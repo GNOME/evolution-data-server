@@ -56,15 +56,44 @@ typedef struct _ECalBackendStorePrivate ECalBackendStorePrivate;
 /**
  * ECalBackendStore:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 2.28
  **/
 struct _ECalBackendStore {
+	/*< private >*/
 	GObject parent;
 	ECalBackendStorePrivate *priv;
 };
 
+/**
+ * ECalBackendStoreClass:
+ * @load: FIXME: Doxument me
+ * @clean: FIXME: Doxument me
+ * @get_component: FIXME: Doxument me
+ * @put_component: FIXME: Doxument me
+ * @remove_component: FIXME: Doxument me
+ * @has_component: FIXME: Doxument me
+ * @get_components_by_uid: FIXME: Doxument me
+ * @get_components: FIXME: Doxument me
+ * @get_component_ids: FIXME: Doxument me
+ * @get_default_timezone: FIXME: Doxument me
+ * @set_default_timezone: FIXME: Doxument me
+ * @thaw_changes: FIXME: Doxument me
+ * @freeze_changes: FIXME: Doxument me
+ * @get_key_value: FIXME: Doxument me
+ * @put_key_value: FIXME: Doxument me
+ *
+ * Class structure for the #ECalBackendStore class.
+ *
+ * Since: 2.28
+ */
 struct _ECalBackendStoreClass {
+	/*< private >*/
 	GObjectClass parent_class;
+
+	/*< public >*/
 
 	/* virtual methods */
 	gboolean	(*load)			(ECalBackendStore *store);
@@ -162,8 +191,8 @@ void		e_cal_backend_store_freeze_changes
 void		e_cal_backend_store_interval_tree_add_comp
 						(ECalBackendStore *store,
 						 ECalComponent *comp,
-						 time_t start,
-						 time_t end);
+						 time_t occurence_start,
+						 time_t occurence_end);
 
 G_END_DECLS
 

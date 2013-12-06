@@ -23,6 +23,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-data-cal-factory
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: The main calendar server object
+ *
+ * This class handles incomming D-Bus connections and creates
+ * the #EDataCal layer for server side calendars to communicate
+ * with client side #ECalClient objects.
+ **/
+
 #include <config.h>
 #include <locale.h>
 #include <stdlib.h>

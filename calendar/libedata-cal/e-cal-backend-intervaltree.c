@@ -20,6 +20,18 @@
  *
  */
 
+/**
+ * SECTION: e-cal-backend-intervaltree
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: A utility for calculating intervals and recurrances
+ *
+ * Implementation of the interval node as described in Introduction to
+ * Algorithms book by Cormen et al, chapter 14.3.
+ *
+ * Basically, the interval tree is the red-black tree, the node key is
+ * the start of the interval.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -569,6 +581,8 @@ e_intervaltree_insert (EIntervalTree *tree,
 /**
  * e_intervaltree_remove:
  * @tree: an #EIntervalTree
+ * @uid: the uid of the component to remove
+ * @rid: the recurrance id of the component to remove
  *
  * Since: 2.32
  **/
@@ -662,7 +676,7 @@ e_intervaltree_remove (EIntervalTree *tree,
  * @start: start of the interval
  * @end: end of the interval
  * 
- * Returns list of nodes that overlaps given interval or %NULL.
+ * Returns: list of nodes that overlaps given interval or %NULL.
  *
  * Since: 2.32
  **/

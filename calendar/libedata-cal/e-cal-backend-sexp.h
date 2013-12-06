@@ -55,12 +55,25 @@ typedef struct _ECalBackendSExp ECalBackendSExp;
 typedef struct _ECalBackendSExpClass ECalBackendSExpClass;
 typedef struct _ECalBackendSExpPrivate ECalBackendSExpPrivate;
 
+/**
+ * ECalBackendSexp:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ */
 struct _ECalBackendSExp {
+	/*< private >*/
 	GObject parent;
 	ECalBackendSExpPrivate *priv;
 };
 
+/**
+ * ECalBackendSexpClass:
+ *
+ * Class structure for the #ECalBackendSexp class.
+ */
 struct _ECalBackendSExpClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 

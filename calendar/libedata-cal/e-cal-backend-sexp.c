@@ -18,6 +18,15 @@
  * 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-cal-backend-sexp
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: A utility for comparing #ECalComponents with search expressions.
+ *
+ * This API is an all purpose utility for comparing #ECalComponents with search expressions
+ * and is used by various backends to implement component filtering and searching.
+ */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

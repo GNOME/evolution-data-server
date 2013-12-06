@@ -21,6 +21,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-cal-client-view
+ * @include: libecal/libecal.h
+ * @short_description: Recieving change notifications on calendars 
+ *
+ * This class provides functionality for watching for changes on a
+ * given calendar opened with an #ECalClient. Use e_cal_client_get_view()
+ * to create an #ECalClientView.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -740,18 +750,28 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 	object_class->dispose = cal_client_view_dispose;
 	object_class->finalize = cal_client_view_finalize;
 
+	/**
+	 * ECalClientView:client:
+	 *
+	 * The ECalClient for the view
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_CLIENT,
 		g_param_spec_object (
 			"client",
+			"Client",
 			"The ECalClient for the view",
-			NULL,
 			E_TYPE_CAL_CLIENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * ECalClientView:connection:
+	 *
+	 * The GDBusConnection used to create the D-Bus proxy
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_CONNECTION,
@@ -765,6 +785,11 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * ECalClientView:object-path:
+	 *
+	 * The object path used to create the D-Bus proxy
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_OBJECT_PATH,

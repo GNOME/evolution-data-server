@@ -1182,8 +1182,9 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
 /**
  * e_cal_util_get_system_timezone_location:
  *
- * Returns system timezone location string, NULL on an error.
- * Returned pointer should be freed with g_free().
+ * Fetches system timezone localtion string.
+ *
+ * Returns: (transfer full): system timezone location string, %NULL on an error.
  *
  * Since: 2.28
  **/
@@ -1196,8 +1197,11 @@ e_cal_util_get_system_timezone_location (void)
 /**
  * e_cal_util_get_system_timezone:
  *
- * Returns icaltimezone object of the system timezone. NULL on an error.
- * Returned pointer is part of the built-in timezones, thus do not free it.
+ * Fetches system timezone icaltimezone object.
+ *
+ * The returned pointer is part of the built-in timezones and should not be freed.
+ *
+ * Returns: (transfer none): The icaltimezone object of the system timezone, or %NULL on an error.
  *
  * Since: 2.28
  **/
@@ -1243,12 +1247,12 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 /**
  * e_cal_util_get_component_occur_times:
  * @comp: an #ECalComponent
- * @start: (out):
- * @end: (out):
- * @tz_cb: (closure tz_cb_data) (scope call):
- * @tz_cb_data: (closure):
- * @default_timezone:
- * @kind:
+ * @start: (out): Location to store the start time
+ * @end: (out): Location to store the end time
+ * @tz_cb: (closure tz_cb_data) (scope call): The #ECalRecurResolveTimezoneFn to call
+ * @tz_cb_data: (closure): User data to be passed to the @tz_cb callback
+ * @default_timezone: The default timezone
+ * @kind: the type of component, indicated with an icalcomponent_kind
  *
  * Find out when the component starts and stops, being careful about
  * recurrences.

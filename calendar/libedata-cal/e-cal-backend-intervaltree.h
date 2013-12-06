@@ -68,14 +68,26 @@ typedef struct _EIntervalTreePrivate EIntervalTreePrivate;
 /**
  * EIntervalTree:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 2.32
  **/
 struct _EIntervalTree {
+	/*< private >*/
 	GObject parent;
 	EIntervalTreePrivate *priv;
 };
 
+/**
+ * EIntervalTreeClass:
+ *
+ * Class structure for the #EIntervalTree class.
+ *
+ * Since: 2.32
+ */
 struct _EIntervalTreeClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 

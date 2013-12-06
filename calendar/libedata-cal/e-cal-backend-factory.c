@@ -7,6 +7,15 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+/**
+ * SECTION: e-cal-backend-factory
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: The factory for creating new calendars
+ *
+ * This class handles creation of new calendars of various
+ * backend types.
+ **/
+
 #include <config.h>
 #include <string.h>
 

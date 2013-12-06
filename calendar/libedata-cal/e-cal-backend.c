@@ -16,6 +16,15 @@
  *
  */
 
+/**
+ * SECTION: e-cal-backend
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: An abstract class for implementing calendar backends
+ *
+ * This is the main server facing API for interfacing with calendar backends,
+ * calendar backends must implement methods on this class.
+ **/
+
 #include <config.h>
 
 #include <glib/gi18n-lib.h>

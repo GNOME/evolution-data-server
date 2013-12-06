@@ -32,8 +32,11 @@ G_BEGIN_DECLS
 
 /**
  * ECalClientSourceType:
+ * @E_CAL_CLIENT_SOURCE_TYPE_EVENTS: Events calander
+ * @E_CAL_CLIENT_SOURCE_TYPE_TASKS: Task list calendar
+ * @E_CAL_CLIENT_SOURCE_TYPE_MEMOS: Memo list calendar
  *
- * FIXME: Document me!
+ * Indicates the type of calendar
  *
  * Since: 3.2
  **/
@@ -46,8 +49,13 @@ typedef enum {
 
 /**
  * ECalObjModType:
+ * @E_CAL_OBJ_MOD_THIS: Modify this component
+ * @E_CAL_OBJ_MOD_THIS_AND_PRIOR: Modify this component and all prior occurrances
+ * @E_CAL_OBJ_MOD_THIS_AND_FUTURE: Modify this component and all future occurrances
+ * @E_CAL_OBJ_MOD_ALL: Modify all occurrances of this component
+ * @E_CAL_OBJ_MOD_ONLY_THIS: Modify only this component
  *
- * FIXME Document me!
+ * Indicates the type of modification made to a calendar
  *
  * Since: 3.8
  **/
@@ -63,10 +71,27 @@ typedef enum {
 
 #ifndef EDS_DISABLE_DEPRECATED
 
+/**
+ * E_CALENDAR_ERROR:
+ *
+ * The error domain for the deprecated #ECal
+ *
+ * Deprecated: 3.2: Use #ECalClient and it's errors instead
+ */
 #define E_CALENDAR_ERROR e_calendar_error_quark()
 
 GQuark e_calendar_error_quark (void) G_GNUC_CONST;
 
+/**
+ * ECalChangeType:
+ * @E_CAL_CHANGE_ADDED: A component was added
+ * @E_CAL_CHANGE_MODIFIED: A component was modified
+ * @E_CAL_CHANGE_DELETED: A component was deleted
+ *
+ * Indicates the type of change in an #ECalChange
+ *
+ * Deprecated: 3.2: Use #ECalClient instead
+ */
 typedef enum {
 	E_CAL_CHANGE_ADDED = 1 << 0,
 	E_CAL_CHANGE_MODIFIED = 1 << 1,
@@ -75,17 +100,31 @@ typedef enum {
 
 /**
  * ECalChange:
+ * @comp: The #ECalComponent which changed
+ * @type: The #ECalChangeType which occurred
  *
- * FIXME Document me!
+ * A structure indicating a calendar change
  *
- * Since: 3.6
+ * Deprecated: 3.2: Use #ECalClient instead
  **/
 typedef struct {
 	ECalComponent *comp;
 	ECalChangeType type;
 } ECalChange;
 
+/**
+ * ECalendarStatus:
+ *
+ * Error codes for the #E_CALENDAR_ERROR error domain
+ *
+ * Deprecated: 3.2: Use #ECalClient and it's errors instead
+ */
+/*
+ * Marked all these deprecated errors as private to avoid
+ * warnings from gtk-doc
+ */
 typedef enum {
+	/*< private >*/
 	E_CALENDAR_STATUS_OK,
 	E_CALENDAR_STATUS_INVALID_ARG,
 	E_CALENDAR_STATUS_BUSY,
@@ -109,16 +148,24 @@ typedef enum {
 	E_CALENDAR_STATUS_NOT_SUPPORTED
 } ECalendarStatus;
 
+/**
+ * E_CALENDAR_STATUS_CORBA_EXCEPTION:
+ *
+ * A deprecated #ECalendarStatus error code
+ *
+ * Deprecated: Use #ECalClient and it's errors instead
+ */
 #define E_CALENDAR_STATUS_CORBA_EXCEPTION E_CALENDAR_STATUS_DBUS_EXCEPTION
 
 /**
  * EDataCalObjType:
  *
- * FIXME Document me!
+ * A deprecated object type indicator
  *
- * Since: 3.6
+ * Deprecated
  **/
 typedef enum {
+	/*< private >*/
 	Event = 1 << 0,
 	Todo = 1 << 1,
 	Journal = 1 << 2,
@@ -128,11 +175,12 @@ typedef enum {
 /**
  * EDataCalObjModType:
  *
- * FIXME Document me!
+ * A deprecated object modification type indicator
  *
- * Since: 3.6
+ * Deprecated
  **/
 typedef enum {
+	/*< private >*/
 	This = 1 << 0,
 	ThisAndPrior = 1 << 1,
 	ThisAndFuture = 1 << 2,

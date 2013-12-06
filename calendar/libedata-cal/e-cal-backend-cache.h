@@ -54,12 +54,25 @@ typedef struct _ECalBackendCache ECalBackendCache;
 typedef struct _ECalBackendCacheClass ECalBackendCacheClass;
 typedef struct _ECalBackendCachePrivate ECalBackendCachePrivate;
 
+/**
+ * ECalBackendCache:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ */
 struct _ECalBackendCache {
+	/*< private >*/
 	EFileCache parent;
 	ECalBackendCachePrivate *priv;
 };
 
+/**
+ * ECalBackendCacheClass:
+ *
+ * Class structure for the #ECalBackendCache.
+ */
 struct _ECalBackendCacheClass {
+	/*< private >*/
 	EFileCacheClass parent_class;
 };
 

@@ -6,6 +6,15 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
+/**
+ * SECTION: e-cal-backend-sync
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: A convenience subclass of #ECalBackend
+ *
+ * This class can be subclassed in place of the #ECalBackend
+ * abstract backend for easier implementation of calendar backends.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

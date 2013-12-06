@@ -16,6 +16,15 @@
  *
  */
 
+/**
+ * SECTION: e-data-cal
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: Server side D-Bus layer to communicate with calendars
+ *
+ * This class communicates with #ECalClients over the bus and accesses
+ * an #ECalBackend to satisfy client requests.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

@@ -102,13 +102,52 @@ typedef struct _ECalBackend ECalBackend;
 typedef struct _ECalBackendClass ECalBackendClass;
 typedef struct _ECalBackendPrivate ECalBackendPrivate;
 
+/**
+ * ECalBackend:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ */
 struct _ECalBackend {
+	/*< private >*/
 	EBackend parent;
 	ECalBackendPrivate *priv;
 };
 
+/**
+ * ECalBackendClass:
+ * @use_serial_dispatch_queue: Whether a serial dispatch queue should
+ *                             be used for this backend or not.
+ * @get_backend_property: Fetch a property value by name from the backend
+ * @open: Open the backend
+ * @refresh: Refresh the backend
+ * @get_object: Fetch a calendar object
+ * @get_object_list: FIXME: Document me
+ * @get_free_busy: FIXME: Document me
+ * @create_objects: FIXME: Document me
+ * @modify_objects: FIXME: Document me
+ * @remove_objects: FIXME: Document me
+ * @receive_objects: FIXME: Document me
+ * @send_objects: FIXME: Document me
+ * @get_attachment_uris: FIXME: Document me
+ * @discard_alarm: FIXME: Document me
+ * @get_timezone: FIXME: Document me
+ * @add_timezone: FIXME: Document me
+ * @start_view: Start up the specified view
+ * @stop_view: Stop the specified view
+ * @closed: A signal notifying that the backend was closed
+ * @shutdown: A signal notifying that the backend is being shut down
+ *
+ * Class structure for the #ECalBackend class.
+ *
+ * These virtual methods must be implemented when writing
+ * a calendar backend.
+ */
 struct _ECalBackendClass {
+	/*< private >*/
 	EBackendClass parent_class;
+
+	/*< public >*/
 
 	/* Set this to TRUE to use a serial dispatch queue, instead
 	 * of a concurrent dispatch queue.  A serial dispatch queue

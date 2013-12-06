@@ -18,6 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION:e-cal-component
+ * @short_description: A convenience interface for interacting with events
+ * @include: libebook-contacts/libebook-contacts.h
+ *
+ * This is the main user facing interface used for representing an event
+ * or other component in a given calendar.
+ **/
+
 #include <config.h>
 #include <string.h>
 #include <stdlib.h>
@@ -3238,9 +3247,10 @@ e_cal_component_get_exrule_list (ECalComponent *comp,
  * e_cal_component_get_exrule_property_list:
  * @comp: A calendar component object.
  * @recur_list: (out) (transfer none) (element-type icalrecurrencetype):
- * Returns a list of exception rule properties
  *
  * Queries the list of exception rule properties of a calendar component object.
+ *
+ * Returns: a list of exception rule properties
  **/
 void
 e_cal_component_get_exrule_property_list (ECalComponent *comp,

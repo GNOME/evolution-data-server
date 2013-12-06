@@ -19,6 +19,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-cal-backend-store
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: A helper class for storing calendar components
+ *
+ * This class can be used by backends to store calendar components.
+ **/
+
 #include "e-cal-backend-store.h"
 
 #include <string.h>
@@ -988,18 +996,28 @@ e_cal_backend_store_class_init (ECalBackendStoreClass *class)
 	class->get_components = cal_backend_store_get_components;
 	class->get_component_ids = cal_backend_store_get_component_ids;
 
+	/**
+	 * ECalBackendStore:path:
+	 *
+	 * The directory to store the file.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_PATH,
 		g_param_spec_string (
 			"path",
-			NULL,
-			NULL,
+			"Path",
+			"The directory to store the file",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 
+	/**
+	 * ECalBackendStore:timezone-cache:
+	 *
+	 * An object implementing the ETimezoneCache interface.
+	 */
 	g_object_class_install_property (
 		object_class,
 		PROP_TIMEZONE_CACHE,
@@ -1058,6 +1076,7 @@ e_cal_backend_store_new (const gchar *path,
 
 /**
  * e_cal_backend_store_get_path:
+ * @store: an #ECalBackendStore
  *
  * Since: 2.28
  **/
@@ -1092,6 +1111,7 @@ e_cal_backend_store_ref_timezone_cache (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_load:
+ * @store: an #ECalBackendStore
  *
  * Since: 2.28
  **/
@@ -1115,6 +1135,7 @@ e_cal_backend_store_load (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_clean:
+ * @store: an #ECalBackendStore
  *
  * Since: 2.28
  **/
@@ -1138,6 +1159,13 @@ e_cal_backend_store_clean (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_get_component:
+ * @store: an #ECalBackendStore
+ * @uid: the uid of the component to fetch
+ * @rid: the recurrence id of the component to fetch
+ *
+ * Fetches a component by @uid and @rid
+ *
+ * Returns: An #ECalComponent
  *
  * Since: 2.28
  **/
@@ -1159,6 +1187,11 @@ e_cal_backend_store_get_component (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_has_component:
+ * @store: an #ECalBackendStore
+ * @uid: the uid of the component to check
+ * @rid: the recurrence id of the component to check
+ *
+ * Returns: Whether there was a component for @uid and @rid
  *
  * Since: 2.28
  **/
@@ -1180,6 +1213,12 @@ e_cal_backend_store_has_component (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_put_component_with_time_range:
+ * @store: an #ECalBackendStore
+ * @comp: the #ECalComonent to add
+ * @occurence_start: start time of this component
+ * @occurence_end: end time of this component
+ *
+ * Returns: whether @comp was successfully added
  *
  * Since: 2.32
  **/
@@ -1210,6 +1249,10 @@ e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_put_component:
+ * @store: an #ECalBackendStore
+ * @comp: the #ECalComonent to add
+ *
+ * Returns: whether @comp was successfully added
  *
  * Since: 2.28
  **/
@@ -1230,6 +1273,11 @@ e_cal_backend_store_put_component (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_remove_component:
+ * @store: an #ECalBackendStore
+ * @uid: the uid of the component to remove
+ * @rid: the recurrence id of the component to remove
+ *
+ * Returns: whether the component was successfully removed
  *
  * Since: 2.28
  **/
@@ -1256,6 +1304,11 @@ e_cal_backend_store_remove_component (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_get_default_timezone:
+ * @store: an #ECalBackendStore
+ *
+ * Fetch the default timezone
+ *
+ * Returns: (transfer none): The default timezone
  *
  * Since: 2.28
  **/
@@ -1274,6 +1327,10 @@ e_cal_backend_store_get_default_timezone (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_set_default_timezone:
+ * @store: an #ECalBackendStore
+ * @zone: the timezone to set
+ *
+ * Returns: whether the timezone was successfully set
  *
  * Since: 2.28
  **/
@@ -1294,6 +1351,10 @@ e_cal_backend_store_set_default_timezone (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_get_components_by_uid:
+ * @store: an #ECalBackendStore
+ * @uid: the @uid of the components to fetch
+ *
+ * Returns: a list of components matching @uid
  *
  * Since: 2.28
  **/
@@ -1366,6 +1427,9 @@ e_cal_backend_store_get_components_by_uid_as_ical_string (ECalBackendStore *stor
 
 /**
  * e_cal_backend_store_get_components:
+ * @store: an #ECalBackendStore
+ *
+ * Returns: the list of components in @store
  *
  * Since: 2.28
  **/
@@ -1385,13 +1449,13 @@ e_cal_backend_store_get_components (ECalBackendStore *store)
 /**
  * e_cal_backend_store_get_components_occuring_in_range:
  * @store: An #ECalBackendStore object.
- * @start:
- * @end:
+ * @start: Start time
+ * @end: End time
  *
  * Retrieves a list of components stored in the store, that are occuring
  * in time range [start, end].
  *
- * Return value: A list of the components. Each item in the list is
+ * Returns: (transfer full): A list of the components. Each item in the list is
  * an #ECalComponent, which should be freed when no longer needed.
  *
  * Since: 2.32
@@ -1438,6 +1502,7 @@ e_cal_backend_store_get_components_occuring_in_range (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_get_component_ids:
+ * @store: an #ECalBackendStore
  *
  * Since: 2.28
  **/
@@ -1456,6 +1521,10 @@ e_cal_backend_store_get_component_ids (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_get_key_value:
+ * @store: an #ECalBackendStore
+ * @key: the key for the value to fetch
+ *
+ * Returns: (transfer none): The value matching @key
  *
  * Since: 2.28
  **/
@@ -1476,6 +1545,11 @@ e_cal_backend_store_get_key_value (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_put_key_value:
+ * @store: an #ECalBackendStore
+ * @key: the key for the value to set
+ * @value: the value to set for @key
+ *
+ * Returns: whether @value was successfully set for @key
  *
  * Since: 2.28
  **/
@@ -1497,6 +1571,7 @@ e_cal_backend_store_put_key_value (ECalBackendStore *store,
 
 /**
  * e_cal_backend_store_thaw_changes:
+ * @store: an #ECalBackendStore
  *
  * Since: 2.28
  **/
@@ -1515,6 +1590,7 @@ e_cal_backend_store_thaw_changes (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_freeze_changes:
+ * @store: an #ECalBackendStore
  *
  * Since: 2.28
  **/
@@ -1533,6 +1609,10 @@ e_cal_backend_store_freeze_changes (ECalBackendStore *store)
 
 /**
  * e_cal_backend_store_interval_tree_add_comp:
+ * @store: an #ECalBackendStore
+ * @comp: the #ECalComponent to add
+ * @occurence_start: start time for @comp
+ * @occurence_end: end time for @comp
  *
  * Since: 2.32
  **/

@@ -53,21 +53,50 @@ typedef struct _ECal ECal;
 typedef struct _ECalClass ECalClass;
 typedef struct _ECalPrivate ECalPrivate;
 
+/**
+ * ECalSourceType:
+ * @E_CAL_SOURCE_TYPE_EVENT: Event calander
+ * @E_CAL_SOURCE_TYPE_TODO: Todo list calendar
+ * @E_CAL_SOURCE_TYPE_JOURNAL: Journal calendar
+ *
+ * Indicates the type of calendar
+ *
+ * Deprecated: 3.2: Use #ECalClient instead
+ */
 typedef enum {
 	E_CAL_SOURCE_TYPE_EVENT,
 	E_CAL_SOURCE_TYPE_TODO,
 	E_CAL_SOURCE_TYPE_JOURNAL,
+	/*< private >*/
 	E_CAL_SOURCE_TYPE_LAST
 } ECalSourceType;
 
-/* Set mode status for the e_cal_set_mode function */
+/**
+ * ECalSetModeStatus:
+ * @E_CAL_SET_MODE_SUCCESS: Success
+ * @E_CAL_SET_MODE_ERROR: Error
+ * @E_CAL_SET_MODE_NOT_SUPPORTED: Not supported
+ *
+ * Status of e_cal_set_mode() function
+ *
+ * Deprecated: 3.2: Use #ECalClient instead
+ */
 typedef enum {
 	E_CAL_SET_MODE_SUCCESS,
 	E_CAL_SET_MODE_ERROR,
 	E_CAL_SET_MODE_NOT_SUPPORTED
 } ECalSetModeStatus;
 
-/* Whether the ecal is not loaded, is being loaded, or is already loaded */
+/**
+ * ECalLoadState:
+ * @E_CAL_LOAD_NOT_LOADED: Not loaded
+ * @E_CAL_LOAD_LOADING: Loading
+ * @E_CAL_LOAD_LOADED: Loaded
+ *
+ * The current loading state reported by e_cal_get_load_state()
+ *
+ * Deprecated: 3.2: Use #ECalClient instead
+ */
 typedef enum {
 	E_CAL_LOAD_NOT_LOADED,
 	E_CAL_LOAD_LOADING,
@@ -77,28 +106,47 @@ typedef enum {
 /**
  * EDataCalMode:
  *
- * FIXME: Document me.
+ * A deprecated detail of the old #ECal API.
  *
- * Since: 3.2
+ * Deprecated: 3.2: Use #ECalClient instead
  **/
 typedef enum {
+	/*< private >*/
 	Local = 1 << 0,
 	Remote = 1 << 1,
 	AnyMode = 0x07
 } EDataCalMode;
 
+/**
+ * ECal:
+ *
+ * The deprecated API for accessing the calendar
+ *
+ * Deprecated: 3.2: Use #ECalClient instead 
+ */
 struct _ECal {
-	GObject object;
-
 	/*< private >*/
+	GObject object;
 	ECalPrivate *priv;
 };
 
+/**
+ * ECalClass:
+ *
+ * Class structure for the deprecated API for accessing the calendar
+ *
+ * Deprecated: 3.2: Use #ECalClient instead 
+ */
 struct _ECalClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
-	/* Notification signals */
+	/*
+	 * Leaving the whole thing < private >, avoid documenting
+	 * the deprecated vfuncs here
+	 */
 
+	/* Notification signals */
 	#ifndef EDS_DISABLE_DEPRECATED
 	void (* cal_opened) (ECal *ecal, ECalendarStatus status);
 	#endif

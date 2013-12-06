@@ -911,11 +911,14 @@ system_timezone_win32_query_registry (void)
 /**
  * e_cal_system_timezone_get_location:
  *
- * Returns system timezone location string, NULL on an error.
- * Returned pointer should be freed with g_free().
+ * Fetches the system timezone location string.
  *
  * Note: Since 3.4 the returned timezone location is either NULL or
  * an equivalent within known libical timezones.
+ *
+ * The returned string should be freed with g_free().
+ *
+ * Returns: (transfer full): system timezone location string, or %NULL on an error.
  *
  * Since: 2.28
  **/

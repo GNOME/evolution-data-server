@@ -19,6 +19,15 @@
  *
  */
 
+/**
+ * SECTION: e-cal-client
+ * @include: libecal/libecal.h
+ * @short_description: Accessing and modifying a calendar 
+ *
+ * This class is the main user facing API for accessing and modifying
+ * the calendar.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

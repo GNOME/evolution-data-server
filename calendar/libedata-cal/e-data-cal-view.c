@@ -21,6 +21,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-data-cal-view
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: A server side object for issuing view notifications
+ *
+ * This class communicates with #ECalClientViews over the bus.
+ *
+ * Calendar backends can automatically own a number of views requested
+ * by the client, this API can be used by the backend to issue notifications
+ * which will be delivered to the #ECalClientView
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

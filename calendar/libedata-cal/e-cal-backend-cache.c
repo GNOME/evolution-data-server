@@ -19,6 +19,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+/**
+ * SECTION: e-cal-backend-cache
+ * @include: libedata-cal/libedata-cal.h
+ * @short_description: A helper class for caching calendar components
+ *
+ * This class can be used by backends to store calendar components.
+ **/
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -650,8 +658,9 @@ e_cal_backend_cache_put_key_value (ECalBackendCache *cache,
 /**
  * e_cal_backend_cache_get_key_value:
  * @cache: An #ECalBackendCache object.
+ * @key: The key to fetch a value for
  *
- * Returns: The value.
+ * Returns: (transfer none): The value.
  */
 const gchar *
 e_cal_backend_cache_get_key_value (ECalBackendCache *cache,
@@ -671,6 +680,10 @@ e_cal_backend_cache_get_key_value (ECalBackendCache *cache,
 
 /**
  * e_cal_backend_cache_remove:
+ * @dirname: The directory name where the cache is stored
+ * @basename: The directory inside @dirname where the cache is stored
+ *
+ * Removes the cache directory
  *
  * Since: 2.28
  **/
