@@ -62,13 +62,27 @@ typedef struct _EBackendPrivate EBackendPrivate;
  * Since: 3.4
  **/
 struct _EBackend {
+	/*< private >*/
 	GObject parent;
 	EBackendPrivate *priv;
 };
 
+/**
+ * EBackendClass:
+ * @authenticate_sync: Authenticate synchronously
+ * @authenticate: Initiate authentication
+ * @authenticate_finish: Complete authentication
+ * @get_destination_address: Fetch the destination address
+ *
+ * Base class structure for the #EBackend class
+ *
+ * Since: 3.4
+ **/
 struct _EBackendClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
+	/*< public >*/
 	/* Methods */
 	gboolean	(*authenticate_sync)	(EBackend *backend,
 						 ESourceAuthenticator *auth,
@@ -88,6 +102,7 @@ struct _EBackendClass {
 						 gchar **host,
 						 guint16 *port);
 
+	/*< private >*/
 	gpointer reserved[12];
 };
 

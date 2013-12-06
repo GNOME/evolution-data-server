@@ -59,11 +59,20 @@ typedef struct _EAuthenticationMediatorPrivate EAuthenticationMediatorPrivate;
  * Since: 3.6
  **/
 struct _EAuthenticationMediator {
+	/*< private >*/
 	GObject parent;
 	EAuthenticationMediatorPrivate *priv;
 };
 
+/**
+ * EAuthenticationMediatorClass:
+ *
+ * Class structure for the #EAuthenticationMediator object
+ *
+ * Since: 3.6
+ */
 struct _EAuthenticationMediatorClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 

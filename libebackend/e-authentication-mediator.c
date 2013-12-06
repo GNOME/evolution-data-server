@@ -1267,6 +1267,7 @@ e_authentication_mediator_dismiss (EAuthenticationMediator *mediator)
 /**
  * e_authentication_mediator_server_error:
  * @mediator: an #EAuthenticationMediator
+ * @error: the #GError to report
  *
  * Signals to the authentication client that the authentication session has
  * terminated with a server-side error.

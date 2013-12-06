@@ -859,9 +859,10 @@ e_backend_authenticate_finish (EBackend *backend,
  * @backend: an #EBackend
  *
  * Gets an instance of #EUserPrompter, associated with this @backend.
- * The instance is owned by the @backend.
  *
- * Returns: (transfer-none): an #EUserPrompter instance
+ * The returned instance is owned by the @backend.
+ *
+ * Returns: (transfer none): an #EUserPrompter instance
  *
  * Since: 3.8
  **/

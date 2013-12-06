@@ -65,12 +65,26 @@ typedef struct _EAuthenticationSessionPrivate EAuthenticationSessionPrivate;
  * Since: 3.6
  **/
 struct _EAuthenticationSession {
+	/*< private >*/
 	GObject parent;
 	EAuthenticationSessionPrivate *priv;
 };
 
+/**
+ * EAuthenticationSessionClass:
+ * @execute_sync: Authenticate synchronously
+ * @execute: Initiate authentication
+ * @execute_finish: Complete authentication
+ *
+ * Class structure for the #EAuthenticationSession object
+ *
+ * Since: 3.6
+ */
 struct _EAuthenticationSessionClass {
+	/*< private >*/
 	GObjectClass parent_class;
+
+	/*< public >*/
 
 	/* Methods */
 	EAuthenticationSessionResult
@@ -88,6 +102,7 @@ struct _EAuthenticationSessionClass {
 					 GAsyncResult *result,
 					 GError **error);
 
+	/*< private >*/
 	/* Reserved slots. */
 	gpointer reserved[16];
 };

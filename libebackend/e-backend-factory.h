@@ -60,18 +60,31 @@ typedef struct _EBackendFactoryPrivate EBackendFactoryPrivate;
  * Since: 3.4
  **/
 struct _EBackendFactory {
+	/*< private >*/
 	EExtension parent;
 	EBackendFactoryPrivate *priv;
 };
 
+/**
+ * EBackendFactoryClass:
+ * @get_hash_key: Get the hash key for this factory
+ * @new_backend: Create a new #EBackend of the appropriate type for the passed #ESource
+ *
+ * Base class structure for the #EBackendFactory class
+ *
+ * Since: 3.4
+ **/
 struct _EBackendFactoryClass {
+	/*< private >*/
 	EExtensionClass parent_class;
 
+	/*< public >*/
 	/* Methods */
 	const gchar *	(*get_hash_key)		(EBackendFactory *factory);
 	EBackend *	(*new_backend)		(EBackendFactory *factory,
 						 ESource *source);
 
+	/*< private >*/
 	gpointer reserved[16];
 };
 
