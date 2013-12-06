@@ -20,6 +20,21 @@
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+/**
+ * SECTION: e-test-server-utils
+ * @short_description: A utility for unit testing EDS
+ *
+ * This test fixture provides an encapsulated testing environment for test
+ * cases to test #EBookClient and #ECalClient.
+ *
+ * The #ETestServerFixture should be used as a fixture and must be coupled
+ * with the #ETestServerClosure to configure how the test fixture will operate.
+ *
+ * Both the #ETestServerFixture and #ETestServerClosure can be extended with
+ * more complex test fixtures, which must remember to call e_test_server_utils_setup()
+ * and e_test_server_utils_teardown() in thier fixture's setup and teardown routines.
+ **/
+
 #include "e-test-server-utils.h"
 
 #include <sys/wait.h>

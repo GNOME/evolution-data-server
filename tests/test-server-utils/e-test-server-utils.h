@@ -77,10 +77,14 @@ typedef enum {
 
 /**
  * ETestServerClosure:
- * @flags:                The #ETestServiceFlags to use for this test
  * @customize:            An #ETestSourceCustomizeFunc to use to parameterize the scratch #ESource, or %NULL
  * @calendar_source_type: An #ECalClientSourceType or #ECalSourceType; for %E_TEST_SERVER_CALENDAR
  *                        and %E_TEST_SERVER_DEPRECATED_CALENDAR tests
+ * @keep_work_directory:  If specified, the work directory will not be deleted between tests
+ * @destroy_closure_func: A function to destroy an allocated #ETestServerClosure, this it
+ *                        typically used by sub-fixtures which embed this structure in their closures.
+ * @use_async_connect:    Specifies whether a synchronous or asyncrhonous API should be used to
+ *                        create the #EClient you plan to test.
  *
  * This structure provides the parameters for the #ETestServerFixture tests,
  * it can be included as the first member of a derived structure
@@ -97,6 +101,7 @@ struct _ETestServerClosure {
 
 /**
  * ETestService:
+ * @generic: A generic pointer for the test service.
  * @book_client: An #EBookClient, created for %E_TEST_SERVER_ADDRESS_BOOK tests
  * @calendar_client: An #ECalClient, created for %E_TEST_SERVER_CALENDAR tests
  * @book: An #EBook, created for %E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK tests
@@ -119,8 +124,8 @@ typedef union {
  * @dbus: The D-Bus test scaffold
  * @registry: An #ESourceRegistry
  * @service: The #ETestService
- * @source_name: A private detail, the ESource name used for this test case
- * @timeout_source_id: A private detail, tracks the idle source which times out if the registry cannot create an ESource.
+ * @source_name: This can be given an allocated string before calling e_test_server_utils_setup() and will be the #ESource UID
+ * for the test addressbook or calendar, leaving this %NULL will result in a suitable unique id being generated for the test. 
  *
  * A fixture for running tests on the Evolution Data Server
  * components in an encapsulated D-Bus environment.
@@ -131,6 +136,8 @@ struct _ETestServerFixture {
 	ESourceRegistry *registry;
 	ETestService     service;
 	gchar           *source_name;
+
+	/*< private >*/
 	guint            timeout_source_id;
 	GWeakRef         registry_ref;
 	GWeakRef         client_ref;
