@@ -38,6 +38,15 @@ struct _CamelMimeFilterPrivate {
 	gsize inlen;
 };
 
+/* Compatible with filter() and complete() methods. */
+typedef void	(*FilterMethod)			(CamelMimeFilter *filter,
+						 const gchar *in,
+						 gsize len,
+						 gsize prespace,
+						 gchar **out,
+						 gsize *outlen,
+						 gsize *outprespace);
+
 #define PRE_HEAD (64)
 #define BACK_HEAD (64)
 
@@ -132,12 +141,15 @@ checkmem (gpointer p)
 }
 #endif
 
-static void filter_run (CamelMimeFilter *f,
-		       const gchar *in, gsize len, gsize prespace,
-		       gchar **out, gsize *outlen, gsize *outprespace,
-		       void (*filterfunc)(CamelMimeFilter *f,
-					  const gchar *in, gsize len, gsize prespace,
-					  gchar **out, gsize *outlen, gsize *outprespace))
+static void
+filter_run (CamelMimeFilter *f,
+            const gchar *in,
+            gsize len,
+            gsize prespace,
+            gchar **out,
+            gsize *outlen,
+            gsize *outprespace,
+            FilterMethod method)
 {
 #ifdef MALLOC_CHECK
 	checkmem (f->outreal);
@@ -179,7 +191,7 @@ static void filter_run (CamelMimeFilter *f,
 	checkmem (f->backbuf);
 #endif
 
-	filterfunc (f, in, len, prespace, out, outlen, outprespace);
+	method (f, in, len, prespace, out, outlen, outprespace);
 
 #ifdef MALLOC_CHECK
 	checkmem (f->outreal);
