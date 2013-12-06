@@ -5,11 +5,8 @@ PRIVATE_DIR = private
 endif
 
 SUBDIRS = \
-	addressbook \
-	calendar \
+	eds	\
 	camel \
-	libedataserver \
-	libebackend \
 	$(PRIVATE_DIR) \
 	$(NULL)
 

@@ -1,0 +1,157 @@
+<refentry id="eds-cursor-example" revision="30 Nov 2013">
+  <refmeta>
+    <refentrytitle>Contacts Browser Example</refentrytitle>
+    <refmiscinfo>Contacts Browser Example</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>Contacts Browser Example</refname>
+    <refpurpose>
+      Explanation of how to create a scrolling window listing contacts in
+      alphabetical order.
+    </refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Introduction</title>
+    <para>
+      This is a fully functional reference application for implementing scrolling contact
+      browsers using the #EBookClientCursor. With the cursor, the following features are
+      possible.
+    </para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Display contacts in a configurable sort order</para>
+	<para>
+	  Sort by any #EContactField which conforms to #G_TYPE_STRING, this can be checked
+	  with e_contact_field_type()
+	</para>
+      </listitem>
+      <listitem>
+        <para>Minimal memory constraints</para>
+	<para>
+	  Only load into memory the contacts which are currently visible in the list
+	</para>
+      </listitem>
+      <listitem>
+	<para>Filter search results on the fly</para>
+	<para>
+	  Set new search expressions generated with #EBookQuery on the fly. Refresh
+	  the contact list at the current position without losing the current cursor
+	  position.
+	</para>
+      </listitem>
+      <listitem>
+	<para>Display the the user's alphabet</para>
+	<para>
+	  Using interesting features from ICU libraries allow us to display
+	  the user's alphabet, and implement features such as jumping to
+	  a given letter in the user's alphabet.
+	</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>
+      The actual example code is built into the 'example' subdirectory of the Evolution Data Server
+      sources. In order to run the example, just launch the program and give it a path to a directory
+      full of vcards, bearing the .vcf filename extention.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>Contact Browser</title>
+    <para>
+      Below is an example of the contact browser code itself, the example program is
+      broken down into a couple of object classes which are also listed below.
+    </para>
+
+    <informalexample>
+      <programlisting>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    parse="text"
+                    href="../../../../examples/cursor/cursor-example.c">
+          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+	</xi:include>
+      </programlisting>
+    </informalexample>
+  </refsect1>
+
+  <refsect1>
+    <title>The alphabetic navigator</title>
+    <para>
+      This is a simple class which implements a vertical scroller and displays
+      various letters according to the currently active alphabet. The actual
+      interaction with #EBookClientCursor is done in the main contact browser
+      and this class is simply configured with the active alphabet.
+    </para>
+
+    <informalexample>
+      <programlisting>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    parse="text"
+                    href="../../../../examples/cursor/cursor-navigator.c">
+          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+	</xi:include>
+      </programlisting>
+    </informalexample>
+  </refsect1>
+
+  <refsect1>
+    <title>The search entry</title>
+    <para>
+      The search entry is placed at the top of the contacts browser,
+      this class simply implements a drop down box choosing the appropriate
+      search expression which should be used to filter the contacts
+      in the browser display window.
+    </para>
+
+    <informalexample>
+      <programlisting>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    parse="text"
+                    href="../../../../examples/cursor/cursor-search.c">
+          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+	</xi:include>
+      </programlisting>
+    </informalexample>
+  </refsect1>
+
+  <refsect1>
+    <title>The contact slot</title>
+    <para>
+      This is a very simple class who's only purpose is to display
+      contact related data, each entry in the list is a 'slot'
+    </para>
+
+    <informalexample>
+      <programlisting>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    parse="text"
+                    href="../../../../examples/cursor/cursor-slot.c">
+          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+	</xi:include>
+      </programlisting>
+    </informalexample>
+  </refsect1>
+
+  <refsect1>
+    <title>Creating addressbooks and loading vcards</title>
+    <para>
+      This is the messy part of the example, here we take care
+      of creating a custom addressbook and populating it with
+      the contacts found in the directory given to the example.
+    </para>
+
+    <informalexample>
+      <programlisting>
+	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    parse="text"
+                    href="../../../../examples/cursor/cursor-data.c">
+          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
+	</xi:include>
+      </programlisting>
+    </informalexample>
+  </refsect1>
+
+</refentry>

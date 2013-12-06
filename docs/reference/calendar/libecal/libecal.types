@@ -1,8 +1,0 @@
-#include <libecal/libecal.h>
-
-e_cal_get_type
-e_cal_client_get_type
-e_cal_client_view_get_type
-e_cal_component_get_type
-e_cal_view_get_type
-e_timezone_cache_get_type
