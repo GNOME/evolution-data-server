@@ -5,10 +5,10 @@ camel/providers/nntp/camel-nntp-grouplist.c
 camel/providers/nntp/camel-nntp-newsrc.c
 camel/providers/nntp/camel-nntp-utils.c
 camel/providers/nntp/test-newsrc.c
+examples/cursor/cursor-example.ui
+examples/cursor/cursor-search.ui
+examples/cursor/cursor-slot.ui
 modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in
 modules/ubuntu-online-accounts/google-contacts.service.in
 modules/ubuntu-online-accounts/google-gmail.service.in
 servers/exchange/lib/e2k-user-dialog.c
-tests/cursor-example/cursor-example.ui
-tests/cursor-example/cursor-search.ui
-tests/cursor-example/cursor-slot.ui
