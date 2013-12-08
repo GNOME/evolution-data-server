@@ -112,7 +112,6 @@ struct _EBookBackend {
 	EBookBackendPrivate *priv;
 };
 
-
 /**
  * EBookBackendClass:
  * @use_serial_dispatch_queue: Whether a serial dispatch queue should
@@ -271,18 +270,18 @@ struct _EBookBackendClass {
 
 	void		(*sync)			(EBookBackend *backend);
 
-	gboolean        (*set_locale)           (EBookBackend *backend,
-						 const gchar  *locale,
+	gboolean	(*set_locale)		(EBookBackend *backend,
+						 const gchar *locale,
 						 GCancellable *cancellable,
 						 GError **error);
-	gchar          *(*dup_locale)           (EBookBackend *backend);
+	gchar *		(*dup_locale)		(EBookBackend *backend);
 	EDataBookCursor *
-	                (*create_cursor)	(EBookBackend *backend,
+			(*create_cursor)	(EBookBackend *backend,
 						 EContactField *sort_fields,
 						 EBookCursorSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
-	gboolean        (* delete_cursor)       (EBookBackend *backend,
+	gboolean	(*delete_cursor)	(EBookBackend *backend,
 						 EDataBookCursor *cursor,
 						 GError **error);
 
@@ -457,19 +456,19 @@ void		e_book_backend_configure_direct	(EBookBackend *backend,
 
 void		e_book_backend_sync		(EBookBackend *backend);
 
-gboolean        e_book_backend_set_locale       (EBookBackend *backend,
-						 const gchar  *locale,
+gboolean	e_book_backend_set_locale	(EBookBackend *backend,
+						 const gchar *locale,
 						 GCancellable *cancellable,
-						 GError      **error);
-gchar          *e_book_backend_dup_locale       (EBookBackend *backend);
+						 GError **error);
+gchar *		e_book_backend_dup_locale	(EBookBackend *backend);
 
 EDataBookCursor *
-                e_book_backend_create_cursor    (EBookBackend *backend,
+		e_book_backend_create_cursor	(EBookBackend *backend,
 						 EContactField *sort_fields,
 						 EBookCursorSortType *sort_types,
 						 guint n_fields,
 						 GError **error);
-gboolean        e_book_backend_delete_cursor    (EBookBackend *backend,
+gboolean	e_book_backend_delete_cursor	(EBookBackend *backend,
 						 EDataBookCursor *cursor,
 						 GError **error);
 

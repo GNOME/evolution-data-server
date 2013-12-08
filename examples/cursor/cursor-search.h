@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #ifndef CURSOR_SEARCH_H
 #define CURSOR_SEARCH_H
 

@@ -31,8 +31,9 @@ main (gint argc,
 
 	for (i = 0; i < G_N_ELEMENTS (params); i++) {
 
-		data = step_test_new (params[i].path, "/ChangeLocale/POSIX/en_US", "POSIX",
-				      params[i].store_vcards, params[i].empty_book);
+		data = step_test_new (
+			params[i].path, "/ChangeLocale/POSIX/en_US", "POSIX",
+			params[i].store_vcards, params[i].empty_book);
 		step_test_add_assertion (data, 5, 11, 2,  6,  3,  8);
 		step_test_add_assertion (data, 5, 1,  5,  4,  7,  15);
 		step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
@@ -45,8 +46,9 @@ main (gint argc,
 		step_test_add_assertion (data, 5, 12, 13, 9,  19, 20);
 		step_test_add (data, FALSE);
 
-		data = step_test_new (params[i].path, "/ChangeLocale/en_US/fr_CA", "en_US.UTF-8",
-				      params[i].store_vcards, params[i].empty_book);
+		data = step_test_new (
+			params[i].path, "/ChangeLocale/en_US/fr_CA", "en_US.UTF-8",
+			params[i].store_vcards, params[i].empty_book);
 		step_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
 		step_test_add_assertion (data, 5, 4,  3,  7,  8,  15);
 		step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);
@@ -59,8 +61,9 @@ main (gint argc,
 		step_test_add_assertion (data, 5, 13, 12, 9,  19, 20);
 		step_test_add (data, FALSE);
 
-		data = step_test_new (params[i].path, "/ChangeLocale/fr_CA/de_DE", "fr_CA.UTF-8",
-				      params[i].store_vcards, params[i].empty_book);
+		data = step_test_new (
+			params[i].path, "/ChangeLocale/fr_CA/de_DE", "fr_CA.UTF-8",
+			params[i].store_vcards, params[i].empty_book);
 		step_test_add_assertion (data, 5, 11, 1,  2,  5,  6);
 		step_test_add_assertion (data, 5, 4,  3,  7,  8,  15);
 		step_test_add_assertion (data, 5, 17, 16, 18, 10, 14);

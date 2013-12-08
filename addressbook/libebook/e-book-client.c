@@ -114,7 +114,6 @@ static void	e_book_client_async_initable_init
 static void     book_client_set_locale  (EBookClient *client,
 					 const gchar *locale);
 
-
 enum {
 	PROP_0,
 	PROP_LOCALE
@@ -471,13 +470,13 @@ book_client_emit_backend_property_changed_idle_cb (gpointer user_data)
 
 			/* XXX Despite appearances, this function does not block. */
 			e_client_get_backend_property_sync (
-			        client,
+				client,
 				signal_closure->property_name,
 				&prop_value, NULL, NULL);
 
 			if (prop_value != NULL) {
 				g_signal_emit_by_name (
-				        client,
+					client,
 					"backend-property-changed",
 					signal_closure->property_name,
 					prop_value);
@@ -1004,8 +1003,9 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	g_object_notify (G_OBJECT (proxy), "writable");
 	g_object_notify (G_OBJECT (proxy), "capabilities");
 
-	book_client_set_locale (E_BOOK_CLIENT (client),
-				e_dbus_address_book_get_locale (priv->dbus_proxy));
+	book_client_set_locale (
+		E_BOOK_CLIENT (client),
+		e_dbus_address_book_get_locale (priv->dbus_proxy));
 
 	g_object_unref (connection);
 }
@@ -1078,9 +1078,9 @@ book_client_initable_init_finish (GAsyncInitable *initable,
 
 static void
 book_client_get_property (GObject *object,
-			  guint property_id,
-			  GValue *value,
-			  GParamSpec *pspec)
+                          guint property_id,
+                          GValue *value,
+                          GParamSpec *pspec)
 {
 	EBookClient *book_client;
 
@@ -1877,9 +1877,10 @@ book_client_add_contact_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2048,9 +2049,10 @@ book_client_add_contacts_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2260,9 +2262,10 @@ book_client_modify_contact_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2390,9 +2393,10 @@ book_client_modify_contacts_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2548,9 +2552,10 @@ book_client_remove_contact_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2681,9 +2686,10 @@ book_client_remove_contact_by_uid_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2811,9 +2817,10 @@ book_client_remove_contacts_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -2968,9 +2975,10 @@ book_client_get_contact_thread (GSimpleAsyncResult *simple,
 		&async_context->contact,
 		cancellable, &local_error)) {
 			if (!local_error)
-				local_error = g_error_new_literal (E_CLIENT_ERROR,
-								   E_CLIENT_ERROR_OTHER_ERROR,
-								   _("Unknown error"));
+				local_error = g_error_new_literal (
+					E_CLIENT_ERROR,
+					E_CLIENT_ERROR_OTHER_ERROR,
+					_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -3005,7 +3013,7 @@ e_book_client_get_contact (EBookClient *client,
 	g_return_if_fail (uid != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->uid  = g_strdup (uid);
+	async_context->uid = g_strdup (uid);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,
@@ -3162,9 +3170,10 @@ book_client_get_contacts_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -3379,9 +3388,10 @@ book_client_get_contacts_uids_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -3785,13 +3795,13 @@ e_book_client_get_view_sync (EBookClient *client,
 /* Helper for e_book_client_get_cursor() */
 static const gchar **
 sort_param_to_strv (gpointer param,
-		    gint     n_fields,
-		    gboolean keys)
+                    gint n_fields,
+                    gboolean keys)
 {
 	const gchar **array;
 	gint i;
 
-	array = (const gchar **)g_new0 (gchar *, n_fields + 1);
+	array = (const gchar **) g_new0 (gchar *, n_fields + 1);
 
 	/* string arrays are shallow allocated, the strings themselves
 	 * are intern strings and don't need to be dupped.
@@ -3799,14 +3809,15 @@ sort_param_to_strv (gpointer param,
 	for (i = 0; i < n_fields; i++) {
 
 		if (keys) {
-			EContactField *fields = (EContactField *)param;
+			EContactField *fields = (EContactField *) param;
 
 			array[i] = e_contact_field_name (fields[i]);
 		} else {
-			EBookCursorSortType *types = (EBookCursorSortType *)param;
+			EBookCursorSortType *types = (EBookCursorSortType *) param;
 
-			array[i] = e_enum_to_string (E_TYPE_BOOK_CURSOR_SORT_TYPE,
-						     types[i]);
+			array[i] = e_enum_to_string (
+				E_TYPE_BOOK_CURSOR_SORT_TYPE,
+				types[i]);
 		}
 	}
 
@@ -3823,7 +3834,7 @@ void book_client_delete_direct_cursor (EBookClient *client,
 
 void
 book_client_delete_direct_cursor (EBookClient *client,
-				  EDataBookCursor *cursor)
+                                  EDataBookCursor *cursor)
 {
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
 	g_return_if_fail (E_IS_DATA_BOOK_CURSOR (cursor));
@@ -3833,15 +3844,15 @@ book_client_delete_direct_cursor (EBookClient *client,
 		return;
 	}
 
-	e_book_backend_delete_cursor (client->priv->direct_backend,
-				      cursor, NULL);
+	e_book_backend_delete_cursor (
+		client->priv->direct_backend,
+		cursor, NULL);
 }
-
 
 static void
 book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
-				       GObject *source_object,
-				       GCancellable *cancellable)
+                                       GObject *source_object,
+                                       GCancellable *cancellable)
 {
 	EBookClient *client = E_BOOK_CLIENT (source_object);
 	AsyncContext *async_context;
@@ -3852,29 +3863,37 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 	const gchar **sort_types;
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-	sort_fields   = sort_param_to_strv (async_context->sort_fields, async_context->n_sort_fields, TRUE);
-	sort_types    = sort_param_to_strv (async_context->sort_types, async_context->n_sort_fields, FALSE);
 
-	/* Direct Read Access cursor don't need any
-	 * D-Bus connection themselves, just give them
-	 * an EDataBookCursor directly
-	 */
+	sort_fields = sort_param_to_strv (
+		async_context->sort_fields,
+		async_context->n_sort_fields, TRUE);
+	sort_types = sort_param_to_strv (
+		async_context->sort_types,
+		async_context->n_sort_fields, FALSE);
+
+	/* Direct Read Access cursor don't need any D-Bus connection
+	 * themselves, just give them an EDataBookCursor directly. */
 	if (client->priv->direct_backend) {
 		EDataBookCursor *cursor;
 
-		cursor = e_book_backend_create_cursor (client->priv->direct_backend,
-						       async_context->sort_fields,
-						       async_context->sort_types,
-						       async_context->n_sort_fields,
-						       &local_error);
+		cursor = e_book_backend_create_cursor (
+			client->priv->direct_backend,
+			async_context->sort_fields,
+			async_context->sort_types,
+			async_context->n_sort_fields,
+			&local_error);
 
-		if (cursor) {
-			if (!e_data_book_cursor_set_sexp (cursor,
-							  async_context->sexp,
-							  cancellable, &local_error)) {
-				e_book_backend_delete_cursor (client->priv->direct_backend,
-							      cursor,
-							      NULL);
+		if (cursor != NULL) {
+			e_data_book_cursor_set_sexp (
+				cursor,
+				async_context->sexp,
+				cancellable, &local_error);
+
+			if (local_error != NULL) {
+				e_book_backend_delete_cursor (
+					client->priv->direct_backend,
+					cursor,
+					NULL);
 				cursor = NULL;
 			}
 		}
@@ -3882,7 +3901,7 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 		if (cursor != NULL) {
 			EBookClientCursor *client_cursor;
 
-			/* The client cursor will take a ref, but 
+			/* The client cursor will take a ref, but
 			 * e_book_backend_create_cursor() returns
 			 * a pointer to a cursor owned by the backend,
 			 * don't unref the returned pointer here.
@@ -3909,8 +3928,8 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
 
 		e_dbus_address_book_call_get_cursor_sync (
 			client->priv->dbus_proxy, utf8_sexp,
-			(const gchar *const *)sort_fields,
-			(const gchar *const *)sort_types,
+			(const gchar *const *) sort_fields,
+			(const gchar *const *) sort_types,
 			&object_path, cancellable, &local_error);
 
 		g_free (utf8_sexp);
@@ -3964,14 +3983,14 @@ book_client_get_cursor_in_dbus_thread (GSimpleAsyncResult *simple,
  */
 static void
 e_book_client_get_cursor_with_context (EBookClient *client,
-				       const gchar *sexp,
-				       const EContactField *sort_fields,
-				       const EBookCursorSortType *sort_types,
-				       guint n_fields,
-				       GMainContext *context,
-				       GCancellable *cancellable,
-				       GAsyncReadyCallback callback,
-				       gpointer user_data)
+                                       const gchar *sexp,
+                                       const EContactField *sort_fields,
+                                       const EBookCursorSortType *sort_types,
+                                       guint n_fields,
+                                       GMainContext *context,
+                                       GCancellable *cancellable,
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -4026,25 +4045,26 @@ e_book_client_get_cursor_with_context (EBookClient *client,
  */
 void
 e_book_client_get_cursor (EBookClient *client,
-			  const gchar *sexp,
-			  const EContactField *sort_fields,
-			  const EBookCursorSortType *sort_types,
-			  guint n_fields,
-			  GCancellable *cancellable,
-			  GAsyncReadyCallback callback,
-			  gpointer user_data)
+                          const gchar *sexp,
+                          const EContactField *sort_fields,
+                          const EBookCursorSortType *sort_types,
+                          guint n_fields,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
 {
 	GMainContext *context;
 
 	context = g_main_context_ref_thread_default ();
-	e_book_client_get_cursor_with_context (client, sexp,
-					       sort_fields,
-					       sort_types,
-					       n_fields,
-					       context,
-					       cancellable,
-					       callback,
-					       user_data);
+	e_book_client_get_cursor_with_context (
+		client, sexp,
+		sort_fields,
+		sort_types,
+		n_fields,
+		context,
+		cancellable,
+		callback,
+		user_data);
 	g_main_context_unref (context);
 }
 
@@ -4066,9 +4086,9 @@ e_book_client_get_cursor (EBookClient *client,
  */
 gboolean
 e_book_client_get_cursor_finish (EBookClient *client,
-				 GAsyncResult *result,
-				 EBookClientCursor **out_cursor,
-				 GError **error)
+                                 GAsyncResult *result,
+                                 EBookClientCursor **out_cursor,
+                                 GError **error)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
@@ -4117,13 +4137,13 @@ e_book_client_get_cursor_finish (EBookClient *client,
  */
 gboolean
 e_book_client_get_cursor_sync (EBookClient *client,
-			       const gchar *sexp,
-			       const EContactField *sort_fields,
-			       const EBookCursorSortType *sort_types,
-			       guint n_fields,
-			       EBookClientCursor **out_cursor,
-			       GCancellable *cancellable,
-			       GError **error)
+                               const gchar *sexp,
+                               const EContactField *sort_fields,
+                               const EBookCursorSortType *sort_types,
+                               guint n_fields,
+                               EBookClientCursor **out_cursor,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	EAsyncClosure *closure;
 	GAsyncResult *result;
@@ -4141,13 +4161,14 @@ e_book_client_get_cursor_sync (EBookClient *client,
 
 	closure = e_async_closure_new ();
 
-	e_book_client_get_cursor_with_context (client, sexp,
-					       sort_fields,
-					       sort_types,
-					       n_fields,
-					       context,
-					       cancellable,
-					       e_async_closure_callback, closure);
+	e_book_client_get_cursor_with_context (
+		client, sexp,
+		sort_fields,
+		sort_types,
+		n_fields,
+		context,
+		cancellable,
+		e_async_closure_callback, closure);
 
 	g_main_context_unref (context);
 
@@ -4163,12 +4184,12 @@ e_book_client_get_cursor_sync (EBookClient *client,
 
 static void
 book_client_set_locale (EBookClient *client,
-			const gchar *locale)
+                        const gchar *locale)
 {
 	if (g_strcmp0 (client->priv->locale, locale) != 0) {
 		g_free (client->priv->locale);
 		client->priv->locale = g_strdup (locale);
-		
+
 		g_object_notify (G_OBJECT (client), "locale");
 	}
 }

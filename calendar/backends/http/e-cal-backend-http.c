@@ -1486,19 +1486,19 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 
 	backend_class->get_backend_property = e_cal_backend_http_get_backend_property;
 
-	sync_class->open_sync			= e_cal_backend_http_open;
-	sync_class->refresh_sync		= e_cal_backend_http_refresh;
-	sync_class->create_objects_sync		= e_cal_backend_http_create_objects;
-	sync_class->modify_objects_sync		= e_cal_backend_http_modify_objects;
-	sync_class->remove_objects_sync		= e_cal_backend_http_remove_objects;
-	sync_class->receive_objects_sync	= e_cal_backend_http_receive_objects;
-	sync_class->send_objects_sync		= e_cal_backend_http_send_objects;
-	sync_class->get_object_sync		= e_cal_backend_http_get_object;
-	sync_class->get_object_list_sync	= e_cal_backend_http_get_object_list;
-	sync_class->add_timezone_sync		= e_cal_backend_http_add_timezone;
-	sync_class->get_free_busy_sync		= e_cal_backend_http_get_free_busy;
+	sync_class->open_sync = e_cal_backend_http_open;
+	sync_class->refresh_sync = e_cal_backend_http_refresh;
+	sync_class->create_objects_sync = e_cal_backend_http_create_objects;
+	sync_class->modify_objects_sync = e_cal_backend_http_modify_objects;
+	sync_class->remove_objects_sync = e_cal_backend_http_remove_objects;
+	sync_class->receive_objects_sync = e_cal_backend_http_receive_objects;
+	sync_class->send_objects_sync = e_cal_backend_http_send_objects;
+	sync_class->get_object_sync = e_cal_backend_http_get_object;
+	sync_class->get_object_list_sync = e_cal_backend_http_get_object_list;
+	sync_class->add_timezone_sync = e_cal_backend_http_add_timezone;
+	sync_class->get_free_busy_sync = e_cal_backend_http_get_free_busy;
 
-	backend_class->start_view		= e_cal_backend_http_start_view;
+	backend_class->start_view = e_cal_backend_http_start_view;
 }
 
 static void

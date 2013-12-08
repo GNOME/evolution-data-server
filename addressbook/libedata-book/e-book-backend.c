@@ -3310,9 +3310,9 @@ e_book_backend_sync (EBookBackend *backend)
  */
 gboolean
 e_book_backend_set_locale (EBookBackend *backend,
-			   const gchar  *locale,
-			   GCancellable *cancellable,
-			   GError      **error)
+                           const gchar *locale,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	/* If the backend does not support locales, just happily return */
 	gboolean success = TRUE;
@@ -3567,10 +3567,10 @@ e_book_backend_prepare_for_completion (EBookBackend *backend,
  */
 EDataBookCursor *
 e_book_backend_create_cursor (EBookBackend *backend,
-			      EContactField *sort_fields,
-			      EBookCursorSortType *sort_types,
-			      guint n_fields,
-			      GError **error)
+                              EContactField *sort_fields,
+                              EBookCursorSortType *sort_types,
+                              guint n_fields,
+                              GError **error)
 {
 	EDataBookCursor *cursor = NULL;
 
@@ -3585,10 +3585,11 @@ e_book_backend_create_cursor (EBookBackend *backend,
 										n_fields,
 										error);
 	else
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_NOT_SUPPORTED,
-			     "Addressbook backend does not support cursors");
+		g_set_error (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			"Addressbook backend does not support cursors");
 
 	g_object_unref (backend);
 
@@ -3611,8 +3612,8 @@ e_book_backend_create_cursor (EBookBackend *backend,
  */
 gboolean
 e_book_backend_delete_cursor (EBookBackend *backend,
-			      EDataBookCursor *cursor,
-			      GError **error)
+                              EDataBookCursor *cursor,
+                              GError **error)
 {
 	gboolean success = FALSE;
 

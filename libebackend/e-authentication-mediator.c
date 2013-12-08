@@ -1276,7 +1276,7 @@ e_authentication_mediator_dismiss (EAuthenticationMediator *mediator)
  **/
 void
 e_authentication_mediator_server_error (EAuthenticationMediator *mediator,
-					const GError *error)
+                                        const GError *error)
 {
 	gchar *name;
 

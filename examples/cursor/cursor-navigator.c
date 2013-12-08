@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #include "cursor-navigator.h"
 
 /* GObjectClass */
@@ -33,13 +33,11 @@ static void            cursor_navigator_changed         (GtkAdjustment        *a
 							 GParamSpec           *pspec,
 							 CursorNavigator      *navigator);
 
-
 struct _CursorNavigatorPrivate {
 	gchar **alphabet;
 	gint    letters;
 	gint    index;
 };
-
 
 enum {
 	INDEX_CHANGED,
@@ -71,11 +69,12 @@ cursor_navigator_class_init (CursorNavigatorClass *klass)
 	scale_class = GTK_SCALE_CLASS (klass);
 	scale_class->format_value = cursor_navigator_format_value;
 
-	signals[INDEX_CHANGED] = g_signal_new ("index-changed",
-					       G_OBJECT_CLASS_TYPE (object_class),
-					       G_SIGNAL_RUN_LAST,
-					       0, NULL, NULL, NULL,
-					       G_TYPE_NONE, 0);
+	signals[INDEX_CHANGED] = g_signal_new (
+		"index-changed",
+		G_OBJECT_CLASS_TYPE (object_class),
+		G_SIGNAL_RUN_LAST,
+		0, NULL, NULL, NULL,
+		G_TYPE_NONE, 0);
 
 	g_type_class_add_private (object_class, sizeof (CursorNavigatorPrivate));
 }
@@ -86,9 +85,10 @@ cursor_navigator_init (CursorNavigator *navigator)
 	CursorNavigatorPrivate *priv;
 
 	navigator->priv = priv =
-		G_TYPE_INSTANCE_GET_PRIVATE (navigator,
-					     CURSOR_TYPE_NAVIGATOR,
-					     CursorNavigatorPrivate);
+		G_TYPE_INSTANCE_GET_PRIVATE (
+			navigator,
+			CURSOR_TYPE_NAVIGATOR,
+			CursorNavigatorPrivate);
 
 	priv->letters = -1;
 }
@@ -104,12 +104,13 @@ cursor_navigator_constructed (GObject *object)
 	adj = gtk_adjustment_new (0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 0.0F);
 	gtk_range_set_adjustment (GTK_RANGE (navigator), adj);
 
-	g_signal_connect (adj, "notify::value",
-			  G_CALLBACK (cursor_navigator_changed), navigator);
+	g_signal_connect (
+		adj, "notify::value",
+		G_CALLBACK (cursor_navigator_changed), navigator);
 }
 
 static void
-cursor_navigator_finalize (GObject  *object)
+cursor_navigator_finalize (GObject *object)
 {
 	CursorNavigator        *navigator = CURSOR_NAVIGATOR (object);
 	CursorNavigatorPrivate *priv = navigator->priv;
@@ -123,8 +124,8 @@ cursor_navigator_finalize (GObject  *object)
  *                          GtkScaleClass                               *
  ************************************************************************/
 static gchar *
-cursor_navigator_format_value (GtkScale  *scale,
-			       gdouble    value)
+cursor_navigator_format_value (GtkScale *scale,
+                               gdouble value)
 {
 	CursorNavigator        *navigator = CURSOR_NAVIGATOR (scale);
 	CursorNavigatorPrivate *priv = navigator->priv;
@@ -133,7 +134,7 @@ cursor_navigator_format_value (GtkScale  *scale,
 	if (priv->letters < 0)
 		return NULL;
 
-	index = CLAMP ((gint)value, 0, priv->letters - 1);
+	index = CLAMP ((gint) value, 0, priv->letters - 1);
 
 	/* Return the letter for the gvoidiven value
 	 */
@@ -141,9 +142,9 @@ cursor_navigator_format_value (GtkScale  *scale,
 }
 
 static void
-cursor_navigator_changed (GtkAdjustment        *adj,
-			  GParamSpec           *pspec,
-			  CursorNavigator      *navigator)
+cursor_navigator_changed (GtkAdjustment *adj,
+                          GParamSpec *pspec,
+                          CursorNavigator *navigator)
 {
 	gint index = gtk_adjustment_get_value (adj);
 
@@ -160,7 +161,7 @@ cursor_navigator_new (void)
 }
 
 static void
-cursor_navigator_update_parameters (CursorNavigator     *navigator)
+cursor_navigator_update_parameters (CursorNavigator *navigator)
 {
 	CursorNavigatorPrivate *priv = navigator->priv;
 	GtkScale               *scale = GTK_SCALE (navigator);
@@ -183,21 +184,21 @@ cursor_navigator_update_parameters (CursorNavigator     *navigator)
 }
 
 void
-cursor_navigator_set_alphabet (CursorNavigator     *navigator,
-			       const gchar * const *alphabet)
+cursor_navigator_set_alphabet (CursorNavigator *navigator,
+                               const gchar * const *alphabet)
 {
 	CursorNavigatorPrivate *priv;
 
 	g_return_if_fail (CURSOR_IS_NAVIGATOR (navigator));
 	g_return_if_fail (alphabet == NULL ||
-			  g_strv_length ((gchar **)alphabet) > 0);
+			  g_strv_length ((gchar **) alphabet) > 0);
 
 	priv = navigator->priv;
 
 	g_free (priv->alphabet);
 	if (alphabet) {
-		priv->alphabet = g_strdupv ((gchar **)alphabet);
-		priv->letters = g_strv_length ((gchar **)alphabet);
+		priv->alphabet = g_strdupv ((gchar **) alphabet);
+		priv->letters = g_strv_length ((gchar **) alphabet);
 	} else {
 		priv->alphabet = NULL;
 		priv->letters = -1;
@@ -216,12 +217,12 @@ cursor_navigator_get_alphabet (CursorNavigator *navigator)
 
 	priv = navigator->priv;
 
-	return (const gchar * const *)priv->alphabet;
+	return (const gchar * const *) priv->alphabet;
 }
 
 void
-cursor_navigator_set_index (CursorNavigator     *navigator,
-			    gint                 index)
+cursor_navigator_set_index (CursorNavigator *navigator,
+                            gint index)
 {
 	CursorNavigatorPrivate *priv;
 	GtkAdjustment          *adj;
@@ -229,7 +230,7 @@ cursor_navigator_set_index (CursorNavigator     *navigator,
 	g_return_if_fail (CURSOR_IS_NAVIGATOR (navigator));
 
 	priv = navigator->priv;
-	adj  = gtk_range_get_adjustment (GTK_RANGE (navigator));
+	adj = gtk_range_get_adjustment (GTK_RANGE (navigator));
 
 	index = CLAMP (index, 0, priv->letters);
 
@@ -246,7 +247,7 @@ cursor_navigator_set_index (CursorNavigator     *navigator,
 }
 
 gint
-cursor_navigator_get_index (CursorNavigator     *navigator)
+cursor_navigator_get_index (CursorNavigator *navigator)
 {
 	CursorNavigatorPrivate *priv;
 

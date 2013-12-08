@@ -69,9 +69,9 @@ struct _CamelFolderSearchPrivate {
 };
 
 typedef enum {
-	CAMEL_FOLDER_SEARCH_NONE         = 0,
+	CAMEL_FOLDER_SEARCH_NONE = 0,
 	CAMEL_FOLDER_SEARCH_ALWAYS_ENTER = 1 << 0,
-	CAMEL_FOLDER_SEARCH_IMMEDIATE    = 1 << 1
+	CAMEL_FOLDER_SEARCH_IMMEDIATE = 1 << 1
 } CamelFolderSearchFlags;
 
 static struct {
@@ -598,7 +598,7 @@ match_words_messages (CamelFolderSearch *search,
 		GPtrArray *v = search->summary_set ? search->summary_set : search->summary;
 
 		for (i = 0; i < v->len && !g_cancellable_is_cancelled (cancellable); i++) {
-			gchar *uid  = g_ptr_array_index (v, i);
+			gchar *uid = g_ptr_array_index (v, i);
 
 			if (match_words_message (
 				search->folder, uid, words,

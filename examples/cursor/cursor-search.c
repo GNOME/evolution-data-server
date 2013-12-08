@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #include <libebook/libebook.h>
 
 #include "cursor-search.h"
@@ -106,10 +106,11 @@ cursor_search_init (CursorSearch *search)
 
 	gtk_widget_init_template (GTK_WIDGET (search));
 
-	g_object_set (search,
-		      "primary-icon-activatable", TRUE,
-		      "primary-icon-sensitive", TRUE,
-		      NULL);
+	g_object_set (
+		search,
+		"primary-icon-activatable", TRUE,
+		"primary-icon-sensitive", TRUE,
+		NULL);
 }
 
 static void
@@ -124,10 +125,10 @@ cursor_search_finalize (GObject *object)
 }
 
 static void
-cursor_search_get_property (GObject           *object,
-			    guint              property_id,
-			    GValue            *value,
-			    GParamSpec        *pspec)
+cursor_search_get_property (GObject *object,
+                            guint property_id,
+                            GValue *value,
+                            GParamSpec *pspec)
 {
 	CursorSearch        *search = CURSOR_SEARCH (object);
 	CursorSearchPrivate *priv = search->priv;
@@ -144,13 +145,12 @@ cursor_search_get_property (GObject           *object,
 	}
 }
 
-
 /************************************************************************
  *                              UI Callbacks                            *
  ************************************************************************/
 static void
-cursor_search_option_toggled (CursorSearch         *search,
-			      GtkWidget            *item)
+cursor_search_option_toggled (CursorSearch *search,
+                              GtkWidget *item)
 {
 	CursorSearchPrivate *priv = search->priv;
 
@@ -162,15 +162,15 @@ cursor_search_option_toggled (CursorSearch         *search,
 			priv->type = SEARCH_PHONE;
 		else if (item == priv->email_radio)
 			priv->type = SEARCH_EMAIL;
-	
+
 		/* Refresh the search */
 		cursor_search_entry_changed (search, NULL);
 	}
 }
 
 static void
-cursor_search_entry_changed (CursorSearch         *search,
-			     GtkEditable          *entry)
+cursor_search_entry_changed (CursorSearch *search,
+                             GtkEditable *entry)
 {
 	CursorSearchPrivate *priv = search->priv;
 	EBookQuery  *query = NULL;
@@ -183,22 +183,24 @@ cursor_search_entry_changed (CursorSearch         *search,
 		case SEARCH_NAME:
 			query = e_book_query_orv (
 				e_book_query_field_test (E_CONTACT_FAMILY_NAME,
-							 E_BOOK_QUERY_CONTAINS,
-							 text),
+				E_BOOK_QUERY_CONTAINS,
+				text),
 				e_book_query_field_test (E_CONTACT_GIVEN_NAME,
-							 E_BOOK_QUERY_CONTAINS,
-							 text),
+				E_BOOK_QUERY_CONTAINS,
+				text),
 				NULL);
 			break;
 		case SEARCH_PHONE:
-			query = e_book_query_field_test (E_CONTACT_TEL,
-							 E_BOOK_QUERY_CONTAINS,
-							 text);
+			query = e_book_query_field_test (
+				E_CONTACT_TEL,
+				E_BOOK_QUERY_CONTAINS,
+				text);
 			break;
 		case SEARCH_EMAIL:
-			query = e_book_query_field_test (E_CONTACT_EMAIL,
-							 E_BOOK_QUERY_CONTAINS,
-							 text);
+			query = e_book_query_field_test (
+				E_CONTACT_EMAIL,
+				E_BOOK_QUERY_CONTAINS,
+				text);
 			break;
 		}
 	}
@@ -215,16 +217,17 @@ cursor_search_entry_changed (CursorSearch         *search,
 }
 
 static void
-cursor_search_icon_press (CursorSearch         *search,
-			  GtkEntryIconPosition  icon_pos,
-			  GdkEvent             *event,
-			  GtkEntry             *entry)
+cursor_search_icon_press (CursorSearch *search,
+                          GtkEntryIconPosition icon_pos,
+                          GdkEvent *event,
+                          GtkEntry *entry)
 {
 	CursorSearchPrivate *priv = search->priv;
-	GdkEventButton *button_event = (GdkEventButton *)event;
+	GdkEventButton *button_event = (GdkEventButton *) event;
 
 	if (icon_pos == GTK_ENTRY_ICON_PRIMARY)
-		gtk_menu_popup (GTK_MENU (priv->popup),
+		gtk_menu_popup (
+			GTK_MENU (priv->popup),
 				NULL, NULL, NULL, NULL,
 				button_event->button,
 				button_event->time);
@@ -236,7 +239,7 @@ cursor_search_icon_press (CursorSearch         *search,
 GtkWidget *
 cursor_search_new (void)
 {
-  return (GtkWidget *)g_object_new (CURSOR_TYPE_SEARCH, NULL);
+  return (GtkWidget *) g_object_new (CURSOR_TYPE_SEARCH, NULL);
 }
 
 const gchar *

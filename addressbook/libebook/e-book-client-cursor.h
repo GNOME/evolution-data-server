@@ -86,59 +86,70 @@ struct _EBookClientCursorClass {
 	void		(* refresh) (EBookClientCursor *cursor);
 };
 
-GType		     e_book_client_cursor_get_type                    (void) G_GNUC_CONST;
-struct _EBookClient *e_book_client_cursor_ref_client                  (EBookClientCursor   *cursor);
-const gchar * const *e_book_client_cursor_get_alphabet                (EBookClientCursor   *cursor,
-								       gint                *n_labels,
-								       gint                *underflow,
-								       gint                *inflow,
-								       gint                *overflow);
-gint                 e_book_client_cursor_get_total                   (EBookClientCursor   *cursor);
-gint                 e_book_client_cursor_get_position                (EBookClientCursor   *cursor);
-void                 e_book_client_cursor_set_sexp                    (EBookClientCursor   *cursor,
-								       const gchar         *sexp,
-								       GCancellable        *cancellable,
-								       GAsyncReadyCallback  callback,
-								       gpointer             user_data);
-gboolean             e_book_client_cursor_set_sexp_finish             (EBookClientCursor   *cursor,
-								       GAsyncResult        *result,
-								       GError             **error);
-gboolean             e_book_client_cursor_set_sexp_sync               (EBookClientCursor   *cursor,
-								       const gchar         *sexp,
-								       GCancellable        *cancellable,
-								       GError             **error);
-void                 e_book_client_cursor_step                        (EBookClientCursor   *cursor,
-								       EBookCursorStepFlags flags,
-								       EBookCursorOrigin    origin,
-								       gint                 count,
-								       GCancellable        *cancellable,
-								       GAsyncReadyCallback  callback,
-								       gpointer             user_data);
-gint                 e_book_client_cursor_step_finish                 (EBookClientCursor   *cursor,
-								       GAsyncResult        *result,
-								       GSList             **out_contacts,
-								       GError             **error);
-gint                 e_book_client_cursor_step_sync                   (EBookClientCursor   *cursor,
-								       EBookCursorStepFlags flags,
-								       EBookCursorOrigin    origin,
-								       gint                 count,
-								       GSList             **out_contacts,
-								       GCancellable        *cancellable,
-								       GError             **error);
-void                 e_book_client_cursor_set_alphabetic_index        (EBookClientCursor   *cursor,
-								       gint                 index,
-								       GCancellable        *cancellable,
-								       GAsyncReadyCallback  callback,
-								       gpointer             user_data);
-gboolean             e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
-								       GAsyncResult        *result,
-								       GError             **error);
-gboolean             e_book_client_cursor_set_alphabetic_index_sync   (EBookClientCursor   *cursor,
-								       gint                 index,
-								       GCancellable        *cancellable,
-								       GError             **error);
-gint                 e_book_client_cursor_get_contact_alphabetic_index(EBookClientCursor   *cursor,
-								       EContact            *contact);
+GType		e_book_client_cursor_get_type	(void) G_GNUC_CONST;
+struct _EBookClient *
+		e_book_client_cursor_ref_client	(EBookClientCursor *cursor);
+const gchar * const *
+		e_book_client_cursor_get_alphabet
+						(EBookClientCursor *cursor,
+						 gint *n_labels,
+						 gint *underflow,
+						 gint *inflow,
+						 gint *overflow);
+gint		e_book_client_cursor_get_total	(EBookClientCursor *cursor);
+gint		e_book_client_cursor_get_position
+						(EBookClientCursor *cursor);
+void		e_book_client_cursor_set_sexp	(EBookClientCursor *cursor,
+						 const gchar *sexp,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_client_cursor_set_sexp_finish
+						(EBookClientCursor *cursor,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_client_cursor_set_sexp_sync
+						(EBookClientCursor *cursor,
+						 const gchar *sexp,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_book_client_cursor_step	(EBookClientCursor *cursor,
+						 EBookCursorStepFlags flags,
+						 EBookCursorOrigin origin,
+						 gint count,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gint		e_book_client_cursor_step_finish
+						(EBookClientCursor *cursor,
+						 GAsyncResult *result,
+						 GSList **out_contacts,
+						 GError **error);
+gint		e_book_client_cursor_step_sync	(EBookClientCursor *cursor,
+						 EBookCursorStepFlags flags,
+						 EBookCursorOrigin origin,
+						 gint count,
+						 GSList **out_contacts,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_book_client_cursor_set_alphabetic_index
+						(EBookClientCursor *cursor,
+						 gint index,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_book_client_cursor_set_alphabetic_index_finish
+						(EBookClientCursor *cursor,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_book_client_cursor_set_alphabetic_index_sync
+						(EBookClientCursor *cursor,
+						 gint index,
+						 GCancellable *cancellable,
+						 GError **error);
+gint		e_book_client_cursor_get_contact_alphabetic_index
+						(EBookClientCursor *cursor,
+						 EContact *contact);
 
 G_END_DECLS
 

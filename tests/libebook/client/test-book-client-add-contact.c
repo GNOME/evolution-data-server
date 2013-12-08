@@ -6,7 +6,7 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure_sync  = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_sync = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
 static ETestServerClosure book_closure_async = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 static void

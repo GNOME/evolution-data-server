@@ -1131,24 +1131,24 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 
 #endif
 
-#define status_backup(gpg, start, len) G_STMT_START {                     \
-	if (gpg->statusleft <= len) {                                     \
-		guint slen, soff;                                  \
-									  \
-		slen = soff = gpg->statusptr - gpg->statusbuf;            \
-		slen = slen ? slen : 1;                                   \
-									  \
-		while (slen < soff + len)                                 \
-			slen <<= 1;                                       \
-									  \
-		gpg->statusbuf = g_realloc (gpg->statusbuf, slen + 1);    \
-		gpg->statusptr = gpg->statusbuf + soff;                   \
-		gpg->statusleft = slen - soff;                            \
-	}                                                                 \
-									  \
-	memcpy (gpg->statusptr, start, len);                              \
-	gpg->statusptr += len;                                            \
-	gpg->statusleft -= len;                                           \
+#define status_backup(gpg, start, len) G_STMT_START { \
+	if (gpg->statusleft <= len) { \
+		guint slen, soff; \
+ \
+		slen = soff = gpg->statusptr - gpg->statusbuf; \
+		slen = slen ? slen : 1; \
+ \
+		while (slen < soff + len) \
+			slen <<= 1; \
+ \
+		gpg->statusbuf = g_realloc (gpg->statusbuf, slen + 1); \
+		gpg->statusptr = gpg->statusbuf + soff; \
+		gpg->statusleft = slen - soff; \
+	} \
+ \
+	memcpy (gpg->statusptr, start, len); \
+	gpg->statusptr += len; \
+	gpg->statusleft -= len; \
 } G_STMT_END
 
 static void

@@ -1182,26 +1182,26 @@ header_append_mempool (struct _header_scan_state *s,
  * remove trailing \r chars (\n's assumed already removed)
  * and track the start offset of the header */
 /* Basically an optimised version of g_byte_array_append() */
-#define header_append(s, start, inptr)								\
-{												\
-	register gint headerlen = inptr - start;							\
-												\
-	if (headerlen > 0) {									\
-		if (headerlen >= (s->outend - s->outptr)) {					\
-			register gchar *outnew;							\
-			register gint olen = ((s->outend - s->outbuf) + headerlen) * 2 + 1;	\
-			outnew = g_realloc (s->outbuf, olen);					\
-			s->outptr = s->outptr - s->outbuf + outnew;				\
-			s->outbuf = outnew;							\
-			s->outend = outnew + olen;						\
-		}										\
-		if (start[headerlen - 1] == '\r')							\
-			headerlen--;								\
-		memcpy (s->outptr, start, headerlen);						\
-		s->outptr += headerlen;								\
-	}											\
-	if (s->header_start == -1)								\
-		s->header_start = (start - s->inbuf) + s->seek;					\
+#define header_append(s, start, inptr) \
+{ \
+	register gint headerlen = inptr - start; \
+ \
+	if (headerlen > 0) { \
+		if (headerlen >= (s->outend - s->outptr)) { \
+			register gchar *outnew; \
+			register gint olen = ((s->outend - s->outbuf) + headerlen) * 2 + 1; \
+			outnew = g_realloc (s->outbuf, olen); \
+			s->outptr = s->outptr - s->outbuf + outnew; \
+			s->outbuf = outnew; \
+			s->outend = outnew + olen; \
+		} \
+		if (start[headerlen - 1] == '\r') \
+			headerlen--; \
+		memcpy (s->outptr, start, headerlen); \
+		s->outptr += headerlen; \
+	} \
+	if (s->header_start == -1) \
+		s->header_start = (start - s->inbuf) + s->seek; \
 }
 
 static struct _header_scan_stack *

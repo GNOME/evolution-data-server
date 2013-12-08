@@ -1,7 +1,6 @@
 #include <libedataserver/libedataserver.h>
 #include <locale.h>
 
-
 typedef struct {
   ECollator *collator;
 
@@ -9,7 +8,7 @@ typedef struct {
 
 static void
 print_locale (CollatorFixture *fixture,
-	      const gchar     *locale)
+              const gchar *locale)
 {
   const gchar *const *labels;
   gint n_labels, i;
@@ -41,9 +40,9 @@ print_locale (CollatorFixture *fixture,
 
 static void
 collator_test_setup (CollatorFixture *fixture,
-		     gconstpointer    data)
+                     gconstpointer data)
 {
-  const gchar *locale = (const gchar *)data;
+  const gchar *locale = (const gchar *) data;
   GError *error = NULL;
 
   fixture->collator = e_collator_new (locale, &error);
@@ -57,14 +56,14 @@ collator_test_setup (CollatorFixture *fixture,
 
 static void
 collator_test_teardown (CollatorFixture *fixture,
-			gconstpointer    data)
+                        gconstpointer data)
 {
   e_collator_unref (fixture->collator);
 }
 
 static void
 test_en_US (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
 
@@ -91,7 +90,7 @@ test_en_US (CollatorFixture *fixture,
 
 static void
 test_el_GR (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
 
@@ -121,7 +120,7 @@ test_el_GR (CollatorFixture *fixture,
 
 static void
 test_ru_RU (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
   const gchar *const *labels;
@@ -146,7 +145,7 @@ test_ru_RU (CollatorFixture *fixture,
 
 static void
 test_ja_JP (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
   const gchar *const *labels;
@@ -171,7 +170,7 @@ test_ja_JP (CollatorFixture *fixture,
 
 static void
 test_zh_CN (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
   const gchar *const *labels;
@@ -200,7 +199,7 @@ test_zh_CN (CollatorFixture *fixture,
 
 static void
 test_ko_KR (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
   const gchar *const *labels;
@@ -225,7 +224,7 @@ test_ko_KR (CollatorFixture *fixture,
 
 static void
 test_ar_TN (CollatorFixture *fixture,
-	    gconstpointer    data)
+            gconstpointer data)
 {
   gint n_labels, underflow, inflow, overflow;
   const gchar *const *labels;

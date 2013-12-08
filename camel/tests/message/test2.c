@@ -90,7 +90,7 @@ check_address_line_decode (gint i,
 	addr = camel_internet_address_new ();
 	check (camel_address_decode (CAMEL_ADDRESS (addr), line) == 1);
 	check (camel_internet_address_get (CAMEL_INTERNET_ADDRESS (addr), 0, &dname, &demail));
-	check_msg (g_strcmp0 (dname, name) == 0  || (!name && dname && !*dname), "decoded name = '%s', but should be '%s'", dname, name);
+	check_msg (g_strcmp0 (dname, name) == 0 || (!name && dname && !*dname), "decoded name = '%s', but should be '%s'", dname, name);
 	check_msg (g_strcmp0 (demail, email) == 0, "decoded email = '%s', but should be '%s'", demail, email);
 	check_unref (addr, 1);
 	pull ();

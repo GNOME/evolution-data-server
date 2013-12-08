@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #include <libebook/libebook.h>
 
 #include "cursor-example.h"
@@ -165,7 +165,7 @@ cursor_example_init (CursorExample *example)
 	for (i = 0; i < N_SLOTS; i++) {
 
 		gchar *name = g_strdup_printf ("contact_slot_%d", i + 1);
-		priv->slots[i] = (GtkWidget *)gtk_widget_get_template_child (GTK_WIDGET (example),
+		priv->slots[i] = (GtkWidget *) gtk_widget_get_template_child (GTK_WIDGET (example),
 									     CURSOR_TYPE_EXAMPLE,
 									     name);
 		g_free (name);
@@ -173,7 +173,7 @@ cursor_example_init (CursorExample *example)
 }
 
 static void
-cursor_example_dispose (GObject  *object)
+cursor_example_dispose (GObject *object)
 {
 	CursorExample        *example = CURSOR_EXAMPLE (object);
 	CursorExamplePrivate *priv = example->priv;
@@ -198,8 +198,8 @@ cursor_example_dispose (GObject  *object)
  ************************************************************************/
 static gboolean
 cursor_example_up_button_press (CursorExample *example,
-				GdkEvent      *event,
-				GtkButton     *button)
+                                GdkEvent *event,
+                                GtkButton *button)
 {
 	d (g_print ("Browse up press\n"));
 
@@ -214,8 +214,8 @@ cursor_example_up_button_press (CursorExample *example,
 
 static gboolean
 cursor_example_up_button_release (CursorExample *example,
-				  GdkEvent      *event,
-				  GtkButton     *button)
+                                  GdkEvent *event,
+                                  GtkButton *button)
 {
 	d (g_print ("Browse up release\n"));
 
@@ -226,8 +226,8 @@ cursor_example_up_button_release (CursorExample *example,
 
 static gboolean
 cursor_example_down_button_press (CursorExample *example,
-				  GdkEvent      *event,
-				  GtkButton     *button)
+                                  GdkEvent *event,
+                                  GtkButton *button)
 {
 	d (g_print ("Browse down press\n"));
 
@@ -242,8 +242,8 @@ cursor_example_down_button_press (CursorExample *example,
 
 static gboolean
 cursor_example_down_button_release (CursorExample *example,
-				    GdkEvent      *event,
-				    GtkButton     *button)
+                                    GdkEvent *event,
+                                    GtkButton *button)
 {
 	d (g_print ("Browse down released\n"));
 
@@ -253,8 +253,8 @@ cursor_example_down_button_release (CursorExample *example,
 }
 
 static void
-cursor_example_navigator_changed (CursorExample      *example,
-				  CursorNavigator    *navigator)
+cursor_example_navigator_changed (CursorExample *example,
+                                  CursorNavigator *navigator)
 {
 	CursorExamplePrivate *priv = example->priv;
 	GError               *error = NULL;
@@ -301,9 +301,9 @@ cursor_example_navigator_changed (CursorExample      *example,
 }
 
 static void
-cursor_example_sexp_changed (CursorExample      *example,
-			     GParamSpec         *pspec,
-			     CursorSearch       *search)
+cursor_example_sexp_changed (CursorExample *example,
+                             GParamSpec *pspec,
+                             CursorSearch *search)
 {
 	CursorExamplePrivate *priv = example->priv;
 	gboolean              full_results = FALSE;
@@ -337,8 +337,8 @@ cursor_example_sexp_changed (CursorExample      *example,
  *                           EDS Callbacks                              *
  ************************************************************************/
 static void
-cursor_example_refresh (EBookClientCursor  *cursor,
-			CursorExample      *example)
+cursor_example_refresh (EBookClientCursor *cursor,
+                        CursorExample *example)
 {
 	d (g_print ("Cursor refreshed\n"));
 
@@ -349,8 +349,8 @@ cursor_example_refresh (EBookClientCursor  *cursor,
 
 static void
 cursor_example_alphabet_changed (EBookClientCursor *cursor,
-				 GParamSpec        *spec,
-				 CursorExample     *example)
+                                 GParamSpec *spec,
+                                 CursorExample *example)
 {
 	d (g_print ("Alphabet Changed\n"));
 
@@ -363,8 +363,8 @@ cursor_example_alphabet_changed (EBookClientCursor *cursor,
 
 static void
 cursor_example_status_changed (EBookClientCursor *cursor,
-			       GParamSpec        *spec,
-			       CursorExample     *example)
+                               GParamSpec *spec,
+                               CursorExample *example)
 {
 	d (g_print ("Status changed\n"));
 
@@ -391,21 +391,22 @@ cursor_example_load_alphabet (CursorExample *example)
 }
 
 static gboolean
-cursor_example_move_cursor (CursorExample     *example,
-			    EBookCursorOrigin  origin,
-			    gint               count)
+cursor_example_move_cursor (CursorExample *example,
+                            EBookCursorOrigin origin,
+                            gint count)
 {
 	CursorExamplePrivate *priv = example->priv;
 	GError               *error = NULL;
 	gint                  n_results;
 
-	n_results = e_book_client_cursor_step_sync (priv->cursor,
-						    E_BOOK_CURSOR_STEP_MOVE,
-						    origin,
-						    count,
-						    NULL, /* Result list */
-						    NULL, /* GCancellable */
-						    &error);
+	n_results = e_book_client_cursor_step_sync (
+		priv->cursor,
+		E_BOOK_CURSOR_STEP_MOVE,
+		origin,
+		count,
+		NULL, /* Result list */
+		NULL, /* GCancellable */
+		&error);
 
 	if (n_results < 0) {
 
@@ -428,8 +429,6 @@ cursor_example_move_cursor (CursorExample     *example,
 		} else
 			g_warning ("Failed to move the cursor: %s", error->message);
 
-
-
 		g_clear_error (&error);
 
 	}
@@ -441,8 +440,8 @@ cursor_example_move_cursor (CursorExample     *example,
  * FALSE if there was an error.
  */
 static gboolean
-cursor_example_load_page (CursorExample     *example,
-			  gboolean          *full_results)
+cursor_example_load_page (CursorExample *example,
+                          gboolean *full_results)
 {
 	CursorExamplePrivate *priv = example->priv;
 	GError               *error = NULL;
@@ -452,13 +451,14 @@ cursor_example_load_page (CursorExample     *example,
 	/* Fetch N_SLOTS contacts after the current cursor position,
 	 * without modifying the current cursor position
 	 */
-	n_results = e_book_client_cursor_step_sync (priv->cursor,
-						    E_BOOK_CURSOR_STEP_FETCH,
-						    E_BOOK_CURSOR_ORIGIN_CURRENT,
-						    N_SLOTS,
-						    &results,
-						    NULL, /* GCancellable */
-						    &error);
+	n_results = e_book_client_cursor_step_sync (
+		priv->cursor,
+		E_BOOK_CURSOR_STEP_FETCH,
+		E_BOOK_CURSOR_ORIGIN_CURRENT,
+		N_SLOTS,
+		&results,
+		NULL, /* GCancellable */
+		&error);
 
 	if (n_results < 0) {
 		if (g_error_matches (error,
@@ -505,7 +505,7 @@ cursor_example_load_page (CursorExample     *example,
 	if (full_results)
 		*full_results = (n_results == N_SLOTS);
 
-	g_slist_free_full (results, (GDestroyNotify)g_object_unref);
+	g_slist_free_full (results, (GDestroyNotify) g_object_unref);
 
 	return n_results >= 0;
 }
@@ -560,7 +560,7 @@ cursor_example_update_status (CursorExample *example)
  */
 static void
 cursor_example_update_current_index (CursorExample *example,
-				     EContact      *contact)
+                                     EContact *contact)
 {
 	CursorExamplePrivate *priv = example->priv;
 	const gchar *const   *labels;
@@ -612,7 +612,7 @@ cursor_example_timeout (CursorExample *example)
 	case TIMEOUT_DOWN_TICK:
 
 		/* Avoid scrolling past the end of the list - N_SLOTS */
-		can_move = (e_book_client_cursor_get_position (priv->cursor) < 
+		can_move = (e_book_client_cursor_get_position (priv->cursor) <
 			    e_book_client_cursor_get_total (priv->cursor) - N_SLOTS);
 
 		/* Move the cursor forwards by 1 and then refresh the page */
@@ -630,8 +630,8 @@ cursor_example_timeout (CursorExample *example)
 }
 
 static void
-cursor_example_ensure_timeout (CursorExample      *example,
-			       TimeoutActivity     activity)
+cursor_example_ensure_timeout (CursorExample *example,
+                               TimeoutActivity activity)
 {
 	CursorExamplePrivate *priv = example->priv;
 	guint                 timeout = 0;
@@ -647,9 +647,10 @@ cursor_example_ensure_timeout (CursorExample      *example,
 	priv->activity = activity;
 
 	priv->timeout_id =
-		g_timeout_add (timeout,
-			       (GSourceFunc)cursor_example_timeout,
-			       example);
+		g_timeout_add (
+			timeout,
+			(GSourceFunc) cursor_example_timeout,
+			example);
 }
 
 static void
@@ -673,7 +674,7 @@ cursor_example_new (const gchar *vcard_path)
   CursorExamplePrivate *priv;
 
   example = g_object_new (CURSOR_TYPE_EXAMPLE, NULL);
-  priv    = example->priv;
+  priv = example->priv;
 
   priv->client = cursor_load_data (vcard_path, &priv->cursor);
 
@@ -695,5 +696,5 @@ cursor_example_new (const gchar *vcard_path)
   g_message ("Cursor example started in locale: %s",
 	     e_book_client_get_locale (priv->client));
 
-  return (GtkWidget *)example;
+  return (GtkWidget *) example;
 }

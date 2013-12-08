@@ -1073,9 +1073,10 @@ get_contact_reply (GObject *source_object,
 		E_BOOK_CLIENT (source_object), result, &contact, &error)) {
 
 		if (!error)
-			error = g_error_new_literal (E_CLIENT_ERROR,
-						     E_CLIENT_ERROR_OTHER_ERROR,
-						     _("Unknown error"));
+			error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (cb != NULL && error == NULL)

@@ -234,9 +234,9 @@ localtime_r (t,
 #define match_char(ch1, ch2) if (ch1 != ch2) return NULL
 #if defined _LIBC && defined __GNUC__ && __GNUC__ >= 2
 # define match_string(cs1, s2) \
-  ({ gsize len = strlen (cs1);						      \
-     gint result = __strncasecmp_l ((cs1), (s2), len, locale) == 0;	      \
-     if (result) (s2) += len;						      \
+  ({ gsize len = strlen (cs1); \
+     gint result = __strncasecmp_l ((cs1), (s2), len, locale) == 0; \
+     if (result) (s2) += len; \
      result; })
 #else
 /* Oh come on.  Get a reasonable compiler.  */
@@ -246,51 +246,51 @@ localtime_r (t,
 /* We intentionally do not use isdigit() for testing because this will
  * lead to problems with the wide character version.  */
 #define get_number(from, to, n) \
-  do {									      \
-    gint __n = n;							      \
-    val = 0;								      \
-    while (*rp == ' ')							      \
-      ++rp;								      \
-    if (*rp < '0' || *rp > '9')						      \
-      return NULL;							      \
-    do {								      \
-      val *= 10;							      \
-      val += *rp++ - '0';						      \
-    } while (--__n > 0 && val * 10 <= to && *rp >= '0' && *rp <= '9');	      \
-    if (val < from || val > to)						      \
-      return NULL;							      \
+  do { \
+    gint __n = n; \
+    val = 0; \
+    while (*rp == ' ') \
+      ++rp; \
+    if (*rp < '0' || *rp > '9') \
+      return NULL; \
+    do { \
+      val *= 10; \
+      val += *rp++ - '0'; \
+    } while (--__n > 0 && val * 10 <= to && *rp >= '0' && *rp <= '9'); \
+    if (val < from || val > to) \
+      return NULL; \
   } while (0)
 #ifdef _NL_CURRENT
 # define get_alt_number(from, to, n) \
-  ({									      \
-     __label__ do_normal;						      \
-									      \
-     if (*decided != raw)						      \
-       {								      \
-	 val = _nl_parse_alt_digit (&rp HELPER_LOCALE_ARG);		      \
-	 if (val == -1 && *decided != loc)				      \
-	   {								      \
-	     *decided = loc;						      \
-	     goto do_normal;						      \
-	   }								      \
-	if (val < from || val > to)					      \
-	  return NULL;							      \
-       }								      \
-     else								      \
-       {								      \
-       do_normal:							      \
-	 get_number (from, to, n);					      \
-       }								      \
-    0;									      \
+  ({ \
+     __label__ do_normal; \
+ \
+     if (*decided != raw) \
+       { \
+	 val = _nl_parse_alt_digit (&rp HELPER_LOCALE_ARG); \
+	 if (val == -1 && *decided != loc) \
+	   { \
+	     *decided = loc; \
+	     goto do_normal; \
+	   } \
+	if (val < from || val > to) \
+	  return NULL; \
+       } \
+     else \
+       { \
+       do_normal: \
+	 get_number (from, to, n); \
+       } \
+    0; \
   })
 #else
 # define get_alt_number(from, to, n) \
-  /* We don't have the alternate representation.  */			      \
+  /* We don't have the alternate representation.  */ \
   get_number (from, to, n)
 #endif
 #define recursive(new_fmt) \
-  (*(new_fmt) != '\0'							      \
-   && (rp = __strptime_internal (rp, (new_fmt), tm,			      \
+  (*(new_fmt) != '\0' \
+   && (rp = __strptime_internal (rp, (new_fmt), tm, \
 				 decided, era_cnt LOCALE_ARG)) != NULL)
 
 #ifdef _LIBC
@@ -377,7 +377,7 @@ static const gushort __mon_yday[2][13] =
 #ifndef __isleap
 /* Nonzero if YEAR is a leap year (every 4 years,
  * except every 100th isn't, and every 400th is).  */
-# define __isleap(year)	\
+# define __isleap(year) \
   ((year) % 4 == 0 && ((year) % 100 != 0 || (year) % 400 == 0))
 #endif
 
@@ -1506,7 +1506,7 @@ parse_with_strptime (const gchar *value,
 		return E_TIME_PARSE_NONE;
 	}
 
-	parse_ret =  E_TIME_PARSE_INVALID;
+	parse_ret = E_TIME_PARSE_INVALID;
 	locale_str = g_locale_from_utf8 (value, -1, NULL, NULL, NULL);
 	pos = (const gchar *) locale_str;
 
@@ -1593,7 +1593,7 @@ has_correct_date (const struct tm *value)
 	g_return_val_if_fail (value != NULL, FALSE);
 	g_return_val_if_fail (value->tm_mon >= 0 && value->tm_mon < 12, FALSE);
 
-	year = value->tm_year  + 1900;
+	year = value->tm_year + 1900;
 	days = days_in_month[value->tm_mon];
 	if (value->tm_mon == 1 &&
 		((year <= 1752) ? (!(year % 4)) :
@@ -1744,7 +1744,7 @@ e_time_parse_date_and_time_ex (const gchar *value,
 			t = time (NULL);
 			today_tm = localtime (&t);
 			result->tm_mday = today_tm->tm_mday;
-			result->tm_mon  = today_tm->tm_mon;
+			result->tm_mon = today_tm->tm_mon;
 			result->tm_year = today_tm->tm_year;
 		}
 	}

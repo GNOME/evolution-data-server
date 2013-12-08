@@ -78,8 +78,8 @@ typedef enum {
  * Since: 3.6
  **/
 typedef enum { /*< flags >*/
-	E_SOURCE_PERMISSION_NONE      = 0,
-	E_SOURCE_PERMISSION_WRITABLE  = 1 << 0,
+	E_SOURCE_PERMISSION_NONE = 0,
+	E_SOURCE_PERMISSION_WRITABLE = 1 << 0,
 	E_SOURCE_PERMISSION_REMOVABLE = 1 << 1
 } ESourcePermissionFlags;
 

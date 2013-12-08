@@ -35,6 +35,10 @@
 
 #include "e-data-book-cursor-sqlite.h"
 
+#define E_DATA_BOOK_CURSOR_SQLITE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DATA_BOOK_CURSOR_SQLITE, EDataBookCursorSqlitePrivate))
+
 /* GObjectClass */
 static void e_data_book_cursor_sqlite_dispose      (GObject *object);
 static void e_data_book_cursor_sqlite_finalize     (GObject *object);
@@ -140,10 +144,7 @@ e_data_book_cursor_sqlite_class_init (EDataBookCursorSqliteClass *class)
 static void
 e_data_book_cursor_sqlite_init (EDataBookCursorSqlite *cursor)
 {
-	cursor->priv = 
-	  G_TYPE_INSTANCE_GET_PRIVATE (cursor,
-				       E_TYPE_DATA_BOOK_CURSOR_SQLITE,
-				       EDataBookCursorSqlitePrivate);
+	cursor->priv = E_DATA_BOOK_CURSOR_SQLITE_GET_PRIVATE (cursor);
 }
 
 static void
@@ -152,11 +153,11 @@ e_data_book_cursor_sqlite_dispose (GObject *object)
 	EDataBookCursorSqlite        *cursor = E_DATA_BOOK_CURSOR_SQLITE (object);
 	EDataBookCursorSqlitePrivate *priv = cursor->priv;
 
-	if (priv->ebsql) {
+	if (priv->ebsql != NULL) {
 
-		if (priv->cursor)
-			e_book_sqlite_cursor_free (priv->ebsql,
-						   priv->cursor);
+		if (priv->cursor != NULL)
+			e_book_sqlite_cursor_free (
+				priv->ebsql, priv->cursor);
 
 		g_object_unref (priv->ebsql);
 		priv->ebsql = NULL;
@@ -179,9 +180,9 @@ e_data_book_cursor_sqlite_finalize (GObject *object)
 
 static void
 e_data_book_cursor_sqlite_set_property (GObject *object,
-					guint property_id,
-					const GValue *value,
-					GParamSpec *pspec)
+                                        guint property_id,
+                                        const GValue *value,
+                                        GParamSpec *pspec)
 {
 	EDataBookCursorSqlite        *cursor = E_DATA_BOOK_CURSOR_SQLITE (object);
 	EDataBookCursorSqlitePrivate *priv = cursor->priv;
@@ -209,9 +210,9 @@ e_data_book_cursor_sqlite_set_property (GObject *object,
  *            EDataBookCursorClass              *
  ************************************************/
 static gboolean
-e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
-				    const gchar         *sexp,
-				    GError             **error)
+e_data_book_cursor_sqlite_set_sexp (EDataBookCursor *cursor,
+                                    const gchar *sexp,
+                                    GError **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -221,19 +222,18 @@ e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	success = e_book_sqlite_cursor_set_sexp (priv->ebsql,
-						 priv->cursor,
-						 sexp,
-						 &local_error);
+	success = e_book_sqlite_cursor_set_sexp (
+		priv->ebsql, priv->cursor, sexp, &local_error);
 
 	if (!success) {
 		if (g_error_matches (local_error,
 				     E_BOOK_SQLITE_ERROR,
 				     E_BOOK_SQLITE_ERROR_INVALID_QUERY)) {
-			g_set_error_literal (error,
-					     E_CLIENT_ERROR,
-					     E_CLIENT_ERROR_INVALID_QUERY,
-					     local_error->message);
+			g_set_error_literal (
+				error,
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_INVALID_QUERY,
+				local_error->message);
 			g_clear_error (&local_error);
 		} else {
 			g_propagate_error (error, local_error);
@@ -244,9 +244,9 @@ e_data_book_cursor_sqlite_set_sexp (EDataBookCursor     *cursor,
 }
 
 static gboolean
-convert_origin (EBookCursorOrigin    src_origin,
-		EbSqlCursorOrigin   *dest_origin,
-		GError             **error)
+convert_origin (EBookCursorOrigin src_origin,
+                EbSqlCursorOrigin *dest_origin,
+                GError **error)
 {
 	gboolean success = TRUE;
 
@@ -262,10 +262,11 @@ convert_origin (EBookCursorOrigin    src_origin,
 		break;
 	default:
 		success = FALSE;
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_INVALID_ARG,
-				     _("Unrecognized cursor origin"));
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_INVALID_ARG,
+			_("Unrecognized cursor origin"));
 		break;
 	}
 
@@ -273,8 +274,8 @@ convert_origin (EBookCursorOrigin    src_origin,
 }
 
 static void
-convert_flags (EBookCursorStepFlags    src_flags,
-	       EbSqlCursorStepFlags   *dest_flags)
+convert_flags (EBookCursorStepFlags src_flags,
+               EbSqlCursorStepFlags *dest_flags)
 {
 	if (src_flags & E_BOOK_CURSOR_STEP_MOVE)
 		*dest_flags |= EBSQL_CURSOR_STEP_MOVE;
@@ -284,14 +285,14 @@ convert_flags (EBookCursorStepFlags    src_flags,
 }
 
 static gint
-e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
-				const gchar         *revision_guard,
-				EBookCursorStepFlags flags,
-				EBookCursorOrigin    origin,
-				gint                 count,
-				GSList             **results,
-				GCancellable        *cancellable,
-				GError             **error)
+e_data_book_cursor_sqlite_step (EDataBookCursor *cursor,
+                                const gchar *revision_guard,
+                                EBookCursorStepFlags flags,
+                                EBookCursorOrigin origin,
+                                gint count,
+                                GSList **results,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -320,32 +321,35 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 	success = e_book_sqlite_lock (priv->ebsql, EBSQL_LOCK_READ, cancellable, error);
 
 	if (success && revision_guard)
-		success = e_book_sqlite_get_key_value (priv->ebsql,
-						       priv->revision_key,
-						       &revision,
-						       error);
+		success = e_book_sqlite_get_key_value (
+			priv->ebsql,
+			priv->revision_key,
+			&revision,
+			error);
 
 	if (success && revision_guard &&
 	    g_strcmp0 (revision, revision_guard) != 0) {
 
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_OUT_OF_SYNC,
-				     _("Out of sync revision while moving cursor"));
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OUT_OF_SYNC,
+			_("Out of sync revision while moving cursor"));
 		success = FALSE;
 	}
 
 	if (success) {
 		GError *local_error = NULL;
 
-		n_results = e_book_sqlite_cursor_step (priv->ebsql,
-						       priv->cursor,
-						       sqlite_flags,
-						       sqlite_origin,
-						       count,
-						       &local_results,
-						       cancellable,
-						       &local_error);
+		n_results = e_book_sqlite_cursor_step (
+			priv->ebsql,
+			priv->cursor,
+			sqlite_flags,
+			sqlite_origin,
+			count,
+			&local_results,
+			cancellable,
+			&local_error);
 
 		if (n_results < 0) {
 
@@ -353,9 +357,10 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 			if (g_error_matches (local_error,
 					     E_BOOK_SQLITE_ERROR,
 					     E_BOOK_SQLITE_ERROR_END_OF_LIST)) {
-				g_set_error_literal (error, E_CLIENT_ERROR,
-						     E_CLIENT_ERROR_QUERY_REFUSED,
-						     local_error->message);
+				g_set_error_literal (
+					error, E_CLIENT_ERROR,
+					E_CLIENT_ERROR_QUERY_REFUSED,
+					local_error->message);
 				g_clear_error (&local_error);
 			} else
 				g_propagate_error (error, local_error);
@@ -371,8 +376,9 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 		GError *local_error = NULL;
 
 		if (!e_book_sqlite_unlock (priv->ebsql, EBSQL_UNLOCK_NONE, &local_error)) {
-			g_warning ("Error occurred while unlocking the SQLite: %s",
-				   local_error->message);
+			g_warning (
+				"Error occurred while unlocking the SQLite: %s",
+				local_error->message);
 			g_clear_error (&local_error);
 		}
 	}
@@ -385,12 +391,12 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 		data->vcard = NULL;
 	}
 
-	g_slist_free_full (local_results, (GDestroyNotify)e_book_sqlite_search_data_free);
+	g_slist_free_full (local_results, (GDestroyNotify) e_book_sqlite_search_data_free);
 
 	if (results)
 		*results = g_slist_reverse (local_converted_results);
 	else
-		g_slist_free_full (local_converted_results, (GDestroyNotify)g_free);
+		g_slist_free_full (local_converted_results, (GDestroyNotify) g_free);
 
 	g_free (revision);
 
@@ -401,10 +407,10 @@ e_data_book_cursor_sqlite_step (EDataBookCursor     *cursor,
 }
 
 static gboolean
-e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor     *cursor,
-						gint                 index,
-						const gchar         *locale,
-						GError             **error)
+e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor *cursor,
+                                                gint index,
+                                                const gchar *locale,
+                                                GError **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -418,27 +424,29 @@ e_data_book_cursor_sqlite_set_alphabetic_index (EDataBookCursor     *cursor,
 
 	/* Locale mismatch, need to report error */
 	if (g_strcmp0 (current_locale, locale) != 0) {
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_OUT_OF_SYNC,
-				     _("Alphabetic index was set for incorrect locale"));
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OUT_OF_SYNC,
+			_("Alphabetic index was set for incorrect locale"));
 		g_free (current_locale);
 		return FALSE;
 	}
 
-	e_book_sqlite_cursor_set_target_alphabetic_index (priv->ebsql,
-							  priv->cursor,
-							  index);
+	e_book_sqlite_cursor_set_target_alphabetic_index (
+		priv->ebsql,
+		priv->cursor,
+		index);
 	g_free (current_locale);
 	return TRUE;
 }
 
 static gboolean
-e_data_book_cursor_sqlite_get_position (EDataBookCursor     *cursor,
-					gint                *total,
-					gint                *position,
-					GCancellable        *cancellable,
-					GError             **error)
+e_data_book_cursor_sqlite_get_position (EDataBookCursor *cursor,
+                                        gint *total,
+                                        gint *position,
+                                        GCancellable *cancellable,
+                                        GError **error)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -446,17 +454,18 @@ e_data_book_cursor_sqlite_get_position (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_sqlite_cursor_calculate (priv->ebsql,
-					       priv->cursor,
-					       total, position,
-					       cancellable,
-					       error);
+	return e_book_sqlite_cursor_calculate (
+		priv->ebsql,
+		priv->cursor,
+		total, position,
+		cancellable,
+		error);
 }
 
 static gint
-e_data_book_cursor_sqlite_compare_contact (EDataBookCursor     *cursor,
-					   EContact            *contact,
-					   gboolean            *matches_sexp)
+e_data_book_cursor_sqlite_compare_contact (EDataBookCursor *cursor,
+                                           EContact *contact,
+                                           gboolean *matches_sexp)
 {
 	EDataBookCursorSqlite *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -464,16 +473,17 @@ e_data_book_cursor_sqlite_compare_contact (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_sqlite_cursor_compare_contact (priv->ebsql,
-						     priv->cursor,
-						     contact,
-						     matches_sexp);
+	return e_book_sqlite_cursor_compare_contact (
+		priv->ebsql,
+		priv->cursor,
+		contact,
+		matches_sexp);
 }
 
 static gboolean
-e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
-				       gchar              **locale,
-				       GError             **error)
+e_data_book_cursor_sqlite_load_locale (EDataBookCursor *cursor,
+                                       gchar **locale,
+                                       GError **error)
 {
 	EDataBookCursorSqlite        *cursor_sqlite;
 	EDataBookCursorSqlitePrivate *priv;
@@ -481,9 +491,7 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
 	cursor_sqlite = E_DATA_BOOK_CURSOR_SQLITE (cursor);
 	priv = cursor_sqlite->priv;
 
-	return e_book_sqlite_get_locale (priv->ebsql,
-					 locale,
-					 error);
+	return e_book_sqlite_get_locale (priv->ebsql, locale, error);
 }
 
 /************************************************
@@ -510,13 +518,13 @@ e_data_book_cursor_sqlite_load_locale (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 EDataBookCursor *
-e_data_book_cursor_sqlite_new (EBookBackend              *backend,
-			       EBookSqlite               *ebsql,
-			       const gchar               *revision_key,
-			       const EContactField       *sort_fields,
-			       const EBookCursorSortType *sort_types,
-			       guint                      n_fields,
-			       GError                   **error)
+e_data_book_cursor_sqlite_new (EBookBackend *backend,
+                               EBookSqlite *ebsql,
+                               const gchar *revision_key,
+                               const EContactField *sort_fields,
+                               const EBookCursorSortType *sort_types,
+                               guint n_fields,
+                               GError **error)
 {
 	EDataBookCursor *cursor = NULL;
 	EbSqlCursor     *ebsql_cursor;
@@ -525,19 +533,21 @@ e_data_book_cursor_sqlite_new (EBookBackend              *backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), NULL);
 
-	ebsql_cursor = e_book_sqlite_cursor_new (ebsql, NULL,
-						 sort_fields,
-						 sort_types,
-						 n_fields,
-						 &local_error);
+	ebsql_cursor = e_book_sqlite_cursor_new (
+		ebsql, NULL,
+		sort_fields,
+		sort_types,
+		n_fields,
+		&local_error);
 
 	if (ebsql_cursor) {
-		cursor = g_object_new (E_TYPE_DATA_BOOK_CURSOR_SQLITE,
-				       "backend", backend,
-				       "ebsql", ebsql,
-				       "revision-key", revision_key,
-				       "cursor", ebsql_cursor,
-				       NULL);
+		cursor = g_object_new (
+			E_TYPE_DATA_BOOK_CURSOR_SQLITE,
+			"backend", backend,
+			"ebsql", ebsql,
+			"revision-key", revision_key,
+			"cursor", ebsql_cursor,
+			NULL);
 
 		/* Initially created cursors should have a position & total */
 		if (!e_data_book_cursor_load_locale (E_DATA_BOOK_CURSOR (cursor),
@@ -547,10 +557,11 @@ e_data_book_cursor_sqlite_new (EBookBackend              *backend,
 	} else if (g_error_matches (local_error,
 				    E_BOOK_SQLITE_ERROR,
 				    E_BOOK_SQLITE_ERROR_INVALID_QUERY)) {
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_INVALID_QUERY,
-				     local_error->message);
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_INVALID_QUERY,
+			local_error->message);
 		g_clear_error (&local_error);
 	} else {
 		g_propagate_error (error, local_error);

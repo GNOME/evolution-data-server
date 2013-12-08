@@ -3232,9 +3232,10 @@ cal_client_get_default_object_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -3404,9 +3405,10 @@ cal_client_get_object_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -3667,9 +3669,10 @@ cal_client_get_objects_for_uid_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -3907,9 +3910,10 @@ cal_client_get_object_list_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -4094,9 +4098,10 @@ cal_client_get_object_list_as_comps_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -4285,9 +4290,10 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -4454,9 +4460,10 @@ cal_client_create_object_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -4622,9 +4629,10 @@ cal_client_create_objects_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -4824,9 +4832,10 @@ cal_client_modify_object_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -4973,9 +4982,10 @@ cal_client_modify_objects_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -5166,9 +5176,10 @@ cal_client_remove_object_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -5318,9 +5329,10 @@ cal_client_remove_objects_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -5534,9 +5546,10 @@ cal_client_receive_objects_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -5687,9 +5700,10 @@ cal_client_send_objects_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -5912,9 +5926,10 @@ cal_client_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -6107,9 +6122,10 @@ cal_client_discard_alarm_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -6469,9 +6485,10 @@ cal_client_get_timezone_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)
@@ -6682,9 +6699,10 @@ cal_client_add_timezone_thread (GSimpleAsyncResult *simple,
 		cancellable, &local_error)) {
 
 		if (!local_error)
-			local_error = g_error_new_literal (E_CLIENT_ERROR,
-							   E_CLIENT_ERROR_OTHER_ERROR,
-							   _("Unknown error"));
+			local_error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	if (local_error != NULL)

@@ -73,8 +73,8 @@ e_weather_source_init (EWeatherSource *source)
 
 static GWeatherLocation *
 weather_source_find_location_by_coords (GWeatherLocation *start,
-					gdouble latitude,
-					gdouble longitude)
+                                        gdouble latitude,
+                                        gdouble longitude)
 {
 	GWeatherLocation *location, **children;
 	gint ii;

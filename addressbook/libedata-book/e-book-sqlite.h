@@ -30,12 +30,23 @@
 #include <libebook-contacts/libebook-contacts.h>
 
 /* Standard GObject macros */
-#define E_TYPE_BOOK_SQLITE            (e_book_sqlite_get_type ())
-#define E_BOOK_SQLITE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_BOOK_SQLITE, EBookSqlite))
-#define E_BOOK_SQLITE_CLASS(cls)      (G_TYPE_CHECK_CLASS_CAST ((cls), E_TYPE_BOOK_SQLITE, EBookSqliteClass))
-#define E_IS_BOOK_SQLITE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_BOOK_SQLITE))
-#define E_IS_BOOK_SQLITE_CLASS(cls)   (G_TYPE_CHECK_CLASS_TYPE ((cls), E_TYPE_BOOK_SQLITE))
-#define E_BOOK_SQLITE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_BOOK_SQLITE, EBookSqliteClass))
+#define E_TYPE_BOOK_SQLITE \
+	(e_book_sqlite_get_type ())
+#define E_BOOK_SQLITE(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), E_TYPE_BOOK_SQLITE, EBookSqlite))
+#define E_BOOK_SQLITE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_CAST \
+	((cls), E_TYPE_BOOK_SQLITE, EBookSqliteClass))
+#define E_IS_BOOK_SQLITE(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_BOOK_SQLITE))
+#define E_IS_BOOK_SQLITE_CLASS(cls) \
+	(G_TYPE_CHECK_CLASS_TYPE \
+	((cls), E_TYPE_BOOK_SQLITE))
+#define E_BOOK_SQLITE_GET_CLASS(obj) \
+	(G_TYPE_INSTANCE_GET_CLASS \
+	((obj), E_TYPE_BOOK_SQLITE, EBookSqliteClass))
 
 /**
  * E_BOOK_SQLITE_ERROR:
@@ -98,11 +109,11 @@ typedef enum {
  *
  * Since: 3.12
  **/
-typedef void    (* EbSqlChangeCallback) (EbSqlChangeType     change_type,
-					 const gchar        *uid,
-					 const gchar        *extra,
-					 const gchar        *vcard,
-					 gpointer            user_data);
+typedef void	(*EbSqlChangeCallback)		(EbSqlChangeType change_type,
+						 const gchar *uid,
+						 const gchar *extra,
+						 const gchar *vcard,
+						 gpointer user_data);
 
 /**
  * EbSqlVCardCallback:
@@ -127,9 +138,9 @@ typedef void    (* EbSqlChangeCallback) (EbSqlChangeType     change_type,
  *
  * Since: 3.12
  **/
-typedef gchar * (* EbSqlVCardCallback)  (const gchar        *uid,
-					 const gchar        *extra,
-					 gpointer            user_data);
+typedef gchar *	(*EbSqlVCardCallback)		(const gchar *uid,
+						 const gchar *extra,
+						 gpointer user_data);
 
 /**
  * EBookSqliteError:
@@ -275,18 +286,18 @@ typedef enum {
  * Since: 3.12
  */
 typedef enum {
-	EBSQL_CURSOR_STEP_MOVE  = (1 << 0),
+	EBSQL_CURSOR_STEP_MOVE = (1 << 0),
 	EBSQL_CURSOR_STEP_FETCH = (1 << 1)
 } EbSqlCursorStepFlags;
 
-GType	     e_book_sqlite_get_type             (void) G_GNUC_CONST;
-GQuark       e_book_sqlite_error_quark          (void);
-void	     e_book_sqlite_search_data_free     (EbSqlSearchData *data);
+GType		e_book_sqlite_get_type		(void) G_GNUC_CONST;
+GQuark		e_book_sqlite_error_quark	(void);
+void		e_book_sqlite_search_data_free	(EbSqlSearchData *data);
 
-EBookSqlite *e_book_sqlite_new		        (const gchar *path,
+EBookSqlite *	e_book_sqlite_new		(const gchar *path,
 						 GCancellable *cancellable,
 						 GError **error);
-EBookSqlite *e_book_sqlite_new_full             (const gchar *path,
+EBookSqlite *	e_book_sqlite_new_full		(const gchar *path,
 						 ESourceBackendSummarySetup *setup,
 						 EbSqlVCardCallback vcard_callback,
 						 EbSqlChangeCallback change_callback,
@@ -294,106 +305,106 @@ EBookSqlite *e_book_sqlite_new_full             (const gchar *path,
 						 GDestroyNotify user_data_destroy,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_lock                 (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_lock		(EBookSqlite *ebsql,
 						 EbSqlLockType lock_type,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_unlock               (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_unlock		(EBookSqlite *ebsql,
 						 EbSqlUnlockAction action,
 						 GError **error);
-gboolean     e_book_sqlite_set_locale           (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_set_locale	(EBookSqlite *ebsql,
 						 const gchar *lc_collate,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_get_locale           (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_get_locale	(EBookSqlite *ebsql,
 						 gchar **locale_out,
 						 GError **error);
 
-ECollator   *e_book_sqlite_ref_collator         (EBookSqlite *ebsql);
+ECollator *	e_book_sqlite_ref_collator	(EBookSqlite *ebsql);
 
 /* Adding / Removing / Searching contacts */
-gboolean     e_book_sqlite_add_contact          (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_add_contact	(EBookSqlite *ebsql,
 						 EContact *contact,
 						 const gchar *extra,
 						 gboolean replace,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_add_contacts         (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_add_contacts	(EBookSqlite *ebsql,
 						 GSList *contacts,
 						 GSList *extra,
 						 gboolean replace,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_remove_contact       (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_remove_contact	(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_remove_contacts	(EBookSqlite *ebsql,
+gboolean	e_book_sqlite_remove_contacts	(EBookSqlite *ebsql,
 						 GSList *uids,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_has_contact          (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_has_contact	(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 gboolean *exists,
 						 GError **error);
-gboolean     e_book_sqlite_get_contact          (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_get_contact	(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 gboolean meta_contact,
 						 EContact **ret_contact,
 						 GError **error);
-gboolean     e_book_sqlite_get_vcard            (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_get_vcard		(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 gboolean meta_contact,
 						 gchar **ret_vcard,
 						 GError **error);
-gboolean     e_book_sqlite_set_contact_extra    (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_set_contact_extra	(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 const gchar *extra,
 						 GError **error);
-gboolean     e_book_sqlite_get_contact_extra    (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_get_contact_extra	(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 gchar **ret_extra,
 						 GError **error);
-gboolean     e_book_sqlite_search               (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_search		(EBookSqlite *ebsql,
 						 const gchar *sexp,
 						 gboolean meta_contacts,
 						 GSList **ret_list,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean     e_book_sqlite_search_uids          (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_search_uids	(EBookSqlite *ebsql,
 						 const gchar *sexp,
 						 GSList **ret_list,
 						 GCancellable *cancellable,
 						 GError **error);
 
 /* Key / Value convenience API */
-gboolean     e_book_sqlite_get_key_value	(EBookSqlite *ebsql,
+gboolean	e_book_sqlite_get_key_value	(EBookSqlite *ebsql,
 						 const gchar *key,
 						 gchar **value,
 						 GError **error);
-gboolean     e_book_sqlite_set_key_value	(EBookSqlite *ebsql,
+gboolean	e_book_sqlite_set_key_value	(EBookSqlite *ebsql,
 						 const gchar *key,
 						 const gchar *value,
 						 GError **error);
-gboolean     e_book_sqlite_get_key_value_int	(EBookSqlite *ebsql,
+gboolean	e_book_sqlite_get_key_value_int	(EBookSqlite *ebsql,
 						 const gchar *key,
 						 gint *value,
 						 GError **error);
-gboolean     e_book_sqlite_set_key_value_int    (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_set_key_value_int	(EBookSqlite *ebsql,
 						 const gchar *key,
 						 gint value,
 						 GError **error);
 
 /* Cursor API */
-EbSqlCursor *e_book_sqlite_cursor_new           (EBookSqlite *ebsql,
+EbSqlCursor *	e_book_sqlite_cursor_new	(EBookSqlite *ebsql,
 						 const gchar *sexp,
 						 const EContactField *sort_fields,
 						 const EBookCursorSortType *sort_types,
 						 guint n_sort_fields,
 						 GError **error);
-void         e_book_sqlite_cursor_free          (EBookSqlite *ebsql,
+void		e_book_sqlite_cursor_free	(EBookSqlite *ebsql,
 						 EbSqlCursor *cursor);
-gint         e_book_sqlite_cursor_step          (EBookSqlite *ebsql,
+gint		e_book_sqlite_cursor_step	(EBookSqlite *ebsql,
 						 EbSqlCursor *cursor,
 						 EbSqlCursorStepFlags flags,
 						 EbSqlCursorOrigin origin,
@@ -401,22 +412,22 @@ gint         e_book_sqlite_cursor_step          (EBookSqlite *ebsql,
 						 GSList **results,
 						 GCancellable *cancellable,
 						 GError **error);
-void         e_book_sqlite_cursor_set_target_alphabetic_index
-                                                (EBookSqlite *ebsql,
+void		e_book_sqlite_cursor_set_target_alphabetic_index
+						(EBookSqlite *ebsql,
 						 EbSqlCursor *cursor,
 						 gint idx);
-gboolean     e_book_sqlite_cursor_set_sexp      (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_cursor_set_sexp	(EBookSqlite *ebsql,
 						 EbSqlCursor *cursor,
 						 const gchar *sexp,
 						 GError **error);
-gboolean     e_book_sqlite_cursor_calculate     (EBookSqlite *ebsql,
+gboolean	e_book_sqlite_cursor_calculate	(EBookSqlite *ebsql,
 						 EbSqlCursor *cursor,
 						 gint *total,
 						 gint *position,
 						 GCancellable *cancellable,
 						 GError **error);
-gint         e_book_sqlite_cursor_compare_contact
-                                                (EBookSqlite *ebsql,
+gint		e_book_sqlite_cursor_compare_contact
+						(EBookSqlite *ebsql,
 						 EbSqlCursor *cursor,
 						 EContact *contact,
 						 gboolean *matches_sexp);

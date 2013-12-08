@@ -1388,7 +1388,7 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 				continue;
 		}
 		if (((prop_info[i].prop_type & PROP_TYPE_COMPLEX) ||
-		     (prop_info[i].prop_type & PROP_TYPE_BINARY))  && is_list) {
+		     (prop_info[i].prop_type & PROP_TYPE_BINARY)) && is_list) {
 			continue;
 		}
 
@@ -3916,7 +3916,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 				strings[1] = g_strdup_printf ("%s", bl->priv->ldap_search_filter);
 				strings[2] = data.list->data;
 				strings[3] = g_strdup (")");
-				retval =  g_strjoinv (" ", strings);
+				retval = g_strjoinv (" ", strings);
 				for (i = 0; i < 4; i++)
 					g_free (strings[i]);
 				g_free (strings);

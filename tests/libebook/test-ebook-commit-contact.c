@@ -13,7 +13,7 @@ static ETestServerClosure book_closure =
 
 /* Global data */
 static EBook *book = NULL;
-static gchar *uid  = NULL;
+static gchar *uid = NULL;
 
 static void
 verify_precommit_and_prepare_contact (EContact *contact)

@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #ifndef CURSOR_SLOT_H
 #define CURSOR_SLOT_H
 

@@ -6,7 +6,7 @@
 #include "client-test-utils.h"
 #include "e-test-server-utils.h"
 
-static ETestServerClosure book_closure_sync  = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
+static ETestServerClosure book_closure_sync = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE };
 static ETestServerClosure book_closure_async = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE };
 
 #define N_TEST_CONTACTS 4
@@ -22,7 +22,7 @@ setup_book (EBookClient *book_client)
 	for (i = 0; i < N_TEST_CONTACTS; i++)
 	{
 		EContact *contact = e_contact_new ();
-		gchar    *name      = g_strdup_printf ("Contact #%d", i + 1);
+		gchar    *name = g_strdup_printf ("Contact #%d", i + 1);
 
 		e_contact_set (contact, E_CONTACT_FULL_NAME, name);
 		e_contact_set (contact, E_CONTACT_NICKNAME, name);
@@ -92,7 +92,7 @@ objects_removed (EBookClientView *view,
 static void
 complete (EBookClientView *view,
           const GError *error,
-	  gpointer user_data)
+          gpointer user_data)
 {
 	GMainLoop *loop = (GMainLoop *) user_data;
 	finish_test (view, loop);

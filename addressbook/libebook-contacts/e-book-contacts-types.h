@@ -43,7 +43,7 @@ G_BEGIN_DECLS
  * Since: 3.4
  */
 typedef enum {
-	E_BOOK_CLIENT_VIEW_FLAGS_NONE           = 0,
+	E_BOOK_CLIENT_VIEW_FLAGS_NONE = 0,
 	E_BOOK_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0),
 } EBookClientViewFlags;
 
@@ -193,7 +193,7 @@ typedef enum {
  * Since: 3.12
  */
 typedef enum {
-	E_BOOK_CURSOR_STEP_MOVE  = (1 << 0),
+	E_BOOK_CURSOR_STEP_MOVE = (1 << 0),
 	E_BOOK_CURSOR_STEP_FETCH = (1 << 1)
 } EBookCursorStepFlags;
 

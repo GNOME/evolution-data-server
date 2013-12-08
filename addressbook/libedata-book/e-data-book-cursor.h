@@ -43,7 +43,6 @@ typedef struct _EDataBookCursor EDataBookCursor;
 typedef struct _EDataBookCursorClass EDataBookCursorClass;
 typedef struct _EDataBookCursorPrivate EDataBookCursorPrivate;
 
-
 /*
  * The following virtual methods have typedefs in order to provide richer 
  * documentation about how to implement the EDataBookCursorClass.

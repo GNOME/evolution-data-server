@@ -41,7 +41,7 @@ test_preserve_uid (ETestServerFixture *fixture,
 
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 
-	vcard   = new_vcard_from_test_case ("simple-1");
+	vcard = new_vcard_from_test_case ("simple-1");
 	contact = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
 
@@ -69,7 +69,7 @@ test_uid_conflict (ETestServerFixture *fixture,
 	/* Hijack the first test case, ensure we already have the contact added */
 	test_preserve_uid (fixture, user_data);
 
-	vcard   = new_vcard_from_test_case ("simple-2");
+	vcard = new_vcard_from_test_case ("simple-2");
 	contact = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
 

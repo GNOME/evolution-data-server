@@ -61,8 +61,8 @@ objects_added_cb (GObject *object,
 	GMainLoop *loop = (GMainLoop *) data;
 
 	for (l = objects; l; l = l->next) {
-		icalcomponent      *component     = l->data;
-		struct icaltimetype recurrence    = icalcomponent_get_recurrenceid (component);
+		icalcomponent      *component = l->data;
+		struct icaltimetype recurrence = icalcomponent_get_recurrenceid (component);
 		struct icaltimetype last_modified = get_last_modified (component);
 
 		g_print (
@@ -86,8 +86,8 @@ objects_modified_cb (GObject *object,
 	GMainLoop *loop = (GMainLoop *) data;
 
 	for (l = objects; l; l = l->next) {
-		icalcomponent      *component     = l->data;
-		struct icaltimetype recurrence    = icalcomponent_get_recurrenceid (component);
+		icalcomponent      *component = l->data;
+		struct icaltimetype recurrence = icalcomponent_get_recurrenceid (component);
 		struct icaltimetype last_modified = get_last_modified (component);
 
 		g_print (

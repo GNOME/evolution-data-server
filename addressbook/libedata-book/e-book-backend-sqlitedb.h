@@ -191,7 +191,7 @@ typedef enum {
  * Deprecated: 3.12: Use #EBookSqlite instead
  */
 typedef enum {
-	EBSDB_CURSOR_STEP_MOVE  = (1 << 0),
+	EBSDB_CURSOR_STEP_MOVE = (1 << 0),
 	EBSDB_CURSOR_STEP_FETCH = (1 << 1)
 } EbSdbCursorStepFlags;
 

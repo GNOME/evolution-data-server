@@ -63,7 +63,6 @@
  *     http://demo.icu-project.org/icu-bin/locexp?_=en_US&d_=en&x=col
  */
 
-
 /* 13 contacts in the test data have an email address ending with ".com" */
 #define N_FILTERED_CONTACTS  13
 #define N_SORTED_CONTACTS    20
@@ -142,8 +141,6 @@ void     e_sqlite_cursor_fixture_filtered_setup (EbSqlCursorFixture *fixture,
 
 gchar    *new_vcard_from_test_case         (const gchar *case_name);
 EContact *new_contact_from_test_case       (const gchar *case_name);
-
-
 
 void      add_contact_from_test_case       (EbSqlFixture *fixture,
 					    const gchar *case_name,

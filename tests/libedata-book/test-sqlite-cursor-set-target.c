@@ -11,7 +11,7 @@
  *****************************************************/
 static void
 test_cursor_set_target_reset_cursor (EbSqlCursorFixture *fixture,
-				     gconstpointer  user_data)
+                                     gconstpointer user_data)
 {
 	GSList *results = NULL;
 	GError *error = NULL;
@@ -28,15 +28,16 @@ test_cursor_set_target_reset_cursor (EbSqlCursorFixture *fixture,
 
 	/* Assert the first 5 contacts in en_US order */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	assert_contacts_order (results,
-			       "sorted-11",
-			       "sorted-1",
-			       "sorted-2",
-			       "sorted-5",
-			       "sorted-6",
-			       NULL);
+	assert_contacts_order (
+		results,
+		"sorted-11",
+		"sorted-1",
+		"sorted-2",
+		"sorted-5",
+		"sorted-6",
+		NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 	results = NULL;
 
@@ -52,15 +53,16 @@ test_cursor_set_target_reset_cursor (EbSqlCursorFixture *fixture,
 
 	/* Assert the first 5 contacts in en_US order again */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	assert_contacts_order (results,
-			       "sorted-11",
-			       "sorted-1",
-			       "sorted-2",
-			       "sorted-5",
-			       "sorted-6",
-			       NULL);
+	assert_contacts_order (
+		results,
+		"sorted-11",
+		"sorted-1",
+		"sorted-2",
+		"sorted-5",
+		"sorted-6",
+		NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -69,7 +71,7 @@ test_cursor_set_target_reset_cursor (EbSqlCursorFixture *fixture,
  *****************************************************/
 static void
 test_cursor_set_target_c_next_results (EbSqlCursorFixture *fixture,
-				       gconstpointer  user_data)
+                                       gconstpointer user_data)
 {
 	GSList *results = NULL;
 	GError *error = NULL;
@@ -84,8 +86,9 @@ test_cursor_set_target_c_next_results (EbSqlCursorFixture *fixture,
 	e_collator_unref (collator);
 
 	/* Set the cursor at the start of family names beginning with 'C' */
-	e_book_sqlite_cursor_set_target_alphabetic_index (((EbSqlFixture *) fixture)->ebsql,
-							  fixture->cursor, 3);
+	e_book_sqlite_cursor_set_target_alphabetic_index (
+		((EbSqlFixture *) fixture)->ebsql,
+		fixture->cursor, 3);
 
 	if (e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
 				       fixture->cursor,
@@ -98,15 +101,16 @@ test_cursor_set_target_c_next_results (EbSqlCursorFixture *fixture,
 
 	/* Assert that we got the results starting at C */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	assert_contacts_order (results,
-			       "sorted-10",
-			       "sorted-14",
-			       "sorted-12",
-			       "sorted-13",
-			       "sorted-9",
-			       NULL);
+	assert_contacts_order (
+		results,
+		"sorted-10",
+		"sorted-14",
+		"sorted-12",
+		"sorted-13",
+		"sorted-9",
+		NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -115,7 +119,7 @@ test_cursor_set_target_c_next_results (EbSqlCursorFixture *fixture,
  *****************************************************/
 static void
 test_cursor_set_target_c_prev_results (EbSqlCursorFixture *fixture,
-				       gconstpointer  user_data)
+                                       gconstpointer user_data)
 {
 	GSList *results = NULL;
 	GError *error = NULL;
@@ -130,11 +134,12 @@ test_cursor_set_target_c_prev_results (EbSqlCursorFixture *fixture,
 	e_collator_unref (collator);
 
 	/* Set the cursor at the start of family names beginning with 'C' */
-	e_book_sqlite_cursor_set_target_alphabetic_index (((EbSqlFixture *) fixture)->ebsql,
-							  fixture->cursor, 3);
+	e_book_sqlite_cursor_set_target_alphabetic_index (
+		((EbSqlFixture *) fixture)->ebsql,
+		fixture->cursor, 3);
 
 	if (e_book_sqlite_cursor_step (((EbSqlFixture *) fixture)->ebsql,
-				       fixture->cursor, 
+				       fixture->cursor,
 				       EBSQL_CURSOR_STEP_MOVE | EBSQL_CURSOR_STEP_FETCH,
 				       EBSQL_CURSOR_ORIGIN_CURRENT,
 				       -5, &results, NULL, &error) < 0)
@@ -144,15 +149,16 @@ test_cursor_set_target_c_prev_results (EbSqlCursorFixture *fixture,
 
 	/* Assert that we got the results before C */
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	assert_contacts_order (results,
-			       "sorted-18",
-			       "sorted-16",
-			       "sorted-17",
-			       "sorted-15",
-			       "sorted-8",
-			       NULL);
+	assert_contacts_order (
+		results,
+		"sorted-18",
+		"sorted-16",
+		"sorted-17",
+		"sorted-15",
+		"sorted-8",
+		NULL);
 
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -185,24 +191,27 @@ main (gint argc,
 		gchar *path;
 
 		path = g_strconcat (prefixes[i], "/SetTarget/ResetCursor", NULL);
-		g_test_add (path, EbSqlCursorFixture, &closures[i],
-			    e_sqlite_cursor_fixture_setup,
-			    test_cursor_set_target_reset_cursor,
-			    e_sqlite_cursor_fixture_teardown);
+		g_test_add (
+			path, EbSqlCursorFixture, &closures[i],
+			e_sqlite_cursor_fixture_setup,
+			test_cursor_set_target_reset_cursor,
+			e_sqlite_cursor_fixture_teardown);
 		g_free (path);
 
 		path = g_strconcat (prefixes[i], "/SetTarget/Alphabetic/C/NextResults", NULL);
-		g_test_add (path, EbSqlCursorFixture, &closures[i],
-			    e_sqlite_cursor_fixture_setup,
-			    test_cursor_set_target_c_next_results,
-			    e_sqlite_cursor_fixture_teardown);
+		g_test_add (
+			path, EbSqlCursorFixture, &closures[i],
+			e_sqlite_cursor_fixture_setup,
+			test_cursor_set_target_c_next_results,
+			e_sqlite_cursor_fixture_teardown);
 		g_free (path);
 
 		path = g_strconcat (prefixes[i], "/SetTarget/Alphabetic/C/PreviousResults", NULL);
-		g_test_add (path, EbSqlCursorFixture, &closures[i],
-			    e_sqlite_cursor_fixture_setup,
-			    test_cursor_set_target_c_prev_results,
-			    e_sqlite_cursor_fixture_teardown);
+		g_test_add (
+			path, EbSqlCursorFixture, &closures[i],
+			e_sqlite_cursor_fixture_setup,
+			test_cursor_set_target_c_prev_results,
+			e_sqlite_cursor_fixture_teardown);
 		g_free (path);
 	}
 

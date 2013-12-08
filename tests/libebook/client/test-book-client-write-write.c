@@ -189,7 +189,7 @@ test_write_thread (ThreadData *data)
 	ESource         *source;
 	GError          *error = NULL;
 
-	context    = g_main_context_new ();
+	context = g_main_context_new ();
 	data->loop = g_main_loop_new (context, FALSE);
 	g_main_context_push_thread_default (context);
 
@@ -233,10 +233,10 @@ create_test_thread (const gchar *book_uid,
 	ThreadData  *data = g_slice_new0 (ThreadData);
 	const gchar *name = e_contact_field_name (field);
 
-	data->book_uid    = book_uid;
+	data->book_uid = book_uid;
 	data->contact_uid = contact_uid;
-	data->field       = field;
-	data->value       = value;
+	data->field = field;
+	data->value = value;
 
 	data->thread = g_thread_new (name, (GThreadFunc) test_write_thread, data);
 

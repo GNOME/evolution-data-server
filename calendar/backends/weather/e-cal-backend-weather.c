@@ -322,7 +322,7 @@ getCategory (GWeatherInfo *report)
 
 static gchar *
 cal_backend_weather_get_temp (gdouble value,
-			      GWeatherTemperatureUnit unit)
+                              GWeatherTemperatureUnit unit)
 {
 	switch (unit) {
 	case GWEATHER_TEMP_UNIT_FAHRENHEIT:
@@ -345,7 +345,7 @@ cal_backend_weather_get_temp (gdouble value,
 static ECalComponent *
 create_weather (ECalBackendWeather *cbw,
                 GWeatherInfo *report,
-		GWeatherTemperatureUnit unit,
+                GWeatherTemperatureUnit unit,
                 gboolean is_forecast)
 {
 	ECalComponent             *cal_comp;
@@ -836,15 +836,15 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 
 	backend_class->get_backend_property = e_cal_backend_weather_get_backend_property;
 
-	sync_class->open_sync			= e_cal_backend_weather_open;
-	sync_class->refresh_sync		= e_cal_backend_weather_refresh;
-	sync_class->receive_objects_sync	= e_cal_backend_weather_receive_objects;
-	sync_class->get_object_sync		= e_cal_backend_weather_get_object;
-	sync_class->get_object_list_sync	= e_cal_backend_weather_get_object_list;
-	sync_class->add_timezone_sync		= e_cal_backend_weather_add_timezone;
-	sync_class->get_free_busy_sync		= e_cal_backend_weather_get_free_busy;
+	sync_class->open_sync = e_cal_backend_weather_open;
+	sync_class->refresh_sync = e_cal_backend_weather_refresh;
+	sync_class->receive_objects_sync = e_cal_backend_weather_receive_objects;
+	sync_class->get_object_sync = e_cal_backend_weather_get_object;
+	sync_class->get_object_list_sync = e_cal_backend_weather_get_object_list;
+	sync_class->add_timezone_sync = e_cal_backend_weather_add_timezone;
+	sync_class->get_free_busy_sync = e_cal_backend_weather_get_free_busy;
 
-	backend_class->start_view		= e_cal_backend_weather_start_view;
+	backend_class->start_view = e_cal_backend_weather_start_view;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_WEATHER;

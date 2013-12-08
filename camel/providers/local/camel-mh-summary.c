@@ -353,8 +353,8 @@ mh_summary_sync (CamelLocalSummary *cls,
 
 static gint
 mh_summary_decode_x_evolution (CamelLocalSummary *cls,
-			       const gchar *xev,
-			       CamelLocalMessageInfo *info)
+                               const gchar *xev,
+                               CamelLocalMessageInfo *info)
 {
 	CamelLocalSummaryClass *local_summary_class;
 	CamelMhSummary *mh_summary;

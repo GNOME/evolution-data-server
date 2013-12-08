@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #ifndef CURSOR_NAVIGATOR_H
 #define CURSOR_NAVIGATOR_H
 

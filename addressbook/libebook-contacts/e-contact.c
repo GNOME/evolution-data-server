@@ -437,7 +437,7 @@ geo_getter (EContact *contact,
 		GList *p = e_vcard_attribute_get_values (attr);
 		EContactGeo *geo = g_new0 (EContactGeo, 1);
 
-		geo->latitude  = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0); if (p) p = p->next;
+		geo->latitude = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0); if (p) p = p->next;
 		geo->longitude = (p && p->data ? g_ascii_strtod (p->data, NULL) : 0);
 
 		return geo;
@@ -680,11 +680,11 @@ n_getter (EContact *contact,
 	if (attr) {
 		GList *p = e_vcard_attribute_get_values (attr);
 
-		name->family     = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		name->given      = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		name->family = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		name->given = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		name->additional = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		name->prefixes   = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		name->suffixes   = g_strdup (p && p->data ? p->data : "");
+		name->prefixes = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		name->suffixes = g_strdup (p && p->data ? p->data : "");
 	}
 
 	new_attr = e_vcard_get_attribute (E_VCARD (contact), EVC_FN);
@@ -745,13 +745,13 @@ adr_getter (EContact *contact,
 		EContactAddress *addr = g_new0 (EContactAddress, 1);
 
 		addr->address_format = g_strdup ("");
-		addr->po       = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->ext      = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->street   = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->po = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->ext = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->street = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 		addr->locality = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->region   = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->code     = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
-		addr->country  = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->region = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->code = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
+		addr->country = g_strdup (p && p->data ? p->data : ""); if (p) p = p->next;
 
 		return addr;
 	}
@@ -1393,8 +1393,8 @@ e_contact_field_type (EContactField field_id)
 	g_return_val_if_fail (field_id >= 1 && field_id < E_CONTACT_FIELD_LAST, G_TYPE_INVALID);
 
 	field_name = e_contact_field_name (field_id);
-	class      = g_type_class_ref (E_TYPE_CONTACT);
-	pspec      = g_object_class_find_property (G_OBJECT_CLASS (class), field_name);
+	class = g_type_class_ref (E_TYPE_CONTACT);
+	pspec = g_object_class_find_property (G_OBJECT_CLASS (class), field_name);
 
 	if (pspec)
 		type = G_PARAM_SPEC_VALUE_TYPE (pspec);
@@ -1898,11 +1898,11 @@ e_contact_name_from_string (const gchar *name_str)
 	name = e_contact_name_new ();
 	western = e_name_western_parse (name_str);
 
-	name->prefixes   = g_strdup (western->prefix);
-	name->given      = g_strdup (western->first );
+	name->prefixes = g_strdup (western->prefix);
+	name->given = g_strdup (western->first );
 	name->additional = g_strdup (western->middle);
-	name->family     = g_strdup (western->last  );
-	name->suffixes   = g_strdup (western->suffix);
+	name->family = g_strdup (western->last  );
+	name->suffixes = g_strdup (western->suffix);
 
 	e_name_western_free (western);
 
@@ -1926,11 +1926,11 @@ e_contact_name_copy (EContactName *n)
 
 	name = e_contact_name_new ();
 
-	name->prefixes   = g_strdup (n->prefixes);
-	name->given      = g_strdup (n->given);
+	name->prefixes = g_strdup (n->prefixes);
+	name->given = g_strdup (n->given);
 	name->additional = g_strdup (n->additional);
-	name->family     = g_strdup (n->family);
-	name->suffixes   = g_strdup (n->suffixes);
+	name->family = g_strdup (n->family);
+	name->suffixes = g_strdup (n->suffixes);
 
 	return name;
 }
@@ -1956,23 +1956,23 @@ e_contact_name_free (EContactName *name)
 	g_free (name);
 }
 
-#define E_CONTACT_DEFINE_BOXED_TYPE(_tp,_nm)				\
-	GType								\
-	_tp ## _get_type (void)						\
-	{								\
-		static volatile gsize type_id__volatile = 0;		\
-									\
-		if (g_once_init_enter (&type_id__volatile)) {		\
-			GType type_id;					\
-									\
-			type_id = g_boxed_type_register_static (_nm,	\
-				(GBoxedCopyFunc) _tp ## _copy,		\
-				(GBoxedFreeFunc) _tp ## _free);		\
-									\
+#define E_CONTACT_DEFINE_BOXED_TYPE(_tp,_nm) \
+	GType \
+	_tp ## _get_type (void) \
+	{ \
+		static volatile gsize type_id__volatile = 0; \
+ \
+		if (g_once_init_enter (&type_id__volatile)) { \
+			GType type_id; \
+ \
+			type_id = g_boxed_type_register_static (_nm, \
+				(GBoxedCopyFunc) _tp ## _copy, \
+				(GBoxedFreeFunc) _tp ## _free); \
+ \
 			g_once_init_leave (&type_id__volatile, type_id);\
-	}								\
-									\
-	return type_id__volatile;					\
+	} \
+ \
+	return type_id__volatile; \
 }
 
 E_CONTACT_DEFINE_BOXED_TYPE (e_contact_name, "EContactName")
@@ -2331,7 +2331,7 @@ mime_type_from_filename (const gchar *filename)
 	if (!extension)
 		return NULL;
 
-	mime_type    = g_uri_unescape_string (extension, NULL);
+	mime_type = g_uri_unescape_string (extension, NULL);
 	content_type = g_content_type_from_mime_type (mime_type);
 
 	if (!content_type) {
@@ -2378,8 +2378,8 @@ e_contact_photo_make_inline (EContactPhoto *photo,
 		g_free (photo->data.uri);
 
 		photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
-		photo->data.inlined.data      = (guchar *) contents;
-		photo->data.inlined.length    = length;
+		photo->data.inlined.data = (guchar *) contents;
+		photo->data.inlined.length = length;
 		photo->data.inlined.mime_type = mime_type;
 
 		success = TRUE;
@@ -2481,7 +2481,7 @@ static EContactGeo *
 e_contact_geo_copy (EContactGeo *geo)
 {
 	EContactGeo *geo2 = g_new0 (EContactGeo, 1);
-	geo2->latitude  = geo->latitude;
+	geo2->latitude = geo->latitude;
 	geo2->longitude = geo->longitude;
 
 	return geo2;

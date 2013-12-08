@@ -1886,9 +1886,9 @@ source_registry_authenticate_dismissed_cb (EDBusAuthenticator *dbus_auth,
 /* Helper for e_source_registry_authenticate_sync() */
 static void
 source_registry_authenticate_server_error_cb (EDBusAuthenticator *dbus_auth,
-					      const gchar *name,
-					      const gchar *message,
-					      AuthContext *auth_context)
+                                              const gchar *name,
+                                              const gchar *message,
+                                              AuthContext *auth_context)
 {
 	/* Be careful not to overwrite an existing error */
 	if (auth_context->auth_result != E_SOURCE_AUTHENTICATION_ERROR) {

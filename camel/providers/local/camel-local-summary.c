@@ -127,7 +127,7 @@ camel_local_summary_class_init (CamelLocalSummaryClass *class)
 	folder_summary_class->content_info_size = sizeof (CamelMessageContentInfo);
 	folder_summary_class->summary_header_from_db = summary_header_from_db;
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
-	folder_summary_class->message_info_new_from_header  = message_info_new_from_header;
+	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
 
 	class->load = local_summary_load;
 	class->check = local_summary_check;

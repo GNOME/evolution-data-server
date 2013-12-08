@@ -80,7 +80,7 @@ static gint global_test_source_id = 0;
  */
 static void
 add_weak_ref (ETestServerFixture *fixture,
-	      ETestServiceType    service_type)
+              ETestServiceType service_type)
 {
 	GObject *object;
 
@@ -105,7 +105,7 @@ add_weak_ref (ETestServerFixture *fixture,
 static gboolean
 object_finalize_timeout (gpointer user_data)
 {
-	const gchar *message = (const gchar *)user_data;
+	const gchar *message = (const gchar *) user_data;
 
 	g_error ("%s", message);
 
@@ -122,7 +122,7 @@ object_unref_idle (gpointer user_data)
 
 static void
 weak_notify_loop_quit (gpointer data,
-		       GObject *where_the_object_was)
+                       GObject *where_the_object_was)
 {
 	ETestServerFixture *fixture = (ETestServerFixture *) data;
 
@@ -131,7 +131,7 @@ weak_notify_loop_quit (gpointer data,
 
 static void
 assert_object_finalized (ETestServerFixture *fixture,
-			 ETestServiceType    service_type)
+                         ETestServiceType service_type)
 {
 	const gchar *message = NULL;
 	GObject *object = NULL;
@@ -164,9 +164,10 @@ assert_object_finalized (ETestServerFixture *fixture,
 		g_object_weak_ref (object, weak_notify_loop_quit, fixture);
 
 		/* Fail the test if we reach the timeout */
-		timeout_id = g_timeout_add_seconds (FINALIZE_SECONDS,
-						    object_finalize_timeout,
-						    (gpointer)message);
+		timeout_id = g_timeout_add_seconds (
+			FINALIZE_SECONDS,
+			object_finalize_timeout,
+			(gpointer) message);
 
 		/* We can't release the strong reference yet, it might try
 		 * to quit the main loop before we've started it.
@@ -216,7 +217,7 @@ generate_source_name (void)
 {
 	gchar *source_name = NULL;
 
-	if (test_installed_services()) {
+	if (test_installed_services ()) {
 		gchar buffer[128] = "eds-source-XXXXXX";
 		gint  fd;
 
@@ -228,9 +229,10 @@ generate_source_name (void)
 		source_name = g_strdup (buffer);
 
 	} else {
-		source_name = g_strdup_printf ("%s-%d",
-					       ADDRESS_BOOK_SOURCE_UID,
-					       global_test_source_id++);
+		source_name = g_strdup_printf (
+			"%s-%d",
+			ADDRESS_BOOK_SOURCE_UID,
+			global_test_source_id++);
 	}
 
 	return source_name;
@@ -532,10 +534,10 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
                            gconstpointer user_data)
 {
 	ETestServerClosure *closure = (ETestServerClosure *) user_data;
-	FixturePair         pair    = { fixture, closure };
+	FixturePair         pair = { fixture, closure };
 
 	/* Create work directory */
-	if (!test_installed_services())
+	if (!test_installed_services ())
 		g_assert (g_mkdir_with_parents (EDS_TEST_WORK_DIR, 0755) == 0);
 
 	/* Init refs */
@@ -655,7 +657,6 @@ e_test_server_utils_teardown (ETestServerFixture *fixture,
 	g_weak_ref_clear (&fixture->registry_ref);
 	g_weak_ref_clear (&fixture->client_ref);
 
-
 	if (!test_installed_services ()) {
 #if !GLOBAL_DBUS_DAEMON
 		/* Teardown the D-Bus Daemon
@@ -702,7 +703,7 @@ e_test_server_utils_run_full (ETestServerFlags flags)
 	gint tests_ret;
 
 	/* Cleanup work directory */
-	if (!test_installed_services()) {
+	if (!test_installed_services ()) {
 
 		if ((flags & E_TEST_SERVER_KEEP_WORK_DIRECTORY) == 0)
 			delete_work_directory ();

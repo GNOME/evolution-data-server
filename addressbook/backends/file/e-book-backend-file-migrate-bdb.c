@@ -307,9 +307,9 @@ e_book_backend_file_maybe_upgrade_db (DB *db)
 
 static gboolean
 migrate_bdb_to_sqlite (EBookSqlite *sqlitedb,
-		       DB *db,
-		       GCancellable *cancellable,
-		       GError **error)
+                       DB *db,
+                       GCancellable *cancellable,
+                       GError **error)
 {
 	DBC            *dbc;
 	DBT             id_dbt, vcard_dbt;
@@ -395,7 +395,7 @@ gboolean
 e_book_backend_file_migrate_bdb (EBookSqlite *sqlitedb,
                                  const gchar *dirname,
                                  const gchar *filename,
-				 GCancellable *cancellable,
+                                 GCancellable *cancellable,
                                  GError **error)
 {
 	DB        *db = NULL;

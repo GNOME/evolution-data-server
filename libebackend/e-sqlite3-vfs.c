@@ -141,18 +141,18 @@ sync_push_request_timeout (gpointer user_data)
 	return FALSE;
 }
 
-#define def_subclassed(_nm, _params, _call)			\
-static gint							\
-e_sqlite3_file_ ## _nm _params				\
-{								\
-	ESqlite3File *cFile;				\
-								\
-	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR);	\
-	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR);	\
-								\
-	cFile = (ESqlite3File *) pFile;		\
-	g_return_val_if_fail (cFile->old_vfs_file->pMethods != NULL, SQLITE_ERROR);	\
-	return cFile->old_vfs_file->pMethods->_nm _call;	\
+#define def_subclassed(_nm, _params, _call) \
+static gint \
+e_sqlite3_file_ ## _nm _params \
+{ \
+	ESqlite3File *cFile; \
+ \
+	g_return_val_if_fail (old_vfs != NULL, SQLITE_ERROR); \
+	g_return_val_if_fail (pFile != NULL, SQLITE_ERROR); \
+ \
+	cFile = (ESqlite3File *) pFile; \
+	g_return_val_if_fail (cFile->old_vfs_file->pMethods != NULL, SQLITE_ERROR); \
+	return cFile->old_vfs_file->pMethods->_nm _call; \
 }
 
 def_subclassed (xRead, (sqlite3_file *pFile, gpointer pBuf, gint iAmt, sqlite3_int64 iOfst), (cFile->old_vfs_file, pBuf, iAmt, iOfst))

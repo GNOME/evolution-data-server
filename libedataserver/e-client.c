@@ -27,7 +27,6 @@
  *      and kill e-client-private.h.  Would simplify things.  --mbarnes
  */
 
-
 /**
  * SECTION: e-client
  * @include: libedataserver/libedataserver.h

@@ -575,17 +575,17 @@ matches_status (ECalComponent *comp ,const gchar *str)
 			return TRUE;
 	else if (g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)
 			return TRUE;
-	else if (g_str_equal (str, "IN PROGRESS")  && status == ICAL_STATUS_INPROCESS)
+	else if (g_str_equal (str, "IN PROGRESS") && status == ICAL_STATUS_INPROCESS)
 			return TRUE;
-	else if (g_str_equal (str, "NEEDS ACTION")  && status == ICAL_STATUS_NEEDSACTION)
+	else if (g_str_equal (str, "NEEDS ACTION") && status == ICAL_STATUS_NEEDSACTION)
 			return TRUE;
-	else if (g_str_equal (str, "TENTATIVE")  && status == ICAL_STATUS_TENTATIVE)
+	else if (g_str_equal (str, "TENTATIVE") && status == ICAL_STATUS_TENTATIVE)
 			return TRUE;
-	else if (g_str_equal (str, "CONFIRMED")  && status == ICAL_STATUS_CONFIRMED)
+	else if (g_str_equal (str, "CONFIRMED") && status == ICAL_STATUS_CONFIRMED)
 			return TRUE;
-	else if (g_str_equal (str, "DRAFT")  && status == ICAL_STATUS_DRAFT)
+	else if (g_str_equal (str, "DRAFT") && status == ICAL_STATUS_DRAFT)
 			return TRUE;
-	else if (g_str_equal (str, "FINAL")  && status == ICAL_STATUS_FINAL)
+	else if (g_str_equal (str, "FINAL") && status == ICAL_STATUS_FINAL)
 			return TRUE;
 
 	return FALSE;

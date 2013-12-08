@@ -72,8 +72,8 @@
 
 G_BEGIN_DECLS
 
-typedef struct _EBookClient        EBookClient;
-typedef struct _EBookClientClass   EBookClientClass;
+typedef struct _EBookClient EBookClient;
+typedef struct _EBookClientClass EBookClientClass;
 typedef struct _EBookClientPrivate EBookClientPrivate;
 
 /**
@@ -112,8 +112,8 @@ void		e_book_client_connect		(ESource *source,
 						 gpointer user_data);
 EClient *	e_book_client_connect_finish	(GAsyncResult *result,
 						 GError **error);
-EClient *       e_book_client_connect_direct_sync
-                                                (ESourceRegistry *registry,
+EClient *	e_book_client_connect_direct_sync
+						(ESourceRegistry *registry,
 						 ESource *source,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -122,7 +122,7 @@ void		e_book_client_connect_direct	(ESource *source,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 EClient *	e_book_client_connect_direct_finish
-                                                (GAsyncResult *result,
+						(GAsyncResult *result,
 						 GError **error);
 gboolean	e_book_client_get_self		(ESourceRegistry *registry,
 						 EContact **out_contact,
@@ -313,8 +313,7 @@ gboolean	e_book_client_get_cursor_sync	(EBookClient *client,
 						 EBookClientCursor **out_cursor,
 						 GCancellable *cancellable,
 						 GError **error);
-const gchar    *e_book_client_get_locale        (EBookClient *client);
-
+const gchar *	e_book_client_get_locale	(EBookClient *client);
 
 #ifndef EDS_DISABLE_DEPRECATED
 /**

@@ -825,7 +825,7 @@ camel_key_table_set_data (CamelKeyTable *ki,
 	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), FALSE);
 	g_return_val_if_fail (keyid != 0, FALSE);
 
-	blockid =  keyid & (~(CAMEL_BLOCK_SIZE - 1));
+	blockid = keyid & (~(CAMEL_BLOCK_SIZE - 1));
 	index = keyid & (CAMEL_BLOCK_SIZE - 1);
 
 	bl = camel_block_file_get_block (ki->blocks, blockid);
@@ -862,7 +862,7 @@ camel_key_table_set_flags (CamelKeyTable *ki,
 	g_return_val_if_fail (CAMEL_IS_KEY_TABLE (ki), FALSE);
 	g_return_val_if_fail (keyid != 0, FALSE);
 
-	blockid =  keyid & (~(CAMEL_BLOCK_SIZE - 1));
+	blockid = keyid & (~(CAMEL_BLOCK_SIZE - 1));
 	index = keyid & (CAMEL_BLOCK_SIZE - 1);
 
 	bl = camel_block_file_get_block (ki->blocks, blockid);
@@ -910,7 +910,7 @@ camel_key_table_lookup (CamelKeyTable *ki,
 	if (flags)
 		*flags = 0;
 
-	blockid =  keyid & (~(CAMEL_BLOCK_SIZE - 1));
+	blockid = keyid & (~(CAMEL_BLOCK_SIZE - 1));
 	index = keyid & (CAMEL_BLOCK_SIZE - 1);
 
 	bl = camel_block_file_get_block (ki->blocks, blockid);
@@ -982,7 +982,7 @@ camel_key_table_next (CamelKeyTable *ki,
 		next++;
 
 	do {
-		blockid =  next & (~(CAMEL_BLOCK_SIZE - 1));
+		blockid = next & (~(CAMEL_BLOCK_SIZE - 1));
 		index = next & (CAMEL_BLOCK_SIZE - 1);
 
 		bl = camel_block_file_get_block (ki->blocks, blockid);

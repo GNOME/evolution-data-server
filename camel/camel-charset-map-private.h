@@ -11136,7 +11136,7 @@ static const struct {
 };
 
 #define charset_mask(x) \
-	(camel_charmap[(x) >> 8].bits0 ? camel_charmap[(x) >> 8].bits0[(x) & 0xff] << 0 : 0)	\
-	| (camel_charmap[(x) >> 8].bits1 ? camel_charmap[(x) >> 8].bits1[(x) & 0xff] << 8 : 0)	\
+	(camel_charmap[(x) >> 8].bits0 ? camel_charmap[(x) >> 8].bits0[(x) & 0xff] << 0 : 0) \
+	| (camel_charmap[(x) >> 8].bits1 ? camel_charmap[(x) >> 8].bits1[(x) & 0xff] << 8 : 0) \
 	| (camel_charmap[(x) >> 8].bits2 ? camel_charmap[(x) >> 8].bits2[(x) & 0xff] << 16 : 0)
 

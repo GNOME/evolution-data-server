@@ -61,6 +61,10 @@
 
 #include "e-book-backend-sexp.h"
 
+#define E_BOOK_SQLITE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_SQLITE, EBookSqlitePrivate))
+
 /******************************************************
  *                 Debugging Macros                   *
  ******************************************************
@@ -115,7 +119,7 @@ ebsql_init_debug (void)
 		env_string = g_getenv (EBSQL_ENV_DEBUG);
 
 		if (env_string != NULL)
-			ebsql_debug_flags = 
+			ebsql_debug_flags =
 				g_parse_debug_string (
 					env_string,
 					ebsql_debug_keys,
@@ -123,70 +127,70 @@ ebsql_init_debug (void)
 	}
 }
 
-#define EBSQL_NOTE(type,action)					\
-	G_STMT_START {						\
-		if (ebsql_debug_flags & EBSQL_DEBUG_##type)	\
-			{ action; };				\
+#define EBSQL_NOTE(type,action) \
+	G_STMT_START { \
+		if (ebsql_debug_flags & EBSQL_DEBUG_##type) \
+			{ action; }; \
 	} G_STMT_END
 
-#define EBSQL_ERROR_STR(code)						\
-	((code) == E_BOOK_SQLITE_ERROR_ENGINE            ? "engine" :	\
-	 (code) == E_BOOK_SQLITE_ERROR_CONSTRAINT        ? "constraint" : \
+#define EBSQL_ERROR_STR(code) \
+	((code) == E_BOOK_SQLITE_ERROR_ENGINE ? "engine" : \
+	 (code) == E_BOOK_SQLITE_ERROR_CONSTRAINT ? "constraint" : \
 	 (code) == E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND ? "contact not found" : \
-	 (code) == E_BOOK_SQLITE_ERROR_INVALID_QUERY     ? "invalid query" : \
+	 (code) == E_BOOK_SQLITE_ERROR_INVALID_QUERY ? "invalid query" : \
 	 (code) == E_BOOK_SQLITE_ERROR_UNSUPPORTED_QUERY ? "unsupported query" : \
 	 (code) == E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD ? "unsupported field" : \
-	 (code) == E_BOOK_SQLITE_ERROR_END_OF_LIST       ? "end of list" : \
-	 (code) == E_BOOK_SQLITE_ERROR_LOAD              ? "load" : "(unknown)")
+	 (code) == E_BOOK_SQLITE_ERROR_END_OF_LIST ? "end of list" : \
+	 (code) == E_BOOK_SQLITE_ERROR_LOAD ? "load" : "(unknown)")
 
-#define EBSQL_ORIGIN_STR(origin)					\
-	((origin) == EBSQL_CURSOR_ORIGIN_CURRENT ? "current" :		\
-	 (origin) == EBSQL_CURSOR_ORIGIN_BEGIN   ? "begin" :		\
-	 (origin) == EBSQL_CURSOR_ORIGIN_END     ? "end" : "(invalid)")
+#define EBSQL_ORIGIN_STR(origin) \
+	((origin) == EBSQL_CURSOR_ORIGIN_CURRENT ? "current" : \
+	 (origin) == EBSQL_CURSOR_ORIGIN_BEGIN ? "begin" : \
+	 (origin) == EBSQL_CURSOR_ORIGIN_END ? "end" : "(invalid)")
 
-#define EBSQL_LOCK_MUTEX(mutex)						\
-	G_STMT_START {							\
-		if (ebsql_debug_flags & EBSQL_DEBUG_LOCKS) {		\
+#define EBSQL_LOCK_MUTEX(mutex) \
+	G_STMT_START { \
+		if (ebsql_debug_flags & EBSQL_DEBUG_LOCKS) { \
 			g_printerr ("%s: Locking %s\n", G_STRFUNC, #mutex); \
-			g_mutex_lock (mutex);				\
+			g_mutex_lock (mutex); \
 			g_printerr ("%s: Locked %s\n", G_STRFUNC, #mutex); \
-		} else {						\
-			g_mutex_lock (mutex);				\
-		}							\
+		} else { \
+			g_mutex_lock (mutex); \
+		} \
 	} G_STMT_END
 
-#define EBSQL_UNLOCK_MUTEX(mutex)					\
-	G_STMT_START {							\
-		if (ebsql_debug_flags & EBSQL_DEBUG_LOCKS) {		\
+#define EBSQL_UNLOCK_MUTEX(mutex) \
+	G_STMT_START { \
+		if (ebsql_debug_flags & EBSQL_DEBUG_LOCKS) { \
 			g_printerr ("%s: Unlocking %s\n", G_STRFUNC, #mutex); \
-			g_mutex_unlock (mutex);				\
-			g_printerr ("%s: Unlocked %s\n", G_STRFUNC, #mutex);	\
-		} else {						\
-			g_mutex_unlock (mutex);				\
-		}							\
+			g_mutex_unlock (mutex); \
+			g_printerr ("%s: Unlocked %s\n", G_STRFUNC, #mutex); \
+		} else { \
+			g_mutex_unlock (mutex); \
+		} \
 	} G_STMT_END
 
 /* Format strings are passed through dgettext(), need to be reformatted */
-#define EBSQL_SET_ERROR(error, code, fmt, args...)			\
-	G_STMT_START {							\
-		if (ebsql_debug_flags & EBSQL_DEBUG_ERRORS) {		\
-			gchar *format = g_strdup_printf (		\
-				"ERR [%%s]: Set error code '%%s': %s\n", fmt);	\
-			g_printerr (format, G_STRFUNC,			\
-				    EBSQL_ERROR_STR (code), ## args);	\
-			g_free (format);				\
-		}							\
+#define EBSQL_SET_ERROR(error, code, fmt, args...) \
+	G_STMT_START { \
+		if (ebsql_debug_flags & EBSQL_DEBUG_ERRORS) { \
+			gchar *format = g_strdup_printf ( \
+				"ERR [%%s]: Set error code '%%s': %s\n", fmt); \
+			g_printerr (format, G_STRFUNC, \
+				    EBSQL_ERROR_STR (code), ## args); \
+			g_free (format); \
+		} \
 		g_set_error (error, E_BOOK_SQLITE_ERROR, code, fmt, ## args); \
 	} G_STMT_END
 
-#define EBSQL_SET_ERROR_LITERAL(error, code, detail)			\
-	G_STMT_START {							\
-		if (ebsql_debug_flags & EBSQL_DEBUG_ERRORS) {		\
-			g_printerr ("ERR [%s]: "			\
-				    "Set error code %s: %s\n",		\
-				    G_STRFUNC,				\
-				    EBSQL_ERROR_STR (code), detail);	\
-		}							\
+#define EBSQL_SET_ERROR_LITERAL(error, code, detail) \
+	G_STMT_START { \
+		if (ebsql_debug_flags & EBSQL_DEBUG_ERRORS) { \
+			g_printerr ("ERR [%s]: " \
+				    "Set error code %s: %s\n", \
+				    G_STRFUNC, \
+				    EBSQL_ERROR_STR (code), detail); \
+		} \
 		g_set_error_literal (error, E_BOOK_SQLITE_ERROR, code, detail); \
 	} G_STMT_END
 
@@ -203,42 +207,42 @@ ebsql_init_debug (void)
  * If the check fails, the lock is released and then
  * @val is returned.
  */
-#define EBSQL_LOCK_OR_RETURN(ebsql, cancellable, val)			\
-	G_STMT_START {							\
-		EBSQL_LOCK_MUTEX (&(ebsql)->priv->lock);		\
-		if (cancellable != NULL &&				\
-		    (ebsql)->priv->cancel != cancellable) {		\
-			g_warning ("The GCancellable passed to `%s' "	\
+#define EBSQL_LOCK_OR_RETURN(ebsql, cancellable, val) \
+	G_STMT_START { \
+		EBSQL_LOCK_MUTEX (&(ebsql)->priv->lock); \
+		if (cancellable != NULL && \
+		    (ebsql)->priv->cancel != cancellable) { \
+			g_warning ("The GCancellable passed to `%s' " \
 				   "is not the same as the cancel object " \
-				   "passed to e_book_sqlite_lock()",	\
-				   G_STRFUNC);				\
-			EBSQL_UNLOCK_MUTEX (&(ebsql)->priv->lock);	\
-			return val;					\
-		}							\
+				   "passed to e_book_sqlite_lock()", \
+				   G_STRFUNC); \
+			EBSQL_UNLOCK_MUTEX (&(ebsql)->priv->lock); \
+			return val; \
+		} \
 	} G_STMT_END
 
 /* Set an error code from an sqlite_exec() or sqlite_step() return value & error message */
-#define EBSQL_SET_ERROR_FROM_SQLITE(error, code, message)		\
-	G_STMT_START {							\
-		if (code == SQLITE_CONSTRAINT) {			\
-			EBSQL_SET_ERROR_LITERAL (error,			\
+#define EBSQL_SET_ERROR_FROM_SQLITE(error, code, message) \
+	G_STMT_START { \
+		if (code == SQLITE_CONSTRAINT) { \
+			EBSQL_SET_ERROR_LITERAL (error, \
 						 E_BOOK_SQLITE_ERROR_CONSTRAINT, \
-						 errmsg);		\
-		} else if (code == SQLITE_ABORT) {			\
-			if (ebsql_debug_flags & EBSQL_DEBUG_ERRORS) {	\
+						 errmsg); \
+		} else if (code == SQLITE_ABORT) { \
+			if (ebsql_debug_flags & EBSQL_DEBUG_ERRORS) { \
 				g_printerr ("ERR [%s]: Set cancelled error\n", \
-					    G_STRFUNC);			\
-			}						\
-			g_set_error (error,				\
-				     G_IO_ERROR,			\
-				     G_IO_ERROR_CANCELLED,		\
+					    G_STRFUNC); \
+			} \
+			g_set_error (error, \
+				     G_IO_ERROR, \
+				     G_IO_ERROR_CANCELLED, \
 				     "Operation cancelled: %s", errmsg); \
-		} else {						\
-			EBSQL_SET_ERROR (error,				\
-					 E_BOOK_SQLITE_ERROR_ENGINE,	\
-					 "SQLite error code `%d': %s",	\
-					 code, errmsg);			\
-		}							\
+		} else { \
+			EBSQL_SET_ERROR (error, \
+					 E_BOOK_SQLITE_ERROR_ENGINE, \
+					 "SQLite error code `%d': %s", \
+					 code, errmsg); \
+		} \
 	} G_STMT_END
 
 #define FOLDER_VERSION                8
@@ -291,31 +295,31 @@ ebsql_init_debug (void)
 #define INDEX_FLAG(type)  (1 << E_BOOK_INDEX_##type)
 
 /* This macro is used to reffer to vcards in statements */
-#define EBSQL_VCARD_FRAGMENT(ebsql)					\
-	((ebsql)->priv->vcard_callback ?				\
-	 EBSQL_FUNC_FETCH_VCARD " (summary.uid, summary.bdata)" :	\
+#define EBSQL_VCARD_FRAGMENT(ebsql) \
+	((ebsql)->priv->vcard_callback ? \
+	 EBSQL_FUNC_FETCH_VCARD " (summary.uid, summary.bdata)" : \
 	 "summary.vcard")
 
 /* Signatures for some of the SQLite callbacks which we pass around */
-typedef void (* EbSqlCustomFunc)     (sqlite3_context *context,
-				      gint             argc,
-				      sqlite3_value  **argv);
-typedef gint (* EbSqlRowFunc)        (gpointer         ref,
-				      gint             n_cols,
-				      gchar          **cols,
-				      gchar          **names);
+typedef void	(*EbSqlCustomFunc)		(sqlite3_context *context,
+						 gint argc,
+						 sqlite3_value **argv);
+typedef gint	(*EbSqlRowFunc)			(gpointer ref,
+						 gint n_cols,
+						 gchar **cols,
+						 gchar **names);
 
 /* Some forward declarations */
-static gboolean      ebsql_init_statements      (EBookSqlite *ebsql,
+static gboolean		ebsql_init_statements	(EBookSqlite *ebsql,
 						 GError **error);
-static gboolean      ebsql_insert_contact       (EBookSqlite *ebsql,
+static gboolean		ebsql_insert_contact	(EBookSqlite *ebsql,
 						 EbSqlChangeType change_type,
 						 EContact *contact,
 						 const gchar *original_vcard,
 						 const gchar *extra,
 						 gboolean replace,
 						 GError **error);
-static gboolean      ebsql_exec                 (EBookSqlite *ebsql,
+static gboolean		ebsql_exec		(EBookSqlite *ebsql,
 						 const gchar *stmt,
 						 EbSqlRowFunc callback,
 						 gpointer data,
@@ -431,16 +435,16 @@ static EBookIndexType default_index_types[] = {
  ******************************************************/
 static ColumnInfo *
 column_info_new (SummaryField *field,
-		 const gchar  *folderid,
-		 const gchar  *column_suffix,
-		 const gchar  *column_type,
-		 const gchar  *column_extra,
-		 const gchar  *idx_prefix)
+                 const gchar *folderid,
+                 const gchar *column_suffix,
+                 const gchar *column_type,
+                 const gchar *column_extra,
+                 const gchar *idx_prefix)
 {
 	ColumnInfo *info;
 
-	info        = g_slice_new0 (ColumnInfo);
-	info->type  = column_type;
+	info = g_slice_new0 (ColumnInfo);
+	info->type = column_type;
 	info->extra = column_extra;
 
 	if (!info->type) {
@@ -456,23 +460,25 @@ column_info_new (SummaryField *field,
 
 	if (field->type == E_TYPE_CONTACT_ATTR_LIST)
 		/* Attribute lists are on their own table  */
-		info->name = g_strconcat ("value",
-					  column_suffix ? "_" : NULL,
-					  column_suffix,
-					  NULL);
+		info->name = g_strconcat (
+			"value",
+			column_suffix ? "_" : NULL,
+			column_suffix,
+			NULL);
 	else
 		/* Regular fields are named by their 'dbname' */
-		info->name = g_strconcat (field->dbname,
-					  column_suffix ? "_" : NULL,
-					  column_suffix,
-					  NULL);
+		info->name = g_strconcat (
+			field->dbname,
+			column_suffix ? "_" : NULL,
+			column_suffix,
+			NULL);
 
 	if (idx_prefix)
-		info->index = 
-			g_strconcat (idx_prefix,
-				     "_", field->dbname,
-				     "_", folderid,
-				     NULL);
+		info->index = g_strconcat (
+			idx_prefix,
+			"_", field->dbname,
+			"_", folderid,
+			NULL);
 
 	return info;
 }
@@ -489,7 +495,7 @@ column_info_free (ColumnInfo *info)
 
 static gint
 summary_field_array_index (GArray *array,
-			   EContactField field)
+                           EContactField field)
 {
 	gint i;
 
@@ -504,7 +510,7 @@ summary_field_array_index (GArray *array,
 
 static SummaryField *
 summary_field_append (GArray *array,
-		      const gchar *folderid,
+                      const gchar *folderid,
                       EContactField field_id,
                       GError **error)
 {
@@ -514,9 +520,10 @@ summary_field_append (GArray *array,
 	SummaryField new_field = { 0, };
 
 	if (field_id < 1 || field_id >= E_CONTACT_FIELD_LAST) {
-		EBSQL_SET_ERROR (error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
-				 _("Unsupported contact field '%d' specified in summary"),
-				 field_id);
+		EBSQL_SET_ERROR (
+			error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
+			_("Unsupported contact field '%d' specified in summary"),
+			field_id);
 		return NULL;
 	}
 
@@ -546,10 +553,11 @@ summary_field_append (GArray *array,
 	if (type != G_TYPE_STRING &&
 	    type != G_TYPE_BOOLEAN &&
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
-		EBSQL_SET_ERROR (error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
-				 _("Contact field '%s' of type '%s' specified in summary, "
-				   "but only boolean, string and string list field types are supported"),
-				 e_contact_pretty_name (field_id), g_type_name (type));
+		EBSQL_SET_ERROR (
+			error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
+			_("Contact field '%s' of type '%s' specified in summary, "
+			"but only boolean, string and string list field types are supported"),
+			e_contact_pretty_name (field_id), g_type_name (type));
 		return NULL;
 	}
 
@@ -559,9 +567,9 @@ summary_field_append (GArray *array,
 	}
 
 	new_field.field_id = field_id;
-	new_field.dbname   = dbname;
-	new_field.type     = type;
-	new_field.index    = 0;
+	new_field.dbname = dbname;
+	new_field.type = type;
+	new_field.index = 0;
 	g_array_append_val (array, new_field);
 
 	return &g_array_index (array, SummaryField, array->len - 1);
@@ -602,7 +610,7 @@ summary_fields_add_indexes (GArray *array,
 
 static inline gint
 summary_field_get_index (EBookSqlite *ebsql,
-			 EContactField field_id)
+                         EContactField field_id)
 {
 	gint i;
 
@@ -616,7 +624,7 @@ summary_field_get_index (EBookSqlite *ebsql,
 
 static inline SummaryField *
 summary_field_get (EBookSqlite *ebsql,
-		   EContactField field_id)
+                   EContactField field_id)
 {
 	gint index;
 
@@ -629,32 +637,34 @@ summary_field_get (EBookSqlite *ebsql,
 
 static GSList *
 summary_field_list_columns (SummaryField *field,
-			    const gchar *folderid)
+                            const gchar *folderid)
 {
 	GSList *columns = NULL;
 	ColumnInfo *info;
 
 	/* Doesn't hurt to verify a bit more here, this shouldn't happen though */
-	g_return_val_if_fail (field->type == G_TYPE_STRING ||
-			      field->type == G_TYPE_BOOLEAN ||
-			      field->type == E_TYPE_CONTACT_ATTR_LIST,
-			      NULL);
+	g_return_val_if_fail (
+		field->type == G_TYPE_STRING ||
+		field->type == G_TYPE_BOOLEAN ||
+		field->type == E_TYPE_CONTACT_ATTR_LIST,
+		NULL);
 
 	/* Normal / default column */
-	info = column_info_new (field, folderid, NULL, NULL,
-				(field->field_id == E_CONTACT_UID) ? "PRIMARY KEY" : NULL,
-				(field->index & INDEX_FLAG (PREFIX)) != 0 ? "INDEX" : NULL);
+	info = column_info_new (
+		field, folderid, NULL, NULL,
+		(field->field_id == E_CONTACT_UID) ? "PRIMARY KEY" : NULL,
+		(field->index & INDEX_FLAG (PREFIX)) != 0 ? "INDEX" : NULL);
 	columns = g_slist_prepend (columns, info);
 
 	/* Localized column, for storing sort keys */
 	if (field->type == G_TYPE_STRING && (field->index & INDEX_FLAG (SORT_KEY))) {
-		info    = column_info_new (field, folderid, EBSQL_SUFFIX_SORT_KEY, "TEXT", NULL, "SINDEX");
+		info = column_info_new (field, folderid, EBSQL_SUFFIX_SORT_KEY, "TEXT", NULL, "SINDEX");
 		columns = g_slist_prepend (columns, info);
 	}
 
 	/* Suffix match column */
 	if (field->type != G_TYPE_BOOLEAN && (field->index & INDEX_FLAG (SUFFIX)) != 0) {
-		info    = column_info_new (field, folderid, EBSQL_SUFFIX_REVERSE, "TEXT", NULL, "RINDEX");
+		info = column_info_new (field, folderid, EBSQL_SUFFIX_REVERSE, "TEXT", NULL, "RINDEX");
 		columns = g_slist_prepend (columns, info);
 	}
 
@@ -662,11 +672,11 @@ summary_field_list_columns (SummaryField *field,
 	if (field->type != G_TYPE_BOOLEAN && (field->index & INDEX_FLAG (PHONE)) != 0) {
 
 		/* One indexed column for storing the national number */
-		info    = column_info_new (field, folderid, EBSQL_SUFFIX_PHONE, "TEXT", NULL, "PINDEX");
+		info = column_info_new (field, folderid, EBSQL_SUFFIX_PHONE, "TEXT", NULL, "PINDEX");
 		columns = g_slist_prepend (columns, info);
 
 		/* One integer column for storing the country code */
-		info    = column_info_new (field, folderid, EBSQL_SUFFIX_COUNTRY, "INTEGER", "DEFAULT 0", NULL);
+		info = column_info_new (field, folderid, EBSQL_SUFFIX_COUNTRY, "INTEGER", "DEFAULT 0", NULL);
 		columns = g_slist_prepend (columns, info);
 	}
 
@@ -675,7 +685,7 @@ summary_field_list_columns (SummaryField *field,
 
 static void
 summary_fields_array_free (SummaryField *fields,
-			   gint n_fields)
+                           gint n_fields)
 {
 	gint i;
 
@@ -712,7 +722,7 @@ ebsql_ref_from_hash (const gchar *path)
 
 static void
 ebsql_register_to_hash (EBookSqlite *ebsql,
-			const gchar *path)
+                        const gchar *path)
 {
 	if (db_connections == NULL)
 		db_connections = g_hash_table_new_full (
@@ -750,9 +760,9 @@ ebsql_unregister_from_hash (EBookSqlite *ebsql)
 /* For EBSQL_DEBUG_EXPLAIN */
 static gint
 ebsql_debug_query_plan_cb (gpointer ref,
-			   gint n_cols,
-			   gchar **cols,
-			   gchar **name)
+                           gint n_cols,
+                           gchar **cols,
+                           gchar **name)
 {
 	gint i;
 
@@ -769,9 +779,9 @@ ebsql_debug_query_plan_cb (gpointer ref,
 /* Collect a GList of column names in the main summary table */
 static gint
 get_columns_cb (gpointer ref,
-		gint col,
-		gchar **cols,
-		gchar **name)
+                gint col,
+                gchar **cols,
+                gchar **name)
 {
 	GSList **columns = (GSList **) ref;
 	gint i;
@@ -809,9 +819,9 @@ get_string_cb (gpointer ref,
 /* Collect the first integer result */
 static gint
 get_int_cb (gpointer ref,
-	    gint col,
-	    gchar **cols,
-	    gchar **name)
+            gint col,
+            gchar **cols,
+            gchar **name)
 {
 	gint *ret = ref;
 
@@ -847,9 +857,9 @@ get_count_cb (gpointer ref,
 /* Report if there was at least one result */
 static gint
 get_exists_cb (gpointer ref,
-	       gint col,
-	       gchar **cols,
-	       gchar **name)
+               gint col,
+               gchar **cols,
+               gchar **name)
 {
 	gboolean *exists = ref;
 
@@ -860,8 +870,8 @@ get_exists_cb (gpointer ref,
 
 static EbSqlSearchData *
 search_data_from_results (gint ncol,
-			  gchar **cols,
-			  gchar **names)
+                          gchar **cols,
+                          gchar **names)
 {
 	EbSqlSearchData *data = g_slice_new0 (EbSqlSearchData);
 	gint i;
@@ -889,9 +899,9 @@ search_data_from_results (gint ncol,
 
 static gint
 collect_full_results_cb (gpointer ref,
-			 gint ncol,
-			 gchar **cols,
-			 gchar **names)
+                         gint ncol,
+                         gchar **cols,
+                         gchar **names)
 {
 	EbSqlSearchData *data;
 	GSList **vcard_data = ref;
@@ -905,9 +915,9 @@ collect_full_results_cb (gpointer ref,
 
 static gint
 collect_uid_results_cb (gpointer ref,
-			gint ncol,
-			gchar **cols,
-			gchar **names)
+                        gint ncol,
+                        gchar **cols,
+                        gchar **names)
 {
 	GSList **uids = ref;
 
@@ -919,9 +929,9 @@ collect_uid_results_cb (gpointer ref,
 
 static gint
 collect_lean_results_cb (gpointer ref,
-			 gint ncol,
-			 gchar **cols,
-			 gchar **names)
+                         gint ncol,
+                         gchar **cols,
+                         gchar **names)
 {
 	GSList **vcard_data = ref;
 	EbSqlSearchData *search_data = g_slice_new0 (EbSqlSearchData);
@@ -955,8 +965,8 @@ collect_lean_results_cb (gpointer ref,
 
 static void
 ebsql_string_append_vprintf (GString *string,
-			     const gchar *fmt,
-			     va_list args)
+                             const gchar *fmt,
+                             va_list args)
 {
 	gchar *stmt;
 
@@ -972,8 +982,8 @@ ebsql_string_append_vprintf (GString *string,
 
 static void
 ebsql_string_append_printf (GString *string,
-			    const gchar *fmt,
-			    ...)
+                            const gchar *fmt,
+                            ...)
 {
 	va_list args;
 
@@ -990,8 +1000,8 @@ ebsql_string_append_printf (GString *string,
  */
 static void
 ebsql_string_append_column (GString *string,
-			    SummaryField *field,
-			    const gchar *suffix)
+                            SummaryField *field,
+                            const gchar *suffix)
 {
 	if (field->aux_table) {
 		g_string_append (string, field->aux_table_symbolic);
@@ -1009,12 +1019,12 @@ ebsql_string_append_column (GString *string,
 
 static gboolean
 ebsql_exec_vprintf (EBookSqlite *ebsql,
-		    const gchar *fmt,
-		    EbSqlRowFunc callback,
-		    gpointer data,
-		    GCancellable *cancellable,
-		    GError **error,
-		    va_list args)
+                    const gchar *fmt,
+                    EbSqlRowFunc callback,
+                    gpointer data,
+                    GCancellable *cancellable,
+                    GError **error,
+                    va_list args)
 {
 	gboolean success;
 	gchar *stmt;
@@ -1028,12 +1038,12 @@ ebsql_exec_vprintf (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_exec_printf (EBookSqlite *ebsql,
-		   const gchar *fmt,
-		   EbSqlRowFunc callback,
-		   gpointer data,
-		   GCancellable *cancellable,
-		   GError **error,
-		   ...)
+                   const gchar *fmt,
+                   EbSqlRowFunc callback,
+                   gpointer data,
+                   GCancellable *cancellable,
+                   GError **error,
+                   ...)
 {
 	gboolean success;
 	va_list args;
@@ -1047,7 +1057,7 @@ ebsql_exec_printf (EBookSqlite *ebsql,
 
 static inline void
 ebsql_exec_maybe_debug (EBookSqlite *ebsql,
-			const gchar *stmt)
+                        const gchar *stmt)
 {
 	if (ebsql_debug_flags & EBSQL_DEBUG_EXPLAIN &&
 	    strncmp (stmt, "SELECT", 6) == 0) {
@@ -1063,11 +1073,11 @@ ebsql_exec_maybe_debug (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_exec (EBookSqlite *ebsql,
-	    const gchar *stmt,
-	    EbSqlRowFunc callback,
-	    gpointer data,
-	    GCancellable *cancellable,
-	    GError **error)
+            const gchar *stmt,
+            EbSqlRowFunc callback,
+            gpointer data,
+            GCancellable *cancellable,
+            GError **error)
 {
 	gboolean had_cancel;
 	gchar *errmsg = NULL;
@@ -1115,9 +1125,9 @@ ebsql_exec (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_start_transaction (EBookSqlite *ebsql,
-			 EbSqlLockType lock_type,
-			 GCancellable *cancel,
-			 GError **error)
+                         EbSqlLockType lock_type,
+                         GCancellable *cancel,
+                         GError **error)
 {
 	gboolean success = TRUE;
 
@@ -1132,8 +1142,9 @@ ebsql_start_transaction (EBookSqlite *ebsql,
 
 		/* No cancellable should be set at transaction start time */
 		if (ebsql->priv->cancel) {
-			g_warning ("Starting a transaction with a cancellable already set. "
-				   "Clearing previously set cancellable");
+			g_warning (
+				"Starting a transaction with a cancellable already set. "
+				"Clearing previously set cancellable");
 			g_clear_object (&ebsql->priv->cancel);
 		}
 
@@ -1167,9 +1178,10 @@ ebsql_start_transaction (EBookSqlite *ebsql,
 
 		/* Warn about cases where where a read transaction might be upgraded */
 		if (lock_type == EBSQL_LOCK_WRITE && ebsql->priv->lock_type == EBSQL_LOCK_READ)
-			g_warning ("A nested transaction wants to write, "
-				   "but the outermost transaction was started "
-				   "without a writer lock.");
+			g_warning (
+				"A nested transaction wants to write, "
+				"but the outermost transaction was started "
+				"without a writer lock.");
 	}
 
 	return success;
@@ -1177,7 +1189,7 @@ ebsql_start_transaction (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_commit_transaction (EBookSqlite *ebsql,
-			  GError **error)
+                          GError **error)
 {
 	gboolean success = TRUE;
 
@@ -1202,7 +1214,7 @@ ebsql_commit_transaction (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_rollback_transaction (EBookSqlite *ebsql,
-			    GError **error)
+                            GError **error)
 {
 	gboolean success = TRUE;
 
@@ -1226,8 +1238,8 @@ ebsql_rollback_transaction (EBookSqlite *ebsql,
 
 static sqlite3_stmt *
 ebsql_prepare_statement (EBookSqlite *ebsql,
-			 const gchar *stmt_str,
-			 GError **error)
+                         const gchar *stmt_str,
+                         GError **error)
 {
 	sqlite3_stmt *stmt;
 	const gchar *stmt_tail = NULL;
@@ -1237,13 +1249,15 @@ ebsql_prepare_statement (EBookSqlite *ebsql,
 
 	if (ret != SQLITE_OK) {
 		const gchar *errmsg = sqlite3_errmsg (ebsql->priv->db);
-		EBSQL_SET_ERROR_LITERAL (error,
-					 E_BOOK_SQLITE_ERROR_ENGINE,
-					 errmsg);
+		EBSQL_SET_ERROR_LITERAL (
+			error,
+			E_BOOK_SQLITE_ERROR_ENGINE,
+			errmsg);
 	} else if (stmt == NULL) {
-		EBSQL_SET_ERROR_LITERAL (error,
-					 E_BOOK_SQLITE_ERROR_ENGINE,
-					 "Unknown error preparing SQL statement");
+		EBSQL_SET_ERROR_LITERAL (
+			error,
+			E_BOOK_SQLITE_ERROR_ENGINE,
+			"Unknown error preparing SQL statement");
 	}
 
 	if (stmt_tail && stmt_tail[0])
@@ -1257,9 +1271,9 @@ ebsql_prepare_statement (EBookSqlite *ebsql,
  */
 static gboolean
 ebsql_complete_statement (EBookSqlite *ebsql,
-			  sqlite3_stmt *stmt,
-			  gint ret,
-			  GError **error)
+                          sqlite3_stmt *stmt,
+                          gint ret,
+                          GError **error)
 {
 	if (ret == SQLITE_OK)
 		ret = sqlite3_step (stmt);
@@ -1267,7 +1281,7 @@ ebsql_complete_statement (EBookSqlite *ebsql,
 	if (ret != SQLITE_OK && ret != SQLITE_DONE) {
 		const gchar *errmsg = sqlite3_errmsg (ebsql->priv->db);
 		EBSQL_SET_ERROR_FROM_SQLITE (error, ret, errmsg);
-	} 
+	}
 
 	/* Reset / Clear at the end, regardless of error state */
 	sqlite3_reset (stmt);
@@ -1300,16 +1314,17 @@ ebsql_regexp (sqlite3_context *context,
 		regex = g_regex_new (expression, 0, 0, &error);
 
 		if (!regex) {
-			sqlite3_result_error (context,
-					      error ? error->message :
-					      _("Error parsing regular expression"),
-					      -1);
+			sqlite3_result_error (
+				context,
+				error ? error->message :
+				_("Error parsing regular expression"),
+				-1);
 			g_clear_error (&error);
 			return;
 		}
 
 		/* SQLite will take care of freeing the GRegex when we're done with the query */
-		sqlite3_set_auxdata (context, 0, regex, (GDestroyNotify)g_regex_unref);
+		sqlite3_set_auxdata (context, 0, regex, (GDestroyNotify) g_regex_unref);
 	}
 
 	/* Now perform the comparison */
@@ -1325,8 +1340,8 @@ ebsql_regexp (sqlite3_context *context,
 /* Implementation of EBSQL_FUNC_COMPARE_VCARD (fallback for non-summary queries) */
 static void
 ebsql_compare_vcard (sqlite3_context *context,
-		     gint argc,
-		     sqlite3_value **argv)
+                     gint argc,
+                     sqlite3_value **argv)
 {
 	EBookBackendSExp *sexp = NULL;
 	const gchar *text;
@@ -1340,9 +1355,10 @@ ebsql_compare_vcard (sqlite3_context *context,
 		text = (const gchar *) sqlite3_value_text (argv[0]);
 		if (text) {
 			sexp = e_book_backend_sexp_new (text);
-			sqlite3_set_auxdata (context, 0,
-					     sexp,
-					     g_object_unref);
+			sqlite3_set_auxdata (
+				context, 0,
+				sexp,
+				g_object_unref);
 		}
 
 		/* This shouldn't happen, catch invalid sexp in preflight */
@@ -1384,9 +1400,9 @@ ebsql_compare_vcard (sqlite3_context *context,
 
 static void
 ebsql_eqphone (sqlite3_context *context,
-	       gint argc,
-	       sqlite3_value **argv,
-	       EPhoneNumberMatch requested_match)
+               gint argc,
+               sqlite3_value **argv,
+               EPhoneNumberMatch requested_match)
 {
 	EBookSqlite *ebsql = sqlite3_user_data (context);
 	EPhoneNumber *input_phone = NULL, *row_phone = NULL;
@@ -1406,9 +1422,10 @@ ebsql_eqphone (sqlite3_context *context,
 
 			/* SQLite will take care of freeing the EPhoneNumber when we're done with the expression */
 			if (input_phone)
-				sqlite3_set_auxdata (context, 0,
-						     input_phone,
-						     (GDestroyNotify)e_phone_number_free);
+				sqlite3_set_auxdata (
+					context, 0,
+					input_phone,
+					(GDestroyNotify) e_phone_number_free);
 		}
 	}
 
@@ -1443,8 +1460,8 @@ ebsql_eqphone (sqlite3_context *context,
 /* Exact phone number match function: EBSQL_FUNC_EQPHONE_EXACT */
 static void
 ebsql_eqphone_exact (sqlite3_context *context,
-		     gint argc,
-		     sqlite3_value **argv)
+                     gint argc,
+                     sqlite3_value **argv)
 {
 	ebsql_eqphone (context, argc, argv, E_PHONE_NUMBER_MATCH_EXACT);
 }
@@ -1452,8 +1469,8 @@ ebsql_eqphone_exact (sqlite3_context *context,
 /* National phone number match function: EBSQL_FUNC_EQPHONE_NATIONAL */
 static void
 ebsql_eqphone_national (sqlite3_context *context,
-			gint argc,
-			sqlite3_value **argv)
+                        gint argc,
+                        sqlite3_value **argv)
 {
 	ebsql_eqphone (context, argc, argv, E_PHONE_NUMBER_MATCH_NATIONAL);
 }
@@ -1461,8 +1478,8 @@ ebsql_eqphone_national (sqlite3_context *context,
 /* Short phone number match function: EBSQL_FUNC_EQPHONE_SHORT */
 static void
 ebsql_eqphone_short (sqlite3_context *context,
-		     gint argc,
-		     sqlite3_value **argv)
+                     gint argc,
+                     sqlite3_value **argv)
 {
 	ebsql_eqphone (context, argc, argv, E_PHONE_NUMBER_MATCH_SHORT);
 }
@@ -1470,26 +1487,27 @@ ebsql_eqphone_short (sqlite3_context *context,
 /* Implementation of EBSQL_FUNC_FETCH_VCARD (fallback for shallow addressbooks) */
 static void
 ebsql_fetch_vcard (sqlite3_context *context,
-		   gint argc,
-		   sqlite3_value **argv)
+                   gint argc,
+                   sqlite3_value **argv)
 {
 	EBookSqlite *ebsql = sqlite3_user_data (context);
 	const gchar *uid;
 	const gchar *extra;
 	gchar *vcard = NULL;
 
-	uid   = (const gchar *) sqlite3_value_text (argv[0]);
+	uid = (const gchar *) sqlite3_value_text (argv[0]);
 	extra = (const gchar *) sqlite3_value_text (argv[1]);
 
 	/* Call our delegate to generate the vcard */
 	if (ebsql->priv->vcard_callback)
-		vcard = ebsql->priv->vcard_callback (uid,
-						     extra,
-						     ebsql->priv->user_data);
+		vcard = ebsql->priv->vcard_callback (
+			uid, extra, ebsql->priv->user_data);
 
-	EBSQL_NOTE (FETCH_VCARD,
-		    g_printerr ("fetch_vcard (%s, %s) %s",
-				uid, extra, vcard ? "Got VCard" : "No VCard"));
+	EBSQL_NOTE (
+		FETCH_VCARD,
+		g_printerr (
+			"fetch_vcard (%s, %s) %s",
+			uid, extra, vcard ? "Got VCard" : "No VCard"));
 
 	sqlite3_result_text (context, vcard, -1, g_free);
 }
@@ -1518,17 +1536,18 @@ static EbSqlCustomFuncTab ebsql_custom_functions[] = {
  * utilities encode & decode that key).
  */
 static gchar *
-ebsql_encode_vcard_sort_key (const gchar   *sort_key)
+ebsql_encode_vcard_sort_key (const gchar *sort_key)
 {
 	EVCard *vcard = e_vcard_new ();
 	gchar *base64;
 	gchar *encoded;
 
 	/* Encode this otherwise e-vcard messes it up */
-	base64 = g_base64_encode ((const guchar *)sort_key, strlen (sort_key));
-	e_vcard_append_attribute_with_value (vcard,
-					     e_vcard_attribute_new (NULL, EBSQL_VCARD_SORT_KEY),
-					     base64);
+	base64 = g_base64_encode ((const guchar *) sort_key, strlen (sort_key));
+	e_vcard_append_attribute_with_value (
+		vcard,
+		e_vcard_attribute_new (NULL, EBSQL_VCARD_SORT_KEY),
+		base64);
 	encoded = e_vcard_to_string (vcard, EVC_FORMAT_VCARD_30);
 
 	g_free (base64);
@@ -1554,7 +1573,7 @@ ebsql_decode_vcard_sort_key_from_vcard (EVCard *vcard)
 
 		base64 = g_strdup (values->data);
 
-		sort_key = (gchar *)g_base64_decode (base64, &len);
+		sort_key = (gchar *) g_base64_decode (base64, &len);
 		g_free (base64);
 	}
 
@@ -1580,13 +1599,13 @@ typedef struct {
 } EbSqlCollData;
 
 static gint
-ebsql_fallback_collator (gpointer         ref,
-			 gint             len1,
-			 const void      *data1,
-			 gint             len2,
-			 const void      *data2)
+ebsql_fallback_collator (gpointer ref,
+                         gint len1,
+                         gconstpointer data1,
+                         gint len2,
+                         gconstpointer data2)
 {
-	EbSqlCollData *data = (EbSqlCollData *)ref;
+	EbSqlCollData *data = (EbSqlCollData *) ref;
 	EBookSqlitePrivate *priv;
 	EContact *contact1, *contact2;
 	const gchar *str1, *str2;
@@ -1596,8 +1615,8 @@ ebsql_fallback_collator (gpointer         ref,
 
 	priv = data->ebsql->priv;
 
-	str1 = (const gchar *)data1;
-	str2 = (const gchar *)data2;
+	str1 = (const gchar *) data1;
+	str2 = (const gchar *) data2;
 
 	/* Construct 2 contacts (we're comparing vcards) */
 	contact1 = e_contact_new ();
@@ -1638,8 +1657,8 @@ ebsql_fallback_collator (gpointer         ref,
 }
 
 static EbSqlCollData *
-ebsql_coll_data_new (EBookSqlite    *ebsql,
-		     EContactField   field)
+ebsql_coll_data_new (EBookSqlite *ebsql,
+                     EContactField field)
 {
 	EbSqlCollData *data = g_slice_new (EbSqlCollData);
 
@@ -1658,18 +1677,18 @@ ebsql_coll_data_free (EbSqlCollData *data)
 
 /* COLLATE functions are generated on demand only */
 static void
-ebsql_generate_collator (gpointer         ref,
-			 sqlite3         *db,
-			 gint             eTextRep,
-			 const gchar     *coll_name)
+ebsql_generate_collator (gpointer ref,
+                         sqlite3 *db,
+                         gint eTextRep,
+                         const gchar *coll_name)
 {
-	EBookSqlite *ebsql = (EBookSqlite *)ref;
+	EBookSqlite *ebsql = (EBookSqlite *) ref;
 	EbSqlCollData *data;
 	EContactField field;
 	const gchar *field_name;
 
 	field_name = coll_name + strlen (EBSQL_COLLATE_PREFIX);
-	field      = e_contact_field_id (field_name);
+	field = e_contact_field_id (field_name);
 
 	/* This should be caught before reaching here, just an extra check */
 	if (field == 0 || field >= E_CONTACT_FIELD_LAST ||
@@ -1678,10 +1697,11 @@ ebsql_generate_collator (gpointer         ref,
 		return;
 	}
 
-	data  = ebsql_coll_data_new (ebsql, field);
-	sqlite3_create_collation_v2 (db, coll_name, SQLITE_UTF8,
-				     data, ebsql_fallback_collator,
-				     (GDestroyNotify)ebsql_coll_data_free);
+	data = ebsql_coll_data_new (ebsql, field);
+	sqlite3_create_collation_v2 (
+		db, coll_name, SQLITE_UTF8,
+		data, ebsql_fallback_collator,
+		(GDestroyNotify) ebsql_coll_data_free);
 }
 
 /**********************************************************
@@ -1690,12 +1710,13 @@ ebsql_generate_collator (gpointer         ref,
 static gint
 ebsql_check_cancel (gpointer ref)
 {
-	EBookSqlite *ebsql = (EBookSqlite *)ref;
+	EBookSqlite *ebsql = (EBookSqlite *) ref;
 
 	if (ebsql->priv->cancel &&
 	    g_cancellable_is_cancelled (ebsql->priv->cancel)) {
-		EBSQL_NOTE (CANCEL,
-			    g_printerr ("CANCEL: An operation was canceled\n"));
+		EBSQL_NOTE (
+			CANCEL,
+			g_printerr ("CANCEL: An operation was canceled\n"));
 		return -1;
 	}
 
@@ -1720,11 +1741,11 @@ main_table_index_by_name (const gchar *name)
 
 static gint
 check_main_table_columns (gpointer data,
-			  gint n_cols,
-			  gchar **cols,
-			  gchar **name)
+                          gint n_cols,
+                          gchar **cols,
+                          gchar **name)
 {
-	guint *columns_mask = (guint *)data;
+	guint *columns_mask = (guint *) data;
 	gint i;
 
 	for (i = 0; i < n_cols; i++) {
@@ -1744,8 +1765,8 @@ check_main_table_columns (gpointer data,
 
 static gboolean
 ebsql_init_sqlite (EBookSqlite *ebsql,
-		   const gchar *filename,
-		   GError **error)
+                   const gchar *filename,
+                   GError **error)
 {
 	gint ret, i;
 
@@ -1754,10 +1775,11 @@ ebsql_init_sqlite (EBookSqlite *ebsql,
 	ret = sqlite3_open (filename, &ebsql->priv->db);
 
 	/* Handle GCancellable */
-	sqlite3_progress_handler (ebsql->priv->db, 
-				  EBSQL_CANCEL_BATCH_SIZE,
-				  ebsql_check_cancel,
-				  ebsql);
+	sqlite3_progress_handler (
+		ebsql->priv->db,
+		EBSQL_CANCEL_BATCH_SIZE,
+		ebsql_check_cancel,
+		ebsql);
 
 	/* Install our custom functions */
 	for (i = 0; ret == SQLITE_OK && i < G_N_ELEMENTS (ebsql_custom_functions); i++)
@@ -1776,16 +1798,18 @@ ebsql_init_sqlite (EBookSqlite *ebsql,
 
 	if (ret != SQLITE_OK) {
 		if (!ebsql->priv->db) {
-			EBSQL_SET_ERROR_LITERAL (error,
-						 E_BOOK_SQLITE_ERROR_LOAD,
-						 _("Insufficient memory"));
+			EBSQL_SET_ERROR_LITERAL (
+				error,
+				E_BOOK_SQLITE_ERROR_LOAD,
+				_("Insufficient memory"));
 		} else {
 			const gchar *errmsg = sqlite3_errmsg (ebsql->priv->db);
 
-			EBSQL_SET_ERROR (error,
-					 E_BOOK_SQLITE_ERROR_ENGINE,
-					 "Can't open database %s: %s\n",
-					 filename, errmsg);
+			EBSQL_SET_ERROR (
+				error,
+				E_BOOK_SQLITE_ERROR_ENGINE,
+				"Can't open database %s: %s\n",
+				filename, errmsg);
 			sqlite3_close (ebsql->priv->db);
 		}
 		return FALSE;
@@ -1800,7 +1824,7 @@ ebsql_init_sqlite (EBookSqlite *ebsql,
 
 static inline void
 format_column_declaration (GString *string,
-			   ColumnInfo *info)
+                           ColumnInfo *info)
 {
 	g_string_append (string, info->name);
 	g_string_append_c (string, ' ');
@@ -1814,53 +1838,57 @@ format_column_declaration (GString *string,
 }
 
 static inline gboolean
-ensure_column_index (EBookSqlite   *ebsql,
-		     const gchar   *table,
-		     ColumnInfo    *info,
-		     GError       **error)
+ensure_column_index (EBookSqlite *ebsql,
+                     const gchar *table,
+                     ColumnInfo *info,
+                     GError **error)
 {
 	if (!info->index)
 		return TRUE;
 
-	return ebsql_exec_printf (ebsql,
-				  "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)",
-				  NULL, NULL, NULL, error,
-				  info->index, table, info->name);
+	return ebsql_exec_printf (
+		ebsql,
+		"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)",
+		NULL, NULL, NULL, error,
+		info->index, table, info->name);
 }
 
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_resolve_folderid (EBookSqlite *ebsql,
-			gint *previous_schema,
-			gint *already_exists,
-			GError **error)
+                        gint *previous_schema,
+                        gint *already_exists,
+                        GError **error)
 {
 	gint n_folders = 0;
 	gint version = 0;
 	gchar *loaded_folder_id = NULL;
 	gboolean success;
 
-	success = ebsql_exec (ebsql, "SELECT count(*) FROM sqlite_master "
-			      "WHERE type='table' AND name='folders';",
-			      get_count_cb, &n_folders, NULL, error);
+	success = ebsql_exec (
+		ebsql, "SELECT count(*) FROM sqlite_master "
+		"WHERE type='table' AND name='folders';",
+		get_count_cb, &n_folders, NULL, error);
 
 	if (success && n_folders > 1) {
-		EBSQL_SET_ERROR_LITERAL (error,
-					 E_BOOK_SQLITE_ERROR_LOAD,
-					 _("Cannot upgrade contacts database from a legacy "
-					   "database with more than one addressbook. "
-					   "Delete one of the entries in the 'folders' table first."));
+		EBSQL_SET_ERROR_LITERAL (
+			error,
+			E_BOOK_SQLITE_ERROR_LOAD,
+			_("Cannot upgrade contacts database from a legacy "
+			"database with more than one addressbook. "
+			"Delete one of the entries in the 'folders' table first."));
 		success = FALSE;
 	}
 
 	if (success && n_folders == 1)
-		success = ebsql_exec (ebsql, "SELECT folder_id FROM folders LIMIT 1",
-				      get_string_cb, &loaded_folder_id, NULL, error);
+		success = ebsql_exec (
+			ebsql, "SELECT folder_id FROM folders LIMIT 1",
+			get_string_cb, &loaded_folder_id, NULL, error);
 
 	if (success && n_folders == 1)
-		success = ebsql_exec (ebsql, "SELECT version FROM folders LIMIT 1",
-				      get_int_cb, &version, NULL, error);
-
+		success = ebsql_exec (
+			ebsql, "SELECT version FROM folders LIMIT 1",
+			get_int_cb, &version, NULL, error);
 
 	if (success && n_folders == 1) {
 		g_free (ebsql->priv->folderid);
@@ -1871,14 +1899,16 @@ ebsql_resolve_folderid (EBookSqlite *ebsql,
 
 	if (n_folders == 1)
 		*already_exists = TRUE;
-	else	
+	else
 		*already_exists = FALSE;
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: main folder id resolved as '%s', "
-				"already existing tables: %d loaded version: %d (%s)\n",
-				ebsql->priv->folderid, n_folders, version,
-				success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: main folder id resolved as '%s', "
+			"already existing tables: %d loaded version: %d (%s)\n",
+			ebsql->priv->folderid, n_folders, version,
+			success ? "success" : "failed"));
 
 	*previous_schema = version;
 
@@ -1888,8 +1918,8 @@ ebsql_resolve_folderid (EBookSqlite *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_init_folders (EBookSqlite *ebsql,
-		    gint previous_schema,
-		    GError **error)
+                    gint previous_schema,
+                    GError **error)
 {
 	GString *string;
 	guint existing_columns_mask = 0, i;
@@ -1912,9 +1942,10 @@ ebsql_init_folders (EBookSqlite *ebsql,
 
 	/* Check which columns in the main table already exist */
 	if (success)
-		success = ebsql_exec (ebsql, "PRAGMA table_info (folders)",
-				      check_main_table_columns, &existing_columns_mask,
-				      NULL, error);
+		success = ebsql_exec (
+			ebsql, "PRAGMA table_info (folders)",
+			check_main_table_columns, &existing_columns_mask,
+			NULL, error);
 
 	/* Add columns which may be missing */
 	for (i = 0; success && i < G_N_ELEMENTS (main_table_columns); i++) {
@@ -1923,9 +1954,10 @@ ebsql_init_folders (EBookSqlite *ebsql,
 		if ((existing_columns_mask & (1 << i)) != 0)
 			continue;
 
-		success = ebsql_exec_printf (ebsql, "ALTER TABLE folders ADD COLUMN %s %s %s",
-					     NULL, NULL, NULL, error, info->name, info->type,
-					     info->extra ? info->extra : "");
+		success = ebsql_exec_printf (
+			ebsql, "ALTER TABLE folders ADD COLUMN %s %s %s",
+			NULL, NULL, NULL, error, info->name, info->type,
+			info->extra ? info->extra : "");
 	}
 
 	/* Special case upgrade for schema versions 3 & 4.
@@ -1935,7 +1967,7 @@ ebsql_init_folders (EBookSqlite *ebsql,
 	if (success && previous_schema >= 3 && previous_schema < 5) {
 
 		success = ebsql_exec (
-			ebsql, 
+			ebsql,
 			"UPDATE folders SET "
 				"multivalues = REPLACE(RTRIM(REPLACE("
 					"multivalues || ':', ':', "
@@ -1943,19 +1975,22 @@ ebsql_init_folders (EBookSqlite *ebsql,
 						"WHEN 0 THEN ';prefix ' "
 						"ELSE ';prefix;suffix ' "
 					"END)), ' ', ':'), "
-			        "reverse_multivalues = NULL",
+				"reverse_multivalues = NULL",
 			NULL, NULL, NULL, error);
 	}
 
 	/* Finish the eventual upgrade by storing the current schema version.
 	 */
 	if (success && previous_schema >= 1 && previous_schema < FOLDER_VERSION)
-		success = ebsql_exec_printf (ebsql, "UPDATE folders SET version = %d",
-					     NULL, NULL, NULL, error, FOLDER_VERSION);
+		success = ebsql_exec_printf (
+			ebsql, "UPDATE folders SET version = %d",
+			NULL, NULL, NULL, error, FOLDER_VERSION);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Initialized main folders table (%s)\n",
-				success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Initialized main folders table (%s)\n",
+			success ? "success" : "failed"));
 
 	return success;
 }
@@ -1963,27 +1998,31 @@ ebsql_init_folders (EBookSqlite *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_init_keys (EBookSqlite *ebsql,
-		 GError **error)
+                 GError **error)
 {
 	gboolean success;
 
 	/* Create a child table to store key/value pairs for a folder. */
-	success = ebsql_exec (ebsql, 
-			      "CREATE TABLE IF NOT EXISTS keys ("
-			      " key TEXT PRIMARY KEY,"
-			      " value TEXT,"
-			      " folder_id TEXT REFERENCES folders)",
-			      NULL, NULL, NULL, error);
+	success = ebsql_exec (
+		ebsql,
+		"CREATE TABLE IF NOT EXISTS keys ("
+		" key TEXT PRIMARY KEY,"
+		" value TEXT,"
+		" folder_id TEXT REFERENCES folders)",
+		NULL, NULL, NULL, error);
 
 	/* Add an index on the keys */
 	if (success)
-		success = ebsql_exec (ebsql, 
-				      "CREATE INDEX IF NOT EXISTS keysindex ON keys (folder_id)",
-				      NULL, NULL, NULL, error);
+		success = ebsql_exec (
+			ebsql,
+			"CREATE INDEX IF NOT EXISTS keysindex ON keys (folder_id)",
+			NULL, NULL, NULL, error);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Initialized keys table (%s)\n",
-				success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Initialized keys table (%s)\n",
+			success ? "success" : "failed"));
 
 	return success;
 }
@@ -2022,7 +2061,7 @@ format_multivalues (EBookSqlite *ebsql)
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_add_folder (EBookSqlite *ebsql,
-		  GError **error)
+                  GError **error)
 {
 	gboolean success;
 	gchar *multivalues;
@@ -2041,9 +2080,11 @@ ebsql_add_folder (EBookSqlite *ebsql,
 
 	g_free (multivalues);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Added '%s' entry to main folder (%s)\n",
-				ebsql->priv->folderid, success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Added '%s' entry to main folder (%s)\n",
+			ebsql->priv->folderid, success ? "success" : "failed"));
 
 	return success;
 }
@@ -2051,9 +2092,9 @@ ebsql_add_folder (EBookSqlite *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_introspect_summary (EBookSqlite *ebsql,
-			  gint previous_schema,
-			  GSList **introspected_columns,
-			  GError **error)
+                          gint previous_schema,
+                          GSList **introspected_columns,
+                          GError **error)
 {
 	gboolean success;
 	GSList *summary_columns = NULL, *l;
@@ -2091,20 +2132,20 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 		/* Check if we're parsing a reverse field */
 		if ((p = strstr (col, "_" EBSQL_SUFFIX_REVERSE)) != NULL) {
 			computed = INDEX_FLAG (SUFFIX);
-			freeme   = g_strndup (col, p - col);
-			col      = freeme;
+			freeme = g_strndup (col, p - col);
+			col = freeme;
 		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_PHONE)) != NULL) {
 			computed = INDEX_FLAG (PHONE);
-			freeme   = g_strndup (col, p - col);
-			col      = freeme;
+			freeme = g_strndup (col, p - col);
+			col = freeme;
 		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_COUNTRY)) != NULL) {
 			computed = INDEX_FLAG (PHONE);
-			freeme   = g_strndup (col, p - col);
-			col      = freeme;
+			freeme = g_strndup (col, p - col);
+			col = freeme;
 		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_SORT_KEY)) != NULL) {
 			computed = INDEX_FLAG (SORT_KEY);
-			freeme   = g_strndup (col, p - col);
-			col      = freeme;
+			freeme = g_strndup (col, p - col);
+			col = freeme;
 		}
 
 		/* First check exception fields */
@@ -2117,10 +2158,11 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 
 		/* Check for parse error */
 		if (field_id == 0) {
-			EBSQL_SET_ERROR (error,
-					 E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
-					 _("Error introspecting unknown summary field '%s'"),
-					 col);
+			EBSQL_SET_ERROR (
+				error,
+				E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
+				_("Error introspecting unknown summary field '%s'"),
+				col);
 			success = FALSE;
 			g_free (freeme);
 			break;
@@ -2141,8 +2183,9 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 			}
 
 		} else {
-			summary_field_append (summary_fields, ebsql->priv->folderid,
-					      field_id, NULL);
+			summary_field_append (
+				summary_fields, ebsql->priv->folderid,
+				field_id, NULL);
 		}
 
 		g_free (freeme);
@@ -2152,15 +2195,15 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 		goto introspect_summary_finish;
 
 	/* Introspect the multivalied summary fields */
-	success = ebsql_exec_printf (ebsql,
-				     "SELECT multivalues FROM folders "
-				     "WHERE folder_id = %Q",
-				     get_string_cb, &multivalues, NULL, error,
-				     ebsql->priv->folderid);
+	success = ebsql_exec_printf (
+		ebsql,
+		"SELECT multivalues FROM folders "
+		"WHERE folder_id = %Q",
+		get_string_cb, &multivalues, NULL, error,
+		ebsql->priv->folderid);
 
 	if (!success)
 		goto introspect_summary_finish;
-
 
 	if (multivalues) {
 		gchar **fields = g_strsplit (multivalues, ":", 0);
@@ -2170,11 +2213,12 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 			SummaryField *iter;
 			gchar **params;
 
-			params   = g_strsplit (fields[i], ";", 0);
+			params = g_strsplit (fields[i], ";", 0);
 			field_id = e_contact_field_id (params[0]);
-			iter     = summary_field_append (summary_fields,
-							 ebsql->priv->folderid,
-							 field_id, NULL);
+			iter = summary_field_append (
+				summary_fields,
+				ebsql->priv->folderid,
+				field_id, NULL);
 
 			if (iter) {
 				for (j = 1; params[j]; ++j) {
@@ -2220,9 +2264,10 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 				summary_field_remove (summary_fields, E_CONTACT_EMAIL_3);
 				summary_field_remove (summary_fields, E_CONTACT_EMAIL_4);
 
-				summary_field = summary_field_append (summary_fields,
-								      ebsql->priv->folderid,
-								      E_CONTACT_EMAIL, NULL);
+				summary_field = summary_field_append (
+					summary_fields,
+					ebsql->priv->folderid,
+					E_CONTACT_EMAIL, NULL);
 				summary_field->index |= INDEX_FLAG (PREFIX);
 			}
 
@@ -2251,8 +2296,9 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 
 	/* Apply the introspected summary fields */
 	if (success) {
-		summary_fields_array_free (ebsql->priv->summary_fields, 
-					   ebsql->priv->n_summary_fields);
+		summary_fields_array_free (
+			ebsql->priv->summary_fields,
+			ebsql->priv->n_summary_fields);
 
 		ebsql->priv->n_summary_fields = summary_fields->len;
 		ebsql->priv->summary_fields = (SummaryField *) g_array_free (summary_fields, FALSE);
@@ -2264,7 +2310,7 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 
 		/* Properly free the array */
 		n_fields = summary_fields->len;
-		fields   = (SummaryField *)g_array_free (summary_fields, FALSE);
+		fields = (SummaryField *) g_array_free (summary_fields, FALSE);
 		summary_fields_array_free (fields, n_fields);
 
 		g_slist_free_full (summary_columns, (GDestroyNotify) g_free);
@@ -2272,9 +2318,11 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 
 	g_free (multivalues);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Introspected summary (%s)\n",
-				success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Introspected summary (%s)\n",
+			success ? "success" : "failed"));
 
 	return success;
 }
@@ -2282,8 +2330,8 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_init_contacts (EBookSqlite *ebsql,
-		     GSList *introspected_columns,
-		     GError **error)
+                     GSList *introspected_columns,
+                     GError **error)
 {
 	gint i;
 	gboolean success = TRUE;
@@ -2316,9 +2364,10 @@ ebsql_init_contacts (EBookSqlite *ebsql,
 	}
 	g_string_append (string, ", vcard TEXT, bdata TEXT)");
 
-	success = ebsql_exec_printf (ebsql, string->str,
-				     NULL, NULL, NULL, error,
-				     ebsql->priv->folderid);
+	success = ebsql_exec_printf (
+		ebsql, string->str,
+		NULL, NULL, NULL, error,
+		ebsql->priv->folderid);
 
 	g_string_free (string, TRUE);
 
@@ -2333,15 +2382,16 @@ ebsql_init_contacts (EBookSqlite *ebsql,
 			ColumnInfo *info = l->data;
 
 			if (g_slist_find_custom (introspected_columns,
-						 info->name, (GCompareFunc)g_ascii_strcasecmp))
+						 info->name, (GCompareFunc) g_ascii_strcasecmp))
 				continue;
 
-			success = ebsql_exec_printf (ebsql,
-						     "ALTER TABLE %Q ADD COLUMN %s %s %s",
-						     NULL, NULL, NULL, error,
-						     ebsql->priv->folderid,
-						     info->name, info->type,
-						     info->extra ? info->extra : "");
+			success = ebsql_exec_printf (
+				ebsql,
+				"ALTER TABLE %Q ADD COLUMN %s %s %s",
+				NULL, NULL, NULL, error,
+				ebsql->priv->folderid,
+				info->name, info->type,
+				info->extra ? info->extra : "");
 		}
 	}
 
@@ -2353,11 +2403,13 @@ ebsql_init_contacts (EBookSqlite *ebsql,
 		success = ensure_column_index (ebsql, ebsql->priv->folderid, info, error);
 	}
 
-	g_slist_free_full (summary_columns, (GDestroyNotify)column_info_free);
+	g_slist_free_full (summary_columns, (GDestroyNotify) column_info_free);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Initialized summary table '%s' (%s)\n",
-				ebsql->priv->folderid, success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Initialized summary table '%s' (%s)\n",
+			ebsql->priv->folderid, success ? "success" : "failed"));
 
 	return success;
 }
@@ -2365,8 +2417,8 @@ ebsql_init_contacts (EBookSqlite *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_init_aux_tables (EBookSqlite *ebsql,
-		       gint previous_schema,
-		       GError **error)
+                       gint previous_schema,
+                       GError **error)
 {
 	GString *string;
 	gboolean success = TRUE;
@@ -2379,8 +2431,9 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 	 */
 	if (previous_schema >= 1 && previous_schema < 8) {
 		tmp = g_strconcat (ebsql->priv->folderid, "_lists", NULL);
-		success = ebsql_exec_printf (ebsql, "DROP TABLE IF EXISTS %Q",
-					     NULL, NULL, NULL, error, tmp);
+		success = ebsql_exec_printf (
+			ebsql, "DROP TABLE IF EXISTS %Q",
+			NULL, NULL, NULL, error, tmp);
 		g_free (tmp);
 	}
 
@@ -2393,8 +2446,9 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 		aux_columns = summary_field_list_columns (field, ebsql->priv->folderid);
 
 		/* Create the auxiliary table for this multi valued field */
-		string = g_string_sized_new (COLUMN_DEFINITION_BYTES * 3 + 
-					     COLUMN_DEFINITION_BYTES * g_slist_length (aux_columns));
+		string = g_string_sized_new (
+			COLUMN_DEFINITION_BYTES * 3 +
+			COLUMN_DEFINITION_BYTES * g_slist_length (aux_columns));
 
 		g_string_append (string, "CREATE TABLE IF NOT EXISTS %Q (uid TEXT NOT NULL REFERENCES %Q (uid)");
 		for (l = aux_columns; l; l = l->next) {
@@ -2405,10 +2459,10 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 		}
 		g_string_append_c (string, ')');
 
-		success = ebsql_exec_printf (ebsql, string->str, NULL, NULL, NULL, error,
-					     field->aux_table, ebsql->priv->folderid);
+		success = ebsql_exec_printf (
+			ebsql, string->str, NULL, NULL, NULL, error,
+			field->aux_table, ebsql->priv->folderid);
 		g_string_free (string, TRUE);
-
 
 		if (success) {
 
@@ -2420,14 +2474,16 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 			 *
 			 *   DELETE from email_list WHERE email_list.uid = 'contact uid'
 			 */
-			tmp = g_strconcat ("UID_INDEX",
-					   "_", field->dbname,
-					   "_", ebsql->priv->folderid,
-					   NULL);
-			ebsql_exec_printf (ebsql,
-					   "CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)",
-					   NULL, NULL, NULL, error,
-					   tmp, field->aux_table, "uid");
+			tmp = g_strconcat (
+				"UID_INDEX",
+				"_", field->dbname,
+				"_", ebsql->priv->folderid,
+				NULL);
+			ebsql_exec_printf (
+				ebsql,
+				"CREATE INDEX IF NOT EXISTS %Q ON %Q (%s)",
+				NULL, NULL, NULL, error,
+				tmp, field->aux_table, "uid");
 			g_free (tmp);
 		}
 
@@ -2439,25 +2495,29 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 			success = ensure_column_index (ebsql, field->aux_table, info, error);
 		}
 
-		g_slist_free_full (aux_columns, (GDestroyNotify)column_info_free);
+		g_slist_free_full (aux_columns, (GDestroyNotify) column_info_free);
 
-		EBSQL_NOTE (SCHEMA,
-			    g_printerr ("SCHEMA: Initialized auxiliary table '%s'\n",
-					field->aux_table));
+		EBSQL_NOTE (
+			SCHEMA,
+			g_printerr (
+				"SCHEMA: Initialized auxiliary table '%s'\n",
+				field->aux_table));
 	}
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Initialized auxiliary tables (%s)\n",
-				success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Initialized auxiliary tables (%s)\n",
+			success ? "success" : "failed"));
 
 	return success;
 }
 
 static gboolean
-ebsql_upgrade_one (EBookSqlite          *ebsql,
-		   EbSqlChangeType       change_type,
-		   EbSqlSearchData      *result,
-		   GError              **error)
+ebsql_upgrade_one (EBookSqlite *ebsql,
+                   EbSqlChangeType change_type,
+                   EbSqlSearchData *result,
+                   GError **error)
 {
 	EContact *contact = NULL;
 	gboolean success;
@@ -2475,12 +2535,10 @@ ebsql_upgrade_one (EBookSqlite          *ebsql,
 	if (contact == NULL)
 		return TRUE;
 
-	success = ebsql_insert_contact (ebsql,
-					change_type,
-					contact,
-					result->vcard,
-					result->extra, TRUE,
-					error);
+	success = ebsql_insert_contact (
+		ebsql, change_type, contact,
+		result->vcard, result->extra,
+		TRUE, error);
 
 	g_object_unref (contact);
 
@@ -2489,9 +2547,9 @@ ebsql_upgrade_one (EBookSqlite          *ebsql,
 
 /* Called with the lock held and inside a transaction */
 static gboolean
-ebsql_upgrade (EBookSqlite          *ebsql,
-	       EbSqlChangeType       change_type,
-	       GError              **error)
+ebsql_upgrade (EBookSqlite *ebsql,
+               EbSqlChangeType change_type,
+               GError **error)
 {
 	gchar *uid = NULL;
 	gint n_results;
@@ -2524,10 +2582,11 @@ ebsql_upgrade (EBookSqlite          *ebsql,
 		batch = g_slist_reverse (batch);
 		for (l = batch; success && l; l = l->next) {
 			result = l->data;
-			success = ebsql_upgrade_one (ebsql,
-						     change_type,
-						     result,
-						     error);
+			success = ebsql_upgrade_one (
+				ebsql,
+				change_type,
+				result,
+				error);
 		}
 
 		/* result is now the last one in the list */
@@ -2538,7 +2597,7 @@ ebsql_upgrade (EBookSqlite          *ebsql,
 		}
 
 		n_results = g_slist_length (batch);
- 		g_slist_free_full (batch, (GDestroyNotify)e_book_sqlite_search_data_free);
+		g_slist_free_full (batch, (GDestroyNotify) e_book_sqlite_search_data_free);
 
 	} while (success && n_results == EBSQL_UPGRADE_BATCH_SIZE);
 
@@ -2561,9 +2620,9 @@ ebsql_upgrade (EBookSqlite          *ebsql,
 }
 
 static gboolean
-ebsql_set_locale_internal (EBookSqlite   *ebsql,
-			   const gchar   *locale,
-			   GError       **error)
+ebsql_set_locale_internal (EBookSqlite *ebsql,
+                           const gchar *locale,
+                           GError **error)
 {
 	EBookSqlitePrivate *priv = ebsql->priv;
 	ECollator *collator;
@@ -2573,10 +2632,9 @@ ebsql_set_locale_internal (EBookSqlite   *ebsql,
 	if (g_strcmp0 (priv->locale, locale) != 0) {
 		gchar *country_code = NULL;
 
-		collator = e_collator_new_interpret_country (locale,
-							     &country_code,
-							     error);
-		if (!collator)
+		collator = e_collator_new_interpret_country (
+			locale, &country_code, error);
+		if (collator == NULL)
 			return FALSE;
 
 		/* Assign region code parsed from the locale by ICU */
@@ -2599,8 +2657,8 @@ ebsql_set_locale_internal (EBookSqlite   *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_init_is_populated (EBookSqlite *ebsql,
-			 gint previous_schema,
-			 GError **error)
+                         gint previous_schema,
+                         GError **error)
 {
 	gboolean success = TRUE;
 
@@ -2632,9 +2690,9 @@ ebsql_init_is_populated (EBookSqlite *ebsql,
 /* Called with the lock held and inside a transaction */
 static gboolean
 ebsql_init_locale (EBookSqlite *ebsql,
-		   gint previous_schema,
-		   gboolean already_exists,
-		   GError **error)
+                   gint previous_schema,
+                   gboolean already_exists,
+                   GError **error)
 {
 	gchar *stored_lc_collate = NULL;
 	gchar *stored_region_code = NULL;
@@ -2688,9 +2746,11 @@ ebsql_init_locale (EBookSqlite *ebsql,
 	if (success && relocalize_needed)
 		success = ebsql_upgrade (ebsql, EBSQL_CHANGE_LAST, error);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Initialized locale as '%s' (%s)\n",
-				ebsql->priv->locale, success ? "success" : "failed"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: Initialized locale as '%s' (%s)\n",
+			ebsql->priv->locale, success ? "success" : "failed"));
 
 	g_free (stored_region_code);
 	g_free (stored_lc_collate);
@@ -2700,14 +2760,14 @@ ebsql_init_locale (EBookSqlite *ebsql,
 
 static EBookSqlite *
 ebsql_new_internal (const gchar *path,
-		    EbSqlVCardCallback vcard_callback,
-		    EbSqlChangeCallback change_callback,
-		    gpointer user_data,
-		    GDestroyNotify user_data_destroy,
-		    SummaryField *fields,
-		    gint n_fields,
-		    GCancellable *cancellable,
-		    GError **error)
+                    EbSqlVCardCallback vcard_callback,
+                    EbSqlChangeCallback change_callback,
+                    gpointer user_data,
+                    GDestroyNotify user_data_destroy,
+                    SummaryField *fields,
+                    gint n_fields,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	EBookSqlite *ebsql;
 	gchar *dirname = NULL;
@@ -2720,8 +2780,9 @@ ebsql_new_internal (const gchar *path,
 
 	EBSQL_LOCK_MUTEX (&dbcon_lock);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: Creating new EBookSqlite at path '%s'\n", path));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr ("SCHEMA: Creating new EBookSqlite at path '%s'\n", path));
 
 	ebsql = ebsql_ref_from_hash (path);
 	if (ebsql) {
@@ -2744,10 +2805,11 @@ ebsql_new_internal (const gchar *path,
 	/* Ensure existance of the directories leading up to 'path' */
 	dirname = g_path_get_dirname (path);
 	if (g_mkdir_with_parents (dirname, 0777) < 0) {
-		EBSQL_SET_ERROR (error,
-				 E_BOOK_SQLITE_ERROR_LOAD,
-				 "Can not make parent directory: %s",
-			     g_strerror (errno));
+		EBSQL_SET_ERROR (
+			error,
+			E_BOOK_SQLITE_ERROR_LOAD,
+			"Can not make parent directory: %s",
+			g_strerror (errno));
 		success = FALSE;
 		goto exit;
 	}
@@ -2778,10 +2840,11 @@ ebsql_new_internal (const gchar *path,
 	 * the schema.
 	 */
 	if (success)
-		success = ebsql_resolve_folderid (ebsql,
-						  &previous_schema,
-						  &already_exists,
-						  error);
+		success = ebsql_resolve_folderid (
+			ebsql,
+			&previous_schema,
+			&already_exists,
+			error);
 
 	/* Initialize main folders table, also retrieve the current
 	 * schema version if the table already exists
@@ -2807,18 +2870,20 @@ ebsql_new_internal (const gchar *path,
 	 * Some summary fields are also adjusted for schema upgrades
 	 */
 	if (success && already_exists)
-		success = ebsql_introspect_summary (ebsql,
-						    previous_schema,
-						    &introspected_columns,
-						    error);
+		success = ebsql_introspect_summary (
+			ebsql,
+			previous_schema,
+			&introspected_columns,
+			error);
 
 	/* Add the contacts table, ensure the right columns are defined
 	 * to handle our summary configuration
 	 */
 	if (success)
-		success = ebsql_init_contacts (ebsql,
-					       introspected_columns,
-					       error);
+		success = ebsql_init_contacts (
+			ebsql,
+			introspected_columns,
+			error);
 
 	/* Add any auxiliary tables which we might need to support our
 	 * summary configuration.
@@ -2836,7 +2901,6 @@ ebsql_new_internal (const gchar *path,
 	if (success)
 		success = ebsql_init_statements (ebsql, error);
 
-
 	/* When porting from older schemas, we need to port the old 'is-populated' flag */
 	if (success)
 		success = ebsql_init_is_populated (ebsql, previous_schema, error);
@@ -2849,8 +2913,9 @@ ebsql_new_internal (const gchar *path,
 	 * for this.
 	 */
 	if (success)
-		success = ebsql_init_locale (ebsql, previous_schema,
-					     already_exists, error);
+		success = ebsql_init_locale (
+			ebsql, previous_schema,
+			already_exists, error);
 
 	if (success)
 		success = ebsql_commit_transaction (ebsql, error);
@@ -2875,9 +2940,11 @@ ebsql_new_internal (const gchar *path,
 	if (!success)
 		g_clear_object (&ebsql);
 
-	EBSQL_NOTE (SCHEMA,
-		    g_printerr ("SCHEMA: %s the new EBookSqlite\n",
-		    success ? "Successfully created" : "Failed to create"));
+	EBSQL_NOTE (
+		SCHEMA,
+		g_printerr (
+			"SCHEMA: %s the new EBookSqlite\n",
+			success ? "Successfully created" : "Failed to create"));
 
 	g_slist_free_full (introspected_columns, (GDestroyNotify) g_free);
 	g_free (dirname);
@@ -2891,7 +2958,7 @@ ebsql_new_internal (const gchar *path,
 static gchar *
 convert_phone (const gchar *normal,
                const gchar *region_code,
-	       gint *out_country_code)
+               gint *out_country_code)
 {
 	EPhoneNumber *number = NULL;
 	gchar *national_number = NULL;
@@ -2928,7 +2995,7 @@ typedef struct {
 
 static E164Number *
 ebsql_e164_number_new (gint country_code,
-		       gchar *national)
+                       gchar *national)
 {
 	E164Number *number = g_slice_new (E164Number);
 
@@ -2949,15 +3016,16 @@ ebsql_e164_number_free (E164Number *number)
 
 static gint
 ebsql_e164_number_find (E164Number *number_a,
-			E164Number *number_b)
+                        E164Number *number_b)
 {
 	gint ret;
 
 	ret = number_a->country_code - number_b->country_code;
 
 	if (ret == 0)
-		ret = g_strcmp0 (number_a->national,
-				 number_b->national);
+		ret = g_strcmp0 (
+			number_a->national,
+			number_b->national);
 
 	return ret;
 }
@@ -3004,14 +3072,16 @@ extract_e164_attribute_params (EContact *contact)
 		if (this_national) {
 			E164Number *number;
 
-			EBSQL_NOTE (CONVERT_E164,
-				    g_printerr ("Extracted e164 number from '%s' with "
-						"country = %d national = %s\n",
-						(gchar *)e_contact_get_const (contact, E_CONTACT_UID),
-						this_country, this_national));
+			EBSQL_NOTE (
+				CONVERT_E164,
+				g_printerr (
+					"Extracted e164 number from '%s' with "
+					"country = %d national = %s\n",
+					(gchar *) e_contact_get_const (contact, E_CONTACT_UID),
+					this_country, this_national));
 
-			number = ebsql_e164_number_new (this_country,
-							this_national);
+			number = ebsql_e164_number_new (
+				this_country, this_national);
 			extracted = g_list_prepend (extracted, number);
 		}
 
@@ -3022,17 +3092,19 @@ extract_e164_attribute_params (EContact *contact)
 		e_vcard_attribute_remove_param (attr, EVC_X_E164);
 	}
 
-	EBSQL_NOTE (CONVERT_E164,
-		    g_printerr ("Extracted %d numbers from '%s'\n",
-				g_list_length (extracted),
-				(gchar *)e_contact_get_const (contact, E_CONTACT_UID)));
+	EBSQL_NOTE (
+		CONVERT_E164,
+		g_printerr (
+			"Extracted %d numbers from '%s'\n",
+			g_list_length (extracted),
+			(gchar *) e_contact_get_const (contact, E_CONTACT_UID)));
 
 	return extracted;
 }
 
 static gboolean
 update_e164_attribute_params (EBookSqlite *ebsql,
-			      EContact *contact,
+                              EContact *contact,
                               const gchar *default_region)
 {
 	GList *original_numbers = NULL;
@@ -3060,10 +3132,11 @@ update_e164_attribute_params (EBookSqlite *ebsql,
 
 		/* Compute E164 number based on the TEL value */
 		if (values && values->data) {
-			original_number = (const gchar *)values->data;
-			number.national = convert_phone (original_number,
-							 ebsql->priv->region_code,
-							 &(number.country_code));
+			original_number = (const gchar *) values->data;
+			number.national = convert_phone (
+				original_number,
+				ebsql->priv->region_code,
+				&(number.country_code));
 		}
 
 		if (number.national == NULL)
@@ -3075,8 +3148,8 @@ update_e164_attribute_params (EBookSqlite *ebsql,
 		/* Check if we have a differing e164 number, if there is no match
 		 * in the old existing values then the vcard changed
 		 */
-		if (!g_list_find_custom (original_numbers, &number, 
-					 (GCompareFunc)ebsql_e164_number_find))
+		if (!g_list_find_custom (original_numbers, &number,
+					 (GCompareFunc) ebsql_e164_number_find))
 			changed = TRUE;
 
 		if (number.country_code != 0)
@@ -3094,12 +3167,14 @@ update_e164_attribute_params (EBookSqlite *ebsql,
 		 ** other vCard parsers. */
 		e_vcard_attribute_param_add_values (param, number.national, country_string, NULL);
 
-		EBSQL_NOTE (CONVERT_E164,
-			    g_printerr ("Converted '%s' to e164 number with country = %d "
-					"national = %s for '%s' (changed %s)\n",
-					original_number, number.country_code, number.national, 
-					(gchar *)e_contact_get_const (contact, E_CONTACT_UID),
-					changed ? "yes" : "no"));
+		EBSQL_NOTE (
+			CONVERT_E164,
+			g_printerr (
+				"Converted '%s' to e164 number with country = %d "
+				"national = %s for '%s' (changed %s)\n",
+				original_number, number.country_code, number.national,
+				(gchar *) e_contact_get_const (contact, E_CONTACT_UID),
+				changed ? "yes" : "no"));
 
 		g_free (number.national);
 		g_free (country_string);
@@ -3109,22 +3184,23 @@ update_e164_attribute_params (EBookSqlite *ebsql,
 	    n_numbers != g_list_length (original_numbers))
 		changed = TRUE;
 
+	EBSQL_NOTE (
+		CONVERT_E164,
+		g_printerr (
+			"Converted %d e164 numbers for '%s' which previously had %d e164 numbers\n",
+			n_numbers,
+			(gchar *) e_contact_get_const (contact, E_CONTACT_UID),
+			g_list_length (original_numbers)));
 
-	EBSQL_NOTE (CONVERT_E164,
-		    g_printerr ("Converted %d e164 numbers for '%s' which previously had %d e164 numbers\n",
-				n_numbers,
-				(gchar *)e_contact_get_const (contact, E_CONTACT_UID),
-				g_list_length (original_numbers)));
-
-	g_list_free_full (original_numbers, (GDestroyNotify)ebsql_e164_number_free);
+	g_list_free_full (original_numbers, (GDestroyNotify) ebsql_e164_number_free);
 
 	return changed;
 }
 
 static sqlite3_stmt *
 ebsql_prepare_multi_delete (EBookSqlite *ebsql,
-			    SummaryField *field,
-			    GError **error)
+                            SummaryField *field,
+                            GError **error)
 {
 	sqlite3_stmt *stmt = NULL;
 	gchar *stmt_str;
@@ -3138,9 +3214,9 @@ ebsql_prepare_multi_delete (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_run_multi_delete (EBookSqlite *ebsql,
-			SummaryField *field,
-			const gchar *uid,
-			GError **error)
+                        SummaryField *field,
+                        const gchar *uid,
+                        GError **error)
 {
 	sqlite3_stmt *stmt;
 	gint ret;
@@ -3165,8 +3241,8 @@ ebsql_run_multi_delete (EBookSqlite *ebsql,
 
 static sqlite3_stmt *
 ebsql_prepare_multi_insert (EBookSqlite *ebsql,
-			    SummaryField *field,
-			    GError **error)
+                            SummaryField *field,
+                            GError **error)
 {
 	sqlite3_stmt *stmt = NULL;
 	GString *string;
@@ -3202,11 +3278,11 @@ ebsql_prepare_multi_insert (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_run_multi_insert_one (EBookSqlite *ebsql,
-			    sqlite3_stmt *stmt,
-			    SummaryField *field,
-			    const gchar *uid,
-			    const gchar *value,
-			    GError **error)
+                            sqlite3_stmt *stmt,
+                            SummaryField *field,
+                            const gchar *uid,
+                            const gchar *value,
+                            GError **error)
 {
 	gchar *normal = e_util_utf8_normalize (value);
 	gchar *str;
@@ -3231,8 +3307,9 @@ ebsql_run_multi_insert_one (EBookSqlite *ebsql,
 	if (ret == SQLITE_OK && (field->index & INDEX_FLAG (PHONE)) != 0) {
 		gint country_code;
 
-		str = convert_phone (normal, ebsql->priv->region_code,
-				     &country_code);
+		str = convert_phone (
+			normal, ebsql->priv->region_code,
+			&country_code);
 
 		/* :value_phone */
 		ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
@@ -3249,10 +3326,10 @@ ebsql_run_multi_insert_one (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_run_multi_insert (EBookSqlite *ebsql,
-			SummaryField *field,
-			const gchar *uid,
-			EContact *contact,
-			GError **error)
+                        SummaryField *field,
+                        const gchar *uid,
+                        EContact *contact,
+                        GError **error)
 {
 	sqlite3_stmt *stmt;
 	GList *values, *l;
@@ -3276,8 +3353,8 @@ ebsql_run_multi_insert (EBookSqlite *ebsql,
 
 static sqlite3_stmt *
 ebsql_prepare_insert (EBookSqlite *ebsql,
-		      gboolean replace_existing,
-		      GError **error)
+                      gboolean replace_existing,
+                      GError **error)
 {
 	sqlite3_stmt *stmt;
 	GString *string;
@@ -3285,11 +3362,13 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 
 	string = g_string_new ("");
 	if (replace_existing)
-		ebsql_string_append_printf (string, "INSERT or REPLACE INTO %Q (",
-					    ebsql->priv->folderid);
+		ebsql_string_append_printf (
+			string, "INSERT or REPLACE INTO %Q (",
+			ebsql->priv->folderid);
 	else
-		ebsql_string_append_printf (string, "INSERT or FAIL INTO %Q (",
-					    ebsql->priv->folderid);
+		ebsql_string_append_printf (
+			string, "INSERT or FAIL INTO %Q (",
+			ebsql->priv->folderid);
 
 	/*
 	 * First specify the column names for the insert, since it's possible we
@@ -3386,7 +3465,7 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_init_statements (EBookSqlite *ebsql,
-		       GError **error)
+                       GError **error)
 {
 	sqlite3_stmt *stmt;
 	gint i;
@@ -3400,13 +3479,15 @@ ebsql_init_statements (EBookSqlite *ebsql,
 		goto preparation_failed;
 
 	ebsql->priv->multi_deletes =
-		g_hash_table_new_full (g_direct_hash, g_direct_equal,
-				       NULL,
-				       (GDestroyNotify)sqlite3_finalize);
+		g_hash_table_new_full (
+			g_direct_hash, g_direct_equal,
+			NULL,
+			(GDestroyNotify) sqlite3_finalize);
 	ebsql->priv->multi_inserts =
-		g_hash_table_new_full (g_direct_hash, g_direct_equal,
-				       NULL,
-				       (GDestroyNotify)sqlite3_finalize);
+		g_hash_table_new_full (
+			g_direct_hash, g_direct_equal,
+			NULL,
+			(GDestroyNotify) sqlite3_finalize);
 
 	for (i = 0; i < ebsql->priv->n_summary_fields; i++) {
 		SummaryField *field = &(ebsql->priv->summary_fields[i]);
@@ -3418,17 +3499,19 @@ ebsql_init_statements (EBookSqlite *ebsql,
 		if (!stmt)
 			goto preparation_failed;
 
-		g_hash_table_insert (ebsql->priv->multi_inserts,
-				     GUINT_TO_POINTER (field->field_id),
-				     stmt);
+		g_hash_table_insert (
+			ebsql->priv->multi_inserts,
+			GUINT_TO_POINTER (field->field_id),
+			stmt);
 
 		stmt = ebsql_prepare_multi_delete (ebsql, field, error);
 		if (!stmt)
 			goto preparation_failed;
 
-		g_hash_table_insert (ebsql->priv->multi_deletes,
-				     GUINT_TO_POINTER (field->field_id),
-				     stmt);
+		g_hash_table_insert (
+			ebsql->priv->multi_deletes,
+			GUINT_TO_POINTER (field->field_id),
+			stmt);
 	}
 
 	return TRUE;
@@ -3440,11 +3523,11 @@ ebsql_init_statements (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_run_insert (EBookSqlite *ebsql,
-		  gboolean replace,
-		  EContact *contact,
-		  gchar *vcard,
-		  const gchar *extra,
-		  GError **error)
+                  gboolean replace,
+                  EContact *contact,
+                  gchar *vcard,
+                  const gchar *extra,
+                  GError **error)
 {
 	EBookSqlitePrivate *priv;
 	sqlite3_stmt *stmt;
@@ -3512,8 +3595,9 @@ ebsql_run_insert (EBookSqlite *ebsql,
 			    (field->index & INDEX_FLAG (PHONE)) != 0) {
 				gint country_code;
 
-				str = convert_phone (normal, ebsql->priv->region_code,
-						     &country_code);
+				str = convert_phone (
+					normal, ebsql->priv->region_code,
+					&country_code);
 
 				ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 				if (ret == SQLITE_OK)
@@ -3533,10 +3617,12 @@ ebsql_run_insert (EBookSqlite *ebsql,
 
 	if (ret == SQLITE_OK) {
 
-		EBSQL_NOTE (INSERT,
-			    g_printerr ("Inserting vcard for contact with UID '%s'\n%s\n",
-					(gchar *)e_contact_get_const (contact, E_CONTACT_UID),
-					vcard ? vcard  : "(no vcard)"));
+		EBSQL_NOTE (
+			INSERT,
+			g_printerr (
+				"Inserting vcard for contact with UID '%s'\n%s\n",
+				(gchar *) e_contact_get_const (contact, E_CONTACT_UID),
+				vcard ? vcard : "(no vcard)"));
 
 		/* If we have a priv->vcard_callback, then it's a shallow addressbook
 		 * and we don't populate the vcard column, need to free it anyway
@@ -3544,7 +3630,7 @@ ebsql_run_insert (EBookSqlite *ebsql,
 		if (priv->vcard_callback != NULL) {
 			g_free (vcard);
 			vcard = NULL;
-		}			
+		}
 
 		ret = sqlite3_bind_text (stmt, param_idx++, vcard, -1, g_free);
 	}
@@ -3556,12 +3642,14 @@ ebsql_run_insert (EBookSqlite *ebsql,
 	/* Run the statement */
 	success = ebsql_complete_statement (ebsql, stmt, ret, &local_error);
 
-	EBSQL_NOTE (INSERT,
-		    g_printerr ("%s contact with UID '%s' and extra data '%s' vcard: %s (error: %s)\n",
-				success ? "Succesfully inserted" : "Failed to insert",
-				(gchar *)e_contact_get_const (contact, E_CONTACT_UID), extra,
-				vcard ? "yes"  : "no",
-				local_error ? local_error->message : "(none)"));
+	EBSQL_NOTE (
+		INSERT,
+		g_printerr (
+			"%s contact with UID '%s' and extra data '%s' vcard: %s (error: %s)\n",
+			success ? "Succesfully inserted" : "Failed to insert",
+			(gchar *) e_contact_get_const (contact, E_CONTACT_UID), extra,
+			vcard ? "yes" : "no",
+			local_error ? local_error->message : "(none)"));
 
 	if (!success)
 		g_propagate_error (error, local_error);
@@ -3571,12 +3659,12 @@ ebsql_run_insert (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_insert_contact (EBookSqlite *ebsql,
-		      EbSqlChangeType change_type,
-		      EContact *contact,
-		      const gchar *original_vcard,
-		      const gchar *extra,
-		      gboolean replace,
-		      GError **error)
+                      EbSqlChangeType change_type,
+                      EContact *contact,
+                      const gchar *original_vcard,
+                      const gchar *extra,
+                      gboolean replace,
+                      GError **error)
 {
 	EBookSqlitePrivate *priv;
 	gboolean e164_changed = FALSE;
@@ -3584,11 +3672,11 @@ ebsql_insert_contact (EBookSqlite *ebsql,
 	gchar *uid, *vcard = NULL;
 
 	priv = ebsql->priv;
-	uid  = e_contact_get (contact, E_CONTACT_UID);
+	uid = e_contact_get (contact, E_CONTACT_UID);
 
 	/* Update E.164 parameters in vcard if needed */
-	e164_changed = update_e164_attribute_params (ebsql, contact,
-						     priv->region_code);
+	e164_changed = update_e164_attribute_params (
+		ebsql, contact, priv->region_code);
 
 	if (e164_changed || original_vcard == NULL) {
 
@@ -3648,19 +3736,19 @@ typedef enum {
 	PREFLIGHT_UNSUPPORTED,
 } PreflightStatus;
 
-#define EBSQL_STATUS_STR(status)					\
-	((status) == PREFLIGHT_OK             ? "Ok"             :	\
-	 (status) == PREFLIGHT_LIST_ALL       ? "List all"       :	\
-	 (status) == PREFLIGHT_NOT_SUMMARIZED ? "Not Summarized" :	\
-	 (status) == PREFLIGHT_INVALID        ? "Invalid"        :	\
-	 (status) == PREFLIGHT_UNSUPPORTED    ? "Unsupported"    : "(unknown status)")
+#define EBSQL_STATUS_STR(status) \
+	((status) == PREFLIGHT_OK ? "Ok" : \
+	 (status) == PREFLIGHT_LIST_ALL ? "List all" : \
+	 (status) == PREFLIGHT_NOT_SUMMARIZED ? "Not Summarized" : \
+	 (status) == PREFLIGHT_INVALID ? "Invalid" : \
+	 (status) == PREFLIGHT_UNSUPPORTED ? "Unsupported" : "(unknown status)")
 
 /* Whether we can satisfy the constraints or whether we
  * need to do a fallback, we still need to call
  * ebsql_generate_constraints()
  */
-#define EBSQL_STATUS_GEN_CONSTRAINTS(status)	\
-	((status) == PREFLIGHT_OK ||		\
+#define EBSQL_STATUS_GEN_CONSTRAINTS(status) \
+	((status) == PREFLIGHT_OK || \
 	 (status) == PREFLIGHT_NOT_SUMMARIZED)
 
 /* Internal extension of the EBookQueryTest enumeration */
@@ -3677,30 +3765,30 @@ enum {
 	BOOK_QUERY_SUB_FIRST = BOOK_QUERY_SUB_AND,
 };
 
-#define EBSQL_QUERY_TYPE_STR(query)					\
-	((query) == BOOK_QUERY_EXISTS          ? "exists"        :	\
-	 (query) == BOOK_QUERY_SUB_AND         ? "AND"           :	\
-	 (query) == BOOK_QUERY_SUB_OR          ? "OR"            :	\
-	 (query) == BOOK_QUERY_SUB_NOT         ? "NOT"           :	\
-	 (query) == BOOK_QUERY_SUB_END         ? "END"           :	\
-	 (query) == E_BOOK_QUERY_IS            ? "is"            :	\
-	 (query) == E_BOOK_QUERY_CONTAINS      ? "contains"      :	\
-	 (query) == E_BOOK_QUERY_BEGINS_WITH   ? "begins-with"   :	\
-	 (query) == E_BOOK_QUERY_ENDS_WITH     ? "ends-with"     :	\
-	 (query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER   ? "eqphone" :	\
-	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER   ? "eqphone-national" : \
-	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER      ? "eqphone-short" : \
-	 (query) == E_BOOK_QUERY_REGEX_NORMAL   ? "regex-normal" :	\
-	 (query) == E_BOOK_QUERY_REGEX_NORMAL   ? "regex-raw"    : "(unknown)")
+#define EBSQL_QUERY_TYPE_STR(query) \
+	((query) == BOOK_QUERY_EXISTS ? "exists" : \
+	 (query) == BOOK_QUERY_SUB_AND ? "AND" : \
+	 (query) == BOOK_QUERY_SUB_OR ? "OR" : \
+	 (query) == BOOK_QUERY_SUB_NOT ? "NOT" : \
+	 (query) == BOOK_QUERY_SUB_END ? "END" : \
+	 (query) == E_BOOK_QUERY_IS ? "is" : \
+	 (query) == E_BOOK_QUERY_CONTAINS ? "contains" : \
+	 (query) == E_BOOK_QUERY_BEGINS_WITH ? "begins-with" : \
+	 (query) == E_BOOK_QUERY_ENDS_WITH ? "ends-with" : \
+	 (query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER ? "eqphone" : \
+	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER ? "eqphone-national" : \
+	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER ? "eqphone-short" : \
+	 (query) == E_BOOK_QUERY_REGEX_NORMAL ? "regex-normal" : \
+	 (query) == E_BOOK_QUERY_REGEX_NORMAL ? "regex-raw" : "(unknown)")
 
-#define EBSQL_FIELD_ID_STR(field_id)					\
-	((field_id) == E_CONTACT_FIELD_LAST ? "x-evolution-any-field" :	\
-	 (field_id) == 0 ? "(not an EContactField)" :			\
+#define EBSQL_FIELD_ID_STR(field_id) \
+	((field_id) == E_CONTACT_FIELD_LAST ? "x-evolution-any-field" : \
+	 (field_id) == 0 ? "(not an EContactField)" : \
 	 e_contact_field_name (field_id))
 
-#define IS_QUERY_PHONE(query)						\
-	((query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER          ||	\
-	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER ||	\
+#define IS_QUERY_PHONE(query) \
+	((query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER || \
+	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER || \
 	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER)
 
 typedef struct {
@@ -3750,52 +3838,52 @@ query_delimiter_new (guint query)
 
 	g_return_val_if_fail (query >= BOOK_QUERY_SUB_FIRST, NULL);
 
-	delim        = g_slice_new (QueryDelimiter);
+	delim = g_slice_new (QueryDelimiter);
 	delim->query = query;
 
-	return (QueryElement *)delim;
+	return (QueryElement *) delim;
 }
 
 static QueryFieldTest *
-query_field_test_new (guint          query,
-		      EContactField  field)
+query_field_test_new (guint query,
+                      EContactField field)
 {
 	QueryFieldTest *test;
 
 	g_return_val_if_fail (query < BOOK_QUERY_SUB_FIRST, NULL);
 	g_return_val_if_fail (IS_QUERY_PHONE (query) == FALSE, NULL);
 
-	test            = g_slice_new (QueryFieldTest);
-	test->query     = query;
-	test->field_id  = field;
+	test = g_slice_new (QueryFieldTest);
+	test->query = query;
+	test->field_id = field;
 
 	/* Instead of g_slice_new0, NULL them out manually */
-	test->field     = NULL;
-	test->value     = NULL;
+	test->field = NULL;
+	test->value = NULL;
 
 	return test;
 }
 
 static QueryPhoneTest *
-query_phone_test_new (guint          query,
-		      EContactField  field)
+query_phone_test_new (guint query,
+                      EContactField field)
 {
 	QueryPhoneTest *test;
 
 	g_return_val_if_fail (IS_QUERY_PHONE (query), NULL);
 
-	test            = g_slice_new (QueryPhoneTest);
-	test->query     = query;
-	test->field_id  = field;
+	test = g_slice_new (QueryPhoneTest);
+	test->query = query;
+	test->field_id = field;
 
 	/* Instead of g_slice_new0, NULL them out manually */
-	test->field     = NULL;
-	test->value     = NULL;
+	test->field = NULL;
+	test->value = NULL;
 
 	/* Extra QueryPhoneTest fields */
-	test->region    = NULL;
-	test->national  = NULL;
-	test->country   = 0;
+	test->region = NULL;
+	test->national = NULL;
+	test->country = 0;
 
 	return test;
 }
@@ -3806,18 +3894,18 @@ query_element_free (QueryElement *element)
 	if (element) {
 
 		if (element->query >= BOOK_QUERY_SUB_FIRST) {
-			QueryDelimiter *delim = (QueryDelimiter *)element;
+			QueryDelimiter *delim = (QueryDelimiter *) element;
 
 			g_slice_free (QueryDelimiter, delim);
 		} else if (IS_QUERY_PHONE (element->query)) {
-			QueryPhoneTest *test = (QueryPhoneTest *)element;
+			QueryPhoneTest *test = (QueryPhoneTest *) element;
 
 			g_free (test->value);
 			g_free (test->region);
 			g_free (test->national);
 			g_slice_free (QueryPhoneTest, test);
 		} else {
-			QueryFieldTest *test = (QueryFieldTest *)element;
+			QueryFieldTest *test = (QueryFieldTest *) element;
 
 			g_free (test->value);
 			g_slice_free (QueryFieldTest, test);
@@ -3828,13 +3916,13 @@ query_element_free (QueryElement *element)
 /* We use ptr arrays for the QueryElement vectors */
 static inline void
 constraints_insert (GPtrArray *array,
-		    gint       idx,
-		    gpointer   data)
+                    gint idx,
+                    gpointer data)
 {
 #if 0
 	g_ptr_array_insert (array, idx, data);
 #else
-	g_return_if_fail ((idx >= -1) && (idx < (gint)array->len + 1));
+	g_return_if_fail ((idx >= -1) && (idx < (gint) array->len + 1));
 
 	if (idx < 0)
 		idx = array->len;
@@ -3842,9 +3930,10 @@ constraints_insert (GPtrArray *array,
 	g_ptr_array_add (array, NULL);
 
 	if (idx != (array->len - 1))
-		memmove (&(array->pdata[idx + 1]),
-			 &(array->pdata[idx]),
-			 ((array->len - 1) - idx) * sizeof (gpointer));
+		memmove (
+			&(array->pdata[idx + 1]),
+			&(array->pdata[idx]),
+			((array->len - 1) - idx) * sizeof (gpointer));
 
 	array->pdata[idx] = data;
 #endif
@@ -3852,11 +3941,11 @@ constraints_insert (GPtrArray *array,
 
 static inline QueryElement *
 constraints_take (GPtrArray *array,
-		  gint       idx)
+                  gint idx)
 {
 	QueryElement *element;
 
-	g_return_val_if_fail (idx >= 0 && idx < (gint)array->len, NULL);
+	g_return_val_if_fail (idx >= 0 && idx < (gint) array->len, NULL);
 
 	element = array->pdata[idx];
 	array->pdata[idx] = NULL;
@@ -3867,8 +3956,8 @@ constraints_take (GPtrArray *array,
 
 static inline void
 constraints_insert_delimiter (GPtrArray *array,
-			      gint       idx,
-			      guint      query)
+                              gint idx,
+                              guint query)
 {
 	QueryElement *delim;
 
@@ -3877,17 +3966,17 @@ constraints_insert_delimiter (GPtrArray *array,
 }
 
 static inline void
-constraints_insert_field_test (GPtrArray      *array,
-			       gint            idx,
-			       SummaryField   *field,
-			       guint           query,
-			       const gchar    *value)
+constraints_insert_field_test (GPtrArray *array,
+                               gint idx,
+                               SummaryField *field,
+                               guint query,
+                               const gchar *value)
 {
 	QueryFieldTest *test;
 
-	test            = query_field_test_new (query, field->field_id);
-	test->field     = field;
-	test->value     = g_strdup (value);
+	test = query_field_test_new (query, field->field_id);
+	test->field = field;
+	test->value = g_strdup (value);
 
 	constraints_insert (array, idx, test);
 }
@@ -3920,13 +4009,13 @@ typedef struct {
 
 static inline void
 sub_query_context_push (SubQueryContext *ctx,
-			guint            sub_type)
+                        guint sub_type)
 {
 	SubQueryData *data;
 
-	data           = g_slice_new (SubQueryData);
+	data = g_slice_new (SubQueryData);
 	data->sub_type = sub_type;
-	data->count    = 0;
+	data->count = 0;
 
 	g_queue_push_tail (ctx, data);
 }
@@ -3994,12 +4083,12 @@ typedef gboolean (* PreflightSubCallback) (QueryElement *element,
 					   gpointer      user_data);
 
 static void
-query_preflight_foreach_sub (QueryElement        **elements,
-			     gint                  n_elements,
-			     gint                  offset,
-			     gboolean              include_delim,
-			     PreflightSubCallback  callback,
-			     gpointer              user_data)
+query_preflight_foreach_sub (QueryElement **elements,
+                             gint n_elements,
+                             gint offset,
+                             gboolean include_delim,
+                             PreflightSubCallback callback,
+                             gpointer user_data)
 {
 	gint sub_counter = 1, i;
 
@@ -4052,7 +4141,6 @@ static const struct {
 	{ "exists",           FALSE, BOOK_QUERY_EXISTS },
 };
 
-
 /* Cheat our way into passing mode data to these funcs */
 static ESExpResult *
 func_check_subset (ESExp *f,
@@ -4069,20 +4157,22 @@ func_check_subset (ESExp *f,
 	query_type = GPOINTER_TO_UINT (data);
 
 	/* The compound query delimiter is the first element in this return array */
-	result_array = g_ptr_array_new_with_free_func ((GDestroyNotify)query_element_free);
-	element      = query_delimiter_new (query_type);
+	result_array = g_ptr_array_new_with_free_func ((GDestroyNotify) query_element_free);
+	element = query_delimiter_new (query_type);
 	g_ptr_array_add (result_array, element);
 
-	EBSQL_NOTE (PREFLIGHT,
-		    g_printerr ("PREFLIGHT INIT: Open sub: %s\n",
-				EBSQL_QUERY_TYPE_STR (query_type)));
+	EBSQL_NOTE (
+		PREFLIGHT,
+		g_printerr (
+			"PREFLIGHT INIT: Open sub: %s\n",
+			EBSQL_QUERY_TYPE_STR (query_type)));
 
 	for (i = 0; i < argc; i++) {
 		sub_result = e_sexp_term_eval (f, argv[i]);
 
 		if (sub_result->type == ESEXP_RES_ARRAY_PTR) {
 			/* Steal the elements directly from the sub result */
-			sub_elements = (QueryElement **)sub_result->value.ptrarray->pdata;
+			sub_elements = (QueryElement **) sub_result->value.ptrarray->pdata;
 			len = sub_result->value.ptrarray->len;
 
 			for (j = 0; j < len; j++) {
@@ -4095,9 +4185,11 @@ func_check_subset (ESExp *f,
 		e_sexp_result_free (f, sub_result);
 	}
 
-	EBSQL_NOTE (PREFLIGHT,
-		    g_printerr ("PREFLIGHT INIT: Close sub: %s\n",
-				EBSQL_QUERY_TYPE_STR (query_type)));
+	EBSQL_NOTE (
+		PREFLIGHT,
+		g_printerr (
+			"PREFLIGHT INIT: Close sub: %s\n",
+			EBSQL_QUERY_TYPE_STR (query_type)));
 
 	/* The last element in this return array is the sub end delimiter */
 	element = query_delimiter_new (BOOK_QUERY_SUB_END);
@@ -4111,9 +4203,9 @@ func_check_subset (ESExp *f,
 
 static ESExpResult *
 func_check (struct _ESExp *f,
-	    gint argc,
-	    struct _ESExpResult **argv,
-	    gpointer data)
+            gint argc,
+            struct _ESExpResult **argv,
+            gpointer data)
 {
 	ESExpResult *result;
 	GPtrArray *result_array;
@@ -4129,7 +4221,7 @@ func_check (struct _ESExp *f,
 	if (argc == 2 &&
 	    argv[0]->type == ESEXP_RES_STRING &&
 	    argv[1]->type == ESEXP_RES_STRING) {
-		query_name  = argv[0]->value.string;
+		query_name = argv[0]->value.string;
 		query_value = argv[1]->value.string;
 
 		/* We use E_CONTACT_FIELD_LAST to hold the special case of "x-evolution-any-field" */
@@ -4142,7 +4234,7 @@ func_check (struct _ESExp *f,
 		   argv[0]->type == ESEXP_RES_STRING &&
 		   argv[1]->type == ESEXP_RES_STRING &&
 		   argv[2]->type == ESEXP_RES_STRING) {
-		query_name  = argv[0]->value.string;
+		query_name = argv[0]->value.string;
 		query_value = argv[1]->value.string;
 		query_extra = argv[2]->value.string;
 
@@ -4153,30 +4245,32 @@ func_check (struct _ESExp *f,
 		QueryPhoneTest *test;
 
 		/* Collect data from this field test */
-		test         = query_phone_test_new (query_type, field_id);
-		test->value  = g_strdup (query_value);
+		test = query_phone_test_new (query_type, field_id);
+		test->value = g_strdup (query_value);
 		test->region = g_strdup (query_extra);
 
-		element = (QueryElement *)test;
+		element = (QueryElement *) test;
 	} else {
 		QueryFieldTest *test;
 
 		/* Collect data from this field test */
-		test        = query_field_test_new (query_type, field_id);
+		test = query_field_test_new (query_type, field_id);
 		test->value = g_strdup (query_value);
 
-		element = (QueryElement *)test;
+		element = (QueryElement *) test;
 	}
 
-	EBSQL_NOTE (PREFLIGHT,
-		    g_printerr ("PREFLIGHT INIT: Adding field test: `%s' on field `%s' "
-				"(field name: %s query value: %s query extra: %s)\n",
-				EBSQL_QUERY_TYPE_STR (query_type),
-				EBSQL_FIELD_ID_STR (field_id),
-				query_name, query_value, query_extra));
+	EBSQL_NOTE (
+		PREFLIGHT,
+		g_printerr (
+			"PREFLIGHT INIT: Adding field test: `%s' on field `%s' "
+			"(field name: %s query value: %s query extra: %s)\n",
+			EBSQL_QUERY_TYPE_STR (query_type),
+			EBSQL_FIELD_ID_STR (field_id),
+			query_name, query_value, query_extra));
 
 	/* Return an array with only one element, for lack of a pointer type ESExpResult */
-	result_array = g_ptr_array_new_with_free_func ((GDestroyNotify)query_element_free);
+	result_array = g_ptr_array_new_with_free_func ((GDestroyNotify) query_element_free);
 	g_ptr_array_add (result_array, element);
 
 	result = e_sexp_result_new (f, ESEXP_RES_ARRAY_PTR);
@@ -4192,7 +4286,7 @@ func_check (struct _ESExp *f,
  */
 static void
 query_preflight_initialize (PreflightContext *context,
-			    const gchar *sexp)
+                            const gchar *sexp)
 {
 	ESExp *sexp_parser;
 	ESExpResult *result;
@@ -4225,8 +4319,9 @@ query_preflight_initialize (PreflightContext *context,
 	if (esexp_error == -1) {
 		context->status = PREFLIGHT_INVALID;
 
-		EBSQL_NOTE (PREFLIGHT,
-			    g_printerr ("PREFLIGHT INIT: Sexp parse error\n"));
+		EBSQL_NOTE (
+			PREFLIGHT,
+			g_printerr ("PREFLIGHT INIT: Sexp parse error\n"));
 	} else {
 
 		result = e_sexp_eval (sexp_parser);
@@ -4235,14 +4330,15 @@ query_preflight_initialize (PreflightContext *context,
 			if (result->type == ESEXP_RES_ARRAY_PTR) {
 
 				/* Just steal the array away from the ESexpResult */
-				context->constraints   = result->value.ptrarray;
+				context->constraints = result->value.ptrarray;
 				result->value.ptrarray = NULL;
 
 			} else {
 				context->status = PREFLIGHT_INVALID;
 
-				EBSQL_NOTE (PREFLIGHT,
-					    g_printerr ("PREFLIGHT INIT: ERROR, Did not get GPtrArray\n"));
+				EBSQL_NOTE (
+					PREFLIGHT,
+					g_printerr ("PREFLIGHT INIT: ERROR, Did not get GPtrArray\n"));
 			}
 		}
 
@@ -4251,9 +4347,11 @@ query_preflight_initialize (PreflightContext *context,
 
 	e_sexp_unref (sexp_parser);
 
-	EBSQL_NOTE (PREFLIGHT,
-		    g_printerr ("PREFLIGHT INIT: Completed with status %s\n",
-				EBSQL_STATUS_STR (context->status)));
+	EBSQL_NOTE (
+		PREFLIGHT,
+		g_printerr (
+			"PREFLIGHT INIT: Completed with status %s\n",
+			EBSQL_STATUS_STR (context->status)));
 }
 
 typedef struct {
@@ -4263,12 +4361,12 @@ typedef struct {
 
 static gboolean
 check_has_attr_list_cb (QueryElement *element,
-			gint          sub_level,
-			gint          offset,
-			gpointer      user_data)
+                        gint sub_level,
+                        gint offset,
+                        gpointer user_data)
 {
-	QueryFieldTest *test = (QueryFieldTest *)element;
-	AttrListCheckData *data = (AttrListCheckData *)user_data;
+	QueryFieldTest *test = (QueryFieldTest *) element;
+	AttrListCheckData *data = (AttrListCheckData *) user_data;
 
 	/* We havent resolved all the fields at this stage yet */
 	if (!test->field)
@@ -4287,24 +4385,26 @@ check_has_attr_list_cb (QueryElement *element,
  *  o Bitmask of auxiliary tables is collected
  */
 static void
-query_preflight_check (PreflightContext  *context,
-		       EBookSqlite       *ebsql)
+query_preflight_check (PreflightContext *context,
+                       EBookSqlite *ebsql)
 {
 	gint i, n_elements;
 	QueryElement **elements;
 
 	context->status = PREFLIGHT_OK;
 
-	elements   = (QueryElement **)context->constraints->pdata;
+	elements = (QueryElement **) context->constraints->pdata;
 	n_elements = context->constraints->len;
 
 	for (i = 0; i < n_elements; i++) {
 		QueryFieldTest *test;
 		guint           field_test;
 
-		EBSQL_NOTE (PREFLIGHT,
-			    g_printerr ("PREFLIGHT CHECK: Encountered: %s\n",
-					EBSQL_QUERY_TYPE_STR (elements[i]->query)));
+		EBSQL_NOTE (
+			PREFLIGHT,
+			g_printerr (
+				"PREFLIGHT CHECK: Encountered: %s\n",
+				EBSQL_QUERY_TYPE_STR (elements[i]->query)));
 
 		if (elements[i]->query >= BOOK_QUERY_SUB_FIRST) {
 			/* It's too complicated to properly perform
@@ -4329,20 +4429,23 @@ query_preflight_check (PreflightContext  *context,
 							     &data);
 
 				if (data.has_attr_list) {
-					context->status = MAX (context->status,
-							       PREFLIGHT_NOT_SUMMARIZED);
-					EBSQL_NOTE (PREFLIGHT,
-						    g_printerr ("PREFLIGHT CHECK: "
-								"Setting invalid for NOT (mutli-attribute), "
-								"new status: %s\n",
-								EBSQL_STATUS_STR (context->status)));
+					context->status = MAX (
+						context->status,
+						PREFLIGHT_NOT_SUMMARIZED);
+					EBSQL_NOTE (
+						PREFLIGHT,
+						g_printerr (
+							"PREFLIGHT CHECK: "
+							"Setting invalid for NOT (mutli-attribute), "
+							"new status: %s\n",
+							EBSQL_STATUS_STR (context->status)));
 				}
 			}
 			continue;
 		}
 
 		test = (QueryFieldTest *) elements[i];
-		field_test = (EBookQueryTest)test->query;
+		field_test = (EBookQueryTest) test->query;
 
 		if (!test->field)
 			test->field = summary_field_get (ebsql, test->field_id);
@@ -4370,33 +4473,39 @@ query_preflight_check (PreflightContext  *context,
 				if (n_elements == 1 && (!test->value || !test->value[0])) {
 
 					context->status = MAX (context->status, PREFLIGHT_LIST_ALL);
-					EBSQL_NOTE (PREFLIGHT,
-						    g_printerr ("PREFLIGHT CHECK: "
-								"Encountered lonesome 'x-evolution-any-field' with empty value, "
-								"new status: %s\n",
-								EBSQL_STATUS_STR (context->status)));
+					EBSQL_NOTE (
+						PREFLIGHT,
+						g_printerr (
+							"PREFLIGHT CHECK: "
+							"Encountered lonesome 'x-evolution-any-field' with empty value, "
+							"new status: %s\n",
+							EBSQL_STATUS_STR (context->status)));
 				} else {
 
 					/* Searching for a value with 'x-evolution-any-field' is
 					 * not a summary query.
 					 */
 					context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
-					EBSQL_NOTE (PREFLIGHT,
-						    g_printerr ("PREFLIGHT CHECK: "
-								"Encountered 'x-evolution-any-field', "
-								"new status: %s\n",
-								EBSQL_STATUS_STR (context->status)));
+					EBSQL_NOTE (
+						PREFLIGHT,
+						g_printerr (
+							"PREFLIGHT CHECK: "
+							"Encountered 'x-evolution-any-field', "
+							"new status: %s\n",
+							EBSQL_STATUS_STR (context->status)));
 				}
 
 			} else {
 
 				/* Couldnt resolve the field, it's not a summary query */
 				context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
-				EBSQL_NOTE (PREFLIGHT,
-					    g_printerr ("PREFLIGHT CHECK: "
-							"Field `%s' not in the summary, new status: %s\n",
-							EBSQL_FIELD_ID_STR (test->field_id),
-							EBSQL_STATUS_STR (context->status)));
+				EBSQL_NOTE (
+					PREFLIGHT,
+					g_printerr (
+						"PREFLIGHT CHECK: "
+						"Field `%s' not in the summary, new status: %s\n",
+						EBSQL_FIELD_ID_STR (test->field_id),
+						EBSQL_STATUS_STR (context->status)));
 			}
 		}
 
@@ -4417,11 +4526,13 @@ query_preflight_check (PreflightContext  *context,
 				if (test->field->type != G_TYPE_STRING &&
 				    test->field->type != E_TYPE_CONTACT_ATTR_LIST) {
 					context->status = MAX (context->status, PREFLIGHT_INVALID);
-					EBSQL_NOTE (PREFLIGHT,
-						    g_printerr ("PREFLIGHT CHECK: "
-								"Refusing pattern match on boolean field `%s', new status: %s\n",
-								EBSQL_FIELD_ID_STR (test->field_id),
-								EBSQL_STATUS_STR (context->status)));
+					EBSQL_NOTE (
+						PREFLIGHT,
+						g_printerr (
+							"PREFLIGHT CHECK: "
+							"Refusing pattern match on boolean field `%s', new status: %s\n",
+							EBSQL_FIELD_ID_STR (test->field_id),
+							EBSQL_STATUS_STR (context->status)));
 				}
 			}
 
@@ -4430,10 +4541,12 @@ query_preflight_check (PreflightContext  *context,
 		case E_BOOK_QUERY_REGEX_RAW:
 			/* Raw regex queries only supported in the fallback */
 			context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
-			EBSQL_NOTE (PREFLIGHT,
-				    g_printerr ("PREFLIGHT CHECK: "
-						"Raw regexp requires full data, new status: %s\n",
-						EBSQL_STATUS_STR (context->status)));
+			EBSQL_NOTE (
+				PREFLIGHT,
+				g_printerr (
+					"PREFLIGHT CHECK: "
+					"Raw regexp requires full data, new status: %s\n",
+					EBSQL_STATUS_STR (context->status)));
 			break;
 
 		case E_BOOK_QUERY_EQUALS_PHONE_NUMBER:
@@ -4446,12 +4559,14 @@ query_preflight_check (PreflightContext  *context,
 			if (!e_phone_number_is_supported ()) {
 
 				context->status = MAX (context->status, PREFLIGHT_UNSUPPORTED);
-				EBSQL_NOTE (PREFLIGHT,
-					    g_printerr ("PREFLIGHT CHECK: "
-							"Usupported phone number query, new status: %s\n",
-							EBSQL_STATUS_STR (context->status)));
+				EBSQL_NOTE (
+					PREFLIGHT,
+					g_printerr (
+						"PREFLIGHT CHECK: "
+						"Usupported phone number query, new status: %s\n",
+						EBSQL_STATUS_STR (context->status)));
 			} else {
-				QueryPhoneTest *phone_test = (QueryPhoneTest *)test;
+				QueryPhoneTest *phone_test = (QueryPhoneTest *) test;
 				EPhoneNumberCountrySource source;
 				EPhoneNumber *number;
 				const gchar *region_code;
@@ -4461,17 +4576,20 @@ query_preflight_check (PreflightContext  *context,
 				else
 					region_code = ebsql->priv->region_code;
 
-				number = e_phone_number_from_string (phone_test->value,
-								     region_code, NULL);
+				number = e_phone_number_from_string (
+					phone_test->value,
+					region_code, NULL);
 
 				if (number == NULL) {
 
 					context->status = MAX (context->status, PREFLIGHT_INVALID);
-					EBSQL_NOTE (PREFLIGHT,
-						    g_printerr ("PREFLIGHT CHECK: "
-								"Invalid phone number `%s', new status: %s\n",
-								phone_test->value,
-								EBSQL_STATUS_STR (context->status)));
+					EBSQL_NOTE (
+						PREFLIGHT,
+						g_printerr (
+							"PREFLIGHT CHECK: "
+							"Invalid phone number `%s', new status: %s\n",
+							phone_test->value,
+							EBSQL_STATUS_STR (context->status)));
 				} else {
 					/* Collect values we'll need later while generating field
 					 * tests, no need to parse the phone number more than once
@@ -4497,10 +4615,12 @@ query_preflight_check (PreflightContext  *context,
 			 */
 			g_warn_if_fail (aux_index < EBSQL_MAX_SUMMARY_FIELDS);
 			context->aux_mask |= (1 << aux_index);
-			EBSQL_NOTE (PREFLIGHT,
-				    g_printerr ("PREFLIGHT CHECK: "
-						"Adding auxiliary field `%s' to the mask\n",
-						EBSQL_FIELD_ID_STR (test->field_id)));
+			EBSQL_NOTE (
+				PREFLIGHT,
+				g_printerr (
+					"PREFLIGHT CHECK: "
+					"Adding auxiliary field `%s' to the mask\n",
+					EBSQL_FIELD_ID_STR (test->field_id)));
 		}
 	}
 }
@@ -4513,7 +4633,7 @@ query_preflight_check (PreflightContext  *context,
  */
 static void
 query_preflight_substitute_full_name (PreflightContext *context,
-				      EBookSqlite      *ebsql)
+                                      EBookSqlite *ebsql)
 {
 	gint i, j;
 
@@ -4532,8 +4652,8 @@ query_preflight_substitute_full_name (PreflightContext *context,
 			continue;
 
 		family_name = summary_field_get (ebsql, E_CONTACT_FAMILY_NAME);
-		given_name  = summary_field_get (ebsql, E_CONTACT_GIVEN_NAME);
-		nickname    = summary_field_get (ebsql, E_CONTACT_NICKNAME);
+		given_name = summary_field_get (ebsql, E_CONTACT_GIVEN_NAME);
+		nickname = summary_field_get (ebsql, E_CONTACT_NICKNAME);
 
 		/* If any of these are in the summary, then we'll construct
 		 * a grouped OR statment for this E_CONTACT_FULL_NAME test */
@@ -4541,23 +4661,25 @@ query_preflight_substitute_full_name (PreflightContext *context,
 			/* Add the OR directly before the E_CONTACT_FULL_NAME test */
 			constraints_insert_delimiter (context->constraints, i, BOOK_QUERY_SUB_OR);
 
-
 			j = i + 2;
 
 			if (family_name)
-				constraints_insert_field_test (context->constraints, j++,
-							       family_name, test->query,
-							       test->value);
+				constraints_insert_field_test (
+					context->constraints, j++,
+					family_name, test->query,
+					test->value);
 
 			if (given_name)
-				constraints_insert_field_test (context->constraints, j++,
-							       given_name, test->query,
-							       test->value);
+				constraints_insert_field_test (
+					context->constraints, j++,
+					given_name, test->query,
+					test->value);
 
 			if (nickname)
-				constraints_insert_field_test (context->constraints, j++,
-							       nickname, test->query,
-							       test->value);
+				constraints_insert_field_test (
+					context->constraints, j++,
+					nickname, test->query,
+					test->value);
 
 			constraints_insert_delimiter (context->constraints, j, BOOK_QUERY_SUB_END);
 
@@ -4567,9 +4689,9 @@ query_preflight_substitute_full_name (PreflightContext *context,
 }
 
 static void
-query_preflight (PreflightContext   *context,
-		 EBookSqlite        *ebsql,
-		 const gchar        *sexp)
+query_preflight (PreflightContext *context,
+                 EBookSqlite *ebsql,
+                 const gchar *sexp)
 {
 	EBSQL_NOTE (PREFLIGHT, g_printerr ("PREFLIGHT BEGIN\n"));
 	query_preflight_initialize (context, sexp);
@@ -4582,8 +4704,9 @@ query_preflight (PreflightContext   *context,
 		 * going to generate statements with it
 		 */
 		if (context->status == PREFLIGHT_OK) {
-			EBSQL_NOTE (PREFLIGHT,
-				    g_printerr ("PREFLIGHT: Substituting full name\n"));
+			EBSQL_NOTE (
+				PREFLIGHT,
+				g_printerr ("PREFLIGHT: Substituting full name\n"));
 
 			/* Handle E_CONTACT_FULL_NAME substitutions */
 			query_preflight_substitute_full_name (context, ebsql);
@@ -4598,9 +4721,11 @@ query_preflight (PreflightContext   *context,
 		}
 	}
 
-	EBSQL_NOTE (PREFLIGHT,
-		    g_printerr ("PREFLIGHT END (status: %s)\n",
-				EBSQL_STATUS_STR (context->status)));
+	EBSQL_NOTE (
+		PREFLIGHT,
+		g_printerr (
+			"PREFLIGHT END (status: %s)\n",
+			EBSQL_STATUS_STR (context->status)));
 }
 
 /**********************************************************
@@ -4625,8 +4750,8 @@ typedef void (* GenerateFieldTest) (EBookSqlite      *ebsql,
  */
 static gchar *
 ebsql_normalize_for_like (QueryFieldTest *test,
-			  gboolean reverse_string,
-			  gboolean *escape_needed)
+                          gboolean reverse_string,
+                          gboolean *escape_needed)
 {
 	GString *str;
 	size_t len;
@@ -4681,9 +4806,9 @@ ebsql_normalize_for_like (QueryFieldTest *test,
 }
 
 static void
-field_test_query_is (EBookSqlite        *ebsql,
-		     GString            *string,
-		     QueryFieldTest     *test)
+field_test_query_is (EBookSqlite *ebsql,
+                     GString *string,
+                     QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 	gchar *normal;
@@ -4702,9 +4827,9 @@ field_test_query_is (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_contains (EBookSqlite        *ebsql,
-			   GString            *string,
-			   QueryFieldTest     *test)
+field_test_query_contains (EBookSqlite *ebsql,
+                           GString *string,
+                           QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 	gboolean need_escape;
@@ -4730,9 +4855,9 @@ field_test_query_contains (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_begins_with (EBookSqlite        *ebsql,
-			      GString            *string,
-			      QueryFieldTest     *test)
+field_test_query_begins_with (EBookSqlite *ebsql,
+                              GString *string,
+                              QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 	gboolean need_escape;
@@ -4757,9 +4882,9 @@ field_test_query_begins_with (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_ends_with (EBookSqlite        *ebsql,
-			    GString            *string,
-			    QueryFieldTest     *test)
+field_test_query_ends_with (EBookSqlite *ebsql,
+                            GString *string,
+                            QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 	gboolean need_escape;
@@ -4767,8 +4892,7 @@ field_test_query_ends_with (EBookSqlite        *ebsql,
 
 	if ((field->index & INDEX_FLAG (SUFFIX)) != 0) {
 
-		escaped = ebsql_normalize_for_like (test,
-						    TRUE, &need_escape);
+		escaped = ebsql_normalize_for_like (test, TRUE, &need_escape);
 
 		g_string_append_c (string, '(');
 		ebsql_string_append_column (string, field, EBSQL_SUFFIX_REVERSE);
@@ -4781,8 +4905,7 @@ field_test_query_ends_with (EBookSqlite        *ebsql,
 
 	} else {
 
-		escaped = ebsql_normalize_for_like (test,
-						    FALSE, &need_escape);
+		escaped = ebsql_normalize_for_like (test, FALSE, &need_escape);
 		g_string_append_c (string, '(');
 
 		ebsql_string_append_column (string, field, NULL);
@@ -4802,12 +4925,12 @@ field_test_query_ends_with (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_eqphone (EBookSqlite        *ebsql,
-			  GString            *string,
-			  QueryFieldTest     *test)
+field_test_query_eqphone (EBookSqlite *ebsql,
+                          GString *string,
+                          QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
-	QueryPhoneTest *phone_test = (QueryPhoneTest *)test;
+	QueryPhoneTest *phone_test = (QueryPhoneTest *) test;
 
 	if ((field->index & INDEX_FLAG (PHONE)) != 0) {
 
@@ -4835,13 +4958,13 @@ field_test_query_eqphone (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_eqphone_national (EBookSqlite        *ebsql,
-				   GString            *string,
-				   QueryFieldTest     *test)
+field_test_query_eqphone_national (EBookSqlite *ebsql,
+                                   GString *string,
+                                   QueryFieldTest *test)
 {
 
 	SummaryField *field = test->field;
-	QueryPhoneTest *phone_test = (QueryPhoneTest *)test;
+	QueryPhoneTest *phone_test = (QueryPhoneTest *) test;
 
 	if ((field->index & INDEX_FLAG (PHONE)) != 0) {
 
@@ -4876,9 +4999,9 @@ field_test_query_eqphone_national (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_eqphone_short (EBookSqlite        *ebsql,
-				GString            *string,
-				QueryFieldTest     *test)
+field_test_query_eqphone_short (EBookSqlite *ebsql,
+                                GString *string,
+                                QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 
@@ -4889,9 +5012,9 @@ field_test_query_eqphone_short (EBookSqlite        *ebsql,
 }
 
 static void
-field_test_query_regex_normal (EBookSqlite        *ebsql,
-			       GString            *string,
-			       QueryFieldTest     *test)
+field_test_query_regex_normal (EBookSqlite *ebsql,
+                               GString *string,
+                               QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 	gchar *normal;
@@ -4899,21 +5022,23 @@ field_test_query_regex_normal (EBookSqlite        *ebsql,
 	normal = e_util_utf8_normalize (test->value);
 
 	if (field->aux_table)
-		ebsql_string_append_printf (string, "%s.value REGEXP %Q",
-					    field->aux_table_symbolic,
-					    normal);
+		ebsql_string_append_printf (
+			string, "%s.value REGEXP %Q",
+			field->aux_table_symbolic,
+			normal);
 	else
-		ebsql_string_append_printf (string, "summary.%s REGEXP %Q",
-					    field->dbname,
-					    normal);
+		ebsql_string_append_printf (
+			string, "summary.%s REGEXP %Q",
+			field->dbname,
+			normal);
 
 	g_free (normal);
 }
 
 static void
-field_test_query_exists (EBookSqlite        *ebsql,
-			 GString            *string,
-			 QueryFieldTest     *test)
+field_test_query_exists (EBookSqlite *ebsql,
+                         GString *string,
+                         QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 
@@ -4953,9 +5078,9 @@ typedef enum {
 
 static void
 ebsql_generate_constraints (EBookSqlite *ebsql,
-			    GString *string,
-			    GPtrArray *constraints,
-			    const gchar *sexp)
+                            GString *string,
+                            GPtrArray *constraints,
+                            const gchar *sexp)
 {
 	SubQueryContext *ctx;
 	QueryDelimiter *delim;
@@ -4966,16 +5091,16 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
 	/* If there are no constraints, we generate the fallback constraint for 'sexp' */
 	if (constraints == NULL) {
 		ebsql_string_append_printf (
-			string, 
+			string,
 			EBSQL_FUNC_COMPARE_VCARD " (%Q, %s)",
 			sexp, EBSQL_VCARD_FRAGMENT (ebsql));
 		return;
 	}
 
-	elements   = (QueryElement **)constraints->pdata;
+	elements = (QueryElement **) constraints->pdata;
 	n_elements = constraints->len;
 
-	ctx = sub_query_context_new();
+	ctx = sub_query_context_new ();
 
 	for (i = 0; i < n_elements; i++) {
 		GenerateFieldTest generate_test_func = NULL;
@@ -5010,7 +5135,7 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
 		}
 
 		if (elements[i]->query >= BOOK_QUERY_SUB_FIRST) {
-			delim = (QueryDelimiter *)elements[i];
+			delim = (QueryDelimiter *) elements[i];
 
 			switch (delim->query) {
 
@@ -5044,7 +5169,7 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
 		}
 
 		/* Find the appropriate field test generator */
-		test = (QueryFieldTest *)elements[i];
+		test = (QueryFieldTest *) elements[i];
 		if (test->query < G_N_ELEMENTS (field_test_func_table))
 			generate_test_func = field_test_func_table[test->query];
 
@@ -5070,10 +5195,10 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
  */
 static EbSqlRowFunc
 ebsql_generate_select (EBookSqlite *ebsql,
-		       GString *string,
-		       SearchType search_type,
-		       PreflightContext *context,
-		       GError **error)
+                       GString *string,
+                       SearchType search_type,
+                       PreflightContext *context,
+                       GError **error)
 {
 	EbSqlRowFunc callback = NULL;
 	gboolean add_auxiliary_tables = FALSE;
@@ -5086,12 +5211,12 @@ ebsql_generate_select (EBookSqlite *ebsql,
 	g_string_append (string, "SELECT ");
 	if (add_auxiliary_tables)
 		g_string_append (string, "DISTINCT ");
- 
+
 	switch (search_type) {
 	case SEARCH_FULL:
 		callback = collect_full_results_cb;
 		g_string_append (string, "summary.uid, ");
-		g_string_append (string, EBSQL_VCARD_FRAGMENT (ebsql)); 
+		g_string_append (string, EBSQL_VCARD_FRAGMENT (ebsql));
 		g_string_append (string, ", summary.bdata ");
 		break;
 	case SEARCH_UID_AND_REV:
@@ -5135,10 +5260,11 @@ ebsql_generate_select (EBookSqlite *ebsql,
 				 *
 				 *     WHERE email_list.value LIKE "boogieman%"
 				 */
-				ebsql_string_append_printf (string, " JOIN %Q AS %s ON +%s.uid = summary.uid",
-							    field->aux_table,
-							    field->aux_table_symbolic,
-							    field->aux_table_symbolic);
+				ebsql_string_append_printf (
+					string, " JOIN %Q AS %s ON +%s.uid = summary.uid",
+					field->aux_table,
+					field->aux_table_symbolic,
+					field->aux_table_symbolic);
 			}
 		}
 	}
@@ -5148,12 +5274,12 @@ ebsql_generate_select (EBookSqlite *ebsql,
 
 static gboolean
 ebsql_do_search_query (EBookSqlite *ebsql,
-		       PreflightContext *context,
-		       const gchar *sexp,
-		       SearchType search_type,
-		       GSList **return_data,
-		       GCancellable *cancellable,	
-		       GError **error)
+                       PreflightContext *context,
+                       const gchar *sexp,
+                       SearchType search_type,
+                       GSList **return_data,
+                       GCancellable *cancellable,
+                       GError **error)
 {
 	GString *string;
 	EbSqlRowFunc callback = NULL;
@@ -5164,11 +5290,8 @@ ebsql_do_search_query (EBookSqlite *ebsql,
 	string = g_string_sized_new (GENERATED_QUERY_BYTES);
 
 	/* Generate the leading SELECT statement */
-	callback = ebsql_generate_select (ebsql,
-					  string,
-					  search_type,
-					  context,
-					  error);
+	callback = ebsql_generate_select (
+		ebsql, string, search_type, context, error);
 
 	if (callback &&
 	    EBSQL_STATUS_GEN_CONSTRAINTS (context->status)) {
@@ -5176,16 +5299,15 @@ ebsql_do_search_query (EBookSqlite *ebsql,
 		 * Now generate the search expression on the main contacts table
 		 */
 		g_string_append (string, " WHERE ");
-		ebsql_generate_constraints (ebsql,
-					    string,
-					    context->constraints,
-					    sexp);
+		ebsql_generate_constraints (
+			ebsql, string, context->constraints, sexp);
 	}
 
 	if (callback)
-		success = ebsql_exec (ebsql, string->str,
-				      callback, return_data,
-				      cancellable, error);
+		success = ebsql_exec (
+			ebsql, string->str,
+			callback, return_data,
+			cancellable, error);
 
 	g_string_free (string, TRUE);
 
@@ -5206,11 +5328,11 @@ ebsql_do_search_query (EBookSqlite *ebsql,
  */
 static gboolean
 ebsql_search_query (EBookSqlite *ebsql,
-		    const gchar *sexp,
-		    SearchType search_type,
-		    GSList **return_data,
-		    GCancellable *cancellable,
-		    GError **error)
+                    const gchar *sexp,
+                    SearchType search_type,
+                    GSList **return_data,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	PreflightContext context = PREFLIGHT_CONTEXT_INIT;
 	gboolean success = FALSE;
@@ -5223,25 +5345,24 @@ ebsql_search_query (EBookSqlite *ebsql,
 	case PREFLIGHT_LIST_ALL:
 	case PREFLIGHT_NOT_SUMMARIZED:
 		/* No errors, let's really search */
-		success = ebsql_do_search_query (ebsql,
-						 &context,
-						 sexp,
-						 search_type,
-						 return_data,
-						 cancellable,
-						 error);
+		success = ebsql_do_search_query (
+			ebsql, &context, sexp,
+			search_type, return_data,
+			cancellable, error);
 		break;
 
 	case PREFLIGHT_INVALID:
-		EBSQL_SET_ERROR (error,
-				 E_BOOK_SQLITE_ERROR_INVALID_QUERY,
-				 _("Invalid query: %s"), sexp);
+		EBSQL_SET_ERROR (
+			error,
+			E_BOOK_SQLITE_ERROR_INVALID_QUERY,
+			_("Invalid query: %s"), sexp);
 		break;
 
 	case PREFLIGHT_UNSUPPORTED:
-		EBSQL_SET_ERROR_LITERAL (error,
-					 E_BOOK_SQLITE_ERROR_UNSUPPORTED_QUERY,
-					 _("Query contained unsupported elements"));
+		EBSQL_SET_ERROR_LITERAL (
+			error,
+			E_BOOK_SQLITE_ERROR_UNSUPPORTED_QUERY,
+			_("Query contained unsupported elements"));
 		break;
 	}
 
@@ -5266,7 +5387,7 @@ struct _CursorState {
 };
 
 struct _EbSqlCursor {
-	EBookBackendSExp *sexp;       /* An EBookBackendSExp based on the query, used by e_book_sqlite_cursor_compare() */
+	EBookBackendSExp *sexp;       /* An EBookBackendSExp based on the query, used by e_book_sqlite_cursor_compare () */
 	gchar         *select_vcards; /* The first fragment when querying results */
 	gchar         *select_count;  /* The first fragment when querying contact counts */
 	gchar         *query;         /* The SQL query expression derived from the passed search expression */
@@ -5297,8 +5418,8 @@ static void         cursor_state_set_from_vcard   (EBookSqlite          *ebsql,
 						   const gchar          *vcard);
 
 static CursorState *
-cursor_state_copy (EbSqlCursor        *cursor,
-		   CursorState        *state)
+cursor_state_copy (EbSqlCursor *cursor,
+                   CursorState *state)
 {
 	CursorState *copy;
 	gint i;
@@ -5316,8 +5437,8 @@ cursor_state_copy (EbSqlCursor        *cursor,
 }
 
 static void
-cursor_state_free (EbSqlCursor  *cursor,
-		   CursorState  *state)
+cursor_state_free (EbSqlCursor *cursor,
+                   CursorState *state)
 {
 	if (state) {
 		cursor_state_clear (cursor, state, EBSQL_CURSOR_ORIGIN_BEGIN);
@@ -5327,9 +5448,9 @@ cursor_state_free (EbSqlCursor  *cursor,
 }
 
 static void
-cursor_state_clear (EbSqlCursor        *cursor,
-		    CursorState        *state,
-		    EbSqlCursorOrigin   position)
+cursor_state_clear (EbSqlCursor *cursor,
+                    CursorState *state,
+                    EbSqlCursorOrigin position)
 {
 	gint i;
 
@@ -5344,10 +5465,10 @@ cursor_state_clear (EbSqlCursor        *cursor,
 }
 
 static void
-cursor_state_set_from_contact (EBookSqlite    *ebsql,
-			       EbSqlCursor    *cursor,
-			       CursorState    *state,
-			       EContact       *contact)
+cursor_state_set_from_contact (EBookSqlite *ebsql,
+                               EbSqlCursor *cursor,
+                               CursorState *state,
+                               EContact *contact)
 {
 	gint i;
 
@@ -5359,8 +5480,9 @@ cursor_state_set_from_contact (EBookSqlite    *ebsql,
 		gchar *sort_key;
 
 		if (string)
-			sort_key = e_collator_generate_key (ebsql->priv->collator,
-							    string, NULL);
+			sort_key = e_collator_generate_key (
+				ebsql->priv->collator,
+				string, NULL);
 		else
 			sort_key = g_strdup ("");
 
@@ -5380,9 +5502,9 @@ cursor_state_set_from_contact (EBookSqlite    *ebsql,
 
 static void
 cursor_state_set_from_vcard (EBookSqlite *ebsql,
-			     EbSqlCursor *cursor,
-			     CursorState *state,
-			     const gchar *vcard)
+                             EbSqlCursor *cursor,
+                             CursorState *state,
+                             const gchar *vcard)
 {
 	EContact *contact;
 
@@ -5392,10 +5514,10 @@ cursor_state_set_from_vcard (EBookSqlite *ebsql,
 }
 
 static gboolean
-ebsql_cursor_setup_query (EBookSqlite  *ebsql,
-			  EbSqlCursor  *cursor,
-			  const gchar  *sexp,
-			  GError      **error)
+ebsql_cursor_setup_query (EBookSqlite *ebsql,
+                          EbSqlCursor *cursor,
+                          const gchar *sexp,
+                          GError **error)
 {
 	PreflightContext context = PREFLIGHT_CONTEXT_INIT;
 	GString *string;
@@ -5405,9 +5527,10 @@ ebsql_cursor_setup_query (EBookSqlite  *ebsql,
 		query_preflight (&context, ebsql, sexp);
 
 		if (context.status > PREFLIGHT_NOT_SUMMARIZED) {
-			EBSQL_SET_ERROR_LITERAL (error,
-						 E_BOOK_SQLITE_ERROR_INVALID_QUERY,
-						 _("Invalid query for EbSqlCursor"));
+			EBSQL_SET_ERROR_LITERAL (
+				error,
+				E_BOOK_SQLITE_ERROR_INVALID_QUERY,
+				_("Invalid query for EbSqlCursor"));
 
 			preflight_context_clear (&context);
 			return FALSE;
@@ -5432,17 +5555,15 @@ ebsql_cursor_setup_query (EBookSqlite  *ebsql,
 
 	if (sexp == NULL || context.status == PREFLIGHT_LIST_ALL) {
 		cursor->query = NULL;
-		cursor->sexp  = NULL;
+		cursor->sexp = NULL;
 	} else {
 		/* Generate the constraints for our queries
 		 */
 		string = g_string_new (NULL);
-		ebsql_generate_constraints (ebsql,
-					    string,
-					    context.constraints,
-					    sexp);
+		ebsql_generate_constraints (
+			ebsql, string, context.constraints, sexp);
 		cursor->query = g_string_free (string, FALSE);
-		cursor->sexp  = e_book_backend_sexp_new (sexp);
+		cursor->sexp = e_book_backend_sexp_new (sexp);
 	}
 
 	preflight_context_clear (&context);
@@ -5451,11 +5572,11 @@ ebsql_cursor_setup_query (EBookSqlite  *ebsql,
 }
 
 static gchar *
-ebsql_cursor_order_by_fragment (EBookSqlite               *ebsql,
-				const EContactField       *sort_fields,
-				const EBookCursorSortType *sort_types,
-				guint                      n_sort_fields,
-				gboolean                   reverse)
+ebsql_cursor_order_by_fragment (EBookSqlite *ebsql,
+                                const EContactField *sort_fields,
+                                const EBookCursorSortType *sort_types,
+                                guint n_sort_fields,
+                                gboolean reverse)
 {
 	GString *string;
 	gint i;
@@ -5484,7 +5605,7 @@ ebsql_cursor_order_by_fragment (EBookSqlite               *ebsql,
 		if (reverse)
 			g_string_append (string, (sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "DESC" : "ASC"));
 		else
-			g_string_append (string, (sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "ASC"  : "DESC"));
+			g_string_append (string, (sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ? "ASC" : "DESC"));
 	}
 
 	/* Also order the UID, since it's our tie breaker */
@@ -5498,32 +5619,26 @@ ebsql_cursor_order_by_fragment (EBookSqlite               *ebsql,
 }
 
 static EbSqlCursor *
-ebsql_cursor_new (EBookSqlite               *ebsql,
-		  const gchar               *sexp,
-		  const EContactField       *sort_fields,
-		  const EBookCursorSortType *sort_types,
-		  guint                      n_sort_fields)
+ebsql_cursor_new (EBookSqlite *ebsql,
+                  const gchar *sexp,
+                  const EContactField *sort_fields,
+                  const EBookCursorSortType *sort_types,
+                  guint n_sort_fields)
 {
 	EbSqlCursor *cursor = g_slice_new0 (EbSqlCursor);
 
-	cursor->order = ebsql_cursor_order_by_fragment (ebsql,
-							sort_fields,
-							sort_types,
-							n_sort_fields,
-							FALSE);
-	cursor->reverse_order = ebsql_cursor_order_by_fragment (ebsql,
-								sort_fields,
-								sort_types,
-								n_sort_fields,
-								TRUE);
+	cursor->order = ebsql_cursor_order_by_fragment (
+		ebsql, sort_fields, sort_types, n_sort_fields, FALSE);
+	cursor->reverse_order = ebsql_cursor_order_by_fragment (
+		ebsql, sort_fields, sort_types, n_sort_fields, TRUE);
 
 	/* Sort parameters */
-	cursor->n_sort_fields  = n_sort_fields;
-	cursor->sort_fields    = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
-	cursor->sort_types     = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
+	cursor->n_sort_fields = n_sort_fields;
+	cursor->sort_fields = g_memdup (sort_fields, sizeof (EContactField) * n_sort_fields);
+	cursor->sort_types = g_memdup (sort_types,  sizeof (EBookCursorSortType) * n_sort_fields);
 
 	/* Cursor state */
-	cursor->state.values   = g_new0 (gchar *, n_sort_fields);
+	cursor->state.values = g_new0 (gchar *, n_sort_fields);
 	cursor->state.last_uid = NULL;
 	cursor->state.position = EBSQL_CURSOR_ORIGIN_BEGIN;
 
@@ -5550,17 +5665,17 @@ ebsql_cursor_free (EbSqlCursor *cursor)
 	}
 }
 
-#define GREATER_OR_LESS(cursor, idx, reverse)				\
-	(reverse ?							\
-	 (((EbSqlCursor *)cursor)->sort_types[idx] == E_BOOK_CURSOR_SORT_ASCENDING ? '<' : '>') : \
-	 (((EbSqlCursor *)cursor)->sort_types[idx] == E_BOOK_CURSOR_SORT_ASCENDING ? '>' : '<'))
+#define GREATER_OR_LESS(cursor, idx, reverse) \
+	(reverse ? \
+	 (((EbSqlCursor *) cursor)->sort_types[idx] == E_BOOK_CURSOR_SORT_ASCENDING ? '<' : '>') : \
+	 (((EbSqlCursor *) cursor)->sort_types[idx] == E_BOOK_CURSOR_SORT_ASCENDING ? '>' : '<'))
 
 static inline void
-ebsql_cursor_format_equality (EBookSqlite    *ebsql,
-			      GString        *string,
-			      EContactField   field_id,
-			      const gchar    *value,
-			      gchar           equality)
+ebsql_cursor_format_equality (EBookSqlite *ebsql,
+                              GString *string,
+                              EContactField field_id,
+                              const gchar *value,
+                              gchar equality)
 {
 	SummaryField *field = summary_field_get (ebsql, field_id);
 
@@ -5574,9 +5689,10 @@ ebsql_cursor_format_equality (EBookSqlite    *ebsql,
 		ebsql_string_append_printf (string, "%c %Q", equality, value);
 
 	} else {
-		ebsql_string_append_printf (string, "(%s %c %Q ",
-					    EBSQL_VCARD_FRAGMENT (ebsql),
-					    equality, value);
+		ebsql_string_append_printf (
+			string, "(%s %c %Q ",
+			EBSQL_VCARD_FRAGMENT (ebsql),
+			equality, value);
 
 		g_string_append (string, "COLLATE " EBSQL_COLLATE_PREFIX);
 		g_string_append (string, e_contact_field_name (field_id));
@@ -5585,11 +5701,11 @@ ebsql_cursor_format_equality (EBookSqlite    *ebsql,
 }
 
 static gchar *
-ebsql_cursor_constraints (EBookSqlite  *ebsql,
-			  EbSqlCursor  *cursor,
-			  CursorState  *state,
-			  gboolean      reverse,
-			  gboolean      include_current_uid)
+ebsql_cursor_constraints (EBookSqlite *ebsql,
+                          EbSqlCursor *cursor,
+                          CursorState *state,
+                          gboolean reverse,
+                          gboolean include_current_uid)
 {
 	GString *string;
 	gint i, j;
@@ -5619,8 +5735,8 @@ ebsql_cursor_constraints (EBookSqlite  *ebsql,
 	for (i = 0; i <= cursor->n_sort_fields; i++) {
 
 		/* Break once we hit a NULL value */
-		if ((i  < cursor->n_sort_fields && state->values[i] == NULL) ||
-		    (i == cursor->n_sort_fields && state->last_uid  == NULL))
+		if ((i < cursor->n_sort_fields && state->values[i] == NULL) ||
+		    (i == cursor->n_sort_fields && state->last_uid == NULL))
 			break;
 
 		/* Between each qualifier, add an 'OR' */
@@ -5648,15 +5764,17 @@ ebsql_cursor_constraints (EBookSqlite  *ebsql,
 				g_string_append_c (string, '(');
 
 			/* Append the UID tie breaker */
-			ebsql_string_append_printf (string,
-						    "summary.uid %c %Q",
-						    reverse ? '<' : '>',
-						    state->last_uid);
+			ebsql_string_append_printf (
+				string,
+				"summary.uid %c %Q",
+				reverse ? '<' : '>',
+				state->last_uid);
 
 			if (include_current_uid)
-				ebsql_string_append_printf (string,
-							    " OR summary.uid = %Q)",
-							    state->last_uid);
+				ebsql_string_append_printf (
+					string,
+					" OR summary.uid = %Q)",
+					state->last_uid);
 
 		} else {
 
@@ -5697,10 +5815,10 @@ ebsql_cursor_constraints (EBookSqlite  *ebsql,
 }
 
 static gboolean
-cursor_count_total_locked (EBookSqlite   *ebsql,
-			   EbSqlCursor   *cursor,
-			   gint          *total,
-			   GError       **error)
+cursor_count_total_locked (EBookSqlite *ebsql,
+                           EbSqlCursor *cursor,
+                           gint *total,
+                           GError **error)
 {
 	GString *query;
 	gboolean success;
@@ -5725,10 +5843,10 @@ cursor_count_total_locked (EBookSqlite   *ebsql,
 }
 
 static gboolean
-cursor_count_position_locked (EBookSqlite  *ebsql,
-			      EbSqlCursor  *cursor,
-			      gint         *position,
-			      GError      **error)
+cursor_count_position_locked (EBookSqlite *ebsql,
+                              EbSqlCursor *cursor,
+                              gint *position,
+                              GError **error)
 {
 	GString *query;
 	gboolean success;
@@ -5757,9 +5875,8 @@ cursor_count_position_locked (EBookSqlite  *ebsql,
 		 * results leading up to the current cursor value, including
 		 * the cursor value
 		 */
-		constraints = ebsql_cursor_constraints (ebsql, cursor,
-							&(cursor->state),
-							TRUE, TRUE);
+		constraints = ebsql_cursor_constraints (
+			ebsql, cursor, &(cursor->state), TRUE, TRUE);
 
 		g_string_append_c (query, '(');
 		g_string_append (query, constraints);
@@ -5796,8 +5913,9 @@ e_book_sqlite_finalize (GObject *object)
 	EBookSqlite *ebsql = E_BOOK_SQLITE (object);
 	EBookSqlitePrivate *priv = ebsql->priv;
 
-	summary_fields_array_free (priv->summary_fields, 
-				   priv->n_summary_fields);
+	summary_fields_array_free (
+		priv->summary_fields,
+		priv->n_summary_fields);
 
 	g_free (priv->folderid);
 	g_free (priv->path);
@@ -5847,10 +5965,8 @@ e_book_sqlite_class_init (EBookSqliteClass *class)
 static void
 e_book_sqlite_init (EBookSqlite *ebsql)
 {
-	ebsql->priv = 
-		G_TYPE_INSTANCE_GET_PRIVATE (ebsql,
-					     E_TYPE_BOOK_SQLITE,
-					     EBookSqlitePrivate);
+	ebsql->priv = E_BOOK_SQLITE_GET_PRIVATE (ebsql);
+
 	g_mutex_init (&ebsql->priv->lock);
 	g_mutex_init (&ebsql->priv->updates_lock);
 }
@@ -5860,12 +5976,12 @@ e_book_sqlite_init (EBookSqlite *ebsql)
  **********************************************************/
 static EBookSqlite *
 ebsql_new_default (const gchar *path,
-		   EbSqlVCardCallback vcard_callback,
-		   EbSqlChangeCallback change_callback,
-		   gpointer user_data,
-		   GDestroyNotify user_data_destroy,
-		   GCancellable *cancellable,
-		   GError **error)
+                   EbSqlVCardCallback vcard_callback,
+                   EbSqlChangeCallback change_callback,
+                   gpointer user_data,
+                   GDestroyNotify user_data_destroy,
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	EBookSqlite *ebsql;
 	GArray *summary_fields;
@@ -5924,8 +6040,8 @@ ebsql_new_default (const gchar *path,
  **/
 EBookSqlite *
 e_book_sqlite_new (const gchar *path,
-		   GCancellable *cancellable,
-		   GError **error)
+                   GCancellable *cancellable,
+                   GError **error)
 {
 	g_return_val_if_fail (path && path[0], NULL);
 
@@ -5974,13 +6090,13 @@ e_book_sqlite_new (const gchar *path,
  **/
 EBookSqlite *
 e_book_sqlite_new_full (const gchar *path,
-			ESourceBackendSummarySetup *setup,
-			EbSqlVCardCallback vcard_callback,
-			EbSqlChangeCallback change_callback,
-			gpointer user_data,
-			GDestroyNotify user_data_destroy,
-			GCancellable *cancellable,
-			GError **error)
+                        ESourceBackendSummarySetup *setup,
+                        EbSqlVCardCallback vcard_callback,
+                        EbSqlChangeCallback change_callback,
+                        gpointer user_data,
+                        GDestroyNotify user_data_destroy,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	EBookSqlite *ebsql = NULL;
 	EContactField *fields;
@@ -5994,29 +6110,32 @@ e_book_sqlite_new_full (const gchar *path,
 	g_return_val_if_fail (setup == NULL || E_IS_SOURCE_BACKEND_SUMMARY_SETUP (setup), NULL);
 
 	if (!setup)
-		return ebsql_new_default (path,
-					  vcard_callback,
-					  change_callback,
-					  user_data,
-					  user_data_destroy,
-					  cancellable, error);
+		return ebsql_new_default (
+			path,
+			vcard_callback,
+			change_callback,
+			user_data,
+			user_data_destroy,
+			cancellable, error);
 
-	fields         = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
+	fields = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
 	indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);
 
 	/* No specified summary fields indicates the default summary configuration should be used */
 	if (n_fields <= 0 || n_fields >= EBSQL_MAX_SUMMARY_FIELDS) {
 
 		if (n_fields)
-			g_warning ("EBookSqlite refused to create addressbook with over %d summary fields",
-				   EBSQL_MAX_SUMMARY_FIELDS);
+			g_warning (
+				"EBookSqlite refused to create addressbook with over %d summary fields",
+				EBSQL_MAX_SUMMARY_FIELDS);
 
-		ebsql = ebsql_new_default (path,
-					   vcard_callback,
-					   change_callback,
-					   user_data,
-					   user_data_destroy,
-					   cancellable, error);
+		ebsql = ebsql_new_default (
+			path,
+			vcard_callback,
+			change_callback,
+			user_data,
+			user_data_destroy,
+			cancellable, error);
 		g_free (fields);
 		g_free (index_types);
 		g_free (indexed_fields);
@@ -6043,7 +6162,7 @@ e_book_sqlite_new_full (const gchar *path,
 
 		/* Properly free the array */
 		n_sfields = summary_fields->len;
-		sfields   = (SummaryField *)g_array_free (summary_fields, FALSE);
+		sfields = (SummaryField *) g_array_free (summary_fields, FALSE);
 		summary_fields_array_free (sfields, n_sfields);
 
 		g_free (fields);
@@ -6062,7 +6181,7 @@ e_book_sqlite_new_full (const gchar *path,
 
 	ebsql = ebsql_new_internal (
 		path, vcard_callback, change_callback,
-		user_data, user_data_destroy, 
+		user_data, user_data_destroy,
 		(SummaryField *) summary_fields->data,
 		summary_fields->len,
 		cancellable, error);
@@ -6102,9 +6221,9 @@ e_book_sqlite_new_full (const gchar *path,
  **/
 gboolean
 e_book_sqlite_lock (EBookSqlite *ebsql,
-		    EbSqlLockType lock_type,
-		    GCancellable *cancellable,
-		    GError **error)
+                    EbSqlLockType lock_type,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	gboolean success;
 
@@ -6162,8 +6281,8 @@ e_book_sqlite_lock (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_unlock (EBookSqlite *ebsql,
-		      EbSqlUnlockAction action,
-		      GError **error)
+                      EbSqlUnlockAction action,
+                      GError **error)
 {
 	gboolean success = FALSE;
 
@@ -6227,11 +6346,11 @@ e_book_sqlite_ref_collator (EBookSqlite *ebsql)
  **/
 gboolean
 e_book_sqlite_add_contact (EBookSqlite *ebsql,
-			   EContact *contact,
-			   const gchar *extra,
-			   gboolean replace,
-			   GCancellable *cancellable,
-			   GError **error)
+                           EContact *contact,
+                           const gchar *extra,
+                           gboolean replace,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	GSList l;
 	GSList el;
@@ -6242,7 +6361,7 @@ e_book_sqlite_add_contact (EBookSqlite *ebsql,
 	l.data = contact;
 	l.next = NULL;
 
-	el.data = (gpointer)extra;
+	el.data = (gpointer) extra;
 	el.next = NULL;
 
 	return e_book_sqlite_add_contacts (ebsql, &l, &el, replace, cancellable, error);
@@ -6271,11 +6390,11 @@ e_book_sqlite_add_contact (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_add_contacts (EBookSqlite *ebsql,
-			    GSList *contacts,
-			    GSList *extra,
-			    gboolean replace,
-			    GCancellable *cancellable,
-			    GError **error)
+                            GSList *contacts,
+                            GSList *extra,
+                            gboolean replace,
+                            GCancellable *cancellable,
+                            GError **error)
 {
 	GSList *l, *ll;
 	gboolean success = TRUE;
@@ -6299,12 +6418,13 @@ e_book_sqlite_add_contacts (EBookSqlite *ebsql,
 		const gchar *extra_data = NULL;
 
 		if (ll)
-			extra_data = (const gchar *)ll->data;
+			extra_data = (const gchar *) ll->data;
 
-		success = ebsql_insert_contact (ebsql,
-						EBSQL_CHANGE_CONTACT_ADDED,
-						contact, NULL, extra_data,
-						replace, error);
+		success = ebsql_insert_contact (
+			ebsql,
+			EBSQL_CHANGE_CONTACT_ADDED,
+			contact, NULL, extra_data,
+			replace, error);
 	}
 
 	if (success)
@@ -6333,9 +6453,9 @@ e_book_sqlite_add_contacts (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_remove_contact (EBookSqlite *ebsql,
-			      const gchar *uid,
-			      GCancellable *cancellable,
-			      GError **error)
+                              const gchar *uid,
+                              GCancellable *cancellable,
+                              GError **error)
 {
 	GSList l;
 
@@ -6388,9 +6508,9 @@ generate_delete_stmt (const gchar *table,
  **/
 gboolean
 e_book_sqlite_remove_contacts (EBookSqlite *ebsql,
-			       GSList *uids,
-			       GCancellable *cancellable,
-			       GError **error)
+                               GSList *uids,
+                               GCancellable *cancellable,
+                               GError **error)
 {
 	gboolean success = TRUE;
 	gint i;
@@ -6451,9 +6571,9 @@ e_book_sqlite_remove_contacts (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_has_contact (EBookSqlite *ebsql,
-			   const gchar *uid,
-			   gboolean *exists,
-			   GError **error)
+                           const gchar *uid,
+                           gboolean *exists,
+                           GError **error)
 {
 	gboolean local_exists = FALSE;
 	gboolean success;
@@ -6463,10 +6583,11 @@ e_book_sqlite_has_contact (EBookSqlite *ebsql,
 	g_return_val_if_fail (exists != NULL, FALSE);
 
 	EBSQL_LOCK_MUTEX (&ebsql->priv->lock);
-	success = ebsql_exec_printf (ebsql,
-				     "SELECT uid FROM %Q WHERE uid = %Q",
-				     get_exists_cb, &local_exists, NULL, error,
-				     ebsql->priv->folderid, uid);
+	success = ebsql_exec_printf (
+		ebsql,
+		"SELECT uid FROM %Q WHERE uid = %Q",
+		get_exists_cb, &local_exists, NULL, error,
+		ebsql->priv->folderid, uid);
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
 	*exists = local_exists;
@@ -6493,10 +6614,10 @@ e_book_sqlite_has_contact (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_get_contact (EBookSqlite *ebsql,
-			   const gchar *uid,
-			   gboolean meta_contact,	
-			   EContact **ret_contact,
-			   GError **error)
+                           const gchar *uid,
+                           gboolean meta_contact,
+                           EContact **ret_contact,
+                           GError **error)
 {
 	gboolean success = FALSE;
 	gchar *vcard = NULL;
@@ -6505,11 +6626,8 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (ret_contact != NULL && *ret_contact == NULL, FALSE);
 
-	success = e_book_sqlite_get_vcard (ebsql,
-					   uid,
-					   meta_contact,	
-					   &vcard,
-					   error);
+	success = e_book_sqlite_get_vcard (
+		ebsql, uid, meta_contact, &vcard, error);
 
 	if (success && vcard) {
 		*ret_contact = e_contact_new_from_vcard_with_uid (vcard, uid);
@@ -6538,10 +6656,10 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_get_vcard (EBookSqlite *ebsql,
-			 const gchar *uid,
-			 gboolean meta_contact,	
-			 gchar **ret_vcard,
-			 GError **error)
+                         const gchar *uid,
+                         gboolean meta_contact,
+                         gchar **ret_vcard,
+                         GError **error)
 {
 	gboolean success = FALSE;
 	gchar *vcard = NULL;
@@ -6567,14 +6685,14 @@ e_book_sqlite_get_vcard (EBookSqlite *ebsql,
 			vcard = search_data->vcard;
 			search_data->vcard = NULL;
 
-			g_slist_free_full (vcards, (GDestroyNotify)e_book_sqlite_search_data_free);
+			g_slist_free_full (vcards, (GDestroyNotify) e_book_sqlite_search_data_free);
 			vcards = NULL;
 		}
 
 	} else {
 		success = ebsql_exec_printf (
 			ebsql, "SELECT %s FROM %Q AS summary WHERE summary.uid = %Q",
-			get_string_cb, &vcard, NULL, error, 
+			get_string_cb, &vcard, NULL, error,
 			EBSQL_VCARD_FRAGMENT (ebsql), ebsql->priv->folderid, uid);
 	}
 
@@ -6583,9 +6701,10 @@ e_book_sqlite_get_vcard (EBookSqlite *ebsql,
 	*ret_vcard = vcard;
 
 	if (success && !vcard) {
-		EBSQL_SET_ERROR (error,
-				 E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND,
-				 _("Contact '%s' not found"), uid);
+		EBSQL_SET_ERROR (
+			error,
+			E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND,
+			_("Contact '%s' not found"), uid);
 		success = FALSE;
 	}
 
@@ -6607,9 +6726,9 @@ e_book_sqlite_get_vcard (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_set_contact_extra (EBookSqlite *ebsql,
-				 const gchar *uid,
-				 const gchar *extra,
-				 GError **error)
+                                 const gchar *uid,
+                                 const gchar *extra,
+                                 GError **error)
 {
 	gboolean success;
 
@@ -6619,7 +6738,7 @@ e_book_sqlite_set_contact_extra (EBookSqlite *ebsql,
 	EBSQL_LOCK_MUTEX (&ebsql->priv->lock);
 	success = ebsql_exec_printf (
 		ebsql, "UPDATE %Q SET bdata = %Q WHERE uid = %Q",
-		NULL, NULL, NULL, error, 
+		NULL, NULL, NULL, error,
 		ebsql->priv->folderid, uid);
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
@@ -6642,9 +6761,9 @@ e_book_sqlite_set_contact_extra (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
-				 const gchar *uid,
-				 gchar **ret_extra,
-				 GError **error)
+                                 const gchar *uid,
+                                 gchar **ret_extra,
+                                 GError **error)
 {
 	gboolean success;
 
@@ -6655,7 +6774,7 @@ e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
 	EBSQL_LOCK_MUTEX (&ebsql->priv->lock);
 	success = ebsql_exec_printf (
 		ebsql, "SELECT bdata FROM %Q WHERE uid = %Q",
-		get_string_cb, ret_extra, NULL, error, 
+		get_string_cb, ret_extra, NULL, error,
 		ebsql->priv->folderid, uid);
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
@@ -6691,11 +6810,11 @@ e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_search (EBookSqlite *ebsql,
-		      const gchar *sexp,
-		      gboolean meta_contacts,
-		      GSList **ret_list,
-		      GCancellable *cancellable,
-		      GError **error)
+                      const gchar *sexp,
+                      gboolean meta_contacts,
+                      GSList **ret_list,
+                      GCancellable *cancellable,
+                      GError **error)
 {
 	gboolean success;
 
@@ -6703,12 +6822,13 @@ e_book_sqlite_search (EBookSqlite *ebsql,
 	g_return_val_if_fail (ret_list != NULL && *ret_list == NULL, FALSE);
 
 	EBSQL_LOCK_OR_RETURN (ebsql, cancellable, FALSE);
-	success = ebsql_search_query (ebsql, sexp,
-				      meta_contacts ? 
-				      SEARCH_UID_AND_REV : SEARCH_FULL,
-				      ret_list,
-				      cancellable,
-				      error);	
+	success = ebsql_search_query (
+		ebsql, sexp,
+		meta_contacts ?
+		SEARCH_UID_AND_REV : SEARCH_FULL,
+		ret_list,
+		cancellable,
+		error);
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
 	return success;
@@ -6733,10 +6853,10 @@ e_book_sqlite_search (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_search_uids (EBookSqlite *ebsql,
-			   const gchar *sexp,
-			   GSList **ret_list,
-			   GCancellable *cancellable,
-			   GError **error)
+                           const gchar *sexp,
+                           GSList **ret_list,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	gboolean success;
 
@@ -6765,9 +6885,9 @@ e_book_sqlite_search_uids (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_get_key_value (EBookSqlite *ebsql,
-			     const gchar *key,
-			     gchar **value,
-			     GError **error)
+                             const gchar *key,
+                             gchar **value,
+                             GError **error)
 {
 	gboolean success;
 
@@ -6776,10 +6896,11 @@ e_book_sqlite_get_key_value (EBookSqlite *ebsql,
 	g_return_val_if_fail (value != NULL && *value == NULL, FALSE);
 
 	EBSQL_LOCK_MUTEX (&ebsql->priv->lock);
-	success = ebsql_exec_printf (ebsql,
-				     "SELECT value FROM keys WHERE folder_id = %Q AND key = %Q",
-				     get_string_cb, value, NULL, error,
-				     ebsql->priv->folderid, key);
+	success = ebsql_exec_printf (
+		ebsql,
+		"SELECT value FROM keys WHERE folder_id = %Q AND key = %Q",
+		get_string_cb, value, NULL, error,
+		ebsql->priv->folderid, key);
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
 	return success;
@@ -6800,9 +6921,9 @@ e_book_sqlite_get_key_value (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_set_key_value (EBookSqlite *ebsql,
-			     const gchar *key,
-			     const gchar *value,
-			     GError **error)
+                             const gchar *key,
+                             const gchar *value,
+                             GError **error)
 {
 	gboolean success;
 
@@ -6835,9 +6956,9 @@ e_book_sqlite_set_key_value (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_get_key_value_int (EBookSqlite *ebsql,
-				 const gchar *key,
-				 gint *value,
-				 GError **error)
+                                 const gchar *key,
+                                 gint *value,
+                                 GError **error)
 {
 	gboolean success;
 	gchar *str_value = NULL;
@@ -6876,9 +6997,9 @@ e_book_sqlite_get_key_value_int (EBookSqlite *ebsql,
  **/
 gboolean
 e_book_sqlite_set_key_value_int (EBookSqlite *ebsql,
-				 const gchar *key,
-				 gint value,
-				 GError **error)
+                                 const gchar *key,
+                                 gint value,
+                                 GError **error)
 {
 	gboolean success;
 	gchar *str_value = NULL;
@@ -6887,10 +7008,8 @@ e_book_sqlite_set_key_value_int (EBookSqlite *ebsql,
 	g_return_val_if_fail (key != NULL, FALSE);
 
 	str_value = g_strdup_printf ("%d", value);
-	success = e_book_sqlite_set_key_value (ebsql,
-						       key,
-						       str_value,
-						       error);
+	success = e_book_sqlite_set_key_value (
+		ebsql, key, str_value, error);
 	g_free (str_value);
 
 	return success;
@@ -6941,9 +7060,9 @@ e_book_sqlite_search_data_free (EbSqlSearchData *data)
  */
 gboolean
 e_book_sqlite_set_locale (EBookSqlite *ebsql,
-			  const gchar *lc_collate,
-			  GCancellable *cancellable,
-			  GError **error)
+                          const gchar *lc_collate,
+                          GCancellable *cancellable,
+                          GError **error)
 {
 	gboolean success;
 	gchar *stored_lc_collate = NULL;
@@ -7001,9 +7120,9 @@ e_book_sqlite_set_locale (EBookSqlite *ebsql,
  * Since: 3.12
  */
 gboolean
-e_book_sqlite_get_locale (EBookSqlite  *ebsql,
-			  gchar       **locale_out,
-			  GError      **error)
+e_book_sqlite_get_locale (EBookSqlite *ebsql,
+                          gchar **locale_out,
+                          GError **error)
 {
 	gboolean success;
 	GError *local_error = NULL;
@@ -7055,12 +7174,12 @@ e_book_sqlite_get_locale (EBookSqlite  *ebsql,
  * Since: 3.12
  */
 EbSqlCursor *
-e_book_sqlite_cursor_new (EBookSqlite               *ebsql,
-			  const gchar               *sexp,
-			  const EContactField       *sort_fields,
-			  const EBookCursorSortType *sort_types,
-			  guint                      n_sort_fields,
-			  GError                   **error)
+e_book_sqlite_cursor_new (EBookSqlite *ebsql,
+                          const gchar *sexp,
+                          const EContactField *sort_fields,
+                          const EBookCursorSortType *sort_types,
+                          guint n_sort_fields,
+                          GError **error)
 {
 	EbSqlCursor *cursor;
 	gint i;
@@ -7084,11 +7203,13 @@ e_book_sqlite_cursor_new (EBookSqlite               *ebsql,
 
 	/* We only support string fields to sort the cursor */
 	for (i = 0; i < n_sort_fields; i++) {
-		EBSQL_NOTE (CURSOR,
-			    g_printerr ("Building cursor to sort '%s' in '%s' order\n",
-					e_contact_field_name (sort_fields[i]),
-					sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ?
-					"ascending" : "descending"));
+		EBSQL_NOTE (
+			CURSOR,
+			g_printerr (
+				"Building cursor to sort '%s' in '%s' order\n",
+				e_contact_field_name (sort_fields[i]),
+				sort_types[i] == E_BOOK_CURSOR_SORT_ASCENDING ?
+				"ascending" : "descending"));
 
 		if (e_contact_field_type (sort_fields[i]) != G_TYPE_STRING) {
 			EBSQL_SET_ERROR_LITERAL (
@@ -7112,10 +7233,12 @@ e_book_sqlite_cursor_new (EBookSqlite               *ebsql,
 
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
-	EBSQL_NOTE (CURSOR,
-		    g_printerr ("%s cursor with search expression '%s'\n",
-				cursor ? "Successfully created" : "Failed to create",
-				sexp));
+	EBSQL_NOTE (
+		CURSOR,
+		g_printerr (
+			"%s cursor with search expression '%s'\n",
+			cursor ? "Successfully created" : "Failed to create",
+			sexp));
 
 	return cursor;
 }
@@ -7131,7 +7254,7 @@ e_book_sqlite_cursor_new (EBookSqlite               *ebsql,
  */
 void
 e_book_sqlite_cursor_free (EBookSqlite *ebsql,
-			   EbSqlCursor *cursor)
+                           EbSqlCursor *cursor)
 {
 	g_return_if_fail (E_IS_BOOK_SQLITE (ebsql));
 
@@ -7149,9 +7272,9 @@ typedef struct {
 
 static gint
 collect_results_for_cursor_cb (gpointer ref,
-			       gint ncol,
-			       gchar **cols,
-			       gchar **names)
+                               gint ncol,
+                               gchar **cols,
+                               gchar **names)
 {
 	CursorCollectData *data = ref;
 
@@ -7211,14 +7334,14 @@ collect_results_for_cursor_cb (gpointer ref,
  * Since: 3.12
  */
 gint
-e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
-			   EbSqlCursor          *cursor,
-			   EbSqlCursorStepFlags  flags,
-			   EbSqlCursorOrigin     origin,
-			   gint                  count,
-			   GSList              **results,
-			   GCancellable         *cancellable,
-			   GError              **error)
+e_book_sqlite_cursor_step (EBookSqlite *ebsql,
+                           EbSqlCursor *cursor,
+                           EbSqlCursorStepFlags flags,
+                           EbSqlCursorOrigin origin,
+                           gint count,
+                           GSList **results,
+                           GCancellable *cancellable,
+                           GError **error)
 {
 	CursorCollectData data = { NULL, NULL, NULL, FALSE, 0 };
 	CursorState *state;
@@ -7234,12 +7357,13 @@ e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
 	/* Lock and check cancellable early */
 	EBSQL_LOCK_OR_RETURN (ebsql, cancellable, -1);
 
-	EBSQL_NOTE (CURSOR,
-		    g_printerr ("Cursor requested to step by %d with origin %s will move: %s will fetch: %s\n",
-				count, EBSQL_ORIGIN_STR (origin),
-				(flags & EBSQL_CURSOR_STEP_MOVE) ? "yes" : "no",
-				(flags & EBSQL_CURSOR_STEP_FETCH) ? "yes" : "no"));
-
+	EBSQL_NOTE (
+		CURSOR,
+		g_printerr (
+			"Cursor requested to step by %d with origin %s will move: %s will fetch: %s\n",
+			count, EBSQL_ORIGIN_STR (origin),
+			(flags & EBSQL_CURSOR_STEP_MOVE) ? "yes" : "no",
+			(flags & EBSQL_CURSOR_STEP_FETCH) ? "yes" : "no"));
 
 	/* Check if this step should result in an end of list error first */
 	try_position = cursor->state.position;
@@ -7251,15 +7375,15 @@ e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
 		EBSQL_SET_ERROR_LITERAL (
 			error, E_BOOK_SQLITE_ERROR_END_OF_LIST,
 			_("Tried to step a cursor in reverse, "
-			  "but cursor is already at the beginning of the contact list"));
-		
+			"but cursor is already at the beginning of the contact list"));
+
 		EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 		return -1;
 	} else if (try_position == EBSQL_CURSOR_ORIGIN_END && count > 0) {
 		EBSQL_SET_ERROR_LITERAL (
 			error, E_BOOK_SQLITE_ERROR_END_OF_LIST,
 			_("Tried to step a cursor forwards, "
-			  "but cursor is already at the end of the contact list"));
+			"but cursor is already at the end of the contact list"));
 
 		EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 		return -1;
@@ -7330,11 +7454,8 @@ e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
 		else
 			g_string_append (query, " AND ");
 
-		constraints = ebsql_cursor_constraints (ebsql,
-							cursor,
-							state,
-							count < 0,
-							FALSE);
+		constraints = ebsql_cursor_constraints (
+			ebsql, cursor, state, count < 0, FALSE);
 
 		g_string_append_c (query, '(');
 		g_string_append (query, constraints);
@@ -7357,9 +7478,10 @@ e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
 	data.collect_results = (flags & EBSQL_CURSOR_STEP_FETCH) != 0;
 
 	/* Execute the query */
-	success = ebsql_exec (ebsql, query->str,
-			      collect_results_for_cursor_cb, &data,
-			      cancellable, error);
+	success = ebsql_exec (
+		ebsql, query->str,
+		collect_results_for_cursor_cb, &data,
+		cancellable, error);
 
 	/* Lock was obtained above */
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
@@ -7395,8 +7517,9 @@ e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
 
 	/* Cleanup what was allocated by collect_results_for_cursor_cb() */
 	if (data.results)
-		g_slist_free_full (data.results,
-				   (GDestroyNotify)e_book_sqlite_search_data_free);
+		g_slist_free_full (
+			data.results,
+			(GDestroyNotify) e_book_sqlite_search_data_free);
 	g_free (data.alloc_vcard);
 
 	/* Free the copy state if we were working with a copy */
@@ -7434,8 +7557,8 @@ e_book_sqlite_cursor_step (EBookSqlite          *ebsql,
  */
 void
 e_book_sqlite_cursor_set_target_alphabetic_index (EBookSqlite *ebsql,
-						  EbSqlCursor *cursor,
-						  gint         idx)
+                                                  EbSqlCursor *cursor,
+                                                  gint idx)
 {
 	gint n_labels = 0;
 
@@ -7443,8 +7566,9 @@ e_book_sqlite_cursor_set_target_alphabetic_index (EBookSqlite *ebsql,
 	g_return_if_fail (cursor != NULL);
 	g_return_if_fail (idx >= 0);
 
-	e_collator_get_index_labels (ebsql->priv->collator, &n_labels,
-				     NULL, NULL, NULL);
+	e_collator_get_index_labels (
+		ebsql->priv->collator, &n_labels,
+		NULL, NULL, NULL);
 	g_return_if_fail (idx < n_labels);
 
 	cursor_state_clear (cursor, &(cursor->state), EBSQL_CURSOR_ORIGIN_CURRENT);
@@ -7453,12 +7577,12 @@ e_book_sqlite_cursor_set_target_alphabetic_index (EBookSqlite *ebsql,
 		gchar *index_key;
 
 		index_key = e_collator_generate_key_for_index (ebsql->priv->collator, idx);
-		field     = summary_field_get (ebsql, cursor->sort_fields[0]);
+		field = summary_field_get (ebsql, cursor->sort_fields[0]);
 
 		if (field && (field->index & INDEX_FLAG (SORT_KEY)) != 0) {
 			cursor->state.values[0] = index_key;
 		} else {
-			cursor->state.values[0] = 
+			cursor->state.values[0] =
 				ebsql_encode_vcard_sort_key (index_key);
 			g_free (index_key);
 		}
@@ -7482,10 +7606,10 @@ e_book_sqlite_cursor_set_target_alphabetic_index (EBookSqlite *ebsql,
  * Since: 3.12
  */
 gboolean
-e_book_sqlite_cursor_set_sexp (EBookSqlite  *ebsql,
-			       EbSqlCursor  *cursor,
-			       const gchar  *sexp,
-			       GError      **error)
+e_book_sqlite_cursor_set_sexp (EBookSqlite *ebsql,
+                               EbSqlCursor *cursor,
+                               const gchar *sexp,
+                               GError **error)
 {
 	gboolean success;
 
@@ -7523,12 +7647,12 @@ e_book_sqlite_cursor_set_sexp (EBookSqlite  *ebsql,
  * Since: 3.12
  */
 gboolean
-e_book_sqlite_cursor_calculate (EBookSqlite  *ebsql,
-				EbSqlCursor  *cursor,
-				gint         *total,
-				gint         *position,
-				GCancellable *cancellable,
-				GError      **error)
+e_book_sqlite_cursor_calculate (EBookSqlite *ebsql,
+                                EbSqlCursor *cursor,
+                                gint *total,
+                                gint *position,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	gboolean success = TRUE;
 	gint local_total = 0;
@@ -7577,7 +7701,6 @@ e_book_sqlite_cursor_calculate (EBookSqlite  *ebsql,
 		/* The GError is already set. */
 		ebsql_rollback_transaction (ebsql, NULL);
 
-
 	EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 
 	/* In the case we're at the end, we just set the position
@@ -7607,9 +7730,9 @@ e_book_sqlite_cursor_calculate (EBookSqlite  *ebsql,
  */
 gint
 e_book_sqlite_cursor_compare_contact (EBookSqlite *ebsql,
-				      EbSqlCursor *cursor,
-				      EContact    *contact,
-				      gboolean    *matches_sexp)
+                                      EbSqlCursor *cursor,
+                                      EContact *contact,
+                                      gboolean *matches_sexp)
 {
 	EBookSqlitePrivate *priv;
 	gint i;
@@ -7636,10 +7759,10 @@ e_book_sqlite_cursor_compare_contact (EBookSqlite *ebsql,
 		const gchar *field_value;
 		gchar *freeme = NULL;
 
-		field_value = (const gchar *)e_contact_get_const (contact, cursor->sort_fields[i]);
+		field_value = (const gchar *) e_contact_get_const (contact, cursor->sort_fields[i]);
 		if (field_value)
 			contact_key = e_collator_generate_key (priv->collator, field_value, NULL);
-			
+
 		field = summary_field_get (ebsql, cursor->sort_fields[i]);
 
 		if (field && (field->index & INDEX_FLAG (SORT_KEY)) != 0) {
@@ -7667,7 +7790,7 @@ e_book_sqlite_cursor_compare_contact (EBookSqlite *ebsql,
 	if (comparison == 0) {
 		const gchar *uid;
 
-		uid = (const gchar *)e_contact_get_const (contact, E_CONTACT_UID);
+		uid = (const gchar *) e_contact_get_const (contact, E_CONTACT_UID);
 
 		if (cursor->state.last_uid == NULL)
 			comparison = 1;

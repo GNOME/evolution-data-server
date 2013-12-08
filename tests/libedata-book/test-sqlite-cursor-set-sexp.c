@@ -10,7 +10,7 @@ static EbSqlCursorClosure book_closure = { { FALSE, NULL }, NULL, E_BOOK_CURSOR_
 
 static void
 test_cursor_sexp_calculate_position (EbSqlCursorFixture *fixture,
-				     gconstpointer  user_data)
+                                     gconstpointer user_data)
 {
 	GError *error = NULL;
 	EBookQuery *query;
@@ -32,7 +32,7 @@ test_cursor_sexp_calculate_position (EbSqlCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-16");
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 
 	/* Check position */
@@ -65,7 +65,7 @@ test_cursor_sexp_calculate_position (EbSqlCursorFixture *fixture,
 
 static void
 test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
-			   gconstpointer  user_data)
+                           gconstpointer user_data)
 {
 	GError *error = NULL;
 	EBookQuery *query;
@@ -95,7 +95,7 @@ test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-8");
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 	results = NULL;
 
@@ -112,7 +112,7 @@ test_cursor_sexp_and_step (EbSqlCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-12");
-	g_slist_foreach (results, (GFunc)e_book_sqlite_search_data_free, NULL);
+	g_slist_foreach (results, (GFunc) e_book_sqlite_search_data_free, NULL);
 	g_slist_free (results);
 }
 
@@ -125,15 +125,16 @@ main (gint argc,
 #endif
 	g_test_init (&argc, &argv, NULL);
 
-	g_test_add ("/EbSqlCursor/SetSexp/CalculatePosition", EbSqlCursorFixture, &book_closure,
-		    e_sqlite_cursor_fixture_setup,
-		    test_cursor_sexp_calculate_position,
-		    e_sqlite_cursor_fixture_teardown);
-	g_test_add ("/EbSqlCursor/SetSexp/Step", EbSqlCursorFixture, &book_closure,
-		    e_sqlite_cursor_fixture_setup,
-		    test_cursor_sexp_and_step,
-		    e_sqlite_cursor_fixture_teardown);
-
+	g_test_add (
+		"/EbSqlCursor/SetSexp/CalculatePosition", EbSqlCursorFixture, &book_closure,
+		e_sqlite_cursor_fixture_setup,
+		test_cursor_sexp_calculate_position,
+		e_sqlite_cursor_fixture_teardown);
+	g_test_add (
+		"/EbSqlCursor/SetSexp/Step", EbSqlCursorFixture, &book_closure,
+		e_sqlite_cursor_fixture_setup,
+		test_cursor_sexp_and_step,
+		e_sqlite_cursor_fixture_teardown);
 
 	return g_test_run ();
 }

@@ -7,8 +7,8 @@
 #include "data-test-utils.h"
 
 static void
-test_get_contact (EbSqlFixture   *fixture,
-		  gconstpointer   user_data)
+test_get_contact (EbSqlFixture *fixture,
+                  gconstpointer user_data)
 {
 	EContact *contact = NULL;
 	EContact *other = NULL;
@@ -17,13 +17,14 @@ test_get_contact (EbSqlFixture   *fixture,
 	add_contact_from_test_case (fixture, "simple-1", &contact);
 
 	if (!e_book_sqlite_get_contact (fixture->ebsql,
-					(const gchar *)e_contact_get_const (contact, E_CONTACT_UID),
-					FALSE,	
+					(const gchar *) e_contact_get_const (contact, E_CONTACT_UID),
+					FALSE,
 					&other,
 					&error))
-		g_error ("Failed to get contact with uid '%s': %s",
-			 (const gchar *)e_contact_get_const (contact, E_CONTACT_UID),
-			 error->message);
+		g_error (
+			"Failed to get contact with uid '%s': %s",
+			(const gchar *) e_contact_get_const (contact, E_CONTACT_UID),
+			error->message);
 
 	g_object_unref (contact);
 	g_object_unref (other);
@@ -59,8 +60,9 @@ main (gint argc,
 	setlocale (LC_ALL, "");
 
 	for (i = 0; i < G_N_ELEMENTS (closures); i++)
-		g_test_add (paths[i], EbSqlFixture, &closures[i],
-			    e_sqlite_fixture_setup, test_get_contact, e_sqlite_fixture_teardown);
+		g_test_add (
+			paths[i], EbSqlFixture, &closures[i],
+			e_sqlite_fixture_setup, test_get_contact, e_sqlite_fixture_teardown);
 
 	return g_test_run ();
 }

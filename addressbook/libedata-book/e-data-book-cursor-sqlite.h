@@ -54,7 +54,6 @@ struct _EDataBookCursorSqlite {
 	EDataBookCursorSqlitePrivate *priv;
 };
 
-
 /**
  * EDataBookCursorSqliteClass:
  *

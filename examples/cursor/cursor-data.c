@@ -34,17 +34,17 @@ static ESource     *address_book_source = NULL;
 
 static void
 cursor_data_source_added (ESourceRegistry *registry,
-			  ESource *source,
-			  gpointer data)
+                          ESource *source,
+                          gpointer data)
 {
 	GError    *error = NULL;
-	GMainLoop *loop = (GMainLoop *)data;
+	GMainLoop *loop = (GMainLoop *) data;
 
 	if (g_strcmp0 (e_source_get_uid (source), CURSOR_DATA_SOURCE_ID) != 0)
 		return;
 
 	/* Open the address book */
-	address_book = (EBookClient *)e_book_client_connect_sync (source, NULL, &error);
+	address_book = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
 	if (!address_book)
 		g_error ("Unable to create the test book: %s", error->message);
 
@@ -86,7 +86,7 @@ contact_from_file (const gchar *vcard_file)
  */
 static void
 load_contacts (EBookClient *client,
-	       const gchar *vcard_directory)
+               const gchar *vcard_directory)
 {
 	GDir *dir;
 	GError *error = NULL;
@@ -158,8 +158,8 @@ get_cursor (EBookClient *book_client)
  * getting an EBookClient, and creating our EBookClientCursor.
  */
 EBookClient *
-cursor_load_data (const gchar        *vcard_path,
-		  EBookClientCursor **ret_cursor)
+cursor_load_data (const gchar *vcard_path,
+                  EBookClientCursor **ret_cursor)
 {
 	ESourceRegistry *registry;
 	ESource *scratch;
@@ -180,8 +180,9 @@ cursor_load_data (const gchar        *vcard_path,
 		g_error ("Unable to create the registry: %s", error->message);
 
 	/* Listen to the registry for our added source */
-	g_signal_connect (registry, "source-added",
-			  G_CALLBACK (cursor_data_source_added), loop);
+	g_signal_connect (
+		registry, "source-added",
+		G_CALLBACK (cursor_data_source_added), loop);
 
 	/* Now create a scratch source for our addressbook */
 	scratch = e_source_new_with_uid (CURSOR_DATA_SOURCE_ID, NULL, &error);

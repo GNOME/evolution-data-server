@@ -52,8 +52,8 @@ struct _CamelURL {
 };
 
 typedef enum {
-	CAMEL_URL_HIDE_PARAMS   = 1 << 0,
-	CAMEL_URL_HIDE_AUTH     = 1 << 1
+	CAMEL_URL_HIDE_PARAMS = 1 << 0,
+	CAMEL_URL_HIDE_AUTH = 1 << 1
 } CamelURLFlags;
 
 #define CAMEL_URL_HIDE_ALL \

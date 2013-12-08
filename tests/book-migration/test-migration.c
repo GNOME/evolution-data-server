@@ -59,12 +59,12 @@ setup_migration_sandbox (const gchar *version)
 	GFile *src_file, *dest_file;
 	GError *error = NULL;
 
-	dest_dir  = g_build_filename (EDS_TEST_WORK_DIR, "evolution", "addressbook", version, NULL);
-	dest_bdb  = g_build_filename (dest_dir, "addressbook.db", NULL);
-	dest      = g_build_filename (dest_dir, "contacts.db", NULL);
+	dest_dir = g_build_filename (EDS_TEST_WORK_DIR, "evolution", "addressbook", version, NULL);
+	dest_bdb = g_build_filename (dest_dir, "addressbook.db", NULL);
+	dest = g_build_filename (dest_dir, "contacts.db", NULL);
 
-	src_bdb     = g_build_filename (EDS_TEST_BUILT_BOOKS, version, "addressbook.db", NULL);
-	src         = g_build_filename (EDS_TEST_SQLITE_BOOKS, version, "contacts.db", NULL);
+	src_bdb = g_build_filename (EDS_TEST_BUILT_BOOKS, version, "addressbook.db", NULL);
+	src = g_build_filename (EDS_TEST_SQLITE_BOOKS, version, "contacts.db", NULL);
 
 	/* Create the directory for the database files */
 	g_assert (g_mkdir_with_parents (dest_dir, 0755) == 0);
@@ -294,24 +294,26 @@ test_cursor_step (MigrationFixture *fixture,
 					    NULL, &error))
 		g_error ("Failed to create a cursor from a migrated book: %s", error->message);
 
-	n_reported_results = e_book_client_cursor_step_sync (cursor,
-							     E_BOOK_CURSOR_STEP_MOVE |
-							     E_BOOK_CURSOR_STEP_FETCH,
-							     E_BOOK_CURSOR_ORIGIN_BEGIN,
-							     10,
-							     &contacts,
-							     NULL, &error);
+	n_reported_results = e_book_client_cursor_step_sync (
+		cursor,
+		E_BOOK_CURSOR_STEP_MOVE |
+		E_BOOK_CURSOR_STEP_FETCH,
+		E_BOOK_CURSOR_ORIGIN_BEGIN,
+		10,
+		&contacts,
+		NULL, &error);
 	g_assert_cmpint (n_reported_results, ==, g_slist_length (contacts));
 	g_assert_cmpint (e_book_client_cursor_get_position (cursor), ==, 10);
 	g_slist_free_full (contacts, g_object_unref);
 
-	n_reported_results = e_book_client_cursor_step_sync (cursor,
-							     E_BOOK_CURSOR_STEP_MOVE |
-							     E_BOOK_CURSOR_STEP_FETCH,
-							     E_BOOK_CURSOR_ORIGIN_CURRENT,
-							     10,
-							     &contacts,
-							     NULL, &error);
+	n_reported_results = e_book_client_cursor_step_sync (
+		cursor,
+		E_BOOK_CURSOR_STEP_MOVE |
+		E_BOOK_CURSOR_STEP_FETCH,
+		E_BOOK_CURSOR_ORIGIN_CURRENT,
+		10,
+		&contacts,
+		NULL, &error);
 	g_assert_cmpint (n_reported_results, ==, g_slist_length (contacts));
 	g_assert_cmpint (e_book_client_cursor_get_position (cursor), ==, 20);
 	g_slist_free_full (contacts, g_object_unref);

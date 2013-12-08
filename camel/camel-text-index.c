@@ -1025,8 +1025,9 @@ camel_text_index_rename (const gchar *old,
 		g_snprintf (oldname, oldname_len, "%s.index", old);
 		g_snprintf (newname, newname_len, "%s.index", new);
 		if (g_rename (newname, oldname) == -1) {
-			g_warning ("%s: Failed to rename '%s' to '%s': %s",
-				   G_STRFUNC, newname, oldname, g_strerror (errno));
+			g_warning (
+				"%s: Failed to rename '%s' to '%s': %s",
+				G_STRFUNC, newname, oldname, g_strerror (errno));
 		}
 		errno = err;
 		return -1;

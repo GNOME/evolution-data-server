@@ -265,9 +265,10 @@ book_record_get_view_thread (gpointer user_data)
 		br->book_client, query_sexp, &book_view, NULL, &error)) {
 
 		if (!error)
-			error = g_error_new_literal (E_CLIENT_ERROR,
-						     E_CLIENT_ERROR_OTHER_ERROR,
-						     _("Unknown error"));
+			error = g_error_new_literal (
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_OTHER_ERROR,
+				_("Unknown error"));
 	}
 
 	/* Sanity check. */
@@ -1362,16 +1363,16 @@ e_cal_backend_contacts_class_init (ECalBackendContactsClass *class)
 
 	backend_class->get_backend_property = e_cal_backend_contacts_get_backend_property;
 
-	sync_class->open_sync			= e_cal_backend_contacts_open;
-	sync_class->create_objects_sync		= e_cal_backend_contacts_create_objects;
-	sync_class->receive_objects_sync	= e_cal_backend_contacts_receive_objects;
-	sync_class->send_objects_sync		= e_cal_backend_contacts_send_objects;
-	sync_class->get_object_sync		= e_cal_backend_contacts_get_object;
-	sync_class->get_object_list_sync	= e_cal_backend_contacts_get_object_list;
-	sync_class->add_timezone_sync		= e_cal_backend_contacts_add_timezone;
-	sync_class->get_free_busy_sync		= e_cal_backend_contacts_get_free_busy;
+	sync_class->open_sync = e_cal_backend_contacts_open;
+	sync_class->create_objects_sync = e_cal_backend_contacts_create_objects;
+	sync_class->receive_objects_sync = e_cal_backend_contacts_receive_objects;
+	sync_class->send_objects_sync = e_cal_backend_contacts_send_objects;
+	sync_class->get_object_sync = e_cal_backend_contacts_get_object;
+	sync_class->get_object_list_sync = e_cal_backend_contacts_get_object_list;
+	sync_class->add_timezone_sync = e_cal_backend_contacts_add_timezone;
+	sync_class->get_free_busy_sync = e_cal_backend_contacts_get_free_busy;
 
-	backend_class->start_view		= e_cal_backend_contacts_start_view;
+	backend_class->start_view = e_cal_backend_contacts_start_view;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_CONTACTS;

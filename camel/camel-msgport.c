@@ -48,7 +48,7 @@
 
 /* message flags */
 enum {
-	MSG_FLAG_SYNC_WITH_PIPE    = 1 << 0,
+	MSG_FLAG_SYNC_WITH_PIPE = 1 << 0,
 	MSG_FLAG_SYNC_WITH_PR_PIPE = 1 << 1
 };
 

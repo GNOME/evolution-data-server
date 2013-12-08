@@ -548,12 +548,12 @@ add_initial_untagged_descriptor (GHashTable *untagged_handlers,
                                  guint untagged_id)
 {
 	const CamelIMAPXUntaggedRespHandlerDesc *prev = NULL;
-	const CamelIMAPXUntaggedRespHandlerDesc *cur  = NULL;
+	const CamelIMAPXUntaggedRespHandlerDesc *cur = NULL;
 
 	g_return_if_fail (untagged_handlers != NULL);
 	g_return_if_fail (untagged_id < IMAPX_UNTAGGED_LAST_ID);
 
-	cur =  &(_untagged_descr[untagged_id]);
+	cur = &(_untagged_descr[untagged_id]);
 	prev = replace_untagged_descriptor (
 		untagged_handlers,
 		cur->untagged_response,
@@ -3228,7 +3228,7 @@ imapx_step (CamelIMAPXServer *is,
 	gint tok;
 	gboolean success = FALSE;
 
-	// poll ?  wait for other stuff? loop?
+	// poll ? wait for other stuff? loop?
 	tok = camel_imapx_stream_token (
 		stream, &token, &len, cancellable, error);
 
@@ -4313,7 +4313,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	CAMEL_IMAPX_STREAM (imapx_stream)->tagprefix = is->tagprefix;
 
 	while (1) {
-		// poll ?  wait for other stuff? loop?
+		// poll ? wait for other stuff? loop?
 		if (camel_application_is_exiting || is->priv->parser_quit) {
 			g_set_error (
 				error, G_IO_ERROR,

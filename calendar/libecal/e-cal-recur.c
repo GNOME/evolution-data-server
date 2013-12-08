@@ -850,19 +850,19 @@ e_cal_recur_generate_instances_of_rule (ECalComponent *comp,
 		chunk_end.year = year;
 
 		if (year != interval_start.year) {
-			chunk_start.month  = 0;
-			chunk_start.day    = 1;
-			chunk_start.hour   = 0;
+			chunk_start.month = 0;
+			chunk_start.day = 1;
+			chunk_start.hour = 0;
 			chunk_start.minute = 0;
 			chunk_start.second = 0;
 		}
 		if (end == -1 || year != interval_end.year) {
-			chunk_end.month  = 11;
-			chunk_end.day    = 31;
-			chunk_end.hour   = 23;
+			chunk_end.month = 11;
+			chunk_end.day = 31;
+			chunk_end.hour = 23;
 			chunk_end.minute = 59;
 			chunk_end.second = 61;
-			chunk_end.flags  = FALSE;
+			chunk_end.flags = FALSE;
 		}
 
 		if (!generate_instances_for_chunk (comp, dtstart_time,
@@ -1233,13 +1233,13 @@ generate_instances_for_chunk (ECalComponent *comp,
 		p = elem->data;
 
 		tt = icaltime_convert_to_zone (p->start, zone);
-		cotime.year     = tt.year;
-		cotime.month    = tt.month - 1;
-		cotime.day      = tt.day;
-		cotime.hour     = tt.hour;
-		cotime.minute   = tt.minute;
-		cotime.second   = tt.second;
-		cotime.flags    = FALSE;
+		cotime.year = tt.year;
+		cotime.month = tt.month - 1;
+		cotime.day = tt.day;
+		cotime.hour = tt.hour;
+		cotime.minute = tt.minute;
+		cotime.second = tt.second;
+		cotime.flags = FALSE;
 
 		/* If the rdate is after the current chunk we set finished
 		 * to FALSE, and we skip it. */
@@ -1293,23 +1293,23 @@ generate_instances_for_chunk (ECalComponent *comp,
 		cdt = elem->data;
 		tt = icaltime_convert_to_zone (*cdt->value, zone);
 
-		cotime.year     = tt.year;
-		cotime.month    = tt.month - 1;
-		cotime.day      = tt.day;
+		cotime.year = tt.year;
+		cotime.month = tt.month - 1;
+		cotime.day = tt.day;
 
 		/* If the EXDATE has a DATE value, set the time to the start
 		 * of the day and set flags to TRUE so we know to skip all
 		 * occurrences on that date. */
 		if (cdt->value->is_date) {
-			cotime.hour     = 0;
-			cotime.minute   = 0;
-			cotime.second   = 0;
-			cotime.flags    = TRUE;
+			cotime.hour = 0;
+			cotime.minute = 0;
+			cotime.second = 0;
+			cotime.flags = TRUE;
 		} else {
-			cotime.hour     = tt.hour;
-			cotime.minute   = tt.minute;
-			cotime.second   = tt.second;
-			cotime.flags    = FALSE;
+			cotime.hour = tt.hour;
+			cotime.minute = tt.minute;
+			cotime.second = tt.second;
+			cotime.flags = FALSE;
 		}
 
 		g_array_append_val (ex_occs, cotime);
@@ -1339,10 +1339,10 @@ generate_instances_for_chunk (ECalComponent *comp,
 			cal_obj_time_to_string (occ));
 #endif
 		start_tt = icaltime_null_time ();
-		start_tt.year   = occ->year;
-		start_tt.month  = occ->month + 1;
-		start_tt.day    = occ->day;
-		start_tt.hour   = occ->hour;
+		start_tt.year = occ->year;
+		start_tt.month = occ->month + 1;
+		start_tt.day = occ->day;
+		start_tt.hour = occ->hour;
 		start_tt.minute = occ->minute;
 		start_tt.second = occ->second;
 		start_time = icaltime_as_timet_with_zone (start_tt, zone);
@@ -1383,10 +1383,10 @@ generate_instances_for_chunk (ECalComponent *comp,
 		}
 
 		end_tt = icaltime_null_time ();
-		end_tt.year   = occ->year;
-		end_tt.month  = occ->month + 1;
-		end_tt.day    = occ->day;
-		end_tt.hour   = occ->hour;
+		end_tt.year = occ->year;
+		end_tt.month = occ->month + 1;
+		end_tt.day = occ->day;
+		end_tt.hour = occ->hour;
 		end_tt.minute = occ->minute;
 		end_tt.second = occ->second;
 		end_time = icaltime_as_timet_with_zone (end_tt, zone);
@@ -1464,13 +1464,13 @@ cal_object_get_rdate_end (CalObjTime *occ,
 	if (p->type == E_CAL_COMPONENT_PERIOD_DATETIME) {
 		struct icaltimetype tt =
 			icaltime_convert_to_zone (p->u.end, zone);
-		occ->year     = tt.year;
-		occ->month    = tt.month - 1;
-		occ->day      = tt.day;
-		occ->hour     = tt.hour;
-		occ->minute   = tt.minute;
-		occ->second   = tt.second;
-		occ->flags    = FALSE;
+		occ->year = tt.year;
+		occ->month = tt.month - 1;
+		occ->day = tt.day;
+		occ->hour = tt.hour;
+		occ->minute = tt.minute;
+		occ->second = tt.second;
+		occ->flags = FALSE;
 	} else {
 		cal_obj_time_add_days (
 			occ,
@@ -2016,7 +2016,7 @@ cal_obj_remove_duplicates_and_invalid_dates (GArray *occs)
 		if (keep_occ) {
 			if (i != j)
 				g_array_index (occs, CalObjTime, j)
-					= g_array_index (occs, CalObjTime, i);
+ = g_array_index (occs, CalObjTime, i);
 			j++;
 		}
 
@@ -2117,7 +2117,7 @@ cal_obj_remove_exceptions (GArray *occs,
 			 * kept). */
 			if (i != j)
 				g_array_index (occs, CalObjTime, j)
-					= g_array_index (occs, CalObjTime, i);
+ = g_array_index (occs, CalObjTime, i);
 			j++;
 		}
 
@@ -3788,13 +3788,13 @@ cal_object_time_from_time (CalObjTime *cotime,
 	else
 		tt = icaltime_from_timet (t, FALSE);
 
-	cotime->year     = tt.year;
-	cotime->month    = tt.month - 1;
-	cotime->day      = tt.day;
-	cotime->hour     = tt.hour;
-	cotime->minute   = tt.minute;
-	cotime->second   = tt.second;
-	cotime->flags    = FALSE;
+	cotime->year = tt.year;
+	cotime->month = tt.month - 1;
+	cotime->day = tt.day;
+	cotime->hour = tt.hour;
+	cotime->minute = tt.minute;
+	cotime->second = tt.second;
+	cotime->flags = FALSE;
 }
 
 /* Debugging function to convert a CalObjTime to a string. It uses a static

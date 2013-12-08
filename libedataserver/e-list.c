@@ -76,8 +76,8 @@ e_list_construct (EList *list,
                   EListFreeFunc free,
                   gpointer closure)
 {
-	list->copy    = copy;
-	list->free    = free;
+	list->copy = copy;
+	list->free = free;
 	list->closure = closure;
 }
 
@@ -92,10 +92,10 @@ e_list_duplicate (EList *list)
 {
 	EList *dupe = g_object_new (E_TYPE_LIST, NULL);
 
-	dupe->copy    = list->copy;
-	dupe->free    = list->free;
+	dupe->copy = list->copy;
+	dupe->free = list->free;
 	dupe->closure = list->closure;
-	dupe->list    = g_list_copy (list->list);
+	dupe->list = g_list_copy (list->list);
 	if (dupe->copy) {
 		GList *listlist;
 		for (listlist = dupe->list; listlist; listlist = listlist->next) {

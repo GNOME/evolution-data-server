@@ -57,7 +57,7 @@ setup_custom_book (ESource *scratch,
 		0);
 }
 
-static ETestServerClosure setup_custom_closure  = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0, TRUE, NULL };
+static ETestServerClosure setup_custom_closure = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0, TRUE, NULL };
 static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, TRUE, NULL };
 
 /* Filter which tests we want to try with a regexp */
@@ -71,7 +71,6 @@ static GOptionEntry entries[] = {
 	{ NULL }
 };
 
-
 /* Define this macro to expect E_CLIENT_ERROR_NOT_SUPPORTED
  * only on phone number queries when EDS is built with no
  * phone number support.
@@ -83,7 +82,6 @@ static GOptionEntry entries[] = {
 #endif
 
 #define N_CONTACTS 15
-
 
 typedef struct {
 	ETestServerClosure parent;
@@ -111,8 +109,8 @@ setup_book (ClientTestFixture *fixture)
 		gchar *vcard;
 		EContact *contact;
 
-		vcard    = new_vcard_from_test_case (case_name);
-		contact  = e_contact_new_from_vcard (vcard);
+		vcard = new_vcard_from_test_case (case_name);
+		contact = e_contact_new_from_vcard (vcard);
 		contacts = g_slist_prepend (contacts, contact);
 		g_free (vcard);
 		g_free (case_name);
@@ -380,10 +378,12 @@ main (gint argc,
 	 * a customized summary and another without a customized summary
 	 */
 	if (test_regex == NULL) {
-		g_test_add ("/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
-			    client_test_setup_default, setup_test, client_test_teardown);
-		g_test_add ("/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
-			    client_test_setup_custom, setup_test, client_test_teardown);
+		g_test_add (
+			"/EBookClient/SetupDefaultBook", ClientTestFixture, &setup_default_closure,
+			client_test_setup_default, setup_test, client_test_teardown);
+		g_test_add (
+			"/EBookClient/SetupCustomBook", ClientTestFixture, &setup_custom_closure,
+			client_test_setup_custom, setup_test, client_test_teardown);
 	}
 
 	/* Test all queries in 8 different combinations specified by the 'suites'
@@ -842,7 +842,6 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
-
 		/*
 		 * Query: +49 408.765.5050 (one exact match)
 		 * +------------------------------+--------------------+
@@ -884,7 +883,6 @@ main (gint argc,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
-
 
 		/*********************************************
 		 * E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER *
@@ -982,7 +980,6 @@ main (gint argc,
 			suites[i].custom,
 			TRUE);
 
-
 		/* Test that a query term with a specified country returns
 		 * only vCards that are specifically in the specified country
 		 * code.
@@ -1052,8 +1049,6 @@ main (gint argc,
 			suites[i].direct,
 			suites[i].custom,
 			TRUE);
-
-
 
 		/********************************************
 		 *  E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER  *

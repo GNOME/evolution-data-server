@@ -523,7 +523,7 @@ summary_header_to_db (CamelFolderSummary *summary,
 
 	/* we always write out the current version */
 	record->version = CAMEL_FOLDER_SUMMARY_VERSION;
-	record->flags  = summary->flags;
+	record->flags = summary->flags;
 	record->nextuid = summary->priv->nextuid;
 	record->time = summary->time;
 
@@ -647,7 +647,7 @@ message_info_to_db (CamelFolderSummary *summary,
 	record->uid = (gchar *) camel_pstring_strdup (camel_message_info_uid (mi));
 	record->flags = mi->flags;
 
-	record->read =  ((mi->flags & (CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_JUNK))) ? 1 : 0;
+	record->read = ((mi->flags & (CAMEL_MESSAGE_SEEN | CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_JUNK))) ? 1 : 0;
 	record->deleted = mi->flags & CAMEL_MESSAGE_DELETED ? 1 : 0;
 	record->replied = mi->flags & CAMEL_MESSAGE_ANSWERED ? 1 : 0;
 	record->important = mi->flags & CAMEL_MESSAGE_FLAGGED ? 1 : 0;
@@ -1162,14 +1162,14 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 	class->content_info_from_db = content_info_from_db;
 	class->content_info_to_db = content_info_to_db;
 
-	class->message_info_new_from_header  = message_info_new_from_header;
+	class->message_info_new_from_header = message_info_new_from_header;
 	class->message_info_new_from_parser = message_info_new_from_parser;
 	class->message_info_new_from_message = message_info_new_from_message;
 	class->message_info_free = message_info_free;
 	class->message_info_clone = message_info_clone;
 	class->message_info_from_uid = message_info_from_uid;
 
-	class->content_info_new_from_header  = content_info_new_from_header;
+	class->content_info_new_from_header = content_info_new_from_header;
 	class->content_info_new_from_parser = content_info_new_from_parser;
 	class->content_info_new_from_message = content_info_new_from_message;
 	class->content_info_free = content_info_free;
@@ -2416,7 +2416,7 @@ mir_from_cols (CamelMIRecord *mir,
 				mir->flags = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 				break;
 			case CAMEL_DB_COLUMN_READ:
-				mir->read =  (cols[i]) ? ( ((strtoul (cols[i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
+				mir->read = (cols[i]) ? ( ((strtoul (cols[i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
 				break;
 			case CAMEL_DB_COLUMN_DELETED:
 				mir->deleted = (cols[i]) ? ( ((strtoul (cols[i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
@@ -2434,7 +2434,7 @@ mir_from_cols (CamelMIRecord *mir,
 				mir->attachment = (cols[i]) ? ( ((strtoul (cols[i], NULL, 10)) ? TRUE : FALSE)) : FALSE;
 				break;
 			case CAMEL_DB_COLUMN_SIZE:
-				mir->size =  cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				mir->size = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 				break;
 			case CAMEL_DB_COLUMN_DSENT:
 				mir->dsent = cols[i] ? strtol (cols[i], NULL, 10) : 0;

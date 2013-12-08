@@ -36,9 +36,9 @@ G_BEGIN_DECLS
 struct _CamelSession;
 
 enum {
-	CAMEL_SEARCH_ERROR    = -1,
-	CAMEL_SEARCH_NOMATCH  =  0,
-	CAMEL_SEARCH_MATCHED  =  1
+	CAMEL_SEARCH_ERROR = -1,
+	CAMEL_SEARCH_NOMATCH = 0,
+	CAMEL_SEARCH_MATCHED = 1
 };
 
 typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, GError **error);

@@ -469,6 +469,10 @@
 #include "e-book-client.h"
 #include "e-book-client-cursor.h"
 
+#define E_BOOK_CLIENT_CURSOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_BOOK_CLIENT_CURSOR, EBookClientCursorPrivate))
+
 /* Forward declarations */
 typedef struct _SetSexpContext        SetSexpContext;
 typedef struct _StepContext           StepContext;
@@ -934,10 +938,8 @@ e_book_client_cursor_class_init (EBookClientCursorClass *class)
 static void
 e_book_client_cursor_init (EBookClientCursor *cursor)
 {
-	cursor->priv =
-		G_TYPE_INSTANCE_GET_PRIVATE (cursor,
-					     E_TYPE_BOOK_CLIENT_CURSOR,
-					     EBookClientCursorPrivate);
+	cursor->priv = E_BOOK_CLIENT_CURSOR_GET_PRIVATE (cursor);
+
 	g_mutex_init (&cursor->priv->main_context_lock);
 	g_mutex_init (&cursor->priv->notifications_lock);
 }
@@ -994,9 +996,9 @@ book_client_cursor_finalize (GObject *object)
 
 static void
 book_client_cursor_set_property (GObject *object,
-				 guint property_id,
-				 const GValue *value,
-				 GParamSpec *pspec)
+                                 guint property_id,
+                                 const GValue *value,
+                                 GParamSpec *pspec)
 {
 	EBookClientCursor        *cursor = E_BOOK_CLIENT_CURSOR (object);
 	EBookClientCursorPrivate *priv = cursor->priv;
@@ -1044,9 +1046,9 @@ book_client_cursor_set_property (GObject *object,
 
 static void
 book_client_cursor_get_property (GObject *object,
-				 guint property_id,
-				 GValue *value,
-				 GParamSpec *pspec)
+                                 guint property_id,
+                                 GValue *value,
+                                 GParamSpec *pspec)
 {
 	switch (property_id) {
 	case PROP_CLIENT:
@@ -1060,7 +1062,7 @@ book_client_cursor_get_property (GObject *object,
 		g_value_set_boxed (
 			value,
 			e_book_client_cursor_get_alphabet (
-				E_BOOK_CLIENT_CURSOR (object), 
+				E_BOOK_CLIENT_CURSOR (object),
 				NULL, NULL, NULL, NULL));
 		break;
 
@@ -1096,8 +1098,8 @@ e_book_client_cursor_initable_init (GInitableIface *interface)
 
 static gboolean
 book_client_cursor_initable_init (GInitable *initable,
-				  GCancellable *cancellable,
-				  GError **error)
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	EBookClientCursor        *cursor = E_BOOK_CLIENT_CURSOR (initable);
 	EBookClientCursorPrivate *priv = cursor->priv;
@@ -1135,7 +1137,7 @@ book_client_cursor_initable_init (GInitable *initable,
  */
 static void
 book_client_cursor_set_client (EBookClientCursor *cursor,
-			       EBookClient *client)
+                               EBookClient *client)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1164,26 +1166,29 @@ book_client_cursor_set_client (EBookClientCursor *cursor,
 			gchar *revision = NULL;
 
 			/* Connect signals */
-			priv->revision_changed_id = 
-				g_signal_connect_data (client, "backend-property-changed",
-						       G_CALLBACK (client_revision_changed_cb),
-						       e_weak_ref_new (cursor),
-						       (GClosureNotify) e_weak_ref_free,
-						       0);
-			priv->locale_changed_id = 
-				g_signal_connect_data (client, "notify::locale",
-						       G_CALLBACK (client_locale_changed_cb),
-						       e_weak_ref_new (cursor),
-						       (GClosureNotify) e_weak_ref_free,
-						       0);
+			priv->revision_changed_id =
+				g_signal_connect_data (
+					client, "backend-property-changed",
+					G_CALLBACK (client_revision_changed_cb),
+					e_weak_ref_new (cursor),
+					(GClosureNotify) e_weak_ref_free,
+					0);
+			priv->locale_changed_id =
+				g_signal_connect_data (
+					client, "notify::locale",
+					G_CALLBACK (client_locale_changed_cb),
+					e_weak_ref_new (cursor),
+					(GClosureNotify) e_weak_ref_free,
+					0);
 
 			/* Load initial locale & revision */
 			book_client_cursor_set_locale (cursor, e_book_client_get_locale (priv->client));
 
 			/* This loads a cached D-Bus property, no D-Bus activity */
-			e_client_get_backend_property_sync (E_CLIENT (priv->client),
-							    CLIENT_BACKEND_PROPERTY_REVISION,
-							    &revision, NULL, NULL);
+			e_client_get_backend_property_sync (
+				E_CLIENT (priv->client),
+				CLIENT_BACKEND_PROPERTY_REVISION,
+				&revision, NULL, NULL);
 			book_client_cursor_set_revision (cursor, revision);
 			g_free (revision);
 
@@ -1194,7 +1199,7 @@ book_client_cursor_set_client (EBookClientCursor *cursor,
 
 static void
 book_client_cursor_set_connection (EBookClientCursor *cursor,
-				   GDBusConnection   *connection)
+                                   GDBusConnection *connection)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1214,8 +1219,8 @@ book_client_cursor_set_connection (EBookClientCursor *cursor,
 
 static void
 proxy_dispose_cb (GObject *source_object,
-		  GAsyncResult *result,
-		  gpointer user_data)
+                  GAsyncResult *result,
+                  gpointer user_data)
 {
 	GError *local_error = NULL;
 
@@ -1230,8 +1235,8 @@ proxy_dispose_cb (GObject *source_object,
 }
 
 static void
-book_client_cursor_set_proxy (EBookClientCursor      *cursor,
-			      EDBusAddressBookCursor *proxy)
+book_client_cursor_set_proxy (EBookClientCursor *cursor,
+                              EDBusAddressBookCursor *proxy)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1259,24 +1264,26 @@ book_client_cursor_set_proxy (EBookClientCursor      *cursor,
 		if (priv->dbus_proxy) {
 			gint position, total;
 
-			priv->proxy_total_changed_id = 
-				g_signal_connect_data (priv->dbus_proxy, "notify::total",
-						       G_CALLBACK (proxy_total_changed_cb),
-						       e_weak_ref_new (cursor),
-						       (GClosureNotify) e_weak_ref_free,
-						       0);
-			priv->proxy_position_changed_id = 
-				g_signal_connect_data (priv->dbus_proxy, "notify::position",
-						       G_CALLBACK (proxy_position_changed_cb),
-						       e_weak_ref_new (cursor),
-						       (GClosureNotify) e_weak_ref_free,
-						       0);
+			priv->proxy_total_changed_id =
+				g_signal_connect_data (
+					priv->dbus_proxy, "notify::total",
+					G_CALLBACK (proxy_total_changed_cb),
+					e_weak_ref_new (cursor),
+					(GClosureNotify) e_weak_ref_free,
+					0);
+			priv->proxy_position_changed_id =
+				g_signal_connect_data (
+					priv->dbus_proxy, "notify::position",
+					G_CALLBACK (proxy_position_changed_cb),
+					e_weak_ref_new (cursor),
+					(GClosureNotify) e_weak_ref_free,
+					0);
 
 			/* Set initial values */
-			total    = e_dbus_address_book_cursor_get_total (proxy);
+			total = e_dbus_address_book_cursor_get_total (proxy);
 			position = e_dbus_address_book_cursor_get_position (proxy);
- 			book_client_cursor_set_total (cursor, total);
- 			book_client_cursor_set_position (cursor, position);
+			book_client_cursor_set_total (cursor, total);
+			book_client_cursor_set_position (cursor, position);
 
 			g_object_ref (priv->dbus_proxy);
 		}
@@ -1285,7 +1292,7 @@ book_client_cursor_set_proxy (EBookClientCursor      *cursor,
 
 static void
 book_client_cursor_set_context (EBookClientCursor *cursor,
-				GMainContext      *context)
+                                GMainContext *context)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1353,7 +1360,7 @@ void book_client_delete_direct_cursor (EBookClient *client,
 
 static void
 book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
-				      EDataBookCursor   *direct_cursor)
+                                      EDataBookCursor *direct_cursor)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1374,8 +1381,9 @@ book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
 			 * before releasing our strong reference to the EBookClient
 			 */
 			g_warn_if_fail (priv->client != NULL);
-			book_client_delete_direct_cursor (priv->client,
-							  priv->direct_cursor);
+			book_client_delete_direct_cursor (
+				priv->client,
+				priv->direct_cursor);
 
 			g_object_unref (priv->direct_cursor);
 		}
@@ -1387,30 +1395,33 @@ book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
 			gchar *freeme = NULL;
 			gint total, position;
 
-			priv->dra_total_changed_id = 
-				g_signal_connect (priv->direct_cursor, "notify::total",
-						  G_CALLBACK (dra_total_changed_cb),
-						  cursor);
-			priv->dra_position_changed_id = 
-				g_signal_connect (priv->direct_cursor, "notify::position",
-						  G_CALLBACK (dra_position_changed_cb),
-						  cursor);
+			priv->dra_total_changed_id =
+				g_signal_connect (
+					priv->direct_cursor, "notify::total",
+					G_CALLBACK (dra_total_changed_cb),
+					cursor);
+			priv->dra_position_changed_id =
+				g_signal_connect (
+					priv->direct_cursor, "notify::position",
+					G_CALLBACK (dra_position_changed_cb),
+					cursor);
 
 			/* Load initial locale */
 			if (priv->direct_cursor &&
 			    !e_data_book_cursor_load_locale (priv->direct_cursor,
 							     &freeme, NULL, &error)) {
-				g_warning ("Error loading locale in direct read access cursor: %s",
-					   error->message);
+				g_warning (
+					"Error loading locale in direct read access cursor: %s",
+					error->message);
 				g_clear_error (&error);
 			}
 			g_free (freeme);
 
 			/* Set initial values */
-			total    = e_data_book_cursor_get_total (priv->direct_cursor);
+			total = e_data_book_cursor_get_total (priv->direct_cursor);
 			position = e_data_book_cursor_get_position (priv->direct_cursor);
- 			book_client_cursor_set_total (cursor, total);
- 			book_client_cursor_set_position (cursor, position);
+			book_client_cursor_set_total (cursor, total);
+			book_client_cursor_set_position (cursor, position);
 
 			g_object_ref (priv->direct_cursor);
 		}
@@ -1419,7 +1430,7 @@ book_client_cursor_set_direct_cursor (EBookClientCursor *cursor,
 
 static void
 book_client_cursor_set_object_path (EBookClientCursor *cursor,
-				    const gchar       *object_path)
+                                    const gchar *object_path)
 {
 	g_return_if_fail (cursor->priv->object_path == NULL);
 
@@ -1428,7 +1439,7 @@ book_client_cursor_set_object_path (EBookClientCursor *cursor,
 
 static void
 book_client_cursor_set_locale (EBookClientCursor *cursor,
-			       const gchar       *locale)
+                               const gchar *locale)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 	GError                   *error = NULL;
@@ -1444,15 +1455,17 @@ book_client_cursor_set_locale (EBookClientCursor *cursor,
 	priv->collator = e_collator_new (locale, &error);
 
 	if (!priv->collator) {
-		g_warning ("Error loading collator for locale '%s': %s",
-			   locale, error->message);
+		g_warning (
+			"Error loading collator for locale '%s': %s",
+			locale, error->message);
 		g_clear_error (&error);
 		return;
 	}
 
-	e_collator_get_index_labels (priv->collator,
-				     &priv->n_labels,
-				     NULL, NULL, NULL);
+	e_collator_get_index_labels (
+		priv->collator,
+		&priv->n_labels,
+		NULL, NULL, NULL);
 
 	/* The server side EDataBookCursor should have already
 	 * reset its cursor values internally and notified
@@ -1461,8 +1474,9 @@ book_client_cursor_set_locale (EBookClientCursor *cursor,
 	 */
 	if (priv->direct_cursor &&
 	    !e_data_book_cursor_load_locale (priv->direct_cursor, NULL, NULL, &error)) {
-		g_warning ("Error loading locale in direct read access cursor: %s",
-			   error->message);
+		g_warning (
+			"Error loading locale in direct read access cursor: %s",
+			error->message);
 		g_clear_error (&error);
 	}
 
@@ -1476,8 +1490,8 @@ book_client_cursor_set_locale (EBookClientCursor *cursor,
 }
 
 static void
-book_client_cursor_set_revision (EBookClientCursor    *cursor,
-				 const gchar          *revision)
+book_client_cursor_set_revision (EBookClientCursor *cursor,
+                                 const gchar *revision)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1509,7 +1523,7 @@ book_client_cursor_set_revision (EBookClientCursor    *cursor,
 
 static void
 book_client_cursor_set_total (EBookClientCursor *cursor,
-			      gint               total)
+                              gint total)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1521,7 +1535,7 @@ book_client_cursor_set_total (EBookClientCursor *cursor,
 
 static void
 book_client_cursor_set_position (EBookClientCursor *cursor,
-				 gint               position)
+                                 gint position)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 
@@ -1548,8 +1562,8 @@ book_client_cursor_set_position (EBookClientCursor *cursor,
 
 static void
 notification_new_string (EBookClientCursor *cursor,
-			 NotificationType   type,
-			 const gchar       *value)
+                         NotificationType type,
+                         const gchar *value)
 {
 	Notification *notification = g_slice_new0 (Notification);
 
@@ -1564,8 +1578,8 @@ notification_new_string (EBookClientCursor *cursor,
 
 static void
 notification_new_int (EBookClientCursor *cursor,
-		      NotificationType   type,
-		      gint               value)
+                      NotificationType type,
+                      gint value)
 {
 	Notification *notification = g_slice_new0 (Notification);
 
@@ -1590,7 +1604,7 @@ notification_free (Notification *notification)
 
 static void
 notification_queue (EBookClientCursor *cursor,
-		    Notification      *notification)
+                    Notification *notification)
 {
 	EBookClientCursorPrivate *priv = cursor->priv;
 	GMainContext *context;
@@ -1605,10 +1619,11 @@ notification_queue (EBookClientCursor *cursor,
 	if (context && priv->notification_source == NULL) {
 		/* Hold on to a reference, release our reference in dispatch() */
 		priv->notification_source = g_idle_source_new ();
-		g_source_set_callback (priv->notification_source,
-				       (GSourceFunc) notification_dispatch,
-				       e_weak_ref_new (cursor),
-				       (GDestroyNotify) e_weak_ref_free);
+		g_source_set_callback (
+			priv->notification_source,
+			(GSourceFunc) notification_dispatch,
+			e_weak_ref_new (cursor),
+			(GDestroyNotify) e_weak_ref_free);
 		g_source_attach (priv->notification_source, context);
 		g_main_context_unref (context);
 	}
@@ -1680,10 +1695,10 @@ notification_dispatch (GWeakRef *weak_ref)
  *             Callbacks from EBookClient           *
  ****************************************************/
 static void
-client_revision_changed_cb (EClient              *client,
-			    const gchar          *prop_name,
-			    const gchar          *prop_value,
-			    GWeakRef             *weak_ref)
+client_revision_changed_cb (EClient *client,
+                            const gchar *prop_name,
+                            const gchar *prop_value,
+                            GWeakRef *weak_ref)
 {
 	EBookClientCursor *cursor;
 
@@ -1698,9 +1713,9 @@ client_revision_changed_cb (EClient              *client,
 }
 
 static void
-client_locale_changed_cb (EBookClient          *book_client,
-			  GParamSpec           *pspec,
-			  GWeakRef             *weak_ref)
+client_locale_changed_cb (EBookClient *book_client,
+                          GParamSpec *pspec,
+                          GWeakRef *weak_ref)
 {
 	EBookClientCursor *cursor;
 
@@ -1716,8 +1731,8 @@ client_locale_changed_cb (EBookClient          *book_client,
  ****************************************************/
 static void
 proxy_total_changed_cb (EDBusAddressBookCursor *proxy,
-			 GParamSpec             *pspec,
-			 GWeakRef               *weak_ref)
+                         GParamSpec *pspec,
+                         GWeakRef *weak_ref)
 {
 	EBookClientCursor *cursor;
 
@@ -1731,8 +1746,8 @@ proxy_total_changed_cb (EDBusAddressBookCursor *proxy,
 
 static void
 proxy_position_changed_cb (EDBusAddressBookCursor *proxy,
-			   GParamSpec             *pspec,
-			   GWeakRef               *weak_ref)
+                           GParamSpec *pspec,
+                           GWeakRef *weak_ref)
 {
 	EBookClientCursor *cursor;
 
@@ -1748,18 +1763,18 @@ proxy_position_changed_cb (EDBusAddressBookCursor *proxy,
  *       Callbacks from EDBusAddressBookCursor      *
  ****************************************************/
 static void
-dra_total_changed_cb (EDataBookCursor        *direct_cursor,
-		      GParamSpec             *pspec,
-		      EBookClientCursor      *cursor)
+dra_total_changed_cb (EDataBookCursor *direct_cursor,
+                      GParamSpec *pspec,
+                      EBookClientCursor *cursor)
 {
 	notification_new_int (cursor, TOTAL_CHANGED,
 			      e_data_book_cursor_get_total (direct_cursor));
 }
 
 static void
-dra_position_changed_cb (EDataBookCursor        *direct_cursor,
-			 GParamSpec             *pspec,
-			 EBookClientCursor      *cursor)
+dra_position_changed_cb (EDataBookCursor *direct_cursor,
+                         GParamSpec *pspec,
+                         EBookClientCursor *cursor)
 {
 	notification_new_int (cursor, POSITION_CHANGED,
 			      e_data_book_cursor_get_position (direct_cursor));
@@ -1820,12 +1835,12 @@ set_sexp_context_free (SetSexpContext *context)
 }
 
 static gboolean
-set_sexp_sync_internal (EBookClientCursor   *cursor,
-			const gchar         *sexp,
-			guint               *new_total,
-			guint               *new_position,
-			GCancellable        *cancellable,
-			GError             **error)
+set_sexp_sync_internal (EBookClientCursor *cursor,
+                        const gchar *sexp,
+                        guint *new_total,
+                        guint *new_position,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	EBookClientCursorPrivate *priv;
 	gchar *utf8_sexp;
@@ -1866,37 +1881,38 @@ set_sexp_sync_internal (EBookClientCursor   *cursor,
 
 static void
 set_sexp_thread (GSimpleAsyncResult *simple,
-		 GObject            *source_object,
-		 GCancellable       *cancellable)
+                 GObject *source_object,
+                 GCancellable *cancellable)
 {
 	SetSexpContext *context;
 	GError *local_error = NULL;
 
 	context = g_simple_async_result_get_op_res_gpointer (simple);
-	set_sexp_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
-				context->sexp,
-				&context->new_total,
-				&context->new_position,
-				cancellable,
-				&local_error);
+	set_sexp_sync_internal (
+		E_BOOK_CLIENT_CURSOR (source_object),
+		context->sexp,
+		&context->new_total,
+		&context->new_position,
+		cancellable,
+		&local_error);
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
 }
 
 static StepContext *
-step_context_new (const gchar         *revision,
-		  EBookCursorStepFlags flags,
-		  EBookCursorOrigin    origin,
-		  gint                 count)
+step_context_new (const gchar *revision,
+                  EBookCursorStepFlags flags,
+                  EBookCursorOrigin origin,
+                  gint count)
 {
 	StepContext *context = g_slice_new0 (StepContext);
 
-	context->revision      = g_strdup (revision);
-	context->flags         = flags;
-	context->origin        = origin;
-	context->count         = count;
-	context->n_results     = 0;
+	context->revision = g_strdup (revision);
+	context->flags = flags;
+	context->origin = origin;
+	context->count = count;
+	context->n_results = 0;
 
 	return context;
 }
@@ -1912,16 +1928,16 @@ step_context_free (StepContext *context)
 }
 
 static gint
-step_sync_internal (EBookClientCursor   *cursor,
-		    const gchar         *revision,
-		    EBookCursorStepFlags flags,
-		    EBookCursorOrigin    origin,
-		    gint                 count,
-		    GSList             **out_contacts,
-		    guint               *new_total,
-		    guint               *new_position,
-		    GCancellable        *cancellable,
-		    GError             **error)
+step_sync_internal (EBookClientCursor *cursor,
+                    const gchar *revision,
+                    EBookCursorStepFlags flags,
+                    EBookCursorOrigin origin,
+                    gint count,
+                    GSList **out_contacts,
+                    guint *new_total,
+                    guint *new_position,
+                    GCancellable *cancellable,
+                    GError **error)
 {
 	EBookClientCursorPrivate *priv;
 	GError *local_error = NULL;
@@ -1934,14 +1950,15 @@ step_sync_internal (EBookClientCursor   *cursor,
 		GSList *results = NULL, *l;
 		GSList *contacts = NULL;
 
-		n_results = e_data_book_cursor_step (priv->direct_cursor,
-						     revision,
-						     flags,
-						     origin,
-						     count,
-						     &results,
-						     cancellable,
-						     error);
+		n_results = e_data_book_cursor_step (
+			priv->direct_cursor,
+			revision,
+			flags,
+			origin,
+			count,
+			&results,
+			cancellable,
+			error);
 		if (n_results < 0)
 			return n_results;
 
@@ -1953,7 +1970,7 @@ step_sync_internal (EBookClientCursor   *cursor,
 				contacts = g_slist_prepend (contacts, contact);
 		}
 
-		g_slist_free_full (results, (GDestroyNotify)g_free);
+		g_slist_free_full (results, (GDestroyNotify) g_free);
 
 		if (out_contacts)
 			*out_contacts = g_slist_reverse (contacts);
@@ -2008,32 +2025,32 @@ step_sync_internal (EBookClientCursor   *cursor,
 
 static void
 step_thread (GSimpleAsyncResult *simple,
-	     GObject            *source_object,
-	     GCancellable       *cancellable)
+             GObject *source_object,
+             GCancellable *cancellable)
 {
 	StepContext *context;
 	GError *local_error = NULL;
 
 	context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	context->n_results = 
-		step_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
-				    context->revision,
-				    context->flags,
-				    context->origin,
-				    context->count,
-				    &(context->contacts),
-				    &context->new_total,
-				    &context->new_position,
-				    cancellable, &local_error);
+	context->n_results = step_sync_internal (
+		E_BOOK_CLIENT_CURSOR (source_object),
+		context->revision,
+		context->flags,
+		context->origin,
+		context->count,
+		&(context->contacts),
+		&context->new_total,
+		&context->new_position,
+		cancellable, &local_error);
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
 }
 
 static AlphabetIndexContext *
-alphabet_index_context_new (gint         index,
-			    const gchar *locale)
+alphabet_index_context_new (gint index,
+                            const gchar *locale)
 {
 	AlphabetIndexContext *context = g_slice_new0 (AlphabetIndexContext);
 
@@ -2053,13 +2070,13 @@ alphabet_index_context_free (AlphabetIndexContext *context)
 }
 
 static gboolean
-set_alphabetic_index_sync_internal (EBookClientCursor   *cursor,
-				    gint                 index,
-				    const gchar         *locale,
-				    guint               *new_total,
-				    guint               *new_position,
-				    GCancellable        *cancellable,
-				    GError             **error)
+set_alphabetic_index_sync_internal (EBookClientCursor *cursor,
+                                    gint index,
+                                    const gchar *locale,
+                                    guint *new_total,
+                                    guint *new_position,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	EBookClientCursorPrivate *priv;
 	GError *local_error = NULL;
@@ -2100,21 +2117,22 @@ set_alphabetic_index_sync_internal (EBookClientCursor   *cursor,
 
 static void
 alphabet_index_thread (GSimpleAsyncResult *simple,
-		       GObject            *source_object,
-		       GCancellable       *cancellable)
+                       GObject *source_object,
+                       GCancellable *cancellable)
 {
 	AlphabetIndexContext *context;
 	GError *local_error = NULL;
 
 	context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	set_alphabetic_index_sync_internal (E_BOOK_CLIENT_CURSOR (source_object),
-					    context->index,
-					    context->locale,
-					    &context->new_total,
-					    &context->new_position,
-					    cancellable,
-					    &local_error);
+	set_alphabetic_index_sync_internal (
+		E_BOOK_CLIENT_CURSOR (source_object),
+		context->index,
+		context->locale,
+		&context->new_total,
+		&context->new_position,
+		cancellable,
+		&local_error);
 
 	if (local_error != NULL)
 		g_simple_async_result_take_error (simple, local_error);
@@ -2180,11 +2198,11 @@ e_book_client_cursor_ref_client (EBookClientCursor *cursor)
  * Since: 3.12
  */
 const gchar * const *
-e_book_client_cursor_get_alphabet (EBookClientCursor   *cursor,
-				   gint                *n_labels,
-				   gint                *underflow,
-				   gint                *inflow,
-				   gint                *overflow)
+e_book_client_cursor_get_alphabet (EBookClientCursor *cursor,
+                                   gint *n_labels,
+                                   gint *underflow,
+                                   gint *inflow,
+                                   gint *overflow)
 {
 	EBookClientCursorPrivate *priv;
 
@@ -2192,11 +2210,12 @@ e_book_client_cursor_get_alphabet (EBookClientCursor   *cursor,
 
 	priv = cursor->priv;
 
-	return e_collator_get_index_labels (priv->collator,
-					    n_labels,
-					    underflow,
-					    inflow,
-					    overflow);
+	return e_collator_get_index_labels (
+		priv->collator,
+		n_labels,
+		underflow,
+		inflow,
+		overflow);
 }
 
 /**
@@ -2211,7 +2230,7 @@ e_book_client_cursor_get_alphabet (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_get_total (EBookClientCursor   *cursor)
+e_book_client_cursor_get_total (EBookClientCursor *cursor)
 {
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), -1);
 
@@ -2238,7 +2257,7 @@ e_book_client_cursor_get_total (EBookClientCursor   *cursor)
  * Since: 3.12
  */
 gint
-e_book_client_cursor_get_position (EBookClientCursor   *cursor)
+e_book_client_cursor_get_position (EBookClientCursor *cursor)
 {
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), -1);
 
@@ -2263,13 +2282,12 @@ e_book_client_cursor_get_position (EBookClientCursor   *cursor)
  * Since: 3.12
  */
 void
-e_book_client_cursor_set_sexp (EBookClientCursor   *cursor,
-			       const gchar         *sexp,
-			       GCancellable        *cancellable,
-			       GAsyncReadyCallback  callback,
-			       gpointer             user_data)
+e_book_client_cursor_set_sexp (EBookClientCursor *cursor,
+                               const gchar *sexp,
+                               GCancellable *cancellable,
+                               GAsyncReadyCallback callback,
+                               gpointer user_data)
 {
-
 
 	GSimpleAsyncResult *simple;
 	SetSexpContext *context;
@@ -2278,13 +2296,15 @@ e_book_client_cursor_set_sexp (EBookClientCursor   *cursor,
 	g_return_if_fail (callback != NULL);
 
 	context = set_sexp_context_new (sexp);
-	simple  = g_simple_async_result_new (G_OBJECT (cursor),
-					     callback, user_data,
-					     e_book_client_cursor_set_sexp);
+	simple = g_simple_async_result_new (
+		G_OBJECT (cursor),
+		callback, user_data,
+		e_book_client_cursor_set_sexp);
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
-	g_simple_async_result_set_op_res_gpointer (simple, context,
-						   (GDestroyNotify) set_sexp_context_free);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, context,
+		(GDestroyNotify) set_sexp_context_free);
 
 	g_simple_async_result_run_in_thread (
 		simple, set_sexp_thread,
@@ -2307,9 +2327,9 @@ e_book_client_cursor_set_sexp (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gboolean
-e_book_client_cursor_set_sexp_finish (EBookClientCursor   *cursor,
-				      GAsyncResult        *result,
-				      GError             **error)
+e_book_client_cursor_set_sexp_finish (EBookClientCursor *cursor,
+                                      GAsyncResult *result,
+                                      GError **error)
 {
 	GSimpleAsyncResult *simple;
 	SetSexpContext *context;
@@ -2366,22 +2386,23 @@ e_book_client_cursor_set_sexp_finish (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gboolean
-e_book_client_cursor_set_sexp_sync (EBookClientCursor   *cursor,
-				    const gchar         *sexp,
-				    GCancellable        *cancellable,
-				    GError             **error)
+e_book_client_cursor_set_sexp_sync (EBookClientCursor *cursor,
+                                    const gchar *sexp,
+                                    GCancellable *cancellable,
+                                    GError **error)
 {
 	gboolean success;
 	guint new_total = 0, new_position = 0;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), FALSE);
 
-	success = set_sexp_sync_internal (cursor,
-					  sexp,
-					  &new_total,
-					  &new_position,
-					  cancellable,
-					  error);
+	success = set_sexp_sync_internal (
+		cursor,
+		sexp,
+		&new_total,
+		&new_position,
+		cancellable,
+		error);
 
 	/* If we are in the thread where the cursor was created, 
 	 * then synchronize the new total & position right away
@@ -2417,13 +2438,13 @@ e_book_client_cursor_set_sexp_sync (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 void
-e_book_client_cursor_step (EBookClientCursor   *cursor,
-			   EBookCursorStepFlags flags,
-			   EBookCursorOrigin    origin,
-			   gint                 count,
-			   GCancellable        *cancellable,
-			   GAsyncReadyCallback  callback,
-			   gpointer             user_data)
+e_book_client_cursor_step (EBookClientCursor *cursor,
+                           EBookCursorStepFlags flags,
+                           EBookCursorOrigin origin,
+                           gint count,
+                           GCancellable *cancellable,
+                           GAsyncReadyCallback callback,
+                           gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	StepContext *context;
@@ -2431,15 +2452,18 @@ e_book_client_cursor_step (EBookClientCursor   *cursor,
 	g_return_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor));
 	g_return_if_fail (callback != NULL);
 
-	context = step_context_new (cursor->priv->revision,
-				    flags, origin, count);
-	simple  = g_simple_async_result_new (G_OBJECT (cursor),
-					     callback, user_data,
-					     e_book_client_cursor_step);
+	context = step_context_new (
+		cursor->priv->revision,
+		flags, origin, count);
+	simple = g_simple_async_result_new (
+		G_OBJECT (cursor),
+		callback, user_data,
+		e_book_client_cursor_step);
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
-	g_simple_async_result_set_op_res_gpointer (simple, context,
-						   (GDestroyNotify) step_context_free);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, context,
+		(GDestroyNotify) step_context_free);
 
 	g_simple_async_result_run_in_thread (
 		simple, step_thread,
@@ -2464,10 +2488,10 @@ e_book_client_cursor_step (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
-				  GAsyncResult        *result,
-				  GSList             **out_contacts,
-				  GError             **error)
+e_book_client_cursor_step_finish (EBookClientCursor *cursor,
+                                  GAsyncResult *result,
+                                  GSList **out_contacts,
+                                  GError **error)
 {
 	GSimpleAsyncResult *simple;
 	StepContext *context;
@@ -2548,23 +2572,24 @@ e_book_client_cursor_step_finish (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_step_sync (EBookClientCursor   *cursor,
-				EBookCursorStepFlags flags,
-				EBookCursorOrigin    origin,
-				gint                 count,
-				GSList             **out_contacts,
-				GCancellable        *cancellable,
-				GError             **error)
+e_book_client_cursor_step_sync (EBookClientCursor *cursor,
+                                EBookCursorStepFlags flags,
+                                EBookCursorOrigin origin,
+                                gint count,
+                                GSList **out_contacts,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	guint new_total = 0, new_position = 0;
 	gint retval;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), FALSE);
 
-	retval = step_sync_internal (cursor, cursor->priv->revision,
-				     flags, origin, count,
-				     out_contacts, &new_total, &new_position,
-				     cancellable, error);
+	retval = step_sync_internal (
+		cursor, cursor->priv->revision,
+		flags, origin, count,
+		out_contacts, &new_total, &new_position,
+		cancellable, error);
 
 	/* If we are in the thread where the cursor was created, 
 	 * then synchronize the new total & position right away
@@ -2597,11 +2622,11 @@ e_book_client_cursor_step_sync (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 void
-e_book_client_cursor_set_alphabetic_index (EBookClientCursor   *cursor,
-					   gint                 index,
-					   GCancellable        *cancellable,
-					   GAsyncReadyCallback  callback,
-					   gpointer             user_data)
+e_book_client_cursor_set_alphabetic_index (EBookClientCursor *cursor,
+                                           gint index,
+                                           GCancellable *cancellable,
+                                           GAsyncReadyCallback callback,
+                                           gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AlphabetIndexContext *context;
@@ -2611,13 +2636,15 @@ e_book_client_cursor_set_alphabetic_index (EBookClientCursor   *cursor,
 	g_return_if_fail (callback != NULL);
 
 	context = alphabet_index_context_new (index, cursor->priv->locale);
-	simple  = g_simple_async_result_new (G_OBJECT (cursor),
-					     callback, user_data,
-					     e_book_client_cursor_set_alphabetic_index);
+	simple = g_simple_async_result_new (
+		G_OBJECT (cursor),
+		callback, user_data,
+		e_book_client_cursor_set_alphabetic_index);
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
-	g_simple_async_result_set_op_res_gpointer (simple, context,
-						   (GDestroyNotify) alphabet_index_context_free);
+	g_simple_async_result_set_op_res_gpointer (
+		simple, context,
+		(GDestroyNotify) alphabet_index_context_free);
 
 	g_simple_async_result_run_in_thread (
 		simple, alphabet_index_thread,
@@ -2639,9 +2666,9 @@ e_book_client_cursor_set_alphabetic_index (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gboolean
-e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
-						  GAsyncResult        *result,
-						  GError             **error)
+e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor *cursor,
+                                                  GAsyncResult *result,
+                                                  GError **error)
 {
 	GSimpleAsyncResult *simple;
 	AlphabetIndexContext *context;
@@ -2706,10 +2733,10 @@ e_book_client_cursor_set_alphabetic_index_finish (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gboolean
-e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
-						gint                 index,
-						GCancellable        *cancellable,
-						GError             **error)
+e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor *cursor,
+                                                gint index,
+                                                GCancellable *cancellable,
+                                                GError **error)
 {
 	guint new_total = 0, new_position = 0;
 	gboolean success;
@@ -2717,8 +2744,9 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_CURSOR (cursor), FALSE);
 	g_return_val_if_fail (index >= 0 && index < cursor->priv->n_labels, FALSE);
 
-	success = set_alphabetic_index_sync_internal (cursor, index, cursor->priv->locale,
-						      &new_total, &new_position, cancellable, error);
+	success = set_alphabetic_index_sync_internal (
+		cursor, index, cursor->priv->locale,
+		&new_total, &new_position, cancellable, error);
 
 	/* If we are in the thread where the cursor was created, 
 	 * then synchronize the new total & position right away
@@ -2754,8 +2782,8 @@ e_book_client_cursor_set_alphabetic_index_sync (EBookClientCursor   *cursor,
  * Since: 3.12
  */
 gint
-e_book_client_cursor_get_contact_alphabetic_index (EBookClientCursor   *cursor,
-						   EContact            *contact)
+e_book_client_cursor_get_contact_alphabetic_index (EBookClientCursor *cursor,
+                                                   EContact *contact)
 {
 	EBookClientCursorPrivate *priv;
 	EContactField field;

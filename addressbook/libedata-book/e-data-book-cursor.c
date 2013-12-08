@@ -225,6 +225,10 @@
 /* Private D-Bus class. */
 #include <e-dbus-address-book-cursor.h>
 
+#define E_DATA_BOOK_CURSOR_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	((obj), E_TYPE_DATA_BOOK_CURSOR, EDataBookCursorPrivate))
+
 /* GObjectClass */
 static void e_data_book_cursor_constructed (GObject *object);
 static void e_data_book_cursor_dispose (GObject *object);
@@ -341,55 +345,54 @@ e_data_book_cursor_class_init (EDataBookCursorClass *class)
 static void
 e_data_book_cursor_init (EDataBookCursor *cursor)
 {
-	cursor->priv = 
-	  G_TYPE_INSTANCE_GET_PRIVATE (cursor,
-				       E_TYPE_DATA_BOOK_CURSOR,
-				       EDataBookCursorPrivate);
+	cursor->priv = E_DATA_BOOK_CURSOR_GET_PRIVATE (cursor);
 }
 
 static void
 e_data_book_cursor_constructed (GObject *object)
 {
-  EDataBookCursor *cursor = E_DATA_BOOK_CURSOR (object);
-  GError *error = NULL;
+	EDataBookCursor *cursor = E_DATA_BOOK_CURSOR (object);
+	GError *error = NULL;
 
-  /* Get the initial cursor values */
-  if (!e_data_book_cursor_recalculate (cursor, NULL, &error)) {
-	  g_warning ("Failed to calculate initial cursor position: %s", error->message);
-	  g_clear_error (&error);
-  }
+	/* Get the initial cursor values */
+	if (!e_data_book_cursor_recalculate (cursor, NULL, &error)) {
+		g_warning (
+			"Failed to calculate initial cursor position: %s",
+			error->message);
+		g_clear_error (&error);
+	}
 
-  G_OBJECT_CLASS (e_data_book_cursor_parent_class)->constructed (object);
+	G_OBJECT_CLASS (e_data_book_cursor_parent_class)->constructed (object);
 }
 
 static void
 e_data_book_cursor_finalize (GObject *object)
 {
-  EDataBookCursor        *cursor = E_DATA_BOOK_CURSOR (object);
-  EDataBookCursorPrivate *priv = cursor->priv;
+	EDataBookCursor        *cursor = E_DATA_BOOK_CURSOR (object);
+	EDataBookCursorPrivate *priv = cursor->priv;
 
-  g_free (priv->locale);
+	g_free (priv->locale);
 
-  G_OBJECT_CLASS (e_data_book_cursor_parent_class)->finalize (object);
+	G_OBJECT_CLASS (e_data_book_cursor_parent_class)->finalize (object);
 }
 
 static void
 e_data_book_cursor_dispose (GObject *object)
 {
-  EDataBookCursor        *cursor = E_DATA_BOOK_CURSOR (object);
-  EDataBookCursorPrivate *priv = cursor->priv;
+	EDataBookCursor        *cursor = E_DATA_BOOK_CURSOR (object);
+	EDataBookCursorPrivate *priv = cursor->priv;
 
-  g_clear_object (&(priv->dbus_object));
-  g_clear_object (&(priv->backend));
+	g_clear_object (&(priv->dbus_object));
+	g_clear_object (&(priv->backend));
 
-  G_OBJECT_CLASS (e_data_book_cursor_parent_class)->dispose (object);
+	G_OBJECT_CLASS (e_data_book_cursor_parent_class)->dispose (object);
 }
 
 static void
 e_data_book_cursor_get_property (GObject *object,
-				 guint property_id,
-				 GValue *value,
-				 GParamSpec *pspec)
+                                 guint property_id,
+                                 GValue *value,
+                                 GParamSpec *pspec)
 {
 	EDataBookCursor        *cursor = E_DATA_BOOK_CURSOR (object);
 	EDataBookCursorPrivate *priv = cursor->priv;
@@ -412,9 +415,9 @@ e_data_book_cursor_get_property (GObject *object,
 
 static void
 e_data_book_cursor_set_property (GObject *object,
-				 guint property_id,
-				 const GValue *value,
-				 GParamSpec *pspec)
+                                 guint property_id,
+                                 const GValue *value,
+                                 GParamSpec *pspec)
 {
 	EDataBookCursor        *cursor = E_DATA_BOOK_CURSOR (object);
 	EDataBookCursorPrivate *priv = cursor->priv;
@@ -435,8 +438,8 @@ e_data_book_cursor_set_property (GObject *object,
  ************************************************/
 static void
 data_book_cursor_set_values (EDataBookCursor *cursor,
-			     gint             total,
-			     gint             position)
+                             gint total,
+                             gint position)
 {
 	EDataBookCursorPrivate *priv;
 	gboolean changed = FALSE;
@@ -468,15 +471,16 @@ data_book_cursor_set_values (EDataBookCursor *cursor,
 }
 
 static gint
-data_book_cursor_compare_contact (EDataBookCursor     *cursor,
-				  EContact            *contact,
-				  gboolean            *matches_sexp)
+data_book_cursor_compare_contact (EDataBookCursor *cursor,
+                                  EContact *contact,
+                                  gboolean *matches_sexp)
 {
 	gint result;
 
 	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) {
-		g_critical ("EDataBookCursor.compare_contact() unimplemented on type '%s'",
-			    G_OBJECT_TYPE_NAME (cursor));
+		g_critical (
+			"EDataBookCursor.compare_contact() unimplemented on type '%s'",
+			G_OBJECT_TYPE_NAME (cursor));
 		return 0;
 	}
 
@@ -490,10 +494,10 @@ data_book_cursor_compare_contact (EDataBookCursor     *cursor,
 }
 
 static void
-calculate_step_position (EDataBookCursor     *cursor,
-			 EBookCursorOrigin    origin,
-			 gint                 count,
-			 gint                 results)
+calculate_step_position (EDataBookCursor *cursor,
+                         EBookCursorOrigin origin,
+                         gint count,
+                         gint results)
 {
 	EDataBookCursorPrivate *priv = cursor->priv;
 	gint new_position = priv->position;
@@ -541,25 +545,20 @@ calculate_step_position (EDataBookCursor     *cursor,
  ************************************************/
 static gboolean
 data_book_cursor_handle_step (EDBusAddressBookCursor *dbus_object,
-			      GDBusMethodInvocation  *invocation,
-			      const gchar            *revision,
-			      EBookCursorStepFlags    flags,
-			      EBookCursorOrigin       origin,
-			      gint                    count,
-			      EDataBookCursor        *cursor)
+                              GDBusMethodInvocation *invocation,
+                              const gchar *revision,
+                              EBookCursorStepFlags flags,
+                              EBookCursorOrigin origin,
+                              gint count,
+                              EDataBookCursor *cursor)
 {
 	GSList *results = NULL;
 	GError *error = NULL;
 	gint n_results;
 
-	n_results = e_data_book_cursor_step (cursor,
-					     revision,
-					     flags,
-					     origin,
-					     count,
-					     &results,
-					     NULL,
-					     &error);
+	n_results = e_data_book_cursor_step (
+		cursor, revision, flags, origin,
+		count, &results, NULL, &error);
 
 	if (n_results < 0) {
 		g_dbus_method_invocation_return_gerror (invocation, error);
@@ -583,15 +582,15 @@ data_book_cursor_handle_step (EDBusAddressBookCursor *dbus_object,
 			g_slist_free_full (results, g_free);
 		}
 
-		e_dbus_address_book_cursor_complete_step (dbus_object,
-							  invocation,
-							  n_results,
-							  strv ? 
-							  (const gchar *const *)strv :
-							  empty_str,
-							  cursor->priv->total,
-							  cursor->priv->position);
-
+		e_dbus_address_book_cursor_complete_step (
+			dbus_object,
+			invocation,
+			n_results,
+			strv ?
+			(const gchar *const *) strv :
+			empty_str,
+			cursor->priv->total,
+			cursor->priv->position);
 
 		g_strfreev (strv);
 	}
@@ -601,10 +600,10 @@ data_book_cursor_handle_step (EDBusAddressBookCursor *dbus_object,
 
 static gboolean
 data_book_cursor_handle_set_alphabetic_index (EDBusAddressBookCursor *dbus_object,
-					      GDBusMethodInvocation  *invocation,
-					      gint                    index,
-					      const gchar            *locale,
-					      EDataBookCursor        *cursor)
+                                              GDBusMethodInvocation *invocation,
+                                              gint index,
+                                              const gchar *locale,
+                                              EDataBookCursor *cursor)
 {
 	GError *error = NULL;
 
@@ -616,10 +615,11 @@ data_book_cursor_handle_set_alphabetic_index (EDBusAddressBookCursor *dbus_objec
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_clear_error (&error);
 	} else {
-		e_dbus_address_book_cursor_complete_set_alphabetic_index (dbus_object,
-									  invocation,
-									  cursor->priv->total,
-									  cursor->priv->position);
+		e_dbus_address_book_cursor_complete_set_alphabetic_index (
+			dbus_object,
+			invocation,
+			cursor->priv->total,
+			cursor->priv->position);
 	}
 
 	return TRUE;
@@ -627,9 +627,9 @@ data_book_cursor_handle_set_alphabetic_index (EDBusAddressBookCursor *dbus_objec
 
 static gboolean
 data_book_cursor_handle_set_query (EDBusAddressBookCursor *dbus_object,
-				   GDBusMethodInvocation  *invocation,
-				   const gchar            *query,
-				   EDataBookCursor        *cursor)
+                                   GDBusMethodInvocation *invocation,
+                                   const gchar *query,
+                                   EDataBookCursor *cursor)
 {
 	GError *error = NULL;
 
@@ -637,10 +637,11 @@ data_book_cursor_handle_set_query (EDBusAddressBookCursor *dbus_object,
 		g_dbus_method_invocation_return_gerror (invocation, error);
 		g_clear_error (&error);
 	} else {
-		e_dbus_address_book_cursor_complete_set_query (dbus_object,
-							       invocation,
-							       cursor->priv->total,
-							       cursor->priv->position);
+		e_dbus_address_book_cursor_complete_set_query (
+			dbus_object,
+			invocation,
+			cursor->priv->total,
+			cursor->priv->position);
 	}
 
 	return TRUE;
@@ -648,8 +649,8 @@ data_book_cursor_handle_set_query (EDBusAddressBookCursor *dbus_object,
 
 static gboolean
 data_book_cursor_handle_dispose (EDBusAddressBookCursor *dbus_object,
-				 GDBusMethodInvocation  *invocation,
-				 EDataBookCursor        *cursor)
+                                 GDBusMethodInvocation *invocation,
+                                 EDataBookCursor *cursor)
 {
 	EDataBookCursorPrivate *priv = cursor->priv;
 	GError *error = NULL;
@@ -697,7 +698,6 @@ e_data_book_cursor_get_backend (EDataBookCursor *cursor)
 	return cursor->priv->backend;
 }
 
-
 /**
  * e_data_book_cursor_get_total:
  * @cursor: an #EDataBookCursor
@@ -734,7 +734,6 @@ e_data_book_cursor_get_position (EDataBookCursor *cursor)
 	return cursor->priv->position;
 }
 
-
 /**
  * e_data_book_cursor_set_sexp:
  * @cursor: an #EDataBookCursor
@@ -749,10 +748,10 @@ e_data_book_cursor_get_position (EDataBookCursor *cursor)
  * Since: 3.12
  */
 gboolean
-e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
-			     const gchar         *sexp,
-			     GCancellable        *cancellable,
-			     GError             **error)
+e_data_book_cursor_set_sexp (EDataBookCursor *cursor,
+                             const gchar *sexp,
+                             GCancellable *cancellable,
+                             GError **error)
 {
 	GError *local_error = NULL;
 	gboolean success = FALSE;
@@ -767,10 +766,11 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 									       error);
 
 	} else {
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_NOT_SUPPORTED,
-				     _("Cursor does not support setting the search expression"));
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			_("Cursor does not support setting the search expression"));
 	}
 
 	/* We already set the new search expression,
@@ -778,9 +778,10 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
 	 */
 	if (success &&
 	    !e_data_book_cursor_recalculate (cursor, cancellable, &local_error)) {
-		g_warning ("Failed to recalculate the cursor value "
-			   "after setting the search expression: %s",
-			   local_error->message);
+		g_warning (
+			"Failed to recalculate the cursor value "
+			"after setting the search expression: %s",
+			local_error->message);
 		g_clear_error (&local_error);
 	}
 
@@ -832,14 +833,14 @@ e_data_book_cursor_set_sexp (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 gint
-e_data_book_cursor_step (EDataBookCursor     *cursor,
-			 const gchar         *revision_guard,
-			 EBookCursorStepFlags flags,
-			 EBookCursorOrigin    origin,
-			 gint                 count,
-			 GSList             **results,
-			 GCancellable        *cancellable,
-			 GError             **error)
+e_data_book_cursor_step (EDataBookCursor *cursor,
+                         const gchar *revision_guard,
+                         EBookCursorStepFlags flags,
+                         EBookCursorOrigin origin,
+                         gint count,
+                         GSList **results,
+                         GCancellable *cancellable,
+                         GError **error)
 {
 	gint retval;
 
@@ -848,10 +849,11 @@ e_data_book_cursor_step (EDataBookCursor     *cursor,
 			      (results != NULL && *results == NULL), -1);
 
 	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->step) {
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_NOT_SUPPORTED,
-				     _("Cursor does not support step"));
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			_("Cursor does not support step"));
 		return FALSE;
 	}
 
@@ -901,11 +903,11 @@ e_data_book_cursor_step (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 gboolean
-e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
-					 gint                 index,
-					 const gchar         *locale,
-					 GCancellable        *cancellable,
-					 GError             **error)
+e_data_book_cursor_set_alphabetic_index (EDataBookCursor *cursor,
+                                         gint index,
+                                         const gchar *locale,
+                                         GCancellable *cancellable,
+                                         GError **error)
 {
 	GError *local_error = NULL;
 	gboolean success;
@@ -922,17 +924,19 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
 
 		/* We already set the new cursor value, we can't fail anymore so just fire a warning */
 		if (!e_data_book_cursor_recalculate (cursor, cancellable, &local_error)) {
-			g_warning ("Failed to recalculate the cursor value "
-				   "after setting the alphabetic index: %s",
-				   local_error->message);
+			g_warning (
+				"Failed to recalculate the cursor value "
+				"after setting the alphabetic index: %s",
+				local_error->message);
 			g_clear_error (&local_error);
 		}
 
 	} else {
-		g_set_error_literal (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_NOT_SUPPORTED,
-				     _("Cursor does not support alphabetic indexes"));
+		g_set_error_literal (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_NOT_SUPPORTED,
+			_("Cursor does not support alphabetic indexes"));
 		success = FALSE;
 	}
 
@@ -957,9 +961,9 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 gboolean
-e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
-				GCancellable        *cancellable,
-				GError             **error)
+e_data_book_cursor_recalculate (EDataBookCursor *cursor,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	gint total = 0;
 	gint position = 0;
@@ -969,14 +973,15 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
 
 	/* Bad programming error */
 	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->get_position) {
-		g_critical ("EDataBookCursor.get_position() unimplemented on type '%s'",
-			    G_OBJECT_TYPE_NAME (cursor));
+		g_critical (
+			"EDataBookCursor.get_position() unimplemented on type '%s'",
+			G_OBJECT_TYPE_NAME (cursor));
 
 		return FALSE;
 	}
 
 	g_object_ref (cursor);
-	success =  (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->get_position) (cursor,
+	success = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->get_position) (cursor,
 									    &total,
 									    &position,
 									    cancellable,
@@ -1008,10 +1013,10 @@ e_data_book_cursor_recalculate (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 gboolean
-e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
-				gchar              **locale,
-				GCancellable        *cancellable,
-				GError             **error)
+e_data_book_cursor_load_locale (EDataBookCursor *cursor,
+                                gchar **locale,
+                                GCancellable *cancellable,
+                                GError **error)
 {
 	EDataBookCursorPrivate *priv;
 	gboolean success;
@@ -1022,8 +1027,9 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 	priv = cursor->priv;
 
 	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->load_locale) {
-		g_critical ("EDataBookCursor.load_locale() unimplemented on type '%s'",
-			    G_OBJECT_TYPE_NAME (cursor));
+		g_critical (
+			"EDataBookCursor.load_locale() unimplemented on type '%s'",
+			G_OBJECT_TYPE_NAME (cursor));
 		return FALSE;
 	}
 
@@ -1042,13 +1048,15 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
 					     E_BOOK_CURSOR_STEP_MOVE,
 					     E_BOOK_CURSOR_ORIGIN_BEGIN,
 					     0, NULL, cancellable, &local_error) < 0) {
-			g_warning ("Error resetting cursor position after locale change: %s",
-				   local_error->message);
+			g_warning (
+				"Error resetting cursor position after locale change: %s",
+				local_error->message);
 			g_clear_error (&local_error);
 		} else if (!e_data_book_cursor_recalculate (E_DATA_BOOK_CURSOR (cursor),
 							    cancellable, &local_error)) {
-			g_warning ("Error recalculating cursor position after locale change: %s",
-				   local_error->message);
+			g_warning (
+				"Error recalculating cursor position after locale change: %s",
+				local_error->message);
 			g_clear_error (&local_error);
 		}
 	}
@@ -1072,8 +1080,8 @@ e_data_book_cursor_load_locale (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 void
-e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
-				  EContact            *contact)
+e_data_book_cursor_contact_added (EDataBookCursor *cursor,
+                                  EContact *contact)
 {
 	EDataBookCursorPrivate *priv;
 	gint comparison = 0;
@@ -1118,8 +1126,8 @@ e_data_book_cursor_contact_added (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 void
-e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
-				    EContact            *contact)
+e_data_book_cursor_contact_removed (EDataBookCursor *cursor,
+                                    EContact *contact)
 {
 	EDataBookCursorPrivate *priv;
 	gint comparison = 0;
@@ -1167,10 +1175,10 @@ e_data_book_cursor_contact_removed (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 gboolean
-e_data_book_cursor_register_gdbus_object (EDataBookCursor     *cursor,
-					  GDBusConnection     *connection,
-					  const gchar         *object_path,
-					  GError             **error)
+e_data_book_cursor_register_gdbus_object (EDataBookCursor *cursor,
+                                          GDBusConnection *connection,
+                                          const gchar *object_path,
+                                          GError **error)
 {
 	EDataBookCursorPrivate *priv;
 
@@ -1183,15 +1191,18 @@ e_data_book_cursor_register_gdbus_object (EDataBookCursor     *cursor,
 	if (!priv->dbus_object) {
 		priv->dbus_object = e_dbus_address_book_cursor_skeleton_new ();
 
-		g_signal_connect (priv->dbus_object, "handle-step",
-				  G_CALLBACK (data_book_cursor_handle_step), cursor);
-		g_signal_connect (priv->dbus_object, "handle-set-alphabetic-index",
-				  G_CALLBACK (data_book_cursor_handle_set_alphabetic_index), cursor);
-		g_signal_connect (priv->dbus_object, "handle-set-query",
-				  G_CALLBACK (data_book_cursor_handle_set_query), cursor);
-		g_signal_connect (priv->dbus_object, "handle-dispose",
-				  G_CALLBACK (data_book_cursor_handle_dispose), cursor);
-
+		g_signal_connect (
+			priv->dbus_object, "handle-step",
+			G_CALLBACK (data_book_cursor_handle_step), cursor);
+		g_signal_connect (
+			priv->dbus_object, "handle-set-alphabetic-index",
+			G_CALLBACK (data_book_cursor_handle_set_alphabetic_index), cursor);
+		g_signal_connect (
+			priv->dbus_object, "handle-set-query",
+			G_CALLBACK (data_book_cursor_handle_set_query), cursor);
+		g_signal_connect (
+			priv->dbus_object, "handle-dispose",
+			G_CALLBACK (data_book_cursor_handle_dispose), cursor);
 
 		/* Set initial total / position */
 		e_dbus_address_book_cursor_set_total (priv->dbus_object, priv->total);

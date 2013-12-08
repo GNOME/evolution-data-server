@@ -404,7 +404,7 @@ migrate_parse_commit_changes (ParseType parse_type,
 	g_print (
 		"    Checking for old cache dir '%s'... %s\n",
 		old_directory,
-		old_directory_exists ?  "found" : "not found");
+		old_directory_exists ? "found" : "not found");
 
 	if (old_directory_exists) {
 		g_print (
@@ -448,7 +448,7 @@ migrate_parse_commit_changes (ParseType parse_type,
 	g_print (
 		"    Checking for old data dir '%s'... %s\n",
 		old_directory,
-		old_directory_exists ?  "found" : "not found");
+		old_directory_exists ? "found" : "not found");
 
 	if (old_directory_exists) {
 		g_print (

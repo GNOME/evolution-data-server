@@ -52,7 +52,7 @@
  * This environment variable configures where the address book
  * factory loads it's backend modules from.
  */
-#define EDS_ADDRESS_BOOK_MODULES    "EDS_ADDRESS_BOOK_MODULES"
+#define EDS_ADDRESS_BOOK_MODULES "EDS_ADDRESS_BOOK_MODULES"
 
 G_BEGIN_DECLS
 

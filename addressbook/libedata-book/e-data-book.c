@@ -1064,11 +1064,11 @@ data_book_handle_get_view_cb (EDBusAddressBook *interface,
 
 static gboolean
 data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
-			       const gchar * const *in_sort_types,
-			       EContactField **out_sort_keys,
-			       EBookCursorSortType **out_sort_types,
-			       gint *n_fields,
-			       GError **error)
+                               const gchar * const *in_sort_types,
+                               EContactField **out_sort_keys,
+                               EBookCursorSortType **out_sort_types,
+                               gint *n_fields,
+                               GError **error)
 {
 	gint i, key_count = 0, type_count = 0;
 	EContactField *sort_keys;
@@ -1076,10 +1076,11 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 	gboolean success = TRUE;
 
 	if (!in_sort_keys || !in_sort_types) {
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_INVALID_ARG,
-			     "Missing sort keys while trying to create a Cursor");
+		g_set_error (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_INVALID_ARG,
+			"Missing sort keys while trying to create a Cursor");
 		return FALSE;
 	}
 
@@ -1089,10 +1090,11 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 		type_count++;
 
 	if (key_count != type_count) {
-		g_set_error (error,
-			     E_CLIENT_ERROR,
-			     E_CLIENT_ERROR_INVALID_ARG,
-			     "Must specify the same amount of sort keys as sort types while creating a Cursor");
+		g_set_error (
+			error,
+			E_CLIENT_ERROR,
+			E_CLIENT_ERROR_INVALID_ARG,
+			"Must specify the same amount of sort keys as sort types while creating a Cursor");
 		return FALSE;
 	}
 
@@ -1104,11 +1106,12 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 		sort_keys[i] = e_contact_field_id (in_sort_keys[i]);
 
 		if (sort_keys[i] == 0) {
-			g_set_error (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_INVALID_ARG,
-				     "Invalid sort key '%s' specified when creating a Cursor",
-				     in_sort_keys[i]);
+			g_set_error (
+				error,
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_INVALID_ARG,
+				"Invalid sort key '%s' specified when creating a Cursor",
+				in_sort_keys[i]);
 			success = FALSE;
 		}
 	}
@@ -1119,11 +1122,12 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 		if (!e_enum_from_string (E_TYPE_BOOK_CURSOR_SORT_TYPE,
 					 in_sort_types[i],
 					 &enum_value)) {
-			g_set_error (error,
-				     E_CLIENT_ERROR,
-				     E_CLIENT_ERROR_INVALID_ARG,
-				     "Invalid sort type '%s' specified when creating a Cursor",
-				     in_sort_types[i]);
+			g_set_error (
+				error,
+				E_CLIENT_ERROR,
+				E_CLIENT_ERROR_INVALID_ARG,
+				"Invalid sort type '%s' specified when creating a Cursor",
+				in_sort_types[i]);
 			success = FALSE;
 		}
 
@@ -1144,11 +1148,11 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 
 static gboolean
 data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
-				GDBusMethodInvocation *invocation,
-				const gchar *in_query,
-				const gchar * const *in_sort_keys,
-				const gchar * const *in_sort_types,
-				EDataBook *data_book)
+                                GDBusMethodInvocation *invocation,
+                                const gchar *in_query,
+                                const gchar * const *in_sort_keys,
+                                const gchar * const *in_sort_types,
+                                EDataBook *data_book)
 {
 	EBookBackend *backend;
 	EDataBookCursor *cursor;
@@ -1179,11 +1183,8 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	/*
 	 * Create cursor
 	 */
-	cursor = e_book_backend_create_cursor (backend,
-					       sort_keys,
-					       sort_types,
-					       n_fields,
-					       &error);
+	cursor = e_book_backend_create_cursor (
+		backend, sort_keys, sort_types, n_fields, &error);
 	g_free (sort_keys);
 	g_free (sort_types);
 
@@ -1221,9 +1222,8 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	/*
 	 * All is good in the hood, complete the method call
 	 */
-	e_dbus_address_book_complete_get_cursor (interface,
-						 invocation,
-						 object_path);
+	e_dbus_address_book_complete_get_cursor (
+		interface, invocation, object_path);
 	g_free (object_path);
 	g_object_unref (backend);
 	return TRUE;
@@ -1861,8 +1861,9 @@ data_book_constructed (GObject *object)
 	/* Initialize the locale to the value reported by setlocale() until
 	 * systemd says otherwise.
 	 */
-	e_dbus_address_book_set_locale (book->priv->dbus_interface,
-					setlocale (LC_COLLATE, NULL));
+	e_dbus_address_book_set_locale (
+		book->priv->dbus_interface,
+		setlocale (LC_COLLATE, NULL));
 
 	g_object_unref (backend);
 }
@@ -2149,9 +2150,9 @@ e_data_book_get_object_path (EDataBook *book)
  */
 gboolean
 e_data_book_set_locale (EDataBook *book,
-			const gchar *locale,
-			GCancellable *cancellable,
-			GError **error)
+                        const gchar *locale,
+                        GCancellable *cancellable,
+                        GError **error)
 {
 	EBookBackend *backend;
 	gboolean success;
@@ -2159,13 +2160,12 @@ e_data_book_set_locale (EDataBook *book,
 	g_return_val_if_fail (E_IS_DATA_BOOK (book), FALSE);
 
 	backend = e_data_book_ref_backend (book);
-	success = e_book_backend_set_locale (backend,
-					     locale,
-					     cancellable,
-					     error);
+	success = e_book_backend_set_locale (
+		backend, locale, cancellable, error);
 
 	if (success)
-		e_dbus_address_book_set_locale (book->priv->dbus_interface, locale);
+		e_dbus_address_book_set_locale (
+			book->priv->dbus_interface, locale);
 
 	g_object_unref (backend);
 

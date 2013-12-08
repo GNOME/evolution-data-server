@@ -21,8 +21,9 @@
 
 #include "cursor-example.h"
 
-int
-main (int argc, char *argv[])
+gint
+main (gint argc,
+      gchar *argv[])
 {
   GtkWidget *example;
 

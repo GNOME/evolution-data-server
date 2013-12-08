@@ -11,9 +11,9 @@ typedef struct {
 	gboolean uids_only;
 } UIDOnlyClosure;
 
-static UIDOnlyClosure book_closure_all_data_sync   = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE }, FALSE };
-static UIDOnlyClosure book_closure_all_data_async  = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE },  FALSE };
-static UIDOnlyClosure book_closure_uids_only_sync  = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE }, TRUE };
+static UIDOnlyClosure book_closure_all_data_sync = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE }, FALSE };
+static UIDOnlyClosure book_closure_all_data_async = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE },  FALSE };
+static UIDOnlyClosure book_closure_uids_only_sync = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, FALSE }, TRUE };
 static UIDOnlyClosure book_closure_uids_only_async = { { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, FALSE, NULL, TRUE },  TRUE };
 
 #define N_TEST_CONTACTS 4
@@ -26,7 +26,7 @@ static UIDOnlyClosure book_closure_uids_only_async = { { E_TEST_SERVER_ADDRESS_B
 #  define SETUP_TIMER(timer)  GTimer *timer = g_timer_new ();
 #  define START_TIMER(timer)  g_timer_start (timer);
 #  define STOP_TIMER(timer)   g_timer_stop (timer);
-#  define PRINT_TIMER(timer, activity)  \
+#  define PRINT_TIMER(timer, activity) \
 	printf ("%s finished in %02.6f seconds\n", activity, g_timer_elapsed (timer, NULL));
 #else
 #  define SETUP_TIMER(timer)
@@ -35,7 +35,7 @@ static UIDOnlyClosure book_closure_uids_only_async = { { E_TEST_SERVER_ADDRESS_B
 #  define PRINT_TIMER(timer, activity)
 #endif
 
-static gboolean uids_only    = FALSE;
+static gboolean uids_only = FALSE;
 
 /****************************************************************
  *                     Modify/Setup the EBook                   *
@@ -48,7 +48,7 @@ setup_book (EBookClient *book_client)
 	for (i = 0; i < N_TEST_CONTACTS; i++)
 	{
 		EContact *contact = e_contact_new ();
-		gchar    *name      = g_strdup_printf ("Contact #%d", i + 1);
+		gchar    *name = g_strdup_printf ("Contact #%d", i + 1);
 		gchar    *emails[5] = {
 			g_strdup_printf ("contact%d@first.email.com", i),
 			g_strdup_printf ("contact%d@second.email.com", i),
@@ -169,7 +169,7 @@ objects_removed (EBookClientView *view,
 static void
 complete (EBookClientView *view,
           const GError *error,
-	  gpointer user_data)
+          gpointer user_data)
 {
 	GMainLoop *loop = (GMainLoop *) user_data;
 

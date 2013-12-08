@@ -18,7 +18,7 @@
  *
  * Author: Tristan Van Berkom <tristanvb@openismus.com>
  */
- 
+
 #include <libebook/libebook.h>
 
 #include "cursor-slot.h"
@@ -62,7 +62,7 @@ cursor_slot_init (CursorSlot *slot)
  *                                API                                   *
  ************************************************************************/
 GtkWidget *
-cursor_slot_new (EContact   *contact)
+cursor_slot_new (EContact *contact)
 {
   CursorSlot *slot;
 
@@ -70,12 +70,12 @@ cursor_slot_new (EContact   *contact)
 
   cursor_slot_set_from_contact (slot, contact);
 
-  return (GtkWidget *)slot;
+  return (GtkWidget *) slot;
 }
 
 static gchar *
-make_string_from_list (EContact      *contact,
-		       EContactField  field)
+make_string_from_list (EContact *contact,
+                       EContactField field)
 {
 	GList *values, *l;
 	GString *string;
@@ -103,7 +103,7 @@ make_string_from_list (EContact      *contact,
 
 void
 cursor_slot_set_from_contact (CursorSlot *slot,
-			      EContact   *contact)
+                              EContact *contact)
 {
 	CursorSlotPrivate *priv;
 	const gchar *family_name, *given_name;
@@ -119,8 +119,8 @@ cursor_slot_set_from_contact (CursorSlot *slot,
 		return;
 	}
 
-	family_name = (const gchar *)e_contact_get_const (contact, E_CONTACT_FAMILY_NAME);
-	given_name = (const gchar *)e_contact_get_const (contact, E_CONTACT_GIVEN_NAME);
+	family_name = (const gchar *) e_contact_get_const (contact, E_CONTACT_FAMILY_NAME);
+	given_name = (const gchar *) e_contact_get_const (contact, E_CONTACT_GIVEN_NAME);
 
 	str = g_strdup_printf ("%s, %s", family_name, given_name);
 	gtk_label_set_text (priv->name_label, str);
