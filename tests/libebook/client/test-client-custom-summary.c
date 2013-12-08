@@ -56,7 +56,7 @@ setup_custom_book (ESource *scratch,
 		0);
 }
 
-static ETestServerClosure setup_custom_closure  = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0, TRUE, NULL };
+static ETestServerClosure setup_custom_closure = { E_TEST_SERVER_ADDRESS_BOOK, setup_custom_book, 0, TRUE, NULL };
 static ETestServerClosure setup_default_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0, TRUE, NULL };
 
 /* Define this macro to expect E_CLIENT_ERROR_NOT_SUPPORTED
@@ -181,8 +181,8 @@ setup_book (ClientTestFixture *fixture)
 		gchar *vcard;
 		EContact *contact;
 
-		vcard    = new_vcard_from_test_case (case_name);
-		contact  = e_contact_new_from_vcard (vcard);
+		vcard = new_vcard_from_test_case (case_name);
+		contact = e_contact_new_from_vcard (vcard);
 		contacts = g_slist_prepend (contacts, contact);
 		g_free (vcard);
 		g_free (case_name);

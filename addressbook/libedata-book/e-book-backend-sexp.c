@@ -267,7 +267,7 @@ compare_address (EContact *contact,
 	for (i = E_CONTACT_FIRST_ADDRESS_ID; i <= E_CONTACT_LAST_ADDRESS_ID; i++) {
 		EContactAddress *address = e_contact_get (contact, i);
 		if (address) {
-			rv =  (address->po && compare (address->po, str, region)) ||
+			rv = (address->po && compare (address->po, str, region)) ||
 				(address->street && compare (address->street, str, region)) ||
 				(address->ext && compare (address->ext, str, region)) ||
 				(address->locality && compare (address->locality, str, region)) ||
@@ -552,7 +552,7 @@ try_contains_word (const gchar *s1,
 	w = word->data;
 	first_w_char = g_utf8_get_char (w->str);
 
-	o  = s1;
+	o = s1;
 	for (p = e_util_unicode_get_utf8 (o, &unival); p && unival; p = e_util_unicode_get_utf8 (p, &unival)) {
 		if (unival == first_w_char) {
 			gunichar unival2;

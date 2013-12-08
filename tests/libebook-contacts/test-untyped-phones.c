@@ -4,13 +4,13 @@
 
 /* TEL;WORK:... should map to PHONE_BUSINESS
  * TEL;FAX:... should map to OTHER_FAX. */
-#define VCARD					\
-  "BEGIN:VCARD\n"				\
-  "FN:Janet Jackson\n"				\
-  "N:Janet\n"					\
-  "TEL;WORK:123-123-1234\n"			\
-  "TEL;VOICE:456-456-4567\n"			\
-  "TEL;FAX:321-321-4321\n"			\
+#define VCARD \
+  "BEGIN:VCARD\n" \
+  "FN:Janet Jackson\n" \
+  "N:Janet\n" \
+  "TEL;WORK:123-123-1234\n" \
+  "TEL;VOICE:456-456-4567\n" \
+  "TEL;FAX:321-321-4321\n" \
   "END:VCARD\n"
 
 static void

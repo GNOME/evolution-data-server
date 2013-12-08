@@ -523,15 +523,15 @@ camel_quoted_encode_step (guchar *in,
 	register gint sofar = *save;  /* keeps track of how many chars on a line */
 	register gint last = *statep; /* keeps track if last gchar to end was a space cr etc */
 
-	#define output_last()				\
-		if (sofar + 3 > 74) {			\
-			*outptr++ = '=';		\
-			*outptr++ = '\n';		\
-			sofar = 0;			\
-		}					\
-		*outptr++ = '=';			\
-		*outptr++ = tohex[(last >> 4) & 0xf];	\
-		*outptr++ = tohex[last & 0xf];		\
+	#define output_last() \
+		if (sofar + 3 > 74) { \
+			*outptr++ = '='; \
+			*outptr++ = '\n'; \
+			sofar = 0; \
+		} \
+		*outptr++ = '='; \
+		*outptr++ = tohex[(last >> 4) & 0xf]; \
+		*outptr++ = tohex[last & 0xf]; \
 		sofar += 3;
 
 	inptr = in;

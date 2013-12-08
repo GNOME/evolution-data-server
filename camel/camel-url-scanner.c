@@ -132,14 +132,14 @@ static guchar url_scanner_table[256] = {
 };
 
 enum {
-	IS_CTRL		= (1 << 0),
-	IS_ALPHA        = (1 << 1),
-	IS_DIGIT        = (1 << 2),
-	IS_LWSP		= (1 << 3),
-	IS_SPACE	= (1 << 4),
-	IS_SPECIAL	= (1 << 5),
-	IS_DOMAIN       = (1 << 6),
-	IS_URLSAFE      = (1 << 7)
+	IS_CTRL = (1 << 0),
+	IS_ALPHA = (1 << 1),
+	IS_DIGIT = (1 << 2),
+	IS_LWSP = (1 << 3),
+	IS_SPACE = (1 << 4),
+	IS_SPECIAL = (1 << 5),
+	IS_DOMAIN = (1 << 6),
+	IS_URLSAFE = (1 << 7)
 };
 
 #define is_ctrl(x) ((url_scanner_table[(guchar)(x)] & IS_CTRL) != 0)

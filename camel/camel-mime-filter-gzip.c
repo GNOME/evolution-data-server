@@ -38,11 +38,11 @@
 /* rfc1952 */
 
 enum {
-	GZIP_FLAG_FTEXT     = (1 << 0),
-	GZIP_FLAG_FHCRC     = (1 << 1),
-	GZIP_FLAG_FEXTRA    = (1 << 2),
-	GZIP_FLAG_FNAME     = (1 << 3),
-	GZIP_FLAG_FCOMMENT  = (1 << 4),
+	GZIP_FLAG_FTEXT = (1 << 0),
+	GZIP_FLAG_FHCRC = (1 << 1),
+	GZIP_FLAG_FEXTRA = (1 << 2),
+	GZIP_FLAG_FNAME = (1 << 3),
+	GZIP_FLAG_FCOMMENT = (1 << 4),
 	GZIP_FLAG_RESERVED0 = (1 << 5),
 	GZIP_FLAG_RESERVED1 = (1 << 6),
 	GZIP_FLAG_RESERVED2 = (1 << 7)

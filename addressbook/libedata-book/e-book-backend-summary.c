@@ -743,17 +743,17 @@ e_book_backend_summary_add_contact (EBookBackendSummary *summary,
 
 	new_item = g_new0 (EBookBackendSummaryItem, 1);
 
-	new_item->id         = id;
-	new_item->nickname   = e_contact_get (contact, E_CONTACT_NICKNAME);
-	new_item->full_name  = e_contact_get (contact, E_CONTACT_FULL_NAME);
+	new_item->id = id;
+	new_item->nickname = e_contact_get (contact, E_CONTACT_NICKNAME);
+	new_item->full_name = e_contact_get (contact, E_CONTACT_FULL_NAME);
 	new_item->given_name = e_contact_get (contact, E_CONTACT_GIVEN_NAME);
-	new_item->surname    = e_contact_get (contact, E_CONTACT_FAMILY_NAME);
-	new_item->file_as    = e_contact_get (contact, E_CONTACT_FILE_AS);
-	new_item->email_1    = e_contact_get (contact, E_CONTACT_EMAIL_1);
-	new_item->email_2    = e_contact_get (contact, E_CONTACT_EMAIL_2);
-	new_item->email_3    = e_contact_get (contact, E_CONTACT_EMAIL_3);
-	new_item->email_4    = e_contact_get (contact, E_CONTACT_EMAIL_4);
-	new_item->list       = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_IS_LIST));
+	new_item->surname = e_contact_get (contact, E_CONTACT_FAMILY_NAME);
+	new_item->file_as = e_contact_get (contact, E_CONTACT_FILE_AS);
+	new_item->email_1 = e_contact_get (contact, E_CONTACT_EMAIL_1);
+	new_item->email_2 = e_contact_get (contact, E_CONTACT_EMAIL_2);
+	new_item->email_3 = e_contact_get (contact, E_CONTACT_EMAIL_3);
+	new_item->email_4 = e_contact_get (contact, E_CONTACT_EMAIL_4);
+	new_item->list = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_IS_LIST));
 	new_item->list_show_addresses = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_LIST_SHOW_ADDRESSES));
 	new_item->wants_html = GPOINTER_TO_INT (e_contact_get (contact, E_CONTACT_WANTS_HTML));
 

@@ -86,7 +86,7 @@ test_add_e164_param (ETestServerFixture *fixture,
 	book_client = E_TEST_SERVER_UTILS_SERVICE (fixture, EBookClient);
 	g_print ("%p\n", book_client);
 
-	vcard   = new_vcard_from_test_case (data->vcard_name);
+	vcard = new_vcard_from_test_case (data->vcard_name);
 	contact = e_contact_new_from_vcard (vcard);
 	g_free (vcard);
 

@@ -31,7 +31,7 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #ifndef IN6_ARE_ADDR_EQUAL
-#define IN6_ARE_ADDR_EQUAL(a, b)	\
+#define IN6_ARE_ADDR_EQUAL(a, b) \
     (memcmp ((gpointer)(a), (gpointer)(b), sizeof (struct in6_addr)) == 0)
 #endif
 #else
@@ -362,7 +362,7 @@ ep_need_proxy_http (EProxy *proxy,
 			for (l = priv->ign_addrs; l; l = l->next) {
 				p_addr = (ProxyHostAddr *) l->data;
 				if (p_addr->type == PROXY_IPV4) {
-					addr_in =  ((struct in_addr *) p_addr->addr);
+					addr_in = ((struct in_addr *) p_addr->addr);
 					mask = ((struct in_addr *) p_addr->mask);
 					if ((in.s_addr & mask->s_addr) == addr_in->s_addr) {
 						d (g_print ("Host [%s] doesn't require proxy\n", host));
@@ -389,7 +389,7 @@ ep_need_proxy_http (EProxy *proxy,
 					   IN6_IS_ADDR_V4MAPPED (&net6)) {
 					guint32 v4addr;
 
-					addr_in =  ((struct in_addr *) p_addr->addr);
+					addr_in = ((struct in_addr *) p_addr->addr);
 					mask = ((struct in_addr *) p_addr->mask);
 
 					v4addr = net6.s6_addr[12] << 24

@@ -271,7 +271,7 @@ md4sum (const guchar *in,
 
 	for (i = 0; i < nbytes + pbytes + 8; i += 64) {
 		for (j = 0; j < 16; j++) {
-			X[j] =  (M[i + j * 4]) |
+			X[j] = (M[i + j * 4]) |
 				(M[i + j * 4 + 1] << 8) |
 				(M[i + j * 4 + 2] << 16) |
 				(M[i + j * 4 + 3] << 24);
@@ -339,20 +339,20 @@ md4sum (const guchar *in,
 		D += DD;
 	}
 
-	digest[0]  =  A        & 0xFF;
-	digest[1]  = (A >>  8) & 0xFF;
-	digest[2]  = (A >> 16) & 0xFF;
-	digest[3]  = (A >> 24) & 0xFF;
-	digest[4]  =  B        & 0xFF;
-	digest[5]  = (B >>  8) & 0xFF;
-	digest[6]  = (B >> 16) & 0xFF;
-	digest[7]  = (B >> 24) & 0xFF;
-	digest[8]  =  C        & 0xFF;
-	digest[9]  = (C >>  8) & 0xFF;
+	digest[0] = A & 0xFF;
+	digest[1] = (A >> 8) & 0xFF;
+	digest[2] = (A >> 16) & 0xFF;
+	digest[3] = (A >> 24) & 0xFF;
+	digest[4] = B & 0xFF;
+	digest[5] = (B >> 8) & 0xFF;
+	digest[6] = (B >> 16) & 0xFF;
+	digest[7] = (B >> 24) & 0xFF;
+	digest[8] = C & 0xFF;
+	digest[9] = (C >> 8) & 0xFF;
 	digest[10] = (C >> 16) & 0xFF;
 	digest[11] = (C >> 24) & 0xFF;
-	digest[12] =  D        & 0xFF;
-	digest[13] = (D >>  8) & 0xFF;
+	digest[12] = D & 0xFF;
+	digest[13] = (D >> 8) & 0xFF;
 	digest[14] = (D >> 16) & 0xFF;
 	digest[15] = (D >> 24) & 0xFF;
 }
@@ -571,7 +571,7 @@ des (guint32 ks[16][2],
 	work = (left ^ right) & 0xaaaaaaaa;
 	left ^= work;
 	right ^= work;
-	left = (left >> 1) | (left  << 31);
+	left = (left >> 1) | (left << 31);
 	work = ((left >> 8) ^ right) & 0xff00ff;
 	right ^= work;
 	left ^= work << 8;

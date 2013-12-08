@@ -24,7 +24,7 @@ static UIDOnlyClosure book_closure_uids_only = { { E_TEST_SERVER_ADDRESS_BOOK, N
 #  define SETUP_TIMER(timer)  GTimer *timer = g_timer_new ();
 #  define START_TIMER(timer)  g_timer_start (timer);
 #  define STOP_TIMER(timer)   g_timer_stop (timer);
-#  define PRINT_TIMER(timer, activity)  \
+#  define PRINT_TIMER(timer, activity) \
 	printf ("%s finished in %02.6f seconds\n", activity, g_timer_elapsed (timer, NULL));
 #else
 #  define SETUP_TIMER(timer)
@@ -34,7 +34,7 @@ static UIDOnlyClosure book_closure_uids_only = { { E_TEST_SERVER_ADDRESS_BOOK, N
 #endif
 
 static gboolean loading_view = FALSE;
-static gboolean uids_only    = FALSE;
+static gboolean uids_only = FALSE;
 
 /****************************************************************
  *                     Modify/Setup the EBook                   *
@@ -60,7 +60,7 @@ setup_book (EBookClient *book_client)
 	for (i = 0; i < N_TEST_CONTACTS; i++)
 	{
 		EContact *contact = e_contact_new ();
-		gchar    *name      = g_strdup_printf ("Contact #%d", i + 1);
+		gchar    *name = g_strdup_printf ("Contact #%d", i + 1);
 		gchar    *emails[5] = {
 			g_strdup_printf ("contact%d@first.email.com", i),
 			g_strdup_printf ("contact%d@second.email.com", i),

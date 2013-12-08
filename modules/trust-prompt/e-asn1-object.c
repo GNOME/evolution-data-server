@@ -347,7 +347,7 @@ process_subject_public_key_info (CERTSubjectPublicKeyInfo *spki,
 	 * let's convert the lenght into a temporary SECItem.
 	*/
 	data.data = spki->subjectPublicKey.data;
-	data.len  = spki->subjectPublicKey.len / 8;
+	data.len = spki->subjectPublicKey.len / 8;
 
 	process_raw_bytes (&data, &text);
 	printableItem = e_asn1_object_new ();
@@ -372,7 +372,7 @@ process_ns_cert_type_extensions (SECItem *extData,
 	guchar nsCertType;
 
 	decoded.data = NULL;
-	decoded.len  = 0;
+	decoded.len = 0;
 	if (SECSuccess != SEC_ASN1DecodeItem (NULL, &decoded,
 					     SEC_ASN1_GET (SEC_BitStringTemplate), extData)) {
 		g_string_append (text, _("Error: Unable to process extension"));
@@ -422,7 +422,7 @@ process_key_usage_extensions (SECItem *extData,
 	guchar keyUsage;
 
 	decoded.data = NULL;
-	decoded.len  = 0;
+	decoded.len = 0;
 	if (SECSuccess != SEC_ASN1DecodeItem (NULL, &decoded,
 					     SEC_ASN1_GET (SEC_BitStringTemplate), extData)) {
 		g_string_append (text, _("Error: Unable to process extension"));
@@ -731,7 +731,7 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 		 * length in a temporary SECItem
 		*/
 		data.data = cert->issuerID.data;
-		data.len  = cert->issuerID.len / 8;
+		data.len = cert->issuerID.len / 8;
 
 		subitem = e_asn1_object_new ();
 
@@ -750,7 +750,7 @@ create_tbs_certificate_asn1_struct (CERTCertificate *cert,
 		 * length in a temporary SECItem
 		*/
 		data.data = cert->issuerID.data;
-		data.len  = cert->issuerID.len / 8;
+		data.len = cert->issuerID.len / 8;
 
 		subitem = e_asn1_object_new ();
 
@@ -822,7 +822,7 @@ fill_asn1_from_cert (EASN1Object *asn1,
 	 * length to be in bytes, so let's convert the
 	 * length in a temporary SECItem */
 	temp.data = cert->signatureWrap.signature.data;
-	temp.len  = cert->signatureWrap.signature.len / 8;
+	temp.len = cert->signatureWrap.signature.len / 8;
 	process_raw_bytes (&temp, &text);
 	e_asn1_object_set_display_value (sequence, text);
 	e_asn1_object_append_child (asn1, sequence);

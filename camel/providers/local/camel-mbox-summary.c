@@ -165,7 +165,7 @@ camel_mbox_summary_class_init (CamelMboxSummaryClass *class)
 	folder_summary_class->summary_header_to_db = summary_header_to_db;
 	folder_summary_class->message_info_from_db = message_info_from_db;
 	folder_summary_class->message_info_to_db = message_info_to_db;
-	folder_summary_class->message_info_new_from_header  = message_info_new_from_header;
+	folder_summary_class->message_info_new_from_header = message_info_new_from_header;
 	folder_summary_class->message_info_new_from_parser = message_info_new_from_parser;
 	folder_summary_class->info_set_user_flag = mbox_info_set_user_flag;
 	folder_summary_class->info_set_user_tag = mbox_info_set_user_tag;

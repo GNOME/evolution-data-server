@@ -85,7 +85,7 @@ typedef enum {
 #define CAMEL_BLOCK_SIZE_BITS (10) /* # bits to contain block_size bytes */
 
 typedef enum {
-	CAMEL_BLOCK_DIRTY    = 1 << 0,
+	CAMEL_BLOCK_DIRTY = 1 << 0,
 	CAMEL_BLOCK_DETACHED = 1 << 1
 } CamelBlockFlags;
 

@@ -413,7 +413,7 @@ ecalcomp_get_href (ECalComponent *comp)
 	icomp = e_cal_component_get_icalcomponent (comp);
 	g_return_val_if_fail (icomp != NULL, NULL);
 
-	str =  icomp_x_prop_get (icomp, X_E_CALDAV "HREF");
+	str = icomp_x_prop_get (icomp, X_E_CALDAV "HREF");
 
 	return str;
 }
@@ -441,7 +441,7 @@ ecalcomp_get_etag (ECalComponent *comp)
 	icomp = e_cal_component_get_icalcomponent (comp);
 	g_return_val_if_fail (icomp != NULL, NULL);
 
-	str =  icomp_x_prop_get (icomp, X_E_CALDAV "ETAG");
+	str = icomp_x_prop_get (icomp, X_E_CALDAV "ETAG");
 
 	/* libical 0.48 escapes quotes, thus unescape them */
 	if (str && strchr (str, '\\')) {
@@ -2251,8 +2251,8 @@ free_comp_list (gpointer cclist)
 	g_free (ccl);
 }
 
-#define etags_match(_tag1, _tag2) ((_tag1 == _tag2) ? TRUE :                 \
-				   g_str_equal (_tag1 != NULL ? _tag1 : "",  \
+#define etags_match(_tag1, _tag2) ((_tag1 == _tag2) ? TRUE : \
+				   g_str_equal (_tag1 != NULL ? _tag1 : "", \
 						_tag2 != NULL ? _tag2 : ""))
 
 /* start_time/end_time is an interval for checking changes. If both greater than zero,
@@ -2276,8 +2276,8 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 		return;
 	}
 
-	len    = 0;
-	sobjs  = NULL;
+	len = 0;
+	sobjs = NULL;
 
 	/* get list of server objects */
 	if (!caldav_server_list_objects (cbdav, &sobjs, &len, NULL, start_time, end_time))
@@ -4045,8 +4045,8 @@ do_create_objects (ECalBackendCalDAV *cbdav,
 	if (online) {
 		CalDAVObject object;
 
-		object.href  = ecalcomp_gen_href (comp);
-		object.etag  = NULL;
+		object.href = ecalcomp_gen_href (comp);
+		object.etag = NULL;
 		object.cdata = pack_cobj (cbdav, icalcomp);
 
 		did_put = caldav_server_put_object (cbdav, &object, icalcomp, cancellable, perror);
@@ -4218,8 +4218,8 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 	if (online) {
 		CalDAVObject object;
 
-		object.href  = href;
-		object.etag  = etag;
+		object.href = href;
+		object.etag = etag;
 		object.cdata = pack_cobj (cbdav, cache_comp);
 
 		did_put = caldav_server_put_object (cbdav, &object, cache_comp, cancellable, error);
@@ -4329,8 +4329,8 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 	if (online) {
 		CalDAVObject caldav_object;
 
-		caldav_object.href  = href;
-		caldav_object.etag  = etag;
+		caldav_object.href = href;
+		caldav_object.etag = etag;
 		caldav_object.cdata = NULL;
 
 		if (mod == E_CAL_OBJ_MOD_THIS && rid && *rid) {
@@ -4627,34 +4627,34 @@ do_receive_objects (ECalBackendSync *backend,
 		g_propagate_error (perror, err);
 }
 
-#define caldav_busy_stub(_func_name, _params, _call_func, _call_params)	\
-static void								\
-_func_name _params							\
-{									\
-	ECalBackendCalDAV        *cbdav;				\
-	SlaveCommand		  old_slave_cmd;			\
-	gboolean		  was_slave_busy;			\
-									\
-	cbdav = E_CAL_BACKEND_CALDAV (backend);				\
-									\
-	/* this is done before locking */				\
-	old_slave_cmd = cbdav->priv->slave_cmd;				\
-	was_slave_busy = cbdav->priv->slave_busy;			\
-	if (was_slave_busy) {						\
-		/* let it pause its work and do our job */		\
-		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);	\
-	}								\
-									\
-	g_mutex_lock (&cbdav->priv->busy_lock);				\
-	_call_func _call_params;					\
-									\
-	/* this is done before unlocking */				\
-	if (was_slave_busy) {						\
-		update_slave_cmd (cbdav->priv, old_slave_cmd);		\
-		g_cond_signal (&cbdav->priv->cond);			\
-	}								\
-									\
-	g_mutex_unlock (&cbdav->priv->busy_lock);			\
+#define caldav_busy_stub(_func_name, _params, _call_func, _call_params) \
+static void \
+_func_name _params \
+{ \
+	ECalBackendCalDAV        *cbdav; \
+	SlaveCommand		  old_slave_cmd; \
+	gboolean		  was_slave_busy; \
+ \
+	cbdav = E_CAL_BACKEND_CALDAV (backend); \
+ \
+	/* this is done before locking */ \
+	old_slave_cmd = cbdav->priv->slave_cmd; \
+	was_slave_busy = cbdav->priv->slave_busy; \
+	if (was_slave_busy) { \
+		/* let it pause its work and do our job */ \
+		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP); \
+	} \
+ \
+	g_mutex_lock (&cbdav->priv->busy_lock); \
+	_call_func _call_params; \
+ \
+	/* this is done before unlocking */ \
+	if (was_slave_busy) { \
+		update_slave_cmd (cbdav->priv, old_slave_cmd); \
+		g_cond_signal (&cbdav->priv->cond); \
+	} \
+ \
+	g_mutex_unlock (&cbdav->priv->busy_lock); \
 }
 
 caldav_busy_stub (
@@ -5296,7 +5296,7 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (cbdav->priv->session);
 
-	cbdav->priv->loaded   = FALSE;
+	cbdav->priv->loaded = FALSE;
 	cbdav->priv->opened = FALSE;
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
@@ -5340,26 +5340,26 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 	parent_class = (ECalBackendSyncClass *) g_type_class_peek_parent (class);
 	g_type_class_add_private (class, sizeof (ECalBackendCalDAVPrivate));
 
-	object_class->dispose  = e_cal_backend_caldav_dispose;
+	object_class->dispose = e_cal_backend_caldav_dispose;
 	object_class->finalize = e_cal_backend_caldav_finalize;
 	object_class->constructed = cal_backend_caldav_constructed;
 
 	backend_class->get_backend_property = caldav_get_backend_property;
 	backend_class->shutdown = caldav_shutdown;
 
-	sync_class->open_sync			= caldav_do_open;
-	sync_class->refresh_sync		= caldav_refresh;
+	sync_class->open_sync = caldav_do_open;
+	sync_class->refresh_sync = caldav_refresh;
 
-	sync_class->create_objects_sync		= caldav_create_objects;
-	sync_class->modify_objects_sync		= caldav_modify_objects;
-	sync_class->remove_objects_sync		= caldav_remove_objects;
+	sync_class->create_objects_sync = caldav_create_objects;
+	sync_class->modify_objects_sync = caldav_modify_objects;
+	sync_class->remove_objects_sync = caldav_remove_objects;
 
-	sync_class->receive_objects_sync	= caldav_receive_objects;
-	sync_class->send_objects_sync		= caldav_send_objects;
-	sync_class->get_object_sync		= caldav_get_object;
-	sync_class->get_object_list_sync	= caldav_get_object_list;
-	sync_class->add_timezone_sync		= caldav_add_timezone;
-	sync_class->get_free_busy_sync		= caldav_get_free_busy;
+	sync_class->receive_objects_sync = caldav_receive_objects;
+	sync_class->send_objects_sync = caldav_send_objects;
+	sync_class->get_object_sync = caldav_get_object;
+	sync_class->get_object_list_sync = caldav_get_object_list;
+	sync_class->add_timezone_sync = caldav_add_timezone;
+	sync_class->get_free_busy_sync = caldav_get_free_busy;
 
-	backend_class->start_view		= caldav_start_view;
+	backend_class->start_view = caldav_start_view;
 }

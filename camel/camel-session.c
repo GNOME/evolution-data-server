@@ -72,9 +72,9 @@ struct _CamelSessionPrivate {
 
 	GMainContext *main_context;
 
-	guint check_junk        : 1;
+	guint check_junk : 1;
 	guint network_available : 1;
-	guint online            : 1;
+	guint online : 1;
 };
 
 struct _AsyncContext {

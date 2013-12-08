@@ -223,8 +223,8 @@ struct _CamelMessageInfoBase {
  *    it is always created on the fly.
  **/
 typedef enum {
-	CAMEL_FOLDER_SUMMARY_DIRTY		= 1 << 0,
-	CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY	= 1 << 1
+	CAMEL_FOLDER_SUMMARY_DIRTY = 1 << 0,
+	CAMEL_FOLDER_SUMMARY_IN_MEMORY_ONLY = 1 << 1
 } CamelFolderSummaryFlags;
 
 /**

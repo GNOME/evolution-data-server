@@ -257,14 +257,14 @@ camel_ustrstrcase (const gchar *haystack,
 	return NULL;
 }
 
-#define CAMEL_SEARCH_COMPARE(x, y, z) G_STMT_START {   \
-	if ((x) == (z)) {                              \
-		if ((y) == (z))                        \
-			return 0;                      \
-		else                                   \
-			return -1;                     \
-	} else if ((y) == (z))                         \
-		return 1;                              \
+#define CAMEL_SEARCH_COMPARE(x, y, z) G_STMT_START { \
+	if ((x) == (z)) { \
+		if ((y) == (z)) \
+			return 0; \
+		else \
+			return -1; \
+	} else if ((y) == (z)) \
+		return 1; \
 } G_STMT_END
 
 static gint

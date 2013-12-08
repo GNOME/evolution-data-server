@@ -165,8 +165,8 @@ init_closure (EDataBookView *book_view,
 {
 	WebdavBackendSearchClosure *closure = g_new (WebdavBackendSearchClosure, 1);
 
-	closure->webdav  = webdav;
-	closure->thread  = NULL;
+	closure->webdav = webdav;
+	closure->thread = NULL;
 	closure->running = e_flag_new ();
 
 	g_object_set_data_full (
@@ -339,7 +339,7 @@ upload_contact (EBookBackendWebdav *webdav,
 		message, "text/vcard", SOUP_MEMORY_TEMPORARY,
 		request, strlen (request));
 
-	status   = send_and_handle_ssl (webdav, message, cancellable);
+	status = send_and_handle_ssl (webdav, message, cancellable);
 	new_etag = soup_message_headers_get_list (message->response_headers, "ETag");
 
 	redir_uri = soup_message_headers_get_list (message->response_headers, "Location");
@@ -459,8 +459,8 @@ static response_element_t *
 parse_response_tag (const parser_strings_t *strings,
                     xmlTextReaderPtr reader)
 {
-	xmlChar            *href  = NULL;
-	xmlChar            *etag  = NULL;
+	xmlChar            *href = NULL;
+	xmlChar            *etag = NULL;
 	gint                 depth = xmlTextReaderDepth (reader);
 	response_element_t *element;
 
@@ -531,14 +531,13 @@ parse_propfind_response (xmlTextReaderPtr reader)
 
 	/* get internalized versions of some strings to avoid strcmp while
 	 * parsing */
-	strings.multistatus
-		= xmlTextReaderConstString (reader, BAD_CAST "multistatus");
-	strings.dav         = xmlTextReaderConstString (reader, BAD_CAST "DAV:");
-	strings.href        = xmlTextReaderConstString (reader, BAD_CAST "href");
-	strings.response    = xmlTextReaderConstString (reader, BAD_CAST "response");
-	strings.propstat    = xmlTextReaderConstString (reader, BAD_CAST "propstat");
-	strings.prop        = xmlTextReaderConstString (reader, BAD_CAST "prop");
-	strings.getetag     = xmlTextReaderConstString (reader, BAD_CAST "getetag");
+	strings.multistatus = xmlTextReaderConstString (reader, BAD_CAST "multistatus");
+	strings.dav = xmlTextReaderConstString (reader, BAD_CAST "DAV:");
+	strings.href = xmlTextReaderConstString (reader, BAD_CAST "href");
+	strings.response = xmlTextReaderConstString (reader, BAD_CAST "response");
+	strings.propstat = xmlTextReaderConstString (reader, BAD_CAST "propstat");
+	strings.prop = xmlTextReaderConstString (reader, BAD_CAST "prop");
+	strings.getetag = xmlTextReaderConstString (reader, BAD_CAST "getetag");
 
 	while (xmlTextReaderRead (reader) == 1 && xmlTextReaderNodeType (reader) != XML_READER_TYPE_ELEMENT) {
 	}
@@ -567,7 +566,7 @@ parse_propfind_response (xmlTextReaderPtr reader)
 			continue;
 
 		element->next = elements;
-		elements      = element;
+		elements = element;
 	}
 
 	return elements;
@@ -578,7 +577,7 @@ send_propfind (EBookBackendWebdav *webdav,
                GCancellable *cancellable)
 {
 	SoupMessage               *message;
-	EBookBackendWebdavPrivate *priv    = webdav->priv;
+	EBookBackendWebdavPrivate *priv = webdav->priv;
 	const gchar               *request =
 		"<?xml version=\"1.0\" encoding=\"utf-8\"?>"
 		"<propfind xmlns=\"DAV:\"><prop><getetag/></prop></propfind>";
@@ -806,7 +805,7 @@ download_contacts (EBookBackendWebdav *webdav,
 	}
 
 	message = send_propfind (webdav, cancellable);
-	status  = message->status_code;
+	status = message->status_code;
 
 	if (status == 401 || status == 407) {
 		g_object_unref (message);
@@ -893,7 +892,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		/* uri might be relative, construct complete one */
 		if (uri[0] == '/') {
 			SoupURI *soup_uri = soup_uri_new (priv->uri);
-			soup_uri->path    = g_strdup (uri);
+			soup_uri->path = g_strdup (uri);
 
 			complete_uri = soup_uri_to_string (soup_uri, FALSE);
 			soup_uri_free (soup_uri);
@@ -980,7 +979,7 @@ e_book_backend_webdav_start_view (EBookBackend *backend,
                                   EDataBookView *book_view)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	EBookBackendWebdavPrivate *priv = webdav->priv;
 	EBookBackendSExp *sexp;
 	const gchar *query;
 	GList *contacts;
@@ -1005,11 +1004,13 @@ e_book_backend_webdav_start_view (EBookBackend *backend,
 	e_data_book_view_notify_complete (book_view, NULL /* Success */);
 
 	if (e_backend_get_online (E_BACKEND (backend))) {
-		WebdavBackendSearchClosure *closure
-			= init_closure (book_view, E_BOOK_BACKEND_WEBDAV (backend));
+		WebdavBackendSearchClosure *closure;
 
-		closure->thread
-			= g_thread_new (NULL, book_view_thread, book_view);
+		closure = init_closure (
+			book_view, E_BOOK_BACKEND_WEBDAV (backend));
+
+		closure->thread = g_thread_new (
+			NULL, book_view_thread, book_view);
 
 		e_flag_wait (closure->running);
 	}
@@ -1047,7 +1048,7 @@ soup_authenticate (SoupSession *session,
                    gpointer data)
 {
 	EBookBackendWebdav        *webdav = data;
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	EBookBackendWebdavPrivate *priv = webdav->priv;
 
 	if (retrying)
 		return;
@@ -1162,7 +1163,7 @@ book_backend_webdav_open_sync (EBookBackend *backend,
                                GError **error)
 {
 	EBookBackendWebdav        *webdav = E_BOOK_BACKEND_WEBDAV (backend);
-	EBookBackendWebdavPrivate *priv   = webdav->priv;
+	EBookBackendWebdavPrivate *priv = webdav->priv;
 	ESourceAuthentication     *auth_extension;
 	ESourceOffline            *offline_extension;
 	ESourceWebdav             *webdav_extension;

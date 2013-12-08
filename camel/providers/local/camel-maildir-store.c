@@ -1102,7 +1102,7 @@ scan_old_dir_info (CamelStore *store,
 					fi->display_name = g_strdup (d->d_name);
 					snew->fi = fi;
 
-					last->next =  snew->fi;
+					last->next = snew->fi;
 					last = snew->fi;
 					snew->fi->parent = sn->fi;
 

@@ -97,7 +97,6 @@ camel_lock_dot (const gchar *path,
 		if (retry > 0)
 			sleep (CAMEL_LOCK_DOT_DELAY);
 
-
 		g_snprintf (locktmp, locktmp_len, "%sXXXXXX", path);
 		fdtmp = g_mkstemp (locktmp);
 		if (fdtmp == -1) {

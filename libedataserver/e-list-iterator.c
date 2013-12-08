@@ -39,15 +39,15 @@ e_list_iterator_class_init (EListIteratorClass *class)
 
 	iterator_class = E_ITERATOR_CLASS (class);
 	iterator_class->invalidate = e_list_iterator_invalidate;
-	iterator_class->get        = e_list_iterator_get;
-	iterator_class->reset      = e_list_iterator_reset;
-	iterator_class->last       = e_list_iterator_last;
-	iterator_class->next       = e_list_iterator_next;
-	iterator_class->prev       = e_list_iterator_prev;
-	iterator_class->remove     = e_list_iterator_remove;
-	iterator_class->insert     = e_list_iterator_insert;
-	iterator_class->set        = e_list_iterator_set;
-	iterator_class->is_valid   = e_list_iterator_is_valid;
+	iterator_class->get = e_list_iterator_get;
+	iterator_class->reset = e_list_iterator_reset;
+	iterator_class->last = e_list_iterator_last;
+	iterator_class->next = e_list_iterator_next;
+	iterator_class->prev = e_list_iterator_prev;
+	iterator_class->remove = e_list_iterator_remove;
+	iterator_class->insert = e_list_iterator_insert;
+	iterator_class->set = e_list_iterator_set;
+	iterator_class->is_valid = e_list_iterator_is_valid;
 }
 
 /**

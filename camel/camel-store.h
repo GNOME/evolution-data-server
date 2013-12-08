@@ -107,8 +107,8 @@ typedef struct _CamelStorePrivate CamelStorePrivate;
 
 /* open mode for folder */
 typedef enum {
-	CAMEL_STORE_FOLDER_CREATE     = 1 << 0,
-	CAMEL_STORE_FOLDER_EXCL       = 1 << 1,
+	CAMEL_STORE_FOLDER_CREATE = 1 << 0,
+	CAMEL_STORE_FOLDER_EXCL = 1 << 1,
 	CAMEL_STORE_FOLDER_BODY_INDEX = 1 << 2,
 	CAMEL_STORE_FOLDER_PRIVATE    = 1 << 3  /* a private folder that
                                                    should not show up in

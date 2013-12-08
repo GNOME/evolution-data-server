@@ -208,7 +208,7 @@ i386_length_and_rw_bits (gint len,
 
 #define I386_DR_SET_RW_LEN(i,rwlen) \
   do { \
-    dr_control_mirror &= ~(0x0f << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * (i)));   \
+    dr_control_mirror &= ~(0x0f << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * (i))); \
     dr_control_mirror |= ((rwlen) << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * (i))); \
   } while (0)
 
@@ -216,12 +216,12 @@ i386_length_and_rw_bits (gint len,
   dr_control_mirror |= (1 << (DR_LOCAL_ENABLE_SHIFT + DR_ENABLE_SIZE * (i)))
 
 #define set_dr(regnum, val) \
-		__asm__("movl %0,%%db" #regnum  \
+		__asm__("movl %0,%%db" #regnum \
 			: /* no output */ \
 			:"r" (val))
 
 #define get_dr(regnum, val) \
-		__asm__("movl %%db" #regnum ", %0"  \
+		__asm__("movl %%db" #regnum ", %0" \
 			:"=r" (val))
 
 /* fine idea, but it doesn't work, crashes in get_dr :-/ */
@@ -240,7 +240,7 @@ camel_debug_hwatch (gint wp,
      control &= ~(((1 << DR_CONTROL_SIZE) - 1) << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * wp));
      control |= rw << (DR_CONTROL_SHIFT + DR_CONTROL_SIZE * wp);
      /* set watch enable */
-     control |=  ( 1<< (DR_LOCAL_ENABLE_SHIFT + DR_ENABLE_SIZE * wp));
+     control |= ( 1<< (DR_LOCAL_ENABLE_SHIFT + DR_ENABLE_SIZE * wp));
      control |= DR_LOCAL_SLOWDOWN;
      control &= ~DR_CONTROL_RESERVED;
 

@@ -166,7 +166,7 @@ test_view_thread_async (ThreadData *data)
 	ESource         *source;
 	GError          *error = NULL;
 
-	context    = g_main_context_new ();
+	context = g_main_context_new ();
 	data->loop = g_main_loop_new (context, FALSE);
 	g_main_context_push_thread_default (context);
 
@@ -250,7 +250,7 @@ test_view_thread_sync (ThreadData *data)
 	ESource         *source;
 	GError          *error = NULL;
 
-	context    = g_main_context_new ();
+	context = g_main_context_new ();
 	data->loop = g_main_loop_new (context, FALSE);
 	g_main_context_push_thread_default (context);
 
@@ -293,8 +293,8 @@ create_test_thread (const gchar *book_uid,
 {
 	ThreadData  *data = g_slice_new0 (ThreadData);
 
-	data->book_uid    = book_uid;
-	data->closure     = (ETestServerClosure *) user_data;
+	data->book_uid = book_uid;
+	data->closure = (ETestServerClosure *) user_data;
 
 	g_mutex_init (&data->complete_mutex);
 	g_cond_init (&data->complete_cond);

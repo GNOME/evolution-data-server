@@ -331,7 +331,7 @@ read_attribute_value (EVCardAttribute *attr,
 
 	/* read in the value */
 	str = g_string_new ("");
-	for (lp =  skip_newline ( *p, quoted_printable);
+	for (lp = skip_newline ( *p, quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, quoted_printable ) ) {
 
@@ -444,7 +444,7 @@ read_attribute_params (EVCardAttribute *attr,
 	gboolean in_quote = FALSE;
 
 	str = g_string_new ("");
-	for (lp =  skip_newline ( *p, *quoted_printable);
+	for (lp = skip_newline ( *p, *quoted_printable);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, *quoted_printable ) ) {
 
@@ -610,7 +610,7 @@ read_attribute (gchar **p)
 
 	/* first read in the group/name */
 	str = g_string_new ("");
-	for (lp =  skip_newline ( *p, is_qp);
+	for (lp = skip_newline ( *p, is_qp);
 	     *lp != '\n' && *lp != '\r' && *lp != '\0';
 	     lp = skip_newline ( lp, is_qp ) ) {
 

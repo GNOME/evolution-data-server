@@ -25,9 +25,9 @@
 #define N_CYCLES 10
 
 static ETestServerClosure registry_closure = { E_TEST_SERVER_NONE, NULL, 0 };
-static ETestServerClosure book_closure     = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure book_closure = { E_TEST_SERVER_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure calendar_closure = { E_TEST_SERVER_CALENDAR, NULL, E_CAL_CLIENT_SOURCE_TYPE_EVENTS };
-static ETestServerClosure deprecated_book_closure     = { E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
+static ETestServerClosure deprecated_book_closure = { E_TEST_SERVER_DEPRECATED_ADDRESS_BOOK, NULL, 0 };
 static ETestServerClosure deprecated_calendar_closure = { E_TEST_SERVER_DEPRECATED_CALENDAR, NULL, E_CAL_SOURCE_TYPE_EVENT };
 
 static void

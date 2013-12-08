@@ -48,9 +48,9 @@
 #include "e-source-backend-summary-setup.h"
 #include "e-book-contacts-enumtypes.h"
 
-#define E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE(obj)	\
-	(G_TYPE_INSTANCE_GET_PRIVATE			\
-	 ((obj), E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP,	\
+#define E_SOURCE_BACKEND_SUMMARY_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE \
+	 ((obj), E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP, \
 	  ESourceBackendSummarySetupPrivate))
 
 struct _ESourceBackendSummarySetupPrivate {
@@ -256,7 +256,7 @@ source_backend_summary_setup_get_fields_array (ESourceBackendSummarySetup *exten
 
 	if (split) {
 		n_ret_fields = g_strv_length (split);
-		fields       = g_new (EContactField, n_ret_fields);
+		fields = g_new (EContactField, n_ret_fields);
 
 		for (i = 0; i < n_ret_fields; i++) {
 			field = e_contact_field_id (split[i]);
@@ -476,7 +476,7 @@ e_source_backend_summary_setup_get_indexed_fields (ESourceBackendSummarySetup *e
 	ret_n_fields = g_strv_length (split);
 
 	ret_fields = g_new0 (EContactField, ret_n_fields);
-	ret_types  = g_new0 (EBookIndexType, ret_n_fields);
+	ret_types = g_new0 (EBookIndexType, ret_n_fields);
 
 	for (i = 0; i < ret_n_fields && malformed == FALSE; i++) {
 
@@ -572,7 +572,7 @@ e_source_backend_summary_setup_set_indexed_fieldsv (ESourceBackendSummarySetup *
 		const gchar *type;
 
 		field = e_contact_field_name (fields[i]);
-		type  = e_enum_to_string (E_TYPE_BOOK_INDEX_TYPE, types[i]);
+		type = e_enum_to_string (E_TYPE_BOOK_INDEX_TYPE, types[i]);
 
 		if (!field) {
 			g_warning ("Invalid contact field specified in indexed fields");

@@ -98,7 +98,7 @@ func_and (CamelSExp *f,
 			continue;
 		}
 		if (r1->value.string && *r1->value.string)
-			g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ?  " AND ":"");
+			g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ? " AND ":"");
 		camel_sexp_result_free (f, r1);
 	}
 	g_string_append (string, " )");
@@ -133,7 +133,7 @@ func_or (CamelSExp *f,
 			camel_sexp_result_free (f, r1);
 			continue;
 		}
-		g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ?  " OR ":"");
+		g_string_append_printf (string, "%s%s", r1->value.string, ((argc > 1) && (i != argc - 1)) ? " OR ":"");
 		camel_sexp_result_free (f, r1);
 	}
 	g_string_append (string, " )");
@@ -346,7 +346,7 @@ match_threads (struct _CamelSExp *f,
 
 	for (i = 1; i < argc; i++) {
 		r = camel_sexp_term_eval (f, argv[i]);
-		g_string_append_printf (str, "%s%s", r->value.string, ((argc > 1) && (i != argc - 1)) ?  " AND ":"");
+		g_string_append_printf (str, "%s%s", r->value.string, ((argc > 1) && (i != argc - 1)) ? " AND ":"");
 		camel_sexp_result_free (f, r);
 	}
 

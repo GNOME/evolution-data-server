@@ -68,7 +68,7 @@ struct _ECalClient;
  * Since: 3.6
  */
 typedef enum {
-	E_CAL_CLIENT_VIEW_FLAGS_NONE           = 0,
+	E_CAL_CLIENT_VIEW_FLAGS_NONE = 0,
 	E_CAL_CLIENT_VIEW_FLAGS_NOTIFY_INITIAL = (1 << 0)
 } ECalClientViewFlags;
 

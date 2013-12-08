@@ -262,7 +262,7 @@ camel_store_summary_class_init (CamelStoreSummaryClass *class)
 
 	class->summary_header_load = store_summary_summary_header_load;
 	class->summary_header_save = store_summary_summary_header_save;
-	class->store_info_new  = store_summary_store_info_new;
+	class->store_info_new = store_summary_store_info_new;
 	class->store_info_load = store_summary_store_info_load;
 	class->store_info_save = store_summary_store_info_save;
 	class->store_info_free = store_summary_store_info_free;

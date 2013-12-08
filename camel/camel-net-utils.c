@@ -92,78 +92,78 @@ G_LOCK_DEFINE_STATIC (gethost_mutex);
 
 #define ALIGN(x) (((x) + (sizeof (gchar *) - 1)) & ~(sizeof (gchar *) - 1))
 
-#define GETHOST_PROCESS(h, host, buf, buflen, herr) G_STMT_START {     \
-	gint num_aliases = 0, num_addrs = 0;                            \
-	gint req_length;                                                \
-	gchar *p;                                                       \
-	gint i;                                                         \
-								       \
-	/* check to make sure we have enough room in our buffer */     \
-	req_length = 0;                                                \
-	if (h->h_aliases) {                                            \
-		for (i = 0; h->h_aliases[i]; i++)                      \
-			req_length += strlen (h->h_aliases[i]) + 1;    \
-		num_aliases = i;                                       \
-	}                                                              \
-								       \
-	if (h->h_addr_list) {                                          \
-		for (i = 0; h->h_addr_list[i]; i++)                    \
-			req_length += h->h_length;                     \
-		num_addrs = i;                                         \
-	}                                                              \
-								       \
-	req_length += sizeof (gchar *) * (num_aliases + 1);             \
-	req_length += sizeof (gchar *) * (num_addrs + 1);               \
-	req_length += strlen (h->h_name) + 1;                          \
-								       \
-	if (buflen < req_length) {                                     \
-		*herr = ERANGE;                                        \
-		G_UNLOCK (gethost_mutex);                              \
-		return ERANGE;                                         \
-	}                                                              \
-								       \
-	/* we store the alias/addr pointers in the buffer */           \
-        /* their addresses here. */                                    \
-	p = buf;                                                       \
-	if (num_aliases) {                                             \
-		host->h_aliases = (gchar **) p;                         \
-		p += sizeof (gchar *) * (num_aliases + 1);              \
-	} else                                                         \
-		host->h_aliases = NULL;                                \
-                                                                       \
-	if (num_addrs) {                                               \
-		host->h_addr_list = (gchar **) p;                       \
-		p += sizeof (gchar *) * (num_addrs + 1);                \
-	} else                                                         \
-		host->h_addr_list = NULL;                              \
-								       \
-	/* copy the host name into the buffer */                       \
-	host->h_name = p;                                              \
-	strcpy (p, h->h_name);                                         \
-	p += strlen (h->h_name) + 1;                                   \
-	host->h_addrtype = h->h_addrtype;                              \
-	host->h_length = h->h_length;                                  \
-								       \
-	/* copy the aliases/addresses into the buffer */               \
-        /* and assign pointers into the hostent */                     \
-	*p = 0;                                                        \
-	if (num_aliases) {                                             \
-		for (i = 0; i < num_aliases; i++) {                    \
-			strcpy (p, h->h_aliases[i]);                   \
-			host->h_aliases[i] = p;                        \
-			p += strlen (h->h_aliases[i]);                 \
-		}                                                      \
-		host->h_aliases[num_aliases] = NULL;                   \
-	}                                                              \
-								       \
-	if (num_addrs) {                                               \
-		for (i = 0; i < num_addrs; i++) {                      \
-			memcpy (p, h->h_addr_list[i], h->h_length);    \
-			host->h_addr_list[i] = p;                      \
-			p += h->h_length;                              \
-		}                                                      \
-		host->h_addr_list[num_addrs] = NULL;                   \
-	}                                                              \
+#define GETHOST_PROCESS(h, host, buf, buflen, herr) G_STMT_START { \
+	gint num_aliases = 0, num_addrs = 0; \
+	gint req_length; \
+	gchar *p; \
+	gint i; \
+ \
+	/* check to make sure we have enough room in our buffer */ \
+	req_length = 0; \
+	if (h->h_aliases) { \
+		for (i = 0; h->h_aliases[i]; i++) \
+			req_length += strlen (h->h_aliases[i]) + 1; \
+		num_aliases = i; \
+	} \
+ \
+	if (h->h_addr_list) { \
+		for (i = 0; h->h_addr_list[i]; i++) \
+			req_length += h->h_length; \
+		num_addrs = i; \
+	} \
+ \
+	req_length += sizeof (gchar *) * (num_aliases + 1); \
+	req_length += sizeof (gchar *) * (num_addrs + 1); \
+	req_length += strlen (h->h_name) + 1; \
+ \
+	if (buflen < req_length) { \
+		*herr = ERANGE; \
+		G_UNLOCK (gethost_mutex); \
+		return ERANGE; \
+	} \
+ \
+	/* we store the alias/addr pointers in the buffer */ \
+        /* their addresses here. */ \
+	p = buf; \
+	if (num_aliases) { \
+		host->h_aliases = (gchar **) p; \
+		p += sizeof (gchar *) * (num_aliases + 1); \
+	} else \
+		host->h_aliases = NULL; \
+ \
+	if (num_addrs) { \
+		host->h_addr_list = (gchar **) p; \
+		p += sizeof (gchar *) * (num_addrs + 1); \
+	} else \
+		host->h_addr_list = NULL; \
+ \
+	/* copy the host name into the buffer */ \
+	host->h_name = p; \
+	strcpy (p, h->h_name); \
+	p += strlen (h->h_name) + 1; \
+	host->h_addrtype = h->h_addrtype; \
+	host->h_length = h->h_length; \
+ \
+	/* copy the aliases/addresses into the buffer */ \
+        /* and assign pointers into the hostent */ \
+	*p = 0; \
+	if (num_aliases) { \
+		for (i = 0; i < num_aliases; i++) { \
+			strcpy (p, h->h_aliases[i]); \
+			host->h_aliases[i] = p; \
+			p += strlen (h->h_aliases[i]); \
+		} \
+		host->h_aliases[num_aliases] = NULL; \
+	} \
+ \
+	if (num_addrs) { \
+		for (i = 0; i < num_addrs; i++) { \
+			memcpy (p, h->h_addr_list[i], h->h_length); \
+			host->h_addr_list[i] = p; \
+			p += h->h_length; \
+		} \
+		host->h_addr_list[num_addrs] = NULL; \
+	} \
 } G_STMT_END
 
 #ifdef ENABLE_IPv6

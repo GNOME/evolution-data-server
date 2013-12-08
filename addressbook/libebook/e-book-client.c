@@ -2701,7 +2701,7 @@ e_book_client_get_contact (EBookClient *client,
 	g_return_if_fail (uid != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->uid  = g_strdup (uid);
+	async_context->uid = g_strdup (uid);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (client), callback, user_data,

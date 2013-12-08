@@ -110,8 +110,8 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 	micheal_face = e_contact_get (micheal, E_CONTACT_PHOTO);
 	g_assert (micheal_face->type == E_CONTACT_PHOTO_TYPE_URI);
 
-	james_face  = g_new (EContactPhoto, 1);
-	james_face->type     = E_CONTACT_PHOTO_TYPE_URI;
+	james_face = g_new (EContactPhoto, 1);
+	james_face->type = E_CONTACT_PHOTO_TYPE_URI;
 	james_face->data.uri = g_strdup (micheal_face->data.uri);
 
 	e_contact_set (james, E_CONTACT_PHOTO, james_face);
@@ -285,8 +285,8 @@ add_contact_uri (EBookClient *book)
 
 	contact = e_contact_new ();
 
-	photo           = g_new (EContactPhoto, 1);
-	photo->type     = E_CONTACT_PHOTO_TYPE_URI;
+	photo = g_new (EContactPhoto, 1);
+	photo->type = E_CONTACT_PHOTO_TYPE_URI;
 	photo->data.uri = g_strdup ("http://en.wikipedia.org/wiki/File:Jamesbrown4.jpg");
 
 	/* set the photo */

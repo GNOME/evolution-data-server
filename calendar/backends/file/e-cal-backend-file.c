@@ -448,7 +448,7 @@ static void
 bump_revision (ECalBackendFile *cbfile)
 {
 	/* Update the revision string */
-	icalproperty *prop     = ensure_revision (cbfile);
+	icalproperty *prop = ensure_revision (cbfile);
 	gchar        *revision = make_revision_string (cbfile);
 
 	icalproperty_set_x (prop, revision);
@@ -1696,7 +1696,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 		&occur_start,
 		&occur_end);
 
-	objs_occuring_in_tw =  NULL;
+	objs_occuring_in_tw = NULL;
 
 	if (!prunning_by_time) {
 		g_hash_table_foreach (priv->comp_uid_hash, (GHFunc) match_object_sexp,
@@ -3543,19 +3543,19 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 
 	backend_class->get_backend_property = e_cal_backend_file_get_backend_property;
 
-	sync_class->open_sync			= e_cal_backend_file_open;
-	sync_class->create_objects_sync		= e_cal_backend_file_create_objects;
-	sync_class->modify_objects_sync		= e_cal_backend_file_modify_objects;
-	sync_class->remove_objects_sync		= e_cal_backend_file_remove_objects;
-	sync_class->receive_objects_sync	= e_cal_backend_file_receive_objects;
-	sync_class->send_objects_sync		= e_cal_backend_file_send_objects;
-	sync_class->get_object_sync		= e_cal_backend_file_get_object;
-	sync_class->get_object_list_sync	= e_cal_backend_file_get_object_list;
-	sync_class->get_attachment_uris_sync	= e_cal_backend_file_get_attachment_uris;
-	sync_class->add_timezone_sync		= e_cal_backend_file_add_timezone;
-	sync_class->get_free_busy_sync		= e_cal_backend_file_get_free_busy;
+	sync_class->open_sync = e_cal_backend_file_open;
+	sync_class->create_objects_sync = e_cal_backend_file_create_objects;
+	sync_class->modify_objects_sync = e_cal_backend_file_modify_objects;
+	sync_class->remove_objects_sync = e_cal_backend_file_remove_objects;
+	sync_class->receive_objects_sync = e_cal_backend_file_receive_objects;
+	sync_class->send_objects_sync = e_cal_backend_file_send_objects;
+	sync_class->get_object_sync = e_cal_backend_file_get_object;
+	sync_class->get_object_list_sync = e_cal_backend_file_get_object_list;
+	sync_class->get_attachment_uris_sync = e_cal_backend_file_get_attachment_uris;
+	sync_class->add_timezone_sync = e_cal_backend_file_add_timezone;
+	sync_class->get_free_busy_sync = e_cal_backend_file_get_free_busy;
 
-	backend_class->start_view		= e_cal_backend_file_start_view;
+	backend_class->start_view = e_cal_backend_file_start_view;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LOCAL;

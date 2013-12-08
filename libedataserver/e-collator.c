@@ -57,7 +57,7 @@ G_DEFINE_QUARK (e-collator-error-quark, e_collator_error)
 
 G_DEFINE_BOXED_TYPE (ECollator,
 		     e_collator,
-		     e_collator_ref, 
+		     e_collator_ref,
 		     e_collator_unref)
 
 struct _ECollator
@@ -89,21 +89,21 @@ print_available_locales (void)
 
 	u_init (&status);
 
-	g_printerr ("List of available locales (default locale is: %s)\n", uloc_getDefault());
+	g_printerr ("List of available locales (default locale is: %s)\n", uloc_getDefault ());
 
-	count = uloc_countAvailable();
+	count = uloc_countAvailable ();
 	for (i = 0; i < count; i++) {
 		UEnumeration *keywords;
 		const gchar *keyword;
 
-		uloc_getDisplayName(uloc_getAvailable(i), NULL, result, 100, &status);
+		uloc_getDisplayName (uloc_getAvailable (i), NULL, result, 100, &status);
 
 		u_austrncpy (printable, result, sizeof (printable));
 
 		/* print result */
-		g_printerr ("\t%s - %s", uloc_getAvailable(i), printable);
+		g_printerr ("\t%s - %s", uloc_getAvailable (i), printable);
 
-		keywords = uloc_openKeywords (uloc_getAvailable(i), &status);
+		keywords = uloc_openKeywords (uloc_getAvailable (i), &status);
 		if (keywords) {
 			UErrorCode kstatus = U_ZERO_ERROR;
 
@@ -122,9 +122,9 @@ print_available_locales (void)
 #endif
 
 static gchar *
-canonicalize_locale (const gchar  *posix_locale,
-		     gchar       **language_code,
-		     GError      **error)
+canonicalize_locale (const gchar *posix_locale,
+                     gchar **language_code,
+                     GError **error)
 {
 	UErrorCode status = U_ZERO_ERROR;
 	gchar  locale_buffer[LOCALE_BUFFER_LEN];
@@ -137,11 +137,12 @@ canonicalize_locale (const gchar  *posix_locale,
 	len = uloc_canonicalize (posix_locale, locale_buffer, LOCALE_BUFFER_LEN, &status);
 
 	if (U_FAILURE (status)) {
-		g_set_error (error, E_COLLATOR_ERROR,
-			     E_COLLATOR_ERROR_INVALID_LOCALE,
-			     "Failed to interpret locale '%s' (%s)",
-			     posix_locale,
-			     u_errorName (status));
+		g_set_error (
+			error, E_COLLATOR_ERROR,
+			E_COLLATOR_ERROR_INVALID_LOCALE,
+			"Failed to interpret locale '%s' (%s)",
+			posix_locale,
+			u_errorName (status));
 		return NULL;
 	}
 
@@ -157,11 +158,12 @@ canonicalize_locale (const gchar  *posix_locale,
 	len = uloc_getLanguage (icu_locale, language_buffer, 8, &status);
 
 	if (U_FAILURE (status)) {
-		g_set_error (error, E_COLLATOR_ERROR,
-			     E_COLLATOR_ERROR_INVALID_LOCALE,
-			     "Failed to interpret language for locale '%s': %s",
-			     icu_locale,
-			     u_errorName (status));
+		g_set_error (
+			error, E_COLLATOR_ERROR,
+			E_COLLATOR_ERROR_INVALID_LOCALE,
+			"Failed to interpret language for locale '%s': %s",
+			icu_locale,
+			u_errorName (status));
 		g_free (icu_locale);
 		return NULL;
 	}
@@ -194,12 +196,12 @@ canonicalize_locale (const gchar  *posix_locale,
  * is valid UTF-8
  */
 static const UChar *
-convert_to_ustring (const gchar  *string,
-		    UChar        *buffer,
-		    gint          buffer_len,
-		    gint         *result_len,
-		    UChar       **free_me,
-		    GError      **error)
+convert_to_ustring (const gchar *string,
+                    UChar *buffer,
+                    gint buffer_len,
+                    gint *result_len,
+                    UChar **free_me,
+                    GError **error)
 {
 	UErrorCode status = U_ZERO_ERROR;
 	const gchar *source_utf8;
@@ -216,12 +218,13 @@ convert_to_ustring (const gchar  *string,
 	}
 
 	/* First pass, try converting to UChar in the given buffer */
-	converted_buffer = u_strFromUTF8Lenient (buffer,
-						 buffer_len,
-						 &converted_len,
-						 source_utf8,
-						 -1,
-						 &status);
+	converted_buffer = u_strFromUTF8Lenient (
+		buffer,
+		buffer_len,
+		&converted_len,
+		source_utf8,
+		-1,
+		&status);
 
 	/* Set the result length right away... */
 	*result_len = converted_len;
@@ -235,12 +238,13 @@ convert_to_ustring (const gchar  *string,
 	if (converted_len > buffer_len) {
 		*free_me = g_new (UChar, converted_len);
 
-		converted_buffer = u_strFromUTF8Lenient (*free_me,
-							 converted_len,
-							 NULL,
-							 source_utf8,
-							 -1,
-							 &status);
+		converted_buffer = u_strFromUTF8Lenient (
+			*free_me,
+			converted_len,
+			NULL,
+			source_utf8,
+			-1,
+			&status);
 
 		if (U_FAILURE (status)) {
 			g_free (*free_me);
@@ -254,10 +258,11 @@ convert_to_ustring (const gchar  *string,
 	g_free (alloc_utf8);
 
 	if (U_FAILURE (status))
-		g_set_error (error, E_COLLATOR_ERROR,
-			     E_COLLATOR_ERROR_CONVERSION,
-			     "Error occured while converting character encoding (%s)",
-			     u_errorName (status));
+		g_set_error (
+			error, E_COLLATOR_ERROR,
+			E_COLLATOR_ERROR_CONVERSION,
+			"Error occured while converting character encoding (%s)",
+			u_errorName (status));
 
 	return converted_buffer;
 }
@@ -279,8 +284,8 @@ convert_to_ustring (const gchar  *string,
  * Since: 3.12
  */
 ECollator *
-e_collator_new (const gchar     *locale,
-		GError         **error)
+e_collator_new (const gchar *locale,
+                GError **error)
 {
 	ECollator *collator;
 	UCollator *coll;
@@ -301,11 +306,12 @@ e_collator_new (const gchar     *locale,
 	coll = ucol_open (icu_locale, &status);
 
 	if (U_FAILURE (status)) {
-		g_set_error (error, E_COLLATOR_ERROR,
-			     E_COLLATOR_ERROR_OPEN,
-			     "Unable to open collator for locale '%s' (%s)",
-			     icu_locale,
-			     u_errorName (status));
+		g_set_error (
+			error, E_COLLATOR_ERROR,
+			E_COLLATOR_ERROR_OPEN,
+			"Unable to open collator for locale '%s' (%s)",
+			icu_locale,
+			u_errorName (status));
 
 		g_free (language_code);
 		g_free (icu_locale);
@@ -328,11 +334,12 @@ e_collator_new (const gchar     *locale,
 		collator->transliterator = _e_transliterator_cxx_new ("Han-Latin");
 
 	collator->alpha_index = _e_alphabet_index_cxx_new_for_language (language_code);
-	collator->labels = _e_alphabet_index_cxx_get_labels (collator->alpha_index,
-							     &collator->n_labels,
-							     &collator->underflow,
-							     &collator->inflow,
-							     &collator->overflow);
+	collator->labels = _e_alphabet_index_cxx_get_labels (
+		collator->alpha_index,
+		&collator->n_labels,
+		&collator->underflow,
+		&collator->inflow,
+		&collator->overflow);
 
 	g_free (language_code);
 
@@ -408,9 +415,9 @@ e_collator_unref (ECollator *collator)
  * Since: 3.12
  */
 gchar *
-e_collator_generate_key (ECollator    *collator,
-			 const gchar  *str,
-			 GError      **error)
+e_collator_generate_key (ECollator *collator,
+                         const gchar *str,
+                         GError **error)
 {
 	UChar  source_buffer[CONVERT_BUFFER_LEN];
 	UChar *free_me = NULL;
@@ -433,12 +440,13 @@ e_collator_generate_key (ECollator    *collator,
 		input_str = str;
 	}
 
-	source = convert_to_ustring (input_str,
-				     source_buffer,
-				     CONVERT_BUFFER_LEN,
-				     &source_len,
-				     &free_me,
-				     error);
+	source = convert_to_ustring (
+		input_str,
+		source_buffer,
+		CONVERT_BUFFER_LEN,
+		&source_len,
+		&free_me,
+		error);
 
 	if (!source) {
 		g_free (translit_str);
@@ -449,8 +457,9 @@ e_collator_generate_key (ECollator    *collator,
 	alphabet_index = _e_alphabet_index_cxx_get_index (collator->alpha_index, input_str);
 
 	/* First try to generate a key in a predefined buffer size */
-	key_len = ucol_getSortKey (collator->coll, source, source_len,
-				   (guchar *)stack_buffer, COLLATION_KEY_BUFFER_LEN);
+	key_len = ucol_getSortKey (
+		collator->coll, source, source_len,
+		(guchar *) stack_buffer, COLLATION_KEY_BUFFER_LEN);
 
 	if (key_len > COLLATION_KEY_BUFFER_LEN) {
 
@@ -467,8 +476,9 @@ e_collator_generate_key (ECollator    *collator,
 		snprintf (collation_key, 4, "%03d-", alphabet_index);
 
 		/* Get the sort key and put it in &collation_key[4] */
-		ucol_getSortKey (collator->coll, source, source_len,
-				 (guchar *)(collation_key + 4), key_len);
+		ucol_getSortKey (
+			collator->coll, source, source_len,
+			(guchar *)(collation_key + 4), key_len);
 
 		/* Just being paranoid, make sure we're null terminated since the API
 		 * doesn't specify if the result length is null character inclusive
@@ -489,7 +499,7 @@ e_collator_generate_key (ECollator    *collator,
 	g_free (free_me);
 	g_free (translit_str);
 
-	return (gchar *)collation_key;
+	return (gchar *) collation_key;
 }
 
 /**
@@ -515,8 +525,8 @@ e_collator_generate_key (ECollator    *collator,
  * Since: 3.12
  */
 gchar *
-e_collator_generate_key_for_index (ECollator       *collator,
-				   gint             index)
+e_collator_generate_key_for_index (ECollator *collator,
+                                   gint index)
 {
 	g_return_val_if_fail (collator != NULL, NULL);
 	g_return_val_if_fail (index >= 0 && index < collator->n_labels, NULL);
@@ -544,11 +554,11 @@ e_collator_generate_key_for_index (ECollator       *collator,
  * Since: 3.12
  */
 gboolean
-e_collator_collate (ECollator    *collator,
-		    const gchar  *str_a,
-		    const gchar  *str_b,
-		    gint         *result,
-		    GError      **error)
+e_collator_collate (ECollator *collator,
+                    const gchar *str_a,
+                    const gchar *str_b,
+                    gint *result,
+                    GError **error)
 {
 	gchar *sort_key_a, *sort_key_b;
 
@@ -591,11 +601,11 @@ e_collator_collate (ECollator    *collator,
  * Since: 3.12
  */
 const gchar *const  *
-e_collator_get_index_labels (ECollator       *collator,
-			     gint            *n_labels,
-			     gint            *underflow,
-			     gint            *inflow,
-			     gint            *overflow)
+e_collator_get_index_labels (ECollator *collator,
+                             gint *n_labels,
+                             gint *underflow,
+                             gint *inflow,
+                             gint *overflow)
 {
 	g_return_val_if_fail (collator != NULL, NULL);
 
@@ -608,7 +618,7 @@ e_collator_get_index_labels (ECollator       *collator,
 	if (overflow)
 		*overflow = collator->overflow;
 
-	return (const gchar *const  *)collator->labels;
+	return (const gchar *const  *) collator->labels;
 }
 
 /**
@@ -624,8 +634,8 @@ e_collator_get_index_labels (ECollator       *collator,
  * Since: 3.12
  */
 gint
-e_collator_get_index (ECollator       *collator,
-		      const gchar     *str)
+e_collator_get_index (ECollator *collator,
+                      const gchar *str)
 {
 	gint index;
 	gchar *translit_str = NULL;

@@ -1689,20 +1689,20 @@ setup (void)
 
 #include "libedataserver-private.h" /* For prototypes */
 
-#define GETTER_IMPL(varbl)			\
-{						\
-	setup ();				\
-	return varbl;				\
+#define GETTER_IMPL(varbl) \
+{ \
+	setup (); \
+	return varbl; \
 }
 
-#define PRIVATE_GETTER(varbl)			\
-const gchar *					\
-_libedataserver_get_##varbl (void)		\
+#define PRIVATE_GETTER(varbl) \
+const gchar * \
+_libedataserver_get_##varbl (void) \
 	GETTER_IMPL (varbl)
 
-#define PUBLIC_GETTER(varbl)			\
-const gchar *					\
-e_util_get_##varbl (void)			\
+#define PUBLIC_GETTER(varbl) \
+const gchar * \
+e_util_get_##varbl (void) \
 	GETTER_IMPL (varbl)
 
 PRIVATE_GETTER (extensiondir)

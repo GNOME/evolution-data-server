@@ -761,7 +761,7 @@ notify_remove (EDataCalView *view,
                ECalComponentId *id)
 {
 	gchar *ids;
- 	gsize ids_len, ids_offset;
+	gsize ids_len, ids_offset;
 	gchar *uid, *rid;
 	gsize uid_len, rid_len;
 
@@ -1064,7 +1064,7 @@ filter_component (icalcomponent *icomponent,
 	/* 	kind_string = icomponent->x_name; */
 	/* } */
 
-	kind_string  = icalcomponent_kind_to_string (kind);
+	kind_string = icalcomponent_kind_to_string (kind);
 
 	g_string_append (string, kind_string);
 	g_string_append (string, newline);

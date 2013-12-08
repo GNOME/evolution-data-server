@@ -324,7 +324,7 @@ e_test_server_utils_setup (ETestServerFixture *fixture,
                            gconstpointer user_data)
 {
 	ETestServerClosure *closure = (ETestServerClosure *) user_data;
-	FixturePair         pair    = { fixture, closure };
+	FixturePair         pair = { fixture, closure };
 
 	/* Create work directory */
 	g_assert (g_mkdir_with_parents (EDS_TEST_WORK_DIR, 0755) == 0);

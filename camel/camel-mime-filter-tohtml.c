@@ -44,7 +44,7 @@ struct _CamelMimeFilterToHTMLPrivate {
 
 	guint blockquote_depth;
 
-	guint32 column   : 31;
+	guint32 column : 31;
 	guint32 pre_open : 1;
 };
 

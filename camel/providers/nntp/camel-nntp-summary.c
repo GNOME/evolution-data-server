@@ -488,7 +488,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 				const gchar *uid;
 				const gchar *msgid;
 
-				uid  = g_ptr_array_index (known_uids, i);
+				uid = g_ptr_array_index (known_uids, i);
 				n = strtoul (uid, NULL, 10);
 
 				if (n < f || n > l) {

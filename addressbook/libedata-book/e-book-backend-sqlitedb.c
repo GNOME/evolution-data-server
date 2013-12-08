@@ -43,18 +43,18 @@
 #define d(x)
 
 #if d(1)+0
-#  define LOCK_MUTEX(mutex)					\
-	G_STMT_START {						\
-		g_message ("%s: DB Locking ", G_STRFUNC);	\
-		g_mutex_lock (mutex);				\
-		g_message ("%s: DB Locked ", G_STRFUNC);	\
+#  define LOCK_MUTEX(mutex) \
+	G_STMT_START { \
+		g_message ("%s: DB Locking ", G_STRFUNC); \
+		g_mutex_lock (mutex); \
+		g_message ("%s: DB Locked ", G_STRFUNC); \
 	} G_STMT_END
 
-#  define UNLOCK_MUTEX(mutex)					\
-	G_STMT_START {						\
-		g_message ("%s: Unlocking ", G_STRFUNC);	\
-		g_mutex_unlock (mutex);				\
-		g_message ("%s: DB Unlocked ", G_STRFUNC);	\
+#  define UNLOCK_MUTEX(mutex) \
+	G_STMT_START { \
+		g_message ("%s: Unlocking ", G_STRFUNC); \
+		g_mutex_unlock (mutex); \
+		g_message ("%s: DB Unlocked ", G_STRFUNC); \
 	} G_STMT_END
 #else
 #  define LOCK_MUTEX(mutex)   g_mutex_lock (mutex)
@@ -67,7 +67,7 @@
 typedef enum {
 	INDEX_PREFIX = (1 << 0),
 	INDEX_SUFFIX = (1 << 1),
-	INDEX_PHONE  = (1 << 2)
+	INDEX_PHONE = (1 << 2)
 } IndexFlags;
 
 typedef struct {
@@ -511,7 +511,7 @@ create_folders_table (EBookBackendSqliteDB *ebsdb,
 		goto rollback;
 
 	/* Create a child table to store key/value pairs for a folder. */
-	stmt =	"CREATE TABLE IF NOT EXISTS keys"
+	stmt = "CREATE TABLE IF NOT EXISTS keys"
 		"( key TEXT PRIMARY KEY, value TEXT,"
 		" folder_id TEXT REFERENCES folders)";
 	if (!book_backend_sql_exec (ebsdb->priv->db, stmt, NULL, NULL, error))
@@ -1513,10 +1513,10 @@ append_summary_field (GArray *array,
 	if (type == E_TYPE_CONTACT_ATTR_LIST && have_attr_list)
 		*have_attr_list = TRUE;
 
-	new_field.field  = field;
+	new_field.field = field;
 	new_field.dbname = dbname;
-	new_field.type   = type;
-	new_field.index  = 0;
+	new_field.type = type;
+	new_field.index = 0;
 	g_array_append_val (array, new_field);
 
 	return &g_array_index (array, SummaryField, array->len - 1);
@@ -1608,7 +1608,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 	GArray *summary_fields;
 	gint n_fields = 0, n_indexed_fields = 0, i;
 
-	fields         = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
+	fields = e_source_backend_summary_setup_get_summary_fields (setup, &n_fields);
 	indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);
 
 	/* No specified summary fields indicates the default summary configuration should be used */
@@ -2500,8 +2500,8 @@ e_book_backend_sqlitedb_is_summary_fields (GHashTable *fields_of_interest)
 	g_hash_table_iter_init (&iter, fields_of_interest);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
 		const gchar  *field_name = key;
-		EContactField field      = e_contact_field_id (field_name);
-		gboolean      found      = FALSE;
+		EContactField field = e_contact_field_id (field_name);
+		gboolean      found = FALSE;
 
 		for (i = 0; i < G_N_ELEMENTS (default_summary_fields); i++) {
 			if (field == default_summary_fields[i]) {
@@ -2545,7 +2545,7 @@ e_book_backend_sqlitedb_check_summary_fields (EBookBackendSqliteDB *ebsdb,
 	g_hash_table_iter_init (&iter, fields_of_interest);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
 		const gchar  *field_name = key;
-		EContactField field      = e_contact_field_id (field_name);
+		EContactField field = e_contact_field_id (field_name);
 
 		if (summary_dbname_from_field (ebsdb, field) == NULL) {
 			summary_fields = FALSE;
@@ -2710,10 +2710,10 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 }
 
 enum {
-	CHECK_IS_SUMMARY   = (1 << 0),
+	CHECK_IS_SUMMARY = (1 << 0),
 	CHECK_IS_LIST_ATTR = (1 << 1),
-	CHECK_UNSUPPORTED  = (1 << 2),
-	CHECK_INVALID      = (1 << 3)
+	CHECK_UNSUPPORTED = (1 << 2),
+	CHECK_INVALID = (1 << 3)
 };
 
 static ESExpResult *
@@ -3088,10 +3088,10 @@ typedef enum {
 } MatchType;
 
 typedef enum {
-	CONVERT_NOTHING   =  0,
+	CONVERT_NOTHING = 0,
 	CONVERT_NORMALIZE = (1 << 0),
-	CONVERT_REVERSE   = (1 << 1),
-	CONVERT_PHONE     = (1 << 2)
+	CONVERT_REVERSE = (1 << 1),
+	CONVERT_PHONE = (1 << 2)
 } ConvertFlags;
 
 static gchar *

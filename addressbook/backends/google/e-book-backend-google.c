@@ -2268,7 +2268,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 	g_type_class_add_private (class, sizeof (EBookBackendGooglePrivate));
 
 	object_class = G_OBJECT_CLASS (class);
-	object_class->dispose  = book_backend_google_dispose;
+	object_class->dispose = book_backend_google_dispose;
 	object_class->finalize = book_backend_google_finalize;
 
 	backend_class = E_BOOK_BACKEND_CLASS (class);

@@ -197,19 +197,19 @@ e_destination_copy (const EDestination *dest)
 
 	new_dest = e_destination_new ();
 
-	new_dest->priv->source_uid         = g_strdup (dest->priv->source_uid);
-	new_dest->priv->contact_uid        = g_strdup (dest->priv->contact_uid);
-	new_dest->priv->name               = g_strdup (dest->priv->name);
-	new_dest->priv->email              = g_strdup (dest->priv->email);
-	new_dest->priv->addr               = g_strdup (dest->priv->addr);
-	new_dest->priv->email_num          = dest->priv->email_num;
-	new_dest->priv->ignored            = dest->priv->ignored;
+	new_dest->priv->source_uid = g_strdup (dest->priv->source_uid);
+	new_dest->priv->contact_uid = g_strdup (dest->priv->contact_uid);
+	new_dest->priv->name = g_strdup (dest->priv->name);
+	new_dest->priv->email = g_strdup (dest->priv->email);
+	new_dest->priv->addr = g_strdup (dest->priv->addr);
+	new_dest->priv->email_num = dest->priv->email_num;
+	new_dest->priv->ignored = dest->priv->ignored;
 
 	if (dest->priv->contact)
 		new_dest->priv->contact = g_object_ref (dest->priv->contact);
 
 	new_dest->priv->html_mail_override = dest->priv->html_mail_override;
-	new_dest->priv->wants_html_mail    = dest->priv->wants_html_mail;
+	new_dest->priv->wants_html_mail = dest->priv->wants_html_mail;
 
 	/* deep copy, recursively copy our children */
 	for (iter = dest->priv->list_dests; iter != NULL; iter = g_list_next (iter)) {
@@ -1101,7 +1101,7 @@ e_destination_get_textrep (const EDestination *dest,
 	if (dest->priv->raw)
 		return dest->priv->raw;
 
-	name  = e_destination_get_name (dest);
+	name = e_destination_get_name (dest);
 	email = e_destination_get_email (dest);
 
 	if (e_destination_from_contact (dest) && name != NULL && (!include_email || !email || !*email))
@@ -1664,7 +1664,7 @@ e_destination_exportv (EDestination **destv)
 	if (destv == NULL || *destv == NULL)
 		return NULL;
 
-	destv_doc  = xmlNewDoc ((xmlChar *) XML_DEFAULT_VERSION);
+	destv_doc = xmlNewDoc ((xmlChar *) XML_DEFAULT_VERSION);
 	destv_node = xmlNewNode (NULL, (xmlChar *)"destinations");
 	xmlDocSetRootElement (destv_doc, destv_node);
 

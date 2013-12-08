@@ -223,7 +223,7 @@ maybe_delete_unused_uris (EBookBackendFile *bf,
 	 * old uris for those fields from old_contact to delete
 	 */
 	uri_photo = check_remove_uri_for_field (old_contact, new_contact, E_CONTACT_PHOTO);
-	uri_logo  = check_remove_uri_for_field (old_contact, new_contact, E_CONTACT_LOGO);
+	uri_logo = check_remove_uri_for_field (old_contact, new_contact, E_CONTACT_LOGO);
 
 	if (uri_photo) {
 		maybe_delete_uri (bf, uri_photo);
@@ -329,7 +329,7 @@ safe_name_for_photo (EBookBackendFile *bf,
 	do {
 		g_free (fullname);
 
-		str      = e_filename_mkdir_encoded (bf->priv->photo_dirname, name, NULL, i);
+		str = e_filename_mkdir_encoded (bf->priv->photo_dirname, name, NULL, i);
 		fullname = g_strdup_printf ("%s.%s", str, suffix);
 		g_free (str);
 
@@ -370,7 +370,7 @@ hard_link_photo (EBookBackendFile *bf,
 	do {
 		g_free (fullname);
 
-		str      = e_filename_mkdir_encoded (bf->priv->photo_dirname, name, NULL, i);
+		str = e_filename_mkdir_encoded (bf->priv->photo_dirname, name, NULL, i);
 		fullname = g_strdup_printf ("%s.%s", str, suffix);
 		g_free (str);
 
@@ -463,8 +463,8 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 
 			status = STATUS_ERROR;
 		} else {
-			new_photo           = e_contact_photo_new ();
-			new_photo->type     = E_CONTACT_PHOTO_TYPE_URI;
+			new_photo = e_contact_photo_new ();
+			new_photo->type = E_CONTACT_PHOTO_TYPE_URI;
 			new_photo->data.uri = g_strdup (uri);
 
 			e_contact_set (contact, field, new_photo);
@@ -541,8 +541,8 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 				status = STATUS_ERROR;
 			} else {
 
-				new_photo           = e_contact_photo_new ();
-				new_photo->type     = E_CONTACT_PHOTO_TYPE_URI;
+				new_photo = e_contact_photo_new ();
+				new_photo->type = E_CONTACT_PHOTO_TYPE_URI;
 				new_photo->data.uri = new_uri;
 
 				e_contact_set (contact, field, new_photo);
@@ -938,7 +938,7 @@ view_notify_update (EBookBackendFile *backend,
                     EContact *contact)
 {
 	EBookBackendSExp *sexp;
-	GHashTable *fields   = e_data_book_view_get_fields_of_interest (view);
+	GHashTable *fields = e_data_book_view_get_fields_of_interest (view);
 	const gchar *query;
 	gboolean    notified = FALSE;
 	gboolean    with_all_required_fields = FALSE;
@@ -1286,7 +1286,7 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 			NULL, NULL, &local_error);
 
 		if (contact) {
-			removed_ids      = g_slist_prepend (removed_ids, g_strdup (uids[ii]));
+			removed_ids = g_slist_prepend (removed_ids, g_strdup (uids[ii]));
 			removed_contacts = g_slist_prepend (removed_contacts, contact);
 		} else {
 			g_warning ("Failed to fetch contact to be removed: %s", local_error->message);

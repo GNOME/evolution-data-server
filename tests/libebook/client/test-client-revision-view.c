@@ -36,7 +36,7 @@ setup_book (EBookClient *book_client)
 	for (i = 0; i < N_TEST_CONTACTS; i++)
 	{
 		EContact *contact = e_contact_new ();
-		gchar    *name      = g_strdup_printf ("Contact #%d", i + 1);
+		gchar    *name = g_strdup_printf ("Contact #%d", i + 1);
 
 		e_contact_set (contact, E_CONTACT_FULL_NAME, name);
 		e_contact_set (contact, E_CONTACT_NICKNAME, name);

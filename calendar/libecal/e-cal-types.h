@@ -52,11 +52,11 @@ typedef enum {
  * Since: 3.8
  **/
 typedef enum {
-	E_CAL_OBJ_MOD_THIS            = 1 << 0,
-	E_CAL_OBJ_MOD_THIS_AND_PRIOR  = 1 << 1,
+	E_CAL_OBJ_MOD_THIS = 1 << 0,
+	E_CAL_OBJ_MOD_THIS_AND_PRIOR = 1 << 1,
 	E_CAL_OBJ_MOD_THIS_AND_FUTURE = 1 << 2,
-	E_CAL_OBJ_MOD_ALL             = 0x07,
-	E_CAL_OBJ_MOD_ONLY_THIS       = 1 << 3
+	E_CAL_OBJ_MOD_ALL = 0x07,
+	E_CAL_OBJ_MOD_ONLY_THIS = 1 << 3
 } ECalObjModType;
 
 /** Everything below this point is deprecated. **/

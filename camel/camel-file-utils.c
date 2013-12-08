@@ -148,35 +148,35 @@ camel_file_util_decode_fixed_int32 (FILE *in,
 	}
 }
 
-#define CFU_ENCODE_T(type)						\
-gint									\
-camel_file_util_encode_##type (FILE *out, type value)			\
-{									\
-	gint i;								\
-									\
-	for (i = sizeof (type) - 1; i >= 0; i--) {			\
-		if (fputc ((value >> (i * 8)) & 0xff, out) == -1)	\
-			return -1;					\
-	}								\
-	return 0;							\
+#define CFU_ENCODE_T(type) \
+gint \
+camel_file_util_encode_##type (FILE *out, type value) \
+{ \
+	gint i; \
+ \
+	for (i = sizeof (type) - 1; i >= 0; i--) { \
+		if (fputc ((value >> (i * 8)) & 0xff, out) == -1) \
+			return -1; \
+	} \
+	return 0; \
 }
 
-#define CFU_DECODE_T(type)				\
-gint							\
-camel_file_util_decode_##type (FILE *in, type *dest)	\
-{							\
-	type save = 0;					\
-	gint i = sizeof (type) - 1;			\
-	gint v = EOF;					\
-							\
-	while (i >= 0 && (v = fgetc (in)) != EOF) {	\
-		save |= ((type) v) << (i * 8);		\
-		i--;					\
-	}						\
-	*dest = save;					\
-	if (v == EOF)					\
-		return -1;				\
-	return 0;					\
+#define CFU_DECODE_T(type) \
+gint \
+camel_file_util_decode_##type (FILE *in, type *dest) \
+{ \
+	type save = 0; \
+	gint i = sizeof (type) - 1; \
+	gint v = EOF; \
+ \
+	while (i >= 0 && (v = fgetc (in)) != EOF) { \
+		save |= ((type) v) << (i * 8); \
+		i--; \
+	} \
+	*dest = save; \
+	if (v == EOF) \
+		return -1; \
+	return 0; \
 }
 
 /**

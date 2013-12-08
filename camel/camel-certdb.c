@@ -173,7 +173,7 @@ camel_certdb_class_init (CamelCertDBClass *class)
 	class->header_load = certdb_header_load;
 	class->header_save = certdb_header_save;
 
-	class->cert_new  = certdb_cert_new;
+	class->cert_new = certdb_cert_new;
 	class->cert_load = certdb_cert_load;
 	class->cert_save = certdb_cert_save;
 	class->cert_free = certdb_cert_free;

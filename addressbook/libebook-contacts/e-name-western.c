@@ -232,7 +232,7 @@ e_name_western_extract_prefix (ENameWestern *name,
 		return;
 
 	idxs->prefix_idx = 0;
-	name->prefix     = pfx;
+	name->prefix = pfx;
 }
 
 static gboolean
@@ -480,7 +480,7 @@ e_name_western_extract_last (ENameWestern *name,
 			return;
 		}
 
-		name->last     = g_strdup (name->full);
+		name->last = g_strdup (name->full);
 		idxs->last_idx = 0;
 		return;
 	}
@@ -766,59 +766,59 @@ e_name_western_zap_nil (gchar **str,
 	*str = NULL;
 }
 
-#define FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION			\
-	gchar *last_start = NULL;					\
-	if (name->last)							\
-		last_start = g_utf8_strchr (name->last, -1, ' ');	\
-	if (last_start) {						\
-		gchar *new_last, *new_first;				\
-									\
-		new_last = g_strdup (g_utf8_next_char (last_start));	\
-		*last_start = '\0';					\
-									\
-		idxs->last_idx += (last_start - name->last) + 1;	\
-									\
-		new_first = g_strdup_printf ("%s %s %s",		\
-					     name->first,		\
-					     name->middle,		\
-					     name->last);		\
-									\
-		g_free (name->first);					\
-		g_free (name->middle);					\
-		g_free (name->last);					\
-									\
-		name->first = new_first;				\
-		name->middle = NULL;					\
-		name->last = new_last;					\
-									\
-		idxs->middle_idx = -1;					\
-	} else {							\
-		gchar *new_first;					\
-									\
-		new_first = g_strdup_printf ("%s %s %s",		\
-					     name->first,		\
-					     name->middle,		\
-					     name->last);		\
-									\
-		g_free (name->first);					\
-		g_free (name->middle);					\
-		g_free (name->last);					\
-									\
-		name->first = new_first;				\
-		name->middle = NULL;					\
-		name->last = NULL;					\
-		idxs->middle_idx = -1;					\
-		idxs->last_idx = -1;					\
+#define FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION \
+	gchar *last_start = NULL; \
+	if (name->last) \
+		last_start = g_utf8_strchr (name->last, -1, ' '); \
+	if (last_start) { \
+		gchar *new_last, *new_first; \
+ \
+		new_last = g_strdup (g_utf8_next_char (last_start)); \
+		*last_start = '\0'; \
+ \
+		idxs->last_idx += (last_start - name->last) + 1; \
+ \
+		new_first = g_strdup_printf ("%s %s %s", \
+					     name->first, \
+					     name->middle, \
+					     name->last); \
+ \
+		g_free (name->first); \
+		g_free (name->middle); \
+		g_free (name->last); \
+ \
+		name->first = new_first; \
+		name->middle = NULL; \
+		name->last = new_last; \
+ \
+		idxs->middle_idx = -1; \
+	} else { \
+		gchar *new_first; \
+ \
+		new_first = g_strdup_printf ("%s %s %s", \
+					     name->first, \
+					     name->middle, \
+					     name->last); \
+ \
+		g_free (name->first); \
+		g_free (name->middle); \
+		g_free (name->last); \
+ \
+		name->first = new_first; \
+		name->middle = NULL; \
+		name->last = NULL; \
+		idxs->middle_idx = -1; \
+		idxs->last_idx = -1; \
 	}
 
 #define CHECK_MIDDLE_NAME_FOR_CONJUNCTION(conj) \
-	if (idxs->middle_idx != -1 && !strcmp (name->middle, conj)) {	\
-		FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION	\
+	if (idxs->middle_idx != -1 && !strcmp (name->middle, conj)) { \
+		FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION \
 	}
 
 #define CHECK_MIDDLE_NAME_FOR_CONJUNCTION_CASE(conj) \
-	if (idxs->middle_idx != -1 && !g_ascii_strcasecmp (name->middle, conj)) {	\
-		FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION	\
+	if (idxs->middle_idx != -1 && !g_ascii_strcasecmp (name->middle, conj)) { \
+		FINISH_CHECK_MIDDLE_NAME_FOR_CONJUNCTION \
 	}
 
 static void
@@ -839,9 +839,9 @@ e_name_western_fixup (ENameWestern *name,
 	 * the last name for the middle name.
 	 */
 	if (idxs->last_idx == -1 && idxs->middle_idx != -1) {
-		idxs->last_idx   = idxs->middle_idx;
-		name->last       = name->middle;
-		name->middle     = NULL;
+		idxs->last_idx = idxs->middle_idx;
+		name->last = name->middle;
+		name->middle = NULL;
 		idxs->middle_idx = -1;
 	}
 
@@ -878,10 +878,10 @@ e_name_western_fixup (ENameWestern *name,
 	 */
 	if (idxs->first_idx != -1 && idxs->prefix_idx != -1 &&
 	    idxs->last_idx == -1) {
-		name->last      = name->first;
-		idxs->last_idx  = idxs->first_idx;
+		name->last = name->first;
+		idxs->last_idx = idxs->first_idx;
 		idxs->first_idx = -1;
-		name->first     = NULL;
+		name->first = NULL;
 	}
 
 	if (idxs->middle_idx != -1) {
@@ -970,10 +970,10 @@ e_name_western_parse (const gchar *full_name)
 	idxs = g_new0 (ENameWesternIdxs, 1);
 
 	idxs->prefix_idx = -1;
-	idxs->first_idx  = -1;
+	idxs->first_idx = -1;
 	idxs->middle_idx = -1;
-	idxs->nick_idx   = -1;
-	idxs->last_idx   = -1;
+	idxs->nick_idx = -1;
+	idxs->last_idx = -1;
 	idxs->suffix_idx = -1;
 
 	/*
