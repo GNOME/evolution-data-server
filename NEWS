@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.10.3 2013-12-09
+---------------------------------------
+
+* Ubuntu-Online-Accounts improvements:
+  - Support Outlook.com IMAP accounts.
+  - Use Google's OAuth-based CalDAV interface.
+
+Bug Fixes:
+	Bug 680961 - Broken dispatching of EAuthenticationSession (Milan Crha)
+	Bug 710361 - GError corruption in imapx_command_fetch_message_done()
+	             (Matthew Barnes)
+	Bug 712323 - Substantially expand EVCard documentation (Philip Withnall)
+	Bug 712578 - MH folder refresh can cause summary rebuild (Milan Crha)
+	Bug 719720 - Refcount error in imapx_command_select_done()
+	             (Matthew Barnes)
+
+Other Changes:
+	* Bump minimum libgweather requirement. (Matthew Barnes)
+	* e-vcard: Fix a minor memory leak for multi-valued parameters.
+	  (Philip Withnall)
+	* e-vcard: Fix case sensitivity of string comparisions.
+	  (Philip Withnall)
+	* EDataBook: Fixed memory leak of every EContact succesfully added to
+	  the addressbook. (Tristan Van Berkom)
+	* CamelPOP3Folder: Fix a potential g_object_unref(NULL) call
+	  (Philip Withnall)
+	* EBookBackendCache: Remove an unnecessary NULL check.
+	  (Philip Withnall)
+	* libecal: Refactor system timezone key file parsing code.
+	  (Philip Withnall)
+	* libedata-cal: Fix a potential g_strstrip(NULL) call (Philip Withnall)
+	* Remove --enable-strict configure option. (Matthew Barnes)
+
+Translations:
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Andika Triwidada (id)
+	Aurimas Černius (lt)
+	Piotr Drąg (pl)
+	Rafael Ferreira (pt_BR)
+	Мирослав Николић (sr)
+	Shantha kumar (ta)
+	Wylmer Wang (zh_CN)
+
+
 Evolution-Data-Server 3.10.2 2013-11-11
 ---------------------------------------
 
