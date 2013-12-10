@@ -81,7 +81,6 @@ struct _GetMessageData {
 	CamelStream *stream;
 	/* working variables */
 	gsize body_offset;
-	gssize body_len;
 	gsize fetch_offset;
 	gsize size;
 	gboolean use_multi_fetch;
@@ -2018,6 +2017,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 		 * fill out the body stream, in the right spot. */
 
 		if (job != NULL) {
+			gssize bytes_written;
+
 			if (data->use_multi_fetch) {
 				data->body_offset = finfo->offset;
 				g_seekable_seek (
@@ -2026,9 +2027,9 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					NULL, NULL);
 			}
 
-			data->body_len = camel_stream_write_to_stream (
+			bytes_written = camel_stream_write_to_stream (
 				finfo->body, data->stream, cancellable, error);
-			if (data->body_len == -1) {
+			if (bytes_written == -1) {
 				g_prefix_error (
 					error, "%s: ",
 					_("Error writing to cache stream"));
@@ -4766,7 +4767,6 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_prefix_error (
 			&local_error, "%s: ",
 			_("Error fetching message"));
-		data->body_len = -1;
 
 	} else if (data->use_multi_fetch) {
 		gsize really_fetched = g_seekable_tell (G_SEEKABLE (data->stream));
