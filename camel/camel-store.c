@@ -2536,9 +2536,9 @@ store_rename_folder_thread (GTask *task,
 
 	reserved_vfolder_name =
 		((store->flags & CAMEL_STORE_VJUNK) &&
-		g_str_equal (old_name, CAMEL_VJUNK_NAME) == 0) ||
+		g_str_equal (old_name, CAMEL_VJUNK_NAME)) ||
 		((store->flags & CAMEL_STORE_VTRASH) &&
-		g_str_equal (old_name, CAMEL_VTRASH_NAME) == 0);
+		g_str_equal (old_name, CAMEL_VTRASH_NAME));
 
 	if (reserved_vfolder_name) {
 		g_task_return_new_error (
