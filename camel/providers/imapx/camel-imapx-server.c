@@ -2296,7 +2296,6 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 	CamelIMAPXListResponse *response;
 	CamelIMAPXMailbox *mailbox;
 	const gchar *mailbox_name;
-	gboolean emit_mailbox_created = FALSE;
 	gboolean emit_mailbox_updated = FALSE;
 	gchar separator;
 
@@ -2329,20 +2328,19 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 		g_mutex_unlock (&is->priv->namespaces_lock);
 	}
 
-	/* Create or update a corresponding CamelIMAPXMailbox. */
+	/* Update a corresponding CamelIMAPXMailbox.
+	 *
+	 * Note, don't create the CamelIMAPXMailbox like we do for a LIST
+	 * response.  We always issue LIST before LSUB on a mailbox name,
+	 * so if we don't already have a CamelIMAPXMailbox instance then
+	 * this is a subscription on a non-existent mailbox.  Skip it. */
 	g_mutex_lock (&is->priv->mailboxes_lock);
 	mailbox = imapx_server_ref_mailbox_unlocked (is, mailbox_name);
 	if (mailbox != NULL) {
 		camel_imapx_mailbox_handle_lsub_response (mailbox, response);
 		emit_mailbox_updated = TRUE;
-	} else {
-		mailbox = imapx_server_create_mailbox_unlocked (is, response);
-		emit_mailbox_created = (mailbox != NULL);
 	}
 	g_mutex_unlock (&is->priv->mailboxes_lock);
-
-	if (emit_mailbox_created)
-		g_signal_emit (is, signals[MAILBOX_CREATED], 0, mailbox);
 
 	if (emit_mailbox_updated)
 		g_signal_emit (is, signals[MAILBOX_UPDATED], 0, mailbox);
