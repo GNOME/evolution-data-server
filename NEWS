@@ -1,3 +1,97 @@
+Evolution-Data-Server 3.11.3 2013-12-16
+---------------------------------------
+
+Highlights:
+	* Evolution-Data-Server API documentation has been merged into
+	  one Gtk-Doc module (excluding Camel and private D-Bus APIs).
+	  (Tristan Van Berkom)
+
+Bug Fixes:
+	Bug 680961 - Broken dispatching of EAuthenticationSession (Milan Crha)
+	Bug 709838 - CamelDataCache: Empty cache file leads to deadlock
+	             (Matthew Barnes)
+	Bug 710361 - GError corruption in imapx_command_fetch_message_done()
+	             (Matthew Barnes)
+	Bug 712323 - Substantially expand EVCard documentation
+	             (Philip Withnall)
+	Bug 712578 - MH folder refresh can cause summary rebuild (Milan Crha)
+	Bug 712728 - Add --disable-migration option to
+	             evolution-source-registry (Tristan Van Berkom)
+	Bug 712829 - Silence unnecessary migration chatter on stdout
+	             (Colin Walters)
+	Bug 715035 - cache-reaper: Demote g_message() -> g_debug()
+	             (Colin Walters)
+	Bug 715057 - Weather calendar is using Fahrenheit units as default
+	             (Fabiano Fidêncio)
+	Bug 719307 - trust-prompt: Squash a compiler warning (Colin Walters)
+	Bug 719382 - Build break, missing NSPR CFLAGS/LIBS in Camel
+	             (Milan Crha)
+	Bug 719720 - Refcount error in imapx_command_select_done()
+	             (Matthew Barnes)
+	Bug 719774 - Missing linker flag in evolution-addressbook-factory
+	             (Lionel Landwerlin)
+
+Other Changes:
+	* Bump minimum libgweather requirement. (Matthew Barnes)
+	* Remove --enable-nntp configure option. (Matthew Barnes)
+	* Remove --enable-strict configure option. (Matthew Barnes)
+	* UOA: Update google-calendar service to use OAuth-based CalDAV.
+	  (Matthew Barnes)
+	* UOA: Add support for IMAP access to Windows Live accounts.
+	  (Matthew Barnes)
+	* ESourceRegistry: Ignore hidden files from .source folder monitoring
+	  (Milan Crha)
+	* Weather calendar: Be able to change temperature unit (Milan Crha)
+	* e-vcard: Fix a minor memory leak for multi-valued parameters.
+	  (Philip Withnall)
+	* e-vcard: Fix case sensitivity of string comparisions.
+	  (Philip Withnall)
+	* EDataBook: Fixed memory leak of every EContact succesfully added to
+	  the addressbook. (Tristan Van Berkom)
+	* ESExp: Fixed memory leak of ESExp->error string (Tristan Van Berkom)
+	* CamelSession: Remove "check-junk" property. (Matthew Barnes)
+	* CamelSession: Add a "user-alert" signal. (Matthew Barnes)
+	* Added e_vcard_construct_full() (Tristan Van Berkom)
+	* ECollator: fixed e_collator_collate() to allow NULL strings.
+	  (Tristan Van Berkom)
+	* ECollator: Added e_collator_new_interpret_country()
+	  (Tristan Van Berkom)
+	* EPhoneNumber: Fixed phone number matching semantics.
+	  (Tristan Van Berkom)
+	* Added E_BOOK_INDEX_SORT_KEY to EBookIndexType (Tristan Van Berkom)
+	* Adding new EBookSqlite (Tristan Van Berkom)
+	* EDataBookCursor: Changed APIs to permit GCancellable for long
+	  running operations. (Tristan Van Berkom)
+	* Camel: Remove all asynchronous class methods. (Matthew Barnes)
+	* Camel: Port from GSimpleAsyncResult to GTask. (Matthew Barnes)
+	* CamelFolder: Remove unused fetch_messages_sync() method.
+	  (Matthew Barnes)
+	* CamelPOP3Settings: Remove unused "mobile-mode" property.
+	  (Matthew Barnes)
+	* CamelPOP3Settings: Remove unused "batch-fetch-count" property.
+	  (Matthew Barnes)
+	* CamelIMAPXSettings: Remove unused "mobile-mode" property.
+	  (Matthew Barnes)
+	* Add CamelAsyncClosure. (Matthew Barnes)
+	* Added m4/eds-installed-tests.m4 with the EDS_INSTALLED_TESTS macro
+	  (Tristan Van Berkom)
+	* CamelPOP3Folder: Fix a potential g_object_unref(NULL) call
+	  (Philip Withnall)
+	* libecal: Refactor system timezone key file parsing code
+	  (Philip Withnall)
+	* Deprecate ECancellable[Rec]Mutex. (Matthew Barnes)
+	* Add camel_service_queue_task(). (Matthew Barnes)
+	* CamelIMAPXServer: Fix handling of LSUB responses. (Matthew Barnes)
+
+Translations:
+	Dimitris Spingos (el)
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Aurimas Černius (lt)
+	Piotr Drąg (pl)
+	Shantha kumar (ta)
+
+
 Evolution-Data-Server 3.11.2 2013-11-18
 ---------------------------------------
 
