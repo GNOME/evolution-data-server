@@ -17,6 +17,7 @@
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+#include <sys/wait.h>
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
