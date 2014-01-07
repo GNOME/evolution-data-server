@@ -604,10 +604,16 @@ dnl ******************************
 AC_ARG_WITH([libdb],
 	AS_HELP_STRING([--with-libdb=PREFIX],
 	[Prefix where libdb is installed]),
-	[libdb_prefix="$withval"], [libdb_prefix='${prefix}'])
-
-DB_CFLAGS="-I$libdb_prefix/include"
-DB_LIBS="-L$libdb_prefix/lib -ldb"
+	[
+		DB_CFLAGS="-I$withval/include"
+		DB_LIBS="-L$withval/lib -ldl"
+	],
+	[
+		if test -z "$DB_CFLAGS" -a -z "$DB_LIBS"; then
+			DB_CFLAGS=""
+			DB_LIBS="-ldb"
+		fi
+	])
 
 AC_MSG_CHECKING([Berkeley DB])
 save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
