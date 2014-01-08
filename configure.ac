@@ -606,7 +606,7 @@ AC_ARG_WITH([libdb],
 	[Prefix where libdb is installed]),
 	[
 		DB_CFLAGS="-I$withval/include"
-		DB_LIBS="-L$withval/lib -ldl"
+		DB_LIBS="-L$withval/lib -ldb"
 	],
 	[
 		if test -z "$DB_CFLAGS" -a -z "$DB_LIBS"; then
