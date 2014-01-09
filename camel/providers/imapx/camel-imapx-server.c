@@ -1988,6 +1988,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
                       GError **error)
 {
 	struct _fetch_info *finfo;
+	gboolean got_body_header;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
@@ -1995,6 +1996,21 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 	if (finfo == NULL) {
 		imapx_free_fetch (finfo);
 		return FALSE;
+	}
+
+	/* Some IMAP servers respond with BODY[HEADER] when
+	 * asked for RFC822.HEADER.  Treat them equivalently. */
+	got_body_header =
+		((finfo->got & FETCH_HEADER) == 0) &&
+		(finfo->header == NULL) &&
+		((finfo->got & FETCH_BODY) != 0) &&
+		(g_strcmp0 (finfo->section, "HEADER") == 0);
+
+	if (got_body_header) {
+		finfo->got |= FETCH_HEADER;
+		finfo->got &= ~FETCH_BODY;
+		finfo->header = finfo->body;
+		finfo->body = NULL;
 	}
 
 	if ((finfo->got & (FETCH_BODY | FETCH_UID)) == (FETCH_BODY | FETCH_UID)) {
