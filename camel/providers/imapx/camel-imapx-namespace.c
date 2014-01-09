@@ -91,8 +91,8 @@ camel_imapx_namespace_new (CamelIMAPXNamespaceCategory category,
 {
 	CamelIMAPXNamespace *namespace;
 
+	/* Note, mailbox path separator can be NIL. */
 	g_return_val_if_fail (prefix != NULL, NULL);
-	g_return_val_if_fail (separator != '\0', NULL);
 
 	/* Not bothering with GObject properties for this class. */
 
