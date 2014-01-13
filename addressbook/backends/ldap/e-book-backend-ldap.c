@@ -595,6 +595,7 @@ check_schema_support (EBookBackendLDAP *bl)
 	const gchar *attrs[2];
 	LDAPMessage *resp;
 	struct timeval timeout;
+	gchar *lst;
 
 	g_rec_mutex_lock (&eds_ldap_handler_lock);
 	if (!bl->priv->ldap) {
@@ -682,6 +683,10 @@ check_schema_support (EBookBackendLDAP *bl)
 	else {
 		g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	}
+
+	lst = e_data_book_string_slist_to_comma_string (bl->priv->supported_fields);
+	e_book_backend_notify_property_changed (E_BOOK_BACKEND (bl), BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS, lst);
+	g_free (lst);
 }
 
 #ifndef SUNLDAP
