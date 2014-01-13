@@ -1,3 +1,29 @@
+Evolution-Data-Server 3.11.4 2014-01-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 721527 - License text contains obsolete FSF postal address
+	             (Matthew Barnes)
+	Bug 721733 - Tweak Berkeley DB detection logic (Ryan Lortie)
+	Bug 720657 - IMAPX: No new messages are received (Matthew Barnes)
+
+Other Changes:
+	* Update project homepage URL (William Jon McCann)
+	* Bump SOURCES_DBUS_SERVICE_NAME version. (Matthew Barnes)
+	* Remove #include <malloc.h> from a file (Ryan Lortie)
+	* tests: #include <sys/wait.h> for WIFEXITED (Ryan Lortie)
+	* CamelIMAPXNamespace: Allow NIL separator character. (Lubomir Rintel)
+	* IMAPX: Handle BODY[HEADER] in FETCH response. (Lubomir Rintel)
+
+Translations:
+	Marek Černocký (cs)
+	Dimitris Spingos (el)
+	Fran Diéguez (gl)
+	Gabor Kelemen (hu)
+	Andika Triwidada (id)
+	Rafael Ferreira (pt_BR)
+
+
 Evolution-Data-Server 3.11.3 2013-12-16
 ---------------------------------------
 
