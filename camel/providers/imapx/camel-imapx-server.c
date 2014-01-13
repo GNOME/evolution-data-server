@@ -90,7 +90,6 @@ struct _RefreshInfoData {
 	/* used for building uidset stuff */
 	gint index;
 	gint last_index;
-	gint fetch_msg_limit;
 	CamelFetchType fetch_type;
 	gboolean update_unseen;
 	gboolean scan_changes;
@@ -3562,7 +3561,6 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
 	data = g_slice_new0 (RefreshInfoData);
 	data->changes = camel_folder_change_info_new ();
 	data->update_unseen = update_unseen;
-	data->fetch_msg_limit = -1;
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_FETCH_NEW_MESSAGES;
@@ -5326,8 +5324,6 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	CamelFolder *folder;
 	RefreshInfoData *data;
 	gint i;
-	CamelIMAPXSettings *settings;
-	guint batch_count;
 	GError *local_error = NULL;
 
 	job = camel_imapx_command_get_job (ic);
@@ -5345,10 +5341,6 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	data->scan_changes = FALSE;
 
 	isum = CAMEL_IMAPX_SUMMARY (folder->summary);
-
-	settings = camel_imapx_server_ref_settings (is);
-	batch_count = camel_imapx_settings_get_batch_fetch_count (settings);
-	g_object_unref (settings);
 
 	i = data->index;
 
@@ -5369,9 +5361,6 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 	camel_folder_change_info_clear (data->changes);
 
 	if (i < data->infos->len) {
-		gint total = camel_folder_summary_count (folder->summary);
-		gint fetch_limit = data->fetch_msg_limit;
-
 		ic = camel_imapx_command_new (
 			is, "FETCH", mailbox, "UID FETCH ");
 		ic->complete = imapx_command_step_fetch_done;
@@ -5380,11 +5369,7 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 
 		data->last_index = i;
 
-		for (; i < data->infos->len &&
-			((total && i == 0) ||
-			((fetch_limit != -1 && i < fetch_limit) ||
-			(fetch_limit == -1 && i < batch_count))); i++) {
-
+		for (; i < data->infos->len; i++) {
 			gint res;
 			struct _refresh_info *r = &g_array_index (data->infos, struct _refresh_info, i);
 
