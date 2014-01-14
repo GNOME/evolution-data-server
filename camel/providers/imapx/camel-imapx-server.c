@@ -284,7 +284,7 @@ static const CamelIMAPXUntaggedRespHandlerDesc _untagged_descr[] = {
 	{CAMEL_IMAPX_UNTAGGED_VANISHED, imapx_untagged_vanished, NULL, TRUE},
 };
 
-enum _idle_state {
+typedef enum {
 	IMAPX_IDLE_OFF,
 	IMAPX_IDLE_PENDING,	/* Queue is idle; waiting to send IDLE command
 				   soon if nothing more interesting happens */
@@ -292,7 +292,7 @@ enum _idle_state {
 	IMAPX_IDLE_STARTED,	/* IDLE continuation received; IDLE active */
 	IMAPX_IDLE_CANCEL,	/* Cancelled from ISSUED state; need to send
 				   DONE as soon as we receive continuation */
-};
+} CamelIMAPXIdleState;
 
 #define IMAPX_IDLE_DWELL_TIME	2 /* Number of seconds to remain in PENDING
 				     state waiting for other commands to be
@@ -360,7 +360,7 @@ struct _CamelIMAPXServerPrivate {
 	GMainLoop *idle_main_loop;
 	GMainContext *idle_main_context;
 	GSource *idle_pending;
-	enum _idle_state idle_state;
+	CamelIMAPXIdleState idle_state;
 };
 
 enum {
