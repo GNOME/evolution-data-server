@@ -55,8 +55,6 @@ typedef struct _CamelIMAPXServer CamelIMAPXServer;
 typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
 
-typedef struct _CamelIMAPXIdle CamelIMAPXIdle;
-
 /* untagged response handling */
 typedef gboolean
 		(*CamelIMAPXUntaggedRespHandler)
@@ -116,9 +114,6 @@ struct _CamelIMAPXServer {
 	CamelIMAPXCommandQueue *queue;
 	CamelIMAPXCommandQueue *active;
 	CamelIMAPXCommandQueue *done;
-
-	/* Idle */
-	CamelIMAPXIdle *idle;
 
 	gboolean use_qresync;
 };
