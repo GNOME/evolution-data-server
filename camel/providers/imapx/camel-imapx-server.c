@@ -357,12 +357,10 @@ struct _CamelIMAPXServerPrivate {
 	/* IDLE support */
 	GMutex idle_lock;
 	GThread *idle_thread;
-	GCond idle_start_watch_cond;
-	GMutex idle_start_watch_mutex;
-	gboolean idle_start_watch_is_set;
-	time_t idle_started;
+	GMainLoop *idle_main_loop;
+	GMainContext *idle_main_context;
+	GSource *idle_pending;
 	enum _idle_state idle_state;
-	gboolean idle_exit;
 };
 
 enum {
@@ -3573,100 +3571,106 @@ imapx_server_fetch_new_messages (CamelIMAPXServer *is,
 	return success;
 }
 
+static gboolean
+imapx_call_idle (gpointer data)
+{
+	CamelFolder *folder;
+	CamelIMAPXServer *is;
+	CamelIMAPXMailbox *mailbox;
+	GCancellable *cancellable;
+	GError *local_error = NULL;
+
+	is = CAMEL_IMAPX_SERVER (data);
+
+	/* XXX Rename to 'pending_lock'? */
+	g_mutex_lock (&is->priv->idle_lock);
+	g_source_unref (is->priv->idle_pending);
+	is->priv->idle_pending = NULL;
+	g_mutex_unlock (&is->priv->idle_lock);
+
+	if (is->priv->idle_state != IMAPX_IDLE_PENDING)
+		return G_SOURCE_REMOVE;
+
+	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	if (mailbox == NULL)
+		return G_SOURCE_REMOVE;
+
+	folder = imapx_server_ref_folder (is, mailbox);
+	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
+
+	/* We block here until the IDLE command completes. */
+	camel_imapx_server_idle (is, mailbox, cancellable, &local_error);
+
+	if (local_error == NULL) {
+		CamelFolder *folder;
+		gboolean have_new_messages;
+		gboolean fetch_new_messages;
+
+		folder = imapx_server_ref_folder (is, mailbox);
+
+		have_new_messages =
+			camel_imapx_mailbox_get_messages (mailbox) >
+			camel_folder_summary_count (folder->summary);
+
+		fetch_new_messages =
+			have_new_messages &&
+			imapx_is_command_queue_empty (is);
+
+		if (fetch_new_messages)
+			imapx_server_fetch_new_messages (
+				is, mailbox, TRUE, TRUE,
+				cancellable, &local_error);
+
+		g_clear_object (&folder);
+	}
+
+	/* XXX Need a better way to propagate IDLE errors. */
+	if (local_error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_clear_error (&local_error);
+	}
+
+	g_clear_object (&folder);
+	g_clear_object (&cancellable);
+
+	return G_SOURCE_REMOVE;
+}
+
 static gpointer
 imapx_idle_thread (gpointer data)
 {
 	CamelIMAPXServer *is = (CamelIMAPXServer *) data;
-	GCancellable *cancellable;
-	GError *local_error = NULL;
+	GSource *pending;
 
-	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
+	g_main_context_push_thread_default (is->priv->idle_main_context);
 
-	while (TRUE) {
-		g_mutex_lock (&is->priv->idle_start_watch_mutex);
-		is->priv->idle_start_watch_is_set = FALSE;
-		g_mutex_unlock (&is->priv->idle_start_watch_mutex);
+	/* Schedule the first IDLE command after a brief "dwell"
+	 * delay so any other pending commands get priority.
+	 *
+	 * XXX Don't fully understand why this is necessary, but
+	 *     for now just adapting old code and hoping to avoid
+	 *     regressions.
+	 */
 
-		g_mutex_lock (&is->priv->idle_lock);
+	g_mutex_lock (&is->priv->idle_lock);
 
-		while (TRUE) {
-			CamelFolder *folder;
-			CamelIMAPXMailbox *mailbox;
-			gboolean new_messages_on_server;
-			time_t dwelled;
+	g_warn_if_fail (is->priv->idle_pending == NULL);
+	pending = g_timeout_source_new_seconds (IMAPX_IDLE_DWELL_TIME);
+	g_source_set_name (pending, "imapx_call_idle");
+	g_source_set_callback (
+		pending, imapx_call_idle,
+		g_object_ref (is),
+		(GDestroyNotify) g_object_unref);
+	g_source_attach (pending, is->priv->idle_main_context);
+	is->priv->idle_pending = g_source_ref (pending);
+	g_source_unref (pending);
 
-			if (is->priv->idle_state != IMAPX_IDLE_PENDING)
-				break;
+	g_mutex_unlock (&is->priv->idle_lock);
 
-			if (is->priv->idle_exit)
-				break;
+	g_main_loop_run (is->priv->idle_main_loop);
 
-			mailbox = g_weak_ref_get (&is->priv->select_mailbox);
-			if (mailbox == NULL)
-				break;
+	g_main_context_pop_thread_default (is->priv->idle_main_context);
 
-			dwelled = time (NULL) - is->priv->idle_started;
-			if (dwelled < IMAPX_IDLE_DWELL_TIME) {
-				gulong seconds;
-
-				g_object_unref (mailbox);
-
-				g_mutex_unlock (&is->priv->idle_lock);
-				seconds = IMAPX_IDLE_DWELL_TIME - dwelled;
-				g_usleep (seconds * G_USEC_PER_SEC);
-				g_mutex_lock (&is->priv->idle_lock);
-
-				continue;
-			}
-
-			g_mutex_unlock (&is->priv->idle_lock);
-
-			folder = imapx_server_ref_folder (is, mailbox);
-
-			camel_imapx_server_idle (
-				is, mailbox, cancellable, &local_error);
-
-			new_messages_on_server =
-				camel_imapx_mailbox_get_messages (mailbox) >
-				camel_folder_summary_count (folder->summary);
-
-			if (local_error == NULL &&
-			    new_messages_on_server &&
-			    imapx_is_command_queue_empty (is)) {
-				imapx_server_fetch_new_messages (
-					is, mailbox, TRUE, TRUE,
-					cancellable, &local_error);
-			}
-
-			if (local_error != NULL) {
-				e (is->tagprefix, "Caught exception in idle thread:  %s \n", local_error->message);
-				/* No way to asyncronously notify UI ? */
-				g_clear_error (&local_error);
-			}
-
-			g_clear_object (&folder);
-			g_clear_object (&mailbox);
-
-			g_mutex_lock (&is->priv->idle_lock);
-		}
-
-		g_mutex_unlock (&is->priv->idle_lock);
-
-		g_mutex_lock (&is->priv->idle_start_watch_mutex);
-		while (!is->priv->idle_start_watch_is_set)
-			g_cond_wait (
-				&is->priv->idle_start_watch_cond,
-				&is->priv->idle_start_watch_mutex);
-		g_mutex_unlock (&is->priv->idle_start_watch_mutex);
-
-		if (is->priv->idle_exit)
-			break;
-	}
-
-	g_object_unref (cancellable);
-
-	g_clear_error (&local_error);
-	is->priv->idle_thread = NULL;
 	return NULL;
 }
 
@@ -3724,19 +3728,13 @@ imapx_exit_idle (CamelIMAPXServer *is)
 
 	g_mutex_lock (&is->priv->idle_lock);
 
-	if (is->priv->idle_thread != NULL) {
-		is->priv->idle_exit = TRUE;
-
-		g_mutex_lock (&is->priv->idle_start_watch_mutex);
-		is->priv->idle_start_watch_is_set = TRUE;
-		g_cond_broadcast (&is->priv->idle_start_watch_cond);
-		g_mutex_unlock (&is->priv->idle_start_watch_mutex);
-
-		idle_thread = is->priv->idle_thread;
-		is->priv->idle_thread = NULL;
-	}
+	idle_thread = is->priv->idle_thread;
+	is->priv->idle_thread = NULL;
 
 	g_mutex_unlock (&is->priv->idle_lock);
+
+	if (g_main_loop_is_running (is->priv->idle_main_loop))
+		g_main_loop_quit (is->priv->idle_main_loop);
 
 	if (idle_thread != NULL)
 		g_thread_join (idle_thread);
@@ -3751,20 +3749,24 @@ imapx_start_idle (CamelIMAPXServer *is)
 	g_mutex_lock (&is->priv->idle_lock);
 
 	g_return_if_fail (is->priv->idle_state == IMAPX_IDLE_OFF);
-	time (&is->priv->idle_started);
 	is->priv->idle_state = IMAPX_IDLE_PENDING;
 
 	if (is->priv->idle_thread == NULL) {
-		is->priv->idle_start_watch_is_set = FALSE;
-
 		is->priv->idle_thread = g_thread_new (
 			NULL, (GThreadFunc) imapx_idle_thread, is);
 
-	} else {
-		g_mutex_lock (&is->priv->idle_start_watch_mutex);
-		is->priv->idle_start_watch_is_set = TRUE;
-		g_cond_broadcast (&is->priv->idle_start_watch_cond);
-		g_mutex_unlock (&is->priv->idle_start_watch_mutex);
+	} else if (is->priv->idle_pending == NULL) {
+		GSource *pending;
+
+		pending = g_idle_source_new ();
+		g_source_set_name (pending, "imapx_call_idle");
+		g_source_set_callback (
+			pending, imapx_call_idle,
+			g_object_ref (is),
+			(GDestroyNotify) g_object_unref);
+		g_source_attach (pending, is->priv->idle_main_context);
+		is->priv->idle_pending = g_source_ref (pending);
+		g_source_unref (pending);
 	}
 
 	g_mutex_unlock (&is->priv->idle_lock);
@@ -7406,8 +7408,8 @@ imapx_server_finalize (GObject *object)
 	g_mutex_clear (&is->priv->known_alerts_lock);
 
 	g_mutex_clear (&is->priv->idle_lock);
-	g_cond_clear (&is->priv->idle_start_watch_cond);
-	g_mutex_clear (&is->priv->idle_start_watch_mutex);
+	g_main_loop_unref (is->priv->idle_main_loop);
+	g_main_context_unref (is->priv->idle_main_context);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
@@ -7591,6 +7593,7 @@ static void
 camel_imapx_server_init (CamelIMAPXServer *is)
 {
 	GHashTable *mailboxes;
+	GMainContext *main_context;
 
 	/* Hash table key is owned by the CamelIMAPXMailbox. */
 	mailboxes = g_hash_table_new_full (
@@ -7631,9 +7634,13 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	/* Initialize IDLE structs. */
 
+	main_context = g_main_context_new ();
+
 	g_mutex_init (&is->priv->idle_lock);
-	g_cond_init (&is->priv->idle_start_watch_cond);
-	g_mutex_init (&is->priv->idle_start_watch_mutex);
+	is->priv->idle_main_loop = g_main_loop_new (main_context, FALSE);
+	is->priv->idle_main_context = g_main_context_ref (main_context);
+
+	g_main_context_unref (main_context);
 }
 
 CamelIMAPXServer *
