@@ -5138,20 +5138,23 @@ caldav_source_changed_thread (gpointer data)
 
 	old_slave_cmd = cbdav->priv->slave_cmd;
 	old_slave_busy = cbdav->priv->slave_busy;
-	if (old_slave_busy) {
+	if (old_slave_busy)
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_SLEEP);
-		g_mutex_lock (&cbdav->priv->busy_lock);
-	}
 
+	g_mutex_lock (&cbdav->priv->busy_lock);
+
+	/* guard the call with busy_lock, thus the two threads (this 'source changed'
+	   thread and the 'backend open' thread) will not clash on internal data
+	   when they are called in once */
 	initialize_backend (cbdav, NULL);
 
 	/* always wakeup thread, even when it was sleeping */
 	g_cond_signal (&cbdav->priv->cond);
 
-	if (old_slave_busy) {
+	if (old_slave_busy)
 		update_slave_cmd (cbdav->priv, old_slave_cmd);
-		g_mutex_unlock (&cbdav->priv->busy_lock);
-	}
+
+	g_mutex_unlock (&cbdav->priv->busy_lock);
 
 	cbdav->priv->updating_source = FALSE;
 
@@ -5169,7 +5172,9 @@ caldav_source_changed_cb (ESource *source,
 	g_return_if_fail (source != NULL);
 	g_return_if_fail (cbdav != NULL);
 
-	if (cbdav->priv->updating_source)
+	if (cbdav->priv->updating_source ||
+	    !cbdav->priv->loaded ||
+	    !e_cal_backend_is_opened (E_CAL_BACKEND (cbdav)))
 		return;
 
 	cbdav->priv->updating_source = TRUE;
