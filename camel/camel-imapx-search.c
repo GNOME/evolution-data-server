@@ -88,6 +88,127 @@ imapx_search_dispose (GObject *object)
 }
 
 static CamelSExpResult *
+imapx_search_result_match_all (CamelSExp *sexp,
+			       CamelFolderSearch *search)
+{
+	CamelSExpResult *result;
+
+	g_return_val_if_fail (search != NULL, NULL);
+
+	if (search->current != NULL) {
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+		result->value.boolean = TRUE;
+	} else {
+		gint ii;
+
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
+		result->value.ptrarray = g_ptr_array_new ();
+
+		for (ii = 0; ii < search->summary->len; ii++)
+			g_ptr_array_add (
+				result->value.ptrarray,
+				(gpointer) search->summary->pdata[ii]);
+	}
+
+	return result;
+}
+
+static CamelSExpResult *
+imapx_search_result_match_none (CamelSExp *sexp,
+				CamelFolderSearch *search)
+{
+	CamelSExpResult *result;
+
+	g_return_val_if_fail (search != NULL, NULL);
+
+	if (search->current != NULL) {
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+		result->value.boolean = FALSE;
+	} else {
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
+		result->value.ptrarray = g_ptr_array_new ();
+	}
+
+	return result;
+}
+
+static CamelSExpResult *
+imapx_search_process_criteria (CamelSExp *sexp,
+			       CamelFolderSearch *search,
+			       CamelIMAPXServer *server,
+			       const GString *criteria,
+			       const gchar *from_function)
+{
+	CamelSExpResult *result;
+	GPtrArray *uids = NULL;
+	GError *error = NULL;
+
+	uids = camel_imapx_server_uid_search (
+		server, search->folder, criteria->str, NULL, &error);
+
+	/* Sanity check. */
+	g_return_val_if_fail (
+		((uids != NULL) && (error == NULL)) ||
+		((uids == NULL) && (error != NULL)), NULL);
+
+	/* XXX No allowance for errors in CamelSExp callbacks!
+	 *     Dump the error to the console and make like we
+	 *     got an empty result. */
+	if (error != NULL) {
+		g_warning (
+			"%s: (UID SEARCH %s): %s",
+			from_function, criteria->str, error->message);
+		uids = g_ptr_array_new ();
+		g_error_free (error);
+	}
+
+	if (search->current != NULL) {
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
+		result->value.boolean = (uids && uids->len > 0);
+	} else {
+		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
+		result->value.ptrarray = g_ptr_array_ref (uids);
+	}
+
+	g_ptr_array_unref (uids);
+
+	return result;
+}
+
+static CamelSExpResult *
+imapx_search_match_all (CamelSExp *sexp,
+			gint argc,
+			CamelSExpTerm **argv,
+			CamelFolderSearch *search)
+{
+	CamelIMAPXServer *server;
+	CamelSExpResult *result;
+
+	if (argc != 1)
+		return imapx_search_result_match_none (sexp, search);
+
+	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
+	if (!server || search->current) {
+		g_clear_object (&server);
+
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			match_all (sexp, argc, argv, search);
+	}
+
+	/* let's change the requirements a bit, the parent class expects as a result boolean,
+	   but here is expected GPtrArray of matched UIDs */
+	result = camel_sexp_term_eval (sexp, argv[0]);
+
+	g_object_unref (server);
+
+	g_return_val_if_fail (result != NULL, result);
+	g_return_val_if_fail (result->type == CAMEL_SEXP_RES_ARRAY_PTR, result);
+
+	return result;
+}
+
+static CamelSExpResult *
 imapx_search_body_contains (CamelSExp *sexp,
                             gint argc,
                             CamelSExpResult **argv,
@@ -95,25 +216,25 @@ imapx_search_body_contains (CamelSExp *sexp,
 {
 	CamelIMAPXServer *server;
 	CamelSExpResult *result;
-	CamelSExpResultType type;
 	GString *criteria;
-	GPtrArray *uids;
 	gint ii, jj;
-	GError *error = NULL;
 
 	/* Match everything if argv = [""] */
 	if (argc == 1 && argv[0]->value.string[0] == '\0')
-		goto match_all;
+		return imapx_search_result_match_all (sexp, search);
 
 	/* Match nothing if empty argv or empty summary. */
 	if (argc == 0 || search->summary->len == 0)
-		goto match_none;
+		return imapx_search_result_match_none (sexp, search);
 
 	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
 
 	/* This will be NULL if we're offline.  Search from cache. */
-	if (server == NULL)
-		goto chain_up;
+	if (server == NULL) {
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			body_contains (sexp, argc, argv, search);
+	}
 
 	/* Build the IMAP search criteria. */
 
@@ -157,78 +278,164 @@ imapx_search_body_contains (CamelSExp *sexp,
 		}
 	}
 
-	uids = camel_imapx_server_uid_search (
-		server, search->folder, criteria->str, NULL, &error);
-
-	/* Sanity check. */
-	g_return_val_if_fail (
-		((uids != NULL) && (error == NULL)) ||
-		((uids == NULL) && (error != NULL)), NULL);
-
-	/* XXX No allowance for errors in CamelSExp callbacks!
-	 *     Dump the error to the console and make like we
-	 *     got an empty result. */
-	if (error != NULL) {
-		g_warning (
-			"%s: (UID SEARCH %s): %s",
-			G_STRFUNC, criteria->str, error->message);
-		uids = g_ptr_array_new ();
-		g_error_free (error);
-	}
-
-	if (search->current != NULL) {
-		type = CAMEL_SEXP_RES_BOOL;
-		result = camel_sexp_result_new (sexp, type);
-		result->value.boolean = (uids->len > 0);
-	} else {
-		type = CAMEL_SEXP_RES_ARRAY_PTR;
-		result = camel_sexp_result_new (sexp, type);
-		result->value.ptrarray = g_ptr_array_ref (uids);
-	}
-
-	g_ptr_array_unref (uids);
+	result = imapx_search_process_criteria (sexp, search, server, criteria, G_STRFUNC);
 
 	g_string_free (criteria, TRUE);
-
 	g_object_unref (server);
 
 	return result;
+}
 
-match_all:
-	if (search->current != NULL) {
-		type = CAMEL_SEXP_RES_BOOL;
-		result = camel_sexp_result_new (sexp, type);
-		result->value.boolean = TRUE;
-	} else {
-		type = CAMEL_SEXP_RES_ARRAY_PTR;
-		result = camel_sexp_result_new (sexp, type);
-		result->value.ptrarray = g_ptr_array_new ();
+static CamelSExpResult *
+imapx_search_header_contains (CamelSExp *sexp,
+			      gint argc,
+			      CamelSExpResult **argv,
+			      CamelFolderSearch *search)
+{
+	CamelIMAPXServer *server;
+	CamelSExpResult *result;
+	const gchar *headername, *command = NULL;
+	GString *criteria;
+	gint ii, jj;
 
-		for (ii = 0; ii < search->summary->len; ii++)
-			g_ptr_array_add (
-				result->value.ptrarray,
-				(gpointer) search->summary->pdata[ii]);
+	/* Match nothing if empty argv or empty summary. */
+	if (argc <= 1 ||
+	    argv[0]->type != CAMEL_SEXP_RES_STRING ||
+	    search->summary->len == 0)
+		return imapx_search_result_match_none (sexp, search);
+
+	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
+
+	/* This will be NULL if we're offline.  Search from cache. */
+	if (server == NULL) {
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			header_contains (sexp, argc, argv, search);
 	}
 
-	return result;
+	/* Build the IMAP search criteria. */
 
-match_none:
+	criteria = g_string_sized_new (128);
+
 	if (search->current != NULL) {
-		type = CAMEL_SEXP_RES_BOOL;
-		result = camel_sexp_result_new (sexp, type);
-		result->value.boolean = FALSE;
-	} else {
-		type = CAMEL_SEXP_RES_ARRAY_PTR;
-		result = camel_sexp_result_new (sexp, type);
-		result->value.ptrarray = g_ptr_array_new ();
+		const gchar *uid;
+
+		/* Limit the search to a single UID. */
+		uid = camel_message_info_uid (search->current);
+		g_string_append_printf (criteria, "UID %s", uid);
 	}
 
-	return result;
+	headername = argv[0]->value.string;
+	if (g_ascii_strcasecmp (headername, "From") == 0)
+		command = "FROM";
+	else if (g_ascii_strcasecmp (headername, "To") == 0)
+		command = "TO";
+	else if (g_ascii_strcasecmp (headername, "CC") == 0)
+		command = "CC";
+	else if (g_ascii_strcasecmp (headername, "Bcc") == 0)
+		command = "BCC";
+	else if (g_ascii_strcasecmp (headername, "Subject") == 0)
+		command = "SUBJECT";
 
-chain_up:
-	/* Chain up to parent's body_contains() method. */
-	return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
-		body_contains (sexp, argc, argv, search);
+	for (ii = 1; ii < argc; ii++) {
+		struct _camel_search_words *words;
+		const guchar *term;
+
+		if (argv[ii]->type != CAMEL_SEXP_RES_STRING)
+			continue;
+
+		/* Handle multiple search words within a single term. */
+		term = (const guchar *) argv[ii]->value.string;
+		words = camel_search_words_split (term);
+
+		for (jj = 0; jj < words->len; jj++) {
+			gchar *cp;
+
+			if (criteria->len > 0)
+				g_string_append_c (criteria, ' ');
+
+			if (command)
+				g_string_append (criteria, command);
+			else
+				g_string_append_printf (criteria, "HEADER \"%s\"", headername);
+
+			g_string_append (criteria, " \"");
+
+			cp = words->words[jj]->word;
+			for (; *cp != '\0'; cp++) {
+				if (*cp == '\\' || *cp == '"')
+					g_string_append_c (criteria, '\\');
+				g_string_append_c (criteria, *cp);
+			}
+
+			g_string_append_c (criteria, '"');
+		}
+	}
+
+	result = imapx_search_process_criteria (sexp, search, server, criteria, G_STRFUNC);
+
+	g_string_free (criteria, TRUE);
+	g_object_unref (server);
+
+	return result;
+}
+
+static CamelSExpResult *
+imapx_search_header_exists (CamelSExp *sexp,
+			    gint argc,
+			    CamelSExpResult **argv,
+			    CamelFolderSearch *search)
+{
+	CamelIMAPXServer *server;
+	CamelSExpResult *result;
+	GString *criteria;
+	gint ii;
+
+	/* Match nothing if empty argv or empty summary. */
+	if (argc == 0 || search->summary->len == 0)
+		return imapx_search_result_match_none (sexp, search);
+
+	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
+
+	/* This will be NULL if we're offline.  Search from cache. */
+	if (server == NULL) {
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			header_exists (sexp, argc, argv, search);
+	}
+
+	/* Build the IMAP search criteria. */
+
+	criteria = g_string_sized_new (128);
+
+	if (search->current != NULL) {
+		const gchar *uid;
+
+		/* Limit the search to a single UID. */
+		uid = camel_message_info_uid (search->current);
+		g_string_append_printf (criteria, "UID %s", uid);
+	}
+
+	for (ii = 0; ii < argc; ii++) {
+		const gchar *headername;
+
+		if (argv[ii]->type != CAMEL_SEXP_RES_STRING)
+			continue;
+
+		headername = argv[ii]->value.string;
+
+		if (criteria->len > 0)
+			g_string_append_c (criteria, ' ');
+
+		g_string_append_printf (criteria, "HEADER \"%s\" \"\"", headername);
+	}
+
+	result = imapx_search_process_criteria (sexp, search, server, criteria, G_STRFUNC);
+
+	g_string_free (criteria, TRUE);
+	g_object_unref (server);
+
+	return result;
 }
 
 static void
@@ -245,7 +452,10 @@ camel_imapx_search_class_init (CamelIMAPXSearchClass *class)
 	object_class->dispose = imapx_search_dispose;
 
 	search_class = CAMEL_FOLDER_SEARCH_CLASS (class);
+	search_class->match_all = imapx_search_match_all;
 	search_class->body_contains = imapx_search_body_contains;
+	search_class->header_contains = imapx_search_header_contains;
+	search_class->header_exists = imapx_search_header_exists;
 
 	g_object_class_install_property (
 		object_class,
