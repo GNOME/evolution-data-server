@@ -43,8 +43,6 @@
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
-#define CIF(x) ((CamelIMAPXFolder *)x)
-
 #define QUEUE_LOCK(x) (g_rec_mutex_lock(&(x)->queue_lock))
 #define QUEUE_UNLOCK(x) (g_rec_mutex_unlock(&(x)->queue_lock))
 
