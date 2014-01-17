@@ -2229,30 +2229,6 @@ exit:
 	return success;
 }
 
-static gboolean
-imapx_store_noop_sync (CamelStore *store,
-                       GCancellable *cancellable,
-                       GError **error)
-{
-	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
-	gboolean success = TRUE;
-
-	/* If we're not connected then this truly is a no-op. */
-
-	imapx_store = CAMEL_IMAPX_STORE (store);
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL);
-
-	if (imapx_server != NULL) {
-		success = camel_imapx_server_noop (
-			imapx_server, NULL, cancellable, error);
-	}
-
-	g_clear_object (&imapx_server);
-
-	return success;
-}
-
 static void
 imapx_migrate_to_user_cache_dir (CamelService *service)
 {
@@ -2514,7 +2490,6 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->create_folder_sync = imapx_store_create_folder_sync;
 	store_class->delete_folder_sync = imapx_store_delete_folder_sync;
 	store_class->rename_folder_sync = imapx_store_rename_folder_sync;
-	store_class->noop_sync = imapx_store_noop_sync;
 
 	/* Inherited from CamelNetworkService. */
 	g_object_class_override_property (
