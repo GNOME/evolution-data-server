@@ -58,6 +58,10 @@
 
 #define MAX_COMMAND_LEN 1000
 
+/* Ping the server after a period of inactivity to avoid being logged off.
+ * Using a 29 minute inactivity timeout as recommended in RFC 2177 (IDLE). */
+#define INACTIVITY_TIMEOUT_SECONDS (29 * 60)
+
 extern gint camel_application_is_exiting;
 
 /* Job-specific structs */
@@ -320,6 +324,9 @@ struct _CamelIMAPXServerPrivate {
 	GMainContext *parser_main_context;
 	GWeakRef parser_cancellable;
 
+	GSource *inactivity_timeout;
+	GMutex inactivity_timeout_lock;
+
 	CamelIMAPXNamespaceResponse *namespaces;
 	GMutex namespaces_lock;
 
@@ -494,6 +501,10 @@ static gboolean	imapx_command_copy_messages_step_start
 						(CamelIMAPXServer *is,
 						 CamelIMAPXJob *job,
 						 gint index,
+						 GError **error);
+static gboolean	imapx_job_noop_start		(CamelIMAPXJob *job,
+						 CamelIMAPXServer *is,
+						 GCancellable *cancellable,
 						 GError **error);
 
 static gboolean	imapx_in_idle			(CamelIMAPXServer *is);
@@ -906,6 +917,105 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 	}
 }
 
+static gboolean
+imapx_server_inactivity_timeout_cb (gpointer data)
+{
+	CamelIMAPXServer *is;
+	gboolean result = G_SOURCE_REMOVE;
+
+	is = g_weak_ref_get (data);
+
+	if (is == NULL)
+		return result;
+
+	/* IDLE command may still be active, and any other active
+	 * commands would have reset this timeout.  So just check
+	 * for any queued-but-not-yet-active commands. */
+
+	if (!camel_imapx_command_queue_is_empty (is->queue)) {
+		/* Do nothing. */
+
+	} else if (imapx_in_idle (is)) {
+		CamelIMAPXStream *stream;
+
+		/* Stop and restart the IDLE command. */
+
+		stream = camel_imapx_server_ref_stream (is);
+
+		if (stream != NULL) {
+			switch (imapx_stop_idle (is, stream, NULL)) {
+				case IMAPX_IDLE_STOP_SUCCESS:
+					imapx_start_idle (is);
+					/* fall through */
+
+				case IMAPX_IDLE_STOP_NOOP:
+					result = G_SOURCE_CONTINUE;
+					break;
+
+				default:
+					break;
+			}
+
+			g_object_unref (stream);
+		}
+
+	} else {
+		CamelIMAPXJob *job;
+		GCancellable *cancellable;
+		GError *local_error = NULL;
+
+		/* Submit a NOOP job but indicate we don't need a
+		 * reply when finished.  So this should NOT block. */
+
+		cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
+
+		job = camel_imapx_job_new (cancellable);
+		job->type = IMAPX_JOB_NOOP;
+		job->start = imapx_job_noop_start;
+		job->pri = IMAPX_PRIORITY_NOOP;
+		job->noreply = TRUE;
+
+		imapx_submit_job (is, job, &local_error);
+
+		if (local_error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_error_free (local_error);
+		}
+
+		camel_imapx_job_unref (job);
+
+		g_clear_object (&cancellable);
+	}
+
+	g_object_unref (is);
+
+	return result;
+}
+
+static void
+imapx_server_reset_inactivity_timer (CamelIMAPXServer *is)
+{
+	g_mutex_lock (&is->priv->inactivity_timeout_lock);
+
+	if (is->priv->inactivity_timeout != NULL) {
+		g_source_destroy (is->priv->inactivity_timeout);
+		g_source_unref (is->priv->inactivity_timeout);
+	}
+
+	is->priv->inactivity_timeout =
+		g_timeout_source_new_seconds (INACTIVITY_TIMEOUT_SECONDS);
+	g_source_set_callback (
+		is->priv->inactivity_timeout,
+		imapx_server_inactivity_timeout_cb,
+		imapx_weak_ref_new (is),
+		(GDestroyNotify) imapx_weak_ref_free);
+	g_source_attach (
+		is->priv->inactivity_timeout,
+		is->priv->parser_main_context);
+
+	g_mutex_unlock (&is->priv->inactivity_timeout_lock);
+}
+
 static void
 imapx_server_add_mailbox_unlocked (CamelIMAPXServer *is,
                                    CamelIMAPXMailbox *mailbox)
@@ -1199,6 +1309,8 @@ imapx_command_start (CamelIMAPXServer *is,
 		if (local_error != NULL)
 			goto fail;
 	}
+
+	imapx_server_reset_inactivity_timer (is);
 
 	goto exit;
 
@@ -7482,6 +7594,10 @@ imapx_server_finalize (GObject *object)
 	g_free (is->priv->context);
 	g_hash_table_destroy (is->priv->untagged_handlers);
 
+	if (is->priv->inactivity_timeout != NULL)
+		g_source_unref (is->priv->inactivity_timeout);
+	g_mutex_clear (&is->priv->inactivity_timeout_lock);
+
 	g_mutex_clear (&is->priv->namespaces_lock);
 
 	g_hash_table_destroy (is->priv->mailboxes);
@@ -7698,6 +7814,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	is->priv->mailboxes = mailboxes;
 
 	g_mutex_init (&is->priv->stream_lock);
+	g_mutex_init (&is->priv->inactivity_timeout_lock);
 	g_mutex_init (&is->priv->namespaces_lock);
 	g_mutex_init (&is->priv->mailboxes_lock);
 	g_mutex_init (&is->priv->select_lock);
