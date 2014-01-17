@@ -181,12 +181,9 @@ struct _CamelStoreClass {
 						 gboolean expunge,
 						 GCancellable *cancellable,
 						 GError **error);
-	gboolean	(*noop_sync)		(CamelStore *store,
-						 GCancellable *cancellable,
-						 GError **error);
 
 	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[20];
+	gpointer reserved_for_methods[21];
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
@@ -361,17 +358,6 @@ void		camel_store_synchronize		(CamelStore *store,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 gboolean	camel_store_synchronize_finish	(CamelStore *store,
-						 GAsyncResult *result,
-						 GError **error);
-gboolean	camel_store_noop_sync		(CamelStore *store,
-						 GCancellable *cancellable,
-						 GError **error);
-void		camel_store_noop		(CamelStore *store,
-						 gint io_priority,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	camel_store_noop_finish		(CamelStore *store,
 						 GAsyncResult *result,
 						 GError **error);
 

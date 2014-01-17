@@ -2084,9 +2084,6 @@ camel_store_rename_folder_finish
 camel_store_synchronize_sync
 camel_store_synchronize
 camel_store_synchronize_finish
-camel_store_noop_sync
-camel_store_noop
-camel_store_noop_finish
 <SUBSECTION Standard>
 CAMEL_STORE
 CAMEL_IS_STORE

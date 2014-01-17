@@ -495,14 +495,6 @@ store_synchronize_sync (CamelStore *store,
 }
 
 static gboolean
-store_noop_sync (CamelStore *store,
-                 GCancellable *cancellable,
-                 GError **error)
-{
-	return TRUE;
-}
-
-static gboolean
 store_initable_init (GInitable *initable,
                      GCancellable *cancellable,
                      GError **error)
@@ -572,7 +564,6 @@ camel_store_class_init (CamelStoreClass *class)
 	class->get_junk_folder_sync = store_get_junk_folder_sync;
 	class->get_trash_folder_sync = store_get_trash_folder_sync;
 	class->synchronize_sync = store_synchronize_sync;
-	class->noop_sync = store_noop_sync;
 
 	signals[FOLDER_CREATED] = g_signal_new (
 		"folder-created",
@@ -2848,116 +2839,3 @@ camel_store_synchronize_finish (CamelStore *store,
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
-/**
- * camel_store_noop_sync:
- * @store: a #CamelStore
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Pings @store so its connection doesn't time out.
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_store_noop_sync (CamelStore *store,
-                       GCancellable *cancellable,
-                       GError **error)
-{
-	CamelStoreClass *class;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-
-	class = CAMEL_STORE_GET_CLASS (store);
-	g_return_val_if_fail (class->noop_sync != NULL, FALSE);
-
-	success = class->noop_sync (store, cancellable, error);
-	CAMEL_CHECK_GERROR (store, noop_sync, success, error);
-
-	return success;
-}
-
-/* Helper for camel_store_noop() */
-static void
-store_noop_thread (GTask *task,
-                   gpointer source_object,
-                   gpointer task_data,
-                   GCancellable *cancellable)
-{
-	gboolean success;
-	GError *local_error = NULL;
-
-	success = camel_store_noop_sync (
-		CAMEL_STORE (source_object),
-		cancellable, &local_error);
-
-	if (local_error != NULL) {
-		g_task_return_error (task, local_error);
-	} else {
-		g_task_return_boolean (task, success);
-	}
-}
-
-/**
- * camel_store_noop:
- * @store: a #CamelStore
- * @io_priority: the I/O priority of the request
- * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
- *
- * Pings @store asynchronously so its connection doesn't time out.
- *
- * When the operation is finished, @callback will be called.  You can then
- * call camel_store_noop_finish() to get the result of the operation.
- *
- * Since: 3.0
- **/
-void
-camel_store_noop (CamelStore *store,
-                  gint io_priority,
-                  GCancellable *cancellable,
-                  GAsyncReadyCallback callback,
-                  gpointer user_data)
-{
-	GTask *task;
-
-	g_return_if_fail (CAMEL_IS_STORE (store));
-
-	task = g_task_new (store, cancellable, callback, user_data);
-	g_task_set_source_tag (task, camel_store_noop);
-	g_task_set_priority (task, io_priority);
-
-	g_task_run_in_thread (task, store_noop_thread);
-
-	g_object_unref (task);
-}
-
-/**
- * camel_store_noop_finish:
- * @store: a #CamelStore
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with camel_store_noop().
- *
- * Returns: %TRUE on success, %FALSE on error
- *
- * Since: 3.0
- **/
-gboolean
-camel_store_noop_finish (CamelStore *store,
-                         GAsyncResult *result,
-                         GError **error)
-{
-	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
-	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
-
-	g_return_val_if_fail (
-		g_async_result_is_tagged (
-		result, camel_store_noop), FALSE);
-
-	return g_task_propagate_boolean (G_TASK (result), error);
-}
