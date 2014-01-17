@@ -515,6 +515,32 @@ static void	imapx_maybe_select		(CamelIMAPXServer *is,
 
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, G_TYPE_OBJECT)
 
+static GWeakRef *
+imapx_weak_ref_new (gpointer object)
+{
+	GWeakRef *weak_ref;
+
+	/* XXX Might want to expose this in Camel's public API if it
+	 *     proves useful elsewhere.  Based on e_weak_ref_new(). */
+
+	weak_ref = g_slice_new0 (GWeakRef);
+	g_weak_ref_set (weak_ref, object);
+
+	return weak_ref;
+}
+
+static void
+imapx_weak_ref_free (GWeakRef *weak_ref)
+{
+	g_return_if_fail (weak_ref != NULL);
+
+	/* XXX Might want to expose this in Camel's public API if it
+	 *     proves useful elsewhere.  Based on e_weak_ref_free(). */
+
+	g_weak_ref_set (weak_ref, NULL);
+	g_slice_free (GWeakRef, weak_ref);
+}
+
 static const CamelIMAPXUntaggedRespHandlerDesc *
 replace_untagged_descriptor (GHashTable *untagged_handlers,
                              const gchar *key,
@@ -3583,7 +3609,10 @@ imapx_call_idle (gpointer data)
 	GCancellable *cancellable;
 	GError *local_error = NULL;
 
-	is = CAMEL_IMAPX_SERVER (data);
+	is = g_weak_ref_get (data);
+
+	if (is == NULL)
+		goto exit;
 
 	/* XXX Rename to 'pending_lock'? */
 	g_mutex_lock (&is->priv->idle_lock);
@@ -3592,11 +3621,11 @@ imapx_call_idle (gpointer data)
 	g_mutex_unlock (&is->priv->idle_lock);
 
 	if (is->priv->idle_state != IMAPX_IDLE_PENDING)
-		return G_SOURCE_REMOVE;
+		goto exit;
 
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 	if (mailbox == NULL)
-		return G_SOURCE_REMOVE;
+		goto exit;
 
 	folder = imapx_server_ref_folder (is, mailbox);
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
@@ -3636,6 +3665,9 @@ imapx_call_idle (gpointer data)
 	g_clear_object (&folder);
 	g_clear_object (&cancellable);
 
+exit:
+	g_clear_object (&is);
+
 	return G_SOURCE_REMOVE;
 }
 
@@ -3662,8 +3694,8 @@ imapx_idle_thread (gpointer data)
 	g_source_set_name (pending, "imapx_call_idle");
 	g_source_set_callback (
 		pending, imapx_call_idle,
-		g_object_ref (is),
-		(GDestroyNotify) g_object_unref);
+		imapx_weak_ref_new (is),
+		(GDestroyNotify) imapx_weak_ref_free);
 	g_source_attach (pending, is->priv->idle_main_context);
 	is->priv->idle_pending = g_source_ref (pending);
 	g_source_unref (pending);
@@ -3765,8 +3797,8 @@ imapx_start_idle (CamelIMAPXServer *is)
 		g_source_set_name (pending, "imapx_call_idle");
 		g_source_set_callback (
 			pending, imapx_call_idle,
-			g_object_ref (is),
-			(GDestroyNotify) g_object_unref);
+			imapx_weak_ref_new (is),
+			(GDestroyNotify) imapx_weak_ref_free);
 		g_source_attach (pending, is->priv->idle_main_context);
 		is->priv->idle_pending = g_source_ref (pending);
 		g_source_unref (pending);
