@@ -791,6 +791,52 @@ imapx_uidset_add (struct _uidset_state *ss,
 	return 0;
 }
 
+static gboolean
+imapx_register_job (CamelIMAPXServer *is,
+                    CamelIMAPXJob *job,
+                    GError **error)
+{
+	if (is->state >= IMAPX_INITIALISED) {
+		QUEUE_LOCK (is);
+		g_queue_push_head (&is->jobs, camel_imapx_job_ref (job));
+		QUEUE_UNLOCK (is);
+
+	} else {
+		e (is->tagprefix, "NO connection yet, maybe user cancelled jobs earlier ?");
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_NOT_CONNECTED,
+			_("Not authenticated"));
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static void
+imapx_unregister_job (CamelIMAPXServer *is,
+                      CamelIMAPXJob *job)
+{
+	if (!job->noreply)
+		camel_imapx_job_done (job);
+
+	QUEUE_LOCK (is);
+	if (g_queue_remove (&is->jobs, job))
+		camel_imapx_job_unref (job);
+	QUEUE_UNLOCK (is);
+}
+
+static gboolean
+imapx_submit_job (CamelIMAPXServer *is,
+                  CamelIMAPXJob *job,
+                  GError **error)
+{
+	if (!imapx_register_job (is, job, error))
+		return FALSE;
+
+	return camel_imapx_job_run (job, is, error);
+}
+
 static CamelFolder *
 imapx_server_ref_folder (CamelIMAPXServer *is,
                          CamelIMAPXMailbox *mailbox)
@@ -3388,52 +3434,6 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 		return FALSE;
 
 	return success;
-}
-
-static gboolean
-imapx_register_job (CamelIMAPXServer *is,
-                    CamelIMAPXJob *job,
-                    GError **error)
-{
-	if (is->state >= IMAPX_INITIALISED) {
-		QUEUE_LOCK (is);
-		g_queue_push_head (&is->jobs, camel_imapx_job_ref (job));
-		QUEUE_UNLOCK (is);
-
-	} else {
-		e (is->tagprefix, "NO connection yet, maybe user cancelled jobs earlier ?");
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_NOT_CONNECTED,
-			_("Not authenticated"));
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-static void
-imapx_unregister_job (CamelIMAPXServer *is,
-                      CamelIMAPXJob *job)
-{
-	if (!job->noreply)
-		camel_imapx_job_done (job);
-
-	QUEUE_LOCK (is);
-	if (g_queue_remove (&is->jobs, job))
-		camel_imapx_job_unref (job);
-	QUEUE_UNLOCK (is);
-}
-
-static gboolean
-imapx_submit_job (CamelIMAPXServer *is,
-                  CamelIMAPXJob *job,
-                  GError **error)
-{
-	if (!imapx_register_job (is, job, error))
-		return FALSE;
-
-	return camel_imapx_job_run (job, is, error);
 }
 
 /* ********************************************************************** */
