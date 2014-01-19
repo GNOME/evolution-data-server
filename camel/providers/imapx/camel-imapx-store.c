@@ -904,6 +904,9 @@ imapx_connect_sync (CamelService *service,
 			priv->mailbox_updated_handler_id = 0;
 		}
 
+		if (priv->connected_server != NULL)
+			camel_imapx_server_shutdown (priv->connected_server);
+
 		g_clear_object (&priv->connected_server);
 		priv->connected_server = g_object_ref (imapx_server);
 
@@ -991,6 +994,9 @@ imapx_disconnect_sync (CamelService *service,
 			priv->mailbox_updated_handler_id);
 		priv->mailbox_updated_handler_id = 0;
 	}
+
+	if (priv->connected_server != NULL)
+		camel_imapx_server_shutdown (priv->connected_server);
 
 	g_clear_object (&priv->connected_server);
 	g_clear_object (&priv->connecting_server);

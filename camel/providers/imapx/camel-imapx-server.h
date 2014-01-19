@@ -169,6 +169,7 @@ CamelAuthenticationResult
 						 const gchar *mechanism,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_imapx_server_shutdown	(CamelIMAPXServer *is);
 gboolean	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *pattern,
 						 CamelStoreGetFolderInfoFlags flags,

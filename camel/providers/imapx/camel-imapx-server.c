@@ -510,7 +510,6 @@ static gboolean	imapx_job_noop_start		(CamelIMAPXJob *job,
 static gboolean	imapx_in_idle			(CamelIMAPXServer *is);
 static gboolean	imapx_use_idle		(CamelIMAPXServer *is);
 static void	imapx_start_idle		(CamelIMAPXServer *is);
-static void	imapx_exit_idle			(CamelIMAPXServer *is);
 static CamelIMAPXIdleStopResult
 		imapx_stop_idle			(CamelIMAPXServer *is,
 						 CamelIMAPXStream *stream,
@@ -3818,6 +3817,8 @@ imapx_idle_thread (gpointer data)
 
 	g_main_context_pop_thread_default (is->priv->idle_main_context);
 
+	g_object_unref (is);
+
 	return NULL;
 }
 
@@ -3869,25 +3870,6 @@ exit:
 }
 
 static void
-imapx_exit_idle (CamelIMAPXServer *is)
-{
-	GThread *idle_thread = NULL;
-
-	g_mutex_lock (&is->priv->idle_lock);
-
-	idle_thread = is->priv->idle_thread;
-	is->priv->idle_thread = NULL;
-
-	g_mutex_unlock (&is->priv->idle_lock);
-
-	if (g_main_loop_is_running (is->priv->idle_main_loop))
-		g_main_loop_quit (is->priv->idle_main_loop);
-
-	if (idle_thread != NULL)
-		g_thread_join (idle_thread);
-}
-
-static void
 imapx_start_idle (CamelIMAPXServer *is)
 {
 	if (camel_application_is_exiting)
@@ -3900,7 +3882,7 @@ imapx_start_idle (CamelIMAPXServer *is)
 
 	if (is->priv->idle_thread == NULL) {
 		is->priv->idle_thread = g_thread_new (
-			NULL, (GThreadFunc) imapx_idle_thread, is);
+			NULL, imapx_idle_thread, g_object_ref (is));
 
 	} else if (is->priv->idle_pending == NULL) {
 		GSource *pending;
@@ -4854,6 +4836,40 @@ exit:
 	g_object_unref (store);
 
 	return success;
+}
+
+/**
+ * camel_imapx_server_shutdown:
+ * @is: a #CamelIMAPXServer
+ *
+ * Signals the server to shut down command processing.  #CamelIMAPXStore
+ * should call this immediately before unreferencing its server instance.
+ * Note, the server instance may linger a short time after this function
+ * returns as its own worker threads finish.
+ *
+ * Since: 3.12
+ **/
+void
+camel_imapx_server_shutdown (CamelIMAPXServer *is)
+{
+	GCancellable *cancellable;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (is));
+
+	g_main_loop_quit (is->priv->idle_main_loop);
+	g_main_loop_quit (is->priv->parser_main_loop);
+
+	QUEUE_LOCK (is);
+
+	is->state = IMAPX_SHUTDOWN;
+
+	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
+	g_weak_ref_set (&is->priv->parser_cancellable, NULL);
+
+	QUEUE_UNLOCK (is);
+
+	g_cancellable_cancel (cancellable);
+	g_clear_object (&cancellable);
 }
 
 /* ********************************************************************** */
@@ -7533,28 +7549,27 @@ static void
 imapx_server_dispose (GObject *object)
 {
 	CamelIMAPXServer *server = CAMEL_IMAPX_SERVER (object);
-	GCancellable *cancellable;
+	gboolean idle_main_loop_is_running;
+	gboolean parser_main_loop_is_running;
 
-	g_main_loop_quit (server->priv->parser_main_loop);
-
-	QUEUE_LOCK (server);
-	server->state = IMAPX_SHUTDOWN;
-
-	cancellable = g_weak_ref_get (&server->priv->parser_cancellable);
-	g_weak_ref_set (&server->priv->parser_cancellable, NULL);
-
-	g_cancellable_cancel (cancellable);
-	g_clear_object (&cancellable);
-
-	QUEUE_UNLOCK (server);
+	/* Server should be shut down already.  Warn if
+	 * the idle or parser threads are still running. */
+	idle_main_loop_is_running =
+		g_main_loop_is_running (server->priv->idle_main_loop);
+	parser_main_loop_is_running =
+		g_main_loop_is_running (server->priv->parser_main_loop);
+	g_warn_if_fail (!idle_main_loop_is_running);
+	g_warn_if_fail (!parser_main_loop_is_running);
 
 	if (server->priv->parser_thread != NULL) {
 		g_thread_unref (server->priv->parser_thread);
 		server->priv->parser_thread = NULL;
 	}
 
-	if (server->cinfo && imapx_use_idle (server))
-		imapx_exit_idle (server);
+	if (server->priv->idle_thread != NULL) {
+		g_thread_unref (server->priv->idle_thread);
+		server->priv->idle_thread = NULL;
+	}
 
 	imapx_disconnect (server);
 
@@ -8115,7 +8130,7 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 		return FALSE;
 
 	is->priv->parser_thread = g_thread_new (
-		NULL, (GThreadFunc) imapx_parser_thread, g_object_ref (is));
+		NULL, imapx_parser_thread, g_object_ref (is));
 
 	return TRUE;
 }
