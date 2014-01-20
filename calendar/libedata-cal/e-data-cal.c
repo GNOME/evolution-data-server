@@ -171,7 +171,7 @@ async_context_new (EDataCal *data_cal,
 		(GBusNameAppearedCallback) NULL,
 		(GBusNameVanishedCallback) sender_vanished_cb,
 		g_object_ref (async_context->cancellable),
-		(GDestroyNotify) g_object_ref);
+		(GDestroyNotify) g_object_unref);
 
 	sender_table_insert (
 		async_context->data_cal,

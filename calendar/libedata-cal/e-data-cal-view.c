@@ -262,8 +262,9 @@ impl_DataCalView_dispose (EGdbusCalView *object,
 {
 	e_gdbus_cal_view_complete_dispose (object, invocation, NULL);
 
-	view->priv->stopped = TRUE;
 	e_cal_backend_stop_view (view->priv->backend, view);
+	view->priv->stopped = TRUE;
+	e_cal_backend_remove_view (view->priv->backend, view);
 
 	return TRUE;
 }

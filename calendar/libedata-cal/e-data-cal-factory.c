@@ -407,6 +407,8 @@ data_cal_factory_open (EDataCalFactory *factory,
 		 * So we must track each and every connection made. */
 		data_cal_factory_connections_add (
 			factory, sender, E_CAL_BACKEND (backend));
+
+		g_object_unref (data_cal);
 	}
 
 	g_object_unref (backend);
