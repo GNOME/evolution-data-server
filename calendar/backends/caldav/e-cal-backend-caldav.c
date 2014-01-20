@@ -99,6 +99,7 @@ struct _ECalBackendCalDAVPrivate {
 	/* Authentication info */
 	gchar *password;
 	gboolean auth_required;
+	gboolean force_ask_password;
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
@@ -1030,8 +1031,10 @@ soup_authenticate (SoupSession *session,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
-	if (retrying)
+	if (retrying || cbdav->priv->force_ask_password) {
+		cbdav->priv->force_ask_password = TRUE;
 		return;
+	}
 
 	if (E_IS_SOUP_AUTH_BEARER (auth)) {
 		soup_authenticate_bearer (session, msg, auth, cbdav);
@@ -5168,6 +5171,11 @@ caldav_try_password_sync (ESourceAuthenticator *authenticator,
 	cbdav = E_CAL_BACKEND_CALDAV (authenticator);
 
 	/* Busy lock is already acquired by caldav_do_open(). */
+
+	if (cbdav->priv->force_ask_password) {
+		cbdav->priv->force_ask_password = FALSE;
+		return E_SOURCE_AUTHENTICATION_REJECTED;
+	}
 
 	g_free (cbdav->priv->password);
 	cbdav->priv->password = g_strdup (password->str);
