@@ -507,6 +507,10 @@ network_service_update_host_reachable (CamelNetworkService *service)
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (service));
+	if (!camel_session_get_online (session)) {
+		g_object_unref (session);
+		return;
+	}
 
 	g_mutex_lock (&priv->update_host_reachable_lock);
 

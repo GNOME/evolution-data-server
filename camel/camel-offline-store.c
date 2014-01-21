@@ -216,6 +216,14 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	}
 
 	if (host_reachable) {
+		CamelSession *session;
+
+		session = camel_service_ref_session (service);
+		host_reachable = camel_session_get_online (session);
+		g_clear_object (&session);
+	}
+
+	if (host_reachable) {
 		GPtrArray *folders;
 		guint ii;
 
