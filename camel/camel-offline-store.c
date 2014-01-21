@@ -160,7 +160,8 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	service = CAMEL_SERVICE (store);
 	session = camel_service_ref_session (service);
 
-	network_available = camel_session_get_network_available (session);
+	network_available = camel_session_get_network_available (session) &&
+			    camel_session_get_online (session);
 	store_is_online = camel_offline_store_get_online (store);
 
 	settings = camel_service_ref_settings (service);
