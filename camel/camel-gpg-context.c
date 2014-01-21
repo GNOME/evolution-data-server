@@ -458,8 +458,8 @@ gpg_ctx_get_executable_name (void)
 {
 	static gint index = -1;
 	const gchar *names[] = {
-		"gpg",
 		"gpg2",
+		"gpg",
 		NULL
 	};
 
