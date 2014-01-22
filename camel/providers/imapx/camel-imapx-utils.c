@@ -2809,7 +2809,7 @@ guchar imapx_specials[256] = {
 
 /* special types for the tokeniser, come out as raw tokens */
 #define token_specials "\n*()[]+"
-#define notid_specials "\x20\r\n()[]+"
+#define notid_specials "\x20\r\n()[]"
 
 void
 imapx_utils_init (void)
