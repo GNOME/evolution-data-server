@@ -99,7 +99,6 @@ struct _CamelIMAPXServer {
 
 	/* Info about the current connection */
 	struct _capability_info *cinfo;
-	gboolean is_process_stream;
 
 	/* incoming jobs */
 	GQueue jobs;

@@ -19,6 +19,13 @@
 #include <config.h>
 #endif
 
+/* XXX Disable deprecation warnings until we require GLib 2.40.
+ *
+ *     This silences warnings for using GSubprocess functions, which are
+ *     only available as of GLib 2.39.  But we do so conditionally, with
+ *     GLIB_CHECK_VERSION macros. */
+#define GLIB_DISABLE_DEPRECATION_WARNINGS
+
 #include <time.h>
 #include <errno.h>
 #include <glib/gstdio.h>
@@ -326,7 +333,11 @@ struct _CamelIMAPXServerPrivate {
 	CamelIMAPXServerUntaggedContext *context;
 	GHashTable *untagged_handlers;
 
+	/* The 'stream_lock' also guards the GSubprocess. */
 	CamelIMAPXStream *stream;
+#if GLIB_CHECK_VERSION(2,39,0)
+	GSubprocess *subprocess;
+#endif
 	GMutex stream_lock;
 
 	GThread *parser_thread;
@@ -4178,33 +4189,34 @@ imapx_maybe_select (CamelIMAPXServer *is,
 	camel_imapx_command_unref (ic);
 }
 
-#ifndef G_OS_WIN32
-
-/* Using custom commands to connect to IMAP servers is not supported on Win32 */
-
-static CamelStream *
+static gboolean
 connect_to_server_process (CamelIMAPXServer *is,
                            const gchar *cmd,
                            GError **error)
 {
+#if GLIB_CHECK_VERSION(2,39,0)
+	GSubprocessLauncher *launcher;
+	GSubprocess *subprocess = NULL;
 	CamelNetworkSettings *network_settings;
 	CamelProvider *provider;
 	CamelSettings *settings;
-	CamelStream *cmd_stream;
-	CamelStream *imapx_stream;
 	CamelIMAPXStore *store;
 	CamelURL url;
-	gint ret, i = 0;
+	gchar **argv = NULL;
 	gchar *buf;
 	gchar *cmd_copy;
 	gchar *full_cmd;
-	gchar *child_env[7];
 	const gchar *password;
 	gchar *host;
 	gchar *user;
 	guint16 port;
 
 	memset (&url, 0, sizeof (CamelURL));
+
+	launcher = g_subprocess_launcher_new (
+		G_SUBPROCESS_FLAGS_STDIN_PIPE |
+		G_SUBPROCESS_FLAGS_STDOUT_PIPE |
+		G_SUBPROCESS_FLAGS_STDERR_SILENCE);
 
 	store = camel_imapx_server_ref_store (is);
 
@@ -4224,17 +4236,30 @@ connect_to_server_process (CamelIMAPXServer *is,
 	camel_url_set_port (&url, port);
 	camel_url_set_user (&url, user);
 	buf = camel_url_to_string (&url, 0);
-	child_env[i++] = g_strdup_printf ("URL=%s", buf);
-	g_free (buf);
 
-	child_env[i++] = g_strdup_printf ("URLHOST=%s", host);
-	if (port)
-		child_env[i++] = g_strdup_printf ("URLPORT=%u", port);
-	if (user)
-		child_env[i++] = g_strdup_printf ("URLUSER=%s", user);
-	if (password)
-		child_env[i++] = g_strdup_printf ("URLPASSWD=%s", password);
-	child_env[i] = NULL;
+	g_subprocess_launcher_setenv (launcher, "URL", buf, TRUE);
+	g_subprocess_launcher_setenv (launcher, "URLHOST", host, TRUE);
+
+	if (port > 0) {
+		gchar *port_string;
+
+		port_string = g_strdup_printf ("%u", port);
+		g_subprocess_launcher_setenv (
+			launcher, "URLPORT", port_string, TRUE);
+		g_free (port_string);
+	}
+
+	if (user != NULL) {
+		g_subprocess_launcher_setenv (
+			launcher, "URLPORT", user, TRUE);
+	}
+
+	if (password != NULL) {
+		g_subprocess_launcher_setenv (
+			launcher, "URLPASSWD", password, TRUE);
+	}
+
+	g_free (buf);
 
 	g_object_unref (settings);
 	g_object_unref (store);
@@ -4288,41 +4313,41 @@ connect_to_server_process (CamelIMAPXServer *is,
 	g_free (host);
 	g_free (user);
 
-	/* FIXME Use GSubprocess here as soon as we can. */
-
-	cmd_stream = camel_stream_process_new ();
-
-	ret = camel_stream_process_connect (
-		CAMEL_STREAM_PROCESS (cmd_stream),
-		full_cmd, (const gchar **) child_env, error);
-
-	while (i)
-		g_free (child_env[--i]);
-
-	if (ret == -1) {
-		g_object_unref (cmd_stream);
-		g_free (full_cmd);
-		return NULL;
+	if (g_shell_parse_argv (full_cmd, NULL, &argv, error)) {
+		subprocess = g_subprocess_launcher_spawnv (
+			launcher, (const gchar * const *) argv, error);
+		g_strfreev (argv);
 	}
 
 	g_free (full_cmd);
+	g_object_unref (launcher);
 
-	imapx_stream = camel_imapx_stream_new (cmd_stream);
+	if (subprocess != NULL) {
+		g_mutex_lock (&is->priv->stream_lock);
 
-	g_object_unref (cmd_stream);
+		g_warn_if_fail (is->priv->subprocess == NULL);
 
-	/* Server takes ownership of the IMAPX stream. */
-	g_mutex_lock (&is->priv->stream_lock);
-	g_warn_if_fail (is->priv->stream == NULL);
-	is->priv->stream = CAMEL_IMAPX_STREAM (imapx_stream);
-	is->is_process_stream = TRUE;
-	g_mutex_unlock (&is->priv->stream_lock);
+		is->priv->subprocess = g_object_ref (subprocess);
 
-	g_object_notify (G_OBJECT (is), "stream");
+		g_mutex_unlock (&is->priv->stream_lock);
 
-	return imapx_stream;
+		g_object_unref (subprocess);
+	}
+
+	/* FIXME Temporarily broken.  Need to port the rest of
+	 *       IMAPX to use GInput/OutputStream directly. */
+	return FALSE;
+
+#else /* GLIB_CHECK_VERSION(2,39,0) */
+
+	g_set_error_literal (
+		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+		"GLib 2.39 or later is required to connect "
+		"to an IMAP server through a shell command");
+
+	return FALSE;
+#endif
 }
-#endif /* G_OS_WIN32 */
 
 gboolean
 imapx_connect_to_server (CamelIMAPXServer *is,
@@ -4342,14 +4367,11 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	guchar *token;
 	gint tok;
 	CamelIMAPXCommand *ic;
+	gchar *shell_command = NULL;
+	gboolean use_shell_command;
 	gboolean success = TRUE;
 	gchar *host;
 	GError *local_error = NULL;
-
-#ifndef G_OS_WIN32
-	gboolean use_shell_command;
-	gchar *shell_command = NULL;
-#endif
 
 	store = camel_imapx_server_ref_store (is);
 
@@ -4359,30 +4381,25 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	host = camel_network_settings_dup_host (network_settings);
 	method = camel_network_settings_get_security_method (network_settings);
 
-#ifndef G_OS_WIN32
 	use_shell_command = camel_imapx_settings_get_use_shell_command (
 		CAMEL_IMAPX_SETTINGS (settings));
 
 	if (use_shell_command)
 		shell_command = camel_imapx_settings_dup_shell_command (
 			CAMEL_IMAPX_SETTINGS (settings));
-#endif
 
 	g_object_unref (settings);
 
-#ifndef G_OS_WIN32
 	if (shell_command != NULL) {
-		imapx_stream = connect_to_server_process (
-			is, shell_command, &local_error);
+		success = connect_to_server_process (is, shell_command, error);
 
 		g_free (shell_command);
 
-		if (imapx_stream != NULL)
+		if (success)
 			goto connected;
 		else
 			goto exit;
 	}
-#endif
 
 	base_stream = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (store), cancellable, error);
@@ -7425,7 +7442,8 @@ imapx_abort_all_commands (CamelIMAPXServer *is,
 /* ********************************************************************** */
 
 static gboolean
-imapx_parse_contents (CamelIMAPXServer *is)
+imapx_ready_to_read (GInputStream *input_stream,
+                     CamelIMAPXServer *is)
 {
 	CamelIMAPXStream *stream;
 	GCancellable *cancellable;
@@ -7478,21 +7496,6 @@ imapx_parse_contents (CamelIMAPXServer *is)
 	return G_SOURCE_CONTINUE;
 }
 
-static gboolean
-imapx_ready_to_read (GInputStream *input_stream,
-                     CamelIMAPXServer *is)
-{
-	return imapx_parse_contents (is);
-}
-
-static gboolean
-imapx_process_ready_to_read (gint fd,
-                             GIOCondition condition,
-                             CamelIMAPXServer *is)
-{
-	return imapx_parse_contents (is);
-}
-
 /*
  * The main processing (reading) loop.
  *
@@ -7506,8 +7509,10 @@ imapx_parser_thread (gpointer user_data)
 	CamelIMAPXServer *is;
 	CamelIMAPXStore *store;
 	CamelIMAPXStream *stream;
-	CamelStream *source_stream;
+	GIOStream *base_stream = NULL;
+	GInputStream *input_stream = NULL;
 	GCancellable *cancellable;
+	GSource *pollable_source;
 
 	is = CAMEL_IMAPX_SERVER (user_data);
 
@@ -7522,65 +7527,38 @@ imapx_parser_thread (gpointer user_data)
 	stream = camel_imapx_server_ref_stream (is);
 	g_return_val_if_fail (stream != NULL, NULL);
 
-	source_stream = camel_imapx_stream_ref_source (stream);
-
 	g_main_context_push_thread_default (is->priv->parser_main_context);
 
-#ifndef G_OS_WIN32
-	if (is->is_process_stream) {
-		GSource *unix_fd_source;
-		GSource *cancellable_source;
-		gint fd;
+#if GLIB_CHECK_VERSION(2,39,0)
+	if (is->priv->subprocess != NULL) {
+		input_stream =
+			g_subprocess_get_stdout_pipe (is->priv->subprocess);
+	}
+#endif
 
-		/* FIXME Use GSubprocess here as soon as we can. */
+	if (input_stream == NULL) {
+		CamelStream *source_stream;
 
-		fd = CAMEL_STREAM_PROCESS (source_stream)->sockfd;
-
-		cancellable_source = g_cancellable_source_new (cancellable);
-		g_source_set_dummy_callback (cancellable_source);
-
-		unix_fd_source = g_unix_fd_source_new (fd, G_IO_IN);
-		g_source_add_child_source (
-			unix_fd_source, cancellable_source);
-		g_source_set_callback (
-			unix_fd_source,
-			(GSourceFunc) imapx_process_ready_to_read,
-			g_object_ref (is),
-			(GDestroyNotify) g_object_unref);
-		g_source_attach (
-			unix_fd_source,
-			is->priv->parser_main_context);
-		g_source_unref (unix_fd_source);
-
-		g_source_unref (cancellable_source);
-
-	} else
-#endif /* G_OS_WIN32 */
-	{
-		GIOStream *base_stream;
-		GInputStream *input_stream;
-		GSource *pollable_source;
-
+		source_stream = camel_imapx_stream_ref_source (stream);
 		base_stream = camel_stream_ref_base_stream (source_stream);
 		input_stream = g_io_stream_get_input_stream (base_stream);
-
-		pollable_source = g_pollable_input_stream_create_source (
-			G_POLLABLE_INPUT_STREAM (input_stream), cancellable);
-		g_source_set_callback (
-			pollable_source,
-			(GSourceFunc) imapx_ready_to_read,
-			g_object_ref (is),
-			(GDestroyNotify) g_object_unref);
-		g_source_attach (
-			pollable_source,
-			is->priv->parser_main_context);
-		g_source_unref (pollable_source);
-
-		g_object_unref (base_stream);
+		g_object_unref (source_stream);
 	}
 
+	pollable_source = g_pollable_input_stream_create_source (
+		G_POLLABLE_INPUT_STREAM (input_stream), cancellable);
+	g_source_set_callback (
+		pollable_source,
+		(GSourceFunc) imapx_ready_to_read,
+		g_object_ref (is),
+		(GDestroyNotify) g_object_unref);
+	g_source_attach (
+		pollable_source,
+		is->priv->parser_main_context);
+	g_source_unref (pollable_source);
+
 	g_clear_object (&cancellable);
-	g_clear_object (&source_stream);
+	g_clear_object (&base_stream);
 	g_clear_object (&stream);
 
 	g_main_loop_run (is->priv->parser_main_loop);
@@ -7690,6 +7668,9 @@ imapx_server_dispose (GObject *object)
 
 	g_weak_ref_set (&server->priv->store, NULL);
 
+#if GLIB_CHECK_VERSION(2,39,0)
+	g_clear_object (&server->priv->subprocess);
+#endif
 	g_clear_object (&server->priv->namespaces);
 
 	g_hash_table_remove_all (server->priv->mailboxes);
