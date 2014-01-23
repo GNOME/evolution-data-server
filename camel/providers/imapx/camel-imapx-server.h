@@ -145,6 +145,8 @@ struct _CamelIMAPXSettings *
 		camel_imapx_server_ref_settings	(CamelIMAPXServer *is);
 CamelIMAPXStream *
 		camel_imapx_server_ref_stream	(CamelIMAPXServer *is);
+GInputStream *	camel_imapx_server_ref_input_stream
+						(CamelIMAPXServer *is);
 CamelIMAPXNamespaceResponse *
 		camel_imapx_server_ref_namespaces
 						(CamelIMAPXServer *is);
