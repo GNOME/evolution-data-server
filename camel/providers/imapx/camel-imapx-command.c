@@ -443,7 +443,6 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
                               gpointer data)
 {
 	CamelIMAPXCommandPart *cp;
-	CamelStreamNull *null;
 	GString *buffer;
 	guint ob_size = 0;
 
@@ -454,13 +453,16 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	switch (type & CAMEL_IMAPX_COMMAND_MASK) {
 	case CAMEL_IMAPX_COMMAND_DATAWRAPPER: {
 		CamelObject *ob = data;
+		GOutputStream *stream;
 
-		null = (CamelStreamNull *) camel_stream_null_new ();
-		camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *) ob, (CamelStream *) null, NULL, NULL);
+		stream = camel_null_output_stream_new ();
+		camel_data_wrapper_write_to_output_stream_sync (
+			CAMEL_DATA_WRAPPER (ob), stream, NULL, NULL);
 		type |= CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
 		g_object_ref (ob);
-		ob_size = null->written;
-		g_object_unref (null);
+		ob_size = camel_null_output_stream_get_bytes_written (
+			CAMEL_NULL_OUTPUT_STREAM (stream));
+		g_object_unref (stream);
 		break;
 	}
 	case CAMEL_IMAPX_COMMAND_AUTH: {
