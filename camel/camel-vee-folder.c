@@ -1702,3 +1702,26 @@ camel_vee_folder_ignore_next_changed_event (CamelVeeFolder *vfolder,
 	g_rec_mutex_unlock (&vfolder->priv->changed_lock);
 }
 
+/**
+ * camel_vee_folder_remove_from_ignore_changed_event:
+ * @vfolder: a #CamelVeeFolder
+ * @subfolder: a #CamelFolder folder
+ *
+ * Make sure the next @subfolder-'s 'changed' event will not be silently ignored.
+ * This is a counter-part function of camel_vee_folder_ignore_next_changed_event(),
+ * when there was expected a change, which did not happen, to take back the previous
+ * ignore event request.
+ *
+ * Since: 3.12
+ **/
+void
+camel_vee_folder_remove_from_ignore_changed_event (CamelVeeFolder *vfolder,
+						   CamelFolder *subfolder)
+{
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+	g_return_if_fail (subfolder != NULL);
+
+	g_rec_mutex_lock (&vfolder->priv->changed_lock);
+	g_hash_table_remove (vfolder->priv->ignore_changed, subfolder);
+	g_rec_mutex_unlock (&vfolder->priv->changed_lock);
+}
