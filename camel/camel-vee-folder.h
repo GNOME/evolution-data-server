@@ -141,6 +141,9 @@ const gchar *	camel_vee_folder_get_expression		(CamelVeeFolder *vfolder);
 void		camel_vee_folder_ignore_next_changed_event
 							(CamelVeeFolder *vfolder,
 							 CamelFolder *subfolder);
+void		camel_vee_folder_remove_from_ignore_changed_event
+							(CamelVeeFolder *vfolder,
+							 CamelFolder *subfolder);
 
 void		camel_vee_folder_lock			(CamelVeeFolder *folder,
 							 CamelVeeFolderLock lock);

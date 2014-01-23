@@ -191,10 +191,14 @@ vee_info_set_user_flag (CamelMessageInfo *mi,
 
 		res = camel_message_info_set_user_flag (rmi, name, value);
 
-		camel_message_info_free (rmi);
+		if (ignore_changes) {
+			if (res)
+				vee_summary_notify_mi_changed (vf, mi);
+			else
+				camel_vee_folder_remove_from_ignore_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
+		}
 
-		if (ignore_changes)
-			vee_summary_notify_mi_changed (vf, mi);
+		camel_message_info_free (rmi);
 	}
 
 	return res;
@@ -220,10 +224,15 @@ vee_info_set_user_tag (CamelMessageInfo *mi,
 			camel_vee_folder_ignore_next_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
 
 		res = camel_message_info_set_user_tag (rmi, name, value);
-		camel_message_info_free (rmi);
 
-		if (ignore_changes)
-			vee_summary_notify_mi_changed (vf, mi);
+		if (ignore_changes) {
+			if (res)
+				vee_summary_notify_mi_changed (vf, mi);
+			else
+				camel_vee_folder_remove_from_ignore_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
+		}
+
+		camel_message_info_free (rmi);
 	}
 
 	return res;
@@ -259,10 +268,14 @@ vee_info_set_flags (CamelMessageInfo *mi,
 			camel_folder_summary_replace_flags (mi->summary, mi);
 		}
 
-		camel_message_info_free (rmi);
+		if (ignore_changes) {
+			if (res)
+				vee_summary_notify_mi_changed (vf, mi);
+			else
+				camel_vee_folder_remove_from_ignore_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
+		}
 
-		if (ignore_changes)
-			vee_summary_notify_mi_changed (vf, mi);
+		camel_message_info_free (rmi);
 	}
 
 	/* Do not call parent class' info_set_flags, to not do flood
