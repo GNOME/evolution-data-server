@@ -336,6 +336,7 @@ struct _CamelIMAPXServerPrivate {
 	/* The 'stream_lock' also guards the GSubprocess. */
 	CamelIMAPXStream *stream;
 	GInputStream *input_stream;
+	GOutputStream *output_stream;
 #if GLIB_CHECK_VERSION(2,39,0)
 	GSubprocess *subprocess;
 #endif
@@ -8054,6 +8055,38 @@ camel_imapx_server_ref_input_stream (CamelIMAPXServer *is)
 }
 
 /**
+ * camel_imapx_server_ref_output_stream:
+ * @is: a #CamelIMAPXServer
+ *
+ * Returns the #GOutputStream for @is, which is owned by either a
+ * #GTcpConnection or a #GSubprocess.  If the #CamelIMAPXServer is not
+ * yet connected or has lost its connection, the function returns %NULL.
+ *
+ * The returned #GOutputStream is referenced for thread-safety and must
+ * be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #GOutputStream, or %NULL
+ *
+ * Since: 3.12
+ **/
+GOutputStream *
+camel_imapx_server_ref_output_stream (CamelIMAPXServer *is)
+{
+	GOutputStream *output_stream = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+
+	g_mutex_lock (&is->priv->stream_lock);
+
+	if (is->priv->output_stream != NULL)
+		output_stream = g_object_ref (is->priv->output_stream);
+
+	g_mutex_unlock (&is->priv->stream_lock);
+
+	return output_stream;
+}
+
+/**
  * camel_imapx_server_ref_namespaces:
  * @is: a #CamelIMAPXServer
  *
@@ -8217,6 +8250,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 	}
 
 	g_clear_object (&is->priv->input_stream);
+	g_clear_object (&is->priv->output_stream);
 
 	g_mutex_unlock (&is->priv->stream_lock);
 
