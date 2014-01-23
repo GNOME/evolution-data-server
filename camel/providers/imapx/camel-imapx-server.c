@@ -4325,20 +4325,29 @@ connect_to_server_process (CamelIMAPXServer *is,
 	g_object_unref (launcher);
 
 	if (subprocess != NULL) {
+		GInputStream *input_stream;
+		GOutputStream *output_stream;
+
 		g_mutex_lock (&is->priv->stream_lock);
 
 		g_warn_if_fail (is->priv->subprocess == NULL);
+		g_warn_if_fail (is->priv->input_stream == NULL);
+		g_warn_if_fail (is->priv->output_stream == NULL);
 
 		is->priv->subprocess = g_object_ref (subprocess);
+
+		input_stream = g_subprocess_get_stdout_pipe (subprocess);
+		is->priv->input_stream = g_object_ref (input_stream);
+
+		output_stream = g_subprocess_get_stdin_pipe (subprocess);
+		is->priv->output_stream = g_object_ref (output_stream);
 
 		g_mutex_unlock (&is->priv->stream_lock);
 
 		g_object_unref (subprocess);
 	}
 
-	/* FIXME Temporarily broken.  Need to port the rest of
-	 *       IMAPX to use GInput/OutputStream directly. */
-	return FALSE;
+	return TRUE;
 
 #else /* GLIB_CHECK_VERSION(2,39,0) */
 
@@ -4407,6 +4416,22 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		CAMEL_NETWORK_SERVICE (store), cancellable, error);
 
 	if (base_stream != NULL) {
+		GInputStream *input_stream;
+		GOutputStream *output_stream;
+
+		g_mutex_lock (&is->priv->stream_lock);
+
+		g_warn_if_fail (is->priv->input_stream == NULL);
+		g_warn_if_fail (is->priv->output_stream == NULL);
+
+		input_stream = g_io_stream_get_input_stream (base_stream);
+		is->priv->input_stream = g_object_ref (input_stream);
+
+		output_stream = g_io_stream_get_output_stream (base_stream);
+		is->priv->output_stream = g_object_ref (output_stream);
+
+		g_mutex_unlock (&is->priv->stream_lock);
+
 		stream = camel_stream_new (base_stream);
 		g_object_unref (base_stream);
 	} else {
@@ -4552,6 +4577,24 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		g_object_unref (base_stream);
 
 		if (tls_stream != NULL) {
+			GInputStream *input_stream;
+			GOutputStream *output_stream;
+
+			g_mutex_lock (&is->priv->stream_lock);
+
+			g_clear_object (&is->priv->input_stream);
+			g_clear_object (&is->priv->output_stream);
+
+			input_stream =
+				g_io_stream_get_input_stream (tls_stream);
+			is->priv->input_stream = g_object_ref (input_stream);
+
+			output_stream =
+				g_io_stream_get_output_stream (tls_stream);
+			is->priv->output_stream = g_object_ref (output_stream);
+
+			g_mutex_unlock (&is->priv->stream_lock);
+
 			camel_stream_set_base_stream (stream, tls_stream);
 			g_object_unref (tls_stream);
 		} else {
