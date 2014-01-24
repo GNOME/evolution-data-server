@@ -319,6 +319,69 @@ source_localized_hack (GKeyFile *key_file,
 	g_key_file_set_string (key_file, group_name, key, new_value);
 }
 
+static gboolean
+source_check_values_differ (GType g_type,
+			    const GValue *value,
+			    const GValue *value2)
+{
+	gboolean differ = TRUE;
+	GValue *value1;
+
+	g_return_val_if_fail (value != NULL, TRUE);
+	g_return_val_if_fail (value2 != NULL, TRUE);
+
+	value1 = g_slice_new0 (GValue);
+	g_value_init (value1, g_type);
+	g_value_copy (value2, value1);
+
+	if (g_value_transform (value, value1)) {
+		#define check_type(name,get) G_STMT_START { \
+			if (G_VALUE_HOLDS_ ## name (value1)) { \
+				differ = g_value_get_ ## get (value1) != g_value_get_ ## get (value2); \
+				break; \
+			} } G_STMT_END
+
+		do {
+			check_type (BOOLEAN, boolean);
+			check_type (CHAR, char);
+			check_type (DOUBLE, double);
+			check_type (ENUM, enum);
+			check_type (FLAGS, flags);
+			check_type (FLOAT, float);
+			check_type (GTYPE, gtype);
+			check_type (INT, int);
+			check_type (INT64, int64);
+			check_type (LONG, long);
+			check_type (POINTER, pointer);
+			check_type (UCHAR, uchar);
+			check_type (UINT, uint);
+			check_type (UINT64, uint64);
+			check_type (ULONG, ulong);
+
+			if (G_VALUE_HOLDS_STRING (value1)) {
+				differ = g_strcmp0 (g_value_get_string (value1), g_value_get_string (value2)) != 0;
+				break;
+			}
+
+			if (G_VALUE_HOLDS_VARIANT (value1)) {
+				GVariant *variant1, *variant2;
+
+				variant1 = g_value_get_variant (value1);
+				variant2 = g_value_get_variant (value2);
+				differ = g_variant_compare (variant1, variant2) != 0;
+				break;
+			}
+		} while (FALSE);
+
+		#undef check_type
+	}
+
+	g_value_unset (value1);
+	g_slice_free (GValue, value1);
+
+	return differ;
+}
+
 static void
 source_set_key_file_from_property (GObject *object,
                                    GParamSpec *pspec,
@@ -570,7 +633,23 @@ source_set_property_from_key_file (GObject *object,
 	}
 
 	if (G_IS_VALUE (value)) {
-		g_object_set_property (object, pspec->name, value);
+		GValue *cvalue;
+
+		cvalue = g_slice_new0 (GValue);
+		g_value_init (cvalue, pspec->value_type);
+		g_object_get_property (object, pspec->name, cvalue);
+
+		/* This is because the g_object_set_property() invokes "notify" signal
+		   on the set property, even if the value did not change, which creates
+		   false notifications, which can cause UI or background activities
+		   without any real reason (especially with the ''enabled' property load). */
+		if (!G_IS_VALUE (cvalue) || source_check_values_differ (pspec->value_type, value, cvalue))
+			g_object_set_property (object, pspec->name, value);
+
+		if (G_IS_VALUE (cvalue))
+			g_value_unset (cvalue);
+		g_slice_free (GValue, cvalue);
+
 		g_value_unset (value);
 	}
 
