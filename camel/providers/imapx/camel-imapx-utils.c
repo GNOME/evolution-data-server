@@ -220,7 +220,7 @@ imapx_write_flags (GString *string,
 
 	for (i = 0; flags != 0 && i< G_N_ELEMENTS (flag_table); i++) {
 		if (flag_table[i].flag & flags) {
-			if (flags & CAMEL_IMAPX_MESSAGE_RECENT)
+			if (flag_table[i].flag & CAMEL_IMAPX_MESSAGE_RECENT)
 				continue;
 			if (!first)
 				g_string_append_c (string, ' ');
