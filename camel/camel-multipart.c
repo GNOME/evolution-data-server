@@ -177,6 +177,97 @@ multipart_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	return total;
 }
 
+/* this is MIME specific, doesn't belong here really */
+static gssize
+multipart_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
+                                       GOutputStream *output_stream,
+                                       GCancellable *cancellable,
+                                       GError **error)
+{
+	CamelMultipartPrivate *priv;
+	const gchar *boundary;
+	gchar *content;
+	gsize bytes_written;
+	gssize total = 0;
+	gboolean success;
+	guint ii;
+
+	priv = CAMEL_MULTIPART_GET_PRIVATE (data_wrapper);
+
+	/* get the bundary text */
+	boundary = camel_multipart_get_boundary (
+		CAMEL_MULTIPART (data_wrapper));
+
+	/* we cannot write a multipart without a boundary string */
+	g_return_val_if_fail (boundary, -1);
+
+	/*
+	 * write the preface text (usually something like
+	 *   "This is a mime message, if you see this, then
+	 *    your mail client probably doesn't support ...."
+	 */
+	if (priv->preface != NULL) {
+		success = g_output_stream_write_all (
+			output_stream,
+			priv->preface, strlen (priv->preface),
+			&bytes_written, cancellable, error);
+		if (!success)
+			return -1;
+		total += (gsize) bytes_written;
+	}
+
+	/*
+	 * Now, write all the parts, separated by the boundary
+	 * delimiter
+	 */
+	for (ii = 0; ii < priv->parts->len; ii++) {
+		CamelDataWrapper *part;
+		gssize result;
+
+		part = g_ptr_array_index (priv->parts, ii);
+
+		content = g_strdup_printf ("\n--%s\n", boundary);
+		success = g_output_stream_write_all (
+			output_stream,
+			content, strlen (content),
+			&bytes_written, cancellable, error);
+		g_free (content);
+		if (!success)
+			return -1;
+		total += (gsize) bytes_written;
+
+		result = camel_data_wrapper_write_to_output_stream_sync (
+			part, output_stream, cancellable, error);
+		if (result == -1)
+			return -1;
+		total += result;
+	}
+
+	/* write the terminating boudary delimiter */
+	content = g_strdup_printf ("\n--%s--\n", boundary);
+	success = g_output_stream_write_all (
+		output_stream,
+		content, strlen (content),
+		&bytes_written, cancellable, error);
+	g_free (content);
+	if (!success)
+		return -1;
+	total += (gsize) bytes_written;
+
+	/* and finally the postface */
+	if (priv->postface != NULL) {
+		success = g_output_stream_write_all (
+			output_stream,
+			priv->postface, strlen (priv->postface),
+			&bytes_written, cancellable, error);
+		if (!success)
+			return -1;
+		total += (gsize) bytes_written;
+	}
+
+	return total;
+}
+
 static void
 multipart_add_part (CamelMultipart *multipart,
                     CamelMimePart *part)
@@ -307,6 +398,8 @@ camel_multipart_class_init (CamelMultipartClass *class)
 	data_wrapper_class->is_offline = multipart_is_offline;
 	data_wrapper_class->write_to_stream_sync = multipart_write_to_stream_sync;
 	data_wrapper_class->decode_to_stream_sync = multipart_write_to_stream_sync;
+	data_wrapper_class->write_to_output_stream_sync = multipart_write_to_output_stream_sync;
+	data_wrapper_class->decode_to_output_stream_sync = multipart_write_to_output_stream_sync;
 
 	class->add_part = multipart_add_part;
 	class->get_part = multipart_get_part;

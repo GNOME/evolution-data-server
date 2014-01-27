@@ -179,6 +179,32 @@ unref_recipient (gpointer key,
 }
 
 static void
+mime_message_ensure_required_headers (CamelMimeMessage *message)
+{
+	CamelMedium *medium = CAMEL_MEDIUM (message);
+
+	if (message->from == NULL) {
+		/* FIXME: should we just abort?  Should we make one up? */
+		g_warning ("No from set for message");
+		camel_medium_set_header (medium, "From", "");
+	}
+	if (!camel_medium_get_header (medium, "Date"))
+		camel_mime_message_set_date (
+			message, CAMEL_MESSAGE_DATE_CURRENT, 0);
+
+	if (message->subject == NULL)
+		camel_mime_message_set_subject (message, "No Subject");
+
+	if (message->message_id == NULL)
+		camel_mime_message_set_message_id (message, NULL);
+
+	/* FIXME: "To" header needs to be set explicitly as well ... */
+
+	if (!camel_medium_get_header (medium, "Mime-Version"))
+		camel_medium_set_header (medium, "Mime-Version", "1.0");
+}
+
+static void
 mime_message_dispose (GObject *object)
 {
 	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
@@ -219,34 +245,32 @@ mime_message_write_to_stream_sync (CamelDataWrapper *data_wrapper,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-	CamelDataWrapperClass *data_wrapper_class;
-	CamelMimeMessage *mm = CAMEL_MIME_MESSAGE (data_wrapper);
+	CamelMimeMessage *message;
 
-	/* force mandatory headers ... */
-	if (mm->from == NULL) {
-		/* FIXME: should we just abort?  Should we make one up? */
-		g_warning ("No from set for message");
-		camel_medium_set_header ((CamelMedium *) mm, "From", "");
-	}
-	if (!camel_medium_get_header ((CamelMedium *) mm, "Date"))
-		camel_mime_message_set_date (mm, CAMEL_MESSAGE_DATE_CURRENT, 0);
-
-	if (mm->subject == NULL)
-		camel_mime_message_set_subject (mm, "No Subject");
-
-	if (mm->message_id == NULL)
-		camel_mime_message_set_message_id (mm, NULL);
-
-	/* FIXME: "To" header needs to be set explicitly as well ... */
-
-	if (!camel_medium_get_header ((CamelMedium *) mm, "Mime-Version"))
-		camel_medium_set_header ((CamelMedium *) mm, "Mime-Version", "1.0");
+	message = CAMEL_MIME_MESSAGE (data_wrapper);
+	mime_message_ensure_required_headers (message);
 
 	/* Chain up to parent's write_to_stream_sync() method. */
-	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (
-		camel_mime_message_parent_class);
-	return data_wrapper_class->write_to_stream_sync (
+	return CAMEL_DATA_WRAPPER_CLASS (camel_mime_message_parent_class)->
+		write_to_stream_sync (
 		data_wrapper, stream, cancellable, error);
+}
+
+static gssize
+mime_message_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
+                                          GOutputStream *output_stream,
+                                          GCancellable *cancellable,
+                                          GError **error)
+{
+	CamelMimeMessage *message;
+
+	message = CAMEL_MIME_MESSAGE (data_wrapper);
+	mime_message_ensure_required_headers (message);
+
+	/* Chain up to parent's write_to_output_stream_sync() method. */
+	return CAMEL_DATA_WRAPPER_CLASS (camel_mime_message_parent_class)->
+		write_to_output_stream_sync (
+		data_wrapper, output_stream, cancellable, error);
 }
 
 static void
@@ -351,6 +375,8 @@ camel_mime_message_class_init (CamelMimeMessageClass *class)
 	data_wrapper_class = CAMEL_DATA_WRAPPER_CLASS (class);
 	data_wrapper_class->write_to_stream_sync = mime_message_write_to_stream_sync;
 	data_wrapper_class->decode_to_stream_sync = mime_message_write_to_stream_sync;
+	data_wrapper_class->write_to_output_stream_sync = mime_message_write_to_output_stream_sync;
+	data_wrapper_class->decode_to_output_stream_sync = mime_message_write_to_output_stream_sync;
 
 	medium_class = CAMEL_MEDIUM_CLASS (class);
 	medium_class->add_header = mime_message_add_header;

@@ -95,9 +95,19 @@ struct _CamelDataWrapperClass {
 						 CamelStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
+	gssize		(*write_to_output_stream_sync)
+						(CamelDataWrapper *data_wrapper,
+						 GOutputStream *output_stream,
+						 GCancellable *cancellable,
+						 GError **error);
+	gssize		(*decode_to_output_stream_sync)
+						(CamelDataWrapper *data_wrapper,
+						 GOutputStream *output_stream,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/* Reserved slots. */
-	gpointer reserved[6];
+	gpointer reserved[4];
 };
 
 GType		camel_data_wrapper_get_type	(void);
@@ -163,6 +173,38 @@ void		camel_data_wrapper_construct_from_stream
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 gboolean	camel_data_wrapper_construct_from_stream_finish
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
+						 GError **error);
+gssize		camel_data_wrapper_write_to_output_stream_sync
+						(CamelDataWrapper *data_wrapper,
+						 GOutputStream *output_stream,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_data_wrapper_write_to_output_stream
+						(CamelDataWrapper *data_wrapper,
+						 GOutputStream *output_stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gssize		camel_data_wrapper_write_to_output_stream_finish
+						(CamelDataWrapper *data_wrapper,
+						 GAsyncResult *result,
+						 GError **error);
+gssize		camel_data_wrapper_decode_to_output_stream_sync
+						(CamelDataWrapper *data_wrapper,
+						 GOutputStream *output_stream,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_data_wrapper_decode_to_output_stream
+						(CamelDataWrapper *data_wrapper,
+						 GOutputStream *output_stream,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gssize		camel_data_wrapper_decode_to_output_stream_finish
 						(CamelDataWrapper *data_wrapper,
 						 GAsyncResult *result,
 						 GError **error);
