@@ -4120,7 +4120,7 @@ camel_flag_list_copy (CamelFlag **to,
                       CamelFlag **from)
 {
 	CamelFlag *flag, *tmp;
-	gint changed = FALSE;
+	gboolean changed = FALSE;
 
 	if (*to == NULL && from == NULL)
 		return FALSE;
@@ -4130,18 +4130,20 @@ camel_flag_list_copy (CamelFlag **to,
 	while (flag->next) {
 		tmp = flag->next;
 		if (!camel_flag_get (from, tmp->name)) {
+			if (*tmp->name)
+				changed = TRUE;
 			flag->next = tmp->next;
 			g_free (tmp);
-			changed = TRUE;
 		} else {
 			flag = tmp;
 		}
 	}
 
-	/* Add any new flags */
+	/* Add any new non-empty flags */
 	flag = *from;
 	while (flag) {
-		changed |= camel_flag_set (to, flag->name, TRUE);
+		if (*flag->name)
+			changed |= camel_flag_set (to, flag->name, TRUE);
 		flag = flag->next;
 	}
 
