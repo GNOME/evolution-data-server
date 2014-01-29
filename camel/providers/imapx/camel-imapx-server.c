@@ -7401,7 +7401,12 @@ imapx_parser_thread (gpointer user_data)
 
 	is = CAMEL_IMAPX_SERVER (user_data);
 
-	cancellable = camel_operation_new ();
+	/* Do not use CamelOperation here, because it can be cancelled at
+	   an application end with camel_operation_cancel_all() call, which
+	   is done too early, before any pending jobs are properly finished
+	   (it can be IDLE job, or save of folder changes back to the server).
+	 */
+	cancellable = g_cancellable_new ();
 	g_weak_ref_set (&is->priv->parser_cancellable, cancellable);
 
 	stream = camel_imapx_server_ref_stream (is);
