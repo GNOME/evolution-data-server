@@ -1967,12 +1967,29 @@ perform_content_info_load_from_db (CamelFolderSummary *summary,
 }
 
 static void
-append_changed_uids (gchar *key,
-                     CamelMessageInfoBase *info,
-                     GPtrArray *array)
+gather_dirty_uids (gpointer key,
+		   gpointer value,
+		   gpointer user_data)
 {
-	if (info->dirty || info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED)
-		g_ptr_array_add (array, (gpointer) camel_pstring_strdup ((camel_message_info_uid (info))));
+	const gchar *uid = key;
+	CamelMessageInfoBase *info = value;
+	GHashTable *hash = user_data;
+
+	if (info->dirty)
+		g_hash_table_insert (hash, (gpointer) camel_pstring_strdup (uid), GINT_TO_POINTER (1));
+}
+
+static void
+gather_changed_uids (gpointer key,
+		     gpointer value,
+		     gpointer user_data)
+{
+	const gchar *uid = key;
+	guint32 flags = GPOINTER_TO_UINT (value);
+	GHashTable *hash = user_data;
+
+	if ((flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0)
+		g_hash_table_insert (hash, (gpointer) camel_pstring_strdup (uid), GINT_TO_POINTER (1));
 }
 
 /**
@@ -1983,15 +2000,20 @@ append_changed_uids (gchar *key,
 GPtrArray *
 camel_folder_summary_get_changed (CamelFolderSummary *summary)
 {
-	GPtrArray *res = g_ptr_array_new ();
-
-	/* FIXME[disk-summary] sucks, this function returns from memory.
-	 * We need to have collate or something to get the modified ones
-	 * from DB and merge */
+	GPtrArray *res;
+	GHashTable *hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	camel_folder_summary_lock (summary);
-	g_hash_table_foreach (summary->priv->loaded_infos, (GHFunc) append_changed_uids, res);
+
+	g_hash_table_foreach (summary->priv->loaded_infos, gather_dirty_uids, hash);
+	g_hash_table_foreach (summary->priv->uids, gather_changed_uids, hash);
+
+	res = g_ptr_array_sized_new (g_hash_table_size (hash));
+	g_hash_table_foreach (hash, folder_summary_dupe_uids_to_array, res);
+
 	camel_folder_summary_unlock (summary);
+
+	g_hash_table_destroy (hash);
 
 	return res;
 }
