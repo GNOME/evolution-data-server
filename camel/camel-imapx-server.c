@@ -6892,7 +6892,12 @@ imapx_parser_thread (gpointer user_data)
 
 	is = CAMEL_IMAPX_SERVER (user_data);
 
-	cancellable = camel_operation_new ();
+	/* Do not use CamelOperation here, because it can be cancelled at
+	   an application end with camel_operation_cancel_all() call, which
+	   is done too early, before any pending jobs are properly finished
+	   (it can be IDLE job, or save of folder changes back to the server).
+	 */
+	cancellable = g_cancellable_new ();
 	g_weak_ref_set (&is->priv->parser_cancellable, cancellable);
 
 	while (local_error == NULL) {
@@ -7699,6 +7704,40 @@ imapx_sync_free_user (GArray *user_set)
 	g_array_free (user_set, TRUE);
 }
 
+static void
+imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
+				 GPtrArray *changed_uids)
+{
+	CamelMessageInfo *info;
+	gboolean changed = FALSE;
+	gint ii;
+
+	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
+	g_return_if_fail (changed_uids != NULL);
+
+	for (ii = 0; ii < changed_uids->len; ii++) {
+		info = camel_folder_summary_get (summary, changed_uids->pdata[ii]);
+
+		if (info) {
+			CamelMessageInfoBase *mi = (CamelMessageInfoBase *) info;
+
+			/* some infos could be only 'dirty' (needed to save into summary) */
+			if ((mi->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0) {
+				mi->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+				mi->dirty = TRUE;
+				changed = TRUE;
+			}
+
+			camel_message_info_free (info);
+		}
+	}
+
+	if (changed) {
+		camel_folder_summary_touch (summary);
+		camel_folder_summary_save_to_db (summary, NULL);
+	}
+}
+
 static gboolean
 imapx_server_sync_changes (CamelIMAPXServer *is,
                            CamelFolder *folder,
@@ -7857,6 +7896,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	if (nothing_to_do) {
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
+		imapx_unset_folder_flagged_flag (folder->summary, changed_uids);
 		camel_folder_free_uids (folder, changed_uids);
 		return TRUE;
 	}

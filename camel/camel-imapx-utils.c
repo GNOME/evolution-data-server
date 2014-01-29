@@ -284,6 +284,15 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 	gboolean changed = FALSE;
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
 
+	/* This makes sure that server flags has precedence from locally stored flags,
+	   thus a user actually sees what is stored on the server, but only if the message
+	   was not changed locally and is ready to be saved */
+	if (!(camel_message_info_flags (info) & CAMEL_MESSAGE_FOLDER_FLAGGED) &&
+	    (camel_message_info_flags (info) & CAMEL_IMAPX_SERVER_FLAGS) != (server_flags & CAMEL_IMAPX_SERVER_FLAGS)) {
+		xinfo->server_flags = (xinfo->server_flags & ~CAMEL_IMAPX_SERVER_FLAGS) |
+				      (camel_message_info_flags (info) & CAMEL_IMAPX_SERVER_FLAGS);
+	}
+
 	if (server_flags != xinfo->server_flags) {
 		guint32 server_set, server_cleared;
 
