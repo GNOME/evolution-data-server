@@ -123,6 +123,7 @@ libcamel_1_2_la_SOURCES = \
 	camel-network-service.c \
 	camel-network-settings.c \
 	camel-nntp-address.c \
+	camel-null-output-stream.c \
 	camel-object-bag.c \
 	camel-object.c \
 	camel-offline-folder.c \
@@ -240,6 +241,7 @@ libcamelinclude_HEADERS = \
 	camel-network-service.h \
 	camel-network-settings.h \
 	camel-nntp-address.h \
+	camel-null-output-stream.h \
 	camel-object-bag.h \
 	camel-object.h \
 	camel-offline-folder.h \

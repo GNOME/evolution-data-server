@@ -1462,6 +1462,25 @@ CamelNNTPAddressPrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-null-output-stream</FILE>
+<TITLE>CamelNullOutputStream</TITLE>
+CamelNullOutputStream
+camel_null_output_stream_new
+camel_null_output_stream_get_bytes_written
+<SUBSECTION Standard>
+CAMEL_NULL_OUTPUT_STREAM
+CAMEL_IS_NULL_OUTPUT_STREAM
+CAMEL_TYPE_NULL_OUTPUT_STREAM
+CAMEL_NULL_OUTPUT_STREAM_CLASS
+CAMEL_IS_NULL_OUTPUT_STREAM_CLASS
+CAMEL_NULL_OUTPUT_STREAM_GET_CLASS
+CamelNullOutputStreamClass
+camel_null_output_stream_get_type
+<SUBSECTION Private>
+CamelNullOutputStreamPrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-object</FILE>
 <TITLE>CamelObject</TITLE>
 CamelObject

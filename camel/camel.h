@@ -88,6 +88,7 @@
 #include <camel/camel-net-utils.h>
 #include <camel/camel-network-service.h>
 #include <camel/camel-nntp-address.h>
+#include <camel/camel-null-output-stream.h>
 #include <camel/camel-object.h>
 #include <camel/camel-object-bag.h>
 #include <camel/camel-offline-folder.h>
