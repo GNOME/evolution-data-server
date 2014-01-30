@@ -270,7 +270,6 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	glong l;
 	guint32 f;
 	CamelFlag *F;
-	CamelStream *S;
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar literal_format[16];
@@ -328,11 +327,6 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 			case 'A': /* auth object - sasl auth, treat as special kind of continuation */
 				A = va_arg (ap, CamelSasl *);
 				camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_AUTH, A);
-				break;
-			case 'S': /* stream */
-				S = va_arg (ap, CamelStream *);
-				c (ic->is->tagprefix, "got stream '%p'\n", S);
-				camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_STREAM, S);
 				break;
 			case 'D': /* datawrapper */
 				D = va_arg (ap, CamelDataWrapper *);
@@ -458,19 +452,11 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 	/* TODO: literal+? */
 
 	switch (type & CAMEL_IMAPX_COMMAND_MASK) {
-	case CAMEL_IMAPX_COMMAND_DATAWRAPPER:
-	case CAMEL_IMAPX_COMMAND_STREAM: {
+	case CAMEL_IMAPX_COMMAND_DATAWRAPPER: {
 		CamelObject *ob = data;
 
-		/* TODO: seekable streams we could just seek to the end and back */
 		null = (CamelStreamNull *) camel_stream_null_new ();
-		if ( (type & CAMEL_IMAPX_COMMAND_MASK) == CAMEL_IMAPX_COMMAND_DATAWRAPPER) {
-			camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *) ob, (CamelStream *) null, NULL, NULL);
-		} else {
-			g_seekable_seek (G_SEEKABLE (ob), 0, G_SEEK_SET, NULL, NULL);
-			camel_stream_write_to_stream ((CamelStream *) ob, (CamelStream *) null, NULL, NULL);
-			g_seekable_seek (G_SEEKABLE (ob), 0, G_SEEK_SET, NULL, NULL);
-		}
+		camel_data_wrapper_write_to_stream_sync ((CamelDataWrapper *) ob, (CamelStream *) null, NULL, NULL);
 		type |= CAMEL_IMAPX_COMMAND_LITERAL_PLUS;
 		g_object_ref (ob);
 		ob_size = null->written;

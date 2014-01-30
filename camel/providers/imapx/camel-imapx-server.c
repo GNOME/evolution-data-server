@@ -3180,15 +3180,6 @@ imapx_continuation (CamelIMAPXServer *is,
 		if (n_bytes_written < 0)
 			return FALSE;
 		break;
-	case CAMEL_IMAPX_COMMAND_STREAM:
-		c (is->tagprefix, "writing stream to literal\n");
-		n_bytes_written = camel_stream_write_to_stream (
-			CAMEL_STREAM (cp->ob),
-			CAMEL_STREAM (stream),
-			cancellable, error);
-		if (n_bytes_written < 0)
-			return FALSE;
-		break;
 	case CAMEL_IMAPX_COMMAND_AUTH: {
 		gchar *resp;
 		guchar *token;
