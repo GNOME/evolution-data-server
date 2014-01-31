@@ -207,7 +207,7 @@ maildir_store_get_folder_sync (CamelStore *store,
 
 	/* Chain up to parent's get_folder() method. */
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
-	if (!store_class->get_folder_sync (store, dir_name, flags, cancellable, error)) {
+	if (!store_class->get_folder_sync (store, name, flags, cancellable, error)) {
 		g_free (name);
 		return NULL;
 	}
