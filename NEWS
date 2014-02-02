@@ -1,3 +1,39 @@
+Evolution-Data-Server 3.11.5 2014-02-02
+---------------------------------------
+
+Bug Fixes:
+	Bug 687640 - Crash in caldav's initialize_backend() (Milan Crha)
+	Bug 702709 - Do network background operations only if the CamelSession
+	             is online (Milan Crha)
+	Bug 719583 - Get a ESourceRegistry singleton (Xavier Claessens)
+	Bug 720676 - [IMAPX] Do more searching server-side (Milan Crha)
+	Bug 720943 - vFolder does not refresh automatically (Milan Crha)
+	Bug 721286 - IMAPx: read messages become unread when reopening
+	             Evolution (Milan Crha)
+	Bug 721581 - Unable to write to ldap addressbook (Milan Crha)
+	Bug 722275 - IMAPX: Parser trips on mailbox containing '+'
+	             (Matthew Barnes)
+	Bug 722415 - Memo does not support Start Date property
+	             (Fabiano Fidêncio)
+
+Other Changes:
+	* IMAP IDLE mode improvements. (Matthew Barnes)
+	* CamelStore: Remove noop_sync() method. (Matthew Barnes)
+	* CalDAV: Force password ask on soup authenticate failure (Milan Crha)
+	* Server-side memory leaks in calendar factory (Milan Crha)
+	* CamelGPGContext: Prefer gpg2 over gpg (Milan Crha)
+	* IMAPX: Remove some unused character macros. (Matthew Barnes)
+	* ESource: Do not set properties on load which did not change
+	  (Milan Crha)
+	* Add CamelNullOutputStream. (Matthew Barnes)
+	* maildir_store_get_folder_sync: Fix use-after-free issue (Milan Crha)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Wylmer Wang (zh_CN)
+	Chao-Hsiung Liao (zh_HK)
+
+
 Evolution-Data-Server 3.11.4 2014-01-13
 ---------------------------------------
 
