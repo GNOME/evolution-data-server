@@ -111,6 +111,10 @@ struct _ESourceRegistryPrivate {
 	GMutex sources_lock;
 
 	GSettings *settings;
+
+	gboolean initialized;
+	GError *init_error;
+	GMutex init_lock;
 };
 
 struct _AsyncContext {
@@ -286,6 +290,27 @@ thread_closure_free (ThreadClosure *closure)
 	g_warn_if_fail (closure->error == NULL);
 
 	g_slice_free (ThreadClosure, closure);
+}
+
+G_LOCK_DEFINE_STATIC (singleton_lock);
+static GWeakRef singleton;
+
+static ESourceRegistry *
+source_registry_dup_uninitialized_singleton (void)
+{
+	ESourceRegistry *registry;
+
+	G_LOCK (singleton_lock);
+
+	registry = g_weak_ref_get (&singleton);
+	if (registry == NULL) {
+		registry = g_object_new (E_TYPE_SOURCE_REGISTRY, NULL);
+		g_weak_ref_set (&singleton, registry);
+	}
+
+	G_UNLOCK (singleton_lock);
+
+	return registry;
 }
 
 static gchar *
@@ -1283,6 +1308,9 @@ source_registry_finalize (GObject *object)
 	g_hash_table_destroy (priv->sources);
 	g_mutex_clear (&priv->sources_lock);
 
+	g_clear_error (&priv->init_error);
+	g_mutex_clear (&priv->init_lock);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_parent_class)->finalize (object);
 }
@@ -1297,6 +1325,11 @@ source_registry_initable_init (GInitable *initable,
 	GError *local_error = NULL;
 
 	registry = E_SOURCE_REGISTRY (initable);
+
+	g_mutex_lock (&registry->priv->init_lock);
+
+	if (registry->priv->initialized)
+		goto exit;
 
 	closure = g_slice_new0 (ThreadClosure);
 	closure->registry = registry;  /* do not reference */
@@ -1315,9 +1348,6 @@ source_registry_initable_init (GInitable *initable,
 		source_registry_object_manager_thread,
 		closure);
 
-	if (registry->priv->manager_thread == NULL)
-		return FALSE;
-
 	/* Wait for notification that the manager
 	 * thread's main loop has been started. */
 	g_mutex_lock (&closure->main_loop_mutex);
@@ -1330,9 +1360,9 @@ source_registry_initable_init (GInitable *initable,
 	/* Check for error in the manager thread. */
 	if (closure->error != NULL) {
 		g_dbus_error_strip_remote_error (closure->error);
-		g_propagate_error (error, closure->error);
+		g_propagate_error (&registry->priv->init_error, closure->error);
 		closure->error = NULL;
-		return FALSE;
+		goto exit;
 	}
 
 	/* The registry should now be populated with sources.
@@ -1367,8 +1397,8 @@ source_registry_initable_init (GInitable *initable,
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
-		g_propagate_error (error, local_error);
-		return FALSE;
+		g_propagate_error (&registry->priv->init_error, local_error);
+		goto exit;
 	}
 
 	/* Allow authentication prompts for all exported data sources
@@ -1378,6 +1408,21 @@ source_registry_initable_init (GInitable *initable,
 	 * client app.  Failure here is non-fatal, ignore errors. */
 	e_dbus_source_manager_call_allow_auth_prompt_all_sync (
 		registry->priv->dbus_source_manager, cancellable, NULL);
+
+exit:
+	registry->priv->initialized = TRUE;
+	g_mutex_unlock (&registry->priv->init_lock);
+
+	if (registry->priv->init_error != NULL) {
+		GError *init_error_copy;
+
+		/* Return a copy of the same error to
+		 * all pending initialization requests. */
+		init_error_copy = g_error_copy (registry->priv->init_error);
+		g_propagate_error (error, init_error_copy);
+
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -1625,6 +1670,8 @@ e_source_registry_init (ESourceRegistry *registry)
 	g_signal_connect (
 		registry->priv->settings, "changed",
 		G_CALLBACK (source_registry_settings_changed_cb), registry);
+
+	g_mutex_init (&registry->priv->init_lock);
 }
 
 /**
@@ -1636,6 +1683,9 @@ e_source_registry_init (ESourceRegistry *registry)
  * If an error occurs in connecting to the D-Bus service, the function sets
  * @error and returns %NULL.
  *
+ * Since 3.12 a singleton will be returned.  No strong reference is kept
+ * internally, so it is the caller's responsibility to keep one.
+ *
  * Returns: a new #ESourceRegistry, or %NULL
  *
  * Since: 3.6
@@ -1644,14 +1694,42 @@ ESourceRegistry *
 e_source_registry_new_sync (GCancellable *cancellable,
                             GError **error)
 {
+	ESourceRegistry *registry;
+
 	/* XXX Work around http://bugzilla.gnome.org/show_bug.cgi?id=683519
 	 *     until GObject's type initialization deadlock issue is fixed.
 	 *     Apparently only the synchronous instantiation is affected. */
 	g_type_ensure (G_TYPE_DBUS_CONNECTION);
 
-	return g_initable_new (
-		E_TYPE_SOURCE_REGISTRY,
-		cancellable, error, NULL);
+	registry = source_registry_dup_uninitialized_singleton ();
+
+	if (!g_initable_init (G_INITABLE (registry), cancellable, error))
+		g_clear_object (&registry);
+
+	return registry;
+}
+
+/* Helper for e_source_registry_new() */
+static void
+source_registry_init_cb (GObject *source_object,
+                         GAsyncResult *result,
+                         gpointer user_data)
+{
+	GTask *task = user_data;
+	GError *local_error = NULL;
+
+	g_async_initable_init_finish (
+		G_ASYNC_INITABLE (source_object), result, &local_error);
+
+	if (local_error == NULL) {
+		g_task_return_pointer (
+			task, g_object_ref (source_object),
+			(GDestroyNotify) g_object_unref);
+	} else {
+		g_task_return_error (task, local_error);
+	}
+
+	g_object_unref (task);
 }
 
 /**
@@ -1667,6 +1745,9 @@ e_source_registry_new_sync (GCancellable *cancellable,
  * When the operation is finished, @callback will be called.  You can then
  * call e_source_registry_new_finish() to get the result of the operation.
  *
+ * Since 3.12 a singleton will be returned.  No strong reference is kept
+ * internally, so it is the caller's responsibility to keep one.
+ *
  * Since: 3.6
  **/
 void
@@ -1674,10 +1755,19 @@ e_source_registry_new (GCancellable *cancellable,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
 {
-	g_async_initable_new_async (
-		E_TYPE_SOURCE_REGISTRY,
+	ESourceRegistry *registry;
+	GTask *task;
+
+	task = g_task_new (NULL, cancellable, callback, user_data);
+
+	registry = source_registry_dup_uninitialized_singleton ();
+
+	g_async_initable_init_async (
+		G_ASYNC_INITABLE (registry),
 		G_PRIORITY_DEFAULT, cancellable,
-		callback, user_data, NULL);
+		source_registry_init_cb, task);
+
+	g_object_unref (registry);
 }
 
 /**
@@ -1697,20 +1787,9 @@ ESourceRegistry *
 e_source_registry_new_finish (GAsyncResult *result,
                               GError **error)
 {
-	GObject *source_object;
-	GObject *object;
+	g_return_val_if_fail (g_task_is_valid (result, NULL), NULL);
 
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), NULL);
-
-	source_object = g_async_result_get_source_object (result);
-	g_return_val_if_fail (source_object != NULL, NULL);
-
-	object = g_async_initable_new_finish (
-		G_ASYNC_INITABLE (source_object), result, error);
-
-	g_object_unref (source_object);
-
-	return (object != NULL) ? E_SOURCE_REGISTRY (object) : NULL;
+	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
 /* Helper for e_source_registry_authenticate() */
