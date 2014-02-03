@@ -27,6 +27,7 @@
 
 struct _CamelIMAPXSearchPrivate {
 	GWeakRef server;
+	gint *local_data_search; /* not NULL, if testing whether all used headers are all locally available */
 };
 
 enum {
@@ -181,14 +182,48 @@ imapx_search_match_all (CamelSExp *sexp,
 			CamelSExpTerm **argv,
 			CamelFolderSearch *search)
 {
+	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;
 	CamelSExpResult *result;
+	GPtrArray *summary;
+	gint local_data_search = 0, *prev_local_data_search, ii;
 
 	if (argc != 1)
 		return imapx_search_result_match_none (sexp, search);
 
 	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
-	if (!server || search->current) {
+	if (!server || search->current || !search->summary) {
+		g_clear_object (&server);
+
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			match_all (sexp, argc, argv, search);
+	}
+
+	/* First try to see whether all used headers are available locally - if
+	   they are, then do not use server-side filtering at all. */
+	prev_local_data_search = imapx_search->priv->local_data_search;
+	imapx_search->priv->local_data_search = &local_data_search;
+
+	summary = search->summary_set ? search->summary_set : search->summary;
+
+	if (!CAMEL_IS_VEE_FOLDER (search->folder)) {
+		camel_folder_summary_prepare_fetch_all (search->folder->summary, NULL);
+	}
+
+	for (ii = 0; ii < summary->len; ii++) {
+		search->current = camel_folder_summary_get (search->folder->summary, summary->pdata[ii]);
+		if (search->current) {
+			result = camel_sexp_term_eval (sexp, argv[0]);
+			camel_sexp_result_free (sexp, result);
+			camel_message_info_free (search->current);
+			search->current = NULL;
+			break;
+		}
+	}
+	imapx_search->priv->local_data_search = prev_local_data_search;
+
+	if (local_data_search >= 0) {
 		g_clear_object (&server);
 
 		/* Chain up to parent's method. */
@@ -214,10 +249,17 @@ imapx_search_body_contains (CamelSExp *sexp,
                             CamelSExpResult **argv,
                             CamelFolderSearch *search)
 {
+	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;
 	CamelSExpResult *result;
 	GString *criteria;
 	gint ii, jj;
+
+	/* Always do body-search server-side */
+	if (imapx_search->priv->local_data_search) {
+		*imapx_search->priv->local_data_search = -1;
+		return imapx_search_result_match_none (sexp, search);
+	}
 
 	/* Match everything if argv = [""] */
 	if (argc == 1 && argv[0]->value.string[0] == '\0')
@@ -286,12 +328,22 @@ imapx_search_body_contains (CamelSExp *sexp,
 	return result;
 }
 
+static gboolean
+imapx_search_is_header_from_summary (const gchar *header_name)
+{
+	return  g_ascii_strcasecmp (header_name, "From") == 0 ||
+		g_ascii_strcasecmp (header_name, "To") == 0 ||
+		g_ascii_strcasecmp (header_name, "CC") == 0 ||
+		g_ascii_strcasecmp (header_name, "Subject") == 0;
+}
+
 static CamelSExpResult *
 imapx_search_header_contains (CamelSExp *sexp,
 			      gint argc,
 			      CamelSExpResult **argv,
 			      CamelFolderSearch *search)
 {
+	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;
 	CamelSExpResult *result;
 	const gchar *headername, *command = NULL;
@@ -303,6 +355,23 @@ imapx_search_header_contains (CamelSExp *sexp,
 	    argv[0]->type != CAMEL_SEXP_RES_STRING ||
 	    search->summary->len == 0)
 		return imapx_search_result_match_none (sexp, search);
+
+	headername = argv[0]->value.string;
+
+	if (imapx_search_is_header_from_summary (headername)) {
+		if (imapx_search->priv->local_data_search) {
+			if (*imapx_search->priv->local_data_search >= 0)
+				*imapx_search->priv->local_data_search = (*imapx_search->priv->local_data_search) + 1;
+			return imapx_search_result_match_all (sexp, search);
+		}
+
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			header_contains (sexp, argc, argv, search);
+	} else if (imapx_search->priv->local_data_search) {
+		*imapx_search->priv->local_data_search = -1;
+		return imapx_search_result_match_none (sexp, search);
+	}
 
 	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
 
@@ -325,7 +394,6 @@ imapx_search_header_contains (CamelSExp *sexp,
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 
-	headername = argv[0]->value.string;
 	if (g_ascii_strcasecmp (headername, "From") == 0)
 		command = "FROM";
 	else if (g_ascii_strcasecmp (headername, "To") == 0)
@@ -386,6 +454,7 @@ imapx_search_header_exists (CamelSExp *sexp,
 			    CamelSExpResult **argv,
 			    CamelFolderSearch *search)
 {
+	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;
 	CamelSExpResult *result;
 	GString *criteria;
@@ -394,6 +463,32 @@ imapx_search_header_exists (CamelSExp *sexp,
 	/* Match nothing if empty argv or empty summary. */
 	if (argc == 0 || search->summary->len == 0)
 		return imapx_search_result_match_none (sexp, search);
+
+	/* Check if asking for locally stored headers only */
+	for (ii = 0; ii < argc; ii++) {
+		if (argv[ii]->type != CAMEL_SEXP_RES_STRING)
+			continue;
+
+		if (!imapx_search_is_header_from_summary (argv[ii]->value.string))
+			break;
+	}
+
+	/* All headers are from summary */
+	if (ii == argc) {
+		if (imapx_search->priv->local_data_search) {
+			if (*imapx_search->priv->local_data_search >= 0)
+				*imapx_search->priv->local_data_search = (*imapx_search->priv->local_data_search) + 1;
+
+			return imapx_search_result_match_all (sexp, search);
+		}
+
+		/* Chain up to parent's method. */
+		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
+			header_exists (sexp, argc, argv, search);
+	} else if (imapx_search->priv->local_data_search) {
+		*imapx_search->priv->local_data_search = -1;
+		return imapx_search_result_match_none (sexp, search);
+	}
 
 	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
 
@@ -473,6 +568,7 @@ static void
 camel_imapx_search_init (CamelIMAPXSearch *search)
 {
 	search->priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (search);
+	search->priv->local_data_search = NULL;
 }
 
 /**
