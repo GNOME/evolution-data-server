@@ -1051,14 +1051,6 @@ imapx_query_auth_types_sync (CamelService *service,
 	GList *t, *next;
 	CamelIMAPXServer *server;
 
-	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (service))) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online to complete this operation"));
-		return NULL;
-	}
-
 	server = camel_imapx_server_new (CAMEL_IMAPX_STORE (service));
 
 	if (!imapx_connect_to_server (server, cancellable, error))
