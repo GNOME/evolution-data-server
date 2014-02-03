@@ -7369,7 +7369,9 @@ imapx_ready_to_read (GInputStream *input_stream,
 }
 
 static gboolean
-imapx_process_ready_to_read (CamelIMAPXServer *is)
+imapx_process_ready_to_read (gint fd,
+                             GIOCondition condition,
+                             CamelIMAPXServer *is)
 {
 	return imapx_parse_contents (is);
 }
