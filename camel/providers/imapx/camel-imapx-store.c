@@ -1046,14 +1046,10 @@ imapx_query_auth_types_sync (CamelService *service,
                              GCancellable *cancellable,
                              GError **error)
 {
-	CamelIMAPXStore *imapx_store;
 	CamelServiceAuthType *authtype;
-	GList *sasl_types, *t, *next;
+	GList *sasl_types = NULL;
+	GList *t, *next;
 	CamelIMAPXServer *server;
-	CamelIMAPXStream *stream;
-	gboolean connected;
-
-	imapx_store = CAMEL_IMAPX_STORE (service);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (service))) {
 		g_set_error (
@@ -1063,19 +1059,10 @@ imapx_query_auth_types_sync (CamelService *service,
 		return NULL;
 	}
 
-	server = camel_imapx_server_new (imapx_store);
+	server = camel_imapx_server_new (CAMEL_IMAPX_STORE (service));
 
-	stream = camel_imapx_server_ref_stream (server);
-	if (stream != NULL) {
-		connected = TRUE;
-		g_object_unref (stream);
-	} else {
-		connected = imapx_connect_to_server (
-			server, cancellable, error);
-	}
-
-	if (!connected)
-		return NULL;
+	if (!imapx_connect_to_server (server, cancellable, error))
+		goto exit;
 
 	sasl_types = camel_sasl_authtype_list (FALSE);
 	for (t = sasl_types; t; t = next) {
@@ -1088,9 +1075,13 @@ imapx_query_auth_types_sync (CamelService *service,
 		}
 	}
 
+	sasl_types = g_list_prepend (
+		sasl_types, &camel_imapx_password_authtype);
+
+exit:
 	g_object_unref (server);
 
-	return g_list_prepend (sasl_types, &camel_imapx_password_authtype);
+	return sasl_types;
 }
 
 static CamelFolder *
