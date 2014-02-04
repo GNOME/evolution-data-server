@@ -892,6 +892,7 @@ download_contacts (EBookBackendWebdav *webdav,
 		/* uri might be relative, construct complete one */
 		if (uri[0] == '/') {
 			SoupURI *soup_uri = soup_uri_new (priv->uri);
+			g_free (soup_uri->path);
 			soup_uri->path = g_strdup (uri);
 
 			complete_uri = soup_uri_to_string (soup_uri, FALSE);
@@ -911,6 +912,8 @@ download_contacts (EBookBackendWebdav *webdav,
 		/* download contact if it is not cached or its ETag changed */
 		if (contact == NULL || etag == NULL || !stored_etag ||
 		    strcmp (stored_etag, etag) != 0) {
+			if (contact != NULL)
+				g_object_unref (contact);
 			contact = download_contact (webdav, complete_uri, cancellable);
 			if (contact != NULL) {
 				g_mutex_lock (&priv->cache_lock);
@@ -922,6 +925,8 @@ download_contacts (EBookBackendWebdav *webdav,
 			}
 		}
 
+		if (contact != NULL)
+			g_object_unref (contact);
 		g_free (complete_uri);
 		g_free (stored_etag);
 	}
