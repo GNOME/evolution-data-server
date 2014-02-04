@@ -20,6 +20,7 @@
 
 #include <imapx/camel-imapx-folder.h>
 #include <imapx/camel-imapx-list-response.h>
+#include <imapx/camel-imapx-logger.h>
 #include <imapx/camel-imapx-mailbox.h>
 #include <imapx/camel-imapx-namespace.h>
 #include <imapx/camel-imapx-namespace-response.h>
@@ -164,6 +165,7 @@ camel_spool_summary_get_type
 
 camel_imapx_folder_get_type
 camel_imapx_list_response_get_type
+camel_imapx_logger_get_type
 camel_imapx_mailbox_get_type
 camel_imapx_namespace_get_type
 camel_imapx_namespace_response_get_type

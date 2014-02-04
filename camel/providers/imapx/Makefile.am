@@ -27,6 +27,8 @@ libcamelimapx_la_SOURCES = \
 	camel-imapx-job.h \
 	camel-imapx-list-response.c \
 	camel-imapx-list-response.h \
+	camel-imapx-logger.c \
+	camel-imapx-logger.h \
 	camel-imapx-mailbox.c \
 	camel-imapx-mailbox.h \
 	camel-imapx-namespace.c \

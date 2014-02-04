@@ -3448,6 +3448,25 @@ CamelIMAPXListResponsePrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-logger</FILE>
+<TITLE>CamelIMAPXLogger</TITLE>
+CamelIMAPXLogger
+camel_imapx_logger_new
+camel_imapx_logger_get_prefix
+<SUBSECTION Standard>
+CAMEL_IMAPX_LOGGER
+CAMEL_IS_IMAPX_LOGGER
+CAMEL_TYPE_IMAPX_LOGGER
+CAMEL_IMAPX_LOGGER_CLASS
+CAMEL_IS_IMAPX_LOGGER_CLASS
+CAMEL_IMAPX_LOGGER_GET_CLASS
+CamelIMAPXLoggerClass
+camel_imapx_logger_get_type
+<SUBSECTION Private>
+CamelIMAPXLoggerPrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-mailbox</FILE>
 <TITLE>CamelIMAPXMailbox</TITLE>
 CamelIMAPXMailbox

@@ -224,6 +224,7 @@
       <xi:include href="xml/camel-imapx-command.xml"/>
       <xi:include href="xml/camel-imapx-folder.xml"/>
       <xi:include href="xml/camel-imapx-job.xml"/>
+      <xi:include href="xml/camel-imapx-logger.xml"/>
       <xi:include href="xml/camel-imapx-mailbox.xml"/>
       <xi:include href="xml/camel-imapx-namespace.xml"/>
       <xi:include href="xml/camel-imapx-namespace-response.xml"/>

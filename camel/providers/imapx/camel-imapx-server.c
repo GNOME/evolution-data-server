@@ -41,6 +41,7 @@
 #include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-job.h"
+#include "camel-imapx-logger.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-stream.h"
@@ -4218,6 +4219,54 @@ imapx_maybe_select (CamelIMAPXServer *is,
 	camel_imapx_command_unref (ic);
 }
 
+static void
+imapx_server_set_streams (CamelIMAPXServer *is,
+                          GInputStream *input_stream,
+                          GOutputStream *output_stream)
+{
+	GConverter *logger;
+
+	/* Wrapper the streams for debugging output. */
+
+	if (input_stream != NULL) {
+		logger = camel_imapx_logger_new (is->tagprefix);
+		input_stream = g_converter_input_stream_new (
+			input_stream, logger);
+		g_clear_object (&logger);
+	}
+
+	if (output_stream != NULL) {
+		logger = camel_imapx_logger_new (is->tagprefix);
+		output_stream = g_converter_output_stream_new (
+			output_stream, logger);
+		g_clear_object (&logger);
+	}
+
+	g_mutex_lock (&is->priv->stream_lock);
+
+	/* Don't close the base streams so STARTTLS works correctly. */
+
+	if (G_IS_FILTER_INPUT_STREAM (is->priv->input_stream)) {
+		g_filter_input_stream_set_close_base_stream (
+			G_FILTER_INPUT_STREAM (is->priv->input_stream),
+			FALSE);
+	}
+
+	if (G_IS_FILTER_OUTPUT_STREAM (is->priv->output_stream)) {
+		g_filter_output_stream_set_close_base_stream (
+			G_FILTER_OUTPUT_STREAM (is->priv->output_stream),
+			FALSE);
+	}
+
+	g_clear_object (&is->priv->input_stream);
+	is->priv->input_stream = input_stream;
+
+	g_clear_object (&is->priv->output_stream);
+	is->priv->output_stream = output_stream;
+
+	g_mutex_unlock (&is->priv->stream_lock);
+}
+
 static gboolean
 connect_to_server_process (CamelIMAPXServer *is,
                            const gchar *cmd,
@@ -4356,20 +4405,14 @@ connect_to_server_process (CamelIMAPXServer *is,
 		GOutputStream *output_stream;
 
 		g_mutex_lock (&is->priv->stream_lock);
-
 		g_warn_if_fail (is->priv->subprocess == NULL);
-		g_warn_if_fail (is->priv->input_stream == NULL);
-		g_warn_if_fail (is->priv->output_stream == NULL);
-
 		is->priv->subprocess = g_object_ref (subprocess);
+		g_mutex_unlock (&is->priv->stream_lock);
 
 		input_stream = g_subprocess_get_stdout_pipe (subprocess);
-		is->priv->input_stream = g_object_ref (input_stream);
-
 		output_stream = g_subprocess_get_stdin_pipe (subprocess);
-		is->priv->output_stream = g_object_ref (output_stream);
 
-		g_mutex_unlock (&is->priv->stream_lock);
+		imapx_server_set_streams (is, input_stream, output_stream);
 
 		g_object_unref (subprocess);
 	}
@@ -4446,18 +4489,10 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		GInputStream *input_stream;
 		GOutputStream *output_stream;
 
-		g_mutex_lock (&is->priv->stream_lock);
-
-		g_warn_if_fail (is->priv->input_stream == NULL);
-		g_warn_if_fail (is->priv->output_stream == NULL);
-
 		input_stream = g_io_stream_get_input_stream (base_stream);
-		is->priv->input_stream = g_object_ref (input_stream);
-
 		output_stream = g_io_stream_get_output_stream (base_stream);
-		is->priv->output_stream = g_object_ref (output_stream);
 
-		g_mutex_unlock (&is->priv->stream_lock);
+		imapx_server_set_streams (is, input_stream, output_stream);
 
 		stream = camel_stream_new (base_stream);
 		g_object_unref (base_stream);
@@ -4607,20 +4642,13 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			GInputStream *input_stream;
 			GOutputStream *output_stream;
 
-			g_mutex_lock (&is->priv->stream_lock);
-
-			g_clear_object (&is->priv->input_stream);
-			g_clear_object (&is->priv->output_stream);
-
 			input_stream =
 				g_io_stream_get_input_stream (tls_stream);
-			is->priv->input_stream = g_object_ref (input_stream);
-
 			output_stream =
 				g_io_stream_get_output_stream (tls_stream);
-			is->priv->output_stream = g_object_ref (output_stream);
 
-			g_mutex_unlock (&is->priv->stream_lock);
+			imapx_server_set_streams (
+				is, input_stream, output_stream);
 
 			camel_stream_set_base_stream (stream, tls_stream);
 			g_object_unref (tls_stream);
