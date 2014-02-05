@@ -19,6 +19,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include <gio/gunixoutputstream.h>
+
 #include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-settings.h"
@@ -1414,11 +1416,11 @@ imapx_free_fetch (struct _fetch_info *finfo)
 		return;
 
 	if (finfo->body)
-		g_object_unref (finfo->body);
+		g_bytes_unref (finfo->body);
 	if (finfo->text)
-		g_object_unref (finfo->text);
+		g_bytes_unref (finfo->text);
 	if (finfo->header)
-		g_object_unref (finfo->header);
+		g_bytes_unref (finfo->header);
 	if (finfo->minfo)
 		camel_message_info_unref (finfo->minfo);
 	if (finfo->cinfo)
@@ -1434,9 +1436,9 @@ imapx_free_fetch (struct _fetch_info *finfo)
 void
 imapx_dump_fetch (struct _fetch_info *finfo)
 {
-	CamelStream *sout;
-	gchar *string;
-	gint fd;
+	GOutputStream *output_stream;
+	gconstpointer data;
+	gsize size;
 
 	d ('?', "Fetch info:\n");
 	if (finfo == NULL) {
@@ -1444,68 +1446,60 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 		return;
 	}
 
-	fd = dup (1);
-	sout = camel_stream_fs_new_with_fd (fd);
-	if (finfo->body) {
-		camel_stream_write_string (sout, "Body content:\n", NULL, NULL);
-		camel_stream_write_to_stream (finfo->body, sout, NULL, NULL);
-		g_seekable_seek (
-			G_SEEKABLE (finfo->body),
-			0, G_SEEK_SET, NULL, NULL);
+	output_stream = g_unix_output_stream_new (STDOUT_FILENO, FALSE);
+
+	/* XXX g_output_stream_write_bytes_all() would be awfully
+	 *     handy here.  g_output_stream_write_bytes() may not
+	 *     write the entire GBytes. */
+
+	if (finfo->body != NULL) {
+		g_print ("Body content:\n");
+		data = g_bytes_get_data (finfo->body, &size);
+		g_output_stream_write_all (
+			output_stream, data,
+			size, NULL, NULL, NULL);
 	}
-	if (finfo->text) {
-		camel_stream_write_string (sout, "Text content:\n", NULL, NULL);
-		camel_stream_write_to_stream (finfo->text, sout, NULL, NULL);
-		g_seekable_seek (
-			G_SEEKABLE (finfo->text),
-			0, G_SEEK_SET, NULL, NULL);
+
+	if (finfo->text != NULL) {
+		g_print ("Text content:\n");
+		data = g_bytes_get_data (finfo->text, &size);
+		g_output_stream_write_all (
+			output_stream, data,
+			size, NULL, NULL, NULL);
 	}
-	if (finfo->header) {
-		camel_stream_write_string (sout, "Header content:\n", NULL, NULL);
-		camel_stream_write_to_stream (finfo->header, sout, NULL, NULL);
-		g_seekable_seek (
-			G_SEEKABLE (finfo->header),
-			0, G_SEEK_SET, NULL, NULL);
+
+	if (finfo->header != NULL) {
+		g_print ("Header content:\n");
+		data = g_bytes_get_data (finfo->header, &size);
+		g_output_stream_write_all (
+			output_stream, data,
+			size, NULL, NULL, NULL);
 	}
-	if (finfo->minfo) {
-		camel_stream_write_string (sout, "Message Info:\n", NULL, NULL);
+
+	if (finfo->minfo != NULL) {
+		g_print ("Message Info:\n");
 		camel_message_info_dump (finfo->minfo);
 	}
-	if (finfo->cinfo) {
-		camel_stream_write_string (sout, "Content Info:\n", NULL, NULL);
-		//camel_content_info_dump (finfo->cinfo, 0);
-	}
-	if (finfo->got & FETCH_SIZE) {
-		string = g_strdup_printf ("Size: %d\n", (gint) finfo->size);
-		camel_stream_write_string (sout, string, NULL, NULL);
-		g_free (string);
-	}
-	if (finfo->got & FETCH_BODY) {
-		string = g_strdup_printf ("Offset: %d\n", (gint) finfo->offset);
-		camel_stream_write_string (sout, string, NULL, NULL);
-		g_free (string);
-	}
-	if (finfo->got & FETCH_FLAGS) {
-		string = g_strdup_printf ("Flags: %08x\n", (gint) finfo->flags);
-		camel_stream_write_string (sout, string, NULL, NULL);
-		g_free (string);
-	}
-	if (finfo->date) {
-		string = g_strdup_printf ("Data: '%s'\n", finfo->date);
-		camel_stream_write_string (sout, string, NULL, NULL);
-		g_free (string);
-	}
-	if (finfo->section) {
-		string = g_strdup_printf ("Section: '%s'\n", finfo->section);
-		camel_stream_write_string (sout, string, NULL, NULL);
-		g_free (string);
-	}
-	if (finfo->uid) {
-		string = g_strdup_printf ("UID: '%s'\n", finfo->uid);
-		camel_stream_write_string (sout, string, NULL, NULL);
-		g_free (string);
-	}
-	g_object_unref (sout);
+
+	if (finfo->got & FETCH_SIZE)
+		g_print ("Size: %d\n", (gint) finfo->size);
+
+	if (finfo->got & FETCH_BODY)
+		g_print ("Offset: %d\n", (gint) finfo->offset);
+
+	if (finfo->got & FETCH_FLAGS)
+		g_print ("Flags: %08x\n", (gint) finfo->flags);
+
+	if (finfo->date != NULL)
+		g_print ("Date: '%s'\n", finfo->date);
+
+	if (finfo->section != NULL)
+		g_print ("Section: '%s'\n", finfo->section);
+
+	if (finfo->uid != NULL)
+		g_print ("UID: '%s'\n", finfo->uid);
+
+	g_object_unref (output_stream);
 }
 
 static gboolean
@@ -1557,7 +1551,7 @@ imapx_parse_fetch_body (CamelIMAPXStream *is,
 			camel_imapx_stream_ungettoken (is, tok, token, len);
 		}
 
-		success = camel_imapx_stream_nstring_stream (
+		success = camel_imapx_stream_nstring_bytes (
 			is, &finfo->body, cancellable, error);
 
 		/* Sanity check. */
@@ -1663,7 +1657,7 @@ imapx_parse_fetch_rfc822_header (CamelIMAPXStream *is,
 {
 	gboolean success;
 
-	success = camel_imapx_stream_nstring_stream (
+	success = camel_imapx_stream_nstring_bytes (
 		is, &finfo->header, cancellable, error);
 
 	/* Sanity check. */
@@ -1702,7 +1696,7 @@ imapx_parse_fetch_rfc822_text (CamelIMAPXStream *is,
 {
 	gboolean success;
 
-	success = camel_imapx_stream_nstring_stream (
+	success = camel_imapx_stream_nstring_bytes (
 		is, &finfo->text, cancellable, error);
 
 	/* Sanity check. */

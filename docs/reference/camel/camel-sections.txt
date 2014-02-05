@@ -3769,7 +3769,7 @@ camel_imapx_stream_getl
 camel_imapx_stream_atom
 camel_imapx_stream_astring
 camel_imapx_stream_nstring
-camel_imapx_stream_nstring_stream
+camel_imapx_stream_nstring_bytes
 camel_imapx_stream_text
 camel_imapx_stream_number
 camel_imapx_stream_skip

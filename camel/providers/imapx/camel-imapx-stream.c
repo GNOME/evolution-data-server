@@ -529,22 +529,23 @@ camel_imapx_stream_nstring (CamelIMAPXStream *is,
 	}
 }
 
-/* parse an nstring as a stream */
+/* parse an nstring as a GBytes */
 gboolean
-camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
-                                   CamelStream **stream,
-                                   GCancellable *cancellable,
-                                   GError **error)
+camel_imapx_stream_nstring_bytes (CamelIMAPXStream *is,
+                                  GBytes **out_bytes,
+                                  GCancellable *cancellable,
+                                  GError **error)
 {
 	camel_imapx_token_t tok;
 	guchar *token;
 	guint len;
 	CamelStream *mem = NULL;
+	GByteArray *byte_array;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (is), FALSE);
-	g_return_val_if_fail (stream != NULL, FALSE);
+	g_return_val_if_fail (out_bytes != NULL, FALSE);
 
-	*stream = NULL;
+	*out_bytes = NULL;
 
 	tok = camel_imapx_stream_token (is, &token, &len, cancellable, error);
 
@@ -553,25 +554,24 @@ camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
 			return FALSE;
 
 		case IMAPX_TOK_STRING:
-			mem = camel_stream_mem_new_with_buffer (
-				(gchar *) token, len);
-			*stream = mem;
+			*out_bytes = g_bytes_new (token, len);
 			return TRUE;
 
 		case IMAPX_TOK_LITERAL:
 			/* If len is big, we could
 			 * automatically use a file backing. */
 			camel_imapx_stream_set_literal (is, len);
+			byte_array = g_byte_array_new ();
 			mem = camel_stream_mem_new ();
+			camel_stream_mem_set_byte_array (
+				CAMEL_STREAM_MEM (mem), byte_array);
 			if (camel_stream_write_to_stream ((CamelStream *) is, mem, cancellable, error) == -1) {
+				g_byte_array_unref (byte_array);
 				g_object_unref (mem);
 				return FALSE;
 			}
-
-			g_seekable_seek (
-				G_SEEKABLE (mem), 0,
-				G_SEEK_SET, NULL, NULL);
-			*stream = mem;
+			*out_bytes = g_byte_array_free_to_bytes (byte_array);
+			g_object_unref (mem);
 			return TRUE;
 
 		case IMAPX_TOK_TOKEN:
@@ -579,7 +579,7 @@ camel_imapx_stream_nstring_stream (CamelIMAPXStream *is,
 			    toupper (token[1]) == 'I' &&
 			    toupper (token[2]) == 'L' &&
 			    token[3] == 0) {
-				*stream = NULL;
+				*out_bytes = NULL;
 				return TRUE;
 			}
 			/* fall through */

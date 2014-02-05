@@ -96,7 +96,7 @@ struct _GetMessageData {
 	gchar *uid;
 	CamelDataCache *message_cache;
 	/* in/out: message content stream output */
-	CamelStream *stream;
+	GIOStream *stream;
 	/* working variables */
 	gsize body_offset;
 	gsize fetch_offset;
@@ -2250,7 +2250,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 		 * fill out the body stream, in the right spot. */
 
 		if (job != NULL) {
-			gssize bytes_written;
+			GOutputStream *output_stream;
+			gconstpointer body_data;
+			gsize body_size;
+			gboolean success;
 
 			if (data->use_multi_fetch) {
 				data->body_offset = finfo->offset;
@@ -2260,9 +2263,16 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					NULL, NULL);
 			}
 
-			bytes_written = camel_stream_write_to_stream (
-				finfo->body, data->stream, cancellable, error);
-			if (bytes_written == -1) {
+			output_stream =
+				g_io_stream_get_output_stream (data->stream);
+
+			body_data = g_bytes_get_data (finfo->body, &body_size);
+
+			success = g_output_stream_write_all (
+				output_stream, body_data, body_size,
+				NULL, cancellable, error);
+
+			if (!success) {
 				g_prefix_error (
 					error, "%s: ",
 					_("Error writing to cache stream"));
@@ -2408,7 +2418,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			/* Do we want to save these headers for later too?  Do we care? */
 
 			mp = camel_mime_parser_new ();
-			camel_mime_parser_init_with_stream (mp, finfo->header, NULL);
+			camel_mime_parser_init_with_bytes (mp, finfo->header);
 			mi = camel_folder_summary_info_new_from_parser (folder->summary, mp);
 			g_object_unref (mp);
 
@@ -5068,14 +5078,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 	/* No more messages to fetch, let's wrap things up. */
 
 	if (local_error == NULL) {
-		camel_stream_flush (data->stream, cancellable, &local_error);
-		g_prefix_error (
-			&local_error, "%s: ",
-			_("Failed to close the tmp stream"));
-	}
-
-	if (local_error == NULL) {
-		camel_stream_close (data->stream, cancellable, &local_error);
+		g_io_stream_close (data->stream, cancellable, &local_error);
 		g_prefix_error (
 			&local_error, "%s: ",
 			_("Failed to close the tmp stream"));
@@ -5097,17 +5100,11 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_free (dirname);
 
 		if (g_rename (tmp_filename, cur_filename) == 0) {
-			GIOStream *base_stream;
-
 			/* Exchange the "tmp" stream for the "cur" stream. */
 			g_clear_object (&data->stream);
-			base_stream = camel_data_cache_get (
+			data->stream = camel_data_cache_get (
 				data->message_cache, "cur",
 				data->uid, &local_error);
-			if (base_stream != NULL) {
-				data->stream = camel_stream_new (base_stream);
-				g_object_unref (base_stream);
-			}
 		} else {
 			g_set_error (
 				&local_error, G_FILE_ERROR,
@@ -8425,7 +8422,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	CamelStream *stream = NULL;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *mi;
-	GIOStream *base_stream;
+	GIOStream *cache_stream;
 	GetMessageData *data;
 	gboolean registered;
 
@@ -8448,11 +8445,11 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		/* Disregard errors here.  If we failed to retreive the
 		 * message from cache (implying the job we were waiting
 		 * on failed or got cancelled), we'll just re-fetch it. */
-		base_stream = camel_data_cache_get (
+		cache_stream = camel_data_cache_get (
 			message_cache, "cur", message_uid, NULL);
-		if (base_stream != NULL) {
-			stream = camel_stream_new (base_stream);
-			g_object_unref (base_stream);
+		if (cache_stream != NULL) {
+			stream = camel_stream_new (cache_stream);
+			g_object_unref (cache_stream);
 			return stream;
 		}
 
@@ -8470,9 +8467,9 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		return NULL;
 	}
 
-	base_stream = camel_data_cache_add (
+	cache_stream = camel_data_cache_add (
 		message_cache, "tmp", message_uid, error);
-	if (base_stream == NULL) {
+	if (cache_stream == NULL) {
 		QUEUE_UNLOCK (is);
 		return NULL;
 	}
@@ -8480,7 +8477,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	data = g_slice_new0 (GetMessageData);
 	data->uid = g_strdup (message_uid);
 	data->message_cache = g_object_ref (message_cache);
-	data->stream = camel_stream_new (base_stream);
+	data->stream = g_object_ref (cache_stream);
 	data->size = ((CamelMessageInfoBase *) mi)->size;
 	if (data->size > MULTI_SIZE)
 		data->use_multi_fetch = TRUE;
@@ -8496,7 +8493,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) get_message_data_free);
 
-	g_clear_object (&base_stream);
+	g_clear_object (&cache_stream);
 	camel_message_info_unref (mi);
 
 	registered = imapx_register_job (is, job, error);
@@ -8504,7 +8501,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 
 	if (registered && camel_imapx_job_run (job, is, error))
-		stream = g_object_ref (data->stream);
+		stream = camel_stream_new (data->stream);
 
 	camel_imapx_job_unref (job);
 

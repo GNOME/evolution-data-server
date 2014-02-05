@@ -116,10 +116,10 @@ gboolean	camel_imapx_stream_nstring	(CamelIMAPXStream *is,
 						 guchar **start,
 						 GCancellable *cancellable,
 						 GError **error);
-/* gets a NIL or string into a stream, stream==NULL if NIL */
-gboolean	camel_imapx_stream_nstring_stream
+/* gets a NIL or string into a GBytes, bytes==NULL if NIL */
+gboolean	camel_imapx_stream_nstring_bytes
 						(CamelIMAPXStream *is,
-						 CamelStream **stream,
+						 GBytes **out_bytes,
 						 GCancellable *cancellable,
 						 GError **error);
 /* gets 'text' */

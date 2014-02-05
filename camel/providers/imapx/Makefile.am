@@ -13,6 +13,7 @@ libcamelimapx_la_CPPFLAGS = \
 	-I$(top_builddir) \
 	-I$(top_builddir)/camel \
 	$(CAMEL_CFLAGS) \
+	$(GIO_UNIX_CFLAGS) \
 	-DG_LOG_DOMAIN=\"camel-imapx\" \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
@@ -59,6 +60,7 @@ libcamelimapx_la_SOURCES = \
 libcamelimapx_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la \
 	$(CAMEL_LIBS) \
+	$(GIO_UNIX_LIBS) \
 	$(NULL)
 
 libcamelimapx_la_LDFLAGS = -avoid-version -module $(NO_UNDEFINED) \

@@ -235,9 +235,9 @@ void		imapx_free_body			(struct _CamelMessageContentInfo *cinfo);
 /* this assumes the caller/server doesn't send any one of these types twice */
 struct _fetch_info {
 	guint32 got;		/* what we got, see below */
-	CamelStream *body;	/* BODY[.*](<.*>)? */
-	CamelStream *text;	/* RFC822.TEXT */
-	CamelStream *header;	/* RFC822.HEADER */
+	GBytes *body;		/* BODY[.*](<.*>)? */
+	GBytes *text;		/* RFC822.TEXT */
+	GBytes *header;		/* RFC822.HEADER */
 	CamelMessageInfo *minfo;	/* ENVELOPE */
 	CamelMessageContentInfo *cinfo;	/* BODYSTRUCTURE,BODY */
 	guint32 size;		/* RFC822.SIZE */
