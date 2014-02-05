@@ -257,10 +257,23 @@ server_side_source_write_cb (EDBusSourceWritable *interface,
 	 *    4) The idle callback calls e_source_write_sync().
 	 *    5) e_source_write_sync() calls e_dbus_source_dup_data()
 	 *       and synchronously writes the resulting string to disk.
+	 *
+	 * XXX: This should be done more straigtforward, because rely
+	 *      on two different signals and having actual data file
+	 *      save in 5 steps is ridiculous, not talking that
+	 *      the returned GError from this D-Bus call doesn't handle
+	 *      errors from actual file save, which can also break, thus
+	 *      the caller doesn't know about any real problem during saving
+	 *      and thinks that everything went fine.
 	 */
 
-	if (error == NULL)
+	if (error == NULL) {
 		e_dbus_source_set_data (dbus_source, data);
+
+		/* Make sure the ESource::changed signal is called, otherwise
+		   the above Q&A doesn't work and changed data are not saved. */
+		e_source_changed (source);
+	}
 
 	if (error != NULL)
 		g_dbus_method_invocation_take_error (invocation, error);
