@@ -72,6 +72,8 @@ gboolean	camel_offline_store_prepare_for_offline_sync
 						(CamelOfflineStore *store,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	camel_offline_store_requires_downsync
+						(CamelOfflineStore *store);
 
 G_END_DECLS
 
