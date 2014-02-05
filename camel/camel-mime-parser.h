@@ -97,14 +97,11 @@ CamelMimeParser *camel_mime_parser_new (void);
 /* quick-fix for parser not erroring, we can find out if it had an error afterwards */
 gint		camel_mime_parser_errno (CamelMimeParser *parser);
 
-/* using an fd will be a little faster, but not much (over a simple stream) */
 gint		camel_mime_parser_init_with_fd (CamelMimeParser *m, gint fd);
 gint		camel_mime_parser_init_with_stream (CamelMimeParser *m, CamelStream *stream, GError **error);
 void		camel_mime_parser_init_with_input_stream (CamelMimeParser *parser, GInputStream *input_stream);
 
-/* get the stream or fd back of the parser */
 CamelStream    *camel_mime_parser_stream (CamelMimeParser *parser);
-gint		camel_mime_parser_fd (CamelMimeParser *parser);
 
 /* scan 'From' separators? */
 void camel_mime_parser_scan_from (CamelMimeParser *parser, gboolean scan_from);
