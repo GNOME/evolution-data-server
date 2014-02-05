@@ -72,7 +72,8 @@ struct _header_scan_state {
 	gchar *outend;
 
 	gint fd;			/* input for a fd input */
-	CamelStream *stream;	/* or for a stream */
+	CamelStream *stream;		/* or for a stream */
+	GInputStream *input_stream;
 
 	gint ioerrno;		/* io error state */
 
@@ -138,6 +139,7 @@ struct _header_scan_filter {
 	CamelMimeFilter *filter;
 };
 
+static void folder_scan_reset (struct _header_scan_state *s);
 static void folder_scan_step (struct _header_scan_state *s, gchar **databuffer, gsize *datalength);
 static void folder_scan_drop_step (struct _header_scan_state *s);
 static gint folder_scan_init_with_fd (struct _header_scan_state *s, gint fd);
@@ -468,6 +470,27 @@ camel_mime_parser_init_with_stream (CamelMimeParser *parser,
 	struct _header_scan_state *s = _PRIVATE (parser);
 
 	return folder_scan_init_with_stream (s, stream, error);
+}
+
+/**
+ * camel_mime_parser_init_with_input_stream:
+ * @parser: a #CamelMimeParser
+ * @input_stream: a #GInputStream
+ *
+ * Initialize the scanner with @input_stream.  The scanner's offsets will
+ * be relative to the current file position of the stream.  As a result,
+ * seekable streams should only be seeked using the parser seek function.
+ *
+ * Since: 3.12
+ **/
+void
+camel_mime_parser_init_with_input_stream (CamelMimeParser *parser,
+                                          GInputStream *input_stream)
+{
+	struct _header_scan_state *s = _PRIVATE (parser);
+
+	folder_scan_reset (s);
+	s->input_stream = g_object_ref (input_stream);
 }
 
 /**
@@ -930,6 +953,10 @@ folder_read (struct _header_scan_state *s)
 	if (s->stream) {
 		len = camel_stream_read (
 			s->stream, s->inbuf + inoffset, SCAN_BUF - inoffset, NULL, NULL);
+	} else if (s->input_stream != NULL) {
+		len = g_input_stream_read (
+			s->input_stream, s->inbuf + inoffset,
+			SCAN_BUF - inoffset, NULL, NULL);
 	} else {
 		len = read (s->fd, s->inbuf + inoffset, SCAN_BUF - inoffset);
 	}
@@ -982,6 +1009,18 @@ folder_seek (struct _header_scan_state *s,
 				G_SEEKABLE (s->stream),
 				offset, whence, NULL, NULL);
 			newoffset = g_seekable_tell (G_SEEKABLE (s->stream));
+		} else {
+			newoffset = -1;
+			errno = EINVAL;
+		}
+	} else if (s->input_stream != NULL) {
+		if (G_IS_SEEKABLE (s->input_stream)) {
+			/* NOTE: assumes whence seekable stream == whence libc, which is probably
+			 * the case (or bloody well should've been) */
+			g_seekable_seek (
+				G_SEEKABLE (s->input_stream),
+				offset, whence, NULL, NULL);
+			newoffset = g_seekable_tell (G_SEEKABLE (s->input_stream));
 		} else {
 			newoffset = -1;
 			errno = EINVAL;
@@ -1453,9 +1492,8 @@ folder_scan_close (struct _header_scan_state *s)
 		folder_pull_part (s);
 	if (s->fd != -1)
 		close (s->fd);
-	if (s->stream) {
-		g_object_unref (s->stream);
-	}
+	g_clear_object (&s->stream);
+	g_clear_object (&s->input_stream);
 	g_free (s);
 }
 
@@ -1468,6 +1506,7 @@ folder_scan_init (void)
 
 	s->fd = -1;
 	s->stream = NULL;
+	s->input_stream = NULL;
 	s->ioerrno = 0;
 
 	s->outbuf = g_malloc (1024);
@@ -1524,10 +1563,8 @@ folder_scan_reset (struct _header_scan_state *s)
 		close (s->fd);
 		s->fd = -1;
 	}
-	if (s->stream) {
-		g_object_unref (s->stream);
-		s->stream = NULL;
-	}
+	g_clear_object (&s->stream);
+	g_clear_object (&s->input_stream);
 	s->ioerrno = 0;
 	s->eof = FALSE;
 }
