@@ -4080,7 +4080,7 @@ camel_flag_set (CamelFlag **list,
 	if (value) {
 		tmp_len = sizeof (*tmp) + strlen (name);
 		tmp = g_malloc (tmp_len);
-		g_strlcpy (tmp->name, name, tmp_len);
+		g_strlcpy (tmp->name, name, strlen (name) + 1);
 		tmp->next = NULL;
 		flag->next = tmp;
 	}
@@ -4235,7 +4235,7 @@ camel_tag_set (CamelTag **list,
 
 	if (value) {
 		tmp = g_malloc (sizeof (*tmp) + strlen (name));
-		g_strlcpy (tmp->name, name, sizeof (tmp->name));
+		g_strlcpy (tmp->name, name, strlen (name) + 1);
 		tmp->value = g_strdup (value);
 		tmp->next = NULL;
 		tag->next = tmp;
