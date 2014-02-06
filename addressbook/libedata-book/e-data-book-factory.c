@@ -33,6 +33,7 @@
 #include "e-book-backend-factory.h"
 #include "e-data-book.h"
 #include "e-data-book-factory.h"
+#include "e-dbus-localed.h"
 
 #define d(x)
 
@@ -51,6 +52,12 @@ struct _EDataBookFactoryPrivate {
 	GMutex connections_lock;
 	/* This is a hash of client addresses to GList* of EDataBooks */
 	GHashTable *connections;
+
+	/* Watching "org.freedesktop.locale1" for locale changes */
+	guint localed_watch_id;
+	EDBusLocale1 *localed_proxy;
+	GCancellable *localed_cancel;
+	gchar *locale;
 };
 
 enum {
@@ -103,6 +110,38 @@ data_book_factory_ref_backend (EDataFactory *factory,
 	g_free (backend_name);
 
 	return backend;
+}
+
+static GList *
+data_book_factory_list_books (EDataBookFactory *factory)
+{
+	GList *l = NULL, *books_list = NULL;
+	GHashTableIter iter;
+	gpointer hkey, hvalue;
+	GHashTable *connections;
+	EDataBook *book;
+
+	g_mutex_lock (&factory->priv->connections_lock);
+
+	connections = factory->priv->connections;
+
+	g_hash_table_iter_init (&iter, connections);
+	while (g_hash_table_iter_next (&iter, &hkey, &hvalue)) {
+		GSList *books = hvalue;
+
+		for (l = books; l; l = l->next) {
+			book = l->data;
+			EDataBook *insert_book = g_object_ref(book);
+
+			if (g_list_find (books_list, insert_book) == NULL)
+				books_list = g_list_prepend(books_list, insert_book);
+			else
+				g_object_unref(insert_book);
+		}
+	}
+	g_mutex_unlock (&factory->priv->connections_lock);
+
+	return books_list;
 }
 
 static gchar *
@@ -236,6 +275,13 @@ data_book_factory_open (EDataBookFactory *factory,
 			g_strdup (sender), list);
 		g_mutex_unlock (&factory->priv->connections_lock);
 
+		/* Don't set the locale on a new book if we have not
+		 * yet received a notification of a locale change
+		 */
+		if (factory->priv->locale)
+			e_data_book_set_locale (book,
+						factory->priv->locale,
+						NULL, NULL);
 	} else {
 		g_free (object_path);
 		object_path = NULL;
@@ -323,6 +369,20 @@ data_book_factory_dispose (GObject *object)
 		priv->dbus_factory = NULL;
 	}
 
+	if (priv->localed_cancel) {
+		g_cancellable_cancel (priv->localed_cancel);
+		g_object_unref (priv->localed_cancel);
+		priv->localed_cancel = NULL;
+	}
+
+	if (priv->localed_proxy) {
+		g_object_unref (priv->localed_proxy);
+		priv->localed_proxy = NULL;
+	}
+
+	if (priv->localed_watch_id > 0)
+		g_bus_unwatch_name (priv->localed_watch_id);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose (object);
 }
@@ -340,8 +400,178 @@ data_book_factory_finalize (GObject *object)
 	g_mutex_clear (&priv->books_lock);
 	g_mutex_clear (&priv->connections_lock);
 
+	g_free(priv->locale);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->finalize (object);
+}
+
+static gchar *
+data_book_factory_interpret_locale_value (const gchar *value)
+{
+	gchar *interpreted_value = NULL;
+	gchar **split;
+
+	split = g_strsplit (value, "=", 2);
+
+	if (split && split[0] && split[1])
+		interpreted_value = g_strdup (split[1]);
+
+	g_strfreev (split);
+
+	if (!interpreted_value)
+		g_warning ("Failed to interpret locale value: %s", value);
+
+	return interpreted_value;
+}
+
+static gchar *
+data_book_factory_interpret_locale (const gchar * const * locale)
+{
+	gint i;
+	gchar *interpreted_locale = NULL;
+
+	/* Prioritize LC_COLLATE and then LANG values
+	 * in the 'locale' specified by localed.
+	 *
+	 * If localed explicitly specifies no locale, then
+	 * default to checking system locale.
+	 */
+	if (locale) {
+		for (i = 0; locale[i] != NULL && interpreted_locale == NULL; i++) {
+			if (strncmp (locale[i], "LC_COLLATE", 10) == 0)
+				interpreted_locale =
+					data_book_factory_interpret_locale_value (locale[i]);
+		}
+
+		for (i = 0; locale[i] != NULL && interpreted_locale == NULL; i++) {
+			if (strncmp (locale[i], "LANG", 4) == 0)
+				interpreted_locale =
+					data_book_factory_interpret_locale_value (locale[i]);
+		}
+	}
+
+	if (!interpreted_locale) {
+		const gchar *system_locale = setlocale (LC_COLLATE, NULL);
+
+		interpreted_locale = g_strdup (system_locale);
+	}
+
+	return interpreted_locale;
+}
+
+
+static void
+data_book_factory_set_locale (EDataBookFactory *factory,
+			      const gchar *locale)
+{
+	EDataBookFactoryPrivate *priv = factory->priv;
+	GError *error = NULL;
+	GList *books, *l;
+
+	if (g_strcmp0 (priv->locale, locale) != 0) {
+
+		g_free (priv->locale);
+		priv->locale = g_strdup (locale);
+
+		books = data_book_factory_list_books (factory);
+		for (l = books; l; l = l->next) {
+
+			EDataBook *book = l->data;
+
+			if (!e_data_book_set_locale (book, locale, NULL, &error)) {
+				g_warning ("Failed to set locale on addressbook: %s",
+					   error->message);
+				g_clear_error (&error);
+			}
+		}
+		g_list_free_full (books, g_object_unref);
+	}
+}
+
+static void
+data_book_factory_locale_changed (GObject *object,
+				  GParamSpec *pspec,
+				  gpointer user_data)
+{
+	EDBusLocale1 *locale_proxy = E_DBUS_LOCALE1 (object);
+	EDataBookFactory *factory = (EDataBookFactory *)user_data;
+	const gchar * const *locale;
+	gchar *interpreted_locale;
+
+	locale = e_dbus_locale1_get_locale (locale_proxy);
+	interpreted_locale = data_book_factory_interpret_locale (locale);
+
+	data_book_factory_set_locale (factory, interpreted_locale);
+
+	g_free (interpreted_locale);
+}
+
+static void
+data_book_factory_localed_ready (GObject *source_object,
+				 GAsyncResult *res,
+				 gpointer user_data)
+{
+	EDataBookFactory *factory = (EDataBookFactory *)user_data;
+	GError *error = NULL;
+
+	factory->priv->localed_proxy = e_dbus_locale1_proxy_new_finish (res, &error);
+
+	if (factory->priv->localed_proxy == NULL) {
+		g_warning ("Error fetching localed proxy: %s", error->message);
+		g_error_free (error);
+	}
+
+	if (factory->priv->localed_cancel) {
+		g_object_unref (factory->priv->localed_cancel);
+		factory->priv->localed_cancel = NULL;
+	}
+
+	if (factory->priv->localed_proxy) {
+		g_signal_connect (factory->priv->localed_proxy, "notify::locale",
+				  G_CALLBACK (data_book_factory_locale_changed), factory);
+
+		/* Initial refresh of the locale */
+		data_book_factory_locale_changed (G_OBJECT (factory->priv->localed_proxy), NULL, factory);
+	}
+}
+
+static void
+data_book_factory_localed_appeared (GDBusConnection *connection,
+				    const gchar *name,
+				    const gchar *name_owner,
+				    gpointer user_data)
+{
+	EDataBookFactory *factory = (EDataBookFactory *)user_data;
+
+	factory->priv->localed_cancel = g_cancellable_new ();
+
+	e_dbus_locale1_proxy_new (connection,
+				  G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+				  "org.freedesktop.locale1",
+				  "/org/freedesktop/locale1",
+				  factory->priv->localed_cancel,
+				  data_book_factory_localed_ready,
+				  factory);
+}
+
+static void
+data_book_factory_localed_vanished (GDBusConnection *connection,
+				    const gchar *name,
+				    gpointer user_data)
+{
+	EDataBookFactory *factory = (EDataBookFactory *)user_data;
+
+	if (factory->priv->localed_cancel) {
+		g_cancellable_cancel (factory->priv->localed_cancel);
+		g_object_unref (factory->priv->localed_cancel);
+		factory->priv->localed_cancel = NULL;
+	}
+
+	if (factory->priv->localed_proxy) {
+		g_object_unref (factory->priv->localed_proxy);
+		factory->priv->localed_proxy = NULL;
+	}
 }
 
 static void
@@ -380,7 +610,6 @@ data_book_factory_bus_name_lost (EDBusServer *server,
 	gchar *key;
 
 	priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (server);
-
 	g_mutex_lock (&priv->connections_lock);
 
 	while (g_hash_table_lookup_extended (
@@ -427,10 +656,26 @@ data_book_factory_initable_init (GInitable *initable,
                                  GError **error)
 {
 	EDataBookFactoryPrivate *priv;
-
+	GBusType bus_type = G_BUS_TYPE_SYSTEM;
 	priv = E_DATA_BOOK_FACTORY_GET_PRIVATE (initable);
 
 	priv->registry = e_source_registry_new_sync (cancellable, error);
+
+	/* When running tests, we pretend to be the "org.freedesktop.locale1" service
+	 * on the session bus instead of the real location on the system bus.
+	 */
+	if (g_getenv ("EDS_TESTING") != NULL)
+		bus_type = G_BUS_TYPE_SESSION;
+
+	/* Watch system bus for locale change notifications */
+	priv->localed_watch_id =
+		g_bus_watch_name (bus_type,
+				  "org.freedesktop.locale1",
+				  G_BUS_NAME_WATCHER_FLAGS_NONE,
+				  data_book_factory_localed_appeared,
+				  data_book_factory_localed_vanished,
+				  initable,
+				  NULL);
 
 	return (priv->registry != NULL);
 }
