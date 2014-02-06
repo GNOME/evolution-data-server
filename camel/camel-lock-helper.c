@@ -176,7 +176,7 @@ lock_path (const gchar *path,
 		info->uid = lock_real_uid;
 	}
 
-	g_strlcpy (info->path, path, sizeof (info->path));
+	g_strlcpy (info->path, path, strlen (path) + 1);
 	info->id = lock_id;
 	info->depth = 1;
 	info->next = lock_info_list;
