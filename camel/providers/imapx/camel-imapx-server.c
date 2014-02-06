@@ -3760,7 +3760,8 @@ imapx_call_idle (gpointer data)
 
 	/* XXX Need a better way to propagate IDLE errors. */
 	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
 		g_clear_error (&local_error);
 	}
 
