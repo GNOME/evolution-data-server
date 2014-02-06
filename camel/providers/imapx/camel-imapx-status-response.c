@@ -90,7 +90,7 @@ camel_imapx_status_response_init (CamelIMAPXStatusResponse *response)
 
 /**
  * camel_imapx_status_response_new:
- * @stream: a #CamelIMAPXStream
+ * @stream: a #CamelIMAPXInputStream
  * @inbox_separator: the separator character for INBOX
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
@@ -104,7 +104,7 @@ camel_imapx_status_response_init (CamelIMAPXStatusResponse *response)
  * Since: 3.10
  **/
 CamelIMAPXStatusResponse *
-camel_imapx_status_response_new (CamelIMAPXStream *stream,
+camel_imapx_status_response_new (CamelIMAPXInputStream *stream,
                                  gchar inbox_separator,
                                  GCancellable *cancellable,
                                  GError **error)
@@ -114,7 +114,7 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 	guchar *token;
 	guint len;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (stream), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (stream), NULL);
 
 	response = g_object_new (CAMEL_TYPE_IMAPX_STATUS_RESPONSE, NULL);
 
@@ -127,8 +127,9 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 
 	/* Parse status attributes. */
 
-	tok = camel_imapx_stream_token (
-		stream, &token, &len, cancellable, error);
+	tok = camel_imapx_input_stream_token (
+		CAMEL_IMAPX_INPUT_STREAM (stream),
+		&token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
 	if (tok != '(') {
@@ -138,8 +139,9 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 		goto fail;
 	}
 
-	tok = camel_imapx_stream_token (
-		stream, &token, &len, cancellable, error);
+	tok = camel_imapx_input_stream_token (
+		CAMEL_IMAPX_INPUT_STREAM (stream),
+		&token, &len, cancellable, error);
 
 	while (tok == IMAPX_TOK_TOKEN) {
 		guint64 number;
@@ -147,44 +149,50 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 
 		switch (imapx_tokenise ((gchar *) token, len)) {
 			case IMAPX_MESSAGES:
-				success = camel_imapx_stream_number (
-					stream, &number, cancellable, error);
+				success = camel_imapx_input_stream_number (
+					CAMEL_IMAPX_INPUT_STREAM (stream),
+					&number, cancellable, error);
 				response->priv->messages = (guint32) number;
 				response->priv->have_messages = TRUE;
 				break;
 
 			case IMAPX_RECENT:
-				success = camel_imapx_stream_number (
-					stream, &number, cancellable, error);
+				success = camel_imapx_input_stream_number (
+					CAMEL_IMAPX_INPUT_STREAM (stream),
+					&number, cancellable, error);
 				response->priv->recent = (guint32) number;
 				response->priv->have_recent = TRUE;
 				break;
 
 			case IMAPX_UNSEEN:
-				success = camel_imapx_stream_number (
-					stream, &number, cancellable, error);
+				success = camel_imapx_input_stream_number (
+					CAMEL_IMAPX_INPUT_STREAM (stream),
+					&number, cancellable, error);
 				response->priv->unseen = (guint32) number;
 				response->priv->have_unseen = TRUE;
 				break;
 
 			case IMAPX_UIDNEXT:
-				success = camel_imapx_stream_number (
-					stream, &number, cancellable, error);
+				success = camel_imapx_input_stream_number (
+					CAMEL_IMAPX_INPUT_STREAM (stream),
+					&number, cancellable, error);
 				response->priv->uidnext = (guint32) number;
 				response->priv->have_uidnext = TRUE;
 				break;
 
 			case IMAPX_UIDVALIDITY:
-				success = camel_imapx_stream_number (
-					stream, &number, cancellable, error);
+				success = camel_imapx_input_stream_number (
+					CAMEL_IMAPX_INPUT_STREAM (stream),
+					&number, cancellable, error);
 				response->priv->uidvalidity = (guint32) number;
 				response->priv->have_uidvalidity = TRUE;
 				break;
 
 			/* See RFC 4551 section 3.6 */
 			case IMAPX_HIGHESTMODSEQ:
-				success = camel_imapx_stream_number (
-					stream, &number, cancellable, error);
+				success = camel_imapx_input_stream_number (
+					CAMEL_IMAPX_INPUT_STREAM (stream),
+					&number, cancellable, error);
 				response->priv->highestmodseq = number;
 				response->priv->have_highestmodseq = TRUE;
 				break;
@@ -200,8 +208,9 @@ camel_imapx_status_response_new (CamelIMAPXStream *stream,
 		if (!success)
 			goto fail;
 
-		tok = camel_imapx_stream_token (
-			stream, &token, &len, cancellable, error);
+		tok = camel_imapx_input_stream_token (
+			CAMEL_IMAPX_INPUT_STREAM (stream),
+			&token, &len, cancellable, error);
 	}
 
 	if (tok == IMAPX_TOK_ERROR)

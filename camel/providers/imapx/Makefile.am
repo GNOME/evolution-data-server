@@ -24,6 +24,8 @@ libcamelimapx_la_SOURCES = \
 	camel-imapx-command.h \
 	camel-imapx-folder.c \
 	camel-imapx-folder.h \
+	camel-imapx-input-stream.c \
+	camel-imapx-input-stream.h \
 	camel-imapx-job.c \
 	camel-imapx-job.h \
 	camel-imapx-list-response.c \

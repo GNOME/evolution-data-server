@@ -131,7 +131,7 @@ camel_imapx_list_response_init (CamelIMAPXListResponse *response)
 
 /* Helper for camel_imapx_list_response_new() */
 static GVariant *
-imapx_list_response_parse_childinfo (CamelIMAPXStream *stream,
+imapx_list_response_parse_childinfo (CamelIMAPXInputStream *stream,
                                      CamelIMAPXListResponse *response,
                                      GCancellable *cancellable,
                                      GError **error)
@@ -141,10 +141,11 @@ imapx_list_response_parse_childinfo (CamelIMAPXStream *stream,
 	camel_imapx_token_t tok;
 	guchar *token;
 	guint len;
+	gboolean success;
 
 	g_variant_builder_init (&builder, G_VARIANT_TYPE_STRING_ARRAY);
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
@@ -156,18 +157,21 @@ imapx_list_response_parse_childinfo (CamelIMAPXStream *stream,
 	}
 
 repeat:
-	if (!camel_imapx_stream_astring (stream, &token, cancellable, error))
+	success = camel_imapx_input_stream_astring (
+		stream, &token, cancellable, error);
+
+	if (!success)
 		goto fail;
 
 	value = g_variant_new_string ((gchar *) token);
 	g_variant_builder_add_value (&builder, value);
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
 	if (tok != ')') {
-		camel_imapx_stream_ungettoken (stream, tok, token, len);
+		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 		goto repeat;
 	}
 
@@ -181,7 +185,7 @@ fail:
 
 /* Helper for camel_imapx_list_response_new() */
 static GVariant *
-imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
+imapx_list_response_parse_oldname (CamelIMAPXInputStream *stream,
                                    CamelIMAPXListResponse *response,
                                    GCancellable *cancellable,
                                    GError **error)
@@ -191,7 +195,7 @@ imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
 	guint len;
 	gchar *mailbox_name = NULL;
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
@@ -208,7 +212,7 @@ imapx_list_response_parse_oldname (CamelIMAPXStream *stream,
 	if (mailbox_name == NULL)
 		goto fail;
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
@@ -229,7 +233,7 @@ fail:
 
 /* Helper for camel_imapx_list_response_new() */
 static gboolean
-imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
+imapx_list_response_parse_extended_item (CamelIMAPXInputStream *stream,
                                          CamelIMAPXListResponse *response,
                                          GCancellable *cancellable,
                                          GError **error)
@@ -241,7 +245,10 @@ imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
 
 	/* Parse the extended item tag. */
 
-	if (!camel_imapx_stream_astring (stream, &token, cancellable, error))
+	success = camel_imapx_input_stream_astring (
+		stream, &token, cancellable, error);
+
+	if (!success)
 		return FALSE;
 
 	item_tag = g_strdup ((gchar *) token);
@@ -268,7 +275,7 @@ imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
 		success = (item_value != NULL);
 
 	} else {
-		success = camel_imapx_stream_skip_until (
+		success = camel_imapx_input_stream_skip_until (
 			stream, ")", cancellable, error);
 	}
 
@@ -286,7 +293,7 @@ imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
 
 /**
  * camel_imapx_list_response_new:
- * @stream: a #CamelIMAPXStream
+ * @stream: a #CamelIMAPXInputStream
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
@@ -299,7 +306,7 @@ imapx_list_response_parse_extended_item (CamelIMAPXStream *stream,
  * Since: 3.10
  **/
 CamelIMAPXListResponse *
-camel_imapx_list_response_new (CamelIMAPXStream *stream,
+camel_imapx_list_response_new (CamelIMAPXInputStream *stream,
                                GCancellable *cancellable,
                                GError **error)
 {
@@ -308,14 +315,15 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 	guchar *token;
 	guint len;
 	const gchar *attribute;
+	gboolean success;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (stream), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (stream), NULL);
 
 	response = g_object_new (CAMEL_TYPE_IMAPX_LIST_RESPONSE, NULL);
 
 	/* Parse attributes. */
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
@@ -326,12 +334,12 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 		goto fail;
 	}
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	while (tok == IMAPX_TOK_STRING || tok == IMAPX_TOK_TOKEN) {
 		camel_imapx_list_response_add_attribute (
 			response, (gchar *) token);
-		tok = camel_imapx_stream_token (
+		tok = camel_imapx_input_stream_token (
 			stream, &token, &len, cancellable, error);
 	}
 
@@ -362,7 +370,10 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 
 	/* Parse separator. */
 
-	if (!camel_imapx_stream_nstring (stream, &token, cancellable, error))
+	success = camel_imapx_input_stream_nstring (
+		stream, &token, cancellable, error);
+
+	if (!success)
 		goto fail;
 
 	if (token != NULL)
@@ -379,7 +390,7 @@ camel_imapx_list_response_new (CamelIMAPXStream *stream,
 
 	/* Parse extended info (optional). */
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		goto fail;
@@ -392,18 +403,18 @@ extended_item_repeat:
 		if (!success)
 			goto fail;
 
-		tok = camel_imapx_stream_token (
+		tok = camel_imapx_input_stream_token (
 			stream, &token, &len, cancellable, error);
 		if (tok == IMAPX_TOK_ERROR)
 			goto fail;
 		if (tok != ')') {
-			camel_imapx_stream_ungettoken (
+			camel_imapx_input_stream_ungettoken (
 				stream, tok, token, len);
 			goto extended_item_repeat;
 		}
 
 	} else if (tok == '\n') {
-		camel_imapx_stream_ungettoken (stream, tok, token, len);
+		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 
 	} else {
 		g_set_error (

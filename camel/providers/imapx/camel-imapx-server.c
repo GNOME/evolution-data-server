@@ -38,13 +38,12 @@
 
 #include "camel-imapx-server.h"
 
-#include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
+#include "camel-imapx-input-stream.h"
 #include "camel-imapx-job.h"
 #include "camel-imapx-logger.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
-#include "camel-imapx-stream.h"
 #include "camel-imapx-summary.h"
 #include "camel-imapx-utils.h"
 
@@ -195,71 +194,71 @@ struct _CamelIMAPXServerUntaggedContext {
 
 /* internal untagged handler prototypes */
 static gboolean	imapx_untagged_bye		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_capability	(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_exists		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_expunge		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_fetch		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_flags		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_list		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_lsub		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_namespace	(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_ok_no_bad	(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_preauth		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_quota		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_quotaroot	(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_recent		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_search		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_status		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 static gboolean	imapx_untagged_vanished		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GCancellable *cancellable,
 						 GError **error);
 
@@ -335,9 +334,9 @@ struct _CamelIMAPXServerPrivate {
 	GHashTable *untagged_handlers;
 
 	/* The 'stream_lock' also guards the GSubprocess. */
-	CamelIMAPXStream *stream;
 	GInputStream *input_stream;
 	GOutputStream *output_stream;
+	GIOStream *connection;
 #if GLIB_CHECK_VERSION(2,39,0)
 	GSubprocess *subprocess;
 #endif
@@ -400,7 +399,6 @@ struct _CamelIMAPXServerPrivate {
 enum {
 	PROP_0,
 	PROP_NAMESPACES,
-	PROP_STREAM,
 	PROP_STORE
 };
 
@@ -425,15 +423,14 @@ static gint	imapx_uidset_add		(struct _uidset_state *ss,
 						 const gchar *uid);
 
 static gboolean	imapx_command_idle_stop		(CamelIMAPXServer *is,
-						 GOutputStream *output_stream,
 						 GError **error);
 static gboolean	imapx_continuation		(CamelIMAPXServer *is,
-						 CamelIMAPXStream *stream,
+						 GInputStream *input_stream,
 						 GOutputStream *output_stream,
 						 gboolean litplus,
 						 GCancellable *cancellable,
 						 GError **error);
-static gboolean	imapx_disconnect		(CamelIMAPXServer *is);
+static void	imapx_disconnect		(CamelIMAPXServer *is);
 static gboolean	imapx_is_command_queue_empty	(CamelIMAPXServer *is);
 static gint	imapx_uid_cmp			(gconstpointer ap,
 						 gconstpointer bp,
@@ -537,7 +534,6 @@ static gboolean	imapx_use_idle		(CamelIMAPXServer *is);
 static void	imapx_start_idle		(CamelIMAPXServer *is);
 static CamelIMAPXIdleStopResult
 		imapx_stop_idle			(CamelIMAPXServer *is,
-						 GOutputStream *output_stream,
 						 GError **error);
 static gboolean	camel_imapx_server_idle		(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox,
@@ -960,27 +956,19 @@ imapx_server_inactivity_timeout_cb (gpointer data)
 		/* Do nothing. */
 
 	} else if (imapx_in_idle (is)) {
-		GOutputStream *output_stream;
 
 		/* Stop and restart the IDLE command. */
+		switch (imapx_stop_idle (is, NULL)) {
+			case IMAPX_IDLE_STOP_SUCCESS:
+				imapx_start_idle (is);
+				/* fall through */
 
-		output_stream = camel_imapx_server_ref_output_stream (is);
+			case IMAPX_IDLE_STOP_NOOP:
+				result = G_SOURCE_CONTINUE;
+				break;
 
-		if (output_stream != NULL) {
-			switch (imapx_stop_idle (is, output_stream, NULL)) {
-				case IMAPX_IDLE_STOP_SUCCESS:
-					imapx_start_idle (is);
-					/* fall through */
-
-				case IMAPX_IDLE_STOP_NOOP:
-					result = G_SOURCE_CONTINUE;
-					break;
-
-				default:
-					break;
-			}
-
-			g_object_unref (output_stream);
+			default:
+				break;
 		}
 
 	} else {
@@ -1270,8 +1258,8 @@ static void
 imapx_command_start (CamelIMAPXServer *is,
                      CamelIMAPXCommand *ic)
 {
-	CamelIMAPXStream *stream;
 	CamelIMAPXCommandPart *cp;
+	GInputStream *input_stream;
 	GOutputStream *output_stream;
 	GCancellable *cancellable;
 	gboolean cp_continuation;
@@ -1298,11 +1286,11 @@ imapx_command_start (CamelIMAPXServer *is,
 
 	camel_imapx_command_queue_push_tail (is->active, ic);
 
-	stream = camel_imapx_server_ref_stream (is);
+	input_stream = camel_imapx_server_ref_input_stream (is);
 	output_stream = camel_imapx_server_ref_output_stream (is);
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
-	if (stream == NULL) {
+	if (output_stream == NULL) {
 		local_error = g_error_new_literal (
 			CAMEL_IMAPX_ERROR, 1,
 			"Cannot issue command, no stream available");
@@ -1332,7 +1320,7 @@ imapx_command_start (CamelIMAPXServer *is,
 	while (is->literal == ic && cp_literal_plus) {
 		/* Sent LITERAL+ continuation immediately */
 		imapx_continuation (
-			is, stream, output_stream,
+			is, input_stream, output_stream,
 			TRUE, cancellable, &local_error);
 		if (local_error != NULL)
 			goto fail;
@@ -1358,7 +1346,7 @@ fail:
 	g_error_free (local_error);
 
 exit:
-	g_clear_object (&stream);
+	g_clear_object (&input_stream);
 	g_clear_object (&output_stream);
 	g_clear_object (&cancellable);
 }
@@ -1509,21 +1497,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			imapx_is_command_queue_empty (is);
 
 		if (stop_idle) {
-			GOutputStream *output_stream;
-			CamelIMAPXIdleStopResult stop_result;
-
-			stop_result = IMAPX_IDLE_STOP_NOOP;
-
-			output_stream =
-				camel_imapx_server_ref_output_stream (is);
-
-			if (output_stream != NULL) {
-				stop_result = imapx_stop_idle (
-					is, output_stream, NULL);
-				g_object_unref (output_stream);
-			}
-
-			switch (stop_result) {
+			switch (imapx_stop_idle (is, NULL)) {
 				/* Proceed with the next queued command. */
 				case IMAPX_IDLE_STOP_NOOP:
 					break;
@@ -1934,7 +1908,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_capability (CamelIMAPXServer *is,
-                           CamelIMAPXStream *stream,
+                           GInputStream *input_stream,
                            GCancellable *cancellable,
                            GError **error)
 {
@@ -1943,7 +1917,9 @@ imapx_untagged_capability (CamelIMAPXServer *is,
 	if (is->cinfo != NULL)
 		imapx_free_capability (is->cinfo);
 
-	is->cinfo = imapx_parse_capability (stream, cancellable, error);
+	is->cinfo = imapx_parse_capability (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
+
 	if (is->cinfo == NULL)
 		return FALSE;
 
@@ -1956,7 +1932,7 @@ imapx_untagged_capability (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_expunge (CamelIMAPXServer *is,
-                        CamelIMAPXStream *stream,
+                        GInputStream *input_stream,
                         GCancellable *cancellable,
                         GError **error)
 {
@@ -1999,7 +1975,7 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_vanished (CamelIMAPXServer *is,
-                         CamelIMAPXStream *stream,
+                         GInputStream *input_stream,
                          GCancellable *cancellable,
                          GError **error)
 {
@@ -2015,24 +1991,29 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	tok = camel_imapx_stream_token (
-		stream, &token, &len, cancellable, error);
+	tok = camel_imapx_input_stream_token (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		&token, &len, cancellable, error);
 	if (tok < 0)
 		return FALSE;
 	if (tok == '(') {
 		unsolicited = FALSE;
 		while (tok != ')') {
 			/* We expect this to be 'EARLIER' */
-			tok = camel_imapx_stream_token (
-				stream, &token, &len, cancellable, error);
+			tok = camel_imapx_input_stream_token (
+				CAMEL_IMAPX_INPUT_STREAM (input_stream),
+				&token, &len, cancellable, error);
 			if (tok < 0)
 				return FALSE;
 		}
 	} else {
-		camel_imapx_stream_ungettoken (stream, tok, token, len);
+		camel_imapx_input_stream_ungettoken (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			tok, token, len);
 	}
 
-	uids = imapx_parse_uids (stream, cancellable, error);
+	uids = imapx_parse_uids (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 	if (uids == NULL)
 		return FALSE;
 
@@ -2100,7 +2081,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_namespace (CamelIMAPXServer *is,
-                          CamelIMAPXStream *stream,
+                          GInputStream *input_stream,
                           GCancellable *cancellable,
                           GError **error)
 {
@@ -2109,7 +2090,8 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	response = camel_imapx_namespace_response_new (
-		stream, cancellable, error);
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
+
 	if (response == NULL)
 		return FALSE;
 
@@ -2127,7 +2109,7 @@ imapx_untagged_namespace (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_exists (CamelIMAPXServer *is,
-                       CamelIMAPXStream *stream,
+                       GInputStream *input_stream,
                        GCancellable *cancellable,
                        GError **error)
 {
@@ -2157,20 +2139,9 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 
 		count = camel_folder_summary_count (folder->summary);
 		if (count < exists) {
-			GOutputStream *output_stream;
 			CamelIMAPXIdleStopResult stop_result;
 
-			stop_result = IMAPX_IDLE_STOP_NOOP;
-
-			output_stream =
-				camel_imapx_server_ref_output_stream (is);
-
-			if (output_stream != NULL) {
-				stop_result = imapx_stop_idle (
-					is, output_stream, error);
-				g_object_unref (output_stream);
-			}
-
+			stop_result = imapx_stop_idle (is, error);
 			success = (stop_result != IMAPX_IDLE_STOP_ERROR);
 		}
 	}
@@ -2183,7 +2154,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_flags (CamelIMAPXServer *is,
-                      CamelIMAPXStream *stream,
+                      GInputStream *input_stream,
                       GCancellable *cancellable,
                       GError **error)
 {
@@ -2193,7 +2164,8 @@ imapx_untagged_flags (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	success = imapx_parse_flags (
-		stream, &flags, NULL, cancellable, error);
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		&flags, NULL, cancellable, error);
 
 	c (is->tagprefix, "flags: %08x\n", flags);
 
@@ -2202,7 +2174,7 @@ imapx_untagged_flags (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_fetch (CamelIMAPXServer *is,
-                      CamelIMAPXStream *stream,
+                      GInputStream *input_stream,
                       GCancellable *cancellable,
                       GError **error)
 {
@@ -2211,7 +2183,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	finfo = imapx_parse_fetch (stream, cancellable, error);
+	finfo = imapx_parse_fetch (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 	if (finfo == NULL) {
 		imapx_free_fetch (finfo);
 		return FALSE;
@@ -2532,7 +2505,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_lsub (CamelIMAPXServer *is,
-                     CamelIMAPXStream *stream,
+                     GInputStream *input_stream,
                      GCancellable *cancellable,
                      GError **error)
 {
@@ -2545,7 +2518,8 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	/* LSUB response is syntactically compatible with LIST response. */
-	response = camel_imapx_list_response_new (stream, cancellable, error);
+	response = camel_imapx_list_response_new (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 	if (response == NULL)
 		return FALSE;
 
@@ -2596,7 +2570,7 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_list (CamelIMAPXServer *is,
-                     CamelIMAPXStream *stream,
+                     GInputStream *input_stream,
                      GCancellable *cancellable,
                      GError **error)
 {
@@ -2611,7 +2585,8 @@ imapx_untagged_list (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	response = camel_imapx_list_response_new (stream, cancellable, error);
+	response = camel_imapx_list_response_new (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 	if (response == NULL)
 		return FALSE;
 
@@ -2675,7 +2650,7 @@ imapx_untagged_list (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_quota (CamelIMAPXServer *is,
-                      CamelIMAPXStream *stream,
+                      GInputStream *input_stream,
                       GCancellable *cancellable,
                       GError **error)
 {
@@ -2684,7 +2659,8 @@ imapx_untagged_quota (CamelIMAPXServer *is,
 	gboolean success;
 
 	success = camel_imapx_parse_quota (
-		stream, cancellable, &quota_root_name, &quota_info, error);
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		cancellable, &quota_root_name, &quota_info, error);
 
 	/* Sanity check */
 	g_return_val_if_fail (
@@ -2708,7 +2684,7 @@ imapx_untagged_quota (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_quotaroot (CamelIMAPXServer *is,
-                          CamelIMAPXStream *stream,
+                          GInputStream *input_stream,
                           GCancellable *cancellable,
                           GError **error)
 {
@@ -2718,7 +2694,8 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 	gboolean success;
 
 	success = camel_imapx_parse_quotaroot (
-		stream, cancellable, &mailbox_name, &quota_roots, error);
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		cancellable, &mailbox_name, &quota_roots, error);
 
 	/* Sanity check */
 	g_return_val_if_fail (
@@ -2748,7 +2725,7 @@ imapx_untagged_quotaroot (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_recent (CamelIMAPXServer *is,
-                       CamelIMAPXStream *stream,
+                       GInputStream *input_stream,
                        GCancellable *cancellable,
                        GError **error)
 {
@@ -2775,7 +2752,7 @@ imapx_untagged_recent (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_search (CamelIMAPXServer *is,
-                       CamelIMAPXStream *stream,
+                       GInputStream *input_stream,
                        GCancellable *cancellable,
                        GError **error)
 {
@@ -2789,18 +2766,26 @@ imapx_untagged_search (CamelIMAPXServer *is,
 	search_results = g_array_new (FALSE, FALSE, sizeof (guint64));
 
 	while (TRUE) {
+		gboolean success;
+
 		/* Peek at the next token, and break
 		 * out of the loop if we get a newline. */
-		tok = camel_imapx_stream_token (
-			stream, &token, &len, cancellable, error);
+		tok = camel_imapx_input_stream_token (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			&token, &len, cancellable, error);
 		if (tok == '\n')
 			break;
 		if (tok == IMAPX_TOK_ERROR)
 			goto exit;
-		camel_imapx_stream_ungettoken (stream, tok, token, len);
+		camel_imapx_input_stream_ungettoken (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			tok, token, len);
 
-		if (!camel_imapx_stream_number (
-			stream, &number, cancellable, error))
+		success = camel_imapx_input_stream_number (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			&number, cancellable, error);
+
+		if (!success)
 			goto exit;
 
 		g_array_append_val (search_results, number);
@@ -2825,7 +2810,7 @@ exit:
 
 static gboolean
 imapx_untagged_status (CamelIMAPXServer *is,
-                       CamelIMAPXStream *stream,
+                       GInputStream *input_stream,
                        GCancellable *cancellable,
                        GError **error)
 {
@@ -2836,7 +2821,8 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
 	response = camel_imapx_status_response_new (
-		stream, is->priv->inbox_separator, cancellable, error);
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		is->priv->inbox_separator, cancellable, error);
 	if (response == NULL)
 		return FALSE;
 
@@ -2857,7 +2843,7 @@ imapx_untagged_status (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_bye (CamelIMAPXServer *is,
-                    CamelIMAPXStream *stream,
+                    GInputStream *input_stream,
                     GCancellable *cancellable,
                     GError **error)
 {
@@ -2865,10 +2851,17 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 	CamelService *service;
 	CamelServiceConnectionStatus status;
 	guchar *token = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	if (camel_imapx_stream_text (stream, &token, cancellable, error)) {
+	success = camel_imapx_input_stream_text (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		&token, cancellable, error);
+
+	/* XXX It's weird to be setting an error on success,
+	 *     but it's to indicate the server hung up on us. */
+	if (success) {
 		c (is->tagprefix, "BYE: %s\n", token);
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, 1,
@@ -2897,7 +2890,7 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_preauth (CamelIMAPXServer *is,
-                        CamelIMAPXStream *stream,
+                        GInputStream *input_stream,
                         GCancellable *cancellable,
                         GError **error)
 {
@@ -2912,7 +2905,7 @@ imapx_untagged_preauth (CamelIMAPXServer *is,
 
 static gboolean
 imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
-                          CamelIMAPXStream *stream,
+                          GInputStream *input_stream,
                           GCancellable *cancellable,
                           GError **error)
 {
@@ -2922,16 +2915,17 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 
 	/* TODO: validate which ones of these can happen as unsolicited responses */
 	/* TODO: handle bye/preauth differently */
-	camel_imapx_stream_ungettoken (
-		stream,
+	camel_imapx_input_stream_ungettoken (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
 		is->priv->context->tok,
 		is->priv->context->token,
 		is->priv->context->len);
 
 	mailbox = camel_imapx_server_ref_selected (is);
 
-	is->priv->context->sinfo =
-		imapx_parse_status (stream, mailbox, cancellable, error);
+	is->priv->context->sinfo = imapx_parse_status (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		mailbox, cancellable, error);
 
 	g_clear_object (&mailbox);
 
@@ -3048,7 +3042,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 /* handle any untagged responses */
 static gboolean
 imapx_untagged (CamelIMAPXServer *is,
-                CamelIMAPXStream *stream,
+                GInputStream *input_stream,
                 GCancellable *cancellable,
                 GError **error)
 {
@@ -3075,8 +3069,8 @@ imapx_untagged (CamelIMAPXServer *is,
 
 	e (is->tagprefix, "got untagged response\n");
 	is->priv->context->id = 0;
-	is->priv->context->tok = camel_imapx_stream_token (
-		stream,
+	is->priv->context->tok = camel_imapx_input_stream_token (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
 		&(is->priv->context->token),
 		&(is->priv->context->len),
 		cancellable, error);
@@ -3086,8 +3080,8 @@ imapx_untagged (CamelIMAPXServer *is,
 	if (is->priv->context->tok == IMAPX_TOK_INT) {
 		is->priv->context->id = strtoul (
 			(gchar *) is->priv->context->token, NULL, 10);
-		is->priv->context->tok = camel_imapx_stream_token (
-			stream,
+		is->priv->context->tok = camel_imapx_input_stream_token (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
 			&(is->priv->context->token),
 			&(is->priv->context->len),
 			cancellable, error);
@@ -3124,7 +3118,7 @@ imapx_untagged (CamelIMAPXServer *is,
 		}
 
 		/* call the handler function */
-		success = desc->handler (is, stream, cancellable, error);
+		success = desc->handler (is, input_stream, cancellable, error);
 		if (!success)
 			goto exit;
 
@@ -3147,7 +3141,8 @@ imapx_untagged (CamelIMAPXServer *is,
 			goto exit;
 	}
 
-	success = camel_imapx_stream_skip (stream, cancellable, error);
+	success = camel_imapx_input_stream_skip (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
 
 exit:
 	g_free (is->priv->context);
@@ -3160,7 +3155,7 @@ exit:
  * either data continuations, or auth continuation */
 static gboolean
 imapx_continuation (CamelIMAPXServer *is,
-                    CamelIMAPXStream *stream,
+                    GInputStream *input_stream,
                     GOutputStream *output_stream,
                     gboolean litplus,
                     GCancellable *cancellable,
@@ -3170,13 +3165,18 @@ imapx_continuation (CamelIMAPXServer *is,
 	CamelIMAPXCommandPart *cp;
 	GList *link;
 	gssize n_bytes_written;
+	gboolean success;
 
 	/* The 'literal' pointer is like a write-lock, nothing else
 	 * can write while we have it ... so we dont need any
 	 * ohter lock here.  All other writes go through
 	 * queue-lock */
 	if (imapx_in_idle (is)) {
-		if (!camel_imapx_stream_skip (stream, cancellable, error))
+		success = camel_imapx_input_stream_skip (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			cancellable, error);
+
+		if (!success)
 			return FALSE;
 
 		c (is->tagprefix, "Got continuation response for IDLE \n");
@@ -3188,7 +3188,7 @@ imapx_continuation (CamelIMAPXServer *is,
 			/* IDLE got cancelled after we sent the command, while
 			 * we were waiting for this continuation. Send DONE
 			 * immediately. */
-			if (!imapx_command_idle_stop (is, output_stream, error)) {
+			if (!imapx_command_idle_stop (is, error)) {
 				g_mutex_unlock (&is->priv->idle_lock);
 				return FALSE;
 			}
@@ -3212,8 +3212,9 @@ imapx_continuation (CamelIMAPXServer *is,
 	if (!litplus) {
 		if (ic == NULL) {
 			c (is->tagprefix, "got continuation response with no outstanding continuation requests?\n");
-			return camel_imapx_stream_skip (
-				stream, cancellable, error);
+			return camel_imapx_input_stream_skip (
+				CAMEL_IMAPX_INPUT_STREAM (input_stream),
+				cancellable, error);
 		}
 		c (is->tagprefix, "got continuation response for data\n");
 	} else {
@@ -3238,8 +3239,11 @@ imapx_continuation (CamelIMAPXServer *is,
 		gchar *resp;
 		guchar *token;
 
-		if (!camel_imapx_stream_text (
-			stream, &token, cancellable, error))
+		success = camel_imapx_input_stream_text (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			&token, cancellable, error);
+
+		if (!success)
 			return FALSE;
 
 		resp = camel_sasl_challenge_base64_sync (
@@ -3265,22 +3269,29 @@ imapx_continuation (CamelIMAPXServer *is,
 		goto noskip;
 		break; }
 	case CAMEL_IMAPX_COMMAND_FILE: {
-		CamelStream *file;
+		GFile *file;
+		GFileInputStream *file_input_stream;
 
 		c (is->tagprefix, "writing file '%s' to literal\n", (gchar *) cp->ob);
 
-		// FIXME: errors
-		if (cp->ob && (file = camel_stream_fs_new_with_name (cp->ob, O_RDONLY, 0, NULL))) {
-			n_bytes_written = camel_stream_write_to_stream (
-				file, CAMEL_STREAM (stream),
-				cancellable, error);
-			g_object_unref (file);
+		file = g_file_new_for_path (cp->ob);
+		file_input_stream = g_file_read (file, cancellable, error);
+		g_object_unref (file);
 
-			if (n_bytes_written < 0)
-				return FALSE;
-		} else if (cp->ob_size > 0) {
-			// Server is expecting data ... ummm, send it zeros?  abort?
-		}
+		if (file_input_stream == NULL)
+			return FALSE;
+
+		n_bytes_written = g_output_stream_splice (
+			output_stream,
+			G_INPUT_STREAM (file_input_stream),
+			G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE,
+			cancellable, error);
+
+		g_object_unref (file_input_stream);
+
+		if (n_bytes_written < 0)
+			return FALSE;
+
 		break; }
 	case CAMEL_IMAPX_COMMAND_STRING:
 		n_bytes_written = g_output_stream_write_all (
@@ -3299,7 +3310,11 @@ imapx_continuation (CamelIMAPXServer *is,
 	}
 
 	if (!litplus) {
-		if (!camel_imapx_stream_skip (stream, cancellable, error))
+		success = camel_imapx_input_stream_skip (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
+			cancellable, error);
+
+		if (!success)
 			return FALSE;
 	}
 
@@ -3344,7 +3359,7 @@ noskip:
 /* handle a completion line */
 static gboolean
 imapx_completion (CamelIMAPXServer *is,
-                  CamelIMAPXStream *stream,
+                  GInputStream *input_stream,
                   guchar *token,
                   gint len,
                   GCancellable *cancellable,
@@ -3429,7 +3444,9 @@ imapx_completion (CamelIMAPXServer *is,
 
 	mailbox = camel_imapx_server_ref_selected (is);
 
-	ic->status = imapx_parse_status (stream, mailbox, cancellable, error);
+	ic->status = imapx_parse_status (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		mailbox, cancellable, error);
 
 	g_clear_object (&mailbox);
 
@@ -3453,19 +3470,23 @@ exit:
 
 static gboolean
 imapx_step (CamelIMAPXServer *is,
-            CamelIMAPXStream *stream,
-            GOutputStream *output_stream,
+            GInputStream *input_stream,
             GCancellable *cancellable,
             GError **error)
 {
+	GOutputStream *output_stream;
 	guint len;
 	guchar *token;
 	gint tok;
 	gboolean success = FALSE;
 
 	// poll ? wait for other stuff? loop?
-	tok = camel_imapx_stream_token (
-		stream, &token, &len, cancellable, error);
+	tok = camel_imapx_input_stream_token (
+		CAMEL_IMAPX_INPUT_STREAM (input_stream),
+		&token, &len, cancellable, error);
+
+	output_stream = camel_imapx_server_ref_output_stream (is);
+	g_return_val_if_fail (output_stream != NULL, FALSE);
 
 	switch (tok) {
 		case IMAPX_TOK_ERROR:
@@ -3473,15 +3494,16 @@ imapx_step (CamelIMAPXServer *is,
 			break;
 		case '*':
 			success = imapx_untagged (
-				is, stream, cancellable, error);
+				is, input_stream, cancellable, error);
 			break;
 		case IMAPX_TOK_TOKEN:
 			success = imapx_completion (
-				is, stream, token, len, cancellable, error);
+				is, input_stream,
+				token, len, cancellable, error);
 			break;
 		case '+':
 			success = imapx_continuation (
-				is, stream, output_stream,
+				is, input_stream, output_stream,
 				FALSE, cancellable, error);
 			break;
 		default:
@@ -3490,6 +3512,8 @@ imapx_step (CamelIMAPXServer *is,
 				"unexpected server response:");
 			break;
 	}
+
+	g_clear_object (&output_stream);
 
 	return success;
 }
@@ -3502,15 +3526,11 @@ imapx_command_run (CamelIMAPXServer *is,
                    GCancellable *cancellable,
                    GError **error)
 {
-	CamelIMAPXStream *stream;
-	GOutputStream *output_stream;
+	GInputStream *input_stream;
 	gboolean success = TRUE;
 
-	stream = camel_imapx_server_ref_stream (is);
-	g_return_val_if_fail (stream != NULL, FALSE);
-
-	output_stream = camel_imapx_server_ref_output_stream (is);
-	g_return_val_if_fail (output_stream != NULL, FALSE);
+	input_stream = camel_imapx_server_ref_input_stream (is);
+	g_return_val_if_fail (input_stream != NULL, FALSE);
 
 	camel_imapx_command_close (ic);
 
@@ -3518,11 +3538,8 @@ imapx_command_run (CamelIMAPXServer *is,
 	imapx_command_start (is, ic);
 	QUEUE_UNLOCK (is);
 
-	while (success && ic->status == NULL) {
-		success = imapx_step (
-			is, stream, output_stream,
-			cancellable, error);
-	}
+	while (success && ic->status == NULL)
+		success = imapx_step (is, input_stream, cancellable, error);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -3531,8 +3548,7 @@ imapx_command_run (CamelIMAPXServer *is,
 	camel_imapx_command_queue_remove (is->active, ic);
 	QUEUE_UNLOCK (is);
 
-	g_object_unref (stream);
-	g_object_unref (output_stream);
+	g_object_unref (input_stream);
 
 	return success;
 }
@@ -3607,14 +3623,16 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 /*TODO handle negative cases sanely */
 static gboolean
 imapx_command_idle_stop (CamelIMAPXServer *is,
-                         GOutputStream *output_stream,
                          GError **error)
 {
+	GOutputStream *output_stream;
 	GCancellable *cancellable;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	g_return_val_if_fail (G_IS_OUTPUT_STREAM (output_stream), FALSE);
+
+	output_stream = camel_imapx_server_ref_output_stream (is);
+	g_return_val_if_fail (output_stream != NULL, FALSE);
 
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
@@ -3629,6 +3647,7 @@ imapx_command_idle_stop (CamelIMAPXServer *is,
 	}
 
 	g_clear_object (&cancellable);
+	g_clear_object (&output_stream);
 
 	return success;
 }
@@ -3878,11 +3897,9 @@ imapx_idle_thread (gpointer data)
 
 static CamelIMAPXIdleStopResult
 imapx_stop_idle (CamelIMAPXServer *is,
-                 GOutputStream *output_stream,
                  GError **error)
 {
 	CamelIMAPXIdleStopResult result = IMAPX_IDLE_STOP_NOOP;
-	gboolean success;
 	time_t now;
 
 	time (&now);
@@ -3899,9 +3916,7 @@ imapx_stop_idle (CamelIMAPXServer *is,
 			break;
 
 		case IMAPX_IDLE_STARTED:
-			success = imapx_command_idle_stop (
-				is, output_stream, error);
-			if (success) {
+			if (imapx_command_idle_stop (is, error)) {
 				result = IMAPX_IDLE_STOP_SUCCESS;
 			} else {
 				result = IMAPX_IDLE_STOP_ERROR;
@@ -4236,16 +4251,27 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 {
 	GConverter *logger;
 
-	/* Wrapper the streams for debugging output. */
-
 	if (input_stream != NULL) {
+		GInputStream *temp_stream;
+
+		/* The logger produces debugging output. */
 		logger = camel_imapx_logger_new (is->tagprefix);
 		input_stream = g_converter_input_stream_new (
 			input_stream, logger);
 		g_clear_object (&logger);
+
+		/* Buffer the input stream for parsing. */
+		temp_stream = camel_imapx_input_stream_new (input_stream);
+		g_object_bind_property (
+			temp_stream, "close-base-stream",
+			input_stream, "close-base-stream",
+			G_BINDING_SYNC_CREATE);
+		g_object_unref (input_stream);
+		input_stream = temp_stream;
 	}
 
 	if (output_stream != NULL) {
+		/* The logger produces debugging output. */
 		logger = camel_imapx_logger_new (is->tagprefix);
 		output_stream = g_converter_output_stream_new (
 			output_stream, logger);
@@ -4447,11 +4473,9 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 {
 	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
-	CamelStream *stream = NULL;
-	CamelStream *imapx_stream = NULL;
 	CamelIMAPXStore *store;
 	CamelSettings *settings;
-	GIOStream *base_stream;
+	GIOStream *connection = NULL;
 	GIOStream *tls_stream;
 	GSocket *socket;
 	guint len;
@@ -4492,55 +4516,47 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			goto exit;
 	}
 
-	base_stream = camel_network_service_connect_sync (
+	connection = camel_network_service_connect_sync (
 		CAMEL_NETWORK_SERVICE (store), cancellable, error);
 
-	if (base_stream != NULL) {
+	if (connection != NULL) {
 		GInputStream *input_stream;
 		GOutputStream *output_stream;
 
-		input_stream = g_io_stream_get_input_stream (base_stream);
-		output_stream = g_io_stream_get_output_stream (base_stream);
+		/* Disable the Nagle algorithm with TCP_NODELAY, since IMAP
+		 * commands should be issued immediately even we've not yet
+		 * received a response to a previous command. */
+		socket = g_socket_connection_get_socket (
+			G_SOCKET_CONNECTION (connection));
+		g_socket_set_option (
+			socket, IPPROTO_TCP, TCP_NODELAY, 1, &local_error);
+		if (local_error != NULL) {
+			/* Failure to set the socket option is non-fatal. */
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_clear_error (&local_error);
+		}
+
+		g_mutex_lock (&is->priv->stream_lock);
+		g_warn_if_fail (is->priv->connection == NULL);
+		is->priv->connection = g_object_ref (connection);
+		g_mutex_unlock (&is->priv->stream_lock);
+
+		input_stream = g_io_stream_get_input_stream (connection);
+		output_stream = g_io_stream_get_output_stream (connection);
 
 		imapx_server_set_streams (is, input_stream, output_stream);
 
-		stream = camel_stream_new (base_stream);
-		g_object_unref (base_stream);
+		/* Hang on to the connection reference in case we need to
+		 * issue STARTTLS below. */
 	} else {
 		success = FALSE;
 		goto exit;
 	}
 
-	/* Disable the Nagle algorithm with TCP_NODELAY, since IMAP
-	 * commands should be issued immediately even we've not yet
-	 * received a response to a previous command. */
-	socket = g_socket_connection_get_socket (
-		G_SOCKET_CONNECTION (base_stream));
-	g_socket_set_option (
-		socket, IPPROTO_TCP, TCP_NODELAY, 1, &local_error);
-	if (local_error != NULL) {
-		/* Failure to set the socket option is non-fatal. */
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-		g_clear_error (&local_error);
-	}
-
-	imapx_stream = camel_imapx_stream_new (stream);
-
-	/* CamelIMAPXServer takes ownership of the IMAPX stream.
-	 * We need to set this right away for imapx_command_run()
-	 * to work, but we delay emitting a "notify" signal until
-	 * we're fully connected. */
-	g_mutex_lock (&is->priv->stream_lock);
-	g_warn_if_fail (is->priv->stream == NULL);
-	is->priv->stream = CAMEL_IMAPX_STREAM (imapx_stream);
-	g_mutex_unlock (&is->priv->stream_lock);
-
-	g_object_unref (stream);
-
- connected:
-	CAMEL_IMAPX_STREAM (imapx_stream)->tagprefix = is->tagprefix;
-
+connected:
 	while (1) {
+		GInputStream *input_stream;
+
 		// poll ? wait for other stuff? loop?
 		if (camel_application_is_exiting) {
 			g_set_error (
@@ -4551,32 +4567,40 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			goto exit;
 		}
 
-		tok = camel_imapx_stream_token (
-			CAMEL_IMAPX_STREAM (imapx_stream),
+		input_stream = camel_imapx_server_ref_input_stream (is);
+
+		tok = camel_imapx_input_stream_token (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream),
 			&token, &len, cancellable, error);
+
 		if (tok < 0) {
 			success = FALSE;
-			goto exit;
-		}
 
-		if (tok == '*') {
+		} else if (tok == '*') {
 			success = imapx_untagged (
-				is, CAMEL_IMAPX_STREAM (imapx_stream),
-				cancellable, error);
-			if (!success)
-				goto exit;
-			break;
-		}
-		camel_imapx_stream_ungettoken (
-			CAMEL_IMAPX_STREAM (imapx_stream), tok, token, len);
+				is, input_stream, cancellable, error);
 
-		success = camel_imapx_stream_text (
-			CAMEL_IMAPX_STREAM (imapx_stream),
-			&token, cancellable, error);
+			if (success) {
+				g_object_unref (input_stream);
+				break;
+			}
+
+		} else {
+			camel_imapx_input_stream_ungettoken (
+				CAMEL_IMAPX_INPUT_STREAM (input_stream),
+				tok, token, len);
+
+			success = camel_imapx_input_stream_text (
+				CAMEL_IMAPX_INPUT_STREAM (input_stream),
+				&token, cancellable, error);
+
+			g_free (token);
+		}
+
+		g_object_unref (input_stream);
+
 		if (!success)
 			goto exit;
-		e (is->tagprefix, "Got unexpected line before greeting:  '%s'\n", token);
-		g_free (token);
 	}
 
 	if (!is->cinfo) {
@@ -4643,14 +4667,17 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 		if (!success)
 			goto exit;
 
-		base_stream = camel_stream_ref_base_stream (stream);
 		tls_stream = camel_network_service_starttls (
-			CAMEL_NETWORK_SERVICE (store), base_stream, error);
-		g_object_unref (base_stream);
+			CAMEL_NETWORK_SERVICE (store), connection, error);
 
 		if (tls_stream != NULL) {
 			GInputStream *input_stream;
 			GOutputStream *output_stream;
+
+			g_mutex_lock (&is->priv->stream_lock);
+			g_object_unref (is->priv->connection);
+			is->priv->connection = g_object_ref (tls_stream);
+			g_mutex_unlock (&is->priv->stream_lock);
 
 			input_stream =
 				g_io_stream_get_input_stream (tls_stream);
@@ -4660,7 +4687,6 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 			imapx_server_set_streams (
 				is, input_stream, output_stream);
 
-			camel_stream_set_base_stream (stream, tls_stream);
 			g_object_unref (tls_stream);
 		} else {
 			g_prefix_error (
@@ -4684,15 +4710,15 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	}
 
 exit:
-	if (success) {
-		g_object_notify (G_OBJECT (is), "stream");
-	} else {
+	if (!success) {
 		g_mutex_lock (&is->priv->stream_lock);
 
-		if (is->priv->stream != NULL) {
-			g_object_unref (is->priv->stream);
-			is->priv->stream = NULL;
-		}
+		g_clear_object (&is->priv->input_stream);
+		g_clear_object (&is->priv->output_stream);
+		g_clear_object (&is->priv->connection);
+#if GLIB_CHECK_VERSION(2,39,0)
+		g_clear_object (&is->priv->subprocess);
+#endif
 
 		if (is->cinfo != NULL) {
 			imapx_free_capability (is->cinfo);
@@ -4704,7 +4730,8 @@ exit:
 
 	g_free (host);
 
-	g_object_unref (store);
+	g_clear_object (&connection);
+	g_clear_object (&store);
 
 	return success;
 }
@@ -7542,38 +7569,26 @@ static gboolean
 imapx_ready_to_read (GInputStream *input_stream,
                      CamelIMAPXServer *is)
 {
-	CamelIMAPXStream *stream;
 	GOutputStream *output_stream;
 	GCancellable *cancellable;
 	GError *local_error = NULL;
 
-	/* XXX Still need to retrieve the CamelStream until IMAPX can
-	 *     be ported to use GInputStream / GOutputStream directly. */
-	stream = camel_imapx_server_ref_stream (is);
+	/* XXX Don't use the passed in GInputStream because that's
+	 *     the CamelIMAPXInputStream base stream.  We need the
+	 *     CamelIMAPXInputStream itself. */
+
+	input_stream = camel_imapx_server_ref_input_stream (is);
 	output_stream = camel_imapx_server_ref_output_stream (is);
 
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
-	if (stream != NULL) {
-		gboolean success;
+	while (imapx_step (is, input_stream, cancellable, &local_error)) {
+		gint bytes_buffered;
 
-		success = imapx_step (
-			is, stream, output_stream,
-			cancellable, &local_error);
-
-		while (success) {
-			if (camel_imapx_stream_buffered (stream) == 0)
-				break;
-
-			success = imapx_step (
-				is, stream, output_stream,
-				cancellable, &local_error);
-		}
-	} else {
-		local_error = g_error_new_literal (
-			CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_NOT_CONNECTED,
-			_("Lost connection to IMAP server"));
+		bytes_buffered = camel_imapx_input_stream_buffered (
+			CAMEL_IMAPX_INPUT_STREAM (input_stream));
+		if (bytes_buffered == 0)
+			break;
 	}
 
 	if (g_cancellable_is_cancelled (cancellable)) {
@@ -7593,7 +7608,7 @@ imapx_ready_to_read (GInputStream *input_stream,
 		}
 	}
 
-	g_clear_object (&stream);
+	g_clear_object (&input_stream);
 	g_clear_object (&output_stream);
 	g_clear_object (&cancellable);
 
@@ -7619,9 +7634,7 @@ imapx_parser_thread (gpointer user_data)
 {
 	CamelIMAPXServer *is;
 	CamelIMAPXStore *store;
-	CamelIMAPXStream *stream;
-	GIOStream *base_stream = NULL;
-	GInputStream *input_stream = NULL;
+	GInputStream *input_stream;
 	GCancellable *cancellable;
 	GSource *pollable_source;
 
@@ -7635,26 +7648,10 @@ imapx_parser_thread (gpointer user_data)
 	cancellable = g_cancellable_new ();
 	g_weak_ref_set (&is->priv->parser_cancellable, cancellable);
 
-	stream = camel_imapx_server_ref_stream (is);
-	g_return_val_if_fail (stream != NULL, NULL);
+	input_stream = camel_imapx_server_ref_input_stream (is);
+	g_return_val_if_fail (input_stream != NULL, NULL);
 
 	g_main_context_push_thread_default (is->priv->parser_main_context);
-
-#if GLIB_CHECK_VERSION(2,39,0)
-	if (is->priv->subprocess != NULL) {
-		input_stream =
-			g_subprocess_get_stdout_pipe (is->priv->subprocess);
-	}
-#endif
-
-	if (input_stream == NULL) {
-		CamelStream *source_stream;
-
-		source_stream = camel_imapx_stream_ref_source (stream);
-		base_stream = camel_stream_ref_base_stream (source_stream);
-		input_stream = g_io_stream_get_input_stream (base_stream);
-		g_object_unref (source_stream);
-	}
 
 	pollable_source = g_pollable_input_stream_create_source (
 		G_POLLABLE_INPUT_STREAM (input_stream), cancellable);
@@ -7669,8 +7666,7 @@ imapx_parser_thread (gpointer user_data)
 	g_source_unref (pollable_source);
 
 	g_clear_object (&cancellable);
-	g_clear_object (&base_stream);
-	g_clear_object (&stream);
+	g_clear_object (&input_stream);
 
 	g_main_loop_run (is->priv->parser_main_loop);
 
@@ -7728,13 +7724,6 @@ imapx_server_get_property (GObject *object,
 			g_value_take_object (
 				value,
 				camel_imapx_server_ref_namespaces (
-				CAMEL_IMAPX_SERVER (object)));
-			return;
-
-		case PROP_STREAM:
-			g_value_take_object (
-				value,
-				camel_imapx_server_ref_stream (
 				CAMEL_IMAPX_SERVER (object)));
 			return;
 
@@ -7947,17 +7936,6 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_STREAM,
-		g_param_spec_object (
-			"stream",
-			"Stream",
-			"IMAP network stream",
-			CAMEL_TYPE_IMAPX_STREAM,
-			G_PARAM_READABLE |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
 		PROP_STORE,
 		g_param_spec_object (
 			"store",
@@ -8112,23 +8090,6 @@ camel_imapx_server_ref_settings (CamelIMAPXServer *server)
 	g_object_unref (store);
 
 	return CAMEL_IMAPX_SETTINGS (settings);
-}
-
-CamelIMAPXStream *
-camel_imapx_server_ref_stream (CamelIMAPXServer *server)
-{
-	CamelIMAPXStream *stream = NULL;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), NULL);
-
-	g_mutex_lock (&server->priv->stream_lock);
-
-	if (server->priv->stream != NULL)
-		stream = g_object_ref (server->priv->stream);
-
-	g_mutex_unlock (&server->priv->stream_lock);
-
-	return stream;
 }
 
 /**
@@ -8341,25 +8302,17 @@ camel_imapx_server_list_mailboxes (CamelIMAPXServer *is,
 	return list;
 }
 
-static gboolean
+static void
 imapx_disconnect (CamelIMAPXServer *is)
 {
-	gboolean ret = TRUE;
-
 	g_mutex_lock (&is->priv->stream_lock);
-
-	if (is->priv->stream != NULL) {
-		CamelStream *stream = CAMEL_STREAM (is->priv->stream);
-
-		if (camel_stream_close (stream, NULL, NULL) == -1)
-			ret = FALSE;
-
-		g_object_unref (is->priv->stream);
-		is->priv->stream = NULL;
-	}
 
 	g_clear_object (&is->priv->input_stream);
 	g_clear_object (&is->priv->output_stream);
+	g_clear_object (&is->priv->connection);
+#if GLIB_CHECK_VERSION(2,39,0)
+	g_clear_object (&is->priv->subprocess);
+#endif
 
 	g_mutex_unlock (&is->priv->stream_lock);
 
@@ -8375,10 +8328,6 @@ imapx_disconnect (CamelIMAPXServer *is)
 	}
 
 	is->state = IMAPX_DISCONNECTED;
-
-	g_object_notify (G_OBJECT (is), "stream");
-
-	return ret;
 }
 
 /* Client commands */

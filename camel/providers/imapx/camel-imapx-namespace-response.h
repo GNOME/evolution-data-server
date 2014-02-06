@@ -67,7 +67,7 @@ GType		camel_imapx_namespace_response_get_type
 					(void) G_GNUC_CONST;
 CamelIMAPXNamespaceResponse *
 		camel_imapx_namespace_response_new
-					(CamelIMAPXStream *stream,
+					(CamelIMAPXInputStream *stream,
 					 GCancellable *cancellable,
 					 GError **error);
 CamelIMAPXNamespaceResponse *

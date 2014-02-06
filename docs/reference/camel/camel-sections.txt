@@ -3379,6 +3379,41 @@ CamelIMAPXFolderPrivate
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-input-stream</FILE>
+<TITLE>CamelIMAPXInputStream</TITLE>
+CAMEL_IMAPX_ERROR
+CamelIMAPXInputStream
+camel_imapx_input_stream_new
+camel_imapx_input_stream_buffered
+camel_imapx_token_t
+camel_imapx_input_stream_token
+camel_imapx_input_stream_ungettoken
+camel_imapx_input_stream_set_literal
+camel_imapx_input_stream_gets
+camel_imapx_input_stream_getl
+camel_imapx_input_stream_atom
+camel_imapx_input_stream_astring
+camel_imapx_input_stream_nstring
+camel_imapx_input_stream_nstring_bytes
+camel_imapx_input_stream_text
+camel_imapx_input_stream_number
+camel_imapx_input_stream_skip
+camel_imapx_input_stream_skip_until
+<SUBSECTION Standard>
+CAMEL_IMAPX_INPUT_STREAM
+CAMEL_IS_IMAPX_INPUT_STREAM
+CAMEL_TYPE_IMAPX_INPUT_STREAM
+CAMEL_IMAPX_INPUT_STREAM_CLASS
+CAMEL_IS_IMAPX_INPUT_STREAM_CLASS
+CAMEL_IMAPX_INPUT_STREAM_GET_CLASS
+CamelIMAPXInputStreamClass
+camel_imapx_input_stream_get_type
+<SUBSECTION Private>
+CamelIMAPXInputStreamPrivate
+camel_imapx_error_quark
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-job</FILE>
 <TITLE>CamelIMAPXJob</TITLE>
 CAMEL_IS_IMAPX_JOB
@@ -3588,7 +3623,6 @@ CamelIMAPXServer
 camel_imapx_server_new
 camel_imapx_server_ref_store
 camel_imapx_server_ref_settings
-camel_imapx_server_ref_stream
 camel_imapx_server_ref_input_stream
 camel_imapx_server_ref_output_stream
 camel_imapx_server_ref_namespaces

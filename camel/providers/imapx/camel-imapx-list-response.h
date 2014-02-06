@@ -20,7 +20,7 @@
 
 #include <gio/gio.h>
 
-#include "camel-imapx-stream.h"
+#include "camel-imapx-input-stream.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_LIST_RESPONSE \
@@ -90,7 +90,7 @@ GType		camel_imapx_list_response_get_type
 					(void) G_GNUC_CONST;
 CamelIMAPXListResponse *
 		camel_imapx_list_response_new
-					(CamelIMAPXStream *stream,
+					(CamelIMAPXInputStream *stream,
 					 GCancellable *cancellable,
 					 GError **error);
 guint		camel_imapx_list_response_hash

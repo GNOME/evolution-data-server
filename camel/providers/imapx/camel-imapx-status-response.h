@@ -20,7 +20,7 @@
 
 #include <gio/gio.h>
 
-#include "camel-imapx-stream.h"
+#include "camel-imapx-input-stream.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_STATUS_RESPONSE \
@@ -68,7 +68,7 @@ GType		camel_imapx_status_response_get_type
 					(void) G_GNUC_CONST;
 CamelIMAPXStatusResponse *
 		camel_imapx_status_response_new
-					(CamelIMAPXStream *stream,
+					(CamelIMAPXInputStream *stream,
 					 gchar inbox_separator,
 					 GCancellable *cancellable,
 					 GError **error);

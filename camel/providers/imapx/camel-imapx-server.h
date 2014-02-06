@@ -23,7 +23,6 @@
 #include "camel-imapx-command.h"
 #include "camel-imapx-mailbox.h"
 #include "camel-imapx-namespace-response.h"
-#include "camel-imapx-stream.h"
 #include "camel-imapx-store-summary.h"
 
 /* Standard GObject macros */
@@ -58,10 +57,10 @@ typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
 /* untagged response handling */
 typedef gboolean
 		(*CamelIMAPXUntaggedRespHandler)
-						(CamelIMAPXServer *server,
-						 CamelIMAPXStream *stream,
-						 GCancellable *cancellable,
-						 GError **error);
+					(CamelIMAPXServer *server,
+					 GInputStream *input_stream,
+					 GCancellable *cancellable,
+					 GError **error);
 
 /**
  * CamelIMAPXUntaggedRespHandlerDesc:
@@ -75,7 +74,7 @@ typedef gboolean
  *                 running @handler. If not NULL, @skip_stream_when_done
  *                 for the current handler has no effect
  * @skip_stream_when_done: whether or not to skip the current IMAP
- *                         untagged response in the #CamelIMAPXStream.
+ *                         untagged response in the #GInputStream.
  *                         Set to TRUE if your handler does not eat
  *                         the stream up to the next response token
  *
@@ -143,8 +142,6 @@ struct _CamelIMAPXStore *
 		camel_imapx_server_ref_store	(CamelIMAPXServer *is);
 struct _CamelIMAPXSettings *
 		camel_imapx_server_ref_settings	(CamelIMAPXServer *is);
-CamelIMAPXStream *
-		camel_imapx_server_ref_stream	(CamelIMAPXServer *is);
 GInputStream *	camel_imapx_server_ref_input_stream
 						(CamelIMAPXServer *is);
 GOutputStream *	camel_imapx_server_ref_output_stream

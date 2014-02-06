@@ -91,7 +91,7 @@ camel_imapx_namespace_response_init (CamelIMAPXNamespaceResponse *response)
 }
 
 static gboolean
-imapx_namespace_response_parse_namespace (CamelIMAPXStream *stream,
+imapx_namespace_response_parse_namespace (CamelIMAPXInputStream *stream,
                                           CamelIMAPXNamespaceResponse *response,
                                           CamelIMAPXNamespaceCategory category,
                                           GCancellable *cancellable,
@@ -102,8 +102,9 @@ imapx_namespace_response_parse_namespace (CamelIMAPXStream *stream,
 	guint len;
 	gchar *prefix;
 	gchar separator;
+	gboolean success;
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		return FALSE;
@@ -122,7 +123,7 @@ imapx_namespace_response_parse_namespace (CamelIMAPXStream *stream,
 	}
 
 repeat:
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		return FALSE;
@@ -133,7 +134,7 @@ repeat:
 		return FALSE;
 	}
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		return FALSE;
@@ -146,7 +147,10 @@ repeat:
 
 	prefix = g_strdup ((gchar *) token);
 
-	if (!camel_imapx_stream_nstring (stream, &token, cancellable, error)) {
+	success = camel_imapx_input_stream_nstring (
+		stream, &token, cancellable, error);
+
+	if (!success) {
 		g_free (prefix);
 		return FALSE;
 	}
@@ -159,7 +163,7 @@ repeat:
 
 	/* FIXME Parse any namespace response extensions. */
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		return FALSE;
@@ -170,12 +174,12 @@ repeat:
 		return FALSE;
 	}
 
-	tok = camel_imapx_stream_token (
+	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
 	if (tok == IMAPX_TOK_ERROR)
 		return FALSE;
 	if (tok == '(') {
-		camel_imapx_stream_ungettoken (stream, tok, token, len);
+		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 		goto repeat;
 	}
 	if (tok != ')') {
@@ -190,7 +194,7 @@ repeat:
 
 /**
  * camel_imapx_namespace_response_new:
- * @stream: a #CamelIMAPXStream
+ * @stream: a #CamelIMAPXInputStream
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -203,14 +207,14 @@ repeat:
  * Since: 3.12
  **/
 CamelIMAPXNamespaceResponse *
-camel_imapx_namespace_response_new (CamelIMAPXStream *stream,
+camel_imapx_namespace_response_new (CamelIMAPXInputStream *stream,
                                     GCancellable *cancellable,
                                     GError **error)
 {
 	CamelIMAPXNamespaceResponse *response;
 	gint ii;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STREAM (stream), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (stream), NULL);
 
 	response = g_object_new (CAMEL_TYPE_IMAPX_NAMESPACE_RESPONSE, NULL);
 
@@ -239,7 +243,7 @@ camel_imapx_namespace_response_new (CamelIMAPXStream *stream,
 	}
 
 	/* Eat the newline. */
-	if (!camel_imapx_stream_skip (stream, cancellable, error))
+	if (!camel_imapx_input_stream_skip (stream, cancellable, error))
 		goto fail;
 
 	return response;

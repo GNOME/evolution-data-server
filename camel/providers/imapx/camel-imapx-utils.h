@@ -20,6 +20,7 @@
 
 #include <camel/camel.h>
 
+#include "camel-imapx-input-stream.h"
 #include "camel-imapx-mailbox.h"
 
 G_BEGIN_DECLS
@@ -28,7 +29,6 @@ G_BEGIN_DECLS
  *       enum/struct definitions and helper macros, so we don't
  *       have these conflicting header dependencies. */
 struct _CamelIMAPXCommand;
-struct _CamelIMAPXStream;
 struct _CamelFlag;
 struct _CamelIMAPXStore;
 
@@ -130,10 +130,10 @@ enum {
 
 /* ********************************************************************** */
 
-GArray *	imapx_parse_uids		(struct _CamelIMAPXStream *is,
+GArray *	imapx_parse_uids		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	imapx_parse_flags		(struct _CamelIMAPXStream *is,
+gboolean	imapx_parse_flags		(CamelIMAPXInputStream *stream,
 						 guint32 *flagsp,
 						 struct _CamelFlag **user_flagsp,
 						 GCancellable *cancellable,
@@ -194,38 +194,38 @@ struct _capability_info {
 };
 
 struct _capability_info *
-		imapx_parse_capability		(struct _CamelIMAPXStream *is,
+		imapx_parse_capability		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 void		imapx_free_capability		(struct _capability_info *);
 guint32		imapx_register_capability	(const gchar *capability);
 guint32		imapx_lookup_capability		(const gchar *capability);
 
-gboolean	imapx_parse_param_list		(struct _CamelIMAPXStream *is,
+gboolean	imapx_parse_param_list		(CamelIMAPXInputStream *stream,
 						 struct _camel_header_param **plist,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _CamelContentDisposition *
-		imapx_parse_ext_optional	(struct _CamelIMAPXStream *is,
+		imapx_parse_ext_optional	(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _CamelMessageContentInfo *
-		imapx_parse_body_fields		(struct _CamelIMAPXStream *is,
+		imapx_parse_body_fields		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _camel_header_address *
-		imapx_parse_address_list	(struct _CamelIMAPXStream *is,
+		imapx_parse_address_list	(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _CamelMessageInfo *
-		imapx_parse_envelope		(struct _CamelIMAPXStream *is,
+		imapx_parse_envelope		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _CamelMessageContentInfo *
-		imapx_parse_body		(struct _CamelIMAPXStream *is,
+		imapx_parse_body		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-gchar *		imapx_parse_section		(struct _CamelIMAPXStream *is,
+gchar *		imapx_parse_section		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 void		imapx_free_body			(struct _CamelMessageContentInfo *cinfo);
@@ -264,7 +264,7 @@ struct _fetch_info {
 #define FETCH_MODSEQ (1 << 11)
 
 struct _fetch_info *
-		imapx_parse_fetch		(struct _CamelIMAPXStream *is,
+		imapx_parse_fetch		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
 void		imapx_free_fetch		(struct _fetch_info *finfo);
@@ -298,7 +298,7 @@ struct _status_info {
 };
 
 struct _status_info *
-		imapx_parse_status		(struct _CamelIMAPXStream *is,
+		imapx_parse_status		(CamelIMAPXInputStream *stream,
 						 CamelIMAPXMailbox *mailbox,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -314,7 +314,7 @@ gboolean	camel_imapx_command_add_qresync_parameter
 
 /* ********************************************************************** */
 
-gchar *		camel_imapx_parse_mailbox	(struct _CamelIMAPXStream *is,
+gchar *		camel_imapx_parse_mailbox	(CamelIMAPXInputStream *stream,
 						 gchar separator,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -330,12 +330,12 @@ gchar *		camel_imapx_folder_path_to_mailbox
 
 /* ********************************************************************** */
 
-gboolean	camel_imapx_parse_quota		(struct _CamelIMAPXStream *is,
+gboolean	camel_imapx_parse_quota		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 gchar **out_quota_root_name,
 						 CamelFolderQuotaInfo **out_quota_info,
 						 GError **error);
-gboolean	camel_imapx_parse_quotaroot	(struct _CamelIMAPXStream *is,
+gboolean	camel_imapx_parse_quotaroot	(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 gchar **out_mailbox_name,
 						 gchar ***out_quota_roots,
