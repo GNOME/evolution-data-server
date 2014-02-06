@@ -498,6 +498,30 @@ camel_mime_parser_init_with_input_stream (CamelMimeParser *parser,
 }
 
 /**
+ * camel_mime_parser_init_with_bytes:
+ * @parser: a #CamelMimeParser
+ * @bytes: a #GBytes containing the message content
+ *
+ * Convenience function creates a #GMemoryInputStream from @bytes and hands
+ * it off to camel_mime_parser_init_with_input_stream().
+ *
+ * Since: 3.12
+ **/
+void
+camel_mime_parser_init_with_bytes (CamelMimeParser *parser,
+                                   GBytes *bytes)
+{
+	GInputStream *input_stream;
+
+	g_return_if_fail (CAMEL_IS_MIME_PARSER (parser));
+	g_return_if_fail (bytes != NULL);
+
+	input_stream = g_memory_input_stream_new_from_bytes (bytes);
+	camel_mime_parser_init_with_input_stream (parser, input_stream);
+	g_object_unref (input_stream);
+}
+
+/**
  * camel_mime_parser_scan_from:
  * @parser: MIME parser object
  * @scan_from: %TRUE if the scanner should scan From lines.

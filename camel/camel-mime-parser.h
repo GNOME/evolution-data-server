@@ -100,6 +100,7 @@ gint		camel_mime_parser_errno (CamelMimeParser *parser);
 gint		camel_mime_parser_init_with_fd (CamelMimeParser *m, gint fd);
 gint		camel_mime_parser_init_with_stream (CamelMimeParser *m, CamelStream *stream, GError **error);
 void		camel_mime_parser_init_with_input_stream (CamelMimeParser *parser, GInputStream *input_stream);
+void		camel_mime_parser_init_with_bytes (CamelMimeParser *parser, GBytes *bytes);
 
 CamelStream    *camel_mime_parser_stream (CamelMimeParser *parser);
 
