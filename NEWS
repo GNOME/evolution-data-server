@@ -1,3 +1,40 @@
+Evolution-Data-Server 3.10.4 2014-02-10
+---------------------------------------
+
+Bug Fixes:
+	Bug 687640 - Crash in caldav's initialize_backend() (Milan Crha)
+	Bug 702709 - Do network background operations only if the CamelSession
+	             is online (Milan Crha)
+	Bug 720676 - [IMAPX] Do more searching server-side (Milan Crha)
+	Bug 720751 - camel_tag_set() doesn't copy tag's name properly
+	             (Milan Crha)
+	Bug 720943 - vFolder does not refresh automatically (Milan Crha)
+	Bug 721030 - WebDAV: download_contacts() leaks (Michel Dänzer)
+	Bug 721286 - IMAPx: read messages become unread when reopening
+	             Evolution (Milan Crha)
+	Bug 721581 - Unable to write to ldap addressbook (Milan Crha)
+	Bug 722275 - IMAPX: Parser trips on mailbox containing '+'
+	             (Matthew Barnes)
+
+Other Changes:
+	* IMAPX: Handle BODY[HEADER] in FETCH response. (Lubomir Rintel)
+	* Server-side memory leaks in calendar factory (Milan Crha)
+	* [CamelGPGContext] Prefer gpg2 over gpg (Milan Crha)
+	* imapx_write_flags: Fix a typo which flag to skip (Milan Crha)
+	* maildir_store_get_folder_sync: Fix a use-after-free issue
+	  (Milan Crha)
+
+Translations:
+	Nilamdyuti Goswami (as)
+	Marek Černocký (cs)
+	Benjamin Steinwender (de)
+	Dimitris Spingos (el)
+	Gabor Kelemen (hu)
+	Shankar Prasad (kn)
+	Matej Urbančič (sl)
+	Wylmer Wang (zh_CN)
+
+
 Evolution-Data-Server 3.10.3 2013-12-09
 ---------------------------------------
 
