@@ -111,6 +111,31 @@ gnome_online_accounts_get_backend_name (const gchar *goa_provider_type)
 	return eds_backend_name;
 }
 
+static const gchar *
+gnome_online_accounts_get_smtp_auth (GoaMail *goa_mail)
+{
+	if (!goa_mail_get_smtp_use_auth (goa_mail))
+		return NULL;
+
+#if GOA_CHECK_VERSION(3,11,5)
+	/* XXX I guess check these in order of our own preference?
+	 *     GOA relays the server's authentication capabilities
+	 *     as a set of flags, but we can only choose one. */
+
+	if (goa_mail_get_smtp_auth_xoauth2 (goa_mail))
+		return "XOAUTH2";
+
+	if (goa_mail_get_smtp_auth_plain (goa_mail))
+		return "PLAIN";
+
+	if (goa_mail_get_smtp_auth_login (goa_mail))
+		return "LOGIN";
+#endif
+
+	/* Hard-coded fallback option. */
+	return CAMEL_SMTP_MECHANISM_NAME;
+}
+
 static ESourceRegistryServer *
 gnome_online_accounts_get_server (EGnomeOnlineAccounts *extension)
 {
@@ -484,11 +509,9 @@ gnome_online_accounts_config_smtp (EGnomeOnlineAccounts *extension,
 		CAMEL_NETWORK_SETTINGS (settings),
 		goa_mail_get_smtp_user_name (goa_mail));
 
-	/* If not using auth, leave the auth mechanism NULL. */
-	if (goa_mail_get_smtp_use_auth (goa_mail))
-		camel_network_settings_set_auth_mechanism (
-			CAMEL_NETWORK_SETTINGS (settings),
-			CAMEL_SMTP_MECHANISM_NAME);
+	camel_network_settings_set_auth_mechanism (
+		CAMEL_NETWORK_SETTINGS (settings),
+		gnome_online_accounts_get_smtp_auth (goa_mail));
 
 	/* Prefer "use_tls" over "use_ssl" if both are set. */
 	camel_network_settings_set_security_method (
@@ -658,6 +681,7 @@ gnome_online_accounts_config_mail_account (EGnomeOnlineAccounts *extension,
 {
 	EServerSideSource *server_side_source;
 
+	/* This DOES NOT set the auth mechanism. */
 	gnome_online_accounts_config_imap (extension, source, goa_object);
 
 	/* Only one or the other should be present, not both. */
@@ -706,11 +730,8 @@ gnome_online_accounts_config_mail_transport (EGnomeOnlineAccounts *extension,
 {
 	EServerSideSource *server_side_source;
 
+	/* This DOES set the auth mechanism. */
 	gnome_online_accounts_config_smtp (extension, source, goa_object);
-
-	/* Only one or the other should be present, not both. */
-	gnome_online_accounts_config_oauth (extension, source, goa_object);
-	gnome_online_accounts_config_oauth2 (extension, source, goa_object);
 
 	/* Clients may change the source by may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
