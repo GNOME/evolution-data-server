@@ -244,6 +244,44 @@ gboolean	e_source_get_oauth2_access_token_finish
 						 gint *out_expires_in,
 						 GError **error);
 
+/* Password Management */
+gboolean	e_source_store_password_sync	(ESource *source,
+						 const gchar *password,
+						 gboolean permanently,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_store_password		(ESource *source,
+						 const gchar *password,
+						 gboolean permanently,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_store_password_finish	(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_source_lookup_password_sync	(ESource *source,
+						 GCancellable *cancellable,
+						 gchar **out_password,
+						 GError **error);
+void		e_source_lookup_password	(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_lookup_password_finish	(ESource *source,
+						 GAsyncResult *result,
+						 gchar **out_password,
+						 GError **error);
+gboolean	e_source_delete_password_sync	(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_delete_password	(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_delete_password_finish	(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* E_SOURCE_H */

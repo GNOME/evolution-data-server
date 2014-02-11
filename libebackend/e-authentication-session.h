@@ -155,6 +155,27 @@ EAuthenticationSessionResult
 					(EAuthenticationSession *session,
 					 GAsyncResult *result,
 					 GError **error);
+
+#ifndef EDS_DISABLE_DEPRECATED
+/**
+ * E_AUTHENTICATION_SESSION_KEYRING_ERROR:
+ *
+ * Error domain for password storage and retrieval.
+ *
+ * No longer used.
+ *
+ * Since: 3.6
+ *
+ * Deprecated: 3.8: The #SECRET_ERROR domain is now used instead.
+ **/
+#define E_AUTHENTICATION_SESSION_KEYRING_ERROR \
+	(e_authentication_session_error_quark ())
+
+EAuthenticationSession *
+		e_authentication_session_new
+					(struct _ESourceRegistryServer *server,
+					 ESourceAuthenticator *authenticator,
+					 const gchar *source_uid);
 gboolean	e_authentication_session_store_password_sync
 					(EAuthenticationSession *session,
 					 const gchar *password,
@@ -203,27 +224,6 @@ gboolean	e_authentication_session_delete_password_finish
 					(EAuthenticationSession *session,
 					 GAsyncResult *result,
 					 GError **error);
-
-#ifndef EDS_DISABLE_DEPRECATED
-/**
- * E_AUTHENTICATION_SESSION_KEYRING_ERROR:
- *
- * Error domain for password storage and retrieval.
- *
- * No longer used.
- *
- * Since: 3.6
- *
- * Deprecated: 3.8: The #SECRET_ERROR domain is now used instead.
- **/
-#define E_AUTHENTICATION_SESSION_KEYRING_ERROR \
-	(e_authentication_session_error_quark ())
-
-EAuthenticationSession *
-		e_authentication_session_new
-					(struct _ESourceRegistryServer *server,
-					 ESourceAuthenticator *authenticator,
-					 const gchar *source_uid);
 #endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS

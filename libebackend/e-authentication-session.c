@@ -69,9 +69,6 @@
 /* Wait forever for a system prompt. */
 #define SYSTEM_PROMPT_TIMEOUT (-1)
 
-#define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
-#define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source %s"
-
 typedef struct _AsyncContext AsyncContext;
 
 struct _EAuthenticationSessionPrivate {
@@ -100,16 +97,6 @@ enum {
 	PROP_PROMPT_TITLE,
 	PROP_SERVER,
 	PROP_SOURCE_UID
-};
-
-static SecretSchema schema = {
-	"org.gnome.Evolution.Data.Source",
-	SECRET_SCHEMA_DONT_MATCH_NAME,
-	{
-		{ KEYRING_ITEM_ATTRIBUTE_NAME,
-		  SECRET_SCHEMA_ATTRIBUTE_STRING },
-		{ NULL, 0 }
-	}
 };
 
 /* Forward Declarations */
@@ -402,15 +389,15 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	EAuthenticationSessionResult session_result;
 	ESourceAuthenticationResult auth_result;
 	ESourceRegistryServer *server;
-	ESource *source;
+	ESource *source = NULL;
 	GcrPrompt *prompt;
 	GString *password_string;
-	gboolean allow_auth_prompt;
 	const gchar *label;
 	const gchar *source_uid;
 	const gchar *prompt_password;
 	gchar *stored_password = NULL;
 	gboolean success;
+	gboolean allow_auth_prompt = TRUE;
 	gboolean remember_password = TRUE;
 	GError *local_error = NULL;
 
@@ -433,6 +420,10 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	server = e_authentication_session_get_server (session);
 	source_uid = e_authentication_session_get_source_uid (session);
 	authenticator = e_authentication_session_get_authenticator (session);
+
+	/* This will return NULL if the authenticating data source
+	 * has not yet been submitted to the D-Bus registry service. */
+	source = e_source_registry_server_ref_source (server, source_uid);
 
 	if (e_source_authenticator_get_without_password (authenticator)) {
 		password_string = g_string_new ("");
@@ -460,12 +451,28 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 		/* if an empty password fails, then ask a user for it */
 	}
 
-	success = e_authentication_session_lookup_password_sync (
-		session, cancellable, &stored_password, error);
+	if (source != NULL) {
+		ESourceExtension *extension;
+		const gchar *extension_name;
 
-	if (!success) {
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
-		goto exit;
+		success = e_source_lookup_password_sync (
+			source, cancellable, &stored_password, error);
+
+		if (!success) {
+			session_result = E_AUTHENTICATION_SESSION_ERROR;
+			goto exit;
+		}
+
+		extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+		extension = e_source_get_extension (source, extension_name);
+
+		allow_auth_prompt =
+			e_server_side_source_get_allow_auth_prompt (
+			E_SERVER_SIDE_SOURCE (source));
+
+		remember_password =
+			e_source_authentication_get_remember_password (
+			E_SOURCE_AUTHENTICATION (extension));
 	}
 
 	auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
@@ -502,34 +509,14 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	 * Failure here does not affect the outcome of this operation,
 	 * but leave a breadcrumb as evidence that something went wrong. */
 
-	e_authentication_session_delete_password_sync (
-		session, cancellable, &local_error);
-
-	if (local_error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-		g_clear_error (&local_error);
-	}
-
-	/* This will return NULL if the authenticating data source
-	 * has not yet been submitted to the D-Bus registry service. */
-	source = e_source_registry_server_ref_source (server, source_uid);
 	if (source != NULL) {
-		ESourceExtension *extension;
-		const gchar *extension_name;
+		e_source_delete_password_sync (
+			source, cancellable, &local_error);
 
-		allow_auth_prompt =
-			e_server_side_source_get_allow_auth_prompt (
-			E_SERVER_SIDE_SOURCE (source));
-
-		extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-		extension = e_source_get_extension (source, extension_name);
-		remember_password =
-			e_source_authentication_get_remember_password (
-			E_SOURCE_AUTHENTICATION (extension));
-
-		g_object_unref (source);
-	} else {
-		allow_auth_prompt = TRUE;
+		if (local_error != NULL) {
+			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			g_clear_error (&local_error);
+		}
 	}
 
 	/* Check if we're allowed to interrupt the user for a password.
@@ -589,7 +576,6 @@ try_again:
 		goto close_prompt;
 	}
 
-	source = e_source_registry_server_ref_source (server, source_uid);
 	if (source != NULL) {
 		ESourceExtension *extension;
 		const gchar *extension_name;
@@ -600,8 +586,6 @@ try_again:
 		e_source_authentication_set_remember_password (
 			E_SOURCE_AUTHENTICATION (extension),
 			gcr_prompt_get_choice_chosen (prompt));
-
-		g_object_unref (source);
 	}
 
 	/* Attempt authentication with the provided password. */
@@ -654,9 +638,17 @@ try_again:
 
 		g_object_unref (prompt);
 
-		e_authentication_session_store_password_sync (
-			session, password_copy, permanently,
-			cancellable, &local_error);
+		/* Create a phony "scratch" source if necessary. */
+		if (source == NULL) {
+			source = e_source_new_with_uid (
+				source_uid, NULL, &local_error);
+		}
+
+		if (source != NULL) {
+			e_source_store_password_sync (
+				source, password_copy, permanently,
+				cancellable, &local_error);
+		}
 
 		if (local_error != NULL) {
 			g_warning ("%s: %s", G_STRFUNC, local_error->message);
@@ -714,6 +706,8 @@ exit:
 		default:
 			g_warn_if_reached ();
 	}
+
+	g_clear_object (&source);
 
 	return session_result;
 }
@@ -1359,6 +1353,8 @@ authentication_session_store_password_thread (GSimpleAsyncResult *simple,
  * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_store_password_sync() instead.
  **/
 gboolean
 e_authentication_session_store_password_sync (EAuthenticationSession *session,
@@ -1367,31 +1363,31 @@ e_authentication_session_store_password_sync (EAuthenticationSession *session,
                                               GCancellable *cancellable,
                                               GError **error)
 {
-	gboolean result;
-	const gchar *collection;
+	ESourceRegistryServer *server;
+	ESource *source;
 	const gchar *uid;
-	gchar *display_name;
+	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), FALSE);
-	g_return_val_if_fail (password != NULL, FALSE);
 
-	if (permanently)
-		collection = SECRET_COLLECTION_DEFAULT;
-	else
-		collection = SECRET_COLLECTION_SESSION;
-
+	server = e_authentication_session_get_server (session);
 	uid = e_authentication_session_get_source_uid (session);
-	display_name = g_strdup_printf (KEYRING_ITEM_DISPLAY_FORMAT, uid);
 
-	result = secret_password_store_sync (
-		&schema, collection, display_name,
-		password, cancellable, error,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
-		NULL);
+	/* Try to use the registered ESource instance,
+	 * otherwise create a phony "scratch" source. */
 
-	g_free (display_name);
+	source = e_source_registry_server_ref_source (server, uid);
 
-	return result;
+	if (source == NULL)
+		source = e_source_new_with_uid (uid, NULL, error);
+
+	if (source != NULL) {
+		success = e_source_store_password_sync (
+			source, password, permanently, cancellable, error);
+		g_object_unref (source);
+	}
+
+	return success;
 }
 
 /**
@@ -1414,6 +1410,8 @@ e_authentication_session_store_password_sync (EAuthenticationSession *session,
  * of the operation.
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_store_password() instead.
  **/
 void
 e_authentication_session_store_password (EAuthenticationSession *session,
@@ -1462,6 +1460,8 @@ e_authentication_session_store_password (EAuthenticationSession *session,
  * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_store_password_finish() instead.
  **/
 gboolean
 e_authentication_session_store_password_finish (EAuthenticationSession *session,
@@ -1519,6 +1519,8 @@ authentication_session_lookup_password_thread (GSimpleAsyncResult *simple,
  * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_lookup_password_sync() instead.
  **/
 gboolean
 e_authentication_session_lookup_password_sync (EAuthenticationSession *session,
@@ -1526,27 +1528,28 @@ e_authentication_session_lookup_password_sync (EAuthenticationSession *session,
                                                gchar **password,
                                                GError **error)
 {
+	ESourceRegistryServer *server;
+	ESource *source;
 	const gchar *uid;
-	gchar *temp = NULL;
-	gboolean success = TRUE;
-	GError *local_error = NULL;
+	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), FALSE);
 
+	server = e_authentication_session_get_server (session);
 	uid = e_authentication_session_get_source_uid (session);
 
-	temp = secret_password_lookup_sync (
-		&schema, cancellable, &local_error,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid, NULL);
+	/* Try to use the registered ESource instance,
+	 * otherwise create a phony "scratch" source. */
 
-	if (local_error != NULL) {
-		g_warn_if_fail (temp == NULL);
-		g_propagate_error (error, local_error);
-		success = FALSE;
-	} else if (password != NULL) {
-		*password = temp;  /* takes ownership */
-	} else {
-		secret_password_free (temp);
+	source = e_source_registry_server_ref_source (server, uid);
+
+	if (source == NULL)
+		source = e_source_new_with_uid (uid, NULL, error);
+
+	if (source != NULL) {
+		success = e_source_lookup_password_sync (
+			source, cancellable, password, error);
+		g_object_unref (source);
 	}
 
 	return success;
@@ -1568,6 +1571,8 @@ e_authentication_session_lookup_password_sync (EAuthenticationSession *session,
  * result of the operation.
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_lookup_password() instead.
  **/
 void
 e_authentication_session_lookup_password (EAuthenticationSession *session,
@@ -1618,6 +1623,8 @@ e_authentication_session_lookup_password (EAuthenticationSession *session,
  * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_lookup_password_finish() instead.
  **/
 gboolean
 e_authentication_session_lookup_password_finish (EAuthenticationSession *session,
@@ -1679,30 +1686,36 @@ authentication_session_delete_password_thread (GSimpleAsyncResult *simple,
  * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_delete_password_sync() instead.
  **/
 gboolean
 e_authentication_session_delete_password_sync (EAuthenticationSession *session,
                                                GCancellable *cancellable,
                                                GError **error)
 {
+	ESourceRegistryServer *server;
+	ESource *source;
 	const gchar *uid;
-	gboolean success = TRUE;
-	GError *local_error = NULL;
+	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_AUTHENTICATION_SESSION (session), FALSE);
 
+	server = e_authentication_session_get_server (session);
 	uid = e_authentication_session_get_source_uid (session);
 
-	/* The return value indicates whether any passwords were removed,
-	 * not whether the operation completed successfully.  So we have
-	 * check the GError directly. */
-	secret_password_clear_sync (
-		&schema, cancellable, &local_error,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid, NULL);
+	/* Try to use the registered ESource instance,
+	 * otherwise create a phony "scratch" source. */
 
-	if (local_error != NULL) {
-		g_propagate_error (error, local_error);
-		success = FALSE;
+	source = e_source_registry_server_ref_source (server, uid);
+
+	if (source == NULL)
+		source = e_source_new_with_uid (uid, NULL, error);
+
+	if (source != NULL) {
+		success = e_source_delete_password_sync (
+			source, cancellable, error);
+		g_object_unref (source);
 	}
 
 	return success;
@@ -1724,6 +1737,8 @@ e_authentication_session_delete_password_sync (EAuthenticationSession *session,
  * of the operation.
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_delete_password() instead.
  **/
 void
 e_authentication_session_delete_password (EAuthenticationSession *session,
@@ -1766,6 +1781,8 @@ e_authentication_session_delete_password (EAuthenticationSession *session,
  * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
+ *
+ * Deprecated: 3.12: Use e_source_delete_password_finish() instead.
  **/
 gboolean
 e_authentication_session_delete_password_finish (EAuthenticationSession *session,

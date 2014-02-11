@@ -71,6 +71,8 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
+#include <libsecret/secret.h>
+
 /* Private D-Bus classes. */
 #include <e-dbus-source.h>
 
@@ -112,6 +114,9 @@
 
 #define PRIMARY_GROUP_NAME	"Data Source"
 
+#define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
+#define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source '%s'"
+
 typedef struct _AsyncContext AsyncContext;
 typedef struct _RemoveContext RemoveContext;
 
@@ -143,6 +148,8 @@ struct _AsyncContext {
 	ESource *scratch_source;
 	gchar *access_token;
 	gint expires_in;
+	gchar *password;
+	gboolean permanently;
 };
 
 /* Used in e_source_remove_sync() */
@@ -168,6 +175,16 @@ enum {
 enum {
 	CHANGED,
 	LAST_SIGNAL
+};
+
+static SecretSchema password_schema = {
+	"org.gnome.Evolution.Data.Source",
+	SECRET_SCHEMA_DONT_MATCH_NAME,
+	{
+		{ KEYRING_ITEM_ATTRIBUTE_NAME,
+		  SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ NULL, 0 }
+	}
 };
 
 static guint signals[LAST_SIGNAL];
@@ -200,6 +217,7 @@ async_context_free (AsyncContext *async_context)
 		g_object_unref (async_context->scratch_source);
 
 	g_free (async_context->access_token);
+	g_free (async_context->password);
 
 	g_slice_free (AsyncContext, async_context);
 }
@@ -3419,5 +3437,470 @@ e_source_get_oauth2_access_token_finish (ESource *source,
 
 	return class->get_oauth2_access_token_finish (
 		source, result, out_access_token, out_expires_in, error);
+}
+
+/**
+ * e_source_store_password_sync:
+ * @source: an #ESource
+ * @password: the password to store
+ * @permanently: store permanently or just for the session
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Stores a password for @source.  This operation does not rely on the
+ * registry service and therefore works for any #ESource -- registered
+ * or "scratch".
+ *
+ * If @permanently is %TRUE, the password is stored in the default keyring.
+ * Otherwise the password is stored in the memory-only session keyring.  If
+ * an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_source_store_password_sync (ESource *source,
+                              const gchar *password,
+                              gboolean permanently,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	gboolean success;
+	const gchar *collection;
+	const gchar *uid;
+	gchar *label;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (password != NULL, FALSE);
+
+	if (permanently)
+		collection = SECRET_COLLECTION_DEFAULT;
+	else
+		collection = SECRET_COLLECTION_SESSION;
+
+	uid = e_source_get_uid (source);
+	label = g_strdup_printf (KEYRING_ITEM_DISPLAY_FORMAT, uid);
+
+	success = secret_password_store_sync (
+		&password_schema,
+		collection, label, password,
+		cancellable, error,
+		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		NULL);
+
+	g_free (label);
+
+	return success;
+}
+
+/* Helper for e_source_store_password() */
+static void
+source_store_password_thread (GTask *task,
+                              gpointer source_object,
+                              gpointer task_data,
+                              GCancellable *cancellable)
+{
+	gboolean success;
+	AsyncContext *async_context;
+	GError *local_error = NULL;
+
+	async_context = (AsyncContext *) task_data;
+
+	success = e_source_store_password_sync (
+		E_SOURCE (source_object),
+		async_context->password,
+		async_context->permanently,
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * e_source_store_password:
+ * @source: an #ESource
+ * @password: the password to store
+ * @permanently: store permanently or just for the session
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously stores a password for @source.  This operation does
+ * not rely on the registry service and therefore works for any #ESource
+ * -- registered or "scratch".
+ *
+ * If @permanently is %TRUE, the password is stored in the default keyring.
+ * Otherwise the password is stored in the memory-only session keyring.  If
+ * an error occurs, the function sets @error and returns %FALSE.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_source_store_password_finish() to get the result of the operation.
+ *
+ * Since: 3.12
+ **/
+void
+e_source_store_password (ESource *source,
+                         const gchar *password,
+                         gboolean permanently,
+                         GCancellable *cancellable,
+                         GAsyncReadyCallback callback,
+                         gpointer user_data)
+{
+	GTask *task;
+	AsyncContext *async_context;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (password != NULL);
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->password = g_strdup (password);
+	async_context->permanently = permanently;
+
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_store_password);
+
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
+
+	g_task_run_in_thread (task, source_store_password_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_store_password_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_store_password().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_source_store_password_finish (ESource *source,
+                                GAsyncResult *result,
+                                GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_source_store_password), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
+ * e_source_lookup_password_sync:
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @out_password: return location for the password, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Looks up a password for @source.  Both the default and session keyrings
+ * are queried.  This operation does not rely on the registry service and
+ * therefore works for any #ESource -- registered or "scratch".
+ *
+ * Note the boolean return value indicates whether the lookup operation
+ * itself completed successfully, not whether a password was found.  If
+ * no password was found, the function will set @out_password to %NULL
+ * but still return %TRUE.  If an error occurs, the function sets @error
+ * and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_source_lookup_password_sync (ESource *source,
+                               GCancellable *cancellable,
+                               gchar **out_password,
+                               GError **error)
+{
+	const gchar *uid;
+	gchar *temp = NULL;
+	gboolean success = TRUE;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	uid = e_source_get_uid (source);
+
+	temp = secret_password_lookup_sync (
+		&password_schema,
+		cancellable, &local_error,
+		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		NULL);
+
+	if (local_error != NULL) {
+		g_warn_if_fail (temp == NULL);
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	} else if (out_password != NULL) {
+		*out_password = temp;  /* takes ownership */
+	} else {
+		secret_password_free (temp);
+	}
+
+	return success;
+}
+
+/* Helper for e_source_lookup_password() */
+static void
+source_lookup_password_thread (GTask *task,
+                               gpointer source_object,
+                               gpointer task_data,
+                               GCancellable *cancellable)
+{
+	gboolean success;
+	AsyncContext *async_context;
+	GError *local_error = NULL;
+
+	async_context = (AsyncContext *) task_data;
+
+	success = e_source_lookup_password_sync (
+		E_SOURCE (source_object),
+		cancellable,
+		&async_context->password,
+		&local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * e_source_lookup_password:
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously looks up a password for @source.  Both the default and
+ * session keyrings are queried.  This operation does not rely on the
+ * registry service and therefore works for any #ESource -- registered
+ * or "scratch".
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_source_lookup_password_finish() to get the result of the operation.
+ *
+ * Since: 3.12
+ **/
+void
+e_source_lookup_password (ESource *source,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	GTask *task;
+	AsyncContext *async_context;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_lookup_password);
+
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
+
+	g_task_run_in_thread (task, source_lookup_password_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_lookup_password_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @out_password: return location for the password, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_lookup_password().
+ *
+ * Note the boolean return value indicates whether the lookup operation
+ * itself completed successfully, not whether a password was found.  If
+ * no password was found, the function will set @out_password to %NULL
+ * but still return %TRUE.  If an error occurs, the function sets @error
+ * and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_source_lookup_password_finish (ESource *source,
+                                 GAsyncResult *result,
+                                 gchar **out_password,
+                                 GError **error)
+{
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_source_lookup_password), FALSE);
+
+	async_context = g_task_get_task_data (G_TASK (result));
+
+	if (!g_task_had_error (G_TASK (result))) {
+		if (out_password != NULL) {
+			*out_password = async_context->password;
+			async_context->password = NULL;
+		}
+	}
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
+ * e_source_delete_password_sync:
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes the password for @source from either the default keyring or
+ * session keyring.  This operation does not rely on the registry service
+ * and therefore works for any #ESource -- registered or "scratch".
+ *
+ * Note the boolean return value indicates whether the delete operation
+ * itself completed successfully, not whether a password was found and
+ * deleted.  If no password was found, the function will still return
+ * %TRUE.  If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_source_delete_password_sync (ESource *source,
+                               GCancellable *cancellable,
+                               GError **error)
+{
+	const gchar *uid;
+	gboolean success = TRUE;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	uid = e_source_get_uid (source);
+
+	/* The return value indicates whether any passwords were removed,
+	 * not whether the operation completed successfully.  So we have
+	 * to check the GError directly. */
+	secret_password_clear_sync (
+		&password_schema,
+		cancellable, &local_error,
+		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		NULL);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
+
+	return success;
+}
+
+/* Helper for e_source_delete_password() */
+static void
+source_delete_password_thread (GTask *task,
+                               gpointer source_object,
+                               gpointer task_data,
+                               GCancellable *cancellable)
+{
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = e_source_delete_password_sync (
+		E_SOURCE (source_object),
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * e_source_delete_password:
+ * @source: an #ESource
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously deletes the password for @source from either the default
+ * keyring or session keyring.  This operation does not rely on the registry
+ * service and therefore works for any #ESource -- registered or "scratch".
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call e_source_delete_password_finish() to get the result of the operation.
+ *
+ * Since: 3.12
+ **/
+void
+e_source_delete_password (ESource *source,
+                          GCancellable *cancellable,
+                          GAsyncReadyCallback callback,
+                          gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_delete_password);
+
+	g_task_run_in_thread (task, source_delete_password_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_delete_password_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_delete_password().
+ *
+ * Note the boolean return value indicates whether the delete operation
+ * itself completed successfully, not whether a password was found and
+ * deleted.  If no password was found, the function will still return
+ * %TRUE.  If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_source_delete_password_finish (ESource *source,
+                                 GAsyncResult *result,
+                                 GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_source_delete_password), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
