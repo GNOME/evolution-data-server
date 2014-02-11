@@ -2930,7 +2930,7 @@ e_source_parameter_to_key (const gchar *param_name)
  *
  * If an error occurs, the functon will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3023,7 +3023,7 @@ e_source_remove_finish (ESource *source,
  *
  * If an error occurs, the functon will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3084,7 +3084,7 @@ e_source_write (ESource *source,
  * Finishes the operation started with e_source_write().  If an
  * error occurred, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3122,7 +3122,7 @@ e_source_write_finish (ESource *source,
  *
  * If an error occurs, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3196,7 +3196,7 @@ e_source_remote_create (ESource *source,
  * Finishes the operation started with e_source_remote_create().  If
  * an error occurred, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3228,7 +3228,7 @@ e_source_remote_create_finish (ESource *source,
  *
  * If an error occurs, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3290,7 +3290,7 @@ e_source_remote_delete (ESource *source,
  * Finishes the operation started with e_source_remote_delete().  If
  * an error occurred, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.6
  **/
@@ -3325,7 +3325,7 @@ e_source_remote_delete_finish (ESource *source,
  * Free the returned access token with g_free() when finished with it.
  * If an error occurs, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.8
  **/
@@ -3397,7 +3397,7 @@ e_source_get_oauth2_access_token (ESource *source,
  * Free the returned access token with g_free() when finished with it.
  * If an error occurred, the function will set @error and return %FALSE.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * Returns: %TRUE on success, %FALSE on error
  *
  * Since: 3.8
  **/
