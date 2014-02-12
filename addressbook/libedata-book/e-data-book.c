@@ -2162,9 +2162,12 @@ e_data_book_set_locale (EDataBook *book,
 	success = e_book_backend_set_locale (
 		backend, locale, cancellable, error);
 
-	if (success)
+	if (success) {
 		e_dbus_address_book_set_locale (
 			book->priv->dbus_interface, locale);
+		g_dbus_interface_skeleton_flush (
+			book->priv->dbus_interface);
+	}
 
 	g_object_unref (backend);
 
