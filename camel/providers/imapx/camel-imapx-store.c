@@ -1913,8 +1913,24 @@ imapx_store_get_junk_folder_sync (CamelStore *store,
                                   GCancellable *cancellable,
                                   GError **error)
 {
-	CamelFolder *folder;
+	CamelFolder *folder = NULL;
 	CamelStoreClass *store_class;
+	CamelSettings *settings;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	if (camel_imapx_settings_get_use_real_junk_path (CAMEL_IMAPX_SETTINGS (settings))) {
+		gchar *real_junk_path;
+
+		real_junk_path = camel_imapx_settings_dup_real_junk_path (CAMEL_IMAPX_SETTINGS (settings));
+		if (real_junk_path) {
+			folder = camel_store_get_folder_sync (store, real_junk_path, 0, cancellable, NULL);
+			g_free (real_junk_path);
+		}
+	}
+	g_object_unref (settings);
+
+	if (folder)
+		return folder;
 
 	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
 	folder = store_class->get_junk_folder_sync (store, cancellable, error);
@@ -1945,8 +1961,24 @@ imapx_store_get_trash_folder_sync (CamelStore *store,
                                    GCancellable *cancellable,
                                    GError **error)
 {
-	CamelFolder *folder;
+	CamelFolder *folder = NULL;
 	CamelStoreClass *store_class;
+	CamelSettings *settings;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	if (camel_imapx_settings_get_use_real_trash_path (CAMEL_IMAPX_SETTINGS (settings))) {
+		gchar *real_trash_path;
+
+		real_trash_path = camel_imapx_settings_dup_real_trash_path (CAMEL_IMAPX_SETTINGS (settings));
+		if (real_trash_path) {
+			folder = camel_store_get_folder_sync (store, real_trash_path, 0, cancellable, NULL);
+			g_free (real_trash_path);
+		}
+	}
+	g_object_unref (settings);
+
+	if (folder)
+		return folder;
 
 	store_class = CAMEL_STORE_CLASS (camel_imapx_store_parent_class);
 	folder = store_class->get_trash_folder_sync (store, cancellable, error);

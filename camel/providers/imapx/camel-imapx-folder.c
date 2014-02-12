@@ -492,6 +492,39 @@ imapx_expunge_sync (CamelFolder *folder,
 	if (mailbox == NULL)
 		goto exit;
 
+	if ((store->flags & CAMEL_STORE_VTRASH) == 0) {
+		CamelFolder *trash;
+		const gchar *full_name;
+		GError *local_error = NULL;
+
+		full_name = camel_folder_get_full_name (folder);
+
+		trash = camel_store_get_trash_folder_sync (store, cancellable, &local_error);
+
+		if (local_error == NULL && trash && (folder == trash || g_ascii_strcasecmp (full_name, camel_folder_get_full_name (trash)) == 0)) {
+			CamelMessageInfo *info;
+			GPtrArray *known_uids;
+			gint ii;
+
+			camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+			known_uids = camel_folder_summary_get_array (folder->summary);
+
+			/* it's a real trash folder, thus delete all mails from there */
+			for (ii = 0; known_uids && ii < known_uids->len; ii++) {
+				info = camel_folder_summary_get (folder->summary, g_ptr_array_index (known_uids, ii));
+				if (info) {
+					camel_message_info_set_flags (info, CAMEL_MESSAGE_DELETED, CAMEL_MESSAGE_DELETED);
+					camel_message_info_unref (info);
+				}
+			}
+
+			camel_folder_summary_free_array (known_uids);
+		}
+
+		g_clear_object (&trash);
+		g_clear_error (&local_error);
+	}
+
 	success = camel_imapx_server_expunge (
 		imapx_server, mailbox, cancellable, error);
 
