@@ -1074,6 +1074,22 @@ decode_8bit (const gchar *text,
 
 #define is_rfc2047_encoded_word(atom, len) (len >= 7 && !strncmp (atom, "=?", 2) && !strncmp (atom + len - 2, "?=", 2))
 
+static void
+make_string_utf8_valid (gchar *text,
+			gsize textlen)
+{
+	gchar *p;
+	gsize len;
+
+	p = text;
+	len = textlen;
+
+	while (!g_utf8_validate (p, len, (const gchar **) &p)) {
+		len = textlen - (p - text);
+		*p = '?';
+	}
+}
+
 /* decode an rfc2047 encoded-word token */
 static gchar *
 rfc2047_decode_word (const gchar *in,
@@ -1144,17 +1160,8 @@ rfc2047_decode_word (const gchar *in,
 		*p = '\0';
 
 	/* slight optimization? */
-	if (!g_ascii_strcasecmp (charset, "UTF-8")) {
-		p = (gchar *) decoded;
-		len = declen;
-
-		while (!g_utf8_validate (p, len, (const gchar **) &p)) {
-			len = declen - (p - (gchar *) decoded);
-			*p = '?';
-		}
-
+	if (!g_ascii_strcasecmp (charset, "UTF-8"))
 		return g_strndup ((gchar *) decoded, declen);
-	}
 
 	if (charset[0])
 		charset = camel_iconv_charset_name (charset);
@@ -1372,8 +1379,7 @@ header_decode_text (const gchar *in,
 		}
 	}
 
-	decoded = out->str;
-	g_string_free (out, FALSE);
+	decoded = g_string_free (out, FALSE);
 
 	return decoded;
 }
@@ -1392,10 +1398,17 @@ gchar *
 camel_header_decode_string (const gchar *in,
                             const gchar *default_charset)
 {
+	gchar *res;
+
 	if (in == NULL)
 		return NULL;
 
-	return header_decode_text (in, FALSE, default_charset);
+	res = header_decode_text (in, FALSE, default_charset);
+
+	if (res)
+		make_string_utf8_valid (res, strlen (res));
+
+	return res;
 }
 
 /**
@@ -2606,7 +2619,7 @@ header_decode_mailbox (const gchar **in,
 			gchar *text, *last;
 
 			/* perform internationalised decoding, and append */
-			text = camel_header_decode_string (pre, charset);
+			text = header_decode_text (pre, FALSE, charset);
 			g_string_append (name, text);
 			last = pre;
 			g_free (text);
@@ -2733,7 +2746,7 @@ header_decode_mailbox (const gchar **in,
 			}
 
 			/* check for address is encoded word ... */
-			text = camel_header_decode_string (addr->str, charset);
+			text = header_decode_text (addr->str, FALSE, charset);
 			if (name == NULL) {
 				name = addr;
 				addr = g_string_new ("");
@@ -2788,7 +2801,7 @@ header_decode_mailbox (const gchar **in,
 			if (comend > comstart) {
 				d (printf ("  looking at subset '%.*s'\n", comend - comstart, comstart));
 				tmp = g_strndup (comstart, comend - comstart);
-				text = camel_header_decode_string (tmp, charset);
+				text = header_decode_text (tmp, FALSE, charset);
 				name = g_string_new (text);
 				g_free (tmp);
 				g_free (text);
@@ -2824,8 +2837,12 @@ header_decode_mailbox (const gchar **in,
 				g_string_truncate (addr, 0);
 				g_string_append (addr, text);
 				g_free (text);
+
+				make_string_utf8_valid (addr->str, addr->len);
 			}
 
+		} else {
+			make_string_utf8_valid (name->str, name->len);
 		}
 
 		address = camel_header_address_new_name (name ? name->str : "", addr->str);
