@@ -1765,6 +1765,7 @@ modules/gnome-online-accounts/Makefile
 modules/google-backend/Makefile
 modules/outlook-backend/Makefile
 modules/owncloud-backend/Makefile
+modules/secret-monitor/Makefile
 modules/ubuntu-online-accounts/Makefile
 modules/ubuntu-online-accounts/calendar.service-type.in
 modules/ubuntu-online-accounts/contacts.service-type.in

@@ -17,6 +17,7 @@ SUBDIRS = \
 	google-backend \
 	outlook-backend \
 	owncloud-backend \
+	secret-monitor \
 	yahoo-backend \
 	$(TRUST_PROMPT_DIR) \
 	$(GNOME_ONLINE_ACCOUNTS_DIR) \
