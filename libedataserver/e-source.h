@@ -178,6 +178,7 @@ const gchar *	e_source_get_display_name	(ESource *source);
 gchar *		e_source_dup_display_name	(ESource *source);
 void		e_source_set_display_name	(ESource *source,
 						 const gchar *display_name);
+gchar *		e_source_dup_secret_label	(ESource *source);
 gint		e_source_compare_by_display_name
 						(ESource *source1,
 						 ESource *source2);

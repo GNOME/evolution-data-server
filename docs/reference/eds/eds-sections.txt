@@ -2863,6 +2863,7 @@ e_source_ref_main_context
 e_source_get_display_name
 e_source_dup_display_name
 e_source_set_display_name
+e_source_dup_secret_label
 e_source_compare_by_display_name
 e_source_to_string
 e_source_parameter_to_key

@@ -115,7 +115,6 @@
 #define PRIMARY_GROUP_NAME	"Data Source"
 
 #define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
-#define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source '%s'"
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _RemoveContext RemoveContext;
@@ -2835,6 +2834,40 @@ e_source_set_display_name (ESource *source,
 }
 
 /**
+ * e_source_dup_secret_label:
+ * @source: an #ESource
+ *
+ * Creates a label string based on @source's #ESource:display-name for use
+ * with #SecretItem.
+ *
+ * Returns: a newly-allocated secret label
+ *
+ * Since: 3.12
+ **/
+gchar *
+e_source_dup_secret_label (ESource *source)
+{
+	gchar *display_name;
+	gchar *secret_label;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	display_name = e_source_dup_display_name (source);
+
+	if (display_name == NULL || *display_name == '\0') {
+		g_free (display_name);
+		display_name = e_source_dup_uid (source);
+	}
+
+	secret_label = g_strdup_printf (
+		"Evolution Data Source \"%s\"", display_name);
+
+	g_free (display_name);
+
+	return secret_label;
+}
+
+/**
  * e_source_compare_by_display_name:
  * @source1: the first #ESource
  * @source2: the second #ESource
@@ -3480,7 +3513,7 @@ e_source_store_password_sync (ESource *source,
 		collection = SECRET_COLLECTION_SESSION;
 
 	uid = e_source_get_uid (source);
-	label = g_strdup_printf (KEYRING_ITEM_DISPLAY_FORMAT, uid);
+	label = e_source_dup_secret_label (source);
 
 	success = secret_password_store_sync (
 		&password_schema,
