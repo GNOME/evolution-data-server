@@ -52,7 +52,6 @@
 #include <string.h>
 #include <glib/gi18n-lib.h>
 #include <gcr/gcr-base.h>
-#include <libsecret/secret.h>
 
 /* Private D-Bus classes. */
 #include <e-dbus-authenticator.h>
