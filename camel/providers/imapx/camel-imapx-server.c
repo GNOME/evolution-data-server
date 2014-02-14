@@ -62,6 +62,15 @@
  * Using a 29 minute inactivity timeout as recommended in RFC 2177 (IDLE). */
 #define INACTIVITY_TIMEOUT_SECONDS (29 * 60)
 
+#ifdef G_OS_WIN32
+#ifdef gmtime_r
+#undef gmtime_r
+#endif
+
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
+#endif
+
 extern gint camel_application_is_exiting;
 
 /* Job-specific structs */
@@ -120,6 +129,7 @@ struct _AppendMessageData {
 	gchar *path;
 	CamelMessageInfo *info;
 	gchar *appended_uid;
+	time_t date_time; /* message's date/time, in UTC */
 };
 
 struct _CopyMessagesData {
@@ -5317,6 +5327,20 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 	imapx_unregister_job (is, job);
 }
 
+static const gchar *
+get_month_str (gint month)
+{
+	static const gchar tm_months[][4] = {
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	};
+
+	if (month < 1 || month > 12)
+		return NULL;
+
+	return tm_months[month - 1];
+}
+
 static gboolean
 imapx_job_append_message_start (CamelIMAPXJob *job,
                                 CamelIMAPXServer *is,
@@ -5333,13 +5357,40 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
 	mailbox = camel_imapx_job_ref_mailbox (job);
 	g_return_val_if_fail (mailbox != NULL, FALSE);
 
-	/* TODO: we could supply the original append date from the file timestamp */
-	ic = camel_imapx_command_new (
-		is, "APPEND", NULL,
-		"APPEND %M %F %P", mailbox,
-		((CamelMessageInfoBase *) data->info)->flags,
-		((CamelMessageInfoBase *) data->info)->user_flags,
-		data->path);
+	if (data->date_time > 0) {
+		gchar *date_time;
+		struct tm stm;
+
+		gmtime_r (&data->date_time, &stm);
+
+		/* Store always in UTC */
+		date_time = g_strdup_printf (
+			"\"%02d-%s-%04d %02d:%02d:%02d +0000\"",
+			stm.tm_mday,
+			get_month_str (stm.tm_mon + 1),
+			stm.tm_year + 1900,
+			stm.tm_hour,
+			stm.tm_min,
+			stm.tm_sec);
+
+		ic = camel_imapx_command_new (
+			is, "APPEND", NULL,
+			"APPEND %M %F %t %P", mailbox,
+			((CamelMessageInfoBase *) data->info)->flags,
+			((CamelMessageInfoBase *) data->info)->user_flags,
+			date_time,
+			data->path);
+
+		g_free (date_time);
+	} else {
+		ic = camel_imapx_command_new (
+			is, "APPEND", NULL,
+			"APPEND %M %F %P", mailbox,
+			((CamelMessageInfoBase *) data->info)->flags,
+			((CamelMessageInfoBase *) data->info)->user_flags,
+			data->path);
+	}
+
 	ic->complete = imapx_command_append_message_done;
 	camel_imapx_command_set_job (ic, job);
 	ic->pri = job->pri;
@@ -8364,6 +8415,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	GIOStream *base_stream;
 	AppendMessageData *data;
 	gint res;
+	time_t date_time;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -8407,6 +8459,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 		return FALSE;
 	}
 
+	date_time = camel_mime_message_get_date (message, NULL);
 	path = camel_data_cache_get_filename (message_cache, "new", uid);
 	info = camel_folder_summary_info_new_from_message (
 		summary, message, NULL);
@@ -8439,6 +8492,9 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 				tag = tag->next;
 			}
 		}
+
+		if (date_time <= 0)
+			date_time = camel_message_info_date_received (mi);
 	}
 
 	g_free (uid);
@@ -8451,6 +8507,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	data = g_slice_new0 (AppendMessageData);
 	data->info = info;  /* takes ownership */
 	data->path = path;  /* takes ownership */
+	data->date_time = date_time;
 	data->appended_uid = NULL;
 
 	job = camel_imapx_job_new (cancellable);
