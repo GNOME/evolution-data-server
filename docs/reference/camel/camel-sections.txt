@@ -1566,6 +1566,7 @@ CamelOfflineStore
 camel_offline_store_get_online
 camel_offline_store_set_online_sync
 camel_offline_store_prepare_for_offline_sync
+camel_offline_store_requires_downsync
 <SUBSECTION Standard>
 CAMEL_OFFLINE_STORE
 CAMEL_IS_OFFLINE_STORE
