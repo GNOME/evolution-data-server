@@ -1,3 +1,38 @@
+Evolution-Data-Server 3.11.90 2014-02-17
+----------------------------------------
+
+Bug Fixes:
+	Bug 655806 - Folder deletion is very slow (Fabiano Fidêncio)
+	Bug 719806 - IMAP: Empty trash doesn't work with a real trash folder
+	             (Milan Crha)
+	Bug 720529 - Merge RFC2047 encoded words before ensuring UTF-8 validity
+	             (Milan Crha)
+	Bug 720751 - camel_tag_set() doesn't copy tag's name properly
+	             (Milan Crha)
+	Bug 720940 - Always asked to synchronize folders when going offline
+	             (Milan Crha)
+	Bug 721030 - WebDAV: download_contacts() leaks (Michel Dänzer)
+	Bug 723481 - Wrong callback signature in imapx_process_read_to_read()
+	             (Matthew Barnes)
+	Bug 723539 - Use SmtpAuth* properties from
+	             org.gnome.OnlineAccounts.Mail (Matthew Barnes)
+	Bug 724343 - Moving emails between IMAP server results in wrong date
+	             (Milan Crha)
+
+Other Changes:
+	* Add a 'secret-monitor' module to maintain keyring entries.
+	  (Matthew Barnes)
+	* Begin phasing out CamelStream for GIO streams. (Matthew Barnes)
+	* ESource changes not always written to a disk (Milan Crha)
+	* ESource: Add functions for password management. (Matthew Barnes)
+
+Translations:
+	Claude Paroz (fr)
+	Shankar Prasad (kn)
+	Kjartan Maraas (nb)
+	Yuri Myasoedov (ru)
+
+
 Evolution-Data-Server 3.11.5 2014-02-02
 ---------------------------------------
 
