@@ -151,6 +151,8 @@ void		imapx_set_message_info_flags_for_new_message
 						(CamelMessageInfo *info,
 						 guint32 server_flags,
 						 CamelFlag *server_user_flags,
+						 gboolean force_user_flags,
+						 CamelTag *user_tags,
 						 CamelFolder *folder);
 void		imapx_update_store_summary	(CamelFolder *folder);
 

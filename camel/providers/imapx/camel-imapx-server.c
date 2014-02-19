@@ -2459,7 +2459,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					data = camel_imapx_job_get_data (job);
 					g_return_val_if_fail (data != NULL, FALSE);
 
-					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, folder);
+					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, folder);
 					camel_folder_summary_add (folder->summary, mi);
 					camel_folder_change_info_add_uid (data->changes, mi->uid);
 
@@ -5130,6 +5130,69 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 		goto exit;
 	}
 
+	if (ic->status && ic->status->u.copyuid.uids && ic->status->u.copyuid.copied_uids &&
+	    ic->status->u.copyuid.uids->len == ic->status->u.copyuid.copied_uids->len) {
+		CamelFolder *destination;
+
+		destination = imapx_server_ref_folder (is, data->destination);
+		if (destination) {
+			CamelMessageInfo *source_info, *destination_info;
+			CamelFolderChangeInfo *changes;
+			gint ii;
+
+			changes = camel_folder_change_info_new ();
+
+			for (ii = 0; ii < ic->status->u.copyuid.uids->len; ii++) {
+				gchar *uid;
+				gboolean is_new = FALSE;
+
+				uid = g_strdup_printf ("%d", g_array_index (ic->status->u.copyuid.uids, guint32, ii));
+				source_info = camel_folder_summary_get (folder->summary, uid);
+				g_free (uid);
+
+				if (!source_info)
+					continue;
+
+				uid = g_strdup_printf ("%d", g_array_index (ic->status->u.copyuid.copied_uids, guint32, ii));
+				destination_info = camel_folder_summary_get (folder->summary, uid);
+
+				if (!destination_info) {
+					is_new = TRUE;
+					destination_info = camel_message_info_clone (source_info);
+					destination_info->summary = destination->summary;
+					camel_pstring_free (destination_info->uid);
+					destination_info->uid = camel_pstring_strdup (uid);
+				}
+
+				g_free (uid);
+
+				imapx_set_message_info_flags_for_new_message (
+					destination_info,
+					((CamelMessageInfoBase *) source_info)->flags,
+					((CamelMessageInfoBase *) source_info)->user_flags,
+					TRUE,
+					((CamelMessageInfoBase *) source_info)->user_tags,
+					destination);
+				if (is_new)
+					camel_folder_summary_add (destination->summary, destination_info);
+				camel_folder_change_info_add_uid (changes, destination_info->uid);
+
+				camel_message_info_unref (source_info);
+				if (!is_new)
+					camel_message_info_unref (destination_info);
+			}
+
+			if (camel_folder_change_info_changed (changes)) {
+				camel_folder_summary_touch (destination->summary);
+				camel_folder_summary_save_to_db (destination->summary, NULL);
+				camel_folder_changed (destination, changes);
+			}
+
+			camel_folder_change_info_free (changes);
+			g_object_unref (destination);
+		}
+	}
+
 	if (data->delete_originals) {
 		gint j;
 
@@ -5300,11 +5363,12 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, data->path, cur, g_strerror (errno));
 			}
 
-			/* should we update the message count ? */
 			imapx_set_message_info_flags_for_new_message (
 				mi,
 				((CamelMessageInfoBase *) data->info)->flags,
 				((CamelMessageInfoBase *) data->info)->user_flags,
+				TRUE,
+				((CamelMessageInfoBase *) data->info)->user_tags,
 				folder);
 			camel_folder_summary_add (folder->summary, mi);
 			changes = camel_folder_change_info_new ();
@@ -8466,31 +8530,28 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	info->uid = camel_pstring_strdup (uid);
 	if (mi != NULL) {
 		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
+		const CamelFlag *flag;
+		const CamelTag *tag;
 
 		base_info->flags = camel_message_info_flags (mi);
 		base_info->size = camel_message_info_size (mi);
 
-		if ((is->priv->permanentflags & CAMEL_MESSAGE_USER) != 0) {
-			const CamelFlag *flag;
-			const CamelTag *tag;
+		flag = camel_message_info_user_flags (mi);
+		while (flag != NULL) {
+			if (*flag->name != '\0')
+				camel_flag_set (
+					&base_info->user_flags,
+					flag->name, TRUE);
+			flag = flag->next;
+		}
 
-			flag = camel_message_info_user_flags (mi);
-			while (flag != NULL) {
-				if (*flag->name != '\0')
-					camel_flag_set (
-						&base_info->user_flags,
-						flag->name, TRUE);
-				flag = flag->next;
-			}
-
-			tag = camel_message_info_user_tags (mi);
-			while (tag != NULL) {
-				if (*tag->name != '\0')
-					camel_tag_set (
-						&base_info->user_tags,
-						tag->name, tag->value);
-				tag = tag->next;
-			}
+		tag = camel_message_info_user_tags (mi);
+		while (tag != NULL) {
+			if (*tag->name != '\0')
+				camel_tag_set (
+					&base_info->user_tags,
+					tag->name, tag->value);
+			tag = tag->next;
 		}
 
 		if (date_time <= 0)

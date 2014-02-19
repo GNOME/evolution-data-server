@@ -328,6 +328,8 @@ void
 imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
                                               guint32 server_flags,
                                               CamelFlag *server_user_flags,
+					      gboolean force_user_flags,
+					      CamelTag *user_tags,
                                               CamelFolder *folder)
 {
 	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
@@ -338,8 +340,13 @@ imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
 
 	xinfo->server_flags = server_flags;
 
-	if (folder->permanent_flags & CAMEL_MESSAGE_USER)
+	if (force_user_flags || (folder->permanent_flags & CAMEL_MESSAGE_USER) != 0)
 		imapx_update_user_flags (info, server_user_flags);
+
+	while (user_tags) {
+		camel_message_info_set_user_tag (info, user_tags->name, user_tags->value);
+		user_tags = user_tags->next;
+	}
 
 	binfo->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 	binfo->dirty = TRUE;
