@@ -290,6 +290,29 @@ folder_filter (CamelSession *session,
 	if (junk_filter != NULL)
 		g_object_ref (junk_filter);
 
+	/* Reset junk learn flag so that we don't process it again */
+	if (data->junk) {
+		for (i = 0; i < data->junk->len; i++) {
+			info = camel_folder_summary_get (data->folder->summary, data->junk->pdata[i]);
+			if (!info)
+				continue;
+
+			camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0);
+			camel_message_info_unref (info);
+		}
+	}
+
+	if (data->notjunk) {
+		for (i = 0; i < data->notjunk->len; i++) {
+			info = camel_folder_summary_get (data->folder->summary, data->notjunk->pdata[i]);
+			if (!info)
+				continue;
+
+			camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK_LEARN, 0);
+			camel_message_info_unref (info);
+		}
+	}
+
 	if (data->junk) {
 		gboolean success = TRUE;
 
@@ -1070,7 +1093,7 @@ folder_changed (CamelFolder *folder,
 		CamelMessageFlags flags;
 
 		for (i = 0; i < info->uid_changed->len; i++) {
-			flags = camel_folder_get_message_flags (folder, info->uid_changed->pdata[i]);
+			flags = camel_folder_summary_get_info_flags (folder->summary, info->uid_changed->pdata[i]);
 			if (flags & CAMEL_MESSAGE_JUNK_LEARN) {
 				if (flags & CAMEL_MESSAGE_JUNK) {
 					if (!junk)
@@ -1081,10 +1104,8 @@ folder_changed (CamelFolder *folder,
 						notjunk = g_ptr_array_new ();
 					g_ptr_array_add (notjunk, g_strdup (info->uid_changed->pdata[i]));
 				}
-				/* reset junk learn flag so that we don't process it again*/
-				camel_folder_set_message_flags (
-					folder, info->uid_changed->pdata[i],
-					CAMEL_MESSAGE_JUNK_LEARN, 0);
+
+				/* the flag will be unset in the thread, to not block the UI/main thread */
 			}
 		}
 	}

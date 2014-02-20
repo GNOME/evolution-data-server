@@ -1916,6 +1916,8 @@ message_info_from_uid (CamelFolderSummary *summary,
  *
  * Returns: the summary item, or %NULL if the uid @uid is not available
  *
+ * See camel_folder_summary_get_info_flags().
+ *
  * Since: 3.4
  **/
 CamelMessageInfo *
@@ -1931,6 +1933,40 @@ camel_folder_summary_get (CamelFolderSummary *summary,
 	g_return_val_if_fail (class->message_info_from_uid != NULL, NULL);
 
 	return class->message_info_from_uid (summary, uid);
+}
+
+/**
+ * camel_folder_summary_get_info_flags:
+ * @summary: a #CamelFolderSummary object
+ * @uid: a uid
+ *
+ * Retrieve CamelMessageInfo::flags for a message info with UID @uid.
+ * This is much quicker than camel_folder_summary_get(), because it
+ * doesn't require reading the message info from a disk.
+ *
+ * Returns: the flags currently stored for message info with UID @uid,
+ *          or (~0) on error
+ *
+ * Since: 3.12
+ **/
+guint32
+camel_folder_summary_get_info_flags (CamelFolderSummary *summary,
+				     const gchar *uid)
+{
+	gpointer ptr_uid = NULL, ptr_flags = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), (~0));
+	g_return_val_if_fail (uid != NULL, (~0));
+
+	camel_folder_summary_lock (summary);
+	if (!g_hash_table_lookup_extended (summary->priv->uids, uid, &ptr_uid, &ptr_flags)) {
+		camel_folder_summary_unlock (summary);
+		return (~0);
+	}
+
+	camel_folder_summary_unlock (summary);
+
+	return GPOINTER_TO_UINT (ptr_flags);
 }
 
 static CamelMessageContentInfo *

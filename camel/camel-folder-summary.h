@@ -468,6 +468,9 @@ gboolean	camel_folder_summary_check_uid	(CamelFolderSummary *summary,
 CamelMessageInfo *
 		camel_folder_summary_get	(CamelFolderSummary *summary,
 						 const gchar *uid);
+guint32		camel_folder_summary_get_info_flags
+						(CamelFolderSummary *summary,
+						 const gchar *uid);
 GPtrArray *	camel_folder_summary_get_array	(CamelFolderSummary *summary);
 void		camel_folder_summary_free_array	(GPtrArray *array);
 
