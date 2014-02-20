@@ -2547,6 +2547,7 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 		g_signal_emit (is, signals[MAILBOX_UPDATED], 0, mailbox);
 
 	g_clear_object (&mailbox);
+	g_clear_object (&response);
 
 	return TRUE;
 }
