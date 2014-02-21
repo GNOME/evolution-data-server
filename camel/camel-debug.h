@@ -138,6 +138,8 @@ void		camel_pointer_tracker_track_with_info
 void		camel_pointer_tracker_untrack	(gpointer ptr);
 void		camel_pointer_tracker_dump	(void);
 
+GString *	camel_debug_get_backtrace	(void);
+
 G_END_DECLS
 
 #endif /* CAMEL_DEBUG_H */

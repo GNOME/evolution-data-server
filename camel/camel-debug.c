@@ -672,3 +672,21 @@ camel_pointer_tracker_dump (void)
 {
 	dump_tracked_ptrs (FALSE);
 }
+
+/**
+ * camel_debug_get_backtrace:
+ *
+ * Gets current backtrace leading to this function call.
+ *
+ * Returns: Current backtrace, or %NULL, if cannot determine it.
+ *
+ * Note: Getting backtraces only works if the library was
+ * configured with --enable-backtraces.
+ *
+ * Since: 3.12
+ **/
+GString *
+camel_debug_get_backtrace (void)
+{
+	return get_current_backtrace ();
+}
