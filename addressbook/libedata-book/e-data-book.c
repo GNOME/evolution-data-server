@@ -2554,8 +2554,10 @@ e_data_book_set_locale (EDataBook *book,
 					     cancellable,
 					     error);
 
-	if (success)
+	if (success) {
 		e_dbus_address_book_set_locale (book->priv->dbus_interface, locale);
+		g_dbus_interface_skeleton_flush (book->priv->dbus_interface);
+	}
 
 	return success;
 }
