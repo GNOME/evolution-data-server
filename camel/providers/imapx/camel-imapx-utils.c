@@ -24,7 +24,6 @@
 #include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
 #include "camel-imapx-settings.h"
-#include "camel-imapx-stream.h"
 #include "camel-imapx-summary.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-store-summary.h"

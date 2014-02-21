@@ -31,7 +31,6 @@
 #include <imapx/camel-imapx-status-response.h>
 #include <imapx/camel-imapx-store.h>
 #include <imapx/camel-imapx-store-summary.h>
-#include <imapx/camel-imapx-stream.h>
 #include <imapx/camel-imapx-summary.h>
 
 #include <nntp/camel-nntp-folder.h>
@@ -177,7 +176,6 @@ camel_imapx_settings_get_type
 camel_imapx_status_response_get_type
 camel_imapx_store_get_type
 camel_imapx_store_summary_get_type
-camel_imapx_stream_get_type
 camel_imapx_summary_get_type
 
 camel_nntp_folder_get_type

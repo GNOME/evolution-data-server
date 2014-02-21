@@ -20,9 +20,6 @@
 
 #include <gio/gio.h>
 
-/* XXX temporary */
-#include "camel-imapx-stream.h"
-
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_INPUT_STREAM \
 	(camel_imapx_input_stream_get_type ())
@@ -51,7 +48,6 @@ typedef struct _CamelIMAPXInputStream CamelIMAPXInputStream;
 typedef struct _CamelIMAPXInputStreamClass CamelIMAPXInputStreamClass;
 typedef struct _CamelIMAPXInputStreamPrivate CamelIMAPXInputStreamPrivate;
 
-#if 0
 typedef enum {
 	IMAPX_TOK_ERROR = -1,
 	IMAPX_TOK_TOKEN = 256,
@@ -59,7 +55,6 @@ typedef enum {
 	IMAPX_TOK_INT,
 	IMAPX_TOK_LITERAL,
 } camel_imapx_token_t;
-#endif
 
 struct _CamelIMAPXInputStream {
 	GFilterInputStream parent;
@@ -70,9 +65,7 @@ struct _CamelIMAPXInputStreamClass {
 	GFilterInputStreamClass parent_class;
 };
 
-#if 0
 GQuark		camel_imapx_error_quark		(void) G_GNUC_CONST;
-#endif
 GType		camel_imapx_input_stream_get_type
 						(void) G_GNUC_CONST;
 GInputStream *	camel_imapx_input_stream_new	(GInputStream *base_stream);

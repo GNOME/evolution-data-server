@@ -275,9 +275,7 @@ camel_imapx_input_stream_grow (CamelIMAPXInputStream *is,
 		*bufptr = is->priv->buf + (*bufptr - oldbuf);
 }
 
-#if 0
 G_DEFINE_QUARK (camel-imapx-error-quark, camel_imapx_error)
-#endif
 
 /**
  * camel_imapx_input_stream_new:

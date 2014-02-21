@@ -50,8 +50,6 @@ libcamelimapx_la_SOURCES = \
 	camel-imapx-store.h \
 	camel-imapx-store-summary.c \
 	camel-imapx-store-summary.h \
-	camel-imapx-stream.c \
-	camel-imapx-stream.h \
 	camel-imapx-summary.c \
 	camel-imapx-summary.h \
 	camel-imapx-tokenise.h \

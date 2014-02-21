@@ -3786,42 +3786,6 @@ camel_imapx_store_summary_get_type
 </SECTION>
 
 <SECTION>
-<FILE>camel-imapx-stream</FILE>
-<TITLE>CamelIMAPXStream</TITLE>
-CAMEL_IMAPX_ERROR
-camel_imapx_token_t
-CamelIMAPXStream
-camel_imapx_error_quark
-camel_imapx_stream_new
-camel_imapx_stream_ref_source
-camel_imapx_stream_buffered
-camel_imapx_stream_token
-camel_imapx_stream_ungettoken
-camel_imapx_stream_set_literal
-camel_imapx_stream_gets
-camel_imapx_stream_getl
-camel_imapx_stream_atom
-camel_imapx_stream_astring
-camel_imapx_stream_nstring
-camel_imapx_stream_nstring_bytes
-camel_imapx_stream_text
-camel_imapx_stream_number
-camel_imapx_stream_skip
-camel_imapx_stream_skip_until
-<SUBSECTION Standard>
-CAMEL_IMAPX_STREAM
-CAMEL_IS_IMAPX_STREAM
-CAMEL_TYPE_IMAPX_STREAM
-CAMEL_IMAPX_STREAM_CLASS
-CAMEL_IS_IMAPX_STREAM_CLASS
-CAMEL_IMAPX_STREAM_GET_CLASS
-CamelIMAPXStreamClass
-camel_imapx_stream_get_type
-<SUBSECTION Private>
-CamelIMAPXStreamPrivate
-</SECTION>
-
-<SECTION>
 <FILE>camel-imapx-summary</FILE>
 <TITLE>CamelIMAPXSummary</TITLE>
 CAMEL_IMAPX_SERVER_FLAGS
