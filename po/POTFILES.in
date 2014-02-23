@@ -135,10 +135,10 @@ camel/camel-vee-summary.c
 camel/camel-vtrash-folder.c
 camel/providers/imapx/camel-imapx-command.c
 camel/providers/imapx/camel-imapx-folder.c
+camel/providers/imapx/camel-imapx-input-stream.c
 camel/providers/imapx/camel-imapx-provider.c
 camel/providers/imapx/camel-imapx-server.c
 camel/providers/imapx/camel-imapx-store.c
-camel/providers/imapx/camel-imapx-stream.c
 camel/providers/local/camel-local-folder.c
 camel/providers/local/camel-local-provider.c
 camel/providers/local/camel-local-store.c
