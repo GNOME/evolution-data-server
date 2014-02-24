@@ -2303,7 +2303,6 @@ cfs_reload_from_db (CamelFolderSummary *summary,
                     GError **error)
 {
 	CamelDB *cdb;
-	CamelSession *session;
 	CamelStore *parent_store;
 	const gchar *folder_name;
 	gint ret = 0;
@@ -2318,7 +2317,6 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
 	cdb = parent_store->cdb_r;
 
 	data.columns_hash = NULL;
@@ -2337,14 +2335,22 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 	/* FIXME Convert this to a GTask, submitted through
 	 *       camel_service_queue_task().  Then it won't
 	 *       have to call camel_folder_lock/unlock(). */
-	if (summary->priv->need_preview)
-		camel_session_submit_job (
-			session,
-			(CamelSessionCallback) preview_update,
-			g_object_ref (summary->priv->folder),
-			(GDestroyNotify) g_object_unref);
+	if (summary->priv->need_preview) {
+		CamelSession *session;
 
-	g_object_unref (session);
+		/* This may not be available in a case of this being called as part
+		   of CamelSession's dispose, because the CamelService uses GWeakRef
+		   object which is invalidates its content when it reaches the dispose. */
+		session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+		if (session) {
+			camel_session_submit_job (
+				session,
+				(CamelSessionCallback) preview_update,
+				g_object_ref (summary->priv->folder),
+				(GDestroyNotify) g_object_unref);
+			g_object_unref (session);
+		}
+	}
 
 	return ret == 0 ? 0 : -1;
 }
