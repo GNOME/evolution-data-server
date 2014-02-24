@@ -210,7 +210,7 @@ camel_imapx_logger_new (gchar prefix)
 gchar
 camel_imapx_logger_get_prefix (CamelIMAPXLogger *logger)
 {
-	g_return_val_if_fail (CAMEL_IS_IMAPX_LOGGER (logger), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_LOGGER (logger), 0);
 
 	return logger->priv->prefix;
 }
