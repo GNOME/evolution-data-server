@@ -1961,23 +1961,23 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 		if (hdr != NULL) {
 			g_free (object->etag);
 			object->etag = quote_etag (hdr);
-		} else {
-			/* no ETag header returned, check for it with a GET */
-			hdr = soup_message_headers_get_list (message->response_headers, "Location");
-			if (hdr) {
-				/* reflect possible href change first */
-				gchar *file = strrchr (hdr, '/');
+		}
 
-				if (file) {
-					gchar *decoded;
+		/* "201 Created" can contain a Location with a link where the component was saved */
+		hdr = soup_message_headers_get_list (message->response_headers, "Location");
+		if (hdr) {
+			/* reflect possible href change */
+			gchar *file = strrchr (hdr, '/');
 
-					g_free (object->href);
+			if (file) {
+				gchar *decoded;
 
-					decoded = soup_uri_decode (file + 1);
-					object->href = soup_uri_encode (decoded ? decoded : (file + 1), NULL);
+				g_free (object->href);
 
-					g_free (decoded);
-				}
+				decoded = soup_uri_decode (file + 1);
+				object->href = soup_uri_encode (decoded ? decoded : (file + 1), NULL);
+
+				g_free (decoded);
 			}
 		}
 
