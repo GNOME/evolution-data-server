@@ -268,10 +268,13 @@ notify_and_remove_from_cache (gpointer key,
 	ECalComponent *comp = e_cal_component_new_from_string (calobj);
 	ECalComponentId *id = e_cal_component_get_id (comp);
 
-	e_cal_backend_store_remove_component (cbhttp->priv->store, id->uid, id->rid);
-	e_cal_backend_notify_component_removed (E_CAL_BACKEND (cbhttp), id, comp, NULL);
+	if (id) {
+		e_cal_backend_store_remove_component (cbhttp->priv->store, id->uid, id->rid);
+		e_cal_backend_notify_component_removed (E_CAL_BACKEND (cbhttp), id, comp, NULL);
 
-	e_cal_component_free_id (id);
+		e_cal_component_free_id (id);
+	}
+
 	g_object_unref (comp);
 
 	return TRUE;

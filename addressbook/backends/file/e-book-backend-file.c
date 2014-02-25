@@ -963,7 +963,7 @@ book_view_thread (gpointer data)
 	fields_of_interest = e_data_book_view_get_fields_of_interest (book_view);
 	meta_contact = uid_rev_fields (fields_of_interest);
 
-	if ( !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
+	if (query && !strcmp (query, "(contains \"x-evolution-any-field\" \"\")")) {
 		e_data_book_view_notify_progress (book_view, -1, _("Loading..."));
 	} else {
 		e_data_book_view_notify_progress (book_view, -1, _("Searching..."));

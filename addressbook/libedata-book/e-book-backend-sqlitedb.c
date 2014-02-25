@@ -1832,7 +1832,7 @@ e_book_backend_sqlitedb_new_full (const gchar *path,
 	indexed_fields = e_source_backend_summary_setup_get_indexed_fields (setup, &index_types, &n_indexed_fields);
 
 	/* No specified summary fields indicates the default summary configuration should be used */
-	if (n_fields <= 0) {
+	if (n_fields <= 0 || !fields) {
 		ebsdb = e_book_backend_sqlitedb_new (path, emailid, folderid, folder_name, store_vcard, error);
 		g_free (fields);
 		g_free (index_types);
@@ -3553,7 +3553,7 @@ convert_string_value (EBookBackendSqliteDB *ebsdb,
 		ptr = normal;
 	}
 
-	while ((c = *ptr++)) {
+	while (ptr && (c = *ptr++)) {
 		if (c == '\'') {
 			g_string_append_c (str, '\'');
 		} else if ((c == '%' || c == '^') && match != MATCH_REGEX) {

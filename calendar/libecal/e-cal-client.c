@@ -2362,13 +2362,15 @@ generate_instances (ECalClient *client,
 				continue;
 			}
 
-			ci->start = icaltime_as_timet_with_zone (
-				*dtstart.value, start_zone);
+			if (dtstart.value) {
+				ci->start = icaltime_as_timet_with_zone (
+					*dtstart.value, start_zone);
+			}
 
 			if (dtend.value)
 				ci->end = icaltime_as_timet_with_zone (
 					*dtend.value, end_zone);
-			else if (icaltime_is_date (*dtstart.value))
+			else if (dtstart.value && icaltime_is_date (*dtstart.value))
 				ci->end = time_day_end (ci->start);
 			else
 				ci->end = ci->start;

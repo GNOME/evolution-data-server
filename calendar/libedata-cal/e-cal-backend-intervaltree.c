@@ -588,9 +588,9 @@ e_intervaltree_remove (EIntervalTree *tree,
                        const gchar *uid,
                        const gchar *rid)
 {
-	EIntervalNode *y;
-	EIntervalNode *x;
-	EIntervalNode *z;
+	EIntervalNode *y = NULL;
+	EIntervalNode *x = NULL;
+	EIntervalNode *z = NULL;
 	EIntervalNode *nil, *root;
 	gchar *key;
 
@@ -609,21 +609,23 @@ e_intervaltree_remove (EIntervalTree *tree,
 
 	y = ((z->left == nil) || (z->right == nil)) ? z :
 		intervaltree_node_next (tree, z);
+	g_return_val_if_fail (y, FALSE);
 	x = (y->left == nil) ? y->right : y->left;
+	g_return_val_if_fail (x, FALSE);
 	/* y is to be spliced out. x is it's only child */
 
 	x->parent = y->parent;
 
-	if (root == x->parent)
+	if (root && root == x->parent)
 		root->left = x;
-	else {
+	else if (y->parent) {
 		if (y == y->parent->left)
 			y->parent->left = x;
 		else
 			y->parent->right = x;
 	}
 
-	if (y != z) {
+	if (z && y != z) {
 		/* y (the succesor of z) is the node to be spliced out */
 		g_return_val_if_fail (y != tree->priv->nil, FALSE);
 
@@ -634,10 +636,13 @@ e_intervaltree_remove (EIntervalTree *tree,
 		y->parent = z->parent;
 		z->left->parent = z->right->parent = y;
 
-		if (z == z->parent->left)
-			z->parent->left = y;
-		else
-			z->parent->right = y;
+		if (z->parent) {
+			if (z == z->parent->left)
+				z->parent->left = y;
+			else
+				z->parent->right = y;
+
+		}
 
 		fixup_min_max_fields (tree, x->parent);
 

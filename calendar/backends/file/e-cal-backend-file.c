@@ -1679,7 +1679,7 @@ e_cal_backend_file_get_object_list (ECalBackendSync *backend,
 	match_data.as_string = TRUE;
 	match_data.backend = E_CAL_BACKEND (backend);
 
-	if (!strcmp (sexp, "#t"))
+	if (sexp && !strcmp (sexp, "#t"))
 		match_data.search_needed = FALSE;
 
 	match_data.obj_sexp = e_cal_backend_sexp_new (sexp);
@@ -1870,7 +1870,7 @@ e_cal_backend_file_start_view (ECalBackend *backend,
 	match_data.obj_sexp = e_data_cal_view_get_sexp (query);
 	match_data.view = query;
 
-	if (!strcmp (match_data.query, "#t"))
+	if (match_data.query && !strcmp (match_data.query, "#t"))
 		match_data.search_needed = FALSE;
 
 	if (!match_data.obj_sexp) {
@@ -3683,7 +3683,7 @@ test_query_by_scanning_all_objects (ECalBackendFile *cbfile,
 	match_data.as_string = TRUE;
 	match_data.backend = E_CAL_BACKEND (cbfile);
 
-	if (!strcmp (sexp, "#t"))
+	if (sexp && !strcmp (sexp, "#t"))
 		match_data.search_needed = FALSE;
 
 	match_data.obj_sexp = e_cal_backend_sexp_new (sexp);
