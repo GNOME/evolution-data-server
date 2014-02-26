@@ -115,7 +115,7 @@ static void free_refresh_data (ECalBackendFile *cbfile);
 static void bump_revision (ECalBackendFile *cbfile);
 
 static void	e_cal_backend_file_timezone_cache_init
-					(ETimezoneCacheInterface *interface);
+					(ETimezoneCacheInterface *iface);
 
 static ETimezoneCacheInterface *parent_timezone_cache_interface;
 
@@ -3563,14 +3563,13 @@ e_cal_backend_file_class_init (ECalBackendFileClass *class)
 }
 
 static void
-e_cal_backend_file_timezone_cache_init (ETimezoneCacheInterface *interface)
+e_cal_backend_file_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	parent_timezone_cache_interface =
-		g_type_interface_peek_parent (interface);
+	parent_timezone_cache_interface = g_type_interface_peek_parent (iface);
 
-	interface->add_timezone = cal_backend_file_add_cached_timezone;
-	interface->get_timezone = cal_backend_file_get_cached_timezone;
-	interface->list_timezones = cal_backend_file_list_cached_timezones;
+	iface->add_timezone = cal_backend_file_add_cached_timezone;
+	iface->get_timezone = cal_backend_file_get_cached_timezone;
+	iface->list_timezones = cal_backend_file_list_cached_timezones;
 }
 
 static void

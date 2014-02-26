@@ -93,7 +93,7 @@ enum {
 };
 
 /* Forward Declarations */
-static void	e_data_cal_view_initable_init	(GInitableIface *interface);
+static void	e_data_cal_view_initable_init	(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EDataCalView,
@@ -557,9 +557,9 @@ e_data_cal_view_class_init (EDataCalViewClass *class)
 }
 
 static void
-e_data_cal_view_initable_init (GInitableIface *interface)
+e_data_cal_view_initable_init (GInitableIface *iface)
 {
-	interface->init = data_cal_view_initable_init;
+	iface->init = data_cal_view_initable_init;
 }
 
 static void

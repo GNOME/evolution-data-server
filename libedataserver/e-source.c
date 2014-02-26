@@ -189,9 +189,9 @@ static SecretSchema password_schema = {
 static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
-static void	e_source_initable_init	(GInitableIface *interface);
+static void	e_source_initable_init	(GInitableIface *iface);
 static void	e_source_proxy_resolver_init
-					(GProxyResolverInterface *interface);
+					(GProxyResolverInterface *iface);
 
 /* Private function shared only with ESourceRegistry. */
 void		__e_source_private_replace_dbus_object
@@ -2011,18 +2011,18 @@ e_source_class_init (ESourceClass *class)
 }
 
 static void
-e_source_initable_init (GInitableIface *interface)
+e_source_initable_init (GInitableIface *iface)
 {
-	interface->init = source_initable_init;
+	iface->init = source_initable_init;
 }
 
 static void
-e_source_proxy_resolver_init (GProxyResolverInterface *interface)
+e_source_proxy_resolver_init (GProxyResolverInterface *iface)
 {
-	interface->is_supported = source_proxy_resolver_is_supported;
-	interface->lookup = source_proxy_resolver_lookup;
-	interface->lookup_async = source_proxy_resolver_lookup_async;
-	interface->lookup_finish = source_proxy_resolver_lookup_finish;
+	iface->is_supported = source_proxy_resolver_is_supported;
+	iface->lookup = source_proxy_resolver_lookup;
+	iface->lookup_async = source_proxy_resolver_lookup_async;
+	iface->lookup_finish = source_proxy_resolver_lookup_finish;
 }
 
 static void

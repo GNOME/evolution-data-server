@@ -671,13 +671,13 @@ network_service_new_connectable (CamelNetworkService *service)
 }
 
 static void
-camel_network_service_default_init (CamelNetworkServiceInterface *interface)
+camel_network_service_default_init (CamelNetworkServiceInterface *iface)
 {
-	interface->connect_sync = network_service_connect_sync;
-	interface->new_connectable = network_service_new_connectable;
+	iface->connect_sync = network_service_connect_sync;
+	iface->new_connectable = network_service_new_connectable;
 
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_object (
 			"connectable",
 			"Connectable",
@@ -687,7 +687,7 @@ camel_network_service_default_init (CamelNetworkServiceInterface *interface)
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_boolean (
 			"host-reachable",
 			"Host Reachable",
@@ -729,15 +729,15 @@ const gchar *
 camel_network_service_get_service_name (CamelNetworkService *service,
                                         CamelNetworkSecurityMethod method)
 {
-	CamelNetworkServiceInterface *interface;
+	CamelNetworkServiceInterface *iface;
 	const gchar *service_name = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), NULL);
 
-	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
+	iface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
 
-	if (interface->get_service_name != NULL)
-		service_name = interface->get_service_name (service, method);
+	if (iface->get_service_name != NULL)
+		service_name = iface->get_service_name (service, method);
 
 	return service_name;
 }
@@ -760,15 +760,15 @@ guint16
 camel_network_service_get_default_port (CamelNetworkService *service,
                                         CamelNetworkSecurityMethod method)
 {
-	CamelNetworkServiceInterface *interface;
+	CamelNetworkServiceInterface *iface;
 	guint16 default_port = 0;
 
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), 0);
 
-	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
+	iface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
 
-	if (interface->get_default_port != NULL)
-		default_port = interface->get_default_port (service, method);
+	if (iface->get_default_port != NULL)
+		default_port = iface->get_default_port (service, method);
 
 	return default_port;
 }
@@ -823,13 +823,13 @@ void
 camel_network_service_set_connectable (CamelNetworkService *service,
                                        GSocketConnectable *connectable)
 {
-	CamelNetworkServiceInterface *interface;
+	CamelNetworkServiceInterface *iface;
 	CamelNetworkServicePrivate *priv;
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
 
-	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
-	g_return_if_fail (interface->new_connectable != NULL);
+	iface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
+	g_return_if_fail (iface->new_connectable != NULL);
 
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
 	g_return_if_fail (priv != NULL);
@@ -840,7 +840,7 @@ camel_network_service_set_connectable (CamelNetworkService *service,
 	} else {
 		/* This may return NULL if we don't have valid network
 		 * settings from which to create a GSocketConnectable. */
-		connectable = interface->new_connectable (service);
+		connectable = iface->new_connectable (service);
 	}
 
 	g_mutex_lock (&priv->property_lock);
@@ -903,14 +903,14 @@ camel_network_service_connect_sync (CamelNetworkService *service,
                                     GCancellable *cancellable,
                                     GError **error)
 {
-	CamelNetworkServiceInterface *interface;
+	CamelNetworkServiceInterface *iface;
 
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SERVICE (service), NULL);
 
-	interface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
-	g_return_val_if_fail (interface->connect_sync != NULL, NULL);
+	iface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
+	g_return_val_if_fail (iface->connect_sync != NULL, NULL);
 
-	return interface->connect_sync (service, cancellable, error);
+	return iface->connect_sync (service, cancellable, error);
 }
 
 /**

@@ -46,7 +46,7 @@ struct _CamelStreamMemPrivate {
 };
 
 /* Forward Declarations */
-static void camel_stream_mem_seekable_init (GSeekableIface *interface);
+static void camel_stream_mem_seekable_init (GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelStreamMem, camel_stream_mem, CAMEL_TYPE_STREAM,
@@ -240,13 +240,13 @@ camel_stream_mem_class_init (CamelStreamMemClass *class)
 }
 
 static void
-camel_stream_mem_seekable_init (GSeekableIface *interface)
+camel_stream_mem_seekable_init (GSeekableIface *iface)
 {
-	interface->tell = stream_mem_tell;
-	interface->can_seek = stream_mem_can_seek;
-	interface->seek = stream_mem_seek;
-	interface->can_truncate = stream_mem_can_truncate;
-	interface->truncate_fn = stream_mem_truncate_fn;
+	iface->tell = stream_mem_tell;
+	iface->can_seek = stream_mem_can_seek;
+	iface->seek = stream_mem_seek;
+	iface->can_truncate = stream_mem_can_truncate;
+	iface->truncate_fn = stream_mem_truncate_fn;
 }
 
 static void

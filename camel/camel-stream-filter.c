@@ -65,7 +65,7 @@ struct _CamelStreamFilterPrivate {
 #define READ_PAD (128)		/* bytes padded before buffer */
 #define READ_SIZE (4096)
 
-static void camel_stream_filter_seekable_init (GSeekableIface *interface);
+static void camel_stream_filter_seekable_init (GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (CamelStreamFilter, camel_stream_filter, CAMEL_TYPE_STREAM,
 	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_stream_filter_seekable_init))
@@ -399,13 +399,13 @@ camel_stream_filter_class_init (CamelStreamFilterClass *class)
 }
 
 static void
-camel_stream_filter_seekable_init (GSeekableIface *interface)
+camel_stream_filter_seekable_init (GSeekableIface *iface)
 {
-	interface->tell = stream_filter_tell;
-	interface->can_seek = stream_filter_can_seek;
-	interface->seek = stream_filter_seek;
-	interface->can_truncate = stream_filter_can_truncate;
-	interface->truncate_fn = stream_filter_truncate_fn;
+	iface->tell = stream_filter_tell;
+	iface->can_seek = stream_filter_can_seek;
+	iface->seek = stream_filter_seek;
+	iface->can_truncate = stream_filter_can_truncate;
+	iface->truncate_fn = stream_filter_truncate_fn;
 }
 
 static void

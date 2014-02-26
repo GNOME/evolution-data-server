@@ -178,7 +178,7 @@ enum {
 /* Forward Declarations */
 static void	source_registry_add_source	(ESourceRegistry *registry,
 						 ESource *source);
-static void	e_source_registry_initable_init	(GInitableIface *interface);
+static void	e_source_registry_initable_init	(GInitableIface *iface);
 
 /* Private ESource function, for our use only. */
 void		__e_source_private_replace_dbus_object
@@ -1622,9 +1622,9 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 }
 
 static void
-e_source_registry_initable_init (GInitableIface *interface)
+e_source_registry_initable_init (GInitableIface *iface)
 {
-	interface->init = source_registry_initable_init;
+	iface->init = source_registry_initable_init;
 }
 
 static void

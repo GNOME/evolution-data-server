@@ -91,7 +91,7 @@ enum {
 };
 
 /* Forward Declarations */
-static void	e_cal_client_view_initable_init	(GInitableIface *interface);
+static void	e_cal_client_view_initable_init	(GInitableIface *iface);
 
 static guint signals[LAST_SIGNAL];
 
@@ -865,9 +865,9 @@ e_cal_client_view_class_init (ECalClientViewClass *class)
 }
 
 static void
-e_cal_client_view_initable_init (GInitableIface *interface)
+e_cal_client_view_initable_init (GInitableIface *iface)
 {
-	interface->init = cal_client_view_initable_init;
+	iface->init = cal_client_view_initable_init;
 }
 
 static void

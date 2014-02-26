@@ -66,7 +66,7 @@ owncloud_authenticator_try_password_sync (ESourceAuthenticator *auth,
 GType		e_owncloud_authenticator_get_type
 				(void) G_GNUC_CONST;
 static void	e_owncloud_authenticator_authenticator_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_EXTENDED (
 	EOwncloudAuthenticator,
@@ -98,9 +98,9 @@ e_owncloud_authenticator_class_init (EOwncloudAuthenticatorClass *class)
 }
 
 static void
-e_owncloud_authenticator_authenticator_init (ESourceAuthenticatorInterface *interface)
+e_owncloud_authenticator_authenticator_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->try_password_sync = owncloud_authenticator_try_password_sync;
+	iface->try_password_sync = owncloud_authenticator_try_password_sync;
 }
 
 static void

@@ -145,11 +145,11 @@ subscribable_delete_cached_folder (CamelStore *store,
 }
 
 static void
-camel_subscribable_default_init (CamelSubscribableInterface *interface)
+camel_subscribable_default_init (CamelSubscribableInterface *iface)
 {
 	signals[FOLDER_SUBSCRIBED] = g_signal_new (
 		"folder-subscribed",
-		G_OBJECT_CLASS_TYPE (interface),
+		G_OBJECT_CLASS_TYPE (iface),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (
 			CamelSubscribableInterface,
@@ -160,7 +160,7 @@ camel_subscribable_default_init (CamelSubscribableInterface *interface)
 
 	signals[FOLDER_UNSUBSCRIBED] = g_signal_new (
 		"folder-unsubscribed",
-		G_OBJECT_CLASS_TYPE (interface),
+		G_OBJECT_CLASS_TYPE (iface),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (
 			CamelSubscribableInterface,
@@ -185,15 +185,15 @@ gboolean
 camel_subscribable_folder_is_subscribed (CamelSubscribable *subscribable,
                                          const gchar *folder_name)
 {
-	CamelSubscribableInterface *interface;
+	CamelSubscribableInterface *iface;
 
 	g_return_val_if_fail (CAMEL_IS_SUBSCRIBABLE (subscribable), FALSE);
 	g_return_val_if_fail (folder_name != NULL, FALSE);
 
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
-	g_return_val_if_fail (interface->folder_is_subscribed != NULL, FALSE);
+	iface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
+	g_return_val_if_fail (iface->folder_is_subscribed != NULL, FALSE);
 
-	return interface->folder_is_subscribed (subscribable, folder_name);
+	return iface->folder_is_subscribed (subscribable, folder_name);
 }
 
 /**
@@ -247,7 +247,7 @@ subscribable_subscribe_folder_thread (GTask *task,
                                       GCancellable *cancellable)
 {
 	CamelSubscribable *subscribable;
-	CamelSubscribableInterface *interface;
+	CamelSubscribableInterface *iface;
 	const gchar *folder_name;
 	const gchar *message;
 	gboolean success;
@@ -259,8 +259,8 @@ subscribable_subscribe_folder_thread (GTask *task,
 
 	folder_name = async_context->folder_name;
 
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
-	g_return_if_fail (interface->subscribe_folder_sync != NULL);
+	iface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
+	g_return_if_fail (iface->subscribe_folder_sync != NULL);
 
 	/* Need to establish a connection before subscribing. */
 	camel_service_connect_sync (
@@ -273,7 +273,7 @@ subscribable_subscribe_folder_thread (GTask *task,
 	message = _("Subscribing to folder '%s'");
 	camel_operation_push_message (cancellable, message, folder_name);
 
-	success = interface->subscribe_folder_sync (
+	success = iface->subscribe_folder_sync (
 		subscribable, folder_name, cancellable, &local_error);
 	CAMEL_CHECK_LOCAL_GERROR (
 		subscribable, subscribe_folder_sync, success, local_error);
@@ -416,7 +416,7 @@ subscribable_unsubscribe_folder_thread (GTask *task,
                                         GCancellable *cancellable)
 {
 	CamelSubscribable *subscribable;
-	CamelSubscribableInterface *interface;
+	CamelSubscribableInterface *iface;
 	const gchar *folder_name;
 	const gchar *message;
 	gboolean success;
@@ -428,8 +428,8 @@ subscribable_unsubscribe_folder_thread (GTask *task,
 
 	folder_name = async_context->folder_name;
 
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
-	g_return_if_fail (interface->unsubscribe_folder_sync != NULL);
+	iface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
+	g_return_if_fail (iface->unsubscribe_folder_sync != NULL);
 
 	/* Need to establish a connection before unsubscribing. */
 	camel_service_connect_sync (
@@ -442,7 +442,7 @@ subscribable_unsubscribe_folder_thread (GTask *task,
 	message = _("Unsubscribing from folder '%s'");
 	camel_operation_push_message (cancellable, message, folder_name);
 
-	success = interface->unsubscribe_folder_sync (
+	success = iface->unsubscribe_folder_sync (
 		subscribable, folder_name, cancellable, &local_error);
 	CAMEL_CHECK_LOCAL_GERROR (
 		subscribable, unsubscribe_folder_sync, success, local_error);

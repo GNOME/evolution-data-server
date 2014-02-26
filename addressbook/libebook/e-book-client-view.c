@@ -96,7 +96,7 @@ enum {
 
 /* Forward Declarations */
 static void	e_book_client_view_initable_init
-						(GInitableIface *interface);
+						(GInitableIface *iface);
 
 static guint signals[LAST_SIGNAL];
 
@@ -1042,9 +1042,9 @@ e_book_client_view_class_init (EBookClientViewClass *class)
 }
 
 static void
-e_book_client_view_initable_init (GInitableIface *interface)
+e_book_client_view_initable_init (GInitableIface *iface)
 {
-	interface->init = book_client_view_initable_init;
+	iface->init = book_client_view_initable_init;
 }
 
 static void

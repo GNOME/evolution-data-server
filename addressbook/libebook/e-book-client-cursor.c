@@ -492,7 +492,7 @@ static void          book_client_cursor_get_property       (GObject             
 							    GParamSpec             *pspec);
 
 /* GInitable */
-static void	     e_book_client_cursor_initable_init    (GInitableIface         *interface);
+static void	     e_book_client_cursor_initable_init    (GInitableIface         *iface);
 static gboolean      book_client_cursor_initable_init      (GInitable              *initable,
 							    GCancellable           *cancellable,
 							    GError                **error);
@@ -1090,9 +1090,9 @@ book_client_cursor_get_property (GObject *object,
  *                    GInitable                     *
  ****************************************************/
 static void
-e_book_client_cursor_initable_init (GInitableIface *interface)
+e_book_client_cursor_initable_init (GInitableIface *iface)
 {
-	interface->init = book_client_cursor_initable_init;
+	iface->init = book_client_cursor_initable_init;
 }
 
 static gboolean

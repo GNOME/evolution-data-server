@@ -46,7 +46,7 @@ struct _CamelStreamFsPrivate {
 };
 
 /* Forward Declarations */
-static void camel_stream_fs_seekable_init (GSeekableIface *interface);
+static void camel_stream_fs_seekable_init (GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelStreamFs, camel_stream_fs, CAMEL_TYPE_STREAM,
@@ -248,13 +248,13 @@ camel_stream_fs_class_init (CamelStreamFsClass *class)
 }
 
 static void
-camel_stream_fs_seekable_init (GSeekableIface *interface)
+camel_stream_fs_seekable_init (GSeekableIface *iface)
 {
-	interface->tell = stream_fs_tell;
-	interface->can_seek = stream_fs_can_seek;
-	interface->seek = stream_fs_seek;
-	interface->can_truncate = stream_fs_can_truncate;
-	interface->truncate_fn = stream_fs_truncate_fn;
+	iface->tell = stream_fs_tell;
+	iface->can_seek = stream_fs_can_seek;
+	iface->seek = stream_fs_seek;
+	iface->can_truncate = stream_fs_can_truncate;
+	iface->truncate_fn = stream_fs_truncate_fn;
 }
 
 static void

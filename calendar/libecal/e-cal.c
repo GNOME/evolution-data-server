@@ -93,7 +93,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void	e_cal_initable_init		(GInitableIface *interface);
+static void	e_cal_initable_init		(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	ECal, e_cal, G_TYPE_OBJECT,
@@ -528,9 +528,9 @@ e_cal_class_init (ECalClass *class)
 }
 
 static void
-e_cal_initable_init (GInitableIface *interface)
+e_cal_initable_init (GInitableIface *iface)
 {
-	interface->init = cal_initable_init;
+	iface->init = cal_initable_init;
 }
 
 static void

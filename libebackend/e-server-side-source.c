@@ -83,7 +83,7 @@ static GInitableIface *initable_parent_interface;
 
 /* Forward Declarations */
 static void	e_server_side_source_initable_init
-						(GInitableIface *interface);
+						(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EServerSideSource,
@@ -190,19 +190,19 @@ server_side_source_traverse_cb (GNode *node,
 }
 
 static gboolean
-server_side_source_allow_auth_prompt_cb (EDBusSource *interface,
+server_side_source_allow_auth_prompt_cb (EDBusSource *dbus_interface,
                                          GDBusMethodInvocation *invocation,
                                          EServerSideSource *source)
 {
 	e_server_side_source_set_allow_auth_prompt (source, TRUE);
 
-	e_dbus_source_complete_allow_auth_prompt (interface, invocation);
+	e_dbus_source_complete_allow_auth_prompt (dbus_interface, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-server_side_source_remove_cb (EDBusSourceRemovable *interface,
+server_side_source_remove_cb (EDBusSourceRemovable *dbus_interface,
                               GDBusMethodInvocation *invocation,
                               EServerSideSource *source)
 {
@@ -219,13 +219,13 @@ server_side_source_remove_cb (EDBusSourceRemovable *interface,
 		g_dbus_method_invocation_take_error (invocation, error);
 	else
 		e_dbus_source_removable_complete_remove (
-			interface, invocation);
+			dbus_interface, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-server_side_source_write_cb (EDBusSourceWritable *interface,
+server_side_source_write_cb (EDBusSourceWritable *dbus_interface,
                              GDBusMethodInvocation *invocation,
                              const gchar *data,
                              ESource *source)
@@ -279,7 +279,7 @@ server_side_source_write_cb (EDBusSourceWritable *interface,
 		g_dbus_method_invocation_take_error (invocation, error);
 	else
 		e_dbus_source_writable_complete_write (
-			interface, invocation);
+			dbus_interface, invocation);
 
 	g_object_unref (dbus_source);
 	g_object_unref (dbus_object);
@@ -314,7 +314,7 @@ server_side_source_remote_create_done_cb (GObject *source_object,
 }
 
 static gboolean
-server_side_source_remote_create_cb (EDBusSourceRemoteCreatable *interface,
+server_side_source_remote_create_cb (EDBusSourceRemoteCreatable *dbus_interface,
                                      GDBusMethodInvocation *invocation,
                                      const gchar *uid,
                                      const gchar *data,
@@ -372,7 +372,7 @@ server_side_source_remote_create_cb (EDBusSourceRemoteCreatable *interface,
 	g_object_unref (dbus_source);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->remote_creatable = g_object_ref (interface);
+	async_context->remote_creatable = g_object_ref (dbus_interface);
 	async_context->invocation = g_object_ref (invocation);
 
 	e_source_remote_create (
@@ -412,14 +412,14 @@ server_side_source_remote_delete_done_cb (GObject *source_object,
 }
 
 static gboolean
-server_side_source_remote_delete_cb (EDBusSourceRemoteDeletable *interface,
+server_side_source_remote_delete_cb (EDBusSourceRemoteDeletable *dbus_interface,
                                      GDBusMethodInvocation *invocation,
                                      ESource *source)
 {
 	AsyncContext *async_context;
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->remote_deletable = g_object_ref (interface);
+	async_context->remote_deletable = g_object_ref (dbus_interface);
 	async_context->invocation = g_object_ref (invocation);
 
 	e_source_remote_delete (
@@ -468,14 +468,14 @@ server_side_source_get_access_token_done_cb (GObject *source_object,
 }
 
 static gboolean
-server_side_source_get_access_token_cb (EDBusSourceOAuth2Support *interface,
+server_side_source_get_access_token_cb (EDBusSourceOAuth2Support *dbus_interface,
                                         GDBusMethodInvocation *invocation,
                                         ESource *source)
 {
 	AsyncContext *async_context;
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->oauth2_support = g_object_ref (interface);
+	async_context->oauth2_support = g_object_ref (dbus_interface);
 	async_context->invocation = g_object_ref (invocation);
 
 	e_source_get_oauth2_access_token (
@@ -1326,11 +1326,11 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 }
 
 static void
-e_server_side_source_initable_init (GInitableIface *interface)
+e_server_side_source_initable_init (GInitableIface *iface)
 {
-	initable_parent_interface = g_type_interface_peek_parent (interface);
+	initable_parent_interface = g_type_interface_peek_parent (iface);
 
-	interface->init = server_side_source_initable_init;
+	iface->init = server_side_source_initable_init;
 }
 
 static void

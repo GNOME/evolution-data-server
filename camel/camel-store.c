@@ -86,7 +86,7 @@ static guint signals[LAST_SIGNAL];
 static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
-static void camel_store_initable_init (GInitableIface *interface);
+static void camel_store_initable_init (GInitableIface *iface);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	CamelStore, camel_store, CAMEL_TYPE_SERVICE,
@@ -630,11 +630,11 @@ camel_store_class_init (CamelStoreClass *class)
 }
 
 static void
-camel_store_initable_init (GInitableIface *interface)
+camel_store_initable_init (GInitableIface *iface)
 {
-	parent_initable_interface = g_type_interface_peek_parent (interface);
+	parent_initable_interface = g_type_interface_peek_parent (iface);
 
-	interface->init = store_initable_init;
+	iface->init = store_initable_init;
 }
 
 static void

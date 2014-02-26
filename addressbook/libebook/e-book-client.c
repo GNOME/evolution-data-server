@@ -107,9 +107,9 @@ struct _RunInThreadClosure {
 
 /* Forward Declarations */
 static void	e_book_client_initable_init
-					(GInitableIface *interface);
+					(GInitableIface *iface);
 static void	e_book_client_async_initable_init
-					(GAsyncInitableIface *interface);
+					(GAsyncInitableIface *iface);
 static void     book_client_set_locale  (EBookClient *client,
 					 const gchar *locale);
 
@@ -1137,16 +1137,16 @@ e_book_client_class_init (EBookClientClass *class)
 }
 
 static void
-e_book_client_initable_init (GInitableIface *interface)
+e_book_client_initable_init (GInitableIface *iface)
 {
-	interface->init = book_client_initable_init;
+	iface->init = book_client_initable_init;
 }
 
 static void
-e_book_client_async_initable_init (GAsyncInitableIface *interface)
+e_book_client_async_initable_init (GAsyncInitableIface *iface)
 {
-	interface->init_async = book_client_initable_init_async;
-	interface->init_finish = book_client_initable_init_finish;
+	iface->init_async = book_client_initable_init_async;
+	iface->init_finish = book_client_initable_init_finish;
 }
 
 static void

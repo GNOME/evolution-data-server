@@ -119,7 +119,7 @@ enum {
 
 /* Forward Declarations */
 void		camel_network_service_init	(CamelNetworkService *service);
-static void	camel_service_initable_init	(GInitableIface *interface);
+static void	camel_service_initable_init	(GInitableIface *iface);
 static void	service_task_dispatch		(CamelService *service,
 						 GTask *task);
 
@@ -1068,9 +1068,9 @@ camel_service_class_init (CamelServiceClass *class)
 }
 
 static void
-camel_service_initable_init (GInitableIface *interface)
+camel_service_initable_init (GInitableIface *iface)
 {
-	interface->init = service_initable_init;
+	iface->init = service_initable_init;
 }
 
 static void

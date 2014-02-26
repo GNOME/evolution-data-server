@@ -67,7 +67,7 @@ struct _EDataBookPrivate {
 
 struct _AsyncContext {
 	EDataBook *data_book;
-	EDBusAddressBook *interface;
+	EDBusAddressBook *dbus_interface;
 	GDBusMethodInvocation *invocation;
 	GCancellable *cancellable;
 	guint watcher_id;
@@ -81,7 +81,7 @@ enum {
 };
 
 /* Forward Declarations */
-static void e_data_book_initable_init (GInitableIface *interface);
+static void e_data_book_initable_init (GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EDataBook,
@@ -159,13 +159,13 @@ async_context_new (EDataBook *data_book,
                    GDBusMethodInvocation *invocation)
 {
 	AsyncContext *async_context;
-	EDBusAddressBook *interface;
+	EDBusAddressBook *dbus_interface;
 
-	interface = data_book->priv->dbus_interface;
+	dbus_interface = data_book->priv->dbus_interface;
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->data_book = g_object_ref (data_book);
-	async_context->interface = g_object_ref (interface);
+	async_context->dbus_interface = g_object_ref (dbus_interface);
 	async_context->invocation = g_object_ref (invocation);
 	async_context->cancellable = g_cancellable_new ();
 
@@ -196,7 +196,7 @@ async_context_free (AsyncContext *async_context)
 		async_context->cancellable);
 
 	g_clear_object (&async_context->data_book);
-	g_clear_object (&async_context->interface);
+	g_clear_object (&async_context->dbus_interface);
 	g_clear_object (&async_context->invocation);
 	g_clear_object (&async_context->cancellable);
 
@@ -550,7 +550,7 @@ data_book_complete_open_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_address_book_complete_open (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_book_convert_to_client_error (error);
@@ -562,7 +562,7 @@ data_book_complete_open_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_open_cb (EDBusAddressBook *interface,
+data_book_handle_open_cb (EDBusAddressBook *dbus_interface,
                           GDBusMethodInvocation *invocation,
                           EDataBook *data_book)
 {
@@ -598,7 +598,7 @@ data_book_complete_refresh_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_address_book_complete_refresh (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_book_convert_to_client_error (error);
@@ -610,7 +610,7 @@ data_book_complete_refresh_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_refresh_cb (EDBusAddressBook *interface,
+data_book_handle_refresh_cb (EDBusAddressBook *dbus_interface,
                              GDBusMethodInvocation *invocation,
                              EDataBook *data_book)
 {
@@ -659,7 +659,7 @@ data_book_complete_get_contact_cb (GObject *source_object,
 			EVC_FORMAT_VCARD_30);
 		utf8_vcard = e_util_utf8_make_valid (vcard);
 		e_dbus_address_book_complete_get_contact (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			utf8_vcard);
 		g_free (utf8_vcard);
@@ -676,7 +676,7 @@ data_book_complete_get_contact_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_get_contact_cb (EDBusAddressBook *interface,
+data_book_handle_get_contact_cb (EDBusAddressBook *dbus_interface,
                                  GDBusMethodInvocation *invocation,
                                  const gchar *in_uid,
                                  EDataBook *data_book)
@@ -734,7 +734,7 @@ data_book_complete_get_contact_list_cb (GObject *source_object,
 		}
 
 		e_dbus_address_book_complete_get_contact_list (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv);
 
@@ -749,7 +749,7 @@ data_book_complete_get_contact_list_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_get_contact_list_cb (EDBusAddressBook *interface,
+data_book_handle_get_contact_list_cb (EDBusAddressBook *dbus_interface,
                                       GDBusMethodInvocation *invocation,
                                       const gchar *in_query,
                                       EDataBook *data_book)
@@ -798,7 +798,7 @@ data_book_complete_get_contact_list_uids_cb (GObject *source_object,
 		}
 
 		e_dbus_address_book_complete_get_contact_list_uids (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv);
 
@@ -813,7 +813,7 @@ data_book_complete_get_contact_list_uids_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_get_contact_list_uids_cb (EDBusAddressBook *interface,
+data_book_handle_get_contact_list_uids_cb (EDBusAddressBook *dbus_interface,
                                            GDBusMethodInvocation *invocation,
                                            const gchar *in_query,
                                            EDataBook *data_book)
@@ -866,7 +866,7 @@ data_book_complete_create_contacts_cb (GObject *source_object,
 		}
 
 		e_dbus_address_book_complete_create_contacts (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv);
 
@@ -881,7 +881,7 @@ data_book_complete_create_contacts_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_create_contacts_cb (EDBusAddressBook *interface,
+data_book_handle_create_contacts_cb (EDBusAddressBook *dbus_interface,
                                      GDBusMethodInvocation *invocation,
                                      const gchar * const *in_vcards,
                                      EDataBook *data_book)
@@ -918,7 +918,7 @@ data_book_complete_modify_contacts_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_address_book_complete_modify_contacts (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_book_convert_to_client_error (error);
@@ -930,7 +930,7 @@ data_book_complete_modify_contacts_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_modify_contacts_cb (EDBusAddressBook *interface,
+data_book_handle_modify_contacts_cb (EDBusAddressBook *dbus_interface,
                                      GDBusMethodInvocation *invocation,
                                      const gchar * const *in_vcards,
                                      EDataBook *data_book)
@@ -967,7 +967,7 @@ data_book_complete_remove_contacts_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_address_book_complete_remove_contacts (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_book_convert_to_client_error (error);
@@ -979,7 +979,7 @@ data_book_complete_remove_contacts_cb (GObject *source_object,
 }
 
 static gboolean
-data_book_handle_remove_contacts_cb (EDBusAddressBook *interface,
+data_book_handle_remove_contacts_cb (EDBusAddressBook *dbus_interface,
                                      GDBusMethodInvocation *invocation,
                                      const gchar * const *in_uids,
                                      EDataBook *data_book)
@@ -1004,7 +1004,7 @@ data_book_handle_remove_contacts_cb (EDBusAddressBook *interface,
 }
 
 static gboolean
-data_book_handle_get_view_cb (EDBusAddressBook *interface,
+data_book_handle_get_view_cb (EDBusAddressBook *dbus_interface,
                               GDBusMethodInvocation *invocation,
                               const gchar *in_query,
                               EDataBook *data_book)
@@ -1045,7 +1045,7 @@ data_book_handle_get_view_cb (EDBusAddressBook *interface,
 
 	if (view != NULL) {
 		e_dbus_address_book_complete_get_view (
-			interface, invocation, object_path);
+			dbus_interface, invocation, object_path);
 		e_book_backend_add_view (backend, view);
 		g_object_unref (view);
 	} else {
@@ -1146,7 +1146,7 @@ data_book_interpret_sort_keys (const gchar * const *in_sort_keys,
 }
 
 static gboolean
-data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
+data_book_handle_get_cursor_cb (EDBusAddressBook *dbus_interface,
                                 GDBusMethodInvocation *invocation,
                                 const gchar *in_query,
                                 const gchar * const *in_sort_keys,
@@ -1222,14 +1222,14 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *interface,
 	 * All is good in the hood, complete the method call
 	 */
 	e_dbus_address_book_complete_get_cursor (
-		interface, invocation, object_path);
+		dbus_interface, invocation, object_path);
 	g_free (object_path);
 	g_object_unref (backend);
 	return TRUE;
 }
 
 static gboolean
-data_book_handle_close_cb (EDBusAddressBook *interface,
+data_book_handle_close_cb (EDBusAddressBook *dbus_interface,
                            GDBusMethodInvocation *invocation,
                            EDataBook *data_book)
 {
@@ -1239,7 +1239,7 @@ data_book_handle_close_cb (EDBusAddressBook *interface,
 	/* G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED should be set on
 	 * the GDBusMessage, but we complete the invocation anyway
 	 * and let the D-Bus machinery suppress the reply. */
-	e_dbus_address_book_complete_close (interface, invocation);
+	e_dbus_address_book_complete_close (dbus_interface, invocation);
 
 	backend = e_data_book_ref_backend (data_book);
 	g_return_val_if_fail (backend != NULL, FALSE);
@@ -1972,9 +1972,9 @@ e_data_book_class_init (EDataBookClass *class)
 }
 
 static void
-e_data_book_initable_init (GInitableIface *interface)
+e_data_book_initable_init (GInitableIface *iface)
 {
-	interface->init = data_book_initable_init;
+	iface->init = data_book_initable_init;
 }
 
 static void

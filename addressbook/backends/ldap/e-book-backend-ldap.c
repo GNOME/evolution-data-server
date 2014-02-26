@@ -43,9 +43,7 @@
 #undef LDAP_DEBUG
 #endif
 #else
-#define interface windows_interface
 #include <windows.h>
-#undef interface
 #include <winldap.h>
 #define LDAP_RES_RENAME LDAP_RES_MODRDN
 #include <winber.h>
@@ -178,7 +176,7 @@ typedef struct LDAPOp LDAPOp;
 
 /* Forward Declarations */
 static void	e_book_backend_ldap_source_authenticator_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookBackendLDAP,
@@ -5865,9 +5863,9 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 }
 
 static void
-e_book_backend_ldap_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+e_book_backend_ldap_source_authenticator_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->try_password_sync = book_backend_ldap_try_password_sync;
+	iface->try_password_sync = book_backend_ldap_try_password_sync;
 }
 
 static void

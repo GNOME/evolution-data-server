@@ -95,7 +95,7 @@ static void		smtp_set_error		(CamelSmtpTransport *transport,
 						 GError **error);
 
 /* Forward Declarations */
-static void camel_network_service_init (CamelNetworkServiceInterface *interface);
+static void camel_network_service_init (CamelNetworkServiceInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelSmtpTransport,
@@ -849,10 +849,10 @@ camel_smtp_transport_class_init (CamelSmtpTransportClass *class)
 }
 
 static void
-camel_network_service_init (CamelNetworkServiceInterface *interface)
+camel_network_service_init (CamelNetworkServiceInterface *iface)
 {
-	interface->get_service_name = smtp_transport_get_service_name;
-	interface->get_default_port = smtp_transport_get_default_port;
+	iface->get_service_name = smtp_transport_get_service_name;
+	iface->get_default_port = smtp_transport_get_default_port;
 }
 
 static void

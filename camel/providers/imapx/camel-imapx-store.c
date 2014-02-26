@@ -86,9 +86,9 @@ enum {
 static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
-static void camel_imapx_store_initable_init (GInitableIface *interface);
-static void camel_network_service_init (CamelNetworkServiceInterface *interface);
-static void camel_subscribable_init (CamelSubscribableInterface *interface);
+static void camel_imapx_store_initable_init (GInitableIface *iface);
+static void camel_network_service_init (CamelNetworkServiceInterface *iface);
+static void camel_subscribable_init (CamelSubscribableInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXStore,
@@ -2526,26 +2526,26 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 }
 
 static void
-camel_imapx_store_initable_init (GInitableIface *interface)
+camel_imapx_store_initable_init (GInitableIface *iface)
 {
-	parent_initable_interface = g_type_interface_peek_parent (interface);
+	parent_initable_interface = g_type_interface_peek_parent (iface);
 
-	interface->init = imapx_store_initable_init;
+	iface->init = imapx_store_initable_init;
 }
 
 static void
-camel_network_service_init (CamelNetworkServiceInterface *interface)
+camel_network_service_init (CamelNetworkServiceInterface *iface)
 {
-	interface->get_service_name = imapx_store_get_service_name;
-	interface->get_default_port = imapx_store_get_default_port;
+	iface->get_service_name = imapx_store_get_service_name;
+	iface->get_default_port = imapx_store_get_default_port;
 }
 
 static void
-camel_subscribable_init (CamelSubscribableInterface *interface)
+camel_subscribable_init (CamelSubscribableInterface *iface)
 {
-	interface->folder_is_subscribed = imapx_store_folder_is_subscribed;
-	interface->subscribe_folder_sync = imapx_store_subscribe_folder_sync;
-	interface->unsubscribe_folder_sync = imapx_store_unsubscribe_folder_sync;
+	iface->folder_is_subscribed = imapx_store_folder_is_subscribed;
+	iface->subscribe_folder_sync = imapx_store_subscribe_folder_sync;
+	iface->unsubscribe_folder_sync = imapx_store_unsubscribe_folder_sync;
 }
 
 static void

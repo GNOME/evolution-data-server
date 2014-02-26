@@ -126,11 +126,11 @@ enum {
 
 /* Forward Declarations */
 static void	e_cal_client_initable_init
-					(GInitableIface *interface);
+					(GInitableIface *iface);
 static void	e_cal_client_async_initable_init
-					(GAsyncInitableIface *interface);
+					(GAsyncInitableIface *iface);
 static void	e_cal_client_timezone_cache_init
-					(ETimezoneCacheInterface *interface);
+					(ETimezoneCacheInterface *iface);
 
 static guint signals[LAST_SIGNAL];
 
@@ -1438,24 +1438,24 @@ e_cal_client_class_init (ECalClientClass *class)
 }
 
 static void
-e_cal_client_initable_init (GInitableIface *interface)
+e_cal_client_initable_init (GInitableIface *iface)
 {
-	interface->init = cal_client_initable_init;
+	iface->init = cal_client_initable_init;
 }
 
 static void
-e_cal_client_async_initable_init (GAsyncInitableIface *interface)
+e_cal_client_async_initable_init (GAsyncInitableIface *iface)
 {
-	interface->init_async = cal_client_initable_init_async;
-	interface->init_finish = cal_client_initable_init_finish;
+	iface->init_async = cal_client_initable_init_async;
+	iface->init_finish = cal_client_initable_init_finish;
 }
 
 static void
-e_cal_client_timezone_cache_init (ETimezoneCacheInterface *interface)
+e_cal_client_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	interface->add_timezone = cal_client_add_cached_timezone;
-	interface->get_timezone = cal_client_get_cached_timezone;
-	interface->list_timezones = cal_client_list_cached_timezones;
+	iface->add_timezone = cal_client_add_cached_timezone;
+	iface->get_timezone = cal_client_get_cached_timezone;
+	iface->list_timezones = cal_client_list_cached_timezones;
 }
 
 static void

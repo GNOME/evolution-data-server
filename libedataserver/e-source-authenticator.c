@@ -323,12 +323,12 @@ source_authenticator_try_password_finish (ESourceAuthenticator *auth,
 }
 
 static void
-e_source_authenticator_default_init (ESourceAuthenticatorInterface *interface)
+e_source_authenticator_default_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->get_prompt_strings = source_authenticator_get_prompt_strings;
-	interface->get_without_password = source_authenticator_get_without_password;
-	interface->try_password = source_authenticator_try_password;
-	interface->try_password_finish = source_authenticator_try_password_finish;
+	iface->get_prompt_strings = source_authenticator_get_prompt_strings;
+	iface->get_without_password = source_authenticator_get_without_password;
+	iface->try_password = source_authenticator_try_password;
+	iface->try_password_finish = source_authenticator_try_password_finish;
 }
 
 /**
@@ -362,7 +362,7 @@ e_source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
                                            gchar **prompt_message,
                                            gchar **prompt_description)
 {
-	ESourceAuthenticatorInterface *interface;
+	ESourceAuthenticatorInterface *iface;
 
 	g_return_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth));
 	g_return_if_fail (E_IS_SOURCE (source));
@@ -370,10 +370,10 @@ e_source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
 	g_return_if_fail (prompt_message != NULL);
 	g_return_if_fail (prompt_description != NULL);
 
-	interface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
-	g_return_if_fail (interface->get_prompt_strings);
+	iface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
+	g_return_if_fail (iface->get_prompt_strings);
 
-	interface->get_prompt_strings (
+	iface->get_prompt_strings (
 		auth, source,
 		prompt_title,
 		prompt_message,
@@ -397,14 +397,14 @@ e_source_authenticator_get_prompt_strings (ESourceAuthenticator *auth,
 gboolean
 e_source_authenticator_get_without_password (ESourceAuthenticator *auth)
 {
-	ESourceAuthenticatorInterface *interface;
+	ESourceAuthenticatorInterface *iface;
 
 	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth), FALSE);
 
-	interface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
-	g_return_val_if_fail (interface->get_without_password, FALSE);
+	iface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
+	g_return_val_if_fail (iface->get_without_password, FALSE);
 
-	return interface->get_without_password (auth);
+	return iface->get_without_password (auth);
 }
 
 /**
@@ -432,7 +432,7 @@ e_source_authenticator_try_password_sync (ESourceAuthenticator *auth,
                                           GCancellable *cancellable,
                                           GError **error)
 {
-	ESourceAuthenticatorInterface *interface;
+	ESourceAuthenticatorInterface *iface;
 
 	g_return_val_if_fail (
 		E_IS_SOURCE_AUTHENTICATOR (auth),
@@ -441,12 +441,12 @@ e_source_authenticator_try_password_sync (ESourceAuthenticator *auth,
 		password != NULL,
 		E_SOURCE_AUTHENTICATION_REJECTED);
 
-	interface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
+	iface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
 	g_return_val_if_fail (
-		interface->try_password_sync != NULL,
+		iface->try_password_sync != NULL,
 		E_SOURCE_AUTHENTICATION_REJECTED);
 
-	return interface->try_password_sync (
+	return iface->try_password_sync (
 		auth, password, cancellable, error);
 }
 
@@ -477,15 +477,15 @@ e_source_authenticator_try_password (ESourceAuthenticator *auth,
                                      GAsyncReadyCallback callback,
                                      gpointer user_data)
 {
-	ESourceAuthenticatorInterface *interface;
+	ESourceAuthenticatorInterface *iface;
 
 	g_return_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth));
 	g_return_if_fail (password != NULL);
 
-	interface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
-	g_return_if_fail (interface->try_password != NULL);
+	iface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
+	g_return_if_fail (iface->try_password != NULL);
 
-	interface->try_password (
+	iface->try_password (
 		auth, password, cancellable, callback, user_data);
 }
 
@@ -509,7 +509,7 @@ e_source_authenticator_try_password_finish (ESourceAuthenticator *auth,
                                             GAsyncResult *result,
                                             GError **error)
 {
-	ESourceAuthenticatorInterface *interface;
+	ESourceAuthenticatorInterface *iface;
 
 	g_return_val_if_fail (
 		E_IS_SOURCE_AUTHENTICATOR (auth),
@@ -518,11 +518,11 @@ e_source_authenticator_try_password_finish (ESourceAuthenticator *auth,
 		G_IS_ASYNC_RESULT (result),
 		E_SOURCE_AUTHENTICATION_REJECTED);
 
-	interface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
+	iface = E_SOURCE_AUTHENTICATOR_GET_INTERFACE (auth);
 	g_return_val_if_fail (
-		interface->try_password_finish != NULL,
+		iface->try_password_finish != NULL,
 		E_SOURCE_AUTHENTICATION_REJECTED);
 
-	return interface->try_password_finish (auth, result, error);
+	return iface->try_password_finish (auth, result, error);
 }
 

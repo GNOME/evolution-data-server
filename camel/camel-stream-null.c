@@ -28,7 +28,7 @@
 
 #include "camel-stream-null.h"
 
-static void camel_stream_null_seekable_init (GSeekableIface *interface);
+static void camel_stream_null_seekable_init (GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM,
 	G_IMPLEMENT_INTERFACE (G_TYPE_SEEKABLE, camel_stream_null_seekable_init))
@@ -113,13 +113,13 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 }
 
 static void
-camel_stream_null_seekable_init (GSeekableIface *interface)
+camel_stream_null_seekable_init (GSeekableIface *iface)
 {
-	interface->tell = stream_null_tell;
-	interface->can_seek = stream_null_can_seek;
-	interface->seek = stream_null_seek;
-	interface->can_truncate = stream_null_can_truncate;
-	interface->truncate_fn = stream_null_truncate_fn;
+	iface->tell = stream_null_tell;
+	iface->can_seek = stream_null_can_seek;
+	iface->seek = stream_null_seek;
+	iface->can_truncate = stream_null_can_truncate;
+	iface->truncate_fn = stream_null_truncate_fn;
 }
 
 static void

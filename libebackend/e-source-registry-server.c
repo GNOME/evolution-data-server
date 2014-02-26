@@ -652,7 +652,7 @@ source_registry_server_wait_for_client_cb (GObject *source_object,
 }
 
 static gboolean
-source_registry_server_allow_auth_prompt_all_cb (EDBusSourceManager *interface,
+source_registry_server_allow_auth_prompt_all_cb (EDBusSourceManager *dbus_interface,
                                                  GDBusMethodInvocation *invocation,
                                                  ESourceRegistryServer *server)
 {
@@ -667,13 +667,13 @@ source_registry_server_allow_auth_prompt_all_cb (EDBusSourceManager *interface,
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	e_dbus_source_manager_complete_allow_auth_prompt_all (
-		interface, invocation);
+		dbus_interface, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-source_registry_server_authenticate_cb (EDBusSourceManager *interface,
+source_registry_server_authenticate_cb (EDBusSourceManager *dbus_interface,
                                         GDBusMethodInvocation *invocation,
                                         const gchar *source_uid,
                                         const gchar *prompt_title,
@@ -741,7 +741,7 @@ source_registry_server_authenticate_cb (EDBusSourceManager *interface,
 		g_object_ref (session));
 
 	e_dbus_source_manager_complete_authenticate (
-		interface, invocation, auth_object_path);
+		dbus_interface, invocation, auth_object_path);
 
 	g_object_unref (authenticator);
 	g_object_unref (session);
@@ -854,7 +854,7 @@ source_registry_server_create_source (ESourceRegistryServer *server,
 }
 
 static gboolean
-source_registry_server_create_sources_cb (EDBusSourceManager *interface,
+source_registry_server_create_sources_cb (EDBusSourceManager *dbus_interface,
                                           GDBusMethodInvocation *invocation,
                                           GVariant *array,
                                           ESourceRegistryServer *server)
@@ -880,13 +880,13 @@ source_registry_server_create_sources_cb (EDBusSourceManager *interface,
 		g_dbus_method_invocation_take_error (invocation, error);
 	else
 		e_dbus_source_manager_complete_create_sources (
-			interface, invocation);
+			dbus_interface, invocation);
 
 	return TRUE;
 }
 
 static gboolean
-source_registry_server_reload_cb (EDBusSourceManager *interface,
+source_registry_server_reload_cb (EDBusSourceManager *dbus_interface,
                                   GDBusMethodInvocation *invocation,
                                   ESourceRegistryServer *server)
 {
@@ -894,7 +894,7 @@ source_registry_server_reload_cb (EDBusSourceManager *interface,
 		E_DBUS_SERVER (server),
 		E_DBUS_SERVER_EXIT_RELOAD);
 
-	e_dbus_source_manager_complete_reload (interface, invocation);
+	e_dbus_source_manager_complete_reload (dbus_interface, invocation);
 
 	return TRUE;
 }

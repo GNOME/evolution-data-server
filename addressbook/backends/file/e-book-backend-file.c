@@ -62,7 +62,7 @@
 
 /* Forward Declarations */
 static void	e_book_backend_file_initable_init
-						(GInitableIface *interface);
+						(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookBackendFile,
@@ -2120,9 +2120,9 @@ e_book_backend_file_class_init (EBookBackendFileClass *class)
 }
 
 static void
-e_book_backend_file_initable_init (GInitableIface *interface)
+e_book_backend_file_initable_init (GInitableIface *iface)
 {
-	interface->init = book_backend_file_initable_init;
+	iface->init = book_backend_file_initable_init;
 }
 
 static void

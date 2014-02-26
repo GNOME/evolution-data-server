@@ -46,7 +46,7 @@
 
 /* Forward Declarations */
 static void	e_book_backend_google_source_authenticator_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookBackendGoogle,
@@ -2317,9 +2317,9 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 }
 
 static void
-e_book_backend_google_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+e_book_backend_google_source_authenticator_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->try_password_sync = book_backend_google_try_password_sync;
+	iface->try_password_sync = book_backend_google_try_password_sync;
 }
 
 static void

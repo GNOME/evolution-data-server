@@ -47,7 +47,7 @@ enum {
 static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
-static void	e_goa_client_interface_init	(GInitableIface *interface);
+static void	e_goa_client_interface_init	(GInitableIface *iface);
 
 /* By default, the GAsyncInitable interface calls GInitable.init()
  * from a separate thread, so we only have to override GInitable. */
@@ -408,9 +408,9 @@ e_goa_client_class_finalize (EGoaClientClass *class)
 }
 
 static void
-e_goa_client_interface_init (GInitableIface *interface)
+e_goa_client_interface_init (GInitableIface *iface)
 {
-	interface->init = e_goa_client_initable_init;
+	iface->init = e_goa_client_initable_init;
 }
 
 static void

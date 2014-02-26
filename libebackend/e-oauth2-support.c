@@ -142,11 +142,11 @@ oauth2_support_get_access_token_finish (EOAuth2Support *support,
 }
 
 static void
-e_oauth2_support_default_init (EOAuth2SupportInterface *interface)
+e_oauth2_support_default_init (EOAuth2SupportInterface *iface)
 {
-	interface->get_access_token =
+	iface->get_access_token =
 		oauth2_support_get_access_token;
-	interface->get_access_token_finish =
+	iface->get_access_token_finish =
 		oauth2_support_get_access_token_finish;
 }
 
@@ -177,15 +177,15 @@ e_oauth2_support_get_access_token_sync (EOAuth2Support *support,
                                         gint *out_expires_in,
                                         GError **error)
 {
-	EOAuth2SupportInterface *interface;
+	EOAuth2SupportInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SUPPORT (support), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	interface = E_OAUTH2_SUPPORT_GET_INTERFACE (support);
-	g_return_val_if_fail (interface->get_access_token_sync != NULL, FALSE);
+	iface = E_OAUTH2_SUPPORT_GET_INTERFACE (support);
+	g_return_val_if_fail (iface->get_access_token_sync != NULL, FALSE);
 
-	return interface->get_access_token_sync (
+	return iface->get_access_token_sync (
 		support, source, cancellable,
 		out_access_token, out_expires_in, error);
 }
@@ -214,15 +214,15 @@ e_oauth2_support_get_access_token (EOAuth2Support *support,
                                    GAsyncReadyCallback callback,
                                    gpointer user_data)
 {
-	EOAuth2SupportInterface *interface;
+	EOAuth2SupportInterface *iface;
 
 	g_return_if_fail (E_IS_OAUTH2_SUPPORT (support));
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	interface = E_OAUTH2_SUPPORT_GET_INTERFACE (support);
-	g_return_if_fail (interface->get_access_token != NULL);
+	iface = E_OAUTH2_SUPPORT_GET_INTERFACE (support);
+	g_return_if_fail (iface->get_access_token != NULL);
 
-	return interface->get_access_token (
+	return iface->get_access_token (
 		support, source, cancellable, callback, user_data);
 }
 
@@ -250,15 +250,15 @@ e_oauth2_support_get_access_token_finish (EOAuth2Support *support,
                                           gint *out_expires_in,
                                           GError **error)
 {
-	EOAuth2SupportInterface *interface;
+	EOAuth2SupportInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SUPPORT (support), FALSE);
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
-	interface = E_OAUTH2_SUPPORT_GET_INTERFACE (support);
-	g_return_val_if_fail (interface->get_access_token_finish != NULL, FALSE);
+	iface = E_OAUTH2_SUPPORT_GET_INTERFACE (support);
+	g_return_val_if_fail (iface->get_access_token_finish != NULL, FALSE);
 
-	return interface->get_access_token_finish (
+	return iface->get_access_token_finish (
 		support, result, out_access_token, out_expires_in, error);
 }
 

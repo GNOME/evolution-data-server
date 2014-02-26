@@ -70,7 +70,7 @@ extern CamelServiceAuthType camel_pop3_password_authtype;
 extern CamelServiceAuthType camel_pop3_apop_authtype;
 
 /* Forward Declarations */
-static void camel_network_service_init (CamelNetworkServiceInterface *interface);
+static void camel_network_service_init (CamelNetworkServiceInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelPOP3Store,
@@ -974,10 +974,10 @@ camel_pop3_store_class_init (CamelPOP3StoreClass *class)
 }
 
 static void
-camel_network_service_init (CamelNetworkServiceInterface *interface)
+camel_network_service_init (CamelNetworkServiceInterface *iface)
 {
-	interface->get_service_name = pop3_store_get_service_name;
-	interface->get_default_port = pop3_store_get_default_port;
+	iface->get_service_name = pop3_store_get_service_name;
+	iface->get_default_port = pop3_store_get_default_port;
 }
 
 static void

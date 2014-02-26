@@ -67,7 +67,7 @@ void e_module_unload (GTypeModule *type_module);
 /* Forward Declarations */
 GType e_gnome_online_accounts_get_type (void);
 static void e_gnome_online_accounts_oauth2_support_init
-					(EOAuth2SupportInterface *interface);
+					(EOAuth2SupportInterface *iface);
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED (
 	EGnomeOnlineAccounts,
@@ -1312,9 +1312,9 @@ e_gnome_online_accounts_class_finalize (EGnomeOnlineAccountsClass *class)
 }
 
 static void
-e_gnome_online_accounts_oauth2_support_init (EOAuth2SupportInterface *interface)
+e_gnome_online_accounts_oauth2_support_init (EOAuth2SupportInterface *iface)
 {
-	interface->get_access_token_sync =
+	iface->get_access_token_sync =
 		gnome_online_accounts_get_access_token_sync;
 }
 

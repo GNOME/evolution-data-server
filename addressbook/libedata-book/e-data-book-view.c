@@ -90,7 +90,7 @@ enum {
 };
 
 /* Forward Declarations */
-static void	e_data_book_view_initable_init	(GInitableIface *interface);
+static void	e_data_book_view_initable_init	(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EDataBookView,
@@ -601,9 +601,9 @@ e_data_book_view_class_init (EDataBookViewClass *class)
 }
 
 static void
-e_data_book_view_initable_init (GInitableIface *interface)
+e_data_book_view_initable_init (GInitableIface *iface)
 {
-	interface->init = data_book_view_initable_init;
+	iface->init = data_book_view_initable_init;
 }
 
 static void

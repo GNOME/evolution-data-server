@@ -46,7 +46,7 @@ enum {
 
 /* Forward Declarations */
 static void	camel_imapx_logger_interface_init
-						(GConverterIface *interface);
+						(GConverterIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXLogger,
@@ -165,10 +165,10 @@ camel_imapx_logger_class_init (CamelIMAPXLoggerClass *class)
 }
 
 static void
-camel_imapx_logger_interface_init (GConverterIface *interface)
+camel_imapx_logger_interface_init (GConverterIface *iface)
 {
-	interface->convert = imapx_logger_convert;
-	interface->reset = imapx_logger_reset;
+	iface->convert = imapx_logger_convert;
+	iface->reset = imapx_logger_reset;
 }
 
 static void

@@ -37,10 +37,10 @@ G_DEFINE_INTERFACE (
 	CAMEL_TYPE_SETTINGS)
 
 static void
-camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
+camel_network_settings_default_init (CamelNetworkSettingsInterface *iface)
 {
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_string (
 			"auth-mechanism",
 			"Auth Mechanism",
@@ -51,7 +51,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_string (
 			"host",
 			"Host",
@@ -62,7 +62,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_uint (
 			"port",
 			"Port",
@@ -73,7 +73,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_enum (
 			"security-method",
 			"Security Method",
@@ -85,7 +85,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *interface)
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_interface_install_property (
-		interface,
+		iface,
 		g_param_spec_string (
 			"user",
 			"User",

@@ -34,7 +34,7 @@ G_DEFINE_INTERFACE (
 	G_TYPE_OBJECT)
 
 static void
-e_timezone_cache_default_init (ETimezoneCacheInterface *interface)
+e_timezone_cache_default_init (ETimezoneCacheInterface *iface)
 {
 	/**
 	 * ETimezoneCache::timezone-added:
@@ -45,7 +45,7 @@ e_timezone_cache_default_init (ETimezoneCacheInterface *interface)
 	 **/
 	g_signal_new (
 		"timezone-added",
-		G_OBJECT_CLASS_TYPE (interface),
+		G_OBJECT_CLASS_TYPE (iface),
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (ETimezoneCacheInterface, timezone_added),
 		NULL, NULL, NULL,
@@ -74,15 +74,15 @@ void
 e_timezone_cache_add_timezone (ETimezoneCache *cache,
                                icaltimezone *zone)
 {
-	ETimezoneCacheInterface *interface;
+	ETimezoneCacheInterface *iface;
 
 	g_return_if_fail (E_IS_TIMEZONE_CACHE (cache));
 	g_return_if_fail (zone != NULL);
 
-	interface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_if_fail (interface->add_timezone != NULL);
+	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
+	g_return_if_fail (iface->add_timezone != NULL);
 
-	interface->add_timezone (cache, zone);
+	iface->add_timezone (cache, zone);
 }
 
 /**
@@ -102,15 +102,15 @@ icaltimezone *
 e_timezone_cache_get_timezone (ETimezoneCache *cache,
                                const gchar *tzid)
 {
-	ETimezoneCacheInterface *interface;
+	ETimezoneCacheInterface *iface;
 
 	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), NULL);
 	g_return_val_if_fail (tzid != NULL, NULL);
 
-	interface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_val_if_fail (interface->get_timezone != NULL, NULL);
+	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
+	g_return_val_if_fail (iface->get_timezone != NULL, NULL);
 
-	return interface->get_timezone (cache, tzid);
+	return iface->get_timezone (cache, tzid);
 }
 
 /**
@@ -133,13 +133,13 @@ e_timezone_cache_get_timezone (ETimezoneCache *cache,
 GList *
 e_timezone_cache_list_timezones (ETimezoneCache *cache)
 {
-	ETimezoneCacheInterface *interface;
+	ETimezoneCacheInterface *iface;
 
 	g_return_val_if_fail (E_IS_TIMEZONE_CACHE (cache), NULL);
 
-	interface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
-	g_return_val_if_fail (interface->list_timezones != NULL, NULL);
+	iface = E_TIMEZONE_CACHE_GET_INTERFACE (cache);
+	g_return_val_if_fail (iface->list_timezones != NULL, NULL);
 
-	return interface->list_timezones (cache);
+	return iface->list_timezones (cache);
 }
 

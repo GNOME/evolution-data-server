@@ -128,7 +128,7 @@ static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
 static void	e_cal_backend_timezone_cache_init
-					(ETimezoneCacheInterface *interface);
+					(ETimezoneCacheInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	ECalBackend,
@@ -1013,11 +1013,11 @@ e_cal_backend_class_init (ECalBackendClass *class)
 }
 
 static void
-e_cal_backend_timezone_cache_init (ETimezoneCacheInterface *interface)
+e_cal_backend_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	interface->add_timezone = cal_backend_add_cached_timezone;
-	interface->get_timezone = cal_backend_get_cached_timezone;
-	interface->list_timezones = cal_backend_list_cached_timezones;
+	iface->add_timezone = cal_backend_add_cached_timezone;
+	iface->get_timezone = cal_backend_get_cached_timezone;
+	iface->list_timezones = cal_backend_list_cached_timezones;
 }
 
 static void

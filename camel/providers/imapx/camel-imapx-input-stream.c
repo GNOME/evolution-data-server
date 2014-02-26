@@ -48,7 +48,7 @@ struct _CamelIMAPXInputStreamPrivate {
 
 /* Forward Declarations */
 static void	camel_imapx_input_stream_pollable_init
-				(GPollableInputStreamInterface *interface);
+				(GPollableInputStreamInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelIMAPXInputStream,
@@ -225,12 +225,12 @@ camel_imapx_input_stream_class_init (CamelIMAPXInputStreamClass *class)
 }
 
 static void
-camel_imapx_input_stream_pollable_init (GPollableInputStreamInterface *interface)
+camel_imapx_input_stream_pollable_init (GPollableInputStreamInterface *iface)
 {
-	interface->can_poll = imapx_input_stream_can_poll;
-	interface->is_readable = imapx_input_stream_is_readable;
-	interface->create_source = imapx_input_stream_create_source;
-	interface->read_nonblocking = imapx_input_stream_read_nonblocking;
+	iface->can_poll = imapx_input_stream_can_poll;
+	iface->is_readable = imapx_input_stream_is_readable;
+	iface->create_source = imapx_input_stream_create_source;
+	iface->read_nonblocking = imapx_input_stream_read_nonblocking;
 }
 
 static void

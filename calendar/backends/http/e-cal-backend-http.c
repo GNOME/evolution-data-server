@@ -38,7 +38,7 @@
 
 /* Forward Declarations */
 static void	e_cal_backend_http_source_authenticator_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	ECalBackendHttp,
@@ -1504,8 +1504,8 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 }
 
 static void
-e_cal_backend_http_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+e_cal_backend_http_source_authenticator_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->try_password_sync = cal_backend_http_try_password_sync;
+	iface->try_password_sync = cal_backend_http_try_password_sync;
 }
 

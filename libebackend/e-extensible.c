@@ -104,7 +104,7 @@ exit:
 }
 
 static void
-e_extensible_default_init (EExtensibleInterface *interface)
+e_extensible_default_init (EExtensibleInterface *iface)
 {
 	extensible_quark = g_quark_from_static_string ("e-extensible-quark");
 }

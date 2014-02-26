@@ -77,7 +77,7 @@ enum {
 
 /* Forward Declarations */
 static void	e_data_cal_factory_initable_init
-						(GInitableIface *interface);
+						(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EDataCalFactory,
@@ -417,7 +417,7 @@ data_cal_factory_open (EDataCalFactory *factory,
 }
 
 static gboolean
-data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *interface,
+data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *dbus_interface,
                                           GDBusMethodInvocation *invocation,
                                           const gchar *uid,
                                           EDataCalFactory *factory)
@@ -436,7 +436,7 @@ data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *interface,
 
 	if (object_path != NULL) {
 		e_dbus_calendar_factory_complete_open_calendar (
-			interface, invocation, object_path);
+			dbus_interface, invocation, object_path);
 		g_free (object_path);
 	} else {
 		g_return_val_if_fail (error != NULL, FALSE);
@@ -447,7 +447,7 @@ data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *interface,
 }
 
 static gboolean
-data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *interface,
+data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *dbus_interface,
                                            GDBusMethodInvocation *invocation,
                                            const gchar *uid,
                                            EDataCalFactory *factory)
@@ -466,7 +466,7 @@ data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *interface,
 
 	if (object_path != NULL) {
 		e_dbus_calendar_factory_complete_open_task_list (
-			interface, invocation, object_path);
+			dbus_interface, invocation, object_path);
 		g_free (object_path);
 	} else {
 		g_return_val_if_fail (error != NULL, FALSE);
@@ -477,7 +477,7 @@ data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *interface,
 }
 
 static gboolean
-data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *interface,
+data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *dbus_interface,
                                            GDBusMethodInvocation *invocation,
                                            const gchar *uid,
                                            EDataCalFactory *factory)
@@ -496,7 +496,7 @@ data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *interface,
 
 	if (object_path != NULL) {
 		e_dbus_calendar_factory_complete_open_memo_list (
-			interface, invocation, object_path);
+			dbus_interface, invocation, object_path);
 		g_free (object_path);
 	} else {
 		g_return_val_if_fail (error != NULL, FALSE);
@@ -681,9 +681,9 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 }
 
 static void
-e_data_cal_factory_initable_init (GInitableIface *interface)
+e_data_cal_factory_initable_init (GInitableIface *iface)
 {
-	interface->init = data_cal_factory_initable_init;
+	iface->init = data_cal_factory_initable_init;
 }
 
 static void

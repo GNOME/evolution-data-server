@@ -76,9 +76,9 @@ enum {
 static GInitableIface *parent_initable_interface;
 
 /* Forward Declarations */
-static void camel_nntp_store_initable_init (GInitableIface *interface);
-static void camel_network_service_init (CamelNetworkServiceInterface *interface);
-static void camel_subscribable_init (CamelSubscribableInterface *interface);
+static void camel_nntp_store_initable_init (GInitableIface *iface);
+static void camel_network_service_init (CamelNetworkServiceInterface *iface);
+static void camel_subscribable_init (CamelSubscribableInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelNNTPStore,
@@ -1292,12 +1292,12 @@ nntp_store_delete_folder_sync (CamelStore *store,
                                GError **error)
 {
 	CamelSubscribable *subscribable;
-	CamelSubscribableInterface *interface;
+	CamelSubscribableInterface *iface;
 
 	subscribable = CAMEL_SUBSCRIBABLE (store);
-	interface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
+	iface = CAMEL_SUBSCRIBABLE_GET_INTERFACE (subscribable);
 
-	interface->unsubscribe_folder_sync (
+	iface->unsubscribe_folder_sync (
 		subscribable, folder_name, cancellable, NULL);
 
 	g_set_error (
@@ -1654,26 +1654,26 @@ camel_nntp_store_class_init (CamelNNTPStoreClass *class)
 }
 
 static void
-camel_nntp_store_initable_init (GInitableIface *interface)
+camel_nntp_store_initable_init (GInitableIface *iface)
 {
-	parent_initable_interface = g_type_interface_peek_parent (interface);
+	parent_initable_interface = g_type_interface_peek_parent (iface);
 
-	interface->init = nntp_store_initable_init;
+	iface->init = nntp_store_initable_init;
 }
 
 static void
-camel_network_service_init (CamelNetworkServiceInterface *interface)
+camel_network_service_init (CamelNetworkServiceInterface *iface)
 {
-	interface->get_service_name = nntp_store_get_service_name;
-	interface->get_default_port = nntp_store_get_default_port;
+	iface->get_service_name = nntp_store_get_service_name;
+	iface->get_default_port = nntp_store_get_default_port;
 }
 
 static void
-camel_subscribable_init (CamelSubscribableInterface *interface)
+camel_subscribable_init (CamelSubscribableInterface *iface)
 {
-	interface->folder_is_subscribed = nntp_store_folder_is_subscribed;
-	interface->subscribe_folder_sync = nntp_store_subscribe_folder_sync;
-	interface->unsubscribe_folder_sync = nntp_store_unsubscribe_folder_sync;
+	iface->folder_is_subscribed = nntp_store_folder_is_subscribed;
+	iface->subscribe_folder_sync = nntp_store_subscribe_folder_sync;
+	iface->unsubscribe_folder_sync = nntp_store_unsubscribe_folder_sync;
 }
 
 static void

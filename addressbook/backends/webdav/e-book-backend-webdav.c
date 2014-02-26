@@ -52,7 +52,7 @@
 
 /* Forward Declarations */
 static void	e_book_backend_webdav_source_authenticator_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBookBackendWebdav,
@@ -1650,9 +1650,9 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 }
 
 static void
-e_book_backend_webdav_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+e_book_backend_webdav_source_authenticator_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->try_password_sync = book_backend_webdav_try_password_sync;
+	iface->try_password_sync = book_backend_webdav_try_password_sync;
 }
 
 static void

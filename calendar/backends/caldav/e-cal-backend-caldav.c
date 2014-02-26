@@ -133,7 +133,7 @@ struct _ECalBackendCalDAVPrivate {
 
 /* Forward Declarations */
 static void	caldav_source_authenticator_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	ECalBackendCalDAV,
@@ -5196,9 +5196,9 @@ caldav_try_password_sync (ESourceAuthenticator *authenticator,
 }
 
 static void
-caldav_source_authenticator_init (ESourceAuthenticatorInterface *interface)
+caldav_source_authenticator_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->try_password_sync = caldav_try_password_sync;
+	iface->try_password_sync = caldav_try_password_sync;
 }
 
 /* ************************************************************************* */

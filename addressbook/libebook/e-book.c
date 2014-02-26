@@ -82,7 +82,7 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static void	e_book_initable_init		(GInitableIface *interface);
+static void	e_book_initable_init		(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EBook, e_book, G_TYPE_OBJECT,
@@ -288,9 +288,9 @@ e_book_class_init (EBookClass *class)
 }
 
 static void
-e_book_initable_init (GInitableIface *interface)
+e_book_initable_init (GInitableIface *iface)
 {
-	interface->init = book_initable_init;
+	iface->init = book_initable_init;
 }
 
 static void

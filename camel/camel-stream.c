@@ -42,7 +42,7 @@ enum {
 };
 
 /* Forward Declarations */
-static void	camel_stream_seekable_init	(GSeekableIface *interface);
+static void	camel_stream_seekable_init	(GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	CamelStream,
@@ -376,13 +376,13 @@ camel_stream_class_init (CamelStreamClass *class)
 }
 
 static void
-camel_stream_seekable_init (GSeekableIface *interface)
+camel_stream_seekable_init (GSeekableIface *iface)
 {
-	interface->tell = stream_tell;
-	interface->can_seek = stream_can_seek;
-	interface->seek = stream_seek;
-	interface->can_truncate = stream_can_truncate;
-	interface->truncate_fn = stream_truncate;
+	iface->tell = stream_tell;
+	iface->can_seek = stream_can_seek;
+	iface->seek = stream_seek;
+	iface->can_truncate = stream_can_truncate;
+	iface->truncate_fn = stream_truncate;
 }
 
 static void

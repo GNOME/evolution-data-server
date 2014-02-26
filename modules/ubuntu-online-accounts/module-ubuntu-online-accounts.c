@@ -63,7 +63,7 @@ void e_module_unload (GTypeModule *type_module);
 /* Forward Declarations */
 GType e_ubuntu_online_accounts_get_type (void);
 static void e_ubuntu_online_accounts_oauth2_support_init
-					(EOAuth2SupportInterface *interface);
+					(EOAuth2SupportInterface *iface);
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED (
 	EUbuntuOnlineAccounts,
@@ -1118,11 +1118,11 @@ e_ubuntu_online_accounts_class_finalize (EUbuntuOnlineAccountsClass *class)
 }
 
 static void
-e_ubuntu_online_accounts_oauth2_support_init (EOAuth2SupportInterface *interface)
+e_ubuntu_online_accounts_oauth2_support_init (EOAuth2SupportInterface *iface)
 {
-	interface->get_access_token_sync = ubuntu_online_accounts_get_access_token_sync;
-	interface->get_access_token = ubuntu_online_accounts_get_access_token;
-	interface->get_access_token_finish = ubuntu_online_accounts_get_access_token_finish;
+	iface->get_access_token_sync = ubuntu_online_accounts_get_access_token_sync;
+	iface->get_access_token = ubuntu_online_accounts_get_access_token;
+	iface->get_access_token_finish = ubuntu_online_accounts_get_access_token_finish;
 }
 
 static void

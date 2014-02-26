@@ -62,7 +62,7 @@ struct _EDataCalPrivate {
 
 struct _AsyncContext {
 	EDataCal *data_cal;
-	EDBusCalendar *interface;
+	EDBusCalendar *dbus_interface;
 	GDBusMethodInvocation *invocation;
 	GCancellable *cancellable;
 	guint watcher_id;
@@ -76,7 +76,7 @@ enum {
 };
 
 /* Forward Declarations */
-static void	e_data_cal_initable_init	(GInitableIface *interface);
+static void	e_data_cal_initable_init	(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EDataCal,
@@ -154,13 +154,13 @@ async_context_new (EDataCal *data_cal,
                    GDBusMethodInvocation *invocation)
 {
 	AsyncContext *async_context;
-	EDBusCalendar *interface;
+	EDBusCalendar *dbus_interface;
 
-	interface = data_cal->priv->dbus_interface;
+	dbus_interface = data_cal->priv->dbus_interface;
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->data_cal = g_object_ref (data_cal);
-	async_context->interface = g_object_ref (interface);
+	async_context->dbus_interface = g_object_ref (dbus_interface);
 	async_context->invocation = g_object_ref (invocation);
 	async_context->cancellable = g_cancellable_new ();
 
@@ -191,7 +191,7 @@ async_context_free (AsyncContext *async_context)
 		async_context->cancellable);
 
 	g_clear_object (&async_context->data_cal);
-	g_clear_object (&async_context->interface);
+	g_clear_object (&async_context->dbus_interface);
 	g_clear_object (&async_context->invocation);
 	g_clear_object (&async_context->cancellable);
 
@@ -502,7 +502,7 @@ data_cal_complete_open_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_open (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -514,7 +514,7 @@ data_cal_complete_open_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_open_cb (EDBusCalendar *interface,
+data_cal_handle_open_cb (EDBusCalendar *dbus_interface,
                          GDBusMethodInvocation *invocation,
                          EDataCal *data_cal)
 {
@@ -550,7 +550,7 @@ data_cal_complete_refresh_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_refresh (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -562,7 +562,7 @@ data_cal_complete_refresh_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_refresh_cb (EDBusCalendar *interface,
+data_cal_handle_refresh_cb (EDBusCalendar *dbus_interface,
                             GDBusMethodInvocation *invocation,
                             EDataCal *data_cal)
 {
@@ -608,7 +608,7 @@ data_cal_complete_get_object_cb (GObject *source_object,
 		utf8_calobj = e_util_utf8_make_valid (calobj);
 
 		e_dbus_calendar_complete_get_object (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			utf8_calobj);
 
@@ -624,7 +624,7 @@ data_cal_complete_get_object_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_get_object_cb (EDBusCalendar *interface,
+data_cal_handle_get_object_cb (EDBusCalendar *dbus_interface,
                                GDBusMethodInvocation *invocation,
                                const gchar *in_uid,
                                const gchar *in_rid,
@@ -684,7 +684,7 @@ data_cal_complete_get_object_list_cb (GObject *source_object,
 		}
 
 		e_dbus_calendar_complete_get_object_list (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv);
 
@@ -699,7 +699,7 @@ data_cal_complete_get_object_list_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_get_object_list_cb (EDBusCalendar *interface,
+data_cal_handle_get_object_list_cb (EDBusCalendar *dbus_interface,
                                     GDBusMethodInvocation *invocation,
                                     const gchar *in_query,
                                     EDataCal *data_cal)
@@ -737,7 +737,7 @@ data_cal_complete_get_free_busy_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_get_free_busy (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -749,7 +749,7 @@ data_cal_complete_get_free_busy_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_get_free_busy_cb (EDBusCalendar *interface,
+data_cal_handle_get_free_busy_cb (EDBusCalendar *dbus_interface,
                                   GDBusMethodInvocation *invocation,
                                   gint64 in_start,
                                   gint64 in_end,
@@ -805,7 +805,7 @@ data_cal_complete_create_objects_cb (GObject *source_object,
 		}
 
 		e_dbus_calendar_complete_create_objects (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv);
 
@@ -820,7 +820,7 @@ data_cal_complete_create_objects_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_create_objects_cb (EDBusCalendar *interface,
+data_cal_handle_create_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    const gchar * const *in_calobjs,
                                    EDataCal *data_cal)
@@ -858,7 +858,7 @@ data_cal_complete_modify_objects_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_modify_objects (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -870,7 +870,7 @@ data_cal_complete_modify_objects_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_modify_objects_cb (EDBusCalendar *interface,
+data_cal_handle_modify_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    const gchar * const *in_ics_objects,
                                    const gchar *in_mod_type,
@@ -931,7 +931,7 @@ data_cal_complete_remove_objects_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_remove_objects (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -943,7 +943,7 @@ data_cal_complete_remove_objects_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_remove_objects_cb (EDBusCalendar *interface,
+data_cal_handle_remove_objects_cb (EDBusCalendar *dbus_interface,
                                    GDBusMethodInvocation *invocation,
                                    GVariant *in_uid_rid_array,
                                    const gchar *in_mod_type,
@@ -1035,7 +1035,7 @@ data_cal_complete_receive_objects_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_receive_objects (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -1047,7 +1047,7 @@ data_cal_complete_receive_objects_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_receive_objects_cb (EDBusCalendar *interface,
+data_cal_handle_receive_objects_cb (EDBusCalendar *dbus_interface,
                                     GDBusMethodInvocation *invocation,
                                     const gchar *in_calobj,
                                     EDataCal *data_cal)
@@ -1108,7 +1108,7 @@ data_cal_complete_send_objects_cb (GObject *source_object,
 		utf8_calobj = e_util_utf8_make_valid (calobj);
 
 		e_dbus_calendar_complete_send_objects (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv,
 			utf8_calobj);
@@ -1127,7 +1127,7 @@ data_cal_complete_send_objects_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_send_objects_cb (EDBusCalendar *interface,
+data_cal_handle_send_objects_cb (EDBusCalendar *dbus_interface,
                                  GDBusMethodInvocation *invocation,
                                  const gchar *in_calobj,
                                  EDataCal *data_cal)
@@ -1179,7 +1179,7 @@ data_cal_complete_get_attachment_uris_cb (GObject *source_object,
 		}
 
 		e_dbus_calendar_complete_get_attachment_uris (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			(const gchar * const *) strv);
 
@@ -1194,7 +1194,7 @@ data_cal_complete_get_attachment_uris_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_get_attachment_uris_cb (EDBusCalendar *interface,
+data_cal_handle_get_attachment_uris_cb (EDBusCalendar *dbus_interface,
                                         GDBusMethodInvocation *invocation,
                                         const gchar *in_uid,
                                         const gchar *in_rid,
@@ -1238,7 +1238,7 @@ data_cal_complete_discard_alarm_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_discard_alarm (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -1250,7 +1250,7 @@ data_cal_complete_discard_alarm_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_discard_alarm_cb (EDBusCalendar *interface,
+data_cal_handle_discard_alarm_cb (EDBusCalendar *dbus_interface,
                                   GDBusMethodInvocation *invocation,
                                   const gchar *in_uid,
                                   const gchar *in_rid,
@@ -1283,7 +1283,7 @@ data_cal_handle_discard_alarm_cb (EDBusCalendar *interface,
 }
 
 static gboolean
-data_cal_handle_get_view_cb (EDBusCalendar *interface,
+data_cal_handle_get_view_cb (EDBusCalendar *dbus_interface,
                              GDBusMethodInvocation *invocation,
                              const gchar *in_query,
                              EDataCal *data_cal)
@@ -1324,7 +1324,7 @@ data_cal_handle_get_view_cb (EDBusCalendar *interface,
 
 	if (view != NULL) {
 		e_dbus_calendar_complete_get_view (
-			interface, invocation, object_path);
+			dbus_interface, invocation, object_path);
 		e_cal_backend_add_view (backend, view);
 		g_object_unref (view);
 	} else {
@@ -1360,7 +1360,7 @@ data_cal_complete_get_timezone_cb (GObject *source_object,
 
 	if (tzobject != NULL) {
 		e_dbus_calendar_complete_get_timezone (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation,
 			tzobject);
 
@@ -1375,7 +1375,7 @@ data_cal_complete_get_timezone_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_get_timezone_cb (EDBusCalendar *interface,
+data_cal_handle_get_timezone_cb (EDBusCalendar *dbus_interface,
                                  GDBusMethodInvocation *invocation,
                                  const gchar *in_tzid,
                                  EDataCal *data_cal)
@@ -1413,7 +1413,7 @@ data_cal_complete_add_timezone_cb (GObject *source_object,
 
 	if (error == NULL) {
 		e_dbus_calendar_complete_add_timezone (
-			async_context->interface,
+			async_context->dbus_interface,
 			async_context->invocation);
 	} else {
 		data_cal_convert_to_client_error (error);
@@ -1425,7 +1425,7 @@ data_cal_complete_add_timezone_cb (GObject *source_object,
 }
 
 static gboolean
-data_cal_handle_add_timezone_cb (EDBusCalendar *interface,
+data_cal_handle_add_timezone_cb (EDBusCalendar *dbus_interface,
                                  GDBusMethodInvocation *invocation,
                                  const gchar *in_tzobject,
                                  EDataCal *data_cal)
@@ -1451,7 +1451,7 @@ data_cal_handle_add_timezone_cb (EDBusCalendar *interface,
 }
 
 static gboolean
-data_cal_handle_close_cb (EDBusCalendar *interface,
+data_cal_handle_close_cb (EDBusCalendar *dbus_interface,
                           GDBusMethodInvocation *invocation,
                           EDataCal *data_cal)
 {
@@ -1461,7 +1461,7 @@ data_cal_handle_close_cb (EDBusCalendar *interface,
 	/* G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED should be set on
 	 * the GDBusMessage, but we complete the invocation anyway
 	 * and let the D-Bus machinery suppress the reply. */
-	e_dbus_calendar_complete_close (interface, invocation);
+	e_dbus_calendar_complete_close (dbus_interface, invocation);
 
 	backend = e_data_cal_ref_backend (data_cal);
 	g_return_val_if_fail (backend != NULL, FALSE);
@@ -2550,9 +2550,9 @@ e_data_cal_class_init (EDataCalClass *class)
 }
 
 static void
-e_data_cal_initable_init (GInitableIface *interface)
+e_data_cal_initable_init (GInitableIface *iface)
 {
-	interface->init = data_cal_initable_init;
+	iface->init = data_cal_initable_init;
 }
 
 static void

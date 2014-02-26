@@ -53,7 +53,7 @@ typedef struct _ThreadClosure ThreadClosure;
 
 struct _EAuthenticationMediatorPrivate {
 	GDBusConnection *connection;
-	EDBusAuthenticator *interface;
+	EDBusAuthenticator *dbus_interface;
 	GcrSecretExchange *secret_exchange;
 	gchar *object_path;
 	gchar *sender;
@@ -102,9 +102,9 @@ enum {
 
 /* Forward Declarations */
 static void	e_authentication_mediator_initable_init
-				(GInitableIface *interface);
+				(GInitableIface *iface);
 static void	e_authentication_mediator_interface_init
-				(ESourceAuthenticatorInterface *interface);
+				(ESourceAuthenticatorInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EAuthenticationMediator,
@@ -271,7 +271,7 @@ authentication_mediator_timeout_cb (gpointer user_data)
 }
 
 static gboolean
-authentication_mediator_handle_ready (EDBusAuthenticator *interface,
+authentication_mediator_handle_ready (EDBusAuthenticator *dbus_interface,
                                       GDBusMethodInvocation *invocation,
                                       const gchar *encrypted_key,
                                       ThreadClosure *closure)
@@ -301,7 +301,7 @@ authentication_mediator_handle_ready (EDBusAuthenticator *interface,
 
 	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
-	e_dbus_authenticator_complete_ready (interface, invocation);
+	e_dbus_authenticator_complete_ready (dbus_interface, invocation);
 
 	g_object_unref (mediator);
 
@@ -309,7 +309,7 @@ authentication_mediator_handle_ready (EDBusAuthenticator *interface,
 }
 
 static gboolean
-authentication_mediator_handle_cancel (EDBusAuthenticator *interface,
+authentication_mediator_handle_cancel (EDBusAuthenticator *dbus_interface,
                                        GDBusMethodInvocation *invocation,
                                        ThreadClosure *closure)
 {
@@ -348,7 +348,7 @@ authentication_mediator_handle_cancel (EDBusAuthenticator *interface,
 
 	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
-	e_dbus_authenticator_complete_cancel (interface, invocation);
+	e_dbus_authenticator_complete_cancel (dbus_interface, invocation);
 
 	g_object_unref (mediator);
 
@@ -356,7 +356,7 @@ authentication_mediator_handle_cancel (EDBusAuthenticator *interface,
 }
 
 static gboolean
-authentication_mediator_handle_accepted (EDBusAuthenticator *interface,
+authentication_mediator_handle_accepted (EDBusAuthenticator *dbus_interface,
                                          GDBusMethodInvocation *invocation,
                                          ThreadClosure *closure)
 {
@@ -382,7 +382,7 @@ authentication_mediator_handle_accepted (EDBusAuthenticator *interface,
 
 	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
-	e_dbus_authenticator_complete_accepted (interface, invocation);
+	e_dbus_authenticator_complete_accepted (dbus_interface, invocation);
 
 	g_object_unref (mediator);
 
@@ -390,7 +390,7 @@ authentication_mediator_handle_accepted (EDBusAuthenticator *interface,
 }
 
 static gboolean
-authentication_mediator_handle_rejected (EDBusAuthenticator *interface,
+authentication_mediator_handle_rejected (EDBusAuthenticator *dbus_interface,
                                          GDBusMethodInvocation *invocation,
                                          ThreadClosure *closure)
 {
@@ -419,7 +419,7 @@ authentication_mediator_handle_rejected (EDBusAuthenticator *interface,
 
 	g_mutex_unlock (&mediator->priv->shared_data_lock);
 
-	e_dbus_authenticator_complete_rejected (interface, invocation);
+	e_dbus_authenticator_complete_rejected (dbus_interface, invocation);
 
 	g_object_unref (mediator);
 
@@ -442,7 +442,7 @@ static gpointer
 authentication_mediator_authenticator_thread (gpointer data)
 {
 	EAuthenticationMediator *mediator;
-	GDBusInterfaceSkeleton *interface;
+	GDBusInterfaceSkeleton *dbus_interface;
 	GDBusConnection *connection;
 	ThreadClosure *closure = data;
 	GSource *idle_source;
@@ -465,7 +465,7 @@ authentication_mediator_authenticator_thread (gpointer data)
 
 	/* Keep our own reference to the GDBusInterfaceSkeleton so
 	 * we can clean up signals after the mediator is disposed. */
-	interface = g_object_ref (mediator->priv->interface);
+	dbus_interface = g_object_ref (mediator->priv->dbus_interface);
 
 	connection = e_authentication_mediator_get_connection (mediator);
 	object_path = e_authentication_mediator_get_object_path (mediator);
@@ -480,25 +480,25 @@ authentication_mediator_authenticator_thread (gpointer data)
 	/* Listen for method invocations. */
 
 	handle_ready_id = g_signal_connect_data (
-		interface, "handle-ready",
+		dbus_interface, "handle-ready",
 		G_CALLBACK (authentication_mediator_handle_ready),
 		thread_closure_ref (closure),
 		(GClosureNotify) thread_closure_unref, 0);
 
 	handle_cancel_id = g_signal_connect_data (
-		interface, "handle-cancel",
+		dbus_interface, "handle-cancel",
 		G_CALLBACK (authentication_mediator_handle_cancel),
 		thread_closure_ref (closure),
 		(GClosureNotify) thread_closure_unref, 0);
 
 	handle_accepted_id = g_signal_connect_data (
-		interface, "handle-accepted",
+		dbus_interface, "handle-accepted",
 		G_CALLBACK (authentication_mediator_handle_accepted),
 		thread_closure_ref (closure),
 		(GClosureNotify) thread_closure_unref, 0);
 
 	handle_rejected_id = g_signal_connect_data (
-		interface, "handle-rejected",
+		dbus_interface, "handle-rejected",
 		G_CALLBACK (authentication_mediator_handle_rejected),
 		thread_closure_ref (closure),
 		(GClosureNotify) thread_closure_unref, 0);
@@ -506,7 +506,7 @@ authentication_mediator_authenticator_thread (gpointer data)
 	/* Export the Authenticator interface. */
 
 	g_dbus_interface_skeleton_export (
-		interface, connection, object_path, &closure->export_error);
+		dbus_interface, connection, object_path, &closure->export_error);
 
 	/* Schedule a one-time idle callback to broadcast through a
 	 * condition variable that our main loop is up and running. */
@@ -530,14 +530,14 @@ authentication_mediator_authenticator_thread (gpointer data)
 
 	/* Clean up and exit. */
 
-	g_signal_handler_disconnect (interface, handle_ready_id);
-	g_signal_handler_disconnect (interface, handle_cancel_id);
-	g_signal_handler_disconnect (interface, handle_accepted_id);
-	g_signal_handler_disconnect (interface, handle_rejected_id);
+	g_signal_handler_disconnect (dbus_interface, handle_ready_id);
+	g_signal_handler_disconnect (dbus_interface, handle_cancel_id);
+	g_signal_handler_disconnect (dbus_interface, handle_accepted_id);
+	g_signal_handler_disconnect (dbus_interface, handle_rejected_id);
 
 	g_main_context_pop_thread_default (closure->main_context);
 
-	g_object_unref (interface);
+	g_object_unref (dbus_interface);
 
 	thread_closure_unref (closure);
 
@@ -655,9 +655,9 @@ authentication_mediator_dispose (GObject *object)
 		priv->connection = NULL;
 	}
 
-	if (priv->interface != NULL) {
-		g_object_unref (priv->interface);
-		priv->interface = NULL;
+	if (priv->dbus_interface != NULL) {
+		g_object_unref (priv->dbus_interface);
+		priv->dbus_interface = NULL;
 	}
 
 	if (priv->secret_exchange != NULL) {
@@ -780,7 +780,7 @@ authentication_mediator_get_without_password (ESourceAuthenticator *auth)
 
 	mediator = E_AUTHENTICATION_MEDIATOR (auth);
 
-	return e_dbus_authenticator_get_without_password (mediator->priv->interface);
+	return e_dbus_authenticator_get_without_password (mediator->priv->dbus_interface);
 }
 
 static ESourceAuthenticationResult
@@ -872,7 +872,7 @@ authentication_mediator_try_password (ESourceAuthenticator *auth,
 			mediator->priv->secret_exchange, password->str, -1);
 
 		e_dbus_authenticator_emit_authenticate (
-			mediator->priv->interface, encrypted_secret);
+			mediator->priv->dbus_interface, encrypted_secret);
 
 		g_free (encrypted_secret);
 	}
@@ -961,21 +961,21 @@ e_authentication_mediator_class_init (EAuthenticationMediatorClass *class)
 }
 
 static void
-e_authentication_mediator_initable_init (GInitableIface *interface)
+e_authentication_mediator_initable_init (GInitableIface *iface)
 {
-	interface->init = authentication_mediator_initable_init;
+	iface->init = authentication_mediator_initable_init;
 }
 
 static void
-e_authentication_mediator_interface_init (ESourceAuthenticatorInterface *interface)
+e_authentication_mediator_interface_init (ESourceAuthenticatorInterface *iface)
 {
-	interface->get_without_password =
+	iface->get_without_password =
 		authentication_mediator_get_without_password;
-	interface->try_password_sync =
+	iface->try_password_sync =
 		authentication_mediator_try_password_sync;
-	interface->try_password =
+	iface->try_password =
 		authentication_mediator_try_password;
-	interface->try_password_finish =
+	iface->try_password_finish =
 		authentication_mediator_try_password_finish;
 }
 
@@ -984,7 +984,7 @@ e_authentication_mediator_init (EAuthenticationMediator *mediator)
 {
 	mediator->priv = E_AUTHENTICATION_MEDIATOR_GET_PRIVATE (mediator);
 
-	mediator->priv->interface = e_dbus_authenticator_skeleton_new ();
+	mediator->priv->dbus_interface = e_dbus_authenticator_skeleton_new ();
 	mediator->priv->secret_exchange = gcr_secret_exchange_new (NULL);
 
 	g_mutex_init (&mediator->priv->shared_data_lock);
@@ -1260,7 +1260,7 @@ e_authentication_mediator_dismiss (EAuthenticationMediator *mediator)
 {
 	g_return_if_fail (E_IS_AUTHENTICATION_MEDIATOR (mediator));
 
-	e_dbus_authenticator_emit_dismissed (mediator->priv->interface);
+	e_dbus_authenticator_emit_dismissed (mediator->priv->dbus_interface);
 }
 
 /**
@@ -1285,7 +1285,7 @@ e_authentication_mediator_server_error (EAuthenticationMediator *mediator,
 	name = g_dbus_error_encode_gerror (error);
 	g_return_if_fail (name != NULL);
 
-	e_dbus_authenticator_emit_server_error (mediator->priv->interface, name, error->message);
+	e_dbus_authenticator_emit_server_error (mediator->priv->dbus_interface, name, error->message);
 
 	g_free (name);
 }

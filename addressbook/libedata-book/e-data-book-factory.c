@@ -78,7 +78,7 @@ enum {
 
 /* Forward Declarations */
 static void	e_data_book_factory_initable_init
-						(GInitableIface *interface);
+						(GInitableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EDataBookFactory,
@@ -462,7 +462,7 @@ data_book_factory_open (EDataBookFactory *factory,
 }
 
 static gboolean
-data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *interface,
+data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *iface,
                                                GDBusMethodInvocation *invocation,
                                                const gchar *uid,
                                                EDataBookFactory *factory)
@@ -480,7 +480,7 @@ data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *interfac
 
 	if (object_path != NULL) {
 		e_dbus_address_book_factory_complete_open_address_book (
-			interface, invocation, object_path);
+			iface, invocation, object_path);
 		g_free (object_path);
 	} else {
 		g_return_val_if_fail (error != NULL, FALSE);
@@ -868,9 +868,9 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 }
 
 static void
-e_data_book_factory_initable_init (GInitableIface *interface)
+e_data_book_factory_initable_init (GInitableIface *iface)
 {
-	interface->init = data_book_factory_initable_init;
+	iface->init = data_book_factory_initable_init;
 }
 
 static void

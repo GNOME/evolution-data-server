@@ -39,7 +39,7 @@ static GMutex mutex;
 
 /* Forward Declarations */
 static void	e_gdata_oauth2_authorizer_interface_init
-					(GDataAuthorizerInterface *interface);
+					(GDataAuthorizerInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (
 	EGDataOAuth2Authorizer,
@@ -279,13 +279,13 @@ e_gdata_oauth2_authorizer_class_init (EGDataOAuth2AuthorizerClass *class)
 }
 
 static void
-e_gdata_oauth2_authorizer_interface_init (GDataAuthorizerInterface *interface)
+e_gdata_oauth2_authorizer_interface_init (GDataAuthorizerInterface *iface)
 {
-	interface->process_request =
+	iface->process_request =
 		gdata_oauth2_authorizer_process_request;
-	interface->is_authorized_for_domain =
+	iface->is_authorized_for_domain =
 		gdata_oauth2_authorizer_is_authorized_for_domain;
-	interface->refresh_authorization =
+	iface->refresh_authorization =
 		gdata_oauth2_authorizer_refresh_authorization;
 }
 
