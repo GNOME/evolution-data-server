@@ -291,7 +291,7 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 	}
 
 	/* This makes sure that server flags has precedence from locally stored flags,
-	   thus a user actually sees what is stored on the server */
+	 * thus a user actually sees what is stored on the server */
 	if ((camel_message_info_flags (info) & CAMEL_IMAPX_SERVER_FLAGS) != (server_flags & CAMEL_IMAPX_SERVER_FLAGS)) {
 		xinfo->server_flags = (xinfo->server_flags & ~CAMEL_IMAPX_SERVER_FLAGS) |
 				      (camel_message_info_flags (info) & CAMEL_IMAPX_SERVER_FLAGS);

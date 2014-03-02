@@ -1076,7 +1076,7 @@ decode_8bit (const gchar *text,
 
 static void
 make_string_utf8_valid (gchar *text,
-			gsize textlen)
+                        gsize textlen)
 {
 	gchar *p;
 	gsize len;

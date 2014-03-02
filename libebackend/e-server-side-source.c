@@ -271,7 +271,7 @@ server_side_source_write_cb (EDBusSourceWritable *dbus_interface,
 		e_dbus_source_set_data (dbus_source, data);
 
 		/* Make sure the ESource::changed signal is called, otherwise
-		   the above Q&A doesn't work and changed data are not saved. */
+		 * the above Q&A doesn't work and changed data are not saved. */
 		e_source_changed (source);
 	}
 

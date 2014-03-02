@@ -91,7 +91,7 @@ imapx_search_dispose (GObject *object)
 
 static CamelSExpResult *
 imapx_search_result_match_all (CamelSExp *sexp,
-			       CamelFolderSearch *search)
+                               CamelFolderSearch *search)
 {
 	CamelSExpResult *result;
 
@@ -117,7 +117,7 @@ imapx_search_result_match_all (CamelSExp *sexp,
 
 static CamelSExpResult *
 imapx_search_result_match_none (CamelSExp *sexp,
-				CamelFolderSearch *search)
+                                CamelFolderSearch *search)
 {
 	CamelSExpResult *result;
 
@@ -136,10 +136,10 @@ imapx_search_result_match_none (CamelSExp *sexp,
 
 static CamelSExpResult *
 imapx_search_process_criteria (CamelSExp *sexp,
-			       CamelFolderSearch *search,
-			       CamelIMAPXServer *server,
-			       const GString *criteria,
-			       const gchar *from_function)
+                               CamelFolderSearch *search,
+                               CamelIMAPXServer *server,
+                               const GString *criteria,
+                               const gchar *from_function)
 {
 	CamelSExpResult *result;
 	CamelIMAPXMailbox *mailbox;
@@ -191,9 +191,9 @@ imapx_search_process_criteria (CamelSExp *sexp,
 
 static CamelSExpResult *
 imapx_search_match_all (CamelSExp *sexp,
-			gint argc,
-			CamelSExpTerm **argv,
-			CamelFolderSearch *search)
+                        gint argc,
+                        CamelSExpTerm **argv,
+                        CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;
@@ -214,7 +214,7 @@ imapx_search_match_all (CamelSExp *sexp,
 	}
 
 	/* First try to see whether all used headers are available locally - if
-	   they are, then do not use server-side filtering at all. */
+	 * they are, then do not use server-side filtering at all. */
 	prev_local_data_search = imapx_search->priv->local_data_search;
 	imapx_search->priv->local_data_search = &local_data_search;
 
@@ -245,7 +245,7 @@ imapx_search_match_all (CamelSExp *sexp,
 	}
 
 	/* let's change the requirements a bit, the parent class expects as a result boolean,
-	   but here is expected GPtrArray of matched UIDs */
+	 * but here is expected GPtrArray of matched UIDs */
 	result = camel_sexp_term_eval (sexp, argv[0]);
 
 	g_object_unref (server);
@@ -352,9 +352,9 @@ imapx_search_is_header_from_summary (const gchar *header_name)
 
 static CamelSExpResult *
 imapx_search_header_contains (CamelSExp *sexp,
-			      gint argc,
-			      CamelSExpResult **argv,
-			      CamelFolderSearch *search)
+                              gint argc,
+                              CamelSExpResult **argv,
+                              CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;
@@ -463,9 +463,9 @@ imapx_search_header_contains (CamelSExp *sexp,
 
 static CamelSExpResult *
 imapx_search_header_exists (CamelSExp *sexp,
-			    gint argc,
-			    CamelSExpResult **argv,
-			    CamelFolderSearch *search)
+                            gint argc,
+                            CamelSExpResult **argv,
+                            CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXServer *server;

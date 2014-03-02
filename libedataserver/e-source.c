@@ -338,8 +338,8 @@ source_localized_hack (GKeyFile *key_file,
 
 static gboolean
 source_check_values_differ (GType g_type,
-			    const GValue *value,
-			    const GValue *value2)
+                            const GValue *value,
+                            const GValue *value2)
 {
 	gboolean differ = TRUE;
 	GValue *value1;
@@ -360,7 +360,7 @@ source_check_values_differ (GType g_type,
 
 		do {
 			check_type (BOOLEAN, boolean);
-			check_type (CHAR, char);
+			check_type (CHAR, schar);
 			check_type (DOUBLE, double);
 			check_type (ENUM, enum);
 			check_type (FLAGS, flags);
@@ -657,9 +657,9 @@ source_set_property_from_key_file (GObject *object,
 		g_object_get_property (object, pspec->name, cvalue);
 
 		/* This is because the g_object_set_property() invokes "notify" signal
-		   on the set property, even if the value did not change, which creates
-		   false notifications, which can cause UI or background activities
-		   without any real reason (especially with the ''enabled' property load). */
+		 * on the set property, even if the value did not change, which creates
+		 * false notifications, which can cause UI or background activities
+		 * without any real reason (especially with the ''enabled' property load). */
 		if (!G_IS_VALUE (cvalue) || source_check_values_differ (pspec->value_type, value, cvalue))
 			g_object_set_property (object, pspec->name, value);
 

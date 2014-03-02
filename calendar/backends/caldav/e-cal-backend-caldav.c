@@ -5119,8 +5119,8 @@ caldav_source_changed_thread (gpointer data)
 	g_mutex_lock (&cbdav->priv->busy_lock);
 
 	/* guard the call with busy_lock, thus the two threads (this 'source changed'
-	   thread and the 'backend open' thread) will not clash on internal data
-	   when they are called in once */
+	 * thread and the 'backend open' thread) will not clash on internal data
+	 * when they are called in once */
 	initialize_backend (cbdav, NULL);
 
 	/* always wakeup thread, even when it was sleeping */

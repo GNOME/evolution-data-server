@@ -1716,7 +1716,7 @@ camel_vee_folder_ignore_next_changed_event (CamelVeeFolder *vfolder,
  **/
 void
 camel_vee_folder_remove_from_ignore_changed_event (CamelVeeFolder *vfolder,
-						   CamelFolder *subfolder)
+                                                   CamelFolder *subfolder)
 {
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 	g_return_if_fail (subfolder != NULL);

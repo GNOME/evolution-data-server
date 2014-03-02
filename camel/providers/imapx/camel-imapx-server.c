@@ -7641,9 +7641,9 @@ imapx_parser_thread (gpointer user_data)
 	is = CAMEL_IMAPX_SERVER (user_data);
 
 	/* Do not use CamelOperation here, because it can be cancelled at
-	   an application end with camel_operation_cancel_all() call, which
-	   is done too early, before any pending jobs are properly finished
-	   (it can be IDLE job, or save of folder changes back to the server).
+	 * an application end with camel_operation_cancel_all() call, which
+	 * is done too early, before any pending jobs are properly finished
+	 * (it can be IDLE job, or save of folder changes back to the server).
 	 */
 	cancellable = g_cancellable_new ();
 	g_weak_ref_set (&is->priv->parser_cancellable, cancellable);
@@ -8817,7 +8817,7 @@ imapx_sync_free_user (GArray *user_set)
 
 static void
 imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
-				 GPtrArray *changed_uids)
+                                 GPtrArray *changed_uids)
 {
 	CamelMessageInfo *info;
 	gboolean changed = FALSE;

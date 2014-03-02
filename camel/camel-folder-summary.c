@@ -2004,8 +2004,8 @@ perform_content_info_load_from_db (CamelFolderSummary *summary,
 
 static void
 gather_dirty_uids (gpointer key,
-		   gpointer value,
-		   gpointer user_data)
+                   gpointer value,
+                   gpointer user_data)
 {
 	const gchar *uid = key;
 	CamelMessageInfoBase *info = value;
@@ -2017,8 +2017,8 @@ gather_dirty_uids (gpointer key,
 
 static void
 gather_changed_uids (gpointer key,
-		     gpointer value,
-		     gpointer user_data)
+                     gpointer value,
+                     gpointer user_data)
 {
 	const gchar *uid = key;
 	guint32 flags = GPOINTER_TO_UINT (value);
