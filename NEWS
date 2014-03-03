@@ -1,3 +1,29 @@
+Evolution-Data-Server 3.11.91 2014-03-03
+----------------------------------------
+
+Bug Fixes:
+	Bug 274316 - [IMAP] Follow-up flag lost on message move/copy
+	             (Milan Crha)
+	Bug 623066 - CalDAV doesn't read Location header from Created
+	             response (Milan Crha)
+	Bug 694084 - IMAPx doesn't stick Labels (Milan Crha)
+	Bug 705028 - gen-western-table.py is not compatible with python3
+	             (Arfrever Frehtes Taifersar Arahesis)
+	Bug 710997 - Check some return values before use (Murray Cumming)
+	Bug 724729 - camel-folder.c:folder_changed() blocks the UI thread
+	             (Milan Crha)
+
+Other Changes:
+	* Ported IMAPX backend to use GIO streams instead of CamelStream.
+	  (Matthew Barnes)
+	* Weather Calendar: Weather info source never freed (Milan Crha)
+	* Fix a memory leak in imapx_untagged_lsub() (Milan Crha)
+
+Translations:
+	Aurimas Černius (lt)
+	Piotr Drąg (pl)
+
+
 Evolution-Data-Server 3.11.90 2014-02-17
 ----------------------------------------
 
