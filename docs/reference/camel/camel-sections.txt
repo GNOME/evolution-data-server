@@ -2073,7 +2073,6 @@ CamelFolderInfo
 CamelStoreFlags
 CamelStorePermissionFlags
 CamelStoreGetFolderFlags
-CAMEL_STORE_FOLDER_CREATE_EXCL
 CamelStoreGetFolderInfoFlags
 camel_store_folder_created
 camel_store_folder_deleted

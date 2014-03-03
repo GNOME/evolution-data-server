@@ -105,9 +105,6 @@ typedef enum {
                                                    info's, etc. */
 } CamelStoreGetFolderFlags;
 
-#define CAMEL_STORE_FOLDER_CREATE_EXCL \
-	(CAMEL_STORE_FOLDER_CREATE | CAMEL_STORE_FOLDER_EXCL)
-
 struct _CamelStore {
 	CamelService parent;
 	CamelStorePrivate *priv;
