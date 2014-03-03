@@ -1184,17 +1184,18 @@ camel_store_get_folder_sync (CamelStore *store,
 	CamelFolder *folder = NULL;
 	CamelVeeFolder *vjunk = NULL;
 	CamelVeeFolder *vtrash = NULL;
+	gboolean create_folder = FALSE;
 	gboolean folder_name_is_vjunk;
 	gboolean folder_name_is_vtrash;
 	gboolean store_uses_vjunk;
 	gboolean store_uses_vtrash;
-
 
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 	g_return_val_if_fail (folder_name != NULL, NULL);
 
 	class = CAMEL_STORE_GET_CLASS (store);
 
+try_again:
 	/* Try cache first. */
 	folder = camel_object_bag_reserve (store->folders, folder_name);
 	if (folder != NULL)
@@ -1243,12 +1244,33 @@ camel_store_get_folder_sync (CamelStore *store,
 			store, get_junk_folder_sync,
 			folder != NULL, error);
 	} else {
+		GError *local_error = NULL;
+
+		/* If CAMEL_STORE_FOLDER_CREATE flag is set, note it and
+		 * strip it so subclasses never receive it.  We'll handle
+		 * it ourselves below. */
+		create_folder = ((flags & CAMEL_STORE_FOLDER_CREATE) != 0);
+		flags &= ~CAMEL_STORE_FOLDER_CREATE;
+
 		folder = class->get_folder_sync (
 			store, folder_name, flags,
-			cancellable, error);
-		CAMEL_CHECK_GERROR (
+			cancellable, &local_error);
+		CAMEL_CHECK_LOCAL_GERROR (
 			store, get_folder_sync,
-			folder != NULL, error);
+			folder != NULL, local_error);
+
+		/* XXX This depends on subclasses setting this error code
+		 *     consistently.  Do they?  I guess we'll find out... */
+		create_folder &= g_error_matches (
+			local_error,
+			CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_NO_FOLDER);
+
+		if (create_folder)
+			g_clear_error (&local_error);
+
+		if (local_error != NULL)
+			g_propagate_error (error, local_error);
 
 		if (folder != NULL && store_uses_vjunk)
 			vjunk = camel_object_bag_get (
@@ -1289,6 +1311,50 @@ camel_store_get_folder_sync (CamelStore *store,
 
 	if (folder != NULL)
 		camel_store_folder_opened (store, folder);
+
+	/* Handle CAMEL_STORE_FOLDER_CREATE flag. */
+	if (create_folder) {
+		CamelFolderInfo *folder_info;
+		gchar *reversed_name;
+		gchar **child_and_parent;
+
+		g_warn_if_fail (folder == NULL);
+
+		/* XXX GLib lacks a rightmost string splitting function,
+		 *     so we'll reverse the string and use g_strsplit(). */
+		reversed_name = g_strreverse (g_strdup (folder_name));
+		child_and_parent = g_strsplit (reversed_name, "/", 2);
+		g_return_val_if_fail (child_and_parent[0] != NULL, NULL);
+
+		/* Element 0 is the new folder name.
+		 * Element 1 is the parent path, or NULL. */
+
+		/* XXX Reverse the child and parent names back. */
+		g_strreverse (child_and_parent[0]);
+		if (child_and_parent[1] != NULL)
+			g_strreverse (child_and_parent[1]);
+
+		/* Call the method directly to avoid the queuing
+		 * behavior of camel_store_create_folder_sync(). */
+		folder_info = class->create_folder_sync (
+			store,
+			child_and_parent[1],
+			child_and_parent[0],
+			cancellable, error);
+		CAMEL_CHECK_GERROR (
+			store, create_folder_sync,
+			folder_info != NULL, error);
+
+		g_strfreev (child_and_parent);
+		g_free (reversed_name);
+
+		/* If we successfully created the folder, retry the
+		 * method without the CAMEL_STORE_FOLDER_CREATE flag. */
+		if (folder_info != NULL) {
+			camel_folder_info_free (folder_info);
+			goto try_again;
+		}
+	}
 
 	return folder;
 }
