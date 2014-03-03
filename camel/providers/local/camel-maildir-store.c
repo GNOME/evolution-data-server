@@ -282,11 +282,6 @@ maildir_store_get_folder_sync (CamelStore *store,
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("Cannot get folder '%s': not a maildir directory."),
 			name);
-	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot create folder '%s': folder exists."),
-			folder_name);
 	} else {
 		folder = camel_maildir_folder_new (store, folder_name, flags, cancellable, error);
 	}

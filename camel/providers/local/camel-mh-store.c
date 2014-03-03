@@ -558,13 +558,6 @@ mh_store_get_folder_sync (CamelStore *store,
 			_("Cannot get folder '%s': not a directory."),
 			folder_name);
 		goto exit;
-
-	} else if (flags & CAMEL_STORE_FOLDER_EXCL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot create folder '%s': folder exists."),
-			folder_name);
-		goto exit;
 	}
 
 	folder = camel_mh_folder_new (
