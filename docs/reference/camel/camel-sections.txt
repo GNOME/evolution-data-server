@@ -570,6 +570,7 @@ camel_folder_summary_clear
 camel_folder_summary_count
 camel_folder_summary_check_uid
 camel_folder_summary_get
+camel_folder_summary_get_info_flags
 camel_folder_summary_get_array
 camel_folder_summary_free_array
 camel_folder_summary_get_hash
@@ -2635,6 +2636,7 @@ camel_pointer_tracker_track
 camel_pointer_tracker_track_with_info
 camel_pointer_tracker_untrack
 camel_pointer_tracker_dump
+camel_debug_get_backtrace
 </SECTION>
 
 <SECTION>
