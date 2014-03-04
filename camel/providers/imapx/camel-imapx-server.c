@@ -26,8 +26,12 @@
  *     GLIB_CHECK_VERSION macros. */
 #define GLIB_DISABLE_DEPRECATION_WARNINGS
 
-#include <time.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <time.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 #include <gio/gnetworking.h>
@@ -4303,6 +4307,26 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 	g_mutex_unlock (&is->priv->stream_lock);
 }
 
+#if GLIB_CHECK_VERSION(2,39,0)
+static void
+imapx_server_child_process_setup (gpointer user_data)
+{
+	gint fd;
+
+	setsid ();
+
+#ifdef TIOCNOTTY
+	/* Detach from the controlling tty if we have one.  Otherwise,
+	 * SSH might do something stupid like trying to use it instead
+	 * of running $SSH_ASKPASS. */
+	if ((fd = open ("/dev/tty", O_RDONLY)) != -1) {
+		ioctl (fd, TIOCNOTTY, NULL);
+		close (fd);
+	}
+#endif /* TIOCNOTTY */
+}
+#endif
+
 static gboolean
 connect_to_server_process (CamelIMAPXServer *is,
                            const gchar *cmd,
@@ -4331,6 +4355,10 @@ connect_to_server_process (CamelIMAPXServer *is,
 		G_SUBPROCESS_FLAGS_STDIN_PIPE |
 		G_SUBPROCESS_FLAGS_STDOUT_PIPE |
 		G_SUBPROCESS_FLAGS_STDERR_SILENCE);
+
+	g_subprocess_launcher_set_child_setup (
+		launcher, imapx_server_child_process_setup,
+		NULL, (GDestroyNotify) NULL);
 
 	store = camel_imapx_server_ref_store (is);
 
