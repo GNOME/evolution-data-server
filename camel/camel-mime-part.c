@@ -966,6 +966,26 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 }
 
 static gboolean
+mime_part_construct_from_input_stream_sync (CamelDataWrapper *dw,
+                                            GInputStream *input_stream,
+                                            GCancellable *cancellable,
+                                            GError **error)
+{
+	CamelMimeParser *parser;
+	gboolean success;
+
+	parser = camel_mime_parser_new ();
+	camel_mime_parser_init_with_input_stream (parser, input_stream);
+
+	success = camel_mime_part_construct_from_parser_sync (
+		CAMEL_MIME_PART (dw), parser, cancellable, error);
+
+	g_object_unref (parser);
+
+	return success;
+}
+
+static gboolean
 mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
                                       CamelMimeParser *parser,
                                       GCancellable *cancellable,
@@ -1053,6 +1073,7 @@ camel_mime_part_class_init (CamelMimePartClass *class)
 	data_wrapper_class->write_to_stream_sync = mime_part_write_to_stream_sync;
 	data_wrapper_class->construct_from_stream_sync = mime_part_construct_from_stream_sync;
 	data_wrapper_class->write_to_output_stream_sync = mime_part_write_to_output_stream_sync;
+	data_wrapper_class->construct_from_input_stream_sync = mime_part_construct_from_input_stream_sync;
 
 	class->construct_from_parser_sync = mime_part_construct_from_parser_sync;
 

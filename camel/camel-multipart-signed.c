@@ -528,6 +528,32 @@ multipart_signed_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	return total;
 }
 
+static gboolean
+multipart_signed_construct_from_input_stream_sync (CamelDataWrapper *data_wrapper,
+                                                   GInputStream *input_stream,
+                                                   GCancellable *cancellable,
+                                                   GError **error)
+{	CamelMultipartSignedPrivate *priv;
+	gboolean success;
+
+	priv = CAMEL_MULTIPART_SIGNED_GET_PRIVATE (data_wrapper);
+
+	/* Chain up to parent's construct_from_input_stream_sync() method. */
+	success = CAMEL_DATA_WRAPPER_CLASS (
+		camel_multipart_signed_parent_class)->
+		construct_from_input_stream_sync (
+		data_wrapper, input_stream, cancellable, error);
+
+	if (success) {
+		priv->start1 = -1;
+		g_clear_object (&priv->content);
+		g_clear_object (&priv->signature);
+		g_clear_object (&priv->contentraw);
+	}
+
+	return success;
+}
+
 static void
 multipart_signed_add_part (CamelMultipart *multipart,
                            CamelMimePart *part)
@@ -694,6 +720,7 @@ camel_multipart_signed_class_init (CamelMultipartSignedClass *class)
 	data_wrapper_class->construct_from_stream_sync = multipart_signed_construct_from_stream_sync;
 	data_wrapper_class->write_to_output_stream_sync = multipart_signed_write_to_output_stream_sync;
 	data_wrapper_class->decode_to_output_stream_sync = multipart_signed_write_to_output_stream_sync;
+	data_wrapper_class->construct_from_input_stream_sync = multipart_signed_construct_from_input_stream_sync;
 
 	multipart_class = CAMEL_MULTIPART_CLASS (class);
 	multipart_class->add_part = multipart_signed_add_part;

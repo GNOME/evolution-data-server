@@ -48,6 +48,7 @@ struct _CamelDataWrapperPrivate {
 
 struct _AsyncContext {
 	CamelStream *stream;
+	GInputStream *input_stream;
 	GOutputStream *output_stream;
 };
 
@@ -57,6 +58,7 @@ static void
 async_context_free (AsyncContext *async_context)
 {
 	g_clear_object (&async_context->stream);
+	g_clear_object (&async_context->input_stream);
 	g_clear_object (&async_context->output_stream);
 
 	g_slice_free (AsyncContext, async_context);
@@ -355,6 +357,63 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	return bytes_written;
 }
 
+static gboolean
+data_wrapper_construct_from_input_stream_sync (CamelDataWrapper *data_wrapper,
+                                               GInputStream *input_stream,
+                                               GCancellable *cancellable,
+                                               GError **error)
+{
+	GOutputStream *output_stream;
+	gssize bytes_written;
+	gboolean success;
+
+	/* XXX Should keep the internal data as a reference-counted
+	 *     GBytes to avoid locking while reading from the stream. */
+
+	g_mutex_lock (&data_wrapper->priv->stream_lock);
+
+	/* Check for cancellation after locking. */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		g_mutex_unlock (&data_wrapper->priv->stream_lock);
+		return FALSE;
+	}
+
+	if (G_IS_SEEKABLE (input_stream)) {
+		success = g_seekable_seek (
+			G_SEEKABLE (input_stream), 0,
+			G_SEEK_SET, cancellable, error);
+		if (!success) {
+			g_mutex_unlock (&data_wrapper->priv->stream_lock);
+			return FALSE;
+		}
+	}
+
+	output_stream = g_memory_output_stream_new_resizable ();
+
+	bytes_written = g_output_stream_splice (
+		output_stream, input_stream,
+		G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
+		cancellable, error);
+
+	success = (bytes_written >= 0);
+
+	if (success) {
+		GBytes *bytes;
+
+		bytes = g_memory_output_stream_steal_as_bytes (
+			G_MEMORY_OUTPUT_STREAM (output_stream));
+
+		g_byte_array_free (data_wrapper->priv->byte_array, TRUE);
+		data_wrapper->priv->byte_array = g_bytes_unref_to_array (bytes);
+	}
+
+	g_object_unref (output_stream);
+
+	g_mutex_unlock (&data_wrapper->priv->stream_lock);
+
+	return success;
+}
+
 static void
 camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 {
@@ -377,6 +436,7 @@ camel_data_wrapper_class_init (CamelDataWrapperClass *class)
 	class->construct_from_stream_sync = data_wrapper_construct_from_stream_sync;
 	class->write_to_output_stream_sync = data_wrapper_write_to_output_stream_sync;
 	class->decode_to_output_stream_sync = data_wrapper_decode_to_output_stream_sync;
+	class->construct_from_input_stream_sync = data_wrapper_construct_from_input_stream_sync;
 }
 
 static void
@@ -1259,5 +1319,141 @@ camel_data_wrapper_decode_to_output_stream_finish (CamelDataWrapper *data_wrappe
 		result, camel_data_wrapper_decode_to_output_stream), -1);
 
 	return g_task_propagate_int (G_TASK (result), error);
+}
+
+/**
+ * camel_data_wrapper_construct_from_input_stream_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @input_stream: a #GInputStream
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Constructs the content of @data_wrapper from @input_stream.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+camel_data_wrapper_construct_from_input_stream_sync (CamelDataWrapper *data_wrapper,
+                                                     GInputStream *input_stream,
+                                                     GCancellable *cancellable,
+                                                     GError **error)
+{
+	CamelDataWrapperClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), FALSE);
+	g_return_val_if_fail (G_IS_INPUT_STREAM (input_stream), FALSE);
+
+	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class->construct_from_input_stream_sync != NULL, FALSE);
+
+	success = class->construct_from_input_stream_sync (
+		data_wrapper, input_stream, cancellable, error);
+	CAMEL_CHECK_GERROR (
+		data_wrapper, construct_from_input_stream_sync, success, error);
+
+	return success;
+}
+
+/* Helper for camel_data_wrapper_construct_from_input_stream() */
+static void
+data_wrapper_construct_from_input_stream_thread (GTask *task,
+                                                 gpointer source_object,
+                                                 gpointer task_data,
+                                                 GCancellable *cancellable)
+{
+	gboolean success;
+	AsyncContext *async_context;
+	GError *local_error = NULL;
+
+	async_context = (AsyncContext *) task_data;
+
+	success = camel_data_wrapper_construct_from_input_stream_sync (
+		CAMEL_DATA_WRAPPER (source_object),
+		async_context->input_stream,
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * camel_data_wrapper_construct_from_input_stream:
+ * @data_wrapper: a #CamelDataWrapper
+ * @input_stream: a #GInputStream
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously constructs the content of @data_wrapper from @input_stream.
+ *
+ * When the operation is finished, @callback will be called.  You can then
+ * call camel_data_wrapper_construct_from_input_stream_finish() to get the
+ * result of the operation.
+ *
+ * Since: 3.12
+ **/
+void
+camel_data_wrapper_construct_from_input_stream (CamelDataWrapper *data_wrapper,
+                                                GInputStream *input_stream,
+                                                gint io_priority,
+                                                GCancellable *cancellable,
+                                                GAsyncReadyCallback callback,
+                                                gpointer user_data)
+{
+	GTask *task;
+	AsyncContext *async_context;
+
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (G_IS_INPUT_STREAM (input_stream));
+
+	async_context = g_slice_new0 (AsyncContext);
+	async_context->input_stream = g_object_ref (input_stream);
+
+	task = g_task_new (data_wrapper, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_data_wrapper_construct_from_input_stream);
+	g_task_set_priority (task, io_priority);
+
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
+
+	g_task_run_in_thread (task, data_wrapper_construct_from_input_stream_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * camel_data_wrapper_construct_from_input_stream_finish:
+ * @data_wrapper: a #CamelDataWrapper
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with
+ * camel_data_wrapper_construct_from_input_stream().
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.12
+ **/
+gboolean
+camel_data_wrapper_construct_from_input_stream_finish (CamelDataWrapper *data_wrapper,
+                                                       GAsyncResult *result,
+                                                       GError **error)
+{
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, data_wrapper), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, camel_data_wrapper_construct_from_input_stream), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
