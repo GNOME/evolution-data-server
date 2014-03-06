@@ -1925,7 +1925,7 @@ gpg_verify_sync (CamelCipherContext *context,
 	diagnostics = gpg_ctx_get_diagnostics (gpg);
 	camel_cipher_validity_set_description (validity, diagnostics);
 	if (gpg->validsig) {
-		if (gpg->trust == GPG_TRUST_UNDEFINED || gpg->trust == GPG_TRUST_NONE)
+		if (gpg->trust == GPG_TRUST_UNDEFINED || gpg->trust == GPG_TRUST_NONE || gpg->trust == GPG_TRUST_MARGINAL)
 			validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_UNKNOWN;
 		else if (gpg->trust != GPG_TRUST_NEVER)
 			validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_GOOD;
