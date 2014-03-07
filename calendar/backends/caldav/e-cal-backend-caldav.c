@@ -58,6 +58,7 @@ typedef enum {
 
 	SLAVE_SHOULD_SLEEP,
 	SLAVE_SHOULD_WORK,
+	SLAVE_SHOULD_WORK_NO_CTAG_CHECK,
 	SLAVE_SHOULD_DIE
 
 } SlaveCommand;
@@ -1320,7 +1321,8 @@ compat_libxml_output_buffer_get_content (xmlOutputBufferPtr buf,
 /* Returns whether calendar changed on the server. This works only when server
  * supports 'getctag' extension. */
 static gboolean
-check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
+check_calendar_changed_on_server (ECalBackendCalDAV *cbdav,
+				  gboolean save_ctag)
 {
 	xmlOutputBufferPtr	  buf;
 	SoupMessage              *message;
@@ -1395,7 +1397,7 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav)
 			if (ctag && my_ctag && g_str_equal (ctag, my_ctag)) {
 				/* ctag is same, no change in the calendar */
 				result = FALSE;
-			} else {
+			} else if (save_ctag) {
 				/* do not store ctag now, do it rather after complete sync */
 				g_free (cbdav->priv->ctag_to_store);
 				cbdav->priv->ctag_to_store = ctag;
@@ -2264,7 +2266,8 @@ free_comp_list (gpointer cclist)
 static void
 synchronize_cache (ECalBackendCalDAV *cbdav,
                    time_t start_time,
-                   time_t end_time)
+                   time_t end_time,
+		   gboolean can_check_ctag)
 {
 	CalDAVObject *sobjs, *object;
 	GSList *c_objs, *c_iter; /* list of all items known from our cache */
@@ -2273,7 +2276,10 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	GSList *hrefs_to_update, *htu; /* list of href-s to update */
 	gint i, len;
 
-	if (!check_calendar_changed_on_server (cbdav)) {
+	/* intentionally do server-side checking first, and then the bool test,
+	   to store actual ctag value first, and then update the content, to not
+	   do it again the next time this function is called */
+	if (!check_calendar_changed_on_server (cbdav, start_time == (time_t) 0) && can_check_ctag) {
 		/* no changes on the server, no update required */
 		return;
 	}
@@ -2528,6 +2534,8 @@ caldav_synch_slave_loop (gpointer data)
 	know_unreachable = !cbdav->priv->opened;
 
 	while (cbdav->priv->slave_cmd != SLAVE_SHOULD_DIE) {
+		gboolean can_check_ctag = TRUE;
+
 		if (cbdav->priv->slave_cmd == SLAVE_SHOULD_SLEEP) {
 			/* just sleep until we get woken up again */
 			g_cond_wait (&cbdav->priv->cond, &cbdav->priv->busy_lock);
@@ -2540,6 +2548,10 @@ caldav_synch_slave_loop (gpointer data)
 		 * Synch it baby one more time ...
 		 */
 		cbdav->priv->slave_busy = TRUE;
+		if (cbdav->priv->slave_cmd == SLAVE_SHOULD_WORK_NO_CTAG_CHECK) {
+			cbdav->priv->slave_cmd = SLAVE_SHOULD_WORK;
+			can_check_ctag = FALSE;
+		}
 
 		if (!cbdav->priv->opened) {
 			gboolean server_unreachable = FALSE;
@@ -2580,11 +2592,11 @@ caldav_synch_slave_loop (gpointer data)
 			time (&now);
 			/* check for events in the month before/after today first,
 			 * to show user actual data as soon as possible */
-			synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc));
+			synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc), can_check_ctag);
 
 			if (cbdav->priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
 				/* and then check for changes in a whole calendar */
-				synchronize_cache (cbdav, 0, 0);
+				synchronize_cache (cbdav, 0, 0, can_check_ctag);
 			}
 
 			if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
@@ -3017,7 +3029,7 @@ caldav_refresh (ECalBackendSync *backend,
 		return;
 	}
 
-	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
+	update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK_NO_CTAG_CHECK);
 
 	/* wake it up */
 	g_cond_signal (&cbdav->priv->cond);
