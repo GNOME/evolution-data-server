@@ -55,8 +55,19 @@ maildir_folder_cmp_uids (CamelFolder *folder,
 	a = camel_folder_summary_get (folder->summary, uid1);
 	b = camel_folder_summary_get (folder->summary, uid2);
 
-	g_return_val_if_fail (a != NULL, 0);
-	g_return_val_if_fail (b != NULL, 0);
+	if (!a || !b) {
+		/* It's not a problem when one of the messages is not in the summary */
+		if (a)
+			camel_message_info_unref (a);
+		if (b)
+			camel_message_info_unref (b);
+
+		if (a == b)
+			return 0;
+		if (!a)
+			return -1;
+		return 1;
+	}
 
 	tma = camel_message_info_date_received (a);
 	tmb = camel_message_info_date_received (b);
