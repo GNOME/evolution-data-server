@@ -307,6 +307,8 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 				CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
 			filter_stream = camel_filter_output_stream_new (
 				output_stream, filter);
+			g_filter_output_stream_set_close_base_stream (
+				G_FILTER_OUTPUT_STREAM (filter_stream), FALSE);
 			g_object_unref (filter);
 			break;
 		case CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE:
@@ -314,6 +316,8 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 				CAMEL_MIME_FILTER_BASIC_QP_DEC);
 			filter_stream = camel_filter_output_stream_new (
 				output_stream, filter);
+			g_filter_output_stream_set_close_base_stream (
+				G_FILTER_OUTPUT_STREAM (filter_stream), FALSE);
 			g_object_unref (filter);
 			break;
 		case CAMEL_TRANSFER_ENCODING_UUENCODE:
@@ -321,6 +325,8 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 				CAMEL_MIME_FILTER_BASIC_UU_DEC);
 			filter_stream = camel_filter_output_stream_new (
 				output_stream, filter);
+			g_filter_output_stream_set_close_base_stream (
+				G_FILTER_OUTPUT_STREAM (filter_stream), FALSE);
 			g_object_unref (filter);
 			break;
 		default:
@@ -343,6 +349,8 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 			CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 		temp_stream = camel_filter_output_stream_new (
 			filter_stream, filter);
+		g_filter_output_stream_set_close_base_stream (
+			G_FILTER_OUTPUT_STREAM (temp_stream), FALSE);
 		g_object_unref (filter);
 
 		g_object_unref (filter_stream);

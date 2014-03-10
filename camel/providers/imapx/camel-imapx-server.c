@@ -8646,6 +8646,9 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	filter = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
 	filter_stream = camel_filter_output_stream_new (output_stream, filter);
 
+	g_filter_output_stream_set_close_base_stream (
+		G_FILTER_OUTPUT_STREAM (filter_stream), FALSE);
+
 	res = camel_data_wrapper_write_to_output_stream_sync (
 		CAMEL_DATA_WRAPPER (message),
 		filter_stream, cancellable, error);

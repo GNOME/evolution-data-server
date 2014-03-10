@@ -898,6 +898,8 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 				content_charset, part_charset);
 			temp_stream = camel_filter_output_stream_new (
 				filter_stream, charenc);
+			g_filter_output_stream_set_close_base_stream (
+				G_FILTER_OUTPUT_STREAM (temp_stream), FALSE);
 			g_object_unref (charenc);
 
 			g_object_unref (filter_stream);
@@ -915,6 +917,8 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 				CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
 			temp_stream = camel_filter_output_stream_new (
 				filter_stream, crlf);
+			g_filter_output_stream_set_close_base_stream (
+				G_FILTER_OUTPUT_STREAM (temp_stream), FALSE);
 			g_object_unref (crlf);
 
 			g_object_unref (filter_stream);
@@ -928,6 +932,8 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 
 			temp_stream = camel_filter_output_stream_new (
 				filter_stream, filter);
+			g_filter_output_stream_set_close_base_stream (
+				G_FILTER_OUTPUT_STREAM (temp_stream), FALSE);
 			g_object_unref (filter);
 
 			g_object_unref (filter_stream);
