@@ -233,7 +233,7 @@ e_book_backend_cache_get_contacts (EBookBackendCache *cache,
 		if (vcard_str && !strncmp (vcard_str, "BEGIN:VCARD", 11)) {
 			contact = e_contact_new_from_vcard (vcard_str);
 			uid = e_contact_get_const (contact, E_CONTACT_UID);
-			if (uid && *uid && (query && e_book_backend_sexp_match_contact (sexp, contact)))
+			if (uid && *uid && (!query || e_book_backend_sexp_match_contact (sexp, contact)))
 				list = g_list_prepend (list, contact);
 			else
 				g_object_unref (contact);

@@ -47,8 +47,9 @@
 #define WEBDAV_CLOSURE_NAME   "EBookBackendWebdav.BookView::closure"
 #define WEBDAV_CTAG_KEY "WEBDAV_CTAG"
 #define WEBDAV_CACHE_VERSION_KEY "WEBDAV_CACHE_VERSION"
-#define WEBDAV_CACHE_VERSION "1"
+#define WEBDAV_CACHE_VERSION "2"
 #define WEBDAV_CONTACT_ETAG "X-EVOLUTION-WEBDAV-ETAG"
+#define WEBDAV_CONTACT_HREF "X-EVOLUTION-WEBDAV-HREF"
 
 /* Forward Declarations */
 static void	e_book_backend_webdav_source_authenticator_init
@@ -140,6 +141,47 @@ webdav_contact_get_etag (EContact *contact)
 	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
 
 	attr = e_vcard_get_attribute (E_VCARD (contact), WEBDAV_CONTACT_ETAG);
+
+	if (attr)
+		v = e_vcard_attribute_get_values (attr);
+
+	return ((v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
+}
+
+static void
+webdav_contact_set_href (EContact *contact,
+                         const gchar *href)
+{
+	EVCardAttribute *attr;
+
+	g_return_if_fail (E_IS_CONTACT (contact));
+
+	attr = e_vcard_get_attribute (E_VCARD (contact), WEBDAV_CONTACT_HREF);
+
+	if (attr) {
+		e_vcard_attribute_remove_values (attr);
+		if (href) {
+			e_vcard_attribute_add_value (attr, href);
+		} else {
+			e_vcard_remove_attribute (E_VCARD (contact), attr);
+		}
+	} else if (href) {
+		e_vcard_append_attribute_with_value (
+			E_VCARD (contact),
+			e_vcard_attribute_new (NULL, WEBDAV_CONTACT_HREF),
+			href);
+	}
+}
+
+static gchar *
+webdav_contact_get_href (EContact *contact)
+{
+	EVCardAttribute *attr;
+	GList *v = NULL;
+
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	attr = e_vcard_get_attribute (E_VCARD (contact), WEBDAV_CONTACT_HREF);
 
 	if (attr)
 		v = e_vcard_attribute_get_values (attr);
@@ -256,13 +298,14 @@ download_contact (EBookBackendWebdav *webdav,
 	etag = soup_message_headers_get_list (message->response_headers, "ETag");
 
 	/* we use our URI as UID */
-	contact = e_contact_new_from_vcard_with_uid (message->response_body->data, uri);
+	contact = e_contact_new_from_vcard (message->response_body->data);
 	if (contact == NULL) {
 		g_warning ("Invalid vcard at '%s'", uri);
 		g_object_unref (message);
 		return NULL;
 	}
 
+	webdav_contact_set_href (contact, uri);
 	/* the etag is remembered in the WEBDAV_CONTACT_ETAG field */
 	if (etag != NULL) {
 		webdav_contact_set_etag (contact, etag);
@@ -274,6 +317,7 @@ download_contact (EBookBackendWebdav *webdav,
 
 static guint
 upload_contact (EBookBackendWebdav *webdav,
+		const gchar *uri,
                 EContact *contact,
                 gchar **reason,
                 GCancellable *cancellable)
@@ -281,7 +325,6 @@ upload_contact (EBookBackendWebdav *webdav,
 	ESource     *source;
 	ESourceWebdav *webdav_extension;
 	SoupMessage *message;
-	gchar       *uri;
 	gchar       *etag;
 	const gchar  *new_etag, *redir_uri;
 	gchar        *request;
@@ -289,16 +332,12 @@ upload_contact (EBookBackendWebdav *webdav,
 	gboolean     avoid_ifmatch;
 	const gchar *extension_name;
 
+	g_return_val_if_fail (uri != NULL, SOUP_STATUS_BAD_REQUEST);
+
 	source = e_backend_get_source (E_BACKEND (webdav));
 
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	webdav_extension = e_source_get_extension (source, extension_name);
-
-	uri = e_contact_get (contact, E_CONTACT_UID);
-	if (uri == NULL) {
-		g_warning ("can't upload contact without UID");
-		return 400;
-	}
 
 	message = soup_message_new (SOUP_METHOD_PUT, uri);
 	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
@@ -357,15 +396,15 @@ upload_contact (EBookBackendWebdav *webdav,
 			}
 			full_uri = soup_uri_to_string (suri, FALSE);
 
-			e_contact_set (contact, E_CONTACT_UID, full_uri);
+			webdav_contact_set_href (contact, full_uri);
 
 			g_free (full_uri);
 			soup_uri_free (suri);
 		} else {
-			e_contact_set (contact, E_CONTACT_UID, redir_uri);
+			webdav_contact_set_href (contact, redir_uri);
 		}
 	} else {
-		e_contact_set (contact, E_CONTACT_UID, uri);
+		webdav_contact_set_href (contact, uri);
 	}
 
 	if (reason != NULL) {
@@ -382,7 +421,6 @@ upload_contact (EBookBackendWebdav *webdav,
 
 	g_object_unref (message);
 	g_free (request);
-	g_free (uri);
 
 	return status;
 }
@@ -765,6 +803,20 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 	return res;
 }
 
+static void
+remove_unknown_contacts_cb (gpointer href,
+			    gpointer pcontact,
+			    gpointer pwebdav)
+{
+	EContact *contact = pcontact;
+	EBookBackendWebdav *webdav = pwebdav;
+	const gchar *uid;
+
+	uid = e_contact_get_const (contact, E_CONTACT_UID);
+	if (uid && e_book_backend_cache_remove_contact (webdav->priv->cache, uid))
+		e_book_backend_notify_remove ((EBookBackend *) webdav, uid);
+}
+
 static gboolean
 download_contacts (EBookBackendWebdav *webdav,
                    EFlag *running,
@@ -783,6 +835,8 @@ download_contacts (EBookBackendWebdav *webdav,
 	gint                        count;
 	gint                        i;
 	gchar                     *new_ctag = NULL;
+	GHashTable                *href_to_contact;
+	GList                     *cached_contacts, *iter;
 
 	g_mutex_lock (&priv->update_lock);
 
@@ -860,6 +914,25 @@ download_contacts (EBookBackendWebdav *webdav,
 		++count;
 	}
 
+	href_to_contact = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	g_mutex_lock (&priv->cache_lock);
+	e_file_cache_freeze_changes (E_FILE_CACHE (priv->cache));
+	cached_contacts = e_book_backend_cache_get_contacts (priv->cache, NULL);
+	for (iter = cached_contacts; iter; iter = g_list_next (iter)) {
+		EContact *contact = iter->data;
+		gchar *href;
+
+		if (!contact)
+			continue;
+
+		href = webdav_contact_get_href (contact);
+
+		if (href)
+			g_hash_table_insert (href_to_contact, href, g_object_ref (contact));
+	}
+	g_list_free_full (cached_contacts, g_object_unref);
+	g_mutex_unlock (&priv->cache_lock);
+
 	/* download contacts */
 	i = 0;
 	for (element = elements; element != NULL; element = element->next, ++i) {
@@ -898,11 +971,15 @@ download_contacts (EBookBackendWebdav *webdav,
 
 		etag = (const gchar *) element->etag;
 
-		g_mutex_lock (&priv->cache_lock);
-		contact = e_book_backend_cache_get_contact (priv->cache, complete_uri);
-		g_mutex_unlock (&priv->cache_lock);
+		contact = g_hash_table_lookup (href_to_contact, complete_uri);
+		if (contact) {
+			g_object_ref (contact);
+			g_hash_table_remove (href_to_contact, complete_uri);
+			stored_etag = webdav_contact_get_etag (contact);
+		} else {
+			stored_etag = NULL;
+		}
 
-		stored_etag = webdav_contact_get_etag (contact);
 
 		/* download contact if it is not cached or its ETag changed */
 		if (contact == NULL || etag == NULL || !stored_etag ||
@@ -911,9 +988,13 @@ download_contacts (EBookBackendWebdav *webdav,
 				g_object_unref (contact);
 			contact = download_contact (webdav, complete_uri, cancellable);
 			if (contact != NULL) {
+				const gchar *uid;
+
+				uid = e_contact_get_const (contact, E_CONTACT_UID);
+
 				g_mutex_lock (&priv->cache_lock);
-				if (e_book_backend_cache_remove_contact (priv->cache, complete_uri))
-					e_book_backend_notify_remove (book_backend, complete_uri);
+				if (e_book_backend_cache_remove_contact (priv->cache, uid))
+					e_book_backend_notify_remove (book_backend, uid);
 				e_book_backend_cache_add_contact (priv->cache, contact);
 				g_mutex_unlock (&priv->cache_lock);
 				e_book_backend_notify_update (book_backend, contact);
@@ -949,7 +1030,13 @@ download_contacts (EBookBackendWebdav *webdav,
 	if (book_view)
 		e_data_book_view_notify_progress (book_view, -1, NULL);
 
+	g_mutex_lock (&priv->cache_lock);
+	g_hash_table_foreach (href_to_contact, remove_unknown_contacts_cb, webdav);
+	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
+	g_mutex_unlock (&priv->cache_lock);
 	g_mutex_unlock (&priv->update_lock);
+
+	g_hash_table_destroy (href_to_contact);
 
 	return TRUE;
 }
@@ -1258,7 +1345,8 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 {
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EContact *contact;
-	gchar *uid;
+	gchar *uid, *href;
+	const gchar *orig_uid;
 	guint status;
 	gchar *status_reason = NULL, *stored_etag;
 
@@ -1283,18 +1371,26 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 		return FALSE;
 	}
 
-	/* do 3 rand() calls to construct a unique ID... poor way but should be
-	 * good enough for us */
-	uid = g_strdup_printf (
-		"%s%08X-%08X-%08X.vcf",
-		webdav->priv->uri, rand (), rand (), rand ());
+	contact = e_contact_new_from_vcard (vcards[0]);
 
-	contact = e_contact_new_from_vcard_with_uid (vcards[0], uid);
+	orig_uid = e_contact_get_const (contact, E_CONTACT_UID);
+	if (orig_uid && *orig_uid && !e_book_backend_cache_check_contact (webdav->priv->cache, orig_uid)) {
+		uid = g_strdup (orig_uid);
+	} else {
+		/* do 3 rand() calls to construct a unique ID... poor way but should be
+		 * good enough for us */
+		uid = g_strdup_printf ("%08X-%08X-%08X", rand (), rand (), rand ());
+		e_contact_set (contact, E_CONTACT_UID, uid);
+	}
+	href = g_strconcat (webdav->priv->uri, uid, ".vcf", NULL);
 
 	/* kill WEBDAV_CONTACT_ETAG field (might have been set by some other backend) */
+	webdav_contact_set_href (contact, NULL);
 	webdav_contact_set_etag (contact, NULL);
 
-	status = upload_contact (webdav, contact, &status_reason, cancellable);
+	status = upload_contact (webdav, href, contact, &status_reason, cancellable);
+	g_free (href);
+
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
@@ -1312,16 +1408,20 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 	}
 
 	g_free (status_reason);
+	g_free (uid);
 
 	/* PUT request didn't return an etag? try downloading to get one */
 	stored_etag = webdav_contact_get_etag (contact);
 	if (!stored_etag) {
-		const gchar *new_uid;
-		EContact *new_contact;
+		gchar *href;
+		EContact *new_contact = NULL;
 
-		g_warning ("Server didn't return etag for new address resource");
-		new_uid = e_contact_get_const (contact, E_CONTACT_UID);
-		new_contact = download_contact (webdav, new_uid, cancellable);
+		href = webdav_contact_get_href (contact);
+		if (href) {
+			new_contact = download_contact (webdav, href, cancellable);
+			g_free (href);
+		}
+
 		g_object_unref (contact);
 
 		if (new_contact == NULL) {
@@ -1330,7 +1430,6 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 				E_CLIENT_ERROR_OTHER_ERROR,
 				e_client_error_to_string (
 				E_CLIENT_ERROR_OTHER_ERROR));
-			g_free (uid);
 			return FALSE;
 		}
 		contact = new_contact;
@@ -1345,7 +1444,6 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 	g_queue_push_tail (out_contacts, g_object_ref (contact));
 
 	g_object_unref (contact);
-	g_free (uid);
 
 	return TRUE;
 }
@@ -1360,7 +1458,7 @@ book_backend_webdav_modify_contacts_sync (EBookBackend *backend,
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EContact *contact;
 	const gchar *uid;
-	gchar *etag;
+	gchar *href, *etag;
 	guint status;
 	gchar *status_reason = NULL;
 
@@ -1387,7 +1485,9 @@ book_backend_webdav_modify_contacts_sync (EBookBackend *backend,
 
 	/* modify contact */
 	contact = e_contact_new_from_vcard (vcards[0]);
-	status = upload_contact (webdav, contact, &status_reason, cancellable);
+	href = webdav_contact_get_href (contact);
+	status = upload_contact (webdav, href, contact, &status_reason, cancellable);
+	g_free (href);
 	if (status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
@@ -1426,10 +1526,14 @@ book_backend_webdav_modify_contacts_sync (EBookBackend *backend,
 
 	/* PUT request didn't return an etag? try downloading to get one */
 	if (etag == NULL || (etag[0] == 'W' && etag[1] == '/')) {
-		EContact *new_contact;
+		EContact *new_contact = NULL;
 
-		g_warning ("Server didn't return etag for modified address resource");
-		new_contact = download_contact (webdav, uid, cancellable);
+		href = webdav_contact_get_href (contact);
+		if (href) {
+			new_contact = download_contact (webdav, href, cancellable);
+			g_free (href);
+		}
+
 		if (new_contact != NULL) {
 			g_object_unref (contact);
 			contact = new_contact;
@@ -1455,6 +1559,8 @@ book_backend_webdav_remove_contacts_sync (EBookBackend *backend,
                                           GError **error)
 {
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
+	EContact *contact;
+	gchar *href;
 	guint status;
 
 	/* We make the assumption that the ID list we're passed is
@@ -1477,7 +1583,34 @@ book_backend_webdav_remove_contacts_sync (EBookBackend *backend,
 		return FALSE;
 	}
 
-	status = delete_contact (webdav, uids[0], cancellable);
+	g_mutex_lock (&webdav->priv->cache_lock);
+	contact = e_book_backend_cache_get_contact (webdav->priv->cache, uids[0]);
+	g_mutex_unlock (&webdav->priv->cache_lock);
+
+	if (!contact) {
+		g_set_error_literal (
+			error, E_BOOK_CLIENT_ERROR,
+			E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
+			e_book_client_error_to_string (
+			E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND));
+		return FALSE;
+	}
+
+	href = webdav_contact_get_href (contact);
+	if (!href) {
+		g_object_unref (contact);
+		g_set_error (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OTHER_ERROR,
+			_("DELETE failed with HTTP status %d"), SOUP_STATUS_MALFORMED);
+		return FALSE;
+	}
+
+	status = delete_contact (webdav, href, cancellable);
+
+	g_object_unref (contact);
+	g_free (href);
+
 	if (!SOUP_STATUS_IS_SUCCESSFUL (status)) {
 		if (status == 401 || status == 407) {
 			webdav_handle_auth_request (webdav, error);
@@ -1506,13 +1639,24 @@ book_backend_webdav_get_contact_sync (EBookBackend *backend,
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	EContact *contact;
 
-	if (!e_backend_get_online (E_BACKEND (backend))) {
-		g_mutex_lock (&webdav->priv->cache_lock);
-		contact = e_book_backend_cache_get_contact (
-			webdav->priv->cache, uid);
-		g_mutex_unlock (&webdav->priv->cache_lock);
-	} else {
-		contact = download_contact (webdav, uid, cancellable);
+	g_mutex_lock (&webdav->priv->cache_lock);
+	contact = e_book_backend_cache_get_contact (
+		webdav->priv->cache, uid);
+	g_mutex_unlock (&webdav->priv->cache_lock);
+
+	if (contact && e_backend_get_online (E_BACKEND (backend))) {
+		gchar *href;
+
+		href = webdav_contact_get_href (contact);
+		g_object_unref (contact);
+
+		if (href) {
+			contact = download_contact (webdav, href, cancellable);
+			g_free (href);
+		} else {
+			contact = NULL;
+		}
+
 		/* update cache as we possibly have changes */
 		if (contact != NULL) {
 			g_mutex_lock (&webdav->priv->cache_lock);
