@@ -348,6 +348,37 @@ e_destination_equal (const EDestination *a,
 		return FALSE;
 }
 
+static void
+remove_empty_subgroups (EDestination *dest,
+			GHashTable *lists_hash)
+{
+	EDestination *s_dest;
+	GSList *to_remove = NULL, *siter;
+	GList *iter;
+
+	if (!dest)
+		return;
+
+	for (iter = dest->priv->list_dests; iter; iter = g_list_next (iter)) {
+		s_dest = iter->data;
+
+		remove_empty_subgroups (s_dest, lists_hash);
+
+		if (g_hash_table_lookup (lists_hash, s_dest) &&
+		    !s_dest->priv->list_dests)
+			to_remove = g_slist_prepend (to_remove, s_dest);
+	}
+
+	for (siter = to_remove; siter; siter = g_slist_next (siter)) {
+		s_dest = siter->data;
+
+		dest->priv->list_dests = g_list_remove (dest->priv->list_dests, s_dest);
+		dest->priv->list_alldests = g_list_remove (dest->priv->list_alldests, s_dest);
+	}
+
+	g_slist_free_full (to_remove, g_object_unref);
+}
+
 /**
  * e_destination_set_contact:
  * @dest: an #EDestination
@@ -381,13 +412,14 @@ e_destination_set_contact (EDestination *dest,
 		if (e_contact_get (dest->priv->contact, E_CONTACT_IS_LIST)) {
 			gint list_length;
 			GList *attr, *attrs;
-			GHashTable *hash_table;
+			GHashTable *hash_table, *lists_hash;
 			gint list_iterations = 0;
 			gint lists_count = 0;
 
 			hash_table = g_hash_table_new_full (
 				g_str_hash, g_str_equal,
 				(GDestroyNotify) g_free, NULL);
+			lists_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 			g_hash_table_insert (hash_table, g_strdup ("0"), dest);
 
@@ -483,6 +515,8 @@ e_destination_set_contact (EDestination *dest,
 						if (id)
 							g_hash_table_insert (hash_table, g_strdup (id), s_dest);
 						lists_count--;
+
+						g_hash_table_insert (lists_hash, s_dest, GINT_TO_POINTER (1));
 					}
 
 					if (id) {
@@ -518,9 +552,11 @@ e_destination_set_contact (EDestination *dest,
 				}
 			}
 
+			remove_empty_subgroups (dest, lists_hash);
+
+			g_hash_table_unref (lists_hash);
 			g_hash_table_unref (hash_table);
 			g_list_free (attrs);
-
 		} else {
 			/* handle the normal contact case */
 			/* is there anything to do here? */
