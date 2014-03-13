@@ -143,12 +143,18 @@ maildir_store_create_folder_sync (CamelStore *store,
 	g_free (name);
 	name = NULL;
 
-	if (g_stat (fullname, &st) == 0 || errno != ENOENT) {
+	if (g_stat (fullname, &st) == 0) {
+		g_set_error (
+			error, G_IO_ERROR, G_IO_ERROR_EXISTS,
+			_("Folder %s already exists"), folder_name);
+		goto exit;
+
+	} else if (errno != ENOENT) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Cannot get folder: %s: %s"),
-			name, g_strerror (errno));
+			folder_name, g_strerror (errno));
 		goto exit;
 	}
 
