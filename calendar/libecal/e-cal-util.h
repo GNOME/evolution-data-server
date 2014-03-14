@@ -103,7 +103,7 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
 #define CAL_STATIC_CAPABILITY_NO_TRANSPARENCY		"no-transparency"
 
 /**
- * CAL_STATIC_CAPABILITY_MEMO_START_DATE
+ * CAL_STATIC_CAPABILITY_MEMO_START_DATE:
  * Flag indicating that the backend does not support memo's start date
  *
  * Since: 3.12
