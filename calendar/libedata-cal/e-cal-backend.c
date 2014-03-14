@@ -4007,7 +4007,7 @@ e_cal_backend_get_timezone_finish (ECalBackend *backend,
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
 		result, G_OBJECT (backend),
-		e_cal_backend_get_timezone), FALSE);
+		e_cal_backend_get_timezone), NULL);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -4015,10 +4015,14 @@ e_cal_backend_get_timezone_finish (ECalBackend *backend,
 	cal_backend_unblock_operations (backend, simple);
 
 	if (g_simple_async_result_propagate_error (simple, error))
-		return FALSE;
+		return NULL;
 
 	tzobject = g_queue_pop_head (&async_context->result_queue);
-	g_return_val_if_fail (tzobject != NULL, NULL);
+
+	if (!tzobject)
+		g_set_error_literal (error,
+			E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
+			e_client_error_to_string (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 
 	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
 
