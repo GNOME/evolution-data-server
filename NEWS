@@ -1,3 +1,38 @@
+Evolution-Data-Server 3.11.92 2014-03-17
+----------------------------------------
+
+Bug Fixes:
+	Bug 633177 - Avoid runtime warnings from CamelFolder::cmp_uids()
+	             overrides (Milan Crha)
+	Bug 710633 - EDestination: Remove empty sublists (Milan Crha)
+	Bug 711053 - WebDAV: Do not overwrite UID of a contact (Milan Crha)
+	Bug 711436 - CalDAV: Ignore ctag on manual Refresh invocation
+	             (Milan Crha)
+	Bug 712564 - GPG: Treat marginal trust the same as unknown (Milan Crha)
+	Bug 726204 - Ugly error message when creating Maildir folder fails
+	             (Matthew Barnes)
+
+Other Changes:
+	* CamelStore: Handle CAMEL_STORE_FOLDER_CREATE flag directly.
+	  (Matthew Barnes)
+	* CamelDataWrapper: Add construct_from_input_stream() method.
+	  (Matthew Barnes)
+	* CamelIMAPXServer: Copy child setup gunk from CamelStreamProcess.
+	  (Matthew Barnes)
+	* Addressbook: Flush DBus properties after setting new locale.
+	  (Mateusz Polrola)
+	* Don't close base stream when destroying a CamelFilterOutputStream.
+	  (Matthew Barnes)
+	* e_cal_backend_get_timezone_finish: Do not panic when the timezone
+	  cannot be found (Milan Crha)
+
+Translations:
+	Changwoo Ryu (ko)
+	Rūdolfs Mazurs (lv)
+	Kjartan Maraas (nb)
+	Yuri Myasoedov (ru)
+
+
 Evolution-Data-Server 3.11.91 2014-03-03
 ----------------------------------------
 
