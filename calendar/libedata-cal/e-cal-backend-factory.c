@@ -51,13 +51,13 @@ cal_backend_factory_get_hash_key (EBackendFactory *factory)
 
 	switch (class->component_kind) {
 		case ICAL_VEVENT_COMPONENT:
-			component_name = "VEVENT";
+			component_name = E_SOURCE_EXTENSION_CALENDAR;
 			break;
 		case ICAL_VTODO_COMPONENT:
-			component_name = "VTODO";
+			component_name = E_SOURCE_EXTENSION_TASK_LIST;
 			break;
 		case ICAL_VJOURNAL_COMPONENT:
-			component_name = "VJOURNAL";
+			component_name = E_SOURCE_EXTENSION_MEMO_LIST;
 			break;
 		default:
 			g_return_val_if_reached (NULL);
@@ -86,7 +86,7 @@ cal_backend_factory_new_backend (EBackendFactory *factory,
 		class->backend_type, E_TYPE_CAL_BACKEND), NULL);
 
 	data_factory = cal_backend_factory_get_data_factory (factory);
-	registry = e_data_cal_factory_get_registry (data_factory);
+	registry = e_data_factory_get_registry (E_DATA_FACTORY (data_factory));
 
 	return g_object_new (
 		class->backend_type,

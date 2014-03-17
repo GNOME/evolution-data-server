@@ -17,6 +17,7 @@
  **/
 
 #include <config.h>
+#include <string.h>
 
 #include "e-book-backend.h"
 #include "e-book-backend-factory.h"
@@ -41,15 +42,23 @@ static const gchar *
 book_backend_factory_get_hash_key (EBackendFactory *factory)
 {
 	EBookBackendFactoryClass *class;
+	const gchar *component_name;
+	gchar *hash_key;
+	gsize length;
 
 	class = E_BOOK_BACKEND_FACTORY_GET_CLASS (factory);
 	g_return_val_if_fail (class->factory_name != NULL, NULL);
 
-	/* For address book backends the factory hash key is simply
-	 * the factory name.  See ECalBackendFactory for a slightly
-	 * more complex scheme. */
+	component_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 
-	return class->factory_name;
+	/* Hash Key: FACTORY_NAME ':' COMPONENT_NAME */
+	length = strlen (class->factory_name) + strlen (component_name) + 2;
+	hash_key = g_alloca (length);
+	g_snprintf (
+		hash_key, length, "%s:%s",
+		class->factory_name, component_name);
+
+	return g_intern_string (hash_key);
 }
 
 static EBackend *
@@ -65,7 +74,7 @@ book_backend_factory_new_backend (EBackendFactory *factory,
 		class->backend_type, E_TYPE_BOOK_BACKEND), NULL);
 
 	data_factory = book_backend_factory_get_data_factory (factory);
-	registry = e_data_book_factory_get_registry (data_factory);
+	registry = e_data_factory_get_registry (E_DATA_FACTORY (data_factory));
 
 	return g_object_new (
 		class->backend_type,

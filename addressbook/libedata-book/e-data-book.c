@@ -235,6 +235,14 @@ data_book_convert_to_client_error (GError *error)
 {
 	g_return_if_fail (error != NULL);
 
+	/* Data-Factory returns common error for unknown/broken ESource-s */
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+		error->domain = E_BOOK_CLIENT_ERROR;
+		error->code = E_BOOK_CLIENT_ERROR_NO_SUCH_BOOK;
+
+		return;
+	}
+
 	if (error->domain != E_DATA_BOOK_ERROR)
 		return;
 

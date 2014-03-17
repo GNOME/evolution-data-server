@@ -68,9 +68,22 @@ struct _EDataFactoryClass {
 
 	GType backend_factory_type;
 
+	const gchar *factory_object_path;
+	const gchar *data_object_path_prefix;
+
 	/* Signals */
 	void		(*backend_created)	(EDataFactory *data_factory,
 						 EBackend *backend);
+
+	/* Virtual methods */
+	GDBusInterfaceSkeleton *
+			(*get_dbus_interface_skeleton)
+						(EDBusServer *server);
+
+	gchar *		(*data_open)		(EDataFactory *data_factory,
+						 EBackend *backend,
+						 GDBusConnection *connection,
+						 GError **error);
 
 	gpointer reserved[15];
 };
@@ -89,6 +102,19 @@ EBackendFactory *
 		e_data_factory_ref_backend_factory
 						(EDataFactory *data_factory,
 						 const gchar *hash_key);
+ESourceRegistry *
+		e_data_factory_get_registry	(EDataFactory *data_factory);
+GSList *	e_data_factory_list_backends	(EDataFactory *data_factory);
+gchar *		e_data_factory_open_backend	(EDataFactory *data_factory,
+						 GDBusConnection *connection,
+						 const gchar *sender,
+						 const gchar *uid,
+						 const gchar *extension_name,
+						 GError **error);
+gchar *		e_data_factory_construct_path	(EDataFactory *data_factory);
+void		e_data_factory_set_backend_callbacks
+						(EDataFactory *data_factory,
+						 EBackend *backend);
 
 G_END_DECLS
 

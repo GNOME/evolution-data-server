@@ -218,6 +218,14 @@ data_cal_convert_to_client_error (GError *error)
 {
 	g_return_if_fail (error != NULL);
 
+	/* Data-Factory returns common error for unknown/broken ESource-s */
+	if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+		error->domain = E_CAL_CLIENT_ERROR;
+		error->code = E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR;
+
+		return;
+	}
+
 	if (error->domain != E_DATA_CAL_ERROR)
 		return;
 

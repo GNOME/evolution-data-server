@@ -85,8 +85,6 @@ struct _ESourceRegistryServerPrivate {
 	GMutex auth_lock;
 	GHashTable *running_auths;
 	GHashTable *waiting_auths;
-
-	guint authentication_count;
 };
 
 struct _AuthRequest {
@@ -684,7 +682,6 @@ source_registry_server_authenticate_cb (EDBusSourceManager *dbus_interface,
 	GDBusConnection *connection;
 	EAuthenticationSession *session;
 	ESourceAuthenticator *authenticator;
-	const gchar *base_object_path;
 	const gchar *sender;
 	gchar *auth_object_path;
 	GError *error = NULL;
@@ -693,13 +690,11 @@ source_registry_server_authenticate_cb (EDBusSourceManager *dbus_interface,
 	 * effectively starts a new authentication session with the
 	 * method caller. */
 
-	base_object_path = E_SOURCE_REGISTRY_SERVER_OBJECT_PATH;
 	connection = g_dbus_method_invocation_get_connection (invocation);
 	sender = g_dbus_method_invocation_get_sender (invocation);
 
-	auth_object_path = g_strdup_printf (
-		"%s/auth_%u", base_object_path,
-		server->priv->authentication_count++);
+	auth_object_path = e_data_factory_construct_path (
+		E_DATA_FACTORY (server));
 
 	authenticator = e_authentication_mediator_new (
 		connection, auth_object_path, sender, &error);
@@ -1102,23 +1097,11 @@ source_registry_server_bus_acquired (EDBusServer *server,
                                      GDBusConnection *connection)
 {
 	ESourceRegistryServerPrivate *priv;
-	GError *error = NULL;
 
 	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
 
 	g_dbus_object_manager_server_set_connection (
 		priv->object_manager, connection);
-
-	g_dbus_interface_skeleton_export (
-		G_DBUS_INTERFACE_SKELETON (priv->source_manager),
-		connection, E_SOURCE_REGISTRY_SERVER_OBJECT_PATH, &error);
-
-	/* Terminate the server if we can't export the interface. */
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
-		g_error_free (error);
-	}
 
 	/* Chain up to parent's bus_acquired() method. */
 	E_DBUS_SERVER_CLASS (e_source_registry_server_parent_class)->
@@ -1139,9 +1122,6 @@ source_registry_server_quit_server (EDBusServer *server,
 	/* This makes the object manager unexport all objects. */
 	g_dbus_object_manager_server_set_connection (
 		priv->object_manager, NULL);
-
-	g_dbus_interface_skeleton_unexport (
-		G_DBUS_INTERFACE_SKELETON (priv->source_manager));
 
 	/* Chain up to parent's quit_server() method. */
 	E_DBUS_SERVER_CLASS (e_source_registry_server_parent_class)->
@@ -1250,6 +1230,16 @@ source_registry_server_any_true (GSignalInvocationHint *ihint,
 	return TRUE;
 }
 
+static GDBusInterfaceSkeleton *
+source_registry_server_get_dbus_interface_skeleton (EDBusServer *server)
+{
+	ESourceRegistryServerPrivate *priv;
+
+	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (server);
+
+	return G_DBUS_INTERFACE_SKELETON (priv->source_manager);
+}
+
 static void
 e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 {
@@ -1276,10 +1266,12 @@ e_source_registry_server_class_init (ESourceRegistryServerClass *class)
 	dbus_server_class->module_directory = modules_directory;
 	dbus_server_class->bus_acquired = source_registry_server_bus_acquired;
 	dbus_server_class->quit_server = source_registry_server_quit_server;
-
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	backend_factory_type = E_TYPE_COLLECTION_BACKEND_FACTORY;
 	data_factory_class->backend_factory_type = backend_factory_type;
+	data_factory_class->factory_object_path = E_SOURCE_REGISTRY_SERVER_OBJECT_PATH;
+	data_factory_class->data_object_path_prefix = E_SOURCE_REGISTRY_SERVER_OBJECT_PATH;
+	data_factory_class->get_dbus_interface_skeleton = source_registry_server_get_dbus_interface_skeleton;
 
 	class->source_added = source_registry_server_source_added;
 	class->source_removed = source_registry_server_source_removed;

@@ -1941,7 +1941,6 @@ EDS_ADDRESS_BOOK_MODULES
 EDataBookFactory
 EDataBookFactoryClass
 e_data_book_factory_new
-e_data_book_factory_get_registry
 <SUBSECTION Standard>
 EDataBookFactoryPrivate
 E_DATA_BOOK_FACTORY
@@ -2032,7 +2031,6 @@ EDS_CALENDAR_MODULES
 EDataCalFactory
 EDataCalFactoryClass
 e_data_cal_factory_new
-e_data_cal_factory_get_registry
 <SUBSECTION Standard>
 EDataCalFactoryPrivate
 E_DATA_CAL_FACTORY
@@ -2089,6 +2087,10 @@ EDataFactoryClass
 e_data_factory_ref_backend
 e_data_factory_ref_initable_backend
 e_data_factory_ref_backend_factory
+e_data_factory_get_registry
+e_data_factory_open
+e_data_factory_construct_path
+e_data_factory_set_backend_callbacks
 <SUBSECTION Standard>
 EDataFactoryPrivate
 E_DATA_FACTORY
