@@ -3767,10 +3767,16 @@ evolution_source_registry_migrate_sources (void)
 	gchar *gconf_base_dir;
 	gchar *gconf_tree_xml;
 
-	gconf_base_dir =
-		g_build_filename (g_get_home_dir (), ".gconf", NULL);
-	gconf_tree_xml =
-		g_build_filename (gconf_base_dir, "%gconf-tree.xml", NULL);
+	/* If the GConf is configured to follow XDG settings, then its root
+	 * data folder is ~/.config/gconf/, thus try this first and fallback
+	 * to the default non-XDG path ~/.gconf/ if it doesn't exist. */
+	gconf_base_dir = g_build_filename (g_get_user_config_dir (), "gconf", NULL);
+	if (!g_file_test (gconf_base_dir, G_FILE_TEST_EXISTS)) {
+		g_free (gconf_base_dir);
+		gconf_base_dir = g_build_filename (g_get_home_dir (), ".gconf", NULL);
+	}
+
+	gconf_tree_xml = g_build_filename (gconf_base_dir, "%gconf-tree.xml", NULL);
 
 	/* Handle a merged GConf tree file if present (mainly for
 	 * Debian), otherwise assume a normal GConf directory tree. */
