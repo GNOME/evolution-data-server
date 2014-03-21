@@ -1078,6 +1078,11 @@ camel_data_wrapper_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 		data_wrapper, write_to_output_stream_sync,
 		bytes_written >= 0, error);
 
+	if (bytes_written >= 0) {
+		if (!g_output_stream_flush (output_stream, cancellable, error))
+			bytes_written = -1;
+	}
+
 	return bytes_written;
 }
 
