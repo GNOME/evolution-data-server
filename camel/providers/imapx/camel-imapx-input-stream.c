@@ -58,6 +58,61 @@ G_DEFINE_TYPE_WITH_CODE (
 		G_TYPE_POLLABLE_INPUT_STREAM,
 		camel_imapx_input_stream_pollable_init))
 
+static void
+imapx_input_stream_grow (CamelIMAPXInputStream *is,
+                         guint len,
+                         guchar **bufptr,
+                         guchar **tokptr)
+{
+	guchar *oldtok = is->priv->tokenbuf;
+	guchar *oldbuf = is->priv->buf;
+
+	do {
+		is->priv->bufsize <<= 1;
+	} while (is->priv->bufsize <= len);
+
+	is->priv->tokenbuf = g_realloc (
+		is->priv->tokenbuf,
+		is->priv->bufsize + 1);
+	if (tokptr)
+		*tokptr = is->priv->tokenbuf + (*tokptr - oldtok);
+	if (is->priv->unget)
+		is->priv->unget_token =
+			is->priv->tokenbuf +
+			(is->priv->unget_token - oldtok);
+
+	is->priv->buf = g_realloc (is->priv->buf, is->priv->bufsize + 1);
+	is->priv->ptr = is->priv->buf + (is->priv->ptr - oldbuf);
+	is->priv->end = is->priv->buf + (is->priv->end - oldbuf);
+	if (bufptr)
+		*bufptr = is->priv->buf + (*bufptr - oldbuf);
+}
+
+static gsize
+imapx_input_stream_prep_for_read (CamelIMAPXInputStream *is)
+{
+	gsize bytes_buffered;
+	gsize bytes_available;
+
+	bytes_buffered = is->priv->end - is->priv->ptr;
+	bytes_available = is->priv->bufsize - bytes_buffered;
+
+	/* If no bytes are available, expand the buffer. */
+	if (bytes_available == 0) {
+		imapx_input_stream_grow (is, is->priv->bufsize, NULL, NULL);
+		bytes_available = is->priv->bufsize - bytes_buffered;
+	}
+
+	/* Shift any buffered data to the front of the buffer. */
+	if (is->priv->ptr != is->priv->buf) {
+		memcpy (is->priv->buf, is->priv->ptr, bytes_buffered);
+		is->priv->end = is->priv->buf + bytes_buffered;
+		is->priv->ptr = is->priv->buf;
+	}
+
+	return bytes_available;
+}
+
 static gint
 imapx_input_stream_fill (CamelIMAPXInputStream *is,
                          GCancellable *cancellable,
@@ -245,36 +300,6 @@ camel_imapx_input_stream_init (CamelIMAPXInputStream *is)
 	is->priv->tokenbuf = g_malloc (is->priv->bufsize + 1);
 }
 
-static void
-camel_imapx_input_stream_grow (CamelIMAPXInputStream *is,
-                               guint len,
-                               guchar **bufptr,
-                               guchar **tokptr)
-{
-	guchar *oldtok = is->priv->tokenbuf;
-	guchar *oldbuf = is->priv->buf;
-
-	do {
-		is->priv->bufsize <<= 1;
-	} while (is->priv->bufsize <= len);
-
-	is->priv->tokenbuf = g_realloc (
-		is->priv->tokenbuf,
-		is->priv->bufsize + 1);
-	if (tokptr)
-		*tokptr = is->priv->tokenbuf + (*tokptr - oldtok);
-	if (is->priv->unget)
-		is->priv->unget_token =
-			is->priv->tokenbuf +
-			(is->priv->unget_token - oldtok);
-
-	is->priv->buf = g_realloc (is->priv->buf, is->priv->bufsize + 1);
-	is->priv->ptr = is->priv->buf + (is->priv->ptr - oldbuf);
-	is->priv->end = is->priv->buf + (is->priv->end - oldbuf);
-	if (bufptr)
-		*bufptr = is->priv->buf + (*bufptr - oldbuf);
-}
-
 G_DEFINE_QUARK (camel-imapx-error-quark, camel_imapx_error)
 
 /**
@@ -307,6 +332,127 @@ camel_imapx_input_stream_buffered (CamelIMAPXInputStream *is)
 	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), 0);
 
 	return is->priv->end - is->priv->ptr;
+}
+
+/**
+ * camel_imapx_input_stream_has_response:
+ * @is: a #CamelIMAPXInputStream
+ *
+ * Returns whether the stream has a full IMAP response line buffered.
+ *
+ * Returns: whether a full response line is buffered
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_imapx_input_stream_has_response (CamelIMAPXInputStream *is)
+{
+	gboolean prev_was_cr = FALSE;
+	guchar *cp;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), FALSE);
+
+	/* Look for a buffered CRLF sequence. */
+
+	for (cp = is->priv->ptr; cp < is->priv->end; cp++) {
+		if (*cp == 10 && prev_was_cr)
+			return TRUE;
+		prev_was_cr = (*cp == 13);
+	}
+
+	return FALSE;
+}
+
+/**
+ * camel_imapx_input_stream_wait_for_response:
+ * @is: a #CamelIMAPXInputStream
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Blocks until a full IMAP response line has been read from the input stream
+ * and buffered internally, or until a cancellation or I/O error occurs.
+ *
+ * Returns: %TRUE if a full response line is buffered, %FALSE if an error
+ *          occurred
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_imapx_input_stream_wait_for_response (CamelIMAPXInputStream *is,
+                                            GCancellable *cancellable,
+                                            GError **error)
+{
+	GInputStream *base_stream;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), FALSE);
+
+	base_stream = g_filter_input_stream_get_base_stream (
+		G_FILTER_INPUT_STREAM (is));
+
+	while (!camel_imapx_input_stream_has_response (is)) {
+		gsize bytes_available;
+		gssize bytes_read;
+
+		bytes_available = imapx_input_stream_prep_for_read (is);
+
+		bytes_read = g_input_stream_read (
+			base_stream,
+			is->priv->end, bytes_available,
+			cancellable, error);
+
+		if (bytes_read > 0) {
+			is->priv->end += bytes_read;
+		} else {
+			if (bytes_read == 0) {
+				/* XXX Not sure if G_IO_ERROR_CLOSED is the
+				 *     best error code but it's better than
+				 *     CAMEL_ERROR_GENERIC. */
+				g_set_error_literal (
+					error, G_IO_ERROR, G_IO_ERROR_CLOSED,
+					_("Source stream returned no data"));
+			}
+
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+/**
+ * camel_imapx_input_stream_read_nonblocking:
+ * @is: a #CamelIMAPXInputStream
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Similar to g_pollable_input_stream_read_nonblocking(), except the data
+ * read from the stream is buffered internally.
+ *
+ * Returns: the number of bytes read, or -1 on error
+ *
+ * Since: 3.14
+ **/
+gssize
+camel_imapx_input_stream_read_nonblocking (CamelIMAPXInputStream *is,
+                                           GCancellable *cancellable,
+                                           GError **error)
+{
+	gsize bytes_available;
+	gssize bytes_read;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), -1);
+
+	bytes_available = imapx_input_stream_prep_for_read (is);
+
+	bytes_read = g_pollable_input_stream_read_nonblocking (
+		G_POLLABLE_INPUT_STREAM (is),
+		is->priv->end, bytes_available,
+		cancellable, error);
+
+	if (bytes_read > 0)
+		is->priv->end += bytes_read;
+
+	return bytes_read;
 }
 
 /* FIXME: these should probably handle it themselves,
@@ -377,7 +523,7 @@ camel_imapx_input_stream_astring (CamelIMAPXInputStream *is,
 
 		case IMAPX_TOK_LITERAL:
 			if (len >= is->priv->bufsize)
-				camel_imapx_input_stream_grow (is, len, NULL, NULL);
+				imapx_input_stream_grow (is, len, NULL, NULL);
 			p = is->priv->tokenbuf;
 			camel_imapx_input_stream_set_literal (is, len);
 			do {
@@ -426,7 +572,7 @@ camel_imapx_input_stream_nstring (CamelIMAPXInputStream *is,
 
 		case IMAPX_TOK_LITERAL:
 			if (len >= is->priv->bufsize)
-				camel_imapx_input_stream_grow (is, len, NULL, NULL);
+				imapx_input_stream_grow (is, len, NULL, NULL);
 			p = is->priv->tokenbuf;
 			camel_imapx_input_stream_set_literal (is, len);
 			do {
@@ -718,7 +864,7 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 				if (c == '\n' || c == '\r')
 					goto protocol_error;
 				if (o >= oe) {
-					camel_imapx_input_stream_grow (is, 0, &p, &o);
+					imapx_input_stream_grow (is, 0, &p, &o);
 					oe = is->priv->tokenbuf + is->priv->bufsize - 1;
 					e = is->priv->end;
 				}
@@ -751,7 +897,7 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 				}
 
 				if (o >= oe) {
-					camel_imapx_input_stream_grow (is, 0, &p, &o);
+					imapx_input_stream_grow (is, 0, &p, &o);
 					oe = is->priv->tokenbuf + is->priv->bufsize - 1;
 					e = is->priv->end;
 				}
