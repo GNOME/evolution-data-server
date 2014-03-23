@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.12.0 2014-03-24
+---------------------------------------
+
+Bug Fixes:
+	Bug 726681 - Check GConf XDG folder for migration too (Milan Crha)
+	Bug 726723 - Data loss on message copy to an IMAPx folder (Milan Crha)
+
+Translations:
+	Ask H. Larsen (da)
+	Christian Kirbach (de)
+	Gábor Kelemen (hu)
+	Duarte Loreto (pt)
+	Мирослав Николић (sr)
+
+
 Evolution-Data-Server 3.11.92 2014-03-17
 ----------------------------------------
 
