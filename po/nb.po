@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.11.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-05 07:35+0100\n"
-"PO-Revision-Date: 2014-03-05 17:58+0100\n"
+"POT-Creation-Date: 2014-03-23 19:50+0100\n"
+"PO-Revision-Date: 2014-03-23 19:51+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -89,8 +89,8 @@ msgstr "Kunne ikke endre navn på gammel database fra «%s» til «%s»: %s"
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:147
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1242
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4318
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:378
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:820
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:417
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:874
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
@@ -105,9 +105,9 @@ msgstr "Kunne ikke endre navn på gammel database fra «%s» til «%s»: %s"
 #: ../addressbook/libebook/e-book-client.c:3175
 #: ../addressbook/libebook/e-book-client.c:3393
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:878
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:575
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:606
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:576
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:607
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
 #: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:276
 #: ../calendar/libecal/e-cal-client.c:3239
@@ -145,18 +145,18 @@ msgstr "Spør etter oppdaterte grupper …"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1705
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5054
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1273
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1361
 msgid "The backend does not support bulk additions"
 msgstr "Motor støtter ikke å legge til flere oppføringer samtidig"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1854
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5190
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1375
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1473
 msgid "The backend does not support bulk modifications"
 msgstr "Motor støtter ikke å legge til flere oppføringer samtidig"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:2054
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1467
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1573
 msgid "The backend does not support bulk removals"
 msgstr "Kalender støtter ikke fjerning av mange oppføringer"
 
@@ -260,43 +260,44 @@ msgstr "Fjerner kontakt fra LDAP-tjener …"
 msgid "Failed to get the DN for user '%s'"
 msgstr "Klarte ikke å hente DN for bruker «%s»"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:799
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:853
 msgid "Loading Addressbook summary..."
 msgstr "Laster sammendrag for adressebok …"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:817
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:871
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "PROPFIND på webdav feilet med HTTP-status: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:836
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:890
 msgid "No response body in webdav PROPFIND result"
 msgstr "Ingen svarkropp i resultat av WebDAV PROPFIND kommando"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:878
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:951
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Laster kontakter (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1196
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1283
 msgid "Cannot transform SoupURI to string"
 msgstr "Kan ikke transformere SoupURI til streng"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1306
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "Oppretting av ressurs «%s» feilet med HTTP-status %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1404
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1504
 msgid "Contact on server changed -> not modifying"
 msgstr "Kontakt på tjener endret -> endrer ikke"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1412
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1512
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "Endring av kontakt feilet med HTTP-status %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1488
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1605
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1621
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE feilet med HTTP-status: %d"
@@ -901,7 +902,7 @@ msgid "Twitter Name List"
 msgstr "Liste med Twitter-navn"
 
 #: ../addressbook/libebook-contacts/e-contact.c:1635
-#: ../addressbook/libebook/e-destination.c:881
+#: ../addressbook/libebook/e-destination.c:917
 msgid "Unnamed List"
 msgstr "Liste uten navn"
 
@@ -1303,31 +1304,31 @@ msgstr "Mangler UID for kilde"
 msgid "No such source for UID '%s'"
 msgstr "Kilden eksisterer ikke for UID «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:573
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Tjener kan ikke nås (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:604
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:605
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Klarte ikke å koble til en tjener med SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Uventet HTTP-statuskode %d mottatt (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:634
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV-motor er ikke lastet ennå"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1073
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1074
 msgid "Invalid Redirect URL"
 msgstr "Ugyldig objekt for omdirigering"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2565
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2930
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2577
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2942
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1336,32 +1337,32 @@ msgstr ""
 "Tjeneren kan ikke nås. Kalender åpnes i skrivebeskyttet modus.\n"
 "Feilmelding: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2885
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2897
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Kan ikke opprette lokal buffermappe «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3970
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3982
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV støtter ikke å legge til flere oppføringer samtidig"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4073
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4085
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV støtter ikke å endre flere oppføringer samtidig"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4249
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4261
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV støtter ikke fjerning av flere oppføringer samtidig"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4916
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4928
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender støtter ikke ledig/opptatt"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4925
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4937
 msgid "Schedule outbox url not found"
 msgstr "URL for kalenderutboks"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5022
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5034
 msgid "Unexpected result in schedule-response"
 msgstr "Uventet resultat i schedule-response"
 
@@ -1457,24 +1458,24 @@ msgstr "Vær: Tordenvær"
 #: ../calendar/backends/weather/e-cal-backend-weather.c:329
 #, c-format
 msgid "%.1f °F"
-msgstr ""
+msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:332
 #, c-format
 msgid "%.1f °C"
-msgstr ""
+msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
 #: ../calendar/backends/weather/e-cal-backend-weather.c:335
 #, c-format
 msgid "%.1f K"
-msgstr ""
+msgstr "%.1f K"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:341
 #, c-format
 msgid "%.1f"
-msgstr ""
+msgstr "%.1f"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:452
 msgid "Forecast"
@@ -2065,7 +2066,7 @@ msgstr[0] "Filtrerer ny melding i «%s»"
 msgstr[1] "Filtrerer nye meldinger i «%s»"
 
 #: ../camel/camel-folder.c:1011
-#: ../camel/providers/local/camel-maildir-folder.c:319
+#: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Flytter meldinger"
 
@@ -2383,7 +2384,7 @@ msgstr "Ikke noe innhold tilgjengelig"
 msgid "No signature available"
 msgstr "Ingen signatur tilgjengelig"
 
-#: ../camel/camel-multipart-signed.c:779
+#: ../camel/camel-multipart-signed.c:806
 #, c-format
 msgid "parse error"
 msgstr "lesefeil"
@@ -2931,13 +2932,13 @@ msgid "Creating folder '%s'"
 msgstr "Lager mappe «%s»"
 
 #: ../camel/camel-store.c:2398 ../camel/camel-vee-store.c:416
-#: ../camel/providers/local/camel-maildir-store.c:315
+#: ../camel/providers/local/camel-maildir-store.c:321
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kan ikke slette mappe: %s: Ugyldig operasjon"
 
 #: ../camel/camel-store.c:2588 ../camel/camel-vee-store.c:467
-#: ../camel/providers/local/camel-maildir-store.c:846
+#: ../camel/providers/local/camel-maildir-store.c:852
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Kan ikke endre navn på mappe: %s: Ugyldig operasjon"
@@ -3314,21 +3315,21 @@ msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:8640
-#: ../camel/providers/imapx/camel-imapx-server.c:8658
+#: ../camel/providers/imapx/camel-imapx-server.c:8661
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9400
+#: ../camel/providers/imapx/camel-imapx-server.c:9403
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-tjener støtter ikke kvoter"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imapx/camel-imapx-store.c:207
-#: ../camel/providers/local/camel-maildir-folder.c:471
-#: ../camel/providers/local/camel-maildir-store.c:316
-#: ../camel/providers/local/camel-maildir-store.c:758
+#: ../camel/providers/local/camel-maildir-folder.c:482
+#: ../camel/providers/local/camel-maildir-store.c:322
 #: ../camel/providers/local/camel-maildir-store.c:764
-#: ../camel/providers/local/camel-maildir-store.c:847
+#: ../camel/providers/local/camel-maildir-store.c:770
+#: ../camel/providers/local/camel-maildir-store.c:853
 #: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
 msgstr "Innboks"
@@ -3505,7 +3506,7 @@ msgstr "Lagerrot %s er ikke en vanlig katalog"
 #: ../camel/providers/local/camel-local-store.c:242
 #: ../camel/providers/local/camel-local-store.c:252
 #: ../camel/providers/local/camel-local-store.c:394
-#: ../camel/providers/local/camel-maildir-store.c:150
+#: ../camel/providers/local/camel-maildir-store.c:156
 #, c-format
 msgid "Cannot get folder: %s: %s"
 msgstr "Finner ikke mappe: %s: %s"
@@ -3532,79 +3533,80 @@ msgstr "Kunne ikke slette metadatafil for mappe «%s»: %s"
 msgid "Could not rename '%s': %s"
 msgstr "Kunne ikke endre navn på «%s»: %s"
 
-#: ../camel/providers/local/camel-maildir-folder.c:98
-#: ../camel/providers/local/camel-maildir-folder.c:333
-#: ../camel/providers/local/camel-mbox-folder.c:115
-#: ../camel/providers/local/camel-mbox-folder.c:328
+#: ../camel/providers/local/camel-maildir-folder.c:109
+#: ../camel/providers/local/camel-maildir-folder.c:344
+#: ../camel/providers/local/camel-mbox-folder.c:126
+#: ../camel/providers/local/camel-mbox-folder.c:339
 #: ../camel/providers/local/camel-mh-folder.c:157
 msgid "No such message"
 msgstr "Ingen slik melding"
 
-#: ../camel/providers/local/camel-maildir-folder.c:223
+#: ../camel/providers/local/camel-maildir-folder.c:234
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Kan ikke legge til melding i maildir mappe: %s: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:271
-#: ../camel/providers/local/camel-maildir-folder.c:281
-#: ../camel/providers/local/camel-mbox-folder.c:389
+#: ../camel/providers/local/camel-maildir-folder.c:282
+#: ../camel/providers/local/camel-maildir-folder.c:292
+#: ../camel/providers/local/camel-mbox-folder.c:400
 #: ../camel/providers/local/camel-mh-folder.c:169
 #: ../camel/providers/local/camel-mh-folder.c:179
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "Kan ikke hente melding %s fra mappe %s: "
 
-#: ../camel/providers/local/camel-maildir-folder.c:351
+#: ../camel/providers/local/camel-maildir-folder.c:362
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Kan ikke overføre melding til målmappe: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:130
-#: ../camel/providers/local/camel-maildir-store.c:855
+#: ../camel/providers/local/camel-maildir-store.c:149
+#: ../camel/providers/local/camel-maildir-store.c:861
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Mappen %s eksisterer allerede"
 
-#: ../camel/providers/local/camel-maildir-store.c:235
-#: ../camel/providers/local/camel-maildir-store.c:266
+#: ../camel/providers/local/camel-maildir-store.c:241
+#: ../camel/providers/local/camel-maildir-store.c:272
 #: ../camel/providers/local/camel-mbox-store.c:401
 #: ../camel/providers/local/camel-mbox-store.c:422
 #, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "Kan ikke opprette mappe «%s»: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:250
+#: ../camel/providers/local/camel-maildir-store.c:256
 #: ../camel/providers/local/camel-mbox-store.c:367
 #: ../camel/providers/local/camel-mh-store.c:523
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "Finner ikke mappe «%s»: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:256
+#: ../camel/providers/local/camel-maildir-store.c:262
 #: ../camel/providers/local/camel-mbox-store.c:377
 #: ../camel/providers/local/camel-mh-store.c:532
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "Finner ikke mappe «%s»: mappen eksisterer ikke."
 
-#: ../camel/providers/local/camel-maildir-store.c:283
+#: ../camel/providers/local/camel-maildir-store.c:289
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
 msgstr "Kan ikke hente mappe «%s»: ikke en maildir katalog."
 
-#: ../camel/providers/local/camel-maildir-store.c:347
-#: ../camel/providers/local/camel-maildir-store.c:387
+#: ../camel/providers/local/camel-maildir-store.c:353
+#: ../camel/providers/local/camel-maildir-store.c:393
 #: ../camel/providers/local/camel-mh-store.c:676
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "Kunne ikke slette mappe «%s»: %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:349
+#: ../camel/providers/local/camel-maildir-store.c:355
 msgid "not a maildir directory"
 msgstr "ikke en maildir katalog"
 
-#: ../camel/providers/local/camel-maildir-store.c:630
-#: ../camel/providers/local/camel-maildir-store.c:1069
+#: ../camel/providers/local/camel-maildir-store.c:636
+#: ../camel/providers/local/camel-maildir-store.c:1075
 #: ../camel/providers/local/camel-spool-store.c:212
 #: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
@@ -3633,21 +3635,21 @@ msgstr "Ser etter nye meldinger"
 msgid "Storing folder"
 msgstr "Lagrer mappe"
 
-#: ../camel/providers/local/camel-mbox-folder.c:185
+#: ../camel/providers/local/camel-mbox-folder.c:196
 #, c-format
 msgid "Cannot open mailbox: %s: "
 msgstr "Kan ikke åpne postboks: %s: "
 
-#: ../camel/providers/local/camel-mbox-folder.c:251
+#: ../camel/providers/local/camel-mbox-folder.c:262
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
 msgstr "Kan ikke legge til melding i mbox-fil: %s: "
 
-#: ../camel/providers/local/camel-mbox-folder.c:381
+#: ../camel/providers/local/camel-mbox-folder.c:392
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Mappen ser ut til å ha blitt korrupt og kan ikke repareres."
 
-#: ../camel/providers/local/camel-mbox-folder.c:438
+#: ../camel/providers/local/camel-mbox-folder.c:449
 #: ../camel/providers/local/camel-spool-folder.c:67
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
@@ -5352,7 +5354,9 @@ msgstr ""
 #, c-format
 msgid ""
 "Expected status 200 when requesting your identity, instead got status %d (%s)"
-msgstr "Forventet status 200 ved forespørsel om din identitet. Fikk i stedet status %d (%s)"
+msgstr ""
+"Forventet status 200 ved forespørsel om din identitet. Fikk i stedet status "
+"%d (%s)"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:101
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:298
