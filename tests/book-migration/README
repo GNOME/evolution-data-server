@@ -43,7 +43,7 @@ instructions:
 
   o Remember to add contacts.db to EXTRA_DIST
 
-    Edit evolution-data-server/tests/book-migration/Makefile.am
+    Edit evolution-data-server/tests/book-migration/db/Makefile.am
     and add the new "$(EDS_MAJOR_VERSION).$(EDS_MINOR_VERSION)/contacts.db"
     to EXTRA_DIST.
 
