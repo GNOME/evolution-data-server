@@ -3191,7 +3191,7 @@ e_source_registry_dup_unique_display_name (ESourceRegistry *registry,
 	link = g_list_find (list, source);
 	if (link != NULL) {
 		g_object_unref (link->data);
-		list = g_list_remove_link (list, link);
+		list = g_list_delete_link (list, link);
 	}
 
 	/* Now find another source with a matching display name. */
