@@ -763,7 +763,8 @@ parse (EVCard *evc,
 		e_vcard_attribute_free (attr);
 		attr = NULL;
 	} else if (attr) {
-		if (!ignore_uid || g_ascii_strcasecmp (attr->name, EVC_UID) != 0)
+		if ((!ignore_uid || g_ascii_strcasecmp (attr->name, EVC_UID) != 0) &&
+		    g_ascii_strcasecmp (attr->name, "end") != 0)
 			e_vcard_add_attribute (evc, attr);
 	}
 	while (*p) {
