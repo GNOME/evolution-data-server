@@ -536,6 +536,46 @@ exit:
 }
 
 static CamelMimeMessage *
+imapx_get_message_cached (CamelFolder *folder,
+			  const gchar *message_uid,
+			  GCancellable *cancellable)
+{
+	CamelIMAPXFolder *imapx_folder;
+	CamelMimeMessage *msg = NULL;
+	CamelStream *stream = NULL;
+	GIOStream *base_stream;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
+	g_return_val_if_fail (message_uid != NULL, NULL);
+
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+
+	base_stream = camel_data_cache_get (imapx_folder->cache, "cur", message_uid, NULL);
+	if (base_stream != NULL) {
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+	}
+
+	if (stream != NULL) {
+		gboolean success;
+
+		msg = camel_mime_message_new ();
+
+		g_mutex_lock (&imapx_folder->stream_lock);
+		success = camel_data_wrapper_construct_from_stream_sync (
+			CAMEL_DATA_WRAPPER (msg), stream, cancellable, NULL);
+		if (!success) {
+			g_object_unref (msg);
+			msg = NULL;
+		}
+		g_mutex_unlock (&imapx_folder->stream_lock);
+		g_object_unref (stream);
+	}
+
+	return msg;
+}
+
+static CamelMimeMessage *
 imapx_get_message_sync (CamelFolder *folder,
                         const gchar *uid,
                         GCancellable *cancellable,
@@ -1131,6 +1171,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->get_filename = imapx_get_filename;
 	folder_class->append_message_sync = imapx_append_message_sync;
 	folder_class->expunge_sync = imapx_expunge_sync;
+	folder_class->get_message_cached = imapx_get_message_cached;
 	folder_class->get_message_sync = imapx_get_message_sync;
 	folder_class->get_quota_info_sync = imapx_get_quota_info_sync;
 	folder_class->purge_message_cache_sync = imapx_purge_message_cache_sync;
