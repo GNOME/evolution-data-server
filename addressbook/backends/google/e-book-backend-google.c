@@ -437,8 +437,19 @@ cache_update_group (EBookBackend *backend,
 
 		if (!e_file_cache_replace_object (file_cache, key, group_name))
 			e_file_cache_add_object (file_cache, key, group_name);
+
+		/* Add the category to Evolution’s category list. */
+		e_categories_add (group_name, NULL, NULL, TRUE);
 	} else {
+		const gchar *old_value;
+
+		old_value = e_file_cache_get_object (file_cache, key);
 		changed = e_file_cache_remove_object (file_cache, key);
+
+		/* Remove the category from Evolution’s category list. */
+		if (old_value != NULL) {
+			e_categories_remove (old_value);
+		}
 	}
 
 	g_mutex_unlock (&priv->cache_lock);
@@ -1073,6 +1084,9 @@ create_group (EBookBackend *backend,
 	g_hash_table_replace (priv->groups_by_id, e_contact_sanitise_google_group_id (uid), g_strdup (category_name));
 	g_hash_table_replace (priv->groups_by_name, g_strdup (category_name), e_contact_sanitise_google_group_id (uid));
 	g_object_unref (new_group);
+
+	/* Update the cache. */
+	cache_update_group (backend, uid, category_name);
 
 	g_debug ("...got UID %s", uid);
 

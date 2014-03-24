@@ -459,6 +459,9 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 			}
 		}
 
+		/* Add the category to Evolution’s category list. */
+		e_categories_add (category_name, NULL, NULL, TRUE);
+
 		gdata_contacts_contact_add_group (GDATA_CONTACTS_CONTACT (entry), category_id);
 		if (g_strcmp0 (system_group_id, GDATA_CONTACTS_GROUP_CONTACTS) == 0)
 			ensure_personal_group = FALSE;
@@ -718,8 +721,12 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 		category_name = g_hash_table_lookup (groups_by_id, category_id);
 
 		if (category_name != NULL) {
-			if (g_list_find_custom (category_names, category_name, (GCompareFunc) g_strcmp0) == NULL)
+			if (g_list_find_custom (category_names, category_name, (GCompareFunc) g_strcmp0) == NULL) {
 				category_names = g_list_prepend (category_names, category_name);
+
+				/* Add the category to Evolution’s category list. */
+				e_categories_add (category_name, NULL, NULL, TRUE);
+			}
 		} else
 			g_warning ("Couldn't find name for category with ID '%s'.", category_id);
 
