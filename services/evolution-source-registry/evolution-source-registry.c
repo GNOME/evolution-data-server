@@ -121,6 +121,22 @@ evolution_source_registry_load_all (ESourceRegistryServer *server,
 	return TRUE;
 }
 
+static void
+evolution_source_registry_load_sources (ESourceRegistryServer *server,
+					GDBusConnection *connection)
+{
+	GError *error = NULL;
+
+	/* Failure here is fatal.  Don't even try to keep going. */
+	evolution_source_registry_load_all (server, &error);
+
+	if (error != NULL) {
+		g_printerr ("%s\n", error->message);
+		g_object_unref (server);
+		exit (EXIT_FAILURE);
+	}
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -172,22 +188,17 @@ reload:
 		evolution_source_registry_load_error),
 		NULL);
 
+	/* Postpone the sources load only after the D-Bus name is acquired */
+	g_signal_connect (
+		server, "bus-acquired",
+		G_CALLBACK (evolution_source_registry_load_sources), NULL);
+
 	/* Convert "imap" mail accounts to "imapx". */
 	if (!opt_disable_migration)
 		g_signal_connect (
 			server, "tweak-key-file", G_CALLBACK (
 			evolution_source_registry_migrate_imap_to_imapx),
 			NULL);
-
-	/* Failure here is fatal.  Don't even try to keep going. */
-	evolution_source_registry_load_all (
-		E_SOURCE_REGISTRY_SERVER (server), &error);
-
-	if (error != NULL) {
-		g_printerr ("%s\n", error->message);
-		g_object_unref (server);
-		exit (EXIT_FAILURE);
-	}
 
 	g_debug ("Server is up and running...");
 
