@@ -416,6 +416,8 @@ imapx_settings_finalize (GObject *object)
 
 	g_free (priv->namespace);
 	g_free (priv->shell_command);
+	g_free (priv->real_trash_path);
+	g_free (priv->real_junk_path);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_settings_parent_class)->finalize (object);
