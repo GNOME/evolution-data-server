@@ -1559,10 +1559,12 @@ ECancellableRecMutex
 <FILE>e-categories</FILE>
 <TITLE>ECategories</TITLE>
 e_categories_get_list
+e_categories_dup_list
 e_categories_add
 e_categories_remove
 e_categories_exist
 e_categories_get_icon_file_for
+e_categories_dup_icon_file_for
 e_categories_set_icon_file_for
 e_categories_is_searchable
 e_categories_register_change_listener

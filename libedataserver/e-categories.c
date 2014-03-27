@@ -114,6 +114,9 @@ e_changed_listener_init (EChangedListener *listener)
 
 /* ------------------------------------------------------------------------- */
 
+/* All the static variables below are protected by a global categories lock. */
+G_LOCK_DEFINE_STATIC (categories);
+
 static gboolean initialized = FALSE;
 static GHashTable *categories_table = NULL;
 static gboolean save_is_pending = FALSE;
@@ -188,6 +191,7 @@ escape_string (const gchar *source)
 	return g_string_free (buffer, FALSE);
 }
 
+/* This must be called with the @categories lock held. */
 static void
 hash_to_xml_string (gpointer key,
                     gpointer value,
@@ -226,7 +230,10 @@ idle_saver_cb (gpointer user_data)
 	gchar *contents;
 	gchar *filename;
 	gchar *pathname;
+	EChangedListener *emit_listeners = NULL;  /* owned */
 	GError *error = NULL;
+
+	G_LOCK (categories);
 
 	if (!save_is_pending)
 		goto exit;
@@ -255,14 +262,25 @@ idle_saver_cb (gpointer user_data)
 	save_is_pending = FALSE;
 
 	if (changed)
-		g_signal_emit_by_name (listeners, "changed");
+		emit_listeners = g_object_ref (listeners);
 
 	changed = FALSE;
 exit:
 	idle_id = 0;
+
+	G_UNLOCK (categories);
+
+	/* Emit the signal with the lock released to avoid re-entrancy
+	 * deadlocks. Hold a reference to @listeners until this is complete. */
+	if (emit_listeners) {
+		g_signal_emit_by_name (emit_listeners, "changed");
+		g_object_unref (emit_listeners);
+	}
+
 	return FALSE;
 }
 
+/* This must be called with the @categories lock held. */
 static void
 save_categories (void)
 {
@@ -288,6 +306,7 @@ get_collation_key (const gchar *category)
 	return key;
 }
 
+/* This must be called with the @categories lock held. */
 static void
 categories_add_full (const gchar *category,
                      const gchar *icon_file,
@@ -319,6 +338,7 @@ categories_add_full (const gchar *category,
 	save_categories ();
 }
 
+/* This must be called with the @categories lock held. */
 static CategoryInfo *
 categories_lookup (const gchar *category)
 {
@@ -332,6 +352,7 @@ categories_lookup (const gchar *category)
 	return cat_info;
 }
 
+/* This must be called with the @categories lock held. */
 static gint
 parse_categories (const gchar *contents,
                   gsize length)
@@ -380,6 +401,7 @@ parse_categories (const gchar *contents,
 	return n_added;
 }
 
+/* This must be called with the @categories lock held. */
 static gint
 load_categories (void)
 {
@@ -412,6 +434,7 @@ exit:
 	return n_added;
 }
 
+/* This must be called with the @categories lock held. */
 static void
 load_default_categories (void)
 {
@@ -435,6 +458,8 @@ load_default_categories (void)
 static void
 finalize_categories (void)
 {
+	G_LOCK (categories);
+
 	if (save_is_pending)
 		idle_saver_cb (NULL);
 
@@ -454,8 +479,11 @@ finalize_categories (void)
 	}
 
 	initialized = FALSE;
+
+	G_UNLOCK (categories);
 }
 
+/* This must be called with the @categories lock held. */
 static void
 initialize_categories (void)
 {
@@ -494,10 +522,17 @@ initialize_categories (void)
  *
  * Returns a sorted list of all the category names currently configured.
  *
+ * This function is mostly thread safe, but as the category names are not
+ * copied, they may be freed by another thread after being returned by this
+ * function. Use e_categories_dup_list() instead.
+ *
  * Returns: (transfer container) (element-type utf8): a sorted GList containing
- * the names of the categories.The list should be freed using g_list_free(), but
- * the names of the categories should not be touched at all, they are internal
- * strings.
+ * the names of the categories. The list should be freed using g_list_free(),
+ * but the names of the categories should not be touched at all, they are
+ * internal strings.
+ *
+ * Deprecated: 3.14: This function is not entirely thread safe. Use
+ * e_categories_dup_list() instead.
  */
 GList *
 e_categories_get_list (void)
@@ -505,6 +540,8 @@ e_categories_get_list (void)
 	GHashTableIter iter;
 	GList *list = NULL;
 	gpointer key, value;
+
+	G_LOCK (categories);
 
 	if (!initialized)
 		initialize_categories ();
@@ -515,6 +552,46 @@ e_categories_get_list (void)
 		CategoryInfo *cat_info = value;
 		list = g_list_prepend (list, cat_info->display_name);
 	}
+
+	G_UNLOCK (categories);
+
+	return g_list_sort (list, (GCompareFunc) g_utf8_collate);
+}
+
+/**
+ * e_categories_dup_list:
+ *
+ * Returns a sorted list of all the category names currently configured.
+ *
+ * This function is thread safe.
+ *
+ * Returns: (transfer full) (element-type utf8): a sorted #GList containing
+ * the names of the categories. The list should be freed using g_list_free(),
+ * and the names of the categories should be freed using g_free(). Everything
+ * can be freed simultaneously using g_list_free_full().
+ *
+ * Since: 3.14
+ */
+GList *
+e_categories_dup_list (void)
+{
+	GHashTableIter iter;
+	GList *list = NULL;
+	gpointer key, value;
+
+	G_LOCK (categories);
+
+	if (!initialized)
+		initialize_categories ();
+
+	g_hash_table_iter_init (&iter, categories_table);
+
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		CategoryInfo *cat_info = value;
+		list = g_list_prepend (list, g_strdup (cat_info->display_name));
+	}
+
+	G_UNLOCK (categories);
 
 	return g_list_sort (list, (GCompareFunc) g_utf8_collate);
 }
@@ -528,6 +605,8 @@ e_categories_get_list (void)
  *
  * Adds a new category, with its corresponding icon, to the
  * configuration database.
+ *
+ * This function is thread safe.
  */
 void
 e_categories_add (const gchar *category,
@@ -538,10 +617,14 @@ e_categories_add (const gchar *category,
 	g_return_if_fail (category != NULL);
 	g_return_if_fail (*category);
 
+	G_LOCK (categories);
+
 	if (!initialized)
 		initialize_categories ();
 
 	categories_add_full (category, icon_file, FALSE, searchable);
+
+	G_UNLOCK (categories);
 }
 
 /**
@@ -549,6 +632,8 @@ e_categories_add (const gchar *category,
  * @category: category to be removed.
  *
  * Removes the given category from the configuration.
+ *
+ * This function is thread safe.
  */
 void
 e_categories_remove (const gchar *category)
@@ -556,6 +641,8 @@ e_categories_remove (const gchar *category)
 	gchar *collation_key;
 
 	g_return_if_fail (category != NULL);
+
+	G_LOCK (categories);
 
 	if (!initialized)
 		initialize_categories ();
@@ -568,6 +655,8 @@ e_categories_remove (const gchar *category)
 	}
 
 	g_free (collation_key);
+
+	G_UNLOCK (categories);
 }
 
 /**
@@ -576,17 +665,27 @@ e_categories_remove (const gchar *category)
  *
  * Checks whether the given category is available in the configuration.
  *
+ * This function is thread safe.
+ *
  * Returns: %TRUE if the category is available, %FALSE otherwise.
  */
 gboolean
 e_categories_exist (const gchar *category)
 {
+	gboolean exists;
+
 	g_return_val_if_fail (category != NULL, FALSE);
+
+	G_LOCK (categories);
 
 	if (!initialized)
 		initialize_categories ();
 
-	return (!*category) || (categories_lookup (category) != NULL);
+	exists = (!*category) || (categories_lookup (category) != NULL);
+
+	G_UNLOCK (categories);
+
+	return exists;
 }
 
 /**
@@ -594,6 +693,13 @@ e_categories_exist (const gchar *category)
  * @category: category to retrieve the icon file for.
  *
  * Gets the icon file associated with the given category.
+ *
+ * This function is mostly thread safe, but as the icon file name is not
+ * copied, it may be freed by another thread after being returned by this
+ * function. Use e_categories_dup_icon_file_for() instead.
+ *
+ * Deprecated: 3.14: This function is not entirely thread safe. Use
+ * e_categories_dup_icon_file_for() instead.
  *
  * Returns: icon file name.
  */
@@ -604,14 +710,55 @@ e_categories_get_icon_file_for (const gchar *category)
 
 	g_return_val_if_fail (category != NULL, NULL);
 
+	G_LOCK (categories);
+
 	if (!initialized)
 		initialize_categories ();
 
 	cat_info = categories_lookup (category);
+
+	G_UNLOCK (categories);
+
 	if (cat_info == NULL)
 		return NULL;
 
 	return cat_info->icon_file;
+}
+
+/**
+ * e_categories_get_icon_file_for:
+ * @category: category to retrieve the icon file for.
+ *
+ * Gets the icon file associated with the given category and returns a copy of
+ * it.
+ *
+ * This function is thread safe.
+ *
+ * Returns: (transfer full): icon file name; free with g_free().
+ *
+ * Since: 3.14
+ */
+gchar *
+e_categories_dup_icon_file_for (const gchar *category)
+{
+	CategoryInfo *cat_info;
+	gchar *icon_file = NULL;
+
+	g_return_val_if_fail (category != NULL, NULL);
+
+	G_LOCK (categories);
+
+	if (!initialized)
+		initialize_categories ();
+
+	cat_info = categories_lookup (category);
+
+	if (cat_info != NULL)
+		icon_file = g_strdup (cat_info->icon_file);
+
+	G_UNLOCK (categories);
+
+	return icon_file;
 }
 
 /**
@@ -620,6 +767,8 @@ e_categories_get_icon_file_for (const gchar *category)
  * @icon_file: icon file.
  *
  * Sets the icon file associated with the given category.
+ *
+ * This function is thread safe.
  */
 void
 e_categories_set_icon_file_for (const gchar *category,
@@ -628,6 +777,8 @@ e_categories_set_icon_file_for (const gchar *category,
 	CategoryInfo *cat_info;
 
 	g_return_if_fail (category != NULL);
+
+	G_LOCK (categories);
 
 	if (!initialized)
 		initialize_categories ();
@@ -640,6 +791,8 @@ e_categories_set_icon_file_for (const gchar *category,
 
 	changed = TRUE;
 	save_categories ();
+
+	G_UNLOCK (categories);
 }
 
 /**
@@ -648,23 +801,31 @@ e_categories_set_icon_file_for (const gchar *category,
  *
  * Gets whether the given calendar is to be used for searches in the GUI.
  *
+ * This function is thread safe.
+ *
  * Return value; %TRUE% if the category is searchable, %FALSE% if not.
  */
 gboolean
 e_categories_is_searchable (const gchar *category)
 {
 	CategoryInfo *cat_info;
+	gboolean is_searchable = FALSE;
 
 	g_return_val_if_fail (category != NULL, FALSE);
+
+	G_LOCK (categories);
 
 	if (!initialized)
 		initialize_categories ();
 
 	cat_info = categories_lookup (category);
-	if (cat_info == NULL)
-		return FALSE;
 
-	return cat_info->is_searchable;
+	if (cat_info != NULL)
+		is_searchable = cat_info->is_searchable;
+
+	G_UNLOCK (categories);
+
+	return is_searchable;
 }
 
 /**
@@ -676,16 +837,22 @@ e_categories_is_searchable (const gchar *category)
  * Pair listener and user_data is used to distinguish between listeners.
  * Listeners can be unregistered with @e_categories_unregister_change_listener.
  *
+ * This function is thread safe.
+ *
  * Since: 2.24
  **/
 void
 e_categories_register_change_listener (GCallback listener,
                                        gpointer user_data)
 {
+	G_LOCK (categories);
+
 	if (!initialized)
 		initialize_categories ();
 
 	g_signal_connect (listeners, "changed", listener, user_data);
+
+	G_UNLOCK (categories);
 }
 
 /**
@@ -696,12 +863,18 @@ e_categories_register_change_listener (GCallback listener,
  * Removes previously registered callback from the list of listeners on changes.
  * If it was not registered, then does nothing.
  *
+ * This function is thread safe.
+ *
  * Since: 2.24
  **/
 void
 e_categories_unregister_change_listener (GCallback listener,
                                          gpointer user_data)
 {
+	G_LOCK (categories);
+
 	if (initialized)
 		g_signal_handlers_disconnect_by_func (listeners, listener, user_data);
+
+	G_UNLOCK (categories);
 }

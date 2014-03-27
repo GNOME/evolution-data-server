@@ -26,7 +26,10 @@
 
 G_BEGIN_DECLS
 
+G_DEPRECATED_FOR (e_categories_dup_list)
 GList *		e_categories_get_list		(void);
+
+GList *		e_categories_dup_list		(void);
 
 /* 'unused' parameter was 'color', but it is deprecated now (see bug #308815) */
 void		e_categories_add		(const gchar *category,
@@ -35,7 +38,9 @@ void		e_categories_add		(const gchar *category,
 						 gboolean searchable);
 void		e_categories_remove		(const gchar *category);
 gboolean	e_categories_exist		(const gchar *category);
+G_DEPRECATED_FOR (e_categories_dup_icon_file_for)
 const gchar *	e_categories_get_icon_file_for	(const gchar *category);
+gchar *		e_categories_dup_icon_file_for	(const gchar *category);
 void		e_categories_set_icon_file_for	(const gchar *category,
 						 const gchar *icon_file);
 gboolean	e_categories_is_searchable	(const gchar *category);
