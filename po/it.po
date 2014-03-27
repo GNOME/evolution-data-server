@@ -16,6 +16,10 @@
 #     home		-> abitazione se inteso casa
 #     			-> personale se di indirizzo email/im
 # 			   (contrapposto a lavoro)
+#     junk              -> indesiderato 	(MS)
+#     not junk          -> attendibile 
+#     spam              -> spam
+#
 # Milo Casagrande <milo@ubuntu.com>, 2012, 2013.
 # Luca Ferretti <lferrett@gnome.org>, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013.
 # Gianvito Cavasoli <gianvito@gmx.it>, 2014.
@@ -25,8 +29,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-03-24 20:11+0000\n"
-"PO-Revision-Date: 2014-03-24 12:00+0100\n"
+"POT-Creation-Date: 2014-03-26 07:23+0000\n"
+"PO-Revision-Date: 2014-03-26 11:11+0100\n"
 "Last-Translator: Gianvito Cavasoli <gianvito@gmx.it>\n"
 "Language-Team: Italiano <gnome-it-list@gnome.org>\n"
 "Language: it\n"
@@ -326,7 +330,7 @@ msgstr "DELETE non riuscita con stato HTTP %d"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:24
 msgid "No such book"
-msgstr "Rubric inesistente"
+msgstr "Rubrica inesistente"
 
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:26
 #: ../addressbook/libedata-book/e-data-book.c:371
@@ -1115,7 +1119,7 @@ msgid ""
 "the contact list"
 msgstr ""
 "Si è cercato di passare un cursore in senso inverso, ma il cursore è già "
-"all'inizio dell'elenco dei contatti"
+"alla fine dell'elenco dei contatti"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
 #: ../addressbook/libedata-book/e-book-sqlite.c:7384
@@ -1345,7 +1349,7 @@ msgstr "Revisione non sincronizzata durante il movimento del cursore"
 #: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:430
 msgid "Alphabetic index was set for incorrect locale"
 msgstr ""
-"L'indice alfabetico è stato impostato per un localizzazione non corretta"
+"L'indice alfabetico è stato impostato per una localizzazione non corretta"
 
 #: ../addressbook/libedata-book/e-data-book-factory.c:289
 #: ../calendar/libedata-cal/e-data-cal-factory.c:285
@@ -1386,7 +1390,7 @@ msgstr "Il backend CalDAV non è ancora caricato"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:1074
 msgid "Invalid Redirect URL"
-msgstr "URL di redirezione non valida"
+msgstr "URL di redirezione non valido"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2577
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:2942
@@ -1494,7 +1498,7 @@ msgstr "Meteo: nuvoloso"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:298
 msgid "Weather: Overcast"
-msgstr "Meteo: nuvoloso"
+msgstr "Meteo: coperto"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:299
 msgid "Weather: Showers"
@@ -1628,7 +1632,7 @@ msgstr "Proprietà di calendario «%s» sconosciuta"
 #: ../calendar/libecal/e-cal-client.c:951
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
-msgstr "Impossibile cambiare valore della proprietà di caledario «%s»"
+msgstr "Impossibile cambiare valore della proprietà di calendario «%s»"
 
 #: ../calendar/libecal/e-cal-component.c:1348
 msgid "Untitled appointment"
@@ -2114,8 +2118,8 @@ msgstr "Errore nell'eseguire la ricerca nei filtri: %s: %s"
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
-msgstr[0] "Apprendimento nuovo messaggio indesiderato in «%s»"
-msgstr[1] "Apprendimento nuovi messaggi indesiderati in «%s»"
+msgstr[0] "Apprendimento nuovo messaggio di spam in «%s»"
+msgstr[1] "Apprendimento nuovi messaggi di spam in «%s»"
 
 #: ../camel/camel-folder.c:363
 #, c-format
@@ -2274,7 +2278,7 @@ msgid ""
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
 "Notare che il contenuto cifrato non contiene informazioni su un "
-"destinatario, perciò verrà chiesta una password per ciascuna della chiavi "
+"destinatario, perciò verrà chiesta una password per ciascuna delle chiavi "
 "private memorizzate."
 
 #: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:522
@@ -2348,7 +2352,7 @@ msgstr "Contenuto cifrato"
 
 #: ../camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
-msgstr "Sincronizzazione database spam"
+msgstr "Sincronizzazione database indesiderata"
 
 #: ../camel/camel-lock.c:110
 #, c-format
@@ -2944,14 +2948,14 @@ msgstr "Decodificatore non riuscito"
 # GNOME-2-26 (milo)
 #: ../camel/camel-smime-context.c:1084
 msgid "Cannot find common bulk encryption algorithm"
-msgstr "Impossibile trovare un algoritmo di cifratura di massa comune"
+msgstr "Impossibile trovare un algoritmo di cifratura in serie comune"
 
 # GNOME-2-26 (milo)
 # http://en.wikipedia.org/wiki/Link_encryption
 # https://www.ccn-cert.cni.es/publico/2008/401/en/b/bulk_encryption.htm
 #: ../camel/camel-smime-context.c:1092
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr "Impossibile allocare spazio per la chiave di cifratura di massa"
+msgstr "Impossibile allocare spazio per la chiave di cifratura in serie"
 
 # Nota: esiste un altro messaggio con message minuscolo, suppongo che qui
 # sia una parola "chiave"
@@ -3136,7 +3140,7 @@ msgstr "Nessuna cartella di destinazione specificata"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:869
 msgid "Unable to move junk messages"
-msgstr "Impossibile spostare i messaggi spazzatura"
+msgstr "Impossibile spostare i messaggi indesiderati"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:962
 msgid "Unable to move deleted messages"
@@ -3227,7 +3231,7 @@ msgstr "A_pplicare i filtri ai nuovi messaggi in «In arrivo» su questo server"
 # TO SYNC
 #: ../camel/providers/imapx/camel-imapx-provider.c:65
 msgid "Check new messages for _Junk contents"
-msgstr "Controllare contenuti in_desiderati nei nuovi messaggi"
+msgstr "Controllare i contenuti in_desiderati nei nuovi messaggi"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:67
 msgid "Only check for Junk messages in the IN_BOX folder"
@@ -3375,7 +3379,7 @@ msgstr "Errore nell'eliminare la cartella"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:6906
 msgid "Error renaming folder"
-msgstr "Errore nel rinominare la cartelle"
+msgstr "Errore nel rinominare la cartella"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:6993
 msgid "Error subscribing to folder"
@@ -4643,12 +4647,12 @@ msgstr "Utente non locale; tentare <forward-path>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:901
 msgid "Requested action not taken: insufficient system storage"
-msgstr "Azione richiesta non intrapresa: storage di sistema non sufficiente"
+msgstr "Azione richiesta non intrapresa: archivio di sistema non sufficiente"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:903
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr ""
-"Azione di posta richiesta interrotta: allocazione dello storage superato"
+"Azione di posta richiesta interrotta: allocazione dell'archivio superata"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:905
 msgid "Requested action not taken: mailbox name not allowed"
@@ -5061,7 +5065,7 @@ msgstr "Fuori rete non disponibile"
 
 #: ../libedataserver/e-client.c:176
 msgid "D-Bus error"
-msgstr "errore D-Bus"
+msgstr "Errore D-Bus"
 
 #: ../libedataserver/e-source-authenticator.c:162
 msgid "Address book authentication request"
@@ -5373,7 +5377,7 @@ msgid ""
 "from which to obtain an access token for '%s'"
 msgstr ""
 "Impossibile trovare nel servizio org.gnome.OnlineAccounts un account "
-"corrispondente da cui ottenere una token d'accesso per \"%s\""
+"corrispondente da cui ottenere un token d'accesso per \"%s\""
 
 #: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1288
 #, c-format
@@ -5417,12 +5421,12 @@ msgid ""
 "The certificate has been revoked according to the connection's certificate "
 "revocation list."
 msgstr ""
-"Il certificato è stato revocato, in accordo all'elenco di revoca del "
-"certificato della connessione."
+"In accordo con l'elenco di revoca dei certificati di connessione, il "
+"certificato è stato revocato."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:92
 msgid "The certificate's algorithm is considered insecure."
-msgstr "L'algoritmo del certificato è considerato insicuro.f"
+msgstr "L'algoritmo del certificato è considerato insicuro."
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:119
 msgid "Certificate trust..."
@@ -5434,7 +5438,7 @@ msgstr "_Rifiuta"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:121
 msgid "Accept _Temporarily"
-msgstr "Accetta _temporanaemente"
+msgstr "Accetta _temporaneamente"
 
 #: ../modules/trust-prompt/trust-prompt-gtk.c:122
 msgid "_Accept Permanently"
