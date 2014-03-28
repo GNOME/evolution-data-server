@@ -71,16 +71,6 @@ GType		camel_imapx_input_stream_get_type
 GInputStream *	camel_imapx_input_stream_new	(GInputStream *base_stream);
 gint		camel_imapx_input_stream_buffered
 						(CamelIMAPXInputStream *is);
-gboolean	camel_imapx_input_stream_has_response
-						(CamelIMAPXInputStream *is);
-gboolean	camel_imapx_input_stream_wait_for_response
-						(CamelIMAPXInputStream *is,
-						 GCancellable *cancellable,
-						 GError **error);
-gssize		camel_imapx_input_stream_read_nonblocking
-						(CamelIMAPXInputStream *is,
-						 GCancellable *cancellable,
-						 GError **error);
 
 camel_imapx_token_t
 		camel_imapx_input_stream_token	(CamelIMAPXInputStream *is,

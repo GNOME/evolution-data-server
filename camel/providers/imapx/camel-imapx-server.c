@@ -3542,14 +3542,8 @@ imapx_command_run (CamelIMAPXServer *is,
 	imapx_command_start (is, ic);
 	QUEUE_UNLOCK (is);
 
-	while (success && ic->status == NULL) {
-		success = camel_imapx_input_stream_wait_for_response (
-			CAMEL_IMAPX_INPUT_STREAM (input_stream),
-			cancellable, error);
-		if (success)
-			success = imapx_step (
-				is, input_stream, cancellable, error);
-	}
+	while (success && ic->status == NULL)
+		success = imapx_step (is, input_stream, cancellable, error);
 
 	if (is->literal == ic)
 		is->literal = NULL;
@@ -4602,15 +4596,6 @@ connected:
 		}
 
 		input_stream = camel_imapx_server_ref_input_stream (is);
-
-		success = camel_imapx_input_stream_wait_for_response (
-			CAMEL_IMAPX_INPUT_STREAM (input_stream),
-			cancellable, error);
-
-		if (!success) {
-			g_object_unref (input_stream);
-			goto exit;
-		}
 
 		tok = camel_imapx_input_stream_token (
 			CAMEL_IMAPX_INPUT_STREAM (input_stream),
@@ -7614,7 +7599,6 @@ imapx_ready_to_read (GInputStream *input_stream,
 {
 	GOutputStream *output_stream;
 	GCancellable *cancellable;
-	gssize bytes_read;
 	GError *local_error = NULL;
 
 	/* XXX Don't use the passed in GInputStream because that's
@@ -7626,45 +7610,13 @@ imapx_ready_to_read (GInputStream *input_stream,
 
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
-	bytes_read = camel_imapx_input_stream_read_nonblocking (
-		CAMEL_IMAPX_INPUT_STREAM (input_stream),
-		cancellable, &local_error);
+	while (imapx_step (is, input_stream, cancellable, &local_error)) {
+		gint bytes_buffered;
 
-	if (local_error != NULL) {
-		gboolean ignore_error;
-
-		/* XXX Not sure why this callback is invoked if there's no
-		 *     data ready to read, but it happens.  Check for that
-		 *     condition and clear the error so we return silently. */
-		ignore_error = g_error_matches (
-			local_error, G_IO_ERROR, G_IO_ERROR_WOULD_BLOCK);
-
-		if (ignore_error)
-			g_clear_error (&local_error);
-
-	} else if (bytes_read == 0) {
-		/* XXX Not sure if G_IO_ERROR_CLOSED is the
-		 *     best error code but it's better than
-		 *     CAMEL_ERROR_GENERIC. */
-		local_error = g_error_new_literal (
-			G_IO_ERROR, G_IO_ERROR_CLOSED,
-			_("Source stream returned no data"));
-
-	} else {
-		gboolean success = TRUE;
-		gboolean has_response;
-
-		/* Only step if we have a full response line. */
-
-		has_response = camel_imapx_input_stream_has_response (
+		bytes_buffered = camel_imapx_input_stream_buffered (
 			CAMEL_IMAPX_INPUT_STREAM (input_stream));
-
-		while (success && has_response) {
-			success = imapx_step (
-				is, input_stream, cancellable, &local_error);
-			has_response = camel_imapx_input_stream_has_response (
-				CAMEL_IMAPX_INPUT_STREAM (input_stream));
-		}
+		if (bytes_buffered == 0)
+			break;
 	}
 
 	if (g_cancellable_is_cancelled (cancellable)) {
