@@ -1780,14 +1780,43 @@ GList *
 e_contact_get_attributes (EContact *contact,
                           EContactField field_id)
 {
+	EContactField set[1];
+	set[0] = field_id;
+	return e_contact_get_attributes_set (contact, set, 1);
+}
+
+/**
+ * e_contact_get_attributes_set:
+ * @contact: an #EContact
+ * @field_ids: an array of #EContactField
+ * @size: number of elements in field_ids
+ *
+ * Gets a list of the vcard attributes for @contact's @field_ids.
+ *
+ * Returns: (transfer full) (element-type EVCardAttribute): A #GList of pointers
+ * to #EVCardAttribute, owned by the caller.
+ *
+ * Since: 3.14
+ **/
+GList *
+e_contact_get_attributes_set (EContact *contact,
+                              const EContactField field_ids[],
+                              gint size)
+{
 	GList *l = NULL;
 	GList *attrs, *a;
-	const EContactFieldInfo *info = NULL;
+	gint ii;
+	EContactFieldInfo **infos;
 
 	g_return_val_if_fail (contact && E_IS_CONTACT (contact), NULL);
-	g_return_val_if_fail (field_id >= 1 && field_id < E_CONTACT_FIELD_LAST, NULL);
+	g_return_val_if_fail (size > 0, NULL);
+	g_return_val_if_fail (size < E_CONTACT_FIELD_LAST, NULL);
 
-	info = &field_info[field_id];
+	infos = g_new0 (EContactFieldInfo *, size);
+	for (ii = 0; ii < size; ii++) {
+		g_return_val_if_fail (field_ids[ii] >= 1 && field_ids[ii] < E_CONTACT_FIELD_LAST, NULL);
+		infos[ii] = (EContactFieldInfo *) &field_info[field_ids[ii]];
+	}
 
 	attrs = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -1797,10 +1826,15 @@ e_contact_get_attributes (EContact *contact,
 
 		name = e_vcard_attribute_get_name (attr);
 
-		if (!g_ascii_strcasecmp (name, info->vcard_field_name)) {
-			l = g_list_prepend (l, e_vcard_attribute_copy (attr));
+		for (ii = 0; ii < size; ii++) {
+			if (!g_ascii_strcasecmp (name, infos[ii]->vcard_field_name)) {
+				l = g_list_prepend (l, e_vcard_attribute_copy (attr));
+				break;
+			}
 		}
 	}
+
+	g_free (infos);
 
 	return g_list_reverse (l);
 }

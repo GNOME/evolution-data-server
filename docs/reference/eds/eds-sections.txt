@@ -1733,6 +1733,7 @@ e_contact_get
 e_contact_get_const
 e_contact_set
 e_contact_get_attributes
+e_contact_get_attributes_set
 e_contact_set_attributes
 e_contact_date_new
 e_contact_date_from_string

@@ -358,10 +358,14 @@ void		e_contact_set			(EContact *contact,
 						 EContactField field_id,
 						 gconstpointer value);
 
-/* the following two calls return and take a GList of
+/* the following three calls return and take a GList of
  * EVCardAttribute*'s. */
 GList *		e_contact_get_attributes	(EContact *contact,
 						 EContactField field_id);
+GList *		e_contact_get_attributes_set	(EContact *contact,
+						 const EContactField field_ids[],
+						 gint size);
+
 void		e_contact_set_attributes	(EContact *contact,
 						 EContactField field_id,
 						 GList *attributes);
