@@ -5041,17 +5041,16 @@ camel_imapx_server_shutdown (CamelIMAPXServer *is)
 
 	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (is));
 
-	g_main_loop_quit (is->priv->idle_main_loop);
-	g_main_loop_quit (is->priv->parser_main_loop);
-
 	QUEUE_LOCK (is);
 
 	is->state = IMAPX_SHUTDOWN;
 
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
-	g_weak_ref_set (&is->priv->parser_cancellable, NULL);
 
 	QUEUE_UNLOCK (is);
+
+	g_main_loop_quit (is->priv->idle_main_loop);
+	g_main_loop_quit (is->priv->parser_main_loop);
 
 	g_cancellable_cancel (cancellable);
 	g_clear_object (&cancellable);
@@ -7620,14 +7619,15 @@ imapx_ready_to_read (GInputStream *input_stream,
 	}
 
 	if (g_cancellable_is_cancelled (cancellable)) {
-		gboolean active_queue_is_empty;
+		gboolean active_queue_is_empty, is_shutdown_request;
 
 		QUEUE_LOCK (is);
 		active_queue_is_empty =
 			camel_imapx_command_queue_is_empty (is->active);
+		is_shutdown_request = is->state == IMAPX_SHUTDOWN;
 		QUEUE_UNLOCK (is);
 
-		if (active_queue_is_empty || imapx_in_idle (is)) {
+		if (!is_shutdown_request && (active_queue_is_empty || imapx_in_idle (is))) {
 			g_cancellable_reset (cancellable);
 			g_clear_error (&local_error);
 		} else {
