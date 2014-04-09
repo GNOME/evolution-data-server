@@ -580,18 +580,18 @@ status_code_to_result (SoupMessage *message,
 				E_CAL_BACKEND (cbdav), FALSE);
 		}
 		break;
-	case 404:
+	case SOUP_STATUS_NOT_FOUND:
 		if (is_opening)
 			g_propagate_error (perror, EDC_ERROR (NoSuchCal));
 		else
 			g_propagate_error (perror, EDC_ERROR (ObjectNotFound));
 		break;
 
-	case 403:
-		g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
+	case SOUP_STATUS_FORBIDDEN:
+		g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
 		break;
 
-	case 401:
+	case SOUP_STATUS_UNAUTHORIZED:
 		if (priv && priv->auth_required)
 			g_propagate_error (perror, EDC_ERROR (AuthenticationFailed));
 		else
@@ -1045,7 +1045,10 @@ soup_authenticate (SoupSession *session,
 		gchar *user;
 
 		user = e_source_authentication_dup_user (auth_extension);
-		soup_auth_authenticate (auth, user, cbdav->priv->password);
+		if (!user || !*user)
+			soup_message_set_status (msg, SOUP_STATUS_FORBIDDEN);
+		else
+			soup_auth_authenticate (auth, user, cbdav->priv->password);
 		g_free (user);
 	}
 }
@@ -2992,7 +2995,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 		open_calendar (cbdav, cancellable, &local_error);
 
-		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired) || g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
+		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
 			g_clear_error (&local_error);
 			caldav_authenticate (
 				cbdav, FALSE, cancellable, perror);
