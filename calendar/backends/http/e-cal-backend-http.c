@@ -91,6 +91,10 @@ soup_authenticate (SoupSession *session,
 	ESourceAuthentication *auth_extension;
 	ESource *source;
 	const gchar *extension_name;
+	gchar *user;
+
+	if (retrying)
+		return;
 
 	cbhttp = E_CAL_BACKEND_HTTP (data);
 
@@ -98,13 +102,14 @@ soup_authenticate (SoupSession *session,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
-	if (!retrying && cbhttp->priv->password != NULL) {
-		gchar *user;
+	user = e_source_authentication_dup_user (auth_extension);
 
-		user = e_source_authentication_dup_user (auth_extension);
+	if (!user || !*user)
+		soup_message_set_status (msg, SOUP_STATUS_FORBIDDEN);
+	else if (cbhttp->priv->password != NULL)
 		soup_auth_authenticate (auth, user, cbhttp->priv->password);
-		g_free (user);
-	}
+
+	g_free (user);
 }
 
 /* Dispose handler for the file backend */
@@ -782,6 +787,9 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 			E_BACKEND (backend),
 			E_SOURCE_AUTHENTICATOR (backend),
 			cancellable, &error);
+	} else if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		g_clear_error (&error);
+		error = EDC_ERROR (AuthenticationRequired);
 	}
 
 	backend->priv->is_loading = FALSE;
@@ -936,7 +944,11 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 				registry, source,
 				E_SOURCE_AUTHENTICATOR (backend),
 				cancellable, &local_error);
+		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+			g_clear_error (&local_error);
+			local_error = EDC_ERROR (AuthenticationRequired);
 		}
+
 
 		if (local_error != NULL)
 			g_propagate_error (perror, g_error_copy (local_error));

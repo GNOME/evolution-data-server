@@ -856,7 +856,9 @@ download_contacts (EBookBackendWebdav *webdav,
 	message = send_propfind (webdav, cancellable);
 	status = message->status_code;
 
-	if (status == 401 || status == 407) {
+	if (status == SOUP_STATUS_UNAUTHORIZED ||
+	    status == SOUP_STATUS_PROXY_UNAUTHORIZED ||
+	    status == SOUP_STATUS_FORBIDDEN) {
 		g_object_unref (message);
 		g_free (new_ctag);
 		if (book_view)
@@ -1140,9 +1142,10 @@ soup_authenticate (SoupSession *session,
 	if (retrying)
 		return;
 
-	if (priv->username != NULL) {
+	if (!priv->username || !*priv->username)
+		soup_message_set_status (message, SOUP_STATUS_FORBIDDEN);
+	else
 		soup_auth_authenticate (auth, priv->username, priv->password);
-	}
 }
 
 static void
@@ -1223,6 +1226,57 @@ book_backend_webdav_get_backend_property (EBookBackend *backend,
 	/* Chain up to parent's get_backend_property() method. */
 	return E_BOOK_BACKEND_CLASS (e_book_backend_webdav_parent_class)->
 		get_backend_property (backend, prop_name);
+}
+
+static gboolean
+book_backend_webdav_test_can_connect (EBookBackendWebdav *webdav,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	SoupMessage *message;
+	gboolean res = FALSE;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (webdav), FALSE);
+
+	/* Send a PROPFIND to test whether user/password is correct. */
+	message = send_propfind (webdav, cancellable);
+
+	switch (message->status_code) {
+		case SOUP_STATUS_OK:
+		case SOUP_STATUS_MULTI_STATUS:
+			res = TRUE;
+			break;
+
+		case SOUP_STATUS_UNAUTHORIZED:
+		case SOUP_STATUS_PROXY_UNAUTHORIZED:
+			g_free (webdav->priv->username);
+			webdav->priv->username = NULL;
+			g_free (webdav->priv->password);
+			webdav->priv->password = NULL;
+			g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED,
+				e_client_error_to_string (E_CLIENT_ERROR_AUTHENTICATION_FAILED));
+			break;
+
+		case SOUP_STATUS_FORBIDDEN:
+			g_free (webdav->priv->username);
+			webdav->priv->username = NULL;
+			g_free (webdav->priv->password);
+			webdav->priv->password = NULL;
+			g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_REQUIRED,
+				e_client_error_to_string (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED));
+			break;
+
+		default:
+			g_set_error (
+				error, SOUP_HTTP_ERROR,
+				message->status_code,
+				"%s", message->reason_phrase);
+			break;
+	}
+
+	g_object_unref (message);
+
+	return res;
 }
 
 static gboolean
@@ -1330,6 +1384,8 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 			E_BACKEND (backend),
 			E_SOURCE_AUTHENTICATOR (backend),
 			cancellable, error);
+	else
+		success = book_backend_webdav_test_can_connect (webdav, cancellable, error);
 
 	soup_uri_free (suri);
 
@@ -1726,8 +1782,8 @@ book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
 	ESourceAuthentication *auth_extension;
 	ESourceAuthenticationResult result;
 	ESource *source;
-	SoupMessage *message;
 	const gchar *extension_name;
+	GError *local_error = NULL;
 
 	source = e_backend_get_source (E_BACKEND (authenticator));
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
@@ -1737,34 +1793,15 @@ book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
 		e_source_authentication_dup_user (auth_extension);
 	webdav->priv->password = g_strdup (password->str);
 
-	/* Send a PROPFIND to test whether user/password is correct. */
-	message = send_propfind (webdav, cancellable);
-
-	switch (message->status_code) {
-		case SOUP_STATUS_OK:
-		case SOUP_STATUS_MULTI_STATUS:
-			result = E_SOURCE_AUTHENTICATION_ACCEPTED;
-			break;
-
-		case SOUP_STATUS_UNAUTHORIZED:
-		case SOUP_STATUS_PROXY_UNAUTHORIZED:  /* XXX really? */
-			g_free (webdav->priv->username);
-			webdav->priv->username = NULL;
-			g_free (webdav->priv->password);
-			webdav->priv->password = NULL;
-			result = E_SOURCE_AUTHENTICATION_REJECTED;
-			break;
-
-		default:
-			g_set_error (
-				error, SOUP_HTTP_ERROR,
-				message->status_code,
-				"%s", message->reason_phrase);
-			result = E_SOURCE_AUTHENTICATION_ERROR;
-			break;
+	if (book_backend_webdav_test_can_connect (webdav, cancellable, &local_error)) {
+		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+	} else if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED)) {
+		result = E_SOURCE_AUTHENTICATION_REJECTED;
+		g_clear_error (&local_error);
+	} else {
+		result = E_SOURCE_AUTHENTICATION_ERROR;
+		g_propagate_error (error, local_error);
 	}
-
-	g_object_unref (message);
 
 	return result;
 }
