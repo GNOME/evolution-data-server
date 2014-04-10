@@ -514,11 +514,17 @@ cal_client_view_dispose_cb (GObject *source_object,
 	e_gdbus_cal_view_call_dispose_finish (
 		G_DBUS_PROXY (source_object), result, &local_error);
 
-	if (local_error != NULL) {
+	/* Ignore closed errors, since this callback can be called after the
+	 * EBookClientView has been disposed, and hence after the calling code
+	 * has dropped its final reference and gone on to clean up other things
+	 * (like the dbus-daemon, if it’s a test harness). */
+	if (local_error != NULL &&
+	    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CLOSED)) {
 		g_dbus_error_strip_remote_error (local_error);
 		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-		g_error_free (local_error);
 	}
+
+	g_clear_error (&local_error);
 }
 
 static void
