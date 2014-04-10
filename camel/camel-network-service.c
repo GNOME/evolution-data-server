@@ -345,28 +345,33 @@ network_service_accept_certificate_cb (GTlsConnection *connection,
 
 	g_free (host);
 
-	if (cert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
-		cert->trust = camel_session_trust_prompt (
-			session, CAMEL_SERVICE (service),
-			peer_certificate, errors);
+	if ((errors & G_TLS_CERTIFICATE_REVOKED) != 0) {
+		/* Always reject revoked certificates */
+		accept = FALSE;
+	} else {
+		if (cert->trust == CAMEL_CERT_TRUST_UNKNOWN) {
+			cert->trust = camel_session_trust_prompt (
+				session, CAMEL_SERVICE (service),
+				peer_certificate, errors);
 
-		if (new_cert)
-			network_service_certdb_store (
-				certdb, cert, peer_certificate);
+			if (new_cert)
+				network_service_certdb_store (
+					certdb, cert, peer_certificate);
 
-		camel_certdb_touch (certdb);
-	}
+			camel_certdb_touch (certdb);
+		}
 
-	switch (cert->trust) {
-		case CAMEL_CERT_TRUST_MARGINAL:
-		case CAMEL_CERT_TRUST_FULLY:
-		case CAMEL_CERT_TRUST_ULTIMATE:
-		case CAMEL_CERT_TRUST_TEMPORARY:
-			accept = TRUE;
-			break;
-		default:
-			accept = FALSE;
-			break;
+		switch (cert->trust) {
+			case CAMEL_CERT_TRUST_MARGINAL:
+			case CAMEL_CERT_TRUST_FULLY:
+			case CAMEL_CERT_TRUST_ULTIMATE:
+			case CAMEL_CERT_TRUST_TEMPORARY:
+				accept = TRUE;
+				break;
+			default:
+				accept = FALSE;
+				break;
+		}
 	}
 
 	camel_cert_unref (cert);
