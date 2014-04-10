@@ -398,6 +398,11 @@ struct _CamelIMAPXServerPrivate {
 	GMainContext *idle_main_context;
 	GSource *idle_pending;
 	CamelIMAPXIdleState idle_state;
+
+	GMutex jobs_prop_lock;
+	GHashTable *jobs_prop_folder_paths;
+	gint jobs_prop_command_count; /* without IDLE command */
+	gint jobs_prop_expensive_command_count;
 };
 
 enum {
@@ -412,6 +417,7 @@ enum {
 	MAILBOX_CREATED,
 	MAILBOX_RENAMED,
 	MAILBOX_UPDATED,
+	SHUTDOWN,
 	LAST_SIGNAL
 };
 
@@ -574,6 +580,138 @@ imapx_weak_ref_free (GWeakRef *weak_ref)
 
 	g_weak_ref_set (weak_ref, NULL);
 	g_slice_free (GWeakRef, weak_ref);
+}
+
+static void
+imapx_server_command_added (CamelIMAPXServer *imapx_server,
+			    CamelIMAPXCommand *command)
+{
+	CamelIMAPXJob *job;
+
+	g_return_if_fail (command != NULL);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	job = camel_imapx_command_get_job (command);
+
+	if (job) {
+		/* without IDLE commands */
+		if (!(job->type & IMAPX_JOB_IDLE))
+			imapx_server->priv->jobs_prop_command_count++;
+
+		if ((job->type & (IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO)) != 0)
+			imapx_server->priv->jobs_prop_expensive_command_count++;
+	}
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+}
+
+static void
+imapx_server_command_removed (CamelIMAPXServer *imapx_server,
+			      CamelIMAPXCommand *command)
+{
+	CamelIMAPXJob *job;
+
+	g_return_if_fail (command != NULL);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	job = camel_imapx_command_get_job (command);
+
+	if (job) {
+		/* without IDLE commands */
+		if (!(job->type & IMAPX_JOB_IDLE)) {
+			imapx_server->priv->jobs_prop_command_count--;
+			g_warn_if_fail (imapx_server->priv->jobs_prop_command_count >= 0);
+		}
+
+		if ((job->type & (IMAPX_JOB_FETCH_NEW_MESSAGES | IMAPX_JOB_REFRESH_INFO)) != 0) {
+			imapx_server->priv->jobs_prop_expensive_command_count--;
+			g_warn_if_fail (imapx_server->priv->jobs_prop_expensive_command_count >= 0);
+		}
+	}
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+}
+
+static void
+imapx_server_add_job_mailbox (CamelIMAPXServer *imapx_server,
+			      CamelIMAPXMailbox *mailbox)
+{
+	gchar *folder_path;
+	gint n_stored;
+
+	g_return_if_fail (mailbox != NULL);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
+
+	n_stored = GPOINTER_TO_INT (g_hash_table_lookup (imapx_server->priv->jobs_prop_folder_paths, folder_path));
+	/* takes ownership of folder_path */
+	g_hash_table_insert (imapx_server->priv->jobs_prop_folder_paths, folder_path, GINT_TO_POINTER (n_stored + 1));
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+}
+
+static void
+imapx_server_remove_job_mailbox (CamelIMAPXServer *imapx_server,
+				 CamelIMAPXMailbox *mailbox)
+{
+	gchar *folder_path;
+	gint n_stored;
+
+	g_return_if_fail (mailbox != NULL);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
+
+	n_stored = GPOINTER_TO_INT (g_hash_table_lookup (imapx_server->priv->jobs_prop_folder_paths, folder_path));
+	g_warn_if_fail (n_stored >= 1);
+
+	n_stored--;
+	if (n_stored > 0) {
+		/* takes ownership of folder_path */
+		g_hash_table_insert (imapx_server->priv->jobs_prop_folder_paths, folder_path, GINT_TO_POINTER (n_stored));
+	} else {
+		g_hash_table_remove (imapx_server->priv->jobs_prop_folder_paths, folder_path);
+		g_free (folder_path);
+	}
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+}
+
+static void
+imapx_server_job_added (CamelIMAPXServer *imapx_server,
+			CamelIMAPXJob *job)
+{
+	CamelIMAPXMailbox *mailbox;
+
+	g_return_if_fail (job != NULL);
+
+	mailbox = camel_imapx_job_ref_mailbox (job);
+
+	if (mailbox != NULL) {
+		imapx_server_add_job_mailbox (imapx_server, mailbox);
+		g_object_unref (mailbox);
+	}
+}
+
+static void
+imapx_server_job_removed (CamelIMAPXServer *imapx_server,
+			  CamelIMAPXJob *job)
+{
+	CamelIMAPXMailbox *mailbox;
+
+	g_return_if_fail (job != NULL);
+
+	mailbox = camel_imapx_job_ref_mailbox (job);
+
+	if (mailbox != NULL) {
+		imapx_server_remove_job_mailbox (imapx_server, mailbox);
+		g_object_unref (mailbox);
+	}
 }
 
 static const CamelIMAPXUntaggedRespHandlerDesc *
@@ -834,6 +972,7 @@ imapx_register_job (CamelIMAPXServer *is,
 	if (is->state >= IMAPX_INITIALISED) {
 		QUEUE_LOCK (is);
 		g_queue_push_head (&is->jobs, camel_imapx_job_ref (job));
+		imapx_server_job_added (is, job);
 		QUEUE_UNLOCK (is);
 
 	} else {
@@ -856,8 +995,10 @@ imapx_unregister_job (CamelIMAPXServer *is,
 		camel_imapx_job_done (job);
 
 	QUEUE_LOCK (is);
-	if (g_queue_remove (&is->jobs, job))
+	if (g_queue_remove (&is->jobs, job)) {
+		imapx_server_job_removed (is, job);
 		camel_imapx_job_unref (job);
+	}
 	QUEUE_UNLOCK (is);
 }
 
@@ -878,18 +1019,12 @@ imapx_server_ref_folder (CamelIMAPXServer *is,
 {
 	CamelFolder *folder;
 	CamelIMAPXStore *store;
-	const gchar *mailbox_name;
 	gchar *folder_path;
-	gchar separator;
 	GError *local_error = NULL;
-
-	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
-	separator = camel_imapx_mailbox_get_separator (mailbox);
 
 	store = camel_imapx_server_ref_store (is);
 
-	folder_path = camel_imapx_mailbox_to_folder_path (
-		mailbox_name, separator);
+	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
 
 	folder = camel_store_get_folder_sync (
 		CAMEL_STORE (store), folder_path, 0, NULL, &local_error);
@@ -906,7 +1041,7 @@ imapx_server_ref_folder (CamelIMAPXServer *is,
 	if (local_error != NULL) {
 		g_warning (
 			"%s: Failed to get folder for '%s': %s",
-			G_STRFUNC, mailbox_name, local_error->message);
+			G_STRFUNC, camel_imapx_mailbox_get_name (mailbox), local_error->message);
 		g_error_free (local_error);
 	}
 
@@ -1263,9 +1398,10 @@ imapx_command_start (CamelIMAPXServer *is,
                      CamelIMAPXCommand *ic)
 {
 	CamelIMAPXCommandPart *cp;
-	GInputStream *input_stream;
-	GOutputStream *output_stream;
-	GCancellable *cancellable;
+	CamelIMAPXJob *job;
+	GInputStream *input_stream = NULL;
+	GOutputStream *output_stream = NULL;
+	GCancellable *cancellable = NULL;
 	gboolean cp_continuation;
 	gboolean cp_literal_plus;
 	GList *head;
@@ -1289,6 +1425,25 @@ imapx_command_start (CamelIMAPXServer *is,
 		is->literal = ic;
 
 	camel_imapx_command_queue_push_tail (is->active, ic);
+	imapx_server_command_added (is, ic);
+
+	job = camel_imapx_command_get_job (ic);
+	if (job && g_cancellable_set_error_if_cancelled (camel_imapx_job_get_cancellable (job), &local_error)) {
+		camel_imapx_job_take_error (job, local_error);
+		local_error = NULL;
+
+		camel_imapx_command_queue_remove (is->active, ic);
+		imapx_server_command_removed (is, ic);
+
+		if (ic->complete != NULL)
+			ic->complete (is, ic);
+
+		if (is->literal == ic)
+			is->literal = NULL;
+
+		goto exit;
+	}
+
 
 	input_stream = camel_imapx_server_ref_input_stream (is);
 	output_stream = camel_imapx_server_ref_output_stream (is);
@@ -1336,6 +1491,7 @@ imapx_command_start (CamelIMAPXServer *is,
 
 fail:
 	camel_imapx_command_queue_remove (is->active, ic);
+	imapx_server_command_removed (is, ic);
 
 	/* Break the parser thread out of its loop so it disconnects. */
 	g_main_loop_quit (is->priv->parser_main_loop);
@@ -1474,6 +1630,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_server_command_removed (is, ic);
 			imapx_command_start (is, ic);
 			camel_imapx_command_unref (ic);
 
@@ -1625,6 +1782,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_server_command_removed (is, ic);
 			imapx_command_start (is, ic);
 			camel_imapx_command_unref (ic);
 
@@ -1719,6 +1877,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 			ic = camel_imapx_command_ref (link->data);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_server_command_removed (is, ic);
 			imapx_command_start (is, ic);
 			camel_imapx_command_unref (ic);
 
@@ -1783,6 +1942,7 @@ imapx_command_queue (CamelIMAPXServer *is,
 	}
 
 	camel_imapx_command_queue_insert_sorted (is->queue, ic);
+	imapx_server_command_added (is, ic);
 
 	imapx_command_start_next (is);
 
@@ -2340,8 +2500,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 				camel_folder_change_info_change_uid (
 					is->priv->changes, uid);
-				g_free (uid);
 			}
+			g_free (uid);
 
 			if (changed && imapx_in_idle (is)) {
 				camel_folder_summary_save_to_db (
@@ -3429,6 +3589,7 @@ imapx_completion (CamelIMAPXServer *is,
 	 * We're holding our own reference to the command so there's
 	 * no risk of accidentally finalizing it here. */
 	camel_imapx_command_queue_remove (is->active, ic);
+	imapx_server_command_removed (is, ic);
 	camel_imapx_command_queue_push_tail (is->done, ic);
 
 	if (is->literal == ic)
@@ -3550,6 +3711,7 @@ imapx_command_run (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 	camel_imapx_command_queue_remove (is->active, ic);
+	imapx_server_command_removed (is, ic);
 	QUEUE_UNLOCK (is);
 
 	g_object_unref (input_stream);
@@ -4070,6 +4232,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 			CamelIMAPXCommand *cw = link->data;
 			camel_imapx_command_ref (cw);
 			camel_imapx_command_queue_delete_link (is->queue, link);
+			imapx_server_command_removed (is, cw);
 			camel_imapx_command_queue_push_tail (failed, cw);
 			camel_imapx_command_unref (cw);
 		}
@@ -7563,6 +7726,14 @@ imapx_abort_all_commands (CamelIMAPXServer *is,
 	camel_imapx_command_queue_transfer (is->queue, queue);
 	camel_imapx_command_queue_transfer (is->active, queue);
 
+	head = camel_imapx_command_queue_peek_head_link (queue);
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		CamelIMAPXCommand *ic = link->data;
+
+		if (ic)
+			imapx_server_command_removed (is, ic);
+	}
+
 	QUEUE_UNLOCK (is);
 
 	head = camel_imapx_command_queue_peek_head_link (queue);
@@ -7661,7 +7832,6 @@ static gpointer
 imapx_parser_thread (gpointer user_data)
 {
 	CamelIMAPXServer *is;
-	CamelIMAPXStore *store;
 	GInputStream *input_stream;
 	GCancellable *cancellable;
 	GSource *pollable_source;
@@ -7702,13 +7872,9 @@ imapx_parser_thread (gpointer user_data)
 	is->state = IMAPX_SHUTDOWN;
 	QUEUE_UNLOCK (is);
 
-	/* Disconnect the CamelService. */
-	store = camel_imapx_server_ref_store (is);
-	camel_service_disconnect_sync (
-		CAMEL_SERVICE (store), FALSE, NULL, NULL);
-	g_object_unref (store);
-
 	g_main_context_pop_thread_default (is->priv->parser_main_context);
+
+	g_signal_emit (is, signals[SHUTDOWN], 0);
 
 	g_object_unref (is);
 
@@ -7856,6 +8022,9 @@ imapx_server_finalize (GObject *object)
 	g_main_loop_unref (is->priv->idle_main_loop);
 	g_main_context_unref (is->priv->idle_main_context);
 
+	g_mutex_clear (&is->priv->jobs_prop_lock);
+	g_hash_table_destroy (is->priv->jobs_prop_folder_paths);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
 }
@@ -7879,6 +8048,8 @@ static void
 imapx_server_mailbox_select (CamelIMAPXServer *is,
                              CamelIMAPXMailbox *mailbox)
 {
+	imapx_server_add_job_mailbox (is, mailbox);
+
 	e (
 		is->tagprefix,
 		"%s::mailbox-select (\"%s\")\n",
@@ -7890,6 +8061,8 @@ static void
 imapx_server_mailbox_closed (CamelIMAPXServer *is,
                              CamelIMAPXMailbox *mailbox)
 {
+	imapx_server_remove_job_mailbox (is, mailbox);
+
 	e (
 		is->tagprefix,
 		"%s::mailbox-closed (\"%s\")\n",
@@ -8020,6 +8193,19 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 		G_TYPE_NONE, 1,
 		CAMEL_TYPE_IMAPX_MAILBOX);
 
+	/**
+	 * CamelIMAPXServer::shutdown
+	 * @server: the #CamelIMAPXServer which emitted the signal
+	 **/
+	signals[SHUTDOWN] = g_signal_new (
+		"shutdown",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelIMAPXServerClass, shutdown),
+		NULL, NULL,
+		g_cclosure_marshal_VOID__VOID,
+		G_TYPE_NONE, 0);
+
 	class->tagprefix = 'A';
 }
 
@@ -8048,6 +8234,11 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	g_mutex_init (&is->priv->select_lock);
 	g_mutex_init (&is->priv->search_results_lock);
 	g_mutex_init (&is->priv->known_alerts_lock);
+	g_mutex_init (&is->priv->jobs_prop_lock);
+
+	is->priv->jobs_prop_folder_paths = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	is->priv->jobs_prop_command_count = 0;
+	is->priv->jobs_prop_expensive_command_count = 0;
 
 	is->queue = camel_imapx_command_queue_new ();
 	is->active = camel_imapx_command_queue_new ();
@@ -9474,6 +9665,56 @@ camel_imapx_server_uid_search (CamelIMAPXServer *is,
 	camel_imapx_job_unref (job);
 
 	return results;
+}
+
+gboolean
+camel_imapx_server_folder_name_in_jobs (CamelIMAPXServer *imapx_server,
+					const gchar *folder_path)
+{
+	gboolean res;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server), FALSE);
+	g_return_val_if_fail (folder_path != NULL, FALSE);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	res = GPOINTER_TO_INT (g_hash_table_lookup (imapx_server->priv->jobs_prop_folder_paths, folder_path)) > 0;
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+
+	return res;
+}
+
+gboolean
+camel_imapx_server_has_expensive_command (CamelIMAPXServer *imapx_server)
+{
+	gboolean res;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server), FALSE);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	res = imapx_server->priv->jobs_prop_expensive_command_count > 0;
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+
+	return res;
+}
+
+gint
+camel_imapx_server_get_command_count (CamelIMAPXServer *imapx_server)
+{
+	guint32 res;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server), -1);
+
+	g_mutex_lock (&imapx_server->priv->jobs_prop_lock);
+
+	res = imapx_server->priv->jobs_prop_command_count;
+
+	g_mutex_unlock (&imapx_server->priv->jobs_prop_lock);
+
+	return res;
 }
 
 /**

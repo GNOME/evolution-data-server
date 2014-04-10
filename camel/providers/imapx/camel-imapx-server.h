@@ -133,6 +133,7 @@ struct _CamelIMAPXServerClass {
 						 const gchar *oldname);
 	void		(*mailbox_updated)	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox);
+	void		(*shutdown)		(CamelIMAPXServer *is);
 };
 
 GType		camel_imapx_server_get_type	(void);
@@ -259,6 +260,13 @@ GPtrArray *	camel_imapx_server_uid_search	(CamelIMAPXServer *is,
 						 const gchar *criteria,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	camel_imapx_server_folder_name_in_jobs
+						(CamelIMAPXServer *imapx_server,
+						 const gchar *folder_path);
+gboolean	camel_imapx_server_has_expensive_command
+						(CamelIMAPXServer *imapx_server);
+gint		camel_imapx_server_get_command_count
+						(CamelIMAPXServer *imapx_server);
 const CamelIMAPXUntaggedRespHandlerDesc *
 		camel_imapx_server_register_untagged_handler
 						(CamelIMAPXServer *is,

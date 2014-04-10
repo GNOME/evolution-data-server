@@ -85,6 +85,8 @@ const gchar *	camel_imapx_mailbox_get_name
 					(CamelIMAPXMailbox *mailbox);
 gchar		camel_imapx_mailbox_get_separator
 					(CamelIMAPXMailbox *mailbox);
+gchar *		camel_imapx_mailbox_dup_folder_path
+					(CamelIMAPXMailbox *mailbox);
 CamelIMAPXNamespace *
 		camel_imapx_mailbox_get_namespace
 					(CamelIMAPXMailbox *mailbox);

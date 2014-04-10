@@ -70,6 +70,11 @@ gboolean	camel_imapx_settings_get_check_subscribed
 void		camel_imapx_settings_set_check_subscribed
 						(CamelIMAPXSettings *settings,
 						 gboolean check_subscribed);
+guint		camel_imapx_settings_get_concurrent_connections
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_concurrent_connections
+						(CamelIMAPXSettings *settings,
+						 guint concurrent_connections);
 CamelSortType	camel_imapx_settings_get_fetch_order
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_fetch_order
