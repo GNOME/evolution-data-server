@@ -65,7 +65,17 @@ struct _CamelIMAPXStoreClass {
 GType		camel_imapx_store_get_type	(void);
 CamelIMAPXServer *
 		camel_imapx_store_ref_server	(CamelIMAPXStore *store,
+						 const gchar *folder_name,
+						 gboolean for_expensive_job,
+						 GCancellable *cancellable,
 						 GError **error);
+void		camel_imapx_store_set_connecting_server
+						(CamelIMAPXStore *store,
+						 CamelIMAPXServer *server);
+void		camel_imapx_store_folder_op_done
+						(CamelIMAPXStore *store,
+						 CamelIMAPXServer *server,
+						 const gchar *folder_name);
 CamelFolderQuotaInfo *
 		camel_imapx_store_dup_quota_info
 						(CamelIMAPXStore *store,

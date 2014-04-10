@@ -29,6 +29,7 @@
  **/
 
 #include "camel-imapx-mailbox.h"
+#include "camel-imapx-utils.h"
 
 #define CAMEL_IMAPX_MAILBOX_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -364,6 +365,26 @@ camel_imapx_mailbox_get_separator (CamelIMAPXMailbox *mailbox)
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), '\0');
 
 	return mailbox->priv->separator;
+}
+
+/**
+ * camel_imapx_mailbox_dup_folder_path:
+ * @mailbox: a #CamelIMAPXMailbox
+ *
+ * Returns the mailbox name as folder path.
+ *
+ * Returns: the mailbox name as folder path.
+ *
+ * Since: 3.12.1
+ **/
+gchar *
+camel_imapx_mailbox_dup_folder_path (CamelIMAPXMailbox *mailbox)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), NULL);
+
+	return camel_imapx_mailbox_to_folder_path (
+		camel_imapx_mailbox_get_name (mailbox),
+		camel_imapx_mailbox_get_separator (mailbox));
 }
 
 /**

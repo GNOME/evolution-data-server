@@ -492,6 +492,10 @@ service_queue_notify_connection_status (CamelService *service)
 
 	session = camel_service_ref_session (service);
 
+	/* most-likely exitting the application */
+	if (!session)
+		return;
+
 	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
 		session, G_PRIORITY_HIGH_IDLE,

@@ -32,6 +32,7 @@ struct _CamelIMAPXSettingsPrivate {
 	gchar *shell_command;
 
 	guint batch_fetch_count;
+	guint concurrent_connections;
 
 	gboolean check_all;
 	gboolean check_subscribed;
@@ -113,6 +114,12 @@ imapx_settings_set_property (GObject *object,
 			camel_imapx_settings_set_check_subscribed (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_boolean (value));
+			return;
+
+		case PROP_CONCURRENT_CONNECTIONS:
+			camel_imapx_settings_set_concurrent_connections (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_uint (value));
 			return;
 
 		case PROP_FETCH_ORDER:
@@ -265,6 +272,13 @@ imapx_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_imapx_settings_get_check_subscribed (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_CONCURRENT_CONNECTIONS:
+			g_value_set_uint (
+				value,
+				camel_imapx_settings_get_concurrent_connections (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 
@@ -475,6 +489,20 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"Check Subscribed",
 			"Check only subscribed folders for new messages",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONCURRENT_CONNECTIONS,
+		g_param_spec_uint (
+			"concurrent-connections",
+			"Concurrent Connections",
+			"Number of concurrent IMAP connections to use",
+			MIN_CONCURRENT_CONNECTIONS,
+			MAX_CONCURRENT_CONNECTIONS,
+			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -822,6 +850,58 @@ camel_imapx_settings_set_check_subscribed (CamelIMAPXSettings *settings,
 	settings->priv->check_subscribed = check_subscribed;
 
 	g_object_notify (G_OBJECT (settings), "check-subscribed");
+}
+
+/**
+ * camel_imapx_settings_get_concurrent_connections:
+ * @settings: a #CamelIMAPXSettings
+ * 
+ * Returns the number of concurrent network connections to the IMAP server
+ * to use for faster command/response processing.
+ *
+ * Returns: the number of concurrent connections to use
+ *
+ * Since: 3.14
+ **/
+guint
+camel_imapx_settings_get_concurrent_connections (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), 1);
+
+	return settings->priv->concurrent_connections;
+}
+
+/**
+ * camel_imapx_settings_set_concurrent_connections:
+ * @settings: a #CamelIMAPXSettings
+ * @concurrent_connections: the number of concurrent connections to use
+ *
+ * Sets the number of concurrent network connections to the IMAP server to
+ * use for faster command/response processing.
+ *
+ * The minimum number of connections is 1, the maximum is 7.  The
+ * @concurrent_connections value will be clamped to these limits if
+ * necessary.
+ *
+ * Since: 3.14
+ **/
+void
+camel_imapx_settings_set_concurrent_connections (CamelIMAPXSettings *settings,
+                                                 guint concurrent_connections)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	concurrent_connections = CLAMP (
+		concurrent_connections,
+		MIN_CONCURRENT_CONNECTIONS,
+		MAX_CONCURRENT_CONNECTIONS);
+
+	if (settings->priv->concurrent_connections == concurrent_connections)
+		return;
+
+	settings->priv->concurrent_connections = concurrent_connections;
+
+	g_object_notify (G_OBJECT (settings), "concurrent-connections");
 }
 
 /**
