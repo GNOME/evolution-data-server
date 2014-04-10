@@ -76,6 +76,10 @@ void		camel_imapx_store_folder_op_done
 						(CamelIMAPXStore *store,
 						 CamelIMAPXServer *server,
 						 const gchar *folder_name);
+CamelIMAPXMailbox *
+		camel_imapx_store_ref_mailbox	(CamelIMAPXStore *imapx_store,
+						 const gchar *mailbox_name);
+
 CamelFolderQuotaInfo *
 		camel_imapx_store_dup_quota_info
 						(CamelIMAPXStore *store,

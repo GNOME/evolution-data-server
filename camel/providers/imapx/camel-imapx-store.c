@@ -529,23 +529,18 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 }
 
 static void
-imapx_store_process_mailbox_status (CamelIMAPXStore *store,
+imapx_store_process_mailbox_status (CamelIMAPXStore *imapx_store,
                                     CamelIMAPXMailbox *mailbox)
 {
-	CamelFolder *folder = NULL;
+	CamelStore *store;
+	CamelFolder *folder;
 	gchar *folder_path;
-	GError *local_error = NULL;
 
 	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
+	store = CAMEL_STORE (imapx_store);
 
-	folder = camel_store_get_folder_sync (
-		CAMEL_STORE (store), folder_path, 0, NULL, &local_error);
-
-	/* Sanity check. */
-	g_return_if_fail (
-		((folder != NULL) && (local_error == NULL)) ||
-		((folder == NULL) && (local_error != NULL)));
-
+	/* Update only already opened folders */
+	folder = camel_object_bag_reserve (store->folders, folder_path);
 	if (folder != NULL) {
 		CamelIMAPXFolder *imapx_folder;
 		CamelIMAPXSummary *imapx_summary;
@@ -562,10 +557,7 @@ imapx_store_process_mailbox_status (CamelIMAPXStore *store,
 
 		g_object_unref (folder);
 	} else {
-		g_warning (
-			"%s: Failed to get folder '%s': %s",
-			G_STRFUNC, folder_path, local_error->message);
-		g_error_free (local_error);
+		camel_object_bag_abort (store->folders, folder_path);
 	}
 
 	g_free (folder_path);
@@ -2533,6 +2525,16 @@ camel_imapx_store_folder_op_done (CamelIMAPXStore *store,
 
 	camel_imapx_conn_manager_update_con_info (
 		store->priv->con_man, server, folder_name);
+}
+
+CamelIMAPXMailbox *
+camel_imapx_store_ref_mailbox (CamelIMAPXStore *imapx_store,
+			       const gchar *mailbox_name)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
+	g_return_val_if_fail (mailbox_name != NULL, NULL);
+
+	return camel_imapx_conn_manager_ref_mailbox (imapx_store->priv->con_man, mailbox_name);
 }
 
 CamelFolderQuotaInfo *

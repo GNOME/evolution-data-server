@@ -88,6 +88,10 @@ void		camel_imapx_conn_manager_update_con_info
 						(CamelIMAPXConnManager *con_man,
 						 CamelIMAPXServer *server,
 						 const gchar *folder_name);
+CamelIMAPXMailbox *
+		camel_imapx_conn_manager_ref_mailbox
+						(CamelIMAPXConnManager *con_man,
+						 const gchar *mailbox_name);
 
 G_END_DECLS
 
