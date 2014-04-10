@@ -897,6 +897,33 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man,
 	connection_info_unref (cinfo);
 }
 
+CamelIMAPXMailbox *
+camel_imapx_conn_manager_ref_mailbox (CamelIMAPXConnManager *con_man,
+				      const gchar *mailbox_name)
+{
+	CamelIMAPXMailbox *mailbox = NULL;
+	GList *iter;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
+	g_return_val_if_fail (mailbox_name != NULL, NULL);
+
+	CON_READ_LOCK (con_man);
+
+	for (iter = con_man->priv->connections; iter != NULL; iter = g_list_next (iter)) {
+		ConnectionInfo *candidate = iter->data;
+
+		if (candidate->is) {
+			mailbox = camel_imapx_server_ref_mailbox (candidate->is, mailbox_name);
+			if (mailbox)
+				break;
+		}
+	}
+
+	CON_READ_UNLOCK (con_man);
+
+	return mailbox;
+}
+
 void
 camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man)
 {

@@ -1447,10 +1447,19 @@ void
 camel_imapx_folder_set_mailbox (CamelIMAPXFolder *folder,
                                 CamelIMAPXMailbox *mailbox)
 {
+	CamelIMAPXSummary *imapx_summary;
+	guint32 uidvalidity;
+
 	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
 	g_weak_ref_set (&folder->priv->mailbox, mailbox);
+
+	imapx_summary = CAMEL_IMAPX_SUMMARY (CAMEL_FOLDER (folder)->summary);
+	uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
+
+	if (uidvalidity > 0 && uidvalidity != imapx_summary->validity)
+		camel_imapx_folder_invalidate_local_cache (folder, uidvalidity);
 
 	g_object_notify (G_OBJECT (folder), "mailbox");
 }
@@ -1519,10 +1528,15 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 
 	camel_store_summary_info_unref (imapx_store->summary, store_info);
 
-	/* See if the CamelIMAPXServer already has the mailbox. */
+	/* See if the CamelIMAPXStore already has the mailbox. */
+
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, mailbox_name);
+	if (mailbox != NULL) {
+		camel_imapx_folder_set_mailbox (folder, mailbox);
+		goto exit;
+	}
 
 	server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-
 	if (server == NULL)
 		goto exit;
 
