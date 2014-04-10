@@ -1483,6 +1483,10 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 	if (!soup_message_get_https_status (message, &cert, &cert_errors) || !cert)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
 
+	/* Always reject revoked certificates */
+	if ((cert_errors & G_TLS_CERTIFICATE_REVOKED) != 0)
+		return E_TRUST_PROMPT_RESPONSE_REJECT;
+
 	soup_uri = soup_message_get_uri (message);
 
 	if (soup_uri == NULL)
