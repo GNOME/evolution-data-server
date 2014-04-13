@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.12.1 2014-04-14
+---------------------------------------
+
+Bug Fixes:
+	Bug 660535 - Google contact groups/categories not showing in category
+	             list (Philip Withnall)
+	Bug 722275 - IMAPX: Incorrectly reads astring values (mailbox names)
+	             (Milan Crha)
+	Bug 726060 - Password prompt initiated before D-Bus name acquired
+	             (Milan Crha)
+	Bug 726767 - [imapx] Implement CamelFolder::get_message_cached()
+	             (Milan Crha)
+	Bug 726788 - Crash on malformed vCard (Xavier Claessens)
+
+Other Changes:
+	* CamelIMAPXServer not shut down properly on network outage (Milan Crha)
+	* Claim missing user name when authenticating (Milan Crha)
+	* [IMAPx] Enable concurrent connections (Milan Crha)
+	* [IMAPx] Do not open each folder on LIST/LSUB responses (Milan Crha)
+	* Always reject revoked certificates (Milan Crha)
+
+Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Gianvito Cavasoli (it)
+	Jiro Matsuzawa (ja)
+
+
 Evolution-Data-Server 3.12.0 2014-03-24
 ---------------------------------------
 
