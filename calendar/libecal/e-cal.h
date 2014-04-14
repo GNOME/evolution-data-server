@@ -2,20 +2,20 @@
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * Authors: Federico Mena-Quintero <federico@ximian.com>
- *          Rodrigo Moya <rodrigo@novell.com>
- *
- * This library is free software you can redistribute it and/or modify it
+ * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation.
  *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- *for more details.
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>.
+ * along with this library. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors: Federico Mena-Quintero <federico@ximian.com>
+ *          Rodrigo Moya <rodrigo@novell.com>
  */
 
 #if !defined (__LIBECAL_H_INSIDE__) && !defined (LIBECAL_COMPILATION)

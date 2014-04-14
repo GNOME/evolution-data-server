@@ -1,21 +1,20 @@
 /*
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  *
- * Authors:
- *    Michael Zucchi <notzed@ximian.com>
- *    Dan Winship <danw@ximian.com>
- *
- * This library is free software you can redistribute it and/or modify it
+ * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation.
  *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this library; if not, see <http://www.gnu.org/licenses/>.
+ * along with this library. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors: Michael Zucchi <notzed@ximian.com>
+ *          Dan Winship <danw@ximian.com>
  */
 
 #ifndef CAMEL_IMAPX_SUMMARY_H

@@ -4,20 +4,20 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  * Copyright (C) 2013 Collabora Ltd.
  *
- * This library is free software you can redistribute it and/or modify it
+ * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation.
  *
  * This library is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
  * for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with this library; if not, see <http://www.gnu.org/licenses/>.
+ * along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Chris Toshok (toshok@ximian.com)
- *         Philip Withnall <philip.withnall@collabora.co.uk>
+ * Authors: Chris Toshok (toshok@ximian.com)
+ *          Philip Withnall <philip.withnall@collabora.co.uk>
  */
 
 /**

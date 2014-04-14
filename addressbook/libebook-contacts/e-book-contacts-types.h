@@ -1,12 +1,22 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *
- * Authors:
- *   Nat Friedman (nat@ximian.com)
- *   Tristan Van Berkom <tristanvb@openismus.com>
- *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  * Copyright (C) 2012 Intel Corporation
+ *
+ * This library is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors: Nat Friedman (nat@ximian.com)
+ *          Tristan Van Berkom <tristanvb@openismus.com>
  */
 
 #if !defined (__LIBEBOOK_CONTACTS_H_INSIDE__) && !defined (LIBEBOOK_CONTACTS_COMPILATION)
