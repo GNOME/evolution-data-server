@@ -112,6 +112,7 @@ imapx_logger_convert (GConverter *converter,
 	CamelIMAPXLoggerPrivate *priv;
 	GConverterResult result;
 	gsize min_size;
+	const gchar *login_start;
 
 	priv = CAMEL_IMAPX_LOGGER_GET_PRIVATE (converter);
 
@@ -120,9 +121,31 @@ imapx_logger_convert (GConverter *converter,
 	memcpy (outbuf, inbuf, min_size);
 	*bytes_read = *bytes_written = min_size;
 
-	camel_imapx_debug (
-		io, priv->prefix, "I/O: '%.*s'\n",
-		(gint) min_size, (gchar *) outbuf);
+	login_start = g_strstr_len (outbuf, min_size, " LOGIN ");
+	if (login_start > (const gchar *) outbuf) {
+		const gchar *space = g_strstr_len (outbuf, min_size, " ");
+
+		if (space == login_start) {
+			camel_imapx_debug (
+				io, priv->prefix, "I/O: '%.*s ...'\n",
+				(gint) (login_start - ((const gchar *) outbuf) + 6), (gchar *) outbuf);
+		} else {
+			/* To print the command the other way */
+			login_start = NULL;
+		}
+	}
+
+	if (!login_start) {
+		/* Skip ending '\n' '\r'; it may sometimes show wrong data,
+		   when the input is divided into wrong chunks, but it will
+		   usually work as is needed, no extra new-lines in the log */
+		while (min_size > 0 && (((gchar *) outbuf)[min_size - 1] == '\r' || ((gchar *) outbuf)[min_size - 1] == '\n'))
+			min_size--;
+
+		camel_imapx_debug (
+			io, priv->prefix, "I/O: '%.*s'\n",
+			(gint) min_size, (gchar *) outbuf);
+	}
 
 	if ((flags & G_CONVERTER_INPUT_AT_END) != 0)
 		result = G_CONVERTER_FINISHED;
