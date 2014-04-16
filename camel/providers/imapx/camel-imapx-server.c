@@ -8574,6 +8574,12 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 	is->priv->parser_thread = g_thread_new (
 		NULL, imapx_parser_thread, g_object_ref (is));
 
+	if (CAMEL_IMAPX_LACK_CAPABILITY (is->cinfo, NAMESPACE)) {
+		/* This also creates a needed faux NAMESPACE */
+		if (!camel_imapx_server_list (is, "INBOX", 0, cancellable, error))
+			return FALSE;
+	}
+
 	return TRUE;
 }
 
