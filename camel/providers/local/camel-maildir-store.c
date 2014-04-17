@@ -607,6 +607,7 @@ scan_dirs (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
+	CamelFolderInfo *fi;
 	GPtrArray *folders;
 	gint res = -1;
 	DIR *dir;
@@ -665,7 +666,6 @@ scan_dirs (CamelStore *store,
 	while ((d = readdir (dir))) {
 		gchar *full_name, *filename;
 		const gchar *short_name;
-		CamelFolderInfo *fi;
 		struct stat st;
 
 		if (strcmp (d->d_name, "tmp") == 0
@@ -707,9 +707,6 @@ scan_dirs (CamelStore *store,
 		fi = scan_fi (store, flags, full_name, short_name, cancellable);
 		g_free (full_name);
 
-		fi->flags &= ~CAMEL_FOLDER_NOCHILDREN;
-		fi->flags |= CAMEL_FOLDER_CHILDREN;
-
 		g_ptr_array_add (folders, fi);
 	}
 
@@ -723,6 +720,29 @@ scan_dirs (CamelStore *store,
 
 			*topfi = camel_folder_info_build (folders, (*topfi)->full_name, '/', TRUE);
 			camel_folder_info_free (old_topfi);
+		}
+
+		fi = *topfi;
+
+		if (fi && (flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) != 0) {
+			while (fi) {
+				if (fi->child) {
+					fi->flags = fi->flags & (~CAMEL_FOLDER_NOCHILDREN);
+					fi->flags = fi->flags | CAMEL_FOLDER_CHILDREN;
+
+					fi = fi->child;
+				} else if (fi->next) {
+					fi = fi->next;
+				} else {
+					while (fi) {
+						fi = fi->parent;
+						if (fi && fi->next) {
+							fi = fi->next;
+							break;
+						}
+					}
+				}
+			}
 		}
 
 		res = 0;
