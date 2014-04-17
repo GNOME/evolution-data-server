@@ -644,7 +644,9 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	if ((flags & CAMEL_STORE_FOLDER_CREATE) != 0) {
 		CamelFolderInfo *fi;
 
-		fi = camel_store_get_folder_info_sync (parent_store, full_name, 0, NULL, NULL);
+		/* Use 'recursive' mode, even for just created folder, to have set whether
+		   the folder has children or not properly. */
+		fi = camel_store_get_folder_info_sync (parent_store, full_name, CAMEL_STORE_FOLDER_INFO_RECURSIVE, NULL, NULL);
 		g_return_val_if_fail (fi != NULL, lf);
 
 		camel_store_folder_created (parent_store, fi);
