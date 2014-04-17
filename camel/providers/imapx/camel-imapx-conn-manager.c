@@ -46,6 +46,7 @@ struct _CamelIMAPXConnManagerPrivate {
 	GList *connections;
 	GWeakRef store;
 	GRWLock rw_lock;
+	guint limit_max_connections;
 };
 
 struct _ConnectionInfo {
@@ -577,6 +578,10 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 		camel_imapx_settings_get_concurrent_connections (
 		CAMEL_IMAPX_SETTINGS (settings));
 
+	if (con_man->priv->limit_max_connections > 0 &&
+	    con_man->priv->limit_max_connections < concurrent_connections)
+		concurrent_connections = con_man->priv->limit_max_connections;
+
 	g_object_unref (settings);
 
 	/* XXX Have a dedicated connection for INBOX ? */
@@ -757,9 +762,9 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 	 *     we should not have multiple IMAPX connections trying to
 	 *     authenticate at once, so this should be thread-safe.
 	 */
-	camel_imapx_store_set_connecting_server (imapx_store, is);
+	camel_imapx_store_set_connecting_server (imapx_store, is, con_man->priv->connections != NULL);
 	success = camel_imapx_server_connect (is, cancellable, error);
-	camel_imapx_store_set_connecting_server (imapx_store, NULL);
+	camel_imapx_store_set_connecting_server (imapx_store, NULL, FALSE);
 
 	if (!success) {
 		g_clear_object (&is);
@@ -843,9 +848,35 @@ camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man,
 	/* Check if we got cancelled while waiting for the lock. */
 	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		is = imapx_find_connection_unlocked (con_man, folder_name, for_expensive_job);
-		if (is == NULL)
-			is = imapx_create_new_connection_unlocked (
-				con_man, folder_name, cancellable, error);
+		if (is == NULL) {
+			GError *local_error = NULL;
+
+			is = imapx_create_new_connection_unlocked (con_man, folder_name, cancellable, &local_error);
+
+			if (!is) {
+				gboolean limit_connections =
+					g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR,
+					CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED) &&
+					con_man->priv->connections;
+
+				c ('*', "Failed to open a new connection, while having %d opened, with error: %s; will limit connections: %s\n",
+					g_list_length (con_man->priv->connections),
+					local_error ? local_error->message : "Unknown error",
+					limit_connections ? "yes" : "no");
+
+				if (limit_connections) {
+					/* limit to one-less than current connection count - be nice to the server */
+					con_man->priv->limit_max_connections = g_list_length (con_man->priv->connections) - 1;
+					if (!con_man->priv->limit_max_connections)
+						con_man->priv->limit_max_connections = 1;
+
+					g_clear_error (&local_error);
+					is = imapx_find_connection_unlocked (con_man, folder_name, for_expensive_job);
+				} else {
+					g_propagate_error (error, local_error);
+				}
+			}
+		}
 	}
 
 	CON_WRITE_UNLOCK (con_man);
@@ -929,6 +960,8 @@ camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man)
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
 
 	CON_WRITE_LOCK (con_man);
+
+	c('*', "Closing all %d connections\n", g_list_length (con_man->priv->connections));
 
 	g_list_free_full (
 		con_man->priv->connections,

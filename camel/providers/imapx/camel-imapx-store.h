@@ -70,7 +70,10 @@ CamelIMAPXServer *
 						 GError **error);
 void		camel_imapx_store_set_connecting_server
 						(CamelIMAPXStore *store,
-						 CamelIMAPXServer *server);
+						 CamelIMAPXServer *server,
+						 gboolean is_concurrent_connection);
+gboolean	camel_imapx_store_is_connecting_concurrent_connection
+						(CamelIMAPXStore *imapx_store);
 void		camel_imapx_store_folder_op_done
 						(CamelIMAPXStore *store,
 						 CamelIMAPXServer *server,
