@@ -82,6 +82,8 @@
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 #endif
 
+G_DEFINE_QUARK (camel-imapx-server-error-quark, camel_imapx_server_error)
+
 extern gint camel_application_is_exiting;
 
 /* Job-specific structs */
@@ -5015,8 +5017,27 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 		result = CAMEL_AUTHENTICATION_ERROR;
 	else if (ic->status->result == IMAPX_OK)
 		result = CAMEL_AUTHENTICATION_ACCEPTED;
-	else
-		result = CAMEL_AUTHENTICATION_REJECTED;
+	else if (ic->status->result == IMAPX_NO) {
+		if (camel_imapx_store_is_connecting_concurrent_connection (store)) {
+			/* At least one connection succeeded, probably max connection limit
+			   set on the server had been reached, thus use special error code
+			   for it, to instruct the connection manager to decrease the limit
+			   and use already created connection. */
+			g_set_error_literal (
+				error, CAMEL_IMAPX_SERVER_ERROR,
+				CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED,
+				ic->status->text ? ic->status->text : _("Unknown error"));
+			result = CAMEL_AUTHENTICATION_ERROR;
+		} else {
+			result = CAMEL_AUTHENTICATION_REJECTED;
+		}
+	} else {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			ic->status->text ? ic->status->text : _("Unknown error"));
+		result = CAMEL_AUTHENTICATION_ERROR;
+	}
 
 	/* Forget old capabilities after login. */
 	if (result == CAMEL_AUTHENTICATION_ACCEPTED) {

@@ -44,7 +44,15 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_IMAPX_SERVER, CamelIMAPXServerClass))
 
+#define CAMEL_IMAPX_SERVER_ERROR (camel_imapx_server_error_quark ())
+
 G_BEGIN_DECLS
+
+typedef enum {
+	CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED
+} CamelIMAPXServerError;
+
+GQuark		camel_imapx_server_error_quark		(void) G_GNUC_CONST;
 
 /* Avoid a circular reference. */
 struct _CamelIMAPXStore;

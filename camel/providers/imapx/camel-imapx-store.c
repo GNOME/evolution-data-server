@@ -57,7 +57,10 @@
 
 struct _CamelIMAPXStorePrivate {
 	CamelIMAPXConnManager *con_man;
+
 	CamelIMAPXServer *connecting_server;
+	gboolean is_concurrent_connection;
+
 	gulong mailbox_created_handler_id;
 	gulong mailbox_renamed_handler_id;
 	gulong mailbox_updated_handler_id;
@@ -2496,7 +2499,8 @@ camel_imapx_store_ref_server (CamelIMAPXStore *store,
 /* The caller should hold the store->priv->server_lock already, when calling this */
 void
 camel_imapx_store_set_connecting_server (CamelIMAPXStore *store,
-					 CamelIMAPXServer *server)
+					 CamelIMAPXServer *server,
+					 gboolean is_concurrent_connection)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
 
@@ -2511,7 +2515,23 @@ camel_imapx_store_set_connecting_server (CamelIMAPXStore *store,
 			store->priv->connecting_server = g_object_ref (server);
 	}
 
+	store->priv->is_concurrent_connection = is_concurrent_connection;
+
 	g_mutex_unlock (&store->priv->server_lock);
+}
+
+gboolean
+camel_imapx_store_is_connecting_concurrent_connection (CamelIMAPXStore *imapx_store)
+{
+	gboolean res;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), FALSE);
+
+	g_mutex_lock (&imapx_store->priv->server_lock);
+	res = imapx_store->priv->is_concurrent_connection;
+	g_mutex_unlock (&imapx_store->priv->server_lock);
+
+	return res;
 }
 
 void
