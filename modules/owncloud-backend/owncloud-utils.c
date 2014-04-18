@@ -465,39 +465,6 @@ authenticate_cb (SoupSession *session,
 			authenticator->password->str);
 }
 
-static ETrustPromptResponse
-trust_prompt_sync (const ENamedParameters *parameters,
-                   GCancellable *cancellable,
-                   GError **error)
-{
-	EUserPrompter *prompter;
-	gint response;
-
-	g_return_val_if_fail (
-		parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
-
-	prompter = e_user_prompter_new ();
-	g_return_val_if_fail (
-		prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
-
-	response = e_user_prompter_extension_prompt_sync (
-		prompter, "ETrustPrompt::trust-prompt",
-		parameters, NULL, cancellable, error);
-
-	g_object_unref (prompter);
-
-	if (response == 0)
-		return E_TRUST_PROMPT_RESPONSE_REJECT;
-	if (response == 1)
-		return E_TRUST_PROMPT_RESPONSE_ACCEPT;
-	if (response == 2)
-		return E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY;
-	if (response == -1)
-		return E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
-
-	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
-}
-
 static gboolean
 find_sources (ECollectionBackend *collection,
               OwnCloudSourceFoundCb found_cb,
@@ -565,33 +532,11 @@ find_sources (ECollectionBackend *collection,
 		msg, "application/xml; charset=utf-8",
 		SOUP_MEMORY_STATIC, req_body, strlen (req_body));
 
-	if (soup_session_send_message (session, msg) == SOUP_STATUS_SSL_FAILED) {
-		ETrustPromptResponse response;
-		ENamedParameters *parameters;
-		ESourceWebdav *extension;
-		ESource *source;
+	/* this is the master source, thus there is no parent_source */
+	e_soup_ssl_trust_connect (
+		msg, e_backend_get_source (E_BACKEND (collection)), NULL, NULL);
 
-		source = e_backend_get_source (E_BACKEND (collection));
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		parameters = e_named_parameters_new ();
-
-		/* this is the master source, thus there is no parent_source */
-		response = e_source_webdav_prepare_ssl_trust_prompt_with_parent (extension, msg, NULL, parameters);
-		if (response == E_TRUST_PROMPT_RESPONSE_UNKNOWN) {
-			response = trust_prompt_sync (parameters, NULL, NULL);
-			if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN)
-				e_source_webdav_store_ssl_trust_prompt (extension, msg, response);
-		}
-
-		e_named_parameters_free (parameters);
-
-		if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT ||
-		    response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
-			g_object_set (session, SOUP_SESSION_SSL_STRICT, FALSE, NULL);
-
-			soup_session_send_message (session, msg);
-		}
-	}
+	soup_session_send_message (session, msg);
 
 	if (msg->status_code == SOUP_STATUS_MULTI_STATUS &&
 	    msg->response_body && msg->response_body->length) {

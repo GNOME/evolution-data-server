@@ -22,6 +22,7 @@
 #ifndef E_SOURCE_WEBDAV_H
 #define E_SOURCE_WEBDAV_H
 
+#include <gio/gio.h>
 #include <libsoup/soup.h>
 #include <libedataserver/e-source-enums.h>
 #include <libedataserver/e-source-extension.h>
@@ -132,17 +133,22 @@ ETrustPromptResponse
 		e_source_webdav_prepare_ssl_trust_prompt
 						(ESourceWebdav *extension,
 						 SoupMessage *message,
+						 GTlsCertificate *cert,
+						 GTlsCertificateFlags cert_errors,
 						 struct _ESourceRegistry *registry,
 						 struct _ENamedParameters *parameters);
 ETrustPromptResponse
 		e_source_webdav_prepare_ssl_trust_prompt_with_parent
 						(ESourceWebdav *extension,
 						 SoupMessage *message,
+						 GTlsCertificate *cert,
+						 GTlsCertificateFlags cert_errors,
 						 ESource *parent_source,
 						 struct _ENamedParameters *parameters);
 void		e_source_webdav_store_ssl_trust_prompt
 						(ESourceWebdav *extension,
 						 SoupMessage *message,
+						 GTlsCertificate *cert,
 						 ETrustPromptResponse response);
 void		e_source_webdav_unset_temporary_ssl_trust
 						(ESourceWebdav *extension);

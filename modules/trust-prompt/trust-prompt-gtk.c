@@ -125,7 +125,6 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 	widget = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
 	gtk_window_set_icon_name (GTK_WINDOW (dialog), "evolution");
-	gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 
 	grid = g_object_new (

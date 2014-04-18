@@ -63,6 +63,7 @@ libebackend_1_2_la_SOURCES = \
 	e-module.c \
 	e-server-side-source.c \
 	e-soup-auth-bearer.c \
+	e-soup-ssl-trust.c \
 	e-source-registry-server.c \
 	e-sqlite3-vfs.c \
 	e-user-prompter.c \
@@ -111,6 +112,7 @@ libebackendinclude_HEADERS = \
 	e-module.h \
 	e-server-side-source.h \
 	e-soup-auth-bearer.h \
+	e-soup-ssl-trust.h \
 	e-source-registry-server.h \
 	e-sqlite3-vfs.h \
 	e-user-prompter.h \

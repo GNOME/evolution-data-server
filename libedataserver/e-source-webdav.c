@@ -1367,32 +1367,35 @@ encode_ssl_trust (ESourceWebdav *extension,
 /**
  * e_source_webdav_prepare_ssl_trust_prompt:
  * @extension: an #ESourceWebdav
- * @message: a #SoupMessage with #SOUP_STATUS_SSL_FAILED status code
- * @registry: an #ESourceRegistry, to use for parent lookups
+ * @message: a #SoupMessage
+ * @cert: the invalid certificate of the connection over which @message is about
+ *        to be sent
+ * @cert_errors: the error flags for @cert
+ * @registry: (allow-none): an #ESourceRegistry, to use for parent lookups
  * @parameters: an #ENamedParameters to be populated
  *
- * Checks @messages<!-- -->'s certificate against currently stored trust
- * response and either returns what to do immediately, or returns
- * #E_TRUST_PROMPT_RESPONSE_UNKNOWN and populates @parameters with necessary
- * values for a trust prompt.
+ * Checks @cert against currently stored trust response and either returns what
+ * to do immediately, or returns #E_TRUST_PROMPT_RESPONSE_UNKNOWN and populates
+ * @parameters with necessary values for a trust prompt.
  *
  * Returns: What to do with SSL connection, where
  *          #E_TRUST_PROMPT_RESPONSE_UNKNOWN means 'ask a user, with
  *          populated parameters'.
  *
- * Note: The #E_TRUST_PROMPT_RESPONSE_REJECT is returned on any errors, like
- *  the @message not being with the #SOUP_STATUS_SSL_FAILED status code,
- *  no certificate being stored in the @message and so on.
+ * Note: The #E_TRUST_PROMPT_RESPONSE_REJECT is returned on any errors, such as
+ *  invalid parameters.
  *
  * Since: 3.8
  **/
 ETrustPromptResponse
 e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
                                           SoupMessage *message,
+                                          GTlsCertificate *cert,
+                                          GTlsCertificateFlags cert_errors,
                                           ESourceRegistry *registry,
                                           ENamedParameters *parameters)
 {
-	ESource *source, *parent_source = NULL;
+	ESource *parent_source = NULL;
 	ETrustPromptResponse res;
 
 	g_return_val_if_fail (
@@ -1401,28 +1404,33 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 	g_return_val_if_fail (
 		SOUP_IS_MESSAGE (message),
 		E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (
-		E_IS_SOURCE_REGISTRY (registry),
-		E_TRUST_PROMPT_RESPONSE_REJECT);
+	if (registry)
+		g_return_val_if_fail (
+			E_IS_SOURCE_REGISTRY (registry),
+			E_TRUST_PROMPT_RESPONSE_REJECT);
 	g_return_val_if_fail (
 		parameters != NULL,
 		E_TRUST_PROMPT_RESPONSE_REJECT);
 
-	source = e_source_extension_ref_source (E_SOURCE_EXTENSION (extension));
-	if (source != NULL) {
-		const gchar *parent_uid;
+	if (registry != NULL) {
+		ESource *source;
 
-		parent_uid = e_source_get_parent (source);
-
-		if (parent_uid != NULL)
-			parent_source = e_source_registry_ref_source (
-				registry, parent_uid);
-
-		g_object_unref (source);
+		source = e_source_extension_ref_source (E_SOURCE_EXTENSION (extension));
+		if (source != NULL) {
+			const gchar *parent_uid;
+	
+			parent_uid = e_source_get_parent (source);
+	
+			if (parent_uid != NULL)
+				parent_source = e_source_registry_ref_source (
+					registry, parent_uid);
+	
+			g_object_unref (source);
+		}
 	}
 
 	res = e_source_webdav_prepare_ssl_trust_prompt_with_parent (
-		extension, message, parent_source, parameters);
+		extension, message, cert, cert_errors, parent_source, parameters);
 
 	if (parent_source)
 		g_object_unref (parent_source);
@@ -1433,7 +1441,10 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 /**
  * e_source_webdav_prepare_ssl_trust_prompt_with_parent:
  * @extension: an #ESourceWebdav
- * @message: a #SoupMessage with #SOUP_STATUS_SSL_FAILED status code
+ * @message: a #SoupMessage
+ * @cert: the invalid certificate of the connection over which @message is about
+ *        to be sent
+ * @cert_errors: the error flags for @cert
  * @parent_source: an #ESource, parent of the @extension<!-- -->'s source
  * @parameters: an #ENamedParameters to be populated
  *
@@ -1447,13 +1458,13 @@ e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
 ETrustPromptResponse
 e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
                                                       SoupMessage *message,
+                                                      GTlsCertificate *cert,
+                                                      GTlsCertificateFlags cert_errors,
                                                       ESource *parent_source,
                                                       ENamedParameters *parameters)
 {
 	ETrustPromptResponse response;
 	ESource *source;
-	GTlsCertificate *cert = NULL;
-	GTlsCertificateFlags cert_errors = 0;
 	GByteArray *bytes = NULL;
 	SoupURI *soup_uri;
 	const gchar *host;
@@ -1476,12 +1487,6 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 	g_return_val_if_fail (
 		parameters != NULL,
 		E_TRUST_PROMPT_RESPONSE_REJECT);
-
-	if (message->status_code != SOUP_STATUS_SSL_FAILED)
-		return E_TRUST_PROMPT_RESPONSE_REJECT;
-
-	if (!soup_message_get_https_status (message, &cert, &cert_errors) || !cert)
-		return E_TRUST_PROMPT_RESPONSE_REJECT;
 
 	/* Always reject revoked certificates */
 	if ((cert_errors & G_TLS_CERTIFICATE_REVOKED) != 0)
@@ -1622,8 +1627,10 @@ webdav_extension_changes_written_cb (GObject *source_object,
 /**
  * e_source_webdav_store_ssl_trust_prompt:
  * @extension: an #ESourceWebdav
- * @message: a #SoupMessage with #SOUP_STATUS_SSL_FAILED status code
- * @response: user's response from a trust prompt
+ * @message: a #SoupMessage
+ * @cert: the invalid certificate of the connection over which @message is about
+ *        to be sent
+ * @response: user's response from a trust prompt for @cert
  *
  * Stores user's response from a trust prompt, thus it is re-used the next
  * time it'll be needed. An #E_TRUST_PROMPT_RESPONSE_UNKNOWN is treated as
@@ -1634,9 +1641,9 @@ webdav_extension_changes_written_cb (GObject *source_object,
 void
 e_source_webdav_store_ssl_trust_prompt (ESourceWebdav *extension,
                                         SoupMessage *message,
+                                        GTlsCertificate *cert,
                                         ETrustPromptResponse response)
 {
-	GTlsCertificate *cert = NULL;
 	GByteArray *bytes = NULL;
 	SoupURI *soup_uri;
 	const gchar *host;
@@ -1645,12 +1652,6 @@ e_source_webdav_store_ssl_trust_prompt (ESourceWebdav *extension,
 
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 	g_return_if_fail (SOUP_IS_MESSAGE (message));
-
-	if (message->status_code != SOUP_STATUS_SSL_FAILED)
-		return;
-
-	if (!soup_message_get_https_status (message, &cert, NULL) || !cert)
-		return;
 
 	soup_uri = soup_message_get_uri (message);
 	if (!soup_uri || !soup_uri_get_host (soup_uri))

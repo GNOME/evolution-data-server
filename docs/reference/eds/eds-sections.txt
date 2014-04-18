@@ -2840,6 +2840,12 @@ e_soup_auth_bearer_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-soup-ssl-trust</FILE>
+<TITLE>SSL certificate trust handling for WebDAV sources</TITLE>
+e_soup_ssl_trust_connect
+</SECTION>
+
+<SECTION>
 <FILE>e-source</FILE>
 <TITLE>ESource</TITLE>
 E_SOURCE_PARAM_SETTING

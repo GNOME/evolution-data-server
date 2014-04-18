@@ -500,37 +500,12 @@ cal_backend_http_load (ECalBackendHttp *backend,
 			&cancel_data, (GDestroyNotify) NULL);
 	}
 
+	e_soup_ssl_trust_connect (
+		soup_message, e_backend_get_source (E_BACKEND (backend)),
+		e_cal_backend_get_registry (E_CAL_BACKEND (backend)),
+		cancellable);
+
 	status_code = soup_session_send_message (soup_session, soup_message);
-	if (status_code == SOUP_STATUS_SSL_FAILED) {
-		ESource *source;
-		ESourceWebdav *extension;
-		ESourceRegistry *registry;
-		EBackend *ebackend;
-		ETrustPromptResponse response;
-		ENamedParameters *parameters;
-
-		ebackend = E_BACKEND (backend);
-		source = e_backend_get_source (ebackend);
-		registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-
-		parameters = e_named_parameters_new ();
-
-		response = e_source_webdav_prepare_ssl_trust_prompt (extension, soup_message, registry, parameters);
-		if (response == E_TRUST_PROMPT_RESPONSE_UNKNOWN) {
-			response = e_backend_trust_prompt_sync (ebackend, parameters, cancellable, NULL);
-			if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN)
-				e_source_webdav_store_ssl_trust_prompt (extension, soup_message, response);
-		}
-
-		e_named_parameters_free (parameters);
-
-		if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT ||
-		    response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
-			g_object_set (soup_session, SOUP_SESSION_SSL_STRICT, FALSE, NULL);
-			status_code = soup_session_send_message (soup_session, soup_message);
-		}
-	}
 
 	if (G_IS_CANCELLABLE (cancellable))
 		g_cancellable_disconnect (cancellable, cancel_id);
@@ -896,7 +871,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	webdav_extension = e_source_get_extension (source, extension_name);
 
-	g_object_set (cbhttp->priv->soup_session, SOUP_SESSION_SSL_STRICT, TRUE, NULL);
 	e_source_webdav_unset_temporary_ssl_trust (webdav_extension);
 
 	if (priv->source_changed_id == 0) {

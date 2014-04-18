@@ -228,37 +228,12 @@ send_and_handle_ssl (EBookBackendWebdav *webdav,
 {
 	guint status_code;
 
+	e_soup_ssl_trust_connect (
+		message, e_backend_get_source (E_BACKEND (webdav)),
+		e_book_backend_get_registry (E_BOOK_BACKEND (webdav)),
+		cancellable);
+
 	status_code = soup_session_send_message (webdav->priv->session, message);
-	if (status_code == SOUP_STATUS_SSL_FAILED) {
-		ESource *source;
-		ESourceWebdav *extension;
-		ESourceRegistry *registry;
-		EBackend *backend;
-		ETrustPromptResponse response;
-		ENamedParameters *parameters;
-
-		backend = E_BACKEND (webdav);
-		source = e_backend_get_source (backend);
-		registry = e_book_backend_get_registry (E_BOOK_BACKEND (backend));
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-
-		parameters = e_named_parameters_new ();
-
-		response = e_source_webdav_prepare_ssl_trust_prompt (extension, message, registry, parameters);
-		if (response == E_TRUST_PROMPT_RESPONSE_UNKNOWN) {
-			response = e_backend_trust_prompt_sync (backend, parameters, cancellable, NULL);
-			if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN)
-				e_source_webdav_store_ssl_trust_prompt (extension, message, response);
-		}
-
-		e_named_parameters_free (parameters);
-
-		if (response == E_TRUST_PROMPT_RESPONSE_ACCEPT ||
-		    response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY) {
-			g_object_set (webdav->priv->session, SOUP_SESSION_SSL_STRICT, FALSE, NULL);
-			status_code = soup_session_send_message (webdav->priv->session, message);
-		}
-	}
 
 	return status_code;
 }
