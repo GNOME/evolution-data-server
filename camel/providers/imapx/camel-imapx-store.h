@@ -59,6 +59,15 @@ struct _CamelIMAPXStore {
 
 struct _CamelIMAPXStoreClass {
 	CamelOfflineStoreClass parent_class;
+
+	/* Signals */
+	void		(*mailbox_created)	(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXMailbox *mailbox);
+	void		(*mailbox_renamed)	(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXMailbox *mailbox,
+						 const gchar *oldname);
+	void		(*mailbox_updated)	(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXMailbox *mailbox);
 };
 
 GType		camel_imapx_store_get_type	(void);
@@ -78,10 +87,34 @@ void		camel_imapx_store_folder_op_done
 						(CamelIMAPXStore *store,
 						 CamelIMAPXServer *server,
 						 const gchar *folder_name);
+CamelIMAPXNamespaceResponse *
+		camel_imapx_store_ref_namespaces
+						(CamelIMAPXStore *imapx_store);
+void		camel_imapx_store_set_namespaces
+						(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXNamespaceResponse *namespaces);
 CamelIMAPXMailbox *
 		camel_imapx_store_ref_mailbox	(CamelIMAPXStore *imapx_store,
 						 const gchar *mailbox_name);
-
+GList *		camel_imapx_store_list_mailboxes
+						(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXNamespace *namespace_,
+						 const gchar *pattern);
+void		camel_imapx_store_emit_mailbox_updated
+						(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXMailbox *mailbox);
+void		camel_imapx_store_handle_mailbox_rename
+						(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXMailbox *old_mailbox,
+						 const gchar *new_mailbox_name);
+void		camel_imapx_store_handle_list_response
+						(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXServer *imapx_server,
+						 CamelIMAPXListResponse *response);
+void		camel_imapx_store_handle_lsub_response
+						(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXServer *imapx_server,
+						 CamelIMAPXListResponse *response);
 CamelFolderQuotaInfo *
 		camel_imapx_store_dup_quota_info
 						(CamelIMAPXStore *store,

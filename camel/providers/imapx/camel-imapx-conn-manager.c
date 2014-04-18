@@ -62,15 +62,6 @@ enum {
 	PROP_STORE
 };
 
-enum {
-	MAILBOX_CREATED,
-	MAILBOX_RENAMED,
-	MAILBOX_UPDATED,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
-
 G_DEFINE_TYPE (
 	CamelIMAPXConnManager,
 	camel_imapx_conn_manager,
@@ -87,31 +78,6 @@ static void
 imapx_conn_mailbox_closed (CamelIMAPXServer *is,
 			   CamelIMAPXMailbox *mailbox,
 			   CamelIMAPXConnManager *con_man);
-
-static void
-imapx_conn_mailbox_created_cb (CamelIMAPXServer *server,
-			       CamelIMAPXMailbox *mailbox,
-			       CamelIMAPXConnManager *con_man)
-{
-	g_signal_emit (con_man, signals[MAILBOX_CREATED], 0, mailbox);
-}
-
-static void
-imapx_conn_mailbox_renamed_cb (CamelIMAPXServer *server,
-			       CamelIMAPXMailbox *mailbox,
-			       const gchar *oldname,
-			       CamelIMAPXConnManager *con_man)
-{
-	g_signal_emit (con_man, signals[MAILBOX_RENAMED], 0, mailbox, oldname);
-}
-
-static void
-imapx_conn_mailbox_updated_cb (CamelIMAPXServer *server,
-			       CamelIMAPXMailbox *mailbox,
-			       CamelIMAPXConnManager *con_man)
-{
-	g_signal_emit (con_man, signals[MAILBOX_UPDATED], 0, mailbox);
-}
 
 static ConnectionInfo *
 connection_info_new (CamelIMAPXServer *is)
@@ -156,9 +122,6 @@ connection_info_unref (ConnectionInfo *cinfo)
 		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_shutdown, NULL);
 		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_update_select, NULL);
 		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_closed, NULL);
-		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_created_cb, NULL);
-		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_renamed_cb, NULL);
-		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_updated_cb, NULL);
 
 		g_mutex_clear (&cinfo->lock);
 		g_object_unref (cinfo->is);
@@ -178,9 +141,6 @@ connection_info_cancel_and_unref (ConnectionInfo *cinfo)
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_shutdown, NULL);
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_update_select, NULL);
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_closed, NULL);
-	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_created_cb, NULL);
-	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_renamed_cb, NULL);
-	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_updated_cb, NULL);
 	camel_imapx_server_shutdown (cinfo->is);
 	connection_info_unref (cinfo);
 }
@@ -456,34 +416,6 @@ camel_imapx_conn_manager_class_init (CamelIMAPXConnManagerClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
-
-	signals[MAILBOX_CREATED] = g_signal_new (
-		"mailbox-created",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelIMAPXConnManagerClass, mailbox_created),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 1,
-		CAMEL_TYPE_IMAPX_MAILBOX);
-
-	signals[MAILBOX_RENAMED] = g_signal_new (
-		"mailbox-renamed",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelIMAPXConnManagerClass, mailbox_renamed),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 2,
-		CAMEL_TYPE_IMAPX_MAILBOX,
-		G_TYPE_STRING);
-
-	signals[MAILBOX_UPDATED] = g_signal_new (
-		"mailbox-updated",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_FIRST,
-		G_STRUCT_OFFSET (CamelIMAPXConnManagerClass, mailbox_updated),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 1,
-		CAMEL_TYPE_IMAPX_MAILBOX);
 }
 
 static void
@@ -782,18 +714,6 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 		is, "mailbox-closed",
 		G_CALLBACK (imapx_conn_mailbox_closed), con_man);
 
-	g_signal_connect (
-		is, "mailbox-created",
-		G_CALLBACK (imapx_conn_mailbox_created_cb), con_man);
-
-	g_signal_connect (
-		is, "mailbox-renamed",
-		G_CALLBACK (imapx_conn_mailbox_renamed_cb), con_man);
-
-	g_signal_connect (
-		is, "mailbox-updated",
-		G_CALLBACK (imapx_conn_mailbox_updated_cb), con_man);
-
 	cinfo = connection_info_new (is);
 
 	if (folder_name != NULL)
@@ -925,33 +845,6 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man,
 	}
 
 	connection_info_unref (cinfo);
-}
-
-CamelIMAPXMailbox *
-camel_imapx_conn_manager_ref_mailbox (CamelIMAPXConnManager *con_man,
-				      const gchar *mailbox_name)
-{
-	CamelIMAPXMailbox *mailbox = NULL;
-	GList *iter;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
-	g_return_val_if_fail (mailbox_name != NULL, NULL);
-
-	CON_READ_LOCK (con_man);
-
-	for (iter = con_man->priv->connections; iter != NULL; iter = g_list_next (iter)) {
-		ConnectionInfo *candidate = iter->data;
-
-		if (candidate->is) {
-			mailbox = camel_imapx_server_ref_mailbox (candidate->is, mailbox_name);
-			if (mailbox)
-				break;
-		}
-	}
-
-	CON_READ_UNLOCK (con_man);
-
-	return mailbox;
 }
 
 void

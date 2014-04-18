@@ -1540,7 +1540,7 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 	if (server == NULL)
 		goto exit;
 
-	mailbox = camel_imapx_server_ref_mailbox (server, mailbox_name);
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, mailbox_name);
 	if (mailbox != NULL) {
 		camel_imapx_folder_set_mailbox (folder, mailbox);
 		goto exit;
@@ -1562,7 +1562,7 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 
 	/* This might still return NULL if the mailbox has a
 	 * /NonExistent attribute.  Otherwise this should work. */
-	mailbox = camel_imapx_server_ref_mailbox (server, mailbox_name);
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, mailbox_name);
 	if (mailbox != NULL) {
 		camel_imapx_folder_set_mailbox (folder, mailbox);
 	} else {

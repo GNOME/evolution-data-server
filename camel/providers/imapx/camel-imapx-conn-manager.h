@@ -56,15 +56,6 @@ struct _CamelIMAPXConnManager {
 
 struct _CamelIMAPXConnManagerClass {
 	GObjectClass parent_class;
-
-	/* Signals */
-	void		(*mailbox_created)	(CamelIMAPXConnManager *con_man,
-						 CamelIMAPXMailbox *mailbox);
-	void		(*mailbox_renamed)	(CamelIMAPXConnManager *con_man,
-						 CamelIMAPXMailbox *mailbox,
-						 const gchar *oldname);
-	void		(*mailbox_updated)	(CamelIMAPXConnManager *con_man,
-						 CamelIMAPXMailbox *mailbox);
 };
 
 GType		camel_imapx_conn_manager_get_type (void);
@@ -87,10 +78,6 @@ void		camel_imapx_conn_manager_update_con_info
 						(CamelIMAPXConnManager *con_man,
 						 CamelIMAPXServer *server,
 						 const gchar *folder_name);
-CamelIMAPXMailbox *
-		camel_imapx_conn_manager_ref_mailbox
-						(CamelIMAPXConnManager *con_man,
-						 const gchar *mailbox_name);
 
 G_END_DECLS
 
