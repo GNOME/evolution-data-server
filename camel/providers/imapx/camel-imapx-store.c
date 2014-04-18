@@ -55,15 +55,14 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_IMAPX_STORE, CamelIMAPXStorePrivate))
 
+#define e(...) camel_imapx_debug(extra, __VA_ARGS__)
+
 struct _CamelIMAPXStorePrivate {
 	CamelIMAPXConnManager *con_man;
 
 	CamelIMAPXServer *connecting_server;
 	gboolean is_concurrent_connection;
 
-	gulong mailbox_created_handler_id;
-	gulong mailbox_renamed_handler_id;
-	gulong mailbox_updated_handler_id;
 	GMutex server_lock;
 
 	GHashTable *quota_info;
@@ -77,6 +76,12 @@ struct _CamelIMAPXStorePrivate {
 	GMutex get_finfo_lock;
 	time_t last_refresh_time;
 	volatile gint syncing_folders;
+
+	CamelIMAPXNamespaceResponse *namespaces;
+	GMutex namespaces_lock;
+
+	GHashTable *mailboxes;
+	GMutex mailboxes_lock;
 };
 
 enum {
@@ -84,6 +89,15 @@ enum {
 	PROP_CONNECTABLE,
 	PROP_HOST_REACHABLE
 };
+
+enum {
+	MAILBOX_CREATED,
+	MAILBOX_RENAMED,
+	MAILBOX_UPDATED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 static GInitableIface *parent_initable_interface;
 
@@ -567,34 +581,6 @@ imapx_store_process_mailbox_status (CamelIMAPXStore *imapx_store,
 }
 
 static void
-imapx_store_mailbox_created_cb (CamelIMAPXConnManager *con_man,
-                                CamelIMAPXMailbox *mailbox,
-                                CamelIMAPXStore *store)
-{
-	imapx_store_add_mailbox_to_folder (store, mailbox);
-	imapx_store_process_mailbox_attributes (store, mailbox, NULL);
-}
-
-static void
-imapx_store_mailbox_renamed_cb (CamelIMAPXConnManager *con_man,
-                                CamelIMAPXMailbox *mailbox,
-                                const gchar *oldname,
-                                CamelIMAPXStore *store)
-{
-	imapx_store_process_mailbox_attributes (store, mailbox, oldname);
-	imapx_store_process_mailbox_status (store, mailbox);
-}
-
-static void
-imapx_store_mailbox_updated_cb (CamelIMAPXConnManager *con_man,
-                                CamelIMAPXMailbox *mailbox,
-                                CamelIMAPXStore *store)
-{
-	imapx_store_process_mailbox_attributes (store, mailbox, NULL);
-	imapx_store_process_mailbox_status (store, mailbox);
-}
-
-static void
 imapx_store_connect_to_settings (CamelStore *store)
 {
 	CamelIMAPXStorePrivate *priv;
@@ -686,29 +672,7 @@ imapx_store_dispose (GObject *object)
 	/* Force disconnect so we don't have it run later,
 	 * after we've cleaned up some stuff. */
 	if (imapx_store->priv->con_man != NULL) {
-		if (imapx_store->priv->mailbox_created_handler_id > 0) {
-			g_signal_handler_disconnect (
-				imapx_store->priv->con_man,
-				imapx_store->priv->mailbox_created_handler_id);
-			imapx_store->priv->mailbox_created_handler_id = 0;
-		}
-
-		if (imapx_store->priv->mailbox_renamed_handler_id > 0) {
-			g_signal_handler_disconnect (
-				imapx_store->priv->con_man,
-				imapx_store->priv->mailbox_renamed_handler_id);
-			imapx_store->priv->mailbox_renamed_handler_id = 0;
-		}
-
-		if (imapx_store->priv->mailbox_updated_handler_id > 0) {
-			g_signal_handler_disconnect (
-				imapx_store->priv->con_man,
-				imapx_store->priv->mailbox_updated_handler_id);
-			imapx_store->priv->mailbox_updated_handler_id = 0;
-		}
-
-		camel_service_disconnect_sync (
-			CAMEL_SERVICE (imapx_store), TRUE, NULL, NULL);
+		camel_service_disconnect_sync (CAMEL_SERVICE (imapx_store), FALSE, NULL, NULL);
 		g_clear_object (&imapx_store->priv->con_man);
 	}
 
@@ -723,6 +687,9 @@ imapx_store_dispose (GObject *object)
 
 	g_clear_object (&imapx_store->priv->connecting_server);
 	g_clear_object (&imapx_store->priv->settings);
+	g_clear_object (&imapx_store->priv->namespaces);
+
+	g_hash_table_remove_all (imapx_store->priv->mailboxes);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->dispose (object);
@@ -743,6 +710,11 @@ imapx_store_finalize (GObject *object)
 	g_mutex_clear (&priv->quota_info_lock);
 
 	g_mutex_clear (&priv->settings_lock);
+
+	g_mutex_clear (&priv->namespaces_lock);
+
+	g_hash_table_destroy (priv->mailboxes);
+	g_mutex_clear (&priv->mailboxes_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_store_parent_class)->finalize (object);
@@ -1232,7 +1204,7 @@ fetch_folder_info_for_pattern (CamelIMAPXServer *server,
 
 	imapx_store = camel_imapx_server_ref_store (server);
 
-	list = camel_imapx_server_list_mailboxes (server, namespace, pattern);
+	list = camel_imapx_store_list_mailboxes (imapx_store, namespace, pattern);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		CamelIMAPXMailbox *mailbox;
@@ -1266,10 +1238,10 @@ fetch_folder_info_for_inbox (CamelIMAPXServer *server,
 		CamelIMAPXStore *imapx_store;
 		CamelIMAPXMailbox *mailbox;
 
-		mailbox = camel_imapx_server_ref_mailbox (server, "INBOX");
-		g_return_val_if_fail (mailbox != NULL, FALSE);
-
 		imapx_store = camel_imapx_server_ref_store (server);
+
+		mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
+		g_return_val_if_fail (mailbox != NULL, FALSE);
 
 		collect_folder_info_for_list (
 			imapx_store, mailbox, folder_info_results);
@@ -1281,7 +1253,8 @@ fetch_folder_info_for_inbox (CamelIMAPXServer *server,
 }
 
 static gboolean
-fetch_folder_info_for_namespace_category (CamelIMAPXServer *server,
+fetch_folder_info_for_namespace_category (CamelIMAPXStore *imapx_store,
+					  CamelIMAPXServer *server,
                                           CamelIMAPXNamespaceCategory category,
                                           CamelStoreGetFolderInfoFlags flags,
                                           GHashTable *folder_info_results,
@@ -1292,7 +1265,7 @@ fetch_folder_info_for_namespace_category (CamelIMAPXServer *server,
 	GList *list, *link;
 	gboolean success = TRUE;
 
-	namespace_response = camel_imapx_server_ref_namespaces (server);
+	namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
 	g_return_val_if_fail (namespace_response != NULL, FALSE);
 
 	list = camel_imapx_namespace_response_list (namespace_response);
@@ -1330,7 +1303,8 @@ fetch_folder_info_for_namespace_category (CamelIMAPXServer *server,
 }
 
 static gboolean
-fetch_folder_info_from_folder_path (CamelIMAPXServer *server,
+fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
+				    CamelIMAPXServer *server,
                                     const gchar *folder_path,
                                     CamelStoreGetFolderInfoFlags flags,
                                     GHashTable *folder_info_results,
@@ -1345,7 +1319,7 @@ fetch_folder_info_from_folder_path (CamelIMAPXServer *server,
 	gchar separator;
 	gboolean success = FALSE;
 
-	namespace_response = camel_imapx_server_ref_namespaces (server);
+	namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
 	g_return_val_if_fail (namespace_response != NULL, FALSE);
 
 	/* Find a suitable IMAP namespace for the folder path. */
@@ -1412,14 +1386,14 @@ sync_folders (CamelIMAPXStore *imapx_store,
 
 	if (root_folder_path != NULL && *root_folder_path != '\0') {
 		success = fetch_folder_info_from_folder_path (
-			server, root_folder_path, flags,
+			imapx_store, server, root_folder_path, flags,
 			folder_info_results, cancellable, error);
 	} else {
 		gboolean have_folder_info_for_inbox;
 
 		/* XXX We only fetch personal mailboxes at this time. */
 		success = fetch_folder_info_for_namespace_category (
-			server, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags,
+			imapx_store, server, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags,
 			folder_info_results, cancellable, error);
 
 		have_folder_info_for_inbox =
@@ -1535,7 +1509,7 @@ discover_inbox (CamelIMAPXStore *imapx_store,
 	if (imapx_server == NULL)
 		return;
 
-	mailbox = camel_imapx_server_ref_mailbox (imapx_server, "INBOX");
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
 
 	if (mailbox == NULL)
 		goto exit;
@@ -1918,7 +1892,7 @@ check_namespace:
 	 *       This needs fixed to properly support IMAP namespaces.
 	 */
 
-	namespace_response = camel_imapx_server_ref_namespaces (imapx_server);
+	namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
 	g_return_val_if_fail (namespace_response != NULL, NULL);
 
 	list = camel_imapx_namespace_response_list (namespace_response);
@@ -1949,7 +1923,7 @@ check_separator:
 	}
 
 	/* This also LISTs the mailbox after creating it, which
-	 * triggers the CamelIMAPXServer::mailbox-created signal
+	 * triggers the CamelIMAPXStore::mailbox-created signal
 	 * and all the local processing that goes along with it. */
 	success = camel_imapx_server_create_mailbox (
 		imapx_server, mailbox_name, cancellable, error);
@@ -2328,6 +2302,49 @@ exit:
 }
 
 static void
+imapx_store_mailbox_created (CamelIMAPXStore *imapx_store,
+			     CamelIMAPXMailbox *mailbox)
+{
+	e (
+		'*',
+		"%s::mailbox-created (\"%s\")\n",
+		G_OBJECT_TYPE_NAME (imapx_store),
+		camel_imapx_mailbox_get_name (mailbox));
+
+	imapx_store_add_mailbox_to_folder (imapx_store, mailbox);
+	imapx_store_process_mailbox_attributes (imapx_store, mailbox, NULL);
+}
+
+static void
+imapx_store_mailbox_renamed (CamelIMAPXStore *imapx_store,
+			     CamelIMAPXMailbox *mailbox,
+			     const gchar *oldname)
+{
+	e (
+		'*',
+		"%s::mailbox-renamed (\"%s\" -> \"%s\")\n",
+		G_OBJECT_TYPE_NAME (imapx_store), oldname,
+		camel_imapx_mailbox_get_name (mailbox));
+
+	imapx_store_process_mailbox_attributes (imapx_store, mailbox, oldname);
+	imapx_store_process_mailbox_status (imapx_store, mailbox);
+}
+
+static void
+imapx_store_mailbox_updated (CamelIMAPXStore *imapx_store,
+			     CamelIMAPXMailbox *mailbox)
+{
+	e (
+		'*',
+		"%s::mailbox-updated (\"%s\")\n",
+		G_OBJECT_TYPE_NAME (imapx_store),
+		camel_imapx_mailbox_get_name (mailbox));
+
+	imapx_store_process_mailbox_attributes (imapx_store, mailbox, NULL);
+	imapx_store_process_mailbox_status (imapx_store, mailbox);
+}
+
+static void
 camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 {
 	GObjectClass *object_class;
@@ -2363,6 +2380,10 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->delete_folder_sync = imapx_store_delete_folder_sync;
 	store_class->rename_folder_sync = imapx_store_rename_folder_sync;
 
+	class->mailbox_created = imapx_store_mailbox_created;
+	class->mailbox_renamed = imapx_store_mailbox_renamed;
+	class->mailbox_updated = imapx_store_mailbox_updated;
+
 	/* Inherited from CamelNetworkService. */
 	g_object_class_override_property (
 		object_class,
@@ -2374,6 +2395,34 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 		object_class,
 		PROP_HOST_REACHABLE,
 		"host-reachable");
+
+	signals[MAILBOX_CREATED] = g_signal_new (
+		"mailbox-created",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelIMAPXStoreClass, mailbox_created),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		CAMEL_TYPE_IMAPX_MAILBOX);
+
+	signals[MAILBOX_RENAMED] = g_signal_new (
+		"mailbox-renamed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelIMAPXStoreClass, mailbox_renamed),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 2,
+		CAMEL_TYPE_IMAPX_MAILBOX,
+		G_TYPE_STRING);
+
+	signals[MAILBOX_UPDATED] = g_signal_new (
+		"mailbox-updated",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelIMAPXStoreClass, mailbox_updated),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		CAMEL_TYPE_IMAPX_MAILBOX);
 }
 
 static void
@@ -2402,13 +2451,16 @@ camel_subscribable_init (CamelSubscribableInterface *iface)
 static void
 camel_imapx_store_init (CamelIMAPXStore *store)
 {
-	gulong handler_id;
-
 	store->priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
 
 	store->priv->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
 
 	g_mutex_init (&store->priv->get_finfo_lock);
+
+	g_mutex_init (&store->priv->namespaces_lock);
+	g_mutex_init (&store->priv->mailboxes_lock);
+	/* Hash table key is owned by the CamelIMAPXMailbox. */
+	store->priv->mailboxes = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_object_unref);
 
 	/* Initialize to zero to ensure we always obtain fresh folder
 	 * info on startup.  See imapx_store_get_folder_info_sync(). */
@@ -2430,24 +2482,6 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 	g_signal_connect (
 		store, "notify::settings",
 		G_CALLBACK (imapx_store_update_store_flags), NULL);
-
-	handler_id = g_signal_connect (
-		store->priv->con_man, "mailbox-created",
-		G_CALLBACK (imapx_store_mailbox_created_cb),
-		store);
-	store->priv->mailbox_created_handler_id = handler_id;
-
-	handler_id = g_signal_connect (
-		store->priv->con_man, "mailbox-renamed",
-		G_CALLBACK (imapx_store_mailbox_renamed_cb),
-		store);
-	store->priv->mailbox_renamed_handler_id = handler_id;
-
-	handler_id = g_signal_connect (
-		store->priv->con_man, "mailbox-updated",
-		G_CALLBACK (imapx_store_mailbox_updated_cb),
-		store);
-	store->priv->mailbox_updated_handler_id = handler_id;
 }
 
 /**
@@ -2547,14 +2581,503 @@ camel_imapx_store_folder_op_done (CamelIMAPXStore *store,
 		store->priv->con_man, server, folder_name);
 }
 
+/**
+ * camel_imapx_store_ref_namespaces:
+ * @imapx_store: a #CamelIMAPXStore
+ *
+ * Returns the #CamelIMAPXNamespaceResponse for @is. This is obtained
+ * during the connection phase if the IMAP server lists the "NAMESPACE"
+ * keyword in its CAPABILITY response, or else is fabricated from the
+ * first LIST response.
+ *
+ * The returned #CamelIMAPXNamespaceResponse is reference for thread-safety
+ * and must be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #CamelIMAPXNamespaceResponse
+ *
+ * Since: 3.12.2
+ **/
+CamelIMAPXNamespaceResponse *
+camel_imapx_store_ref_namespaces (CamelIMAPXStore *imapx_store)
+{
+	CamelIMAPXNamespaceResponse *namespaces = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
+
+	g_mutex_lock (&imapx_store->priv->namespaces_lock);
+
+	if (imapx_store->priv->namespaces != NULL)
+		namespaces = g_object_ref (imapx_store->priv->namespaces);
+
+	g_mutex_unlock (&imapx_store->priv->namespaces_lock);
+
+	return namespaces;
+}
+
+void
+camel_imapx_store_set_namespaces (CamelIMAPXStore *imapx_store,
+				  CamelIMAPXNamespaceResponse *namespaces)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+	if (namespaces)
+		g_return_if_fail (CAMEL_IS_IMAPX_NAMESPACE_RESPONSE (namespaces));
+
+	if (namespaces)
+		g_object_ref (namespaces);
+
+	g_mutex_lock (&imapx_store->priv->namespaces_lock);
+
+	g_clear_object (&imapx_store->priv->namespaces);
+	imapx_store->priv->namespaces = namespaces;
+
+	g_mutex_unlock (&imapx_store->priv->namespaces_lock);
+}
+
+static void
+imapx_store_add_mailbox_unlocked (CamelIMAPXStore *imapx_store,
+				  CamelIMAPXMailbox *mailbox)
+{
+	const gchar *mailbox_name;
+
+	/* Acquire "mailboxes_lock" before calling. */
+
+	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
+	g_return_if_fail (mailbox_name != NULL);
+
+	/* Use g_hash_table_replace() here instead of g_hash_table_insert().
+	 * The hash table key is owned by the hash table value, so if we're
+	 * replacing an existing table item we want to replace both the key
+	 * and value to avoid data corruption. */
+	g_hash_table_replace (
+		imapx_store->priv->mailboxes,
+		(gpointer) mailbox_name,
+		g_object_ref (mailbox));
+}
+
+static gboolean
+imapx_store_remove_mailbox_unlocked (CamelIMAPXStore *imapx_store,
+				     CamelIMAPXMailbox *mailbox)
+{
+	const gchar *mailbox_name;
+
+	/* Acquire "mailboxes_lock" before calling. */
+
+	mailbox_name = camel_imapx_mailbox_get_name (mailbox);
+	g_return_val_if_fail (mailbox_name != NULL, FALSE);
+
+	return g_hash_table_remove (imapx_store->priv->mailboxes, mailbox_name);
+}
+
+static CamelIMAPXMailbox *
+imapx_store_ref_mailbox_unlocked (CamelIMAPXStore *imapx_store,
+				  const gchar *mailbox_name)
+{
+	CamelIMAPXMailbox *mailbox;
+
+	/* Acquire "mailboxes_lock" before calling. */
+
+	g_return_val_if_fail (mailbox_name != NULL, NULL);
+
+	/* The INBOX mailbox is case-insensitive. */
+	if (g_ascii_strcasecmp (mailbox_name, "INBOX") == 0)
+		mailbox_name = "INBOX";
+
+	mailbox = g_hash_table_lookup (imapx_store->priv->mailboxes, mailbox_name);
+
+	/* Remove non-existent mailboxes as we find them. */
+	if (mailbox != NULL && !camel_imapx_mailbox_exists (mailbox)) {
+		imapx_store_remove_mailbox_unlocked (imapx_store, mailbox);
+		mailbox = NULL;
+	}
+
+	if (mailbox != NULL)
+		g_object_ref (mailbox);
+
+	return mailbox;
+}
+
+static GList *
+imapx_store_list_mailboxes_unlocked (CamelIMAPXStore *imapx_store,
+				     CamelIMAPXNamespace *namespace,
+				     const gchar *pattern)
+{
+	GHashTableIter iter;
+	GList *list = NULL;
+	gpointer value;
+
+	/* Acquire "mailboxes_lock" before calling. */
+
+	if (pattern == NULL)
+		pattern = "*";
+
+	g_hash_table_iter_init (&iter, imapx_store->priv->mailboxes);
+
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		CamelIMAPXMailbox *mailbox;
+		CamelIMAPXNamespace *mailbox_ns;
+
+		mailbox = CAMEL_IMAPX_MAILBOX (value);
+		mailbox_ns = camel_imapx_mailbox_get_namespace (mailbox);
+
+		if (!camel_imapx_mailbox_exists (mailbox))
+			continue;
+
+		if (!camel_imapx_namespace_equal (namespace, mailbox_ns))
+			continue;
+
+		if (!camel_imapx_mailbox_matches (mailbox, pattern))
+			continue;
+
+		list = g_list_prepend (list, g_object_ref (mailbox));
+	}
+
+	/* Sort the list by mailbox name. */
+	return g_list_sort (list, (GCompareFunc) camel_imapx_mailbox_compare);
+}
+
+static CamelIMAPXMailbox *
+imapx_store_create_mailbox_unlocked (CamelIMAPXStore *imapx_store,
+				     CamelIMAPXListResponse *response)
+{
+	CamelIMAPXNamespaceResponse *namespace_response;
+	CamelIMAPXNamespace *namespace;
+	CamelIMAPXMailbox *mailbox = NULL;
+	const gchar *mailbox_name;
+	gchar separator;
+
+	/* Acquire "mailboxes_lock" before calling. */
+
+	namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
+	g_return_val_if_fail (namespace_response != NULL, FALSE);
+
+	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
+	separator = camel_imapx_list_response_get_separator (response);
+
+	namespace = camel_imapx_namespace_response_lookup (
+		namespace_response, mailbox_name, separator);
+
+	if (namespace != NULL) {
+		mailbox = camel_imapx_mailbox_new (response, namespace);
+		imapx_store_add_mailbox_unlocked (imapx_store, mailbox);
+		g_object_unref (namespace);
+
+	/* XXX Slight hack, mainly for Courier servers.  If INBOX does
+	 *     not match any defined namespace, just create one for it
+	 *     on the fly.  The namespace response won't know about it. */
+	} else if (camel_imapx_mailbox_is_inbox (mailbox_name)) {
+		namespace = camel_imapx_namespace_new (
+			CAMEL_IMAPX_NAMESPACE_PERSONAL, "", separator);
+		mailbox = camel_imapx_mailbox_new (response, namespace);
+		imapx_store_add_mailbox_unlocked (imapx_store, mailbox);
+		g_object_unref (namespace);
+
+	} else {
+		g_warning (
+			"%s: No matching namespace for \"%c\" %s",
+			G_STRFUNC, separator, mailbox_name);
+	}
+
+	g_object_unref (namespace_response);
+
+	return mailbox;
+}
+
+static CamelIMAPXMailbox *
+imapx_store_rename_mailbox_unlocked (CamelIMAPXStore *imapx_store,
+				     const gchar *old_mailbox_name,
+				     const gchar *new_mailbox_name)
+{
+	CamelIMAPXMailbox *old_mailbox;
+	CamelIMAPXMailbox *new_mailbox;
+	CamelIMAPXNamespace *namespace;
+	gsize old_mailbox_name_length;
+	GList *list, *link;
+	gchar separator;
+	gchar *pattern;
+
+	/* Acquire "mailboxes_lock" before calling. */
+
+	g_return_val_if_fail (old_mailbox_name != NULL, NULL);
+	g_return_val_if_fail (new_mailbox_name != NULL, NULL);
+
+	old_mailbox = imapx_store_ref_mailbox_unlocked (imapx_store, old_mailbox_name);
+	if (old_mailbox == NULL)
+		return NULL;
+
+	old_mailbox_name_length = strlen (old_mailbox_name);
+	namespace = camel_imapx_mailbox_get_namespace (old_mailbox);
+	separator = camel_imapx_mailbox_get_separator (old_mailbox);
+
+	new_mailbox = camel_imapx_mailbox_clone (old_mailbox, new_mailbox_name);
+
+	/* Add the new mailbox, remove the old mailbox.
+	 * Note we still have a reference on the old mailbox. */
+	imapx_store_add_mailbox_unlocked (imapx_store, new_mailbox);
+	imapx_store_remove_mailbox_unlocked (imapx_store, old_mailbox);
+
+	/* Rename any child mailboxes. */
+
+	pattern = g_strdup_printf ("%s%c*", old_mailbox_name, separator);
+	list = imapx_store_list_mailboxes_unlocked (imapx_store, namespace, pattern);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		CamelIMAPXMailbox *old_child;
+		CamelIMAPXMailbox *new_child;
+		const gchar *old_child_name;
+		gchar *new_child_name;
+
+		old_child = CAMEL_IMAPX_MAILBOX (link->data);
+		old_child_name = camel_imapx_mailbox_get_name (old_child);
+
+		/* Sanity checks. */
+		g_warn_if_fail (
+			old_child_name != NULL &&
+			strlen (old_child_name) > old_mailbox_name_length &&
+			old_child_name[old_mailbox_name_length] == separator);
+
+		new_child_name = g_strconcat (
+			new_mailbox_name,
+			old_child_name + old_mailbox_name_length, NULL);
+		new_child = camel_imapx_mailbox_clone (
+			old_child, new_child_name);
+
+		/* Add the new mailbox, remove the old mailbox.
+		 * Note we still have a reference on the old mailbox. */
+		imapx_store_add_mailbox_unlocked (imapx_store, new_child);
+		imapx_store_remove_mailbox_unlocked (imapx_store, old_child);
+
+		g_object_unref (new_child);
+		g_free (new_child_name);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	g_free (pattern);
+
+	g_object_unref (old_mailbox);
+
+	return new_mailbox;
+}
+
+/**
+ * camel_imapx_store_ref_mailbox:
+ * @imapx_store: a #CamelIMAPXStore
+ * @mailbox_name: a mailbox name
+ *
+ * Looks up a #CamelMailbox by its name. If no match is found, the function
+ * returns %NULL.
+ *
+ * The returned #CamelIMAPXMailbox is referenced for thread-safety and
+ * should be unreferenced with g_object_unref() when finished with it.
+ *
+ * Returns: a #CamelIMAPXMailbox, or %NULL
+ *
+ * Since: 3.12.2
+ **/
 CamelIMAPXMailbox *
 camel_imapx_store_ref_mailbox (CamelIMAPXStore *imapx_store,
 			       const gchar *mailbox_name)
 {
+	CamelIMAPXMailbox *mailbox;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
 	g_return_val_if_fail (mailbox_name != NULL, NULL);
 
-	return camel_imapx_conn_manager_ref_mailbox (imapx_store->priv->con_man, mailbox_name);
+	g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+
+	mailbox = imapx_store_ref_mailbox_unlocked (imapx_store, mailbox_name);
+
+	g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+
+	return mailbox;
+}
+
+/**
+ * camel_imapx_store_list_mailboxes:
+ * @imapx_store: a #CamelIMAPXStore
+ * @namespace_: a #CamelIMAPXNamespace
+ * @pattern: mailbox name with possible wildcards, or %NULL
+ *
+ * Returns a list of #CamelIMAPXMailbox instances which match @namespace and
+ * @pattern. The @pattern may contain wildcard characters '*' and '%', which
+ * are interpreted similar to the IMAP LIST command. A %NULL @pattern lists
+ * all mailboxes in @namespace; equivalent to passing "*".
+ *
+ * The mailboxes returned in the list are referenced for thread-safety.
+ * They must each be unreferenced with g_object_unref() when finished with
+ * them. Free the returned list itself with g_list_free().
+ *
+ * An easy way to free the list properly in one step is as follows:
+ *
+ * |[
+ *   g_list_free_full (list, g_object_unref);
+ * ]|
+ *
+ * Returns: a list of #CamelIMAPXMailbox instances
+ *
+ * Since: 3.12.2
+ **/
+GList *
+camel_imapx_store_list_mailboxes (CamelIMAPXStore *imapx_store,
+				  CamelIMAPXNamespace *namespace,
+				  const gchar *pattern)
+{
+	GList *list;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_NAMESPACE (namespace), NULL);
+
+	g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+
+	list = imapx_store_list_mailboxes_unlocked (imapx_store, namespace, pattern);
+
+	g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+
+	return list;
+}
+
+void
+camel_imapx_store_emit_mailbox_updated (CamelIMAPXStore *imapx_store,
+					CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	g_signal_emit (imapx_store, signals[MAILBOX_UPDATED], 0, mailbox);
+}
+
+void
+camel_imapx_store_handle_mailbox_rename (CamelIMAPXStore *imapx_store,
+					 CamelIMAPXMailbox *old_mailbox,
+					 const gchar *new_mailbox_name)
+{
+	CamelIMAPXMailbox *new_mailbox;
+	const gchar *old_mailbox_name;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (old_mailbox));
+	g_return_if_fail (new_mailbox_name != NULL);
+
+	old_mailbox_name = camel_imapx_mailbox_get_name (old_mailbox);
+
+	g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+	new_mailbox = imapx_store_rename_mailbox_unlocked (
+		imapx_store, old_mailbox_name, new_mailbox_name);
+	g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+
+	g_warn_if_fail (new_mailbox != NULL);
+
+	g_signal_emit (
+		imapx_store, signals[MAILBOX_RENAMED], 0,
+		new_mailbox, old_mailbox_name);
+
+	g_clear_object (&new_mailbox);
+}
+
+void
+camel_imapx_store_handle_list_response (CamelIMAPXStore *imapx_store,
+					CamelIMAPXServer *imapx_server,
+					CamelIMAPXListResponse *response)
+{
+	CamelIMAPXMailbox *mailbox = NULL;
+	const gchar *mailbox_name;
+	const gchar *old_mailbox_name;
+	gboolean emit_mailbox_created = FALSE;
+	gboolean emit_mailbox_renamed = FALSE;
+	gboolean emit_mailbox_updated = FALSE;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server));
+	g_return_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response));
+
+	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
+	old_mailbox_name = camel_imapx_list_response_get_oldname (response);
+
+	/* Fabricate a CamelIMAPXNamespaceResponse if the server lacks the
+	 * NAMESPACE capability and this is the first LIST / LSUB response. */
+	if (CAMEL_IMAPX_LACK_CAPABILITY (imapx_server->cinfo, NAMESPACE)) {
+		g_mutex_lock (&imapx_store->priv->namespaces_lock);
+		if (imapx_store->priv->namespaces == NULL) {
+			imapx_store->priv->namespaces = camel_imapx_namespace_response_faux_new (response);
+		}
+		g_mutex_unlock (&imapx_store->priv->namespaces_lock);
+	}
+
+	/* Create, rename, or update a corresponding CamelIMAPXMailbox. */
+	g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+	if (old_mailbox_name != NULL) {
+		mailbox = imapx_store_rename_mailbox_unlocked (
+			imapx_store, old_mailbox_name, mailbox_name);
+		emit_mailbox_renamed = (mailbox != NULL);
+	}
+	if (mailbox == NULL) {
+		mailbox = imapx_store_ref_mailbox_unlocked (imapx_store, mailbox_name);
+		emit_mailbox_updated = (mailbox != NULL);
+	}
+	if (mailbox == NULL) {
+		mailbox = imapx_store_create_mailbox_unlocked (imapx_store, response);
+		emit_mailbox_created = (mailbox != NULL);
+	} else {
+		camel_imapx_mailbox_handle_list_response (mailbox, response);
+	}
+	g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+
+	if (emit_mailbox_created)
+		g_signal_emit (imapx_store, signals[MAILBOX_CREATED], 0, mailbox);
+
+	if (emit_mailbox_renamed)
+		g_signal_emit (
+			imapx_store, signals[MAILBOX_RENAMED], 0,
+			mailbox, old_mailbox_name);
+
+	if (emit_mailbox_updated)
+		g_signal_emit (imapx_store, signals[MAILBOX_UPDATED], 0, mailbox);
+
+	g_clear_object (&mailbox);
+}
+
+void
+camel_imapx_store_handle_lsub_response (CamelIMAPXStore *imapx_store,
+					CamelIMAPXServer *imapx_server,
+					CamelIMAPXListResponse *response)
+{
+	CamelIMAPXMailbox *mailbox;
+	const gchar *mailbox_name;
+	gboolean emit_mailbox_updated = FALSE;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server));
+	g_return_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response));
+
+	mailbox_name = camel_imapx_list_response_get_mailbox_name (response);
+
+	/* Fabricate a CamelIMAPXNamespaceResponse if the server lacks the
+	 * NAMESPACE capability and this is the first LIST / LSUB response. */
+	if (CAMEL_IMAPX_LACK_CAPABILITY (imapx_server->cinfo, NAMESPACE)) {
+		g_mutex_lock (&imapx_store->priv->namespaces_lock);
+		if (imapx_store->priv->namespaces == NULL) {
+			imapx_store->priv->namespaces = camel_imapx_namespace_response_faux_new (response);
+		}
+		g_mutex_unlock (&imapx_store->priv->namespaces_lock);
+	}
+
+	/* Update a corresponding CamelIMAPXMailbox.
+	 *
+	 * Note, don't create the CamelIMAPXMailbox like we do for a LIST
+	 * response.  We always issue LIST before LSUB on a mailbox name,
+	 * so if we don't already have a CamelIMAPXMailbox instance then
+	 * this is a subscription on a non-existent mailbox.  Skip it. */
+	g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+	mailbox = imapx_store_ref_mailbox_unlocked (imapx_store, mailbox_name);
+	if (mailbox != NULL) {
+		camel_imapx_mailbox_handle_lsub_response (mailbox, response);
+		emit_mailbox_updated = TRUE;
+	}
+	g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+
+	if (emit_mailbox_updated)
+		g_signal_emit (imapx_store, signals[MAILBOX_UPDATED], 0, mailbox);
+
+	g_clear_object (&mailbox);
 }
 
 CamelFolderQuotaInfo *

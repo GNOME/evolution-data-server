@@ -134,13 +134,6 @@ struct _CamelIMAPXServerClass {
 						 CamelIMAPXMailbox *mailbox);
 	void		(*mailbox_closed)	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox);
-	void		(*mailbox_created)	(CamelIMAPXServer *is,
-						 CamelIMAPXMailbox *mailbox);
-	void		(*mailbox_renamed)	(CamelIMAPXServer *is,
-						 CamelIMAPXMailbox *mailbox,
-						 const gchar *oldname);
-	void		(*mailbox_updated)	(CamelIMAPXServer *is,
-						 CamelIMAPXMailbox *mailbox);
 	void		(*shutdown)		(CamelIMAPXServer *is);
 };
 
@@ -155,18 +148,8 @@ GInputStream *	camel_imapx_server_ref_input_stream
 						(CamelIMAPXServer *is);
 GOutputStream *	camel_imapx_server_ref_output_stream
 						(CamelIMAPXServer *is);
-CamelIMAPXNamespaceResponse *
-		camel_imapx_server_ref_namespaces
-						(CamelIMAPXServer *is);
-CamelIMAPXMailbox *
-		camel_imapx_server_ref_mailbox	(CamelIMAPXServer *is,
-						 const gchar *mailbox_name);
 CamelIMAPXMailbox *
 		camel_imapx_server_ref_selected	(CamelIMAPXServer *is);
-GList *		camel_imapx_server_list_mailboxes
-						(CamelIMAPXServer *is,
-						 CamelIMAPXNamespace *namespace_,
-						 const gchar *pattern);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
 						 GCancellable *cancellable,
 						 GError **error);
