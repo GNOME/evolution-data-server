@@ -564,9 +564,12 @@ e_destination_set_contact (EDestination *dest,
 	} else if (dest->priv->email_num != email_num) {
 		/* Splitting here would help the contact lists not rebuiding, so that it remembers ignored values */
 
+		/* increase ref counter, because e_destination_clear calls g_object_unref, but we want to keep the contact */
+		g_object_ref (contact);
+
 		e_destination_clear (dest);
 
-		dest->priv->contact = e_contact_duplicate (contact);
+		dest->priv->contact = contact;
 
 		dest->priv->contact_uid = e_contact_get (dest->priv->contact, E_CONTACT_UID);
 
