@@ -106,7 +106,9 @@ e_soup_ssl_trust_network_event_cb (SoupMessage *msg,
 {
 	ESoupSslTrustData *handler = user_data;
 
-	if (event == G_SOCKET_CLIENT_TLS_HANDSHAKING) {
+	/* It's either a GTlsConnection or a GTcpConnection */
+	if (event == G_SOCKET_CLIENT_TLS_HANDSHAKING &&
+	    G_IS_TLS_CONNECTION (connection)) {
 		g_signal_connect_closure (
 			G_TLS_CONNECTION (connection), "accept-certificate",
 			handler->accept_certificate_closure, FALSE);
