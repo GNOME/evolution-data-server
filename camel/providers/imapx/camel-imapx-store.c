@@ -1195,12 +1195,24 @@ fetch_folder_info_for_pattern (CamelIMAPXServer *server,
 {
 	CamelIMAPXStore *imapx_store;
 	GList *list, *link;
+	GError *local_error = NULL;
 	gboolean success;
 
 	success = camel_imapx_server_list (
-		server, pattern, flags, cancellable, error);
-	if (!success)
+		server, pattern, flags, cancellable, &local_error);
+	if (!success) {
+		if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) &&
+		    camel_imapx_namespace_get_category (namespace) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
+			/* Ignore errors for non-personal namespaces; one such error can be:
+			   "NO LIST failed: wildcards not permitted in username" */
+			g_clear_error (&local_error);
+			return TRUE;
+		} else {
+			g_propagate_error (error, local_error);
+		}
+
 		return FALSE;
+	}
 
 	imapx_store = camel_imapx_server_ref_store (server);
 
@@ -1280,7 +1292,7 @@ fetch_folder_info_for_namespace_category (CamelIMAPXStore *imapx_store,
 		ns_category = camel_imapx_namespace_get_category (namespace);
 		ns_prefix = camel_imapx_namespace_get_prefix (namespace);
 
-		if (ns_category != category)
+		if ((flags & (CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST | CAMEL_STORE_FOLDER_INFO_SUBSCRIBED)) == 0 && ns_category != category)
 			continue;
 
 		pattern = g_strdup_printf ("%s*", ns_prefix);
@@ -1443,8 +1455,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 			gchar *dup_folder_path = g_strdup (si_path);
 
 			if (dup_folder_path != NULL) {
-				imapx_unmark_folder_subscribed (
-					imapx_store, dup_folder_path, TRUE);
+				/* Do not unsubscribe from it, it influences UI for non-subscribable folders */
 				imapx_delete_folder_from_cache (
 					imapx_store, dup_folder_path);
 				g_free (dup_folder_path);
@@ -2201,6 +2212,51 @@ imapx_store_folder_is_subscribed (CamelSubscribable *subscribable,
 	return is_subscribed;
 }
 
+static void
+imapx_ensure_parents_subscribed (CamelIMAPXStore *imapx_store,
+				 const gchar *folder_name)
+{
+	GSList *parents = NULL, *iter;
+	CamelSubscribable *subscribable;
+	CamelFolderInfo *fi;
+	gchar *parent, *sep;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+	g_return_if_fail (folder_name != NULL);
+
+	subscribable = CAMEL_SUBSCRIBABLE (imapx_store);
+
+	if (folder_name && *folder_name == '/')
+		folder_name++;
+
+	parent = g_strdup (folder_name);
+	while (sep = strrchr (parent, '/'), sep) {
+		*sep = '\0';
+
+		fi = camel_folder_info_new ();
+
+		fi->display_name = strrchr (parent, '/');
+		if (fi->display_name != NULL)
+			fi->display_name = g_strdup (fi->display_name + 1);
+		else
+			fi->display_name = g_strdup (parent);
+
+		fi->full_name = g_strdup (parent);
+
+		/* Since this is a "fake" folder node, it is not selectable. */
+		fi->flags |= CAMEL_FOLDER_NOSELECT;
+
+		parents = g_slist_prepend (parents, fi);
+	}
+
+	for (iter = parents; iter; iter = g_slist_next (iter)) {
+		fi = iter->data;
+
+		camel_subscribable_folder_subscribed (subscribable, fi);
+		camel_folder_info_free (fi);
+	}
+}
+
 static gboolean
 imapx_store_subscribe_folder_sync (CamelSubscribable *subscribable,
                                    const gchar *folder_name,
@@ -2237,6 +2293,9 @@ imapx_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 
 	if (success) {
 		CamelFolderInfo *fi;
+
+		/* without this the folder is not visible if parents are not subscribed */
+		imapx_ensure_parents_subscribed (imapx_store, folder_name);
 
 		fi = imapx_store_build_folder_info (
 			CAMEL_IMAPX_STORE (subscribable), folder_name, 0);
