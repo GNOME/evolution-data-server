@@ -455,10 +455,9 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 		mailbox_was_subscribed = FALSE;
 	}
 
-	/* Check if the SUBSCRIBED flags disagree. */
-	if ((flags ^ si->info.flags) & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
-		si->info.flags &= ~CAMEL_FOLDER_SUBSCRIBED;
-		si->info.flags |= flags & CAMEL_FOLDER_SUBSCRIBED;
+	/* Check whether the flags disagree. */
+	if (si->info.flags != flags) {
+		si->info.flags = flags;
 		camel_store_summary_touch (store->summary);
 	}
 
