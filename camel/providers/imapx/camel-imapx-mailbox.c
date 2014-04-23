@@ -218,9 +218,7 @@ camel_imapx_mailbox_clone (CamelIMAPXMailbox *mailbox,
 	/* Use camel_imapx_list_response_dup_attributes()
 	 * as a guide for cloning the mailbox attributes. */
 
-	clone->priv->attributes = g_hash_table_new (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal);
+	clone->priv->attributes = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 
 	g_mutex_lock (&mailbox->priv->property_lock);
 

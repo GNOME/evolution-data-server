@@ -749,8 +749,8 @@ static GHashTable *
 create_initial_untagged_handler_table (void)
 {
 	GHashTable *uh = g_hash_table_new_full (
-		g_str_hash,
-		g_str_equal,
+		camel_strcase_hash,
+		camel_strcase_equal,
 		g_free,
 		NULL);
 	guint32 ii = 0;
