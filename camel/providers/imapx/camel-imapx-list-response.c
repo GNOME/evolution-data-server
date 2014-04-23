@@ -114,13 +114,9 @@ camel_imapx_list_response_init (CamelIMAPXListResponse *response)
 	GHashTable *extended_items;
 
 	/* Set of internalized attribute strings. */
-	attributes = g_hash_table_new (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal);
+	attributes = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 
-	extended_items = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
+	extended_items = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_variant_unref);
 
@@ -263,13 +259,13 @@ imapx_list_response_parse_extended_item (CamelIMAPXInputStream *stream,
 	 *     IMAP parser makes this more difficult. */
 
 	/* RFC 5258 "LIST-EXTENDED" */
-	if (g_strcmp0 (item_tag, "CHILDINFO") == 0) {
+	if (item_tag && g_ascii_strcasecmp (item_tag, "CHILDINFO") == 0) {
 		item_value = imapx_list_response_parse_childinfo (
 			stream, response, cancellable, error);
 		success = (item_value != NULL);
 
 	/* RFC 5465 "NOTIFY" */
-	} else if (g_strcmp0 (item_tag, "OLDNAME") == 0) {
+	} else if (item_tag && g_ascii_strcasecmp (item_tag, "OLDNAME") == 0) {
 		item_value = imapx_list_response_parse_oldname (
 			stream, response, cancellable, error);
 		success = (item_value != NULL);
@@ -770,9 +766,7 @@ camel_imapx_list_response_dup_attributes (CamelIMAPXListResponse *response)
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_LIST_RESPONSE (response), NULL);
 
-	hash_table = g_hash_table_new (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal);
+	hash_table = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
 
 	g_hash_table_iter_init (&iter, response->priv->attributes);
 

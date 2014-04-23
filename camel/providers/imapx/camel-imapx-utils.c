@@ -462,8 +462,8 @@ create_initial_capabilities_table (void)
 	 *      to free hash table
 	 */
 	capa_htable = g_hash_table_new_full (
-		g_str_hash,
-		g_str_equal,
+		camel_strcase_hash,
+		camel_strcase_equal,
 		g_free,
 		NULL);
 
@@ -489,11 +489,7 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 
 	cinfo = g_malloc0 (sizeof (*cinfo));
 
-	cinfo->auth_types = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) NULL);
+	cinfo->auth_types = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, NULL);
 
 	/* FIXME: handle auth types */
 	tok = camel_imapx_input_stream_token (
