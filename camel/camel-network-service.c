@@ -1024,6 +1024,9 @@ camel_network_service_can_reach_sync (CamelNetworkService *service,
 
 	g_clear_object (&connectable);
 
+	if (local_error)
+		g_propagate_error (error, local_error);
+
 	return can_reach;
 }
 
