@@ -797,6 +797,7 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 			if (val == NULL) {
 				g_warning ("h->value is NULL here for %s", h->name);
 				bytes_written = 0;
+				result = 0;
 			} else if ((writefn = g_hash_table_lookup (header_formatted_table, h->name)) == NULL) {
 				val = camel_header_fold (val, strlen (h->name));
 				result = write_header (
