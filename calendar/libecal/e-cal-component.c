@@ -4463,16 +4463,19 @@ set_alarm_description_cb (gpointer key,
 	SetAlarmDescriptionData *sadd;
 	gboolean changed = FALSE;
 	const gchar *old_summary = NULL;
+	gboolean free_description = FALSE;
 
 	alarm = value;
 	sadd = user_data;
 
 	/* set the new description on the alarm */
 	desc_prop = icalcomponent_get_first_property (alarm, ICAL_DESCRIPTION_PROPERTY);
-	if (desc_prop)
+	if (desc_prop) {
 		old_summary = icalproperty_get_description (desc_prop);
-	else
+	} else {
 		desc_prop = icalproperty_new_description (sadd->new_summary);
+		free_description = TRUE;
+	}
 
 	/* remove the X-EVOLUTION-NEEDS_DESCRIPTION property */
 	icalprop = icalcomponent_get_first_property (alarm, ICAL_X_PROPERTY);
@@ -4497,6 +4500,9 @@ set_alarm_description_cb (gpointer key,
 			icalproperty_set_description (desc_prop, sadd->new_summary);
 		}
 	}
+
+	if (free_description)
+		icalproperty_free (desc_prop);
 }
 
 /**

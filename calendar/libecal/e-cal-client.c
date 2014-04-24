@@ -4077,6 +4077,8 @@ e_cal_client_get_object_list_sync (ECalClient *client,
 
 	*out_icalcomps = g_slist_reverse (tmp);
 
+	g_strfreev (strv);
+
 	return TRUE;
 }
 
