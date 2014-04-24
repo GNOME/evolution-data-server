@@ -52,7 +52,7 @@ struct _EDataFactoryPrivate {
 	/* This is a hash table of client bus names to an array of
 	 * EBackend references; one for every connection opened. */
 	GHashTable *connections;
-	GMutex connections_lock;
+	GRecMutex connections_lock;
 
 	/* This is a hash table of client bus names being watched.
 	 * The value is the watcher ID for g_bus_unwatch_name(). */
@@ -149,7 +149,7 @@ data_factory_connections_add (EDataFactory *data_factory,
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (backend != NULL);
 
-	g_mutex_lock (&data_factory->priv->connections_lock);
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
 
 	connections = data_factory->priv->connections;
 
@@ -167,7 +167,50 @@ data_factory_connections_add (EDataFactory *data_factory,
 
 	g_ptr_array_add (array, g_object_ref (backend));
 
-	g_mutex_unlock (&data_factory->priv->connections_lock);
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+}
+
+static gboolean
+data_factory_verify_backend_is_used (EDataFactory *data_factory,
+				     const gchar *except_bus_name,
+				     EBackend *backend)
+{
+	GHashTable *connections;
+	GList *names, *l;
+	GPtrArray *array;
+	gboolean is_used = FALSE;
+
+	g_return_val_if_fail (except_bus_name != NULL, TRUE);
+
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+
+	connections = data_factory->priv->connections;
+	names = g_hash_table_get_keys (connections);
+
+	for (l = names; l != NULL && !is_used; l = g_list_next (l)) {
+		const gchar *client_bus_name = l->data;
+		gint ii;
+
+		if (g_strcmp0 (client_bus_name, except_bus_name) == 0)
+			continue;
+
+		array = g_hash_table_lookup (connections, client_bus_name);
+		for (ii = 0; ii < array->len; ii++) {
+			EBackend *backend_in_use;
+
+			backend_in_use = g_ptr_array_index (array, ii);
+
+			if (backend_in_use == backend) {
+				is_used = TRUE;
+				break;
+			}
+		}
+	}
+
+	g_list_free (names);
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+
+	return is_used;
 }
 
 static gboolean
@@ -182,15 +225,29 @@ data_factory_connections_remove (EDataFactory *data_factory,
 	/* If backend is NULL, we remove all backends for name. */
 	g_return_val_if_fail (name != NULL, FALSE);
 
-	g_mutex_lock (&data_factory->priv->connections_lock);
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
 
 	connections = data_factory->priv->connections;
 	array = g_hash_table_lookup (connections, name);
 
 	if (array != NULL) {
 		if (backend != NULL) {
+			if (!data_factory_verify_backend_is_used (data_factory, name, backend))
+				e_backend_prepare_shutdown (backend);
+
 			removed = g_ptr_array_remove_fast (array, backend);
 		} else if (array->len > 0) {
+			gint ii;
+
+			for (ii = 0; ii < array->len; ii++) {
+				EBackend *backend;
+
+				backend = g_ptr_array_index (array, ii);
+
+				if (!data_factory_verify_backend_is_used (data_factory, name, backend))
+					e_backend_prepare_shutdown (backend);
+			}
+
 			g_ptr_array_set_size (array, 0);
 			removed = TRUE;
 		}
@@ -202,7 +259,7 @@ data_factory_connections_remove (EDataFactory *data_factory,
 			e_dbus_server_release (E_DBUS_SERVER (data_factory));
 	}
 
-	g_mutex_unlock (&data_factory->priv->connections_lock);
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
 
 	return removed;
 }
@@ -212,16 +269,26 @@ data_factory_connections_remove_all (EDataFactory *data_factory)
 {
 	GHashTable *connections;
 
-	g_mutex_lock (&data_factory->priv->connections_lock);
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
 
 	connections = data_factory->priv->connections;
 
 	if (g_hash_table_size (connections) > 0) {
+		GSList *backends, *l;
+		backends = e_data_factory_list_backends (data_factory);
+
+		for (l = backends; l != NULL; l = g_slist_next (l)) {
+			EBackend *backend = l->data;
+			e_backend_prepare_shutdown (backend);
+		}
+
+		g_slist_free_full (backends, g_object_unref);
+
 		g_hash_table_remove_all (connections);
 		e_dbus_server_release (E_DBUS_SERVER (data_factory));
 	}
 
-	g_mutex_unlock (&data_factory->priv->connections_lock);
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
 }
 
 static void
@@ -391,7 +458,7 @@ data_factory_finalize (GObject *object)
 	g_hash_table_destroy (priv->backend_factories);
 
 	g_hash_table_destroy (priv->connections);
-	g_mutex_clear (&priv->connections_lock);
+	g_rec_mutex_clear (&priv->connections_lock);
 
 	g_hash_table_destroy (priv->watched_names);
 	g_mutex_clear (&priv->watched_names_lock);
@@ -520,7 +587,7 @@ e_data_factory_init (EDataFactory *data_factory)
 	data_factory->priv = E_DATA_FACTORY_GET_PRIVATE (data_factory);
 
 	g_mutex_init (&data_factory->priv->mutex);
-	g_mutex_init (&data_factory->priv->connections_lock);
+	g_rec_mutex_init (&data_factory->priv->connections_lock);
 	g_mutex_init (&data_factory->priv->watched_names_lock);
 
 	data_factory->priv->backends = g_hash_table_new_full (
@@ -810,14 +877,16 @@ e_data_factory_list_backends (EDataFactory *data_factory)
 {
 	GSList *backends = NULL;
 	GHashTable *connections;
+	GHashTable *backends_hash;
 	GHashTableIter iter;
 	gpointer key, value;
 
 	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
 
-	g_mutex_lock (&data_factory->priv->connections_lock);
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
 
 	connections = data_factory->priv->connections;
+	backends_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
 	g_hash_table_iter_init (&iter, connections);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -826,12 +895,16 @@ e_data_factory_list_backends (EDataFactory *data_factory)
 
 		for (ii = 0; ii < array->len; ii++) {
 			EBackend *backend = g_ptr_array_index (array, ii);
-			backends = g_slist_prepend (backends, g_object_ref (backend));
+			if (!g_hash_table_contains (backends_hash, backend)) {
+				g_hash_table_insert (backends_hash, backend, GINT_TO_POINTER (1));
+				backends = g_slist_prepend (backends, g_object_ref (backend));
+			}
 		}
 	}
 
+	g_hash_table_destroy (backends_hash);
 	backends = g_slist_reverse (backends);
-	g_mutex_unlock (&data_factory->priv->connections_lock);
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
 
 	return backends;
 }

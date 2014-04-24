@@ -100,9 +100,10 @@ struct _EBackendClass {
 						(EBackend *backend,
 						 gchar **host,
 						 guint16 *port);
+	void		(*prepare_shutdown)	(EBackend *backend);
 
 	/*< private >*/
-	gpointer reserved[12];
+	gpointer reserved[11];
 };
 
 GType		e_backend_get_type		(void) G_GNUC_CONST;
@@ -152,6 +153,7 @@ gboolean	e_backend_is_destination_reachable
 						(EBackend *backend,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_backend_prepare_shutdown	(EBackend *backend);
 
 G_END_DECLS
 

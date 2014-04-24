@@ -725,6 +725,25 @@ cal_backend_authenticate_sync (EBackend *backend,
 }
 
 static void
+cal_backend_prepare_shutdown (EBackend *backend)
+{
+	GList *list, *l;
+
+	list = e_cal_backend_list_views (E_CAL_BACKEND (backend));
+
+	for (l = list; l != NULL; l = g_list_next (l)) {
+		EDataCalView *view = l->data;
+
+		e_cal_backend_remove_view (E_CAL_BACKEND (backend), view);
+	}
+
+	g_list_free_full (list, g_object_unref);
+
+	/* Chain up to parent's prepare_shutdown() method. */
+	E_BACKEND_CLASS (e_cal_backend_parent_class)->prepare_shutdown (backend);
+}
+
+static void
 cal_backend_shutdown (ECalBackend *backend)
 {
 	ESource *source;
@@ -911,6 +930,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->authenticate_sync = cal_backend_authenticate_sync;
+	backend_class->prepare_shutdown = cal_backend_prepare_shutdown;
 
 	class->get_backend_property = cal_backend_get_backend_property;
 	class->shutdown = cal_backend_shutdown;

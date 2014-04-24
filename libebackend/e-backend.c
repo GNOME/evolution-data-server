@@ -469,6 +469,11 @@ backend_get_destination_address (EBackend *backend,
 }
 
 static void
+backend_prepare_shutdown (EBackend *backend)
+{
+}
+
+static void
 e_backend_class_init (EBackendClass *class)
 {
 	GObjectClass *object_class;
@@ -486,6 +491,7 @@ e_backend_class_init (EBackendClass *class)
 	class->authenticate = backend_authenticate;
 	class->authenticate_finish = backend_authenticate_finish;
 	class->get_destination_address = backend_get_destination_address;
+	class->prepare_shutdown = backend_prepare_shutdown;
 
 	g_object_class_install_property (
 		object_class,
@@ -1102,4 +1108,27 @@ e_backend_is_destination_reachable (EBackend *backend,
 	g_free (host);
 
 	return reachable;
+}
+
+/**
+ * e_backend_prepare_shutdown:
+ * @backend: an #EBackend instance
+ *
+ * Let's the @backend know that it'll be shut down shortly, no client connects
+ * to it anymore. The @backend can free any resources which reference it, for
+ * example the opened views.
+ *
+ * Since: 3.14
+ */
+void
+e_backend_prepare_shutdown (EBackend *backend)
+{
+	EBackendClass *class;
+
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	class = E_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class->prepare_shutdown != NULL);
+
+	class->prepare_shutdown (backend);
 }

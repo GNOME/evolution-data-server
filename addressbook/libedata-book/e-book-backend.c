@@ -586,6 +586,25 @@ book_backend_authenticate_sync (EBackend *backend,
 		registry, source, auth, cancellable, error);
 }
 
+static void
+book_backend_prepare_shutdown (EBackend *backend)
+{
+	GList *list, *l;
+
+	list = e_book_backend_list_views (E_BOOK_BACKEND (backend));
+
+	for (l = list; l != NULL; l = g_list_next (l)) {
+		EDataBookView *view = l->data;
+
+		e_book_backend_remove_view (E_BOOK_BACKEND (backend), view);
+	}
+
+	g_list_free_full (list, g_object_unref);
+
+	/* Chain up to parent's prepare_shutdown() method. */
+	E_BACKEND_CLASS (e_book_backend_parent_class)->prepare_shutdown (backend);
+}
+
 static gchar *
 book_backend_get_backend_property (EBookBackend *backend,
                                    const gchar *prop_name)
@@ -703,6 +722,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->authenticate_sync = book_backend_authenticate_sync;
+	backend_class->prepare_shutdown = book_backend_prepare_shutdown;
 
 	class->get_backend_property = book_backend_get_backend_property;
 	class->get_contact_list_uids_sync = book_backend_get_contact_list_uids_sync;

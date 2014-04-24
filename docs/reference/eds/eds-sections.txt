@@ -101,6 +101,7 @@ e_backend_trust_prompt
 e_backend_trust_prompt_finish
 e_backend_get_destination_address
 e_backend_is_destination_reachable
+e_backend_prepare_shutdown
 <SUBSECTION Standard>
 EBackendPrivate
 E_BACKEND
