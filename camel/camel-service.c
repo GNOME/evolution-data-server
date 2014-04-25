@@ -2101,12 +2101,12 @@ camel_service_authenticate_sync (CamelService *service,
 
 	g_return_val_if_fail (
 		CAMEL_IS_SERVICE (service),
-		CAMEL_AUTHENTICATION_REJECTED);
+		CAMEL_AUTHENTICATION_ERROR);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
 	g_return_val_if_fail (
 		class->authenticate_sync != NULL,
-		CAMEL_AUTHENTICATION_REJECTED);
+		CAMEL_AUTHENTICATION_ERROR);
 
 	result = class->authenticate_sync (
 		service, mechanism, cancellable, error);
@@ -2224,15 +2224,15 @@ camel_service_authenticate_finish (CamelService *service,
 
 	g_return_val_if_fail (
 		CAMEL_IS_SERVICE (service),
-		CAMEL_AUTHENTICATION_REJECTED);
+		CAMEL_AUTHENTICATION_ERROR);
 	g_return_val_if_fail (
 		g_task_is_valid (result, service),
-		CAMEL_AUTHENTICATION_REJECTED);
+		CAMEL_AUTHENTICATION_ERROR);
 
 	g_return_val_if_fail (
 		g_async_result_is_tagged (
 		result, camel_service_authenticate),
-		CAMEL_AUTHENTICATION_REJECTED);
+		CAMEL_AUTHENTICATION_ERROR);
 
 	/* XXX A little hackish, but best way to return enum values
 	 *     from GTask in GLib 2.36.  Recommended by Dan Winship. */

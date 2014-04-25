@@ -4644,7 +4644,7 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (
 		CAMEL_IS_IMAPX_SERVER (is),
-		CAMEL_AUTHENTICATION_REJECTED);
+		CAMEL_AUTHENTICATION_ERROR);
 
 	store = camel_imapx_server_ref_store (is);
 
