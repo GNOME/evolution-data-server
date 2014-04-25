@@ -769,37 +769,14 @@ imapx_connect_sync (CamelService *service,
                     GCancellable *cancellable,
                     GError **error)
 {
-	CamelIMAPXStorePrivate *priv;
+	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *imapx_server;
 	gboolean success;
 
-	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
+	imapx_store = CAMEL_IMAPX_STORE (service);
 
-	imapx_server = camel_imapx_server_new (CAMEL_IMAPX_STORE (service));
-
-	g_mutex_lock (&priv->server_lock);
-
-	/* We need to share the CamelIMAPXServer instance with the
-	 * authenticate_sync() method, but we don't want other parts
-	 * getting at it just yet.  So stash it in a special private
-	 * variable while connecting to the IMAP server. */
-	g_warn_if_fail (priv->connecting_server == NULL);
-	priv->connecting_server = g_object_ref (imapx_server);
-
-	g_mutex_unlock (&priv->server_lock);
-
-	success = camel_imapx_server_connect (
-		imapx_server, cancellable, error);
-
-	g_mutex_lock (&priv->server_lock);
-
-	g_warn_if_fail (
-		priv->connecting_server == NULL ||
-		priv->connecting_server == imapx_server);
-
-	g_clear_object (&priv->connecting_server);
-
-	g_mutex_unlock (&priv->server_lock);
+	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
+	success = imapx_server != NULL;
 
 	g_clear_object (&imapx_server);
 
