@@ -946,34 +946,6 @@ fill_fi (CamelStore *store,
 }
 
 static void
-imapx_unmark_folder_subscribed (CamelIMAPXStore *imapx_store,
-                                const gchar *folder_path,
-                                gboolean emit_signal)
-{
-	CamelStoreInfo *si;
-
-	si = camel_store_summary_path (imapx_store->summary, folder_path);
-	if (si != NULL) {
-		if (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) {
-			si->flags &= ~CAMEL_STORE_INFO_FOLDER_SUBSCRIBED;
-			camel_store_summary_touch (imapx_store->summary);
-			camel_store_summary_save (imapx_store->summary);
-		}
-		camel_store_summary_info_unref (imapx_store->summary, si);
-	}
-
-	if (emit_signal) {
-		CamelFolderInfo *fi;
-
-		fi = imapx_store_build_folder_info (
-			imapx_store, folder_path, 0);
-		camel_subscribable_folder_unsubscribed (
-			CAMEL_SUBSCRIBABLE (imapx_store), fi);
-		camel_folder_info_free (fi);
-	}
-}
-
-static void
 imapx_delete_folder_from_cache (CamelIMAPXStore *imapx_store,
                                 const gchar *folder_path)
 {
