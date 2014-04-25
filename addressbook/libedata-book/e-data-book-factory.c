@@ -97,7 +97,7 @@ data_book_factory_list_books (EDataBookFactory *factory)
 
 	backends = e_data_factory_list_backends (E_DATA_FACTORY (factory));
 
-	for (l = backends; l != NULL; l = g_slist_next (l)); {
+	for (l = backends; l != NULL; l = g_slist_next (l)) {
 		EBookBackend *backend = l->data;
 		EDataBook *book = e_book_backend_ref_data_book (backend);
 
@@ -106,6 +106,8 @@ data_book_factory_list_books (EDataBookFactory *factory)
 		else
 			g_object_unref (book);
 	}
+
+	g_slist_free_full (backends, g_object_unref);
 
 	return books;
 }
