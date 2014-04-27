@@ -1,3 +1,49 @@
+Evolution-Data-Server 3.13.1 2014-04-28
+---------------------------------------
+
+Bug Fixes:
+	Bug 660535 - Google contact groups/categories not showing in category
+	             list (Philip Withnall)
+	Bug 699797 - Verify SSL trust after redirection (Matt McCutchen)
+	Bug 722275 - IMAPX: Incorrectly reads astring values (mailbox names)
+	             (Milan Crha)
+	Bug 726060 - Password prompt initiated before D-Bus name acquired
+	             (Milan Crha)
+	Bug 726767 - [imapx] Implement CamelFolder::get_message_cached()
+	             (Milan Crha)
+	Bug 726788 - Crash on malformed vCard (Xavier Claessens)
+	Bug 727237 - Correct LGPL license information in sources (Milan Crha)
+	Bug 727431 - Merge common factories' code into a superclass
+	             (Fabiano Fidêncio)
+	Bug 727598 - [IMAPX] Fails to list folders without NAMESPACE capability
+	             (Milan Crha)
+	Bug 728087 - Use-after-free in contact address switch in composer
+	             (Christian Schaarschmidt)
+	Bug 728737 - [IMAPx] Namespaces not recognized in subscription list
+	             (Milan Crha)
+	Bug 728917 - Crashes on start with SIGSEGV in
+	             data_book_factory_list_books (Fabiano Fidêncio)
+
+Other Changes:
+	* The IMAP backend uses concurrent connections again. (Milan Crha)
+	* Plugged assorted memory leaks. (Milan Crha)
+	* Automatically reject revoked certificates rather than prompting -
+	  mainly in reaction to "heartbleed". (Milan Crha)
+	* libedataserver: Make ECategories thread safe (Philip Withnall)
+	* Add e_contact_get_attributes_set(). (Christian Schaarschmidt)
+	* libebook/libecal: Don’t emit a warning on a dropped D-Bus
+	  connection in dispose (Philip Withnall)
+	* Set properly children availability for newly created local
+	  folders (Milan Crha)
+	* [ownCloud backend] Check color format before using it (Milan Crha)
+
+Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Gianvito Cavasoli (it)
+	Jiro Matsuzawa (ja)
+	Kjartan Maraas (nb)
+
+
 Evolution-Data-Server 3.12.0 2014-03-24
 ---------------------------------------
 
