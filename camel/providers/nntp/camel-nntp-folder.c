@@ -242,7 +242,7 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 	CamelStore *parent_store;
 	CamelDataCache *nntp_cache;
 	CamelNNTPStore *nntp_store;
-	CamelNNTPStream *nntp_stream;
+	CamelNNTPStream *nntp_stream = NULL;
 	CamelStream *stream = NULL;
 	gint ret;
 	gchar *line;
@@ -252,7 +252,6 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
-	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 	ret = camel_nntp_command (
 		nntp_store, cancellable, error,
@@ -260,6 +259,8 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 
 	if (ret == 220) {
 		GIOStream *base_stream;
+
+		nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 		base_stream = camel_data_cache_add (
 			nntp_cache, "cache", msgid, NULL);
@@ -402,7 +403,7 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 {
 	CamelStore *parent_store;
 	CamelNNTPStore *nntp_store;
-	CamelNNTPStream *nntp_stream;
+	CamelNNTPStream *nntp_stream = NULL;
 	CamelStream *filtered_stream;
 	CamelMimeFilter *crlffilter;
 	gint ret;
@@ -417,7 +418,6 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
-	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 	/* send 'POST' command */
 	ret = camel_nntp_command (
@@ -442,15 +442,6 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 	/* the 'Newsgroups: ' header */
 	group = g_strdup_printf ("Newsgroups: %s\r\n", full_name);
 
-	/* setup stream filtering */
-	filtered_stream = camel_stream_filter_new (CAMEL_STREAM (nntp_stream));
-	crlffilter = camel_mime_filter_crlf_new (
-		CAMEL_MIME_FILTER_CRLF_ENCODE,
-		CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
-	camel_stream_filter_add (
-		CAMEL_STREAM_FILTER (filtered_stream), crlffilter);
-	g_object_unref (crlffilter);
-
 	/* remove mail 'To', 'CC', and 'BCC' headers */
 	savedhdrs = NULL;
 	tail = (struct _camel_header_raw *) &savedhdrs;
@@ -469,6 +460,17 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 
 		n = header->next;
 	}
+
+	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
+
+	/* setup stream filtering */
+	filtered_stream = camel_stream_filter_new (CAMEL_STREAM (nntp_stream));
+	crlffilter = camel_mime_filter_crlf_new (
+		CAMEL_MIME_FILTER_CRLF_ENCODE,
+		CAMEL_MIME_FILTER_CRLF_MODE_CRLF_DOTS);
+	camel_stream_filter_add (
+		CAMEL_STREAM_FILTER (filtered_stream), crlffilter);
+	g_object_unref (crlffilter);
 
 	/* write the message */
 	if (local_error == NULL)
