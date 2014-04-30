@@ -27,13 +27,16 @@
 	((obj), CAMEL_TYPE_IMAPX_SEARCH, CamelIMAPXSearchPrivate))
 
 struct _CamelIMAPXSearchPrivate {
-	GWeakRef server;
+	GWeakRef imapx_store;
 	gint *local_data_search; /* not NULL, if testing whether all used headers are all locally available */
+
+	GCancellable *cancellable; /* not referenced */
+	GError **error; /* not referenced */
 };
 
 enum {
 	PROP_0,
-	PROP_SERVER
+	PROP_STORE
 };
 
 G_DEFINE_TYPE (
@@ -48,8 +51,8 @@ imapx_search_set_property (GObject *object,
                            GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_SERVER:
-			camel_imapx_search_set_server (
+		case PROP_STORE:
+			camel_imapx_search_set_store (
 				CAMEL_IMAPX_SEARCH (object),
 				g_value_get_object (value));
 			return;
@@ -65,10 +68,10 @@ imapx_search_get_property (GObject *object,
                            GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_SERVER:
+		case PROP_STORE:
 			g_value_take_object (
 				value,
-				camel_imapx_search_ref_server (
+				camel_imapx_search_ref_store (
 				CAMEL_IMAPX_SEARCH (object)));
 			return;
 	}
@@ -83,7 +86,7 @@ imapx_search_dispose (GObject *object)
 
 	priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (object);
 
-	g_weak_ref_set (&priv->server, NULL);
+	g_weak_ref_set (&priv->imapx_store, NULL);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_search_parent_class)->dispose (object);
@@ -137,43 +140,64 @@ imapx_search_result_match_none (CamelSExp *sexp,
 static CamelSExpResult *
 imapx_search_process_criteria (CamelSExp *sexp,
                                CamelFolderSearch *search,
-                               CamelIMAPXServer *server,
+                               CamelIMAPXStore *imapx_store,
                                const GString *criteria,
                                const gchar *from_function)
 {
 	CamelSExpResult *result;
+	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
 	CamelIMAPXMailbox *mailbox;
 	GPtrArray *uids = NULL;
-	GError *error = NULL;
+	GError *local_error = NULL;
 
 	mailbox = camel_imapx_folder_list_mailbox (
-		CAMEL_IMAPX_FOLDER (search->folder), NULL, &error);
+		CAMEL_IMAPX_FOLDER (search->folder), imapx_search->priv->cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		((mailbox != NULL) && (error == NULL)) ||
-		((mailbox == NULL) && (error != NULL)), NULL);
+		((mailbox != NULL) && (local_error == NULL)) ||
+		((mailbox == NULL) && (local_error != NULL)), NULL);
 
 	if (mailbox != NULL) {
-		uids = camel_imapx_server_uid_search (
-			server, mailbox, criteria->str, NULL, &error);
+		CamelIMAPXStore *imapx_store;
+		CamelIMAPXServer *imapx_server;
+		const gchar *folder_name;
+
+		imapx_store = camel_imapx_search_ref_store (imapx_search);
+
+		/* there should always be one, held by one of the callers of this function */
+		g_warn_if_fail (imapx_store != NULL);
+
+		folder_name = camel_folder_get_full_name (search->folder);
+		imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, imapx_search->priv->cancellable, &local_error);
+		if (imapx_server) {
+			uids = camel_imapx_server_uid_search (imapx_server, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
+
+			while (!uids && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
+				g_clear_error (&local_error);
+				g_clear_object (&imapx_server);
+
+				imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, imapx_search->priv->cancellable, &local_error);
+				if (imapx_server)
+					uids = camel_imapx_server_uid_search (imapx_server, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
+			}
+		}
+
+		g_clear_object (&imapx_server);
+		g_clear_object (&imapx_store);
 		g_object_unref (mailbox);
 	}
 
 	/* Sanity check. */
 	g_return_val_if_fail (
-		((uids != NULL) && (error == NULL)) ||
-		((uids == NULL) && (error != NULL)), NULL);
+		((uids != NULL) && (local_error == NULL)) ||
+		((uids == NULL) && (local_error != NULL)), NULL);
 
-	/* XXX No allowance for errors in CamelSExp callbacks!
-	 *     Dump the error to the console and make like we
-	 *     got an empty result. */
-	if (error != NULL) {
-		g_warning (
-			"%s: (UID SEARCH %s): %s",
-			from_function, criteria->str, error->message);
+	if (local_error != NULL) {
+		g_propagate_error (imapx_search->priv->error, local_error);
+
+		/* Make like we've got an empty result */
 		uids = g_ptr_array_new ();
-		g_error_free (error);
 	}
 
 	if (search->current != NULL) {
@@ -196,7 +220,7 @@ imapx_search_match_all (CamelSExp *sexp,
                         CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
-	CamelIMAPXServer *server;
+	CamelIMAPXStore *imapx_store;
 	CamelSExpResult *result;
 	GPtrArray *summary;
 	gint local_data_search = 0, *prev_local_data_search, ii;
@@ -204,9 +228,9 @@ imapx_search_match_all (CamelSExp *sexp,
 	if (argc != 1)
 		return imapx_search_result_match_none (sexp, search);
 
-	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
-	if (!server || search->current || !search->summary) {
-		g_clear_object (&server);
+	imapx_store = camel_imapx_search_ref_store (CAMEL_IMAPX_SEARCH (search));
+	if (!imapx_store || search->current || !search->summary) {
+		g_clear_object (&imapx_store);
 
 		/* Chain up to parent's method. */
 		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
@@ -237,7 +261,7 @@ imapx_search_match_all (CamelSExp *sexp,
 	imapx_search->priv->local_data_search = prev_local_data_search;
 
 	if (local_data_search >= 0) {
-		g_clear_object (&server);
+		g_clear_object (&imapx_store);
 
 		/* Chain up to parent's method. */
 		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
@@ -248,7 +272,7 @@ imapx_search_match_all (CamelSExp *sexp,
 	 * but here is expected GPtrArray of matched UIDs */
 	result = camel_sexp_term_eval (sexp, argv[0]);
 
-	g_object_unref (server);
+	g_object_unref (imapx_store);
 
 	g_return_val_if_fail (result != NULL, result);
 	g_return_val_if_fail (result->type == CAMEL_SEXP_RES_ARRAY_PTR, result);
@@ -263,7 +287,7 @@ imapx_search_body_contains (CamelSExp *sexp,
                             CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
-	CamelIMAPXServer *server;
+	CamelIMAPXStore *imapx_store;
 	CamelSExpResult *result;
 	GString *criteria;
 	gint ii, jj;
@@ -282,10 +306,10 @@ imapx_search_body_contains (CamelSExp *sexp,
 	if (argc == 0 || search->summary->len == 0)
 		return imapx_search_result_match_none (sexp, search);
 
-	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
+	imapx_store = camel_imapx_search_ref_store (CAMEL_IMAPX_SEARCH (search));
 
-	/* This will be NULL if we're offline.  Search from cache. */
-	if (server == NULL) {
+	/* This will be NULL if we're offline. Search from cache. */
+	if (imapx_store == NULL) {
 		/* Chain up to parent's method. */
 		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
 			body_contains (sexp, argc, argv, search);
@@ -333,10 +357,10 @@ imapx_search_body_contains (CamelSExp *sexp,
 		}
 	}
 
-	result = imapx_search_process_criteria (sexp, search, server, criteria, G_STRFUNC);
+	result = imapx_search_process_criteria (sexp, search, imapx_store, criteria, G_STRFUNC);
 
 	g_string_free (criteria, TRUE);
-	g_object_unref (server);
+	g_object_unref (imapx_store);
 
 	return result;
 }
@@ -357,7 +381,7 @@ imapx_search_header_contains (CamelSExp *sexp,
                               CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
-	CamelIMAPXServer *server;
+	CamelIMAPXStore *imapx_store;
 	CamelSExpResult *result;
 	const gchar *headername, *command = NULL;
 	GString *criteria;
@@ -386,10 +410,10 @@ imapx_search_header_contains (CamelSExp *sexp,
 		return imapx_search_result_match_none (sexp, search);
 	}
 
-	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
+	imapx_store = camel_imapx_search_ref_store (CAMEL_IMAPX_SEARCH (search));
 
-	/* This will be NULL if we're offline.  Search from cache. */
-	if (server == NULL) {
+	/* This will be NULL if we're offline. Search from cache. */
+	if (imapx_store == NULL) {
 		/* Chain up to parent's method. */
 		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
 			header_contains (sexp, argc, argv, search);
@@ -453,10 +477,10 @@ imapx_search_header_contains (CamelSExp *sexp,
 		}
 	}
 
-	result = imapx_search_process_criteria (sexp, search, server, criteria, G_STRFUNC);
+	result = imapx_search_process_criteria (sexp, search, imapx_store, criteria, G_STRFUNC);
 
 	g_string_free (criteria, TRUE);
-	g_object_unref (server);
+	g_object_unref (imapx_store);
 
 	return result;
 }
@@ -468,7 +492,7 @@ imapx_search_header_exists (CamelSExp *sexp,
                             CamelFolderSearch *search)
 {
 	CamelIMAPXSearch *imapx_search = CAMEL_IMAPX_SEARCH (search);
-	CamelIMAPXServer *server;
+	CamelIMAPXStore *imapx_store;
 	CamelSExpResult *result;
 	GString *criteria;
 	gint ii;
@@ -503,10 +527,10 @@ imapx_search_header_exists (CamelSExp *sexp,
 		return imapx_search_result_match_none (sexp, search);
 	}
 
-	server = camel_imapx_search_ref_server (CAMEL_IMAPX_SEARCH (search));
+	imapx_store = camel_imapx_search_ref_store (CAMEL_IMAPX_SEARCH (search));
 
-	/* This will be NULL if we're offline.  Search from cache. */
-	if (server == NULL) {
+	/* This will be NULL if we're offline. Search from cache. */
+	if (imapx_store == NULL) {
 		/* Chain up to parent's method. */
 		return CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->
 			header_exists (sexp, argc, argv, search);
@@ -538,10 +562,10 @@ imapx_search_header_exists (CamelSExp *sexp,
 		g_string_append_printf (criteria, "HEADER \"%s\" \"\"", headername);
 	}
 
-	result = imapx_search_process_criteria (sexp, search, server, criteria, G_STRFUNC);
+	result = imapx_search_process_criteria (sexp, search, imapx_store, criteria, G_STRFUNC);
 
 	g_string_free (criteria, TRUE);
-	g_object_unref (server);
+	g_object_unref (imapx_store);
 
 	return result;
 }
@@ -567,12 +591,12 @@ camel_imapx_search_class_init (CamelIMAPXSearchClass *class)
 
 	g_object_class_install_property (
 		object_class,
-		PROP_SERVER,
+		PROP_STORE,
 		g_param_spec_object (
-			"server",
-			"Server",
-			"Server proxy for server-side searches",
-			CAMEL_TYPE_IMAPX_SERVER,
+			"store",
+			"IMAPX Store",
+			"IMAPX Store for server-side searches",
+			CAMEL_TYPE_IMAPX_STORE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
 }
@@ -586,67 +610,105 @@ camel_imapx_search_init (CamelIMAPXSearch *search)
 
 /**
  * camel_imapx_search_new:
+ * imapx_store: a #CamelIMAPXStore to which the search belongs
  *
  * Returns a new #CamelIMAPXSearch instance.
- *
- * The #CamelIMAPXSearch must be given a #CamelIMAPXSearch:server before
- * it can issue server-side search requests.  Otherwise it will fallback
- * to the default #CamelFolderSearch behavior.
  *
  * Returns: a new #CamelIMAPXSearch
  *
  * Since: 3.8
  **/
 CamelFolderSearch *
-camel_imapx_search_new (void)
+camel_imapx_search_new (CamelIMAPXStore *imapx_store)
 {
-	return g_object_new (CAMEL_TYPE_IMAPX_SEARCH, NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
+
+	return g_object_new (
+		CAMEL_TYPE_IMAPX_SEARCH,
+		"store", imapx_store,
+		NULL);
 }
 
 /**
- * camel_imapx_search_ref_server:
+ * camel_imapx_search_ref_store:
  * @search: a #CamelIMAPXSearch
  *
- * Returns a #CamelIMAPXServer to use for server-side searches,
- * or %NULL when the corresponding #CamelIMAPXStore is offline.
+ * Returns a #CamelIMAPXStore to use for server-side searches,
+ * or %NULL when the store is offline.
  *
- * The returned #CamelIMAPXSearch is referenced for thread-safety and
+ * The returned #CamelIMAPXStore is referenced for thread-safety and
  * must be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelIMAPXServer, or %NULL
+ * Returns: a #CamelIMAPXStore, or %NULL
  *
  * Since: 3.8
  **/
-CamelIMAPXServer *
-camel_imapx_search_ref_server (CamelIMAPXSearch *search)
+CamelIMAPXStore *
+camel_imapx_search_ref_store (CamelIMAPXSearch *search)
 {
+	CamelIMAPXStore *imapx_store;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SEARCH (search), NULL);
 
-	return g_weak_ref_get (&search->priv->server);
+	imapx_store = g_weak_ref_get (&search->priv->imapx_store);
+
+	if (imapx_store && !camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store)))
+		g_clear_object (&imapx_store);
+
+	return imapx_store;
 }
 
 /**
- * camel_imapx_search_set_server:
+ * camel_imapx_search_set_store:
  * @search: a #CamelIMAPXSearch
- * @server: a #CamelIMAPXServer, or %NULL
+ * @imapx_server: a #CamelIMAPXStore, or %NULL
  *
- * Sets a #CamelIMAPXServer to use for server-side searches.  Generally
+ * Sets a #CamelIMAPXStore to use for server-side searches. Generally
  * this is set for the duration of a single search when online, and then
  * reset to %NULL.
  *
  * Since: 3.8
  **/
 void
-camel_imapx_search_set_server (CamelIMAPXSearch *search,
-                               CamelIMAPXServer *server)
+camel_imapx_search_set_store (CamelIMAPXSearch *search,
+			      CamelIMAPXStore *imapx_store)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_SEARCH (search));
 
-	if (server != NULL)
-		g_return_if_fail (CAMEL_IS_IMAPX_SERVER (server));
+	if (imapx_store != NULL)
+		g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
 
-	g_weak_ref_set (&search->priv->server, server);
+	g_weak_ref_set (&search->priv->imapx_store, imapx_store);
 
-	g_object_notify (G_OBJECT (search), "server");
+	g_object_notify (G_OBJECT (search), "store");
 }
 
+/**
+ * camel_imapx_search_set_cancellable_and_error:
+ * @search: a #CamelIMAPXSearch
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: a #GError, or %NULL
+ *
+ * Sets @cancellable and @error to use for server-side searches. This way
+ * the search can return accurate errors and be eventually cancelled by
+ * a user.
+ *
+ * Note: The caller is responsible to keep alive both @cancellable and @error
+ * for the whole run of the search and reset them both to NULL after
+ * the search is finished.
+ *
+ * Since: 3.14
+ **/
+void
+camel_imapx_search_set_cancellable_and_error (CamelIMAPXSearch *search,
+					      GCancellable *cancellable,
+					      GError **error)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SEARCH (search));
+
+	if (cancellable)
+		g_return_if_fail (G_IS_CANCELLABLE (cancellable));
+
+	search->priv->cancellable = cancellable;
+	search->priv->error = error;
+}

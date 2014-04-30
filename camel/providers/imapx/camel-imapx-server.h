@@ -50,7 +50,8 @@
 G_BEGIN_DECLS
 
 typedef enum {
-	CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED
+	CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED,
+	CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT
 } CamelIMAPXServerError;
 
 GQuark		camel_imapx_server_error_quark		(void) G_GNUC_CONST;
@@ -135,7 +136,8 @@ struct _CamelIMAPXServerClass {
 						 CamelIMAPXMailbox *mailbox);
 	void		(*mailbox_closed)	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox);
-	void		(*shutdown)		(CamelIMAPXServer *is);
+	void		(*shutdown)		(CamelIMAPXServer *is,
+						 const GError *error);
 };
 
 GType		camel_imapx_server_get_type	(void);
@@ -162,7 +164,8 @@ CamelAuthenticationResult
 						 const gchar *mechanism,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_imapx_server_shutdown	(CamelIMAPXServer *is);
+void		camel_imapx_server_shutdown	(CamelIMAPXServer *is,
+						 const GError *error);
 gboolean	camel_imapx_server_list		(CamelIMAPXServer *is,
 						 const gchar *pattern,
 						 CamelStoreGetFolderInfoFlags flags,

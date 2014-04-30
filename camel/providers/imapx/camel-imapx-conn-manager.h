@@ -71,7 +71,8 @@ CamelIMAPXServer *
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_imapx_conn_manager_close_connections
-						(CamelIMAPXConnManager *con_man);
+						(CamelIMAPXConnManager *con_man,
+						 const GError *error);
 GList *		camel_imapx_conn_manager_get_connections
 						(CamelIMAPXConnManager *con_man);
 void		camel_imapx_conn_manager_update_con_info

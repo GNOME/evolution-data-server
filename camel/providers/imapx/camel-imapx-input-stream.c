@@ -27,6 +27,7 @@
 
 #include <camel/camel.h>
 
+#include "camel-imapx-server.h"
 #include "camel-imapx-utils.h"
 
 #define CAMEL_IMAPX_INPUT_STREAM_GET_PRIVATE(obj) \
@@ -88,7 +89,7 @@ imapx_input_stream_fill (CamelIMAPXInputStream *is,
 		 * accordingly */
 		if (!left)
 			g_set_error (
-				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
 				_("Source stream returned no data"));
 		return -1;
 	}

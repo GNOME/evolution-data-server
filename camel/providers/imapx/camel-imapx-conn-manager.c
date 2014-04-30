@@ -54,6 +54,7 @@ struct _ConnectionInfo {
 	CamelIMAPXServer *is;
 	GHashTable *folder_names;
 	gchar *selected_folder;
+	GError *shutdown_error;
 	volatile gint ref_count;
 };
 
@@ -68,7 +69,9 @@ G_DEFINE_TYPE (
 	G_TYPE_OBJECT)
 
 static void
-imapx_conn_shutdown (CamelIMAPXServer *is, CamelIMAPXConnManager *con_man);
+imapx_conn_shutdown (CamelIMAPXServer *is,
+		     const GError *error,
+		     CamelIMAPXConnManager *con_man);
 
 static void
 imapx_conn_update_select (CamelIMAPXServer *is,
@@ -95,6 +98,7 @@ connection_info_new (CamelIMAPXServer *is)
 	g_mutex_init (&cinfo->lock);
 	cinfo->is = g_object_ref (is);
 	cinfo->folder_names = folder_names;
+	cinfo->shutdown_error = NULL;
 	cinfo->ref_count = 1;
 
 	return cinfo;
@@ -118,7 +122,7 @@ connection_info_unref (ConnectionInfo *cinfo)
 	g_return_if_fail (cinfo->ref_count > 0);
 
 	if (g_atomic_int_dec_and_test (&cinfo->ref_count)) {
-		camel_imapx_server_shutdown (cinfo->is);
+		camel_imapx_server_shutdown (cinfo->is, cinfo->shutdown_error);
 		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_shutdown, NULL);
 		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_update_select, NULL);
 		g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_closed, NULL);
@@ -127,6 +131,7 @@ connection_info_unref (ConnectionInfo *cinfo)
 		g_object_unref (cinfo->is);
 		g_hash_table_destroy (cinfo->folder_names);
 		g_free (cinfo->selected_folder);
+		g_clear_error (&cinfo->shutdown_error);
 
 		g_slice_free (ConnectionInfo, cinfo);
 	}
@@ -141,7 +146,7 @@ connection_info_cancel_and_unref (ConnectionInfo *cinfo)
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_shutdown, NULL);
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_update_select, NULL);
 	g_signal_handlers_disconnect_matched (cinfo->is, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, imapx_conn_mailbox_closed, NULL);
-	camel_imapx_server_shutdown (cinfo->is);
+	camel_imapx_server_shutdown (cinfo->is, cinfo->shutdown_error);
 	connection_info_unref (cinfo);
 }
 
@@ -240,6 +245,23 @@ connection_info_set_selected_folder (ConnectionInfo *cinfo,
 
 	g_free (cinfo->selected_folder);
 	cinfo->selected_folder = g_strdup (selected_folder);
+
+	g_mutex_unlock (&cinfo->lock);
+}
+
+static void
+connection_info_set_shutdown_error (ConnectionInfo *cinfo,
+                                    const GError *shutdown_error)
+{
+	g_return_if_fail (cinfo != NULL);
+
+	g_mutex_lock (&cinfo->lock);
+
+	if (cinfo->shutdown_error != shutdown_error) {
+		g_clear_error (&cinfo->shutdown_error);
+		if (shutdown_error)
+			cinfo->shutdown_error = g_error_copy (shutdown_error);
+	}
 
 	g_mutex_unlock (&cinfo->lock);
 }
@@ -426,11 +448,9 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 	g_rw_lock_init (&con_man->priv->rw_lock);
 }
 
-/* Static functions go here */
-
-/* TODO destroy unused connections in a time-out loop */
 static void
 imapx_conn_shutdown (CamelIMAPXServer *is,
+		     const GError *error,
                      CamelIMAPXConnManager *con_man)
 {
 	ConnectionInfo *cinfo;
@@ -441,6 +461,14 @@ imapx_conn_shutdown (CamelIMAPXServer *is,
 	if (cinfo != NULL) {
 		imapx_conn_manager_remove_info (con_man, cinfo);
 		connection_info_unref (cinfo);
+	}
+
+	/* If one connection ends with this error, then it means all
+	   other opened connections also may end with the same error,
+	   thus better to kill them all from the list of connections.
+	*/
+	if (g_error_matches (error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
+		camel_imapx_conn_manager_close_connections (con_man, error);
 	}
 }
 
@@ -792,7 +820,7 @@ camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man,
 
 					g_clear_error (&local_error);
 					is = imapx_find_connection_unlocked (con_man, folder_name, for_expensive_job);
-				} else {
+				} else if (local_error) {
 					g_propagate_error (error, local_error);
 				}
 			}
@@ -848,13 +876,20 @@ camel_imapx_conn_manager_update_con_info (CamelIMAPXConnManager *con_man,
 }
 
 void
-camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man)
+camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man,
+					    const GError *error)
 {
+	GList *iter;
+
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
 
 	CON_WRITE_LOCK (con_man);
 
-	c('*', "Closing all %d connections\n", g_list_length (con_man->priv->connections));
+	c('*', "Closing all %d connections, with propagated error: %s\n", g_list_length (con_man->priv->connections), error ? error->message : "none");
+
+	for (iter = con_man->priv->connections; iter; iter = g_list_next (iter)) {
+		connection_info_set_shutdown_error (iter->data, error);
+	}
 
 	g_list_free_full (
 		con_man->priv->connections,

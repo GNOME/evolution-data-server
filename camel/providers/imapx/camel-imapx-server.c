@@ -354,6 +354,9 @@ struct _CamelIMAPXServerPrivate {
 	GMainContext *parser_main_context;
 	GWeakRef parser_cancellable;
 
+	GMutex shutdown_error_lock;
+	GError *shutdown_error;
+
 	GSource *inactivity_timeout;
 	GMutex inactivity_timeout_lock;
 
@@ -573,6 +576,36 @@ imapx_weak_ref_free (GWeakRef *weak_ref)
 
 	g_weak_ref_set (weak_ref, NULL);
 	g_slice_free (GWeakRef, weak_ref);
+}
+
+static void
+imapx_server_set_shutdown_error (CamelIMAPXServer *imapx_server,
+				 const GError *error)
+{
+	g_mutex_lock (&imapx_server->priv->shutdown_error_lock);
+
+	if (error != imapx_server->priv->shutdown_error) {
+		g_clear_error (&imapx_server->priv->shutdown_error);
+		if (error)
+			imapx_server->priv->shutdown_error = g_error_copy (error);
+	}
+
+	g_mutex_unlock (&imapx_server->priv->shutdown_error_lock);
+}
+
+static GError *
+imapx_server_dup_shutdown_error (CamelIMAPXServer *imapx_server)
+{
+	GError *error = NULL;
+
+	g_mutex_lock (&imapx_server->priv->shutdown_error_lock);
+
+	if (imapx_server->priv->shutdown_error)
+		error = g_error_copy (imapx_server->priv->shutdown_error);
+
+	g_mutex_unlock (&imapx_server->priv->shutdown_error_lock);
+
+	return error;
 }
 
 static void
@@ -1696,7 +1729,7 @@ imapx_command_queue (CamelIMAPXServer *is,
 		c (is->tagprefix, "refuse to queue job on disconnected server\n");
 
 		local_error = g_error_new (
-			CAMEL_IMAPX_ERROR, 1,
+			CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
 			"%s", _("Server disconnected"));
 		camel_imapx_command_failed (ic, local_error);
 		g_error_free (local_error);
@@ -2710,9 +2743,6 @@ imapx_untagged_bye (CamelIMAPXServer *is,
                     GCancellable *cancellable,
                     GError **error)
 {
-	CamelIMAPXStore *imapx_store;
-	CamelService *service;
-	CamelServiceConnectionStatus status;
 	guchar *token = NULL;
 	gboolean success;
 
@@ -2727,26 +2757,13 @@ imapx_untagged_bye (CamelIMAPXServer *is,
 	if (success) {
 		c (is->tagprefix, "BYE: %s\n", token);
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
 			"IMAP server said BYE: %s", token);
 	}
 
 	g_free (token);
 
 	is->state = IMAPX_SHUTDOWN;
-
-	imapx_store = camel_imapx_server_ref_store (is);
-	service = CAMEL_SERVICE (imapx_store);
-	status = camel_service_get_connection_status (service);
-
-	/* Do not disconnect the service if we're still connecting.
-	 * camel_service_disconnect_sync() will cancel the connect
-	 * operation and the server message will get replaced with
-	 * a generic "Operation was cancelled" message. */
-	if (status == CAMEL_SERVICE_CONNECTED)
-		camel_service_disconnect_sync (service, FALSE, NULL, NULL);
-
-	g_object_unref (imapx_store);
 
 	return FALSE;
 }
@@ -4902,39 +4919,6 @@ exit:
 	g_object_unref (store);
 
 	return success;
-}
-
-/**
- * camel_imapx_server_shutdown:
- * @is: a #CamelIMAPXServer
- *
- * Signals the server to shut down command processing.  #CamelIMAPXStore
- * should call this immediately before unreferencing its server instance.
- * Note, the server instance may linger a short time after this function
- * returns as its own worker threads finish.
- *
- * Since: 3.12
- **/
-void
-camel_imapx_server_shutdown (CamelIMAPXServer *is)
-{
-	GCancellable *cancellable;
-
-	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (is));
-
-	QUEUE_LOCK (is);
-
-	is->state = IMAPX_SHUTDOWN;
-
-	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
-
-	QUEUE_UNLOCK (is);
-
-	g_main_loop_quit (is->priv->idle_main_loop);
-	g_main_loop_quit (is->priv->parser_main_loop);
-
-	g_cancellable_cancel (cancellable);
-	g_clear_object (&cancellable);
 }
 
 /* ********************************************************************** */
@@ -7447,6 +7431,8 @@ imapx_abort_all_commands (CamelIMAPXServer *is,
 
 	queue = camel_imapx_command_queue_new ();
 
+	imapx_server_set_shutdown_error (is, error);
+
 	QUEUE_LOCK (is);
 
 	camel_imapx_command_queue_transfer (is->queue, queue);
@@ -7538,6 +7524,25 @@ imapx_ready_to_read (GInputStream *input_stream,
 	g_clear_object (&cancellable);
 
 	if (local_error != NULL) {
+		camel_imapx_debug (io, is->tagprefix, "Data read failed with error '%s'\n", local_error->message);
+
+		/* Sadly, G_IO_ERROR_FAILED is also used for 'Connection reset by peer' error */
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED)) {
+			local_error->domain = CAMEL_IMAPX_SERVER_ERROR;
+			local_error->code = CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT;
+		}
+
+		imapx_server_set_shutdown_error (is, local_error);
+
+		/* Call the signal early, certain thread interleaving can cause the closed connection
+		   being reused on the following reconnect attempt. There is also re-setting
+		   the shutdown_error above, because the signal handler in connection manager
+		   also calls camel_imapx_server_shutdown(), but without the error, while we want
+		   to have there propagated the "try reconnect" error instead. As there is no
+		   guarantee that it'll be called, then we also quit the parser's mainloop and
+		   call the imapx_abort_all_commands() below - just in case. */
+		g_signal_emit (is, signals[SHUTDOWN], 0, local_error);
+
 		g_main_loop_quit (is->priv->parser_main_loop);
 		imapx_abort_all_commands (is, local_error);
 		g_clear_error (&local_error);
@@ -7561,6 +7566,7 @@ imapx_parser_thread (gpointer user_data)
 	GInputStream *input_stream;
 	GCancellable *cancellable;
 	GSource *pollable_source;
+	GError *shutdown_error;
 
 	is = CAMEL_IMAPX_SERVER (user_data);
 
@@ -7600,7 +7606,11 @@ imapx_parser_thread (gpointer user_data)
 
 	g_main_context_pop_thread_default (is->priv->parser_main_context);
 
-	g_signal_emit (is, signals[SHUTDOWN], 0);
+	shutdown_error = imapx_server_dup_shutdown_error (is);
+
+	g_signal_emit (is, signals[SHUTDOWN], 0, shutdown_error);
+
+	g_clear_error (&shutdown_error);
 
 	g_object_unref (is);
 
@@ -7736,6 +7746,9 @@ imapx_server_finalize (GObject *object)
 	g_mutex_clear (&is->priv->jobs_prop_lock);
 	g_hash_table_destroy (is->priv->jobs_prop_folder_paths);
 
+	g_mutex_clear (&is->priv->shutdown_error_lock);
+	g_clear_error (&is->priv->shutdown_error);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
 }
@@ -7831,6 +7844,7 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 	/**
 	 * CamelIMAPXServer::shutdown
 	 * @server: the #CamelIMAPXServer which emitted the signal
+	 * @error: a #GError, which caused the shutdown; can be %NULL
 	 **/
 	signals[SHUTDOWN] = g_signal_new (
 		"shutdown",
@@ -7838,8 +7852,8 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 		G_SIGNAL_RUN_FIRST,
 		G_STRUCT_OFFSET (CamelIMAPXServerClass, shutdown),
 		NULL, NULL,
-		g_cclosure_marshal_VOID__VOID,
-		G_TYPE_NONE, 0);
+		g_cclosure_marshal_VOID__BOXED,
+		G_TYPE_NONE, 1, G_TYPE_ERROR);
 
 	class->tagprefix = 'A';
 }
@@ -7859,6 +7873,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	g_mutex_init (&is->priv->search_results_lock);
 	g_mutex_init (&is->priv->known_alerts_lock);
 	g_mutex_init (&is->priv->jobs_prop_lock);
+	g_mutex_init (&is->priv->shutdown_error_lock);
 
 	is->priv->jobs_prop_folder_paths = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	is->priv->jobs_prop_command_count = 0;
@@ -7888,6 +7903,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	is->priv->parser_main_loop = g_main_loop_new (main_context, FALSE);
 	is->priv->parser_main_context = g_main_context_ref (main_context);
+	is->priv->shutdown_error = NULL;
 
 	g_main_context_unref (main_context);
 
@@ -9282,3 +9298,59 @@ camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
 	return previous;
 }
 
+/**
+ * camel_imapx_server_shutdown:
+ * @is: a #CamelIMAPXServer
+ * @error: a #GError with which cancel any pending jobs
+ *
+ * Signals the server to shut down command processing. A #CamelIMAPXStore
+ * should call this immediately before unreferencing its server instance.
+ * Note, the server instance may linger a short time after this function
+ * returns as its own worker threads finish.
+ *
+ * Since: 3.12
+ **/
+void
+camel_imapx_server_shutdown (CamelIMAPXServer *is,
+			     const GError *error)
+{
+	GCancellable *cancellable;
+	GError *shutdown_error_copy = NULL;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (is));
+
+	QUEUE_LOCK (is);
+
+	is->state = IMAPX_SHUTDOWN;
+
+	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
+
+	QUEUE_UNLOCK (is);
+
+	if (!error) {
+		shutdown_error_copy = imapx_server_dup_shutdown_error (is);
+		error = shutdown_error_copy;
+	}
+
+	if (error) {
+		imapx_abort_all_commands (is, error);
+	} else {
+		GError *local_error = NULL;
+
+		g_set_error (
+			&local_error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			"Shutting down");
+
+		imapx_abort_all_commands (is, local_error);
+
+		g_clear_error (&local_error);
+	}
+
+	g_main_loop_quit (is->priv->idle_main_loop);
+	g_main_loop_quit (is->priv->parser_main_loop);
+
+	g_cancellable_cancel (cancellable);
+	g_clear_object (&cancellable);
+	g_clear_error (&shutdown_error_copy);
+}
