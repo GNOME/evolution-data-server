@@ -20,7 +20,7 @@
 
 #include <camel/camel.h>
 
-#include "camel-imapx-server.h"
+#include "camel-imapx-store.h"
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_IMAPX_SEARCH \
@@ -66,11 +66,15 @@ struct _CamelIMAPXSearchClass {
 
 GType		camel_imapx_search_get_type	(void) G_GNUC_CONST;
 CamelFolderSearch *
-		camel_imapx_search_new		(void);
-CamelIMAPXServer *
-		camel_imapx_search_ref_server	(CamelIMAPXSearch *search);
-void		camel_imapx_search_set_server	(CamelIMAPXSearch *search,
-						 CamelIMAPXServer *server);
+		camel_imapx_search_new		(CamelIMAPXStore *imapx_store);
+CamelIMAPXStore *
+		camel_imapx_search_ref_store	(CamelIMAPXSearch *search);
+void		camel_imapx_search_set_store	(CamelIMAPXSearch *search,
+						 CamelIMAPXStore *imapx_store);
+void		camel_imapx_search_set_cancellable_and_error
+						(CamelIMAPXSearch *search,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 
