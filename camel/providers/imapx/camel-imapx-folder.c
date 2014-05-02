@@ -1476,6 +1476,11 @@ camel_imapx_folder_new (CamelStore *store,
 		return NULL;
 	}
 
+	/* Ensure cache will never expire, otherwise
+	 * it causes redownload of messages. */
+	camel_data_cache_set_expire_age (imapx_folder->cache, -1);
+	camel_data_cache_set_expire_access (imapx_folder->cache, -1);
+
 	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free (state_file);
