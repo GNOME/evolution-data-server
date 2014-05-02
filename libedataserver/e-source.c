@@ -126,6 +126,9 @@ struct _ESourcePrivate {
 	GSource *changed;
 	GMutex changed_lock;
 
+	GSource *data_change;
+	GMutex data_change_lock;
+
 	GMutex property_lock;
 
 	gchar *display_name;
@@ -784,12 +787,25 @@ source_parse_dbus_data (ESource *source,
 	return TRUE;
 }
 
-static void
-source_notify_dbus_data_cb (EDBusSource *dbus_source,
-                            GParamSpec *pspec,
-                            ESource *source)
+static gboolean
+source_idle_data_change_cb (gpointer user_data)
 {
+	ESource *source = E_SOURCE (user_data);
 	GError *local_error = NULL;
+
+	/* If the ESource is still initializing itself in a different
+	 * thread, skip the signal emission and try again on the next
+	 * main loop iteration. This is a busy wait but it should be
+	 * a very short wait. */
+	if (!source->priv->initialized)
+		return TRUE;
+
+	g_mutex_lock (&source->priv->data_change_lock);
+	if (source->priv->data_change != NULL) {
+		g_source_unref (source->priv->data_change);
+		source->priv->data_change = NULL;
+	}
+	g_mutex_unlock (&source->priv->data_change_lock);
 
 	g_rec_mutex_lock (&source->priv->lock);
 
@@ -804,6 +820,27 @@ source_notify_dbus_data_cb (EDBusSource *dbus_source,
 	}
 
 	g_rec_mutex_unlock (&source->priv->lock);
+
+	return FALSE;
+}
+
+static void
+source_notify_dbus_data_cb (EDBusSource *dbus_source,
+                            GParamSpec *pspec,
+                            ESource *source)
+{
+	g_mutex_lock (&source->priv->data_change_lock);
+	if (source->priv->data_change == NULL) {
+		source->priv->data_change = g_idle_source_new ();
+		g_source_set_callback (
+			source->priv->data_change,
+			source_idle_data_change_cb,
+			source, NULL);
+		g_source_attach (
+			source->priv->data_change,
+			source->priv->main_context);
+	}
+	g_mutex_unlock (&source->priv->data_change_lock);
 }
 
 static gboolean
@@ -1026,6 +1063,14 @@ source_dispose (GObject *object)
 	}
 	g_mutex_unlock (&priv->changed_lock);
 
+	g_mutex_lock (&priv->data_change_lock);
+	if (priv->data_change != NULL) {
+		g_source_destroy (priv->data_change);
+		g_source_unref (priv->data_change);
+		priv->data_change = NULL;
+	}
+	g_mutex_unlock (&priv->data_change_lock);
+
 	g_hash_table_remove_all (priv->extensions);
 
 	/* Chain up to parent's dispose() method. */
@@ -1040,6 +1085,7 @@ source_finalize (GObject *object)
 	priv = E_SOURCE_GET_PRIVATE (object);
 
 	g_mutex_clear (&priv->changed_lock);
+	g_mutex_clear (&priv->data_change_lock);
 	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->display_name);
@@ -2043,6 +2089,7 @@ e_source_init (ESource *source)
 
 	source->priv = E_SOURCE_GET_PRIVATE (source);
 	g_mutex_init (&source->priv->changed_lock);
+	g_mutex_init (&source->priv->data_change_lock);
 	g_mutex_init (&source->priv->property_lock);
 	source->priv->key_file = g_key_file_new ();
 	source->priv->extensions = extensions;
