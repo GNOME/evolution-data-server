@@ -58,6 +58,7 @@ GQuark		camel_imapx_server_error_quark		(void) G_GNUC_CONST;
 /* Avoid a circular reference. */
 struct _CamelIMAPXStore;
 struct _CamelIMAPXSettings;
+struct _CamelIMAPXJob;
 
 typedef struct _CamelIMAPXServer CamelIMAPXServer;
 typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
@@ -266,6 +267,11 @@ const CamelIMAPXUntaggedRespHandlerDesc *
 						(CamelIMAPXServer *is,
 						 const gchar *untagged_response,
 						 const CamelIMAPXUntaggedRespHandlerDesc *desc);
+struct _CamelIMAPXJob *
+		camel_imapx_server_ref_job	(CamelIMAPXServer *imapx_server,
+						 CamelIMAPXMailbox *mailbox,
+						 guint32 job_type,
+						 const gchar *uid);
 
 G_END_DECLS
 

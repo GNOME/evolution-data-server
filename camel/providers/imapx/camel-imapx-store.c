@@ -39,6 +39,7 @@
 
 #include "camel-imapx-conn-manager.h"
 #include "camel-imapx-folder.h"
+#include "camel-imapx-job.h"
 #include "camel-imapx-server.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
@@ -3269,3 +3270,32 @@ camel_imapx_store_set_quota_info (CamelIMAPXStore *store,
 	g_mutex_unlock (&store->priv->quota_info_lock);
 }
 
+/* Tries to find matching job among all active connections.
+   See camel_imapx_server_ref_job() for more information on parameters
+   and return values.
+*/
+CamelIMAPXJob *
+camel_imapx_store_ref_job (CamelIMAPXStore *imapx_store,
+			   CamelIMAPXMailbox *mailbox,
+			   guint32 job_type,
+			   const gchar *uid)
+{
+	GList *servers, *siter;
+	CamelIMAPXJob *job = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
+
+	servers = camel_imapx_conn_manager_get_connections (imapx_store->priv->con_man);
+
+	for (siter = servers; siter; siter = g_list_next (siter)) {
+		CamelIMAPXServer *imapx_server = siter->data;
+
+		job = camel_imapx_server_ref_job (imapx_server, mailbox, job_type, uid);
+		if (job)
+			break;
+	}
+
+	g_list_free_full (servers, g_object_unref);
+
+	return job;
+}

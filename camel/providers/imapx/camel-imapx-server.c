@@ -1792,34 +1792,31 @@ imapx_match_active_job (CamelIMAPXServer *is,
 }
 
 static CamelIMAPXJob *
-imapx_is_job_in_queue (CamelIMAPXServer *is,
-                       CamelIMAPXMailbox *mailbox,
-                       guint32 type,
-                       const gchar *uid)
+imapx_server_ref_job (CamelIMAPXServer *imapx_server,
+		      CamelIMAPXMailbox *mailbox,
+		      guint32 job_type,
+		      const gchar *uid)
 {
-	GList *head, *link;
-	CamelIMAPXJob *job = NULL;
-	gboolean found = FALSE;
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXJob *job;
 
-	QUEUE_LOCK (is);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server), NULL);
 
-	head = g_queue_peek_head_link (&is->jobs);
+	/* first try its own queue */
+	job = camel_imapx_server_ref_job (imapx_server, mailbox, job_type, uid);
+	if (job)
+		return job;
 
-	for (link = head; link != NULL; link = g_list_next (link)) {
-		job = (CamelIMAPXJob *) link->data;
+	/* then try queue for all the opened servers */
+	imapx_store = camel_imapx_server_ref_store (imapx_server);
+	if (!imapx_store)
+		return NULL;
 
-		if (!job || !(job->type & type))
-			continue;
+	job = camel_imapx_store_ref_job (imapx_store, mailbox, job_type, uid);
 
-		if (camel_imapx_job_matches (job, mailbox, uid)) {
-			found = TRUE;
-			break;
-		}
-	}
+	g_object_unref (imapx_store);
 
-	QUEUE_UNLOCK (is);
-
-	return found ? job : NULL;
+	return job;
 }
 
 static void
@@ -4008,24 +4005,17 @@ imapx_command_select_done (CamelIMAPXServer *is,
 			/* We don't want to fetch new messages if the command we selected this
 			 * folder for is *already* fetching all messages (i.e. scan_changes).
 			 * Bug #667725. */
-			CamelIMAPXJob *job = imapx_is_job_in_queue (
+			CamelIMAPXJob *job = imapx_server_ref_job (
 				is, select_pending,
 				IMAPX_JOB_REFRESH_INFO, NULL);
 			if (job) {
-				RefreshInfoData *data = camel_imapx_job_get_data (job);
-
-				if (data->scan_changes) {
-					c (
-						is->tagprefix,
-						"Will not fetch_new_messages "
-						"when already in scan_changes\n");
-					goto no_fetch_new;
-				}
+				camel_imapx_job_unref (job);
+				c (
+					is->tagprefix,
+					"Will not fetch_new_messages when already refreshing information\n");
+			} else {
+				imapx_server_fetch_new_messages (is, select_pending, TRUE, TRUE, NULL, NULL);
 			}
-			imapx_server_fetch_new_messages (
-				is, select_pending, TRUE, TRUE, NULL, NULL);
-		no_fetch_new:
-			;
 		}
 
 #if 0  /* see comment for disabled bits in imapx_job_refresh_info_start() */
@@ -6137,7 +6127,6 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 		_("Fetching summary information for new messages in '%s'"),
 		camel_folder_get_display_name (folder));
 
-	//printf ("Fetch order: %d/%d\n", fetch_order, CAMEL_SORT_DESCENDING);
 	if (diff > uidset_size || fetch_order == CAMEL_SORT_DESCENDING) {
 		ic = camel_imapx_command_new (
 			is, "FETCH", mailbox,
@@ -8131,8 +8120,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	job = imapx_is_job_in_queue (
-		is, mailbox, IMAPX_JOB_GET_MESSAGE, message_uid);
+	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_GET_MESSAGE, message_uid);
 
 	if (job != NULL) {
 		/* Promote the existing GET_MESSAGE
@@ -8144,6 +8132,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 		/* Wait for the job to finish. */
 		camel_imapx_job_wait (job, NULL);
+		camel_imapx_job_unref (job);
 
 		/* Disregard errors here.  If we failed to retreive the
 		 * message from cache (implying the job we were waiting
@@ -8507,11 +8496,11 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	/* Don't run concurrent refreshes on the same mailbox.
 	 * If a refresh is already in progress, let it finish
 	 * and return no changes for this refresh request. */
-	job = imapx_is_job_in_queue (
-		is, mailbox, IMAPX_JOB_REFRESH_INFO, NULL);
+	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_REFRESH_INFO, NULL);
 
 	if (job != NULL) {
 		QUEUE_UNLOCK (is);
+		camel_imapx_job_unref (job);
 		return camel_folder_change_info_new ();
 	}
 
@@ -8779,13 +8768,14 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 	QUEUE_LOCK (is);
 
-	job = imapx_is_job_in_queue (is, mailbox, IMAPX_JOB_SYNC_CHANGES, NULL);
+	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_SYNC_CHANGES, NULL);
 
 	if (job != NULL) {
 		if (pri > job->pri)
 			job->pri = pri;
 
 		QUEUE_UNLOCK (is);
+		camel_imapx_job_unref (job);
 
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
@@ -8863,10 +8853,11 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	/* Do we really care to wait for this one to finish? */
 	QUEUE_LOCK (is);
 
-	job = imapx_is_job_in_queue (is, mailbox, IMAPX_JOB_EXPUNGE, NULL);
+	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_EXPUNGE, NULL);
 
 	if (job != NULL) {
 		QUEUE_UNLOCK (is);
+		camel_imapx_job_unref (job);
 		return TRUE;
 	}
 
@@ -9295,6 +9286,52 @@ camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
 		untagged_response, desc);
 
 	return previous;
+}
+
+/**
+ * camel_imapx_server_is_job_in_queue:
+ * @imapx_server: a #CamelIMAPXServer instance
+ * @mailbox: a mailbox to search job for
+ * @job_type: a job type specifier to search for
+ * @uid: optional message UID for which the job might be searched
+ *
+ * Searches queue of jobs for the particular job. The returned job
+ * is referenced for thread safety, unref it with camel_imapx_job_unref().
+ *
+ * Returns: %NULL, if such job could not be found, or a referenced job.
+ **/
+CamelIMAPXJob *
+camel_imapx_server_ref_job (CamelIMAPXServer *imapx_server,
+			    CamelIMAPXMailbox *mailbox,
+			    guint32 job_type,
+			    const gchar *uid)
+{
+	GList *head, *link;
+	CamelIMAPXJob *job = NULL;
+	gboolean found = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server), NULL);
+
+	QUEUE_LOCK (imapx_server);
+
+	head = g_queue_peek_head_link (&imapx_server->jobs);
+
+	for (link = head; link != NULL; link = g_list_next (link)) {
+		job = (CamelIMAPXJob *) link->data;
+
+		if (!job || !(job->type & job_type))
+			continue;
+
+		if (camel_imapx_job_matches (job, mailbox, uid)) {
+			found = TRUE;
+			camel_imapx_job_ref (job);
+			break;
+		}
+	}
+
+	QUEUE_UNLOCK (imapx_server);
+
+	return found ? job : NULL;
 }
 
 /**
