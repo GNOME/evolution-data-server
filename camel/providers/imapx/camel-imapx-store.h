@@ -46,6 +46,9 @@
 
 G_BEGIN_DECLS
 
+/* Avoid a circular reference. */
+struct _CamelIMAPXJob;
+
 typedef struct _CamelIMAPXStore CamelIMAPXStore;
 typedef struct _CamelIMAPXStoreClass CamelIMAPXStoreClass;
 typedef struct _CamelIMAPXStorePrivate CamelIMAPXStorePrivate;
@@ -123,6 +126,11 @@ void		camel_imapx_store_set_quota_info
 						(CamelIMAPXStore *store,
 						 const gchar *quota_root_name,
 						 const CamelFolderQuotaInfo *info);
+struct _CamelIMAPXJob *
+		camel_imapx_store_ref_job	(CamelIMAPXStore *imapx_store,
+						 CamelIMAPXMailbox *mailbox,
+						 guint32 job_type,
+						 const gchar *uid);
 
 G_END_DECLS
 
