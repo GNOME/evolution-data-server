@@ -4999,6 +4999,13 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			_("Failed to close the tmp stream"));
 	}
 
+	if (local_error == NULL &&
+	    g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
+		g_prefix_error (
+			&local_error, "%s: ",
+			_("Error fetching message"));
+	}
+
 	if (local_error == NULL) {
 		gchar *cur_filename;
 		gchar *tmp_filename;
