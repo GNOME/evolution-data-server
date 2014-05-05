@@ -879,7 +879,7 @@ void
 camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man,
 					    const GError *error)
 {
-	GList *iter;
+	GList *iter, *connections;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
 
@@ -887,15 +887,14 @@ camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man,
 
 	c('*', "Closing all %d connections, with propagated error: %s\n", g_list_length (con_man->priv->connections), error ? error->message : "none");
 
-	for (iter = con_man->priv->connections; iter; iter = g_list_next (iter)) {
-		connection_info_set_shutdown_error (iter->data, error);
-	}
-
-	g_list_free_full (
-		con_man->priv->connections,
-		(GDestroyNotify) connection_info_cancel_and_unref);
+	connections = con_man->priv->connections;
 	con_man->priv->connections = NULL;
 
 	CON_WRITE_UNLOCK (con_man);
-}
 
+	for (iter = connections; iter; iter = g_list_next (iter)) {
+		connection_info_set_shutdown_error (iter->data, error);
+	}
+
+	g_list_free_full (connections, (GDestroyNotify) connection_info_cancel_and_unref);
+}
