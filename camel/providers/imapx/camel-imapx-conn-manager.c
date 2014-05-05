@@ -668,7 +668,7 @@ exit:
 		for (link = list; link != NULL; link = g_list_next (link)) {
 			ConnectionInfo *candidate = link->data;
 
-			printf ("   cmds:%d has-expensive:%d avail:%d cinfo:%p\n", camel_imapx_server_get_command_count (candidate->is), camel_imapx_server_has_expensive_command (candidate->is), connection_info_is_available (candidate), candidate);
+			printf ("   cmds:%d has-expensive:%d avail:%d cinfo:%p server:%p\n", camel_imapx_server_get_command_count (candidate->is), camel_imapx_server_has_expensive_command (candidate->is), connection_info_is_available (candidate), candidate, candidate->is);
 		}
 	}
 
@@ -751,7 +751,7 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 	con_man->priv->connections = g_list_prepend (
 		con_man->priv->connections, cinfo);
 
-	c (is->tagprefix, "Created new connection for %s and total connections %d \n", folder_name, g_list_length (con_man->priv->connections));
+	c (is->tagprefix, "Created new connection %p (server:%p) for %s; total connections %d\n", cinfo, cinfo->is, folder_name, g_list_length (con_man->priv->connections));
 
 exit:
 	g_object_unref (store);

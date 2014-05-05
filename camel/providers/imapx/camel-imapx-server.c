@@ -1000,8 +1000,14 @@ imapx_register_job (CamelIMAPXServer *is,
 		imapx_server_job_added (is, job);
 		QUEUE_UNLOCK (is);
 
+	} else if (is->state <= IMAPX_SHUTDOWN) {
+		e (is->tagprefix, "Server is shutdown/disconnected, try reconnect.");
+		g_set_error (error,
+			CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
+			_("Not authenticated"));
+		return FALSE;
 	} else {
-		e (is->tagprefix, "NO connection yet, maybe user cancelled jobs earlier ?");
+		e (is->tagprefix, "Not connected yet, maybe user cancelled jobs earlier?");
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_NOT_CONNECTED,
