@@ -1798,6 +1798,8 @@ imapx_match_active_job (CamelIMAPXServer *is,
 	return match;
 }
 
+/* Do *not* call this when the queue_lock is held, it can cause
+   deadlock when searching between multiple servers */
 static CamelIMAPXJob *
 imapx_server_ref_job (CamelIMAPXServer *imapx_server,
 		      CamelIMAPXMailbox *mailbox,
@@ -8132,8 +8134,6 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	GetMessageData *data;
 	gboolean registered;
 
-	QUEUE_LOCK (is);
-
 	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_GET_MESSAGE, message_uid);
 
 	if (job != NULL) {
@@ -8141,8 +8141,6 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		 * job's priority if ours is higher. */
 		if (pri > job->pri)
 			job->pri = pri;
-
-		QUEUE_UNLOCK (is);
 
 		/* Wait for the job to finish. */
 		camel_imapx_job_wait (job, NULL);
@@ -8158,9 +8156,9 @@ imapx_server_get_message (CamelIMAPXServer *is,
 			g_object_unref (cache_stream);
 			return stream;
 		}
-
-		QUEUE_LOCK (is);
 	}
+
+	QUEUE_LOCK (is);
 
 	mi = camel_folder_summary_get (summary, message_uid);
 	if (mi == NULL) {
@@ -8505,18 +8503,17 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
-	QUEUE_LOCK (is);
-
 	/* Don't run concurrent refreshes on the same mailbox.
 	 * If a refresh is already in progress, let it finish
 	 * and return no changes for this refresh request. */
 	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_REFRESH_INFO, NULL);
 
 	if (job != NULL) {
-		QUEUE_UNLOCK (is);
 		camel_imapx_job_unref (job);
 		return camel_folder_change_info_new ();
 	}
+
+	QUEUE_LOCK (is);
 
 	data = g_slice_new0 (RefreshInfoData);
 	data->changes = camel_folder_change_info_new ();
@@ -8780,15 +8777,12 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 	/* TODO above code should go into changes_start */
 
-	QUEUE_LOCK (is);
-
 	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_SYNC_CHANGES, NULL);
 
 	if (job != NULL) {
 		if (pri > job->pri)
 			job->pri = pri;
 
-		QUEUE_UNLOCK (is);
 		camel_imapx_job_unref (job);
 
 		imapx_sync_free_user (on_user);
@@ -8797,6 +8791,8 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 		g_object_unref (folder);
 		return TRUE;
 	}
+
+	QUEUE_LOCK (is);
 
 	data = g_slice_new0 (SyncChangesData);
 	data->folder = g_object_ref (folder);
@@ -8865,15 +8861,14 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
 	/* Do we really care to wait for this one to finish? */
-	QUEUE_LOCK (is);
-
 	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_EXPUNGE, NULL);
 
 	if (job != NULL) {
-		QUEUE_UNLOCK (is);
 		camel_imapx_job_unref (job);
 		return TRUE;
 	}
+
+	QUEUE_LOCK (is);
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_EXPUNGE;
