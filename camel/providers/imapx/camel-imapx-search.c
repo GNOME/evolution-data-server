@@ -172,14 +172,17 @@ imapx_search_process_criteria (CamelSExp *sexp,
 		imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, imapx_search->priv->cancellable, &local_error);
 		if (imapx_server) {
 			uids = camel_imapx_server_uid_search (imapx_server, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
+			camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
 
 			while (!uids && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
 				g_clear_error (&local_error);
 				g_clear_object (&imapx_server);
 
 				imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, imapx_search->priv->cancellable, &local_error);
-				if (imapx_server)
+				if (imapx_server) {
 					uids = camel_imapx_server_uid_search (imapx_server, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
+					camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
+				}
 			}
 		}
 
