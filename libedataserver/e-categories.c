@@ -727,7 +727,7 @@ e_categories_get_icon_file_for (const gchar *category)
 }
 
 /**
- * e_categories_get_icon_file_for:
+ * e_categories_dup_icon_file_for:
  * @category: category to retrieve the icon file for.
  *
  * Gets the icon file associated with the given category and returns a copy of
