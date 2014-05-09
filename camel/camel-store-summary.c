@@ -480,7 +480,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 
 error:
 	i = ferror (in);
-	g_warning ("Cannot load summary file: %s", g_strerror (ferror (in)));
+	g_warning ("Cannot load summary file '%s': %s", summary->priv->summary_path, i == 0 ? "Unknown error" : g_strerror (i));
 	g_rec_mutex_unlock (&summary->priv->io_lock);
 	fclose (in);
 	summary->priv->dirty = FALSE;

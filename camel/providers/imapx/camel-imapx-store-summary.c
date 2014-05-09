@@ -109,11 +109,8 @@ imapx_store_summary_summary_header_load (CamelStoreSummary *summary,
 		return -1;
 
 	if (version < CAMEL_IMAPX_STORE_SUMMARY_VERSION) {
-		g_warning (
-			"Unable to load store summary: "
-			"Expected version (%d), got (%d)",
-			CAMEL_IMAPX_STORE_SUMMARY_VERSION,
-			version);
+		g_warning ("IMAPx: Unable to load store summary: Expected version (%d), got (%d)",
+			CAMEL_IMAPX_STORE_SUMMARY_VERSION, version);
 		return -1;
 	}
 

@@ -2210,7 +2210,10 @@ imapx_store_initable_init (GInitable *initable,
 
 	summary = g_build_filename (user_cache_dir, ".ev-store-summary", NULL);
 	camel_store_summary_set_filename (imapx_store->summary, summary);
-	camel_store_summary_load (imapx_store->summary);
+	if (camel_store_summary_load (imapx_store->summary) == -1) {
+		camel_store_summary_touch (imapx_store->summary);
+		camel_store_summary_save (imapx_store->summary);
+	}
 
 	g_free (summary);
 
