@@ -561,7 +561,7 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 		if (camel_imapx_server_has_expensive_command (candidate->is))
 			expensive_connections++;
 
-		if (connection_info_has_folder_name (candidate, folder_name) &&
+		if (connection_info_has_folder_name (candidate, folder_name) && camel_imapx_server_is_connected (candidate->is) &&
 		    (opened_connections >= concurrent_connections || for_expensive_job || !camel_imapx_server_has_expensive_command (candidate->is))) {
 			if (cinfo) {
 				/* group expensive jobs into one connection */
@@ -599,7 +599,8 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 			ConnectionInfo *candidate = link->data;
 			guint jobs;
 
-			if (!camel_imapx_server_has_expensive_command (candidate->is))
+			if (!camel_imapx_server_is_connected (candidate->is) ||
+			    !camel_imapx_server_has_expensive_command (candidate->is))
 				continue;
 
 			jobs = camel_imapx_server_get_command_count (candidate->is);
@@ -623,7 +624,8 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ConnectionInfo *candidate = link->data;
 
-		if (connection_info_is_available (candidate)) {
+		if (camel_imapx_server_is_connected (candidate->is) &&
+		    connection_info_is_available (candidate)) {
 			if (cinfo)
 				connection_info_unref (cinfo);
 			cinfo = connection_info_ref (candidate);
@@ -646,7 +648,12 @@ imapx_find_connection_unlocked (CamelIMAPXConnManager *con_man,
 	/* Pick the connection with the least number of jobs in progress. */
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ConnectionInfo *candidate = link->data;
-		gint n_commands = camel_imapx_server_get_command_count (candidate->is);
+		gint n_commands;
+
+		if (!camel_imapx_server_is_connected (candidate->is))
+			continue;
+
+		n_commands = camel_imapx_server_get_command_count (candidate->is);
 
 		if (cinfo == NULL) {
 			cinfo = connection_info_ref (candidate);
