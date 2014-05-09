@@ -365,9 +365,20 @@ struct _EBookSqlitePrivate {
 	sqlite3_stmt   *replace_stmt;    /* Replace statement for main summary table */
 	GHashTable     *multi_deletes;   /* Delete statement for each auxiliary table */
 	GHashTable     *multi_inserts;   /* Insert statement for each auxiliary table */
+
+	ESource        *source;
 };
 
-G_DEFINE_TYPE (EBookSqlite, e_book_sqlite, G_TYPE_OBJECT)
+enum {
+	BEFORE_INSERT_CONTACT,
+	BEFORE_REMOVE_CONTACT,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
+G_DEFINE_TYPE_WITH_CODE (EBookSqlite, e_book_sqlite, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 G_DEFINE_QUARK (e-book-backend-sqlite-error-quark,
 		e_book_sqlite_error)
 
@@ -2758,6 +2769,7 @@ ebsql_init_locale (EBookSqlite *ebsql,
 
 static EBookSqlite *
 ebsql_new_internal (const gchar *path,
+		    ESource *source,
                     EbSqlVCardCallback vcard_callback,
                     EbSqlChangeCallback change_callback,
                     gpointer user_data,
@@ -2797,6 +2809,10 @@ ebsql_new_internal (const gchar *path,
 	ebsql->priv->change_callback = change_callback;
 	ebsql->priv->user_data = user_data;
 	ebsql->priv->user_data_destroy = user_data_destroy;
+	if (source != NULL)
+		ebsql->priv->source = g_object_ref (source);
+	else
+		ebsql->priv->source = NULL;
 
 	EBSQL_NOTE (REF_COUNTS, g_printerr ("EBookSqlite initially created\n"));
 
@@ -5923,6 +5939,8 @@ e_book_sqlite_finalize (GObject *object)
 	if (priv->collator)
 		e_collator_unref (priv->collator);
 
+	g_clear_object (&priv->source);
+
 	g_mutex_clear (&priv->lock);
 	g_mutex_clear (&priv->updates_lock);
 
@@ -5946,6 +5964,51 @@ e_book_sqlite_finalize (GObject *object)
 }
 
 static void
+e_book_sqlite_constructed (GObject *object)
+{
+	/* Chain up to parent's constructed() method. */
+	G_OBJECT_CLASS (e_book_sqlite_parent_class)->constructed (object);
+
+	e_extensible_load_extensions (E_EXTENSIBLE (object));
+}
+
+static gboolean
+ebsql_signals_accumulator (GSignalInvocationHint *ihint,
+			   GValue *return_accu,
+			   const GValue *handler_return,
+			   gpointer data)
+{
+	gboolean handler_result;
+
+	handler_result = g_value_get_boolean (handler_return);
+	g_value_set_boolean (return_accu, handler_result);
+
+	return handler_result;
+}
+
+static gboolean
+ebsql_before_insert_contact_default (EBookSqlite *ebsql,
+				     gpointer db,
+				     EContact *contact,
+				     const gchar *extra,
+				     gboolean replace,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	return TRUE;
+}
+
+static gboolean
+ebsql_before_remove_contact_default (EBookSqlite *ebsql,
+				     gpointer db,
+				     const gchar *contact_uid,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	return TRUE;
+}
+
+static void
 e_book_sqlite_class_init (EBookSqliteClass *class)
 {
 	GObjectClass *object_class;
@@ -5955,9 +6018,43 @@ e_book_sqlite_class_init (EBookSqliteClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = e_book_sqlite_dispose;
 	object_class->finalize = e_book_sqlite_finalize;
+	object_class->constructed = e_book_sqlite_constructed;
+
+	class->before_insert_contact = ebsql_before_insert_contact_default;
+	class->before_remove_contact = ebsql_before_remove_contact_default;
 
 	/* Parse the EBSQL_DEBUG environment variable */
 	ebsql_init_debug ();
+
+	signals[BEFORE_INSERT_CONTACT] = g_signal_new (
+		"before-insert-contact",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookSqliteClass, before_insert_contact),
+		ebsql_signals_accumulator,
+		NULL,
+		g_cclosure_marshal_generic,
+		G_TYPE_BOOLEAN, 6,
+		G_TYPE_POINTER,
+		G_TYPE_OBJECT,
+		G_TYPE_STRING,
+		G_TYPE_BOOLEAN,
+		G_TYPE_OBJECT,
+		G_TYPE_POINTER);
+
+	signals[BEFORE_REMOVE_CONTACT] = g_signal_new (
+		"before-remove-contact",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookSqliteClass, before_remove_contact),
+		ebsql_signals_accumulator,
+		NULL,
+		g_cclosure_marshal_generic,
+		G_TYPE_BOOLEAN, 4,
+		G_TYPE_POINTER,
+		G_TYPE_STRING,
+		G_TYPE_OBJECT,
+		G_TYPE_POINTER);
 }
 
 static void
@@ -5974,6 +6071,7 @@ e_book_sqlite_init (EBookSqlite *ebsql)
  **********************************************************/
 static EBookSqlite *
 ebsql_new_default (const gchar *path,
+		   ESource *source,
                    EbSqlVCardCallback vcard_callback,
                    EbSqlChangeCallback change_callback,
                    gpointer user_data,
@@ -5998,7 +6096,8 @@ ebsql_new_default (const gchar *path,
 		G_N_ELEMENTS (default_indexed_fields));
 
 	ebsql = ebsql_new_internal (
-		path, vcard_callback, change_callback,
+		path, source,
+		vcard_callback, change_callback,
 		user_data, user_data_destroy,
 		(SummaryField *) summary_fields->data,
 		summary_fields->len,
@@ -6038,12 +6137,13 @@ ebsql_new_default (const gchar *path,
  **/
 EBookSqlite *
 e_book_sqlite_new (const gchar *path,
+		   ESource *source,
                    GCancellable *cancellable,
                    GError **error)
 {
 	g_return_val_if_fail (path && path[0], NULL);
 
-	return ebsql_new_default (path, NULL, NULL, NULL, NULL, cancellable, error);
+	return ebsql_new_default (path, source, NULL, NULL, NULL, NULL, cancellable, error);
 }
 
 /**
@@ -6088,6 +6188,7 @@ e_book_sqlite_new (const gchar *path,
  **/
 EBookSqlite *
 e_book_sqlite_new_full (const gchar *path,
+			ESource *source,
                         ESourceBackendSummarySetup *setup,
                         EbSqlVCardCallback vcard_callback,
                         EbSqlChangeCallback change_callback,
@@ -6110,6 +6211,7 @@ e_book_sqlite_new_full (const gchar *path,
 	if (!setup)
 		return ebsql_new_default (
 			path,
+			source,
 			vcard_callback,
 			change_callback,
 			user_data,
@@ -6129,6 +6231,7 @@ e_book_sqlite_new_full (const gchar *path,
 
 		ebsql = ebsql_new_default (
 			path,
+			source,
 			vcard_callback,
 			change_callback,
 			user_data,
@@ -6178,7 +6281,8 @@ e_book_sqlite_new_full (const gchar *path,
 		summary_fields, indexed_fields, index_types, n_indexed_fields);
 
 	ebsql = ebsql_new_internal (
-		path, vcard_callback, change_callback,
+		path, source,
+		vcard_callback, change_callback,
 		user_data, user_data_destroy,
 		(SummaryField *) summary_fields->data,
 		summary_fields->len,
@@ -6327,6 +6431,30 @@ e_book_sqlite_ref_collator (EBookSqlite *ebsql)
 }
 
 /**
+ * e_book_sqlite_ref_source:
+ * @ebsql: An #EBookSqlite
+ *
+ * References the #ESource to which @ebsql is paired,
+ * use g_object_unref() when finished using the source.
+ * It can be %NULL in some cases, like when running tests.
+ *
+ * Returns: (transfer-full): A reference to the #ESource to which @ebsql
+ * is paired, or %NULL.
+ *
+ * Since: 3.14
+*/
+ESource *
+e_book_sqlite_ref_source (EBookSqlite *ebsql)
+{
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), NULL);
+
+	if (!ebsql->priv->source)
+		return NULL;
+
+	return g_object_ref (ebsql->priv->source);
+}
+
+/**
  * e_book_sqlitedb_add_contact:
  * @ebsql: An #EBookSqlite
  * @contact: EContact to be added
@@ -6417,6 +6545,17 @@ e_book_sqlite_add_contacts (EBookSqlite *ebsql,
 
 		if (ll)
 			extra_data = (const gchar *) ll->data;
+
+		g_signal_emit (ebsql,
+			       signals[BEFORE_INSERT_CONTACT],
+			       0,
+			       ebsql->priv->db,
+			       contact, extra_data,
+			       replace,
+			       cancellable, error,
+			       &success);
+		if (!success)
+			break;
 
 		success = ebsql_insert_contact (
 			ebsql,
@@ -6513,6 +6652,8 @@ e_book_sqlite_remove_contacts (EBookSqlite *ebsql,
 	gboolean success = TRUE;
 	gint i;
 	gchar *stmt;
+	const gchar *contact_uid;
+	GSList *l = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
@@ -6522,6 +6663,17 @@ e_book_sqlite_remove_contacts (EBookSqlite *ebsql,
 	if (!ebsql_start_transaction (ebsql, EBSQL_LOCK_WRITE, cancellable, error)) {
 		EBSQL_UNLOCK_MUTEX (&ebsql->priv->lock);
 		return FALSE;
+	}
+
+	for (l = uids; success && l; l = l->next) {
+		contact_uid = (const gchar *) l->data;
+		g_signal_emit (ebsql,
+			       signals[BEFORE_REMOVE_CONTACT],
+			       0,
+			       ebsql->priv->db,
+			       contact_uid,
+			       cancellable, error,
+			       &success);
 	}
 
 	/* Delete data from the auxiliary tables first */
@@ -6604,7 +6756,7 @@ e_book_sqlite_has_contact (EBookSqlite *ebsql,
  * Fetch the #EContact specified by @uid in @ebsql.
  *
  * If @meta_contact is specified, then a shallow #EContact will be created
- * holing only the %E_CONTACT_UID and %E_CONTACT_REV fields.
+ * holding only the %E_CONTACT_UID and %E_CONTACT_REV fields.
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
@@ -6636,6 +6788,51 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
 }
 
 /**
+ * ebsql_get_contact_unlocked:
+ * @ebsql: An #EBookSqlite
+ * @uid: The uid of the contact to fetch
+ * @meta_contact: Whether an entire contact is desired, or only the metadata
+ * @contact: (out) (transfer full): Return location to store the fetched contact
+ * @error: (allow-none): A location to store any error that may have occurred.
+ *
+ * Fetch the #EContact specified by @uid in @ebsql without locking internal mutex.
+ *
+ * If @meta_contact is specified, then a shallow #EContact will be created
+ * holding only the %E_CONTACT_UID and %E_CONTACT_REV fields.
+ *
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
+ *
+ * Since: 3.14
+ **/
+gboolean
+ebsql_get_contact_unlocked (EBookSqlite *ebsql,
+			    const gchar *uid,
+			    gboolean meta_contact,
+			    EContact **contact,
+			    GError **error)
+{
+	gboolean success = FALSE;
+	gchar *vcard = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (contact != NULL && *contact == NULL, FALSE);
+
+	success = ebsql_get_vcard_unlocked (ebsql,
+					    uid,
+					    meta_contact,
+					    &vcard,
+					    error);
+
+	if (success && vcard) {
+		*contact = e_contact_new_from_vcard_with_uid (vcard, uid);
+		g_free (vcard);
+	}
+
+	return success;
+}
+
+/**
  * e_book_sqlite_get_vcard:
  * @ebsql: An #EBookSqlite
  * @uid: The uid of the contact to fetch
@@ -6646,7 +6843,7 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
  * Fetch a vcard string for @uid in @ebsql.
  *
  * If @meta_contact is specified, then a shallow vcard representation will be
- * created holing only the %E_CONTACT_UID and %E_CONTACT_REV fields.
+ * created holding only the %E_CONTACT_UID and %E_CONTACT_REV fields.
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
@@ -6703,6 +6900,75 @@ e_book_sqlite_get_vcard (EBookSqlite *ebsql,
 			error,
 			E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND,
 			_("Contact '%s' not found"), uid);
+		success = FALSE;
+	}
+
+	return success;
+}
+
+/**
+ * ebsql_get_vcard_unlocked:
+ * @ebsql: An #EBookSqlite
+ * @uid: The uid of the contact to fetch
+ * @meta_contact: Whether an entire contact is desired, or only the metadata
+ * @ret_vcard: (out) (transfer full): Return location to store the fetched vcard string
+ * @error: (allow-none): A location to store any error that may have occurred.
+ *
+ * Fetch a vcard string for @uid in @ebsql without locking internal mutex.
+ *
+ * If @meta_contact is specified, then a shallow vcard representation will be
+ * created holding only the %E_CONTACT_UID and %E_CONTACT_REV fields.
+ *
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
+ *
+ * Since: 3.14
+ **/
+gboolean
+ebsql_get_vcard_unlocked (EBookSqlite *ebsql,
+                         const gchar *uid,
+                         gboolean meta_contact,
+                         gchar **ret_vcard,
+                         GError **error)
+{
+	gboolean success = FALSE;
+	gchar *vcard = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (ret_vcard != NULL && *ret_vcard == NULL, FALSE);
+
+	/* Try constructing contacts from only UID/REV first if that's requested */
+	if (meta_contact) {
+		GSList *vcards = NULL;
+
+		success = ebsql_exec_printf (
+			ebsql, "SELECT summary.uid, summary.Rev FROM %Q AS summary WHERE uid = %Q",
+			collect_lean_results_cb, &vcards, NULL, error,
+			ebsql->priv->folderid, uid);
+
+		if (vcards) {
+			EbSqlSearchData *search_data = (EbSqlSearchData *) vcards->data;
+
+			vcard = search_data->vcard;
+			search_data->vcard = NULL;
+
+			g_slist_free_full (vcards, (GDestroyNotify) e_book_sqlite_search_data_free);
+			vcards = NULL;
+		}
+
+       } else {
+	       success = ebsql_exec_printf (
+		       ebsql, "SELECT %s FROM %Q AS summary WHERE summary.uid = %Q",
+		       get_string_cb, &vcard, NULL, error,
+		       EBSQL_VCARD_FRAGMENT (ebsql), ebsql->priv->folderid, uid);
+       }
+
+	*ret_vcard = vcard;
+
+	if (success && !vcard) {
+		EBSQL_SET_ERROR (error,
+				 E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND,
+				 _("Contact '%s' not found"), uid);
 		success = FALSE;
 	}
 
@@ -6780,6 +7046,41 @@ e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
 }
 
 /**
+ * ebsql_get_contact_extra_unlocked:
+ * @ebsql: An #EBookSqlite
+ * @uid: The uid of the contact to fetch the extra data for
+ * @ret_extra: (out) (transfer full): Return location to store the extra data
+ * @error: (allow-none): A location to store any error that may have occurred.
+ *
+ * Fetches the extra data previously set for @uid, either with
+ * e_book_sqlite_set_contact_extra() or when adding contacts,
+ * without locking internal mutex.
+ *
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
+ *
+ * Since: 3.14
+ **/
+gboolean
+ebsql_get_contact_extra_unlocked (EBookSqlite *ebsql,
+				  const gchar *uid,
+				  gchar **ret_extra,
+				  GError **error)
+{
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_SQLITE (ebsql), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (ret_extra != NULL && *ret_extra == NULL, FALSE);
+
+	success = ebsql_exec_printf (
+		ebsql, "SELECT bdata FROM %Q WHERE uid = %Q",
+		get_string_cb, ret_extra, NULL, error,
+		ebsql->priv->folderid, uid);
+
+	return success;
+}
+
+/**
  * e_book_sqlite_search:
  * @ebsql: An #EBookSqlite
  * @sexp: (allow-none): search expression; use %NULL or an empty string to list all stored contacts.
@@ -6800,7 +7101,7 @@ e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
  * and all elements freed with e_book_sqlite_search_data_free().
  *
  * If @meta_contact is specified, then shallow vcard representations will be
- * created holing only the %E_CONTACT_UID and %E_CONTACT_REV fields.
+ * created holding only the %E_CONTACT_UID and %E_CONTACT_REV fields.
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *

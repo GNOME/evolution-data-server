@@ -1469,8 +1469,10 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 		/* Remove from summary as well */
 		if (!e_book_sqlite_remove_contacts (bf->priv->sqlitedb, removed_ids,
 						    cancellable, &local_error)) {
-			g_warning ("Failed to remove contacts: %s", local_error->message);
-			g_propagate_error (error, local_error);
+			if (!local_error) {
+				g_warning ("Failed to remove contacts: %s", local_error->message);
+				g_propagate_error (error, local_error);
+			}
 		}
 
 		e_book_backend_file_bump_revision (bf, NULL);
@@ -1988,7 +1990,7 @@ book_backend_file_initable_init (GInitable *initable,
 	/* The old BDB exists, lets migrate that to sqlite right away. */
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
 		priv->sqlitedb = e_book_sqlite_new_full (
-			fullpath, setup_extension,
+			fullpath, source, setup_extension,
 			NULL,
 			book_backend_file_vcard_changed,
 			initable, NULL, cancellable, error);
@@ -2033,7 +2035,7 @@ book_backend_file_initable_init (GInitable *initable,
 
 		/* Create the sqlitedb. */
 		priv->sqlitedb = e_book_sqlite_new_full (
-			fullpath, setup_extension,
+			fullpath, source, setup_extension,
 			NULL,
 			book_backend_file_vcard_changed,
 			initable, NULL, cancellable, error);

@@ -210,6 +210,7 @@ e_sqlite_fixture_setup (EbSqlFixture *fixture,
 	if (closure->without_vcards)
 		fixture->ebsql = e_book_sqlite_new_full (
 			filename,
+			NULL,
 			setup,
 			fetch_vcard_from_hash,
 			contact_change_cb,
@@ -219,6 +220,7 @@ e_sqlite_fixture_setup (EbSqlFixture *fixture,
 	else
 		fixture->ebsql = e_book_sqlite_new_full (
 			filename,
+			NULL,
 			setup,
 			NULL,
 			contact_change_cb,
