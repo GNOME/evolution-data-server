@@ -1,3 +1,31 @@
+Evolution-Data-Server 3.12.2 2014-05-12
+---------------------------------------
+
+Bug Fixes:
+	Bug 720154 - [NNTP] Silently recover from "Connection reset by peer"
+	             error (Milan Crha)
+	Bug 727598 - [IMAPX] Fails to list folders without NAMESPACE
+	             capability (Milan Crha)
+	Bug 728087 - Use-after-free in contact address switch in composer
+	             (Christian Schaarschmidt)
+	Bug 728167 - [IMAPx] Message headers downloaded twice (Milan Crha)
+	Bug 728414 - Deliver ESource data changes on idle (Milan Crha)
+	Bug 728737 - [IMAPx] Namespaces not recognized in subscription list
+	             (Milan Crha)
+	Bug 728973 - [IMAPX] Recover after store summary version mismatch
+	             (Milan Crha)
+
+Other Changes:
+	* [ownCloud backend] Check color format before using it (Milan Crha)
+	* [IMAPx] Set local cache to never expire (Milan Crha)
+	* [IMAPx] Try to address "Empty cache file" error (Milan Crha)
+
+Translations:
+	Pau Iranzo (ca)
+	Daniel Mustieles (es)
+	Matej Urbančič (sl)
+
+
 Evolution-Data-Server 3.12.1 2014-04-14
 ---------------------------------------
 
