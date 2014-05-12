@@ -282,6 +282,17 @@ void		e_source_delete_password	(ESource *source,
 gboolean	e_source_delete_password_finish	(ESource *source,
 						 GAsyncResult *result,
 						 GError **error);
+gboolean	e_source_allow_auth_prompt_sync	(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_allow_auth_prompt	(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_allow_auth_prompt_finish
+						(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 
