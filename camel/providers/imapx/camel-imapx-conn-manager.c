@@ -905,3 +905,22 @@ camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man,
 
 	g_list_free_full (connections, (GDestroyNotify) connection_info_cancel_and_unref);
 }
+
+/* for debugging purposes only */
+void
+camel_imapx_conn_manager_dump_queue_status (CamelIMAPXConnManager *con_man)
+{
+	GList *list, *link;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
+
+	list = imapx_conn_manager_list_info (con_man);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		ConnectionInfo *cinfo = link->data;
+		camel_imapx_server_dump_queue_status (cinfo->is);
+		connection_info_unref (cinfo);
+	}
+
+	g_list_free (list);
+}

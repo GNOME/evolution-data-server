@@ -50,7 +50,7 @@ struct _CamelIMAPXJob {
 	guint noreply:1;	/* dont wait for reply */
 	guint32 type;		/* operation type */
 	gint pri;		/* the command priority */
-	gshort commands;	/* counts how many commands are outstanding */
+	volatile gint commands;	/* counts how many commands are outstanding */
 };
 
 CamelIMAPXJob *	camel_imapx_job_new		(GCancellable *cancellable);

@@ -441,6 +441,7 @@ static gboolean	imapx_is_command_queue_empty	(CamelIMAPXServer *is);
 static gint	imapx_uid_cmp			(gconstpointer ap,
 						 gconstpointer bp,
 						 gpointer data);
+static void	imapx_command_start_next	(CamelIMAPXServer *is);
 
 /* states for the connection? */
 enum {
@@ -1027,10 +1028,14 @@ imapx_unregister_job (CamelIMAPXServer *is,
 		camel_imapx_job_done (job);
 
 	QUEUE_LOCK (is);
+
 	if (g_queue_remove (&is->jobs, job)) {
 		imapx_server_job_removed (is, job);
 		camel_imapx_job_unref (job);
 	}
+
+	imapx_command_start_next (is);
+
 	QUEUE_UNLOCK (is);
 }
 
@@ -1382,7 +1387,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 	mailbox = g_weak_ref_get (&is->priv->select_pending);
 	if (mailbox != NULL) {
-		GQueue start = G_QUEUE_INIT;
+		CamelIMAPXCommand *start_ic = NULL;
 		GList *head, *link;
 
 		c (
@@ -1392,7 +1397,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		/* Tag which commands in the queue to start. */
-		for (link = head; link != NULL; link = g_list_next (link)) {
+		for (link = head; link != NULL && !start_ic; link = g_list_next (link)) {
 			CamelIMAPXCommand *ic = link->data;
 			CamelIMAPXMailbox *ic_mailbox;
 
@@ -1412,38 +1417,28 @@ imapx_command_start_next (CamelIMAPXServer *is)
 					"--> starting '%s'\n",
 					ic->name);
 				min_pri = ic->pri;
-				g_queue_push_tail (&start, link);
+
+				/* Each command must be removed from 'is->queue' before
+				 * starting it, so we temporarily reference the command
+				 * to avoid accidentally finalizing it. */
+				start_ic = camel_imapx_command_ref (ic);
 			}
 
 			g_clear_object (&ic_mailbox);
-
-			if (g_queue_get_length (&start) == MAX_COMMANDS)
-				break;
 		}
 
-		if (g_queue_is_empty (&start))
+		if (!start_ic)
 			c (
 				is->tagprefix,
 				"* no, waiting for pending select '%s'\n",
 				camel_imapx_mailbox_get_name (mailbox));
 
-		/* Start the tagged commands.
-		 *
-		 * Each command must be removed from 'is->queue' before
-		 * starting it, so we temporarily reference the command
-		 * to avoid accidentally finalizing it. */
-		while ((link = g_queue_pop_head (&start)) != NULL) {
-			CamelIMAPXCommand *ic;
-
-			ic = camel_imapx_command_ref (link->data);
-			camel_imapx_command_queue_delete_link (is->queue, link);
-			imapx_server_command_removed (is, ic);
-			imapx_command_start (is, ic);
-			camel_imapx_command_unref (ic);
-
-			/* This will terminate the loop. */
-			if (is->state == IMAPX_SHUTDOWN)
-				g_queue_clear (&start);
+		/* Start the tagged command */
+		if (start_ic) {
+			camel_imapx_command_queue_remove (is->queue, start_ic);
+			imapx_server_command_removed (is, start_ic);
+			imapx_command_start (is, start_ic);
+			camel_imapx_command_unref (start_ic);
 		}
 
 		g_clear_object (&mailbox);
@@ -1497,9 +1492,8 @@ imapx_command_start_next (CamelIMAPXServer *is)
 	/* See if any queued jobs on this select first */
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 	if (mailbox != NULL) {
-		GQueue start = G_QUEUE_INIT;
+		CamelIMAPXCommand *start_ic = NULL;
 		GList *head, *link;
-		gboolean commands_started = FALSE;
 
 		c (
 			is->tagprefix,
@@ -1533,7 +1527,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		/* Tag which commands in the queue to start. */
-		for (link = head; link != NULL; link = g_list_next (link)) {
+		for (link = head; link != NULL && !start_ic; link = g_list_next (link)) {
 			CamelIMAPXCommand *ic = link->data;
 			CamelIMAPXMailbox *ic_mailbox;
 			gboolean okay_to_start;
@@ -1562,7 +1556,10 @@ imapx_command_start_next (CamelIMAPXServer *is)
 					"--> starting '%s'\n",
 					ic->name);
 				min_pri = ic->pri;
-				g_queue_push_tail (&start, link);
+				/* Each command must be removed from 'is->queue' before
+				 * starting it, so we temporarily reference the command
+				 * to avoid accidentally finalizing it. */
+				start_ic = camel_imapx_command_ref (ic);
 			} else {
 				/* This job isn't for the selected mailbox,
 				 * but we don't want to consider jobs with
@@ -1572,37 +1569,19 @@ imapx_command_start_next (CamelIMAPXServer *is)
 			}
 
 			g_clear_object (&ic_mailbox);
-
-			if (g_queue_get_length (&start) == MAX_COMMANDS)
-				break;
 		}
 
 		g_clear_object (&mailbox);
 
-		/* Start the tagged commands.
-		 *
-		 * Each command must be removed from 'is->queue' before
-		 * starting it, so we temporarily reference the command
-		 * to avoid accidentally finalizing it. */
-		while ((link = g_queue_pop_head (&start)) != NULL) {
-			CamelIMAPXCommand *ic;
+		/* Start the tagged command */
+		if (start_ic) {
+			camel_imapx_command_queue_remove (is->queue, start_ic);
+			imapx_server_command_removed (is, start_ic);
+			imapx_command_start (is, start_ic);
+			camel_imapx_command_unref (start_ic);
 
-			ic = camel_imapx_command_ref (link->data);
-			camel_imapx_command_queue_delete_link (is->queue, link);
-			imapx_server_command_removed (is, ic);
-			imapx_command_start (is, ic);
-			camel_imapx_command_unref (ic);
-
-			if (is->state == IMAPX_SHUTDOWN) {
-				g_queue_clear (&start);
-				return;
-			}
-
-			commands_started = TRUE;
-		}
-
-		if (commands_started)
 			return;
+		}
 	}
 
 	/* This won't be NULL because we checked for an empty queue above. */
@@ -1629,7 +1608,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		g_clear_object (&mailbox);
 
 	} else {
-		GQueue start = G_QUEUE_INIT;
+		CamelIMAPXCommand *start_ic = NULL;
 		GList *head, *link;
 
 		min_pri = first_ic->pri;
@@ -1639,7 +1618,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
 		/* Tag which commands in the queue to start. */
-		for (link = head; link != NULL; link = g_list_next (link)) {
+		for (link = head; link != NULL && !start_ic; link = g_list_next (link)) {
 			CamelIMAPXCommand *ic = link->data;
 			CamelIMAPXMailbox *ic_mailbox;
 			gboolean okay_to_start;
@@ -1663,34 +1642,23 @@ imapx_command_start_next (CamelIMAPXServer *is)
 					"* queueing job %3d '%s'\n",
 					(gint) ic->pri, ic->name);
 				min_pri = ic->pri;
-				g_queue_push_tail (&start, link);
+				/* Each command must be removed from 'is->queue' before
+				 * starting it, so we temporarily reference the command
+				 * to avoid accidentally finalizing it. */
+				start_ic = camel_imapx_command_ref (ic);
 			}
 
 			g_clear_object (&ic_mailbox);
-
-			if (g_queue_get_length (&start) == MAX_COMMANDS)
-				break;
 		}
 
 		g_clear_object (&mailbox);
 
-		/* Start the tagged commands.
-		 *
-		 * Each command must be removed from 'is->queue' before
-		 * starting it, so we temporarily reference the command
-		 * to avoid accidentally finalizing it. */
-		while ((link = g_queue_pop_head (&start)) != NULL) {
-			CamelIMAPXCommand *ic;
-
-			ic = camel_imapx_command_ref (link->data);
-			camel_imapx_command_queue_delete_link (is->queue, link);
-			imapx_server_command_removed (is, ic);
-			imapx_command_start (is, ic);
-			camel_imapx_command_unref (ic);
-
-			/* This will terminate the loop. */
-			if (is->state == IMAPX_SHUTDOWN)
-				g_queue_clear (&start);
+		/* Start the tagged command */
+		if (start_ic) {
+			camel_imapx_command_queue_remove (is->queue, start_ic);
+			imapx_server_command_removed (is, start_ic);
+			imapx_command_start (is, start_ic);
+			camel_imapx_command_unref (start_ic);
 		}
 	}
 }
@@ -3342,13 +3310,13 @@ imapx_completion (CamelIMAPXServer *is,
 	if (ic->complete != NULL)
 		ic->complete (is, ic);
 
+	success = TRUE;
+
+exit:
 	QUEUE_LOCK (is);
 	imapx_command_start_next (is);
 	QUEUE_UNLOCK (is);
 
-	success = TRUE;
-
-exit:
 	camel_imapx_command_unref (ic);
 
 	return success;
@@ -4955,7 +4923,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 	 * or we failed.  Failure is handled in the fetch code, so
 	 * we just return the job, or keep it alive with more requests */
 
-	job->commands--;
+	g_atomic_int_add (&job->commands, -1);
 
 	if (camel_imapx_command_set_error_if_failed (ic, &local_error)) {
 		g_prefix_error (
@@ -4986,7 +4954,7 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 			camel_imapx_command_set_job (new_ic, job);
 			new_ic->pri = job->pri - 1;
 			data->fetch_offset += MULTI_SIZE;
-			job->commands++;
+			g_atomic_int_add (&job->commands, 1);
 
 			imapx_command_queue (is, new_ic);
 
@@ -4997,8 +4965,14 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 	}
 
 	/* If we have more messages to fetch, skip the rest. */
-	if (job->commands > 0)
+	if (g_atomic_int_get (&job->commands) > 0) {
+		/* Make sure no command will starve in a queue */
+		QUEUE_LOCK (is);
+		imapx_command_start_next (is);
+		QUEUE_UNLOCK (is);
+
 		goto exit;
+	}
 
 	/* No more messages to fetch, let's wrap things up. */
 
@@ -5050,7 +5024,22 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_free (tmp_filename);
 	}
 
-	camel_data_cache_remove (data->message_cache, "tmp", data->uid, NULL);
+	/* Delete the 'tmp' file only if the operation wasn't cancelled. It's because
+	   cancelled operations end before they are properly finished (IMAP-protocol speaking),
+	   thus if any other GET_MESSAGE operation was waiting for this job, then it
+	   realized that the message was not downloaded and opened its own "tmp" file, but
+	   of the same name, thus this remove would drop file which could be used
+	   by a different GET_MESSAGE job. */
+	if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+		camel_data_cache_remove (data->message_cache, "tmp", data->uid, NULL);
+
+	/* Avoid possible use-after-free when the imapx_unregister_job() can
+	   also free the 'job' structure. */
+	if (local_error != NULL) {
+		camel_imapx_job_take_error (job, local_error);
+		local_error = NULL;
+	}
+
 	imapx_unregister_job (is, job);
 
 exit:
@@ -5090,7 +5079,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 			camel_imapx_command_set_job (ic, job);
 			ic->pri = job->pri;
 			data->fetch_offset += MULTI_SIZE;
-			job->commands++;
+			g_atomic_int_add (&job->commands, 1);
 
 			imapx_command_queue (is, ic);
 
@@ -5104,7 +5093,7 @@ imapx_job_get_message_start (CamelIMAPXJob *job,
 		ic->complete = imapx_command_fetch_message_done;
 		camel_imapx_command_set_job (ic, job);
 		ic->pri = job->pri;
-		job->commands++;
+		g_atomic_int_add (&job->commands, 1);
 
 		imapx_command_queue (is, ic);
 
@@ -5505,7 +5494,7 @@ imapx_job_append_message_start (CamelIMAPXJob *job,
 	ic->complete = imapx_command_append_message_done;
 	camel_imapx_command_set_job (ic, job);
 	ic->pri = job->pri;
-	job->commands++;
+	g_atomic_int_add (&job->commands, 1);
 
 	imapx_command_queue (is, ic);
 
@@ -7193,7 +7182,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_if_fail (folder != NULL);
 
-	job->commands--;
+	g_atomic_int_add (&job->commands, -1);
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
@@ -7251,7 +7240,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 		camel_imapx_mailbox_set_unseen (mailbox, unseen);
 	}
 
-	if (job->commands == 0) {
+	if (g_atomic_int_get (&job->commands) == 0) {
 		if (folder->summary && (folder->summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
 			CamelStoreInfo *si;
 
@@ -7273,6 +7262,11 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 		camel_store_summary_save (CAMEL_IMAPX_STORE (parent_store)->summary);
 
 		imapx_unregister_job (is, job);
+	} else {
+		/* Make sure no command will starve in a queue */
+		QUEUE_LOCK (is);
+		imapx_command_start_next (is);
+		QUEUE_UNLOCK (is);
 	}
 
 exit:
@@ -7361,7 +7355,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 					send = imapx_uidset_add (&ss, ic, camel_message_info_uid (info));
 				}
 				if (send == 1 || (i == uids->len - 1 && imapx_uidset_done (&ss, ic))) {
-					job->commands++;
+					g_atomic_int_add (&job->commands, 1);
 					camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on?"+":"-", flags_table[j].name);
 					imapx_command_queue (is, ic);
 					camel_imapx_command_unref (ic);
@@ -7400,7 +7394,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 
 					if (imapx_uidset_add (&ss, ic, camel_message_info_uid (info)) == 1
 					    || (i == c->infos->len - 1 && imapx_uidset_done (&ss, ic))) {
-						job->commands++;
+						g_atomic_int_add (&job->commands, 1);
 						camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on?"+":"-", c->name);
 						imapx_command_queue (is, ic);
 						camel_imapx_command_unref (ic);
@@ -7414,11 +7408,14 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 	g_object_unref (folder);
 	g_object_unref (mailbox);
 
-	/* Since this may start in another thread ... we need to
-	 * lock the commands count, ho hum */
-
-	if (job->commands == 0)
+	if (g_atomic_int_get (&job->commands) == 0) {
 		imapx_unregister_job (is, job);
+	} else {
+		/* Make sure no command will starve in a queue */
+		QUEUE_LOCK (is);
+		imapx_command_start_next (is);
+		QUEUE_UNLOCK (is);
+	}
 
 	return TRUE;
 }
@@ -8179,8 +8176,12 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		return NULL;
 	}
 
-	cache_stream = camel_data_cache_add (
-		message_cache, "tmp", message_uid, error);
+	/* This makes sure that if any file is left on the disk, it is not reused.
+	   That can happen when the previous message download had been cancelled
+	   or finished with an error. */
+	camel_data_cache_remove (message_cache, "tmp", message_uid, NULL);
+
+	cache_stream = camel_data_cache_add (message_cache, "tmp", message_uid, error);
 	if (cache_stream == NULL) {
 		QUEUE_UNLOCK (is);
 		return NULL;
@@ -9406,4 +9407,109 @@ camel_imapx_server_shutdown (CamelIMAPXServer *is,
 	g_cancellable_cancel (cancellable);
 	g_clear_object (&cancellable);
 	g_clear_error (&shutdown_error_copy);
+}
+
+static const gchar *
+imapx_server_get_job_type_name (CamelIMAPXJob *job)
+{
+	if (!job)
+		return "[null]";
+
+	switch (job->type) {
+	case IMAPX_JOB_GET_MESSAGE:
+		return "GET_MESSAGE";
+	case IMAPX_JOB_APPEND_MESSAGE:
+		return "APPEND_MESSAGE";
+	case IMAPX_JOB_COPY_MESSAGE:
+		return "COPY_MESSAGE";
+	case IMAPX_JOB_FETCH_NEW_MESSAGES:
+		return "FETCH_NEW_MESSAGES";
+	case IMAPX_JOB_REFRESH_INFO:
+		return "REFRESH_INFO";
+	case IMAPX_JOB_SYNC_CHANGES:
+		return "SYNC_CHANGES";
+	case IMAPX_JOB_EXPUNGE:
+		return "EXPUNGE";
+	case IMAPX_JOB_NOOP:
+		return "NOOP";
+	case IMAPX_JOB_IDLE:
+		return "IDLE";
+	case IMAPX_JOB_LIST:
+		return "LIST";
+	case IMAPX_JOB_CREATE_MAILBOX:
+		return "CREATE_MAILBOX";
+	case IMAPX_JOB_DELETE_MAILBOX:
+		return "DELETE_MAILBOX";
+	case IMAPX_JOB_RENAME_MAILBOX:
+		return "RENAME_MAILBOX";
+	case IMAPX_JOB_SUBSCRIBE_MAILBOX:
+		return "SUBSCRIBE_MAILBOX";
+	case IMAPX_JOB_UNSUBSCRIBE_MAILBOX:
+		return "UNSUBSCRIBE_MAILBOX";
+	case IMAPX_JOB_UPDATE_QUOTA_INFO:
+		return "UPDATE_QUOTA_INFO";
+	case IMAPX_JOB_UID_SEARCH:
+		return "UID_SEARCH";
+	}
+
+	return "???";
+}
+
+static void
+imapx_server_dump_one_queue (CamelIMAPXCommandQueue *queue,
+			     const gchar *queue_name)
+{
+	GList *iter;
+	gint ii;
+
+	g_return_if_fail (queue != NULL);
+	g_return_if_fail (queue_name != NULL);
+
+	if (camel_imapx_command_queue_is_empty (queue))
+		return;
+
+	printf ("      Content of '%s':\n", queue_name);
+
+	for (ii = 0, iter = camel_imapx_command_queue_peek_head_link (queue); iter != NULL; iter = g_list_next (iter), ii++) {
+		CamelIMAPXCommand *ic = iter->data;
+		CamelIMAPXJob *job = camel_imapx_command_get_job (ic);
+
+		printf ("         [%d] command:%p for job:%p (type:0x%x %s)\n", ii, ic, job, job ? job->type : 0, imapx_server_get_job_type_name (job));
+	}
+}
+
+/* for debugging purposes only */
+void
+camel_imapx_server_dump_queue_status (CamelIMAPXServer *imapx_server)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (imapx_server));
+
+	QUEUE_LOCK (imapx_server);
+
+	printf ("   Queue status for server %p: jobs:%d queued:%d active:%d done:%d\n", imapx_server,
+		g_queue_get_length (&imapx_server->jobs),
+		camel_imapx_command_queue_get_length (imapx_server->queue),
+		camel_imapx_command_queue_get_length (imapx_server->active),
+		camel_imapx_command_queue_get_length (imapx_server->done));
+
+	if (!g_queue_is_empty (&imapx_server->jobs)) {
+		GList *iter;
+		gint ii;
+
+		printf ("      Content of 'jobs':\n");
+
+		for (ii = 0, iter = g_queue_peek_head_link (&imapx_server->jobs); iter != NULL; iter = g_list_next (iter), ii++) {
+			CamelIMAPXJob *job = iter->data;
+
+			printf ("         [%d] job:%p (type:0x%x %s) with pending commands:%d\n", ii, job, job ? job->type : 0,
+				imapx_server_get_job_type_name (job),
+				job ? g_atomic_int_get (&job->commands) : -1);
+		}
+	}
+
+	imapx_server_dump_one_queue (imapx_server->queue, "queue");
+	imapx_server_dump_one_queue (imapx_server->active, "active");
+	imapx_server_dump_one_queue (imapx_server->done, "done");
+
+	QUEUE_UNLOCK (imapx_server);
 }

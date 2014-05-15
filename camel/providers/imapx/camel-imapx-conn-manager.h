@@ -80,6 +80,9 @@ void		camel_imapx_conn_manager_update_con_info
 						 CamelIMAPXServer *server,
 						 const gchar *folder_name);
 
+/* for debugging purposes only */
+void		camel_imapx_conn_manager_dump_queue_status
+						(CamelIMAPXConnManager *con_man);
 G_END_DECLS
 
 #endif /* _CAMEL_IMAPX_SERVER_H */
