@@ -133,6 +133,9 @@ struct _CamelIMAPXJob *
 						 guint32 job_type,
 						 const gchar *uid);
 
+/* for debugging purposes only */
+void		camel_imapx_store_dump_queue_status
+						(CamelIMAPXStore *imapx_store);
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_STORE_H */

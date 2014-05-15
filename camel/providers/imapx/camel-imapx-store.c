@@ -3302,3 +3302,12 @@ camel_imapx_store_ref_job (CamelIMAPXStore *imapx_store,
 
 	return job;
 }
+
+/* for debugging purposes only */
+void
+camel_imapx_store_dump_queue_status (CamelIMAPXStore *imapx_store)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+
+	camel_imapx_conn_manager_dump_queue_status (imapx_store->priv->con_man);
+}
