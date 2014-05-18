@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-03-16 05:43+0000\n"
-"PO-Revision-Date: 2014-03-19 11:38+0100\n"
+"POT-Creation-Date: 2014-05-05 04:26+0000\n"
+"PO-Revision-Date: 2014-05-05 13:55+0100\n"
 "Last-Translator: Christian Kirbach <christian.kirbach@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 1.5.4\n"
 "X-Project-Style: gnome\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:117
@@ -101,7 +101,7 @@ msgstr "Umbenennen der alten Datenbank von »%s« in »%s« schlug fehl: %s"
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:1242
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4318
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:417
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:874
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:876
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
@@ -125,58 +125,60 @@ msgstr "Umbenennen der alten Datenbank von »%s« in »%s« schlug fehl: %s"
 #: ../calendar/libecal/e-cal-client.c:3412
 #: ../calendar/libecal/e-cal-client.c:3676
 #: ../calendar/libecal/e-cal-client.c:3917
-#: ../calendar/libecal/e-cal-client.c:4105
-#: ../calendar/libecal/e-cal-client.c:4297
-#: ../calendar/libecal/e-cal-client.c:4467
-#: ../calendar/libecal/e-cal-client.c:4636
-#: ../calendar/libecal/e-cal-client.c:4839
-#: ../calendar/libecal/e-cal-client.c:4989
-#: ../calendar/libecal/e-cal-client.c:5183
-#: ../calendar/libecal/e-cal-client.c:5336
-#: ../calendar/libecal/e-cal-client.c:5553
-#: ../calendar/libecal/e-cal-client.c:5707
-#: ../calendar/libecal/e-cal-client.c:5933
-#: ../calendar/libecal/e-cal-client.c:6129
-#: ../calendar/libecal/e-cal-client.c:6492
-#: ../calendar/libecal/e-cal-client.c:6706
+#: ../calendar/libecal/e-cal-client.c:4107
+#: ../calendar/libecal/e-cal-client.c:4299
+#: ../calendar/libecal/e-cal-client.c:4469
+#: ../calendar/libecal/e-cal-client.c:4638
+#: ../calendar/libecal/e-cal-client.c:4841
+#: ../calendar/libecal/e-cal-client.c:4991
+#: ../calendar/libecal/e-cal-client.c:5185
+#: ../calendar/libecal/e-cal-client.c:5338
+#: ../calendar/libecal/e-cal-client.c:5555
+#: ../calendar/libecal/e-cal-client.c:5709
+#: ../calendar/libecal/e-cal-client.c:5935
+#: ../calendar/libecal/e-cal-client.c:6131
+#: ../calendar/libecal/e-cal-client.c:6494
+#: ../calendar/libecal/e-cal-client.c:6708
 #: ../camel/providers/imapx/camel-imapx-command.c:642
+#: ../camel/providers/imapx/camel-imapx-server.c:4732
+#: ../camel/providers/imapx/camel-imapx-server.c:4741
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:836
+#: ../addressbook/backends/google/e-book-backend-google.c:847
 msgid "Querying for updated contacts…"
 msgstr "Aktualisierte Kontakte werden abgefragt …"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:988
+#: ../addressbook/backends/google/e-book-backend-google.c:999
 msgid "Querying for updated groups…"
 msgstr "Aktualisierte Gruppen werden abgefragt …"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1705
+#: ../addressbook/backends/google/e-book-backend-google.c:1719
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5054
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1361
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1417
 msgid "The backend does not support bulk additions"
 msgstr "Das Backend unterstützt keine Massenhinzufügungen"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1854
+#: ../addressbook/backends/google/e-book-backend-google.c:1868
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5190
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1473
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1529
 msgid "The backend does not support bulk modifications"
 msgstr "Das Backend unterstützt keine Massenänderungen"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2054
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1573
+#: ../addressbook/backends/google/e-book-backend-google.c:2068
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1629
 msgid "The backend does not support bulk removals"
 msgstr "Das Backend unterstützt keine Massenentfernungen"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2180
+#: ../addressbook/backends/google/e-book-backend-google.c:2194
 msgid "Loading…"
 msgstr "Ladevorgang …"
 
 #. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1618
+#: ../addressbook/backends/google/e-book-google-utils.c:1625
 #: ../services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -185,17 +187,17 @@ msgid "Personal"
 msgstr "Persönlich"
 
 #. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1620
+#: ../addressbook/backends/google/e-book-google-utils.c:1627
 msgid "Friends"
 msgstr "Freunde"
 
 #. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1622
+#: ../addressbook/backends/google/e-book-google-utils.c:1629
 msgid "Family"
 msgstr "Familie"
 
 #. System Group: Coworkers
-#: ../addressbook/backends/google/e-book-google-utils.c:1624
+#: ../addressbook/backends/google/e-book-google-utils.c:1631
 msgid "Coworkers"
 msgstr "Mitarbeiter"
 
@@ -275,43 +277,43 @@ msgstr "DN für Benutzer »%s« konnte nicht erhalten werden"
 msgid "Loading Addressbook summary..."
 msgstr "Zusammenfassung des Adressbuchs wird geladen …"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:871
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:873
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr ""
 "WebDAV-Anweisung PROPFIND scheiterte mit folgendem HTTP-Status: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:890
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:892
 msgid "No response body in webdav PROPFIND result"
 msgstr ""
 "Kein Response-Textkörper im Ergebnis der WebDAV-Anweisung PROPFIND gefunden"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:951
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:953
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Kontakte werden geladen (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1283
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1337
 msgid "Cannot transform SoupURI to string"
 msgstr "SoupURI kann nicht in eine Zeichenkette umgewandelt werden"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1458
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "Erzeugen der Ressource »%s« scheiterte mit HTTP-Status %d (%s)"
 
 # Die Formulierung können wir wohl nicht so stehen lassen
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1504
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1560
 msgid "Contact on server changed -> not modifying"
 msgstr "Kontakt wurde auf dem Server geändert > wird nicht geändert"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1512
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1568
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "Ändern des Kontakts scheiterte mit HTTP-Status %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1605
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1621
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1661
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1677
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE scheiterte mit HTTP-Status %d"
@@ -916,7 +918,7 @@ msgid "Twitter Name List"
 msgstr "Twitter-Namensliste"
 
 #: ../addressbook/libebook-contacts/e-contact.c:1635
-#: ../addressbook/libebook/e-destination.c:917
+#: ../addressbook/libebook/e-destination.c:920
 msgid "Unnamed List"
 msgstr "Namenlose Liste"
 
@@ -1098,7 +1100,6 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:524
 #, c-format
-#| msgid "Invalid contact field '%d' specified in summary"
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Nicht unterstütztes Kontaktfeld »%d« in der Zusammenfassung angegeben"
 
@@ -1107,15 +1108,16 @@ msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
 msgstr ""
+"Die Kontaktedatenbank kann nicht von einer veralteten Datenbank mit mehr als "
+"einem Adressbuch aufgerüstet werden. Löschen Sie zuerst einen Eintrag in der "
+"Tabelle »Ordner«."
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:5357
 #, c-format
-#| msgid "Invalid query: "
 msgid "Invalid query: %s"
 msgstr "Ungültige Abfrage: %s"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:5532
-#| msgid "Invalid query: "
 msgid "Invalid query for EbSqlCursor"
 msgstr "Ungültige Abfrage nach EbSqlCursor"
 
@@ -1361,12 +1363,12 @@ msgstr "Ein unerwarteter HTTP-Statuscode %d wurde zurückgegeben (%s)"
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV-Backend wurde noch nicht geladen"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1074
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1077
 msgid "Invalid Redirect URL"
 msgstr "Ungültige Umleitungsadresse"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2577
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2942
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2580
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2945
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1376,32 +1378,32 @@ msgstr ""
 "Modus geöffnet.\n"
 "Fehlermeldung: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2897
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2900
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Lokaler Ordner »%s« zum Zwischenspeichern kann nicht angelegt werden"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3982
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3985
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV unterstützt keine Massenhinzufügungen"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4085
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4088
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV unterstützt keine Massenänderungen"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4261
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4264
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV unterstützt keine Massenentfernungen"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4928
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4931
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender unterstützt keine Verfügbarkeitsinformationen"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4937
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4940
 msgid "Schedule outbox url not found"
 msgstr "Adresse des Terminplanausgangs nicht gefunden"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5034
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5037
 msgid "Unexpected result in schedule-response"
 msgstr "Unerwartetes Ergebnis in schedule-response"
 
@@ -1430,27 +1432,27 @@ msgstr ""
 msgid "Cannot save calendar data"
 msgstr "Kalenderdaten konnten nicht gespeichert werden"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:486
+#: ../calendar/backends/http/e-cal-backend-http.c:491
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "Fehlerhaft formatierte URI: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:577
+#: ../calendar/backends/http/e-cal-backend-http.c:582
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Auf ungültige URI weitergeleitet"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:620
+#: ../calendar/backends/http/e-cal-backend-http.c:625
 #, c-format
 msgid "Bad file format."
 msgstr "Dateiformat fehlerhaft."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:630
+#: ../calendar/backends/http/e-cal-backend-http.c:635
 #, c-format
 msgid "Not a calendar."
 msgstr "Kein Kalender."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:917
+#: ../calendar/backends/http/e-cal-backend-http.c:925
 #: ../calendar/backends/weather/e-cal-backend-weather.c:536
 msgid "Could not create cache file"
 msgstr "Datei zum Zwischenspeichern konnte nicht angelegt werden"
@@ -2465,8 +2467,7 @@ msgstr ""
 msgid "Host lookup '%s' failed: %s"
 msgstr "Finden des Rechners »%s« fehlgeschlagen: %s"
 
-#: ../camel/camel-network-service.c:1009
-#| msgid "No quota information available for folder '%s'"
+#: ../camel/camel-network-service.c:1014
 msgid "No host information available"
 msgstr "Es sind keine Informationen zum Rechner verfügbar"
 
@@ -2768,7 +2769,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Ungültiger GType registriert für Protokoll »%s«"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4814
+#: ../camel/providers/imapx/camel-imapx-server.c:4682
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
 #: ../camel/providers/smtp/camel-smtp-transport.c:515
@@ -3019,16 +3020,16 @@ msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Ordner konnte nicht gelöscht werden: %s: Ungültiger Vorgang"
 
 #: ../camel/camel-store.c:2588 ../camel/camel-vee-store.c:467
-#: ../camel/providers/local/camel-maildir-store.c:852
+#: ../camel/providers/local/camel-maildir-store.c:872
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Ordner konnte nicht umbenannt werden: %s: Ungültiger Vorgang"
 
 #: ../camel/camel-stream.c:285 ../camel/camel-stream.c:336
-#, fuzzy, c-format
+#, c-format
 #| msgid "Data source '%s' is not removable"
 msgid "Stream type '%s' is not seekable"
-msgstr "Datenquelle »%s« ist nicht entfernbar"
+msgstr "Datenstromtyp »%s« kann nicht durchsucht werden"
 
 #: ../camel/camel-stream-filter.c:344
 msgid "Only reset to beginning is supported with CamelStreamFilter"
@@ -3118,47 +3119,46 @@ msgstr "Nachrichten können nicht in den Papierkorb-Ordner kopiert werden"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nachrichten können nicht in den Unerwünscht-Ordner kopiert werden"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:687
+#: ../camel/providers/imapx/camel-imapx-folder.c:790
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "Kontingent-Informationen sind für Ordner »%s« nicht verfügbar"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:801
-#: ../camel/providers/imapx/camel-imapx-folder.c:894
+#: ../camel/providers/imapx/camel-imapx-folder.c:925
+#: ../camel/providers/imapx/camel-imapx-folder.c:1018
 #, c-format
 msgid "No destination folder specified"
 msgstr "Kein Zielordner angegeben"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:829
+#: ../camel/providers/imapx/camel-imapx-folder.c:953
 msgid "Unable to move junk messages"
 msgstr "Unerwünschte Nachrichten konnten nicht verschoben werden"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:922
+#: ../camel/providers/imapx/camel-imapx-folder.c:1046
 msgid "Unable to move deleted messages"
 msgstr "Gelöschte Nachrichten konnten nicht verschoben werden"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1148
-#: ../camel/providers/nntp/camel-nntp-folder.c:758
+#: ../camel/providers/imapx/camel-imapx-folder.c:1359
+#: ../camel/providers/nntp/camel-nntp-folder.c:760
 msgid "Apply message _filters to this folder"
 msgstr "Nachrichten_filter auf diesen Ordner anwenden"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1254
+#: ../camel/providers/imapx/camel-imapx-folder.c:1465
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Zusammenfassung für %s konnte nicht erstellt werden"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1263
+#: ../camel/providers/imapx/camel-imapx-folder.c:1474
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Zwischenspeicher konnte nicht für »%s« angelegt werden:"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1448
+#: ../camel/providers/imapx/camel-imapx-folder.c:1691
 #, c-format
-#| msgid "No quota information available for folder '%s'"
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "Für Ordner »%s« ist kein IMAP-Postfach verfügbar"
 
-#: ../camel/providers/imapx/camel-imapx-input-stream.c:92
+#: ../camel/providers/imapx/camel-imapx-input-stream.c:93
 #, c-format
 msgid "Source stream returned no data"
 msgstr "Quelldatenstrom gab keine Daten zurück"
@@ -3245,227 +3245,226 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Zum Lesen und Speichern von E-Mails auf IMAP-Servern."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:844
+#: ../camel/providers/imapx/camel-imapx-server.c:1008
 #, c-format
 msgid "Not authenticated"
 msgstr "Nicht legitimiert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1773
+#: ../camel/providers/imapx/camel-imapx-server.c:1732
 msgid "Server disconnected"
 msgstr "Serververbindung wurde getrennt"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2255
+#: ../camel/providers/imapx/camel-imapx-server.c:2210
 msgid "Error writing to cache stream"
 msgstr "Fehler beim Schreiben in den Zwischenspeicher-Datenstrom"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3672
+#: ../camel/providers/imapx/camel-imapx-server.c:3546
 msgid "Error performing IDLE"
 msgstr "Fehler beim Ausführen von IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4661
+#: ../camel/providers/imapx/camel-imapx-server.c:4529
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4662
+#: ../camel/providers/imapx/camel-imapx-server.c:4530
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nicht unterstützt"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4722
+#: ../camel/providers/imapx/camel-imapx-server.c:4590
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4803
+#: ../camel/providers/imapx/camel-imapx-server.c:4671
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-Server %s unterstützt den Legitimierungstyp %s nicht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4833
+#: ../camel/providers/imapx/camel-imapx-server.c:4701
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "Legitimierung ohne Benutzername ist nicht möglich"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4842
+#: ../camel/providers/imapx/camel-imapx-server.c:4710
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "Legitimierungspasswort ist nicht verfügbar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5093
+#: ../camel/providers/imapx/camel-imapx-server.c:4946
 msgid "Error fetching message"
 msgstr "Fehler beim Abrufen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5139
+#: ../camel/providers/imapx/camel-imapx-server.c:4992
 msgid "Failed to close the tmp stream"
 msgstr "Temporärer Datenstrom konnte nicht geschlossen werden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5168
+#: ../camel/providers/imapx/camel-imapx-server.c:5021
 msgid "Failed to copy the tmp file"
 msgstr "Temporäre Datei konnte nicht kopiert werden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5294
+#: ../camel/providers/imapx/camel-imapx-server.c:5147
 msgid "Error moving messages"
 msgstr "Fehler beim Verschieben von Nachrichten"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5298
+#: ../camel/providers/imapx/camel-imapx-server.c:5151
 msgid "Error copying messages"
 msgstr "Fehler beim Kopieren von Nachrichten"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5520
+#: ../camel/providers/imapx/camel-imapx-server.c:5373
 msgid "Error appending message"
 msgstr "Fehler beim Anhängen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5756
+#: ../camel/providers/imapx/camel-imapx-server.c:5609
 msgid "Error fetching message headers"
 msgstr "Fehler beim Holen der Nachrichtenkopfzeilen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5921
+#: ../camel/providers/imapx/camel-imapx-server.c:5774
 msgid "Error retrieving message"
 msgstr "Fehler beim Abrufen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6051
-#: ../camel/providers/imapx/camel-imapx-server.c:6274
+#: ../camel/providers/imapx/camel-imapx-server.c:5904
+#: ../camel/providers/imapx/camel-imapx-server.c:6127
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr ""
 "Zusammenfassende Informationen für neue Nachrichten in »%s« werden abgerufen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6103
+#: ../camel/providers/imapx/camel-imapx-server.c:5956
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Geänderte Nachrichten werden in »%s« gesucht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6155
+#: ../camel/providers/imapx/camel-imapx-server.c:6008
 msgid "Error fetching new messages"
 msgstr "Fehler beim Abrufen neuer Nachrichten"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6423
+#: ../camel/providers/imapx/camel-imapx-server.c:6275
 msgid "Error refreshing folder"
 msgstr "Fehler beim Aktualisieren des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6573
+#: ../camel/providers/imapx/camel-imapx-server.c:6425
 msgid "Error expunging message"
 msgstr "Fehler beim Löschen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6682
-#: ../camel/providers/imapx/camel-imapx-server.c:6707
+#: ../camel/providers/imapx/camel-imapx-server.c:6534
+#: ../camel/providers/imapx/camel-imapx-server.c:6559
 msgid "Error fetching folders"
 msgstr "Fehler beim Abrufen der Ordner"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6787
+#: ../camel/providers/imapx/camel-imapx-server.c:6639
 msgid "Error creating folder"
 msgstr "Fehler beim Anlegen des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6839
+#: ../camel/providers/imapx/camel-imapx-server.c:6691
 msgid "Error deleting folder"
 msgstr "Fehler beim Löschen des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6906
+#: ../camel/providers/imapx/camel-imapx-server.c:6767
 msgid "Error renaming folder"
 msgstr "Fehler beim Umbenennen des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6993
+#: ../camel/providers/imapx/camel-imapx-server.c:6841
 msgid "Error subscribing to folder"
 msgstr "Fehler beim Abonnieren des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7053
-#| msgid "Error subscribing to folder"
+#: ../camel/providers/imapx/camel-imapx-server.c:6907
 msgid "Error unsubscribing from folder"
 msgstr "Fehler beim Kündigen des Abonnement des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7109
+#: ../camel/providers/imapx/camel-imapx-server.c:6969
 msgid "Error retrieving quota information"
 msgstr "Fehler beim Abrufen der Kontingent-Informationen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7161
+#: ../camel/providers/imapx/camel-imapx-server.c:7021
 msgid "Search failed"
 msgstr "Suche fehlgeschlagen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7223
+#: ../camel/providers/imapx/camel-imapx-server.c:7083
 msgid "Error performing NOOP"
 msgstr "Fehler beim Ausführen von NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7330
+#: ../camel/providers/imapx/camel-imapx-server.c:7190
 msgid "Error syncing changes"
 msgstr "Fehler beim Abgleichen der Änderungen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8441
+#: ../camel/providers/imapx/camel-imapx-server.c:8156
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nachricht mit Kennung %s konnte nicht abgerufen werden: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8442
+#: ../camel/providers/imapx/camel-imapx-server.c:8157
 msgid "No such message available."
 msgstr "Nachricht nicht verfügbar."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8640
-#: ../camel/providers/imapx/camel-imapx-server.c:8661
+#: ../camel/providers/imapx/camel-imapx-server.c:8355
+#: ../camel/providers/imapx/camel-imapx-server.c:8376
 msgid "Cannot create spool file: "
 msgstr "Spool-Datei konnte nicht angelegt werden:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9403
+#: ../camel/providers/imapx/camel-imapx-server.c:9120
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-Server unterstützt keine Kontingente"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imapx/camel-imapx-store.c:207
+#: ../camel/providers/imapx/camel-imapx-store.c:224
 #: ../camel/providers/local/camel-maildir-folder.c:482
 #: ../camel/providers/local/camel-maildir-store.c:322
-#: ../camel/providers/local/camel-maildir-store.c:764
-#: ../camel/providers/local/camel-maildir-store.c:770
-#: ../camel/providers/local/camel-maildir-store.c:853
+#: ../camel/providers/local/camel-maildir-store.c:784
+#: ../camel/providers/local/camel-maildir-store.c:790
+#: ../camel/providers/local/camel-maildir-store.c:873
 #: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
 msgstr "Eingang"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:823
+#: ../camel/providers/imapx/camel-imapx-store.c:757
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP-Server %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:826
+#: ../camel/providers/imapx/camel-imapx-store.c:760
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-Dienst für %s auf %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1035
+#: ../camel/providers/imapx/camel-imapx-store.c:835
 #: ../camel/providers/nntp/camel-nntp-provider.c:93
 #: ../camel/providers/pop3/camel-pop3-provider.c:81
 msgid "Password"
 msgstr "Passwort"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1037
+#: ../camel/providers/imapx/camel-imapx-store.c:837
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Dies stellt unter Verwendung eines unverschlüsselten Passworts eine "
 "Verbindung mit dem IMAP-Server her."
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1112
+#: ../camel/providers/imapx/camel-imapx-store.c:912
 #, c-format
 msgid "No such folder %s"
 msgstr "Ordner »%s« nicht vorhanden"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1507
+#: ../camel/providers/imapx/camel-imapx-store.c:1323
 #, c-format
 msgid "No IMAP namespace for folder path '%s'"
 msgstr "Kein IMAP-Namensraum für Ordnerpfad  »%s«"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1656
+#: ../camel/providers/imapx/camel-imapx-store.c:1471
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "Ordnerliste für »%s« wird abgerufen"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2094
+#: ../camel/providers/imapx/camel-imapx-store.c:1923
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Der Ordnername »%s« ist ungültig, da er das Zeichen »%c« enthält"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2615
+#: ../camel/providers/imapx/camel-imapx-store.c:2675
 #: ../camel/providers/nntp/camel-nntp-store.c:1250
 #: ../camel/providers/pop3/camel-pop3-folder.c:450
 #: ../camel/providers/pop3/camel-pop3-folder.c:593
@@ -3500,7 +3499,7 @@ msgstr "%s (%s)"
 msgid "_Index message body data"
 msgstr "Rumpfdaten der Nachricht _indizieren"
 
-#: ../camel/providers/local/camel-local-folder.c:725
+#: ../camel/providers/local/camel-local-folder.c:727
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3652,7 +3651,7 @@ msgstr "Nachricht kann nicht in den Zielordner übertragen werden: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:130
 #: ../camel/providers/local/camel-maildir-store.c:149
-#: ../camel/providers/local/camel-maildir-store.c:861
+#: ../camel/providers/local/camel-maildir-store.c:881
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Ordner %s existiert bereits"
@@ -3695,8 +3694,8 @@ msgstr "Ordner »%s« konnte nicht gelöscht werden: %s"
 msgid "not a maildir directory"
 msgstr "kein Maildir-Ordner"
 
-#: ../camel/providers/local/camel-maildir-store.c:636
-#: ../camel/providers/local/camel-maildir-store.c:1075
+#: ../camel/providers/local/camel-maildir-store.c:637
+#: ../camel/providers/local/camel-maildir-store.c:1095
 #: ../camel/providers/local/camel-spool-store.c:212
 #: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
@@ -4008,21 +4007,21 @@ msgstr ""
 "Ordner könnte fehlerhaft sein, Kopie in »%s« gespeichert"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:222
-#: ../camel/providers/nntp/camel-nntp-folder.c:588
+#: ../camel/providers/nntp/camel-nntp-folder.c:590
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Interner Fehler: UID-Format ungültig: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:291
-#: ../camel/providers/nntp/camel-nntp-folder.c:296
+#: ../camel/providers/nntp/camel-nntp-folder.c:292
+#: ../camel/providers/nntp/camel-nntp-folder.c:297
 #: ../camel/providers/pop3/camel-pop3-folder.c:546
 #: ../camel/providers/pop3/camel-pop3-folder.c:945
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Nachricht %s konnte nicht abgerufen werden: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:303
-#: ../camel/providers/nntp/camel-nntp-folder.c:622
+#: ../camel/providers/nntp/camel-nntp-folder.c:304
+#: ../camel/providers/nntp/camel-nntp-folder.c:624
 #: ../camel/providers/pop3/camel-pop3-folder.c:476
 #: ../camel/providers/pop3/camel-pop3-folder.c:536
 #: ../camel/providers/pop3/camel-pop3-folder.c:555
@@ -4036,18 +4035,17 @@ msgstr "Nachricht %s konnte nicht abgerufen werden:"
 msgid "Posting failed: %s"
 msgstr "Veröffentlichung gescheitert: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:501
+#: ../camel/providers/nntp/camel-nntp-folder.c:503
 msgid "Posting failed: "
 msgstr "Veröffentlichung gescheitert:"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:611
+#: ../camel/providers/nntp/camel-nntp-folder.c:613
 #, c-format
 msgid "This message is not currently available"
 msgstr "Diese Nachricht ist derzeit nicht verfügbar"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:720
+#: ../camel/providers/nntp/camel-nntp-folder.c:722
 #, c-format
-#| msgid "You cannot copy messages from a NNTP folder!"
 msgid "You cannot copy messages from a NNTP folder"
 msgstr "Nachrichten können nicht aus NNTP-Ordnern kopiert werden"
 
@@ -4729,7 +4727,6 @@ msgstr ""
 "oder »days«)."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
-#| msgid "Proxy type to use"
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Veraltet) Typ des zu verwendenden Proxys"
 
@@ -4745,63 +4742,51 @@ msgstr ""
 "ESourceProxy für genauere Details."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-#| msgid "Whether to use http-proxy"
 msgid "(Deprecated) Whether to use http-proxy"
 msgstr "(Veraltet) Legt fest, ob ein HTTP-Proxy verwendet wird"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
-#| msgid "Whether proxy server requires authentication"
 msgid "(Deprecated) Whether proxy server requires authentication"
 msgstr "(Veraltet) Proxy-Server benötigt Legitimierung"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-#| msgid "Host name for HTTP requests"
 msgid "(Deprecated) Host name for HTTP requests"
 msgstr "(Veraltet) Rechnername für HTTP-Anfragen"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#| msgid "Port number for HTTP requests"
 msgid "(Deprecated) Port number for HTTP requests"
 msgstr "(Veraltet) Portnummer für HTTP-Anfragen"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-#| msgid "Proxy authentication user name"
 msgid "(Deprecated) Proxy authentication user name"
 msgstr "(Veraltet) Benutzername für Proxy-Legitimierung"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-#| msgid "Proxy authentication password"
 msgid "(Deprecated) Proxy authentication password"
 msgstr "(Veraltet) Passwort für Proxy-Legitimierung"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
-#| msgid "List of hosts to connect to without proxy"
 msgid "(Deprecated) List of hosts to connect to without proxy"
 msgstr ""
 "(Veraltet) Liste der Rechner, zu denen ohne Proxy verbunden werden soll"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-#| msgid "Host name for HTTPS requests"
 msgid "(Deprecated) Host name for HTTPS requests"
 msgstr "(Veraltet) Rechnername für HTTPS-Anfragen"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#| msgid "Port number for HTTPS requests"
 msgid "(Deprecated) Port number for HTTPS requests"
 msgstr "(Veraltet) Portnummer für HTTPS-Anfragen"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#| msgid "Host name for SOCKS requests"
 msgid "(Deprecated) Host name for SOCKS requests"
 msgstr "(Veraltet) Rechnername für SOCKS-Anfragen"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#| msgid "Port number for SOCKS requests"
 msgid "(Deprecated) Port number for SOCKS requests"
 msgstr "(Veraltet) Portnummer für SOCKS-Anfragen"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#| msgid "Automatic proxy configuration URL"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Veraltet) Adresse zur automatischen Proxy-Konfiguration"
 
@@ -4863,7 +4848,7 @@ msgid "Data source is missing a [%s] group"
 msgstr "In der Quelldatei fehlt eine [%s]-Gruppe"
 
 #: ../libebackend/e-server-side-source.c:1020
-#: ../libedataserver/e-source.c:1348
+#: ../libedataserver/e-source.c:1394
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr ""
@@ -4878,7 +4863,7 @@ msgstr ""
 "Ressource"
 
 #: ../libebackend/e-server-side-source.c:1062
-#: ../libedataserver/e-source.c:1461
+#: ../libedataserver/e-source.c:1507
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr ""
@@ -4892,7 +4877,7 @@ msgstr ""
 "Datenquelle »%s« hat kein Sammel-Backend zum Löschen der entfernten Ressource"
 
 #: ../libebackend/e-server-side-source.c:1107
-#: ../libedataserver/e-source.c:1557
+#: ../libedataserver/e-source.c:1603
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -5101,22 +5086,22 @@ msgstr "Bitte geben Sie das Passwort für die Aufgabenliste »%s« ein."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Bitte geben Sie das Passwort für das Konto »%s« ein."
 
-#: ../libedataserver/e-source.c:765
+#: ../libedataserver/e-source.c:768
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "In der Quelldatei fehlt eine [%s]-Gruppe"
 
-#: ../libedataserver/e-source.c:1128
+#: ../libedataserver/e-source.c:1174
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "Datenquelle »%s« ist nicht entfernbar"
 
-#: ../libedataserver/e-source.c:1251
+#: ../libedataserver/e-source.c:1297
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "Datenquelle »%s« ist schreibgeschützt"
 
-#: ../libedataserver/e-source.c:1864
+#: ../libedataserver/e-source.c:1910
 msgid "Unnamed"
 msgstr "Unbenannt"
 
@@ -5127,11 +5112,10 @@ msgstr "Das Signaturskript muss eine lokale Datei sein"
 
 #: ../libedataserver/e-source-proxy.c:1646
 #, c-format
-#| msgid "Data source '%s' does not support creating remote resources"
 msgid "Source '%s' does not support proxy lookups"
 msgstr "Die Datenquelle »%s« unterstützt nicht das Nachschlagen von Proxys"
 
-#: ../libedataserver/e-source-webdav.c:1551
+#: ../libedataserver/e-source-webdav.c:1555
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
@@ -5140,7 +5124,7 @@ msgstr ""
 "Dem SSL-Zertifikat für »%s« (vom Adressbuch »%s« verwendet) wird nicht "
 "vertraut. Wollen Sie es akzeptieren?"
 
-#: ../libedataserver/e-source-webdav.c:1560
+#: ../libedataserver/e-source-webdav.c:1564
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
@@ -5149,7 +5133,7 @@ msgstr ""
 "Dem SSL-Zertifikat für »%s« (vom Kalender »%s« verwendet) wird nicht "
 "vertraut. Wollen Sie es akzeptieren?"
 
-#: ../libedataserver/e-source-webdav.c:1569
+#: ../libedataserver/e-source-webdav.c:1573
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
@@ -5158,7 +5142,7 @@ msgstr ""
 "Dem SSL-Zertifikat für »%s« (von der Notizliste »%s« verwendet) wird nicht "
 "vertraut. Wollen Sie es akzeptieren?"
 
-#: ../libedataserver/e-source-webdav.c:1578
+#: ../libedataserver/e-source-webdav.c:1582
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5488,7 +5472,6 @@ msgstr ""
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:84
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:281
 #, c-format
-#| msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
 msgid ""
 "Expected status 200 when requesting your identity, instead got status %d (%s)"
 msgstr ""
@@ -5501,22 +5484,18 @@ msgid "Error parsing response as JSON: "
 msgstr "Fehler beim Analysieren der Antwort als JSON:"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:119
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'email' in JSON data"
 msgstr "»E-Mail« wurde nicht in den JSON-Daten gefunden"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:316
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'id' in JSON data"
 msgstr "»id« wurde nicht in den JSON-Daten gefunden"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:321
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'emails.account' in JSON data"
 msgstr "»emails.account« wurde nicht in den JSON-Daten gefunden"
 
 #: ../modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
-#| msgid "Wants HTML Mail"
 msgid "Windows Live Mail"
 msgstr "Windows Live E-Mail"
 
