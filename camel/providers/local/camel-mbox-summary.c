@@ -518,9 +518,14 @@ summary_update (CamelLocalSummary *cls,
 	while (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
 		CamelMessageInfo *info;
 		goffset pc = camel_mime_parser_tell_start_from (mp) + 1;
+		gint progress;
 
-		camel_operation_progress (
-			cancellable, (gint) (((gfloat) pc / size) * 100));
+		/* To avoid a division by zero if the fstat()
+		 * call above failed. */
+		size = MAX (size, pc);
+		progress = (size > 0) ? (gint) (((gfloat) pc / size) * 100) : 0;
+
+		camel_operation_progress (cancellable, progress);
 
 		info = camel_folder_summary_info_new_from_parser (s, mp);
 		camel_folder_summary_add (s, info);
