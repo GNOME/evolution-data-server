@@ -446,9 +446,11 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 
 		if (*endptr != '\0' || width < 0 || width > 32) {
 			has_error = TRUE;
+			mask->s_addr = 0xFFFFFFFF;
+		} else {
+			mask->s_addr = htonl (~0 << width);
+			addr->s_addr &= mask->s_addr;
 		}
-		mask->s_addr = htonl (~0 << width);
-		addr->s_addr &= mask->s_addr;
 	} else {
 		mask->s_addr = 0xFFFFFFFF;
 	}
