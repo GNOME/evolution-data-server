@@ -112,7 +112,7 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 	g_hash_table_destroy (attributes);
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
-		SecretItem *item = SECRET_ITEM (link->data);
+		SecretItem *item;
 		ESource *source;
 		const gchar *uid;
 
