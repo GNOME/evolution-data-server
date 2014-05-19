@@ -1103,7 +1103,7 @@ ebsql_exec (EBookSqlite *ebsql,
 		had_cancel = TRUE;
 	} else {
 		ebsql->priv->cancel = cancellable;
-		had_cancel = TRUE;
+		had_cancel = FALSE;
 	}
 
 	ret = sqlite3_exec (ebsql->priv->db, stmt, callback, data, &errmsg);
