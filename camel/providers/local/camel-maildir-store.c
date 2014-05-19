@@ -1275,7 +1275,7 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore,
                            GError **error)
 {
 	CamelFolderInfo *topfi;
-	gchar *meta_path, *ptr;
+	gchar *meta_path = NULL, *ptr;
 
 	topfi = camel_folder_info_new ();
 	topfi->full_name = g_strdup (".");
@@ -1283,8 +1283,7 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore,
 
 	if (scan_old_dir_info ((CamelStore *) mstore, topfi, error) == -1) {
 		g_warning ("Failed to scan the old folder info \n");
-		camel_folder_info_free (topfi);
-		return;
+		goto done;
 	}
 
 	if (maildir_version < 1)
@@ -1297,8 +1296,12 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore,
 	/* cannot pass dot inside maildir_get_meta_path(), because it is escaped */
 	ptr[0] = '.';
 
-	g_file_set_contents (meta_path, MAILDIR_CONTENT_VERSION_STR, -1, NULL);
+	if (!g_file_set_contents (meta_path, MAILDIR_CONTENT_VERSION_STR, -1, error)) {
+		g_warning ("Failed to save the maildir version in ‘%s’.", meta_path);
+		goto done;
+	}
 
+done:
 	camel_folder_info_free (topfi);
 	g_free (meta_path);
 }
