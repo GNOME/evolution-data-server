@@ -3826,7 +3826,7 @@ typedef struct {
 
 typedef struct {
 	PreflightStatus  status;         /* result status */
-	GPtrArray       *constraints;    /* main query */
+	GPtrArray       *constraints;    /* main query; may be NULL */
 	guint64          aux_mask;       /* Bitmask of which auxiliary tables are needed in the query */
 } PreflightContext;
 
@@ -4392,8 +4392,13 @@ query_preflight_check (PreflightContext *context,
 
 	context->status = PREFLIGHT_OK;
 
-	elements = (QueryElement **) context->constraints->pdata;
-	n_elements = context->constraints->len;
+	if (context->constraints != NULL) {
+		elements = (QueryElement **) context->constraints->pdata;
+		n_elements = context->constraints->len;
+	} else {
+		elements = NULL;
+		n_elements = 0;
+	}
 
 	for (i = 0; i < n_elements; i++) {
 		QueryFieldTest *test;
@@ -4636,7 +4641,7 @@ query_preflight_substitute_full_name (PreflightContext *context,
 {
 	gint i, j;
 
-	for (i = 0; i < context->constraints->len; i++) {
+	for (i = 0; context->constraints != NULL && i < context->constraints->len; i++) {
 		SummaryField *family_name, *given_name, *nickname;
 		QueryElement *element;
 		QueryFieldTest *test;
