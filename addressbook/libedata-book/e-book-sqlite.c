@@ -4632,7 +4632,7 @@ query_preflight_check (PreflightContext *context,
 			/* It's really improbable that we ever get 64 fields in the summary
 			 * In any case we warn about this in e_book_sqlite_new_full().
 			 */
-			g_warn_if_fail (aux_index < EBSQL_MAX_SUMMARY_FIELDS);
+			g_warn_if_fail (aux_index >= 0 && aux_index < EBSQL_MAX_SUMMARY_FIELDS);
 			context->aux_mask |= (1 << aux_index);
 			EBSQL_NOTE (
 				PREFLIGHT,
