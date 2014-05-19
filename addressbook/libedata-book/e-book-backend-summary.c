@@ -272,10 +272,14 @@ e_book_backend_summary_load_header (EBookBackendSummary *summary,
 
 static gchar *
 read_string (FILE *fp,
-             gint len)
+             gsize len)
 {
 	gchar *buf;
 	gint rv;
+
+	/* Avoid overflow for the nul byte. */
+	if (len == G_MAXSIZE)
+		return NULL;
 
 	buf = g_new0 (char, len + 1);
 
