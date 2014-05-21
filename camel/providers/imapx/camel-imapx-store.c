@@ -371,7 +371,8 @@ imapx_store_mailbox_attributes_to_flags (CamelIMAPXMailbox *mailbox)
 	const gchar *attribute;
 
 	attribute = CAMEL_IMAPX_LIST_ATTR_NOSELECT;
-	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute) &&
+	    !camel_imapx_mailbox_is_inbox (camel_imapx_mailbox_get_name (mailbox)))
 		store_info_flags |= CAMEL_STORE_INFO_FOLDER_NOSELECT;
 
 	attribute = CAMEL_IMAPX_LIST_ATTR_NOINFERIORS;
