@@ -70,6 +70,8 @@ struct _EBookBackendWebdavPrivate {
 	gchar              *username;
 	gchar              *password;
 	gboolean supports_getctag;
+	gint64 last_server_test_us; /* real-time, in microseconds, when the last server test
+					for changes had been made, when the server doesn't support ctag */
 
 	GMutex cache_lock;
 	GMutex update_lock;
@@ -713,8 +715,17 @@ check_addressbook_changed (EBookBackendWebdav *webdav,
 	*new_ctag = NULL;
 	priv = webdav->priv;
 
-	if (!priv->supports_getctag)
+	if (!priv->supports_getctag) {
+		gint64 real_time_us = g_get_real_time ();
+
+		/* Fifteen minutes in microseconds */
+		if (real_time_us - priv->last_server_test_us < 15 * 60 * 1000 * 1000)
+			return FALSE;
+
+		priv->last_server_test_us = real_time_us;
+
 		return TRUE;
+	}
 
 	priv->supports_getctag = FALSE;
 
@@ -1033,7 +1044,12 @@ download_contacts (EBookBackendWebdav *webdav,
 		e_data_book_view_notify_progress (book_view, -1, NULL);
 
 	g_mutex_lock (&priv->cache_lock);
-	g_hash_table_foreach (href_to_contact, remove_unknown_contacts_cb, webdav);
+
+	if (!g_cancellable_is_cancelled (cancellable) &&
+	    (!running || e_flag_is_set (running))) {
+		/* clean-up the cache only if it wasn't cancelled during the work */
+		g_hash_table_foreach (href_to_contact, remove_unknown_contacts_cb, webdav);
+	}
 	e_file_cache_thaw_changes (E_FILE_CACHE (priv->cache));
 	g_mutex_unlock (&priv->cache_lock);
 	g_mutex_unlock (&priv->update_lock);
