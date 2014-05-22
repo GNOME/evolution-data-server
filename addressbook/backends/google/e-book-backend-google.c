@@ -57,8 +57,6 @@ G_DEFINE_TYPE_WITH_CODE (
 		e_book_backend_google_source_authenticator_init))
 
 struct _EBookBackendGooglePrivate {
-	GList *bookviews;
-
 	EBookBackendCache *cache;
 	GMutex cache_lock;
 
@@ -477,45 +475,6 @@ backend_is_authorized (EBookBackend *backend)
 	return gdata_service_is_authorized (priv->service);
 }
 
-static void
-on_contact_added (EBookBackend *backend,
-                  EContact *contact)
-{
-	EBookBackendGooglePrivate *priv;
-	GList *iter;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	for (iter = priv->bookviews; iter; iter = iter->next)
-		e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), g_object_ref (contact));
-}
-
-static void
-on_contact_removed (EBookBackend *backend,
-                    const gchar *uid)
-{
-	EBookBackendGooglePrivate *priv;
-	GList *iter;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	for (iter = priv->bookviews; iter; iter = iter->next)
-		e_data_book_view_notify_remove (E_DATA_BOOK_VIEW (iter->data), g_strdup (uid));
-}
-
-static void
-on_contact_changed (EBookBackend *backend,
-                    EContact *contact)
-{
-	EBookBackendGooglePrivate *priv;
-	GList *iter;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
-	for (iter = priv->bookviews; iter; iter = iter->next)
-		e_data_book_view_notify_update (E_DATA_BOOK_VIEW (iter->data), g_object_ref (contact));
-}
-
 static GCancellable *
 start_operation (EBookBackend *backend,
                  guint32 opid,
@@ -523,7 +482,7 @@ start_operation (EBookBackend *backend,
                  const gchar *message)
 {
 	EBookBackendGooglePrivate *priv;
-	GList *iter;
+	GList *list, *link;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
@@ -535,8 +494,14 @@ start_operation (EBookBackend *backend,
 	g_hash_table_insert (priv->cancellables, GUINT_TO_POINTER (opid), g_object_ref (cancellable));
 
 	/* Send out a status message to each view */
-	for (iter = priv->bookviews; iter; iter = iter->next)
-		e_data_book_view_notify_progress (E_DATA_BOOK_VIEW (iter->data), -1, message);
+	list = e_book_backend_list_views (backend);
+
+	for (link = list; link != NULL; link = g_list_next (link)) {
+		EDataBookView *view = E_DATA_BOOK_VIEW (link->data);
+		e_data_book_view_notify_progress (view, -1, message);
+	}
+
+	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
 	return cancellable;
 }
@@ -557,11 +522,16 @@ finish_operation (EBookBackend *backend,
 	}
 
 	if (g_hash_table_remove (priv->cancellables, GUINT_TO_POINTER (opid))) {
-		GList *iter;
+		GList *list, *link;
 
-		/* Send out a status message to each view */
-		for (iter = priv->bookviews; iter; iter = iter->next)
-			e_data_book_view_notify_complete (E_DATA_BOOK_VIEW (iter->data), book_error);
+		list = e_book_backend_list_views (backend);
+
+		for (link = list; link != NULL; link = g_list_next (link)) {
+			EDataBookView *view = E_DATA_BOOK_VIEW (link->data);
+			e_data_book_view_notify_complete (view, book_error);
+		}
+
+		g_list_free_full (list, (GDestroyNotify) g_object_unref);
 	}
 
 	g_clear_error (&book_error);
@@ -580,9 +550,9 @@ process_contact_finish (EBookBackend *backend,
 	new_contact = cache_add_contact (backend, entry);
 
 	if (was_cached == TRUE) {
-		on_contact_changed (backend, new_contact);
+		e_book_backend_notify_update (backend, new_contact);
 	} else {
-		on_contact_added (backend, new_contact);
+		e_book_backend_notify_update (backend, new_contact);
 	}
 
 	g_object_unref (new_contact);
@@ -712,7 +682,7 @@ process_contact_cb (GDataEntry *entry,
 		/* Do we have this item in our cache? */
 		if (is_cached) {
 			cache_remove_contact (backend, uid);
-			on_contact_removed (backend, uid);
+			e_book_backend_notify_remove (backend, uid);
 		}
 	} else {
 		gchar *old_photo_etag = NULL;
@@ -1469,9 +1439,6 @@ book_backend_google_dispose (GObject *object)
 	/* Cancel all outstanding operations */
 	google_cancel_all_operations (E_BOOK_BACKEND (object));
 
-	g_list_free_full (priv->bookviews, (GDestroyNotify) g_object_unref);
-	priv->bookviews = NULL;
-
 	if (priv->refresh_id > 0) {
 		e_source_refresh_remove_timeout (
 			e_backend_get_source (E_BACKEND (object)),
@@ -2222,20 +2189,14 @@ static void
 book_backend_google_start_view (EBookBackend *backend,
                                 EDataBookView *bookview)
 {
-	EBookBackendGooglePrivate *priv;
 	GQueue queue = G_QUEUE_INIT;
 	GError *error = NULL;
 
 	g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend));
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (bookview));
 
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
 	g_debug (G_STRFUNC);
 
-	priv->bookviews = g_list_append (priv->bookviews, bookview);
-
-	g_object_ref (bookview);
 	e_data_book_view_notify_progress (bookview, -1, _("Loading…"));
 
 	/* Ensure that we're ready to support a view */
@@ -2264,18 +2225,7 @@ static void
 book_backend_google_stop_view (EBookBackend *backend,
                                EDataBookView *bookview)
 {
-	EBookBackendGooglePrivate *priv;
-	GList *view;
-
-	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
-
 	g_debug (G_STRFUNC);
-
-	/* Remove the view from the list of active views */
-	if ((view = g_list_find (priv->bookviews, bookview)) != NULL) {
-		priv->bookviews = g_list_delete_link (priv->bookviews, view);
-		g_object_unref (bookview);
-	}
 }
 
 static gboolean
