@@ -4707,26 +4707,24 @@ generate_cache (EBookBackendLDAP *book_backend_ldap)
 	}
 }
 
-static void
-book_backend_ldap_refresh (EBookBackend *backend,
-                           EDataBook *book,
-                           guint32 opid,
-                           GCancellable *cancellable)
+static gboolean
+book_backend_ldap_refresh_sync (EBookBackend *backend,
+				GCancellable *cancellable,
+				GError **error)
 {
 	EBookBackendLDAP *ldap_backend = E_BOOK_BACKEND_LDAP (backend);
 
-	g_return_if_fail (ldap_backend != NULL);
-	g_return_if_fail (ldap_backend->priv != NULL);
-
-	/* stop immediately, nothing to report here */
-	e_data_book_respond_refresh (book, opid, NULL);
+	g_return_val_if_fail (ldap_backend != NULL, FALSE);
+	g_return_val_if_fail (ldap_backend->priv != NULL, FALSE);
 
 	if (!ldap_backend->priv->cache || !ldap_backend->priv->marked_for_offline ||
 	    ldap_backend->priv->generate_cache_in_progress)
-		return;
+		return TRUE;
 
 	e_book_backend_cache_set_time (ldap_backend->priv->cache, "");
 	generate_cache (ldap_backend);
+
+	return TRUE;
 }
 
 static void
@@ -5856,7 +5854,7 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	backend_class->get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
 	backend_class->start_view = book_backend_ldap_start_view;
 	backend_class->stop_view = book_backend_ldap_stop_view;
-	backend_class->refresh = book_backend_ldap_refresh;
+	backend_class->refresh_sync = book_backend_ldap_refresh_sync;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LDAP;

@@ -2278,19 +2278,17 @@ book_backend_google_stop_view (EBookBackend *backend,
 	}
 }
 
-static void
-book_backend_google_refresh (EBookBackend *backend,
-                             EDataBook *book,
-                             guint32 opid,
-                             GCancellable *cancellable)
+static gboolean
+book_backend_google_refresh_sync (EBookBackend *backend,
+				  GCancellable *cancellable,
+				  GError **error)
 {
-	g_return_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend));
-
-	/* stop immediately, nothing to report here */
-	e_data_book_respond_refresh (book, opid, NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_GOOGLE (backend), FALSE);
 
 	/* get only changes, it's not needed to redownload whole cache */
 	get_new_contacts (backend);
+
+	return TRUE;
 }
 
 static ESourceAuthenticationResult
@@ -2372,7 +2370,7 @@ e_book_backend_google_class_init (EBookBackendGoogleClass *class)
 	backend_class->get_contact_list_sync = book_backend_google_get_contact_list_sync;
 	backend_class->start_view = book_backend_google_start_view;
 	backend_class->stop_view = book_backend_google_stop_view;
-	backend_class->refresh = book_backend_google_refresh;
+	backend_class->refresh_sync = book_backend_google_refresh_sync;
 }
 
 static void
