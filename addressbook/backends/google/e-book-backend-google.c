@@ -2057,6 +2057,7 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 		g_object_set_data_full (
 			G_OBJECT (new_contact), "photo", photo,
 			(GDestroyNotify) e_contact_photo_free);
+		photo = NULL;
 	} else {
 		g_object_set_data (
 			G_OBJECT (new_contact), "photo", NULL);
