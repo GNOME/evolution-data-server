@@ -250,6 +250,9 @@ cache_add_contact (EBookBackend *backend,
 	contact = e_contact_new_from_gdata_entry (entry, priv->groups_by_id, priv->system_groups_by_entry_id);
 	g_rec_mutex_unlock (&priv->groups_lock);
 
+	if (!contact)
+		return NULL;
+
 	e_contact_add_gdata_entry_xml (contact, entry);
 	g_mutex_lock (&priv->cache_lock);
 	e_book_backend_cache_add_contact (priv->cache, contact);
@@ -548,6 +551,9 @@ process_contact_finish (EBookBackend *backend,
 
 	was_cached = cache_has_contact (backend, gdata_entry_get_id (entry));
 	new_contact = cache_add_contact (backend, entry);
+
+	if (!new_contact)
+		return;
 
 	if (was_cached == TRUE) {
 		e_book_backend_notify_update (backend, new_contact);
@@ -960,7 +966,21 @@ get_groups_cb (GDataService *service,
 }
 
 static void
-get_groups (EBookBackend *backend)
+get_groups_and_update_cache_cb (GDataService *service,
+				GAsyncResult *result,
+				EBookBackend *backend)
+{
+	g_object_ref (backend);
+
+	get_groups_cb (service, result, backend);
+	get_new_contacts (backend);
+
+	g_object_unref (backend);
+}
+
+static void
+get_groups (EBookBackend *backend,
+	    gboolean and_update_cache)
 {
 	EBookBackendGooglePrivate *priv;
 	GDataQuery *query;
@@ -995,7 +1015,7 @@ get_groups (EBookBackend *backend)
 		(GDataQueryProgressCallback) process_group,
 		backend,
 		(GDestroyNotify) NULL,
-		(GAsyncReadyCallback) get_groups_cb,
+		(GAsyncReadyCallback) (and_update_cache ? get_groups_and_update_cache_cb : get_groups_cb),
 		backend);
 
 	g_object_unref (cancellable);
@@ -1108,8 +1128,9 @@ refresh_local_cache_cb (ESource *source,
 
 	g_debug ("Invoking cache refresh");
 
-	get_groups (backend);
-	get_new_contacts (backend);
+	/* The TRUE means the cache update will be run immediately
+	   after groups are updated */
+	get_groups (backend, TRUE);
 }
 
 static void
@@ -1143,7 +1164,7 @@ cache_refresh_if_needed (EBookBackend *backend)
 		g_rec_mutex_lock (&priv->groups_lock);
 		if (g_hash_table_size (priv->system_groups_by_id) == 0) {
 			g_rec_mutex_unlock (&priv->groups_lock);
-			get_groups (backend);
+			get_groups (backend, FALSE);
 		} else {
 			g_rec_mutex_unlock (&priv->groups_lock);
 		}
@@ -1817,8 +1838,10 @@ book_backend_google_create_contacts_sync (EBookBackend *backend,
 	}
 
 	contact = cache_add_contact (backend, GDATA_ENTRY (new_contact));
-	g_queue_push_tail (out_contacts, g_object_ref (contact));
-	g_object_unref (contact);
+	if (contact) {
+		g_queue_push_tail (out_contacts, g_object_ref (contact));
+		g_object_unref (contact);
+	}
 
 exit:
 	g_clear_object (&entry);
@@ -2031,8 +2054,10 @@ book_backend_google_modify_contacts_sync (EBookBackend *backend,
 	}
 
 	contact = cache_add_contact (backend, new_contact);
-	g_queue_push_tail (out_contacts, g_object_ref (contact));
-	g_object_unref (contact);
+	if (contact) {
+		g_queue_push_tail (out_contacts, g_object_ref (contact));
+		g_object_unref (contact);
+	}
 
 exit:
 	g_clear_object (&entry);
