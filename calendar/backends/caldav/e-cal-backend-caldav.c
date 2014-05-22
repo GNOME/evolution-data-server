@@ -150,6 +150,8 @@ G_DEFINE_TYPE_WITH_CODE (
 #define DEBUG_SERVER_ITEMS "items"
 #define DEBUG_ATTACHMENTS "attachments"
 
+static gboolean open_calendar_wrapper (ECalBackendCalDAV *cbdav, GCancellable *cancellable, GError **error, gboolean can_call_authenticate, gboolean *know_unreachable);
+
 static void convert_to_inline_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp);
 static void convert_to_url_attachment (ECalBackendCalDAV *cbdav, icalcomponent *icalcomp);
 static void remove_cached_attachment (ECalBackendCalDAV *cbdav, const gchar *uid);
@@ -2511,8 +2513,12 @@ caldav_synch_slave_loop (gpointer data)
 			/* just sleep until we get woken up again */
 			g_cond_wait (&cbdav->priv->cond, &cbdav->priv->busy_lock);
 
-			/* check if we should die, work or sleep again */
-			continue;
+			/* This means to honor SLAVE_SHOULD_SLEEP only if the backend is opened */
+			if (cbdav->priv->slave_cmd == SLAVE_SHOULD_DIE ||
+			    cbdav->priv->opened) {
+				/* check if we should die, work or sleep again */
+				continue;
+			}
 		}
 
 		/* Ok here we go, do some real work
@@ -2525,37 +2531,13 @@ caldav_synch_slave_loop (gpointer data)
 		}
 
 		if (!cbdav->priv->opened) {
-			gboolean server_unreachable = FALSE;
-			GError *local_error = NULL;
-
-			if (caldav_server_open_calendar (cbdav, &server_unreachable, NULL, &local_error)) {
+			if (open_calendar_wrapper (cbdav, NULL, NULL, TRUE, &know_unreachable)) {
 				cbdav->priv->opened = TRUE;
 				update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 				g_cond_signal (&cbdav->priv->cond);
 
 				cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 				know_unreachable = FALSE;
-			} else if (local_error) {
-				cbdav->priv->opened = FALSE;
-				e_cal_backend_set_writable (
-					E_CAL_BACKEND (cbdav), FALSE);
-
-				if (!know_unreachable) {
-					gchar *msg;
-
-					know_unreachable = TRUE;
-
-					msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
-					e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
-					g_free (msg);
-				}
-
-				g_clear_error (&local_error);
-			} else {
-				cbdav->priv->opened = FALSE;
-				e_cal_backend_set_writable (
-					E_CAL_BACKEND (cbdav), FALSE);
-				know_unreachable = TRUE;
 			}
 		}
 
@@ -2888,9 +2870,11 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 }
 
 static gboolean
-open_calendar (ECalBackendCalDAV *cbdav,
-               GCancellable *cancellable,
-               GError **error)
+open_calendar_wrapper (ECalBackendCalDAV *cbdav,
+		       GCancellable *cancellable,
+		       GError **error,
+		       gboolean can_call_authenticate,
+		       gboolean *know_unreachable)
 {
 	gboolean server_unreachable = FALSE;
 	gboolean success;
@@ -2898,8 +2882,12 @@ open_calendar (ECalBackendCalDAV *cbdav,
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 
-	success = caldav_server_open_calendar (
-		cbdav, &server_unreachable, cancellable, &local_error);
+	success = caldav_server_open_calendar (cbdav, &server_unreachable, cancellable, &local_error);
+
+	if (can_call_authenticate && g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
+		g_clear_error (&local_error);
+		success = caldav_authenticate (cbdav, FALSE, cancellable, &local_error);
+	}
 
 	if (success) {
 		update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
@@ -2910,11 +2898,18 @@ open_calendar (ECalBackendCalDAV *cbdav,
 		cbdav->priv->opened = FALSE;
 		e_cal_backend_set_writable (E_CAL_BACKEND (cbdav), FALSE);
 		if (local_error) {
-			gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
-			e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
-			g_free (msg);
-			g_clear_error (&local_error);
-			success = TRUE;
+			if (know_unreachable && !*know_unreachable) {
+				gchar *msg = g_strdup_printf (_("Server is unreachable, calendar is opened in read-only mode.\nError message: %s"), local_error->message);
+				e_cal_backend_notify_error (E_CAL_BACKEND (cbdav), msg);
+				g_free (msg);
+				g_clear_error (&local_error);
+
+				*know_unreachable = TRUE;
+			} else {
+				/* this allows to open the calendar in read-only mode */
+				g_clear_error (&local_error);
+				success = TRUE;
+			}
 		}
 	}
 
@@ -2959,19 +2954,7 @@ caldav_do_open (ECalBackendSync *backend,
 	cbdav->priv->is_google = FALSE;
 
 	if (online) {
-		GError *local_error = NULL;
-
-		open_calendar (cbdav, cancellable, &local_error);
-
-		if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
-			g_clear_error (&local_error);
-			caldav_authenticate (
-				cbdav, FALSE, cancellable, perror);
-		}
-
-		if (local_error != NULL)
-			g_propagate_error (perror, local_error);
-
+		open_calendar_wrapper (cbdav, cancellable, perror, TRUE, NULL);
 	} else {
 		e_cal_backend_set_writable (E_CAL_BACKEND (cbdav), FALSE);
 	}
@@ -5163,7 +5146,7 @@ caldav_try_password_sync (ESourceAuthenticator *authenticator,
 	g_free (cbdav->priv->password);
 	cbdav->priv->password = g_strdup (password->str);
 
-	open_calendar (cbdav, cancellable, &local_error);
+	open_calendar_wrapper (cbdav, cancellable, &local_error, FALSE, NULL);
 
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
