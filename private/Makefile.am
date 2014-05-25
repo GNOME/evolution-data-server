@@ -99,6 +99,16 @@ $(GENERATED_DBUS_USER_PROMPTER) : Makefile.am org.gnome.evolution.dataserver.Use
 	$(top_srcdir)/private/org.gnome.evolution.dataserver.UserPrompter.xml \
 	$(NULL)
 
+$(GENERATED_DBUS_SUBPROCESS_BACKEND) : Makefile.am org.gnome.evolution.dataserver.Subprocess.Backend.xml
+	$(AM_V_GEN) gdbus-codegen \
+	--interface-prefix org.gnome.evolution.dataserver.Subprocess \
+	--c-namespace E_DBus_Subprocess \
+	--c-generate-object-manager \
+	--generate-c-code e-dbus-subprocess-backend \
+	--generate-docbook e-dbus-subprocess-backend \
+	$(top_srcdir)/private/org.gnome.evolution.dataserver.Subprocess.Backend.xml \
+	$(NULL)
+
 GENERATED_DBUS_LOCALE = \
 	e-dbus-localed.c \
 	e-dbus-localed.h \
@@ -169,6 +179,12 @@ GENERATED_DBUS_CALENDAR_FACTORY = \
 	e-dbus-calendar-factory-org.gnome.evolution.dataserver.CalendarFactory.xml \
 	$(NULL)
 
+GENERATED_DBUS_SUBPROCESS_BACKEND = \
+	e-dbus-subprocess-backend.c \
+	e-dbus-subprocess-backend.h \
+	e-dbus-subprocess-backend-org.gnome.evolution.dataserver.Subprocess.Backend.xml \
+	$(NULL)
+
 BUILT_SOURCES = \
 	$(GENERATED_DBUS_LOCALE) \
 	$(GENERATED_DBUS_SOURCE) \
@@ -181,6 +197,7 @@ BUILT_SOURCES = \
 	$(GENERATED_DBUS_CALENDAR) \
 	$(GENERATED_DBUS_CALENDAR_FACTORY) \
 	$(GENERATED_DBUS_USER_PROMPTER) \
+	$(GENERATED_DBUS_SUBPROCESS_BACKEND) \
 	$(NULL)
 
 noinst_LTLIBRARIES = libedbus-private.la
@@ -224,6 +241,7 @@ EXTRA_DIST = \
 	org.gnome.evolution.dataserver.Calendar.xml \
 	org.gnome.evolution.dataserver.CalendarFactory.xml \
 	org.gnome.evolution.dataserver.UserPrompter.xml \
+	org.gnome.evolution.dataserver.Subprocess.Backend.xml \
 	$(NULL)
 
 CLEANFILES = \

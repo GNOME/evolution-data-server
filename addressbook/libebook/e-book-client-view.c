@@ -876,18 +876,35 @@ book_client_view_initable_init (GInitable *initable,
                                 GCancellable *cancellable,
                                 GError **error)
 {
+	EBookClient *book_client;
 	EBookClientViewPrivate *priv;
 	EGdbusBookView *gdbus_bookview;
 	gulong handler_id;
+	gchar *bus_name;
 
 	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (initable);
+
+	book_client = g_weak_ref_get (&priv->client);
+	if (book_client == NULL) {
+		g_set_error (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OTHER_ERROR,
+			_("Client disappeared"));
+
+		return FALSE;
+	}
+
+	bus_name = e_client_dup_bus_name (E_CLIENT (book_client));
+	g_object_unref (book_client);
 
 	gdbus_bookview = e_gdbus_book_view_proxy_new_sync (
 		priv->connection,
 		G_DBUS_PROXY_FLAGS_NONE,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		bus_name,
 		priv->object_path,
 		cancellable, error);
+
+	g_free (bus_name);
 
 	if (gdbus_bookview == NULL)
 		return FALSE;

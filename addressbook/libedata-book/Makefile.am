@@ -12,6 +12,7 @@ libedata_book_1_2_la_CPPFLAGS = \
 	-DLIBEDATA_BOOK_COMPILATION \
 	-DG_LOG_DOMAIN=\"libedata-book\" \
 	-DBACKENDDIR=\"$(ebook_backenddir)\" \
+	-DSUBPROCESS_BOOK_BACKEND_PATH=\"$(libexecdir)/evolution-addressbook-factory-subprocess\" \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/addressbook \
 	-I$(top_srcdir)/addressbook/libegdbus \
@@ -40,6 +41,7 @@ libedata_book_1_2_la_SOURCES = \
 	e-data-book-direct.c \
 	e-data-book-factory.c \
 	e-data-book-view.c \
+	e-subprocess-book-factory.c \
 	ximian-vcard.h \
 	$(LIBDB_C_FILES) \
 	$(NULL)
@@ -77,6 +79,7 @@ libedata_bookinclude_HEADERS = \
 	e-book-backend-cache.h \
 	e-book-backend-sqlitedb.h \
 	e-book-sqlite.h \
+	e-subprocess-book-factory.h \
 	$(LIBDB_H_FILES) \
 	$(NULL)
 
@@ -96,6 +99,47 @@ e_book_backend_sqlitedb_test_LDADD = \
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-book-$(API_VERSION).pc
+
+libexec_PROGRAMS = evolution-addressbook-factory-subprocess
+
+evolution_addressbook_factory_subprocess_CPPFLAGS= \
+	$(AM_CPPFLAGS) \
+	-DLOCALEDIR=\"$(localedir)\" \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/private \
+	-I$(top_srcdir)/addressbook \
+	-I$(top_builddir) \
+	-I$(top_builddir)/private \
+	-I$(top_builddir)/addressbook \
+	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
+	$(LIBSECRET_CFLAGS) \
+	$(FACTORY_GTK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(SOUP_CFLAGS) \
+	$(GOA_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
+	$(NULL)
+
+evolution_addressbook_factory_subprocess_SOURCES = \
+	evolution-addressbook-factory-subprocess.c \
+	$(NULL)
+
+evolution_addressbook_factory_subprocess_LDADD = \
+	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	libedata-book-1.2.la \
+	$(EVOLUTION_ADDRESSBOOK_LIBS) \
+	$(LIBSECRET_LIBS) \
+	$(FACTORY_GTK_LIBS) \
+	$(CAMEL_LIBS) \
+	$(SOUP_LIBS) \
+	$(GOA_LIBS) \
+	$(NULL)
+
+evolution_addressbook_factory_subprocess_LDFLAGS = \
+	$(AM_LDFLAGS) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 DISTCLEANFILES = $(pkgconfig_DATA)
 

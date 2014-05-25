@@ -30,27 +30,40 @@
 #include <libebackend/e-backend-factory.h>
 #include <libebackend/e-dbus-server.h>
 
+#include <e-dbus-subprocess-backend.h>
+
 #define E_DATA_FACTORY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_DATA_FACTORY, EDataFactoryPrivate))
 
+typedef enum {
+	DATA_FACTORY_SPAWN_SUBPROCESS_NONE = 0,
+	DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED,
+	DATA_FACTORY_SPAWN_SUBPROCESS_READY
+} DataFactorySpawnSubprocessStates;
+
 struct _EDataFactoryPrivate {
 	ESourceRegistry *registry;
 
-	/* The mutex guards the 'backends' hash table.  The
-	 * 'backend_factories' hash table doesn't really need
+	/* The mutex guards the 'subprocess_helpers' hash table.
+	 * The 'backend_factories' hash table doesn't really need
 	 * guarding since it gets populated during construction
 	 * and is read-only thereafter. */
 	GMutex mutex;
 
-	/* ESource UID -> GWeakRef (EBackend) */
-	GHashTable *backends;
+	/* Factory Name -> DataFactorySubprocessFactoryHelper */
+	GHashTable *subprocess_helpers;
+
+	/* Bus Name -> Watched Name */
+	GHashTable *subprocess_watched_ids;
+	GMutex subprocess_watched_ids_lock;
 
 	/* Hash Key -> EBackendFactory */
 	GHashTable *backend_factories;
 
 	/* This is a hash table of client bus names to an array of
-	 * EBackend references; one for every connection opened. */
+	 * EDBusSubprocessBackend references; one for every connection
+	 * opened. */
 	GHashTable *connections;
 	GRecMutex connections_lock;
 
@@ -58,19 +71,21 @@ struct _EDataFactoryPrivate {
 	 * The value is the watcher ID for g_bus_unwatch_name(). */
 	GHashTable *watched_names;
 	GMutex watched_names_lock;
-};
 
-enum {
-	BACKEND_CREATED,
-	LAST_SIGNAL
+	/* This is a GCond used to guarantee that in case of two
+	 * instances of the same backend are created at the same
+	 * time, the second instance will wait the first one be
+	 * created and then will use that instance, instead of
+	 * creating it twice. */
+	GCond spawn_subprocess_cond;
+	GMutex spawn_subprocess_lock;
+	DataFactorySpawnSubprocessStates spawn_subprocess_state;
 };
 
 enum {
 	PROP_0,
 	PROP_REGISTRY
 };
-
-static guint signals[LAST_SIGNAL];
 
 /* Forward Declarations */
 static void	e_data_factory_initable_init	(GInitableIface *iface);
@@ -83,97 +98,205 @@ G_DEFINE_TYPE_WITH_CODE (
 		G_TYPE_INITABLE,
 		e_data_factory_initable_init))
 
-static GWeakRef *
-data_factory_backends_lookup (EDataFactory *data_factory,
-                              const gchar *uid)
+typedef struct _DataFactorySpawnSubprocessBackendThreadData DataFactorySpawnSubprocessBackendThreadData;
+
+struct _DataFactorySpawnSubprocessBackendThreadData {
+	EDataFactory *data_factory;
+	GDBusMethodInvocation *invocation;
+	gchar *uid;
+	gchar *extension_name;
+	gchar *subprocess_path;
+};
+
+static DataFactorySpawnSubprocessBackendThreadData *
+data_factory_spawn_subprocess_backend_thread_data_new (EDataFactory *data_factory,
+						       GDBusMethodInvocation *invocation,
+						       const gchar *uid,
+						       const gchar *extension_name,
+						       const gchar *subprocess_path)
 {
-	GHashTable *backends;
-	GWeakRef *weak_ref;
+	DataFactorySpawnSubprocessBackendThreadData *data;
 
-	backends = data_factory->priv->backends;
-	weak_ref = g_hash_table_lookup (backends, uid);
+	data = g_new0 (DataFactorySpawnSubprocessBackendThreadData, 1);
+	data->data_factory = g_object_ref (data_factory);
+	data->invocation = g_object_ref (invocation);
+	data->uid = g_strdup (uid);
+	data->extension_name = g_strdup (extension_name);
+	data->subprocess_path = g_strdup (subprocess_path);
 
-	if (weak_ref == NULL) {
-		weak_ref = e_weak_ref_new (NULL);
-		g_hash_table_insert (backends, g_strdup (uid), weak_ref);
+	return data;
+}
+
+static void
+data_factory_spawn_subprocess_backend_thread_data_free (DataFactorySpawnSubprocessBackendThreadData *data)
+{
+	if (data != NULL) {
+		g_clear_object (&data->data_factory);
+		g_clear_object (&data->invocation);
+		g_free (data->uid);
+		g_free (data->extension_name);
+		g_free (data->subprocess_path);
+
+		g_free (data);
 	}
+}
 
-	return weak_ref;
+typedef struct _DataFactorySubprocessHelper DataFactorySubprocessHelper;
+
+struct _DataFactorySubprocessHelper {
+	EDBusSubprocessBackend *proxy;
+	gchar *bus_name;
+};
+
+static DataFactorySubprocessHelper *
+data_factory_subprocess_helper_new (EDBusSubprocessBackend *proxy,
+				    const gchar *bus_name)
+{
+	DataFactorySubprocessHelper *helper;
+
+	helper = g_new0 (DataFactorySubprocessHelper, 1);
+	helper->proxy = g_object_ref (proxy);
+	helper->bus_name = g_strdup (bus_name);
+
+	return helper;
 }
 
 static void
-watched_names_value_free (gpointer value)
+data_factory_subprocess_helper_free (DataFactorySubprocessHelper *helper)
 {
-	g_bus_unwatch_name (GPOINTER_TO_UINT (value));
+	if (helper != NULL) {
+		g_clear_object (&helper->proxy);
+		g_free (helper->bus_name);
+
+		g_free (helper);
+	}
 }
 
-static void
-data_factory_bus_acquired (EDBusServer *server,
-			   GDBusConnection *connection)
+static gchar *
+data_factory_construct_subprocess_path (EDataFactory *data_factory)
 {
-	GDBusInterfaceSkeleton *skeleton_interface;
 	EDataFactoryClass *class;
-	GError *error = NULL;
+	static volatile gint counter = 1;
 
-	class = E_DATA_FACTORY_GET_CLASS (E_DATA_FACTORY (server));
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
 
-	skeleton_interface = class->get_dbus_interface_skeleton (server);
+	g_atomic_int_inc (&counter);
 
-	g_dbus_interface_skeleton_export (
-		skeleton_interface,
-		connection,
-		class->factory_object_path,
-		&error);
+	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (class->subprocess_object_path_prefix != NULL, NULL);
 
-	if (error != NULL) {
-		g_warning ("%s: %s", G_STRFUNC, error->message);
-		e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
-		g_error_free (error);
+	return g_strdup_printf (
+		"%s/%d/%u",
+		class->subprocess_object_path_prefix, getpid (), counter);
+}
 
-		return;
-	}
+static gchar *
+data_factory_construct_subprocess_bus_name (EDataFactory *data_factory)
+{
+	EDataFactoryClass *class;
+	static volatile gint counter = 1;
 
-	/* Chain up to parent's bus_acquired() method. */
-	E_DBUS_SERVER_CLASS (e_data_factory_parent_class)->
-		bus_acquired (server, connection);
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
+
+	g_atomic_int_inc (&counter);
+
+	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (class->subprocess_bus_name_prefix != NULL, NULL);
+
+	/* We use the format "%sx%d%u" because we want to be really safe about
+	 * the GDBus bus names used. When we create an object path we follow
+	 * the same pattern %s/%d/%u, but bus names are quite more restrictive
+	 * about its format, not allowing ".", "-", "/" or whatever that could
+	 * be used in a more descriptive way. And that's the reason the "x" is
+	 * being used here. */
+	return g_strdup_printf (
+		"%sx%dx%u",
+		class->subprocess_bus_name_prefix, getpid(), counter);
+}
+
+typedef struct _DataFactorySubprocessData DataFactorySubprocessData;
+
+struct _DataFactorySubprocessData {
+	EDataFactory *data_factory;
+	GDBusMethodInvocation *invocation;
+	gchar *bus_name;
+	gchar *extension_name;
+	gchar *factory_name;
+	gchar *path;
+	gchar *type_name;
+	gchar *uid;
+	gchar *module_filename;
+	gchar *subprocess_helpers_hash_key;
+};
+
+static DataFactorySubprocessData *
+data_factory_subprocess_data_new (EDataFactory *data_factory,
+				  GDBusMethodInvocation *invocation,
+				  const gchar *uid,
+				  const gchar *factory_name,
+				  const gchar *type_name,
+				  const gchar *extension_name,
+				  const gchar *module_filename,
+				  const gchar *subprocess_helpers_hash_key)
+{
+	DataFactorySubprocessData *sd;
+
+	sd = g_new0 (DataFactorySubprocessData, 1);
+	sd->data_factory = g_object_ref (data_factory);
+	sd->invocation = g_object_ref (invocation);
+	sd->uid = g_strdup (uid);
+	sd->factory_name = g_strdup (factory_name);
+	sd->type_name = g_strdup (type_name);
+	sd->extension_name = g_strdup (extension_name);
+	sd->module_filename = g_strdup (module_filename);
+	sd->subprocess_helpers_hash_key = g_strdup (subprocess_helpers_hash_key);
+	sd->path = data_factory_construct_subprocess_path (data_factory);
+	sd->bus_name = data_factory_construct_subprocess_bus_name (data_factory);
+
+	return sd;
 }
 
 static void
-data_factory_connections_add (EDataFactory *data_factory,
-			      const gchar *name,
-			      EBackend *backend)
+data_factory_subprocess_data_free (DataFactorySubprocessData *sd)
 {
-	GHashTable *connections;
-	GPtrArray *array;
+	if (sd != NULL) {
+		g_clear_object (&sd->data_factory);
+		g_clear_object (&sd->invocation);
+		g_free (sd->uid);
+		g_free (sd->path);
+		g_free (sd->bus_name);
+		g_free (sd->type_name);
+		g_free (sd->factory_name);
+		g_free (sd->extension_name);
+		g_free (sd->module_filename);
+		g_free (sd->subprocess_helpers_hash_key);
 
-	g_return_if_fail (name != NULL);
-	g_return_if_fail (backend != NULL);
-
-	g_rec_mutex_lock (&data_factory->priv->connections_lock);
-
-	connections = data_factory->priv->connections;
-
-	if (g_hash_table_size (connections) == 0)
-		e_dbus_server_hold (E_DBUS_SERVER (data_factory));
-
-	array = g_hash_table_lookup (connections, name);
-
-	if (array == NULL) {
-		array = g_ptr_array_new_with_free_func (
-			(GDestroyNotify) g_object_unref);
-		g_hash_table_insert (
-			connections, g_strdup (name), array);
+		g_free (sd);
 	}
+}
 
-	g_ptr_array_add (array, g_object_ref (backend));
+static gchar *
+data_factory_dup_subprocess_helper_hash_key (const gchar *factory_name,
+					     const gchar *extension_name,
+					     const gchar *uid,
+					     gboolean backend_factory_share_subprocess)
+{
+	gchar *helper_hash_key;
 
-	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+#ifdef ENABLE_BACKEND_PER_PROCESS
+	helper_hash_key = backend_factory_share_subprocess ?
+		g_strdup (factory_name) : g_strdup_printf ("%s:%s:%s", factory_name, extension_name, uid);
+#else
+	helper_hash_key = g_strdup ("not-using-bacend-per-process");
+#endif
+
+	return helper_hash_key;
 }
 
 static gboolean
-data_factory_verify_backend_is_used (EDataFactory *data_factory,
-				     const gchar *except_bus_name,
-				     EBackend *backend)
+data_factory_verify_subprocess_backend_proxy_is_used (EDataFactory *data_factory,
+						      const gchar *except_bus_name,
+						      EDBusSubprocessBackend *proxy)
 {
 	GHashTable *connections;
 	GList *names, *l;
@@ -191,16 +314,34 @@ data_factory_verify_backend_is_used (EDataFactory *data_factory,
 		const gchar *client_bus_name = l->data;
 		gint ii;
 
-		if (g_strcmp0 (client_bus_name, except_bus_name) == 0)
+		/* Check if we don't have more connections from the same client */
+		if (g_strcmp0 (client_bus_name, except_bus_name) == 0) {
+			guint used = 0;
+			array = g_hash_table_lookup (connections, client_bus_name);
+
+			for (ii = 0; ii < array->len; ii++) {
+				EDBusSubprocessBackend *proxy_in_use;
+
+				proxy_in_use = g_ptr_array_index (array, ii);
+
+				if (proxy == proxy_in_use)
+					used++;
+
+				if (used > 1) {
+					is_used = TRUE;
+					break;
+				}
+			}
 			continue;
+		}
 
 		array = g_hash_table_lookup (connections, client_bus_name);
 		for (ii = 0; ii < array->len; ii++) {
-			EBackend *backend_in_use;
+			EDBusSubprocessBackend *proxy_in_use;
 
-			backend_in_use = g_ptr_array_index (array, ii);
+			proxy_in_use = g_ptr_array_index (array, ii);
 
-			if (backend_in_use == backend) {
+			if (proxy == proxy_in_use) {
 				is_used = TRUE;
 				break;
 			}
@@ -216,13 +357,13 @@ data_factory_verify_backend_is_used (EDataFactory *data_factory,
 static gboolean
 data_factory_connections_remove (EDataFactory *data_factory,
 				 const gchar *name,
-				 EBackend *backend)
+				 EDBusSubprocessBackend *proxy)
 {
 	GHashTable *connections;
 	GPtrArray *array;
 	gboolean removed = FALSE;
 
-	/* If backend is NULL, we remove all backends for name. */
+	/* If proxy is NULL, we remove all proxies for name. */
 	g_return_val_if_fail (name != NULL, FALSE);
 
 	g_rec_mutex_lock (&data_factory->priv->connections_lock);
@@ -231,24 +372,30 @@ data_factory_connections_remove (EDataFactory *data_factory,
 	array = g_hash_table_lookup (connections, name);
 
 	if (array != NULL) {
-		if (backend != NULL) {
-			if (!data_factory_verify_backend_is_used (data_factory, name, backend))
-				e_backend_prepare_shutdown (backend);
+		if (proxy != NULL) {
+			if (!data_factory_verify_subprocess_backend_proxy_is_used (data_factory, name, proxy))
+				e_dbus_subprocess_backend_call_close_sync (proxy, NULL, NULL);
 
-			removed = g_ptr_array_remove_fast (array, backend);
+			removed = g_ptr_array_remove_fast (array, proxy);
 		} else if (array->len > 0) {
-			gint ii;
+			/*
+			 * As we can have more than one proxy being used by the same name,
+			 * in the same array, we must remove the connections one by one
+			 * and then notify the subprocess to quit itself when it's the last
+			 * one being used. AKA: do *not* try to optimize this code to use
+			 * g_ptr_array_set_size (array, 0).
+			 */
+			while (array->len != 0) {
+				EDBusSubprocessBackend *proxy1;
 
-			for (ii = 0; ii < array->len; ii++) {
-				EBackend *backend;
+				proxy1 = g_ptr_array_index (array, 0);
 
-				backend = g_ptr_array_index (array, ii);
+				if (!data_factory_verify_subprocess_backend_proxy_is_used (data_factory, name, proxy1))
+					e_dbus_subprocess_backend_call_close_sync (proxy1, NULL, NULL);
 
-				if (!data_factory_verify_backend_is_used (data_factory, name, backend))
-					e_backend_prepare_shutdown (backend);
+				g_ptr_array_remove_fast (array, proxy1);
 			}
 
-			g_ptr_array_set_size (array, 0);
 			removed = TRUE;
 		}
 
@@ -262,41 +409,6 @@ data_factory_connections_remove (EDataFactory *data_factory,
 	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
 
 	return removed;
-}
-
-static void
-data_factory_connections_remove_all (EDataFactory *data_factory)
-{
-	GHashTable *connections;
-
-	g_rec_mutex_lock (&data_factory->priv->connections_lock);
-
-	connections = data_factory->priv->connections;
-
-	if (g_hash_table_size (connections) > 0) {
-		GSList *backends, *l;
-		backends = e_data_factory_list_backends (data_factory);
-
-		for (l = backends; l != NULL; l = g_slist_next (l)) {
-			EBackend *backend = l->data;
-			e_backend_prepare_shutdown (backend);
-		}
-
-		g_slist_free_full (backends, g_object_unref);
-
-		g_hash_table_remove_all (connections);
-		e_dbus_server_release (E_DBUS_SERVER (data_factory));
-	}
-
-	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
-}
-
-static void
-data_factory_closed_cb (EBackend *backend,
-                        const gchar *sender,
-                        EDataFactory *data_factory)
-{
-       data_factory_connections_remove (data_factory, sender, backend);
 }
 
 static void
@@ -366,6 +478,288 @@ data_factory_watched_names_add (EDataFactory *data_factory,
 }
 
 static void
+data_factory_connections_add (EDataFactory *data_factory,
+			      const gchar *name,
+			      EDBusSubprocessBackend *proxy)
+{
+	GHashTable *connections;
+	GPtrArray *array;
+
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (proxy != NULL);
+
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+
+	connections = data_factory->priv->connections;
+
+	if (g_hash_table_size (connections) == 0)
+		e_dbus_server_hold (E_DBUS_SERVER (data_factory));
+
+	array = g_hash_table_lookup (connections, name);
+
+	if (array == NULL) {
+		array = g_ptr_array_new_with_free_func (
+			(GDestroyNotify) g_object_unref);
+		g_hash_table_insert (
+			connections, g_strdup (name), array);
+	}
+
+	g_ptr_array_add (array, g_object_ref (proxy));
+
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+}
+
+static void
+data_factory_call_subprocess_backend_create_sync (EDataFactory *data_factory,
+						  EDBusSubprocessBackend *proxy,
+						  GDBusMethodInvocation *invocation,
+						  const gchar *uid,
+						  const gchar *bus_name,
+						  const gchar *type_name,
+						  const gchar *extension_name,
+						  const gchar *module_filename)
+{
+	GError *error = NULL;
+	gchar *object_path = NULL;
+
+	e_dbus_subprocess_backend_call_create_sync (
+		proxy, uid, type_name, module_filename, &object_path, NULL, &error);
+
+	if (object_path != NULL) {
+		EDataFactoryClass *class;
+		GDBusConnection *connection;
+		const gchar *sender;
+
+		connection = g_dbus_method_invocation_get_connection (invocation);
+		sender = g_dbus_method_invocation_get_sender (invocation);
+
+		data_factory_watched_names_add (
+			data_factory, connection, sender);
+
+		data_factory_connections_add (
+			data_factory, sender, proxy);
+
+		class = E_DATA_FACTORY_GET_CLASS (data_factory);
+		g_return_if_fail (class->complete_open != NULL);
+
+		class->complete_open (data_factory, invocation, object_path, bus_name, extension_name);
+
+		g_free (object_path);
+	} else {
+		g_return_if_fail (error != NULL);
+		g_dbus_method_invocation_take_error (invocation, error);
+	}
+}
+
+static void
+data_factory_backend_closed_cb (EDBusSubprocessBackend *proxy,
+				const gchar *sender,
+				GWeakRef *factory_weak_ref)
+{
+	EDataFactory *data_factory;
+
+	data_factory = g_weak_ref_get (factory_weak_ref);
+	data_factory_connections_remove (data_factory, sender, proxy);
+	g_object_unref (data_factory);
+}
+
+static void
+data_factory_subprocess_appeared_cb (GDBusConnection *connection,
+				     const gchar *name,
+				     const gchar *name_owner,
+				     gpointer user_data)
+{
+	EDBusSubprocessBackend *proxy;
+	EDataFactoryPrivate *priv;
+	DataFactorySubprocessData *sd;
+	DataFactorySubprocessHelper *helper;
+
+	sd = user_data;
+
+	proxy = e_dbus_subprocess_backend_proxy_new_sync (
+		connection,
+		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+		sd->bus_name,
+		sd->path, NULL, NULL);
+
+	g_signal_connect_data (
+		proxy, "backend-closed",
+		G_CALLBACK (data_factory_backend_closed_cb),
+		e_weak_ref_new (sd->data_factory),
+		(GClosureNotify) e_weak_ref_free,
+		0);
+
+	data_factory_call_subprocess_backend_create_sync (
+		sd->data_factory,
+		proxy,
+		sd->invocation,
+		sd->uid,
+		sd->bus_name,
+		sd->type_name,
+		sd->extension_name,
+		sd->module_filename);
+
+	helper = data_factory_subprocess_helper_new (proxy, sd->bus_name);
+
+	priv = sd->data_factory->priv;
+	g_mutex_lock (&priv->mutex);
+	g_hash_table_insert (
+		priv->subprocess_helpers,
+		g_strdup (sd->subprocess_helpers_hash_key),
+		helper);
+	g_mutex_unlock (&priv->mutex);
+
+	g_mutex_lock (&priv->spawn_subprocess_lock);
+	priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_READY;
+	g_cond_signal (&priv->spawn_subprocess_cond);
+	g_mutex_unlock (&priv->spawn_subprocess_lock);
+
+	g_object_unref (proxy);
+}
+
+static void
+data_factory_subprocess_vanished_cb (GDBusConnection *connection,
+				     const gchar *name,
+				     gpointer user_data)
+{
+	DataFactorySubprocessData *sd;
+	DataFactorySubprocessHelper *helper;
+	EDataFactoryPrivate *priv;
+	const gchar *sender;
+	guint watched_id;
+
+	sd = user_data;
+	priv = sd->data_factory->priv;
+
+	g_mutex_lock (&priv->mutex);
+	helper = g_hash_table_lookup (
+		priv->subprocess_helpers,
+		sd->subprocess_helpers_hash_key);
+	g_mutex_unlock (&priv->mutex);
+
+	if (helper == NULL)
+		return;
+
+	sender = g_dbus_method_invocation_get_sender (sd->invocation);
+	data_factory_connections_remove (sd->data_factory, sender, helper->proxy);
+
+	g_mutex_lock (&priv->mutex);
+	g_hash_table_remove (
+		priv->subprocess_helpers,
+		sd->subprocess_helpers_hash_key);
+	g_mutex_unlock (&priv->mutex);
+
+	g_mutex_lock (&priv->subprocess_watched_ids_lock);
+	watched_id = GPOINTER_TO_UINT (g_hash_table_lookup (priv->subprocess_watched_ids, sd->bus_name));
+	g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
+
+	if (watched_id > 0)
+		g_bus_unwatch_name (watched_id);
+	g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+}
+
+static void
+watched_names_value_free (gpointer value)
+{
+	g_bus_unwatch_name (GPOINTER_TO_UINT (value));
+}
+
+static void
+data_factory_bus_acquired (EDBusServer *server,
+			   GDBusConnection *connection)
+{
+	GDBusInterfaceSkeleton *skeleton_interface;
+	EDataFactoryClass *class;
+	GError *error = NULL;
+
+	class = E_DATA_FACTORY_GET_CLASS (E_DATA_FACTORY (server));
+
+	skeleton_interface = class->get_dbus_interface_skeleton (server);
+
+	g_dbus_interface_skeleton_export (
+		skeleton_interface,
+		connection,
+		class->factory_object_path,
+		&error);
+
+	if (error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, error->message);
+		e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
+		g_error_free (error);
+
+		return;
+	}
+
+	/* Chain up to parent's bus_acquired() method. */
+	E_DBUS_SERVER_CLASS (e_data_factory_parent_class)->
+		bus_acquired (server, connection);
+}
+
+static GList *
+data_factory_list_proxies (EDataFactory *data_factory)
+{
+	GList *proxies = NULL;
+	GHashTable *connections;
+	GHashTable *proxies_hash;
+	GHashTableIter iter;
+	gpointer key, value;
+
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
+
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+
+	connections = data_factory->priv->connections;
+	proxies_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+	g_hash_table_iter_init (&iter, connections);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		GPtrArray *array = value;
+		gint ii;
+
+		for (ii = 0; ii < array->len; ii++) {
+			EDBusSubprocessBackend *proxy = g_ptr_array_index (array, ii);
+			if (!g_hash_table_contains (proxies_hash, proxy)) {
+				g_hash_table_insert (proxies_hash, proxy, GINT_TO_POINTER (1));
+				proxies = g_list_prepend (proxies, g_object_ref (proxy));
+			}
+		}
+	}
+
+	g_hash_table_destroy (proxies_hash);
+	proxies = g_list_reverse (proxies);
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+
+	return proxies;
+}
+
+static void
+data_factory_connections_remove_all (EDataFactory *data_factory)
+{
+	GHashTable *connections;
+
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+
+	connections = data_factory->priv->connections;
+
+	if (g_hash_table_size (connections) > 0) {
+		GList *proxies, *l;
+		proxies = data_factory_list_proxies (data_factory);
+
+		for (l = proxies; l != NULL; l = g_list_next (l)) {
+			EDBusSubprocessBackend *proxy = l->data;
+			e_dbus_subprocess_backend_call_close_sync (proxy, NULL, NULL);
+		}
+
+		g_list_free_full (proxies, g_object_unref);
+
+		g_hash_table_remove_all (connections);
+		e_dbus_server_release (E_DBUS_SERVER (data_factory));
+	}
+
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+}
+
+static void
 data_factory_bus_name_lost (EDBusServer *server,
 			    GDBusConnection *connection)
 {
@@ -431,8 +825,9 @@ data_factory_dispose (GObject *object)
 	data_factory = E_DATA_FACTORY (object);
 	priv = data_factory->priv;
 
-	g_hash_table_remove_all (priv->backends);
 	g_hash_table_remove_all (priv->backend_factories);
+	g_hash_table_remove_all (priv->subprocess_helpers);
+	g_hash_table_remove_all (priv->subprocess_watched_ids);
 
 	g_clear_object (&priv->registry);
 
@@ -454,8 +849,11 @@ data_factory_finalize (GObject *object)
 
 	g_mutex_clear (&priv->mutex);
 
-	g_hash_table_destroy (priv->backends);
 	g_hash_table_destroy (priv->backend_factories);
+	g_hash_table_destroy (priv->subprocess_helpers);
+
+	g_hash_table_destroy (priv->subprocess_watched_ids);
+	g_mutex_clear (&priv->subprocess_watched_ids_lock);
 
 	g_hash_table_destroy (priv->connections);
 	g_rec_mutex_clear (&priv->connections_lock);
@@ -559,26 +957,6 @@ e_data_factory_class_init (EDataFactoryClass *class)
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
-
-	/**
-	 * EDataFactory::backend-created:
-	 * @data_factory: the #EDataFactory which emitted the signal
-	 * @backend: the newly-created #EBackend
-	 *
-	 * Emitted when a new #EBackend is instantiated by way of
-	 * e_data_factory_ref_backend().  Extensions can connect to this
-	 * signal to perform additional initialization on the #EBackend.
-	 *
-	 * Since: 3.8
-	 **/
-	signals[BACKEND_CREATED] = g_signal_new (
-		"backend-created",
-		G_OBJECT_CLASS_TYPE (object_class),
-		G_SIGNAL_RUN_LAST,
-		G_STRUCT_OFFSET (EDataFactoryClass, backend_created),
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 1,
-		E_TYPE_BACKEND);
 }
 
 static void
@@ -587,20 +965,28 @@ e_data_factory_init (EDataFactory *data_factory)
 	data_factory->priv = E_DATA_FACTORY_GET_PRIVATE (data_factory);
 
 	g_mutex_init (&data_factory->priv->mutex);
+	g_mutex_init (&data_factory->priv->subprocess_watched_ids_lock);
 	g_rec_mutex_init (&data_factory->priv->connections_lock);
 	g_mutex_init (&data_factory->priv->watched_names_lock);
-
-	data_factory->priv->backends = g_hash_table_new_full (
-		(GHashFunc) g_str_hash,
-		(GEqualFunc) g_str_equal,
-		(GDestroyNotify) g_free,
-		(GDestroyNotify) e_weak_ref_free);
+	g_mutex_init (&data_factory->priv->spawn_subprocess_lock);
 
 	data_factory->priv->backend_factories = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_object_unref);
+
+	data_factory->priv->subprocess_helpers = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) data_factory_subprocess_helper_free);
+
+	data_factory->priv->subprocess_watched_ids = g_hash_table_new_full (
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
+		(GDestroyNotify) g_free,
+		(GDestroyNotify) NULL);
 
 	data_factory->priv->connections = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -613,148 +999,18 @@ e_data_factory_init (EDataFactory *data_factory)
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) watched_names_value_free);
-}
 
-/**
- * e_data_factory_ref_backend:
- * @data_factory: an #EDataFactory
- * @hash_key: hash key for an #EBackendFactory
- * @source: an #ESource
- * @error: return location for a #GError, or %NULL
- *
- * Returns either a newly-created or existing #EBackend for #ESource.
- * The returned #EBackend is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
- *
- * The @data_factory retains a weak reference to @backend so it can return
- * the same instance while @backend is in use.  When the last strong reference
- * to @backend is dropped, @data_factory will lose its weak reference and will
- * have to create a new #EBackend instance the next time the same @hash_key
- * and @source are requested.
- *
- * If no suitable #EBackendFactory exists, the function returns %NULL.
- *
- * Returns: an #EBackend for @source, or %NULL
- *
- * Since: 3.6
- **/
-EBackend *
-e_data_factory_ref_backend (EDataFactory *data_factory,
-                            const gchar *hash_key,
-                            ESource *source)
-{
-	return e_data_factory_ref_initable_backend (
-		data_factory, hash_key, source, NULL, NULL);
-}
-
-/**
- * e_data_factory_ref_initable_backend:
- * @data_factory: an #EDataFactory
- * @hash_key: hash key for an #EBackendFactory
- * @source: an #ESource
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Similar to e_data_factory_ref_backend(), but allows for backends that
- * implement the #GInitable interface so they can fail gracefully if they
- * are unable to initialize critical resources, such as a cache database.
- *
- * Returns either a newly-created or existing #EBackend for #ESource.
- * The returned #EBackend is referenced for thread-safety and must be
- * unreferenced with g_object_unref() when finished with it.
- *
- * If the newly-created backend implements the #GInitable interface, then
- * g_initable_init() is also called on it using @cancellable and @error.
- *
- * The @data_factory retains a weak reference to @backend so it can return
- * the same instance while @backend is in use.  When the last strong reference
- * to @backend is dropped, @data_factory will lose its weak reference and will
- * have to create a new #EBackend instance the next time the same @hash_key
- * and @source are requested.
- *
- * If no suitable #EBackendFactory exists, or if the #EBackend fails to
- * initialize, the function sets @error and returns %NULL.
- *
- * Returns: an #EBackend for @source, or %NULL
- *
- * Since: 3.8
- **/
-EBackend *
-e_data_factory_ref_initable_backend (EDataFactory *data_factory,
-                                     const gchar *hash_key,
-                                     ESource *source,
-                                     GCancellable *cancellable,
-                                     GError **error)
-{
-	EBackendFactory *backend_factory;
-	GWeakRef *weak_ref;
-	EBackend *backend;
-	const gchar *uid;
-
-	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
-	g_return_val_if_fail (hash_key != NULL, NULL);
-	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-
-	uid = e_source_get_uid (source);
-	g_return_val_if_fail (uid != NULL, NULL);
-
-	g_mutex_lock (&data_factory->priv->mutex);
-
-	/* The weak ref is already inserted in the hash table. */
-	weak_ref = data_factory_backends_lookup (data_factory, uid);
-
-	/* Check if we already have a backend for the given source. */
-	backend = g_weak_ref_get (weak_ref);
-
-	if (backend != NULL)
-		goto exit;
-
-	/* Find a suitable backend factory using the hash key. */
-	backend_factory =
-		e_data_factory_ref_backend_factory (data_factory, hash_key);
-
-	if (backend_factory == NULL) {
-		g_set_error (
-			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("No backend factory for hash key '%s'"),
-			hash_key);
-		goto exit;
-	}
-
-	/* Create a new backend for the given source and store it. */
-	backend = e_backend_factory_new_backend (backend_factory, source);
-
-	if (G_IS_INITABLE (backend)) {
-		GInitable *initable = G_INITABLE (backend);
-
-		if (!g_initable_init (initable, cancellable, error)) {
-			g_object_unref (backend);
-			backend = NULL;
-		}
-	}
-
-	/* This still does the right thing if backend is NULL. */
-	g_weak_ref_set (weak_ref, backend);
-
-	g_object_unref (backend_factory);
-
-	if (backend != NULL)
-		g_signal_emit (
-			data_factory, signals[BACKEND_CREATED], 0, backend);
-
-exit:
-	g_mutex_unlock (&data_factory->priv->mutex);
-
-	return backend;
+	data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
 }
 
 /**
  * e_data_factory_ref_backend_factory:
  * @data_factory: an #EDataFactory
- * @hash_key: hash key for an #EBackendFactory
+ * @backend_name: a backend name
+ * @extension_name: an extension name
  *
- * Returns the #EBackendFactory for @hash_key, or %NULL if no such factory
- * is registered.
+ * Returns the #EBackendFactory for "@backend_name:@extension_name", or
+ * %NULL if no such factory is registered.
  *
  * The returned #EBackendFactory is referenced for thread-safety.
  * Unreference the #EBackendFactory with g_object_unref() when finished
@@ -766,13 +1022,16 @@ exit:
  **/
 EBackendFactory *
 e_data_factory_ref_backend_factory (EDataFactory *data_factory,
-                                    const gchar *hash_key)
+				    const gchar *backend_name,
+				    const gchar *extension_name)
 {
 	GHashTable *backend_factories;
 	EBackendFactory *backend_factory;
+	gchar *hash_key;
 
 	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
-	g_return_val_if_fail (hash_key != NULL, NULL);
+	g_return_val_if_fail (backend_name != NULL && *backend_name != '\0', NULL);
+	g_return_val_if_fail (extension_name != NULL && *extension_name != '\0', NULL);
 
 	/* It should be safe to lookup backend factories without a mutex
 	 * because once initially populated the hash table remains fixed.
@@ -781,65 +1040,15 @@ e_data_factory_ref_backend_factory (EDataFactory *data_factory,
 	 *     to be referenced for thread-safety, but better to do it when
 	 *     not really needed than wish we had in the future. */
 
+	hash_key =  g_strdup_printf ("%s:%s", backend_name, extension_name);
 	backend_factories = data_factory->priv->backend_factories;
 	backend_factory = g_hash_table_lookup (backend_factories, hash_key);
+	g_free (hash_key);
 
 	if (backend_factory != NULL)
 		g_object_ref (backend_factory);
 
 	return backend_factory;
-}
-
-static void
-data_factory_toggle_notify_cb (gpointer data,
-			       GObject *backend,
-			       gboolean is_last_ref)
-{
-	if (is_last_ref) {
-		/* Take a strong reference before removing the
-		 * toggle reference, to keep the backend alive. */
-		g_object_ref (backend);
-
-		g_object_remove_toggle_ref (
-			backend, data_factory_toggle_notify_cb, data);
-
-		g_signal_emit_by_name (backend, "shutdown");
-
-		g_object_unref (backend);
-	}
-}
-
-/**
- * e_data_factory_get_registry:
- * @data_factory: an #EDataFactory
- * @backend: an #EBackend
- *
- * Install a toggle reference on the backend, that can receive a signal to
- * shutdown once all client connections are closed.
- *
- * Since: 3.14
- **/
-void
-e_data_factory_set_backend_callbacks (EDataFactory *data_factory,
-				      EBackend *backend)
-{
-	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
-	g_return_if_fail (data_factory != NULL);
-	g_return_if_fail (backend != NULL);
-
-	/* Install a toggle reference on the backend
-	 * so we can signal it to shut down once all
-	 * client connections are closed.
-	 */
-	g_object_add_toggle_ref (
-		G_OBJECT (backend),
-		data_factory_toggle_notify_cb,
-		NULL);
-
-	g_signal_connect_object (
-		backend, "closed",
-		G_CALLBACK (data_factory_closed_cb),
-		data_factory, 0);
 }
 
 /**
@@ -858,95 +1067,6 @@ e_data_factory_get_registry (EDataFactory *data_factory)
 	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
 
 	return data_factory->priv->registry;
-}
-
-/**
- * e_data_factory_list_backends:
- * @data_factory: an #EDataFactory
- *
- * Returns a list of backends connected to the @data_factory
- *
- * Returns: a #GSList of backends connected to the @data_factory.
- *          The list should be freed using
- *          g_slist_free_full (backends, g_object_unref)
- *
- * Since: 3.14
- **/
-GSList *
-e_data_factory_list_backends (EDataFactory *data_factory)
-{
-	GSList *backends = NULL;
-	GHashTable *connections;
-	GHashTable *backends_hash;
-	GHashTableIter iter;
-	gpointer key, value;
-
-	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
-
-	g_rec_mutex_lock (&data_factory->priv->connections_lock);
-
-	connections = data_factory->priv->connections;
-	backends_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
-
-	g_hash_table_iter_init (&iter, connections);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		GPtrArray *array = value;
-		gint ii;
-
-		for (ii = 0; ii < array->len; ii++) {
-			EBackend *backend = g_ptr_array_index (array, ii);
-			if (!g_hash_table_contains (backends_hash, backend)) {
-				g_hash_table_insert (backends_hash, backend, GINT_TO_POINTER (1));
-				backends = g_slist_prepend (backends, g_object_ref (backend));
-			}
-		}
-	}
-
-	g_hash_table_destroy (backends_hash);
-	backends = g_slist_reverse (backends);
-	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
-
-	return backends;
-}
-
-static EBackend *
-data_factory_ref_backend (EDataFactory *data_factory,
-			  ESource *source,
-			  const gchar *extension_name,
-			  GError **error)
-{
-	EBackend *backend;
-	ESourceBackend *extension;
-	gchar *backend_name;
-	gchar *hash_key = NULL;
-
-	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
-
-	extension = e_source_get_extension (source, extension_name);
-	backend_name = e_source_backend_dup_backend_name (extension);
-
-	if (backend_name == NULL || *backend_name == '\0') {
-		g_set_error (
-			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("No backend name in source '%s'"),
-			e_source_get_display_name (source));
-		g_free (backend_name);
-		return NULL;
-	}
-
-	hash_key = g_strdup_printf ("%s:%s", backend_name, extension_name);
-
-	backend = e_data_factory_ref_initable_backend (
-		data_factory,
-		hash_key,
-		source,
-		NULL,
-		error);
-
-	g_free (hash_key);
-	g_free (backend_name);
-
-	return backend;
 }
 
 /**
@@ -979,83 +1099,195 @@ e_data_factory_construct_path (EDataFactory *data_factory)
 		class->data_object_path_prefix, getpid (), counter);
 }
 
+static void
+data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
+				       GDBusMethodInvocation *invocation,
+				       const gchar *uid,
+				       const gchar *extension_name,
+				       const gchar *subprocess_path)
+{
+	DataFactorySubprocessHelper *helper;
+	DataFactorySubprocessData *sd;
+	EBackendFactory *backend_factory;
+	EDataFactoryClass *class;
+	ESource *source;
+	ESourceBackend *extension;
+	EDataFactoryPrivate *priv;
+	GError *error = NULL;
+	GSubprocess *subprocess;
+	guint watched_id;
+	gchar *backend_name;
+	gchar *subprocess_helpers_hash_key;
+	const gchar *factory_name;
+	const gchar *filename;
+	const gchar *type_name;
+
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+	g_return_if_fail (invocation != NULL);
+	g_return_if_fail (uid  != NULL && *uid != '\0');
+	g_return_if_fail (extension_name != NULL && *extension_name != '\0');
+	g_return_if_fail (subprocess_path != NULL && *subprocess_path != '\0');
+
+	priv = data_factory->priv;
+
+	source = e_source_registry_ref_source (priv->registry, uid);
+	extension = e_source_get_extension (source, extension_name);
+	backend_name = e_source_backend_dup_backend_name (extension);
+	g_object_unref (source);
+
+	backend_factory = e_data_factory_ref_backend_factory (
+		data_factory, backend_name, extension_name);
+
+	g_free (backend_name);
+
+	type_name = G_OBJECT_TYPE_NAME (backend_factory);
+
+	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	factory_name = class->get_factory_name (backend_factory);
+
+	subprocess_helpers_hash_key = data_factory_dup_subprocess_helper_hash_key (
+		factory_name, extension_name, uid, e_backend_factory_share_subprocess (backend_factory));
+
+	g_mutex_lock (&priv->mutex);
+	helper = g_hash_table_lookup (
+		priv->subprocess_helpers,
+		subprocess_helpers_hash_key);
+	g_mutex_unlock (&priv->mutex);
+
+	filename = e_backend_factory_get_module_filename (backend_factory);
+
+	if (helper != NULL) {
+		data_factory_call_subprocess_backend_create_sync (
+			data_factory,
+			helper->proxy,
+			invocation,
+			uid,
+			helper->bus_name,
+			type_name,
+			extension_name,
+			filename);
+
+		g_object_unref (backend_factory);
+		g_free (subprocess_helpers_hash_key);
+
+		return;
+	}
+
+	g_mutex_lock (&priv->spawn_subprocess_lock);
+	if (priv->spawn_subprocess_state != DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED)
+		priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED;
+	g_mutex_unlock (&priv->spawn_subprocess_lock);
+
+	sd = data_factory_subprocess_data_new (
+		data_factory,
+		invocation,
+		uid,
+		factory_name,
+		type_name,
+		extension_name,
+		filename,
+		subprocess_helpers_hash_key);
+
+	g_object_unref (backend_factory);
+	g_free (subprocess_helpers_hash_key);
+
+	watched_id = g_bus_watch_name (
+		G_BUS_TYPE_SESSION,
+		sd->bus_name,
+		G_BUS_NAME_WATCHER_FLAGS_NONE,
+		data_factory_subprocess_appeared_cb,
+		data_factory_subprocess_vanished_cb,
+		sd,
+		(GDestroyNotify) data_factory_subprocess_data_free);
+
+	g_mutex_lock (&priv->subprocess_watched_ids_lock);
+	g_hash_table_insert (priv->subprocess_watched_ids, g_strdup (sd->bus_name), GUINT_TO_POINTER (watched_id));
+	g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+
+	subprocess = g_subprocess_new (
+		G_SUBPROCESS_FLAGS_NONE,
+		&error,
+		subprocess_path,
+		"--bus-name", sd->bus_name,
+		"--own-path", sd->path,
+		NULL);
+
+	g_object_unref (subprocess);
+
+	if (error != NULL) {
+		g_mutex_lock (&priv->subprocess_watched_ids_lock);
+		g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
+		g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+
+		g_bus_unwatch_name (watched_id);
+		g_dbus_method_invocation_take_error (invocation, error);
+
+		g_mutex_lock (&priv->spawn_subprocess_lock);
+		priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
+		g_cond_signal (&priv->spawn_subprocess_cond);
+		g_mutex_unlock (&priv->spawn_subprocess_lock);
+	}
+}
+
+static gpointer
+data_factory_spawn_subprocess_backend_in_thread (gpointer user_data)
+{
+	DataFactorySpawnSubprocessBackendThreadData *data = user_data;
+	EDataFactory *data_factory = data->data_factory;
+	GDBusMethodInvocation *invocation = data->invocation;
+	const gchar *uid = data->uid;
+	const gchar *extension_name = data->extension_name;
+	const gchar *subprocess_path = data->subprocess_path;
+
+	g_mutex_lock (&data_factory->priv->spawn_subprocess_lock);
+	while (data_factory->priv->spawn_subprocess_state == DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED) {
+		g_cond_wait (
+			&data_factory->priv->spawn_subprocess_cond,
+			&data_factory->priv->spawn_subprocess_lock);
+	}
+
+	if (data_factory->priv->spawn_subprocess_state == DATA_FACTORY_SPAWN_SUBPROCESS_NONE)
+		data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED;
+	g_mutex_unlock (&data_factory->priv->spawn_subprocess_lock);
+
+	data_factory_spawn_subprocess_backend (
+		data_factory, invocation, uid, extension_name, subprocess_path);
+
+	data_factory_spawn_subprocess_backend_thread_data_free (data);
+
+	return NULL;
+}
+
 /**
- * e_data_factory_open_backend:
+ * e_data_factory_spawn_subprocess_backend:
  * @data_factory: an #EDataFactory
- * @connection: a #GDBusConnection
- * @sender: a string
- * @uid: UID of an #ESource to open
+ * @invocation: a #GDBusMethodInvcation
+ * @uid: an #ESource UID
  * @extension_name: an extension name
- * @error: return location for a #GError, or %NULL
+ * @subprocess_path: a path of an executable responsible for running the subprocess
  *
- * Returns the #EBackend data D-Bus object path
- *
- * Returns: a newly allocated string that represents the #EBackend
- *          data D-Bus object path.
+ * Spawns a new subprocess for a backend type and returns the object path
+ * of the new subprocess to the client, in the way the client can talk
+ * directly to the running backend. If the backend already has a subprocess
+ * running, the used object path is returned to the client.
  *
  * Since: 3.14
  **/
-gchar *
-e_data_factory_open_backend (EDataFactory *data_factory,
-			     GDBusConnection *connection,
-			     const gchar *sender,
-			     const gchar *uid,
-			     const gchar *extension_name,
-			     GError **error)
+void
+e_data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
+					 GDBusMethodInvocation *invocation,
+					 const gchar *uid,
+					 const gchar *extension_name,
+					 const gchar *subprocess_path)
 {
-	EDataFactoryClass *class;
-	EBackend *backend;
-	ESourceRegistry *registry;
-	ESource *source;
-	gchar *object_path;
+	GThread *thread;
+	DataFactorySpawnSubprocessBackendThreadData *data;
 
-	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
+	data = data_factory_spawn_subprocess_backend_thread_data_new (
+		data_factory, invocation, uid, extension_name, subprocess_path);
 
-	if (uid == NULL || *uid == '\0') {
-		g_set_error (
-			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("Missing source UID"));
-		return NULL;
-	}
+	thread = g_thread_new ("Spawn-Subprocess-Backend",
+		data_factory_spawn_subprocess_backend_in_thread, data);
 
-	registry = e_data_factory_get_registry (data_factory);
-	source = e_source_registry_ref_source (registry, uid);
-
-	if (source == NULL) {
-		g_set_error (
-			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("No such source for UID '%s'"), uid);
-		return NULL;
-	}
-
-	backend = data_factory_ref_backend (
-		data_factory, source, extension_name, error);
-
-	g_object_unref (source);
-
-	if (backend == NULL)
-		return NULL;
-
-	class = E_DATA_FACTORY_GET_CLASS (data_factory);
-	object_path = class->data_open (
-		data_factory, backend, connection, error);
-
-	if (object_path != NULL) {
-		/* Watch the sender's bus name so we can clean
-		 * up its connections if the bus name vanishes.
-		 */
-		data_factory_watched_names_add (
-			data_factory, connection, sender);
-
-		/* A client my create multiple Eclient instances for the
-		 * same ESource, each of which calls close() individually.
-		 * So we must track each and every connection made.
-		 */
-		data_factory_connections_add (
-			data_factory, sender, backend);
-	}
-
-	g_clear_object (&backend);
-
-	return object_path;
+	g_thread_unref (thread);
 }

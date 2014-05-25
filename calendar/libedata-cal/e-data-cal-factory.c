@@ -82,44 +82,65 @@ data_cal_factory_get_dbus_interface_skeleton (EDBusServer *server)
 	return G_DBUS_INTERFACE_SKELETON (factory->priv->dbus_factory);
 }
 
-static gchar *
-data_cal_factory_open (EDataFactory *data_factory,
-		       EBackend *backend,
-		       GDBusConnection *connection,
-		       GError **error)
+static const gchar *
+data_cal_get_factory_name (EBackendFactory *backend_factory)
 {
-	EDataCal *data_cal;
-	gchar *object_path;
+	ECalBackendFactoryClass *class;
 
-	/* If the backend already has an EDataCal installed, return its
-	 * object path.  Otherwise we need to install a new EDataCal. */
+	class = E_CAL_BACKEND_FACTORY_GET_CLASS (E_CAL_BACKEND_FACTORY (backend_factory));
 
-	data_cal = e_cal_backend_ref_data_cal (E_CAL_BACKEND (backend));
+	return class->factory_name;
+}
 
-	if (data_cal != NULL) {
-		object_path = g_strdup (
-			e_data_cal_get_object_path (data_cal));
-	} else {
-		object_path = e_data_factory_construct_path (data_factory);
+static void
+data_cal_complete_calendar_open (EDataFactory *data_factory,
+				 GDBusMethodInvocation *invocation,
+				 const gchar *object_path,
+				 const gchar *bus_name)
+{
+	EDataCalFactory *data_cal_factory = E_DATA_CAL_FACTORY (data_factory);
 
-		/* The EDataCal will attach itself to ECalBackend,
-		 * so no need to call e_cal_backend_set_data_cal(). */
-		data_cal = e_data_cal_new (
-			E_CAL_BACKEND (backend),
-			connection, object_path, error);
+	e_dbus_calendar_factory_complete_open_calendar (
+		data_cal_factory->priv->dbus_factory, invocation, object_path, bus_name);
+}
 
-		if (data_cal != NULL) {
-			e_data_factory_set_backend_callbacks (
-				data_factory, backend);
-		} else {
-			g_free (object_path);
-			object_path = NULL;
-		}
-	}
+static void
+data_cal_complete_task_list_open (EDataFactory *data_factory,
+				  GDBusMethodInvocation *invocation,
+				  const gchar *object_path,
+				  const gchar *bus_name)
+{
+	EDataCalFactory *data_cal_factory = E_DATA_CAL_FACTORY (data_factory);
 
-	g_clear_object (&data_cal);
+	e_dbus_calendar_factory_complete_open_task_list (
+		data_cal_factory->priv->dbus_factory, invocation, object_path, bus_name);
+}
 
-	return object_path;
+static void
+data_cal_complete_memo_list_open (EDataFactory *data_factory,
+				  GDBusMethodInvocation *invocation,
+				  const gchar *object_path,
+				  const gchar *bus_name)
+{
+	EDataCalFactory *data_cal_factory = E_DATA_CAL_FACTORY (data_factory);
+
+	e_dbus_calendar_factory_complete_open_memo_list (
+		data_cal_factory->priv->dbus_factory, invocation, object_path, bus_name);
+}
+
+static void
+data_cal_complete_open (EDataFactory *data_factory,
+			GDBusMethodInvocation *invocation,
+			const gchar *object_path,
+			const gchar *bus_name,
+			const gchar *extension_name)
+{
+	if (g_strcmp0 (extension_name, E_SOURCE_EXTENSION_CALENDAR) == 0)
+		data_cal_complete_calendar_open (data_factory, invocation, object_path, bus_name);
+	else if (g_strcmp0 (extension_name, E_SOURCE_EXTENSION_TASK_LIST) == 0)
+		data_cal_complete_task_list_open (data_factory, invocation, object_path, bus_name);
+	else if (g_strcmp0 (extension_name, E_SOURCE_EXTENSION_MEMO_LIST) == 0)
+		data_cal_complete_memo_list_open (data_factory, invocation, object_path, bus_name);
 }
 
 static gboolean
@@ -161,34 +182,12 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	data_factory_class = E_DATA_FACTORY_CLASS (class);
 	data_factory_class->backend_factory_type = E_TYPE_CAL_BACKEND_FACTORY;
 	data_factory_class->factory_object_path = "/org/gnome/evolution/dataserver/CalendarFactory";
-	data_factory_class->data_object_path_prefix = "/org/gnome/evolution/dataserver/Calendar";
+	data_factory_class->subprocess_object_path_prefix = "/org/gnome/evolution/dataserver/Subprocess/Backend/Calendar";
+	data_factory_class->subprocess_bus_name_prefix = "org.gnome.evolution.dataserver.Subprocess.Backend.Calendar";
 	data_factory_class->get_dbus_interface_skeleton = data_cal_factory_get_dbus_interface_skeleton;
-	data_factory_class->data_open = data_cal_factory_open;
+	data_factory_class->get_factory_name = data_cal_get_factory_name;
+	data_factory_class->complete_open = data_cal_complete_open;
 }
-
-#define HANDLE_OPEN_CB(extension_name, minus)					\
-	GDBusConnection *connection;						\
-	const gchar *sender;							\
-	gchar *object_path;							\
-	GError *error = NULL;							\
-										\
-	connection = g_dbus_method_invocation_get_connection (invocation);	\
-	sender = g_dbus_method_invocation_get_sender (invocation);		\
-										\
-	object_path = e_data_factory_open_backend (				\
-		E_DATA_FACTORY (factory), connection, sender,			\
-		uid, extension_name, &error);					\
-										\
-	if (object_path != NULL) {						\
-		e_dbus_calendar_factory_complete_open_##minus (			\
-			dbus_interface, invocation, object_path);		\
-		g_free (object_path);						\
-	} else {								\
-		g_return_val_if_fail (error != NULL, FALSE);			\
-		g_dbus_method_invocation_take_error (invocation, error);	\
-	}									\
-										\
-	return TRUE;
 
 static gboolean
 data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *dbus_interface,
@@ -196,7 +195,12 @@ data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *dbus_interface,
 					  const gchar *uid,
 					  EDataCalFactory *factory)
 {
-	HANDLE_OPEN_CB (E_SOURCE_EXTENSION_CALENDAR, calendar);
+	EDataFactory *data_factory = E_DATA_FACTORY (factory);
+
+	e_data_factory_spawn_subprocess_backend (
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_CALENDAR, SUBPROCESS_CAL_BACKEND_PATH);
+
+	return TRUE;
 }
 
 static gboolean
@@ -205,7 +209,12 @@ data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *dbus_interface,
 					   const gchar *uid,
 					   EDataCalFactory *factory)
 {
-	HANDLE_OPEN_CB (E_SOURCE_EXTENSION_TASK_LIST, task_list);
+	EDataFactory *data_factory = E_DATA_FACTORY (factory);
+
+	e_data_factory_spawn_subprocess_backend (
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_TASK_LIST, SUBPROCESS_CAL_BACKEND_PATH);
+
+	return TRUE;
 }
 
 static gboolean
@@ -214,10 +223,13 @@ data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *dbus_interface,
 					   const gchar *uid,
 					   EDataCalFactory *factory)
 {
-	HANDLE_OPEN_CB (E_SOURCE_EXTENSION_MEMO_LIST, memo_list);
+	EDataFactory *data_factory = E_DATA_FACTORY (factory);
+
+	e_data_factory_spawn_subprocess_backend (
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_MEMO_LIST, SUBPROCESS_CAL_BACKEND_PATH);
+
+	return TRUE;
 }
-
-
 
 static void
 e_data_cal_factory_init (EDataCalFactory *factory)

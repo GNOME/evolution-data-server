@@ -20,13 +20,6 @@
 #include <config.h>
 #endif
 
-/* XXX Disable deprecation warnings until we require GLib 2.40.
- *
- *     This silences warnings for using GSubprocess functions, which are
- *     only available as of GLib 2.39.  But we do so conditionally, with
- *     GLIB_CHECK_VERSION macros. */
-#define GLIB_DISABLE_DEPRECATION_WARNINGS
-
 #include <errno.h>
 #include <fcntl.h>
 #include <time.h>
@@ -343,9 +336,7 @@ struct _CamelIMAPXServerPrivate {
 	GInputStream *input_stream;
 	GOutputStream *output_stream;
 	GIOStream *connection;
-#if GLIB_CHECK_VERSION(2,39,0)
 	GSubprocess *subprocess;
-#endif
 	GMutex stream_lock;
 
 	GThread *parser_thread;
@@ -4192,7 +4183,6 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 	g_mutex_unlock (&is->priv->stream_lock);
 }
 
-#if GLIB_CHECK_VERSION(2,39,0)
 static void
 imapx_server_child_process_setup (gpointer user_data)
 {
@@ -4212,14 +4202,12 @@ imapx_server_child_process_setup (gpointer user_data)
 	}
 #endif /* TIOCNOTTY */
 }
-#endif
 
 static gboolean
 connect_to_server_process (CamelIMAPXServer *is,
                            const gchar *cmd,
                            GError **error)
 {
-#if GLIB_CHECK_VERSION(2,39,0)
 	GSubprocessLauncher *launcher;
 	GSubprocess *subprocess = NULL;
 	CamelNetworkSettings *network_settings;
@@ -4369,16 +4357,6 @@ connect_to_server_process (CamelIMAPXServer *is,
 	}
 
 	return TRUE;
-
-#else /* GLIB_CHECK_VERSION(2,39,0) */
-
-	g_set_error_literal (
-		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		"GLib 2.39 or later is required to connect "
-		"to an IMAP server through a shell command");
-
-	return FALSE;
-#endif
 }
 
 gboolean
@@ -4631,9 +4609,7 @@ exit:
 		g_clear_object (&is->priv->input_stream);
 		g_clear_object (&is->priv->output_stream);
 		g_clear_object (&is->priv->connection);
-#if GLIB_CHECK_VERSION(2,39,0)
 		g_clear_object (&is->priv->subprocess);
-#endif
 
 		if (is->cinfo != NULL) {
 			imapx_free_capability (is->cinfo);
@@ -7760,9 +7736,7 @@ imapx_server_dispose (GObject *object)
 
 	g_weak_ref_set (&server->priv->store, NULL);
 
-#if GLIB_CHECK_VERSION(2,39,0)
 	g_clear_object (&server->priv->subprocess);
-#endif
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->dispose (object);
@@ -8140,9 +8114,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_clear_object (&is->priv->input_stream);
 	g_clear_object (&is->priv->output_stream);
 	g_clear_object (&is->priv->connection);
-#if GLIB_CHECK_VERSION(2,39,0)
 	g_clear_object (&is->priv->subprocess);
-#endif
 
 	g_mutex_unlock (&is->priv->stream_lock);
 

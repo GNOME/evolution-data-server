@@ -73,6 +73,7 @@ libebackend_1_2_la_SOURCES = \
 	e-soup-ssl-trust.c \
 	e-source-registry-server.c \
 	e-sqlite3-vfs.c \
+	e-subprocess-factory.c \
 	e-user-prompter.c \
 	e-user-prompter-server.c \
 	e-user-prompter-server-extension.c \
@@ -121,6 +122,7 @@ libebackendinclude_HEADERS = \
 	e-soup-ssl-trust.h \
 	e-source-registry-server.h \
 	e-sqlite3-vfs.h \
+	e-subprocess-factory.h \
 	e-user-prompter.h \
 	e-user-prompter-server.h \
 	e-user-prompter-server-extension.h \

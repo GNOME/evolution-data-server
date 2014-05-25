@@ -34,6 +34,7 @@
 #include <libedata-cal/e-data-cal-factory.h>
 #include <libedata-cal/e-data-cal.h>
 #include <libedata-cal/e-data-cal-view.h>
+#include <libedata-cal/e-subprocess-cal-factory.h>
 
 #undef __LIBEDATA_CAL_H_INSIDE__
 

@@ -43,6 +43,7 @@
 #include <libebackend/e-soup-ssl-trust.h>
 #include <libebackend/e-source-registry-server.h>
 #include <libebackend/e-sqlite3-vfs.h>
+#include <libebackend/e-subprocess-factory.h>
 #include <libebackend/e-user-prompter.h>
 #include <libebackend/e-user-prompter-server.h>
 #include <libebackend/e-user-prompter-server-extension.h>

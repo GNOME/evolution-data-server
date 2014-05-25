@@ -415,6 +415,10 @@ GSList *	e_client_util_copy_object_slist	(GSList *copy_to,
 						 const GSList *objects);
 void		e_client_util_free_string_slist	(GSList *strings);
 void		e_client_util_free_object_slist	(GSList *objects);
+gchar *		e_client_dup_bus_name		(EClient *client);
+void		e_client_set_bus_name		(EClient *client,
+						 const gchar *bus_name);
+
 
 typedef struct _EClientErrorsList EClientErrorsList;
 

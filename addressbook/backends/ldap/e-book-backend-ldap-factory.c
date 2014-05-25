@@ -31,6 +31,8 @@
 typedef EBookBackendFactory EBookBackendLDAPFactory;
 typedef EBookBackendFactoryClass EBookBackendLDAPFactoryClass;
 
+static EModule *e_module;
+
 /* Module Entry Points */
 void e_module_load (GTypeModule *type_module);
 void e_module_unload (GTypeModule *type_module);
@@ -46,6 +48,12 @@ G_DEFINE_DYNAMIC_TYPE (
 static void
 e_book_backend_ldap_factory_class_init (EBookBackendFactoryClass *class)
 {
+	EBackendFactoryClass *backend_factory_class;
+
+	backend_factory_class = E_BACKEND_FACTORY_CLASS (class);
+	backend_factory_class->e_module = e_module;
+	backend_factory_class->share_subprocess = FALSE;
+
 	class->factory_name = FACTORY_NAME;
 	class->backend_type = E_TYPE_BOOK_BACKEND_LDAP;
 }
@@ -63,6 +71,8 @@ e_book_backend_ldap_factory_init (EBookBackendFactory *factory)
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
+	e_module = E_MODULE (type_module);
+
 	e_source_ldap_type_register (type_module);
 	e_book_backend_ldap_factory_register_type (type_module);
 }
@@ -70,5 +80,5 @@ e_module_load (GTypeModule *type_module)
 G_MODULE_EXPORT void
 e_module_unload (GTypeModule *type_module)
 {
+	e_module = NULL;
 }
-

@@ -1,0 +1,29 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-Bus Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+
+<!--
+    org.gnome.evolution.dataserver.Subprocess.Backend:
+    @short_description: Subprocess for backends objects
+    @since: 3.14
+
+    This interface provides access to the subprocess responsible to
+    create a backend instance
+-->
+<interface name="org.gnome.evolution.dataserver.Subprocess.Backend">
+
+  <signal name="BackendClosed">
+    <arg name="sender" type="s"/>
+  </signal>
+
+  <method name="Create">
+    <arg name="source_id" direction="in" type="s"/>
+    <arg name="backend_factory_type_name" direction="in" type="s"/>
+    <arg name="module_filename" direction="in" type="s"/>
+    <arg name="object_path" direction="out" type="s"/>
+  </method>
+
+  <method name="Close"/>
+
+</interface>

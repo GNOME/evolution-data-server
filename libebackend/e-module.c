@@ -302,23 +302,44 @@ e_module_load_all_in_directory (const gchar *dirname)
 
 		filename = g_build_filename (dirname, basename, NULL);
 
-		module = e_module_new (filename);
-
-		if (!g_type_module_use (G_TYPE_MODULE (module))) {
-			g_printerr ("Failed to load module: %s\n", filename);
-			g_object_unref (module);
-			g_free (filename);
-			continue;
-		}
+		module = e_module_load_file (filename);
 
 		g_free (filename);
 
-		loaded_modules = g_list_prepend (loaded_modules, module);
+		if (module != NULL)
+			loaded_modules = g_list_prepend (loaded_modules, module);
 	}
 
 	g_dir_close (dir);
 
 	return loaded_modules;
+}
+
+/**
+ * e_module_load_file:
+ * @dirname: filename of the module to load
+ *
+ * Load the module from the specified filename into memory. If
+ * you want to unload it (enabling on-demand loading) you must call
+ * g_type_module_unuse() on the module.
+ *
+ * Returns: an #EModule loaded from @filename
+ *
+ * Since: 3.14
+ **/
+EModule *
+e_module_load_file (const gchar *filename)
+{
+	EModule *module;
+
+	module = e_module_new (filename);
+
+	if (!g_type_module_use (G_TYPE_MODULE (module))) {
+		g_printerr ("Failed to load module: %s\n", filename);
+		g_clear_object (&module);
+	}
+
+	return module;
 }
 
 /**

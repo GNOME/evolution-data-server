@@ -25,6 +25,8 @@
  * #ECollectionBackend instances.
  **/
 
+#include <string.h>
+
 #include "e-collection-backend-factory.h"
 
 #include <libedataserver/libedataserver.h>
@@ -51,11 +53,23 @@ static const gchar *
 collection_backend_factory_get_hash_key (EBackendFactory *factory)
 {
 	ECollectionBackendFactoryClass *class;
+	const gchar *component_name;
+	gchar *hash_key;
+	gsize length;
 
 	class = E_COLLECTION_BACKEND_FACTORY_GET_CLASS (factory);
 	g_return_val_if_fail (class->factory_name != NULL, NULL);
 
-	return class->factory_name;
+	component_name = E_SOURCE_EXTENSION_COLLECTION;
+
+	/* Hash key: FACTORY ´:' COMPONENT_NAME */
+	length = strlen (class->factory_name) + strlen (component_name) + 2;
+	hash_key = g_alloca (length);
+	g_snprintf (
+		hash_key, length, "%s:%s",
+		class->factory_name, component_name);
+
+	return g_intern_string (hash_key);
 }
 
 static EBackend *

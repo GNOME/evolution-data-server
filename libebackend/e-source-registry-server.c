@@ -1146,9 +1146,11 @@ source_registry_server_source_added (ESourceRegistryServer *server,
 
 	extension_name = E_SOURCE_EXTENSION_COLLECTION;
 	if (e_source_has_extension (source, extension_name)) {
-		EBackend *backend;
+		EBackend *backend = NULL;
+		ECollectionBackendFactory *backend_factory;
 		ESourceBackend *extension;
 		const gchar *backend_name;
+		GError *error = NULL;
 
 		extension = e_source_get_extension (source, extension_name);
 		backend_name = e_source_backend_get_backend_name (extension);
@@ -1157,8 +1159,18 @@ source_registry_server_source_added (ESourceRegistryServer *server,
 		 * itself, which creates a reference cycle.  The cycle is
 		 * explicitly broken when the ESource is removed from the
 		 * 'sources' hash table (see unref_data_source() above). */
-		backend = e_data_factory_ref_backend (
-			E_DATA_FACTORY (server), backend_name, source);
+		backend_factory = e_source_registry_server_ref_backend_factory (server, source);
+		backend = e_backend_factory_new_backend (E_BACKEND_FACTORY (backend_factory), source);
+
+		if (G_IS_INITABLE (backend)) {
+			GInitable *initable = G_INITABLE (backend);
+
+			if (!g_initable_init (initable, NULL, &error))
+				g_clear_object (&backend);
+		}
+
+		g_object_unref (backend_factory);
+
 		if (backend != NULL) {
 			g_object_set_data_full (
 				G_OBJECT (source),
@@ -1166,8 +1178,10 @@ source_registry_server_source_added (ESourceRegistryServer *server,
 				(GDestroyNotify) g_object_unref);
 		} else {
 			g_warning (
-				"No collection backend '%s' for %s",
-				backend_name, e_source_get_uid (source));
+				"No collection backend '%s' for %s: %s",
+				backend_name, e_source_get_uid (source), error->message);
+
+			g_clear_error (&error);
 		}
 	}
 
@@ -2296,7 +2310,7 @@ e_source_registry_server_ref_backend_factory (ESourceRegistryServer *server,
 	backend_name = e_source_backend_get_backend_name (extension);
 
 	factory = e_data_factory_ref_backend_factory (
-		E_DATA_FACTORY (server), backend_name);
+		E_DATA_FACTORY (server), backend_name, extension_name);
 
 	if (factory == NULL)
 		return NULL;

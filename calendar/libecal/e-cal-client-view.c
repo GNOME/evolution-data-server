@@ -689,18 +689,35 @@ cal_client_view_initable_init (GInitable *initable,
                                GCancellable *cancellable,
                                GError **error)
 {
+	ECalClient *cal_client;
 	ECalClientViewPrivate *priv;
 	EGdbusCalView *gdbus_calview;
 	gulong handler_id;
+	gchar *bus_name;
 
 	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (initable);
+
+	cal_client = g_weak_ref_get (&priv->client);
+	if (cal_client == NULL) {
+		g_set_error (
+			error, E_CLIENT_ERROR,
+			E_CLIENT_ERROR_OTHER_ERROR,
+			_("Client disappeared"));
+
+		return FALSE;
+	}
+
+	bus_name = e_client_dup_bus_name (E_CLIENT (cal_client));
+	g_object_unref (cal_client);
 
 	gdbus_calview = e_gdbus_cal_view_proxy_new_sync (
 		priv->connection,
 		G_DBUS_PROXY_FLAGS_NONE,
-		CALENDAR_DBUS_SERVICE_NAME,
+		bus_name,
 		priv->object_path,
 		cancellable, error);
+
+	g_free (bus_name);
 
 	if (gdbus_calview == NULL)
 		return FALSE;

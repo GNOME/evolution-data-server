@@ -22,6 +22,7 @@
   <method name="OpenAddressBook">
     <arg name="source_uid" direction="in" type="s"/>
     <arg name="object_path" direction="out" type="s"/>
+    <arg name="bus_name" direction="out" type="s"/>
   </method>
 </interface>
 

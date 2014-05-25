@@ -83,14 +83,22 @@ struct _EBackendFactoryClass {
 	EBackend *	(*new_backend)		(EBackendFactory *factory,
 						 ESource *source);
 
+	struct _EModule	*e_module;
+	gboolean	share_subprocess;
+
 	/*< private >*/
-	gpointer reserved[16];
+	gpointer reserved[15];
 };
 
 GType		e_backend_factory_get_type	(void) G_GNUC_CONST;
 const gchar *	e_backend_factory_get_hash_key	(EBackendFactory *factory);
 EBackend *	e_backend_factory_new_backend	(EBackendFactory *factory,
 						 ESource *source);
+const gchar *  e_backend_factory_get_module_filename
+						(EBackendFactory *factory);
+gboolean	e_backend_factory_share_subprocess
+						(EBackendFactory *factory);
+
 
 G_END_DECLS
 

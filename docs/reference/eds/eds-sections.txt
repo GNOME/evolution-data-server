@@ -138,6 +138,8 @@ EBackendFactory
 EBackendFactoryClass
 e_backend_factory_get_hash_key
 e_backend_factory_new_backend
+e_backend_factory_get_module_filename
+e_backend_factory_share_subprocess
 <SUBSECTION Standard>
 EBackendFactoryPrivate
 E_BACKEND_FACTORY
@@ -1600,6 +1602,8 @@ e_client_refresh
 e_client_refresh_finish
 e_client_refresh_sync
 e_client_util_parse_comma_strings
+e_client_dup_bus_name
+e_client_set_bus_name
 CLIENT_BACKEND_PROPERTY_OPENED
 CLIENT_BACKEND_PROPERTY_OPENING
 e_client_error_create
@@ -2085,13 +2089,10 @@ e_data_cal_view_get_type
 <TITLE>EDataFactory</TITLE>
 EDataFactory
 EDataFactoryClass
-e_data_factory_ref_backend
-e_data_factory_ref_initable_backend
 e_data_factory_ref_backend_factory
 e_data_factory_get_registry
-e_data_factory_open
 e_data_factory_construct_path
-e_data_factory_set_backend_callbacks
+e_data_factoru_spawn_subprocess_backend
 <SUBSECTION Standard>
 EDataFactoryPrivate
 E_DATA_FACTORY
@@ -2101,6 +2102,29 @@ E_IS_DATA_FACTORY
 E_IS_DATA_FACTORY_CLASS
 E_TYPE_DATA_FACTORY
 e_data_factory_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-subprocess-factory</FILE>
+<TITLE>ESubprocessFactory</TITLE>
+ESubprocessFactory
+ESubprocessFactoryClass
+e_subprocess_factory_ref_initable_backend
+e_subprocess_factory_get_registry
+e_subprocess_factory_open_baclkend
+e_subprocess_factory_constrcut_path
+e_subprocess_factory_set_backend_callbacks
+e_subprocess_factory_call_backends_prepare_shutdown
+e_subprocess_factory_get_backends_list
+<SUBSECTION Standard>
+ESubprocessFactoryPrivate
+E_SUBPROCESS_FACTORY
+E_SUBPROCESS_FACTORY_CLASS
+E_SUBPROCESS_FACTORY_GET_CLASS
+E_IS_SUBPROCESS_FACTORY
+E_IS_SUBPROCESS_FACTORY_CLASS
+E_TYPE_DATA_FACTORY
+e_subprocess_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -2630,6 +2654,7 @@ EModuleClass
 e_module_new
 e_module_get_filename
 e_module_load_all_in_directory
+e_module_load_file
 ETypeFunc
 e_type_traverse
 <SUBSECTION Standard>

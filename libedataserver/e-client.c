@@ -60,6 +60,7 @@ struct _EClientPrivate {
 	gboolean readonly;
 	GSList *capabilities;
 	GMainContext *main_context;
+	gchar *bus_name;
 };
 
 struct _AsyncContext {
@@ -309,6 +310,9 @@ client_dispose (GObject *object)
 	}
 
 	g_clear_object (&priv->source);
+
+	g_free (priv->bus_name);
+	priv->bus_name = NULL;
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_client_parent_class)->dispose (object);
@@ -2124,3 +2128,45 @@ e_client_util_unwrap_dbus_error (GError *dbus_error,
 	return TRUE;
 }
 
+/**
+ * e_client_dup_bus_name:
+ * @client: an #EClient
+ *
+ * Returns a D-Bus bus name that will be used to connect the
+ * client to the backend subprocess.
+ *
+ * Returns: a newly-allocated string representing a D-Bus bus
+ *          name that will be used to connect the client to
+ *          the backend subprocess. The string should be
+ *          freed by the caller using g_free().
+ *
+ * Since: 3.14
+ **/
+gchar *
+e_client_dup_bus_name (EClient *client)
+{
+	g_return_val_if_fail (E_IS_CLIENT (client), NULL);
+
+	return g_strdup (client->priv->bus_name);
+}
+
+/**
+ * e_client_set_bus_name:
+ * @client: an #EClient
+ * @bus_name: a string representing a D-Bus bus name
+ *
+ * Sets a D-Bus bus name that will be used to connect the client
+ * to the backend subprocess.
+ *
+ * Since: 3.14
+ **/
+void
+e_client_set_bus_name (EClient *client,
+		       const gchar *bus_name)
+{
+	g_return_if_fail (E_IS_CLIENT (client));
+	g_return_if_fail (client->priv->bus_name == NULL);
+	g_return_if_fail (bus_name != NULL && *bus_name != '\0');
+
+	client->priv->bus_name = g_strdup (bus_name);
+}

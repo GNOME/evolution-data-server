@@ -35,8 +35,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 dnl Required Package Versions
 
 dnl Keep these two definitions in agreement.
-m4_define([glib_minimum_version], [2.36])
-m4_define([glib_encoded_version], [GLIB_VERSION_2_36])
+m4_define([glib_minimum_version], [2.40])
+m4_define([glib_encoded_version], [GLIB_VERSION_2_40])
 
 dnl Keep these two definitions in agreement.
 m4_define([gdk_minimum_version], [3.2])
@@ -73,8 +73,8 @@ GLIB_GSETTINGS
 dnl ******************************
 dnl D-Bus versioning
 dnl ******************************
-ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook7"
-CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar5"
+ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook8"
+CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar6"
 SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources3"
 USER_PROMPTER_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.UserPrompter0"
 
@@ -106,23 +106,23 @@ AC_SUBST(USER_PROMPTER_DBUS_SERVICE_NAME)
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=18
+LIBEDATASERVER_CURRENT=19
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
-LIBECAL_CURRENT=16
+LIBECAL_CURRENT=17
 LIBECAL_REVISION=0
 LIBECAL_AGE=0
 
-LIBEDATACAL_CURRENT=25
+LIBEDATACAL_CURRENT=26
 LIBEDATACAL_REVISION=0
 LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=23
+LIBEDATABOOK_CURRENT=24
 LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 
-LIBEBOOK_CURRENT=17
+LIBEBOOK_CURRENT=18
 LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=3
 
@@ -134,7 +134,7 @@ LIBCAMEL_CURRENT=50
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 
-LIBEBACKEND_CURRENT=8
+LIBEBACKEND_CURRENT=9
 LIBEBACKEND_REVISION=0
 LIBEBACKEND_AGE=0
 
@@ -566,6 +566,20 @@ if test "x$enable_uoa" = xyes; then
 	AC_DEFINE(HAVE_UOA, 1, [Have libaccounts-glib])
 fi
 AM_CONDITIONAL(HAVE_UOA, [test x$enable_uoa = xyes])
+
+dnl **********************************************
+dnl Check if backend per process should be enabled
+dnl **********************************************
+AC_ARG_ENABLE([backend-per-process],
+	[AS_HELP_STRING([--enable-backend-per-process],
+	[enable backend per process support (default=yes)])],
+	[enable_backend_per_process=$enableval], [enable_backend_per_process=yes])
+AC_MSG_CHECKING([if backend per process is enabled])
+AC_MSG_RESULT([$enable_backend_per_process])
+if test "x$enable_backend_per_process" = xyes; then
+	AC_DEFINE(ENABLE_BACKEND_PER_PROCESS, 1, [If backend-per-process is enabled])
+fi
+AM_CONDITIONAL(ENABLE_BACKEND_PER_PROCESS, [test x$enable_backend_per_process = xyes])
 
 dnl ***********************************
 dnl Check for GNOME Keyring.
@@ -1838,4 +1852,5 @@ echo "
 	Examples:  		$enable_examples
 	Code coverage (gcov):	$enable_code_coverage
 	Installed tests:        $enable_installed_tests
+	Backend per process	$enable_backend_per_process
 "

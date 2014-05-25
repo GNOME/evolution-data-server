@@ -974,6 +974,7 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	ESource *source;
 	const gchar *uid;
 	gchar *object_path = NULL;
+	gchar *bus_name = NULL;
 	gulong handler_id;
 	GError *local_error = NULL;
 
@@ -1017,14 +1018,14 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	}
 
 	e_dbus_address_book_factory_call_open_address_book_sync (
-		factory_proxy, uid, &object_path, cancellable, &local_error);
+		factory_proxy, uid, &object_path, &bus_name, cancellable, &local_error);
 
 	g_object_unref (factory_proxy);
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((object_path != NULL) && (local_error == NULL)) ||
-		((object_path == NULL) && (local_error != NULL)));
+		(((object_path != NULL) || (bus_name != NULL)) && (local_error == NULL)) ||
+		(((object_path == NULL) || (bus_name == NULL)) && (local_error != NULL)));
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1033,13 +1034,15 @@ book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		return;
 	}
 
+	e_client_set_bus_name (client, bus_name);
+
 	priv->dbus_proxy = e_dbus_address_book_proxy_new_sync (
 		connection,
 		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
-		object_path, cancellable, &local_error);
+		bus_name, object_path, cancellable, &local_error);
 
 	g_free (object_path);
+	g_free (bus_name);
 
 	/* Sanity check. */
 	g_return_if_fail (

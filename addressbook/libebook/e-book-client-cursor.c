@@ -1103,17 +1103,22 @@ book_client_cursor_initable_init (GInitable *initable,
 	EBookClientCursor        *cursor = E_BOOK_CLIENT_CURSOR (initable);
 	EBookClientCursorPrivate *priv = cursor->priv;
 	EDBusAddressBookCursor   *proxy;
+	gchar                    *bus_name;
 
 	/* We only need a proxy for regular access, no need in DRA mode */
 	if (priv->direct_cursor)
 		return TRUE;
 
+	bus_name = e_client_dup_bus_name (E_CLIENT (priv->client));
+
 	proxy = e_dbus_address_book_cursor_proxy_new_sync (
 		priv->connection,
 		G_DBUS_PROXY_FLAGS_NONE,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		bus_name,
 		priv->object_path,
 		cancellable, error);
+
+	g_free (bus_name);
 
 	if (!proxy)
 		return FALSE;

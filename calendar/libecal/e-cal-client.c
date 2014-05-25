@@ -1105,6 +1105,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	ESource *source;
 	const gchar *uid;
 	gchar *object_path = NULL;
+	gchar *bus_name = NULL;
 	gulong handler_id;
 	GError *local_error = NULL;
 
@@ -1150,17 +1151,17 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 	switch (e_cal_client_get_source_type (E_CAL_CLIENT (client))) {
 		case E_CAL_CLIENT_SOURCE_TYPE_EVENTS:
 			e_dbus_calendar_factory_call_open_calendar_sync (
-				factory_proxy, uid, &object_path,
+				factory_proxy, uid, &object_path, &bus_name,
 				cancellable, &local_error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_TASKS:
 			e_dbus_calendar_factory_call_open_task_list_sync (
-				factory_proxy, uid, &object_path,
+				factory_proxy, uid, &object_path, &bus_name,
 				cancellable, &local_error);
 			break;
 		case E_CAL_CLIENT_SOURCE_TYPE_MEMOS:
 			e_dbus_calendar_factory_call_open_memo_list_sync (
-				factory_proxy, uid, &object_path,
+				factory_proxy, uid, &object_path, &bus_name,
 				cancellable, &local_error);
 			break;
 		default:
@@ -1171,8 +1172,8 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 
 	/* Sanity check. */
 	g_return_if_fail (
-		((object_path != NULL) && (local_error == NULL)) ||
-		((object_path == NULL) && (local_error != NULL)));
+		(((object_path != NULL) || (bus_name != NULL)) && (local_error == NULL)) ||
+		(((object_path == NULL) || (bus_name == NULL)) && (local_error != NULL)));
 
 	if (object_path == NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1181,13 +1182,15 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		return;
 	}
 
+	e_client_set_bus_name (client, bus_name);
+
 	priv->dbus_proxy = e_dbus_calendar_proxy_new_sync (
 		connection,
 		G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
-		CALENDAR_DBUS_SERVICE_NAME,
-		object_path, cancellable, &local_error);
+		bus_name, object_path, cancellable, &local_error);
 
 	g_free (object_path);
+	g_free (bus_name);
 
 	/* Sanity check. */
 	g_return_if_fail (

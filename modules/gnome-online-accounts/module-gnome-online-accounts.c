@@ -915,7 +915,7 @@ gnome_online_accounts_account_added_cb (EGoaClient *goa_client,
 
 	if (source_uid == NULL && backend_name != NULL)
 		backend_factory = e_data_factory_ref_backend_factory (
-			E_DATA_FACTORY (server), backend_name);
+			E_DATA_FACTORY (server), backend_name, E_SOURCE_EXTENSION_COLLECTION);
 
 	if (backend_factory != NULL) {
 		gnome_online_accounts_create_collection (

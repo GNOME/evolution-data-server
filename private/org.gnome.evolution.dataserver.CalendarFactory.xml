@@ -22,6 +22,7 @@
   <method name="OpenCalendar">
     <arg name="source_uid" direction="in" type="s"/>
     <arg name="object_path" direction="out" type="s"/>
+    <arg name="bus_name" direction="out" type="s"/>
   </method>
 
   <!--
@@ -36,6 +37,7 @@
   <method name="OpenTaskList">
     <arg name="source_uid" direction="in" type="s"/>
     <arg name="object_path" direction="out" type="s"/>
+    <arg name="bus_name" direction="out" type="s"/>
   </method>
 
   <!--
@@ -49,6 +51,7 @@
   <method name="OpenMemoList">
     <arg name="source_uid" direction="in" type="s"/>
     <arg name="object_path" direction="out" type="s"/>
+    <arg name="bus_name" direction="out" type="s"/>
   </method>
 </interface>
 

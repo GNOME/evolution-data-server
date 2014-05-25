@@ -38,6 +38,7 @@
 #include <config.h>
 
 #include <libebackend/e-data-factory.h>
+#include "e-module.h"
 
 G_DEFINE_ABSTRACT_TYPE (EBackendFactory, e_backend_factory, E_TYPE_EXTENSION)
 
@@ -106,4 +107,52 @@ e_backend_factory_new_backend (EBackendFactory *factory,
 	g_return_val_if_fail (class->new_backend != NULL, NULL);
 
 	return class->new_backend (factory, source);
+}
+
+/**
+ * e_backend_factory_get_module_filename:
+ * @factory: an #EBackendFactory
+ *
+ * Returns the filename of the shared library for the module used
+ * to load the backends provided by @factory.
+ *
+ * Returns: the filename for the module associated to the @factory
+ *
+ * Since: 3.14
+ **/
+const gchar *
+e_backend_factory_get_module_filename (EBackendFactory *factory)
+{
+	EBackendFactoryClass *class;
+
+	g_return_val_if_fail (E_IS_BACKEND_FACTORY (factory), NULL);
+
+	class = E_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class->e_module != NULL, NULL);
+
+	return e_module_get_filename (class->e_module);
+}
+
+/**
+ * e_backend_factory_share_subprocess:
+ * @factory: an #EBackendFactory
+ *
+ * Returns TRUE if the @factory wants to share the subprocess
+ * for all backends provided by itself. Otherwise, returns FALSE.
+ *
+ * Returns: TRUE if the @factory shares the subprocess for all its
+ *          backends. Otherwise, FALSE.
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_backend_factory_share_subprocess (EBackendFactory *factory)
+{
+	EBackendFactoryClass *class;
+
+	g_return_val_if_fail (E_IS_BACKEND_FACTORY (factory), FALSE);
+
+	class = E_BACKEND_FACTORY_GET_CLASS (factory);
+
+	return class->share_subprocess;
 }

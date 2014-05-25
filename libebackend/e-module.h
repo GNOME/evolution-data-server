@@ -70,6 +70,7 @@ struct _EModuleClass {
 GType		e_module_get_type		(void) G_GNUC_CONST;
 EModule *	e_module_new			(const gchar *filename);
 const gchar *	e_module_get_filename		(EModule *module);
+EModule *	e_module_load_file		(const gchar *filename);
 GList *		e_module_load_all_in_directory	(const gchar *dirname);
 
 /* This is here for lack of a better place for it. */

@@ -7,6 +7,7 @@ libedata_cal_1_2_la_CPPFLAGS = \
 	-DLIBEDATA_CAL_COMPILATION \
 	-DG_LOG_DOMAIN=\"libedata-cal\" \
 	-DBACKENDDIR=\"$(ecal_backenddir)\" \
+	-DSUBPROCESS_CAL_BACKEND_PATH=\"$(libexecdir)/evolution-calendar-factory-subprocess\" \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/calendar \
 	-I$(top_srcdir)/calendar/libegdbus \
@@ -31,6 +32,7 @@ libedata_cal_1_2_la_SOURCES = \
 	e-data-cal.c \
 	e-data-cal-factory.c \
 	e-data-cal-view.c \
+	e-subprocess-cal-factory.c \
 	$(NULL)
 
 libedata_cal_1_2_la_LIBADD = \
@@ -62,6 +64,7 @@ libedata_calinclude_HEADERS = \
 	e-data-cal-factory.h \
 	e-cal-backend-store.h \
 	e-data-cal-view.h \
+	e-subprocess-cal-factory.h \
 	$(NULL)
 
 %-$(API_VERSION).pc: %.pc
@@ -69,6 +72,45 @@ libedata_calinclude_HEADERS = \
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libedata-cal-$(API_VERSION).pc
+
+libexec_PROGRAMS = evolution-calendar-factory-subprocess
+
+evolution_calendar_factory_subprocess_CPPFLAGS= \
+	$(AM_CPPFLAGS) \
+	-DLOCALEDIR=\"$(localedir)\" \
+	-I$(top_srcdir) \
+	-I$(top_srcdir)/private \
+	-I$(top_srcdir)/calendar \
+	-I$(top_builddir) \
+	-I$(top_builddir)/private \
+	-I$(top_builddir)/calendar \
+	$(EVOLUTION_CALENDAR_CFLAGS) \
+	$(LIBSECRET_CFLAGS) \
+	$(FACTORY_GTK_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(SOUP_CFLAGS) \
+	$(CODE_COVERAGE_CFLAGS) \
+	$(NULL)
+
+evolution_calendar_factory_subprocess_SOURCES = \
+	evolution-calendar-factory-subprocess.c \
+	$(NULL)
+
+evolution_calendar_factory_subprocess_LDADD = \
+	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	libedata-cal-1.2.la \
+	$(EVOLUTION_CALENDAR_LIBS) \
+	$(LIBSECRET_LIBS) \
+	$(FACTORY_GTK_LIBS) \
+	$(CAMEL_CFLAGS) \
+	$(SOUP_LIBS) \
+	$(NULL)
+
+evolution_calendar_factory_subprocess_LDFLAGS = \
+	$(AM_LDFLAGS) \
+	$(CODE_COVERAGE_LDFLAGS) \
+	$(NULL)
 
 DISTCLEANFILES = $(pkgconfig_DATA)
 
