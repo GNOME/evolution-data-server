@@ -1,3 +1,51 @@
+Evolution-Data-Server 3.13.2 2014-05-26
+---------------------------------------
+
+Bug Fixes:
+	Bug #720154 - [IMAPx] Silently recover from "Connection reset by peer" error (Milan Crha)
+	Bug #720154 - [NNTP] Silently recover from "Connection reset by peer" error (Milan Crha)
+	Bug #728167 - [IMAPx] Message headers downloaded twice (Milan Crha)
+	Bug #728414 - Deliver ESource data changes on idle (Milan Crha)
+	Bug #729251 - EBookSqlite: Allow record detailed changes made to contacts (Mateusz Polrola)
+	Bug #728973 - [IMAPX] Recover after store summary version mismatch (Milan Crha)
+	Bug #678843 - May re-prompt password on account re-enable (Milan Crha)
+	Bug #729546 - [IMAPx] Crash after large message download cancel (Milan Crha)
+	Bug #728976 - [IMAPx] Ignore \NoSelect for Inbox folder (Milan Crha)
+	Bug #730398 - [WebDAV] Incorrect cache clean-up after book view cancel (Milan Crha)
+	Bug #725045 - Crash updating Google book's contact with photo (Milan Crha)
+	Bug #730281 - [CalDAV] Recover after temporary connection lost (Milan Crha)
+
+Miscellaneous:
+	EBackend: Fix view leak when the client crashes (Fabiano Fidêncio)
+	[IMAPx] Set local cache to never expire (Milan Crha)
+	camel_imapx_conn_manager_close_connections: Avoid possible deadlock (Milan Crha)
+	imapx_register_job: Try reconnect if the server is shutdown/disconnected (Milan Crha)
+	[IMAPx] Try to address "Empty cache file" error (Milan Crha)
+	[IMAPX] Missing folder operation finish call at imapx_search_process_criteria() (Milan Crha)
+	[IMAPX] Do not hold queue_lock when calling imapx_server_ref_job() (Milan Crha)
+	libedataserver: Fix a function name in a documentation comment (Philip Withnall)
+	camel_imapx_conn_manager_get_connection: Ensure only connected servers are returned (Milan Crha)
+	e-proxy: Eliminate use of undefined C behaviour (Philip Withnall)
+	secret-monitor: Remove duplicate assignment (Philip Withnall)
+	addressbook: Fix some potential NULL pointer dereferences with SQL (Philip Withnall)
+	camel: Print a warning on failing to save migrated maildir version (Philip Withnall)
+	camel: Avoid an unlikely division by zero on a race condition (Philip Withnall)
+	addressbook: Add bounds checking to a summary file function (Philip Withnall)
+	addressbook: Fix cancellable handling if not in a transaction (Philip Withnall)
+	camel: Avoid an unlikely division by zero failure (Philip Withnall)
+	addressbook: Strengthen an assertion to avoid negative bit shifts (Philip Withnall)
+	[EBookBackendGoogle] Guard private 'groups' members with a lock (Milan Crha)
+	[LDAP & Google] Use EBookBackendClass::refresh_sync method (Milan Crha)
+	[EBookBackendGoogle] Do not store active views in its own way (Milan Crha)
+	[EBookBackendGoogle] Serialize group list update and cache update (Milan Crha)
+
+Translations:
+	Matej Urbančič (sl)
+	Pau Iranzo (ca)
+	Christian Kirbach (de)
+	Piotr Drąg (pl)
+	Enrico Nicoletto (pt_BR)
+
 Evolution-Data-Server 3.13.1 2014-04-28
 ---------------------------------------
 
