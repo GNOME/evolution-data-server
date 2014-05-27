@@ -63,7 +63,7 @@
 #define QUEUE_UNLOCK(x) (g_rec_mutex_unlock(&(x)->queue_lock))
 
 /* Try pipelining fetch requests, 'in bits' */
-#define MULTI_SIZE (20480)
+#define MULTI_SIZE (32768 * 8)
 
 /* How many outstanding commands do we allow before we just queue them? */
 #define MAX_COMMANDS (10)
