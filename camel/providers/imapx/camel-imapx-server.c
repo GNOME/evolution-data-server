@@ -3555,16 +3555,20 @@ imapx_job_idle_start (CamelIMAPXJob *job,
 	cp = g_queue_peek_head (&ic->parts);
 	cp->type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 
-	QUEUE_LOCK (is);
 	g_mutex_lock (&is->priv->idle_lock);
 	/* Don't issue it if the idle was cancelled already */
 	if (is->priv->idle_state == IMAPX_IDLE_PENDING) {
 		is->priv->idle_state = IMAPX_IDLE_ISSUED;
+		g_mutex_unlock (&is->priv->idle_lock);
+
+		QUEUE_LOCK (is);
 		imapx_command_start (is, ic);
 	} else {
+		g_mutex_unlock (&is->priv->idle_lock);
+
+		QUEUE_LOCK (is);
 		imapx_unregister_job (is, job);
 	}
-	g_mutex_unlock (&is->priv->idle_lock);
 	QUEUE_UNLOCK (is);
 
 	camel_imapx_command_unref (ic);
