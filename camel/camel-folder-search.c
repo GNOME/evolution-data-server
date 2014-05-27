@@ -712,6 +712,15 @@ folder_search_dummy (CamelSExp *sexp,
 	return r;
 }
 
+static CamelSExpResult *
+folder_search_header_has_words (CamelSExp *sexp,
+				gint argc,
+				CamelSExpResult **argv,
+				CamelFolderSearch *search)
+{
+	return check_header (sexp, argc, argv, search, CAMEL_SEARCH_MATCH_WORD);
+}
+
 static void
 folder_search_dispose (GObject *object)
 {
@@ -783,6 +792,10 @@ folder_search_constructed (GObject *object)
 			}
 		}
 	}
+
+	camel_sexp_add_function (
+		search->sexp, 0, "header-has-words",
+		(CamelSExpFunc) folder_search_header_has_words, search);
 }
 
 /* implement an 'array not', i.e. everything in the summary, not in the supplied array */
