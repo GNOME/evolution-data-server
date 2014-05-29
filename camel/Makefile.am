@@ -57,7 +57,6 @@ libcamel_1_2_la_CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DCAMEL_COMPILATION \
 	$(CAMEL_CFLAGS) \
-	$(GIO_UNIX_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(NULL)
 
@@ -300,7 +299,6 @@ libcamel_1_2_la_LDFLAGS = -version-info $(LIBCAMEL_CURRENT):$(LIBCAMEL_REVISION)
 
 libcamel_1_2_la_LIBADD = \
 	$(CAMEL_LIBS) \
-	$(GIO_UNIX_LIBS) \
 	$(SOCKET_LIBS) \
 	$(ICONV_LIBS) \
 	$(REGEX_LIBS) \

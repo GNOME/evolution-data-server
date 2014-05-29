@@ -31,8 +31,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include <gio/gunixinputstream.h>
-
 #include "camel-mempool.h"
 #include "camel-mime-filter.h"
 #include "camel-mime-parser.h"
@@ -73,7 +71,8 @@ struct _header_scan_state {
 	gchar *outptr;
 	gchar *outend;
 
-	CamelStream *stream;
+	gint fd;			/* input for a fd input */
+	CamelStream *stream;		/* or for a stream */
 	GInputStream *input_stream;
 
 	gint ioerrno;		/* io error state */
@@ -143,6 +142,7 @@ struct _header_scan_filter {
 static void folder_scan_reset (struct _header_scan_state *s);
 static void folder_scan_step (struct _header_scan_state *s, gchar **databuffer, gsize *datalength);
 static void folder_scan_drop_step (struct _header_scan_state *s);
+static gint folder_scan_init_with_fd (struct _header_scan_state *s, gint fd);
 static gint folder_scan_init_with_stream (struct _header_scan_state *s, CamelStream *stream, GError **error);
 static struct _header_scan_state *folder_scan_init (void);
 static void folder_scan_close (struct _header_scan_state *s);
@@ -441,16 +441,12 @@ camel_mime_parser_from_line (CamelMimeParser *m)
  * Returns: Returns -1 on error.
  **/
 gint
-camel_mime_parser_init_with_fd (CamelMimeParser *parser,
+camel_mime_parser_init_with_fd (CamelMimeParser *m,
                                 gint fd)
 {
-	GInputStream *input_stream;
+	struct _header_scan_state *s = _PRIVATE (m);
 
-	input_stream = g_unix_input_stream_new (fd, TRUE);
-	camel_mime_parser_init_with_input_stream (parser, input_stream);
-	g_object_unref (input_stream);
-
-	return 0;
+	return folder_scan_init_with_fd (s, fd);
 }
 
 /**
@@ -959,10 +955,12 @@ folder_read (struct _header_scan_state *s)
 	if (s->stream) {
 		len = camel_stream_read (
 			s->stream, s->inbuf + inoffset, SCAN_BUF - inoffset, NULL, NULL);
-	} else {
+	} else if (s->input_stream != NULL) {
 		len = g_input_stream_read (
 			s->input_stream, s->inbuf + inoffset,
 			SCAN_BUF - inoffset, NULL, NULL);
+	} else {
+		len = read (s->fd, s->inbuf + inoffset, SCAN_BUF - inoffset);
 	}
 	r (printf ("read %d bytes, offset = %d\n", len, inoffset));
 	if (len >= 0) {
@@ -1017,7 +1015,7 @@ folder_seek (struct _header_scan_state *s,
 			newoffset = -1;
 			errno = EINVAL;
 		}
-	} else {
+	} else if (s->input_stream != NULL) {
 		if (G_IS_SEEKABLE (s->input_stream)) {
 			/* NOTE: assumes whence seekable stream == whence libc, which is probably
 			 * the case (or bloody well should've been) */
@@ -1029,6 +1027,8 @@ folder_seek (struct _header_scan_state *s,
 			newoffset = -1;
 			errno = EINVAL;
 		}
+	} else {
+		newoffset = lseek (s->fd, offset, whence);
 	}
 #ifdef PURIFY
 	purify_watch_remove (inend_id);
@@ -1492,6 +1492,8 @@ folder_scan_close (struct _header_scan_state *s)
 	g_free (s->outbuf);
 	while (s->parts)
 		folder_pull_part (s);
+	if (s->fd != -1)
+		close (s->fd);
 	g_clear_object (&s->stream);
 	g_clear_object (&s->input_stream);
 	g_free (s);
@@ -1504,6 +1506,7 @@ folder_scan_init (void)
 
 	s = g_malloc (sizeof (*s));
 
+	s->fd = -1;
 	s->stream = NULL;
 	s->input_stream = NULL;
 	s->ioerrno = 0;
@@ -1558,10 +1561,24 @@ folder_scan_reset (struct _header_scan_state *s)
 	s->inend = s->inbuf;
 	s->inptr = s->inbuf;
 	s->inend[0] = '\n';
+	if (s->fd != -1) {
+		close (s->fd);
+		s->fd = -1;
+	}
 	g_clear_object (&s->stream);
 	g_clear_object (&s->input_stream);
 	s->ioerrno = 0;
 	s->eof = FALSE;
+}
+
+static gint
+folder_scan_init_with_fd (struct _header_scan_state *s,
+			  gint fd)
+{
+	folder_scan_reset (s);
+	s->fd = fd;
+
+	return 0;
 }
 
 static gint
