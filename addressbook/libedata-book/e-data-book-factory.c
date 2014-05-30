@@ -807,7 +807,7 @@ data_book_factory_initable_init (GInitable *initable,
 	/* When running tests, we pretend to be the "org.freedesktop.locale1" service
 	 * on the session bus instead of the real location on the system bus.
 	 */
-	if (g_getenv ("EDS_TESTING") != NULL)
+	if (g_getenv ("EDS_LOCALED_TESTING") != NULL)
 		bus_type = G_BUS_TYPE_SESSION;
 
 	/* Watch system bus for locale change notifications */
