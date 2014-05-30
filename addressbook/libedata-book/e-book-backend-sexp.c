@@ -1073,6 +1073,141 @@ func_exists_vcard (struct _ESExp *f,
 	return r;
 }
 
+/* first space between words is treated as wildcard character;
+ * we are looking for s2 in s1, so s2 will be breaked into words
+ */
+static gboolean
+translit_contains_helper (const gchar *s1,
+			  const gchar *s2,
+			  const gchar *region)
+{
+	ETransliterator *transliterator;
+	gchar *t1, *t2;
+	gboolean res = FALSE;
+
+	transliterator = e_transliterator_new ("Any-Latin");
+	t1 = e_transliterator_transliterate (transliterator, s1);
+	t2 = e_transliterator_transliterate (transliterator, s2);
+	e_transliterator_unref (transliterator);
+
+	res = contains_helper (t1, t2, region);
+
+	g_free (t1);
+	g_free (t2);
+
+	return res;
+}
+
+static ESExpResult *
+func_translit_contains (struct _ESExp *f,
+			gint argc,
+			struct _ESExpResult **argv,
+			gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, translit_contains_helper);
+}
+
+static gboolean
+translit_is_helper (const gchar *ps1,
+		    const gchar *ps2,
+		    const gchar *region)
+{
+	ETransliterator *transliterator;
+	gchar *t1, *t2;
+	gboolean res = FALSE;
+
+	transliterator = e_transliterator_new ("Any-Latin");
+	t1 = e_transliterator_transliterate (transliterator, ps1);
+	t2 = e_transliterator_transliterate (transliterator, ps2);
+	e_transliterator_unref (transliterator);
+
+	res = is_helper (t1, t2, region);
+
+	g_free (t1);
+	g_free (t2);
+
+	return res;
+}
+
+static ESExpResult *
+func_translit_is (struct _ESExp *f,
+		  gint argc,
+		  struct _ESExpResult **argv,
+		  gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, translit_is_helper);
+}
+
+static gboolean
+translit_endswith_helper (const gchar *ps1,
+			  const gchar *ps2,
+			  const gchar *region)
+{
+	ETransliterator *transliterator;
+	gchar *t1, *t2;
+	gboolean res = FALSE;
+
+	transliterator = e_transliterator_new ("Any-Latin");
+	t1 = e_transliterator_transliterate (transliterator, ps1);
+	t2 = e_transliterator_transliterate (transliterator, ps2);
+	e_transliterator_unref (transliterator);
+
+	res = endswith_helper (t1, t2, region);
+
+	g_free (t1);
+	g_free (t2);
+
+	return res;
+}
+
+static ESExpResult *
+func_translit_endswith (struct _ESExp *f,
+			gint argc,
+			struct _ESExpResult **argv,
+			gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, translit_endswith_helper);
+}
+
+static gboolean
+translit_beginswith_helper (const gchar *ps1,
+			    const gchar *ps2,
+			    const gchar *region)
+{
+	ETransliterator *transliterator;
+	gchar *t1, *t2;
+	gboolean res = FALSE;
+
+	transliterator = e_transliterator_new ("Any-Latin");
+	t1 = e_transliterator_transliterate (transliterator, ps1);
+	t2 = e_transliterator_transliterate (transliterator, ps2);
+	e_transliterator_unref (transliterator);
+
+	res = beginswith_helper (t1, t2, region);
+
+	g_free (t1);
+	g_free (t2);
+
+	return res;
+}
+
+static ESExpResult *
+func_translit_beginswith (struct _ESExp *f,
+			  gint argc,
+			  struct _ESExpResult **argv,
+			  gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, translit_beginswith_helper);
+}
+
 static void
 book_backend_sexp_finalize (GObject *object)
 {
@@ -1124,6 +1259,10 @@ static struct {
 	{ "regex_raw", func_regex_raw, 0 },
 	{ "exists", func_exists, 0 },
 	{ "exists_vcard", func_exists_vcard, 0 },
+	{ "translit_contains", func_translit_contains, 0 },
+	{ "translit_is", func_translit_is, 0 },
+	{ "translit_beginswith", func_translit_beginswith, 0 },
+	{ "translit_endswith", func_translit_endswith, 0 },
 };
 
 /**

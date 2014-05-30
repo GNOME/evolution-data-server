@@ -35,19 +35,19 @@ G_BEGIN_DECLS
 #endif
 
 /**
- * ETransliterator:
+ * ECxxTransliterator:
  *
  * A private opaque type describing an alphabetic index
  *
  * Since: 3.12
  **/
-typedef struct _ETransliterator ETransliterator;
+typedef struct _ECxxTransliterator ECxxTransliterator;
 
 /* defined in e-transliterator-private.cpp, and used by by e-collator.c */
-E_TRANSLITERATOR_LOCAL ETransliterator *_e_transliterator_cxx_new             (const gchar      *transliterator_id);
-E_TRANSLITERATOR_LOCAL void             _e_transliterator_cxx_free            (ETransliterator  *transliterator);
-E_TRANSLITERATOR_LOCAL gchar           *_e_transliterator_cxx_transliterate   (ETransliterator  *transliterator,
-									       const gchar      *str);
+E_TRANSLITERATOR_LOCAL ECxxTransliterator *_e_transliterator_cxx_new             (const gchar        *transliterator_id);
+E_TRANSLITERATOR_LOCAL void                _e_transliterator_cxx_free            (ECxxTransliterator *transliterator);
+E_TRANSLITERATOR_LOCAL gchar              *_e_transliterator_cxx_transliterate   (ECxxTransliterator *transliterator,
+										  const gchar        *str);
 
 G_END_DECLS
 

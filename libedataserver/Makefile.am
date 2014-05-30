@@ -92,6 +92,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-debug-log.c \
 	e-time-utils.c \
 	e-transliterator-private.h \
+	e-transliterator.c \
 	e-uid.c \
 	e-url.c \
 	e-data-server-util.c \
@@ -126,6 +127,7 @@ libedataserverinclude_HEADERS = \
 	e-categories.h \
 	e-client.h \
 	e-collator.h \
+	e-transliterator.h \
 	e-credentials.h \
 	e-flag.h \
 	e-gdbus-templates.h \

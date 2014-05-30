@@ -289,6 +289,7 @@ ebsql_init_debug (void)
 #define EBSQL_SUFFIX_SORT_KEY        "localized"
 #define EBSQL_SUFFIX_PHONE           "phone"
 #define EBSQL_SUFFIX_COUNTRY         "country"
+#define EBSQL_SUFFIX_TRANSLIT        "translit"
 
 /* Track EBookIndexType's in a bit mask  */
 #define INDEX_FLAG(type)  (1 << E_BOOK_INDEX_##type)
@@ -359,6 +360,7 @@ struct _EBookSqlitePrivate {
 	GCancellable   *cancel;          /* User passed GCancellable, we abort an operation if cancelled */
 
 	ECollator      *collator;        /* The ECollator to create sort keys for any sortable fields */
+	ETransliterator *transliterator; /* For transliterated queries */
 
 	/* SQLite resources  */
 	sqlite3        *db;
@@ -676,6 +678,12 @@ summary_field_list_columns (SummaryField *field,
 
 		/* One integer column for storing the country code */
 		info = column_info_new (field, folderid, EBSQL_SUFFIX_COUNTRY, "INTEGER", "DEFAULT 0", NULL);
+		columns = g_slist_prepend (columns, info);
+	}
+
+	/* Transliterated value column */
+	if (field->type != G_TYPE_BOOLEAN && (field->index & INDEX_FLAG (TRANSLIT)) != 0) {
+		info    = column_info_new (field, folderid, EBSQL_SUFFIX_TRANSLIT, "TEXT", NULL, "TINDEX");
 		columns = g_slist_prepend (columns, info);
 	}
 
@@ -2051,6 +2059,8 @@ format_multivalues (EBookSqlite *ebsql)
 				g_string_append (string, ";suffix");
 			if ((ebsql->priv->summary_fields[i].index & INDEX_FLAG (PHONE)) != 0)
 				g_string_append (string, ";phone");
+			if ((ebsql->priv->summary_fields[i].index & INDEX_FLAG (TRANSLIT)) != 0)
+				g_string_append (string, ";translit");
 		}
 	}
 
@@ -2145,6 +2155,10 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 			computed = INDEX_FLAG (SORT_KEY);
 			freeme = g_strndup (col, p - col);
 			col = freeme;
+		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_TRANSLIT)) != NULL) {
+			computed = INDEX_FLAG (TRANSLIT);
+			freeme = g_strndup (col, p - col);
+			col = freeme;
 		}
 
 		/* First check exception fields */
@@ -2228,6 +2242,8 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 						iter->index |= INDEX_FLAG (SUFFIX);
 					} else if (strcmp (params[j], "phone") == 0) {
 						iter->index |= INDEX_FLAG (PHONE);
+					} else if (strcmp (params[j], "translit") == 0) {
+						iter->index |= INDEX_FLAG (TRANSLIT);
 					}
 				}
 			}
@@ -3257,6 +3273,9 @@ ebsql_prepare_multi_insert (EBookSqlite *ebsql,
 		g_string_append (string, ", value_" EBSQL_SUFFIX_COUNTRY);
 	}
 
+	if ((field->index & INDEX_FLAG (TRANSLIT)) != 0)
+		g_string_append (string, ", value_" EBSQL_SUFFIX_TRANSLIT);
+
 	g_string_append (string, ") VALUES (:uid, :value");
 
 	if ((field->index & INDEX_FLAG (SUFFIX)) != 0)
@@ -3266,6 +3285,9 @@ ebsql_prepare_multi_insert (EBookSqlite *ebsql,
 		g_string_append (string, ", :value_" EBSQL_SUFFIX_PHONE);
 		g_string_append (string, ", :value_" EBSQL_SUFFIX_COUNTRY);
 	}
+
+	if ((field->index & INDEX_FLAG (TRANSLIT)) != 0)
+		g_string_append (string, ", :value_" EBSQL_SUFFIX_TRANSLIT);
 
 	g_string_append_c (string, ')');
 
@@ -3284,7 +3306,7 @@ ebsql_run_multi_insert_one (EBookSqlite *ebsql,
                             GError **error)
 {
 	gchar *normal = e_util_utf8_normalize (value);
-	gchar *str;
+	gchar *tmp, *str;
 	gint ret, param_idx = 1;
 
 	/* :uid */
@@ -3317,6 +3339,20 @@ ebsql_run_multi_insert_one (EBookSqlite *ebsql,
 		if (ret == SQLITE_OK)
 			sqlite3_bind_int (stmt, param_idx++, country_code);
 
+	}
+
+	if (ret == SQLITE_OK && (field->index & INDEX_FLAG (TRANSLIT)) != 0) {
+
+		if (value) {
+			tmp = e_transliterator_transliterate (ebsql->priv->transliterator, value);
+			str = e_util_utf8_normalize (tmp);
+			g_free (tmp);
+		} else {
+			str = NULL;
+		}
+
+		/* :value_translit */
+		ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 	}
 
 	/* Run the statement */
@@ -3414,6 +3450,12 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 				g_string_append (string, field->dbname);
 				g_string_append (string, "_" EBSQL_SUFFIX_COUNTRY);
 			}
+
+			if ((field->index & INDEX_FLAG (TRANSLIT)) != 0) {
+				g_string_append (string, ", ");
+				g_string_append (string, field->dbname);
+				g_string_append (string, "_" EBSQL_SUFFIX_TRANSLIT);
+			}
 		}
 	}
 	g_string_append (string, ", vcard, bdata)");
@@ -3449,6 +3491,9 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_PHONE, field->dbname);
 				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_COUNTRY, field->dbname);
 			}
+
+			if ((field->index & INDEX_FLAG (TRANSLIT)) != 0)
+				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_TRANSLIT, field->dbname);
 
 		} else if (field->type != E_TYPE_CONTACT_ATTR_LIST)
 			g_warn_if_reached ();
@@ -3601,6 +3646,20 @@ ebsql_run_insert (EBookSqlite *ebsql,
 				ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 				if (ret == SQLITE_OK)
 					sqlite3_bind_int (stmt, param_idx++, country_code);
+			}
+
+			if (ret == SQLITE_OK &&
+			    (field->index & INDEX_FLAG (TRANSLIT)) != 0) {
+
+				if (val) {
+					gchar *tmp = e_transliterator_transliterate (ebsql->priv->transliterator, val);
+					str = e_util_utf8_normalize (tmp);
+					g_free (tmp);
+				} else {
+					str = NULL;
+				}
+
+				ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 			}
 
 			g_free (val);
@@ -3778,7 +3837,11 @@ enum {
 	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER ? "eqphone-national" : \
 	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER ? "eqphone-short" : \
 	 (query) == E_BOOK_QUERY_REGEX_NORMAL ? "regex-normal" : \
-	 (query) == E_BOOK_QUERY_REGEX_NORMAL ? "regex-raw" : "(unknown)")
+	 (query) == E_BOOK_QUERY_REGEX_RAW ? "regex-raw" : \
+         (query) == E_BOOK_QUERY_TRANSLIT_IS    ? "translit-is" : \
+	 (query) == E_BOOK_QUERY_TRANSLIT_CONTAINS ? "translit-contains" : \
+	 (query) == E_BOOK_QUERY_TRANSLIT_BEGINS_WITH ? "translit-begins-with" : \
+	 (query) == E_BOOK_QUERY_TRANSLIT_ENDS_WITH ? "translit-ends-with" : "unknown")
 
 #define EBSQL_FIELD_ID_STR(field_id) \
 	((field_id) == E_CONTACT_FIELD_LAST ? "x-evolution-any-field" : \
@@ -4127,7 +4190,6 @@ static const struct {
 	{ "and",              TRUE, BOOK_QUERY_SUB_AND },
 	{ "or",               TRUE, BOOK_QUERY_SUB_OR },
 	{ "not",              TRUE, BOOK_QUERY_SUB_NOT },
-
 	{ "contains",         FALSE, E_BOOK_QUERY_CONTAINS },
 	{ "is",               FALSE, E_BOOK_QUERY_IS },
 	{ "beginswith",       FALSE, E_BOOK_QUERY_BEGINS_WITH },
@@ -4137,6 +4199,10 @@ static const struct {
 	{ "eqphone_short",    FALSE, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER },
 	{ "regex_normal",     FALSE, E_BOOK_QUERY_REGEX_NORMAL },
 	{ "regex_raw",        FALSE, E_BOOK_QUERY_REGEX_RAW },
+	{ "translit_is",         FALSE, E_BOOK_QUERY_TRANSLIT_IS },
+	{ "translit_contains",   FALSE, E_BOOK_QUERY_TRANSLIT_CONTAINS },
+	{ "translit_beginswith", FALSE, E_BOOK_QUERY_TRANSLIT_BEGINS_WITH },
+	{ "translit_endswith",   FALSE, E_BOOK_QUERY_TRANSLIT_ENDS_WITH },
 	{ "exists",           FALSE, BOOK_QUERY_EXISTS },
 };
 
@@ -4603,6 +4669,24 @@ query_preflight_check (PreflightContext *context,
 				}
 			}
 			break;
+
+		case E_BOOK_QUERY_TRANSLIT_IS:
+		case E_BOOK_QUERY_TRANSLIT_CONTAINS:
+		case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:
+		case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
+
+			/* These only only searchable in the summary with the E_BOOK_INDEX_TRANSLIT index */
+			if (test->field == NULL ||
+			    (test->field->index & INDEX_FLAG (TRANSLIT)) == 0) {
+
+				context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
+				EBSQL_NOTE (PREFLIGHT,
+					    g_printerr ("PREFLIGHT CHECK: "
+							"Query `%s' needs fallback search, new status: %s\n",
+							EBSQL_QUERY_TYPE_STR (field_test),
+							EBSQL_STATUS_STR (context->status)));
+			}
+			break;
 		}
 
 		if (test->field &&
@@ -4640,6 +4724,7 @@ query_preflight_substitute_full_name (PreflightContext *context,
 		SummaryField *family_name, *given_name, *nickname;
 		QueryElement *element;
 		QueryFieldTest *test;
+		gboolean need_translit = FALSE;
 
 		element = g_ptr_array_index (context->constraints, i);
 
@@ -4650,9 +4735,29 @@ query_preflight_substitute_full_name (PreflightContext *context,
 		if (test->field_id != E_CONTACT_FULL_NAME)
 			continue;
 
+		/* If it's transliterated, we won't do this */
+		if (element->query >= E_BOOK_QUERY_TRANSLIT_IS &&
+		    element->query <= E_BOOK_QUERY_TRANSLIT_ENDS_WITH)
+			need_translit = TRUE;
+
 		family_name = summary_field_get (ebsql, E_CONTACT_FAMILY_NAME);
 		given_name = summary_field_get (ebsql, E_CONTACT_GIVEN_NAME);
 		nickname = summary_field_get (ebsql, E_CONTACT_NICKNAME);
+
+		/* Only OR them in if they are also indexed for transliteration */
+		if (need_translit) {
+			if (family_name &&
+			    (family_name->index & INDEX_FLAG (TRANSLIT)) == 0)
+				family_name = NULL;
+
+			if (given_name &&
+			    (given_name->index & INDEX_FLAG (TRANSLIT)) == 0)
+				given_name = NULL;
+
+			if (nickname &&
+			    (nickname->index & INDEX_FLAG (TRANSLIT)) == 0)
+				nickname = NULL;
+		}
 
 		/* If any of these are in the summary, then we'll construct
 		 * a grouped OR statment for this E_CONTACT_FULL_NAME test */
@@ -4748,7 +4853,8 @@ typedef void (* GenerateFieldTest) (EBookSqlite      *ebsql,
  * with %Q or %q
  */
 static gchar *
-ebsql_normalize_for_like (QueryFieldTest *test,
+ebsql_normalize_for_like (EBookSqlite *ebsql,
+			  QueryFieldTest *test,
                           gboolean reverse_string,
                           gboolean *escape_needed)
 {
@@ -4765,6 +4871,13 @@ ebsql_normalize_for_like (QueryFieldTest *test,
 	if (test->field_id == E_CONTACT_UID ||
 	    test->field_id == E_CONTACT_REV) {
 		normal = test->value;
+	} else if (test->query >= E_BOOK_QUERY_TRANSLIT_CONTAINS &&
+		   test->query <= E_BOOK_QUERY_TRANSLIT_ENDS_WITH) {
+		gchar *tmp = e_transliterator_transliterate (ebsql->priv->transliterator, test->value);
+		freeme = e_util_utf8_normalize (tmp);
+		g_free (tmp);
+
+		normal = freeme;
 	} else {
 		freeme = e_util_utf8_normalize (test->value);
 		normal = freeme;
@@ -4834,7 +4947,7 @@ field_test_query_contains (EBookSqlite *ebsql,
 	gboolean need_escape;
 	gchar *escaped;
 
-	escaped = ebsql_normalize_for_like (test, FALSE, &need_escape);
+	escaped = ebsql_normalize_for_like (ebsql, test, FALSE, &need_escape);
 
 	g_string_append_c (string, '(');
 
@@ -4862,7 +4975,7 @@ field_test_query_begins_with (EBookSqlite *ebsql,
 	gboolean need_escape;
 	gchar *escaped;
 
-	escaped = ebsql_normalize_for_like (test, FALSE, &need_escape);
+	escaped = ebsql_normalize_for_like (ebsql, test, FALSE, &need_escape);
 
 	g_string_append_c (string, '(');
 	ebsql_string_append_column (string, field, NULL);
@@ -4891,7 +5004,7 @@ field_test_query_ends_with (EBookSqlite *ebsql,
 
 	if ((field->index & INDEX_FLAG (SUFFIX)) != 0) {
 
-		escaped = ebsql_normalize_for_like (test, TRUE, &need_escape);
+		escaped = ebsql_normalize_for_like (ebsql, test, TRUE, &need_escape);
 
 		g_string_append_c (string, '(');
 		ebsql_string_append_column (string, field, EBSQL_SUFFIX_REVERSE);
@@ -4904,7 +5017,7 @@ field_test_query_ends_with (EBookSqlite *ebsql,
 
 	} else {
 
-		escaped = ebsql_normalize_for_like (test, FALSE, &need_escape);
+		escaped = ebsql_normalize_for_like (ebsql, test, FALSE, &need_escape);
 		g_string_append_c (string, '(');
 
 		ebsql_string_append_column (string, field, NULL);
@@ -5035,9 +5148,109 @@ field_test_query_regex_normal (EBookSqlite *ebsql,
 }
 
 static void
+field_test_query_translit_is (EBookSqlite *ebsql,
+			      GString *string,
+                              QueryFieldTest *test)
+{
+	SummaryField *field = test->field;
+	gchar *normal, *translit;
+
+	translit = e_transliterator_transliterate (ebsql->priv->transliterator, test->value);
+	normal = e_util_utf8_normalize (translit);
+
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	ebsql_string_append_printf (string, " = %Q", normal);
+
+	g_free (translit);
+	g_free (normal);
+}
+
+static void
+field_test_query_translit_contains (EBookSqlite *ebsql,
+				    GString *string,
+                                    QueryFieldTest *test)
+{
+	SummaryField *field = test->field;
+	gboolean need_escape;
+	gchar *escaped;
+
+	escaped = ebsql_normalize_for_like (ebsql, test, FALSE, &need_escape);
+
+	g_string_append_c (string, '(');
+
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	g_string_append (string, " IS NOT NULL AND ");
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	g_string_append (string, " LIKE '%");
+	g_string_append (string, escaped);
+	g_string_append (string, "%'");
+
+	if (need_escape)
+		g_string_append (string, EBSQL_ESCAPE_SEQUENCE);
+
+	g_string_append_c (string, ')');
+
+	g_free (escaped);
+}
+
+static void
+field_test_query_translit_begins_with (EBookSqlite *ebsql,
+								   GString *string,
+								   QueryFieldTest *test)
+{
+	SummaryField *field = test->field;
+	gboolean need_escape;
+	gchar *escaped;
+
+	escaped = ebsql_normalize_for_like (ebsql, test, FALSE, &need_escape);
+
+	g_string_append_c (string, '(');
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	g_string_append (string, " IS NOT NULL AND ");
+
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	g_string_append (string, " LIKE \'");
+	g_string_append (string, escaped);
+	g_string_append (string, "%\'");
+
+	if (need_escape)
+		g_string_append (string, EBSQL_ESCAPE_SEQUENCE);
+	g_string_append_c (string, ')');
+
+	g_free (escaped);
+}
+
+static void
+field_test_query_translit_ends_with (EBookSqlite *ebsql,
+								     GString *string,
+								     QueryFieldTest *test)
+{
+	SummaryField *field = test->field;
+	gboolean need_escape;
+	gchar *escaped;
+
+	escaped = ebsql_normalize_for_like (ebsql, test, FALSE, &need_escape);
+	g_string_append_c (string, '(');
+
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	g_string_append (string, " IS NOT NULL AND ");
+
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	g_string_append (string, " LIKE \'%");
+	g_string_append (string, escaped);
+	g_string_append (string, "\'");
+
+	if (need_escape)
+		g_string_append (string, EBSQL_ESCAPE_SEQUENCE);
+
+	g_string_append_c (string, ')');
+	g_free (escaped);
+}
+
+static void
 field_test_query_exists (EBookSqlite *ebsql,
-                         GString *string,
-                         QueryFieldTest *test)
+						 GString *string,
+						 QueryFieldTest *test)
 {
 	SummaryField *field = test->field;
 
@@ -5059,6 +5272,10 @@ static const GenerateFieldTest field_test_func_table[] = {
 	field_test_query_eqphone_short,    /* E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER */
 	field_test_query_regex_normal,     /* E_BOOK_QUERY_REGEX_NORMAL */
 	NULL /* Requires fallback */,      /* E_BOOK_QUERY_REGEX_RAW  */
+	field_test_query_translit_is,      /* E_BOOK_QUERY_TRANSLIT_IS  */
+	field_test_query_translit_contains,/* E_BOOK_QUERY_TRANSLIT_CONTAINS  */
+	field_test_query_translit_begins_with,/* E_BOOK_QUERY_TRANSLIT_BEGINS_WITH  */
+	field_test_query_translit_ends_with,/* E_BOOK_QUERY_TRANSLIT_ENDS_WITH  */
 	field_test_query_exists,           /* BOOK_QUERY_EXISTS */
 };
 
@@ -5924,6 +6141,9 @@ e_book_sqlite_finalize (GObject *object)
 	if (priv->collator)
 		e_collator_unref (priv->collator);
 
+	if (ebsql->priv->transliterator)
+		e_transliterator_unref (ebsql->priv->transliterator);
+
 	g_mutex_clear (&priv->lock);
 	g_mutex_clear (&priv->updates_lock);
 
@@ -5968,6 +6188,8 @@ e_book_sqlite_init (EBookSqlite *ebsql)
 
 	g_mutex_init (&ebsql->priv->lock);
 	g_mutex_init (&ebsql->priv->updates_lock);
+
+	ebsql->priv->transliterator = e_transliterator_new ("Any-Latin");
 }
 
 /**********************************************************

@@ -2,7 +2,7 @@
 /*
  * Copyright (C) 2013 Intel Corporation
  *
- * This library is free software; you can redistribute it and/or modify it
+g * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation.
  *
@@ -36,43 +36,43 @@
 
 using icu::Transliterator;
 
-struct _ETransliterator {
+struct _ECxxTransliterator {
 	Transliterator *priv;
 };
 
 /* Create an Transliterator for the source and target
  * language stripts
  */
-ETransliterator *
+ECxxTransliterator *
 _e_transliterator_cxx_new (const gchar *transliterator_id)
 {
 	UErrorCode status = U_ZERO_ERROR;
-	ETransliterator *transliterator;
+	ECxxTransliterator *transliterator;
 
 	g_return_val_if_fail (transliterator_id != NULL, NULL);
 
-	transliterator = g_slice_new (ETransliterator);
+	transliterator = g_slice_new (ECxxTransliterator);
 	transliterator->priv = Transliterator::createInstance (transliterator_id, UTRANS_FORWARD, status); 
 
 	return transliterator;
 }
 
-/* Frees an ETransliterator and it's associated resources
+/* Frees an ECxxTransliterator and it's associated resources
  */
 void
-_e_transliterator_cxx_free (ETransliterator *transliterator)
+_e_transliterator_cxx_free (ECxxTransliterator *transliterator)
 {
 	if (transliterator) {
 		delete transliterator->priv;
-		g_slice_free (ETransliterator, transliterator);
+		g_slice_free (ECxxTransliterator, transliterator);
 	}
 }
 
 /* Transliterates 'str' and returns the new allocated result
  */
 gchar *
-_e_transliterator_cxx_transliterate (ETransliterator  *transliterator,
-				     const gchar      *str)
+_e_transliterator_cxx_transliterate (ECxxTransliterator  *transliterator,
+				     const gchar         *str)
 {
 	UnicodeString transform;
 	std::string sourceUTF8;

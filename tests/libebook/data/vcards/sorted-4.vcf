@@ -1,6 +1,7 @@
 BEGIN:VCARD
 UID:sorted-4
 N:bat;First Name
+EMAIL:警察@brown.org
 TEL;TYPE=work,pref:12 245999
 EMAIL:big.bobby@brown.org
 END:VCARD
