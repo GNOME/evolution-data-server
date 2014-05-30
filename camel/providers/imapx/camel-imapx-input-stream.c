@@ -368,54 +368,58 @@ camel_imapx_input_stream_astring (CamelIMAPXInputStream *is,
 	p = is->priv->ptr;
 	e = is->priv->end;
 
-	/* skip whitespace/prefill buffer */
-	do {
-		while (p >= e ) {
-			is->priv->ptr = p;
-			if (imapx_input_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
-				return FALSE;
-			p = is->priv->ptr;
-			e = is->priv->end;
-		}
-		c = *p++;
-	} while (c == ' ' || c == '\r');
-
-	if (c == '\"' || c == '{') {
+	if (is->priv->unget) {
 		tok = camel_imapx_input_stream_token (is, data, &len, cancellable, error);
 	} else {
-		guchar *o, *oe;
-
-		tok = IMAPX_TOK_STRING;
-
-		/* <any %x01-7F except "(){ " / %x00-1F / %x7F > */
-		o = is->priv->tokenbuf;
-		oe = is->priv->tokenbuf + is->priv->bufsize - 1;
-		*o++ = c;
-		while (1) {
-			while (p < e) {
-				c = *p++;
-				if (c <= 0x1f || c == 0x7f || c == '(' || c == ')' || c == '{' || c == ' ') {
-					if (c == ' ' || c == '\r')
-						is->priv->ptr = p;
-					else
-						is->priv->ptr = p - 1;
-					*o = 0;
-					*data = is->priv->tokenbuf;
-					return TRUE;
-				}
-
-				if (o >= oe) {
-					camel_imapx_input_stream_grow (is, 0, &p, &o);
-					oe = is->priv->tokenbuf + is->priv->bufsize - 1;
-					e = is->priv->end;
-				}
-				*o++ = c;
+		/* skip whitespace/prefill buffer */
+		do {
+			while (p >= e ) {
+				is->priv->ptr = p;
+				if (imapx_input_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
+					return FALSE;
+				p = is->priv->ptr;
+				e = is->priv->end;
 			}
-			is->priv->ptr = p;
-			if (imapx_input_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
-				return FALSE;
-			p = is->priv->ptr;
-			e = is->priv->end;
+			c = *p++;
+		} while (c == ' ' || c == '\r');
+
+		if (c == '\"' || c == '{') {
+			tok = camel_imapx_input_stream_token (is, data, &len, cancellable, error);
+		} else {
+			guchar *o, *oe;
+
+			tok = IMAPX_TOK_STRING;
+
+			/* <any %x01-7F except "(){ " / %x00-1F / %x7F > */
+			o = is->priv->tokenbuf;
+			oe = is->priv->tokenbuf + is->priv->bufsize - 1;
+			*o++ = c;
+			while (1) {
+				while (p < e) {
+					c = *p++;
+					if (c <= 0x1f || c == 0x7f || c == '(' || c == ')' || c == '{' || c == ' ') {
+						if (c == ' ' || c == '\r')
+							is->priv->ptr = p;
+						else
+							is->priv->ptr = p - 1;
+						*o = 0;
+						*data = is->priv->tokenbuf;
+						return TRUE;
+					}
+
+					if (o >= oe) {
+						camel_imapx_input_stream_grow (is, 0, &p, &o);
+						oe = is->priv->tokenbuf + is->priv->bufsize - 1;
+						e = is->priv->end;
+					}
+					*o++ = c;
+				}
+				is->priv->ptr = p;
+				if (imapx_input_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
+					return FALSE;
+				p = is->priv->ptr;
+				e = is->priv->end;
+			}
 		}
 	}
 
