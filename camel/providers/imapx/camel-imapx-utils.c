@@ -16,11 +16,13 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
-
-#include <gio/gunixoutputstream.h>
 
 #include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
@@ -1541,7 +1543,6 @@ imapx_free_fetch (struct _fetch_info *finfo)
 void
 imapx_dump_fetch (struct _fetch_info *finfo)
 {
-	GOutputStream *output_stream;
 	gconstpointer data;
 	gsize size;
 
@@ -1551,8 +1552,6 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 		return;
 	}
 
-	output_stream = g_unix_output_stream_new (STDOUT_FILENO, FALSE);
-
 	/* XXX g_output_stream_write_bytes_all() would be awfully
 	 *     handy here.  g_output_stream_write_bytes() may not
 	 *     write the entire GBytes. */
@@ -1560,25 +1559,19 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 	if (finfo->body != NULL) {
 		g_print ("Body content:\n");
 		data = g_bytes_get_data (finfo->body, &size);
-		g_output_stream_write_all (
-			output_stream, data,
-			size, NULL, NULL, NULL);
+		fwrite (data, size, 1, stdout);
 	}
 
 	if (finfo->text != NULL) {
 		g_print ("Text content:\n");
 		data = g_bytes_get_data (finfo->text, &size);
-		g_output_stream_write_all (
-			output_stream, data,
-			size, NULL, NULL, NULL);
+		fwrite (data, size, 1, stdout);
 	}
 
 	if (finfo->header != NULL) {
 		g_print ("Header content:\n");
 		data = g_bytes_get_data (finfo->header, &size);
-		g_output_stream_write_all (
-			output_stream, data,
-			size, NULL, NULL, NULL);
+		fwrite (data, size, 1, stdout);
 	}
 
 	if (finfo->minfo != NULL) {
@@ -1603,8 +1596,6 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 
 	if (finfo->uid != NULL)
 		g_print ("UID: '%s'\n", finfo->uid);
-
-	g_object_unref (output_stream);
 }
 
 static gboolean

@@ -31,7 +31,6 @@
 #include <fcntl.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>

@@ -27,6 +27,11 @@
 #define CATEGORY LC_ADDRESS
 #else
 /* Mimic the fallback branch in EBookQuery. */
+#ifdef G_OS_WIN32
+#ifndef LC_MESSAGES
+#define LC_MESSAGES LC_CTYPE
+#endif
+#endif
 #define CATEGORY LC_MESSAGES
 #endif /* LC_ADDRESS */
 
