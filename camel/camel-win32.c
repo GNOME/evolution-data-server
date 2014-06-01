@@ -29,6 +29,7 @@
 
 #include "camel.h"
 
+static HMODULE hmodule;
 G_LOCK_DEFINE_STATIC (mutex);
 
 /* localedir uses system codepage as it is passed to the non-UTF8ified
@@ -37,13 +38,10 @@ G_LOCK_DEFINE_STATIC (mutex);
 static const gchar *localedir = NULL;
 
 /* The others are in UTF-8 */
+static const gchar *prefix = NULL;
+static const gchar *cp_prefix;
 static const gchar *libexecdir;
 static const gchar *providerdir;
-
-/* XXX Where do these get defined?  e-data-server-util.h just has
- * declarations for e_util_get_prefix() and e_util_get_cp_prefix(). */
-static const gchar *	get_prefix		(void) G_GNUC_CONST;
-static const gchar *	get_cp_prefix		(void) G_GNUC_CONST;
 
 static gchar *
 replace_prefix (const gchar *configure_time_prefix,
@@ -72,19 +70,31 @@ replace_prefix (const gchar *configure_time_prefix,
 static void
 setup (void)
 {
+	gchar *full_pfx;
+	gchar *cp_pfx;
+
 	G_LOCK (mutex);
 
-	if (localedir != NULL) {
+	if (prefix != NULL) {
 		G_UNLOCK (mutex);
 		return;
 	}
+	/* This requires that the libedataserver DLL is installed in $bindir */
+	full_pfx = g_win32_get_package_installation_directory_of_module (hmodule);
+	cp_pfx = g_win32_locale_filename_from_utf8 (full_pfx);
+
+	prefix = g_strdup (full_pfx);
+	cp_prefix = g_strdup (cp_pfx);
+
+	g_free (full_pfx);
+	g_free (cp_pfx);
 
 	localedir = replace_prefix (
-		E_DATA_SERVER_PREFIX, get_cp_prefix (), LOCALEDIR);
+		E_DATA_SERVER_PREFIX, cp_prefix, LOCALEDIR);
 	libexecdir = replace_prefix (
-		E_DATA_SERVER_PREFIX, get_prefix (), CAMEL_LIBEXECDIR);
+		E_DATA_SERVER_PREFIX, prefix, CAMEL_LIBEXECDIR);
 	providerdir = replace_prefix (
-		E_DATA_SERVER_PREFIX, get_prefix (), CAMEL_PROVIDERDIR);
+		E_DATA_SERVER_PREFIX, prefix, CAMEL_PROVIDERDIR);
 
 	G_UNLOCK (mutex);
 }
@@ -102,3 +112,22 @@ _camel_get_##varbl (void)			\
 GETTER(localedir)
 GETTER(libexecdir)
 GETTER(providerdir)
+
+/* Silence gcc with a prototype. Yes, this is silly. */
+BOOL WINAPI DllMain (HINSTANCE hinstDLL,
+		     DWORD     fdwReason,
+		     LPVOID    lpvReserved);
+
+/* Minimal DllMain that just tucks away the DLL's HMODULE */
+BOOL WINAPI
+DllMain (HINSTANCE hinstDLL,
+         DWORD fdwReason,
+         LPVOID lpvReserved)
+{
+	switch (fdwReason) {
+	case DLL_PROCESS_ATTACH:
+		hmodule = hinstDLL;
+		break;
+	}
+	return TRUE;
+}

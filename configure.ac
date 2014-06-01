@@ -337,7 +337,6 @@ case "$host" in
 	DL_LIB=''
 	LIBEXECDIR_IN_SERVER_FILE='../../../libexec'
 	AC_CACHE_VAL(ac_cv_have_addrinfo, [ac_cv_have_addrinfo=yes])
-	AC_DEFINE(_WIN32_WINNT, 0x501, [To get getaddrinfo etc declarations])
 	;;
 *openbsd*|*freebsd*)
 	os_win32='no'
@@ -386,6 +385,8 @@ PKG_CHECK_MODULES(GNOME_PLATFORM,
 
 if test x$os_win32 = xno; then
 	PKG_CHECK_MODULES(GIO_UNIX, [gio-unix-2.0])
+else
+	PKG_CHECK_MODULES(GIO_UNIX, [gio-windows-2.0])
 fi
 
 dnl ******************************

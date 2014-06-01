@@ -381,7 +381,27 @@ hard_link_photo (EBookBackendFile *bf,
 
 		i++;
 
+		#ifdef G_OS_WIN32
+		{
+		GFile *src_file = g_file_new_for_path (src_filename);
+		GFile *dst_file = g_file_new_for_path (fullname);
+		GError *copy_error = NULL;
+
+		g_file_copy (src_file, dst_file, G_FILE_COPY_NONE,
+		             NULL, NULL, NULL, &copy_error);
+
+		if (copy_error != NULL) {
+			g_error_free (copy_error);
+			ret = -1;
+		} else
+			ret = 0;
+
+		g_object_unref (src_file);
+		g_object_unref (dst_file);
+		}
+		#else
 		ret = link (src_filename, fullname);
+		#endif
 
 	} while (ret < 0 && errno == EEXIST);
 
