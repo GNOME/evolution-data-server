@@ -44,7 +44,7 @@
 #include "e-name-western.h"
 
 #ifdef G_OS_WIN32
-#include "libedataserver/e-data-server-util.h"
+#include "libedataserver/libedataserver.h"
 #undef LOCALEDIR
 #define LOCALEDIR e_util_get_localedir ()
 #endif

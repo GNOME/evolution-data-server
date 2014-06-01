@@ -16,9 +16,12 @@
  */
 
 #include <string.h>
-#include <gio/gunixoutputstream.h>
 
 #include <libedataserver/libedataserver.h>
+
+#ifndef G_OS_WIN32
+#include <gio/gunixoutputstream.h>
+#endif
 
 #define SIMPLE_KEY_FILE \
 	"[Data Source]\n" \
@@ -53,7 +56,9 @@ static void
 setup_test_source (TestESource *test,
                    const gchar *content)
 {
+#ifndef G_OS_WIN32
 	GOutputStream *stream;
+#endif
 	gchar *filename;
 	gint fd;
 	GError *error = NULL;
@@ -63,11 +68,16 @@ setup_test_source (TestESource *test,
 	g_assert_no_error (error);
 
 	/* Write the given content to the temporary key file. */
+#ifdef G_OS_WIN32
+	close (fd);
+	g_file_set_contents (filename, content, strlen (content), &error);
+#else
 	stream = g_unix_output_stream_new (fd, TRUE);
 	g_output_stream_write_all (
 		stream, content, strlen (content), NULL, NULL, &error);
 	g_object_unref (stream);
 	g_assert_no_error (error);
+#endif
 
 	/* Create a GFile that points to the temporary key file. */
 	test->file = g_file_new_for_path (filename);

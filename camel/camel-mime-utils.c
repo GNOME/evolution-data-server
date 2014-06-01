@@ -61,6 +61,28 @@
 #define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
 #endif
 
+#if !defined HAVE_LOCALTIME_R && !defined localtime_r
+# ifdef _LIBC
+#  define localtime_r __localtime_r
+# else
+/* Approximate localtime_r as best we can in its absence.  */
+#  define localtime_r my_localtime_r
+static struct tm *localtime_r (const time_t *, struct tm *);
+static struct tm *
+localtime_r (t,
+             tp)
+	const time_t *t;
+	struct tm *tp;
+{
+	struct tm *l = localtime (t);
+	if (!l)
+		return 0;
+	*tp = *l;
+	return tp;
+}
+# endif /* !_LIBC */
+#endif /* HAVE_LOCALTIME_R && !defined (localtime_r) */
+
 /* for all non-essential warnings ... */
 #define w(x)
 
