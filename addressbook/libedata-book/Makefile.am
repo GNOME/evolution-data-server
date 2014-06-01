@@ -1,5 +1,10 @@
 NULL =
 
+if HAVE_LIBDB
+LIBDB_C_FILES = e-book-backend-db-cache.c
+LIBDB_H_FILES = e-book-backend-db-cache.h
+endif
+
 lib_LTLIBRARIES = libedata-book-1.2.la
 
 libedata_book_1_2_la_CPPFLAGS = \
@@ -26,7 +31,6 @@ libedata_book_1_2_la_SOURCES = \
 	e-book-backend-sexp.c \
 	e-book-backend-summary.c \
 	e-book-backend-cache.c \
-	e-book-backend-db-cache.c \
 	e-book-backend-sqlitedb.c \
 	e-book-backend.c \
 	e-book-sqlite.c \
@@ -37,6 +41,7 @@ libedata_book_1_2_la_SOURCES = \
 	e-data-book-factory.c \
 	e-data-book-view.c \
 	ximian-vcard.h \
+	$(LIBDB_C_FILES) \
 	$(NULL)
 
 libedata_book_1_2_la_LIBADD = \
@@ -71,8 +76,8 @@ libedata_bookinclude_HEADERS = \
 	e-data-book-direct.h \
 	e-book-backend-cache.h \
 	e-book-backend-sqlitedb.h \
-	e-book-backend-db-cache.h \
 	e-book-sqlite.h \
+	$(LIBDB_H_FILES) \
 	$(NULL)
 
 factorydir = $(libexecdir)

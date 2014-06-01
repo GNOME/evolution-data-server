@@ -604,29 +604,36 @@ dnl ******************************
 AC_ARG_WITH([libdb],
 	AS_HELP_STRING([--with-libdb=PREFIX],
 	[Prefix where libdb is installed]),
-	[
-		DB_CFLAGS="-I$withval/include"
-		DB_LIBS="-L$withval/lib -ldb"
-	],
-	[
+	[with_libdb=$withval],[with_libdb=yes])
+
+if test "x$with_libdb" != "xno" ; then
+	if test "x$with_libdb" != "xyes" ; then
+		DB_CFLAGS="-I$with_libdb/include"
+		DB_LIBS="-L$with_libdb/lib -ldb"
+	else
 		if test -z "$DB_CFLAGS" -a -z "$DB_LIBS"; then
 			DB_CFLAGS=""
 			DB_LIBS="-ldb"
 		fi
-	])
+	fi
 
-AC_MSG_CHECKING([Berkeley DB])
-save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
-save_libs=$LIBS; LIBS="$DB_LIBS"
-AC_LINK_IFELSE([AC_LANG_PROGRAM(
-	[[#include <db.h>]],
-	[[db_create(NULL, NULL, 0)]])],
-	[AC_MSG_RESULT([yes])],
-	[AC_MSG_ERROR([Cannot find libdb])])
-CFLAGS=$save_cflags
-LIBS=$save_libs
-AC_SUBST(DB_CFLAGS)
-AC_SUBST(DB_LIBS)
+	AC_MSG_CHECKING([Berkeley DB])
+	save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
+	save_libs=$LIBS; LIBS="$DB_LIBS"
+	AC_LINK_IFELSE([AC_LANG_PROGRAM(
+		[[#include <db.h>]],
+		[[db_create(NULL, NULL, 0)]])],
+		[AC_MSG_RESULT([yes])],
+		[AC_MSG_ERROR([Cannot find libdb])])
+	CFLAGS=$save_cflags
+	LIBS=$save_libs
+	AC_SUBST(DB_CFLAGS)
+	AC_SUBST(DB_LIBS)
+
+	AC_DEFINE(HAVE_LIBDB, 1, [Have libdb])
+fi
+AM_CONDITIONAL(HAVE_LIBDB, [test x$with_libdb != xno])
+
 
 dnl ******************************
 dnl db_load checking

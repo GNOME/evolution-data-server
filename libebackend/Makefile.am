@@ -2,6 +2,15 @@ NULL =
 
 ENUM_TYPES = e-backend-enums.h
 
+if HAVE_LIBDB
+LIBDB_C_FILES = \
+	e-dbhash.c \
+	e-db3-utils.c
+LIBDB_H_FILES = \
+	e-db3-utils.h \
+	e-dbhash.h
+endif
+
 e-backend-enumtypes.h: $(top_srcdir)/enumtypes.h.template $(ENUM_TYPES)
 	$(AM_V_GEN) $(GLIB_MKENUMS) --template $(top_srcdir)/enumtypes.h.template \
 		--fhead "#ifndef E_BACKEND_ENUMTYPES_H\n#define E_BACKEND_ENUMTYPES_H\n" \
@@ -58,8 +67,6 @@ libebackend_1_2_la_SOURCES = \
 	e-extension.c \
 	e-oauth2-support.c \
 	e-offline-listener.c \
-	e-dbhash.c \
-	e-db3-utils.c \
 	e-module.c \
 	e-server-side-source.c \
 	e-soup-auth-bearer.c \
@@ -70,6 +77,7 @@ libebackend_1_2_la_SOURCES = \
 	e-user-prompter-server.c \
 	e-user-prompter-server-extension.c \
 	e-file-cache.c \
+	$(LIBDB_C_FILES) \
 	$(NULL)
 
 libebackend_1_2_la_LIBADD = \
@@ -107,8 +115,6 @@ libebackendinclude_HEADERS = \
 	e-extension.h \
 	e-oauth2-support.h \
 	e-offline-listener.h \
-	e-db3-utils.h \
-	e-dbhash.h \
 	e-module.h \
 	e-server-side-source.h \
 	e-soup-auth-bearer.h \
@@ -119,6 +125,7 @@ libebackendinclude_HEADERS = \
 	e-user-prompter-server.h \
 	e-user-prompter-server-extension.h \
 	e-file-cache.h \
+	$(LIBDB_H_FILES) \
 	$(NULL)
 
 %-$(API_VERSION).pc: %.pc
