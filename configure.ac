@@ -1376,57 +1376,45 @@ EVO_PURIFY_SUPPORT
 dnl ******************************
 dnl LDAP support.
 dnl ******************************
-if test "x$os_win32" != "xyes"; then
-	EVO_LDAP_CHECK(no)
-	case $with_openldap in
-	no)
-		msg_ldap="no"
-	;;
+EVO_LDAP_CHECK(no)
+case $with_openldap in
+no)
+	msg_ldap="no"
+;;
+*)
+	case $with_static_ldap in
+	yes)
+		msg_ldap="$with_openldap (static)"
+		;;
 	*)
-		case $with_static_ldap in
-		yes)
-			msg_ldap="$with_openldap (static)"
-			;;
-		*)
-			msg_ldap="$with_openldap (dynamic)"
-			;;
-		esac
+		msg_ldap="$with_openldap (dynamic)"
+		;;
 	esac
+esac
 
 dnl SunLDAP support, but if OpenLDAP support, skip check SunLDAP.
-	if test "x$with_openldap" = "xno" ; then
-		EVO_SUNLDAP_CHECK(no)
-		case $with_sunldap in
-		no)
-			msg_ldap="no"
+if test "x$with_openldap" = "xno" ; then
+	EVO_SUNLDAP_CHECK(no)
+	case $with_sunldap in
+	no)
+		msg_ldap="no"
+		;;
+	*)
+		case $with_static_sunldap in
+		yes)
+			msg_ldap="$with_sunldap (static)"
 			;;
 		*)
-			case $with_static_sunldap in
-			yes)
-				msg_ldap="$with_sunldap (static)"
-				;;
-			*)
-				msg_ldap="$with_sunldap (dynamic)"
-				;;
-		esac
+			msg_ldap="$with_sunldap (dynamic)"
+			;;
 	esac
-	else
-		with_sunldap="no"
-	fi
-	AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
-
-	LDAP_CFLAGS="$LDAP_CFLAGS -DLDAP_DEPRECATED"
+esac
 else
-	dnl Win32 LDAP support
-	LDAP_CFLAGS="-DLDAP_DEPRECATED"
-	LDAP_LIBS="-lwldap32"
-	AC_SUBST(LDAP_CFLAGS)
-	AC_SUBST(LDAP_LIBS)
-	AC_DEFINE(HAVE_LDAP,1,[Define if you have LDAP support])
-	AM_CONDITIONAL(ENABLE_LDAP, true)
-	AM_CONDITIONAL(SUNLDAP, false)
-	msg_ldap="yes"
+	with_sunldap="no"
 fi
+AM_CONDITIONAL(SUNLDAP, [test "$with_sunldap" != no])
+
+LDAP_CFLAGS="$LDAP_CFLAGS -DLDAP_DEPRECATED"
 
 dnl ******************************
 dnl Utility macro to set compiler flags for a specific lib.
