@@ -42,6 +42,12 @@
 
 #include <libedataserver/libedataserver.h>
 
+#ifdef G_OS_WIN32
+#ifndef LC_MESSAGES
+#define LC_MESSAGES LC_CTYPE
+#endif
+#endif
+
 typedef enum {
 	E_BOOK_QUERY_TYPE_AND,
 	E_BOOK_QUERY_TYPE_OR,

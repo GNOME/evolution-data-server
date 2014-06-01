@@ -943,7 +943,7 @@ __strptime_internal (rp,
 	      const gchar *picture;
 	      const gchar *posix_t_fmt;
 
-	      picture = get_local_string (LOCALE_STIMEFORMAT);
+	      picture = get_locale_string (LOCALE_STIMEFORMAT);
 	      posix_t_fmt = translate_picture (picture);
 
 	      if (!recursive (posix_t_fmt))

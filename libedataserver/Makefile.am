@@ -186,7 +186,11 @@ libedataserver_private_la_SOURCES = \
 	e-transliterator-private.cpp \
 	$(NULL)
 libedataserver_private_la_CPPFLAGS = $(libedataserver_1_2_la_CPPFLAGS)
+if OS_WIN32
+libedataserver_1_2_la_LIBADD += libedataserver-private.la -lstdc++
+else
 libedataserver_1_2_la_LIBADD += @predeps_CXX@ libedataserver-private.la @postdeps_CXX@
+endif
 
 %-$(API_VERSION).pc: %.pc
 	 cp $< $@

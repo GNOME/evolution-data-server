@@ -34,9 +34,15 @@
  * and e_test_server_utils_teardown() in thier fixture's setup and teardown routines.
  **/
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "e-test-server-utils.h"
 
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
 
 #define ADDRESS_BOOK_SOURCE_UID "test-address-book"
 #define CALENDAR_SOURCE_UID     "test-calendar"
@@ -274,8 +280,12 @@ delete_work_directory (void)
 					NULL, NULL, &exit_status, NULL);
 
 	g_assert (spawn_succeeded);
+	#ifndef G_OS_WIN32
 	g_assert (WIFEXITED (exit_status));
 	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
+	#else
+	g_assert_cmpint (exit_status, ==, 0);
+	#endif
 }
 
 static gboolean

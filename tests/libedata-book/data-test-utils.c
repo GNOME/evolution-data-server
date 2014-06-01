@@ -17,7 +17,14 @@
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#endif
+
 #include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -116,8 +123,12 @@ delete_work_directory (const gchar *filename)
 					NULL, NULL, &exit_status, NULL);
 
 	g_assert (spawn_succeeded);
+	#ifndef G_OS_WIN32
 	g_assert (WIFEXITED (exit_status));
 	g_assert_cmpint (WEXITSTATUS (exit_status), ==, 0);
+	#else
+	g_assert_cmpint (exit_status, ==, 0);
+	#endif
 }
 
 ESourceBackendSummarySetup *

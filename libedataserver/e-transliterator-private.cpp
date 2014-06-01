@@ -28,7 +28,9 @@
 #include <memory>
 
 /* system headers */
+#ifdef HAVE_CODESET
 #include <langinfo.h>
+#endif
 #include <locale.h>
 
 /* ICU headers */

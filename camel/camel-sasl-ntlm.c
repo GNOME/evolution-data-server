@@ -807,10 +807,10 @@ sasl_ntlm_challenge_sync (CamelSasl *sasl,
 
 	ret = g_byte_array_new ();
 
+#ifndef G_OS_WIN32
 	if (!priv->tried_helper && password == NULL)
 		sasl_ntlm_try_empty_password_sync (sasl, cancellable, NULL);
 
-#ifndef G_OS_WIN32
 	if (priv->helper_stream && password == NULL) {
 		guchar *data;
 		gsize length = 0;
