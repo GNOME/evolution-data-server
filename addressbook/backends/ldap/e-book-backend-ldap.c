@@ -32,7 +32,6 @@
 
 #include <glib.h>
 
-#ifndef G_OS_WIN32
 #ifdef DEBUG
 #define LDAP_DEBUG
 #define LDAP_DEBUG_ADD
@@ -42,62 +41,8 @@
 #ifdef DEBUG
 #undef LDAP_DEBUG
 #endif
-#else
-#include <windows.h>
-#include <winldap.h>
-#define LDAP_RES_RENAME LDAP_RES_MODRDN
-#include <winber.h>
-#include "openldap-extract.h"
-
-/* map between the WinLDAP API and OpenLDAP API */
-#  ifndef ldap_msgtype
-#    define ldap_msgtype(m) ((m)->lm_msgtype)
-#  endif
-
-#  ifndef ldap_first_message
-#    define ldap_first_message ldap_first_entry
-#  endif
-
-#  ifndef ldap_next_message
-#    define ldap_next_message ldap_next_entry
-#  endif
-
-#  ifndef LDAP_RES_MODDN
-#    define LDAP_RES_MODDN LDAP_RES_MODRDN
-#  endif
-
-#  ifdef ldap_compare_ext
-#    undef ldap_compare_ext
-#  endif
-#  ifdef ldap_search_ext
-#    undef ldap_search_ext
-#  endif
-
-#  ifdef UNICODE
-#    define ldap_compare_ext(ld,dn,a,v,sc,cc,msg) \
-        ldap_compare_extW (ld,dn,a,0,v,sc,cc,msg)
-#    define ldap_search_ext(ld,base,scope,f,a,o,sc,cc,(t),s,msg) \
-        ldap_search_extW (ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL) t) ? ((PLDAP_TIMEVAL) t)->tv_sec : 0,s,msg)
-# if defined (__MINGW64_VERSION_MAJOR) || defined (_MSC_VER)
-#    define ldap_start_tls_s(ld,sc,cc) \
-        ldap_start_tls_sW (ld,0,0,sc,cc)
-# endif
-#  else /* !UNICODE */
-#    define ldap_compare_ext(ld,dn,a,v,sc,cc,msg) \
-        ldap_compare_extA (ld,dn,a,0,v,sc,cc,msg)
-#    define ldap_search_ext(ld,base,scope,f,a,o,sc,cc,t,s,msg) \
-        ldap_search_extA (ld,base,scope,f,a,o,sc,cc,((PLDAP_TIMEVAL) t) ? ((PLDAP_TIMEVAL) t)->tv_sec : 0,s,msg)
-# if defined (__MINGW64_VERSION_MAJOR) || defined (_MSC_VER)
-#    define ldap_start_tls_s(ld,sc,cc) \
-        ldap_start_tls_sA (ld,0,0,sc,cc)
-# endif
-#  endif /* UNICODE */
-
-#endif
 
 #define d(x)
-
-#ifndef G_OS_WIN32
 
 #if LDAP_VENDOR_VERSION > 20000
 #define OPENLDAP2
@@ -113,8 +58,6 @@
 
 #ifdef SUNLDAP
 #include "openldap-extract.h"
-#endif
-
 #endif
 
 #include <sys/time.h>
@@ -913,20 +856,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 				ldap_set_option (blpriv->ldap, LDAP_OPT_RECONNECT, LDAP_OPT_ON );
 			}
 #else
-#ifdef _WIN32
-			typedef ULONG (*PFN_ldap_start_tls_s)(PLDAP,PLDAPControl *,PLDAPControl *);
-			PFN_ldap_start_tls_s pldap_start_tls_s =
-			(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_s");
-			if (!pldap_start_tls_s)
-				(PFN_ldap_start_tls_s) GetProcAddress (GetModuleHandle ("wldap32.dll"), "ldap_start_tls_sA");
-
-			if (!pldap_start_tls_s)
-				ldap_error = LDAP_NOT_SUPPORTED;
-			else
-				ldap_error = pldap_start_tls_s (blpriv->ldap, NULL, NULL);
-#else /* !defined(_WIN32) */
 			ldap_error = ldap_start_tls_s (blpriv->ldap, NULL, NULL);
-#endif /* _WIN32 */
 #endif
 			if (ldap_error != LDAP_SUCCESS) {
 				g_message ("TLS not available (fatal version), (ldap_error 0x%02x)", ldap_error);
