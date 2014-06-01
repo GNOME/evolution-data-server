@@ -1,5 +1,11 @@
 NULL =
 
+if HAVE_LIBDB
+LIBDB_FILES = \
+	e-book-backend-file-migrate-bdb.c \
+	e-book-backend-file-migrate-bdb.h
+endif
+
 ebook_backend_LTLIBRARIES = libebookbackendfile.la
 
 libebookbackendfile_la_CPPFLAGS = \
@@ -19,9 +25,8 @@ libebookbackendfile_la_CPPFLAGS = \
 libebookbackendfile_la_SOURCES = \
 	e-book-backend-file.c \
 	e-book-backend-file.h \
-	e-book-backend-file-migrate-bdb.c \
-	e-book-backend-file-migrate-bdb.h \
 	e-book-backend-file-factory.c \
+	$(LIBDB_FILES) \
 	$(NULL)
 
 libebookbackendfile_la_LIBADD = \

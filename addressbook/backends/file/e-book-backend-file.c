@@ -39,7 +39,10 @@
 #include <glib/gi18n-lib.h>
 
 #include "e-book-backend-file.h"
+
+#ifdef HAVE_LIBDB
 #include "e-book-backend-file-migrate-bdb.h"
+#endif
 
 #define E_BOOK_BACKEND_FILE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -1962,8 +1965,10 @@ book_backend_file_initable_init (GInitable *initable,
 	ESourceRegistry *registry;
 	ESource *source;
 	const gchar *extension_name;
-	gchar *backup, *dirname;
-	gchar *filename, *fullpath;
+#ifdef HAVE_LIBDB
+	gchar *backup, *filename;
+#endif /* HAVE_LIBDB */
+	gchar *dirname, *fullpath;
 	gboolean success = TRUE;
 
 	priv = E_BOOK_BACKEND_FILE_GET_PRIVATE (initable);
@@ -1981,9 +1986,11 @@ book_backend_file_initable_init (GInitable *initable,
 		dirname = e_book_backend_file_extract_path_from_source (
 			registry, source, GET_PATH_DB_DIR);
 
+	fullpath = g_build_filename (dirname, "contacts.db", NULL);
+
+#ifdef HAVE_LIBDB
 	filename = g_build_filename (dirname, "addressbook.db", NULL);
 	backup = g_build_filename (dirname, "addressbook.db.old", NULL);
-	fullpath = g_build_filename (dirname, "contacts.db", NULL);
 
 	/* The old BDB exists, lets migrate that to sqlite right away. */
 	if (g_file_test (filename, G_FILE_TEST_EXISTS)) {
@@ -2018,6 +2025,7 @@ book_backend_file_initable_init (GInitable *initable,
 			goto exit;
 		}
 	}
+#endif /* HAVE_LIBDB */
 
 	/* If we already have a handle on this, it means there
 	 * was an old BDB migrated and no need to reopen it. */
@@ -2081,8 +2089,10 @@ book_backend_file_initable_init (GInitable *initable,
 exit:
 	g_free (dirname);
 	g_free (fullpath);
+#ifdef HAVE_LIBDB
 	g_free (filename);
 	g_free (backup);
+#endif /* HAVE_LIBDB */
 
 	return success;
 }
