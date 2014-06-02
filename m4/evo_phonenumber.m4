@@ -47,10 +47,11 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 	AS_VAR_IF([with_phonenumber], [no],, [
 		AC_LANG_PUSH(C++)
 
+		PHONENUMBER_INCLUDES="-DI18N_PHONENUMBERS_USE_BOOST"
 		PHONENUMBER_LIBS="-lphonenumber"
 
 		AS_VAR_IF([evo_phonenumber_prefix],,,[
-			PHONENUMBER_INCLUDES="-I$evo_phonenumber_prefix/include"
+			PHONENUMBER_INCLUDES="-I$evo_phonenumber_prefix/include $PHONENUMBER_INCLUDES"
 			PHONENUMBER_LIBS="-L$evo_phonenumber_prefix/lib $PHONENUMBER_LIBS"
 		])
 
@@ -93,12 +94,12 @@ AC_DEFUN([EVO_PHONENUMBER_SUPPORT],[
 			 AC_RUN_IFELSE(
 				[AC_LANG_PROGRAM(
 					[[#include <phonenumbers/phonenumberutil.h>]],
-					[[namespace pn = i18n::phonenumbers;i18n::phonenumbers;
+					[[namespace pn = i18n::phonenumbers;
 
 					  pn::PhoneNumber n;
 
 					  if (pn::PhoneNumberUtil::GetInstance ()->
-						Parse("049(800)46663", "DE", &) == pn::PhoneNumberUtil::NO_PARSING_ERROR
+						Parse("049(800)46663", "DE", &n) == pn::PhoneNumberUtil::NO_PARSING_ERROR
 							&& n.has_country_code_source ()
 							&& n.country_code_source () == 49)
 						return EXIT_SUCCESS;
