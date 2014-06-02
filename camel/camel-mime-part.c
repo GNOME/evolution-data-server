@@ -683,17 +683,6 @@ mime_part_write_to_stream_sync (CamelDataWrapper *dw,
 				g_object_unref (charenc);
 			}
 
-			/* we only re-do crlf on encoded blocks */
-			if (filter && camel_content_type_is (dw->mime_type, "text", "*")) {
-				CamelMimeFilter *crlf = camel_mime_filter_crlf_new (
-					CAMEL_MIME_FILTER_CRLF_ENCODE,
-					CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
-
-				camel_stream_filter_add (
-					CAMEL_STREAM_FILTER (filter_stream), crlf);
-				g_object_unref (crlf);
-			}
-
 			if (filter) {
 				camel_stream_filter_add (
 					CAMEL_STREAM_FILTER (filter_stream), filter);
@@ -901,25 +890,6 @@ mime_part_write_to_output_stream_sync (CamelDataWrapper *dw,
 			g_filter_output_stream_set_close_base_stream (
 				G_FILTER_OUTPUT_STREAM (temp_stream), FALSE);
 			g_object_unref (charenc);
-
-			g_object_unref (filter_stream);
-			filter_stream = temp_stream;
-
-			reencode = TRUE;
-		}
-
-		if (filter != NULL && content_type_is_text) {
-			CamelMimeFilter *crlf;
-			GOutputStream *temp_stream;
-
-			crlf = camel_mime_filter_crlf_new (
-				CAMEL_MIME_FILTER_CRLF_ENCODE,
-				CAMEL_MIME_FILTER_CRLF_MODE_CRLF_ONLY);
-			temp_stream = camel_filter_output_stream_new (
-				filter_stream, crlf);
-			g_filter_output_stream_set_close_base_stream (
-				G_FILTER_OUTPUT_STREAM (temp_stream), FALSE);
-			g_object_unref (crlf);
 
 			g_object_unref (filter_stream);
 			filter_stream = temp_stream;

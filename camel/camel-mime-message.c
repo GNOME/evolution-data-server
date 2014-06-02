@@ -898,6 +898,18 @@ camel_mime_message_has_8bit_parts (CamelMimeMessage *msg)
 	return has8bit;
 }
 
+static gboolean
+mime_part_is_attachment (CamelMimePart *mp)
+{
+	const CamelContentDisposition *content_disposition;
+
+	content_disposition = camel_mime_part_get_content_disposition (mp);
+
+	return content_disposition &&
+	       content_disposition->disposition &&
+	       g_ascii_strcasecmp (content_disposition->disposition, "attachment") == 0;
+}
+
 /* finds the best charset and transfer encoding for a given part */
 static CamelTransferEncoding
 find_best_encoding (CamelMimePart *part,
@@ -1044,6 +1056,10 @@ best_encoding (CamelMimeMessage *msg,
 	CamelTransferEncoding encoding;
 	CamelDataWrapper *wrapper;
 	gchar *charset;
+
+	/* Keep attachments untouched. */
+	if (mime_part_is_attachment (part))
+		return TRUE;
 
 	wrapper = camel_medium_get_content (CAMEL_MEDIUM (part));
 	if (!wrapper)
