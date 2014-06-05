@@ -1741,7 +1741,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		result = camel_filter_search_match (
 			driver->priv->session, get_message_cb, &data, driver->priv->info,
-			original_store_uid, rule->match, &driver->priv->error);
+			original_store_uid, source, rule->match, &driver->priv->error);
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:

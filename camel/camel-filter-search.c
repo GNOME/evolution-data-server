@@ -61,6 +61,7 @@ typedef struct {
 	gpointer get_message_data;
 	CamelMimeMessage *message;
 	CamelMessageInfo *info;
+	CamelFolder *folder;
 	const gchar *source;
 	GError **error;
 } FilterMessageSearch;
@@ -89,6 +90,7 @@ static CamelSExpResult *header_source (struct _CamelSExp *f, gint argc, struct _
 static CamelSExpResult *get_size (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *pipe_message (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 static CamelSExpResult *junk_test (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
+static CamelSExpResult *message_location (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, FilterMessageSearch *fms);
 
 /* builtin functions */
 static struct {
@@ -120,6 +122,7 @@ static struct {
 	{ "get-size",           (CamelSExpFunc) get_size,           0 },
 	{ "pipe-message",       (CamelSExpFunc) pipe_message,       0 },
 	{ "junk-test",          (CamelSExpFunc) junk_test,          0 },
+	{ "message-location",   (CamelSExpFunc) message_location,   0 }
 };
 
 static CamelMimeMessage *
@@ -989,6 +992,68 @@ exit:
 	return r;
 }
 
+/* this is copied from Evolution's libemail-engine/e-mail-folder-utils.c */
+static gchar *
+mail_folder_uri_build (CamelStore *store,
+                       const gchar *folder_name)
+{
+	const gchar *uid;
+	gchar *encoded_name;
+	gchar *encoded_uid;
+	gchar *uri;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
+	g_return_val_if_fail (folder_name != NULL, NULL);
+
+	/* Skip the leading slash, if present. */
+	if (*folder_name == '/')
+		folder_name++;
+
+	uid = camel_service_get_uid (CAMEL_SERVICE (store));
+
+	encoded_uid = camel_url_encode (uid, ":;@/");
+	encoded_name = camel_url_encode (folder_name, "#");
+
+	uri = g_strdup_printf ("folder://%s/%s", encoded_uid, encoded_name);
+
+	g_free (encoded_uid);
+	g_free (encoded_name);
+
+	return uri;
+}
+
+static CamelSExpResult *
+message_location (struct _CamelSExp *f,
+		  gint argc,
+		  struct _CamelSExpResult **argv,
+		  FilterMessageSearch *fms)
+{
+	CamelSExpResult *r;
+	gboolean same = FALSE;
+
+	if (argc != 1 || argv[0]->type != CAMEL_SEXP_RES_STRING)
+		camel_sexp_fatal_error (f, _("Invalid arguments to (message-location)"));
+
+	if (fms->folder && argv[0]->value.string) {
+		CamelStore *store;
+		const gchar *name;
+		gchar *uri;
+
+		store = camel_folder_get_parent_store (fms->folder);
+		name = camel_folder_get_full_name (fms->folder);
+		uri = mail_folder_uri_build (store, name);
+
+		same = g_str_equal (uri, argv[0]->value.string);
+
+		g_free (uri);
+	}
+
+	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
+	r->value.boolean = same;
+
+	return r;
+}
+
 /**
  * camel_filter_search_match:
  * @session:
@@ -996,6 +1061,7 @@ exit:
  * @data: data for above
  * @info:
  * @source:
+ * @folder: in which folder the message is stored
  * @expression:
  * @error: return location for a #GError, or %NULL
  *
@@ -1008,6 +1074,7 @@ camel_filter_search_match (CamelSession *session,
                            gpointer data,
                            CamelMessageInfo *info,
                            const gchar *source,
+			   CamelFolder *folder,
                            const gchar *expression,
                            GError **error)
 {
@@ -1023,6 +1090,7 @@ camel_filter_search_match (CamelSession *session,
 	fms.message = NULL;
 	fms.info = info;
 	fms.source = source;
+	fms.folder = folder;
 	fms.error = error;
 
 	sexp = camel_sexp_new ();
