@@ -337,9 +337,23 @@ yahoo_backend_child_added (ECollectionBackend *backend,
 }
 
 static void
+yahoo_backend_finalize (GObject *object)
+{
+	EYahooBackend *backend = E_YAHOO_BACKEND (object);
+
+	g_weak_ref_clear (&backend->mail_identity_source);
+
+	G_OBJECT_CLASS (e_yahoo_backend_parent_class)->finalize (object);
+}
+
+static void
 e_yahoo_backend_class_init (EYahooBackendClass *class)
 {
+	GObjectClass *object_class;
 	ECollectionBackendClass *backend_class;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = yahoo_backend_finalize;
 
 	backend_class = E_COLLECTION_BACKEND_CLASS (class);
 	backend_class->populate = yahoo_backend_populate;
@@ -355,6 +369,7 @@ e_yahoo_backend_class_finalize (EYahooBackendClass *class)
 static void
 e_yahoo_backend_init (EYahooBackend *backend)
 {
+	g_weak_ref_init (&backend->mail_identity_source, NULL);
 }
 
 static void

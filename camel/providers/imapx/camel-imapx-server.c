@@ -561,7 +561,7 @@ imapx_weak_ref_new (gpointer object)
 	 *     proves useful elsewhere.  Based on e_weak_ref_new(). */
 
 	weak_ref = g_slice_new0 (GWeakRef);
-	g_weak_ref_set (weak_ref, object);
+	g_weak_ref_init (weak_ref, object);
 
 	return weak_ref;
 }
@@ -574,7 +574,7 @@ imapx_weak_ref_free (GWeakRef *weak_ref)
 	/* XXX Might want to expose this in Camel's public API if it
 	 *     proves useful elsewhere.  Based on e_weak_ref_free(). */
 
-	g_weak_ref_set (weak_ref, NULL);
+	g_weak_ref_clear (weak_ref);
 	g_slice_free (GWeakRef, weak_ref);
 }
 
@@ -7762,6 +7762,12 @@ imapx_server_finalize (GObject *object)
 	g_mutex_clear (&is->priv->shutdown_error_lock);
 	g_clear_error (&is->priv->shutdown_error);
 
+	g_weak_ref_clear (&is->priv->store);
+	g_weak_ref_clear (&is->priv->parser_cancellable);
+	g_weak_ref_clear (&is->priv->select_mailbox);
+	g_weak_ref_clear (&is->priv->select_closing);
+	g_weak_ref_clear (&is->priv->select_pending);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
 }
@@ -7887,6 +7893,12 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	g_mutex_init (&is->priv->known_alerts_lock);
 	g_mutex_init (&is->priv->jobs_prop_lock);
 	g_mutex_init (&is->priv->shutdown_error_lock);
+
+	g_weak_ref_init (&is->priv->store, NULL);
+	g_weak_ref_init (&is->priv->parser_cancellable, NULL);
+	g_weak_ref_init (&is->priv->select_mailbox, NULL);
+	g_weak_ref_init (&is->priv->select_closing, NULL);
+	g_weak_ref_init (&is->priv->select_pending, NULL);
 
 	is->priv->jobs_prop_folder_paths = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	is->priv->jobs_prop_command_count = 0;

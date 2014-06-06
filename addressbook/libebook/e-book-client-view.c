@@ -116,7 +116,7 @@ typedef struct {
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->client_view, NULL);
+	g_weak_ref_clear (&signal_closure->client_view);
 
 	g_slist_free_full (
 		signal_closure->object_list,
@@ -271,7 +271,7 @@ book_client_view_emit_objects_added (EBookClientView *client_view,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
+	g_weak_ref_init (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
 	main_context = book_client_view_ref_main_context (client_view);
@@ -297,7 +297,7 @@ book_client_view_emit_objects_modified (EBookClientView *client_view,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client_view, client_view);
+	g_weak_ref_init (&signal_closure->client_view, client_view);
 	signal_closure->object_list = object_list;  /* takes ownership */
 
 	main_context = book_client_view_ref_main_context (client_view);
@@ -562,7 +562,7 @@ book_client_view_objects_removed_cb (EGdbusBookView *object,
 			list = g_slist_prepend (list, g_strdup (ids[ii]));
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		signal_closure->string_list = g_slist_reverse (list);
 
 		main_context = book_client_view_ref_main_context (client_view);
@@ -603,7 +603,7 @@ book_client_view_progress_cb (EGdbusBookView *object,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		signal_closure->message = g_strdup (message);
 		signal_closure->percent = percent;
 
@@ -644,7 +644,7 @@ book_client_view_complete_cb (EGdbusBookView *object,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		e_gdbus_templates_decode_error (
 			in_error_strv, &signal_closure->error);
 
@@ -863,6 +863,7 @@ book_client_view_finalize (GObject *object)
 	g_free (priv->object_path);
 
 	g_mutex_clear (&priv->main_context_lock);
+	g_weak_ref_clear (&priv->client);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_view_parent_class)->finalize (object);
@@ -1059,6 +1060,7 @@ e_book_client_view_init (EBookClientView *client_view)
 	client_view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (client_view);
 
 	g_mutex_init (&client_view->priv->main_context_lock);
+	g_weak_ref_init (&client_view->priv->client, NULL);
 }
 
 /**

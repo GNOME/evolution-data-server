@@ -660,6 +660,8 @@ collection_backend_finalize (GObject *object)
 	g_hash_table_destroy (priv->unclaimed_resources);
 	g_mutex_clear (&priv->unclaimed_resources_lock);
 
+	g_weak_ref_clear (&priv->server);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_collection_backend_parent_class)->finalize (object);
 }
@@ -1098,6 +1100,7 @@ e_collection_backend_init (ECollectionBackend *backend)
 	g_mutex_init (&backend->priv->property_lock);
 	backend->priv->unclaimed_resources = unclaimed_resources;
 	g_mutex_init (&backend->priv->unclaimed_resources_lock);
+	g_weak_ref_init (&backend->priv->server, NULL);
 }
 
 /**

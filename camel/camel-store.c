@@ -103,7 +103,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->store, NULL);
+	g_weak_ref_clear (&signal_closure->store);
 
 	if (signal_closure->folder != NULL)
 		g_object_unref (signal_closure->folder);
@@ -681,7 +681,7 @@ camel_store_folder_created (CamelStore *store,
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->store, store);
+	g_weak_ref_init (&signal_closure->store, store);
 	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 
 	/* Prioritize ahead of GTK+ redraws. */
@@ -719,7 +719,7 @@ camel_store_folder_deleted (CamelStore *store,
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->store, store);
+	g_weak_ref_init (&signal_closure->store, store);
 	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 
 	/* Prioritize ahead of GTK+ redraws. */
@@ -757,7 +757,7 @@ camel_store_folder_opened (CamelStore *store,
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->store, store);
+	g_weak_ref_init (&signal_closure->store, store);
 	signal_closure->folder = g_object_ref (folder);
 
 	/* Prioritize ahead of GTK+ redraws. */
@@ -798,7 +798,7 @@ camel_store_folder_renamed (CamelStore *store,
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->store, store);
+	g_weak_ref_init (&signal_closure->store, store);
 	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 	signal_closure->folder_name = g_strdup (old_name);
 
@@ -844,7 +844,7 @@ camel_store_folder_info_stale (CamelStore *store)
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->store, store);
+		g_weak_ref_init (&signal_closure->store, store);
 
 		camel_session_idle_add (
 			session, G_PRIORITY_LOW,

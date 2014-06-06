@@ -1567,7 +1567,7 @@ notification_new_string (EBookClientCursor *cursor,
 	Notification *notification = g_slice_new0 (Notification);
 
 	notification->type = type;
-	g_weak_ref_set (&notification->cursor, cursor);
+	g_weak_ref_init (&notification->cursor, cursor);
 
 	g_value_init (&notification->value, G_TYPE_STRING);
 	g_value_set_string (&notification->value, value);
@@ -1583,7 +1583,7 @@ notification_new_int (EBookClientCursor *cursor,
 	Notification *notification = g_slice_new0 (Notification);
 
 	notification->type = type;
-	g_weak_ref_set (&notification->cursor, cursor);
+	g_weak_ref_init (&notification->cursor, cursor);
 
 	g_value_init (&notification->value, G_TYPE_INT);
 	g_value_set_int (&notification->value, value);
@@ -1595,7 +1595,7 @@ static void
 notification_free (Notification *notification)
 {
 	if (notification) {
-		g_weak_ref_set (&notification->cursor, NULL);
+		g_weak_ref_clear (&notification->cursor);
 		g_value_unset (&notification->value);
 		g_slice_free (Notification, notification);
 	}

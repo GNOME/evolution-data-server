@@ -137,7 +137,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->session, NULL);
+	g_weak_ref_clear (&signal_closure->session);
 
 	if (signal_closure->service != NULL)
 		g_object_unref (signal_closure->service);
@@ -1198,7 +1198,7 @@ camel_session_user_alert (CamelSession *session,
 	g_return_if_fail (message != NULL);
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->session, session);
+	g_weak_ref_init (&signal_closure->session, session);
 	signal_closure->service = g_object_ref (service);
 	signal_closure->alert_type = type;
 	signal_closure->alert_message = g_strdup (message);

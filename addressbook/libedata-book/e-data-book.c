@@ -1796,6 +1796,7 @@ data_book_finalize (GObject *object)
 	g_free (priv->object_path);
 
 	g_mutex_clear (&priv->sender_lock);
+	g_weak_ref_clear (&priv->backend);
 	g_hash_table_destroy (priv->sender_table);
 
 	if (priv->dbus_interface) {
@@ -1996,6 +1997,7 @@ e_data_book_init (EDataBook *data_book)
 	data_book->priv->dbus_interface = dbus_interface;
 
 	g_mutex_init (&data_book->priv->sender_lock);
+	g_weak_ref_init (&data_book->priv->backend, NULL);
 
 	data_book->priv->sender_table = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,

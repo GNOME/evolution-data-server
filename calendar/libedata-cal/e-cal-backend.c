@@ -182,7 +182,7 @@ dispatch_node_free (DispatchNode *dispatch_node)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->backend, NULL);
+	g_weak_ref_clear (&signal_closure->backend);
 
 	/* The icaltimezone is cached in ECalBackend's internal
 	 * "zone_cache" hash table and must not be freed here. */
@@ -797,7 +797,7 @@ cal_backend_add_cached_timezone (ETimezoneCache *cache,
 		 * internally cached icaltimezone alive for the
 		 * duration of the idle callback. */
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->backend, cache);
+		g_weak_ref_init (&signal_closure->backend, cache);
 		signal_closure->cached_zone = cached_zone;
 
 		main_context = e_backend_ref_main_context (E_BACKEND (cache));

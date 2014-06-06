@@ -269,7 +269,7 @@ create_context_free (CreateContext *create_context)
 static void
 source_closure_free (SourceClosure *closure)
 {
-	g_weak_ref_set (&closure->registry, NULL);
+	g_weak_ref_clear (&closure->registry);
 	g_object_unref (closure->source);
 
 	g_slice_free (SourceClosure, closure);
@@ -632,7 +632,7 @@ source_registry_source_changed_cb (ESource *source,
 	SourceClosure *closure;
 
 	closure = g_slice_new0 (SourceClosure);
-	g_weak_ref_set (&closure->registry, registry);
+	g_weak_ref_init (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -653,7 +653,7 @@ source_registry_source_notify_enabled_cb (ESource *source,
 	SourceClosure *closure;
 
 	closure = g_slice_new0 (SourceClosure);
-	g_weak_ref_set (&closure->registry, registry);
+	g_weak_ref_init (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -790,7 +790,7 @@ source_registry_object_added_by_owner (ESourceRegistry *registry,
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 
 	closure = g_slice_new0 (SourceClosure);
-	g_weak_ref_set (&closure->registry, registry);
+	g_weak_ref_init (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -903,7 +903,7 @@ source_registry_object_removed_by_owner (ESourceRegistry *registry,
 	/* Schedule a callback on the ESourceRegistry's GMainContext. */
 
 	closure = g_slice_new0 (SourceClosure);
-	g_weak_ref_set (&closure->registry, registry);
+	g_weak_ref_init (&closure->registry, registry);
 	closure->source = g_object_ref (source);
 
 	idle_source = g_idle_source_new ();
@@ -974,7 +974,7 @@ source_registry_name_appeared (ESourceRegistry *registry)
 			continue;
 
 		closure = g_slice_new0 (SourceClosure);
-		g_weak_ref_set (&closure->registry, registry);
+		g_weak_ref_init (&closure->registry, registry);
 		closure->source = g_object_ref (source);
 
 		idle_source = g_idle_source_new ();

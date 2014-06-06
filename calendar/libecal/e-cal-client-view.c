@@ -106,7 +106,7 @@ G_DEFINE_TYPE_WITH_CODE (
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->client_view, NULL);
+	g_weak_ref_clear (&signal_closure->client_view);
 
 	g_slist_free_full (
 		signal_closure->component_list,
@@ -321,7 +321,7 @@ cal_client_view_objects_added_cb (EGdbusCalView *dbus_proxy,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		signal_closure->component_list = build_object_list (objects);
 
 		main_context = cal_client_view_ref_main_context (client_view);
@@ -361,7 +361,7 @@ cal_client_view_objects_modified_cb (EGdbusCalView *dbus_proxy,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		signal_closure->component_list = build_object_list (objects);
 
 		main_context = cal_client_view_ref_main_context (client_view);
@@ -401,7 +401,7 @@ cal_client_view_objects_removed_cb (EGdbusCalView *dbus_proxy,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		signal_closure->component_id_list = build_id_list (uids);
 
 		main_context = cal_client_view_ref_main_context (client_view);
@@ -442,7 +442,7 @@ cal_client_view_progress_cb (EGdbusCalView *dbus_proxy,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		signal_closure->message = g_strdup (message);
 		signal_closure->percent = percent;
 
@@ -483,7 +483,7 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 		}
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client_view, client_view);
+		g_weak_ref_init (&signal_closure->client_view, client_view);
 		e_gdbus_templates_decode_error (
 			arg_error, &signal_closure->error);
 
@@ -676,6 +676,7 @@ cal_client_view_finalize (GObject *object)
 	g_free (priv->object_path);
 
 	g_mutex_clear (&priv->main_context_lock);
+	g_weak_ref_clear (&priv->client);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_view_parent_class)->finalize (object);
@@ -882,6 +883,7 @@ e_cal_client_view_init (ECalClientView *client_view)
 	client_view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (client_view);
 
 	g_mutex_init (&client_view->priv->main_context_lock);
+	g_weak_ref_init (&client_view->priv->client, NULL);
 }
 
 /**

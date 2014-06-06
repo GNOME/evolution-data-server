@@ -92,6 +92,19 @@ imapx_search_dispose (GObject *object)
 	G_OBJECT_CLASS (camel_imapx_search_parent_class)->dispose (object);
 }
 
+static void
+imapx_search_finalize (GObject *object)
+{
+	CamelIMAPXSearchPrivate *priv;
+
+	priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (object);
+
+	g_weak_ref_clear (&priv->imapx_store);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_imapx_search_parent_class)->finalize (object);
+}
+
 static CamelSExpResult *
 imapx_search_result_match_all (CamelSExp *sexp,
                                CamelFolderSearch *search)
@@ -585,6 +598,7 @@ camel_imapx_search_class_init (CamelIMAPXSearchClass *class)
 	object_class->set_property = imapx_search_set_property;
 	object_class->get_property = imapx_search_get_property;
 	object_class->dispose = imapx_search_dispose;
+	object_class->finalize = imapx_search_finalize;
 
 	search_class = CAMEL_FOLDER_SEARCH_CLASS (class);
 	search_class->match_all = imapx_search_match_all;
@@ -609,6 +623,8 @@ camel_imapx_search_init (CamelIMAPXSearch *search)
 {
 	search->priv = CAMEL_IMAPX_SEARCH_GET_PRIVATE (search);
 	search->priv->local_data_search = NULL;
+
+	g_weak_ref_init (&search->priv->imapx_store, NULL);
 }
 
 /**

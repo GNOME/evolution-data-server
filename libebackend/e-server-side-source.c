@@ -705,6 +705,8 @@ server_side_source_finalize (GObject *object)
 	g_free (priv->file_contents);
 	g_free (priv->write_directory);
 
+	g_weak_ref_clear (&priv->oauth2_support);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_server_side_source_parent_class)->finalize (object);
 }
@@ -1346,6 +1348,8 @@ e_server_side_source_init (EServerSideSource *source)
 	source->priv->write_directory = g_strdup (user_dir);
 
 	source->priv->auth_session_type = E_TYPE_AUTHENTICATION_SESSION;
+
+	g_weak_ref_init (&source->priv->oauth2_support, NULL);
 }
 
 /**

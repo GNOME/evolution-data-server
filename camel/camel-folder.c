@@ -159,7 +159,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->folder, NULL);
+	g_weak_ref_clear (&signal_closure->folder);
 
 	g_free (signal_closure->folder_name);
 
@@ -2263,7 +2263,7 @@ camel_folder_delete (CamelFolder *folder)
 	session = camel_service_ref_session (service);
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->folder, folder);
+	g_weak_ref_init (&signal_closure->folder, folder);
 
 	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
@@ -2316,7 +2316,7 @@ camel_folder_rename (CamelFolder *folder,
 	session = camel_service_ref_session (service);
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->folder, folder);
+	g_weak_ref_init (&signal_closure->folder, folder);
 	signal_closure->folder_name = old_name;  /* transfer ownership */
 
 	/* Prioritize ahead of GTK+ redraws. */
@@ -2380,7 +2380,7 @@ camel_folder_changed (CamelFolder *folder,
 		folder->priv->pending_changes = pending_changes;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->folder, folder);
+		g_weak_ref_init (&signal_closure->folder, folder);
 
 		camel_session_idle_add (
 			session, G_PRIORITY_LOW,

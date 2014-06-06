@@ -58,7 +58,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->subscribable, NULL);
+	g_weak_ref_clear (&signal_closure->subscribable);
 
 	if (signal_closure->folder_info != NULL)
 		camel_folder_info_free (signal_closure->folder_info);
@@ -565,7 +565,7 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 	session = camel_service_ref_session (service);
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->subscribable, subscribable);
+	g_weak_ref_init (&signal_closure->subscribable, subscribable);
 	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 
 	/* Prioritize ahead of GTK+ redraws. */
@@ -605,7 +605,7 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 	session = camel_service_ref_session (service);
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->subscribable, subscribable);
+	g_weak_ref_init (&signal_closure->subscribable, subscribable);
 	signal_closure->folder_info = camel_folder_info_clone (folder_info);
 
 	/* Prioritize ahead of GTK+ redraws. */

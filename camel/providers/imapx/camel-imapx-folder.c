@@ -216,6 +216,8 @@ imapx_folder_finalize (GObject *object)
 	g_hash_table_destroy (folder->priv->move_to_real_junk_uids);
 	g_hash_table_destroy (folder->priv->move_to_real_trash_uids);
 
+	g_weak_ref_clear (&folder->priv->mailbox);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_folder_parent_class)->finalize (object);
 }
@@ -1411,6 +1413,11 @@ camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 	g_mutex_init (&imapx_folder->priv->move_to_hash_table_lock);
 	imapx_folder->priv->move_to_real_junk_uids = move_to_real_junk_uids;
 	imapx_folder->priv->move_to_real_trash_uids = move_to_real_trash_uids;
+
+	g_mutex_init (&imapx_folder->search_lock);
+	g_mutex_init (&imapx_folder->stream_lock);
+
+	g_weak_ref_init (&imapx_folder->priv->mailbox, NULL);
 }
 
 CamelFolder *
@@ -1487,8 +1494,6 @@ camel_imapx_folder_new (CamelStore *store,
 	camel_object_state_read (CAMEL_OBJECT (folder));
 
 	imapx_folder->search = camel_imapx_search_new (CAMEL_IMAPX_STORE (store));
-	g_mutex_init (&imapx_folder->search_lock);
-	g_mutex_init (&imapx_folder->stream_lock);
 
 	if (filter_all)
 		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;

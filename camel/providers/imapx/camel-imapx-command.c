@@ -74,7 +74,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	/* Initialize private bits. */
 	real_ic->ref_count = 1;
 	real_ic->buffer = g_string_sized_new (512);
-	g_weak_ref_set (&real_ic->mailbox, mailbox);
+	g_weak_ref_init (&real_ic->mailbox, mailbox);
 	g_cond_init (&real_ic->done_sync_cond);
 	g_mutex_init (&real_ic->done_sync_mutex);
 
@@ -146,7 +146,7 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 
 		g_string_free (real_ic->buffer, TRUE);
 
-		g_weak_ref_set (&real_ic->mailbox, NULL);
+		g_weak_ref_clear (&real_ic->mailbox);
 
 		g_clear_error (&real_ic->error);
 

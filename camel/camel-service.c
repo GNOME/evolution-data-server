@@ -258,7 +258,7 @@ connection_op_complete_pending (ConnectionOp *op,
 static void
 dispatch_data_free (DispatchData *dispatch_data)
 {
-	g_weak_ref_set (&dispatch_data->service, NULL);
+	g_weak_ref_clear (&dispatch_data->service);
 
 	g_slice_free (DispatchData, dispatch_data);
 }
@@ -869,6 +869,8 @@ service_finalize (GObject *object)
 	g_hash_table_destroy (priv->task_table);
 	g_mutex_clear (&priv->task_table_lock);
 
+	g_weak_ref_clear (&priv->session);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_service_parent_class)->finalize (object);
 }
@@ -1089,6 +1091,7 @@ camel_service_init (CamelService *service)
 
 	g_mutex_init (&service->priv->property_lock);
 	g_mutex_init (&service->priv->connection_lock);
+	g_weak_ref_init (&service->priv->session, NULL);
 	service->priv->status = CAMEL_SERVICE_DISCONNECTED;
 
 	service->priv->proxy_resolver = g_proxy_resolver_get_default ();
@@ -1711,7 +1714,7 @@ camel_service_queue_task (CamelService *service,
 	return_on_cancel = g_task_get_return_on_cancel (task);
 
 	dispatch_data = g_slice_new0 (DispatchData);
-	g_weak_ref_set (&dispatch_data->service, service);
+	g_weak_ref_init (&dispatch_data->service, service);
 	dispatch_data->return_on_cancel = return_on_cancel;
 	dispatch_data->task_func = task_func;
 
