@@ -164,7 +164,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->client, NULL);
+	g_weak_ref_clear (&signal_closure->client);
 
 	g_free (signal_closure->property_name);
 	g_free (signal_closure->property_value);
@@ -504,7 +504,7 @@ book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, client);
 		signal_closure->error_message = g_strdup (error_message);
 
 		main_context = e_client_ref_main_context (client);
@@ -595,7 +595,7 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
 
 		/* The 'locale' is not an EClient property, so just transport
@@ -637,7 +637,7 @@ book_client_name_vanished_cb (GDBusConnection *connection,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, client);
 
 		main_context = e_client_ref_main_context (client);
 

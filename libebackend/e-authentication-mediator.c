@@ -140,7 +140,7 @@ thread_closure_new (EAuthenticationMediator *mediator)
 
 	closure = g_slice_new0 (ThreadClosure);
 	closure->ref_count = 1;
-	g_weak_ref_set (&closure->mediator, mediator);
+	g_weak_ref_init (&closure->mediator, mediator);
 	closure->main_context = g_main_context_new ();
 	/* It's important to pass 'is_running=FALSE' here because
 	 * we wait for the main loop to start running as a way of
@@ -170,7 +170,7 @@ thread_closure_unref (ThreadClosure *closure)
 	g_return_if_fail (closure->ref_count > 0);
 
 	if (g_atomic_int_dec_and_test (&closure->ref_count)) {
-		g_weak_ref_set (&closure->mediator, NULL);
+		g_weak_ref_clear (&closure->mediator);
 		g_main_context_unref (closure->main_context);
 		g_main_loop_unref (closure->main_loop);
 		g_cond_clear (&closure->main_loop_cond);

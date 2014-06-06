@@ -135,6 +135,7 @@ gdata_oauth2_authorizer_finalize (GObject *object)
 	g_free (priv->access_token);
 
 	g_hash_table_destroy (priv->authorization_domains);
+	g_weak_ref_clear (&priv->source);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_gdata_oauth2_authorizer_parent_class)->
@@ -302,6 +303,7 @@ e_gdata_oauth2_authorizer_init (EGDataOAuth2Authorizer *authorizer)
 
 	authorizer->priv = E_GDATA_OAUTH2_AUTHORIZER_GET_PRIVATE (authorizer);
 	authorizer->priv->authorization_domains = authorization_domains;
+	g_weak_ref_init (&authorizer->priv->source, NULL);
 }
 
 EGDataOAuth2Authorizer *

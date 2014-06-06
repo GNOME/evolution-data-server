@@ -409,6 +409,7 @@ imapx_conn_manager_finalize (GObject *object)
 	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
 
 	g_rw_lock_clear (&priv->rw_lock);
+	g_weak_ref_clear (&priv->store);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->finalize (object);
@@ -446,6 +447,7 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 	con_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (con_man);
 
 	g_rw_lock_init (&con_man->priv->rw_lock);
+	g_weak_ref_init (&con_man->priv->store, NULL);
 }
 
 static void

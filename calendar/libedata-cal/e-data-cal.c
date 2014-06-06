@@ -2402,6 +2402,7 @@ data_cal_finalize (GObject *object)
 	g_free (priv->object_path);
 
 	g_mutex_clear (&priv->sender_lock);
+	g_weak_ref_clear (&priv->backend);
 	g_hash_table_destroy (priv->sender_table);
 
 	if (priv->dbus_interface) {
@@ -2566,6 +2567,7 @@ e_data_cal_init (EDataCal *data_cal)
 	data_cal->priv->dbus_interface = dbus_interface;
 
 	g_mutex_init (&data_cal->priv->sender_lock);
+	g_weak_ref_init (&data_cal->priv->backend, NULL);
 
 	data_cal->priv->sender_table = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,

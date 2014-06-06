@@ -187,7 +187,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_set (&signal_closure->client, NULL);
+	g_weak_ref_clear (&signal_closure->client);
 
 	g_free (signal_closure->property_name);
 	g_free (signal_closure->error_message);
@@ -554,7 +554,7 @@ cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, client);
 		signal_closure->error_message = g_strdup (error_message);
 
 		main_context = e_client_ref_main_context (client);
@@ -645,7 +645,7 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
 
 		main_context = e_client_ref_main_context (client);
@@ -675,7 +675,7 @@ cal_client_dbus_proxy_free_busy_data_cb (EDBusCalendar *dbus_proxy,
 	SignalClosure *signal_closure;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_set (&signal_closure->client, client);
+	g_weak_ref_init (&signal_closure->client, client);
 	signal_closure->free_busy_data = g_strdupv (free_busy_data);
 
 	main_context = e_client_ref_main_context (client);
@@ -707,7 +707,7 @@ cal_client_name_vanished_cb (GDBusConnection *connection,
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, client);
 
 		main_context = e_client_ref_main_context (client);
 
@@ -1265,7 +1265,7 @@ cal_client_add_cached_timezone (ETimezoneCache *cache,
 		 * internally cached icaltimezone alive for the
 		 * duration of the idle callback. */
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_set (&signal_closure->client, cache);
+		g_weak_ref_init (&signal_closure->client, cache);
 		signal_closure->cached_zone = cached_zone;
 
 		main_context = e_client_ref_main_context (E_CLIENT (cache));

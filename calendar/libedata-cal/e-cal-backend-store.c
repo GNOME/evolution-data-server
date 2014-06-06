@@ -587,6 +587,7 @@ cal_backend_store_finalize (GObject *object)
 	g_free (priv->key_file_name);
 
 	g_mutex_clear (&priv->save_timeout_lock);
+	g_weak_ref_clear (&priv->timezone_cache);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->finalize (object);
@@ -1048,6 +1049,7 @@ e_cal_backend_store_init (ECalBackendStore *store)
 	store->priv->comp_uid_hash = comp_uid_hash;
 	g_rw_lock_init (&store->priv->lock);
 	g_mutex_init (&store->priv->save_timeout_lock);
+	g_weak_ref_init (&store->priv->timezone_cache, NULL);
 }
 
 /**

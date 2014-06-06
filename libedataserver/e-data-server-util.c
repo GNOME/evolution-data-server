@@ -1134,7 +1134,7 @@ e_weak_ref_new (gpointer object)
 	GWeakRef *weak_ref;
 
 	weak_ref = g_slice_new0 (GWeakRef);
-	g_weak_ref_set (weak_ref, object);
+	g_weak_ref_init (weak_ref, object);
 
 	return weak_ref;
 }
@@ -1152,7 +1152,7 @@ e_weak_ref_free (GWeakRef *weak_ref)
 {
 	g_return_if_fail (weak_ref != NULL);
 
-	g_weak_ref_set (weak_ref, NULL);
+	g_weak_ref_clear (weak_ref);
 	g_slice_free (GWeakRef, weak_ref);
 }
 

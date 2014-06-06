@@ -105,6 +105,19 @@ source_extension_dispose (GObject *object)
 }
 
 static void
+source_extension_finalize (GObject *object)
+{
+	ESourceExtensionPrivate *priv;
+
+	priv = E_SOURCE_EXTENSION_GET_PRIVATE (object);
+
+	g_weak_ref_clear (&priv->source);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (e_source_extension_parent_class)->finalize (object);
+}
+
+static void
 source_extension_notify (GObject *object,
                          GParamSpec *pspec)
 {
@@ -132,6 +145,7 @@ e_source_extension_class_init (ESourceExtensionClass *class)
 	object_class->set_property = source_extension_set_property;
 	object_class->get_property = source_extension_get_property;
 	object_class->dispose = source_extension_dispose;
+	object_class->finalize = source_extension_finalize;
 	object_class->notify = source_extension_notify;
 
 	g_object_class_install_property (
@@ -151,6 +165,7 @@ static void
 e_source_extension_init (ESourceExtension *extension)
 {
 	extension->priv = E_SOURCE_EXTENSION_GET_PRIVATE (extension);
+	g_weak_ref_init (&extension->priv->source, NULL);
 }
 
 /**
