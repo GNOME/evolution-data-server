@@ -1,3 +1,53 @@
+Evolution-Data-Server 3.12.3 2014-06-09
+---------------------------------------
+
+Bug Fixes:
+	Bug 729546 - [IMAPx] Crash after large message download cancel (Milan Crha)
+	Bug 728976 - [IMAPx] Ignore \NoSelect for Inbox folder (Milan Crha)
+	Bug 730398 - [WebDAV] Incorrect cache clean-up after book view cancel (Milan Crha)
+	Bug 725045 - Crash updating Google book's contact with photo (Milan Crha)
+	Bug 730281 - [CalDAV] Recover after temporary connection lost (Milan Crha)
+	Bug 719475 - [IMAPx] Increase multi-fetch chunk size to 32KB (Milan Crha)
+	Bug 730788 - [IMAPx] Deadlock during IDLE start (Milan Crha)
+	Bug 730645 - Search / filtering for "has words" is broken (Milan Crha)
+	Bug 729850 - CamelMimeParser cannot parse mbox files (Milan Crha)
+	Bug 730979 - [IMAPx] Quota information is not read properly (Milan Crha)
+	Bug 721128 - Make Evolution-Data-Server build under Win32 (Tarnyko)
+	Bug 730827 - Cannot use libphonenumber >= r568 (Mateusz Polrola)
+	Bug 591811 - Do not re-encode attachments and change CRLF/LF (Milan Crha)
+
+Miscellaneous:
+	e-proxy: Eliminate use of undefined C behaviour (Philip Withnall)
+	secret-monitor: Remove duplicate assignment (Philip Withnall)
+	addressbook: Fix some potential NULL pointer dereferences with SQL (Philip Withnall)
+	camel: Print a warning on failing to save migrated maildir version (Philip Withnall)
+	camel: Avoid an unlikely division by zero on a race condition (Philip Withnall)
+	addressbook: Add bounds checking to a summary file function (Philip Withnall)
+	addressbook: Fix cancellable handling if not in a transaction (Philip Withnall)
+	camel: Avoid an unlikely division by zero failure (Philip Withnall)
+	addressbook: Strengthen an assertion to avoid negative bit shifts (Philip Withnall)
+	[IMAPx] Add "Number of concurrent connections to use" UI option (Milan Crha)
+	[EBookBackendGoogle] Guard private 'groups' members with a lock (Milan Crha)
+	[EBookBackendGoogle] Do not store active views in its own way (Milan Crha)
+	[EBookBackendGoogle] Serialize group list update and cache update (Milan Crha)
+	Make libdb optional dependency (Milan Crha)
+	Use OpenLDAP in Win32 builds as well (Milan Crha)
+	Misceallenous Win32 build related fixes (Milan Crha)
+	[IMAPx] 'Error performing IDLE: Shutting down' is not an error (Milan Crha)
+	Use g_weak_ref_init/_clear() on structure-allocated GWeakRef-s (Milan Crha)
+
+Translations:
+	Christian Kirbach (de)
+	Piotr Drąg (pl)
+	Enrico Nicoletto (pt_BR)
+	Andika Triwidada (id)
+	Balázs Úr (hu)
+	Gil Forcada (ca)
+	Carles Ferrando (ca@valencia)
+	Aurimas Černius (lt)
+	Marek Černocký (cs)
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.12.2 2014-05-12
 ---------------------------------------
 
