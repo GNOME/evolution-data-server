@@ -232,9 +232,9 @@ maildir_store_get_folder_sync (CamelStore *store,
 		if (g_stat (tmp, &st) != 0 || !S_ISDIR (st.st_mode)
 		    || g_stat (cur, &st) != 0 || !S_ISDIR (st.st_mode)
 		    || g_stat (new, &st) != 0 || !S_ISDIR (st.st_mode)) {
-			if (g_mkdir (tmp, 0700) != 0
-			    || g_mkdir (cur, 0700) != 0
-			    || g_mkdir (new, 0700) != 0) {
+			if ((g_mkdir (tmp, 0700) != 0 && errno != EEXIST)
+			    || (g_mkdir (cur, 0700) != 0 && errno != EEXIST)
+			    || (g_mkdir (new, 0700) != 0 && errno != EEXIST)) {
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
@@ -262,10 +262,10 @@ maildir_store_get_folder_sync (CamelStore *store,
 				_("Cannot get folder '%s': folder does not exist."),
 				folder_name);
 		} else {
-			if (g_mkdir (name, 0700) != 0
-			    || g_mkdir (tmp, 0700) != 0
-			    || g_mkdir (cur, 0700) != 0
-			    || g_mkdir (new, 0700) != 0) {
+			if ((g_mkdir (name, 0700) != 0 && errno != EEXIST)
+			    || (g_mkdir (tmp, 0700) != 0 && errno != EEXIST)
+			    || (g_mkdir (cur, 0700) != 0 && errno != EEXIST)
+			    || (g_mkdir (new, 0700) != 0 && errno != EEXIST)) {
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
