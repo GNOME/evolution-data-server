@@ -1016,6 +1016,7 @@ camel_filter_search_match (CamelSession *session,
 	CamelSExp *sexp;
 	CamelSExpResult *result;
 	gboolean retval;
+	GError *local_error = NULL;
 	gint i;
 
 	fms.session = session;
@@ -1024,7 +1025,7 @@ camel_filter_search_match (CamelSession *session,
 	fms.message = NULL;
 	fms.info = info;
 	fms.source = source;
-	fms.error = error;
+	fms.error = &local_error;
 
 	sexp = camel_sexp_new ();
 
@@ -1037,21 +1038,29 @@ camel_filter_search_match (CamelSession *session,
 
 	camel_sexp_input_text (sexp, expression, strlen (expression));
 	if (camel_sexp_parse (sexp) == -1) {
-		/* A filter search is a search through your filters,
-		 * ie. your filters is the corpus being searched thru. */
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Error executing filter search: %s: %s"),
-			camel_sexp_error (sexp), expression);
+		if (!local_error) {
+			/* A filter search is a search through your filters,
+			 * ie. your filters is the corpus being searched thru. */
+			g_set_error (
+				&local_error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Error executing filter search: %s: %s"),
+				camel_sexp_error (sexp), expression);
+		}
 		goto error;
 	}
 
 	result = camel_sexp_eval (sexp);
 	if (result == NULL) {
-		g_set_error (
-			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Error executing filter search: %s: %s"),
-			camel_sexp_error (sexp), expression);
+		if (!local_error)
+			g_set_error (
+				&local_error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("Error executing filter search: %s: %s"),
+				camel_sexp_error (sexp), expression);
+		goto error;
+	}
+
+	if (local_error) {
+		camel_sexp_result_free (sexp, result);
 		goto error;
 	}
 
@@ -1073,6 +1082,9 @@ camel_filter_search_match (CamelSession *session,
 		g_object_unref (fms.message);
 
 	g_object_unref (sexp);
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return CAMEL_SEARCH_ERROR;
 }
