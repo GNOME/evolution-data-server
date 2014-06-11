@@ -180,19 +180,18 @@ imapx_store_settings_notify_cb (CamelSettings *settings,
                                 GParamSpec *pspec,
                                 CamelStore *store)
 {
-	if (g_str_equal (pspec->name, "use-real-junk-path")) {
+	gboolean folder_info_stale = g_str_equal (pspec->name, "use-subscriptions");
+
+	if (g_str_equal (pspec->name, "use-real-junk-path") ||
+	    g_str_equal (pspec->name, "use-real-trash-path") ||
+	    g_str_equal (pspec->name, "real-junk-path") ||
+	    g_str_equal (pspec->name, "real-trash-path")) {
 		imapx_store_update_store_flags (store);
-		camel_store_folder_info_stale (store);
+		folder_info_stale = TRUE;
 	}
 
-	if (g_str_equal (pspec->name, "use-real-trash-path")) {
-		imapx_store_update_store_flags (store);
+	if (folder_info_stale)
 		camel_store_folder_info_stale (store);
-	}
-
-	if (g_str_equal (pspec->name, "use-subscriptions")) {
-		camel_store_folder_info_stale (store);
-	}
 }
 
 static CamelFolderInfo *
