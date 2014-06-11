@@ -2665,19 +2665,27 @@ camel_imapx_store_ref_server (CamelIMAPXStore *store,
                               GError **error)
 {
 	CamelIMAPXServer *server = NULL;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), NULL);
 
  	server = camel_imapx_conn_manager_get_connection (
-		store->priv->con_man, folder_name, for_expensive_job, cancellable, error);
+		store->priv->con_man, folder_name, for_expensive_job, cancellable, &local_error);
 
-	if (!server && error && !*error) {
-		g_set_error (
-			error, CAMEL_SERVICE_ERROR,
-			CAMEL_SERVICE_ERROR_UNAVAILABLE,
-			_("You must be working online "
-			"to complete this operation"));
+	if (!server && (!local_error || local_error->domain == G_RESOLVER_ERROR)) {
+		if (!local_error) {
+			g_set_error (
+				&local_error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("You must be working online to complete this operation"));
+		} else {
+			local_error->domain = CAMEL_SERVICE_ERROR;
+			local_error->code = CAMEL_SERVICE_ERROR_UNAVAILABLE;
+		}
 	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return server;
 }

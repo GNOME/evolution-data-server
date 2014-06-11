@@ -827,6 +827,10 @@ imapx_refresh_info_sync (CamelFolder *folder,
 	store = camel_folder_get_parent_store (folder);
 	folder_name = camel_folder_get_full_name (folder);
 
+	/* Not connected, thus skip the operation */
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
+		return TRUE;
+
 	imapx_store = CAMEL_IMAPX_STORE (store);
 	imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, cancellable, error);
 
@@ -1077,6 +1081,10 @@ imapx_synchronize_sync (CamelFolder *folder,
 
 	store = camel_folder_get_parent_store (folder);
 	folder_name = camel_folder_get_full_name (folder);
+
+	/* Not connected, thus skip the operation */
+	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
+		return TRUE;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
 	/* while it can be expensive job, do not treat it as such, to avoid a blockage
