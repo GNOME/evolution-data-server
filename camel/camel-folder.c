@@ -2667,7 +2667,6 @@ camel_folder_append_message_sync (CamelFolder *folder,
                                   GError **error)
 {
 	CamelFolderClass *class;
-	CamelStore *parent_store;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -2677,9 +2676,7 @@ camel_folder_append_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->append_message_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can append. */
-	parent_store = camel_folder_get_parent_store (folder);
-	success = camel_service_connect_sync (
-		CAMEL_SERVICE (parent_store), cancellable, error);
+	success = folder_maybe_connect_sync (folder, cancellable, error);
 	if (!success)
 		return FALSE;
 
@@ -2838,7 +2835,6 @@ camel_folder_expunge_sync (CamelFolder *folder,
                            GError **error)
 {
 	CamelFolderClass *class;
-	CamelStore *parent_store;
 	const gchar *display_name;
 	const gchar *message;
 	gboolean success;
@@ -2849,9 +2845,7 @@ camel_folder_expunge_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->expunge_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can expunge. */
-	parent_store = camel_folder_get_parent_store (folder);
-	success = camel_service_connect_sync (
-		CAMEL_SERVICE (parent_store), cancellable, error);
+	success = folder_maybe_connect_sync (folder, cancellable, error);
 	if (!success)
 		return FALSE;
 
@@ -3457,7 +3451,6 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
                                 GError **error)
 {
 	CamelFolderClass *class;
-	CamelStore *parent_store;
 	const gchar *display_name;
 	const gchar *message;
 	gboolean success;
@@ -3468,9 +3461,7 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->refresh_info_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can refresh. */
-	parent_store = camel_folder_get_parent_store (folder);
-	success = camel_service_connect_sync (
-		CAMEL_SERVICE (parent_store), cancellable, error);
+	success = folder_maybe_connect_sync (folder, cancellable, error);
 	if (!success)
 		return FALSE;
 
@@ -3600,7 +3591,6 @@ camel_folder_synchronize_sync (CamelFolder *folder,
                                GError **error)
 {
 	CamelFolderClass *class;
-	CamelStore *parent_store;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -3609,9 +3599,7 @@ camel_folder_synchronize_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can synchronize. */
-	parent_store = camel_folder_get_parent_store (folder);
-	success = camel_service_connect_sync (
-		CAMEL_SERVICE (parent_store), cancellable, error);
+	success = folder_maybe_connect_sync (folder, cancellable, error);
 	if (!success)
 		return FALSE;
 
@@ -3940,11 +3928,9 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 	destination_store = camel_folder_get_parent_store (destination);
 
 	/* Need to connect both services before we can transfer. */
-	success = camel_service_connect_sync (
-		CAMEL_SERVICE (destination_store), cancellable, error);
+	success = folder_maybe_connect_sync (destination, cancellable, error);
 	if (success && source_store != destination_store)
-		success = camel_service_connect_sync (
-			CAMEL_SERVICE (source_store), cancellable, error);
+		success = folder_maybe_connect_sync (source, cancellable, error);
 	if (!success)
 		return FALSE;
 
