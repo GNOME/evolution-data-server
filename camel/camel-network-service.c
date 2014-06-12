@@ -665,7 +665,7 @@ network_service_new_connectable (CamelNetworkService *service)
 	host = camel_network_settings_dup_host (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 
-	if (host != NULL)
+	if (host && *host && g_ascii_strcasecmp (host, "localhost") != 0)
 		connectable = g_network_address_new (host, port);
 
 	g_free (host);
@@ -1008,10 +1008,8 @@ camel_network_service_can_reach_sync (CamelNetworkService *service,
 			priv->network_monitor, connectable,
 			cancellable, &local_error);
 	} else {
-		local_error = g_error_new_literal (
-			G_IO_ERROR,
-			G_IO_ERROR_HOST_UNREACHABLE,
-			_("No host information available"));
+		/* No host information available, assume reachable */
+		can_reach = TRUE;
 	}
 
 	update_property =
