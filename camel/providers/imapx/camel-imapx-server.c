@@ -8336,6 +8336,7 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	CamelIMAPXJob *job;
 	CopyMessagesData *data;
 	gint ii;
+	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
@@ -8368,7 +8369,11 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	camel_imapx_job_set_data (
 		job, data, (GDestroyNotify) copy_messages_data_free);
 
-	return imapx_submit_job (is, job, error);
+	success = imapx_submit_job (is, job, error);
+
+	camel_imapx_job_unref (job);
+
+	return success;
 }
 
 gboolean
