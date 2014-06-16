@@ -435,8 +435,8 @@ camel_imapx_job_set_error_if_failed (CamelIMAPXJob *job,
 {
 	CamelIMAPXRealJob *real_job;
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
-	g_return_if_fail (error != NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), TRUE);
+	g_return_val_if_fail (error != NULL, TRUE);
 
 	real_job = (CamelIMAPXRealJob *) job;
 
