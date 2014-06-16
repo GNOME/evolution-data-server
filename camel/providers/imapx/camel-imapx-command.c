@@ -596,7 +596,10 @@ camel_imapx_command_failed (CamelIMAPXCommand *ic,
 	g_return_if_fail (error != NULL);
 
 	real_ic = (CamelIMAPXRealCommand *) ic;
-	g_return_if_fail (real_ic->error == NULL);
+
+	/* Do not overwrite errors, the first passed in wins */
+	if (real_ic->error != NULL)
+		return;
 
 	real_ic->error = g_error_copy (error);
 }
@@ -642,6 +645,9 @@ camel_imapx_command_set_error_if_failed (CamelIMAPXCommand *ic,
 				"%s", _("Unknown error"));
 		return TRUE;
 	}
+
+	if (real_ic->job)
+		return camel_imapx_job_set_error_if_failed (real_ic->job, error);
 
 	return FALSE;
 }

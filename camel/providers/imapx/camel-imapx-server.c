@@ -1383,7 +1383,9 @@ imapx_command_start_next (CamelIMAPXServer *is)
 		return;
 	}
 
+	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_pending);
+	g_mutex_unlock (&is->priv->select_lock);
 	if (mailbox != NULL) {
 		CamelIMAPXCommand *start_ic = NULL;
 		GList *head, *link;
@@ -1488,7 +1490,9 @@ imapx_command_start_next (CamelIMAPXServer *is)
 	}
 
 	/* See if any queued jobs on this select first */
+	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	g_mutex_unlock (&is->priv->select_lock);
 	if (mailbox != NULL) {
 		CamelIMAPXCommand *start_ic = NULL;
 		GList *head, *link;
@@ -1611,7 +1615,9 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 		min_pri = first_ic->pri;
 
+		g_mutex_lock (&is->priv->select_lock);
 		mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+		g_mutex_unlock (&is->priv->select_lock);
 
 		head = camel_imapx_command_queue_peek_head_link (is->queue);
 
@@ -1749,7 +1755,10 @@ imapx_match_active_job (CamelIMAPXServer *is,
 		if (!(job->type & type))
 			continue;
 
+		g_mutex_lock (&is->priv->select_lock);
 		mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+		g_mutex_unlock (&is->priv->select_lock);
+
 		job_matches = camel_imapx_job_matches (job, mailbox, uid);
 		g_clear_object (&mailbox);
 
@@ -1804,7 +1813,10 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	CamelMessageInfo *mi;
 	guint32 messages;
 
+	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	g_mutex_unlock (&is->priv->select_lock);
+
 	g_return_if_fail (mailbox != NULL);
 
 	folder = imapx_server_ref_folder (is, mailbox);
@@ -1887,7 +1899,9 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 
 	c (is->tagprefix, "expunged: %lu\n", is->priv->context->id);
 
+	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	g_mutex_unlock (&is->priv->select_lock);
 
 	if (mailbox != NULL) {
 		CamelFolder *folder;
@@ -1953,7 +1967,10 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	if (uids == NULL)
 		return FALSE;
 
+	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	g_mutex_unlock (&is->priv->select_lock);
+
 	g_return_val_if_fail (mailbox != NULL, FALSE);
 
 	folder = imapx_server_ref_folder (is, mailbox);
@@ -1987,7 +2004,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 		uid = g_array_index (uids, guint32, ii);
 
-		c (is->tagprefix, "vanished: %u\n", uid);
+		e (is->tagprefix, "vanished: %u\n", uid);
 
 		str = g_strdup_printf ("%u", uid);
 		uid_list = g_list_prepend (uid_list, str);
@@ -3254,7 +3271,10 @@ imapx_completion (CamelIMAPXServer *is,
 		CamelFolder *folder;
 		CamelIMAPXMailbox *mailbox;
 
+		g_mutex_lock (&is->priv->select_lock);
 		mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+		g_mutex_unlock (&is->priv->select_lock);
+
 		g_return_val_if_fail (mailbox != NULL, FALSE);
 
 		folder = imapx_server_ref_folder (is, mailbox);
@@ -3663,7 +3683,10 @@ imapx_call_idle (gpointer data)
 	if (is->priv->idle_state != IMAPX_IDLE_PENDING)
 		goto exit;
 
+	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	g_mutex_unlock (&is->priv->select_lock);
+
 	if (mailbox == NULL)
 		goto exit;
 
