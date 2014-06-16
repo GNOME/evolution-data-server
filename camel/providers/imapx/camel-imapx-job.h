@@ -80,6 +80,9 @@ void		camel_imapx_job_set_mailbox	(CamelIMAPXJob *job,
 GCancellable *	camel_imapx_job_get_cancellable	(CamelIMAPXJob *job);
 void		camel_imapx_job_take_error	(CamelIMAPXJob *job,
 						 GError *error);
+gboolean	camel_imapx_job_set_error_if_failed
+						(CamelIMAPXJob *job,
+						 GError **error);
 
 G_END_DECLS
 

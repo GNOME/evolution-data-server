@@ -417,3 +417,33 @@ camel_imapx_job_take_error (CamelIMAPXJob *job,
 	real_job->error = error;  /* takes ownership */
 }
 
+/**
+ * camel_imapx_job_set_error_if_failed:
+ * @job: a #CamelIMAPXJob
+ * @error: a location for a #GError
+ *
+ * Sets @error to a new GError instance and returns TRUE, if the job has set
+ * an error or when it was cancelled.
+ *
+ * Returns: Whether the job failed.
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_imapx_job_set_error_if_failed (CamelIMAPXJob *job,
+				     GError **error)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+	g_return_if_fail (error != NULL);
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	if (real_job->error) {
+		g_propagate_error (error, g_error_copy (real_job->error));
+		return TRUE;
+	}
+
+	return g_cancellable_set_error_if_cancelled (real_job->cancellable, error);
+}
