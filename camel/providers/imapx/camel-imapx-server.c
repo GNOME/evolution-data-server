@@ -3692,17 +3692,17 @@ imapx_call_idle (gpointer data)
 		goto exit;
 
 	folder = imapx_server_ref_folder (is, mailbox);
+	if (folder == NULL)
+		goto exit;
+
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
 	/* We block here until the IDLE command completes. */
 	camel_imapx_server_idle (is, mailbox, cancellable, &local_error);
 
 	if (local_error == NULL) {
-		CamelFolder *folder;
 		gboolean have_new_messages;
 		gboolean fetch_new_messages;
-
-		folder = imapx_server_ref_folder (is, mailbox);
 
 		have_new_messages =
 			camel_imapx_mailbox_get_messages (mailbox) >
@@ -3716,8 +3716,6 @@ imapx_call_idle (gpointer data)
 			imapx_server_fetch_new_messages (
 				is, mailbox, TRUE, TRUE,
 				cancellable, &local_error);
-
-		g_clear_object (&folder);
 	}
 
 	/* XXX Need a better way to propagate IDLE errors. */
@@ -3732,6 +3730,7 @@ imapx_call_idle (gpointer data)
 	g_clear_object (&cancellable);
 
 exit:
+	g_clear_object (&mailbox);
 	g_clear_object (&is);
 
 	return G_SOURCE_REMOVE;
