@@ -874,20 +874,17 @@ junk_test (struct _CamelSExp *f,
 	gboolean message_is_junk = FALSE;
 	GError *error = NULL;
 
-	junk_filter = camel_session_get_junk_filter (fms->session);
-	if (junk_filter == NULL)
-		goto exit;
-
 	/* Check if the message is already classified. */
 
 	flags = camel_message_info_flags (info);
 
 	if (flags & CAMEL_MESSAGE_JUNK) {
+		message_is_junk = TRUE;
 		if (camel_debug ("junk"))
 			printf (
 				"Message has a Junk flag set already, "
 				"skipping junk test...\n");
-		goto exit;
+		goto done;
 	}
 
 	if (flags & CAMEL_MESSAGE_NOTJUNK) {
@@ -895,8 +892,21 @@ junk_test (struct _CamelSExp *f,
 			printf (
 				"Message has a NotJunk flag set already, "
 				"skipping junk test...\n");
-		goto exit;
+		goto done;
 	}
+
+	/* If the sender is known, the message is not junk.
+	   Do this before header test, to be able to override server-side set headers. */
+
+	sender_is_known = camel_session_lookup_addressbook (
+		fms->session, camel_message_info_from (info));
+	if (camel_debug ("junk"))
+		printf (
+			"Sender '%s' in book? %d\n",
+			camel_message_info_from (info),
+			sender_is_known);
+	if (sender_is_known)
+		goto done;
 
 	/* Check the headers for a junk designation. */
 
@@ -925,21 +935,41 @@ junk_test (struct _CamelSExp *f,
 		node = node->next;
 	}
 
-	/* If the sender is known, the message is not junk. */
+	/* Not every message info has headers available, thus try headers of the message itself */
+	message = camel_filter_search_get_message (fms, f);
+	if (message) {
+		struct _camel_header_raw *h;
 
-	sender_is_known = camel_session_lookup_addressbook (
-		fms->session, camel_message_info_from (info));
-	if (camel_debug ("junk"))
-		printf (
-			"Sender '%s' in book? %d\n",
-			camel_message_info_from (info),
-			sender_is_known);
-	if (sender_is_known)
+		for (h = CAMEL_MIME_PART (message)->headers; h; h = h->next) {
+			const gchar *value;
+
+			if (!h->name)
+				continue;
+
+			value = g_hash_table_lookup ((GHashTable *) ht, h->name);
+			if (!value)
+				continue;
+
+			message_is_junk = camel_strstrcase (h->value, value) != NULL;
+
+			if (message_is_junk) {
+				if (camel_debug ("junk"))
+					printf (
+						"Message contains \"%s: %s\"",
+						h->name, value);
+				goto done;
+			}
+		}
+	} else {
 		goto done;
+	}
 
 	/* Consult 3rd party junk filtering software. */
 
-	message = camel_filter_search_get_message (fms, f);
+	junk_filter = camel_session_get_junk_filter (fms->session);
+	if (junk_filter == NULL)
+		goto done;
+
 	status = camel_junk_filter_classify (
 		junk_filter, message, NULL, &error);
 
@@ -967,7 +997,7 @@ junk_test (struct _CamelSExp *f,
 		}
 
 		if (camel_debug ("junk"))
-			g_print (
+			printf (
 				"Junk filter classification: %s\n",
 				status_desc);
 	} else {
@@ -977,13 +1007,12 @@ junk_test (struct _CamelSExp *f,
 		message_is_junk = FALSE;
 	}
 
-done:
+ done:
 	if (camel_debug ("junk"))
 		printf (
 			"Message is determined to be %s\n",
 			message_is_junk ? "*JUNK*" : "clean");
 
-exit:
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
 	r->value.number = message_is_junk;
 
