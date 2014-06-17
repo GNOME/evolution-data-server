@@ -69,9 +69,9 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
 	  N_("Check new messages for _Junk contents"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk-inbox", "filter-junk",
-	  N_("Only check for Junk messages in the IN_BOX folder"), "0" },
+	  N_("Only check for Junk messages in the In_box folder"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "stay-synchronized", NULL,
-	  N_("Automatically synchroni_ze remote mail locally"), "0" },
+	  N_("Synchroni_ze remote mail locally in all folders"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
