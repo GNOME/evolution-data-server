@@ -4703,8 +4703,17 @@ camel_header_raw_clear (struct _camel_header_raw **list)
 	*list = NULL;
 }
 
+/**
+ * camel_header_msgid_generate:
+ * @domain: domain to use (like "example.com") for the ID suffix; can be NULL
+ *
+ * Either the @domain is used, or the user's local hostname,
+ * in case it's NULL or empty.
+ *
+ * Returns: Unique message ID.
+ **/
 gchar *
-camel_header_msgid_generate (void)
+camel_header_msgid_generate (const gchar *domain)
 {
 	static GMutex count_lock;
 #define COUNT_LOCK() g_mutex_lock (&count_lock)
@@ -4717,7 +4726,10 @@ camel_header_msgid_generate (void)
 	struct addrinfo *ai = NULL, hints = { 0 };
 	static gchar *cached_hostname = NULL;
 
-	if (!cached_hostname) {
+	COUNT_LOCK ();
+	if (!cached_hostname && (!domain || !*domain)) {
+		domain = NULL;
+
 		retval = gethostname (host, sizeof (host));
 		if (retval == 0 && *host) {
 			hints.ai_flags = AI_CANONNAME;
@@ -4733,8 +4745,7 @@ camel_header_msgid_generate (void)
 		cached_hostname = g_strdup (name);
 	}
 
-	COUNT_LOCK ();
-	msgid = g_strdup_printf ("%d.%d.%d.camel@%s", (gint) time (NULL), getpid (), count++, cached_hostname);
+	msgid = g_strdup_printf ("%d.%d.%d.camel@%s", (gint) time (NULL), getpid (), count++, domain ? domain : cached_hostname);
 	COUNT_UNLOCK ();
 
 	if (ai)

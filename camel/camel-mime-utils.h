@@ -201,7 +201,7 @@ gchar *camel_header_msgid_decode (const gchar *in);
 gchar *camel_header_contentid_decode (const gchar *in);
 
 /* generate msg id */
-gchar *camel_header_msgid_generate (void);
+gchar *camel_header_msgid_generate (const gchar *domain);
 
 /* decode a References or In-Reply-To header */
 struct _camel_header_references *camel_header_references_inreplyto_decode (const gchar *in);

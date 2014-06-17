@@ -1217,7 +1217,7 @@ camel_mime_part_set_content_id (CamelMimePart *mime_part,
 	if (contentid)
 		id = g_strstrip (g_strdup (contentid));
 	else
-		id = camel_header_msgid_generate ();
+		id = camel_header_msgid_generate (NULL);
 
 	cid = g_strdup_printf ("<%s>", id);
 	camel_medium_set_header (medium, "Content-ID", cid);

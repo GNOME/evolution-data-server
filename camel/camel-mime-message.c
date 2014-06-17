@@ -536,7 +536,19 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
 	if (message_id) {
 		id = g_strstrip (g_strdup (message_id));
 	} else {
-		id = camel_header_msgid_generate ();
+		CamelInternetAddress *from;
+		const gchar *domain = NULL;
+
+		from = camel_mime_message_get_from (mime_message);
+		if (from && camel_internet_address_get (from, 0, NULL, &domain) && domain) {
+			const gchar *at = strchr (domain, '@');
+			if (at)
+				domain = at + 1;
+			else
+				domain = NULL;
+		}
+
+		id = camel_header_msgid_generate (domain);
 	}
 
 	mime_message->message_id = id;
