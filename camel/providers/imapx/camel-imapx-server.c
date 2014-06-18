@@ -3729,7 +3729,6 @@ imapx_call_idle (gpointer data)
 	g_clear_object (&cancellable);
 
 exit:
-	g_clear_object (&mailbox);
 	g_clear_object (&is);
 
 	return G_SOURCE_REMOVE;
