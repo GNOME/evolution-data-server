@@ -26,7 +26,7 @@ libecalbackendcaldav_la_LIBADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
-	$(CAMEL_CFLAGS) \
+	$(CAMEL_LIBS) \
 	$(SOUP_LIBS) \
 	$(NULL)
 
