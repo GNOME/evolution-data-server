@@ -4182,7 +4182,9 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 static void
 imapx_server_child_process_setup (gpointer user_data)
 {
+#ifdef TIOCNOTTY
 	gint fd;
+#endif
 
 	setsid ();
 
