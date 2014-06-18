@@ -5419,7 +5419,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 			mi->uid = camel_pstring_add (data->appended_uid, FALSE);
 
 			cur = camel_data_cache_get_filename  (ifolder->cache, "cur", mi->uid);
-			if (g_rename (data->path, cur) == -1) {
+			if (g_rename (data->path, cur) == -1 && errno != ENOENT) {
 				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, data->path, cur, g_strerror (errno));
 			}
 

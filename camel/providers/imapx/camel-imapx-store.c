@@ -327,7 +327,7 @@ imapx_store_rename_storage_path (CamelIMAPXStore *imapx_store,
 	new_storage_path =
 		imapx_path_to_physical (root_storage_path, new_mailbox);
 
-	if (g_rename (old_storage_path, new_storage_path) == -1) {
+	if (g_rename (old_storage_path, new_storage_path) == -1 && errno != ENOENT) {
 		g_warning (
 			"Could not rename message cache "
 			"'%s' to '%s: %s: cache reset",
@@ -2175,7 +2175,7 @@ imapx_migrate_to_user_cache_dir (CamelService *service)
 		g_mkdir_with_parents (parent_dir, S_IRWXU);
 		g_free (parent_dir);
 
-		if (g_rename (user_data_dir, user_cache_dir) == -1)
+		if (g_rename (user_data_dir, user_cache_dir) == -1 && errno != ENOENT)
 			g_debug ("%s: Failed to migrate '%s' to '%s': %s", G_STRFUNC, user_data_dir, user_cache_dir, g_strerror (errno));
 	}
 }
