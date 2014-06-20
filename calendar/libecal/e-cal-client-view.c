@@ -519,7 +519,9 @@ cal_client_view_dispose_cb (GObject *source_object,
 	 * has dropped its final reference and gone on to clean up other things
 	 * (like the dbus-daemon, if it’s a test harness). */
 	if (local_error != NULL &&
-	    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CLOSED)) {
+	    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CLOSED) &&
+	    !g_error_matches (local_error, G_DBUS_ERROR,
+	                      G_DBUS_ERROR_NOT_SUPPORTED)) {
 		g_dbus_error_strip_remote_error (local_error);
 		g_warning ("%s: %s", G_STRFUNC, local_error->message);
 	}
