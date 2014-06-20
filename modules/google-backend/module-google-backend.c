@@ -59,6 +59,10 @@
 #define GOOGLE_CONTACTS_HOST		"www.google.com"
 #define GOOGLE_CONTACTS_RESOURCE_ID	"Contacts"
 
+/* Tasks Configuration Details */
+#define GOOGLE_TASKS_BACKEND_NAME	"gtasks"
+#define GOOGLE_TASKS_RESOURCE_ID	"Tasks List"
+
 typedef struct _EGoogleBackend EGoogleBackend;
 typedef struct _EGoogleBackendClass EGoogleBackendClass;
 
@@ -242,6 +246,63 @@ google_backend_add_calendar (ECollectionBackend *backend)
 }
 
 static void
+google_backend_add_tasks (ECollectionBackend *backend)
+{
+	ESource *source;
+	ESource *collection_source;
+	ESourceRegistryServer *server;
+	ESourceExtension *extension;
+	ESourceCollection *collection_extension;
+	const gchar *backend_name;
+	const gchar *extension_name;
+	const gchar *resource_id;
+
+	/* FIXME As a future enhancement, we should query Google
+	 *       for a list of user calendars and add them to the
+	 *       collection with matching display names and colors. */
+
+	collection_source = e_backend_get_source (E_BACKEND (backend));
+
+	resource_id = GOOGLE_TASKS_RESOURCE_ID;
+	source = e_collection_backend_new_child (backend, resource_id);
+	e_source_set_display_name (source, _("Tasks"));
+
+	collection_extension = e_source_get_extension (
+		collection_source, E_SOURCE_EXTENSION_COLLECTION);
+
+	/* Configure the calendar source. */
+
+	backend_name = GOOGLE_TASKS_BACKEND_NAME;
+
+	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
+	extension = e_source_get_extension (source, extension_name);
+
+	e_source_backend_set_backend_name (
+		E_SOURCE_BACKEND (extension), backend_name);
+
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	extension = e_source_get_extension (source, extension_name);
+
+	e_source_authentication_set_host (E_SOURCE_AUTHENTICATION (extension), "www.google.com");
+	e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
+
+	g_object_bind_property (
+		collection_extension, "identity",
+		extension, "user",
+		G_BINDING_SYNC_CREATE);
+
+	extension_name = E_SOURCE_EXTENSION_ALARMS;
+	extension = e_source_get_extension (source, extension_name);
+	e_source_alarms_set_include_me (E_SOURCE_ALARMS (extension), FALSE);
+
+	server = e_collection_backend_ref_server (backend);
+	e_source_registry_server_add_source (server, source);
+	g_object_unref (server);
+
+	g_object_unref (source);
+}
+
+static void
 google_backend_add_contacts (ECollectionBackend *backend)
 {
 	ESource *source;
@@ -295,12 +356,25 @@ google_backend_add_contacts (ECollectionBackend *backend)
 static void
 google_backend_populate (ECollectionBackend *backend)
 {
-	GList *list;
+	GList *list, *link;
+	gboolean have_calendar = FALSE, have_tasks = FALSE;
 
 	list = e_collection_backend_list_calendar_sources (backend);
-	if (list == NULL)
-		google_backend_add_calendar (backend);
+	for (link = list; link; link = g_list_next (link)) {
+		ESource *source = link->data;
+
+		have_calendar = have_calendar || e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR);
+		have_tasks = have_tasks || e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST);
+
+		if (have_calendar && have_tasks)
+			break;
+	}
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+
+	if (!have_calendar)
+		google_backend_add_calendar (backend);
+	if (!have_tasks)
+		google_backend_add_tasks (backend);
 
 	list = e_collection_backend_list_contacts_sources (backend);
 	if (list == NULL)
@@ -324,6 +398,10 @@ google_backend_dup_resource_id (ECollectionBackend *backend,
 	extension_name = E_SOURCE_EXTENSION_CALENDAR;
 	if (e_source_has_extension (child_source, extension_name))
 		return g_strdup (GOOGLE_CALENDAR_RESOURCE_ID);
+
+	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
+	if (e_source_has_extension (child_source, extension_name))
+		return g_strdup (GOOGLE_TASKS_RESOURCE_ID);
 
 	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 	if (e_source_has_extension (child_source, extension_name))

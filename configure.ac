@@ -1500,6 +1500,7 @@ dnl *****
 dnl ******************************
 dnl Google flags
 dnl ******************************
+have_gdata_0_15_1=no
 LIBGDATA_REQUIRED=libgdata_minimum_version
 AC_SUBST(LIBGDATA_REQUIRED)
 AC_ARG_ENABLE([google],
@@ -1514,8 +1515,13 @@ if test "x$enable_google" = xyes; then
 	AC_SUBST(GDATA_LIBS)
 
 	AC_DEFINE(HAVE_GOOGLE, 1, [Define to 1 if you have the google-1.0 package.])
+
+	if `$PKG_CONFIG --atleast-version=0.15.1 libgdata`; then
+		have_gdata_0_15_1=yes
+	fi
 fi
 AM_CONDITIONAL(HAVE_GOOGLE, [test x$enable_google = xyes])
+AM_CONDITIONAL(HAVE_GDATA_0_15_1, [test x$have_gdata_0_15_1 = xyes])
 
 EVO_SET_COMPILE_FLAGS(SOUP, libsoup-2.4)
 AC_SUBST(SOUP_CFLAGS)
@@ -1727,6 +1733,7 @@ calendar/libegdbus/Makefile
 calendar/backends/Makefile
 calendar/backends/caldav/Makefile
 calendar/backends/file/Makefile
+calendar/backends/gtasks/Makefile
 calendar/backends/http/Makefile
 calendar/backends/contacts/Makefile
 calendar/backends/weather/Makefile
@@ -1827,6 +1834,7 @@ echo "
 	GNOME Online Accounts	$enable_goa
 	Ubuntu Online Accounts	$enable_uoa
 	Google Contacts		$enable_google
+	Google Tasks		$have_gdata_0_15_1
 	GTK+:  			$enable_gtk
 	Examples:  		$enable_examples
 	Code coverage (gcov):	$enable_code_coverage
