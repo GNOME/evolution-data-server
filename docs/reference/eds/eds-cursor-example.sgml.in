@@ -70,9 +70,7 @@
       <programlisting>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
                     parse="text"
-                    href="../../../../examples/cursor/cursor-example.c">
-          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
-	</xi:include>
+                    href="@SRCDIR@/examples/cursor/cursor-example.c"/>
       </programlisting>
     </informalexample>
   </refsect1>
@@ -90,9 +88,7 @@
       <programlisting>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
                     parse="text"
-                    href="../../../../examples/cursor/cursor-navigator.c">
-          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
-	</xi:include>
+                    href="@SRCDIR@/examples/cursor/cursor-navigator.c"/>
       </programlisting>
     </informalexample>
   </refsect1>
@@ -110,9 +106,7 @@
       <programlisting>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
                     parse="text"
-                    href="../../../../examples/cursor/cursor-search.c">
-          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
-	</xi:include>
+                    href="@SRCDIR@/examples/cursor/cursor-search.c"/>
       </programlisting>
     </informalexample>
   </refsect1>
@@ -128,9 +122,7 @@
       <programlisting>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
                     parse="text"
-                    href="../../../../examples/cursor/cursor-slot.c">
-          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
-	</xi:include>
+                    href="@SRCDIR@/examples/cursor/cursor-slot.c"/>
       </programlisting>
     </informalexample>
   </refsect1>
@@ -147,9 +139,7 @@
       <programlisting>
 	<xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
                     parse="text"
-                    href="../../../../examples/cursor/cursor-data.c">
-          <xi:fallback>FIXME: MISSING XINCLUDE CONTENT</xi:fallback>
-	</xi:include>
+                    href="@SRCDIR@/examples/cursor/cursor-data.c"/>
       </programlisting>
     </informalexample>
   </refsect1>

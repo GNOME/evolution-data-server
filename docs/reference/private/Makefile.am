@@ -36,8 +36,18 @@ GTKDOC_LIBS = \
 # This is needed for cross-references to D-Bus interfaces to work.
 MKDB_OPTIONS = --output-format=xml --sgml-mode --name-space=e-dbus
 
+$(DOC_MAIN_SGML_FILE): $(DOC_MAIN_SGML_FILE).in
+	sed -e 's|\@SRCDIR\@|$(abs_top_srcdir)|g' $< > $(@)
+
+BUILT_SOURCES = $(DOC_MAIN_SGML_FILE)
+DISTCLEANFILES = $(BUILT_SOURCES)
+
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
+
+EXTRA_DIST += $(DOC_MAIN_SGML_FILE).in
+
+CLEANFILES += $(BUILT_SOURCES)
 
 #TESTS = $(GTKDOC_CHECK)
 

@@ -138,13 +138,20 @@ GTKDOC_LIBS = \
 	$(CAMEL_LIBS) $(E_DATA_SERVER_LIBS) $(E_BACKEND_LIBS)			\
 	$(EVOLUTION_ADDRESSBOOK_LIBS) $(EVOLUTION_CALENDAR_LIBS)
 
+eds-cursor-example.sgml: eds-cursor-example.sgml.in
+	sed -e 's|\@SRCDIR\@|$(abs_top_srcdir)|g' $< > $(@)
+
+BUILT_SOURCES = eds-cursor-example.sgml
+DISTCLEANFILES = $(BUILT_SOURCES)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 # e.g. EXTRA_DIST += version.xml.in
-EXTRA_DIST += version.xml.in $(HTML_IMAGE_SOURCE_FILES)
+EXTRA_DIST += version.xml.in $(HTML_IMAGE_SOURCE_FILES) eds-cursor-example.sgml.in
+
+CLEANFILES += $(BUILT_SOURCES)
 
 # Uncomment this to enable tests, currently we are still
 # quite far from passing them
