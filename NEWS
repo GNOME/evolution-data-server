@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.13.3 2014-06-23
+---------------------------------------
+
+Bug Fixes:
+	Bug 719475 - [IMAPx] Increase multi-fetch chunk size to 32KB (Milan Crha)
+	Bug 730788 - [IMAPx] Deadlock during IDLE start (Milan Crha)
+	Bug 730645 - Search / filtering for "has words" is broken (Milan Crha)
+	Bug 729850 - CamelMimeParser cannot parse mbox files (Milan Crha)
+	Bug 730979 - [IMAPx] Quota information is not read properly (Milan Crha)
+	Bug 721128 - Make Evolution-Data-Server build under Win32 (Tarnyko)
+	Bug 730827 - Cannot use libphonenumber >= r568 (Mateusz Polrola)
+	Bug 591811 - Do not re-encode attachments and change CRLF/LF (Milan Crha)
+	Bug 227536 - Add "Message Location" filter option (Milan Crha)
+	Bug 731418 - Unnecessary localedir override in configure.ac (Alan Swanson)
+	Bug 731356 - GError overwrite in camel_filter_search_match() (Milan Crha)
+	Bug 729848 - [IMAPx] Hard to get to cached messages in offline (Milan Crha)
+	Bug 731585 - evolution-ews Camel part pretends offline state (Milan Crha)
+	Bug 731562 - [IMAPx] Occasionally getting 'Empty cache file' error (Milan Crha)
+	Bug 702703 - Be able to overwrite domain in Message IDs (Milan Crha)
+	Bug 731560 - Crash under imapx_call_idle() after folder rename (Milan Crha)
+	Bug 731656 - "Automatically synchronize remote mail locally" confusing (Milan Crha)
+	Bug 731720 - Junk test logic has useless ordering (Milan Crha)
+	Bug 652132 - Google Tasks support (Milan Crha)
+
+Miscellaneous:
+	Make libdb optional dependency (Milan Crha)
+	Use OpenLDAP in Win32 builds as well (Milan Crha)
+	Misceallenous Win32 build related fixes (Milan Crha)
+	[IMAPx] 'Error performing IDLE: Shutting down' is not an error (Milan Crha)
+	Use g_weak_ref_init/_clear() on structure-allocated GWeakRef-s (Milan Crha)
+	[Maildir] g_mkdir() doesn't fail, if the folder already exists (Milan Crha)
+	[IMAPx] Claim camel_store_folder_info_stale() when more settings changed (Milan Crha)
+	Fix two dumb compiler warnings introduced in the previous commit (Milan Crha)
+	Fix a memory leak in camel_imapx_server_copy_message() (Milan Crha)
+	Fix possible compiler warning of unused 'fd' variable (Milan Crha)
+	Revert leak-fix part from commit eb8ba5489 (Milan Crha)
+	[IMAPx] Avoid useless console warnings after a call to g_rename() (Milan Crha)
+	Correct a typo in CalDAV's Makefile.am (Milan Crha)
+	libebook: Don’t warn on calling unimplemented methods (Philip Withnall)
+	libecal: Don’t warn on calling unimplemented methods (Philip Withnall)
+
+Translations:
+	Marek Černocký (cs)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.13.2 2014-05-26
 ---------------------------------------
 
