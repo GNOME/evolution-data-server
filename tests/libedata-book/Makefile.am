@@ -24,6 +24,7 @@ libdata_test_utils_la_CPPFLAGS = \
 	-DDATADIR=\"$(datadir)\" \
 	-DSRCDIR=\""$(abs_srcdir)"\" \
 	-DBUILDDIR=\""$(abs_topbuilddir)"\" \
+	-DCAMEL_PROVIDERDIR=\""$(camel_providerdir)"\" \
 	-DINSTALLED_TEST_DIR=\""$(pkglibexecdir)/installed-tests"\" \
 	$(EVOLUTION_ADDRESSBOOK_CFLAGS) \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
