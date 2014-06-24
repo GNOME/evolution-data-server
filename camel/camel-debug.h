@@ -104,7 +104,7 @@ void camel_debug_end (void);
 				((error))->message); \
 		} \
 	} else { \
-		if ((error) != NULL) { \
+		if ((error) == NULL) { \
 			g_warning ( \
 				"%s::%s() reported failure " \
 				"without setting its GError", \
