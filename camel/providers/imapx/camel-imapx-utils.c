@@ -2457,6 +2457,8 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 	imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
 
 	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
+	if (!mailbox)
+		return FALSE;
 
 	last_known_uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
 	last_known_modsequence = imapx_summary->modseq;

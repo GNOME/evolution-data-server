@@ -820,17 +820,17 @@ imapx_refresh_info_sync (CamelFolder *folder,
 	CamelIMAPXServer *imapx_server;
 	CamelIMAPXMailbox *mailbox = NULL;
 	CamelFolderChangeInfo *changes;
-	const gchar *folder_name;
+	gchar *folder_name;
 	gboolean success = FALSE;
 	GError *local_error = NULL;
 
 	store = camel_folder_get_parent_store (folder);
-	folder_name = camel_folder_get_full_name (folder);
 
 	/* Not connected, thus skip the operation */
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
 		return TRUE;
 
+	folder_name = g_strdup (camel_folder_get_full_name (folder));
 	imapx_store = CAMEL_IMAPX_STORE (store);
 	imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, cancellable, error);
 
@@ -874,6 +874,7 @@ imapx_refresh_info_sync (CamelFolder *folder,
 exit:
 	g_clear_object (&mailbox);
 	g_clear_object (&imapx_server);
+	g_free (folder_name);
 
 	return success;
 }
