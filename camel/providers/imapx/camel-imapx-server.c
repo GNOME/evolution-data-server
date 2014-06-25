@@ -694,7 +694,8 @@ imapx_server_remove_job_mailbox (CamelIMAPXServer *imapx_server,
 	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
 
 	n_stored = GPOINTER_TO_INT (g_hash_table_lookup (imapx_server->priv->jobs_prop_folder_paths, folder_path));
-	g_warn_if_fail (n_stored >= 1);
+	if (!camel_imapx_mailbox_is_inbox (camel_imapx_mailbox_get_name (mailbox)))
+		g_warn_if_fail (n_stored >= 1);
 
 	n_stored--;
 	if (n_stored > 0) {

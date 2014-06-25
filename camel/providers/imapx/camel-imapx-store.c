@@ -413,7 +413,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	gboolean emit_folder_created_subscribed = FALSE;
 	gboolean emit_folder_unsubscribed_deleted = FALSE;
 	gboolean emit_folder_renamed = FALSE;
-	const gchar *folder_path;
+	gchar *folder_path;
 	const gchar *mailbox_name;
 	gchar separator;
 
@@ -441,6 +441,8 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 
 	/* Summary retains ownership of the returned CamelStoreInfo. */
 	si = camel_imapx_store_summary_mailbox (store->summary, mailbox_name);
+	if (!si && oldname)
+		si = camel_imapx_store_summary_mailbox (store->summary, oldname);
 	if (si != NULL) {
 		mailbox_was_in_summary = TRUE;
 		if (si->info.flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED)
@@ -462,8 +464,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 		camel_store_summary_touch (store->summary);
 	}
 
-	folder_path = camel_store_info_path (
-		store->summary, (CamelStoreInfo *) si);
+	folder_path = camel_imapx_mailbox_to_folder_path (mailbox_name, separator);
 	fi = imapx_store_build_folder_info (store, folder_path, flags);
 
 	/* Figure out which signals to emit, if any. */
@@ -499,13 +500,13 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 		emit_folder_created_subscribed = FALSE;
 		emit_folder_unsubscribed_deleted = FALSE;
 		emit_folder_renamed = FALSE;
+	} else {
+		/* At most one signal emission flag should be set. */
+		g_warn_if_fail (
+			(emit_folder_created_subscribed ? 1 : 0) +
+			(emit_folder_unsubscribed_deleted ? 1 : 0) +
+			(emit_folder_renamed ? 1 : 0) <= 1);
 	}
-
-	/* At most one signal emission flag should be set. */
-	g_warn_if_fail (
-		(emit_folder_created_subscribed ? 1 : 0) +
-		(emit_folder_unsubscribed_deleted ? 1 : 0) +
-		(emit_folder_renamed ? 1 : 0) <= 1);
 
 	if (emit_folder_created_subscribed) {
 		camel_store_folder_created (
@@ -535,14 +536,14 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 		imapx_store_rename_storage_path (
 			store, old_folder_path, new_folder_path);
 
-		camel_store_folder_renamed (
-			CAMEL_STORE (store), old_folder_path, fi);
+		camel_store_folder_renamed (CAMEL_STORE (store), old_folder_path, fi);
 
 		g_free (old_folder_path);
 		g_free (new_folder_path);
 	}
 
 	camel_folder_info_free (fi);
+	g_free (folder_path);
 }
 
 static void
@@ -2042,6 +2043,10 @@ imapx_store_rename_folder_sync (CamelStore *store,
 
 	g_object_unref (settings);
 
+	/* This suppresses CamelStore signal emissions
+	 * in imapx_store_process_mailbox_attributes(). */
+	g_atomic_int_inc (&imapx_store->priv->syncing_folders);
+
 	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
 
 	if (imapx_server == NULL)
@@ -2148,6 +2153,10 @@ exit:
 
 	g_clear_object (&mailbox);
 	g_clear_object (&imapx_server);
+
+	/* This enabled CamelStore signal emissions
+	 * in imapx_store_process_mailbox_attributes() again. */
+	g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
 
 	return success;
 }
