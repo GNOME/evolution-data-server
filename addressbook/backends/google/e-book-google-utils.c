@@ -1087,7 +1087,7 @@ is_known_google_im_protocol (const gchar *protocol)
 {
 	const gchar *known_protocols[] = {
 		"AIM", "MSN", "YAHOO", "SKYPE", "QQ",
-		"GOOGLE_TALK", "ICQ", "JABBER"
+		"GOOGLE-TALK", "ICQ", "JABBER"
 	};
 	guint i;
 
@@ -1113,7 +1113,10 @@ field_name_from_google_im_protocol (const gchar *google_protocol)
 	if (!protocol)
 		return NULL;
 
-	return g_strdup_printf ("X-%s", protocol + 1);
+	if (strcmp ("#GOOGLE_TALK", protocol) == 0)
+		return g_strdup (EVC_X_GOOGLE_TALK);
+	else
+		return g_strdup_printf ("X-%s", protocol + 1);
 }
 
 static gchar *
@@ -1124,7 +1127,10 @@ google_im_protocol_from_field_name (const gchar *field_name)
 	if (!field_name || strlen (field_name) < 3)
 		return NULL;
 
-	return g_strdup_printf (format, field_name + 2);
+	if (strcmp (field_name, EVC_X_GOOGLE_TALK) == 0)
+		return g_strdup_printf (format, "GOOGLE_TALK");
+	else
+		return g_strdup_printf (format, field_name + 2);
 }
 
 static void
