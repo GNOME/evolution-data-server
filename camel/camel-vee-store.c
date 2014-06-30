@@ -308,12 +308,6 @@ vee_store_get_folder_info_sync (CamelStore *store,
 		if (add) {
 			gint32 unread;
 
-			/* ensures unread is correct */
-			if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
-				camel_folder_refresh_info_sync (
-					(CamelFolder *) folder,
-					cancellable, NULL);
-
 			unread = camel_folder_get_unread_message_count (
 				CAMEL_FOLDER (folder));
 
