@@ -5,170 +5,174 @@
 # Laszlo Dvornik <dvornik at gnome dot hu>, 2004.
 # Gabor Kelemen <kelemeng at gnome dot hu>, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014.
 # Balázs Úr <urbalazs at gmail dot com>, 2013.
+# Balázs Úr <urbalazs@gmail.com>, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-03-19 05:44+0000\n"
-"PO-Revision-Date: 2014-03-21 16:53+0100\n"
-"Last-Translator: Gabor Kelemen <kelemeng at gnome dot hu>\n"
+"POT-Creation-Date: 2014-06-30 16:37+0000\n"
+"PO-Revision-Date: 2014-06-30 22:19+0200\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Lokalize 1.2\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:117
+#: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "Nem sikerült a(z) „%s” fájl eltávolítása: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:145
+#: ../addressbook/backends/file/e-book-backend-file.c:148
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "Nem sikerült létrehozni a(z) %s könyvtárat: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:396
+#: ../addressbook/backends/file/e-book-backend-file.c:419
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "Nem sikerült hard linket létrehozni a(z) „%s” erőforráshoz: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:501
-#: ../addressbook/backends/file/e-book-backend-file.c:1230
+#: ../addressbook/backends/file/e-book-backend-file.c:524
+#: ../addressbook/backends/file/e-book-backend-file.c:1253
 msgid "No UID in the contact"
 msgstr "Nincs UID a névjegyben"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:828
+#: ../addressbook/backends/file/e-book-backend-file.c:851
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Ütköző UID-k a hozzáadott névjegyekben"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:967
+#: ../addressbook/backends/file/e-book-backend-file.c:990
 msgid "Loading..."
 msgstr "Betöltés…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:969
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4423
+#: ../addressbook/backends/file/e-book-backend-file.c:992
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4353
 msgid "Searching..."
 msgstr "Keresés…"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1258
+#: ../addressbook/backends/file/e-book-backend-file.c:1281
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr "Kísérlet „%s” névjegy módosítására szinkronon kívüli revízióval"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1449
-#: ../addressbook/backends/file/e-book-backend-file.c:1532
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6706
+#: ../addressbook/backends/file/e-book-backend-file.c:1472
+#: ../addressbook/backends/file/e-book-backend-file.c:1557
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
+#: ../addressbook/libedata-book/e-book-sqlite.c:6907
+#: ../addressbook/libedata-book/e-book-sqlite.c:6976
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "A(z) „%s” névjegy nem található"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1592
-#: ../addressbook/backends/file/e-book-backend-file.c:1673
+#: ../addressbook/backends/file/e-book-backend-file.c:1617
+#: ../addressbook/backends/file/e-book-backend-file.c:1698
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "A lekérdezés („%s”) nem támogatott"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1601
-#: ../addressbook/backends/file/e-book-backend-file.c:1682
+#: ../addressbook/backends/file/e-book-backend-file.c:1626
+#: ../addressbook/backends/file/e-book-backend-file.c:1707
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "Érvénytelen lekérdezés: „%s”"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1947
+#: ../addressbook/backends/file/e-book-backend-file.c:1972
 msgid "Requested to delete an unrelated cursor"
 msgstr "Kérés nem kapcsolódó kurzor törlésére"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:2014
+#: ../addressbook/backends/file/e-book-backend-file.c:2043
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Nem sikerült a régi „%s” adatbázist „%s” névre átnevezni: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:147
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1242
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4318
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:417
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:874
-#: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1172
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4248
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:394
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:862
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
-#: ../addressbook/libebook/e-book-client.c:1882
-#: ../addressbook/libebook/e-book-client.c:2054
-#: ../addressbook/libebook/e-book-client.c:2267
-#: ../addressbook/libebook/e-book-client.c:2398
-#: ../addressbook/libebook/e-book-client.c:2557
-#: ../addressbook/libebook/e-book-client.c:2691
-#: ../addressbook/libebook/e-book-client.c:2822
-#: ../addressbook/libebook/e-book-client.c:2980
-#: ../addressbook/libebook/e-book-client.c:3175
-#: ../addressbook/libebook/e-book-client.c:3393
-#: ../addressbook/libedata-book/e-book-backend-sexp.c:878
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:576
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:607
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:619
+#: ../addressbook/libebook/e-book-client.c:1881
+#: ../addressbook/libebook/e-book-client.c:2053
+#: ../addressbook/libebook/e-book-client.c:2266
+#: ../addressbook/libebook/e-book-client.c:2397
+#: ../addressbook/libebook/e-book-client.c:2556
+#: ../addressbook/libebook/e-book-client.c:2690
+#: ../addressbook/libebook/e-book-client.c:2821
+#: ../addressbook/libebook/e-book-client.c:2979
+#: ../addressbook/libebook/e-book-client.c:3174
+#: ../addressbook/libebook/e-book-client.c:3392
+#: ../addressbook/libedata-book/e-book-backend-sexp.c:877
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:575
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:606
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
-#: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:276
-#: ../calendar/libecal/e-cal-client.c:3239
-#: ../calendar/libecal/e-cal-client.c:3412
-#: ../calendar/libecal/e-cal-client.c:3676
-#: ../calendar/libecal/e-cal-client.c:3917
-#: ../calendar/libecal/e-cal-client.c:4105
-#: ../calendar/libecal/e-cal-client.c:4297
-#: ../calendar/libecal/e-cal-client.c:4467
-#: ../calendar/libecal/e-cal-client.c:4636
-#: ../calendar/libecal/e-cal-client.c:4839
-#: ../calendar/libecal/e-cal-client.c:4989
-#: ../calendar/libecal/e-cal-client.c:5183
-#: ../calendar/libecal/e-cal-client.c:5336
-#: ../calendar/libecal/e-cal-client.c:5553
-#: ../calendar/libecal/e-cal-client.c:5707
-#: ../calendar/libecal/e-cal-client.c:5933
-#: ../calendar/libecal/e-cal-client.c:6129
-#: ../calendar/libecal/e-cal-client.c:6492
-#: ../calendar/libecal/e-cal-client.c:6706
-#: ../camel/providers/imapx/camel-imapx-command.c:642
-#: ../libedataserver/e-client.c:185
+#: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:275
+#: ../calendar/libecal/e-cal-client.c:3238
+#: ../calendar/libecal/e-cal-client.c:3411
+#: ../calendar/libecal/e-cal-client.c:3675
+#: ../calendar/libecal/e-cal-client.c:3916
+#: ../calendar/libecal/e-cal-client.c:4106
+#: ../calendar/libecal/e-cal-client.c:4298
+#: ../calendar/libecal/e-cal-client.c:4468
+#: ../calendar/libecal/e-cal-client.c:4637
+#: ../calendar/libecal/e-cal-client.c:4840
+#: ../calendar/libecal/e-cal-client.c:4990
+#: ../calendar/libecal/e-cal-client.c:5184
+#: ../calendar/libecal/e-cal-client.c:5337
+#: ../calendar/libecal/e-cal-client.c:5554
+#: ../calendar/libecal/e-cal-client.c:5708
+#: ../calendar/libecal/e-cal-client.c:5934
+#: ../calendar/libecal/e-cal-client.c:6130
+#: ../calendar/libecal/e-cal-client.c:6493
+#: ../calendar/libecal/e-cal-client.c:6707
+#: ../camel/providers/imapx/camel-imapx-command.c:645
+#: ../camel/providers/imapx/camel-imapx-server.c:4745
+#: ../camel/providers/imapx/camel-imapx-server.c:4754
+#: ../libedataserver/e-client.c:184
 msgid "Unknown error"
 msgstr "Ismeretlen hiba"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:836
+#: ../addressbook/backends/google/e-book-backend-google.c:828
 msgid "Querying for updated contacts…"
 msgstr "Frissített névjegyek lekérése…"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:988
+#: ../addressbook/backends/google/e-book-backend-google.c:1010
 msgid "Querying for updated groups…"
 msgstr "Frissített csoportok lekérése…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1705
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5054
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1361
+#: ../addressbook/backends/google/e-book-backend-google.c:1757
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4982
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1408
 msgid "The backend does not support bulk additions"
 msgstr "A háttérprogram nem támogatja a tömeges hozzáadásokat"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1854
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5190
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1473
+#: ../addressbook/backends/google/e-book-backend-google.c:1912
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5118
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1520
 msgid "The backend does not support bulk modifications"
 msgstr "A háttérprogram nem támogatja a tömeges módosításokat"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2054
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1573
+#: ../addressbook/backends/google/e-book-backend-google.c:2119
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1620
 msgid "The backend does not support bulk removals"
 msgstr "A háttérprogram nem támogatja a tömeges eltávolításokat"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2180
+#: ../addressbook/backends/google/e-book-backend-google.c:2239
 msgid "Loading…"
 msgstr "Betöltés…"
 
 #. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1618
+#: ../addressbook/backends/google/e-book-google-utils.c:1631
 #: ../services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -177,159 +181,159 @@ msgid "Personal"
 msgstr "Személyes"
 
 #. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1620
+#: ../addressbook/backends/google/e-book-google-utils.c:1633
 msgid "Friends"
 msgstr "Barátok"
 
 #. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1622
+#: ../addressbook/backends/google/e-book-google-utils.c:1635
 msgid "Family"
 msgstr "Család"
 
 #. System Group: Coworkers
-#: ../addressbook/backends/google/e-book-google-utils.c:1624
+#: ../addressbook/backends/google/e-book-google-utils.c:1637
 msgid "Coworkers"
 msgstr "Munkatársak"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:170
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:113
 msgid "Not connected"
 msgstr "Nincs kapcsolat"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:899
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Nem sikerült az összekapcsolás v3 vagy v2 kötések használatával"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1092
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1022
 msgid "Reconnecting to LDAP server..."
 msgstr "Újrakapcsolódás az LDAP kiszolgálóhoz…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1223
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1153
 msgid "Invalid DN syntax"
 msgstr "Érvénytelen DN szintaxis"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1239
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4317
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1169
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP hiba: 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1851
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2174
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1781
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2104
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: az ldap_first_entry NULL értéket adott vissza"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2104
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2232
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2034
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2162
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: Kezeletlen eredménytípus (%d) lett visszaadva"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2365
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2492
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2295
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2422
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: Kezeletlen keresési eredménytípus (%d) lett visszaadva"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4266
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4196
 msgid "Receiving LDAP search results..."
 msgstr "LDAP keresés eredményeinek letöltése…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4445
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4375
 msgid "Error performing search"
 msgstr "Hiba a keresés közben"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4573
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4503
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Névjegyek letöltése (%d)…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5137
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5065
 msgid "Adding contact to LDAP server..."
 msgstr "Névjegy hozzáadása az LDAP kiszolgálóhoz…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5212
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5140
 msgid "Modifying contact from LDAP server..."
 msgstr "Névjegy módosítása az LDAP kiszolgálón…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5278
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5206
 msgid "Removing contact from LDAP server..."
 msgstr "Névjegy eltávolítása az LDAP kiszolgálóról…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5667
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5595
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Nem sikerült a(z) „%s” felhasználó DN-jét lekérni"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:853
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:839
 msgid "Loading Addressbook summary..."
 msgstr "Címjegyzék összefoglalójának betöltése…"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:871
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:859
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "A PROPFIND a WebDav-on meghiúsult ezen HTTP állapottal: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:890
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:878
 msgid "No response body in webdav PROPFIND result"
 msgstr "Nincs választörzs a WebDav PROPFIND eredményben"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:951
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:939
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Névjegyek betöltése (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1283
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1328
 msgid "Cannot transform SoupURI to string"
 msgstr "A SoupURI nem alakítható karakterlánccá"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1402
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1449
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "„%s” erőforrás létrehozása meghiúsult ezen HTTP állapottal: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1504
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1551
 msgid "Contact on server changed -> not modifying"
 msgstr "A névjegy megváltozott a kiszolgálón -> nem lesz módosítva"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1512
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1559
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "A névjegy módosítása meghiúsult ezen HTTP állapottal: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1605
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1621
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1652
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1668
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE meghiúsult ezen HTTP állapottal: %d"
 
-#: ../addressbook/libebook-contacts/e-book-contacts-types.c:24
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:38
 msgid "No such book"
 msgstr "Nincs ilyen címjegyzék"
 
-#: ../addressbook/libebook-contacts/e-book-contacts-types.c:26
-#: ../addressbook/libedata-book/e-data-book.c:371
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:40
+#: ../addressbook/libedata-book/e-data-book.c:379
 msgid "Contact not found"
 msgstr "A névjegy nem található"
 
-#: ../addressbook/libebook-contacts/e-book-contacts-types.c:28
-#: ../addressbook/libedata-book/e-data-book.c:372
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:42
+#: ../addressbook/libedata-book/e-data-book.c:380
 msgid "Contact ID already exists"
 msgstr "A névjegy-azonosító már létezik"
 
-#: ../addressbook/libebook-contacts/e-book-contacts-types.c:30
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:44
 msgid "No such source"
 msgstr "Nincs ilyen forrás"
 
-#: ../addressbook/libebook-contacts/e-book-contacts-types.c:32
-#: ../addressbook/libedata-book/e-data-book.c:388
+#: ../addressbook/libebook-contacts/e-book-contacts-types.c:46
+#: ../addressbook/libedata-book/e-data-book.c:396
 msgid "No space"
 msgstr "Nincs hely"
 
 #. Dummy row as EContactField starts from 1
-#: ../addressbook/libebook-contacts/e-contact.c:131
+#: ../addressbook/libebook-contacts/e-contact.c:130
 msgid "Unique ID"
 msgstr "Egyedi azonosító"
 
@@ -337,12 +341,12 @@ msgstr "Egyedi azonosító"
 #. * so we can generate its value if necessary in the getter
 #. Translators: This is an EContact field description, in this case it's a
 #. * preferred user's description (or display name) of the contact. Note 'File' is a verb here.
-#: ../addressbook/libebook-contacts/e-contact.c:136
+#: ../addressbook/libebook-contacts/e-contact.c:135
 msgid "File Under"
 msgstr "Mentés mint"
 
 #. URI of the book to which the contact belongs to
-#: ../addressbook/libebook-contacts/e-contact.c:138
+#: ../addressbook/libebook-contacts/e-contact.c:137
 msgid "Book UID"
 msgstr "Címjegyzék UID"
 
@@ -350,434 +354,434 @@ msgstr "Címjegyzék UID"
 #. FN isn't really a structured field - we use a getter/setter
 #. * so we can set the N property (since evo 1.4 works fine with
 #. * vcards that don't even have a N attribute.  *sigh*)
-#: ../addressbook/libebook-contacts/e-contact.c:144
+#: ../addressbook/libebook-contacts/e-contact.c:143
 msgid "Full Name"
 msgstr "Teljes név"
 
-#: ../addressbook/libebook-contacts/e-contact.c:145
+#: ../addressbook/libebook-contacts/e-contact.c:144
 msgid "Given Name"
 msgstr "Keresztnév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:146
+#: ../addressbook/libebook-contacts/e-contact.c:145
 msgid "Family Name"
 msgstr "Vezetéknév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:147
+#: ../addressbook/libebook-contacts/e-contact.c:146
 msgid "Nickname"
 msgstr "Becenév"
 
 #. Email fields
-#: ../addressbook/libebook-contacts/e-contact.c:150
+#: ../addressbook/libebook-contacts/e-contact.c:149
 msgid "Email 1"
 msgstr "1. e-mail"
 
-#: ../addressbook/libebook-contacts/e-contact.c:151
+#: ../addressbook/libebook-contacts/e-contact.c:150
 msgid "Email 2"
 msgstr "2. e-mail"
 
-#: ../addressbook/libebook-contacts/e-contact.c:152
+#: ../addressbook/libebook-contacts/e-contact.c:151
 msgid "Email 3"
 msgstr "3. e-mail"
 
-#: ../addressbook/libebook-contacts/e-contact.c:153
+#: ../addressbook/libebook-contacts/e-contact.c:152
 msgid "Email 4"
 msgstr "4. e-mail"
 
-#: ../addressbook/libebook-contacts/e-contact.c:155
+#: ../addressbook/libebook-contacts/e-contact.c:154
 msgid "Mailer"
 msgstr "Levelező"
 
 #. Address Labels
-#: ../addressbook/libebook-contacts/e-contact.c:158
+#: ../addressbook/libebook-contacts/e-contact.c:157
 msgid "Home Address Label"
 msgstr "Otthoni cím címke"
 
-#: ../addressbook/libebook-contacts/e-contact.c:159
+#: ../addressbook/libebook-contacts/e-contact.c:158
 msgid "Work Address Label"
 msgstr "Munkahelyi cím címke"
 
-#: ../addressbook/libebook-contacts/e-contact.c:160
+#: ../addressbook/libebook-contacts/e-contact.c:159
 msgid "Other Address Label"
 msgstr "Egyéb cím címke"
 
 #. Phone fields
-#: ../addressbook/libebook-contacts/e-contact.c:163
+#: ../addressbook/libebook-contacts/e-contact.c:162
 msgid "Assistant Phone"
 msgstr "Asszisztens telefonja"
 
-#: ../addressbook/libebook-contacts/e-contact.c:164
+#: ../addressbook/libebook-contacts/e-contact.c:163
 msgid "Business Phone"
 msgstr "Munkahelyi telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:165
+#: ../addressbook/libebook-contacts/e-contact.c:164
 msgid "Business Phone 2"
 msgstr "2. munkahelyi telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:166
+#: ../addressbook/libebook-contacts/e-contact.c:165
 msgid "Business Fax"
 msgstr "Üzleti fax"
 
-#: ../addressbook/libebook-contacts/e-contact.c:167
+#: ../addressbook/libebook-contacts/e-contact.c:166
 msgid "Callback Phone"
 msgstr "Visszahívó telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:168
+#: ../addressbook/libebook-contacts/e-contact.c:167
 msgid "Car Phone"
 msgstr "Autótelefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:169
+#: ../addressbook/libebook-contacts/e-contact.c:168
 msgid "Company Phone"
 msgstr "Céges telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:170
+#: ../addressbook/libebook-contacts/e-contact.c:169
 msgid "Home Phone"
 msgstr "Otthoni telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:171
+#: ../addressbook/libebook-contacts/e-contact.c:170
 msgid "Home Phone 2"
 msgstr "2. otthoni telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:172
+#: ../addressbook/libebook-contacts/e-contact.c:171
 msgid "Home Fax"
 msgstr "Otthoni fax"
 
-#: ../addressbook/libebook-contacts/e-contact.c:173
+#: ../addressbook/libebook-contacts/e-contact.c:172
 msgid "ISDN"
 msgstr "ISDN"
 
-#: ../addressbook/libebook-contacts/e-contact.c:174
+#: ../addressbook/libebook-contacts/e-contact.c:173
 msgid "Mobile Phone"
 msgstr "Mobiltelefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:175
+#: ../addressbook/libebook-contacts/e-contact.c:174
 msgid "Other Phone"
 msgstr "Egyéb telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:176
+#: ../addressbook/libebook-contacts/e-contact.c:175
 msgid "Other Fax"
 msgstr "Egyéb fax"
 
-#: ../addressbook/libebook-contacts/e-contact.c:177
+#: ../addressbook/libebook-contacts/e-contact.c:176
 msgid "Pager"
 msgstr "Személyhívó"
 
-#: ../addressbook/libebook-contacts/e-contact.c:178
+#: ../addressbook/libebook-contacts/e-contact.c:177
 msgid "Primary Phone"
 msgstr "Elsődleges telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:179
+#: ../addressbook/libebook-contacts/e-contact.c:178
 msgid "Radio"
 msgstr "Rádió"
 
-#: ../addressbook/libebook-contacts/e-contact.c:180
+#: ../addressbook/libebook-contacts/e-contact.c:179
 msgid "Telex"
 msgstr "Telex"
 
 #. To translators: TTY is Teletypewriter
-#: ../addressbook/libebook-contacts/e-contact.c:182
+#: ../addressbook/libebook-contacts/e-contact.c:181
 msgid "TTY"
 msgstr "TTY"
 
 #. Organizational fields
-#: ../addressbook/libebook-contacts/e-contact.c:185
+#: ../addressbook/libebook-contacts/e-contact.c:184
 msgid "Organization"
 msgstr "Szervezet"
 
-#: ../addressbook/libebook-contacts/e-contact.c:186
+#: ../addressbook/libebook-contacts/e-contact.c:185
 msgid "Organizational Unit"
 msgstr "Szervezeti egység"
 
-#: ../addressbook/libebook-contacts/e-contact.c:187
+#: ../addressbook/libebook-contacts/e-contact.c:186
 msgid "Office"
 msgstr "Hivatal"
 
-#: ../addressbook/libebook-contacts/e-contact.c:188
+#: ../addressbook/libebook-contacts/e-contact.c:187
 msgid "Title"
 msgstr "Beosztás"
 
-#: ../addressbook/libebook-contacts/e-contact.c:189
+#: ../addressbook/libebook-contacts/e-contact.c:188
 msgid "Role"
 msgstr "Szerep"
 
-#: ../addressbook/libebook-contacts/e-contact.c:190
+#: ../addressbook/libebook-contacts/e-contact.c:189
 msgid "Manager"
 msgstr "Főnök"
 
-#: ../addressbook/libebook-contacts/e-contact.c:191
+#: ../addressbook/libebook-contacts/e-contact.c:190
 msgid "Assistant"
 msgstr "Asszisztens"
 
 #. Web fields
-#: ../addressbook/libebook-contacts/e-contact.c:194
+#: ../addressbook/libebook-contacts/e-contact.c:193
 msgid "Homepage URL"
 msgstr "Honlap URL"
 
-#: ../addressbook/libebook-contacts/e-contact.c:195
+#: ../addressbook/libebook-contacts/e-contact.c:194
 msgid "Weblog URL"
 msgstr "Weblog URL"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:198
+#: ../addressbook/libebook-contacts/e-contact.c:197
 msgid "Categories"
 msgstr "Kategóriák"
 
 #. Collaboration fields
-#: ../addressbook/libebook-contacts/e-contact.c:201
+#: ../addressbook/libebook-contacts/e-contact.c:200
 msgid "Calendar URI"
 msgstr "Naptár URI"
 
-#: ../addressbook/libebook-contacts/e-contact.c:202
+#: ../addressbook/libebook-contacts/e-contact.c:201
 msgid "Free/Busy URL"
 msgstr "Szabad/foglalt URL"
 
-#: ../addressbook/libebook-contacts/e-contact.c:203
+#: ../addressbook/libebook-contacts/e-contact.c:202
 msgid "ICS Calendar"
 msgstr "ICS-naptár"
 
-#: ../addressbook/libebook-contacts/e-contact.c:204
+#: ../addressbook/libebook-contacts/e-contact.c:203
 msgid "Video Conferencing URL"
 msgstr "Videokonferencia URL"
 
 #. Misc fields
-#: ../addressbook/libebook-contacts/e-contact.c:207
+#: ../addressbook/libebook-contacts/e-contact.c:206
 msgid "Spouse's Name"
 msgstr "Házastárs neve"
 
-#: ../addressbook/libebook-contacts/e-contact.c:208
+#: ../addressbook/libebook-contacts/e-contact.c:207
 msgid "Note"
 msgstr "Megjegyzés"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:211
+#: ../addressbook/libebook-contacts/e-contact.c:210
 msgid "AIM Home Screen Name 1"
 msgstr "1. otthoni AIM felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:212
+#: ../addressbook/libebook-contacts/e-contact.c:211
 msgid "AIM Home Screen Name 2"
 msgstr "2. otthoni AIM felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:213
+#: ../addressbook/libebook-contacts/e-contact.c:212
 msgid "AIM Home Screen Name 3"
 msgstr "3. otthoni AIM felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:214
+#: ../addressbook/libebook-contacts/e-contact.c:213
 msgid "AIM Work Screen Name 1"
 msgstr "1. munkahelyi AIM felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:215
+#: ../addressbook/libebook-contacts/e-contact.c:214
 msgid "AIM Work Screen Name 2"
 msgstr "2. munkahelyi AIM felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:216
+#: ../addressbook/libebook-contacts/e-contact.c:215
 msgid "AIM Work Screen Name 3"
 msgstr "3. munkahelyi AIM felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:217
+#: ../addressbook/libebook-contacts/e-contact.c:216
 msgid "GroupWise Home Screen Name 1"
 msgstr "1. otthoni GroupWise felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:218
+#: ../addressbook/libebook-contacts/e-contact.c:217
 msgid "GroupWise Home Screen Name 2"
 msgstr "2. otthoni GroupWise felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:219
+#: ../addressbook/libebook-contacts/e-contact.c:218
 msgid "GroupWise Home Screen Name 3"
 msgstr "3. otthoni GroupWise felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:220
+#: ../addressbook/libebook-contacts/e-contact.c:219
 msgid "GroupWise Work Screen Name 1"
 msgstr "1. munkahelyi GroupWise felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:221
+#: ../addressbook/libebook-contacts/e-contact.c:220
 msgid "GroupWise Work Screen Name 2"
 msgstr "2. munkahelyi GroupWise felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:222
+#: ../addressbook/libebook-contacts/e-contact.c:221
 msgid "GroupWise Work Screen Name 3"
 msgstr "3. munkahelyi GroupWise felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:223
+#: ../addressbook/libebook-contacts/e-contact.c:222
 msgid "Jabber Home ID 1"
 msgstr "1. otthoni Jabber-azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:224
+#: ../addressbook/libebook-contacts/e-contact.c:223
 msgid "Jabber Home ID 2"
 msgstr "2. otthoni Jabber-azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:225
+#: ../addressbook/libebook-contacts/e-contact.c:224
 msgid "Jabber Home ID 3"
 msgstr "3. otthoni Jabber-azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:226
+#: ../addressbook/libebook-contacts/e-contact.c:225
 msgid "Jabber Work ID 1"
 msgstr "1. munkahelyi Jabber-azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:227
+#: ../addressbook/libebook-contacts/e-contact.c:226
 msgid "Jabber Work ID 2"
 msgstr "2. munkahelyi Jabber-azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:228
+#: ../addressbook/libebook-contacts/e-contact.c:227
 msgid "Jabber Work ID 3"
 msgstr "3. munkahelyi Jabber-azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:229
+#: ../addressbook/libebook-contacts/e-contact.c:228
 msgid "Yahoo! Home Screen Name 1"
 msgstr "1. otthoni Yahoo! felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:230
+#: ../addressbook/libebook-contacts/e-contact.c:229
 msgid "Yahoo! Home Screen Name 2"
 msgstr "2. otthoni Yahoo! felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:231
+#: ../addressbook/libebook-contacts/e-contact.c:230
 msgid "Yahoo! Home Screen Name 3"
 msgstr "3. otthoni Yahoo! felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:232
+#: ../addressbook/libebook-contacts/e-contact.c:231
 msgid "Yahoo! Work Screen Name 1"
 msgstr "1. munkahelyi Yahoo! felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:233
+#: ../addressbook/libebook-contacts/e-contact.c:232
 msgid "Yahoo! Work Screen Name 2"
 msgstr "2. munkahelyi Yahoo! felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:234
+#: ../addressbook/libebook-contacts/e-contact.c:233
 msgid "Yahoo! Work Screen Name 3"
 msgstr "3. munkahelyi Yahoo! felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:235
+#: ../addressbook/libebook-contacts/e-contact.c:234
 msgid "MSN Home Screen Name 1"
 msgstr "1. otthoni MSN felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:236
+#: ../addressbook/libebook-contacts/e-contact.c:235
 msgid "MSN Home Screen Name 2"
 msgstr "2. otthoni MSN felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:237
+#: ../addressbook/libebook-contacts/e-contact.c:236
 msgid "MSN Home Screen Name 3"
 msgstr "3. otthoni MSN felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:238
+#: ../addressbook/libebook-contacts/e-contact.c:237
 msgid "MSN Work Screen Name 1"
 msgstr "1. munkahelyi MSN felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:239
+#: ../addressbook/libebook-contacts/e-contact.c:238
 msgid "MSN Work Screen Name 2"
 msgstr "2. munkahelyi MSN felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:240
+#: ../addressbook/libebook-contacts/e-contact.c:239
 msgid "MSN Work Screen Name 3"
 msgstr "3. munkahelyi MSN felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:241
+#: ../addressbook/libebook-contacts/e-contact.c:240
 msgid "ICQ Home ID 1"
 msgstr "1. otthoni ICQ azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:242
+#: ../addressbook/libebook-contacts/e-contact.c:241
 msgid "ICQ Home ID 2"
 msgstr "2. otthoni ICQ azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:243
+#: ../addressbook/libebook-contacts/e-contact.c:242
 msgid "ICQ Home ID 3"
 msgstr "3. otthoni ICQ azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:244
+#: ../addressbook/libebook-contacts/e-contact.c:243
 msgid "ICQ Work ID 1"
 msgstr "1. munkahelyi ICQ azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:245
+#: ../addressbook/libebook-contacts/e-contact.c:244
 msgid "ICQ Work ID 2"
 msgstr "2. munkahelyi ICQ azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:246
+#: ../addressbook/libebook-contacts/e-contact.c:245
 msgid "ICQ Work ID 3"
 msgstr "3. munkahelyi ICQ azonosító"
 
 #. Last modified time
-#: ../addressbook/libebook-contacts/e-contact.c:249
+#: ../addressbook/libebook-contacts/e-contact.c:248
 msgid "Last Revision"
 msgstr "Utolsó módosítás"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
-#: ../addressbook/libebook-contacts/e-contact.c:253
+#: ../addressbook/libebook-contacts/e-contact.c:252
 msgid "Name or Org"
 msgstr "Név vagy szervezet"
 
 #. Address fields
-#: ../addressbook/libebook-contacts/e-contact.c:256
+#: ../addressbook/libebook-contacts/e-contact.c:255
 msgid "Address List"
 msgstr "Címlista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:257
+#: ../addressbook/libebook-contacts/e-contact.c:256
 msgid "Home Address"
 msgstr "Otthoni cím"
 
-#: ../addressbook/libebook-contacts/e-contact.c:258
+#: ../addressbook/libebook-contacts/e-contact.c:257
 msgid "Work Address"
 msgstr "Munkahelyi cím"
 
-#: ../addressbook/libebook-contacts/e-contact.c:259
+#: ../addressbook/libebook-contacts/e-contact.c:258
 msgid "Other Address"
 msgstr "Egyéb cím"
 
 #. Contact categories
-#: ../addressbook/libebook-contacts/e-contact.c:262
+#: ../addressbook/libebook-contacts/e-contact.c:261
 msgid "Category List"
 msgstr "Kategórialista"
 
 #. Photo/Logo
-#: ../addressbook/libebook-contacts/e-contact.c:265
+#: ../addressbook/libebook-contacts/e-contact.c:264
 msgid "Photo"
 msgstr "Fotó"
 
-#: ../addressbook/libebook-contacts/e-contact.c:266
+#: ../addressbook/libebook-contacts/e-contact.c:265
 msgid "Logo"
 msgstr "Logó"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
-#: ../addressbook/libebook-contacts/e-contact.c:270
+#: ../addressbook/libebook-contacts/e-contact.c:269
 msgid "Name"
 msgstr "Név"
 
-#: ../addressbook/libebook-contacts/e-contact.c:271
+#: ../addressbook/libebook-contacts/e-contact.c:270
 msgid "Email List"
 msgstr "E-mail lista"
 
 #. Instant messaging fields
-#: ../addressbook/libebook-contacts/e-contact.c:274
+#: ../addressbook/libebook-contacts/e-contact.c:273
 msgid "AIM Screen Name List"
 msgstr "AIM felhasználónév-lista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:275
+#: ../addressbook/libebook-contacts/e-contact.c:274
 msgid "GroupWise ID List"
 msgstr "GroupWise azonosítólista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:276
+#: ../addressbook/libebook-contacts/e-contact.c:275
 msgid "Jabber ID List"
 msgstr "Jabber-azonosítólista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:277
+#: ../addressbook/libebook-contacts/e-contact.c:276
 msgid "Yahoo! Screen Name List"
 msgstr "Yahoo! felhasználónév-lista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:278
+#: ../addressbook/libebook-contacts/e-contact.c:277
 msgid "MSN Screen Name List"
 msgstr "MSN felhasználónév-lista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:279
+#: ../addressbook/libebook-contacts/e-contact.c:278
 msgid "ICQ ID List"
 msgstr "ICQ azonosítólista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:281
+#: ../addressbook/libebook-contacts/e-contact.c:280
 msgid "Wants HTML Mail"
 msgstr "HTML levelet kér"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
-#: ../addressbook/libebook-contacts/e-contact.c:286
+#: ../addressbook/libebook-contacts/e-contact.c:285
 msgid "List"
 msgstr "Lista"
 
@@ -785,127 +789,127 @@ msgstr "Lista"
 #. * used to determine whether when sending to Contact lists the addresses should be
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
-#: ../addressbook/libebook-contacts/e-contact.c:291
+#: ../addressbook/libebook-contacts/e-contact.c:290
 msgid "List Shows Addresses"
 msgstr "A lista megjeleníti a címeket"
 
-#: ../addressbook/libebook-contacts/e-contact.c:293
+#: ../addressbook/libebook-contacts/e-contact.c:292
 msgid "Birth Date"
 msgstr "Születési dátum"
 
-#: ../addressbook/libebook-contacts/e-contact.c:294
+#: ../addressbook/libebook-contacts/e-contact.c:293
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:893
 msgid "Anniversary"
 msgstr "Évforduló"
 
 #. Security fields
-#: ../addressbook/libebook-contacts/e-contact.c:297
+#: ../addressbook/libebook-contacts/e-contact.c:296
 msgid "X.509 Certificate"
 msgstr "X.509 tanúsítvány"
 
-#: ../addressbook/libebook-contacts/e-contact.c:299
+#: ../addressbook/libebook-contacts/e-contact.c:298
 msgid "Gadu-Gadu Home ID 1"
 msgstr "1. otthoni Gadu-Gadu azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:300
+#: ../addressbook/libebook-contacts/e-contact.c:299
 msgid "Gadu-Gadu Home ID 2"
 msgstr "2. otthoni Gadu-Gadu azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:301
+#: ../addressbook/libebook-contacts/e-contact.c:300
 msgid "Gadu-Gadu Home ID 3"
 msgstr "3. otthoni Gadu-Gadu azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:302
+#: ../addressbook/libebook-contacts/e-contact.c:301
 msgid "Gadu-Gadu Work ID 1"
 msgstr "1. munkahelyi Gadu-Gadu azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:303
+#: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Gadu-Gadu Work ID 2"
 msgstr "2. munkahelyi Gadu-Gadu azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:304
+#: ../addressbook/libebook-contacts/e-contact.c:303
 msgid "Gadu-Gadu Work ID 3"
 msgstr "3. munkahelyi Gadu-Gadu azonosító"
 
-#: ../addressbook/libebook-contacts/e-contact.c:305
+#: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Gadu-Gadu ID List"
 msgstr "Gadu-Gadu azonosítólista"
 
 #. Geo information
-#: ../addressbook/libebook-contacts/e-contact.c:308
+#: ../addressbook/libebook-contacts/e-contact.c:307
 msgid "Geographic Information"
 msgstr "Földrajzi információk"
 
-#: ../addressbook/libebook-contacts/e-contact.c:310
+#: ../addressbook/libebook-contacts/e-contact.c:309
 msgid "Telephone"
 msgstr "Telefon"
 
-#: ../addressbook/libebook-contacts/e-contact.c:312
+#: ../addressbook/libebook-contacts/e-contact.c:311
 msgid "Skype Home Name 1"
 msgstr "1. otthoni Skype felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:313
+#: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "Skype Home Name 2"
 msgstr "2. otthoni Skype felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:314
+#: ../addressbook/libebook-contacts/e-contact.c:313
 msgid "Skype Home Name 3"
 msgstr "3. otthoni Skype felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:315
+#: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Skype Work Name 1"
 msgstr "1. munkahelyi Skype felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:316
+#: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Skype Work Name 2"
 msgstr "2. munkahelyi Skype felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:317
+#: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Skype Work Name 3"
 msgstr "3. munkahelyi Skype felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:318
+#: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Skype Name List"
 msgstr "Skype felhasználónév-lista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:320
+#: ../addressbook/libebook-contacts/e-contact.c:319
 msgid "SIP address"
 msgstr "SIP cím"
 
-#: ../addressbook/libebook-contacts/e-contact.c:322
+#: ../addressbook/libebook-contacts/e-contact.c:321
 msgid "Google Talk Home Name 1"
 msgstr "1. otthoni Google Talk felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:323
+#: ../addressbook/libebook-contacts/e-contact.c:322
 msgid "Google Talk Home Name 2"
 msgstr "2. otthoni Google Talk felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:324
+#: ../addressbook/libebook-contacts/e-contact.c:323
 msgid "Google Talk Home Name 3"
 msgstr "3. otthoni Google Talk felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:325
+#: ../addressbook/libebook-contacts/e-contact.c:324
 msgid "Google Talk Work Name 1"
 msgstr "1. munkahelyi Google Talk felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:326
+#: ../addressbook/libebook-contacts/e-contact.c:325
 msgid "Google Talk Work Name 2"
 msgstr "2. munkahelyi Google Talk felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:327
+#: ../addressbook/libebook-contacts/e-contact.c:326
 msgid "Google Talk Work Name 3"
 msgstr "3. munkahelyi Google Talk felhasználónév"
 
-#: ../addressbook/libebook-contacts/e-contact.c:328
+#: ../addressbook/libebook-contacts/e-contact.c:327
 msgid "Google Talk Name List"
 msgstr "Google Talk felhasználónév-lista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:330
+#: ../addressbook/libebook-contacts/e-contact.c:329
 msgid "Twitter Name List"
 msgstr "Twitter felhasználónév-lista"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1635
-#: ../addressbook/libebook/e-destination.c:917
+#: ../addressbook/libebook-contacts/e-contact.c:1634
+#: ../addressbook/libebook/e-destination.c:918
 msgid "Unnamed List"
 msgstr "Névtelen lista"
 
@@ -939,49 +943,49 @@ msgstr "A szöveg túl rövid ahhoz, hogy telefonszám legyen"
 msgid "Text is too long for a phone number"
 msgstr "A szöveg túl hosszú ahhoz, hogy telefonszám legyen"
 
-#: ../addressbook/libebook/e-book-client.c:807
+#: ../addressbook/libebook/e-book-client.c:806
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Ismeretlen címjegyzék-tulajdonság: „%s”"
 
-#: ../addressbook/libebook/e-book-client.c:822
+#: ../addressbook/libebook/e-book-client.c:821
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Nem lehet módosítani a(z) „%s” címjegyzék-tulajdonság értékét"
 
-#: ../addressbook/libebook/e-book-client.c:1207
-#: ../addressbook/libebook/e-book-client.c:1382
-#: ../addressbook/libebook/e-book-client.c:1649
-#: ../calendar/libecal/e-cal-client.c:1530
-#: ../calendar/libecal/e-cal-client.c:1712
+#: ../addressbook/libebook/e-book-client.c:1206
+#: ../addressbook/libebook/e-book-client.c:1381
+#: ../addressbook/libebook/e-book-client.c:1648
+#: ../calendar/libecal/e-cal-client.c:1529
+#: ../calendar/libecal/e-cal-client.c:1711
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Nem sikerült kapcsolódni a következőhöz: „%s”:"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:898
+#: ../addressbook/libedata-book/e-book-sqlite.c:2173
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Hiba az ismeretlen „%s” összegzőmezőbe betekintéskor"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1508
+#: ../addressbook/libedata-book/e-book-sqlite.c:1329
 msgid "Error parsing regular expression"
 msgstr "Hiba a reguláris kifejezés feldolgozásakor"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1553
+#: ../addressbook/libedata-book/e-book-sqlite.c:1813 ../camel/camel-db.c:542
 #, c-format
 msgid "Insufficient memory"
 msgstr "Kevés a memória"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1691
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1690
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
 msgstr "Érvénytelen névjegymező („%d”) az összegzésben"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1724
+#: ../addressbook/libedata-book/e-book-sqlite.c:567
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -990,8 +994,8 @@ msgstr ""
 "Az összegzésben „%2$s” típusú „%1$s” névjegymező áll, de csak logikai, "
 "karakterlánc és karakterlánclista típusú mezők támogatottak."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3065
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4161
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3064
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4160
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -999,19 +1003,19 @@ msgstr ""
 "A teljes search_contacts nincs a gyorsítótárban. A vCardok nem adhatók "
 "vissza."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5364
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4291
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4384
+#: ../addressbook/libedata-book/e-book-sqlite.c:5384
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "A lekérdezés nem támogatott elemeket is tartalmazott"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4296
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4295
 #, c-format
 msgid "Invalid Query"
 msgstr "Érvénytelen lekérdezés"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4320
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4319
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -1020,16 +1024,16 @@ msgstr ""
 "A teljes search_contacts nincs a gyorsítótárban. Emiatt csak az összegzés "
 "lekérdezése támogatott."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4389
-#: ../addressbook/libedata-book/e-data-book.c:383
-#: ../addressbook/libedata-book/e-data-book.c:1028
-#: ../calendar/libedata-cal/e-data-cal.c:420
-#: ../calendar/libedata-cal/e-data-cal.c:1307 ../libedataserver/e-client.c:172
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4388
+#: ../addressbook/libedata-book/e-data-book.c:391
+#: ../addressbook/libedata-book/e-data-book.c:1036
+#: ../calendar/libedata-cal/e-data-cal.c:428
+#: ../calendar/libedata-cal/e-data-cal.c:1315 ../libedataserver/e-client.c:171
 #, c-format
 msgid "Invalid query"
 msgstr "Érvénytelen lekérdezés"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4432
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4431
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1037,34 +1041,34 @@ msgstr ""
 "A teljes vCardok nincsenek a gyorsítótárban. Emiatt csak az összegzés "
 "lekérdezése támogatott."
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:5255
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:5254
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Nem sikerült az adatbázisfájl eltávolítása: hibaszám: %d"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6042
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6442
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6041
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6441
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr "Az EbSdbCursor csak összefoglaló lekérdezéseket támogat"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6049
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6048
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr "Legalább egy rendezési mezőt meg kell adni EbSdbCursor használatához"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6063
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6062
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr "Nem lehet az összegzésben nem szereplő mező szerint rendezni"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6070
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6069
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr "Nem lehet több értékkel rendelkezni képes mező szerint rendezni"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7376
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6202
+#: ../addressbook/libedata-book/e-book-sqlite.c:7681
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1073,22 +1077,22 @@ msgstr ""
 "Kísérlet egy kurzor fordított irányú léptetésére, de a kurzor már a "
 "névjegylista elején van"
 
-#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7384
+#: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
+#: ../addressbook/libedata-book/e-book-sqlite.c:7689
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
 msgstr ""
-"Kísérlet egy kurzor előreléptetésére, de a kurzor már a névjegylista végén van"
+"Kísérlet egy kurzor előreléptetésére, de a kurzor már a névjegylista végén "
+"van"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:534
 #, c-format
-#| msgid "Invalid contact field '%d' specified in summary"
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Nem támogatott névjegymező („%d”) az összegzésben"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1886
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1096,200 +1100,195 @@ msgstr ""
 "Nem frissíthető a névjegyadatbázis  több címjegyzéket tartalmazó örökölt "
 "adatbázisból. Előbb törölje az egyik bejegyzést a „folders” táblából."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5357
+#: ../addressbook/libedata-book/e-book-sqlite.c:5377
 #, c-format
-#| msgid "Invalid query: "
 msgid "Invalid query: %s"
 msgstr "Érvénytelen lekérdezés: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5532
-#| msgid "Invalid query: "
+#: ../addressbook/libedata-book/e-book-sqlite.c:5552
 msgid "Invalid query for EbSqlCursor"
 msgstr "Érvénytelen lekérdezés az EbSqlCursor-hoz"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7198
+#: ../addressbook/libedata-book/e-book-sqlite.c:7503
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Legalább egy rendezési mezőt meg kell adni egy EbSqlCursor használatához"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7216
+#: ../addressbook/libedata-book/e-book-sqlite.c:7521
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nem lehet nem karakterlánc típusú mező szerint rendezni"
 
-#: ../addressbook/libedata-book/e-data-book.c:367
-#: ../calendar/libedata-cal/e-data-cal.c:401
+#: ../addressbook/libedata-book/e-data-book.c:375
+#: ../calendar/libedata-cal/e-data-cal.c:409
 msgid "Success"
 msgstr "Sikerült"
 
-#: ../addressbook/libedata-book/e-data-book.c:368
-#: ../calendar/libecal/e-cal.c:2302 ../calendar/libedata-cal/e-data-cal.c:402
-#: ../libedataserver/e-client.c:139
+#: ../addressbook/libedata-book/e-data-book.c:376
+#: ../calendar/libecal/e-cal.c:2302 ../calendar/libedata-cal/e-data-cal.c:410
+#: ../libedataserver/e-client.c:138
 msgid "Backend is busy"
 msgstr "A háttérprogram foglalt"
 
-#: ../addressbook/libedata-book/e-data-book.c:369
-#: ../calendar/libedata-cal/e-data-cal.c:403 ../libedataserver/e-client.c:149
+#: ../addressbook/libedata-book/e-data-book.c:377
+#: ../calendar/libedata-cal/e-data-cal.c:411 ../libedataserver/e-client.c:148
 msgid "Repository offline"
 msgstr "Az adattár offline"
 
-#: ../addressbook/libedata-book/e-data-book.c:370
-#: ../calendar/libecal/e-cal.c:2316 ../calendar/libedata-cal/e-data-cal.c:404
-#: ../libedataserver/e-client.c:156
+#: ../addressbook/libedata-book/e-data-book.c:378
+#: ../calendar/libecal/e-cal.c:2316 ../calendar/libedata-cal/e-data-cal.c:412
+#: ../libedataserver/e-client.c:155
 msgid "Permission denied"
 msgstr "Hozzáférés megtagadva"
 
-#: ../addressbook/libedata-book/e-data-book.c:373
-#: ../calendar/libedata-cal/e-data-cal.c:409
+#: ../addressbook/libedata-book/e-data-book.c:381
+#: ../calendar/libedata-cal/e-data-cal.c:417
 msgid "Authentication Failed"
 msgstr "Hitelesítés sikertelen"
 
-#: ../addressbook/libedata-book/e-data-book.c:374
-#: ../calendar/libedata-cal/e-data-cal.c:410
+#: ../addressbook/libedata-book/e-data-book.c:382
+#: ../calendar/libedata-cal/e-data-cal.c:418
 msgid "Authentication Required"
 msgstr "Hitelesítés szükséges"
 
-#: ../addressbook/libedata-book/e-data-book.c:375
-#: ../calendar/libedata-cal/e-data-cal.c:411
+#: ../addressbook/libedata-book/e-data-book.c:383
+#: ../calendar/libedata-cal/e-data-cal.c:419
 msgid "Unsupported field"
 msgstr "Nem támogatott mező"
 
-#: ../addressbook/libedata-book/e-data-book.c:376
-#: ../calendar/libedata-cal/e-data-cal.c:413 ../libedataserver/e-client.c:164
+#: ../addressbook/libedata-book/e-data-book.c:384
+#: ../calendar/libedata-cal/e-data-cal.c:421 ../libedataserver/e-client.c:163
 msgid "Unsupported authentication method"
 msgstr "Nem támogatott hitelesítési metódus"
 
-#: ../addressbook/libedata-book/e-data-book.c:377
-#: ../calendar/libedata-cal/e-data-cal.c:414 ../libedataserver/e-client.c:166
+#: ../addressbook/libedata-book/e-data-book.c:385
+#: ../calendar/libedata-cal/e-data-cal.c:422 ../libedataserver/e-client.c:165
 msgid "TLS not available"
 msgstr "TLS nem érhető el"
 
-#: ../addressbook/libedata-book/e-data-book.c:378
+#: ../addressbook/libedata-book/e-data-book.c:386
 msgid "Address book does not exist"
 msgstr "A címjegyzék nem létezik"
 
-#: ../addressbook/libedata-book/e-data-book.c:379
+#: ../addressbook/libedata-book/e-data-book.c:387
 msgid "Book removed"
 msgstr "A címjegyzék eltávolítva"
 
-#: ../addressbook/libedata-book/e-data-book.c:380
-#: ../calendar/libedata-cal/e-data-cal.c:417
+#: ../addressbook/libedata-book/e-data-book.c:388
+#: ../calendar/libedata-cal/e-data-cal.c:425
 msgid "Not available in offline mode"
 msgstr "Nem érhető el kapcsolat nélküli módban"
 
-#: ../addressbook/libedata-book/e-data-book.c:381
-#: ../calendar/libedata-cal/e-data-cal.c:418 ../libedataserver/e-client.c:168
+#: ../addressbook/libedata-book/e-data-book.c:389
+#: ../calendar/libedata-cal/e-data-cal.c:426 ../libedataserver/e-client.c:167
 msgid "Search size limit exceeded"
 msgstr "A keresési méretkorlát túllépve"
 
-#: ../addressbook/libedata-book/e-data-book.c:382
-#: ../calendar/libedata-cal/e-data-cal.c:419 ../libedataserver/e-client.c:170
+#: ../addressbook/libedata-book/e-data-book.c:390
+#: ../calendar/libedata-cal/e-data-cal.c:427 ../libedataserver/e-client.c:169
 msgid "Search time limit exceeded"
 msgstr "A keresési időkorlát túllépve"
 
-#: ../addressbook/libedata-book/e-data-book.c:384
-#: ../calendar/libedata-cal/e-data-cal.c:421 ../libedataserver/e-client.c:174
+#: ../addressbook/libedata-book/e-data-book.c:392
+#: ../calendar/libedata-cal/e-data-cal.c:429 ../libedataserver/e-client.c:173
 msgid "Query refused"
 msgstr "Lekérdezés visszautasítva"
 
-#: ../addressbook/libedata-book/e-data-book.c:385
-#: ../calendar/libedata-cal/e-data-cal.c:422 ../libedataserver/e-client.c:160
+#: ../addressbook/libedata-book/e-data-book.c:393
+#: ../calendar/libedata-cal/e-data-cal.c:430 ../libedataserver/e-client.c:159
 msgid "Could not cancel"
 msgstr "Nem lehet megszakítani"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:387
-#: ../calendar/libedata-cal/e-data-cal.c:424
+#: ../addressbook/libedata-book/e-data-book.c:395
+#: ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Invalid server version"
 msgstr "Érvénytelen kiszolgálóverzió"
 
-#: ../addressbook/libedata-book/e-data-book.c:389
-#: ../calendar/libecal/e-cal.c:2300 ../calendar/libedata-cal/e-data-cal.c:425
-#: ../libedataserver/e-client.c:137
+#: ../addressbook/libedata-book/e-data-book.c:397
+#: ../calendar/libecal/e-cal.c:2300 ../calendar/libedata-cal/e-data-cal.c:433
+#: ../libedataserver/e-client.c:136
 msgid "Invalid argument"
 msgstr "Érvénytelen argumentum"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:391
+#: ../addressbook/libedata-book/e-data-book.c:399
 #: ../calendar/libecal/e-cal.c:1059 ../calendar/libecal/e-cal.c:1427
 #: ../calendar/libecal/e-cal.c:1907 ../calendar/libecal/e-cal.c:2339
-#: ../calendar/libedata-cal/e-data-cal.c:427 ../libedataserver/e-client.c:162
+#: ../calendar/libedata-cal/e-data-cal.c:435 ../libedataserver/e-client.c:161
 #, c-format
 msgid "Not supported"
 msgstr "Nem támogatott"
 
-#: ../addressbook/libedata-book/e-data-book.c:392
-#: ../calendar/libedata-cal/e-data-cal.c:428 ../libedataserver/e-client.c:180
+#: ../addressbook/libedata-book/e-data-book.c:400
+#: ../calendar/libedata-cal/e-data-cal.c:436 ../libedataserver/e-client.c:179
 msgid "Backend is not opened yet"
 msgstr "A háttérprogram még nem nyílt meg"
 
-#: ../addressbook/libedata-book/e-data-book.c:393
-#: ../libedataserver/e-client.c:182
+#: ../addressbook/libedata-book/e-data-book.c:401
+#: ../libedataserver/e-client.c:181
 msgid "Object is out of sync"
 msgstr "Az objektum nincs szinkronban"
 
-#: ../addressbook/libedata-book/e-data-book.c:401
-#: ../calendar/libedata-cal/e-data-cal.c:436 ../libedataserver/e-client.c:178
+#: ../addressbook/libedata-book/e-data-book.c:409
+#: ../calendar/libedata-cal/e-data-cal.c:444 ../libedataserver/e-client.c:177
 msgid "Other error"
 msgstr "Egyéb hiba"
 
-#: ../addressbook/libedata-book/e-data-book.c:1053
-#: ../calendar/libedata-cal/e-data-cal.c:1332
+#: ../addressbook/libedata-book/e-data-book.c:1061
+#: ../calendar/libedata-cal/e-data-cal.c:1340
 msgid "Invalid query: "
 msgstr "Érvénytelen lekérdezés: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1272
+#: ../addressbook/libedata-book/e-data-book.c:1280
 msgid "Cannot open book: "
 msgstr "Nem lehet megnyitni a címjegyzéket: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1309
+#: ../addressbook/libedata-book/e-data-book.c:1317
 msgid "Cannot refresh address book: "
 msgstr "Nem frissíthető a címjegyzék: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1340
+#: ../addressbook/libedata-book/e-data-book.c:1348
 msgid "Cannot get contact: "
 msgstr "A névjegy nem kérhető le: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1378
+#: ../addressbook/libedata-book/e-data-book.c:1386
 msgid "Cannot get contact list: "
 msgstr "Nem lehet lekérni a névjegylistát: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1430
+#: ../addressbook/libedata-book/e-data-book.c:1438
 msgid "Cannot get contact list uids: "
 msgstr "Nem lehet lekérni a névjegylista felhasználói azonosítóit: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1477
+#: ../addressbook/libedata-book/e-data-book.c:1485
 msgid "Cannot add contact: "
 msgstr "A névjegy nem vehető fel: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1526
+#: ../addressbook/libedata-book/e-data-book.c:1534
 msgid "Cannot modify contacts: "
 msgstr "A névjegyek nem távolíthatók el: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../addressbook/libedata-book/e-data-book.c:1568
+#: ../addressbook/libedata-book/e-data-book.c:1576
 msgid "Cannot remove contacts: "
 msgstr "Nem törölhetők a névjegyek: "
 
 #: ../addressbook/libedata-book/e-data-book-cursor.c:772
-#| msgid "%s does not support creating remote resources"
 msgid "Cursor does not support setting the search expression"
 msgstr "A kurzor nem támogatja keresési kifejezés beállítását"
 
 #: ../addressbook/libedata-book/e-data-book-cursor.c:855
-#| msgid "Store does not support an INBOX"
 msgid "Cursor does not support step"
 msgstr "A kurzor nem támogatja a léptetést"
 
 #: ../addressbook/libedata-book/e-data-book-cursor.c:938
-#| msgid "%s does not support authentication"
 msgid "Cursor does not support alphabetic indexes"
 msgstr "A kurzor nem támogatja a betűrendes indexeket"
 
@@ -1305,49 +1304,35 @@ msgstr "Szinkronizáláson kívüli revízió a kurzor mozgatásakor"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "A helytelen területi beállításhoz betűrendes index kényszerítve"
 
-#: ../addressbook/libedata-book/e-data-book-factory.c:289
-#: ../calendar/libedata-cal/e-data-cal-factory.c:285
-#, c-format
-msgid "No backend name in source '%s'"
-msgstr "Nem található háttérprogramnév a(z) „%s” forrásban"
-
-#: ../addressbook/libedata-book/e-data-book-factory.c:377
-#: ../calendar/libedata-cal/e-data-cal-factory.c:339
-#, c-format
-msgid "Missing source UID"
-msgstr "Hiányzó forrás UID"
-
-#: ../addressbook/libedata-book/e-data-book-factory.c:388
-#: ../calendar/libedata-cal/e-data-cal-factory.c:349
-#, c-format
-msgid "No such source for UID '%s'"
-msgstr "Nincs ilyen forrás a(z) „%s” UID-hez"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:574
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:573
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "A kiszolgáló nem érhető el (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:605
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:604
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Nem sikerült kapcsolódni a kiszolgálóhoz SSL használatával: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Váratlan HTTP állapotkód (%d) érkezett (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:635
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:634
 msgid "CalDAV backend is not loaded yet"
 msgstr "A CalDAV háttérprogram még nincs betöltve"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1074
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1076
 msgid "Invalid Redirect URL"
 msgstr "Érvénytelen átirányítási URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2577
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2942
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2850
+#, c-format
+msgid "Cannot create local cache folder '%s'"
+msgstr "Nem lehet létrehozni a helyi „%s” gyorsítótármappát"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2902
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1356,32 +1341,27 @@ msgstr ""
 "A kiszolgáló nem érhető el, a naptár csak olvasható módban van megnyitva.\n"
 "A hibaüzenet: (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2897
-#, c-format
-msgid "Cannot create local cache folder '%s'"
-msgstr "Nem lehet létrehozni a helyi „%s” gyorsítótármappát"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3982
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3936
 msgid "CalDAV does not support bulk additions"
 msgstr "A CalDAV nem támogatja a tömeges hozzáadásokat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4085
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4039
 msgid "CalDAV does not support bulk modifications"
 msgstr "A CalDAV nem támogatja a tömeges módosításokat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4261
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4215
 msgid "CalDAV does not support bulk removals"
 msgstr "A CalDAV nem támogatja a tömeges eltávolításokat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4928
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4882
 msgid "Calendar doesn't support Free/Busy"
 msgstr "A naptár nem támogatja a szabad/elfoglalt jelzését"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4937
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4891
 msgid "Schedule outbox url not found"
 msgstr "Ütemezés kimenő URL-je nem található"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5034
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4988
 msgid "Unexpected result in schedule-response"
 msgstr "Váratlan eredmény az ütemezésre adott válaszban"
 
@@ -1408,27 +1388,27 @@ msgstr "Nem menthetők a naptáradatok: rosszul formázott URI."
 msgid "Cannot save calendar data"
 msgstr "Nem menthetők a naptáradatok"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:486
+#: ../calendar/backends/http/e-cal-backend-http.c:489
 #, c-format
 msgid "Malformed URI: %s"
 msgstr "Rosszul formázott URI: %s"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:577
+#: ../calendar/backends/http/e-cal-backend-http.c:555
 #, c-format
 msgid "Redirected to Invalid URI"
 msgstr "Átirányítva érvénytelen URI címre"
 
-#: ../calendar/backends/http/e-cal-backend-http.c:620
+#: ../calendar/backends/http/e-cal-backend-http.c:598
 #, c-format
 msgid "Bad file format."
 msgstr "Hibás fájlformátum."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:630
+#: ../calendar/backends/http/e-cal-backend-http.c:608
 #, c-format
 msgid "Not a calendar."
 msgstr "Nem naptár."
 
-#: ../calendar/backends/http/e-cal-backend-http.c:917
+#: ../calendar/backends/http/e-cal-backend-http.c:897
 #: ../calendar/backends/weather/e-cal-backend-weather.c:536
 msgid "Could not create cache file"
 msgstr "Nem lehet létrehozni a gyorsítótár fájlt"
@@ -1504,17 +1484,17 @@ msgstr "Előrejelzés"
 msgid "Repository is offline"
 msgstr "Az adattár offline"
 
-#: ../calendar/libecal/e-cal.c:2306 ../calendar/libecal/e-cal-client.c:263
+#: ../calendar/libecal/e-cal.c:2306 ../calendar/libecal/e-cal-client.c:262
 msgid "No such calendar"
 msgstr "Nincs ilyen naptár"
 
-#: ../calendar/libecal/e-cal.c:2308 ../calendar/libecal/e-cal-client.c:265
-#: ../calendar/libedata-cal/e-data-cal.c:406
+#: ../calendar/libecal/e-cal.c:2308 ../calendar/libecal/e-cal-client.c:264
+#: ../calendar/libedata-cal/e-data-cal.c:414
 msgid "Object not found"
 msgstr "Az objektum nem található"
 
-#: ../calendar/libecal/e-cal.c:2310 ../calendar/libecal/e-cal-client.c:267
-#: ../calendar/libedata-cal/e-data-cal.c:407
+#: ../calendar/libecal/e-cal.c:2310 ../calendar/libecal/e-cal-client.c:266
+#: ../calendar/libedata-cal/e-data-cal.c:415
 msgid "Invalid object"
 msgstr "Érvénytelen objektum"
 
@@ -1530,8 +1510,8 @@ msgstr "URI már be van töltve"
 msgid "Unknown User"
 msgstr "Ismeretlen felhasználó"
 
-#: ../calendar/libecal/e-cal.c:2320 ../calendar/libecal/e-cal-client.c:271
-#: ../calendar/libedata-cal/e-data-cal.c:408
+#: ../calendar/libecal/e-cal.c:2320 ../calendar/libecal/e-cal-client.c:270
+#: ../calendar/libedata-cal/e-data-cal.c:416
 msgid "Object ID already exists"
 msgstr "Az objektumazonosító már létezik"
 
@@ -1547,13 +1527,13 @@ msgstr "Művelet megszakítva"
 msgid "Could not cancel operation"
 msgstr "Nem lehet megszakítani a műveletet"
 
-#: ../calendar/libecal/e-cal.c:2328 ../libedataserver/e-client.c:145
+#: ../calendar/libecal/e-cal.c:2328 ../libedataserver/e-client.c:144
 msgid "Authentication failed"
 msgstr "Hitelesítés sikertelen"
 
 #: ../calendar/libecal/e-cal.c:2330
-#: ../camel/providers/smtp/camel-smtp-transport.c:921
-#: ../libedataserver/e-client.c:147
+#: ../camel/providers/smtp/camel-smtp-transport.c:920
+#: ../libedataserver/e-client.c:146
 msgid "Authentication required"
 msgstr "Hitelesítés szükséges"
 
@@ -1565,22 +1545,22 @@ msgstr "D-Bus kivétel történt"
 msgid "No error"
 msgstr "Nincs hiba"
 
-#: ../calendar/libecal/e-cal-client.c:269
-#: ../calendar/libedata-cal/e-data-cal.c:416
+#: ../calendar/libecal/e-cal-client.c:268
+#: ../calendar/libedata-cal/e-data-cal.c:424
 msgid "Unknown user"
 msgstr "Ismeretlen felhasználó"
 
-#: ../calendar/libecal/e-cal-client.c:273
-#: ../calendar/libedata-cal/e-data-cal.c:405
+#: ../calendar/libecal/e-cal-client.c:272
+#: ../calendar/libedata-cal/e-data-cal.c:413
 msgid "Invalid range"
 msgstr "Érvénytelen tartomány"
 
-#: ../calendar/libecal/e-cal-client.c:936
+#: ../calendar/libecal/e-cal-client.c:935
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Ismeretlen naptártulajdonság: „%s”"
 
-#: ../calendar/libecal/e-cal-client.c:951
+#: ../calendar/libecal/e-cal-client.c:950
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Nem lehet módosítani a(z) „%s” naptártulajdonság értékét"
@@ -1844,113 +1824,113 @@ msgstr "a(z) „%s” első argumentumként ISO 8601 dátum/idő karakterláncot
 msgid "\"%s\" expects the second argument to be an integer"
 msgstr "„%s” második argumentumként egész számot vár"
 
-#: ../calendar/libedata-cal/e-data-cal.c:412
+#: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Unsupported method"
 msgstr "Nem támogatott metódus"
 
-#: ../calendar/libedata-cal/e-data-cal.c:415
+#: ../calendar/libedata-cal/e-data-cal.c:423
 msgid "Calendar does not exist"
 msgstr "A naptár nem létezik"
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1503
+#: ../calendar/libedata-cal/e-data-cal.c:1511
 msgid "Cannot open calendar: "
 msgstr "Nem nyitható meg a naptár: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1540
+#: ../calendar/libedata-cal/e-data-cal.c:1548
 msgid "Cannot refresh calendar: "
 msgstr "Nem frissíthető a naptár: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1581
+#: ../calendar/libedata-cal/e-data-cal.c:1589
 msgid "Cannot retrieve calendar object path: "
 msgstr "Nem kérhető le a naptárobjektum-útvonal: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1633
+#: ../calendar/libedata-cal/e-data-cal.c:1641
 msgid "Cannot retrieve calendar object list: "
 msgstr "Nem kérhető le a naptárobjektum-lista: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1684
+#: ../calendar/libedata-cal/e-data-cal.c:1692
 msgid "Cannot retrieve calendar free/busy list: "
 msgstr "Nem kérhető le a naptár szabad/foglalt listája: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1727
+#: ../calendar/libedata-cal/e-data-cal.c:1735
 msgid "Cannot create calendar object: "
 msgstr "Nem hozható létre a naptárobjektum: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1795
+#: ../calendar/libedata-cal/e-data-cal.c:1803
 msgid "Cannot modify calendar object: "
 msgstr "Nem módosítható a naptárobjektum: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1873
+#: ../calendar/libedata-cal/e-data-cal.c:1881
 msgid "Cannot remove calendar object: "
 msgstr "Nem távolítható el a naptárobjektum: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:1959
+#: ../calendar/libedata-cal/e-data-cal.c:1967
 msgid "Cannot receive calendar objects: "
 msgstr "Nem fogadhatók a naptárobjektumok: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2002
+#: ../calendar/libedata-cal/e-data-cal.c:2010
 msgid "Cannot send calendar objects: "
 msgstr "Nem küldhetők el a naptárobjektumok: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2054
+#: ../calendar/libedata-cal/e-data-cal.c:2062
 msgid "Could not retrieve attachment uris: "
 msgstr "Nem kérhetők le a mellékletek URI-címei: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2099
+#: ../calendar/libedata-cal/e-data-cal.c:2107
 msgid "Could not discard reminder: "
 msgstr "Nem sikerült eldobni az emlékeztetőt: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2140
+#: ../calendar/libedata-cal/e-data-cal.c:2148
 msgid "Could not retrieve calendar time zone: "
 msgstr "Nem kérhető le a naptár időzónája: "
 
 #. Translators: This is prefix to a detailed error message
-#: ../calendar/libedata-cal/e-data-cal.c:2180
+#: ../calendar/libedata-cal/e-data-cal.c:2188
 msgid "Could not add calendar time zone: "
 msgstr "Nem vehető fel a naptár időzónája: "
 
-#: ../camel/camel-cipher-context.c:200
+#: ../camel/camel-cipher-context.c:199
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Ez a titkosító nem támogatja az aláírást"
 
-#: ../camel/camel-cipher-context.c:213
+#: ../camel/camel-cipher-context.c:212
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Ez a titkosító nem támogatja az ellenőrzést"
 
-#: ../camel/camel-cipher-context.c:229
+#: ../camel/camel-cipher-context.c:228
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Ez a titkosító nem támogatja a titkosítást"
 
-#: ../camel/camel-cipher-context.c:243
+#: ../camel/camel-cipher-context.c:242
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Ez a titkosító nem támogatja a visszafejtést"
 
-#: ../camel/camel-cipher-context.c:359
+#: ../camel/camel-cipher-context.c:358
 msgid "Signing message"
 msgstr "Levél aláírása"
 
-#: ../camel/camel-cipher-context.c:649
+#: ../camel/camel-cipher-context.c:648
 msgid "Encrypting message"
 msgstr "Levél titkosítása"
 
-#: ../camel/camel-cipher-context.c:821
+#: ../camel/camel-cipher-context.c:820
 msgid "Decrypting message"
 msgstr "Levél visszafejtése"
 
@@ -1968,7 +1948,7 @@ msgstr "Üres gyorsítótárfájl"
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Nem sikerült megnyitni a gyorstár könyvtárát: %s %s"
 
-#: ../camel/camel-filter-driver.c:914 ../camel/camel-filter-search.c:795
+#: ../camel/camel-filter-driver.c:914 ../camel/camel-filter-search.c:797
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Nem sikerült létrehozni a(z) „%s” gyermekfolyamatot: %s"
@@ -2045,109 +2025,114 @@ msgstr "Hiba a szűrő („%s”) feldolgozása közben: %s: %s"
 msgid "Error executing filter '%s': %s: %s"
 msgstr "Hiba a szűrő („%s”) végrehajtása közben: %s: %s"
 
-#: ../camel/camel-filter-search.c:136
+#: ../camel/camel-filter-search.c:138
 msgid "Failed to retrieve message"
 msgstr "Az üzenet letöltése sikertelen"
 
-#: ../camel/camel-filter-search.c:535
+#: ../camel/camel-filter-search.c:537
 msgid "Invalid arguments to (system-flag)"
 msgstr "Érvénytelen argumentumok (system-flag)"
 
-#: ../camel/camel-filter-search.c:553
+#: ../camel/camel-filter-search.c:555
 msgid "Invalid arguments to (user-tag)"
 msgstr "Érvénytelen argumentumok (user-tag)"
 
-#: ../camel/camel-filter-search.c:1044 ../camel/camel-filter-search.c:1053
+#: ../camel/camel-filter-search.c:1064
+#| msgid "Invalid arguments to (system-flag)"
+msgid "Invalid arguments to (message-location)"
+msgstr "Érvénytelen argumentumok (message-location)"
+
+#: ../camel/camel-filter-search.c:1142 ../camel/camel-filter-search.c:1153
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Hiba a szűrt keresés végrehajtása közben: %s: %s"
 
-#: ../camel/camel-folder.c:323
+#: ../camel/camel-folder.c:321
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "Új levélszemét tanulása itt: „%s”"
 msgstr[1] "Új levélszemetek tanulása itt: „%s”"
 
-#: ../camel/camel-folder.c:363
+#: ../camel/camel-folder.c:361
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "Új érvényes levél tanulása itt: „%s”"
 msgstr[1] "Új érvényes levelek tanulása itt: „%s”"
 
-#: ../camel/camel-folder.c:411
+#: ../camel/camel-folder.c:409
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Új üzenet szűrése itt: „%s”"
 msgstr[1] "Új üzenetek szűrése itt: „%s”"
 
-#: ../camel/camel-folder.c:1011
+#: ../camel/camel-folder.c:1009
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Levelek áthelyezése"
 
-#: ../camel/camel-folder.c:1014
+#: ../camel/camel-folder.c:1012
 msgid "Copying messages"
 msgstr "Levelek másolása"
 
-#: ../camel/camel-folder.c:1056
+#: ../camel/camel-folder.c:1054
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "A kvótainformációk nem támogatottak a(z) „%s” mappához"
 
-#: ../camel/camel-folder.c:2868
+#: ../camel/camel-folder.c:2860
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "„%s” mappa tisztítása"
 
-#: ../camel/camel-folder.c:2996
+#: ../camel/camel-folder.c:2988
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "„%s” üzenet letöltése ebből: %s"
 
-#: ../camel/camel-folder.c:3187
+#: ../camel/camel-folder.c:3179
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Kvótainformációk lekérése a következőhöz: „%s”"
 
-#: ../camel/camel-folder.c:3487
+#: ../camel/camel-folder.c:3476
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "„%s” mappa frissítése"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:886 ../camel/camel-folder-search.c:929
+#: ../camel/camel-folder-search.c:899 ../camel/camel-folder-search.c:942
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "A(z) (%s) egyetlen logikai eredményt vár"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:964
+#: ../camel/camel-folder-search.c:977
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nem engedélyezett a(z) %s elemen belül"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:971 ../camel/camel-folder-search.c:979
+#: ../camel/camel-folder-search.c:984 ../camel/camel-folder-search.c:992
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "A(z) (%s) egy keresési típusszöveget igényel"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1007
+#: ../camel/camel-folder-search.c:1020
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "A(z) (%s) egy tömb eredményt vár"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1017
+#: ../camel/camel-folder-search.c:1030
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "A(z) (%s) a mappahalmazt igényli"
 
-#: ../camel/camel-folder-search.c:1931 ../camel/camel-folder-search.c:2097
+#: ../camel/camel-folder-search.c:1944 ../camel/camel-folder-search.c:2110
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2156,7 +2141,7 @@ msgstr ""
 "Nem sikerült értelmezni a keresőkifejezést:  %s\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1943 ../camel/camel-folder-search.c:2109
+#: ../camel/camel-folder-search.c:1956 ../camel/camel-folder-search.c:2122
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2165,18 +2150,18 @@ msgstr ""
 "Hiba a keresőkifejezés végrehajtása közben: %s:\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:721 ../camel/camel-gpg-context.c:726
-#: ../camel/camel-gpg-context.c:1383
+#: ../camel/camel-gpg-context.c:720 ../camel/camel-gpg-context.c:725
+#: ../camel/camel-gpg-context.c:1382
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "A gpg végrehajtása sikertelen: %s"
 
-#: ../camel/camel-gpg-context.c:726
-#: ../camel/providers/smtp/camel-smtp-transport.c:924
+#: ../camel/camel-gpg-context.c:725
+#: ../camel/providers/smtp/camel-smtp-transport.c:923
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../camel/camel-gpg-context.c:791
+#: ../camel/camel-gpg-context.c:790
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2187,17 +2172,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:827
+#: ../camel/camel-gpg-context.c:826
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "A gpg felhasználói azonosító sikertelen elemzése."
 
-#: ../camel/camel-gpg-context.c:852 ../camel/camel-gpg-context.c:867
+#: ../camel/camel-gpg-context.c:851 ../camel/camel-gpg-context.c:866
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "A gpg jelmondatkérés elemzése sikertelen."
 
-#: ../camel/camel-gpg-context.c:888
+#: ../camel/camel-gpg-context.c:887
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2206,7 +2191,7 @@ msgstr ""
 "Egy PIN szükséges a SmartCard kulcsának\n"
 "feloldásához: „%s”"
 
-#: ../camel/camel-gpg-context.c:892
+#: ../camel/camel-gpg-context.c:891
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2215,12 +2200,12 @@ msgstr ""
 "Meg kell adnia a jelmondatot „%s”\n"
 "titkos kulcsának érvényesítéséhez"
 
-#: ../camel/camel-gpg-context.c:898
+#: ../camel/camel-gpg-context.c:897
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Váratlan kérés a GnuPG-től a következőre: „%s”"
 
-#: ../camel/camel-gpg-context.c:910
+#: ../camel/camel-gpg-context.c:909
 msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2229,70 +2214,70 @@ msgstr ""
 "címzettről, így minden tárolt személyes kulcs esetén be fogja kérni a "
 "jelszót a program."
 
-#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:522
+#: ../camel/camel-gpg-context.c:940 ../camel/camel-net-utils.c:522
 #: ../camel/providers/nntp/camel-nntp-summary.c:401
-#: ../libedataserver/e-client.c:158
+#: ../libedataserver/e-client.c:157
 #, c-format
 msgid "Cancelled"
 msgstr "Megszakítva"
 
-#: ../camel/camel-gpg-context.c:962
+#: ../camel/camel-gpg-context.c:961
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "A titkos kulcs érvényesítéséhez 3 alkalommal adott meg rossz jelmondatot."
 
-#: ../camel/camel-gpg-context.c:975
+#: ../camel/camel-gpg-context.c:974
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Váratlan válasz a GnuPG részéről: %s"
 
-#: ../camel/camel-gpg-context.c:1106
+#: ../camel/camel-gpg-context.c:1105
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Sikertelen titkosítás: Nincs érvényes címzett megadva."
 
-#: ../camel/camel-gpg-context.c:1658 ../camel/camel-smime-context.c:844
+#: ../camel/camel-gpg-context.c:1657 ../camel/camel-smime-context.c:843
 msgid "Could not generate signing data: "
 msgstr "Nem sikerült az aláírási adatok előállítása: "
 
-#: ../camel/camel-gpg-context.c:1708 ../camel/camel-gpg-context.c:1920
-#: ../camel/camel-gpg-context.c:2030 ../camel/camel-gpg-context.c:2179
+#: ../camel/camel-gpg-context.c:1707 ../camel/camel-gpg-context.c:1919
+#: ../camel/camel-gpg-context.c:2029 ../camel/camel-gpg-context.c:2178
 msgid "Failed to execute gpg."
 msgstr "A gpg végrehajtása sikertelen."
 
-#: ../camel/camel-gpg-context.c:1791 ../camel/camel-gpg-context.c:1799
-#: ../camel/camel-gpg-context.c:1807 ../camel/camel-gpg-context.c:1827
-#: ../camel/camel-smime-context.c:973 ../camel/camel-smime-context.c:987
-#: ../camel/camel-smime-context.c:996
+#: ../camel/camel-gpg-context.c:1790 ../camel/camel-gpg-context.c:1798
+#: ../camel/camel-gpg-context.c:1806 ../camel/camel-gpg-context.c:1826
+#: ../camel/camel-smime-context.c:972 ../camel/camel-smime-context.c:986
+#: ../camel/camel-smime-context.c:995
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nem ellenőrizhető az üzenet aláírása: helytelen üzenetformátum"
 
-#: ../camel/camel-gpg-context.c:1873
+#: ../camel/camel-gpg-context.c:1872
 msgid "Cannot verify message signature: "
 msgstr "Nem ellenőrizhető az üzenet aláírása: "
 
-#: ../camel/camel-gpg-context.c:1996
+#: ../camel/camel-gpg-context.c:1995
 msgid "Could not generate encrypting data: "
 msgstr "Nem sikerült előállítani titkosított adatokat: "
 
-#: ../camel/camel-gpg-context.c:2049
+#: ../camel/camel-gpg-context.c:2048
 msgid "This is a digitally encrypted message part"
 msgstr "Ez egy digitálisan aláírt üzenetrész"
 
-#: ../camel/camel-gpg-context.c:2105 ../camel/camel-gpg-context.c:2114
-#: ../camel/camel-gpg-context.c:2137
+#: ../camel/camel-gpg-context.c:2104 ../camel/camel-gpg-context.c:2113
+#: ../camel/camel-gpg-context.c:2136
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nem lehet visszafejteni az üzenetet: helytelen üzenetformátum"
 
-#: ../camel/camel-gpg-context.c:2125
+#: ../camel/camel-gpg-context.c:2124
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Protokoll hiba miatt sikertelen a MIME titkosítás feloldása"
 
-#: ../camel/camel-gpg-context.c:2220 ../camel/camel-smime-context.c:1289
+#: ../camel/camel-gpg-context.c:2219 ../camel/camel-smime-context.c:1288
 msgid "Encrypted content"
 msgstr "Titkosított tartalom"
 
@@ -2340,56 +2325,56 @@ msgstr "Nem sikerült „%s” zárolása: segédzároló protokollhiba"
 msgid "Could not lock '%s'"
 msgstr "Nem sikerült a zárolás: %s"
 
-#: ../camel/camel-movemail.c:109
+#: ../camel/camel-movemail.c:107
 #, c-format
 msgid "Could not check mail file %s: %s"
 msgstr "Nem sikerült ellenőrizni ezt a levélfájlt: %s: %s"
 
-#: ../camel/camel-movemail.c:123
+#: ../camel/camel-movemail.c:121
 #, c-format
 msgid "Could not open mail file %s: %s"
 msgstr "Nem sikerült megnyitni ezt a levélfájlt: %s: %s"
 
-#: ../camel/camel-movemail.c:133
+#: ../camel/camel-movemail.c:131
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
 msgstr "Nem sikerült megnyitni ezt az ideiglenes levélfájlt: %s: %s"
 
-#: ../camel/camel-movemail.c:163
+#: ../camel/camel-movemail.c:161
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
 msgstr "Nem sikerült a levelet ebben az ideiglenes fájlban tárolni: %s: %s"
 
-#: ../camel/camel-movemail.c:197
+#: ../camel/camel-movemail.c:195
 #, c-format
 msgid "Could not create pipe: %s"
 msgstr "Nem sikerült csővezetéket létrehozni: %s"
 
-#: ../camel/camel-movemail.c:211
+#: ../camel/camel-movemail.c:209
 #, c-format
 msgid "Could not fork: %s"
 msgstr "Nem sikerült az indítás: %s"
 
-#: ../camel/camel-movemail.c:249
+#: ../camel/camel-movemail.c:247
 #, c-format
 msgid "Movemail program failed: %s"
 msgstr "A movemail program sikertelen: %s"
 
-#: ../camel/camel-movemail.c:250
+#: ../camel/camel-movemail.c:248
 msgid "(Unknown error)"
 msgstr "(Ismeretlen hiba)"
 
-#: ../camel/camel-movemail.c:277
+#: ../camel/camel-movemail.c:275
 #, c-format
 msgid "Error reading mail file: %s"
 msgstr "Hiba a levélfájl olvasása közben: %s"
 
-#: ../camel/camel-movemail.c:290
+#: ../camel/camel-movemail.c:288
 #, c-format
 msgid "Error writing mail temp file: %s"
 msgstr "Hiba az ideiglenes levélfájl írása közben: %s"
 
-#: ../camel/camel-movemail.c:497 ../camel/camel-movemail.c:566
+#: ../camel/camel-movemail.c:495 ../camel/camel-movemail.c:564
 #, c-format
 msgid "Error copying mail temp file: %s"
 msgstr "Hiba az ideiglenes levélfájl másolása közben: %s"
@@ -2428,71 +2413,66 @@ msgstr "„%s” gép kikeresése sikertelen. Ellenőrizze a gép nevének helye
 msgid "Host lookup '%s' failed: %s"
 msgstr "„%s” gép kikeresése sikertelen: %s"
 
-#: ../camel/camel-network-service.c:1009
-#| msgid "No quota information available for folder '%s'"
-msgid "No host information available"
-msgstr "Nem érhetők el gépinformációk"
-
-#: ../camel/camel-offline-folder.c:90
+#: ../camel/camel-offline-folder.c:89
 msgid "Downloading new messages for offline mode"
 msgstr "Új üzenetek letöltése kapcsolat nélküli módhoz"
 
-#: ../camel/camel-offline-folder.c:209
+#: ../camel/camel-offline-folder.c:208
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "A(z) „%s” mappában lévő levelek szinkronizálása lemezre"
 
-#: ../camel/camel-offline-folder.c:266
+#: ../camel/camel-offline-folder.c:265
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "A mappa tartalmáról _helyi másolat készítése kapcsolat nélküli munkához"
 
-#: ../camel/camel-provider.c:56
+#: ../camel/camel-provider.c:55
 msgid "Virtual folder email provider"
 msgstr "Virtuális mappa e-mail szolgáltató"
 
-#: ../camel/camel-provider.c:58
+#: ../camel/camel-provider.c:57
 msgid "For reading mail as a query of another set of folders"
 msgstr ""
 "A leveleket más mappákon futtatott lekérdezés eredményétől függően "
 "csoportosíthatja"
 
-#: ../camel/camel-provider.c:261
+#: ../camel/camel-provider.c:260
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "%s betöltése sikertelen: A modulbetöltés nem támogatott a rendszereden."
 
-#: ../camel/camel-provider.c:270
+#: ../camel/camel-provider.c:269
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "%s betöltése sikertelen: %s"
 
-#: ../camel/camel-provider.c:279
+#: ../camel/camel-provider.c:278
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s betöltése sikertelen: Nincs előkészítő kód a modulban."
 
-#: ../camel/camel-provider.c:427 ../camel/camel-session.c:424
+#: ../camel/camel-provider.c:426 ../camel/camel-session.c:422
 #, c-format
 msgid "No provider available for protocol '%s'"
 msgstr "„%s” protokollhoz nincs elérhető szolgáltató"
 
-#: ../camel/camel-sasl-anonymous.c:33
-#: ../camel/providers/nntp/camel-nntp-provider.c:83
+#: ../camel/camel-sasl-anonymous.c:32
+#: ../camel/providers/nntp/camel-nntp-provider.c:82
 msgid "Anonymous"
 msgstr "Anonymous"
 
-#: ../camel/camel-sasl-anonymous.c:35
+#: ../camel/camel-sasl-anonymous.c:34
 msgid "This option will connect to the server using an anonymous login."
 msgstr "Névtelen bejelentkezés használatával kapcsolódik a kiszolgálóhoz."
 
-#: ../camel/camel-sasl-anonymous.c:68
+#: ../camel/camel-sasl-anonymous.c:67
 #, c-format
 msgid "Authentication failed."
 msgstr "Hitelesítés sikertelen."
 
-#: ../camel/camel-sasl-anonymous.c:79
+#: ../camel/camel-sasl-anonymous.c:78
 #, c-format
 msgid ""
 "Invalid email address trace information:\n"
@@ -2501,7 +2481,7 @@ msgstr ""
 "Érvénytelen e-mail cím nyomkövetési információ:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:93
+#: ../camel/camel-sasl-anonymous.c:92
 #, c-format
 msgid ""
 "Invalid opaque trace information:\n"
@@ -2510,7 +2490,7 @@ msgstr ""
 "Érvénytelen átlátszatlan nyomkövetési információ:\n"
 "%s"
 
-#: ../camel/camel-sasl-anonymous.c:107
+#: ../camel/camel-sasl-anonymous.c:106
 #, c-format
 msgid ""
 "Invalid trace information:\n"
@@ -2519,11 +2499,11 @@ msgstr ""
 "Érvénytelen nyomkövetési információ:\n"
 "%s"
 
-#: ../camel/camel-sasl-cram-md5.c:44
+#: ../camel/camel-sasl-cram-md5.c:43
 msgid "CRAM-MD5"
 msgstr "CRAM-MD5"
 
-#: ../camel/camel-sasl-cram-md5.c:46
+#: ../camel/camel-sasl-cram-md5.c:45
 msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
@@ -2531,11 +2511,11 @@ msgstr ""
 "Ezt a lehetőséget választva biztonságos CRAM-MD5 jelszóval csatlakozik a "
 "kiszolgálóhoz, ha az támogatja azt."
 
-#: ../camel/camel-sasl-digest-md5.c:57
+#: ../camel/camel-sasl-digest-md5.c:56
 msgid "DIGEST-MD5"
 msgstr "DIGEST-MD5"
 
-#: ../camel/camel-sasl-digest-md5.c:59
+#: ../camel/camel-sasl-digest-md5.c:58
 msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
@@ -2543,47 +2523,47 @@ msgstr ""
 "Ezt a lehetőséget választva biztonságos DIGEST-MD5 jelszóval csatlakozik a "
 "kiszolgálóhoz, ha az támogatja azt."
 
-#: ../camel/camel-sasl-digest-md5.c:853
+#: ../camel/camel-sasl-digest-md5.c:852
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "A kiszolgáló felszólítása túl hosszú (>2048 bájt)"
 
-#: ../camel/camel-sasl-digest-md5.c:864
+#: ../camel/camel-sasl-digest-md5.c:863
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "A kiszolgáló felszólítása érvénytelen\n"
 
-#: ../camel/camel-sasl-digest-md5.c:872
+#: ../camel/camel-sasl-digest-md5.c:871
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
 "A kiszolgáló felszólítása érvénytelen „Quality of Protection” tokent "
 "tartalmazott"
 
-#: ../camel/camel-sasl-digest-md5.c:905
+#: ../camel/camel-sasl-digest-md5.c:904
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "A kiszolgáló válasza nem tartalmazott engedélyezési adatokat"
 
-#: ../camel/camel-sasl-digest-md5.c:926
+#: ../camel/camel-sasl-digest-md5.c:925
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "A kiszolgáló válasza hiányos engedélyezési adatokat tartalmazott"
 
-#: ../camel/camel-sasl-digest-md5.c:939
+#: ../camel/camel-sasl-digest-md5.c:938
 #, c-format
 msgid "Server response does not match"
 msgstr "A kiszolgáló válasza nem egyezik"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:88
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:90
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Kerberos 5 hitelesítés használatával kapcsolódik a kiszolgálóhoz."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:133
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2591,11 +2571,11 @@ msgstr ""
 "A megadott mechanizmust nem támogatja a meglévő igazolás, vagy a "
 "megvalósítás nem ismeri fel."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:138
 msgid "The provided target_name parameter was ill-formed."
 msgstr "A megadott target_name paraméter rosszul formázott."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:141
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2603,7 +2583,7 @@ msgstr ""
 "A megadott target_name paraméter érvénytelen vagy nem támogatott névtípust "
 "tartalmazott."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:145
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2611,7 +2591,7 @@ msgstr ""
 "Az input_token különböző csatornakötéseket tartalmaz, mint ami az "
 "input_chan_bindings paraméterben megadott."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:150
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2619,7 +2599,7 @@ msgstr ""
 "Az input_token érvénytelen aláírást tartalmaz, vagy az aláírás nem "
 "ellenőrizhető."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:154
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2627,45 +2607,45 @@ msgstr ""
 "A megadott azonosító adatok érvénytelenek voltak a kontextus indításához, "
 "vagy az azonosító adatok kezelője nem hivatkozott semmilyen azonosító adatra."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:159
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "A megadott kontextuskezelő nem hivatkozott érvényes kontextusra."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:162
 msgid "The consistency checks performed on the input_token failed."
 msgstr ""
 "Az input_token-re végrehajtott konzisztencia-ellenőrzés sikertelen volt."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:165
 msgid "The consistency checks performed on the credential failed."
 msgstr ""
 "Az azonosító adatra végrehajtott konzisztencia-ellenőrzés sikertelen volt."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:168
 msgid "The referenced credentials have expired."
 msgstr "A hivatkozott azonosító adatok lejártak."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:352
-#: ../camel/camel-sasl-gssapi.c:400 ../camel/camel-sasl-gssapi.c:417
-#: ../camel/providers/smtp/camel-smtp-transport.c:622
+#: ../camel/camel-sasl-gssapi.c:174 ../camel/camel-sasl-gssapi.c:351
+#: ../camel/camel-sasl-gssapi.c:399 ../camel/camel-sasl-gssapi.c:416
+#: ../camel/providers/smtp/camel-smtp-transport.c:621
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Rossz hitelesítési válasz a kiszolgálótól."
 
-#: ../camel/camel-sasl-gssapi.c:429
+#: ../camel/camel-sasl-gssapi.c:428
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Nem támogatott biztonsági réteg."
 
-#: ../camel/camel-sasl-login.c:38
+#: ../camel/camel-sasl-login.c:37
 msgid "Login"
 msgstr "Bejelentkezés"
 
-#: ../camel/camel-sasl-login.c:40 ../camel/camel-sasl-plain.c:44
+#: ../camel/camel-sasl-login.c:39 ../camel/camel-sasl-plain.c:43
 msgid "This option will connect to the server using a simple password."
 msgstr "Egyszerű jelszó használatával kapcsolódik a kiszolgálóhoz."
 
-#: ../camel/camel-sasl-login.c:108
+#: ../camel/camel-sasl-login.c:107
 #, c-format
 msgid "Unknown authentication state."
 msgstr "Ismeretlen hitelesítési állapot."
@@ -2682,299 +2662,298 @@ msgstr ""
 "NTLM/SPA (biztonságos jelszó-hitelesítés) használatával kapcsolódik a "
 "Windows alapú kiszolgálóhoz."
 
-#: ../camel/camel-sasl-plain.c:42
+#: ../camel/camel-sasl-plain.c:41
 msgid "PLAIN"
 msgstr "PLAIN"
 
-#: ../camel/camel-sasl-popb4smtp.c:44
+#: ../camel/camel-sasl-popb4smtp.c:43
 msgid "POP before SMTP"
 msgstr "POP az SMTP előtt"
 
-#: ../camel/camel-sasl-popb4smtp.c:46
+#: ../camel/camel-sasl-popb4smtp.c:45
 msgid "This option will authorise a POP connection before attempting SMTP"
 msgstr ""
 "Ezzel a beállítással a POP engedélyezése az SMTP kapcsolat előtt jön létre"
 
-#: ../camel/camel-sasl-popb4smtp.c:82
+#: ../camel/camel-sasl-popb4smtp.c:81
 msgid "POP Source UID"
 msgstr "POP forrás felhasználóazonosító"
 
-#: ../camel/camel-sasl-popb4smtp.c:96
+#: ../camel/camel-sasl-popb4smtp.c:95
 #, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
 msgstr "POP az SMTP hitelesítés előtt ismeretlen átvitel használatával"
 
-#: ../camel/camel-sasl-popb4smtp.c:108 ../camel/camel-sasl-popb4smtp.c:117
+#: ../camel/camel-sasl-popb4smtp.c:107 ../camel/camel-sasl-popb4smtp.c:116
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr ""
 "POP az SMTP hitelesítés megkísérlése előtt %s szolgáltatás használatával"
 
-#: ../camel/camel-search-private.c:114
+#: ../camel/camel-search-private.c:113
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
 msgstr "A reguláris kifejezés lefordítása sikertelen: %s: %s"
 
-#: ../camel/camel-session.c:433
+#: ../camel/camel-session.c:431
 #, c-format
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "Érvénytelen GType regisztrálva a(z) „%s” protokollhoz"
 
-#: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4814
-#: ../camel/providers/pop3/camel-pop3-store.c:311
-#: ../camel/providers/pop3/camel-pop3-store.c:757
-#: ../camel/providers/smtp/camel-smtp-transport.c:515
+#: ../camel/camel-session.c:500
+#: ../camel/providers/imapx/camel-imapx-server.c:4695
+#: ../camel/providers/pop3/camel-pop3-store.c:309
+#: ../camel/providers/pop3/camel-pop3-store.c:755
+#: ../camel/providers/smtp/camel-smtp-transport.c:514
 #, c-format
 msgid "No support for %s authentication"
 msgstr "A(z) %s hitelesítési típus nem támogatott"
 
-#: ../camel/camel-session.c:517
+#: ../camel/camel-session.c:515
 #, c-format
 msgid "%s authentication failed"
 msgstr "A(z) %s hitelesítés sikertelen"
 
-#: ../camel/camel-session.c:586
+#: ../camel/camel-session.c:584
 msgid "Forwarding messages is not supported"
 msgstr "Az üzenetek továbbítása nem támogatott"
 
-#: ../camel/camel-smime-context.c:349 ../camel/camel-smime-context.c:1076
+#: ../camel/camel-smime-context.c:348 ../camel/camel-smime-context.c:1075
 #, c-format
 msgid "Cannot find certificate for '%s'"
 msgstr "Nem található tanúsítvány a következőhöz: %s"
 
-#: ../camel/camel-smime-context.c:377
+#: ../camel/camel-smime-context.c:376
 msgid "Cannot create CMS message"
 msgstr "Nem lehet létrehozni CMS levelet"
 
-#: ../camel/camel-smime-context.c:382
+#: ../camel/camel-smime-context.c:381
 msgid "Cannot create CMS signed data"
 msgstr "Nem lehet létrehozni CMS-sel aláírt adatot"
 
-#: ../camel/camel-smime-context.c:388
+#: ../camel/camel-smime-context.c:387
 msgid "Cannot attach CMS signed data"
 msgstr "Nem lehet csatolni a CMS-sel aláírt adatot"
 
-#: ../camel/camel-smime-context.c:395
+#: ../camel/camel-smime-context.c:394
 msgid "Cannot attach CMS data"
 msgstr "Nem lehet csatolni a CMS adatot"
 
-#: ../camel/camel-smime-context.c:401
+#: ../camel/camel-smime-context.c:400
 msgid "Cannot create CMS Signer information"
 msgstr "Nem lehet létrehozni CMS aláíró-információt"
 
-#: ../camel/camel-smime-context.c:407
+#: ../camel/camel-smime-context.c:406
 msgid "Cannot find certificate chain"
 msgstr "Nem található a tanúsítvány karakterlánca"
 
-#: ../camel/camel-smime-context.c:413
+#: ../camel/camel-smime-context.c:412
 msgid "Cannot add CMS Signing time"
 msgstr "Nem adható hozzá a CMS aláírás ideje"
 
-#: ../camel/camel-smime-context.c:437 ../camel/camel-smime-context.c:452
+#: ../camel/camel-smime-context.c:436 ../camel/camel-smime-context.c:451
 #, c-format
 msgid "Encryption certificate for '%s' does not exist"
 msgstr "Nem létezik titkosítási tanúsítvány a következőhöz: „%s”"
 
-#: ../camel/camel-smime-context.c:459
+#: ../camel/camel-smime-context.c:458
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
 msgstr "Nem adható hozzá a SMIMEEncKeyPrefs attribútum"
 
-#: ../camel/camel-smime-context.c:464
+#: ../camel/camel-smime-context.c:463
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
 msgstr "Nem adható hozzá MS SMIMEEncKeyPrefs attribútum"
 
-#: ../camel/camel-smime-context.c:469
+#: ../camel/camel-smime-context.c:468
 msgid "Cannot add encryption certificate"
 msgstr "Nem adható hozzá titkosítási tanúsítvány"
 
-#: ../camel/camel-smime-context.c:475
+#: ../camel/camel-smime-context.c:474
 msgid "Cannot add CMS Signer information"
 msgstr "Nem adható hozzá CMS aláíró-információ"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
-#: ../camel/camel-smime-context.c:508
+#: ../camel/camel-smime-context.c:507
 msgid "Unverified"
 msgstr "Ellenőrizetlen"
 
-#: ../camel/camel-smime-context.c:510
+#: ../camel/camel-smime-context.c:509
 msgid "Good signature"
 msgstr "Hiteles aláírás"
 
-#: ../camel/camel-smime-context.c:512
+#: ../camel/camel-smime-context.c:511
 msgid "Bad signature"
 msgstr "Hibás aláírás"
 
-#: ../camel/camel-smime-context.c:514
+#: ../camel/camel-smime-context.c:513
 msgid "Content tampered with or altered in transit"
 msgstr "A tartalom átvitel közben módosult vagy megsérült"
 
-#: ../camel/camel-smime-context.c:516
+#: ../camel/camel-smime-context.c:515
 msgid "Signing certificate not found"
 msgstr "Aláírási tanúsítvány nem található"
 
-#: ../camel/camel-smime-context.c:518
+#: ../camel/camel-smime-context.c:517
 msgid "Signing certificate not trusted"
 msgstr "Az aláírási tanúsítvány nem megbízható"
 
-#: ../camel/camel-smime-context.c:520
+#: ../camel/camel-smime-context.c:519
 msgid "Signature algorithm unknown"
 msgstr "Az aláírási algoritmus ismeretlen"
 
-#: ../camel/camel-smime-context.c:522
+#: ../camel/camel-smime-context.c:521
 msgid "Signature algorithm unsupported"
 msgstr "Az aláírási algoritmus nem támogatott"
 
-#: ../camel/camel-smime-context.c:524
+#: ../camel/camel-smime-context.c:523
 msgid "Malformed signature"
 msgstr "Hibás formátumú aláírás"
 
-#: ../camel/camel-smime-context.c:526
+#: ../camel/camel-smime-context.c:525
 msgid "Processing error"
 msgstr "Feldolgozási hiba"
 
-#: ../camel/camel-smime-context.c:571
+#: ../camel/camel-smime-context.c:570
 msgid "No signed data in signature"
 msgstr "Nincs aláírt adat az aláírásban"
 
-#: ../camel/camel-smime-context.c:576
+#: ../camel/camel-smime-context.c:575
 msgid "Digests missing from enveloped data"
 msgstr "Hiányzik az összefoglaló a borítékolt adatból"
 
-#: ../camel/camel-smime-context.c:589 ../camel/camel-smime-context.c:600
+#: ../camel/camel-smime-context.c:588 ../camel/camel-smime-context.c:599
 msgid "Cannot calculate digests"
 msgstr "Nem lehet kiszámítani az összefoglalókat"
 
-#: ../camel/camel-smime-context.c:607 ../camel/camel-smime-context.c:611
+#: ../camel/camel-smime-context.c:606 ../camel/camel-smime-context.c:610
 msgid "Cannot set message digests"
 msgstr "Nem állíthatók be az üzenet-összefoglalók"
 
-#: ../camel/camel-smime-context.c:621 ../camel/camel-smime-context.c:626
+#: ../camel/camel-smime-context.c:620 ../camel/camel-smime-context.c:625
 msgid "Certificate import failed"
 msgstr "Tanúsítványimportálás sikertelen"
 
-#: ../camel/camel-smime-context.c:636
+#: ../camel/camel-smime-context.c:635
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
 msgstr "A tanúsítvány az egyetlen üzenet, a tanúsítványok nem ellenőrizhetők"
 
-#: ../camel/camel-smime-context.c:639
+#: ../camel/camel-smime-context.c:638
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
 msgstr ""
 "A tanúsítvány az egyetlen üzenet, a tanúsítványok importálva és ellenőrizve "
 "vannak"
 
-#: ../camel/camel-smime-context.c:643
+#: ../camel/camel-smime-context.c:642
 msgid "Cannot find signature digests"
 msgstr "Nem találhatóak aláírás-összefoglalók"
 
-#: ../camel/camel-smime-context.c:660
+#: ../camel/camel-smime-context.c:659
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
 msgstr "Aláíró: %s <%s>: %s\n"
 
-#: ../camel/camel-smime-context.c:856 ../camel/camel-smime-context.c:1150
+#: ../camel/camel-smime-context.c:855 ../camel/camel-smime-context.c:1149
 msgid "Cannot create encoder context"
 msgstr "Nem lehet létrehozni kódolókontextust"
 
-#: ../camel/camel-smime-context.c:862
+#: ../camel/camel-smime-context.c:861
 msgid "Failed to add data to CMS encoder"
 msgstr "Nem sikerült hozzáadni az adatot a CMS kódolóhoz"
 
-#: ../camel/camel-smime-context.c:867 ../camel/camel-smime-context.c:1167
+#: ../camel/camel-smime-context.c:866 ../camel/camel-smime-context.c:1166
 msgid "Failed to encode data"
 msgstr "Sikertelen adatkódolás"
 
-#: ../camel/camel-smime-context.c:1015 ../camel/camel-smime-context.c:1264
+#: ../camel/camel-smime-context.c:1014 ../camel/camel-smime-context.c:1263
 msgid "Decoder failed"
 msgstr "Visszafejtés sikertelen"
 
-#: ../camel/camel-smime-context.c:1084
+#: ../camel/camel-smime-context.c:1083
 msgid "Cannot find common bulk encryption algorithm"
 msgstr "Nem található általános titkosítási algoritmus "
 
-#: ../camel/camel-smime-context.c:1092
+#: ../camel/camel-smime-context.c:1091
 msgid "Cannot allocate slot for encryption bulk key"
 msgstr "Nem lehet helyet foglalni a titkosítási kulcsnak"
 
-#: ../camel/camel-smime-context.c:1103
+#: ../camel/camel-smime-context.c:1102
 msgid "Cannot create CMS Message"
 msgstr "Nem lehet létrehozni CMS üzenetet"
 
-#: ../camel/camel-smime-context.c:1109
+#: ../camel/camel-smime-context.c:1108
 msgid "Cannot create CMS Enveloped data"
 msgstr "Nem lehet létrehozni CMS borítékolt adatot"
 
-#: ../camel/camel-smime-context.c:1115
+#: ../camel/camel-smime-context.c:1114
 msgid "Cannot attach CMS Enveloped data"
 msgstr "Nem sikerült csatolni a CMS borítékolt adatot"
 
-#: ../camel/camel-smime-context.c:1121
+#: ../camel/camel-smime-context.c:1120
 msgid "Cannot attach CMS data object"
 msgstr "Nem sikerült csatolni a CMS adatobjektumot"
 
-#: ../camel/camel-smime-context.c:1130
+#: ../camel/camel-smime-context.c:1129
 msgid "Cannot create CMS Recipient information"
 msgstr "Nem lehet létrehozni a CMS címzettinformációt"
 
-#: ../camel/camel-smime-context.c:1135
+#: ../camel/camel-smime-context.c:1134
 msgid "Cannot add CMS Recipient information"
 msgstr "Nem lehet hozzáadni a CMS címzettinformációt"
 
-#: ../camel/camel-smime-context.c:1161
+#: ../camel/camel-smime-context.c:1160
 msgid "Failed to add data to encoder"
 msgstr "Nem sikerült hozzáadni az adatokat a kódolóhoz"
 
-#: ../camel/camel-smime-context.c:1271
+#: ../camel/camel-smime-context.c:1270
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME visszafejtés: nem található titkosított tartalom"
 
-#: ../camel/camel-store.c:1232
+#: ../camel/camel-store.c:1230
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "„%s” mappa megnyitása"
 
-#: ../camel/camel-store.c:1523
+#: ../camel/camel-store.c:1521
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Mappák keresése a következőn: „%s”"
 
-#: ../camel/camel-store.c:1551 ../camel/camel-store.c:1596
-#: ../camel/camel-vtrash-folder.c:46
+#: ../camel/camel-store.c:1549 ../camel/camel-store.c:1594
+#: ../camel/camel-vtrash-folder.c:45
 msgid "Trash"
 msgstr "Kuka"
 
-#: ../camel/camel-store.c:1565 ../camel/camel-store.c:1613
-#: ../camel/camel-vtrash-folder.c:48
+#: ../camel/camel-store.c:1563 ../camel/camel-store.c:1611
+#: ../camel/camel-vtrash-folder.c:47
 msgid "Junk"
 msgstr "Levélszemét"
 
-#: ../camel/camel-store.c:2214
+#: ../camel/camel-store.c:2212
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nem lehet létrehozni a(z) „%s” mappát: a mappa létezik"
 
-#: ../camel/camel-store.c:2221
+#: ../camel/camel-store.c:2219
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "„%s” mappa létrehozása"
 
-#: ../camel/camel-store.c:2398 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2396 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:321
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nem sikerült törölni a mappát: %s: Érvénytelen művelet"
 
-#: ../camel/camel-store.c:2588 ../camel/camel-vee-store.c:467
-#: ../camel/providers/local/camel-maildir-store.c:852
+#: ../camel/camel-store.c:2586 ../camel/camel-vee-store.c:461
+#: ../camel/providers/local/camel-maildir-store.c:872
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Nem sikerült átnevezni a mappát: %s: Érvénytelen művelet"
 
-#: ../camel/camel-stream.c:285 ../camel/camel-stream.c:336
+#: ../camel/camel-stream.c:283 ../camel/camel-stream.c:334
 #, c-format
-#| msgid "Data source '%s' is not removable"
 msgid "Stream type '%s' is not seekable"
 msgstr "A(z) „%s” adatfolyam-típus nem tekerhető"
 
@@ -2983,17 +2962,17 @@ msgid "Only reset to beginning is supported with CamelStreamFilter"
 msgstr ""
 "Csak a kezdetre visszaállítás támogatott a CamelStreamFilter használatával"
 
-#: ../camel/camel-stream-null.c:76
+#: ../camel/camel-stream-null.c:74
 msgid "Only reset to beginning is supported with CamelHttpStream"
 msgstr ""
 "Csak a kezdetre visszaállítás támogatott a CamelHttpStream használatával"
 
-#: ../camel/camel-stream-process.c:280
+#: ../camel/camel-stream-process.c:278
 #, c-format
 msgid "Connection cancelled"
 msgstr "Kapcsolat megszakítva"
 
-#: ../camel/camel-stream-process.c:285
+#: ../camel/camel-stream-process.c:283
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
 msgstr "Nem lehet csatlakozni a(z) „%s” paranccsal: %s"
@@ -3008,7 +2987,7 @@ msgstr "Hiba a(z) „%s” mappára feliratkozáskor"
 msgid "Unsubscribing from folder '%s'"
 msgstr "Leiratkozás a(z) „%s” mappáról"
 
-#: ../camel/camel-url.c:329
+#: ../camel/camel-url.c:327
 #, c-format
 msgid "Could not parse URL '%s'"
 msgstr "Nem sikerült értelmezni ezt az URL címet: „%s”"
@@ -3043,69 +3022,68 @@ msgstr "A_utomatikus frissítés a forrásmappák változásakor"
 msgid "Unmatched"
 msgstr "Ki nem válogatott"
 
-#: ../camel/camel-vee-store.c:442
+#: ../camel/camel-vee-store.c:436
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Nem sikerült törölni a mappát: %s: Nincs ilyen mappa"
 
-#: ../camel/camel-vee-store.c:477
+#: ../camel/camel-vee-store.c:471
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Nem sikerült átnevezni a mappát: %s: Nincs ilyen mappa"
 
-#: ../camel/camel-vee-store.c:539
+#: ../camel/camel-vee-store.c:533
 msgid "Enable _Unmatched folder"
 msgstr "A „_Ki nem válogatott” mappa engedélyezése"
 
-#: ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-vtrash-folder.c:46
 msgid "Cannot copy messages to the Trash folder"
 msgstr "Nem lehet átmásolni az üzeneteket a Kuka mappába"
 
-#: ../camel/camel-vtrash-folder.c:49
+#: ../camel/camel-vtrash-folder.c:48
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nem lehet átmásolni az üzeneteket a Levélszemét mappába"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:687
+#: ../camel/providers/imapx/camel-imapx-folder.c:792
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "Nem érhetők el kvótainformációk a(z) „%s” mappához"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:801
-#: ../camel/providers/imapx/camel-imapx-folder.c:894
+#: ../camel/providers/imapx/camel-imapx-folder.c:932
+#: ../camel/providers/imapx/camel-imapx-folder.c:1025
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nincs megadva célmappa"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:829
+#: ../camel/providers/imapx/camel-imapx-folder.c:960
 msgid "Unable to move junk messages"
 msgstr "Nem lehet áthelyezni a levélszemetet "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:922
+#: ../camel/providers/imapx/camel-imapx-folder.c:1053
 msgid "Unable to move deleted messages"
 msgstr "Nem lehet áthelyezni a törölt leveleket "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1148
-#: ../camel/providers/nntp/camel-nntp-folder.c:758
+#: ../camel/providers/imapx/camel-imapx-folder.c:1370
+#: ../camel/providers/nntp/camel-nntp-folder.c:760
 msgid "Apply message _filters to this folder"
 msgstr "Ü_zenetszűrők alkalmazása erre a mappába"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1254
+#: ../camel/providers/imapx/camel-imapx-folder.c:1481
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nem sikerült létrehozni %s mappa-összefoglalóját"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1263
+#: ../camel/providers/imapx/camel-imapx-folder.c:1490
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nem lehet létrehozni a gyorsítótárat ehhez: %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1448
+#: ../camel/providers/imapx/camel-imapx-folder.c:1705
 #, c-format
-#| msgid "No quota information available for folder '%s'"
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "Nem érhető el IMAP postafiók a(z) „%s” mappához"
 
-#: ../camel/providers/imapx/camel-imapx-input-stream.c:92
+#: ../camel/providers/imapx/camel-imapx-input-stream.c:93
 #, c-format
 msgid "Source stream returned no data"
 msgstr "A forrás adatfolyam nem adott vissza adatokat"
@@ -3131,328 +3109,346 @@ msgid "_Listen for server change notifications"
 msgstr "_Kiszolgáló változásértesítéseinek figyelése"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:49
-#: ../camel/providers/nntp/camel-nntp-provider.c:44
+#| msgid "Lost connection to IMAP server"
+msgid "Connection to Server"
+msgstr "Kapcsolat a kiszolgálóhoz"
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:51
+msgid "Numbe_r of concurrent connections to use"
+msgstr "_Használandó egyidejű kapcsolatok száma"
+
+#: ../camel/providers/imapx/camel-imapx-provider.c:54
+#: ../camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Folders"
 msgstr "Mappák"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:51
+#: ../camel/providers/imapx/camel-imapx-provider.c:56
 msgid "_Show only subscribed folders"
 msgstr "Csak a _feliratkozott mappák megjelenítése"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:54
+#: ../camel/providers/imapx/camel-imapx-provider.c:59
 msgid "O_verride server-supplied folder namespace"
 msgstr "Kiszolgáló által _nyújtott mappanévtér felülbírálata"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:56
+#: ../camel/providers/imapx/camel-imapx-provider.c:61
 msgid "Namespace:"
 msgstr "Névtér:"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:59
+#: ../camel/providers/imapx/camel-imapx-provider.c:64
 #: ../camel/providers/local/camel-local-provider.c:39
 #: ../camel/providers/local/camel-local-provider.c:79
 #: ../camel/providers/local/camel-local-provider.c:99
-#: ../camel/providers/nntp/camel-nntp-provider.c:39
+#: ../camel/providers/nntp/camel-nntp-provider.c:38
 msgid "Options"
 msgstr "Beállítások"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:61
-#: ../camel/providers/nntp/camel-nntp-provider.c:41
+#: ../camel/providers/imapx/camel-imapx-provider.c:66
+#: ../camel/providers/nntp/camel-nntp-provider.c:40
 msgid "Apply _filters to new messages in all folders"
 msgstr "Szűrők _alkalmazása az új levelekre minden mappában"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:63
+#: ../camel/providers/imapx/camel-imapx-provider.c:68
 msgid "_Apply filters to new messages in Inbox on this server"
 msgstr ""
 "_Szűrők alkalmazása az új levelekre ezen kiszolgáló Beérkezett üzenetek "
 "mappájában"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:65
+#: ../camel/providers/imapx/camel-imapx-provider.c:70
 msgid "Check new messages for _Junk contents"
 msgstr "_Levélszemét keresése az új levelek között"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:67
-msgid "Only check for Junk messages in the IN_BOX folder"
+#: ../camel/providers/imapx/camel-imapx-provider.c:72
+#| msgid "Only check for Junk messages in the IN_BOX folder"
+msgid "Only check for Junk messages in the In_box folder"
 msgstr "Levélsze_mét keresése csak a Beérkezett üzenetek mappában"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:69
-msgid "Automatically synchroni_ze remote mail locally"
-msgstr "Tá_voli levelek automatikus szinkronizálása a helyiekkel"
+#: ../camel/providers/imapx/camel-imapx-provider.c:74
+#| msgid "Automatically synchroni_ze remote mail locally"
+msgid "Synchroni_ze remote mail locally in all folders"
+msgstr "Távoli levelek s_zinkronizálása a helyiekkel minden mappában"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:75
+#: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Default IMAP port"
 msgstr "Alap IMAP port"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:76
+#: ../camel/providers/imapx/camel-imapx-provider.c:81
 msgid "IMAP over SSL"
 msgstr "IMAP SSL felett"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:83
+#: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../camel/providers/imapx/camel-imapx-provider.c:85
+#: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Levelek olvasására és tárolására IMAP kiszolgálókon."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:844
+#: ../camel/providers/imapx/camel-imapx-server.c:1009
+#: ../camel/providers/imapx/camel-imapx-server.c:1016
 #, c-format
 msgid "Not authenticated"
 msgstr "Nincs hitelesítve"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1773
+#: ../camel/providers/imapx/camel-imapx-server.c:1713
 msgid "Server disconnected"
 msgstr "A kiszolgáló leválasztva"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2255
+#: ../camel/providers/imapx/camel-imapx-server.c:2204
 msgid "Error writing to cache stream"
 msgstr "Hiba a gyorsítótár-adatfolyam írása közben"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3672
+#: ../camel/providers/imapx/camel-imapx-server.c:3543
 msgid "Error performing IDLE"
 msgstr "Hiba az IDLE végrehajtása közben"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4661
+#: ../camel/providers/imapx/camel-imapx-server.c:4534
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Nem sikerült biztonságos kapcsolattal kapcsolódni a(z) %s IMAP "
 "kiszolgálóhoz: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4662
-#: ../camel/providers/smtp/camel-smtp-transport.c:215
+#: ../camel/providers/imapx/camel-imapx-server.c:4535
+#: ../camel/providers/smtp/camel-smtp-transport.c:214
 msgid "STARTTLS not supported"
 msgstr "A STARTTLS nem támogatott"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4722
+#: ../camel/providers/imapx/camel-imapx-server.c:4595
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr ""
 "Nem sikerült biztonságos kapcsolattal kapcsolódni a(z) %s IMAP "
 "kiszolgálóhoz: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4803
+#: ../camel/providers/imapx/camel-imapx-server.c:4684
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP kiszolgáló nem támogatja a(z) %s hitelesítési típust"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4833
-#: ../camel/providers/nntp/camel-nntp-store.c:394
-#: ../camel/providers/nntp/camel-nntp-store.c:531
+#: ../camel/providers/imapx/camel-imapx-server.c:4714
+#: ../camel/providers/nntp/camel-nntp-store.c:393
+#: ../camel/providers/nntp/camel-nntp-store.c:530
 msgid "Cannot authenticate without a username"
 msgstr "Nem lehet felhasználónév nélkül hitelesíteni"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4842
-#: ../camel/providers/nntp/camel-nntp-store.c:540
-#: ../camel/providers/pop3/camel-pop3-store.c:678
-#: ../camel/providers/pop3/camel-pop3-store.c:699
+#: ../camel/providers/imapx/camel-imapx-server.c:4723
+#: ../camel/providers/nntp/camel-nntp-store.c:539
+#: ../camel/providers/pop3/camel-pop3-store.c:676
+#: ../camel/providers/pop3/camel-pop3-store.c:697
 msgid "Authentication password not available"
 msgstr "A hitelesítési jelszó nem érhető el"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5093
+#: ../camel/providers/imapx/camel-imapx-server.c:4959
+#: ../camel/providers/imapx/camel-imapx-server.c:5018
 msgid "Error fetching message"
 msgstr "Hiba a levél lekérésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5139
+#: ../camel/providers/imapx/camel-imapx-server.c:5011
 msgid "Failed to close the tmp stream"
 msgstr "Az ideiglenes adatfolyam lezárása meghiúsult"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5168
+#: ../camel/providers/imapx/camel-imapx-server.c:5047
 msgid "Failed to copy the tmp file"
 msgstr "Az ideiglenes fájl másolása meghiúsult"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5294
+#: ../camel/providers/imapx/camel-imapx-server.c:5188
 msgid "Error moving messages"
 msgstr "Hiba az üzenetek mozgatásakor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5298
+#: ../camel/providers/imapx/camel-imapx-server.c:5192
 msgid "Error copying messages"
 msgstr "Hiba a levelek másolásakor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5520
+#: ../camel/providers/imapx/camel-imapx-server.c:5414
 msgid "Error appending message"
 msgstr "Hiba az üzenet hozzáfűzésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5756
+#: ../camel/providers/imapx/camel-imapx-server.c:5650
 msgid "Error fetching message headers"
 msgstr "Hiba a levélfejlécek lekérésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5921
+#: ../camel/providers/imapx/camel-imapx-server.c:5815
 msgid "Error retrieving message"
 msgstr "Hiba a levél letöltése közben"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6051
-#: ../camel/providers/imapx/camel-imapx-server.c:6274
+#: ../camel/providers/imapx/camel-imapx-server.c:5945
+#: ../camel/providers/imapx/camel-imapx-server.c:6168
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Összefoglaló adatok letöltése az új levelekhez ebben: „%s”"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6103
+#: ../camel/providers/imapx/camel-imapx-server.c:5997
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Megváltozott levelek keresése ebben: „%s”"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6155
+#: ../camel/providers/imapx/camel-imapx-server.c:6049
 msgid "Error fetching new messages"
 msgstr "Hiba az új levelek lekérésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6423
+#: ../camel/providers/imapx/camel-imapx-server.c:6316
 msgid "Error refreshing folder"
 msgstr "Hiba a mappa frissítése közben"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6573
+#: ../camel/providers/imapx/camel-imapx-server.c:6466
 msgid "Error expunging message"
 msgstr "Hiba a levél törlésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6682
-#: ../camel/providers/imapx/camel-imapx-server.c:6707
+#: ../camel/providers/imapx/camel-imapx-server.c:6575
+#: ../camel/providers/imapx/camel-imapx-server.c:6600
 msgid "Error fetching folders"
 msgstr "Hiba a mappák lekérésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6787
+#: ../camel/providers/imapx/camel-imapx-server.c:6680
 msgid "Error creating folder"
 msgstr "Hiba a mappa létrehozásakor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6839
+#: ../camel/providers/imapx/camel-imapx-server.c:6732
 msgid "Error deleting folder"
 msgstr "Hiba a mappa törlésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6906
+#: ../camel/providers/imapx/camel-imapx-server.c:6808
 msgid "Error renaming folder"
 msgstr "Hiba a mappa átnevezésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6993
+#: ../camel/providers/imapx/camel-imapx-server.c:6882
 msgid "Error subscribing to folder"
 msgstr "Hiba a mappára feliratkozáskor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7053
-#| msgid "Error subscribing to folder"
+#: ../camel/providers/imapx/camel-imapx-server.c:6948
 msgid "Error unsubscribing from folder"
 msgstr "Hiba a mappáról leiratkozáskor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7109
+#: ../camel/providers/imapx/camel-imapx-server.c:7010
 msgid "Error retrieving quota information"
 msgstr "Hiba a kvótainformációk lekérésekor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7161
+#: ../camel/providers/imapx/camel-imapx-server.c:7062
 msgid "Search failed"
 msgstr "A keresés sikertelen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7223
+#: ../camel/providers/imapx/camel-imapx-server.c:7124
 msgid "Error performing NOOP"
 msgstr "Hiba a NOOP végrehajtásakor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7330
+#: ../camel/providers/imapx/camel-imapx-server.c:7231
 msgid "Error syncing changes"
 msgstr "Hiba a változások szinkronizálásakor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8441
+#: ../camel/providers/imapx/camel-imapx-server.c:8213
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nem lehet letölteni a(z) %s azonosítójú levelet: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8442
+#: ../camel/providers/imapx/camel-imapx-server.c:8214
 msgid "No such message available."
 msgstr "Nincs ilyen üzenet."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8640
-#: ../camel/providers/imapx/camel-imapx-server.c:8661
+#: ../camel/providers/imapx/camel-imapx-server.c:8421
+#: ../camel/providers/imapx/camel-imapx-server.c:8442
 msgid "Cannot create spool file: "
 msgstr "Nem lehet létrehozni a várólistafájlt: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9403
+#: ../camel/providers/imapx/camel-imapx-server.c:9183
 msgid "IMAP server does not support quotas"
 msgstr "Az IMAP kiszolgáló nem támogatja a kvótákat"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imapx/camel-imapx-store.c:207
+#: ../camel/providers/imapx/camel-imapx-store.c:223
 #: ../camel/providers/local/camel-maildir-folder.c:482
 #: ../camel/providers/local/camel-maildir-store.c:322
-#: ../camel/providers/local/camel-maildir-store.c:764
-#: ../camel/providers/local/camel-maildir-store.c:770
-#: ../camel/providers/local/camel-maildir-store.c:853
+#: ../camel/providers/local/camel-maildir-store.c:784
+#: ../camel/providers/local/camel-maildir-store.c:790
+#: ../camel/providers/local/camel-maildir-store.c:873
 #: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
 msgstr "Beérkezett üzenetek"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:823
+#: ../camel/providers/imapx/camel-imapx-store.c:758
 #, c-format
 msgid "IMAP server %s"
 msgstr "%s IMAP kiszolgáló"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:826
+#: ../camel/providers/imapx/camel-imapx-store.c:761
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP szolgáltatás a következőnek %s, ezen a címen: %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1035
-#: ../camel/providers/nntp/camel-nntp-provider.c:93
-#: ../camel/providers/pop3/camel-pop3-provider.c:81
+#: ../camel/providers/imapx/camel-imapx-store.c:836
+#: ../camel/providers/nntp/camel-nntp-provider.c:92
+#: ../camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Jelszó"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1037
+#: ../camel/providers/imapx/camel-imapx-store.c:838
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Ez a beállítás egyszerű szöveges jelszó használatával létesít kapcsolatot az "
 "IMAP kiszolgálóval."
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1112
+#: ../camel/providers/imapx/camel-imapx-store.c:913
 #, c-format
 msgid "No such folder %s"
 msgstr "Nincs %s nevű mappa"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1507
+#: ../camel/providers/imapx/camel-imapx-store.c:1324
 #, c-format
 msgid "No IMAP namespace for folder path '%s'"
 msgstr "Nem található IMAP névtér a(z) „%s” mappaútvonalhoz"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1656
+#: ../camel/providers/imapx/camel-imapx-store.c:1472
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "%s mappalistájának lekérése"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2094
+#: ../camel/providers/imapx/camel-imapx-store.c:1924
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "A mappanév „%s”  nem érvényes, mert a(z) „%c” karaktert tartalmazza"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2615
-#: ../camel/providers/nntp/camel-nntp-store.c:1250
-#: ../camel/providers/pop3/camel-pop3-folder.c:450
-#: ../camel/providers/pop3/camel-pop3-folder.c:593
-#: ../camel/providers/pop3/camel-pop3-folder.c:789
-#: ../camel/providers/pop3/camel-pop3-folder.c:987
-#: ../camel/providers/pop3/camel-pop3-store.c:299
-#: ../camel/providers/pop3/camel-pop3-store.c:528
-#: ../camel/providers/pop3/camel-pop3-store.c:576
-#: ../camel/providers/pop3/camel-pop3-store.c:668
-#: ../camel/providers/pop3/camel-pop3-store.c:1072
+#: ../camel/providers/imapx/camel-imapx-store.c:2689
+#: ../camel/providers/nntp/camel-nntp-store.c:1249
+#: ../camel/providers/pop3/camel-pop3-folder.c:448
+#: ../camel/providers/pop3/camel-pop3-folder.c:591
+#: ../camel/providers/pop3/camel-pop3-folder.c:787
+#: ../camel/providers/pop3/camel-pop3-folder.c:985
+#: ../camel/providers/pop3/camel-pop3-store.c:297
+#: ../camel/providers/pop3/camel-pop3-store.c:526
+#: ../camel/providers/pop3/camel-pop3-store.c:574
+#: ../camel/providers/pop3/camel-pop3-store.c:666
+#: ../camel/providers/pop3/camel-pop3-store.c:1070
 #, c-format
 msgid "You must be working online to complete this operation"
 msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkeznie"
 
-#: ../camel/providers/local/camel-local-folder.c:192
+#: ../camel/providers/imapx/camel-imapx-store.c:2694
+#, c-format
+#| msgid "You must be working online to complete this operation"
+msgid "You must be working online to complete this operation (%s)"
+msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkeznie (%s)"
+
+#: ../camel/providers/local/camel-local-folder.c:191
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:202
-#: ../camel/providers/local/camel-local-folder.c:211
+#: ../camel/providers/local/camel-local-folder.c:201
+#: ../camel/providers/local/camel-local-folder.c:210
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "postafiók: %s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:220
+#: ../camel/providers/local/camel-local-folder.c:219
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:497
+#: ../camel/providers/local/camel-local-folder.c:496
 msgid "_Index message body data"
 msgstr "_Levéltörzs adatainak indexelése"
 
-#: ../camel/providers/local/camel-local-folder.c:725
+#: ../camel/providers/local/camel-local-folder.c:726
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3603,7 +3599,7 @@ msgstr "Nem lehet átvinni az üzenetet a cél mappába: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:130
 #: ../camel/providers/local/camel-maildir-store.c:149
-#: ../camel/providers/local/camel-maildir-store.c:861
+#: ../camel/providers/local/camel-maildir-store.c:881
 #, c-format
 msgid "Folder %s already exists"
 msgstr "A mappa (%s) már létezik"
@@ -3646,8 +3642,8 @@ msgstr "Nem sikerült törölni a mappát: „%s”: %s"
 msgid "not a maildir directory"
 msgstr "nem maildir könyvtár"
 
-#: ../camel/providers/local/camel-maildir-store.c:636
-#: ../camel/providers/local/camel-maildir-store.c:1075
+#: ../camel/providers/local/camel-maildir-store.c:637
+#: ../camel/providers/local/camel-maildir-store.c:1095
 #: ../camel/providers/local/camel-spool-store.c:212
 #: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
@@ -3668,10 +3664,10 @@ msgstr "Mappa konzisztenciájának ellenőrzése"
 msgid "Checking for new messages"
 msgstr "Új levelek keresése"
 
-#: ../camel/providers/local/camel-maildir-summary.c:784
+#: ../camel/providers/local/camel-maildir-summary.c:791
 #: ../camel/providers/local/camel-mbox-summary.c:466
-#: ../camel/providers/local/camel-mbox-summary.c:682
-#: ../camel/providers/local/camel-mbox-summary.c:831
+#: ../camel/providers/local/camel-mbox-summary.c:687
+#: ../camel/providers/local/camel-mbox-summary.c:836
 #: ../camel/providers/local/camel-spool-summary.c:139
 msgid "Storing folder"
 msgstr "Mappa tárolása"
@@ -3768,73 +3764,73 @@ msgstr "A(z) „%s” nem nevezhető át %s névre: %s"
 msgid "Could not open folder: %s: %s"
 msgstr "Nem sikerült megnyitni a mappát: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:606
+#: ../camel/providers/local/camel-mbox-summary.c:611
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Nem sikerült ellenőrizni a mappát: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:695
-#: ../camel/providers/local/camel-mbox-summary.c:840
+#: ../camel/providers/local/camel-mbox-summary.c:700
+#: ../camel/providers/local/camel-mbox-summary.c:845
 #: ../camel/providers/local/camel-spool-summary.c:146
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Nem sikerült megnyitni ezt a fájlt: %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:710
+#: ../camel/providers/local/camel-mbox-summary.c:715
 #: ../camel/providers/local/camel-spool-summary.c:161
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Nem sikerült megnyitni az ideiglenes postafiókot: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:727
-#: ../camel/providers/local/camel-mbox-summary.c:962
+#: ../camel/providers/local/camel-mbox-summary.c:732
+#: ../camel/providers/local/camel-mbox-summary.c:967
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Nem sikerült lezárni a forrásmappát %s: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:740
+#: ../camel/providers/local/camel-mbox-summary.c:745
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Nem sikerült bezárni az ideiglenes mappát: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:759
+#: ../camel/providers/local/camel-mbox-summary.c:764
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Nem sikerült átnevezni ezt a mappát: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:854
-#: ../camel/providers/local/camel-mbox-summary.c:1127
+#: ../camel/providers/local/camel-mbox-summary.c:859
+#: ../camel/providers/local/camel-mbox-summary.c:1132
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Nem sikerült tárolni ezt a mappát: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:893
-#: ../camel/providers/local/camel-mbox-summary.c:1167
+#: ../camel/providers/local/camel-mbox-summary.c:898
+#: ../camel/providers/local/camel-mbox-summary.c:1172
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
 "it.)"
 msgstr "Az MBOX fájl sérült, javítsa. A várt From sor nem található."
 
-#: ../camel/providers/local/camel-mbox-summary.c:903
-#: ../camel/providers/local/camel-mbox-summary.c:1179
+#: ../camel/providers/local/camel-mbox-summary.c:908
+#: ../camel/providers/local/camel-mbox-summary.c:1184
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Az összefoglaló és a mappa eltér, még szinkronizálás után is"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1072
+#: ../camel/providers/local/camel-mbox-summary.c:1077
 #: ../camel/providers/local/camel-spool-summary.c:356
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Ismeretlen hiba: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1237
-#: ../camel/providers/local/camel-mbox-summary.c:1267
+#: ../camel/providers/local/camel-mbox-summary.c:1242
+#: ../camel/providers/local/camel-mbox-summary.c:1272
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Az írás meghiúsult az ideiglenes postafiókba: %s"
 
-#: ../camel/providers/local/camel-mbox-summary.c:1256
+#: ../camel/providers/local/camel-mbox-summary.c:1261
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Az írás meghiúsult az ideiglenes postafiókba: %s: %s"
@@ -3955,24 +3951,24 @@ msgstr ""
 "A mappa sérült lehet, másolat mentve ide: „%s”"
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:222
-#: ../camel/providers/nntp/camel-nntp-folder.c:588
+#: ../camel/providers/nntp/camel-nntp-folder.c:590
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Belső hiba: az UID érvénytelen formátumú: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:291
-#: ../camel/providers/nntp/camel-nntp-folder.c:296
-#: ../camel/providers/pop3/camel-pop3-folder.c:546
-#: ../camel/providers/pop3/camel-pop3-folder.c:945
+#: ../camel/providers/nntp/camel-nntp-folder.c:292
+#: ../camel/providers/nntp/camel-nntp-folder.c:297
+#: ../camel/providers/pop3/camel-pop3-folder.c:544
+#: ../camel/providers/pop3/camel-pop3-folder.c:943
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Nem sikerült betölteni a levelet: %s: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:303
-#: ../camel/providers/nntp/camel-nntp-folder.c:622
-#: ../camel/providers/pop3/camel-pop3-folder.c:476
-#: ../camel/providers/pop3/camel-pop3-folder.c:536
-#: ../camel/providers/pop3/camel-pop3-folder.c:555
+#: ../camel/providers/nntp/camel-nntp-folder.c:304
+#: ../camel/providers/nntp/camel-nntp-folder.c:624
+#: ../camel/providers/pop3/camel-pop3-folder.c:474
+#: ../camel/providers/pop3/camel-pop3-folder.c:534
+#: ../camel/providers/pop3/camel-pop3-folder.c:553
 #, c-format
 msgid "Cannot get message %s: "
 msgstr "Nem sikerült letölteni a levelet: %s: "
@@ -3983,77 +3979,76 @@ msgstr "Nem sikerült letölteni a levelet: %s: "
 msgid "Posting failed: %s"
 msgstr "Küldés sikertelen: %s"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:501
+#: ../camel/providers/nntp/camel-nntp-folder.c:503
 msgid "Posting failed: "
 msgstr "Küldés sikertelen: "
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:611
+#: ../camel/providers/nntp/camel-nntp-folder.c:613
 #, c-format
 msgid "This message is not currently available"
 msgstr "Ez az üzenet jelenleg nem érhető el"
 
-#: ../camel/providers/nntp/camel-nntp-folder.c:720
+#: ../camel/providers/nntp/camel-nntp-folder.c:722
 #, c-format
-#| msgid "You cannot copy messages from a NNTP folder!"
 msgid "You cannot copy messages from a NNTP folder"
 msgstr "Nem másolhat leveleket egy NNTP mappából"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:46
+#: ../camel/providers/nntp/camel-nntp-provider.c:45
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
 "Mappák mutatása _rövid jelöléssel (például: c.o.linux a comp.os.linux "
 "helyett)"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:49
+#: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "A _feliratkozási párbeszédablakban relatív mappanevek mutatása"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:55
+#: ../camel/providers/nntp/camel-nntp-provider.c:54
 msgid "Default NNTP port"
 msgstr "Alap NNTP port"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:56
+#: ../camel/providers/nntp/camel-nntp-provider.c:55
 msgid "NNTP over SSL"
 msgstr "NNTP SSL felett"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:62
+#: ../camel/providers/nntp/camel-nntp-provider.c:61
 msgid "USENET news"
 msgstr "USENET hírcsoportok"
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:64
+#: ../camel/providers/nntp/camel-nntp-provider.c:63
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "Ez egy szolgáltató a USENET hírcsoportok írásához és olvasásához."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:85
+#: ../camel/providers/nntp/camel-nntp-provider.c:84
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
 msgstr "Hitelesítés nélkül, névtelenül kapcsolódik az NNTP kiszolgálóhoz."
 
-#: ../camel/providers/nntp/camel-nntp-provider.c:95
+#: ../camel/providers/nntp/camel-nntp-provider.c:94
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
 "Ez a beállítás egyszerű szöveges jelszót használ az NNTP kiszolgálóhoz."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:371
+#: ../camel/providers/nntp/camel-nntp-store.c:370
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "Nem sikerült az üdvözlést elolvasni innen: %s: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:379
+#: ../camel/providers/nntp/camel-nntp-store.c:378
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "A(z) %s NNTP kiszolgáló %d hibakódot adott vissza: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:449
+#: ../camel/providers/nntp/camel-nntp-store.c:448
 #, c-format
 msgid "USENET News via %s"
 msgstr "USENET hírcsoportok innen: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1151
+#: ../camel/providers/nntp/camel-nntp-store.c:1150
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4064,22 +4059,22 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1267
+#: ../camel/providers/nntp/camel-nntp-store.c:1266
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Nem hozhat létre mappát hírcsoportban, inkább iratkozzon fel."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1283
+#: ../camel/providers/nntp/camel-nntp-store.c:1282
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Nem nevezhet át egy mappát egy hírcsoportban."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1306
+#: ../camel/providers/nntp/camel-nntp-store.c:1305
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr "Nem törölhet mappát a hírcsoportban, inkább iratkozzon le."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1516
+#: ../camel/providers/nntp/camel-nntp-store.c:1515
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4090,7 +4085,7 @@ msgstr ""
 "\n"
 "Nincs ilyen hírcsoport. A kiválasztott elem valószínűleg egy szülőmappa."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1583
+#: ../camel/providers/nntp/camel-nntp-store.c:1582
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4101,16 +4096,16 @@ msgstr ""
 "\n"
 "hírcsoport nem létezik!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2009
+#: ../camel/providers/nntp/camel-nntp-store.c:2008
 msgid "NNTP Command failed: "
 msgstr "Az NNTP parancs sikertelen: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2106
+#: ../camel/providers/nntp/camel-nntp-store.c:2105
 #, c-format
 msgid "Not connected."
 msgstr "Nincs kapcsolat."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2200
+#: ../camel/providers/nntp/camel-nntp-store.c:2199
 #, c-format
 msgid "No such folder: %s"
 msgstr "Nincs ilyen mappa: %s"
@@ -4136,81 +4131,81 @@ msgstr "Váratlan kiszolgálóválasz a head részéről: %s"
 msgid "Operation failed: %s"
 msgstr "Művelet sikertelen: %s"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:359
-#: ../camel/providers/pop3/camel-pop3-folder.c:442
+#: ../camel/providers/pop3/camel-pop3-folder.c:357
+#: ../camel/providers/pop3/camel-pop3-folder.c:440
 #, c-format
 msgid "No message with UID %s"
 msgstr "Nincs %s felhasználóazonosítójú levél"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:458
+#: ../camel/providers/pop3/camel-pop3-folder.c:456
 #, c-format
 msgid "Retrieving POP message %d"
 msgstr "%d. POP-levél letöltése"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:547
+#: ../camel/providers/pop3/camel-pop3-folder.c:545
 msgid "Unknown reason"
 msgstr "Ismeretlen ok"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:598
+#: ../camel/providers/pop3/camel-pop3-folder.c:596
 msgid "Retrieving POP summary"
 msgstr "POP-összefoglaló letöltése"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:659
-#: ../camel/providers/pop3/camel-pop3-folder.c:662
-#: ../camel/providers/pop3/camel-pop3-folder.c:675
-#: ../camel/providers/pop3/camel-pop3-folder.c:688
-#: ../camel/providers/pop3/camel-pop3-folder.c:702
+#: ../camel/providers/pop3/camel-pop3-folder.c:657
+#: ../camel/providers/pop3/camel-pop3-folder.c:660
+#: ../camel/providers/pop3/camel-pop3-folder.c:673
+#: ../camel/providers/pop3/camel-pop3-folder.c:686
+#: ../camel/providers/pop3/camel-pop3-folder.c:700
 msgid "Cannot get POP summary: "
 msgstr "Nem sikerült letölteni a POP-összefoglalót: "
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:766
+#: ../camel/providers/pop3/camel-pop3-folder.c:764
 msgid "Expunging old messages"
 msgstr "Régi levelek eltávolítása"
 
-#: ../camel/providers/pop3/camel-pop3-folder.c:794
+#: ../camel/providers/pop3/camel-pop3-folder.c:792
 msgid "Expunging deleted messages"
 msgstr "A törlésre kijelölt levelek eltávolítása"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:37
+#: ../camel/providers/pop3/camel-pop3-provider.c:36
 msgid "Message Storage"
 msgstr "Levéltároló"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:39
+#: ../camel/providers/pop3/camel-pop3-provider.c:38
 msgid "_Leave messages on server"
 msgstr "Üzenetek _megtartása a kiszolgálón"
 
 #. Translators: '%s' is replaced with a widget, where user can
 #. * select how many days can be message left on the server.
-#: ../camel/providers/pop3/camel-pop3-provider.c:43
+#: ../camel/providers/pop3/camel-pop3-provider.c:42
 #, c-format
 msgid "_Delete after %s day(s)"
 msgstr "_Törlés %s nap után"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:45
+#: ../camel/providers/pop3/camel-pop3-provider.c:44
 msgid "Delete _expunged from local Inbox"
 msgstr "Tisztítottak törlése a _helyi Érkezett mappából"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:47
+#: ../camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable _support for all POP3 extensions"
 msgstr "Minden P_OP3-kiterjesztés tiltása"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:53
+#: ../camel/providers/pop3/camel-pop3-provider.c:52
 msgid "Default POP3 port"
 msgstr "Alap POP3 port"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:54
+#: ../camel/providers/pop3/camel-pop3-provider.c:53
 msgid "POP3 over SSL"
 msgstr "POP3 SSL felett"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:61
+#: ../camel/providers/pop3/camel-pop3-provider.c:60
 msgid "POP"
 msgstr "POP"
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:63
+#: ../camel/providers/pop3/camel-pop3-provider.c:62
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "Csatlakozás és a levelek letöltése POP-kiszolgálókról."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:83
+#: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4218,7 +4213,7 @@ msgstr ""
 "Ez a beállítás egyszerű szöveges jelszóval kapcsolódik a POP-kiszolgálóhoz. "
 "Sok POP-kiszolgáló csak ezt a módot támogatja."
 
-#: ../camel/providers/pop3/camel-pop3-provider.c:93
+#: ../camel/providers/pop3/camel-pop3-provider.c:92
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -4230,59 +4225,59 @@ msgstr ""
 "támogatják."
 
 #. Translators: This is the separator between an error and an explanation
-#: ../camel/providers/pop3/camel-pop3-store.c:97
+#: ../camel/providers/pop3/camel-pop3-store.c:95
 msgid ": "
 msgstr ": "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:164
+#: ../camel/providers/pop3/camel-pop3-store.c:162
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
 msgstr "Nem sikerült érvényes üdvözlést olvasni a(z) %s POP kiszolgálón"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:179
+#: ../camel/providers/pop3/camel-pop3-store.c:177
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
 msgstr ""
 "Nem sikerült biztonságos módon kapcsolódni a(z) %s POP-kiszolgálóhoz: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:180
+#: ../camel/providers/pop3/camel-pop3-store.c:178
 msgid "STLS not supported by server"
 msgstr "A kiszolgáló nem támogatja az STLS-t"
 
 #. Translators: Last %s is an optional
 #. * explanation beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:201
+#: ../camel/providers/pop3/camel-pop3-store.c:199
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
 msgstr "Nem sikerült biztonságos módon kapcsolódni a(z) %s POP-kiszolgálóhoz%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:219
+#: ../camel/providers/pop3/camel-pop3-store.c:217
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
 msgstr "Nem sikerült biztonságos módon kapcsolódni a(z) %s POP-kiszolgálóhoz: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:360
+#: ../camel/providers/pop3/camel-pop3-store.c:358
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
 msgstr ""
 "SASL protokollhiba miatt nem lehet bejelentkezni a(z) %s POP-kiszolgálóra"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:382
+#: ../camel/providers/pop3/camel-pop3-store.c:380
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
 msgstr "Sikertelen hitelesítés a(z) %s POP-kiszolgálón: "
 
-#: ../camel/providers/pop3/camel-pop3-store.c:490
+#: ../camel/providers/pop3/camel-pop3-store.c:488
 #, c-format
 msgid "POP3 server %s"
 msgstr "%s POP3-kiszolgáló"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:493
+#: ../camel/providers/pop3/camel-pop3-store.c:491
 #, c-format
 msgid "POP3 server for %s on %s"
 msgstr "POP3 kiszolgáló ehhez: %s, itt: %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:713
+#: ../camel/providers/pop3/camel-pop3-store.c:711
 #, c-format
 msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
@@ -4292,7 +4287,7 @@ msgstr ""
 "érkezett. Ezt valószínűleg egy személyiséglopási támadás okozza, keresse meg "
 "a rendszergazdát."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:768
+#: ../camel/providers/pop3/camel-pop3-store.c:766
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4303,7 +4298,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:783
+#: ../camel/providers/pop3/camel-pop3-store.c:781
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4312,319 +4307,319 @@ msgstr ""
 "Nem sikerült kapcsolódni a(z) %s POP kiszolgálóhoz.\n"
 "Hiba a felhasználónév küldése közben%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:865
+#: ../camel/providers/pop3/camel-pop3-store.c:863
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Nincs „%s” mappa."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:882
+#: ../camel/providers/pop3/camel-pop3-store.c:880
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "A POP3 tárolók nem rendelkeznek mappahierarchiával"
 
-#: ../camel/providers/sendmail/camel-sendmail-provider.c:34
+#: ../camel/providers/sendmail/camel-sendmail-provider.c:33
 #: ../services/evolution-source-registry/builtin/sendmail.source.in.h:1
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-provider.c:36
+#: ../camel/providers/sendmail/camel-sendmail-provider.c:35
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
 msgstr "Levél kézbesítése a helyi rendszer „sendmail” programjával."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:48
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:46
 msgid "sendmail"
 msgstr "sendmail"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:50
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:48
 msgid "Mail delivery via the sendmail program"
 msgstr "Levélküldés a sendmail programon keresztül"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:138
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:136
 #, c-format
 msgid "Failed to read From address"
 msgstr "Nem sikerült olvasni a feladó címét"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:155
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:153
 #, c-format
 msgid "Message send in offline mode is disabled"
 msgstr "Az üzenet küldése kapcsolat nélküli módban le van tiltva"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:183
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:181
 #, c-format
 msgid "Could not parse recipient list"
 msgstr "Nem sikerült értelmezni a címzettek listáját"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:200
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:198
 #, c-format
 msgid "Could not parse arguments"
 msgstr "Az argumentumok nem dolgozhatók fel"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:231
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
 msgstr ""
 "Nem sikerült adatcsatornát létrehozni ehhez: „%s”: %s: a levél nem ment el"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:256
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:254
 #, c-format
 msgid "Could not fork '%s': %s: mail not sent"
 msgstr "„%s” indítása sikertelen: %s: a levél nem ment el"
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:305
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:303
 msgid "Could not send message: "
 msgstr "Nem sikerült elküldeni a levelet: "
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:335
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:333
 #, c-format
 msgid "'%s' exited with signal %s: mail not sent."
 msgstr "„%s” %s szignállal kilépett: a levél nem ment el."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:345
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:343
 #, c-format
 msgid "Could not execute '%s': mail not sent."
 msgstr "A(z) „%s” végrehajtása meghiúsult: a levél nem ment el."
 
-#: ../camel/providers/sendmail/camel-sendmail-transport.c:350
+#: ../camel/providers/sendmail/camel-sendmail-transport.c:348
 #, c-format
 msgid "'%s' exited with status %d: mail not sent."
 msgstr "„%s” %d állapottal lépett ki: a levél nem ment el."
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:40
+#: ../camel/providers/smtp/camel-smtp-provider.c:39
 msgid "Default SMTP port"
 msgstr "Alap SMTP port"
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:41
+#: ../camel/providers/smtp/camel-smtp-provider.c:40
 msgid "SMTP over SSL"
 msgstr "SMTP SSL felett"
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:42
+#: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "Message submission port"
 msgstr "Üzenetküldési port"
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:48
+#: ../camel/providers/smtp/camel-smtp-provider.c:47
 msgid "SMTP"
 msgstr "SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-provider.c:50
+#: ../camel/providers/smtp/camel-smtp-provider.c:49
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
 "SMTP használata levelek kézbesítéséhez egy távoli levélelosztóhoz "
 "csatlakozással."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:170
-#: ../camel/providers/smtp/camel-smtp-transport.c:178
+#: ../camel/providers/smtp/camel-smtp-transport.c:169
+#: ../camel/providers/smtp/camel-smtp-transport.c:177
 msgid "Welcome response error: "
 msgstr "Hibás üdvözlő válasz: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:214
+#: ../camel/providers/smtp/camel-smtp-transport.c:213
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Sikertelen hitelesített kapcsolódás a(z) %s SMTP kiszolgálóhoz: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:224
-#: ../camel/providers/smtp/camel-smtp-transport.c:238
-#: ../camel/providers/smtp/camel-smtp-transport.c:246
+#: ../camel/providers/smtp/camel-smtp-transport.c:223
+#: ../camel/providers/smtp/camel-smtp-transport.c:237
+#: ../camel/providers/smtp/camel-smtp-transport.c:245
 msgid "STARTTLS command failed: "
 msgstr "A STARTTLS parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:265
+#: ../camel/providers/smtp/camel-smtp-transport.c:264
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Sikertelen hitelesített kapcsolódás a(z) %s SMTP kiszolgálóhoz: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:357
+#: ../camel/providers/smtp/camel-smtp-transport.c:356
 #, c-format
 msgid "SMTP server %s"
 msgstr "%s SMTP kiszolgáló"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:360
+#: ../camel/providers/smtp/camel-smtp-transport.c:359
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP levélküldés %s kiszolgálón keresztül"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:434
+#: ../camel/providers/smtp/camel-smtp-transport.c:433
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "%s SMTP kiszolgáló nem támogatja a(z) %s hitelesítési típust"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:506
+#: ../camel/providers/smtp/camel-smtp-transport.c:505
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Nem adott meg SASL mechanizmust"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:536
-#: ../camel/providers/smtp/camel-smtp-transport.c:547
-#: ../camel/providers/smtp/camel-smtp-transport.c:560
+#: ../camel/providers/smtp/camel-smtp-transport.c:535
+#: ../camel/providers/smtp/camel-smtp-transport.c:546
+#: ../camel/providers/smtp/camel-smtp-transport.c:559
 msgid "AUTH command failed: "
 msgstr "Az AUTH parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:701
+#: ../camel/providers/smtp/camel-smtp-transport.c:700
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Nem küldhető el a levél: a szolgáltatáshoz nincs kapcsolat."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:708
+#: ../camel/providers/smtp/camel-smtp-transport.c:707
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Nem küldhető el a levél: a feladó címe érvénytelen."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:712
+#: ../camel/providers/smtp/camel-smtp-transport.c:711
 msgid "Sending message"
 msgstr "Levél küldése"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:737
+#: ../camel/providers/smtp/camel-smtp-transport.c:736
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Nem küldhető el a levél: nincs címzett."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:750
+#: ../camel/providers/smtp/camel-smtp-transport.c:749
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Nem küldhető el a levél: egy vagy több érvénytelen címzett"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:871
+#: ../camel/providers/smtp/camel-smtp-transport.c:870
 msgid "Syntax error, command unrecognized"
 msgstr "Szintaktikai hiba, ismeretlen parancs"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:873
+#: ../camel/providers/smtp/camel-smtp-transport.c:872
 msgid "Syntax error in parameters or arguments"
 msgstr "Szintaktikai hiba a paraméterekben vagy argumentumokban"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:875
+#: ../camel/providers/smtp/camel-smtp-transport.c:874
 msgid "Command not implemented"
 msgstr "A parancs nincs megvalósítva"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:877
+#: ../camel/providers/smtp/camel-smtp-transport.c:876
 msgid "Command parameter not implemented"
 msgstr "A parancsparaméter nincs megvalósítva"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:879
+#: ../camel/providers/smtp/camel-smtp-transport.c:878
 msgid "System status, or system help reply"
 msgstr "Rendszerállapot, vagy rendszer-segédüzenet"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:881
+#: ../camel/providers/smtp/camel-smtp-transport.c:880
 msgid "Help message"
 msgstr "Segédüzenet"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:883
+#: ../camel/providers/smtp/camel-smtp-transport.c:882
 msgid "Service ready"
 msgstr "Szolgáltatás rendelkezésre áll"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:885
+#: ../camel/providers/smtp/camel-smtp-transport.c:884
 msgid "Service closing transmission channel"
 msgstr "A szolgáltatás lezárja az átviteli csatornát"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:887
+#: ../camel/providers/smtp/camel-smtp-transport.c:886
 msgid "Service not available, closing transmission channel"
 msgstr "A szolgáltatás nem érhető el, az átviteli csatorna lezáródik"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:889
+#: ../camel/providers/smtp/camel-smtp-transport.c:888
 msgid "Requested mail action okay, completed"
 msgstr "A kért levélművelet rendben, befejezve"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:891
+#: ../camel/providers/smtp/camel-smtp-transport.c:890
 msgid "User not local; will forward to <forward-path>"
 msgstr "A felhasználó nem helyi, továbbítás a <forward-path>-ra"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:893
+#: ../camel/providers/smtp/camel-smtp-transport.c:892
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "A kért levélművelet sikertelen: nem érhető el a postafiók"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:895
+#: ../camel/providers/smtp/camel-smtp-transport.c:894
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "A kért művelet sikertelen: nem érhető el a postafiók"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:897
+#: ../camel/providers/smtp/camel-smtp-transport.c:896
 msgid "Requested action aborted: error in processing"
 msgstr "A kért művelet megszakítva: hiba a feldolgozás közben"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:899
+#: ../camel/providers/smtp/camel-smtp-transport.c:898
 msgid "User not local; please try <forward-path>"
 msgstr "Nem helyi felhasználó; próbálja a <forward-path>-t"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:901
+#: ../camel/providers/smtp/camel-smtp-transport.c:900
 msgid "Requested action not taken: insufficient system storage"
 msgstr "A kért művelet sikertelen: elégtelen rendszertárolóhely"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:903
+#: ../camel/providers/smtp/camel-smtp-transport.c:902
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "A kért művelt sikertelen: tárfoglalás túllépése"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:905
+#: ../camel/providers/smtp/camel-smtp-transport.c:904
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "A kért művelet sikertelen: nem engedélyezett postafióknév"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:907
+#: ../camel/providers/smtp/camel-smtp-transport.c:906
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Kezdje el írni a levelet, fejezze be <CRLF>.<CRLF> karakterekkel"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:909
+#: ../camel/providers/smtp/camel-smtp-transport.c:908
 msgid "Transaction failed"
 msgstr "Sikertelen tranzakció"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:913
+#: ../camel/providers/smtp/camel-smtp-transport.c:912
 msgid "A password transition is needed"
 msgstr "Jelszóátvitel szükséges"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:915
+#: ../camel/providers/smtp/camel-smtp-transport.c:914
 msgid "Authentication mechanism is too weak"
 msgstr "A hitelesítési mechanizmus túl gyenge"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:917
+#: ../camel/providers/smtp/camel-smtp-transport.c:916
 msgid "Encryption required for requested authentication mechanism"
 msgstr "A kért hitelesítési mechanizmushoz titkosítás szükséges"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:919
+#: ../camel/providers/smtp/camel-smtp-transport.c:918
 msgid "Temporary authentication failure"
 msgstr "Átmeneti hitelesítési hiba"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1207
+#: ../camel/providers/smtp/camel-smtp-transport.c:1206
 msgid "SMTP Greeting"
 msgstr "SMTP üdvözlet"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1217
-#: ../camel/providers/smtp/camel-smtp-transport.c:1231
-#: ../camel/providers/smtp/camel-smtp-transport.c:1239
+#: ../camel/providers/smtp/camel-smtp-transport.c:1216
+#: ../camel/providers/smtp/camel-smtp-transport.c:1230
+#: ../camel/providers/smtp/camel-smtp-transport.c:1238
 msgid "HELO command failed: "
 msgstr "A HELO parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1314
-#: ../camel/providers/smtp/camel-smtp-transport.c:1329
-#: ../camel/providers/smtp/camel-smtp-transport.c:1339
+#: ../camel/providers/smtp/camel-smtp-transport.c:1313
+#: ../camel/providers/smtp/camel-smtp-transport.c:1328
+#: ../camel/providers/smtp/camel-smtp-transport.c:1338
 msgid "MAIL FROM command failed: "
 msgstr "A MAIL FROM parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1366
+#: ../camel/providers/smtp/camel-smtp-transport.c:1365
 msgid "RCPT TO command failed: "
 msgstr "Az RCPT TO parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1383
-#: ../camel/providers/smtp/camel-smtp-transport.c:1393
+#: ../camel/providers/smtp/camel-smtp-transport.c:1382
+#: ../camel/providers/smtp/camel-smtp-transport.c:1392
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1436
-#: ../camel/providers/smtp/camel-smtp-transport.c:1447
-#: ../camel/providers/smtp/camel-smtp-transport.c:1458
-#: ../camel/providers/smtp/camel-smtp-transport.c:1517
-#: ../camel/providers/smtp/camel-smtp-transport.c:1537
-#: ../camel/providers/smtp/camel-smtp-transport.c:1551
-#: ../camel/providers/smtp/camel-smtp-transport.c:1560
+#: ../camel/providers/smtp/camel-smtp-transport.c:1435
+#: ../camel/providers/smtp/camel-smtp-transport.c:1446
+#: ../camel/providers/smtp/camel-smtp-transport.c:1457
+#: ../camel/providers/smtp/camel-smtp-transport.c:1516
+#: ../camel/providers/smtp/camel-smtp-transport.c:1536
+#: ../camel/providers/smtp/camel-smtp-transport.c:1550
+#: ../camel/providers/smtp/camel-smtp-transport.c:1559
 msgid "DATA command failed: "
 msgstr "A DATA parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1585
-#: ../camel/providers/smtp/camel-smtp-transport.c:1600
-#: ../camel/providers/smtp/camel-smtp-transport.c:1609
+#: ../camel/providers/smtp/camel-smtp-transport.c:1584
+#: ../camel/providers/smtp/camel-smtp-transport.c:1599
+#: ../camel/providers/smtp/camel-smtp-transport.c:1608
 msgid "RSET command failed: "
 msgstr "Az RSET parancs sikertelen: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1634
-#: ../camel/providers/smtp/camel-smtp-transport.c:1648
-#: ../camel/providers/smtp/camel-smtp-transport.c:1655
+#: ../camel/providers/smtp/camel-smtp-transport.c:1633
+#: ../camel/providers/smtp/camel-smtp-transport.c:1647
+#: ../camel/providers/smtp/camel-smtp-transport.c:1654
 msgid "QUIT command failed: "
 msgstr "A QUIT parancs sikertelen: "
 
@@ -4663,7 +4658,6 @@ msgstr ""
 "értékek: „minutes” (perc), „hours” (óra) vagy „days” (nap)"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
-#| msgid "Proxy type to use"
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Elavult) Használandó proxytípus"
 
@@ -4678,62 +4672,50 @@ msgstr ""
 "integrálva. Részletekért lásd az ESourceProxy API dokumentációját."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-#| msgid "Whether to use http-proxy"
 msgid "(Deprecated) Whether to use http-proxy"
 msgstr "(Elavult) Mikor kell http proxyt használni"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
-#| msgid "Whether proxy server requires authentication"
 msgid "(Deprecated) Whether proxy server requires authentication"
 msgstr "(Elavult) A proxy kiszolgáló igényel-e hitelesítést"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-#| msgid "Host name for HTTP requests"
 msgid "(Deprecated) Host name for HTTP requests"
 msgstr "(Elavult) Gépnév a HTTP-kérésekhez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#| msgid "Port number for HTTP requests"
 msgid "(Deprecated) Port number for HTTP requests"
 msgstr "(Elavult) Portszám a HTTP-kérésekhez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-#| msgid "Proxy authentication user name"
 msgid "(Deprecated) Proxy authentication user name"
 msgstr "(Elavult) Felhasználónév a proxy hitelesítéshez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-#| msgid "Proxy authentication password"
 msgid "(Deprecated) Proxy authentication password"
 msgstr "(Elavult) Proxy hitelesítési jelszó"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
-#| msgid "List of hosts to connect to without proxy"
 msgid "(Deprecated) List of hosts to connect to without proxy"
 msgstr "(Elavult) Gépek listája, amelyekhez proxy nélkül kell csatlakozni"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-#| msgid "Host name for HTTPS requests"
 msgid "(Deprecated) Host name for HTTPS requests"
 msgstr "(Elavult) Gépnév a HTTPS-kérésekhez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#| msgid "Port number for HTTPS requests"
 msgid "(Deprecated) Port number for HTTPS requests"
 msgstr "(Elavult) Portszám a HTTPS-kérésekhez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#| msgid "Host name for SOCKS requests"
 msgid "(Deprecated) Host name for SOCKS requests"
 msgstr "(Elavult) Gépnév a SOCKS-kérésekhez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#| msgid "Port number for SOCKS requests"
 msgid "(Deprecated) Port number for SOCKS requests"
 msgstr "(Elavult) Portszám a SOCKS-kérésekhez"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#| msgid "Automatic proxy configuration URL"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Elavult) Automatikus proxybeállítás URL címe"
 
@@ -4772,33 +4754,48 @@ msgstr "A jelszó helytelen volt"
 msgid "%s does not support authentication"
 msgstr "%s nem támogatja a hitelesítést"
 
-#: ../libebackend/e-collection-backend.c:900
+#: ../libebackend/e-collection-backend.c:902
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s nem támogatja távoli erőforrások létrehozását"
 
-#: ../libebackend/e-collection-backend.c:959
+#: ../libebackend/e-collection-backend.c:961
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s nem támogatja távoli erőforrások törlését"
 
-#: ../libebackend/e-data-factory.c:303
+#: ../libebackend/e-data-factory.c:719
 #, c-format
 msgid "No backend factory for hash key '%s'"
 msgstr "Nem található háttérprogramgyár a(z) „%s” kulcshoz"
+
+#: ../libebackend/e-data-factory.c:931
+#, c-format
+msgid "No backend name in source '%s'"
+msgstr "Nem található háttérprogramnév a(z) „%s” forrásban"
+
+#: ../libebackend/e-data-factory.c:1017
+#, c-format
+msgid "Missing source UID"
+msgstr "Hiányzó forrás UID"
+
+#: ../libebackend/e-data-factory.c:1027
+#, c-format
+msgid "No such source for UID '%s'"
+msgstr "Nincs ilyen forrás a(z) „%s” UID-hez"
 
 #: ../libebackend/e-server-side-source.c:133
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Az adatforrásból hiányzik egy [%s] csoport"
 
-#: ../libebackend/e-server-side-source.c:1020
-#: ../libedataserver/e-source.c:1348
+#: ../libebackend/e-server-side-source.c:1022
+#: ../libedataserver/e-source.c:1394
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "A(z) „%s” adatforrás nem támogatja távoli erőforrások létrehozását"
 
-#: ../libebackend/e-server-side-source.c:1034
+#: ../libebackend/e-server-side-source.c:1036
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
@@ -4806,13 +4803,13 @@ msgstr ""
 "A(z) „%s” adatforrás nem rendelkezik adatgyűjtő háttérprogrammal a távoli "
 "erőforrás létrehozásához"
 
-#: ../libebackend/e-server-side-source.c:1062
-#: ../libedataserver/e-source.c:1461
+#: ../libebackend/e-server-side-source.c:1064
+#: ../libedataserver/e-source.c:1507
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "A(z) „%s” adatforrás nem támogatja távoli erőforrások törlését"
 
-#: ../libebackend/e-server-side-source.c:1076
+#: ../libebackend/e-server-side-source.c:1078
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
@@ -4820,24 +4817,24 @@ msgstr ""
 "A(z) „%s” adatforrás nem rendelkezik adatgyűjtő háttérprogrammal a távoli "
 "erőforrás törléséhez"
 
-#: ../libebackend/e-server-side-source.c:1107
-#: ../libedataserver/e-source.c:1557
+#: ../libebackend/e-server-side-source.c:1109
+#: ../libedataserver/e-source.c:1603
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "„%s” adatforrás nem támogatja az OAuth 2.0 hitelesítést"
 
-#: ../libebackend/e-server-side-source.c:1452
+#: ../libebackend/e-server-side-source.c:1456
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "A fájlnak „.source” kiterjesztéssel kell rendelkeznie"
 
-#: ../libebackend/e-source-registry-server.c:531
+#: ../libebackend/e-source-registry-server.c:529
 #: ../libedataserver/e-source-registry.c:1957
 msgid "The user declined to authenticate"
 msgstr "A felhasználó visszautasította a hitelesítést"
 
-#: ../libebackend/e-source-registry-server.c:800
+#: ../libebackend/e-source-registry-server.c:795
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "A(z) „%s” UID már használatban van"
@@ -4847,134 +4844,134 @@ msgstr "A(z) „%s” UID már használatban van"
 msgid "Extension dialog '%s' not found."
 msgstr "A(z) „%s” kiterjesztésablak nem található."
 
-#: ../libedataserver/e-categories.c:48
+#: ../libedataserver/e-categories.c:49
 msgctxt "CategoryName"
 msgid "Anniversary"
 msgstr "Évforduló"
 
-#: ../libedataserver/e-categories.c:49
+#: ../libedataserver/e-categories.c:50
 msgctxt "CategoryName"
 msgid "Birthday"
 msgstr "Születésnap"
 
-#: ../libedataserver/e-categories.c:50
+#: ../libedataserver/e-categories.c:51
 msgctxt "CategoryName"
 msgid "Business"
 msgstr "Üzleti"
 
-#: ../libedataserver/e-categories.c:51
+#: ../libedataserver/e-categories.c:52
 msgctxt "CategoryName"
 msgid "Competition"
 msgstr "Versenytárs"
 
-#: ../libedataserver/e-categories.c:52
+#: ../libedataserver/e-categories.c:53
 msgctxt "CategoryName"
 msgid "Favorites"
 msgstr "Kedvencek"
 
-#: ../libedataserver/e-categories.c:53
+#: ../libedataserver/e-categories.c:54
 msgctxt "CategoryName"
 msgid "Gifts"
 msgstr "Ajándékok"
 
-#: ../libedataserver/e-categories.c:54
+#: ../libedataserver/e-categories.c:55
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
 msgstr "Célok/Célkitűzések"
 
-#: ../libedataserver/e-categories.c:55
+#: ../libedataserver/e-categories.c:56
 msgctxt "CategoryName"
 msgid "Holiday"
 msgstr "Szabadság"
 
-#: ../libedataserver/e-categories.c:56
+#: ../libedataserver/e-categories.c:57
 msgctxt "CategoryName"
 msgid "Holiday Cards"
 msgstr "Üdvözlőlap"
 
 #. important people (e.g. new business partners)
-#: ../libedataserver/e-categories.c:58
+#: ../libedataserver/e-categories.c:59
 msgctxt "CategoryName"
 msgid "Hot Contacts"
 msgstr "Fontos kapcsolatok"
 
-#: ../libedataserver/e-categories.c:59
+#: ../libedataserver/e-categories.c:60
 msgctxt "CategoryName"
 msgid "Ideas"
 msgstr "Ötletek"
 
-#: ../libedataserver/e-categories.c:60
+#: ../libedataserver/e-categories.c:61
 msgctxt "CategoryName"
 msgid "International"
 msgstr "Nemzetközi"
 
-#: ../libedataserver/e-categories.c:61
+#: ../libedataserver/e-categories.c:62
 msgctxt "CategoryName"
 msgid "Key Customer"
 msgstr "Kiemelt ügyfél"
 
-#: ../libedataserver/e-categories.c:62
+#: ../libedataserver/e-categories.c:63
 msgctxt "CategoryName"
 msgid "Miscellaneous"
 msgstr "Egyebek"
 
-#: ../libedataserver/e-categories.c:63
+#: ../libedataserver/e-categories.c:64
 msgctxt "CategoryName"
 msgid "Personal"
 msgstr "Személyes"
 
-#: ../libedataserver/e-categories.c:64
+#: ../libedataserver/e-categories.c:65
 msgctxt "CategoryName"
 msgid "Phone Calls"
 msgstr "Telefonhívások"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
-#: ../libedataserver/e-categories.c:66
+#: ../libedataserver/e-categories.c:67
 msgctxt "CategoryName"
 msgid "Status"
 msgstr "Állapot"
 
-#: ../libedataserver/e-categories.c:67
+#: ../libedataserver/e-categories.c:68
 msgctxt "CategoryName"
 msgid "Strategies"
 msgstr "Stratégiák"
 
-#: ../libedataserver/e-categories.c:68
+#: ../libedataserver/e-categories.c:69
 msgctxt "CategoryName"
 msgid "Suppliers"
 msgstr "Beszállítók"
 
-#: ../libedataserver/e-categories.c:69
+#: ../libedataserver/e-categories.c:70
 msgctxt "CategoryName"
 msgid "Time & Expenses"
 msgstr "Idő és kiadások"
 
-#: ../libedataserver/e-categories.c:70
+#: ../libedataserver/e-categories.c:71
 msgctxt "CategoryName"
 msgid "VIP"
 msgstr "VIP"
 
-#: ../libedataserver/e-categories.c:71
+#: ../libedataserver/e-categories.c:72
 msgctxt "CategoryName"
 msgid "Waiting"
 msgstr "Várakozás"
 
-#: ../libedataserver/e-client.c:141
+#: ../libedataserver/e-client.c:140
 msgid "Source not loaded"
 msgstr "A forrás nincs betöltve"
 
-#: ../libedataserver/e-client.c:143
+#: ../libedataserver/e-client.c:142
 msgid "Source already loaded"
 msgstr "A forrás már be van töltve"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
-#: ../libedataserver/e-client.c:154
+#: ../libedataserver/e-client.c:153
 msgid "Offline unavailable"
 msgstr "Kapcsolat nélkül nem érhető el"
 
-#: ../libedataserver/e-client.c:176
+#: ../libedataserver/e-client.c:175
 msgid "D-Bus error"
 msgstr "D-Bus hiba"
 
@@ -5030,22 +5027,22 @@ msgstr "Adja meg a(z) „%s” feladatlista jelszavát."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Adja meg a(z) „%s” fiók jelszavát."
 
-#: ../libedataserver/e-source.c:765
+#: ../libedataserver/e-source.c:768
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "A forrásfájlból hiányzik egy [%s] csoport"
 
-#: ../libedataserver/e-source.c:1128
+#: ../libedataserver/e-source.c:1174
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "A(z) „%s” adatforrás nem távolítható el"
 
-#: ../libedataserver/e-source.c:1251
+#: ../libedataserver/e-source.c:1297
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "A(z) „%s” adatforrás nem írható"
 
-#: ../libedataserver/e-source.c:1864
+#: ../libedataserver/e-source.c:1910
 msgid "Unnamed"
 msgstr "Névtelen"
 
@@ -5056,11 +5053,10 @@ msgstr "Az aláírás-parancsfájlnak helyi fájlnak kell lennie"
 
 #: ../libedataserver/e-source-proxy.c:1646
 #, c-format
-#| msgid "Data source '%s' does not support creating remote resources"
 msgid "Source '%s' does not support proxy lookups"
 msgstr "A(z) „%s” forrás nem támogatja a proxykikereséseket"
 
-#: ../libedataserver/e-source-webdav.c:1551
+#: ../libedataserver/e-source-webdav.c:1560
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
@@ -5069,7 +5065,7 @@ msgstr ""
 "A(z) „%s” gép a(z) „%s” címjegyzék által használt SSL-tanúsítványa nem "
 "megbízható. El szeretné fogadni?"
 
-#: ../libedataserver/e-source-webdav.c:1560
+#: ../libedataserver/e-source-webdav.c:1569
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
@@ -5078,7 +5074,7 @@ msgstr ""
 "A(z) „%s” gép a(z) „%s” naptár által használt SSL-tanúsítványa nem "
 "megbízható. El szeretné fogadni?"
 
-#: ../libedataserver/e-source-webdav.c:1569
+#: ../libedataserver/e-source-webdav.c:1578
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
@@ -5087,7 +5083,7 @@ msgstr ""
 "A(z) „%s” gép a(z) „%s” feljegyzéslista által használt SSL-tanúsítványa nem "
 "megbízható. El szeretné fogadni?"
 
-#: ../libedataserver/e-source-webdav.c:1578
+#: ../libedataserver/e-source-webdav.c:1587
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5100,7 +5096,7 @@ msgstr ""
 #. * in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1662 ../libedataserver/e-time-utils.c:1961
+#: ../libedataserver/e-time-utils.c:1672 ../libedataserver/e-time-utils.c:1971
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%Y. %m. %d. %a %l.%M.%S %P"
 
@@ -5108,7 +5104,7 @@ msgstr "%Y. %m. %d. %a %l.%M.%S %P"
 #. * in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1667 ../libedataserver/e-time-utils.c:1952
+#: ../libedataserver/e-time-utils.c:1677 ../libedataserver/e-time-utils.c:1962
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%Y. %m. %d. %a %k.%M.%S"
 
@@ -5116,7 +5112,7 @@ msgstr "%Y. %m. %d. %a %k.%M.%S"
 #. * in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1672 ../libedataserver/e-time-utils.c:1957
+#: ../libedataserver/e-time-utils.c:1682 ../libedataserver/e-time-utils.c:1967
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%Y. %m. %d. %a %l.%M %P"
 
@@ -5124,78 +5120,78 @@ msgstr "%Y. %m. %d. %a %l.%M %P"
 #. * in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1677 ../libedataserver/e-time-utils.c:1948
+#: ../libedataserver/e-time-utils.c:1687 ../libedataserver/e-time-utils.c:1958
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%Y. %m. %d. %a %k.%M"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1682
+#: ../libedataserver/e-time-utils.c:1692
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%Y. %m. %d. %a %l %P"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1687
+#: ../libedataserver/e-time-utils.c:1697
 msgid "%a %m/%d/%Y %H"
 msgstr "%Y. %m. %d. %a %k"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1690 ../libedataserver/e-time-utils.c:1810
-#: ../libedataserver/e-time-utils.c:1943
+#: ../libedataserver/e-time-utils.c:1700 ../libedataserver/e-time-utils.c:1820
+#: ../libedataserver/e-time-utils.c:1953
 msgid "%a %m/%d/%Y"
 msgstr "%Y. %m. %d., %a."
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1697
+#: ../libedataserver/e-time-utils.c:1707
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%Y. %m. %d. %l.%M.%S %P"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1701
+#: ../libedataserver/e-time-utils.c:1711
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%Y. %m. %d. %k.%M.%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1706
+#: ../libedataserver/e-time-utils.c:1716
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%Y. %m. %d. %l.%M %P"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1711
+#: ../libedataserver/e-time-utils.c:1721
 msgid "%m/%d/%Y %H:%M"
 msgstr "%Y. %m. %d. %k.%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1716
+#: ../libedataserver/e-time-utils.c:1726
 msgid "%m/%d/%Y %I %p"
 msgstr "%Y. %m. %d. %l %P"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1721
+#: ../libedataserver/e-time-utils.c:1731
 msgid "%m/%d/%Y %H"
 msgstr "%Y. %m. %d. %k"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1724 ../libedataserver/e-time-utils.c:1813
+#: ../libedataserver/e-time-utils.c:1734 ../libedataserver/e-time-utils.c:1823
 msgid "%m/%d/%Y"
 msgstr "%Y. %m. %d."
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1884 ../libedataserver/e-time-utils.c:2005
+#: ../libedataserver/e-time-utils.c:1894 ../libedataserver/e-time-utils.c:2015
 msgid "%I:%M:%S %p"
 msgstr "%l.%M.%S %P"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1888 ../libedataserver/e-time-utils.c:1997
+#: ../libedataserver/e-time-utils.c:1898 ../libedataserver/e-time-utils.c:2007
 msgid "%H:%M:%S"
 msgstr "%k.%M.%S"
 
@@ -5203,25 +5199,25 @@ msgstr "%k.%M.%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1893 ../libedataserver/e-time-utils.c:2002
+#: ../libedataserver/e-time-utils.c:1903 ../libedataserver/e-time-utils.c:2012
 msgid "%I:%M %p"
 msgstr "%l.%M %P"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1897 ../libedataserver/e-time-utils.c:1994
+#: ../libedataserver/e-time-utils.c:1907 ../libedataserver/e-time-utils.c:2004
 msgid "%H:%M"
 msgstr "%k.%M"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: ../libedataserver/e-time-utils.c:1901
+#: ../libedataserver/e-time-utils.c:1911
 msgid "%H%M"
 msgstr "%k%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1905
+#: ../libedataserver/e-time-utils.c:1915
 msgid "%I %p"
 msgstr "%l %P"
 
@@ -5296,13 +5292,18 @@ msgstr ""
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Nem sikerült beszerezni a hozzáférési tokent ehhez: „%s”:"
 
-#: ../modules/google-backend/module-google-backend.c:191
+#: ../modules/google-backend/module-google-backend.c:195
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
 #: ../modules/yahoo-backend/module-yahoo-backend.c:199
 msgid "Calendar"
 msgstr "Naptár"
 
-#: ../modules/google-backend/module-google-backend.c:260
+#: ../modules/google-backend/module-google-backend.c:268
+#: ../modules/yahoo-backend/module-yahoo-backend.c:226
+msgid "Tasks"
+msgstr "Feladatok"
+
+#: ../modules/google-backend/module-google-backend.c:321
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5356,12 +5357,12 @@ msgstr "Elfogadás i_deiglenesen"
 msgid "_Accept Permanently"
 msgstr "Elfogadás _tartósan"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:160
+#: ../modules/trust-prompt/trust-prompt-gtk.c:159
 #, c-format
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
 msgstr "A(z) „%s” SSL-tanúsítványa nem megbízható. El szeretné fogadni?"
 
-#: ../modules/trust-prompt/trust-prompt-gtk.c:175
+#: ../modules/trust-prompt/trust-prompt-gtk.c:174
 msgid "Reason:"
 msgstr "Ok:"
 
@@ -5429,7 +5430,6 @@ msgid "Error parsing response as JSON: "
 msgstr "Hiba a válasz JSON-ként való feldolgozásakor: "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:119
-#| msgid "Didn't find 'id' in JSON data"
 msgid "Didn't find 'email' in JSON data"
 msgstr "Nem található „email” a JSON-adatokban"
 
@@ -5452,10 +5452,6 @@ msgstr "Yahoo! naptár"
 #: ../modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
 msgid "Yahoo! Mail"
 msgstr "Yahoo! Mail"
-
-#: ../modules/yahoo-backend/module-yahoo-backend.c:226
-msgid "Tasks"
-msgstr "Feladatok"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:46
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:50
@@ -5514,6 +5510,10 @@ msgstr ""
 msgid "_Dismiss"
 msgstr "_Rendben"
 
+#~| msgid "No quota information available for folder '%s'"
+#~ msgid "No host information available"
+#~ msgstr "Nem érhetők el gépinformációk"
+
 #~ msgid "You may not import keys with this cipher"
 #~ msgstr "Nem tudja importálni a kulcsot ezzel a titkosítással"
 
@@ -5561,9 +5561,6 @@ msgstr "_Rendben"
 #~ msgid_plural "Fetching summary information for %d messages in '%s'"
 #~ msgstr[0] "Összefoglaló adatok letöltése %d levélhez ebben: „%s”"
 #~ msgstr[1] "Összefoglaló adatok letöltése %d levélhez ebben: „%s”"
-
-#~ msgid "Lost connection to IMAP server"
-#~ msgstr "Megszakadt a kapcsolat az IMAP kiszolgálóval"
 
 #~ msgid "Unknown parent folder: %s"
 #~ msgstr "Ismeretlen szülőmappa: %s"
