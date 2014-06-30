@@ -446,7 +446,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,
 			_("You must be working online to complete this operation"));
-		return FALSE;
+		return NULL;
 	}
 
 	/* Sigh, most of the crap in this function is so that the cancel button
