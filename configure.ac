@@ -73,8 +73,8 @@ GLIB_GSETTINGS
 dnl ******************************
 dnl D-Bus versioning
 dnl ******************************
-ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook6"
-CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar4"
+ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook7"
+CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar5"
 SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources3"
 USER_PROMPTER_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.UserPrompter0"
 
@@ -114,11 +114,11 @@ LIBECAL_CURRENT=16
 LIBECAL_REVISION=0
 LIBECAL_AGE=0
 
-LIBEDATACAL_CURRENT=24
+LIBEDATACAL_CURRENT=25
 LIBEDATACAL_REVISION=0
 LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=22
+LIBEDATABOOK_CURRENT=23
 LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 

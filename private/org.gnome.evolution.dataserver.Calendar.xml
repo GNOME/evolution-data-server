@@ -32,7 +32,9 @@
     <arg name="ics_objects" type="as"/>
   </signal>
 
-  <method name="Open"/>
+  <method name="Open">
+    <arg name="properties" direction="out" type="as"/>
+  </method>
 
   <method name="Close"/>
 

@@ -557,9 +557,69 @@ data_book_complete_open_cb (GObject *source_object,
 		E_BOOK_BACKEND (source_object), result, &error);
 
 	if (error == NULL) {
+		GPtrArray *properties_array;
+		GParamSpec **properties;
+		guint ii, n_properties = 0;
+
+		properties_array = g_ptr_array_new_with_free_func (g_free);
+		properties = g_object_class_list_properties (G_OBJECT_GET_CLASS (async_context->dbus_interface), &n_properties);
+
+		for (ii = 0; ii < n_properties; ii++) {
+			gboolean can_process =
+				g_type_is_a (properties[ii]->value_type, G_TYPE_BOOLEAN) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_STRING) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_STRV) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_UCHAR) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_INT) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_UINT) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_INT64) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_UINT64) ||
+				g_type_is_a (properties[ii]->value_type, G_TYPE_DOUBLE);
+
+			if (can_process) {
+				GValue value = G_VALUE_INIT;
+				GVariant *stored = NULL;
+
+				g_value_init (&value, properties[ii]->value_type);
+				g_object_get_property ((GObject *) async_context->dbus_interface, properties[ii]->name, &value);
+
+				#define WORKOUT(gvl, gvr) \
+					if (g_type_is_a (properties[ii]->value_type, G_TYPE_ ## gvl)) \
+						stored = g_dbus_gvalue_to_gvariant (&value, G_VARIANT_TYPE_ ## gvr);
+
+				WORKOUT (BOOLEAN, BOOLEAN);
+				WORKOUT (STRING, STRING);
+				WORKOUT (STRV, STRING_ARRAY);
+				WORKOUT (UCHAR, BYTE);
+				WORKOUT (INT, INT32);
+				WORKOUT (UINT, UINT32);
+				WORKOUT (INT64, INT64);
+				WORKOUT (UINT64, UINT64);
+				WORKOUT (DOUBLE, DOUBLE);
+
+				#undef WORKOUT
+
+				g_value_unset (&value);
+
+				if (stored) {
+					g_ptr_array_add (properties_array, g_strdup (properties[ii]->name));
+					g_ptr_array_add (properties_array, g_variant_print (stored, TRUE));
+
+					g_variant_unref (stored);
+				}
+			}
+		}
+
+		g_free (properties);
+
+		g_ptr_array_add (properties_array, NULL);
+
 		e_dbus_address_book_complete_open (
 			async_context->dbus_interface,
-			async_context->invocation);
+			async_context->invocation,
+			(const gchar * const *) properties_array->pdata);
+
+		g_ptr_array_free (properties_array, TRUE);
 	} else {
 		data_book_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (

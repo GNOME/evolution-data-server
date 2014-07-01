@@ -574,67 +574,64 @@ cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
 }
 
 static void
-cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
-                                 GParamSpec *pspec,
-                                 GWeakRef *client_weak_ref)
+cal_client_dbus_proxy_property_changed (EClient *client,
+					const gchar *property_name,
+					const GValue *value)
 {
-	EClient *client;
 	const gchar *backend_prop_name = NULL;
 
-	client = g_weak_ref_get (client_weak_ref);
-	if (client == NULL)
-		return;
+	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (property_name != NULL);
 
-	if (g_str_equal (pspec->name, "alarm-email-address")) {
+	if (g_str_equal (property_name, "alarm-email-address")) {
 		backend_prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
 	}
 
-	if (g_str_equal (pspec->name, "cache-dir")) {
+	if (g_str_equal (property_name, "cache-dir")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
 	}
 
-	if (g_str_equal (pspec->name, "cal-email-address")) {
+	if (g_str_equal (property_name, "cal-email-address")) {
 		backend_prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
 	}
 
-	if (g_str_equal (pspec->name, "capabilities")) {
+	if (g_str_equal (property_name, "capabilities")) {
 		gchar **strv;
 		gchar *csv = NULL;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
 
-		strv = e_dbus_calendar_dup_capabilities (dbus_proxy);
+		strv = g_value_get_boxed (value);
 		if (strv != NULL) {
 			csv = g_strjoinv (",", strv);
-			g_strfreev (strv);
 		}
 		e_client_set_capabilities (client, csv);
 		g_free (csv);
 	}
 
-	if (g_str_equal (pspec->name, "default-object")) {
+	if (g_str_equal (property_name, "default-object")) {
 		backend_prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
 	}
 
-	if (g_str_equal (pspec->name, "online")) {
+	if (g_str_equal (property_name, "online")) {
 		gboolean online;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
 
-		online = e_dbus_calendar_get_online (dbus_proxy);
+		online = g_value_get_boolean (value);
 		e_client_set_online (client, online);
 	}
 
-	if (g_str_equal (pspec->name, "revision")) {
+	if (g_str_equal (property_name, "revision")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
 	}
 
-	if (g_str_equal (pspec->name, "writable")) {
+	if (g_str_equal (property_name, "writable")) {
 		gboolean writable;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
 
-		writable = e_dbus_calendar_get_writable (dbus_proxy);
+		writable = g_value_get_boolean (value);
 		e_client_set_readonly (client, !writable);
 	}
 
@@ -661,6 +658,26 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
 		g_main_context_unref (main_context);
 	}
 
+}
+
+static void
+cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
+                                 GParamSpec *pspec,
+                                 GWeakRef *client_weak_ref)
+{
+	EClient *client;
+	GValue value = G_VALUE_INIT;
+
+	client = g_weak_ref_get (client_weak_ref);
+	if (client == NULL)
+		return;
+
+	g_value_init (&value, pspec->value_type);
+	g_object_get_property (G_OBJECT (dbus_proxy), pspec->name, &value);
+
+	cal_client_dbus_proxy_property_changed (client, pspec->name, &value);
+
+	g_value_unset (&value);
 	g_object_unref (client);
 }
 
@@ -845,6 +862,75 @@ cal_client_finalize (GObject *object)
 	G_OBJECT_CLASS (e_cal_client_parent_class)->finalize (object);
 }
 
+static void
+cal_client_process_properties (ECalClient *cal_client,
+			       gchar * const *properties)
+{
+	GObject *dbus_proxy;
+	GObjectClass *object_class;
+	gint ii;
+
+	g_return_if_fail (E_IS_CAL_CLIENT (cal_client));
+
+	dbus_proxy = G_OBJECT (cal_client->priv->dbus_proxy);
+	g_return_if_fail (G_IS_OBJECT (dbus_proxy));
+
+	if (!properties)
+		return;
+
+	object_class = G_OBJECT_GET_CLASS (dbus_proxy);
+
+	for (ii = 0; properties[ii]; ii++) {
+		if (!(ii & 1) && properties[ii + 1]) {
+			GParamSpec *param;
+			GVariant *stored = NULL, *expected = NULL;
+
+			param = g_object_class_find_property (object_class, properties[ii]);
+			if (param) {
+				GValue value = G_VALUE_INIT;
+
+				g_value_init (&value, param->value_type);
+				g_object_get_property (dbus_proxy, param->name, &value);
+
+				#define WORKOUT(gvl, gvr) \
+					if (g_type_is_a (param->value_type, G_TYPE_ ## gvl)) { \
+						stored = g_dbus_gvalue_to_gvariant (&value, G_VARIANT_TYPE_ ## gvr); \
+						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, properties[ii + 1], NULL, NULL, NULL); \
+					}
+
+				WORKOUT (BOOLEAN, BOOLEAN);
+				WORKOUT (STRING, STRING);
+				WORKOUT (STRV, STRING_ARRAY);
+				WORKOUT (UCHAR, BYTE);
+				WORKOUT (INT, INT32);
+				WORKOUT (UINT, UINT32);
+				WORKOUT (INT64, INT64);
+				WORKOUT (UINT64, UINT64);
+				WORKOUT (DOUBLE, DOUBLE);
+
+				#undef WORKOUT
+
+				g_value_unset (&value);
+			}
+
+			if (stored && expected && !g_variant_equal (stored, expected)) {
+				GValue value = G_VALUE_INIT;
+
+				g_dbus_gvariant_to_gvalue (expected, &value);
+
+				cal_client_dbus_proxy_property_changed (E_CLIENT (cal_client), param->name, &value);
+
+				g_value_unset (&value);
+			}
+
+			if (stored)
+				g_variant_unref (stored);
+			if (expected)
+				g_variant_unref (expected);
+		}
+	}
+}
+
 static GDBusProxy *
 cal_client_get_dbus_proxy (EClient *client)
 {
@@ -960,6 +1046,7 @@ cal_client_open_sync (EClient *client,
                       GError **error)
 {
 	ECalClient *cal_client;
+	gchar **properties = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CLIENT (client), FALSE);
@@ -967,7 +1054,10 @@ cal_client_open_sync (EClient *client,
 	cal_client = E_CAL_CLIENT (client);
 
 	e_dbus_calendar_call_open_sync (
-		cal_client->priv->dbus_proxy, cancellable, &local_error);
+		cal_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+
+	cal_client_process_properties (cal_client, properties);
+	g_strfreev (properties);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1518,9 +1608,15 @@ e_cal_client_connect_sync (ESource *source,
 
 	g_initable_init (G_INITABLE (client), cancellable, &local_error);
 
-	if (local_error == NULL)
+	if (local_error == NULL) {
+		gchar **properties = NULL;
+
 		e_dbus_calendar_call_open_sync (
-			client->priv->dbus_proxy, cancellable, &local_error);
+			client->priv->dbus_proxy, &properties, cancellable, &local_error);
+
+		cal_client_process_properties (client, properties);
+		g_strfreev (properties);
+	}
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1542,12 +1638,15 @@ cal_client_connect_open_cb (GObject *source_object,
                             gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
+	gchar **properties = NULL;
 	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	e_dbus_calendar_call_open_finish (
-		E_DBUS_CALENDAR (source_object), result, &local_error);
+		E_DBUS_CALENDAR (source_object), &properties, result, &local_error);
+
+	cal_client_process_properties (E_CAL_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (simple))), properties);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1557,6 +1656,7 @@ cal_client_connect_open_cb (GObject *source_object,
 	g_simple_async_result_complete (simple);
 
 	g_object_unref (simple);
+	g_strfreev (properties);
 }
 
 /* Helper for e_cal_client_connect() */

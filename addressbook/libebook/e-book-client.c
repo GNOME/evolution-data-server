@@ -524,67 +524,64 @@ book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
 }
 
 static void
-book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
-                                  GParamSpec *pspec,
-                                  GWeakRef *client_weak_ref)
+book_client_dbus_proxy_property_changed (EClient *client,
+					 const gchar *property_name,
+					 const GValue *value)
 {
-	EClient *client;
 	const gchar *backend_prop_name = NULL;
 
-	client = g_weak_ref_get (client_weak_ref);
-	if (client == NULL)
-		return;
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (property_name != NULL);
 
-	if (g_str_equal (pspec->name, "cache-dir")) {
+	if (g_str_equal (property_name, "cache-dir")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
 	}
 
-	if (g_str_equal (pspec->name, "capabilities")) {
+	if (g_str_equal (property_name, "capabilities")) {
 		gchar **strv;
 		gchar *csv = NULL;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
 
-		strv = e_dbus_address_book_dup_capabilities (dbus_proxy);
+		strv = g_value_get_boxed (value);
 		if (strv != NULL) {
 			csv = g_strjoinv (",", strv);
-			g_strfreev (strv);
 		}
 		e_client_set_capabilities (client, csv);
 		g_free (csv);
 	}
 
-	if (g_str_equal (pspec->name, "online")) {
+	if (g_str_equal (property_name, "online")) {
 		gboolean online;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
 
-		online = e_dbus_address_book_get_online (dbus_proxy);
+		online = g_value_get_boolean (value);
 		e_client_set_online (client, online);
 	}
 
-	if (g_str_equal (pspec->name, "required-fields")) {
+	if (g_str_equal (property_name, "required-fields")) {
 		backend_prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
 	}
 
-	if (g_str_equal (pspec->name, "revision")) {
+	if (g_str_equal (property_name, "revision")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
 	}
 
-	if (g_str_equal (pspec->name, "supported-fields")) {
+	if (g_str_equal (property_name, "supported-fields")) {
 		backend_prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
 	}
 
-	if (g_str_equal (pspec->name, "writable")) {
+	if (g_str_equal (property_name, "writable")) {
 		gboolean writable;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
 
-		writable = e_dbus_address_book_get_writable (dbus_proxy);
+		writable = g_value_get_boolean (value);
 		e_client_set_readonly (client, !writable);
 	}
 
-	if (g_str_equal (pspec->name, "locale")) {
+	if (g_str_equal (property_name, "locale")) {
 		backend_prop_name = "locale";
 	}
 
@@ -601,8 +598,7 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		 * the value directly on the SignalClosure
 		 */
 		if (g_str_equal (backend_prop_name, "locale"))
-			signal_closure->property_value =
-				e_dbus_address_book_dup_locale (dbus_proxy);
+			signal_closure->property_value = g_value_dup_string (value);
 
 		main_context = e_client_ref_main_context (client);
 
@@ -617,7 +613,26 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 
 		g_main_context_unref (main_context);
 	}
+}
 
+static void
+book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
+                                  GParamSpec *pspec,
+                                  GWeakRef *client_weak_ref)
+{
+	EClient *client;
+	GValue value = G_VALUE_INIT;
+
+	client = g_weak_ref_get (client_weak_ref);
+	if (client == NULL)
+		return;
+
+	g_value_init (&value, pspec->value_type);
+	g_object_get_property (G_OBJECT (dbus_proxy), pspec->name, &value);
+
+	book_client_dbus_proxy_property_changed (client, pspec->name, &value);
+
+	g_value_unset (&value);
 	g_object_unref (client);
 }
 
@@ -709,6 +724,75 @@ book_client_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_parent_class)->finalize (object);
+}
+
+static void
+book_client_process_properties (EBookClient *book_client,
+				gchar * const *properties)
+{
+	GObject *dbus_proxy;
+	GObjectClass *object_class;
+	gint ii;
+
+	g_return_if_fail (E_IS_BOOK_CLIENT (book_client));
+
+	dbus_proxy = G_OBJECT (book_client->priv->dbus_proxy);
+	g_return_if_fail (G_IS_OBJECT (dbus_proxy));
+
+	if (!properties)
+		return;
+
+	object_class = G_OBJECT_GET_CLASS (dbus_proxy);
+
+	for (ii = 0; properties[ii]; ii++) {
+		if (!(ii & 1) && properties[ii + 1]) {
+			GParamSpec *param;
+			GVariant *stored = NULL, *expected = NULL;
+
+			param = g_object_class_find_property (object_class, properties[ii]);
+			if (param) {
+				GValue value = G_VALUE_INIT;
+
+				g_value_init (&value, param->value_type);
+				g_object_get_property (dbus_proxy, param->name, &value);
+
+				#define WORKOUT(gvl, gvr) \
+					if (g_type_is_a (param->value_type, G_TYPE_ ## gvl)) { \
+						stored = g_dbus_gvalue_to_gvariant (&value, G_VARIANT_TYPE_ ## gvr); \
+						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, properties[ii + 1], NULL, NULL, NULL); \
+					}
+
+				WORKOUT (BOOLEAN, BOOLEAN);
+				WORKOUT (STRING, STRING);
+				WORKOUT (STRV, STRING_ARRAY);
+				WORKOUT (UCHAR, BYTE);
+				WORKOUT (INT, INT32);
+				WORKOUT (UINT, UINT32);
+				WORKOUT (INT64, INT64);
+				WORKOUT (UINT64, UINT64);
+				WORKOUT (DOUBLE, DOUBLE);
+
+				#undef WORKOUT
+
+				g_value_unset (&value);
+			}
+
+			if (stored && expected && !g_variant_equal (stored, expected)) {
+				GValue value = G_VALUE_INIT;
+
+				g_dbus_gvariant_to_gvalue (expected, &value);
+
+				book_client_dbus_proxy_property_changed (E_CLIENT (book_client), param->name, &value);
+
+				g_value_unset (&value);
+			}
+
+			if (stored)
+				g_variant_unref (stored);
+			if (expected)
+				g_variant_unref (expected);
+		}
+	}
 }
 
 static GDBusProxy *
@@ -831,6 +915,7 @@ book_client_open_sync (EClient *client,
                        GError **error)
 {
 	EBookClient *book_client;
+	gchar **properties = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
@@ -838,7 +923,10 @@ book_client_open_sync (EClient *client,
 	book_client = E_BOOK_CLIENT (client);
 
 	e_dbus_address_book_call_open_sync (
-		book_client->priv->dbus_proxy, cancellable, &local_error);
+		book_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+
+	book_client_process_properties (book_client, properties);
+	g_strfreev (properties);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1195,9 +1283,15 @@ e_book_client_connect_sync (ESource *source,
 
 	g_initable_init (G_INITABLE (client), cancellable, &local_error);
 
-	if (local_error == NULL)
+	if (local_error == NULL) {
+		gchar **properties = NULL;
+
 		e_dbus_address_book_call_open_sync (
-			client->priv->dbus_proxy, cancellable, &local_error);
+			client->priv->dbus_proxy, &properties, cancellable, &local_error);
+
+		book_client_process_properties (client, properties);
+		g_strfreev (properties);
+	}
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1219,12 +1313,15 @@ book_client_connect_open_cb (GObject *source_object,
                              gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
+	gchar **properties = NULL;
 	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
 
 	e_dbus_address_book_call_open_finish (
-		E_DBUS_ADDRESS_BOOK (source_object), result, &local_error);
+		E_DBUS_ADDRESS_BOOK (source_object), &properties, result, &local_error);
+
+	book_client_process_properties (E_BOOK_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (simple))), properties);
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
@@ -1234,6 +1331,7 @@ book_client_connect_open_cb (GObject *source_object,
 	g_simple_async_result_complete (simple);
 
 	g_object_unref (simple);
+	g_strfreev (properties);
 }
 
 /* Helper for e_book_client_connect() */

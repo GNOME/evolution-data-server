@@ -28,7 +28,9 @@
     <arg name="error_message" type="s"/>
   </signal>
 
-  <method name="Open"/>
+  <method name="Open">
+    <arg name="properties" direction="out" type="as"/>
+  </method>
 
   <method name="Close"/>
 
