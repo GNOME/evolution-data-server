@@ -510,6 +510,8 @@ imapx_expunge_sync (CamelFolder *folder,
 			GPtrArray *known_uids;
 			gint ii;
 
+			camel_folder_summary_lock (folder->summary);
+
 			camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
 			known_uids = camel_folder_summary_get_array (folder->summary);
 
@@ -521,6 +523,8 @@ imapx_expunge_sync (CamelFolder *folder,
 					camel_message_info_unref (info);
 				}
 			}
+
+			camel_folder_summary_unlock (folder->summary);
 
 			camel_folder_summary_free_array (known_uids);
 		}

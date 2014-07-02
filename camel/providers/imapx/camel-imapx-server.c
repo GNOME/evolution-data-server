@@ -2422,6 +2422,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				binfo = (CamelMessageInfoBase *) mi;
 				binfo->size = finfo->size;
 
+				camel_folder_summary_lock (folder->summary);
+
 				if (!camel_folder_summary_check_uid (folder->summary, mi->uid)) {
 					RefreshInfoData *data;
 
@@ -2442,9 +2444,10 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					camel_message_info_unref (mi);
 				}
 
+				camel_folder_summary_unlock (folder->summary);
+
 				if (free_user_flags && server_user_flags)
 					camel_flag_list_free (&server_user_flags);
-
 			}
 
 			g_object_unref (folder);
@@ -5720,20 +5723,22 @@ imapx_command_step_fetch_done (CamelIMAPXServer *is,
 		uid = camel_imapx_dup_uid_from_summary_index (
 			folder,
 			camel_folder_summary_count (folder->summary) - 1);
-		uidl = (guint32) strtoull (uid, NULL, 10);
-		g_free (uid);
+		if (uid) {
+			uidl = (guint32) strtoull (uid, NULL, 10);
+			g_free (uid);
 
-		uidl++;
+			uidl++;
 
-		uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
+			uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
 
-		if (uidl > uidnext) {
-			c (
-				is->tagprefix,
-				"Updating uidnext for '%s' to %ul\n",
-				camel_imapx_mailbox_get_name (mailbox),
-				uidl);
-			camel_imapx_mailbox_set_uidnext (mailbox, uidl);
+			if (uidl > uidnext) {
+				c (
+					is->tagprefix,
+					"Updating uidnext for '%s' to %ul\n",
+					camel_imapx_mailbox_get_name (mailbox),
+					uidl);
+				camel_imapx_mailbox_set_uidnext (mailbox, uidl);
+			}
 		}
 	}
 
@@ -5841,6 +5846,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 		 * anything missing in our summary, and also queue up jobs
 		 * for all outstanding messages to be uploaded */
 
+		camel_folder_summary_lock (s);
+
 		/* obtain a copy to be thread safe */
 		uids = camel_folder_summary_get_array (s);
 
@@ -5928,6 +5935,8 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 
 		camel_folder_summary_save_to_db (s, NULL);
 		imapx_update_store_summary (folder);
+
+		camel_folder_summary_unlock (s);
 
 		if (camel_folder_change_info_changed (data->changes))
 			camel_folder_changed (folder, data->changes);
@@ -6065,20 +6074,22 @@ imapx_command_fetch_new_messages_done (CamelIMAPXServer *is,
 		uid = camel_imapx_dup_uid_from_summary_index (
 			folder,
 			camel_folder_summary_count (folder->summary) - 1);
-		uidl = (guint32) strtoull (uid, NULL, 10);
-		g_free (uid);
+		if (uid) {
+			uidl = (guint32) strtoull (uid, NULL, 10);
+			g_free (uid);
 
-		uidl++;
+			uidl++;
 
-		uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
+			uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
 
-		if (uidl > uidnext) {
-			c (
-				is->tagprefix,
-				"Updating uidnext for '%s' to %ul\n",
-				camel_imapx_mailbox_get_name (mailbox),
-				uidl);
-			camel_imapx_mailbox_set_uidnext (mailbox, uidl);
+			if (uidl > uidnext) {
+				c (
+					is->tagprefix,
+					"Updating uidnext for '%s' to %ul\n",
+					camel_imapx_mailbox_get_name (mailbox),
+					uidl);
+				camel_imapx_mailbox_set_uidnext (mailbox, uidl);
+			}
 		}
 	}
 
@@ -6154,9 +6165,13 @@ imapx_job_fetch_new_messages_start (CamelIMAPXJob *job,
 	if (total > 0) {
 		guint64 uidl;
 		uid = camel_imapx_dup_uid_from_summary_index (folder, total - 1);
-		uidl = strtoull (uid, NULL, 10);
-		g_free (uid);
-		uid = g_strdup_printf ("%" G_GUINT64_FORMAT, uidl + 1);
+		if (uid) {
+			uidl = strtoull (uid, NULL, 10);
+			g_free (uid);
+			uid = g_strdup_printf ("%" G_GUINT64_FORMAT, uidl + 1);
+		} else {
+			uid = g_strdup ("1");
+		}
 	} else
 		uid = g_strdup ("1");
 
@@ -6473,6 +6488,8 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 		full_name = camel_folder_get_full_name (folder);
 		parent_store = camel_folder_get_parent_store (folder);
 
+		camel_folder_summary_lock (folder->summary);
+
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, NULL);
 
@@ -6504,8 +6521,12 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 
 			g_list_free (removed);
 			g_ptr_array_foreach (uids, (GFunc) camel_pstring_free, NULL);
-			g_ptr_array_free (uids, TRUE);
 		}
+
+		if (uids)
+			g_ptr_array_free (uids, TRUE);
+
+		camel_folder_summary_unlock (folder->summary);
 	}
 
 	g_object_unref (folder);
