@@ -2179,7 +2179,6 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			GOutputStream *output_stream;
 			gconstpointer body_data;
 			gsize body_size;
-			gboolean success;
 
 			if (data->use_multi_fetch) {
 				data->body_offset = finfo->offset;
@@ -2194,15 +2193,18 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 			body_data = g_bytes_get_data (finfo->body, &body_size);
 
-			success = g_output_stream_write_all (
-				output_stream, body_data, body_size,
-				NULL, cancellable, error);
-
-			if (!success) {
-				g_prefix_error (
-					error, "%s: ",
-					_("Error writing to cache stream"));
-				return FALSE;
+			/* Sometimes the server, like Microsoft Exchange, reports larger message
+			   size than it actually is, which results in no data being read from
+			   the server for that particular offset. */
+			if (body_size) {
+				if (!g_output_stream_write_all (
+					output_stream, body_data, body_size,
+					NULL, cancellable, error)) {
+					g_prefix_error (
+						error, "%s: ",
+						_("Error writing to cache stream"));
+					return FALSE;
+				}
 			}
 		}
 	}
