@@ -1639,6 +1639,7 @@ cal_client_connect_open_cb (GObject *source_object,
 {
 	GSimpleAsyncResult *simple;
 	gchar **properties = NULL;
+	GObject *client_object;
 	GError *local_error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
@@ -1646,7 +1647,11 @@ cal_client_connect_open_cb (GObject *source_object,
 	e_dbus_calendar_call_open_finish (
 		E_DBUS_CALENDAR (source_object), &properties, result, &local_error);
 
-	cal_client_process_properties (E_CAL_CLIENT (g_async_result_get_source_object (G_ASYNC_RESULT (simple))), properties);
+	client_object = g_async_result_get_source_object (G_ASYNC_RESULT (simple));
+	if (client_object) {
+		cal_client_process_properties (E_CAL_CLIENT (client_object), properties);
+		g_clear_object (&client_object);
+	}
 
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
