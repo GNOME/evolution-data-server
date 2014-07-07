@@ -18,10 +18,6 @@
  * Authors: Chris Lahey <clahey@ximian.com>
  */
 
-#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
-#error "Only <libebackend/libebackend.h> should be included directly."
-#endif
-
 #ifndef __E_DB3_UTILS_H__
 #define __E_DB3_UTILS_H__
 

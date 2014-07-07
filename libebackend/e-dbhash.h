@@ -18,10 +18,6 @@
  * Authors: JP Rosevear (jpr@ximian.com)
  */
 
-#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
-#error "Only <libebackend/libebackend.h> should be included directly."
-#endif
-
 #ifndef EDS_DISABLE_DEPRECATED
 
 #ifndef E_DBHASH_H

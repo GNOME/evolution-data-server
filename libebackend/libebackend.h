@@ -31,8 +31,6 @@
 #include <libebackend/e-collection-backend-factory.h>
 #include <libebackend/e-collection-backend.h>
 #include <libebackend/e-data-factory.h>
-#include <libebackend/e-db3-utils.h>
-#include <libebackend/e-dbhash.h>
 #include <libebackend/e-dbus-server.h>
 #include <libebackend/e-extensible.h>
 #include <libebackend/e-extension.h>
