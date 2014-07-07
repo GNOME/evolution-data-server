@@ -8,10 +8,6 @@
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
  */
 
-#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
-#error "Only <libebackend/libebackend.h> should be included directly."
-#endif
-
 #ifndef EDS_DISABLE_DEPRECATED
 
 #ifndef E_DBHASH_H

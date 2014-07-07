@@ -38,6 +38,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libedata-book/libedata-book.h>
+#include <libebackend/e-db3-utils.h>
 
 #include "e-book-backend-file-migrate-bdb.h"
 
