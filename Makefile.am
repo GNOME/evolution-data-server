@@ -81,6 +81,7 @@ MAINTAINERCLEANFILES = \
 	$(srcdir)/gtk-doc.make \
 	$(srcdir)/install-sh \
 	$(srcdir)/ltmain.sh \
+	$(srcdir)/test-driver \
 	$(srcdir)/m4/codeset.m4 \
 	$(srcdir)/m4/gettext.m4 \
 	$(srcdir)/m4/glibc2.m4 \
