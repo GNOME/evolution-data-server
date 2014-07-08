@@ -3587,7 +3587,16 @@ imapx_job_idle_start (CamelIMAPXJob *job,
 		g_mutex_unlock (&is->priv->idle_lock);
 
 		QUEUE_LOCK (is);
-		imapx_command_start (is, ic);
+		/* It can be that another thread started a command between
+		   the two locks above had been interchanged, thus also test
+		   whether the active command queue is empty, before starting
+		   the IDLE command. */
+		if (camel_imapx_command_queue_is_empty (is->active)) {
+			imapx_command_start (is, ic);
+		} else {
+			c (is->tagprefix, "finally cancelling IDLE, other command was quicker\n");
+			imapx_unregister_job (is, job);
+		}
 	} else {
 		g_mutex_unlock (&is->priv->idle_lock);
 
