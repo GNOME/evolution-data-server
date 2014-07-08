@@ -13,25 +13,27 @@ EXTRA_DIST = \
 if HAVE_DB_LOAD
 
 GENERATED_DBS = \
-	$(top_builddir)/tests/book-migration/db/3.0/addressbook.db \
-	$(top_builddir)/tests/book-migration/db/3.2/addressbook.db \
-	$(top_builddir)/tests/book-migration/db/3.4/addressbook.db \
-	$(top_builddir)/tests/book-migration/db/3.6/addressbook.db \
+	3.0/addressbook.db \
+	3.2/addressbook.db \
+	3.4/addressbook.db \
+	3.6/addressbook.db \
 	$(NULL)
 
 noinst_DATA = $(GENERATED_DBS)
 CLEANFILES = $(GENERATED_DBS)
 
-$(top_builddir)/tests/book-migration/db/3.0/addressbook.db: $(top_srcdir)/tests/book-migration/db/3.0/addressbook.dump
+3.0/addressbook.db: 3.0/addressbook.dump
 	$(AM_V_GEN) mkdir -p $(top_builddir)/tests/book-migration/db/3.0 && $(DB_LOAD) -f $< $@
 
-$(top_builddir)/tests/book-migration/db/3.2/addressbook.db: $(top_srcdir)/tests/book-migration/db/3.2/addressbook.dump
+3.2/addressbook.db: 3.2/addressbook.dump
 	$(AM_V_GEN) mkdir -p $(top_builddir)/tests/book-migration/db/3.2 && $(DB_LOAD) -f $< $@
 
-$(top_builddir)/tests/book-migration/db/3.4/addressbook.db: $(top_srcdir)/tests/book-migration/db/3.4/addressbook.dump
+3.4/addressbook.db: 3.4/addressbook.dump
 	$(AM_V_GEN) mkdir -p $(top_builddir)/tests/book-migration/db/3.4 && $(DB_LOAD) -f $< $@
 
-$(top_builddir)/tests/book-migration/db/3.6/addressbook.db: $(top_srcdir)/tests/book-migration/db/3.6/addressbook.dump
+3.6/addressbook.db: 3.6/addressbook.dump
 	$(AM_V_GEN) mkdir -p $(top_builddir)/tests/book-migration/db/3.6 && $(DB_LOAD) -f $< $@
 
 endif
+
+-include $(top_srcdir)/git.mk
