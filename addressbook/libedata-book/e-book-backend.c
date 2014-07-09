@@ -3339,9 +3339,13 @@ e_book_backend_set_locale (EBookBackend *backend,
 
 	g_object_ref (backend);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale)
+	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) {
 		success = (* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale,
 									      cancellable, error);
+		if (success)
+			e_book_backend_notify_complete (backend);
+
+	}
 	g_object_unref (backend);
 
 	return success;
