@@ -1707,7 +1707,6 @@ export privdatadir
 
 AC_CONFIG_FILES([
 Makefile
-evolution-data-server-zip
 evolution-data-server.pc
 addressbook/Makefile
 addressbook/libebook/Makefile
