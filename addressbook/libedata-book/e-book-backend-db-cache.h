@@ -18,10 +18,6 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#if !defined (__LIBEDATA_BOOK_H_INSIDE__) && !defined (LIBEDATA_BOOK_COMPILATION)
-#error "Only <libedata-book/libedata-book.h> should be included directly."
-#endif
-
 #ifndef E_BOOK_BACKEND_DB_CACHE_H
 #define E_BOOK_BACKEND_DB_CACHE_H
 
