@@ -24,7 +24,6 @@
 #include <libebackend/libebackend.h>
 
 #include <libedata-book/e-book-backend-cache.h>
-#include <libedata-book/e-book-backend-db-cache.h>
 #include <libedata-book/e-book-backend-factory.h>
 #include <libedata-book/e-book-backend-sexp.h>
 #include <libedata-book/e-book-backend-sqlitedb.h>
