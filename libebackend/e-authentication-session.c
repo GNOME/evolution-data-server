@@ -504,20 +504,6 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 
 	g_warn_if_fail (auth_result == E_SOURCE_AUTHENTICATION_REJECTED);
 
-	/* The stored password is bad so delete it from the keyring.
-	 * Failure here does not affect the outcome of this operation,
-	 * but leave a breadcrumb as evidence that something went wrong. */
-
-	if (source != NULL) {
-		e_source_delete_password_sync (
-			source, cancellable, &local_error);
-
-		if (local_error != NULL) {
-			g_warning ("%s: %s", G_STRFUNC, local_error->message);
-			g_clear_error (&local_error);
-		}
-	}
-
 	/* Check if we're allowed to interrupt the user for a password.
 	 * If not, we have no choice but to dismiss the authentication
 	 * request. */
