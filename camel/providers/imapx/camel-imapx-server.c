@@ -4192,7 +4192,7 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 }
 
 #if GLIB_CHECK_VERSION(2,39,0)
-#ifndef G_OS_WIN32
+#ifdef G_OS_UNIX
 static void
 imapx_server_child_process_setup (gpointer user_data)
 {
@@ -4210,7 +4210,7 @@ imapx_server_child_process_setup (gpointer user_data)
 	}
 #endif /* TIOCNOTTY */
 }
-#endif /* G_OS_WIN32 */
+#endif /* G_OS_UNIX */
 #endif
 
 static gboolean
@@ -4242,7 +4242,7 @@ connect_to_server_process (CamelIMAPXServer *is,
 		G_SUBPROCESS_FLAGS_STDOUT_PIPE |
 		G_SUBPROCESS_FLAGS_STDERR_SILENCE);
 
-#ifndef G_OS_WIN32
+#ifdef G_OS_UNIX
 	g_subprocess_launcher_set_child_setup (
 		launcher, imapx_server_child_process_setup,
 		NULL, (GDestroyNotify) NULL);
