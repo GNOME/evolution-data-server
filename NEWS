@@ -1,3 +1,43 @@
+Evolution-Data-Server 3.12.4 2014-07-14
+---------------------------------------
+
+Bug Fixes:
+	Bug 731418 - Unnecessary localedir override in configure.ac (Alan Swanson)
+	Bug 731356 - GError overwrite in camel_filter_search_match() (Milan Crha)
+	Bug 729848 - [IMAPx] Hard to get to cached messages in offline (Milan Crha)
+	Bug 731585 - evolution-ews Camel part pretends offline state (Milan Crha)
+	Bug 731562 - [IMAPx] Occasionally getting 'Empty cache file' error (Milan Crha)
+	Bug 731560 - Crash under imapx_call_idle() after folder rename (Milan Crha)
+	Bug 731720 - Junk test logic has useless ordering (Milan Crha)
+	Bug 652132 - Google Tasks support (Milan Crha)
+	Bug 731440 - [IMAPx] Moved folder within account duplicated in UI (Milan Crha)
+	Bug 728653 - Fix Google Talk support (Christian Schaarschmidt)
+	Bug 732263 - Deleting Search Folder very slow (Milan Crha)
+	Bug 729172 - [IMAPx] Cannot retrieve certain messages (Ian Campbell)
+	Bug 732607 - Crash in imapx_job_fetch_new_messages_start() (Milan Crha)
+	Bug 732366 - [IMAPx] Stuck FETCH command when using IDLE (Milan Crha)
+	Bug 732730 - Addressbook: Notify views after locale change (Mateusz Polrola)
+
+Miscellaneous:
+	Correct typo in a CAMEL_CHECK_LOCAL_GERROR() debugging macro (Milan Crha)
+	[Maildir] g_mkdir() fails, if the folder already exists (Milan Crha)
+	[IMAPx] Claim camel_store_folder_info_stale() when more settings changed (Milan Crha)
+	[IMAPx] Avoid useless console warnings after a call to g_rename() (Milan Crha)
+	Fix a memory leak in camel_imapx_server_copy_message() (Milan Crha)
+	Revert leak-fix part from commit 6cac5a9da (Milan Crha)
+	Correct a typo in CalDAV's Makefile.am (Milan Crha)
+	Correct return value at pop3_folder_get_message_sync() (Milan Crha)
+	Remove libdb related headers from libebackend.h (Milan Crha)
+	Remove unused and obsolete evolution-data-server-zip.in (Milan Crha)
+	Remove libdb related headers from libedata-book.h (Milan Crha)
+	Do not delete passwords during authentication session (Milan Crha)
+	g_subprocess_launcher_set_child_setup() is available only for Unixes (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Fran Diéguez (gl)
+	Yuri Myasoedov (ru)
+
 Evolution-Data-Server 3.12.3 2014-06-09
 ---------------------------------------
 
