@@ -390,7 +390,7 @@ struct _CamelIMAPXServerPrivate {
 	gchar inbox_separator;
 
 	/* IDLE support */
-	GMutex idle_lock;
+	GRecMutex idle_lock;
 	GThread *idle_thread;
 	GMainLoop *idle_main_loop;
 	GMainContext *idle_main_context;
@@ -3054,7 +3054,7 @@ imapx_continuation (CamelIMAPXServer *is,
 			return FALSE;
 
 		c (is->tagprefix, "Got continuation response for IDLE \n");
-		g_mutex_lock (&is->priv->idle_lock);
+		g_rec_mutex_lock (&is->priv->idle_lock);
 		/* We might have actually sent the DONE already! */
 		if (is->priv->idle_state == IMAPX_IDLE_ISSUED)
 			is->priv->idle_state = IMAPX_IDLE_STARTED;
@@ -3063,7 +3063,7 @@ imapx_continuation (CamelIMAPXServer *is,
 			 * we were waiting for this continuation. Send DONE
 			 * immediately. */
 			if (!imapx_command_idle_stop (is, error)) {
-				g_mutex_unlock (&is->priv->idle_lock);
+				g_rec_mutex_unlock (&is->priv->idle_lock);
 				return FALSE;
 			}
 			is->priv->idle_state = IMAPX_IDLE_OFF;
@@ -3072,7 +3072,7 @@ imapx_continuation (CamelIMAPXServer *is,
 				is->tagprefix, "idle starts in wrong state %d\n",
 				is->priv->idle_state);
 		}
-		g_mutex_unlock (&is->priv->idle_lock);
+		g_rec_mutex_unlock (&is->priv->idle_lock);
 
 		QUEUE_LOCK (is);
 		is->literal = NULL;
@@ -3548,9 +3548,9 @@ imapx_command_idle_done (CamelIMAPXServer *is,
 		camel_imapx_job_take_error (job, local_error);
 	}
 
-	g_mutex_lock (&is->priv->idle_lock);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 	is->priv->idle_state = IMAPX_IDLE_OFF;
-	g_mutex_unlock (&is->priv->idle_lock);
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	imapx_unregister_job (is, job);
 }
@@ -3579,29 +3579,23 @@ imapx_job_idle_start (CamelIMAPXJob *job,
 	cp = g_queue_peek_head (&ic->parts);
 	cp->type |= CAMEL_IMAPX_COMMAND_CONTINUATION;
 
-	g_mutex_lock (&is->priv->idle_lock);
+	QUEUE_LOCK (is);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 	/* Don't issue it if the idle was cancelled already */
 	if (is->priv->idle_state == IMAPX_IDLE_PENDING) {
 		is->priv->idle_state = IMAPX_IDLE_ISSUED;
-		g_mutex_unlock (&is->priv->idle_lock);
 
-		QUEUE_LOCK (is);
-		/* It can be that another thread started a command between
-		   the two locks above had been interchanged, thus also test
-		   whether the active command queue is empty, before starting
-		   the IDLE command. */
 		if (camel_imapx_command_queue_is_empty (is->active)) {
 			imapx_command_start (is, ic);
 		} else {
 			c (is->tagprefix, "finally cancelling IDLE, other command was quicker\n");
+			is->priv->idle_state = IMAPX_IDLE_OFF;
 			imapx_unregister_job (is, job);
 		}
 	} else {
-		g_mutex_unlock (&is->priv->idle_lock);
-
-		QUEUE_LOCK (is);
 		imapx_unregister_job (is, job);
 	}
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 	QUEUE_UNLOCK (is);
 
 	camel_imapx_command_unref (ic);
@@ -3690,10 +3684,10 @@ imapx_call_idle (gpointer data)
 		goto exit;
 
 	/* XXX Rename to 'pending_lock'? */
-	g_mutex_lock (&is->priv->idle_lock);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 	g_source_unref (is->priv->idle_pending);
 	is->priv->idle_pending = NULL;
-	g_mutex_unlock (&is->priv->idle_lock);
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	if (is->priv->idle_state != IMAPX_IDLE_PENDING)
 		goto exit;
@@ -3765,7 +3759,7 @@ imapx_idle_thread (gpointer data)
 	 *     regressions.
 	 */
 
-	g_mutex_lock (&is->priv->idle_lock);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 
 	g_warn_if_fail (is->priv->idle_pending == NULL);
 	pending = g_timeout_source_new_seconds (IMAPX_IDLE_DWELL_TIME);
@@ -3778,7 +3772,7 @@ imapx_idle_thread (gpointer data)
 	is->priv->idle_pending = g_source_ref (pending);
 	g_source_unref (pending);
 
-	g_mutex_unlock (&is->priv->idle_lock);
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	g_main_loop_run (is->priv->idle_main_loop);
 
@@ -3798,7 +3792,7 @@ imapx_stop_idle (CamelIMAPXServer *is,
 
 	time (&now);
 
-	g_mutex_lock (&is->priv->idle_lock);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 
 	switch (is->priv->idle_state) {
 		case IMAPX_IDLE_ISSUED:
@@ -3827,7 +3821,7 @@ imapx_stop_idle (CamelIMAPXServer *is,
 	}
 
 exit:
-	g_mutex_unlock (&is->priv->idle_lock);
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	return result;
 }
@@ -3838,7 +3832,7 @@ imapx_start_idle (CamelIMAPXServer *is)
 	if (camel_application_is_exiting)
 		return;
 
-	g_mutex_lock (&is->priv->idle_lock);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 
 	g_return_if_fail (is->priv->idle_state == IMAPX_IDLE_OFF);
 	is->priv->idle_state = IMAPX_IDLE_PENDING;
@@ -3861,7 +3855,7 @@ imapx_start_idle (CamelIMAPXServer *is)
 		g_source_unref (pending);
 	}
 
-	g_mutex_unlock (&is->priv->idle_lock);
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 }
 
 static gboolean
@@ -3869,12 +3863,12 @@ imapx_in_idle (CamelIMAPXServer *is)
 {
 	gboolean in_idle = FALSE;
 
-	g_mutex_lock (&is->priv->idle_lock);
+	g_rec_mutex_lock (&is->priv->idle_lock);
 
 	if (is->priv->idle_thread != NULL)
 		in_idle = (is->priv->idle_state > IMAPX_IDLE_OFF);
 
-	g_mutex_unlock (&is->priv->idle_lock);
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	return in_idle;
 }
@@ -7809,7 +7803,7 @@ imapx_server_finalize (GObject *object)
 	g_hash_table_destroy (is->priv->known_alerts);
 	g_mutex_clear (&is->priv->known_alerts_lock);
 
-	g_mutex_clear (&is->priv->idle_lock);
+	g_rec_mutex_clear (&is->priv->idle_lock);
 	g_main_loop_unref (is->priv->idle_main_loop);
 	g_main_context_unref (is->priv->idle_main_context);
 
@@ -7993,7 +7987,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	main_context = g_main_context_new ();
 
-	g_mutex_init (&is->priv->idle_lock);
+	g_rec_mutex_init (&is->priv->idle_lock);
 	is->priv->idle_main_loop = g_main_loop_new (main_context, FALSE);
 	is->priv->idle_main_context = g_main_context_ref (main_context);
 
