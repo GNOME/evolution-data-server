@@ -151,4 +151,7 @@ CLEANFILES = $(gsettings_SCHEMAS:.xml=.valid)
 
 DISTCLEANFILES = $(pkgconfig_DATA)
 
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
+
 -include $(top_srcdir)/git.mk

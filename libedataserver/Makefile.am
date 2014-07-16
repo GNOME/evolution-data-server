@@ -210,6 +210,9 @@ DISTCLEANFILES = \
 	$(pkgconfig_DATA) \
 	$(NULL)
 
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
+
 -include $(INTROSPECTION_MAKEFILE)
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = \
