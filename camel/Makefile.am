@@ -409,4 +409,7 @@ EXTRA_DIST = \
 CLEANFILES = $(BUILT_SOURCES)
 DISTCLEANFILES = $(pkgconfig_DATA)
 
+dist-hook:
+	cd $(distdir); rm -f $(BUILT_SOURCES)
+
 -include $(top_srcdir)/git.mk
