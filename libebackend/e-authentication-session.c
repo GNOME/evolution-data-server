@@ -322,8 +322,7 @@ authentication_session_constructed (GObject *object)
 	session = E_AUTHENTICATION_SESSION (object);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_authentication_session_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_authentication_session_parent_class)->constructed (object);
 
 	/* If the server knows about the data source UID we've been
 	 * given, then we can auto-configure our own prompt strings. */

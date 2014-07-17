@@ -899,8 +899,7 @@ ubuntu_online_accounts_constructed (GObject *object)
 		extension);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_ubuntu_online_accounts_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_ubuntu_online_accounts_parent_class)->constructed (object);
 }
 
 static gboolean

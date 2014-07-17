@@ -1290,8 +1290,7 @@ e_cal_backend_contacts_constructed (GObject *object)
 		(GDestroyNotify) g_object_unref);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->constructed (object);
 }
 
 /* Object initialization function for the contacts backend */
