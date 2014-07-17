@@ -1456,6 +1456,25 @@ e_contact_vcard_attribute (EContactField field_id)
 }
 
 /**
+ * e_contact_field_is_string:
+ * @field_id: an #EContactField
+ *
+ * Returns whether the @field_id is of a string type,
+ * thus it can be used with e_contact_get_const().
+ *
+ * Returns: Whether the @field_id is of a string type.
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_contact_field_is_string (EContactField field_id)
+{
+	g_return_val_if_fail (field_id >= 1 && field_id < E_CONTACT_FIELD_LAST, FALSE);
+
+	return (field_info[field_id].t & E_CONTACT_FIELD_TYPE_STRING) != 0;
+}
+
+/**
  * e_contact_field_id:
  * @field_name: a string representing a contact field
  *
@@ -1710,7 +1729,8 @@ e_contact_get (EContact *contact,
  * @field_id: an #EContactField
  *
  * Gets the value of @contact's field specified by @field_id, caching
- * the result so it can be freed later.
+ * the result so it can be freed later. Use e_contact_field_is_string()
+ * to check whether the field can be used here.
  *
  * Returns: (transfer none): Depends on the field's type, owned by the
  * #EContact.

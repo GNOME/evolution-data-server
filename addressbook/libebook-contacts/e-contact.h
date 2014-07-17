@@ -424,6 +424,7 @@ GType		e_contact_field_type		(EContactField field_id);
 const gchar *	e_contact_field_name		(EContactField field_id);
 const gchar *	e_contact_pretty_name		(EContactField field_id);
 const gchar *	e_contact_vcard_attribute	(EContactField field_id);
+gboolean	e_contact_field_is_string	(EContactField field_id);
 EContactField	e_contact_field_id		(const gchar *field_name);
 EContactField	e_contact_field_id_from_vcard	(const gchar *vcard_field);
 

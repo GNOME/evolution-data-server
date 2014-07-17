@@ -961,7 +961,7 @@ func_exists (struct _ESExp *f,
 
 	if (argc == 1
 	    && argv[0]->type == ESEXP_RES_STRING) {
-		gchar *propname;
+		const gchar *propname;
 		struct prop_info *info = NULL;
 		gint i;
 		gboolean saw_any = FALSE;
@@ -1012,15 +1012,22 @@ func_exists (struct _ESExp *f,
 			 * against value in this field only */
 			EContactField fid = e_contact_field_id (propname);
 
-			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST) {
+			if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST &&
+			    e_contact_field_is_string (fid)) {
 				const gchar *prop = e_contact_get_const (ctx->contact, fid);
 
 				if (prop && *prop)
 					truth = TRUE;
 			} else {
 				/* is is not a known EContact field, try with EVCard attributes */
-				EVCardAttribute *attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
-				GList *l, *values = attr ? e_vcard_attribute_get_values (attr) : NULL;
+				EVCardAttribute *attr;
+				GList *l, *values;
+
+				if (fid >= E_CONTACT_FIELD_FIRST && fid < E_CONTACT_FIELD_LAST)
+					propname = e_contact_vcard_attribute (fid);
+
+				attr = e_vcard_get_attribute (E_VCARD (ctx->contact), propname);
+				values = attr ? e_vcard_attribute_get_values (attr) : NULL;
 
 				for (l = values; l && !truth; l = l->next) {
 					const gchar *value = l->data;
