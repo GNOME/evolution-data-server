@@ -61,8 +61,7 @@ offline_store_constructed (GObject *object)
 	priv = CAMEL_OFFLINE_STORE_GET_PRIVATE (object);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_offline_store_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (camel_offline_store_parent_class)->constructed (object);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (object));
 	priv->online = camel_session_get_online (session);

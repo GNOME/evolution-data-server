@@ -7829,6 +7829,9 @@ imapx_server_constructed (GObject *object)
 	CamelIMAPXServer *server;
 	CamelIMAPXServerClass *class;
 
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_imapx_server_parent_class)->constructed (object);
+
 	server = CAMEL_IMAPX_SERVER (object);
 	class = CAMEL_IMAPX_SERVER_GET_CLASS (server);
 

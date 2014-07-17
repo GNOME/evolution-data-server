@@ -619,8 +619,7 @@ cal_backend_store_constructed (GObject *object)
 	g_object_unref (timezone_cache);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_cal_backend_store_parent_class)->constructed (object);
 }
 
 static gboolean

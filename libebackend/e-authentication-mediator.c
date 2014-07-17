@@ -718,8 +718,7 @@ authentication_mediator_constructed (GObject *object)
 			mediator, (GDestroyNotify) NULL);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_authentication_mediator_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_authentication_mediator_parent_class)->constructed (object);
 }
 
 static gboolean

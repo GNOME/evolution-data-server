@@ -169,8 +169,7 @@ source_mail_signature_constructed (GObject *object)
 	priv = E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE (object);
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_source_mail_signature_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_source_mail_signature_parent_class)->constructed (object);
 
 	extension = E_SOURCE_EXTENSION (object);
 	source = e_source_extension_ref_source (extension);

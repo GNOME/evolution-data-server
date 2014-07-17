@@ -369,8 +369,7 @@ source_camel_constructed (GObject *object)
 	guint array_index = 0;
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_source_camel_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_source_camel_parent_class)->constructed (object);
 
 	class = E_SOURCE_CAMEL_GET_CLASS (object);
 	priv = E_SOURCE_CAMEL_GET_PRIVATE (object);

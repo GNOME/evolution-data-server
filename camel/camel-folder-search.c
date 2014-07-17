@@ -754,8 +754,7 @@ folder_search_constructed (GObject *object)
 	gint ii;
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (camel_folder_search_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (camel_folder_search_parent_class)->constructed (object);
 
 	search = CAMEL_FOLDER_SEARCH (object);
 	class = CAMEL_FOLDER_SEARCH_GET_CLASS (search);

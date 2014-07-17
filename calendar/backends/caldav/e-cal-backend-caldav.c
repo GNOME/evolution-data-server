@@ -5239,14 +5239,6 @@ e_cal_backend_caldav_finalize (GObject *object)
 }
 
 static void
-cal_backend_caldav_constructed (GObject *object)
-{
-	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_cal_backend_caldav_parent_class)->
-		constructed (object);
-}
-
-static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
 	SoupSessionFeature *feature;
@@ -5325,7 +5317,6 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 
 	object_class->dispose = e_cal_backend_caldav_dispose;
 	object_class->finalize = e_cal_backend_caldav_finalize;
-	object_class->constructed = cal_backend_caldav_constructed;
 
 	backend_class->get_backend_property = caldav_get_backend_property;
 	backend_class->shutdown = caldav_shutdown;

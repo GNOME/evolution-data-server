@@ -150,8 +150,7 @@ gdata_oauth2_authorizer_constructed (GObject *object)
 	GList *domains;
 
 	/* Chain up to parent's constructed() method. */
-	G_OBJECT_CLASS (e_gdata_oauth2_authorizer_parent_class)->
-		constructed (object);
+	G_OBJECT_CLASS (e_gdata_oauth2_authorizer_parent_class)->constructed (object);
 
 	priv = E_GDATA_OAUTH2_AUTHORIZER_GET_PRIVATE (object);
 
