@@ -320,6 +320,7 @@ typedef enum {
 	IMAPX_IDLE_STARTED,	/* IDLE continuation received; IDLE active */
 	IMAPX_IDLE_CANCEL,	/* Cancelled from ISSUED state; need to send
 				   DONE as soon as we receive continuation */
+	IMAPX_IDLE_WAIT_DONE	/* DONE was issued, waiting for a confirmation response */
 } CamelIMAPXIdleState;
 
 #define IMAPX_IDLE_DWELL_TIME	2 /* Number of seconds to remain in PENDING
@@ -1472,7 +1473,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 						"waiting for idle to stop \n");
 					/* if there are more pending commands,
 					 * then they should be processed too */
-					break;
+					return;
 
 				case IMAPX_IDLE_STOP_ERROR:
 					return;
@@ -3056,9 +3057,9 @@ imapx_continuation (CamelIMAPXServer *is,
 		c (is->tagprefix, "Got continuation response for IDLE \n");
 		g_rec_mutex_lock (&is->priv->idle_lock);
 		/* We might have actually sent the DONE already! */
-		if (is->priv->idle_state == IMAPX_IDLE_ISSUED)
+		if (is->priv->idle_state == IMAPX_IDLE_ISSUED) {
 			is->priv->idle_state = IMAPX_IDLE_STARTED;
-		else if (is->priv->idle_state == IMAPX_IDLE_CANCEL) {
+		} else if (is->priv->idle_state == IMAPX_IDLE_CANCEL) {
 			/* IDLE got cancelled after we sent the command, while
 			 * we were waiting for this continuation. Send DONE
 			 * immediately. */
@@ -3066,7 +3067,9 @@ imapx_continuation (CamelIMAPXServer *is,
 				g_rec_mutex_unlock (&is->priv->idle_lock);
 				return FALSE;
 			}
-			is->priv->idle_state = IMAPX_IDLE_OFF;
+			is->priv->idle_state = IMAPX_IDLE_WAIT_DONE;
+		} else if (is->priv->idle_state == IMAPX_IDLE_WAIT_DONE) {
+			/* Do nothing, just wait */
 		} else {
 			c (
 				is->tagprefix, "idle starts in wrong state %d\n",
@@ -3687,10 +3690,13 @@ imapx_call_idle (gpointer data)
 	g_rec_mutex_lock (&is->priv->idle_lock);
 	g_source_unref (is->priv->idle_pending);
 	is->priv->idle_pending = NULL;
-	g_rec_mutex_unlock (&is->priv->idle_lock);
 
-	if (is->priv->idle_state != IMAPX_IDLE_PENDING)
+	if (is->priv->idle_state != IMAPX_IDLE_PENDING) {
+		g_rec_mutex_unlock (&is->priv->idle_lock);
 		goto exit;
+	}
+
+	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	g_mutex_lock (&is->priv->select_lock);
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
@@ -3797,24 +3803,28 @@ imapx_stop_idle (CamelIMAPXServer *is,
 	switch (is->priv->idle_state) {
 		case IMAPX_IDLE_ISSUED:
 			is->priv->idle_state = IMAPX_IDLE_CANCEL;
-			/* fall through */
+			result = IMAPX_IDLE_STOP_SUCCESS;
+			break;
 
 		case IMAPX_IDLE_CANCEL:
+		case IMAPX_IDLE_WAIT_DONE:
 			result = IMAPX_IDLE_STOP_SUCCESS;
 			break;
 
 		case IMAPX_IDLE_STARTED:
 			if (imapx_command_idle_stop (is, error)) {
 				result = IMAPX_IDLE_STOP_SUCCESS;
+				is->priv->idle_state = IMAPX_IDLE_WAIT_DONE;
 			} else {
 				result = IMAPX_IDLE_STOP_ERROR;
+				is->priv->idle_state = IMAPX_IDLE_OFF;
 				goto exit;
 			}
-			/* fall through */
+			break;
 
 		case IMAPX_IDLE_PENDING:
 			is->priv->idle_state = IMAPX_IDLE_OFF;
-			/* fall through */
+			break;
 
 		case IMAPX_IDLE_OFF:
 			break;
@@ -3834,7 +3844,12 @@ imapx_start_idle (CamelIMAPXServer *is)
 
 	g_rec_mutex_lock (&is->priv->idle_lock);
 
-	g_return_if_fail (is->priv->idle_state == IMAPX_IDLE_OFF);
+	if (is->priv->idle_state != IMAPX_IDLE_OFF) {
+		g_warn_if_fail (is->priv->idle_state == IMAPX_IDLE_OFF);
+		g_rec_mutex_unlock (&is->priv->idle_lock);
+		return;
+	}
+
 	is->priv->idle_state = IMAPX_IDLE_PENDING;
 
 	if (is->priv->idle_thread == NULL) {
