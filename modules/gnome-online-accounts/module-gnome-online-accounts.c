@@ -1282,6 +1282,9 @@ gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
 	g_object_unref (goa_account);
 	g_object_unref (goa_object);
 
+	if (error && *error)
+		g_dbus_error_strip_remote_error (*error);
+
 	g_prefix_error (
 		error,
 		_("Failed to obtain an access token for '%s': "),
