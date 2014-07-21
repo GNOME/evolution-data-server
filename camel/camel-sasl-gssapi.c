@@ -114,6 +114,7 @@ struct _CamelSaslGssapiPrivate {
 	gss_name_t target;
 	gchar *override_host;
 	gchar *override_user;
+	gss_OID used_mech;
 };
 
 #endif /* HAVE_KRB5 */
@@ -123,8 +124,49 @@ G_DEFINE_TYPE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
 #ifdef HAVE_KRB5
 
 static void
-gssapi_set_exception (OM_uint32 major,
-                      OM_uint32 minor,
+gssapi_set_mechanism_exception (gss_OID mech, OM_uint32 minor, GError **error)
+{
+	OM_uint32 tmajor, tminor, message_status = 0;
+	char *message = NULL;
+
+	do {
+		char *message_part;
+		char *new_message;
+		gss_buffer_desc status_string;
+
+		tmajor = gss_display_status (&tminor, minor, GSS_C_MECH_CODE,
+					     mech, &message_status,
+					     &status_string);
+
+		if (tmajor != GSS_S_COMPLETE) {
+			message_part = g_strdup_printf (
+				_("(Could not retrieve GSSAPI status code for %x: %x %x)"),
+				minor, tmajor, tminor);
+			message_status = 0;
+		} else {
+			message_part = g_strdup (status_string.value);
+			gss_release_buffer (&tminor, &status_string);
+		}
+		if (message) {
+			new_message = g_strconcat (message, message_part, NULL);
+			free (message_part);
+		} else {
+			new_message = message_part;
+		}
+		g_free (message);
+		message = new_message;
+	} while (message_status != 0);
+
+	g_set_error (
+		error, CAMEL_SERVICE_ERROR,
+		CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+		"%s", message);
+
+	g_free (message);
+}
+
+static void
+gssapi_set_exception (gss_OID mech, OM_uint32 major, OM_uint32 minor,
                       GError **error)
 {
 	const gchar *str;
@@ -169,7 +211,10 @@ gssapi_set_exception (OM_uint32 major,
 		str = _("The referenced credentials have expired.");
 		break;
 	case GSS_S_FAILURE:
-		str = error_message (minor);
+		if (mech == GSS_C_OID_KRBV5_DES)
+			str = error_message (minor);
+		else
+			return gssapi_set_mechanism_exception (mech, minor, error);
 		break;
 	default:
 		str = _("Bad authentication response from server.");
@@ -280,7 +325,6 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	gss_buffer_t input_token;
 	gint conf_state;
 	gss_qop_t qop;
-	gss_OID mech;
 	gchar *str;
 	struct addrinfo *ai, hints;
 	const gchar *service_name;
@@ -338,7 +382,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		g_free (str);
 
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (major, minor, error);
+			gssapi_set_exception (GSS_C_OID_KRBV5_DES, major, minor, error);
 			goto exit;
 		}
 
@@ -368,7 +412,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			GSS_C_REPLAY_FLAG |
 			GSS_C_SEQUENCE_FLAG,
 			0, GSS_C_NO_CHANNEL_BINDINGS,
-			input_token, &mech, &outbuf, &flags, &time);
+			input_token, &priv->used_mech, &outbuf, &flags, &time);
 
 		switch (major) {
 		case GSS_S_COMPLETE:
@@ -378,13 +422,14 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			priv->state = GSSAPI_STATE_CONTINUE_NEEDED;
 			break;
 		default:
-			if (major == (OM_uint32) GSS_S_FAILURE &&
+			if (priv->used_mech == GSS_C_OID_KRBV5_DES &&
+			    major == (OM_uint32) GSS_S_FAILURE &&
 			    (minor == (OM_uint32) KRB5KRB_AP_ERR_TKT_EXPIRED ||
 			     minor == (OM_uint32) KRB5KDC_ERR_NEVER_VALID) &&
 			    send_dbus_message (user))
 					goto challenge;
 
-			gssapi_set_exception (major, minor, error);
+			gssapi_set_exception (priv->used_mech, major, minor, error);
 			goto exit;
 		}
 
@@ -408,7 +453,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 
 		major = gss_unwrap (&minor, priv->ctx, &inbuf, &outbuf, &conf_state, &qop);
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (major, minor, error);
+			gssapi_set_exception (priv->used_mech, major, minor, error);
 			goto exit;
 		}
 
@@ -447,7 +492,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 
 		major = gss_wrap (&minor, priv->ctx, FALSE, qop, &inbuf, &conf_state, &outbuf);
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (major, minor, error);
+			gssapi_set_exception (priv->used_mech, major, minor, error);
 			g_free (str);
 			goto exit;
 		}
