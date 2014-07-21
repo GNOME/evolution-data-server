@@ -77,6 +77,12 @@ extern gss_OID gss_nt_service_name;
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_SASL_GSSAPI, CamelSaslGssapiPrivate))
 
+static const char spnego_OID[] = "\x2b\x06\x01\x05\x05\x02";
+static const gss_OID_desc gss_mech_spnego = {
+       6,
+       &spnego_OID
+};
+
 #ifndef GSS_C_OID_KRBV5_DES
 #define GSS_C_OID_KRBV5_DES GSS_C_NO_OID
 #endif
@@ -114,7 +120,7 @@ struct _CamelSaslGssapiPrivate {
 	gss_name_t target;
 	gchar *override_host;
 	gchar *override_user;
-	gss_OID used_mech;
+	gss_OID mech, used_mech;
 };
 
 #endif /* HAVE_KRB5 */
@@ -373,6 +379,10 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		if (ai == NULL)
 			goto exit;
 
+		/* HTTP authentication should be SPNEGO not just KRB5 */
+		if (!strcmp (service_name, "HTTP"))
+			priv->mech = (gss_OID)&gss_mech_spnego;
+
 		str = g_strdup_printf ("%s@%s", service_name, ai->ai_canonname);
 		camel_freeaddrinfo (ai);
 
@@ -382,7 +392,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		g_free (str);
 
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (GSS_C_OID_KRBV5_DES, major, minor, error);
+			gssapi_set_exception (priv->mech, major, minor, error);
 			goto exit;
 		}
 
@@ -407,7 +417,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		major = gss_init_sec_context (
 			&minor, GSS_C_NO_CREDENTIAL,
 			&priv->ctx, priv->target,
-			GSS_C_OID_KRBV5_DES,
+			priv->mech,
 			GSS_C_MUTUAL_FLAG |
 			GSS_C_REPLAY_FLAG |
 			GSS_C_SEQUENCE_FLAG,
@@ -550,6 +560,7 @@ camel_sasl_gssapi_init (CamelSaslGssapi *sasl)
 	sasl->priv->target = GSS_C_NO_NAME;
 	sasl->priv->override_host = NULL;
 	sasl->priv->override_user = NULL;
+	sasl->priv->mech = GSS_C_OID_KRBV5_DES;
 #endif /* HAVE_KRB5 */
 }
 
