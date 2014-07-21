@@ -145,8 +145,8 @@ gssapi_set_mechanism_exception (gss_OID mech, OM_uint32 minor, GError **error)
 
 		if (tmajor != GSS_S_COMPLETE) {
 			message_part = g_strdup_printf (
-				_("(Could not retrieve GSSAPI status code for %x: %x %x)"),
-				minor, tmajor, tminor);
+				_("(Unknown GSSAPI mechanism code: %x)"),
+				minor);
 			message_status = 0;
 		} else {
 			message_part = g_strdup (status_string.value);
