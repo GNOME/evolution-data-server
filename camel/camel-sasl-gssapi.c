@@ -217,10 +217,7 @@ gssapi_set_exception (gss_OID mech, OM_uint32 major, OM_uint32 minor,
 		str = _("The referenced credentials have expired.");
 		break;
 	case GSS_S_FAILURE:
-		if (mech == GSS_C_OID_KRBV5_DES)
-			str = error_message (minor);
-		else
-			return gssapi_set_mechanism_exception (mech, minor, error);
+		return gssapi_set_mechanism_exception (mech, minor, error);
 		break;
 	default:
 		str = _("Bad authentication response from server.");
