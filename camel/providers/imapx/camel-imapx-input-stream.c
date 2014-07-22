@@ -679,6 +679,7 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 	guchar *o, *p, *e;
 	guint literal;
 	gint digits;
+	gboolean is_literal8 = FALSE;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_INPUT_STREAM (is), IMAPX_TOK_ERROR);
 	g_return_val_if_fail (data != NULL, IMAPX_TOK_ERROR);
@@ -711,6 +712,21 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 		c = *p++;
 	} while (c == ' ' || c == '\r');
 
+	if (c == '~') {
+		if (p >= e) {
+			is->priv->ptr = p;
+			if (imapx_input_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
+				return IMAPX_TOK_ERROR;
+			p = is->priv->ptr;
+			e = is->priv->end;
+		}
+
+		if (*p == '{') {
+			c = *p++;
+			is_literal8 = TRUE;
+		}
+	}
+
 	/*strchr("\n*()[]+", c)*/
 	if (imapx_is_token_char (c)) {
 		is->priv->ptr = p;
@@ -723,6 +739,18 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 				c = *p++;
 				if (isdigit (c) && literal < (UINT_MAX / 10)) {
 					literal = literal * 10 + (c - '0');
+				} else if (is_literal8 && c == '+') {
+					if (p >= e) {
+						is->priv->ptr = p;
+						if (imapx_input_stream_fill (is, cancellable, error) == IMAPX_TOK_ERROR)
+							return IMAPX_TOK_ERROR;
+						p = is->priv->ptr;
+						e = is->priv->end;
+					}
+
+					/* The '+' can be only at the end of the literal8 token */
+					if (*p != '}')
+						goto protocol_error;
 				} else if (c == '}') {
 					while (1) {
 						while (p < e) {
