@@ -47,7 +47,7 @@ e_book_backend_webdav_factory_class_init (EBookBackendFactoryClass *class)
 
 	backend_factory_class = E_BACKEND_FACTORY_CLASS (class);
 	backend_factory_class->e_module = e_module;
-	backend_factory_class->share_subprocess = FALSE;
+	backend_factory_class->share_subprocess = TRUE;
 
 	class->factory_name = FACTORY_NAME;
 	class->backend_type = E_TYPE_BOOK_BACKEND_WEBDAV;

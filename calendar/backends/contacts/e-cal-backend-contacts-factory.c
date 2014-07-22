@@ -48,7 +48,7 @@ e_cal_backend_contacts_events_factory_class_init (ECalBackendFactoryClass *class
 
 	backend_factory_class = E_BACKEND_FACTORY_CLASS (class);
 	backend_factory_class->e_module = e_module;
-	backend_factory_class->share_subprocess = FALSE;
+	backend_factory_class->share_subprocess = TRUE;
 
 	class->factory_name = FACTORY_NAME;
 	class->component_kind = ICAL_VEVENT_COMPONENT;
