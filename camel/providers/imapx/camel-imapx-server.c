@@ -3927,7 +3927,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		GQueue trash = G_QUEUE_INIT;
 		GList *list, *link;
 
-		c (is->tagprefix, "Select failed\n");
+		c (is->tagprefix, "Select failed: %s\n", local_error ? local_error->message : "Unknown error");
 
 		g_mutex_lock (&is->priv->select_lock);
 		select_closing = g_weak_ref_get (&is->priv->select_closing);
