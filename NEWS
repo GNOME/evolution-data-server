@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.13.4 2014-07-28
+---------------------------------------
+
+Bug Fixes:
+	Bug 731440 - [IMAPx] Moved folder within account duplicated in UI (Milan Crha)
+	Bug 728653 - Fix Google Talk support (Christian Schaarschmidt)
+	Bug 732263 - Deleting Search Folder very slow (Milan Crha)
+	Bug 721712 - Writeable calendars can report as read-only after open (Milan Crha)
+	Bug 729172 - [IMAPx] Cannot retrieve certain messages (Ian Campbell)
+	Bug 732607 - Crash in imapx_job_fetch_new_messages_start() (Milan Crha)
+	Bug 732366 - [IMAPx] Stuck FETCH command when using IDLE (Milan Crha)
+	Bug 732800 - Generated files in tests/book-migration/db are not git-ignored (Jonas Hahnfeld)
+	Bug 732801 - test-driver is not git-ignored (Jonas Hahnfeld)
+	Bug 732730 - Addressbook: Notify views after locale change (Mateusz Polrola)
+	Bug 732948 - Add backend-per-process support (Fabiano Fidêncio)
+	Bug 733183 - Do not include built sources in distribution (Milan Crha)
+	Bug 733081 - [IMAPx] Job stuck after send when saving to IMAP server (Milan Crha)
+	Bug 732983 - e_book_query_field_exists() fails with non-string fields (Milan Crha)
+	Bug 733081 - [IMAPx] Job stuck after send when saving to IMAP server (take 2) (Milan Crha)
+	Bug 732627 - [IMAPx] Add support for literal8 in nstring (Milan Crha)
+
+Miscellaneous:
+	Make file references in sgml files source-dir capable (Milan Crha)
+	data-test-utils.c: Make sure Camel's provider dir exists during tests (Milan Crha)
+	Fix handling of NTLM passwords of 28 characters (David Woodhouse)
+	Correct return value at pop3_folder_get_message_sync() (Milan Crha)
+	Remove libdb related headers from libebackend.h (Milan Crha)
+	Remove unused and obsolete evolution-data-server-zip.in (Milan Crha)
+	Remove libdb related headers from libedata-book.h (Milan Crha)
+	Do not delete passwords during authentication session (Milan Crha)
+	g_subprocess_launcher_set_child_setup() is available only for Unixes (Milan Crha)
+	Add missing chain-up-s to parent's constructed() method (Milan Crha)
+	Strip remote GDBus errors after talking to GOA (Milan Crha)
+	camel-sasl-gssapi: Generate correct error messages for non-krb5 mechanisms (Daniel Sands)
+	camel-sasl-gssapi: Use SPNEGO for HTTP auth not bare krb5 (David Woodhouse)
+	Improve error on failed conversion (David Woodhouse)
+	camel-sasl-gssapi: Always use gss_display_status() for mechanism error code (David Woodhouse)
+	Share subprocesses for built-in backends by default (Milan Crha)
+	Correct typo in a CAMEL_CHECK_LOCAL_GERROR() debugging macro (Milan Crha)
+	EBook/CalClient reference imbalance after commit 033215f for bug 721712 (Milan Crha)
+
+Translations:
+	Balázs Úr (hu)
+	Yuri Myasoedov (ru)
+
 Evolution-Data-Server 3.13.3 2014-06-23
 ---------------------------------------
 
