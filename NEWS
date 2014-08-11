@@ -1,3 +1,25 @@
+Evolution-Data-Server 3.12.5 2014-08-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 733183 - Do not include built sources in distribution (Milan Crha)
+	Bug 732983 - e_book_query_field_exists() fails with non-string fields (Milan Crha)
+	Bug 733081 - [IMAPx] Job stuck after send when saving to IMAP server (Milan Crha)
+	Bug 732627 - [IMAPx] Add support for literal8 in nstring (Milan Crha)
+
+Miscellaneous:
+	Correct the test for g_subprocess_launcher_set_child_setup() availability (Milan Crha)
+	Add missing chain-up-s to parent's constructed() method (Milan Crha)
+	Strip remote GDBus errors after talking to GOA (Milan Crha)
+	[IMAPx] Add actual error message into 'Select failed' debug log (Milan Crha)
+
+Translations:
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+	Kjartan Maraas (nb)
+	YunQiang Su (zh_CN)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.12.4 2014-07-14
 ---------------------------------------
 
