@@ -2665,15 +2665,16 @@ ebsql_set_locale_internal (EBookSqlite *ebsql,
 
 /* Called with the lock held and inside a transaction */
 static gboolean
-ebsql_init_is_populated (EBookSqlite *ebsql,
-                         gint previous_schema,
-                         GError **error)
+ebsql_init_legacy_keys (EBookSqlite *ebsql,
+                        gint previous_schema,
+                        GError **error)
 {
 	gboolean success = TRUE;
 
 	/* Schema 8 is when we moved from EBookSqlite */
 	if (previous_schema >= 1 && previous_schema < 8) {
 		gint is_populated = 0;
+		gchar *sync_data = NULL;
 
 		/* We need to hold on to the value of any previously set 'is_populated' flag */
 		success = ebsql_exec_printf (
@@ -2690,6 +2691,21 @@ ebsql_init_is_populated (EBookSqlite *ebsql,
 				E_BOOK_SQL_IS_POPULATED_KEY,
 				is_populated ? "1" : "0",
 				ebsql->priv->folderid);
+		}
+
+		/* Repeat for 'sync_data' */
+		success = ebsql_exec_printf (
+			ebsql, "SELECT sync_data FROM folders WHERE folder_id = %Q",
+			get_string_cb, &sync_data, NULL, error, ebsql->priv->folderid);
+
+		if (success) {
+			success = ebsql_exec_printf (
+				ebsql, "INSERT or REPLACE INTO keys (key, value, folder_id) values (%Q, %Q, %Q)",
+				NULL, NULL, NULL, error,
+				E_BOOK_SQL_SYNC_DATA_KEY,
+				sync_data, ebsql->priv->folderid);
+
+			g_free (sync_data);
 		}
 	}
 
@@ -2917,7 +2933,7 @@ ebsql_new_internal (const gchar *path,
 
 	/* When porting from older schemas, we need to port the old 'is-populated' flag */
 	if (success)
-		success = ebsql_init_is_populated (ebsql, previous_schema, error);
+		success = ebsql_init_legacy_keys (ebsql, previous_schema, error);
 
 	/* Load / resolve the current locale setting
 	 *
