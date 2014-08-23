@@ -208,7 +208,7 @@ ebsql_init_debug (void)
 #define EBSQL_LOCK_OR_RETURN(ebsql, cancellable, val) \
 	G_STMT_START { \
 		EBSQL_LOCK_MUTEX (&(ebsql)->priv->lock); \
-		if (cancellable != NULL && \
+		if (cancellable != NULL && (ebsql)->priv->cancel &&	    \
 		    (ebsql)->priv->cancel != cancellable) { \
 			g_warning ("The GCancellable passed to `%s' " \
 				   "is not the same as the cancel object " \
