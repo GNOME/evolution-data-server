@@ -69,6 +69,19 @@
  **/
 #define E_BOOK_SQL_IS_POPULATED_KEY "eds-reserved-namespace-is-populated"
 
+/**
+ * E_BOOK_SQL_SYNC_DATA_KEY:
+ *
+ * This key can be used with e_book_sqlite_get_key_value().
+ *
+ * In the case of a migration from an older SQLite, any value which
+ * was previously stored with e_book_sqlitedb_set_sync_data()
+ * can be retrieved with this key.
+ *
+ * Since: 3.12
+ **/
+#define E_BOOK_SQL_SYNC_DATA_KEY "eds-reserved-namespace-sync-data"
+
 G_BEGIN_DECLS
 
 typedef struct _EBookSqlite EBookSqlite;
