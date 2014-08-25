@@ -1,3 +1,17 @@
+Evolution-Data-Server 3.13.5 2014-08-25
+---------------------------------------
+
+Bug Fixes:
+	[IMAPx] Add actual error message into 'Select failed' debug log (Milan Crha)
+
+Miscellaneous:
+	doap category core (Olav Vitters)
+	doap: add <programming-language> (Andre Klapper)
+
+Translations:
+	YunQiang Su (zh_CN)
+	Inaki Larranaga Murgoitio (eu)
+
 Evolution-Data-Server 3.13.4 2014-07-28
 ---------------------------------------
 
