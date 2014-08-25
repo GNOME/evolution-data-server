@@ -244,7 +244,9 @@ source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
 
 	soup_uri_set_user (soup_uri, user);
 	soup_uri_set_host (soup_uri, host);
-	soup_uri_set_port (soup_uri, port);
+
+	if (port > 0)
+		soup_uri_set_port (soup_uri, port);
 
 	/* SoupURI doesn't like NULL paths. */
 	soup_uri_set_path (soup_uri, (path != NULL) ? path : "");

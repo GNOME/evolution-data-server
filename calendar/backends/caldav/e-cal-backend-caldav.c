@@ -133,6 +133,8 @@ struct _ECalBackendCalDAVPrivate {
 };
 
 /* Forward Declarations */
+static void	e_caldav_backend_initable_init
+				(GInitableIface *interface);
 static void	caldav_source_authenticator_init
 				(ESourceAuthenticatorInterface *iface);
 
@@ -140,6 +142,9 @@ G_DEFINE_TYPE_WITH_CODE (
 	ECalBackendCalDAV,
 	e_cal_backend_caldav,
 	E_TYPE_CAL_BACKEND_SYNC,
+	G_IMPLEMENT_INTERFACE (
+		G_TYPE_INITABLE,
+		e_caldav_backend_initable_init)
 	G_IMPLEMENT_INTERFACE (
 		E_TYPE_SOURCE_AUTHENTICATOR,
 		caldav_source_authenticator_init))
@@ -5238,11 +5243,83 @@ e_cal_backend_caldav_finalize (GObject *object)
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
+static gboolean
+caldav_backend_initable_init (GInitable *initable,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	ECalBackendCalDAVPrivate *priv;
+	SoupSessionFeature *feature;
+	ESource *source;
+	const gchar *extension_name;
+	gchar *auth_method = NULL;
+	gboolean success = TRUE;
+
+	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (initable);
+
+	feature = soup_session_get_feature (
+		priv->session, SOUP_TYPE_AUTH_MANAGER);
+
+	/* Add the "Bearer" auth type to support OAuth 2.0. */
+	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+	g_mutex_init (&priv->bearer_auth_error_lock);
+
+	/* Preload the SoupAuthManager with a valid "Bearer" token
+	 * when using OAuth 2.0.  This avoids an extra unauthorized
+	 * HTTP round-trip, which apparently Google doesn't like. */
+
+	source = e_backend_get_source (E_BACKEND (initable));
+
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	if (e_source_has_extension (source, extension_name)) {
+		ESourceAuthentication *extension;
+
+		extension = e_source_get_extension (source, extension_name);
+		auth_method = e_source_authentication_dup_method (extension);
+	}
+
+	if (g_strcmp0 (auth_method, "OAuth2") == 0) {
+		ESourceWebdav *extension;
+		SoupAuth *soup_auth;
+		SoupURI *soup_uri;
+		gchar *access_token = NULL;
+		gint expires_in_seconds = -1;
+
+		extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
+		extension = e_source_get_extension (source, extension_name);
+		soup_uri = e_source_webdav_dup_soup_uri (extension);
+
+		soup_auth = g_object_new (
+			E_TYPE_SOUP_AUTH_BEARER,
+			SOUP_AUTH_HOST, soup_uri->host, NULL);
+
+		success = e_source_get_oauth2_access_token_sync (
+			source, cancellable, &access_token,
+			&expires_in_seconds, error);
+
+		if (success) {
+			e_soup_auth_bearer_set_access_token (
+				E_SOUP_AUTH_BEARER (soup_auth),
+				access_token, expires_in_seconds);
+
+			soup_auth_manager_use_auth (
+				SOUP_AUTH_MANAGER (feature),
+				soup_uri, soup_auth);
+		}
+
+		g_free (access_token);
+		g_object_unref (soup_auth);
+		soup_uri_free (soup_uri);
+	}
+
+	g_free (auth_method);
+
+	return success;
+}
+
 static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
-	SoupSessionFeature *feature;
-
 	cbdav->priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (cbdav);
 	cbdav->priv->session = soup_session_sync_new ();
 	g_object_set (
@@ -5256,17 +5333,6 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 		cbdav, "proxy-resolver",
 		cbdav->priv->session, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);
-
-	/* XXX SoupAuthManager is public API as of libsoup 2.42, but
-	 *     this isn't worth bumping our libsoup requirement over.
-	 *     So get the SoupAuthManager GType by its type name. */
-	feature = soup_session_get_feature (
-		cbdav->priv->session,
-		g_type_from_name ("SoupAuthManager"));
-
-	/* Add the "Bearer" auth type to support OAuth 2.0. */
-	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
-	g_mutex_init (&cbdav->priv->bearer_auth_error_lock);
 
 	if (G_UNLIKELY (caldav_debug_show (DEBUG_MESSAGE)))
 		caldav_debug_setup (cbdav->priv->session);
@@ -5337,3 +5403,10 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *class)
 
 	backend_class->start_view = caldav_start_view;
 }
+
+static void
+e_caldav_backend_initable_init (GInitableIface *interface)
+{
+	interface->init = caldav_backend_initable_init;
+}
+
