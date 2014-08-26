@@ -4248,7 +4248,12 @@ func_check (struct _ESExp *f,
 
 	query_type = GPOINTER_TO_UINT (data);
 
-	if (argc == 2 &&
+	if (argc == 1 && query_type == BOOK_QUERY_EXISTS &&
+	    argv[0]->type == ESEXP_RES_STRING) {
+		query_name = argv[0]->value.string;
+
+		field_id = e_contact_field_id (query_name);
+	} else if (argc == 2 &&
 	    argv[0]->type == ESEXP_RES_STRING &&
 	    argv[1]->type == ESEXP_RES_STRING) {
 		query_name = argv[0]->value.string;
