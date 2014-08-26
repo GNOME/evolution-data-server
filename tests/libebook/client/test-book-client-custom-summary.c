@@ -762,6 +762,30 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
+		add_client_test (
+			suites[i].prefix,
+			"/Exists/Email",
+			suites[i].func,
+			e_book_query_field_exists (
+				E_CONTACT_EMAIL),
+			/* There are 13 contacts with email addresses */
+			13,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
+		add_client_test (
+			suites[i].prefix,
+			"/Exists/X509",
+			suites[i].func,
+			e_book_query_field_exists (
+				E_CONTACT_X509_CERT),
+			/* There is 1 contact with a cert listed */
+			1,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 		/*********************************************
 		 *                PHONE NUMBERS              *
 		 *********************************************/
