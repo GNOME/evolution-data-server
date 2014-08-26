@@ -459,7 +459,7 @@ column_info_new (SummaryField *field,
 	if (!info->type) {
 		if (field->type == G_TYPE_STRING)
 			info->type = "TEXT";
-		else if (field->type == G_TYPE_BOOLEAN)
+		else if (field->type == G_TYPE_BOOLEAN || field->type == E_TYPE_CONTACT_CERT)
 			info->type = "INTEGER";
 		else if (field->type == E_TYPE_CONTACT_ATTR_LIST)
 			info->type = "TEXT";
@@ -561,6 +561,7 @@ summary_field_append (GArray *array,
 
 	if (type != G_TYPE_STRING &&
 	    type != G_TYPE_BOOLEAN &&
+	    type != E_TYPE_CONTACT_CERT &&
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
 		EBSQL_SET_ERROR (
 			error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
@@ -655,6 +656,7 @@ summary_field_list_columns (SummaryField *field,
 	g_return_val_if_fail (
 		field->type == G_TYPE_STRING ||
 		field->type == G_TYPE_BOOLEAN ||
+		field->type == E_TYPE_CONTACT_CERT ||
 		field->type == E_TYPE_CONTACT_ATTR_LIST,
 		NULL);
 
@@ -672,13 +674,15 @@ summary_field_list_columns (SummaryField *field,
 	}
 
 	/* Suffix match column */
-	if (field->type != G_TYPE_BOOLEAN && (field->index & INDEX_FLAG (SUFFIX)) != 0) {
+	if (field->type != G_TYPE_BOOLEAN && field->type != E_TYPE_CONTACT_CERT &&
+	    (field->index & INDEX_FLAG (SUFFIX)) != 0) {
 		info = column_info_new (field, folderid, EBSQL_SUFFIX_REVERSE, "TEXT", NULL, "RINDEX");
 		columns = g_slist_prepend (columns, info);
 	}
 
 	/* Phone match columns */
-	if (field->type != G_TYPE_BOOLEAN && (field->index & INDEX_FLAG (PHONE)) != 0) {
+	if (field->type != G_TYPE_BOOLEAN && field->type != E_TYPE_CONTACT_CERT &&
+	    (field->index & INDEX_FLAG (PHONE)) != 0) {
 
 		/* One indexed column for storing the national number */
 		info = column_info_new (field, folderid, EBSQL_SUFFIX_PHONE, "TEXT", NULL, "PINDEX");
@@ -3465,7 +3469,8 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 				g_string_append (string, ", ");
 		}
 
-		if (field->type == G_TYPE_STRING || field->type == G_TYPE_BOOLEAN) {
+		if (field->type == G_TYPE_STRING || field->type == G_TYPE_BOOLEAN ||
+		    field->type == E_TYPE_CONTACT_CERT) {
 
 			g_string_append_c (string, ':');
 			g_string_append (string, field->dbname);
@@ -3641,6 +3646,15 @@ ebsql_run_insert (EBookSqlite *ebsql,
 			val = e_contact_get (contact, field->field_id) ? TRUE : FALSE;
 
 			ret = sqlite3_bind_int (stmt, param_idx++, val ? 1 : 0);
+		} else if (field->type == E_TYPE_CONTACT_CERT) {
+			EContactCert *cert = NULL;
+
+			cert = e_contact_get (contact, field->field_id);
+
+			/* We don't actually store the cert; only a boolean to indicate
+			 * that is *has* a cert. */
+			ret = sqlite3_bind_int (stmt, param_idx++, cert ? 1 : 0);
+			e_contact_cert_free (cert);
 		} else if (field->type != E_TYPE_CONTACT_ATTR_LIST)
 			g_warn_if_reached ();
 	}
@@ -4549,6 +4563,26 @@ query_preflight_check (PreflightContext *context,
 			}
 		}
 
+		if (test->field && test->field->type == E_TYPE_CONTACT_CERT) {
+			/* For certificates, and later potentially other fields,
+			 * the only information in the summary is the fact that
+			 * they exist, or not. So the only check we can do from
+			 * the summary is BOOK_QUERY_EXISTS. */
+			if (field_test != BOOK_QUERY_EXISTS) {
+				context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
+				EBSQL_NOTE (
+					PREFLIGHT,
+					g_printerr (
+						"PREFLIGHT CHECK: "
+						"Cannot perform '%s' check on existence summary field '%s', new status: %s\n",
+						EBSQL_QUERY_TYPE_STR (field_test),
+						EBSQL_FIELD_ID_STR (test->field_id),
+						EBSQL_STATUS_STR (context->status)));
+			}
+			/* Bypass the other checks below which are not appropriate. */
+			return;
+		}
+
 		switch (field_test) {
 		case E_BOOK_QUERY_IS:
 			break;
@@ -5083,7 +5117,11 @@ field_test_query_exists (EBookSqlite *ebsql,
 	SummaryField *field = test->field;
 
 	ebsql_string_append_column (string, field, NULL);
-	ebsql_string_append_printf (string, " IS NOT NULL");
+
+	if (test->field->type == E_TYPE_CONTACT_CERT)
+		ebsql_string_append_printf (string, " IS NOT '0'");
+	else
+		ebsql_string_append_printf (string, " IS NOT NULL");
 }
 
 /* Lookup table for field test generators per EBookQueryTest,
