@@ -27,6 +27,8 @@
 #include <stdio.h>
 
 #include <glib/gi18n-lib.h>
+#include <unicode/uidna.h>
+#include <unicode/ustring.h>
 
 #include "camel-msgport.h"
 #include "camel-net-utils.h"
@@ -693,6 +695,8 @@ camel_getaddrinfo (const gchar *name,
 #ifndef ENABLE_IPv6
 	struct addrinfo myhints;
 #endif
+	gchar *ascii_name;
+
 	g_return_val_if_fail (name != NULL, NULL);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
@@ -712,8 +716,10 @@ camel_getaddrinfo (const gchar *name,
 	hints = &myhints;
 #endif
 
+	ascii_name = camel_host_idna_to_ascii (name);
+
 	msg = g_malloc0 (sizeof (*msg));
-	msg->name = name;
+	msg->name = ascii_name;
 	msg->service = service;
 	msg->hints = hints;
 	msg->res = &res;
@@ -739,6 +745,7 @@ camel_getaddrinfo (const gchar *name,
 		res = NULL;
 
 	cs_freeinfo (msg);
+	g_free (ascii_name);
 
 	camel_operation_pop_message (cancellable);
 
@@ -767,3 +774,75 @@ camel_freeaddrinfo (struct addrinfo *host)
 #endif
 }
 
+/**
+ * camel_host_idna_to_ascii:
+ * @host: Host name, with or without non-ascii letters in utf8
+ *
+ * Converts IDN (Internationalized Domain Name) into ASCII representation.
+ * If there's a failure or the @host has only ASCII letters, then a copy
+ * of @host is returned.
+ *
+ * Returns: Newly allocated string with only ASCII letters describing the @host.
+ *   Free it with g_free() when done with it.
+ *
+ * Since: 3.12.6
+ **/
+gchar *
+camel_host_idna_to_ascii (const gchar *host)
+{
+	UErrorCode uerror = U_ZERO_ERROR;
+	int32_t uhost_len = 0;
+	const gchar *ptr;
+	gchar *ascii = NULL;
+
+	g_return_val_if_fail (host != NULL, NULL);
+
+	ptr = host;
+	while (*ptr > 0)
+		ptr++;
+
+	if (!*ptr) {
+		/* Did read whole buffer, it should be ASCII string already */
+		return g_strdup (host);
+	}
+
+	u_strFromUTF8 (NULL, 0, &uhost_len, host, -1, &uerror);
+	if (uhost_len > 0) {
+		UChar *uhost = g_new0 (UChar, uhost_len + 2);
+
+		uerror = U_ZERO_ERROR;
+		u_strFromUTF8 (uhost, uhost_len + 1, &uhost_len, host, -1, &uerror);
+		if (uerror == U_ZERO_ERROR && uhost_len > 0) {
+			int32_t buffer_len = uhost_len * 6 + 6, nconverted;
+			UChar *buffer = g_new0 (UChar, buffer_len);
+
+			nconverted = uidna_IDNToASCII (uhost, uhost_len, buffer, buffer_len, UIDNA_ALLOW_UNASSIGNED, 0, &uerror);
+			if (uerror == U_ZERO_ERROR && nconverted > 0) {
+				int32_t ascii_len = 0;
+
+				u_strToUTF8 (NULL, 0, &ascii_len, buffer, nconverted, &uerror);
+				if (ascii_len > 0) {
+					uerror = U_ZERO_ERROR;
+					ascii = g_new0 (gchar, ascii_len + 2);
+
+					u_strToUTF8 (ascii, ascii_len + 1, &ascii_len, buffer, nconverted, &uerror);
+					if (uerror == U_ZERO_ERROR && ascii_len > 0) {
+						ascii[ascii_len] = '\0';
+					} else {
+						g_free (ascii);
+						ascii = NULL;
+					}
+				}
+			}
+
+			g_free (buffer);
+		}
+
+		g_free (uhost);
+	}
+
+	if (!ascii)
+		ascii = g_strdup (host);
+
+	return ascii;
+}

@@ -94,6 +94,8 @@ struct addrinfo *
 						 GError **error);
 void		camel_freeaddrinfo		(struct addrinfo *host);
 
+gchar *		camel_host_idna_to_ascii	(const gchar *host);
+
 G_END_DECLS
 
 #ifdef _WIN32

@@ -19,6 +19,7 @@
 
 #include <camel/camel-enumtypes.h>
 #include <camel/camel-settings.h>
+#include <camel/camel-net-utils.h>
 
 #define AUTH_MECHANISM_KEY  "CamelNetworkSettings:auth-mechanism"
 #define HOST_KEY            "CamelNetworkSettings:host"
@@ -227,6 +228,40 @@ camel_network_settings_dup_host (CamelNetworkSettings *settings)
 
 	protected = camel_network_settings_get_host (settings);
 	duplicate = g_strdup (protected);
+
+	G_UNLOCK (property_lock);
+
+	return duplicate;
+}
+
+/**
+ * camel_network_settings_dup_host_ensure_ascii:
+ * @settings: a #CamelNetworkSettings
+ *
+ * Just like camel_network_settings_dup_host(), only makes sure that
+ * the returned host name will be converted into its ASCII form in case
+ * of IDNA value.
+ *
+ * Returns: a newly-allocated copy of #CamelNetworkSettings:host with
+ *    only ASCII letters.
+ *
+ * Since: 3.12.6
+ **/
+gchar *
+camel_network_settings_dup_host_ensure_ascii (CamelNetworkSettings *settings)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
+
+	G_LOCK (property_lock);
+
+	protected = camel_network_settings_get_host (settings);
+	if (protected && *protected)
+		duplicate = camel_host_idna_to_ascii (protected);
+	else
+		duplicate = g_strdup (protected);
 
 	G_UNLOCK (property_lock);
 
