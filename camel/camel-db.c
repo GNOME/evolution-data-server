@@ -36,11 +36,6 @@
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5
 
-#define READER_LOCK(cdb) g_rw_lock_reader_lock (&cdb->priv->rwlock)
-#define READER_UNLOCK(cdb) g_rw_lock_reader_unlock (&cdb->priv->rwlock)
-#define WRITER_LOCK(cdb) g_rw_lock_writer_lock (&cdb->priv->rwlock)
-#define WRITER_UNLOCK(cdb) g_rw_lock_writer_unlock (&cdb->priv->rwlock)
-
 static sqlite3_vfs *old_vfs = NULL;
 static GThreadPool *sync_pool = NULL;
 
@@ -421,7 +416,9 @@ struct _CamelDBPrivate {
 	GTimer *timer;
 	GRWLock rwlock;
 	gchar *file_name;
-	gboolean transaction_is_on;
+	GMutex transaction_lock;
+	GThread *transaction_thread;
+	guint32 transaction_level;
 };
 
 /**
@@ -514,6 +511,114 @@ cdb_match_func (sqlite3_context *ctx,
 	sqlite3_result_int (ctx, matches ? 1 : 0);
 }
 
+static void
+cdb_writer_lock (CamelDB *cdb)
+{
+	g_return_if_fail (cdb != NULL);
+
+	g_mutex_lock (&cdb->priv->transaction_lock);
+	if (cdb->priv->transaction_thread != g_thread_self ()) {
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+
+		g_rw_lock_writer_lock (&cdb->priv->rwlock);
+
+		g_mutex_lock (&cdb->priv->transaction_lock);
+
+		g_warn_if_fail (cdb->priv->transaction_thread == NULL);
+		g_warn_if_fail (cdb->priv->transaction_level == 0);
+
+		cdb->priv->transaction_thread = g_thread_self ();
+	}
+
+	cdb->priv->transaction_level++;
+
+	g_mutex_unlock (&cdb->priv->transaction_lock);
+}
+
+static void
+cdb_writer_unlock (CamelDB *cdb)
+{
+	g_return_if_fail (cdb != NULL);
+
+	g_mutex_lock (&cdb->priv->transaction_lock);
+
+	g_warn_if_fail (cdb->priv->transaction_thread == g_thread_self ());
+	g_warn_if_fail (cdb->priv->transaction_level > 0);
+
+	cdb->priv->transaction_level--;
+
+	if (!cdb->priv->transaction_level) {
+		cdb->priv->transaction_thread = NULL;
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+
+		g_rw_lock_writer_unlock (&cdb->priv->rwlock);
+	} else {
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+	}
+}
+
+static void
+cdb_reader_lock (CamelDB *cdb)
+{
+	g_return_if_fail (cdb != NULL);
+
+	g_mutex_lock (&cdb->priv->transaction_lock);
+	if (cdb->priv->transaction_thread == g_thread_self ()) {
+		/* already holding write lock */
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+	} else {
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+
+		g_rw_lock_reader_lock (&cdb->priv->rwlock);
+	}
+}
+
+static void
+cdb_reader_unlock (CamelDB *cdb)
+{
+	g_return_if_fail (cdb != NULL);
+
+	g_mutex_lock (&cdb->priv->transaction_lock);
+	if (cdb->priv->transaction_thread == g_thread_self ()) {
+		/* already holding write lock */
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+	} else {
+		g_mutex_unlock (&cdb->priv->transaction_lock);
+
+		g_rw_lock_reader_unlock (&cdb->priv->rwlock);
+	}
+}
+
+static gboolean
+cdb_is_in_transaction (CamelDB *cdb)
+{
+	gboolean res;
+
+	g_return_val_if_fail (cdb != NULL, FALSE);
+
+	g_mutex_lock (&cdb->priv->transaction_lock);
+	res = cdb->priv->transaction_level > 0 && cdb->priv->transaction_thread == g_thread_self ();
+	g_mutex_unlock (&cdb->priv->transaction_lock);
+
+	return res;
+}
+
+static gchar *
+cdb_construct_transaction_stmt (CamelDB *cdb,
+				const gchar *prefix)
+{
+	gchar *name;
+
+	g_return_val_if_fail (cdb != NULL, NULL);
+
+	g_mutex_lock (&cdb->priv->transaction_lock);
+	g_warn_if_fail (cdb->priv->transaction_thread == g_thread_self ());
+	name = g_strdup_printf ("%sTN%d", prefix ? prefix : "", cdb->priv->transaction_level);
+	g_mutex_unlock (&cdb->priv->transaction_lock);
+
+	return name;
+}
+
 /**
  * camel_db_open:
  *
@@ -554,9 +659,12 @@ camel_db_open (const gchar *path,
 
 	cdb = g_new (CamelDB, 1);
 	cdb->db = db;
-	cdb->priv = g_new (CamelDBPrivate, 1);
+	cdb->priv = g_new0 (CamelDBPrivate, 1);
 	cdb->priv->file_name = g_strdup (path);
 	g_rw_lock_init (&cdb->priv->rwlock);
+	g_mutex_init (&cdb->priv->transaction_lock);
+	cdb->priv->transaction_thread = NULL;
+	cdb->priv->transaction_level = 0;
 	cdb->priv->timer = NULL;
 	d (g_print ("\nDatabase succesfully opened  \n"));
 
@@ -607,6 +715,7 @@ camel_db_close (CamelDB *cdb)
 	if (cdb) {
 		sqlite3_close (cdb->db);
 		g_rw_lock_clear (&cdb->priv->rwlock);
+		g_mutex_clear (&cdb->priv->transaction_lock);
 		g_free (cdb->priv->file_name);
 		g_free (cdb->priv);
 		g_free (cdb);
@@ -630,11 +739,11 @@ camel_db_set_collate (CamelDB *cdb,
 		if (!cdb)
 			return 0;
 
-		WRITER_LOCK (cdb);
+		cdb_writer_lock (cdb);
 		d (g_print ("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
 		if (collate && func)
 			ret = sqlite3_create_collation (cdb->db, collate, SQLITE_UTF8,  NULL, func);
-		WRITER_UNLOCK (cdb);
+		cdb_writer_unlock (cdb);
 
 		return ret;
 }
@@ -654,13 +763,13 @@ camel_db_command (CamelDB *cdb,
 	if (!cdb)
 		return TRUE;
 
-	WRITER_LOCK (cdb);
+	cdb_writer_lock (cdb);
 
 	START (stmt);
 	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, error);
 	END;
 
-	WRITER_UNLOCK (cdb);
+	cdb_writer_unlock (cdb);
 
 	return ret;
 }
@@ -674,15 +783,21 @@ gint
 camel_db_begin_transaction (CamelDB *cdb,
                             GError **error)
 {
+	gchar *stmt;
+	gint res;
+
 	if (!cdb)
 		return -1;
 
-	WRITER_LOCK (cdb);
-	STARTTS ("BEGIN");
+	cdb_writer_lock (cdb);
 
-	cdb->priv->transaction_is_on = TRUE;
+	stmt = cdb_construct_transaction_stmt (cdb, "SAVEPOINT ");
 
-	return (cdb_sql_exec (cdb->db, "BEGIN", NULL, NULL, error));
+	STARTTS (stmt);
+	res = cdb_sql_exec (cdb->db, stmt, NULL, NULL, error);
+	g_free (stmt);
+
+	return res;
 }
 
 /**
@@ -694,15 +809,18 @@ gint
 camel_db_end_transaction (CamelDB *cdb,
                           GError **error)
 {
+	gchar *stmt;
 	gint ret;
+
 	if (!cdb)
 		return -1;
 
-	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
-	cdb->priv->transaction_is_on = FALSE;
+	stmt = cdb_construct_transaction_stmt (cdb, "RELEASE SAVEPOINT ");
+	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, error);
+	g_free (stmt);
 
 	ENDTS;
-	WRITER_UNLOCK (cdb);
+	cdb_writer_unlock (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
 	return ret;
@@ -717,12 +835,14 @@ gint
 camel_db_abort_transaction (CamelDB *cdb,
                             GError **error)
 {
+	gchar *stmt;
 	gint ret;
 
-	ret = cdb_sql_exec (cdb->db, "ROLLBACK", NULL, NULL, error);
-	cdb->priv->transaction_is_on = FALSE;
+	stmt = cdb_construct_transaction_stmt (cdb, "ROLLBACK TO SAVEPOINT ");
+	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, error);
+	g_free (stmt);
 
-	WRITER_UNLOCK (cdb);
+	cdb_writer_unlock (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
 	return ret;
@@ -741,7 +861,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
 	if (!cdb)
 		return -1;
 
-	g_assert (cdb->priv->transaction_is_on == TRUE);
+	g_return_val_if_fail (cdb_is_in_transaction (cdb), -1);
 
 	return (cdb_sql_exec (cdb->db, stmt, NULL, NULL, error));
 }
@@ -756,18 +876,18 @@ camel_db_transaction_command (CamelDB *cdb,
                               GList *qry_list,
                               GError **error)
 {
+	gboolean in_transaction = FALSE;
 	gint ret;
 	const gchar *query;
 
 	if (!cdb)
 		return -1;
 
-	WRITER_LOCK (cdb);
-
-	STARTTS ("BEGIN");
-	ret = cdb_sql_exec (cdb->db, "BEGIN", NULL, NULL, error);
+	ret = camel_db_begin_transaction (cdb, error);
 	if (ret)
 		goto end;
+
+	in_transaction = TRUE;
 
 	while (qry_list) {
 		query = qry_list->data;
@@ -777,10 +897,12 @@ camel_db_transaction_command (CamelDB *cdb,
 		qry_list = g_list_next (qry_list);
 	}
 
-	ret = cdb_sql_exec (cdb->db, "COMMIT", NULL, NULL, error);
-	ENDTS;
+	ret = camel_db_end_transaction (cdb, error);
+	in_transaction = FALSE;
 end:
-	WRITER_UNLOCK (cdb);
+	if (in_transaction)
+		ret = camel_db_abort_transaction (cdb, error);
+
 	return ret;
 }
 
@@ -814,13 +936,13 @@ camel_db_count_message_info (CamelDB *cdb,
 {
 	gint ret = -1;
 
-	READER_LOCK (cdb);
+	cdb_reader_lock (cdb);
 
 	START (query);
 	ret = cdb_sql_exec (cdb->db, query, count_cb, count, error);
 	END;
 
-	READER_UNLOCK (cdb);
+	cdb_reader_unlock (cdb);
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
@@ -1021,13 +1143,13 @@ camel_db_select (CamelDB *cdb,
 		return ret;
 
 	d (g_print ("\n%s:\n%s \n", G_STRFUNC, stmt));
-	READER_LOCK (cdb);
+	cdb_reader_lock (cdb);
 
 	START (stmt);
 	ret = cdb_sql_exec (cdb->db, stmt, callback, data, error);
 	END;
 
-	READER_UNLOCK (cdb);
+	cdb_reader_unlock (cdb);
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
 	return ret;
@@ -1382,7 +1504,10 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 
 	/* Migration stage one: storing the old data */
 
-	if (version < 1) {
+	if (version < 0) {
+		ret = camel_db_create_message_info_table (cdb, folder_name, error);
+		g_clear_error (error);
+	} else if (version < 1) {
 
 		/* Between version 0-1 the following things are changed
 		 * ADDED: created: time
@@ -1427,6 +1552,7 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 				folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
+		g_clear_error (error);
 
 		table_creation_query = sqlite3_mprintf (
 			"INSERT INTO 'mem.%q' SELECT "
@@ -1441,10 +1567,12 @@ camel_db_migrate_folder_prepare (CamelDB *cdb,
 			folder_name, folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
+		g_clear_error (error);
 
 		table_creation_query = sqlite3_mprintf ("DROP TABLE IF EXISTS %Q", folder_name);
 		ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 		sqlite3_free (table_creation_query);
+		g_clear_error (error);
 
 		ret = camel_db_create_message_info_table (cdb, folder_name, error);
 		g_clear_error (error);
@@ -1601,6 +1729,7 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
                                      GError **error)
 {
 	gint ret, current_version;
+	gboolean in_transaction = TRUE;
 	GError *err = NULL;
 
 	/* Make sure we have the table already */
@@ -1610,11 +1739,17 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 		goto exit;
 
 	camel_db_end_transaction (cdb, &err);
+	in_transaction = FALSE;
 
 	/* Migration stage zero: version fetch */
 	current_version = camel_db_get_folder_version (cdb, folder_name, &err);
+	if (err && err->message && strstr (err->message, "no such table") != NULL) {
+		g_clear_error (&err);
+		current_version = -1;
+	}
 
 	camel_db_begin_transaction (cdb, &err);
+	in_transaction = TRUE;
 
 	/* Migration stage one: storing the old data if necessary */
 	ret = camel_db_migrate_folder_prepare (cdb, folder_name, current_version, &err);
@@ -1632,9 +1767,10 @@ camel_db_prepare_message_info_table (CamelDB *cdb,
 		goto exit;
 
 	camel_db_end_transaction (cdb, &err);
+	in_transaction = FALSE;
 
 exit:
-	if (err && cdb->priv->transaction_is_on)
+	if (err && in_transaction)
 		camel_db_abort_transaction (cdb, NULL);
 
 	if (err)
