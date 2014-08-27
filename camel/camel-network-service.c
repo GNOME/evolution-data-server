@@ -662,7 +662,7 @@ network_service_new_connectable (CamelNetworkService *service)
 	g_return_val_if_fail (CAMEL_IS_NETWORK_SETTINGS (settings), NULL);
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
-	host = camel_network_settings_dup_host (network_settings);
+	host = camel_network_settings_dup_host_ensure_ascii (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 
 	if (host && *host && g_ascii_strcasecmp (host, "localhost") != 0)

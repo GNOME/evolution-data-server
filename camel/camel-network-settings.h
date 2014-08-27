@@ -71,6 +71,8 @@ const gchar *	camel_network_settings_get_host
 					(CamelNetworkSettings *settings);
 gchar *		camel_network_settings_dup_host
 					(CamelNetworkSettings *settings);
+gchar *		camel_network_settings_dup_host_ensure_ascii
+					(CamelNetworkSettings *settings);
 void		camel_network_settings_set_host
 					(CamelNetworkSettings *settings,
 					 const gchar *host);

@@ -21,6 +21,7 @@
 
 #include "camel-internet-address.h"
 #include "camel-mime-utils.h"
+#include "camel-net-utils.h"
 
 #define d(x)
 
@@ -346,6 +347,71 @@ camel_internet_address_find_name (CamelInternetAddress *addr,
 		}
 	}
 	return -1;
+}
+
+static gboolean
+domain_contains_only_ascii (const gchar *address,
+			    gint *at_pos)
+{
+	gint pos;
+	gboolean all_ascii = TRUE;
+
+	g_return_val_if_fail (address != NULL, TRUE);
+	g_return_val_if_fail (at_pos != NULL, TRUE);
+
+	*at_pos = -1;
+	for (pos = 0; address[pos]; pos++) {
+		all_ascii = all_ascii && address[pos] > 0;
+		if (*at_pos == -1 && address[pos] == '@') {
+			*at_pos = pos;
+			all_ascii = TRUE;
+		}
+	}
+
+	/* Do not change anything when there is no domain part
+	   of the email address */
+	return all_ascii || *at_pos == -1;
+}
+
+/**
+ * camel_internet_address_ensure_ascii_domains:
+ * @addr: a #CamelInternetAddress
+ *
+ * Ensures that all email address' domains will be ASCII encoded,
+ * which means that any non-ASCII letters will be properly encoded.
+ * This includes IDN (Internationalized Domain Names).
+ *
+ * Since: 3.14
+ **/
+void
+camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
+{
+	struct _address *a;
+	gint i, len;
+
+	g_return_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr));
+
+	len = ((CamelAddress *) addr)->addresses->len;
+	for (i = 0; i < len; i++) {
+		gint at_pos = -1;
+		a = g_ptr_array_index (((CamelAddress *) addr)->addresses, i);
+		if (a->address && !domain_contains_only_ascii (a->address, &at_pos)) {
+			gchar *address, *domain;
+
+			domain = camel_host_idna_to_ascii (a->address + at_pos + 1);
+			if (at_pos >= 0) {
+				gchar *name = g_strndup (a->address, at_pos);
+				address = g_strconcat (name, "@", domain, NULL);
+			} else {
+				address = domain;
+				domain = NULL;
+			}
+
+			g_free (domain);
+			g_free (a->address);
+			a->address = address;
+		}
+	}
 }
 
 /**

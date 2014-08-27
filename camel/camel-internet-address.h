@@ -77,6 +77,8 @@ gint		camel_internet_address_find_address
 						(CamelInternetAddress *addr,
 						 const gchar *address,
 						 const gchar **namep);
+void		camel_internet_address_ensure_ascii_domains
+						(CamelInternetAddress *addr);
 
 /* utility functions, for network/display formatting */
 gchar *		camel_internet_address_encode_address

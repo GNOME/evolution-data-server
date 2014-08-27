@@ -200,8 +200,18 @@ camel_transport_send_to (CamelTransport *transport,
 	service = CAMEL_SERVICE (transport);
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->from = g_object_ref (from);
-	async_context->recipients = g_object_ref (recipients);
+	if (CAMEL_IS_INTERNET_ADDRESS (from)) {
+		async_context->from = camel_address_new_clone (from);
+		camel_internet_address_ensure_ascii_domains (CAMEL_INTERNET_ADDRESS (async_context->from));
+	} else {
+		async_context->from = g_object_ref (from);
+	}
+	if (CAMEL_IS_INTERNET_ADDRESS (recipients)) {
+		async_context->recipients = camel_address_new_clone (recipients);
+		camel_internet_address_ensure_ascii_domains (CAMEL_INTERNET_ADDRESS (async_context->recipients));
+	} else {
+		async_context->recipients = g_object_ref (recipients);
+	}
 	async_context->message = g_object_ref (message);
 
 	task = g_task_new (transport, cancellable, callback, user_data);
