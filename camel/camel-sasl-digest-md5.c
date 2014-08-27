@@ -838,8 +838,10 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 
 	g_return_val_if_fail (user != NULL, NULL);
 
-	if (host == NULL)
+	if (!host || !*host) {
+		g_free (host);
 		host = g_strdup ("localhost");
+	}
 
 	password = camel_service_get_password (service);
 	g_return_val_if_fail (password != NULL, NULL);

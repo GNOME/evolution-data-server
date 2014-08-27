@@ -665,7 +665,7 @@ network_service_new_connectable (CamelNetworkService *service)
 	host = camel_network_settings_dup_host_ensure_ascii (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 
-	if (host && *host && g_ascii_strcasecmp (host, "localhost") != 0)
+	if (host && *host)
 		connectable = g_network_address_new (host, port);
 
 	g_free (host);

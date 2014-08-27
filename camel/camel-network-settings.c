@@ -57,7 +57,7 @@ camel_network_settings_default_init (CamelNetworkSettingsInterface *iface)
 			"host",
 			"Host",
 			"Host name for the network service",
-			"localhost",
+			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));

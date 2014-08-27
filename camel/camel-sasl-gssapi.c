@@ -315,8 +315,10 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 
 	g_return_val_if_fail (user != NULL, NULL);
 
-	if (host == NULL)
+	if (!host || !*host) {
+		g_free (host);
 		host = g_strdup ("localhost");
+	}
 
 	switch (priv->state) {
 	case GSSAPI_STATE_INIT:
