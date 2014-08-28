@@ -177,6 +177,8 @@ struct _EBookBackendLDAPPrivate {
 	EBookBackendSummary *summary;
 
 	gboolean generate_cache_in_progress; /* set to TRUE, when updating local cache for offline */
+
+	GMutex view_mutex;
 };
 
 typedef void (*LDAPOpHandler)(LDAPOp *op, LDAPMessage *res);
@@ -4272,12 +4274,17 @@ ldap_search_handler (LDAPOp *op,
 static void
 ldap_search_dtor (LDAPOp *op)
 {
+	EBookBackendLDAP *bl;
 	LDAPSearchOp *search_op = (LDAPSearchOp *) op;
 
 	d (printf ("ldap_search_dtor (%p)\n", search_op->view));
 
+	bl = E_BOOK_BACKEND_LDAP (e_data_book_view_get_backend (op->view));
+
 	/* unhook us from our EDataBookView */
+	g_mutex_lock (&bl->priv->view_mutex);
 	g_object_set_data (G_OBJECT (search_op->view), LDAP_SEARCH_OP_IDENT, NULL);
+	g_mutex_unlock (&bl->priv->view_mutex);
 
 	g_object_unref (search_op->view);
 
@@ -4396,7 +4403,9 @@ e_book_backend_ldap_search (EBookBackendLDAP *bl,
 				printf ("and took  %ld.%03ld seconds\n", diff / 1000,diff % 1000);
 			}
 
+			g_mutex_lock (&bl->priv->view_mutex);
 			g_object_set_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT, op);
+			g_mutex_unlock (&bl->priv->view_mutex);
 		}
 		return;
 	} else {
@@ -4422,16 +4431,19 @@ static void
 book_backend_ldap_stop_view (EBookBackend *backend,
                              EDataBookView *view)
 {
+	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (backend);
 	LDAPSearchOp *op;
 
 	d (printf ("stop_view (%p)\n", view));
 
+	g_mutex_lock (&bl->priv->view_mutex);
 	op = g_object_get_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT);
+	g_object_set_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT, NULL);
+	g_mutex_unlock (&bl->priv->view_mutex);
+
 	if (op) {
 		op->aborted = TRUE;
 		ldap_op_finished ((LDAPOp *) op);
-
-		g_object_set_data (G_OBJECT (view), LDAP_SEARCH_OP_IDENT, NULL);
 
 		g_free (op);
 	}
@@ -4754,6 +4766,7 @@ book_backend_ldap_finalize (GObject *object)
 	g_rec_mutex_unlock (&priv->op_hash_mutex);
 	g_rec_mutex_unlock (&eds_ldap_handler_lock);
 	g_rec_mutex_clear (&priv->op_hash_mutex);
+	g_mutex_clear (&priv->view_mutex);
 
 	/* Remove the timeout before unbinding to avoid a race. */
 	if (priv->poll_timeout > 0) {
@@ -5804,6 +5817,7 @@ e_book_backend_ldap_init (EBookBackendLDAP *backend)
 	backend->priv->ldap_limit = 100;
 	backend->priv->id_to_op = g_hash_table_new (g_int_hash, g_int_equal);
 
+	g_mutex_init (&backend->priv->view_mutex);
 	g_rec_mutex_init (&backend->priv->op_hash_mutex);
 
 	if (g_getenv ("LDAP_DEBUG"))
