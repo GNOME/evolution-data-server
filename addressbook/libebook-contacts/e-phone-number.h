@@ -220,7 +220,8 @@ gchar *			e_phone_number_to_string	(const EPhoneNumber *phone_number,
 gint			e_phone_number_get_country_code	(const EPhoneNumber *phone_number,
 							 EPhoneNumberCountrySource *source);
 gchar *			e_phone_number_get_national_number
-							(const EPhoneNumber *phone_number);
+							(const EPhoneNumber *phone_number,
+							 gboolean with_leading_zeros);
 
 EPhoneNumberMatch	e_phone_number_compare		(const EPhoneNumber *first_number,
 							 const EPhoneNumber *second_number);
