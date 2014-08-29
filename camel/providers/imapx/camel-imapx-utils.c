@@ -324,7 +324,7 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 		changed = TRUE;
 	}
 
-	if ((folder->permanent_flags & CAMEL_MESSAGE_USER) != 0 && imapx_update_user_flags (info, server_user_flags))
+	if ((permanent_flags & CAMEL_MESSAGE_USER) != 0 && imapx_update_user_flags (info, server_user_flags))
 		changed = TRUE;
 
 	return changed;
@@ -336,7 +336,7 @@ imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
                                               CamelFlag *server_user_flags,
 					      gboolean force_user_flags,
 					      CamelTag *user_tags,
-                                              CamelFolder *folder)
+					      guint32 permanent_flags)
 {
 	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
 	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
@@ -346,7 +346,7 @@ imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
 
 	xinfo->server_flags = server_flags;
 
-	if (force_user_flags || (folder->permanent_flags & CAMEL_MESSAGE_USER) != 0)
+	if (force_user_flags || (permanent_flags & CAMEL_MESSAGE_USER) != 0)
 		imapx_update_user_flags (info, server_user_flags);
 
 	while (user_tags) {

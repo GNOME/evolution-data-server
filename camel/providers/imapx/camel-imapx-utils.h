@@ -153,7 +153,7 @@ void		imapx_set_message_info_flags_for_new_message
 						 CamelFlag *server_user_flags,
 						 gboolean force_user_flags,
 						 CamelTag *user_tags,
-						 CamelFolder *folder);
+						 guint32 permanent_flags);
 void		imapx_update_store_summary	(CamelFolder *folder);
 
 gchar *		camel_imapx_dup_uid_from_summary_index

@@ -2431,7 +2431,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					data = camel_imapx_job_get_data (job);
 					g_return_val_if_fail (data != NULL, FALSE);
 
-					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, folder);
+					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, is->priv->permanentflags);
 					camel_folder_summary_add (folder->summary, mi);
 					camel_folder_change_info_add_uid (data->changes, mi->uid);
 
@@ -5260,7 +5260,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 					((CamelMessageInfoBase *) source_info)->user_flags,
 					TRUE,
 					((CamelMessageInfoBase *) source_info)->user_tags,
-					destination);
+					is->priv->permanentflags);
 				if (is_new)
 					camel_folder_summary_add (destination->summary, destination_info);
 				camel_folder_change_info_add_uid (changes, destination_info->uid);
@@ -5457,7 +5457,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 				((CamelMessageInfoBase *) data->info)->user_flags,
 				TRUE,
 				((CamelMessageInfoBase *) data->info)->user_tags,
-				folder);
+				is->priv->permanentflags);
 			camel_folder_summary_add (folder->summary, mi);
 			changes = camel_folder_change_info_new ();
 			camel_folder_change_info_add_uid (changes, mi->uid);
@@ -7297,7 +7297,9 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 				xinfo->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 			}
 			xinfo->info.dirty = TRUE;
-			camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
+			if ((is->priv->permanentflags & CAMEL_MESSAGE_USER) != 0 ||
+			    camel_flag_list_size (&xinfo->server_user_flags) == 0)
+				camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
 
 			camel_folder_summary_touch (folder->summary);
 			camel_message_info_unref (xinfo);
@@ -8796,66 +8798,75 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 			camel_imapx_folder_add_move_to_real_trash (
 				CAMEL_IMAPX_FOLDER (folder), uid);
 
+		flags &= is->priv->permanentflags;
+		sflags &= is->priv->permanentflags;
+
 		if (flags != sflags) {
 			off_orset |= (flags ^ sflags) & ~flags;
 			on_orset |= (flags ^ sflags) & flags;
 		}
 
-		uflags = info->info.user_flags;
-		suflags = info->server_user_flags;
-		while (uflags || suflags) {
-			gint res;
+		if ((is->priv->permanentflags & CAMEL_MESSAGE_USER) != 0) {
+			uflags = info->info.user_flags;
+			suflags = info->server_user_flags;
+			while (uflags || suflags) {
+				gint res;
 
-			if (uflags) {
-				if (suflags)
-					res = strcmp (uflags->name, suflags->name);
-				else if (*uflags->name)
-					res = -1;
-				else {
-					uflags = uflags->next;
-					continue;
-				}
-			} else {
-				res = 1;
-			}
-
-			if (res == 0) {
-				uflags = uflags->next;
-				suflags = suflags->next;
-			} else {
-				GArray *user_set;
-				CamelFlag *user_flag;
-				struct _imapx_flag_change *change = NULL, add = { 0 };
-
-				if (res < 0) {
-					if (on_user == NULL)
-						on_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
-					user_set = on_user;
-					user_flag = uflags;
-					uflags = uflags->next;
+				if (uflags) {
+					if (suflags)
+						res = strcmp (uflags->name, suflags->name);
+					else if (*uflags->name)
+						res = -1;
+					else {
+						uflags = uflags->next;
+						continue;
+					}
 				} else {
-					if (off_user == NULL)
-						off_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
-					user_set = off_user;
-					user_flag = suflags;
-					suflags = suflags->next;
+					res = 1;
 				}
 
-				/* Could sort this and binary search */
-				for (j = 0; j < user_set->len; j++) {
-					change = &g_array_index (user_set, struct _imapx_flag_change, j);
-					if (strcmp (change->name, user_flag->name) == 0)
-						goto found;
+				if (res == 0) {
+					uflags = uflags->next;
+					suflags = suflags->next;
+				} else {
+					GArray *user_set;
+					CamelFlag *user_flag;
+					struct _imapx_flag_change *change = NULL, add = { 0 };
+
+					if (res < 0) {
+						if (on_user == NULL)
+							on_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
+						user_set = on_user;
+						user_flag = uflags;
+						uflags = uflags->next;
+					} else {
+						if (off_user == NULL)
+							off_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
+						user_set = off_user;
+						user_flag = suflags;
+						suflags = suflags->next;
+					}
+
+					/* Could sort this and binary search */
+					for (j = 0; j < user_set->len; j++) {
+						change = &g_array_index (user_set, struct _imapx_flag_change, j);
+						if (strcmp (change->name, user_flag->name) == 0)
+							goto found;
+					}
+					add.name = g_strdup (user_flag->name);
+					add.infos = g_ptr_array_new ();
+					g_array_append_val (user_set, add);
+					change = &add;
+				found:
+					camel_message_info_ref (info);
+					g_ptr_array_add (change->infos, info);
 				}
-				add.name = g_strdup (user_flag->name);
-				add.infos = g_ptr_array_new ();
-				g_array_append_val (user_set, add);
-				change = &add;
-			found:
-				camel_message_info_ref (info);
-				g_ptr_array_add (change->infos, info);
 			}
+		} else {
+			/* Cannot save user flags to the server => store them locally only */
+			camel_flag_list_copy (&info->server_user_flags, &info->info.user_flags);
 		}
+
 		camel_message_info_unref (info);
 	}
 
