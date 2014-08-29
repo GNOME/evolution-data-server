@@ -2989,6 +2989,7 @@ ebsql_new_internal (const gchar *path,
 static gchar *
 convert_phone (const gchar *normal,
                const gchar *region_code,
+	       gboolean with_leading_zeros,
                gint *out_country_code)
 {
 	EPhoneNumber *number = NULL;
@@ -3005,7 +3006,7 @@ convert_phone (const gchar *normal,
 	if (number) {
 		EPhoneNumberCountrySource source;
 
-		national_number = e_phone_number_get_national_number (number);
+		national_number = e_phone_number_get_national_number (number, with_leading_zeros);
 		country_code = e_phone_number_get_country_code (number, &source);
 		e_phone_number_free (number);
 
@@ -3167,6 +3168,7 @@ update_e164_attribute_params (EBookSqlite *ebsql,
 			number.national = convert_phone (
 				original_number,
 				ebsql->priv->region_code,
+				TRUE,
 				&(number.country_code));
 		}
 
@@ -3346,7 +3348,7 @@ ebsql_run_multi_insert_one (EBookSqlite *ebsql,
 
 		str = convert_phone (
 			normal, ebsql->priv->region_code,
-			&country_code);
+			FALSE, &country_code);
 
 		/* :value_phone */
 		ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
@@ -3657,7 +3659,7 @@ ebsql_run_insert (EBookSqlite *ebsql,
 
 				str = convert_phone (
 					normal, ebsql->priv->region_code,
-					&country_code);
+					FALSE, &country_code);
 
 				ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 				if (ret == SQLITE_OK)
@@ -4675,7 +4677,7 @@ query_preflight_check (PreflightContext *context,
 					/* Collect values we'll need later while generating field
 					 * tests, no need to parse the phone number more than once
 					 */
-					phone_test->national = e_phone_number_get_national_number (number);
+					phone_test->national = e_phone_number_get_national_number (number, FALSE);
 					phone_test->country = e_phone_number_get_country_code (number, &source);
 
 					if (source == E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT)

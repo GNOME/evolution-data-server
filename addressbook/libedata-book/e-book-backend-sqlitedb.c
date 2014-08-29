@@ -2039,7 +2039,7 @@ convert_phone (const gchar *normal,
 	if (number) {
 		EPhoneNumberCountrySource source;
 
-		national_number = e_phone_number_get_national_number (number);
+		national_number = e_phone_number_get_national_number (number, TRUE);
 		country_code = e_phone_number_get_country_code (number, &source);
 		e_phone_number_free (number);
 

@@ -29,6 +29,7 @@
 
 /* C++ standard library */
 #include <string>
+#include <sstream>
 
 /* system headers */
 #include <langinfo.h>
@@ -249,14 +250,22 @@ _e_phone_number_cxx_get_country_code (const EPhoneNumber *phone_number,
 }
 
 gchar *
-_e_phone_number_cxx_get_national_number (const EPhoneNumber *phone_number)
+_e_phone_number_cxx_get_national_number (const EPhoneNumber *phone_number,
+					 gboolean with_leading_zeros)
 {
 	g_return_val_if_fail (NULL != phone_number, NULL);
 
 	std::string national_number;
 
-	e_phone_number_util_get_instance ()->GetNationalSignificantNumber (
-			phone_number->priv, &national_number);
+	if (with_leading_zeros) {
+		e_phone_number_util_get_instance ()->GetNationalSignificantNumber (
+				phone_number->priv, &national_number);
+	} else {
+		std::ostringstream oss;
+		oss << phone_number->priv.national_number();
+		national_number = oss.str();
+	}
+
 
 	if (!national_number.empty ())
 		return g_strdup (national_number.c_str ());
