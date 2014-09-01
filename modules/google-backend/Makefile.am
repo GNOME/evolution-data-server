@@ -8,6 +8,7 @@ module_google_backend_la_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"module-google-backend\" \
 	$(E_BACKEND_CFLAGS) \
 	$(E_DATA_SERVER_CFLAGS) \
+	$(GDATA_CFLAGS) \
 	$(NULL)
 
 module_google_backend_la_SOURCES = \
@@ -20,6 +21,7 @@ module_google_backend_la_LIBADD = \
 	$(top_builddir)/camel/libcamel-1.2.la \
 	$(E_BACKEND_LIBS) \
 	$(E_DATA_SERVER_LIBS) \
+	$(GDATA_LIBS) \
 	$(NULL)
 
 module_google_backend_la_LDFLAGS = \

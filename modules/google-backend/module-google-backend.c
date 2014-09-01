@@ -20,6 +20,16 @@
 
 #include <libebackend/libebackend.h>
 
+#ifdef HAVE_GOOGLE
+#include <gdata/gdata.h>
+#endif
+
+/* This macro was introduced in libgdata 0.11,
+ * but we currently only require libgdata 0.10. */
+#ifndef GDATA_CHECK_VERSION
+#define GDATA_CHECK_VERSION(major,minor,micro) 0
+#endif
+
 /* Standard GObject macros */
 #define E_TYPE_GOOGLE_BACKEND \
 	(e_google_backend_get_type ())
@@ -245,6 +255,7 @@ google_backend_add_calendar (ECollectionBackend *backend)
 	g_object_unref (source);
 }
 
+#if GDATA_CHECK_VERSION(0,15,1)
 static void
 google_backend_add_tasks (ECollectionBackend *backend)
 {
@@ -301,6 +312,7 @@ google_backend_add_tasks (ECollectionBackend *backend)
 
 	g_object_unref (source);
 }
+#endif /* GDATA_CHECK_VERSION(0,15,1) */
 
 static void
 google_backend_add_contacts (ECollectionBackend *backend)
@@ -373,8 +385,11 @@ google_backend_populate (ECollectionBackend *backend)
 
 	if (!have_calendar)
 		google_backend_add_calendar (backend);
+
+#if GDATA_CHECK_VERSION(0,15,1)
 	if (!have_tasks)
 		google_backend_add_tasks (backend);
+#endif
 
 	list = e_collection_backend_list_contacts_sources (backend);
 	if (list == NULL)
