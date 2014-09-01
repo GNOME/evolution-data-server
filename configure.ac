@@ -1629,6 +1629,16 @@ AC_SUBST(privincludedir)
 privlibdir='${libdir}'/evolution-data-server
 AC_SUBST(privlibdir)
 
+if test "$os_win32" = yes; then
+	dnl On Win32 there is no "rpath" mechanism. We install the private
+	dnl shared libraries in $libdir, meaning the DLLs will actually be in
+	dnl $bindir. This means just having $bindir in PATH will be enough.
+	privsolibdir=$libdir
+else
+	privsolibdir=$privlibdir
+fi
+AC_SUBST(privsolibdir)
+
 imagesdir='${datadir}'/pixmaps/evolution-data-server
 AC_SUBST(imagesdir)
 
