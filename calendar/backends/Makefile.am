@@ -1,4 +1,4 @@
-if  HAVE_GDATA_0_15_1
+if HAVE_GDATA_0_15_1
 GTASKS_SUBDIR = gtasks
 else
 GTASKS_SUBDIR =
