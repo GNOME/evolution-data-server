@@ -2773,7 +2773,7 @@ camel_imapx_parse_quota (CamelIMAPXInputStream *stream,
 	g_return_val_if_fail (out_quota_info != NULL, FALSE);
 
 	/* quota_response  ::= "QUOTA" SP astring SP quota_list
-	 * quota_list      ::= "(" #quota_resource ")"
+	 * quota_list      ::= "(" *quota_resource ")"
 	 * quota_resource  ::= atom SP number SP number */
 
 	success = camel_imapx_input_stream_astring (
@@ -2798,46 +2798,44 @@ camel_imapx_parse_quota (CamelIMAPXInputStream *stream,
 			goto fail;
 	}
 
-quota_resource:
-
-	success = camel_imapx_input_stream_atom (
-		stream, &token, &len, cancellable, error);
-
-	if (!success)
-		goto fail;
-
-	resource_name = g_strdup ((gchar *) token);
-
-	success = camel_imapx_input_stream_number (
-		stream, &resource_usage, cancellable, error);
-
-	if (!success)
-		goto fail;
-
-	success = camel_imapx_input_stream_number (
-		stream, &resource_limit, cancellable, error);
-
-	if (!success)
-		goto fail;
-
-	info = camel_folder_quota_info_new (
-		resource_name, resource_usage, resource_limit);
-	g_queue_push_tail (&queue, info);
-
-	g_free (resource_name);
-	resource_name = NULL;
-
-	tok = camel_imapx_input_stream_token (
-		stream, &token, &len, cancellable, error);
-	switch (tok) {
-		case IMAPX_TOK_ERROR:
-			goto fail;
-		case ')':
+	while (TRUE) {
+		/* Peek at the next token, and break
+		 * out of the loop if we get a close-paren. */
+		tok = camel_imapx_input_stream_token (
+			stream, &token, &len, cancellable, error);
+		if (tok == ')')
 			break;
-		default:
-			camel_imapx_input_stream_ungettoken (
-				stream, tok, token, len);
-			goto quota_resource;
+		if (tok == IMAPX_TOK_ERROR)
+			goto fail;
+		camel_imapx_input_stream_ungettoken (
+			stream, tok, token, len);
+
+		success = camel_imapx_input_stream_atom (
+			stream, &token, &len, cancellable, error);
+
+		if (!success)
+			goto fail;
+
+		resource_name = g_strdup ((gchar *) token);
+
+		success = camel_imapx_input_stream_number (
+			stream, &resource_usage, cancellable, error);
+
+		if (!success)
+			goto fail;
+
+		success = camel_imapx_input_stream_number (
+			stream, &resource_limit, cancellable, error);
+
+		if (!success)
+			goto fail;
+
+		info = camel_folder_quota_info_new (
+			resource_name, resource_usage, resource_limit);
+		g_queue_push_tail (&queue, info);
+
+		g_free (resource_name);
+		resource_name = NULL;
 	}
 
 	/* Eat the newline. */

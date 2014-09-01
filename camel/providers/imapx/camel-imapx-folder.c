@@ -792,7 +792,7 @@ imapx_get_quota_info_sync (CamelFolder *folder,
 
 	if (quota_info == NULL)
 		g_set_error (
-			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 			_("No quota information available for folder '%s'"),
 			camel_folder_get_full_name (folder));
 
