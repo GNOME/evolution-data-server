@@ -443,7 +443,7 @@ html_convert (CamelMimeFilter *mime_filter,
 				outptr = g_stpcpy (outptr, "<br>");
 			}
 
-			*outptr++ = '\n';
+			outptr = append_string_verbatim (mime_filter, "\n", outptr, &outend);
 		}
 
 		start = ++inptr;
