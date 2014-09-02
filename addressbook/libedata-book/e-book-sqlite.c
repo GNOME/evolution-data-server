@@ -4588,7 +4588,7 @@ query_preflight_check (PreflightContext *context,
 						EBSQL_STATUS_STR (context->status)));
 			}
 			/* Bypass the other checks below which are not appropriate. */
-			return;
+			continue;
 		}
 
 		switch (field_test) {
