@@ -8650,7 +8650,8 @@ imapx_sync_free_user (GArray *user_set)
 
 static void
 imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
-                                 GPtrArray *changed_uids)
+				 GPtrArray *changed_uids,
+				 gboolean except_deleted_messages)
 {
 	CamelMessageInfo *info;
 	gboolean changed = FALSE;
@@ -8666,7 +8667,8 @@ imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
 			CamelMessageInfoBase *mi = (CamelMessageInfoBase *) info;
 
 			/* some infos could be only 'dirty' (needed to save into summary) */
-			if ((mi->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0) {
+			if ((mi->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0 &&
+			   (!except_deleted_messages || (mi->flags & CAMEL_MESSAGE_DELETED) == 0)) {
 				mi->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 				mi->dirty = TRUE;
 				changed = TRUE;
@@ -8700,6 +8702,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	SyncChangesData *data;
 	gboolean use_real_junk_path;
 	gboolean use_real_trash_path;
+	gboolean remove_deleted_flags;
 	gboolean nothing_to_do;
 	gboolean registered;
 	gboolean success = TRUE;
@@ -8731,6 +8734,8 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	use_real_trash_path =
 		camel_imapx_settings_get_use_real_trash_path (settings);
 	g_object_unref (settings);
+
+	remove_deleted_flags = use_real_trash_path && (job_type != IMAPX_JOB_EXPUNGE) != 0;
 
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
@@ -8854,7 +8859,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	if (nothing_to_do) {
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
-		imapx_unset_folder_flagged_flag (folder->summary, changed_uids);
+		imapx_unset_folder_flagged_flag (folder->summary, changed_uids, remove_deleted_flags);
 		camel_folder_free_uids (folder, changed_uids);
 		g_object_unref (folder);
 		return TRUE;
@@ -8886,10 +8891,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	data->off_set = off_orset;
 	data->on_user = on_user;  /* takes ownership */
 	data->off_user = off_user;  /* takes ownership */
-
-	data->remove_deleted_flags =
-		use_real_trash_path &&
-		(job_type != IMAPX_JOB_EXPUNGE);
+	data->remove_deleted_flags = remove_deleted_flags;
 
 	job = camel_imapx_job_new (cancellable);
 	job->type = IMAPX_JOB_SYNC_CHANGES;
