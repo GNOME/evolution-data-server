@@ -2796,7 +2796,22 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 		is->priv->context->token,
 		is->priv->context->len);
 
-	mailbox = camel_imapx_server_ref_selected (is);
+	/* These untagged responses can belong to ongoing SELECT command, thus
+	   to the pending select mailbox, not to the currently selected or closing
+	   mailbox, thus prefer the select pending mailbox, from the other two.
+	   This makes sure that for example UIDVALIDITY is not incorrectly
+	   overwritten with a value from a different mailbox, thus the offline
+	   cache will persist, instead of being vanished.
+	*/
+	g_mutex_lock (&is->priv->select_lock);
+
+	mailbox = g_weak_ref_get (&is->priv->select_pending);
+	if (!mailbox)
+		mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	if (!mailbox)
+		mailbox = g_weak_ref_get (&is->priv->select_closing);
+
+	g_mutex_unlock (&is->priv->select_lock);
 
 	is->priv->context->sinfo = imapx_parse_status (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
