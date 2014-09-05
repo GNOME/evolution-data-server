@@ -128,6 +128,7 @@ const gchar *	e_util_get_localedir		(void) G_GNUC_CONST;
 gchar *		e_util_replace_prefix		(const gchar *configure_time_prefix,
 						 const gchar *runtime_prefix,
 						 const gchar *configure_time_path);
+void		e_util_win32_initialize		(void);
 #endif
 
 /* utility functions for easier processing of named parameters */

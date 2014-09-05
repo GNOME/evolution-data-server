@@ -20,6 +20,8 @@
 #include <libintl.h>
 #include <glib/gi18n.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "prompt-user.h"
 
 static gboolean opt_keep_running = FALSE;
@@ -38,6 +40,10 @@ main (gint argc,
 	GOptionContext *context;
 	EDBusServer *server;
 	GError *error = NULL;
+
+#ifdef G_OS_WIN32
+	e_util_win32_initialize ();
+#endif
 
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);

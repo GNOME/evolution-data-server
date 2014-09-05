@@ -1669,8 +1669,17 @@ AC_SUBST(camel_providerdir)
 dnl *******************
 dnl D-BUS service stuff
 dnl *******************
+servicelibexecdir=${libexecdir}
+if test x$os_win32 = xyes -a "x$WIN32_SERVICELIBEXECDIR" != "x" ; then
+	dnl
+	dnl D-Bus requires Windows full path, not Unix-like, like the one provided by MSYS
+	dnl
+	AC_SUBST(WIN32_SERVICELIBEXECDIR)
+	servicelibexecdir="$WIN32_SERVICELIBEXECDIR"
+fi
+AC_SUBST(servicelibexecdir)
 m4_pattern_allow([AM_V_GEN])
-EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(libexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" -e "s|\@USER_PROMPTER_DBUS_SERVICE_NAME\@|$(USER_PROMPTER_DBUS_SERVICE_NAME)|" $< > $@'
+EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(servicelibexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" -e "s|\@USER_PROMPTER_DBUS_SERVICE_NAME\@|$(USER_PROMPTER_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
 dnl ******************************

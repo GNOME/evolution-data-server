@@ -73,8 +73,6 @@ static CamelProvider mbox_provider = {
 	/* ... */
 };
 
-#ifndef G_OS_WIN32
-
 static CamelProviderConfEntry maildir_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
@@ -94,6 +92,8 @@ static CamelProvider maildir_provider = {
 	NULL,
 	/* ... */
 };
+
+#ifndef G_OS_WIN32
 
 static CamelProviderConfEntry spool_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
@@ -250,11 +250,11 @@ camel_provider_module_init (void)
 	spool_directory_provider.url_equal = local_url_equal;
 	spool_directory_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&spool_directory_provider);
+#endif
 
 	maildir_provider.object_types[CAMEL_PROVIDER_STORE] = camel_maildir_store_get_type ();
 	maildir_provider.url_hash = local_url_hash;
 	maildir_provider.url_equal = local_url_equal;
 	maildir_provider.translation_domain = GETTEXT_PACKAGE;
 	camel_provider_register (&maildir_provider);
-#endif
 }

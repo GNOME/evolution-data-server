@@ -24,17 +24,7 @@
 #include <gtk/gtk.h>
 #endif
 
-#ifdef G_OS_WIN32
-#include <windows.h>
-#include <conio.h>
-#ifndef PROCESS_DEP_ENABLE
-#define PROCESS_DEP_ENABLE 0x00000001
-#endif
-#ifndef PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION
-#define PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION 0x00000002
-#endif
-#endif
-
+#include <libedataserver/libedataserver.h>
 #include <libedata-book/libedata-book.h>
 
 static gboolean opt_keep_running = FALSE;
@@ -58,33 +48,7 @@ main (gint argc,
 	GError *error = NULL;
 
 #ifdef G_OS_WIN32
-	/* Reduce risks */
-	{
-		typedef BOOL (WINAPI *t_SetDllDirectoryA) (LPCSTR lpPathName);
-		t_SetDllDirectoryA p_SetDllDirectoryA;
-
-		p_SetDllDirectoryA = GetProcAddress (
-			GetModuleHandle ("kernel32.dll"),
-			"SetDllDirectoryA");
-
-		if (p_SetDllDirectoryA != NULL)
-			p_SetDllDirectoryA ("");
-	}
-#ifndef _WIN64
-	{
-		typedef BOOL (WINAPI *t_SetProcessDEPPolicy) (DWORD dwFlags);
-		t_SetProcessDEPPolicy p_SetProcessDEPPolicy;
-
-		p_SetProcessDEPPolicy = GetProcAddress (
-			GetModuleHandle ("kernel32.dll"),
-			"SetProcessDEPPolicy");
-
-		if (p_SetProcessDEPPolicy != NULL)
-			p_SetProcessDEPPolicy (
-				PROCESS_DEP_ENABLE |
-				PROCESS_DEP_DISABLE_ATL_THUNK_EMULATION);
-	}
-#endif
+	e_util_win32_initialize ();
 #endif
 
 	setlocale (LC_ALL, "");

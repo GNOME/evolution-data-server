@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 #endif
 
+#include <libedataserver/libedataserver.h>
 #include <libebackend/libebackend.h>
 
 #include "evolution-source-registry-resource.h"
@@ -145,6 +146,10 @@ main (gint argc,
 	EDBusServer *server;
 	EDBusServerExitCode exit_code;
 	GError *error = NULL;
+
+#ifdef G_OS_WIN32
+	e_util_win32_initialize ();
+#endif
 
 	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
