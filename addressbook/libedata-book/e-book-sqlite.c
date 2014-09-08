@@ -87,6 +87,7 @@ typedef enum {
 	EBSQL_DEBUG_REF_COUNTS    = 1 << 9,  /* Print about shared EBookSqlite instances, print when finalized */
 	EBSQL_DEBUG_CANCEL        = 1 << 10, /* Print information about GCancellable cancellations */
 	EBSQL_DEBUG_PREFLIGHT     = 1 << 11, /* Print information about query preflighting */
+	EBSQL_DEBUG_TIMING        = 1 << 12, /* Print information about timing */
 } EbSqlDebugFlag;
 
 static const GDebugKey ebsql_debug_keys[] = {
@@ -102,6 +103,7 @@ static const GDebugKey ebsql_debug_keys[] = {
 	{ "ref-counts",     EBSQL_DEBUG_REF_COUNTS   },
 	{ "cancel",         EBSQL_DEBUG_CANCEL       },
 	{ "preflight",      EBSQL_DEBUG_PREFLIGHT    },
+	{ "timing",         EBSQL_DEBUG_TIMING       },
 };
 
 static EbSqlDebugFlag ebsql_debug_flags = 0;
@@ -1096,6 +1098,7 @@ ebsql_exec (EBookSqlite *ebsql,
 	gboolean had_cancel;
 	gchar *errmsg = NULL;
 	gint ret = -1;
+	gint64 t1 = 0, t2;
 
 	/* Debug output for statements and query plans */
 	ebsql_exec_maybe_debug (ebsql, stmt);
@@ -1111,6 +1114,10 @@ ebsql_exec (EBookSqlite *ebsql,
 		had_cancel = FALSE;
 	}
 
+	if ((ebsql_debug_flags & EBSQL_DEBUG_TIMING) != 0 &&
+	    strncmp (stmt, "EXPLAIN QUERY PLAN ", 19) != 0)
+		t1 = g_get_monotonic_time();
+
 	ret = sqlite3_exec (ebsql->priv->db, stmt, callback, data, &errmsg);
 
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
@@ -1119,12 +1126,20 @@ ebsql_exec (EBookSqlite *ebsql,
 			errmsg = NULL;
 		}
 		g_thread_yield ();
+
+		if (t1)
+			t1 = g_get_monotonic_time();
+
 		ret = sqlite3_exec (ebsql->priv->db, stmt, callback, data, &errmsg);
 	}
 
 	if (!had_cancel)
 		ebsql->priv->cancel = NULL;
 
+	if (t1) {
+		t2 = g_get_monotonic_time();
+		g_printerr ("TIME: %" G_GINT64_FORMAT " ms\n", (t2 - t1) / 1000);
+	}
 	if (ret != SQLITE_OK) {
 		EBSQL_SET_ERROR_FROM_SQLITE (error, ret, errmsg);
 		sqlite3_free (errmsg);
