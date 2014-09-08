@@ -1223,12 +1223,12 @@ header_append_mempool (struct _header_scan_state *s,
 /* Basically an optimised version of g_byte_array_append() */
 #define header_append(s, start, inptr) \
 { \
-	register gint headerlen = inptr - start; \
+	register gintptr headerlen = inptr - start; \
  \
 	if (headerlen > 0) { \
 		if (headerlen >= (s->outend - s->outptr)) { \
 			register gchar *outnew; \
-			register gint olen = ((s->outend - s->outbuf) + headerlen) * 2 + 1; \
+			register gintptr olen = ((s->outend - s->outbuf) + headerlen) * 2 + 1; \
 			outnew = g_realloc (s->outbuf, olen); \
 			s->outptr = s->outptr - s->outbuf + outnew; \
 			s->outbuf = outnew; \
