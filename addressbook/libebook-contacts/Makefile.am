@@ -61,6 +61,7 @@ libebook_contacts_1_2_la_LIBADD = \
 
 libebook_contacts_1_2_la_LDFLAGS = \
 	-version-info $(LIBEBOOK_CONTACTS_CURRENT):$(LIBEBOOK_CONTACTS_REVISION):$(LIBEBOOK_CONTACTS_AGE) $(NO_UNDEFINED) \
+	-export-symbols-regex "^e_.*" \
 	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
