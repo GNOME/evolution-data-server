@@ -120,7 +120,7 @@ camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);
 void camel_mime_parser_push_state (CamelMimeParser *mp, camel_mime_parser_state_t newstate, const gchar *boundary);
 
 /* read through the parser */
-gint camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gint len, GError **error);
+gssize camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gssize len, GError **error);
 
 /* get content type for the current part/header */
 CamelContentType *camel_mime_parser_content_type (CamelMimeParser *parser);

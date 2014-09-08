@@ -686,7 +686,7 @@ camel_mime_parser_step (CamelMimeParser *parser,
  * Returns the address of the internal buffer in @databuffer,
  * and the length of useful data.
  *
- * @len may be specified as INT_MAX, in which case you will
+ * @len may be specified as %G_MAXSSIZE, in which case you will
  * get the full remainder of the buffer at each call.
  *
  * Note that no parsing of the data read through this function
@@ -695,14 +695,14 @@ camel_mime_parser_step (CamelMimeParser *parser,
  *
  * Returns: The number of bytes available, or -1 on error.
  **/
-gint
+gssize
 camel_mime_parser_read (CamelMimeParser *parser,
                         const gchar **databuffer,
-                        gint len,
+                        gssize len,
                         GError **error)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
-	gint there;
+	gintptr there;
 
 	if (len == 0)
 		return 0;
