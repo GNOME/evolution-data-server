@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.12.6 2014-09-08
+---------------------------------------
+
+Bug Fixes:
+	Bug 735311 - Adapt to new Google HTTP restriction (Matthew Barnes)
+	Bug 486018 - Implement IDNA (Internationalized Domain Names in Applications) (Milan Crha)
+	Bug 734853 - CamelNetworkService fails to connect to 'localhost' (Milan Crha)
+	Bug 694112 - Crash under e_book_backend_ldap_stop_book_view() (Milan Crha)
+	Bug 735523 - Migrate sync_data from EBookBackendSqliteDB to EBookSqlite (David Woodhouse)
+	Bug 735191 - [IMAPx] Avoid storing server-disallowed message flags (Milan Crha)
+	Bug 733733 - Crash due to write out of buffer in CamelMimeFilterToHTML (Milan Crha)
+	Bug 735200 - [IMAPx] Fails to handle QUOTA response with no quotas (Jeffrey Hutzelman)
+	Bug 735523 - Allow EBookSqlite to be used without transactions (David Woodhouse)
+
+Miscellaneous:
+	Do not add GTasks source when the GTasks backend is not built (Milan Crha)
+	[IMAPx] Deleted messages not always saved to the server properly (Milan Crha)
+	[IMAPx] Incorrect mailbox used for untagged OK/NO/BAD with pending SELECT (Milan Crha)
+
+Translations:
+	MarMav (el)
+	Christian Kirbach (de)
+	ngoswami (as)
+	Kjartan Maraas (nb)
+	Chao-Hsiung Liao (zh_HK)
+	Chao-Hsiung Liao (zh_TW)
+	Claude Paroz (fr)
+	Manoj Kumar Giri (or)
+	Sweta Kothari (gu)
+	Shankar Prasad (kn)
+	Changwoo Ryu (ko)
+	Rūdolfs Mazurs (lv)
+
 Evolution-Data-Server 3.12.5 2014-08-11
 ---------------------------------------
 
