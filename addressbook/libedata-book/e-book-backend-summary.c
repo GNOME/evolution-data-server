@@ -439,28 +439,34 @@ e_book_backend_summary_open (EBookBackendSummary *summary)
 	if (summary->priv->fp)
 		return TRUE;
 
-	if (g_stat (summary->priv->summary_path, &sb) == -1) {
+	/* Try opening the summary file. */
+	fp = g_fopen (summary->priv->summary_path, "rb");
+	if (!fp) {
 		/* if there's no summary present, look for the .new
 		 * file and rename it if it's there, and attempt to
 		 * load that */
 		gchar *new_filename = g_strconcat (summary->priv->summary_path, ".new", NULL);
-		if (g_stat (new_filename, &sb) == -1) {
-			g_free (new_filename);
-			return FALSE;
+
+		if (g_rename (new_filename, summary->priv->summary_path) == -1 &&
+		    errno != ENOENT) {
+			g_warning (
+				"%s: Failed to rename '%s' to '%s': %s", G_STRFUNC,
+				new_filename, summary->priv->summary_path, g_strerror (errno));
+		} else {
+			fp = g_fopen (summary->priv->summary_path, "rb");
 		}
-		else {
-			if (g_rename (new_filename, summary->priv->summary_path) == -1) {
-				g_warning (
-					"%s: Failed to rename '%s' to '%s': %s", G_STRFUNC,
-					new_filename, summary->priv->summary_path, g_strerror (errno));
-			}
-			g_free (new_filename);
-		}
+
+		g_free (new_filename);
 	}
 
-	fp = g_fopen (summary->priv->summary_path, "rb");
 	if (!fp) {
 		g_warning ("failed to open summary file");
+		return FALSE;
+	}
+
+	if (fstat (fileno (fp), &sb) == -1) {
+		g_warning ("failed to get summary file size");
+		fclose (fp);
 		return FALSE;
 	}
 

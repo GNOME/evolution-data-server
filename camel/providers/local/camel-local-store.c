@@ -58,7 +58,6 @@ xrename (const gchar *oldp,
          gint missingok,
          GError **error)
 {
-	struct stat st;
 	gchar *old, *new;
 	gchar *basename;
 	gint ret = -1;
@@ -74,19 +73,12 @@ xrename (const gchar *oldp,
 
 	d (printf ("renaming %s%s to %s%s\n", oldp, suffix, newp, suffix));
 
-	if (g_stat (old, &st) == -1) {
-		if (missingok && errno == ENOENT) {
-			ret = 0;
-		} else {
-			err = errno;
-			ret = -1;
-		}
-	} else if ((!g_file_test (new, G_FILE_TEST_EXISTS) || g_remove (new) == 0) &&
-		   g_rename (old, new) == 0) {
-		ret = 0;
-	} else {
+	if (g_rename (old, new) == -1 &&
+	    !(errno == ENOENT && missingok)) {
 		err = errno;
 		ret = -1;
+	} else {
+		ret = 0;
 	}
 
 	if (ret == -1) {

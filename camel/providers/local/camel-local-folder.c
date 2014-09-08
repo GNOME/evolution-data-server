@@ -538,7 +538,6 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 #else
 	gchar folder_path[PATH_MAX];
 #endif
-	struct stat st;
 #endif
 	gint forceindex;
 	CamelLocalStore *ls;
@@ -584,11 +583,10 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	 */
 #ifndef G_OS_WIN32
 	/* follow any symlinks to the mailbox */
-	if (g_lstat (lf->folder_path, &st) != -1 && S_ISLNK (st.st_mode) &&
 #ifdef __GLIBC__
-	    (folder_path = realpath (lf->folder_path, NULL)) != NULL) {
+	if ((folder_path = realpath (lf->folder_path, NULL)) != NULL) {
 #else
-	    realpath (lf->folder_path, folder_path) != NULL) {
+	if (realpath (lf->folder_path, folder_path) != NULL) {
 #endif
 		g_free (lf->folder_path);
 		lf->folder_path = g_strdup (folder_path);

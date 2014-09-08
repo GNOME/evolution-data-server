@@ -80,7 +80,7 @@ static gint camel_movemail_copy (gint fromfd, gint tofd, goffset start, gsize by
  * directory. Dot locking is used on the source file (but not the
  * destination).
  *
- * Return Value: Returns -1 on error.
+ * Return Value: Returns -1 on error or 0 on success.
  **/
 gint
 camel_movemail (const gchar *source,
@@ -92,35 +92,40 @@ camel_movemail (const gchar *source,
 	gint sfd, dfd;
 	struct stat st;
 
-	/* Stat and then open the spool file. If it doesn't exist or
-	 * is empty, the user has no mail. (There's technically a race
-	 * condition here in that an MDA might have just now locked it
-	 * to deliver a message, but we don't care. In that case,
-	 * assuming it's unlocked is equivalent to pretending we were
-	 * called a fraction earlier.)
-	 */
-	if (g_stat (source, &st) == -1) {
-		if (errno != ENOENT)
-			g_set_error (
-				error, G_IO_ERROR,
-				g_io_error_from_errno (errno),
-				_("Could not check mail file %s: %s"),
-				source, g_strerror (errno));
-		return -1;
-	}
-
-	if (st.st_size == 0)
-		return 0;
-
 	/* open files */
 	sfd = open (source, O_RDWR);
-	if (sfd == -1) {
+	if (sfd == -1 && errno != ENOENT) {
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
 			_("Could not open mail file %s: %s"),
 			source, g_strerror (errno));
 		return -1;
+	} else if (sfd == -1) {
+		/* No mail. */
+		return -1;
+	}
+
+	/* Stat the spool file. If it doesn't exist or
+	 * is empty, the user has no mail. (There's technically a race
+	 * condition here in that an MDA might have just now locked it
+	 * to deliver a message, but we don't care. In that case,
+	 * assuming it's unlocked is equivalent to pretending we were
+	 * called a fraction earlier.)
+	 */
+	if (fstat (sfd, &st) == -1) {
+		close (sfd);
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not check mail file %s: %s"),
+			source, g_strerror (errno));
+		return -1;
+	}
+
+	if (st.st_size == 0) {
+		close (sfd);
+		return 0;
 	}
 
 	dfd = open (dest, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);

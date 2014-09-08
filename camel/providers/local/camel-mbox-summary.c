@@ -687,10 +687,6 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 	camel_operation_push_message (cancellable, _("Storing folder"));
 	camel_folder_summary_lock (s);
 
-	/* preserve attributes as set on the file previously */
-	if (g_stat (cls->folder_path, &st) == 0)
-		filemode = 07777 & st.st_mode;
-
 	fd = g_open (cls->folder_path, O_LARGEFILE | O_RDONLY | O_BINARY, 0);
 	if (fd == -1) {
 		camel_folder_summary_unlock (s);
@@ -702,6 +698,10 @@ mbox_summary_sync_full (CamelMboxSummary *mbs,
 		camel_operation_pop_message (cancellable);
 		return -1;
 	}
+
+	/* preserve attributes as set on the file previously */
+	if (fstat (fd, &st) == 0)
+		filemode = 07777 & st.st_mode;
 
 	tmpname_len = strlen (cls->folder_path) + 5;
 	tmpname = g_alloca (tmpname_len);
