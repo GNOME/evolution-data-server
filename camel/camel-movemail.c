@@ -103,7 +103,7 @@ camel_movemail (const gchar *source,
 		return -1;
 	} else if (sfd == -1) {
 		/* No mail. */
-		return -1;
+		return 0;
 	}
 
 	/* Stat the spool file. If it doesn't exist or
