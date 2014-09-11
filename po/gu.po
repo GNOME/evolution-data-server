@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug."
 "cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
 "POT-Creation-Date: 2014-09-03 04:28+0000\n"
-"PO-Revision-Date: 2014-09-03 16:03+0530\n"
+"PO-Revision-Date: 2014-09-11 16:15+0530\n"
 "Last-Translator: \n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: \n"
@@ -106,7 +106,7 @@ msgstr "અમાન્ય પ્રશ્ર્ન '%s'"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1970
 msgid "Requested to delete an unrelated cursor"
-msgstr ""
+msgstr "અસંબંધિત કર્સરને કાઢવા સૂચિત થયેલ છે"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:2041
 #, c-format
@@ -1066,7 +1066,7 @@ msgstr "ડેટાબેઝ ફાઇલને દૂર કરવાનું
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6442
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
-msgstr ""
+msgstr "ફક્ત સારાંશ ક્વેરી EbSdbCursor દ્દારા આધારભૂત છે"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6049
 #, c-format
@@ -1076,12 +1076,12 @@ msgstr ""
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6063
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
-msgstr ""
+msgstr "ક્ષેત્ર દ્દારા ક્રમ કરી શકાતુ નથી કે જે સારાંશમાં નથી"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6070
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
-msgstr ""
+msgstr "ક્ષેત્ર દ્દારા ક્રમ કરી શકાતુ નથી કે જેની પાસે ઘણી કિંમકો છે"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
 #: ../addressbook/libedata-book/e-book-sqlite.c:7397
@@ -1124,7 +1124,7 @@ msgstr "EbSqlCursor માટે અમાન્ય ક્વેરી"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:7219
 msgid "At least one sort field must be specified to use an EbSqlCursor"
-msgstr ""
+msgstr "ઓછામાં ઓછી એક ક્રમ ક્ષેત્ર એ EbSqlCursor ને વાપરવા માટે સ્પષ્ટ કરવુ જ જોઇએ"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:7237
 msgid "Cannot sort by a field that is not a string type"
@@ -4683,10 +4683,9 @@ msgid "(Deprecated) Proxy authentication user name"
 msgstr "પ્રોક્સી સત્તાધિકરણ વપરાશકર્તા નામ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-#, fuzzy
 #| msgid "Proxy authentication password"
 msgid "(Deprecated) Proxy authentication password"
-msgstr "પ્રોક્સી સત્તાધિકરણ પાસવર્ડ"
+msgstr "(અપ્રચલિત) પ્રોક્સી સત્તાધિકરણ પાસવર્ડ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 #, fuzzy
@@ -4719,10 +4718,9 @@ msgid "(Deprecated) Port number for SOCKS requests"
 msgstr "SOCKS સૂચનાઓ માટે પોર્ટ નંબર"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#, fuzzy
 #| msgid "Automatic proxy configuration URL"
 msgid "(Deprecated) Automatic proxy configuration URL"
-msgstr "સ્વયં પ્રોક્સી રૂપરેખાંકન URL"
+msgstr "(અપ્રચલિત) આપમેળે પ્રોક્સી રૂપરેખાંકન URL"
 
 #: ../libebackend/e-authentication-mediator.c:204
 #: ../libebackend/e-authentication-mediator.c:215
@@ -5492,7 +5490,7 @@ msgstr "WebDAV"
 
 #: ../services/evolution-source-registry/evolution-source-registry.c:38
 msgid "Don't migrate user data from previous versions of Evolution"
-msgstr ""
+msgstr "Evolution ની પહેલાંની આવૃત્તિમાંથી વપરાશકર્તા માહિતીને સ્થળાંતર કરાતુ નથી"
 
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
