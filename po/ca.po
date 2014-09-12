@@ -7,7 +7,7 @@
 # Traductor original: Víctor Nieto <vnie2025@alu-etsetb.upc.es>
 # Xavier A. Conde Rueda <xavi.conde@gmail.com>, 2004, 2005, 2006.
 # David Planella Molas <david.planella@googlemail.com>, 2007, 2008, 2009, 2010, 2011.
-# Gil Forcada <gilforcada@guifi.net>, 2011, 2012, 2013.
+# Gil Forcada <gilforcada@guifi.net>, 2011, 2012, 2013, 2014.
 # Jordi Serratosa <jordis@softcatala.cat>, 2012.
 #
 msgid ""
@@ -15,89 +15,89 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-05-24 16:26+0000\n"
-"PO-Revision-Date: 2014-05-25 01:00+0200\n"
-"Last-Translator: Pau Iranzo <paugnu@gmail.com>\n"
+"POT-Creation-Date: 2014-09-12 19:07+0000\n"
+"PO-Revision-Date: 2014-09-12 21:44+0200\n"
+"Last-Translator: Gil Forcada <gilforcada@guifi.net>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: 8bits\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:117
+#: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
 msgid "Failed to remove file '%s': %s"
 msgstr "No s'ha pogut suprimir el fitxer «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:145
+#: ../addressbook/backends/file/e-book-backend-file.c:148
 #, c-format
 msgid "Failed to make directory %s: %s"
 msgstr "No s'ha pogut crear el directori %s: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:396
+#: ../addressbook/backends/file/e-book-backend-file.c:419
 #, c-format
 msgid "Failed to create hardlink for resource '%s': %s"
 msgstr "No s'ha pogut crear un enllaç fort pel recurs «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:501
-#: ../addressbook/backends/file/e-book-backend-file.c:1230
+#: ../addressbook/backends/file/e-book-backend-file.c:524
+#: ../addressbook/backends/file/e-book-backend-file.c:1253
 msgid "No UID in the contact"
 msgstr "El contacte no conté cap UID"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:828
+#: ../addressbook/backends/file/e-book-backend-file.c:851
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "S'han trobat UID duplicats en els contactes afegits"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:967
+#: ../addressbook/backends/file/e-book-backend-file.c:990
 msgid "Loading..."
 msgstr "S'està carregant..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:969
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4423
+#: ../addressbook/backends/file/e-book-backend-file.c:992
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4360
 msgid "Searching..."
 msgstr "S'està cercant..."
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1258
+#: ../addressbook/backends/file/e-book-backend-file.c:1281
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr ""
 "S'ha intentat modificar el contacte «%s» des d'una revisió dessincronitzada"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1449
-#: ../addressbook/backends/file/e-book-backend-file.c:1532
+#: ../addressbook/backends/file/e-book-backend-file.c:1472
+#: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6711
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "No s'ha trobat el contacte «%s»"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1592
-#: ../addressbook/backends/file/e-book-backend-file.c:1673
+#: ../addressbook/backends/file/e-book-backend-file.c:1615
+#: ../addressbook/backends/file/e-book-backend-file.c:1696
 #, c-format
 msgid "Query '%s' not supported"
 msgstr "La consulta «%s» no està implementada"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1601
-#: ../addressbook/backends/file/e-book-backend-file.c:1682
+#: ../addressbook/backends/file/e-book-backend-file.c:1624
+#: ../addressbook/backends/file/e-book-backend-file.c:1705
 #, c-format
 msgid "Invalid Query '%s'"
 msgstr "La consulta «%s» no és vàlida"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:1947
+#: ../addressbook/backends/file/e-book-backend-file.c:1970
 msgid "Requested to delete an unrelated cursor"
 msgstr "S'ha sol·licitat la supressió d'un cursor sense cap relació"
 
-#: ../addressbook/backends/file/e-book-backend-file.c:2014
+#: ../addressbook/backends/file/e-book-backend-file.c:2041
 #, c-format
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr ""
 "No s'ha pogut canviar el nom de la base de dades vella de «%s» a «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:147
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1242
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4318
+#: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1174
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4250
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:419
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:887
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
@@ -114,9 +114,9 @@ msgstr ""
 #: ../addressbook/libebook/e-book-client.c:3175
 #: ../addressbook/libebook/e-book-client.c:3393
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:878
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:578
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:609
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:621
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:583
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:614
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:626
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
 #: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:276
 #: ../calendar/libecal/e-cal-client.c:3239
@@ -137,9 +137,9 @@ msgstr ""
 #: ../calendar/libecal/e-cal-client.c:6131
 #: ../calendar/libecal/e-cal-client.c:6494
 #: ../calendar/libecal/e-cal-client.c:6708
-#: ../camel/providers/imapx/camel-imapx-command.c:642
-#: ../camel/providers/imapx/camel-imapx-server.c:4716
-#: ../camel/providers/imapx/camel-imapx-server.c:4725
+#: ../camel/providers/imapx/camel-imapx-command.c:645
+#: ../camel/providers/imapx/camel-imapx-server.c:4784
+#: ../camel/providers/imapx/camel-imapx-server.c:4793
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "Error desconegut"
@@ -154,29 +154,29 @@ msgstr "S'està consultant si hi ha contactes actualitzats…"
 msgid "Querying for updated groups…"
 msgstr "S'està consultant si hi ha grups actualitzats…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1743
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5054
+#: ../addressbook/backends/google/e-book-backend-google.c:1757
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4997
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1433
 msgid "The backend does not support bulk additions"
 msgstr "El rerefons no permet les addicions en bloc"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1898
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5190
+#: ../addressbook/backends/google/e-book-backend-google.c:1912
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5133
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1545
 msgid "The backend does not support bulk modifications"
 msgstr "El rerefons no permet les modificacions en bloc"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2105
+#: ../addressbook/backends/google/e-book-backend-google.c:2119
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1645
 msgid "The backend does not support bulk removals"
 msgstr "El rerefons no permet les supressions en bloc"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2225
+#: ../addressbook/backends/google/e-book-backend-google.c:2239
 msgid "Loading…"
 msgstr "S'està carregant…"
 
 #. System Group: My Contacts
-#: ../addressbook/backends/google/e-book-google-utils.c:1625
+#: ../addressbook/backends/google/e-book-google-utils.c:1631
 #: ../services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -185,90 +185,90 @@ msgid "Personal"
 msgstr "Personal"
 
 #. System Group: Friends
-#: ../addressbook/backends/google/e-book-google-utils.c:1627
+#: ../addressbook/backends/google/e-book-google-utils.c:1633
 msgid "Friends"
 msgstr "Amics"
 
 #. System Group: Family
-#: ../addressbook/backends/google/e-book-google-utils.c:1629
+#: ../addressbook/backends/google/e-book-google-utils.c:1635
 msgid "Family"
 msgstr "Família"
 
 #. System Group: Coworkers
-#: ../addressbook/backends/google/e-book-google-utils.c:1631
+#: ../addressbook/backends/google/e-book-google-utils.c:1637
 msgid "Coworkers"
 msgstr "Companys de feina"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:170
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:113
 msgid "Not connected"
 msgstr "No connectat"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:969
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:901
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr ""
 "Ha fallat la vinculació tan amb la versió 2 com la 3 de les vinculacions"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1092
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1024
 msgid "Reconnecting to LDAP server..."
 msgstr "S'està tornant a connectar amb el servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1223
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1155
 msgid "Invalid DN syntax"
 msgstr "Sintaxi no vàlida en el nom de domini (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1239
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4317
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1171
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4249
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Error de l'LDAP 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1851
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2174
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1783
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2106
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: la funció «ldap_first_entry» ha retornat nul"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2104
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2232
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2036
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2164
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: s'ha retornat el tipus de valor %d que no està gestionat"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2365
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2492
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2297
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2424
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr ""
 "%s: s'ha retornat el tipus de resultat de cerca %d que no està gestionat"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4266
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4198
 msgid "Receiving LDAP search results..."
 msgstr "S'estan rebent els resultats de la cerca LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4445
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4382
 msgid "Error performing search"
 msgstr "S'ha produït un error en realitzar la cerca"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4573
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4515
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "S'estan baixant els contactes (%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5137
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5080
 msgid "Adding contact to LDAP server..."
 msgstr "S'està afegint un contacte al servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5212
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5155
 msgid "Modifying contact from LDAP server..."
 msgstr "S'està modificant un contacte del servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5278
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5221
 msgid "Removing contact from LDAP server..."
 msgstr "S'està suprimint un contacte del servidor LDAP..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5667
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5610
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "No s'ha pogut obtenir el nom distingit (DN) per l'usuari «%s»"
@@ -915,7 +915,7 @@ msgstr "Llista de noms del Google Talk"
 msgid "Twitter Name List"
 msgstr "Llista de sobrenoms de Twitter"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1635
+#: ../addressbook/libebook-contacts/e-contact.c:1654
 #: ../addressbook/libebook/e-destination.c:920
 msgid "Unnamed List"
 msgstr "Llista sense nom"
@@ -973,18 +973,18 @@ msgid "Unable to connect to '%s': "
 msgstr "No s'ha pogut connectar a «%s»: "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "S'ha produït un error en inspeccionar el camp de resum desconegut «%s»"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "S'ha produït un error en analitzar l'expressió regular"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:545
 #, c-format
 msgid "Insufficient memory"
 msgstr "No hi ha prou memòria"
@@ -995,7 +995,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "El camp de contacte «%d» especificat en el resum no és vàlid"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1016,7 +1016,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5369
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "La consulta contenia elements no implementats"
@@ -1082,7 +1082,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "No es pot ordenar per un camp que pot tenir valors múltiples"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7381
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1092,7 +1092,7 @@ msgstr ""
 "començament de la llista de contactes"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7389
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1101,12 +1101,12 @@ msgstr ""
 "S'ha provat de moure un cursor cap endavant, però el cursor ja es troba al "
 "final de la llista de contactes"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "El camp de contacte «%d» especificat en el resum no és compatible"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1115,22 +1115,22 @@ msgstr ""
 "antiga amb més d'una llibreta d'adreces. Primer heu de suprimir una de les "
 "entrades a la taula «carpetes»."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5362
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
 msgid "Invalid query: %s"
 msgstr "La consulta no és vàlida: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5537
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "La consulta per l'EbSqlCursor no és vàlida"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7203
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "S'ha d'especificar com a mínim un camp d'ordenació per utilitzar un "
 "EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7221
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "No es pot ordenar per un camp que no sigui de tipus cadena de text"
 
@@ -1339,35 +1339,35 @@ msgstr "Manca l'UID de la font"
 msgid "No such source for UID '%s'"
 msgstr "No hi ha cap font per a l'UID «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:576
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:581
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "El servidor no és accessible (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:607
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "No s'ha pogut connectar a un servidor a través d'SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:623
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "S'ha obtingut el codi d'estat HTTP inesperat %d (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:637
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:642
 msgid "CalDAV backend is not loaded yet"
 msgstr "El rerefons de CalDAV encara no està carregat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1079
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1084
 msgid "Invalid Redirect URL"
 msgstr "L'URL de redirecció no és vàlid"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2882
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2887
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "No s'ha pogut crear la carpeta de memòria cau local «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2934
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2939
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1377,27 +1377,27 @@ msgstr ""
 "lectura.\n"
 "El missatge d'error fou: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3968
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3973
 msgid "CalDAV does not support bulk additions"
 msgstr "El CalDAV no permet les addicions en bloc"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4071
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4076
 msgid "CalDAV does not support bulk modifications"
 msgstr "El CalDAV no permet les modificacions en bloc"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4247
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4252
 msgid "CalDAV does not support bulk removals"
 msgstr "El CalDAV no permet les supressions en bloc"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4914
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4919
 msgid "Calendar doesn't support Free/Busy"
 msgstr "El calendari no implementa l'estat lliure/ocupat"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4923
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4928
 msgid "Schedule outbox url not found"
 msgstr "No s'ha trobat l'URL de sortida de planificació"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5020
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5025
 msgid "Unexpected result in schedule-response"
 msgstr "S'ha retornat un valor no esperat en la resposta de planificació"
 
@@ -2077,7 +2077,7 @@ msgstr "Els arguments per a (system-flag) no són vàlids"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Els arguments per a (user-tag) no són vàlids"
 
-#: ../camel/camel-filter-search.c:1044 ../camel/camel-filter-search.c:1053
+#: ../camel/camel-filter-search.c:1075 ../camel/camel-filter-search.c:1086
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "S'ha produït un error en executar la cerca de filtres: %s. %s"
@@ -2117,57 +2117,57 @@ msgstr "S'estan copiant els missatges"
 msgid "Quota information not supported for folder '%s'"
 msgstr "La informació de quota no està implementada per a la carpeta «%s»"
 
-#: ../camel/camel-folder.c:2868
+#: ../camel/camel-folder.c:2862
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "S'està buidant la carpeta «%s»"
 
-#: ../camel/camel-folder.c:2996
+#: ../camel/camel-folder.c:2990
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "S'està recuperant el missatge «%s» a %s"
 
-#: ../camel/camel-folder.c:3187
+#: ../camel/camel-folder.c:3181
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "S'està recuperant la informació de la quota per «%s»"
 
-#: ../camel/camel-folder.c:3487
+#: ../camel/camel-folder.c:3478
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "S'està actualitzant la carpeta «%s»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:886 ../camel/camel-folder-search.c:929
+#: ../camel/camel-folder-search.c:898 ../camel/camel-folder-search.c:941
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) necessita un únic resultat booleà"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:964
+#: ../camel/camel-folder-search.c:976
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no és permès dins de %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:971 ../camel/camel-folder-search.c:979
+#: ../camel/camel-folder-search.c:983 ../camel/camel-folder-search.c:991
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) necessita una cadena de tipus de concordança"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1007
+#: ../camel/camel-folder-search.c:1019
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) espera un resultat de tipus matriu"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1017
+#: ../camel/camel-folder-search.c:1029
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) espera el conjunt de carpetes"
 
-#: ../camel/camel-folder-search.c:1931 ../camel/camel-folder-search.c:2097
+#: ../camel/camel-folder-search.c:1943 ../camel/camel-folder-search.c:2109
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2176,7 +2176,7 @@ msgstr ""
 "No s'ha pogut analitzar l'expressió de cerca: %s.\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1943 ../camel/camel-folder-search.c:2109
+#: ../camel/camel-folder-search.c:1955 ../camel/camel-folder-search.c:2121
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2250,7 +2250,7 @@ msgstr ""
 "destinatari, de manera que se us demanarà la contrasenya per a cada clau "
 "privada emmagatzemada."
 
-#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:522
+#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:524
 #: ../camel/providers/nntp/camel-nntp-summary.c:401
 #: ../libedataserver/e-client.c:158
 #, c-format
@@ -2439,30 +2439,26 @@ msgstr "No hi ha cap signatura disponible"
 msgid "parse error"
 msgstr "error d'anàlisi"
 
-#: ../camel/camel-net-utils.c:702
+#: ../camel/camel-net-utils.c:706
 #, c-format
 msgid "Resolving: %s"
 msgstr "S'està resolent: %s"
 
-#: ../camel/camel-net-utils.c:725
+#: ../camel/camel-net-utils.c:731
 msgid "Host lookup failed"
 msgstr "Ha fallat la cerca de l'ordinador remot"
 
-#: ../camel/camel-net-utils.c:731
+#: ../camel/camel-net-utils.c:737
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
 msgstr ""
 "Ha fallat la cerca del servidor «%s». Comproveu que heu introduït "
 "correctament el nom del servidor."
 
-#: ../camel/camel-net-utils.c:735
+#: ../camel/camel-net-utils.c:741
 #, c-format
 msgid "Host lookup '%s' failed: %s"
 msgstr "Ha fallat la cerca del servidor «%s»: %s"
-
-#: ../camel/camel-network-service.c:1014
-msgid "No host information available"
-msgstr "No hi ha cap informació disponible de l'amfitrió"
 
 #: ../camel/camel-offline-folder.c:90
 msgid "Downloading new messages for offline mode"
@@ -2573,49 +2569,54 @@ msgstr ""
 "Amb aquesta opció es connectarà al servidor usant una contrasenya segura "
 "DIGEST-MD5, si el servidor ho implementa."
 
-#: ../camel/camel-sasl-digest-md5.c:853
+#: ../camel/camel-sasl-digest-md5.c:855
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "El desafiament del servidor és massa llarg (més de 2048 bytes)"
 
-#: ../camel/camel-sasl-digest-md5.c:864
+#: ../camel/camel-sasl-digest-md5.c:866
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "El desafiament del servidor no és vàlid\n"
 
-#: ../camel/camel-sasl-digest-md5.c:872
+#: ../camel/camel-sasl-digest-md5.c:874
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr ""
 "El desafiament del servidor contenia un element «Qualitat de la protecció» "
 "no vàlid"
 
-#: ../camel/camel-sasl-digest-md5.c:905
+#: ../camel/camel-sasl-digest-md5.c:907
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "La resposta del servidor no contenia dades d'autorització"
 
-#: ../camel/camel-sasl-digest-md5.c:926
+#: ../camel/camel-sasl-digest-md5.c:928
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "La resposta del servidor contenia dades d'autorització incompletes"
 
-#: ../camel/camel-sasl-digest-md5.c:939
+#: ../camel/camel-sasl-digest-md5.c:941
 #, c-format
 msgid "Server response does not match"
 msgstr "La resposta del servidor no concorda"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Amb aquesta opció es connectarà al servidor que usa autenticació basada en "
 "Kerberos 5."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(codi de mecanisme de la GSSAPI desconegut: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2623,11 +2624,11 @@ msgstr ""
 "La credencial proporcionada no implementa el mecanisme especificat, o bé la "
 "implementació no la reconeix."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "El paràmetre target_name proporcionat estava mal format."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2635,7 +2636,7 @@ msgstr ""
 "El paràmetre target_name proporcionat contenia un tipus de nom no "
 "implementat o no vàlid."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2643,7 +2644,7 @@ msgstr ""
 "L'input_token conté vinculacions a canals diferents de les especificades "
 "mitjançant el paràmetre input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2651,7 +2652,7 @@ msgstr ""
 "L'input_token conté una signatura no vàlida, o bé una signatura que no es "
 "pot verificar."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2659,30 +2660,30 @@ msgstr ""
 "Les credencials proporcionades no eren vàlides per iniciar un context, o bé "
 "el gestor de credencials no referenciava cap credencial."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "El gestor del context proporcionat no es refereix a cap context vàlid."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Han fallat les comprovacions de consistència quant a l'input_token."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr "Han fallat les comprovacions realitzades sobre les credencials."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "Les credencials referenciades han vençut."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:352
-#: ../camel/camel-sasl-gssapi.c:400 ../camel/camel-sasl-gssapi.c:417
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
 #: ../camel/providers/smtp/camel-smtp-transport.c:622
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "La resposta d'autenticació del servidor és incorrecta."
 
-#: ../camel/camel-sasl-gssapi.c:429
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Aquesta capa de seguretat no està implementada."
@@ -2753,7 +2754,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "El GType registrat per al protocol «%s» no és vàlid"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4666
+#: ../camel/providers/imapx/camel-imapx-server.c:4734
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
 #: ../camel/providers/smtp/camel-smtp-transport.c:515
@@ -2993,13 +2994,13 @@ msgstr "No s'ha pogut crear la carpeta: %s. La carpeta existeix"
 msgid "Creating folder '%s'"
 msgstr "S'està creant la carpeta «%s»"
 
-#: ../camel/camel-store.c:2398 ../camel/camel-vee-store.c:416
+#: ../camel/camel-store.c:2398 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:321
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No s'ha pogut suprimir la carpeta: %s. L'operació no és vàlida"
 
-#: ../camel/camel-store.c:2588 ../camel/camel-vee-store.c:467
+#: ../camel/camel-store.c:2588 ../camel/camel-vee-store.c:461
 #: ../camel/providers/local/camel-maildir-store.c:872
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3074,17 +3075,17 @@ msgstr "_Actualitza automàticament si canvien les carpetes fonts"
 msgid "Unmatched"
 msgstr "Sense coincidència"
 
-#: ../camel/camel-vee-store.c:442
+#: ../camel/camel-vee-store.c:436
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "No s'ha pogut suprimir la carpeta: %s: no existeix"
 
-#: ../camel/camel-vee-store.c:477
+#: ../camel/camel-vee-store.c:471
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "No s'ha pogut canviar el nom de la carpeta: %s: no existeix"
 
-#: ../camel/camel-vee-store.c:539
+#: ../camel/camel-vee-store.c:533
 msgid "Enable _Unmatched folder"
 msgstr "Habilita carpetes _no coincidents"
 
@@ -3096,41 +3097,41 @@ msgstr "No es poden copiar els missatges a la Paperera"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "No es poden copiar els missatges a la Brossa"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:790
+#: ../camel/providers/imapx/camel-imapx-folder.c:796
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "La informació de quota no està disponible per a la carpeta «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:925
-#: ../camel/providers/imapx/camel-imapx-folder.c:1018
+#: ../camel/providers/imapx/camel-imapx-folder.c:936
+#: ../camel/providers/imapx/camel-imapx-folder.c:1029
 #, c-format
 msgid "No destination folder specified"
 msgstr "No s'ha especificat la carpeta de destinació"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:953
+#: ../camel/providers/imapx/camel-imapx-folder.c:964
 msgid "Unable to move junk messages"
 msgstr "No s'han pogut moure els missatges brossa"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1046
+#: ../camel/providers/imapx/camel-imapx-folder.c:1057
 msgid "Unable to move deleted messages"
 msgstr "No s'han pogut moure els missatges suprimits"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1359
+#: ../camel/providers/imapx/camel-imapx-folder.c:1374
 #: ../camel/providers/nntp/camel-nntp-folder.c:760
 msgid "Apply message _filters to this folder"
 msgstr "Aplica els _filtres de missatge a aquesta carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1465
+#: ../camel/providers/imapx/camel-imapx-folder.c:1485
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "No s'ha pogut crear el resum de les carpetes de %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1474
+#: ../camel/providers/imapx/camel-imapx-folder.c:1494
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "No s'ha pogut crear la de memòria cau de %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1691
+#: ../camel/providers/imapx/camel-imapx-folder.c:1709
 #, c-format
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "No hi ha cap bústia de correu IMAP disponible per a la carpeta «%s»"
@@ -3232,174 +3233,174 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Per llegir i emmagatzemar correu en servidors IMAP."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1008
-#: ../camel/providers/imapx/camel-imapx-server.c:1015
+#: ../camel/providers/imapx/camel-imapx-server.c:1009
+#: ../camel/providers/imapx/camel-imapx-server.c:1016
 #, c-format
 msgid "Not authenticated"
 msgstr "No autenticat"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1706
+#: ../camel/providers/imapx/camel-imapx-server.c:1713
 msgid "Server disconnected"
 msgstr "El servidor s'ha desconnectat"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2186
+#: ../camel/providers/imapx/camel-imapx-server.c:2205
 msgid "Error writing to cache stream"
 msgstr "S'ha produït un error en escriure al flux de la memòria cau"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3522
+#: ../camel/providers/imapx/camel-imapx-server.c:3565
 msgid "Error performing IDLE"
 msgstr "S'ha produït un error en realitzar l'IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4505
+#: ../camel/providers/imapx/camel-imapx-server.c:4573
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "No s'ha pogut connectar amb el servidor IMAP %s en mode segur: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4506
+#: ../camel/providers/imapx/camel-imapx-server.c:4574
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "No està implementat l'STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4566
+#: ../camel/providers/imapx/camel-imapx-server.c:4634
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "No s'ha pogut connectar amb el servidor IMAP %s en mode segur: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4655
+#: ../camel/providers/imapx/camel-imapx-server.c:4723
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "El servidor IMAP %s no implementa l'autenticació %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4685
+#: ../camel/providers/imapx/camel-imapx-server.c:4753
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "No es pot autenticar sense un nom d'usuari"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4694
+#: ../camel/providers/imapx/camel-imapx-server.c:4762
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "No està disponible l'autenticació per contrasenya"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4930
-#: ../camel/providers/imapx/camel-imapx-server.c:4989
+#: ../camel/providers/imapx/camel-imapx-server.c:4998
+#: ../camel/providers/imapx/camel-imapx-server.c:5057
 msgid "Error fetching message"
 msgstr "S'ha produït un error en recollir el missatge"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4982
+#: ../camel/providers/imapx/camel-imapx-server.c:5050
 msgid "Failed to close the tmp stream"
 msgstr "Ha fallat el tancament del flux temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5018
+#: ../camel/providers/imapx/camel-imapx-server.c:5086
 msgid "Failed to copy the tmp file"
 msgstr "No s'ha pogut copiar el fitxer temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5159
+#: ../camel/providers/imapx/camel-imapx-server.c:5227
 msgid "Error moving messages"
 msgstr "S'ha produït un error en moure els missatges"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5163
+#: ../camel/providers/imapx/camel-imapx-server.c:5231
 msgid "Error copying messages"
 msgstr "S'ha produït un error en copiar els missatges"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5385
+#: ../camel/providers/imapx/camel-imapx-server.c:5453
 msgid "Error appending message"
 msgstr "S'ha produït un error en afegir el missatge"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5621
+#: ../camel/providers/imapx/camel-imapx-server.c:5689
 msgid "Error fetching message headers"
 msgstr "S'ha produït un error en recollir les capçaleres del missatge"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5786
+#: ../camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error retrieving message"
 msgstr "S'ha produït un error recuperar el missatge"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5916
-#: ../camel/providers/imapx/camel-imapx-server.c:6139
+#: ../camel/providers/imapx/camel-imapx-server.c:5990
+#: ../camel/providers/imapx/camel-imapx-server.c:6219
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "S'està recollint la informació del resum pels missatges nous a «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5968
+#: ../camel/providers/imapx/camel-imapx-server.c:6042
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "S'estan cercant els missatges canviats a «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6020
+#: ../camel/providers/imapx/camel-imapx-server.c:6094
 msgid "Error fetching new messages"
 msgstr "S'ha produït un error en recollir els missatges nous"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6287
+#: ../camel/providers/imapx/camel-imapx-server.c:6367
 msgid "Error refreshing folder"
 msgstr "S'ha produït un error en actualitzar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6437
+#: ../camel/providers/imapx/camel-imapx-server.c:6517
 msgid "Error expunging message"
 msgstr "S'ha produït un error en buidar el missatge"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6546
-#: ../camel/providers/imapx/camel-imapx-server.c:6571
+#: ../camel/providers/imapx/camel-imapx-server.c:6632
+#: ../camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error fetching folders"
 msgstr "S'ha produït un error en recollir les carpetes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6651
+#: ../camel/providers/imapx/camel-imapx-server.c:6737
 msgid "Error creating folder"
 msgstr "S'ha produït un error en crear la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6703
+#: ../camel/providers/imapx/camel-imapx-server.c:6789
 msgid "Error deleting folder"
 msgstr "S'ha produït un error en suprimir la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6779
+#: ../camel/providers/imapx/camel-imapx-server.c:6865
 msgid "Error renaming folder"
 msgstr "S'ha produït un error en canviar el nom de la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6853
+#: ../camel/providers/imapx/camel-imapx-server.c:6939
 msgid "Error subscribing to folder"
 msgstr "S'ha produït un error en subscriure's a la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6919
+#: ../camel/providers/imapx/camel-imapx-server.c:7005
 msgid "Error unsubscribing from folder"
 msgstr "S'ha produït un error en cancel·lar la subscripció a la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6981
+#: ../camel/providers/imapx/camel-imapx-server.c:7067
 msgid "Error retrieving quota information"
 msgstr "S'ha produït un error en recuperar la informació de la quota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7033
+#: ../camel/providers/imapx/camel-imapx-server.c:7119
 msgid "Search failed"
 msgstr "Ha fallat la cerca"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7095
+#: ../camel/providers/imapx/camel-imapx-server.c:7181
 msgid "Error performing NOOP"
 msgstr "S'ha produït un error en realitzar el NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7202
+#: ../camel/providers/imapx/camel-imapx-server.c:7288
 msgid "Error syncing changes"
 msgstr "S'ha produït un error en sincronitzar els canvis"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8172
+#: ../camel/providers/imapx/camel-imapx-server.c:8275
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No es pot obtenir el missatge amb l'identificador %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8173
+#: ../camel/providers/imapx/camel-imapx-server.c:8276
 msgid "No such message available."
 msgstr "No existeix tal missatge."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8375
-#: ../camel/providers/imapx/camel-imapx-server.c:8396
+#: ../camel/providers/imapx/camel-imapx-server.c:8483
+#: ../camel/providers/imapx/camel-imapx-server.c:8504
 msgid "Cannot create spool file: "
 msgstr "No es pot crear el fitxer de cua: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9137
+#: ../camel/providers/imapx/camel-imapx-server.c:9256
 msgid "IMAP server does not support quotas"
 msgstr "El servidor d'IMAP no implementa les quotes"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../camel/providers/imapx/camel-imapx-store.c:224
+#: ../camel/providers/imapx/camel-imapx-store.c:223
 #: ../camel/providers/local/camel-maildir-folder.c:482
 #: ../camel/providers/local/camel-maildir-store.c:322
 #: ../camel/providers/local/camel-maildir-store.c:784
@@ -3452,7 +3453,7 @@ msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "El nom de carpeta «%s» no és vàlid perquè conté el caràcter «%c»"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2679
+#: ../camel/providers/imapx/camel-imapx-store.c:2689
 #: ../camel/providers/nntp/camel-nntp-store.c:1250
 #: ../camel/providers/pop3/camel-pop3-folder.c:450
 #: ../camel/providers/pop3/camel-pop3-folder.c:593
@@ -3467,27 +3468,27 @@ msgstr "El nom de carpeta «%s» no és vàlid perquè conté el caràcter «%c�
 msgid "You must be working online to complete this operation"
 msgstr "Heu d'estar en línia per completar aquesta operació"
 
-#: ../camel/providers/local/camel-local-folder.c:192
+#: ../camel/providers/local/camel-local-folder.c:195
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:202
-#: ../camel/providers/local/camel-local-folder.c:211
+#: ../camel/providers/local/camel-local-folder.c:205
+#: ../camel/providers/local/camel-local-folder.c:214
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "bústia de correu: %s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:220
+#: ../camel/providers/local/camel-local-folder.c:223
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:497
+#: ../camel/providers/local/camel-local-folder.c:500
 msgid "_Index message body data"
 msgstr "_Indexa les dades del cos dels missatges"
 
-#: ../camel/providers/local/camel-local-folder.c:727
+#: ../camel/providers/local/camel-local-folder.c:730
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -4786,8 +4787,8 @@ msgstr "(Obsolet) URL de configuració automàtica del servidor intermediari"
 
 #: ../libebackend/e-authentication-mediator.c:204
 #: ../libebackend/e-authentication-mediator.c:215
-#: ../libebackend/e-authentication-mediator.c:861
-#: ../libebackend/e-authentication-mediator.c:1198
+#: ../libebackend/e-authentication-mediator.c:860
+#: ../libebackend/e-authentication-mediator.c:1197
 msgid "Bus name vanished (client terminated?)"
 msgstr "S'ha esvaït el nom de bus (el client ha finalitzat?)"
 
@@ -4797,8 +4798,8 @@ msgstr "El client no ha respost"
 
 #: ../libebackend/e-authentication-mediator.c:333
 #: ../libebackend/e-authentication-mediator.c:344
-#: ../libebackend/e-authentication-mediator.c:855
-#: ../libebackend/e-authentication-mediator.c:1192
+#: ../libebackend/e-authentication-mediator.c:854
+#: ../libebackend/e-authentication-mediator.c:1191
 msgid "Client cancelled the operation"
 msgstr "El client ha cancel·lat l'operació"
 
@@ -4806,11 +4807,11 @@ msgstr "El client ha cancel·lat l'operació"
 msgid "Client reports password was rejected"
 msgstr "El client ha informat que s'ha rebutjat la contrasenya"
 
-#: ../libebackend/e-authentication-session.c:554
+#: ../libebackend/e-authentication-session.c:539
 msgid "Add this password to your keyring"
 msgstr "Afegeix aquesta contrasenya a l'anell de claus"
 
-#: ../libebackend/e-authentication-session.c:664
+#: ../libebackend/e-authentication-session.c:649
 msgid "Password was incorrect"
 msgstr "La contrasenya era errònia"
 
@@ -4819,12 +4820,12 @@ msgstr "La contrasenya era errònia"
 msgid "%s does not support authentication"
 msgstr "%s no implementa l'autenticació"
 
-#: ../libebackend/e-collection-backend.c:900
+#: ../libebackend/e-collection-backend.c:901
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s no permet la creació de recursos remots"
 
-#: ../libebackend/e-collection-backend.c:959
+#: ../libebackend/e-collection-backend.c:960
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s no permet la supressió de recursos remots"
@@ -4839,13 +4840,13 @@ msgstr "No hi ha cap fàbrica de rerefons per la clau de resum «%s»"
 msgid "Data source is missing a [%s] group"
 msgstr "A la font de dades li manca un grup [%s]"
 
-#: ../libebackend/e-server-side-source.c:1020
+#: ../libebackend/e-server-side-source.c:1022
 #: ../libedataserver/e-source.c:1394
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "La font de dades «%s» no permet la creació de recursos remots"
 
-#: ../libebackend/e-server-side-source.c:1034
+#: ../libebackend/e-server-side-source.c:1036
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
@@ -4853,13 +4854,13 @@ msgstr ""
 "La font de dades «%s» no té un rerefons de col·lecció per la creació de "
 "recursos remots"
 
-#: ../libebackend/e-server-side-source.c:1062
+#: ../libebackend/e-server-side-source.c:1064
 #: ../libedataserver/e-source.c:1507
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "La font de dades «%s» no permet la supressió de recursos remots"
 
-#: ../libebackend/e-server-side-source.c:1076
+#: ../libebackend/e-server-side-source.c:1078
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
@@ -4867,14 +4868,14 @@ msgstr ""
 "La font de dades «%s» no te un rerefons de col·lecció per la supressió de "
 "recursos remots"
 
-#: ../libebackend/e-server-side-source.c:1107
+#: ../libebackend/e-server-side-source.c:1109
 #: ../libedataserver/e-source.c:1603
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "La font de dades «%s» no permet l'ús de l'autenticació OAuth 2.0"
 
-#: ../libebackend/e-server-side-source.c:1452
+#: ../libebackend/e-server-side-source.c:1456
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "El fitxer ha de tenir una extensió «.source»"
@@ -5096,7 +5097,7 @@ msgstr "No es pot escriure a la font de dades «%s»"
 msgid "Unnamed"
 msgstr "Sense nom"
 
-#: ../libedataserver/e-source-mail-signature.c:486
+#: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "L'script de signatura ha de ser un fitxer local"
@@ -5106,7 +5107,7 @@ msgstr "L'script de signatura ha de ser un fitxer local"
 msgid "Source '%s' does not support proxy lookups"
 msgstr "La font «%s» no permet la cerca de servidors intermediaris"
 
-#: ../libedataserver/e-source-webdav.c:1555
+#: ../libedataserver/e-source-webdav.c:1557
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
@@ -5115,7 +5116,7 @@ msgstr ""
 "No es pot confiar en el certificat SSL del servidor «%s» on hi ha la "
 "llibreta d'adreces «%s». Voleu acceptar-lo?"
 
-#: ../libedataserver/e-source-webdav.c:1564
+#: ../libedataserver/e-source-webdav.c:1566
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
@@ -5124,7 +5125,7 @@ msgstr ""
 "No es pot confiar en el certificat SSL del servidor «%s» on hi ha el "
 "calendari «%s». Voleu acceptar-lo?"
 
-#: ../libedataserver/e-source-webdav.c:1573
+#: ../libedataserver/e-source-webdav.c:1575
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
@@ -5133,7 +5134,7 @@ msgstr ""
 "No es pot confiar en el certificat SSL del servidor «%s» on hi ha la llista "
 "d'anotacions «%s». Voleu acceptar-lo?"
 
-#: ../libedataserver/e-source-webdav.c:1582
+#: ../libedataserver/e-source-webdav.c:1584
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5327,7 +5328,7 @@ msgstr "No s'ha pogut trobar l'element de compte"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "No s'ha trobat l'«ASUrl» ni l'«OABUrl» en la resposta d'autodescoberta"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1261
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1260
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5336,18 +5337,23 @@ msgstr ""
 "No s'ha pogut trobar cap compte relacionat en el servei org.gnome."
 "OnlineAccounts del qual obtenir-ne un testimoni d'accés per «%s»"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1288
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1290
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "No s'ha pogut obtenir un testimoni d'accés per «%s»: "
 
-#: ../modules/google-backend/module-google-backend.c:191
+#: ../modules/google-backend/module-google-backend.c:205
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
 #: ../modules/yahoo-backend/module-yahoo-backend.c:199
 msgid "Calendar"
 msgstr "Calendari"
 
-#: ../modules/google-backend/module-google-backend.c:260
+#: ../modules/google-backend/module-google-backend.c:279
+#: ../modules/yahoo-backend/module-yahoo-backend.c:226
+msgid "Tasks"
+msgstr "Tasques"
+
+#: ../modules/google-backend/module-google-backend.c:333
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5450,7 +5456,7 @@ msgstr "Correu electrònic"
 msgid "Integrate your mailboxes"
 msgstr "Integreu les vostres bústies de correu"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1008
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1007
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
@@ -5496,10 +5502,6 @@ msgstr "Calendari del Yahoo!"
 #: ../modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
 msgid "Yahoo! Mail"
 msgstr "Correu del Yahoo!"
-
-#: ../modules/yahoo-backend/module-yahoo-backend.c:226
-msgid "Tasks"
-msgstr "Tasques"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:46
 #: ../services/evolution-calendar-factory/evolution-calendar-factory.c:50
