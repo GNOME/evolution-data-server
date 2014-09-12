@@ -421,6 +421,38 @@ main (gint argc,
 			suites[i].custom,
 			FALSE);
 
+		/* Evolution's addressbook autocompletion search.
+		 * This should ideally be indexed, and should *definitely*
+		 * not be a fallback query. It should also correctly
+		 * return results for which there is no email address
+		 * listed. */
+		add_client_test (
+			suites[i].prefix,
+			"/Autocomplete",
+			suites[i].func,
+			e_book_query_orv (
+				e_book_query_field_test (
+					E_CONTACT_NICKNAME,
+					E_BOOK_QUERY_BEGINS_WITH,
+					"P"),
+				e_book_query_field_test (
+					E_CONTACT_EMAIL,
+					E_BOOK_QUERY_BEGINS_WITH,
+					"P"),
+				e_book_query_field_test (
+					E_CONTACT_FULL_NAME,
+					E_BOOK_QUERY_BEGINS_WITH,
+					"P"),
+				e_book_query_field_test (
+					E_CONTACT_FILE_AS,
+					E_BOOK_QUERY_BEGINS_WITH,
+					"P"),
+				NULL),
+			3,
+			suites[i].direct,
+			suites[i].custom,
+			FALSE);
+
 		/* Add search tests that fetch contacts */
 		add_client_test (
 			suites[i].prefix,
