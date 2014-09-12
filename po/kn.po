@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.gnome-2-28.kn\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-09-02 04:28+0000\n"
-"PO-Revision-Date: 2014-09-05 17:27+0530\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2014-09-12 11:25+0000\n"
+"PO-Revision-Date: 2014-09-12 18:22+0530\n"
+"Last-Translator: Shankar Prasad <svenkate AT redhat Dot com>\n"
 "Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: kn\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "ಸಿಂಕ್ ಪುನರಾವರ್ತನೆ ಇಲ್ಲದೆ '%s
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6727
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "'%s' ಸಂಪರ್ಕವು ಕಂಡು ಬಂದಿಲ್ಲ"
@@ -131,8 +131,8 @@ msgstr "'%s' ಎಂಬ ಹಳೆಯ ದತ್ತಸಂಚಯದಿಂದ ಹೆ�
 #: ../calendar/libecal/e-cal-client.c:6494
 #: ../calendar/libecal/e-cal-client.c:6708
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4769
-#: ../camel/providers/imapx/camel-imapx-server.c:4778
+#: ../camel/providers/imapx/camel-imapx-server.c:4784
+#: ../camel/providers/imapx/camel-imapx-server.c:4793
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "ಅಜ್ಞಾತ ದೋಷ"
@@ -244,7 +244,6 @@ msgstr "ಹುಡುಕುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ"
 
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4515
 #, c-format
-#| msgid "Downloading contacts (%d)... "
 msgid "Downloading contacts (%d)..."
 msgstr "ಸಂಪರ್ಕಗಳನ್ನು ಇಳಿಸಿಕೊಳ್ಳಲಾಗುತ್ತಿದೆ (%d)..."
 
@@ -964,21 +963,18 @@ msgid "Unable to connect to '%s': "
 msgstr "'%s ನೊಂದಿಗೆ ಸಂಪರ್ಕ ಸಾಧಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ:"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "ದೋಷ ಆತ್ಮಶೋಶನೆಯಲ್ಲಿ ಅಜ್ಞಾತ ಸಾರಾಂಶ ಸ್ಥಳ '%s'"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
-#| msgid ""
-#| "Error executing search expression: %s:\n"
-#| "%s"
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "ರೆಗ್ಯುಲರ್ ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ಅನ್ನು ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ದೋಷ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:545
 #, c-format
 msgid "Insufficient memory"
 msgstr "ಸಾಕಷ್ಟು ಮೆಮೊರಿ ಇಲ್ಲ"
@@ -989,7 +985,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "ಸಾರಾಂಶದಲ್ಲಿ ಅಮಾನ್ಯವಾದ ಸಂಪರ್ಕ ವಿಳಾಸದ ಸ್ಥಳ '%d' ಅನ್ನು ಸೂಚಿಸಲಾಗಿದೆ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1009,7 +1005,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5385
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "ಮನವಿಯು ಬೆಂಬಲವಿರದ ಘಟಕಗಳನ್ನು ಹೊಂದಿದೆ"
@@ -1075,7 +1071,7 @@ msgstr ""
 "ಅನೇಕ ಮೌಲ್ಯಗಳನ್ನು ಹೊಂದಿರುವ ಸಾಧ್ಯತೆ ಇರುವ ಒಂದು ಸ್ಥಳದಿಂದ ವಿಂಗಡಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7397
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1085,7 +1081,7 @@ msgstr ""
 "ಸಂಪರ್ಕಪಟ್ಟಿಯ ಆರಂಭದಲ್ಲಿ ಇದೆ"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7405
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1094,37 +1090,34 @@ msgstr ""
 "ತೆರೆಸೂಚಕವನ್ನು ಮುಂದಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸಲು ಪ್ರಯತ್ನಿಸಲಾಗಿದೆ, ಆದರೆ ತೆರೆಸೂಚಕವು ಈಗಾಗಲೆ "
 "ಸಂಪರ್ಕಪಟ್ಟಿಯ ಕೊನೆಯಲ್ಲಿ ಇದೆ"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
-#| msgid "Invalid contact field '%d' specified in summary"
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "ಸಾರಾಂಶದಲ್ಲಿ ಬೆಂಬಲವಿರದ ಸಂಪರ್ಕ ವಿಳಾಸದ ಸ್ಥಳ '%d' ಅನ್ನು ಸೂಚಿಸಲಾಗಿದೆ"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
 msgstr ""
 "ಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ವಿಳಾಸಪುಸ್ತಕದೊಂದಿಗೆ ಒಂದು ಸಾಂಪ್ರದಾಯಿಕ ದತ್ತಸಂಚಯದಿಂದ "
-"ಸಂಪರ್ಕಗಳನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿರುವುದಿಲ್ಲ. 'ಕಡತಕೋಶಗಳು' ಪಟ್ಟಿಯಿಂದ ಒಂದು ನಮೂದನ್ನು "
-"ಮೊದಲು ಅಳಿಸಿ."
+"ಸಂಪರ್ಕಗಳನ್ನು "
+"ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿರುವುದಿಲ್ಲ. 'ಕಡತಕೋಶಗಳು' ಪಟ್ಟಿಯಿಂದ ಒಂದು ನಮೂದನ್ನು ಮೊದಲು ಅಳಿಸಿ."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5378
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
-#| msgid "Invalid query: "
 msgid "Invalid query: %s"
 msgstr "ಅಮಾನ್ಯವಾದ ಮನವಿ: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5553
-#| msgid "Invalid query: "
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "EbSqlCursor ಗಾಗಿ ಅಮಾನ್ಯವಾದ ಮನವಿ"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7219
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "EbSqlCursor ಅನ್ನು ಬಳಸಲು ಕನಿಷ್ಟ ಒಂದು ವಿಂಗಡಣಾ ಸ್ಥಳವನ್ನು ಸೂಚಿಸಬೇಕು"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7237
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "ಒಂದು ವಾಕ್ಯಾಂಶದ ಬಗೆ ಆಗಿರದೆ ಇರುವ ಒಂದು ಸ್ಥಳದಿಂದ ವಿಂಗಡಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
@@ -1291,17 +1284,14 @@ msgid "Cannot remove contacts: "
 msgstr "ಸಂಪರ್ಕವಿಳಾಸಗಳನ್ನು ತೆಗೆದು ಹಾಕಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ:"
 
 #: ../addressbook/libedata-book/e-data-book-cursor.c:772
-#| msgid "%s does not support creating remote resources"
 msgid "Cursor does not support setting the search expression"
 msgstr "ಹುಡುಕು ಎಕ್ಸ್‌ಪ್ರೆಶನ್ ಅನ್ನು ಹೊಂದಿಸುವುದನ್ನು ತೆರೆಸೂಚಕವು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../addressbook/libedata-book/e-data-book-cursor.c:855
-#| msgid "Store does not support an INBOX"
 msgid "Cursor does not support step"
 msgstr "ಮುಂದಕ್ಕೆ ಹೋಗುವುದನ್ನು ತೆರೆಸೂಚಕವು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
 #: ../addressbook/libedata-book/e-data-book-cursor.c:938
-#| msgid "%s does not support authentication"
 msgid "Cursor does not support alphabetic indexes"
 msgstr "ವರ್ಣಮಾಲೆಯ ಕ್ರಮದಲ್ಲಿ ಅನಸೂಚಿತಗೊಳಿಸುವುದನ್ನು ತೆರೆಸೂಚಕವು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
@@ -2593,17 +2583,22 @@ msgstr "ಪೂರೈಕೆಗಣಕದ ಪ್ರತಿಕ್ರಿಯೆಯು �
 msgid "Server response does not match"
 msgstr "ಪೂರೈಕೆಗಣಕದ ಪ್ರತಿಕ್ರಿಯೆಗಳು ತಾಳೆಯಾಗುತ್ತಿಲ್ಲ"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "ಈ ಆಯ್ಕೆಯಿಂದಾಗಿ ಕರ್ಬರೋಸ್ 5 ದೃಡೀಕರಣವನ್ನು ಬಳಸಿಕೊಂಡು ಪೂರೈಕೆಗಣಕದೊಂದಿಗೆ "
 "ಸಂಪರ್ಕಸಾಧಿಸುತ್ತದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(ಗೊತ್ತಿರದ GSSAPI ವ್ಯವಸ್ಥೆಯ ಸಂಕೇತ: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2611,11 +2606,11 @@ msgstr ""
 "ಸೂಚಿಸಲಾದ ಕಾರ್ಯವಿನ್ಯಾಸವು ಒದಗಿಸಲಾದಂತಹ ಪರಿಚಯಪತ್ರದಿಂದ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ, ಅಥವ "
 "ಅನ್ವಯಿಸುವಿಕೆಯಿಂದ ಅದು ಗುರುತಿಸಲಾಗಿಲ್ಲ."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "ಒದಗಿಸಲಾದ target_name ನಿಯತಾಂಕವು ಸರಿಯಾಗಿರಲಿಲ್ಲ."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2623,7 +2618,7 @@ msgstr ""
 "ಒದಗಿಸಲಾದ target_name ನಿಯತಾಂಕವು ಒಂದು ಅಮಾನ್ಯವಾದ ಅಥವ ಬೆಂಬಲವಿರದ ಹೆಸರಿನ ಬಗೆಯನ್ನು "
 "ಹೊಂದಿದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2632,7 +2627,7 @@ msgstr ""
 "ಚಾನಲ್ "
 "ಬೈಂಡಿಂಗ್‌ಗಳನ್ನು ಹೊಂದಿದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2640,7 +2635,7 @@ msgstr ""
 "input_token ಒಂದು ಅಮಾನ್ಯವಾದಂತಹ ಸಹಿಯನ್ನು, ಅಥವ ಪರಿಶೀಲಿಸಲು ಸಾಧ್ಯವಾಗದೆ ಇರುವಂತಹ "
 "ಸಹಿಯನ್ನು ಹೊಂದಿದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2649,31 +2644,31 @@ msgstr ""
 "ಹಿಡಿಕೆ "
 "ಯಾವುದೆ ಪರಿಚಯಪತ್ರಗಳನ್ನು ಉಲ್ಲೇಖಿಸಿಲ್ಲ."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "ಒದಗಿಸಿರುವ ಸನ್ನಿವೇಶದ ಹಿಡಿಕೆ ಒಂದು ಮಾನ್ಯವಾದ ಸನ್ನಿವೇಶವನ್ನು ಸೂಚಿಸುತ್ತಿಲ್ಲ."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "input_token ನ ಮೇಲೆ ಮಾಡಲಾದ ಸ್ಥಿರತೆಯ ಪರೀಕ್ಷೆಯು ವಿಫಲಗೊಂಡಿದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr ""
 "ಪರಿಚಯ ಪತ್ರದ(ಕ್ರೆಡೆನ್ಶಿಯಲ್‌ನ) ಮೇಲೆ ಮಾಡಲಾದ ಸ್ಥಿರತೆಯ ಪರೀಕ್ಷೆಯು ವಿಫಲಗೊಂಡಿದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "ಉಲ್ಲೇಖಿಸಲಾದ ಪರಿಚಯಪತ್ರದ ವಾಯಿದೆ ತೀರಿದೆ."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:354
-#: ../camel/camel-sasl-gssapi.c:402 ../camel/camel-sasl-gssapi.c:419
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
 #: ../camel/providers/smtp/camel-smtp-transport.c:622
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "ಪೂರೈಕೆಗಣಕದಿಂದ ಸರಿಯಲ್ಲದ ಧೃಡೀಕರಣ ಪ್ರತಿಕ್ರಿಯೆ."
 
-#: ../camel/camel-sasl-gssapi.c:431
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "ಬೆಂಬಲವಿಲ್ಲದ ಸುರಕ್ಷತಾ ಲೇಯರ್."
@@ -2742,7 +2737,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "'%s' ಪ್ರೊಟೋಕಾಲ್‌ಗಾಗಿ ಅಮಾನ್ಯವಾದ GType ಬಗೆ"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4719
+#: ../camel/providers/imapx/camel-imapx-server.c:4734
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
 #: ../camel/providers/smtp/camel-smtp-transport.c:515
@@ -2995,7 +2990,6 @@ msgstr "ಪತ್ರಕೋಶದ ಹೆಸರನ್ನು ಬದಲಾಯಿಸ�
 
 #: ../camel/camel-stream.c:285 ../camel/camel-stream.c:336
 #, c-format
-#| msgid "Data source '%s' is not removable"
 msgid "Stream type '%s' is not seekable"
 msgstr "'%s' ಎಂಬ ಸ್ಟ್ರೀಮ್‌ ಬಗೆಯನ್ನು ಕೋರಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
@@ -3122,7 +3116,6 @@ msgstr "%s ಗಾಗಿ ಕ್ಯಾಶೆಯನ್ನು ನಿರ್ಮಿಸ�
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:1709
 #, c-format
-#| msgid "No quota information available for folder '%s'"
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "'%s' ಪತ್ರಕೋಶಕ್ಕಾಗಿ ಯಾವುದೆ IMAP ಅಂಚೆಪೆಟ್ಟಿಗೆಯು ಲಭ್ಯವಿಲ್ಲ"
 
@@ -3152,7 +3145,6 @@ msgid "_Listen for server change notifications"
 msgstr "ಪೂರೈಕೆಗಣಕದ ಬದಲಾವಣೆಯ ಸೂಚನೆಗಳಿಗಾಗಿ ಆಲಿಸು (_L)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:49
-#| msgid "Connection refused"
 msgid "Connection to Server"
 msgstr "ಪೂರೈಕೆಗಣಕದ ಸಂಪರ್ಕ"
 
@@ -3236,159 +3228,157 @@ msgstr "ಪೂರೈಕೆಗಣಕದಿಂದ ಸಂಪರ್ಕಕಡಿದ�
 msgid "Error writing to cache stream"
 msgstr "ಕ್ಯಾಶೆ ಸ್ಟ್ರೀಮ್‌ಗೆ ಬರೆಯುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3550
+#: ../camel/providers/imapx/camel-imapx-server.c:3565
 msgid "Error performing IDLE"
 msgstr "IDLE ಅನ್ನು ನಿರ್ವಹಿಸುವಾಗ ದೋಷ ಉಂಟಾಗಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4558
+#: ../camel/providers/imapx/camel-imapx-server.c:4573
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "ಸುರಕ್ಷಿತಾ ಕ್ರಮದಲ್ಲಿ IMAP ಪೂರೈಕೆಗಣಕ %s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4559
+#: ../camel/providers/imapx/camel-imapx-server.c:4574
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "STARTTLS ಬೆಂಬಲಿತವಾಗಿಲ್ಲ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4619
+#: ../camel/providers/imapx/camel-imapx-server.c:4634
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr ""
 "ಸುರಕ್ಷಿತಾ ಕ್ರಮದಲ್ಲಿ IMAP ಪೂರೈಕೆಗಣಕ %s ದೊಂದಿಗೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4708
+#: ../camel/providers/imapx/camel-imapx-server.c:4723
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s ಎಂಬ IMAP ಪೂರೈಕೆಗಣಕವು %s ಎಂಬ ದೃಢೀಕರಣವನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4738
+#: ../camel/providers/imapx/camel-imapx-server.c:4753
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "ಬಳಕೆದಾರಹೆಸರಿಲ್ಲದೆ ದೃಡೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4747
+#: ../camel/providers/imapx/camel-imapx-server.c:4762
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "ದೃಢೀಕರಣ ಗುಪ್ತಪದವು ಲಭ್ಯವಿಲ್ಲ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4983
-#: ../camel/providers/imapx/camel-imapx-server.c:5042
+#: ../camel/providers/imapx/camel-imapx-server.c:4998
+#: ../camel/providers/imapx/camel-imapx-server.c:5057
 msgid "Error fetching message"
 msgstr "ಸಂದೇಶವನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5035
+#: ../camel/providers/imapx/camel-imapx-server.c:5050
 msgid "Failed to close the tmp stream"
 msgstr "tmp ಹರಿವನ್ನು ಮುಚ್ಚುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5071
+#: ../camel/providers/imapx/camel-imapx-server.c:5086
 msgid "Failed to copy the tmp file"
 msgstr "tmp ಕಡತವನ್ನು ಪ್ರತಿ ಮಾಡಲು ವಿಫಲಗೊಂಡಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5212
-#| msgid "Error copying messages"
+#: ../camel/providers/imapx/camel-imapx-server.c:5227
 msgid "Error moving messages"
 msgstr "ಸಂದೇಶಗಳನ್ನು ಸ್ಥಳಾಂತರಿಸುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5216
+#: ../camel/providers/imapx/camel-imapx-server.c:5231
 msgid "Error copying messages"
 msgstr "ಸಂದೇಶಗಳನ್ನು ಪ್ರತಿ ಮಾಡುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5438
+#: ../camel/providers/imapx/camel-imapx-server.c:5453
 msgid "Error appending message"
 msgstr "ಸಂದೇಶವನ್ನು ಸೇರಿಸುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5674
+#: ../camel/providers/imapx/camel-imapx-server.c:5689
 msgid "Error fetching message headers"
 msgstr "ಸಂದೇಶದ ತಲೆಬರಹವನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5841
+#: ../camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error retrieving message"
 msgstr "ಸಂದೇಶವನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5975
-#: ../camel/providers/imapx/camel-imapx-server.c:6204
+#: ../camel/providers/imapx/camel-imapx-server.c:5990
+#: ../camel/providers/imapx/camel-imapx-server.c:6219
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "'%s' ನಲ್ಲಿನ ಹೊಸ ಸಂದೇಶಗಳಿಗಾಗಿ ಮಾಹಿತಿಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳಲಾಗುತ್ತಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6027
+#: ../camel/providers/imapx/camel-imapx-server.c:6042
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "'%s' ನಲ್ಲಿ ಬದಲಾಯಿಸಲಾದ ಸಂದೇಶಗಳಿಗಾಗಿ ಪರಿಶೋಧನೆ'"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6079
+#: ../camel/providers/imapx/camel-imapx-server.c:6094
 msgid "Error fetching new messages"
 msgstr "ಹೊಸ ಸಂದೇಶಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6352
+#: ../camel/providers/imapx/camel-imapx-server.c:6367
 msgid "Error refreshing folder"
 msgstr "ಪತ್ರಕೋಶಗಳನ್ನು ಪುನಶ್ಚೇತನಗೊಳಿಸುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6502
+#: ../camel/providers/imapx/camel-imapx-server.c:6517
 msgid "Error expunging message"
 msgstr "ಸಂದೇಶವನ್ನು ಹೊರಹಾಕುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6617
-#: ../camel/providers/imapx/camel-imapx-server.c:6642
+#: ../camel/providers/imapx/camel-imapx-server.c:6632
+#: ../camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error fetching folders"
 msgstr "ಪತ್ರಕೋಶಗಳನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6722
+#: ../camel/providers/imapx/camel-imapx-server.c:6737
 msgid "Error creating folder"
 msgstr "ಪತ್ರಕೋಶವನ್ನು ರಚಿಸುವಾಗ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6774
+#: ../camel/providers/imapx/camel-imapx-server.c:6789
 msgid "Error deleting folder"
 msgstr "ಪತ್ರಕೋಶವನ್ನು ಅಳಿಸುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6850
+#: ../camel/providers/imapx/camel-imapx-server.c:6865
 msgid "Error renaming folder"
 msgstr "ಪತ್ರಕೋಶವನ್ನು ಮರುಹೆಸರಿಸುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6924
+#: ../camel/providers/imapx/camel-imapx-server.c:6939
 msgid "Error subscribing to folder"
 msgstr "ಪತ್ರಕೋಶಗಳಿಗೆ ಚಂದಾದಾರವಾಗುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6990
-#| msgid "Error subscribing to folder"
+#: ../camel/providers/imapx/camel-imapx-server.c:7005
 msgid "Error unsubscribing from folder"
 msgstr "ಪತ್ರಕೋಶಗಳಿಂದ ಚಂದಾದಾರಿಕೆ ರದ್ದುಗೊಳಿಸುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7052
+#: ../camel/providers/imapx/camel-imapx-server.c:7067
 msgid "Error retrieving quota information"
 msgstr "ಕೋಟಾ ಮಾಹಿತಿಯನ್ನು ಪಡೆದುಕೊಳ್ಳುವಲ್ಲಿ ದೋಷ ಉಂಟಾಗಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7104
+#: ../camel/providers/imapx/camel-imapx-server.c:7119
 msgid "Search failed"
 msgstr "ಹುಡುಕಾಟ ವಿಫಲವಾಗಿದೆ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7166
+#: ../camel/providers/imapx/camel-imapx-server.c:7181
 msgid "Error performing NOOP"
 msgstr "NOOP ಅನ್ನು ನಿರ್ವಹಿಸುವಾಗ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7273
+#: ../camel/providers/imapx/camel-imapx-server.c:7288
 msgid "Error syncing changes"
 msgstr "ಬದಲಾವಣೆಗಳನ್ನು ಹೊಂದಾಣಿಕೆ ಮಾಡುವಲ್ಲಿ ದೋಷ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8260
+#: ../camel/providers/imapx/camel-imapx-server.c:8275
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "%s ಸಂದೇಶ ಐಡಿಯೊಂದಿಗಿನ ಸಂದೇಶವನ್ನು ಪಡೆಯಲಾಗಿಲ್ಲ: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8261
+#: ../camel/providers/imapx/camel-imapx-server.c:8276
 msgid "No such message available."
 msgstr "ಅಂತಹ ಯಾವುದೆ ಸಂದೇಶವು ಲಭ್ಯವಿಲ್ಲ."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8468
-#: ../camel/providers/imapx/camel-imapx-server.c:8489
+#: ../camel/providers/imapx/camel-imapx-server.c:8483
+#: ../camel/providers/imapx/camel-imapx-server.c:8504
 msgid "Cannot create spool file: "
 msgstr "ಸ್ಪೂಲ್ ಕಡತವನ್ನು ರಚಿಸಲಾಗಿಲ್ಲ: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9239
+#: ../camel/providers/imapx/camel-imapx-server.c:9256
 msgid "IMAP server does not support quotas"
 msgstr "IMAP ಪೂರೈಕೆಗಣಕವು ಕೋಟಾಗಳನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
@@ -4025,7 +4015,6 @@ msgstr "ಈ ಸಂದೇಶವು ಸದ್ಯಕ್ಕೆ ಲಭ್ಯವಿಲ
 
 #: ../camel/providers/nntp/camel-nntp-folder.c:722
 #, c-format
-#| msgid "You cannot copy messages from a NNTP folder!"
 msgid "You cannot copy messages from a NNTP folder"
 msgstr "NTTP ಪತ್ರಕೋಶದಿಂದ ಸಂದೇಶಗಳನ್ನು ಪ್ರತಿ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ"
 
@@ -4388,7 +4377,6 @@ msgstr "ಸೆಂಡ್‌ಮೈಲ್ ಪ್ರೋಗ್ರಾಮ ಮೂಲಕ 
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:138
 #, c-format
-#| msgid "Failed to retrieve message"
 msgid "Failed to read From address"
 msgstr "ಇಂದ ವಿಳಾಸವನ್ನು ಓದುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ"
 
@@ -4717,7 +4705,6 @@ msgstr ""
 "\"ದಿನಗಳು\""
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
-#| msgid "Proxy type to use"
 msgid "(Deprecated) Proxy type to use"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) ಬಳಸಬೇಕಿರುವ ಪ್ರಾಕ್ಸಿಯ ಬಗೆ"
 
@@ -4729,67 +4716,55 @@ msgid ""
 msgstr ""
 "ಈ ಕೀಲಿಯನ್ನು ಆವೃತ್ತಿ 3.12 ರಿಂದ ಅಪ್ರಚಲಿತಗೊಳಿಸಲಾಗಿದೆ ಮತ್ತು ಇದನ್ನು ಇನ್ನು ಮುಂದೆ "
 "ಬಳಸಬಾರದು. ಪ್ರಾಕ್ಸಿ ಸಿದ್ಧತೆಗಳನ್ನು ಈಗ Evolution-Data-Server ನ ಖಾತೆಯ "
-"ವ್ಯವಸ್ಥೆಯೊಂದಿಗೆ ಸಂಯೋಜಿಸಲಾಗಿದೆ. ವಿವರಗಳಿಗಾಗಿ ESourceProxy API ಡಾಕ್ಯುಮೆಂಟೇಶನ್ "
-"ಅನ್ನು ನೋಡಿ."
+"ವ್ಯವಸ್ಥೆಯೊಂದಿಗೆ "
+"ಸಂಯೋಜಿಸಲಾಗಿದೆ. ವಿವರಗಳಿಗಾಗಿ ESourceProxy API ಡಾಕ್ಯುಮೆಂಟೇಶನ್ ಅನ್ನು ನೋಡಿ."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
-#| msgid "Whether to use http-proxy"
 msgid "(Deprecated) Whether to use http-proxy"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) http-proxy ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸಬೇಕೆ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:4
-#| msgid "Whether proxy server requires authentication"
 msgid "(Deprecated) Whether proxy server requires authentication"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) ಪ್ರಾಕ್ಸಿ ಪೂರೈಕೆಗಣಕಕ್ಕೆ ದೃಢೀಕರಣದ ಅಗತ್ಯವಿದೆಯೆ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:5
-#| msgid "Host name for HTTP requests"
 msgid "(Deprecated) Host name for HTTP requests"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) HTTP ಮನವಿಗಳಿಗಾಗಿನ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:6
-#| msgid "Port number for HTTP requests"
 msgid "(Deprecated) Port number for HTTP requests"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) HTTP ಮನವಿಗಳಿಗಾಗಿನ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:7
-#| msgid "Proxy authentication user name"
 msgid "(Deprecated) Proxy authentication user name"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) ಪ್ರಾಕ್ಸಿ ದೃಢೀಕರಣ ಬಳಕೆದಾರ ಹೆಸರು"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:8
-#| msgid "Proxy authentication password"
 msgid "(Deprecated) Proxy authentication password"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) ಪ್ರಾಕ್ಸಿ ದೃಢೀಕರಣ ಗುಪ್ತಪದ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
-#| msgid "List of hosts to connect to without proxy"
 msgid "(Deprecated) List of hosts to connect to without proxy"
 msgstr ""
 "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) ಪ್ರಾಕ್ಸಿಯನ್ನು ಬಳಸದೆ ಸಂಪರ್ಕಸಾಧಿಸಬೇಕಿರುವ ಆತಿಥೇಯಗಣಕಗಳ ಪಟ್ಟಿ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
-#| msgid "Host name for HTTPS requests"
 msgid "(Deprecated) Host name for HTTPS requests"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) HTTPS ಮನವಿಗಳಿಗಾಗಿನ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:11
-#| msgid "Port number for HTTPS requests"
 msgid "(Deprecated) Port number for HTTPS requests"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) HTTPS ಮನವಿಗಳಿಗಾಗಿನ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:12
-#| msgid "Host name for SOCKS requests"
 msgid "(Deprecated) Host name for SOCKS requests"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) SOCKS ಮನವಿಗಳಿಗಾಗಿನ ಆತಿಥೇಯಗಣಕದ ಹೆಸರು"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:13
-#| msgid "Port number for SOCKS requests"
 msgid "(Deprecated) Port number for SOCKS requests"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) SOCKS ಮನವಿಗಳಿಗಾಗಿ ಸಂಪರ್ಕಸ್ಥಾನದ ಸಂಖ್ಯೆ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:14
-#| msgid "Automatic proxy configuration URL"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(ಬಳಕೆಯಲ್ಲಿಲ್ಲ) ಸ್ವಯಂಚಾಲಿತ ಪ್ರಾಕ್ಸಿ ಸಂರಚನೆಯ URL"
 
@@ -5112,7 +5087,6 @@ msgstr "ಸಹಿಯ ಸ್ಕ್ರಿಪ್ಟ್‍ ಒಂದು ಸ್ಥಳ
 
 #: ../libedataserver/e-source-proxy.c:1646
 #, c-format
-#| msgid "Data source '%s' does not support creating remote resources"
 msgid "Source '%s' does not support proxy lookups"
 msgstr "ಪ್ರಾಕ್ಸಿ ಹುಡುಕಾಟಗಳನ್ನು '%s' ದತ್ತಾಂಶವು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ"
 
@@ -5482,7 +5456,6 @@ msgstr ""
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:84
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:281
 #, c-format
-#| msgid "Expected status 200 when requesting guid, instead got status %d (%s)"
 msgid ""
 "Expected status 200 when requesting your identity, instead got status %d (%s)"
 msgstr ""
@@ -5496,22 +5469,18 @@ msgid "Error parsing response as JSON: "
 msgstr "ಪ್ರತಿಕ್ರಿಯೆಯನ್ನು JSON ಆಗಿ ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ದೋಷ: "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:119
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'email' in JSON data"
 msgstr "JSON ದತ್ತಾಂಶದಲ್ಲಿ 'email' ಕಂಡುಬಂದಿಲ್ಲ"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:316
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'id' in JSON data"
 msgstr "JSON ದತ್ತಾಂಶದಲ್ಲಿ 'id' ಕಂಡುಬಂದಿಲ್ಲ"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:321
-#| msgid "Didn't find email member in JSON data"
 msgid "Didn't find 'emails.account' in JSON data"
 msgstr "JSON ದತ್ತಾಂಶದಲ್ಲಿ 'emails.account' ಕಂಡುಬಂದಿಲ್ಲ"
 
 #: ../modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
-#| msgid "Wants HTML Mail"
 msgid "Windows Live Mail"
 msgstr "Windows ಲೈವ್ ಮೇಲ್"
 
