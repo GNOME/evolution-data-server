@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-09-06 04:28+0000\n"
-"PO-Revision-Date: 2014-09-06 16:59+0900\n"
+"POT-Creation-Date: 2014-09-12 19:07+0000\n"
+"PO-Revision-Date: 2014-09-14 01:21+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: Korean\n"
@@ -73,7 +73,7 @@ msgstr "동기화되지 않은 버전으로 '%s' 연락처 수정을 시도했�
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6727
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "'%s' 연락처를 찾을 수 없습니다"
@@ -970,18 +970,18 @@ msgid "Unable to connect to '%s': "
 msgstr "'%s'에 연결할 수 없습니다: "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "요약 필드 '%s' 점검에 오류가 발생했습니다"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "정규식을 파싱하는 중 오류: %s"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:545
 #, c-format
 msgid "Insufficient memory"
 msgstr "메모리 부족"
@@ -992,7 +992,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "잘못된 연락처 필드 '%d'번을 요약에서 지정했습니다"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1011,7 +1011,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5385
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "질의에 지원하지 않는 요소가 들어 있습니다"
@@ -1071,7 +1071,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "값이 여러 개일 수도 있는 항목으로는 정렬할 수 없습니다"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7397
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1081,7 +1081,7 @@ msgstr ""
 "있습니다"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7405
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1090,12 +1090,12 @@ msgstr ""
 "커서를 반대 순서으로 지정하려고 했지만, 이미 커서가 연락처 목록 끝에 들어 있"
 "습니다"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "지원하지 않는 연락처 필드 '%d'번을 요약에서 지정했습니다"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1103,20 +1103,20 @@ msgstr ""
 "여러 개의 주소록이 있는 레가시 데이터베이스에서 연락처 데이터베이스를 업그레"
 "이드할 수 없습니다. 먼저 'folders' 테이블의 항목을 삭제하십시오."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5378
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
 msgid "Invalid query: %s"
 msgstr "질의가 잘못되었습니다: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5553
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "EbSqlCursor에 대한 질의가 잘못되었습니다"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7219
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "EbSqlCursor를 사용하려면 최소한 하나의 정렬 항목을 지정해야 합니다"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7237
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "문자열이 아닌 항목으로는 정렬할 수 없습니다"
 
@@ -1830,7 +1830,9 @@ msgstr "\"%s\"에는 최소한 한 개의 인자가 필요합니다"
 msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
-msgstr "\"%s\"의 모든 인자가 문자열이거나, 아니면 인자가 한 개이고 불리언 거짓(#f) 값이어야 합니다"
+msgstr ""
+"\"%s\"의 모든 인자가 문자열이거나, 아니면 인자가 한 개이고 불리언 거짓(#f) 값"
+"이어야 합니다"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1395
 #, c-format
@@ -2562,15 +2564,20 @@ msgstr "서버 응답에 불완전한 인증 데이터가 들어 있습니다"
 msgid "Server response does not match"
 msgstr "서버 응답이 일치하지 않습니다"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "이 옵션을 켜면 Kerberos 5 인증을 사용해 서버에 연결합니다."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(알 수 없는 GSSAPI 방식 코드 번호: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2578,11 +2585,11 @@ msgstr ""
 "지정한 방식은 제공한 증명서가 지원하지 않습니다. 혹은 현재 구현해 놓은 것에"
 "서 인식할 수 없습니다."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "제공된 target_name 매개변수의 형식이 틀렸습니다."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2590,7 +2597,7 @@ msgstr ""
 "제공된 target_name 매개변수에 잘못되었거나 지원하지 않은 종류의 이름이 들어 "
 "있습니다."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2598,13 +2605,13 @@ msgstr ""
 "input_chan_bindings 인수를 통해 지정된 것과 다른 채널 바인딩이 input_token에 "
 "들어 있습니다."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr "input_token에 잘못된 서명 혹은 확인할 수 없는 서명이 들어 있습니다."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2612,30 +2619,30 @@ msgstr ""
 "제공된 증명서가 컨텍스트 초기화에 올바르지 않거나, 증명서 핸들이 어떤 증명서"
 "도 참조하지 않습니다."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "제공된 컨텍스트 핸들이 올바른 컨텍스트를 참조하지 않습니다."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "input_token에 수행한 일관성 검사가 실패했습니다."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr "credential에 수행한 일관성 검사가 실패했습니다."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "참조한 증명서가 만료된 증명서입니다."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:354
-#: ../camel/camel-sasl-gssapi.c:402 ../camel/camel-sasl-gssapi.c:419
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
 #: ../camel/providers/smtp/camel-smtp-transport.c:622
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "서버에서 보낸 인증 응답이 틀렸습니다."
 
-#: ../camel/camel-sasl-gssapi.c:431
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "보안 레이어를 지원하지 않습니다."
