@@ -142,6 +142,7 @@ citation_depth (const gchar *in,
 #endif
 
 	depth = 1;
+	skip = 1;
 
 	while (inptr < inend && *inptr != '\n') {
 		if (*inptr == ' ') {
