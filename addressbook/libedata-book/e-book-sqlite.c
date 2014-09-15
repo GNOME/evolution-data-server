@@ -245,7 +245,7 @@ ebsql_init_debug (void)
 		} \
 	} G_STMT_END
 
-#define FOLDER_VERSION                9
+#define FOLDER_VERSION                10
 #define INSERT_MULTI_STMT_BYTES       128
 #define COLUMN_DEFINITION_BYTES       32
 #define GENERATED_QUERY_BYTES         1024
@@ -428,6 +428,10 @@ static EContactField default_summary_fields[] = {
  */
 static EContactField default_indexed_fields[] = {
 	E_CONTACT_FULL_NAME,
+	E_CONTACT_NICKNAME,
+	E_CONTACT_FILE_AS,
+	E_CONTACT_GIVEN_NAME,
+	E_CONTACT_FAMILY_NAME,
 	E_CONTACT_EMAIL,
 	E_CONTACT_FILE_AS,
 	E_CONTACT_FAMILY_NAME,
@@ -435,6 +439,10 @@ static EContactField default_indexed_fields[] = {
 };
 
 static EBookIndexType default_index_types[] = {
+	E_BOOK_INDEX_PREFIX,
+	E_BOOK_INDEX_PREFIX,
+	E_BOOK_INDEX_PREFIX,
+	E_BOOK_INDEX_PREFIX,
 	E_BOOK_INDEX_PREFIX,
 	E_BOOK_INDEX_PREFIX,
 	E_BOOK_INDEX_SORT_KEY,
@@ -2325,6 +2333,29 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 				summary_field_append (summary_fields, ebsql->priv->folderid,
 						      E_CONTACT_X509_CERT, NULL);
 			}
+		}
+
+		if (previous_schema < 10) {
+			if ((i = summary_field_array_index (summary_fields, E_CONTACT_NICKNAME)) >= 0) {
+				summary_field = &g_array_index (summary_fields, SummaryField, i);
+				summary_field->index |= INDEX_FLAG (PREFIX);
+			}
+
+			if ((i = summary_field_array_index (summary_fields, E_CONTACT_FILE_AS)) >= 0) {
+				summary_field = &g_array_index (summary_fields, SummaryField, i);
+				summary_field->index |= INDEX_FLAG (PREFIX);
+			}
+
+			if ((i = summary_field_array_index (summary_fields, E_CONTACT_GIVEN_NAME)) >= 0) {
+				summary_field = &g_array_index (summary_fields, SummaryField, i);
+				summary_field->index |= INDEX_FLAG (PREFIX);
+			}
+
+			if ((i = summary_field_array_index (summary_fields, E_CONTACT_FAMILY_NAME)) >= 0) {
+				summary_field = &g_array_index (summary_fields, SummaryField, i);
+				summary_field->index |= INDEX_FLAG (PREFIX);
+			}
+
 		}
 	}
 
