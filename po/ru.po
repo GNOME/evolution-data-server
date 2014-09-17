@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-07-05 16:27+0000\n"
-"PO-Revision-Date: 2014-07-05 23:01+0400\n"
+"POT-Creation-Date: 2014-09-17 15:15+0000\n"
+"PO-Revision-Date: 2014-09-17 21:53+0400\n"
 "Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
 "Language-Team: русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.6.9\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -56,7 +56,7 @@ msgid "Loading..."
 msgstr "Загрузка…"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:992
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4353
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4360
 msgid "Searching..."
 msgstr "Поиск…"
 
@@ -68,7 +68,7 @@ msgstr "Попытка изменить контакт «%s» с рассинх�
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6711
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Контакт «%s» не найден"
@@ -94,9 +94,9 @@ msgstr "Запрошено удаление несвязанного курсо�
 msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Не удалось переименовать базу данных из «%s» в «%s»: %s"
 
-#: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:147
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1172
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4248
+#: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1174
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4250
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:419
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:887
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
@@ -113,9 +113,9 @@ msgstr "Не удалось переименовать базу данных и�
 #: ../addressbook/libebook/e-book-client.c:3175
 #: ../addressbook/libebook/e-book-client.c:3393
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:878
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:578
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:609
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:621
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:583
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:614
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:626
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
 #: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:276
 #: ../calendar/libecal/e-cal-client.c:3239
@@ -137,8 +137,8 @@ msgstr "Не удалось переименовать базу данных и�
 #: ../calendar/libecal/e-cal-client.c:6494
 #: ../calendar/libecal/e-cal-client.c:6708
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4747
-#: ../camel/providers/imapx/camel-imapx-server.c:4756
+#: ../camel/providers/imapx/camel-imapx-server.c:4784
+#: ../camel/providers/imapx/camel-imapx-server.c:4793
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
@@ -154,13 +154,13 @@ msgid "Querying for updated groups…"
 msgstr "Запрос обновлённых групп…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1757
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4984
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4997
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1433
 msgid "The backend does not support bulk additions"
 msgstr "Драйвер не поддерживает общие добавления"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1912
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5120
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5133
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1545
 msgid "The backend does not support bulk modifications"
 msgstr "Драйвер не поддерживает общие изменения"
@@ -204,68 +204,68 @@ msgstr "Сотрудники"
 msgid "Not connected"
 msgstr "Не подключён"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:899
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:901
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Сбой связывания при использовании модуля 2 или 3 версии"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1022
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1024
 msgid "Reconnecting to LDAP server..."
 msgstr "Повторное подключение к серверу LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1153
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1155
 msgid "Invalid DN syntax"
 msgstr "Недопустимый синтаксис в отличительном имени (DN)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1169
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1171
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4249
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Ошибка в LDAP 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1781
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2104
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1783
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2106
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: из ldap_first_entry возвращено значение NULL"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2034
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2162
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2036
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2164
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: возвращён необработанный тип результата %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2295
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2422
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2297
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2424
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: возвращён необработанный тип результата поиска %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4196
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4198
 msgid "Receiving LDAP search results..."
 msgstr "Получение результатов поиска с сервера LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4375
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4382
 msgid "Error performing search"
 msgstr "Ошибка выполнения поиска"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4503
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4515
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Загрузка контактов (%d)…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5067
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5080
 msgid "Adding contact to LDAP server..."
 msgstr "Создание контакта на сервере LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5142
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5155
 msgid "Modifying contact from LDAP server..."
 msgstr "Изменение контакта на сервере LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5208
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5221
 msgid "Removing contact from LDAP server..."
 msgstr "Удаление контакта с сервера LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5597
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5610
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Не удалось получить DN для пользователя «%s»"
@@ -913,7 +913,7 @@ msgstr "Список экранных имён Google Talk"
 msgid "Twitter Name List"
 msgstr "Список имён Twitter"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1635
+#: ../addressbook/libebook-contacts/e-contact.c:1654
 #: ../addressbook/libebook/e-destination.c:920
 msgid "Unnamed List"
 msgstr "Безымянный список"
@@ -967,18 +967,18 @@ msgid "Unable to connect to '%s': "
 msgstr "Не удалось подключиться к «%s»: "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Ошибка при интроспекции неизвестного поля сводки «%s»"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "Ошибка разбора регулярного выражения"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:545
 #, c-format
 msgid "Insufficient memory"
 msgstr "Недостаточно памяти"
@@ -989,7 +989,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "В сводке указано неверное поле контакта «%d»"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1009,7 +1009,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5369
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Запрос содержит неподдерживаемые элементы"
@@ -1074,7 +1074,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Невозможно отсортировать по полю, которое имеет несколько значений"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7381
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1084,7 +1084,7 @@ msgstr ""
 "списка контактов"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7389
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1093,12 +1093,12 @@ msgstr ""
 "Попытка перевести курсор на шаг вперёд, но курсор уже находится в конце "
 "списка контактов"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "В сводке указано неподдерживаемое поле контакта «%d»"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1107,22 +1107,22 @@ msgstr ""
 "больше одной адресной книги. Сначала удалите одну из записей в таблице "
 "«папки»."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5362
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Недопустимый запрос: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5537
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "Недопустимый запрос для EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7203
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Для использования EbSqlCursor должно быть указано по крайней мере одно поле "
 "сортировки"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7221
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Невозможно отсортировать по полю, которое имеет нестроковый тип"
 
@@ -1330,35 +1330,35 @@ msgstr "Отсутствует UID источника"
 msgid "No such source for UID '%s'"
 msgstr "Нет такого источника для UID «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:576
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:581
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Сервер недоступен (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:607
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "Сбой при подключении к серверу с использованием SSL: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:623
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "Получен неожиданный код (%d) состояния HTTP (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:637
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:642
 msgid "CalDAV backend is not loaded yet"
 msgstr "Драйвер CalDAV ещё не загружен"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1079
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1084
 msgid "Invalid Redirect URL"
 msgstr "Неверный перенаправляющий URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2882
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2887
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Не удалось создать локальную кэш-папку «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2934
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2939
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1367,27 +1367,27 @@ msgstr ""
 "Сервер недоступен, календарь открыт в режиме «только чтение».\n"
 "Сообщение об ошибке: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3968
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3973
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV не поддерживает пакетные добавления"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4071
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4076
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV не поддерживает пакетные изменения"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4247
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4252
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV не поддерживает пакетные удаления"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4914
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4919
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Календарь не поддерживает информацию о занятости"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4923
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4928
 msgid "Schedule outbox url not found"
 msgstr "Не найден url исходящего расписания"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5020
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5025
 msgid "Unexpected result in schedule-response"
 msgstr "Неожиданный результат в ответе-расписании"
 
@@ -2129,36 +2129,36 @@ msgid "Refreshing folder '%s'"
 msgstr "Обновление папки «%s»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:899 ../camel/camel-folder-search.c:942
+#: ../camel/camel-folder-search.c:898 ../camel/camel-folder-search.c:941
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) требует единственного логического результата"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:977
+#: ../camel/camel-folder-search.c:976
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) запрещено в %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:984 ../camel/camel-folder-search.c:992
+#: ../camel/camel-folder-search.c:983 ../camel/camel-folder-search.c:991
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) требует строку соответствия"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1020
+#: ../camel/camel-folder-search.c:1019
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) ожидает результат в виде массива"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1030
+#: ../camel/camel-folder-search.c:1029
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) требует набор папок"
 
-#: ../camel/camel-folder-search.c:1944 ../camel/camel-folder-search.c:2110
+#: ../camel/camel-folder-search.c:1943 ../camel/camel-folder-search.c:2109
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2167,7 +2167,7 @@ msgstr ""
 "Ошибка в регулярном выражении «%s»:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1956 ../camel/camel-folder-search.c:2122
+#: ../camel/camel-folder-search.c:1955 ../camel/camel-folder-search.c:2121
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2237,7 +2237,7 @@ msgstr ""
 "Зашифрованные данные не содержат сведений о получателе. Для каждого "
 "закрытого ключа будет предложено ввести пароль."
 
-#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:522
+#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:524
 #: ../camel/providers/nntp/camel-nntp-summary.c:401
 #: ../libedataserver/e-client.c:158
 #, c-format
@@ -2419,21 +2419,21 @@ msgstr "Подпись недоступна"
 msgid "parse error"
 msgstr "Ошибка обработки"
 
-#: ../camel/camel-net-utils.c:702
+#: ../camel/camel-net-utils.c:706
 #, c-format
 msgid "Resolving: %s"
 msgstr "Поиск узла: %s"
 
-#: ../camel/camel-net-utils.c:725
+#: ../camel/camel-net-utils.c:731
 msgid "Host lookup failed"
 msgstr "Узел не найден"
 
-#: ../camel/camel-net-utils.c:731
+#: ../camel/camel-net-utils.c:737
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
 msgstr "Узел «%s» не найден. Проверьте правильность имени узла."
 
-#: ../camel/camel-net-utils.c:735
+#: ../camel/camel-net-utils.c:741
 #, c-format
 msgid "Host lookup '%s' failed: %s"
 msgstr "Узел «%s» не найден: %s"
@@ -2546,45 +2546,50 @@ msgstr ""
 "Подключение к серверу будет производиться с использованием зашифрованного "
 "пароля DIGEST-MD5, если сервер его поддерживает."
 
-#: ../camel/camel-sasl-digest-md5.c:853
+#: ../camel/camel-sasl-digest-md5.c:855
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "Слишком длинный ответ от сервера (>2048 байт)"
 
-#: ../camel/camel-sasl-digest-md5.c:864
+#: ../camel/camel-sasl-digest-md5.c:866
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "Недопустимый ответ сервера\n"
 
-#: ../camel/camel-sasl-digest-md5.c:872
+#: ../camel/camel-sasl-digest-md5.c:874
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr "Ответ сервера содержит недопустимый жетон «Качество защиты»"
 
-#: ../camel/camel-sasl-digest-md5.c:905
+#: ../camel/camel-sasl-digest-md5.c:907
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "Ответ сервера не содержит информации об авторизации"
 
-#: ../camel/camel-sasl-digest-md5.c:926
+#: ../camel/camel-sasl-digest-md5.c:928
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "Ответ сервера содержит неполную информацию об авторизации"
 
-#: ../camel/camel-sasl-digest-md5.c:939
+#: ../camel/camel-sasl-digest-md5.c:941
 #, c-format
 msgid "Server response does not match"
 msgstr "Ответ сервера не совпадает"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Подключение к серверу будет производиться с использованием Kerberos 5."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(неизвестный код механизма GSSAPI: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2592,11 +2597,11 @@ msgstr ""
 "Указанный механизм не поддерживается предоставленными средствами, либо не "
 "распознаётся в этой реализации."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Предоставленный параметр target_name сформирован неверно."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2604,7 +2609,7 @@ msgstr ""
 "Предоставленный параметр target_name содержит неверный или неподдерживаемый "
 "тип имени."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2612,7 +2617,7 @@ msgstr ""
 "input_token содержит не такую привязку к каналам, как указано в параметре "
 "input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2620,7 +2625,7 @@ msgstr ""
 "input_token содержит неверную подпись, или подпись, которая не может быть "
 "проверена."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2628,31 +2633,31 @@ msgstr ""
 "Предоставленные удостоверения были не действительны для инициализации "
 "контекста, либо обработчик удостоверения не ссылается на удостоверения."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr ""
 "Указанный обработчик контекста не ссылается на действительный контекст."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Сбой проверки целостности элемента input_token."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr "Сбой проверки целостности удостоверений."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "Срок действия упомянутых удостоверений истёк."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:352
-#: ../camel/camel-sasl-gssapi.c:400 ../camel/camel-sasl-gssapi.c:417
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
 #: ../camel/providers/smtp/camel-smtp-transport.c:622
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Неверный ответ от сервера при идентификации."
 
-#: ../camel/camel-sasl-gssapi.c:429
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Неподдерживаемый уровень безопасности."
@@ -2721,7 +2726,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Некорректный зарегистрированный GType для протокола «%s»"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4697
+#: ../camel/providers/imapx/camel-imapx-server.c:4734
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
 #: ../camel/providers/smtp/camel-smtp-transport.c:515
@@ -3128,7 +3133,6 @@ msgid "_Listen for server change notifications"
 msgstr "_Следить за уведомлениями сервера об изменениях"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:49
-#| msgid "Lost connection to IMAP server"
 msgid "Connection to Server"
 msgstr "Соединение с сервером"
 
@@ -3200,169 +3204,169 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Для чтения и хранения почты на серверах IMAP."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1008
-#: ../camel/providers/imapx/camel-imapx-server.c:1015
+#: ../camel/providers/imapx/camel-imapx-server.c:1009
+#: ../camel/providers/imapx/camel-imapx-server.c:1016
 #, c-format
 msgid "Not authenticated"
 msgstr "Не удалось выполнить аутентификацию"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1712
+#: ../camel/providers/imapx/camel-imapx-server.c:1713
 msgid "Server disconnected"
 msgstr "Сервер отключился"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2204
+#: ../camel/providers/imapx/camel-imapx-server.c:2205
 msgid "Error writing to cache stream"
 msgstr "Ошибка записи в поток кэша"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3547
+#: ../camel/providers/imapx/camel-imapx-server.c:3565
 msgid "Error performing IDLE"
 msgstr "Ошибка выполнения команды IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4536
+#: ../camel/providers/imapx/camel-imapx-server.c:4573
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Не удалось подключиться к IMAP-серверу %s в защищённом режиме:%s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4537
+#: ../camel/providers/imapx/camel-imapx-server.c:4574
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "STARTTLS не поддерживается"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4597
+#: ../camel/providers/imapx/camel-imapx-server.c:4634
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Не удалось подключиться к IMAP-серверу %s в защищённом режиме: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4686
+#: ../camel/providers/imapx/camel-imapx-server.c:4723
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Сервер IMAP %s не поддерживает аутентификацию %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4716
+#: ../camel/providers/imapx/camel-imapx-server.c:4753
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "Невозможно выполнить проверку подлинности без имени пользователя"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4725
+#: ../camel/providers/imapx/camel-imapx-server.c:4762
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "Пароль аутентификации недоступен"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4961
-#: ../camel/providers/imapx/camel-imapx-server.c:5020
+#: ../camel/providers/imapx/camel-imapx-server.c:4998
+#: ../camel/providers/imapx/camel-imapx-server.c:5057
 msgid "Error fetching message"
 msgstr "Ошибка при получении сообщения"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5013
+#: ../camel/providers/imapx/camel-imapx-server.c:5050
 msgid "Failed to close the tmp stream"
 msgstr "Сбой при закрытии временного потока"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5049
+#: ../camel/providers/imapx/camel-imapx-server.c:5086
 msgid "Failed to copy the tmp file"
 msgstr "Сбой при копировании временного файла"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5190
+#: ../camel/providers/imapx/camel-imapx-server.c:5227
 msgid "Error moving messages"
 msgstr "Ошибка при перемещении сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5194
+#: ../camel/providers/imapx/camel-imapx-server.c:5231
 msgid "Error copying messages"
 msgstr "Ошибка при копировании сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5416
+#: ../camel/providers/imapx/camel-imapx-server.c:5453
 msgid "Error appending message"
 msgstr "Ошибка при присоединении сообщения"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5652
+#: ../camel/providers/imapx/camel-imapx-server.c:5689
 msgid "Error fetching message headers"
 msgstr "Ошибка при получении заголовков сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5819
+#: ../camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error retrieving message"
 msgstr "Ошибка при получении сообщения"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5953
-#: ../camel/providers/imapx/camel-imapx-server.c:6182
+#: ../camel/providers/imapx/camel-imapx-server.c:5990
+#: ../camel/providers/imapx/camel-imapx-server.c:6219
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Получение краткой информации о новых сообщениях «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6005
+#: ../camel/providers/imapx/camel-imapx-server.c:6042
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Поиск изменённых сообщений в «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6057
+#: ../camel/providers/imapx/camel-imapx-server.c:6094
 msgid "Error fetching new messages"
 msgstr "Ошибка при получении новых сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6330
+#: ../camel/providers/imapx/camel-imapx-server.c:6367
 msgid "Error refreshing folder"
 msgstr "Ошибка при обновлении папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6480
+#: ../camel/providers/imapx/camel-imapx-server.c:6517
 msgid "Error expunging message"
 msgstr "Ошибка уничтожения сообщений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6595
-#: ../camel/providers/imapx/camel-imapx-server.c:6620
+#: ../camel/providers/imapx/camel-imapx-server.c:6632
+#: ../camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error fetching folders"
 msgstr "Ошибка при получении папок"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6700
+#: ../camel/providers/imapx/camel-imapx-server.c:6737
 msgid "Error creating folder"
 msgstr "Ошибка при создании папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6752
+#: ../camel/providers/imapx/camel-imapx-server.c:6789
 msgid "Error deleting folder"
 msgstr "Ошибка при удалении папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6828
+#: ../camel/providers/imapx/camel-imapx-server.c:6865
 msgid "Error renaming folder"
 msgstr "Ошибка при переименовании папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6902
+#: ../camel/providers/imapx/camel-imapx-server.c:6939
 msgid "Error subscribing to folder"
 msgstr "Ошибка подписывания на папку"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6968
+#: ../camel/providers/imapx/camel-imapx-server.c:7005
 msgid "Error unsubscribing from folder"
 msgstr "Ошибка отписывания от папки"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7030
+#: ../camel/providers/imapx/camel-imapx-server.c:7067
 msgid "Error retrieving quota information"
 msgstr "Ошибка получения информации о квоте"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7082
+#: ../camel/providers/imapx/camel-imapx-server.c:7119
 msgid "Search failed"
 msgstr "Ошибка поиска"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7144
+#: ../camel/providers/imapx/camel-imapx-server.c:7181
 msgid "Error performing NOOP"
 msgstr "Ошибка выполнения команды NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7251
+#: ../camel/providers/imapx/camel-imapx-server.c:7288
 msgid "Error syncing changes"
 msgstr "Ошибка при синхронизации изменений"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8233
+#: ../camel/providers/imapx/camel-imapx-server.c:8275
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Не удалось получить сообщение с идентификатором %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8234
+#: ../camel/providers/imapx/camel-imapx-server.c:8276
 msgid "No such message available."
 msgstr "Нет такого сообщения."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8441
-#: ../camel/providers/imapx/camel-imapx-server.c:8462
+#: ../camel/providers/imapx/camel-imapx-server.c:8483
+#: ../camel/providers/imapx/camel-imapx-server.c:8504
 msgid "Cannot create spool file: "
 msgstr "Не удалось создать файл спула: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9203
+#: ../camel/providers/imapx/camel-imapx-server.c:9256
 msgid "IMAP server does not support quotas"
 msgstr "Сервер IMAP не поддерживает квоты"
 
@@ -3435,27 +3439,27 @@ msgstr "Недопустимое имя папки «%s»: имя содержи
 msgid "You must be working online to complete this operation"
 msgstr "Для завершения данной операции необходимо подключение к сети"
 
-#: ../camel/providers/local/camel-local-folder.c:192
+#: ../camel/providers/local/camel-local-folder.c:195
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:202
-#: ../camel/providers/local/camel-local-folder.c:211
+#: ../camel/providers/local/camel-local-folder.c:205
+#: ../camel/providers/local/camel-local-folder.c:214
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "почтовый ящик: %s: (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:220
+#: ../camel/providers/local/camel-local-folder.c:223
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:497
+#: ../camel/providers/local/camel-local-folder.c:500
 msgid "_Index message body data"
 msgstr "_Индексировать данные тела сообщения"
 
-#: ../camel/providers/local/camel-local-folder.c:727
+#: ../camel/providers/local/camel-local-folder.c:730
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -4737,8 +4741,8 @@ msgstr "(Устарело) URL автоматической настройки �
 
 #: ../libebackend/e-authentication-mediator.c:204
 #: ../libebackend/e-authentication-mediator.c:215
-#: ../libebackend/e-authentication-mediator.c:861
-#: ../libebackend/e-authentication-mediator.c:1198
+#: ../libebackend/e-authentication-mediator.c:860
+#: ../libebackend/e-authentication-mediator.c:1197
 msgid "Bus name vanished (client terminated?)"
 msgstr "Имя шины пропало (клиент отключился?)"
 
@@ -4748,8 +4752,8 @@ msgstr "Нет ответа от клиента"
 
 #: ../libebackend/e-authentication-mediator.c:333
 #: ../libebackend/e-authentication-mediator.c:344
-#: ../libebackend/e-authentication-mediator.c:855
-#: ../libebackend/e-authentication-mediator.c:1192
+#: ../libebackend/e-authentication-mediator.c:854
+#: ../libebackend/e-authentication-mediator.c:1191
 msgid "Client cancelled the operation"
 msgstr "Клиент отменил операцию"
 
@@ -4757,11 +4761,11 @@ msgstr "Клиент отменил операцию"
 msgid "Client reports password was rejected"
 msgstr "Пароль клиента отклонён"
 
-#: ../libebackend/e-authentication-session.c:554
+#: ../libebackend/e-authentication-session.c:539
 msgid "Add this password to your keyring"
 msgstr "Добавить этот пароль в связку ключей"
 
-#: ../libebackend/e-authentication-session.c:664
+#: ../libebackend/e-authentication-session.c:649
 msgid "Password was incorrect"
 msgstr "Некорректный пароль"
 
@@ -4770,12 +4774,12 @@ msgstr "Некорректный пароль"
 msgid "%s does not support authentication"
 msgstr "%s не поддерживает аутентификацию"
 
-#: ../libebackend/e-collection-backend.c:902
+#: ../libebackend/e-collection-backend.c:901
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s не поддерживает создание удалённых ресурсов"
 
-#: ../libebackend/e-collection-backend.c:961
+#: ../libebackend/e-collection-backend.c:960
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s не поддерживает удаление удалённых ресурсов"
@@ -4816,7 +4820,7 @@ msgstr "У источника данных «%s» нет бэкэнда для �
 
 #: ../libebackend/e-server-side-source.c:1109
 #: ../libedataserver/e-source.c:1603
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "Источник данных «%s» не поддерживает аутентификацию OAuth 2.0"
@@ -5043,7 +5047,7 @@ msgstr "Источник данных «%s» нельзя изменить"
 msgid "Unnamed"
 msgstr "Безымянный"
 
-#: ../libedataserver/e-source-mail-signature.c:486
+#: ../libedataserver/e-source-mail-signature.c:485
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Сценарий подписи должен быть локальным файлом"
@@ -5053,7 +5057,7 @@ msgstr "Сценарий подписи должен быть локальным
 msgid "Source '%s' does not support proxy lookups"
 msgstr "Источник «%s» не поддерживает поиск прокси"
 
-#: ../libedataserver/e-source-webdav.c:1555
+#: ../libedataserver/e-source-webdav.c:1557
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
@@ -5062,7 +5066,7 @@ msgstr ""
 "Сертификат SSL для «%s», используемый адресной книгой «%s», не является "
 "доверенным. Принять сертификат?"
 
-#: ../libedataserver/e-source-webdav.c:1564
+#: ../libedataserver/e-source-webdav.c:1566
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
@@ -5071,7 +5075,7 @@ msgstr ""
 "Сертификат SSL для «%s», используемый календарём «%s», не является "
 "доверенным. Принять сертификат?"
 
-#: ../libedataserver/e-source-webdav.c:1573
+#: ../libedataserver/e-source-webdav.c:1575
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
@@ -5080,7 +5084,7 @@ msgstr ""
 "Сертификат SSL для «%s», используемый списком заметок «%s», не является "
 "доверенным. Принять сертификат?"
 
-#: ../libedataserver/e-source-webdav.c:1582
+#: ../libedataserver/e-source-webdav.c:1584
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5274,7 +5278,7 @@ msgstr "Не удалось найти элемент Account"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Не удалось найти ASUrl и OABUrl в ответе автообнаружения"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1261
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1260
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5283,23 +5287,23 @@ msgstr ""
 "Не удалось найти соответствующую запись в службе org.gnome.OnlineAccounts, с "
 "помощью которой можно получить маркер доступа для «%s»"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1288
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1290
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Не удалось получить маркер доступа для «%s»: "
 
-#: ../modules/google-backend/module-google-backend.c:195
+#: ../modules/google-backend/module-google-backend.c:205
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
 #: ../modules/yahoo-backend/module-yahoo-backend.c:199
 msgid "Calendar"
 msgstr "Календарь"
 
-#: ../modules/google-backend/module-google-backend.c:268
+#: ../modules/google-backend/module-google-backend.c:279
 #: ../modules/yahoo-backend/module-yahoo-backend.c:226
 msgid "Tasks"
 msgstr "Задачи"
 
-#: ../modules/google-backend/module-google-backend.c:321
+#: ../modules/google-backend/module-google-backend.c:333
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5400,7 +5404,7 @@ msgstr "Почта"
 msgid "Integrate your mailboxes"
 msgstr "Интегрировать ваши почтовые ящики"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1008
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1007
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
