@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-09-02 16:17+0000\n"
-"PO-Revision-Date: 2014-09-03 17:14+0200\n"
+"POT-Creation-Date: 2014-09-15 04:26+0000\n"
+"PO-Revision-Date: 2014-09-15 10:13+0100\n"
 "Last-Translator: Mattias Eriksson <snaggen@gmail.com>\n"
 "Language-Team: Svenska <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -66,7 +66,7 @@ msgstr "Försökte modifiera kontakt ”%s” för en revision som inte är i sy
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6727
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Kontakten ”%s” hittades inte"
@@ -135,8 +135,8 @@ msgstr "Kunde inte byta namn på gammal databas från ”%s” till ”%s”: %s
 #: ../calendar/libecal/e-cal-client.c:6494
 #: ../calendar/libecal/e-cal-client.c:6708
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4769
-#: ../camel/providers/imapx/camel-imapx-server.c:4778
+#: ../camel/providers/imapx/camel-imapx-server.c:4784
+#: ../camel/providers/imapx/camel-imapx-server.c:4793
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "Okänt fel"
@@ -964,18 +964,18 @@ msgid "Unable to connect to '%s': "
 msgstr "Kunde inte ansluta till ”%s”"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Fel vid introspektion av okänt summeringsfält ”%s”"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "Fel vid tolkning av reguljärt uttryck"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:545
 #, c-format
 msgid "Insufficient memory"
 msgstr "Inte tillräckligt mycket minne"
@@ -986,7 +986,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "Okänt kontaktfält ”%d” specificerat i sammanfattningen"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1005,7 +1005,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5385
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Frågesats innehöll element som inte stöds"
@@ -1069,7 +1069,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Kan inte sortera på ett fält som kan ha flera olika värden"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7397
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1079,7 +1079,7 @@ msgstr ""
 "kontaktlistan"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7405
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1088,12 +1088,12 @@ msgstr ""
 "Försökte stega en markör frammåt, men markören är redan i slutet på "
 "kontaktlistan"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Icke stött kontaktfält ”%d” angavs i sammanfattningen"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1101,21 +1101,21 @@ msgstr ""
 "Kan inte uppgradera kontaktdatabas från en äldre databas med mer än en "
 "adressbok. Ta bort en av posterna i tabellen ”folders” först."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5378
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Ogiltig frågesats: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5553
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "Ogiltig frågesats för EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7219
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Åtminstone ett sorteringsfält måste anges för att använda en EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7237
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Kan inte sortera på ett fält som inte är en strängtyp"
 
@@ -2578,17 +2578,22 @@ msgstr "Serversvaret innehöll ofullständiga auktoriseringsdata"
 msgid "Server response does not match"
 msgstr "Serversvaret stämmer inte överens"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Detta alternativ kommer att ansluta till servern med Kerberos 5-"
 "autentisering."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(Okänd GSSAPI-mekanismkod: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2596,11 +2601,11 @@ msgstr ""
 "Den angivna mekanismen stöds inte av det tillhandahållna kreditivet, eller "
 "är okänt av implementationen."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Den angivna target_name-parametern var felaktigt utformad."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2608,7 +2613,7 @@ msgstr ""
 "Den angivna target_name-parametern innehöll en ogiltig namntyp eller en som "
 "inte stöds."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2616,7 +2621,7 @@ msgstr ""
 "input_token innehåller andra kanalbindningar än de som är angivna via "
 "parametern input_chan_bindings."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
@@ -2624,7 +2629,7 @@ msgstr ""
 "input_token innehåller en ogiltig signatur, eller en signatur som inte kunde "
 "verifieras."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2632,31 +2637,31 @@ msgstr ""
 "De kreditiv som angavs var inte giltiga för sammanhangsinitiering, eller så "
 "refererade kreditivhandtaget inga kreditiv."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr ""
 "Det angivna sammanhangshandtaget refererade inte till ett giltigt sammanhang."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "Konsekvenskontrollerna som utfördes på input_token misslyckades."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr "Konsekvenskontrollerna som utförts på kreditivet misslyckades."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "De refererade kreditiven har gått ut."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:354
-#: ../camel/camel-sasl-gssapi.c:402 ../camel/camel-sasl-gssapi.c:419
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
 #: ../camel/providers/smtp/camel-smtp-transport.c:622
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Felaktigt autentiseringssvar från servern."
 
-#: ../camel/camel-sasl-gssapi.c:431
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Säkerhetslagret stöds inte."
@@ -2726,7 +2731,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Ogiltig GType registrerad för protokollet ”%s”"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4719
+#: ../camel/providers/imapx/camel-imapx-server.c:4734
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
 #: ../camel/providers/smtp/camel-smtp-transport.c:515
@@ -3248,155 +3253,155 @@ msgstr "Servern kopplade från"
 msgid "Error writing to cache stream"
 msgstr "Fel vid skrivning till mellanlagringsström"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3550
+#: ../camel/providers/imapx/camel-imapx-server.c:3565
 msgid "Error performing IDLE"
 msgstr "Fel vid genomföring av IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4558
+#: ../camel/providers/imapx/camel-imapx-server.c:4573
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Misslyckades med att ansluta till IMAP-servern %s i säkert läge: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4559
+#: ../camel/providers/imapx/camel-imapx-server.c:4574
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "STARTTLS stöds inte"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4619
+#: ../camel/providers/imapx/camel-imapx-server.c:4634
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Misslyckades med att ansluta till IMAP-servern %s i säkert läge: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4708
+#: ../camel/providers/imapx/camel-imapx-server.c:4723
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-servern %s saknar stöd för %s-autentisering"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4738
+#: ../camel/providers/imapx/camel-imapx-server.c:4753
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "Kan inte autentisera utan ett användarnamn"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4747
+#: ../camel/providers/imapx/camel-imapx-server.c:4762
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "Lösenord för autentisering finns inte tillgängligt"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4983
-#: ../camel/providers/imapx/camel-imapx-server.c:5042
+#: ../camel/providers/imapx/camel-imapx-server.c:4998
+#: ../camel/providers/imapx/camel-imapx-server.c:5057
 msgid "Error fetching message"
 msgstr "Fel vid hämtning av meddelande"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5035
+#: ../camel/providers/imapx/camel-imapx-server.c:5050
 msgid "Failed to close the tmp stream"
 msgstr "Misslyckades med att stänga tmp-ström"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5071
+#: ../camel/providers/imapx/camel-imapx-server.c:5086
 msgid "Failed to copy the tmp file"
 msgstr "Misslyckades med att kopiera tmp-fil"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5212
+#: ../camel/providers/imapx/camel-imapx-server.c:5227
 msgid "Error moving messages"
 msgstr "Fel vid flytt av meddelanden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5216
+#: ../camel/providers/imapx/camel-imapx-server.c:5231
 msgid "Error copying messages"
 msgstr "Fel vid kopiering av meddelanden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5438
+#: ../camel/providers/imapx/camel-imapx-server.c:5453
 msgid "Error appending message"
 msgstr "Fel vid tillägg av meddelande"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5674
+#: ../camel/providers/imapx/camel-imapx-server.c:5689
 msgid "Error fetching message headers"
 msgstr "Fel vid hämtning av meddelanderubriker"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5841
+#: ../camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error retrieving message"
 msgstr "Fel vid hämtning av meddelande"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5975
-#: ../camel/providers/imapx/camel-imapx-server.c:6204
+#: ../camel/providers/imapx/camel-imapx-server.c:5990
+#: ../camel/providers/imapx/camel-imapx-server.c:6219
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Hämtar sammandragsinformation för nya meddelanden i ”%s”"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6027
+#: ../camel/providers/imapx/camel-imapx-server.c:6042
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Letar efter ändrade meddelanden i ”%s”"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6079
+#: ../camel/providers/imapx/camel-imapx-server.c:6094
 msgid "Error fetching new messages"
 msgstr "Fel vid hämtning av nya meddelanden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6352
+#: ../camel/providers/imapx/camel-imapx-server.c:6367
 msgid "Error refreshing folder"
 msgstr "Fel vid uppdatering av mapp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6502
+#: ../camel/providers/imapx/camel-imapx-server.c:6517
 msgid "Error expunging message"
 msgstr "Fel vid radering av meddelande"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6617
-#: ../camel/providers/imapx/camel-imapx-server.c:6642
+#: ../camel/providers/imapx/camel-imapx-server.c:6632
+#: ../camel/providers/imapx/camel-imapx-server.c:6657
 msgid "Error fetching folders"
 msgstr "Fel vid hämtning av mappar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6722
+#: ../camel/providers/imapx/camel-imapx-server.c:6737
 msgid "Error creating folder"
 msgstr "Fel vid skapande av mapp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6774
+#: ../camel/providers/imapx/camel-imapx-server.c:6789
 msgid "Error deleting folder"
 msgstr "Fel vid borttagning av mapp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6850
+#: ../camel/providers/imapx/camel-imapx-server.c:6865
 msgid "Error renaming folder"
 msgstr "Fel vid namnbyte av mapp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6924
+#: ../camel/providers/imapx/camel-imapx-server.c:6939
 msgid "Error subscribing to folder"
 msgstr "Fel vid prenumeration av mapp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6990
+#: ../camel/providers/imapx/camel-imapx-server.c:7005
 msgid "Error unsubscribing from folder"
 msgstr "Fel vid uppsägning av prenumeration på mapp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7052
+#: ../camel/providers/imapx/camel-imapx-server.c:7067
 msgid "Error retrieving quota information"
 msgstr "Fel vid hämtning av kvotinformation"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7104
+#: ../camel/providers/imapx/camel-imapx-server.c:7119
 msgid "Search failed"
 msgstr "Sökning misslyckades"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7166
+#: ../camel/providers/imapx/camel-imapx-server.c:7181
 msgid "Error performing NOOP"
 msgstr "Fel vid genomförande av NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7273
+#: ../camel/providers/imapx/camel-imapx-server.c:7288
 msgid "Error syncing changes"
 msgstr "Fel vid synkronisering av ändringar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8260
+#: ../camel/providers/imapx/camel-imapx-server.c:8275
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan inte hämta meddelande med meddelande-id %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8261
+#: ../camel/providers/imapx/camel-imapx-server.c:8276
 msgid "No such message available."
 msgstr "Det finns inget sådant meddelande."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8468
-#: ../camel/providers/imapx/camel-imapx-server.c:8489
+#: ../camel/providers/imapx/camel-imapx-server.c:8483
+#: ../camel/providers/imapx/camel-imapx-server.c:8504
 msgid "Cannot create spool file: "
 msgstr "Kan inte skapa köfil: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9241
+#: ../camel/providers/imapx/camel-imapx-server.c:9256
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-servern saknar stöd för kvoter"
 
