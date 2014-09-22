@@ -1,3 +1,59 @@
+Evolution-Data-Server 3.13.6 2014-09-22
+---------------------------------------
+
+Bug Fixes:
+	Bug 735311 - Adapt to new Google HTTP restriction (Matthew Barnes)
+	Bug 486018 - Implement IDNA (Internationalized Domain Names in Applications) (Milan Crha)
+	Bug 734853 - CamelNetworkService fails to connect to 'localhost' (Milan Crha)
+	Bug 694112 - Crash under e_book_backend_ldap_stop_book_view() (Milan Crha)
+	Bug 735523 - Migrate sync_data from EBookBackendSqliteDB to EBookSqlite (David Woodhouse)
+	Bug 735191 - [IMAPx] Avoid storing server-disallowed message flags (Milan Crha)
+	Bug 733733 - Crash due to write out of buffer in CamelMimeFilterToHTML (Milan Crha)
+	Bug 735523 - test-book-client-custom-summary: Add 'exists' tests (David Woodhouse)
+	Bug 735523 - EBookSqlite: Support 'exists' queries from summary (David Woodhouse)
+	Bug 735523 - EBookSqlite: Support boolean summary field for EContactCert (David Woodhouse)
+	Bug 735523 - EBookSqlite: Enable x509Cert summary field by default (David Woodhouse)
+	Bug 735200 - [IMAPx] Fails to handle QUOTA response with no quotas (Jeffrey Hutzelman)
+	Bug 735523 - Allow EBookSqlite to be used without transactions (David Woodhouse)
+	Bug 735523 - Fix erroneous 'return' after EContactCert check (David Woodhouse)
+	Bug 735809 - Only export symbols starting with 'e_' in libebook-contacts (Laurent Bigonville)
+	Bug 730438 - Remove Coverity scan TOCTTOU races from file handling code (Philip Withnall)
+	Bug 735659 - EBookSqlite should ignore leading zeros when looking for phone number (Mateusz Polrola)
+	Bug 735342 - camel: Fix potential integer overflow found by Coverity scan (Philip Withnall)
+	Bug 736116 - Add EBSQL_DEBUG=timing (David Woodhouse)
+	Bug 735344 - camel: Fix potential integer overflow found by Coverity scan (Philip Withnall)
+	Bug 730438 - camel_movemail: Treat no source file as no mail to copy (Philip Withnall)
+	Bug 736657 - Extra space in nested quotation reply (Tomas Popela)
+
+Miscellaneous:
+	CamelDB: Allow nested transactions (Milan Crha)
+	Build libedbus-private.la as a shared library (Milan Crha)
+	Do not add GTasks source when the GTasks backend is not built (Milan Crha)
+	[IMAPx] Deleted messages not always saved to the server properly (Milan Crha)
+	[IMAPx] Incorrect mailbox used for untagged OK/NO/BAD with pending SELECT (Milan Crha)
+	Miscellaneous Win32 related changes (Milan Crha)
+	Add (failing) test for Evolution's address autocompletion query (David Woodhouse)
+
+Translations:
+	Christian Kirbach (de)
+	Nilamdyuti Goswami (as)
+	Andika Triwidada (id)
+	Changwoo Ryu (ko)
+	Rūdolfs Mazurs (lv)
+	Balázs Úr (hu)
+	Ville-Pekka Vainio (fi)
+	Piotr Drąg (pl)
+	Matej Urbančič (sl)
+	Shantha kumar (ta)
+	Saibal Ray (bn_IN)
+	Kenneth Nielsen (da)
+	Manoj Kumar Giri (or)
+	Fran Diéguez (gl)
+	Yuri Myasoedov (ru)
+	Maria  Mavridou (el)
+	Sandeep Sheshrao Shedmake (mr)
+	Marek Černocký (cs)
+
 Evolution-Data-Server 3.13.5 2014-08-25
 ---------------------------------------
 
