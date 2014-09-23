@@ -179,6 +179,8 @@ enum {
 	LAST_SIGNAL
 };
 
+#ifndef G_OS_WIN32
+
 static SecretSchema password_schema = {
 	"org.gnome.Evolution.Data.Source",
 	SECRET_SCHEMA_DONT_MATCH_NAME,
@@ -189,7 +191,193 @@ static SecretSchema password_schema = {
 	}
 };
 
+#endif /* !G_OS_WIN32 */
+
 static guint signals[LAST_SIGNAL];
+
+#ifdef G_OS_WIN32
+
+G_LOCK_DEFINE_STATIC (passwords_file);
+#define PASSWORDS_SECTION "Passwords"
+
+static gchar *
+encode_password (const gchar *password)
+{
+	return g_base64_encode ((const guchar *) password, strlen (password));
+}
+
+static gchar *
+decode_password (const gchar *password)
+{
+	guchar *decoded;
+	gchar *tmp;
+	gsize len = 0;
+
+	decoded = g_base64_decode (password, &len);
+	if (!decoded || !len) {
+		g_free (decoded);
+		return NULL;
+	}
+
+	tmp = g_strndup ((const gchar *) decoded, len);
+	g_free (decoded);
+
+	return tmp;
+}
+
+static gchar *
+get_passwords_filename (void)
+{
+	return g_build_filename (e_get_user_config_dir (), "passwords", NULL);
+}
+
+static GKeyFile *
+read_passwords_file (GError **error)
+{
+	gchar *filename;
+	GKeyFile *passwords;
+
+	passwords = g_key_file_new ();
+
+	filename = get_passwords_filename ();
+
+	if (g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
+		if (!g_key_file_load_from_file (passwords, filename, G_KEY_FILE_NONE, error)) {
+			g_key_file_free (passwords);
+			passwords = NULL;
+		}
+	}
+
+	g_free (filename);
+
+	return passwords;
+}
+
+static gboolean
+store_passwords_file (GKeyFile *passwords,
+		      GError **error)
+{
+	gchar *content, *filename;
+	gsize length;
+	gboolean success;
+
+	g_return_val_if_fail (passwords != NULL, FALSE);
+
+	if (!g_file_test (e_get_user_config_dir (), G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)) {
+		if (g_mkdir_with_parents (e_get_user_config_dir (), 0700) == -1) {
+			g_set_error_literal (
+				error, G_FILE_ERROR,
+				g_file_error_from_errno (errno),
+				g_strerror (errno));
+			return FALSE;
+		}
+	}
+
+	content = g_key_file_to_data (passwords, &length, error);
+	if (!content)
+		return FALSE;
+
+
+	filename = get_passwords_filename ();
+
+	success = g_file_set_contents (filename, content, length, error);
+
+	g_free (filename);
+	g_free (content);
+
+	return success;
+}
+
+static gboolean
+e_win32_source_store_password_sync (const gchar *uid,
+				    const gchar *password,
+				    GError **error)
+{
+	GKeyFile *passwords;
+	gboolean success;
+
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	G_LOCK (passwords_file);
+
+	passwords = read_passwords_file (error);
+	success = passwords != NULL;
+
+	if (passwords) {
+		gchar *encoded;
+
+		encoded = password && *password ? encode_password (password) : g_strdup (password);
+
+		g_key_file_set_string (passwords, PASSWORDS_SECTION, uid, encoded);
+
+		success = store_passwords_file (passwords, error);
+
+		g_key_file_free (passwords);
+		g_free (encoded);
+	}
+
+	G_UNLOCK (passwords_file);
+
+	return success;
+}
+
+static gchar *
+e_win32_source_lookup_password_sync (const gchar *uid,
+				     GError **error)
+{
+	GKeyFile *passwords;
+	gchar *password = NULL;
+
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	G_LOCK (passwords_file);
+
+	passwords = read_passwords_file (error);
+	if (passwords) {
+		gchar *tmp;
+
+		tmp = g_key_file_get_string (passwords, PASSWORDS_SECTION, uid, NULL);
+		if (tmp) {
+			password = *tmp ? decode_password (tmp) : g_strdup ("");
+			g_free (tmp);
+		}
+
+		g_key_file_free (passwords);
+	}
+
+	G_UNLOCK (passwords_file);
+
+	return password;
+}
+
+static gboolean
+e_win32_source_delete_password_sync (const gchar *uid,
+				     GError **error)
+{
+	GKeyFile *passwords;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	G_LOCK (passwords_file);
+
+	passwords = read_passwords_file (error);
+	if (passwords) {
+		success = TRUE;
+
+		if (g_key_file_remove_key (passwords, PASSWORDS_SECTION, uid, NULL)) {
+			success = store_passwords_file (passwords, error);
+		}
+
+		g_key_file_free (passwords);
+	}
+
+	G_UNLOCK (passwords_file);
+
+	return success;
+}
+
+#endif /* G_OS_WIN32 */
 
 /* Forward Declarations */
 static void	e_source_initable_init	(GInitableIface *iface);
@@ -3547,27 +3735,35 @@ e_source_store_password_sync (ESource *source,
                               GError **error)
 {
 	gboolean success;
+#ifndef G_OS_WIN32
 	const gchar *collection;
+#endif
 	const gchar *uid;
 	gchar *label;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (password != NULL, FALSE);
 
+#ifndef G_OS_WIN32
 	if (permanently)
 		collection = SECRET_COLLECTION_DEFAULT;
 	else
 		collection = SECRET_COLLECTION_SESSION;
+#endif
 
 	uid = e_source_get_uid (source);
 	label = e_source_dup_secret_label (source);
 
+#ifdef G_OS_WIN32
+	success = e_win32_source_store_password_sync (uid, password, error);
+#else
 	success = secret_password_store_sync (
 		&password_schema,
 		collection, label, password,
 		cancellable, error,
 		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
 		NULL);
+#endif
 
 	g_free (label);
 
@@ -3715,11 +3911,15 @@ e_source_lookup_password_sync (ESource *source,
 
 	uid = e_source_get_uid (source);
 
+#ifdef G_OS_WIN32
+	temp = e_win32_source_lookup_password_sync (uid, &local_error);
+#else
 	temp = secret_password_lookup_sync (
 		&password_schema,
 		cancellable, &local_error,
 		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
 		NULL);
+#endif
 
 	if (local_error != NULL) {
 		g_warn_if_fail (temp == NULL);
@@ -3880,6 +4080,9 @@ e_source_delete_password_sync (ESource *source,
 
 	uid = e_source_get_uid (source);
 
+#ifdef G_OS_WIN32
+	e_win32_source_delete_password_sync (uid, &local_error);
+#else
 	/* The return value indicates whether any passwords were removed,
 	 * not whether the operation completed successfully.  So we have
 	 * to check the GError directly. */
@@ -3888,6 +4091,7 @@ e_source_delete_password_sync (ESource *source,
 		cancellable, &local_error,
 		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
 		NULL);
+#endif
 
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
