@@ -3923,12 +3923,13 @@ typedef struct {
 } QueryPhoneTest;
 
 /* Stack initializer for the PreflightContext struct below */
-#define PREFLIGHT_CONTEXT_INIT { PREFLIGHT_OK, NULL, 0 }
+#define PREFLIGHT_CONTEXT_INIT { PREFLIGHT_OK, NULL, 0, FALSE }
 
 typedef struct {
 	PreflightStatus  status;         /* result status */
 	GPtrArray       *constraints;    /* main query; may be NULL */
 	guint64          aux_mask;       /* Bitmask of which auxiliary tables are needed in the query */
+	guint64          left_join_mask; /* Do we need to use a LEFT JOIN */
 } PreflightContext;
 
 static QueryElement *
@@ -4096,12 +4097,20 @@ preflight_context_clear (PreflightContext *context)
  *
  * I.e. sub contexts can be OR, AND, or NOT, in which
  * field tests or other sub contexts are nested.
+ *
+ * The 'count' field is a simple counter of how deep the contexts are nested.
+ *
+ * The 'cond_count' field is to be used by the caller for its own purposes;
+ * it is incremented in sub_query_context_push() only if the inc_cond_count
+ * parameter is TRUE. This is used by query_preflight_check() in a complex
+ * fashion which is described there.
  */
 typedef GQueue SubQueryContext;
 
 typedef struct {
 	guint sub_type; /* The type of this sub context */
 	guint count;    /* The number of field tests so far in this context */
+	guint cond_count; /* User-specific conditional counter */
 } SubQueryData;
 
 #define sub_query_context_new g_queue_new
@@ -4109,13 +4118,18 @@ typedef struct {
 
 static inline void
 sub_query_context_push (SubQueryContext *ctx,
-                        guint sub_type)
+                        guint sub_type, gboolean inc_cond_count)
 {
-	SubQueryData *data;
+	SubQueryData *data, *prev;
+
+	prev = g_queue_peek_tail (ctx);
 
 	data = g_slice_new (SubQueryData);
 	data->sub_type = sub_type;
 	data->count = 0;
+	data->cond_count = prev ? prev->cond_count : 0;
+	if (inc_cond_count)
+		data->cond_count++;
 
 	g_queue_push_tail (ctx, data);
 }
@@ -4137,6 +4151,19 @@ sub_query_context_peek_type (SubQueryContext *ctx)
 	data = g_queue_peek_tail (ctx);
 
 	return data->sub_type;
+}
+
+static inline guint
+sub_query_context_peek_cond_counter (SubQueryContext *ctx)
+{
+	SubQueryData *data;
+
+	data = g_queue_peek_tail (ctx);
+
+	if (data)
+		return data->cond_count;
+	else
+		return 0;
 }
 
 /* Returns the context field test count before incrementing */
@@ -4461,7 +4488,8 @@ query_preflight_initialize (PreflightContext *context,
 
 typedef struct {
 	EBookSqlite   *ebsql;
-	gboolean       has_attr_list;
+	SummaryField  *field;
+	gboolean       condition;
 } AttrListCheckData;
 
 static gboolean
@@ -4478,10 +4506,32 @@ check_has_attr_list_cb (QueryElement *element,
 		test->field = summary_field_get (data->ebsql, test->field_id);
 
 	if (test->field && test->field->type == E_TYPE_CONTACT_ATTR_LIST)
-		data->has_attr_list = TRUE;
+		data->condition = TRUE;
 
 	/* Keep looping until we find one */
-	return (data->has_attr_list == FALSE);
+	return (data->condition == FALSE);
+}
+
+static gboolean
+check_different_fields_cb (QueryElement *element,
+			   gint sub_level,
+			   gint offset,
+			   gpointer user_data)
+{
+	QueryFieldTest *test = (QueryFieldTest *) element;
+	AttrListCheckData *data = (AttrListCheckData *) user_data;
+
+	/* We havent resolved all the fields at this stage yet */
+	if (!test->field)
+		test->field = summary_field_get (data->ebsql, test->field_id);
+
+	if (test->field && data->field && test->field != data->field)
+		data->condition = TRUE;
+	else
+		data->field = test->field;
+
+	/* Keep looping until we find one */
+	return (data->condition == FALSE);
 }
 
 /* What is done in this pass:
@@ -4495,6 +4545,7 @@ query_preflight_check (PreflightContext *context,
 {
 	gint i, n_elements;
 	QueryElement **elements;
+	SubQueryContext *ctx;
 
 	context->status = PREFLIGHT_OK;
 
@@ -4505,6 +4556,8 @@ query_preflight_check (PreflightContext *context,
 		elements = NULL;
 		n_elements = 0;
 	}
+
+	ctx = sub_query_context_new ();
 
 	for (i = 0; i < n_elements; i++) {
 		QueryFieldTest *test;
@@ -4517,6 +4570,24 @@ query_preflight_check (PreflightContext *context,
 				EBSQL_QUERY_TYPE_STR (elements[i]->query)));
 
 		if (elements[i]->query >= BOOK_QUERY_SUB_FIRST) {
+			AttrListCheckData data = { ebsql, NULL, FALSE };
+
+			switch (elements[i]->query) {
+			case BOOK_QUERY_SUB_OR:
+				/* An OR doesn't have to force us to use a LEFT JOIN, as long
+				   as all its sub-conditions are on the same field. */
+				query_preflight_foreach_sub (elements,
+							     n_elements,
+							     i, FALSE,
+							     check_different_fields_cb,
+							     &data);
+			case BOOK_QUERY_SUB_AND:
+				sub_query_context_push (ctx, elements[i]->query, data.condition);
+				break;
+			case BOOK_QUERY_SUB_END:
+				sub_query_context_pop (ctx);
+				break;
+
 			/* It's too complicated to properly perform
 			 * the unary NOT operator on a constraint which
 			 * accesses attribute lists.
@@ -4529,16 +4600,14 @@ query_preflight_check (PreflightContext *context,
 			 * muliple results from the attribute list tables,
 			 * this breaks down with NOT.
 			 */
-			if (elements[i]->query == BOOK_QUERY_SUB_NOT) {
-				AttrListCheckData data = { ebsql, FALSE };
-
+			case BOOK_QUERY_SUB_NOT:
 				query_preflight_foreach_sub (elements,
 							     n_elements,
 							     i, FALSE,
 							     check_has_attr_list_cb,
 							     &data);
 
-				if (data.has_attr_list) {
+				if (data.condition) {
 					context->status = MAX (
 						context->status,
 						PREFLIGHT_NOT_SUMMARIZED);
@@ -4550,7 +4619,12 @@ query_preflight_check (PreflightContext *context,
 							"new status: %s\n",
 							EBSQL_STATUS_STR (context->status)));
 				}
+				break;
+
+			default:
+				g_warn_if_reached ();
 			}
+
 			continue;
 		}
 
@@ -4751,8 +4825,25 @@ query_preflight_check (PreflightContext *context,
 					"PREFLIGHT CHECK: "
 					"Adding auxiliary field `%s' to the mask\n",
 					EBSQL_FIELD_ID_STR (test->field_id)));
+
+			/* If this condition is a *requirement* for the overall query to
+			   match a given record (i.e. there's no surrounding 'OR' but
+			   only 'AND'), then we can use an inner join for the query and
+			   it will be a lot more efficient. If records without this
+			   condition can also match the overall condition, then we must
+			   use LEFT JOIN. */
+			if (sub_query_context_peek_cond_counter (ctx)) {
+				context->left_join_mask |= (1 << aux_index);
+				EBSQL_NOTE (
+					PREFLIGHT,
+					g_printerr (
+						"PREFLIGHT CHECK: "
+						"Using LEFT JOIN because auxiliary field is not absolute requirement\n"));
+			}
 		}
 	}
+
+	sub_query_context_free (ctx);
 }
 
 /* Handle special case of E_CONTACT_FULL_NAME
@@ -5286,7 +5377,7 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
 			case BOOK_QUERY_SUB_OR:
 
 				/* Open a grouped statement and push the context */
-				sub_query_context_push (ctx, delim->query);
+				sub_query_context_push (ctx, delim->query, FALSE);
 				g_string_append_c (string, '(');
 				break;
 
@@ -5379,6 +5470,7 @@ ebsql_generate_select (EBookSqlite *ebsql,
 			/* We cap this at EBSQL_MAX_SUMMARY_FIELDS (64 bits) at creation time */
 			if ((context->aux_mask & (1 << i)) != 0) {
 				SummaryField *field = &(ebsql->priv->summary_fields[i]);
+				gboolean left_join = (context->left_join_mask >> i) & 1;
 
 				/* Note the '+' in the JOIN statement.
 				 *
@@ -5395,9 +5487,11 @@ ebsql_generate_select (EBookSqlite *ebsql,
 				 *     WHERE email_list.value LIKE "boogieman%"
 				 */
 				ebsql_string_append_printf (
-					string, " JOIN %Q AS %s ON +%s.uid = summary.uid",
+					string, " %sJOIN %Q AS %s ON %s%s.uid = summary.uid",
+					left_join ? "LEFT " : "",
 					field->aux_table,
 					field->aux_table_symbolic,
+					left_join ? "" : "+",
 					field->aux_table_symbolic);
 			}
 		}
