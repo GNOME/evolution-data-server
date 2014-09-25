@@ -1530,6 +1530,7 @@ connect_direct (EBookClient *client,
 	EBookClientPrivate *priv;
 	EDBusDirectBook *direct_config;
 	const gchar *backend_name, *backend_path, *config;
+	gchar *bus_name;
 
 	priv = E_BOOK_CLIENT_GET_PRIVATE (client);
 
@@ -1542,12 +1543,16 @@ connect_direct (EBookClient *client,
 			return;
 	}
 
+	bus_name = e_client_dup_bus_name (E_CLIENT (client));
+
 	direct_config = e_dbus_direct_book_proxy_new_sync (
 		g_dbus_proxy_get_connection (G_DBUS_PROXY (priv->dbus_proxy)),
 		G_DBUS_PROXY_FLAGS_NONE,
-		ADDRESS_BOOK_DBUS_SERVICE_NAME,
+		bus_name,
 		g_dbus_proxy_get_object_path (G_DBUS_PROXY (priv->dbus_proxy)),
 		NULL, NULL);
+
+	g_free (bus_name);
 
 	backend_path = e_dbus_direct_book_get_backend_path (direct_config);
 	backend_name = e_dbus_direct_book_get_backend_name (direct_config);
