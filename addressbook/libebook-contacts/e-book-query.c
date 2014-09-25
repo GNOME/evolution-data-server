@@ -670,6 +670,15 @@ func_regex_raw (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_regex_translit (struct _ESExp *f,
+                     gint argc,
+                     struct _ESExpResult **argv,
+                     gpointer data)
+{
+	return func_field_test (E_BOOK_QUERY_REGEX_TRANSLIT, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_translit_contains (struct _ESExp *f,
 			gint argc,
 			struct _ESExpResult **argv,
@@ -768,6 +777,7 @@ static const struct {
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
+	{ "regex_translit", func_regex_translit, 0 },
 	{ "regex_normal", func_regex_normal, 0 },
 	{ "regex_raw", func_regex_raw, 0 },
 	{ "translit_is", func_translit_is, 0 },
@@ -854,6 +864,8 @@ field_test_name (EBookQueryTest field_test)
 		return "regex_normal";
 	case E_BOOK_QUERY_REGEX_RAW:
 		return "regex_raw";
+	case E_BOOK_QUERY_REGEX_TRANSLIT:
+		return "regex_translit";
 	case E_BOOK_QUERY_TRANSLIT_IS:
 		return "translit_is";
 	case E_BOOK_QUERY_TRANSLIT_CONTAINS:
@@ -884,6 +896,7 @@ is_phone_test (EBookQueryTest field_test)
 	case E_BOOK_QUERY_ENDS_WITH:
 	case E_BOOK_QUERY_REGEX_NORMAL:
 	case E_BOOK_QUERY_REGEX_RAW:
+	case E_BOOK_QUERY_REGEX_TRANSLIT:
 	case E_BOOK_QUERY_TRANSLIT_IS:
 	case E_BOOK_QUERY_TRANSLIT_CONTAINS:
 	case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:

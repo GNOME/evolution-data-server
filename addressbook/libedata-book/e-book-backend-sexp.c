@@ -1256,6 +1256,7 @@ static struct {
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
 	{ "regex_normal", func_regex_normal, 0 },
+	{ "regex_translit", func_regex_normal, 0 },
 	{ "regex_raw", func_regex_raw, 0 },
 	{ "exists", func_exists, 0 },
 	{ "exists_vcard", func_exists_vcard, 0 },

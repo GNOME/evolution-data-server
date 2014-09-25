@@ -3856,6 +3856,7 @@ enum {
 	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER ? "eqphone-short" : \
 	 (query) == E_BOOK_QUERY_REGEX_NORMAL ? "regex-normal" : \
 	 (query) == E_BOOK_QUERY_REGEX_RAW ? "regex-raw" : \
+	 (query) == E_BOOK_QUERY_REGEX_TRANSLIT ? "regex-translit" : \
          (query) == E_BOOK_QUERY_TRANSLIT_IS    ? "translit-is" : \
 	 (query) == E_BOOK_QUERY_TRANSLIT_CONTAINS ? "translit-contains" : \
 	 (query) == E_BOOK_QUERY_TRANSLIT_BEGINS_WITH ? "translit-begins-with" : \
@@ -4217,6 +4218,7 @@ static const struct {
 	{ "eqphone_short",    FALSE, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER },
 	{ "regex_normal",     FALSE, E_BOOK_QUERY_REGEX_NORMAL },
 	{ "regex_raw",        FALSE, E_BOOK_QUERY_REGEX_RAW },
+	{ "regex_translit",   FALSE, E_BOOK_QUERY_REGEX_TRANSLIT },
 	{ "translit_is",         FALSE, E_BOOK_QUERY_TRANSLIT_IS },
 	{ "translit_contains",   FALSE, E_BOOK_QUERY_TRANSLIT_CONTAINS },
 	{ "translit_beginswith", FALSE, E_BOOK_QUERY_TRANSLIT_BEGINS_WITH },
@@ -4692,6 +4694,7 @@ query_preflight_check (PreflightContext *context,
 		case E_BOOK_QUERY_TRANSLIT_CONTAINS:
 		case E_BOOK_QUERY_TRANSLIT_BEGINS_WITH:
 		case E_BOOK_QUERY_TRANSLIT_ENDS_WITH:
+		case E_BOOK_QUERY_REGEX_TRANSLIT:
 
 			/* These only only searchable in the summary with the E_BOOK_INDEX_TRANSLIT index */
 			if (test->field == NULL ||
@@ -4754,8 +4757,9 @@ query_preflight_substitute_full_name (PreflightContext *context,
 			continue;
 
 		/* If it's transliterated, we won't do this */
-		if (element->query >= E_BOOK_QUERY_TRANSLIT_IS &&
-		    element->query <= E_BOOK_QUERY_TRANSLIT_ENDS_WITH)
+		if ((element->query >= E_BOOK_QUERY_TRANSLIT_IS &&
+		    element->query <= E_BOOK_QUERY_TRANSLIT_ENDS_WITH) ||
+		    element->query == E_BOOK_QUERY_REGEX_TRANSLIT)
 			need_translit = TRUE;
 
 		family_name = summary_field_get (ebsql, E_CONTACT_FAMILY_NAME);
@@ -5166,6 +5170,24 @@ field_test_query_regex_normal (EBookSqlite *ebsql,
 }
 
 static void
+field_test_query_regex_translit (EBookSqlite *ebsql,
+                                 GString *string,
+                                 QueryFieldTest *test)
+{
+	SummaryField *field = test->field;
+	gchar *normal, *translit;
+
+	translit = e_transliterator_transliterate (ebsql->priv->transliterator, test->value);
+        normal = e_util_utf8_normalize (translit);
+
+	ebsql_string_append_column (string, field, EBSQL_SUFFIX_TRANSLIT);
+	ebsql_string_append_printf (string, " REGEXP %Q", normal);
+
+	g_free (translit);
+	g_free (normal);
+}
+
+static void
 field_test_query_translit_is (EBookSqlite *ebsql,
 			      GString *string,
                               QueryFieldTest *test)
@@ -5290,6 +5312,7 @@ static const GenerateFieldTest field_test_func_table[] = {
 	field_test_query_eqphone_short,    /* E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER */
 	field_test_query_regex_normal,     /* E_BOOK_QUERY_REGEX_NORMAL */
 	NULL /* Requires fallback */,      /* E_BOOK_QUERY_REGEX_RAW  */
+	field_test_query_regex_translit,   /* E_BOOK_QUERY_REGEX_TRANSLIT */
 	field_test_query_translit_is,      /* E_BOOK_QUERY_TRANSLIT_IS  */
 	field_test_query_translit_contains,/* E_BOOK_QUERY_TRANSLIT_CONTAINS  */
 	field_test_query_translit_begins_with,/* E_BOOK_QUERY_TRANSLIT_BEGINS_WITH  */
