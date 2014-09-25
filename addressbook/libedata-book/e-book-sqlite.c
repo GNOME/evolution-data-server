@@ -899,21 +899,26 @@ search_data_from_results (gint ncol,
 {
 	EbSqlSearchData *data = g_slice_new0 (EbSqlSearchData);
 	gint i;
+	const gchar *name;
 
 	for (i = 0; i < ncol; i++) {
 
 		if (!names[i] || !cols[i])
 			continue;
 
+		name = names[i];
+		if (!strncmp (name, "summary.", 8))
+			name += 8;
+
 		/* These come through differently depending on the configuration,
 		 * search within text is good enough
 		 */
-		if (!g_ascii_strcasecmp (names[i], "uid")) {
+		if (!g_ascii_strcasecmp (name, "uid")) {
 			data->uid = g_strdup (cols[i]);
-		} else if (!g_ascii_strcasecmp (names[i], "vcard") ||
-			   !g_ascii_strncasecmp (names[i], "fetch_vcard", 11)) {
+		} else if (!g_ascii_strcasecmp (name, "vcard") ||
+			   !g_ascii_strncasecmp (name, "fetch_vcard", 11)) {
 			data->vcard = g_strdup (cols[i]);
-		} else if (!g_ascii_strcasecmp (names[i], "bdata")) {
+		} else if (!g_ascii_strcasecmp (name, "bdata")) {
 			data->extra = g_strdup (cols[i]);
 		}
 	}
@@ -5501,6 +5506,124 @@ ebsql_generate_select (EBookSqlite *ebsql,
 }
 
 static gboolean
+ebsql_is_autocomplete_query (PreflightContext *context)
+{
+	QueryFieldTest *test;
+	QueryElement **elements;
+	gint n_elements, i;
+	int non_aux_fields = 0;
+
+	if (context->status != PREFLIGHT_OK || context->aux_mask == 0)
+		return FALSE;
+
+	elements = (QueryElement **) context->constraints->pdata;
+	n_elements = context->constraints->len;
+
+	for (i = 0; i < n_elements; i++) {
+		test = (QueryFieldTest *) elements[i];
+
+		/* For these, check if the field being operated on is
+		   an auxiliary field or not. */
+		if (elements[i]->query == E_BOOK_QUERY_BEGINS_WITH ||
+		    elements[i]->query == E_BOOK_QUERY_BEGINS_WITH ||
+		    elements[i]->query == E_BOOK_QUERY_IS ||
+		    elements[i]->query == BOOK_QUERY_EXISTS ||
+		    elements[i]->query == E_BOOK_QUERY_CONTAINS) {
+			if (test->field->type != E_TYPE_CONTACT_ATTR_LIST)
+				non_aux_fields++;
+			continue;
+		}
+
+		/* Nothing else is allowed other than "(or" ... ")" */
+		if (elements[i]->query != BOOK_QUERY_SUB_OR &&
+		    elements[i]->query != BOOK_QUERY_SUB_END)
+			return FALSE;
+	}
+
+	/* If there were no non-aux fields being queried, don't bother */
+	return non_aux_fields != 0;
+}
+
+static EbSqlRowFunc
+ebsql_generate_autocomplete_query (EBookSqlite *ebsql,
+				   GString *string,
+				   SearchType search_type,
+				   PreflightContext *context,
+				   GError **error)
+{
+	QueryElement **elements;
+	gint n_elements, i;
+	guint64 aux_mask = context->aux_mask;
+	guint64 left_join_mask = context->left_join_mask;
+	EbSqlRowFunc callback;
+	gboolean first = TRUE;
+
+	elements = (QueryElement **) context->constraints->pdata;
+	n_elements = context->constraints->len;
+
+	/* First the queries which use aux tables. */
+	for (i = 0; i < n_elements; i++) {
+		GenerateFieldTest generate_test_func = NULL;
+		QueryFieldTest *test;
+		gint aux_index;
+
+		if (elements[i]->query == BOOK_QUERY_SUB_OR ||
+		    elements[i]->query == BOOK_QUERY_SUB_END)
+			continue;
+
+		test = (QueryFieldTest *) elements[i];
+		if (test->field->type != E_TYPE_CONTACT_ATTR_LIST)
+			continue;
+
+		aux_index = summary_field_get_index (ebsql, test->field_id);
+		context->aux_mask = (1 << aux_index);
+		context->left_join_mask = 0;
+
+		callback = ebsql_generate_select (ebsql, string, search_type, context, error);
+		g_string_append (string, " WHERE ");
+		context->aux_mask = aux_mask;
+		context->left_join_mask = left_join_mask;
+		if (!callback)
+			return NULL;
+
+		generate_test_func = field_test_func_table[test->query];
+		generate_test_func (ebsql, string, test);
+
+		g_string_append (string, " UNION ");
+	}
+	/* Finally, generate the SELECT for the primary fields. */
+	context->aux_mask = 0;
+	callback = ebsql_generate_select (ebsql, string, search_type, context, error);
+	context->aux_mask = aux_mask;
+	if (!callback)
+		return NULL;
+
+	g_string_append (string, " WHERE ");
+
+	for (i = 0; i < n_elements; i++) {
+		GenerateFieldTest generate_test_func = NULL;
+		QueryFieldTest *test;
+
+		if (elements[i]->query == BOOK_QUERY_SUB_OR ||
+		    elements[i]->query == BOOK_QUERY_SUB_END)
+			continue;
+
+		test = (QueryFieldTest *) elements[i];
+		if (test->field->type == E_TYPE_CONTACT_ATTR_LIST)
+			continue;
+
+		if (!first)
+			g_string_append (string, " OR ");
+		else
+			first = FALSE;
+
+		generate_test_func = field_test_func_table[test->query];
+		generate_test_func (ebsql, string, test);
+	}
+
+	return callback;
+}
+static gboolean
 ebsql_do_search_query (EBookSqlite *ebsql,
                        PreflightContext *context,
                        const gchar *sexp,
@@ -5517,18 +5640,25 @@ ebsql_do_search_query (EBookSqlite *ebsql,
 	 * during the preflight checks */
 	string = g_string_sized_new (GENERATED_QUERY_BYTES);
 
-	/* Generate the leading SELECT statement */
-	callback = ebsql_generate_select (
-		ebsql, string, search_type, context, error);
+	/* Extra special case. For the common case of the email composer's
+	   addressbook autocompletion, we really want the most optimal query.
+	   So check for it and use a basically hand-crafted one. */
+        if (ebsql_is_autocomplete_query(context)) {
+		callback = ebsql_generate_autocomplete_query (ebsql, string, search_type, context, error);
+	} else {
+		/* Generate the leading SELECT statement */
+		callback = ebsql_generate_select (
+						  ebsql, string, search_type, context, error);
 
-	if (callback &&
-	    EBSQL_STATUS_GEN_CONSTRAINTS (context->status)) {
-		/*
-		 * Now generate the search expression on the main contacts table
-		 */
-		g_string_append (string, " WHERE ");
-		ebsql_generate_constraints (
-			ebsql, string, context->constraints, sexp);
+		if (callback &&
+		    EBSQL_STATUS_GEN_CONSTRAINTS (context->status)) {
+			/*
+			 * Now generate the search expression on the main contacts table
+			 */
+			g_string_append (string, " WHERE ");
+			ebsql_generate_constraints (
+				ebsql, string, context->constraints, sexp);
+		}
 	}
 
 	if (callback)
