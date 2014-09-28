@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-09-07 04:24+0000\n"
-"PO-Revision-Date: 2014-09-07 12:49+0300\n"
+"POT-Creation-Date: 2014-09-28 08:44+0000\n"
+"PO-Revision-Date: 2014-09-28 12:28+0300\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -68,7 +68,7 @@ msgstr "Mēģināja modificēt kontaktu “%s” bez sinhronām revīzijām"
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6727
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Kontakts “%s” nav atrasts"
@@ -965,18 +965,18 @@ msgid "Unable to connect to '%s': "
 msgstr "Nevarēja savienoties ar “%s”: "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Kļūda, izpētot nezināmu kopsavilkuma lauku “%s”"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "Kļūda, parsējot regulāro izteiksmi"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:545
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nepietiek atmiņas"
@@ -987,7 +987,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "Kopsavilkumā norādīts nederīgs kontakta lauks “%d” "
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1005,7 +1005,7 @@ msgstr "Pilns search_contacts netiek glabāts kešatmiņā. Nevar atgriezt vcard
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5385
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Vaicājums saturēja neatbalstītus elementus"
@@ -1068,7 +1068,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Nevar kārtot pēc lauka, kam var būt vairākas vērtības"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7397
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1078,7 +1078,7 @@ msgstr ""
 "sākumā"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7405
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1087,12 +1087,12 @@ msgstr ""
 "Mēģināja pārvietot kursoru uz priekšu, bet kursors jau ir kontaktu saraksta "
 "beigās"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Kopsavilkumā norādīts neatbalstīts kontakta lauks “%d”"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1100,22 +1100,22 @@ msgstr ""
 "Nevar uzlabot kontaktu datubāzi no mantotās datubāzes ar vairāk kā vienu "
 "adrešu grāmatu. Vispirms dzēsiet vienu no ierakstiem tabulā “mapes”"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5378
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Nederīgs vaicājums: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5553
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "Nederīgs EbSqlCursor vaicājums"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7219
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Vismaz vienam kārtošanas laukam ir jābūt norādītam, ka tas izmanto "
 "EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7237
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nevar kārtot pēc lauka, kura datu tips nav virkne"
 
@@ -2568,15 +2568,20 @@ msgstr "Servera atbilde saturēja nepilnīgus autorizācijas datus"
 msgid "Server response does not match"
 msgstr "Servera atbilde neatbilst"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "Šī opcija savienosies ar serveri, lietojot Kerberos 5 autentifikāciju."
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(Nezināms GSSAPI mehānisma kods: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
@@ -2584,11 +2589,11 @@ msgstr ""
 "Norādīto mehānismu neatbalsta dotā pilnvara vai arī to neatpazīst šī "
 "implementācija."
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Norādītais target_name parametrs bija nepareizi noformēts."
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
@@ -2596,7 +2601,7 @@ msgstr ""
 "Norādītais target_name parametrs saturēja nederīgu vai neatbalstītu "
 "nosaukuma tipu."
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
@@ -2604,13 +2609,13 @@ msgstr ""
 "Mainīgais input_token satur atšķirīgas kanālu sasaistes kā tās, kas ir "
 "norādītas input_chan_bindings parametrā."
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr "input_token satur nederīgu parakstu vai parakstu kuru nevar pārbaudīt."
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
@@ -2618,30 +2623,30 @@ msgstr ""
 "Norādītās pilnvaras nav derīgas konteksta inicializācijai, vai arī pilnvaru "
 "apstrādātājs nav saņēmis atsauces uz pilnvarām."
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "Norādītais konteksta apstrādātājs neatsaucas uz derīgu kontekstu."
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "input_token veiktā konsekvences pārbaude neizdevās."
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr "Pilnvarai veiktā atbilstības pārbaude neizdevās."
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "Norādītās pilnvaras termiņš ir beidzies."
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:354
-#: ../camel/camel-sasl-gssapi.c:402 ../camel/camel-sasl-gssapi.c:419
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
 #: ../camel/providers/smtp/camel-smtp-transport.c:622
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Slikta autentifikācijas atbilde no servera."
 
-#: ../camel/camel-sasl-gssapi.c:431
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "Neatbalstīts drošības slānis."
@@ -3112,12 +3117,10 @@ msgid "_Listen for server change notifications"
 msgstr "K_lausīties servera izmaiņu paziņojumus"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:49
-#| msgid "Lost connection to IMAP server"
 msgid "Connection to Server"
 msgstr "Savienojums ar serveri"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:51
-#| msgid "Numbe_r of cached connections to use"
 msgid "Numbe_r of concurrent connections to use"
 msgstr "_Vienlaicīgo savienojumu skaits, ko izmantot"
 
