@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-12 00:10+0200\n"
-"PO-Revision-Date: 2014-09-12 00:13+0200\n"
+"POT-Creation-Date: 2014-09-29 16:05+0200\n"
+"PO-Revision-Date: 2014-09-29 16:08+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -1485,13 +1485,13 @@ msgstr "Pogoda: Burze"
 #: ../calendar/backends/weather/e-cal-backend-weather.c:329
 #, c-format
 msgid "%.1f ےF"
-msgstr "%.1f ےF"
+msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:332
 #, c-format
 msgid "%.1f ےC"
-msgstr "%.1f ےC"
+msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
 #: ../calendar/backends/weather/e-cal-backend-weather.c:335
