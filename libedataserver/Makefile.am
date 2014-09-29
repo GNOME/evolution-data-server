@@ -18,8 +18,7 @@ BUILT_SOURCES = $(ENUM_GENERATED)
 lib_LTLIBRARIES = libedataserver-1.2.la
 noinst_LTLIBRARIES = libedataserver-private.la
 
-libedataserver_1_2_la_CPPFLAGS = \
-	$(AM_CPPFLAGS) \
+SHARED_COMPILER_FLAGS = \
 	-I$(top_srcdir) \
 	-I$(top_srcdir)/private \
 	-I$(top_builddir) \
@@ -39,6 +38,10 @@ libedataserver_1_2_la_CPPFLAGS = \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(ICU_CFLAGS) \
 	$(NULL)
+
+libedataserver_1_2_la_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	$(SHARED_COMPILER_FLAGS)
 
 libedataserver_1_2_la_SOURCES = \
 	$(BUILT_SOURCES) \
@@ -185,7 +188,10 @@ libedataserver_private_la_SOURCES = \
 	e-alphabet-index-private.cpp \
 	e-transliterator-private.cpp \
 	$(NULL)
-libedataserver_private_la_CPPFLAGS = $(libedataserver_1_2_la_CPPFLAGS)
+libedataserver_private_la_CPPFLAGS = \
+	$(AM_CXXFLAGS) \
+	$(SHARED_COMPILER_FLAGS)
+
 if OS_WIN32
 libedataserver_1_2_la_LIBADD += libedataserver-private.la -lstdc++
 else
