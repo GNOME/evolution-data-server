@@ -178,15 +178,31 @@ dnl *********************************************
 EVO_PHONENUMBER_ARGS
 
 dnl ******************************
+dnl Initialize maintainer mode
+dnl ******************************
+AM_MAINTAINER_MODE([enable])
+
+if test "x$enable_maintainer_mode" = "xyes" ; then
+	AC_DEFINE(ENABLE_MAINTAINER_MODE, 1, [Configured with enabled maintainer mode])
+fi
+
+dnl ******************************
 dnl Compiler Warning Flags
 dnl ******************************
-proposed_warning_flags="-Wall -Wextra
-	-Wdeprecated-declarations
-	-Werror-implicit-function-declaration
-	-Wformat-security -Winit-self
-	-Wmissing-declarations -Wmissing-include-dirs
-	-Wmissing-noreturn -Wpointer-arith
-	-Wredundant-decls -Wundef -Wwrite-strings"
+proposed_warning_flags=
+
+if test "x$enable_maintainer_mode" = "xyes" ; then
+	proposed_warning_flags="-Wall -Wextra -Wdeprecated-declarations"
+else
+	proposed_warning_flags="-Wno-deprecated-declarations"
+fi
+
+proposed_warning_flags="$proposed_warning_flags
+		-Werror-implicit-function-declaration
+		-Wformat -Wformat-security -Winit-self
+		-Wmissing-declarations -Wmissing-include-dirs
+		-Wmissing-noreturn -Wpointer-arith
+		-Wredundant-decls -Wundef -Wwrite-strings"
 
 proposed_c_warning_flags="$proposed_warning_flags
 	-Wdeclaration-after-statement
@@ -227,7 +243,7 @@ dnl Permits linking of C++ based libraries using the C linker if needed.
 AC_SUBST([predeps_CXX])
 AC_SUBST([postdeps_CXX])
 
-AM_CPPFLAGS=
+AM_CPPFLAGS="$WARNING_FLAGS -fno-strict-aliasing"
 
 dnl Warn about API usage that violates our minimum requirements.
 AM_CPPFLAGS="$AM_CPPFLAGS -DGLIB_VERSION_MAX_ALLOWED=glib_encoded_version"
@@ -243,15 +259,6 @@ AM_CPPFLAGS="$AM_CPPFLAGS -DGDK_VERSION_MIN_REQUIRED=gdk_encoded_version"
 AM_CPPFLAGS="$AM_CPPFLAGS -DSOUP_VERSION_MIN_REQUIRED=soup_encoded_version"
 
 AC_SUBST(AM_CPPFLAGS)
-
-dnl ******************************
-dnl Initialize maintainer mode
-dnl ******************************
-AM_MAINTAINER_MODE([enable])
-
-if test "x$enable_maintainer_mode" = "xyes" ; then
-	AC_DEFINE(ENABLE_MAINTAINER_MODE, 1, [Configured with enabled maintainer mode])
-fi
 
 AC_PROG_CC
 AC_PROG_CPP
