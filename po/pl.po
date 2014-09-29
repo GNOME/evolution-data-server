@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-14 22:35+0200\n"
-"PO-Revision-Date: 2014-09-14 22:37+0200\n"
+"POT-Creation-Date: 2014-09-29 16:12+0200\n"
+"PO-Revision-Date: 2014-09-29 16:13+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -106,16 +106,16 @@ msgstr ""
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
-#: ../addressbook/libebook/e-book-client.c:1987
-#: ../addressbook/libebook/e-book-client.c:2159
-#: ../addressbook/libebook/e-book-client.c:2372
-#: ../addressbook/libebook/e-book-client.c:2503
-#: ../addressbook/libebook/e-book-client.c:2662
-#: ../addressbook/libebook/e-book-client.c:2796
-#: ../addressbook/libebook/e-book-client.c:2927
-#: ../addressbook/libebook/e-book-client.c:3085
-#: ../addressbook/libebook/e-book-client.c:3280
-#: ../addressbook/libebook/e-book-client.c:3498
+#: ../addressbook/libebook/e-book-client.c:1992
+#: ../addressbook/libebook/e-book-client.c:2164
+#: ../addressbook/libebook/e-book-client.c:2377
+#: ../addressbook/libebook/e-book-client.c:2508
+#: ../addressbook/libebook/e-book-client.c:2667
+#: ../addressbook/libebook/e-book-client.c:2801
+#: ../addressbook/libebook/e-book-client.c:2932
+#: ../addressbook/libebook/e-book-client.c:3090
+#: ../addressbook/libebook/e-book-client.c:3285
+#: ../addressbook/libebook/e-book-client.c:3503
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:580
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
@@ -963,7 +963,7 @@ msgstr "Nie można zmienić wartości właściwości książki \"%s\""
 
 #: ../addressbook/libebook/e-book-client.c:1303
 #: ../addressbook/libebook/e-book-client.c:1487
-#: ../addressbook/libebook/e-book-client.c:1754
+#: ../addressbook/libebook/e-book-client.c:1759
 #: ../calendar/libecal/e-cal-client.c:1628
 #: ../calendar/libecal/e-cal-client.c:1819
 #, c-format
@@ -1474,13 +1474,13 @@ msgstr "Pogoda: Burze"
 #: ../calendar/backends/weather/e-cal-backend-weather.c:329
 #, c-format
 msgid "%.1f ےF"
-msgstr "%.1f ےF"
+msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:332
 #, c-format
 msgid "%.1f ےC"
-msgstr "%.1f ےC"
+msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
 #: ../calendar/backends/weather/e-cal-backend-weather.c:335
@@ -4807,7 +4807,7 @@ msgid "Data source is missing a [%s] group"
 msgstr "Brak grupy [%s] w źródle danych"
 
 #: ../libebackend/e-server-side-source.c:1022
-#: ../libedataserver/e-source.c:1394
+#: ../libedataserver/e-source.c:1582
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Źródło danych \"%s\" nie obsługuje tworzenia zdalnych zasobów"
@@ -4821,7 +4821,7 @@ msgstr ""
 "zasobów"
 
 #: ../libebackend/e-server-side-source.c:1064
-#: ../libedataserver/e-source.c:1507
+#: ../libedataserver/e-source.c:1695
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Źródło danych \"%s\" nie obsługuje usuwania zdalnych zasobów"
@@ -4835,7 +4835,7 @@ msgstr ""
 "zasobów"
 
 #: ../libebackend/e-server-side-source.c:1109
-#: ../libedataserver/e-source.c:1603
+#: ../libedataserver/e-source.c:1791
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -5049,22 +5049,22 @@ msgstr "Proszę podać hasło dla listy zadań \"%s\"."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Proszę podać hasło dla konta \"%s\"."
 
-#: ../libedataserver/e-source.c:768
+#: ../libedataserver/e-source.c:956
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Brak grupy [%s] w pliku źródła"
 
-#: ../libedataserver/e-source.c:1174
+#: ../libedataserver/e-source.c:1362
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "Źródło danych \"%s\" nie jest usuwalne"
 
-#: ../libedataserver/e-source.c:1297
+#: ../libedataserver/e-source.c:1485
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "Źródło danych \"%s\" nie jest zapisywalne"
 
-#: ../libedataserver/e-source.c:1910
+#: ../libedataserver/e-source.c:2098
 msgid "Unnamed"
 msgstr "Bez nazwy"
 
