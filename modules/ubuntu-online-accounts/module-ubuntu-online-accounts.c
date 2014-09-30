@@ -891,9 +891,10 @@ ubuntu_online_accounts_constructed (GObject *object)
 	extensible = e_extension_get_extensible (extension);
 
 	/* Wait for the registry service to acquire its well-known
-	 * bus name so we don't do anything destructive beforehand. */
+	 * bus name so we don't do anything destructive beforehand.
+	 * Run last so that all the sources get loaded first. */
 
-	g_signal_connect (
+	g_signal_connect_after (
 		extensible, "bus-acquired",
 		G_CALLBACK (ubuntu_online_accounts_bus_acquired_cb),
 		extension);
