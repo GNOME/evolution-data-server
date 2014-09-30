@@ -51,6 +51,7 @@ libedata_book_1_2_la_LIBADD = \
 	$(top_builddir)/addressbook/libegdbus/libegdbus-book.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/private/libedbus-private.la \
 	$(DB_LIBS) \
 	$(CAMEL_LIBS) \
 	$(SQLITE3_LIBS) \
@@ -127,6 +128,7 @@ evolution_addressbook_factory_subprocess_SOURCES = \
 evolution_addressbook_factory_subprocess_LDADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(top_builddir)/private/libedbus-private.la \
 	libedata-book-1.2.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(LIBSECRET_LIBS) \

@@ -59,6 +59,7 @@ libebook_1_2_la_LIBADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/addressbook/libedata-book/libedata-book-1.2.la \
+	$(top_builddir)/private/libedbus-private.la \
 	$(EVOLUTION_ADDRESSBOOK_LIBS) \
 	$(CAMEL_LIBS) \
 	$(NULL)

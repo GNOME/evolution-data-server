@@ -40,6 +40,7 @@ libedata_cal_1_2_la_LIBADD = \
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/private/libedbus-private.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
 	$(CAMEL_LIBS) \
 	$(NULL)
@@ -99,6 +100,7 @@ evolution_calendar_factory_subprocess_SOURCES = \
 evolution_calendar_factory_subprocess_LDADD = \
 	$(top_builddir)/libebackend/libebackend-1.2.la \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(top_builddir)/private/libedbus-private.la \
 	libedata-cal-1.2.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
 	$(LIBSECRET_LIBS) \

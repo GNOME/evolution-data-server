@@ -62,6 +62,7 @@ libecal_1_2_la_SOURCES = \
 libecal_1_2_la_LIBADD = \
 	$(top_builddir)/libedataserver/libedataserver-1.2.la \
 	$(top_builddir)/calendar/libegdbus/libegdbus-cal.la \
+	$(top_builddir)/private/libedbus-private.la \
 	$(EVOLUTION_CALENDAR_LIBS) \
 	$(CAMEL_LIBS) \
 	$(NULL)
