@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-29 16:12+0200\n"
-"PO-Revision-Date: 2014-09-29 16:13+0200\n"
+"POT-Creation-Date: 2014-10-03 15:14+0200\n"
+"PO-Revision-Date: 2014-10-03 15:15+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -1473,13 +1473,13 @@ msgstr "Pogoda: Burze"
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:329
 #, c-format
-msgid "%.1f ےF"
+msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:332
 #, c-format
-msgid "%.1f ےC"
+msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
@@ -4836,7 +4836,7 @@ msgstr ""
 
 #: ../libebackend/e-server-side-source.c:1109
 #: ../libedataserver/e-source.c:1791
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "Źródło danych \"%s\" nie obsługuje uwierzytelniania OAuth 2.0"
@@ -5430,7 +5430,7 @@ msgstr "Poczta"
 msgid "Integrate your mailboxes"
 msgstr "Integracja skrzynek pocztowych"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1007
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1008
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
@@ -5533,9 +5533,3 @@ msgstr ""
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
 msgstr "_Odrzuć"
-
-msgid "%.1f °F"
-msgstr "%.1f °F"
-
-msgid "%.1f °C"
-msgstr "%.1f °C"
