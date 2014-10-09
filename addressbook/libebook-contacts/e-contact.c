@@ -110,6 +110,10 @@ static gpointer  date_getter (EContact *contact, EVCardAttribute *attr);
 static void date_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
 static gpointer  cert_getter (EContact *contact, EVCardAttribute *attr);
 static void cert_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
+static gpointer phonetic_given_name_getter (EContact *contact, EVCardAttribute *attr);
+static void phonetic_given_name_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
+static gpointer phonetic_family_name_getter (EContact *contact, EVCardAttribute *attr);
+static void phonetic_family_name_setter (EContact *contact, EVCardAttribute *attr, gpointer data);
 
 #define STRING_FIELD(id,vc,n,pn,ro)  { E_CONTACT_FIELD_TYPE_STRING, (id), (vc), (n), (pn), (ro) }
 #define BOOLEAN_FIELD(id,vc,n,pn,ro)  { E_CONTACT_FIELD_TYPE_BOOLEAN, (id), (vc), (n), (pn), (ro) }
@@ -145,6 +149,15 @@ static const EContactFieldInfo field_info[] = {
 	LIST_ELEM_STR_FIELD (E_CONTACT_GIVEN_NAME,  EVC_N,        "given_name",  N_("Given Name"),  FALSE, 1),
 	LIST_ELEM_STR_FIELD (E_CONTACT_FAMILY_NAME, EVC_N,        "family_name", N_("Family Name"), FALSE, 0),
 	STRING_FIELD        (E_CONTACT_NICKNAME,    EVC_NICKNAME, "nickname",    N_("Nickname"),    FALSE),
+
+	/* Phonetic name fields */
+	/* If vcard does not contains this fields  they will be set to
+	 * E_CONTACT_GIVEN_NAME and E_CONTACT_FAMILY_NAME respectively,
+	 * this will ensure that each contact will have value assigned
+	 * to these fields so they can be used as sort key in database
+	 * queries */
+	GETSET_FIELD        (E_CONTACT_GIVEN_NAME_PHONETIC,  EVC_X_PHONETIC_FIRST_NAME, "phonetic_given_name",  N_("Phonetic Given Name"),  FALSE, phonetic_given_name_getter, phonetic_given_name_setter),
+	GETSET_FIELD        (E_CONTACT_FAMILY_NAME_PHONETIC, EVC_X_PHONETIC_LAST_NAME,  "phonetic_family_name", N_("Phonetic Family Name"), FALSE, phonetic_family_name_getter, phonetic_family_name_setter),
 
 	/* Email fields */
 	MULTI_ELEM_STR_FIELD (E_CONTACT_EMAIL_1,    EVC_EMAIL,        "email_1",    N_("Email 1"),         FALSE, 0),
@@ -852,6 +865,167 @@ cert_setter (EContact *contact,
 		"b");
 
 	e_vcard_attribute_add_value_decoded (attr, cert->data, cert->length);
+}
+
+static gpointer
+phonetic_given_name_getter (EContact *contact,
+                            EVCardAttribute *attr)
+{
+	GList *p = NULL;
+	gboolean add_attribute = FALSE;
+
+	/* If contact does not contain EVC_X_PHONETIC_FIRST_NAME,
+	 * check other vcard fields that can be used to store phonetic given name.
+	 * Mark also that EVC_X_PHONETIC_FIRST_NAME attribute should be added.
+	 */
+	if (!attr) {
+		add_attribute = TRUE;
+		attr = e_vcard_get_attribute (E_VCARD (contact), EVC_X_YOMI_FNAME);
+	}
+
+	if (!attr) {
+		attr = e_vcard_get_attribute (E_VCARD (contact), EVC_X_GIVENNAME_SOUND);
+	}
+
+	if (attr) {
+		p = e_vcard_attribute_get_values (attr);
+		if (!p || !p->data || !*((const gchar *) p->data)) {
+			p = NULL;
+		}
+	}
+
+	if (!p) {
+		/* VCard does not contains any field with phonetic given name
+		 * Generate it using contact given name */
+		EContactName *name;
+		gchar *new_phonetic_given_name = NULL;
+
+		name = e_contact_get (contact, E_CONTACT_NAME);
+
+		/* Use name if available */
+		if (name) {
+			if (name->given && *name->given) {
+				new_phonetic_given_name = g_strdup (name->given);
+			}
+
+			e_contact_name_free (name);
+		}
+
+		/* Add the EVC_X_PHONETIC_FIRST_NAME attribute to contact */
+		if (new_phonetic_given_name) {
+			add_attribute = FALSE;
+			attr = e_vcard_attribute_new (NULL, EVC_X_PHONETIC_FIRST_NAME);
+			e_vcard_append_attribute_with_value (E_VCARD (contact), attr, new_phonetic_given_name);
+
+			g_free (new_phonetic_given_name);
+		}
+	}
+
+	if (attr) {
+		if (add_attribute) {
+			p = e_vcard_attribute_get_values (attr);
+			attr = e_vcard_attribute_new (NULL, EVC_X_PHONETIC_FIRST_NAME);
+			e_vcard_append_attribute_with_value (E_VCARD (contact), attr, p && p->data ? p->data : (gpointer) "");
+		}
+
+		p = e_vcard_attribute_get_values (attr);
+
+		return p && p->data ? p->data : (gpointer) "";
+	} else {
+		return NULL;
+	}
+}
+
+static void
+phonetic_given_name_setter (EContact *contact,
+                            EVCardAttribute *attr,
+                            gpointer data)
+{
+	/* Default implementation */
+	const gchar *phonetic_given_name = data;
+	e_vcard_attribute_add_value (attr,
+		phonetic_given_name ? phonetic_given_name : "");
+}
+
+static gpointer
+phonetic_family_name_getter (EContact *contact,
+                             EVCardAttribute *attr)
+{
+	GList *p = NULL;
+	gboolean add_attribute = FALSE;
+
+	/* If contact does not contain EVC_X_PHONETIC_LAST_NAME,
+	 * check other vcard fields that can be used to store phonetic family name.
+	 * Mark also that EVC_X_PHONETIC_LAST_NAME attribute should be added.
+	 */
+	if (!attr) {
+		add_attribute = TRUE;
+		attr = e_vcard_get_attribute (E_VCARD (contact), EVC_X_YOMI_LNAME);
+	}
+
+	if (!attr) {
+		attr = e_vcard_get_attribute (E_VCARD (contact), EVC_X_FAMILYNAME_SOUND);
+	}
+
+	if (attr) {
+		p = e_vcard_attribute_get_values (attr);
+		if (!p || !p->data || !*((const gchar *) p->data)) {
+			p = NULL;
+		}
+	}
+
+	if (!p) {
+		/* VCard does not contains any field with phonetic family name
+		 * Generate it using contact family name
+		 * */
+		EContactName *name;
+		gchar *new_phonetic_family_name = NULL;
+
+		name = e_contact_get (contact, E_CONTACT_NAME);
+
+		/* Use name if available */
+		if (name) {
+			if (name->family && *name->family) {
+				new_phonetic_family_name = g_strdup (name->family);
+			}
+
+			e_contact_name_free (name);
+		}
+
+		/* Add the EVC_X_PHONETIC_LAST_NAME attribute to contact */
+		if (new_phonetic_family_name) {
+			add_attribute = FALSE;
+			attr = e_vcard_attribute_new (NULL, EVC_X_PHONETIC_LAST_NAME);
+			e_vcard_append_attribute_with_value (E_VCARD (contact), attr, new_phonetic_family_name);
+
+			g_free (new_phonetic_family_name);
+		}
+	}
+
+	if (attr) {
+		if (add_attribute) {
+			p = e_vcard_attribute_get_values (attr);
+			attr = e_vcard_attribute_new (NULL, EVC_X_PHONETIC_LAST_NAME);
+			e_vcard_append_attribute_with_value (E_VCARD (contact), attr, p && p->data ? p->data : (gpointer) "");
+		}
+
+		p = e_vcard_attribute_get_values (attr);
+
+		return p && p->data ? p->data : (gpointer) "";
+	} else {
+		return NULL;
+	}
+}
+
+static void
+phonetic_family_name_setter (EContact *contact,
+                             EVCardAttribute *attr,
+                            gpointer data)
+{
+	/* Default implementation */
+	const gchar *phonetic_family_name = data;
+	e_vcard_attribute_add_value (attr,
+		phonetic_family_name ? phonetic_family_name : "");
 }
 
 static EVCardAttribute *

@@ -76,6 +76,10 @@ typedef enum {
 	E_CONTACT_FAMILY_NAME,	 /* synthetic string field */
 	E_CONTACT_NICKNAME,	 /* string field */
 
+	/* Phonetic name fields */
+	E_CONTACT_GIVEN_NAME_PHONETIC,  /* synthetic string field */
+	E_CONTACT_FAMILY_NAME_PHONETIC, /* synthetic string field */
+
 	/* Email fields */
 	E_CONTACT_EMAIL_1,	 /* synthetic string field */
 	E_CONTACT_EMAIL_2,	 /* synthetic string field */
@@ -271,6 +275,8 @@ typedef struct {
 	gchar *additional;
 	gchar *prefixes;
 	gchar *suffixes;
+	gchar *family_phonetic;
+	gchar *given_phonetic;
 } EContactName;
 
 /**

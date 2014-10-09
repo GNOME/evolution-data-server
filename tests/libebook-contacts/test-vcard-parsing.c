@@ -377,6 +377,37 @@ test_vcard_quoted_printable (void)
 	g_assert (test_vcard_qp_3_0_saving (expected_text));
 }
 
+static gboolean
+test_vcard_with_phonetic (const gchar* vcard_str, const gchar* expected_family_name, const gchar* expected_given_name)
+{
+        EContact *c;
+	const gchar* family_name;
+	const gchar* given_name;
+
+        c = e_contact_new_from_vcard (vcard_str);
+        g_return_val_if_fail (e_vcard_is_parsed (E_VCARD (c)) == FALSE, FALSE);
+	family_name = (const gchar*) e_contact_get_const (c, E_CONTACT_FAMILY_NAME_PHONETIC);
+	given_name = (const gchar*) e_contact_get_const (c, E_CONTACT_GIVEN_NAME_PHONETIC);
+
+	if (family_name == NULL || expected_family_name == NULL) {
+		g_return_val_if_fail (family_name == expected_family_name, FALSE);
+	}
+        else {
+		g_return_val_if_fail (g_strcmp0(family_name, expected_family_name) == 0, FALSE);
+	}
+
+	if (given_name == NULL || expected_given_name == NULL) {
+		g_return_val_if_fail (given_name == expected_given_name, FALSE);
+	}
+        else {
+		g_return_val_if_fail (g_strcmp0(given_name, expected_given_name) == 0, FALSE);
+	}
+
+	g_object_unref (c);
+
+	return TRUE;
+}
+
 static const gchar *test_vcard_no_uid_str =
 	"BEGIN:VCARD\r\n"
 	"VERSION:3.0\r\n"
@@ -392,6 +423,38 @@ static const gchar *test_vcard_with_uid_str =
 	"EMAIL;TYPE=OTHER:zyx@no.where\r\n"
 	"FN:zyx mix\r\n"
 	"N:zyx;mix;;;\r\n"
+	"END:VCARD";
+
+static const gchar *test_vcard_with_x_phonetic =
+	"BEGIN:VCARD\r\n"
+	"VERSION:3.0\r\n"
+	"FN:zyx mix\r\n"
+	"N:zyx;mix;;;\r\n"
+	"X-PHONETIC-FIRST-NAME:xim\r\n"
+	"X-PHONETIC-LAST-NAME:xyz\r\n"
+	"END:VCARD";
+
+static const gchar *test_vcard_with_x_sound =
+	"BEGIN:VCARD\r\n"
+	"VERSION:3.0\r\n"
+	"FN:zyx mix\r\n"
+	"N:zyx;mix;;;\r\n"
+	"X-GIVENNAME-SOUND:xim\r\n"
+	"X-FAMILYNAME-SOUND:xyz\r\n"
+	"END:VCARD";
+
+static const gchar *test_vcard_with_x_yomi =
+	"BEGIN:VCARD\r\n"
+	"VERSION:3.0\r\n"
+	"FN:zyx mix\r\n"
+	"N:zyx;mix;;;\r\n"
+	"X-YOMI-FNAME:xim\r\n"
+	"X-YOMI-LNAME:xyz\r\n"
+	"END:VCARD";
+
+static const gchar *test_vcard_without_name =
+	"BEGIN:VCARD\r\n"
+	"VERSION:3.0\r\n"
 	"END:VCARD";
 
 static void
@@ -418,6 +481,26 @@ test_contact_without_uid (void)
 	g_assert (test_econtact (test_vcard_no_uid_str));
 }
 
+static void
+test_contact_with_x_phonetic (void)
+{
+	g_assert (test_vcard_with_phonetic (test_vcard_with_x_phonetic, "xyz", "xim"));
+	g_assert (test_vcard_with_phonetic (test_vcard_with_x_sound, "xyz", "xim"));
+	g_assert (test_vcard_with_phonetic (test_vcard_with_x_yomi, "xyz", "xim"));
+}
+
+static void
+test_contact_without_phonetic (void)
+{
+	g_assert (test_vcard_with_phonetic (test_vcard_no_uid_str, "zyx", "mix"));
+}
+
+static void
+test_contact_without_name (void)
+{
+	g_assert (test_vcard_with_phonetic (test_vcard_without_name, NULL, NULL));
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -430,6 +513,9 @@ main (gint argc,
 	g_test_add_func ("/Parsing/VCard/WithUID", test_contact_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_contact_without_uid);
 	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
+	g_test_add_func ("/Parsing/VCard/WithoutPhonetics", test_contact_without_phonetic);
+	g_test_add_func ("/Parsing/VCard/WithXPhonetics", test_contact_with_x_phonetic);
+	g_test_add_func ("/Parsing/VCard/WithoutName", test_contact_without_name);
 
 	return g_test_run ();
 }
