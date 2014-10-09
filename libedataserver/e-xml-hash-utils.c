@@ -41,7 +41,7 @@
  * %E_XML_HASH_TYPE_OBJECT_UID, then XML objects will be indexed in
  * the hash by their UID (other nodes will still be indexed by name).
  *
- * Returns: (transfer full): The newly-created #GHashTable representation
+ * Returns: (transfer full) (element-type utf8 utf8): The newly-created #GHashTable representation
  * of @doc.
  **/
 GHashTable *
@@ -118,7 +118,7 @@ foreach_save_func (gpointer key,
 
 /**
  * e_xml_from_hash:
- * @hash: The #GHashTable to extract the XML from
+ * @hash: (element-type utf8 utf8): The #GHashTable to extract the XML from
  * @type: The #EXmlHashType used to store the XML
  * @root_name: The name to call the new #xmlDoc
  *
@@ -157,7 +157,7 @@ free_values (gpointer key,
 
 /**
  * e_xml_destroy_hash:
- * @hash: the #GHashTable to destroy
+ * @hash: (element-type utf8 utf8): the #GHashTable to destroy
  *
  * Frees the memory used by @hash and its contents.
  **/

@@ -3411,9 +3411,9 @@ e_source_remote_delete_finish (ESource *source,
  * e_source_get_oauth2_access_token_sync:
  * @source: an #ESource
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @out_access_token: (allow-none): return location for the access token,
+ * @out_access_token: (allow-none) (out): return location for the access token,
  *                    or %NULL
- * @out_expires_in: (allow-none): return location for the token expiry,
+ * @out_expires_in: (allow-none) (out): return location for the token expiry,
  *                  or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3484,9 +3484,9 @@ e_source_get_oauth2_access_token (ESource *source,
  * e_source_get_oauth2_access_token_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @out_access_token: (allow-none): return location for the access token,
+ * @out_access_token: (allow-none) (out): return location for the access token,
  *                    or %NULL
- * @out_expires_in: (allow-none): return location for the token expiry,
+ * @out_expires_in: (allow-none) (out): return location for the token expiry,
  *                  or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3683,7 +3683,7 @@ e_source_store_password_finish (ESource *source,
  * e_source_lookup_password_sync:
  * @source: an #ESource
  * @cancellable: optional #GCancellable object, or %NULL
- * @out_password: return location for the password, or %NULL
+ * @out_password: (out): return location for the password, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Looks up a password for @source.  Both the default and session keyrings
@@ -3806,7 +3806,7 @@ e_source_lookup_password (ESource *source,
  * e_source_lookup_password_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @out_password: return location for the password, or %NULL
+ * @out_password: (out): return location for the password, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_lookup_password().
