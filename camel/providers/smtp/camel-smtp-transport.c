@@ -523,8 +523,8 @@ smtp_transport_authenticate_sync (CamelService *service,
 			"AUTH %s %s\r\n", mechanism, challenge);
 		g_free (challenge);
 	} else {
-		cmdbuf = g_strdup_printf (
-			"AUTH %s\r\n", mechanism);
+		g_object_unref (sasl);
+		return CAMEL_AUTHENTICATION_ERROR;
 	}
 
 	d (fprintf (stderr, "sending : %s", cmdbuf));
