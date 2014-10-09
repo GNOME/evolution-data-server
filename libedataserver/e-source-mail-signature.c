@@ -376,8 +376,8 @@ source_mail_signature_load_thread (GSimpleAsyncResult *simple,
 /**
  * e_source_mail_signature_load_sync:
  * @source: an #ESource
- * @contents: return location for the signature content
- * @length: (allow-none): return location for the length of the signature
+ * @contents: (out): return location for the signature content
+ * @length: (allow-none) (out): return location for the length of the signature
  *          content, or %NULL if the length is not needed
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -620,8 +620,8 @@ e_source_mail_signature_load (ESource *source,
  * e_source_mail_signature_load_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @contents: return location for the signature content
- * @length: (allow-none): return location for the length of the signature
+ * @contents: (out): return location for the signature content
+ * @length: (allow-none) (out): return location for the length of the signature
  *          content, or %NULL if the length is not needed
  * @error: return location for a #GError, or %NULL
  *
