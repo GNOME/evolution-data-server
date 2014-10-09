@@ -1340,7 +1340,7 @@ imapx_is_duplicate_fetch_or_refresh (CamelIMAPXServer *is,
 	if (job == NULL)
 		return FALSE;
 
-	if ((job->type && job_types) == 0)
+	if ((job->type & job_types) == 0)
 		return FALSE;
 
 	if (imapx_match_active_job (is, job_types, NULL) == NULL)
