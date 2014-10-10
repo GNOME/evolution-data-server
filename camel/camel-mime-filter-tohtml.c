@@ -469,6 +469,7 @@ html_convert (CamelMimeFilter *mime_filter,
 			/* close the pre-tag */
 			outptr = check_size (mime_filter, outptr, &outend, 10);
 			outptr = g_stpcpy (outptr, "</pre>");
+			priv->pre_open = FALSE;
 		}
 	} else if (start < inend) {
 		/* backup */
