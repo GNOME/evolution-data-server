@@ -519,7 +519,6 @@ e_backend_class_init (EBackendClass *class)
 			"Whether the backend is online",
 			TRUE,
 			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
@@ -555,6 +554,7 @@ e_backend_init (EBackend *backend)
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
 	backend->priv->prompter = e_user_prompter_new ();
 	backend->priv->main_context = g_main_context_ref_thread_default ();
+	backend->priv->online = TRUE;
 
 	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->update_online_state_lock);
