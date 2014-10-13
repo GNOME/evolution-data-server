@@ -165,6 +165,7 @@ connect_to_server (CamelService *service,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("Welcome response error: "));
 			transport->connected = FALSE;
@@ -217,7 +218,7 @@ connect_to_server (CamelService *service,
 		goto exit;
 	}
 
-	d (fprintf (stderr, "sending : STARTTLS\r\n"));
+	d (fprintf (stderr, "[SMTP] sending: STARTTLS\r\n"));
 	if (camel_stream_write (
 		stream, "STARTTLS\r\n", 10, cancellable, error) == -1) {
 		g_prefix_error (error, _("STARTTLS command failed: "));
@@ -233,6 +234,7 @@ connect_to_server (CamelService *service,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("STARTTLS command failed: "));
 			transport->connected = FALSE;
@@ -363,6 +365,31 @@ smtp_transport_get_name (CamelService *service,
 	return name;
 }
 
+static void
+smtp_debug_print_server_name (CamelService *service,
+			      const gchar *what)
+{
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	gchar *host;
+	gint port;
+
+	if (d(1) + 0 == 0)
+		return;
+
+	settings = camel_service_ref_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_dup_host (network_settings);
+	port = camel_network_settings_get_port (network_settings);
+
+	g_object_unref (settings);
+
+	fprintf (stderr, "[SMTP] %s server %s:%d from account %s\r\n", what, host, port, camel_service_get_uid (service));
+
+	g_free (host);
+}
+
 static gboolean
 smtp_transport_connect_sync (CamelService *service,
                              GCancellable *cancellable,
@@ -375,6 +402,8 @@ smtp_transport_connect_sync (CamelService *service,
 	gchar *mechanism;
 	gboolean auth_required;
 	gboolean success = TRUE;
+
+	smtp_debug_print_server_name (service, "Connecting to");
 
 	settings = camel_service_ref_settings (service);
 
@@ -527,7 +556,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		return CAMEL_AUTHENTICATION_ERROR;
 	}
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf,
 		cancellable, error) == -1) {
@@ -540,6 +569,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 	respbuf = camel_stream_buffer_read_line (
 		CAMEL_STREAM_BUFFER (transport->istream),
 		cancellable, error);
+	d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 
 	while (!camel_sasl_get_authenticated (sasl)) {
 		if (!respbuf) {
@@ -563,7 +593,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		if (FALSE) {
 		broken_smtp_server:
 			d (fprintf (
-				stderr, "Your SMTP server's implementation "
+				stderr, "[SMTP] Your SMTP server's implementation "
 				"of the %s SASL\nauthentication mechanism is "
 				"broken. Please report this to the\n"
 				"appropriate vendor and suggest that they "
@@ -585,7 +615,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		/* send our challenge */
 		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
 		g_free (challenge);
-		d (fprintf (stderr, "sending : %s", cmdbuf));
+		d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 		if (camel_stream_write_string (
 			transport->ostream, cmdbuf,
 			cancellable, error) == -1) {
@@ -598,6 +628,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 	}
 
 	if (respbuf == NULL)
@@ -626,11 +657,11 @@ smtp_transport_authenticate_sync (CamelService *service,
 
 break_and_lose:
 	/* Get the server out of "waiting for continuation data" mode. */
-	d (fprintf (stderr, "sending : *\n"));
+	d (fprintf (stderr, "[SMTP] sending: *\n"));
 	camel_stream_write (transport->ostream, "*\r\n", 3, cancellable, NULL);
 	respbuf = camel_stream_buffer_read_line (
 		CAMEL_STREAM_BUFFER (transport->istream), cancellable, NULL);
-	d (fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
+	d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 
 lose:
 	result = CAMEL_AUTHENTICATION_ERROR;
@@ -692,6 +723,8 @@ smtp_transport_send_to_sync (CamelTransport *transport,
 	gboolean has_8bit_parts;
 	const gchar *addr;
 	gint i, len;
+
+	smtp_debug_print_server_name (CAMEL_SERVICE (transport), "Sending with");
 
 	if (!smtp_transport->connected) {
 		g_set_error (
@@ -1103,6 +1136,7 @@ smtp_set_error (CamelSmtpTransport *transport,
 			buffer = camel_stream_buffer_read_line (
 				CAMEL_STREAM_BUFFER (transport->istream),
 				cancellable, NULL);
+			d (fprintf (stderr, "[SMTP] received: %s\n", buffer ? buffer : "(null)"));
 			g_string_append_c (string, '\n');
 		} else {
 			g_free (buffer);
@@ -1209,7 +1243,7 @@ smtp_helo (CamelSmtpTransport *transport,
 	cmdbuf = g_strdup_printf ("%s %s\r\n", token, name);
 	g_free (name);
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
 		g_free (cmdbuf);
@@ -1226,6 +1260,7 @@ smtp_helo (CamelSmtpTransport *transport,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("HELO command failed: "));
 			transport->connected = FALSE;
@@ -1305,7 +1340,7 @@ smtp_mail (CamelSmtpTransport *transport,
 	else
 		cmdbuf = g_strdup_printf ("MAIL FROM:<%s>\r\n", sender);
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1324,6 +1359,7 @@ smtp_mail (CamelSmtpTransport *transport,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("MAIL FROM command failed: "));
 			camel_service_disconnect_sync (
@@ -1357,7 +1393,7 @@ smtp_rcpt (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup_printf ("RCPT TO:<%s>\r\n", recipient);
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1377,6 +1413,7 @@ smtp_rcpt (CamelSmtpTransport *transport,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (
 				error, _("RCPT TO <%s> failed: "), recipient);
@@ -1427,7 +1464,7 @@ smtp_data (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup ("DATA\r\n");
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1442,6 +1479,7 @@ smtp_data (CamelSmtpTransport *transport,
 
 	respbuf = camel_stream_buffer_read_line (
 		CAMEL_STREAM_BUFFER (transport->istream), cancellable, error);
+	d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 	if (respbuf == NULL) {
 		g_prefix_error (error, _("DATA command failed: "));
 		camel_service_disconnect_sync (
@@ -1528,7 +1566,7 @@ smtp_data (CamelSmtpTransport *transport,
 
 	/* terminate the message body */
 
-	d (fprintf (stderr, "sending : \\r\\n.\\r\\n\n"));
+	d (fprintf (stderr, "[SMTP] sending: \\r\\n.\\r\\n\n"));
 
 	if (camel_stream_write (
 		transport->ostream, "\r\n.\r\n", 5,
@@ -1546,6 +1584,7 @@ smtp_data (CamelSmtpTransport *transport,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("DATA command failed: "));
 			camel_service_disconnect_sync (
@@ -1576,7 +1615,7 @@ smtp_rset (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup ("RSET\r\n");
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1595,6 +1634,7 @@ smtp_rset (CamelSmtpTransport *transport,
 		respbuf = camel_stream_buffer_read_line (
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("RSET command failed: "));
 			camel_service_disconnect_sync (
@@ -1625,7 +1665,7 @@ smtp_quit (CamelSmtpTransport *transport,
 
 	cmdbuf = g_strdup ("QUIT\r\n");
 
-	d (fprintf (stderr, "sending : %s", cmdbuf));
+	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
 
 	if (camel_stream_write_string (
 		transport->ostream, cmdbuf, cancellable, error) == -1) {
@@ -1642,7 +1682,7 @@ smtp_quit (CamelSmtpTransport *transport,
 			CAMEL_STREAM_BUFFER (transport->istream),
 			cancellable, error);
 
-		d (fprintf (stderr, "received: %s\n", respbuf ? respbuf : "(null)"));
+		d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
 		if (respbuf == NULL) {
 			g_prefix_error (error, _("QUIT command failed: "));
 			transport->connected = FALSE;
