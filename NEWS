@@ -1,3 +1,54 @@
+Evolution-Data-Server 3.12.7 2014-10-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 736116 - Add EBSQL_DEBUG=timing (David Woodhouse)
+	Bug 737903 - [SMTP] Crash when authentication fails (Milan Crha)
+
+Miscellaneous:
+	camel-sasl-gssapi: Generate correct error messages for non-krb5 mechanisms (Daniel Sands)
+	camel-sasl-gssapi: Use SPNEGO for HTTP auth not bare krb5 (David Woodhouse)
+	Improve error on failed conversion (David Woodhouse)
+	camel-sasl-gssapi: Always use gss_display_status() for mechanism error code (David Woodhouse)
+	Fix UOA accounts accumulating on startup. (Michael Blennerhassett)
+	imapx_is_duplicate_fetch_or_refresh: Fix incorrect bit-flag test (Milan Crha)
+	Do not define EBackend::online as G_PARAM_CONSTRUCT (Milan Crha)
+	Fixed introspection annotations. (tintou)
+
+Translations:
+	Sweta Kothari (gu)
+	Ville-Pekka Vainio (fi)
+	Piotr Drąg (pl)
+	Andika Triwidada (id)
+	Rafael Ferreira (pt_BR)
+	Nilamdyuti Goswami (as)
+	Daniel Mustieles (es)
+	Shankar Prasad (kn)
+	Alexandre Franke (fr)
+	Aurimas Černius (lt)
+	Gil Forcada (ca)
+	Changwoo Ryu (ko)
+	Matej Urbančič (sl)
+	Balázs Úr (hu)
+	Mattias Eriksson (sv)
+	Christian Kirbach (de)
+	Kenneth Nielsen (da)
+	Fran Diéguez (gl)
+	Yuri Myasoedov (ru)
+	Sandeep Sheshrao Shedmake (mr)
+	Tom Tryfonidis (el)
+	Marek Černocký (cs)
+	Rajesh Ranjan (hi)
+	Fran Diéguez (gl)
+	Krishnababu Krothapalli (te)
+	Shantha kumar (ta)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+	Kjartan Maraas (nb)
+	Rūdolfs Mazurs (lv)
+	Saibal Ray (bn_IN)
+	Milo Casagrande (it)
+
 Evolution-Data-Server 3.12.6 2014-09-08
 ---------------------------------------
 
