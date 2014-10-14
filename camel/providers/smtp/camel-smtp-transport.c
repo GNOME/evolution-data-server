@@ -526,6 +526,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 	CamelSasl *sasl;
 	gchar *cmdbuf, *respbuf = NULL, *challenge;
 	gboolean auth_challenge = FALSE;
+	GError *local_error = NULL;
 
 	if (mechanism == NULL) {
 		g_set_error (
@@ -545,15 +546,20 @@ smtp_transport_authenticate_sync (CamelService *service,
 	}
 
 	challenge = camel_sasl_challenge_base64_sync (
-		sasl, NULL, cancellable, error);
+		sasl, NULL, cancellable, &local_error);
 	if (challenge) {
 		auth_challenge = TRUE;
 		cmdbuf = g_strdup_printf (
 			"AUTH %s %s\r\n", mechanism, challenge);
 		g_free (challenge);
-	} else {
+	} else if (local_error) {
+		d (fprintf (stderr, "[SMTP] SASL challenge failed: %s", local_error->message));
+		g_propagate_error (error, local_error);
 		g_object_unref (sasl);
 		return CAMEL_AUTHENTICATION_ERROR;
+	} else {
+		cmdbuf = g_strdup_printf (
+			"AUTH %s\r\n", mechanism);
 	}
 
 	d (fprintf (stderr, "[SMTP] sending: %s", cmdbuf));
