@@ -1,3 +1,12 @@
+Evolution-Data-Server 3.12.7.1 2014-10-14
+-----------------------------------------
+
+Bug Fixes:
+	Bug 737951 - CAMEL_DEBUG=smtp should provide information about SMTP server (Milan Crha)
+
+Miscellaneous:
+	[SMTP] Fails to send message after a change for bug 737903 (Milan Crha)
+
 Evolution-Data-Server 3.12.7 2014-10-13
 ---------------------------------------
 
