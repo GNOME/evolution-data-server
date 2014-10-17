@@ -1280,9 +1280,11 @@ imapx_command_start (CamelIMAPXServer *is,
 
 	string = g_strdup_printf (
 		"%c%05u %s\r\n", is->tagprefix, ic->tag, cp->data);
+	g_mutex_lock (&is->priv->stream_lock);
 	g_output_stream_write_all (
 		output_stream, string, strlen (string),
 		NULL, cancellable, &local_error);
+	g_mutex_unlock (&is->priv->stream_lock);
 	g_free (string);
 
 	if (local_error != NULL)
@@ -2197,14 +2199,17 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			   size than it actually is, which results in no data being read from
 			   the server for that particular offset. */
 			if (body_size) {
+				g_mutex_lock (&is->priv->stream_lock);
 				if (!g_output_stream_write_all (
 					output_stream, body_data, body_size,
 					NULL, cancellable, error)) {
+					g_mutex_unlock (&is->priv->stream_lock);
 					g_prefix_error (
 						error, "%s: ",
 						_("Error writing to cache stream"));
 					return FALSE;
 				}
+				g_mutex_unlock (&is->priv->stream_lock);
 			}
 		}
 	}
@@ -3146,9 +3151,11 @@ imapx_continuation (CamelIMAPXServer *is,
 			return FALSE;
 		c (is->tagprefix, "got auth continuation, feeding token '%s' back to auth mech\n", resp);
 
+		g_mutex_lock (&is->priv->stream_lock);
 		n_bytes_written = g_output_stream_write_all (
 			output_stream, resp, strlen (resp),
 			NULL, cancellable, error);
+		g_mutex_unlock (&is->priv->stream_lock);
 		g_free (resp);
 
 		if (n_bytes_written < 0)
@@ -3173,11 +3180,13 @@ imapx_continuation (CamelIMAPXServer *is,
 		if (file_input_stream == NULL)
 			return FALSE;
 
+		g_mutex_lock (&is->priv->stream_lock);
 		n_bytes_written = g_output_stream_splice (
 			output_stream,
 			G_INPUT_STREAM (file_input_stream),
 			G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE,
 			cancellable, error);
+		g_mutex_unlock (&is->priv->stream_lock);
 
 		g_object_unref (file_input_stream);
 
@@ -3186,9 +3195,11 @@ imapx_continuation (CamelIMAPXServer *is,
 
 		break; }
 	case CAMEL_IMAPX_COMMAND_STRING:
+		g_mutex_lock (&is->priv->stream_lock);
 		n_bytes_written = g_output_stream_write_all (
 			output_stream, cp->ob, cp->ob_size,
 			NULL, cancellable, error);
+		g_mutex_unlock (&is->priv->stream_lock);
 		if (n_bytes_written < 0)
 			return FALSE;
 		break;
@@ -3218,9 +3229,11 @@ noskip:
 
 		c (is->tagprefix, "next part of command \"%c%05u: %s\"\n", is->tagprefix, ic->tag, cp->data);
 
+		g_mutex_lock (&is->priv->stream_lock);
 		n_bytes_written = g_output_stream_write_all (
 			output_stream, cp->data, strlen (cp->data),
 			NULL, cancellable, error);
+		g_mutex_unlock (&is->priv->stream_lock);
 		if (n_bytes_written < 0)
 			return FALSE;
 
@@ -3233,8 +3246,10 @@ noskip:
 		c (is->tagprefix, "%p: queueing continuation\n", ic);
 	}
 
+	g_mutex_lock (&is->priv->stream_lock);
 	n_bytes_written = g_output_stream_write_all (
 		output_stream, "\r\n", 2, NULL, cancellable, error);
+	g_mutex_unlock (&is->priv->stream_lock);
 	if (n_bytes_written < 0)
 		return FALSE;
 
@@ -3533,8 +3548,10 @@ imapx_command_idle_stop (CamelIMAPXServer *is,
 
 	cancellable = g_weak_ref_get (&is->priv->parser_cancellable);
 
+	g_mutex_lock (&is->priv->stream_lock);
 	success = g_output_stream_write_all (
 		output_stream, "DONE\r\n", 6, NULL, cancellable, error);
+	g_mutex_unlock (&is->priv->stream_lock);
 
 	if (!success) {
 		g_prefix_error (error, "Unable to issue DONE: ");
