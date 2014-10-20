@@ -6311,7 +6311,7 @@ e_book_sqlite_init (EBookSqlite *ebsql)
 	g_mutex_init (&ebsql->priv->lock);
 	g_mutex_init (&ebsql->priv->updates_lock);
 
-	ebsql->priv->transliterator = e_transliterator_new ("Any-Latin");
+	ebsql->priv->transliterator = e_transliterator_new ("Any-Latin;Latin-ASCII");
 }
 
 /**********************************************************
