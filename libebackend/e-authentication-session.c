@@ -389,7 +389,7 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	ESourceRegistryServer *server;
 	ESource *source = NULL;
 	GcrPrompt *prompt;
-	GString *password_string;
+	GString *password_string = NULL;
 	const gchar *label;
 	const gchar *source_uid;
 	const gchar *prompt_password;
@@ -397,6 +397,7 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	gboolean success;
 	gboolean allow_auth_prompt = TRUE;
 	gboolean remember_password = TRUE;
+	gboolean first_prompt = TRUE;
 	GError *local_error = NULL;
 
 	/* XXX I moved the execute() operation into a class method thinking
@@ -513,6 +514,8 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 
 	/* Configure a system prompt. */
 
+ try_again:
+
 	prompt = gcr_system_prompt_open (
 		SYSTEM_PROMPT_TIMEOUT, cancellable, error);
 
@@ -540,7 +543,10 @@ authentication_session_execute_sync (EAuthenticationSession *session,
 	gcr_prompt_set_choice_label (prompt, label);
 	gcr_prompt_set_choice_chosen (prompt, remember_password);
 
-try_again:
+	if (!first_prompt)
+		gcr_prompt_set_warning (prompt, _("Password was incorrect"));
+	else
+		first_prompt = FALSE;
 
 	/* Prompt the user for a password. */
 
@@ -560,6 +566,29 @@ try_again:
 		goto close_prompt;
 	}
 
+	if (password_string)
+		g_string_free (password_string, TRUE);
+	password_string = g_string_new (prompt_password);
+	prompt_password = NULL;
+
+	remember_password = gcr_prompt_get_choice_chosen (prompt);
+
+	/* Failure here does not affect the outcome of this
+	 * operation, but leave a breadcrumb as evidence that
+	 * something went wrong. */
+
+	gcr_system_prompt_close (
+		GCR_SYSTEM_PROMPT (prompt),
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_warning ("%s: %s", G_STRFUNC, local_error->message);
+		g_clear_error (&local_error);
+	}
+
+	g_object_unref (prompt);
+	prompt = NULL;
+
 	if (source != NULL) {
 		ESourceExtension *extension;
 		const gchar *extension_name;
@@ -569,58 +598,32 @@ try_again:
 
 		e_source_authentication_set_remember_password (
 			E_SOURCE_AUTHENTICATION (extension),
-			gcr_prompt_get_choice_chosen (prompt));
+			remember_password);
 	}
 
 	/* Attempt authentication with the provided password. */
 
-	password_string = g_string_new (prompt_password);
-
 	auth_result = e_source_authenticator_try_password_sync (
 		authenticator, password_string, cancellable, error);
 
-	g_string_free (password_string, TRUE);
-	password_string = NULL;
-
 	if (auth_result == E_SOURCE_AUTHENTICATION_ERROR) {
 		session_result = E_AUTHENTICATION_SESSION_ERROR;
-		goto close_prompt;
+		goto exit;
 	}
 
 	if (auth_result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
-		gboolean permanently;
 		gchar *password_copy;
 
-		permanently = gcr_prompt_get_choice_chosen (prompt);
 		session_result = E_AUTHENTICATION_SESSION_SUCCESS;
-
-		/* Close our prompt before storing the password in
-		 * the keyring.  If the keyring is locked, it will
-		 * need to prompt the user for a keyring password,
-		 * but it can't do that if our password prompt is
-		 * still open since both prompts are system-modal.
-		 * Not sure what would happen next; probably the
-		 * store operation would either fail or deadlock. */
 
 		/* XXX Not sure if it's safe to use the prompt's
 		 *     password string after closing the prompt,
 		 *     so make a copy here just to be safe. */
-		password_copy = gcr_secure_memory_strdup (prompt_password);
+		password_copy = gcr_secure_memory_strdup (password_string->str);
 
 		/* Failure here does not affect the outcome of this
 		 * operation, but leave a breadcrumb as evidence that
 		 * something went wrong. */
-
-		gcr_system_prompt_close (
-			GCR_SYSTEM_PROMPT (prompt),
-			cancellable, &local_error);
-
-		if (local_error != NULL) {
-			g_warning ("%s: %s", G_STRFUNC, local_error->message);
-			g_clear_error (&local_error);
-		}
-
-		g_object_unref (prompt);
 
 		/* Create a phony "scratch" source if necessary. */
 		if (source == NULL) {
@@ -630,7 +633,7 @@ try_again:
 
 		if (source != NULL) {
 			e_source_store_password_sync (
-				source, password_copy, permanently,
+				source, password_copy, remember_password,
 				cancellable, &local_error);
 		}
 
@@ -645,8 +648,6 @@ try_again:
 	}
 
 	g_warn_if_fail (auth_result == E_SOURCE_AUTHENTICATION_REJECTED);
-
-	gcr_prompt_set_warning (prompt, _("Password was incorrect"));
 
 	goto try_again;
 
@@ -692,6 +693,11 @@ exit:
 	}
 
 	g_clear_object (&source);
+
+	if (password_string) {
+		g_string_free (password_string, TRUE);
+		password_string = NULL;
+	}
 
 	return session_result;
 }
