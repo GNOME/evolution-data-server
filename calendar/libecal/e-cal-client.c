@@ -574,94 +574,128 @@ cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
 	}
 }
 
+typedef struct {
+	EClient *client;
+	EDBusCalendar *dbus_proxy;
+	gchar *property_name;
+} IdleProxyNotifyData;
+
+static void
+idle_proxy_notify_data_free (gpointer ptr)
+{
+	IdleProxyNotifyData *ipn = ptr;
+
+	if (ipn) {
+		g_clear_object (&ipn->client);
+		g_clear_object (&ipn->dbus_proxy);
+		g_free (ipn->property_name);
+		g_free (ipn);
+	}
+}
+
+static gboolean
+cal_client_dbus_proxy_notify_idle_cb (gpointer user_data)
+{
+	IdleProxyNotifyData *ipn = user_data;
+	const gchar *backend_prop_name = NULL;
+
+	g_return_val_if_fail (ipn != NULL, FALSE);
+
+	if (g_str_equal (ipn->property_name, "alarm-email-address")) {
+		backend_prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
+	}
+
+	if (g_str_equal (ipn->property_name, "cache-dir")) {
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
+	}
+
+	if (g_str_equal (ipn->property_name, "cal-email-address")) {
+		backend_prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
+	}
+
+	if (g_str_equal (ipn->property_name, "capabilities")) {
+		gchar **strv;
+		gchar *csv = NULL;
+
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
+
+		strv = e_dbus_calendar_dup_capabilities (ipn->dbus_proxy);
+		if (strv != NULL) {
+			csv = g_strjoinv (",", strv);
+			g_strfreev (strv);
+		}
+		e_client_set_capabilities (ipn->client, csv);
+		g_free (csv);
+	}
+
+	if (g_str_equal (ipn->property_name, "default-object")) {
+		backend_prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
+	}
+
+	if (g_str_equal (ipn->property_name, "online")) {
+		gboolean online;
+
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
+
+		online = e_dbus_calendar_get_online (ipn->dbus_proxy);
+		e_client_set_online (ipn->client, online);
+	}
+
+	if (g_str_equal (ipn->property_name, "revision")) {
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
+	}
+
+	if (g_str_equal (ipn->property_name, "writable")) {
+		gboolean writable;
+
+		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
+
+		writable = e_dbus_calendar_get_writable (ipn->dbus_proxy);
+		e_client_set_readonly (ipn->client, !writable);
+	}
+
+	if (backend_prop_name != NULL) {
+		SignalClosure *signal_closure;
+
+		signal_closure = g_slice_new0 (SignalClosure);
+		g_weak_ref_init (&signal_closure->client, ipn->client);
+		signal_closure->property_name = g_strdup (backend_prop_name);
+
+		cal_client_emit_backend_property_changed_idle_cb (signal_closure);
+		signal_closure_free (signal_closure);
+	}
+
+	return FALSE;
+}
+
 static void
 cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
                                  GParamSpec *pspec,
                                  GWeakRef *client_weak_ref)
 {
 	EClient *client;
-	const gchar *backend_prop_name = NULL;
+	GSource *idle_source;
+	GMainContext *main_context;
+	IdleProxyNotifyData *ipn;
 
 	client = g_weak_ref_get (client_weak_ref);
 	if (client == NULL)
 		return;
 
-	if (g_str_equal (pspec->name, "alarm-email-address")) {
-		backend_prop_name = CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS;
-	}
+	ipn = g_new0 (IdleProxyNotifyData, 1);
+	ipn->client = g_object_ref (client);
+	ipn->dbus_proxy = g_object_ref (dbus_proxy);
+	ipn->property_name = g_strdup (pspec->name);
 
-	if (g_str_equal (pspec->name, "cache-dir")) {
-		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
-	}
+	main_context = e_client_ref_main_context (client);
 
-	if (g_str_equal (pspec->name, "cal-email-address")) {
-		backend_prop_name = CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS;
-	}
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (idle_source, cal_client_dbus_proxy_notify_idle_cb,
+		ipn, idle_proxy_notify_data_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
 
-	if (g_str_equal (pspec->name, "capabilities")) {
-		gchar **strv;
-		gchar *csv = NULL;
-
-		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
-
-		strv = e_dbus_calendar_dup_capabilities (dbus_proxy);
-		if (strv != NULL) {
-			csv = g_strjoinv (",", strv);
-			g_strfreev (strv);
-		}
-		e_client_set_capabilities (client, csv);
-		g_free (csv);
-	}
-
-	if (g_str_equal (pspec->name, "default-object")) {
-		backend_prop_name = CAL_BACKEND_PROPERTY_DEFAULT_OBJECT;
-	}
-
-	if (g_str_equal (pspec->name, "online")) {
-		gboolean online;
-
-		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
-
-		online = e_dbus_calendar_get_online (dbus_proxy);
-		e_client_set_online (client, online);
-	}
-
-	if (g_str_equal (pspec->name, "revision")) {
-		backend_prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
-	}
-
-	if (g_str_equal (pspec->name, "writable")) {
-		gboolean writable;
-
-		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
-
-		writable = e_dbus_calendar_get_writable (dbus_proxy);
-		e_client_set_readonly (client, !writable);
-	}
-
-	if (backend_prop_name != NULL) {
-		GSource *idle_source;
-		GMainContext *main_context;
-		SignalClosure *signal_closure;
-
-		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_init (&signal_closure->client, client);
-		signal_closure->property_name = g_strdup (backend_prop_name);
-
-		main_context = e_client_ref_main_context (client);
-
-		idle_source = g_idle_source_new ();
-		g_source_set_callback (
-			idle_source,
-			cal_client_emit_backend_property_changed_idle_cb,
-			signal_closure,
-			(GDestroyNotify) signal_closure_free);
-		g_source_attach (idle_source, main_context);
-		g_source_unref (idle_source);
-
-		g_main_context_unref (main_context);
-	}
-
+	g_main_context_unref (main_context);
 	g_object_unref (client);
 }
 

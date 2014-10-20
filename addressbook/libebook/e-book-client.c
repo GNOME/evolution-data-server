@@ -524,78 +524,91 @@ book_client_dbus_proxy_error_cb (EDBusAddressBook *dbus_proxy,
 	}
 }
 
-static void
-book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
-                                  GParamSpec *pspec,
-                                  GWeakRef *client_weak_ref)
-{
+typedef struct {
 	EClient *client;
+	EDBusAddressBook *dbus_proxy;
+	gchar *property_name;
+} IdleProxyNotifyData;
+
+static void
+idle_proxy_notify_data_free (gpointer ptr)
+{
+	IdleProxyNotifyData *ipn = ptr;
+
+	if (ipn) {
+		g_clear_object (&ipn->client);
+		g_clear_object (&ipn->dbus_proxy);
+		g_free (ipn->property_name);
+		g_free (ipn);
+	}
+}
+
+static gboolean
+book_client_dbus_proxy_notify_idle_cb (gpointer user_data)
+{
+	IdleProxyNotifyData *ipn = user_data;
 	const gchar *backend_prop_name = NULL;
 
-	client = g_weak_ref_get (client_weak_ref);
-	if (client == NULL)
-		return;
+	g_return_val_if_fail (ipn != NULL, FALSE);
 
-	if (g_str_equal (pspec->name, "cache-dir")) {
+	if (g_str_equal (ipn->property_name, "cache-dir")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CACHE_DIR;
 	}
 
-	if (g_str_equal (pspec->name, "capabilities")) {
+	if (g_str_equal (ipn->property_name, "capabilities")) {
 		gchar **strv;
 		gchar *csv = NULL;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_CAPABILITIES;
 
-		strv = e_dbus_address_book_dup_capabilities (dbus_proxy);
+		strv = e_dbus_address_book_dup_capabilities (ipn->dbus_proxy);
 		if (strv != NULL) {
 			csv = g_strjoinv (",", strv);
 			g_strfreev (strv);
 		}
-		e_client_set_capabilities (client, csv);
+		e_client_set_capabilities (ipn->client, csv);
 		g_free (csv);
 	}
 
-	if (g_str_equal (pspec->name, "online")) {
+	if (g_str_equal (ipn->property_name, "online")) {
 		gboolean online;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_ONLINE;
 
-		online = e_dbus_address_book_get_online (dbus_proxy);
-		e_client_set_online (client, online);
+		online = e_dbus_address_book_get_online (ipn->dbus_proxy);
+		e_client_set_online (ipn->client, online);
 	}
 
-	if (g_str_equal (pspec->name, "required-fields")) {
+	if (g_str_equal (ipn->property_name, "required-fields")) {
 		backend_prop_name = BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS;
 	}
 
-	if (g_str_equal (pspec->name, "revision")) {
+	if (g_str_equal (ipn->property_name, "revision")) {
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_REVISION;
 	}
 
-	if (g_str_equal (pspec->name, "supported-fields")) {
+	if (g_str_equal (ipn->property_name, "supported-fields")) {
 		backend_prop_name = BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS;
 	}
 
-	if (g_str_equal (pspec->name, "writable")) {
+	if (g_str_equal (ipn->property_name, "writable")) {
 		gboolean writable;
 
 		backend_prop_name = CLIENT_BACKEND_PROPERTY_READONLY;
 
-		writable = e_dbus_address_book_get_writable (dbus_proxy);
-		e_client_set_readonly (client, !writable);
+		writable = e_dbus_address_book_get_writable (ipn->dbus_proxy);
+		e_client_set_readonly (ipn->client, !writable);
 	}
 
-	if (g_str_equal (pspec->name, "locale")) {
+	if (g_str_equal (ipn->property_name, "locale")) {
 		backend_prop_name = "locale";
 	}
 
 	if (backend_prop_name != NULL) {
-		GSource *idle_source;
-		GMainContext *main_context;
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_init (&signal_closure->client, client);
+		g_weak_ref_init (&signal_closure->client, ipn->client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
 
 		/* The 'locale' is not an EClient property, so just transport
@@ -603,22 +616,43 @@ book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
 		 */
 		if (g_str_equal (backend_prop_name, "locale"))
 			signal_closure->property_value =
-				e_dbus_address_book_dup_locale (dbus_proxy);
+				e_dbus_address_book_dup_locale (ipn->dbus_proxy);
 
-		main_context = e_client_ref_main_context (client);
-
-		idle_source = g_idle_source_new ();
-		g_source_set_callback (
-			idle_source,
-			book_client_emit_backend_property_changed_idle_cb,
-			signal_closure,
-			(GDestroyNotify) signal_closure_free);
-		g_source_attach (idle_source, main_context);
-		g_source_unref (idle_source);
-
-		g_main_context_unref (main_context);
+		book_client_emit_backend_property_changed_idle_cb (signal_closure);
+		signal_closure_free (signal_closure);
 	}
 
+	return FALSE;
+}
+
+static void
+book_client_dbus_proxy_notify_cb (EDBusAddressBook *dbus_proxy,
+                                  GParamSpec *pspec,
+                                  GWeakRef *client_weak_ref)
+{
+	EClient *client;
+	GSource *idle_source;
+	GMainContext *main_context;
+	IdleProxyNotifyData *ipn;
+
+	client = g_weak_ref_get (client_weak_ref);
+	if (client == NULL)
+		return;
+
+	ipn = g_new0 (IdleProxyNotifyData, 1);
+	ipn->client = g_object_ref (client);
+	ipn->dbus_proxy = g_object_ref (dbus_proxy);
+	ipn->property_name = g_strdup (pspec->name);
+
+	main_context = e_client_ref_main_context (client);
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (idle_source, book_client_dbus_proxy_notify_idle_cb,
+		ipn, idle_proxy_notify_data_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 	g_object_unref (client);
 }
 
