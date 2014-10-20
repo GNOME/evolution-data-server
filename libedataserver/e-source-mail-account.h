@@ -85,6 +85,13 @@ gchar *		e_source_mail_account_dup_identity_uid
 void		e_source_mail_account_set_identity_uid
 					(ESourceMailAccount *extension,
 					 const gchar *identity_uid);
+const gchar *	e_source_mail_account_get_archive_folder
+					(ESourceMailAccount *extension);
+gchar *		e_source_mail_account_dup_archive_folder
+					(ESourceMailAccount *extension);
+void		e_source_mail_account_set_archive_folder
+					(ESourceMailAccount *extension,
+					 const gchar *archive_folder);
 
 G_END_DECLS
 
