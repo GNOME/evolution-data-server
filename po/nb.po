@@ -7,10 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.12.x\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-09-28 04:32+0000\n"
-"PO-Revision-Date: 2014-09-28 10:44+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-10-20 18:50+0200\n"
+"PO-Revision-Date: 2014-10-20 18:51+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -130,8 +129,8 @@ msgstr "Kunne ikke endre navn på gammel database fra «%s» til «%s»: %s"
 #: ../calendar/libecal/e-cal-client.c:6494
 #: ../calendar/libecal/e-cal-client.c:6708
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4784
-#: ../camel/providers/imapx/camel-imapx-server.c:4793
+#: ../camel/providers/imapx/camel-imapx-server.c:4801
+#: ../camel/providers/imapx/camel-imapx-server.c:4810
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "Ukjent feil"
@@ -1065,7 +1064,7 @@ msgstr "Kan ikke sortere på et felt som kan ha flere verdier"
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
 "the contact list"
-msgstr ""
+msgstr "Prøvde å flytte en markør et steg baklengs, men markøren er allerede ved starten av kontaktlisten"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
 #: ../addressbook/libedata-book/e-book-sqlite.c:7420
@@ -1073,7 +1072,7 @@ msgstr ""
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
-msgstr ""
+msgstr "Prøvde å flytte en markør fremover, men markøren er allerede ved slutten av kontaktlisten"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
@@ -1084,7 +1083,9 @@ msgstr "Ikke støttet kontaktfelt «%d» oppgitt i sammendraget"
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
-msgstr "Kan ikke oppgradere kontaktdatabasen fra en eldre database med mer enn en adressebok. Slett en av oppføringene i tabellen «folders» først."
+msgstr ""
+"Kan ikke oppgradere kontaktdatabasen fra en eldre database med mer enn en "
+"adressebok. Slett en av oppføringene i tabellen «folders» først."
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
@@ -1535,7 +1536,7 @@ msgid "Authentication failed"
 msgstr "Autentisering feilet"
 
 #: ../calendar/libecal/e-cal.c:2330
-#: ../camel/providers/smtp/camel-smtp-transport.c:921
+#: ../camel/providers/smtp/camel-smtp-transport.c:960
 #: ../libedataserver/e-client.c:147
 msgid "Authentication required"
 msgstr "Autentisering kreves"
@@ -2156,7 +2157,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "Feil ved kjøring av gpg: %s"
 
 #: ../camel/camel-gpg-context.c:726
-#: ../camel/providers/smtp/camel-smtp-transport.c:924
+#: ../camel/providers/smtp/camel-smtp-transport.c:963
 msgid "Unknown"
 msgstr "Ukjent"
 
@@ -2622,7 +2623,7 @@ msgstr "Refererte akkreditiver har utløpt."
 
 #: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
 #: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
-#: ../camel/providers/smtp/camel-smtp-transport.c:622
+#: ../camel/providers/smtp/camel-smtp-transport.c:659
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Ugyldig svar på autentisering fra tjener."
@@ -2695,10 +2696,10 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Ugyldig GType registrert for protokoll «%s»"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4734
+#: ../camel/providers/imapx/camel-imapx-server.c:4751
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
-#: ../camel/providers/smtp/camel-smtp-transport.c:515
+#: ../camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Ingen støtte for autentiseringstype %s"
@@ -3176,163 +3177,163 @@ msgstr "For lesing og lagring av e-post på IMAP-tjenere."
 msgid "Not authenticated"
 msgstr "Ikke autentisert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1713
+#: ../camel/providers/imapx/camel-imapx-server.c:1715
 msgid "Server disconnected"
 msgstr "Tjener frakoblet"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2205
+#: ../camel/providers/imapx/camel-imapx-server.c:2209
 msgid "Error writing to cache stream"
 msgstr "Feil ved skriving til mellomlagerstrøm"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3565
+#: ../camel/providers/imapx/camel-imapx-server.c:3582
 msgid "Error performing IDLE"
 msgstr "Feil ved utføring av IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4573
+#: ../camel/providers/imapx/camel-imapx-server.c:4590
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Kunne ikke koble til IMAP-tjener %s i sikker modus: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4574
-#: ../camel/providers/smtp/camel-smtp-transport.c:215
+#: ../camel/providers/imapx/camel-imapx-server.c:4591
+#: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "STARTTLS not supported"
 msgstr "STARTTLS er ikke støttet"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4634
+#: ../camel/providers/imapx/camel-imapx-server.c:4651
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Klarte ikke å koble til IMAP-tjener %s i sikker modus: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4723
+#: ../camel/providers/imapx/camel-imapx-server.c:4740
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-tjener %s støtter ikke autentiseringstype %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4753
+#: ../camel/providers/imapx/camel-imapx-server.c:4770
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "Kan ikke autentisere uten brukernavn"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4762
+#: ../camel/providers/imapx/camel-imapx-server.c:4779
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "Passord for autentisering er ikke tilgjengelig"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4998
-#: ../camel/providers/imapx/camel-imapx-server.c:5057
+#: ../camel/providers/imapx/camel-imapx-server.c:5015
+#: ../camel/providers/imapx/camel-imapx-server.c:5074
 msgid "Error fetching message"
 msgstr "Feil ved henting av melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5050
+#: ../camel/providers/imapx/camel-imapx-server.c:5067
 msgid "Failed to close the tmp stream"
 msgstr "Klarte ikke å lukke midlertidig strøm"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5086
+#: ../camel/providers/imapx/camel-imapx-server.c:5103
 msgid "Failed to copy the tmp file"
 msgstr "Klarte ikke å kopiere midlertidig fil"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5227
+#: ../camel/providers/imapx/camel-imapx-server.c:5244
 msgid "Error moving messages"
 msgstr "Feil ved flytting av meldinger"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5231
+#: ../camel/providers/imapx/camel-imapx-server.c:5248
 msgid "Error copying messages"
 msgstr "Feil ved kopiering av meldinger"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5453
+#: ../camel/providers/imapx/camel-imapx-server.c:5470
 msgid "Error appending message"
 msgstr "Feil ved forsøk på å legge til en melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5689
+#: ../camel/providers/imapx/camel-imapx-server.c:5706
 msgid "Error fetching message headers"
 msgstr "Feil ved henting av meldingshoder"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5856
+#: ../camel/providers/imapx/camel-imapx-server.c:5873
 msgid "Error retrieving message"
 msgstr "Feil ved henting av melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5990
-#: ../camel/providers/imapx/camel-imapx-server.c:6219
+#: ../camel/providers/imapx/camel-imapx-server.c:6007
+#: ../camel/providers/imapx/camel-imapx-server.c:6236
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Henter sammendragsinformasjon for nye meldinger i «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6042
+#: ../camel/providers/imapx/camel-imapx-server.c:6059
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Søker etter endrede meldinger i «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6094
+#: ../camel/providers/imapx/camel-imapx-server.c:6111
 msgid "Error fetching new messages"
 msgstr "Feil ved henting av nye meldinger"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6367
+#: ../camel/providers/imapx/camel-imapx-server.c:6384
 msgid "Error refreshing folder"
 msgstr "Feil ved oppdatering av mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6517
+#: ../camel/providers/imapx/camel-imapx-server.c:6534
 msgid "Error expunging message"
 msgstr "Feil ved tømming av melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6632
-#: ../camel/providers/imapx/camel-imapx-server.c:6657
+#: ../camel/providers/imapx/camel-imapx-server.c:6649
+#: ../camel/providers/imapx/camel-imapx-server.c:6674
 msgid "Error fetching folders"
 msgstr "Feil ved henting av mapper"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6737
+#: ../camel/providers/imapx/camel-imapx-server.c:6754
 msgid "Error creating folder"
 msgstr "Feil ved oppretting av mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6789
+#: ../camel/providers/imapx/camel-imapx-server.c:6806
 msgid "Error deleting folder"
 msgstr "Feil ved sletting av mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6865
+#: ../camel/providers/imapx/camel-imapx-server.c:6882
 msgid "Error renaming folder"
 msgstr "Feil ved endring av navn på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6939
+#: ../camel/providers/imapx/camel-imapx-server.c:6956
 msgid "Error subscribing to folder"
 msgstr "Feil ved abonnering på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7005
+#: ../camel/providers/imapx/camel-imapx-server.c:7022
 msgid "Error unsubscribing from folder"
 msgstr "Feil ved fjerning av abonnement på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7067
+#: ../camel/providers/imapx/camel-imapx-server.c:7084
 msgid "Error retrieving quota information"
 msgstr "Feil ved henting av kvoteinformasjon"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7119
+#: ../camel/providers/imapx/camel-imapx-server.c:7136
 msgid "Search failed"
 msgstr "Søk feilet"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7181
+#: ../camel/providers/imapx/camel-imapx-server.c:7198
 msgid "Error performing NOOP"
 msgstr "Feil ved utføring av NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7288
+#: ../camel/providers/imapx/camel-imapx-server.c:7305
 msgid "Error syncing changes"
 msgstr "Feil ved synkronisering av endringer"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8275
+#: ../camel/providers/imapx/camel-imapx-server.c:8292
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente melding med meldings-ID %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8276
+#: ../camel/providers/imapx/camel-imapx-server.c:8293
 msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8483
-#: ../camel/providers/imapx/camel-imapx-server.c:8504
+#: ../camel/providers/imapx/camel-imapx-server.c:8500
+#: ../camel/providers/imapx/camel-imapx-server.c:8521
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9256
+#: ../camel/providers/imapx/camel-imapx-server.c:9273
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-tjener støtter ikke kvoter"
 
@@ -4385,218 +4386,218 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "For levering av e-post via en ekstern e-posttjener med SMTP."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:170
-#: ../camel/providers/smtp/camel-smtp-transport.c:178
+#: ../camel/providers/smtp/camel-smtp-transport.c:171
+#: ../camel/providers/smtp/camel-smtp-transport.c:179
 msgid "Welcome response error: "
 msgstr "Feil i velkommen-svar: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:214
+#: ../camel/providers/smtp/camel-smtp-transport.c:215
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Klarte ikke å koble til SMTP-tjener %s i sikker modus: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:224
-#: ../camel/providers/smtp/camel-smtp-transport.c:238
-#: ../camel/providers/smtp/camel-smtp-transport.c:246
+#: ../camel/providers/smtp/camel-smtp-transport.c:225
+#: ../camel/providers/smtp/camel-smtp-transport.c:240
+#: ../camel/providers/smtp/camel-smtp-transport.c:248
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:265
+#: ../camel/providers/smtp/camel-smtp-transport.c:267
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Klarte ikke å koble til SMTP-tjener %s i sikker modus: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:357
+#: ../camel/providers/smtp/camel-smtp-transport.c:359
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP-tjener %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:360
+#: ../camel/providers/smtp/camel-smtp-transport.c:362
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "SMTP e-postlevering via %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:434
+#: ../camel/providers/smtp/camel-smtp-transport.c:463
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "SMTP-tjener %s støtter ikke autentiseringstype %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:506
+#: ../camel/providers/smtp/camel-smtp-transport.c:536
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Ingen SASL-mekanisme oppgitt"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:536
-#: ../camel/providers/smtp/camel-smtp-transport.c:547
-#: ../camel/providers/smtp/camel-smtp-transport.c:560
+#: ../camel/providers/smtp/camel-smtp-transport.c:571
+#: ../camel/providers/smtp/camel-smtp-transport.c:583
+#: ../camel/providers/smtp/camel-smtp-transport.c:596
 msgid "AUTH command failed: "
 msgstr "AUTH-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:701
+#: ../camel/providers/smtp/camel-smtp-transport.c:740
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Kan ikke sende melding: tjenesten er ikke tilkoblet."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:708
+#: ../camel/providers/smtp/camel-smtp-transport.c:747
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Kan ikke sende melding: senderadresse ikke gyldig."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:712
+#: ../camel/providers/smtp/camel-smtp-transport.c:751
 msgid "Sending message"
 msgstr "Sender melding"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:737
+#: ../camel/providers/smtp/camel-smtp-transport.c:776
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Kan ikke sende melding: ingen mottakere definert."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:750
+#: ../camel/providers/smtp/camel-smtp-transport.c:789
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Kan ikke sende melding: en eller flere ugyldige mottakere"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:871
+#: ../camel/providers/smtp/camel-smtp-transport.c:910
 msgid "Syntax error, command unrecognized"
 msgstr "Syntaksfeil, kommando ikke gjenkjent"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:873
+#: ../camel/providers/smtp/camel-smtp-transport.c:912
 msgid "Syntax error in parameters or arguments"
 msgstr "Syntaksfeil i parametere eller argumenter"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:875
+#: ../camel/providers/smtp/camel-smtp-transport.c:914
 msgid "Command not implemented"
 msgstr "Kommando ikke implementert"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:877
+#: ../camel/providers/smtp/camel-smtp-transport.c:916
 msgid "Command parameter not implemented"
 msgstr "Kommandoparameter ikke implementert"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:879
+#: ../camel/providers/smtp/camel-smtp-transport.c:918
 msgid "System status, or system help reply"
 msgstr "Systemstatus, eller svar på systemhjelp"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:881
+#: ../camel/providers/smtp/camel-smtp-transport.c:920
 msgid "Help message"
 msgstr "Hjelp-melding"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:883
+#: ../camel/providers/smtp/camel-smtp-transport.c:922
 msgid "Service ready"
 msgstr "Tjeneste klar"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:885
+#: ../camel/providers/smtp/camel-smtp-transport.c:924
 msgid "Service closing transmission channel"
 msgstr "Tjenesten lukker sendekanalen"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:887
+#: ../camel/providers/smtp/camel-smtp-transport.c:926
 msgid "Service not available, closing transmission channel"
 msgstr "Tjenesten er ikke tilgjengelig, lukker sendekanalen"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:889
+#: ../camel/providers/smtp/camel-smtp-transport.c:928
 msgid "Requested mail action okay, completed"
 msgstr "Forespurt e-post handling er ok, fullført"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:891
+#: ../camel/providers/smtp/camel-smtp-transport.c:930
 msgid "User not local; will forward to <forward-path>"
 msgstr "Ikke lokal bruker; videresender til <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:893
+#: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Forespurt e-post handling er ikke utført: postboks ikke tilgjengelig"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:895
+#: ../camel/providers/smtp/camel-smtp-transport.c:934
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Forespurt handling ikke utført: postboks ikke tilgjengelig"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:897
+#: ../camel/providers/smtp/camel-smtp-transport.c:936
 msgid "Requested action aborted: error in processing"
 msgstr "Forespurt handling avbrutt: feil i prosessering"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:899
+#: ../camel/providers/smtp/camel-smtp-transport.c:938
 msgid "User not local; please try <forward-path>"
 msgstr "Ikke lokal bruker; vennligst prøv <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:901
+#: ../camel/providers/smtp/camel-smtp-transport.c:940
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Forespurt handling ikke utført: utilstrekkelig lagringsplass"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:903
+#: ../camel/providers/smtp/camel-smtp-transport.c:942
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Forespurt e-post handling avbrutt: lagringsallokering oversteget"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:905
+#: ../camel/providers/smtp/camel-smtp-transport.c:944
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Forespurt handling ikke utført: postboksnavn ikke tillatt"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:907
+#: ../camel/providers/smtp/camel-smtp-transport.c:946
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Start e-post input; slutt med <CRLF>.<CRLF>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:909
+#: ../camel/providers/smtp/camel-smtp-transport.c:948
 msgid "Transaction failed"
 msgstr "Transaksjonen feilet"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:913
+#: ../camel/providers/smtp/camel-smtp-transport.c:952
 msgid "A password transition is needed"
 msgstr "Passordoverføring kreves"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:915
+#: ../camel/providers/smtp/camel-smtp-transport.c:954
 msgid "Authentication mechanism is too weak"
 msgstr "Autentiseringsmekanismen er for svak"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:917
+#: ../camel/providers/smtp/camel-smtp-transport.c:956
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Kryptering kreves for forespurt autentiseringsmekanisme."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:919
+#: ../camel/providers/smtp/camel-smtp-transport.c:958
 msgid "Temporary authentication failure"
 msgstr "Midlertidig autentiseringsfeil"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1207
+#: ../camel/providers/smtp/camel-smtp-transport.c:1247
 msgid "SMTP Greeting"
 msgstr "SMTP-velkomst"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1217
-#: ../camel/providers/smtp/camel-smtp-transport.c:1231
-#: ../camel/providers/smtp/camel-smtp-transport.c:1239
+#: ../camel/providers/smtp/camel-smtp-transport.c:1257
+#: ../camel/providers/smtp/camel-smtp-transport.c:1272
+#: ../camel/providers/smtp/camel-smtp-transport.c:1280
 msgid "HELO command failed: "
 msgstr "HELO-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1314
-#: ../camel/providers/smtp/camel-smtp-transport.c:1329
-#: ../camel/providers/smtp/camel-smtp-transport.c:1339
+#: ../camel/providers/smtp/camel-smtp-transport.c:1355
+#: ../camel/providers/smtp/camel-smtp-transport.c:1371
+#: ../camel/providers/smtp/camel-smtp-transport.c:1381
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1366
+#: ../camel/providers/smtp/camel-smtp-transport.c:1408
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1383
-#: ../camel/providers/smtp/camel-smtp-transport.c:1393
+#: ../camel/providers/smtp/camel-smtp-transport.c:1426
+#: ../camel/providers/smtp/camel-smtp-transport.c:1436
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1436
-#: ../camel/providers/smtp/camel-smtp-transport.c:1447
-#: ../camel/providers/smtp/camel-smtp-transport.c:1458
-#: ../camel/providers/smtp/camel-smtp-transport.c:1517
-#: ../camel/providers/smtp/camel-smtp-transport.c:1537
-#: ../camel/providers/smtp/camel-smtp-transport.c:1551
-#: ../camel/providers/smtp/camel-smtp-transport.c:1560
+#: ../camel/providers/smtp/camel-smtp-transport.c:1479
+#: ../camel/providers/smtp/camel-smtp-transport.c:1491
+#: ../camel/providers/smtp/camel-smtp-transport.c:1502
+#: ../camel/providers/smtp/camel-smtp-transport.c:1561
+#: ../camel/providers/smtp/camel-smtp-transport.c:1581
+#: ../camel/providers/smtp/camel-smtp-transport.c:1596
+#: ../camel/providers/smtp/camel-smtp-transport.c:1605
 msgid "DATA command failed: "
 msgstr "DATA-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1585
-#: ../camel/providers/smtp/camel-smtp-transport.c:1600
-#: ../camel/providers/smtp/camel-smtp-transport.c:1609
+#: ../camel/providers/smtp/camel-smtp-transport.c:1630
+#: ../camel/providers/smtp/camel-smtp-transport.c:1646
+#: ../camel/providers/smtp/camel-smtp-transport.c:1655
 msgid "RSET command failed: "
 msgstr "RSET-kommando feilet: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1634
-#: ../camel/providers/smtp/camel-smtp-transport.c:1648
-#: ../camel/providers/smtp/camel-smtp-transport.c:1655
+#: ../camel/providers/smtp/camel-smtp-transport.c:1680
+#: ../camel/providers/smtp/camel-smtp-transport.c:1694
+#: ../camel/providers/smtp/camel-smtp-transport.c:1701
 msgid "QUIT command failed: "
 msgstr "QUIT-kommando feilet: "
 
@@ -4772,7 +4773,7 @@ msgstr "Datakilde «%s» har ingen samlingsmotor for å slette ekstern ressurs"
 
 #: ../libebackend/e-server-side-source.c:1109
 #: ../libedataserver/e-source.c:1603
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "Datakilde «%s» støtter ikke OAuth 2.0 autentisering"
@@ -5358,7 +5359,7 @@ msgstr "E-post"
 msgid "Integrate your mailboxes"
 msgstr "Integrer dine postbokser"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1007
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1008
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
