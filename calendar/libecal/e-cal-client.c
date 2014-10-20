@@ -576,7 +576,8 @@ cal_client_dbus_proxy_error_cb (EDBusCalendar *dbus_proxy,
 static void
 cal_client_dbus_proxy_property_changed (EClient *client,
 					const gchar *property_name,
-					const GValue *value)
+					const GValue *value,
+					gboolean is_in_main_thread)
 {
 	const gchar *backend_prop_name = NULL;
 
@@ -636,28 +637,65 @@ cal_client_dbus_proxy_property_changed (EClient *client,
 	}
 
 	if (backend_prop_name != NULL) {
-		GSource *idle_source;
-		GMainContext *main_context;
 		SignalClosure *signal_closure;
 
 		signal_closure = g_slice_new0 (SignalClosure);
 		g_weak_ref_init (&signal_closure->client, client);
 		signal_closure->property_name = g_strdup (backend_prop_name);
 
-		main_context = e_client_ref_main_context (client);
+		if (is_in_main_thread) {
+			cal_client_emit_backend_property_changed_idle_cb (signal_closure);
+			signal_closure_free (signal_closure);
+		} else {
+			GSource *idle_source;
+			GMainContext *main_context;
 
-		idle_source = g_idle_source_new ();
-		g_source_set_callback (
-			idle_source,
-			cal_client_emit_backend_property_changed_idle_cb,
-			signal_closure,
-			(GDestroyNotify) signal_closure_free);
-		g_source_attach (idle_source, main_context);
-		g_source_unref (idle_source);
+			main_context = e_client_ref_main_context (client);
 
-		g_main_context_unref (main_context);
+			idle_source = g_idle_source_new ();
+			g_source_set_callback (
+				idle_source,
+				cal_client_emit_backend_property_changed_idle_cb,
+				signal_closure,
+				(GDestroyNotify) signal_closure_free);
+			g_source_attach (idle_source, main_context);
+			g_source_unref (idle_source);
+
+			g_main_context_unref (main_context);
+		}
 	}
 
+}
+
+typedef struct {
+	EClient *client;
+	gchar *property_name;
+	GValue property_value;
+} IdleProxyNotifyData;
+
+static void
+idle_proxy_notify_data_free (gpointer ptr)
+{
+	IdleProxyNotifyData *ipn = ptr;
+
+	if (ipn) {
+		g_clear_object (&ipn->client);
+		g_free (ipn->property_name);
+		g_value_unset (&ipn->property_value);
+		g_free (ipn);
+	}
+}
+
+static gboolean
+cal_client_proxy_notify_idle_cb (gpointer user_data)
+{
+	IdleProxyNotifyData *ipn = user_data;
+
+	g_return_val_if_fail (ipn != NULL, FALSE);
+
+	cal_client_dbus_proxy_property_changed (ipn->client, ipn->property_name, &ipn->property_value, TRUE);
+
+	return FALSE;
 }
 
 static void
@@ -666,18 +704,29 @@ cal_client_dbus_proxy_notify_cb (EDBusCalendar *dbus_proxy,
                                  GWeakRef *client_weak_ref)
 {
 	EClient *client;
-	GValue value = G_VALUE_INIT;
+	GSource *idle_source;
+	GMainContext *main_context;
+	IdleProxyNotifyData *ipn;
 
 	client = g_weak_ref_get (client_weak_ref);
 	if (client == NULL)
 		return;
 
-	g_value_init (&value, pspec->value_type);
-	g_object_get_property (G_OBJECT (dbus_proxy), pspec->name, &value);
+	ipn = g_new0 (IdleProxyNotifyData, 1);
+	ipn->client = g_object_ref (client);
+	ipn->property_name = g_strdup (pspec->name);
+	g_value_init (&ipn->property_value, pspec->value_type);
+	g_object_get_property (G_OBJECT (dbus_proxy), pspec->name, &ipn->property_value);
 
-	cal_client_dbus_proxy_property_changed (client, pspec->name, &value);
+	main_context = e_client_ref_main_context (client);
 
-	g_value_unset (&value);
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (idle_source, cal_client_proxy_notify_idle_cb,
+		ipn, idle_proxy_notify_data_free);
+	g_source_attach (idle_source, main_context);
+	g_source_unref (idle_source);
+
+	g_main_context_unref (main_context);
 	g_object_unref (client);
 }
 
@@ -918,7 +967,7 @@ cal_client_process_properties (ECalClient *cal_client,
 
 				g_dbus_gvariant_to_gvalue (expected, &value);
 
-				cal_client_dbus_proxy_property_changed (E_CLIENT (cal_client), param->name, &value);
+				cal_client_dbus_proxy_property_changed (E_CLIENT (cal_client), param->name, &value, FALSE);
 
 				g_value_unset (&value);
 			}
