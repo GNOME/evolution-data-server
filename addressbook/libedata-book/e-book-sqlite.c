@@ -718,7 +718,7 @@ ebsql_ref_from_hash (const gchar *path)
 		g_object_ref (ebsql);
 	}
 
-	return NULL;
+	return ebsql;
 }
 
 static void
