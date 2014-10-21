@@ -1879,16 +1879,15 @@ gpg_verify_sync (CamelCipherContext *context,
 	canon_stream = camel_stream_mem_new ();
 
 	/* strip trailing white-spaces */
-	filter = camel_stream_filter_new (canon_stream);
+	filter = camel_stream_filter_new (istream);
 	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP);
 	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), canon);
 	g_object_unref (canon);
 
-	camel_stream_write_to_stream (istream, filter, NULL, NULL);
+	camel_stream_write_to_stream (filter, canon_stream, NULL, NULL);
 
 	g_object_unref (filter);
-
-	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
+	g_object_unref (istream);
 
 	g_seekable_seek (G_SEEKABLE (canon_stream), 0, G_SEEK_SET, NULL, NULL);
 
@@ -1944,7 +1943,7 @@ gpg_verify_sync (CamelCipherContext *context,
 		g_unlink (sigfile);
 		g_free (sigfile);
 	}
-	g_object_unref (istream);
+
 	g_object_unref (canon_stream);
 
 	return validity;
