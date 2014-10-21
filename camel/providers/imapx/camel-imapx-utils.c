@@ -2136,7 +2136,7 @@ imapx_parse_status_newname (CamelIMAPXInputStream *stream,
 
 static gboolean
 imapx_parse_status_permanentflags (CamelIMAPXInputStream *stream,
-                                   struct _status_info *sinfo,
+				   CamelIMAPXMailbox *mailbox,
                                    GCancellable *cancellable,
                                    GError **error)
 {
@@ -2146,7 +2146,7 @@ imapx_parse_status_permanentflags (CamelIMAPXInputStream *stream,
 	if (!imapx_parse_flags (stream, &flags, NULL, cancellable, error))
 		return FALSE;
 
-	sinfo->u.permanentflags = flags;
+	camel_imapx_mailbox_set_permanentflags (mailbox, flags);
 
 	return TRUE;
 }
@@ -2314,7 +2314,7 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 
 			case IMAPX_PERMANENTFLAGS:
 				success = imapx_parse_status_permanentflags (
-					stream, sinfo, cancellable, error);
+					stream, mailbox, cancellable, error);
 				break;
 
 			case IMAPX_UIDNEXT:

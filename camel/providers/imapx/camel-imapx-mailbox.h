@@ -120,6 +120,11 @@ guint64		camel_imapx_mailbox_get_highestmodseq
 void		camel_imapx_mailbox_set_highestmodseq
 					(CamelIMAPXMailbox *mailbox,
 					 guint64 highestmodseq);
+guint32		camel_imapx_mailbox_get_permanentflags
+					(CamelIMAPXMailbox *mailbox);
+void		camel_imapx_mailbox_set_permanentflags
+					(CamelIMAPXMailbox *mailbox,
+					 guint32 permanentflags);
 gchar **	camel_imapx_mailbox_dup_quota_roots
 					(CamelIMAPXMailbox *mailbox);
 void		camel_imapx_mailbox_set_quota_roots

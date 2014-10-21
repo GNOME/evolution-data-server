@@ -46,6 +46,7 @@ struct _CamelIMAPXMailboxPrivate {
 	guint32 uidnext;
 	guint32 uidvalidity;
 	guint64 highestmodseq;
+	guint32 permanentflags;
 
 	GMutex property_lock;
 
@@ -121,6 +122,7 @@ camel_imapx_mailbox_init (CamelIMAPXMailbox *mailbox)
 
 	g_mutex_init (&mailbox->priv->property_lock);
 	mailbox->priv->message_map = g_sequence_new (NULL);
+	mailbox->priv->permanentflags = ~0;
 }
 
 /**
@@ -660,6 +662,41 @@ camel_imapx_mailbox_set_highestmodseq (CamelIMAPXMailbox *mailbox,
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
 	mailbox->priv->highestmodseq = highestmodseq;
+}
+
+/**
+ * camel_imapx_mailbox_get_permanentflags:
+ * @mailbox: a #CamelIMAPXMailbox
+ *
+ * Returns: PERMANENTFLAGS response for the mailbox, or ~0, if the mailbox
+ *    was not selected yet.
+ *
+ * Since: 3.14
+ **/
+guint32
+camel_imapx_mailbox_get_permanentflags (CamelIMAPXMailbox *mailbox)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), ~0);
+
+	return mailbox->priv->permanentflags;
+}
+
+/**
+ * camel_imapx_mailbox_set_permanentflags:
+ * @mailbox: a #CamelIMAPXMailbox
+ * @permanentflags: a newly-reported "PERMANENTFLAGS" value
+ *
+ * Updates the last know value for PERMANENTFLAGS for this mailbox.
+ *
+ * Since: 3.14
+ **/
+void
+camel_imapx_mailbox_set_permanentflags (CamelIMAPXMailbox *mailbox,
+					guint32 permanentflags)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	mailbox->priv->permanentflags = permanentflags;
 }
 
 /**

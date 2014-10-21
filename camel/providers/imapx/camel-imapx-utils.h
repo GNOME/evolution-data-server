@@ -282,7 +282,6 @@ struct _status_info {
 			gchar *oldname;
 			gchar *newname;
 		} newname;
-		guint32 permanentflags;
 		struct {
 			guint64 uidvalidity;
 			guint32 uid;
