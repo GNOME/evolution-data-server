@@ -125,6 +125,7 @@ struct _RefreshInfoData {
 struct _SyncChangesData {
 	CamelFolder *folder;
 	GPtrArray *changed_uids;
+	gboolean own_allocated_changed_uids;
 	guint32 on_set;
 	guint32 off_set;
 	GArray *on_user; /* imapx_flag_change */
@@ -365,7 +366,6 @@ struct _CamelIMAPXServerPrivate {
 	GWeakRef select_closing;
 	GWeakRef select_pending;
 	CamelFolderChangeInfo *changes;
-	guint32 permanentflags;
 
 	/* Data items to request in STATUS commands:
 	 * STATUS $mailbox_name ($status_data_items) */
@@ -843,8 +843,14 @@ static void
 sync_changes_data_free (SyncChangesData *data)
 {
 	if (data->folder != NULL) {
-		camel_folder_free_uids (data->folder, data->changed_uids);
+		if (!data->own_allocated_changed_uids)
+			camel_folder_free_uids (data->folder, data->changed_uids);
 		g_object_unref (data->folder);
+	}
+
+	if (data->own_allocated_changed_uids && data->changed_uids) {
+		g_ptr_array_foreach (data->changed_uids, (GFunc) camel_pstring_free, NULL);
+		g_ptr_array_free (data->changed_uids, TRUE);
 	}
 
 	imapx_sync_free_user (data->on_user);
@@ -2278,7 +2284,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					changed = imapx_update_message_info_flags (
 						mi, finfo->flags,
 						finfo->user_flags,
-						is->priv->permanentflags,
+						camel_imapx_mailbox_get_permanentflags (select_mailbox),
 						select_folder,
 						(select_pending == NULL));
 				} else {
@@ -2436,7 +2442,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					data = camel_imapx_job_get_data (job);
 					g_return_val_if_fail (data != NULL, FALSE);
 
-					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, is->priv->permanentflags);
+					imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, camel_imapx_mailbox_get_permanentflags (mailbox));
 					camel_folder_summary_add (folder->summary, mi);
 					camel_folder_change_info_add_uid (data->changes, mi->uid);
 
@@ -2864,10 +2870,6 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			g_clear_object (&select_closing);
 			g_clear_object (&select_pending);
 		}
-		break;
-	case IMAPX_PERMANENTFLAGS:
-		is->priv->permanentflags =
-			is->priv->context->sinfo->u.permanentflags;
 		break;
 	case IMAPX_ALERT:
 		c (is->tagprefix, "ALERT!: %s\n", is->priv->context->sinfo->text);
@@ -3529,6 +3531,25 @@ imapx_command_run_sync (CamelIMAPXServer *is,
 	return success;
 }
 
+static gboolean
+imapx_ensure_mailbox_permanentflags (CamelIMAPXServer *is,
+				     CamelIMAPXMailbox *mailbox,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+
+	if (camel_imapx_mailbox_get_permanentflags (mailbox) != ~0)
+		return TRUE;
+
+	/* This will also invoke SELECT command, which updates PERMANENTFLAGS
+	   for the mailbox. There might be possible to use EXAMINE for it,
+	   but some servers do not return the same set of flags as with SELECT.
+	   It's a little hack on top of the IMAPx implementation. */
+	return camel_imapx_server_noop (is, mailbox, cancellable, error);
+}
+
 /* ********************************************************************** */
 // IDLE support
 
@@ -4137,8 +4158,6 @@ imapx_maybe_select (CamelIMAPXServer *is,
 		}
 
 		g_weak_ref_set (&is->priv->select_closing, select_mailbox);
-
-		is->priv->permanentflags = 0;
 
 		/* Hrm, what about reconnecting? */
 		is->state = IMAPX_INITIALISED;
@@ -5292,7 +5311,7 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 					((CamelMessageInfoBase *) source_info)->user_flags,
 					TRUE,
 					((CamelMessageInfoBase *) source_info)->user_tags,
-					is->priv->permanentflags);
+					camel_imapx_mailbox_get_permanentflags (data->destination));
 				if (is_new)
 					camel_folder_summary_add (destination->summary, destination_info);
 				camel_folder_change_info_add_uid (changes, destination_info->uid);
@@ -5489,7 +5508,7 @@ imapx_command_append_message_done (CamelIMAPXServer *is,
 				((CamelMessageInfoBase *) data->info)->user_flags,
 				TRUE,
 				((CamelMessageInfoBase *) data->info)->user_tags,
-				is->priv->permanentflags);
+				camel_imapx_mailbox_get_permanentflags (mailbox));
 			camel_folder_summary_add (folder->summary, mi);
 			changes = camel_folder_change_info_new ();
 			camel_folder_change_info_add_uid (changes, mi->uid);
@@ -5935,7 +5954,7 @@ imapx_job_scan_changes_done (CamelIMAPXServer *is,
 						(CamelMessageInfo *) info,
 						r->server_flags,
 						r->server_user_flags,
-						is->priv->permanentflags,
+						camel_imapx_mailbox_get_permanentflags (mailbox),
 						folder, FALSE))
 					camel_folder_change_info_change_uid (
 						data->changes,
@@ -7309,8 +7328,10 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 
 	/* lock cache ? */
 	} else {
-		guint32 unseen;
+		guint32 unseen, permanentflags;
 		gint i;
+
+		permanentflags = camel_imapx_mailbox_get_permanentflags (mailbox);
 
 		for (i = 0; i < data->changed_uids->len; i++) {
 			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_get (folder->summary,
@@ -7329,7 +7350,7 @@ imapx_command_sync_changes_done (CamelIMAPXServer *is,
 				xinfo->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
 			}
 			xinfo->info.dirty = TRUE;
-			if ((is->priv->permanentflags & CAMEL_MESSAGE_USER) != 0 ||
+			if ((permanentflags & CAMEL_MESSAGE_USER) != 0 ||
 			    camel_flag_list_size (&xinfo->server_user_flags) == 0)
 				camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
 
@@ -7387,7 +7408,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 	SyncChangesData *data;
 	CamelFolder *folder;
 	CamelIMAPXMailbox *mailbox;
-	guint32 i, j;
+	guint32 i, j, permanentflags;
 	struct _uidset_state ss;
 	GPtrArray *uids;
 	gint on;
@@ -7401,6 +7422,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
+	permanentflags = camel_imapx_mailbox_get_permanentflags (mailbox);
 	uids = data->changed_uids;
 
 	for (on = 0; on < 2; on++) {
@@ -7431,8 +7453,8 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 				if (info == NULL)
 					continue;
 
-				flags = info->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
-				sflags = info->server_flags & CAMEL_IMAPX_SERVER_FLAGS;
+				flags = (info->info.flags & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
+				sflags = (info->server_flags & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
 				send = 0;
 
 				remove_deleted_flag =
@@ -7458,7 +7480,7 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 					}
 					send = imapx_uidset_add (&ss, ic, camel_message_info_uid (info));
 				}
-				if (send == 1 || (i == uids->len - 1 && imapx_uidset_done (&ss, ic))) {
+				if (send == 1 || (i == uids->len - 1 && ic && imapx_uidset_done (&ss, ic))) {
 					g_atomic_int_add (&job->commands, 1);
 					camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on?"+":"-", flags_table[j].name);
 					imapx_command_queue (is, ic);
@@ -7473,11 +7495,20 @@ imapx_job_sync_changes_start (CamelIMAPXJob *job,
 					else
 						data->unread_change++;
 				}
+
+				/* The second round and the server doesn't support saving user flags,
+				   thus store them at least locally */
+				if (on && (permanentflags & CAMEL_MESSAGE_USER) == 0) {
+					camel_flag_list_copy (&info->server_user_flags, &info->info.user_flags);
+				}
+
 				camel_message_info_unref (info);
 			}
+
+			g_warn_if_fail (ic == NULL);
 		}
 
-		if (user_set) {
+		if (user_set && (permanentflags & CAMEL_MESSAGE_USER) != 0) {
 			CamelIMAPXCommand *ic = NULL;
 
 			for (j = 0; j < user_set->len; j++) {
@@ -8424,6 +8455,9 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (destination), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
+	if (!imapx_ensure_mailbox_permanentflags (is, destination, cancellable, error))
+		return FALSE;
+
 	data = g_slice_new0 (CopyMessagesData);
 	data->destination = g_object_ref (destination);
 	data->uids = g_ptr_array_new ();
@@ -8486,6 +8520,9 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (message_cache), FALSE);
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
 	/* CamelMessageInfo can be NULL. */
+
+	if (!imapx_ensure_mailbox_permanentflags (is, mailbox, cancellable, error))
+		return FALSE;
 
 	/* Append just assumes we have no/a dodgy connection.  We dump
 	 * stuff into the 'new' directory, and let the summary know it's
@@ -8633,8 +8670,8 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	gboolean registered = TRUE;
 	const gchar *mailbox_name;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), NULL);
 
 	/* Don't run concurrent refreshes on the same mailbox.
 	 * If a refresh is already in progress, let it finish
@@ -8645,6 +8682,9 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 		camel_imapx_job_unref (job);
 		return camel_folder_change_info_new ();
 	}
+
+	if (!imapx_ensure_mailbox_permanentflags (is, mailbox, cancellable, error))
+		return NULL;
 
 	QUEUE_LOCK (is);
 
@@ -8762,10 +8802,14 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	gboolean remove_deleted_flags;
 	gboolean nothing_to_do;
 	gboolean registered;
+	gboolean own_allocated_changed_uids = FALSE;
 	gboolean success = TRUE;
 
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
+
+	if (!imapx_ensure_mailbox_permanentflags (is, mailbox, cancellable, error))
+		return FALSE;
 
 	/* We calculate two masks, a mask of all flags which have been
 	 * turned off and a mask of all flags which have been turned
@@ -8835,73 +8879,65 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 			camel_imapx_folder_add_move_to_real_trash (
 				CAMEL_IMAPX_FOLDER (folder), uid);
 
-		flags &= is->priv->permanentflags;
-		sflags &= is->priv->permanentflags;
-
 		if (flags != sflags) {
 			off_orset |= (flags ^ sflags) & ~flags;
 			on_orset |= (flags ^ sflags) & flags;
 		}
 
-		if ((is->priv->permanentflags & CAMEL_MESSAGE_USER) != 0) {
-			uflags = info->info.user_flags;
-			suflags = info->server_user_flags;
-			while (uflags || suflags) {
-				gint res;
+		uflags = info->info.user_flags;
+		suflags = info->server_user_flags;
+		while (uflags || suflags) {
+			gint res;
 
-				if (uflags) {
-					if (suflags)
-						res = strcmp (uflags->name, suflags->name);
-					else if (*uflags->name)
-						res = -1;
-					else {
-						uflags = uflags->next;
-						continue;
-					}
-				} else {
-					res = 1;
-				}
-
-				if (res == 0) {
+			if (uflags) {
+				if (suflags)
+					res = strcmp (uflags->name, suflags->name);
+				else if (*uflags->name)
+					res = -1;
+				else {
 					uflags = uflags->next;
-					suflags = suflags->next;
-				} else {
-					GArray *user_set;
-					CamelFlag *user_flag;
-					struct _imapx_flag_change *change = NULL, add = { 0 };
-
-					if (res < 0) {
-						if (on_user == NULL)
-							on_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
-						user_set = on_user;
-						user_flag = uflags;
-						uflags = uflags->next;
-					} else {
-						if (off_user == NULL)
-							off_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
-						user_set = off_user;
-						user_flag = suflags;
-						suflags = suflags->next;
-					}
-
-					/* Could sort this and binary search */
-					for (j = 0; j < user_set->len; j++) {
-						change = &g_array_index (user_set, struct _imapx_flag_change, j);
-						if (strcmp (change->name, user_flag->name) == 0)
-							goto found;
-					}
-					add.name = g_strdup (user_flag->name);
-					add.infos = g_ptr_array_new ();
-					g_array_append_val (user_set, add);
-					change = &add;
-				found:
-					camel_message_info_ref (info);
-					g_ptr_array_add (change->infos, info);
+					continue;
 				}
+			} else {
+				res = 1;
 			}
-		} else {
-			/* Cannot save user flags to the server => store them locally only */
-			camel_flag_list_copy (&info->server_user_flags, &info->info.user_flags);
+
+			if (res == 0) {
+				uflags = uflags->next;
+				suflags = suflags->next;
+			} else {
+				GArray *user_set;
+				CamelFlag *user_flag;
+				struct _imapx_flag_change *change = NULL, add = { 0 };
+
+				if (res < 0) {
+					if (on_user == NULL)
+						on_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
+					user_set = on_user;
+					user_flag = uflags;
+					uflags = uflags->next;
+				} else {
+					if (off_user == NULL)
+						off_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
+					user_set = off_user;
+					user_flag = suflags;
+					suflags = suflags->next;
+				}
+
+				/* Could sort this and binary search */
+				for (j = 0; j < user_set->len; j++) {
+					change = &g_array_index (user_set, struct _imapx_flag_change, j);
+					if (strcmp (change->name, user_flag->name) == 0)
+						goto found;
+				}
+				add.name = g_strdup (user_flag->name);
+				add.infos = g_ptr_array_new ();
+				g_array_append_val (user_set, add);
+				change = &add;
+			found:
+				camel_message_info_ref (info);
+				g_ptr_array_add (change->infos, info);
+			}
 		}
 
 		camel_message_info_unref (info);
@@ -8927,16 +8963,57 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_SYNC_CHANGES, NULL);
 
 	if (job != NULL) {
-		if (pri > job->pri)
-			job->pri = pri;
+		GPtrArray *new_changed_uids;
+		GHashTable *known_uids;
+		GHashTableIter iter;
+		gpointer key, value;
+		gint ii;
 
-		camel_imapx_job_unref (job);
+		known_uids = g_hash_table_new (g_str_hash, g_str_equal);
+		data = camel_imapx_job_get_data (job);
 
-		imapx_sync_free_user (on_user);
-		imapx_sync_free_user (off_user);
+		if (data && data->changed_uids) {
+			for (ii = 0; ii < changed_uids->len; ii++) {
+				g_hash_table_insert (known_uids, changed_uids->pdata[ii], GINT_TO_POINTER (1));
+			}
+
+			for (ii = 0; ii < data->changed_uids->len; ii++) {
+				g_hash_table_remove (known_uids, data->changed_uids->pdata[ii]);
+			}
+		}
+
+		if (g_hash_table_size (known_uids) == 0) {
+			/* The pending job stores changes for the same UIDs */
+			if (pri > job->pri)
+				job->pri = pri;
+
+			camel_imapx_job_unref (job);
+
+			imapx_sync_free_user (on_user);
+			imapx_sync_free_user (off_user);
+			camel_folder_free_uids (folder, changed_uids);
+			g_object_unref (folder);
+			g_hash_table_destroy (known_uids);
+			return TRUE;
+		}
+
+		new_changed_uids = g_ptr_array_sized_new (g_hash_table_size (known_uids));
+
+		/* What left in known_uids are message info changes which are not being
+		   saved in the pending job */
+
+		g_hash_table_iter_init (&iter, known_uids);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			g_ptr_array_add (new_changed_uids, (gpointer) camel_pstring_strdup (key));
+		}
+
+		g_hash_table_destroy (known_uids);
+
 		camel_folder_free_uids (folder, changed_uids);
-		g_object_unref (folder);
-		return TRUE;
+		changed_uids = new_changed_uids;
+
+		/* Why would anyone define a virtual function for the free on the folder? */
+		own_allocated_changed_uids = TRUE;
 	}
 
 	QUEUE_LOCK (is);
@@ -8944,6 +9021,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	data = g_slice_new0 (SyncChangesData);
 	data->folder = g_object_ref (folder);
 	data->changed_uids = changed_uids;  /* takes ownership */
+	data->own_allocated_changed_uids = own_allocated_changed_uids;
 	data->on_set = on_orset;
 	data->off_set = off_orset;
 	data->on_user = on_user;  /* takes ownership */
