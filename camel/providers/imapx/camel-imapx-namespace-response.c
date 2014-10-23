@@ -500,7 +500,10 @@ camel_imapx_namespace_response_lookup_for_path (CamelIMAPXNamespaceResponse *res
 
 		/* Special handling when searching for an empty prefix. */
 		if (find_empty_prefix) {
-			if (*prefix == '\0') {
+			if (*prefix == '\0' ||
+			    g_ascii_strcasecmp (prefix, "INBOX") == 0 ||
+			    (g_ascii_strncasecmp (prefix, "INBOX", 5) == 0 &&
+			     prefix[5] == separator && !prefix[6])) {
 				g_queue_push_tail (&candidates, namespace);
 				break;
 			}
@@ -523,6 +526,11 @@ camel_imapx_namespace_response_lookup_for_path (CamelIMAPXNamespaceResponse *res
 
 	/* First candidate is the preferred namespace. */
 	match = g_queue_pop_head (&candidates);
+
+	/* Fallback to the first known namespace when none suitable for the given path found */
+	if (!match && head && head->data)
+		match = head->data;
+
 	if (match != NULL)
 		g_object_ref (match);
 
