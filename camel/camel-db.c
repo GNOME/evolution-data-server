@@ -194,6 +194,20 @@ camel_sqlite3_file_ ## _nm _params \
 	return cFile->old_vfs_file->pMethods->_nm _call; \
 }
 
+#define def_subclassed_void(_nm, _params, _call) \
+static void \
+camel_sqlite3_file_ ## _nm _params \
+{ \
+	CamelSqlite3File *cFile; \
+ \
+	g_return_if_fail (old_vfs != NULL); \
+	g_return_if_fail (pFile != NULL); \
+ \
+	cFile = (CamelSqlite3File *) pFile; \
+	g_return_if_fail (cFile->old_vfs_file->pMethods != NULL); \
+	cFile->old_vfs_file->pMethods->_nm _call; \
+}
+
 def_subclassed (xRead, (sqlite3_file *pFile, gpointer pBuf, gint iAmt, sqlite3_int64 iOfst), (cFile->old_vfs_file, pBuf, iAmt, iOfst))
 def_subclassed (xWrite, (sqlite3_file *pFile, gconstpointer pBuf, gint iAmt, sqlite3_int64 iOfst), (cFile->old_vfs_file, pBuf, iAmt, iOfst))
 def_subclassed (xTruncate, (sqlite3_file *pFile, sqlite3_int64 size), (cFile->old_vfs_file, size))
@@ -203,6 +217,12 @@ def_subclassed (xUnlock, (sqlite3_file *pFile, gint lockType), (cFile->old_vfs_f
 def_subclassed (xFileControl, (sqlite3_file *pFile, gint op, gpointer pArg), (cFile->old_vfs_file, op, pArg))
 def_subclassed (xSectorSize, (sqlite3_file *pFile), (cFile->old_vfs_file))
 def_subclassed (xDeviceCharacteristics, (sqlite3_file *pFile), (cFile->old_vfs_file))
+def_subclassed (xShmMap, (sqlite3_file *pFile, gint iPg, gint pgsz, gint n, void volatile **arr), (cFile->old_vfs_file, iPg, pgsz, n, arr))
+def_subclassed (xShmLock, (sqlite3_file *pFile, gint offset, gint n, gint flags), (cFile->old_vfs_file, offset, n, flags))
+def_subclassed_void (xShmBarrier, (sqlite3_file *pFile), (cFile->old_vfs_file))
+def_subclassed (xShmUnmap, (sqlite3_file *pFile, gint deleteFlag), (cFile->old_vfs_file, deleteFlag))
+def_subclassed (xFetch, (sqlite3_file *pFile, sqlite3_int64 iOfst, int iAmt, void **pp), (cFile->old_vfs_file, iOfst, iAmt, pp))
+def_subclassed (xUnfetch, (sqlite3_file *pFile, sqlite3_int64 iOfst, void *p), (cFile->old_vfs_file, iOfst, p))
 
 #undef def_subclassed
 
@@ -351,6 +371,23 @@ camel_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs,
 		use_subclassed (xFileControl);
 		use_subclassed (xSectorSize);
 		use_subclassed (xDeviceCharacteristics);
+
+		if (io_methods.iVersion > 1) {
+			use_subclassed (xShmMap);
+			use_subclassed (xShmLock);
+			use_subclassed (xShmBarrier);
+			use_subclassed (xShmUnmap);
+		}
+
+		if (io_methods.iVersion > 2) {
+			use_subclassed (xFetch);
+			use_subclassed (xUnfetch);
+		}
+
+		if (io_methods.iVersion > 3) {
+			g_warning ("%s: Unchecked IOMethods version %d, downgrading to version 3", G_STRFUNC, io_methods.iVersion);
+			io_methods.iVersion = 3;
+		}
 		#undef use_subclassed
 	}
 
