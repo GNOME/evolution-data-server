@@ -1037,8 +1037,19 @@ camel_network_service_can_reach_sync (CamelNetworkService *service,
 		G_IS_IO_ERROR (local_error, G_IO_ERROR_HOST_UNREACHABLE) ||
 		G_IS_RESOLVER_ERROR (local_error, G_RESOLVER_ERROR_NOT_FOUND);
 
-	if (update_property)
+	if (update_property) {
+		g_mutex_lock (&priv->update_host_reachable_lock);
+
+		if (priv->update_host_reachable) {
+			g_source_destroy (priv->update_host_reachable);
+			g_source_unref (priv->update_host_reachable);
+			priv->update_host_reachable = NULL;
+		}
+
+		g_mutex_unlock (&priv->update_host_reachable_lock);
+
 		network_service_set_host_reachable (service, can_reach);
+	}
 
 	g_clear_object (&connectable);
 
