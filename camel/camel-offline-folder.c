@@ -86,7 +86,8 @@ offline_folder_downsync_background (CamelSession *session,
 {
 	camel_operation_push_message (
 		cancellable,
-		_("Downloading new messages for offline mode"));
+		_("Downloading new messages for offline mode in '%s'"),
+		camel_folder_get_full_name (data->folder));
 
 	if (data->changes) {
 		GPtrArray *uid_added;
