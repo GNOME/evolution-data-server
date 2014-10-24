@@ -2674,12 +2674,19 @@ camel_imapx_store_ref_server (CamelIMAPXStore *store,
                               GError **error)
 {
 	CamelIMAPXServer *server = NULL;
+	CamelSession *session;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), NULL);
 
- 	server = camel_imapx_conn_manager_get_connection (
-		store->priv->con_man, folder_name, for_expensive_job, cancellable, &local_error);
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
+
+	if (camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) &&
+	    camel_session_get_online (session))
+		server = camel_imapx_conn_manager_get_connection (
+			store->priv->con_man, folder_name, for_expensive_job, cancellable, &local_error);
+
+	g_clear_object (&session);
 
 	if (!server && (!local_error || local_error->domain == G_RESOLVER_ERROR)) {
 		if (!local_error) {
