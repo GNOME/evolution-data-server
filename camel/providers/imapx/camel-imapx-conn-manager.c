@@ -47,6 +47,9 @@ struct _CamelIMAPXConnManagerPrivate {
 	GWeakRef store;
 	GRWLock rw_lock;
 	guint limit_max_connections;
+
+	GMutex pending_connections_lock;
+	GSList *pending_connections; /* GCancellable * */
 };
 
 struct _ConnectionInfo {
@@ -340,6 +343,23 @@ imapx_conn_manager_remove_info (CamelIMAPXConnManager *con_man,
 }
 
 static void
+imax_conn_manager_cancel_pending_connections (CamelIMAPXConnManager *con_man)
+{
+	GSList *link;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
+
+	g_mutex_lock (&con_man->priv->pending_connections_lock);
+	for (link = con_man->priv->pending_connections; link; link = g_slist_next (link)) {
+		GCancellable *cancellable = link->data;
+
+		if (cancellable)
+			g_cancellable_cancel (cancellable);
+	}
+	g_mutex_unlock (&con_man->priv->pending_connections_lock);
+}
+
+static void
 imapx_conn_manager_set_store (CamelIMAPXConnManager *con_man,
                               CamelStore *store)
 {
@@ -395,6 +415,8 @@ imapx_conn_manager_dispose (GObject *object)
 		(GDestroyNotify) connection_info_unref);
 	priv->connections = NULL;
 
+	imax_conn_manager_cancel_pending_connections (CAMEL_IMAPX_CONN_MANAGER (object));
+
 	g_weak_ref_set (&priv->store, NULL);
 
 	/* Chain up to parent's dispose() method. */
@@ -408,7 +430,10 @@ imapx_conn_manager_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (object);
 
+	g_warn_if_fail (priv->pending_connections == NULL);
+
 	g_rw_lock_clear (&priv->rw_lock);
+	g_mutex_clear (&priv->pending_connections_lock);
 	g_weak_ref_clear (&priv->store);
 
 	/* Chain up to parent's finalize() method. */
@@ -447,6 +472,7 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 	con_man->priv = CAMEL_IMAPX_CONN_MANAGER_GET_PRIVATE (con_man);
 
 	g_rw_lock_init (&con_man->priv->rw_lock);
+	g_mutex_init (&con_man->priv->pending_connections_lock);
 	g_weak_ref_init (&con_man->priv->store, NULL);
 }
 
@@ -798,11 +824,20 @@ camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man), NULL);
 
+	g_mutex_lock (&con_man->priv->pending_connections_lock);
+	if (cancellable) {
+		g_object_ref (cancellable);
+	} else {
+		cancellable = g_cancellable_new ();
+	}
+	con_man->priv->pending_connections = g_slist_prepend (con_man->priv->pending_connections, cancellable);
+	g_mutex_unlock (&con_man->priv->pending_connections_lock);
+
 	/* Hold the writer lock while we requisition a CamelIMAPXServer
 	 * to prevent other threads from adding or removing connections. */
 	CON_WRITE_LOCK (con_man);
 
-	/* Check if we got cancelled while waiting for the lock. */
+	/* Check if we've got cancelled while waiting for the lock. */
 	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		is = imapx_find_connection_unlocked (con_man, folder_name, for_expensive_job);
 		if (is == NULL) {
@@ -837,6 +872,11 @@ camel_imapx_conn_manager_get_connection (CamelIMAPXConnManager *con_man,
 	}
 
 	CON_WRITE_UNLOCK (con_man);
+
+	g_mutex_lock (&con_man->priv->pending_connections_lock);
+	con_man->priv->pending_connections = g_slist_remove (con_man->priv->pending_connections, cancellable);
+	g_object_unref (cancellable);
+	g_mutex_unlock (&con_man->priv->pending_connections_lock);
 
 	return is;
 }
@@ -891,6 +931,10 @@ camel_imapx_conn_manager_close_connections (CamelIMAPXConnManager *con_man,
 	GList *iter, *connections;
 
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (con_man));
+
+	/* Do this before acquiring the write lock, because any pending
+	   connection holds the write lock, thus makes this request starve. */
+	imax_conn_manager_cancel_pending_connections (con_man);
 
 	CON_WRITE_LOCK (con_man);
 
