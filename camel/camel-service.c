@@ -1806,6 +1806,11 @@ camel_service_connect (CamelService *service,
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
+	if (cancellable)
+		g_object_ref (cancellable);
+	else
+		cancellable = g_cancellable_new ();
+
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_service_connect);
 	g_task_set_priority (task, io_priority);
@@ -1861,6 +1866,7 @@ camel_service_connect (CamelService *service,
 
 	g_mutex_unlock (&service->priv->connection_lock);
 
+	g_object_unref (cancellable);
 	g_object_unref (task);
 }
 
@@ -1972,6 +1978,11 @@ camel_service_disconnect (CamelService *service,
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
+	if (cancellable)
+		g_object_ref (cancellable);
+	else
+		cancellable = g_cancellable_new ();
+
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_service_disconnect);
 	g_task_set_priority (task, io_priority);
@@ -2035,6 +2046,7 @@ camel_service_disconnect (CamelService *service,
 
 	g_mutex_unlock (&service->priv->connection_lock);
 
+	g_object_unref (cancellable);
 	g_object_unref (task);
 }
 
