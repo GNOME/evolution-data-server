@@ -655,6 +655,14 @@ network_service_connect_sync (CamelNetworkService *service,
 
 	g_object_unref (settings);
 
+	if (connection) {
+		GSocket *socket;
+
+		socket = g_socket_connection_get_socket (connection);
+		if (socket)
+			g_socket_set_timeout (socket, 90);
+	}
+
 	return (connection != NULL) ? G_IO_STREAM (connection) : NULL;
 }
 
