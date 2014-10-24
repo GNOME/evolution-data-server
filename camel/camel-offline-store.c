@@ -188,9 +188,18 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	status = camel_service_get_connection_status (service);
 
 	if (CAMEL_IS_NETWORK_SERVICE (store)) {
-		host_reachable =
-			camel_network_service_get_host_reachable (
-			CAMEL_NETWORK_SERVICE (store));
+		/* When going to set the 'online' state, then check with up-to-date
+		   value, otherwise use the cached value. The cached value is
+		   updated with few seconds timeout, thus it can be stale here. */
+		if (online)
+			host_reachable =
+				camel_network_service_can_reach_sync (
+				CAMEL_NETWORK_SERVICE (store),
+				cancellable, NULL);
+		else
+			host_reachable =
+				camel_network_service_get_host_reachable (
+				CAMEL_NETWORK_SERVICE (store));
 	}
 
 	store_is_online = camel_offline_store_get_online (store);
@@ -288,9 +297,12 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 	session = camel_service_ref_session (service);
 
 	if (CAMEL_IS_NETWORK_SERVICE (store)) {
+		/* Check with up-to-date value. The cached value is updated with
+		   few seconds timeout, thus it can be stale here. */
 		host_reachable =
-			camel_network_service_get_host_reachable (
-			CAMEL_NETWORK_SERVICE (store));
+			camel_network_service_can_reach_sync (
+			CAMEL_NETWORK_SERVICE (store),
+			cancellable, NULL);
 	}
 
 	store_is_online = camel_offline_store_get_online (store);
