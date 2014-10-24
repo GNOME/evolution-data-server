@@ -1202,6 +1202,25 @@ imapx_server_reset_inactivity_timer (CamelIMAPXServer *is)
 	g_mutex_unlock (&is->priv->inactivity_timeout_lock);
 }
 
+static gint
+imapx_server_set_connection_timeout (GIOStream *connection,
+				     gint timeout_seconds)
+{
+	GSocket *socket;
+	gint previous_timeout = -1;
+
+	if (!G_IS_SOCKET_CONNECTION (connection))
+		return previous_timeout;
+
+	socket = g_socket_connection_get_socket (connection);
+	if (socket) {
+		previous_timeout = g_socket_get_timeout (socket);
+		g_socket_set_timeout (socket, timeout_seconds);
+	}
+
+	return previous_timeout;
+}
+
 /* Must hold QUEUE_LOCK */
 static void
 imapx_command_start (CamelIMAPXServer *is,
@@ -3660,6 +3679,7 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
                          GError **error)
 {
 	CamelIMAPXJob *job;
+	gint previous_connection_timeout;
 	gboolean success;
 
 	job = camel_imapx_job_new (cancellable);
@@ -3668,7 +3688,12 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
 
 	camel_imapx_job_set_mailbox (job, mailbox);
 
+	previous_connection_timeout = imapx_server_set_connection_timeout (is->priv->connection, 0);
+
 	success = imapx_submit_job (is, job, error);
+
+	if (previous_connection_timeout >= 0)
+		imapx_server_set_connection_timeout (is->priv->connection, previous_connection_timeout);
 
 	camel_imapx_job_unref (job);
 
