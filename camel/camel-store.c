@@ -296,6 +296,7 @@ store_maybe_connect_sync (CamelStore *store,
 {
 	CamelService *service;
 	CamelServiceConnectionStatus status;
+	CamelSession *session;
 	gboolean connect = FALSE;
 	gboolean success = TRUE;
 
@@ -303,8 +304,10 @@ store_maybe_connect_sync (CamelStore *store,
 	 * when the CamelService is online but disconnected. */
 
 	service = CAMEL_SERVICE (store);
+	session = camel_service_ref_session (service);
 	status = camel_service_get_connection_status (service);
-	connect = (status != CAMEL_SERVICE_CONNECTED);
+	connect = camel_session_get_online (session) && (status != CAMEL_SERVICE_CONNECTED);
+	g_clear_object (&session);
 
 	if (connect && CAMEL_IS_NETWORK_SERVICE (store)) {
 		/* Disregard errors here.  Just want to
