@@ -126,11 +126,16 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 }
 
 static gboolean
-backend_update_online_state_idle_cb (gpointer user_data)
+backend_update_online_state_timeout_cb (gpointer user_data)
 {
 	EBackend *backend;
 	GSocketConnectable *connectable;
 	GCancellable *cancellable;
+	GSource *current_source;
+
+	current_source = g_main_current_source ();
+	if (current_source && g_source_is_destroyed (current_source))
+		return FALSE;
 
 	backend = E_BACKEND (user_data);
 	connectable = e_backend_ref_connectable (backend);
@@ -188,23 +193,29 @@ backend_update_online_state (EBackend *backend)
 {
 	g_mutex_lock (&backend->priv->update_online_state_lock);
 
+	if (backend->priv->update_online_state) {
+		g_source_destroy (backend->priv->update_online_state);
+		g_source_unref (backend->priv->update_online_state);
+		backend->priv->update_online_state = NULL;
+	}
+
 	if (backend->priv->update_online_state == NULL) {
 		GMainContext *main_context;
-		GSource *idle_source;
+		GSource *timeout_source;
 
 		main_context = e_backend_ref_main_context (backend);
 
-		idle_source = g_idle_source_new ();
-		g_source_set_priority (idle_source, G_PRIORITY_LOW);
+		timeout_source = g_timeout_source_new_seconds (5);
+		g_source_set_priority (timeout_source, G_PRIORITY_LOW);
 		g_source_set_callback (
-			idle_source,
-			backend_update_online_state_idle_cb,
+			timeout_source,
+			backend_update_online_state_timeout_cb,
 			g_object_ref (backend),
 			(GDestroyNotify) g_object_unref);
-		g_source_attach (idle_source, main_context);
+		g_source_attach (timeout_source, main_context);
 		backend->priv->update_online_state =
-			g_source_ref (idle_source);
-		g_source_unref (idle_source);
+			g_source_ref (timeout_source);
+		g_source_unref (timeout_source);
 
 		g_main_context_unref (main_context);
 	}

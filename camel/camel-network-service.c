@@ -460,19 +460,25 @@ network_service_set_host_reachable (CamelNetworkService *service,
 		camel_service_disconnect_sync (
 			CAMEL_SERVICE (service), FALSE, NULL, &local_error);
 		if (local_error != NULL) {
-			g_warning ("%s: %s", G_STRFUNC, local_error->message);
+			if (!G_IS_IO_ERROR (local_error, G_IO_ERROR_CANCELLED))
+				g_warning ("%s: %s", G_STRFUNC, local_error->message);
 			g_error_free (local_error);
 		}
 	}
 }
 
 static gboolean
-network_service_update_host_reachable_idle_cb (gpointer user_data)
+network_service_update_host_reachable_timeout_cb (gpointer user_data)
 {
 	CamelNetworkService *service;
 	CamelNetworkServicePrivate *priv;
 	GCancellable *old_cancellable;
 	GCancellable *new_cancellable;
+	GSource *current_source;
+
+	current_source = g_main_current_source ();
+	if (current_source && g_source_is_destroyed (current_source))
+		return FALSE;
 
 	service = CAMEL_NETWORK_SERVICE (user_data);
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
@@ -519,22 +525,28 @@ network_service_update_host_reachable (CamelNetworkService *service)
 
 	g_mutex_lock (&priv->update_host_reachable_lock);
 
+	if (priv->update_host_reachable) {
+		g_source_destroy (priv->update_host_reachable);
+		g_source_unref (priv->update_host_reachable);
+		priv->update_host_reachable = NULL;
+	}
+
 	if (priv->update_host_reachable == NULL) {
 		GMainContext *main_context;
-		GSource *idle_source;
+		GSource *timeout_source;
 
 		main_context = camel_session_ref_main_context (session);
 
-		idle_source = g_idle_source_new ();
-		g_source_set_priority (idle_source, G_PRIORITY_LOW);
+		timeout_source = g_timeout_source_new_seconds (5);
+		g_source_set_priority (timeout_source, G_PRIORITY_LOW);
 		g_source_set_callback (
-			idle_source,
-			network_service_update_host_reachable_idle_cb,
+			timeout_source,
+			network_service_update_host_reachable_timeout_cb,
 			g_object_ref (service),
 			(GDestroyNotify) g_object_unref);
-		g_source_attach (idle_source, main_context);
-		priv->update_host_reachable = g_source_ref (idle_source);
-		g_source_unref (idle_source);
+		g_source_attach (timeout_source, main_context);
+		priv->update_host_reachable = g_source_ref (timeout_source);
+		g_source_unref (timeout_source);
 
 		g_main_context_unref (main_context);
 	}
