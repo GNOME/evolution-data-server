@@ -190,7 +190,25 @@ eval_eq (struct _CamelSExp *f,
 		else if (r1->type == CAMEL_SEXP_RES_STRING)
 			g_string_append_printf (str, "%s", r1->value.string);
 
-		if (!strstr (str->str, "completed-on") && !strstr (str->str, "follow-up")) {
+		if (g_str_equal (str->str, "( msgid") || g_str_equal (str->str, "( references")) {
+			gboolean is_msgid = g_str_equal (str->str, "( msgid");
+
+			g_string_assign (str, "( part LIKE ");
+			if (r2->type == CAMEL_SEXP_RES_STRING) {
+				gchar *tmp, *safe;
+
+				/* Expects CamelSummaryMessageID encoded as "%lu %lu", id.part.hi, id.part.lo.
+				   The 'msgid' is always the first, while 'references' is inside. */
+				/* Beware, the 'references' can return false positives, thus recheck returned UID-s. */
+				tmp = g_strdup_printf ("%s%s%%", is_msgid ? "" : "%", r2->value.string);
+				safe = get_db_safe_string (tmp);
+				g_string_append_printf (str, "%s", safe);
+				g_free (safe);
+				g_free (tmp);
+			} else {
+				g_warn_if_reached ();
+			}
+		} else if (!strstr (str->str, "completed-on") && !strstr (str->str, "follow-up")) {
 			gboolean ut = FALSE;
 
 			if (strstr (str->str, "usertags"))
