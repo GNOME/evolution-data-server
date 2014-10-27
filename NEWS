@@ -1,3 +1,52 @@
+Evolution-Data-Server 3.13.7 2014-10-27
+---------------------------------------
+
+Bug Fixes:
+	Bug 737279 - DRA not working (Fabiano Fidêncio)
+	Bug 653157 - Enable extra compiler warnings in maintainer mode only (Milan Crha)
+	Bug 699597 - EBookSqlite: Add indices on family_name, nickname, given_name and file_as (David Woodhouse)
+	Bug 699597 - EBookSqlite: Fix queries to use LEFT JOIN where appropriate (David Woodhouse)
+	Bug 699597 - EBookSqlite: Use UNION for autocomplete queries (David Woodhouse)
+	Bug 737903 - [SMTP] Crash when authentication fails (Milan Crha)
+	Bug 737951 - CAMEL_DEBUG=smtp should provide information about SMTP server (Milan Crha)
+	Bug 737733 - [IMAPx] Prevent "Stream has outstanding operation" error (Milan Crha)
+	Bug 223621 - Add per-account mail Archive Folder option (Milan Crha)
+	Bug 738288 - EBookSqlite is leaking memory in ebsql_ref_from_hash function (Mateusz Polrola)
+	Bug 698964 - Hide password prompt right after getting the password (Milan Crha)
+	Bug 708166 - Update EClient properties on idle after GDBusProxy notify (Milan Crha)
+	Bug 737930 - Claims invalid PGP signature for single line mail (Christian Schaarschmidt)
+	Bug 738724 - [IMAP] Message flag changes not always saved (Milan Crha)
+	Bug 738965 - [SQLite VFS] Crash due to missing xFetch definition (Milan Crha)
+	Bug 738184 - [IMAPx] Not every server returns empty namespace prefix for INBOX (Milan Crha)
+	Bug 712392 - Delay server availability checks on network change (Milan Crha)
+	Bug 583772 - Specify folder in "Downloading new messages for offline mode" (Milan Crha)
+
+Miscellaneous:
+	[Win32] Provide a simple password store (Milan Crha)
+	Correct compiler flags for libedataserver-private.la (Milan Crha)
+	Add libedbus-private.la into LIBADD where needed (Milan Crha)
+	Fix UOA accounts accumulating on startup. (Michael Blennerhassett)
+	imapx_is_duplicate_fetch_or_refresh: Fix incorrect bit-flag test (Milan Crha)
+	CamelMimeFilterToHTML - If the PRE close tag is written to the output, mark it as processed in private as well (Tomas Popela)
+	Do not define EBackend::online as G_PARAM_CONSTRUCT (Milan Crha)
+	Fixed introspection annotations. (tintou)
+	[SMTP] Fails to send message after a change for bug 737903 (Milan Crha)
+	Update MAINTAINERS, doap. (Matthew Barnes)
+	[CamelService] Connect/Disconnect rely on provided cancellable (Milan Crha)
+	[CamelFolder/Store] Check online state of the session too before connecting (Milan Crha)
+	[CamelIMAPXConnManager] Can starve in close connections (Milan Crha)
+	Use 90 seconds timeout for Camel connections (Milan Crha)
+	[CamelOfflineStore] Count with host reachability update delay (Milan Crha)
+	[IMAPx] Do not connect to the server in offline mode (Milan Crha)
+
+Translations:
+	Rajesh Ranjan (hi)
+	Rūdolfs Mazurs (lv)
+	Saibal Ray (bn_IN)
+	Piotr Drąg (pl)
+	Milo Casagrande (it)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.13.6 2014-09-22
 ---------------------------------------
 
