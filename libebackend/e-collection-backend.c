@@ -71,6 +71,7 @@ struct _ECollectionBackendPrivate {
 
 	gulong source_added_handler_id;
 	gulong source_removed_handler_id;
+	gulong notify_enabled_handler_id;
 };
 
 enum {
@@ -478,6 +479,28 @@ collection_backend_source_removed_cb (ESourceRegistryServer *server,
 	g_object_unref (parent_source);
 }
 
+static void
+collection_backend_source_enabled_cb (ESource *source,
+				      GParamSpec *spec,
+				      EBackend *backend)
+{
+	ESource *collection_source;
+	GObject *collection;
+
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	collection_source = e_backend_get_source (E_BACKEND (backend));
+	collection = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION);
+
+	/* Some child sources depend on both sub-part enabled and the main
+	   ESource::enabled state, thus if the main's ESource::enabled
+	   changes, then also notify the change of the sub-parts, thus
+	   child's enabled property is properly recalculated. */
+	g_object_notify (collection, "calendar-enabled");
+	g_object_notify (collection, "contacts-enabled");
+	g_object_notify (collection, "mail-enabled");
+}
+
 static gboolean
 collection_backend_populate_idle_cb (gpointer user_data)
 {
@@ -630,6 +653,15 @@ collection_backend_dispose (GObject *object)
 		g_object_unref (server);
 	}
 
+	if (priv->notify_enabled_handler_id) {
+		ESource *source = e_backend_get_source (E_BACKEND (object));
+
+		if (source)
+			g_signal_handler_disconnect (source, priv->notify_enabled_handler_id);
+
+		priv->notify_enabled_handler_id = 0;
+	}
+
 	g_mutex_lock (&priv->children_lock);
 	g_hash_table_remove_all (priv->children);
 	g_mutex_unlock (&priv->children_lock);
@@ -741,6 +773,9 @@ collection_backend_constructed (GObject *object)
 	backend->priv->source_removed_handler_id = handler_id;
 
 	g_object_unref (server);
+
+	backend->priv->notify_enabled_handler_id = g_signal_connect (source, "notify::enabled",
+		G_CALLBACK (collection_backend_source_enabled_cb), backend);
 
 	/* Populate the newly-added collection from an idle callback
 	 * so persistent child sources have a chance to be added first. */
