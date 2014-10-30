@@ -492,9 +492,6 @@ data_factory_connections_add (EDataFactory *data_factory,
 
 	connections = data_factory->priv->connections;
 
-	if (g_hash_table_size (connections) == 0)
-		e_dbus_server_hold (E_DBUS_SERVER (data_factory));
-
 	array = g_hash_table_lookup (connections, name);
 
 	if (array == NULL) {
@@ -546,6 +543,11 @@ data_factory_call_subprocess_backend_create_sync (EDataFactory *data_factory,
 
 		g_free (object_path);
 	} else {
+		g_rec_mutex_lock (&data_factory->priv->connections_lock);
+		if (g_hash_table_size (data_factory->priv->connections) == 0)
+			e_dbus_server_release (E_DBUS_SERVER (data_factory));
+		g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+
 		g_return_if_fail (error != NULL);
 		g_dbus_method_invocation_take_error (invocation, error);
 	}
@@ -1215,6 +1217,11 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	g_object_unref (subprocess);
 
 	if (error != NULL) {
+		g_rec_mutex_lock (&priv->connections_lock);
+		if (g_hash_table_size (priv->connections) == 0)
+			e_dbus_server_release (E_DBUS_SERVER (data_factory));
+		g_rec_mutex_unlock (&priv->connections_lock);
+
 		g_mutex_lock (&priv->subprocess_watched_ids_lock);
 		g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
 		g_mutex_unlock (&priv->subprocess_watched_ids_lock);
@@ -1282,6 +1289,15 @@ e_data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 {
 	GThread *thread;
 	DataFactorySpawnSubprocessBackendThreadData *data;
+
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+
+	/* Make sure the server will not quit due to inactivity while
+	   the subprocess is opening */
+	g_rec_mutex_lock (&data_factory->priv->connections_lock);
+	if (g_hash_table_size (data_factory->priv->connections) == 0)
+		e_dbus_server_hold (E_DBUS_SERVER (data_factory));
+	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
 
 	data = data_factory_spawn_subprocess_backend_thread_data_new (
 		data_factory, invocation, uid, extension_name, subprocess_path);
