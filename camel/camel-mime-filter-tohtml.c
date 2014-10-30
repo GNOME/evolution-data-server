@@ -132,7 +132,7 @@ citation_depth (const gchar *in,
 	if (out_skip != NULL)
 		*out_skip = 0;
 
-	if (*inptr++ != '>')
+	if (!strchr (">|", *inptr++))
 		goto exit;
 
 #if FOOLISHLY_UNMUNGE_FROM
@@ -150,7 +150,7 @@ citation_depth (const gchar *in,
 			skip++;
 		}
 
-		if (inptr >= inend || *inptr++ != '>')
+		if (inptr >= inend || !strchr (">|", *inptr++))
 			break;
 
 		depth++;
