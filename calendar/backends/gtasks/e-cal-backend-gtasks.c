@@ -1322,6 +1322,17 @@ ecb_gtasks_stop_view (ECalBackend *backend,
 }
 
 static void
+ecb_gtasks_add_timezone (ECalBackend *backend,
+			 EDataCal *cal,
+			 guint32 opid,
+			 GCancellable *cancellable,
+			 const gchar *tzobject)
+{
+	/* Nothing to do, times are in UTC */
+	e_data_cal_respond_add_timezone (cal, opid, NULL);
+}
+
+static void
 ecb_gtasks_shutdown (ECalBackend *backend)
 {
 	ECalBackendGTasks *gtasks;
@@ -1438,5 +1449,6 @@ e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *class)
 	backend_class->discard_alarm = ecb_gtasks_discard_alarm;
 	backend_class->start_view = ecb_gtasks_start_view;
 	backend_class->stop_view = ecb_gtasks_stop_view;
+	backend_class->add_timezone = ecb_gtasks_add_timezone;
 	backend_class->shutdown = ecb_gtasks_shutdown;
 }
