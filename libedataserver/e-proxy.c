@@ -425,6 +425,8 @@ ep_need_proxy_socks (EProxy *proxy,
 	return !ep_is_in_ignored (proxy, host);
 }
 
+/* Apply a prefix-notation @netmask to the given @addr_in, as described in
+ * http://tools.ietf.org/html/rfc4632#section-3.1 */
 static gboolean
 ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
                     struct in_addr *addr_in,
@@ -448,6 +450,9 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 		if (*endptr != '\0' || width < 0 || width > 32) {
 			has_error = TRUE;
 			mask->s_addr = 0xFFFFFFFF;
+		} else if (width == 32) {
+			mask->s_addr = 0;
+			addr->s_addr = 0;
 		} else {
 			mask->s_addr = htonl (~0 << width);
 			addr->s_addr &= mask->s_addr;
