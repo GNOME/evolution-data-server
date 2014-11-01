@@ -274,7 +274,7 @@ read_string (FILE *fp,
              gsize len)
 {
 	gchar *buf;
-	gint rv;
+	size_t rv;
 
 	/* Avoid overflow for the nul byte. */
 	if (len == G_MAXSIZE)
@@ -282,8 +282,8 @@ read_string (FILE *fp,
 
 	buf = g_new0 (char, len + 1);
 
-	rv = fread (buf, len, 1, fp);
-	if (rv != 1) {
+	rv = fread (buf, sizeof (gchar), len, fp);
+	if (rv != len) {
 		g_free (buf);
 		return NULL;
 	}
