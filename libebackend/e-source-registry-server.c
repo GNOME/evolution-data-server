@@ -1179,7 +1179,8 @@ source_registry_server_source_added (ESourceRegistryServer *server,
 		} else {
 			g_warning (
 				"No collection backend '%s' for %s: %s",
-				backend_name, e_source_get_uid (source), error->message);
+				backend_name, e_source_get_uid (source),
+				error ? error->message : "Unknown error");
 
 			g_clear_error (&error);
 		}
