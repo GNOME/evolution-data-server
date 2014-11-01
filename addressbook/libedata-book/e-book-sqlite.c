@@ -5525,7 +5525,7 @@ ebsql_is_autocomplete_query (PreflightContext *context)
 		/* For these, check if the field being operated on is
 		   an auxiliary field or not. */
 		if (elements[i]->query == E_BOOK_QUERY_BEGINS_WITH ||
-		    elements[i]->query == E_BOOK_QUERY_BEGINS_WITH ||
+		    elements[i]->query == E_BOOK_QUERY_ENDS_WITH ||
 		    elements[i]->query == E_BOOK_QUERY_IS ||
 		    elements[i]->query == BOOK_QUERY_EXISTS ||
 		    elements[i]->query == E_BOOK_QUERY_CONTAINS) {
