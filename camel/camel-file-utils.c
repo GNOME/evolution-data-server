@@ -306,7 +306,7 @@ camel_file_util_decode_string (FILE *in,
 	}
 
 	ret = g_malloc (len + 1);
-	if (len > 0 && fread (ret, len, 1, in) != 1) {
+	if (len > 0 && fread (ret, sizeof (gchar), len, in) != len) {
 		g_free (ret);
 		*str = NULL;
 		return -1;
@@ -379,7 +379,7 @@ camel_file_util_decode_fixed_string (FILE *in,
 	}
 
 	ret = g_malloc (len + 1);
-	if (len > 0 && fread (ret, len, 1, in) != 1) {
+	if (len > 0 && fread (ret, sizeof (gchar), len, in) != len) {
 		g_free (ret);
 		*str = NULL;
 		return -1;
