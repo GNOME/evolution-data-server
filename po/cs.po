@@ -7,8 +7,7 @@
 # Michal Bukovjan <bukm@centrum.cz>, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
 # Petr Kovar <pknbe@volny.cz>, 2008.
-# Jiří Eischmann <jiri@eischmann.cz> 2008, 2009, 2010.
-# Jiri Eischmann <jiri@eischmann.cz>, 2011, 2012, 2013.
+# Jiří Eischmann <jiri@eischmann.cz> 2008, 2009, 2010, 2011, 2012, 2013.
 # Marek Černocký <marek@manet.cz>, 2010, 2013, 2014.
 #
 msgid ""
@@ -16,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-09-22 04:40+0000\n"
-"PO-Revision-Date: 2014-09-22 07:30+0200\n"
+"POT-Creation-Date: 2014-11-02 05:30+0000\n"
+"PO-Revision-Date: 2014-11-02 07:12+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -69,8 +68,8 @@ msgstr "Pokus změnit kontakt „%s“ s revizí mimo synchronizaci"
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1557
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3076
-#: ../addressbook/libedata-book/e-book-sqlite.c:6991
-#: ../addressbook/libedata-book/e-book-sqlite.c:7060
+#: ../addressbook/libedata-book/e-book-sqlite.c:7246
+#: ../addressbook/libedata-book/e-book-sqlite.c:7315
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Kontakt „%s“ nenalezen"
@@ -104,43 +103,43 @@ msgstr "Nelze přejmenovat starou databázi z „%s“ na „%s“: %s"
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
-#: ../addressbook/libebook/e-book-client.c:1987
-#: ../addressbook/libebook/e-book-client.c:2159
-#: ../addressbook/libebook/e-book-client.c:2372
-#: ../addressbook/libebook/e-book-client.c:2503
-#: ../addressbook/libebook/e-book-client.c:2662
-#: ../addressbook/libebook/e-book-client.c:2796
-#: ../addressbook/libebook/e-book-client.c:2927
-#: ../addressbook/libebook/e-book-client.c:3085
-#: ../addressbook/libebook/e-book-client.c:3280
-#: ../addressbook/libebook/e-book-client.c:3498
+#: ../addressbook/libebook/e-book-client.c:2041
+#: ../addressbook/libebook/e-book-client.c:2213
+#: ../addressbook/libebook/e-book-client.c:2426
+#: ../addressbook/libebook/e-book-client.c:2557
+#: ../addressbook/libebook/e-book-client.c:2716
+#: ../addressbook/libebook/e-book-client.c:2850
+#: ../addressbook/libebook/e-book-client.c:2981
+#: ../addressbook/libebook/e-book-client.c:3139
+#: ../addressbook/libebook/e-book-client.c:3334
+#: ../addressbook/libebook/e-book-client.c:3552
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:580
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:611
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:623
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
 #: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:275
-#: ../calendar/libecal/e-cal-client.c:3346
-#: ../calendar/libecal/e-cal-client.c:3519
-#: ../calendar/libecal/e-cal-client.c:3783
-#: ../calendar/libecal/e-cal-client.c:4024
-#: ../calendar/libecal/e-cal-client.c:4214
-#: ../calendar/libecal/e-cal-client.c:4406
-#: ../calendar/libecal/e-cal-client.c:4576
-#: ../calendar/libecal/e-cal-client.c:4745
-#: ../calendar/libecal/e-cal-client.c:4948
-#: ../calendar/libecal/e-cal-client.c:5098
-#: ../calendar/libecal/e-cal-client.c:5292
-#: ../calendar/libecal/e-cal-client.c:5445
-#: ../calendar/libecal/e-cal-client.c:5662
-#: ../calendar/libecal/e-cal-client.c:5816
-#: ../calendar/libecal/e-cal-client.c:6042
-#: ../calendar/libecal/e-cal-client.c:6238
-#: ../calendar/libecal/e-cal-client.c:6601
-#: ../calendar/libecal/e-cal-client.c:6815
+#: ../calendar/libecal/e-cal-client.c:3395
+#: ../calendar/libecal/e-cal-client.c:3568
+#: ../calendar/libecal/e-cal-client.c:3832
+#: ../calendar/libecal/e-cal-client.c:4073
+#: ../calendar/libecal/e-cal-client.c:4263
+#: ../calendar/libecal/e-cal-client.c:4455
+#: ../calendar/libecal/e-cal-client.c:4625
+#: ../calendar/libecal/e-cal-client.c:4794
+#: ../calendar/libecal/e-cal-client.c:4997
+#: ../calendar/libecal/e-cal-client.c:5147
+#: ../calendar/libecal/e-cal-client.c:5341
+#: ../calendar/libecal/e-cal-client.c:5494
+#: ../calendar/libecal/e-cal-client.c:5711
+#: ../calendar/libecal/e-cal-client.c:5865
+#: ../calendar/libecal/e-cal-client.c:6091
+#: ../calendar/libecal/e-cal-client.c:6287
+#: ../calendar/libecal/e-cal-client.c:6650
+#: ../calendar/libecal/e-cal-client.c:6864
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4763
-#: ../camel/providers/imapx/camel-imapx-server.c:4772
+#: ../camel/providers/imapx/camel-imapx-server.c:4824
+#: ../camel/providers/imapx/camel-imapx-server.c:4833
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "Neznámá chyba"
@@ -947,21 +946,21 @@ msgstr "Text je na telefonní číslo příliš krátký"
 msgid "Text is too long for a phone number"
 msgstr "Text je na telefonní číslo příliš dlouhý"
 
-#: ../addressbook/libebook/e-book-client.c:890
+#: ../addressbook/libebook/e-book-client.c:939
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "Neznámé vlastnictví adresáře „%s“"
 
-#: ../addressbook/libebook/e-book-client.c:905
+#: ../addressbook/libebook/e-book-client.c:954
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "Nelze změnit hodnotu vlastnictví adresáře „%s“"
 
-#: ../addressbook/libebook/e-book-client.c:1303
-#: ../addressbook/libebook/e-book-client.c:1487
-#: ../addressbook/libebook/e-book-client.c:1754
-#: ../calendar/libecal/e-cal-client.c:1628
-#: ../calendar/libecal/e-cal-client.c:1819
+#: ../addressbook/libebook/e-book-client.c:1352
+#: ../addressbook/libebook/e-book-client.c:1536
+#: ../addressbook/libebook/e-book-client.c:1808
+#: ../calendar/libecal/e-cal-client.c:1677
+#: ../calendar/libecal/e-cal-client.c:1868
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "Nelze se připojit k „%s“:"
@@ -973,18 +972,18 @@ msgid "Client disappeared"
 msgstr "Klient zmizel"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:898
-#: ../addressbook/libedata-book/e-book-sqlite.c:2193
+#: ../addressbook/libedata-book/e-book-sqlite.c:2206
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Chyba při introspekci neznámého pole shrnutí „%s“"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1508
-#: ../addressbook/libedata-book/e-book-sqlite.c:1349
+#: ../addressbook/libedata-book/e-book-sqlite.c:1362
 msgid "Error parsing regular expression"
 msgstr "Chyba při zpracování regulárního výrazu"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1553
-#: ../addressbook/libedata-book/e-book-sqlite.c:1833 ../camel/camel-db.c:647
+#: ../addressbook/libedata-book/e-book-sqlite.c:1846 ../camel/camel-db.c:684
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nedostatek paměti"
@@ -995,7 +994,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "Neplatné pole kontaktu „%d“ zadané v shrnutí"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1724
-#: ../addressbook/libedata-book/e-book-sqlite.c:571
+#: ../addressbook/libedata-book/e-book-sqlite.c:579
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1015,7 +1014,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4291
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4384
-#: ../addressbook/libedata-book/e-book-sqlite.c:5468
+#: ../addressbook/libedata-book/e-book-sqlite.c:5723
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Dotaz obsahuje nepodporované prvky"
@@ -1080,7 +1079,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Nelze řadit podle pole, které má více hodnot"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6202
-#: ../addressbook/libedata-book/e-book-sqlite.c:7765
+#: ../addressbook/libedata-book/e-book-sqlite.c:8020
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1090,7 +1089,7 @@ msgstr ""
 "začátku seznamu kontaktů"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6210
-#: ../addressbook/libedata-book/e-book-sqlite.c:7773
+#: ../addressbook/libedata-book/e-book-sqlite.c:8028
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1099,12 +1098,12 @@ msgstr ""
 "Proběhla snaha o krokování kurzorem směrem vpřed, ale kurzor je již na konci "
 "seznamu kontaktů"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:537
+#: ../addressbook/libedata-book/e-book-sqlite.c:545
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Nepodporované pole kontaktu „%d“ zadané v souhrném dotazu"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1906
+#: ../addressbook/libedata-book/e-book-sqlite.c:1919
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1112,22 +1111,22 @@ msgstr ""
 "Nelze povýšit databázi kontaktů ze zastaralé verze databáze s více než "
 "jedním adresářem. Neprve vymažte jednu z položek v tabulce „folders“."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5461
+#: ../addressbook/libedata-book/e-book-sqlite.c:5716
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Neplatný dotaz: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5636
+#: ../addressbook/libedata-book/e-book-sqlite.c:5891
 msgid "Invalid query for EbSqlCursor"
 msgstr "Neplatný dotaz na EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7587
+#: ../addressbook/libedata-book/e-book-sqlite.c:7842
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Aby šel použít EbSqlCursor, musí být určeno nejméně jedno pole, podle "
 "kterého se bude řadit"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7605
+#: ../addressbook/libedata-book/e-book-sqlite.c:7860
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nelze řadit podle pole, které není textového typu"
 
@@ -1545,7 +1544,7 @@ msgid "Authentication failed"
 msgstr "Ověření totožnosti selhalo"
 
 #: ../calendar/libecal/e-cal.c:2330
-#: ../camel/providers/smtp/camel-smtp-transport.c:920
+#: ../camel/providers/smtp/camel-smtp-transport.c:959
 #: ../libedataserver/e-client.c:147
 msgid "Authentication required"
 msgstr "Je vyžadováno ověření totožnosti"
@@ -1568,12 +1567,12 @@ msgstr "Neznámý uživatel"
 msgid "Invalid range"
 msgstr "Neplatný rozsah"
 
-#: ../calendar/libecal/e-cal-client.c:1021
+#: ../calendar/libecal/e-cal-client.c:1070
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "Neznámé vlastnictví kalendáře „%s“"
 
-#: ../calendar/libecal/e-cal-client.c:1036
+#: ../calendar/libecal/e-cal-client.c:1085
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Nelze změnit hodnotu vlastnictví kalendáře: „%s“"
@@ -2083,36 +2082,36 @@ msgstr[0] "Filtrování nové zprávy v „%s“"
 msgstr[1] "Filtrování nový zpráv v „%s“"
 msgstr[2] "Filtrování nový zpráv v „%s“"
 
-#: ../camel/camel-folder.c:1009
+#: ../camel/camel-folder.c:1012
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Přesouvání zprávy"
 
-#: ../camel/camel-folder.c:1012
+#: ../camel/camel-folder.c:1015
 msgid "Copying messages"
 msgstr "Kopírování zprávy"
 
-#: ../camel/camel-folder.c:1054
+#: ../camel/camel-folder.c:1057
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Informace o kvótě nejsou podporovány pro složku „%s“"
 
-#: ../camel/camel-folder.c:2860
+#: ../camel/camel-folder.c:2863
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Čištění složky „%s“"
 
-#: ../camel/camel-folder.c:2988
+#: ../camel/camel-folder.c:2991
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Získávání zprávy „%s“ v %s"
 
-#: ../camel/camel-folder.c:3179
+#: ../camel/camel-folder.c:3182
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Stahování informací o kvótě pro „%s“"
 
-#: ../camel/camel-folder.c:3476
+#: ../camel/camel-folder.c:3479
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Obnovování složky „%s“"
@@ -2172,7 +2171,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "Nelze spustit gpg: %s"
 
 #: ../camel/camel-gpg-context.c:725
-#: ../camel/providers/smtp/camel-smtp-transport.c:923
+#: ../camel/providers/smtp/camel-smtp-transport.c:962
 msgid "Unknown"
 msgstr "Neznámá"
 
@@ -2254,8 +2253,8 @@ msgstr "Nelze zašifrovat zprávu: Nejsou určeni platní příjemci."
 msgid "Could not generate signing data: "
 msgstr "Nelze vygenerovat data podpisu: "
 
-#: ../camel/camel-gpg-context.c:1707 ../camel/camel-gpg-context.c:1919
-#: ../camel/camel-gpg-context.c:2029 ../camel/camel-gpg-context.c:2178
+#: ../camel/camel-gpg-context.c:1707 ../camel/camel-gpg-context.c:1918
+#: ../camel/camel-gpg-context.c:2028 ../camel/camel-gpg-context.c:2177
 msgid "Failed to execute gpg."
 msgstr "Nelze spustit gpg."
 
@@ -2271,26 +2270,26 @@ msgstr "Nelze ověřit podpis zprávy: nesprávný formát zprávy"
 msgid "Cannot verify message signature: "
 msgstr "Nelze ověřit podpis zprávy: "
 
-#: ../camel/camel-gpg-context.c:1995
+#: ../camel/camel-gpg-context.c:1994
 msgid "Could not generate encrypting data: "
 msgstr "Nelze vygenerovat data šifrování: "
 
-#: ../camel/camel-gpg-context.c:2048
+#: ../camel/camel-gpg-context.c:2047
 msgid "This is a digitally encrypted message part"
 msgstr "Toto je digitálně šifrovaná část zprávy"
 
-#: ../camel/camel-gpg-context.c:2104 ../camel/camel-gpg-context.c:2113
-#: ../camel/camel-gpg-context.c:2136
+#: ../camel/camel-gpg-context.c:2103 ../camel/camel-gpg-context.c:2112
+#: ../camel/camel-gpg-context.c:2135
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nelze dešifrovat zprávu: Nesprávný formát zprávy"
 
-#: ../camel/camel-gpg-context.c:2124
+#: ../camel/camel-gpg-context.c:2123
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Nelze dešifrovat část MIME: chyba protokolu"
 
-#: ../camel/camel-gpg-context.c:2219 ../camel/camel-smime-context.c:1288
+#: ../camel/camel-gpg-context.c:2218 ../camel/camel-smime-context.c:1288
 msgid "Encrypted content"
 msgstr "Šifrovaný obsah"
 
@@ -2429,15 +2428,16 @@ msgid "Host lookup '%s' failed: %s"
 msgstr "Vyhledání hostitele „%s“ selhalo: %s"
 
 #: ../camel/camel-offline-folder.c:89
-msgid "Downloading new messages for offline mode"
-msgstr "Stahování nové zprávy pro režim odpojení"
+#, c-format
+msgid "Downloading new messages for offline mode in '%s'"
+msgstr "Stahují se nové zprávy pro režim odpojení v „%s“"
 
-#: ../camel/camel-offline-folder.c:208
+#: ../camel/camel-offline-folder.c:209
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
-msgstr "Synchronizace zprávy ve složce „%s“ na disk"
+msgstr "Synchronizují se zprávy ve složce „%s“ na disk"
 
-#: ../camel/camel-offline-folder.c:265
+#: ../camel/camel-offline-folder.c:266
 msgid "Copy folder content locally for _offline operation"
 msgstr "Zkopírovat obsah složky lokálně pro práci při _odpojení"
 
@@ -2636,7 +2636,7 @@ msgstr "Odkazované údaje vypršely."
 
 #: ../camel/camel-sasl-gssapi.c:222 ../camel/camel-sasl-gssapi.c:404
 #: ../camel/camel-sasl-gssapi.c:453 ../camel/camel-sasl-gssapi.c:470
-#: ../camel/providers/smtp/camel-smtp-transport.c:621
+#: ../camel/providers/smtp/camel-smtp-transport.c:658
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Neplatná odpověď ověřování totožnosti od serveru."
@@ -2708,10 +2708,10 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Neplatný GType registrovaný pro protokol „%s“"
 
 #: ../camel/camel-session.c:500
-#: ../camel/providers/imapx/camel-imapx-server.c:4713
+#: ../camel/providers/imapx/camel-imapx-server.c:4774
 #: ../camel/providers/pop3/camel-pop3-store.c:309
 #: ../camel/providers/pop3/camel-pop3-store.c:755
-#: ../camel/providers/smtp/camel-smtp-transport.c:514
+#: ../camel/providers/smtp/camel-smtp-transport.c:544
 #, c-format
 msgid "No support for %s authentication"
 msgstr "Typ ověřování totožnosti %s není podporován"
@@ -2915,43 +2915,43 @@ msgstr "Nelze přidat data ke kodéru"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Dešifrování S/MIME: Nenalezen šifrovaný obsah"
 
-#: ../camel/camel-store.c:1230
+#: ../camel/camel-store.c:1233
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Otevírání složky „%s“"
 
-#: ../camel/camel-store.c:1521
+#: ../camel/camel-store.c:1524
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Prohledávání složek v „%s“"
 
-#: ../camel/camel-store.c:1549 ../camel/camel-store.c:1594
+#: ../camel/camel-store.c:1552 ../camel/camel-store.c:1597
 #: ../camel/camel-vtrash-folder.c:45
 msgid "Trash"
 msgstr "Koš"
 
-#: ../camel/camel-store.c:1563 ../camel/camel-store.c:1611
+#: ../camel/camel-store.c:1566 ../camel/camel-store.c:1614
 #: ../camel/camel-vtrash-folder.c:47
 msgid "Junk"
 msgstr "Nevyžádané"
 
-#: ../camel/camel-store.c:2212
+#: ../camel/camel-store.c:2215
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nelze vytvořit složku: %s: složka existuje"
 
-#: ../camel/camel-store.c:2219
+#: ../camel/camel-store.c:2222
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Vytváření složky „%s“"
 
-#: ../camel/camel-store.c:2396 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2399 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:321
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nelze odstranit složku: %s: Neplatná operace"
 
-#: ../camel/camel-store.c:2586 ../camel/camel-vee-store.c:461
+#: ../camel/camel-store.c:2589 ../camel/camel-vee-store.c:461
 #: ../camel/providers/local/camel-maildir-store.c:872
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3181,169 +3181,169 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Pro čtení a ukládání pošty na serverech IMAP."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1001
-#: ../camel/providers/imapx/camel-imapx-server.c:1008
+#: ../camel/providers/imapx/camel-imapx-server.c:1007
+#: ../camel/providers/imapx/camel-imapx-server.c:1014
 #, c-format
 msgid "Not authenticated"
 msgstr "Uživatele nelze ověřit"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1705
+#: ../camel/providers/imapx/camel-imapx-server.c:1732
 msgid "Server disconnected"
 msgstr "Server byl odpojen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2197
+#: ../camel/providers/imapx/camel-imapx-server.c:2226
 msgid "Error writing to cache stream"
 msgstr "Chyba při zápisu do proudu mezipaměti "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3557
+#: ../camel/providers/imapx/camel-imapx-server.c:3614
 msgid "Error performing IDLE"
 msgstr "Chyba při vykonávání IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4554
+#: ../camel/providers/imapx/camel-imapx-server.c:4615
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4555
-#: ../camel/providers/smtp/camel-smtp-transport.c:214
+#: ../camel/providers/imapx/camel-imapx-server.c:4616
+#: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "STARTTLS není podporováno"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4615
+#: ../camel/providers/imapx/camel-imapx-server.c:4676
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4702
+#: ../camel/providers/imapx/camel-imapx-server.c:4763
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s nepodporuje ověřování totožnosti %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4732
+#: ../camel/providers/imapx/camel-imapx-server.c:4793
 #: ../camel/providers/nntp/camel-nntp-store.c:393
 #: ../camel/providers/nntp/camel-nntp-store.c:530
 msgid "Cannot authenticate without a username"
 msgstr "Nelze ověřit totožnost bez uživatelského jména"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4741
+#: ../camel/providers/imapx/camel-imapx-server.c:4802
 #: ../camel/providers/nntp/camel-nntp-store.c:539
 #: ../camel/providers/pop3/camel-pop3-store.c:676
 #: ../camel/providers/pop3/camel-pop3-store.c:697
 msgid "Authentication password not available"
 msgstr "Heslo pro ověření totožnosti není k dispozici"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4977
-#: ../camel/providers/imapx/camel-imapx-server.c:5036
+#: ../camel/providers/imapx/camel-imapx-server.c:5038
+#: ../camel/providers/imapx/camel-imapx-server.c:5097
 msgid "Error fetching message"
 msgstr "Chyba při získávání zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5029
+#: ../camel/providers/imapx/camel-imapx-server.c:5090
 msgid "Failed to close the tmp stream"
 msgstr "Selhalo zavření proudu tmp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5065
+#: ../camel/providers/imapx/camel-imapx-server.c:5126
 msgid "Failed to copy the tmp file"
 msgstr "Selhalo kopírování souboru tmp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5206
+#: ../camel/providers/imapx/camel-imapx-server.c:5267
 msgid "Error moving messages"
 msgstr "Chyba při přesouvání zpráv"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5210
+#: ../camel/providers/imapx/camel-imapx-server.c:5271
 msgid "Error copying messages"
 msgstr "Chyba při kopírování zpráv"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5432
+#: ../camel/providers/imapx/camel-imapx-server.c:5493
 msgid "Error appending message"
 msgstr "Chyba při přidávání zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5668
+#: ../camel/providers/imapx/camel-imapx-server.c:5729
 msgid "Error fetching message headers"
 msgstr "Chyba při získávání hlaviček zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5835
+#: ../camel/providers/imapx/camel-imapx-server.c:5896
 msgid "Error retrieving message"
 msgstr "Chyba při získávání zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5969
-#: ../camel/providers/imapx/camel-imapx-server.c:6198
+#: ../camel/providers/imapx/camel-imapx-server.c:6030
+#: ../camel/providers/imapx/camel-imapx-server.c:6259
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Stahování souhrnných informací o nových zprávách v „%s“"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6021
+#: ../camel/providers/imapx/camel-imapx-server.c:6082
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Hledání změněných zpráv v „%s“"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6073
+#: ../camel/providers/imapx/camel-imapx-server.c:6134
 msgid "Error fetching new messages"
 msgstr "Chyba při získávání nových zpráv"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6346
+#: ../camel/providers/imapx/camel-imapx-server.c:6407
 msgid "Error refreshing folder"
 msgstr "Chyba při obnovování složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6496
+#: ../camel/providers/imapx/camel-imapx-server.c:6557
 msgid "Error expunging message"
 msgstr "Chyba při trvalém odstranění zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6611
-#: ../camel/providers/imapx/camel-imapx-server.c:6636
+#: ../camel/providers/imapx/camel-imapx-server.c:6672
+#: ../camel/providers/imapx/camel-imapx-server.c:6697
 msgid "Error fetching folders"
 msgstr "Chyba při získávání složek"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6716
+#: ../camel/providers/imapx/camel-imapx-server.c:6777
 msgid "Error creating folder"
 msgstr "Chyba při vytváření složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6768
+#: ../camel/providers/imapx/camel-imapx-server.c:6829
 msgid "Error deleting folder"
 msgstr "Chyba při odstraňování složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6844
+#: ../camel/providers/imapx/camel-imapx-server.c:6905
 msgid "Error renaming folder"
 msgstr "Chyba při přejmenovávání složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6918
+#: ../camel/providers/imapx/camel-imapx-server.c:6979
 msgid "Error subscribing to folder"
 msgstr "Chyba při přihlašování ke složce"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6984
+#: ../camel/providers/imapx/camel-imapx-server.c:7045
 msgid "Error unsubscribing from folder"
 msgstr "Chyba při odhlašování od složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7046
+#: ../camel/providers/imapx/camel-imapx-server.c:7107
 msgid "Error retrieving quota information"
 msgstr "Chyba při získávání informací o kvótě"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7098
+#: ../camel/providers/imapx/camel-imapx-server.c:7159
 msgid "Search failed"
 msgstr "Hledání selhalo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7160
+#: ../camel/providers/imapx/camel-imapx-server.c:7221
 msgid "Error performing NOOP"
 msgstr "Chyba při vykonávání NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7267
+#: ../camel/providers/imapx/camel-imapx-server.c:7328
 msgid "Error syncing changes"
 msgstr "Chyba při synchronizaci změn"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8250
+#: ../camel/providers/imapx/camel-imapx-server.c:8323
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nelze získat zprávu s ID %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8251
+#: ../camel/providers/imapx/camel-imapx-server.c:8324
 msgid "No such message available."
 msgstr "Žádná taková zpráva není k dispozici."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8458
-#: ../camel/providers/imapx/camel-imapx-server.c:8479
+#: ../camel/providers/imapx/camel-imapx-server.c:8537
+#: ../camel/providers/imapx/camel-imapx-server.c:8558
 msgid "Cannot create spool file: "
 msgstr "Nelze vytvořit soubor fronty: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9231
+#: ../camel/providers/imapx/camel-imapx-server.c:9351
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP nepodporuje kvóty"
 
@@ -3400,7 +3400,7 @@ msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Název složky „%s“ je neplatný, protože obsahuje znak „%c“"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2689
+#: ../camel/providers/imapx/camel-imapx-store.c:2696
 #: ../camel/providers/nntp/camel-nntp-store.c:1249
 #: ../camel/providers/pop3/camel-pop3-folder.c:448
 #: ../camel/providers/pop3/camel-pop3-folder.c:591
@@ -3415,7 +3415,7 @@ msgstr "Název složky „%s“ je neplatný, protože obsahuje znak „%c“"
 msgid "You must be working online to complete this operation"
 msgstr "Pro dokončení této operace musíte pracovat připojeni"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2694
+#: ../camel/providers/imapx/camel-imapx-store.c:2701
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "Pro dokončení této operace musíte pracovat připojeni (%s)"
@@ -4400,219 +4400,219 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "Pro doručování pošty spojením se vzdáleným serverem pomocí SMTP."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:169
-#: ../camel/providers/smtp/camel-smtp-transport.c:177
+#: ../camel/providers/smtp/camel-smtp-transport.c:170
+#: ../camel/providers/smtp/camel-smtp-transport.c:178
 msgid "Welcome response error: "
 msgstr "Chyba odpovědi na přivítání: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:213
+#: ../camel/providers/smtp/camel-smtp-transport.c:214
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "Nelze se připojit k serveru SMTP %s v zabezpečeném režimu: %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:223
-#: ../camel/providers/smtp/camel-smtp-transport.c:237
-#: ../camel/providers/smtp/camel-smtp-transport.c:245
+#: ../camel/providers/smtp/camel-smtp-transport.c:224
+#: ../camel/providers/smtp/camel-smtp-transport.c:239
+#: ../camel/providers/smtp/camel-smtp-transport.c:247
 msgid "STARTTLS command failed: "
 msgstr "Příkaz STARTTLS selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:264
+#: ../camel/providers/smtp/camel-smtp-transport.c:266
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "Nelze se připojit k serveru SMTP %s v zabezpečeném režimu: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:356
+#: ../camel/providers/smtp/camel-smtp-transport.c:358
 #, c-format
 msgid "SMTP server %s"
 msgstr "Server SMTP %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:359
+#: ../camel/providers/smtp/camel-smtp-transport.c:361
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "Doručení pošty SMTP pomocí %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:433
+#: ../camel/providers/smtp/camel-smtp-transport.c:462
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "Server SMTP %s nepodporuje ověřování totožnosti %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:505
+#: ../camel/providers/smtp/camel-smtp-transport.c:535
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "Nebyl specifikovaný žádný mechanismus SASL "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:535
-#: ../camel/providers/smtp/camel-smtp-transport.c:546
-#: ../camel/providers/smtp/camel-smtp-transport.c:559
+#: ../camel/providers/smtp/camel-smtp-transport.c:570
+#: ../camel/providers/smtp/camel-smtp-transport.c:582
+#: ../camel/providers/smtp/camel-smtp-transport.c:595
 msgid "AUTH command failed: "
 msgstr "Příkaz AUTH selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:700
+#: ../camel/providers/smtp/camel-smtp-transport.c:739
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Nelze odeslat zprávu: služba není připojena."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:707
+#: ../camel/providers/smtp/camel-smtp-transport.c:746
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Nelze odeslat zprávu: adresa odesílatele není platná."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:711
+#: ../camel/providers/smtp/camel-smtp-transport.c:750
 msgid "Sending message"
 msgstr "Posílání zprávy"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:736
+#: ../camel/providers/smtp/camel-smtp-transport.c:775
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Nelze odeslat zprávu: nebyli určeni příjemci."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:749
+#: ../camel/providers/smtp/camel-smtp-transport.c:788
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Nelze odeslat zprávu: jeden nebo více neplatných příjemců"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:870
+#: ../camel/providers/smtp/camel-smtp-transport.c:909
 msgid "Syntax error, command unrecognized"
 msgstr "Syntaktická chyba, příkaz neznámý"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:872
+#: ../camel/providers/smtp/camel-smtp-transport.c:911
 msgid "Syntax error in parameters or arguments"
 msgstr "Syntaktická chyba v parametrech nebo argumentech"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:874
+#: ../camel/providers/smtp/camel-smtp-transport.c:913
 msgid "Command not implemented"
 msgstr "Příkaz není implementován"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:876
+#: ../camel/providers/smtp/camel-smtp-transport.c:915
 msgid "Command parameter not implemented"
 msgstr "Parametr příkazu není implementován"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:878
+#: ../camel/providers/smtp/camel-smtp-transport.c:917
 msgid "System status, or system help reply"
 msgstr "Stav systému nebo odpověď na pomoc"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:880
+#: ../camel/providers/smtp/camel-smtp-transport.c:919
 msgid "Help message"
 msgstr "Nápověda"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:882
+#: ../camel/providers/smtp/camel-smtp-transport.c:921
 msgid "Service ready"
 msgstr "Služba připravena"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:884
+#: ../camel/providers/smtp/camel-smtp-transport.c:923
 msgid "Service closing transmission channel"
 msgstr "Služba zavírá přenosový kanál"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:886
+#: ../camel/providers/smtp/camel-smtp-transport.c:925
 msgid "Service not available, closing transmission channel"
 msgstr "Služba není k dispozici, zavírá se přenosový kanál"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:888
+#: ../camel/providers/smtp/camel-smtp-transport.c:927
 msgid "Requested mail action okay, completed"
 msgstr "Požadovaná poštovní akce v pořádku, dokončena"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:890
+#: ../camel/providers/smtp/camel-smtp-transport.c:929
 msgid "User not local; will forward to <forward-path>"
 msgstr "Uživatel není místní; bude předáno na <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:892
+#: ../camel/providers/smtp/camel-smtp-transport.c:931
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr ""
 "Požadovaná poštovní akce nebyla vykonána, poštovní schránka není k dispozici"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:894
+#: ../camel/providers/smtp/camel-smtp-transport.c:933
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Požadovaná akce nebyla vykonána, poštovní schránka není k dispozici"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:896
+#: ../camel/providers/smtp/camel-smtp-transport.c:935
 msgid "Requested action aborted: error in processing"
 msgstr "Požadovaná činnost se nezdařila: chyba při zpracování"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:898
+#: ../camel/providers/smtp/camel-smtp-transport.c:937
 msgid "User not local; please try <forward-path>"
 msgstr "Uživatel není místní; zkuste prosím <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:900
+#: ../camel/providers/smtp/camel-smtp-transport.c:939
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Požadovaná akce nebyla vykonána: nedostatek místa v systému"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:902
+#: ../camel/providers/smtp/camel-smtp-transport.c:941
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Požadovaná poštovní akce přerušena: překročena alokace úložiště"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:904
+#: ../camel/providers/smtp/camel-smtp-transport.c:943
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Požadovaná akce nebyla vykonána: název poštovní schránky nepovolen"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:906
+#: ../camel/providers/smtp/camel-smtp-transport.c:945
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Spustit vstup pošty, končí <CRLF>.<CRLF>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:908
+#: ../camel/providers/smtp/camel-smtp-transport.c:947
 msgid "Transaction failed"
 msgstr "Transakce selhala"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:912
+#: ../camel/providers/smtp/camel-smtp-transport.c:951
 msgid "A password transition is needed"
 msgstr "Vyžadován přenos hesla"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:914
+#: ../camel/providers/smtp/camel-smtp-transport.c:953
 msgid "Authentication mechanism is too weak"
 msgstr "Mechanismus ověřování totožnosti je příliš slabý"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:916
+#: ../camel/providers/smtp/camel-smtp-transport.c:955
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Pro požadovaný způsob ověřování totožnosti je vyžadováno šifrovaní"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:918
+#: ../camel/providers/smtp/camel-smtp-transport.c:957
 msgid "Temporary authentication failure"
 msgstr "Dočasné selhání ověřování totožnosti"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1206
+#: ../camel/providers/smtp/camel-smtp-transport.c:1246
 msgid "SMTP Greeting"
 msgstr "Pozdrav SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1216
-#: ../camel/providers/smtp/camel-smtp-transport.c:1230
-#: ../camel/providers/smtp/camel-smtp-transport.c:1238
+#: ../camel/providers/smtp/camel-smtp-transport.c:1256
+#: ../camel/providers/smtp/camel-smtp-transport.c:1271
+#: ../camel/providers/smtp/camel-smtp-transport.c:1279
 msgid "HELO command failed: "
 msgstr "Příkaz HELO selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1313
-#: ../camel/providers/smtp/camel-smtp-transport.c:1328
-#: ../camel/providers/smtp/camel-smtp-transport.c:1338
+#: ../camel/providers/smtp/camel-smtp-transport.c:1354
+#: ../camel/providers/smtp/camel-smtp-transport.c:1370
+#: ../camel/providers/smtp/camel-smtp-transport.c:1380
 msgid "MAIL FROM command failed: "
 msgstr "Příkaz MAIL FROM selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1365
+#: ../camel/providers/smtp/camel-smtp-transport.c:1407
 msgid "RCPT TO command failed: "
 msgstr "Příkaz RCPT TO selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1382
-#: ../camel/providers/smtp/camel-smtp-transport.c:1392
+#: ../camel/providers/smtp/camel-smtp-transport.c:1425
+#: ../camel/providers/smtp/camel-smtp-transport.c:1435
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "Příkaz RCPT TO <%s> selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1435
-#: ../camel/providers/smtp/camel-smtp-transport.c:1446
-#: ../camel/providers/smtp/camel-smtp-transport.c:1457
-#: ../camel/providers/smtp/camel-smtp-transport.c:1516
-#: ../camel/providers/smtp/camel-smtp-transport.c:1536
-#: ../camel/providers/smtp/camel-smtp-transport.c:1550
-#: ../camel/providers/smtp/camel-smtp-transport.c:1559
+#: ../camel/providers/smtp/camel-smtp-transport.c:1478
+#: ../camel/providers/smtp/camel-smtp-transport.c:1490
+#: ../camel/providers/smtp/camel-smtp-transport.c:1501
+#: ../camel/providers/smtp/camel-smtp-transport.c:1560
+#: ../camel/providers/smtp/camel-smtp-transport.c:1580
+#: ../camel/providers/smtp/camel-smtp-transport.c:1595
+#: ../camel/providers/smtp/camel-smtp-transport.c:1604
 msgid "DATA command failed: "
 msgstr "Příkaz DATA selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1584
-#: ../camel/providers/smtp/camel-smtp-transport.c:1599
-#: ../camel/providers/smtp/camel-smtp-transport.c:1608
+#: ../camel/providers/smtp/camel-smtp-transport.c:1629
+#: ../camel/providers/smtp/camel-smtp-transport.c:1645
+#: ../camel/providers/smtp/camel-smtp-transport.c:1654
 msgid "RSET command failed: "
 msgstr "Příkaz RSET selhal: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1633
-#: ../camel/providers/smtp/camel-smtp-transport.c:1647
-#: ../camel/providers/smtp/camel-smtp-transport.c:1654
+#: ../camel/providers/smtp/camel-smtp-transport.c:1679
+#: ../camel/providers/smtp/camel-smtp-transport.c:1693
+#: ../camel/providers/smtp/camel-smtp-transport.c:1700
 msgid "QUIT command failed: "
 msgstr "Příkaz QUIT selhal: "
 
@@ -4731,25 +4731,25 @@ msgstr "Klient operaci zrušil"
 msgid "Client reports password was rejected"
 msgstr "Klient hlásí, že heslo bylo odmítnuto"
 
-#: ../libebackend/e-authentication-session.c:539
+#: ../libebackend/e-authentication-session.c:542
 msgid "Add this password to your keyring"
 msgstr "Přidat toto heslo do klíčenky"
 
-#: ../libebackend/e-authentication-session.c:649
+#: ../libebackend/e-authentication-session.c:547
 msgid "Password was incorrect"
 msgstr "Heslo bylo chybné"
 
-#: ../libebackend/e-backend.c:408
+#: ../libebackend/e-backend.c:419
 #, c-format
 msgid "%s does not support authentication"
 msgstr "%s nepodporuje ověřování totožnosti"
 
-#: ../libebackend/e-collection-backend.c:901
+#: ../libebackend/e-collection-backend.c:936
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s nepodporuje vytváření vzdálených zdrojů"
 
-#: ../libebackend/e-collection-backend.c:960
+#: ../libebackend/e-collection-backend.c:995
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepodporuje mazání vzdálených zdrojů"
@@ -4760,7 +4760,7 @@ msgid "Data source is missing a [%s] group"
 msgstr "Zdroji dat chybí skupina [%s]"
 
 #: ../libebackend/e-server-side-source.c:1022
-#: ../libedataserver/e-source.c:1394
+#: ../libedataserver/e-source.c:1582
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Zdroj dat „%s“ nepodporuje vytváření vzdálených zdrojů"
@@ -4774,7 +4774,7 @@ msgstr ""
 "zdrojů"
 
 #: ../libebackend/e-server-side-source.c:1064
-#: ../libedataserver/e-source.c:1507
+#: ../libedataserver/e-source.c:1695
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Zdroj dat „%s“ nepodporuje mazání vzdálených zdrojů"
@@ -4788,8 +4788,8 @@ msgstr ""
 "zdrojů"
 
 #: ../libebackend/e-server-side-source.c:1109
-#: ../libedataserver/e-source.c:1603
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
+#: ../libedataserver/e-source.c:1791
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "Zdroj dat „%s“ nepodporuje ověřování totožnosti OAuth 2.0"
@@ -5002,22 +5002,22 @@ msgstr "Zadejte prosím heslo pro seznam úkolů „%s“."
 msgid "Please enter the password for account \"%s\"."
 msgstr "Zadejte prosím heslo pro účet „%s“."
 
-#: ../libedataserver/e-source.c:768
+#: ../libedataserver/e-source.c:956
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Zdrojovému souboru chybí skupina [%s]"
 
-#: ../libedataserver/e-source.c:1174
+#: ../libedataserver/e-source.c:1362
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "Zdroj dat „%s“ není odstranitelný"
 
-#: ../libedataserver/e-source.c:1297
+#: ../libedataserver/e-source.c:1485
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "Zdroj dat „%s“ není zapisovatelný"
 
-#: ../libedataserver/e-source.c:1910
+#: ../libedataserver/e-source.c:2098
 msgid "Unnamed"
 msgstr "Nepojmenovaný"
 
@@ -5377,7 +5377,7 @@ msgstr "Pošta"
 msgid "Integrate your mailboxes"
 msgstr "Integrovat poštovní schránky"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1007
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1008
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
