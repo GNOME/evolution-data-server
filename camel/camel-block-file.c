@@ -1043,7 +1043,7 @@ camel_key_file_new (const gchar *path,
 		fseek (kf->fp, 0, SEEK_END);
 		last = ftell (kf->fp);
 		if (last == 0) {
-			fwrite (version, 8, 1, kf->fp);
+			fwrite (version, sizeof (gchar), 8, kf->fp);
 			last += 8;
 		}
 		kf->last = last;

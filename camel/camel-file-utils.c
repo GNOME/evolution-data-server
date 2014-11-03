@@ -273,7 +273,7 @@ camel_file_util_encode_string (FILE *out,
 
 	if (camel_file_util_encode_uint32 (out, len + 1) == -1)
 		return -1;
-	if (len == 0 || fwrite (str, len, 1, out) == 1)
+	if (len == 0 || fwrite (str, sizeof (gchar), len, out) == len)
 		return 0;
 	return -1;
 }
@@ -347,7 +347,7 @@ camel_file_util_encode_fixed_string (FILE *out,
 		buf = g_malloc0 (len);
 		g_strlcpy (buf, str, len);
 
-		if (fwrite (buf, len, 1, out) == len)
+		if (fwrite (buf, sizeof (gchar), len, out) == len)
 			retval = 0;
 
 		g_free (buf);

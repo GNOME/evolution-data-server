@@ -1559,19 +1559,19 @@ imapx_dump_fetch (struct _fetch_info *finfo)
 	if (finfo->body != NULL) {
 		g_print ("Body content:\n");
 		data = g_bytes_get_data (finfo->body, &size);
-		fwrite (data, size, 1, stdout);
+		fwrite (data, sizeof (gchar), size, stdout);
 	}
 
 	if (finfo->text != NULL) {
 		g_print ("Text content:\n");
 		data = g_bytes_get_data (finfo->text, &size);
-		fwrite (data, size, 1, stdout);
+		fwrite (data, sizeof (gchar), size, stdout);
 	}
 
 	if (finfo->header != NULL) {
 		g_print ("Header content:\n");
 		data = g_bytes_get_data (finfo->header, &size);
-		fwrite (data, size, 1, stdout);
+		fwrite (data, sizeof (gchar), size, stdout);
 	}
 
 	if (finfo->minfo != NULL) {
