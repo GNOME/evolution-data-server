@@ -479,6 +479,9 @@ store_synchronize_sync (CamelStore *store,
 	for (ii = 0; ii < folders->len; ii++) {
 		CamelFolder *folder = folders->pdata[ii];
 
+		if (folder->summary)
+			camel_folder_summary_save_to_db (folder->summary, NULL);
+
 		if (!CAMEL_IS_VEE_FOLDER (folder) && local_error == NULL) {
 			camel_folder_synchronize_sync (
 				folder, expunge, cancellable, &local_error);

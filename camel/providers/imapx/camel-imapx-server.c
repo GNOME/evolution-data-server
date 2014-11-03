@@ -4558,16 +4558,6 @@ connected:
 	while (1) {
 		GInputStream *input_stream;
 
-		// poll ? wait for other stuff? loop?
-		if (camel_application_is_exiting) {
-			g_set_error (
-				error, G_IO_ERROR,
-				G_IO_ERROR_CANCELLED,
-				"Connection to server cancelled\n");
-			success = FALSE;
-			goto exit;
-		}
-
 		input_stream = camel_imapx_server_ref_input_stream (is);
 
 		tok = camel_imapx_input_stream_token (
