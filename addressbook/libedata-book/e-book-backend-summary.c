@@ -541,8 +541,8 @@ static gboolean
 e_book_backend_summary_save_magic (FILE *fp)
 {
 	gint rv;
-	rv = fwrite (PAS_SUMMARY_MAGIC, PAS_SUMMARY_MAGIC_LEN, 1, fp);
-	if (rv != 1)
+	rv = fwrite (PAS_SUMMARY_MAGIC, sizeof (gchar), PAS_SUMMARY_MAGIC_LEN, fp);
+	if (rv != PAS_SUMMARY_MAGIC_LEN)
 		return FALSE;
 
 	return TRUE;
@@ -570,13 +570,14 @@ static gboolean
 save_string (const gchar *str,
              FILE *fp)
 {
-	gint rv;
+	size_t rv, len;
 
 	if (!str || !*str)
 		return TRUE;
 
-	rv = fwrite (str, strlen (str), 1, fp);
-	return (rv == 1);
+	len = strlen (str);
+	rv = fwrite (str, sizeof (gchar), len, fp);
+	return (rv == len);
 }
 
 static gboolean
