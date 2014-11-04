@@ -966,6 +966,9 @@ folder_thaw (CamelFolder *folder)
 	if (info) {
 		camel_folder_changed (folder, info);
 		camel_folder_change_info_free (info);
+
+		if (folder->summary)
+			camel_folder_summary_save_to_db (folder->summary, NULL);
 	}
 }
 
