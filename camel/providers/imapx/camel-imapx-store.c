@@ -848,11 +848,15 @@ imapx_query_auth_types_sync (CamelService *service,
                              GError **error)
 {
 	CamelServiceAuthType *authtype;
+	CamelIMAPXStore *imapx_store;
 	GList *sasl_types = NULL;
 	GList *t, *next;
 	CamelIMAPXServer *server;
 
-	server = camel_imapx_server_new (CAMEL_IMAPX_STORE (service));
+	imapx_store = CAMEL_IMAPX_STORE (service);
+
+	server = camel_imapx_server_new (imapx_store);
+	server->tagprefix = 'Z';
 
 	if (!imapx_connect_to_server (server, cancellable, error))
 		goto exit;
