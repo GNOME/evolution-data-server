@@ -7923,18 +7923,12 @@ static void
 imapx_server_constructed (GObject *object)
 {
 	CamelIMAPXServer *server;
-	CamelIMAPXServerClass *class;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->constructed (object);
 
 	server = CAMEL_IMAPX_SERVER (object);
-	class = CAMEL_IMAPX_SERVER_GET_CLASS (server);
-
-	server->tagprefix = class->tagprefix;
-	class->tagprefix++;
-	if (class->tagprefix > 'Z')
-		class->tagprefix = 'A';
+	server->tagprefix = 'Z';
 }
 
 static void
@@ -8023,8 +8017,6 @@ camel_imapx_server_class_init (CamelIMAPXServerClass *class)
 		NULL, NULL,
 		g_cclosure_marshal_VOID__BOXED,
 		G_TYPE_NONE, 1, G_TYPE_ERROR);
-
-	class->tagprefix = 'A';
 }
 
 static void

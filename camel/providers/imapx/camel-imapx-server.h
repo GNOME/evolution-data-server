@@ -129,8 +129,6 @@ struct _CamelIMAPXServer {
 struct _CamelIMAPXServerClass {
 	GObjectClass parent_class;
 
-	gchar tagprefix;
-
 	/* Signals */
 	void		(*mailbox_select)	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox);

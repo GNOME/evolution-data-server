@@ -717,6 +717,37 @@ exit:
 	return is;
 }
 
+static gchar
+imapx_conn_manager_get_next_free_tagprefix_unlocked (CamelIMAPXConnManager *con_man)
+{
+	gchar adept;
+	GList *iter;
+
+	/* the 'Z' is dedicated to auth types query */
+	adept = 'A';
+	while (adept < 'Z') {
+		for (iter = con_man->priv->connections; iter; iter = g_list_next (iter)) {
+			ConnectionInfo *cinfo = iter->data;
+
+			if (!cinfo || !cinfo->is)
+				continue;
+
+			if (cinfo->is->tagprefix == adept)
+				break;
+		}
+
+		/* Read all current active connections and none has the same tag prefix */
+		if (!iter)
+			break;
+
+		adept++;
+	}
+
+	g_return_val_if_fail (adept >= 'A' && adept < 'Z', 'Z');
+
+	return adept;
+}
+
 static CamelIMAPXServer *
 imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
                                       const gchar *folder_name,
@@ -741,6 +772,7 @@ imapx_create_new_connection_unlocked (CamelIMAPXConnManager *con_man,
 	imapx_store = CAMEL_IMAPX_STORE (store);
 
 	is = camel_imapx_server_new (imapx_store);
+	is->tagprefix = imapx_conn_manager_get_next_free_tagprefix_unlocked (con_man);
 
 	/* XXX As part of the connect operation the CamelIMAPXServer will
 	 *     have to call camel_session_authenticate_sync(), but it has
