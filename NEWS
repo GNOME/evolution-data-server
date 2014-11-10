@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.12.8 2014-11-10
+-----------------------------------------
+
+Bug Fixes:
+	Bug 737733 - [IMAPx] Prevent "Stream has outstanding operation" error (Milan Crha)
+	Bug 738288 - EBookSqlite is leaking memory in ebsql_ref_from_hash function (Mateusz Polrola)
+	Bug 698964 - Hide password prompt right after getting the password (Milan Crha)
+	Bug 708166 - Update EClient properties on idle after GDBusProxy notify (Milan Crha)
+	Bug 737930 - Claims invalid PGP signature for single line mail (Christian Schaarschmidt)
+	Bug 738724 - [IMAPx] Message flag changes not always saved (Milan Crha)
+	Bug 738965 - [SQLite VFS] Crash due to missing xFetch definition (Milan Crha)
+	Bug 738184 - [IMAPx] Not every server returns empty namespace prefix for INBOX (Milan Crha)
+	Bug 712392 - Delay server availability checks on network change (Milan Crha)
+	Bug 739343 - Google Task with Due Date freezes UI on save (Milan Crha)
+	Bug 738724 - [IMAPx] Message flag changes not always saved (Milan Crha)
+
+Miscellaneous:
+	Update MAINTAINERS, doap. (Matthew Barnes)
+	[CamelService] Connect/Disconnect rely on provided cancellable (Milan Crha)
+	[CamelFolder/Store] Check online state of the session too before connecting (Milan Crha)
+	[CamelIMAPXConnManager] Can starve in close connections (Milan Crha)
+	[CamelOfflineStore] Count with host reachability update delay (Milan Crha)
+	[IMAPx] Do not connect to the server in offline mode (Milan Crha)
+	[IMAPx] Try to reconnect after socket I/O timeout (Milan Crha)
+	[CamelIMAPXServer] Assign tagprefix per account (Milan Crha)
+	Use 90 seconds timeout for Camel connections (Milan Crha)
+	Disabling/enabling Collection master source doesn't update children properly (Milan Crha)
+	camel_folder_thaw: Save changes to local summary (Milan Crha)
+
+Translations:
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.12.7.1 2014-10-14
 -----------------------------------------
 
