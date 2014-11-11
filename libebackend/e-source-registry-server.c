@@ -1223,7 +1223,7 @@ source_registry_server_source_removed (ESourceRegistryServer *server,
 	object_path = g_dbus_object_get_object_path (dbus_object);
 	object_name = strrchr (object_path, '/') + 1;
 
-	g_print ("Removing %s ('%s')\n", uid, object_name);
+	e_source_registry_debug_print ("Removing %s ('%s')\n", uid, object_name);
 
 	g_dbus_object_manager_server_unexport (
 		server->priv->object_manager, object_path);
@@ -2504,4 +2504,3 @@ e_source_registry_server_authenticate_finish (ESourceRegistryServer *server,
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
 }
-

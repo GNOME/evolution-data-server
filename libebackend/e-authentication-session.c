@@ -134,7 +134,7 @@ authentication_session_msg (EAuthenticationSession *session,
 	g_string_append_vprintf (buffer, format, args);
 	va_end (args);
 
-	g_print ("%s\n", buffer->str);
+	e_source_registry_debug_print ("%s\n", buffer->str);
 
 	g_string_free (buffer, TRUE);
 }

@@ -699,7 +699,7 @@ book_backend_shutdown (EBookBackend *backend)
 
 	source = e_backend_get_source (E_BACKEND (backend));
 
-	g_print (
+	e_source_registry_debug_print (
 		"The %s instance for \"%s\" is shutting down.\n",
 		G_OBJECT_TYPE_NAME (backend),
 		e_source_get_display_name (source));

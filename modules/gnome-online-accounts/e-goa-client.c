@@ -15,6 +15,12 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <libedataserver/libedataserver.h>
+
 #include "e-goa-client.h"
 
 #define E_GOA_CLIENT_GET_PRIVATE(obj) \
@@ -76,7 +82,7 @@ e_goa_client_stash_orphan (EGoaClient *client,
 	goa_account_id = goa_account_get_id (goa_account);
 	g_return_if_fail (goa_account_id != NULL);
 
-	g_print ("GOA: Stashing orphaned account '%s'\n", goa_account_id);
+	e_source_registry_debug_print ("GOA: Stashing orphaned account '%s'\n", goa_account_id);
 
 	g_mutex_lock (&client->priv->orphans_lock);
 
@@ -117,7 +123,7 @@ e_goa_client_claim_one_orphan (EGoaClient *client,
 	g_mutex_unlock (&client->priv->orphans_lock);
 
 	if (old_goa_object != NULL)
-		g_print (
+		e_source_registry_debug_print (
 			"GOA: Claiming orphaned account '%s'\n",
 			goa_account_id);
 
@@ -138,7 +144,7 @@ e_goa_client_claim_all_orphans (EGoaClient *client)
 	g_mutex_unlock (&client->priv->orphans_lock);
 
 	if (list != NULL)
-		g_print ("GOA: Claiming orphaned account(s)\n");
+		e_source_registry_debug_print ("GOA: Claiming orphaned account(s)\n");
 
 	return list;
 }
@@ -217,9 +223,9 @@ e_goa_client_notify_name_owner_cb (GDBusObjectManager *manager,
 		G_DBUS_OBJECT_MANAGER_CLIENT (manager));
 
 	if (name_owner != NULL)
-		g_print ("GOA: 'org.gnome.OnlineAccounts' name appeared\n");
+		e_source_registry_debug_print ("GOA: 'org.gnome.OnlineAccounts' name appeared\n");
 	else
-		g_print ("GOA: 'org.gnome.OnlineAccounts' name vanished\n");
+		e_source_registry_debug_print ("GOA: 'org.gnome.OnlineAccounts' name vanished\n");
 
 	if (name_owner != NULL) {
 		GList *list, *link;
