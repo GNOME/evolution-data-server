@@ -212,6 +212,10 @@ void		e_data_server_util_set_dbus_call_timeout
 
 #endif /* EDS_DISABLE_DEPRECATED */
 
+gboolean	e_source_registry_debug_enabled	(void);
+void		e_source_registry_debug_print	(const gchar *format,
+						 ...) G_GNUC_PRINTF (1, 2);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */

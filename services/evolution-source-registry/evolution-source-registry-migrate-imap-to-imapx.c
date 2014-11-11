@@ -70,7 +70,7 @@ evolution_source_registry_migrate_imap_to_imapx (ESourceRegistryServer *server,
 	if (!backend_is_imap)
 		return FALSE;
 
-	g_print ("Converting %s from IMAP to IMAPX\n", uid);
+	e_source_registry_debug_print ("Converting %s from IMAP to IMAPX\n", uid);
 
 	g_key_file_set_string (key_file, group_name, "BackendName", "imapx");
 

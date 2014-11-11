@@ -149,7 +149,10 @@ server_side_source_print_diff (ESource *source,
 	guint new_length = 0;
 	guint ii;
 
-	g_print ("Saving %s\n", e_source_get_uid (source));
+	if (!e_source_registry_debug_enabled ())
+		return;
+
+	e_source_registry_debug_print ("Saving %s\n", e_source_get_uid (source));
 
 	if (old_data != NULL) {
 		old_strv = g_strsplit (old_data, "\n", 0);
@@ -163,18 +166,18 @@ server_side_source_print_diff (ESource *source,
 
 	for (ii = 0; ii < MIN (old_length, new_length); ii++) {
 		if (g_strcmp0 (old_strv[ii], new_strv[ii]) != 0) {
-			g_print (" - : %s\n", old_strv[ii]);
-			g_print (" + : %s\n", new_strv[ii]);
+			e_source_registry_debug_print (" - : %s\n", old_strv[ii]);
+			e_source_registry_debug_print (" + : %s\n", new_strv[ii]);
 		} else {
-			g_print ("   : %s\n", old_strv[ii]);
+			e_source_registry_debug_print ("   : %s\n", old_strv[ii]);
 		}
 	}
 
 	for (; ii < old_length; ii++)
-		g_print (" - : %s\n", old_strv[ii]);
+		e_source_registry_debug_print (" - : %s\n", old_strv[ii]);
 
 	for (; ii < new_length; ii++)
-		g_print (" + : %s\n", new_strv[ii]);
+		e_source_registry_debug_print (" + : %s\n", new_strv[ii]);
 
 	g_strfreev (old_strv);
 	g_strfreev (new_strv);

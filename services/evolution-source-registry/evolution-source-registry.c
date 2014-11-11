@@ -216,7 +216,7 @@ reload:
 		const gchar *config_dir;
 		gchar *dirname;
 
-		g_print ("Reloading...\n");
+		e_source_registry_debug_print ("Reloading...\n");
 
 		/* It's possible the Reload is called after restore, where
 		 * the ~/.config/evolution/sources directory can be missing,

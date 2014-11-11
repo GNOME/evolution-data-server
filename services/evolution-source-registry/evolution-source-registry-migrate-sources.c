@@ -353,9 +353,9 @@ migrate_parse_commit_changes (ParseType parse_type,
 	if (uid == NULL)
 		return FALSE;
 
-	g_print ("  * Source: %s\n", uid);
+	e_source_registry_debug_print ("  * Source: %s\n", uid);
 
-	g_print ("    Writing key file...\n");
+	e_source_registry_debug_print ("    Writing key file...\n");
 
 	/* Save the key file contents to disk. */
 	contents = g_key_file_to_data (key_file, &length, NULL);
@@ -400,21 +400,21 @@ migrate_parse_commit_changes (ParseType parse_type,
 	old_directory_exists = g_file_test (old_directory, G_FILE_TEST_EXISTS);
 	new_directory_exists = g_file_test (new_directory, G_FILE_TEST_EXISTS);
 
-	g_print (
+	e_source_registry_debug_print (
 		"    Checking for old cache dir '%s'... %s\n",
 		old_directory,
 		old_directory_exists ? "found" : "not found");
 
 	if (old_directory_exists) {
-		g_print (
+		e_source_registry_debug_print (
 			"    Checking for new cache dir '%s'... %s\n",
 			new_directory,
 			new_directory_exists ? "found" : "not found");
 
 		if (new_directory_exists)
-			g_print ("    Skipping cache directory rename.\n");
+			e_source_registry_debug_print ("    Skipping cache directory rename.\n");
 		else {
-			g_print ("    Renaming old cache directory...\n");
+			e_source_registry_debug_print ("    Renaming old cache directory...\n");
 			if (g_rename (old_directory, new_directory) < 0) {
 				g_set_error (
 					error, G_FILE_ERROR,
@@ -444,21 +444,21 @@ migrate_parse_commit_changes (ParseType parse_type,
 	old_directory_exists = g_file_test (old_directory, G_FILE_TEST_EXISTS);
 	new_directory_exists = g_file_test (new_directory, G_FILE_TEST_EXISTS);
 
-	g_print (
+	e_source_registry_debug_print (
 		"    Checking for old data dir '%s'... %s\n",
 		old_directory,
 		old_directory_exists ? "found" : "not found");
 
 	if (old_directory_exists) {
-		g_print (
+		e_source_registry_debug_print (
 			"    Checking for new data dir '%s'... %s\n",
 			new_directory,
 			new_directory_exists ? "found" : "not found");
 
 		if (new_directory_exists)
-			g_print ("    Skipping data directory rename.\n");
+			e_source_registry_debug_print ("    Skipping data directory rename.\n");
 		else {
-			g_print ("    Renaming old data directory...\n");
+			e_source_registry_debug_print ("    Renaming old data directory...\n");
 			if (g_rename (old_directory, new_directory) < 0) {
 				g_set_error (
 					error, G_FILE_ERROR,
@@ -3678,7 +3678,7 @@ migrate_and_remove_key (const gchar *filename,
 		filename, &contents, &length, &local_error);
 
 	if (contents != NULL) {
-		g_print ("Migrating %s from GConf...\n", migrate_type_name);
+		e_source_registry_debug_print ("Migrating %s from GConf...\n", migrate_type_name);
 
 		migrate_parse_gconf_xml (
 			parse_type, contents, length, &local_error);

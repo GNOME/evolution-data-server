@@ -22,6 +22,8 @@
 
 #include <glib.h>
 
+#include <libedataserver/libedataserver.h>
+
 #define PROGRAM_SUMMARY \
 	"Extracts Evolution accounts from a merged GConf tree file."
 
@@ -51,7 +53,7 @@ main (gint argc,
 	}
 
 	if (argc != 2) {
-		g_print (
+		e_source_registry_debug_print (
 			"Usage: %s /path/to/%%gconf-tree.xml\n\n",
 			g_get_prgname ());
 		exit (0);

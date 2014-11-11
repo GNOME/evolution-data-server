@@ -111,7 +111,7 @@ dbus_server_hang_up_cb (gpointer user_data)
 {
 	EDBusServer *server = E_DBUS_SERVER (user_data);
 
-	g_print ("Received hang up signal.\n");
+	e_source_registry_debug_print ("Received hang up signal.\n");
 	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
 
 	return FALSE;
@@ -122,7 +122,7 @@ dbus_server_terminate_cb (gpointer user_data)
 {
 	EDBusServer *server = E_DBUS_SERVER (user_data);
 
-	g_print ("Received terminate signal.\n");
+	e_source_registry_debug_print ("Received terminate signal.\n");
 	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 
 	return FALSE;
@@ -187,7 +187,7 @@ dbus_server_bus_name_acquired (EDBusServer *server,
 	class = E_DBUS_SERVER_GET_CLASS (server);
 	g_return_if_fail (class->bus_name != NULL);
 
-	g_print ("Bus name '%s' acquired.\n", class->bus_name);
+	e_source_registry_debug_print ("Bus name '%s' acquired.\n", class->bus_name);
 }
 
 static void
@@ -199,7 +199,7 @@ dbus_server_bus_name_lost (EDBusServer *server,
 	class = E_DBUS_SERVER_GET_CLASS (server);
 	g_return_if_fail (class->bus_name != NULL);
 
-	g_print ("Bus name '%s' lost.\n", class->bus_name);
+	e_source_registry_debug_print ("Bus name '%s' lost.\n", class->bus_name);
 
 	e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_NORMAL);
 }

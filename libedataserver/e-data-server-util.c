@@ -2255,3 +2255,52 @@ e_timeout_add_seconds_with_name (gint priority,
 	return tag;
 }
 
+/**
+ * e_source_registry_debug_enabled:
+ *
+ * Returns: Whether debugging is enabled, that is,
+ * whether e_source_registry_debug_print() will produce any output.
+ *
+ * Since: 3.12.9
+ **/
+gboolean
+e_source_registry_debug_enabled (void)
+{
+	static gint esr_debug = -1;
+
+	if (esr_debug == -1)
+		esr_debug = g_strcmp0 (g_getenv ("ESR_DEBUG"), "1") == 0 ? 1 : 0;
+
+	return esr_debug == 1;
+}
+
+/**
+ * e_source_registry_debug_print:
+ * @format: a format string to print
+ * @...: other arguments for the format
+ *
+ * Prints the text only if a debugging is enabled with an environment
+ * variable ESR_DEBUG=1.
+ *
+ * Since: 3.12.9
+ **/
+void
+e_source_registry_debug_print (const gchar *format,
+			       ...)
+{
+	GString *str;
+	va_list args;
+
+	if (!e_source_registry_debug_enabled ())
+		return;
+
+	str = g_string_new ("");
+
+	va_start (args, format);
+	g_string_vprintf (str, format, args);
+	va_end (args);
+
+	g_print ("%s", str->str);
+
+	g_string_free (str, TRUE);
+}

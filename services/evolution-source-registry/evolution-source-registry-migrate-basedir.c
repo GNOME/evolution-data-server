@@ -38,7 +38,7 @@ migrate_rename (const gchar *old_filename,
 	if (!old_filename_exists)
 		return TRUE;
 
-	g_print ("  mv %s %s\n", old_filename, new_filename);
+	e_source_registry_debug_print ("  mv %s %s\n", old_filename, new_filename);
 
 	/* It's safe to go ahead and move directories because rename()
 	 * will fail if the new directory already exists with content.
@@ -64,7 +64,7 @@ migrate_rmdir (const gchar *dirname)
 	gboolean success = TRUE;
 
 	if (g_file_test (dirname, G_FILE_TEST_IS_DIR)) {
-		g_print ("  rmdir %s\n", dirname);
+		e_source_registry_debug_print ("  rmdir %s\n", dirname);
 		if (g_rmdir (dirname) < 0) {
 			g_printerr ("  FAILED: %s", g_strerror (errno));
 			if (errno == ENOTEMPTY) {
@@ -82,7 +82,7 @@ migrate_rmdir (const gchar *dirname)
 
 		/* Align the filenames beneath the error message. */
 		while ((basename = g_dir_read_name (dir)) != NULL)
-			g_print ("          %s\n", basename);
+			e_source_registry_debug_print ("          %s\n", basename);
 
 		g_dir_close (dir);
 	}
@@ -281,7 +281,7 @@ migrate_to_user_cache_dir (const gchar *old_base_dir)
 	old_cache_dir = g_build_filename (old_base_dir, "cache", NULL);
 	new_cache_dir = e_get_user_cache_dir ();
 
-	g_print ("Migrating cached backend data\n");
+	e_source_registry_debug_print ("Migrating cached backend data\n");
 
 	/* We don't want to move the source directory directly because the
 	 * destination directory may already exist with content.  Instead
@@ -354,7 +354,7 @@ migrate_to_user_data_dir (const gchar *old_base_dir)
 
 	new_data_dir = e_get_user_data_dir ();
 
-	g_print ("Migrating local backend data\n");
+	e_source_registry_debug_print ("Migrating local backend data\n");
 
 	/* We don't want to move the source directory directly because the
 	 * destination directory may already exist with content.  Instead
