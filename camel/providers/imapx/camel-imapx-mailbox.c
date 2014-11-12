@@ -49,6 +49,7 @@ struct _CamelIMAPXMailboxPrivate {
 	guint32 permanentflags;
 
 	GMutex property_lock;
+	GRecMutex update_lock;
 
 	/* Protected by the "property_lock". */
 	GHashTable *attributes;
@@ -95,6 +96,7 @@ imapx_mailbox_finalize (GObject *object)
 	g_free (priv->name);
 
 	g_mutex_clear (&priv->property_lock);
+	g_rec_mutex_clear (&priv->update_lock);
 	g_hash_table_destroy (priv->attributes);
 	g_sequence_free (priv->message_map);
 	g_strfreev (priv->quota_roots);
@@ -121,6 +123,7 @@ camel_imapx_mailbox_init (CamelIMAPXMailbox *mailbox)
 	mailbox->priv = CAMEL_IMAPX_MAILBOX_GET_PRIVATE (mailbox);
 
 	g_mutex_init (&mailbox->priv->property_lock);
+	g_rec_mutex_init (&mailbox->priv->update_lock);
 	mailbox->priv->message_map = g_sequence_new (NULL);
 	mailbox->priv->permanentflags = ~0;
 }
@@ -1145,3 +1148,20 @@ camel_imapx_mailbox_handle_status_response (CamelIMAPXMailbox *mailbox,
 		mailbox->priv->highestmodseq = value64;
 }
 
+/* Prevents running FETCH and STORE at the same time for the given mailbox */
+void
+camel_imapx_mailbox_lock_update (CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	g_rec_mutex_lock (&mailbox->priv->update_lock);
+}
+
+/* Prevents running FETCH and STORE at the same time for the given mailbox */
+void
+camel_imapx_mailbox_unlock_update (CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	g_rec_mutex_unlock (&mailbox->priv->update_lock);
+}
