@@ -4311,6 +4311,7 @@ extract_objects (icalcomponent *icomp,
 {
 	icalcomponent         *scomp;
 	icalcomponent_kind     kind;
+	GSList *link;
 
 	kind = icalcomponent_isa (icomp);
 
@@ -4328,11 +4329,14 @@ extract_objects (icalcomponent *icomp,
 	scomp = icalcomponent_get_first_component (icomp, ekind);
 
 	while (scomp) {
-		/* Remove components from toplevel here */
 		*objects = g_slist_prepend (*objects, scomp);
-		icalcomponent_remove_component (icomp, scomp);
 
 		scomp = icalcomponent_get_next_component (icomp, ekind);
+	}
+
+	for (link = *objects; link; link = g_slist_next (link)) {
+		/* Remove components from toplevel here */
+		icalcomponent_remove_component (icomp, link->data);
 	}
 }
 
@@ -4543,7 +4547,10 @@ do_receive_objects (ECalBackendSync *backend,
 	/* Extract optional timezone compnents */
 	extract_timezones (cbdav, icomp);
 
-	tmethod = icalcomponent_get_method (icomp);
+	if (icalcomponent_get_first_property (icomp, ICAL_METHOD_PROPERTY))
+		tmethod = icalcomponent_get_method (icomp);
+	else
+		tmethod = ICAL_METHOD_PUBLISH;
 
 	for (iter = objects; iter && !err; iter = iter->next) {
 		icalcomponent       *scomp;
