@@ -162,6 +162,11 @@ void		camel_imapx_mailbox_handle_status_response
 					(CamelIMAPXMailbox *mailbox,
 					 CamelIMAPXStatusResponse *response);
 
+void		camel_imapx_mailbox_lock_update
+					(CamelIMAPXMailbox *mailbox);
+void		camel_imapx_mailbox_unlock_update
+					(CamelIMAPXMailbox *mailbox);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_MAILBOX_H */
