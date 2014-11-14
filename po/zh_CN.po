@@ -21,16 +21,16 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-07-29 04:28+0000\n"
-"PO-Revision-Date: 2014-07-29 16:34+0800\n"
-"Last-Translator: Yunqiang Su <wzssyqa@gmail.com>\n"
+"POT-Creation-Date: 2014-11-14 12:41+0000\n"
+"PO-Revision-Date: 2014-11-15 01:05+0800\n"
+"Last-Translator: YunQiang Su <wzssyqa@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.6.7\n"
+"X-Generator: Poedit 1.6.10\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -62,7 +62,7 @@ msgid "Loading..."
 msgstr "正在载入..."
 
 #: ../addressbook/backends/file/e-book-backend-file.c:992
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4353
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4360
 msgid "Searching..."
 msgstr "正在搜索..."
 
@@ -74,7 +74,7 @@ msgstr "试图修改失去同步的联系人“%s”"
 #: ../addressbook/backends/file/e-book-backend-file.c:1472
 #: ../addressbook/backends/file/e-book-backend-file.c:1555
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3077
-#: ../addressbook/libedata-book/e-book-sqlite.c:6711
+#: ../addressbook/libedata-book/e-book-sqlite.c:6742
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "未找到联系人“%s”"
@@ -101,50 +101,50 @@ msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "无法将旧数据库“ %s” 改名为 “%s”：%s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1172
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4248
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1174
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4250
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:419
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:887
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:35
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
-#: ../addressbook/libebook/e-book-client.c:1882
-#: ../addressbook/libebook/e-book-client.c:2054
-#: ../addressbook/libebook/e-book-client.c:2267
-#: ../addressbook/libebook/e-book-client.c:2398
-#: ../addressbook/libebook/e-book-client.c:2557
-#: ../addressbook/libebook/e-book-client.c:2691
-#: ../addressbook/libebook/e-book-client.c:2822
-#: ../addressbook/libebook/e-book-client.c:2980
-#: ../addressbook/libebook/e-book-client.c:3175
-#: ../addressbook/libebook/e-book-client.c:3393
+#: ../addressbook/libebook/e-book-client.c:1916
+#: ../addressbook/libebook/e-book-client.c:2088
+#: ../addressbook/libebook/e-book-client.c:2301
+#: ../addressbook/libebook/e-book-client.c:2432
+#: ../addressbook/libebook/e-book-client.c:2591
+#: ../addressbook/libebook/e-book-client.c:2725
+#: ../addressbook/libebook/e-book-client.c:2856
+#: ../addressbook/libebook/e-book-client.c:3014
+#: ../addressbook/libebook/e-book-client.c:3209
+#: ../addressbook/libebook/e-book-client.c:3427
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:878
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:578
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:609
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:621
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:583
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:614
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:626
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
 #: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:276
-#: ../calendar/libecal/e-cal-client.c:3239
-#: ../calendar/libecal/e-cal-client.c:3412
-#: ../calendar/libecal/e-cal-client.c:3676
-#: ../calendar/libecal/e-cal-client.c:3917
-#: ../calendar/libecal/e-cal-client.c:4107
-#: ../calendar/libecal/e-cal-client.c:4299
-#: ../calendar/libecal/e-cal-client.c:4469
-#: ../calendar/libecal/e-cal-client.c:4638
-#: ../calendar/libecal/e-cal-client.c:4841
-#: ../calendar/libecal/e-cal-client.c:4991
-#: ../calendar/libecal/e-cal-client.c:5185
-#: ../calendar/libecal/e-cal-client.c:5338
-#: ../calendar/libecal/e-cal-client.c:5555
-#: ../calendar/libecal/e-cal-client.c:5709
-#: ../calendar/libecal/e-cal-client.c:5935
-#: ../calendar/libecal/e-cal-client.c:6131
-#: ../calendar/libecal/e-cal-client.c:6494
-#: ../calendar/libecal/e-cal-client.c:6708
+#: ../calendar/libecal/e-cal-client.c:3273
+#: ../calendar/libecal/e-cal-client.c:3446
+#: ../calendar/libecal/e-cal-client.c:3710
+#: ../calendar/libecal/e-cal-client.c:3951
+#: ../calendar/libecal/e-cal-client.c:4141
+#: ../calendar/libecal/e-cal-client.c:4333
+#: ../calendar/libecal/e-cal-client.c:4503
+#: ../calendar/libecal/e-cal-client.c:4672
+#: ../calendar/libecal/e-cal-client.c:4875
+#: ../calendar/libecal/e-cal-client.c:5025
+#: ../calendar/libecal/e-cal-client.c:5219
+#: ../calendar/libecal/e-cal-client.c:5372
+#: ../calendar/libecal/e-cal-client.c:5589
+#: ../calendar/libecal/e-cal-client.c:5743
+#: ../calendar/libecal/e-cal-client.c:5969
+#: ../calendar/libecal/e-cal-client.c:6165
+#: ../calendar/libecal/e-cal-client.c:6528
+#: ../calendar/libecal/e-cal-client.c:6742
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4769
-#: ../camel/providers/imapx/camel-imapx-server.c:4778
+#: ../camel/providers/imapx/camel-imapx-server.c:4835
+#: ../camel/providers/imapx/camel-imapx-server.c:4844
 #: ../libedataserver/e-client.c:185
 msgid "Unknown error"
 msgstr "未知的错误"
@@ -160,13 +160,13 @@ msgid "Querying for updated groups…"
 msgstr "查询更新的组..."
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1757
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4984
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4997
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1433
 msgid "The backend does not support bulk additions"
 msgstr "后端不支持批量添加"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1912
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5120
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5133
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:1545
 msgid "The backend does not support bulk modifications"
 msgstr "后端不支持批量修改"
@@ -210,68 +210,68 @@ msgstr "同事"
 msgid "Not connected"
 msgstr "未连接。"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:899
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:901
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "无法使用 v3 或 v2 绑定"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1022
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1024
 msgid "Reconnecting to LDAP server..."
 msgstr "正在重新连接 LDAP 服务器..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1153
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1155
 msgid "Invalid DN syntax"
 msgstr "无效 DN 语法"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1169
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4247
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1171
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4249
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP 错误 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1781
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2104
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1783
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2106
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s：ldap_first_entry 返回 NULL"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2034
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2162
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2036
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2164
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s：返回了未处理的结果类型 %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2295
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2422
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2297
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2424
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s：返回了未处理的搜索结果类型 %d"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4196
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4198
 msgid "Receiving LDAP search results..."
 msgstr "正在接收 LDAP 的搜索结果..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4375
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4382
 msgid "Error performing search"
 msgstr "执行搜索错误"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4503
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4515
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "正在下载联系人(%d)..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5067
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5080
 msgid "Adding contact to LDAP server..."
 msgstr "正在将联系人添加到 LDAP 服务器..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5142
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5155
 msgid "Modifying contact from LDAP server..."
 msgstr "正在修改 LDAP 服务器上的联系人..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5208
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5221
 msgid "Removing contact from LDAP server..."
 msgstr "正在从 LDAP 服务器删除联系人..."
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5597
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5610
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "无法获取用户“%s”的 DN"
@@ -951,38 +951,38 @@ msgstr "电话号码太短"
 msgid "Text is too long for a phone number"
 msgstr "电话号码太长"
 
-#: ../addressbook/libebook/e-book-client.c:807
+#: ../addressbook/libebook/e-book-client.c:841
 #, c-format
 msgid "Unknown book property '%s'"
 msgstr "未知的地址簿属性“%s”"
 
-#: ../addressbook/libebook/e-book-client.c:822
+#: ../addressbook/libebook/e-book-client.c:856
 #, c-format
 msgid "Cannot change value of book property '%s'"
 msgstr "无法更改地址簿属性“%s”的值"
 
-#: ../addressbook/libebook/e-book-client.c:1207
-#: ../addressbook/libebook/e-book-client.c:1382
-#: ../addressbook/libebook/e-book-client.c:1649
-#: ../calendar/libecal/e-cal-client.c:1530
-#: ../calendar/libecal/e-cal-client.c:1712
+#: ../addressbook/libebook/e-book-client.c:1241
+#: ../addressbook/libebook/e-book-client.c:1416
+#: ../addressbook/libebook/e-book-client.c:1683
+#: ../calendar/libecal/e-cal-client.c:1564
+#: ../calendar/libecal/e-cal-client.c:1746
 #, c-format
 msgid "Unable to connect to '%s': "
 msgstr "无法连接到“%s”："
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:899
-#: ../addressbook/libedata-book/e-book-sqlite.c:2163
+#: ../addressbook/libedata-book/e-book-sqlite.c:2178
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "检查未知概要信息字段“%s”出错"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1509
-#: ../addressbook/libedata-book/e-book-sqlite.c:1319
+#: ../addressbook/libedata-book/e-book-sqlite.c:1334
 msgid "Error parsing regular expression"
 msgstr "执行搜索表达式错误"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1554
-#: ../addressbook/libedata-book/e-book-sqlite.c:1803 ../camel/camel-db.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:1818 ../camel/camel-db.c:582
 #, c-format
 msgid "Insufficient memory"
 msgstr "内存不足"
@@ -993,7 +993,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "概要中的联系人字段“%d”无效"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1725
-#: ../addressbook/libedata-book/e-book-sqlite.c:557
+#: ../addressbook/libedata-book/e-book-sqlite.c:559
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1011,7 +1011,7 @@ msgstr "缓存中没有保存完整的 search_contacts，无法返回电子名�
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4292
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4385
-#: ../addressbook/libedata-book/e-book-sqlite.c:5369
+#: ../addressbook/libedata-book/e-book-sqlite.c:5400
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "查询中包含不支持的元素"
@@ -1070,7 +1070,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "无法按可能有多个值的字段排序"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6203
-#: ../addressbook/libedata-book/e-book-sqlite.c:7381
+#: ../addressbook/libedata-book/e-book-sqlite.c:7412
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1078,19 +1078,19 @@ msgid ""
 msgstr "尝试对 cursor 反向步进，但 cursor 已位于联系人列表的开头"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6211
-#: ../addressbook/libedata-book/e-book-sqlite.c:7389
+#: ../addressbook/libedata-book/e-book-sqlite.c:7420
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
 msgstr "尝试向前步进 cursor，但 cursor 已位于联系人列表的末尾"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:524
+#: ../addressbook/libedata-book/e-book-sqlite.c:526
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "不支持概要中指定的联系人字段“%d”"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1876
+#: ../addressbook/libedata-book/e-book-sqlite.c:1891
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1098,20 +1098,20 @@ msgstr ""
 "无法从包含多于一个地址簿的旧数据库升级联系人数据库。请先删除“folders”表中的一"
 "条记录。"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5362
+#: ../addressbook/libedata-book/e-book-sqlite.c:5393
 #, c-format
 msgid "Invalid query: %s"
 msgstr "无效的查询：%s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5537
+#: ../addressbook/libedata-book/e-book-sqlite.c:5568
 msgid "Invalid query for EbSqlCursor"
 msgstr "无效的 EbSqlCursor 查询"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7203
+#: ../addressbook/libedata-book/e-book-sqlite.c:7234
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr "要使用 EbSqlCursor 至少要指定一个排序字段"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7221
+#: ../addressbook/libedata-book/e-book-sqlite.c:7252
 msgid "Cannot sort by a field that is not a string type"
 msgstr "无法按非字符串类型的字段排序"
 
@@ -1319,35 +1319,35 @@ msgstr "缺少源 UID"
 msgid "No such source for UID '%s'"
 msgstr "没有 UID “%s”的源"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:576
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:581
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "服务器不可用 (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:607
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:612
 #, c-format
 msgid "Failed to connect to a server using SSL: %s"
 msgstr "无法使用 SSL 连接到服务器：%s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:618
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:623
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s)"
 msgstr "返回了意外的 HTTP 状态代码 %d(%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:637
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:642
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV 后端尚未加载"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1079
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1084
 msgid "Invalid Redirect URL"
 msgstr "无效的重定向 URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2882
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2887
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "无法创建本地缓存文件夹“%s”"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2934
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2939
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1356,27 +1356,27 @@ msgstr ""
 "服务器不可用，日历将以只读模式打开。\n"
 "错误消息：%s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3968
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3973
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV 不支持批量添加"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4071
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4076
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV 不支持批量修改"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4247
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4252
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV 不支持批量删除"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4914
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4926
 msgid "Calendar doesn't support Free/Busy"
 msgstr "日历不支持空闲/繁忙"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4923
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4935
 msgid "Schedule outbox url not found"
 msgstr "未找到定时发件箱 url"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5020
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5032
 msgid "Unexpected result in schedule-response"
 msgstr "定时响应的结果异常"
 
@@ -1547,7 +1547,7 @@ msgid "Authentication failed"
 msgstr "认证失败"
 
 #: ../calendar/libecal/e-cal.c:2330
-#: ../camel/providers/smtp/camel-smtp-transport.c:921
+#: ../camel/providers/smtp/camel-smtp-transport.c:960
 #: ../libedataserver/e-client.c:147
 msgid "Authentication required"
 msgstr "必须认证"
@@ -1570,12 +1570,12 @@ msgstr "未知用户"
 msgid "Invalid range"
 msgstr "无效范围"
 
-#: ../calendar/libecal/e-cal-client.c:936
+#: ../calendar/libecal/e-cal-client.c:970
 #, c-format
 msgid "Unknown calendar property '%s'"
 msgstr "未知的日历属性“%s”"
 
-#: ../calendar/libecal/e-cal-client.c:951
+#: ../calendar/libecal/e-cal-client.c:985
 #, c-format
 msgid "Cannot change value of calendar property '%s'"
 msgstr "无法更改日历属性的值“%s”"
@@ -2074,36 +2074,36 @@ msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "在“%s”中过滤新消息"
 
-#: ../camel/camel-folder.c:1011
+#: ../camel/camel-folder.c:1017
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "移动消息"
 
-#: ../camel/camel-folder.c:1014
+#: ../camel/camel-folder.c:1020
 msgid "Copying messages"
 msgstr "复制消息"
 
-#: ../camel/camel-folder.c:1056
+#: ../camel/camel-folder.c:1062
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "文件夹“%s”不支持配额信息"
 
-#: ../camel/camel-folder.c:2862
+#: ../camel/camel-folder.c:2868
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "正在销毁文件夹“%s”"
 
-#: ../camel/camel-folder.c:2990
+#: ../camel/camel-folder.c:2996
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "正在获取 %2$s 中的消息“%1$s”"
 
-#: ../camel/camel-folder.c:3181
+#: ../camel/camel-folder.c:3187
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "正在获取“%s”的配额信息"
 
-#: ../camel/camel-folder.c:3478
+#: ../camel/camel-folder.c:3484
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "正在刷新文件夹“%s”"
@@ -2163,7 +2163,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "执行 gpg 失败：%s"
 
 #: ../camel/camel-gpg-context.c:726
-#: ../camel/providers/smtp/camel-smtp-transport.c:924
+#: ../camel/providers/smtp/camel-smtp-transport.c:963
 msgid "Unknown"
 msgstr "未知"
 
@@ -2217,7 +2217,7 @@ msgid ""
 "thus there will be a password prompt for each of stored private key."
 msgstr "请注意加密的内容里不包含收件人信息，因此可能会请求输出每个私钥的口令。"
 
-#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:522
+#: ../camel/camel-gpg-context.c:941 ../camel/camel-net-utils.c:524
 #: ../camel/providers/nntp/camel-nntp-summary.c:401
 #: ../libedataserver/e-client.c:158
 #, c-format
@@ -2243,8 +2243,8 @@ msgstr "加密失败：没有指定有效的收件人。"
 msgid "Could not generate signing data: "
 msgstr "无法生成签名数据："
 
-#: ../camel/camel-gpg-context.c:1708 ../camel/camel-gpg-context.c:1920
-#: ../camel/camel-gpg-context.c:2030 ../camel/camel-gpg-context.c:2179
+#: ../camel/camel-gpg-context.c:1708 ../camel/camel-gpg-context.c:1919
+#: ../camel/camel-gpg-context.c:2029 ../camel/camel-gpg-context.c:2178
 msgid "Failed to execute gpg."
 msgstr "执行 gpg 失败。"
 
@@ -2260,26 +2260,26 @@ msgstr "无法校验消息签名：消息格式不对"
 msgid "Cannot verify message signature: "
 msgstr "无法校验消息签名："
 
-#: ../camel/camel-gpg-context.c:1996
+#: ../camel/camel-gpg-context.c:1995
 msgid "Could not generate encrypting data: "
 msgstr "无法生成加密数据："
 
-#: ../camel/camel-gpg-context.c:2049
+#: ../camel/camel-gpg-context.c:2048
 msgid "This is a digitally encrypted message part"
 msgstr "这是消息的数字加密部分"
 
-#: ../camel/camel-gpg-context.c:2105 ../camel/camel-gpg-context.c:2114
-#: ../camel/camel-gpg-context.c:2137
+#: ../camel/camel-gpg-context.c:2104 ../camel/camel-gpg-context.c:2113
+#: ../camel/camel-gpg-context.c:2136
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "无法解密消息：消息格式不对"
 
-#: ../camel/camel-gpg-context.c:2125
+#: ../camel/camel-gpg-context.c:2124
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "解密 MIME 部分失败：协议错误"
 
-#: ../camel/camel-gpg-context.c:2220 ../camel/camel-smime-context.c:1289
+#: ../camel/camel-gpg-context.c:2219 ../camel/camel-smime-context.c:1289
 msgid "Encrypted content"
 msgstr "加密内容"
 
@@ -2396,21 +2396,21 @@ msgstr "没有可用的签名"
 msgid "parse error"
 msgstr "解析错误"
 
-#: ../camel/camel-net-utils.c:702
+#: ../camel/camel-net-utils.c:706
 #, c-format
 msgid "Resolving: %s"
 msgstr "解析：%s"
 
-#: ../camel/camel-net-utils.c:725
+#: ../camel/camel-net-utils.c:731
 msgid "Host lookup failed"
 msgstr "主机查阅失败"
 
-#: ../camel/camel-net-utils.c:731
+#: ../camel/camel-net-utils.c:737
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
 msgstr "主机“%s”查找失败，请检查主机名是否存在拼写错误。"
 
-#: ../camel/camel-net-utils.c:735
+#: ../camel/camel-net-utils.c:741
 #, c-format
 msgid "Host lookup '%s' failed: %s"
 msgstr "查找主机“%s”失败：%s"
@@ -2517,103 +2517,108 @@ msgid ""
 "if the server supports it."
 msgstr "如果服务器支持的话，该选项将用安全 DIGEST-MD5 密码连接到服务器。"
 
-#: ../camel/camel-sasl-digest-md5.c:853
+#: ../camel/camel-sasl-digest-md5.c:855
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
 msgstr "服务器质询过长 (>2048 字节)"
 
-#: ../camel/camel-sasl-digest-md5.c:864
+#: ../camel/camel-sasl-digest-md5.c:866
 #, c-format
 msgid "Server challenge invalid\n"
 msgstr "服务器质询无效\n"
 
-#: ../camel/camel-sasl-digest-md5.c:872
+#: ../camel/camel-sasl-digest-md5.c:874
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
 msgstr "服务器质询含有无效的“品质保护”标志"
 
-#: ../camel/camel-sasl-digest-md5.c:905
+#: ../camel/camel-sasl-digest-md5.c:907
 #, c-format
 msgid "Server response did not contain authorization data"
 msgstr "服务器应答不含有认证数据"
 
-#: ../camel/camel-sasl-digest-md5.c:926
+#: ../camel/camel-sasl-digest-md5.c:928
 #, c-format
 msgid "Server response contained incomplete authorization data"
 msgstr "服务器应达含有不完整的认证数据"
 
-#: ../camel/camel-sasl-digest-md5.c:939
+#: ../camel/camel-sasl-digest-md5.c:941
 #, c-format
 msgid "Server response does not match"
 msgstr "服务器应答不匹配"
 
-#: ../camel/camel-sasl-gssapi.c:89
+#: ../camel/camel-sasl-gssapi.c:95
 msgid "GSSAPI"
 msgstr "GSSAPI"
 
-#: ../camel/camel-sasl-gssapi.c:91
+#: ../camel/camel-sasl-gssapi.c:97
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr "该选项将用 Kerberos 5 认证连接到服务器。"
 
-#: ../camel/camel-sasl-gssapi.c:134
+#: ../camel/camel-sasl-gssapi.c:149
+#, c-format
+msgid "(Unknown GSSAPI mechanism code: %x)"
+msgstr "(未知 GSSAPI 机制代码: %x)"
+
+#: ../camel/camel-sasl-gssapi.c:182
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 msgstr "所提供的证书不支持指定的机制，或者无法被实现所识别。"
 
-#: ../camel/camel-sasl-gssapi.c:139
+#: ../camel/camel-sasl-gssapi.c:187
 msgid "The provided target_name parameter was ill-formed."
 msgstr "提供的 target_name 参数格式不对。"
 
-#: ../camel/camel-sasl-gssapi.c:142
+#: ../camel/camel-sasl-gssapi.c:190
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr "提供的 target_name 参数包含无效或不支持的名称类型。"
 
-#: ../camel/camel-sasl-gssapi.c:146
+#: ../camel/camel-sasl-gssapi.c:194
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
 "input_token 包含的通道绑定与通过 input_chan_bindings 参数指定的通道不同。"
 
-#: ../camel/camel-sasl-gssapi.c:151
+#: ../camel/camel-sasl-gssapi.c:199
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr "input_token 包含无效的签名，或者无法验证签名。"
 
-#: ../camel/camel-sasl-gssapi.c:155
+#: ../camel/camel-sasl-gssapi.c:203
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr "提供的证书由于上下文的原因无效，或者证书句柄没有引用证书。"
 
-#: ../camel/camel-sasl-gssapi.c:160
+#: ../camel/camel-sasl-gssapi.c:208
 msgid "The supplied context handle did not refer to a valid context."
 msgstr "提供的上下文句柄所引用的上下文无效。"
 
-#: ../camel/camel-sasl-gssapi.c:163
+#: ../camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the input_token failed."
 msgstr "对 input_token 执行完整性检查失败。"
 
-#: ../camel/camel-sasl-gssapi.c:166
+#: ../camel/camel-sasl-gssapi.c:214
 msgid "The consistency checks performed on the credential failed."
 msgstr "对证书执行完整性检查失败。"
 
-#: ../camel/camel-sasl-gssapi.c:169
+#: ../camel/camel-sasl-gssapi.c:217
 msgid "The referenced credentials have expired."
 msgstr "引用的证书已过期。"
 
-#: ../camel/camel-sasl-gssapi.c:175 ../camel/camel-sasl-gssapi.c:352
-#: ../camel/camel-sasl-gssapi.c:400 ../camel/camel-sasl-gssapi.c:417
-#: ../camel/providers/smtp/camel-smtp-transport.c:622
+#: ../camel/camel-sasl-gssapi.c:223 ../camel/camel-sasl-gssapi.c:405
+#: ../camel/camel-sasl-gssapi.c:454 ../camel/camel-sasl-gssapi.c:471
+#: ../camel/providers/smtp/camel-smtp-transport.c:659
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "来自服务器的无效认证应答。"
 
-#: ../camel/camel-sasl-gssapi.c:429
+#: ../camel/camel-sasl-gssapi.c:483
 #, c-format
 msgid "Unsupported security layer."
 msgstr "不支持的安全层。"
@@ -2678,10 +2683,10 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "为协议“%s”注册的 GType 无效"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4719
+#: ../camel/providers/imapx/camel-imapx-server.c:4785
 #: ../camel/providers/pop3/camel-pop3-store.c:311
 #: ../camel/providers/pop3/camel-pop3-store.c:757
-#: ../camel/providers/smtp/camel-smtp-transport.c:515
+#: ../camel/providers/smtp/camel-smtp-transport.c:545
 #, c-format
 msgid "No support for %s authentication"
 msgstr "不支持 %s 认证"
@@ -2885,43 +2890,43 @@ msgstr "将数据添加到编码器失败"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME 解密：没有找到加密内容"
 
-#: ../camel/camel-store.c:1232
+#: ../camel/camel-store.c:1238
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "打开文件夹“%s”"
 
-#: ../camel/camel-store.c:1523
+#: ../camel/camel-store.c:1529
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "扫描“%s”中的文件夹"
 
-#: ../camel/camel-store.c:1551 ../camel/camel-store.c:1596
+#: ../camel/camel-store.c:1557 ../camel/camel-store.c:1602
 #: ../camel/camel-vtrash-folder.c:46
 msgid "Trash"
 msgstr "回收站"
 
-#: ../camel/camel-store.c:1565 ../camel/camel-store.c:1613
+#: ../camel/camel-store.c:1571 ../camel/camel-store.c:1619
 #: ../camel/camel-vtrash-folder.c:48
 msgid "Junk"
 msgstr "垃圾"
 
-#: ../camel/camel-store.c:2214
+#: ../camel/camel-store.c:2220
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "无法创建文件夹：%s：文件夹已存在"
 
-#: ../camel/camel-store.c:2221
+#: ../camel/camel-store.c:2227
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "创建文件夹“%s”"
 
-#: ../camel/camel-store.c:2398 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2404 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:321
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "无法删除文件夹：%s：无效操作"
 
-#: ../camel/camel-store.c:2588 ../camel/camel-vee-store.c:461
+#: ../camel/camel-store.c:2594 ../camel/camel-vee-store.c:461
 #: ../camel/providers/local/camel-maildir-store.c:872
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3082,12 +3087,10 @@ msgid "_Listen for server change notifications"
 msgstr "监听服务器变化提醒(_L)"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:49
-#| msgid "Lost connection to IMAP server"
 msgid "Connection to Server"
 msgstr "到服务器的连接"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:51
-#| msgid "Numbe_r of cached connections to use"
 msgid "Numbe_r of concurrent connections to use"
 msgstr "使用的并发连接的数目(_R)"
 
@@ -3153,169 +3156,169 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP 服务器上的邮件的读写。"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1009
-#: ../camel/providers/imapx/camel-imapx-server.c:1016
+#: ../camel/providers/imapx/camel-imapx-server.c:1015
+#: ../camel/providers/imapx/camel-imapx-server.c:1022
 #, c-format
 msgid "Not authenticated"
 msgstr "没有验证"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1713
+#: ../camel/providers/imapx/camel-imapx-server.c:1740
 msgid "Server disconnected"
 msgstr "服务器断开连接"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2205
+#: ../camel/providers/imapx/camel-imapx-server.c:2234
 msgid "Error writing to cache stream"
 msgstr "写入缓存流错误"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3550
+#: ../camel/providers/imapx/camel-imapx-server.c:3622
 msgid "Error performing IDLE"
 msgstr "执行 IDLE 命令出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4558
+#: ../camel/providers/imapx/camel-imapx-server.c:4624
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "以安全模式连接到 IMAP 服务器 %s 失败：%s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4559
-#: ../camel/providers/smtp/camel-smtp-transport.c:215
+#: ../camel/providers/imapx/camel-imapx-server.c:4625
+#: ../camel/providers/smtp/camel-smtp-transport.c:216
 msgid "STARTTLS not supported"
 msgstr "不支持 STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4619
+#: ../camel/providers/imapx/camel-imapx-server.c:4685
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "以安全模式连接到 IMAP 服务器 %s 失败："
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4708
+#: ../camel/providers/imapx/camel-imapx-server.c:4774
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP 服务器 %s 不支持 %s 认证"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4738
+#: ../camel/providers/imapx/camel-imapx-server.c:4804
 #: ../camel/providers/nntp/camel-nntp-store.c:394
 #: ../camel/providers/nntp/camel-nntp-store.c:531
 msgid "Cannot authenticate without a username"
 msgstr "无法进行无用户名的认证"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4747
+#: ../camel/providers/imapx/camel-imapx-server.c:4813
 #: ../camel/providers/nntp/camel-nntp-store.c:540
 #: ../camel/providers/pop3/camel-pop3-store.c:678
 #: ../camel/providers/pop3/camel-pop3-store.c:699
 msgid "Authentication password not available"
 msgstr "密码认证不可用"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4983
-#: ../camel/providers/imapx/camel-imapx-server.c:5042
+#: ../camel/providers/imapx/camel-imapx-server.c:5049
+#: ../camel/providers/imapx/camel-imapx-server.c:5108
 msgid "Error fetching message"
 msgstr "取回消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5035
+#: ../camel/providers/imapx/camel-imapx-server.c:5101
 msgid "Failed to close the tmp stream"
 msgstr "无法关闭临时流"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5071
+#: ../camel/providers/imapx/camel-imapx-server.c:5137
 msgid "Failed to copy the tmp file"
 msgstr "无法复制临时文件"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5212
+#: ../camel/providers/imapx/camel-imapx-server.c:5278
 msgid "Error moving messages"
 msgstr "移动消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5216
+#: ../camel/providers/imapx/camel-imapx-server.c:5282
 msgid "Error copying messages"
 msgstr "复制消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5438
+#: ../camel/providers/imapx/camel-imapx-server.c:5504
 msgid "Error appending message"
 msgstr "追加消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5674
+#: ../camel/providers/imapx/camel-imapx-server.c:5740
 msgid "Error fetching message headers"
 msgstr "取回消息头出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5841
+#: ../camel/providers/imapx/camel-imapx-server.c:5907
 msgid "Error retrieving message"
 msgstr "收取消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5975
-#: ../camel/providers/imapx/camel-imapx-server.c:6204
+#: ../camel/providers/imapx/camel-imapx-server.c:6041
+#: ../camel/providers/imapx/camel-imapx-server.c:6270
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "获取“%s”中新消息的概要信息"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6027
+#: ../camel/providers/imapx/camel-imapx-server.c:6093
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "扫描“%s”中更改了的消息"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6079
+#: ../camel/providers/imapx/camel-imapx-server.c:6145
 msgid "Error fetching new messages"
 msgstr "取回新消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6352
+#: ../camel/providers/imapx/camel-imapx-server.c:6418
 msgid "Error refreshing folder"
 msgstr "刷新文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6502
+#: ../camel/providers/imapx/camel-imapx-server.c:6568
 msgid "Error expunging message"
 msgstr "销毁消息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6617
-#: ../camel/providers/imapx/camel-imapx-server.c:6642
+#: ../camel/providers/imapx/camel-imapx-server.c:6683
+#: ../camel/providers/imapx/camel-imapx-server.c:6708
 msgid "Error fetching folders"
 msgstr "取回文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6722
+#: ../camel/providers/imapx/camel-imapx-server.c:6788
 msgid "Error creating folder"
 msgstr "创建文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6774
+#: ../camel/providers/imapx/camel-imapx-server.c:6840
 msgid "Error deleting folder"
 msgstr "删除文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6850
+#: ../camel/providers/imapx/camel-imapx-server.c:6916
 msgid "Error renaming folder"
 msgstr "重命名文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6924
+#: ../camel/providers/imapx/camel-imapx-server.c:6990
 msgid "Error subscribing to folder"
 msgstr "订阅文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6990
+#: ../camel/providers/imapx/camel-imapx-server.c:7056
 msgid "Error unsubscribing from folder"
 msgstr "取消订阅文件夹出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7052
+#: ../camel/providers/imapx/camel-imapx-server.c:7118
 msgid "Error retrieving quota information"
 msgstr "获取配额信息出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7104
+#: ../camel/providers/imapx/camel-imapx-server.c:7170
 msgid "Search failed"
 msgstr "搜索失败"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7166
+#: ../camel/providers/imapx/camel-imapx-server.c:7232
 msgid "Error performing NOOP"
 msgstr "执行 NOOP 出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7273
+#: ../camel/providers/imapx/camel-imapx-server.c:7339
 msgid "Error syncing changes"
 msgstr "同步变更出错"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8258
+#: ../camel/providers/imapx/camel-imapx-server.c:8331
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "无法获取消息 ID %s：%s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8259
+#: ../camel/providers/imapx/camel-imapx-server.c:8332
 msgid "No such message available."
 msgstr "没有该消息。"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8466
-#: ../camel/providers/imapx/camel-imapx-server.c:8487
+#: ../camel/providers/imapx/camel-imapx-server.c:8545
+#: ../camel/providers/imapx/camel-imapx-server.c:8566
 msgid "Cannot create spool file: "
 msgstr "无法创建离线文件："
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9228
+#: ../camel/providers/imapx/camel-imapx-server.c:9371
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 服务器不支持配额"
 
@@ -3350,28 +3353,28 @@ msgstr "密码"
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "该选项将使用纯文本密码连接到 IMAP 服务器。"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:913
+#: ../camel/providers/imapx/camel-imapx-store.c:917
 #, c-format
 msgid "No such folder %s"
 msgstr "没有文件夹 %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1324
+#: ../camel/providers/imapx/camel-imapx-store.c:1328
 #, c-format
 msgid "No IMAP namespace for folder path '%s'"
 msgstr "没有对应文件夹路径“%s”的 IMAP 名字空间"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1472
+#: ../camel/providers/imapx/camel-imapx-store.c:1476
 #, c-format
 msgid "Retrieving folder list for %s"
 msgstr "正在获取“%s”的文件夹列表"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1924
+#: ../camel/providers/imapx/camel-imapx-store.c:1928
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "文件夹名“%s”无效，原因是其中含有字符“%c”"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2689
+#: ../camel/providers/imapx/camel-imapx-store.c:2700
 #: ../camel/providers/nntp/camel-nntp-store.c:1250
 #: ../camel/providers/pop3/camel-pop3-folder.c:450
 #: ../camel/providers/pop3/camel-pop3-folder.c:593
@@ -4354,218 +4357,218 @@ msgstr "SMTP"
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr "要投递邮件，应该使用 SMTP 连接到远程的邮件交换服务器。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:170
-#: ../camel/providers/smtp/camel-smtp-transport.c:178
+#: ../camel/providers/smtp/camel-smtp-transport.c:171
+#: ../camel/providers/smtp/camel-smtp-transport.c:179
 msgid "Welcome response error: "
 msgstr "欢迎应答错误："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:214
+#: ../camel/providers/smtp/camel-smtp-transport.c:215
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
 msgstr "以安全模式连接 SMTP 服务器 %s 失败：%s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:224
-#: ../camel/providers/smtp/camel-smtp-transport.c:238
-#: ../camel/providers/smtp/camel-smtp-transport.c:246
+#: ../camel/providers/smtp/camel-smtp-transport.c:225
+#: ../camel/providers/smtp/camel-smtp-transport.c:240
+#: ../camel/providers/smtp/camel-smtp-transport.c:248
 msgid "STARTTLS command failed: "
 msgstr "STARTTLS 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:265
+#: ../camel/providers/smtp/camel-smtp-transport.c:267
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
 msgstr "以安全模式连接 SMTP 服务器 %s 失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:357
+#: ../camel/providers/smtp/camel-smtp-transport.c:359
 #, c-format
 msgid "SMTP server %s"
 msgstr "SMTP 服务器 %s"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:360
+#: ../camel/providers/smtp/camel-smtp-transport.c:362
 #, c-format
 msgid "SMTP mail delivery via %s"
 msgstr "通过 %s 发送 SMTP 邮件"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:434
+#: ../camel/providers/smtp/camel-smtp-transport.c:463
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
 msgstr "SMTP 服务器 %s 不支持 %s 认证。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:506
+#: ../camel/providers/smtp/camel-smtp-transport.c:536
 #, c-format
 msgid "No SASL mechanism was specified"
 msgstr "未指定 SASL 机制"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:536
-#: ../camel/providers/smtp/camel-smtp-transport.c:547
-#: ../camel/providers/smtp/camel-smtp-transport.c:560
+#: ../camel/providers/smtp/camel-smtp-transport.c:571
+#: ../camel/providers/smtp/camel-smtp-transport.c:583
+#: ../camel/providers/smtp/camel-smtp-transport.c:596
 msgid "AUTH command failed: "
 msgstr "AUTH 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:701
+#: ../camel/providers/smtp/camel-smtp-transport.c:740
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "无法发送消息：服务未连接。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:708
+#: ../camel/providers/smtp/camel-smtp-transport.c:747
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "无法发送消息：发件人地址不合法。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:712
+#: ../camel/providers/smtp/camel-smtp-transport.c:751
 msgid "Sending message"
 msgstr "正在发送消息"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:737
+#: ../camel/providers/smtp/camel-smtp-transport.c:776
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "无法发送消息：没有定义收件人。"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:750
+#: ../camel/providers/smtp/camel-smtp-transport.c:789
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "无法发送消息：一个或多个非法收件人"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:871
+#: ../camel/providers/smtp/camel-smtp-transport.c:910
 msgid "Syntax error, command unrecognized"
 msgstr "语法错误，命令无法识别"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:873
+#: ../camel/providers/smtp/camel-smtp-transport.c:912
 msgid "Syntax error in parameters or arguments"
 msgstr "参数语法错误"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:875
+#: ../camel/providers/smtp/camel-smtp-transport.c:914
 msgid "Command not implemented"
 msgstr "命令尚未实现"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:877
+#: ../camel/providers/smtp/camel-smtp-transport.c:916
 msgid "Command parameter not implemented"
 msgstr "命令参数尚未实现"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:879
+#: ../camel/providers/smtp/camel-smtp-transport.c:918
 msgid "System status, or system help reply"
 msgstr "系统状态，或系统求助就绪"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:881
+#: ../camel/providers/smtp/camel-smtp-transport.c:920
 msgid "Help message"
 msgstr "帮助消息"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:883
+#: ../camel/providers/smtp/camel-smtp-transport.c:922
 msgid "Service ready"
 msgstr "服务就绪"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:885
+#: ../camel/providers/smtp/camel-smtp-transport.c:924
 msgid "Service closing transmission channel"
 msgstr "服务正在关闭传输通道"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:887
+#: ../camel/providers/smtp/camel-smtp-transport.c:926
 msgid "Service not available, closing transmission channel"
 msgstr "服务不可用，正在关闭传输通道"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:889
+#: ../camel/providers/smtp/camel-smtp-transport.c:928
 msgid "Requested mail action okay, completed"
 msgstr "邮件动作请求确认，已完成"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:891
+#: ../camel/providers/smtp/camel-smtp-transport.c:930
 msgid "User not local; will forward to <forward-path>"
 msgstr "用户不在本地；将转发到 <转发路径>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:893
+#: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "邮件动作请求未发生：邮箱无效"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:895
+#: ../camel/providers/smtp/camel-smtp-transport.c:934
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "动作请求未发生：邮箱无效"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:897
+#: ../camel/providers/smtp/camel-smtp-transport.c:936
 msgid "Requested action aborted: error in processing"
 msgstr "动作请求已放弃：处理出错"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:899
+#: ../camel/providers/smtp/camel-smtp-transport.c:938
 msgid "User not local; please try <forward-path>"
 msgstr "用户不在本地；请尝试 <转发路径>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:901
+#: ../camel/providers/smtp/camel-smtp-transport.c:940
 msgid "Requested action not taken: insufficient system storage"
 msgstr "动作请求未发生：系统存储空间不足"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:903
+#: ../camel/providers/smtp/camel-smtp-transport.c:942
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "邮件动作请求已放弃：存储分配超额"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:905
+#: ../camel/providers/smtp/camel-smtp-transport.c:944
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "动作请求未发生：不允许的邮件箱名称"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:907
+#: ../camel/providers/smtp/camel-smtp-transport.c:946
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "开始输入邮件；以 <CRLF>.<CRLF> 结束"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:909
+#: ../camel/providers/smtp/camel-smtp-transport.c:948
 msgid "Transaction failed"
 msgstr "传送失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:913
+#: ../camel/providers/smtp/camel-smtp-transport.c:952
 msgid "A password transition is needed"
 msgstr "必须传输密码"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:915
+#: ../camel/providers/smtp/camel-smtp-transport.c:954
 msgid "Authentication mechanism is too weak"
 msgstr "认证机制太弱"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:917
+#: ../camel/providers/smtp/camel-smtp-transport.c:956
 msgid "Encryption required for requested authentication mechanism"
 msgstr "请求的认证机制必须加密"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:919
+#: ../camel/providers/smtp/camel-smtp-transport.c:958
 msgid "Temporary authentication failure"
 msgstr "临时认证失败"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1207
+#: ../camel/providers/smtp/camel-smtp-transport.c:1247
 msgid "SMTP Greeting"
 msgstr "SMTP 欢迎"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1217
-#: ../camel/providers/smtp/camel-smtp-transport.c:1231
-#: ../camel/providers/smtp/camel-smtp-transport.c:1239
+#: ../camel/providers/smtp/camel-smtp-transport.c:1257
+#: ../camel/providers/smtp/camel-smtp-transport.c:1272
+#: ../camel/providers/smtp/camel-smtp-transport.c:1280
 msgid "HELO command failed: "
 msgstr "HELO 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1314
-#: ../camel/providers/smtp/camel-smtp-transport.c:1329
-#: ../camel/providers/smtp/camel-smtp-transport.c:1339
+#: ../camel/providers/smtp/camel-smtp-transport.c:1355
+#: ../camel/providers/smtp/camel-smtp-transport.c:1371
+#: ../camel/providers/smtp/camel-smtp-transport.c:1381
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1366
+#: ../camel/providers/smtp/camel-smtp-transport.c:1408
 msgid "RCPT TO command failed: "
 msgstr "RSET 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1383
-#: ../camel/providers/smtp/camel-smtp-transport.c:1393
+#: ../camel/providers/smtp/camel-smtp-transport.c:1426
+#: ../camel/providers/smtp/camel-smtp-transport.c:1436
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> 失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1436
-#: ../camel/providers/smtp/camel-smtp-transport.c:1447
-#: ../camel/providers/smtp/camel-smtp-transport.c:1458
-#: ../camel/providers/smtp/camel-smtp-transport.c:1517
-#: ../camel/providers/smtp/camel-smtp-transport.c:1537
-#: ../camel/providers/smtp/camel-smtp-transport.c:1551
-#: ../camel/providers/smtp/camel-smtp-transport.c:1560
+#: ../camel/providers/smtp/camel-smtp-transport.c:1479
+#: ../camel/providers/smtp/camel-smtp-transport.c:1491
+#: ../camel/providers/smtp/camel-smtp-transport.c:1502
+#: ../camel/providers/smtp/camel-smtp-transport.c:1561
+#: ../camel/providers/smtp/camel-smtp-transport.c:1581
+#: ../camel/providers/smtp/camel-smtp-transport.c:1596
+#: ../camel/providers/smtp/camel-smtp-transport.c:1605
 msgid "DATA command failed: "
 msgstr "DATP 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1585
-#: ../camel/providers/smtp/camel-smtp-transport.c:1600
-#: ../camel/providers/smtp/camel-smtp-transport.c:1609
+#: ../camel/providers/smtp/camel-smtp-transport.c:1630
+#: ../camel/providers/smtp/camel-smtp-transport.c:1646
+#: ../camel/providers/smtp/camel-smtp-transport.c:1655
 msgid "RSET command failed: "
 msgstr "RSET 命令失败："
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1634
-#: ../camel/providers/smtp/camel-smtp-transport.c:1648
-#: ../camel/providers/smtp/camel-smtp-transport.c:1655
+#: ../camel/providers/smtp/camel-smtp-transport.c:1680
+#: ../camel/providers/smtp/camel-smtp-transport.c:1694
+#: ../camel/providers/smtp/camel-smtp-transport.c:1701
 msgid "QUIT command failed: "
 msgstr "QUIT 命令失败："
 
@@ -4682,25 +4685,25 @@ msgstr "客户端已取消操作"
 msgid "Client reports password was rejected"
 msgstr "客户端报告密码被拒绝"
 
-#: ../libebackend/e-authentication-session.c:539
+#: ../libebackend/e-authentication-session.c:542
 msgid "Add this password to your keyring"
 msgstr "将该密码添加到您的密钥环"
 
-#: ../libebackend/e-authentication-session.c:649
+#: ../libebackend/e-authentication-session.c:547
 msgid "Password was incorrect"
 msgstr "密码错误"
 
-#: ../libebackend/e-backend.c:408
+#: ../libebackend/e-backend.c:419
 #, c-format
 msgid "%s does not support authentication"
 msgstr "%s 不支持认证"
 
-#: ../libebackend/e-collection-backend.c:901
+#: ../libebackend/e-collection-backend.c:936
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s 不支持创建远程资源"
 
-#: ../libebackend/e-collection-backend.c:960
+#: ../libebackend/e-collection-backend.c:995
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s 不支持删除远程资源"
@@ -4715,39 +4718,39 @@ msgstr "散列键“%s”没有对应的后端工厂"
 msgid "Data source is missing a [%s] group"
 msgstr "数据源缺少一个 [%s] 组"
 
-#: ../libebackend/e-server-side-source.c:1022
+#: ../libebackend/e-server-side-source.c:1025
 #: ../libedataserver/e-source.c:1394
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "数据源“%s”不支持创建远程资源"
 
 # collection backend，如何翻译更好？
-#: ../libebackend/e-server-side-source.c:1036
+#: ../libebackend/e-server-side-source.c:1039
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
 msgstr "数据源“%s”没有合集后端(collection backend)来创建远程资源"
 
-#: ../libebackend/e-server-side-source.c:1064
+#: ../libebackend/e-server-side-source.c:1067
 #: ../libedataserver/e-source.c:1507
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "数据源“%s”不支持删除远程资源"
 
-#: ../libebackend/e-server-side-source.c:1078
+#: ../libebackend/e-server-side-source.c:1081
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr "数据源“%s”没有合集后端(collection backend)来删除远程资源"
 
-#: ../libebackend/e-server-side-source.c:1109
+#: ../libebackend/e-server-side-source.c:1112
 #: ../libedataserver/e-source.c:1603
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1026
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "数据源“%s”不支持 OAuth 2.0 认证"
 
-#: ../libebackend/e-server-side-source.c:1456
+#: ../libebackend/e-server-side-source.c:1459
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "文件扩展名必须为“.source”"
@@ -4979,28 +4982,28 @@ msgstr "签名脚本必须为本地文件"
 msgid "Source '%s' does not support proxy lookups"
 msgstr "数据源“%s”不支持代理查找"
 
-#: ../libedataserver/e-source-webdav.c:1555
+#: ../libedataserver/e-source-webdav.c:1557
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr "地址簿“%2$s”所使用的主机“%1$s”的 SSL 证书不受信任，您是否想要接受它？"
 
-#: ../libedataserver/e-source-webdav.c:1564
+#: ../libedataserver/e-source-webdav.c:1566
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
 "wish to accept it?"
 msgstr "日历“%2$s”所使用的主机“%1$s”的 SSL 证书不受信任，您是否想要接受它？"
 
-#: ../libedataserver/e-source-webdav.c:1573
+#: ../libedataserver/e-source-webdav.c:1575
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
 "you wish to accept it?"
 msgstr "备忘录“%2$s”所使用的主机“%1$s”的 SSL 证书不受信任，您是否想要接受它？"
 
-#: ../libedataserver/e-source-webdav.c:1582
+#: ../libedataserver/e-source-webdav.c:1584
 #, c-format
 msgid ""
 "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
@@ -5203,18 +5206,18 @@ msgstr "通过 org.gnome.OnlineAccounts 服务无法找到“%s”对应的帐�
 msgid "Failed to obtain an access token for '%s': "
 msgstr "无法获取“%s”的访问令牌："
 
-#: ../modules/google-backend/module-google-backend.c:195
+#: ../modules/google-backend/module-google-backend.c:205
 #: ../modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
 #: ../modules/yahoo-backend/module-yahoo-backend.c:199
 msgid "Calendar"
 msgstr "日历"
 
-#: ../modules/google-backend/module-google-backend.c:268
+#: ../modules/google-backend/module-google-backend.c:279
 #: ../modules/yahoo-backend/module-yahoo-backend.c:226
 msgid "Tasks"
 msgstr "任务"
 
-#: ../modules/google-backend/module-google-backend.c:321
+#: ../modules/google-backend/module-google-backend.c:333
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5313,7 +5316,7 @@ msgstr "邮件"
 msgid "Integrate your mailboxes"
 msgstr "集成您的邮箱"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1007
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1008
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
