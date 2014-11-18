@@ -3900,6 +3900,9 @@ e_cal_recur_ensure_rule_end_date (ECalComponent *comp,
 	if (!refresh) {
 		if (e_cal_recur_get_rule_end_date (prop, NULL) != -1)
 			return FALSE;
+	} else {
+		/* Remove the property parameter, thus it'll not influence the regeneration */
+		icalproperty_remove_parameter_by_name (prop, EVOLUTION_END_DATE_PARAMETER);
 	}
 
 	/* Calculate the end date. Note that we initialize end_date to 0, so

@@ -4153,6 +4153,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 		}
 		break;
 	case E_CAL_OBJ_MOD_ALL:
+		e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, cbdav);
 		cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
 		break;
 	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
@@ -4177,6 +4178,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 					icalcomponent_remove_property (icalcomp, prop);
 
 				e_cal_component_rescan (comp);
+				e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, cbdav);
 
 				/* Then do it like for "mod_all" */
 				cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
@@ -4206,6 +4208,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 				rid = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
 				e_cal_util_remove_instances (master_comp, rid, mod);
 				e_cal_component_rescan (mcomp);
+				e_cal_recur_ensure_end_dates (mcomp, TRUE, resolve_tzid, cbdav);
 
 				if (new_components) {
 					*new_components = g_slist_prepend (*new_components,
@@ -4226,6 +4229,8 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 				g_free (new_uid);
 
 				g_warn_if_fail (e_cal_component_set_icalcomponent (comp, split_icalcomp));
+
+				e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, cbdav);
 
 				/* sanitize the component */
 				sanitize_component ((ECalBackend *) cbdav, comp);

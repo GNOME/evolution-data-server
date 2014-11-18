@@ -2452,6 +2452,8 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				/* add the new object */
 				obj_data->full_object = comp;
 
+				e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, priv->icalcomp);
+
 				icalcomponent_add_component (
 					priv->icalcomp,
 					e_cal_component_get_icalcomponent (obj_data->full_object));
@@ -2557,6 +2559,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 					rid_struct = icaltime_convert_to_zone (rid_struct, icaltimezone_get_utc_timezone ());
 					e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object), rid_struct, mod);
 					e_cal_component_rescan (obj_data->full_object);
+					e_cal_recur_ensure_end_dates (obj_data->full_object, TRUE, resolve_tzid, priv->icalcomp);
 
 					e_cal_backend_notify_component_modified (E_CAL_BACKEND (backend), prev_comp, obj_data->full_object);
 
@@ -2581,6 +2584,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				g_free (new_uid);
 
 				g_warn_if_fail (e_cal_component_set_icalcomponent (comp, split_icalcomp));
+				e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, priv->icalcomp);
 
 				/* sanitize the component */
 				sanitize_component (cbfile, comp);
@@ -2605,6 +2609,8 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			}
 
 			remove_component (cbfile, comp_uid, obj_data);
+
+			e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, priv->icalcomp);
 
 			/* Add the new object */
 			add_component (cbfile, comp, TRUE);
