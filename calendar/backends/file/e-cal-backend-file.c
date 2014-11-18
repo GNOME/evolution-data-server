@@ -472,10 +472,9 @@ e_cal_backend_file_get_backend_property (ECalBackend *backend,
 		return g_strjoin (
 			",",
 			CAL_STATIC_CAPABILITY_NO_EMAIL_ALARMS,
-			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
 			CAL_STATIC_CAPABILITY_DELEGATE_SUPPORTED,
 			CAL_STATIC_CAPABILITY_REMOVE_ONLY_THIS,
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
 			CAL_STATIC_CAPABILITY_BULK_ADDS,
 			CAL_STATIC_CAPABILITY_BULK_MODIFIES,
 			CAL_STATIC_CAPABILITY_BULK_REMOVES,
@@ -2414,7 +2413,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 		gchar *rid = NULL;
 		gchar *real_rid;
 		const gchar *comp_uid;
-		icalcomponent * icalcomp = l->data;
+		icalcomponent * icalcomp = l->data, *split_icalcomp = NULL;
 		ECalComponent *comp, *recurrence;
 		ECalBackendFileObject *obj_data;
 
@@ -2489,19 +2488,23 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			break;
 		case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
 		case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
-			if (!rid || !*rid) {
-				if (old_components)
-					*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);
-
-				remove_component (cbfile, comp_uid, obj_data);
-
-				/* Add the new object */
-				add_component (cbfile, comp, TRUE);
-				break;
-			}
+			if (!rid || !*rid)
+				goto like_mod_all;
 
 			/* remove the component from our data, temporarily */
 			if (obj_data->full_object) {
+				if (mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE &&
+				    e_cal_util_is_first_instance (obj_data->full_object, icalcomponent_get_recurrenceid (icalcomp), resolve_tzid, priv->icalcomp)) {
+					icalproperty *prop = icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY);
+
+					if (prop)
+						icalcomponent_remove_property (icalcomp, prop);
+
+					e_cal_component_rescan (comp);
+
+					goto like_mod_all;
+				}
+
 				icalcomponent_remove_component (
 					priv->icalcomp,
 					e_cal_component_get_icalcomponent (obj_data->full_object));
@@ -2536,24 +2539,58 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			 * so that it's always before any detached instance we
 			 * might have */
 			if (obj_data->full_object) {
+				struct icaltimetype rid_struct = icalcomponent_get_recurrenceid (icalcomp), master_dtstart;
+				icalcomponent *master_icalcomp = e_cal_component_get_icalcomponent (obj_data->full_object);
+				icalproperty *prop = icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY);
+
+				if (prop)
+					icalcomponent_remove_property (icalcomp, prop);
+
+				master_dtstart = icalcomponent_get_dtstart (master_icalcomp);
+				if (master_dtstart.zone && master_dtstart.zone != rid_struct.zone)
+					rid_struct = icaltime_convert_to_zone (rid_struct, (icaltimezone *) master_dtstart.zone);
+				split_icalcomp = e_cal_util_split_at_instance (icalcomp, rid_struct, master_dtstart);
+				if (split_icalcomp) {
+					ECalComponent *prev_comp;
+					prev_comp = e_cal_component_clone (obj_data->full_object);
+
+					rid_struct = icaltime_convert_to_zone (rid_struct, icaltimezone_get_utc_timezone ());
+					e_cal_util_remove_instances (e_cal_component_get_icalcomponent (obj_data->full_object), rid_struct, mod);
+					e_cal_component_rescan (obj_data->full_object);
+
+					e_cal_backend_notify_component_modified (E_CAL_BACKEND (backend), prev_comp, obj_data->full_object);
+
+					g_clear_object (&prev_comp);
+				}
+
 				icalcomponent_add_component (
 					priv->icalcomp,
 					e_cal_component_get_icalcomponent (obj_data->full_object));
 				priv->comp = g_list_prepend (priv->comp, obj_data->full_object);
+			} else {
+				struct icaltimetype rid_struct = icalcomponent_get_recurrenceid (icalcomp);
+
+				split_icalcomp = e_cal_util_split_at_instance (icalcomp, rid_struct, icaltime_null_time ());
 			}
 
-			/* add the new detached recurrence */
-			g_hash_table_insert (
-				obj_data->recurrences,
-				g_strdup (rid),
-				comp);
-			icalcomponent_add_component (
-				priv->icalcomp,
-				e_cal_component_get_icalcomponent (comp));
-			priv->comp = g_list_append (priv->comp, comp);
-			obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
+			if (split_icalcomp) {
+				gchar *new_uid;
+
+				new_uid = e_cal_component_gen_uid ();
+				icalcomponent_set_uid (split_icalcomp, new_uid);
+				g_free (new_uid);
+
+				g_warn_if_fail (e_cal_component_set_icalcomponent (comp, split_icalcomp));
+
+				/* sanitize the component */
+				sanitize_component (cbfile, comp);
+
+				/* Add the object */
+				add_component (cbfile, comp, TRUE);
+			}
 			break;
 		case E_CAL_OBJ_MOD_ALL :
+ like_mod_all:
 			/* Remove the old version */
 			if (old_components)
 				*old_components = g_slist_prepend (*old_components, obj_data->full_object ? e_cal_component_clone (obj_data->full_object) : NULL);

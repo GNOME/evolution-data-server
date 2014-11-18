@@ -2654,7 +2654,6 @@ caldav_get_backend_property (ECalBackend *backend,
 		const gchar *extension_name;
 
 		caps = g_string_new (
-			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
 			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
 			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
 
@@ -4025,8 +4024,8 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
                    GError **error)
 {
 	ECalComponent            *comp;
-	icalcomponent            *cache_comp;
-	gboolean                  online, did_put = FALSE;
+	icalcomponent            *cache_comp, *master_comp;
+	gboolean                  online, did_put = FALSE, success = TRUE;
 	ECalComponentId		 *id;
 	struct icaltimetype current;
 	gchar *href = NULL, *etag = NULL;
@@ -4158,6 +4157,112 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 		break;
 	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
 	case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
+		master_comp = get_master_comp (cbdav, cache_comp);
+		if (e_cal_component_is_instance (comp) && master_comp) {
+			ECalComponent *mcomp;
+			gboolean processed = FALSE;
+			struct icaltimetype rid, master_dtstart;
+			icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
+			icalcomponent *split_icalcomp;
+			icalproperty *prop;
+
+			rid = icalcomponent_get_recurrenceid (icalcomp);
+			mcomp = e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master_comp));
+
+			if (mod == E_CAL_OBJ_MOD_THIS_AND_FUTURE &&
+			    e_cal_util_is_first_instance (mcomp, icalcomponent_get_recurrenceid (icalcomp), resolve_tzid, cbdav)) {
+				icalproperty *prop = icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY);
+
+				if (prop)
+					icalcomponent_remove_property (icalcomp, prop);
+
+				e_cal_component_rescan (comp);
+
+				/* Then do it like for "mod_all" */
+				cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+				g_clear_object (&mcomp);
+
+				if (new_components) {
+					/* read the comp from cache again, as some servers can modify it on put */
+					*new_components = g_slist_prepend (*new_components, get_ecalcomp_master_from_cache_or_fallback (cbdav, id->uid, NULL, comp));
+				}
+				break;
+			}
+
+			prop = icalcomponent_get_first_property (icalcomp, ICAL_RECURRENCEID_PROPERTY);
+			if (prop)
+				icalcomponent_remove_property (icalcomp, prop);
+			e_cal_component_rescan (comp);
+
+			master_dtstart = icalcomponent_get_dtstart (master_comp);
+			if (master_dtstart.zone && master_dtstart.zone != rid.zone)
+				rid = icaltime_convert_to_zone (rid, (icaltimezone *) master_dtstart.zone);
+			split_icalcomp = e_cal_util_split_at_instance (icalcomp, rid, master_dtstart);
+			if (split_icalcomp) {
+				ECalComponent *prev_comp;
+
+				prev_comp = e_cal_component_clone (mcomp);
+
+				rid = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
+				e_cal_util_remove_instances (master_comp, rid, mod);
+				e_cal_component_rescan (mcomp);
+
+				if (new_components) {
+					*new_components = g_slist_prepend (*new_components,
+						get_ecalcomp_master_from_cache_or_fallback (cbdav, id->uid, NULL, mcomp));
+				}
+
+				g_clear_object (&prev_comp);
+			}
+
+			processed = TRUE;
+
+			cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (master_comp));
+			if (split_icalcomp) {
+				gchar *new_uid;
+
+				new_uid = e_cal_component_gen_uid ();
+				icalcomponent_set_uid (split_icalcomp, new_uid);
+				g_free (new_uid);
+
+				g_warn_if_fail (e_cal_component_set_icalcomponent (comp, split_icalcomp));
+
+				/* sanitize the component */
+				sanitize_component ((ECalBackend *) cbdav, comp);
+
+				if (online) {
+					CalDAVObject object;
+
+					object.href = ecalcomp_gen_href (comp);
+					object.etag = NULL;
+					object.cdata = pack_cobj (cbdav, split_icalcomp);
+
+					success = caldav_server_put_object (cbdav, &object, split_icalcomp, cancellable, error);
+					if (success && new_components) {
+						ECalComponent *new_comp;
+
+						/* read the comp from cache again, as some servers can modify it on put */
+						new_comp = get_ecalcomp_master_from_cache_or_fallback (cbdav, icalcomponent_get_uid (split_icalcomp), NULL, comp);
+						if (new_comp)
+							e_cal_backend_notify_component_created (E_CAL_BACKEND (cbdav), new_comp);
+
+						g_clear_object (&new_comp);
+					}
+
+					caldav_object_free (&object, FALSE);
+				} else {
+					/* mark component as out of synch */
+					/*ecalcomp_set_synch_state (comp, ECALCOMP_LOCALLY_CREATED); */
+				}
+			}
+
+			g_clear_object (&mcomp);
+
+			if (!processed)
+				cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+		} else {
+			cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
+		}
 		break;
 	}
 
@@ -4168,7 +4273,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 		object.etag = etag;
 		object.cdata = pack_cobj (cbdav, cache_comp);
 
-		did_put = caldav_server_put_object (cbdav, &object, cache_comp, cancellable, error);
+		did_put = success && caldav_server_put_object (cbdav, &object, cache_comp, cancellable, error);
 
 		caldav_object_free (&object, FALSE);
 		href = NULL;
@@ -4269,6 +4374,14 @@ do_remove_objects (ECalBackendCalDAV *cbdav,
 		break;
 	case E_CAL_OBJ_MOD_THIS_AND_PRIOR:
 	case E_CAL_OBJ_MOD_THIS_AND_FUTURE:
+		if (remove_instance (cbdav, cache_comp, icaltime_from_string (rid), mod, TRUE)) {
+			if (new_components) {
+				icalcomponent *master = get_master_comp (cbdav, cache_comp);
+				if (master) {
+					*new_components = g_slist_prepend (*new_components, e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (master)));
+				}
+			}
+		}
 		break;
 	}
 

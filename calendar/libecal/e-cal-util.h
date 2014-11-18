@@ -201,6 +201,13 @@ icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 void		e_cal_util_remove_instances	(icalcomponent *icalcomp,
 						 struct icaltimetype rid,
 						 ECalObjModType mod);
+icalcomponent *	e_cal_util_split_at_instance	(icalcomponent *icalcomp,
+						 struct icaltimetype rid,
+						 struct icaltimetype master_dtstart);
+gboolean	e_cal_util_is_first_instance	(ECalComponent *comp,
+						 struct icaltimetype rid,
+						 ECalRecurResolveTimezoneFn tz_cb,
+						 gpointer tz_cb_data);
 
 gchar *		e_cal_util_get_system_timezone_location (void);
 icaltimezone *	e_cal_util_get_system_timezone (void);
