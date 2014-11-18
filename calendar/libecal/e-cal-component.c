@@ -271,6 +271,7 @@ free_icalcomponent (ECalComponent *comp,
 	/* Free the mappings */
 
 	priv->uid = NULL;
+	priv->recur_id.recur_time.prop = NULL;
 
 	priv->status = NULL;
 
