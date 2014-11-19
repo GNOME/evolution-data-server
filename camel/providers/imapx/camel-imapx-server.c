@@ -8606,6 +8606,9 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 
 	g_free (uid);
 
+	if (camel_mime_message_has_attachment (message))
+		((CamelMessageInfoBase *) info)->flags |= CAMEL_MESSAGE_ATTACHMENTS;
+
 	/* So, we actually just want to let the server loop that
 	 * messages need appending, i think.  This is so the same
 	 * mechanism is used for normal uploading as well as
