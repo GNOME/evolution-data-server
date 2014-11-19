@@ -271,13 +271,11 @@ e_phone_number_get_country_code (const EPhoneNumber *phone_number,
  * Since: 3.8
  **/
 gchar *
-e_phone_number_get_national_number (const EPhoneNumber *phone_number,
-				    gboolean with_leading_zeros)
+e_phone_number_get_national_number (const EPhoneNumber *phone_number)
 {
 #ifdef ENABLE_PHONENUMBER
 
-	return _e_phone_number_cxx_get_national_number (phone_number,
-							with_leading_zeros);
+	return _e_phone_number_cxx_get_national_number (phone_number);
 
 #else /* ENABLE_PHONENUMBER */
 

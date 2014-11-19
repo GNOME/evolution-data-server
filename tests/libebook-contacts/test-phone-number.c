@@ -200,7 +200,7 @@ test_parse_and_format (gconstpointer data)
 			test_data->country_code);
 		g_assert_cmpuint (source, ==, test_data->country_source);
 
-		national = e_phone_number_get_national_number (parsed, TRUE);
+		national = e_phone_number_get_national_number (parsed);
 		g_assert_cmpstr (national, ==, test_data->national_number);
 		g_free (national);
 
@@ -272,7 +272,7 @@ test_parse_auto_region (void)
 		g_assert_cmpint (e_phone_number_get_country_code (parsed, &source), ==, 1);
 		g_assert_cmpuint (source, ==, E_PHONE_NUMBER_COUNTRY_FROM_DEFAULT);
 
-		national = e_phone_number_get_national_number (parsed, TRUE);
+		national = e_phone_number_get_national_number (parsed);
 		g_assert_cmpstr (national, ==, "2125423789");
 		g_free (national);
 
