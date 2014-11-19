@@ -61,8 +61,7 @@ E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_to_string		(const EPhoneNumber
 										 EPhoneNumberFormat format);
 E_PHONE_NUMBER_LOCAL gint		_e_phone_number_cxx_get_country_code	(const EPhoneNumber *phone_number,
 										 EPhoneNumberCountrySource *source);
-E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_get_national_number	(const EPhoneNumber *phone_number,
-										 gboolean with_leading_zeros);
+E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_get_national_number	(const EPhoneNumber *phone_number);
 
 E_PHONE_NUMBER_LOCAL EPhoneNumberMatch	_e_phone_number_cxx_compare		(const EPhoneNumber *first_number,
 										 const EPhoneNumber *second_number);
