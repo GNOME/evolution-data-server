@@ -320,15 +320,22 @@ book_backend_sql_exec_real (sqlite3 *db,
                             GError **error)
 {
 	gchar *errmsg = NULL;
-	gint ret = -1;
+	gint ret = -1, retries = 0;
 
 	ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
+		/* try for ~15 seconds, then give up */
+		if (retries > 150)
+			break;
+		retries++;
+
 		if (errmsg) {
 			sqlite3_free (errmsg);
 			errmsg = NULL;
 		}
 		g_thread_yield ();
+		g_usleep (100 * 1000); /* Sleep for 100 ms */
+
 		ret = sqlite3_exec (db, stmt, callback, data, &errmsg);
 	}
 

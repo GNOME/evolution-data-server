@@ -1110,7 +1110,7 @@ ebsql_exec (EBookSqlite *ebsql,
 {
 	gboolean had_cancel;
 	gchar *errmsg = NULL;
-	gint ret = -1;
+	gint ret = -1, retries = 0;
 	gint64 t1 = 0, t2;
 
 	/* Debug output for statements and query plans */
@@ -1134,11 +1134,17 @@ ebsql_exec (EBookSqlite *ebsql,
 	ret = sqlite3_exec (ebsql->priv->db, stmt, callback, data, &errmsg);
 
 	while (ret == SQLITE_BUSY || ret == SQLITE_LOCKED || ret == -1) {
+		/* try for ~15 seconds, then give up */
+		if (retries > 150)
+			break;
+		retries++;
+
 		if (errmsg) {
 			sqlite3_free (errmsg);
 			errmsg = NULL;
 		}
 		g_thread_yield ();
+		g_usleep (100 * 1000); /* Sleep for 100 ms */
 
 		if (t1)
 			t1 = g_get_monotonic_time();
