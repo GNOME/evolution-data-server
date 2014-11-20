@@ -48,6 +48,8 @@ struct _CamelIMAPXMailboxPrivate {
 	guint64 highestmodseq;
 	guint32 permanentflags;
 
+	CamelIMAPXMailboxState state;
+
 	GMutex property_lock;
 	GRecMutex update_lock;
 
@@ -126,6 +128,7 @@ camel_imapx_mailbox_init (CamelIMAPXMailbox *mailbox)
 	g_rec_mutex_init (&mailbox->priv->update_lock);
 	mailbox->priv->message_map = g_sequence_new (NULL);
 	mailbox->priv->permanentflags = ~0;
+	mailbox->priv->state = CAMEL_IMAPX_MAILBOX_STATE_CREATED;
 }
 
 /**
@@ -217,6 +220,7 @@ camel_imapx_mailbox_clone (CamelIMAPXMailbox *mailbox,
 	clone->priv->uidnext = mailbox->priv->uidnext;
 	clone->priv->uidvalidity = mailbox->priv->uidvalidity;
 	clone->priv->highestmodseq = mailbox->priv->highestmodseq;
+	clone->priv->state = mailbox->priv->state;
 
 	clone->priv->quota_roots = g_strdupv (mailbox->priv->quota_roots);
 
@@ -235,6 +239,46 @@ camel_imapx_mailbox_clone (CamelIMAPXMailbox *mailbox,
 	g_mutex_unlock (&mailbox->priv->property_lock);
 
 	return clone;
+}
+
+/**
+ * camel_imapx_mailbox_get_state:
+ * @mailbox: a #CamelIMAPXMailbox
+ *
+ * Returns current state of the mailbox. This is used for folder
+ * structure updates, to identify newly created, updated, renamed
+ * or removed mailboxes.
+ *
+ * Returns: Current (update) state of the mailbox.
+ *
+ * Since: 3.14
+ **/
+CamelIMAPXMailboxState
+camel_imapx_mailbox_get_state (CamelIMAPXMailbox *mailbox)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN);
+
+	return mailbox->priv->state;
+}
+
+/**
+ * camel_imapx_mailbox_set_state:
+ * @mailbox: a #CamelIMAPXMailbox
+ * @state: a new #CamelIMAPXMailboxState to set
+ *
+ * Sets current (update) state of the mailbox. This is used for folder
+ * structure updates, to identify newly created, updated, renamed
+ * or removed mailboxes.
+ *
+ * Since: 3.14
+ **/
+void
+camel_imapx_mailbox_set_state (CamelIMAPXMailbox *mailbox,
+			       CamelIMAPXMailboxState state)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	mailbox->priv->state = state;
 }
 
 /**

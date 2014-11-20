@@ -993,6 +993,7 @@ event:
 	camel_store_summary_save (imapx_store->summary);
 
 	fi = imapx_store_build_folder_info (imapx_store, folder_path, 0);
+	camel_subscribable_folder_unsubscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
 	camel_store_folder_deleted (CAMEL_STORE (imapx_store), fi);
 	camel_folder_info_free (fi);
 }
@@ -1352,10 +1353,73 @@ exit:
 	return success;
 }
 
+static void
+imapx_store_mark_mailbox_unknown_cb (gpointer key,
+				     gpointer value,
+				     gpointer user_data)
+{
+	CamelIMAPXMailbox *mailbox = value;
+
+	g_return_if_fail (mailbox != NULL);
+
+	camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN);
+}
+
+static gboolean
+imapx_store_remove_unknown_mailboxes_cb (gpointer key,
+					 gpointer value,
+					 gpointer user_data)
+{
+	CamelIMAPXMailbox *mailbox = value;
+	CamelIMAPXStore *imapx_store = user_data;
+	CamelStoreInfo *si;
+
+	g_return_val_if_fail (mailbox != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), FALSE);
+
+	if (camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_CREATED) {
+		CamelFolderInfo *fi;
+		gchar *folder_path;
+
+		folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
+		fi = imapx_store_build_folder_info (imapx_store, folder_path,
+			imapx_store_mailbox_attributes_to_flags (mailbox));
+		camel_store_folder_created (CAMEL_STORE (imapx_store), fi);
+		camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
+		camel_folder_info_free (fi);
+		g_free (folder_path);
+	}
+
+	if (camel_imapx_mailbox_get_state (mailbox) != CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN) {
+		return FALSE;
+	}
+
+	si = (CamelStoreInfo *) camel_imapx_store_summary_mailbox (imapx_store->summary, camel_imapx_mailbox_get_name (mailbox));
+	if (si) {
+		const gchar *si_path;
+		gchar *dup_folder_path;
+
+		si_path = camel_store_info_path (imapx_store->summary, si);
+		dup_folder_path = g_strdup (si_path);
+
+		if (dup_folder_path != NULL) {
+			imapx_delete_folder_from_cache (imapx_store, dup_folder_path);
+			g_free (dup_folder_path);
+		} else {
+			camel_store_summary_remove (imapx_store->summary, si);
+		}
+
+		camel_store_summary_info_unref (imapx_store->summary, si);
+	}
+
+	return TRUE;
+}
+
 static gboolean
 sync_folders (CamelIMAPXStore *imapx_store,
               const gchar *root_folder_path,
               CamelStoreGetFolderInfoFlags flags,
+	      gboolean initial_setup,
               GCancellable *cancellable,
               GError **error)
 {
@@ -1379,6 +1443,12 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	/* This suppresses CamelStore signal emissions
 	 * in imapx_store_process_mailbox_attributes(). */
 	g_atomic_int_inc (&imapx_store->priv->syncing_folders);
+
+	if (!initial_setup && (!root_folder_path || !*root_folder_path)) {
+		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+		g_hash_table_foreach (imapx_store->priv->mailboxes, imapx_store_mark_mailbox_unknown_cb, imapx_store);
+		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+	}
 
 	if (root_folder_path != NULL && *root_folder_path != '\0') {
 		success = fetch_folder_info_from_folder_path (
@@ -1409,6 +1479,12 @@ sync_folders (CamelIMAPXStore *imapx_store,
 
 	if (!success)
 		goto exit;
+
+	if (!initial_setup && (!root_folder_path || !*root_folder_path)) {
+		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
+		g_hash_table_foreach_remove (imapx_store->priv->mailboxes, imapx_store_remove_unknown_mailboxes_cb, imapx_store);
+		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+	}
 
 	array = camel_store_summary_array (imapx_store->summary);
 
@@ -1483,7 +1559,7 @@ imapx_refresh_finfo (CamelSession *session,
 		CAMEL_SERVICE (store), cancellable, error))
 		goto exit;
 
-	sync_folders (store, NULL, 0, cancellable, error);
+	sync_folders (store, NULL, 0, FALSE, cancellable, error);
 
 	camel_store_summary_save (store->summary);
 
@@ -1724,7 +1800,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		goto exit;
 	}
 
-	if (!sync_folders (imapx_store, top, flags, cancellable, error))
+	if (!sync_folders (imapx_store, top, flags, initial_setup, cancellable, error))
 		goto exit;
 
 	camel_store_summary_save (imapx_store->summary);
@@ -3193,14 +3269,20 @@ camel_imapx_store_handle_list_response (CamelIMAPXStore *imapx_store,
 		mailbox = imapx_store_rename_mailbox_unlocked (
 			imapx_store, old_mailbox_name, mailbox_name);
 		emit_mailbox_renamed = (mailbox != NULL);
+		if (mailbox && camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN)
+			camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_RENAMED);
 	}
 	if (mailbox == NULL) {
 		mailbox = imapx_store_ref_mailbox_unlocked (imapx_store, mailbox_name);
 		emit_mailbox_updated = (mailbox != NULL);
+		if (mailbox && camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN)
+			camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_UPDATED);
 	}
 	if (mailbox == NULL) {
 		mailbox = imapx_store_create_mailbox_unlocked (imapx_store, response);
 		emit_mailbox_created = (mailbox != NULL);
+		if (mailbox)
+			camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_CREATED);
 	} else {
 		camel_imapx_mailbox_handle_list_response (mailbox, response);
 	}
@@ -3255,6 +3337,8 @@ camel_imapx_store_handle_lsub_response (CamelIMAPXStore *imapx_store,
 	mailbox = imapx_store_ref_mailbox_unlocked (imapx_store, mailbox_name);
 	if (mailbox != NULL) {
 		camel_imapx_mailbox_handle_lsub_response (mailbox, response);
+		if (camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN)
+			camel_imapx_mailbox_set_state (mailbox, CAMEL_IMAPX_MAILBOX_STATE_UPDATED);
 		emit_mailbox_updated = TRUE;
 	}
 	g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
