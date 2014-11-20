@@ -47,6 +47,13 @@ typedef struct _CamelIMAPXMailbox CamelIMAPXMailbox;
 typedef struct _CamelIMAPXMailboxClass CamelIMAPXMailboxClass;
 typedef struct _CamelIMAPXMailboxPrivate CamelIMAPXMailboxPrivate;
 
+typedef enum {
+	CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN,
+	CAMEL_IMAPX_MAILBOX_STATE_CREATED,
+	CAMEL_IMAPX_MAILBOX_STATE_UPDATED,
+	CAMEL_IMAPX_MAILBOX_STATE_RENAMED
+} CamelIMAPXMailboxState;
+
 /**
  * CamelIMAPXMailbox:
  *
@@ -73,6 +80,12 @@ CamelIMAPXMailbox *
 		camel_imapx_mailbox_clone
 					(CamelIMAPXMailbox *mailbox,
 					 const gchar *new_mailbox_name);
+CamelIMAPXMailboxState
+		camel_imapx_mailbox_get_state
+					(CamelIMAPXMailbox *mailbox);
+void		camel_imapx_mailbox_set_state
+					(CamelIMAPXMailbox *mailbox,
+					 CamelIMAPXMailboxState state);
 gboolean	camel_imapx_mailbox_exists
 					(CamelIMAPXMailbox *mailbox);
 gint		camel_imapx_mailbox_compare
