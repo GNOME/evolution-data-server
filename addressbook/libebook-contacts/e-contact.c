@@ -863,6 +863,10 @@ e_contact_find_attribute_with_types (EContact *contact,
 {
 	GList *l, *attrs;
 	gboolean found_needed1, found_needed2;
+	gboolean can_empty_needed2;
+
+	can_empty_needed2 = g_ascii_strcasecmp (attr_name, "TEL") == 0 && type_needed2 &&
+			    g_ascii_strcasecmp (type_needed2, "VOICE") == 0;
 
 	attrs = e_vcard_get_attributes (E_VCARD (contact));
 
@@ -881,6 +885,7 @@ e_contact_find_attribute_with_types (EContact *contact,
 			for (params = e_vcard_attribute_get_params (attr); params; params = params->next) {
 				EVCardAttributeParam *param = params->data;
 				const gchar *param_name = e_vcard_attribute_param_get_name (param);
+				gint n_types = 0;
 
 				if (!g_ascii_strcasecmp (param_name, EVC_TYPE)) {
 					gboolean matches = FALSE;
@@ -892,11 +897,12 @@ e_contact_find_attribute_with_types (EContact *contact,
 						found_needed2 = values && !values->next;
 
 					while (values && values->data) {
+						n_types++;
+
 						if (!found_needed1 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed1)) {
 							found_needed1 = TRUE;
 							matches = TRUE;
-						}
-						else if (!found_needed2 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed2)) {
+						} else if (!found_needed2 && !g_ascii_strcasecmp ((gchar *) values->data, type_needed2)) {
 							found_needed2 = TRUE;
 							matches = TRUE;
 						} else if (found_needed1) {
@@ -907,7 +913,7 @@ e_contact_find_attribute_with_types (EContact *contact,
 						values = values->next;
 					}
 
-					if (!matches) {
+					if (!matches && (!can_empty_needed2 || n_types != 1)) {
 						/* this is to enforce that we find an attribute
 						 * with *only* the TYPE='s we need.  This may seem like
 						 * an odd restriction but it's the only way at present to
@@ -917,7 +923,7 @@ e_contact_find_attribute_with_types (EContact *contact,
 					}
 				}
 
-				if (found_needed1 && found_needed2) {
+				if (found_needed1 && (found_needed2 || (n_types == 1 && can_empty_needed2))) {
 					if (nth-- == 0)
 						return attr;
 					else
