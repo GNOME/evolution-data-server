@@ -682,6 +682,15 @@ pop3_store_authenticate_sync (CamelService *service,
 		pcu = camel_pop3_engine_command_new (
 			pop3_engine, 0, NULL, NULL, cancellable, error,
 			"USER %s\r\n", user);
+		if (error && *error) {
+			g_prefix_error (
+				error,
+				_("Unable to connect to POP server %s.\n"
+				"Error sending password: "), host);
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
+		}
+
 		pcp = camel_pop3_engine_command_new (
 			pop3_engine, 0, NULL, NULL, cancellable, error,
 			"PASS %s\r\n", password);
