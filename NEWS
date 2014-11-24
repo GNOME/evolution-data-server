@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.13.8 2014-11-24
+---------------------------------------
+
+Bug Fixes:
+	Bug 300871 - Ignore a specific thread (Milan Crha)
+	Bug 739343 - Google Task with Due Date freezes UI on save (Milan Crha)
+	Bug 738724 - [IMAP] Message flag changes not always saved (Milan Crha)
+	Bug 739495 - addressbook: Fix a typo in a comparison (Philip Withnall)
+	Bug 739904 - Can't create Contact List on an LDAP server (Milan Crha)
+	Bug 678398 - Make evolution-source-registry debugging configurable (Milan Crha)
+	Bug 739610 - [IMAPx] Prevent running FETCH and STORE at the same time (Milan Crha)
+	Bug 736011 - [CalDAV] Receive two events adds only the first (Milan Crha)
+	Bug 620088 - Enable "This and future" recurrence change option (Milan Crha)
+	Bug 735659 - EBookSqlite: Revert ABI change introduced by commit 8231f94 (Mateusz Polrola)
+	Bug 736947 - Attachment icon not shown in Sent folder (Milan Crha)
+	Bug 732717 - Refreshing an IMAP account does not refresh folder list (Milan Crha)
+	Bug 733518 - Make VOICE type optional for TEL in EContact (Milan Crha)
+	Bug 732018 - Crash due to passing set GError to glib-networking (Milan Crha)
+
+Miscellaneous:
+	Disabling/enabling Collection master source doesn't update children properly (Milan Crha)
+	CamelMimeFilterToHTML - Text can be quoted with different characters than just ">" (Tomas Popela)
+	Factory could close due to inactivity with slow backend subprocess open (Milan Crha)
+	[IMAPx] Try to reconnect after socket I/O timeout (Milan Crha)
+	addressbook: Fix ordering of parameters to fread() (Philip Withnall)
+	e-proxy: Eliminate more use of undefined C behaviour (Philip Withnall)
+	addressbook: Strengthen an assertion to avoid negative bit shifts (Philip Withnall)
+	camel: Fix ordering of parameters to fread() (Philip Withnall)
+	camel: Fix ordering of parameters to fwrite() (Philip Withnall)
+	addressbook: Fix ordering of parameters to fwrite() (Philip Withnall)
+	camel_folder_thaw: Save changes to local summary (Milan Crha)
+	[CamelIMAPXServer] Assign tagprefix per account (Milan Crha)
+	e-source-registry-server: Fix a potential NULL pointer dereference (Philip Withnall)
+	[ECalBackendFile] Stops refresh thread too late (Milan Crha)
+	ECalComponent: Recurrence ID not rescan properly (Milan Crha)
+	Update X-EVOLUTION-ENDDATE before saving changes to events (Milan Crha)
+	Limit SQLite busy-wait for a lock (Milan Crha)
+
+Translations:
+	Baurzhan Muftakhidinov (kk)
+	Marek Černocký (cs)
+	Anders Jonsson (sv)
+	Kjartan Maraas (nb)
+	Duarte Loreto (pt)
+
 Evolution-Data-Server 3.13.7 2014-10-27
 ---------------------------------------
 
