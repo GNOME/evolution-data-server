@@ -932,18 +932,12 @@ cal_client_process_properties (ECalClient *cal_client,
 	for (ii = 0; properties[ii]; ii++) {
 		if (!(ii & 1) && properties[ii + 1]) {
 			GParamSpec *param;
-			GVariant *stored = NULL, *expected = NULL;
+			GVariant *expected = NULL;
 
 			param = g_object_class_find_property (object_class, properties[ii]);
 			if (param) {
-				GValue value = G_VALUE_INIT;
-
-				g_value_init (&value, param->value_type);
-				g_object_get_property (dbus_proxy, param->name, &value);
-
 				#define WORKOUT(gvl, gvr) \
 					if (g_type_is_a (param->value_type, G_TYPE_ ## gvl)) { \
-						stored = g_dbus_gvalue_to_gvariant (&value, G_VARIANT_TYPE_ ## gvr); \
 						expected = g_variant_parse (G_VARIANT_TYPE_ ## gvr, properties[ii + 1], NULL, NULL, NULL); \
 					}
 
@@ -958,11 +952,12 @@ cal_client_process_properties (ECalClient *cal_client,
 				WORKOUT (DOUBLE, DOUBLE);
 
 				#undef WORKOUT
-
-				g_value_unset (&value);
 			}
 
-			if (stored && expected && !g_variant_equal (stored, expected)) {
+			/* Update the property always, even when the current value on the GDBusProxy
+			   matches the expected value, because sometimes the proxy can have up-to-date
+			   values, but still not propagated into EClient properties. */
+			if (expected) {
 				GValue value = G_VALUE_INIT;
 
 				g_dbus_gvariant_to_gvalue (expected, &value);
@@ -970,12 +965,8 @@ cal_client_process_properties (ECalClient *cal_client,
 				cal_client_dbus_proxy_property_changed (E_CLIENT (cal_client), param->name, &value, FALSE);
 
 				g_value_unset (&value);
-			}
-
-			if (stored)
-				g_variant_unref (stored);
-			if (expected)
 				g_variant_unref (expected);
+			}
 		}
 	}
 }
