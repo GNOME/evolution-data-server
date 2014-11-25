@@ -4004,6 +4004,7 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		CamelIMAPXCommandQueue *failed;
 		GQueue trash = G_QUEUE_INIT;
 		GList *list, *link;
+		gboolean noperm_error;
 
 		c (is->tagprefix, "Select failed: %s\n", local_error ? local_error->message : "Unknown error");
 
@@ -4019,6 +4020,9 @@ imapx_command_select_done (CamelIMAPXServer *is,
 		failed = camel_imapx_command_queue_new ();
 
 		QUEUE_LOCK (is);
+
+		noperm_error = select_pending != NULL && ic->status && ic->status->result == IMAPX_NO &&
+			(ic->status->condition == IMAPX_NOPERM || ic->status->condition == IMAPX_UNKNOWN);
 
 		if (select_pending != NULL) {
 			GList *head = camel_imapx_command_queue_peek_head_link (is->queue);
@@ -4041,6 +4045,13 @@ imapx_command_select_done (CamelIMAPXServer *is,
 
 				g_clear_object (&cw_mailbox);
 			}
+		}
+
+		if (noperm_error) {
+			/* This avoids another SELECT try on this mailbox;
+			   the mailbox can be write-only in this case. */
+			if (camel_imapx_mailbox_get_permanentflags (select_pending) == ~0)
+				camel_imapx_mailbox_set_permanentflags (select_pending, 0);
 		}
 
 		while ((link = g_queue_pop_head (&trash)) != NULL) {
@@ -4067,7 +4078,8 @@ imapx_command_select_done (CamelIMAPXServer *is,
 				continue;
 			}
 
-			camel_imapx_job_cancel (failed_job);
+			if (!noperm_error)
+				camel_imapx_job_cancel (failed_job);
 
 			if (ic->status)
 				cw->status = imapx_copy_status (ic->status);
@@ -8463,7 +8475,11 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (destination), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
-	if (!imapx_ensure_mailbox_permanentflags (is, destination, cancellable, error))
+	/* That's okay if the "SELECT" fails here, as it can be due to
+	   the folder being write-only; just ignore the error and continue. */
+	imapx_ensure_mailbox_permanentflags (is, destination, cancellable, NULL);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
 
 	data = g_slice_new0 (CopyMessagesData);
@@ -8529,7 +8545,11 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
 	/* CamelMessageInfo can be NULL. */
 
-	if (!imapx_ensure_mailbox_permanentflags (is, mailbox, cancellable, error))
+	/* That's okay if the "SELECT" fails here, as it can be due to
+	   the folder being write-only; just ignore the error and continue. */
+	imapx_ensure_mailbox_permanentflags (is, mailbox, cancellable, NULL);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
 
 	/* Append just assumes we have no/a dodgy connection.  We dump
