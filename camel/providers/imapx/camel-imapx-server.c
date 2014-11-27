@@ -7694,6 +7694,15 @@ imapx_ready_to_read (GInputStream *input_stream,
 	g_clear_object (&output_stream);
 	g_clear_object (&cancellable);
 
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT)) {
+		QUEUE_LOCK (is);
+		if (camel_imapx_command_queue_is_empty (is->active) && is->state != IMAPX_SHUTDOWN) {
+			camel_imapx_debug (io, is->tagprefix, "Ignoring timeout error, nothing was waiting (original error: %s)\n", local_error->message);
+			g_clear_error (&local_error);
+		}
+		QUEUE_UNLOCK (is);
+	}
+
 	if (local_error != NULL) {
 		camel_imapx_debug (io, is->tagprefix, "Data read failed with error '%s'\n", local_error->message);
 
