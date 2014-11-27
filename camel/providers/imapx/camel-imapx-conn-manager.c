@@ -50,6 +50,8 @@ struct _CamelIMAPXConnManagerPrivate {
 
 	GMutex pending_connections_lock;
 	GSList *pending_connections; /* GCancellable * */
+
+	gchar last_tagprefix;
 };
 
 struct _ConnectionInfo {
@@ -474,6 +476,8 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *con_man)
 	g_rw_lock_init (&con_man->priv->rw_lock);
 	g_mutex_init (&con_man->priv->pending_connections_lock);
 	g_weak_ref_init (&con_man->priv->store, NULL);
+
+	con_man->priv->last_tagprefix = 'A' - 1;
 }
 
 static void
@@ -721,11 +725,18 @@ static gchar
 imapx_conn_manager_get_next_free_tagprefix_unlocked (CamelIMAPXConnManager *con_man)
 {
 	gchar adept;
+	gint ii;
 	GList *iter;
 
+	adept = con_man->priv->last_tagprefix + 1;
+
 	/* the 'Z' is dedicated to auth types query */
-	adept = 'A';
-	while (adept < 'Z') {
+	if (adept >= 'Z')
+		adept = 'A';
+	else if (adept < 'A')
+		adept = 'A';
+
+	for (ii = 0; ii < 26; ii++) {
 		for (iter = con_man->priv->connections; iter; iter = g_list_next (iter)) {
 			ConnectionInfo *cinfo = iter->data;
 
@@ -741,9 +752,13 @@ imapx_conn_manager_get_next_free_tagprefix_unlocked (CamelIMAPXConnManager *con_
 			break;
 
 		adept++;
+		if (adept >= 'Z')
+			adept = 'A';
 	}
 
 	g_return_val_if_fail (adept >= 'A' && adept < 'Z', 'Z');
+
+	con_man->priv->last_tagprefix = adept;
 
 	return adept;
 }
