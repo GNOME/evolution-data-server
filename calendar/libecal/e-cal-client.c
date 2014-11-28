@@ -5436,7 +5436,7 @@ e_cal_client_remove_object_finish (ECalClient *client,
  * This function allows the removal of instances of a recurrent
  * appointment. By using a combination of the @uid, @rid and @mod
  * arguments, you can remove specific instances. If what you want
- * is to remove all instances, use %NULL @rid and E_CAL_OBJ_MODE_THIS
+ * is to remove all instances, use %NULL @rid and E_CAL_OBJ_MODE_ALL
  * for the @mod.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
