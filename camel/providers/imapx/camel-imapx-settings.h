@@ -133,6 +133,16 @@ gboolean	camel_imapx_settings_get_use_namespace
 void		camel_imapx_settings_set_use_namespace
 						(CamelIMAPXSettings *settings,
 						 gboolean use_namespace);
+gboolean	camel_imapx_settings_get_ignore_other_users_namespace
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_ignore_other_users_namespace
+						(CamelIMAPXSettings *settings,
+						 gboolean ignore);
+gboolean	camel_imapx_settings_get_ignore_shared_folders_namespace
+						(CamelIMAPXSettings *settings);
+void		camel_imapx_settings_set_ignore_shared_folders_namespace
+						(CamelIMAPXSettings *settings,
+						 gboolean ignore);
 gboolean	camel_imapx_settings_get_use_qresync
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_use_qresync

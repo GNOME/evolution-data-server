@@ -46,6 +46,8 @@ struct _CamelIMAPXSettingsPrivate {
 	gboolean use_real_trash_path;
 	gboolean use_shell_command;
 	gboolean use_subscriptions;
+	gboolean ignore_other_users_namespace;
+	gboolean ignore_shared_folders_namespace;
 
 	CamelSortType fetch_order;
 };
@@ -75,7 +77,9 @@ enum {
 	PROP_USE_REAL_JUNK_PATH,
 	PROP_USE_REAL_TRASH_PATH,
 	PROP_USE_SHELL_COMMAND,
-	PROP_USE_SUBSCRIPTIONS
+	PROP_USE_SUBSCRIPTIONS,
+	PROP_IGNORE_OTHER_USERS_NAMESPACE,
+	PROP_IGNORE_SHARED_FOLDERS_NAMESPACE
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -232,6 +236,18 @@ imapx_settings_set_property (GObject *object,
 
 		case PROP_USE_SUBSCRIPTIONS:
 			camel_imapx_settings_set_use_subscriptions (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_IGNORE_OTHER_USERS_NAMESPACE:
+			camel_imapx_settings_set_ignore_other_users_namespace (
+				CAMEL_IMAPX_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_IGNORE_SHARED_FOLDERS_NAMESPACE:
+			camel_imapx_settings_set_ignore_shared_folders_namespace (
 				CAMEL_IMAPX_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -412,6 +428,20 @@ imapx_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_imapx_settings_get_use_subscriptions (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_IGNORE_OTHER_USERS_NAMESPACE:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_ignore_other_users_namespace (
+				CAMEL_IMAPX_SETTINGS (object)));
+			return;
+
+		case PROP_IGNORE_SHARED_FOLDERS_NAMESPACE:
+			g_value_set_boolean (
+				value,
+				camel_imapx_settings_get_ignore_shared_folders_namespace (
 				CAMEL_IMAPX_SETTINGS (object)));
 			return;
 	}
@@ -708,6 +738,30 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"use-subscriptions",
 			"Use Subscriptions",
 			"Whether to honor folder subscriptions",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_IGNORE_OTHER_USERS_NAMESPACE,
+		g_param_spec_boolean (
+			"ignore-other-users-namespace",
+			"Ignore Other Users Namespace",
+			"Whether to ignore other users namespace",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_IGNORE_SHARED_FOLDERS_NAMESPACE,
+		g_param_spec_boolean (
+			"ignore-shared-folders-namespace",
+			"Ignore Shared Folders Namespace",
+			"Whether to ignore shared folders namespace",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -1499,6 +1553,88 @@ camel_imapx_settings_set_use_namespace (CamelIMAPXSettings *settings,
 	settings->priv->use_namespace = use_namespace;
 
 	g_object_notify (G_OBJECT (settings), "use-namespace");
+}
+
+/**
+ * camel_imapx_settings_get_ignore_other_users_namespace:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to ignore namespace for other users.
+ *
+ * Returns: whether to ignore namespace for other users
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_imapx_settings_get_ignore_other_users_namespace (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->ignore_other_users_namespace;
+}
+
+/**
+ * camel_imapx_settings_set_ignore_other_users_namespace:
+ * @settings: a #CamelIMAPXSettings
+ * @ignore: whether to ignore the namespace
+ *
+ * Sets whether to ignore other users namespace.
+ *
+ * Since: 3.14
+ **/
+void
+camel_imapx_settings_set_ignore_other_users_namespace (CamelIMAPXSettings *settings,
+						       gboolean ignore)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if (settings->priv->ignore_other_users_namespace == ignore)
+		return;
+
+	settings->priv->ignore_other_users_namespace = ignore;
+
+	g_object_notify (G_OBJECT (settings), "ignore-other-users-namespace");
+}
+
+/**
+ * camel_imapx_settings_get_ignore_shared_folders_namespace:
+ * @settings: a #CamelIMAPXSettings
+ *
+ * Returns whether to ignore namespace for shared folders.
+ *
+ * Returns: whether to ignore namespace for shared folders
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_imapx_settings_get_ignore_shared_folders_namespace (CamelIMAPXSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings), FALSE);
+
+	return settings->priv->ignore_shared_folders_namespace;
+}
+
+/**
+ * camel_imapx_settings_set_ignore_shared_folders_namespace:
+ * @settings: a #CamelIMAPXSettings
+ * @ignore: whether to ignore the namespace
+ *
+ * Sets whether to ignore shared folders namespace.
+ *
+ * Since: 3.14
+ **/
+void
+camel_imapx_settings_set_ignore_shared_folders_namespace (CamelIMAPXSettings *settings,
+							  gboolean ignore)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_SETTINGS (settings));
+
+	if (settings->priv->ignore_shared_folders_namespace == ignore)
+		return;
+
+	settings->priv->ignore_shared_folders_namespace = ignore;
+
+	g_object_notify (G_OBJECT (settings), "ignore-shared-folders-namespace");
 }
 
 /**

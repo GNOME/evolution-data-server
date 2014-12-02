@@ -75,6 +75,12 @@ CamelIMAPXNamespaceResponse *
 					(CamelIMAPXListResponse *list_response);
 GList *		camel_imapx_namespace_response_list
 					(CamelIMAPXNamespaceResponse *response);
+void		camel_imapx_namespace_response_add
+					(CamelIMAPXNamespaceResponse *response,
+					 CamelIMAPXNamespace *namespace);
+void		camel_imapx_namespace_response_remove
+					(CamelIMAPXNamespaceResponse *response,
+					 CamelIMAPXNamespace *namespace);
 CamelIMAPXNamespace *
 		camel_imapx_namespace_response_lookup
 					(CamelIMAPXNamespaceResponse *response,
