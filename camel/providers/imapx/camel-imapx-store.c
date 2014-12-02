@@ -2877,6 +2877,9 @@ void
 camel_imapx_store_set_namespaces (CamelIMAPXStore *imapx_store,
 				  CamelIMAPXNamespaceResponse *namespaces)
 {
+	CamelIMAPXSettings *imapx_settings;
+	gboolean ignore_other_users_namespace, ignore_shared_folders_namespace;
+
 	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
 	if (namespaces)
 		g_return_if_fail (CAMEL_IS_IMAPX_NAMESPACE_RESPONSE (namespaces));
@@ -2884,12 +2887,79 @@ camel_imapx_store_set_namespaces (CamelIMAPXStore *imapx_store,
 	if (namespaces)
 		g_object_ref (namespaces);
 
+	imapx_settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (imapx_store)));
+
 	g_mutex_lock (&imapx_store->priv->namespaces_lock);
 
 	g_clear_object (&imapx_store->priv->namespaces);
 	imapx_store->priv->namespaces = namespaces;
 
+	if (camel_imapx_settings_get_use_namespace (imapx_settings)) {
+		gchar *use_namespace = camel_imapx_settings_dup_namespace (imapx_settings);
+
+		if (use_namespace && *use_namespace) {
+			/* Overwrite personal namespaces to the given */
+			GList *nslist, *link;
+			gchar folder_sep = 0;
+			CamelIMAPXNamespace *override_ns = NULL;
+
+			nslist = camel_imapx_namespace_response_list (namespaces);
+			for (link = nslist; link; link = g_list_next (link)) {
+				CamelIMAPXNamespace *ns = link->data;
+
+				if (!folder_sep)
+					folder_sep = camel_imapx_namespace_get_separator (ns);
+
+				if (camel_imapx_namespace_get_category (ns) == CAMEL_IMAPX_NAMESPACE_PERSONAL) {
+					if (!override_ns) {
+						override_ns = camel_imapx_namespace_new (
+							CAMEL_IMAPX_NAMESPACE_PERSONAL,
+							use_namespace,
+							camel_imapx_namespace_get_separator (ns));
+					}
+
+					camel_imapx_namespace_response_remove (namespaces, ns);
+				}
+			}
+
+			if (!override_ns) {
+				override_ns = camel_imapx_namespace_new (
+					CAMEL_IMAPX_NAMESPACE_PERSONAL,
+					use_namespace,
+					folder_sep);
+			}
+
+			camel_imapx_namespace_response_add (namespaces, override_ns);
+
+			g_list_free_full (nslist, g_object_unref);
+			g_clear_object (&override_ns);
+		}
+
+		g_free (use_namespace);
+	}
+
+	ignore_other_users_namespace = camel_imapx_settings_get_ignore_other_users_namespace (imapx_settings);
+	ignore_shared_folders_namespace = camel_imapx_settings_get_ignore_shared_folders_namespace (imapx_settings);
+
+	if (ignore_other_users_namespace || ignore_shared_folders_namespace) {
+		GList *nslist, *link;
+
+		nslist = camel_imapx_namespace_response_list (namespaces);
+		for (link = nslist; link; link = g_list_next (link)) {
+			CamelIMAPXNamespace *ns = link->data;
+
+			if ((ignore_other_users_namespace && camel_imapx_namespace_get_category (ns) == CAMEL_IMAPX_NAMESPACE_OTHER_USERS) ||
+			    (ignore_shared_folders_namespace && camel_imapx_namespace_get_category (ns) == CAMEL_IMAPX_NAMESPACE_SHARED)) {
+				camel_imapx_namespace_response_remove (namespaces, ns);
+			}
+		}
+
+		g_list_free_full (nslist, g_object_unref);
+	}
+
 	g_mutex_unlock (&imapx_store->priv->namespaces_lock);
+
+	g_clear_object (&imapx_settings);
 }
 
 static void

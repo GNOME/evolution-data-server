@@ -324,6 +324,57 @@ camel_imapx_namespace_response_list (CamelIMAPXNamespaceResponse *response)
 }
 
 /**
+ * camel_imapx_namespace_response_remove:
+ * @response: a #CamelIMAPXNamespaceResponse
+ * @namespace: a #CamelIMAPXNamespace to add
+ *
+ * Adds a @namespace into the list of namespaces. It adds its own
+ * reference on the @namespace.
+ *
+ * Since: 3.12.9
+ **/
+void
+camel_imapx_namespace_response_add (CamelIMAPXNamespaceResponse *response,
+				    CamelIMAPXNamespace *namespace)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_NAMESPACE_RESPONSE (response));
+	g_return_if_fail (CAMEL_IS_IMAPX_NAMESPACE (namespace));
+
+	g_queue_push_tail (&response->priv->namespaces, g_object_ref (namespace));
+}
+
+/**
+ * camel_imapx_namespace_response_remove:
+ * @response: a #CamelIMAPXNamespaceResponse
+ * @namespace: a #CamelIMAPXNamespace to remove
+ *
+ * Removes @namespace from the list of namespaces in the @response.
+ * If no such namespace exists then does nothing.
+ *
+ * Since: 3.12.9
+ **/
+void
+camel_imapx_namespace_response_remove (CamelIMAPXNamespaceResponse *response,
+				       CamelIMAPXNamespace *namespace)
+{
+	GList *link;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_NAMESPACE_RESPONSE (response));
+	g_return_if_fail (CAMEL_IS_IMAPX_NAMESPACE (namespace));
+
+	for (link = g_queue_peek_head_link (&response->priv->namespaces);
+	     link; link = g_list_next (link)) {
+		CamelIMAPXNamespace *ns = link->data;
+
+		if (camel_imapx_namespace_equal (namespace, ns)) {
+			g_queue_remove (&response->priv->namespaces, ns);
+			g_object_unref (ns);
+			break;
+		}
+	}
+}
+
+/**
  * camel_imapx_namespace_response_lookup:
  * @response: a #CamelIMAPXNamespaceResponse
  * @mailbox_name: a mailbox name
