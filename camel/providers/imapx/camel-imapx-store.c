@@ -953,7 +953,8 @@ fill_fi (CamelStore *store,
 
 static void
 imapx_delete_folder_from_cache (CamelIMAPXStore *imapx_store,
-                                const gchar *folder_path)
+                                const gchar *folder_path,
+				gboolean save_summary)
 {
 	gchar *state_file;
 	gchar *folder_dir, *storage_path;
@@ -990,7 +991,8 @@ imapx_delete_folder_from_cache (CamelIMAPXStore *imapx_store,
 
 event:
 	camel_store_summary_remove_path (imapx_store->summary, folder_path);
-	camel_store_summary_save (imapx_store->summary);
+	if (save_summary)
+		camel_store_summary_save (imapx_store->summary);
 
 	fi = imapx_store_build_folder_info (imapx_store, folder_path, 0);
 	camel_subscribable_folder_unsubscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
@@ -1403,7 +1405,7 @@ imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 		dup_folder_path = g_strdup (si_path);
 
 		if (dup_folder_path != NULL) {
-			imapx_delete_folder_from_cache (imapx_store, dup_folder_path);
+			imapx_delete_folder_from_cache (imapx_store, dup_folder_path, FALSE);
 			g_free (dup_folder_path);
 		} else {
 			camel_store_summary_remove (imapx_store->summary, si);
@@ -1517,7 +1519,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 			if (dup_folder_path != NULL) {
 				/* Do not unsubscribe from it, it influences UI for non-subscribable folders */
 				imapx_delete_folder_from_cache (
-					imapx_store, dup_folder_path);
+					imapx_store, dup_folder_path, FALSE);
 				g_free (dup_folder_path);
 			} else {
 				camel_store_summary_remove (
@@ -1527,6 +1529,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	}
 
 	camel_store_summary_array_free (imapx_store->summary, array);
+	camel_store_summary_save (imapx_store->summary);
 
 exit:
 	g_hash_table_destroy (folder_info_results);
@@ -2083,7 +2086,7 @@ imapx_store_delete_folder_sync (CamelStore *store,
 		g_propagate_error (error, local_error);
 
 	if (success)
-		imapx_delete_folder_from_cache (imapx_store, folder_name);
+		imapx_delete_folder_from_cache (imapx_store, folder_name, TRUE);
 
 exit:
 	g_clear_object (&folder);
