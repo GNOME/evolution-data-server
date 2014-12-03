@@ -2823,6 +2823,13 @@ camel_folder_append_message_finish (CamelFolder *folder,
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
+static gboolean
+camel_folder_maybe_run_db_maintenance (CamelFolder *folder,
+				       GError **error)
+{
+	return camel_store_maybe_run_db_maintenance (camel_folder_get_parent_store (folder), error);
+}
+
 /**
  * camel_folder_expunge_sync:
  * @folder: a #CamelFolder
@@ -2870,6 +2877,9 @@ camel_folder_expunge_sync (CamelFolder *folder,
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
 		success = class->expunge_sync (folder, cancellable, error);
 		CAMEL_CHECK_GERROR (folder, expunge_sync, success, error);
+
+		if (success)
+			success = camel_folder_maybe_run_db_maintenance (folder, error);
 	}
 
 	camel_operation_pop_message (cancellable);
@@ -3621,6 +3631,9 @@ camel_folder_synchronize_sync (CamelFolder *folder,
 		success = class->synchronize_sync (
 			folder, expunge, cancellable, error);
 		CAMEL_CHECK_GERROR (folder, synchronize_sync, success, error);
+
+		if (success && expunge)
+			success = camel_folder_maybe_run_db_maintenance (folder, error);
 	}
 
 	camel_folder_unlock (folder);

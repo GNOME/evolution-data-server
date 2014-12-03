@@ -55,6 +55,7 @@ typedef struct _SignalClosure SignalClosure;
 struct _CamelStorePrivate {
 	GMutex signal_emission_lock;
 	gboolean folder_info_stale_scheduled;
+	volatile gint maintenance_lock;
 };
 
 struct _AsyncContext {
@@ -426,6 +427,8 @@ store_synchronize_sync (CamelStore *store,
 		/* ensure all folders are used when expunging */
 		CamelFolderInfo *root, *fi;
 
+		g_atomic_int_add (&store->priv->maintenance_lock, 1);
+
 		folders = g_ptr_array_new ();
 		root = camel_store_get_folder_info_sync (
 			store, NULL,
@@ -486,6 +489,14 @@ store_synchronize_sync (CamelStore *store,
 			ignore_no_such_table_exception (&local_error);
 		}
 		g_object_unref (folder);
+	}
+
+	/* Unlock it before the call, thus it's actually done. */
+	if (expunge)
+		g_atomic_int_add (&store->priv->maintenance_lock, -1);
+
+	if (!local_error && expunge) {
+		camel_store_maybe_run_db_maintenance (store, &local_error);
 	}
 
 	if (local_error != NULL) {
@@ -658,6 +669,7 @@ camel_store_init (CamelStore *store)
 		CAMEL_STORE_CAN_EDIT_FOLDERS;
 
 	store->mode = CAMEL_STORE_READ | CAMEL_STORE_WRITE;
+	store->priv->maintenance_lock = 0;
 }
 
 G_DEFINE_QUARK (camel-store-error-quark, camel_store_error)
@@ -2895,3 +2907,29 @@ camel_store_synchronize_finish (CamelStore *store,
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
+/**
+ * camel_store_maybe_run_db_maintenance:
+ * @store: a #CamelStore instance
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Checks the state of the current CamelDB used for the @store and eventually
+ * runs maintenance routines on it.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_store_maybe_run_db_maintenance (CamelStore *store,
+				      GError **error)
+{
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+
+	if (g_atomic_int_get (&store->priv->maintenance_lock) > 0)
+		return TRUE;
+
+	if (!store->cdb_w)
+		return TRUE;
+
+	return camel_db_maybe_run_maintenance (store->cdb_w, error);
+}

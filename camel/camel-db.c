@@ -2704,3 +2704,58 @@ camel_db_get_column_ident (GHashTable **hash,
 
 	return GPOINTER_TO_INT (value);
 }
+
+static gint
+get_number_cb (gpointer data,
+	       gint argc,
+	       gchar **argv,
+	       gchar **azColName)
+{
+	guint64 *pui64 = data;
+
+	if (argc == 1) {
+		*pui64 = argv[0] ? g_ascii_strtoull (argv[0], NULL, 10) : 0;
+	} else {
+		*pui64 = 0;
+	}
+
+	return 0;
+}
+
+/**
+ * camel_db_maybe_run_maintenance:
+ * @cdb: a #CamelDB instance
+ * @error: (allow none): a #GError or %NULL
+ *
+ * Runs a @cdb maintenance, which includes vacuum, if necessary.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.14
+ **/
+gboolean
+camel_db_maybe_run_maintenance (CamelDB *cdb,
+				GError **error)
+{
+	GError *local_error = NULL;
+	guint64 page_count = 0, freelist_count = 0;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (cdb != NULL, FALSE);
+
+	cdb_writer_lock (cdb);
+
+	if (cdb_sql_exec (cdb->db, "PRAGMA page_count;", get_number_cb, &page_count, &local_error) == SQLITE_OK &&
+	    cdb_sql_exec (cdb->db, "PRAGMA freelist_count;", get_number_cb, &freelist_count, &local_error) == SQLITE_OK) {
+		/* Vacuum, if there's more than 5% of the free pages */
+		success = !page_count || !freelist_count || (freelist_count * 1000 / page_count > 50 &&
+		    cdb_sql_exec (cdb->db, "vacuum;", NULL, NULL, &local_error) == SQLITE_OK);
+	}
+
+	cdb_writer_unlock (cdb);
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
+}

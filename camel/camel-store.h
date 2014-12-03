@@ -355,6 +355,9 @@ void		camel_store_synchronize		(CamelStore *store,
 gboolean	camel_store_synchronize_finish	(CamelStore *store,
 						 GAsyncResult *result,
 						 GError **error);
+gboolean	camel_store_maybe_run_db_maintenance
+						(CamelStore *store,
+						 GError **error);
 
 G_END_DECLS
 
