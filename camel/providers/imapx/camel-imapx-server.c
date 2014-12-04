@@ -330,6 +330,7 @@ typedef enum {
 
 typedef enum {
 	IMAPX_IDLE_STOP_NOOP,
+	IMAPX_IDLE_STOP_WAIT_DONE,
 	IMAPX_IDLE_STOP_SUCCESS,
 	IMAPX_IDLE_STOP_ERROR
 } CamelIMAPXIdleStopResult;
@@ -1143,8 +1144,10 @@ imapx_server_inactivity_timeout_cb (gpointer data)
 		switch (imapx_stop_idle (is, NULL)) {
 			case IMAPX_IDLE_STOP_SUCCESS:
 				imapx_start_idle (is);
-				/* fall through */
+				result = G_SOURCE_CONTINUE;
+				break;
 
+			case IMAPX_IDLE_STOP_WAIT_DONE:
 			case IMAPX_IDLE_STOP_NOOP:
 				result = G_SOURCE_CONTINUE;
 				break;
@@ -1494,6 +1497,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 				case IMAPX_IDLE_STOP_NOOP:
 					break;
 
+				case IMAPX_IDLE_STOP_WAIT_DONE:
 				case IMAPX_IDLE_STOP_SUCCESS:
 					c (
 						is->tagprefix,
@@ -3885,13 +3889,16 @@ imapx_stop_idle (CamelIMAPXServer *is,
 			break;
 
 		case IMAPX_IDLE_CANCEL:
-		case IMAPX_IDLE_WAIT_DONE:
 			result = IMAPX_IDLE_STOP_SUCCESS;
+			break;
+
+		case IMAPX_IDLE_WAIT_DONE:
+			result = IMAPX_IDLE_STOP_WAIT_DONE;
 			break;
 
 		case IMAPX_IDLE_STARTED:
 			if (imapx_command_idle_stop (is, error)) {
-				result = IMAPX_IDLE_STOP_SUCCESS;
+				result = IMAPX_IDLE_STOP_WAIT_DONE;
 				is->priv->idle_state = IMAPX_IDLE_WAIT_DONE;
 			} else {
 				result = IMAPX_IDLE_STOP_ERROR;
