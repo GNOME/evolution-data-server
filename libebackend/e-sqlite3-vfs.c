@@ -40,6 +40,12 @@ typedef struct {
 	GRecMutex sync_mutex;
 	guint timeout_id;
 	gint flags;
+
+	/* Do know how many syncs are pending, to not close
+	   the file before the last sync is over */
+	guint pending_syncs;
+	GMutex pending_syncs_lock;
+	GCond pending_syncs_cond;
 } ESqlite3File;
 
 static gint
@@ -72,6 +78,13 @@ sync_request_thread_cb (gpointer task_data,
 
 	call_old_file_Sync (sync_data->cFile, sync_data->flags);
 
+	g_mutex_lock (&sync_data->cFile->pending_syncs_lock);
+	g_warn_if_fail (sync_data->cFile->pending_syncs > 0);
+	sync_data->cFile->pending_syncs--;
+	if (!sync_data->cFile->pending_syncs)
+		g_cond_signal (&sync_data->cFile->pending_syncs_cond);
+	g_mutex_unlock (&sync_data->cFile->pending_syncs_lock);
+
 	sync_op = sync_data->sync_op;
 	g_free (sync_data);
 
@@ -92,6 +105,13 @@ sync_push_request (ESqlite3File *cFile,
 
 	g_rec_mutex_lock (&cFile->sync_mutex);
 
+	if (!cFile->flags) {
+		/* nothing to sync, might be when xClose is called
+		   without any pending xSync request */
+		g_rec_mutex_unlock (&cFile->sync_mutex);
+		return;
+	}
+
 	if (wait_for_finish)
 		sync_op = e_flag_new ();
 
@@ -101,6 +121,10 @@ sync_push_request (ESqlite3File *cFile,
 	data->sync_op = sync_op;
 
 	cFile->flags = 0;
+
+	g_mutex_lock (&cFile->pending_syncs_lock);
+	cFile->pending_syncs++;
+	g_mutex_unlock (&cFile->pending_syncs_lock);
 
 	g_rec_mutex_unlock (&cFile->sync_mutex);
 
@@ -227,6 +251,12 @@ e_sqlite3_file_xClose (sqlite3_file *pFile)
 	/* Make the last sync. */
 	sync_push_request (cFile, TRUE);
 
+	g_mutex_lock (&cFile->pending_syncs_lock);
+	while (cFile->pending_syncs > 0) {
+		g_cond_wait (&cFile->pending_syncs_cond, &cFile->pending_syncs_lock);
+	}
+	g_mutex_unlock (&cFile->pending_syncs_lock);
+
 	if (cFile->old_vfs_file->pMethods)
 		res = cFile->old_vfs_file->pMethods->xClose (cFile->old_vfs_file);
 	else
@@ -236,6 +266,8 @@ e_sqlite3_file_xClose (sqlite3_file *pFile)
 	cFile->old_vfs_file = NULL;
 
 	g_rec_mutex_clear (&cFile->sync_mutex);
+	g_mutex_clear (&cFile->pending_syncs_lock);
+	g_cond_clear (&cFile->pending_syncs_cond);
 
 	return res;
 }
@@ -294,6 +326,10 @@ e_sqlite3_vfs_xOpen (sqlite3_vfs *pVfs,
 	}
 
 	g_rec_mutex_init (&cFile->sync_mutex);
+	g_mutex_init (&cFile->pending_syncs_lock);
+	g_cond_init (&cFile->pending_syncs_cond);
+
+	cFile->pending_syncs = 0;
 
 	g_rec_mutex_lock (&only_once_lock);
 
