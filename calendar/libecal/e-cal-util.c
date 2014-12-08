@@ -1105,7 +1105,7 @@ e_cal_util_remove_instances_ex (icalcomponent *icalcomp,
 
 		period = icalproperty_get_rdate (prop);
 		if (time_matches_rid (period.time, rid, mod) && (!keep_rid ||
-		    icaltime_compare (itt, rid) != 0))
+		    icaltime_compare (period.time, rid) != 0))
 			remove_props = g_slist_prepend (remove_props, prop);
 	}
 	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_EXDATE_PROPERTY);
