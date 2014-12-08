@@ -1,3 +1,34 @@
+Evolution-Data-Server 3.12.9 2014-12-08
+-----------------------------------------
+
+Bug Fixes:
+	Bug 739904 - Can't create Contact List on an LDAP server (Milan Crha)
+	Bug 678398 - Make evolution-source-registry debugging configurable (Milan Crha)
+	Bug 739610 - [IMAPx] Prevent running FETCH and STORE at the same time (Milan Crha)
+	Bug 736011 - [CalDAV] Receive two events adds only the first (Milan Crha)
+	Bug 736947 - Attachment icon not shown in Sent folder (Milan Crha)
+	Bug 732717 - Refreshing an IMAP account does not refresh folder list (Milan Crha)
+	Bug 733518 - Make VOICE type optional for TEL in EContact (Milan Crha)
+	Bug 732018 - Crash due to passing set GError to glib-networking (Milan Crha)
+	Bug 740627 - [IMAPx] Cannot append to a write-only folder (Milan Crha)
+	Bug 701138 - Make e_cal_backend_sexp_match_comp() thread safe (Milan Crha)
+	Bug 740585 - [IMAPx] Ignore timeout when no command is running (Milan Crha)
+	Bug 740843 - Correct documentation of e_cal_client_remove_object_sync() (Mateusz Polrola)
+
+Miscellaneous:
+	[ECalBackendFile] Stops refresh thread too late (Milan Crha)
+	ECalComponent: Recurrence ID not rescan properly (Milan Crha)
+	Limit SQLite busy-wait for a lock (Milan Crha)
+	[IMAPx] Speed-up folder cache removal on folder sync (Milan Crha)
+	[IMAPx] Enhance and make work namespace override options (Milan Crha)
+	[IMAPx] Runtime warning on inactivity timeout with IDLE enabled (Milan Crha)
+	[SQLite VFS] Track pending sync requests (Milan Crha)
+
+Translations:
+	Sweta Kothari (gu)
+	YunQiang Su (zh_CN)
+	Pedro Albuquerque (pt)
+
 Evolution-Data-Server 3.12.8 2014-11-10
 -----------------------------------------
 
