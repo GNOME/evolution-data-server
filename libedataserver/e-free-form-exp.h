@@ -28,12 +28,14 @@
 
 G_BEGIN_DECLS
 
+typedef gchar * (*EFreeFormExpBuildSexpFunc)	(const gchar *word,
+						 const gchar *options,
+						 const gchar *hint);
+
 typedef struct _EFreeFormExpSymbol {
 	const gchar *names; /* names (alternative separated by a colon (':')); use an empty string for a default sexp builder */
 	const gchar *hint; /* passed into build_sexp */
-	gchar * (*build_sexp)(const gchar *word,
-			      const gchar *options,
-			      const gchar *hint);
+	EFreeFormExpBuildSexpFunc build_sexp;
 } EFreeFormExpSymbol;
 
 gchar *		e_free_form_exp_to_sexp		(const gchar *free_form_exp,
