@@ -53,6 +53,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-collator.c \
 	e-credentials.c \
 	e-flag.c \
+	e-free-form-exp.c \
 	e-gdbus-templates.c \
 	e-iterator.c \
 	e-list.c \
@@ -131,6 +132,7 @@ libedataserverinclude_HEADERS = \
 	e-collator.h \
 	e-credentials.h \
 	e-flag.h \
+	e-free-form-exp.h \
 	e-gdbus-templates.h \
 	e-iterator.h \
 	e-list.h \

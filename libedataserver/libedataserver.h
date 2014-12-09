@@ -28,6 +28,7 @@
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-debug-log.h>
 #include <libedataserver/e-flag.h>
+#include <libedataserver/e-free-form-exp.h>
 #include <libedataserver/e-gdbus-templates.h>
 #include <libedataserver/e-iterator.h>
 #include <libedataserver/e-list-iterator.h>
