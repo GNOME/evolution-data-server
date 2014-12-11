@@ -70,7 +70,7 @@ typedef struct {
 	gchar *fingerprint;
 
 	CamelCertTrust trust;
-	GBytes *rawcert;
+	GBytes *rawcert; /* loaded on demand, with camel_cert_load_cert_file() */
 } CamelCert;
 
 struct _CamelCertDB {
@@ -96,6 +96,11 @@ struct _CamelCertDBClass {
 CamelCert *	camel_cert_new			(void);
 void		camel_cert_ref			(CamelCert *cert);
 void		camel_cert_unref		(CamelCert *cert);
+gboolean	camel_cert_load_cert_file	(CamelCert *cert,
+						 GError **error);
+gboolean	camel_cert_save_cert_file	(CamelCert *cert,
+						 const GByteArray *der_data,
+						 GError **error);
 
 GType		camel_certdb_get_type		(void) G_GNUC_CONST;
 CamelCertDB *	camel_certdb_new		(void);
@@ -125,6 +130,8 @@ void		camel_certdb_remove_host	(CamelCertDB *certdb,
 						 const gchar *fingerprint);
 
 void		camel_certdb_clear		(CamelCertDB *certdb);
+
+GSList *	camel_certdb_list_certs		(CamelCertDB *certdb);
 
 G_END_DECLS
 

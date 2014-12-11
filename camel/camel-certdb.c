@@ -298,6 +298,123 @@ camel_cert_unref (CamelCert *cert)
 	}
 }
 
+static const gchar *
+certdb_get_cert_dir (void)
+{
+	static gchar *cert_dir = NULL;
+
+	if (G_UNLIKELY (cert_dir == NULL)) {
+		const gchar *data_dir;
+		const gchar *home_dir;
+		gchar *old_dir;
+
+		home_dir = g_get_home_dir ();
+		data_dir = g_get_user_data_dir ();
+
+		cert_dir = g_build_filename (data_dir, "camel_certs", NULL);
+
+		/* Move the old certificate directory if present. */
+		old_dir = g_build_filename (home_dir, ".camel_certs", NULL);
+		if (g_file_test (old_dir, G_FILE_TEST_IS_DIR)) {
+			if (g_rename (old_dir, cert_dir) == -1) {
+				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, old_dir, cert_dir, g_strerror (errno));
+			}
+		}
+		g_free (old_dir);
+
+		g_mkdir_with_parents (cert_dir, 0700);
+	}
+
+	return cert_dir;
+}
+
+gboolean
+camel_cert_load_cert_file (CamelCert *cert,
+			   GError **error)
+{
+	gchar *contents = NULL;
+	gchar *filename;
+	gsize length;
+	const gchar *cert_dir;
+
+	g_return_val_if_fail (cert != NULL, FALSE);
+
+	if (cert->rawcert) {
+		g_bytes_unref (cert->rawcert);
+		cert->rawcert = NULL;
+	}
+
+	cert_dir = certdb_get_cert_dir ();
+	filename = g_build_filename (cert_dir, cert->fingerprint, NULL);
+
+	if (g_file_get_contents (filename, &contents, &length, error))
+		cert->rawcert = g_bytes_new_take (contents, length);
+
+	g_free (filename);
+
+	return cert->rawcert != NULL;
+}
+
+gboolean
+camel_cert_save_cert_file (CamelCert *cert,
+			   const GByteArray *der_data,
+			   GError **error)
+{
+	GFile *file;
+	GFileOutputStream *output_stream;
+	gchar *filename;
+	const gchar *cert_dir;
+
+	g_return_val_if_fail (cert != NULL, FALSE);
+	g_return_val_if_fail (der_data != NULL, FALSE);
+
+	if (cert->rawcert) {
+		g_bytes_unref (cert->rawcert);
+		cert->rawcert = NULL;
+	}
+
+	cert_dir = certdb_get_cert_dir ();
+	filename = g_build_filename (cert_dir, cert->fingerprint, NULL);
+	file = g_file_new_for_path (filename);
+
+	output_stream = g_file_replace (
+		file, NULL, FALSE,
+		G_FILE_CREATE_REPLACE_DESTINATION,
+		NULL, error);
+
+	g_object_unref (file);
+	g_free (filename);
+
+	if (output_stream != NULL) {
+		gssize n_written;
+		GBytes *bytes;
+
+		/* XXX Treat GByteArray as though its data is owned by
+		 *     GTlsCertificate.  That means avoiding functions
+		 *     like g_byte_array_free_to_bytes() that alter or
+		 *     reset the GByteArray. */
+		bytes = g_bytes_new (der_data->data, der_data->len);
+
+		/* XXX Not handling partial writes, but GIO does not make
+		 *     it easy.  Need a g_output_stream_write_all_bytes().
+		 *     (see: https://bugzilla.gnome.org/708838) */
+		n_written = g_output_stream_write_bytes (
+			G_OUTPUT_STREAM (output_stream),
+			bytes, NULL, error);
+
+		if (n_written < 0) {
+			g_bytes_unref (bytes);
+			bytes = NULL;
+		}
+
+		cert->rawcert = bytes;
+
+		g_object_unref (output_stream);
+	}
+
+	return cert->rawcert != NULL;
+}
+
 CamelCertDB *
 camel_certdb_new (void)
 {
@@ -659,3 +776,37 @@ camel_certdb_clear (CamelCertDB *certdb)
 	g_mutex_unlock (&certdb->priv->db_lock);
 }
 
+/**
+ * camel_certdb_list_certs:
+ * @certdb: a #CamelCertDB
+ *
+ * Gathers a list of known certificates. Each certificate in the returned #GSList
+ * is referenced, thus unref it with camel_cert_unref() when done with it, the same
+ * as free the list itself.
+ *
+ * Returns: (transfer full): (element-type CamelCert): Newly allocated list of
+ *   referenced CamelCert-s, which are stored in the @certdb.
+ *
+ * Since: 3.14
+ **/
+GSList *
+camel_certdb_list_certs (CamelCertDB *certdb)
+{
+	GSList *certs = NULL;
+	gint ii;
+
+	g_return_val_if_fail (CAMEL_IS_CERTDB (certdb), NULL);
+
+	g_mutex_lock (&certdb->priv->db_lock);
+
+	for (ii = 0; ii < certdb->priv->certs->len; ii++) {
+		CamelCert *cert = (CamelCert *) certdb->priv->certs->pdata[ii];
+
+		camel_cert_ref (cert);
+		certs = g_slist_prepend (certs, cert);
+	}
+
+	g_mutex_unlock (&certdb->priv->db_lock);
+
+	return g_slist_reverse (certs);
+}

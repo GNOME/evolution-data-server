@@ -66,36 +66,6 @@ G_DEFINE_INTERFACE (
 	camel_network_service,
 	CAMEL_TYPE_SERVICE)
 
-static const gchar *
-network_service_get_cert_dir (void)
-{
-	static gchar *cert_dir = NULL;
-
-	if (G_UNLIKELY (cert_dir == NULL)) {
-		const gchar *data_dir;
-		const gchar *home_dir;
-		gchar *old_dir;
-
-		home_dir = g_get_home_dir ();
-		data_dir = g_get_user_data_dir ();
-
-		cert_dir = g_build_filename (data_dir, "camel_certs", NULL);
-
-		/* Move the old certificate directory if present. */
-		old_dir = g_build_filename (home_dir, ".camel_certs", NULL);
-		if (g_file_test (old_dir, G_FILE_TEST_IS_DIR)) {
-			if (g_rename (old_dir, cert_dir) == -1) {
-				g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, old_dir, cert_dir, g_strerror (errno));
-			}
-		}
-		g_free (old_dir);
-
-		g_mkdir_with_parents (cert_dir, 0700);
-	}
-
-	return cert_dir;
-}
-
 static gchar *
 network_service_generate_fingerprint (GTlsCertificate *certificate)
 {
@@ -139,86 +109,6 @@ network_service_generate_fingerprint (GTlsCertificate *certificate)
 	return g_string_free (fingerprint, FALSE);
 }
 
-static GBytes *
-network_service_load_cert_file (const gchar *fingerprint,
-                                GError **error)
-{
-	GBytes *bytes = NULL;
-	gchar *contents = NULL;
-	gchar *filename;
-	gsize length;
-	const gchar *cert_dir;
-
-	cert_dir = network_service_get_cert_dir ();
-	filename = g_build_filename (cert_dir, fingerprint, NULL);
-
-	if (g_file_get_contents (filename, &contents, &length, error))
-		bytes = g_bytes_new_take (contents, length);
-
-	g_free (filename);
-
-	return bytes;
-}
-
-static GBytes *
-network_service_save_cert_file (GTlsCertificate *certificate,
-                                GError **error)
-{
-	GByteArray *der;
-	GBytes *bytes = NULL;
-	GFile *file;
-	GFileOutputStream *output_stream;
-	gchar *filename;
-	gchar *fingerprint;
-	const gchar *cert_dir;
-
-	/* XXX No accessor function for this property. */
-	g_object_get (certificate, "certificate", &der, NULL);
-	g_return_val_if_fail (der != NULL, NULL);
-
-	fingerprint = network_service_generate_fingerprint (certificate);
-	g_return_val_if_fail (fingerprint != NULL, NULL);
-
-	cert_dir = network_service_get_cert_dir ();
-	filename = g_build_filename (cert_dir, fingerprint, NULL);
-	file = g_file_new_for_path (filename);
-
-	output_stream = g_file_replace (
-		file, NULL, FALSE,
-		G_FILE_CREATE_REPLACE_DESTINATION,
-		NULL, error);
-
-	g_object_unref (file);
-	g_free (filename);
-
-	if (output_stream != NULL) {
-		gssize n_written;
-
-		/* XXX Treat GByteArray as though its data is owned by
-		 *     GTlsCertificate.  That means avoiding functions
-		 *     like g_byte_array_free_to_bytes() that alter or
-		 *     reset the GByteArray. */
-		bytes = g_bytes_new (der->data, der->len);
-
-		/* XXX Not handling partial writes, but GIO does not make
-		 *     it easy.  Need a g_output_stream_write_all_bytes().
-		 *     (see: https://bugzilla.gnome.org/708838) */
-		n_written = g_output_stream_write_bytes (
-			G_OUTPUT_STREAM (output_stream),
-			bytes, NULL, error);
-
-		if (n_written < 0) {
-			g_bytes_unref (bytes);
-			bytes = NULL;
-		}
-	}
-
-	g_byte_array_unref (der);
-	g_free (fingerprint);
-
-	return bytes;
-}
-
 static CamelCert *
 network_service_certdb_lookup (CamelCertDB *certdb,
                                GTlsCertificate *certificate,
@@ -239,8 +129,7 @@ network_service_certdb_lookup (CamelCertDB *certdb,
 	if (cert->rawcert == NULL) {
 		GError *local_error = NULL;
 
-		cert->rawcert = network_service_load_cert_file (
-			fingerprint, &local_error);
+		camel_cert_load_cert_file (cert, &local_error);
 
 		/* Sanity check. */
 		g_warn_if_fail (
@@ -285,10 +174,15 @@ network_service_certdb_store (CamelCertDB *certdb,
                               CamelCert *cert,
                               GTlsCertificate *certificate)
 {
+	GByteArray *der = NULL;
 	GError *local_error = NULL;
 
-	cert->rawcert = network_service_save_cert_file (
-		certificate, &local_error);
+	g_object_get (certificate, "certificate", &der, NULL);
+	g_return_if_fail (der != NULL);
+
+	camel_cert_save_cert_file (cert, der, &local_error);
+
+	g_byte_array_unref (der);
 
 	/* Sanity check. */
 	g_warn_if_fail (
