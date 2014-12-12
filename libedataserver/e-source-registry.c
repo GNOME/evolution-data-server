@@ -445,24 +445,6 @@ source_registry_service_restart_table_steal_all (ESourceRegistry *registry)
 	return list;
 }
 
-static void
-source_registry_sources_insert (ESourceRegistry *registry,
-                                ESource *source)
-{
-	const gchar *uid;
-
-	uid = e_source_get_uid (source);
-	g_return_if_fail (uid != NULL);
-
-	g_mutex_lock (&registry->priv->sources_lock);
-
-	g_hash_table_insert (
-		registry->priv->sources,
-		g_strdup (uid), g_object_ref (source));
-
-	g_mutex_unlock (&registry->priv->sources_lock);
-}
-
 static gboolean
 source_registry_sources_remove (ESourceRegistry *registry,
                                 ESource *source)
@@ -746,9 +728,11 @@ source_registry_add_source (ESourceRegistry *registry,
 		G_CALLBACK (source_registry_source_notify_enabled_cb),
 		registry);
 
-	g_mutex_unlock (&registry->priv->sources_lock);
+	g_hash_table_insert (
+		registry->priv->sources,
+		g_strdup (uid), g_object_ref (source));
 
-	source_registry_sources_insert (registry, source);
+	g_mutex_unlock (&registry->priv->sources_lock);
 }
 
 static gboolean
@@ -1263,11 +1247,6 @@ source_registry_dispose (GObject *object)
 		priv->thread_closure = NULL;
 	}
 
-	if (priv->main_context != NULL) {
-		g_main_context_unref (priv->main_context);
-		priv->main_context = NULL;
-	}
-
 	if (priv->dbus_object_manager != NULL) {
 		g_object_unref (priv->dbus_object_manager);
 		priv->dbus_object_manager = NULL;
@@ -1281,6 +1260,14 @@ source_registry_dispose (GObject *object)
 	g_hash_table_remove_all (priv->object_path_table);
 
 	g_hash_table_remove_all (priv->sources);
+
+	if (priv->main_context != NULL) {
+		while (g_main_context_pending (priv->main_context)) {
+			g_main_context_iteration (priv->main_context, FALSE);
+		}
+		g_main_context_unref (priv->main_context);
+		priv->main_context = NULL;
+	}
 
 	if (priv->settings != NULL) {
 		g_signal_handlers_disconnect_by_data (priv->settings, object);
