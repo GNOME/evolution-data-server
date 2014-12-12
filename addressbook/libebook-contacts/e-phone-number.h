@@ -146,8 +146,8 @@ typedef enum {
  * EPhoneNumberError:
  * @E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED: the library was built without phone
  * number support
- * @E_PHONE_NUMBER_ERROR_UNKNOWN: the phone number parser reported an yet
- * unkown error code.
+ * @E_PHONE_NUMBER_ERROR_UNKNOWN: the phone number parser reported a yet
+ * unknown error code.
  * @E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE: the supplied phone number has an
  * invalid country calling code.
  * @E_PHONE_NUMBER_ERROR_NOT_A_NUMBER: the supplied text is not a phone number.

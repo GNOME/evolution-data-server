@@ -40,7 +40,7 @@ e_phone_number_error_to_string (EPhoneNumberError code)
 	case E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED:
 		return _("The library was built without phone number support.");
 	case E_PHONE_NUMBER_ERROR_UNKNOWN:
-		return _("The phone number parser reported an yet unkown error code.");
+		return _("The phone number parser reported a yet unknown error code.");
 	case E_PHONE_NUMBER_ERROR_NOT_A_NUMBER:
 		return _("Not a phone number");
 	case E_PHONE_NUMBER_ERROR_INVALID_COUNTRY_CODE:
@@ -69,7 +69,7 @@ _e_phone_number_set_error (GError **error,
  *
  * Checks if phone number support is available. It is recommended to call this
  * function before using any of the phone-utils functions to ensure that the
- * required functionality is available, and to pick alternative mechnisms if
+ * required functionality is available, and to pick alternative mechanisms if
  * needed.
  *
  * Returns: %TRUE if phone number support is available.
