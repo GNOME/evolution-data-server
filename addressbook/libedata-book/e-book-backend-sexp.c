@@ -860,6 +860,38 @@ func_eqphone_short (struct _ESExp *f,
 }
 
 static gboolean
+eqphone_is_helper (const gchar *ps1,
+                   const gchar *ps2,
+                   const gchar *region)
+{
+        gchar *p1, *p2;
+        gboolean res = FALSE;
+	GError *error = NULL;
+
+        p1 = e_phone_number_normalize(ps1, &error);
+        p2 = e_phone_number_normalize(ps2, &error);
+
+        res = e_phone_number_equal (p1, p2);
+
+        g_free (p1);
+        g_free (p2);
+
+        return res;
+}
+
+static ESExpResult *
+func_eqphone_is (struct _ESExp *f,
+	       gint argc,
+	       struct _ESExpResult **argv,
+               gpointer data)
+{
+	SearchContext *ctx = data;
+
+	return entry_compare (ctx, f, argc, argv, eqphone_is_helper);
+}
+
+
+static gboolean
 regex_helper (const gchar *ps1,
               const gchar *ps2,
               const gchar *region,
@@ -1255,6 +1287,7 @@ static struct {
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
+	{ "eqphone_is", func_eqphone_is, 0 },
 	{ "regex_normal", func_regex_normal, 0 },
 	{ "regex_translit", func_regex_normal, 0 },
 	{ "regex_raw", func_regex_raw, 0 },

@@ -652,6 +652,15 @@ func_eqphone_short (struct _ESExp *f,
 }
 
 static ESExpResult *
+func_eqphone_is (struct _ESExp *f,
+                 gint argc,
+                 struct _ESExpResult **argv,
+                 gpointer data)
+{
+        return func_field_test (E_BOOK_QUERY_PHONE_NUMBER_IS, f, argc, argv, data);
+}
+
+static ESExpResult *
 func_regex_normal (struct _ESExp *f,
                    gint argc,
                    struct _ESExpResult **argv,
@@ -777,6 +786,7 @@ static const struct {
 	{ "eqphone", func_eqphone, 0 },
 	{ "eqphone_national", func_eqphone_national, 0 },
 	{ "eqphone_short", func_eqphone_short, 0 },
+	{ "eqphone_is", func_eqphone_is, 0 },
 	{ "regex_translit", func_regex_translit, 0 },
 	{ "regex_normal", func_regex_normal, 0 },
 	{ "regex_raw", func_regex_raw, 0 },
@@ -860,6 +870,8 @@ field_test_name (EBookQueryTest field_test)
 		return "eqphone_national";
 	case E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER:
 		return "eqphone_short";
+	case E_BOOK_QUERY_PHONE_NUMBER_IS:
+		return "eqphone_is";
 	case E_BOOK_QUERY_REGEX_NORMAL:
 		return "regex_normal";
 	case E_BOOK_QUERY_REGEX_RAW:
@@ -888,6 +900,7 @@ is_phone_test (EBookQueryTest field_test)
 	case E_BOOK_QUERY_EQUALS_PHONE_NUMBER:
 	case E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER:
 	case E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER:
+	case E_BOOK_QUERY_PHONE_NUMBER_IS:
 		return TRUE;
 
 	case E_BOOK_QUERY_IS:

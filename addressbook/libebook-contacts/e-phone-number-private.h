@@ -54,6 +54,8 @@ E_PHONE_NUMBER_LOCAL gint		_e_phone_number_cxx_get_country_code_for_region
 										(const gchar *region_code);
 E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_get_default_region	(void);
 
+E_PHONE_NUMBER_LOCAL gchar *		_e_phone_number_cxx_normalize		(const gchar *phone_number);
+
 E_PHONE_NUMBER_LOCAL EPhoneNumber *	_e_phone_number_cxx_from_string		(const gchar *phone_number,
 										 const gchar *region_code,
 										 GError **error);

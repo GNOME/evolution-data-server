@@ -139,6 +139,19 @@ _e_phone_number_cxx_get_default_region ()
 	return g_strdup (_e_phone_number_cxx_make_region_code (NULL).c_str ());
 }
 
+gchar *
+_e_phone_number_cxx_normalize (const gchar *phone_number)
+{
+	std::string number = phone_number;
+	std::size_t pos = number.find_first_of('+');
+	if (pos != std::string::npos) {
+		number.replace (pos, 1, "00");
+	}
+
+	e_phone_number_util_get_instance ()->NormalizeDigitsOnly (&number);
+	return g_strdup (number.c_str());
+}
+
 static bool
 _e_phone_number_cxx_parse (const std::string &phone_number,
                            const std::string &region,

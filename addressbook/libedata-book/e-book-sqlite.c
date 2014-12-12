@@ -277,6 +277,7 @@ ebsql_init_debug (void)
 #define EBSQL_FUNC_EQPHONE_EXACT     "eqphone_exact"
 #define EBSQL_FUNC_EQPHONE_NATIONAL  "eqphone_national"
 #define EBSQL_FUNC_EQPHONE_SHORT     "eqphone_short"
+#define EBSQL_FUNC_EQPHONE_IS        "eqphone_is"
 
 /* Fallback collations are generated as with a prefix and an EContactField name */
 #define EBSQL_COLLATE_PREFIX         "ebsql_"
@@ -290,6 +291,8 @@ ebsql_init_debug (void)
 #define EBSQL_SUFFIX_PHONE           "phone"
 #define EBSQL_SUFFIX_COUNTRY         "country"
 #define EBSQL_SUFFIX_TRANSLIT        "translit"
+#define EBSQL_SUFFIX_REVERSE_PHONE   "phone_reverse"
+#define EBSQL_SUFFIX_NORMALIZED_PHONE "phone_normalized"
 
 /* Track EBookIndexType's in a bit mask  */
 #define INDEX_FLAG(type)  (1 << E_BOOK_INDEX_##type)
@@ -685,6 +688,14 @@ summary_field_list_columns (SummaryField *field,
 
 		/* One indexed column for storing the national number */
 		info = column_info_new (field, folderid, EBSQL_SUFFIX_PHONE, "TEXT", NULL, "PINDEX");
+		columns = g_slist_prepend (columns, info);
+
+		/* One indexed column for storing reversed phone number */
+		info = column_info_new (field, folderid, EBSQL_SUFFIX_REVERSE_PHONE, "TEXT", NULL, "RINDEX");
+		columns = g_slist_prepend (columns, info);
+
+		/* One string column for storing normalized phone number */
+		info = column_info_new (field, folderid, EBSQL_SUFFIX_NORMALIZED_PHONE, "TEXT", NULL, NULL);
 		columns = g_slist_prepend (columns, info);
 
 		/* One integer column for storing the country code */
@@ -1502,6 +1513,32 @@ ebsql_eqphone_short (sqlite3_context *context,
 	ebsql_eqphone (context, argc, argv, E_PHONE_NUMBER_MATCH_SHORT);
 }
 
+/* Alternative locale invariant phone number match function: EBSQL_FUNC_EQPHONE_IS */
+static void
+ebsql_eqphone_is (sqlite3_context *context,
+                  gint argc,
+                  sqlite3_value **argv)
+{
+	const gchar *phone1 = NULL;
+	const gchar *phone2 = NULL;
+	gboolean res = FALSE;
+
+	phone1 = (const gchar *) sqlite3_value_text (argv[0]);
+	phone2 = (const gchar *) sqlite3_value_text (argv[1]);
+
+	if (!phone1 || !phone2) {
+		sqlite3_result_error (context, "No phone number provided", -1);
+		return;
+	}
+
+	res = e_phone_number_equal (phone1, phone2);
+
+	if (res)
+		sqlite3_result_int (context, 1);
+	else
+		sqlite3_result_int (context, 0);
+}
+
 /* Implementation of EBSQL_FUNC_FETCH_VCARD (fallback for shallow addressbooks) */
 static void
 ebsql_fetch_vcard (sqlite3_context *context,
@@ -1543,6 +1580,7 @@ static EbSqlCustomFuncTab ebsql_custom_functions[] = {
 	{ EBSQL_FUNC_EQPHONE_EXACT,    ebsql_eqphone_exact,    2 }, /* eqphone_exact (search_input, column_data) */
 	{ EBSQL_FUNC_EQPHONE_NATIONAL, ebsql_eqphone_national, 2 }, /* eqphone_national (search_input, column_data) */
 	{ EBSQL_FUNC_EQPHONE_SHORT,    ebsql_eqphone_short,    2 }, /* eqphone_national (search_input, column_data) */
+	{ EBSQL_FUNC_EQPHONE_IS,       ebsql_eqphone_is,       2 }, /* eqphone_is (search_input, column_data) */
 };
 
 /******************************************************
@@ -2159,6 +2197,14 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 			freeme = g_strndup (col, p - col);
 			col = freeme;
 		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_COUNTRY)) != NULL) {
+			computed = INDEX_FLAG (PHONE);
+			freeme = g_strndup (col, p - col);
+			col = freeme;
+		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_REVERSE_PHONE)) != NULL) {
+			computed = INDEX_FLAG (PHONE);
+			freeme = g_strndup (col, p - col);
+			col = freeme;
+		} else if ((p = strstr (col, "_" EBSQL_SUFFIX_NORMALIZED_PHONE)) != NULL) {
 			computed = INDEX_FLAG (PHONE);
 			freeme = g_strndup (col, p - col);
 			col = freeme;
@@ -3035,6 +3081,27 @@ remove_leading_zeros (gchar *number)
 	return trimmed;
 }
 
+static gchar *
+normalize_phone (const gchar *normal)
+{
+	GError *error = NULL;
+	gchar *normalized = normal ? e_phone_number_normalize (normal, &error) : NULL;
+	return normalized;
+}
+
+static gchar *
+reverse_phone (const gchar *normal)
+{
+	gchar *normalized = normalize_phone (normal);
+	gchar *reverse = normalized ? g_utf8_strreverse (normalized, -1) : NULL;
+	gchar *reverse_cut = reverse ? g_strndup (reverse, 5) : NULL;
+
+	g_free (normalized);
+	g_free (reverse);
+
+	return reverse_cut;
+}
+
 typedef struct {
 	gint country_code;
 	gchar *national;
@@ -3303,6 +3370,8 @@ ebsql_prepare_multi_insert (EBookSqlite *ebsql,
 	if ((field->index & INDEX_FLAG (PHONE)) != 0) {
 		g_string_append (string, ", value_" EBSQL_SUFFIX_PHONE);
 		g_string_append (string, ", value_" EBSQL_SUFFIX_COUNTRY);
+		g_string_append (string, ", value_" EBSQL_SUFFIX_REVERSE_PHONE);
+		g_string_append (string, ", value_" EBSQL_SUFFIX_NORMALIZED_PHONE);
 	}
 
 	if ((field->index & INDEX_FLAG (TRANSLIT)) != 0)
@@ -3316,6 +3385,8 @@ ebsql_prepare_multi_insert (EBookSqlite *ebsql,
 	if ((field->index & INDEX_FLAG (PHONE)) != 0) {
 		g_string_append (string, ", :value_" EBSQL_SUFFIX_PHONE);
 		g_string_append (string, ", :value_" EBSQL_SUFFIX_COUNTRY);
+		g_string_append (string, ", :value_" EBSQL_SUFFIX_REVERSE_PHONE);
+		g_string_append (string, ", :value_" EBSQL_SUFFIX_NORMALIZED_PHONE);
 	}
 
 	if ((field->index & INDEX_FLAG (TRANSLIT)) != 0)
@@ -3370,8 +3441,17 @@ ebsql_run_multi_insert_one (EBookSqlite *ebsql,
 
 		/* :value_country */
 		if (ret == SQLITE_OK)
-			sqlite3_bind_int (stmt, param_idx++, country_code);
+			ret = sqlite3_bind_int (stmt, param_idx++, country_code);
 
+		/* :value reverse phone */
+		str = reverse_phone (normal);
+		if (ret == SQLITE_OK)
+			ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
+
+		/* :value normalized phone */
+		str = normalize_phone (normal);
+		if (ret == SQLITE_OK)
+			sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 	}
 
 	if (ret == SQLITE_OK && (field->index & INDEX_FLAG (TRANSLIT)) != 0) {
@@ -3482,6 +3562,15 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 				g_string_append (string, ", ");
 				g_string_append (string, field->dbname);
 				g_string_append (string, "_" EBSQL_SUFFIX_COUNTRY);
+
+				g_string_append (string, ", ");
+				g_string_append (string, field->dbname);
+				g_string_append (string, "_" EBSQL_SUFFIX_REVERSE_PHONE);
+
+				g_string_append (string, ", ");
+				g_string_append (string, field->dbname);
+				g_string_append (string, "_" EBSQL_SUFFIX_NORMALIZED_PHONE);
+
 			}
 
 			if ((field->index & INDEX_FLAG (TRANSLIT)) != 0) {
@@ -3523,6 +3612,8 @@ ebsql_prepare_insert (EBookSqlite *ebsql,
 			if ((field->index & INDEX_FLAG (PHONE)) != 0) {
 				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_PHONE, field->dbname);
 				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_COUNTRY, field->dbname);
+				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_REVERSE_PHONE, field->dbname);
+				g_string_append_printf (string, ", :%s_" EBSQL_SUFFIX_NORMALIZED_PHONE, field->dbname);
 			}
 
 			if ((field->index & INDEX_FLAG (TRANSLIT)) != 0)
@@ -3679,7 +3770,15 @@ ebsql_run_insert (EBookSqlite *ebsql,
 
 				ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 				if (ret == SQLITE_OK)
-					sqlite3_bind_int (stmt, param_idx++, country_code);
+					ret = sqlite3_bind_int (stmt, param_idx++, country_code);
+
+				str = reverse_phone (normal);
+				if (ret == SQLITE_OK)
+					ret = sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
+
+				str = normalize_phone (normal);
+				if (ret == SQLITE_OK)
+					sqlite3_bind_text (stmt, param_idx++, str, -1, g_free);
 			}
 
 			if (ret == SQLITE_OK &&
@@ -3870,6 +3969,7 @@ enum {
 	 (query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER ? "eqphone" : \
 	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER ? "eqphone-national" : \
 	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER ? "eqphone-short" : \
+	 (query) == E_BOOK_QUERY_PHONE_NUMBER_IS ? "eqphone-is" : \
 	 (query) == E_BOOK_QUERY_REGEX_NORMAL ? "regex-normal" : \
 	 (query) == E_BOOK_QUERY_REGEX_RAW ? "regex-raw" : \
 	 (query) == E_BOOK_QUERY_REGEX_TRANSLIT ? "regex-translit" : \
@@ -3886,7 +3986,8 @@ enum {
 #define IS_QUERY_PHONE(query) \
 	((query) == E_BOOK_QUERY_EQUALS_PHONE_NUMBER || \
 	 (query) == E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER || \
-	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER)
+	 (query) == E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER || \
+	 (query) == E_BOOK_QUERY_PHONE_NUMBER_IS)
 
 typedef struct {
 	guint          query; /* EBookQueryTest (extended) */
@@ -4232,6 +4333,7 @@ static const struct {
 	{ "eqphone",          FALSE, E_BOOK_QUERY_EQUALS_PHONE_NUMBER },
 	{ "eqphone_national", FALSE, E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER },
 	{ "eqphone_short",    FALSE, E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER },
+	{ "eqphone_is",       FALSE, E_BOOK_QUERY_PHONE_NUMBER_IS },
 	{ "regex_normal",     FALSE, E_BOOK_QUERY_REGEX_NORMAL },
 	{ "regex_raw",        FALSE, E_BOOK_QUERY_REGEX_RAW },
 	{ "regex_translit",   FALSE, E_BOOK_QUERY_REGEX_TRANSLIT },
@@ -4653,6 +4755,7 @@ query_preflight_check (PreflightContext *context,
 		case E_BOOK_QUERY_EQUALS_PHONE_NUMBER:
 		case E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER:
 		case E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER:
+		case E_BOOK_QUERY_PHONE_NUMBER_IS:
 
 			/* Phone number queries are supported so long as they are in the summary,
 			 * libphonenumber is available, and the phone number string is a valid one
@@ -5163,6 +5266,39 @@ field_test_query_eqphone_short (EBookSqlite *ebsql,
 }
 
 static void
+field_test_query_eqphone_is (EBookSqlite *ebsql,
+                             GString *string,
+                             QueryFieldTest *test)
+{
+        SummaryField *field = test->field;
+        QueryPhoneTest *phone_test = (QueryPhoneTest *) test;
+
+	gchar * normalized = normalize_phone (phone_test->value);
+	gchar * reversed = reverse_phone (phone_test->value);
+
+        if ((field->index & INDEX_FLAG (PHONE)) != 0) {
+                /* Only a compound expression if there is a country code */
+		g_string_append_c (string, '(');
+
+                /* Generate: phone = %Q */
+                ebsql_string_append_column (string, field, EBSQL_SUFFIX_REVERSE_PHONE);
+                ebsql_string_append_printf (string, " = %Q", reversed);
+
+		g_string_append (string, " AND ");
+		g_string_append (string, EBSQL_FUNC_EQPHONE_IS " (");
+		ebsql_string_append_column (string, field, EBSQL_SUFFIX_NORMALIZED_PHONE);
+		ebsql_string_append_printf (string, ", %Q))", normalized);
+        } else {
+		g_string_append (string, EBSQL_FUNC_EQPHONE_IS " (");
+		ebsql_string_append_column (string, field, EBSQL_SUFFIX_NORMALIZED_PHONE);
+		ebsql_string_append_printf (string, ", %Q)", normalized);
+        }
+
+	g_free (normalized);
+	g_free (reversed);
+}
+
+static void
 field_test_query_regex_normal (EBookSqlite *ebsql,
                                GString *string,
                                QueryFieldTest *test)
@@ -5327,6 +5463,7 @@ static const GenerateFieldTest field_test_func_table[] = {
 	field_test_query_eqphone,          /* E_BOOK_QUERY_EQUALS_PHONE_NUMBER */
 	field_test_query_eqphone_national, /* E_BOOK_QUERY_EQUALS_NATIONAL_PHONE_NUMBER */
 	field_test_query_eqphone_short,    /* E_BOOK_QUERY_EQUALS_SHORT_PHONE_NUMBER */
+	field_test_query_eqphone_is,       /* E_BOOK_QUERY_EQUALS_PHONE_NUMBER_IS */
 	field_test_query_regex_normal,     /* E_BOOK_QUERY_REGEX_NORMAL */
 	NULL /* Requires fallback */,      /* E_BOOK_QUERY_REGEX_RAW  */
 	field_test_query_regex_translit,   /* E_BOOK_QUERY_REGEX_TRANSLIT */

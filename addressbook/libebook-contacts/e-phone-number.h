@@ -206,6 +206,12 @@ GType			e_phone_number_get_type		(void);
 GQuark			e_phone_number_error_quark	(void);
 
 gboolean		e_phone_number_is_supported	(void) G_GNUC_CONST;
+gchar *			e_phone_number_normalize	(const gchar *phone_number,
+							 GError **error);
+
+gboolean		e_phone_number_equal		(const gchar *first_number,
+							 const gchar *second_number);
+
 gint			e_phone_number_get_country_code_for_region
 							(const gchar *region_code,
 							 GError **error);

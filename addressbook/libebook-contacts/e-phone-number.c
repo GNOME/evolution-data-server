@@ -157,6 +157,33 @@ e_phone_number_get_default_region (GError **error)
 }
 
 /**
+ * e_phone_number_normalize:
+ * @phone_number: phone number string
+ * @error: (out): a #GError to set an error, if any
+ *
+ * Normalizes provided phone number string.
+ *
+ * Returns: (transfer full): a newly allocated string containing the
+ * normalized phone number.
+ *
+ * Since: 3.12
+ */
+gchar *
+e_phone_number_normalize (const char *phone_number, GError **error)
+{
+#ifdef ENABLE_PHONENUMBER
+
+	return _e_phone_number_cxx_normalize (phone_number);
+
+#else /* ENABLE_PHONENUMBER */
+
+	_e_phone_number_set_error (error, E_PHONE_NUMBER_ERROR_NOT_IMPLEMENTED);
+	return NULL;
+
+#endif /* ENABLE_PHONENUMBER */
+}
+
+/**
  * e_phone_number_from_string:
  * @phone_number: the phone number to parse
  * @region_code: (allow-none): a two-letter country code, or %NULL
@@ -421,4 +448,295 @@ e_phone_number_free (EPhoneNumber *phone_number)
 	g_warn_if_fail (phone_number == NULL);
 
 #endif /* ENABLE_PHONENUMBER */
+}
+
+/**
+ * match_exit_code:
+ * @phone: phone number string
+ * @max: number of characters to be checked (indexed from 0 or -1 if whole string should be checked)
+ * @up_to (out): number of matched characters (indexed from 0)
+ *
+ * Checks if given phone string begins with valid exit code.
+ * Tries to match exit codes from longest to shortest ones.
+ *
+ * @Returns: TRUE in case that string begins with valid exit code, false otherwise.
+ *
+ * Since: 3.12
+ **/
+static gboolean
+match_exit_code(const char* phone, int max, int* up_to)
+{
+        if (max == 4 || max == -1)
+        {
+                *up_to = 4;
+                if (strncmp (phone, "00414", 5) == 0) return TRUE;
+                if (strncmp (phone, "00468", 5) == 0) return TRUE;
+                if (strncmp (phone, "00456", 5) == 0) return TRUE;
+                if (strncmp (phone, "00444", 5) == 0) return TRUE;
+        }
+
+        if (max == 3 || max == -1)
+        {
+                *up_to = 3;
+                if (strncmp (phone, "0011", 4) == 0) return TRUE;
+                if (strncmp (phone, "0014", 4) == 0) return TRUE;
+                if (strncmp (phone, "0015", 4) == 0) return TRUE;
+                if (strncmp (phone, "0021", 4) == 0) return TRUE;
+                if (strncmp (phone, "0023", 4) == 0) return TRUE;
+                if (strncmp (phone, "0031", 4) == 0) return TRUE;
+                if (strncmp (phone, "1230", 4) == 0) return TRUE;
+                if (strncmp (phone, "1200", 4) == 0) return TRUE;
+                if (strncmp (phone, "1220", 4) == 0) return TRUE;
+                if (strncmp (phone, "1810", 4) == 0) return TRUE;
+                if (strncmp (phone, "1690", 4) == 0) return TRUE;
+                if (strncmp (phone, "1710", 4) == 0) return TRUE;
+        }
+
+	if (max == 2 || max == -1)
+        {
+                *up_to = 2;
+                if (strncmp (phone, "011", 3) == 0) return TRUE;
+                if (strncmp (phone, "001", 3) == 0) return TRUE;
+                if (strncmp (phone, "006", 3) == 0) return TRUE;
+                if (strncmp (phone, "007", 3) == 0) return TRUE;
+                if (strncmp (phone, "008", 3) == 0) return TRUE;
+                if (strncmp (phone, "119", 3) == 0) return TRUE;
+                if (strncmp (phone, "005", 3) == 0) return TRUE;
+                if (strncmp (phone, "007", 3) == 0) return TRUE;
+                if (strncmp (phone, "009", 3) == 0) return TRUE;
+                if (strncmp (phone, "990", 3) == 0) return TRUE;
+                if (strncmp (phone, "994", 3) == 0) return TRUE;
+                if (strncmp (phone, "999", 3) == 0) return TRUE;
+                if (strncmp (phone, "013", 3) == 0) return TRUE;
+                if (strncmp (phone, "014", 3) == 0) return TRUE;
+                if (strncmp (phone, "018", 3) == 0) return TRUE;
+                if (strncmp (phone, "010", 3) == 0) return TRUE;
+                if (strncmp (phone, "009", 3) == 0) return TRUE;
+                if (strncmp (phone, "002", 3) == 0) return TRUE;
+        }
+
+        if (max == 1 || max == -1)
+        {
+                *up_to = 1;
+                if (strncmp (phone, "00", 2) == 0) return TRUE;
+                if (strncmp (phone, "99", 2) == 0) return TRUE;
+        }
+
+        if (max == 0 || max == -1)
+        {
+                *up_to = 0;
+                if (strncmp (phone, "+", 1) == 0) return TRUE;
+        }
+
+        return FALSE;
+}
+
+/**
+ * match_exit_code_reverse:
+ * @phone: phone number string
+ * @max: number of characters to be checked (indexed from 0 or -1 if whole string should be checked)
+ * @up_to (out): number of matched characters (indexed from 0)
+ *
+ * Checks if given phone string begins with valid exit code.
+ * Tries to match exit codes from shortest to longest ones.
+ *
+ * @Returns: TRUE in case that string begins with valid exit code, false otherwise.
+ *
+ * Since: 3.12
+ **/
+static gboolean
+match_exit_code_reverse(const char* phone, int max, int* up_to)
+{
+        if (max == 0 || max == -1)
+        {
+                *up_to = 0;
+                if (strncmp (phone, "+", 1) == 0) return TRUE;
+        }
+
+        if (max == 1 || max == -1)
+        {
+                *up_to = 1;
+                if (strncmp (phone, "00", 2) == 0) return TRUE;
+                if (strncmp (phone, "99", 2) == 0) return TRUE;
+        }
+
+        if (max == 2 || max == -1)
+        {
+                *up_to = 2;
+                if (strncmp (phone, "011", 3) == 0) return TRUE;
+                if (strncmp (phone, "001", 3) == 0) return TRUE;
+                if (strncmp (phone, "006", 3) == 0) return TRUE;
+                if (strncmp (phone, "007", 3) == 0) return TRUE;
+                if (strncmp (phone, "008", 3) == 0) return TRUE;
+                if (strncmp (phone, "119", 3) == 0) return TRUE;
+                if (strncmp (phone, "005", 3) == 0) return TRUE;
+                if (strncmp (phone, "007", 3) == 0) return TRUE;
+                if (strncmp (phone, "009", 3) == 0) return TRUE;
+                if (strncmp (phone, "990", 3) == 0) return TRUE;
+                if (strncmp (phone, "994", 3) == 0) return TRUE;
+                if (strncmp (phone, "999", 3) == 0) return TRUE;
+                if (strncmp (phone, "013", 3) == 0) return TRUE;
+                if (strncmp (phone, "014", 3) == 0) return TRUE;
+                if (strncmp (phone, "018", 3) == 0) return TRUE;
+                if (strncmp (phone, "010", 3) == 0) return TRUE;
+                if (strncmp (phone, "009", 3) == 0) return TRUE;
+                if (strncmp (phone, "002", 3) == 0) return TRUE;
+        }
+
+	if (max == 3 || max == -1)
+        {
+                *up_to = 3;
+                if (strncmp (phone, "0011", 4) == 0) return TRUE;
+                if (strncmp (phone, "0014", 4) == 0) return TRUE;
+                if (strncmp (phone, "0015", 4) == 0) return TRUE;
+                if (strncmp (phone, "0021", 4) == 0) return TRUE;
+                if (strncmp (phone, "0023", 4) == 0) return TRUE;
+                if (strncmp (phone, "0031", 4) == 0) return TRUE;
+                if (strncmp (phone, "1230", 4) == 0) return TRUE;
+                if (strncmp (phone, "1200", 4) == 0) return TRUE;
+                if (strncmp (phone, "1220", 4) == 0) return TRUE;
+                if (strncmp (phone, "1810", 4) == 0) return TRUE;
+                if (strncmp (phone, "1690", 4) == 0) return TRUE;
+                if (strncmp (phone, "1710", 4) == 0) return TRUE;
+        }
+
+        if (max == 4 || max == -1)
+        {
+                *up_to = 4;
+                if (strncmp (phone, "00414", 5) == 0) return TRUE;
+                if (strncmp (phone, "00468", 5) == 0) return TRUE;
+                if (strncmp (phone, "00456", 5) == 0) return TRUE;
+                if (strncmp (phone, "00444", 5) == 0) return TRUE;
+        }
+
+        return FALSE;
+}
+
+/**
+ * is_exit_code_and_cc:
+ * @phone: phone number string
+ * @up_to: number of characters to be checked (indexed from 0)
+ *
+ * Checks if given phone string begins with valid exit code and country code.
+ * After sucessfully matching exit code, any further 1-3 digits 
+ * will be recognized as valid country code.
+ *
+ * @Returns: TRUE in case that string begins with valid exit code 
+ * and country code, false otherwise.
+ *
+ * Since: 3.12
+ **/
+static gboolean
+is_exit_code_and_cc(const char* phone, int up_to)
+{
+        int matched_len = 0;
+        if (match_exit_code(phone, -1, &matched_len))
+        {
+                if (up_to - matched_len -1 >= 0 &&
+                    up_to - matched_len - 1 < 3)
+                        return TRUE;
+        }
+        if (match_exit_code_reverse(phone, -1, &matched_len))
+        {
+                if (up_to - matched_len -1 >= 0 &&
+                    up_to - matched_len - 1 < 3)
+                        return TRUE;
+        }
+
+        return FALSE;
+}
+
+/**
+ * is_trunk:
+ * @phone: phone number string
+ * @up_to: number of characters to be checked (indexed from 0)
+ *
+ * Checks if given phone string begins with trunk code.
+ *
+ * @Returns: TRUE in case that string begins with trunk code. 
+ *
+ * Since: 3.12
+ **/
+static gboolean
+is_trunk(const char* phone, int up_to)
+{
+        if (up_to > 1) return FALSE;
+        if (phone[0] == '0' && up_to == 0) return TRUE;
+        if (phone[0] == '0' && phone[1] == '1' && up_to == 1) return TRUE;       //Mexico trunk code
+        if (phone[0] == '0' && phone[1] == '6' && up_to == 1) return TRUE;       //Hungary trunk code
+        if (phone[0] == '8' && phone[1] == '0' && up_to == 1) return TRUE;       //Belarus trunk code
+
+
+        if (phone[0] == '1' && up_to == 0) return TRUE;                          //Jamaica trunk code
+        if (phone[0] == '8' && up_to == 0) return TRUE;                          //Kazakhstan,Lituana trunk code
+
+
+        return FALSE;
+}
+
+/**
+ * e_phone_number_equal:
+ * @phone1: first phone number string
+ * @phone2: second phone number string
+ *
+ * Compares two phone number strings.
+ *
+ * @Returns: TRUE in case that phone number matches. false otherwise. 
+ *
+ * Since: 3.12
+ **/
+gboolean
+e_phone_number_equal (const gchar *phone1,
+		      const gchar *phone2)
+{
+	int a = 0;
+	int b = 0;
+	int matched = 0;
+        if (!phone1 || !phone2) {
+		return FALSE;
+        }
+
+        a = strlen (phone1) - 1;
+        b = strlen (phone2) - 1;
+
+	/*
+ 	 * Check (in reverse order) number of matching digits
+ 	 */
+        while (a >= 0 && b >= 0) {
+                if (phone1[a] != phone2[b]) {
+                        break;
+                }
+                a--;
+                b--;
+                matched++;
+        }
+
+	//if both phone numbers matched completly, they are equal
+        if (a < 0 && b < 0) {
+		return TRUE;
+        }
+
+	//if one of numbers matched completly, 
+	//and total number of matched digits is greater than 7,
+	//assume also that numbers are equal
+        if (matched >= 7 && (a < 0 || b < 0)) {
+		return TRUE;
+        }
+
+	/*
+         * Check if first phone number begins with trunk code
+         * and second phone number begins exit code + country code
+         */ 
+	if (is_trunk(phone1, a) && is_exit_code_and_cc(phone2, b)) {
+		return TRUE;
+        }
+
+	/*
+         * Check opposite condition
+         */ 
+        if (is_trunk(phone2, b) && is_exit_code_and_cc(phone1, a)) {
+		return TRUE;
+        }
+
+	return FALSE;
 }
