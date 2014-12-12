@@ -2,13 +2,16 @@ NULL =
 
 @GNOME_CODE_COVERAGE_RULES@
 
-TESTS = \
-	e-source-test \
-	e-source-registry-test \
+TESTS_SKIP = \
 	e-collator-test \
 	$(NULL)
 
-noinst_PROGRAMS = $(TESTS)
+TESTS = \
+	e-source-test \
+	e-source-registry-test \
+	$(NULL)
+
+noinst_PROGRAMS = $(TESTS) $(TESTS_SKIP)
 
 test_CPPFLAGS = \
 	$(AM_CPPFLAGS) \
