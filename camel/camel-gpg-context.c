@@ -1888,6 +1888,7 @@ gpg_verify_sync (CamelCipherContext *context,
 
 	g_object_unref (filter);
 	g_object_unref (istream);
+	istream = NULL;
 
 	g_seekable_seek (G_SEEKABLE (canon_stream), 0, G_SEEK_SET, NULL, NULL);
 
