@@ -1,3 +1,37 @@
+Evolution-Data-Server 3.13.9 2014-12-22
+---------------------------------------
+
+Bug Fixes:
+	Bug 740627 - [IMAPx] Cannot append to a write-only folder (Milan Crha)
+	Bug 721712 - Writeable calendars can report as read-only after open ][ (Milan Crha)
+	Bug 701138 - Make e_cal_backend_sexp_match_comp() thread safe (Milan Crha)
+	Bug 740585 - [IMAPx] Ignore timeout when no command is running (Milan Crha)
+	Bug 740843 - Correct documentation of e_cal_client_remove_object_sync() (Mateusz Polrola)
+	Bug 595389 - Auto-vacuum Camel DB on expunge (Milan Crha)
+	Bug 550796 - Implement free form filter expression (Milan Crha)
+	Bug 670114 - Provide list of Mail certificates in UI (Milan Crha)
+	Bug 695754 - Use-after-free in source_registry_source_notify_enabled_idle_cb() (Milan Crha)
+	Bug 735807 - Correct EPhoneNumber spelling errors (Anders Jonsson)
+	Bug 741434 - Use-after-free after error in GPG signature verification (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Circle between tagprefix-es for connections (Milan Crha)
+	[IMAPx] Speed-up folder cache removal on folder sync (Milan Crha)
+	[IMAPx] Enhance and make work namespace override options (Milan Crha)
+	[IMAPx] Runtime warning on inactivity timeout with IDLE enabled (Milan Crha)
+	[SQLite VFS] Track pending sync requests (Milan Crha)
+	e_cal_util_remove_instances_ex: Correct time check on an RDATE value (Milan Crha)
+	Define EFreeFormExpSymbol::build_sexp as a full type, to make Vala happy (Milan Crha)
+	Skip e-collator-test from 'make check' (Milan Crha)
+
+Translations:
+	Balázs Úr (hu)
+	Muhammet Kara (tr)
+	Daniel Șerbănescu (ro)
+	Shantha kumar (ta)
+	Daniel Mustieles (es)
+	Balázs Úr (hu)
+
 Evolution-Data-Server 3.13.8 2014-11-24
 ---------------------------------------
 
