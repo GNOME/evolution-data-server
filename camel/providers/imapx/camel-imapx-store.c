@@ -1645,6 +1645,16 @@ imapx_can_refresh_folder (CamelStore *store,
 	res = store_class->can_refresh_folder (store, info, &local_error) ||
 		check_all || (check_subscribed && subscribed);
 
+	if (!res && !local_error) {
+		CamelFolder *folder;
+
+		folder = camel_store_get_folder_sync (store, info->full_name, 0, NULL, &local_error);
+		if (folder && CAMEL_IS_IMAPX_FOLDER (folder))
+			res = camel_imapx_folder_get_check_folder (CAMEL_IMAPX_FOLDER (folder));
+
+		g_clear_object (&folder);
+	}
+
 	if (local_error != NULL)
 		g_propagate_error (error, local_error);
 

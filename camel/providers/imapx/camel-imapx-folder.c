@@ -49,6 +49,8 @@ struct _CamelIMAPXFolderPrivate {
 	GMutex move_to_hash_table_lock;
 	GHashTable *move_to_real_junk_uids;
 	GHashTable *move_to_real_trash_uids;
+
+	gboolean check_folder;
 };
 
 /* The custom property ID is a CamelArg artifact.
@@ -56,7 +58,8 @@ struct _CamelIMAPXFolderPrivate {
 enum {
 	PROP_0,
 	PROP_MAILBOX,
-	PROP_APPLY_FILTERS = 0x2501
+	PROP_APPLY_FILTERS = 0x2501,
+	PROP_CHECK_FOLDER = 0x2502
 };
 
 G_DEFINE_TYPE (CamelIMAPXFolder, camel_imapx_folder, CAMEL_TYPE_OFFLINE_FOLDER)
@@ -138,6 +141,12 @@ imapx_folder_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_CHECK_FOLDER:
+			camel_imapx_folder_set_check_folder (
+				CAMEL_IMAPX_FOLDER (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_MAILBOX:
 			camel_imapx_folder_set_mailbox (
 				CAMEL_IMAPX_FOLDER (object),
@@ -159,6 +168,13 @@ imapx_folder_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				imapx_folder_get_apply_filters (
+				CAMEL_IMAPX_FOLDER (object)));
+			return;
+
+		case PROP_CHECK_FOLDER:
+			g_value_set_boolean (
+				value,
+				camel_imapx_folder_get_check_folder (
 				CAMEL_IMAPX_FOLDER (object)));
 			return;
 
@@ -1378,6 +1394,17 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_CHECK_FOLDER,
+		g_param_spec_boolean (
+			"check-folder",
+			"Check Folder",
+			_("Always check for _new mail in this folder"),
+			FALSE,
+			G_PARAM_READWRITE |
+			CAMEL_PARAM_PERSISTENT));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_MAILBOX,
 		g_param_spec_object (
 			"mailbox",
@@ -1867,3 +1894,26 @@ camel_imapx_folder_invalidate_local_cache (CamelIMAPXFolder *folder,
 	camel_folder_summary_free_array (array);
 }
 
+gboolean
+camel_imapx_folder_get_check_folder (CamelIMAPXFolder *folder)
+{
+	g_return_val_if_fail (folder != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
+
+	return folder->priv->check_folder;
+}
+
+void
+camel_imapx_folder_set_check_folder (CamelIMAPXFolder *folder,
+				     gboolean check_folder)
+{
+	g_return_if_fail (folder != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	if (folder->priv->check_folder == check_folder)
+		return;
+
+	folder->priv->check_folder = check_folder;
+
+	g_object_notify (G_OBJECT (folder), "check-folder");
+}

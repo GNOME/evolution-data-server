@@ -91,6 +91,11 @@ void		camel_imapx_folder_add_move_to_real_trash
 void		camel_imapx_folder_invalidate_local_cache
 						(CamelIMAPXFolder *folder,
 						 guint64 new_uidvalidity);
+gboolean	camel_imapx_folder_get_check_folder
+						(CamelIMAPXFolder *folder);
+void		camel_imapx_folder_set_check_folder
+						(CamelIMAPXFolder *folder,
+						 gboolean check_folder);
 
 G_END_DECLS
 
