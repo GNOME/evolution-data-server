@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2014-12-20 05:32+0000\n"
-"PO-Revision-Date: 2014-12-20 12:08+0100\n"
+"POT-Creation-Date: 2014-12-23 05:32+0000\n"
+"PO-Revision-Date: 2014-12-23 16:59+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
@@ -917,7 +917,6 @@ msgid "The library was built without phone number support."
 msgstr "A programkönyvtár telefonszámok támogatása nélkül került lefordításra."
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:43
-#| msgid "The phone number parser reported an yet unkown error code."
 msgid "The phone number parser reported a yet unknown error code."
 msgstr "A telefonszám-feldolgozó egy még ismeretlen hibakódot adott vissza."
 
@@ -3055,41 +3054,46 @@ msgstr "Nem lehet átmásolni az üzeneteket a Kuka mappába"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nem lehet átmásolni az üzeneteket a Levélszemét mappába"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:796
+#: ../camel/providers/imapx/camel-imapx-folder.c:812
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "Nem érhetők el kvótainformációk a(z) „%s” mappához"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:936
-#: ../camel/providers/imapx/camel-imapx-folder.c:1029
+#: ../camel/providers/imapx/camel-imapx-folder.c:952
+#: ../camel/providers/imapx/camel-imapx-folder.c:1045
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nincs megadva célmappa"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:964
+#: ../camel/providers/imapx/camel-imapx-folder.c:980
 msgid "Unable to move junk messages"
 msgstr "Nem lehet áthelyezni a levélszemetet "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1057
+#: ../camel/providers/imapx/camel-imapx-folder.c:1073
 msgid "Unable to move deleted messages"
 msgstr "Nem lehet áthelyezni a törölt leveleket "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1374
+#: ../camel/providers/imapx/camel-imapx-folder.c:1390
 #: ../camel/providers/nntp/camel-nntp-folder.c:760
 msgid "Apply message _filters to this folder"
 msgstr "Ü_zenetszűrők alkalmazása erre a mappába"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1485
+#: ../camel/providers/imapx/camel-imapx-folder.c:1401
+#| msgid "Only check for Junk messages in the In_box folder"
+msgid "Always check for _new mail in this folder"
+msgstr "Új _levelek keresése ebben a mappában mindig"
+
+#: ../camel/providers/imapx/camel-imapx-folder.c:1512
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nem sikerült létrehozni %s mappa-összefoglalóját"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1494
+#: ../camel/providers/imapx/camel-imapx-folder.c:1521
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nem lehet létrehozni a gyorsítótárat ehhez: %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1709
+#: ../camel/providers/imapx/camel-imapx-folder.c:1736
 #, c-format
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "Nem érhető el IMAP postafiók a(z) „%s” mappához"
@@ -3409,13 +3413,13 @@ msgstr "Nem található IMAP névtér a(z) „%s” mappaútvonalhoz"
 msgid "Retrieving folder list for %s"
 msgstr "%s mappalistájának lekérése"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2007
+#: ../camel/providers/imapx/camel-imapx-store.c:2017
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "A mappanév „%s”  nem érvényes, mert a(z) „%c” karaktert tartalmazza"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2779
+#: ../camel/providers/imapx/camel-imapx-store.c:2789
 #: ../camel/providers/nntp/camel-nntp-store.c:1249
 #: ../camel/providers/pop3/camel-pop3-folder.c:448
 #: ../camel/providers/pop3/camel-pop3-folder.c:591
@@ -3430,7 +3434,7 @@ msgstr "A mappanév „%s”  nem érvényes, mert a(z) „%c” karaktert tarta
 msgid "You must be working online to complete this operation"
 msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkeznie"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2784
+#: ../camel/providers/imapx/camel-imapx-store.c:2794
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "A művelet befejezéséhez hálózati kapcsolattal kell rendelkeznie (%s)"
