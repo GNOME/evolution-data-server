@@ -842,12 +842,25 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 			dinfo = g_malloc0 (sizeof (*dinfo));
 			dinfo->refcount = 1;
 			/* should be string */
-			camel_imapx_input_stream_astring (
+			tok = camel_imapx_input_stream_astring (
 				stream, &token, cancellable, NULL);
+
+			if (tok != IMAPX_TOK_STRING) {
+				g_set_error (
+					&local_error,
+					CAMEL_IMAPX_ERROR, 1,
+					"expecting string");
+				goto done;
+			}
 
 			dinfo->disposition = g_strdup ((gchar *) token);
 			imapx_parse_param_list (
-				stream, &dinfo->params, cancellable, NULL);
+				stream, &dinfo->params, cancellable,
+				&local_error);
+
+			if (local_error != NULL)
+				goto done;
+
 			break;
 		case IMAPX_TOK_TOKEN:
 			break;
@@ -900,6 +913,7 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 
 	}
 
+ done:
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
 		if (dinfo)
