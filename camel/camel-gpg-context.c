@@ -648,8 +648,12 @@ gpg_ctx_op_start (struct _GpgCtx *gpg,
 		/* Loop over all fds. */
 		for (i = 3; i < maxfd; i++) {
 			/* don't close the status-fd or passwd-fd */
-			if (i != fds[7] && i != fds[8])
-				CHECK_CALL (fcntl (i, F_SETFD, FD_CLOEXEC));
+			if (i != fds[7] && i != fds[8]) {
+				if (fcntl (i, F_SETFD, FD_CLOEXEC) == -1) {
+					/* Do nothing here. Cannot use CHECK_CALL() macro here, because
+					   it makes the process stuck, possibly due to the debug print. */
+				}
+			}
 		}
 
 		/* run gpg */
