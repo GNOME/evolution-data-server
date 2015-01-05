@@ -4161,7 +4161,6 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 		master_comp = get_master_comp (cbdav, cache_comp);
 		if (e_cal_component_is_instance (comp) && master_comp) {
 			ECalComponent *mcomp;
-			gboolean processed = FALSE;
 			struct icaltimetype rid, master_dtstart;
 			icalcomponent *icalcomp = e_cal_component_get_icalcomponent (comp);
 			icalcomponent *split_icalcomp;
@@ -4218,8 +4217,6 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 				g_clear_object (&prev_comp);
 			}
 
-			processed = TRUE;
-
 			cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (master_comp));
 			if (split_icalcomp) {
 				gchar *new_uid;
@@ -4262,9 +4259,6 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 			}
 
 			g_clear_object (&mcomp);
-
-			if (!processed)
-				cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
 		} else {
 			cache_comp = replace_master (cbdav, cache_comp, icalcomponent_new_clone (e_cal_component_get_icalcomponent (comp)));
 		}
