@@ -1215,7 +1215,7 @@ imapx_server_set_connection_timeout (GIOStream *connection,
 	if (!G_IS_SOCKET_CONNECTION (connection))
 		return previous_timeout;
 
-	socket = g_socket_connection_get_socket (connection);
+	socket = g_socket_connection_get_socket (G_SOCKET_CONNECTION (connection));
 	if (socket) {
 		previous_timeout = g_socket_get_timeout (socket);
 		g_socket_set_timeout (socket, timeout_seconds);
