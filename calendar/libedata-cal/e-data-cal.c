@@ -1610,7 +1610,7 @@ e_data_cal_respond_refresh (EDataCal *cal,
 	if (error != NULL)
 		g_simple_async_result_take_error (simple, error);
 
-	g_simple_async_result_complete (simple);
+	g_simple_async_result_complete_in_idle (simple);
 
 	g_object_unref (simple);
 	g_object_unref (backend);
