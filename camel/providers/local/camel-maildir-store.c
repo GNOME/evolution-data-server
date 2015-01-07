@@ -123,7 +123,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 		goto exit;
 	}
 
-	if (!g_ascii_strcasecmp (folder_name, "Inbox")) {
+	if ((!parent_name || !*parent_name) && !g_ascii_strcasecmp (folder_name, "Inbox")) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
