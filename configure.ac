@@ -1679,7 +1679,7 @@ if test x$enable_vala_bindings = xyes; then
     AC_MSG_ERROR([GObject-Introspection must be enabled for Vala bindings])
   fi
 
-  AM_PROG_VALAC([0.13.0])
+  AM_PROG_VALAC([0.22.0])
   have_vala=yes
 
   AC_PATH_PROG(VALAC, valac, valac)
