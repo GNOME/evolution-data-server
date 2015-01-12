@@ -191,7 +191,14 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 static void
 backend_update_online_state (EBackend *backend)
 {
+	GMainContext *main_context;
+	GSource *timeout_source;
+
 	g_mutex_lock (&backend->priv->update_online_state_lock);
+
+	/* Reference the backend before destroying any already scheduled GSource,
+	   in case the backend's last reference is held by that GSource. */
+	g_object_ref (backend);
 
 	if (backend->priv->update_online_state) {
 		g_source_destroy (backend->priv->update_online_state);
@@ -199,26 +206,20 @@ backend_update_online_state (EBackend *backend)
 		backend->priv->update_online_state = NULL;
 	}
 
-	if (backend->priv->update_online_state == NULL) {
-		GMainContext *main_context;
-		GSource *timeout_source;
+	main_context = e_backend_ref_main_context (backend);
 
-		main_context = e_backend_ref_main_context (backend);
+	timeout_source = g_timeout_source_new_seconds (5);
+	g_source_set_priority (timeout_source, G_PRIORITY_LOW);
+	g_source_set_callback (
+		timeout_source,
+		backend_update_online_state_timeout_cb,
+		backend, (GDestroyNotify) g_object_unref);
+	g_source_attach (timeout_source, main_context);
+	backend->priv->update_online_state =
+		g_source_ref (timeout_source);
+	g_source_unref (timeout_source);
 
-		timeout_source = g_timeout_source_new_seconds (5);
-		g_source_set_priority (timeout_source, G_PRIORITY_LOW);
-		g_source_set_callback (
-			timeout_source,
-			backend_update_online_state_timeout_cb,
-			g_object_ref (backend),
-			(GDestroyNotify) g_object_unref);
-		g_source_attach (timeout_source, main_context);
-		backend->priv->update_online_state =
-			g_source_ref (timeout_source);
-		g_source_unref (timeout_source);
-
-		g_main_context_unref (main_context);
-	}
+	g_main_context_unref (main_context);
 
 	g_mutex_unlock (&backend->priv->update_online_state_lock);
 }
