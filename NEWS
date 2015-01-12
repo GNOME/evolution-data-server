@@ -1,5 +1,20 @@
+Evolution-Data-Server 3.12.10 2015-01-12
+----------------------------------------
+
+Bug Fixes:
+	Bug 695754 - Use-after-free in source_registry_source_notify_enabled_idle_cb() (Milan Crha)
+	Bug 741434 - Use-after-free after error in GPG signature verification (Milan Crha)
+	Bug 741699 - Fix "incompatible pointer type" compiler warning (Debarshi Ray)
+	Bug 741786 - Gets stuck while closing fds before execing gpg (Debarshi Ray)
+	Bug 741787 - [Maildir] Cannot create subfolder 'Inbox' (Milan Crha)
+	Bug 741557 - Bump vala dependency to version 0.22 (Milan Crha)
+
+Miscellaneous:
+	Fix "may be used uninitialized" warning (Fabiano Fidêncio)
+	EDataBook/Cal: Complete Refresh operation in IDLE (Milan Crha)
+
 Evolution-Data-Server 3.12.9 2014-12-08
------------------------------------------
+---------------------------------------
 
 Bug Fixes:
 	Bug 739904 - Can't create Contact List on an LDAP server (Milan Crha)
@@ -30,7 +45,7 @@ Translations:
 	Pedro Albuquerque (pt)
 
 Evolution-Data-Server 3.12.8 2014-11-10
------------------------------------------
+---------------------------------------
 
 Bug Fixes:
 	Bug 737733 - [IMAPx] Prevent "Stream has outstanding operation" error (Milan Crha)
