@@ -514,6 +514,8 @@ network_service_update_host_reachable (CamelNetworkService *service)
 {
 	CamelNetworkServicePrivate *priv;
 	CamelSession *session;
+	GMainContext *main_context;
+	GSource *timeout_source;
 
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
 
@@ -525,31 +527,29 @@ network_service_update_host_reachable (CamelNetworkService *service)
 
 	g_mutex_lock (&priv->update_host_reachable_lock);
 
+	/* Reference the service before destroying any already scheduled GSource,
+	   in case the service's last reference is held by that GSource. */
+	g_object_ref (service);
+
 	if (priv->update_host_reachable) {
 		g_source_destroy (priv->update_host_reachable);
 		g_source_unref (priv->update_host_reachable);
 		priv->update_host_reachable = NULL;
 	}
 
-	if (priv->update_host_reachable == NULL) {
-		GMainContext *main_context;
-		GSource *timeout_source;
+	main_context = camel_session_ref_main_context (session);
 
-		main_context = camel_session_ref_main_context (session);
+	timeout_source = g_timeout_source_new_seconds (5);
+	g_source_set_priority (timeout_source, G_PRIORITY_LOW);
+	g_source_set_callback (
+		timeout_source,
+		network_service_update_host_reachable_timeout_cb,
+		service, (GDestroyNotify) g_object_unref);
+	g_source_attach (timeout_source, main_context);
+	priv->update_host_reachable = g_source_ref (timeout_source);
+	g_source_unref (timeout_source);
 
-		timeout_source = g_timeout_source_new_seconds (5);
-		g_source_set_priority (timeout_source, G_PRIORITY_LOW);
-		g_source_set_callback (
-			timeout_source,
-			network_service_update_host_reachable_timeout_cb,
-			g_object_ref (service),
-			(GDestroyNotify) g_object_unref);
-		g_source_attach (timeout_source, main_context);
-		priv->update_host_reachable = g_source_ref (timeout_source);
-		g_source_unref (timeout_source);
-
-		g_main_context_unref (main_context);
-	}
+	g_main_context_unref (main_context);
 
 	g_mutex_unlock (&priv->update_host_reachable_lock);
 
