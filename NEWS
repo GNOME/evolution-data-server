@@ -1,3 +1,24 @@
+Evolution-Data-Server 3.13.10 2015-01-26
+----------------------------------------
+
+Bug Fixes:
+	Bug 691465 - [IMAPx] Mark individual folder for automatic update (Milan Crha)
+	Bug 741275 - [IMAPx] Handle parse errors in the disposition parsing code (Philip Withnall)
+	Bug 741276 - [CalDAV] Remove dead code (Philip Withnall)
+	Bug 741699 - Fix "incompatible pointer type" compiler warning (Debarshi Ray)
+	Bug 741786 - Gets stuck while closing fds before execing gpg (Debarshi Ray)
+	Bug 741787 - [Maildir] Cannot create subfolder 'Inbox' (Milan Crha)
+	Bug 741557 - Bump vala dependency to version 0.22 (Milan Crha)
+	Bug 736006 - Crash under backend_finalize() during online state change (Milan Crha)
+
+Miscellaneous:
+	EDataBook/Cal: Complete Refresh operation in IDLE (Milan Crha)
+
+Translations:
+	Balázs Úr (hu)
+	Inaki Larranaga Murgoitio (eu)
+	Marek Černocký (cs)
+
 Evolution-Data-Server 3.13.9 2014-12-22
 ---------------------------------------
 
