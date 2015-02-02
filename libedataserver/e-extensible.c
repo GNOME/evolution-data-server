@@ -17,7 +17,7 @@
 
 /**
  * SECTION: e-extensible
- * @include: libebackend/libebackend.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: An interface for extending objects
  *
  * #EExtension objects can be tacked on to any #GObject instance that
@@ -29,7 +29,7 @@
  *
  * <informalexample>
  * <programlisting>
- * #include <libebackend/libebackend.h>
+ * #include <libedataserver/libedataserver.h>
  *
  * G_DEFINE_TYPE_WITH_CODE (
  *         ECustomWidget, e_custom_widget, GTK_TYPE_WIDGET,
@@ -55,11 +55,14 @@
  * </informalexample>
  **/
 
-#include "e-extensible.h"
-
+#ifdef HAVE_CONFIG_H
 #include <config.h>
-#include <libebackend/e-extension.h>
-#include <libebackend/e-module.h>
+#endif
+
+#include "e-extension.h"
+#include "e-data-server-util.h"
+
+#include "e-extensible.h"
 
 #define IS_AN_EXTENSION_TYPE(type) \
 	(g_type_is_a ((type), E_TYPE_EXTENSION))

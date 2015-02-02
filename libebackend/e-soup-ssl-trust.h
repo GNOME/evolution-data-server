@@ -29,9 +29,7 @@
 G_BEGIN_DECLS
 
 void		e_soup_ssl_trust_connect	(SoupMessage *soup_message,
-						 ESource *source,
-						 ESourceRegistry *registry,
-						 GCancellable *cancellable);
+						 ESource *source);
 
 G_END_DECLS
 

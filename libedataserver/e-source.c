@@ -77,6 +77,7 @@
 #include <e-dbus-source.h>
 
 #include "e-data-server-util.h"
+#include "e-source-enumtypes.h"
 #include "e-source-extension.h"
 #include "e-uid.h"
 
@@ -129,6 +130,13 @@ struct _ESourcePrivate {
 	GSource *data_change;
 	GMutex data_change_lock;
 
+	GSource *connection_status_change;
+	GMutex connection_status_change_lock;
+	ESourceConnectionStatus connection_status;
+
+	GSource *credentials_required_call;
+	GMutex credentials_required_call_lock;
+
 	GMutex property_lock;
 
 	gchar *display_name;
@@ -171,11 +179,14 @@ enum {
 	PROP_REMOTE_DELETABLE,
 	PROP_REMOVABLE,
 	PROP_UID,
-	PROP_WRITABLE
+	PROP_WRITABLE,
+	PROP_CONNECTION_STATUS
 };
 
 enum {
 	CHANGED,
+	CREDENTIALS_REQUIRED,
+	AUTHENTICATE,
 	LAST_SIGNAL
 };
 
@@ -1032,6 +1043,211 @@ source_notify_dbus_data_cb (EDBusSource *dbus_source,
 }
 
 static gboolean
+source_update_connection_status_internal (ESource *source,
+					  EDBusSource *dbus_source)
+{
+	ESourceConnectionStatus connection_status_value;
+	gchar *connection_status;
+	gboolean changed = FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (dbus_source != NULL, FALSE);
+
+	connection_status_value = E_SOURCE_CONNECTION_STATUS_DISCONNECTED;
+	connection_status = e_dbus_source_dup_connection_status (dbus_source);
+
+	if (connection_status) {
+		GEnumClass *enum_class;
+		GEnumValue *enum_value;
+
+		enum_class = g_type_class_ref (E_TYPE_SOURCE_CONNECTION_STATUS);
+		enum_value = g_enum_get_value_by_nick (enum_class, connection_status);
+
+		if (enum_value) {
+			connection_status_value = enum_value->value;
+		} else if (!*connection_status) {
+			connection_status_value = E_SOURCE_CONNECTION_STATUS_DISCONNECTED;
+		} else {
+			g_warning ("%s: Unknown connection status: '%s'", G_STRFUNC, connection_status);
+		}
+
+		g_type_class_unref (enum_class);
+		g_free (connection_status);
+	}
+
+	if (source->priv->connection_status != connection_status_value) {
+		source->priv->connection_status = connection_status_value;
+		changed = TRUE;
+	}
+
+	return changed;
+}
+
+static gboolean
+source_idle_connection_status_change_cb (gpointer user_data)
+{
+	ESource *source = E_SOURCE (user_data);
+	EDBusObject *dbus_object;
+	EDBusSource *dbus_source;
+	gboolean changed;
+
+	/* If the ESource is still initializing itself in a different
+	 * thread, skip the signal emission and try again on the next
+	 * main loop iteration. This is a busy wait but it should be
+	 * a very short wait. */
+	if (!source->priv->initialized)
+		return TRUE;
+
+	g_mutex_lock (&source->priv->connection_status_change_lock);
+	if (source->priv->connection_status_change != NULL) {
+		g_source_unref (source->priv->connection_status_change);
+		source->priv->connection_status_change = NULL;
+	}
+	g_mutex_unlock (&source->priv->connection_status_change_lock);
+
+	g_object_freeze_notify (G_OBJECT (source));
+	g_mutex_lock (&source->priv->property_lock);
+
+	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
+
+	dbus_source = e_dbus_object_get_source (dbus_object);
+	changed = source_update_connection_status_internal (source, dbus_source);
+	g_object_unref (dbus_source);
+
+	if (changed)
+		g_object_notify (G_OBJECT (source), "connection-status");
+
+	g_mutex_unlock (&source->priv->property_lock);
+	g_object_thaw_notify (G_OBJECT (source));
+
+	return FALSE;
+}
+
+static void
+source_notify_dbus_connection_status_cb (EDBusSource *dbus_source,
+					 GParamSpec *pspec,
+					 ESource *source)
+{
+	g_mutex_lock (&source->priv->connection_status_change_lock);
+	if (source->priv->connection_status_change == NULL) {
+		source->priv->connection_status_change = g_idle_source_new ();
+		g_source_set_callback (
+			source->priv->connection_status_change,
+			source_idle_connection_status_change_cb,
+			source, NULL);
+		g_source_attach (
+			source->priv->connection_status_change,
+			source->priv->main_context);
+	}
+	g_mutex_unlock (&source->priv->connection_status_change_lock);
+}
+
+static ESourceCredentialsReason
+source_credentials_reason_from_text (const gchar *arg_reason)
+{
+	ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
+
+	if (arg_reason && *arg_reason) {
+		GEnumClass *enum_class;
+		GEnumValue *enum_value;
+
+		enum_class = g_type_class_ref (E_TYPE_SOURCE_CREDENTIALS_REASON);
+		enum_value = g_enum_get_value_by_nick (enum_class, arg_reason);
+
+		if (enum_value) {
+			reason = enum_value->value;
+		} else {
+			g_warning ("%s: Unknown reason enum: '%s'", G_STRFUNC, arg_reason);
+		}
+
+		g_type_class_unref (enum_class);
+	}
+
+	return reason;
+}
+
+static GTlsCertificateFlags
+source_certificate_errors_from_text (const gchar *arg_certificate_errors)
+{
+	GTlsCertificateFlags certificate_errors = 0;
+
+	if (arg_certificate_errors && *arg_certificate_errors) {
+		GFlagsClass *flags_class;
+		gchar **flags_strv;
+		gsize ii;
+
+		flags_class = g_type_class_ref (G_TYPE_TLS_CERTIFICATE_FLAGS);
+		flags_strv = g_strsplit (arg_certificate_errors, ":", -1);
+		for (ii = 0; flags_strv[ii] != NULL; ii++) {
+			GFlagsValue *flags_value;
+
+			flags_value = g_flags_get_value_by_nick (flags_class, flags_strv[ii]);
+			if (flags_value != NULL) {
+				certificate_errors |= flags_value->value;
+			} else {
+				g_warning ("%s: Unknown flag: '%s'", G_STRFUNC, flags_strv[ii]);
+			}
+		}
+		g_strfreev (flags_strv);
+		g_type_class_unref (flags_class);
+	}
+
+	return certificate_errors;
+}
+
+static void
+source_dbus_credentials_required_cb (EDBusSource *dbus_source,
+				     const gchar *arg_reason,
+				     const gchar *arg_certificate_pem,
+				     const gchar *arg_certificate_errors,
+				     const gchar *arg_dbus_error_name,
+				     const gchar *arg_dbus_error_message,
+				     ESource *source)
+{
+	ESourceCredentialsReason reason;
+	GTlsCertificateFlags certificate_errors;
+	GError *op_error = NULL;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (arg_reason != NULL);
+	g_return_if_fail (arg_certificate_pem != NULL);
+	g_return_if_fail (arg_certificate_errors != NULL);
+	g_return_if_fail (arg_dbus_error_name != NULL);
+	g_return_if_fail (arg_dbus_error_message != NULL);
+
+	reason = source_credentials_reason_from_text (arg_reason);
+	certificate_errors = source_certificate_errors_from_text (arg_certificate_errors);
+
+	if (*arg_dbus_error_name) {
+		op_error = g_dbus_error_new_for_dbus_error (arg_dbus_error_name, arg_dbus_error_message);
+		g_dbus_error_strip_remote_error (op_error);
+	}
+
+	/* This is delivered in the GDBus thread */
+	e_source_emit_credentials_required (source, reason, arg_certificate_pem, certificate_errors, op_error);
+
+	g_clear_error (&op_error);
+}
+
+static gboolean
+source_dbus_authenticate_cb (EDBusSource *dbus_interface,
+			     const gchar *const *arg_credentials,
+			     ESource *source)
+{
+	ENamedParameters *credentials;
+
+	credentials = e_named_parameters_new_strv (arg_credentials);
+
+	/* This is delivered in the GDBus thread */
+	g_signal_emit (source, signals[AUTHENTICATE], 0, credentials);
+
+	e_named_parameters_free (credentials);
+
+	return TRUE;
+}
+
+
+static gboolean
 source_idle_changed_cb (gpointer user_data)
 {
 	ESource *source = E_SOURCE (user_data);
@@ -1136,6 +1352,11 @@ source_set_property (GObject *object,
 				E_SOURCE (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_CONNECTION_STATUS:
+			e_source_set_connection_status (E_SOURCE (object),
+				g_value_get_enum (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1207,6 +1428,11 @@ source_get_property (GObject *object,
 				value, e_source_get_writable (
 				E_SOURCE (object)));
 			return;
+
+		case PROP_CONNECTION_STATUS:
+			g_value_set_enum (value,
+				e_source_get_connection_status (E_SOURCE (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1259,6 +1485,22 @@ source_dispose (GObject *object)
 	}
 	g_mutex_unlock (&priv->data_change_lock);
 
+	g_mutex_lock (&priv->connection_status_change_lock);
+	if (priv->connection_status_change != NULL) {
+		g_source_destroy (priv->connection_status_change);
+		g_source_unref (priv->connection_status_change);
+		priv->connection_status_change = NULL;
+	}
+	g_mutex_unlock (&priv->connection_status_change_lock);
+
+	g_mutex_lock (&priv->credentials_required_call_lock);
+	if (priv->credentials_required_call != NULL) {
+		g_source_destroy (priv->credentials_required_call);
+		g_source_unref (priv->credentials_required_call);
+		priv->credentials_required_call = NULL;
+	}
+	g_mutex_unlock (&priv->credentials_required_call_lock);
+
 	g_hash_table_remove_all (priv->extensions);
 
 	/* Chain up to parent's dispose() method. */
@@ -1274,6 +1516,8 @@ source_finalize (GObject *object)
 
 	g_mutex_clear (&priv->changed_lock);
 	g_mutex_clear (&priv->data_change_lock);
+	g_mutex_clear (&priv->connection_status_change_lock);
+	g_mutex_clear (&priv->credentials_required_call_lock);
 	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->display_name);
@@ -1891,6 +2135,41 @@ source_get_oauth2_access_token_finish (ESource *source,
 	return TRUE;
 }
 
+
+static gboolean
+source_invoke_credentials_required_impl (ESource *source,
+					 gpointer dbus_source, /* EDBusSource * */
+					 const gchar *arg_reason,
+					 const gchar *arg_certificate_pem,
+					 const gchar *arg_certificate_errors,
+					 const gchar *arg_dbus_error_name,
+					 const gchar *arg_dbus_error_message,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	g_return_val_if_fail (E_DBUS_IS_SOURCE (dbus_source), FALSE);
+
+	return e_dbus_source_call_invoke_credentials_required_sync (dbus_source,
+		arg_reason ? arg_reason : "",
+		arg_certificate_pem ? arg_certificate_pem : "",
+		arg_certificate_errors ? arg_certificate_errors : "",
+		arg_dbus_error_name ? arg_dbus_error_name : "",
+		arg_dbus_error_message ? arg_dbus_error_message : "",
+		cancellable, error);
+}
+
+static gboolean
+source_invoke_authenticate_impl (ESource *source,
+				 gpointer dbus_source, /* EDBusSource * */
+				 const gchar * const *arg_credentials,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	g_return_val_if_fail (E_DBUS_IS_SOURCE (dbus_source), FALSE);
+
+	return e_dbus_source_call_invoke_authenticate_sync (dbus_source, arg_credentials, cancellable, error);
+}
+
 static gboolean
 source_initable_init (GInitable *initable,
                       GCancellable *cancellable,
@@ -1922,9 +2201,20 @@ source_initable_init (GInitable *initable,
 		g_free (source->priv->uid);
 		source->priv->uid = e_dbus_source_dup_uid (dbus_source);
 
+		source_update_connection_status_internal (source, dbus_source);
+
 		g_signal_connect (
 			dbus_source, "notify::data",
 			G_CALLBACK (source_notify_dbus_data_cb), source);
+		g_signal_connect (
+			dbus_source, "notify::connection-status",
+			G_CALLBACK (source_notify_dbus_connection_status_cb), source);
+		g_signal_connect (
+			dbus_source, "credentials-required",
+			G_CALLBACK (source_dbus_credentials_required_cb), source);
+		g_signal_connect (
+			dbus_source, "authenticate",
+			G_CALLBACK (source_dbus_authenticate_cb), source);
 
 		success = source_parse_dbus_data (source, error);
 
@@ -2075,6 +2365,8 @@ e_source_class_init (ESourceClass *class)
 	class->get_oauth2_access_token_sync = source_get_oauth2_access_token_sync;
 	class->get_oauth2_access_token = source_get_oauth2_access_token;
 	class->get_oauth2_access_token_finish = source_get_oauth2_access_token_finish;
+	class->invoke_credentials_required_impl = source_invoke_credentials_required_impl;
+	class->invoke_authenticate_impl = source_invoke_authenticate_impl;
 
 	g_object_class_install_property (
 		object_class,
@@ -2197,6 +2489,18 @@ e_source_class_init (ESourceClass *class)
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
 
+	g_object_class_install_property (
+		object_class,
+		PROP_CONNECTION_STATUS,
+		g_param_spec_enum (
+			"connection-status",
+			"Connection Status",
+			"Connection status of the source",
+			E_TYPE_SOURCE_CONNECTION_STATUS,
+			E_SOURCE_CONNECTION_STATUS_DISCONNECTED,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
 	/**
 	 * ESource::changed:
 	 * @source: the #ESource that received the signal
@@ -2213,6 +2517,47 @@ e_source_class_init (ESourceClass *class)
 		G_STRUCT_OFFSET (ESourceClass, changed),
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
+
+	/**
+	 * ESource::credentials-required:
+	 * @source: the #ESource that received the signal
+	 * @reason: an #ESourceCredentialsReason indicating why the credentials are requested
+	 * @certificate_pem: PEM-encoded secure connection certificate for failed SSL checks
+	 * @certificate_errors: what failed with the SSL certificate
+	 * @error: a text description of the error, if any
+	 *
+	 * The ::credentials-required signal is emitted when the @source
+	 * requires credentials to connect to (possibly remote)
+	 * data store. The credentials can be passed to the backend using
+	 * e_source_authenticate() function.
+	 **/
+	signals[CREDENTIALS_REQUIRED] = g_signal_new (
+		"credentials-required",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		G_STRUCT_OFFSET (ESourceClass, credentials_required),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 4,
+		E_TYPE_SOURCE_CREDENTIALS_REASON,
+		G_TYPE_STRING,
+		G_TYPE_TLS_CERTIFICATE_FLAGS,
+		G_TYPE_ERROR);
+
+	/**
+	 * ESource::authenticate
+	 * @source: the #ESource that received the signal
+	 * @credentials: an #ENamedParameters with provided credentials
+	 *
+	 * Let's the backend know provided credentials to use to login
+	 * to (possibly remote) data store.
+	 **/
+	signals[AUTHENTICATE] = g_signal_new (
+		"authenticate",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		G_STRUCT_OFFSET (ESourceClass, authenticate),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1, E_TYPE_NAMED_PARAMETERS);
 
 	/* Register built-in ESourceExtension types. */
 	g_type_ensure (E_TYPE_SOURCE_ADDRESS_BOOK);
@@ -2278,9 +2623,12 @@ e_source_init (ESource *source)
 	source->priv = E_SOURCE_GET_PRIVATE (source);
 	g_mutex_init (&source->priv->changed_lock);
 	g_mutex_init (&source->priv->data_change_lock);
+	g_mutex_init (&source->priv->connection_status_change_lock);
+	g_mutex_init (&source->priv->credentials_required_call_lock);
 	g_mutex_init (&source->priv->property_lock);
 	source->priv->key_file = g_key_file_new ();
 	source->priv->extensions = extensions;
+	source->priv->connection_status = E_SOURCE_CONNECTION_STATUS_DISCONNECTED;
 
 	g_rec_mutex_init (&source->priv->lock);
 }
@@ -3202,6 +3550,68 @@ e_source_parameter_to_key (const gchar *param_name)
 	}
 
 	return key;
+}
+
+/**
+ * e_source_get_connection_status:
+ * @source: an #ESource
+ *
+ * Obtain current connection status of the @source.
+ *
+ * Returns: Current connection status of the @source.
+ *
+ * Since: 3.14
+ **/
+ESourceConnectionStatus
+e_source_get_connection_status (ESource *source)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+
+	return source->priv->connection_status;
+}
+
+/**
+ * e_source_set_connection_status:
+ * @source: an #ESource
+ * @connection_status: one of the #ESourceConnectionStatus
+ *
+ * Set's current connection status of the @source.
+ *
+ * Since: 3.14
+ **/
+void
+e_source_set_connection_status (ESource *source,
+				ESourceConnectionStatus connection_status)
+{
+	GEnumClass *enum_class;
+	GEnumValue *enum_value;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (source->priv->connection_status == connection_status)
+		return;
+
+	source->priv->connection_status = connection_status;
+
+	enum_class = g_type_class_ref (E_TYPE_SOURCE_CONNECTION_STATUS);
+	enum_value = g_enum_get_value (enum_class, connection_status);
+
+	if (enum_value) {
+		GDBusObject *dbus_object;
+		EDBusSource *dbus_source;
+
+		dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
+		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+		e_dbus_source_set_connection_status (dbus_source, enum_value->value_nick);
+		g_object_unref (dbus_source);
+		g_object_unref (dbus_object);
+	} else {
+		g_warning ("%s: Unknown connection status: %x", G_STRFUNC, connection_status);
+	}
+
+	g_type_class_unref (enum_class);
+
+	g_object_notify (G_OBJECT (source), "connection-status");
 }
 
 /**
@@ -4189,15 +4599,31 @@ e_source_delete_password_finish (ESource *source,
 }
 
 /**
- * e_source_allow_auth_prompt_sync:
+ * e_source_invoke_credentials_required_sync:
  * @source: an #ESource
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
+ * @reason: an #ESourceCredentialsReason, why the credentials are required
+ * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
+ * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @error: (allow none): return location for a #GError, or %NULL
  *
- * Tells the source registry that it can ask for passwords, if necessary.
- * Password prompts are disabled automatically when a user cancels
- * the password prompt. This function is to reverse the effect. It does
- * nothing, if the password prompt is not disabled.
+ * Let's the client-side know that credentials are required. The @reason defines which
+ * parameters are used. The client passed the credentials with an e_source_authenitcate()
+ * call.
+ *
+ * The %E_SOURCE_CREDENTIALS_REASON_REQUIRED is used for the first credentials prompt,
+ * when the client can return credentials as stored from the previous success login.
+ *
+ * The %E_SOURCE_CREDENTIALS_REASON_REJECTED is used when the previously used credentials
+ * had been rejected by the server. That usually means that the user should be asked
+ * to provide/correct the credentials.
+ *
+ * The %E_SOURCE_CREDENTIALS_REASON_SSL_FAILED is used when a secured connection failed
+ * due to some server-side certificate issues.
+ *
+ * The %E_SOURCE_CREDENTIALS_REASON_ERROR is used when the server returned an error.
+ * It is not possible to connect to it at the moment usually.
  *
  * If an error occurs, the function sets @error and returns %FALSE.
  *
@@ -4206,15 +4632,30 @@ e_source_delete_password_finish (ESource *source,
  * Since: 3.14
  **/
 gboolean
-e_source_allow_auth_prompt_sync (ESource *source,
-				 GCancellable *cancellable,
-				 GError **error)
+e_source_invoke_credentials_required_sync (ESource *source,
+					   ESourceCredentialsReason reason,
+					   const gchar *certificate_pem,
+					   GTlsCertificateFlags certificate_errors,
+					   const GError *op_error,
+					   GCancellable *cancellable,
+					   GError **error)
 {
 	GDBusObject *dbus_object;
 	EDBusSource *dbus_source = NULL;
+	ESourceClass *klass;
+	gchar *arg_reason, *arg_certificate_errors;
+	GEnumClass *enum_class;
+	GEnumValue *enum_value;
+	GFlagsClass *flags_class;
+	GFlagsValue *flags_value;
+	GString *certificate_errors_str;
+	gchar *dbus_error_name = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	klass = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (klass->invoke_credentials_required_impl != NULL, FALSE);
 
 	dbus_object = e_source_ref_dbus_object (source);
 	if (dbus_object != NULL) {
@@ -4227,8 +4668,48 @@ e_source_allow_auth_prompt_sync (ESource *source,
 		return FALSE;
 	}
 
-	e_dbus_source_call_allow_auth_prompt_sync (dbus_source, cancellable, &local_error);
+	enum_class = g_type_class_ref (E_TYPE_SOURCE_CREDENTIALS_REASON);
+	enum_value = g_enum_get_value (enum_class, reason);
 
+	g_return_val_if_fail (enum_value != NULL, FALSE);
+
+	arg_reason = g_strdup (enum_value->value_nick);
+	g_type_class_unref (enum_class);
+
+	certificate_errors_str = g_string_new ("");
+
+	flags_class = g_type_class_ref (G_TYPE_TLS_CERTIFICATE_FLAGS);
+	for (flags_value = g_flags_get_first_value (flags_class, certificate_errors);
+	     flags_value;
+	     flags_value = g_flags_get_first_value (flags_class, certificate_errors)) {
+		if (certificate_errors_str->len)
+			g_string_append_c (certificate_errors_str, ':');
+		g_string_append (certificate_errors_str, flags_value->value_nick);
+		certificate_errors &= ~flags_value->value;
+	}
+	g_type_class_unref (flags_class);
+
+	arg_certificate_errors = g_string_free (certificate_errors_str, FALSE);
+
+	if (reason == E_SOURCE_CREDENTIALS_REASON_SSL_FAILED)
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
+	else if (reason != E_SOURCE_CREDENTIALS_REASON_ERROR)
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_AWAITING_CREDENTIALS);
+
+	if (op_error)
+		dbus_error_name = g_dbus_error_encode_gerror (op_error);
+
+	klass->invoke_credentials_required_impl (source, dbus_source,
+			arg_reason ? arg_reason : "",
+			certificate_pem ? certificate_pem : "",
+			arg_certificate_errors ? arg_certificate_errors : "",
+			dbus_error_name ? dbus_error_name : "",
+			op_error ? op_error->message : "",
+			cancellable, &local_error);
+
+	g_free (arg_reason);
+	g_free (arg_certificate_errors);
+	g_free (dbus_error_name);
 	g_object_unref (dbus_source);
 
 	if (local_error != NULL) {
@@ -4240,17 +4721,38 @@ e_source_allow_auth_prompt_sync (ESource *source,
 	return TRUE;
 }
 
+typedef struct _InvokeCredentialsRequiredData {
+	ESourceCredentialsReason reason;
+	gchar *certificate_pem;
+	GTlsCertificateFlags certificate_errors;
+	GError *op_error;
+} InvokeCredentialsRequiredData;
+
 static void
-source_allow_auth_prompt_thread (GTask *task,
-				 gpointer source_object,
-				 gpointer task_data,
-				 GCancellable *cancellable)
+invoke_credentials_required_data_free (gpointer ptr)
 {
+	InvokeCredentialsRequiredData *data = ptr;
+
+	if (data) {
+		g_free (data->certificate_pem);
+		g_clear_error (&data->op_error);
+		g_free (data);
+	}
+}
+
+static void
+source_invoke_credentials_required_thread (GTask *task,
+					   gpointer source_object,
+					   gpointer task_data,
+					   GCancellable *cancellable)
+{
+	InvokeCredentialsRequiredData *data = task_data;
 	gboolean success;
 	GError *local_error = NULL;
 
-	success = e_source_allow_auth_prompt_sync (
-		E_SOURCE (source_object),
+	success = e_source_invoke_credentials_required_sync (
+		E_SOURCE (source_object), data->reason, data->certificate_pem,
+		data->certificate_errors, data->op_error,
 		cancellable, &local_error);
 
 	if (local_error != NULL) {
@@ -4261,47 +4763,61 @@ source_allow_auth_prompt_thread (GTask *task,
 }
 
 /**
- * e_source_allow_auth_prompt:
+ * e_source_invoke_credentials_required:
  * @source: an #ESource
- * @cancellable: optional #GCancellable object, or %NULL
+ * @reason: an #ESourceCredentialsReason, why the credentials are required
+ * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
+ * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
- * Asynchronously tells the source registry that it can ask for passwords,
- * if necessary. Password prompts are disabled automatically when a user cancels
- * the password prompt. This function is to reverse the effect. It does
- * nothing, if the password prompt is not disabled.
+ * Asynchronously calls the InvokeCredentialsRequired method on the server side,
+ * to inform clients that credentials are required.
  *
  * When the operation is finished, @callback will be called. You can then
- * call e_source_allow_auth_prompt_finish() to get the result of the operation.
+ * call e_source_invoke_credentials_required_finish() to get the result of the operation.
  *
  * Since: 3.14
  **/
 void
-e_source_allow_auth_prompt (ESource *source,
-			    GCancellable *cancellable,
-			    GAsyncReadyCallback callback,
-			    gpointer user_data)
+e_source_invoke_credentials_required (ESource *source,
+				      ESourceCredentialsReason reason,
+				      const gchar *certificate_pem,
+				      GTlsCertificateFlags certificate_errors,
+				      const GError *op_error,
+				      GCancellable *cancellable,
+				      GAsyncReadyCallback callback,
+				      gpointer user_data)
 {
+	InvokeCredentialsRequiredData *data;
 	GTask *task;
 
 	g_return_if_fail (E_IS_SOURCE (source));
 
-	task = g_task_new (source, cancellable, callback, user_data);
-	g_task_set_source_tag (task, e_source_allow_auth_prompt);
+	data = g_new0 (InvokeCredentialsRequiredData, 1);
+	data->reason = reason;
+	data->certificate_pem = g_strdup (certificate_pem);
+	data->certificate_errors = certificate_errors;
+	data->op_error = op_error ? g_error_copy (op_error) : NULL;
 
-	g_task_run_in_thread (task, source_allow_auth_prompt_thread);
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_invoke_credentials_required);
+	g_task_set_task_data (task, data, invoke_credentials_required_data_free);
+
+	g_task_run_in_thread (task, source_invoke_credentials_required_thread);
 
 	g_object_unref (task);
 }
 
 /**
- * e_source_allow_auth_prompt_finish:
+ * e_source_invoke_credentials_required_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
+ * @error: (allow none): return location for a #GError, or %NULL
  *
- * Finishes the operation started with e_source_allow_auth_prompt().
+ * Finishes the operation started with e_source_invoke_credentials_required().
  *
  * If an error occurs, the function sets @error and returns %FALSE.
  *
@@ -4310,16 +4826,429 @@ e_source_allow_auth_prompt (ESource *source,
  * Since: 3.14
  **/
 gboolean
-e_source_allow_auth_prompt_finish (ESource *source,
-				   GAsyncResult *result,
-				   GError **error)
+e_source_invoke_credentials_required_finish (ESource *source,
+					     GAsyncResult *result,
+					     GError **error)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
 
 	g_return_val_if_fail (
 		g_async_result_is_tagged (
-		result, e_source_allow_auth_prompt), FALSE);
+		result, e_source_invoke_credentials_required), FALSE);
 
 	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
+ * e_source_invoke_authenticate_sync:
+ * @source: an #ESource
+ * @credentials: (allow none): an #ENamedParameters structure with credentials to use; can be %NULL
+ *    to use those from the last call
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Calls the InvokeAuthenticate method on the server side, thus the backend
+ * knows what credentials to use to connect to its (possibly remote) data store.
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_source_invoke_authenticate_sync (ESource *source,
+				   const ENamedParameters *credentials,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	GDBusObject *dbus_object;
+	EDBusSource *dbus_source = NULL;
+	ESourceClass *klass;
+	gchar **credentials_strv;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	klass = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (klass->invoke_authenticate_impl != NULL, FALSE);
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (!dbus_source) {
+		g_warn_if_fail (dbus_source != NULL);
+		return FALSE;
+	}
+
+	if (credentials) {
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND) &&
+		    !e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST)) {
+			ENamedParameters *clone;
+			ESourceWebdav *webdav_extension;
+
+			clone = e_named_parameters_new_clone (credentials);
+
+			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			e_named_parameters_set (clone, E_SOURCE_CREDENTIAL_SSL_TRUST,
+				e_source_webdav_get_ssl_trust (webdav_extension));
+
+			credentials_strv = e_named_parameters_to_strv (clone);
+
+			e_named_parameters_free (clone);
+		} else {
+			credentials_strv = e_named_parameters_to_strv (credentials);
+		}
+	} else {
+		ENamedParameters *empty_credentials;
+
+		empty_credentials = e_named_parameters_new ();
+		credentials_strv = e_named_parameters_to_strv (empty_credentials);
+		e_named_parameters_free (empty_credentials);
+	}
+
+	success = klass->invoke_authenticate_impl (source, dbus_source, (const gchar * const *) credentials_strv, cancellable, &local_error);
+
+	g_strfreev (credentials_strv);
+	g_object_unref (dbus_source);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return success;
+}
+
+static void
+source_invoke_authenticate_thread (GTask *task,
+				   gpointer source_object,
+				   gpointer task_data,
+				   GCancellable *cancellable)
+{
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = e_source_invoke_authenticate_sync (
+		E_SOURCE (source_object), task_data,
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * e_source_invoke_authenticate:
+ * @source: an #ESource
+ * @credentials: (allow none): an #ENamedParameters structure with credentials to use; can be %NULL
+ *    to use those from the last call
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously calls the InvokeAuthenticate method on the server side,
+ * thus the backend knows what credentials to use to connect to its (possibly
+ * remote) data store.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_source_invoke_authenticate_finish() to get the result of the operation.
+ *
+ * Since: 3.14
+ **/
+void
+e_source_invoke_authenticate (ESource *source,
+			      const ENamedParameters *credentials,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data)
+{
+	ENamedParameters *credentials_copy;
+	GTask *task;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	credentials_copy = e_named_parameters_new_clone (credentials);
+
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_invoke_authenticate);
+	g_task_set_task_data (task, credentials_copy, (GDestroyNotify) e_named_parameters_free);
+
+	g_task_run_in_thread (task, source_invoke_authenticate_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_invoke_authenticate_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_invoke_authenticate().
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_source_invoke_authenticate_finish (ESource *source,
+				     GAsyncResult *result,
+				     GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_source_invoke_authenticate), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
+ * e_source_emit_credentials_required:
+ * @reason: an #ESourceCredentialsReason, why the credentials are required
+ * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
+ * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ *
+ * Emits localy (in this process only) the ESource::credentials-required
+ * signal with given parameters. That's the difference with e_source_invoke_credentials_required(),
+ * which calls the signal globally, within each client.
+ *
+ * Since: 3.14
+ **/
+void
+e_source_emit_credentials_required (ESource *source,
+				    ESourceCredentialsReason reason,
+				    const gchar *certificate_pem,
+				    GTlsCertificateFlags certificate_errors,
+				    const GError *op_error)
+{
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	g_signal_emit (source, signals[CREDENTIALS_REQUIRED], 0, reason, certificate_pem, certificate_errors, op_error);
+}
+
+/**
+ * e_source_get_last_credentials_required_arguments_sync:
+ * @source: an #ESource
+ * @out_reason: (out): an #ESourceCredentialsReason, why the credentials are required
+ * @out_certificate_pem: (out): PEM-encoded secure connection certificate, or an empty string
+ * @out_certificate_errors: (out): a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @out_op_error: (out): a #GError with a description of the previous credentials error
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Retrieves the last used arguments of the 'credentials-required' signal emission.
+ * If there was none emitted yet, or a corresponding 'authenitcate' had been emitted
+ * already, then the @out_reason is set to #E_SOURCE_CREDENTIALS_REASON_UNKNOWN
+ * and the value of other 'out' arguments is set to no values.
+ *
+ * If an error occurs, the function sets @error and returns %FALSE. The result gchar
+ * values should be freed with g_free() when no longer needed.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_source_get_last_credentials_required_arguments_sync (ESource *source,
+						       ESourceCredentialsReason *out_reason,
+						       gchar **out_certificate_pem,
+						       GTlsCertificateFlags *out_certificate_errors,
+						       GError **out_op_error,
+						       GCancellable *cancellable,
+						       GError **error)
+{
+	GDBusObject *dbus_object;
+	EDBusSource *dbus_source = NULL;
+	gboolean success;
+	gchar *arg_reason = NULL, *arg_certificate_errors = NULL;
+	gchar *arg_dbus_error_name = NULL, *arg_dbus_error_message = NULL;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (out_reason != NULL, FALSE);
+	g_return_val_if_fail (out_certificate_pem != NULL, FALSE);
+	g_return_val_if_fail (out_certificate_errors != NULL, FALSE);
+	g_return_val_if_fail (out_op_error != NULL, FALSE);
+
+	*out_reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
+	*out_certificate_pem =  NULL;
+	*out_certificate_errors = 0;
+	*out_op_error = NULL;
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (!dbus_source) {
+		g_warn_if_fail (dbus_source != NULL);
+		return FALSE;
+	}
+
+	success = e_dbus_source_call_get_last_credentials_required_arguments_sync (dbus_source,
+		&arg_reason, out_certificate_pem, &arg_certificate_errors,
+		&arg_dbus_error_name, &arg_dbus_error_message, cancellable, error);
+
+	g_object_unref (dbus_source);
+
+	*out_reason = source_credentials_reason_from_text (arg_reason);
+	*out_certificate_errors = source_certificate_errors_from_text (arg_certificate_errors);
+
+	if (arg_dbus_error_name && *arg_dbus_error_name && arg_dbus_error_message) {
+		*out_op_error = g_dbus_error_new_for_dbus_error (arg_dbus_error_name, arg_dbus_error_message);
+		g_dbus_error_strip_remote_error (*out_op_error);
+	}
+
+	if (*out_certificate_pem && !**out_certificate_pem) {
+		g_free (*out_certificate_pem);
+		*out_certificate_pem = NULL;
+	}
+
+	g_free (arg_reason);
+	g_free (arg_certificate_errors);
+	g_free (arg_dbus_error_name);
+	g_free (arg_dbus_error_message);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return success;
+}
+
+static void
+source_get_last_credentials_required_arguments_thread (GTask *task,
+						       gpointer source_object,
+						       gpointer task_data,
+						       GCancellable *cancellable)
+{
+	InvokeCredentialsRequiredData *data;
+	GError *local_error = NULL;
+
+	data = g_new0 (InvokeCredentialsRequiredData, 1);
+	data->reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
+	data->certificate_pem = NULL;
+	data->certificate_errors = 0;
+	data->op_error = NULL;
+
+	e_source_get_last_credentials_required_arguments_sync (
+		E_SOURCE (source_object), &data->reason, &data->certificate_pem,
+		&data->certificate_errors, &data->op_error,
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_pointer (task, data, invoke_credentials_required_data_free);
+	}
+}
+
+/**
+ * e_source_get_last_credentials_required_arguments:
+ * @source: an #ESource
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously calls the GetLastCredentialsRequiredArguments method
+ * on the server side, to get the last values used for the 'credentials-required'
+ * signal. See e_source_get_last_credentials_required_arguments_sync() for
+ * more information.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_source_get_last_credentials_required_arguments_finish() to get
+ * the result of the operation.
+ *
+ * Since: 3.14
+ **/
+void
+e_source_get_last_credentials_required_arguments (ESource *source,
+						  GCancellable *cancellable,
+						  GAsyncReadyCallback callback,
+						  gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_get_last_credentials_required_arguments);
+
+	g_task_run_in_thread (task, source_get_last_credentials_required_arguments_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_get_last_credentials_required_arguments_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @out_reason: (out): an #ESourceCredentialsReason, why the credentials are required
+ * @out_certificate_pem: (out): PEM-encoded secure connection certificate, or an empty string
+ * @out_certificate_errors: (out): a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @out_op_error: (out): a #GError with a description of the previous credentials error
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_get_last_credentials_required_arguments().
+ * See e_source_get_last_credentials_required_arguments_sync() for more information
+ * about the output arguments.
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_source_get_last_credentials_required_arguments_finish (ESource *source,
+							 GAsyncResult *result,
+							 ESourceCredentialsReason *out_reason,
+							 gchar **out_certificate_pem,
+							 GTlsCertificateFlags *out_certificate_errors,
+							 GError **out_op_error,
+							 GError **error)
+{
+	InvokeCredentialsRequiredData *data;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+	g_return_val_if_fail (out_reason != NULL, FALSE);
+	g_return_val_if_fail (out_certificate_pem != NULL, FALSE);
+	g_return_val_if_fail (out_certificate_errors != NULL, FALSE);
+	g_return_val_if_fail (out_op_error != NULL, FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_source_get_last_credentials_required_arguments), FALSE);
+
+	data = g_task_propagate_pointer (G_TASK (result), error);
+	if (!data)
+		return FALSE;
+
+	*out_reason = data->reason;
+	*out_certificate_pem =  g_strdup (data->certificate_pem);
+	*out_certificate_errors = data->certificate_errors;
+	*out_op_error = data->op_error ? g_error_copy (data->op_error) : NULL;
+
+	invoke_credentials_required_data_free (data);
+
+	return TRUE;
 }

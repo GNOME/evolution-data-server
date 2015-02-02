@@ -31,8 +31,6 @@
 
 #include <libedataserver/libedataserver.h>
 
-#include <libebackend/e-module.h>
-#include <libebackend/e-extensible.h>
 #include <libebackend/e-backend-enumtypes.h>
 
 #define E_DBUS_SERVER_GET_PRIVATE(obj) \

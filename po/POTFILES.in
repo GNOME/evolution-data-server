@@ -173,8 +173,6 @@ camel/providers/smtp/camel-smtp-transport.c
 data/org.gnome.evolution-data-server.addressbook.gschema.xml.in
 data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 data/org.gnome.evolution.shell.network-config.gschema.xml.in
-libebackend/e-authentication-mediator.c
-libebackend/e-authentication-session.c
 libebackend/e-backend.c
 libebackend/e-collection-backend.c
 libebackend/e-data-factory.c
@@ -184,13 +182,17 @@ libebackend/e-subprocess-factory.c
 libebackend/e-user-prompter-server.c
 libedataserver/e-categories.c
 libedataserver/e-client.c
-libedataserver/e-source-authenticator.c
 libedataserver/e-source.c
+libedataserver/e-source-credentials-provider-impl.c
+libedataserver/e-source-credentials-provider-impl-password.c
 libedataserver/e-source-mail-signature.c
 libedataserver/e-source-proxy.c
 libedataserver/e-source-registry.c
 libedataserver/e-source-webdav.c
 libedataserver/e-time-utils.c
+libedataserverui/e-credentials-prompter.c
+libedataserverui/e-credentials-prompter-impl-password.c
+libedataserverui/e-trust-prompt.c
 modules/gnome-online-accounts/e-goa-password-based.c
 modules/gnome-online-accounts/goaewsclient.c
 modules/gnome-online-accounts/module-gnome-online-accounts.c

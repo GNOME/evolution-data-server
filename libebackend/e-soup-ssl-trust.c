@@ -34,40 +34,9 @@
 typedef struct _ESoupSslTrustData {
 	SoupMessage *soup_message; /* weak */
 	ESource *source;
-	ESourceRegistry *registry;
-	GCancellable *cancellable;
 
 	GClosure *accept_certificate_closure;
 } ESoupSslTrustData;
-
-static ETrustPromptResponse
-trust_prompt_sync (const ENamedParameters *parameters,
-                   GCancellable *cancellable,
-                   GError **error)
-{
-	EUserPrompter *prompter;
-	gint response;
-
-	g_return_val_if_fail (parameters != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
-
-	prompter = e_user_prompter_new ();
-	g_return_val_if_fail (prompter != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
-
-	response = e_user_prompter_extension_prompt_sync (prompter, "ETrustPrompt::trust-prompt", parameters, NULL, cancellable, error);
-
-	g_object_unref (prompter);
-
-	if (response == 0)
-		return E_TRUST_PROMPT_RESPONSE_REJECT;
-	if (response == 1)
-		return E_TRUST_PROMPT_RESPONSE_ACCEPT;
-	if (response == 2)
-		return E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY;
-	if (response == -1)
-		return E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
-
-	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
-}
 
 static gboolean
 e_soup_ssl_trust_accept_certificate_cb (GTlsConnection *conn,
@@ -77,22 +46,38 @@ e_soup_ssl_trust_accept_certificate_cb (GTlsConnection *conn,
 {
 	ESoupSslTrustData *handler = user_data;
 	ETrustPromptResponse response;
-	ENamedParameters *parameters;
+	SoupURI *soup_uri;
+	const gchar *host;
+	gchar *auth_host = NULL;
 
-	parameters = e_named_parameters_new ();
+	soup_uri = soup_message_get_uri (handler->soup_message);
+	if (!soup_uri || !soup_uri_get_host (soup_uri))
+		return FALSE;
 
-	response = e_source_webdav_prepare_ssl_trust_prompt (
-		e_source_get_extension (handler->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND),
-		handler->soup_message, peer_cert, errors, handler->registry, parameters);
-	if (response == E_TRUST_PROMPT_RESPONSE_UNKNOWN) {
-		response = trust_prompt_sync (parameters, handler->cancellable, NULL);
-		if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN)
-			e_source_webdav_store_ssl_trust_prompt (
-				e_source_get_extension (handler->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND),
-				handler->soup_message, peer_cert, response);
+	host = soup_uri_get_host (soup_uri);
+
+	if (e_source_has_extension (handler->source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *extension_authentication;
+
+		extension_authentication = e_source_get_extension (handler->source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		auth_host = e_source_authentication_dup_host (extension_authentication);
+
+		if (auth_host && *auth_host) {
+			/* Use the 'host' from the Authentication extension, because
+			   it's the one used when storing the trust prompt result.
+			   The SoupMessage can be redirected, thus it would not ever match. */
+			host = auth_host;
+		} else {
+			g_free (auth_host);
+			auth_host = NULL;
+		}
 	}
 
-	e_named_parameters_free (parameters);
+	response = e_source_webdav_verify_ssl_trust (
+		e_source_get_extension (handler->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND),
+		host, peer_cert, errors);
+
+	g_free (auth_host);
 
 	return (response == E_TRUST_PROMPT_RESPONSE_ACCEPT ||
 	        response == E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY);
@@ -126,8 +111,6 @@ e_soup_ssl_trust_message_finalized_cb (gpointer data,
 	handler = data;
 
 	g_clear_object (&handler->source);
-	g_clear_object (&handler->registry);
-	g_clear_object (&handler->cancellable);
 
 	/* Synchronously disconnects the accept certificate handler from all
 	 * GTlsConnections. */
@@ -141,31 +124,26 @@ e_soup_ssl_trust_message_finalized_cb (gpointer data,
  * e_soup_ssl_trust_connect:
  * @soup_message: a #SoupMessage about to be sent to the source
  * @source: an #ESource that uses WebDAV
- * @registry: (allow-none): an #ESourceRegistry, to use for parent lookups
- * @cancellable: (allow-none): #GCancellable to cancel the trust prompt
  *
- * Sets up automatic SSL certificate trust handling for @message using the trust
- * data stored in @source's WebDAV extension. If @message is about to be sent on
+ * Sets up automatic SSL certificate trust handling for @soup_message using the trust
+ * data stored in @source's WebDAV extension. If @soup_message is about to be sent on
  * an SSL connection with an invalid certificate, the code checks if the WebDAV
- * extension already has a trust response for that certificate with
- * e_source_webdav_prepare_ssl_trust_prompt and if not, prompts the user with
- * the "ETrustPrompt::trust-prompt" extension dialog and
- * saves the result with e_source_webdav_store_ssl_trust_prompt.
+ * extension already has a trust response for that certificate and verifies it
+ * with e_source_webdav_verify_ssl_trust(). If the verification fails, then
+ * the @soup_message send also fails.
  *
- * This works by connecting to the "network-event" signal on @message and
+ * This works by connecting to the "network-event" signal on @soup_message and
  * connecting to the "accept-certificate" signal on each #GTlsConnection for
- * which @message reports a #G_SOCKET_CLIENT_TLS_HANDSHAKING event. These
- * handlers are torn down automatically when @message is disposed. This process
- * is not thread-safe; it is sufficient for safety if all use of @message's
- * session and the disposal of @message occur in the same thread.
+ * which @soup_message reports a #G_SOCKET_CLIENT_TLS_HANDSHAKING event. These
+ * handlers are torn down automatically when @soup_message is disposed. This process
+ * is not thread-safe; it is sufficient for safety if all use of @soup_message's
+ * session and the disposal of @soup_message occur in the same thread.
  *
  * Since: 3.14
  **/
 void
 e_soup_ssl_trust_connect (SoupMessage *soup_message,
-                          ESource *source,
-                          ESourceRegistry *registry,
-                          GCancellable *cancellable)
+                          ESource *source)
 {
 	ESoupSslTrustData *handler;
 
@@ -176,8 +154,6 @@ e_soup_ssl_trust_connect (SoupMessage *soup_message,
 	handler->soup_message = soup_message;
 	g_object_weak_ref (G_OBJECT (soup_message), e_soup_ssl_trust_message_finalized_cb, handler);
 	handler->source = g_object_ref (source);
-	handler->registry = registry ? g_object_ref (registry) : NULL;
-	handler->cancellable = cancellable ? g_object_ref (cancellable) : NULL;
 	handler->accept_certificate_closure = g_cclosure_new (G_CALLBACK (e_soup_ssl_trust_accept_certificate_cb), handler, NULL);
 
 	g_closure_ref (handler->accept_certificate_closure);

@@ -27,6 +27,7 @@
 #include "e-server-side-source.h"
 
 #include <config.h>
+#include <stdio.h>
 #include <glib/gi18n-lib.h>
 
 /* Private D-Bus classes. */
@@ -52,9 +53,18 @@ struct _EServerSideSourcePrivate {
 	/* For comparison. */
 	gchar *file_contents;
 
-	gboolean allow_auth_prompt;
-	GType auth_session_type;
 	gchar *write_directory;
+
+	GMutex last_values_lock;
+	gchar *last_reason;
+	gchar *last_certificate_pem;
+	gchar *last_certificate_errors;
+	gchar *last_dbus_error_name;
+	gchar *last_dbus_error_message;
+	ENamedParameters *last_credentials;
+
+	GMutex pending_credentials_lookup_lock;
+	GCancellable *pending_credentials_lookup;
 };
 
 struct _AsyncContext {
@@ -66,8 +76,6 @@ struct _AsyncContext {
 
 enum {
 	PROP_0,
-	PROP_ALLOW_AUTH_PROMPT,
-	PROP_AUTH_SESSION_TYPE,
 	PROP_EXPORTED,
 	PROP_FILE,
 	PROP_OAUTH2_SUPPORT,
@@ -192,14 +200,304 @@ server_side_source_traverse_cb (GNode *node,
 	return FALSE;
 }
 
-static gboolean
-server_side_source_allow_auth_prompt_cb (EDBusSource *dbus_interface,
-                                         GDBusMethodInvocation *invocation,
-                                         EServerSideSource *source)
+static ESourceCredentialsReason
+server_side_source_credentials_reason_from_text (const gchar *arg_reason)
 {
-	e_server_side_source_set_allow_auth_prompt (source, TRUE);
+	ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
 
-	e_dbus_source_complete_allow_auth_prompt (dbus_interface, invocation);
+	if (arg_reason && *arg_reason) {
+		GEnumClass *enum_class;
+		GEnumValue *enum_value;
+
+		enum_class = g_type_class_ref (E_TYPE_SOURCE_CREDENTIALS_REASON);
+		enum_value = g_enum_get_value_by_nick (enum_class, arg_reason);
+
+		if (enum_value) {
+			reason = enum_value->value;
+		} else {
+			g_warning ("%s: Unknown reason enum: '%s'", G_STRFUNC, arg_reason);
+		}
+
+		g_type_class_unref (enum_class);
+	}
+
+	return reason;
+}
+
+typedef struct _ReinvokeCredentialsRequiredData {
+	EServerSideSource *source;
+	gchar *arg_reason;
+	gchar *arg_certificate_pem;
+	gchar *arg_certificate_errors;
+	gchar *arg_dbus_error_name;
+	gchar *arg_dbus_error_message;
+} ReinvokeCredentialsRequiredData;
+
+static void
+reinvoke_credentials_required_data_free (gpointer ptr)
+{
+	ReinvokeCredentialsRequiredData *data = ptr;
+
+	if (data) {
+		g_clear_object (&data->source);
+		g_free (data->arg_reason);
+		g_free (data->arg_certificate_pem);
+		g_free (data->arg_certificate_errors);
+		g_free (data->arg_dbus_error_name);
+		g_free (data->arg_dbus_error_message);
+		g_free (data);
+	}
+}
+
+static void server_side_source_credentials_lookup_cb (GObject *source_object, GAsyncResult *result, gpointer user_data);
+
+static gboolean
+server_side_source_invoke_credentials_required_cb (EDBusSource *dbus_interface,
+						   GDBusMethodInvocation *invocation,
+						   const gchar *arg_reason,
+						   const gchar *arg_certificate_pem,
+						   const gchar *arg_certificate_errors,
+						   const gchar *arg_dbus_error_name,
+						   const gchar *arg_dbus_error_message,
+						   EServerSideSource *source)
+{
+	gboolean skip_emit = FALSE;
+
+	if (invocation)
+		e_dbus_source_complete_invoke_credentials_required (dbus_interface, invocation);
+
+	g_mutex_lock (&source->priv->pending_credentials_lookup_lock);
+	if (source->priv->pending_credentials_lookup) {
+		g_cancellable_cancel (source->priv->pending_credentials_lookup);
+		g_clear_object (&source->priv->pending_credentials_lookup);
+	}
+	g_mutex_unlock (&source->priv->pending_credentials_lookup_lock);
+
+	g_mutex_lock (&source->priv->last_values_lock);
+
+	g_free (source->priv->last_reason);
+	g_free (source->priv->last_certificate_pem);
+	g_free (source->priv->last_certificate_errors);
+	g_free (source->priv->last_dbus_error_name);
+	g_free (source->priv->last_dbus_error_message);
+	source->priv->last_reason = g_strdup (arg_reason);
+	source->priv->last_certificate_pem = g_strdup (arg_certificate_pem);
+	source->priv->last_certificate_errors = g_strdup (arg_certificate_errors);
+	source->priv->last_dbus_error_name = g_strdup (arg_dbus_error_name);
+	source->priv->last_dbus_error_message = g_strdup (arg_dbus_error_message);
+
+	g_mutex_unlock (&source->priv->last_values_lock);
+
+	/* Do not bother clients, when the password is stored. */
+	if (server_side_source_credentials_reason_from_text (arg_reason) == E_SOURCE_CREDENTIALS_REASON_REQUIRED) {
+		ESourceRegistryServer *server;
+		ESourceCredentialsProvider *credentials_provider;
+
+		server = e_server_side_source_get_server (source);
+		credentials_provider = server ? e_source_registry_server_ref_credentials_provider (server) : NULL;
+
+		if (credentials_provider) {
+			ReinvokeCredentialsRequiredData *data;
+			GCancellable *cancellable;
+
+			g_mutex_lock (&source->priv->pending_credentials_lookup_lock);
+			if (source->priv->pending_credentials_lookup) {
+				g_cancellable_cancel (source->priv->pending_credentials_lookup);
+				g_clear_object (&source->priv->pending_credentials_lookup);
+			}
+			cancellable = g_cancellable_new ();
+			source->priv->pending_credentials_lookup = g_object_ref (cancellable);
+			g_mutex_unlock (&source->priv->pending_credentials_lookup_lock);
+
+			data = g_new0 (ReinvokeCredentialsRequiredData, 1);
+			data->source = g_object_ref (source);
+			data->arg_reason = g_strdup (arg_reason);
+			data->arg_certificate_pem = g_strdup (arg_certificate_pem);
+			data->arg_certificate_errors = g_strdup (arg_certificate_errors);
+			data->arg_dbus_error_name = g_strdup (arg_dbus_error_name);
+			data->arg_dbus_error_message = g_strdup (arg_dbus_error_message);
+
+			skip_emit = TRUE;
+
+			e_source_credentials_provider_lookup (credentials_provider, E_SOURCE (source),
+				cancellable, server_side_source_credentials_lookup_cb, data);
+
+			g_object_unref (cancellable);
+		}
+
+		g_clear_object (&credentials_provider);
+	}
+
+	if (!skip_emit) {
+		e_dbus_source_emit_credentials_required (dbus_interface, arg_reason, arg_certificate_pem, arg_certificate_errors, arg_dbus_error_name, arg_dbus_error_message);
+	}
+
+	return TRUE;
+}
+
+static gboolean
+server_side_source_invoke_authenticate_cb (EDBusSource *dbus_interface,
+					   GDBusMethodInvocation *invocation,
+					   const gchar * const *arg_credentials,
+					   EServerSideSource *source)
+{
+	gchar **last_credentials_strv = NULL;
+
+	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), TRUE);
+
+	g_mutex_lock (&source->priv->pending_credentials_lookup_lock);
+	if (source->priv->pending_credentials_lookup) {
+		g_cancellable_cancel (source->priv->pending_credentials_lookup);
+		g_clear_object (&source->priv->pending_credentials_lookup);
+	}
+	g_mutex_unlock (&source->priv->pending_credentials_lookup_lock);
+
+	g_mutex_lock (&source->priv->last_values_lock);
+
+	/* Empty credentials are used to use the last credentials instead */
+	if (source->priv->last_credentials && arg_credentials && !arg_credentials[0]) {
+		last_credentials_strv = e_named_parameters_to_strv (source->priv->last_credentials);
+		arg_credentials = (const gchar * const *) last_credentials_strv;
+	} else if (arg_credentials && arg_credentials[0]) {
+		e_named_parameters_free (source->priv->last_credentials);
+		source->priv->last_credentials = e_named_parameters_new_strv (arg_credentials);
+	}
+
+	g_free (source->priv->last_reason);
+	g_free (source->priv->last_certificate_pem);
+	g_free (source->priv->last_certificate_errors);
+	g_free (source->priv->last_dbus_error_name);
+	g_free (source->priv->last_dbus_error_message);
+	source->priv->last_reason = NULL;
+	source->priv->last_certificate_pem = NULL;
+	source->priv->last_certificate_errors = NULL;
+	source->priv->last_dbus_error_name = NULL;
+	source->priv->last_dbus_error_message = NULL;
+
+	g_mutex_unlock (&source->priv->last_values_lock);
+
+	if (invocation)
+		e_dbus_source_complete_invoke_authenticate (dbus_interface, invocation);
+
+	e_dbus_source_emit_authenticate (dbus_interface, arg_credentials);
+
+	g_strfreev (last_credentials_strv);
+
+	return TRUE;
+}
+
+static void
+server_side_source_credentials_lookup_cb (GObject *source_object,
+					  GAsyncResult *result,
+					  gpointer user_data)
+{
+	GDBusObject *dbus_object;
+	EDBusSource *dbus_source;
+	ReinvokeCredentialsRequiredData *data = user_data;
+	ENamedParameters *credentials = NULL;
+	gboolean success;
+	GError *error = NULL;
+
+	g_return_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER (source_object));
+	g_return_if_fail (data != NULL);
+
+	success = e_source_credentials_provider_lookup_finish (E_SOURCE_CREDENTIALS_PROVIDER (source_object), result, &credentials, &error);
+
+	dbus_object = e_source_ref_dbus_object (E_SOURCE (data->source));
+	if (!dbus_object) {
+		e_named_parameters_free (credentials);
+		g_warn_if_fail (dbus_object != NULL);
+		reinvoke_credentials_required_data_free (data);
+		return;
+	}
+
+	dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+	if (!dbus_source) {
+		e_named_parameters_free (credentials);
+		g_warn_if_fail (dbus_source != NULL);
+		g_object_unref (dbus_object);
+		reinvoke_credentials_required_data_free (data);
+		return;
+	}
+
+	if (success && credentials) {
+		gchar **arg_credentials;
+
+		arg_credentials = e_named_parameters_to_strv (credentials);
+
+		server_side_source_invoke_authenticate_cb (dbus_source, NULL,
+			(const gchar * const *) arg_credentials, data->source);
+
+		g_strfreev (arg_credentials);
+	} else if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		if (error) {
+			printf ("%s: Failed to lookup password: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
+			fflush (stdout);
+		}
+
+		if (server_side_source_credentials_reason_from_text (data->arg_reason) == E_SOURCE_CREDENTIALS_REASON_REQUIRED &&
+		    error && !e_source_credentials_provider_can_prompt (E_SOURCE_CREDENTIALS_PROVIDER (source_object), E_SOURCE (data->source))) {
+			GEnumClass *enum_class;
+			GEnumValue *enum_value;
+			gchar *dbus_error_name;
+
+			enum_class = g_type_class_ref (E_TYPE_SOURCE_CREDENTIALS_REASON);
+			enum_value = g_enum_get_value (enum_class, E_SOURCE_CREDENTIALS_REASON_ERROR);
+
+			g_return_if_fail (enum_value != NULL);
+
+			dbus_error_name = g_dbus_error_encode_gerror (error);
+
+			/* Use error reason when the source cannot be prompted for credentials */
+			e_dbus_source_emit_credentials_required (dbus_source, enum_value->value_nick,
+				data->arg_certificate_pem, data->arg_certificate_errors, dbus_error_name, error->message);
+
+			g_type_class_unref (enum_class);
+			g_free (dbus_error_name);
+		} else {
+			/* Reinvoke for clients only, if not cancelled */
+			const gchar *arg_dbus_error_name, *arg_dbus_error_message;
+			gchar *dbus_error_name = NULL;
+
+			arg_dbus_error_name = data->arg_dbus_error_name;
+			arg_dbus_error_message = data->arg_dbus_error_message;
+
+			if (!arg_dbus_error_name || !*arg_dbus_error_name) {
+				dbus_error_name = g_dbus_error_encode_gerror (error);
+				arg_dbus_error_name = dbus_error_name;
+				arg_dbus_error_message = error->message;
+			}
+
+			e_dbus_source_emit_credentials_required (dbus_source, data->arg_reason,
+				data->arg_certificate_pem, data->arg_certificate_errors,
+				arg_dbus_error_name, arg_dbus_error_message);
+
+			g_free (dbus_error_name);
+		}
+	}
+
+	e_named_parameters_free (credentials);
+	reinvoke_credentials_required_data_free (data);
+	g_object_unref (dbus_source);
+	g_object_unref (dbus_object);
+	g_clear_error (&error);
+}
+
+static gboolean
+server_side_source_get_last_credentials_required_arguments_cb (EDBusSource *dbus_interface,
+							       GDBusMethodInvocation *invocation,
+							       EServerSideSource *source)
+{
+	g_mutex_lock (&source->priv->last_values_lock);
+
+	e_dbus_source_complete_get_last_credentials_required_arguments (dbus_interface, invocation,
+		source->priv->last_reason ? source->priv->last_reason : "",
+		source->priv->last_certificate_pem ? source->priv->last_certificate_pem : "",
+		source->priv->last_certificate_errors ? source->priv->last_certificate_errors : "",
+		source->priv->last_dbus_error_name ? source->priv->last_dbus_error_name : "",
+		source->priv->last_dbus_error_message ? source->priv->last_dbus_error_message : "");
+
+	g_mutex_unlock (&source->priv->last_values_lock);
 
 	return TRUE;
 }
@@ -520,18 +818,6 @@ server_side_source_set_property (GObject *object,
                                  GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_ALLOW_AUTH_PROMPT:
-			e_server_side_source_set_allow_auth_prompt (
-				E_SERVER_SIDE_SOURCE (object),
-				g_value_get_boolean (value));
-			return;
-
-		case PROP_AUTH_SESSION_TYPE:
-			e_server_side_source_set_auth_session_type (
-				E_SERVER_SIDE_SOURCE (object),
-				g_value_get_gtype (value));
-			return;
-
 		case PROP_FILE:
 			server_side_source_set_file (
 				E_SERVER_SIDE_SOURCE (object),
@@ -591,20 +877,6 @@ server_side_source_get_property (GObject *object,
                                  GParamSpec *pspec)
 {
 	switch (property_id) {
-		case PROP_ALLOW_AUTH_PROMPT:
-			g_value_set_boolean (
-				value,
-				e_server_side_source_get_allow_auth_prompt (
-				E_SERVER_SIDE_SOURCE (object)));
-			return;
-
-		case PROP_AUTH_SESSION_TYPE:
-			g_value_set_gtype (
-				value,
-				e_server_side_source_get_auth_session_type (
-				E_SERVER_SIDE_SOURCE (object)));
-			return;
-
 		case PROP_EXPORTED:
 			g_value_set_boolean (
 				value,
@@ -679,6 +951,31 @@ server_side_source_dispose (GObject *object)
 
 	priv = E_SERVER_SIDE_SOURCE_GET_PRIVATE (object);
 
+	g_mutex_lock (&priv->last_values_lock);
+
+	g_free (priv->last_reason);
+	g_free (priv->last_certificate_pem);
+	g_free (priv->last_certificate_errors);
+	g_free (priv->last_dbus_error_name);
+	g_free (priv->last_dbus_error_message);
+	priv->last_reason = NULL;
+	priv->last_certificate_pem = NULL;
+	priv->last_certificate_errors = NULL;
+	priv->last_dbus_error_name = NULL;
+	priv->last_dbus_error_message = NULL;
+
+	e_named_parameters_free (priv->last_credentials);
+	priv->last_credentials = NULL;
+
+	g_mutex_unlock (&priv->last_values_lock);
+
+	g_mutex_lock (&priv->pending_credentials_lookup_lock);
+	if (priv->pending_credentials_lookup) {
+		g_cancellable_cancel (priv->pending_credentials_lookup);
+		g_clear_object (&priv->pending_credentials_lookup);
+	}
+	g_mutex_unlock (&priv->pending_credentials_lookup_lock);
+
 	if (priv->server != NULL) {
 		g_object_remove_weak_pointer (
 			G_OBJECT (priv->server), &priv->server);
@@ -709,6 +1006,8 @@ server_side_source_finalize (GObject *object)
 	g_free (priv->write_directory);
 
 	g_weak_ref_clear (&priv->oauth2_support);
+	g_mutex_clear (&priv->last_values_lock);
+	g_mutex_clear (&priv->pending_credentials_lookup_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_server_side_source_parent_class)->finalize (object);
@@ -1125,6 +1424,41 @@ server_side_source_get_oauth2_access_token_sync (ESource *source,
 }
 
 static gboolean
+server_side_source_invoke_credentials_required_impl (ESource *source,
+						     gpointer dbus_source, /* EDBusSource * */
+						     const gchar *arg_reason,
+						     const gchar *arg_certificate_pem,
+						     const gchar *arg_certificate_errors,
+						     const gchar *arg_dbus_error_name,
+						     const gchar *arg_dbus_error_message,
+						     GCancellable *cancellable,
+						     GError **error)
+{
+	g_return_val_if_fail (E_DBUS_IS_SOURCE (dbus_source), FALSE);
+
+	return server_side_source_invoke_credentials_required_cb (dbus_source, NULL,
+		arg_reason ? arg_reason : "",
+		arg_certificate_pem ? arg_certificate_pem : "",
+		arg_certificate_errors ? arg_certificate_errors : "",
+		arg_dbus_error_name ? arg_dbus_error_name : "",
+		arg_dbus_error_message ? arg_dbus_error_message : "",
+		E_SERVER_SIDE_SOURCE (source));
+}
+
+static gboolean
+server_side_source_invoke_authenticate_impl (ESource *source,
+					     gpointer dbus_source, /* EDBusSource * */
+					     const gchar * const *arg_credentials,
+					     GCancellable *cancellable,
+					     GError **error)
+{
+	g_return_val_if_fail (E_DBUS_IS_SOURCE (dbus_source), FALSE);
+
+	return server_side_source_invoke_authenticate_cb (dbus_source, NULL,
+		arg_credentials, E_SERVER_SIDE_SOURCE (source));
+}
+
+static gboolean
 server_side_source_initable_init (GInitable *initable,
                                   GCancellable *cancellable,
                                   GError **error)
@@ -1150,8 +1484,14 @@ server_side_source_initable_init (GInitable *initable,
 	g_object_unref (dbus_object);
 
 	g_signal_connect (
-		dbus_source, "handle-allow-auth-prompt",
-		G_CALLBACK (server_side_source_allow_auth_prompt_cb), source);
+		dbus_source, "handle-invoke-credentials-required",
+		G_CALLBACK (server_side_source_invoke_credentials_required_cb), source);
+	g_signal_connect (
+		dbus_source, "handle-invoke-authenticate",
+		G_CALLBACK (server_side_source_invoke_authenticate_cb), source);
+	g_signal_connect (
+		dbus_source, "handle-get-last-credentials-required-arguments",
+		G_CALLBACK (server_side_source_get_last_credentials_required_arguments_cb), source);
 
 	g_object_unref (dbus_source);
 
@@ -1184,37 +1524,11 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	source_class->write_sync = server_side_source_write_sync;
 	source_class->write = server_side_source_write;
 	source_class->write_finish = server_side_source_write_finish;
-	source_class->remote_create_sync =
-		server_side_source_remote_create_sync;
-	source_class->remote_delete_sync =
-		server_side_source_remote_delete_sync;
-	source_class->get_oauth2_access_token_sync =
-		server_side_source_get_oauth2_access_token_sync;
-
-	g_object_class_install_property (
-		object_class,
-		PROP_ALLOW_AUTH_PROMPT,
-		g_param_spec_boolean (
-			"allow-auth-prompt",
-			"Allow Auth Prompt",
-			"Whether authentication sessions may "
-			"interrupt the user for a password",
-			TRUE,
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			G_PARAM_STATIC_STRINGS));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_AUTH_SESSION_TYPE,
-		g_param_spec_gtype (
-			"auth-session-type",
-			"Auth Session Type",
-			"The type of authentication session "
-			"to instantiate for this source",
-			E_TYPE_AUTHENTICATION_SESSION,
-			G_PARAM_READWRITE |
-			G_PARAM_STATIC_STRINGS));
+	source_class->remote_create_sync = server_side_source_remote_create_sync;
+	source_class->remote_delete_sync = server_side_source_remote_delete_sync;
+	source_class->get_oauth2_access_token_sync = server_side_source_get_oauth2_access_token_sync;
+	source_class->invoke_credentials_required_impl = server_side_source_invoke_credentials_required_impl;
+	source_class->invoke_authenticate_impl = server_side_source_invoke_authenticate_impl;
 
 	g_object_class_install_property (
 		object_class,
@@ -1350,9 +1664,9 @@ e_server_side_source_init (EServerSideSource *source)
 	user_dir = e_server_side_source_get_user_dir ();
 	source->priv->write_directory = g_strdup (user_dir);
 
-	source->priv->auth_session_type = E_TYPE_AUTHENTICATION_SESSION;
-
 	g_weak_ref_init (&source->priv->oauth2_support, NULL);
+	g_mutex_init (&source->priv->last_values_lock);
+	g_mutex_init (&source->priv->pending_credentials_lookup_lock);
 }
 
 /**
@@ -1707,122 +2021,6 @@ e_server_side_source_get_server (EServerSideSource *source)
 	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), NULL);
 
 	return source->priv->server;
-}
-
-/**
- * e_server_side_source_get_allow_auth_prompt:
- * @source: an #EServerSideSource
- *
- * Returns whether an authentication prompt is allowed to be shown
- * for @source.  #EAuthenticationSession will honor this setting by
- * dismissing the session if it can't find a valid stored password.
- *
- * See e_server_side_source_set_allow_auth_prompt() for further
- * discussion.
- *
- * Returns: whether auth prompts are allowed for @source
- *
- * Since: 3.6
- **/
-gboolean
-e_server_side_source_get_allow_auth_prompt (EServerSideSource *source)
-{
-	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), FALSE);
-
-	return source->priv->allow_auth_prompt;
-}
-
-/**
- * e_server_side_source_set_allow_auth_prompt:
- * @source: an #EServerSideSource
- * @allow_auth_prompt: whether auth prompts are allowed for @source
- *
- * Sets whether an authentication prompt is allowed to be shown for @source.
- * #EAuthenticationSession will honor this setting by dismissing the session
- * if it can't find a valid stored password.
- *
- * If the user declines to provide a password for @source when prompted
- * by an #EAuthenticationSession, the #ESourceRegistryServer will set this
- * property to %FALSE to suppress any further prompting, which would likely
- * annoy the user.  However when an #ESourceRegistry instance is created by
- * a client application, the first thing it does is reset this property to
- * %TRUE for all registered data sources.  So suppressing authentication
- * prompts is only ever temporary.
- *
- * Since: 3.6
- **/
-void
-e_server_side_source_set_allow_auth_prompt (EServerSideSource *source,
-                                            gboolean allow_auth_prompt)
-{
-	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
-
-	if (source->priv->allow_auth_prompt == allow_auth_prompt)
-		return;
-
-	source->priv->allow_auth_prompt = allow_auth_prompt;
-
-	g_object_notify (G_OBJECT (source), "allow-auth-prompt");
-}
-
-/**
- * e_server_side_source_get_auth_session_type:
- * @source: an #EServerSideSource
- *
- * Returns the type of authentication session to use for @source,
- * which will get passed to e_source_registry_server_authenticate().
- *
- * This defaults to the #GType for #EAuthenticationSession.
- *
- * Returns: the type of authentication session to use for @source
- *
- * Since: 3.8
- **/
-GType
-e_server_side_source_get_auth_session_type (EServerSideSource *source)
-{
-	g_return_val_if_fail (
-		E_IS_SERVER_SIDE_SOURCE (source),
-		E_TYPE_AUTHENTICATION_SESSION);
-
-	return source->priv->auth_session_type;
-}
-
-/**
- * e_server_side_source_set_auth_session_type:
- * @source: an #EServerSideSource
- * @auth_session_type: the type of authentication session to use for @source
- *
- * Sets the type of authentication session to use for @source, which will
- * get passed to e_source_registry_server_authenticate().
- *
- * @auth_session_type must be derived from #EAuthenticationSession, or else
- * the function will reject the #GType with a runtime warning.
- *
- * This defaults to the #GType for #EAuthenticationSession.
- *
- * Since: 3.8
- **/
-void
-e_server_side_source_set_auth_session_type (EServerSideSource *source,
-                                            GType auth_session_type)
-{
-	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
-
-	if (!g_type_is_a (auth_session_type, E_TYPE_AUTHENTICATION_SESSION)) {
-		g_warning (
-			"Invalid auth session type '%s' for source '%s'",
-			g_type_name (auth_session_type),
-			e_source_get_display_name (E_SOURCE (source)));
-		return;
-	}
-
-	if (auth_session_type == source->priv->auth_session_type)
-		return;
-
-	source->priv->auth_session_type = auth_session_type;
-
-	g_object_notify (G_OBJECT (source), "auth-session-type");
 }
 
 /**
@@ -2205,4 +2403,3 @@ e_server_side_source_set_oauth2_support (EServerSideSource *source,
 
 	g_object_notify (G_OBJECT (source), "oauth2-support");
 }
-

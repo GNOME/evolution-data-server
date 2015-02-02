@@ -38,8 +38,13 @@ typedef void	(*OwnCloudSourceFoundCb)	(ECollectionBackend *collection,
 						 gpointer user_data);
 
 gboolean	owncloud_utils_search_server	(ECollectionBackend *collection,
+						 const ENamedParameters *credentials,
+						 gchar **out_certificate_pem,
+						 GTlsCertificateFlags *out_certificate_errors,
 						 OwnCloudSourceFoundCb found_cb,
-						 gpointer user_data);
+						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
 
 G_END_DECLS
 

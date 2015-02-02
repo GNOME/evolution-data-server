@@ -96,6 +96,7 @@ struct _SignalClosure {
 struct _ConnectClosure {
 	ESource *source;
 	GCancellable *cancellable;
+	guint32 wait_for_connected_seconds;
 };
 
 struct _RunInThreadClosure {
@@ -1001,6 +1002,34 @@ book_client_refresh_sync (EClient *client,
 	return TRUE;
 }
 
+static gboolean
+book_client_retrieve_properties_sync (EClient *client,
+				      GCancellable *cancellable,
+				      GError **error)
+{
+	EBookClient *book_client;
+	gchar **properties = NULL;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_CLIENT (client), FALSE);
+
+	book_client = E_BOOK_CLIENT (client);
+
+	e_dbus_address_book_call_retrieve_properties_sync (
+		book_client->priv->dbus_proxy, &properties, cancellable, &local_error);
+
+	book_client_process_properties (book_client, properties);
+	g_strfreev (properties);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 static void
 book_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
                                  GObject *source_object,
@@ -1246,6 +1275,7 @@ e_book_client_class_init (EBookClientClass *class)
 	client_class->set_backend_property_sync = book_client_set_backend_property_sync;
 	client_class->open_sync = book_client_open_sync;
 	client_class->refresh_sync = book_client_refresh_sync;
+	client_class->retrieve_properties_sync = book_client_retrieve_properties_sync;
 
 	/**
 	 * EBookClient:locale:
@@ -1293,6 +1323,7 @@ e_book_client_init (EBookClient *client)
 /**
  * e_book_client_connect_sync:
  * @source: an #ESource
+ * @wait_for_connected_seconds: timeout, in seconds, to wait for the backend to be fully connected
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1301,6 +1332,15 @@ e_book_client_init (EBookClient *client)
  *
  * Unlike with e_book_client_new(), there is no need to call
  * e_client_open_sync() after obtaining the #EBookClient.
+ *
+ * The @wait_for_connected_seconds argument had been added since 3.14,
+ * to let the caller decide how long to wait for the backend to fully
+ * connect to its (possibly remote) data store. This is required due
+ * to a change in the authentication process, which is fully asynchronous
+ * and done on the client side, while not every client is supposed to
+ * response to authentication requests. In case the backend will not connect
+ * within the set interval, then it is opened in an offline mode. A special
+ * value -1 can be used to not wait for the connected state at all.
  *
  * For error handling convenience, any error message returned by this
  * function will have a descriptive prefix that includes the display
@@ -1312,6 +1352,7 @@ e_book_client_init (EBookClient *client)
  **/
 EClient *
 e_book_client_connect_sync (ESource *source,
+			    guint32 wait_for_connected_seconds,
                             GCancellable *cancellable,
                             GError **error)
 {
@@ -1336,6 +1377,12 @@ e_book_client_connect_sync (ESource *source,
 		g_strfreev (properties);
 	}
 
+	if (!local_error && wait_for_connected_seconds != (guint32) -1) {
+		/* These errors are ignored, the book is left opened in an offline mode. */
+		e_client_wait_for_connected_sync (E_CLIENT (client),
+			wait_for_connected_seconds, cancellable, NULL);
+	}
+
 	if (local_error != NULL) {
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
@@ -1347,6 +1394,23 @@ e_book_client_connect_sync (ESource *source,
 	}
 
 	return E_CLIENT (client);
+}
+
+static void
+book_client_connect_wait_for_connected_cb (GObject *source_object,
+					   GAsyncResult *result,
+					   gpointer user_data)
+{
+	GSimpleAsyncResult *simple;
+
+	simple = G_SIMPLE_ASYNC_RESULT (user_data);
+
+	/* These errors are ignored, the book is left opened in an offline mode. */
+	e_client_wait_for_connected_finish (E_CLIENT (source_object), result, NULL);
+
+	g_simple_async_result_complete (simple);
+
+	g_object_unref (simple);
 }
 
 /* Helper for e_book_client_connect() */
@@ -1368,6 +1432,24 @@ book_client_connect_open_cb (GObject *source_object,
 	client_object = g_async_result_get_source_object (G_ASYNC_RESULT (simple));
 	if (client_object) {
 		book_client_process_properties (E_BOOK_CLIENT (client_object), properties);
+
+		if (!local_error) {
+			ConnectClosure *closure;
+
+			closure = g_simple_async_result_get_op_res_gpointer (simple);
+			if (closure->wait_for_connected_seconds != (guint32) -1) {
+				e_client_wait_for_connected (E_CLIENT (client_object),
+					closure->wait_for_connected_seconds,
+					closure->cancellable,
+					book_client_connect_wait_for_connected_cb, g_object_ref (simple));
+
+				g_clear_object (&client_object);
+				g_object_unref (simple);
+				g_strfreev (properties);
+				return;
+			}
+		}
+
 		g_clear_object (&client_object);
 	}
 
@@ -1427,12 +1509,22 @@ exit:
 /**
  * e_book_client_connect:
  * @source: an #ESource
+ * @wait_for_connected_seconds: timeout, in seconds, to wait for the backend to be fully connected
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
  *            is satisfied
  * @user_data: (closure): data to pass to the callback function
  *
  * Asynchronously creates a new #EBookClient for @source.
+ *
+ * The @wait_for_connected_seconds argument had been added since 3.14,
+ * to let the caller decide how long to wait for the backend to fully
+ * connect to its (possibly remote) data store. This is required due
+ * to a change in the authentication process, which is fully asynchronous
+ * and done on the client side, while not every client is supposed to
+ * response to authentication requests. In case the backend will not connect
+ * within the set interval, then it is opened in an offline mode. A special
+ * value -1 can be used to not wait for the connected state at all.
  *
  * Unlike with e_book_client_new(), there is no need to call e_client_open()
  * after obtaining the #EBookClient.
@@ -1444,6 +1536,7 @@ exit:
  **/
 void
 e_book_client_connect (ESource *source,
+		       guint32 wait_for_connected_seconds,
                        GCancellable *cancellable,
                        GAsyncReadyCallback callback,
                        gpointer user_data)
@@ -1462,6 +1555,7 @@ e_book_client_connect (ESource *source,
 
 	closure = g_slice_new0 (ConnectClosure);
 	closure->source = g_object_ref (source);
+	closure->wait_for_connected_seconds = wait_for_connected_seconds;
 
 	if (G_IS_CANCELLABLE (cancellable))
 		closure->cancellable = g_object_ref (cancellable);
@@ -1625,6 +1719,7 @@ connect_direct (EBookClient *client,
  * e_book_client_connect_direct_sync:
  * @registry: an #ESourceRegistry
  * @source: an #ESource
+ * @wait_for_connected_seconds: timeout, in seconds, to wait for the backend to be fully connected
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1638,12 +1733,13 @@ connect_direct (EBookClient *client,
 EClient *
 e_book_client_connect_direct_sync (ESourceRegistry *registry,
                                    ESource *source,
+				   guint32 wait_for_connected_seconds,
                                    GCancellable *cancellable,
                                    GError **error)
 {
 	EClient *client;
 
-	client = e_book_client_connect_sync (source, cancellable, error);
+	client = e_book_client_connect_sync (source, wait_for_connected_seconds, cancellable, error);
 
 	if (!client)
 		return NULL;
@@ -1702,6 +1798,7 @@ exit:
 /**
  * e_book_client_connect_direct:
  * @source: an #ESource
+ * @wait_for_connected_seconds: timeout, in seconds, to wait for the backend to be fully connected
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
  *            is satisfied
@@ -1717,6 +1814,7 @@ exit:
  **/
 void
 e_book_client_connect_direct (ESource *source,
+			      guint32 wait_for_connected_seconds,
                               GCancellable *cancellable,
                               GAsyncReadyCallback callback,
                               gpointer user_data)
@@ -1734,6 +1832,7 @@ e_book_client_connect_direct (ESource *source,
 	 * time and block other clients from receiving signals. */
 	closure = g_slice_new0 (ConnectClosure);
 	closure->source = g_object_ref (source);
+	closure->wait_for_connected_seconds = wait_for_connected_seconds;
 
 	if (G_IS_CANCELLABLE (cancellable))
 		closure->cancellable = g_object_ref (cancellable);

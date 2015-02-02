@@ -50,8 +50,6 @@
 #define G_IS_RESOLVER_ERROR(error, code) \
 	(g_error_matches ((error), G_RESOLVER_ERROR, (code)))
 
-typedef struct _AsyncContext AsyncContext;
-
 struct _EBackendPrivate {
 	GMutex property_lock;
 	ESource *source;
@@ -68,10 +66,9 @@ struct _EBackendPrivate {
 
 	GMutex network_monitor_cancellable_lock;
 	GCancellable *network_monitor_cancellable;
-};
 
-struct _AsyncContext {
-	ESourceAuthenticator *auth;
+	GMutex authenticate_cancellable_lock;
+	GCancellable *authenticate_cancellable;
 };
 
 enum {
@@ -84,15 +81,6 @@ enum {
 };
 
 G_DEFINE_ABSTRACT_TYPE (EBackend, e_backend, G_TYPE_OBJECT)
-
-static void
-async_context_free (AsyncContext *async_context)
-{
-	if (async_context->auth != NULL)
-		g_object_unref (async_context->auth);
-
-	g_slice_free (AsyncContext, async_context);
-}
 
 static void
 backend_network_monitor_can_reach_cb (GObject *source_object,
@@ -232,6 +220,173 @@ backend_network_changed_cb (GNetworkMonitor *network_monitor,
 	backend_update_online_state (backend);
 }
 
+static ESourceAuthenticationResult
+e_backend_authenticate_sync (EBackend *backend,
+			     const ENamedParameters *credentials,
+			     gchar **out_certificate_pem,
+			     GTlsCertificateFlags *out_certificate_errors,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	EBackendClass *class;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
+	g_return_val_if_fail (credentials != NULL, E_SOURCE_AUTHENTICATION_ERROR);
+
+	class = E_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class->authenticate_sync != NULL, E_SOURCE_AUTHENTICATION_ERROR);
+
+	return class->authenticate_sync (backend, credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
+}
+
+typedef struct _AuthenticateThreadData {
+	EBackend *backend;
+	GCancellable *cancellable;
+	ENamedParameters *credentials;
+} AuthenticateThreadData;
+
+static AuthenticateThreadData *
+authenticate_thread_data_new (EBackend *backend,
+			      GCancellable *cancellable,
+			      const ENamedParameters *credentials)
+{
+	AuthenticateThreadData *data;
+
+	data = g_new0 (AuthenticateThreadData, 1);
+	data->backend = g_object_ref (backend);
+	data->cancellable = g_object_ref (cancellable);
+	data->credentials = credentials ? e_named_parameters_new_clone (credentials) : e_named_parameters_new ();
+
+	return data;
+}
+
+static void
+authenticate_thread_data_free (AuthenticateThreadData *data)
+{
+	if (data) {
+		g_clear_object (&data->backend);
+		g_clear_object (&data->cancellable);
+		e_named_parameters_free (data->credentials);
+		g_free (data);
+	}
+}
+
+static gpointer
+backend_source_authenticate_thread (gpointer user_data)
+{
+	ESourceAuthenticationResult auth_result;
+	AuthenticateThreadData *thread_data = user_data;
+	gchar *certificate_pem = NULL;
+	GTlsCertificateFlags certificate_errors = 0;
+	GError *local_error = NULL;
+	ESource *source;
+
+	g_return_val_if_fail (thread_data != NULL, NULL);
+
+	source = e_backend_get_source (thread_data->backend);
+
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
+	/* Update the SSL trust transparently. */
+	if (e_named_parameters_get (thread_data->credentials, E_SOURCE_CREDENTIAL_SSL_TRUST) &&
+	    e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		e_source_webdav_set_ssl_trust (webdav_extension,
+			e_named_parameters_get (thread_data->credentials, E_SOURCE_CREDENTIAL_SSL_TRUST));
+	}
+
+	auth_result = e_backend_authenticate_sync (thread_data->backend, thread_data->credentials,
+		&certificate_pem, &certificate_errors, thread_data->cancellable, &local_error);
+
+	if (!g_cancellable_is_cancelled (thread_data->cancellable)) {
+		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+
+		switch (auth_result) {
+		case E_SOURCE_AUTHENTICATION_ERROR:
+			reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+			break;
+		case E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
+			reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+			break;
+		case E_SOURCE_AUTHENTICATION_ACCEPTED:
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
+			break;
+		case E_SOURCE_AUTHENTICATION_REQUIRED:
+			reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+			break;
+		case E_SOURCE_AUTHENTICATION_REJECTED:
+			reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
+			break;
+		}
+
+		if (auth_result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
+			const gchar *username = e_named_parameters_get (thread_data->credentials, E_SOURCE_CREDENTIAL_USERNAME);
+			gboolean call_write = FALSE;
+
+			if (username && *username && e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+				ESourceAuthentication *extension_authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+				if (g_strcmp0 (username, e_source_authentication_get_user (extension_authentication)) != 0) {
+					e_source_authentication_set_user (extension_authentication, username);
+					call_write = TRUE;
+				}
+			}
+
+			if (username && *username && e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION)) {
+				ESourceCollection *extension_collection = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+				if (g_strcmp0 (username, e_source_collection_get_identity (extension_collection)) != 0) {
+					e_source_collection_set_identity (extension_collection, username);
+					call_write = TRUE;
+				}
+			}
+
+			if (call_write) {
+				GError *local_error2 = NULL;
+
+				if (!e_source_write_sync (source, thread_data->cancellable, &local_error2)) {
+					g_warning ("%s: Failed to store changed user name: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+				}
+
+				g_clear_error (&local_error2);
+			}
+		} else {
+			GError *local_error2 = NULL;
+
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+
+			if (!e_source_invoke_credentials_required_sync (source, reason, certificate_pem, certificate_errors,
+				local_error, thread_data->cancellable, &local_error2)) {
+				g_warning ("%s: Failed to invoke credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+			}
+
+			g_clear_error (&local_error2);
+		}
+	} else {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+	}
+
+	g_free (certificate_pem);
+	g_clear_error (&local_error);
+
+	authenticate_thread_data_free (thread_data);
+
+	return NULL;
+}
+
+static void
+backend_source_authenticate_cb (ESource *source,
+				const ENamedParameters *credentials,
+				EBackend *backend)
+{
+	g_return_if_fail (E_IS_BACKEND (backend));
+	g_return_if_fail (credentials != NULL);
+
+	e_backend_schedule_authenticate	(backend, credentials);
+}
+
 static void
 backend_set_source (EBackend *backend,
                     ESource *source)
@@ -240,6 +395,8 @@ backend_set_source (EBackend *backend,
 	g_return_if_fail (backend->priv->source == NULL);
 
 	backend->priv->source = g_object_ref (source);
+
+	g_signal_connect (backend->priv->source, "authenticate", G_CALLBACK (backend_source_authenticate_cb), backend);
 }
 
 static void
@@ -337,6 +494,17 @@ backend_dispose (GObject *object)
 		priv->update_online_state = NULL;
 	}
 
+	if (priv->source) {
+		g_signal_handlers_disconnect_by_func (priv->source, backend_source_authenticate_cb, object);
+	}
+
+	g_mutex_lock (&priv->authenticate_cancellable_lock);
+	if (priv->authenticate_cancellable) {
+		g_cancellable_cancel (priv->authenticate_cancellable);
+		g_clear_object (&priv->authenticate_cancellable);
+	}
+	g_mutex_unlock (&priv->authenticate_cancellable_lock);
+
 	g_clear_object (&priv->source);
 	g_clear_object (&priv->prompter);
 	g_clear_object (&priv->connectable);
@@ -357,6 +525,7 @@ backend_finalize (GObject *object)
 	g_mutex_clear (&priv->property_lock);
 	g_mutex_clear (&priv->update_online_state_lock);
 	g_mutex_clear (&priv->network_monitor_cancellable_lock);
+	g_mutex_clear (&priv->authenticate_cancellable_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_backend_parent_class)->finalize (object);
@@ -390,86 +559,6 @@ backend_constructed (GObject *object)
 	}
 }
 
-static void
-backend_authenticate_thread (GSimpleAsyncResult *simple,
-                             GObject *object,
-                             GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_backend_authenticate_sync (
-		E_BACKEND (object),
-		async_context->auth,
-		cancellable, &error);
-
-	if (error != NULL)
-		g_simple_async_result_take_error (simple, error);
-}
-
-static gboolean
-backend_authenticate_sync (EBackend *backend,
-                           ESourceAuthenticator *auth,
-                           GCancellable *cancellable,
-                           GError **error)
-{
-	g_set_error (
-		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		_("%s does not support authentication"),
-		G_OBJECT_TYPE_NAME (backend));
-
-	return FALSE;
-}
-
-static void
-backend_authenticate (EBackend *backend,
-                      ESourceAuthenticator *auth,
-                      GCancellable *cancellable,
-                      GAsyncReadyCallback callback,
-                      gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->auth = g_object_ref (auth);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (backend), callback,
-		user_data, backend_authenticate);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, backend_authenticate_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
-}
-
-static gboolean
-backend_authenticate_finish (EBackend *backend,
-                             GAsyncResult *result,
-                             GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (backend),
-		backend_authenticate), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
-}
-
 static gboolean
 backend_get_destination_address (EBackend *backend,
                                  gchar **host,
@@ -499,9 +588,6 @@ e_backend_class_init (EBackendClass *class)
 	object_class->finalize = backend_finalize;
 	object_class->constructed = backend_constructed;
 
-	class->authenticate_sync = backend_authenticate_sync;
-	class->authenticate = backend_authenticate;
-	class->authenticate_finish = backend_authenticate_finish;
 	class->get_destination_address = backend_get_destination_address;
 	class->prepare_shutdown = backend_prepare_shutdown;
 
@@ -577,6 +663,9 @@ e_backend_init (EBackend *backend)
 	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->update_online_state_lock);
 	g_mutex_init (&backend->priv->network_monitor_cancellable_lock);
+	g_mutex_init (&backend->priv->authenticate_cancellable_lock);
+
+	backend->priv->authenticate_cancellable = NULL;
 
 	/* Configure network monitoring. */
 
@@ -646,6 +735,9 @@ e_backend_set_online (EBackend *backend,
 	g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 
 	g_object_notify (G_OBJECT (backend), "online");
+
+	if (!backend->priv->online && backend->priv->source)
+		e_source_set_connection_status (backend->priv->source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 }
 
 /**
@@ -763,112 +855,256 @@ e_backend_ref_main_context (EBackend *backend)
 }
 
 /**
- * e_backend_authenticate_sync:
+ * e_backend_credentials_required_sync:
  * @backend: an #EBackend
- * @auth: an #ESourceAuthenticator
+ * @reason: an #ESourceCredentialsReason, why the credentials are required
+ * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
+ * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Convenience function providing a consistent authentication interface
- * for backends running in either the registry service itself or a client
- * process communicating with the registry service over D-Bus.
+ * Synchronously lets the clients know that the backned requires credentials to be
+ * properly opened. It's a proxy function for e_source_invoke_credentials_required_sync(),
+ * where can be found more information about actual parameters meaning.
  *
- * Authenticates @backend's #EBackend:source, using @auth to handle
- * authentication attempts.  The @backend and @auth arguments may be one
- * and the same if @backend implements the #ESourceAuthenticator interface.
- * The operation loops until authentication is successful or the user aborts
- * further authentication attempts.  If an error occurs, the function will
- * set @error and return %FALSE.
+ * The provided credentials are received through EBackend::authenticate_sync()
+ * method asynchronously.
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * If an error occurs, the function sets @error and returns %FALSE.
  *
- * Since: 3.6
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
  **/
 gboolean
-e_backend_authenticate_sync (EBackend *backend,
-                             ESourceAuthenticator *auth,
-                             GCancellable *cancellable,
-                             GError **error)
+e_backend_credentials_required_sync (EBackend *backend,
+				     ESourceCredentialsReason reason,
+				     const gchar *certificate_pem,
+				     GTlsCertificateFlags certificate_errors,
+				     const GError *op_error,
+				     GCancellable *cancellable,
+				     GError **error)
 {
-	EBackendClass *class;
+	ESource *source;
 
 	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
-	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth), FALSE);
 
-	class = E_BACKEND_GET_CLASS (backend);
-	g_return_val_if_fail (class->authenticate_sync != NULL, FALSE);
+	source = e_backend_get_source (backend);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	return class->authenticate_sync (backend, auth, cancellable, error);
+	return e_source_invoke_credentials_required_sync (source,
+		reason, certificate_pem, certificate_errors, op_error, cancellable, error);
+}
+
+typedef struct _CredentialsRequiredData {
+	ESourceCredentialsReason reason;
+	gchar *certificate_pem;
+	GTlsCertificateFlags certificate_errors;
+	GError *op_error;
+} CredentialsRequiredData;
+
+static void
+credentials_required_data_free (gpointer ptr)
+{
+	CredentialsRequiredData *data = ptr;
+
+	if (data) {
+		g_free (data->certificate_pem);
+		g_clear_error (&data->op_error);
+		g_free (data);
+	}
+}
+
+static void
+backend_credentials_required_thread (GTask *task,
+				     gpointer source_object,
+				     gpointer task_data,
+				     GCancellable *cancellable)
+{
+	CredentialsRequiredData *data = task_data;
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = e_backend_credentials_required_sync (
+		E_BACKEND (source_object), data->reason, data->certificate_pem,
+		data->certificate_errors, data->op_error,
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
 }
 
 /**
- * e_backend_authenticate:
+ * e_backend_credentials_required:
  * @backend: an #EBackend
- * @auth: an #ESourceAuthenticator
+ * @reason: an #ESourceCredentialsReason, why the credentials are required
+ * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
+ * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
- * @user_data: data to pass to the callback function
+ * @error: return location for a #GError, or %NULL
  *
- * Convenience function providing a consistent authentication interface
- * for backends running in either the registry service itself or a client
- * process communicating with the registry service over D-Bus.
+ * Asynchronously calls the e_backend_credentials_required_sync() on the @backend,
+ * to inform clients that credentials are required.
  *
- * Asynchronously authenticates @backend's #EBackend:source, using @auth
- * to handle authentication attempts.  The @backend and @auth arguments may
- * be one and the same if @backend implements the #ESourceAuthenticator
- * interface.  The operation loops until authentication is succesful or the
- * user aborts further authentication attempts.
+ * When the operation is finished, @callback will be called. You can then
+ * call e_backend_credentials_required_finish() to get the result of the operation.
  *
- * When the operation is finished, @callback will be called.  You can then
- * call e_backend_authenticate_finish() to get the result of the operation.
- *
- * Since: 3.6
+ * Since: 3.14
  **/
 void
-e_backend_authenticate (EBackend *backend,
-                        ESourceAuthenticator *auth,
-                        GCancellable *cancellable,
-                        GAsyncReadyCallback callback,
-                        gpointer user_data)
+e_backend_credentials_required (EBackend *backend,
+				ESourceCredentialsReason reason,
+				const gchar *certificate_pem,
+				GTlsCertificateFlags certificate_errors,
+				const GError *op_error,
+				GCancellable *cancellable,
+				GAsyncReadyCallback callback,
+				gpointer user_data)
 {
-	EBackendClass *class;
+	CredentialsRequiredData *data;
+	GTask *task;
 
 	g_return_if_fail (E_IS_BACKEND (backend));
-	g_return_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth));
 
-	class = E_BACKEND_GET_CLASS (backend);
-	g_return_if_fail (class->authenticate != NULL);
+	data = g_new0 (CredentialsRequiredData, 1);
+	data->reason = reason;
+	data->certificate_pem = g_strdup (certificate_pem);
+	data->certificate_errors = certificate_errors;
+	data->op_error = op_error ? g_error_copy (op_error) : NULL;
 
-	class->authenticate (backend, auth, cancellable, callback, user_data);
+	task = g_task_new (backend, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_backend_credentials_required);
+	g_task_set_task_data (task, data, credentials_required_data_free);
+
+	g_task_run_in_thread (task, backend_credentials_required_thread);
+
+	g_object_unref (task);
 }
 
 /**
- * e_backend_authenticate_finish:
+ * e_backend_credentials_required_finish:
  * @backend: an #EBackend
  * @result: a #GAsyncResult
  * @error: return location for a #GError, or %NULL
  *
- * Finishes the operation started with e_backend_authenticate().  If
- * an error occurred, the function will set @error and return %FALSE.
+ * Finishes the operation started with e_backend_credentials_required().
  *
- * Returns: %TRUE on success, %FALSE on failure
+ * If an error occurs, the function sets @error and returns %FALSE.
  *
- * Since: 3.6
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
  **/
 gboolean
-e_backend_authenticate_finish (EBackend *backend,
-                               GAsyncResult *result,
-                               GError **error)
+e_backend_credentials_required_finish (EBackend *backend,
+				       GAsyncResult *result,
+				       GError **error)
 {
-	EBackendClass *class;
-
 	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
-	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, backend), FALSE);
 
-	class = E_BACKEND_GET_CLASS (backend);
-	g_return_val_if_fail (class->authenticate_finish != NULL, FALSE);
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_backend_credentials_required), FALSE);
 
-	return class->authenticate_finish (backend, result, error);
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+static void
+backend_scheduled_credentials_required_done_cb (GObject *source_object,
+						GAsyncResult *result,
+						gpointer user_data)
+{
+	GError *error = NULL;
+	gchar *who_calls = user_data;
+
+	g_return_if_fail (E_IS_BACKEND (source_object));
+
+	if (!e_backend_credentials_required_finish (E_BACKEND (source_object), result, &error) &&
+	    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_warning ("%s: Failed to invoke credentials required: %s", who_calls ? who_calls : G_STRFUNC,
+			error ? error->message : "Unknown error");
+	}
+
+	g_clear_error (&error);
+	g_free (who_calls);
+}
+
+/**
+ * e_backend_schedule_credentials_required:
+ * @backend: an #EBackend
+ * @reason: an #ESourceCredentialsReason, why the credentials are required
+ * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
+ * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
+ * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @who_calls: (allow none): an identification who calls this
+ *
+ * Asynchronously invokes e_backend_credentials_required(), but installs its
+ * own callback which only prints a runtime warning on the console when
+ * the call fails. The @who_calls is a prefix of the console message.
+ * This is useful when the caller just wants to start the operation
+ * without having actual place where to show the operation result.
+ *
+ * Since: 3.14
+ **/
+void
+e_backend_schedule_credentials_required (EBackend *backend,
+					 ESourceCredentialsReason reason,
+					 const gchar *certificate_pem,
+					 GTlsCertificateFlags certificate_errors,
+					 const GError *op_error,
+					 GCancellable *cancellable,
+					 const gchar *who_calls)
+{
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	e_backend_credentials_required (backend, reason, certificate_pem, certificate_errors,
+		op_error, cancellable, backend_scheduled_credentials_required_done_cb, g_strdup (who_calls));
+}
+
+/**
+ * e_backend_schedule_authenticate:
+ * @backend: an #EBackend
+ * @credentials: (allow none): a credentials to use to authenticate, or %NULL
+ *
+ * Schedules a new authenticate session, cancelling any previously run.
+ * This is usually done automatically, when an 'authenticate' signal is
+ * received for the associated #ESource. With %NULL @credentials an attempt
+ * without it is run.
+ *
+ * Since: 3.14
+ **/
+void
+e_backend_schedule_authenticate	(EBackend *backend,
+				 const ENamedParameters *credentials)
+{
+	GCancellable *cancellable;
+	AuthenticateThreadData *thread_data;
+
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	g_mutex_lock (&backend->priv->authenticate_cancellable_lock);
+	if (backend->priv->authenticate_cancellable) {
+		g_cancellable_cancel (backend->priv->authenticate_cancellable);
+		g_clear_object (&backend->priv->authenticate_cancellable);
+	}
+
+	backend->priv->authenticate_cancellable = g_cancellable_new ();
+	cancellable = g_object_ref (backend->priv->authenticate_cancellable);
+
+	g_mutex_unlock (&backend->priv->authenticate_cancellable_lock);
+
+	thread_data = authenticate_thread_data_new (backend, cancellable, credentials);
+
+	g_thread_unref (g_thread_new (NULL, backend_source_authenticate_thread, thread_data));
+
+	g_clear_object (&cancellable);
 }
 
 /**

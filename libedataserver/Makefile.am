@@ -29,6 +29,7 @@ SHARED_COMPILER_FLAGS = \
 	-DE_DATA_SERVER_LOCALEDIR=\""$(localedir)"\" \
 	-DE_DATA_SERVER_EXTENSIONDIR=\"$(extensiondir)\" \
 	-DE_DATA_SERVER_IMAGESDIR=\"$(imagesdir)\" \
+	-DE_DATA_SERVER_CREDENTIALMODULEDIR=\"$(credentialmoduledir)\" \
 	-DE_DATA_SERVER_PRIVDATADIR=\"$(privdatadir)\" \
 	-DE_DATA_SERVER_UI_UIDIR=\""$(uidir)"\" \
 	$(E_DATA_SERVER_CFLAGS) \
@@ -52,6 +53,8 @@ libedataserver_1_2_la_SOURCES = \
 	e-client-private.h \
 	e-collator.c \
 	e-credentials.c \
+	e-extensible.c \
+	e-extension.c \
 	e-flag.c \
 	e-free-form-exp.c \
 	e-gdbus-templates.c \
@@ -59,6 +62,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-list.c \
 	e-list-iterator.c \
 	e-memory.c \
+	e-module.c \
 	e-operation-pool.c \
 	e-proxy.c \
 	e-sexp.c \
@@ -67,12 +71,14 @@ libedataserver_1_2_la_SOURCES = \
 	e-source-address-book.c \
 	e-source-alarms.c \
 	e-source-authentication.c \
-	e-source-authenticator.c \
 	e-source-autocomplete.c \
 	e-source-backend.c \
 	e-source-calendar.c \
 	e-source-camel.c \
 	e-source-collection.c \
+	e-source-credentials-provider.c \
+	e-source-credentials-provider-impl.c \
+	e-source-credentials-provider-impl-password.c \
 	e-source-goa.c \
 	e-source-mail-account.c \
 	e-source-mail-composition.c \
@@ -131,6 +137,8 @@ libedataserverinclude_HEADERS = \
 	e-client.h \
 	e-collator.h \
 	e-credentials.h \
+	e-extensible.h \
+	e-extension.h \
 	e-flag.h \
 	e-free-form-exp.h \
 	e-gdbus-templates.h \
@@ -138,6 +146,7 @@ libedataserverinclude_HEADERS = \
 	e-list.h \
 	e-list-iterator.h \
 	e-memory.h \
+	e-module.h \
 	e-operation-pool.h \
 	e-proxy.h \
 	e-sexp.h \
@@ -145,12 +154,14 @@ libedataserverinclude_HEADERS = \
 	e-source-address-book.h \
 	e-source-alarms.h \
 	e-source-authentication.h \
-	e-source-authenticator.h \
 	e-source-autocomplete.h \
 	e-source-backend.h \
 	e-source-calendar.h \
 	e-source-camel.h \
 	e-source-collection.h \
+	e-source-credentials-provider.h \
+	e-source-credentials-provider-impl.h \
+	e-source-credentials-provider-impl-password.h \
 	e-source-enums.h \
 	e-source-enumtypes.h \
 	e-source-extension.h \

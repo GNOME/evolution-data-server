@@ -23,7 +23,6 @@
 
 #include "goaewsclient.h"
 #include "e-goa-client.h"
-#include "e-goa-password-based.h"
 
 /* Standard GObject macros */
 #define E_TYPE_GNOME_ONLINE_ACCOUNTS \
@@ -655,13 +654,6 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	/* The data source should not be removable by clients. */
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (source), FALSE);
-
-	if (goa_object_peek_password_based (goa_object) != NULL) {
-		/* Obtain passwords from the OnlineAccounts service. */
-		e_server_side_source_set_auth_session_type (
-			E_SERVER_SIDE_SOURCE (source),
-			E_TYPE_GOA_PASSWORD_BASED);
-	}
 
 	if (goa_object_peek_oauth2_based (goa_object) != NULL) {
 		/* This module provides OAuth 2.0 support to the collection.
@@ -1337,7 +1329,6 @@ G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
 	e_goa_client_type_register (type_module);
-	e_goa_password_based_type_register (type_module);
 	e_gnome_online_accounts_register_type (type_module);
 }
 

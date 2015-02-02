@@ -15,14 +15,14 @@
  *
  */
 
-#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
-#error "Only <libebackend/libebackend.h> should be included directly."
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
 #ifndef E_EXTENSION_H
 #define E_EXTENSION_H
 
-#include <libebackend/e-extensible.h>
+#include <libedataserver/e-extensible.h>
 
 /* Standard GObject macros */
 #define E_TYPE_EXTENSION \

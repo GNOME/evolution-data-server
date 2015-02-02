@@ -21,7 +21,6 @@
 #include <libaccounts-glib/accounts-glib.h>
 
 #include "uoa-utils.h"
-#include "e-signon-session-password.h"
 
 /* Standard GObject macros */
 #define E_TYPE_UBUNTU_ONLINE_ACCOUNTS \
@@ -374,11 +373,6 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	/* The data source should not be removable by clients. */
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (source), FALSE);
-
-	/* Obtain passwords from the signond service. */
-	e_server_side_source_set_auth_session_type (
-		E_SERVER_SIDE_SOURCE (source),
-		E_TYPE_SIGNON_SESSION_PASSWORD);
 
 	if (supports_oauth2) {
 		/* This module provides OAuth 2.0 support to the collection.
@@ -1139,7 +1133,6 @@ G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
 	e_ubuntu_online_accounts_register_type (type_module);
-	e_signon_session_password_type_register (type_module);
 }
 
 G_MODULE_EXPORT void

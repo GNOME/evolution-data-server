@@ -497,24 +497,20 @@ e_data_cal_create_error_fmt (EDataCalCallStatus status,
 	return error;
 }
 
-static void
-data_cal_complete_open_cb (GObject *source_object,
-                           GAsyncResult *result,
-                           gpointer user_data)
+static GPtrArray *
+data_cal_encode_properties (EDBusCalendar *dbus_interface)
 {
-	AsyncContext *async_context = user_data;
-	GError *error = NULL;
+	GPtrArray *properties_array;
 
-	e_cal_backend_open_finish (
-		E_CAL_BACKEND (source_object), result, &error);
+	g_warn_if_fail (E_DBUS_IS_CALENDAR (dbus_interface));
 
-	if (error == NULL) {
-		GPtrArray *properties_array;
+	properties_array = g_ptr_array_new_with_free_func (g_free);
+
+	if (dbus_interface) {
 		GParamSpec **properties;
 		guint ii, n_properties = 0;
 
-		properties_array = g_ptr_array_new_with_free_func (g_free);
-		properties = g_object_class_list_properties (G_OBJECT_GET_CLASS (async_context->dbus_interface), &n_properties);
+		properties = g_object_class_list_properties (G_OBJECT_GET_CLASS (dbus_interface), &n_properties);
 
 		for (ii = 0; ii < n_properties; ii++) {
 			gboolean can_process =
@@ -533,7 +529,7 @@ data_cal_complete_open_cb (GObject *source_object,
 				GVariant *stored = NULL;
 
 				g_value_init (&value, properties[ii]->value_type);
-				g_object_get_property ((GObject *) async_context->dbus_interface, properties[ii]->name, &value);
+				g_object_get_property ((GObject *) dbus_interface, properties[ii]->name, &value);
 
 				#define WORKOUT(gvl, gvr) \
 					if (g_type_is_a (properties[ii]->value_type, G_TYPE_ ## gvl)) \
@@ -563,8 +559,47 @@ data_cal_complete_open_cb (GObject *source_object,
 		}
 
 		g_free (properties);
+	}
 
-		g_ptr_array_add (properties_array, NULL);
+	g_ptr_array_add (properties_array, NULL);
+
+	return properties_array;
+}
+
+static gboolean
+data_cal_handle_retrieve_properties_cb (EDBusCalendar *dbus_interface,
+					GDBusMethodInvocation *invocation,
+					EDataCal *data_cal)
+{
+	GPtrArray *properties_array;
+
+	properties_array = data_cal_encode_properties (dbus_interface);
+
+	e_dbus_calendar_complete_retrieve_properties (
+		dbus_interface,
+		invocation,
+		(const gchar * const *) properties_array->pdata);
+
+	g_ptr_array_free (properties_array, TRUE);
+
+	return TRUE;
+}
+
+static void
+data_cal_complete_open_cb (GObject *source_object,
+                           GAsyncResult *result,
+                           gpointer user_data)
+{
+	AsyncContext *async_context = user_data;
+	GError *error = NULL;
+
+	e_cal_backend_open_finish (
+		E_CAL_BACKEND (source_object), result, &error);
+
+	if (error == NULL) {
+		GPtrArray *properties_array;
+
+		properties_array = data_cal_encode_properties (async_context->dbus_interface);
 
 		e_dbus_calendar_complete_open (
 			async_context->dbus_interface,
@@ -2643,6 +2678,9 @@ e_data_cal_init (EDataCal *data_cal)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) g_ptr_array_unref);
 
+	g_signal_connect (
+		dbus_interface, "handle-retrieve-properties",
+		G_CALLBACK (data_cal_handle_retrieve_properties_cb), data_cal);
 	g_signal_connect (
 		dbus_interface, "handle-open",
 		G_CALLBACK (data_cal_handle_open_cb), data_cal);

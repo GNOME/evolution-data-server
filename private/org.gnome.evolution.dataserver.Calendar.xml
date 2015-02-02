@@ -32,6 +32,10 @@
     <arg name="ics_objects" type="as"/>
   </signal>
 
+  <method name="RetrieveProperties">
+    <arg name="properties" direction="out" type="as"/>
+  </method>
+
   <method name="Open">
     <arg name="properties" direction="out" type="as"/>
   </method>

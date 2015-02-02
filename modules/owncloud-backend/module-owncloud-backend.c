@@ -29,6 +29,9 @@
 #define E_OWNCLOUD_BACKEND(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
 	((obj), E_TYPE_OWNCLOUD_BACKEND, EOwncloudBackend))
+#define E_IS_OWNCLOUD_BACKEND(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_OWNCLOUD_BACKEND))
 
 typedef struct _EOwncloudBackend EOwncloudBackend;
 typedef struct _EOwncloudBackendClass EOwncloudBackendClass;
@@ -224,14 +227,21 @@ owncloud_add_uid_to_hashtable (gpointer source,
 	g_hash_table_insert (known_sources, rid, uid);
 }
 
-static gpointer
-owncloud_populate_thread (gpointer data)
+static ESourceAuthenticationResult
+owncloud_backend_authenticate_sync (EBackend *backend,
+				    const ENamedParameters *credentials,
+				    gchar **out_certificate_pem,
+				    GTlsCertificateFlags *out_certificate_errors,
+				    GCancellable *cancellable,
+				    GError **error)
 {
-	ECollectionBackend *collection = data;
+	ECollectionBackend *collection = E_COLLECTION_BACKEND (backend);
+	ESourceAuthenticationResult result;
 	GHashTable *known_sources;
 	GList *sources;
+	GError *local_error = NULL;
 
-	g_return_val_if_fail (collection != NULL, NULL);
+	g_return_val_if_fail (collection != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 
 	/* resource-id => source's UID */
 	known_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -244,7 +254,8 @@ owncloud_populate_thread (gpointer data)
 	g_list_foreach (sources, owncloud_add_uid_to_hashtable, known_sources);
 	g_list_free_full (sources, g_object_unref);
 
-	if (owncloud_utils_search_server (collection, owncloud_source_found_cb, known_sources)) {
+	if (owncloud_utils_search_server (collection, credentials, out_certificate_pem, out_certificate_errors,
+		owncloud_source_found_cb, known_sources, cancellable, &local_error)) {
 		ESourceRegistryServer *server;
 
 		server = e_collection_backend_ref_server (collection);
@@ -254,10 +265,23 @@ owncloud_populate_thread (gpointer data)
 		g_object_unref (server);
 	}
 
-	g_hash_table_destroy (known_sources);
-	g_object_unref (collection);
+	if (local_error == NULL) {
+		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+		e_collection_backend_authenticate_children (collection, credentials);
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		result = E_SOURCE_AUTHENTICATION_REJECTED;
+		g_clear_error (&local_error);
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
+		g_propagate_error (error, local_error);
+	} else {
+		result = E_SOURCE_AUTHENTICATION_ERROR;
+		g_propagate_error (error, local_error);
+	}
 
-	return NULL;
+	g_hash_table_destroy (known_sources);
+
+	return result;
 }
 
 static void
@@ -265,7 +289,6 @@ owncloud_backend_populate (ECollectionBackend *collection)
 {
 	GList *list, *liter;
 	ESourceRegistryServer *server;
-	GThread *thread;
 
 	/* Chain up to parent's populate() method. */
 	E_COLLECTION_BACKEND_CLASS (e_owncloud_backend_parent_class)->populate (collection);
@@ -292,17 +315,21 @@ owncloud_backend_populate (ECollectionBackend *collection)
 	g_list_free_full (list, g_object_unref);
 	g_object_unref (server);
 
-	thread = g_thread_new (NULL, owncloud_populate_thread, g_object_ref (collection));
-	g_thread_unref (thread);
+	e_backend_schedule_credentials_required (E_BACKEND (collection), E_SOURCE_CREDENTIALS_REASON_REQUIRED,
+		NULL, 0, NULL, NULL, G_STRFUNC);
 }
 
 static void
 e_owncloud_backend_class_init (EOwncloudBackendClass *class)
 {
-	ECollectionBackendClass *backend_class;
+	EBackendClass *backend_class;
+	ECollectionBackendClass *collection_backend_class;
 
-	backend_class = E_COLLECTION_BACKEND_CLASS (class);
-	backend_class->populate = owncloud_backend_populate;
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = owncloud_backend_authenticate_sync;
+
+	collection_backend_class = E_COLLECTION_BACKEND_CLASS (class);
+	collection_backend_class->populate = owncloud_backend_populate;
 }
 
 static void

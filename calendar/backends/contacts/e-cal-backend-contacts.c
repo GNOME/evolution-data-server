@@ -144,7 +144,7 @@ create_book_record (ECalBackendContacts *cbc,
 	br->cbc = g_object_ref (cbc);
 
 	e_book_client_connect (
-		source, NULL, book_client_connected_cb, br);
+		source, 30, NULL, book_client_connected_cb, br);
 }
 
 static BookRecord *
@@ -1145,6 +1145,10 @@ e_cal_backend_contacts_open (ECalBackendSync *backend,
 
 	if (priv->addressbook_loaded)
 		return;
+
+	/* Local source is always connected. */
+	e_source_set_connection_status (e_backend_get_source (E_BACKEND (backend)),
+		E_SOURCE_CONNECTION_STATUS_CONNECTED);
 
 	priv->addressbook_loaded = TRUE;
 	e_cal_backend_set_writable (E_CAL_BACKEND (backend), FALSE);

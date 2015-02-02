@@ -5,7 +5,10 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 datadir=@datadir@
 
+privlibdir=@privlibdir@
 privincludedir=@privincludedir@
+
+credentialmoduledir=@credentialmoduledir@
 
 Name: libedataserver
 Description: Utility library for Evolution Data Server

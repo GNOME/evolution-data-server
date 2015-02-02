@@ -26,7 +26,8 @@
 #include <config.h>
 #include <glib/gi18n-lib.h>
 
-#include <libebackend/e-extensible.h>
+#include <libedataserver/libedataserver.h>
+
 #include <libebackend/e-backend-factory.h>
 #include <libebackend/e-dbus-server.h>
 

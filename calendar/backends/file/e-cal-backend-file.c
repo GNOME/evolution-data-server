@@ -1381,6 +1381,10 @@ e_cal_backend_file_open (ECalBackendSync *backend,
 	priv = cbfile->priv;
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
+	/* Local source is always connected. */
+	e_source_set_connection_status (e_backend_get_source (E_BACKEND (backend)),
+		E_SOURCE_CONNECTION_STATUS_CONNECTED);
+
 	/* Claim a succesful open if we are already open */
 	if (priv->path && priv->comp_uid_hash) {
 		/* Success */

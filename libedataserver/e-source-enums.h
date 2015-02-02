@@ -69,19 +69,25 @@ typedef enum {
  * ESourceAuthenticationResult:
  * @E_SOURCE_AUTHENTICATION_ERROR:
  *   An error occurred while authenticating.
+ * @E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
+ *   An SSL certificate check failed. Since: 3.14.
  * @E_SOURCE_AUTHENTICATION_ACCEPTED:
  *   Server requesting authentication accepted password.
  * @E_SOURCE_AUTHENTICATION_REJECTED:
  *   Server requesting authentication rejected password.
+ * @E_SOURCE_AUTHENTICATION_REQUIRED:
+ *   Server requesting authentication, but none was given.
  *
- * Status codes used by the #ESourceAuthenticator interface.
+ * Status codes used by the #EBackend authentication wrapper.
  *
  * Since: 3.6
  **/
 typedef enum {
 	E_SOURCE_AUTHENTICATION_ERROR,
+	E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED,
 	E_SOURCE_AUTHENTICATION_ACCEPTED,
-	E_SOURCE_AUTHENTICATION_REJECTED
+	E_SOURCE_AUTHENTICATION_REJECTED,
+	E_SOURCE_AUTHENTICATION_REQUIRED
 } ESourceAuthenticationResult;
 
 /**
@@ -98,5 +104,67 @@ typedef enum {
 	E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY = 2,
 	E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY = 3
 } ETrustPromptResponse;
+
+/**
+ * ESourceConnectionStatus:
+ * @E_SOURCE_CONNECTION_STATUS_DISCONNECTED:
+ *   The source is currently disconnected from its (possibly remote) data store.
+ * @E_SOURCE_CONNECTION_STATUS_AWAITING_CREDENTIALS:
+ *   The source asked for credentials with a 'credentials-required' signal and
+ *   is currently awaiting for them.
+ * @E_SOURCE_CONNECTION_STATUS_SSL_FAILED:
+ *   A user rejected SSL certificate trust for the connection.
+ * @E_SOURCE_CONNECTION_STATUS_CONNECTING:
+ *   The source is currently connecting to its (possibly remote) data store.
+ * @E_SOURCE_CONNECTION_STATUS_CONNECTED:
+ *   The source is currently connected to its (possibly remote) data store.
+ *
+ * Connection status codes used by the #ESource to indicate its connection state.
+ * This is used in combination with authentication of the ESource. For example,
+ * if there are multiple clients asking for a password and a user enters the password
+ * in one of them, then the status will change into 'connecting', which is a signal
+ * do close the password prompt in the other client, because the credentials had
+ * been already provided.
+ *
+ * Since: 3.14
+ **/
+typedef enum {
+	E_SOURCE_CONNECTION_STATUS_DISCONNECTED,
+	E_SOURCE_CONNECTION_STATUS_AWAITING_CREDENTIALS,
+	E_SOURCE_CONNECTION_STATUS_SSL_FAILED,
+	E_SOURCE_CONNECTION_STATUS_CONNECTING,
+	E_SOURCE_CONNECTION_STATUS_CONNECTED
+} ESourceConnectionStatus;
+
+/**
+ * ESourceCredentialsReason:
+ * @E_SOURCE_CREDENTIALS_REASON_UNKNOWN:
+ *   A return value when there was no 'credentials-required' signal emitted yet,
+ *   or a pair 'authenticate' signal had been received. This value should not
+ *   be used in the call of 'credentials-required'.
+ * @E_SOURCE_CREDENTIALS_REASON_REQUIRED:
+ *   This is the first attempt to get credentials for the source. It's usually
+ *   used right after the source is opened and the authentication continues with
+ *   a stored credentials, if any.
+ * @E_SOURCE_CREDENTIALS_REASON_REJECTED:
+ *   The previously used credentials had been rejected by the server. That
+ *   usually means that the user should be asked to provide/correct the credentials.
+ * @E_SOURCE_CREDENTIALS_REASON_SSL_FAILED:
+ *   A secured connection failed due to some server-side certificate issues.
+ * @E_SOURCE_CREDENTIALS_REASON_ERROR:
+ *   The server returned an error. It is not possible to connect to it
+ *   at the moment usually.
+ *
+ * An ESource's authentication reason, used by an ESource::CredentialsRequired method.
+ *
+ * Since: 3.14
+ **/
+typedef enum {
+	E_SOURCE_CREDENTIALS_REASON_UNKNOWN,
+	E_SOURCE_CREDENTIALS_REASON_REQUIRED,
+	E_SOURCE_CREDENTIALS_REASON_REJECTED,
+	E_SOURCE_CREDENTIALS_REASON_SSL_FAILED,
+	E_SOURCE_CREDENTIALS_REASON_ERROR
+} ESourceCredentialsReason;
 
 #endif /* E_SOURCE_ENUMS_H */

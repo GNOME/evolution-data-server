@@ -83,24 +83,19 @@ struct _EBackendClass {
 
 	/*< public >*/
 	/* Methods */
-	gboolean	(*authenticate_sync)	(EBackend *backend,
-						 ESourceAuthenticator *auth,
-						 GCancellable *cancellable,
-						 GError **error);
-	void		(*authenticate)		(EBackend *backend,
-						 ESourceAuthenticator *auth,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-	gboolean	(*authenticate_finish)	(EBackend *backend,
-						 GAsyncResult *result,
-						 GError **error);
-
 	gboolean	(*get_destination_address)
 						(EBackend *backend,
 						 gchar **host,
 						 guint16 *port);
 	void		(*prepare_shutdown)	(EBackend *backend);
+
+	ESourceAuthenticationResult
+			(*authenticate_sync)	(EBackend *backend,
+						 const ENamedParameters *credentials,
+						 gchar **out_certificate_pem,
+						 GTlsCertificateFlags *out_certificate_errors,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/*< private >*/
 	gpointer reserved[11];
@@ -116,18 +111,36 @@ GSocketConnectable *
 void		e_backend_set_connectable	(EBackend *backend,
 						 GSocketConnectable *connectable);
 GMainContext *	e_backend_ref_main_context	(EBackend *backend);
-gboolean	e_backend_authenticate_sync	(EBackend *backend,
-						 ESourceAuthenticator *auth,
+gboolean	e_backend_credentials_required_sync
+						(EBackend *backend,
+						 ESourceCredentialsReason reason,
+						 const gchar *certificate_pem,
+						 GTlsCertificateFlags certificate_errors,
+						 const GError *op_error,
 						 GCancellable *cancellable,
 						 GError **error);
-void		e_backend_authenticate		(EBackend *backend,
-						 ESourceAuthenticator *auth,
+void		e_backend_credentials_required	(EBackend *backend,
+						 ESourceCredentialsReason reason,
+						 const gchar *certificate_pem,
+						 GTlsCertificateFlags certificate_errors,
+						 const GError *op_error,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
-gboolean	e_backend_authenticate_finish	(EBackend *backend,
+gboolean	e_backend_credentials_required_finish
+						(EBackend *backend,
 						 GAsyncResult *result,
 						 GError **error);
+void		e_backend_schedule_credentials_required
+						(EBackend *backend,
+						 ESourceCredentialsReason reason,
+						 const gchar *certificate_pem,
+						 GTlsCertificateFlags certificate_errors,
+						 const GError *op_error,
+						 GCancellable *cancellable,
+						 const gchar *who_calls);
+void		e_backend_schedule_authenticate	(EBackend *backend,
+						 const ENamedParameters *credentials);
 struct _EUserPrompter *
 		e_backend_get_user_prompter	(EBackend *backend);
 ETrustPromptResponse

@@ -27,6 +27,8 @@
 #include <libedataserver/e-credentials.h>
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-debug-log.h>
+#include <libedataserver/e-extensible.h>
+#include <libedataserver/e-extension.h>
 #include <libedataserver/e-flag.h>
 #include <libedataserver/e-free-form-exp.h>
 #include <libedataserver/e-gdbus-templates.h>
@@ -34,6 +36,7 @@
 #include <libedataserver/e-list-iterator.h>
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-memory.h>
+#include <libedataserver/e-module.h>
 #include <libedataserver/e-operation-pool.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-sexp.h>
@@ -45,6 +48,9 @@
 #include <libedataserver/e-source-calendar.h>
 #include <libedataserver/e-source-camel.h>
 #include <libedataserver/e-source-collection.h>
+#include <libedataserver/e-source-credentials-provider.h>
+#include <libedataserver/e-source-credentials-provider-impl.h>
+#include <libedataserver/e-source-credentials-provider-impl-password.h>
 #include <libedataserver/e-source-enums.h>
 #include <libedataserver/e-source-enumtypes.h>
 #include <libedataserver/e-source-extension.h>

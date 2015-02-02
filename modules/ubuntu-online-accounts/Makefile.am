@@ -16,8 +16,6 @@ module_ubuntu_online_accounts_la_CPPFLAGS = \
 
 module_ubuntu_online_accounts_la_SOURCES = \
 	module-ubuntu-online-accounts.c \
-	e-signon-session-password.c \
-	e-signon-session-password.h \
 	uoa-utils.c \
 	uoa-utils.h \
 	$(NULL)
@@ -34,6 +32,42 @@ module_ubuntu_online_accounts_la_LIBADD = \
 	$(NULL)
 
 module_ubuntu_online_accounts_la_LDFLAGS = \
+	-module -avoid-version $(NO_UNDEFINED) \
+	$(NULL)
+
+credentialmodule_LTLIBRARIES = module-credentials-uoa.la
+
+module_credentials_uoa_la_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	-DG_LOG_DOMAIN=\"module-credentials-uoa\" \
+	$(LIBACCOUNTS_GLIB_CFLAGS) \
+	$(LIBSIGNON_GLIB_CFLAGS) \
+	$(E_BACKEND_CFLAGS) \
+	$(JSON_GLIB_CFLAGS) \
+	$(CAMEL_CFLAGS) \
+	$(REST_CFLAGS) \
+	$(NULL)
+
+module_credentials_uoa_la_SOURCES = \
+	module-credentials-uoa.c \
+	e-signon-session-password.c \
+	e-signon-session-password.h \
+	$(NULL)
+
+module_credentials_uoa_la_LIBADD = \
+	$(top_builddir)/camel/libcamel-1.2.la \
+	$(top_builddir)/libebackend/libebackend-1.2.la \
+	$(top_builddir)/libedataserver/libedataserver-1.2.la \
+	$(LIBACCOUNTS_GLIB_LIBS) \
+	$(LIBSIGNON_GLIB_LIBS) \
+	$(E_BACKEND_LIBS) \
+	$(JSON_GLIB_LIBS) \
+	$(CAMEL_LIBS) \
+	$(REST_LIBS) \
+	$(NULL)
+
+module_credentials_uoa_la_LDFLAGS = \
 	-module -avoid-version $(NO_UNDEFINED) \
 	$(NULL)
 

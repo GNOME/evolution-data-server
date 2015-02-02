@@ -1140,6 +1140,9 @@ book_backend_file_open_sync (EBookBackend *backend,
 
 	source = e_backend_get_source (E_BACKEND (backend));
 
+	/* Local source is always connected. */
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
+
 	g_type_ensure (E_TYPE_SOURCE_REVISION_GUARDS);
 	guards = e_source_get_extension (source, E_SOURCE_EXTENSION_REVISION_GUARDS);
 

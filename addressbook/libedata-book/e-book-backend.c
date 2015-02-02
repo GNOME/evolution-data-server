@@ -568,24 +568,6 @@ book_backend_constructed (GObject *object)
 	}
 }
 
-static gboolean
-book_backend_authenticate_sync (EBackend *backend,
-                                ESourceAuthenticator *auth,
-                                GCancellable *cancellable,
-                                GError **error)
-{
-	EBookBackend *book_backend;
-	ESourceRegistry *registry;
-	ESource *source;
-
-	book_backend = E_BOOK_BACKEND (backend);
-	registry = e_book_backend_get_registry (book_backend);
-	source = e_backend_get_source (backend);
-
-	return e_source_registry_authenticate_sync (
-		registry, source, auth, cancellable, error);
-}
-
 static void
 book_backend_prepare_shutdown (EBackend *backend)
 {
@@ -721,7 +703,6 @@ e_book_backend_class_init (EBookBackendClass *class)
 	object_class->constructed = book_backend_constructed;
 
 	backend_class = E_BACKEND_CLASS (class);
-	backend_class->authenticate_sync = book_backend_authenticate_sync;
 	backend_class->prepare_shutdown = book_backend_prepare_shutdown;
 
 	class->get_backend_property = book_backend_get_backend_property;

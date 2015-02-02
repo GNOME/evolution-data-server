@@ -37,8 +37,9 @@
 
 #include <config.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include <libebackend/e-data-factory.h>
-#include "e-module.h"
 
 G_DEFINE_ABSTRACT_TYPE (EBackendFactory, e_backend_factory, E_TYPE_EXTENSION)
 

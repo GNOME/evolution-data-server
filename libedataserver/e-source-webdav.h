@@ -129,37 +129,19 @@ void		e_source_webdav_set_ssl_trust	(ESourceWebdav *extension,
 SoupURI *	e_source_webdav_dup_soup_uri	(ESourceWebdav *extension);
 void		e_source_webdav_set_soup_uri	(ESourceWebdav *extension,
 						 SoupURI *soup_uri);
-ETrustPromptResponse
-		e_source_webdav_prepare_ssl_trust_prompt
+void		e_source_webdav_update_ssl_trust
 						(ESourceWebdav *extension,
-						 SoupMessage *message,
-						 GTlsCertificate *cert,
-						 GTlsCertificateFlags cert_errors,
-						 struct _ESourceRegistry *registry,
-						 struct _ENamedParameters *parameters);
-ETrustPromptResponse
-		e_source_webdav_prepare_ssl_trust_prompt_with_parent
-						(ESourceWebdav *extension,
-						 SoupMessage *message,
-						 GTlsCertificate *cert,
-						 GTlsCertificateFlags cert_errors,
-						 ESource *parent_source,
-						 struct _ENamedParameters *parameters);
-void		e_source_webdav_store_ssl_trust_prompt
-						(ESourceWebdav *extension,
-						 SoupMessage *message,
+						 const gchar *host,
 						 GTlsCertificate *cert,
 						 ETrustPromptResponse response);
+ETrustPromptResponse
+		e_source_webdav_verify_ssl_trust
+						(ESourceWebdav *extension,
+						 const gchar *host,
+						 GTlsCertificate *cert,
+						 GTlsCertificateFlags cert_errors);
 void		e_source_webdav_unset_temporary_ssl_trust
 						(ESourceWebdav *extension);
-
-#ifndef EDS_DISABLE_DEPRECATED
-gboolean	e_source_webdav_get_ignore_invalid_cert
-						(ESourceWebdav *extension);
-void		e_source_webdav_set_ignore_invalid_cert
-						(ESourceWebdav *extension,
-						 gboolean ignore_invalid_cert);
-#endif /* EDS_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

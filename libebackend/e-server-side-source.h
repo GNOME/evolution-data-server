@@ -22,8 +22,6 @@
 #ifndef E_SERVER_SIDE_SOURCE_H
 #define E_SERVER_SIDE_SOURCE_H
 
-#include <libedataserver/libedataserver.h>
-
 #include <libebackend/e-oauth2-support.h>
 #include <libebackend/e-source-registry-server.h>
 
@@ -91,16 +89,6 @@ GFile *		e_server_side_source_get_file	(EServerSideSource *source);
 GNode *		e_server_side_source_get_node	(EServerSideSource *source);
 ESourceRegistryServer *
 		e_server_side_source_get_server	(EServerSideSource *source);
-gboolean	e_server_side_source_get_allow_auth_prompt
-						(EServerSideSource *source);
-void		e_server_side_source_set_allow_auth_prompt
-						(EServerSideSource *source,
-						 gboolean allow_auth_prompt);
-GType		e_server_side_source_get_auth_session_type
-						(EServerSideSource *source);
-void		e_server_side_source_set_auth_session_type
-						(EServerSideSource *source,
-						 GType auth_session_type);
 gboolean	e_server_side_source_get_exported
 						(EServerSideSource *source);
 const gchar *	e_server_side_source_get_write_directory

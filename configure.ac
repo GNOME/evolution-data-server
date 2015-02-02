@@ -39,8 +39,8 @@ m4_define([glib_minimum_version], [2.40])
 m4_define([glib_encoded_version], [GLIB_VERSION_2_40])
 
 dnl Keep these two definitions in agreement.
-m4_define([gdk_minimum_version], [3.2])
-m4_define([gdk_encoded_version], [GDK_VERSION_3_2])
+m4_define([gdk_minimum_version], [3.6])
+m4_define([gdk_encoded_version], [GDK_VERSION_3_6])
 
 dnl Keep these two definitions in agreement.
 m4_define([soup_minimum_version], [2.42])
@@ -73,9 +73,9 @@ GLIB_GSETTINGS
 dnl ******************************
 dnl D-Bus versioning
 dnl ******************************
-ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook8"
-CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar6"
-SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources3"
+ADDRESS_BOOK_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.AddressBook9"
+CALENDAR_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Calendar7"
+SOURCES_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.Sources4"
 USER_PROMPTER_DBUS_SERVICE_NAME="org.gnome.evolution.dataserver.UserPrompter0"
 
 AC_DEFINE_UNQUOTED(
@@ -106,27 +106,31 @@ AC_SUBST(USER_PROMPTER_DBUS_SERVICE_NAME)
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=19
+LIBEDATASERVER_CURRENT=20
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 
-LIBECAL_CURRENT=17
+LIBEDATASERVERUI_CURRENT=1
+LIBEDATASERVERUI_REVISION=0
+LIBEDATASERVERUI_AGE=0
+
+LIBECAL_CURRENT=18
 LIBECAL_REVISION=0
 LIBECAL_AGE=0
 
-LIBEDATACAL_CURRENT=26
+LIBEDATACAL_CURRENT=27
 LIBEDATACAL_REVISION=0
 LIBEDATACAL_AGE=0
 
-LIBEDATABOOK_CURRENT=24
+LIBEDATABOOK_CURRENT=25
 LIBEDATABOOK_REVISION=0
 LIBEDATABOOK_AGE=0
 
-LIBEBOOK_CURRENT=18
+LIBEBOOK_CURRENT=19
 LIBEBOOK_REVISION=1
 LIBEBOOK_AGE=3
 
-LIBEBOOK_CONTACTS_CURRENT=0
+LIBEBOOK_CONTACTS_CURRENT=1
 LIBEBOOK_CONTACTS_REVISION=0
 LIBEBOOK_CONTACTS_AGE=0
 
@@ -134,7 +138,7 @@ LIBCAMEL_CURRENT=51
 LIBCAMEL_REVISION=0
 LIBCAMEL_AGE=0
 
-LIBEBACKEND_CURRENT=9
+LIBEBACKEND_CURRENT=10
 LIBEBACKEND_REVISION=0
 LIBEBACKEND_AGE=0
 
@@ -144,6 +148,9 @@ AC_SUBST(EDS_MICRO_VERSION)
 AC_SUBST(LIBEDATASERVER_CURRENT)
 AC_SUBST(LIBEDATASERVER_REVISION)
 AC_SUBST(LIBEDATASERVER_AGE)
+AC_SUBST(LIBEDATASERVERUI_CURRENT)
+AC_SUBST(LIBEDATASERVERUI_REVISION)
+AC_SUBST(LIBEDATASERVERUI_AGE)
 AC_SUBST(LIBECAL_CURRENT)
 AC_SUBST(LIBECAL_REVISION)
 AC_SUBST(LIBECAL_AGE)
@@ -1652,6 +1659,9 @@ AC_SUBST(imagesdir)
 moduledir='${privlibdir}'/registry-modules
 AC_SUBST(moduledir)
 
+credentialmoduledir='${privlibdir}'/credential-modules
+AC_SUBST(credentialmoduledir)
+
 ebook_backenddir='${privlibdir}'/addressbook-backends
 AC_SUBST(ebook_backenddir)
 
@@ -1798,6 +1808,8 @@ libebackend/libebackend.pc
 libedataserver/Makefile
 libedataserver/eds-version.h
 libedataserver/libedataserver.pc
+libedataserverui/Makefile
+libedataserverui/libedataserverui.pc
 modules/Makefile
 modules/cache-reaper/Makefile
 modules/gnome-online-accounts/Makefile

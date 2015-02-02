@@ -37,50 +37,37 @@ struct _ESignonSessionPasswordPrivate {
 };
 
 struct _AsyncContext {
-	ESourceAuthenticator *authenticator;
 	SignonAuthSession *signon_auth_session;
 	EAuthenticationSessionResult session_result;
 	AgAuthData *ag_auth_data;
 	GCancellable *cancellable;
+	GString *password;
 };
 
-/* Forward Declarations */
-static void	signon_session_password_msg
-					(EAuthenticationSession *session,
-					 const gchar *format,
-					 ...) G_GNUC_PRINTF (2, 3);
-static void	signon_session_password_process_cb
-					(GObject *source_object,
-					 GAsyncResult *result,
-					 gpointer user_data);
-
-G_DEFINE_DYNAMIC_TYPE (
-	ESignonSessionPassword,
-	e_signon_session_password,
-	E_TYPE_AUTHENTICATION_SESSION)
+G_DEFINE_DYNAMIC_TYPE (ESignonSessionPassword, e_signon_session_password, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
 
 static void
 async_context_free (AsyncContext *async_context)
 {
-	if (async_context->authenticator != NULL)
-		g_object_unref (async_context->authenticator);
-
-	if (async_context->signon_auth_session != NULL)
-		g_object_unref (async_context->signon_auth_session);
+	g_clear_object (&async_context->signon_auth_session);
+	g_clear_object (&async_context->cancellable);
 
 	if (async_context->ag_auth_data != NULL)
 		ag_auth_data_unref (async_context->ag_auth_data);
 
-	if (async_context->cancellable != NULL)
-		g_object_unref (async_context->cancellable);
+	if (async_context->password) {
+		if (async_context->password->len)
+			memset (async_context->password->str, 0, async_context->password->len);
+		g_string_free (async_context->password, TRUE);
+	}
 
 	g_slice_free (AsyncContext, async_context);
 }
 
 static void
-signon_session_password_msg (EAuthenticationSession *session,
-                             const gchar *format,
-                             ...)
+e_signon_session_password_msg (ESource *source,
+                               const gchar *format,
+			       ...)
 {
 	GString *buffer;
 	const gchar *source_uid;
@@ -88,7 +75,7 @@ signon_session_password_msg (EAuthenticationSession *session,
 
 	buffer = g_string_sized_new (256);
 
-	source_uid = e_authentication_session_get_source_uid (session);
+	source_uid = e_source_get_uid (source);
 	g_string_append_printf (buffer, "AUTH (%s): ", source_uid);
 
 	va_start (args, format);
@@ -104,34 +91,43 @@ static void
 signon_session_password_state_changed_cb (SignonAuthSession *signon_auth_session,
                                           gint state,
                                           const gchar *message,
-                                          EAuthenticationSession *session)
+                                          ESource *source)
 {
-	signon_session_password_msg (session, "(signond) %s", message);
+	e_signon_session_password_msg (source, "(signond) %s", message);
 }
 
 static AgAccountService *
-signon_session_password_new_account_service (EAuthenticationSession *session,
+signon_session_password_new_account_service (ESourceCredentialsProviderImpl *provider_impl,
                                              ESource *source,
                                              GError **error)
 {
 	ESignonSessionPasswordPrivate *priv;
-	ESourceUoa *extension;
+	ESource *cred_source = NULL;
+	ESourceUoa *extension = NULL;
 	AgAccountId account_id;
 	AgAccount *ag_account = NULL;
 	AgAccountService *ag_account_service;
 	GList *list;
-	gboolean has_uoa_extension;
-	const gchar *extension_name;
 
-	priv = E_SIGNON_SESSION_PASSWORD_GET_PRIVATE (session);
+	priv = E_SIGNON_SESSION_PASSWORD_GET_PRIVATE (provider_impl);
 
-	/* XXX The ESource should be a collection source with an
-	 *     [Ubuntu Online Accounts] extension.  Verify this. */
-	extension_name = E_SOURCE_EXTENSION_UOA;
-	has_uoa_extension = e_source_has_extension (source, extension_name);
-	g_return_val_if_fail (has_uoa_extension, NULL);
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_UOA)) {
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_UOA);
+	} else {
+		ESourceCredentialsProvider *provider;
 
-	extension = e_source_get_extension (source, extension_name);
+		provider = e_source_credentials_provider_impl_get_provider (provider_impl);
+
+		cred_source = e_source_credentials_provider_ref_credentials_source (provider, source);
+		if (cred_source && e_source_has_extension (cred_source, E_SOURCE_EXTENSION_UOA))
+			extension = e_source_get_extension (cred_source, E_SOURCE_EXTENSION_UOA);
+	}
+
+	if (!extension) {
+		g_clear_object (&cred_source);
+		return NULL;
+	}
+
 	account_id = e_source_uoa_get_account_id (extension);
 
 	ag_account = ag_manager_load_account (
@@ -157,60 +153,46 @@ signon_session_password_new_account_service (EAuthenticationSession *session,
 	return ag_account_service;
 }
 
-static void
-signon_session_password_try_password_cb (GObject *source_object,
-                                         GAsyncResult *result,
-                                         gpointer user_data)
+static gboolean
+e_signon_session_password_can_process (ESourceCredentialsProviderImpl *provider_impl,
+				       ESource *source)
 {
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-	ESourceAuthenticationResult auth_result;
-	GVariantBuilder builder;
-	GVariant *session_data;
-	GError *error = NULL;
+	gboolean can_process;
 
-	simple = G_SIMPLE_ASYNC_RESULT (user_data);
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
+	g_return_val_if_fail (E_IS_SIGNON_SESSION_PASSWORD (provider_impl), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	auth_result = e_source_authenticator_try_password_finish (
-		E_SOURCE_AUTHENTICATOR (source_object), result, &error);
+	can_process = e_source_has_extension (source, E_SOURCE_EXTENSION_UOA);
+	if (!can_process) {
+		ESource *cred_source;
 
-	if (error != NULL) {
-		g_simple_async_result_take_error (simple, error);
-		g_simple_async_result_complete (simple);
-		goto exit;
+		cred_source = e_source_credentials_provider_ref_credentials_source (
+			e_source_credentials_provider_impl_get_provider (provider_impl),
+			source);
+
+		if (cred_source) {
+			can_process = e_source_has_extension (cred_source, E_SOURCE_EXTENSION_UOA);
+			g_clear_object (&cred_source);
+		}
 	}
 
-	if (auth_result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
-		async_context->session_result =
-			E_AUTHENTICATION_SESSION_SUCCESS;
-		g_simple_async_result_complete (simple);
-		goto exit;
-	}
+	return can_process;
+}
 
-	g_variant_builder_init (&builder, G_VARIANT_TYPE_VARDICT);
+static gboolean
+e_signon_session_password_can_store (ESourceCredentialsProviderImpl *provider_impl)
+{
+	g_return_val_if_fail (E_IS_SIGNON_SESSION_PASSWORD (provider_impl), FALSE);
 
-	/* Force the signon service to prompt for a password by adding
-	 * SIGNON_POLICY_REQUEST_PASSWORD to the session data dictionary. */
-	g_variant_builder_add (
-		&builder, "{sv}", SIGNON_SESSION_DATA_UI_POLICY,
-		g_variant_new_int32 (SIGNON_POLICY_REQUEST_PASSWORD));
+	return FALSE;
+}
 
-	/* This returns a floating reference. */
-	session_data = ag_auth_data_get_login_parameters (
-		async_context->ag_auth_data,
-		g_variant_builder_end (&builder));
+static gboolean
+e_signon_session_password_can_prompt (ESourceCredentialsProviderImpl *provider_impl)
+{
+	g_return_val_if_fail (E_IS_SIGNON_SESSION_PASSWORD (provider_impl), FALSE);
 
-	signon_auth_session_process_async (
-		async_context->signon_auth_session,
-		session_data,
-		SIGNON_MECHANISM_PASSWORD,
-		async_context->cancellable,
-		signon_session_password_process_cb,
-		g_object_ref (simple));
-
-exit:
-	g_object_unref (simple);
+	return FALSE;
 }
 
 static void
@@ -238,7 +220,6 @@ signon_session_password_process_cb (GObject *source_object,
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
-		g_simple_async_result_complete (simple);
 		goto exit;
 	}
 
@@ -254,123 +235,52 @@ signon_session_password_process_cb (GObject *source_object,
 			simple, SIGNON_ERROR,
 			SIGNON_ERROR_MISSING_DATA,
 			_("Signon service did not return a secret"));
-		g_simple_async_result_complete (simple);
 		goto exit;
 	}
 
-	/* XXX It occurs to me now a GVariant might have been a better
-	 *     choice for the password parameter in ESourceAuthenticator. */
-	string = g_string_new (g_variant_get_string (secret, NULL));
-
-	e_source_authenticator_try_password (
-		async_context->authenticator,
-		string,
-		async_context->cancellable,
-		signon_session_password_try_password_cb,
-		g_object_ref (simple));
+	async_context->password = g_string_new (g_variant_get_string (secret, NULL));
 
 	g_string_free (string, TRUE);
 	g_variant_unref (secret);
 
 exit:
+	g_simple_async_result_complete (simple);
 	g_object_unref (simple);
 }
 
 static void
-signon_session_password_dispose (GObject *object)
-{
-	ESignonSessionPasswordPrivate *priv;
-
-	priv = E_SIGNON_SESSION_PASSWORD_GET_PRIVATE (object);
-
-	g_clear_object (&priv->ag_manager);
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_signon_session_password_parent_class)->
-		dispose (object);
-}
-
-static EAuthenticationSessionResult
-signon_session_password_execute_sync (EAuthenticationSession *session,
-                                      GCancellable *cancellable,
-                                      GError **error)
-{
-	EAuthenticationSessionResult auth_result;
-	EAsyncClosure *async_closure;
-	GAsyncResult *async_result;
-
-	async_closure = e_async_closure_new ();
-
-	e_authentication_session_execute (
-		session, G_PRIORITY_DEFAULT, cancellable,
-		e_async_closure_callback, async_closure);
-
-	async_result = e_async_closure_wait (async_closure);
-
-	auth_result = e_authentication_session_execute_finish (
-		session, async_result, error);
-
-	e_async_closure_free (async_closure);
-
-	return auth_result;
-}
-
-static void
-signon_session_password_execute (EAuthenticationSession *session,
-                                 gint io_priority,
-                                 GCancellable *cancellable,
-                                 GAsyncReadyCallback callback,
-                                 gpointer user_data)
+e_signon_session_password_get (ESourceCredentialsProviderImpl *provider_impl,
+			       ESource *source,
+			       gint io_priority,
+			       GCancellable *cancellable,
+			       GAsyncReadyCallback callback,
+			       gpointer user_data)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	ESourceAuthenticator *authenticator;
-	ESourceRegistryServer *server;
-	ESource *source;
 	AgAccountService *ag_account_service;
 	AgAuthData *ag_auth_data;
 	SignonAuthSession *signon_auth_session;
-	const gchar *source_uid;
 	guint credentials_id;
 	GError *error = NULL;
 
-	signon_session_password_msg (session, "Initiated");
-
-	authenticator = e_authentication_session_get_authenticator (session);
+	e_signon_session_password_msg (source, "Initiated");
 
 	async_context = g_slice_new0 (AsyncContext);
-	async_context->authenticator = g_object_ref (authenticator);
 
 	if (G_IS_CANCELLABLE (cancellable))
 		async_context->cancellable = g_object_ref (cancellable);
 
 	simple = g_simple_async_result_new (
-		G_OBJECT (session), callback, user_data,
-		signon_session_password_execute);
+		G_OBJECT (provider_impl), callback, user_data,
+		e_signon_session_password_get);
 
 	g_simple_async_result_set_check_cancellable (simple, cancellable);
 
 	g_simple_async_result_set_op_res_gpointer (
 		simple, async_context, (GDestroyNotify) async_context_free);
 
-	server = e_authentication_session_get_server (session);
-	source_uid = e_authentication_session_get_source_uid (session);
-	source = e_source_registry_server_ref_source (server, source_uid);
-
-	if (source == NULL) {
-		g_simple_async_result_set_error (
-			simple, G_IO_ERROR,
-			G_IO_ERROR_NOT_FOUND,
-			_("No such data source for UID '%s'"),
-			source_uid);
-		g_simple_async_result_complete_in_idle (simple);
-		g_object_unref (simple);
-		return;
-	}
-
-	ag_account_service =
-		signon_session_password_new_account_service (
-		session, source, &error);
+	ag_account_service = signon_session_password_new_account_service (provider_impl, source, &error);
 
 	g_object_unref (source);
 
@@ -407,7 +317,7 @@ signon_session_password_execute (EAuthenticationSession *session,
 		g_signal_connect (
 			signon_auth_session, "state-changed",
 			G_CALLBACK (signon_session_password_state_changed_cb),
-			session);
+			source);
 
 		/* Need to hold on to these in case of retries. */
 		async_context->signon_auth_session = signon_auth_session;
@@ -435,74 +345,115 @@ signon_session_password_execute (EAuthenticationSession *session,
 	g_object_unref (simple);
 }
 
-static EAuthenticationSessionResult
-signon_session_password_execute_finish (EAuthenticationSession *session,
-                                        GAsyncResult *result,
-                                        GError **error)
+static gboolean
+e_signon_session_password_get_finish (ESourceCredentialsProviderImpl *provider_impl,
+				      GAsyncResult *result,
+				      GString *out_password,
+				      GError **error)
 {
 	GSimpleAsyncResult *simple;
 	AsyncContext *async_context;
-	EAuthenticationSessionResult session_result;
+	gboolean success;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
-		result, G_OBJECT (session),
-		signon_session_password_execute),
-		E_AUTHENTICATION_SESSION_DISMISSED);
+		result, G_OBJECT (provider_impl),
+		e_signon_session_password_get),
+		FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
-	if (g_simple_async_result_propagate_error (simple, error))
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
-	else
-		session_result = async_context->session_result;
-
-	switch (session_result) {
-		case E_AUTHENTICATION_SESSION_ERROR:
-			if (error != NULL && *error != NULL)
-				signon_session_password_msg (
-					session, "Complete (ERROR - %s)",
-					(*error)->message);
-			else
-				signon_session_password_msg (
-					session, "Complete (ERROR)");
-			break;
-		case E_AUTHENTICATION_SESSION_SUCCESS:
-			signon_session_password_msg (
-				session, "Complete (SUCCESS)");
-			break;
-		case E_AUTHENTICATION_SESSION_DISMISSED:
-			signon_session_password_msg (
-				session, "Complete (DISMISSED)");
-			break;
-		default:
-			g_warn_if_reached ();
+	if (g_simple_async_result_propagate_error (simple, error)) {
+		success = FALSE;
+	} else {
+		success = async_context->password != NULL;
+		if (success && out_password)
+			g_string_assign (out_password, async_context->password->str);
 	}
 
-	return session_result;
+	return success;
+}
+
+static gboolean
+e_signon_session_password_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
+				       ESource *source,
+				       GCancellable *cancellable,
+				       ENamedParameters **out_credentials,
+				       GError **error)
+{
+	EAsyncClosure *async_closure;
+	GAsyncResult *async_result;
+	gboolean success;
+	GString *password;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (out_credentials != NULL, FALSE);
+
+	async_closure = e_async_closure_new ();
+
+	e_signon_session_password_get (provider_impl, source,
+		G_PRIORITY_DEFAULT, cancellable,
+		e_async_closure_callback, async_closure);
+
+	async_result = e_async_closure_wait (async_closure);
+
+	password = g_string_new ("");
+
+	success = e_signon_session_password_get_finish (provider_impl, async_result, password, error);
+	if (success) {
+		*out_credentials = e_named_parameters_new ();
+		e_named_parameters_set (*out_credentials, E_SOURCE_CREDENTIAL_PASSWORD, password->str);
+	}
+
+	if (password->str)
+		memset (password->str, 0, password->len);
+	g_string_free (password, TRUE);
+
+	e_async_closure_free (async_closure);
+
+	if (success) {
+		e_signon_session_password_msg (source, "Complete (SUCCESS)");
+	} else if (error && *error) {
+		e_signon_session_password_msg (source, "Complete (ERROR - %s)", (*error)->message);
+	} else {
+		e_signon_session_password_msg (source, "Complete (ERROR)");
+	}
+
+
+	return success;
+}
+
+static void
+signon_session_password_dispose (GObject *object)
+{
+	ESignonSessionPasswordPrivate *priv;
+
+	priv = E_SIGNON_SESSION_PASSWORD_GET_PRIVATE (object);
+
+	g_clear_object (&priv->ag_manager);
+
+	/* Chain up to parent's dispose() method. */
+	G_OBJECT_CLASS (e_signon_session_password_parent_class)->
+		dispose (object);
 }
 
 static void
 e_signon_session_password_class_init (ESignonSessionPasswordClass *class)
 {
 	GObjectClass *object_class;
-	EAuthenticationSessionClass *authentication_session_class;
+	ESourceCredentialsProviderImplClass *provider_impl_class;
 
-	g_type_class_add_private (
-		class, sizeof (ESignonSessionPasswordPrivate));
+	g_type_class_add_private (class, sizeof (ESignonSessionPasswordPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = signon_session_password_dispose;
 
-	authentication_session_class =
-		E_AUTHENTICATION_SESSION_CLASS (class);
-	authentication_session_class->execute_sync =
-		signon_session_password_execute_sync;
-	authentication_session_class->execute =
-		signon_session_password_execute;
-	authentication_session_class->execute_finish =
-		signon_session_password_execute_finish;
+	provider_impl_class = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS (class);
+	provider_impl_class->can_process = e_signon_session_password_can_process;
+	provider_impl_class->can_store = e_signon_session_password_can_store;
+	provider_impl_class->can_prompt = e_signon_session_password_can_prompt;
+	provider_impl_class->lookup_sync = e_signon_session_password_lookup_sync;
 }
 
 static void

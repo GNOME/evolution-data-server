@@ -18,7 +18,7 @@
 #ifndef E_SIGNON_SESSION_PASSWORD_H
 #define E_SIGNON_SESSION_PASSWORD_H
 
-#include <libebackend/libebackend.h>
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SIGNON_SESSION_PASSWORD \
@@ -46,12 +46,12 @@ typedef struct _ESignonSessionPasswordClass ESignonSessionPasswordClass;
 typedef struct _ESignonSessionPasswordPrivate ESignonSessionPasswordPrivate;
 
 struct _ESignonSessionPassword {
-	EAuthenticationSession parent;
+	ESourceCredentialsProviderImpl parent;
 	ESignonSessionPasswordPrivate *priv;
 };
 
 struct _ESignonSessionPasswordClass {
-	EAuthenticationSessionClass parent_class;
+	ESourceCredentialsProviderImplClass parent_class;
 };
 
 GType		e_signon_session_password_get_type

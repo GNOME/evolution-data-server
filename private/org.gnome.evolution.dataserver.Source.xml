@@ -14,14 +14,105 @@
   <property name="UID" type="s" access="read"/>
   <!-- Data: Raw key file data describing the source. -->
   <property name="Data" type="s" access="read"/>
+  <!-- ConnectionStatus: Current ESourceConnectionStatus of the source. @since: 3.14 -->
+  <property name="ConnectionStatus" type="s" access="readwrite"/>
 
   <!--
-      AllowAuthPrompt:
+      CredentialsRequired:
+      @reason: one of the ESourceCredentialsReason values
+      @certificate_pem: either an empty string or a PEM-encoded certificate
+                        being used for the SSL connection
+      @certificate_errors: a GTlsCertificateFlags bit-or of certificate errors
+      @dbus_error_name: a GDBus' error name for a failed authentication
+      @dbus_error_message: actual error message corresponding to @dbus_error_name
+      @since: 3.14
 
-      If the user declines to provide a secret when prompted, further
-      authentication prompts are inhibited until this method is called.
+      Emitted, when the source requires credentials, like for login, to be
+      able to connect to its destination. The client side may listen to it
+      to let a user know that the credentials are required, eventually ask
+      for the credentials (password) straight away.
+      The ConnectionStatus property changes accordingly, when one of
+      the listeners will provide the credentials using Authenticate method.
+      The reason argument says why the credentials are required.
+
+      The value E_SOURCE_CREDENTIALS_REASON_SSL_FAILED indicates a failed
+      certificate check on a secured connection, then the certificate_pem and
+      certificate_errors are populated with the actual certificate being used
+      and what failed with it. Otherwise these two arguments are meaningless.
+      The error argument can contain a text description of the certificate_errors too.
+
+      The value E_SOURCE_CREDENTIALS_REASON_ERROR indicates a failure
+      on the server side, other than rejected credentials or failed SSL
+      checks. In this case the 'error' argument holds a text description of
+      the error. The 'error' argument is meaningless or optional in other cases.
   -->
-  <method name="AllowAuthPrompt"/>
+  <signal name="CredentialsRequired">
+    <arg name="reason" direction="in" type="s"/>
+    <arg name="certificate_pem" direction="in" type="s"/>
+    <arg name="certificate_errors" direction="in" type="s"/>
+    <arg name="dbus_error_name" direction="in" type="s"/>
+    <arg name="dbus_error_message" direction="in" type="s"/>
+  </signal>
+
+  <!--
+      InvokeCredentialsRequired:
+      @since: 3.14
+
+      Invokes CredentialsRequired signal on the server side, thus it can
+      be received by all clients.
+  -->
+  <method name="InvokeCredentialsRequired">
+    <arg name="reason" direction="in" type="s"/>
+    <arg name="certificate_pem" direction="in" type="s"/>
+    <arg name="certificate_errors" direction="in" type="s"/>
+    <arg name="dbus_error_name" direction="in" type="s"/>
+    <arg name="dbus_error_message" direction="in" type="s"/>
+  </method>
+
+  <!--
+      GetLastCredentialsRequiredArguments:
+      @reason: (out): The 'reason' argument used in the last call of CredentialsRequired()
+      @certificate_pem: (out): The 'certificate_pem' argument used in the last call of CredentialsRequired()
+      @certificate_errors: (out): The 'certificate_errors' argument used in the last call of CredentialsRequired()
+      @dbus_error_name: (out): The 'dbus_error_name' argument used in the last call of CredentialsRequired()
+      @dbus_error_message: (out): The 'dbus_error_message' argument used in the last call of CredentialsRequired()
+      @since: 3.14
+
+      Returns tha last arguments used to the call of CredentialsRequired().
+      The values are automatically unset with the Authenticate() call.
+  -->
+  <method name="GetLastCredentialsRequiredArguments">
+    <arg name="reason" direction="out" type="s"/>
+    <arg name="certificate_pem" direction="out" type="s"/>
+    <arg name="certificate_errors" direction="out" type="s"/>
+    <arg name="dbus_error_name" direction="out" type="s"/>
+    <arg name="dbus_error_message" direction="out" type="s"/>
+  </method>
+
+  <!--
+      Authenticate:
+      @credentials: provided credentials, in a GKeyFile format
+      @since: 3.14
+
+      This is a response method for a signal CredentialsRequired, when
+      the credentials had been obtained from a user. The @credentials is
+      an array of strings suitable for ECredentials structure.
+  -->
+  <signal name="Authenticate">
+    <arg name="credentials" direction="in" type="as"/>
+  </signal>
+
+  <!--
+      InvokeAuthenticate:
+      @since: 3.14
+
+      Invokes Authenticate signal on the server side, thus it can
+      be received by all clients (and served by backends).
+  -->
+  <method name="InvokeAuthenticate">
+    <arg name="credentials" direction="in" type="as"/>
+  </method>
+
 </interface>
 
 <!--

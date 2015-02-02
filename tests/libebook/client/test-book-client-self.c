@@ -56,7 +56,7 @@ test_set_self (ETestServerFixture *fixture,
 
 	/* Open the system addressbook */
 	source = e_source_registry_ref_builtin_address_book (fixture->registry);
-	client = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
+	client = (EBookClient *) e_book_client_connect_sync (source, 30, NULL, &error);
 	g_object_unref (source);
 	if (!client)
 		g_error ("Error connecting to system addressbook: %s", error->message);

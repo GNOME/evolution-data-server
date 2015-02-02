@@ -32,6 +32,8 @@
 
 #include <glib-object.h>
 
+#include "e-source-enumtypes.h"
+
 #include "e-data-server-util.h"
 
 /**
@@ -1090,6 +1092,27 @@ e_util_free_nullable_object_slist (GSList *objects)
 }
 
 /**
+ * e_util_safe_free_string:
+ * @str: a string to free
+ *
+ * Calls g_free() on @string, but before it rewrites its content with zeros.
+ * This is suitable to free strings with passwords.
+ *
+ * Since: 3.14
+ **/
+void
+e_util_safe_free_string (gchar *str)
+{
+	if (!str)
+		return;
+
+	if (*str)
+		memset (str, 0, sizeof (gchar) * strlen (str));
+
+	g_free (str);
+}
+
+/**
  * e_queue_transfer:
  * @src_queue: a source #GQueue
  * @dst_queue: a destination #GQueue
@@ -1650,6 +1673,7 @@ static const gchar *localedir;
 static const gchar *extensiondir;
 static const gchar *imagesdir;
 static const gchar *ui_uidir;
+static const gchar *credentialmoduledir;
 
 static HMODULE hmodule;
 G_LOCK_DEFINE_STATIC (mutex);
@@ -1731,6 +1755,7 @@ setup (void)
 	extensiondir = replace_prefix (prefix, E_DATA_SERVER_EXTENSIONDIR);
 	imagesdir = replace_prefix (prefix, E_DATA_SERVER_IMAGESDIR);
 	ui_uidir = replace_prefix (prefix, E_DATA_SERVER_UI_UIDIR);
+	credentialmoduledir = replace_prefix (prefix, E_DATA_SERVER_CREDENTIALMODULEDIR);
 
 	G_UNLOCK (mutex);
 }
@@ -1756,6 +1781,7 @@ e_util_get_##varbl (void) \
 PRIVATE_GETTER (extensiondir)
 PRIVATE_GETTER (imagesdir)
 PRIVATE_GETTER (ui_uidir)
+PRIVATE_GETTER (credentialmoduledir);
 
 PUBLIC_GETTER (prefix)
 PUBLIC_GETTER (cp_prefix)
@@ -1904,7 +1930,7 @@ e_data_server_util_get_dbus_call_timeout (void)
 ENamedParameters *
 e_named_parameters_new (void)
 {
-	return (ENamedParameters *) g_ptr_array_new_with_free_func (g_free);
+	return (ENamedParameters *) g_ptr_array_new_with_free_func ((GDestroyNotify) e_util_safe_free_string);
 }
 
 /**
@@ -1937,6 +1963,34 @@ e_named_parameters_new_strv (const gchar * const *strv)
 	}
 
 	return parameters;
+}
+
+/**
+ * e_named_parameters_new_clone:
+ * @parameters: an #ENamedParameters to be used as a content of a newly
+ *    created #ENamedParameters
+ *
+ * Creates a new instance of an #ENamedParameters, with initial content
+ * being taken from @parameters. This should be freed with e_named_parameters_free(),
+ * when no longer needed. Names are compared case insensitively.
+ *
+ * The structure is not thread safe, if the caller requires thread safety,
+ * then it should provide it on its own.
+ *
+ * Returns: newly allocated #ENamedParameters
+ *
+ * Since: 3.14
+ **/
+ENamedParameters *
+e_named_parameters_new_clone (const ENamedParameters *parameters)
+{
+	ENamedParameters *clone;
+
+	clone = e_named_parameters_new ();
+	if (parameters)
+		e_named_parameters_assign (clone, parameters);
+
+	return clone;
 }
 
 /**
@@ -2394,4 +2448,47 @@ e_source_registry_debug_print (const gchar *format,
 	g_print ("%s", str->str);
 
 	g_string_free (str, TRUE);
+}
+
+/**
+ * e_type_traverse:
+ * @parent_type: the root #GType to traverse from
+ * @func: the function to call for each visited #GType
+ * @user_data: user data to pass to the function
+ *
+ * Calls @func for all instantiable subtypes of @parent_type.
+ *
+ * This is often useful for extending functionality by way of #EModule.
+ * A module may register a subtype of @parent_type in its e_module_load()
+ * function.  Then later on the application will call e_type_traverse()
+ * to instantiate all registered subtypes of @parent_type.
+ *
+ * Since: 3.4
+ **/
+void
+e_type_traverse (GType parent_type,
+                 ETypeFunc func,
+                 gpointer user_data)
+{
+	GType *children;
+	guint n_children, ii;
+
+	g_return_if_fail (func != NULL);
+
+	children = g_type_children (parent_type, &n_children);
+
+	for (ii = 0; ii < n_children; ii++) {
+		GType type = children[ii];
+
+		/* Recurse over the child's children. */
+		e_type_traverse (type, func, user_data);
+
+		/* Skip abstract types. */
+		if (G_TYPE_IS_ABSTRACT (type))
+			continue;
+
+		func (type, user_data);
+	}
+
+	g_free (children);
 }

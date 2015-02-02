@@ -54,14 +54,13 @@
 
 #include <libedataserver/e-data-server-util.h>
 #include <libedataserver/e-source-collection.h>
+#include <libedataserver/e-source-enumtypes.h>
 
 /* Needed for the defaults API. */
 #include <libedataserver/e-source-address-book.h>
 #include <libedataserver/e-source-calendar.h>
 #include <libedataserver/e-source-mail-account.h>
 #include <libedataserver/e-source-mail-identity.h>
-
-#include "e-dbus-authenticator.h"
 
 #define E_SOURCE_REGISTRY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -87,10 +86,10 @@
 #define E_SETTINGS_DEFAULT_TASK_LIST_KEY	"default-task-list"
 
 typedef struct _AsyncContext AsyncContext;
-typedef struct _AuthContext AuthContext;
 typedef struct _CreateContext CreateContext;
 typedef struct _SourceClosure SourceClosure;
 typedef struct _ThreadClosure ThreadClosure;
+typedef struct _CredentialsRequiredClosure CredentialsRequiredClosure;
 
 struct _ESourceRegistryPrivate {
 	GMainContext *main_context;
@@ -120,19 +119,6 @@ struct _ESourceRegistryPrivate {
 struct _AsyncContext {
 	ESource *source;
 	GList *list_of_sources;
-	ESourceAuthenticator *auth;
-};
-
-/* Used in e_source_registry_authenticate_sync() */
-struct _AuthContext {
-	ESourceAuthenticator *auth;
-	EDBusAuthenticator *dbus_auth;
-	GCancellable *cancellable;
-	GMainLoop *main_loop;
-	ESourceAuthenticationResult auth_result;
-	GcrSecretExchange *secret_exchange;
-	gboolean authenticating;
-	GError **error;
 };
 
 /* Used in e_source_registry_create_sources_sync() */
@@ -156,6 +142,15 @@ struct _ThreadClosure {
 	GError *error;
 };
 
+struct _CredentialsRequiredClosure {
+	GWeakRef registry;
+	ESource *source;
+	ESourceCredentialsReason reason;
+	gchar *certificate_pem;
+	GTlsCertificateFlags certificate_errors;
+	GError *op_error;
+};
+
 enum {
 	PROP_0,
 	PROP_DEFAULT_ADDRESS_BOOK,
@@ -172,6 +167,7 @@ enum {
 	SOURCE_REMOVED,
 	SOURCE_ENABLED,
 	SOURCE_DISABLED,
+	CREDENTIALS_REQUIRED,
 	LAST_SIGNAL
 };
 
@@ -208,31 +204,7 @@ async_context_free (AsyncContext *async_context)
 		async_context->list_of_sources,
 		(GDestroyNotify) g_object_unref);
 
-	if (async_context->auth != NULL)
-		g_object_unref (async_context->auth);
-
 	g_slice_free (AsyncContext, async_context);
-}
-
-static void
-auth_context_free (AuthContext *auth_context)
-{
-	if (auth_context->auth != NULL)
-		g_object_unref (auth_context->auth);
-
-	if (auth_context->dbus_auth != NULL)
-		g_object_unref (auth_context->dbus_auth);
-
-	if (auth_context->cancellable != NULL)
-		g_object_unref (auth_context->cancellable);
-
-	if (auth_context->main_loop != NULL)
-		g_main_loop_unref (auth_context->main_loop);
-
-	if (auth_context->secret_exchange != NULL)
-		g_object_unref (auth_context->secret_exchange);
-
-	g_slice_free (AuthContext, auth_context);
 }
 
 static CreateContext *
@@ -291,6 +263,21 @@ thread_closure_free (ThreadClosure *closure)
 
 	g_slice_free (ThreadClosure, closure);
 }
+
+static void
+credentials_required_closure_free (gpointer ptr)
+{
+	CredentialsRequiredClosure *closure = ptr;
+
+	if (closure) {
+		g_weak_ref_clear (&closure->registry);
+		g_object_unref (closure->source);
+		g_free (closure->certificate_pem);
+		g_clear_error (&closure->op_error);
+
+		g_slice_free (CredentialsRequiredClosure, closure);
+	}
+};
 
 G_LOCK_DEFINE_STATIC (singleton_lock);
 static GWeakRef singleton;
@@ -647,6 +634,55 @@ source_registry_source_notify_enabled_cb (ESource *source,
 	g_source_unref (idle_source);
 }
 
+static gboolean
+source_registry_source_credentials_required_idle_cb (gpointer user_data)
+{
+	CredentialsRequiredClosure *closure = user_data;
+	ESourceRegistry *registry;
+
+	registry = g_weak_ref_get (&closure->registry);
+
+	if (registry != NULL) {
+		g_signal_emit (
+			registry,
+			signals[CREDENTIALS_REQUIRED], 0,
+			closure->source, closure->reason, closure->certificate_pem,
+			closure->certificate_errors, closure->op_error);
+
+		g_object_unref (registry);
+	}
+
+	return FALSE;
+}
+
+static void
+source_registry_source_credentials_required_cb (ESource *source,
+						ESourceCredentialsReason reason,
+						const gchar *certificate_pem,
+						GTlsCertificateFlags certificate_errors,
+						const GError *op_error,
+						ESourceRegistry *registry)
+{
+	GSource *idle_source;
+	CredentialsRequiredClosure *closure;
+
+	closure = g_slice_new0 (CredentialsRequiredClosure);
+	g_weak_ref_init (&closure->registry, registry);
+	closure->source = g_object_ref (source);
+	closure->reason = reason;
+	closure->certificate_pem = g_strdup (certificate_pem);
+	closure->certificate_errors = certificate_errors;
+	closure->op_error = op_error ? g_error_copy (op_error) : NULL;
+
+	idle_source = g_idle_source_new ();
+	g_source_set_callback (
+		idle_source,
+		source_registry_source_credentials_required_idle_cb,
+		closure, credentials_required_closure_free);
+	g_source_attach (idle_source, registry->priv->main_context);
+	g_source_unref (idle_source);
+}
+
 static ESource *
 source_registry_new_source (ESourceRegistry *registry,
                             GDBusObject *dbus_object)
@@ -695,6 +731,10 @@ source_registry_unref_source (ESource *source)
 		source, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
 		source_registry_source_notify_enabled_cb, NULL);
 
+	g_signal_handlers_disconnect_matched (
+		source, G_SIGNAL_MATCH_FUNC, 0, 0, NULL,
+		source_registry_source_credentials_required_cb, NULL);
+
 	g_object_unref (source);
 }
 
@@ -726,6 +766,11 @@ source_registry_add_source (ESourceRegistry *registry,
 	g_signal_connect (
 		source, "notify::enabled",
 		G_CALLBACK (source_registry_source_notify_enabled_cb),
+		registry);
+
+	g_signal_connect (
+		source, "credentials-required",
+		G_CALLBACK (source_registry_source_credentials_required_cb),
 		registry);
 
 	g_hash_table_insert (
@@ -1388,14 +1433,6 @@ source_registry_initable_init (GInitable *initable,
 		goto exit;
 	}
 
-	/* Allow authentication prompts for all exported data sources
-	 * when a new EDBusSourceManagerProxy is created.  The thought
-	 * being, if you cancel an authentication prompt you will not
-	 * be bothered again until you start (or restart) a new E-D-S
-	 * client app.  Failure here is non-fatal, ignore errors. */
-	e_dbus_source_manager_call_allow_auth_prompt_all_sync (
-		registry->priv->dbus_source_manager, cancellable, NULL);
-
 exit:
 	registry->priv->initialized = TRUE;
 	g_mutex_unlock (&registry->priv->init_lock);
@@ -1606,6 +1643,36 @@ e_source_registry_class_init (ESourceRegistryClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		E_TYPE_SOURCE);
+
+	/**
+	 * ESourceRegistry::credentials-required:
+	 * @registry: the #ESourceRegistry which emitted the signal
+	 * @source: the #ESource that requires credentials
+	 * @reason: an #ESourceCredentialsReason indicating why the credentials are requested
+	 * @certificate_pem: PEM-encoded secure connection certificate for failed SSL checks
+	 * @certificate_errors: what failed with the SSL certificate
+	 * @op_error: a #GError with a description of the error, or %NULL
+	 *
+	 * The ::credentials-required signal is emitted when the @source
+	 * requires credentials to connect to (possibly remote)
+	 * data store. The credentials can be passed to the source using
+	 * e_source_authenticate() function. The signal is emitted in
+	 * the thread-default main context from the time the @registry was created.
+	 *
+	 * Note: This is just a proxy signal for the ESource::credentials-required signal.
+	 **/
+	signals[CREDENTIALS_REQUIRED] = g_signal_new (
+		"credentials-required",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE,
+		G_STRUCT_OFFSET (ESourceRegistryClass, credentials_required),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 5,
+		E_TYPE_SOURCE,
+		E_TYPE_SOURCE_CREDENTIALS_REASON,
+		G_TYPE_STRING,
+		G_TYPE_TLS_CERTIFICATE_FLAGS,
+		G_TYPE_ERROR);
 }
 
 static void
@@ -1777,517 +1844,6 @@ e_source_registry_new_finish (GAsyncResult *result,
 	g_return_val_if_fail (g_task_is_valid (result, NULL), NULL);
 
 	return g_task_propagate_pointer (G_TASK (result), error);
-}
-
-/* Helper for e_source_registry_authenticate() */
-static void
-source_registry_authenticate_thread (GSimpleAsyncResult *simple,
-                                     GObject *object,
-                                     GCancellable *cancellable)
-{
-	AsyncContext *async_context;
-	GError *local_error = NULL;
-
-	async_context = g_simple_async_result_get_op_res_gpointer (simple);
-
-	e_source_registry_authenticate_sync (
-		E_SOURCE_REGISTRY (object),
-		async_context->source,
-		async_context->auth,
-		cancellable, &local_error);
-
-	if (local_error != NULL)
-		g_simple_async_result_take_error (simple, local_error);
-}
-
-/* Helper for e_source_registry_authenticate_sync() */
-static gboolean
-source_registry_authenticate_respond_cb (AuthContext *auth_context)
-{
-	ESourceAuthenticationResult auth_result;
-	GError *non_fatal_error = NULL;
-
-	g_return_val_if_fail (auth_context->authenticating, FALSE);
-
-	auth_result = auth_context->auth_result;
-
-	/* Allow the next authentication attempt to proceed. */
-	auth_context->authenticating = FALSE;
-
-	/* Send the server a status update based on the authentication
-	 * result.  Note, we don't really care if the D-Bus message gets
-	 * through to the server at this point.  If it doesn't, the auth
-	 * session will either time out on its own or the authentication
-	 * dialog will eventually be dismissed by the user. */
-
-	/* If we were cancelled from our side, we have a bit of a dilemma.
-	 * We need to tell the server to cancel the authentication session,
-	 * but that involves making a synchronous D-Bus call, which we are
-	 * not supposed to do if we know we've been cancelled.  But if we
-	 * don't tell the server, the authentication session will be left
-	 * to timeout on its own (which may take minutes), and meanwhile
-	 * all other authentication requests are blocked.  So choose the
-	 * lesser evil and make the synchronous call but without passing
-	 * the already-cancelled GCancellable. */
-	if (g_cancellable_is_cancelled (auth_context->cancellable)) {
-		e_dbus_authenticator_call_cancel_sync (
-			auth_context->dbus_auth,
-			NULL, &non_fatal_error);
-		g_main_loop_quit (auth_context->main_loop);
-
-	/* If an error occurred while attempting to authenticate,
-	 * tell the server to cancel the authentication session. */
-	} else if (auth_result == E_SOURCE_AUTHENTICATION_ERROR) {
-		e_dbus_authenticator_call_cancel_sync (
-			auth_context->dbus_auth,
-			auth_context->cancellable,
-			&non_fatal_error);
-		g_main_loop_quit (auth_context->main_loop);
-
-	/* If the password was accepted, let the server know so it
-	 * can close any authentication dialogs and save the user
-	 * provided password to the keyring. */
-	} else if (auth_result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
-		e_dbus_authenticator_call_accepted_sync (
-			auth_context->dbus_auth,
-			auth_context->cancellable,
-			&non_fatal_error);
-		g_main_loop_quit (auth_context->main_loop);
-
-	/* If the password was rejected, let the server know so it can
-	 * indicate failure and request a different password, and then
-	 * wait for the next "response" signal. */
-	} else {
-		e_dbus_authenticator_call_rejected_sync (
-			auth_context->dbus_auth,
-			auth_context->cancellable,
-			&non_fatal_error);
-	}
-
-	/* Leave breadcrumbs if something went wrong,
-	 * but don't fail the whole operation over it. */
-	if (non_fatal_error != NULL) {
-		g_dbus_error_strip_remote_error (non_fatal_error);
-		g_warning ("%s: %s", G_STRFUNC, non_fatal_error->message);
-		g_error_free (non_fatal_error);
-	}
-
-	return FALSE;
-}
-
-/* Helper for e_source_registry_authenticate_sync() */
-static void
-source_registry_authenticate_authenticate_cb (EDBusAuthenticator *dbus_auth,
-                                              const gchar *encrypted_secret,
-                                              AuthContext *auth_context)
-{
-	GSource *idle_source;
-	GMainContext *main_context;
-	GString *password;
-	gboolean valid_secret;
-
-	/* We should only get one secret at a time. */
-	g_return_if_fail (!auth_context->authenticating);
-
-	valid_secret = gcr_secret_exchange_receive (
-		auth_context->secret_exchange, encrypted_secret);
-	g_return_if_fail (valid_secret);
-
-	auth_context->authenticating = TRUE;
-
-	/* This avoids revealing the password in a stack trace. */
-	password = g_string_new (
-		gcr_secret_exchange_get_secret (
-		auth_context->secret_exchange, NULL));
-
-	/* Try authenticating with the given password.  We have to
-	 * call this synchronously because some authenticators use
-	 * mutexes to serialize I/O operations and are not prepared
-	 * to make authentication attempts from a different thread.
-	 *
-	 * Unfortunately this means we won't notice server-side
-	 * dismissals while the main loop is blocked.  We respond
-	 * to the server from a low-priority idle callback so that
-	 * any pending "dismissed" signals get handled first. */
-
-	auth_context->auth_result =
-		e_source_authenticator_try_password_sync (
-			auth_context->auth, password,
-			auth_context->cancellable,
-			auth_context->error);
-
-	idle_source = g_idle_source_new ();
-	main_context = g_main_context_get_thread_default ();
-	g_source_set_callback (
-		idle_source, (GSourceFunc)
-		source_registry_authenticate_respond_cb,
-		auth_context, NULL);
-	g_source_attach (idle_source, main_context);
-	g_source_unref (idle_source);
-
-	g_string_free (password, TRUE);
-}
-
-/* Helper for e_source_registry_authenticate_sync() */
-static void
-source_registry_authenticate_dismissed_cb (EDBusAuthenticator *dbus_auth,
-                                           AuthContext *auth_context)
-{
-	/* Be careful not to overwrite an existing error in case this
-	 * is called after e_source_authenticator_try_password_sync()
-	 * but prior to the idle callback. */
-	if (auth_context->auth_result != E_SOURCE_AUTHENTICATION_ERROR) {
-		/* XXX Use a separate error code for dismissals? */
-		g_set_error_literal (
-			auth_context->error,
-			G_IO_ERROR, G_IO_ERROR_CANCELLED,
-			_("The user declined to authenticate"));
-		auth_context->auth_result = E_SOURCE_AUTHENTICATION_ERROR;
-	}
-
-	g_main_loop_quit (auth_context->main_loop);
-}
-
-/* Helper for e_source_registry_authenticate_sync() */
-static void
-source_registry_authenticate_server_error_cb (EDBusAuthenticator *dbus_auth,
-                                              const gchar *name,
-                                              const gchar *message,
-                                              AuthContext *auth_context)
-{
-	/* Be careful not to overwrite an existing error */
-	if (auth_context->auth_result != E_SOURCE_AUTHENTICATION_ERROR) {
-		GError *error;
-
-		error = g_dbus_error_new_for_dbus_error (name, message);
-		g_propagate_error (auth_context->error, error);
-
-		auth_context->auth_result = E_SOURCE_AUTHENTICATION_ERROR;
-	}
-
-	g_main_loop_quit (auth_context->main_loop);
-}
-
-/* Helper for e_source_registry_authenticate_sync() */
-static gboolean
-source_registry_call_authenticate_for_source (ESourceRegistry *registry,
-                                              ESourceAuthenticator *auth,
-                                              ESource *source,
-                                              gchar **out_object_path,
-                                              GCancellable *cancellable,
-                                              GError **error)
-{
-	ESource *collection;
-	const gchar *uid;
-	gchar *prompt_title = NULL;
-	gchar *prompt_message = NULL;
-	gchar *prompt_description = NULL;
-	GError *local_error = NULL;
-
-	g_object_ref (source);
-
-	/* If the source is a member of a collection, we want to store
-	 * the password under the UID of the "collection" source so it
-	 * will apply to the entire collection.
-	 *
-	 * XXX This assumes all sources in a collection share a single
-	 *     password.  If that turns out not to be true in all cases
-	 *     we could maybe add a "SharedPassword: true/false" key to
-	 *     [Collection] and apply it here.
-	 *
-	 *     Addendum: Assumption proven wrong.  GOA's generic IMAP/SMTP
-	 *               provider uses a plain ECollectionBackend (backend
-	 *               name "none") with separately stored passwords for
-	 *               IMAP vs SMTP.  Just handle this case directly for
-	 *               now, but don't rule out the "SharedPassword" idea.
-	 */
-	collection = e_source_registry_find_extension (
-		registry, source, E_SOURCE_EXTENSION_COLLECTION);
-	if (collection != NULL) {
-		ESourceBackend *extension;
-		gchar *backend_name;
-
-		extension = e_source_get_extension (
-			collection, E_SOURCE_EXTENSION_COLLECTION);
-		backend_name = e_source_backend_dup_backend_name (extension);
-
-		if (g_strcmp0 (backend_name, "none") != 0) {
-			g_object_unref (source);
-			source = g_object_ref (collection);
-		}
-
-		g_free (backend_name);
-
-		g_object_unref (collection);
-	}
-
-	uid = e_source_get_uid (source);
-
-	e_source_authenticator_get_prompt_strings (
-		auth, source,
-		&prompt_title,
-		&prompt_message,
-		&prompt_description);
-
-	e_dbus_source_manager_call_authenticate_sync (
-		registry->priv->dbus_source_manager, uid,
-		prompt_title, prompt_message, prompt_description,
-		out_object_path, cancellable, &local_error);
-
-	g_free (prompt_title);
-	g_free (prompt_message);
-	g_free (prompt_description);
-
-	g_object_unref (source);
-
-	if (local_error != NULL) {
-		g_dbus_error_strip_remote_error (local_error);
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/**
- * e_source_registry_authenticate_sync:
- * @registry: an #ESourceRegistry
- * @source: an #ESource
- * @auth: an #ESourceAuthenticator
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Authenticates @source, using @auth to handle the authentication
- * attempts.  The operation loops until authentication is successful or
- * the user aborts further authentication attempts.  If an error occurs,
- * the function will set @error and return %FALSE.
- *
- * Note that @source need not have a #GDBusObject, which means this
- * function can test authentication on a scratch #ESource.
- *
- * Only backend implementations and data source editors should call this
- * function.  The intent is for basic client applications to not have to
- * deal with authentication at all.
- *
- * Returns: %TRUE on success, %FALSE on failure
- *
- * Since: 3.6
- **/
-gboolean
-e_source_registry_authenticate_sync (ESourceRegistry *registry,
-                                     ESource *source,
-                                     ESourceAuthenticator *auth,
-                                     GCancellable *cancellable,
-                                     GError **error)
-{
-	AuthContext *auth_context;
-	GMainContext *main_context;
-	EDBusAuthenticator *dbus_auth;
-	gboolean without_password;
-	gchar *encryption_key;
-	gchar *object_path = NULL;
-	GError *local_error = NULL;
-
-	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth), FALSE);
-
-	/* This extracts authentication prompt details for the ESource
-	 * before initiating an authentication session with the server,
-	 * so split it out of the main algorithm for clarity's sake. */
-	source_registry_call_authenticate_for_source (
-		registry, auth, source, &object_path,
-		cancellable, &local_error);
-
-	if (local_error != NULL) {
-		g_warn_if_fail (object_path == NULL);
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
-
-	g_return_val_if_fail (object_path != NULL, FALSE);
-
-	main_context = g_main_context_new ();
-	g_main_context_push_thread_default (main_context);
-
-	dbus_auth = e_dbus_authenticator_proxy_new_for_bus_sync (
-		G_BUS_TYPE_SESSION,
-		G_DBUS_PROXY_FLAGS_NONE,
-		SOURCES_DBUS_SERVICE_NAME,
-		object_path, cancellable, &local_error);
-
-	g_free (object_path);
-
-	/* Sanity check. */
-	g_return_val_if_fail (
-		((dbus_auth != NULL) && (local_error == NULL)) ||
-		((dbus_auth == NULL) && (local_error != NULL)), FALSE);
-
-	if (local_error != NULL)
-		goto exit;
-
-	without_password = e_source_authenticator_get_without_password (auth);
-	e_dbus_authenticator_set_without_password (dbus_auth, without_password);
-
-	auth_context = g_slice_new0 (AuthContext);
-	auth_context->auth = g_object_ref (auth);
-	auth_context->dbus_auth = dbus_auth;  /* takes ownership */
-	auth_context->main_loop = g_main_loop_new (main_context, FALSE);
-	auth_context->error = &local_error;
-
-	/* This just needs to be something other than
-	 * E_SOURCE_AUTHENTICATION_ERROR so we don't trip
-	 * up source_registry_authenticate_dismissed_cb(). */
-	auth_context->auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
-
-	if (G_IS_CANCELLABLE (cancellable))
-		auth_context->cancellable = g_object_ref (cancellable);
-
-	auth_context->secret_exchange =
-		gcr_secret_exchange_new (GCR_SECRET_EXCHANGE_PROTOCOL_1);
-
-	g_signal_connect (
-		dbus_auth, "authenticate",
-		G_CALLBACK (source_registry_authenticate_authenticate_cb),
-		auth_context);
-
-	g_signal_connect (
-		dbus_auth, "dismissed",
-		G_CALLBACK (source_registry_authenticate_dismissed_cb),
-		auth_context);
-
-	g_signal_connect (
-		dbus_auth, "server-error",
-		G_CALLBACK (source_registry_authenticate_server_error_cb),
-		auth_context);
-
-	encryption_key = gcr_secret_exchange_begin (
-		auth_context->secret_exchange);
-
-	/* Signal the D-Bus server that we're ready to begin the
-	 * authentication session.  This must happen AFTER we've
-	 * connected to the response signal since the server may
-	 * already have a response ready and waiting for us. */
-	e_dbus_authenticator_call_ready_sync (
-		dbus_auth, encryption_key, cancellable, &local_error);
-
-	g_free (encryption_key);
-
-	if (local_error == NULL)
-		g_main_loop_run (auth_context->main_loop);
-
-	auth_context_free (auth_context);
-
-exit:
-	g_main_context_pop_thread_default (main_context);
-
-	/* Make sure the main_context doesn't have pending operations;
-	 * workarounds https://bugzilla.gnome.org/show_bug.cgi?id=690126 */
-	while (g_main_context_pending (main_context))
-		g_main_context_iteration (main_context, FALSE);
-
-	g_main_context_unref (main_context);
-
-	if (local_error != NULL) {
-		g_dbus_error_strip_remote_error (local_error);
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
-
-	return TRUE;
-}
-
-/**
- * e_source_registry_authenticate:
- * @registry: an #ESourceRegistry
- * @source: an #ESource
- * @auth: an #ESourceAuthenticator
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
- *
- * Asynchronously authenticates @source, using @auth to handle the
- * authentication attempts.  The operation loops until authentication
- * is successful or the user aborts further authentication attempts.
- *
- * Note that @source need not have a #GDBusObject, which means this
- * function can test authentication on a scratch #ESource.
- *
- * When the operation is finished, @callback will be called.  You can then
- * call e_source_registry_authenticate_finish() to get the result of the
- * operation.
- *
- * Only backend implementations and data source editors should call this
- * function.  The intent is for basic client applications to not have to
- * deal with authentication at all.
- *
- * Since: 3.6
- **/
-void
-e_source_registry_authenticate (ESourceRegistry *registry,
-                                ESource *source,
-                                ESourceAuthenticator *auth,
-                                GCancellable *cancellable,
-                                GAsyncReadyCallback callback,
-                                gpointer user_data)
-{
-	GSimpleAsyncResult *simple;
-	AsyncContext *async_context;
-
-	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
-	g_return_if_fail (E_IS_SOURCE (source));
-	g_return_if_fail (E_IS_SOURCE_AUTHENTICATOR (auth));
-
-	async_context = g_slice_new0 (AsyncContext);
-	async_context->source = g_object_ref (source);
-	async_context->auth = g_object_ref (auth);
-
-	simple = g_simple_async_result_new (
-		G_OBJECT (registry), callback, user_data,
-		e_source_registry_authenticate);
-
-	g_simple_async_result_set_check_cancellable (simple, cancellable);
-
-	g_simple_async_result_set_op_res_gpointer (
-		simple, async_context, (GDestroyNotify) async_context_free);
-
-	g_simple_async_result_run_in_thread (
-		simple, source_registry_authenticate_thread,
-		G_PRIORITY_DEFAULT, cancellable);
-
-	g_object_unref (simple);
-}
-
-/**
- * e_source_registry_authenticate_finish:
- * @registry: an #ESourceRegistry
- * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
- *
- * Finishes the operation started with e_source_registry_authenticate().
- * If an error occurred, the function will set @error and return %FALSE.
- *
- * Returns: %TRUE on success, %FALSE on failure
- *
- * Since: 3.6
- **/
-gboolean
-e_source_registry_authenticate_finish (ESourceRegistry *registry,
-                                       GAsyncResult *result,
-                                       GError **error)
-{
-	GSimpleAsyncResult *simple;
-
-	g_return_val_if_fail (
-		g_simple_async_result_is_valid (
-		result, G_OBJECT (registry),
-		e_source_registry_authenticate), FALSE);
-
-	simple = G_SIMPLE_ASYNC_RESULT (result);
-
-	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
 }
 
 /* Helper for e_source_registry_commit_source() */

@@ -11,40 +11,6 @@
 -->
 <interface name="org.gnome.evolution.dataserver.SourceManager">
   <!--
-      AllowAuthPromptAll:
-      @since: 3.8
-
-      This method is equivalent to calling AllowAuthPrompt() on each
-      managed object, but does so in a single method invocation.
-  -->
-  <method name="AllowAuthPromptAll"/>
-
-  <!--
-      Authenticate:
-      @uid: Unique identifier for the authenticating source
-      @prompt_title: The title of the prompt
-      @prompt_message: The prompt message for the user
-      @prompt_description: The detailed description of the prompt
-      @object_path: Object path of a new authentication session
-
-      Initiates a new authentication session at the returned object
-      path.  The client should prepare to receive Response signals
-      from the Authenticator interface at that object path, then
-      call the interface's Ready method.
-
-      The @prompt_title, @prompt_message and @prompt_description
-      arguments are used to construct an authentication prompt if
-      necessary.  (See #GcrPrompt for details.)
-  -->
-  <method name="Authenticate">
-    <arg name="uid" direction="in" type="s"/>
-    <arg name="prompt_title" direction="in" type="s"/>
-    <arg name="prompt_message" direction="in" type="s"/>
-    <arg name="prompt_description" direction="in" type="s"/>
-    <arg name="object_path" direction="out" type="s"/>
-  </method>
-
-  <!--
       CreateSources:
       @array: An array of "uid" and "data" pairs
 

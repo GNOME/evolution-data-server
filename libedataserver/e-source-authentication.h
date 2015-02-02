@@ -121,6 +121,13 @@ gchar *		e_source_authentication_dup_user
 void		e_source_authentication_set_user
 					(ESourceAuthentication *extension,
 					 const gchar *user);
+const gchar *	e_source_authentication_get_credential_name
+					(ESourceAuthentication *extension);
+gchar *		e_source_authentication_dup_credential_name
+					(ESourceAuthentication *extension);
+void		e_source_authentication_set_credential_name
+					(ESourceAuthentication *extension,
+					 const gchar *credential_name);
 
 G_END_DECLS
 

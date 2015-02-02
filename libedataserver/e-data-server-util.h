@@ -29,6 +29,8 @@
 #include <sys/types.h>
 #include <gio/gio.h>
 
+#include <libedataserver/e-source-enums.h>
+
 G_BEGIN_DECLS
 
 struct tm;
@@ -77,6 +79,8 @@ gchar **	e_util_slist_to_strv		(const GSList *strings);
 GSList *	e_util_strv_to_slist		(const gchar * const *strv);
 void		e_util_free_nullable_object_slist
 						(GSList *objects);
+void		e_util_safe_free_string		(gchar *str);
+
 void		e_queue_transfer		(GQueue *src_queue,
 						 GQueue *dst_queue);
 GWeakRef *	e_weak_ref_new			(gpointer object);
@@ -141,11 +145,15 @@ void		e_util_win32_initialize		(void);
 struct _ENamedParameters;
 typedef struct _ENamedParameters ENamedParameters;
 
+#define E_TYPE_NAMED_PARAMETERS (e_named_parameters_get_type ())
+
 GType           e_named_parameters_get_type     (void) G_GNUC_CONST;
 ENamedParameters *
 		e_named_parameters_new		(void);
 ENamedParameters *
 		e_named_parameters_new_strv	(const gchar * const *strv);
+ENamedParameters *
+		e_named_parameters_new_clone	(const ENamedParameters *parameters);
 void		e_named_parameters_free		(ENamedParameters *parameters);
 void		e_named_parameters_clear	(ENamedParameters *parameters);
 void		e_named_parameters_assign	(ENamedParameters *parameters,
@@ -215,6 +223,21 @@ void		e_data_server_util_set_dbus_call_timeout
 gboolean	e_source_registry_debug_enabled	(void);
 void		e_source_registry_debug_print	(const gchar *format,
 						 ...) G_GNUC_PRINTF (1, 2);
+
+/**
+ * ETypeFunc:
+ * @type: a #GType
+ * @user_data: user data passed to e_type_traverse()
+ *
+ * Specifies the type of functions passed to e_type_traverse().
+ *
+ * Since: 3.4
+ **/
+typedef void	(*ETypeFunc)			(GType type,
+						 gpointer user_data);
+void		e_type_traverse			(GType parent_type,
+						 ETypeFunc func,
+						 gpointer user_data);
 
 G_END_DECLS
 

@@ -43,6 +43,8 @@
 
 #include <libedataserver/e-data-server-util.h>
 
+#include "e-flag.h"
+
 #include "e-client.h"
 #include "e-client-private.h"
 
@@ -1842,6 +1844,294 @@ e_client_refresh_sync (EClient *client,
 	g_return_val_if_fail (class->refresh_sync != NULL, FALSE);
 
 	return class->refresh_sync (client, cancellable, error);
+}
+
+static void
+client_wait_for_connected_thread (GTask *task,
+				  gpointer source_object,
+				  gpointer task_data,
+				  GCancellable *cancellable)
+{
+	guint32 timeout_seconds;
+	gboolean success;
+	GError *local_error = NULL;
+
+	timeout_seconds = GPOINTER_TO_UINT (task_data);
+	success = e_client_wait_for_connected_sync (E_CLIENT (source_object), timeout_seconds, cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * e_client_wait_for_connected:
+ * @client: an #EClient
+ * @timeout_seconds: a timeout for the wait, in seconds
+ * @cancellable: (allow none): a #GCancellable; or %NULL
+ * @callback: callback to call when a result is ready
+ * @user_data: user data for the @callback
+ *
+ * Asynchronously waits until the @client is connected (according
+ * to @ESource::connection-status property), but not longer than @timeout_seconds.
+ *
+ * The call is finished by e_client_wait_for_connected_finish() from
+ * the @callback.
+ *
+ * Since: 3.14
+ **/
+void
+e_client_wait_for_connected (EClient *client,
+			     guint32 timeout_seconds,
+			     GCancellable *cancellable,
+			     GAsyncReadyCallback callback,
+			     gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_CLIENT (client));
+
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_client_wait_for_connected);
+	g_task_set_task_data (task, GUINT_TO_POINTER (timeout_seconds), NULL);
+
+	g_task_run_in_thread (task, client_wait_for_connected_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_client_wait_for_connected_finish:
+ * @client: an #EClient
+ * @result: a #GAsyncResult
+ * @error: (out): (allow none): a #GError to set an error, or %NULL
+ *
+ * Finishes previous call of e_client_wait_for_connected().
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_client_wait_for_connected_finish (EClient *client,
+				    GAsyncResult *result,
+				    GError **error)
+{
+	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_client_wait_for_connected), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+static void
+client_wait_for_connected_cancelled_cb (GCancellable *cancellable,
+					EFlag *flag)
+{
+	g_return_if_fail (flag != NULL);
+
+	e_flag_set (flag);
+}
+
+static void
+client_wait_for_connected_notify_cb (ESource *source,
+				     GParamSpec *param,
+				     EFlag *flag)
+{
+	g_return_if_fail (flag != NULL);
+
+	if (e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED)
+		e_flag_set (flag);
+}
+
+/**
+ * @client: an #EClient
+ * @timeout_seconds: a timeout for the wait, in seconds
+ * @cancellable: (allow none): a #GCancellable; or %NULL
+ * @callback: callback to call when a result is ready
+ * @error: (out): (allow none): a #GError to set an error, or %NULL
+ *
+ * Synchronously waits until the @client is connected (according
+ * to @ESource::connection-status property), but not longer than @timeout_seconds.
+ *
+ * Note: This also calls e_client_retrieve_properties_sync() on success, to have
+ *   up-to-date property values on the client side, without a delay due
+ *   to property change notifcations delivery through D-Bus.
+ *
+ * Returns: %TRUE if successful, %FALSE otherwise.
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_client_wait_for_connected_sync (EClient *client,
+				  guint32 timeout_seconds,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	ESource *source;
+	EFlag *flag;
+	gulong cancellable_handler_id = 0, notify_handler_id;
+	gint64 end_time;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
+
+	end_time = g_get_monotonic_time () + timeout_seconds * G_TIME_SPAN_SECOND;
+	flag = e_flag_new ();
+
+	if (cancellable)
+		cancellable_handler_id = g_cancellable_connect (cancellable,
+			G_CALLBACK (client_wait_for_connected_cancelled_cb), flag, NULL);
+
+	source = e_client_get_source (client);
+
+	notify_handler_id = g_signal_connect (source, "notify::connection-status",
+		G_CALLBACK (client_wait_for_connected_notify_cb), flag);
+
+	while (success = e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED,
+	       !success && !g_cancellable_is_cancelled (cancellable)) {
+		e_flag_clear (flag);
+
+		if (timeout_seconds > 0) {
+			if (g_get_monotonic_time () > end_time)
+				break;
+
+			e_flag_wait_until (flag, end_time);
+		} else {
+			e_flag_wait (flag);
+		}
+	}
+
+	if (cancellable_handler_id > 0 && cancellable)
+		g_cancellable_disconnect (cancellable, cancellable_handler_id);
+
+	g_signal_handler_disconnect (source, notify_handler_id);
+	e_flag_set (flag);
+	e_flag_free (flag);
+
+	success = e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED;
+
+	if (!success && !g_cancellable_set_error_if_cancelled (cancellable, error))
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT, _("Timeout was reached"));
+	else if (success)
+		success = e_client_retrieve_properties_sync (client, cancellable, error);
+
+	return success;
+}
+
+/**
+ * e_client_retrieve_properties_sync:
+ * @client: an #EClient
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Retrieves @client properties to match server-side values, without waiting
+ * for the D-Bus property change notifications delivery.
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_client_retrieve_properties_sync (EClient *client,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	EClientClass *klass;
+
+	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
+
+	klass = E_CLIENT_GET_CLASS (client);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->retrieve_properties_sync != NULL, FALSE);
+
+	return klass->retrieve_properties_sync (client, cancellable, error);
+}
+
+static void
+client_retrieve_properties_thread (GTask *task,
+				   gpointer source_object,
+				   gpointer task_data,
+				   GCancellable *cancellable)
+{
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = e_client_retrieve_properties_sync (E_CLIENT (source_object), cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * e_client_retrieve_properties:
+ * @client: an #EClient
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously retrieves @client properties to match server-side values,
+ * without waiting for the D-Bus property change notifications delivery.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_client_retrieve_properties_finish() to get the result of the operation.
+ *
+ * Since: 3.14
+ **/
+void
+e_client_retrieve_properties (EClient *client,
+			      GCancellable *cancellable,
+			      GAsyncReadyCallback callback,
+			      gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_CLIENT (client));
+
+	task = g_task_new (client, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_client_retrieve_properties);
+
+	g_task_run_in_thread (task, client_retrieve_properties_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_client_retrieve_properties_finish:
+ * @client: an #EClient
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Finishes the operation started with e_client_retrieve_properties().
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.14
+ **/
+gboolean
+e_client_retrieve_properties_finish (EClient *client,
+				     GAsyncResult *result,
+				     GError **error)
+{
+	g_return_val_if_fail (E_IS_CLIENT (client), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, client), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_client_retrieve_properties), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**

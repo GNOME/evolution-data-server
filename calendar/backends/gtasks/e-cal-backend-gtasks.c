@@ -678,11 +678,9 @@ ecb_gtasks_request_authorization (ECalBackend *backend,
 	if (!GDATA_IS_CLIENT_LOGIN_AUTHORIZER (gtasks->priv->authorizer))
 		return TRUE;
 
-	/* Otherwise it's up to us to obtain a login secret. */
-	return e_backend_authenticate_sync (
-		E_BACKEND (backend),
-		E_SOURCE_AUTHENTICATOR (backend),
-		cancellable, error);
+	/* Otherwise it's up to us to obtain a login secret, but
+	   there is currently no way to do it, thus simply fail. */
+	return FALSE;
 }
 
 static gchar *

@@ -130,7 +130,7 @@ source_added (ESourceRegistry *registry,
 
 	/* Open the address book */
 #if EDS_CHECK_VERSION(3,8,0)
-	added_data->book = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
+	added_data->book = (EBookClient *) e_book_client_connect_sync (source, 30, NULL, &error);
 #else
 	/* With 3.6 it's a bit more tricky */
 	added_data->book = e_book_client_new (source, &error);

@@ -22,8 +22,8 @@
 #ifndef E_BACKEND_FACTORY_H
 #define E_BACKEND_FACTORY_H
 
+#include <libedataserver/libedataserver.h>
 #include <libebackend/e-backend.h>
-#include <libebackend/e-extension.h>
 
 /* Standard GObject macros */
 #define E_TYPE_BACKEND_FACTORY \

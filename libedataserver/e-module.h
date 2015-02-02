@@ -15,8 +15,8 @@
  *
  */
 
-#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
-#error "Only <libebackend/libebackend.h> should be included directly."
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
 #endif
 
 #ifndef E_MODULE_H
@@ -72,23 +72,6 @@ EModule *	e_module_new			(const gchar *filename);
 const gchar *	e_module_get_filename		(EModule *module);
 EModule *	e_module_load_file		(const gchar *filename);
 GList *		e_module_load_all_in_directory	(const gchar *dirname);
-
-/* This is here for lack of a better place for it. */
-
-/**
- * ETypeFunc:
- * @type: a #GType
- * @user_data: user data passed to e_type_traverse()
- *
- * Specifies the type of functions passed to e_type_traverse().
- *
- * Since: 3.4
- **/
-typedef void	(*ETypeFunc)			(GType type,
-						 gpointer user_data);
-void		e_type_traverse			(GType parent_type,
-						 ETypeFunc func,
-						 gpointer user_data);
 
 G_END_DECLS
 

@@ -17,7 +17,7 @@
 
 /**
  * SECTION: e-extension
- * @include: libebackend/libebackend.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: An abstract base class for extensions
  *
  * #EExtension provides a way to extend the functionality of objects
@@ -38,9 +38,11 @@
  *    registered in the library module's e_module_load() function.
  **/
 
-#include "e-extension.h"
-
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#include "e-extension.h"
 
 #define E_EXTENSION_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

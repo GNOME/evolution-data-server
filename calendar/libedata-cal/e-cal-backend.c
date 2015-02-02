@@ -706,24 +706,6 @@ cal_backend_constructed (GObject *object)
 	}
 }
 
-static gboolean
-cal_backend_authenticate_sync (EBackend *backend,
-                               ESourceAuthenticator *auth,
-                               GCancellable *cancellable,
-                               GError **error)
-{
-	ECalBackend *cal_backend;
-	ESourceRegistry *registry;
-	ESource *source;
-
-	cal_backend = E_CAL_BACKEND (backend);
-	registry = e_cal_backend_get_registry (cal_backend);
-	source = e_backend_get_source (backend);
-
-	return e_source_registry_authenticate_sync (
-		registry, source, auth, cancellable, error);
-}
-
 static void
 cal_backend_prepare_shutdown (EBackend *backend)
 {
@@ -929,7 +911,6 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	object_class->constructed = cal_backend_constructed;
 
 	backend_class = E_BACKEND_CLASS (class);
-	backend_class->authenticate_sync = cal_backend_authenticate_sync;
 	backend_class->prepare_shutdown = cal_backend_prepare_shutdown;
 
 	class->get_backend_property = cal_backend_get_backend_property;

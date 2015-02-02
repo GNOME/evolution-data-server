@@ -55,20 +55,16 @@ libebackend_1_2_la_CPPFLAGS = \
 
 libebackend_1_2_la_SOURCES = \
 	$(BUILT_SOURCES) \
-	e-authentication-mediator.c \
-	e-authentication-session.c \
 	e-backend.c \
 	e-backend-factory.c \
 	e-collection-backend.c \
 	e-collection-backend-factory.c \
 	e-data-factory.c \
 	e-dbus-server.c \
-	e-extensible.c \
-	e-extension.c \
 	e-oauth2-support.c \
 	e-offline-listener.c \
-	e-module.c \
 	e-server-side-source.c \
+	e-server-side-source-credentials-provider.c \
 	e-soup-auth-bearer.c \
 	e-soup-ssl-trust.c \
 	e-source-registry-server.c \
@@ -102,8 +98,6 @@ libebackendincludedir = $(privincludedir)/libebackend
 
 libebackendinclude_HEADERS = \
 	libebackend.h \
-	e-authentication-mediator.h \
-	e-authentication-session.h \
 	e-backend.h \
 	e-backend-enums.h \
 	e-backend-enumtypes.h \
@@ -112,12 +106,10 @@ libebackendinclude_HEADERS = \
 	e-collection-backend-factory.h \
 	e-data-factory.h \
 	e-dbus-server.h \
-	e-extensible.h \
-	e-extension.h \
 	e-oauth2-support.h \
 	e-offline-listener.h \
-	e-module.h \
 	e-server-side-source.h \
+	e-server-side-source-credentials-provider.h \
 	e-soup-auth-bearer.h \
 	e-soup-ssl-trust.h \
 	e-source-registry-server.h \

@@ -137,10 +137,12 @@ const gchar *	e_cal_client_error_to_string	(ECalClientError code);
 GType		e_cal_client_get_type		(void) G_GNUC_CONST;
 EClient *	e_cal_client_connect_sync	(ESource *source,
 						 ECalClientSourceType source_type,
+						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_connect		(ESource *source,
 						 ECalClientSourceType source_type,
+						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);

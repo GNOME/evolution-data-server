@@ -50,6 +50,7 @@ struct _ESourceAuthenticationPrivate {
 	gchar *proxy_uid;
 	gboolean remember_password;
 	gchar *user;
+	gchar *credential_name;
 
 	/* GNetworkAddress caches data internally, so we maintain the
 	 * instance to preserve the cache as opposed to just creating
@@ -65,7 +66,8 @@ enum {
 	PROP_PORT,
 	PROP_PROXY_UID,
 	PROP_REMEMBER_PASSWORD,
-	PROP_USER
+	PROP_USER,
+	PROP_CREDENTIAL_NAME
 };
 
 G_DEFINE_TYPE (
@@ -135,6 +137,12 @@ source_authentication_set_property (GObject *object,
 				E_SOURCE_AUTHENTICATION (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_CREDENTIAL_NAME:
+			e_source_authentication_set_credential_name (
+				E_SOURCE_AUTHENTICATION (object),
+				g_value_get_string (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -193,6 +201,13 @@ source_authentication_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_authentication_dup_user (
+				E_SOURCE_AUTHENTICATION (object)));
+			return;
+
+		case PROP_CREDENTIAL_NAME:
+			g_value_take_string (
+				value,
+				e_source_authentication_dup_credential_name (
 				E_SOURCE_AUTHENTICATION (object)));
 			return;
 	}
@@ -333,6 +348,21 @@ e_source_authentication_class_init (ESourceAuthenticationClass *class)
 			"user",
 			"User",
 			"User name for the remote account",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	/* An empty string or NULL means to use E_SOURCE_CREDENTIAL_PASSWORD to pass
+	   the stored "password" into the backend with e_source_invoke_authenticate()/_sync() */
+	g_object_class_install_property (
+		object_class,
+		PROP_CREDENTIAL_NAME,
+		g_param_spec_string (
+			"credential-name",
+			"Credential Name",
+			"What name to use for the authentication method in credentials for authentication",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -843,4 +873,93 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
 	g_mutex_unlock (&extension->priv->property_lock);
 
 	g_object_notify (G_OBJECT (extension), "user");
+}
+
+/**
+ * e_source_authentication_get_credential_name:
+ * @extension: an #ESourceAuthentication
+ *
+ * Returns the credential name used to pass the stored or gathered credential
+ * (like password) into the e_source_invoke_authenticate(). This is
+ * a counterpart of the authentication method. The %NULL means to use
+ * the default name, which is #E_SOURCE_CREDENTIAL_PASSWORD.
+ *
+ * Returns: the credential name to use for authentication, or %NULL
+ *
+ * Since: 3.14
+ **/
+const gchar *
+e_source_authentication_get_credential_name (ESourceAuthentication *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	return extension->priv->credential_name;
+}
+
+/**
+ * e_source_authentication_dup_credential_name:
+ * @extension: an #ESourceAuthentication
+ *
+ * Thread-safe variation of e_source_authentication_get_credential_name().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceAuthentication:credential-name
+ *
+ * Since: 3.14
+ **/
+gchar *
+e_source_authentication_dup_credential_name (ESourceAuthentication *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (extension), NULL);
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	protected = e_source_authentication_get_credential_name (extension);
+	duplicate = g_strdup (protected);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	return duplicate;
+}
+
+/**
+ * e_source_authentication_set_credential_name:
+ * @extension: an #ESourceAuthentication
+ * @credential_name: (allow-none): a credential name, or %NULL
+ *
+ * Sets the credential name used to pass the stored or gathered credential
+ * (like password) into the e_source_invoke_authenticate(). This is
+ * a counterpart of the authentication method. The %NULL means to use
+ * the default name, which is #E_SOURCE_CREDENTIAL_PASSWORD.
+ *
+ * The internal copy of @credential_name is automatically stripped
+ * of leading and trailing whitespace. If the resulting string is
+ * empty, %NULL is set instead.
+ *
+ * Since: 3.14
+ **/
+void
+e_source_authentication_set_credential_name (ESourceAuthentication *extension,
+					     const gchar *credential_name)
+{
+	g_return_if_fail (E_IS_SOURCE_AUTHENTICATION (extension));
+
+	g_mutex_lock (&extension->priv->property_lock);
+
+	if (g_strcmp0 (extension->priv->credential_name, credential_name) == 0) {
+		g_mutex_unlock (&extension->priv->property_lock);
+		return;
+	}
+
+	g_free (extension->priv->credential_name);
+	extension->priv->credential_name = e_util_strdup_strip (credential_name);
+
+	g_mutex_unlock (&extension->priv->property_lock);
+
+	g_object_notify (G_OBJECT (extension), "credential-name");
 }

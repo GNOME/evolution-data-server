@@ -71,7 +71,6 @@ struct _ESourceWebdavPrivate {
 	gchar *ssl_trust;
 	gboolean avoid_ifmatch;
 	gboolean calendar_auto_schedule;
-	gboolean ignore_invalid_cert;
 	SoupURI *soup_uri;
 };
 
@@ -81,7 +80,6 @@ enum {
 	PROP_CALENDAR_AUTO_SCHEDULE,
 	PROP_DISPLAY_NAME,
 	PROP_EMAIL_ADDRESS,
-	PROP_IGNORE_INVALID_CERT,
 	PROP_RESOURCE_PATH,
 	PROP_RESOURCE_QUERY,
 	PROP_SOUP_URI,
@@ -292,12 +290,6 @@ source_webdav_set_property (GObject *object,
 				g_value_get_string (value));
 			return;
 
-		case PROP_IGNORE_INVALID_CERT:
-			e_source_webdav_set_ignore_invalid_cert (
-				E_SOURCE_WEBDAV (object),
-				g_value_get_boolean (value));
-			return;
-
 		case PROP_RESOURCE_PATH:
 			e_source_webdav_set_resource_path (
 				E_SOURCE_WEBDAV (object),
@@ -358,13 +350,6 @@ source_webdav_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_webdav_dup_email_address (
-				E_SOURCE_WEBDAV (object)));
-			return;
-
-		case PROP_IGNORE_INVALID_CERT:
-			g_value_set_boolean (
-				value,
-				e_source_webdav_get_ignore_invalid_cert (
 				E_SOURCE_WEBDAV (object)));
 			return;
 
@@ -544,18 +529,6 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"Email Address",
 			"The user's email address",
 			"",
-			G_PARAM_READWRITE |
-			G_PARAM_CONSTRUCT |
-			E_SOURCE_PARAM_SETTING));
-
-	g_object_class_install_property (
-		object_class,
-		PROP_IGNORE_INVALID_CERT,
-		g_param_spec_boolean (
-			"ignore-invalid-cert",
-			"Ignore Invalid Cert",
-			"Ignore invalid SSL certificates",
-			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			E_SOURCE_PARAM_SETTING));
@@ -895,57 +868,6 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
 }
 
 /**
- * e_source_webdav_get_ignore_invalid_cert:
- * @extension: an #ESourceWebdav
- *
- * Returns %TRUE if invalid SSL certificates should be ignored.
- *
- * This option allows SSL certificates to be accepted even if they have
- * signed by an unrecognized Certificate Authority.
- *
- * Returns: whether invalid SSL certificates should be ignored
- *
- * Since: 3.6
- *
- * Deprecated: 3.8: The trust prompt APIs replace this.
- **/
-gboolean
-e_source_webdav_get_ignore_invalid_cert (ESourceWebdav *extension)
-{
-	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), FALSE);
-
-	return extension->priv->ignore_invalid_cert;
-}
-
-/**
- * e_source_webdav_set_ignore_invalid_cert:
- * @extension: an #ESourceWebdav
- * @ignore_invalid_cert: whether invalid SSL certificates should be ignored
- *
- * Sets whether invalid SSL certificates should be ignored.
- *
- * This option allows SSL certificates to be accepted even if they have
- * signed by an unrecognized Certificate Authority.
- *
- * Since: 3.6
- *
- * Deprecated: 3.8: The trust prompt APIs replace this.
- **/
-void
-e_source_webdav_set_ignore_invalid_cert (ESourceWebdav *extension,
-                                         gboolean ignore_invalid_cert)
-{
-	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
-
-	if (extension->priv->ignore_invalid_cert == ignore_invalid_cert)
-		return;
-
-	extension->priv->ignore_invalid_cert = ignore_invalid_cert;
-
-	g_object_notify (G_OBJECT (extension), "ignore-invalid-cert");
-}
-
-/**
  * e_source_webdav_get_resource_path:
  * @extension: an #ESourceWebdav
  *
@@ -1133,8 +1055,8 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
  * "temporary-reject" and "temporary-accept". The second is a host
  * name for which the trust was set. Finally the last is a SHA1
  * hash of the certificate. This is not meant to be changed by a caller,
- * it is supposed to be manipulated with e_source_webdav_prepare_ssl_trust_prompt()
- * and e_source_webdav_store_ssl_trust_prompt().
+ * it is supposed to be manipulated with e_source_webdav_update_ssl_trust()
+ * and e_source_webdav_verify_ssl_trust().
  *
  * Returns: an SSL certificate trust for the @extension
  *
@@ -1367,154 +1289,83 @@ encode_ssl_trust (ESourceWebdav *extension,
 }
 
 /**
- * e_source_webdav_prepare_ssl_trust_prompt:
+ * e_source_webdav_update_ssl_trust:
  * @extension: an #ESourceWebdav
- * @message: a #SoupMessage
- * @cert: the invalid certificate of the connection over which @message is about
+ * @host: a host name to store the certificate for
+ * @cert: the invalid certificate of the connection over which @host is about
  *        to be sent
- * @cert_errors: the error flags for @cert
- * @registry: (allow-none): an #ESourceRegistry, to use for parent lookups
- * @parameters: an #ENamedParameters to be populated
+ * @response: user's response from a trust prompt for @cert
  *
- * Checks @cert against currently stored trust response and either returns what
- * to do immediately, or returns #E_TRUST_PROMPT_RESPONSE_UNKNOWN and populates
- * @parameters with necessary values for a trust prompt.
+ * Updates user's response from a trust prompt, thus it is re-used the next
+ * time it'll be needed. An #E_TRUST_PROMPT_RESPONSE_UNKNOWN is treated as
+ * a temporary reject, which means the user will be asked again.
  *
- * Returns: What to do with SSL connection, where
- *          #E_TRUST_PROMPT_RESPONSE_UNKNOWN means 'ask a user, with
- *          populated parameters'.
- *
- * Note: The #E_TRUST_PROMPT_RESPONSE_REJECT is returned on any errors, such as
- *  invalid parameters.
- *
- * Since: 3.8
+ * Since: 3.14
  **/
-ETrustPromptResponse
-e_source_webdav_prepare_ssl_trust_prompt (ESourceWebdav *extension,
-                                          SoupMessage *message,
-                                          GTlsCertificate *cert,
-                                          GTlsCertificateFlags cert_errors,
-                                          ESourceRegistry *registry,
-                                          ENamedParameters *parameters)
+void
+e_source_webdav_update_ssl_trust (ESourceWebdav *extension,
+				  const gchar *host,
+				  GTlsCertificate *cert,
+				  ETrustPromptResponse response)
 {
-	ESource *parent_source = NULL;
-	ETrustPromptResponse res;
+	GByteArray *bytes = NULL;
+	gchar *hash;
 
-	g_return_val_if_fail (
-		E_IS_SOURCE_WEBDAV (extension),
-		E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (
-		SOUP_IS_MESSAGE (message),
-		E_TRUST_PROMPT_RESPONSE_REJECT);
-	if (registry)
-		g_return_val_if_fail (
-			E_IS_SOURCE_REGISTRY (registry),
-			E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (
-		parameters != NULL,
-		E_TRUST_PROMPT_RESPONSE_REJECT);
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+	g_return_if_fail (host != NULL);
+	g_return_if_fail (cert != NULL);
 
-	if (registry != NULL) {
-		ESource *source;
+	g_object_get (cert, "certificate", &bytes, NULL);
 
-		source = e_source_extension_ref_source (E_SOURCE_EXTENSION (extension));
-		if (source != NULL) {
-			const gchar *parent_uid;
-	
-			parent_uid = e_source_get_parent (source);
-	
-			if (parent_uid != NULL)
-				parent_source = e_source_registry_ref_source (
-					registry, parent_uid);
-	
-			g_object_unref (source);
-		}
-	}
+	if (!bytes)
+		return;
 
-	res = e_source_webdav_prepare_ssl_trust_prompt_with_parent (
-		extension, message, cert, cert_errors, parent_source, parameters);
+	hash = g_compute_checksum_for_data (G_CHECKSUM_SHA1, bytes->data, bytes->len);
 
-	if (parent_source)
-		g_object_unref (parent_source);
+	encode_ssl_trust (extension, response, host, hash);
 
-	return res;
+	g_byte_array_unref (bytes);
+	g_free (hash);
 }
 
 /**
- * e_source_webdav_prepare_ssl_trust_prompt_with_parent:
+ * e_source_webdav_verify_ssl_trust:
  * @extension: an #ESourceWebdav
- * @message: a #SoupMessage
- * @cert: the invalid certificate of the connection over which @message is about
+ * @host: a host name to store the certificate for
+ * @cert: the invalid certificate of the connection over which @host is about
  *        to be sent
- * @cert_errors: the error flags for @cert
- * @parent_source: an #ESource, parent of the @extension<!-- -->'s source
- * @parameters: an #ENamedParameters to be populated
  *
- * The same as e_source_webdav_prepare_ssl_trust_prompt(), only takes
- * @parent_source directly, instead of an #ESourceRegistry.
- *
- * See e_source_webdav_prepare_ssl_trust_prompt() for more details.
- *
- * Since: 3.8
+ * Verifies SSL trust for the given @host and @cert, as previously stored in the @extension
+ * with e_source_webdav_update_ssl_trust().
  **/
 ETrustPromptResponse
-e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
-                                                      SoupMessage *message,
-                                                      GTlsCertificate *cert,
-                                                      GTlsCertificateFlags cert_errors,
-                                                      ESource *parent_source,
-                                                      ENamedParameters *parameters)
+e_source_webdav_verify_ssl_trust (ESourceWebdav *extension,
+				  const gchar *host,
+				  GTlsCertificate *cert,
+				  GTlsCertificateFlags cert_errors)
 {
 	ETrustPromptResponse response;
-	ESource *source;
 	GByteArray *bytes = NULL;
-	SoupURI *soup_uri;
-	const gchar *host;
-	gchar *base64;
 	gchar *old_host = NULL;
 	gchar *old_hash = NULL;
-	gchar *cert_errs_str;
-	gchar *markup = NULL;
 
-	g_return_val_if_fail (
-		E_IS_SOURCE_WEBDAV (extension),
-		E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (
-		SOUP_IS_MESSAGE (message),
-		E_TRUST_PROMPT_RESPONSE_REJECT);
-	if (parent_source)
-		g_return_val_if_fail (
-			E_IS_SOURCE (parent_source),
-			E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (
-		parameters != NULL,
-		E_TRUST_PROMPT_RESPONSE_REJECT);
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), E_TRUST_PROMPT_RESPONSE_REJECT);
+	g_return_val_if_fail (host != NULL, E_TRUST_PROMPT_RESPONSE_REJECT);
+	g_return_val_if_fail (cert != NULL, E_TRUST_PROMPT_RESPONSE_REJECT);
 
 	/* Always reject revoked certificates */
 	if ((cert_errors & G_TLS_CERTIFICATE_REVOKED) != 0)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
 
-	soup_uri = soup_message_get_uri (message);
-
-	if (soup_uri == NULL)
-		return E_TRUST_PROMPT_RESPONSE_REJECT;
-
-	if (soup_uri_get_host (soup_uri) == NULL)
-		return E_TRUST_PROMPT_RESPONSE_REJECT;
-
-	g_return_val_if_fail (cert != NULL, E_TRUST_PROMPT_RESPONSE_REJECT);
 	g_object_get (cert, "certificate", &bytes, NULL);
 
 	if (bytes == NULL)
 		return E_TRUST_PROMPT_RESPONSE_REJECT;
 
-	host = soup_uri_get_host (soup_uri);
-
 	if (decode_ssl_trust (extension, &response, &old_host, &old_hash)) {
 		gchar *hash;
 
-		hash = g_compute_checksum_for_data (
-			G_CHECKSUM_SHA1, bytes->data, bytes->len);
+		hash = g_compute_checksum_for_data (G_CHECKSUM_SHA1, bytes->data, bytes->len);
 
 		if (response != E_TRUST_PROMPT_RESPONSE_UNKNOWN &&
 		    g_strcmp0 (old_host, host) == 0 &&
@@ -1532,157 +1383,9 @@ e_source_webdav_prepare_ssl_trust_prompt_with_parent (ESourceWebdav *extension,
 		g_free (hash);
 	}
 
-	source = e_source_extension_ref_source (E_SOURCE_EXTENSION (extension));
-	if (source != NULL) {
-		const gchar *display_name;
-		gchar *bhost = g_strconcat ("<b>", host, "</b>", NULL);
-		gchar *bname = NULL;
-
-		display_name = e_source_get_display_name (source);
-
-		if (parent_source != NULL) {
-			const gchar *parent_display_name;
-
-			parent_display_name =
-				e_source_get_display_name (parent_source);
-			bname = g_strdup_printf (
-				"<b>%s: %s</b>",
-				parent_display_name, display_name);
-		}
-
-		if (bname == NULL)
-			bname = g_strdup_printf ("<b>%s</b>", display_name);
-
-		if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
-			/* Translators: The first %s is replaced with a host
-			 * name, like "www.example.com"; the second %s is
-			 * replaced with actual source name, like
-			 * "On The Web: My Work" */
-			markup = g_strdup_printf (
-				_("SSL certificate for host '%s', used by "
-				"address book '%s', is not trusted. Do you "
-				"wish to accept it?"), bhost, bname);
-		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR)) {
-			/* Translators: The first %s is replaced with a
-			 * host name, like "www.example.com"; the second %s
-			 * is replaced with actual source name, like
-			 * "On The Web: My Work" */
-			markup = g_strdup_printf (
-				_("SSL certificate for host '%s', used by "
-				"calendar '%s', is not trusted. Do you wish "
-				"to accept it?"), bhost, bname);
-		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST)) {
-			/* Translators: The first %s is replaced with a
-			 * host name, like "www.example.com"; the second %s
-			 * is replaced with actual source name, like
-			 * "On The Web: My Work" */
-			markup = g_strdup_printf (
-				_("SSL certificate for host '%s', used by "
-				"memo list '%s', is not trusted. Do you wish "
-				"to accept it?"), bhost, bname);
-		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST)) {
-			/* Translators: The first %s is replaced with a
-			 * host name, like "www.example.com"; the second %s
-			 * is replaced with actual source name, like
-			 * "On The Web: My Work" */
-			markup = g_strdup_printf (
-				_("SSL certificate for host '%s', used by "
-				"task list '%s', is not trusted. Do you wish "
-				"to accept it?"), bhost, bname);
-		}
-
-		g_object_unref (source);
-		g_free (bname);
-		g_free (bhost);
-	}
-
-	base64 = g_base64_encode (bytes->data, bytes->len);
-	cert_errs_str = g_strdup_printf ("%x", cert_errors);
-
-	e_named_parameters_set (parameters, "host", host);
-	e_named_parameters_set (parameters, "markup", markup);
-	e_named_parameters_set (parameters, "certificate", base64);
-	e_named_parameters_set (parameters, "certificate-errors", cert_errs_str);
-
 	g_byte_array_unref (bytes);
-	g_free (cert_errs_str);
-	g_free (markup);
 
 	return E_TRUST_PROMPT_RESPONSE_UNKNOWN;
-}
-
-static void
-webdav_extension_changes_written_cb (GObject *source_object,
-                                     GAsyncResult *result,
-                                     gpointer user_data)
-{
-	GError *error = NULL;
-
-	e_source_write_finish (E_SOURCE (source_object), result, &error);
-
-	if (error) {
-		g_message ("%s: Failed with error: %s", G_STRFUNC, error->message);
-		g_clear_error (&error);
-	}
-}
-
-/**
- * e_source_webdav_store_ssl_trust_prompt:
- * @extension: an #ESourceWebdav
- * @message: a #SoupMessage
- * @cert: the invalid certificate of the connection over which @message is about
- *        to be sent
- * @response: user's response from a trust prompt for @cert
- *
- * Stores user's response from a trust prompt, thus it is re-used the next
- * time it'll be needed. An #E_TRUST_PROMPT_RESPONSE_UNKNOWN is treated as
- * a temporary reject, which means the user will be asked again.
- *
- * Since: 3.8
- **/
-void
-e_source_webdav_store_ssl_trust_prompt (ESourceWebdav *extension,
-                                        SoupMessage *message,
-                                        GTlsCertificate *cert,
-                                        ETrustPromptResponse response)
-{
-	GByteArray *bytes = NULL;
-	SoupURI *soup_uri;
-	const gchar *host;
-	gchar *hash;
-	gboolean changed;
-
-	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
-	g_return_if_fail (SOUP_IS_MESSAGE (message));
-
-	soup_uri = soup_message_get_uri (message);
-	if (!soup_uri || !soup_uri_get_host (soup_uri))
-		return;
-
-	g_return_if_fail (cert != NULL);
-	g_object_get (cert, "certificate", &bytes, NULL);
-
-	if (!bytes)
-		return;
-
-	host = soup_uri_get_host (soup_uri);
-	hash = g_compute_checksum_for_data (G_CHECKSUM_SHA1, bytes->data, bytes->len);
-
-	changed = encode_ssl_trust (extension, response, host, hash);
-
-	g_byte_array_unref (bytes);
-	g_free (hash);
-
-	if (changed) {
-		ESource *source;
-
-		source = e_source_extension_ref_source (
-			E_SOURCE_EXTENSION (extension));
-		e_source_write (
-			source, NULL,
-			webdav_extension_changes_written_cb, NULL);
-		g_object_unref (source);
-	}
 }
 
 /**

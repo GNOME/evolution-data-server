@@ -9,12 +9,17 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--disable-examples \
 	$(NULL)
 
+if HAVE_GTK
+EDSUI_SUBDIR=libedataserverui
+endif
+
 SUBDIRS = \
 	camel \
 	data \
 	private \
 	libedataserver \
 	libebackend \
+	$(EDSUI_SUBDIR) \
 	addressbook \
 	calendar \
 	modules \

@@ -18,7 +18,7 @@
 #ifndef E_GOA_PASSWORD_BASED_H
 #define E_GOA_PASSWORD_BASED_H
 
-#include <libebackend/libebackend.h>
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_GOA_PASSWORD_BASED \
@@ -46,12 +46,12 @@ typedef struct _EGoaPasswordBasedClass EGoaPasswordBasedClass;
 typedef struct _EGoaPasswordBasedPrivate EGoaPasswordBasedPrivate;
 
 struct _EGoaPasswordBased {
-	EAuthenticationSession parent;
+	ESourceCredentialsProviderImpl parent;
 	EGoaPasswordBasedPrivate *priv;
 };
 
 struct _EGoaPasswordBasedClass {
-	EAuthenticationSessionClass parent_class;
+	ESourceCredentialsProviderImplClass parent_class;
 };
 
 GType		e_goa_password_based_get_type	(void) G_GNUC_CONST;

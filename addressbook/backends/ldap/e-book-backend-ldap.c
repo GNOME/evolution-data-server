@@ -117,17 +117,7 @@ typedef struct LDAPOp LDAPOp;
 	"Incorrect msg type %d passed to %s", \
 	_msg_type, G_STRFUNC))
 
-/* Forward Declarations */
-static void	e_book_backend_ldap_source_authenticator_init
-				(ESourceAuthenticatorInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (
-	EBookBackendLDAP,
-	e_book_backend_ldap,
-	E_TYPE_BOOK_BACKEND,
-	G_IMPLEMENT_INTERFACE (
-		E_TYPE_SOURCE_AUTHENTICATOR,
-		e_book_backend_ldap_source_authenticator_init))
+G_DEFINE_TYPE (EBookBackendLDAP, e_book_backend_ldap, E_TYPE_BOOK_BACKEND)
 
 struct _EBookBackendLDAPPrivate {
 	gboolean connected;
@@ -4940,6 +4930,8 @@ book_backend_ldap_open (EBookBackend *backend,
 
 	e_book_backend_set_writable (backend, TRUE);
 
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
 	auth_required = e_source_authentication_required (auth_extension);
 
 	if (!auth_required)
@@ -4953,11 +4945,16 @@ book_backend_ldap_open (EBookBackend *backend,
 		auth_required = TRUE;
 	}
 
-	if (auth_required && error == NULL)
-		e_backend_authenticate_sync (
-			E_BACKEND (backend),
-			E_SOURCE_AUTHENTICATOR (backend),
-			cancellable, &error);
+	if (auth_required && error == NULL) {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+
+		e_backend_credentials_required_sync (E_BACKEND (backend), E_SOURCE_CREDENTIALS_REASON_REQUIRED,
+			NULL, 0, NULL, cancellable, &error);
+	} else if (!auth_required && !error) {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
+	} else {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+	}
 
 	if (error != NULL && enable_debug)
 		printf ("%s ... failed to connect to server \n", G_STRFUNC);
@@ -5545,10 +5542,12 @@ book_backend_ldap_get_contact_list_uids (EBookBackend *backend,
 }
 
 static ESourceAuthenticationResult
-book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
-                                     const GString *password,
-                                     GCancellable *cancellable,
-                                     GError **error)
+book_backend_ldap_authenticate_sync (EBackend *backend,
+				     const ENamedParameters *credentials,
+				     gchar **out_certificate_pem,
+				     GTlsCertificateFlags *out_certificate_errors,
+				     GCancellable *cancellable,
+				     GError **error)
 {
 	ESourceAuthenticationResult result;
 	EBookBackendLDAP *bl;
@@ -5556,23 +5555,27 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 	ESource *source;
 	gint ldap_error;
 	gchar *dn = NULL;
-	const gchar *extension_name;
+	const gchar *username;
 	gchar *method;
-	gchar *user;
+	gchar *auth_user;
 
-	bl = E_BOOK_BACKEND_LDAP (authenticator);
-	source = e_backend_get_source (E_BACKEND (authenticator));
+	bl = E_BOOK_BACKEND_LDAP (backend);
+	source = e_backend_get_source (backend);
 
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	auth_extension = e_source_get_extension (source, extension_name);
+	auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
 	/* We should not have gotten here if we're offline. */
 	g_return_val_if_fail (
-		e_backend_get_online (E_BACKEND (authenticator)),
+		e_backend_get_online (backend),
 		E_SOURCE_AUTHENTICATION_ERROR);
 
 	method = e_source_authentication_dup_method (auth_extension);
-	user = e_source_authentication_dup_user (auth_extension);
+	auth_user = e_source_authentication_dup_user (auth_extension);
+
+	username = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME);
+	if (!username || !*username) {
+		username = auth_user;
+	}
 
 	if (!method)
 		method = g_strdup ("none");
@@ -5581,7 +5584,7 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 
 		if (bl->priv->ldap && !strcmp (method, "ldap/simple-email")) {
 			LDAPMessage    *res, *e;
-			gchar *query = g_strdup_printf ("(mail=%s)", user);
+			gchar *query = g_strdup_printf ("(mail=%s)", username);
 			gchar *entry_dn;
 
 			g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -5606,7 +5609,11 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 					error, G_IO_ERROR,
 					G_IO_ERROR_INVALID_DATA,
 					_("Failed to get the DN "
-					"for user '%s'"), user);
+					"for user '%s'"), username);
+
+				g_free (method);
+				g_free (auth_user);
+
 				return E_SOURCE_AUTHENTICATION_ERROR;
 			}
 
@@ -5620,14 +5627,14 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 			ldap_msgfree (res);
 
 		} else if (!g_strcmp0 (method, "ldap/simple-binddn")) {
-			dn = g_strdup (user);
+			dn = g_strdup (username);
 		}
 
 		g_free (bl->priv->auth_dn);
 		g_free (bl->priv->auth_secret);
 
 		bl->priv->auth_dn = dn;
-		bl->priv->auth_secret = g_strdup (password->str);
+		bl->priv->auth_secret = g_strdup (e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
 
 		/* now authenticate against the DN we were either supplied or queried for */
 		if (enable_debug)
@@ -5641,6 +5648,9 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			e_book_backend_ldap_connect (bl, &local_error);
+
+			g_free (method);
+			g_free (auth_user);
 
 			if (local_error == NULL) {
 				return E_SOURCE_AUTHENTICATION_ACCEPTED;
@@ -5679,7 +5689,7 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 	}
 #ifdef ENABLE_SASL_BINDS
 	else if (!g_ascii_strncasecmp (method, SASL_PREFIX, strlen (SASL_PREFIX))) {
-		g_print ("sasl bind (mech = %s) as %s", method + strlen (SASL_PREFIX), user);
+		g_print ("sasl bind (mech = %s) as %s", method + strlen (SASL_PREFIX), username);
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
 
 		if (!bl->priv->connected || !bl->priv->ldap) {
@@ -5688,6 +5698,9 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 			g_rec_mutex_unlock (&eds_ldap_handler_lock);
 
 			e_book_backend_ldap_connect (bl, &local_error);
+
+			g_free (method);
+			g_free (auth_user);
 
 			if (local_error == NULL) {
 				return E_SOURCE_AUTHENTICATION_ACCEPTED;
@@ -5723,8 +5736,7 @@ book_backend_ldap_try_password_sync (ESourceAuthenticator *authenticator,
 exit:
 	switch (ldap_error) {
 		case LDAP_SUCCESS:
-			e_book_backend_set_writable (
-				E_BOOK_BACKEND (authenticator), TRUE);
+			e_book_backend_set_writable (E_BOOK_BACKEND (backend), TRUE);
 
 			/* force a requery on the root dse since some ldap
 			 * servers are set up such that they don't report
@@ -5765,7 +5777,7 @@ exit:
 	}
 
 	g_free (method);
-	g_free (user);
+	g_free (auth_user);
 
 	return result;
 }
@@ -5774,7 +5786,8 @@ static void
 e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 {
 	GObjectClass  *object_class;
-	EBookBackendClass *backend_class;
+	EBackendClass *backend_class;
+	EBookBackendClass *book_backend_class;
 
 	g_type_class_add_private (class, sizeof (EBookBackendLDAPPrivate));
 
@@ -5786,27 +5799,24 @@ e_book_backend_ldap_class_init (EBookBackendLDAPClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = book_backend_ldap_finalize;
 
-	backend_class = E_BOOK_BACKEND_CLASS (class);
-	backend_class->get_backend_property = book_backend_ldap_get_backend_property;
-	backend_class->open = book_backend_ldap_open;
-	backend_class->create_contacts = book_backend_ldap_create_contacts;
-	backend_class->modify_contacts = book_backend_ldap_modify_contacts;
-	backend_class->remove_contacts = book_backend_ldap_remove_contacts;
-	backend_class->get_contact = book_backend_ldap_get_contact;
-	backend_class->get_contact_list = book_backend_ldap_get_contact_list;
-	backend_class->get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
-	backend_class->start_view = book_backend_ldap_start_view;
-	backend_class->stop_view = book_backend_ldap_stop_view;
-	backend_class->refresh_sync = book_backend_ldap_refresh_sync;
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = book_backend_ldap_authenticate_sync;
+
+	book_backend_class = E_BOOK_BACKEND_CLASS (class);
+	book_backend_class->get_backend_property = book_backend_ldap_get_backend_property;
+	book_backend_class->open = book_backend_ldap_open;
+	book_backend_class->create_contacts = book_backend_ldap_create_contacts;
+	book_backend_class->modify_contacts = book_backend_ldap_modify_contacts;
+	book_backend_class->remove_contacts = book_backend_ldap_remove_contacts;
+	book_backend_class->get_contact = book_backend_ldap_get_contact;
+	book_backend_class->get_contact_list = book_backend_ldap_get_contact_list;
+	book_backend_class->get_contact_list_uids = book_backend_ldap_get_contact_list_uids;
+	book_backend_class->start_view = book_backend_ldap_start_view;
+	book_backend_class->stop_view = book_backend_ldap_stop_view;
+	book_backend_class->refresh_sync = book_backend_ldap_refresh_sync;
 
 	/* Register our ESource extension. */
 	E_TYPE_SOURCE_LDAP;
-}
-
-static void
-e_book_backend_ldap_source_authenticator_init (ESourceAuthenticatorInterface *iface)
-{
-	iface->try_password_sync = book_backend_ldap_try_password_sync;
 }
 
 static void

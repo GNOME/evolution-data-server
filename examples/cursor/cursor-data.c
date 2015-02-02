@@ -43,7 +43,7 @@ cursor_data_source_added (ESourceRegistry *registry,
 		return;
 
 	/* Open the address book */
-	address_book = (EBookClient *) e_book_client_connect_sync (source, NULL, &error);
+	address_book = (EBookClient *) e_book_client_connect_sync (source, 30, NULL, &error);
 	if (!address_book)
 		g_error ("Unable to create the test book: %s", error->message);
 

@@ -22,8 +22,6 @@
 
 #include <libedataserver/libedataserver.h>
 
-#include <libebackend/e-authentication-mediator.h>
-#include <libebackend/e-authentication-session.h>
 #include <libebackend/e-backend-enums.h>
 #include <libebackend/e-backend-enumtypes.h>
 #include <libebackend/e-backend-factory.h>
@@ -32,10 +30,7 @@
 #include <libebackend/e-collection-backend.h>
 #include <libebackend/e-data-factory.h>
 #include <libebackend/e-dbus-server.h>
-#include <libebackend/e-extensible.h>
-#include <libebackend/e-extension.h>
 #include <libebackend/e-file-cache.h>
-#include <libebackend/e-module.h>
 #include <libebackend/e-oauth2-support.h>
 #include <libebackend/e-offline-listener.h>
 #include <libebackend/e-server-side-source.h>

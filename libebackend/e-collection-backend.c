@@ -787,36 +787,6 @@ collection_backend_constructed (GObject *object)
 		(GDestroyNotify) g_object_unref);
 }
 
-static gboolean
-collection_backend_authenticate_sync (EBackend *backend,
-                                      ESourceAuthenticator *authenticator,
-                                      GCancellable *cancellable,
-                                      GError **error)
-{
-	ECollectionBackend *collection_backend;
-	ESourceRegistryServer *server;
-	EAuthenticationSession *session;
-	ESource *source;
-	const gchar *source_uid;
-	gboolean success;
-
-	source = e_backend_get_source (backend);
-	source_uid = e_source_get_uid (source);
-
-	collection_backend = E_COLLECTION_BACKEND (backend);
-	server = e_collection_backend_ref_server (collection_backend);
-	session = e_source_registry_server_new_auth_session (
-		server, authenticator, source_uid);
-
-	success = e_source_registry_server_authenticate_sync (
-		server, session, cancellable, error);
-
-	g_object_unref (session);
-	g_object_unref (server);
-
-	return success;
-}
-
 static void
 collection_backend_populate (ECollectionBackend *backend)
 {
@@ -874,12 +844,6 @@ collection_backend_child_added (ECollectionBackend *backend,
 	/* Collection children are not removable. */
 	e_server_side_source_set_removable (
 		E_SERVER_SIDE_SOURCE (child_source), FALSE);
-
-	/* Collection children inherit the authentication session type. */
-	g_object_bind_property (
-		collection_source, "auth-session-type",
-		child_source, "auth-session-type",
-		G_BINDING_SYNC_CREATE);
 
 	/* Collection children inherit OAuth 2.0 support if available. */
 	g_object_bind_property (
@@ -1017,7 +981,6 @@ static void
 e_collection_backend_class_init (ECollectionBackendClass *class)
 {
 	GObjectClass *object_class;
-	EBackendClass *backend_class;
 
 	g_type_class_add_private (class, sizeof (ECollectionBackendPrivate));
 
@@ -1027,9 +990,6 @@ e_collection_backend_class_init (ECollectionBackendClass *class)
 	object_class->dispose = collection_backend_dispose;
 	object_class->finalize = collection_backend_finalize;
 	object_class->constructed = collection_backend_constructed;
-
-	backend_class = E_BACKEND_CLASS (class);
-	backend_class->authenticate_sync = collection_backend_authenticate_sync;
 
 	class->populate = collection_backend_populate;
 	class->dup_resource_id = collection_backend_dup_resource_id;
@@ -1726,3 +1686,74 @@ e_collection_backend_delete_resource_finish (ECollectionBackend *backend,
 	return class->delete_resource_finish (backend, result, error);
 }
 
+static void
+collection_backend_child_authenticate_done_cb (GObject *source_object,
+					       GAsyncResult *result,
+					       gpointer user_data)
+{
+	ESource *source;
+	GError *error = NULL;
+
+	g_return_if_fail (E_IS_SOURCE (source_object));
+
+	source = E_SOURCE (source_object);
+
+	if (!e_source_invoke_authenticate_finish (source, result, &error) &&
+	    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_warning ("%s: Failed to invoke authenticate for '%s': %s", G_STRFUNC,
+			e_source_get_uid (source), error ? error->message : "Unknown error");
+	}
+
+	g_clear_error (&error);
+}
+
+/**
+ * e_collection_backend_authenticate_children:
+ * @backend: an #ECollectionBackend
+ * @credentials: credentials to authenticate with
+ *
+ * Authenticates all enabled children sources with the given @crendetials.
+ * This is usually called when the collection source successfully used
+ * the @credentials to connect to the (possibly) remote data store, to
+ * open the childern too. Already connected child sources are skipped.
+ *
+ * Since: 3.14
+ **/
+void
+e_collection_backend_authenticate_children (ECollectionBackend *backend,
+					    const ENamedParameters *credentials)
+{
+	ESource *master_source, *child, *cred_source;
+	ESourceRegistryServer *registry_server;
+	ESourceCredentialsProvider *credentials_provider;
+	GList *sources, *link;
+
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	master_source = e_backend_get_source (E_BACKEND (backend));
+	g_return_if_fail (master_source != NULL);
+
+	registry_server = e_collection_backend_ref_server (backend);
+	g_return_if_fail (registry_server != NULL);
+
+	credentials_provider = e_source_registry_server_ref_credentials_provider (registry_server);
+	sources = e_source_registry_server_list_sources (registry_server, NULL);
+	for (link = sources; link; link = g_list_next (link)) {
+		child = link->data;
+
+		if (child && !e_source_equal (child, master_source) && e_source_get_enabled (child) && (
+		    e_source_get_connection_status (child) == E_SOURCE_CONNECTION_STATUS_AWAITING_CREDENTIALS ||
+		    e_source_get_connection_status (child) == E_SOURCE_CONNECTION_STATUS_DISCONNECTED)) {
+			cred_source = e_source_credentials_provider_ref_credentials_source (credentials_provider, child);
+
+			if (cred_source && e_source_equal (cred_source, master_source)) {
+				e_source_invoke_authenticate (child, credentials, NULL, collection_backend_child_authenticate_done_cb, NULL);
+			}
+
+			g_clear_object (&cred_source);
+		}
+	}
+
+	g_clear_object (&credentials_provider);
+	g_clear_object (&registry_server);
+}

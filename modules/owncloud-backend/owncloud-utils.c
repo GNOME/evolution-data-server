@@ -31,83 +31,6 @@
 
 #include "owncloud-utils.h"
 
-typedef struct _EOwncloudAuthenticator EOwncloudAuthenticator;
-typedef struct _EOwncloudAuthenticatorClass EOwncloudAuthenticatorClass;
-
-struct _EOwncloudAuthenticator {
-	GObject parent;
-
-	ECollectionBackend *collection;
-	gchar *username;
-	GString *password;
-};
-
-struct _EOwncloudAuthenticatorClass {
-	GObjectClass parent_class;
-};
-
-static ESourceAuthenticationResult
-owncloud_authenticator_try_password_sync (ESourceAuthenticator *auth,
-                                          const GString *password,
-                                          GCancellable *cancellable,
-                                          GError **error)
-{
-	EOwncloudAuthenticator *authenticator = (EOwncloudAuthenticator *) auth;
-
-	if (authenticator->password)
-		g_string_free (authenticator->password, TRUE);
-	authenticator->password = g_string_new (password->str);
-
-	return E_SOURCE_AUTHENTICATION_ACCEPTED;
-}
-
-#define E_TYPE_OWNCLOUD_AUTHENTICATOR (e_owncloud_authenticator_get_type ())
-
-GType		e_owncloud_authenticator_get_type
-				(void) G_GNUC_CONST;
-static void	e_owncloud_authenticator_authenticator_init
-				(ESourceAuthenticatorInterface *iface);
-
-G_DEFINE_TYPE_EXTENDED (
-	EOwncloudAuthenticator,
-	e_owncloud_authenticator,
-	G_TYPE_OBJECT, 0,
-	G_IMPLEMENT_INTERFACE (
-		E_TYPE_SOURCE_AUTHENTICATOR,
-		e_owncloud_authenticator_authenticator_init))
-
-static void
-owncloud_authenticator_finalize (GObject *object)
-{
-	EOwncloudAuthenticator *authenticator = (EOwncloudAuthenticator *) object;
-
-	g_free (authenticator->username);
-	if (authenticator->password)
-		g_string_free (authenticator->password, TRUE);
-
-	G_OBJECT_CLASS (e_owncloud_authenticator_parent_class)->finalize (object);
-}
-
-static void
-e_owncloud_authenticator_class_init (EOwncloudAuthenticatorClass *class)
-{
-	GObjectClass *object_class;
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = owncloud_authenticator_finalize;
-}
-
-static void
-e_owncloud_authenticator_authenticator_init (ESourceAuthenticatorInterface *iface)
-{
-	iface->try_password_sync = owncloud_authenticator_try_password_sync;
-}
-
-static void
-e_owncloud_authenticator_init (EOwncloudAuthenticator *authenticator)
-{
-}
-
 #define XPATH_STATUS "string(/D:multistatus/D:response[%d]/D:propstat/D:status)"
 #define XPATH_HREF "string(/D:multistatus/D:response[%d]/D:href)"
 #define XPATH_DISPLAY_NAME "string(/D:multistatus/D:response[%d]/D:propstat/D:prop/D:displayname)"
@@ -424,6 +347,11 @@ parse_propfind_response (ECollectionBackend *collection,
 	xmlFreeDoc (doc);
 }
 
+typedef struct _AuthenticateData {
+	const gchar *username;
+	const ENamedParameters *credentials;
+} AuthenticateData;
+
 static void
 authenticate_cb (SoupSession *session,
                  SoupMessage *msg,
@@ -431,38 +359,17 @@ authenticate_cb (SoupSession *session,
                  gboolean retrying,
                  gpointer user_data)
 {
-	EOwncloudAuthenticator *authenticator = user_data;
+	AuthenticateData *auth_data = user_data;
 
-	g_return_if_fail (authenticator != NULL);
+	g_return_if_fail (auth_data != NULL);
+	g_return_if_fail (auth_data->credentials != NULL);
 
-	if (retrying || !authenticator->password) {
-		ESourceRegistryServer *server;
-		EAuthenticationSession *auth_session;
-		ESource *source;
+	if (retrying)
+		return;
 
-		source = e_backend_get_source (
-			E_BACKEND (authenticator->collection));
-		server = e_collection_backend_ref_server (
-			authenticator->collection);
-
-		auth_session = e_source_registry_server_new_auth_session (
-			server,
-			E_SOURCE_AUTHENTICATOR (authenticator),
-			e_source_get_uid (source));
-		if (!e_source_registry_server_authenticate_sync (server, auth_session, NULL, NULL)) {
-			if (authenticator->password)
-				g_string_free (authenticator->password, TRUE);
-			authenticator->password = NULL;
-		}
-
-		g_object_unref (auth_session);
-		g_object_unref (server);
-	}
-
-	if (authenticator->username && authenticator->password)
-		soup_auth_authenticate (
-			auth, authenticator->username,
-			authenticator->password->str);
+	if (auth_data->username && e_named_parameters_get (auth_data->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+		soup_auth_authenticate (auth, auth_data->username,
+			e_named_parameters_get (auth_data->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
 }
 
 static gboolean
@@ -471,7 +378,12 @@ find_sources (ECollectionBackend *collection,
               gpointer user_data,
               const gchar *base_url,
               const gchar *base_collection_path,
-              EOwncloudAuthenticator *authenticator)
+	      const ENamedParameters *credentials,
+	      const gchar *default_username,
+	      gchar **out_certificate_pem,
+	      GTlsCertificateFlags *out_certificate_errors,
+	      GCancellable *cancellable,
+	      GError **error)
 {
 	const gchar *req_body =
 		"<D:propfind "
@@ -486,21 +398,26 @@ find_sources (ECollectionBackend *collection,
 		"  </D:prop>\n"
 		"</D:propfind>\n";
 
+	AuthenticateData auth_data;
 	SoupSession *session;
 	SoupMessage *msg;
 	GString *url;
+	const gchar *username;
 	gboolean tested = FALSE;
 
 	g_return_val_if_fail (base_url && *base_url, FALSE);
 	g_return_val_if_fail (base_collection_path && *base_collection_path, FALSE);
-	g_return_val_if_fail (authenticator, FALSE);
+
+	username = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME);
+	if (!username || !*username)
+		username = default_username;
 
 	url = g_string_new (base_url);
 	if (url->str[url->len - 1] != '/')
 		g_string_append_c (url, '/');
 	g_string_append (url, base_collection_path);
 	g_string_append_c (url, '/');
-	g_string_append (url, authenticator->username);
+	g_string_append (url, username);
 	g_string_append_c (url, '/');
 
 	msg = soup_message_new ("PROPFIND", url->str);
@@ -509,6 +426,9 @@ find_sources (ECollectionBackend *collection,
 		g_string_free (url, TRUE);
 		return FALSE;
 	}
+
+	auth_data.username = username;
+	auth_data.credentials = credentials;
 
 	session = soup_session_sync_new ();
 	g_object_set (
@@ -519,7 +439,7 @@ find_sources (ECollectionBackend *collection,
 		NULL);
 	g_signal_connect (
 		session, "authenticate",
-		G_CALLBACK (authenticate_cb), authenticator);
+		G_CALLBACK (authenticate_cb), &auth_data);
 
 	g_object_bind_property (
 		collection, "proxy-resolver",
@@ -532,9 +452,7 @@ find_sources (ECollectionBackend *collection,
 		msg, "application/xml; charset=utf-8",
 		SOUP_MEMORY_STATIC, req_body, strlen (req_body));
 
-	/* this is the master source, thus there is no parent_source */
-	e_soup_ssl_trust_connect (
-		msg, e_backend_get_source (E_BACKEND (collection)), NULL, NULL);
+	e_soup_ssl_trust_connect (msg, e_backend_get_source (E_BACKEND (collection)));
 
 	soup_session_send_message (session, msg);
 
@@ -551,6 +469,22 @@ find_sources (ECollectionBackend *collection,
 
 		soup_uri_free (suri);
 		tested = TRUE;
+	} else {
+		g_set_error_literal (error, SOUP_HTTP_ERROR, msg->status_code, msg->reason_phrase);
+
+		if (msg->status_code == SOUP_STATUS_SSL_FAILED && out_certificate_pem && out_certificate_errors) {
+			GTlsCertificate *certificate = NULL;
+
+			g_object_get (G_OBJECT (msg),
+				"tls-certificate", &certificate,
+				"tls-errors", out_certificate_errors,
+				NULL);
+
+			if (certificate) {
+				g_object_get (certificate, "certificate-pem", out_certificate_pem, NULL);
+				g_object_unref (certificate);
+			}
+		}
 	}
 
 	g_object_unref (msg);
@@ -561,16 +495,21 @@ find_sources (ECollectionBackend *collection,
 
 gboolean
 owncloud_utils_search_server (ECollectionBackend *collection,
+			      const ENamedParameters *credentials,
+			      gchar **out_certificate_pem,
+			      GTlsCertificateFlags *out_certificate_errors,
                               OwnCloudSourceFoundCb found_cb,
-                              gpointer user_data)
+                              gpointer user_data,
+			      GCancellable *cancellable,
+			      GError **error)
 {
 	ESourceCollection *collection_extension;
 	ESourceGoa *goa_extension;
 	ESource *source;
-	EOwncloudAuthenticator *authenticator;
-	gchar *url;
+	gchar *url, *username;
 	gboolean res_calendars = FALSE;
 	gboolean res_contacts = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (collection != NULL, FALSE);
 	g_return_val_if_fail (found_cb != NULL, FALSE);
@@ -579,9 +518,7 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
 
-	authenticator = g_object_new (E_TYPE_OWNCLOUD_AUTHENTICATOR, NULL);
-	authenticator->collection = collection;
-	authenticator->username = e_source_collection_dup_identity (collection_extension);
+	username = e_source_collection_dup_identity (collection_extension);
 
 	if (e_source_collection_get_calendar_enabled (collection_extension)) {
 		url = e_source_goa_dup_calendar_url (goa_extension);
@@ -589,23 +526,30 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 		if (url && *url)
 			res_calendars = find_sources (
 				collection, found_cb, user_data,
-				url, "calendars", authenticator);
+				url, "calendars", credentials, username,
+				out_certificate_pem, out_certificate_errors,
+				cancellable, &local_error);
 
 		g_free (url);
 	}
 
-	if (e_source_collection_get_contacts_enabled (collection_extension)) {
+	if (e_source_collection_get_contacts_enabled (collection_extension) && !local_error) {
 		url = e_source_goa_dup_contacts_url (goa_extension);
 
 		if (url && *url)
 			res_contacts = find_sources (
 				collection, found_cb, user_data,
-				url, "addressbooks", authenticator);
+				url, "addressbooks", credentials, username,
+				out_certificate_pem, out_certificate_errors,
+				cancellable, &local_error);
 
 		g_free (url);
 	}
 
-	g_object_unref (authenticator);
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	g_free (username);
 
 	return res_calendars || res_contacts;
 }

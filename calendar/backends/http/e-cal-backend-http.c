@@ -34,17 +34,7 @@
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
-/* Forward Declarations */
-static void	e_cal_backend_http_source_authenticator_init
-				(ESourceAuthenticatorInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (
-	ECalBackendHttp,
-	e_cal_backend_http,
-	E_TYPE_CAL_BACKEND_SYNC,
-	G_IMPLEMENT_INTERFACE (
-		E_TYPE_SOURCE_AUTHENTICATOR,
-		e_cal_backend_http_source_authenticator_init))
+G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_BACKEND_SYNC)
 
 /* Private part of the ECalBackendHttp structure */
 struct _ECalBackendHttpPrivate {
@@ -67,6 +57,7 @@ struct _ECalBackendHttpPrivate {
 	gboolean opened;
 	gboolean requires_auth;
 
+	gchar *username;
 	gchar *password;
 };
 
@@ -89,7 +80,8 @@ soup_authenticate (SoupSession *session,
 	ESourceAuthentication *auth_extension;
 	ESource *source;
 	const gchar *extension_name;
-	gchar *user;
+	const gchar *username;
+	gchar *auth_user;
 
 	if (retrying)
 		return;
@@ -100,14 +92,18 @@ soup_authenticate (SoupSession *session,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
-	user = e_source_authentication_dup_user (auth_extension);
+	auth_user = e_source_authentication_dup_user (auth_extension);
 
-	if (!user || !*user)
+	username = cbhttp->priv->username;
+	if (!username || !*username)
+		username = auth_user;
+
+	if (!username || !*username || !cbhttp->priv->password)
 		soup_message_set_status (msg, SOUP_STATUS_FORBIDDEN);
-	else if (cbhttp->priv->password != NULL)
-		soup_auth_authenticate (auth, user, cbhttp->priv->password);
+	else
+		soup_auth_authenticate (auth, username, cbhttp->priv->password);
 
-	g_free (user);
+	g_free (auth_user);
 }
 
 /* Dispose handler for the file backend */
@@ -158,6 +154,7 @@ e_cal_backend_http_finalize (GObject *object)
 	}
 
 	g_free (priv->uri);
+	g_free (priv->username);
 	g_free (priv->password);
 
 	/* Chain up to parent's finalize() method. */
@@ -453,10 +450,35 @@ cal_backend_http_cancelled (GCancellable *cancellable,
 		SOUP_STATUS_CANCELLED);
 }
 
+static void
+cal_backend_http_extract_ssl_failed_data (SoupMessage *msg,
+					  gchar **out_certificate_pem,
+					  GTlsCertificateFlags *out_certificate_errors)
+{
+	GTlsCertificate *certificate = NULL;
+
+	g_return_if_fail (SOUP_IS_MESSAGE (msg));
+
+	if (!out_certificate_pem || !out_certificate_errors)
+		return;
+
+	g_object_get (G_OBJECT (msg),
+		"tls-certificate", &certificate,
+		"tls-errors", out_certificate_errors,
+		NULL);
+
+	if (certificate) {
+		g_object_get (certificate, "certificate-pem", out_certificate_pem, NULL);
+		g_object_unref (certificate);
+	}
+}
+
 static gboolean
 cal_backend_http_load (ECalBackendHttp *backend,
-                       GCancellable *cancellable,
                        const gchar *uri,
+		       gchar **out_certificate_pem,
+		       GTlsCertificateFlags *out_certificate_errors,
+                       GCancellable *cancellable,
                        GError **error)
 {
 	ECalBackendHttpPrivate *priv = backend->priv;
@@ -469,6 +491,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
 	SoupURI *uri_parsed;
 	GHashTable *old_cache;
 	GSList *comps_in_cache;
+	ESource *source;
 	guint status_code;
 	gulong cancel_id = 0;
 
@@ -500,10 +523,11 @@ cal_backend_http_load (ECalBackendHttp *backend,
 			&cancel_data, (GDestroyNotify) NULL);
 	}
 
-	e_soup_ssl_trust_connect (
-		soup_message, e_backend_get_source (E_BACKEND (backend)),
-		e_cal_backend_get_registry (E_CAL_BACKEND (backend)),
-		cancellable);
+	source = e_backend_get_source (E_BACKEND (backend));
+
+	e_soup_ssl_trust_connect (soup_message, source);
+
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
 	status_code = soup_session_send_message (soup_session, soup_message);
 
@@ -511,6 +535,8 @@ cal_backend_http_load (ECalBackendHttp *backend,
 		g_cancellable_disconnect (cancellable, cancel_id);
 
 	if (status_code == SOUP_STATUS_NOT_MODIFIED) {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
+
 		/* attempts with ETag can result in 304 status code */
 		g_object_unref (soup_message);
 		priv->opened = TRUE;
@@ -545,7 +571,7 @@ cal_backend_http_load (ECalBackendHttp *backend,
 			redirected_uri =
 				webcal_to_http_method (newuri, FALSE);
 			success = cal_backend_http_load (
-				backend, cancellable, redirected_uri, error);
+				backend, redirected_uri, out_certificate_pem, out_certificate_errors, cancellable, error);
 			g_free (redirected_uri);
 
 		} else {
@@ -554,6 +580,15 @@ cal_backend_http_load (ECalBackendHttp *backend,
 				SOUP_STATUS_BAD_REQUEST,
 				_("Redirected to Invalid URI"));
 			success = FALSE;
+		}
+
+		if (success) {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
+		} else if (status_code == SOUP_STATUS_SSL_FAILED) {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
+			cal_backend_http_extract_ssl_failed_data (soup_message, out_certificate_pem, out_certificate_errors);
+		} else {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
 
 		g_object_unref (soup_message);
@@ -571,10 +606,20 @@ cal_backend_http_load (ECalBackendHttp *backend,
 			g_set_error (
 				error, SOUP_HTTP_ERROR, status_code,
 				"%s", soup_message->reason_phrase);
+
+		if (status_code == SOUP_STATUS_SSL_FAILED) {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
+			cal_backend_http_extract_ssl_failed_data (soup_message, out_certificate_pem, out_certificate_errors);
+		} else {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+		}
+
 		g_object_unref (soup_message);
 		empty_cache (backend);
 		return FALSE;
 	}
+
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 
 	if (priv->store) {
 		const gchar *etag;
@@ -739,6 +784,8 @@ begin_retrieval_cb (GIOSchedulerJob *job,
                     ECalBackendHttp *backend)
 {
 	const gchar *uri;
+	gchar *certificate_pem = NULL;
+	GTlsCertificateFlags certificate_errors = 0;
 	GError *error = NULL;
 
 	if (!e_backend_get_online (E_BACKEND (backend)))
@@ -752,19 +799,33 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 	backend->priv->is_loading = TRUE;
 
 	uri = cal_backend_http_ensure_uri (backend);
-	cal_backend_http_load (backend, cancellable, uri, &error);
+	cal_backend_http_load (backend, uri, &certificate_pem, &certificate_errors, cancellable, &error);
 
-	if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+	if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+	    g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+		GError *local_error = NULL;
+		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+
+		if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+			reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+		}
+
+		e_backend_credentials_required_sync (E_BACKEND (backend),
+			reason, certificate_pem, certificate_errors, error, cancellable, &local_error);
+
 		g_clear_error (&error);
-		e_backend_authenticate_sync (
-			E_BACKEND (backend),
-			E_SOURCE_AUTHENTICATOR (backend),
-			cancellable, &error);
+		error = local_error;
 	} else if (g_error_matches (error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		GError *local_error = NULL;
+
+		e_backend_credentials_required_sync (E_BACKEND (backend), E_SOURCE_CREDENTIALS_REASON_REJECTED,
+			certificate_pem, certificate_errors, error, cancellable, &local_error);
+
 		g_clear_error (&error);
-		error = EDC_ERROR (AuthenticationRequired);
+		error = local_error;
 	}
 
+	g_free (certificate_pem);
 	backend->priv->is_loading = FALSE;
 
 	/* Ignore cancellations. */
@@ -848,7 +909,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	ECalBackendHttp *cbhttp;
 	ECalBackendHttpPrivate *priv;
 	ESource *source;
-	ESourceRegistry *registry;
 	ESourceWebdav *webdav_extension;
 	const gchar *extension_name;
 	const gchar *cache_dir;
@@ -865,8 +925,6 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	cache_dir = e_cal_backend_get_cache_dir (E_CAL_BACKEND (backend));
-
-	registry = e_cal_backend_get_registry (E_CAL_BACKEND (backend));
 
 	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
 	webdav_extension = e_source_get_extension (source, extension_name);
@@ -902,25 +960,39 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 	e_cal_backend_set_writable (E_CAL_BACKEND (backend), FALSE);
 
 	if (e_backend_get_online (E_BACKEND (backend))) {
+		gchar *certificate_pem = NULL;
+		GTlsCertificateFlags certificate_errors = 0;
 		const gchar *uri;
 
 		uri = cal_backend_http_ensure_uri (cbhttp);
 
-		opened = cal_backend_http_load (
-			cbhttp, cancellable,
-			uri, &local_error);
+		opened = cal_backend_http_load (cbhttp, uri, &certificate_pem,
+			&certificate_errors, cancellable, &local_error);
 
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+			GError *local_error2 = NULL;
+			ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+
+			if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+				reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+			}
+
+			e_backend_credentials_required_sync (E_BACKEND (cbhttp), reason, certificate_pem,
+				certificate_errors, local_error, cancellable, &local_error2);
 			g_clear_error (&local_error);
-			opened = e_source_registry_authenticate_sync (
-				registry, source,
-				E_SOURCE_AUTHENTICATOR (backend),
-				cancellable, &local_error);
+			local_error = local_error2;
 		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+			GError *local_error2 = NULL;
+
+			e_backend_credentials_required_sync (E_BACKEND (cbhttp), E_SOURCE_CREDENTIALS_REASON_REJECTED,
+				certificate_pem, certificate_errors, local_error, cancellable, &local_error2);
+
 			g_clear_error (&local_error);
-			local_error = EDC_ERROR (AuthenticationRequired);
+			local_error = local_error2;
 		}
 
+		g_free (certificate_pem);
 
 		if (local_error != NULL)
 			g_propagate_error (perror, g_error_copy (local_error));
@@ -1407,29 +1479,42 @@ e_cal_backend_http_send_objects (ECalBackendSync *backend,
 }
 
 static ESourceAuthenticationResult
-cal_backend_http_try_password_sync (ESourceAuthenticator *authenticator,
-                                    const GString *password,
-                                    GCancellable *cancellable,
-                                    GError **error)
+e_cal_backend_http_authenticate_sync (EBackend *backend,
+				      const ENamedParameters *credentials,
+				      gchar **out_certificate_pem,
+				      GTlsCertificateFlags *out_certificate_errors,
+				      GCancellable *cancellable,
+				      GError **error)
 {
-	ECalBackendHttp *backend;
+	ECalBackendHttp *cbhttp;
 	ESourceAuthenticationResult result;
-	const gchar *uri;
+	const gchar *uri, *username;
 	GError *local_error = NULL;
 
-	backend = E_CAL_BACKEND_HTTP (authenticator);
+	cbhttp = E_CAL_BACKEND_HTTP (backend);
 
-	g_free (backend->priv->password);
-	backend->priv->password = g_strdup (password->str);
+	g_free (cbhttp->priv->username);
+	cbhttp->priv->username = NULL;
 
-	uri = cal_backend_http_ensure_uri (backend);
-	cal_backend_http_load (backend, cancellable, uri, &local_error);
+	g_free (cbhttp->priv->password);
+	cbhttp->priv->password = g_strdup (e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
+
+	username = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME);
+	if (username && *username) {
+		cbhttp->priv->username = g_strdup (username);
+	}
+
+	uri = cal_backend_http_ensure_uri (cbhttp);
+	cal_backend_http_load (cbhttp, uri, out_certificate_pem, out_certificate_errors, cancellable, &local_error);
 
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 		result = E_SOURCE_AUTHENTICATION_REJECTED;
 		g_clear_error (&local_error);
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
+		g_propagate_error (error, local_error);
 	} else {
 		result = E_SOURCE_AUTHENTICATION_ERROR;
 		g_propagate_error (error, local_error);
@@ -1454,23 +1539,27 @@ static void
 e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 {
 	GObjectClass *object_class;
-	ECalBackendClass *backend_class;
+	EBackendClass *backend_class;
+	ECalBackendClass *cal_backend_class;
 	ECalBackendSyncClass *sync_class;
 
 	g_type_class_add_private (class, sizeof (ECalBackendHttpPrivate));
 
 	object_class = (GObjectClass *) class;
-	backend_class = (ECalBackendClass *) class;
+	backend_class = E_BACKEND_CLASS (class);
+	cal_backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
 
 	object_class->dispose = e_cal_backend_http_dispose;
 	object_class->finalize = e_cal_backend_http_finalize;
 	object_class->constructed = e_cal_backend_http_constructed;
 
-	/* Execute one method at a time. */
-	backend_class->use_serial_dispatch_queue = TRUE;
+	backend_class->authenticate_sync = e_cal_backend_http_authenticate_sync;
 
-	backend_class->get_backend_property = e_cal_backend_http_get_backend_property;
+	/* Execute one method at a time. */
+	cal_backend_class->use_serial_dispatch_queue = TRUE;
+	cal_backend_class->get_backend_property = e_cal_backend_http_get_backend_property;
+	cal_backend_class->start_view = e_cal_backend_http_start_view;
 
 	sync_class->open_sync = e_cal_backend_http_open;
 	sync_class->refresh_sync = e_cal_backend_http_refresh;
@@ -1483,13 +1572,4 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *class)
 	sync_class->get_object_list_sync = e_cal_backend_http_get_object_list;
 	sync_class->add_timezone_sync = e_cal_backend_http_add_timezone;
 	sync_class->get_free_busy_sync = e_cal_backend_http_get_free_busy;
-
-	backend_class->start_view = e_cal_backend_http_start_view;
 }
-
-static void
-e_cal_backend_http_source_authenticator_init (ESourceAuthenticatorInterface *iface)
-{
-	iface->try_password_sync = cal_backend_http_try_password_sync;
-}
-

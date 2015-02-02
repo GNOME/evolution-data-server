@@ -102,9 +102,11 @@ struct _EBookClientClass {
 
 GType		e_book_client_get_type		(void) G_GNUC_CONST;
 EClient *	e_book_client_connect_sync	(ESource *source,
+						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_connect		(ESource *source,
+						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
@@ -113,9 +115,11 @@ EClient *	e_book_client_connect_finish	(GAsyncResult *result,
 EClient *	e_book_client_connect_direct_sync
 						(ESourceRegistry *registry,
 						 ESource *source,
+						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_book_client_connect_direct	(ESource *source,
+						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);

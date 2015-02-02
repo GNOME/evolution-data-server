@@ -15,14 +15,17 @@
  *
  */
 
-#include "e-goa-password-based.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 /* XXX Yeah, yeah... */
 #define GOA_API_IS_SUBJECT_TO_CHANGE
 
-#include <config.h>
 #include <goa/goa.h>
 #include <glib/gi18n-lib.h>
+
+#include "e-goa-password-based.h"
 
 #define E_GOA_PASSWORD_BASED_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -32,34 +35,35 @@ struct _EGoaPasswordBasedPrivate {
 	gint placeholder;
 };
 
-G_DEFINE_DYNAMIC_TYPE (
-	EGoaPasswordBased,
-	e_goa_password_based,
-	E_TYPE_AUTHENTICATION_SESSION)
+G_DEFINE_DYNAMIC_TYPE (EGoaPasswordBased, e_goa_password_based, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
 
 static GoaObject *
-e_goa_password_based_ref_account (ESourceRegistryServer *server,
-                                  ESource *source,
+e_goa_password_based_ref_account (ESourceCredentialsProvider *provider,
+				  ESource *source,
                                   GoaClient *goa_client)
 {
+	ESource *cred_source = NULL;
 	GoaObject *match = NULL;
 	GList *list, *link;
-	const gchar *extension_name;
 	gchar *account_id = NULL;
+	ESourceGoa *extension = NULL;
 
-	extension_name = E_SOURCE_EXTENSION_GOA;
-
-	source = e_source_registry_server_find_extension (
-		server, source, extension_name);
-
-	if (source != NULL) {
-		ESourceGoa *extension;
-
-		extension = e_source_get_extension (source, extension_name);
-		account_id = e_source_goa_dup_account_id (extension);
-
-		g_object_unref (source);
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA)) {
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+	} else {
+		cred_source = e_source_credentials_provider_ref_credentials_source (provider, source);
+		if (cred_source && e_source_has_extension (cred_source, E_SOURCE_EXTENSION_GOA))
+			extension = e_source_get_extension (cred_source, E_SOURCE_EXTENSION_GOA);
 	}
+
+	if (!extension) {
+		g_clear_object (&cred_source);
+		return NULL;
+	}
+
+	account_id = e_source_goa_dup_account_id (extension);
+
+	g_clear_object (&cred_source);
 
 	if (account_id == NULL)
 		return NULL;
@@ -86,55 +90,83 @@ e_goa_password_based_ref_account (ESourceRegistryServer *server,
 	}
 
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	g_free (account_id);
 
 	return match;
 }
 
-static EAuthenticationSessionResult
-e_goa_password_based_execute_sync (EAuthenticationSession *session,
-                                   GCancellable *cancellable,
-                                   GError **error)
+static gboolean
+e_goa_password_based_can_process (ESourceCredentialsProviderImpl *provider_impl,
+				  ESource *source)
 {
-	EAuthenticationSessionResult session_result;
-	ESourceAuthenticationResult auth_result;
-	ESourceAuthenticator *authenticator;
-	ESourceRegistryServer *server;
-	ESource *source = NULL;
+	gboolean can_process;
+
+	g_return_val_if_fail (E_IS_GOA_PASSWORD_BASED (provider_impl), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	can_process = e_source_has_extension (source, E_SOURCE_EXTENSION_GOA);
+	if (!can_process) {
+		ESource *cred_source;
+
+		cred_source = e_source_credentials_provider_ref_credentials_source (
+			e_source_credentials_provider_impl_get_provider (provider_impl),
+			source);
+
+		if (cred_source) {
+			can_process = e_source_has_extension (cred_source, E_SOURCE_EXTENSION_GOA);
+			g_clear_object (&cred_source);
+		}
+	}
+
+	return can_process;
+}
+
+static gboolean
+e_goa_password_based_can_store (ESourceCredentialsProviderImpl *provider_impl)
+{
+	g_return_val_if_fail (E_IS_GOA_PASSWORD_BASED (provider_impl), FALSE);
+
+	return FALSE;
+}
+
+static gboolean
+e_goa_password_based_can_prompt (ESourceCredentialsProviderImpl *provider_impl)
+{
+	g_return_val_if_fail (E_IS_GOA_PASSWORD_BASED (provider_impl), FALSE);
+
+	return FALSE;
+}
+
+static gboolean
+e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
+				  ESource *source,
+				  GCancellable *cancellable,
+				  ENamedParameters **out_credentials,
+				  GError **error)
+{
 	GoaClient *goa_client = NULL;
 	GoaObject *goa_object = NULL;
 	GoaAccount *goa_account = NULL;
 	GoaPasswordBased *goa_password_based = NULL;
-	GString *password_string;
-	const gchar *extension_name;
-	const gchar *source_uid;
 	gchar *password = NULL;
 	gboolean use_imap_password;
 	gboolean use_smtp_password;
-	gboolean success;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_GOA_PASSWORD_BASED (provider_impl), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (out_credentials, FALSE);
 
 	goa_client = goa_client_new_sync (cancellable, error);
 	if (goa_client == NULL) {
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
 		if (error && *error)
 			g_dbus_error_strip_remote_error (*error);
 		goto exit;
 	}
 
-	server = e_authentication_session_get_server (session);
-	source_uid = e_authentication_session_get_source_uid (session);
-	source = e_source_registry_server_ref_source (server, source_uid);
-
-	if (source == NULL) {
-		g_set_error (
-			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("No such data source for UID '%s'"),
-			source_uid);
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
-		goto exit;
-	}
-
 	goa_object = e_goa_password_based_ref_account (
-		server, source, goa_client);
+		e_source_credentials_provider_impl_get_provider (provider_impl),
+		source, goa_client);
 
 	if (goa_object == NULL) {
 		g_set_error (
@@ -143,7 +175,6 @@ e_goa_password_based_execute_sync (EAuthenticationSession *session,
 			"the org.gnome.OnlineAccounts service from "
 			"which to obtain a password for '%s'"),
 			e_source_get_display_name (source));
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
 		goto exit;
 	}
 
@@ -151,24 +182,18 @@ e_goa_password_based_execute_sync (EAuthenticationSession *session,
 	goa_password_based = goa_object_get_password_based (goa_object);
 
 	/* XXX We should only be here if the account is password based. */
-	g_return_val_if_fail (
-		goa_password_based != NULL,
-		E_AUTHENTICATION_SESSION_ERROR);
+	g_return_val_if_fail (goa_password_based != NULL, FALSE);
 
 	success = goa_account_call_ensure_credentials_sync (
 		goa_account, NULL, cancellable, error);
 	if (!success) {
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
 		if (error && *error)
 			g_dbus_error_strip_remote_error (*error);
 		goto exit;
 	}
 
-	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
-	use_imap_password = e_source_has_extension (source, extension_name);
-
-	extension_name = E_SOURCE_EXTENSION_MAIL_TRANSPORT;
-	use_smtp_password = e_source_has_extension (source, extension_name);
+	use_imap_password = e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_ACCOUNT);
+	use_smtp_password = e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_TRANSPORT);
 
 	/* Use a suitable password ID for the ESource. */
 	if (use_imap_password) {
@@ -187,68 +212,38 @@ e_goa_password_based_execute_sync (EAuthenticationSession *session,
 	}
 
 	if (password == NULL) {
-		session_result = E_AUTHENTICATION_SESSION_ERROR;
+		success = FALSE;
 		if (error && *error)
 			g_dbus_error_strip_remote_error (*error);
 		goto exit;
 	}
 
-	authenticator = e_authentication_session_get_authenticator (session);
-	password_string = g_string_new (password);
-	auth_result = e_source_authenticator_try_password_sync (
-		authenticator, password_string, cancellable, error);
-	g_string_free (password_string, TRUE);
+	*out_credentials = e_named_parameters_new ();
+	e_named_parameters_set (*out_credentials, E_SOURCE_CREDENTIAL_PASSWORD, password);
 
-	switch (auth_result) {
-		case E_SOURCE_AUTHENTICATION_ERROR:
-			session_result = E_AUTHENTICATION_SESSION_ERROR;
-			break;
-
-		case E_SOURCE_AUTHENTICATION_ACCEPTED:
-			session_result = E_AUTHENTICATION_SESSION_SUCCESS;
-			break;
-
-		case E_SOURCE_AUTHENTICATION_REJECTED:
-			/* FIXME Apparently applications are expected to post
-			 *       a desktop-wide notification about the failed
-			 *       authentication attempt. */
-			g_set_error (
-				error, G_IO_ERROR,
-				G_IO_ERROR_PERMISSION_DENIED,
-				_("Invalid password for '%s'"),
-				e_source_get_display_name (source));
-			session_result = E_AUTHENTICATION_SESSION_ERROR;
-			break;
-
-		default:
-			g_warn_if_reached ();
-			session_result = E_AUTHENTICATION_SESSION_DISMISSED;
-			break;
-	}
-
-exit:
-	g_clear_object (&source);
+ exit:
 	g_clear_object (&goa_client);
 	g_clear_object (&goa_object);
 	g_clear_object (&goa_account);
 	g_clear_object (&goa_password_based);
 
-	g_free (password);
+	e_util_safe_free_string (password);
 
-	return session_result;
+	return success;
 }
 
 static void
 e_goa_password_based_class_init (EGoaPasswordBasedClass *class)
 {
-	EAuthenticationSessionClass *authentication_session_class;
+	ESourceCredentialsProviderImplClass *provider_impl_class;
 
 	g_type_class_add_private (class, sizeof (EGoaPasswordBasedPrivate));
 
-	authentication_session_class =
-		E_AUTHENTICATION_SESSION_CLASS (class);
-	authentication_session_class->execute_sync =
-		e_goa_password_based_execute_sync;
+	provider_impl_class = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS (class);
+	provider_impl_class->can_process = e_goa_password_based_can_process;
+	provider_impl_class->can_store = e_goa_password_based_can_store;
+	provider_impl_class->can_prompt = e_goa_password_based_can_prompt;
+	provider_impl_class->lookup_sync = e_goa_password_based_lookup_sync;
 }
 
 static void

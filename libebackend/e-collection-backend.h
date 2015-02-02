@@ -160,6 +160,9 @@ gboolean	e_collection_backend_delete_resource_finish
 						(ECollectionBackend *backend,
 						 GAsyncResult *result,
 						 GError **error);
+void		e_collection_backend_authenticate_children
+						(ECollectionBackend *backend,
+						 const ENamedParameters *credentials);
 
 G_END_DECLS
 

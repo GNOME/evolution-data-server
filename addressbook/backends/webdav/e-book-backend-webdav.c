@@ -51,17 +51,7 @@
 #define WEBDAV_CONTACT_ETAG "X-EVOLUTION-WEBDAV-ETAG"
 #define WEBDAV_CONTACT_HREF "X-EVOLUTION-WEBDAV-HREF"
 
-/* Forward Declarations */
-static void	e_book_backend_webdav_source_authenticator_init
-				(ESourceAuthenticatorInterface *iface);
-
-G_DEFINE_TYPE_WITH_CODE (
-	EBookBackendWebdav,
-	e_book_backend_webdav,
-	E_TYPE_BOOK_BACKEND,
-	G_IMPLEMENT_INTERFACE (
-		E_TYPE_SOURCE_AUTHENTICATOR,
-		e_book_backend_webdav_source_authenticator_init))
+G_DEFINE_TYPE (EBookBackendWebdav, e_book_backend_webdav, E_TYPE_BOOK_BACKEND)
 
 struct _EBookBackendWebdavPrivate {
 	gboolean           marked_for_offline;
@@ -230,10 +220,7 @@ send_and_handle_ssl (EBookBackendWebdav *webdav,
 {
 	guint status_code;
 
-	e_soup_ssl_trust_connect (
-		message, e_backend_get_source (E_BACKEND (webdav)),
-		e_book_backend_get_registry (E_BOOK_BACKEND (webdav)),
-		cancellable);
+	e_soup_ssl_trust_connect (message, e_backend_get_source (E_BACKEND (webdav)));
 
 	status_code = soup_session_send_message (webdav->priv->session, message);
 
@@ -1133,7 +1120,7 @@ soup_authenticate (SoupSession *session,
 	if (retrying)
 		return;
 
-	if (!priv->username || !*priv->username)
+	if (!priv->username || !*priv->username || !priv->password)
 		soup_message_set_status (message, SOUP_STATUS_FORBIDDEN);
 	else
 		soup_auth_authenticate (auth, priv->username, priv->password);
@@ -1221,6 +1208,8 @@ book_backend_webdav_get_backend_property (EBookBackend *backend,
 
 static gboolean
 book_backend_webdav_test_can_connect (EBookBackendWebdav *webdav,
+				      gchar **out_certificate_pem,
+				      GTlsCertificateFlags *out_certificate_errors,
 				      GCancellable *cancellable,
 				      GError **error)
 {
@@ -1257,11 +1246,32 @@ book_backend_webdav_test_can_connect (EBookBackendWebdav *webdav,
 				e_client_error_to_string (E_CLIENT_ERROR_AUTHENTICATION_REQUIRED));
 			break;
 
-		default:
-			g_set_error (
+		case SOUP_STATUS_SSL_FAILED:
+			if (out_certificate_pem && out_certificate_errors) {
+				GTlsCertificate *certificate = NULL;
+
+				g_object_get (G_OBJECT (message),
+					"tls-certificate", &certificate,
+					"tls-errors", out_certificate_errors,
+					NULL);
+
+				if (certificate) {
+					g_object_get (certificate, "certificate-pem", out_certificate_pem, NULL);
+					g_object_unref (certificate);
+				}
+			}
+
+			g_set_error_literal (
 				error, SOUP_HTTP_ERROR,
 				message->status_code,
-				"%s", message->reason_phrase);
+				message->reason_phrase);
+			break;
+
+		default:
+			g_set_error_literal (
+				error, SOUP_HTTP_ERROR,
+				message->status_code,
+				message->reason_phrase);
 			break;
 	}
 
@@ -1370,13 +1380,55 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 	e_backend_set_online (E_BACKEND (backend), TRUE);
 	e_book_backend_set_writable (backend, TRUE);
 
-	if (e_source_authentication_required (auth_extension))
-		success = e_backend_authenticate_sync (
-			E_BACKEND (backend),
-			E_SOURCE_AUTHENTICATOR (backend),
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
+	if (e_source_authentication_required (auth_extension)) {
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+
+		success = e_backend_credentials_required_sync (E_BACKEND (backend),
+			E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL,
 			cancellable, error);
-	else
-		success = book_backend_webdav_test_can_connect (webdav, cancellable, error);
+	} else {
+		gchar *certificate_pem = NULL;
+		GTlsCertificateFlags certificate_errors = 0;
+		GError *local_error = NULL;
+
+		success = book_backend_webdav_test_can_connect (webdav, &certificate_pem, &certificate_errors, cancellable, &local_error);
+		if (!success && !g_cancellable_is_cancelled (cancellable)) {
+			ESourceCredentialsReason reason;
+			GError *local_error2 = NULL;
+
+			if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+				reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
+			} else if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED) ||
+			           g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_REQUIRED)) {
+				reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+			} else {
+				reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+			}
+
+			if (!e_backend_credentials_required_sync (E_BACKEND (backend), reason, certificate_pem, certificate_errors,
+				local_error, cancellable, &local_error2)) {
+				g_warning ("%s: Failed to call credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+			}
+
+			if (!local_error2 && g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+				/* These cerificate errors are treated through the authentication */
+				g_clear_error (&local_error);
+			} else {
+				g_propagate_error (error, local_error);
+				local_error = NULL;
+			}
+
+			g_clear_error (&local_error2);
+		}
+
+		g_free (certificate_pem);
+
+		if (local_error)
+			g_propagate_error (error, local_error);
+	}
 
 	soup_uri_free (suri);
 
@@ -1764,31 +1816,49 @@ book_backend_webdav_get_contact_list_sync (EBookBackend *backend,
 }
 
 static ESourceAuthenticationResult
-book_backend_webdav_try_password_sync (ESourceAuthenticator *authenticator,
-                                       const GString *password,
-                                       GCancellable *cancellable,
-                                       GError **error)
+book_backend_webdav_authenticate_sync (EBackend *backend,
+				       const ENamedParameters *credentials,
+				       gchar **out_certificate_pem,
+				       GTlsCertificateFlags *out_certificate_errors,
+				       GCancellable *cancellable,
+				       GError **error)
 {
-	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (authenticator);
+	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	ESourceAuthentication *auth_extension;
 	ESourceAuthenticationResult result;
 	ESource *source;
-	const gchar *extension_name;
+	const gchar *username;
 	GError *local_error = NULL;
 
-	source = e_backend_get_source (E_BACKEND (authenticator));
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	auth_extension = e_source_get_extension (source, extension_name);
+	source = e_backend_get_source (backend);
+	auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
-	webdav->priv->username =
-		e_source_authentication_dup_user (auth_extension);
-	webdav->priv->password = g_strdup (password->str);
+	g_free (webdav->priv->username);
+	webdav->priv->username = NULL;
 
-	if (book_backend_webdav_test_can_connect (webdav, cancellable, &local_error)) {
+	g_free (webdav->priv->password);
+	webdav->priv->password = g_strdup (e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
+
+	username = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME);
+	if (username && *username) {
+		webdav->priv->username = g_strdup (username);
+	} else {
+		webdav->priv->username = e_source_authentication_dup_user (auth_extension);
+	}
+
+	if (book_backend_webdav_test_can_connect (webdav, out_certificate_pem, out_certificate_errors, cancellable, &local_error)) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
-	} else if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED)) {
-		result = E_SOURCE_AUTHENTICATION_REJECTED;
+	} else if (g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_FAILED) ||
+		   g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_REQUIRED)) {
+		if (!e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD) ||
+		    g_error_matches (local_error, E_CLIENT_ERROR, E_CLIENT_ERROR_AUTHENTICATION_REQUIRED))
+			result = E_SOURCE_AUTHENTICATION_REQUIRED;
+		else
+			result = E_SOURCE_AUTHENTICATION_REJECTED;
 		g_clear_error (&local_error);
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
+		g_propagate_error (error, local_error);
 	} else {
 		result = E_SOURCE_AUTHENTICATION_ERROR;
 		g_propagate_error (error, local_error);
@@ -1801,7 +1871,8 @@ static void
 e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 {
 	GObjectClass *object_class;
-	EBookBackendClass *backend_class;
+	EBackendClass *backend_class;
+	EBookBackendClass *book_backend_class;
 
 	g_type_class_add_private (class, sizeof (EBookBackendWebdavPrivate));
 
@@ -1809,22 +1880,19 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	object_class->dispose = book_backend_webdav_dispose;
 	object_class->finalize = book_backend_webdav_finalize;
 
-	backend_class = E_BOOK_BACKEND_CLASS (class);
-	backend_class->get_backend_property = book_backend_webdav_get_backend_property;
-	backend_class->open_sync = book_backend_webdav_open_sync;
-	backend_class->create_contacts_sync = book_backend_webdav_create_contacts_sync;
-	backend_class->modify_contacts_sync = book_backend_webdav_modify_contacts_sync;
-	backend_class->remove_contacts_sync = book_backend_webdav_remove_contacts_sync;
-	backend_class->get_contact_sync = book_backend_webdav_get_contact_sync;
-	backend_class->get_contact_list_sync = book_backend_webdav_get_contact_list_sync;
-	backend_class->start_view = e_book_backend_webdav_start_view;
-	backend_class->stop_view = e_book_backend_webdav_stop_view;
-}
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = book_backend_webdav_authenticate_sync;
 
-static void
-e_book_backend_webdav_source_authenticator_init (ESourceAuthenticatorInterface *iface)
-{
-	iface->try_password_sync = book_backend_webdav_try_password_sync;
+	book_backend_class = E_BOOK_BACKEND_CLASS (class);
+	book_backend_class->get_backend_property = book_backend_webdav_get_backend_property;
+	book_backend_class->open_sync = book_backend_webdav_open_sync;
+	book_backend_class->create_contacts_sync = book_backend_webdav_create_contacts_sync;
+	book_backend_class->modify_contacts_sync = book_backend_webdav_modify_contacts_sync;
+	book_backend_class->remove_contacts_sync = book_backend_webdav_remove_contacts_sync;
+	book_backend_class->get_contact_sync = book_backend_webdav_get_contact_sync;
+	book_backend_class->get_contact_list_sync = book_backend_webdav_get_contact_list_sync;
+	book_backend_class->start_view = e_book_backend_webdav_start_view;
+	book_backend_class->stop_view = e_book_backend_webdav_stop_view;
 }
 
 static void

@@ -358,19 +358,19 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
 			if (pair->closure->use_async_connect)
-				e_book_client_connect_direct (source, NULL, e_test_server_utils_client_ready, pair);
+				e_book_client_connect_direct (source, 30, NULL, e_test_server_utils_client_ready, pair);
 			else
 				pair->fixture->service.book_client = (EBookClient *)
 					e_book_client_connect_direct_sync (
 						pair->fixture->registry,
-						source, NULL, &error);
+						source, 30, NULL, &error);
 		} else {
 
 			if (pair->closure->use_async_connect)
-				e_book_client_connect (source, NULL, e_test_server_utils_client_ready, pair);
+				e_book_client_connect (source, 30, NULL, e_test_server_utils_client_ready, pair);
 			else
 				pair->fixture->service.book_client = (EBookClient *)
-					e_book_client_connect_sync (source, NULL, &error);
+					e_book_client_connect_sync (source, 30, NULL, &error);
 		}
 
 		if (!pair->closure->use_async_connect &&
@@ -395,7 +395,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		if (pair->closure->use_async_connect) {
 			e_cal_client_connect (
-				source, pair->closure->calendar_source_type,
+				source, pair->closure->calendar_source_type, 30,
 				NULL, e_test_server_utils_client_ready, pair);
 
 		} else {
@@ -403,7 +403,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 			pair->fixture->service.calendar_client = (ECalClient *)
 				e_cal_client_connect_sync (
 					source,
-					pair->closure->calendar_source_type, NULL, &error);
+					pair->closure->calendar_source_type, 30, NULL, &error);
 			if (!pair->fixture->service.calendar_client)
 				g_error ("Unable to create the test calendar: %s", error->message);
 		}

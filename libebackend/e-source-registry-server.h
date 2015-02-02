@@ -24,7 +24,6 @@
 
 #include <libedataserver/libedataserver.h>
 
-#include <libebackend/e-authentication-session.h>
 #include <libebackend/e-backend-enums.h>
 #include <libebackend/e-data-factory.h>
 #include <libebackend/e-collection-backend.h>
@@ -109,6 +108,9 @@ struct _ESourceRegistryServerClass {
 GType		e_source_registry_server_get_type
 						(void) G_GNUC_CONST;
 EDBusServer *	e_source_registry_server_new	(void);
+ESourceCredentialsProvider *
+		e_source_registry_server_ref_credentials_provider
+						(ESourceRegistryServer *server);
 void		e_source_registry_server_add_source
 						(ESourceRegistryServer *server,
 						 ESource *source);
@@ -153,26 +155,6 @@ ECollectionBackendFactory *
 		e_source_registry_server_ref_backend_factory
 						(ESourceRegistryServer *server,
 						 ESource *source);
-EAuthenticationSession *
-		e_source_registry_server_new_auth_session
-						(ESourceRegistryServer *server,
-						 ESourceAuthenticator *authenticator,
-						 const gchar *source_uid);
-gboolean	e_source_registry_server_authenticate_sync
-						(ESourceRegistryServer *server,
-						 EAuthenticationSession *session,
-						 GCancellable *cancellable,
-						 GError **error);
-void		e_source_registry_server_authenticate
-						(ESourceRegistryServer *server,
-						 EAuthenticationSession *session,
-						 GCancellable *cancellable,
-						 GAsyncReadyCallback callback,
-						 gpointer user_data);
-gboolean	e_source_registry_server_authenticate_finish
-						(ESourceRegistryServer *server,
-						 GAsyncResult *result,
-						 GError **error);
 
 #ifndef EDS_DISABLE_DEPRECATED
 gboolean	e_source_registry_server_load_all

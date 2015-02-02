@@ -266,6 +266,10 @@ struct _EClientClass {
 	gboolean	(*refresh_sync)		(EClient *client,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*retrieve_properties_sync)
+						(EClient *client,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	void		(*opened)		(EClient *client,
 						 const GError *error);
@@ -315,6 +319,20 @@ gboolean	e_client_refresh_finish		(EClient *client,
 						 GAsyncResult *result,
 						 GError **error);
 gboolean	e_client_refresh_sync		(EClient *client,
+						 GCancellable *cancellable,
+						 GError **error);
+
+void		e_client_wait_for_connected	(EClient *client,
+						 guint32 timeout_seconds,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_client_wait_for_connected_finish
+						(EClient *client,
+						 GAsyncResult *result,
+						 GError **error);
+gboolean	e_client_wait_for_connected_sync(EClient *client,
+						 guint32 timeout_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
 
@@ -406,6 +424,18 @@ gboolean	e_client_remove_finish		(EClient *client,
 						 GError **error);
 gboolean	e_client_remove_sync		(EClient *client,
 						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_client_retrieve_properties_sync
+						(EClient *client,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_client_retrieve_properties	(EClient *client,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_client_retrieve_properties_finish
+						(EClient *client,
+						 GAsyncResult *result,
 						 GError **error);
 gchar **	e_client_util_slist_to_strv	(const GSList *strings);
 GSList *	e_client_util_strv_to_slist	(const gchar * const *strv);
