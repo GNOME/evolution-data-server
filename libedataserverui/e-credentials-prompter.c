@@ -910,7 +910,7 @@ credentials_prompter_dispose (GObject *object)
 
 	g_hash_table_iter_init (&iter, prompter->priv->prompters);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		ECredentialsPrompterImpl *prompter_impl = key;
+		ECredentialsPrompterImpl *prompter_impl = value;
 
 		g_signal_handlers_disconnect_by_func (prompter_impl, credentials_prompter_prompt_finished_cb, prompter);
 	}
