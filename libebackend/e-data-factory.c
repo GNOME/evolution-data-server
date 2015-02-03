@@ -552,6 +552,12 @@ data_factory_call_subprocess_backend_create_sync (EDataFactory *data_factory,
 		g_return_if_fail (error != NULL);
 		g_dbus_method_invocation_take_error (invocation, error);
 	}
+
+	g_mutex_lock (&data_factory->priv->spawn_subprocess_lock);
+	if (data_factory->priv->spawn_subprocess_state == DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED)
+		data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
+	g_cond_signal (&data_factory->priv->spawn_subprocess_cond);
+	g_mutex_unlock (&data_factory->priv->spawn_subprocess_lock);
 }
 
 static void
@@ -1110,16 +1116,15 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 				       const gchar *subprocess_path)
 {
 	DataFactorySubprocessHelper *helper;
-	DataFactorySubprocessData *sd;
-	EBackendFactory *backend_factory;
+	DataFactorySubprocessData *sd = NULL;
+	EBackendFactory *backend_factory = NULL;
 	EDataFactoryClass *class;
 	ESource *source;
-	ESourceBackend *extension;
 	EDataFactoryPrivate *priv;
 	GError *error = NULL;
 	GSubprocess *subprocess;
-	guint watched_id;
-	gchar *backend_name;
+	guint watched_id = 0;
+	gchar *backend_name = NULL;
 	gchar *subprocess_helpers_hash_key;
 	const gchar *factory_name;
 	const gchar *filename;
@@ -1127,95 +1132,107 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 
 	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
 	g_return_if_fail (invocation != NULL);
-	g_return_if_fail (uid  != NULL && *uid != '\0');
+	g_return_if_fail (uid != NULL && *uid != '\0');
 	g_return_if_fail (extension_name != NULL && *extension_name != '\0');
 	g_return_if_fail (subprocess_path != NULL && *subprocess_path != '\0');
 
 	priv = data_factory->priv;
 
 	source = e_source_registry_ref_source (priv->registry, uid);
-	extension = e_source_get_extension (source, extension_name);
-	backend_name = e_source_backend_dup_backend_name (extension);
-	g_object_unref (source);
+	if (source && e_source_has_extension (source, extension_name)) {
+		ESourceBackend *extension;
 
-	backend_factory = e_data_factory_ref_backend_factory (
-		data_factory, backend_name, extension_name);
+		extension = e_source_get_extension (source, extension_name);
+		backend_name = e_source_backend_dup_backend_name (extension);
+	}
+	g_clear_object (&source);
+
+	if (backend_name && *backend_name) {
+		backend_factory = e_data_factory_ref_backend_factory (
+			data_factory, backend_name, extension_name);
+	}
 
 	g_free (backend_name);
 
-	type_name = G_OBJECT_TYPE_NAME (backend_factory);
+	if (backend_factory) {
+		type_name = G_OBJECT_TYPE_NAME (backend_factory);
 
-	class = E_DATA_FACTORY_GET_CLASS (data_factory);
-	factory_name = class->get_factory_name (backend_factory);
+		class = E_DATA_FACTORY_GET_CLASS (data_factory);
+		factory_name = class->get_factory_name (backend_factory);
 
-	subprocess_helpers_hash_key = data_factory_dup_subprocess_helper_hash_key (
-		factory_name, extension_name, uid, e_backend_factory_share_subprocess (backend_factory));
+		subprocess_helpers_hash_key = data_factory_dup_subprocess_helper_hash_key (
+			factory_name, extension_name, uid, e_backend_factory_share_subprocess (backend_factory));
 
-	g_mutex_lock (&priv->mutex);
-	helper = g_hash_table_lookup (
-		priv->subprocess_helpers,
-		subprocess_helpers_hash_key);
-	g_mutex_unlock (&priv->mutex);
+		g_mutex_lock (&priv->mutex);
+		helper = g_hash_table_lookup (
+			priv->subprocess_helpers,
+			subprocess_helpers_hash_key);
+		g_mutex_unlock (&priv->mutex);
 
-	filename = e_backend_factory_get_module_filename (backend_factory);
+		filename = e_backend_factory_get_module_filename (backend_factory);
 
-	if (helper != NULL) {
-		data_factory_call_subprocess_backend_create_sync (
+		if (helper != NULL) {
+			data_factory_call_subprocess_backend_create_sync (
+				data_factory,
+				helper->proxy,
+				invocation,
+				uid,
+				helper->bus_name,
+				type_name,
+				extension_name,
+				filename);
+
+			g_object_unref (backend_factory);
+			g_free (subprocess_helpers_hash_key);
+
+			return;
+		}
+
+		g_mutex_lock (&priv->spawn_subprocess_lock);
+		if (priv->spawn_subprocess_state != DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED)
+			priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED;
+		g_mutex_unlock (&priv->spawn_subprocess_lock);
+
+		sd = data_factory_subprocess_data_new (
 			data_factory,
-			helper->proxy,
 			invocation,
 			uid,
-			helper->bus_name,
+			factory_name,
 			type_name,
 			extension_name,
-			filename);
+			filename,
+			subprocess_helpers_hash_key);
 
 		g_object_unref (backend_factory);
 		g_free (subprocess_helpers_hash_key);
 
-		return;
+		watched_id = g_bus_watch_name (
+			G_BUS_TYPE_SESSION,
+			sd->bus_name,
+			G_BUS_NAME_WATCHER_FLAGS_NONE,
+			data_factory_subprocess_appeared_cb,
+			data_factory_subprocess_vanished_cb,
+			sd,
+			(GDestroyNotify) data_factory_subprocess_data_free);
+
+		g_mutex_lock (&priv->subprocess_watched_ids_lock);
+		g_hash_table_insert (priv->subprocess_watched_ids, g_strdup (sd->bus_name), GUINT_TO_POINTER (watched_id));
+		g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+
+		subprocess = g_subprocess_new (
+			G_SUBPROCESS_FLAGS_NONE,
+			&error,
+			subprocess_path,
+			"--bus-name", sd->bus_name,
+			"--own-path", sd->path,
+			NULL);
+
+		g_object_unref (subprocess);
+	} else {
+		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Backend factory for source '%s' and extension '%s' cannot be found."),
+			uid, extension_name);
 	}
-
-	g_mutex_lock (&priv->spawn_subprocess_lock);
-	if (priv->spawn_subprocess_state != DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED)
-		priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED;
-	g_mutex_unlock (&priv->spawn_subprocess_lock);
-
-	sd = data_factory_subprocess_data_new (
-		data_factory,
-		invocation,
-		uid,
-		factory_name,
-		type_name,
-		extension_name,
-		filename,
-		subprocess_helpers_hash_key);
-
-	g_object_unref (backend_factory);
-	g_free (subprocess_helpers_hash_key);
-
-	watched_id = g_bus_watch_name (
-		G_BUS_TYPE_SESSION,
-		sd->bus_name,
-		G_BUS_NAME_WATCHER_FLAGS_NONE,
-		data_factory_subprocess_appeared_cb,
-		data_factory_subprocess_vanished_cb,
-		sd,
-		(GDestroyNotify) data_factory_subprocess_data_free);
-
-	g_mutex_lock (&priv->subprocess_watched_ids_lock);
-	g_hash_table_insert (priv->subprocess_watched_ids, g_strdup (sd->bus_name), GUINT_TO_POINTER (watched_id));
-	g_mutex_unlock (&priv->subprocess_watched_ids_lock);
-
-	subprocess = g_subprocess_new (
-		G_SUBPROCESS_FLAGS_NONE,
-		&error,
-		subprocess_path,
-		"--bus-name", sd->bus_name,
-		"--own-path", sd->path,
-		NULL);
-
-	g_object_unref (subprocess);
 
 	if (error != NULL) {
 		g_rec_mutex_lock (&priv->connections_lock);
@@ -1223,11 +1240,15 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 			e_dbus_server_release (E_DBUS_SERVER (data_factory));
 		g_rec_mutex_unlock (&priv->connections_lock);
 
-		g_mutex_lock (&priv->subprocess_watched_ids_lock);
-		g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
-		g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+		if (sd) {
+			g_mutex_lock (&priv->subprocess_watched_ids_lock);
+			g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
+			g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+		}
 
-		g_bus_unwatch_name (watched_id);
+		if (watched_id)
+			g_bus_unwatch_name (watched_id);
+
 		g_dbus_method_invocation_take_error (invocation, error);
 
 		g_mutex_lock (&priv->spawn_subprocess_lock);
@@ -1254,8 +1275,7 @@ data_factory_spawn_subprocess_backend_in_thread (gpointer user_data)
 			&data_factory->priv->spawn_subprocess_lock);
 	}
 
-	if (data_factory->priv->spawn_subprocess_state == DATA_FACTORY_SPAWN_SUBPROCESS_NONE)
-		data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED;
+	data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED;
 	g_mutex_unlock (&data_factory->priv->spawn_subprocess_lock);
 
 	data_factory_spawn_subprocess_backend (
