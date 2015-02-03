@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-02-03 05:32+0000\n"
-"PO-Revision-Date: 2015-02-03 09:18+0100\n"
+"POT-Creation-Date: 2015-02-03 08:19+0000\n"
+"PO-Revision-Date: 2015-02-03 09:21+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -4724,6 +4724,11 @@ msgstr "%s nepodporuje vytváření vzdálených zdrojů"
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepodporuje mazání vzdálených zdrojů"
 
+#: ../libebackend/e-data-factory.c:1233
+#, c-format
+msgid "Backend factory for source '%s' and extension '%s' cannot be found."
+msgstr "Nelze najít obslužnou vrstvu pro zdroj „%s“ a rozšíření „%s“."
+
 #: ../libebackend/e-server-side-source.c:141
 #, c-format
 msgid "Data source is missing a [%s] group"
@@ -4939,22 +4944,18 @@ msgid "Unnamed"
 msgstr "Nepojmenovaný"
 
 #: ../libedataserver/e-source-credentials-provider-impl.c:41
-#| msgid "Protocol not supported"
 msgid "Credentials lookup is not supported"
 msgstr "Vyhledávání pověření není podporováno"
 
 #: ../libedataserver/e-source-credentials-provider-impl.c:54
-#| msgid "Forwarding messages is not supported"
 msgid "Credentials store is not supported"
 msgstr "Úložiště pověření není podporováno"
 
 #: ../libedataserver/e-source-credentials-provider-impl.c:65
-#| msgid "Forwarding messages is not supported"
 msgid "Credentials delete is not supported"
 msgstr "Mazání pověření není podporováno"
 
 #: ../libedataserver/e-source-credentials-provider-impl-password.c:81
-#| msgid "Contact not found"
 msgid "Password not found"
 msgstr "Heslo nebylo nalezeno"
 
@@ -5105,7 +5106,6 @@ msgstr "Výzva k zadání pověření byla zrušena"
 
 #: ../libedataserverui/e-credentials-prompter.c:663
 #, c-format
-#| msgid "Source '%s' does not support proxy lookups"
 msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "Zdroj dat „%s“ nepodporuje výzvy k zadání pověření"
 
@@ -5163,7 +5163,6 @@ msgstr "Zadejte prosím heslo pro účet „%s“."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:229
 #: ../libedataserverui/e-trust-prompt.c:114
-#| msgid "Cancelled"
 msgid "_Cancel"
 msgstr "_Zrušit"
 
@@ -5176,13 +5175,11 @@ msgid "_User Name:"
 msgstr "_Uživatelské jméno:"
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:355
-#| msgid "Password"
 msgid "_Password:"
 msgstr "_Heslo:"
 
 #. Remember password check
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:371
-#| msgid "Add this password to your keyring"
 msgid "_Add this password to your keyring"
 msgstr "Přid_at toto heslo do klíčenky"
 
@@ -5218,7 +5215,6 @@ msgid "Reason:"
 msgstr "Důvod:"
 
 #: ../libedataserverui/e-trust-prompt.c:213
-#| msgid "Other error"
 msgid "Detailed error:"
 msgstr "Podrobnosti o chybě:"
 
