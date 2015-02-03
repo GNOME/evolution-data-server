@@ -992,6 +992,9 @@ source_idle_data_change_cb (gpointer user_data)
 	ESource *source = E_SOURCE (user_data);
 	GError *local_error = NULL;
 
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
+
 	/* If the ESource is still initializing itself in a different
 	 * thread, skip the signal emission and try again on the next
 	 * main loop iteration. This is a busy wait but it should be
@@ -1091,6 +1094,9 @@ source_idle_connection_status_change_cb (gpointer user_data)
 	EDBusSource *dbus_source;
 	gboolean changed;
 
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
+
 	/* If the ESource is still initializing itself in a different
 	 * thread, skip the signal emission and try again on the next
 	 * main loop iteration. This is a busy wait but it should be
@@ -1108,11 +1114,13 @@ source_idle_connection_status_change_cb (gpointer user_data)
 	g_object_freeze_notify (G_OBJECT (source));
 	g_mutex_lock (&source->priv->property_lock);
 
-	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
+	if (source->priv->dbus_object) {
+		dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
 
-	dbus_source = e_dbus_object_get_source (dbus_object);
-	changed = source_update_connection_status_internal (source, dbus_source);
-	g_object_unref (dbus_source);
+		dbus_source = e_dbus_object_get_source (dbus_object);
+		changed = source_update_connection_status_internal (source, dbus_source);
+		g_object_unref (dbus_source);
+	}
 
 	if (changed)
 		g_object_notify (G_OBJECT (source), "connection-status");
@@ -1251,6 +1259,9 @@ static gboolean
 source_idle_changed_cb (gpointer user_data)
 {
 	ESource *source = E_SOURCE (user_data);
+
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
 
 	/* If the ESource is still initializing itself in a different
 	 * thread, skip the signal emission and try again on the next
