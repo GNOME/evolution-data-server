@@ -47,7 +47,7 @@
 #define ADDRESS_BOOK_SOURCE_UID "test-address-book"
 #define CALENDAR_SOURCE_UID     "test-calendar"
 
-#define FINALIZE_SECONDS         10
+#define FINALIZE_SECONDS         30
 
 /* FIXME, currently we are unable to achieve server activation
  * twice in a single test case, so we're using one D-Bus server
@@ -358,19 +358,19 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		if (pair->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
 			if (pair->closure->use_async_connect)
-				e_book_client_connect_direct (source, 30, NULL, e_test_server_utils_client_ready, pair);
+				e_book_client_connect_direct (source, (guint32) -1, NULL, e_test_server_utils_client_ready, pair);
 			else
 				pair->fixture->service.book_client = (EBookClient *)
 					e_book_client_connect_direct_sync (
 						pair->fixture->registry,
-						source, 30, NULL, &error);
+						source, (guint32) -1, NULL, &error);
 		} else {
 
 			if (pair->closure->use_async_connect)
-				e_book_client_connect (source, 30, NULL, e_test_server_utils_client_ready, pair);
+				e_book_client_connect (source, (guint32) -1, NULL, e_test_server_utils_client_ready, pair);
 			else
 				pair->fixture->service.book_client = (EBookClient *)
-					e_book_client_connect_sync (source, 30, NULL, &error);
+					e_book_client_connect_sync (source, (guint32) -1, NULL, &error);
 		}
 
 		if (!pair->closure->use_async_connect &&
@@ -395,7 +395,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		if (pair->closure->use_async_connect) {
 			e_cal_client_connect (
-				source, pair->closure->calendar_source_type, 30,
+				source, pair->closure->calendar_source_type, (guint32) -1,
 				NULL, e_test_server_utils_client_ready, pair);
 
 		} else {
@@ -403,7 +403,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 			pair->fixture->service.calendar_client = (ECalClient *)
 				e_cal_client_connect_sync (
 					source,
-					pair->closure->calendar_source_type, 30, NULL, &error);
+					pair->closure->calendar_source_type, (guint32) -1, NULL, &error);
 			if (!pair->fixture->service.calendar_client)
 				g_error ("Unable to create the test calendar: %s", error->message);
 		}

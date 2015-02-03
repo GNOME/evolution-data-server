@@ -113,6 +113,7 @@ finish_thread_test (ThreadData *data)
 	g_thread_join (data->thread);
 	g_mutex_clear (&data->complete_mutex);
 	g_cond_clear (&data->complete_cond);
+	g_clear_object (&data->view);
 	g_slice_free (ThreadData, data);
 }
 
@@ -198,7 +199,7 @@ test_view_thread_async (ThreadData *data)
 	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
 		/* There is no Async API to open a direct book for now, let's stick with the sync API
 		 */
-		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, 30, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, (guint32) -1, NULL, &error);
 
 		if (!data->client)
 			g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
@@ -208,7 +209,7 @@ test_view_thread_async (ThreadData *data)
 
 	} else {
 		/* Connect asynchronously */
-		e_book_client_connect (source, 30, NULL, connect_ready, data);
+		e_book_client_connect (source, (guint32) -1, NULL, connect_ready, data);
 	}
 
 	g_main_loop_run (data->loop);
@@ -280,9 +281,9 @@ test_view_thread_sync (ThreadData *data)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
 	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
-		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, 30, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, (guint32) -1, NULL, &error);
 	else
-		data->client = (EBookClient *) e_book_client_connect_sync (source, 30, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_sync (source, (guint32) -1, NULL, &error);
 
 	if (!data->client)
 		g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);

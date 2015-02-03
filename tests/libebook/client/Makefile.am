@@ -58,6 +58,10 @@ TESTS = \
 	test-book-client-view-operations \
 	test-book-client-suppress-notifications \
 	test-book-client-cursor-create \
+	$(NULL)
+
+# Skip these from 'make check', they take too long for a quick test before release
+TESTS_SKIP = \
 	test-book-client-cursor-operations \
 	$(NULL)
 
@@ -65,7 +69,7 @@ TESTS = \
 #
 # Either they were designed as functional tests or have
 # not been ported to use ETestServerFixture yet.
-noinst_PROGRAMS = $(TESTS)
+noinst_PROGRAMS = $(TESTS) $(TESTS_SKIP)
 
 TEST_CPPFLAGS = \
 	$(libclient_test_utils_la_CPPFLAGS) \

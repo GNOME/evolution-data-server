@@ -2678,7 +2678,7 @@ main (gint argc,
 		closure = cursor_closure_new (&base_params[i], "POSIX");
 		cursor_closure_alphabet (closure, TRUE, "A", "B", "C", "D", "E");
 		cursor_closure_change_locale (closure, "ko_KR.utf8");
-		cursor_closure_alphabet (closure, FALSE, "ᄀ", "ᄂ", "ᄃ", "ᄅ", "ᄆ");
+		cursor_closure_alphabet (closure, FALSE, "ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ");
 		cursor_closure_add (closure, "/EBookClientCursor/ChangeLocale/Alphabet/ko_KR%s", base_params[i].base_path);
 
 		closure = cursor_closure_new (&base_params[i], "POSIX");
