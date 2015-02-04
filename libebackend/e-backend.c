@@ -496,6 +496,7 @@ backend_dispose (GObject *object)
 
 	if (priv->source) {
 		g_signal_handlers_disconnect_by_func (priv->source, backend_source_authenticate_cb, object);
+		e_source_set_connection_status (priv->source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 	}
 
 	g_mutex_lock (&priv->authenticate_cancellable_lock);
