@@ -460,7 +460,7 @@ e_credentials_prompter_manage_impl_prompt (ECredentialsPrompter *prompter,
 		/* If the prompter doesn't auto-prompt, then it should not auto-close the prompt as well. */
 		if (e_credentials_prompter_get_auto_prompt (prompter)) {
 			ppd->notify_handler_id = g_signal_connect (ppd->auth_source, "notify::connection-status",
-				G_CALLBACK (credentials_prompter_connection_status_changed_cb), prompter_impl);
+				G_CALLBACK (credentials_prompter_connection_status_changed_cb), prompter);
 		} else {
 			ppd->notify_handler_id = 0;
 		}
