@@ -6916,8 +6916,16 @@ e_cal_client_get_timezone_sync (ECalClient *client,
 	 * otherwise we'd have to free this struct
 	 * and fetch the cached copy. */
 	g_mutex_lock (&client->priv->zone_cache_lock);
-	g_hash_table_insert (
-		client->priv->zone_cache, g_strdup (tzid), zone);
+	if (g_hash_table_lookup (client->priv->zone_cache, tzid)) {
+		/* It can be that another thread already filled the zone into the cache,
+		   thus deal with it properly, because that other zone can be used by that
+		   other thread. */
+		icaltimezone_free (zone, 1);
+		zone = g_hash_table_lookup (client->priv->zone_cache, tzid);
+	} else {
+		g_hash_table_insert (
+			client->priv->zone_cache, g_strdup (tzid), zone);
+	}
 	g_mutex_unlock (&client->priv->zone_cache_lock);
 
 	*out_zone = zone;
