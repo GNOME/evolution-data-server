@@ -1789,7 +1789,8 @@ book_backend_webdav_get_contact_list_sync (EBookBackend *backend,
 	EBookBackendWebdav *webdav = E_BOOK_BACKEND_WEBDAV (backend);
 	GList *contact_list;
 
-	if (e_backend_get_online (E_BACKEND (backend))) {
+	if (e_backend_get_online (E_BACKEND (backend)) &&
+	    e_source_get_connection_status (e_backend_get_source (E_BACKEND (backend))) == E_SOURCE_CONNECTION_STATUS_CONNECTED) {
 		/* make sure the cache is up to date */
 		if (!download_contacts (webdav, NULL, NULL, cancellable, error))
 			return FALSE;
