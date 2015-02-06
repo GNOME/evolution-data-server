@@ -1131,6 +1131,7 @@ folder_changed (CamelFolder *folder,
 
 	if (driver || junk || notjunk) {
 		FolderFilterData *data;
+		gchar *description;
 
 		data = g_slice_new0 (FolderFilterData);
 		data->recents = recents;
@@ -1148,11 +1149,15 @@ folder_changed (CamelFolder *folder,
 			folder->priv->changed_frozen, info);
 		g_mutex_unlock (&folder->priv->change_lock);
 
+		description = g_strdup_printf (_("Filtering folder '%s'"), camel_folder_get_full_name (folder));
+
 		camel_session_submit_job (
-			session, (CamelSessionCallback) folder_filter,
+			session, description, (CamelSessionCallback) folder_filter,
 			data, (GDestroyNotify) prepare_folder_filter_data_free);
 
 		g_signal_stop_emission (folder, signals[CHANGED], 0);
+
+		g_free (description);
 	}
 
 	g_object_unref (session);

@@ -1110,12 +1110,18 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
 	g_async_queue_push_unlocked (vee_folder->priv->change_queue, data);
 
 	if (!vee_folder->priv->change_queue_busy) {
+		gchar *description;
+
+		description = g_strdup_printf ("Updating search folder '%s'", camel_folder_get_full_name (CAMEL_FOLDER (vee_folder)));
+
 		camel_session_submit_job (
-			session, (CamelSessionCallback)
+			session, description, (CamelSessionCallback)
 			vee_folder_process_changes,
 			g_object_ref (vee_folder),
 			(GDestroyNotify) g_object_unref);
 		vee_folder->priv->change_queue_busy = TRUE;
+
+		g_free (description);
 	}
 
 	g_async_queue_unlock (vee_folder->priv->change_queue);

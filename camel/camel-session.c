@@ -150,6 +150,8 @@ signal_closure_free (SignalClosure *signal_closure)
 static void
 job_data_free (JobData *job_data)
 {
+	camel_operation_pop_message (job_data->cancellable);
+
 	g_object_unref (job_data->session);
 	g_object_unref (job_data->cancellable);
 
@@ -1407,6 +1409,7 @@ camel_session_idle_add (CamelSession *session,
 /**
  * camel_session_submit_job:
  * @session: a #CamelSession
+ * @description: human readable description of the job, shown to a user
  * @callback: a #CamelSessionCallback
  * @user_data: user data passed to the callback
  * @notify: a #GDestroyNotify function
@@ -1433,6 +1436,7 @@ camel_session_idle_add (CamelSession *session,
  **/
 void
 camel_session_submit_job (CamelSession *session,
+			  const gchar *description,
                           CamelSessionCallback callback,
                           gpointer user_data,
                           GDestroyNotify notify)
@@ -1440,6 +1444,7 @@ camel_session_submit_job (CamelSession *session,
 	JobData *job_data;
 
 	g_return_if_fail (CAMEL_IS_SESSION (session));
+	g_return_if_fail (description != NULL);
 	g_return_if_fail (callback != NULL);
 
 	job_data = g_slice_new0 (JobData);
@@ -1448,6 +1453,8 @@ camel_session_submit_job (CamelSession *session,
 	job_data->callback = callback;
 	job_data->user_data = user_data;
 	job_data->notify = notify;
+
+	camel_operation_push_message (job_data->cancellable, "%s", description);
 
 	camel_session_idle_add (
 		session, JOB_PRIORITY,

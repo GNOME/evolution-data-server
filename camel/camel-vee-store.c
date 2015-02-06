@@ -1022,7 +1022,7 @@ camel_vee_store_rebuild_unmatched_folder (CamelVeeStore *vstore,
 		session = camel_service_ref_session (service);
 
 		camel_session_submit_job (
-			session, (CamelSessionCallback)
+			session, _("Updating Unmatched search folder"), (CamelSessionCallback)
 			vee_store_rebuild_unmatched_folder,
 			g_object_ref (vstore),
 			g_object_unref);

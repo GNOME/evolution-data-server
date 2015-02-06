@@ -2118,6 +2118,7 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 {
 	CamelStore *parent_store;
 	CamelSession *session;
+	gchar *description;
 
 	/* If folder is freed or if the cache is nil then clean up */
 	if (!summary->priv->folder ||
@@ -2135,14 +2136,16 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+	description = g_strdup_printf (_("Release unused memory for folder '%s'"), camel_folder_get_full_name (summary->priv->folder));
 
 	camel_session_submit_job (
-		session,
+		session, description,
 		(CamelSessionCallback) remove_cache,
 		g_object_ref (summary),
 		(GDestroyNotify) g_object_unref);
 
 	g_object_unref (session);
+	g_free (description);
 
 	return TRUE;
 }
@@ -2343,12 +2346,18 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 		   object which is invalidates its content when it reaches the dispose. */
 		session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
 		if (session) {
+			gchar *description;
+
+			description = g_strdup_printf (_("Update preview data for folder '%s'"), camel_folder_get_full_name (summary->priv->folder));
+
 			camel_session_submit_job (
-				session,
+				session, description,
 				(CamelSessionCallback) preview_update,
 				g_object_ref (summary->priv->folder),
 				(GDestroyNotify) g_object_unref);
+
 			g_object_unref (session);
+			g_free (description);
 		}
 	}
 

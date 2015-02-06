@@ -202,6 +202,7 @@ guint		camel_session_idle_add		(CamelSession *session,
 						 gpointer data,
 						 GDestroyNotify notify);
 void		camel_session_submit_job	(CamelSession *session,
+						 const gchar *description,
 						 CamelSessionCallback callback,
 						 gpointer user_data,
 						 GDestroyNotify notify);

@@ -145,16 +145,21 @@ offline_folder_changed (CamelFolder *folder,
 
 	if (changes->uid_added->len > 0 && (sync_store || sync_folder)) {
 		OfflineDownsyncData *data;
+		gchar *description;
 
 		data = g_slice_new0 (OfflineDownsyncData);
 		data->changes = camel_folder_change_info_new ();
 		camel_folder_change_info_cat (data->changes, changes);
 		data->folder = g_object_ref (folder);
 
+		description = g_strdup_printf (_("Checking download of new messages for offline in '%s'"), camel_folder_get_full_name (folder));
+
 		camel_session_submit_job (
-			session, (CamelSessionCallback)
+			session, description, (CamelSessionCallback)
 			offline_folder_downsync_background, data,
 			(GDestroyNotify) offline_downsync_data_free);
+
+		g_free (description);
 	}
 
 	g_object_unref (session);
