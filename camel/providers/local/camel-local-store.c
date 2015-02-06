@@ -588,11 +588,12 @@ summary_failed:
 	} else
 		camel_text_index_rename (newibex, oldibex);
 ibex_failed:
-	g_set_error (
-		error, G_IO_ERROR,
-		g_io_error_from_errno (errno),
-		_("Could not rename '%s': %s"),
-		old, g_strerror (errno));
+	if (error && !*error)
+		g_set_error (
+			error, G_IO_ERROR,
+			g_io_error_from_errno (errno),
+			_("Could not rename '%s': %s"),
+			old, g_strerror (errno));
 
 	g_free (newibex);
 	g_free (oldibex);
