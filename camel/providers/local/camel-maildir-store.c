@@ -57,6 +57,7 @@
 
 struct _CamelMaildirStorePrivate {
 	gboolean already_migrated;
+	gboolean can_escape_dots;
 };
 
 static CamelFolder * maildir_store_get_folder_sync (CamelStore *store, const gchar *folder_name, CamelStoreGetFolderFlags flags,
@@ -65,12 +66,12 @@ static CamelFolderInfo *maildir_store_create_folder_sync (CamelStore *store, con
 						GCancellable *cancellable, GError **error);
 static gboolean maildir_store_delete_folder_sync (CamelStore * store, const gchar *folder_name, GCancellable *cancellable, GError **error);
 
-static gchar *maildir_full_name_to_dir_name (const gchar *full_name);
-static gchar *maildir_dir_name_to_fullname (const gchar *dir_name);
+static gchar *maildir_full_name_to_dir_name (gboolean can_escape_dots, const gchar *full_name);
+static gchar *maildir_dir_name_to_fullname (gboolean can_escape_dots, const gchar *dir_name);
 static gchar *maildir_get_full_path (CamelLocalStore *ls, const gchar *full_name);
 static gchar *maildir_get_meta_path (CamelLocalStore *ls, const gchar *full_name, const gchar *ext);
 static void maildir_migrate_hierarchy (CamelMaildirStore *mstore, gint maildir_version, GCancellable *cancellable, GError **error);
-static gboolean maildir_version_requires_migrate (const gchar *meta_filename, gint *maildir_version);
+static gboolean maildir_version_requires_migrate (const gchar *meta_filename, gboolean *file_exists, gint *maildir_version);
 
 G_DEFINE_TYPE (CamelMaildirStore, camel_maildir_store, CAMEL_TYPE_LOCAL_STORE)
 
@@ -123,6 +124,14 @@ maildir_store_create_folder_sync (CamelStore *store,
 		goto exit;
 	}
 
+	if (folder_name && !CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots && strchr (folder_name, HIER_SEP_CHAR)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_INVALID,
+			_("Cannot create folder containing '%s'"), HIER_SEP);
+		goto exit;
+	}
+
 	if ((!parent_name || !*parent_name) && !g_ascii_strcasecmp (folder_name, "Inbox")) {
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
@@ -133,10 +142,10 @@ maildir_store_create_folder_sync (CamelStore *store,
 
 	if (parent_name && *parent_name) {
 		fullname = g_strdup_printf ("%s/%s", parent_name, folder_name);
-		name = maildir_full_name_to_dir_name (fullname);
+		name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, fullname);
 		g_free (fullname);
 	} else
-		name = maildir_full_name_to_dir_name (folder_name);
+		name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, folder_name);
 
 	fullname = g_build_filename (path, name, NULL);
 
@@ -208,7 +217,7 @@ maildir_store_get_folder_sync (CamelStore *store,
 	g_object_unref (settings);
 
 	folder_name = md_canon_name (folder_name);
-	dir_name = maildir_full_name_to_dir_name (folder_name);
+	dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, folder_name);
 
 	/* maildir++ directory names start with a '.' */
 	name = g_build_filename (path, dir_name, NULL);
@@ -333,7 +342,7 @@ maildir_store_delete_folder_sync (CamelStore *store,
 	g_object_unref (settings);
 
 	/* maildir++ directory names start with a '.' */
-	dir_name = maildir_full_name_to_dir_name (folder_name);
+	dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, folder_name);
 	name = g_build_filename (path, dir_name, NULL);
 	g_free (dir_name);
 
@@ -443,7 +452,7 @@ fill_fi (CamelStore *store,
 		g_object_unref (settings);
 
 		/* This should be fast enough not to have to test for INFO_FAST */
-		dir_name = maildir_full_name_to_dir_name (fi->full_name);
+		dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, fi->full_name);
 
 		if (!strcmp (dir_name, "."))
 			folderpath = g_strdup (root);
@@ -505,7 +514,7 @@ scan_fi (CamelStore *store,
 	if (((flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE) != 0))
 		fi->flags = CAMEL_FOLDER_NOCHILDREN;
 
-	dir_name = maildir_full_name_to_dir_name (fi->full_name);
+	dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, fi->full_name);
 	d (printf ("Adding maildir info: '%s' '%s' '%s'\n", fi->name, dir_name, fi->uri));
 
 	tmp = g_build_filename (path, dir_name, "tmp", NULL);
@@ -533,7 +542,8 @@ scan_fi (CamelStore *store,
 
 /* Folder names begin with a dot */
 static gchar *
-maildir_full_name_to_dir_name (const gchar *full_name)
+maildir_full_name_to_dir_name (gboolean can_escape_dots,
+			       const gchar *full_name)
 {
 	gchar *path;
 
@@ -545,7 +555,7 @@ maildir_full_name_to_dir_name (const gchar *full_name)
 		else
 			path = g_strconcat ("/", full_name, NULL);
 
-		if (strchr (path, HIER_SEP_CHAR) || strchr (path, '_')) {
+		if (can_escape_dots && (strchr (path, HIER_SEP_CHAR) || strchr (path, '_'))) {
 			GString *tmp = g_string_new ("");
 			const gchar *pp;
 
@@ -567,7 +577,8 @@ maildir_full_name_to_dir_name (const gchar *full_name)
 }
 
 static gchar *
-maildir_dir_name_to_fullname (const gchar *dir_name)
+maildir_dir_name_to_fullname (gboolean can_escape_dots,
+			      const gchar *dir_name)
 {
 	gchar *full_name;
 
@@ -578,7 +589,7 @@ maildir_dir_name_to_fullname (const gchar *dir_name)
 
 	g_strdelimit (full_name, HIER_SEP, '/');
 
-	if (strchr (full_name, '_')) {
+	if (can_escape_dots && strchr (full_name, '_')) {
 		gint ii, jj;
 
 		for (ii = 0, jj = 0; full_name[ii]; ii++, jj++) {
@@ -605,6 +616,7 @@ scan_dirs (CamelStore *store,
            GError **error)
 {
 	CamelLocalSettings *local_settings;
+	CamelMaildirStore *maildir_store;
 	CamelSettings *settings;
 	CamelService *service;
 	CamelFolderInfo *fi;
@@ -615,6 +627,7 @@ scan_dirs (CamelStore *store,
 	gchar *path;
 
 	service = CAMEL_SERVICE (store);
+	maildir_store = CAMEL_MAILDIR_STORE (store);
 
 	settings = camel_service_ref_settings (service);
 
@@ -639,11 +652,12 @@ scan_dirs (CamelStore *store,
 		goto exit;
 	}
 
-	if (!CAMEL_MAILDIR_STORE (store)->priv->already_migrated) {
+	if (!maildir_store->priv->already_migrated &&
+	    maildir_store->priv->can_escape_dots) {
 		gchar *meta_path = NULL, *ptr;
 		gint maildir_version = 0;
+		gboolean file_exists = FALSE, requires_migrate;
 
-		CAMEL_MAILDIR_STORE (store)->priv->already_migrated = TRUE;
 		meta_path = maildir_get_meta_path ((CamelLocalStore *) store, "?", "maildir++");
 		ptr = strrchr (meta_path, '?');
 		if (!ptr) {
@@ -654,10 +668,22 @@ scan_dirs (CamelStore *store,
 			goto exit;
 		}
 
+		maildir_store->priv->already_migrated = TRUE;
+
+		/* Do not migrate folders out of user's data data, which is completely
+		   handled by Camel/Evolution, thus these tweaks can be done there. */
+		maildir_store->priv->can_escape_dots = g_str_has_prefix (meta_path, camel_service_get_user_data_dir (service));
+
 		/* cannot pass dot inside maildir_get_meta_path(), because it escapes it */
 		ptr[0] = '.';
 
-		if (maildir_version_requires_migrate (meta_path, &maildir_version))
+		requires_migrate = maildir_version_requires_migrate (meta_path, &file_exists, &maildir_version);
+		if (file_exists) {
+			/* Users can enable dot escaping by adding ..maildir++ file into the root Maildir folder */
+			maildir_store->priv->can_escape_dots = TRUE;
+		}
+
+		if (requires_migrate && maildir_store->priv->can_escape_dots)
 			maildir_migrate_hierarchy ((CamelMaildirStore *) store, maildir_version, cancellable, error);
 
 		g_free (meta_path);
@@ -684,7 +710,7 @@ scan_dirs (CamelStore *store,
 			continue;
 		}
 		g_free (filename);
-		full_name = maildir_dir_name_to_fullname (d->d_name);
+		full_name = maildir_dir_name_to_fullname (maildir_store->priv->can_escape_dots, d->d_name);
 		short_name = strrchr (full_name, '/');
 		if (!short_name)
 			short_name = full_name;
@@ -833,8 +859,8 @@ rename_traverse_fi (CamelStore *store,
 			gchar *new_full_name, *old_dir, *new_dir;
 
 			new_full_name = g_strconcat (new_full_name_prefix, fi->full_name + old_prefix_len, NULL);
-			old_dir = maildir_full_name_to_dir_name (fi->full_name);
-			new_dir = maildir_full_name_to_dir_name (new_full_name);
+			old_dir = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, fi->full_name);
+			new_dir = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, new_full_name);
 
 			/* Chain up to parent's rename_folder_sync() method. */
 			ret = store_class->rename_folder_sync (store, old_dir, new_dir, cancellable, error);
@@ -882,14 +908,22 @@ maildir_store_rename_folder_sync (CamelStore *store,
 		return FALSE;
 	}
 
+	if (new && !CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots && strchr (new, HIER_SEP_CHAR)) {
+		g_set_error (
+			error, CAMEL_STORE_ERROR,
+			CAMEL_STORE_ERROR_INVALID,
+			_("Cannot create folder containing '%s'"), HIER_SEP);
+		return FALSE;
+	}
+
 	subfolders = maildir_store_get_folder_info_sync (
 		store, old,
 		CAMEL_STORE_FOLDER_INFO_RECURSIVE |
 		CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
 		cancellable, NULL);
 
-	old_dir = maildir_full_name_to_dir_name (old);
-	new_dir = maildir_full_name_to_dir_name (new);
+	old_dir = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, old);
+	new_dir = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (store)->priv->can_escape_dots, new);
 
 	/* Chain up to parent's rename_folder_sync() method. */
 	store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
@@ -941,6 +975,7 @@ camel_maildir_store_init (CamelMaildirStore *maildir_store)
 {
 	maildir_store->priv = CAMEL_MAILDIR_STORE_GET_PRIVATE (maildir_store);
 	maildir_store->priv->already_migrated = FALSE;
+	maildir_store->priv->can_escape_dots = TRUE;
 }
 
 static gchar *
@@ -963,7 +998,7 @@ maildir_get_full_path (CamelLocalStore *ls,
 
 	g_object_unref (settings);
 
-	dir_name = maildir_full_name_to_dir_name (full_name);
+	dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (ls)->priv->can_escape_dots, full_name);
 	filename = g_build_filename (path, dir_name, NULL);
 	g_free (dir_name);
 
@@ -994,7 +1029,7 @@ maildir_get_meta_path (CamelLocalStore *ls,
 
 	g_object_unref (settings);
 
-	dir_name = maildir_full_name_to_dir_name (full_name);
+	dir_name = maildir_full_name_to_dir_name (CAMEL_MAILDIR_STORE (ls)->priv->can_escape_dots, full_name);
 	tmp = g_build_filename (path, dir_name, NULL);
 	filename = g_strconcat (tmp, ext, NULL);
 	g_free (tmp);
@@ -1166,11 +1201,14 @@ maildir_maybe_rename_old_folder (CamelMaildirStore *mstore,
 {
 	gchar *new_name = NULL;
 
+	if (g_str_equal (fi->full_name, ".") || g_str_equal (fi->full_name, ".."))
+		return;
+
 	if (maildir_version == -1) {
 		/* this is when maildir was not converted yet to maildir++ at all,
 		 * the '_' and '.'  are still there and the dir separator is slash
 		*/
-		new_name = maildir_full_name_to_dir_name (fi->full_name);
+		new_name = maildir_full_name_to_dir_name (mstore->priv->can_escape_dots, fi->full_name);
 	} else if (maildir_version == 0) {
 		/* this is a conversion with maildir folder being already there,
 		 * only with no version; there should be escaped only '_', because
@@ -1188,7 +1226,7 @@ maildir_maybe_rename_old_folder (CamelMaildirStore *mstore,
 
 		g_strdelimit (full_name, HIER_SEP, '/');
 
-		new_name = maildir_full_name_to_dir_name (full_name);
+		new_name = maildir_full_name_to_dir_name (mstore->priv->can_escape_dots, full_name);
 
 		g_free (full_name);
 	} else {
@@ -1197,9 +1235,16 @@ maildir_maybe_rename_old_folder (CamelMaildirStore *mstore,
 
 	if (!g_str_equal (fi->full_name, new_name)) {
 		CamelStoreClass *store_class;
+		GError *local_error = NULL;
 
 		store_class = CAMEL_STORE_CLASS (camel_maildir_store_parent_class);
-		store_class->rename_folder_sync ((CamelStore *) mstore, fi->full_name, new_name, cancellable, error);
+		/* Do not propagate these errors, only warn about them on console */
+		store_class->rename_folder_sync ((CamelStore *) mstore, fi->full_name, new_name, cancellable, &local_error);
+
+		if (local_error) {
+			g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, fi->full_name, new_name, local_error->message);
+			g_error_free (local_error);
+		}
 	}
 
 	g_free (new_name);
@@ -1224,6 +1269,7 @@ traverse_rename_folder_info (CamelMaildirStore *mstore,
 
 static gboolean
 maildir_version_requires_migrate (const gchar *meta_filename,
+				  gboolean *file_exists,
                                   gint *maildir_version)
 {
 	FILE *metafile;
@@ -1232,16 +1278,19 @@ maildir_version_requires_migrate (const gchar *meta_filename,
 	gboolean res = FALSE;
 
 	g_return_val_if_fail (meta_filename != NULL, FALSE);
+	g_return_val_if_fail (file_exists != NULL, FALSE);
 	g_return_val_if_fail (maildir_version != NULL, FALSE);
 
 	/* nonexistent file is -1 */
 	*maildir_version = -1;
+	*file_exists = FALSE;
 
 	if (!g_file_test (meta_filename, G_FILE_TEST_EXISTS))
 		return TRUE;
 
 	/* existing file without version is 0 */
 	*maildir_version = 0;
+	*file_exists = TRUE;
 
 	metafile = fopen (meta_filename, "rb");
 	if (!metafile)
@@ -1277,17 +1326,16 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore,
 	CamelFolderInfo *topfi;
 	gchar *meta_path = NULL, *ptr;
 
+	g_return_if_fail (mstore->priv->can_escape_dots);
+
 	topfi = camel_folder_info_new ();
 	topfi->full_name = g_strdup (".");
 	topfi->display_name = g_strdup ("Inbox");
 
 	if (scan_old_dir_info ((CamelStore *) mstore, topfi, error) == -1) {
-		g_warning ("Failed to scan the old folder info \n");
+		g_warning ("%s: Failed to scan the old folder info", G_STRFUNC);
 		goto done;
 	}
-
-	if (maildir_version < 1)
-		traverse_rename_folder_info (mstore, topfi, maildir_version, cancellable, error);
 
 	meta_path = maildir_get_meta_path ((CamelLocalStore *) mstore, "?", "maildir++");
 	ptr = strrchr (meta_path, '?');
@@ -1296,9 +1344,15 @@ maildir_migrate_hierarchy (CamelMaildirStore *mstore,
 	/* cannot pass dot inside maildir_get_meta_path(), because it is escaped */
 	ptr[0] = '.';
 
-	if (!g_file_set_contents (meta_path, MAILDIR_CONTENT_VERSION_STR, -1, error)) {
+	/* First create/overwrite the file, only then do the migration, otherwise,
+	   if the file creation fails, the folder structure would be migrated repeatedly. */
+	if (!g_file_set_contents (meta_path, MAILDIR_CONTENT_VERSION_STR, -1, error) || (error && *error)) {
 		g_warning ("Failed to save the maildir version in ‘%s’.", meta_path);
 		goto done;
+	}
+
+	if (maildir_version < 1) {
+		traverse_rename_folder_info (mstore, topfi, maildir_version, cancellable, error);
 	}
 
 done:
