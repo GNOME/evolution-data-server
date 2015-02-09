@@ -147,20 +147,25 @@ stream_write (CamelStream *stream,
               GError **error)
 {
 	GIOStream *base_stream;
-	gssize n_bytes_written = (gssize) n;
+	gssize n_bytes_written = -1;
 
 	base_stream = camel_stream_ref_base_stream (stream);
 
 	if (base_stream != NULL) {
 		GOutputStream *output_stream;
+		gsize n_written = 0;
 
 		output_stream = g_io_stream_get_output_stream (base_stream);
 		stream->eos = FALSE;
 
-		n_bytes_written = g_output_stream_write (
-			output_stream, buffer, n, cancellable, error);
+		if (g_output_stream_write_all (output_stream, buffer, n, &n_written, cancellable, error))
+			n_bytes_written = (gssize) n_written;
+		else
+			n_bytes_written = -1;
 
 		g_object_unref (base_stream);
+	} else {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Cannot write with no base stream"));
 	}
 
 	return n_bytes_written;
