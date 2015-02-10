@@ -23,7 +23,8 @@
 #define _XOPEN_SOURCE_EXTENDED 1  /* for strptime */
 
 /* For tm_gmtoff */
-#define _DEFAULT_SOURCE
+#define _BSD_SOURCE 1
+#define _DEFAULT_SOURCE 1
 
 #include <time.h>
 #include <sys/time.h>
