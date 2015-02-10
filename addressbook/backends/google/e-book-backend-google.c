@@ -2357,8 +2357,7 @@ book_backend_google_authenticate_sync (EBackend *backend,
 		user, e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD), cancellable, &local_error)) {
 		EBookBackend *book_backend = E_BOOK_BACKEND (backend);
 
-		if (gdata_authorizer_refresh_authorization (priv->authorizer, cancellable, &local_error) &&
-		    backend_is_authorized (book_backend)) {
+		if (backend_is_authorized (book_backend)) {
 			e_book_backend_set_writable (book_backend, TRUE);
 			cache_refresh_if_needed (book_backend);
 		}
