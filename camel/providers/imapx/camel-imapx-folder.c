@@ -42,8 +42,6 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_IMAPX_FOLDER, CamelIMAPXFolderPrivate))
 
-extern gint camel_application_is_exiting;
-
 struct _CamelIMAPXFolderPrivate {
 	GMutex property_lock;
 	GWeakRef mailbox;

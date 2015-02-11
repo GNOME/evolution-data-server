@@ -138,6 +138,8 @@
 
 G_BEGIN_DECLS
 
+extern gint camel_application_is_exiting;
+
 gint camel_init (const gchar *certdb_dir, gboolean nss_init);
 void camel_shutdown (void);
 

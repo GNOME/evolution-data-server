@@ -77,8 +77,6 @@
 
 G_DEFINE_QUARK (camel-imapx-server-error-quark, camel_imapx_server_error)
 
-extern gint camel_application_is_exiting;
-
 /* Job-specific structs */
 typedef struct _GetMessageData GetMessageData;
 typedef struct _RefreshInfoData RefreshInfoData;
