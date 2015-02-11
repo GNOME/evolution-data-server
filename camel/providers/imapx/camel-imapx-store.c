@@ -1427,8 +1427,6 @@ sync_folders (CamelIMAPXStore *imapx_store,
 {
 	CamelIMAPXServer *server;
 	GHashTable *folder_info_results;
-	GPtrArray *array;
-	guint ii;
 	gboolean success;
 
 	server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
@@ -1488,47 +1486,6 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
 	}
 
-	array = camel_store_summary_array (imapx_store->summary);
-
-	for (ii = 0; ii < array->len; ii++) {
-		CamelStoreInfo *si;
-		CamelFolderInfo *fi;
-		const gchar *mailbox_name;
-		const gchar *si_path;
-		gboolean pattern_match;
-
-		si = g_ptr_array_index (array, ii);
-		si_path = camel_store_info_path (imapx_store->summary, si);
-
-		mailbox_name = ((CamelIMAPXStoreInfo *) si)->mailbox_name;
-		if (mailbox_name == NULL || *mailbox_name == '\0')
-			continue;
-
-		pattern_match =
-			(root_folder_path == NULL) ||
-			(*root_folder_path == '\0') ||
-			(g_str_has_prefix (si_path, root_folder_path));
-		if (!pattern_match)
-			continue;
-
-		fi = g_hash_table_lookup (folder_info_results, mailbox_name);
-
-		if (fi == NULL) {
-			gchar *dup_folder_path = g_strdup (si_path);
-
-			if (dup_folder_path != NULL) {
-				/* Do not unsubscribe from it, it influences UI for non-subscribable folders */
-				imapx_delete_folder_from_cache (
-					imapx_store, dup_folder_path, FALSE);
-				g_free (dup_folder_path);
-			} else {
-				camel_store_summary_remove (
-					imapx_store->summary, si);
-			}
-		}
-	}
-
-	camel_store_summary_array_free (imapx_store->summary, array);
 	camel_store_summary_save (imapx_store->summary);
 
 exit:
@@ -1784,7 +1741,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	}
 
 	/* XXX I don't know why the SUBSCRIBED flag matters here. */
-	if (!initial_setup && flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) {
+	if (!initial_setup && (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) != 0) {
 		time_t time_since_last_refresh;
 
 		time_since_last_refresh =
