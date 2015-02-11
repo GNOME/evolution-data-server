@@ -42,6 +42,8 @@
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), CAMEL_TYPE_IMAPX_FOLDER, CamelIMAPXFolderPrivate))
 
+extern gint camel_application_is_exiting;
+
 struct _CamelIMAPXFolderPrivate {
 	GMutex property_lock;
 	GWeakRef mailbox;
@@ -1115,9 +1117,12 @@ imapx_synchronize_sync (CamelFolder *folder,
 	if (imapx_server == NULL)
 		goto exit;
 
-	mailbox = camel_imapx_folder_list_mailbox (
-		CAMEL_IMAPX_FOLDER (folder), cancellable, error);
-	if (mailbox == NULL) {
+	mailbox = camel_imapx_folder_list_mailbox (CAMEL_IMAPX_FOLDER (folder), cancellable, error);
+
+	/* Do not update mailboxes on exit which were not entered yet */
+	if (mailbox == NULL || (camel_application_is_exiting &&
+	    camel_imapx_mailbox_get_permanentflags (mailbox) == ~0)) {
+		success = mailbox != NULL;
 		camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
 		goto exit;
 	}
