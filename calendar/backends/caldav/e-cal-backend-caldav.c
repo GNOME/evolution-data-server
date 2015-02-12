@@ -124,7 +124,7 @@ struct _ECalBackendCalDAVPrivate {
 	 * soup_authenticate_bearer() stashes an error
 	 * here to be claimed in caldav_credentials_required_sync().
 	 * This lets us propagate a more useful error
-	 * message than a generic 401 description. */
+	 * message than a generic SOUP_STATUS_UNAUTHORIZED description. */
 	GError *bearer_auth_error;
 	GMutex bearer_auth_error_lock;
 };
@@ -1386,9 +1386,9 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav,
 	xmlFreeDoc (doc);
 
 	/* Check the result */
-	if (message->status_code == 401) {
+	if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN) {
 		caldav_credentials_required_sync (cbdav, TRUE, FALSE, NULL, NULL);
-	} else if (message->status_code != 207) {
+	} else if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
 		/* does not support it, but report calendar changed to update cache */
 		cbdav->priv->ctag_supported = FALSE;
 	} else {
@@ -1539,7 +1539,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 	xmlFreeDoc (doc);
 
 	/* Check the result */
-	if (message->status_code != 207) {
+	if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
 		switch (message->status_code) {
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
@@ -1548,11 +1548,12 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 			e_cal_backend_set_writable (
 				E_CAL_BACKEND (cbdav), FALSE);
 			break;
-		case 401:
+		case SOUP_STATUS_UNAUTHORIZED:
+		case SOUP_STATUS_FORBIDDEN:
 			caldav_credentials_required_sync (cbdav, TRUE, FALSE, NULL, NULL);
 			break;
 		default:
-			g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+			g_warning ("Server did not response with SOUP_STATUS_MULTI_STATUS, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 			break;
 		}
 
@@ -1662,7 +1663,7 @@ caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
 	xmlFreeDoc (doc);
 
 	/* Check the result */
-	if (message->status_code != 207) {
+	if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
 		switch (message->status_code) {
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
@@ -1671,11 +1672,12 @@ caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
 			e_cal_backend_set_writable (
 				E_CAL_BACKEND (cbdav), FALSE);
 			break;
-		case 401:
+		case SOUP_STATUS_UNAUTHORIZED:
+		case SOUP_STATUS_FORBIDDEN:
 			caldav_credentials_required_sync (cbdav, TRUE, FALSE, NULL, NULL);
 			break;
 		default:
-			g_warning ("Server did not response with 207, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
+			g_warning ("Server did not response with SOUP_STATUS_MULTI_STATUS, but with code %d (%s)", message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
 			break;
 		}
 
@@ -1736,7 +1738,7 @@ caldav_server_download_attachment (ECalBackendCalDAV *cbdav,
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, cbdav, FALSE, error);
 
-		if (message->status_code == 401)
+		if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN)
 			caldav_credentials_required_sync (cbdav, FALSE, FALSE, NULL, NULL);
 
 		g_object_unref (message);
@@ -1780,7 +1782,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, cbdav, FALSE, perror);
 
-		if (message->status_code == 401)
+		if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN)
 			caldav_credentials_required_sync (cbdav, FALSE, FALSE, NULL, NULL);
 		else
 			g_warning ("Could not fetch object '%s' from server, status:%d (%s)", uri, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
@@ -1843,7 +1845,7 @@ caldav_post_freebusy (ECalBackendCalDAV *cbdav,
 
 	if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
 		status_code_to_result (message, cbdav, FALSE, error);
-		if (message->status_code == 401)
+		if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN)
 			caldav_credentials_required_sync (cbdav, FALSE, FALSE, NULL, NULL);
 		else
 			g_warning ("Could not post free/busy request to '%s', status:%d (%s)", url, message->status_code, soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : "Unknown code");
@@ -2035,7 +2037,9 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 		} else {
 			g_propagate_error (perror, local_error);
 		}
-	} else if (message->status_code == 401) {
+	}
+
+	if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN) {
 		caldav_credentials_required_sync (cbdav, FALSE, FALSE, NULL, NULL);
 	}
 
@@ -2077,7 +2081,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 
 	status_code_to_result (message, cbdav, FALSE, perror);
 
-	if (message->status_code == 401)
+	if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN)
 		caldav_credentials_required_sync (cbdav, FALSE, FALSE, NULL, NULL);
 
 	g_object_unref (message);
@@ -2135,7 +2139,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav,
 	xmlFreeDoc (doc);
 
 	/* Check the result */
-	if (message->status_code == 207 && parse_propfind_response (message, XPATH_OWNER_STATUS, XPATH_OWNER, &owner) && owner && *owner) {
+	if (message->status_code == SOUP_STATUS_MULTI_STATUS && parse_propfind_response (message, XPATH_OWNER_STATUS, XPATH_OWNER, &owner) && owner && *owner) {
 		xmlNsPtr nscd;
 		SoupURI *suri;
 
@@ -2181,7 +2185,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav,
 		/* Send the request now */
 		send_and_handle_redirection (cbdav, message, NULL, cancellable, error);
 
-		if (message->status_code == 207 && parse_propfind_response (message, XPATH_SCHEDULE_OUTBOX_URL_STATUS, XPATH_SCHEDULE_OUTBOX_URL, &cbdav->priv->schedule_outbox_url)) {
+		if (message->status_code == SOUP_STATUS_MULTI_STATUS && parse_propfind_response (message, XPATH_SCHEDULE_OUTBOX_URL_STATUS, XPATH_SCHEDULE_OUTBOX_URL, &cbdav->priv->schedule_outbox_url)) {
 			if (!*cbdav->priv->schedule_outbox_url) {
 				g_free (cbdav->priv->schedule_outbox_url);
 				cbdav->priv->schedule_outbox_url = NULL;
@@ -2198,7 +2202,7 @@ caldav_receive_schedule_outbox_url (ECalBackendCalDAV *cbdav,
 		/* Clean up the memory */
 		xmlOutputBufferClose (buf);
 		xmlFreeDoc (doc);
-	} else if (message->status_code == 401) {
+	} else if (message->status_code == SOUP_STATUS_UNAUTHORIZED || message->status_code == SOUP_STATUS_FORBIDDEN) {
 		caldav_credentials_required_sync (cbdav, FALSE, FALSE, NULL, NULL);
 	}
 
