@@ -344,9 +344,7 @@ e_source_smime_dup_encryption_certificate (ESourceSMIME *extension)
  *
  * Sets the certificate name used to encrypt messages.
  *
- * The internal copy of @encryption_certificate is automatically stripped
- * of leading and trailing whitespace.  If the resulting string is empty,
- * %NULL is set instead.
+ * If the @encryption_certificate string is empty, %NULL is set instead.
  *
  * Since: 3.6
  **/
@@ -365,9 +363,11 @@ e_source_smime_set_encryption_certificate (ESourceSMIME *extension,
 		return;
 	}
 
+	if (encryption_certificate && !*encryption_certificate)
+		encryption_certificate = NULL;
+
 	g_free (extension->priv->encryption_certificate);
-	extension->priv->encryption_certificate =
-		e_util_strdup_strip (encryption_certificate);
+	extension->priv->encryption_certificate = g_strdup (encryption_certificate);
 
 	g_mutex_unlock (&extension->priv->property_lock);
 
@@ -602,9 +602,7 @@ e_source_smime_dup_signing_certificate (ESourceSMIME *extension)
  *
  * Sets the S/MIME certificate name used to sign messages.
  *
- * The internal copy of @signing_certificate is automatically stripped
- * of leading and trailing whitespace.  If the resulting string is empty,
- * %NULL is set instead.
+ * If the @signing_certificate string is empty, %NULL is set instead.
  *
  * Since: 3.6
  **/
@@ -621,9 +619,11 @@ e_source_smime_set_signing_certificate (ESourceSMIME *extension,
 		return;
 	}
 
+	if (signing_certificate && !*signing_certificate)
+		signing_certificate = NULL;
+
 	g_free (extension->priv->signing_certificate);
-	extension->priv->signing_certificate =
-		e_util_strdup_strip (signing_certificate);
+	extension->priv->signing_certificate = g_strdup (signing_certificate);
 
 	g_mutex_unlock (&extension->priv->property_lock);
 
