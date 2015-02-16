@@ -1,3 +1,40 @@
+Evolution-Data-Server 3.13.90 2015-02-16
+----------------------------------------
+
+Bug Fixes:
+	Bug 743015 - Calendar factory crashes when trying to open a book source (Milan Crha)
+	Bug 732145 - Breaks existing (not evolution's) maildir folder structure (Milan Crha)
+	Bug 744092 - Define both _BSD_SOURCE and _DEFAULT_SOURCE (Milan Crha)
+	Bug 743533 - [IMAPx] Shared folders removed on folder list refresh (Milan Crha)
+	Bug 743010 - Do not strip S/MIME certificate names (Milan Crha)
+
+Miscellaneous:
+	Move authentication of backends back to the client (Milan Crha)
+	Replace _BSD_SOURCE with _DEFAULT_SOURCE define (Milan Crha)
+	Correct error in credentials_prompter_dispose() (Milan Crha)
+	Fix issues found by 'make check' in ESource (Milan Crha)
+	Let the 'make check' pass again (Milan Crha)
+	Correct user data for credentials_prompter_connection_status_changed_cb() (Milan Crha)
+	Set ESource's connection-status to disconnected on EBackend's dispose (Milan Crha)
+	[WebDAV book backend] Return at least offline contacts when not connected (Milan Crha)
+	[ECalClient] Do not replace cached timezones (Milan Crha)
+	Identify job description for camel_session_submit_job() (Milan Crha)
+	Make camel_stream_write() try to write all bytes at once (Milan Crha)
+	Google address book backend opened read-only (Milan Crha)
+	[IMAPx] Do not update mailboxes on exit which were not entered yet (Milan Crha)
+	Declare camel_application_is_exiting variable in camel.h (Milan Crha)
+	CalDAV source (calendar/task list/memo list) could be left unauthorized (Milan Crha)
+	[Win32] Try to find subprefix when replacing runtime prefix (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Daniel Mustieles (es)
+	Dušan Kazik (sk)
+	Aurimas Černius (lt)
+	Kjartan Maraas (nb)
+	Balázs Úr (hu)
+	Yuri Myasoedov (ru)
+
 Evolution-Data-Server 3.13.10 2015-01-26
 ----------------------------------------
 
