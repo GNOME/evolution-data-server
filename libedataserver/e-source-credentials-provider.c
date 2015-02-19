@@ -121,14 +121,21 @@ source_credentials_provider_get_property (GObject *object,
 static void
 source_credentials_provider_constructed (GObject *object)
 {
+	static gboolean modules_loaded = FALSE;
 	ESourceCredentialsProvider *provider = E_SOURCE_CREDENTIALS_PROVIDER (object);
-	GList *module_types;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_source_credentials_provider_parent_class)->constructed (object);
 
-	module_types = e_module_load_all_in_directory (E_DATA_SERVER_CREDENTIALMODULEDIR);
-	g_list_free_full (module_types, (GDestroyNotify) g_type_module_unuse);
+	/* Load modules only once. */
+	if (!modules_loaded) {
+		GList *module_types;
+
+		modules_loaded = TRUE;
+
+		module_types = e_module_load_all_in_directory (E_DATA_SERVER_CREDENTIALMODULEDIR);
+		g_list_free_full (module_types, (GDestroyNotify) g_type_module_unuse);
+	}
 
 	e_extensible_load_extensions (E_EXTENSIBLE (object));
 
