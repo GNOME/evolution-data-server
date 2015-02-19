@@ -3612,10 +3612,15 @@ e_source_set_connection_status (ESource *source,
 		EDBusSource *dbus_source;
 
 		dbus_object = e_source_ref_dbus_object (E_SOURCE (source));
-		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
-		e_dbus_source_set_connection_status (dbus_source, enum_value->value_nick);
-		g_object_unref (dbus_source);
-		g_object_unref (dbus_object);
+		if (dbus_object) {
+			dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+			if (dbus_source) {
+				e_dbus_source_set_connection_status (dbus_source, enum_value->value_nick);
+				g_object_unref (dbus_source);
+			}
+
+			g_object_unref (dbus_object);
+		}
 	} else {
 		g_warning ("%s: Unknown connection status: %x", G_STRFUNC, connection_status);
 	}
