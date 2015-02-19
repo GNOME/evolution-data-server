@@ -3442,7 +3442,10 @@ gchar *
 e_source_dup_secret_label (ESource *source)
 {
 	gchar *display_name;
-	gchar *secret_label;
+	gchar *backend_name = NULL;
+	const gchar *type = NULL;
+	const gchar *parent;
+	GString *secret_label;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
@@ -3453,12 +3456,96 @@ e_source_dup_secret_label (ESource *source)
 		display_name = e_source_dup_uid (source);
 	}
 
-	secret_label = g_strdup_printf (
-		"Evolution Data Source \"%s\"", display_name);
+	#define update_backend_name(ext) G_STMT_START { \
+			ESourceBackend *backend_extension; \
+			backend_extension = e_source_get_extension (source, ext); \
+			g_free (backend_name); \
+			backend_name = e_source_backend_dup_backend_name (backend_extension); \
+		} G_STMT_END
 
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
+		type = "Addressbook";
+		update_backend_name (E_SOURCE_EXTENSION_ADDRESS_BOOK);
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_CALENDAR)) {
+		if (!type) {
+			type = "Calendar";
+			update_backend_name (E_SOURCE_EXTENSION_CALENDAR);
+		} else
+			type = "";
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_ACCOUNT)) {
+		if (!type) {
+			type = "Mail Account";
+			update_backend_name (E_SOURCE_EXTENSION_MAIL_ACCOUNT);
+		} else
+			type = "";
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_TRANSPORT)) {
+		if (!type) {
+			type = "Mail Transport";
+			update_backend_name (E_SOURCE_EXTENSION_MAIL_TRANSPORT);
+		} else
+			type = "";
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_MEMO_LIST)) {
+		if (!type) {
+			type = "Memo List";
+			update_backend_name (E_SOURCE_EXTENSION_MEMO_LIST);
+		} else
+			type = "";
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST)) {
+		if (!type) {
+			type = "Task List";
+			update_backend_name (E_SOURCE_EXTENSION_TASK_LIST);
+		} else
+			type = "";
+	}
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION)) {
+		if (!type) {
+			type = "Collection";
+			update_backend_name (E_SOURCE_EXTENSION_COLLECTION);
+		} else
+			type = "";
+	}
+
+	if (!type || !*type) {
+		g_free (backend_name);
+		backend_name = NULL;
+		type = NULL;
+	}
+
+	if (backend_name && !*backend_name) {
+		g_free (backend_name);
+		backend_name = NULL;
+	}
+
+	secret_label = g_string_new (NULL);
+
+	if (type && backend_name)
+		g_string_append_printf (secret_label, "Evolution Data Source \"%s\" (%s - %s) ", display_name, type, backend_name);
+	else if (type)
+		g_string_append_printf (secret_label, "Evolution Data Source \"%s\" (%s)", display_name, type, display_name);
+	else if (backend_name)
+		g_string_append_printf (secret_label, "Evolution Data Source \"%s\" (%s)", display_name, backend_name, display_name);
+	else
+		g_string_append_printf (secret_label, "Evolution Data Source \"%s\"", display_name);
+
+	g_free (backend_name);
 	g_free (display_name);
 
-	return secret_label;
+	parent = e_source_get_parent (source);
+	if (parent && *parent)
+		g_string_append_printf (secret_label, " of %s", parent);
+
+	return g_string_free (secret_label, FALSE);
 }
 
 /**
