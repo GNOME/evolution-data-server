@@ -70,6 +70,11 @@ imapx_input_stream_fill (CamelIMAPXInputStream *is,
 	base_stream = g_filter_input_stream_get_base_stream (
 		G_FILTER_INPUT_STREAM (is));
 
+	if (error && *error) {
+		g_warning ("%s: Avoiding GIO call with a filled error '%s'", G_STRFUNC, (*error)->message);
+		error = NULL;
+	}
+
 	left = is->priv->end - is->priv->ptr;
 	memcpy (is->priv->buf, is->priv->ptr, left);
 	is->priv->end = is->priv->buf + left;
@@ -136,6 +141,11 @@ imapx_input_stream_read (GInputStream *stream,
 		memcpy (buffer, priv->ptr, max);
 		priv->ptr += max;
 	} else {
+		if (error && *error) {
+			g_warning ("%s: Avoiding GIO call with a filled error '%s'", G_STRFUNC, (*error)->message);
+			error = NULL;
+		}
+
 		max = MIN (priv->literal, count);
 		max = g_input_stream_read (
 			base_stream, buffer, max, cancellable, error);
@@ -201,6 +211,11 @@ imapx_input_stream_read_nonblocking (GPollableInputStream *pollable_stream,
 		G_FILTER_INPUT_STREAM (pollable_stream));
 
 	pollable_stream = G_POLLABLE_INPUT_STREAM (base_stream);
+
+	if (error && *error) {
+		g_warning ("%s: Avoiding GIO call with a filled error '%s'", G_STRFUNC, (*error)->message);
+		error = NULL;
+	}
 
 	/* XXX The function takes a GCancellable but the class method
 	 *     does not.  Should be okay to pass NULL here since this
