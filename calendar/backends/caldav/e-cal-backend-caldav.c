@@ -556,6 +556,7 @@ status_code_to_result (SoupMessage *message,
                        GError **perror)
 {
 	ECalBackendCalDAVPrivate *priv;
+	gchar *uri;
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (message != NULL, FALSE);
@@ -618,14 +619,17 @@ status_code_to_result (SoupMessage *message,
 
 	default:
 		d (g_debug ("CalDAV:%s: Unhandled status code %d\n", G_STRFUNC, status_code));
+		uri = soup_uri_to_string (soup_message_get_uri (message), FALSE);
 		g_propagate_error (
 			perror,
 			e_data_cal_create_error_fmt (
 				OtherError,
-				_("Unexpected HTTP status code %d returned (%s)"),
+				_("Unexpected HTTP status code %d returned (%s) for URI: %s"),
 					message->status_code,
 					message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
-					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
+					(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")),
+					uri ? uri : "[null]"));
+		g_free (uri);
 		break;
 	}
 
