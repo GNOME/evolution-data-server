@@ -58,7 +58,7 @@ typedef struct _ECredentialsPrompterImplPasswordPrivate ECredentialsPrompterImpl
  * Contains only private data that should be read and manipulated using the
  * functions below.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _ECredentialsPrompterImplPassword {
 	ECredentialsPrompterImpl parent;

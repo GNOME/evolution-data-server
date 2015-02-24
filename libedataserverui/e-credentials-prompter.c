@@ -961,7 +961,7 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 * Whether the #ECredentialsPrompter can response to credential
 	 * requests automatically.
 	 *
-	 * Since: 3.14
+	 * Since: 3.16
 	 **/
 	g_object_class_install_property (
 		object_class,
@@ -980,7 +980,7 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 *
 	 * The #ESourceRegistry object, to whose credential requests the prompter listens.
 	 *
-	 * Since: 3.14
+	 * Since: 3.16
 	 **/
 	g_object_class_install_property (
 		object_class,
@@ -999,7 +999,7 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 *
 	 * The #ESourceCredentialsProvider object, which the prompter uses.
 	 *
-	 * Since: 3.14
+	 * Since: 3.16
 	 **/
 	g_object_class_install_property (
 		object_class,
@@ -1020,7 +1020,7 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 * window for it. If the result of the call is %NULL, then it tries
 	 * to get the window from the default GtkApplication.
 	 *
-	 * Since: 3.14
+	 * Since: 3.16
 	 **/
 	signals[GET_DIALOG_PARENT] = g_signal_new (
 		"get-dialog-parent",
@@ -1062,7 +1062,7 @@ e_credentials_prompter_init (ECredentialsPrompter *prompter)
  *
  * Returns: (transfer full): a new #ECredentialsPrompter
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ECredentialsPrompter *
 e_credentials_prompter_new (ESourceRegistry *registry)
@@ -1080,7 +1080,7 @@ e_credentials_prompter_new (ESourceRegistry *registry)
  *
  * Returns: (transfer none): an #ESourceRegistry, to which the @prompter listens.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceRegistry *
 e_credentials_prompter_get_registry (ECredentialsPrompter *prompter)
@@ -1098,7 +1098,7 @@ e_credentials_prompter_get_registry (ECredentialsPrompter *prompter)
  *
  * Returns: (transfer none): an #ESourceCredentialsProvider, which the @prompter uses.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceCredentialsProvider *
 e_credentials_prompter_get_provider (ECredentialsPrompter *prompter)
@@ -1120,7 +1120,7 @@ e_credentials_prompter_get_provider (ECredentialsPrompter *prompter)
  *
  * Returns: Whether can respond to credential prompts automatically.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_credentials_prompter_get_auto_prompt (ECredentialsPrompter *prompter)
@@ -1143,7 +1143,7 @@ e_credentials_prompter_get_auto_prompt (ECredentialsPrompter *prompter)
  *
  * This property does not influence direct calls of e_credentials_prompter_prompt().
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_set_auto_prompt (ECredentialsPrompter *prompter,
@@ -1170,7 +1170,7 @@ e_credentials_prompter_set_auto_prompt (ECredentialsPrompter *prompter,
  *
  * This value does not influence direct calls of e_credentials_prompter_prompt().
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_set_auto_prompt_disabled_for (ECredentialsPrompter *prompter,
@@ -1203,7 +1203,7 @@ e_credentials_prompter_set_auto_prompt_disabled_for (ECredentialsPrompter *promp
  *
  * Returns: Whether the auto-prompt is disabled for the given @source
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_credentials_prompter_get_auto_prompt_disabled_for (ECredentialsPrompter *prompter,
@@ -1250,7 +1250,7 @@ credentials_prompter_guess_dialog_parent (ECredentialsPrompter *prompter)
  *
  * Returns: (transfer none): a #GtkWindow, to be used as a dialog parent, or %NULL.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 GtkWindow *
 e_credentials_prompter_get_dialog_parent (ECredentialsPrompter *prompter)
@@ -1286,7 +1286,7 @@ e_credentials_prompter_get_dialog_parent (ECredentialsPrompter *prompter)
  * Returns: %TRUE on success, %FALSE on failure or when there was another prompter
  * implementation registered for the given authentication method.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_credentials_prompter_register_impl (ECredentialsPrompter *prompter,
@@ -1331,7 +1331,7 @@ e_credentials_prompter_register_impl (ECredentialsPrompter *prompter,
  * e_credentials_prompter_register_impl(). Function does nothing, if no such authentication
  * method is registered or if it has set a different prompter implementation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_unregister_impl (ECredentialsPrompter *prompter,
@@ -1413,7 +1413,7 @@ credentials_prompter_get_last_credentials_required_arguments_cb (GObject *source
  * Process all enabled sources with connection state #E_SOURCE_CONNECTION_STATUS_AWAITING_CREDENTIALS,
  * like if they just asked for its credentials for the first time.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_process_awaiting_credentials (ECredentialsPrompter *prompter)
@@ -1449,7 +1449,7 @@ e_credentials_prompter_process_awaiting_credentials (ECredentialsPrompter *promp
  *
  * Returns: Whether continues with the credentials prompt.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_credentials_prompter_process_source (ECredentialsPrompter *prompter,
@@ -1483,7 +1483,7 @@ e_credentials_prompter_process_source (ECredentialsPrompter *prompter,
  * Call e_credentials_prompter_prompt_finish() in @callback to get to
  * the provided credentials.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
@@ -1527,7 +1527,7 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
  *
  * Returns: %TRUE on success, %FALSE otherwise.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
@@ -1583,7 +1583,7 @@ e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
  * Using %NULL @credentials will result in a G_IO_ERROR_CANCELLED error, if
  * no other @error is provided.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_complete_prompt_call (ECredentialsPrompter *prompter,
@@ -1712,7 +1712,7 @@ credentials_prompter_prompt_sync (ECredentialsPrompter *prompter,
  * Returns: %TRUE, when the credentials were provided sucessfully and they
  *   can be used to authenticate the @source; %FALSE otherwise.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_credentials_prompter_loop_prompt_sync (ECredentialsPrompter *prompter,

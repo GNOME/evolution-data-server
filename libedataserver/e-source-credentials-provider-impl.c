@@ -117,7 +117,7 @@ e_source_credentials_provider_impl_init (ESourceCredentialsProviderImpl *provide
  *
  * Returns: an #ESourceCredentialsProvider
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceCredentialsProvider *
 e_source_credentials_provider_impl_get_provider (ESourceCredentialsProviderImpl *provider_impl)
@@ -142,7 +142,7 @@ e_source_credentials_provider_impl_get_provider (ESourceCredentialsProviderImpl 
  *
  * Returns: Whether the @provider_impl can process credentials for the @source.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_impl_can_process (ESourceCredentialsProviderImpl *provider_impl,
@@ -167,7 +167,7 @@ e_source_credentials_provider_impl_can_process (ESourceCredentialsProviderImpl *
  *
  * Returns: Whether the @provider_impl can store credentials.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_impl_can_store (ESourceCredentialsProviderImpl *provider_impl)
@@ -190,7 +190,7 @@ e_source_credentials_provider_impl_can_store (ESourceCredentialsProviderImpl *pr
  *
  * Returns: Whether credential prompt can be done for the @provider_impl.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_impl_can_prompt (ESourceCredentialsProviderImpl *provider_impl)
@@ -224,7 +224,7 @@ e_source_credentials_provider_impl_can_prompt (ESourceCredentialsProviderImpl *p
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_impl_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
@@ -262,7 +262,7 @@ e_source_credentials_provider_impl_lookup_sync (ESourceCredentialsProviderImpl *
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_impl_store_sync (ESourceCredentialsProviderImpl *provider_impl,
@@ -299,7 +299,7 @@ e_source_credentials_provider_impl_store_sync (ESourceCredentialsProviderImpl *p
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_impl_delete_sync (ESourceCredentialsProviderImpl *provider_impl,

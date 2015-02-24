@@ -64,7 +64,7 @@
  * and e_source_invoke_authenticate(). The named parameter is optional,
  * different authentication methods can use different names.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 #define E_SOURCE_CREDENTIAL_USERNAME "username"
 
@@ -76,7 +76,7 @@
  * and e_source_invoke_authenticate(). The named parameter is optional,
  * different authentication methods can use different names.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 #define E_SOURCE_CREDENTIAL_PASSWORD "password"
 
@@ -95,7 +95,7 @@
  * corresponding ESource contain a WebDAV extension and the key
  * is not part of the credentials already.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 #define E_SOURCE_CREDENTIAL_SSL_TRUST "ssl-trust"
 

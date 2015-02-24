@@ -1068,7 +1068,7 @@ e_data_factory_ref_backend_factory (EDataFactory *data_factory,
  *
  * Returns: the #ESourceRegistry
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceRegistry *
 e_data_factory_get_registry (EDataFactory *data_factory)
@@ -1088,7 +1088,7 @@ e_data_factory_get_registry (EDataFactory *data_factory)
  * Returns: a newly allocated string, representing the object path for
  *          the D-Bus interface.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_data_factory_construct_path (EDataFactory *data_factory)
@@ -1299,7 +1299,7 @@ data_factory_spawn_subprocess_backend_in_thread (gpointer user_data)
  * directly to the running backend. If the backend already has a subprocess
  * running, the used object path is returned to the client.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_data_factory_spawn_subprocess_backend (EDataFactory *data_factory,

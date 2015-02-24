@@ -55,7 +55,7 @@ typedef struct _ESubprocessFactoryPrivate ESubprocessFactoryPrivate;
  * Contains only private data that should be read and manipulated using the
  * functions below.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _ESubprocessFactory {
 	GObject parent;

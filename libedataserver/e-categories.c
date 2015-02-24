@@ -532,7 +532,7 @@ initialize_categories (void)
  * but the names of the categories should not be touched at all, they are
  * internal strings.
  *
- * Deprecated: 3.14: This function is not entirely thread safe. Use
+ * Deprecated: 3.16: This function is not entirely thread safe. Use
  * e_categories_dup_list() instead.
  */
 GList *
@@ -571,7 +571,7 @@ e_categories_get_list (void)
  * and the names of the categories should be freed using g_free(). Everything
  * can be freed simultaneously using g_list_free_full().
  *
- * Since: 3.14
+ * Since: 3.16
  */
 GList *
 e_categories_dup_list (void)
@@ -699,7 +699,7 @@ e_categories_exist (const gchar *category)
  * copied, it may be freed by another thread after being returned by this
  * function. Use e_categories_dup_icon_file_for() instead.
  *
- * Deprecated: 3.14: This function is not entirely thread safe. Use
+ * Deprecated: 3.16: This function is not entirely thread safe. Use
  * e_categories_dup_icon_file_for() instead.
  *
  * Returns: icon file name.
@@ -737,7 +737,7 @@ e_categories_get_icon_file_for (const gchar *category)
  *
  * Returns: (transfer full): icon file name; free with g_free().
  *
- * Since: 3.14
+ * Since: 3.16
  */
 gchar *
 e_categories_dup_icon_file_for (const gchar *category)

@@ -381,7 +381,7 @@ domain_contains_only_ascii (const gchar *address,
  * which means that any non-ASCII letters will be properly encoded.
  * This includes IDN (Internationalized Domain Names).
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)

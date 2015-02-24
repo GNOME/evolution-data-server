@@ -79,7 +79,7 @@ e_server_side_source_credentials_provider_init (EServerSideSourceCredentialsProv
  *
  * Returns: (transfer full): a new #EServerSideSourceCredentialsProvider
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceCredentialsProvider *
 e_server_side_source_credentials_provider_new (ESourceRegistryServer *registry)

@@ -886,7 +886,7 @@ e_source_authentication_set_user (ESourceAuthentication *extension,
  *
  * Returns: the credential name to use for authentication, or %NULL
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 const gchar *
 e_source_authentication_get_credential_name (ESourceAuthentication *extension)
@@ -907,7 +907,7 @@ e_source_authentication_get_credential_name (ESourceAuthentication *extension)
  *
  * Returns: a newly-allocated copy of #ESourceAuthentication:credential-name
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_source_authentication_dup_credential_name (ESourceAuthentication *extension)
@@ -941,7 +941,7 @@ e_source_authentication_dup_credential_name (ESourceAuthentication *extension)
  * of leading and trailing whitespace. If the resulting string is
  * empty, %NULL is set instead.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_authentication_set_credential_name (ESourceAuthentication *extension,

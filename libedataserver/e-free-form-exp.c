@@ -284,7 +284,7 @@ ffe_finish_and_or_not (GString *sexp)
  * Returns: converted @free_form_exp into S-Expression, %NULL on error.
  *    Free the returned string with a g_free(), when done with it.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_free_form_exp_to_sexp (const gchar *free_form_exp,

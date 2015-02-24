@@ -1333,7 +1333,7 @@ e_book_client_init (EBookClient *client)
  * Unlike with e_book_client_new(), there is no need to call
  * e_client_open_sync() after obtaining the #EBookClient.
  *
- * The @wait_for_connected_seconds argument had been added since 3.14,
+ * The @wait_for_connected_seconds argument had been added since 3.16,
  * to let the caller decide how long to wait for the backend to fully
  * connect to its (possibly remote) data store. This is required due
  * to a change in the authentication process, which is fully asynchronous
@@ -1517,7 +1517,7 @@ exit:
  *
  * Asynchronously creates a new #EBookClient for @source.
  *
- * The @wait_for_connected_seconds argument had been added since 3.14,
+ * The @wait_for_connected_seconds argument had been added since 3.16,
  * to let the caller decide how long to wait for the backend to fully
  * connect to its (possibly remote) data store. This is required due
  * to a change in the authentication process, which is fully asynchronous

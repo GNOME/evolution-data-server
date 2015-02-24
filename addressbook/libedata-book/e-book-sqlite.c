@@ -6809,7 +6809,7 @@ e_book_sqlite_ref_collator (EBookSqlite *ebsql)
  * Returns: (transfer-full): A reference to the #ESource to which @ebsql
  * is paired, or %NULL.
  *
- * Since: 3.14
+ * Since: 3.16
 */
 ESource *
 e_book_sqlite_ref_source (EBookSqlite *ebsql)
@@ -7170,7 +7170,7 @@ e_book_sqlite_get_contact (EBookSqlite *ebsql,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 ebsql_get_contact_unlocked (EBookSqlite *ebsql,
@@ -7289,7 +7289,7 @@ e_book_sqlite_get_vcard (EBookSqlite *ebsql,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 ebsql_get_vcard_unlocked (EBookSqlite *ebsql,
@@ -7426,7 +7426,7 @@ e_book_sqlite_get_contact_extra (EBookSqlite *ebsql,
  *
  * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 ebsql_get_contact_extra_unlocked (EBookSqlite *ebsql,

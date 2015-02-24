@@ -251,7 +251,7 @@ camel_imapx_mailbox_clone (CamelIMAPXMailbox *mailbox,
  *
  * Returns: Current (update) state of the mailbox.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 CamelIMAPXMailboxState
 camel_imapx_mailbox_get_state (CamelIMAPXMailbox *mailbox)
@@ -270,7 +270,7 @@ camel_imapx_mailbox_get_state (CamelIMAPXMailbox *mailbox)
  * structure updates, to identify newly created, updated, renamed
  * or removed mailboxes.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_mailbox_set_state (CamelIMAPXMailbox *mailbox,
@@ -718,7 +718,7 @@ camel_imapx_mailbox_set_highestmodseq (CamelIMAPXMailbox *mailbox,
  * Returns: PERMANENTFLAGS response for the mailbox, or ~0, if the mailbox
  *    was not selected yet.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 guint32
 camel_imapx_mailbox_get_permanentflags (CamelIMAPXMailbox *mailbox)
@@ -735,7 +735,7 @@ camel_imapx_mailbox_get_permanentflags (CamelIMAPXMailbox *mailbox)
  *
  * Updates the last know value for PERMANENTFLAGS for this mailbox.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_mailbox_set_permanentflags (CamelIMAPXMailbox *mailbox,

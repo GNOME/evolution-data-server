@@ -262,7 +262,7 @@ trust_prompt_show (GtkWindow *parent,
  * Returns: (transfer-full): A newly allocated string with text description
  *  of @flags. Free the returned pointer with g_free() when no longer needed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_trust_prompt_describe_certificate_errors (GTlsCertificateFlags flags)
@@ -398,7 +398,7 @@ e_trust_prompt_run_with_dialog_ready_callback (GtkWindow *parent,
  * Returns: A code of the user's choice. The #E_TRUST_PROMPT_RESPONSE_UNKNOWN
  *    is returned, when the user cancelled the trust prompt dialog.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ETrustPromptResponse
 e_trust_prompt_run_modal (GtkWindow *parent,
@@ -510,7 +510,7 @@ save_source_thread (GTask *task,
  * Note: The dialog is not shown when the stored certificate trust in the WebDAV @source
  *    matches the @certificate_pem and the stored result is #E_TRUST_PROMPT_RESPONSE_REJECT.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_trust_prompt_run_for_source (GtkWindow *parent,
@@ -639,7 +639,7 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_trust_prompt_run_for_source_finish (ESource *source,

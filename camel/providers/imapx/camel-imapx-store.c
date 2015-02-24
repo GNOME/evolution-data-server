@@ -2829,7 +2829,7 @@ camel_imapx_store_folder_op_done (CamelIMAPXStore *store,
  *
  * Returns: a #CamelIMAPXNamespaceResponse
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 CamelIMAPXNamespaceResponse *
 camel_imapx_store_ref_namespaces (CamelIMAPXStore *imapx_store)
@@ -3175,7 +3175,7 @@ imapx_store_rename_mailbox_unlocked (CamelIMAPXStore *imapx_store,
  *
  * Returns: a #CamelIMAPXMailbox, or %NULL
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 CamelIMAPXMailbox *
 camel_imapx_store_ref_mailbox (CamelIMAPXStore *imapx_store,
@@ -3218,7 +3218,7 @@ camel_imapx_store_ref_mailbox (CamelIMAPXStore *imapx_store,
  *
  * Returns: a list of #CamelIMAPXMailbox instances
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 GList *
 camel_imapx_store_list_mailboxes (CamelIMAPXStore *imapx_store,

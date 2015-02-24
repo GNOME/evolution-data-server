@@ -716,7 +716,7 @@ camel_imapx_search_set_store (CamelIMAPXSearch *search,
  * for the whole run of the search and reset them both to NULL after
  * the search is finished.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_search_set_cancellable_and_error (CamelIMAPXSearch *search,

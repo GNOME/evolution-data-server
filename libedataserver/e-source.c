@@ -3658,7 +3658,7 @@ e_source_parameter_to_key (const gchar *param_name)
  *
  * Returns: Current connection status of the @source.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceConnectionStatus
 e_source_get_connection_status (ESource *source)
@@ -3675,7 +3675,7 @@ e_source_get_connection_status (ESource *source)
  *
  * Set's current connection status of the @source.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_set_connection_status (ESource *source,
@@ -4732,7 +4732,7 @@ e_source_delete_password_finish (ESource *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_invoke_credentials_required_sync (ESource *source,
@@ -4882,7 +4882,7 @@ source_invoke_credentials_required_thread (GTask *task,
  * When the operation is finished, @callback will be called. You can then
  * call e_source_invoke_credentials_required_finish() to get the result of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_invoke_credentials_required (ESource *source,
@@ -4926,7 +4926,7 @@ e_source_invoke_credentials_required (ESource *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_invoke_credentials_required_finish (ESource *source,
@@ -4958,7 +4958,7 @@ e_source_invoke_credentials_required_finish (ESource *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_invoke_authenticate_sync (ESource *source,
@@ -5065,7 +5065,7 @@ source_invoke_authenticate_thread (GTask *task,
  * When the operation is finished, @callback will be called. You can then
  * call e_source_invoke_authenticate_finish() to get the result of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_invoke_authenticate (ESource *source,
@@ -5102,7 +5102,7 @@ e_source_invoke_authenticate (ESource *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_invoke_authenticate_finish (ESource *source,
@@ -5130,7 +5130,7 @@ e_source_invoke_authenticate_finish (ESource *source,
  * signal with given parameters. That's the difference with e_source_invoke_credentials_required(),
  * which calls the signal globally, within each client.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_emit_credentials_required (ESource *source,
@@ -5164,7 +5164,7 @@ e_source_emit_credentials_required (ESource *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_get_last_credentials_required_arguments_sync (ESource *source,
@@ -5280,7 +5280,7 @@ source_get_last_credentials_required_arguments_thread (GTask *task,
  * call e_source_get_last_credentials_required_arguments_finish() to get
  * the result of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_get_last_credentials_required_arguments (ESource *source,
@@ -5318,7 +5318,7 @@ e_source_get_last_credentials_required_arguments (ESource *source,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_get_last_credentials_required_arguments_finish (ESource *source,

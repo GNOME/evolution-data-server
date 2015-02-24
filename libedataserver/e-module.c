@@ -328,7 +328,7 @@ e_module_load_all_in_directory (const gchar *dirname)
  *
  * Returns: an #EModule loaded from @filename
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 EModule *
 e_module_load_file (const gchar *filename)

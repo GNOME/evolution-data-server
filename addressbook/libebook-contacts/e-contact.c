@@ -1470,7 +1470,7 @@ e_contact_vcard_attribute (EContactField field_id)
  *
  * Returns: Whether the @field_id is of a string type.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_contact_field_is_string (EContactField field_id)
@@ -1821,7 +1821,7 @@ e_contact_get_attributes (EContact *contact,
  * Returns: (transfer full) (element-type EVCardAttribute): A #GList of pointers
  * to #EVCardAttribute, owned by the caller.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 GList *
 e_contact_get_attributes_set (EContact *contact,

@@ -62,7 +62,7 @@ struct _ESourceCredentialsProvider;
  * implement the virtual methods. The descendants are automatically
  * registered into an #ESourceCredentialsProvider.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _ESourceCredentialsProviderImpl {
 	EExtension parent;

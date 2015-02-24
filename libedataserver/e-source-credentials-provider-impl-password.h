@@ -57,7 +57,7 @@ typedef struct _ESourceCredentialsProviderImplPasswordPrivate ESourceCredentials
  *
  * Password based credentials provider implementation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _ESourceCredentialsProviderImplPassword {
 	ESourceCredentialsProviderImpl parent;

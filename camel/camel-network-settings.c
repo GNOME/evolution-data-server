@@ -245,7 +245,7 @@ camel_network_settings_dup_host (CamelNetworkSettings *settings)
  * Returns: a newly-allocated copy of #CamelNetworkSettings:host with
  *    only ASCII letters.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 camel_network_settings_dup_host_ensure_ascii (CamelNetworkSettings *settings)

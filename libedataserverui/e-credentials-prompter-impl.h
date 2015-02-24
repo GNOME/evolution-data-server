@@ -62,7 +62,7 @@ struct _ECredentialsPrompter;
  * prompt for credentials. The descendants are automatically registered
  * into an #ECredentialsPrompter.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _ECredentialsPrompterImpl {
 	EExtension parent;

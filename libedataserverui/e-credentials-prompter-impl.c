@@ -93,7 +93,7 @@ e_credentials_prompter_impl_class_init (ECredentialsPrompterImplClass *klass)
 	 *
 	 * Emitted when a prompt of ID @prompt_id is finished.
 	 *
-	 * Since: 3.14
+	 * Since: 3.16
 	 **/
 	signals[PROMPT_FINISHED] = g_signal_new (
 		"prompt-finished",
@@ -121,7 +121,7 @@ e_credentials_prompter_impl_init (ECredentialsPrompterImpl *prompter_impl)
  *
  * Returns: an #ECredentialsPrompter
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ECredentialsPrompter *
 e_credentials_prompter_impl_get_credentials_prompter (ECredentialsPrompterImpl *prompter_impl)
@@ -158,7 +158,7 @@ e_credentials_prompter_impl_get_credentials_prompter (ECredentialsPrompterImpl *
  * which can be a case when the @auth_source is part of a collection, then
  * the @cred_stource can be that collection source.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_impl_prompt (ECredentialsPrompterImpl *prompter_impl,
@@ -195,7 +195,7 @@ e_credentials_prompter_impl_prompt (ECredentialsPrompterImpl *prompter_impl,
  * Use %NULL @credentials for cancelled prompts, otherwise the credentials are used
  * for authentication of the associated #ESource.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_impl_prompt_finish (ECredentialsPrompterImpl *prompter_impl,
@@ -215,7 +215,7 @@ e_credentials_prompter_impl_prompt_finish (ECredentialsPrompterImpl *prompter_im
  *
  * Asks the @prompt_impl to cancel current prompt, which should have ID @prompt_id.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_credentials_prompter_impl_cancel_prompt (ECredentialsPrompterImpl *prompter_impl,

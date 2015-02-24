@@ -70,7 +70,7 @@ typedef enum {
  * @E_SOURCE_AUTHENTICATION_ERROR:
  *   An error occurred while authenticating.
  * @E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
- *   An SSL certificate check failed. Since: 3.14.
+ *   An SSL certificate check failed. Since: 3.16.
  * @E_SOURCE_AUTHENTICATION_ACCEPTED:
  *   Server requesting authentication accepted password.
  * @E_SOURCE_AUTHENTICATION_REJECTED:
@@ -126,7 +126,7 @@ typedef enum {
  * do close the password prompt in the other client, because the credentials had
  * been already provided.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 typedef enum {
 	E_SOURCE_CONNECTION_STATUS_DISCONNECTED,
@@ -157,7 +157,7 @@ typedef enum {
  *
  * An ESource's authentication reason, used by an ESource::CredentialsRequired method.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 typedef enum {
 	E_SOURCE_CREDENTIALS_REASON_UNKNOWN,

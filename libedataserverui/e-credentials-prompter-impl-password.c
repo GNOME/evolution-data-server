@@ -552,7 +552,7 @@ e_credentials_prompter_impl_password_init (ECredentialsPrompterImplPassword *pro
  * Returns: (transfer full): a newly created #ECredentialsPrompterImplPassword,
  *    which should be freed with g_object_unref() when no longer needed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ECredentialsPrompterImpl *
 e_credentials_prompter_impl_password_new (void)

@@ -270,7 +270,7 @@ source_credential_provider_ref_impl_for_source (ESourceCredentialsProvider *prov
  *
  * Returns: (transfer full): a new #ESourceCredentialsProvider
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceCredentialsProvider *
 e_source_credentials_provider_new (ESourceRegistry *registry)
@@ -291,7 +291,7 @@ e_source_credentials_provider_new (ESourceRegistry *registry)
  * Returns: Reference registry associated with this @provider. Unref it
  *    with g_object_unref() when no longer needed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 GObject *
 e_source_credentials_provider_ref_registry (ESourceCredentialsProvider *provider)
@@ -312,7 +312,7 @@ e_source_credentials_provider_ref_registry (ESourceCredentialsProvider *provider
  * Returns: %TRUE on success, %FALSE on failure, like when there is
  *    the @provider_impl already registered.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_register_impl (ESourceCredentialsProvider *provider,
@@ -354,7 +354,7 @@ e_source_credentials_provider_register_impl (ESourceCredentialsProvider *provide
  * e_source_credentials_provider_register_impl(). Function does nothing,
  * when the @provider_impl is not registered.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_credentials_provider_unregister_impl (ESourceCredentialsProvider *provider,
@@ -379,7 +379,7 @@ e_source_credentials_provider_unregister_impl (ESourceCredentialsProvider *provi
  * Returns: (transfer full): Referenced #ESource with the given @uid, or %NULL, when it
  *    could not be found. Unref the returned #ESource with g_object_unref(), when no longer needed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESource *
 e_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
@@ -410,7 +410,7 @@ e_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
  * Returns: referenced parent #ESource, which holds credentials, or %NULL. Unref
  *    the returned non-NULL #ESource with g_object_unref(), when no longer needed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESource *
 e_source_credentials_provider_ref_credentials_source (ESourceCredentialsProvider *provider,
@@ -506,7 +506,7 @@ e_source_credentials_provider_ref_credentials_source (ESourceCredentialsProvider
  *
  * Returns: %TRUE, when the credentials storing for @source is possible, %FALSE otherwise.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_can_store (ESourceCredentialsProvider *provider,
@@ -537,7 +537,7 @@ e_source_credentials_provider_can_store (ESourceCredentialsProvider *provider,
  *
  * Returns: %TRUE, when a credentials prompt can be shown for @source, %FALSE otherwise.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_can_prompt (ESourceCredentialsProvider *provider,
@@ -607,7 +607,7 @@ async_context_free (gpointer ptr)
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_lookup_sync (ESourceCredentialsProvider *provider,
@@ -673,7 +673,7 @@ source_credentials_provider_lookup_thread (GTask *task,
  * call e_source_credentials_provider_lookup_finish() to get the result
  * of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_credentials_provider_lookup (ESourceCredentialsProvider *provider,
@@ -719,7 +719,7 @@ e_source_credentials_provider_lookup (ESourceCredentialsProvider *provider,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_lookup_finish (ESourceCredentialsProvider *provider,
@@ -764,7 +764,7 @@ e_source_credentials_provider_lookup_finish (ESourceCredentialsProvider *provide
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_store_sync (ESourceCredentialsProvider *provider,
@@ -836,7 +836,7 @@ source_credentials_provider_store_thread (GTask *task,
  * call e_source_credentials_provider_store_finish() to get the result
  * of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_credentials_provider_store (ESourceCredentialsProvider *provider,
@@ -883,7 +883,7 @@ e_source_credentials_provider_store (ESourceCredentialsProvider *provider,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_store_finish (ESourceCredentialsProvider *provider,
@@ -913,7 +913,7 @@ e_source_credentials_provider_store_finish (ESourceCredentialsProvider *provider
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_delete_sync (ESourceCredentialsProvider *provider,
@@ -974,7 +974,7 @@ source_credentials_provider_delete_thread (GTask *task,
  * call e_source_credentials_provider_delete_finish() to get the result
  * of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_credentials_provider_delete (ESourceCredentialsProvider *provider,
@@ -1019,7 +1019,7 @@ e_source_credentials_provider_delete (ESourceCredentialsProvider *provider,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_credentials_provider_delete_finish (ESourceCredentialsProvider *provider,

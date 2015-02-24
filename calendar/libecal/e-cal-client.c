@@ -1648,7 +1648,7 @@ e_cal_client_init (ECalClient *client)
  * Creates a new #ECalClient for @source and @source_type.  If an error
  * occurs, the function will set @error and return %FALSE.
  *
- * The @wait_for_connected_seconds argument had been added since 3.14,
+ * The @wait_for_connected_seconds argument had been added since 3.16,
  * to let the caller decide how long to wait for the backend to fully
  * connect to its (possibly remote) data store. This is required due
  * to a change in the authentication process, which is fully asynchronous
@@ -1842,7 +1842,7 @@ exit:
  *
  * Asynchronously creates a new #ECalClient for @source and @source_type.
  *
- * The @wait_for_connected_seconds argument had been added since 3.14,
+ * The @wait_for_connected_seconds argument had been added since 3.16,
  * to let the caller decide how long to wait for the backend to fully
  * connect to its (possibly remote) data store. This is required due
  * to a change in the authentication process, which is fully asynchronous

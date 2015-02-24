@@ -1717,7 +1717,7 @@ collection_backend_child_authenticate_done_cb (GObject *source_object,
  * the @credentials to connect to the (possibly) remote data store, to
  * open the childern too. Already connected child sources are skipped.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_collection_backend_authenticate_children (ECollectionBackend *backend,

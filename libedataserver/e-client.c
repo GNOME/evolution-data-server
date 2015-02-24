@@ -1880,7 +1880,7 @@ client_wait_for_connected_thread (GTask *task,
  * The call is finished by e_client_wait_for_connected_finish() from
  * the @callback.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_client_wait_for_connected (EClient *client,
@@ -1912,7 +1912,7 @@ e_client_wait_for_connected (EClient *client,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_client_wait_for_connected_finish (EClient *client,
@@ -1965,7 +1965,7 @@ client_wait_for_connected_notify_cb (ESource *source,
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_client_wait_for_connected_sync (EClient *client,
@@ -2037,7 +2037,7 @@ e_client_wait_for_connected_sync (EClient *client,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_client_retrieve_properties_sync (EClient *client,
@@ -2086,7 +2086,7 @@ client_retrieve_properties_thread (GTask *task,
  * When the operation is finished, @callback will be called. You can then
  * call e_client_retrieve_properties_finish() to get the result of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_client_retrieve_properties (EClient *client,
@@ -2117,7 +2117,7 @@ e_client_retrieve_properties (EClient *client,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_client_retrieve_properties_finish (EClient *client,
@@ -2430,7 +2430,7 @@ e_client_util_unwrap_dbus_error (GError *dbus_error,
  *          the backend subprocess. The string should be
  *          freed by the caller using g_free().
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_client_dup_bus_name (EClient *client)
@@ -2448,7 +2448,7 @@ e_client_dup_bus_name (EClient *client)
  * Sets a D-Bus bus name that will be used to connect the client
  * to the backend subprocess.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_client_set_bus_name (EClient *client,

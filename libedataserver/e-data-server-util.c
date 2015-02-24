@@ -1099,7 +1099,7 @@ e_util_free_nullable_object_slist (GSList *objects)
  * Calls g_free() on @string, but before it rewrites its content with zeros.
  * This is suitable to free strings with passwords.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_util_safe_free_string (gchar *str)
@@ -2070,7 +2070,7 @@ e_named_parameters_new_strv (const gchar * const *strv)
  *
  * Returns: newly allocated #ENamedParameters
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ENamedParameters *
 e_named_parameters_new_clone (const ENamedParameters *parameters)
@@ -2497,7 +2497,7 @@ e_timeout_add_seconds_with_name (gint priority,
  * Returns: Whether debugging is enabled, that is,
  * whether e_source_registry_debug_print() will produce any output.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_source_registry_debug_enabled (void)
@@ -2518,7 +2518,7 @@ e_source_registry_debug_enabled (void)
  * Prints the text only if a debugging is enabled with an environment
  * variable ESR_DEBUG=1.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_registry_debug_print (const gchar *format,

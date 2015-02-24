@@ -60,7 +60,7 @@ typedef struct _EServerSideSourceCredentialsProviderPrivate EServerSideSourceCre
  * Contains only private data that should be read and manipulated using the
  * functions below.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _EServerSideSourceCredentialsProvider {
 	ESourceCredentialsProvider parent;

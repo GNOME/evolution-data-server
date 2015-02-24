@@ -876,7 +876,7 @@ e_backend_ref_main_context (EBackend *backend)
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_backend_credentials_required_sync (EBackend *backend,
@@ -955,7 +955,7 @@ backend_credentials_required_thread (GTask *task,
  * When the operation is finished, @callback will be called. You can then
  * call e_backend_credentials_required_finish() to get the result of the operation.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_backend_credentials_required (EBackend *backend,
@@ -999,7 +999,7 @@ e_backend_credentials_required (EBackend *backend,
  *
  * Returns: %TRUE on success, %FALSE on error
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_backend_credentials_required_finish (EBackend *backend,
@@ -1052,7 +1052,7 @@ backend_scheduled_credentials_required_done_cb (GObject *source_object,
  * This is useful when the caller just wants to start the operation
  * without having actual place where to show the operation result.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_backend_schedule_credentials_required (EBackend *backend,
@@ -1079,7 +1079,7 @@ e_backend_schedule_credentials_required (EBackend *backend,
  * received for the associated #ESource. With %NULL @credentials an attempt
  * without it is run.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_backend_schedule_authenticate	(EBackend *backend,
@@ -1367,7 +1367,7 @@ e_backend_is_destination_reachable (EBackend *backend,
  * to it anymore. The @backend can free any resources which reference it, for
  * example the opened views.
  *
- * Since: 3.14
+ * Since: 3.16
  */
 void
 e_backend_prepare_shutdown (EBackend *backend)

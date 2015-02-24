@@ -1266,7 +1266,7 @@ e_cal_util_remove_instances (icalcomponent *icalcomp,
  *
  * Returns: the split icalcomponent, or %NULL.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 icalcomponent *
 e_cal_util_split_at_instance (icalcomponent *icalcomp,
@@ -1414,7 +1414,7 @@ check_first_instance_cb (ECalComponent *comp,
  *
  * Return: Whether the @rid identifies the first instance of @comp.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_cal_util_is_first_instance (ECalComponent *comp,

@@ -1300,7 +1300,7 @@ encode_ssl_trust (ESourceWebdav *extension,
  * time it'll be needed. An #E_TRUST_PROMPT_RESPONSE_UNKNOWN is treated as
  * a temporary reject, which means the user will be asked again.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_webdav_update_ssl_trust (ESourceWebdav *extension,

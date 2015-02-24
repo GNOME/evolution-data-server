@@ -265,7 +265,7 @@ e_source_mail_account_set_identity_uid (ESourceMailAccount *extension,
  *
  * Returns: an identifier of the archive folder
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 const gchar *
 e_source_mail_account_get_archive_folder (ESourceMailAccount *extension)
@@ -286,7 +286,7 @@ e_source_mail_account_get_archive_folder (ESourceMailAccount *extension)
  *
  * Returns: a newly-allocated copy of #ESourceMailAccount:archive-folder
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_source_mail_account_dup_archive_folder (ESourceMailAccount *extension)
@@ -318,7 +318,7 @@ e_source_mail_account_dup_archive_folder (ESourceMailAccount *extension)
  * and trailing whitespace. If the resulting string is empty, %NULL is set
  * instead.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_source_mail_account_set_archive_folder (ESourceMailAccount *extension,

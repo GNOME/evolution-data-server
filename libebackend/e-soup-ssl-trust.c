@@ -139,7 +139,7 @@ e_soup_ssl_trust_message_finalized_cb (gpointer data,
  * is not thread-safe; it is sufficient for safety if all use of @soup_message's
  * session and the disposal of @soup_message occur in the same thread.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_soup_ssl_trust_connect (SoupMessage *soup_message,

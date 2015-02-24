@@ -787,7 +787,7 @@ camel_certdb_clear (CamelCertDB *certdb)
  * Returns: (transfer full): (element-type CamelCert): Newly allocated list of
  *   referenced CamelCert-s, which are stored in the @certdb.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 GSList *
 camel_certdb_list_certs (CamelCertDB *certdb)

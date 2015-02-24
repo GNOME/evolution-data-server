@@ -915,7 +915,7 @@ camel_imapx_settings_set_check_subscribed (CamelIMAPXSettings *settings,
  *
  * Returns: the number of concurrent connections to use
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 guint
 camel_imapx_settings_get_concurrent_connections (CamelIMAPXSettings *settings)
@@ -937,7 +937,7 @@ camel_imapx_settings_get_concurrent_connections (CamelIMAPXSettings *settings)
  * @concurrent_connections value will be clamped to these limits if
  * necessary.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_settings_set_concurrent_connections (CamelIMAPXSettings *settings,
@@ -1563,7 +1563,7 @@ camel_imapx_settings_set_use_namespace (CamelIMAPXSettings *settings,
  *
  * Returns: whether to ignore namespace for other users
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 camel_imapx_settings_get_ignore_other_users_namespace (CamelIMAPXSettings *settings)
@@ -1580,7 +1580,7 @@ camel_imapx_settings_get_ignore_other_users_namespace (CamelIMAPXSettings *setti
  *
  * Sets whether to ignore other users namespace.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_settings_set_ignore_other_users_namespace (CamelIMAPXSettings *settings,
@@ -1604,7 +1604,7 @@ camel_imapx_settings_set_ignore_other_users_namespace (CamelIMAPXSettings *setti
  *
  * Returns: whether to ignore namespace for shared folders
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 camel_imapx_settings_get_ignore_shared_folders_namespace (CamelIMAPXSettings *settings)
@@ -1621,7 +1621,7 @@ camel_imapx_settings_get_ignore_shared_folders_namespace (CamelIMAPXSettings *se
  *
  * Sets whether to ignore shared folders namespace.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_settings_set_ignore_shared_folders_namespace (CamelIMAPXSettings *settings,

@@ -119,7 +119,7 @@ e_backend_factory_new_backend (EBackendFactory *factory,
  *
  * Returns: the filename for the module associated to the @factory
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 const gchar *
 e_backend_factory_get_module_filename (EBackendFactory *factory)
@@ -144,7 +144,7 @@ e_backend_factory_get_module_filename (EBackendFactory *factory)
  * Returns: TRUE if the @factory shares the subprocess for all its
  *          backends. Otherwise, FALSE.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 e_backend_factory_share_subprocess (EBackendFactory *factory)

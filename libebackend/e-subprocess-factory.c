@@ -238,7 +238,7 @@ e_subprocess_factory_init (ESubprocessFactory *subprocess_factory)
  *
  * Returns: an #EBackend for @source, or %NULL
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 EBackend *
 e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factory,
@@ -317,7 +317,7 @@ exit:
  *
  * Returns: the #ESourceRegistry
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 ESourceRegistry *
 e_subprocess_factory_get_registry (ESubprocessFactory *subprocess_factory)
@@ -338,7 +338,7 @@ e_subprocess_factory_get_registry (ESubprocessFactory *subprocess_factory)
  *
  * This function is here for a lack of a better place
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_subprocess_factory_construct_path (void)
@@ -367,7 +367,7 @@ e_subprocess_factory_construct_path (void)
  * Returns: a newly allocated string that represents the #EBackend
  *          data D-Bus object path.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 e_subprocess_factory_open_backend (ESubprocessFactory *subprocess_factory,
@@ -414,7 +414,7 @@ e_subprocess_factory_open_backend (ESubprocessFactory *subprocess_factory,
  * Returns: A #GList that contains a list of used backends. The list should be freed
  * by the caller using: g_list_free_full (backends, g_object_unref).
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 GList *
 e_subprocess_factory_get_backends_list (ESubprocessFactory *subprocess_factory)
@@ -440,7 +440,7 @@ e_subprocess_factory_get_backends_list (ESubprocessFactory *subprocess_factory)
  *
  * Calls e_backend_prepare_shutdown() for the list of used backends.
  *
- * Since: 3.14
+ * Since: 3.16
  */
 void
 e_subprocess_factory_call_backends_prepare_shutdown (ESubprocessFactory *subprocess_factory)
@@ -469,7 +469,7 @@ e_subprocess_factory_call_backends_prepare_shutdown (ESubprocessFactory *subproc
  * Installs a toggle reference on the backend, that can receive a signal to
  * shutdown once all client connections are closed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 e_subprocess_factory_set_backend_callbacks (ESubprocessFactory *subprocess_factory,

@@ -785,7 +785,7 @@ camel_freeaddrinfo (struct addrinfo *host)
  * Returns: Newly allocated string with only ASCII letters describing the @host.
  *   Free it with g_free() when done with it.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gchar *
 camel_host_idna_to_ascii (const gchar *host)

@@ -2760,7 +2760,7 @@ get_number_cb (gpointer data,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 camel_db_maybe_run_maintenance (CamelDB *cdb,

@@ -331,7 +331,7 @@ camel_imapx_namespace_response_list (CamelIMAPXNamespaceResponse *response)
  * Adds a @namespace into the list of namespaces. It adds its own
  * reference on the @namespace.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_namespace_response_add (CamelIMAPXNamespaceResponse *response,
@@ -351,7 +351,7 @@ camel_imapx_namespace_response_add (CamelIMAPXNamespaceResponse *response,
  * Removes @namespace from the list of namespaces in the @response.
  * If no such namespace exists then does nothing.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 void
 camel_imapx_namespace_response_remove (CamelIMAPXNamespaceResponse *response,

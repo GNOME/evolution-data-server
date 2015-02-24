@@ -427,7 +427,7 @@ camel_imapx_job_take_error (CamelIMAPXJob *job,
  *
  * Returns: Whether the job failed.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 camel_imapx_job_set_error_if_failed (CamelIMAPXJob *job,

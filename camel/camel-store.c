@@ -2917,7 +2917,7 @@ camel_store_synchronize_finish (CamelStore *store,
  *
  * Returns: Whether succeeded.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 gboolean
 camel_store_maybe_run_db_maintenance (CamelStore *store,

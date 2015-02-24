@@ -73,7 +73,7 @@ typedef struct _ECredentialsPrompterPrivate ECredentialsPrompterPrivate;
  * An #ECredentialsPrompter prompt flags, influencing behaviour
  * of the e_credentials_prompter_prompt().
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 typedef enum {
 	E_CREDENTIALS_PROMPTER_PROMPT_FLAG_NONE				= 0,
@@ -108,7 +108,7 @@ typedef gboolean (*ECredentialsPrompterLoopPromptFunc) (ECredentialsPrompter *pr
  * Contains only private data that should be read and manipulated using the
  * functions below.
  *
- * Since: 3.14
+ * Since: 3.16
  **/
 struct _ECredentialsPrompter {
 	GObject parent;
