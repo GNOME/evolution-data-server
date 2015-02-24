@@ -4244,7 +4244,7 @@ imapx_server_set_streams (CamelIMAPXServer *is,
 
 		/* Buffer the input stream for parsing. */
 		temp_stream = camel_imapx_input_stream_new (input_stream);
-		g_object_bind_property (
+		camel_binding_bind_property (
 			temp_stream, "close-base-stream",
 			input_stream, "close-base-stream",
 			G_BINDING_SYNC_CREATE);

@@ -385,7 +385,7 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	extension = e_source_get_extension (collection_source, extension_name);
 
 	if (collection_backend_child_is_calendar (child_source)) {
-		g_object_bind_property_full (
+		e_binding_bind_property_full (
 			extension, "calendar-enabled",
 			child_source, "enabled",
 			G_BINDING_SYNC_CREATE,
@@ -397,7 +397,7 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	}
 
 	if (collection_backend_child_is_contacts (child_source)) {
-		g_object_bind_property_full (
+		e_binding_bind_property_full (
 			extension, "contacts-enabled",
 			child_source, "enabled",
 			G_BINDING_SYNC_CREATE,
@@ -409,7 +409,7 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 	}
 
 	if (collection_backend_child_is_mail (child_source)) {
-		g_object_bind_property_full (
+		e_binding_bind_property_full (
 			extension, "mail-enabled",
 			child_source, "enabled",
 			G_BINDING_SYNC_CREATE,
@@ -420,7 +420,7 @@ collection_backend_bind_child_enabled (ECollectionBackend *backend,
 		return;
 	}
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection_source, "enabled",
 		child_source, "enabled",
 		G_BINDING_SYNC_CREATE);
@@ -836,7 +836,7 @@ collection_backend_child_added (ECollectionBackend *backend,
 
 	/* Synchronize mail-related display names with the collection. */
 	if (is_mail)
-		g_object_bind_property (
+		e_binding_bind_property (
 			collection_source, "display-name",
 			child_source, "display-name",
 			G_BINDING_SYNC_CREATE);
@@ -846,7 +846,7 @@ collection_backend_child_added (ECollectionBackend *backend,
 		E_SERVER_SIDE_SOURCE (child_source), FALSE);
 
 	/* Collection children inherit OAuth 2.0 support if available. */
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection_source, "oauth2-support",
 		child_source, "oauth2-support",
 		G_BINDING_SYNC_CREATE);

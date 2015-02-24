@@ -442,7 +442,7 @@ source_camel_constructed (GObject *object)
 			g_param_value_set_default (pspec, value);
 		}
 
-		g_object_bind_property_full (
+		e_binding_bind_property_full (
 			extension, source_property,
 			priv->settings, target_property,
 			G_BINDING_BIDIRECTIONAL |

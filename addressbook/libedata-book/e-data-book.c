@@ -1920,17 +1920,17 @@ data_book_constructed (GObject *object)
 	/* Attach ourselves to the EBookBackend. */
 	e_book_backend_set_data_book (backend, book);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "cache-dir",
 		book->priv->dbus_interface, "cache-dir",
 		G_BINDING_SYNC_CREATE);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "online",
 		book->priv->dbus_interface, "online",
 		G_BINDING_SYNC_CREATE);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "writable",
 		book->priv->dbus_interface, "writable",
 		G_BINDING_SYNC_CREATE);

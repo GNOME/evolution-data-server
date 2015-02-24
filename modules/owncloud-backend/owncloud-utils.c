@@ -441,7 +441,7 @@ find_sources (ECollectionBackend *collection,
 		session, "authenticate",
 		G_CALLBACK (authenticate_cb), &auth_data);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection, "proxy-resolver",
 		session, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);

@@ -2534,17 +2534,17 @@ data_cal_constructed (GObject *object)
 	/* Attach ourselves to the ECalBackend. */
 	e_cal_backend_set_data_cal (backend, cal);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "cache-dir",
 		cal->priv->dbus_interface, "cache-dir",
 		G_BINDING_SYNC_CREATE);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "online",
 		cal->priv->dbus_interface, "online",
 		G_BINDING_SYNC_CREATE);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "writable",
 		cal->priv->dbus_interface, "writable",
 		G_BINDING_SYNC_CREATE);

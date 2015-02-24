@@ -220,7 +220,7 @@ google_backend_add_calendar (ECollectionBackend *backend)
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	extension = e_source_get_extension (source, extension_name);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection_extension, "identity",
 		extension, "user",
 		G_BINDING_SYNC_CREATE);
@@ -297,7 +297,7 @@ google_backend_add_tasks (ECollectionBackend *backend)
 	e_source_authentication_set_host (E_SOURCE_AUTHENTICATION (extension), "www.google.com");
 	e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection_extension, "identity",
 		extension, "user",
 		G_BINDING_SYNC_CREATE);
@@ -353,7 +353,7 @@ google_backend_add_contacts (ECollectionBackend *backend)
 		E_SOURCE_AUTHENTICATION (extension),
 		GOOGLE_CONTACTS_HOST);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection_extension, "identity",
 		extension, "user",
 		G_BINDING_SYNC_CREATE);

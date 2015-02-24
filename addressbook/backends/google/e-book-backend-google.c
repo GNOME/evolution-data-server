@@ -1248,7 +1248,7 @@ connect_without_password (EBookBackend *backend,
 #if GDATA_CHECK_VERSION(0,15,0)
 		/* proxy-resolver was added in 0.15.0.
 		 * (https://bugzilla.gnome.org/709758) */
-		g_object_bind_property (
+		e_binding_bind_property (
 			backend, "proxy-resolver",
 			priv->service, "proxy-resolver",
 			G_BINDING_SYNC_CREATE);

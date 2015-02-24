@@ -142,7 +142,7 @@ yahoo_backend_config_calendar_child (ECollectionBackend *backend,
 		E_SOURCE_AUTHENTICATION (extension),
 		YAHOO_CALENDAR_HOST);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		collection_extension, "identity",
 		extension, "user",
 		G_BINDING_SYNC_CREATE);

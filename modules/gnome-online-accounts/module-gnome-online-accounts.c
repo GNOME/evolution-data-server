@@ -577,7 +577,7 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	goa_calendar = goa_object_get_calendar (goa_object);
 	goa_contacts = goa_object_get_contacts (goa_object);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		goa_account, "presentation-identity",
 		source, "display-name",
 		G_BINDING_SYNC_CREATE);
@@ -585,20 +585,20 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_GOA;
 	source_extension = e_source_get_extension (source, extension_name);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		goa_account, "id",
 		source_extension, "account-id",
 		G_BINDING_SYNC_CREATE);
 
 	if (goa_calendar != NULL) {
-		g_object_bind_property (
+		e_binding_bind_property (
 			goa_calendar, "uri",
 			source_extension, "calendar-url",
 			G_BINDING_SYNC_CREATE);
 	}
 
 	if (goa_contacts != NULL) {
-		g_object_bind_property (
+		e_binding_bind_property (
 			goa_contacts, "uri",
 			source_extension, "contacts-url",
 			G_BINDING_SYNC_CREATE);
@@ -607,7 +607,7 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_COLLECTION;
 	source_extension = e_source_get_extension (source, extension_name);
 
-	g_object_bind_property_full (
+	e_binding_bind_property_full (
 		goa_account, "provider-type",
 		source_extension, "backend-name",
 		G_BINDING_SYNC_CREATE,
@@ -615,12 +615,12 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		goa_account, "identity",
 		source_extension, "identity",
 		G_BINDING_SYNC_CREATE);
 
-	g_object_bind_property_full (
+	e_binding_bind_property_full (
 		goa_object, "calendar",
 		source_extension, "calendar-enabled",
 		G_BINDING_SYNC_CREATE,
@@ -628,7 +628,7 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
-	g_object_bind_property_full (
+	e_binding_bind_property_full (
 		goa_object, "contacts",
 		source_extension, "contacts-enabled",
 		G_BINDING_SYNC_CREATE,
@@ -636,7 +636,7 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 		NULL,
 		NULL, (GDestroyNotify) NULL);
 
-	g_object_bind_property_full (
+	e_binding_bind_property_full (
 		goa_object, "mail",
 		source_extension, "mail-enabled",
 		G_BINDING_SYNC_CREATE,
@@ -702,7 +702,7 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 	source_extension = e_source_get_extension (source, extension_name);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		goa_mail, "email-address",
 		source_extension, "address",
 		G_BINDING_SYNC_CREATE);

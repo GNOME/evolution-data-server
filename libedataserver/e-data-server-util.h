@@ -98,6 +98,28 @@ gboolean	e_file_recursive_delete_finish	(GFile *file,
 						 GAsyncResult *result,
 						 GError **error);
 
+GBinding *	e_binding_bind_property		(gpointer source,
+						 const gchar *source_property,
+						 gpointer target,
+						 const gchar *target_property,
+						 GBindingFlags flags);
+GBinding *	e_binding_bind_property_full	(gpointer source,
+						 const gchar *source_property,
+						 gpointer target,
+						 const gchar *target_property,
+						 GBindingFlags flags,
+						 GBindingTransformFunc transform_to,
+						 GBindingTransformFunc transform_from,
+						 gpointer user_data,
+						 GDestroyNotify notify);
+GBinding *	e_binding_bind_property_with_closures
+						(gpointer source,
+						 const gchar *source_property,
+						 gpointer target,
+						 const gchar *target_property,
+						 GBindingFlags flags,
+						 GClosure *transform_to,
+						 GClosure *transform_from);
 /* Useful GBinding transform functions */
 gboolean	e_binding_transform_enum_value_to_nick
 						(GBinding *binding,

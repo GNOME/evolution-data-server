@@ -536,7 +536,7 @@ network_service_connect_sync (CamelNetworkService *service,
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT)
 		g_socket_client_set_tls (client, TRUE);
 
-	g_object_bind_property (
+	camel_binding_bind_property (
 		service, "proxy-resolver",
 		client, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);

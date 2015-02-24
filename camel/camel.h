@@ -143,6 +143,29 @@ extern gint camel_application_is_exiting;
 gint camel_init (const gchar *certdb_dir, gboolean nss_init);
 void camel_shutdown (void);
 
+GBinding *	camel_binding_bind_property	(gpointer source,
+						 const gchar *source_property,
+						 gpointer target,
+						 const gchar *target_property,
+						 GBindingFlags flags);
+GBinding *	camel_binding_bind_property_full(gpointer source,
+						 const gchar *source_property,
+						 gpointer target,
+						 const gchar *target_property,
+						 GBindingFlags flags,
+						 GBindingTransformFunc transform_to,
+						 GBindingTransformFunc transform_from,
+						 gpointer user_data,
+						 GDestroyNotify notify);
+GBinding *	camel_binding_bind_property_with_closures
+						(gpointer source,
+						 const gchar *source_property,
+						 gpointer target,
+						 const gchar *target_property,
+						 GBindingFlags flags,
+						 GClosure *transform_to,
+						 GClosure *transform_from);
+
 G_END_DECLS
 
 #endif /* CAMEL_H */

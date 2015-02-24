@@ -33,6 +33,7 @@
 #include <glib-object.h>
 
 #include "e-source-enumtypes.h"
+#include "camel/camel.h"
 
 #include "e-data-server-util.h"
 
@@ -1353,6 +1354,68 @@ e_file_recursive_delete_finish (GFile *file,
 
 	/* Assume success unless a GError is set. */
 	return !g_simple_async_result_propagate_error (simple, error);
+}
+
+/**
+ * e_binding_bind_property:
+ *
+ * Thread safe variant of g_object_bind_property(). See its documentation
+ * for more information on arguments and return value.
+ *
+ * Since: 3.16
+ **/
+GBinding *
+e_binding_bind_property (gpointer source,
+			 const gchar *source_property,
+			 gpointer target,
+			 const gchar *target_property,
+			 GBindingFlags flags)
+{
+	return camel_binding_bind_property (source, source_property, target, target_property, flags);
+}
+
+/**
+ * e_binding_bind_property_full:
+ *
+ * Thread safe variant of g_object_bind_property_full(). See its documentation
+ * for more information on arguments and return value.
+ *
+ * Since: 3.16
+ **/
+GBinding *
+e_binding_bind_property_full (gpointer source,
+			      const gchar *source_property,
+			      gpointer target,
+			      const gchar *target_property,
+			      GBindingFlags flags,
+			      GBindingTransformFunc transform_to,
+			      GBindingTransformFunc transform_from,
+			      gpointer user_data,
+			      GDestroyNotify notify)
+{
+	return camel_binding_bind_property_full (source, source_property, target, target_property, flags,
+		transform_to, transform_from, user_data, notify);
+}
+
+/**
+ * e_binding_bind_property_with_closures:
+ *
+ * Thread safe variant of g_object_bind_property_with_closures(). See its
+ * documentation for more information on arguments and return value.
+ *
+ * Since: 3.16
+ **/
+GBinding *
+e_binding_bind_property_with_closures (gpointer source,
+				       const gchar *source_property,
+				       gpointer target,
+				       const gchar *target_property,
+				       GBindingFlags flags,
+				       GClosure *transform_to,
+				       GClosure *transform_from)
+{
+	return camel_binding_bind_property_with_closures (source, source_property, target, target_property, flags,
+		transform_to, transform_from);
 }
 
 /**

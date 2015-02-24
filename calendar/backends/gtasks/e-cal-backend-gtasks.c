@@ -666,7 +666,7 @@ ecb_gtasks_request_authorization (ECalBackend *backend,
 		tasks_service = gdata_tasks_service_new (gtasks->priv->authorizer);
 		gtasks->priv->service = tasks_service;
 
-		g_object_bind_property (
+		e_binding_bind_property (
 			backend, "proxy-resolver",
 			gtasks->priv->service, "proxy-resolver",
 			G_BINDING_SYNC_CREATE);

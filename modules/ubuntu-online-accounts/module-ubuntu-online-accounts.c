@@ -291,12 +291,12 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	gboolean supports_oauth2 = FALSE;
 	const gchar *extension_name;
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		ag_account, "display-name",
 		source, "display-name",
 		G_BINDING_SYNC_CREATE);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		ag_account, "enabled",
 		source, "enabled",
 		G_BINDING_SYNC_CREATE);
@@ -304,7 +304,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_UOA;
 	source_extension = e_source_get_extension (source, extension_name);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		ag_account, "id",
 		source_extension, "account-id",
 		G_BINDING_SYNC_CREATE);
@@ -312,7 +312,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_COLLECTION;
 	source_extension = e_source_get_extension (source, extension_name);
 
-	g_object_bind_property_full (
+	e_binding_bind_property_full (
 		ag_account, "provider",
 		source_extension, "backend-name",
 		G_BINDING_SYNC_CREATE,
@@ -328,7 +328,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	ag_account_service = g_hash_table_lookup (
 		account_services, E_AG_SERVICE_TYPE_MAIL);
 	if (ag_account_service != NULL) {
-		g_object_bind_property (
+		e_binding_bind_property (
 			ag_account_service , "enabled",
 			source_extension, "mail-enabled",
 			G_BINDING_SYNC_CREATE);
@@ -340,7 +340,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	ag_account_service = g_hash_table_lookup (
 		account_services, E_AG_SERVICE_TYPE_CALENDAR);
 	if (ag_account_service != NULL) {
-		g_object_bind_property (
+		e_binding_bind_property (
 			ag_account_service, "enabled",
 			source_extension, "calendar-enabled",
 			G_BINDING_SYNC_CREATE);
@@ -352,7 +352,7 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 	ag_account_service = g_hash_table_lookup (
 		account_services, E_AG_SERVICE_TYPE_CONTACTS);
 	if (ag_account_service != NULL) {
-		g_object_bind_property (
+		e_binding_bind_property (
 			ag_account_service, "enabled",
 			source_extension, "contacts-enabled",
 			G_BINDING_SYNC_CREATE);

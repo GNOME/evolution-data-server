@@ -266,3 +266,91 @@ camel_shutdown (void)
 
 	initialised = FALSE;
 }
+
+G_LOCK_DEFINE_STATIC (camel_binding_lock);
+
+/**
+ * camel_binding_bind_property:
+ *
+ * Thread safe variant of g_object_bind_property(). See its documentation
+ * for more information on arguments and return value.
+ *
+ * Since: 3.16
+ **/
+GBinding *
+camel_binding_bind_property (gpointer source,
+			     const gchar *source_property,
+			     gpointer target,
+			     const gchar *target_property,
+			     GBindingFlags flags)
+{
+	GBinding *binding;
+
+	G_LOCK (camel_binding_lock);
+
+	binding = g_object_bind_property (source, source_property, target, target_property, flags);
+
+	G_UNLOCK (camel_binding_lock);
+
+	return binding;
+}
+
+/**
+ * camel_binding_bind_property_full:
+ *
+ * Thread safe variant of g_object_bind_property_full(). See its documentation
+ * for more information on arguments and return value.
+ *
+ * Since: 3.16
+ **/
+GBinding *
+camel_binding_bind_property_full (gpointer source,
+				  const gchar *source_property,
+				  gpointer target,
+				  const gchar *target_property,
+				  GBindingFlags flags,
+				  GBindingTransformFunc transform_to,
+				  GBindingTransformFunc transform_from,
+				  gpointer user_data,
+				  GDestroyNotify notify)
+{
+	GBinding *binding;
+
+	G_LOCK (camel_binding_lock);
+
+	binding = g_object_bind_property_full (source, source_property, target, target_property, flags,
+		transform_to, transform_from, user_data, notify);
+
+	G_UNLOCK (camel_binding_lock);
+
+	return binding;
+}
+
+/**
+ * camel_binding_bind_property_with_closures:
+ *
+ * Thread safe variant of g_object_bind_property_with_closures(). See its
+ * documentation for more information on arguments and return value.
+ *
+ * Since: 3.16
+ **/
+GBinding *
+camel_binding_bind_property_with_closures (gpointer source,
+					   const gchar *source_property,
+					   gpointer target,
+					   const gchar *target_property,
+					   GBindingFlags flags,
+					   GClosure *transform_to,
+					   GClosure *transform_from)
+{
+	GBinding *binding;
+
+	G_LOCK (camel_binding_lock);
+
+	binding = g_object_bind_property_with_closures (source, source_property, target, target_property, flags,
+		transform_to, transform_from);
+
+	G_UNLOCK (camel_binding_lock);
+
+	return binding;
+}

@@ -5510,7 +5510,7 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
 		NULL);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		cbdav, "proxy-resolver",
 		cbdav->priv->session, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);

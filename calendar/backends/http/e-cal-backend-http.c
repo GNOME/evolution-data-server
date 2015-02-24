@@ -181,7 +181,7 @@ e_cal_backend_http_constructed (GObject *object)
 	backend = E_CAL_BACKEND_HTTP (object);
 	backend->priv->soup_session = soup_session;
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "proxy-resolver",
 		backend->priv->soup_session, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);

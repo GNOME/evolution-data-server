@@ -449,7 +449,7 @@ source_webdav_constructed (GObject *object)
 
 	/* This updates the authentication method
 	 * based on whether a user name was given. */
-	g_object_bind_property_full (
+	e_binding_bind_property_full (
 		extension, "user",
 		extension, "method",
 		G_BINDING_SYNC_CREATE,

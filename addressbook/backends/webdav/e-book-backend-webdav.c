@@ -1363,7 +1363,7 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
 		NULL);
 
-	g_object_bind_property (
+	e_binding_bind_property (
 		backend, "proxy-resolver",
 		session, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);
