@@ -33,6 +33,8 @@
 #include <glib-unix.h>
 #endif /* G_OS_WIN32 */
 
+#include <camel/camel.h>
+
 #include "camel-imapx-server.h"
 
 #include "camel-imapx-folder.h"

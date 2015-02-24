@@ -267,7 +267,7 @@ camel_shutdown (void)
 	initialised = FALSE;
 }
 
-G_LOCK_DEFINE_STATIC (camel_binding_lock);
+static GRecMutex camel_binding_lock;
 
 /**
  * camel_binding_bind_property:
@@ -286,11 +286,11 @@ camel_binding_bind_property (gpointer source,
 {
 	GBinding *binding;
 
-	G_LOCK (camel_binding_lock);
+	g_rec_mutex_lock (&camel_binding_lock);
 
 	binding = g_object_bind_property (source, source_property, target, target_property, flags);
 
-	G_UNLOCK (camel_binding_lock);
+	g_rec_mutex_unlock (&camel_binding_lock);
 
 	return binding;
 }
@@ -316,12 +316,12 @@ camel_binding_bind_property_full (gpointer source,
 {
 	GBinding *binding;
 
-	G_LOCK (camel_binding_lock);
+	g_rec_mutex_lock (&camel_binding_lock);
 
 	binding = g_object_bind_property_full (source, source_property, target, target_property, flags,
 		transform_to, transform_from, user_data, notify);
 
-	G_UNLOCK (camel_binding_lock);
+	g_rec_mutex_unlock (&camel_binding_lock);
 
 	return binding;
 }
@@ -345,12 +345,12 @@ camel_binding_bind_property_with_closures (gpointer source,
 {
 	GBinding *binding;
 
-	G_LOCK (camel_binding_lock);
+	g_rec_mutex_lock (&camel_binding_lock);
 
 	binding = g_object_bind_property_with_closures (source, source_property, target, target_property, flags,
 		transform_to, transform_from);
 
-	G_UNLOCK (camel_binding_lock);
+	g_rec_mutex_unlock (&camel_binding_lock);
 
 	return binding;
 }

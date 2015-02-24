@@ -24,6 +24,7 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "camel.h"
 #include <camel/camel-enumtypes.h>
 #include <camel/camel-network-settings.h>
 #include <camel/camel-service.h>
