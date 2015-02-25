@@ -571,6 +571,8 @@ status_code_to_result (SoupMessage *message,
 		return FALSE;
 
 	switch (message->status_code) {
+	case SOUP_STATUS_CANT_RESOLVE:
+	case SOUP_STATUS_CANT_RESOLVE_PROXY:
 	case SOUP_STATUS_CANT_CONNECT:
 	case SOUP_STATUS_CANT_CONNECT_PROXY:
 		g_propagate_error (
@@ -1197,6 +1199,8 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
 		switch (message->status_code) {
+		case SOUP_STATUS_CANT_RESOLVE:
+		case SOUP_STATUS_CANT_RESOLVE_PROXY:
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			*server_unreachable = TRUE;
@@ -1545,6 +1549,8 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 	/* Check the result */
 	if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
 		switch (message->status_code) {
+		case SOUP_STATUS_CANT_RESOLVE:
+		case SOUP_STATUS_CANT_RESOLVE_PROXY:
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			cbdav->priv->opened = FALSE;
@@ -1669,6 +1675,8 @@ caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
 	/* Check the result */
 	if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
 		switch (message->status_code) {
+		case SOUP_STATUS_CANT_RESOLVE:
+		case SOUP_STATUS_CANT_RESOLVE_PROXY:
 		case SOUP_STATUS_CANT_CONNECT:
 		case SOUP_STATUS_CANT_CONNECT_PROXY:
 			cbdav->priv->opened = FALSE;
@@ -2572,14 +2580,35 @@ caldav_synch_slave_loop (gpointer data)
 		}
 
 		if (!cbdav->priv->opened) {
-			if (open_calendar_wrapper (cbdav, NULL, NULL, TRUE, &know_unreachable, NULL, NULL)) {
+			gchar *certificate_pem = NULL;
+			GTlsCertificateFlags certificate_errors = 0;
+			GError *local_error = NULL;
+
+			if (open_calendar_wrapper (cbdav, NULL, &local_error, TRUE, &know_unreachable, &certificate_pem, &certificate_errors)) {
 				cbdav->priv->opened = TRUE;
 				update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 				g_cond_signal (&cbdav->priv->cond);
 
 				cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
 				know_unreachable = FALSE;
+			} else {
+				ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+				GError *local_error2 = NULL;
+
+				if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+					reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+				}
+
+				if (!e_backend_credentials_required_sync (E_BACKEND (cbdav), reason, certificate_pem, certificate_errors,
+					local_error, NULL, &local_error2)) {
+					g_warning ("%s: Failed to call credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+				}
+
+				g_clear_error (&local_error2);
 			}
+
+			g_clear_error (&local_error);
+			g_free (certificate_pem);
 		}
 
 		if (cbdav->priv->opened) {
@@ -2910,6 +2939,28 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 }
 
 static gboolean
+caldav_was_ever_connected (ECalBackendCalDAV *cbdav)
+{
+	gboolean has_components;
+	GSList *uids;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
+
+	if (!cbdav->priv->store)
+		return FALSE;
+
+	uids = e_cal_backend_store_get_component_ids (cbdav->priv->store);
+
+	/* Assume the calendar was connected if it has any events stored;
+	   obviously, empty calendars will fail this check. */
+	has_components = uids != NULL;
+
+	g_slist_free_full (uids, (GDestroyNotify) e_cal_component_free_id);
+
+	return has_components;
+}
+
+static gboolean
 open_calendar_wrapper (ECalBackendCalDAV *cbdav,
 		       GCancellable *cancellable,
 		       GError **error,
@@ -2951,8 +3002,9 @@ open_calendar_wrapper (ECalBackendCalDAV *cbdav,
 				g_clear_error (&local_error);
 
 				*know_unreachable = TRUE;
-			} else {
-				/* this allows to open the calendar in read-only mode */
+			} else if (caldav_was_ever_connected (cbdav)) {
+				/* This allows to open the calendar in read-only mode, which can be done
+				   if it was ever connected to the server. */
 				g_clear_error (&local_error);
 				success = TRUE;
 			}

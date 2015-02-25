@@ -565,9 +565,30 @@ backend_get_destination_address (EBackend *backend,
                                  gchar **host,
                                  guint16 *port)
 {
-	/* default implementation returns FALSE, indicating
-	 * no remote destination being used for this backend */
-	return FALSE;
+	GSocketConnectable *connectable;
+	GNetworkAddress *address;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), FALSE);
+	g_return_val_if_fail (host != NULL, FALSE);
+	g_return_val_if_fail (port != NULL, FALSE);
+
+	connectable = e_backend_ref_connectable (backend);
+	if (!connectable)
+		return FALSE;
+
+	if (!G_IS_NETWORK_ADDRESS (connectable)) {
+		g_object_unref (connectable);
+		return FALSE;
+	}
+
+	address = G_NETWORK_ADDRESS (connectable);
+
+	*host = g_strdup (g_network_address_get_hostname (address));
+	*port = g_network_address_get_port (address);
+
+	g_object_unref (connectable);
+
+	return *host != NULL;
 }
 
 static void
