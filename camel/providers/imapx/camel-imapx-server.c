@@ -29,6 +29,8 @@
 #include <glib/gi18n-lib.h>
 #include <gio/gnetworking.h>
 
+#include <libical/ical.h>
+
 #ifndef G_OS_WIN32
 #include <glib-unix.h>
 #endif /* G_OS_WIN32 */
@@ -8586,6 +8588,7 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 		summary, message, NULL);
 	info->uid = camel_pstring_strdup (uid);
 	if (mi != NULL) {
+		struct icaltimetype icaltime;
 		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
 		const CamelFlag *flag;
 		const CamelTag *tag;
@@ -8611,8 +8614,20 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 			tag = tag->next;
 		}
 
+		if (date_time > 0) {
+			icaltime = icaltime_from_timet (date_time, FALSE);
+			if (!icaltime_is_valid_time (icaltime))
+				date_time = -1;
+		}
+
 		if (date_time <= 0)
 			date_time = camel_message_info_date_received (mi);
+
+		if (date_time > 0) {
+			icaltime = icaltime_from_timet (date_time, FALSE);
+			if (!icaltime_is_valid_time (icaltime))
+				date_time = -1;
+		}
 	}
 
 	g_free (uid);
