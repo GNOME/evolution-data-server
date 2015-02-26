@@ -1830,6 +1830,25 @@ imapx_server_ref_job (CamelIMAPXServer *imapx_server,
 	return job;
 }
 
+static gboolean
+imapx_has_expunge_command (CamelIMAPXServer *is,
+			   CamelIMAPXMailbox *mailbox)
+{
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXJob *job;
+
+	imapx_store = camel_imapx_server_ref_store (is);
+	if (!imapx_store)
+		return FALSE;
+
+	job = camel_imapx_store_ref_job (imapx_store, mailbox, IMAPX_JOB_EXPUNGE, NULL);
+
+	if (job)
+		camel_imapx_job_unref (job);
+
+	return job != NULL;
+}
+
 static void
 imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
                                 gchar *uid,
@@ -1837,7 +1856,6 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 {
 	CamelFolder *folder;
 	CamelIMAPXMailbox *mailbox;
-	CamelMessageInfo *mi;
 	guint32 messages;
 
 	g_mutex_lock (&is->priv->select_lock);
@@ -1857,14 +1875,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	if (is->priv->changes == NULL)
 		is->priv->changes = camel_folder_change_info_new ();
 
-	mi = camel_folder_summary_peek_loaded (folder->summary, uid);
-	if (mi) {
-		camel_folder_summary_remove (folder->summary, mi);
-		camel_message_info_unref (mi);
-	} else {
-		camel_folder_summary_remove_uid (folder->summary, uid);
-	}
-
+	camel_folder_summary_remove_uid (folder->summary, uid);
 	camel_folder_change_info_remove_uid (is->priv->changes, uid);
 
 	if (imapx_in_idle (is)) {
@@ -1930,7 +1941,8 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 	g_mutex_unlock (&is->priv->select_lock);
 
-	if (mailbox != NULL) {
+	/* Ignore EXPUNGE responses when there is an ongoing EXPUNGE job */
+	if (mailbox != NULL && !imapx_has_expunge_command (is, mailbox)) {
 		CamelFolder *folder;
 		gchar *uid;
 
@@ -1944,8 +1956,9 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 			imapx_expunge_uid_from_summary (is, uid, TRUE);
 
 		g_object_unref (folder);
-		g_object_unref (mailbox);
 	}
+
+	g_clear_object (&mailbox);
 
 	return TRUE;
 }
@@ -2043,7 +2056,8 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 	/* If the response is truly unsolicited (e.g. via NOTIFY)
 	 * then go ahead and emit the change notification now. */
-	if (camel_imapx_command_queue_is_empty (is->queue)) {
+	if (camel_imapx_command_queue_is_empty (is->queue) && is->priv->changes->uid_removed &&
+	    is->priv->changes->uid_removed->len >= 100) {
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		imapx_update_store_summary (folder);
 		camel_folder_changed (folder, is->priv->changes);
@@ -6588,22 +6602,13 @@ imapx_command_expunge_done (CamelIMAPXServer *is,
 
 			changes = camel_folder_change_info_new ();
 			for (i = 0; i < uids->len; i++) {
-				gchar *uid = uids->pdata[i];
-				CamelMessageInfo *mi;
-
-				mi = camel_folder_summary_peek_loaded (folder->summary, uid);
-				if (mi) {
-					camel_folder_summary_remove (folder->summary, mi);
-					camel_message_info_unref (mi);
-				} else {
-					camel_folder_summary_remove_uid (folder->summary, uid);
-				}
-
 				camel_folder_change_info_remove_uid (changes, uids->pdata[i]);
 				removed = g_list_prepend (removed, (gpointer) uids->pdata[i]);
 			}
 
+			camel_folder_summary_remove_uids (folder->summary, removed);
 			camel_folder_summary_save_to_db (folder->summary, NULL);
+
 			camel_folder_changed (folder, changes);
 			camel_folder_change_info_free (changes);
 
