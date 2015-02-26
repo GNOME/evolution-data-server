@@ -215,6 +215,9 @@ network_service_accept_certificate_cb (GTlsConnection *connection,
 	gchar *host;
 
 	session = camel_service_ref_session (CAMEL_SERVICE (service));
+	if (!session)
+		return FALSE;
+
 	settings = camel_service_ref_settings (CAMEL_SERVICE (service));
 
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
@@ -309,13 +312,15 @@ network_service_notify_host_reachable (CamelNetworkService *service)
 
 	session = camel_service_ref_session (CAMEL_SERVICE (service));
 
-	camel_session_idle_add (
-		session, G_PRIORITY_DEFAULT_IDLE,
-		network_service_notify_host_reachable_cb,
-		g_object_ref (service),
-		(GDestroyNotify) g_object_unref);
+	if (session) {
+		camel_session_idle_add (
+			session, G_PRIORITY_DEFAULT_IDLE,
+			network_service_notify_host_reachable_cb,
+			g_object_ref (service),
+			(GDestroyNotify) g_object_unref);
 
-	g_object_unref (session);
+		g_object_unref (session);
+	}
 }
 
 static void
@@ -415,6 +420,9 @@ network_service_update_host_reachable (CamelNetworkService *service)
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (service));
+	if (!session)
+		return;
+
 	if (!camel_session_get_online (session)) {
 		g_object_unref (session);
 		return;
