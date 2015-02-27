@@ -406,7 +406,6 @@ server_side_source_credentials_lookup_cb (GObject *source_object,
 	dbus_object = e_source_ref_dbus_object (E_SOURCE (data->source));
 	if (!dbus_object) {
 		e_named_parameters_free (credentials);
-		g_warn_if_fail (dbus_object != NULL);
 		reinvoke_credentials_required_data_free (data);
 		return;
 	}
@@ -414,8 +413,7 @@ server_side_source_credentials_lookup_cb (GObject *source_object,
 	dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
 	if (!dbus_source) {
 		e_named_parameters_free (credentials);
-		g_warn_if_fail (dbus_source != NULL);
-		g_object_unref (dbus_object);
+		g_clear_object (&dbus_object);
 		reinvoke_credentials_required_data_free (data);
 		return;
 	}
@@ -463,6 +461,9 @@ server_side_source_credentials_lookup_cb (GObject *source_object,
 			arg_dbus_error_message = data->arg_dbus_error_message;
 
 			if (!arg_dbus_error_name || !*arg_dbus_error_name) {
+				if (!error)
+					error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_FAILED, _("Unknown error"));
+
 				dbus_error_name = g_dbus_error_encode_gerror (error);
 				arg_dbus_error_name = dbus_error_name;
 				arg_dbus_error_message = error->message;
