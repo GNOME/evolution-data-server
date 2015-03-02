@@ -697,7 +697,9 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
 	const gchar *extension_name;
 
 	goa_mail = goa_object_get_mail (goa_object);
-	g_return_if_fail (goa_mail != NULL);
+	/* NULL, when the Mail part is disabled */
+	if (!goa_mail)
+		return;
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 	source_extension = e_source_get_extension (source, extension_name);
