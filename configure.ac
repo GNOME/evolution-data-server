@@ -634,18 +634,18 @@ AC_ARG_WITH([libdb],
 
 if test "x$with_libdb" != "xno" ; then
 	if test "x$with_libdb" != "xyes" ; then
-		DB_CFLAGS="-I$with_libdb/include"
-		DB_LIBS="-L$with_libdb/lib -ldb"
+		DB_CFLAGS="$CFLAGS -I$with_libdb/include"
+		DB_LIBS="$LIBS -L$with_libdb/lib -ldb"
 	else
 		if test -z "$DB_CFLAGS" -a -z "$DB_LIBS"; then
-			DB_CFLAGS=""
-			DB_LIBS="-ldb"
+			DB_CFLAGS="$CFLAGS"
+			DB_LIBS="$LIBS -ldb"
 		fi
 	fi
 
 	AC_MSG_CHECKING([Berkeley DB])
-	save_cflags=$CFLAGS; CFLAGS=$DB_CFLAGS
-	save_libs=$LIBS; LIBS="$DB_LIBS"
+	save_cflags=$CFLAGS; CFLAGS="$CFLAGS $DB_CFLAGS"
+	save_libs=$LIBS; LIBS="$LIBS $DB_LIBS"
 	AC_LINK_IFELSE([AC_LANG_PROGRAM(
 		[[#include <db.h>]],
 		[[db_create(NULL, NULL, 0)]])],
