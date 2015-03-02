@@ -1,3 +1,37 @@
+Evolution-Data-Server 3.15.91 2015-03-02
+----------------------------------------
+
+Bug Fixes:
+	Bug 726036 - Hard to know which password belongs to which account part (Milan Crha)
+	Bug 732018 - [IMAPx] Crash due to passing set GError to glib-networking ][ (Milan Crha)
+	Bug 659522 - [CalDAV] Show URI in generic connection error messages (Milan Crha)
+	Bug 744785 - [IMAPx] Check for correct Date before using it in APPEND (Milan Crha)
+	Bug 737974 - [IMAPx] Resource-expensive EXPUNGE command (Milan Crha)
+
+Miscellaneous:
+	Avoid crash under e_source_set_connection_status() (Milan Crha)
+	Load ESourceCredentialsProvider modules only once (Milan Crha)
+	Provide and use thread safe variants of g_object_bind_property*() functions (Milan Crha)
+	e_source_dup_secret_label: Fix compiler warning about printf format (Milan Crha)
+	Update devel-doc Since from 3.14 to 3.16 (Milan Crha)
+	Use recursive lock for camel_binding_* proxy functions (Milan Crha)
+	[CalDAV] Be able to open in offline mode when VPN is down (Milan Crha)
+	CamelNetworkService: Check for non-NULL session (Milan Crha)
+	Fix a crash in server_side_source_credentials_lookup_cb() (Milan Crha)
+	Sync version with GNOME 3.15 series (Milan Crha)
+
+Translations:
+	Kjartan Maraas (nb)
+	Chao-Hsiung Liao (zh_TW)
+	Dimitris Spingos (el)
+	Dušan Kazik (sk)
+	Daniel Mustieles (es)
+	Claude Paroz (fr)
+	Efstathios Iosifidis (el)
+	Balázs Úr (hu)
+	Aurimas Černius (lt)
+	Fran Dieguez (gl)
+
 Evolution-Data-Server 3.13.90 2015-02-16
 ----------------------------------------
 
