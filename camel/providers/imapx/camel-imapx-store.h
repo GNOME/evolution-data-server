@@ -131,10 +131,6 @@ struct _CamelIMAPXJob *
 						 CamelIMAPXMailbox *mailbox,
 						 guint32 job_type,
 						 const gchar *uid);
-void		camel_imapx_store_job_queue_lock
-						(CamelIMAPXStore *imapx_store);
-void		camel_imapx_store_job_queue_unlock
-						(CamelIMAPXStore *imapx_store);
 
 /* for debugging purposes only */
 void		camel_imapx_store_dump_queue_status

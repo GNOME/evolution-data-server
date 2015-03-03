@@ -55,27 +55,8 @@
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
-#define QUEUE_LOCK(x) G_STMT_START { \
-	CamelIMAPXStore *imapx_store = camel_imapx_server_ref_store ((x)); \
-	\
-	if (imapx_store) { \
-		camel_imapx_store_job_queue_lock (imapx_store); \
-		g_object_unref (imapx_store); \
-	} \
-	\
-	g_rec_mutex_lock (&(x)->queue_lock); \
-	} G_STMT_END
-
-#define QUEUE_UNLOCK(x) G_STMT_START { \
-	CamelIMAPXStore *imapx_store = camel_imapx_server_ref_store ((x)); \
-	\
-	g_rec_mutex_unlock (&(x)->queue_lock); \
-	\
-	if (imapx_store) { \
-		camel_imapx_store_job_queue_unlock (imapx_store); \
-		g_object_unref (imapx_store); \
-	} \
-	} G_STMT_END
+#define QUEUE_LOCK(x) g_rec_mutex_lock (&(x)->queue_lock)
+#define QUEUE_UNLOCK(x) g_rec_mutex_unlock (&(x)->queue_lock)
 
 /* Try pipelining fetch requests, 'in bits' */
 #define MULTI_SIZE (32768 * 8)
