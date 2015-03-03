@@ -1025,8 +1025,7 @@ static void
 imapx_unregister_job (CamelIMAPXServer *is,
                       CamelIMAPXJob *job)
 {
-	if (!job->noreply)
-		camel_imapx_job_done (job);
+	camel_imapx_job_done (job);
 
 	QUEUE_LOCK (is);
 
@@ -1045,10 +1044,17 @@ imapx_submit_job (CamelIMAPXServer *is,
                   CamelIMAPXJob *job,
                   GError **error)
 {
+	gboolean success;
+
 	if (!imapx_register_job (is, job, error))
 		return FALSE;
 
-	return camel_imapx_job_run (job, is, error);
+	success = camel_imapx_job_run (job, is, error);
+
+	if (!success)
+		imapx_unregister_job (is, job);
+
+	return success;
 }
 
 static CamelFolder *
@@ -8383,6 +8389,8 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	if (registered && camel_imapx_job_run (job, is, error))
 		stream = camel_stream_new (data->stream);
+	else if (registered)
+		imapx_unregister_job (is, job);
 
 	camel_imapx_job_unref (job);
 
@@ -8759,6 +8767,8 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	if (registered && camel_imapx_job_run (job, is, error)) {
 		changes = data->changes;
 		data->changes = NULL;
+	} else if (registered) {
+		imapx_unregister_job (is, job);
 	}
 
 	if (registered)
@@ -9096,6 +9106,9 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 	success = registered && camel_imapx_job_run (job, is, error);
 
+	if (!success && registered)
+		imapx_unregister_job (is, job);
+
 	if (job_type == IMAPX_JOB_SYNC_CHANGES && registered)
 		camel_imapx_mailbox_unlock_update (mailbox);
 
@@ -9159,6 +9172,9 @@ camel_imapx_server_expunge (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 
 	success = registered && camel_imapx_job_run (job, is, error);
+
+	if (!success && registered)
+		imapx_unregister_job (is, job);
 
 	camel_imapx_job_unref (job);
 
