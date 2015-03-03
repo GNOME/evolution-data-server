@@ -13,22 +13,23 @@
 # Fran Diéguez <frandieguez@gnome.org>, 2009, 2010, 2011, 2012.
 # Leandro Regueiro <leandro.regueiro@gmail.com>, 2012.
 # Fran Dieguez <frandieguez@gnome.org>, 2012, 2013, 2014, 2015.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-28 16:10+0100\n"
-"PO-Revision-Date: 2015-02-28 16:15+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
+"=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2015-03-03 17:33+0000\n"
+"PO-Revision-Date: 2015-03-03 23:51+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
-"Language-Team: Galician <>\n"
+"Language-Team: gnome-l10n-gl@gnome.org\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Virtaal 0.7.1\n"
 "X-Poedit-Language: Galician\n"
+"X-Project-Style: gnome\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -143,8 +144,8 @@ msgstr "Non foi posíbel renomear a base de datos antiga de %s a %s: %s"
 #: ../calendar/libecal/e-cal-client.c:6734
 #: ../calendar/libecal/e-cal-client.c:6956
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4849
-#: ../camel/providers/imapx/camel-imapx-server.c:4858
+#: ../camel/providers/imapx/camel-imapx-server.c:4855
+#: ../camel/providers/imapx/camel-imapx-server.c:4864
 #: ../libebackend/e-server-side-source.c:465 ../libedataserver/e-client.c:187
 msgid "Unknown error"
 msgstr "Erro descoñecido"
@@ -1481,13 +1482,15 @@ msgstr "Tempo: treboada"
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:329
 #, c-format
-msgid "%.1f ےF"
+#| msgid "%.1f ےF"
+msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../calendar/backends/weather/e-cal-backend-weather.c:332
 #, c-format
-msgid "%.1f ےC"
+#| msgid "%.1f ےC"
+msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
@@ -2766,7 +2769,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "O GType rexistrado non é válido para o protocolo «%s»"
 
 #: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4799
+#: ../camel/providers/imapx/camel-imapx-server.c:4805
 #: ../camel/providers/pop3/camel-pop3-store.c:309
 #: ../camel/providers/pop3/camel-pop3-store.c:764
 #: ../camel/providers/smtp/camel-smtp-transport.c:544
@@ -3260,164 +3263,164 @@ msgstr "Para ler e almacenar correo en servidores IMAP."
 msgid "Not authenticated"
 msgstr "Non autenticado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1738
+#: ../camel/providers/imapx/camel-imapx-server.c:1744
 msgid "Server disconnected"
 msgstr "Servidor desconectado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2246
+#: ../camel/providers/imapx/camel-imapx-server.c:2252
 msgid "Error writing to cache stream"
 msgstr "Produciuse un erro ao escribir ao fluxo da caché"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3634
+#: ../camel/providers/imapx/camel-imapx-server.c:3640
 msgid "Error performing IDLE"
 msgstr "Produciuse un erro ao estar inactivo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4640
+#: ../camel/providers/imapx/camel-imapx-server.c:4646
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Non foi posíbel realizar a conexión co servidor IMAP %s en modo seguro: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4641
+#: ../camel/providers/imapx/camel-imapx-server.c:4647
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "O STARTTLS non é compatíbel"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4701
+#: ../camel/providers/imapx/camel-imapx-server.c:4707
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Produciuse un erro ao conectar co servidor IMAP %s en modo seguro:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4788
+#: ../camel/providers/imapx/camel-imapx-server.c:4794
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "O servidor IMAP %s non permite a autenticación %s "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4818
+#: ../camel/providers/imapx/camel-imapx-server.c:4824
 #: ../camel/providers/nntp/camel-nntp-store.c:393
 #: ../camel/providers/nntp/camel-nntp-store.c:530
 msgid "Cannot authenticate without a username"
 msgstr "Non é posíbel autenticar sen un nome de usuario"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4827
+#: ../camel/providers/imapx/camel-imapx-server.c:4833
 #: ../camel/providers/nntp/camel-nntp-store.c:539
 #: ../camel/providers/pop3/camel-pop3-store.c:676
 #: ../camel/providers/pop3/camel-pop3-store.c:706
 msgid "Authentication password not available"
 msgstr "O contrasinal de autenticación non está dispoñíbel"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5063
-#: ../camel/providers/imapx/camel-imapx-server.c:5122
+#: ../camel/providers/imapx/camel-imapx-server.c:5069
+#: ../camel/providers/imapx/camel-imapx-server.c:5128
 msgid "Error fetching message"
 msgstr "Produciuse un erro ao obter a mensaxe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5115
+#: ../camel/providers/imapx/camel-imapx-server.c:5121
 msgid "Failed to close the tmp stream"
 msgstr "Produciuse un erro ao pechar o fluxo temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5151
+#: ../camel/providers/imapx/camel-imapx-server.c:5157
 msgid "Failed to copy the tmp file"
 msgstr "Produciuse un erro ao copiar o ficheiro temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5292
+#: ../camel/providers/imapx/camel-imapx-server.c:5298
 msgid "Error moving messages"
 msgstr "Produciuse un erro ao mover as mensaxes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5296
+#: ../camel/providers/imapx/camel-imapx-server.c:5302
 msgid "Error copying messages"
 msgstr "Produciuse un erro ao copiar as mensaxes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5518
+#: ../camel/providers/imapx/camel-imapx-server.c:5524
 msgid "Error appending message"
 msgstr "Produciuse un erro ao engadir a mensaxe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5754
+#: ../camel/providers/imapx/camel-imapx-server.c:5760
 msgid "Error fetching message headers"
 msgstr "Produciuse un erro ao obter as cabeceiras das mensaxes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5921
+#: ../camel/providers/imapx/camel-imapx-server.c:5927
 msgid "Error retrieving message"
 msgstr "Produciuse un erro ao obter a mensaxe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6055
-#: ../camel/providers/imapx/camel-imapx-server.c:6284
+#: ../camel/providers/imapx/camel-imapx-server.c:6061
+#: ../camel/providers/imapx/camel-imapx-server.c:6290
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Recollendo a información de resumo para as mensaxes novas en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6107
+#: ../camel/providers/imapx/camel-imapx-server.c:6113
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Buscando mensaxes modificadas en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6159
+#: ../camel/providers/imapx/camel-imapx-server.c:6165
 msgid "Error fetching new messages"
 msgstr "Produciuse un erro ao obter as mensaxes novas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6432
+#: ../camel/providers/imapx/camel-imapx-server.c:6438
 msgid "Error refreshing folder"
 msgstr "Produciuse un erro ao actualizar o cartafol"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6582
+#: ../camel/providers/imapx/camel-imapx-server.c:6588
 msgid "Error expunging message"
 msgstr "Produciuse un erro ao compactar a mensaxe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6688
-#: ../camel/providers/imapx/camel-imapx-server.c:6713
+#: ../camel/providers/imapx/camel-imapx-server.c:6694
+#: ../camel/providers/imapx/camel-imapx-server.c:6719
 msgid "Error fetching folders"
 msgstr "Produciuse un erro ao obter os cartafoles"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6793
+#: ../camel/providers/imapx/camel-imapx-server.c:6799
 msgid "Error creating folder"
 msgstr "Produciuse un erro ao crear o cartafol"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6845
+#: ../camel/providers/imapx/camel-imapx-server.c:6851
 msgid "Error deleting folder"
 msgstr "Produciuse un erro ao eliminar o cartafol"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6921
+#: ../camel/providers/imapx/camel-imapx-server.c:6927
 msgid "Error renaming folder"
 msgstr "Produciuse un erro ao renomear o cartafol"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6995
+#: ../camel/providers/imapx/camel-imapx-server.c:7001
 msgid "Error subscribing to folder"
 msgstr "Produciuse un erro ao subscribirse aos cartafoles"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7061
+#: ../camel/providers/imapx/camel-imapx-server.c:7067
 msgid "Error unsubscribing from folder"
 msgstr "Produciuse un erro ao desubscribirse do cartafol"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7123
+#: ../camel/providers/imapx/camel-imapx-server.c:7129
 msgid "Error retrieving quota information"
 msgstr "Produciuse un erro ao obter a información da cota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7175
+#: ../camel/providers/imapx/camel-imapx-server.c:7181
 msgid "Search failed"
 msgstr "A busca fallou"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7237
+#: ../camel/providers/imapx/camel-imapx-server.c:7243
 msgid "Error performing NOOP"
 msgstr "Produciuse un erro ao realizar NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7344
+#: ../camel/providers/imapx/camel-imapx-server.c:7350
 msgid "Error syncing changes"
 msgstr "Produciuse un erro ao sincronizar os cambios"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8341
+#: ../camel/providers/imapx/camel-imapx-server.c:8347
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Non é posíbel obter a mensaxe co ID de mensaxe %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8342
+#: ../camel/providers/imapx/camel-imapx-server.c:8348
 msgid "No such message available."
 msgstr "A mensaxe non está dispoñíbel."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8563
-#: ../camel/providers/imapx/camel-imapx-server.c:8584
+#: ../camel/providers/imapx/camel-imapx-server.c:8571
+#: ../camel/providers/imapx/camel-imapx-server.c:8592
 msgid "Cannot create spool file: "
 msgstr "Non é posíbel crear o ficheiro de cola de correo: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9405
+#: ../camel/providers/imapx/camel-imapx-server.c:9421
 msgid "IMAP server does not support quotas"
 msgstr "O servidor IMAP non permite cotas"
 
@@ -5396,7 +5399,7 @@ msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
 "Produciuse un erro ao buscar «ASUrl» e «AOBUrl» na resposta da autodetección"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1252
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1254
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5405,7 +5408,7 @@ msgstr ""
 "Non foi posíbel atopar unha conta correspondente no servizo org.gnome."
 "OnlineAccounts desde a que obter un token de acceso para «%s»"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1282
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1284
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Produciuse un erro ao obter un token de acceso para «%s»:"
