@@ -182,6 +182,7 @@ camel_imapx_job_wait (CamelIMAPXJob *job,
 {
 	CamelIMAPXRealJob *real_job;
 	GCancellable *cancellable;
+	gulong cancel_id = 0;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
@@ -189,12 +190,22 @@ camel_imapx_job_wait (CamelIMAPXJob *job,
 	real_job = (CamelIMAPXRealJob *) job;
 	cancellable = camel_imapx_job_get_cancellable (job);
 
+	if (G_IS_CANCELLABLE (cancellable))
+		cancel_id = g_cancellable_connect (
+			cancellable,
+			G_CALLBACK (imapx_job_cancelled_cb),
+			camel_imapx_job_ref (job),
+			(GDestroyNotify) camel_imapx_job_unref);
+
 	g_mutex_lock (&real_job->done_mutex);
-	while (!real_job->done_flag)
+	while (!real_job->done_flag && !g_cancellable_is_cancelled (cancellable))
 		g_cond_wait (
 			&real_job->done_cond,
 			&real_job->done_mutex);
 	g_mutex_unlock (&real_job->done_mutex);
+
+	if (cancel_id > 0)
+		g_cancellable_disconnect (cancellable, cancel_id);
 
 	/* Cancellation takes priority over other errors. */
 	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
@@ -233,7 +244,6 @@ camel_imapx_job_run (CamelIMAPXJob *job,
                      GError **error)
 {
 	GCancellable *cancellable;
-	gulong cancel_id = 0;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
@@ -245,20 +255,10 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
 
-	if (G_IS_CANCELLABLE (cancellable))
-		cancel_id = g_cancellable_connect (
-			cancellable,
-			G_CALLBACK (imapx_job_cancelled_cb),
-			camel_imapx_job_ref (job),
-			(GDestroyNotify) camel_imapx_job_unref);
-
 	success = job->start (job, is, cancellable, error);
 
 	if (success && !job->noreply)
 		success = camel_imapx_job_wait (job, error);
-
-	if (cancel_id > 0)
-		g_cancellable_disconnect (cancellable, cancel_id);
 
 	return success;
 }

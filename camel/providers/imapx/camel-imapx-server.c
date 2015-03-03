@@ -55,8 +55,27 @@
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
-#define QUEUE_LOCK(x) (g_rec_mutex_lock(&(x)->queue_lock))
-#define QUEUE_UNLOCK(x) (g_rec_mutex_unlock(&(x)->queue_lock))
+#define QUEUE_LOCK(x) G_STMT_START { \
+	CamelIMAPXStore *imapx_store = camel_imapx_server_ref_store ((x)); \
+	\
+	if (imapx_store) { \
+		camel_imapx_store_job_queue_lock (imapx_store); \
+		g_object_unref (imapx_store); \
+	} \
+	\
+	g_rec_mutex_lock (&(x)->queue_lock); \
+	} G_STMT_END
+
+#define QUEUE_UNLOCK(x) G_STMT_START { \
+	CamelIMAPXStore *imapx_store = camel_imapx_server_ref_store ((x)); \
+	\
+	g_rec_mutex_unlock (&(x)->queue_lock); \
+	\
+	if (imapx_store) { \
+		camel_imapx_store_job_queue_unlock (imapx_store); \
+		g_object_unref (imapx_store); \
+	} \
+	} G_STMT_END
 
 /* Try pipelining fetch requests, 'in bits' */
 #define MULTI_SIZE (32768 * 8)
@@ -5162,23 +5181,54 @@ imapx_command_fetch_message_done (CamelIMAPXServer *is,
 		g_free (tmp_filename);
 	}
 
-	/* Delete the 'tmp' file only if the operation wasn't cancelled. It's because
+	/* Delete the 'tmp' file only if the operation succeeded. It's because
 	   cancelled operations end before they are properly finished (IMAP-protocol speaking),
 	   thus if any other GET_MESSAGE operation was waiting for this job, then it
 	   realized that the message was not downloaded and opened its own "tmp" file, but
 	   of the same name, thus this remove would drop file which could be used
 	   by a different GET_MESSAGE job. */
-	if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+	if (!local_error && !g_cancellable_is_cancelled (cancellable))
 		camel_data_cache_remove (data->message_cache, "tmp", data->uid, NULL);
 
 	/* Avoid possible use-after-free when the imapx_unregister_job() can
 	   also free the 'job' structure. */
-	if (local_error != NULL) {
-		camel_imapx_job_take_error (job, local_error);
-		local_error = NULL;
-	}
+	camel_imapx_job_ref (job);
 
 	imapx_unregister_job (is, job);
+
+	if (local_error != NULL) {
+		CamelIMAPXJob *pending_job;
+
+		/* Give a chance to other threads. */
+		g_thread_yield ();
+
+		pending_job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_GET_MESSAGE, data->uid);
+		if (pending_job != NULL) {
+			GIOStream *cache_stream;
+
+			/* Wait for the job to finish. */
+			camel_imapx_job_wait (pending_job, NULL);
+			camel_imapx_job_unref (pending_job);
+
+			/* Disregard errors here.  If we failed to retrieve the
+			 * message from cache (implying the job we were waiting
+			 * on failed or got cancelled), we'll just re-fetch it. */
+			cache_stream = camel_data_cache_get (data->message_cache, "cur", data->uid, NULL);
+			if (cache_stream != NULL) {
+				g_clear_error (&local_error);
+
+				g_clear_object (&data->stream);
+				data->stream = cache_stream;
+			}
+		}
+
+		if (local_error) {
+			camel_imapx_job_take_error (job, local_error);
+			local_error = NULL;
+		}
+	}
+
+	camel_imapx_job_unref (job);
 
 exit:
 	if (local_error != NULL)
@@ -8313,9 +8363,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 	GetMessageData *data;
 	gboolean registered;
 
-	job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_GET_MESSAGE, message_uid);
-
-	if (job != NULL) {
+	while (job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_GET_MESSAGE, message_uid), job != NULL) {
 		/* Promote the existing GET_MESSAGE
 		 * job's priority if ours is higher. */
 		if (pri > job->pri)
@@ -8331,13 +8379,25 @@ imapx_server_get_message (CamelIMAPXServer *is,
 		cache_stream = camel_data_cache_get (
 			message_cache, "cur", message_uid, NULL);
 		if (cache_stream != NULL) {
-			stream = camel_stream_new (cache_stream);
+			/* Return new file stream, instead of a DataCache's to not fight
+			   on its content and position with other jobs, if any. */
+			gchar *filename = camel_data_cache_get_filename (message_cache, "cur", message_uid);
+			stream = camel_stream_fs_new_with_name (filename, O_RDONLY, 0, NULL);
+			g_free (filename);
 			g_object_unref (cache_stream);
-			return stream;
+
+			if (stream)
+				return stream;
 		}
 	}
 
 	QUEUE_LOCK (is);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		QUEUE_UNLOCK (is);
+
+		return NULL;
+	}
 
 	mi = camel_folder_summary_get (summary, message_uid);
 	if (mi == NULL) {

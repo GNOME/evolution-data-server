@@ -118,7 +118,7 @@ struct _CamelIMAPXServer {
 
 	/* Current command/work queue.  All commands are stored in one list,
 	 * all the time, so they can be cleaned up in exception cases */
-	GRecMutex queue_lock;
+	GRecMutex queue_lock; /* use in combination with camel_imapx_store_job_queue_lock()/_unlock() */
 	CamelIMAPXCommand *literal;
 	CamelIMAPXCommandQueue *queue;
 	CamelIMAPXCommandQueue *active;

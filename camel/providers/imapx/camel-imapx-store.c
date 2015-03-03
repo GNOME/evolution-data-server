@@ -64,6 +64,8 @@ struct _CamelIMAPXStorePrivate {
 	CamelIMAPXServer *connecting_server;
 	gboolean is_concurrent_connection;
 
+	GRecMutex job_queue_lock;
+
 	GMutex server_lock;
 
 	GHashTable *quota_info;
@@ -703,8 +705,8 @@ imapx_store_finalize (GObject *object)
 
 	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (object);
 
+	g_rec_mutex_clear (&priv->job_queue_lock);
 	g_mutex_clear (&priv->get_finfo_lock);
-
 	g_mutex_clear (&priv->server_lock);
 
 	g_hash_table_destroy (priv->quota_info);
@@ -2669,6 +2671,7 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 
 	store->priv->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
 
+	g_rec_mutex_init (&store->priv->job_queue_lock);
 	g_mutex_init (&store->priv->get_finfo_lock);
 
 	g_mutex_init (&store->priv->namespaces_lock);
@@ -3461,6 +3464,22 @@ camel_imapx_store_ref_job (CamelIMAPXStore *imapx_store,
 	g_list_free_full (servers, g_object_unref);
 
 	return job;
+}
+
+void
+camel_imapx_store_job_queue_lock (CamelIMAPXStore *imapx_store)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+
+	g_rec_mutex_lock (&imapx_store->priv->job_queue_lock);
+}
+
+void
+camel_imapx_store_job_queue_unlock (CamelIMAPXStore *imapx_store)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
+
+	g_rec_mutex_unlock (&imapx_store->priv->job_queue_lock);
 }
 
 /* for debugging purposes only */
