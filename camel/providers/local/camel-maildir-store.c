@@ -202,10 +202,26 @@ maildir_store_get_folder_sync (CamelStore *store,
 	CamelLocalSettings *local_settings;
 	CamelSettings *settings;
 	CamelService *service;
+	CamelMaildirStore *maildir_store;
 	gchar *name, *tmp, *cur, *new, *dir_name;
 	gchar *path;
 	struct stat st;
 	CamelFolder *folder = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_MAILDIR_STORE (store), NULL);
+
+	maildir_store = CAMEL_MAILDIR_STORE (store);
+
+	if (!maildir_store->priv->already_migrated &&
+	    maildir_store->priv->can_escape_dots) {
+		CamelFolderInfo *folder_info;
+
+		/* Not interested in any errors here, this is to invoke folder
+		   content migration only. */
+		folder_info = camel_store_get_folder_info_sync (store, NULL, CAMEL_STORE_FOLDER_INFO_RECURSIVE, cancellable, NULL);
+		if (folder_info)
+			camel_folder_info_free (folder_info);
+	}
 
 	service = CAMEL_SERVICE (store);
 
