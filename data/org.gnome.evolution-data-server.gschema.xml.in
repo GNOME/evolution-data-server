@@ -1,0 +1,8 @@
+<schemalist>
+  <schema gettext-domain="evolution-data-server" id="org.gnome.evolution-data-server" path="/org/gnome/evolution-data-server/">
+    <key name="migrated" type="b">
+      <default>false</default>
+      <_summary>Whether the migration of old setting was already done</_summary>
+    </key>
+  </schema>
+</schemalist>

@@ -2,6 +2,7 @@ NULL =
 
 gsettings_SCHEMAS = \
 	org.gnome.Evolution.DefaultSources.gschema.xml \
+	org.gnome.evolution-data-server.gschema.xml \
 	org.gnome.evolution-data-server.calendar.gschema.xml \
 	org.gnome.evolution-data-server.addressbook.gschema.xml \
 	org.gnome.evolution.shell.network-config.gschema.xml \
