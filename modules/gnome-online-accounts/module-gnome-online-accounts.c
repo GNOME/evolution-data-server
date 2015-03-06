@@ -694,7 +694,10 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
 	GoaMail *goa_mail;
 	ESourceExtension *source_extension;
 	EServerSideSource *server_side_source;
+	ESourceMailSubmission *mail_submission;
+	ESourceMailComposition *mail_composition;
 	const gchar *extension_name;
+	gchar *tmp;
 
 	goa_mail = goa_object_get_mail (goa_object);
 	/* NULL, when the Mail part is disabled */
@@ -710,6 +713,20 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
 		G_BINDING_SYNC_CREATE);
 
 	g_object_unref (goa_mail);
+
+	/* Set default Sent folder to the On This Computer/Sent */
+	mail_submission = e_source_get_extension (source, E_SOURCE_EXTENSION_MAIL_SUBMISSION);
+	tmp = e_source_mail_submission_dup_sent_folder (mail_submission);
+	if (!tmp || !*tmp)
+		e_source_mail_submission_set_sent_folder (mail_submission, "folder://local/Sent");
+	g_free (tmp);
+
+	/* Set default Drafts folder to the On This Computer/Drafts */
+	mail_composition = e_source_get_extension (source, E_SOURCE_EXTENSION_MAIL_COMPOSITION);
+	tmp = e_source_mail_composition_dup_drafts_folder (mail_composition);
+	if (!tmp || !*tmp)
+		e_source_mail_composition_set_drafts_folder (mail_composition, "folder://local/Drafts");
+	g_free (tmp);
 
 	/* Clients may change the source by may not remove it. */
 	server_side_source = E_SERVER_SIDE_SOURCE (source);
