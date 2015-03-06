@@ -96,6 +96,42 @@ signon_session_password_state_changed_cb (SignonAuthSession *signon_auth_session
 	e_signon_session_password_msg (source, "(signond) %s", message);
 }
 
+static ESource *
+e_uoa_signon_session_password_ref_credentials_source (ESourceCredentialsProvider *provider,
+						      ESource *source)
+{
+	ESource *adept, *cred_source = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER (provider), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	adept = g_object_ref (source);
+
+	while (adept && !e_source_has_extension (adept, E_SOURCE_EXTENSION_UOA)) {
+		ESource *parent;
+
+		if (!e_source_get_parent (adept)) {
+			break;
+		}
+
+		parent = e_source_credentials_provider_ref_source (provider, e_source_get_parent (adept));
+
+		g_clear_object (&adept);
+		adept = parent;
+	}
+
+	if (adept && e_source_has_extension (adept, E_SOURCE_EXTENSION_UOA)) {
+		cred_source = g_object_ref (adept);
+	}
+
+	g_clear_object (&adept);
+
+	if (!cred_source)
+		cred_source = e_source_credentials_provider_ref_credentials_source (provider, source);
+
+	return cred_source;
+}
+
 static AgAccountService *
 signon_session_password_new_account_service (ESourceCredentialsProviderImpl *provider_impl,
                                              ESource *source,
@@ -118,7 +154,7 @@ signon_session_password_new_account_service (ESourceCredentialsProviderImpl *pro
 
 		provider = e_source_credentials_provider_impl_get_provider (provider_impl);
 
-		cred_source = e_source_credentials_provider_ref_credentials_source (provider, source);
+		cred_source = e_uoa_signon_session_password_ref_credentials_source (provider, source);
 		if (cred_source && e_source_has_extension (cred_source, E_SOURCE_EXTENSION_UOA))
 			extension = e_source_get_extension (cred_source, E_SOURCE_EXTENSION_UOA);
 	}
@@ -166,7 +202,7 @@ e_signon_session_password_can_process (ESourceCredentialsProviderImpl *provider_
 	if (!can_process) {
 		ESource *cred_source;
 
-		cred_source = e_source_credentials_provider_ref_credentials_source (
+		cred_source = e_uoa_signon_session_password_ref_credentials_source (
 			e_source_credentials_provider_impl_get_provider (provider_impl),
 			source);
 
