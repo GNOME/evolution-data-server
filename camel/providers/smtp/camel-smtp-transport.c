@@ -646,9 +646,18 @@ smtp_transport_authenticate_sync (CamelService *service,
 
 	/* If our authentication data was rejected, destroy the
 	 * password so that the user gets prompted to try again. */
-	if (strncmp (respbuf, "535", 3) == 0)
+	if (strncmp (respbuf, "535", 3) == 0) {
 		result = CAMEL_AUTHENTICATION_REJECTED;
-	else if (strncmp (respbuf, "235", 3) == 0)
+
+		/* Read the continuation, if the server returned it. */
+		while (respbuf && respbuf[3] == '-') {
+			g_free (respbuf);
+			respbuf = camel_stream_buffer_read_line (
+				CAMEL_STREAM_BUFFER (transport->istream),
+				cancellable, error);
+			d (fprintf (stderr, "[SMTP] received: %s\n", respbuf ? respbuf : "(null)"));
+		}
+	} else if (strncmp (respbuf, "235", 3) == 0)
 		result = CAMEL_AUTHENTICATION_ACCEPTED;
 	/* Catch any other errors. */
 	else {
