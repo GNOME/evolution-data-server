@@ -32,18 +32,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-02-27 05:33+0000\n"
-"PO-Revision-Date: 2015-02-27 11:47+0200\n"
-"Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-"
+"server&keywords=I18N+L10N&component=Misc.\n"
+"POT-Creation-Date: 2015-03-11 05:34+0000\n"
+"PO-Revision-Date: 2015-03-11 14:24+0200\n"
+"Last-Translator: Tom Tryfonidis <tomtryf@gmail.com>\n"
 "Language-Team: Greek, Modern (1453-) <opensuse-translation-el@opensuse.org>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"X-Generator: Poedit 1.7.4\n"
 "X-Project-Style: gnome\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
@@ -83,8 +83,7 @@ msgstr "Αναζήτηση..."
 #: ../addressbook/backends/file/e-book-backend-file.c:1284
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
-msgstr ""
-"Προσπάθεια για τροποποίηση της επαφής '%s' εκτός της αναθεώρησης συγχρονισμού"
+msgstr "Προσπάθεια για τροποποίηση της επαφής '%s' εκτός της αναθεώρησης συγχρονισμού"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1475
 #: ../addressbook/backends/file/e-book-backend-file.c:1560
@@ -122,46 +121,30 @@ msgstr "Αποτυχία μετονομασίας της παλιάς βάσης
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:381
 #: ../addressbook/backends/webdav/e-book-backend-webdav.c:849
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:49
-#: ../addressbook/libebook-contacts/e-phone-number.c:56
-#: ../addressbook/libebook/e-book.c:1078
-#: ../addressbook/libebook/e-book-client.c:2131
-#: ../addressbook/libebook/e-book-client.c:2303
-#: ../addressbook/libebook/e-book-client.c:2516
-#: ../addressbook/libebook/e-book-client.c:2647
-#: ../addressbook/libebook/e-book-client.c:2806
-#: ../addressbook/libebook/e-book-client.c:2940
-#: ../addressbook/libebook/e-book-client.c:3071
-#: ../addressbook/libebook/e-book-client.c:3229
-#: ../addressbook/libebook/e-book-client.c:3424
-#: ../addressbook/libebook/e-book-client.c:3642
+#: ../addressbook/libebook-contacts/e-phone-number.c:56 ../addressbook/libebook/e-book.c:1078
+#: ../addressbook/libebook/e-book-client.c:2131 ../addressbook/libebook/e-book-client.c:2303
+#: ../addressbook/libebook/e-book-client.c:2516 ../addressbook/libebook/e-book-client.c:2647
+#: ../addressbook/libebook/e-book-client.c:2806 ../addressbook/libebook/e-book-client.c:2940
+#: ../addressbook/libebook/e-book-client.c:3071 ../addressbook/libebook/e-book-client.c:3229
+#: ../addressbook/libebook/e-book-client.c:3424 ../addressbook/libebook/e-book-client.c:3642
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:584
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:615
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:632
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:270
-#: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:276
-#: ../calendar/libecal/e-cal-client.c:3479
-#: ../calendar/libecal/e-cal-client.c:3652
-#: ../calendar/libecal/e-cal-client.c:3916
-#: ../calendar/libecal/e-cal-client.c:4157
-#: ../calendar/libecal/e-cal-client.c:4347
-#: ../calendar/libecal/e-cal-client.c:4539
-#: ../calendar/libecal/e-cal-client.c:4709
-#: ../calendar/libecal/e-cal-client.c:4878
-#: ../calendar/libecal/e-cal-client.c:5081
-#: ../calendar/libecal/e-cal-client.c:5231
-#: ../calendar/libecal/e-cal-client.c:5425
-#: ../calendar/libecal/e-cal-client.c:5578
-#: ../calendar/libecal/e-cal-client.c:5795
-#: ../calendar/libecal/e-cal-client.c:5949
-#: ../calendar/libecal/e-cal-client.c:6175
-#: ../calendar/libecal/e-cal-client.c:6371
-#: ../calendar/libecal/e-cal-client.c:6734
-#: ../calendar/libecal/e-cal-client.c:6956
-#: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4849
-#: ../camel/providers/imapx/camel-imapx-server.c:4858
-#: ../libedataserver/e-client.c:187
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:270 ../calendar/libecal/e-cal.c:2334
+#: ../calendar/libecal/e-cal-client.c:276 ../calendar/libecal/e-cal-client.c:3479
+#: ../calendar/libecal/e-cal-client.c:3652 ../calendar/libecal/e-cal-client.c:3916
+#: ../calendar/libecal/e-cal-client.c:4157 ../calendar/libecal/e-cal-client.c:4347
+#: ../calendar/libecal/e-cal-client.c:4539 ../calendar/libecal/e-cal-client.c:4709
+#: ../calendar/libecal/e-cal-client.c:4878 ../calendar/libecal/e-cal-client.c:5081
+#: ../calendar/libecal/e-cal-client.c:5231 ../calendar/libecal/e-cal-client.c:5425
+#: ../calendar/libecal/e-cal-client.c:5578 ../calendar/libecal/e-cal-client.c:5795
+#: ../calendar/libecal/e-cal-client.c:5949 ../calendar/libecal/e-cal-client.c:6175
+#: ../calendar/libecal/e-cal-client.c:6371 ../calendar/libecal/e-cal-client.c:6734
+#: ../calendar/libecal/e-cal-client.c:6956 ../camel/providers/imapx/camel-imapx-command.c:645
+#: ../camel/providers/imapx/camel-imapx-server.c:4855
+#: ../camel/providers/imapx/camel-imapx-server.c:4864
+#: ../libebackend/e-server-side-source.c:465 ../libedataserver/e-client.c:187
 msgid "Unknown error"
 msgstr "Άγνωστο σφάλμα"
 
@@ -944,8 +927,7 @@ msgstr "Η βιβλιοθήκη δημιουργήθηκε χωρίς υποστ
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:43
 msgid "The phone number parser reported a yet unknown error code."
-msgstr ""
-"Ο αναλυτής αριθμού τηλεφώνου ανέφερε έναν άγνωστο ακόμα κωδικό σφάλματος."
+msgstr "Ο αναλυτής αριθμού τηλεφώνου ανέφερε έναν άγνωστο ακόμα κωδικό σφάλματος."
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:45
 msgid "Not a phone number"
@@ -956,11 +938,9 @@ msgid "Invalid country calling code"
 msgstr "Άκυρος κωδικός κλήσης χώρας"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:49
-msgid ""
-"Remaining text after the country calling code is too short for a phone number"
+msgid "Remaining text after the country calling code is too short for a phone number"
 msgstr ""
-"Το κείμενο που παραμένει μετά τον κωδικό κλήσης είναι υπερβολικά μικρό για "
-"αριθμό τηλεφώνου"
+"Το κείμενο που παραμένει μετά τον κωδικό κλήσης είναι υπερβολικά μικρό για αριθμό τηλεφώνου"
 
 #: ../addressbook/libebook-contacts/e-phone-number.c:51
 msgid "Text is too short for a phone number"
@@ -980,10 +960,8 @@ msgstr "Άγνωστη ιδιότητα βιβλίου '%s'"
 msgid "Cannot change value of book property '%s'"
 msgstr "Αδύνατη η αλλαγή τιμής της ιδιότητας του βιβλίου '%s'"
 
-#: ../addressbook/libebook/e-book-client.c:1390
-#: ../addressbook/libebook/e-book-client.c:1621
-#: ../addressbook/libebook/e-book-client.c:1898
-#: ../calendar/libecal/e-cal-client.c:1714
+#: ../addressbook/libebook/e-book-client.c:1390 ../addressbook/libebook/e-book-client.c:1621
+#: ../addressbook/libebook/e-book-client.c:1898 ../calendar/libecal/e-cal-client.c:1714
 #: ../calendar/libecal/e-cal-client.c:1952
 #, c-format
 msgid "Unable to connect to '%s': "
@@ -1021,21 +999,19 @@ msgstr "Άκυρο πεδίο επαφής '%d' που ορίστηκε στην
 #: ../addressbook/libedata-book/e-book-sqlite.c:579
 #, c-format
 msgid ""
-"Contact field '%s' of type '%s' specified in summary, but only boolean, "
-"string and string list field types are supported"
+"Contact field '%s' of type '%s' specified in summary, but only boolean, string and string "
+"list field types are supported"
 msgstr ""
-"Πεδίο επαφής '%s' του τύπου '%s' που ορίστηκε στην περίληψη, αλλά μόνο "
-"λογικές τιμές, συμβολοσειρά και τύποι πεδίου λίστας συμβολοσειράς "
-"υποστηρίζονται."
+"Πεδίο επαφής '%s' του τύπου '%s' που ορίστηκε στην περίληψη, αλλά μόνο λογικές τιμές, "
+"συμβολοσειρά και τύποι πεδίου λίστας συμβολοσειράς υποστηρίζονται."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3071
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4167
 #, c-format
-msgid ""
-"Full search_contacts are not stored in cache. vcards cannot be returned."
+msgid "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
-"Η πλήρης αναζήτηση επα_φών δεν αποθηκεύτηκε στην κρυφή μνήμη. Οι vcards δεν "
-"μπορούν να επιστραφούν."
+"Η πλήρης αναζήτηση επα_φών δεν αποθηκεύτηκε στην κρυφή μνήμη. Οι vcards δεν μπορούν να "
+"επιστραφούν."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4298
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4391
@@ -1051,17 +1027,14 @@ msgstr "Άκυρο ερώτημα"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4326
 #, c-format
-msgid ""
-"Full search_contacts are not stored in cache. Hence only summary query is "
-"supported."
+msgid "Full search_contacts are not stored in cache. Hence only summary query is supported."
 msgstr ""
-"Οι πλήρεις αναζητήσεις επα_φών δεν αποθηκεύονται στην κρυφή μνήμη. Συνεπώς "
-"μόνο ερωτήματα περίληψης υποστηρίζονται."
+"Οι πλήρεις αναζητήσεις επα_φών δεν αποθηκεύονται στην κρυφή μνήμη. Συνεπώς μόνο ερωτήματα "
+"περίληψης υποστηρίζονται."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4395
 #: ../addressbook/libedata-book/e-data-book.c:391
-#: ../addressbook/libedata-book/e-data-book.c:1131
-#: ../calendar/libedata-cal/e-data-cal.c:428
+#: ../addressbook/libedata-book/e-data-book.c:1131 ../calendar/libedata-cal/e-data-cal.c:428
 #: ../calendar/libedata-cal/e-data-cal.c:1410 ../libedataserver/e-client.c:174
 #, c-format
 msgid "Invalid query"
@@ -1069,11 +1042,10 @@ msgstr "Άκυρο αίτημα"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4438
 #, c-format
-msgid ""
-"Full vcards are not stored in cache. Hence only summary query is supported."
+msgid "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
-"Πλήρεις vcards δεν αποθηκεύονται στην κρυφή μνήμη. Συνεπώς μόνο ερωτήματα "
-"περίληψης υποστηρίζονται."
+"Πλήρεις vcards δεν αποθηκεύονται στην κρυφή μνήμη. Συνεπώς μόνο ερωτήματα περίληψης "
+"υποστηρίζονται."
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:5261
 #, c-format
@@ -1089,9 +1061,7 @@ msgstr "Μόνο ερωτήματα περίληψης υποστηρίζοντ�
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6055
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
-msgstr ""
-"Τουλάχιστον ένα είδος πεδίου πρέπει να οριστεί για να χρησιμοποιήσει ένα "
-"EbSdbCursor"
+msgstr "Τουλάχιστον ένα είδος πεδίου πρέπει να οριστεί για να χρησιμοποιήσει ένα EbSdbCursor"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6069
 #, c-format
@@ -1107,21 +1077,18 @@ msgstr "Αδύνατη η ταξινόμηση κατά πεδίο που μπο
 #: ../addressbook/libedata-book/e-book-sqlite.c:8044
 #, c-format
 msgid ""
-"Tried to step a cursor in reverse, but cursor is already at the beginning of "
-"the contact list"
+"Tried to step a cursor in reverse, but cursor is already at the beginning of the contact list"
 msgstr ""
-"Έγινε προσπάθεια να προχωρήσει ένας δρομέας αντίστροφα, αλλά ο δρομέας είναι "
-"ήδη στην αρχή του καταλόγου επαφών"
+"Έγινε προσπάθεια να προχωρήσει ένας δρομέας αντίστροφα, αλλά ο δρομέας είναι ήδη στην αρχή "
+"του καταλόγου επαφών"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6217
 #: ../addressbook/libedata-book/e-book-sqlite.c:8052
 #, c-format
-msgid ""
-"Tried to step a cursor forwards, but cursor is already at the end of the "
-"contact list"
+msgid "Tried to step a cursor forwards, but cursor is already at the end of the contact list"
 msgstr ""
-"Έγινε προσπάθεια να προχωρήσει ένας δρομέας προς τα μπρος, αλλά ο δρομέας "
-"είναι ήδη στο τέλος του καταλόγου επαφών"
+"Έγινε προσπάθεια να προχωρήσει ένας δρομέας προς τα μπρος, αλλά ο δρομέας είναι ήδη στο "
+"τέλος του καταλόγου επαφών"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:545
 #, c-format
@@ -1130,12 +1097,11 @@ msgstr "Μη υποστηριζόμενο πεδίο επαφής '%d' που ο
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:1925
 msgid ""
-"Cannot upgrade contacts database from a legacy database with more than one "
-"addressbook. Delete one of the entries in the 'folders' table first."
+"Cannot upgrade contacts database from a legacy database with more than one addressbook. "
+"Delete one of the entries in the 'folders' table first."
 msgstr ""
-"Αδύνατη η αναβάθμιση βάσης δεδομένων επαφών από μια παλιά βάση δεδομένων με "
-"περισσότερα από ένα βιβλία διευθύνσεων. Διαγράψτε μια από τις καταχωρίσεις "
-"στον πίνακα 'φάκελοι' πρώτα."
+"Αδύνατη η αναβάθμιση βάσης δεδομένων επαφών από μια παλιά βάση δεδομένων με περισσότερα από "
+"ένα βιβλία διευθύνσεων. Διαγράψτε μια από τις καταχωρίσεις στον πίνακα 'φάκελοι' πρώτα."
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:5740
 #, c-format
@@ -1148,58 +1114,50 @@ msgstr "Άκυρο ερώτημα για το EbSqlCursor"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:7866
 msgid "At least one sort field must be specified to use an EbSqlCursor"
-msgstr ""
-"Τουλάχιστον ένα είδος πεδίου πρέπει να οριστεί για να χρησιμοποιήσει ένα "
-"EbSqlCursor"
+msgstr "Τουλάχιστον ένα είδος πεδίου πρέπει να οριστεί για να χρησιμοποιήσει ένα EbSqlCursor"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:7884
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Αδύνατη η ταξινόμηση κατά πεδίο που δεν είναι τύπος συμβολοσειράς"
 
-#: ../addressbook/libedata-book/e-data-book.c:375
-#: ../calendar/libedata-cal/e-data-cal.c:409
+#: ../addressbook/libedata-book/e-data-book.c:375 ../calendar/libedata-cal/e-data-cal.c:409
 msgid "Success"
 msgstr "Επιτυχία"
 
-#: ../addressbook/libedata-book/e-data-book.c:376
-#: ../calendar/libecal/e-cal.c:2302 ../calendar/libedata-cal/e-data-cal.c:410
-#: ../libedataserver/e-client.c:141
+#: ../addressbook/libedata-book/e-data-book.c:376 ../calendar/libecal/e-cal.c:2302
+#: ../calendar/libedata-cal/e-data-cal.c:410 ../libedataserver/e-client.c:141
 msgid "Backend is busy"
 msgstr "Το σύστημα υποστήριξης είναι απασχολημένο"
 
-#: ../addressbook/libedata-book/e-data-book.c:377
-#: ../calendar/libedata-cal/e-data-cal.c:411 ../libedataserver/e-client.c:151
+#: ../addressbook/libedata-book/e-data-book.c:377 ../calendar/libedata-cal/e-data-cal.c:411
+#: ../libedataserver/e-client.c:151
 msgid "Repository offline"
 msgstr "Το αποθετήριο είναι χωρίς σύνδεση"
 
-#: ../addressbook/libedata-book/e-data-book.c:378
-#: ../calendar/libecal/e-cal.c:2316 ../calendar/libedata-cal/e-data-cal.c:412
-#: ../libedataserver/e-client.c:158
+#: ../addressbook/libedata-book/e-data-book.c:378 ../calendar/libecal/e-cal.c:2316
+#: ../calendar/libedata-cal/e-data-cal.c:412 ../libedataserver/e-client.c:158
 msgid "Permission denied"
 msgstr "Άρνηση πρόσβαση"
 
-#: ../addressbook/libedata-book/e-data-book.c:381
-#: ../calendar/libedata-cal/e-data-cal.c:417
+#: ../addressbook/libedata-book/e-data-book.c:381 ../calendar/libedata-cal/e-data-cal.c:417
 msgid "Authentication Failed"
 msgstr "Απέτυχε η πιστοποίηση"
 
-#: ../addressbook/libedata-book/e-data-book.c:382
-#: ../calendar/libedata-cal/e-data-cal.c:418
+#: ../addressbook/libedata-book/e-data-book.c:382 ../calendar/libedata-cal/e-data-cal.c:418
 msgid "Authentication Required"
 msgstr "Απαιτείται πιστοποίηση"
 
-#: ../addressbook/libedata-book/e-data-book.c:383
-#: ../calendar/libedata-cal/e-data-cal.c:419
+#: ../addressbook/libedata-book/e-data-book.c:383 ../calendar/libedata-cal/e-data-cal.c:419
 msgid "Unsupported field"
 msgstr "Ανυποστήρικτο πεδίο"
 
-#: ../addressbook/libedata-book/e-data-book.c:384
-#: ../calendar/libedata-cal/e-data-cal.c:421 ../libedataserver/e-client.c:166
+#: ../addressbook/libedata-book/e-data-book.c:384 ../calendar/libedata-cal/e-data-cal.c:421
+#: ../libedataserver/e-client.c:166
 msgid "Unsupported authentication method"
 msgstr "Ανυποστήρικτη μέθοδος πιστοποίησης"
 
-#: ../addressbook/libedata-book/e-data-book.c:385
-#: ../calendar/libedata-cal/e-data-cal.c:422 ../libedataserver/e-client.c:168
+#: ../addressbook/libedata-book/e-data-book.c:385 ../calendar/libedata-cal/e-data-cal.c:422
+#: ../libedataserver/e-client.c:168
 msgid "TLS not available"
 msgstr "Το TLS δεν είναι διαθέσιμο"
 
@@ -1211,70 +1169,65 @@ msgstr "Το ευρετήριο διευθύνσεων δεν υπάρχει"
 msgid "Book removed"
 msgstr "Αφαιρέθηκε το βιβλίο"
 
-#: ../addressbook/libedata-book/e-data-book.c:388
-#: ../calendar/libedata-cal/e-data-cal.c:425
+#: ../addressbook/libedata-book/e-data-book.c:388 ../calendar/libedata-cal/e-data-cal.c:425
 msgid "Not available in offline mode"
 msgstr "Δεν είναι διαθέσιμο σε λειτουργία χωρίς σύνδεση"
 
-#: ../addressbook/libedata-book/e-data-book.c:389
-#: ../calendar/libedata-cal/e-data-cal.c:426 ../libedataserver/e-client.c:170
+#: ../addressbook/libedata-book/e-data-book.c:389 ../calendar/libedata-cal/e-data-cal.c:426
+#: ../libedataserver/e-client.c:170
 msgid "Search size limit exceeded"
 msgstr "Υπέρβαση ορίου μεγέθους αναζήτησης"
 
-#: ../addressbook/libedata-book/e-data-book.c:390
-#: ../calendar/libedata-cal/e-data-cal.c:427 ../libedataserver/e-client.c:172
+#: ../addressbook/libedata-book/e-data-book.c:390 ../calendar/libedata-cal/e-data-cal.c:427
+#: ../libedataserver/e-client.c:172
 msgid "Search time limit exceeded"
 msgstr "Υπέρβαση ορίου χρόνου αναζήτησης"
 
-#: ../addressbook/libedata-book/e-data-book.c:392
-#: ../calendar/libedata-cal/e-data-cal.c:429 ../libedataserver/e-client.c:176
+#: ../addressbook/libedata-book/e-data-book.c:392 ../calendar/libedata-cal/e-data-cal.c:429
+#: ../libedataserver/e-client.c:176
 msgid "Query refused"
 msgstr "Απόρριψη αιτήματος"
 
-#: ../addressbook/libedata-book/e-data-book.c:393
-#: ../calendar/libedata-cal/e-data-cal.c:430 ../libedataserver/e-client.c:162
+#: ../addressbook/libedata-book/e-data-book.c:393 ../calendar/libedata-cal/e-data-cal.c:430
+#: ../libedataserver/e-client.c:162
 msgid "Could not cancel"
 msgstr "Αδυναμία ακύρωσης"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
-#: ../addressbook/libedata-book/e-data-book.c:395
-#: ../calendar/libedata-cal/e-data-cal.c:432
+#: ../addressbook/libedata-book/e-data-book.c:395 ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Invalid server version"
 msgstr "Άκυρη έκδοση διακομιστή"
 
-#: ../addressbook/libedata-book/e-data-book.c:397
-#: ../calendar/libecal/e-cal.c:2300 ../calendar/libedata-cal/e-data-cal.c:433
-#: ../libedataserver/e-client.c:139
+#: ../addressbook/libedata-book/e-data-book.c:397 ../calendar/libecal/e-cal.c:2300
+#: ../calendar/libedata-cal/e-data-cal.c:433 ../libedataserver/e-client.c:139
 msgid "Invalid argument"
 msgstr "Άκυρο όρισμα"
 
 #. Translators: The string for NOT_SUPPORTED error
-#: ../addressbook/libedata-book/e-data-book.c:399
-#: ../calendar/libecal/e-cal.c:1059 ../calendar/libecal/e-cal.c:1427
-#: ../calendar/libecal/e-cal.c:1907 ../calendar/libecal/e-cal.c:2339
-#: ../calendar/libedata-cal/e-data-cal.c:435 ../libedataserver/e-client.c:164
+#: ../addressbook/libedata-book/e-data-book.c:399 ../calendar/libecal/e-cal.c:1059
+#: ../calendar/libecal/e-cal.c:1427 ../calendar/libecal/e-cal.c:1907
+#: ../calendar/libecal/e-cal.c:2339 ../calendar/libedata-cal/e-data-cal.c:435
+#: ../libedataserver/e-client.c:164
 #, c-format
 msgid "Not supported"
 msgstr "Δεν υποστηρίζεται"
 
-#: ../addressbook/libedata-book/e-data-book.c:400
-#: ../calendar/libedata-cal/e-data-cal.c:436 ../libedataserver/e-client.c:182
+#: ../addressbook/libedata-book/e-data-book.c:400 ../calendar/libedata-cal/e-data-cal.c:436
+#: ../libedataserver/e-client.c:182
 msgid "Backend is not opened yet"
 msgstr "Το σύστημα υποστήριξης δεν άνοιξε ακόμα"
 
-#: ../addressbook/libedata-book/e-data-book.c:401
-#: ../libedataserver/e-client.c:184
+#: ../addressbook/libedata-book/e-data-book.c:401 ../libedataserver/e-client.c:184
 msgid "Object is out of sync"
 msgstr "Το αντικείμενο είναι εκτός συγχρονισμού"
 
-#: ../addressbook/libedata-book/e-data-book.c:409
-#: ../calendar/libedata-cal/e-data-cal.c:444 ../libedataserver/e-client.c:180
+#: ../addressbook/libedata-book/e-data-book.c:409 ../calendar/libedata-cal/e-data-cal.c:444
+#: ../libedataserver/e-client.c:180
 msgid "Other error"
 msgstr "Άλλο σφάλμα"
 
-#: ../addressbook/libedata-book/e-data-book.c:1156
-#: ../calendar/libedata-cal/e-data-cal.c:1435
+#: ../addressbook/libedata-book/e-data-book.c:1156 ../calendar/libedata-cal/e-data-cal.c:1435
 msgid "Invalid query: "
 msgstr "Άκυρο ερώτημα: "
 
@@ -1354,7 +1307,6 @@ msgstr "Αποτυχία σύνδεσης με διακομιστή που χρ�
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:629
 #, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s)"
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgstr "Αναπάντεχος κώδικας κατάστασης HTTP %d επέστρεψε (%s) για URI: %s"
 
@@ -1377,8 +1329,7 @@ msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
 "Error message: %s"
 msgstr ""
-"Απρόσιτος ο διακομιστής, το ημερολόγιο θα ανοίξει σε λειτουργία μόνο για "
-"ανάγνωση.\n"
+"Απρόσιτος ο διακομιστής, το ημερολόγιο θα ανοίξει σε λειτουργία μόνο για ανάγνωση.\n"
 "Μήνυμα σφάλματος: %s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:4072
@@ -1571,8 +1522,7 @@ msgstr "Αδυναμία ακύρωσης λειτουργίας"
 msgid "Authentication failed"
 msgstr "Απέτυχε η πιστοποίηση"
 
-#: ../calendar/libecal/e-cal.c:2330
-#: ../camel/providers/smtp/camel-smtp-transport.c:959
+#: ../calendar/libecal/e-cal.c:2330 ../camel/providers/smtp/camel-smtp-transport.c:968
 #: ../libedataserver/e-client.c:149
 msgid "Authentication required"
 msgstr "Απαιτείται πιστοποίηση"
@@ -1585,13 +1535,11 @@ msgstr "Δημιουργήθηκε μία εξαίρεση D-Bus"
 msgid "No error"
 msgstr "Χωρίς σφάλμα"
 
-#: ../calendar/libecal/e-cal-client.c:269
-#: ../calendar/libedata-cal/e-data-cal.c:424
+#: ../calendar/libecal/e-cal-client.c:269 ../calendar/libedata-cal/e-data-cal.c:424
 msgid "Unknown user"
 msgstr "Άγνωστος χρήστης"
 
-#: ../calendar/libecal/e-cal-client.c:273
-#: ../calendar/libedata-cal/e-data-cal.c:413
+#: ../calendar/libecal/e-cal-client.c:273 ../calendar/libedata-cal/e-data-cal.c:413
 msgid "Invalid range"
 msgstr "Άκυρο εύρος"
 
@@ -1833,13 +1781,11 @@ msgstr "Το \"%s\" αναμένει το δεύτερο όρισμα να εί�
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:714
 #, c-format
 msgid ""
-"\"%s\" expects the first argument to be either \"any\", \"summary\", or "
-"\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
-"\"classification\""
+"\"%s\" expects the first argument to be either \"any\", \"summary\", or \"description\", or "
+"\"location\", or \"attendee\", or \"organizer\", or \"classification\""
 msgstr ""
-"Το \"%s\" αναμένει ότι το πρώτο όρισμα να είναι ένα από τα \"any\", \"summary"
-"\", \"description\", \"location\", \"attendee\", \"organizer\", ή "
-"\"classification\""
+"Το \"%s\" αναμένει ότι το πρώτο όρισμα να είναι ένα από τα \"any\", \"summary\", "
+"\"description\", \"location\", \"attendee\", \"organizer\", ή \"classification\""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:885
 #, c-format
@@ -1849,18 +1795,17 @@ msgstr "Το \"%s\" αναμένει τουλάχιστον ένα όρισμα"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:900
 #, c-format
 msgid ""
-"\"%s\" expects all arguments to be strings or one and only one argument to "
-"be a boolean false (#f)"
+"\"%s\" expects all arguments to be strings or one and only one argument to be a boolean "
+"false (#f)"
 msgstr ""
-"Το \"%s\" αναμένει ότι όλα τα ορίσματα θα είναι συμβολοσειρές ή ένα και μόνο "
-"ένα όρισμα θα είναι ψευδής λογική τιμή (#f)"
+"Το \"%s\" αναμένει ότι όλα τα ορίσματα θα είναι συμβολοσειρές ή ένα και μόνο ένα όρισμα θα "
+"είναι ψευδής λογική τιμή (#f)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1403
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"Το \"%s\" αναμένει το πρώτο όρισμα να είναι συμβολοσειρά ημερομηνίας/χρόνου "
-"κατά ISO 8601"
+"Το \"%s\" αναμένει το πρώτο όρισμα να είναι συμβολοσειρά ημερομηνίας/χρόνου κατά ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1464
 #, c-format
@@ -2110,8 +2055,7 @@ msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Φιλτράρισμα νέου μηνύματος σε '%s'"
 msgstr[1] "Φιλτράρισμα νέων μηνυμάτων σε '%s'"
 
-#: ../camel/camel-folder.c:1015
-#: ../camel/providers/local/camel-maildir-folder.c:330
+#: ../camel/camel-folder.c:1015 ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Μετακίνηση μηνυμάτων"
 
@@ -2213,8 +2157,7 @@ msgstr "Ενημέρωση προεπισκόπησης δεδομένων γι�
 msgid "Failed to execute gpg: %s"
 msgstr "Αποτυχία εκτέλεσης gpg: %s"
 
-#: ../camel/camel-gpg-context.c:729
-#: ../camel/providers/smtp/camel-smtp-transport.c:962
+#: ../camel/camel-gpg-context.c:729 ../camel/providers/smtp/camel-smtp-transport.c:971
 msgid "Unknown"
 msgstr "Άγνωστο"
 
@@ -2264,16 +2207,14 @@ msgstr "Αναπάντεχο αίτημα από GnuPG για '%s'"
 
 #: ../camel/camel-gpg-context.c:913
 msgid ""
-"Note the encrypted content doesn't contain information about a recipient, "
-"thus there will be a password prompt for each of stored private key."
+"Note the encrypted content doesn't contain information about a recipient, thus there will be "
+"a password prompt for each of stored private key."
 msgstr ""
-"Σημειώστε ότι το κρυπτογραφημένο περιεχόμενο δεν περιέχει πληροφορίες για "
-"παραλήπτη, συνεπώς θα υπάρχει μια προτροπή κωδικού πρόσβασης για κάθε "
-"αποθηκευμένο ιδιωτικό κλειδί."
+"Σημειώστε ότι το κρυπτογραφημένο περιεχόμενο δεν περιέχει πληροφορίες για παραλήπτη, συνεπώς "
+"θα υπάρχει μια προτροπή κωδικού πρόσβασης για κάθε αποθηκευμένο ιδιωτικό κλειδί."
 
 #: ../camel/camel-gpg-context.c:944 ../camel/camel-net-utils.c:524
-#: ../camel/providers/nntp/camel-nntp-summary.c:401
-#: ../libedataserver/e-client.c:160
+#: ../camel/providers/nntp/camel-nntp-summary.c:401 ../libedataserver/e-client.c:160
 #, c-format
 msgid "Cancelled"
 msgstr "Ακυρώθηκε"
@@ -2281,8 +2222,7 @@ msgstr "Ακυρώθηκε"
 #: ../camel/camel-gpg-context.c:965
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
-msgstr ""
-"Αποτυχία ξεκλειδώματος μυστικού κλειδιού: δόθηκαν 3 εσφαλμένα συνθηματικά."
+msgstr "Αποτυχία ξεκλειδώματος μυστικού κλειδιού: δόθηκαν 3 εσφαλμένα συνθηματικά."
 
 #: ../camel/camel-gpg-context.c:978
 #, c-format
@@ -2464,8 +2404,8 @@ msgstr "Απέτυχε η αναζήτηση κεντρικού υπολογισ
 #, c-format
 msgid "Host lookup '%s' failed. Check your host name for spelling errors."
 msgstr ""
-"Αποτυχία αναζήτησης κεντρικού υπολογιστή '%s'. Ελέγξτε το όνομα του "
-"κεντρικού υπολογιστή για ορθογραφικά σφάλματα."
+"Αποτυχία αναζήτησης κεντρικού υπολογιστή '%s'. Ελέγξτε το όνομα του κεντρικού υπολογιστή για "
+"ορθογραφικά σφάλματα."
 
 #: ../camel/camel-net-utils.c:741
 #, c-format
@@ -2502,9 +2442,7 @@ msgstr "Για την ανάγνωση αλληλογραφίας ως ερώτ�
 #: ../camel/camel-provider.c:260
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
-msgstr ""
-"Αδυναμία φόρτωσης του %s: Η φόρτωση αρθρωμάτων δεν υποστηρίζεται σε αυτό το "
-"σύστημα."
+msgstr "Αδυναμία φόρτωσης του %s: Η φόρτωση αρθρωμάτων δεν υποστηρίζεται σε αυτό το σύστημα."
 
 #: ../camel/camel-provider.c:269
 #, c-format
@@ -2521,8 +2459,7 @@ msgstr "Αδυναμία φόρτωσης του %s: Χωρίς κώδικα α�
 msgid "No provider available for protocol '%s'"
 msgstr "Χωρίς διαθέσιμο πάροχο για το πρωτόκολλο '%s'"
 
-#: ../camel/camel-sasl-anonymous.c:32
-#: ../camel/providers/nntp/camel-nntp-provider.c:82
+#: ../camel/camel-sasl-anonymous.c:32 ../camel/providers/nntp/camel-nntp-provider.c:82
 msgid "Anonymous"
 msgstr "Ανώνυμη"
 
@@ -2568,11 +2505,11 @@ msgstr "CRAM-MD5"
 
 #: ../camel/camel-sasl-cram-md5.c:45
 msgid ""
-"This option will connect to the server using a secure CRAM-MD5 password, if "
-"the server supports it."
+"This option will connect to the server using a secure CRAM-MD5 password, if the server "
+"supports it."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθεί στον διακομιστή με ασφαλή κωδικό πρόσβασης "
-"CRAM-MD5, αν το υποστηρίζει ο διακομιστής."
+"Με την επιλογή αυτή θα συνδεθεί στον διακομιστή με ασφαλή κωδικό πρόσβασης CRAM-MD5, αν το "
+"υποστηρίζει ο διακομιστής."
 
 #: ../camel/camel-sasl-digest-md5.c:56
 msgid "DIGEST-MD5"
@@ -2580,11 +2517,11 @@ msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:58
 msgid ""
-"This option will connect to the server using a secure DIGEST-MD5 password, "
-"if the server supports it."
+"This option will connect to the server using a secure DIGEST-MD5 password, if the server "
+"supports it."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθεί στον διακομιστή με ασφαλή κωδικό πρόσβασης "
-"DIGEST-MD5, αν το υποστηρίζει ο διακομιστής."
+"Με την επιλογή αυτή θα συνδεθεί στον διακομιστή με ασφαλή κωδικό πρόσβασης DIGEST-MD5, αν το "
+"υποστηρίζει ο διακομιστής."
 
 #: ../camel/camel-sasl-digest-md5.c:854
 #, c-format
@@ -2599,9 +2536,7 @@ msgstr "Άκυρο συνθηματικό διακομιστή\n"
 #: ../camel/camel-sasl-digest-md5.c:873
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr ""
-"Το συνθηματικό του διακομιστή περιέχει άκυρο διακριτικό \"ποιότητας "
-"προστασίας\""
+msgstr "Το συνθηματικό του διακομιστή περιέχει άκυρο διακριτικό \"ποιότητας προστασίας\""
 
 #: ../camel/camel-sasl-digest-md5.c:906
 #, c-format
@@ -2624,9 +2559,7 @@ msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:96
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
-"Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή με την πιστοποίηση "
-"Kerberos 5."
+msgstr "Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή με την πιστοποίηση Kerberos 5."
 
 #: ../camel/camel-sasl-gssapi.c:148
 #, c-format
@@ -2635,51 +2568,44 @@ msgstr "(Άγνωστος κώδικας μηχανισμού GSSAPI: %x)"
 
 #: ../camel/camel-sasl-gssapi.c:181
 msgid ""
-"The specified mechanism is not supported by the provided credential, or is "
-"unrecognized by the implementation."
+"The specified mechanism is not supported by the provided credential, or is unrecognized by "
+"the implementation."
 msgstr ""
-"Ο καθορισμένος μηχανισμός δεν υποστηρίζεται από τα παρεχόμενα "
-"διαπιστευτήρια, ή δεν αναγνωρίζεται στην εφαρμογή του."
+"Ο καθορισμένος μηχανισμός δεν υποστηρίζεται από τα παρεχόμενα διαπιστευτήρια, ή δεν "
+"αναγνωρίζεται στην εφαρμογή του."
 
 #: ../camel/camel-sasl-gssapi.c:186
 msgid "The provided target_name parameter was ill-formed."
 msgstr "Η παρεχόμενη παράμετρος target_name είναι κακοδιατυπωμένη."
 
 #: ../camel/camel-sasl-gssapi.c:189
-msgid ""
-"The provided target_name parameter contained an invalid or unsupported type "
-"of name."
-msgstr ""
-"Η παρεχόμενη παράμετρος target_name περιείχε ένα άκυρο ή ανυποστήρικτο τύπο "
-"ονόματος."
+msgid "The provided target_name parameter contained an invalid or unsupported type of name."
+msgstr "Η παρεχόμενη παράμετρος target_name περιείχε ένα άκυρο ή ανυποστήρικτο τύπο ονόματος."
 
 #: ../camel/camel-sasl-gssapi.c:193
 msgid ""
-"The input_token contains different channel bindings to those specified via "
-"the input_chan_bindings parameter."
+"The input_token contains different channel bindings to those specified via the "
+"input_chan_bindings parameter."
 msgstr ""
-"Το input_token περιέχει διαφορετικές συνδέσεις καναλιού από εκείνες που "
-"καθορίζονται μέσω της παραμέτρου input_chan_bindings."
+"Το input_token περιέχει διαφορετικές συνδέσεις καναλιού από εκείνες που καθορίζονται μέσω "
+"της παραμέτρου input_chan_bindings."
 
 #: ../camel/camel-sasl-gssapi.c:198
 msgid ""
-"The input_token contains an invalid signature, or a signature that could not "
-"be verified."
-msgstr ""
-"Το input_token περιέχει μια άκυρη υπογραφή, ή μια ανεπιβεβαίωτη υπογραφή."
+"The input_token contains an invalid signature, or a signature that could not be verified."
+msgstr "Το input_token περιέχει μια άκυρη υπογραφή, ή μια ανεπιβεβαίωτη υπογραφή."
 
 #: ../camel/camel-sasl-gssapi.c:202
 msgid ""
-"The supplied credentials were not valid for context initiation, or the "
-"credential handle did not reference any credentials."
+"The supplied credentials were not valid for context initiation, or the credential handle did "
+"not reference any credentials."
 msgstr ""
-"Τα παρεχόμενα διαπιστευτήρια δεν ήταν έγκυρα για αρχικοποίηση περιεχομένου, "
-"ή ο χειρισμός διαπιστευτηρίων δεν ανέφερε διαπιστευτήρια."
+"Τα παρεχόμενα διαπιστευτήρια δεν ήταν έγκυρα για αρχικοποίηση περιεχομένου, ή ο χειρισμός "
+"διαπιστευτηρίων δεν ανέφερε διαπιστευτήρια."
 
 #: ../camel/camel-sasl-gssapi.c:207
 msgid "The supplied context handle did not refer to a valid context."
-msgstr ""
-"Το παρεχόμενο χειριστήριο περιεχομένου δεν αναφέρεται σε έγκυρο περιεχόμενο."
+msgstr "Το παρεχόμενο χειριστήριο περιεχομένου δεν αναφέρεται σε έγκυρο περιεχόμενο."
 
 #: ../camel/camel-sasl-gssapi.c:210
 msgid "The consistency checks performed on the input_token failed."
@@ -2695,7 +2621,7 @@ msgstr "Τα αναφερόμενα διαπιστευτήρια έχουν λή
 
 #: ../camel/camel-sasl-gssapi.c:222 ../camel/camel-sasl-gssapi.c:404
 #: ../camel/camel-sasl-gssapi.c:453 ../camel/camel-sasl-gssapi.c:470
-#: ../camel/providers/smtp/camel-smtp-transport.c:658
+#: ../camel/providers/smtp/camel-smtp-transport.c:667
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Εσφαλμένη απάντηση πιστοποίησης από τον διακομιστή."
@@ -2712,8 +2638,7 @@ msgstr "Σύνδεση"
 #: ../camel/camel-sasl-login.c:39 ../camel/camel-sasl-plain.c:43
 msgid "This option will connect to the server using a simple password."
 msgstr ""
-"Με την επιλογή αυτή θα γίνει σύνδεση στον διακομιστή με χρήση ενός απλού "
-"κωδικού πρόσβασης."
+"Με την επιλογή αυτή θα γίνει σύνδεση στον διακομιστή με χρήση ενός απλού κωδικού πρόσβασης."
 
 #: ../camel/camel-sasl-login.c:107
 #, c-format
@@ -2726,11 +2651,11 @@ msgstr "NTLM / SPA"
 
 #: ../camel/camel-sasl-ntlm.c:48
 msgid ""
-"This option will connect to a Windows-based server using NTLM / Secure "
-"Password Authentication."
+"This option will connect to a Windows-based server using NTLM / Secure Password "
+"Authentication."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθείτε σε έναν διακομιστή με βάση τα Windows με "
-"τη χρήση NTLM / πιστοποιητικού ασφαλούς κωδικού πρόσβασης."
+"Με την επιλογή αυτή θα συνδεθείτε σε έναν διακομιστή με βάση τα Windows με τη χρήση NTLM / "
+"πιστοποιητικού ασφαλούς κωδικού πρόσβασης."
 
 #: ../camel/camel-sasl-plain.c:41
 msgid "PLAIN"
@@ -2742,9 +2667,7 @@ msgstr "POP πριν από SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:45
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
-"Με την επιλογή αυτή εξουσιοδοτείται πρώτα η σύνδεση POP πριν από την "
-"προσπάθεια SMTP"
+msgstr "Με την επιλογή αυτή εξουσιοδοτείται πρώτα η σύνδεση POP πριν από την προσπάθεια SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:81
 msgid "POP Source UID"
@@ -2770,8 +2693,7 @@ msgstr "Αποτυχία μεταγλώττισης κανονικής έκφρ�
 msgid "Invalid GType registered for protocol '%s'"
 msgstr "Άκυρος GType καταχωρημένος για το πρωτόκολλο '%s'"
 
-#: ../camel/camel-session.c:502
-#: ../camel/providers/imapx/camel-imapx-server.c:4799
+#: ../camel/camel-session.c:502 ../camel/providers/imapx/camel-imapx-server.c:4805
 #: ../camel/providers/pop3/camel-pop3-store.c:309
 #: ../camel/providers/pop3/camel-pop3-store.c:764
 #: ../camel/providers/smtp/camel-smtp-transport.c:544
@@ -2906,15 +2828,12 @@ msgstr "Αποτυχία εισαγωγής πιστοποιητικού"
 #: ../camel/camel-smime-context.c:635
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
-"Μήνυμα που περιέχει μόνο πιστοποιητικό, δεν μπορεί να επιβεβαιώσει "
-"πιστοποιητικά"
+msgstr "Μήνυμα που περιέχει μόνο πιστοποιητικό, δεν μπορεί να επιβεβαιώσει πιστοποιητικά"
 
 #: ../camel/camel-smime-context.c:638
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
-"Μήνυμα μόνο με πιστοποιητικό, τα πιστοποιητικά εισήχθησαν και επιβεβαιώθηκαν"
+msgstr "Μήνυμα μόνο με πιστοποιητικό, τα πιστοποιητικά εισήχθησαν και επιβεβαιώθηκαν"
 
 #: ../camel/camel-smime-context.c:642
 msgid "Cannot find signature digests"
@@ -2991,13 +2910,11 @@ msgstr "Άνοιγμα φακέλου '%s'"
 msgid "Scanning folders in '%s'"
 msgstr "Σάρωση φακέλων στο '%s'"
 
-#: ../camel/camel-store.c:1567 ../camel/camel-store.c:1612
-#: ../camel/camel-vtrash-folder.c:45
+#: ../camel/camel-store.c:1567 ../camel/camel-store.c:1612 ../camel/camel-vtrash-folder.c:45
 msgid "Trash"
 msgstr "Απορρίμματα"
 
-#: ../camel/camel-store.c:1581 ../camel/camel-store.c:1629
-#: ../camel/camel-vtrash-folder.c:47
+#: ../camel/camel-store.c:1581 ../camel/camel-store.c:1629 ../camel/camel-vtrash-folder.c:47
 msgid "Junk"
 msgstr "Ανεπιθύμητα"
 
@@ -3012,13 +2929,13 @@ msgid "Creating folder '%s'"
 msgstr "Δημιουργία φακέλου '%s'"
 
 #: ../camel/camel-store.c:2414 ../camel/camel-vee-store.c:410
-#: ../camel/providers/local/camel-maildir-store.c:330
+#: ../camel/providers/local/camel-maildir-store.c:346
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Αδυναμία διαγραφής του φακέλου: %s: Άκυρη λειτουργία"
 
 #: ../camel/camel-store.c:2604 ../camel/camel-vee-store.c:461
-#: ../camel/providers/local/camel-maildir-store.c:898
+#: ../camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "Αδυναμία μετονομασίας του φακέλου %s: Άκυρη λειτουργία"
@@ -3229,8 +3146,7 @@ msgstr "Εφαρμογή _φίλτρων στα νέα μηνύματα σε ό�
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:68
 msgid "_Apply filters to new messages in Inbox on this server"
-msgstr ""
-"Ε_φαρμογή φίλτρων στα νέα μηνύματα στα εισερχόμενα αυτού του διακομιστή"
+msgstr "Ε_φαρμογή φίλτρων στα νέα μηνύματα στα εισερχόμενα αυτού του διακομιστή"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:70
 msgid "Check new messages for _Junk contents"
@@ -3242,8 +3158,7 @@ msgstr "Έλεγχος μόνο για ανεπιθύμητα μηνύματα �
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "Synchroni_ze remote mail locally in all folders"
-msgstr ""
-"Συγ_χρονισμός απομακρυσμένης αλληλογραφίας τοπικά σε όλους τους φακέλους"
+msgstr "Συγ_χρονισμός απομακρυσμένης αλληλογραφίας τοπικά σε όλους τους φακέλους"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Default IMAP port"
@@ -3267,223 +3182,221 @@ msgstr "Για ανάγνωση και αποθήκευση αλληλογραφ
 msgid "Not authenticated"
 msgstr "Δεν πιστοποιήθηκε"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1738
+#: ../camel/providers/imapx/camel-imapx-server.c:1744
 msgid "Server disconnected"
 msgstr "Ο διακομιστής αποσυνδέθηκε"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2246
+#: ../camel/providers/imapx/camel-imapx-server.c:2252
 msgid "Error writing to cache stream"
 msgstr "Σφάλμα εγγραφής στην ροή κρυφής μνήμης"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3634
+#: ../camel/providers/imapx/camel-imapx-server.c:3640
 msgid "Error performing IDLE"
 msgstr "Σφάλμα εκτέλεσης IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4640
+#: ../camel/providers/imapx/camel-imapx-server.c:4646
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Αποτυχία σύνδεσης με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4641
+#: ../camel/providers/imapx/camel-imapx-server.c:4647
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "Το STARTTLS δεν υποστηρίζεται"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4701
+#: ../camel/providers/imapx/camel-imapx-server.c:4707
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Αποτυχία σύνδεσης με τον διακομιστή IMAP %s σε ασφαλή λειτουργία: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4788
+#: ../camel/providers/imapx/camel-imapx-server.c:4794
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Ο διακομιστής IMAP %s δεν υποστηρίζει την πιστοποίηση %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4818
+#: ../camel/providers/imapx/camel-imapx-server.c:4824
 #: ../camel/providers/nntp/camel-nntp-store.c:393
 #: ../camel/providers/nntp/camel-nntp-store.c:530
 msgid "Cannot authenticate without a username"
 msgstr "Αδυναμία πιστοποίησης χωρίς όνομα χρήστη"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4827
+#: ../camel/providers/imapx/camel-imapx-server.c:4833
 #: ../camel/providers/nntp/camel-nntp-store.c:539
 #: ../camel/providers/pop3/camel-pop3-store.c:676
 #: ../camel/providers/pop3/camel-pop3-store.c:706
 msgid "Authentication password not available"
 msgstr "Ο κωδικός πρόσβασης πιστοποίησης δεν είναι διαθέσιμος"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5063
-#: ../camel/providers/imapx/camel-imapx-server.c:5122
+#: ../camel/providers/imapx/camel-imapx-server.c:5069
+#: ../camel/providers/imapx/camel-imapx-server.c:5128
 msgid "Error fetching message"
 msgstr "Σφάλμα ανάκτησης μηνύματος"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5115
+#: ../camel/providers/imapx/camel-imapx-server.c:5121
 msgid "Failed to close the tmp stream"
 msgstr "Αποτυχία κλεισίματος της ροής tmp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5151
+#: ../camel/providers/imapx/camel-imapx-server.c:5157
 msgid "Failed to copy the tmp file"
 msgstr "Αποτυχία αντιγραφής του αρχείου tmp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5292
+#: ../camel/providers/imapx/camel-imapx-server.c:5329
 msgid "Error moving messages"
 msgstr "Σφάλμα μετακίνησης μηνυμάτων"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5296
+#: ../camel/providers/imapx/camel-imapx-server.c:5333
 msgid "Error copying messages"
 msgstr "Σφάλμα αντιγραφής μηνυμάτων"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5518
+#: ../camel/providers/imapx/camel-imapx-server.c:5555
 msgid "Error appending message"
 msgstr "Σφάλμα προσάρτησης μηνύματος"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5754
+#: ../camel/providers/imapx/camel-imapx-server.c:5791
 msgid "Error fetching message headers"
 msgstr "Σφάλμα ανάκτησης κεφαλίδων μηνύματος"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5921
+#: ../camel/providers/imapx/camel-imapx-server.c:5958
 msgid "Error retrieving message"
 msgstr "Σφάλμα ανάκτησης μηνύματος"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6055
-#: ../camel/providers/imapx/camel-imapx-server.c:6284
+#: ../camel/providers/imapx/camel-imapx-server.c:6092
+#: ../camel/providers/imapx/camel-imapx-server.c:6321
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Ανάκτηση πληροφοριών περίληψης για νέα μηνύματα στο '%s'"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6107
+#: ../camel/providers/imapx/camel-imapx-server.c:6144
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Σάρωση για αλλαγμένα μηνύματα στο '%s'"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6159
+#: ../camel/providers/imapx/camel-imapx-server.c:6196
 msgid "Error fetching new messages"
 msgstr "Σφάλμα ανάκτησης νέων μηνυμάτων"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6432
+#: ../camel/providers/imapx/camel-imapx-server.c:6469
 msgid "Error refreshing folder"
 msgstr "Σφάλμα ανανέωσης φακέλου"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6582
+#: ../camel/providers/imapx/camel-imapx-server.c:6619
 msgid "Error expunging message"
 msgstr "Σφάλμα διαγραφής μηνύματος"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6688
-#: ../camel/providers/imapx/camel-imapx-server.c:6713
+#: ../camel/providers/imapx/camel-imapx-server.c:6725
+#: ../camel/providers/imapx/camel-imapx-server.c:6750
 msgid "Error fetching folders"
 msgstr "Σφάλμα ανάκτησης φακέλων"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6793
+#: ../camel/providers/imapx/camel-imapx-server.c:6830
 msgid "Error creating folder"
 msgstr "Σφάλμα δημιουργίας φακέλου"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6845
+#: ../camel/providers/imapx/camel-imapx-server.c:6882
 msgid "Error deleting folder"
 msgstr "Σφάλμα κατά τη διαγραφή του φακέλου"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6921
+#: ../camel/providers/imapx/camel-imapx-server.c:6958
 msgid "Error renaming folder"
 msgstr "Σφάλμα δημιουργίας φακέλου"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6995
+#: ../camel/providers/imapx/camel-imapx-server.c:7032
 msgid "Error subscribing to folder"
 msgstr "Σφάλμα εγγραφής στον φάκελο"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7061
+#: ../camel/providers/imapx/camel-imapx-server.c:7098
 msgid "Error unsubscribing from folder"
 msgstr "Σφάλμα αφαίρεσης εγγραφής από φάκελο"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7123
+#: ../camel/providers/imapx/camel-imapx-server.c:7160
 msgid "Error retrieving quota information"
 msgstr "Σφάλμα ανάκτησης πληροφοριών ποσόστωσης"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7175
+#: ../camel/providers/imapx/camel-imapx-server.c:7212
 msgid "Search failed"
 msgstr "Αποτυχία αναζήτησης"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7237
+#: ../camel/providers/imapx/camel-imapx-server.c:7274
 msgid "Error performing NOOP"
 msgstr "Σφάλμα εκτέλεσης NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7344
+#: ../camel/providers/imapx/camel-imapx-server.c:7381
 msgid "Error syncing changes"
 msgstr "Σφάλμα συγχρονισμού αλλαγών"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8341
+#: ../camel/providers/imapx/camel-imapx-server.c:8388
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Αδυναμία λήψης μηνύματος με ID μηνύματος %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8342
+#: ../camel/providers/imapx/camel-imapx-server.c:8389
 msgid "No such message available."
 msgstr "Δεν υπάρχει τέτοιο μήνυμα διαθέσιμο."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8563
-#: ../camel/providers/imapx/camel-imapx-server.c:8584
+#: ../camel/providers/imapx/camel-imapx-server.c:8612
+#: ../camel/providers/imapx/camel-imapx-server.c:8633
 msgid "Cannot create spool file: "
 msgstr "Αδυναμία δημιουργίας αρχείου ετεροχρονισμού: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9405
+#: ../camel/providers/imapx/camel-imapx-server.c:9462
 msgid "IMAP server does not support quotas"
 msgstr "Ο διακομιστής IMAP δεν υποστηρίζει ποσοστώσεις"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imapx/camel-imapx-store.c:223
 #: ../camel/providers/local/camel-maildir-folder.c:482
-#: ../camel/providers/local/camel-maildir-store.c:331
-#: ../camel/providers/local/camel-maildir-store.c:810
-#: ../camel/providers/local/camel-maildir-store.c:816
-#: ../camel/providers/local/camel-maildir-store.c:899
+#: ../camel/providers/local/camel-maildir-store.c:347
+#: ../camel/providers/local/camel-maildir-store.c:826
+#: ../camel/providers/local/camel-maildir-store.c:832
+#: ../camel/providers/local/camel-maildir-store.c:915
 #: ../camel/providers/local/camel-spool-store.c:393
 msgid "Inbox"
 msgstr "Εισερχόμενα"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:758
+#: ../camel/providers/imapx/camel-imapx-store.c:757
 #, c-format
 msgid "IMAP server %s"
 msgstr "Διακομιστής IMAP %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:761
+#: ../camel/providers/imapx/camel-imapx-store.c:760
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Υπηρεσία IMAP για %s στο %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:836
+#: ../camel/providers/imapx/camel-imapx-store.c:835
 #: ../camel/providers/nntp/camel-nntp-provider.c:92
 #: ../camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Κωδικός πρόσβασης"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:838
+#: ../camel/providers/imapx/camel-imapx-store.c:837
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
-"Η επιλογή αυτή θα σας συνδέσει με τον διακομιστή IMAP με χρήση κωδικού "
-"πρόσβασης απλού κειμένου."
+"Η επιλογή αυτή θα σας συνδέσει με τον διακομιστή IMAP με χρήση κωδικού πρόσβασης απλού "
+"κειμένου."
 
-#: ../camel/providers/imapx/camel-imapx-store.c:917
+#: ../camel/providers/imapx/camel-imapx-store.c:916
 #, c-format
 msgid "No such folder %s"
 msgstr "Δεν υπάρχει τέτοιος φάκελος %s"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1331
+#: ../camel/providers/imapx/camel-imapx-store.c:1330
 #, c-format
 msgid "No IMAP namespace for folder path '%s'"
 msgstr "Δεν υπάρχει χώρος ονόματος IMAP για τη διαδρομή φακέλου '%s'"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1512
-#: ../camel/providers/imapx/camel-imapx-store.c:1757
+#: ../camel/providers/imapx/camel-imapx-store.c:1511
+#: ../camel/providers/imapx/camel-imapx-store.c:1756
 #, c-format
 msgid "Retrieving folder list for '%s'"
 msgstr "Ανακτάται ο κατάλογος φακέλων για το '%s'"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1977
+#: ../camel/providers/imapx/camel-imapx-store.c:1976
 #, c-format
-msgid ""
-"The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr ""
-"Το όνομα φακέλου \"%s\" είναι άκυρο επειδή περιέχει τον χαρακτήρα \"%c\""
+msgid "The folder name \"%s\" is invalid because it contains the character \"%c\""
+msgstr "Το όνομα φακέλου \"%s\" είναι άκυρο επειδή περιέχει τον χαρακτήρα \"%c\""
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2749
+#: ../camel/providers/imapx/camel-imapx-store.c:2748
 #: ../camel/providers/nntp/camel-nntp-store.c:1249
 #: ../camel/providers/pop3/camel-pop3-folder.c:448
 #: ../camel/providers/pop3/camel-pop3-folder.c:591
@@ -3496,15 +3409,12 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:1079
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr ""
-"Πρέπει να είστε συνδεμένοι στο δίκτυο για να ολοκληρωθεί αυτή η διαδικασία"
+msgstr "Πρέπει να είστε συνδεμένοι στο δίκτυο για να ολοκληρωθεί αυτή η διαδικασία"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2754
+#: ../camel/providers/imapx/camel-imapx-store.c:2753
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
-msgstr ""
-"Πρέπει να είστε συνδεμένοι στο δίκτυο για να ολοκληρωθεί αυτή η διαδικασία "
-"(%s)"
+msgstr "Πρέπει να είστε συνδεμένοι στο δίκτυο για να ολοκληρωθεί αυτή η διαδικασία (%s)"
 
 #: ../camel/providers/local/camel-local-folder.c:194
 #, c-format
@@ -3545,8 +3455,7 @@ msgstr "Κατάλογοι αλληλογραφίας σε μορφή ΜΗ"
 
 #: ../camel/providers/local/camel-local-provider.c:49
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
-"Για την αποθήκευση τοπικής αλληλογραφίας σε καταλόγους αλληλογραφίας όπως ΜΗ."
+msgstr "Για την αποθήκευση τοπικής αλληλογραφίας σε καταλόγους αλληλογραφίας όπως ΜΗ."
 
 #: ../camel/providers/local/camel-local-provider.c:66
 msgid "Local delivery"
@@ -3554,11 +3463,11 @@ msgstr "Τοπική παράδοση"
 
 #: ../camel/providers/local/camel-local-provider.c:67
 msgid ""
-"For retrieving (moving) local mail from standard mbox-formatted spools into "
-"folders managed by Evolution."
+"For retrieving (moving) local mail from standard mbox-formatted spools into folders managed "
+"by Evolution."
 msgstr ""
-"Για την ανάκτηση (μετακίνηση) τοπικής αλληλογραφίας από τυπικά μορφοποιημένα "
-"ετεροχρονισμένα γραμματοκιβώτια σε φακέλους του Evolution."
+"Για την ανάκτηση (μετακίνηση) τοπικής αλληλογραφίας από τυπικά μορφοποιημένα ετεροχρονισμένα "
+"γραμματοκιβώτια σε φακέλους του Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:79
 #: ../camel/providers/local/camel-local-provider.c:101
@@ -3587,10 +3496,9 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Για ανάγνωση και αποθήκευση τοπικής αλληλογραφίας σε εξωτερικά τυπικά αρχεία "
-"ετεροχρονισμού γραμματοκιβωτίου.\n"
-"Μπορεί ακόμα να χρησιμοποιηθούν για την ανάγνωση δέντρου φακέλων στυλ Elm, "
-"Pine, ή Mutt."
+"Για ανάγνωση και αποθήκευση τοπικής αλληλογραφίας σε εξωτερικά τυπικά αρχεία ετεροχρονισμού "
+"γραμματοκιβωτίου.\n"
+"Μπορεί ακόμα να χρησιμοποιηθούν για την ανάγνωση δέντρου φακέλων στυλ Elm, Pine, ή Mutt."
 
 #: ../camel/providers/local/camel-local-provider.c:123
 msgid "Standard Unix mbox spool directory"
@@ -3678,58 +3586,58 @@ msgid "Cannot transfer message to destination folder: %s"
 msgstr "Αδύνατη η μεταφορά του μηνύματος στον φάκελο προορισμού: %s"
 
 #: ../camel/providers/local/camel-maildir-store.c:131
-#: ../camel/providers/local/camel-maildir-store.c:915
+#: ../camel/providers/local/camel-maildir-store.c:931
 #, c-format
 msgid "Cannot create folder containing '%s'"
 msgstr "Αδύνατη η δημιουργία φακέλου που περιέχει το '%s'"
 
 #: ../camel/providers/local/camel-maildir-store.c:139
 #: ../camel/providers/local/camel-maildir-store.c:158
-#: ../camel/providers/local/camel-maildir-store.c:907
+#: ../camel/providers/local/camel-maildir-store.c:923
 #, c-format
 msgid "Folder %s already exists"
 msgstr "Ο φάκελος %s υπάρχει ήδη"
 
-#: ../camel/providers/local/camel-maildir-store.c:250
-#: ../camel/providers/local/camel-maildir-store.c:281
+#: ../camel/providers/local/camel-maildir-store.c:266
+#: ../camel/providers/local/camel-maildir-store.c:297
 #: ../camel/providers/local/camel-mbox-store.c:401
 #: ../camel/providers/local/camel-mbox-store.c:422
 #, c-format
 msgid "Cannot create folder '%s': %s"
 msgstr "Αδύνατη η δημιουργία του φακέλου '%s': %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:265
+#: ../camel/providers/local/camel-maildir-store.c:281
 #: ../camel/providers/local/camel-mbox-store.c:367
 #: ../camel/providers/local/camel-mh-store.c:523
 #, c-format
 msgid "Cannot get folder '%s': %s"
 msgstr "Αδυναμία λήψης του φακέλου '%s': %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:271
+#: ../camel/providers/local/camel-maildir-store.c:287
 #: ../camel/providers/local/camel-mbox-store.c:377
 #: ../camel/providers/local/camel-mh-store.c:532
 #, c-format
 msgid "Cannot get folder '%s': folder does not exist."
 msgstr "Αδυναμία λήψης του φακέλου '%s': ο φάκελος δεν υπάρχει."
 
-#: ../camel/providers/local/camel-maildir-store.c:298
+#: ../camel/providers/local/camel-maildir-store.c:314
 #, c-format
 msgid "Cannot get folder '%s': not a maildir directory."
 msgstr "Αδυναμία λήψης του φακέλου '%s': δεν είναι κατάλογος maildir."
 
-#: ../camel/providers/local/camel-maildir-store.c:362
-#: ../camel/providers/local/camel-maildir-store.c:402
+#: ../camel/providers/local/camel-maildir-store.c:378
+#: ../camel/providers/local/camel-maildir-store.c:418
 #: ../camel/providers/local/camel-mh-store.c:676
 #, c-format
 msgid "Could not delete folder '%s': %s"
 msgstr "Αδυναμία διαγραφής του φακέλου '%s': %s"
 
-#: ../camel/providers/local/camel-maildir-store.c:364
+#: ../camel/providers/local/camel-maildir-store.c:380
 msgid "not a maildir directory"
 msgstr "δεν είναι κατάλογος maildir"
 
-#: ../camel/providers/local/camel-maildir-store.c:650
-#: ../camel/providers/local/camel-maildir-store.c:1130
+#: ../camel/providers/local/camel-maildir-store.c:666
+#: ../camel/providers/local/camel-maildir-store.c:1146
 #: ../camel/providers/local/camel-spool-store.c:212
 #: ../camel/providers/local/camel-spool-store.c:231
 #, c-format
@@ -3893,12 +3801,10 @@ msgstr "Αδυναμία αποθήκευσης του φακέλου : %s"
 #: ../camel/providers/local/camel-mbox-summary.c:898
 #: ../camel/providers/local/camel-mbox-summary.c:1172
 #, c-format
-msgid ""
-"MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
-"it.)"
+msgid "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get it.)"
 msgstr ""
-"Το αρχείο MBOX είναι αλλοιωμένο, παρακαλούμε διορθώστε το. (Αναμενόταν μια "
-"γραμμή με From αλλά δεν παρελήφθη.)"
+"Το αρχείο MBOX είναι αλλοιωμένο, παρακαλούμε διορθώστε το. (Αναμενόταν μια γραμμή με From "
+"αλλά δεν παρελήφθη.)"
 
 #: ../camel/providers/local/camel-mbox-summary.c:908
 #: ../camel/providers/local/camel-mbox-summary.c:1184
@@ -4082,11 +3988,8 @@ msgid "You cannot copy messages from a NNTP folder"
 msgstr "Δεν μπορείτε να αντιγράψετε μηνύματα από έναν φάκελο NNTP"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:45
-msgid ""
-"_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
-msgstr ""
-"_Εμφάνιση φακέλων με σύντομη σημειογραφία (π.χ c.o.linux αντί για comp.os."
-"linux)"
+msgid "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
+msgstr "_Εμφάνιση φακέλων με σύντομη σημειογραφία (π.χ c.o.linux αντί για comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription _dialog, show relative folder names"
@@ -4106,25 +4009,17 @@ msgstr "Ειδήσεις USENET"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:63
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
-"Αυτός είναι ένας πάροχος για την ανάγνωση και ταχυδρόμηση σε ομάδες ειδήσεων "
-"USENET."
+msgstr "Αυτός είναι ένας πάροχος για την ανάγνωση και ταχυδρόμηση σε ομάδες ειδήσεων USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:84
-msgid ""
-"This option will connect to the NNTP server anonymously, without "
-"authentication."
-msgstr ""
-"Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή NNTP ανώνυμα, χωρίς "
-"πιστοποίηση."
+msgid "This option will connect to the NNTP server anonymously, without authentication."
+msgstr "Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή NNTP ανώνυμα, χωρίς πιστοποίηση."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:94
-msgid ""
-"This option will authenticate with the NNTP server using a plaintext "
-"password."
+msgid "This option will authenticate with the NNTP server using a plaintext password."
 msgstr ""
-"Με την επιλογή αυτή θα πιστοποιείστε με τον διακομιστή NNTP με τη χρήση "
-"κωδικού πρόσβασης απλού κειμένου."
+"Με την επιλογή αυτή θα πιστοποιείστε με τον διακομιστή NNTP με τη χρήση κωδικού πρόσβασης "
+"απλού κειμένου."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:370
 #, c-format
@@ -4155,8 +4050,7 @@ msgstr ""
 #: ../camel/providers/nntp/camel-nntp-store.c:1266
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
-msgstr ""
-"Αδυναμία δημιουργίας φακέλου σε ένα αποθετήριο νέων: καλύτερα να εγγραφείτε."
+msgstr "Αδυναμία δημιουργίας φακέλου σε ένα αποθετήριο νέων: καλύτερα να εγγραφείτε."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1282
 #, c-format
@@ -4167,8 +4061,7 @@ msgstr "Αδυναμία μετονομασίας ενός φακέλου στο
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
-"Αδύνατη η απομάκρυνση φακέλου σε ένα αποθετήριο νέων: καλύτερα να "
-"αποχωρήσετε από την ομάδα."
+"Αδύνατη η απομάκρυνση φακέλου σε ένα αποθετήριο νέων: καλύτερα να αποχωρήσετε από την ομάδα."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1515
 #, c-format
@@ -4179,8 +4072,8 @@ msgid ""
 msgstr ""
 "Δεν μπορείτε να εγγραφείτε σε αυτή την ομάδα ειδήσεων:\n"
 "\n"
-"Δεν υπάρχει τέτοια ομάδα ειδήσεων. Το επιλεγμένο αντικείμενο μάλλον είναι "
-"ένας ανιοντικός φάκελος."
+"Δεν υπάρχει τέτοια ομάδα ειδήσεων. Το επιλεγμένο αντικείμενο μάλλον είναι ένας ανιοντικός "
+"φάκελος."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:1582
 #, c-format
@@ -4304,23 +4197,20 @@ msgstr "Για τη σύνδεση και λήψη αλληλογραφίας α
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid ""
-"This option will connect to the POP server using a plaintext password. This "
-"is the only option supported by many POP servers."
+"This option will connect to the POP server using a plaintext password. This is the only "
+"option supported by many POP servers."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή ΡΟΡ με τη χρήση κωδικού "
-"πρόσβασης απλού κειμένου. Είναι η μόνη επιλογή που υποστηρίζουν οι πιο "
-"πολλοί διακομιστές POP."
+"Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή ΡΟΡ με τη χρήση κωδικού πρόσβασης απλού "
+"κειμένου. Είναι η μόνη επιλογή που υποστηρίζουν οι πιο πολλοί διακομιστές POP."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:92
 msgid ""
-"This option will connect to the POP server using an encrypted password via "
-"the APOP protocol. This may not work for all users even on servers that "
-"claim to support it."
+"This option will connect to the POP server using an encrypted password via the APOP "
+"protocol. This may not work for all users even on servers that claim to support it."
 msgstr ""
-"Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή POP με τη χρήση "
-"κρυπτογραφημένου κωδικού πρόσβασης, μέσω του πρωτοκόλλου APOP. Αυτό μπορεί "
-"να μη λειτουργεί για όλους τους χρήστες, ακόμα και αν οι διακομιστές "
-"ισχυρίζονται ότι το υποστηρίζουν."
+"Με την επιλογή αυτή θα συνδεθείτε στον διακομιστή POP με τη χρήση κρυπτογραφημένου κωδικού "
+"πρόσβασης, μέσω του πρωτοκόλλου APOP. Αυτό μπορεί να μη λειτουργεί για όλους τους χρήστες, "
+"ακόμα και αν οι διακομιστές ισχυρίζονται ότι το υποστηρίζουν."
 
 #. Translators: This is the separator between an error and an explanation
 #: ../camel/providers/pop3/camel-pop3-store.c:95
@@ -4386,11 +4276,11 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:720
 #, c-format
 msgid ""
-"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
-"attack suspected. Please contact your admin."
+"Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation attack "
+"suspected. Please contact your admin."
 msgstr ""
-"Αδυναμία σύνδεσης στον διακομιστή POP %s: \tΛήψη άκυρου ID APOP. Υποψία "
-"επίθεσης με αντιποίηση. Παρακαλούμε, επικοινωνήστε με το διαχειριστή σας."
+"Αδυναμία σύνδεσης στον διακομιστή POP %s: \tΛήψη άκυρου ID APOP. Υποψία επίθεσης με "
+"αντιποίηση. Παρακαλούμε, επικοινωνήστε με το διαχειριστή σας."
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
@@ -4419,12 +4309,9 @@ msgid "Sendmail"
 msgstr "Sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-provider.c:35
-msgid ""
-"For delivering mail by passing it to the \"sendmail\" program on the local "
-"system."
+msgid "For delivering mail by passing it to the \"sendmail\" program on the local system."
 msgstr ""
-"Για την παράδοση αλληλογραφίας με την προώθηση στο πρόγραμμα \"sendmail\" "
-"στο τοπικό σύστημα."
+"Για την παράδοση αλληλογραφίας με την προώθηση στο πρόγραμμα \"sendmail\" στο τοπικό σύστημα."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:46
 msgid "sendmail"
@@ -4457,8 +4344,7 @@ msgstr "Αδυναμία ανάλυσης ορισμάτων"
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:229
 #, c-format
 msgid "Could not create pipe to '%s': %s: mail not sent"
-msgstr ""
-"Αδυναμία δημιουργίας διοχέτευσης στο '%s': %s: η αλληλογραφία δε στάλθηκε"
+msgstr "Αδυναμία δημιουργίας διοχέτευσης στο '%s': %s: η αλληλογραφία δε στάλθηκε"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:254
 #, c-format
@@ -4503,8 +4389,7 @@ msgstr "SMTP"
 #: ../camel/providers/smtp/camel-smtp-provider.c:49
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
-"Για τη παράδοση αλληλογραφίας με σύνδεση σε απομακρυσμένο κόμβο "
-"αλληλογραφίας με χρήση SMTP."
+"Για τη παράδοση αλληλογραφίας με σύνδεση σε απομακρυσμένο κόμβο αλληλογραφίας με χρήση SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:170
 #: ../camel/providers/smtp/camel-smtp-transport.c:178
@@ -4553,179 +4438,172 @@ msgstr "Δεν ορίστηκε μηχανισμός SASL"
 msgid "AUTH command failed: "
 msgstr "Η εντολή AUTH απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:739
+#: ../camel/providers/smtp/camel-smtp-transport.c:748
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Αδυναμία αποστολής του μηνύματος: δεν συνδέθηκε η υπηρεσία."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:746
+#: ../camel/providers/smtp/camel-smtp-transport.c:755
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Αδυναμία αποστολής του μηνύματος: άκυρη διεύθυνση αποστολέα."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:750
+#: ../camel/providers/smtp/camel-smtp-transport.c:759
 msgid "Sending message"
 msgstr "Αποστολή μηνύματος"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:775
+#: ../camel/providers/smtp/camel-smtp-transport.c:784
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Αδυναμία αποστολής του μηνύματος: δεν καθορίστηκαν παραλήπτες."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:788
+#: ../camel/providers/smtp/camel-smtp-transport.c:797
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
-msgstr ""
-"Αδυναμία αποστολής του μηνύματος: ένας ή περισσότεροι άκυροι παραλήπτες"
+msgstr "Αδυναμία αποστολής του μηνύματος: ένας ή περισσότεροι άκυροι παραλήπτες"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:909
+#: ../camel/providers/smtp/camel-smtp-transport.c:918
 msgid "Syntax error, command unrecognized"
 msgstr "Σφάλμα σύνταξης, άγνωστη εντολή"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:911
+#: ../camel/providers/smtp/camel-smtp-transport.c:920
 msgid "Syntax error in parameters or arguments"
 msgstr "Σφάλμα σύνταξης σε παραμέτρους ή ορίσματα"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:913
+#: ../camel/providers/smtp/camel-smtp-transport.c:922
 msgid "Command not implemented"
 msgstr "Η εντολή δεν έχει εφαρμοστεί"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:915
+#: ../camel/providers/smtp/camel-smtp-transport.c:924
 msgid "Command parameter not implemented"
 msgstr "Η παράμετρος της εντολής δεν έχει εφαρμοστεί"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:917
+#: ../camel/providers/smtp/camel-smtp-transport.c:926
 msgid "System status, or system help reply"
 msgstr "Κατάσταση συστήματος, ή απάντηση συστήματος βοήθειας"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:919
+#: ../camel/providers/smtp/camel-smtp-transport.c:928
 msgid "Help message"
 msgstr "Μήνυμα βοήθειας"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:921
+#: ../camel/providers/smtp/camel-smtp-transport.c:930
 msgid "Service ready"
 msgstr "Η υπηρεσία είναι έτοιμη"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:923
+#: ../camel/providers/smtp/camel-smtp-transport.c:932
 msgid "Service closing transmission channel"
 msgstr "Η υπηρεσία κλείνει το κανάλι μετάδοσης"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:925
+#: ../camel/providers/smtp/camel-smtp-transport.c:934
 msgid "Service not available, closing transmission channel"
 msgstr "Η υπηρεσία δεν διατίθεται, τερματισμός καναλιού μετάδοσης"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:927
+#: ../camel/providers/smtp/camel-smtp-transport.c:936
 msgid "Requested mail action okay, completed"
 msgstr "Η αιτηθείσα ενέργεια αλληλογραφίας, ολοκληρώθηκε"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:929
+#: ../camel/providers/smtp/camel-smtp-transport.c:938
 msgid "User not local; will forward to <forward-path>"
 msgstr "Μη τοπικός χρήστης· θα προωθηθεί στο <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:931
+#: ../camel/providers/smtp/camel-smtp-transport.c:940
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr ""
-"Η αιτηθείσα ενέργεια αλληλογραφίας δεν εκτελέστηκε: το γραμματοκιβώτιο δεν "
-"είναι διαθέσιμο"
+"Η αιτηθείσα ενέργεια αλληλογραφίας δεν εκτελέστηκε: το γραμματοκιβώτιο δεν είναι διαθέσιμο"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:933
+#: ../camel/providers/smtp/camel-smtp-transport.c:942
 msgid "Requested action not taken: mailbox unavailable"
-msgstr ""
-"Η αιτηθείσα ενέργεια δεν εκτελέστηκε: το γραμματοκιβώτιο δεν είναι διαθέσιμο"
+msgstr "Η αιτηθείσα ενέργεια δεν εκτελέστηκε: το γραμματοκιβώτιο δεν είναι διαθέσιμο"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:935
+#: ../camel/providers/smtp/camel-smtp-transport.c:944
 msgid "Requested action aborted: error in processing"
 msgstr "Η αιτηθείσα ενέργεια εγκαταλείφθηκε: σφάλμα κατά την επεξεργασία"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:937
+#: ../camel/providers/smtp/camel-smtp-transport.c:946
 msgid "User not local; please try <forward-path>"
 msgstr "Μη τοπικός χρήστης· παρακαλoύμε δοκιμάστε <forward-path>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:939
+#: ../camel/providers/smtp/camel-smtp-transport.c:948
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Η αιτηθείσα ενέργεια δεν εκτελέστηκε: ανεπαρκής αποθήκευση συστήματος"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:941
+#: ../camel/providers/smtp/camel-smtp-transport.c:950
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr ""
-"Η αιτηθείσα ενέργεια αλληλογραφίας εγκαταλείφθηκε: υπέρβαση της κατανομής "
-"αποθήκευσης"
+msgstr "Η αιτηθείσα ενέργεια αλληλογραφίας εγκαταλείφθηκε: υπέρβαση της κατανομής αποθήκευσης"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:943
+#: ../camel/providers/smtp/camel-smtp-transport.c:952
 msgid "Requested action not taken: mailbox name not allowed"
-msgstr ""
-"Η αιτηθείσα ενέργεια δεν εκτελέστηκε: το όνομα του γραμματοκιβωτίου δεν "
-"επιτρέπεται"
+msgstr "Η αιτηθείσα ενέργεια δεν εκτελέστηκε: το όνομα του γραμματοκιβωτίου δεν επιτρέπεται"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:945
+#: ../camel/providers/smtp/camel-smtp-transport.c:954
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Εκκίνηση εισαγωγής αλληλογραφίας· τελειώνει με <CRLF>.<CRLF>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:947
+#: ../camel/providers/smtp/camel-smtp-transport.c:956
 msgid "Transaction failed"
 msgstr "Η συναλλαγή απέτυχε"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:951
+#: ../camel/providers/smtp/camel-smtp-transport.c:960
 msgid "A password transition is needed"
 msgstr "Απαιτείται η ανταλλαγή κωδικού πρόσβασης"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:953
+#: ../camel/providers/smtp/camel-smtp-transport.c:962
 msgid "Authentication mechanism is too weak"
 msgstr "Ο μηχανισμός πιστοποίησης είναι αδύναμος"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:955
+#: ../camel/providers/smtp/camel-smtp-transport.c:964
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Απαιτείται κρυπτογράφηση για τον ζητούμενο μηχανισμό πιστοποίησης"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:957
+#: ../camel/providers/smtp/camel-smtp-transport.c:966
 msgid "Temporary authentication failure"
 msgstr "Προσωρινή αποτυχία πιστοποίησης"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1246
+#: ../camel/providers/smtp/camel-smtp-transport.c:1255
 msgid "SMTP Greeting"
 msgstr "Χαιρετισμός SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1256
-#: ../camel/providers/smtp/camel-smtp-transport.c:1271
-#: ../camel/providers/smtp/camel-smtp-transport.c:1279
+#: ../camel/providers/smtp/camel-smtp-transport.c:1265
+#: ../camel/providers/smtp/camel-smtp-transport.c:1280
+#: ../camel/providers/smtp/camel-smtp-transport.c:1288
 msgid "HELO command failed: "
 msgstr "Η εντολή HELO απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1354
-#: ../camel/providers/smtp/camel-smtp-transport.c:1370
-#: ../camel/providers/smtp/camel-smtp-transport.c:1380
+#: ../camel/providers/smtp/camel-smtp-transport.c:1363
+#: ../camel/providers/smtp/camel-smtp-transport.c:1379
+#: ../camel/providers/smtp/camel-smtp-transport.c:1389
 msgid "MAIL FROM command failed: "
 msgstr "Η εντολή MAIL FROM απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1407
+#: ../camel/providers/smtp/camel-smtp-transport.c:1416
 msgid "RCPT TO command failed: "
 msgstr "Η εντολή RCPT TO απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1425
-#: ../camel/providers/smtp/camel-smtp-transport.c:1435
+#: ../camel/providers/smtp/camel-smtp-transport.c:1434
+#: ../camel/providers/smtp/camel-smtp-transport.c:1444
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "Το RCPT TO <%s> απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1478
-#: ../camel/providers/smtp/camel-smtp-transport.c:1490
-#: ../camel/providers/smtp/camel-smtp-transport.c:1501
-#: ../camel/providers/smtp/camel-smtp-transport.c:1560
-#: ../camel/providers/smtp/camel-smtp-transport.c:1580
-#: ../camel/providers/smtp/camel-smtp-transport.c:1595
+#: ../camel/providers/smtp/camel-smtp-transport.c:1487
+#: ../camel/providers/smtp/camel-smtp-transport.c:1499
+#: ../camel/providers/smtp/camel-smtp-transport.c:1510
+#: ../camel/providers/smtp/camel-smtp-transport.c:1569
+#: ../camel/providers/smtp/camel-smtp-transport.c:1589
 #: ../camel/providers/smtp/camel-smtp-transport.c:1604
+#: ../camel/providers/smtp/camel-smtp-transport.c:1613
 msgid "DATA command failed: "
 msgstr "Η εντολή DATA απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1629
-#: ../camel/providers/smtp/camel-smtp-transport.c:1645
+#: ../camel/providers/smtp/camel-smtp-transport.c:1638
 #: ../camel/providers/smtp/camel-smtp-transport.c:1654
+#: ../camel/providers/smtp/camel-smtp-transport.c:1663
 msgid "RSET command failed: "
 msgstr "Η εντολή RSET απέτυχε: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1679
-#: ../camel/providers/smtp/camel-smtp-transport.c:1693
-#: ../camel/providers/smtp/camel-smtp-transport.c:1700
+#: ../camel/providers/smtp/camel-smtp-transport.c:1688
+#: ../camel/providers/smtp/camel-smtp-transport.c:1702
+#: ../camel/providers/smtp/camel-smtp-transport.c:1709
 msgid "QUIT command failed: "
 msgstr "Η εντολή QUIT απέτυχε: "
 
@@ -4754,12 +4632,12 @@ msgid "Birthday and anniversary reminder units"
 msgstr "Μονάδες υπενθύμισης γενεθλίων και επετείων"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
-msgid ""
-"Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
-"\"days\""
-msgstr ""
-"Μονάδες για υπενθύμιση γενεθλίων και επετείων, \"λεπτά\", \"ώρες\" ή \"ημέρες"
-"\""
+msgid "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or \"days\""
+msgstr "Μονάδες για υπενθύμιση γενεθλίων και επετείων, \"λεπτά\", \"ώρες\" ή \"ημέρες\""
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
+msgid "Whether the migration of old setting was already done"
+msgstr "Αν ολοκληρώθηκε η μεταφορά της παλιάς ρύθμισης"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -4767,14 +4645,13 @@ msgstr "(Παρωχημένο) Τύπος διαμεσολαβητή για χρ
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid ""
-"This key was deprecated in version 3.12 and should no longer be used. Proxy "
-"settings are now integrated into Evolution-Data-Server's account system. See "
-"the ESourceProxy API documentation for details."
+"This key was deprecated in version 3.12 and should no longer be used. Proxy settings are now "
+"integrated into Evolution-Data-Server's account system. See the ESourceProxy API "
+"documentation for details."
 msgstr ""
-"Αυτό το κλειδί ξεπεράστηκε στην έκδοση 3.12 και δεν πρέπει να "
-"χρησιμοποιείται πια. Οι ρυθμίσεις διαμεσολαβητή είναι τώρα ενσωματωμένες στο "
-"σύστημα λογαριασμού του διακομιστή δεδομένων Evolution. Δείτε την τεκμηρίωση "
-"API ESourceProxy για λεπτομέρειες."
+"Αυτό το κλειδί ξεπεράστηκε στην έκδοση 3.12 και δεν πρέπει να χρησιμοποιείται πια. Οι "
+"ρυθμίσεις διαμεσολαβητή είναι τώρα ενσωματωμένες στο σύστημα λογαριασμού του διακομιστή "
+"δεδομένων Evolution. Δείτε την τεκμηρίωση API ESourceProxy για λεπτομέρειες."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "(Deprecated) Whether to use http-proxy"
@@ -4802,8 +4679,7 @@ msgstr "(Παρωχημένο) Κωδικός πρόσβασης πιστοπο�
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "(Deprecated) List of hosts to connect to without proxy"
-msgstr ""
-"(Παρωχημένο) Λίστα κεντρικών υπολογιστών για σύνδεση χωρίς διαμεσολαβητή"
+msgstr "(Παρωχημένο) Λίστα κεντρικών υπολογιστών για σύνδεση χωρίς διαμεσολαβητή"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
 msgid "(Deprecated) Host name for HTTPS requests"
@@ -4838,51 +4714,44 @@ msgstr "%s δεν υποστηρίζει απομακρυσμένη διαγρα
 #: ../libebackend/e-data-factory.c:1233
 #, c-format
 msgid "Backend factory for source '%s' and extension '%s' cannot be found."
-msgstr ""
-"Αδύνατη η εύρεση υποστηρικτικού κατασκευαστή για την πηγή '%s' και την "
-"επέκταση '%s'."
+msgstr "Αδύνατη η εύρεση υποστηρικτικού κατασκευαστή για την πηγή '%s' και την επέκταση '%s'."
 
 #: ../libebackend/e-server-side-source.c:141
 #, c-format
 msgid "Data source is missing a [%s] group"
 msgstr "Από την πηγή δεδομένων λείπει μια ομάδα [%s]"
 
-#: ../libebackend/e-server-side-source.c:1324
-#: ../libedataserver/e-source.c:1837
+#: ../libebackend/e-server-side-source.c:1325 ../libedataserver/e-source.c:1837
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Η πηγή δεδομένων '%s' δεν υποστηρίζει απομακρυσμένη δημιουργία πόρων"
 
-#: ../libebackend/e-server-side-source.c:1338
+#: ../libebackend/e-server-side-source.c:1339
 #, c-format
-msgid ""
-"Data source '%s' has no collection backend to create the remote resource"
+msgid "Data source '%s' has no collection backend to create the remote resource"
 msgstr ""
-"Η πηγή δεδομένων '%s' δεν έχει καμιά συλλογή συστήματος υποστήριξης για τη "
-"δημιουργία του απομακρυσμένου πόρου"
+"Η πηγή δεδομένων '%s' δεν έχει καμιά συλλογή συστήματος υποστήριξης για τη δημιουργία του "
+"απομακρυσμένου πόρου"
 
-#: ../libebackend/e-server-side-source.c:1366
-#: ../libedataserver/e-source.c:1950
+#: ../libebackend/e-server-side-source.c:1367 ../libedataserver/e-source.c:1950
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Η πηγή δεδομένων '%s' δεν υποστηρίζει απομακρυσμένη διαγραφή πόρων"
 
-#: ../libebackend/e-server-side-source.c:1380
+#: ../libebackend/e-server-side-source.c:1381
 #, c-format
-msgid ""
-"Data source '%s' has no collection backend to delete the remote resource"
+msgid "Data source '%s' has no collection backend to delete the remote resource"
 msgstr ""
-"Η πηγή δεδομένων '%s' δεν έχει καμιά συλλογή συστήματος υποστήριξης για τη "
-"διαγραφή του απομακρυσμένου πόρου"
+"Η πηγή δεδομένων '%s' δεν έχει καμιά συλλογή συστήματος υποστήριξης για τη διαγραφή του "
+"απομακρυσμένου πόρου"
 
-#: ../libebackend/e-server-side-source.c:1411
-#: ../libedataserver/e-source.c:2046
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1021
+#: ../libebackend/e-server-side-source.c:1412 ../libedataserver/e-source.c:2046
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1038
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "Η πηγή δεδομένων '%s' δεν υποστηρίζει πιστοποίηση OAuth 2.0"
 
-#: ../libebackend/e-server-side-source.c:1773
+#: ../libebackend/e-server-side-source.c:1774
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "Το αρχείο πρέπει να έχει μια επέκταση '.source'"
@@ -5242,8 +5111,7 @@ msgstr "Απαιτείται πιστοποίηση"
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:156
 #, c-format
 msgid "Please enter the password for address book \"%s\"."
-msgstr ""
-"Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για το βιβλίο διευθύνσεων \"%s\"."
+msgstr "Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για το βιβλίο διευθύνσεων \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:160
 #, c-format
@@ -5253,28 +5121,22 @@ msgstr "Παρακαλούμε εισάγετε τον κωδικό πρόσβα
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:164
 #, c-format
 msgid "Please enter the password for mail account \"%s\"."
-msgstr ""
-"Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για τον λογαριασμό αλληλογραφίας "
-"\"%s\"."
+msgstr "Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για τον λογαριασμό αλληλογραφίας \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:168
 #, c-format
 msgid "Please enter the password for mail transport \"%s\"."
-msgstr ""
-"Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για την μεταφορά αλληλογραφίας \"%s"
-"\"."
+msgstr "Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για την μεταφορά αλληλογραφίας \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:172
 #, c-format
 msgid "Please enter the password for memo list \"%s\"."
-msgstr ""
-"Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για τη λίστα υπομνημάτων \"%s\"."
+msgstr "Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για τη λίστα υπομνημάτων \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:176
 #, c-format
 msgid "Please enter the password for task list \"%s\"."
-msgstr ""
-"Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για τη λίστα εργασιών \"%s\"."
+msgstr "Παρακαλούμε εισάγετε τον κωδικό πρόσβασης για τη λίστα εργασιών \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:180
 #, c-format
@@ -5303,36 +5165,28 @@ msgstr "Κ_ωδικός πρόσβασης:"
 msgid "_Add this password to your keyring"
 msgstr "Προσ_θήκη αυτού του κωδικού πρόσβασης στην κλειδοθήκη σας"
 
-#: ../libedataserverui/e-trust-prompt.c:113
-#: ../modules/trust-prompt/trust-prompt-gtk.c:119
+#: ../libedataserverui/e-trust-prompt.c:113 ../modules/trust-prompt/trust-prompt-gtk.c:119
 msgid "Certificate trust..."
 msgstr "Έμπιστο πιστοποιητικό..."
 
-#: ../libedataserverui/e-trust-prompt.c:115
-#: ../modules/trust-prompt/trust-prompt-gtk.c:120
+#: ../libedataserverui/e-trust-prompt.c:115 ../modules/trust-prompt/trust-prompt-gtk.c:120
 msgid "_Reject"
 msgstr "Απόρρι_ψη"
 
-#: ../libedataserverui/e-trust-prompt.c:116
-#: ../modules/trust-prompt/trust-prompt-gtk.c:121
+#: ../libedataserverui/e-trust-prompt.c:116 ../modules/trust-prompt/trust-prompt-gtk.c:121
 msgid "Accept _Temporarily"
 msgstr "_Προσωρινή αποδοχή"
 
-#: ../libedataserverui/e-trust-prompt.c:117
-#: ../modules/trust-prompt/trust-prompt-gtk.c:122
+#: ../libedataserverui/e-trust-prompt.c:117 ../modules/trust-prompt/trust-prompt-gtk.c:122
 msgid "_Accept Permanently"
 msgstr "Οριστική απο_δοχή"
 
-#: ../libedataserverui/e-trust-prompt.c:188
-#: ../modules/trust-prompt/trust-prompt-gtk.c:159
+#: ../libedataserverui/e-trust-prompt.c:188 ../modules/trust-prompt/trust-prompt-gtk.c:159
 #, c-format
 msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
-msgstr ""
-"Το πιστοποιητικό SSL για το '%s' δεν είναι αξιόπιστο. Θέλετε να το "
-"αποδεχτείτε;"
+msgstr "Το πιστοποιητικό SSL για το '%s' δεν είναι αξιόπιστο. Θέλετε να το αποδεχτείτε;"
 
-#: ../libedataserverui/e-trust-prompt.c:210
-#: ../modules/trust-prompt/trust-prompt-gtk.c:174
+#: ../libedataserverui/e-trust-prompt.c:210 ../modules/trust-prompt/trust-prompt-gtk.c:174
 msgid "Reason:"
 msgstr "Αιτία:"
 
@@ -5340,52 +5194,42 @@ msgstr "Αιτία:"
 msgid "Detailed error:"
 msgstr "Λεπτομέρεια σφάλματος:"
 
-#: ../libedataserverui/e-trust-prompt.c:275
-#: ../modules/trust-prompt/module-trust-prompt.c:82
+#: ../libedataserverui/e-trust-prompt.c:275 ../modules/trust-prompt/module-trust-prompt.c:82
 msgid "The signing certificate authority is not known."
 msgstr "Η αρχή πιστοποιητικού υπογραφής δεν είναι γνωστή."
 
-#: ../libedataserverui/e-trust-prompt.c:277
-#: ../modules/trust-prompt/module-trust-prompt.c:84
+#: ../libedataserverui/e-trust-prompt.c:277 ../modules/trust-prompt/module-trust-prompt.c:84
 msgid ""
-"The certificate does not match the expected identity of the site that it was "
-"retrieved from."
+"The certificate does not match the expected identity of the site that it was retrieved from."
 msgstr ""
-"Το πιστοποιητικό δεν ταιριάζει την αναμενόμενη ταυτότητα του τόπου από όπου "
-"ανακτήθηκε."
+"Το πιστοποιητικό δεν ταιριάζει την αναμενόμενη ταυτότητα του τόπου από όπου ανακτήθηκε."
 
-#: ../libedataserverui/e-trust-prompt.c:279
-#: ../modules/trust-prompt/module-trust-prompt.c:86
+#: ../libedataserverui/e-trust-prompt.c:279 ../modules/trust-prompt/module-trust-prompt.c:86
 msgid "The certificate's activation time is still in the future."
 msgstr "Ο χρόνος ενεργοποίησης του πιστοποιητικού είναι ακόμα στο μέλλον."
 
-#: ../libedataserverui/e-trust-prompt.c:281
-#: ../modules/trust-prompt/module-trust-prompt.c:88
+#: ../libedataserverui/e-trust-prompt.c:281 ../modules/trust-prompt/module-trust-prompt.c:88
 msgid "The certificate has expired."
 msgstr "Το πιστοποιητικό έχει λήξει."
 
-#: ../libedataserverui/e-trust-prompt.c:283
-#: ../modules/trust-prompt/module-trust-prompt.c:90
+#: ../libedataserverui/e-trust-prompt.c:283 ../modules/trust-prompt/module-trust-prompt.c:90
 msgid ""
-"The certificate has been revoked according to the connection's certificate "
-"revocation list."
+"The certificate has been revoked according to the connection's certificate revocation list."
 msgstr ""
-"Το πιστοποιητικό έχει ανακληθεί σύμφωνα με τη λίστα ανάκλησης πιστοποιητικών "
-"της σύνδεσης."
+"Το πιστοποιητικό έχει ανακληθεί σύμφωνα με τη λίστα ανάκλησης πιστοποιητικών της σύνδεσης."
 
-#: ../libedataserverui/e-trust-prompt.c:285
-#: ../modules/trust-prompt/module-trust-prompt.c:92
+#: ../libedataserverui/e-trust-prompt.c:285 ../modules/trust-prompt/module-trust-prompt.c:92
 msgid "The certificate's algorithm is considered insecure."
 msgstr "Ο αλγόριθμος του πιστοποιητικού θεωρείται επισφαλής."
 
-#: ../modules/gnome-online-accounts/e-goa-password-based.c:174
+#: ../modules/gnome-online-accounts/e-goa-password-based.c:210
 #, c-format
 msgid ""
-"Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
-"from which to obtain a password for '%s'"
+"Cannot find a corresponding account in the org.gnome.OnlineAccounts service from which to "
+"obtain a password for '%s'"
 msgstr ""
-"Αδυναμία εύρεσης αντίστοιχου λογαριασμού στην υπηρεσία org.gnome."
-"OnlineAccounts από την οποία παίρνετε έναν κωδικό πρόσβασης για το '%s'"
+"Αδυναμία εύρεσης αντίστοιχου λογαριασμού στην υπηρεσία org.gnome.OnlineAccounts από την "
+"οποία παίρνετε έναν κωδικό πρόσβασης για το '%s'"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:219
@@ -5423,16 +5267,16 @@ msgstr "Αποτυχία εύρεσης στοιχείου λογαριασμο�
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Αποτυχία εύρεσης ASUrl και OABUrl σε απόκριση αυτόματης εύρεσης"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1252
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1271
 #, c-format
 msgid ""
-"Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
-"from which to obtain an access token for '%s'"
+"Cannot find a corresponding account in the org.gnome.OnlineAccounts service from which to "
+"obtain an access token for '%s'"
 msgstr ""
-"Αδυναμία εύρεσης αντίστοιχου λογαριασμού στην υπηρεσία org.gnome."
-"OnlineAccounts από την οποία παίρνετε ένα διακριτικό πρόσβασης για το '%s'"
+"Αδυναμία εύρεσης αντίστοιχου λογαριασμού στην υπηρεσία org.gnome.OnlineAccounts από την "
+"οποία παίρνετε ένα διακριτικό πρόσβασης για το '%s'"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1282
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1301
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Αποτυχία λήψης διακριτικού πρόσβασης για το '%s': "
@@ -5462,7 +5306,7 @@ msgstr "Ενσωμάτωση των ημερολογίων σας"
 msgid "Integrate your contacts"
 msgstr "Ενσωμάτωση των επαφών σας"
 
-#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:237
+#: ../modules/ubuntu-online-accounts/e-signon-session-password.c:273
 msgid "Signon service did not return a secret"
 msgstr "Η υπηρεσία σύνδεσης δεν επέστρεψε απόρητο"
 
@@ -5494,23 +5338,22 @@ msgstr "Αλληλογραφία"
 msgid "Integrate your mailboxes"
 msgstr "Ενσωμάτωση γραμματοκιβωτίων σας"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1002
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1019
 #, c-format
 msgid ""
-"Cannot find a corresponding account service in the accounts database from "
-"which to obtain an access token for '%s'"
+"Cannot find a corresponding account service in the accounts database from which to obtain an "
+"access token for '%s'"
 msgstr ""
-"Αδυναμία εύρεσης αντίστοιχης υπηρεσίας λογαριασμού στην βάση δεδομένων "
-"λογαριασμών από την οποία παίρνετε ένα διακριτικό πρόσβασης για το '%s'"
+"Αδυναμία εύρεσης αντίστοιχης υπηρεσίας λογαριασμού στην βάση δεδομένων λογαριασμών από την "
+"οποία παίρνετε ένα διακριτικό πρόσβασης για το '%s'"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:84
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:281
 #, c-format
-msgid ""
-"Expected status 200 when requesting your identity, instead got status %d (%s)"
+msgid "Expected status 200 when requesting your identity, instead got status %d (%s)"
 msgstr ""
-"Αναμενόταν η κατάσταση 200 κατά την αίτηση του αναγνωριστικού, αντίθετα "
-"ελήφθη η κατάσταση %d (%s)"
+"Αναμενόταν η κατάσταση 200 κατά την αίτηση του αναγνωριστικού, αντίθετα ελήφθη η κατάσταση "
+"%d (%s)"
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:101
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:298
@@ -5591,8 +5434,7 @@ msgstr "WebDAV"
 
 #: ../services/evolution-source-registry/evolution-source-registry.c:39
 msgid "Don't migrate user data from previous versions of Evolution"
-msgstr ""
-"Μην μετεγκαθιστάτε δεδομένα χρήστη από προηγούμενες εκδόσεις του Evolution"
+msgstr "Μην μετεγκαθιστάτε δεδομένα χρήστη από προηγούμενες εκδόσεις του Evolution"
 
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
@@ -5620,36 +5462,32 @@ msgstr "_Ακύρωση"
 #~ msgstr "Ο χρήστης αρνήθηκε την πιστοποίηση"
 
 #~ msgid ""
-#~ "SSL certificate for host '%s', used by address book '%s', is not trusted. "
-#~ "Do you wish to accept it?"
+#~ "SSL certificate for host '%s', used by address book '%s', is not trusted. Do you wish to "
+#~ "accept it?"
 #~ msgstr ""
-#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που "
-#~ "χρησιμοποιείται από το βιβλίο διευθύνσεων '%s' δεν είναι αξιόπιστο. "
-#~ "Θέλετε να το αποδεχτείτε;"
+#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που χρησιμοποιείται από το βιβλίο "
+#~ "διευθύνσεων '%s' δεν είναι αξιόπιστο. Θέλετε να το αποδεχτείτε;"
 
 #~ msgid ""
-#~ "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do "
-#~ "you wish to accept it?"
+#~ "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you wish to "
+#~ "accept it?"
 #~ msgstr ""
-#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που "
-#~ "χρησιμοποιείται από το ημερολόγιο '%s' δεν είναι αξιόπιστο. Θέλετε να το "
-#~ "αποδεχτείτε;"
+#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που χρησιμοποιείται από το "
+#~ "ημερολόγιο '%s' δεν είναι αξιόπιστο. Θέλετε να το αποδεχτείτε;"
 
 #~ msgid ""
-#~ "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do "
-#~ "you wish to accept it?"
+#~ "SSL certificate for host '%s', used by memo list '%s', is not trusted. Do you wish to "
+#~ "accept it?"
 #~ msgstr ""
-#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που "
-#~ "χρησιμοποιείται από τη λίστα υπενθυμίσεων '%s' δεν είναι αξιόπιστο. "
-#~ "Θέλετε να το αποδεχτείτε;"
+#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που χρησιμοποιείται από τη λίστα "
+#~ "υπενθυμίσεων '%s' δεν είναι αξιόπιστο. Θέλετε να το αποδεχτείτε;"
 
 #~ msgid ""
-#~ "SSL certificate for host '%s', used by task list '%s', is not trusted. Do "
-#~ "you wish to accept it?"
+#~ "SSL certificate for host '%s', used by task list '%s', is not trusted. Do you wish to "
+#~ "accept it?"
 #~ msgstr ""
-#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που "
-#~ "χρησιμοποιείται από τη λίστα εργασιών '%s' δεν είναι αξιόπιστο. Θέλετε να "
-#~ "το αποδεχτείτε;"
+#~ "Το πιστοποιητικό SSL για τον κεντρικό υπολογιστή '%s', που χρησιμοποιείται από τη λίστα "
+#~ "εργασιών '%s' δεν είναι αξιόπιστο. Θέλετε να το αποδεχτείτε;"
 
 #~ msgid "No such data source for UID '%s'"
 #~ msgstr "Δεν υπάρχει τέτοια πηγή δεδομένων για το UID '%s'"
@@ -5664,8 +5502,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Έλλειψη πηγαίου UID"
 
 #~ msgid "No backend factory for hash key '%s'"
-#~ msgstr ""
-#~ "Χωρίς εργοστασιακό σύστημα υποστήριξης για το κλειδί κατακερματισμού '%s'"
+#~ msgstr "Χωρίς εργοστασιακό σύστημα υποστήριξης για το κλειδί κατακερματισμού '%s'"
 
 #~ msgid "No host information available"
 #~ msgstr "Δεν υπάρχουν διαθέσιμες πληροφορίες οικοδεσπότη"
@@ -5719,8 +5556,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Προετοιμασία φακέλου '%s' για εργασία χωρίς σύνδεση"
 
 #~ msgid "You cannot post NNTP messages while working offline!"
-#~ msgstr ""
-#~ "Δεν μπορείτε να στέλνετε μηνύματα NNTP όταν εργάζεστε χωρίς σύνδεση!"
+#~ msgstr "Δεν μπορείτε να στέλνετε μηνύματα NNTP όταν εργάζεστε χωρίς σύνδεση!"
 
 #~ msgid "You may not import keys with this cipher"
 #~ msgstr "Δεν μπορεί να εισάγετε κλειδιά με αυτήν την κρυπτογράφηση"
@@ -5742,8 +5578,7 @@ msgstr "_Ακύρωση"
 
 #~ msgid "Name lookup failed. Check your host name for spelling errors."
 #~ msgstr ""
-#~ "Αποτυχία αναζήτησης ονόματος. Ελέγξτε το όνομα του οικοδεσπότη για "
-#~ "ορθογραφικά σφάλματα."
+#~ "Αποτυχία αναζήτησης ονόματος. Ελέγξτε το όνομα του οικοδεσπότη για ορθογραφικά σφάλματα."
 
 #~ msgid "Name lookup failed: %s"
 #~ msgstr "Αποτυχία αναζήτησης ονόματος: %s"
@@ -5752,12 +5587,10 @@ msgstr "_Ακύρωση"
 #~ msgstr "Αδυναμία σύνδεσης στο '%s:%s': "
 
 #~ msgid "Cannot write offline journal for folder '%s': %s"
-#~ msgstr ""
-#~ "Αδυναμία δημιουργίας χωρίς σύνδεση ημερολογίου για το φάκελο '%s': %s"
+#~ msgstr "Αδυναμία δημιουργίας χωρίς σύνδεση ημερολογίου για το φάκελο '%s': %s"
 
 #~ msgid "Please enter the %s password for %s on host %s."
-#~ msgstr ""
-#~ "Παρακαλώ εισάγετε τον κωδικό πρόσβασης %s για το %s στον οικοδεσπότη %s."
+#~ msgstr "Παρακαλώ εισάγετε τον κωδικό πρόσβασης %s για το %s στον οικοδεσπότη %s."
 
 #~ msgid "NSPR error code %d"
 #~ msgstr "Κώδικας σφάλματος NSPR %d"
@@ -5808,9 +5641,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Δεν ολοκληρώθηκε η απάντηση από τον εξυπηρετητή SOCKS"
 
 #~ msgid "Hostname is too long (maximum is 255 characters)"
-#~ msgstr ""
-#~ "Το όνομα του οικοδεσπότη είναι πολύ μεγάλο (το μέγιστο είναι 255 "
-#~ "χαρακτήρες)"
+#~ msgstr "Το όνομα του οικοδεσπότη είναι πολύ μεγάλο (το μέγιστο είναι 255 χαρακτήρες)"
 
 #~ msgid "Invalid reply from proxy server"
 #~ msgstr "Άκυρη απάντηση από τον εξυπηρετητή μεσολάβησης"
@@ -5819,23 +5650,20 @@ msgstr "_Ακύρωση"
 #~ msgstr "Αδυναμία προσθήκης μηνύματος στην περίληψη : άγνωστη αιτία"
 
 #~ msgid "Fatal mail parser error near position %s in folder %s"
-#~ msgstr ""
-#~ "Μοιραίο σφάλμα ανάλυσης αλληλογραφίας κοντά στην τοποθεσία %s στο φάκελο "
-#~ "%s"
+#~ msgstr "Μοιραίο σφάλμα ανάλυσης αλληλογραφίας κοντά στην τοποθεσία %s στο φάκελο %s"
 
 #~ msgid ""
-#~ "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
-#~ "means manual proxy."
+#~ "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" means manual "
+#~ "proxy."
 #~ msgstr ""
-#~ "Τύπος μεσολαβητή για χρήση. \"0\" σημαίνει σύστημα, \"1\" σημαίνει χωρίς "
-#~ "μεσολαβητή, \"2\" σημαίνει χειροκίνητος μεσολαβητής."
+#~ "Τύπος μεσολαβητή για χρήση. \"0\" σημαίνει σύστημα, \"1\" σημαίνει χωρίς μεσολαβητή, "
+#~ "\"2\" σημαίνει χειροκίνητος μεσολαβητής."
 
 #~ msgid "Whether to use proxy for HTTP requests."
 #~ msgstr "Εάν θα χρησιμοποιηθεί μεσολαβητής για αιτήματα HTTP."
 
 #~ msgid "Whether authentication is required to access proxy server."
-#~ msgstr ""
-#~ "Εάν απαιτείται πιστοποίηση για πρόσβαση στον εξυπηρετητή μεσολάβησης."
+#~ msgstr "Εάν απαιτείται πιστοποίηση για πρόσβαση στον εξυπηρετητή μεσολάβησης."
 
 #~ msgid "Host name to use for HTTP requests."
 #~ msgstr "Όνομα οικοδεσπότη για χρήση με αιτήματα HTTP."
@@ -5850,8 +5678,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Κωδικός για πιστοποίηση με εξυπηρετητή μεσολάβησης."
 
 #~ msgid "List of hosts for which do not use proxy."
-#~ msgstr ""
-#~ "Λίστα οικοδεσποτών για τους οποίους δεν χρησιμοποιείται μεσολαβητής."
+#~ msgstr "Λίστα οικοδεσποτών για τους οποίους δεν χρησιμοποιείται μεσολαβητής."
 
 #~ msgid "Host name to use for HTTPS requests."
 #~ msgstr "Όνομα οικοδεσπότη για χρήση με αιτήματα HTTPS."
@@ -6118,18 +5945,16 @@ msgstr "_Ακύρωση"
 #~ msgstr "Άκυρο όνομα οπισθοφυλακής '%s' στην πηγή '%s'"
 
 #~ msgid ""
-#~ "Failed to connect to a server using SSL. One possible reason is an "
-#~ "invalid certificate being used by the server. If this is expected, like "
-#~ "self-signed certificate being used on the server, then disable "
-#~ "certificate validity tests by selecting 'Ignore invalid SSL certificate' "
-#~ "option in Properties"
+#~ "Failed to connect to a server using SSL. One possible reason is an invalid certificate "
+#~ "being used by the server. If this is expected, like self-signed certificate being used on "
+#~ "the server, then disable certificate validity tests by selecting 'Ignore invalid SSL "
+#~ "certificate' option in Properties"
 #~ msgstr ""
-#~ "Αποτυχία σύνδεσης με εξυπηρετητή που χρησιμοποιεί SSL. Μια πιθανή αιτία "
-#~ "είναι ένα άκυρο πιστοποιητικό που χρησιμοποιείται από τον εξυπηρετητή. "
-#~ "Εάν αυτό αναμένεται, όπως χρήση αυτοϋπογραφόμενου πιστοποιητικού στον "
-#~ "εξυπηρετητή, τότε απενεργοποιήστε τους ελέγχους εγκυρότητας "
-#~ "πιστοποιητικού διαλέγοντας την επιλογή 'παράβλεψη άκυρου πιστοποιητικού "
-#~ "SSL' στις ιδιότητες."
+#~ "Αποτυχία σύνδεσης με εξυπηρετητή που χρησιμοποιεί SSL. Μια πιθανή αιτία είναι ένα άκυρο "
+#~ "πιστοποιητικό που χρησιμοποιείται από τον εξυπηρετητή. Εάν αυτό αναμένεται, όπως χρήση "
+#~ "αυτοϋπογραφόμενου πιστοποιητικού στον εξυπηρετητή, τότε απενεργοποιήστε τους ελέγχους "
+#~ "εγκυρότητας πιστοποιητικού διαλέγοντας την επιλογή 'παράβλεψη άκυρου πιστοποιητικού SSL' "
+#~ "στις ιδιότητες."
 
 #~ msgid "Cannot create local store"
 #~ msgstr "Αδύνατη η δημιουργία τοπικής αποθήκης"
@@ -6190,8 +6015,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Μεταφορά πληροφοριών περίληψης για νέα μηνύματα στο %s"
 
 #~ msgid "Incomplete server response: no information provided for message %d"
-#~ msgstr ""
-#~ "Ημιτελής απόκριση εξυπηρετητή: δε δόθηκαν πληροφορίες για το μήνυμα %d"
+#~ msgstr "Ημιτελής απόκριση εξυπηρετητή: δε δόθηκαν πληροφορίες για το μήνυμα %d"
 
 #~ msgid "Incomplete server response: no UID provided for message %d"
 #~ msgstr "Ημιτελής απόκριση εξυπηρετητή: δε δόθηκε UID για το μήνυμα %d"
@@ -6230,13 +6054,11 @@ msgstr "_Ακύρωση"
 #~ msgstr "Απροσδόκητη αποσύνδεση εξυπηρετητή: "
 
 #~ msgid "Cannot create folder: %s: Folder name cannot contain a dot"
-#~ msgstr ""
-#~ "Αδυναμία δημιουργίας του φακέλου %s: το όνομα του φακέλου περιέχει τελεία"
+#~ msgstr "Αδυναμία δημιουργίας του φακέλου %s: το όνομα του φακέλου περιέχει τελεία"
 
 #~ msgid "Cannot rename the folder: %s: Folder name cannot contain a dot"
 #~ msgstr ""
-#~ "Αδυναμία μετονομασίας του φακέλου %s: Το όνομα του φακέλου δεν μπορεί να "
-#~ "περιέχει τελεία"
+#~ "Αδυναμία μετονομασίας του φακέλου %s: Το όνομα του φακέλου δεν μπορεί να περιέχει τελεία"
 
 #~ msgid "Failed to build summary for an address book %s"
 #~ msgstr "Αποτυχία δημιουργίας περίληψης για ένα βιβλίο διευθύνσεων %s"
@@ -6337,12 +6159,10 @@ msgstr "_Ακύρωση"
 #~ msgid "Category Properties"
 #~ msgstr "Ιδιότητες κατηγορίας"
 
-#~ msgid ""
-#~ "There is already a category '%s' in the configuration. Please use another "
-#~ "name"
+#~ msgid "There is already a category '%s' in the configuration. Please use another name"
 #~ msgstr ""
-#~ "Υπάρχει ήδη μια κατηγορία '%s' στην ρύθμιση. Παρακαλούμε χρησιμοποιήστε "
-#~ "ένα διαφορετικό όνομα"
+#~ "Υπάρχει ήδη μια κατηγορία '%s' στην ρύθμιση. Παρακαλούμε χρησιμοποιήστε ένα διαφορετικό "
+#~ "όνομα"
 
 #~ msgid "Show Contacts"
 #~ msgstr "Εμφάνιση επαφών"
@@ -6396,9 +6216,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Διαγρα_φή %s"
 
 #~ msgid "Keyring key is unusable: no user or host name"
-#~ msgstr ""
-#~ "Αδυναμία χρήσης κλειδιού κλειδοθήκης: δεν αναφέρεται όνομα χρήστη ή "
-#~ "οικοδεσπότη"
+#~ msgstr "Αδυναμία χρήσης κλειδιού κλειδοθήκης: δεν αναφέρεται όνομα χρήστη ή οικοδεσπότη"
 
 #~ msgid "You have the Caps Lock key on."
 #~ msgstr "Έχετε πατημένο το πλήκτρο Caps Lock."
@@ -6407,8 +6225,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Απο_μνημόνευση αυτού του συνθηματικού"
 
 #~ msgid "_Remember this passphrase for the remainder of this session"
-#~ msgstr ""
-#~ "Απο_μνημόνευση αυτού του συνθηματικού μέχρι το τέλος αυτής της συνεδρίας"
+#~ msgstr "Απο_μνημόνευση αυτού του συνθηματικού μέχρι το τέλος αυτής της συνεδρίας"
 
 #~ msgid "_Remember this password"
 #~ msgstr "Απο_μνημόνευση αυτού του κωδικού"
@@ -6442,9 +6259,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Ενημέρωση της μνήμης επαφών (%d)... "
 
 #~ msgid "%s: there was no source for UID '%s' stored in GConf."
-#~ msgstr ""
-#~ "%s: δεν υπήρχε κάποια πηγή για το UID '%s' που είναι αποθηκευμένο στο "
-#~ "GConf."
+#~ msgstr "%s: δεν υπήρχε κάποια πηγή για το UID '%s' που είναι αποθηκευμένο στο GConf."
 
 #~ msgid "Empty URI"
 #~ msgstr "Κενό URL"
@@ -6492,13 +6307,10 @@ msgstr "_Ακύρωση"
 #~ msgstr "Εισάγετε κωδικό πρόσβασης για %s (χρήστης %s)"
 
 #~ msgid "Enter password for %s to enable proxy for user %s"
-#~ msgstr ""
-#~ "Εισάγετε κωδικό πρόσβασης %s για ενεργοποίηση διαμεσολαβητή για χρήστη %s"
+#~ msgstr "Εισάγετε κωδικό πρόσβασης %s για ενεργοποίηση διαμεσολαβητή για χρήστη %s"
 
 #~ msgid "Cannot retrieve calendar alarm e-mail address: %s"
-#~ msgstr ""
-#~ "Αδύνατη η ανάκτηση της ηλεκτρονικής διεύθυνσης ειδοποιήσεων του "
-#~ "ημερολογίου: %s"
+#~ msgstr "Αδύνατη η ανάκτηση της ηλεκτρονικής διεύθυνσης ειδοποιήσεων του ημερολογίου: %s"
 
 #~ msgid "Cannot retrieve calendar's LDAP attribute: %s"
 #~ msgstr "Αδύνατη η ανάκτηση της ιδιότητας LDAP του ημερολογίου: %s"
@@ -6510,9 +6322,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Αδύνατη η απόρριψη της ειδοποίησης ημερολογίου: %s"
 
 #~ msgid "Cannot retrieve default calendar object path: %s"
-#~ msgstr ""
-#~ "Αδύνατη η ανάκτηση της διαδρομής του προεπιλεγμένου αντικειμένου "
-#~ "ημερολογίου: %s"
+#~ msgstr "Αδύνατη η ανάκτηση της διαδρομής του προεπιλεγμένου αντικειμένου ημερολογίου: %s"
 
 #~ msgid "Could not complete calendar query: %s"
 #~ msgstr "Αδύνατη η ολοκλήρωση του ερωτήματος ημερολογίου: %s"
@@ -6607,12 +6417,10 @@ msgstr "_Ακύρωση"
 #~ msgid "For accessing Novell GroupWise servers"
 #~ msgstr "Για την πρόσβαση σε εξυπηρετητές Novell Groupwise"
 
-#~ msgid ""
-#~ "This option will connect to the GroupWise server using a plaintext "
-#~ "password."
+#~ msgid "This option will connect to the GroupWise server using a plaintext password."
 #~ msgstr ""
-#~ "Με την επιλογή αύτη θα γίνει σύνδεση στον εξυπηρετητή GroupWise με χρήση "
-#~ "κωδικού απλού κειμένου."
+#~ "Με την επιλογή αύτη θα γίνει σύνδεση στον εξυπηρετητή GroupWise με χρήση κωδικού απλού "
+#~ "κειμένου."
 
 #~ msgid "Host or user not available in url"
 #~ msgstr "Το σύστημα ή ο χρήστης δεν είναι διαθέσιμα στο url"
@@ -6620,16 +6428,13 @@ msgstr "_Ακύρωση"
 #~ msgid "You did not enter a password."
 #~ msgstr "Δεν έχετε εισάγει κωδικό πρόσβασης."
 
-#~ msgid ""
-#~ "Some features may not work correctly with your current server version"
+#~ msgid "Some features may not work correctly with your current server version"
 #~ msgstr ""
-#~ "Μερικές λειτουργίες μπορεί να μην λειτουργούν σωστά με την τρέχουσα "
-#~ "έκδοση του εξυπηρετητή σας"
+#~ "Μερικές λειτουργίες μπορεί να μην λειτουργούν σωστά με την τρέχουσα έκδοση του "
+#~ "εξυπηρετητή σας"
 
 #~ msgid "Cannot create GroupWise folders in offline mode."
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η δημιουργία φακέλων GroupWise σε λειτουργία χωρίς "
-#~ "σύνδεση."
+#~ msgstr "Δεν ήταν δυνατή η δημιουργία φακέλων GroupWise σε λειτουργία χωρίς σύνδεση."
 
 #~ msgid "Cannot create a special system folder"
 #~ msgstr "Αδύνατη η δημιουργία ενός ειδκού φακέλου συστήματος"
@@ -6650,18 +6455,15 @@ msgstr "_Ακύρωση"
 #~ msgstr "Γίνεται αποστολή μηνύματος"
 
 #~ msgid "Cannot get folder: Invalid operation on this store"
-#~ msgstr ""
-#~ "Δεν είναι δυνατό να γίνει η λήψη του φακέλου: Μη έγκυρη σε αυτή την "
-#~ "αποθήκη"
+#~ msgstr "Δεν είναι δυνατό να γίνει η λήψη του φακέλου: Μη έγκυρη σε αυτή την αποθήκη"
 
 #~ msgid ""
-#~ "You have exceeded this account's storage limit. Your messages are queued "
-#~ "in your Outbox. Resend by pressing Send/Receive after deleting/archiving "
-#~ "some of your mail.\n"
+#~ "You have exceeded this account's storage limit. Your messages are queued in your Outbox. "
+#~ "Resend by pressing Send/Receive after deleting/archiving some of your mail.\n"
 #~ msgstr ""
-#~ "Έχετε υπερβεί το όριο χώρου αποθήκευσης σε αυτό το λογαριασμό. Τα "
-#~ "μηνύματα σας εκκρεμούν στα Εξερχόμενα. Στείλτε τα ξανά, αφού διαγράψετε/"
-#~ "αρχειοθετήσετε μερικά από τα μηνύματα σας.\n"
+#~ "Έχετε υπερβεί το όριο χώρου αποθήκευσης σε αυτό το λογαριασμό. Τα μηνύματα σας εκκρεμούν "
+#~ "στα Εξερχόμενα. Στείλτε τα ξανά, αφού διαγράψετε/αρχειοθετήσετε μερικά από τα μηνύματα "
+#~ "σας.\n"
 
 #~ msgid "Could not send message: %s"
 #~ msgstr "Δεν είναι δυνατή η αποστολή του μηνύματος : %s"
@@ -6706,11 +6508,10 @@ msgstr "_Ακύρωση"
 #~ msgstr "Το TLS δεν είναι διαθέσιμο σε αυτή την έκδοση"
 
 #~ msgid ""
-#~ "Unable to connect to POP server %s: No support for requested "
-#~ "authentication mechanism."
+#~ "Unable to connect to POP server %s: No support for requested authentication mechanism."
 #~ msgstr ""
-#~ "Δεν ήταν δυνατή η σύνδεση με τον εξυπηρετητή POP %s: Δεν υποστηρίζεται ο "
-#~ "μηχανισμός πιστοποίησης."
+#~ "Δεν ήταν δυνατή η σύνδεση με τον εξυπηρετητή POP %s: Δεν υποστηρίζεται ο μηχανισμός "
+#~ "πιστοποίησης."
 
 #~ msgid "SASL '%s' Login failed for POP server %s%s"
 #~ msgstr "SASL '%s' Είσοδος απέτυχε για τον εξυπηρετητή POP %s%s"
@@ -6753,9 +6554,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Εσφαλμένη παράμετρος"
 
 #~ msgid "_Apply filters to new messages in INBOX on this server"
-#~ msgstr ""
-#~ "Εφαρμογή _φίλτρων στα νέα μηνύματα στα ΕΙΣΕΡΧΟΜΕΝΑ σ' αυτόν τον "
-#~ "εξυπηρετητή"
+#~ msgstr "Εφαρμογή _φίλτρων στα νέα μηνύματα στα ΕΙΣΕΡΧΟΜΕΝΑ σ' αυτόν τον εξυπηρετητή"
 
 #~ msgid "Cannot create spool file: %s"
 #~ msgstr "Αδύνατη η δημιουργία του αρχείου συγκέντρωσης: %s"
@@ -6794,8 +6593,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Μη υποστηριζόμενη λειτουργία: μέτρηση βάση έκφρασης: for %s"
 
 #~ msgid "Unsupported operation: search by UIDs: for %s"
-#~ msgstr ""
-#~ "Μη υποστηριζόμενη λειτουργία: αναζήτηση βάσει ταυτοτήτων χρήστη: για %s"
+#~ msgstr "Μη υποστηριζόμενη λειτουργία: αναζήτηση βάσει ταυτοτήτων χρήστη: για %s"
 
 #~ msgid "Learning junk"
 #~ msgstr "Εκμάθηση ανεπιθύμητης αλληλογραφίας"
@@ -6808,8 +6606,8 @@ msgstr "_Ακύρωση"
 
 #~ msgid "Cannot verify message signature: could not create temp file: %s"
 #~ msgstr ""
-#~ "Δεν ήταν δυνατή η επαλήθευση υπογραφής μηνύματος: δεν ήταν δυνατή η "
-#~ "δημιουργία προσωρινού αρχείου: %s"
+#~ "Δεν ήταν δυνατή η επαλήθευση υπογραφής μηνύματος: δεν ήταν δυνατή η δημιουργία προσωρινού "
+#~ "αρχείου: %s"
 
 #~ msgid "Unable to parse message content"
 #~ msgstr "Αδύνατη η ανάλυση του περιεχομένου του μηνύματος"
@@ -6827,8 +6625,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "εξαγωγή κλειδιών: δεν έχει εφαρμοστεί"
 
 #~ msgid "Cannot create folder: Invalid operation on this store"
-#~ msgstr ""
-#~ "Δεν είναι δυνατό να δημιουργηθεί ο φακέλος: Μη έγκυρη σε αυτή την αποθήκη"
+#~ msgstr "Δεν είναι δυνατό να δημιουργηθεί ο φακέλος: Μη έγκυρη σε αυτή την αποθήκη"
 
 #~ msgid "User canceled"
 #~ msgstr "Ακυρώθηκε από το χρήστη"
@@ -6842,11 +6639,10 @@ msgstr "_Ακύρωση"
 #~ msgid "For accessing Hula servers"
 #~ msgstr "Για την πρόσβαση σε εξυπηρετητές Hula"
 
-#~ msgid ""
-#~ "This option will connect to the Hula server using a plaintext password."
+#~ msgid "This option will connect to the Hula server using a plaintext password."
 #~ msgstr ""
-#~ "Με την επιλογή αυτή θα γίνει σύνδεση στον εξυπηρετητή Hula με χρήση "
-#~ "κωδικού απλού κειμένου."
+#~ "Με την επιλογή αυτή θα γίνει σύνδεση στον εξυπηρετητή Hula με χρήση κωδικού απλού "
+#~ "κειμένου."
 
 #~ msgid "Unexpected response status '%s' after APPEND command"
 #~ msgstr "Μη αναμενόμενη απάντηση κατάστασης '%s' μετά την εντολή APPEND"
@@ -6878,33 +6674,29 @@ msgstr "_Ακύρωση"
 #~ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 #~ msgstr "Απροσδόκητη αποσύνδεση του εξυπηρετητή IMAP4 %s: %s"
 
-#~ msgid ""
-#~ "Enable extended Mailing-List detection required for some filter and "
-#~ "vFolder rules"
+#~ msgid "Enable extended Mailing-List detection required for some filter and vFolder rules"
 #~ msgstr ""
-#~ "Απαιτείται ενεργοποίηση του εκτεταμένου εντοπισμού λίστας αλληλογραφίας "
-#~ "για κάποιους κανόνες φίλτρων και εικονικών φακέλων"
+#~ "Απαιτείται ενεργοποίηση του εκτεταμένου εντοπισμού λίστας αλληλογραφίας για κάποιους "
+#~ "κανόνες φίλτρων και εικονικών φακέλων"
 
 #~ msgid "Expire cached messages that haven't been read in X seconds"
 #~ msgstr ""
-#~ "Λήξη των μηνυμάτων που έχουν αποθηκευτεί στη λανθάνουσα μνήμη, αν δεν "
-#~ "έχουν αναγνωστεί σε X δευτερόλεπτα"
+#~ "Λήξη των μηνυμάτων που έχουν αποθηκευτεί στη λανθάνουσα μνήμη, αν δεν έχουν αναγνωστεί σε "
+#~ "X δευτερόλεπτα"
 
 #~ msgid "Expire cached messages older than X seconds"
 #~ msgstr ""
-#~ "Λήξη των μηνυμάτων που έχουν αποθηκευτεί στη λανθάνουσα μνήμη, αν είναι "
-#~ "παλαιότερα από X δευτερόλεπτα"
+#~ "Λήξη των μηνυμάτων που έχουν αποθηκευτεί στη λανθάνουσα μνήμη, αν είναι παλαιότερα από X "
+#~ "δευτερόλεπτα"
 
 #~ msgid "Cannot access folder '%s': %s"
 #~ msgstr "Δεν είναι δυνατή η πρόσβαση στο φάκελο '%s': %s"
 
 #~ msgid "Cannot sync flags to folder '%s': Unknown error"
-#~ msgstr ""
-#~ "Δεν είναι δυνατός ο συγχρονισμός σημαιών στο φάκελο '%s': Άγνωστο σφάλμα"
+#~ msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στο φάκελο '%s': Άγνωστο σφάλμα"
 
 #~ msgid "Cannot sync flags to folder '%s': Bad command"
-#~ msgstr ""
-#~ "Δεν είναι δυνατός ο συγχρονισμός σημαιών στο φάκελο '%s': Εσφαλμένη εντολή"
+#~ msgstr "Δεν είναι δυνατός ο συγχρονισμός σημαιών στο φάκελο '%s': Εσφαλμένη εντολή"
 
 #~ msgid "Cannot expunge folder '%s': Unknown error"
 #~ msgstr "Δεν είναι δυνατή η εξάλειψη του φακέλου '%s': Άγνωστο σφάλμα"
@@ -6914,46 +6706,38 @@ msgstr "_Ακύρωση"
 
 #~ msgid "Cannot get message %s from folder '%s': No such message"
 #~ msgstr ""
-#~ "Δεν είναι δυνατή η λήψη του μηνύματος %s από το φάκελο '%s': Δεν υπάρχει "
-#~ "τέτοιο μήνυμα"
+#~ "Δεν είναι δυνατή η λήψη του μηνύματος %s από το φάκελο '%s': Δεν υπάρχει τέτοιο μήνυμα"
 
 #~ msgid "Cannot get message %s from folder '%s': Bad command"
-#~ msgstr ""
-#~ "Δεν είναι δυνατή η λήψη του μηνύματος %s από το φάκελο '%s': Εσφαλμένη "
-#~ "εντολή"
+#~ msgstr "Δεν είναι δυνατή η λήψη του μηνύματος %s από το φάκελο '%s': Εσφαλμένη εντολή"
 
 #~ msgid "Cannot append message to folder '%s': Folder is read-only"
 #~ msgstr ""
-#~ "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο '%s': Ο φάκελος είναι "
-#~ "μόνο για ανάγνωση"
+#~ "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο '%s': Ο φάκελος είναι μόνο για ανάγνωση"
 
 #~ msgid "Cannot append message to folder '%s': Unknown error"
-#~ msgstr ""
-#~ "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο '%s': Άγνωστο σφάλμα"
+#~ msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο '%s': Άγνωστο σφάλμα"
 
 #~ msgid "Cannot append message to folder '%s': Bad command"
-#~ msgstr ""
-#~ "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο '%s': Εσφαλμένη εντολή"
+#~ msgstr "Δεν είναι δυνατή η προσθήκη μηνύματος στο φάκελο '%s': Εσφαλμένη εντολή"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "Δεν είναι δυνατή η μετακίνηση μηνυμάτων από το φάκελο '%s' στο φάκελο "
-#~ "'%s': Άγνωστο σφάλμα"
+#~ "Δεν είναι δυνατή η μετακίνηση μηνυμάτων από το φάκελο '%s' στο φάκελο '%s': Άγνωστο σφάλμα"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Unknown error"
 #~ msgstr ""
-#~ "Δεν είναι δυνατή η αντιγραφή μηνυμάτων από το φάκελο '%s' στο φάκελο "
-#~ "'%s': Άγνωστο σφάλμα"
+#~ "Δεν είναι δυνατή η αντιγραφή μηνυμάτων από το φάκελο '%s' στο φάκελο '%s': Άγνωστο σφάλμα"
 
 #~ msgid "Cannot move messages from folder '%s' to folder '%s': Bad command"
 #~ msgstr ""
-#~ "Δεν είναι δυνατή η μετακίνηση μηνυμάτων από το φάκελο '%s' στο φάκελο "
-#~ "'%s': Εσφαλμένη εντολή"
+#~ "Δεν είναι δυνατή η μετακίνηση μηνυμάτων από το φάκελο '%s' στο φάκελο '%s': Εσφαλμένη "
+#~ "εντολή"
 
 #~ msgid "Cannot copy messages from folder '%s' to folder '%s': Bad command"
 #~ msgstr ""
-#~ "Δεν είναι δυνατή η αντιγραφή μηνυμάτων από το φάκελο '%s' στο φάκελο "
-#~ "'%s': Εσφαλμένη εντολή"
+#~ "Δεν είναι δυνατή η αντιγραφή μηνυμάτων από το φάκελο '%s' στο φάκελο '%s': Εσφαλμένη "
+#~ "εντολή"
 
 #~ msgid "Only check for Junk messa_ges in the INBOX folder"
 #~ msgstr "Έλεγχος για Ανεπιθύμητα μη_νύματα μόνο στο φάκελο εισερχομένων"
@@ -6964,107 +6748,80 @@ msgstr "_Ακύρωση"
 #~ msgid "For reading and storing mail on IMAPv4rev1 servers."
 #~ msgstr "Για ανάγνωση και αποθήκευση μηνυμάτων σε εξυπηρετητές IMAPv4rev1."
 
-#~ msgid ""
-#~ "This option will connect to the IMAPv4rev1 server using a plaintext "
-#~ "password."
+#~ msgid "This option will connect to the IMAPv4rev1 server using a plaintext password."
 #~ msgstr ""
-#~ "Με την επιλογή αύτη θα γίνει σύνδεση στον εξυπηρετητή IMAPv4rev1 με χρήση "
-#~ "κωδικού απλού κειμένου."
+#~ "Με την επιλογή αύτη θα γίνει σύνδεση στον εξυπηρετητή IMAPv4rev1 με χρήση κωδικού απλού "
+#~ "κειμένου."
 
-#~ msgid ""
-#~ "Failed to connect to IMAP server %s in secure mode: Server does not "
-#~ "support STARTTLS"
+#~ msgid "Failed to connect to IMAP server %s in secure mode: Server does not support STARTTLS"
 #~ msgstr ""
-#~ "Δεν ήταν δυνατή η σύνδεση με τον εξυπηρετητή IMAP %s σε ασφαλή "
-#~ "λειτουργία: Ο εξυπηρετητής δεν υποστηρίζει το STARTTLS"
+#~ "Δεν ήταν δυνατή η σύνδεση με τον εξυπηρετητή IMAP %s σε ασφαλή λειτουργία: Ο εξυπηρετητής "
+#~ "δεν υποστηρίζει το STARTTLS"
 
-#~ msgid ""
-#~ "Cannot authenticate to IMAP server %s using the %s authentication "
-#~ "mechanism"
+#~ msgid "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
 #~ msgstr ""
-#~ "Δεν ήταν δυνατή η σύνδεση με τον εξυπηρετητή IMAP %s με χρήση του "
-#~ "%sμηχανισμού πιστοποίησης"
+#~ "Δεν ήταν δυνατή η σύνδεση με τον εξυπηρετητή IMAP %s με χρήση του %sμηχανισμού "
+#~ "πιστοποίησης"
 
 #~ msgid "Cannot authenticate to IMAP server %s using %s"
-#~ msgstr ""
-#~ "Δεν είναι δυνατή η πιστοποίηση στον εξυπηρετητή IMAP %s με τη χρήση %s"
+#~ msgstr "Δεν είναι δυνατή η πιστοποίηση στον εξυπηρετητή IMAP %s με τη χρήση %s"
 
 #~ msgid "Cannot create IMAP folders in offline mode."
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η δημιουργία φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
+#~ msgstr "Δεν ήταν δυνατή η δημιουργία φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
 
 #~ msgid "Cannot get folder '%s' on IMAP server %s: Unknown error"
-#~ msgstr ""
-#~ "Δεν είναι δυνατή η λήψη του φακέλου '%s' στον εξυπηρετητή IMAP %s: "
-#~ "Άγνωστο σφάλμα"
+#~ msgstr "Δεν είναι δυνατή η λήψη του φακέλου '%s' στον εξυπηρετητή IMAP %s: Άγνωστο σφάλμα"
 
 #~ msgid "Cannot get LIST information for '%s' on IMAP server %s: %s"
-#~ msgstr ""
-#~ "Αδυναμία λήψης πληροφοριών LIST για το '%s' στον εξυπηρετητή IMAP %s: %s"
+#~ msgstr "Αδυναμία λήψης πληροφοριών LIST για το '%s' στον εξυπηρετητή IMAP %s: %s"
 
 #~ msgid "Bad command"
 #~ msgstr "Εσφαλμένη εντολή"
 
 #~ msgid "Cannot create folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η δημιουργία του φακέλου '%s': Μη έγκυρο όνομα mailbox"
+#~ msgstr "Δεν ήταν δυνατή η δημιουργία του φακέλου '%s': Μη έγκυρο όνομα mailbox"
 
 #~ msgid "Cannot create folder '%s': Bad command"
 #~ msgstr "Δεν είναι δυνατή η δημιουργία φακέλου '%s':' Εσφαλμένη εντολή"
 
 #~ msgid "Cannot delete IMAP folders in offline mode."
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η διαγραφή φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
+#~ msgstr "Δεν ήταν δυνατή η διαγραφή φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
 
 #~ msgid "Cannot delete folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η διαγραφή του φακέλου '%s': Μη έγκυρο όνομα mailbox"
+#~ msgstr "Δεν ήταν δυνατή η διαγραφή του φακέλου '%s': Μη έγκυρο όνομα mailbox"
 
 #~ msgid "Cannot delete folder '%s': Bad command"
 #~ msgstr "Δεν ήταν δυνατή η διαγραφή του φακέλου '%s': Εσφαλμένη εντολή"
 
 #~ msgid "Cannot rename folder '%s' to '%s': Special folder"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η μετονομασία του φακέλου '%s' σε '%s': Ειδικός φάκελος"
+#~ msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου '%s' σε '%s': Ειδικός φάκελος"
 
 #~ msgid "Cannot rename IMAP folders in offline mode."
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η μετονομασία φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
+#~ msgstr "Δεν ήταν δυνατή η μετονομασία φακέλων IMAP σε λειτουργία χωρίς σύνδεση."
 
 #~ msgid "Cannot rename folder '%s' to '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η μετονομασία του φακέλου '%s' σε '%s': Μη έγκυρο όνομα "
-#~ "mailbox"
+#~ msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου '%s' σε '%s': Μη έγκυρο όνομα mailbox"
 
 #~ msgid "Cannot rename folder '%s' to '%s': Bad command"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η μετονομασία του φακέλου '%s' σε '%s': Εσφαλμένη εντολή"
+#~ msgstr "Δεν ήταν δυνατή η μετονομασία του φακέλου '%s' σε '%s': Εσφαλμένη εντολή"
 
 #~ msgid "Cannot get %s information for pattern '%s' on IMAP server %s: %s"
-#~ msgstr ""
-#~ "Αδυναμία λήψης %s πληροφοριών για το μοτίβο '%s' στον εξυπηρετητή IMAP "
-#~ "%s: %s"
+#~ msgstr "Αδυναμία λήψης %s πληροφοριών για το μοτίβο '%s' στον εξυπηρετητή IMAP %s: %s"
 
 #~ msgid "Cannot subscribe to IMAP folders in offline mode."
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η εγγραφή σε φάκελους IMAP σε λειτουργία χωρίς σύνδεση."
+#~ msgstr "Δεν ήταν δυνατή η εγγραφή σε φάκελους IMAP σε λειτουργία χωρίς σύνδεση."
 
 #~ msgid "Cannot subscribe to folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η εγγραφή για το φάκελο '%s': Μη έγκυρο όνομα mailbox"
+#~ msgstr "Δεν ήταν δυνατή η εγγραφή για το φάκελο '%s': Μη έγκυρο όνομα mailbox"
 
 #~ msgid "Cannot subscribe to folder '%s': Bad command"
 #~ msgstr "Δεν ήταν δυνατή η εγγραφή για το φάκελο '%s': Εσφαλμένη εντολή"
 
 #~ msgid "Cannot unsubscribe from IMAP folders in offline mode."
-#~ msgstr ""
-#~ "Δεν είναι δυνατή η αποχώρηση από φάκελους IMAP σε λειτουργία χωρίς "
-#~ "σύνδεση."
+#~ msgstr "Δεν είναι δυνατή η αποχώρηση από φάκελους IMAP σε λειτουργία χωρίς σύνδεση."
 
 #~ msgid "Cannot unsubscribe from folder '%s': Invalid mailbox name"
-#~ msgstr ""
-#~ "Δεν ήταν δυνατή η ακύρωση συνδρομής για το φάκελο '%s': Μη έγκυρο όνομα "
-#~ "mailbox"
+#~ msgstr "Δεν ήταν δυνατή η ακύρωση συνδρομής για το φάκελο '%s': Μη έγκυρο όνομα mailbox"
 
 #~ msgid "Cannot unsubscribe from folder '%s': Bad command"
 #~ msgstr "Δεν είναι δυνατή η αποχώρηση για το φάκελο '%s': Εσφαλμένη εντολή"
@@ -7178,11 +6935,8 @@ msgstr "_Ακύρωση"
 #~ msgid "Kerberos 4"
 #~ msgstr "Kerberos 4"
 
-#~ msgid ""
-#~ "This option will connect to the server using Kerberos 4 authentication."
-#~ msgstr ""
-#~ "Με την επιλογή αυτή θα συνδεθεί στον εξυπηρετητή με την πιστοποίηση "
-#~ "Kerberos 4."
+#~ msgid "This option will connect to the server using Kerberos 4 authentication."
+#~ msgstr "Με την επιλογή αυτή θα συνδεθεί στον εξυπηρετητή με την πιστοποίηση Kerberos 4."
 
 #~ msgid ""
 #~ "Could not get Kerberos ticket:\n"
@@ -7201,8 +6955,7 @@ msgstr "_Ακύρωση"
 #~ msgstr "Αδυναμία αποκρυπτογράφησης υπογραφής πιστοποιητικού"
 
 #~ msgid "Unable to decrypt Certificate Revocation List signature"
-#~ msgstr ""
-#~ "Αδυναμία αποκρυπτογράφησης υπογραφής Λίστας Ανάκτησης Πιστοποιητικών"
+#~ msgstr "Αδυναμία αποκρυπτογράφησης υπογραφής Λίστας Ανάκτησης Πιστοποιητικών"
 
 #~ msgid "Unable to decode issuer's public key"
 #~ msgstr "Αδυναμία αποκωδικοποίησης δημοσίου κλειδιού εκδότη"
