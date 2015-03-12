@@ -514,9 +514,26 @@ match_words_1message (CamelDataWrapper *object,
 		/* for all other text parts, we look inside, otherwise we dont care */
 		CamelStream *stream;
 		GByteArray *byte_array;
+		const gchar *charset;
 
 		byte_array = g_byte_array_new ();
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
+
+		charset = camel_content_type_param (CAMEL_DATA_WRAPPER (containee)->mime_type, "charset");
+		if (charset && *charset) {
+			CamelMimeFilter *filter = camel_mime_filter_charset_new (charset, "UTF-8");
+			if (filter) {
+				CamelStream *filtered = camel_stream_filter_new (stream);
+
+				if (filtered) {
+					camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered), filter);
+					g_object_unref (stream);
+					stream = filtered;
+				}
+
+				g_object_unref (filter);
+			}
+		}
 
 		/* FIXME The match should be part of a stream op */
 		camel_data_wrapper_decode_to_stream_sync (

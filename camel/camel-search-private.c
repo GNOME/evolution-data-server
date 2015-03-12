@@ -532,9 +532,27 @@ camel_search_message_body_contains (CamelDataWrapper *object,
 		 * inside, otherwise we don't care. */
 		CamelStream *stream;
 		GByteArray *byte_array;
+		const gchar *charset;
 
 		byte_array = g_byte_array_new ();
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
+
+		charset = camel_content_type_param (CAMEL_DATA_WRAPPER (containee)->mime_type, "charset");
+		if (charset && *charset) {
+			CamelMimeFilter *filter = camel_mime_filter_charset_new (charset, "UTF-8");
+			if (filter) {
+				CamelStream *filtered = camel_stream_filter_new (stream);
+
+				if (filtered) {
+					camel_stream_filter_add (CAMEL_STREAM_FILTER (filtered), filter);
+					g_object_unref (stream);
+					stream = filtered;
+				}
+
+				g_object_unref (filter);
+			}
+		}
+
 		camel_data_wrapper_decode_to_stream_sync (
 			containee, stream, NULL, NULL);
 		camel_stream_write (stream, "", 1, NULL, NULL);
