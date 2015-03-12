@@ -3137,7 +3137,7 @@ msgstr "_Hledat nové zprávy v přihlášených složkách"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:44
 msgid "Use _Quick Resync if the server supports it"
-msgstr "Použít _rychlou synchronizaci, pokud ji server podporuje"
+msgstr "Používat _rychlou synchronizaci, pokud ji server podporuje"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:46
 msgid "_Listen for server change notifications"
