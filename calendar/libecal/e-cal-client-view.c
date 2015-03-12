@@ -505,31 +505,6 @@ cal_client_view_complete_cb (EGdbusCalView *dbus_proxy,
 }
 
 static void
-cal_client_view_dispose_cb (GObject *source_object,
-                            GAsyncResult *result,
-                            gpointer user_data)
-{
-	GError *local_error = NULL;
-
-	e_gdbus_cal_view_call_dispose_finish (
-		G_DBUS_PROXY (source_object), result, &local_error);
-
-	/* Ignore closed errors, since this callback can be called after the
-	 * EBookClientView has been disposed, and hence after the calling code
-	 * has dropped its final reference and gone on to clean up other things
-	 * (like the dbus-daemon, if it’s a test harness). */
-	if (local_error != NULL &&
-	    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CLOSED) &&
-	    !g_error_matches (local_error, G_DBUS_ERROR,
-	                      G_DBUS_ERROR_NOT_SUPPORTED)) {
-		g_dbus_error_strip_remote_error (local_error);
-		g_warning ("%s: %s", G_STRFUNC, local_error->message);
-	}
-
-	g_clear_error (&local_error);
-}
-
-static void
 cal_client_view_set_client (ECalClientView *client_view,
                             ECalClient *client)
 {
@@ -655,11 +630,11 @@ cal_client_view_dispose (GObject *object)
 			priv->dbus_proxy,
 			priv->complete_handler_id);
 
-		/* Call D-Bus dispose() asynchronously
-		 * so we don't block this dispose(). */
-		e_gdbus_cal_view_call_dispose (
-			priv->dbus_proxy, NULL,
-			cal_client_view_dispose_cb, NULL);
+		/* Call D-Bus dispose() asynchronously so we don't block this dispose().
+		 * Also omit a callback function, so the GDBusMessage
+		 * uses G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED.
+		 */
+		e_gdbus_cal_view_call_dispose (priv->dbus_proxy, NULL, NULL, NULL);
 		g_object_unref (priv->dbus_proxy);
 		priv->dbus_proxy = NULL;
 	}
