@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-03-10 05:33+0000\n"
-"PO-Revision-Date: 2015-03-10 17:15+0100\n"
+"POT-Creation-Date: 2015-03-12 05:33+0000\n"
+"PO-Revision-Date: 2015-03-12 11:00+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -76,7 +76,7 @@ msgstr "Neplatná požiadavka „%s“"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1975
 msgid "Requested to delete an unrelated cursor"
-msgstr ""
+msgstr "Požadovalo sa odstránenie nesúvisiaceho kurzora"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:2046
 #, c-format
@@ -959,12 +959,12 @@ msgstr "Nedá sa odstrániť súbor databázy: chyba číslo %d"
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6048 ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6448
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
-msgstr ""
+msgstr "Kurzorom EbSdbCursor sú podporované iba súhrnné požiadavky"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6055
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
-msgstr ""
+msgstr "Pre použitie kurzora EbSdbCursor musí byť určené aspoň jedno pole, podľa ktorého sa má usporiadať"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6069
 #, c-format
@@ -979,12 +979,12 @@ msgstr "Nedá sa usporiadať podľa poľa, ktoré môže obsahovať viacero hodn
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6209 ../addressbook/libedata-book/e-book-sqlite.c:8044
 #, c-format
 msgid "Tried to step a cursor in reverse, but cursor is already at the beginning of the contact list"
-msgstr ""
+msgstr "Vykonal sa pokus o posun kurzora späť, ale kurzor je už na začiatku zoznamu kontaktov"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6217 ../addressbook/libedata-book/e-book-sqlite.c:8052
 #, c-format
 msgid "Tried to step a cursor forwards, but cursor is already at the end of the contact list"
-msgstr ""
+msgstr "Vykonal sa pokus o posun kurzora dopredu, ale kurzor je už na konci zoznamu kontaktov"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:545
 #, c-format
@@ -1166,7 +1166,7 @@ msgstr "Nerozpoznaný pôvod kurzoru"
 
 #: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:336
 msgid "Out of sync revision while moving cursor"
-msgstr ""
+msgstr "Počas pohybu kurzora sa rozpadla synchronizácia revízie"
 
 #: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:430
 msgid "Alphabetic index was set for incorrect locale"
@@ -4355,7 +4355,7 @@ msgstr "Jednotky pre upozornenie na narodeniny a výročia, „minutes“ (minú
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
-msgstr ""
+msgstr "Určuje, či už bola vykonaná migrácia starých nastavení"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -4363,7 +4363,7 @@ msgstr "(Zavrhnuté) Typ proxy, ktorý použiť"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid "This key was deprecated in version 3.12 and should no longer be used. Proxy settings are now integrated into Evolution-Data-Server's account system. See the ESourceProxy API documentation for details."
-msgstr ""
+msgstr "Tento kľúč bol označený ako zastaralý vo verzii 3.12 a nemal by sa viac používať. Nastavenia sprostredkovateľa proxy sú teraz integrované v systéme účtov Evolution-Data-Server. Pre podrobnosti si prezrite dokumentáciu k API ESourceProxy."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:3
 msgid "(Deprecated) Whether to use http-proxy"
@@ -4426,7 +4426,7 @@ msgstr "%s nepodporuje odstraňovanie vzdialených zdrojov"
 #: ../libebackend/e-data-factory.c:1233
 #, c-format
 msgid "Backend factory for source '%s' and extension '%s' cannot be found."
-msgstr ""
+msgstr "Nedá sa nájsť obslužný program pre zdroj „%s“ a rozšírenie „%s“."
 
 #: ../libebackend/e-server-side-source.c:141
 #, c-format
