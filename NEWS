@@ -1,3 +1,45 @@
+Evolution-Data-Server 3.15.92 2015-03-16
+----------------------------------------
+
+Bug Fixes:
+	Bug 720197 - [IMAPx] Indefinite waiting for message download (Milan Crha)
+	Bug 737468 - [IMAPx] Temporarily workaround 'Empty cache file' error (Milan Crha)
+	Bug 736040 - Local Drafts folder is displayed twice after the first run (Milan Crha)
+	Bug 723614 - Restore from GConf only once (Milan Crha)
+	Bug 732573 - Preset default Drafts and Sent folders for GOA/UOA accounts (Milan Crha)
+	Bug 624003 - [SMTP] GMail password change not accepted first time (Milan Crha)
+	Bug 697053 - Call view's remote dispose without waiting for a result (Milan Crha)
+	Bug 700015 - Searching for mail contents does not respect encoding (Milan Crha)
+
+Miscellaneous:
+	Correct Berkeley DB (libdb) CFLAGS/LIBS (Milan Crha)
+	module-gnome-online-accounts: Mail part of the account can be disabled (Milan Crha)
+	Revert part of commit 687d1b1bcb to avoid deadlock (Milan Crha)
+	Should not ask for password of GOA IMAP account (Milan Crha)
+	[IMAPx] IDLE call timeouts for STARTTLS connections (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Piotr Drąg (pl)
+	Fran Dieguez (gl)
+	Balázs Úr (hu)
+	Baurzhan Muftakhidinov (kk)
+	Changwoo Ryu (ko)
+	Aurimas Černius (lt)
+	Daniel Mustieles (es)
+	Anders Jonsson (sv)
+	Dušan Kazik (sk)
+	Tom Tryfonidis (el)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+	Samir Ribic (bs)
+	Андрій Бандура (uk)
+	Ask Hjorth Larsen (da)
+	Matej Urbančič (sl)
+	Josef Andersson (sv)
+	Alexandre Franke (fr)
+	Muhammet Kara (tr)
+
 Evolution-Data-Server 3.15.91 2015-03-02
 ----------------------------------------
 
