@@ -5417,12 +5417,31 @@ caldav_authenticate_sync (EBackend *backend,
 		g_cond_signal (&cbdav->priv->cond);
 	} else if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed) ||
 		   g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired)) {
-		if (!e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD) ||
-		    g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired))
-			result = E_SOURCE_AUTHENTICATION_REQUIRED;
-		else
-			result = E_SOURCE_AUTHENTICATION_REJECTED;
-		g_clear_error (&local_error);
+		gchar *auth_user = NULL;
+
+		if (!username || !*username) {
+			ESource *source;
+			ESourceAuthentication *auth_extension;
+
+			source = e_backend_get_source (backend);
+			auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+			auth_user = e_source_authentication_dup_user (auth_extension);
+
+			username = auth_user;
+		}
+
+		if (username && *username) {
+			if (!e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+				result = E_SOURCE_AUTHENTICATION_REQUIRED;
+			else
+				result = E_SOURCE_AUTHENTICATION_REJECTED;
+			g_clear_error (&local_error);
+		} else {
+			result = E_SOURCE_AUTHENTICATION_ERROR;
+			g_propagate_error (error, local_error);
+		}
+
+		g_free (auth_user);
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
 		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 		g_propagate_error (error, local_error);
