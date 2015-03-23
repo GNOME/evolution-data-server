@@ -195,6 +195,7 @@ libedataserver/e-webdav-discover.c
 libedataserverui/e-credentials-prompter.c
 libedataserverui/e-credentials-prompter-impl-password.c
 libedataserverui/e-trust-prompt.c
+libedataserverui/e-webdav-discover-widget.c
 modules/gnome-online-accounts/e-goa-password-based.c
 modules/gnome-online-accounts/goaewsclient.c
 modules/gnome-online-accounts/module-gnome-online-accounts.c

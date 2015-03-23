@@ -41,18 +41,22 @@ libedataserveruiincludedir = $(privincludedir)/libedataserverui
 
 libedataserveruiinclude_HEADERS = \
 	libedataserverui.h \
+	e-cell-renderer-color.h \
 	e-credentials-prompter.h \
 	e-credentials-prompter-impl.h \
 	e-credentials-prompter-impl-password.h \
 	e-trust-prompt.h \
+	e-webdav-discover-widget.h \
 	$(NULL)
 
 libedataserverui_1_2_la_SOURCES = \
 	$(BUILT_SOURCES) \
+	e-cell-renderer-color.c \
 	e-credentials-prompter.c \
 	e-credentials-prompter-impl.c \
 	e-credentials-prompter-impl-password.c \
 	e-trust-prompt.c \
+	e-webdav-discover-widget.c \
 	$(NULL)
 
 %-$(API_VERSION).pc: %.pc

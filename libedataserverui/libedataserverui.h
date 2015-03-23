@@ -20,10 +20,12 @@
 
 #define __LIBEDATASERVERUI_H_INSIDE__
 
+#include <libedataserverui/e-cell-renderer-color.h>
 #include <libedataserverui/e-credentials-prompter.h>
 #include <libedataserverui/e-credentials-prompter-impl.h>
 #include <libedataserverui/e-credentials-prompter-impl-password.h>
 #include <libedataserverui/e-trust-prompt.h>
+#include <libedataserverui/e-webdav-discover-widget.h>
 
 #undef __LIBEDATASERVERUI_H_INSIDE__
 
