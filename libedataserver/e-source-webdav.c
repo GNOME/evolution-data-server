@@ -170,8 +170,13 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 		extension,
 		"host", soup_uri->host,
 		"port", soup_uri->port,
-		"user", soup_uri->user,
 		NULL);
+
+	if (soup_uri->user && *soup_uri->user)
+		g_object_set (
+			extension,
+			"user", soup_uri->user,
+			NULL);
 
 	extension_name = E_SOURCE_EXTENSION_SECURITY;
 	extension = e_source_get_extension (source, extension_name);
