@@ -1754,6 +1754,7 @@ e_collection_backend_authenticate_children (ECollectionBackend *backend,
 		}
 	}
 
+	g_list_free_full (sources, g_object_unref);
 	g_clear_object (&credentials_provider);
 	g_clear_object (&registry_server);
 }
