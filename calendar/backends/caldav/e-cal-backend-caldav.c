@@ -127,6 +127,7 @@ struct _ECalBackendCalDAVPrivate {
 	 * message than a generic SOUP_STATUS_UNAUTHORIZED description. */
 	GError *bearer_auth_error;
 	GMutex bearer_auth_error_lock;
+	gboolean using_bearer_auth;
 };
 
 /* Forward Declarations */
@@ -1047,10 +1048,12 @@ soup_authenticate (SoupSession *session,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
+	cbdav->priv->using_bearer_auth = E_IS_SOUP_AUTH_BEARER (auth);
+
 	if (retrying)
 		return;
 
-	if (E_IS_SOUP_AUTH_BEARER (auth)) {
+	if (cbdav->priv->using_bearer_auth) {
 		soup_authenticate_bearer (session, msg, auth, cbdav);
 
 	/* do not send same password twice, but keep it for later use */
@@ -5431,7 +5434,8 @@ caldav_authenticate_sync (EBackend *backend,
 		}
 
 		if (username && *username) {
-			if (!e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+			if (!cbdav->priv->using_bearer_auth &&
+			    !e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
 				result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			else
 				result = E_SOURCE_AUTHENTICATION_REJECTED;
