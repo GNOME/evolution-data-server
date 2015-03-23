@@ -937,6 +937,9 @@ source_parse_dbus_data (ESource *source,
 	gchar *data;
 	gboolean success;
 
+	if (!source->priv->dbus_object)
+		return FALSE;
+
 	dbus_object = E_DBUS_OBJECT (source->priv->dbus_object);
 
 	dbus_source = e_dbus_object_get_source (dbus_object);
