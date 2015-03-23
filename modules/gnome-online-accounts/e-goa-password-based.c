@@ -217,8 +217,12 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 	goa_account = goa_object_get_account (goa_object);
 	goa_password_based = goa_object_get_password_based (goa_object);
 
-	/* XXX We should only be here if the account is password based. */
-	g_return_val_if_fail (goa_password_based != NULL, FALSE);
+	if (!goa_password_based) {
+		/* Can be OAuth/2 based, thus return empty credentials. */
+		*out_credentials = e_named_parameters_new ();
+		success = TRUE;
+		goto exit;
+	}
 
 	success = goa_account_call_ensure_credentials_sync (
 		goa_account, NULL, cancellable, error);
