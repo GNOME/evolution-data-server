@@ -40,6 +40,8 @@
 #include <libedataserver/e-operation-pool.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-sexp.h>
+#include <libedataserver/e-soup-auth-bearer.h>
+#include <libedataserver/e-soup-ssl-trust.h>
 #include <libedataserver/e-source-address-book.h>
 #include <libedataserver/e-source-alarms.h>
 #include <libedataserver/e-source-authentication.h>
@@ -78,6 +80,7 @@
 #include <libedataserver/e-time-utils.h>
 #include <libedataserver/e-uid.h>
 #include <libedataserver/e-url.h>
+#include <libedataserver/e-webdav-discover.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libedataserver/e-xml-utils.h>
 #include <libedataserver/eds-version.h>

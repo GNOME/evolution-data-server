@@ -66,6 +66,8 @@ libedataserver_1_2_la_SOURCES = \
 	e-operation-pool.c \
 	e-proxy.c \
 	e-sexp.c \
+	e-soup-auth-bearer.c \
+	e-soup-ssl-trust.c \
 	e-source.c \
 	e-source-extension.c \
 	e-source-address-book.c \
@@ -104,6 +106,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-transliterator-private.h \
 	e-uid.c \
 	e-url.c \
+	e-webdav-discover.c \
 	e-data-server-util.c \
 	e-xml-utils.c \
 	e-xml-hash-utils.c \
@@ -150,6 +153,8 @@ libedataserverinclude_HEADERS = \
 	e-operation-pool.h \
 	e-proxy.h \
 	e-sexp.h \
+	e-soup-auth-bearer.h \
+	e-soup-ssl-trust.h \
 	e-source.h \
 	e-source-address-book.h \
 	e-source-alarms.h \
@@ -189,6 +194,7 @@ libedataserverinclude_HEADERS = \
 	e-time-utils.h \
 	e-uid.h \
 	e-url.h \
+	e-webdav-discover.h \
 	e-data-server-util.h \
 	e-xml-utils.h \
 	e-xml-hash-utils.h \

@@ -34,8 +34,6 @@
 #include <libebackend/e-oauth2-support.h>
 #include <libebackend/e-offline-listener.h>
 #include <libebackend/e-server-side-source.h>
-#include <libebackend/e-soup-auth-bearer.h>
-#include <libebackend/e-soup-ssl-trust.h>
 #include <libebackend/e-source-registry-server.h>
 #include <libebackend/e-sqlite3-vfs.h>
 #include <libebackend/e-subprocess-factory.h>

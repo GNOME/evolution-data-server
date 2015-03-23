@@ -12,8 +12,6 @@ module_owncloud_backend_la_CPPFLAGS = \
 
 module_owncloud_backend_la_SOURCES = \
 	module-owncloud-backend.c \
-	owncloud-utils.c \
-	owncloud-utils.h \
 	$(NULL)
 
 module_owncloud_backend_la_LIBADD = \

@@ -65,8 +65,6 @@ libebackend_1_2_la_SOURCES = \
 	e-offline-listener.c \
 	e-server-side-source.c \
 	e-server-side-source-credentials-provider.c \
-	e-soup-auth-bearer.c \
-	e-soup-ssl-trust.c \
 	e-source-registry-server.c \
 	e-sqlite3-vfs.c \
 	e-subprocess-factory.c \
@@ -110,8 +108,6 @@ libebackendinclude_HEADERS = \
 	e-offline-listener.h \
 	e-server-side-source.h \
 	e-server-side-source-credentials-provider.h \
-	e-soup-auth-bearer.h \
-	e-soup-ssl-trust.h \
 	e-source-registry-server.h \
 	e-sqlite3-vfs.h \
 	e-subprocess-factory.h \

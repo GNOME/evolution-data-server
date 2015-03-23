@@ -15,14 +15,14 @@
  *
  */
 
-#if !defined (__LIBEBACKEND_H_INSIDE__) && !defined (LIBEBACKEND_COMPILATION)
-#error "Only <libebackend/libebackend.h> should be included directly."
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedateserver.h> should be included directly."
 #endif
 
 #ifndef E_SOUP_SSL_TRUST_H
 #define E_SOUP_SSL_TRUST_H
 
-#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-source.h>
 
 #include <libsoup/soup.h>
 

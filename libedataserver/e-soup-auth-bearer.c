@@ -17,7 +17,7 @@
 
 /**
  * SECTION: e-soup-auth-bearer
- * @include: libebackend/libebackend.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: OAuth 2.0 support for libsoup
  *
  * #ESoupAuthBearer adds libsoup support for the use of bearer tokens in
@@ -29,6 +29,10 @@
  * #SoupSession::authenticate handler call e_source_get_oauth2_access_token()
  * and pass the results to e_soup_auth_bearer_set_access_token().
  **/
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include "e-soup-auth-bearer.h"
 

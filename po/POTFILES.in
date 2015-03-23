@@ -191,6 +191,7 @@ libedataserver/e-source-proxy.c
 libedataserver/e-source-registry.c
 libedataserver/e-source-webdav.c
 libedataserver/e-time-utils.c
+libedataserver/e-webdav-discover.c
 libedataserverui/e-credentials-prompter.c
 libedataserverui/e-credentials-prompter-impl-password.c
 libedataserverui/e-trust-prompt.c

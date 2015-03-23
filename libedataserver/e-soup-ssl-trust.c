@@ -17,7 +17,7 @@
 
 /**
  * SECTION: e-soup-ssl-trust
- * @include: libebackend/libebackend.h
+ * @include: libedataserver/libedataserver.h
  * @short_description: SSL certificate trust handling for WebDAV sources
  *
  * 
@@ -27,7 +27,8 @@
 #include <config.h>
 #endif
 
-#include "e-user-prompter.h"
+#include "e-source-authentication.h"
+#include "e-source-webdav.h"
 
 #include "e-soup-ssl-trust.h"
 

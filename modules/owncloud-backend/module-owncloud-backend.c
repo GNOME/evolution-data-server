@@ -20,8 +20,7 @@
 #endif
 
 #include <libebackend/libebackend.h>
-
-#include "owncloud-utils.h"
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_OWNCLOUD_BACKEND \
@@ -74,6 +73,34 @@ G_DEFINE_DYNAMIC_TYPE (
 	E_TYPE_COLLECTION_BACKEND_FACTORY)
 
 static void
+owncloud_add_uid_to_hashtable (gpointer source,
+			       gpointer known_sources)
+{
+	ESourceResource *resource;
+	gchar *uid, *rid;
+
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE))
+		return;
+
+	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+
+	uid = e_source_dup_uid (source);
+	if (!uid || !*uid) {
+		g_free (uid);
+		return;
+	}
+
+	rid = e_source_resource_dup_identity (resource);
+	if (!rid || !*rid) {
+		g_free (rid);
+		g_free (uid);
+		return;
+	}
+
+	g_hash_table_insert (known_sources, rid, uid);
+}
+
+static void
 owncloud_remove_unknown_sources_cb (gpointer resource_id,
                                     gpointer uid,
                                     gpointer user_data)
@@ -90,14 +117,13 @@ owncloud_remove_unknown_sources_cb (gpointer resource_id,
 }
 
 static void
-owncloud_source_found_cb (ECollectionBackend *collection,
-                          OwnCloudSourceType source_type,
-                          SoupURI *uri,
-                          const gchar *display_name,
-                          const gchar *color,
-                          gpointer user_data)
+owncloud_add_found_source (ECollectionBackend *collection,
+			   EWebDAVDiscoverSupports source_type,
+			   SoupURI *uri,
+			   const gchar *display_name,
+			   const gchar *color,
+			   GHashTable *known_sources)
 {
-	GHashTable *known_sources = user_data;
 	ESourceRegistryServer *server;
 	ESourceBackend *backend;
 	ESource *source = NULL;
@@ -115,26 +141,29 @@ owncloud_source_found_cb (ECollectionBackend *collection,
 	g_return_if_fail (known_sources != NULL);
 
 	switch (source_type) {
-	case OwnCloud_Source_Contacts:
+	case E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS:
 		backend_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 		provider = "webdav";
 		identity_prefix = "contacts";
 		break;
-	case OwnCloud_Source_Events:
+	case E_WEBDAV_DISCOVER_SUPPORTS_EVENTS:
 		backend_name = E_SOURCE_EXTENSION_CALENDAR;
 		provider = "caldav";
 		identity_prefix = "events";
 		break;
-	case OwnCloud_Source_Memos:
+	case E_WEBDAV_DISCOVER_SUPPORTS_MEMOS:
 		backend_name = E_SOURCE_EXTENSION_MEMO_LIST;
 		provider = "caldav";
 		identity_prefix = "memos";
 		break;
-	case OwnCloud_Source_Tasks:
+	case E_WEBDAV_DISCOVER_SUPPORTS_TASKS:
 		backend_name = E_SOURCE_EXTENSION_TASK_LIST;
 		provider = "caldav";
 		identity_prefix = "tasks";
 		break;
+	default:
+		g_warn_if_reached ();
+		return;
 	}
 
 	g_return_if_fail (backend_name != NULL);
@@ -152,14 +181,19 @@ owncloud_source_found_cb (ECollectionBackend *collection,
 		g_warn_if_fail (source != NULL);
 
 		if (source) {
+			ESourceCollection *collection_extension;
+			ESourceAuthentication *child_auth;
 			ESourceResource *resource;
 			ESourceWebdav *master_webdav, *child_webdav;
 
 			master_source = e_backend_get_source (E_BACKEND (collection));
 			master_webdav = e_source_get_extension (master_source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			collection_extension = e_source_get_extension (master_source, E_SOURCE_EXTENSION_COLLECTION);
+			child_auth = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 			child_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 			resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
 
+			e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
 			e_source_webdav_set_soup_uri (child_webdav, uri);
 			e_source_resource_set_identity (resource, identity);
 
@@ -186,9 +220,17 @@ owncloud_source_found_cb (ECollectionBackend *collection,
 		e_source_set_display_name (source, display_name);
 		/* Also check whether the color format is as expected; it cannot
 		   be used gdk_rgba_parse here, because it required gdk/gtk. */
-		if (source_type != OwnCloud_Source_Contacts && color &&
-		    sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3)
-			e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), color);
+		if (source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS && color &&
+		    sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3) {
+			gchar *safe_color;
+
+			/* In case an #RRGGBBAA is returned */
+			safe_color = g_strdup_printf ("#%02x%02x%02x", rr, gg, bb);
+
+			e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), safe_color);
+
+			g_free (safe_color);
+		}
 
 		if (is_new)
 			e_source_registry_server_add_source (server, source);
@@ -200,31 +242,34 @@ owncloud_source_found_cb (ECollectionBackend *collection,
 }
 
 static void
-owncloud_add_uid_to_hashtable (gpointer source,
-                               gpointer known_sources)
+owncloud_process_discovered_sources (ECollectionBackend *collection,
+				     GSList *discovered_sources,
+				     GHashTable *known_sources,
+				     const EWebDAVDiscoverSupports *source_types,
+				     gint n_source_types)
 {
-	ESourceResource *resource;
-	gchar *uid, *rid;
+	GSList *link;
+	gint ii;
 
-	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE))
-		return;
+	for (link = discovered_sources; link; link = g_slist_next (link)) {
+		EWebDAVDiscoveredSource *discovered_source = link->data;
+		SoupURI *soup_uri;
 
-	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+		if (!discovered_source || !discovered_source->href || !discovered_source->display_name)
+			continue;
 
-	uid = e_source_dup_uid (source);
-	if (!uid || !*uid) {
-		g_free (uid);
-		return;
+		soup_uri = soup_uri_new (discovered_source->href);
+		if (!soup_uri)
+			continue;
+
+		for (ii = 0; ii < n_source_types; ii++) {
+			if ((discovered_source->supports & source_types[ii]) == source_types[ii])
+				owncloud_add_found_source (collection, source_types[ii], soup_uri,
+					discovered_source->display_name, discovered_source->color, known_sources);
+		}
+
+		soup_uri_free (soup_uri);
 	}
-
-	rid = e_source_resource_dup_identity (resource);
-	if (!rid || !*rid) {
-		g_free (rid);
-		g_free (uid);
-		return;
-	}
-
-	g_hash_table_insert (known_sources, rid, uid);
 }
 
 static ESourceAuthenticationResult
@@ -236,12 +281,32 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 				    GError **error)
 {
 	ECollectionBackend *collection = E_COLLECTION_BACKEND (backend);
+	ESourceCollection *collection_extension;
+	ESourceGoa *goa_extension;
+	ESource *source;
 	ESourceAuthenticationResult result;
 	GHashTable *known_sources;
 	GList *sources;
+	GSList *discovered_sources = NULL;
+	ENamedParameters *credentials_copy = NULL;
+	gboolean any_success = FALSE, contacts_found = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (collection != NULL, E_SOURCE_AUTHENTICATION_ERROR);
+
+	source = e_backend_get_source (backend);
+	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+
+	if (!e_source_collection_get_calendar_enabled (collection_extension) &&
+	    !e_source_collection_get_contacts_enabled (collection_extension))
+		return E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+	if (credentials && !e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME)) {
+		credentials_copy = e_named_parameters_new_clone (credentials);
+		e_named_parameters_set (credentials_copy, E_SOURCE_CREDENTIAL_USERNAME, e_source_collection_get_identity (collection_extension));
+		credentials = credentials_copy;
+	}
 
 	/* resource-id => source's UID */
 	known_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -254,8 +319,50 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 	g_list_foreach (sources, owncloud_add_uid_to_hashtable, known_sources);
 	g_list_free_full (sources, g_object_unref);
 
-	if (owncloud_utils_search_server (collection, credentials, out_certificate_pem, out_certificate_errors,
-		owncloud_source_found_cb, known_sources, cancellable, &local_error)) {
+	if (e_source_collection_get_calendar_enabled (collection_extension) &&
+	    e_webdav_discover_sources_sync (source, e_source_goa_get_calendar_url (goa_extension), E_WEBDAV_DISCOVER_SUPPORTS_NONE,
+		credentials, out_certificate_pem, out_certificate_errors,
+		&discovered_sources, NULL, cancellable, &local_error)) {
+		GSList *link;
+		EWebDAVDiscoverSupports source_types[] = {
+			E_WEBDAV_DISCOVER_SUPPORTS_EVENTS,
+			E_WEBDAV_DISCOVER_SUPPORTS_MEMOS,
+			E_WEBDAV_DISCOVER_SUPPORTS_TASKS,
+			E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS
+		};
+
+		for (link = discovered_sources; link && !contacts_found; link = g_slist_next (link)) {
+			EWebDAVDiscoveredSource *discovered_source = link->data;
+
+			if (discovered_source)
+				contacts_found = contacts_found || (discovered_source->supports & E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS) != 0;
+		}
+
+		owncloud_process_discovered_sources (collection, discovered_sources, known_sources, source_types,
+			G_N_ELEMENTS (source_types) - (contacts_found ? 0 : 1));
+
+		e_webdav_discover_free_discovered_sources (discovered_sources);
+		discovered_sources = NULL;
+		any_success = TRUE;
+	}
+
+	/* Skip search in this URL, if the previous one returned also contacts - it's quite likely it did */
+	if (!contacts_found && !local_error && e_source_collection_get_contacts_enabled (collection_extension) &&
+	    e_webdav_discover_sources_sync (source, e_source_goa_get_contacts_url (goa_extension), E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS,
+		credentials, out_certificate_pem, out_certificate_errors,
+		&discovered_sources, NULL, cancellable, &local_error)) {
+		EWebDAVDiscoverSupports source_types[] = {
+			E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS
+		};
+
+		owncloud_process_discovered_sources (collection, discovered_sources, known_sources, source_types, G_N_ELEMENTS (source_types));
+
+		e_webdav_discover_free_discovered_sources (discovered_sources);
+		discovered_sources = NULL;
+		any_success = TRUE;
+	}
+
+	if (any_success) {
 		ESourceRegistryServer *server;
 
 		server = e_collection_backend_ref_server (collection);
@@ -268,7 +375,8 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 		e_collection_backend_authenticate_children (collection, credentials);
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
 		result = E_SOURCE_AUTHENTICATION_REJECTED;
 		g_clear_error (&local_error);
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
@@ -280,6 +388,7 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 	}
 
 	g_hash_table_destroy (known_sources);
+	e_named_parameters_free (credentials_copy);
 
 	return result;
 }
@@ -289,6 +398,8 @@ owncloud_backend_populate (ECollectionBackend *collection)
 {
 	GList *list, *liter;
 	ESourceRegistryServer *server;
+	ESourceCollection *collection_extension;
+	ESource *source;
 
 	/* Chain up to parent's populate() method. */
 	E_COLLECTION_BACKEND_CLASS (e_owncloud_backend_parent_class)->populate (collection);
@@ -315,8 +426,14 @@ owncloud_backend_populate (ECollectionBackend *collection)
 	g_list_free_full (list, g_object_unref);
 	g_object_unref (server);
 
-	e_backend_schedule_credentials_required (E_BACKEND (collection), E_SOURCE_CREDENTIALS_REASON_REQUIRED,
-		NULL, 0, NULL, NULL, G_STRFUNC);
+	source = e_backend_get_source (E_BACKEND (collection));
+	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+	if (e_source_collection_get_calendar_enabled (collection_extension) ||
+	    e_source_collection_get_contacts_enabled (collection_extension)) {
+		e_backend_schedule_credentials_required (E_BACKEND (collection),
+			E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL, NULL, G_STRFUNC);
+	}
 }
 
 static void
