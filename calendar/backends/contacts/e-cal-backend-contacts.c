@@ -32,8 +32,7 @@
 #include <glib/gi18n-lib.h>
 
 #include <libebook/libebook.h>
-
-#include "e-source-contacts.h"
+#include <libedataserver/libedataserver.h>
 
 #define E_CAL_BACKEND_CONTACTS_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

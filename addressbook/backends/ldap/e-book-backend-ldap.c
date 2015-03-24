@@ -64,8 +64,9 @@
 
 #include <glib/gi18n-lib.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-book-backend-ldap.h"
-#include "e-source-ldap.h"
 
 /* this is broken currently, don't enable it */
 /*#define ENABLE_SASL_BINDS*/

@@ -15,6 +15,11 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "e-source-enumtypes.h"
 #include "e-source-weather.h"
 
 #define E_SOURCE_WEATHER_GET_PRIVATE(obj) \
@@ -33,9 +38,7 @@ enum {
 	PROP_UNITS
 };
 
-static GType e_source_weather_units_type = G_TYPE_INVALID;
-
-G_DEFINE_DYNAMIC_TYPE (
+G_DEFINE_TYPE (
 	ESourceWeather,
 	e_source_weather,
 	E_TYPE_SOURCE_EXTENSION)
@@ -146,42 +149,10 @@ e_source_weather_class_init (ESourceWeatherClass *class)
 }
 
 static void
-e_source_weather_class_finalize (ESourceWeatherClass *class)
-{
-}
-
-static void
 e_source_weather_init (ESourceWeather *extension)
 {
 	extension->priv = E_SOURCE_WEATHER_GET_PRIVATE (extension);
 	g_mutex_init (&extension->priv->property_lock);
-}
-
-void
-e_source_weather_type_register (GTypeModule *type_module)
-{
-	static const GEnumValue e_source_weather_units_values[] = {
-		{ E_SOURCE_WEATHER_UNITS_FAHRENHEIT,
-		  "E_SOURCE_WEATHER_UNITS_FAHRENHEIT",
-		  "fahrenheit" },
-		{ E_SOURCE_WEATHER_UNITS_CENTIGRADE,
-		  "E_SOURCE_WEATHER_UNITS_CENTIGRADE",
-		  "centigrade" },
-		{ E_SOURCE_WEATHER_UNITS_KELVIN,
-		  "E_SOURCE_WEATHER_UNITS_KELVIN",
-		  "kelvin" },
-		{ 0, NULL, NULL }
-	};
-
-	e_source_weather_units_type =
-		g_type_module_register_enum (
-		type_module, "ESourceWeatherUnits",
-		e_source_weather_units_values);
-
-	/* XXX G_DEFINE_DYNAMIC_TYPE declares a static type registration
-	 *     function, so we have to wrap it with a public function in
-	 *     order to register types from a separate compilation unit. */
-	e_source_weather_register_type (type_module);
 }
 
 const gchar *
@@ -251,10 +222,4 @@ e_source_weather_set_units (ESourceWeather *extension,
 	extension->priv->units = units;
 
 	g_object_notify (G_OBJECT (extension), "units");
-}
-
-GType
-e_source_weather_units_get_type (void)
-{
-	return e_source_weather_units_type;
 }

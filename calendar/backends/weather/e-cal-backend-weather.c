@@ -21,8 +21,9 @@
 #include <glib/gi18n-lib.h>
 #include <string.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-cal-backend-weather.h"
-#include "e-source-weather.h"
 #include "e-weather-source.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE

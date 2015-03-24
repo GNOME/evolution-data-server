@@ -19,8 +19,6 @@ libebookbackendldap_la_SOURCES = \
 	e-book-backend-ldap.c \
 	e-book-backend-ldap.h \
 	e-book-backend-ldap-factory.c \
-	e-source-ldap.c \
-	e-source-ldap.h \
 	$(NULL)
 
 libebookbackendldap_la_LIBADD = \

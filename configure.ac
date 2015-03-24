@@ -106,7 +106,7 @@ AC_SUBST(USER_PROMPTER_DBUS_SERVICE_NAME)
 dnl ******************************
 dnl Libtool versioning
 dnl ******************************
-LIBEDATASERVER_CURRENT=20
+LIBEDATASERVER_CURRENT=21
 LIBEDATASERVER_REVISION=0
 LIBEDATASERVER_AGE=0
 

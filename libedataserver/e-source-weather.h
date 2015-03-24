@@ -15,10 +15,15 @@
  *
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_WEATHER_H
 #define E_SOURCE_WEATHER_H
 
-#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-source-extension.h>
+#include <libedataserver/e-source-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_WEATHER \
@@ -39,9 +44,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE_WEATHER, ESourceWeatherClass))
 
-#define E_TYPE_SOURCE_WEATHER_UNITS \
-	(e_source_weather_units_get_type ())
-
 #define E_SOURCE_EXTENSION_WEATHER_BACKEND "Weather Backend"
 
 G_BEGIN_DECLS
@@ -59,14 +61,7 @@ struct _ESourceWeatherClass {
 	ESourceExtensionClass parent_class;
 };
 
-typedef enum {
-	E_SOURCE_WEATHER_UNITS_FAHRENHEIT = 0,
-	E_SOURCE_WEATHER_UNITS_CENTIGRADE,
-	E_SOURCE_WEATHER_UNITS_KELVIN
-} ESourceWeatherUnits;
-
 GType		e_source_weather_get_type	(void);
-void		e_source_weather_type_register	(GTypeModule *type_module);
 const gchar *	e_source_weather_get_location	(ESourceWeather *extension);
 gchar *		e_source_weather_dup_location	(ESourceWeather *extension);
 void		e_source_weather_set_location	(ESourceWeather *extension,
@@ -75,8 +70,6 @@ ESourceWeatherUnits
 		e_source_weather_get_units	(ESourceWeather *extension);
 void		e_source_weather_set_units	(ESourceWeather *extension,
 						 ESourceWeatherUnits units);
-
-GType		e_source_weather_units_get_type		(void);
 
 G_END_DECLS
 

@@ -15,10 +15,14 @@
  *
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_CONTACTS_H
 #define E_SOURCE_CONTACTS_H
 
-#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-source-extension.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_CONTACTS \
@@ -57,7 +61,6 @@ struct _ESourceContactsClass {
 };
 
 GType		e_source_contacts_get_type	(void);
-void		e_source_contacts_type_register	(GTypeModule *type_module);
 gboolean	e_source_contacts_get_include_me
 						(ESourceContacts *extension);
 void		e_source_contacts_set_include_me

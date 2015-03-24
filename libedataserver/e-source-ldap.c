@@ -15,6 +15,14 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "e-source-authentication.h"
+#include "e-source-security.h"
+#include "e-source-enumtypes.h"
+
 #include "e-source-ldap.h"
 
 #include <ldap.h>
@@ -47,14 +55,73 @@ enum {
 	PROP_SECURITY
 };
 
-static GType e_source_ldap_authentication_type = G_TYPE_INVALID;
-static GType e_source_ldap_scope_type = G_TYPE_INVALID;
-static GType e_source_ldap_security_type = G_TYPE_INVALID;
-
-G_DEFINE_DYNAMIC_TYPE (
+G_DEFINE_TYPE (
 	ESourceLDAP,
 	e_source_ldap,
 	E_TYPE_SOURCE_EXTENSION)
+
+static struct ELDAPAuthMapping {
+	ESourceLDAPAuthentication value;
+	const gchar *nick;
+} ldap_auth_mapping[] = {
+	{ E_SOURCE_LDAP_AUTHENTICATION_NONE, "none" },
+	{ E_SOURCE_LDAP_AUTHENTICATION_EMAIL, "ldap/simple-email" },
+	{ E_SOURCE_LDAP_AUTHENTICATION_BINDDN, "ldap/simple-binddn" }
+};
+
+static gboolean
+source_ldap_transform_auth_enum_nick_to_value (GBinding *binding,
+					       const GValue *source_value,
+					       GValue *target_value,
+					       gpointer not_used)
+{
+	GEnumClass *enum_class;
+	const gchar *string;
+	gboolean success = FALSE;
+	gint ii;
+
+	enum_class = g_type_class_peek (G_VALUE_TYPE (target_value));
+	g_return_val_if_fail (G_IS_ENUM_CLASS (enum_class), FALSE);
+
+	string = g_value_get_string (source_value);
+
+	for (ii = 0; ii < G_N_ELEMENTS (ldap_auth_mapping); ii++) {
+		if (g_strcmp0 (ldap_auth_mapping[ii].nick, string) == 0) {
+			g_value_set_enum (target_value, ldap_auth_mapping[ii].value);
+			success = TRUE;
+			break;
+		}
+	}
+
+	return success;
+}
+
+static gboolean
+source_ldap_transform_auth_enum_value_to_nick (GBinding *binding,
+					       const GValue *source_value,
+					       GValue *target_value,
+					       gpointer not_used)
+{
+	GEnumClass *enum_class;
+	gint value;
+	gboolean success = FALSE;
+	gint ii;
+
+	enum_class = g_type_class_peek (G_VALUE_TYPE (source_value));
+	g_return_val_if_fail (G_IS_ENUM_CLASS (enum_class), FALSE);
+
+	value = g_value_get_enum (source_value);
+
+	for (ii = 0; ii < G_N_ELEMENTS (ldap_auth_mapping); ii++) {
+		if (value == ldap_auth_mapping[ii].value) {
+			g_value_set_string (target_value, ldap_auth_mapping[ii].nick);
+			success = TRUE;
+			break;
+		}
+	}
+
+	return success;
+}
 
 static gboolean
 source_ldap_transform_enum_nick_to_value (GBinding *binding,
@@ -255,8 +322,8 @@ source_ldap_constructed (GObject *object)
 		this_extension, "authentication",
 		G_BINDING_BIDIRECTIONAL |
 		G_BINDING_SYNC_CREATE,
-		source_ldap_transform_enum_nick_to_value,
-		source_ldap_transform_enum_value_to_nick,
+		source_ldap_transform_auth_enum_nick_to_value,
+		source_ldap_transform_auth_enum_value_to_nick,
 		NULL, (GDestroyNotify) NULL);
 
 	extension_name = E_SOURCE_EXTENSION_SECURITY;
@@ -380,75 +447,10 @@ e_source_ldap_class_init (ESourceLDAPClass *class)
 }
 
 static void
-e_source_ldap_class_finalize (ESourceLDAPClass *class)
-{
-}
-
-static void
 e_source_ldap_init (ESourceLDAP *extension)
 {
 	extension->priv = E_SOURCE_LDAP_GET_PRIVATE (extension);
 	g_mutex_init (&extension->priv->property_lock);
-}
-
-void
-e_source_ldap_type_register (GTypeModule *type_module)
-{
-	static const GEnumValue e_source_ldap_authentication_values[] = {
-		{ E_SOURCE_LDAP_AUTHENTICATION_NONE,
-		  "E_SOURCE_LDAP_AUTHENTICATION_NONE",
-		  "none" },
-		{ E_SOURCE_LDAP_AUTHENTICATION_EMAIL,
-		  "E_SOURCE_LDAP_AUTHENTICATION_EMAIL",
-		  "ldap/simple-email" },
-		{ E_SOURCE_LDAP_AUTHENTICATION_BINDDN,
-		  "E_SOURCE_LDAP_AUTHENTICATION_BINDDN",
-		  "ldap/simple-binddn" },
-		{ 0, NULL, NULL }
-	};
-
-	static const GEnumValue e_source_ldap_scope_values[] = {
-		{ E_SOURCE_LDAP_SCOPE_ONELEVEL,
-		  "E_SOURCE_LDAP_SCOPE_ONELEVEL",
-		  "onelevel" },
-		{ E_SOURCE_LDAP_SCOPE_SUBTREE,
-		  "E_SOURCE_LDAP_SCOPE_SUBTREE",
-		  "subtree" },
-		{ 0, NULL, NULL }
-	};
-
-	static const GEnumValue e_source_ldap_security_values[] = {
-		{ E_SOURCE_LDAP_SECURITY_NONE,
-		  "E_SOURCE_LDAP_SECURITY_NONE",
-		  "none" },
-		{ E_SOURCE_LDAP_SECURITY_LDAPS,
-		  "E_SOURCE_LDAP_SECURITY_LDAPS",
-		  "ldaps" },
-		{ E_SOURCE_LDAP_SECURITY_STARTTLS,
-		  "E_SOURCE_LDAP_SECURITY_STARTTLS",
-		  "starttls" },
-		{ 0, NULL, NULL }
-	};
-
-	e_source_ldap_authentication_type =
-		g_type_module_register_enum (
-		type_module, "ESourceLDAPAuthentication",
-		e_source_ldap_authentication_values);
-
-	e_source_ldap_scope_type =
-		g_type_module_register_enum (
-		type_module, "ESourceLDAPScope",
-		e_source_ldap_scope_values);
-
-	e_source_ldap_security_type =
-		g_type_module_register_enum (
-		type_module, "ESourceLDAPSecurity",
-		e_source_ldap_security_values);
-
-	/* XXX G_DEFINE_DYNAMIC_TYPE declares a static type registration
-	 *     function, so we have to wrap it with a public function in
-	 *     order to register types from a separate compilation unit. */
-	e_source_ldap_register_type (type_module);
 }
 
 ESourceLDAPAuthentication
@@ -667,22 +669,4 @@ e_source_ldap_set_security (ESourceLDAP *extension,
 	extension->priv->security = security;
 
 	g_object_notify (G_OBJECT (extension), "security");
-}
-
-GType
-e_source_ldap_authentication_get_type (void)
-{
-	return e_source_ldap_authentication_type;
-}
-
-GType
-e_source_ldap_scope_get_type (void)
-{
-	return e_source_ldap_scope_type;
-}
-
-GType
-e_source_ldap_security_get_type (void)
-{
-	return e_source_ldap_security_type;
 }

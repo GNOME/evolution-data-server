@@ -15,6 +15,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include "e-source-local.h"
 
 #define E_SOURCE_LOCAL_GET_PRIVATE(obj) \
@@ -31,7 +35,7 @@ enum {
 	PROP_CUSTOM_FILE
 };
 
-G_DEFINE_DYNAMIC_TYPE (
+G_DEFINE_TYPE (
 	ESourceLocal,
 	e_source_local,
 	E_TYPE_SOURCE_EXTENSION)
@@ -131,24 +135,10 @@ e_source_local_class_init (ESourceLocalClass *class)
 }
 
 static void
-e_source_local_class_finalize (ESourceLocalClass *class)
-{
-}
-
-static void
 e_source_local_init (ESourceLocal *extension)
 {
 	extension->priv = E_SOURCE_LOCAL_GET_PRIVATE (extension);
 	g_mutex_init (&extension->priv->property_lock);
-}
-
-void
-e_source_local_type_register (GTypeModule *type_module)
-{
-	/* XXX G_DEFINE_DYNAMIC_TYPE declares a static type registration
-	 *     function, so we have to wrap it with a public function in
-	 *     order to register types from a separate compilation unit. */
-	e_source_local_register_type (type_module);
 }
 
 GFile *
@@ -199,4 +189,3 @@ e_source_local_set_custom_file (ESourceLocal *extension,
 
 	g_object_notify (G_OBJECT (extension), "custom-file");
 }
-

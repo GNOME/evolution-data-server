@@ -167,4 +167,77 @@ typedef enum {
 	E_SOURCE_CREDENTIALS_REASON_ERROR
 } ESourceCredentialsReason;
 
+/**
+ * ESourceLDAPAuthentication:
+ * @E_SOURCE_LDAP_AUTHENTICATION_NONE:
+ *   Use none authentication type.
+ * @E_SOURCE_LDAP_AUTHENTICATION_EMAIL:
+ *   Use an email address for authentication.
+ * @E_SOURCE_LDAP_AUTHENTICATION_BINDDN:
+ *   Use a bind DN for authentication.
+ *
+ * Defines authentication types for LDAP sources.
+ *
+ * Since: 3.18
+ **/
+typedef enum {
+	E_SOURCE_LDAP_AUTHENTICATION_NONE,
+	E_SOURCE_LDAP_AUTHENTICATION_EMAIL,
+	E_SOURCE_LDAP_AUTHENTICATION_BINDDN
+} ESourceLDAPAuthentication;
+
+/**
+ * ESourceLDAPScope:
+ * @E_SOURCE_LDAP_SCOPE_ONELEVEL:
+ *   One level search scope.
+ * @E_SOURCE_LDAP_SCOPE_SUBTREE:
+ *   Sub-tree search scope.
+ *
+ * Defines search scope for LDAP sources.
+ *
+ * Since: 3.18
+ **/
+typedef enum {
+	E_SOURCE_LDAP_SCOPE_ONELEVEL,
+	E_SOURCE_LDAP_SCOPE_SUBTREE
+} ESourceLDAPScope;
+
+/**
+ * ESourceLDAPSecurity:
+ * @E_SOURCE_LDAP_SECURITY_NONE:
+ *   Connect insecurely.
+ * @E_SOURCE_LDAP_SECURITY_LDAPS:
+ *   Connect using secure LDAP (LDAPS).
+ * @E_SOURCE_LDAP_SECURITY_STARTTLS:
+ *   Connect using STARTTLS.
+ *
+ * Defines what connection security should be used for LDAP sources.
+ *
+ * Since: 3.18
+ **/
+typedef enum {
+	E_SOURCE_LDAP_SECURITY_NONE,
+	E_SOURCE_LDAP_SECURITY_LDAPS,
+	E_SOURCE_LDAP_SECURITY_STARTTLS
+} ESourceLDAPSecurity;
+
+/**
+ * ESourceWeatherUnits:
+ * @E_SOURCE_WEATHER_UNITS_FAHRENHEIT:
+ *   Fahrenheit units
+ * @E_SOURCE_WEATHER_UNITS_CENTIGRADE:
+ *   Centigrade units
+ * @E_SOURCE_WEATHER_UNITS_KELVIN:
+ *   Kelvin units
+ *
+ * Units to be used in an #ESourceWeather extension.
+ *
+ * Since: 3.18
+ **/
+typedef enum {
+	E_SOURCE_WEATHER_UNITS_FAHRENHEIT = 0,
+	E_SOURCE_WEATHER_UNITS_CENTIGRADE,
+	E_SOURCE_WEATHER_UNITS_KELVIN
+} ESourceWeatherUnits;
+
 #endif /* E_SOURCE_ENUMS_H */

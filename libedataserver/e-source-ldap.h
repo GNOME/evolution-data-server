@@ -15,10 +15,15 @@
  *
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_LDAP_H
 #define E_SOURCE_LDAP_H
 
-#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-source-extension.h>
+#include <libedataserver/e-source-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_LDAP \
@@ -39,15 +44,6 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE_LDAP, ESourceLDAPClass))
 
-#define E_TYPE_SOURCE_LDAP_AUTHENTICATION \
-	(e_source_ldap_authentication_get_type ())
-
-#define E_TYPE_SOURCE_LDAP_SCOPE \
-	(e_source_ldap_scope_get_type ())
-
-#define E_TYPE_SOURCE_LDAP_SECURITY \
-	(e_source_ldap_security_get_type ())
-
 #define E_SOURCE_EXTENSION_LDAP_BACKEND "LDAP Backend"
 
 G_BEGIN_DECLS
@@ -65,25 +61,7 @@ struct _ESourceLDAPClass {
 	ESourceExtensionClass parent_class;
 };
 
-typedef enum {
-	E_SOURCE_LDAP_AUTHENTICATION_NONE,
-	E_SOURCE_LDAP_AUTHENTICATION_EMAIL,
-	E_SOURCE_LDAP_AUTHENTICATION_BINDDN
-} ESourceLDAPAuthentication;
-
-typedef enum {
-	E_SOURCE_LDAP_SCOPE_ONELEVEL,
-	E_SOURCE_LDAP_SCOPE_SUBTREE
-} ESourceLDAPScope;
-
-typedef enum {
-	E_SOURCE_LDAP_SECURITY_NONE,
-	E_SOURCE_LDAP_SECURITY_LDAPS,
-	E_SOURCE_LDAP_SECURITY_STARTTLS
-} ESourceLDAPSecurity;
-
 GType		e_source_ldap_get_type		(void);
-void		e_source_ldap_type_register	(GTypeModule *type_module);
 ESourceLDAPAuthentication
 		e_source_ldap_get_authentication
 						(ESourceLDAP *extension);
@@ -112,10 +90,6 @@ ESourceLDAPSecurity
 		e_source_ldap_get_security	(ESourceLDAP *extension);
 void		e_source_ldap_set_security	(ESourceLDAP *extension,
 						 ESourceLDAPSecurity security);
-
-GType		e_source_ldap_authentication_get_type	(void);
-GType		e_source_ldap_scope_get_type		(void);
-GType		e_source_ldap_security_get_type		(void);
 
 G_END_DECLS
 

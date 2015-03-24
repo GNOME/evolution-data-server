@@ -20,7 +20,6 @@
 #include <config.h>
 
 #include "e-cal-backend-weather.h"
-#include "e-source-weather.h"
 
 #define FACTORY_NAME "weather"
 
@@ -70,7 +69,6 @@ e_module_load (GTypeModule *type_module)
 {
 	e_module = E_MODULE (type_module);
 
-	e_source_weather_type_register (type_module);
 	e_cal_backend_weather_events_factory_register_type (type_module);
 }
 

@@ -21,8 +21,6 @@ libecalbackendcontacts_la_SOURCES = \
 	e-cal-backend-contacts-factory.c \
 	e-cal-backend-contacts.c \
 	e-cal-backend-contacts.h \
-	e-source-contacts.c \
-	e-source-contacts.h \
 	$(NULL)
 
 libecalbackendcontacts_la_LIBADD = \

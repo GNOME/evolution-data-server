@@ -15,6 +15,12 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include "e-source-address-book.h"
+
 #include "e-source-contacts.h"
 
 #define E_SOURCE_CONTACTS_GET_PRIVATE(obj) \
@@ -30,7 +36,7 @@ enum {
 	PROP_INCLUDE_ME
 };
 
-G_DEFINE_DYNAMIC_TYPE (
+G_DEFINE_TYPE (
 	ESourceContacts,
 	e_source_contacts,
 	E_TYPE_SOURCE_EXTENSION)
@@ -129,23 +135,9 @@ e_source_contacts_class_init (ESourceContactsClass *class)
 }
 
 static void
-e_source_contacts_class_finalize (ESourceContactsClass *class)
-{
-}
-
-static void
 e_source_contacts_init (ESourceContacts *extension)
 {
 	extension->priv = E_SOURCE_CONTACTS_GET_PRIVATE (extension);
-}
-
-void
-e_source_contacts_type_register (GTypeModule *type_module)
-{
-	/* XXX G_DEFINE_DYNAMIC_TYPE declares a static type registration
-	 *     function, so we have to wrap it with a public function in
-	 *     order to register types from a separate compilation unit. */
-	e_source_contacts_register_type (type_module);
 }
 
 gboolean

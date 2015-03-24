@@ -32,8 +32,9 @@
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-cal-backend-file-events.h"
-#include "e-source-local.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0

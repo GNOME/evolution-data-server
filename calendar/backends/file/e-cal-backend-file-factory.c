@@ -22,7 +22,6 @@
 #include "e-cal-backend-file-events.h"
 #include "e-cal-backend-file-journal.h"
 #include "e-cal-backend-file-todos.h"
-#include "e-source-local.h"
 
 #define FACTORY_NAME "local"
 
@@ -138,7 +137,6 @@ e_module_load (GTypeModule *type_module)
 {
 	e_module = E_MODULE (type_module);
 
-	e_source_local_type_register (type_module);
 	e_cal_backend_file_events_factory_register_type (type_module);
 	e_cal_backend_file_journal_factory_register_type (type_module);
 	e_cal_backend_file_todos_factory_register_type (type_module);

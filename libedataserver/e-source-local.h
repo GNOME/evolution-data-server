@@ -15,10 +15,14 @@
  *
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_SOURCE_LOCAL_H
 #define E_SOURCE_LOCAL_H
 
-#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-source-extension.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_LOCAL \
@@ -57,7 +61,6 @@ struct _ESourceLocalClass {
 };
 
 GType		e_source_local_get_type		(void);
-void		e_source_local_type_register	(GTypeModule *type_module);
 GFile *		e_source_local_get_custom_file	(ESourceLocal *extension);
 GFile *		e_source_local_dup_custom_file	(ESourceLocal *extension);
 void		e_source_local_set_custom_file	(ESourceLocal *extension,

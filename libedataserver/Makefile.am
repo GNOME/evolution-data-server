@@ -78,10 +78,13 @@ libedataserver_1_2_la_SOURCES = \
 	e-source-calendar.c \
 	e-source-camel.c \
 	e-source-collection.c \
+	e-source-contacts.c \
 	e-source-credentials-provider.c \
 	e-source-credentials-provider-impl.c \
 	e-source-credentials-provider-impl-password.c \
 	e-source-goa.c \
+	e-source-ldap.c \
+	e-source-local.c \
 	e-source-mail-account.c \
 	e-source-mail-composition.c \
 	e-source-mail-identity.c \
@@ -100,6 +103,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-source-selectable.c \
 	e-source-smime.c \
 	e-source-uoa.c \
+	e-source-weather.c \
 	e-source-webdav.c \
 	e-debug-log.c \
 	e-time-utils.c \
@@ -164,6 +168,7 @@ libedataserverinclude_HEADERS = \
 	e-source-calendar.h \
 	e-source-camel.h \
 	e-source-collection.h \
+	e-source-contacts.h \
 	e-source-credentials-provider.h \
 	e-source-credentials-provider-impl.h \
 	e-source-credentials-provider-impl-password.h \
@@ -171,6 +176,8 @@ libedataserverinclude_HEADERS = \
 	e-source-enumtypes.h \
 	e-source-extension.h \
 	e-source-goa.h \
+	e-source-ldap.h \
+	e-source-local.h \
 	e-source-mail-account.h \
 	e-source-mail-composition.h \
 	e-source-mail-identity.h \
@@ -189,6 +196,7 @@ libedataserverinclude_HEADERS = \
 	e-source-selectable.h \
 	e-source-smime.h \
 	e-source-uoa.h \
+	e-source-weather.h \
 	e-source-webdav.h \
 	e-debug-log.h \
 	e-time-utils.h \

@@ -50,6 +50,7 @@
 #include <libedataserver/e-source-calendar.h>
 #include <libedataserver/e-source-camel.h>
 #include <libedataserver/e-source-collection.h>
+#include <libedataserver/e-source-contacts.h>
 #include <libedataserver/e-source-credentials-provider.h>
 #include <libedataserver/e-source-credentials-provider-impl.h>
 #include <libedataserver/e-source-credentials-provider-impl-password.h>
@@ -57,6 +58,8 @@
 #include <libedataserver/e-source-enumtypes.h>
 #include <libedataserver/e-source-extension.h>
 #include <libedataserver/e-source-goa.h>
+#include <libedataserver/e-source-ldap.h>
+#include <libedataserver/e-source-local.h>
 #include <libedataserver/e-source-mail-account.h>
 #include <libedataserver/e-source-mail-composition.h>
 #include <libedataserver/e-source-mail-identity.h>
@@ -76,6 +79,7 @@
 #include <libedataserver/e-source-smime.h>
 #include <libedataserver/e-source-uoa.h>
 #include <libedataserver/e-source-webdav.h>
+#include <libedataserver/e-source-weather.h>
 #include <libedataserver/e-source.h>
 #include <libedataserver/e-time-utils.h>
 #include <libedataserver/e-uid.h>

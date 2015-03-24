@@ -89,7 +89,10 @@
 #include "e-source-calendar.h"
 #include "e-source-camel.h"
 #include "e-source-collection.h"
+#include "e-source-contacts.h"
 #include "e-source-goa.h"
+#include "e-source-ldap.h"
+#include "e-source-local.h"
 #include "e-source-mail-account.h"
 #include "e-source-mail-composition.h"
 #include "e-source-mail-identity.h"
@@ -107,6 +110,7 @@
 #include "e-source-selectable.h"
 #include "e-source-smime.h"
 #include "e-source-uoa.h"
+#include "e-source-weather.h"
 #include "e-source-webdav.h"
 
 #define E_SOURCE_GET_PRIVATE(obj) \
@@ -2580,7 +2584,10 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_AUTOCOMPLETE);
 	g_type_ensure (E_TYPE_SOURCE_CALENDAR);
 	g_type_ensure (E_TYPE_SOURCE_COLLECTION);
+	g_type_ensure (E_TYPE_SOURCE_CONTACTS);
 	g_type_ensure (E_TYPE_SOURCE_GOA);
+	g_type_ensure (E_TYPE_SOURCE_LDAP);
+	g_type_ensure (E_TYPE_SOURCE_LOCAL);
 	g_type_ensure (E_TYPE_SOURCE_MAIL_ACCOUNT);
 	g_type_ensure (E_TYPE_SOURCE_MAIL_COMPOSITION);
 	g_type_ensure (E_TYPE_SOURCE_MAIL_IDENTITY);
@@ -2600,6 +2607,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_SMIME);
 	g_type_ensure (E_TYPE_SOURCE_TASK_LIST);
 	g_type_ensure (E_TYPE_SOURCE_UOA);
+	g_type_ensure (E_TYPE_SOURCE_WEATHER);
 	g_type_ensure (E_TYPE_SOURCE_WEBDAV);
 }
 

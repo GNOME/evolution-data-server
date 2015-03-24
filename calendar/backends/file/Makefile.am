@@ -26,8 +26,6 @@ libecalbackendfile_la_SOURCES = \
 	e-cal-backend-file-todos.h \
 	e-cal-backend-file.c \
 	e-cal-backend-file.h \
-	e-source-local.c \
-	e-source-local.h \
 	$(NULL)
 
 libecalbackendfile_la_LIBADD = \
@@ -46,8 +44,6 @@ libecalbackendfile_la_LDFLAGS = \
 
 test_interval_searches_SOURCES = \
 	e-cal-backend-file.c \
-	e-source-local.c \
-	e-source-local.h \
 	$(NULL)
 
 test_interval_searches_LDADD = \
