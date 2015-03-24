@@ -25,8 +25,6 @@
 
 #include "e-source-ldap.h"
 
-#include <ldap.h>
-
 #define E_SOURCE_LDAP_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_SOURCE_LDAP, ESourceLDAPPrivate))
