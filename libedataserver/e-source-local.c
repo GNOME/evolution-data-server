@@ -26,7 +26,6 @@
 	((obj), E_TYPE_SOURCE_LOCAL, ESourceLocalPrivate))
 
 struct _ESourceLocalPrivate {
-	GMutex property_lock;
 	GFile *custom_file;
 };
 
@@ -76,7 +75,7 @@ source_local_get_property (GObject *object,
 }
 
 static void
-source_local_dispose (GObject *object)
+source_local_finalize (GObject *object)
 {
 	ESourceLocalPrivate *priv;
 
@@ -86,19 +85,6 @@ source_local_dispose (GObject *object)
 		g_object_unref (priv->custom_file);
 		priv->custom_file = NULL;
 	}
-
-	/* Chain up to parent's dispose() method. */
-	G_OBJECT_CLASS (e_source_local_parent_class)->dispose (object);
-}
-
-static void
-source_local_finalize (GObject *object)
-{
-	ESourceLocalPrivate *priv;
-
-	priv = E_SOURCE_LOCAL_GET_PRIVATE (object);
-
-	g_mutex_clear (&priv->property_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_local_parent_class)->finalize (object);
@@ -115,7 +101,6 @@ e_source_local_class_init (ESourceLocalClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = source_local_set_property;
 	object_class->get_property = source_local_get_property;
-	object_class->dispose = source_local_dispose;
 	object_class->finalize = source_local_finalize;
 
 	extension_class = E_SOURCE_EXTENSION_CLASS (class);
@@ -138,7 +123,6 @@ static void
 e_source_local_init (ESourceLocal *extension)
 {
 	extension->priv = E_SOURCE_LOCAL_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 GFile *
@@ -157,12 +141,12 @@ e_source_local_dup_custom_file (ESourceLocal *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_LOCAL (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_local_get_custom_file (extension);
 	duplicate = (protected != NULL) ? g_file_dup (protected) : NULL;
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -178,14 +162,14 @@ e_source_local_set_custom_file (ESourceLocal *extension,
 		g_object_ref (custom_file);
 	}
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (extension->priv->custom_file != NULL)
 		g_object_unref (extension->priv->custom_file);
 
 	extension->priv->custom_file = custom_file;
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "custom-file");
 }

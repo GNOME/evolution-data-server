@@ -50,8 +50,6 @@
 typedef struct _AsyncContext AsyncContext;
 
 struct _ESourceProxyPrivate {
-	GMutex property_lock;
-
 	EProxyMethod method;
 	gchar *autoconfig_url;
 	gchar **ignore_hosts;
@@ -422,8 +420,6 @@ source_proxy_finalize (GObject *object)
 
 	priv = E_SOURCE_PROXY_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->autoconfig_url);
 	g_strfreev (priv->ignore_hosts);
 	g_free (priv->ftp_host);
@@ -642,7 +638,6 @@ static void
 e_source_proxy_init (ESourceProxy *extension)
 {
 	extension->priv = E_SOURCE_PROXY_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -735,12 +730,12 @@ e_source_proxy_dup_autoconfig_url (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_autoconfig_url (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -762,17 +757,17 @@ e_source_proxy_set_autoconfig_url (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (autoconfig_url, extension->priv->autoconfig_url) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->autoconfig_url);
 	extension->priv->autoconfig_url = e_util_strdup_strip (autoconfig_url);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "autoconfig-url");
 }
@@ -825,12 +820,12 @@ e_source_proxy_dup_ignore_hosts (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_ignore_hosts (extension);
 	duplicate = g_strdupv ((gchar **) protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -853,10 +848,10 @@ e_source_proxy_set_ignore_hosts (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (e_util_strv_equal (ignore_hosts, extension->priv->ignore_hosts)) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
@@ -872,7 +867,7 @@ e_source_proxy_set_ignore_hosts (ESourceProxy *extension,
 			g_strstrip (extension->priv->ignore_hosts[ii]);
 	}
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "ignore-hosts");
 }
@@ -917,12 +912,12 @@ e_source_proxy_dup_ftp_host (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_ftp_host (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -943,17 +938,17 @@ e_source_proxy_set_ftp_host (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (ftp_host, extension->priv->ftp_host) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->ftp_host);
 	extension->priv->ftp_host = e_util_strdup_strip (ftp_host);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "ftp-host");
 }
@@ -1041,12 +1036,12 @@ e_source_proxy_dup_http_host (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_http_host (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1067,17 +1062,17 @@ e_source_proxy_set_http_host (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (http_host, extension->priv->http_host) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->http_host);
 	extension->priv->http_host = e_util_strdup_strip (http_host);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "http-host");
 }
@@ -1216,12 +1211,12 @@ e_source_proxy_dup_http_auth_user (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_http_auth_user (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1242,17 +1237,17 @@ e_source_proxy_set_http_auth_user (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (http_auth_user, extension->priv->http_auth_user) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->http_auth_user);
 	extension->priv->http_auth_user = e_util_strdup_strip (http_auth_user);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "http-auth-user");
 }
@@ -1297,12 +1292,12 @@ e_source_proxy_dup_http_auth_password (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_http_auth_password (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1323,17 +1318,17 @@ e_source_proxy_set_http_auth_password (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (http_auth_password, extension->priv->http_auth_password) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->http_auth_password);
 	extension->priv->http_auth_password = e_util_strdup_strip (http_auth_password);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "http-auth-password");
 }
@@ -1378,12 +1373,12 @@ e_source_proxy_dup_https_host (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_https_host (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1404,17 +1399,17 @@ e_source_proxy_set_https_host (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (https_host, extension->priv->https_host) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->https_host);
 	extension->priv->https_host = e_util_strdup_strip (https_host);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "https-host");
 }
@@ -1502,12 +1497,12 @@ e_source_proxy_dup_socks_host (ESourceProxy *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_PROXY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_proxy_get_socks_host (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1528,17 +1523,17 @@ e_source_proxy_set_socks_host (ESourceProxy *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_PROXY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (socks_host, extension->priv->socks_host) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->socks_host);
 	extension->priv->socks_host = e_util_strdup_strip (socks_host);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "socks-host");
 }

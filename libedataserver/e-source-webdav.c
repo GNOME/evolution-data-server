@@ -63,7 +63,6 @@
 	((obj), E_TYPE_SOURCE_WEBDAV, ESourceWebdavPrivate))
 
 struct _ESourceWebdavPrivate {
-	GMutex property_lock;
 	gchar *display_name;
 	gchar *email_address;
 	gchar *resource_path;
@@ -150,9 +149,9 @@ source_webdav_update_properties_from_soup_uri (ESourceWebdav *webdav_extension)
 
 	/* Do not use e_source_webdav_dup_soup_uri() here.  That
 	 * builds the URI from properties we haven't yet updated. */
-	g_mutex_lock (&webdav_extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (webdav_extension));
 	soup_uri = soup_uri_copy (webdav_extension->priv->soup_uri);
-	g_mutex_unlock (&webdav_extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (webdav_extension));
 
 	extension = E_SOURCE_EXTENSION (webdav_extension);
 	source = e_source_extension_ref_source (extension);
@@ -234,7 +233,7 @@ source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
 
 	g_object_unref (source);
 
-	g_mutex_lock (&webdav_extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (webdav_extension));
 
 	soup_uri = webdav_extension->priv->soup_uri;
 
@@ -256,7 +255,7 @@ source_webdav_update_soup_uri_from_properties (ESourceWebdav *webdav_extension)
 
 	soup_uri_set_query (soup_uri, query);
 
-	g_mutex_unlock (&webdav_extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (webdav_extension));
 
 	g_free (user);
 	g_free (host);
@@ -396,8 +395,6 @@ source_webdav_finalize (GObject *object)
 	ESourceWebdavPrivate *priv;
 
 	priv = E_SOURCE_WEBDAV_GET_PRIVATE (object);
-
-	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->display_name);
 	g_free (priv->email_address);
@@ -590,7 +587,6 @@ static void
 e_source_webdav_init (ESourceWebdav *extension)
 {
 	extension->priv = E_SOURCE_WEBDAV_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 
 	/* Initialize this enough for SOUP_URI_IS_VALID() to pass. */
 	extension->priv->soup_uri = soup_uri_new (NULL);
@@ -740,12 +736,12 @@ e_source_webdav_dup_display_name (ESourceWebdav *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_webdav_get_display_name (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -772,17 +768,17 @@ e_source_webdav_set_display_name (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->display_name, display_name) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->display_name);
 	extension->priv->display_name = e_util_strdup_strip (display_name);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "display-name");
 }
@@ -827,12 +823,12 @@ e_source_webdav_dup_email_address (ESourceWebdav *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_webdav_get_email_address (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -857,17 +853,17 @@ e_source_webdav_set_email_address (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->email_address, email_address) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->email_address);
 	extension->priv->email_address = e_util_strdup_strip (email_address);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "email-address");
 }
@@ -911,12 +907,12 @@ e_source_webdav_dup_resource_path (ESourceWebdav *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_webdav_get_resource_path (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -941,17 +937,17 @@ e_source_webdav_set_resource_path (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->resource_path, resource_path) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->resource_path);
 	extension->priv->resource_path = e_util_strdup_strip (resource_path);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "resource-path");
 }
@@ -1000,12 +996,12 @@ e_source_webdav_dup_resource_query (ESourceWebdav *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_webdav_get_resource_query (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1035,17 +1031,17 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->resource_query, resource_query) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->resource_query);
 	extension->priv->resource_query = e_util_strdup_strip (resource_query);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "resource-query");
 }
@@ -1096,12 +1092,12 @@ e_source_webdav_dup_ssl_trust (ESourceWebdav *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_webdav_get_ssl_trust (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1122,17 +1118,17 @@ e_source_webdav_set_ssl_trust (ESourceWebdav *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->ssl_trust, ssl_trust) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->ssl_trust);
 	extension->priv->ssl_trust = g_strdup (ssl_trust);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "ssl-trust");
 }
@@ -1160,11 +1156,11 @@ e_source_webdav_dup_soup_uri (ESourceWebdav *extension)
 	/* Keep this outside of the property lock. */
 	source_webdav_update_soup_uri_from_properties (extension);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	duplicate = soup_uri_copy (extension->priv->soup_uri);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -1188,7 +1184,7 @@ e_source_webdav_set_soup_uri (ESourceWebdav *extension,
 	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
 	g_return_if_fail (SOUP_URI_IS_VALID (soup_uri));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	/* Do not test for URI equality because our
 	 * internal SoupURI might not be up-to-date. */
@@ -1196,7 +1192,7 @@ e_source_webdav_set_soup_uri (ESourceWebdav *extension,
 	soup_uri_free (extension->priv->soup_uri);
 	extension->priv->soup_uri = soup_uri_copy (soup_uri);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_freeze_notify (G_OBJECT (extension));
 	source_webdav_update_properties_from_soup_uri (extension);

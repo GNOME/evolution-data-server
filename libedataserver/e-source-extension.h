@@ -70,6 +70,10 @@ struct _ESourceExtensionClass {
 
 GType		e_source_extension_get_type	(void) G_GNUC_CONST;
 ESource *	e_source_extension_ref_source	(ESourceExtension *extension);
+void		e_source_extension_property_lock
+						(ESourceExtension *extension);
+void		e_source_extension_property_unlock
+						(ESourceExtension *extension);
 
 #ifndef EDS_DISABLE_DEPRECATED
 ESource *	e_source_extension_get_source	(ESourceExtension *extension);

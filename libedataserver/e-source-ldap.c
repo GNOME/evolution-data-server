@@ -32,7 +32,6 @@
 	((obj), E_TYPE_SOURCE_LDAP, ESourceLDAPPrivate))
 
 struct _ESourceLDAPPrivate {
-	GMutex property_lock;
 	gboolean can_browse;
 	gchar *filter;
 	guint limit;
@@ -291,8 +290,6 @@ source_ldap_finalize (GObject *object)
 
 	priv = E_SOURCE_LDAP_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->filter);
 	g_free (priv->root_dn);
 
@@ -450,7 +447,6 @@ static void
 e_source_ldap_init (ESourceLDAP *extension)
 {
 	extension->priv = E_SOURCE_LDAP_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 ESourceLDAPAuthentication
@@ -513,12 +509,12 @@ e_source_ldap_dup_filter (ESourceLDAP *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_LDAP (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_ldap_get_filter (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -537,7 +533,7 @@ e_source_ldap_set_filter (ESourceLDAP *extension,
 		!g_str_has_prefix (filter, "(") &&
 		!g_str_has_suffix (filter, ")");
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (needs_parens)
 		new_filter = g_strdup_printf ("(%s)", filter);
@@ -545,7 +541,7 @@ e_source_ldap_set_filter (ESourceLDAP *extension,
 		new_filter = g_strdup (filter);
 
 	if (g_strcmp0 (extension->priv->filter, new_filter) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		g_free (new_filter);
 		return;
 	}
@@ -553,7 +549,7 @@ e_source_ldap_set_filter (ESourceLDAP *extension,
 	g_free (extension->priv->filter);
 	extension->priv->filter = new_filter;
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "filter");
 }
@@ -596,12 +592,12 @@ e_source_ldap_dup_root_dn (ESourceLDAP *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_LDAP (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_ldap_get_root_dn (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -612,17 +608,17 @@ e_source_ldap_set_root_dn (ESourceLDAP *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_LDAP (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->root_dn, root_dn) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->root_dn);
 	extension->priv->root_dn = e_util_strdup_strip (root_dn);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "root-dn");
 }

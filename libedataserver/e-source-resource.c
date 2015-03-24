@@ -49,7 +49,6 @@
 	((obj), E_TYPE_SOURCE_RESOURCE, ESourceResourcePrivate))
 
 struct _ESourceResourcePrivate {
-	GMutex property_lock;
 	gchar *identity;
 };
 
@@ -105,8 +104,6 @@ source_resource_finalize (GObject *object)
 
 	priv = E_SOURCE_RESOURCE_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->identity);
 
 	/* Chain up to parent's finalize() method. */
@@ -147,7 +144,6 @@ static void
 e_source_resource_init (ESourceResource *extension)
 {
 	extension->priv = E_SOURCE_RESOURCE_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -190,12 +186,12 @@ e_source_resource_dup_identity (ESourceResource *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_RESOURCE (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_resource_get_identity (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -220,17 +216,17 @@ e_source_resource_set_identity (ESourceResource *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_RESOURCE (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->identity, identity) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->identity);
 	extension->priv->identity = e_util_strdup_strip (identity);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "identity");
 }

@@ -44,7 +44,6 @@
 	((obj), E_TYPE_SOURCE_GOA, ESourceGoaPrivate))
 
 struct _ESourceGoaPrivate {
-	GMutex property_lock;
 	gchar *account_id;
 	gchar *calendar_url;
 	gchar *contacts_url;
@@ -130,8 +129,6 @@ source_goa_finalize (GObject *object)
 
 	priv = E_SOURCE_GOA_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->account_id);
 	g_free (priv->calendar_url);
 	g_free (priv->contacts_url);
@@ -200,7 +197,6 @@ static void
 e_source_goa_init (ESourceGoa *extension)
 {
 	extension->priv = E_SOURCE_GOA_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -243,12 +239,12 @@ e_source_goa_dup_account_id (ESourceGoa *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_goa_get_account_id (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -273,17 +269,17 @@ e_source_goa_set_account_id (ESourceGoa *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_GOA (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->account_id, account_id) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->account_id);
 	extension->priv->account_id = e_util_strdup_strip (account_id);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "account-id");
 }
@@ -329,12 +325,12 @@ e_source_goa_dup_calendar_url (ESourceGoa *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_goa_get_calendar_url (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -360,17 +356,17 @@ e_source_goa_set_calendar_url (ESourceGoa *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_GOA (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->calendar_url);
 	extension->priv->calendar_url = e_util_strdup_strip (calendar_url);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "calendar-url");
 }
@@ -416,12 +412,12 @@ e_source_goa_dup_contacts_url (ESourceGoa *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_goa_get_contacts_url (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -447,17 +443,17 @@ e_source_goa_set_contacts_url (ESourceGoa *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_GOA (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->contacts_url);
 	extension->priv->contacts_url = e_util_strdup_strip (contacts_url);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "contacts-url");
 }

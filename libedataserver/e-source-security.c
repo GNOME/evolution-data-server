@@ -45,7 +45,6 @@
 #define SECURE_METHOD "tls"
 
 struct _ESourceSecurityPrivate {
-	GMutex property_lock;
 	gchar *method;
 };
 
@@ -115,8 +114,6 @@ source_security_finalize (GObject *object)
 
 	priv = E_SOURCE_SECURITY_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->method);
 
 	/* Chain up to parent's finalize() method. */
@@ -168,7 +165,6 @@ static void
 e_source_security_init (ESourceSecurity *extension)
 {
 	extension->priv = E_SOURCE_SECURITY_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -213,12 +209,12 @@ e_source_security_dup_method (ESourceSecurity *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_SECURITY (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_security_get_method (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -245,11 +241,11 @@ e_source_security_set_method (ESourceSecurity *extension,
 
 	g_return_if_fail (E_IS_SOURCE_SECURITY (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (extension->priv->method &&
 	    g_strcmp0 (extension->priv->method, method) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
@@ -259,7 +255,7 @@ e_source_security_set_method (ESourceSecurity *extension,
 	if (extension->priv->method == NULL)
 		extension->priv->method = g_strdup ("none");
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	object = G_OBJECT (extension);
 	g_object_freeze_notify (object);

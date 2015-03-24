@@ -27,7 +27,6 @@
 	((obj), E_TYPE_SOURCE_WEATHER, ESourceWeatherPrivate))
 
 struct _ESourceWeatherPrivate {
-	GMutex property_lock;
 	ESourceWeatherUnits units;
 	gchar *location;
 };
@@ -98,8 +97,6 @@ source_weather_finalize (GObject *object)
 
 	priv = E_SOURCE_WEATHER_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->location);
 
 	/* Chain up to parent's finalize() method. */
@@ -152,7 +149,6 @@ static void
 e_source_weather_init (ESourceWeather *extension)
 {
 	extension->priv = E_SOURCE_WEATHER_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 const gchar *
@@ -171,12 +167,12 @@ e_source_weather_dup_location (ESourceWeather *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_WEATHER (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_weather_get_location (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -187,17 +183,17 @@ e_source_weather_set_location (ESourceWeather *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_WEATHER (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->location, location) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->location);
 	extension->priv->location = e_util_strdup_strip (location);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "location");
 }

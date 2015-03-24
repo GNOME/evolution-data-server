@@ -43,7 +43,6 @@
 	((obj), E_TYPE_SOURCE_SMIME, ESourceSMIMEPrivate))
 
 struct _ESourceSMIMEPrivate {
-	GMutex property_lock;
 	gchar *encryption_certificate;
 	gchar *signing_algorithm;
 	gchar *signing_certificate;
@@ -175,8 +174,6 @@ source_smime_finalize (GObject *object)
 
 	priv = E_SOURCE_SMIME_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_free (priv->encryption_certificate);
 	g_free (priv->signing_algorithm);
 	g_free (priv->signing_certificate);
@@ -284,7 +281,6 @@ static void
 e_source_smime_init (ESourceSMIME *extension)
 {
 	extension->priv = E_SOURCE_SMIME_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -326,12 +322,12 @@ e_source_smime_dup_encryption_certificate (ESourceSMIME *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_SMIME (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_smime_get_encryption_certificate (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -354,12 +350,12 @@ e_source_smime_set_encryption_certificate (ESourceSMIME *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (
 		extension->priv->encryption_certificate,
 		encryption_certificate) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
@@ -369,7 +365,7 @@ e_source_smime_set_encryption_certificate (ESourceSMIME *extension,
 	g_free (extension->priv->encryption_certificate);
 	extension->priv->encryption_certificate = g_strdup (encryption_certificate);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "encryption-certificate");
 }
@@ -498,12 +494,12 @@ e_source_smime_dup_signing_algorithm (ESourceSMIME *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_SMIME (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_smime_get_signing_algorithm (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -529,10 +525,10 @@ e_source_smime_set_signing_algorithm (ESourceSMIME *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->signing_algorithm, signing_algorithm) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
@@ -540,7 +536,7 @@ e_source_smime_set_signing_algorithm (ESourceSMIME *extension,
 	extension->priv->signing_algorithm =
 		e_util_strdup_strip (signing_algorithm);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "signing-algorithm");
 }
@@ -584,12 +580,12 @@ e_source_smime_dup_signing_certificate (ESourceSMIME *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_SMIME (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_smime_get_signing_certificate (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -612,10 +608,10 @@ e_source_smime_set_signing_certificate (ESourceSMIME *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_SMIME (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->signing_certificate, signing_certificate) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
@@ -625,7 +621,7 @@ e_source_smime_set_signing_certificate (ESourceSMIME *extension,
 	g_free (extension->priv->signing_certificate);
 	extension->priv->signing_certificate = g_strdup (signing_certificate);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "signing-certificate");
 }

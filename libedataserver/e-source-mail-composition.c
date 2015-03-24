@@ -43,7 +43,6 @@
 	((obj), E_TYPE_SOURCE_MAIL_COMPOSITION, ESourceMailCompositionPrivate))
 
 struct _ESourceMailCompositionPrivate {
-	GMutex property_lock;
 	gchar **bcc;
 	gchar **cc;
 	gchar *drafts_folder;
@@ -159,8 +158,6 @@ source_mail_composition_finalize (GObject *object)
 
 	priv = E_SOURCE_MAIL_COMPOSITION_GET_PRIVATE (object);
 
-	g_mutex_clear (&priv->property_lock);
-
 	g_strfreev (priv->bcc);
 	g_strfreev (priv->cc);
 	g_free (priv->drafts_folder);
@@ -258,7 +255,6 @@ static void
 e_source_mail_composition_init (ESourceMailComposition *extension)
 {
 	extension->priv = E_SOURCE_MAIL_COMPOSITION_GET_PRIVATE (extension);
-	g_mutex_init (&extension->priv->property_lock);
 }
 
 /**
@@ -306,12 +302,12 @@ e_source_mail_composition_dup_bcc (ESourceMailComposition *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_mail_composition_get_bcc (extension);
 	duplicate = g_strdupv ((gchar **) protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -333,17 +329,17 @@ e_source_mail_composition_set_bcc (ESourceMailComposition *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (e_util_strv_equal (bcc, extension->priv->bcc)) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_strfreev (extension->priv->bcc);
 	extension->priv->bcc = g_strdupv ((gchar **) bcc);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "bcc");
 }
@@ -393,12 +389,12 @@ e_source_mail_composition_dup_cc (ESourceMailComposition *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_mail_composition_get_cc (extension);
 	duplicate = g_strdupv ((gchar **) protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -420,17 +416,17 @@ e_source_mail_composition_set_cc (ESourceMailComposition *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (e_util_strv_equal (cc, extension->priv->cc)) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_strfreev (extension->priv->cc);
 	extension->priv->cc = g_strdupv ((gchar **) cc);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "cc");
 }
@@ -475,12 +471,12 @@ e_source_mail_composition_dup_drafts_folder (ESourceMailComposition *extension)
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_mail_composition_get_drafts_folder (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -506,17 +502,17 @@ e_source_mail_composition_set_drafts_folder (ESourceMailComposition *extension,
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->drafts_folder, drafts_folder) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->drafts_folder);
 	extension->priv->drafts_folder = e_util_strdup_strip (drafts_folder);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "drafts-folder");
 }
@@ -606,12 +602,12 @@ e_source_mail_composition_dup_templates_folder (ESourceMailComposition *extensio
 
 	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), NULL);
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	protected = e_source_mail_composition_get_templates_folder (extension);
 	duplicate = g_strdup (protected);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	return duplicate;
 }
@@ -637,17 +633,17 @@ e_source_mail_composition_set_templates_folder (ESourceMailComposition *extensio
 {
 	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
 
-	g_mutex_lock (&extension->priv->property_lock);
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
 
 	if (g_strcmp0 (extension->priv->templates_folder, templates_folder) == 0) {
-		g_mutex_unlock (&extension->priv->property_lock);
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 		return;
 	}
 
 	g_free (extension->priv->templates_folder);
 	extension->priv->templates_folder = e_util_strdup_strip (templates_folder);
 
-	g_mutex_unlock (&extension->priv->property_lock);
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "templates-folder");
 }
