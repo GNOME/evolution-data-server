@@ -4868,6 +4868,19 @@ camel_imapx_server_authenticate (CamelIMAPXServer *is,
 				CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED,
 				ic->status->text ? ic->status->text : _("Unknown error"));
 			result = CAMEL_AUTHENTICATION_ERROR;
+		} else if (sasl) {
+			CamelSaslClass *sasl_class;
+
+			sasl_class = CAMEL_SASL_GET_CLASS (sasl);
+			if (sasl_class && sasl_class->auth_type && !sasl_class->auth_type->need_password) {
+				g_set_error_literal (
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+					ic->status->text ? ic->status->text : _("Unknown error"));
+				result = CAMEL_AUTHENTICATION_ERROR;
+			} else {
+				result = CAMEL_AUTHENTICATION_REJECTED;
+			}
 		} else {
 			result = CAMEL_AUTHENTICATION_REJECTED;
 		}

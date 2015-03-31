@@ -2500,6 +2500,10 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 	if (!success)
 		goto fail;
 
+	if (sinfo->text) {
+		g_strstrip (sinfo->text);
+	}
+
 	goto exit;
 
 fail:
