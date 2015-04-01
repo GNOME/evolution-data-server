@@ -1226,7 +1226,8 @@ imapx_server_set_connection_timeout (GIOStream *connection,
 		g_object_get (G_OBJECT (connection), "base-io-stream", &base_io_stream, NULL);
 
 		connection = base_io_stream;
-	} else {
+	} else if (connection) {
+		/* Connection can be NULL, when a custom command (GSubProcess) is used instead */
 		g_object_ref (connection);
 	}
 
