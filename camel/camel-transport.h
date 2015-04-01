@@ -67,6 +67,7 @@ struct _CamelTransportClass {
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
+						 gboolean *out_sent_message_saved,
 						 GCancellable *cancellable,
 						 GError **error);
 
@@ -79,6 +80,7 @@ gboolean	camel_transport_send_to_sync	(CamelTransport *transport,
 						 CamelMimeMessage *message,
 						 CamelAddress *from,
 						 CamelAddress *recipients,
+						 gboolean *out_sent_message_saved,
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_transport_send_to		(CamelTransport *transport,
@@ -91,6 +93,7 @@ void		camel_transport_send_to		(CamelTransport *transport,
 						 gpointer user_data);
 gboolean	camel_transport_send_to_finish	(CamelTransport *transport,
 						 GAsyncResult *result,
+						 gboolean *out_sent_message_saved,
 						 GError **error);
 
 G_END_DECLS

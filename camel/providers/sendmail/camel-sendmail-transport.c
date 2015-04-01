@@ -110,6 +110,7 @@ sendmail_send_to_sync (CamelTransport *transport,
                        CamelMimeMessage *message,
                        CamelAddress *from,
                        CamelAddress *recipients,
+		       gboolean *out_sent_message_saved,
                        GCancellable *cancellable,
                        GError **error)
 {
