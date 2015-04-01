@@ -1417,6 +1417,58 @@ imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 }
 
 static gboolean
+imapx_store_mailbox_is_unknown (CamelIMAPXStore *imapx_store,
+				GPtrArray *store_infos,
+				const CamelIMAPXStoreInfo *to_check)
+{
+	CamelIMAPXMailbox *mailbox;
+	gboolean is_unknown;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), FALSE);
+	g_return_val_if_fail (store_infos != NULL, FALSE);
+
+	if (!to_check || !to_check->mailbox_name || !*to_check->mailbox_name)
+		return FALSE;
+
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, to_check->mailbox_name);
+
+	is_unknown = mailbox && camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_UNKNOWN;
+
+	if (!mailbox && to_check->separator) {
+		CamelSettings *settings;
+		gboolean use_subscriptions;
+		gchar *mailbox_with_separator;
+		gint ii;
+
+		settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
+		use_subscriptions = camel_imapx_settings_get_use_subscriptions (CAMEL_IMAPX_SETTINGS (settings));
+		g_object_unref (settings);
+
+		mailbox_with_separator = g_strdup_printf ("%s%c", to_check->mailbox_name, to_check->separator);
+
+		for (ii = 0; ii < store_infos->len; ii++) {
+			CamelIMAPXStoreInfo *si;
+
+			si = g_ptr_array_index (store_infos, ii);
+
+			if (si->mailbox_name && g_str_has_prefix (si->mailbox_name, mailbox_with_separator) && (
+			    !use_subscriptions || (((CamelStoreInfo *) si)->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0)) {
+				/* This can be a 'virtual' parent folder of some subscribed subfolder */
+				break;
+			}
+		}
+
+		is_unknown = ii == store_infos->len;
+
+		g_free (mailbox_with_separator);
+	}
+
+	g_clear_object (&mailbox);
+
+	return is_unknown;
+}
+
+static gboolean
 sync_folders (CamelIMAPXStore *imapx_store,
               const gchar *root_folder_path,
               CamelStoreGetFolderInfoFlags flags,
@@ -1483,6 +1535,35 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
 		g_hash_table_foreach_remove (imapx_store->priv->mailboxes, imapx_store_remove_unknown_mailboxes_cb, imapx_store);
 		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
+	}
+
+	if (!root_folder_path || !*root_folder_path) {
+		GPtrArray *array;
+		guint ii;
+
+		/* Finally update store's summary */
+		array = camel_store_summary_array (imapx_store->summary);
+		for (ii = 0; array && ii < array->len; ii++) {
+			CamelStoreInfo *si;
+			const gchar *si_path;
+
+			si = g_ptr_array_index (array, ii);
+			si_path = camel_store_info_path (imapx_store->summary, si);
+
+			if (imapx_store_mailbox_is_unknown (imapx_store, array, (CamelIMAPXStoreInfo *) si)) {
+				gchar *dup_folder_path = g_strdup (si_path);
+
+				if (dup_folder_path != NULL) {
+					/* Do not unsubscribe from it, it influences UI for non-subscribable folders */
+					imapx_delete_folder_from_cache (imapx_store, dup_folder_path, FALSE);
+					g_free (dup_folder_path);
+				} else {
+					camel_store_summary_remove (imapx_store->summary, si);
+				}
+			}
+		}
+
+		camel_store_summary_array_free (imapx_store->summary, array);
 	}
 
 	camel_store_summary_save (imapx_store->summary);
