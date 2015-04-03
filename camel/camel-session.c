@@ -94,6 +94,8 @@ struct _JobData {
 	CamelSessionCallback callback;
 	gpointer user_data;
 	GDestroyNotify notify;
+	GMainContext *main_context;
+	GError *error;
 };
 
 enum {
@@ -154,6 +156,10 @@ job_data_free (JobData *job_data)
 
 	g_object_unref (job_data->session);
 	g_object_unref (job_data->cancellable);
+	g_clear_error (&job_data->error);
+
+	if (job_data->main_context)
+		g_main_context_unref (job_data->main_context);
 
 	if (job_data->notify != NULL)
 		job_data->notify (job_data->user_data);
@@ -161,74 +167,65 @@ job_data_free (JobData *job_data)
 	g_slice_free (JobData, job_data);
 }
 
-static void
-session_finish_job_cb (GObject *source_object,
-                       GAsyncResult *result,
-                       gpointer unused)
+static gboolean
+session_finish_job_cb (gpointer user_data)
 {
-	GCancellable *cancellable;
-	GError *local_error = NULL;
+	JobData *job_data = (JobData *) user_data;
 
-	cancellable = g_task_get_cancellable (G_TASK (result));
-
-	/* XXX Ignore the return value, this is just
-	 *     to extract the GError if there is one. */
-	g_task_propagate_boolean (G_TASK (result), &local_error);
+	g_return_val_if_fail (job_data != NULL, FALSE);
 
 	g_signal_emit (
-		CAMEL_SESSION (source_object),
+		job_data->session,
 		signals[JOB_FINISHED], 0,
-		cancellable, local_error);
+		job_data->cancellable, job_data->error);
 
-	g_clear_error (&local_error);
+	return FALSE;
 }
 
 static void
-session_do_job_cb (GTask *task,
-                   gpointer source_object,
-                   gpointer task_data,
-                   GCancellable *cancellable)
+session_job_thread (gpointer data,
+		    gpointer user_data)
 {
-	JobData *job_data;
-	GError *local_error = NULL;
+	JobData *job_data = (JobData *) data;
+	GSource *source;
 
-	job_data = (JobData *) task_data;
+	g_return_if_fail (job_data != NULL);
 
 	job_data->callback (
-		CAMEL_SESSION (source_object),
-		cancellable,
+		job_data->session,
+		job_data->cancellable,
 		job_data->user_data,
-		&local_error);
+		&job_data->error);
 
-	if (local_error != NULL) {
-		g_task_return_error (task, local_error);
-	} else {
-		g_task_return_boolean (task, TRUE);
-	}
+	source = g_idle_source_new ();
+	g_source_set_priority (source, G_PRIORITY_DEFAULT);
+	g_source_set_callback (source, session_finish_job_cb, job_data, (GDestroyNotify) job_data_free);
+	g_source_attach (source, job_data->main_context);
+	g_source_unref (source);
 }
 
 static gboolean
 session_start_job_cb (gpointer user_data)
 {
+	static GThreadPool *job_pool = NULL;
+	static GMutex job_pool_mutex;
 	JobData *job_data = user_data;
-	GTask *task;
 
 	g_signal_emit (
 		job_data->session,
 		signals[JOB_STARTED], 0,
 		job_data->cancellable);
 
-	task = g_task_new (
-		job_data->session,
-		job_data->cancellable,
-		session_finish_job_cb, NULL);
+	g_mutex_lock (&job_pool_mutex);
 
-	g_task_set_task_data (
-		task, job_data, (GDestroyNotify) job_data_free);
+	if (!job_pool)
+		job_pool = g_thread_pool_new (session_job_thread, NULL, 20, FALSE, NULL);
 
-	g_task_run_in_thread (task, session_do_job_cb);
+	job_data->main_context = g_main_context_ref_thread_default ();
 
-	g_object_unref (task);
+	g_thread_pool_push (job_pool, job_data, NULL);
+
+	g_mutex_unlock (&job_pool_mutex);
 
 	return FALSE;
 }
@@ -1453,6 +1450,8 @@ camel_session_submit_job (CamelSession *session,
 	job_data->callback = callback;
 	job_data->user_data = user_data;
 	job_data->notify = notify;
+	job_data->main_context = NULL;
+	job_data->error = NULL;
 
 	camel_operation_push_message (job_data->cancellable, "%s", description);
 
