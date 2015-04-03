@@ -1099,7 +1099,7 @@ source_idle_connection_status_change_cb (gpointer user_data)
 	ESource *source = E_SOURCE (user_data);
 	EDBusObject *dbus_object;
 	EDBusSource *dbus_source;
-	gboolean changed;
+	gboolean changed = FALSE;
 
 	if (g_source_is_destroyed (g_main_current_source ()))
 		return FALSE;

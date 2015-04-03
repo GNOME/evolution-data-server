@@ -35,7 +35,7 @@ static ESource *
 server_side_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
 						    const gchar *uid)
 {
-	ESource *source;
+	ESource *source = NULL;
 	GObject *registry;
 
 	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER (provider), NULL);
