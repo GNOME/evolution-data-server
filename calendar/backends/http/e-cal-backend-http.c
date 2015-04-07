@@ -778,21 +778,21 @@ cal_backend_http_ensure_uri (ECalBackendHttp *backend)
 	return backend->priv->uri;
 }
 
-static gboolean
-begin_retrieval_cb (GIOSchedulerJob *job,
-                    GCancellable *cancellable,
-                    ECalBackendHttp *backend)
+static void
+begin_retrieval_cb (GTask *task,
+		    gpointer source_object,
+		    gpointer task_tada,
+		    GCancellable *cancellable)
 {
+	ECalBackendHttp *backend = source_object;
 	const gchar *uri;
 	gchar *certificate_pem = NULL;
 	GTlsCertificateFlags certificate_errors = 0;
 	GError *error = NULL;
 
-	if (!e_backend_get_online (E_BACKEND (backend)))
-		return FALSE;
-
-	if (backend->priv->is_loading)
-		return FALSE;
+	if (!e_backend_get_online (E_BACKEND (backend)) ||
+	    backend->priv->is_loading)
+		return;
 
 	d (g_message ("Starting retrieval...\n"));
 
@@ -841,8 +841,18 @@ begin_retrieval_cb (GIOSchedulerJob *job,
 	}
 
 	d (g_message ("Retrieval really done.\n"));
+}
 
-	return FALSE;
+static void
+http_cal_schedule_begin_retrieval (ECalBackendHttp *cbhttp)
+{
+	GTask *task;
+
+	task = g_task_new (cbhttp, NULL, NULL, NULL);
+
+	g_task_run_in_thread (task, begin_retrieval_cb);
+
+	g_object_unref (task);
 }
 
 static void
@@ -868,11 +878,7 @@ source_changed_cb (ESource *source,
 		uri_changed = (g_strcmp0 (old_uri, new_uri) != 0);
 
 		if (uri_changed && !cbhttp->priv->is_loading)
-			g_io_scheduler_push_job (
-				(GIOSchedulerJobFunc) begin_retrieval_cb,
-				g_object_ref (cbhttp),
-				(GDestroyNotify) g_object_unref,
-				G_PRIORITY_DEFAULT, NULL);
+			http_cal_schedule_begin_retrieval (cbhttp);
 
 		g_free (old_uri);
 	}
@@ -891,11 +897,7 @@ http_cal_reload_cb (ESource *source,
 	if (!e_backend_get_online (E_BACKEND (cbhttp)))
 		return;
 
-	g_io_scheduler_push_job (
-		(GIOSchedulerJobFunc) begin_retrieval_cb,
-		g_object_ref (cbhttp),
-		(GDestroyNotify) g_object_unref,
-		G_PRIORITY_DEFAULT, NULL);
+	http_cal_schedule_begin_retrieval (cbhttp);
 }
 
 /* Open handler for the file backend */
@@ -1039,11 +1041,7 @@ e_cal_backend_http_notify_online_cb (ECalBackend *backend,
 	loaded = e_cal_backend_is_opened (backend);
 
 	if (online && loaded)
-		g_io_scheduler_push_job (
-			(GIOSchedulerJobFunc) begin_retrieval_cb,
-			g_object_ref (backend),
-			(GDestroyNotify) g_object_unref,
-			G_PRIORITY_DEFAULT, NULL);
+		http_cal_schedule_begin_retrieval (E_CAL_BACKEND_HTTP (backend));
 }
 
 /* Get_object_component handler for the http backend */
