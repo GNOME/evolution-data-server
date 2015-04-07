@@ -39,8 +39,8 @@ m4_define([glib_minimum_version], [2.40])
 m4_define([glib_encoded_version], [GLIB_VERSION_2_40])
 
 dnl Keep these two definitions in agreement.
-m4_define([gdk_minimum_version], [3.6])
-m4_define([gdk_encoded_version], [GDK_VERSION_3_6])
+m4_define([gdk_minimum_version], [3.10])
+m4_define([gdk_encoded_version], [GDK_VERSION_3_10])
 
 dnl Keep these two definitions in agreement.
 m4_define([soup_minimum_version], [2.42])
