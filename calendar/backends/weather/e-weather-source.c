@@ -121,7 +121,7 @@ e_weather_source_new (const gchar *location)
 	if (location == NULL)
 		return NULL;
 
-	world = gweather_location_new_world (FALSE);
+	world = gweather_location_get_world ();
 
 	if (strncmp (location, "ccf/", 4) == 0)
 		location += 4;
@@ -144,7 +144,6 @@ e_weather_source_new (const gchar *location)
 	if (glocation != NULL)
 		gweather_location_ref (glocation);
 
-	gweather_location_unref (world);
 	g_strfreev (tokens);
 
 	if (glocation == NULL)

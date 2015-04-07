@@ -55,7 +55,7 @@ m4_define([libical_minimum_version], [0.43])
 
 dnl Optional Packages
 m4_define([goa_minimum_version], [3.8])
-m4_define([gweather_minimum_version], [3.8])
+m4_define([gweather_minimum_version], [3.10])
 m4_define([libaccounts_glib_minimum_version], [1.4])
 m4_define([libsignon_glib_minimum_version], [1.8])
 

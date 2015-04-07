@@ -342,6 +342,40 @@ cal_backend_weather_get_temp (gdouble value,
 	return g_strdup_printf (_("%.1f"), value);
 }
 
+static gchar *
+cal_weather_get_info_forecast_text (GWeatherInfo *info)
+{
+	GString *buffer;
+	GSList *forecasts, *link;
+
+	if (!info)
+		return NULL;
+
+	buffer = g_string_new ("");
+
+	forecasts = gweather_info_get_forecast_list (info);
+	for (link = forecasts; link; link = g_slist_next (link)) {
+		GWeatherInfo *nfo = link->data;
+		gchar *date, *summary, *temp;
+
+		date = gweather_info_get_update (nfo);
+		summary = gweather_info_get_conditions (nfo);
+		if (g_str_equal (summary, "-")) {
+			g_free (summary);
+			summary = gweather_info_get_sky (nfo);
+		}
+		temp = gweather_info_get_temp_summary (nfo);
+
+		g_string_append_printf (buffer, " * %s: %s, %s\n", date, summary, temp);
+
+		g_free (date);
+		g_free (summary);
+		g_free (temp);
+	}
+
+	return g_string_free (buffer, FALSE);
+}
+
 static ECalComponent *
 create_weather (ECalBackendWeather *cbw,
                 GWeatherInfo *report,
@@ -436,7 +470,7 @@ create_weather (ECalBackendWeather *cbw,
 	e_cal_component_set_summary (cal_comp, &comp_summary);
 	g_free ((gchar *) comp_summary.value);
 
-	tmp = gweather_info_get_forecast (report);
+	tmp = cal_weather_get_info_forecast_text (report);
 	comp_summary.value = gweather_info_get_weather_summary (report);
 
 	description = g_new0 (ECalComponentText, 1);
@@ -449,7 +483,7 @@ create_weather (ECalBackendWeather *cbw,
 			g_string_append (builder, comp_summary.value);
 			g_string_append_c (builder, '\n');
 		}
-		if (tmp) {
+		if (tmp && *tmp) {
 			g_string_append (builder, _("Forecast"));
 			g_string_append_c (builder, ':');
 			if (!is_forecast)
