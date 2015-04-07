@@ -238,12 +238,9 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 	gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER_ON_PARENT);
 	gtk_container_set_border_width (GTK_CONTAINER (dialog), 12);
 
-	widget = gtk_dialog_get_action_area (prompter_password->priv->dialog);
 	content_area = gtk_dialog_get_content_area (prompter_password->priv->dialog);
 
 	/* Override GtkDialog defaults */
-	gtk_box_set_spacing (GTK_BOX (widget), 12);
-	gtk_container_set_border_width (GTK_CONTAINER (widget), 0);
 	gtk_box_set_spacing (GTK_BOX (content_area), 12);
 	gtk_container_set_border_width (GTK_CONTAINER (content_area), 0);
 
