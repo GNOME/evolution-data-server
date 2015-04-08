@@ -49,7 +49,7 @@
 typedef struct _SignalClosure SignalClosure;
 
 struct _ECalClientViewPrivate {
-	GWeakRef client;
+	ECalClient *client;
 	GDBusProxy *dbus_proxy;
 	GDBusConnection *connection;
 	gchar *object_path;
@@ -509,8 +509,9 @@ cal_client_view_set_client (ECalClientView *client_view,
                             ECalClient *client)
 {
 	g_return_if_fail (E_IS_CAL_CLIENT (client));
+	g_return_if_fail (client_view->priv->client == NULL);
 
-	g_weak_ref_set (&client_view->priv->client, client);
+	client_view->priv->client = g_object_ref (client);
 }
 
 static void
@@ -601,7 +602,7 @@ cal_client_view_dispose (GObject *object)
 
 	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (object);
 
-	g_weak_ref_set (&priv->client, NULL);
+	g_clear_object (&priv->client);
 
 	if (priv->connection != NULL) {
 		g_object_unref (priv->connection);
@@ -653,7 +654,7 @@ cal_client_view_finalize (GObject *object)
 	g_free (priv->object_path);
 
 	g_mutex_clear (&priv->main_context_lock);
-	g_weak_ref_clear (&priv->client);
+	g_clear_object (&priv->client);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_client_view_parent_class)->finalize (object);
@@ -672,7 +673,7 @@ cal_client_view_initable_init (GInitable *initable,
 
 	priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (initable);
 
-	cal_client = g_weak_ref_get (&priv->client);
+	cal_client = priv->client ? g_object_ref (priv->client) : NULL;
 	if (cal_client == NULL) {
 		g_set_error (
 			error, E_CLIENT_ERROR,
@@ -877,7 +878,7 @@ e_cal_client_view_init (ECalClientView *client_view)
 	client_view->priv = E_CAL_CLIENT_VIEW_GET_PRIVATE (client_view);
 
 	g_mutex_init (&client_view->priv->main_context_lock);
-	g_weak_ref_init (&client_view->priv->client, NULL);
+	client_view->priv->client = NULL;
 }
 
 /**
@@ -898,7 +899,10 @@ e_cal_client_view_ref_client (ECalClientView *client_view)
 {
 	g_return_val_if_fail (E_IS_CAL_CLIENT_VIEW (client_view), NULL);
 
-	return g_weak_ref_get (&client_view->priv->client);
+	if (!client_view->priv->client)
+		return NULL;
+
+	return g_object_ref (client_view->priv->client);
 }
 
 /**

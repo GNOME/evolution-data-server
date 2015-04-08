@@ -49,7 +49,7 @@
 typedef struct _SignalClosure SignalClosure;
 
 struct _EBookClientViewPrivate {
-	GWeakRef client;
+	EBookClient *client;
 	GDBusProxy *dbus_proxy;
 	GDBusConnection *connection;
 	gchar *object_path;
@@ -672,8 +672,9 @@ book_client_view_set_client (EBookClientView *client_view,
                              EBookClient *client)
 {
 	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (client_view->priv->client == NULL);
 
-	g_weak_ref_set (&client_view->priv->client, client);
+	client_view->priv->client = g_object_ref (client);
 }
 
 static void
@@ -783,7 +784,7 @@ book_client_view_dispose (GObject *object)
 
 	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (object);
 
-	g_weak_ref_set (&priv->client, NULL);
+	g_clear_object (&priv->client);
 
 	if (priv->connection != NULL) {
 		g_object_unref (priv->connection);
@@ -840,7 +841,7 @@ book_client_view_finalize (GObject *object)
 	g_free (priv->object_path);
 
 	g_mutex_clear (&priv->main_context_lock);
-	g_weak_ref_clear (&priv->client);
+	g_clear_object (&priv->client);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_book_client_view_parent_class)->finalize (object);
@@ -859,7 +860,7 @@ book_client_view_initable_init (GInitable *initable,
 
 	priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (initable);
 
-	book_client = g_weak_ref_get (&priv->client);
+	book_client = priv->client ? g_object_ref (priv->client) : NULL;
 	if (book_client == NULL) {
 		g_set_error (
 			error, E_CLIENT_ERROR,
@@ -1054,7 +1055,7 @@ e_book_client_view_init (EBookClientView *client_view)
 	client_view->priv = E_BOOK_CLIENT_VIEW_GET_PRIVATE (client_view);
 
 	g_mutex_init (&client_view->priv->main_context_lock);
-	g_weak_ref_init (&client_view->priv->client, NULL);
+	client_view->priv->client = NULL;
 }
 
 /**
@@ -1075,7 +1076,10 @@ e_book_client_view_ref_client (EBookClientView *client_view)
 {
 	g_return_val_if_fail (E_IS_BOOK_CLIENT_VIEW (client_view), NULL);
 
-	return g_weak_ref_get (&client_view->priv->client);
+	if (!client_view->priv->client)
+		return NULL;
+
+	return g_object_ref (client_view->priv->client);
 }
 
 /**
