@@ -459,6 +459,10 @@ nntp_store_connect_sync (CamelService *service,
 {
 	CamelNNTPStore *nntp_store;
 
+	/* Chain up to parent's method. */
+	if (!CAMEL_SERVICE_CLASS (camel_nntp_store_parent_class)->connect_sync (service, cancellable, error))
+		return FALSE;
+
 	nntp_store = CAMEL_NNTP_STORE (service);
 
 	if (!connect_to_server (service, cancellable, error))
@@ -491,7 +495,8 @@ nntp_store_disconnect_sync (CamelService *service,
 
 	nntp_store_reset_state (nntp_store, NULL);
 
-	return TRUE;
+	/* Chain up to parent's method. */
+	return CAMEL_SERVICE_CLASS (camel_nntp_store_parent_class)->disconnect_sync (service, clean, cancellable, error);
 }
 
 extern CamelServiceAuthType camel_nntp_anonymous_authtype;
