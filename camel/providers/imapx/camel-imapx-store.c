@@ -774,6 +774,10 @@ imapx_connect_sync (CamelService *service,
 	CamelIMAPXServer *imapx_server;
 	gboolean success;
 
+	/* Chain up to parent's method. */
+	if (!CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class)->connect_sync (service, cancellable, error))
+		return FALSE;
+
 	imapx_store = CAMEL_IMAPX_STORE (service);
 
 	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
@@ -803,7 +807,8 @@ imapx_disconnect_sync (CamelService *service,
 
 	g_mutex_unlock (&priv->server_lock);
 
-	return TRUE;
+	/* Chain up to parent's method. */
+	return CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class)->disconnect_sync (service, clean, cancellable, error);
 }
 
 static CamelAuthenticationResult

@@ -509,6 +509,10 @@ pop3_store_connect_sync (CamelService *service,
 	gboolean success = TRUE;
 	gchar *mechanism;
 
+	/* Chain up to parent's method. */
+	if (!CAMEL_SERVICE_CLASS (camel_pop3_store_parent_class)->connect_sync (service, cancellable, error))
+		return FALSE;
+
 	session = camel_service_ref_session (service);
 	user_data_dir = camel_service_get_user_data_dir (service);
 

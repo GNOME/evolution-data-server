@@ -922,7 +922,6 @@ service_connect_sync (CamelService *service,
                       GCancellable *cancellable,
                       GError **error)
 {
-	/* Default behavior for local storage providers. */
 	return TRUE;
 }
 
@@ -932,7 +931,10 @@ service_disconnect_sync (CamelService *service,
                          GCancellable *cancellable,
                          GError **error)
 {
-	/* Default behavior for local storage providers. */
+	if (CAMEL_IS_NETWORK_SERVICE (service))
+		camel_network_service_set_connectable (
+			CAMEL_NETWORK_SERVICE (service), NULL);
+
 	return TRUE;
 }
 

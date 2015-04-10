@@ -403,6 +403,10 @@ smtp_transport_connect_sync (CamelService *service,
 	gboolean auth_required;
 	gboolean success = TRUE;
 
+	/* Chain up to parent's method. */
+	if (!CAMEL_SERVICE_CLASS (camel_smtp_transport_parent_class)->connect_sync (service, cancellable, error))
+		return FALSE;
+
 	smtp_debug_print_server_name (service, "Connecting to");
 
 	settings = camel_service_ref_settings (service);
