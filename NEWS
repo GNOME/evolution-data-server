@@ -1,3 +1,29 @@
+Evolution-Data-Server 3.16.1 2015-04-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 692555 - Add "Personal" address book to birthdays calendar by default (Milan Crha)
+	Bug 746346 - [IMAPx] Propagate no-password authentication errors into UI (Milan Crha)
+	Bug 746732 - [IMAPx] Custom command doesn't have connection (Milan Crha)
+	Bug 746828 - [IMAPx] Server-side deleted folders still visible in UI (Milan Crha)
+	Bug 747500 - Mail account connection settings change requires restart (Milan Crha)
+
+Miscellaneous:
+	EGoaPasswordBased - Avoid runtime warning when checking OAuth2 based accounts (Milan Crha)
+	[CalDAV] Claim error when user name is missing for authentication (Milan Crha)
+	Avoid possible crash in source_parse_dbus_data() (Milan Crha)
+	e_collection_backend_authenticate_children: Fix a memory leak (Milan Crha)
+	source_webdav_update_properties_from_soup_uri: Ignore empty user name (Milan Crha)
+	[CalDAV] Stop re-trying authentication with bearer authenticator (Milan Crha)
+	Do not use GTask for CamelSession thread jobs (Milan Crha)
+	Avoid use of uninitialized variables (Milan Crha)
+
+Translations:
+	Rūdolfs Mazurs (lv)
+	GNOME Translation Robot (gl)
+	Sveinn í Felli (is)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.16.0 2015-03-23
 ---------------------------------------
 
