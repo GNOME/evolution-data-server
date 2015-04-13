@@ -1495,7 +1495,7 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 		/* Remove from summary as well */
 		if (!e_book_sqlite_remove_contacts (bf->priv->sqlitedb, removed_ids,
 						    cancellable, &local_error)) {
-			if (!local_error) {
+			if (local_error) {
 				g_warning ("Failed to remove contacts: %s", local_error->message);
 				g_propagate_error (error, local_error);
 			}
