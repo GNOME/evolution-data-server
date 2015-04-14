@@ -5426,11 +5426,37 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 		}
 	}
 
-	if (data->delete_originals) {
+	if (data->delete_originals || data->use_move_command) {
+		CamelFolderChangeInfo *changes = NULL;
 		gint j;
 
-		for (j = data->last_index; j < i; j++)
-			camel_folder_delete_message (folder, uids->pdata[j]);
+		camel_folder_freeze (folder);
+
+		for (j = data->last_index; j < i; j++) {
+			const gchar *uid = uids->pdata[j];
+
+			if (data->delete_originals) {
+				camel_folder_delete_message (folder, uid);
+			} else {
+				if (camel_folder_summary_remove_uid (folder->summary, uid)) {
+					if (!changes)
+						changes = camel_folder_change_info_new ();
+
+					camel_folder_change_info_remove_uid (changes, uid);
+				}
+			}
+		}
+
+		if (changes && camel_folder_change_info_changed (changes)) {
+			camel_folder_summary_touch (folder->summary);
+			camel_folder_summary_save_to_db (folder->summary, NULL);
+			camel_folder_changed (folder, changes);
+		}
+
+		camel_folder_thaw (folder);
+
+		if (changes)
+			camel_folder_change_info_free (changes);
 	}
 
 	if (i < uids->len) {
