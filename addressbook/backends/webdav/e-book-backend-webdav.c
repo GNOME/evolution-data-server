@@ -794,6 +794,7 @@ static gboolean
 download_contacts (EBookBackendWebdav *webdav,
                    EFlag *running,
                    EDataBookView *book_view,
+		   gboolean force,
                    GCancellable *cancellable,
                    GError **error)
 {
@@ -813,7 +814,7 @@ download_contacts (EBookBackendWebdav *webdav,
 
 	g_mutex_lock (&priv->update_lock);
 
-	if (!check_addressbook_changed (webdav, &new_ctag, cancellable)) {
+	if (!force && !check_addressbook_changed (webdav, &new_ctag, cancellable)) {
 		g_free (new_ctag);
 		g_mutex_unlock (&priv->update_lock);
 		return TRUE;
@@ -1034,7 +1035,7 @@ book_view_thread (gpointer data)
 	 * it's stopped */
 	g_object_ref (book_view);
 
-	download_contacts (webdav, closure->running, book_view, NULL, NULL);
+	download_contacts (webdav, closure->running, book_view, FALSE, NULL, NULL);
 
 	g_object_unref (book_view);
 
@@ -1180,7 +1181,7 @@ book_backend_webdav_get_backend_property (EBookBackend *backend,
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		return g_strdup ("net,do-initial-query,contact-lists");
+		return g_strdup ("net,do-initial-query,contact-lists,refresh-supported");
 
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS)) {
 		return g_strdup (e_contact_field_name (E_CONTACT_FILE_AS));
@@ -1792,7 +1793,7 @@ book_backend_webdav_get_contact_list_sync (EBookBackend *backend,
 	if (e_backend_get_online (E_BACKEND (backend)) &&
 	    e_source_get_connection_status (e_backend_get_source (E_BACKEND (backend))) == E_SOURCE_CONNECTION_STATUS_CONNECTED) {
 		/* make sure the cache is up to date */
-		if (!download_contacts (webdav, NULL, NULL, cancellable, error))
+		if (!download_contacts (webdav, NULL, NULL, FALSE, cancellable, error))
 			return FALSE;
 	}
 
@@ -1868,6 +1869,29 @@ book_backend_webdav_authenticate_sync (EBackend *backend,
 	return result;
 }
 
+static gboolean
+e_book_backend_webdav_refresh_sync (EBookBackend *book_backend,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	EBackend *backend;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (book_backend), FALSE);
+
+	backend = E_BACKEND (book_backend);
+
+	if (!e_backend_get_online (backend) &&
+	    e_backend_is_destination_reachable (backend, cancellable, NULL)) {
+		e_backend_set_online (backend, TRUE);
+	}
+
+	if (e_backend_get_online (backend) && !g_cancellable_is_cancelled (cancellable)) {
+		return download_contacts (E_BOOK_BACKEND_WEBDAV (book_backend), NULL, NULL, TRUE, cancellable, error);
+	}
+
+	return TRUE;
+}
+
 static void
 e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 {
@@ -1894,6 +1918,7 @@ e_book_backend_webdav_class_init (EBookBackendWebdavClass *class)
 	book_backend_class->get_contact_list_sync = book_backend_webdav_get_contact_list_sync;
 	book_backend_class->start_view = e_book_backend_webdav_start_view;
 	book_backend_class->stop_view = e_book_backend_webdav_stop_view;
+	book_backend_class->refresh_sync = e_book_backend_webdav_refresh_sync;
 }
 
 static void
