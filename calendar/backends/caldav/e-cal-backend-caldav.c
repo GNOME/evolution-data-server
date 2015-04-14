@@ -3115,9 +3115,17 @@ caldav_refresh (ECalBackendSync *backend,
 	g_mutex_lock (&cbdav->priv->busy_lock);
 
 	if (!cbdav->priv->loaded
-	    || cbdav->priv->slave_cmd == SLAVE_SHOULD_DIE
-	    || !check_state (cbdav, &online, NULL)
-	    || !online) {
+	    || cbdav->priv->slave_cmd == SLAVE_SHOULD_DIE) {
+		g_mutex_unlock (&cbdav->priv->busy_lock);
+		return;
+	}
+
+	if (!e_backend_get_online (E_BACKEND (backend)) &&
+	    e_backend_is_destination_reachable (E_BACKEND (backend), cancellable, NULL)) {
+		e_backend_set_online (E_BACKEND (backend), TRUE);
+	}
+
+	if (!check_state (cbdav, &online, NULL) || !online) {
 		g_mutex_unlock (&cbdav->priv->busy_lock);
 		return;
 	}
