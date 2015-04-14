@@ -245,7 +245,7 @@ ebsql_init_debug (void)
 		} \
 	} G_STMT_END
 
-#define FOLDER_VERSION                10
+#define FOLDER_VERSION                11
 #define INSERT_MULTI_STMT_BYTES       128
 #define COLUMN_DEFINITION_BYTES       32
 #define GENERATED_QUERY_BYTES         1024
@@ -2103,7 +2103,7 @@ format_multivalues (EBookSqlite *ebsql)
 		}
 	}
 
-	return g_string_free (string, FALSE);
+	return g_string_free (string, string->len == 0);
 }
 
 /* Called with the lock held and inside a transaction */
@@ -2135,6 +2135,23 @@ ebsql_add_folder (EBookSqlite *ebsql,
 			ebsql->priv->folderid, success ? "success" : "failed"));
 
 	return success;
+}
+
+static gboolean
+ebsql_email_list_exists (EBookSqlite *ebsql)
+{
+	gint n_tables = 0;
+	gboolean success;
+
+	success = ebsql_exec_printf (
+		ebsql, "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='%q_email_list';",
+		get_count_cb, &n_tables, NULL, NULL,
+		ebsql->priv->folderid);
+
+	if (!success)
+		return FALSE;
+
+	return n_tables == 1;
 }
 
 /* Called with the lock held and inside a transaction */
@@ -2252,6 +2269,19 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 
 	if (!success)
 		goto introspect_summary_finish;
+
+	if (!multivalues || !*multivalues) {
+		g_free (multivalues);
+		multivalues = NULL;
+
+		/* The migration from a previous version didn't store this default multivalue
+		   reference, thus the next backend open (not the immediate one after migration),
+		   didn't know about this table, which has a FOREIGN KEY constraint, thus an item
+		   delete caused a 'FOREIGN KEY constraint failed' error.
+		*/
+		if (ebsql_email_list_exists (ebsql))
+			multivalues = g_strdup ("email;prefix");
+	}
 
 	if (multivalues) {
 		gchar **fields = g_strsplit (multivalues, ":", 0);
@@ -2582,6 +2612,20 @@ ebsql_init_aux_tables (EBookSqlite *ebsql,
 				field->aux_table));
 	}
 
+	if (success) {
+		gchar *multivalues;
+
+		multivalues = format_multivalues (ebsql);
+
+		success = ebsql_exec_printf (
+			ebsql,
+			"UPDATE folders SET multivalues=%Q WHERE folder_id=%Q",
+			NULL, NULL, NULL, error,
+			multivalues, ebsql->priv->folderid);
+
+		g_free (multivalues);
+	}
+
 	EBSQL_NOTE (
 		SCHEMA,
 		g_printerr (
@@ -2828,7 +2872,7 @@ ebsql_init_locale (EBookSqlite *ebsql,
 	/* Check if we need to relocalize */
 	if (success) {
 		/* Need to relocalize the whole thing if the schema has been upgraded to version 7 */
-		if (previous_schema >= 1 && previous_schema < 7)
+		if (previous_schema >= 1 && previous_schema < 11)
 			relocalize_needed = TRUE;
 
 		/* We may need to relocalize for a country code change */
