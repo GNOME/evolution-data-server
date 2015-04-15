@@ -2501,8 +2501,14 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					camel_folder_change_info_recent_uid (data->changes, mi->uid);
 
 					if (messages > 0) {
+						GCancellable *use_cancellable;
 						gint cnt = (camel_folder_summary_count (folder->summary) * 100) / messages;
-						camel_operation_progress (cancellable, cnt ? cnt : 1);
+
+						use_cancellable = camel_imapx_job_get_cancellable (job);
+						if (!use_cancellable)
+							use_cancellable = cancellable;
+
+						camel_operation_progress (use_cancellable, cnt ? cnt : 1);
 					}
 				} else {
 					camel_message_info_unref (mi);
