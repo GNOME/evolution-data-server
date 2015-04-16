@@ -3926,6 +3926,7 @@ typedef enum {
 enum {
 	/* 'exists' is a supported query on a field, but not part of EBookQueryTest */
 	BOOK_QUERY_EXISTS = E_BOOK_QUERY_LAST,
+	BOOK_QUERY_EXISTS_VCARD,
 
 	/* From here the compound types start */
 	BOOK_QUERY_SUB_AND,
@@ -3938,6 +3939,7 @@ enum {
 
 #define EBSQL_QUERY_TYPE_STR(query) \
 	((query) == BOOK_QUERY_EXISTS ? "exists" : \
+	 (query) == BOOK_QUERY_EXISTS_VCARD ? "exists_vcard" : \
 	 (query) == BOOK_QUERY_SUB_AND ? "AND" : \
 	 (query) == BOOK_QUERY_SUB_OR ? "OR" : \
 	 (query) == BOOK_QUERY_SUB_NOT ? "NOT" : \
@@ -4337,6 +4339,7 @@ static const struct {
 	{ "regex_normal",     FALSE, E_BOOK_QUERY_REGEX_NORMAL },
 	{ "regex_raw",        FALSE, E_BOOK_QUERY_REGEX_RAW },
 	{ "exists",           FALSE, BOOK_QUERY_EXISTS },
+	{ "exists_vcard",     FALSE, BOOK_QUERY_EXISTS_VCARD }
 };
 
 /* Cheat our way into passing mode data to these funcs */
@@ -4811,6 +4814,17 @@ query_preflight_check (PreflightContext *context,
 				}
 			}
 
+			break;
+
+		case BOOK_QUERY_EXISTS_VCARD:
+			/* Exists vCard queries only supported in the fallback */
+			context->status = MAX (context->status, PREFLIGHT_NOT_SUMMARIZED);
+			EBSQL_NOTE (
+				PREFLIGHT,
+				g_printerr (
+					"PREFLIGHT CHECK: "
+					"Exists vCard requires full data, new status: %s\n",
+					EBSQL_STATUS_STR (context->status)));
 			break;
 
 		case E_BOOK_QUERY_REGEX_RAW:
@@ -5358,6 +5372,7 @@ static const GenerateFieldTest field_test_func_table[] = {
 	field_test_query_regex_normal,     /* E_BOOK_QUERY_REGEX_NORMAL */
 	NULL /* Requires fallback */,      /* E_BOOK_QUERY_REGEX_RAW  */
 	field_test_query_exists,           /* BOOK_QUERY_EXISTS */
+	NULL /* Requires fallback */       /* BOOK_QUERY_EXISTS_VCARD */
 };
 
 /**********************************************************
