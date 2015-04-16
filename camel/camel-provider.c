@@ -321,13 +321,11 @@ add_to_list (gpointer key,
 }
 
 /**
- * camel_session_list_providers:
- * @session: the session
+ * camel_provider_list:
  * @load: whether or not to load in providers that are not already loaded
  *
- * This returns a list of available providers in this session. If @load
- * is %TRUE, it will first load in all available providers that haven't
- * yet been loaded.
+ * This returns a list of available providers. If @load is %TRUE, it will
+ * first load in all available providers that haven't yet been loaded.
  *
  * Free the returned list with g_list_free().  The #CamelProvider structs
  * in the list are owned by Camel and should not be modified or freed.
