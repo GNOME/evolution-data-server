@@ -35,6 +35,10 @@
  * "org.gnome.Evolution.DefaultSources" #GSettings schema which tracks
  * which #ESource instances are designated to be the user's default address
  * book, calendar, memo list and task list for desktop integration.
+ *
+ * Note: The #ESourceRegistry uses thread default main context from the time
+ * of its creation to deliver D-Bus signals, finish operations and so on,
+ * thus it requires a running main loop for its proper functionality.
  **/
 
 #include "e-source-registry.h"
