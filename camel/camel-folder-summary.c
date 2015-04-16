@@ -2003,15 +2003,15 @@ perform_content_info_load_from_db (CamelFolderSummary *summary,
 }
 
 static void
-gather_dirty_uids (gpointer key,
-                   gpointer value,
-                   gpointer user_data)
+gather_dirty_or_flagged_uids (gpointer key,
+			      gpointer value,
+			      gpointer user_data)
 {
 	const gchar *uid = key;
 	CamelMessageInfoBase *info = value;
 	GHashTable *hash = user_data;
 
-	if (info->dirty)
+	if (info->dirty || (info->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0)
 		g_hash_table_insert (hash, (gpointer) camel_pstring_strdup (uid), GINT_TO_POINTER (1));
 }
 
@@ -2041,7 +2041,7 @@ camel_folder_summary_get_changed (CamelFolderSummary *summary)
 
 	camel_folder_summary_lock (summary);
 
-	g_hash_table_foreach (summary->priv->loaded_infos, gather_dirty_uids, hash);
+	g_hash_table_foreach (summary->priv->loaded_infos, gather_dirty_or_flagged_uids, hash);
 	g_hash_table_foreach (summary->priv->uids, gather_changed_uids, hash);
 
 	res = g_ptr_array_sized_new (g_hash_table_size (hash));
