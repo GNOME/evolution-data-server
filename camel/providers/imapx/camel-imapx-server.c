@@ -8634,12 +8634,10 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
                                    GError **error)
 {
 	gchar *uid = NULL, *path = NULL;
-	CamelMimeFilter *filter;
 	CamelIMAPXJob *job;
 	CamelMessageInfo *info;
 	GIOStream *base_stream;
 	GOutputStream *output_stream;
-	GOutputStream *filter_stream;
 	AppendMessageData *data;
 	gint res;
 	time_t date_time;
@@ -8675,19 +8673,12 @@ camel_imapx_server_append_message (CamelIMAPXServer *is,
 	}
 
 	output_stream = g_io_stream_get_output_stream (base_stream);
-	filter = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF);
-	filter_stream = camel_filter_output_stream_new (output_stream, filter);
-
-	g_filter_output_stream_set_close_base_stream (
-		G_FILTER_OUTPUT_STREAM (filter_stream), FALSE);
 
 	res = camel_data_wrapper_write_to_output_stream_sync (
 		CAMEL_DATA_WRAPPER (message),
-		filter_stream, cancellable, error);
+		output_stream, cancellable, error);
 
 	g_object_unref (base_stream);
-	g_object_unref (filter_stream);
-	g_object_unref (filter);
 
 	if (res == -1) {
 		g_prefix_error (error, _("Cannot create spool file: "));
