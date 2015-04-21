@@ -5500,6 +5500,11 @@ e_cal_backend_caldav_finalize (GObject *object)
 	g_free (priv->password);
 	g_free (priv->schedule_outbox_url);
 
+	if (priv->ctag_to_store) {
+		g_free (priv->ctag_to_store);
+		priv->ctag_to_store = NULL;
+	}
+
 	g_clear_error (&priv->bearer_auth_error);
 	g_mutex_clear (&priv->bearer_auth_error_lock);
 
