@@ -997,7 +997,7 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 		g_free (certificate_pem);
 
 		if (local_error != NULL)
-			g_propagate_error (perror, g_error_copy (local_error));
+			g_propagate_error (perror, local_error);
 	}
 
 	if (opened) {
