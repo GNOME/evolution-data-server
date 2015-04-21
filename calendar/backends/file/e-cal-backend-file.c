@@ -645,9 +645,11 @@ add_component_to_intervaltree (ECalBackendFile *cbfile,
 		resolve_tzid, priv->icalcomp, icaltimezone_get_utc_timezone (),
 		e_cal_backend_get_kind (E_CAL_BACKEND (cbfile)));
 
-	if (time_end != -1 && time_start > time_end)
-		g_print ("Bogus component %s\n", e_cal_component_get_as_string (comp));
-	else
+	if (time_end != -1 && time_start > time_end) {
+		gchar *str = e_cal_component_get_as_string (comp);
+		g_print ("Bogus component %s\n", str);
+		g_free (str);
+	} else
 		e_intervaltree_insert (priv->interval_tree, time_start, time_end, comp);
 
 	return FALSE;
@@ -1065,8 +1067,10 @@ free_refresh_data (ECalBackendFile *cbfile)
 		g_cond_wait (priv->refresh_gone_cond, &priv->refresh_lock);
 
 		g_cond_clear (priv->refresh_cond);
+		g_free (priv->refresh_cond);
 		priv->refresh_cond = NULL;
 		g_cond_clear (priv->refresh_gone_cond);
+		g_free (priv->refresh_gone_cond);
 		priv->refresh_gone_cond = NULL;
 	}
 
