@@ -457,8 +457,8 @@ gpg_ctx_get_executable_name (void)
 {
 	static gint index = -1;
 	const gchar *names[] = {
-		"gpg2",
 		"gpg",
+		"gpg2", /* Prefer gpg for now, because gpg2 doesn't save passwords (neither for the session) */
 		NULL
 	};
 
