@@ -20,6 +20,9 @@ common_cflags = \
 	-DEDS_TEST_CALENDAR_DIR=\""$(abs_top_builddir)/calendar/backends/file/.libs"\" \
 	-DEDS_TEST_REGISTRY_DIR=\""$(abs_top_builddir)/modules/cache-reaper/.libs"\" \
 	-DEDS_TEST_CAMEL_DIR=\""$(abs_top_builddir)/camel/providers/local/.libs"\" \
+	-DEDS_TEST_SUBPROCESS_CAL_PATH=\""$(abs_top_builddir)/calendar/libedata-cal/.libs/evolution-calendar-factory-subprocess"\" \
+	-DEDS_TEST_SUBPROCESS_BOOK_PATH=\""$(abs_top_builddir)/addressbook/libedata-book/.libs/evolution-addressbook-factory-subprocess"\" \
+	-DEDS_TEST_TOP_BUILD_DIR=\""$(abs_top_builddir)/"\" \
 	$(E_DATA_SERVER_CFLAGS) \
 	$(EVOLUTION_CALENDAR_CFLAGS) \
 	$(GIO_UNIX_CFLAGS) \

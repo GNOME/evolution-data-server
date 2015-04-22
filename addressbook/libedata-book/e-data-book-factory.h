@@ -53,6 +53,14 @@
  */
 #define EDS_ADDRESS_BOOK_MODULES "EDS_ADDRESS_BOOK_MODULES"
 
+/**
+ * EDS_SUBPROCESS_BOOK_PATH:
+ *
+ * This environment variable configures where the address book
+ * factory subprocess is located in.
+ */
+#define EDS_SUBPROCESS_BOOK_PATH "EDS_SUBPROCESS_BOOK_PATH"
+
 G_BEGIN_DECLS
 
 typedef struct _EDataBookFactory EDataBookFactory;

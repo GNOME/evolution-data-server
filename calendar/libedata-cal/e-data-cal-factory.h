@@ -50,9 +50,17 @@
  * EDS_CALENDAR_MODULES:
  *
  * This environment variable configures where the calendar
- * factory loads it's backend modules from.
+ * factory loads its backend modules from.
  */
 #define EDS_CALENDAR_MODULES    "EDS_CALENDAR_MODULES"
+
+/**
+ * EDS_SUBPROCESS_CAL_PATH:
+ *
+ * This environment variable configures where the calendar
+ * factory subprocess is located in.
+ */
+#define EDS_SUBPROCESS_CAL_PATH "EDS_SUBPROCESS_CAL_PATH"
 
 G_BEGIN_DECLS
 

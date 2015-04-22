@@ -160,6 +160,8 @@ e_data_cal_factory_initable_init (GInitableIface *iface)
 	iface->init = data_cal_factory_initable_init;
 }
 
+static gchar *overwrite_subprocess_cal_path = NULL;
+
 static void
 e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 {
@@ -167,11 +169,17 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	EDataFactoryClass *data_factory_class;
 	const gchar *modules_directory = BACKENDDIR;
 	const gchar *modules_directory_env;
+	const gchar *subprocess_cal_path_env;
 
 	modules_directory_env = g_getenv (EDS_CALENDAR_MODULES);
 	if (modules_directory_env &&
 	    g_file_test (modules_directory_env, G_FILE_TEST_IS_DIR))
 		modules_directory = g_strdup (modules_directory_env);
+
+	subprocess_cal_path_env = g_getenv (EDS_SUBPROCESS_CAL_PATH);
+	if (subprocess_cal_path_env &&
+	    g_file_test (subprocess_cal_path_env, G_FILE_TEST_IS_EXECUTABLE))
+		overwrite_subprocess_cal_path = g_strdup (subprocess_cal_path_env);
 
 	g_type_class_add_private (class, sizeof (EDataCalFactoryPrivate));
 
@@ -198,7 +206,8 @@ data_cal_factory_handle_open_calendar_cb (EDBusCalendarFactory *dbus_interface,
 	EDataFactory *data_factory = E_DATA_FACTORY (factory);
 
 	e_data_factory_spawn_subprocess_backend (
-		data_factory, invocation, uid, E_SOURCE_EXTENSION_CALENDAR, SUBPROCESS_CAL_BACKEND_PATH);
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_CALENDAR,
+		overwrite_subprocess_cal_path ? overwrite_subprocess_cal_path : SUBPROCESS_CAL_BACKEND_PATH);
 
 	return TRUE;
 }
@@ -212,7 +221,8 @@ data_cal_factory_handle_open_task_list_cb (EDBusCalendarFactory *dbus_interface,
 	EDataFactory *data_factory = E_DATA_FACTORY (factory);
 
 	e_data_factory_spawn_subprocess_backend (
-		data_factory, invocation, uid, E_SOURCE_EXTENSION_TASK_LIST, SUBPROCESS_CAL_BACKEND_PATH);
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_TASK_LIST,
+		overwrite_subprocess_cal_path ? overwrite_subprocess_cal_path : SUBPROCESS_CAL_BACKEND_PATH);
 
 	return TRUE;
 }
@@ -226,7 +236,8 @@ data_cal_factory_handle_open_memo_list_cb (EDBusCalendarFactory *dbus_interface,
 	EDataFactory *data_factory = E_DATA_FACTORY (factory);
 
 	e_data_factory_spawn_subprocess_backend (
-		data_factory, invocation, uid, E_SOURCE_EXTENSION_MEMO_LIST, SUBPROCESS_CAL_BACKEND_PATH);
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_MEMO_LIST,
+		overwrite_subprocess_cal_path ? overwrite_subprocess_cal_path : SUBPROCESS_CAL_BACKEND_PATH);
 
 	return TRUE;
 }

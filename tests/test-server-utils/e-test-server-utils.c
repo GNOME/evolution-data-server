@@ -246,6 +246,39 @@ generate_source_name (void)
 static void
 setup_environment (void)
 {
+	GString *libs_dir;
+	const gchar *libs_dir_env;
+
+	libs_dir_env = g_getenv ("LD_LIBRARY_PATH");
+
+	libs_dir = g_string_new ("");
+
+	#define add_lib_path(x) G_STMT_START { \
+		if (libs_dir->len) \
+			g_string_append_c (libs_dir, ':'); \
+		g_string_append_printf (libs_dir, EDS_TEST_TOP_BUILD_DIR x); \
+		} G_STMT_END
+
+	add_lib_path ("addressbook/libebook/.libs");
+	add_lib_path ("addressbook/libebook-contacts/.libs");
+	add_lib_path ("addressbook/libedata-book/.libs");
+	add_lib_path ("calendar/libecal/.libs");
+	add_lib_path ("calendar/libedata-cal/.libs");
+	add_lib_path ("camel/.libs");
+	add_lib_path ("libebackend/.libs");
+	add_lib_path ("libedataserver/.libs");
+	add_lib_path ("libedataserverui/.libs");
+	add_lib_path ("private/.libs");
+
+	#undef add_lib_path
+
+	if (libs_dir_env && *libs_dir_env) {
+		if (libs_dir->len)
+			g_string_append_c (libs_dir, ':');
+		g_string_append (libs_dir, libs_dir_env);
+	}
+
+	g_assert (g_setenv ("LD_LIBRARY_PATH", libs_dir->str, TRUE));
 	g_assert (g_setenv ("XDG_DATA_HOME", EDS_TEST_WORK_DIR, TRUE));
 	g_assert (g_setenv ("XDG_CACHE_HOME", EDS_TEST_WORK_DIR, TRUE));
 	g_assert (g_setenv ("XDG_CONFIG_HOME", EDS_TEST_WORK_DIR, TRUE));
@@ -254,11 +287,15 @@ setup_environment (void)
 	g_assert (g_setenv ("EDS_ADDRESS_BOOK_MODULES", EDS_TEST_ADDRESS_BOOK_DIR, TRUE));
 	g_assert (g_setenv ("EDS_REGISTRY_MODULES", EDS_TEST_REGISTRY_DIR, TRUE));
 	g_assert (g_setenv ("EDS_CAMEL_PROVIDER_DIR", EDS_TEST_CAMEL_DIR, TRUE));
+	g_assert (g_setenv ("EDS_SUBPROCESS_CAL_PATH", EDS_TEST_SUBPROCESS_CAL_PATH, TRUE));
+	g_assert (g_setenv ("EDS_SUBPROCESS_BOOK_PATH", EDS_TEST_SUBPROCESS_BOOK_PATH, TRUE));
 	g_assert (g_setenv ("GIO_USE_VFS", "local", TRUE));
 	g_assert (g_setenv ("EDS_TESTING", "1", TRUE));
 	g_assert (g_setenv ("GSETTINGS_BACKEND", "memory", TRUE));
 
 	g_unsetenv ("DISPLAY");
+
+	g_string_free (libs_dir, TRUE);
 }
 
 static void

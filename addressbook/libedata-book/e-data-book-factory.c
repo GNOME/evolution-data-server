@@ -98,6 +98,8 @@ data_book_complete_open (EDataFactory *data_factory,
 		data_book_factory->priv->dbus_factory, invocation, object_path, bus_name);
 }
 
+static gchar *overwrite_subprocess_book_path = NULL;
+
 static gboolean
 data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *iface,
                                                GDBusMethodInvocation *invocation,
@@ -107,7 +109,8 @@ data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *iface,
 	EDataFactory *data_factory = E_DATA_FACTORY (factory);
 
 	e_data_factory_spawn_subprocess_backend (
-		data_factory, invocation, uid, E_SOURCE_EXTENSION_ADDRESS_BOOK, SUBPROCESS_BOOK_BACKEND_PATH);
+		data_factory, invocation, uid, E_SOURCE_EXTENSION_ADDRESS_BOOK,
+		overwrite_subprocess_book_path ? overwrite_subprocess_book_path : SUBPROCESS_BOOK_BACKEND_PATH);
 
 	return TRUE;
 }
@@ -135,11 +138,17 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	EDataFactoryClass *data_factory_class;
 	const gchar *modules_directory = BACKENDDIR;
 	const gchar *modules_directory_env;
+	const gchar *subprocess_book_path_env;
 
 	modules_directory_env = g_getenv (EDS_ADDRESS_BOOK_MODULES);
 	if (modules_directory_env &&
 	    g_file_test (modules_directory_env, G_FILE_TEST_IS_DIR))
 		modules_directory = g_strdup (modules_directory_env);
+
+	subprocess_book_path_env = g_getenv (EDS_SUBPROCESS_BOOK_PATH);
+	if (subprocess_book_path_env &&
+	    g_file_test (subprocess_book_path_env, G_FILE_TEST_IS_EXECUTABLE))
+		overwrite_subprocess_book_path = g_strdup (subprocess_book_path_env);
 
 	g_type_class_add_private (class, sizeof (EDataBookFactoryPrivate));
 
