@@ -1056,6 +1056,8 @@ imapx_move_to_real_trash (CamelIMAPXServer *imapx_server,
 		/* Avoid duplicating messages in the Trash folder. */
 		if (destination == mailbox) {
 			success = TRUE;
+			/* Deleted messages in the real Trash folder will be permanently deleted immediately. */
+			*out_need_to_expunge = TRUE;
 		} else if (destination != NULL) {
 			success = camel_imapx_server_copy_message (
 				imapx_server,
