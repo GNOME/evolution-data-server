@@ -293,7 +293,9 @@ message_info_from_uid (CamelFolderSummary *s,
 	CamelMessageInfo *info;
 
 	info = camel_folder_summary_peek_loaded (s, uid);
-	if (!info) {
+	if (info) {
+		camel_message_info_ref (info);
+	} else {
 		CamelVeeMessageInfo *vinfo;
 		CamelFolder *orig_folder;
 
