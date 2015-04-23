@@ -650,8 +650,8 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 		info = g_hash_table_lookup (left, uid);
 		if (info) {
-			camel_message_info_unref (info);
 			g_hash_table_remove (left, uid);
+			camel_message_info_unref (info);
 		}
 
 		info = camel_folder_summary_get ((CamelFolderSummary *) cls, uid);

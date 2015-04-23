@@ -8458,6 +8458,7 @@ imapx_server_get_message (CamelIMAPXServer *is,
 
 	cache_stream = camel_data_cache_add (message_cache, "tmp", message_uid, error);
 	if (cache_stream == NULL) {
+		camel_message_info_unref (mi);
 		QUEUE_UNLOCK (is);
 		return NULL;
 	}

@@ -2015,6 +2015,7 @@ ioerror:
 
 exit:
 	g_clear_object (&nntp_stream);
+	g_string_free (buffer, TRUE);
 
 	return u;
 }
