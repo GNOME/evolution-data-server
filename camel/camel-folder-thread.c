@@ -718,8 +718,6 @@ camel_folder_thread_messages_apply (CamelFolderThread *thread,
 	thread->node_chunks = camel_memchunk_new (32, sizeof (CamelFolderThreadNode));
 	thread_summary (thread, all);
 
-	for (i = 0; i < thread->summary->len; i++)
-		camel_message_info_unref (thread->summary->pdata[i]);
 	g_ptr_array_free (thread->summary, TRUE);
 	thread->summary = all;
 }
