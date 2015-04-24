@@ -2208,15 +2208,25 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 		case 400:	/* service discontinued */
 		case 401:	/* wrong client state - this should quit but this is what the old code did */
 		case 503:	/* information not available - this should quit but this is what the old code did (?) */
-			if (camel_service_get_connection_status (service) != CAMEL_SERVICE_CONNECTING)
+			if (camel_service_get_connection_status (service) != CAMEL_SERVICE_CONNECTING) {
+				/* Reset the cancellable, thus the disconnect attempt can succeed. */
+				if (g_cancellable_is_cancelled (cancellable))
+					g_cancellable_reset (cancellable);
+
 				camel_service_disconnect_sync (
 					service, FALSE, cancellable, NULL);
+			}
 			ret = -1;
 			continue;
 		case -1:	/* i/o error */
-			if (camel_service_get_connection_status (service) != CAMEL_SERVICE_CONNECTING)
+			if (camel_service_get_connection_status (service) != CAMEL_SERVICE_CONNECTING) {
+				/* Reset the cancellable, thus the disconnect attempt can succeed. */
+				if (g_cancellable_is_cancelled (cancellable))
+					g_cancellable_reset (cancellable);
+
 				camel_service_disconnect_sync (
 					service, FALSE, cancellable, NULL);
+			}
 			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) || retry >= 3) {
 				g_propagate_error (error, local_error);
 				ret = -1;
