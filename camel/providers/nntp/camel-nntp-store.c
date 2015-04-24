@@ -2164,7 +2164,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 			if (ret == 211) {
 				camel_nntp_store_set_current_group (
 					nntp_store, full_name);
-				if (camel_nntp_folder_selected (folder, *line, NULL, &local_error) < 0) {
+				if (camel_nntp_folder_selected (folder, *line, cancellable, &local_error) < 0) {
 					ret = -1;
 					goto error;
 				}
