@@ -80,6 +80,7 @@ stream_fill (CamelPOP3Stream *is,
 			cancellable, &local_error);
 		if (local_error) {
 			g_propagate_error (error, local_error);
+			left = 0;
 		}
 
 		if (left > 0) {
