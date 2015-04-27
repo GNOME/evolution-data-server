@@ -1527,7 +1527,7 @@ imapx_command_start_next (CamelIMAPXServer *is)
 
 		} else if (start_idle) {
 			imapx_start_idle (is);
-			c (is->tagprefix, "starting idle \n");
+			c (is->tagprefix, "starting idle\n");
 			return;
 		}
 	}
@@ -3734,6 +3734,7 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
 	job->start = imapx_job_idle_start;
 
 	camel_imapx_job_set_mailbox (job, mailbox);
+	imapx_maybe_select (is, job, mailbox);
 
 	previous_connection_timeout = imapx_server_set_connection_timeout (is->priv->connection, 0);
 
@@ -3793,6 +3794,7 @@ static gboolean
 imapx_call_idle (gpointer data)
 {
 	CamelFolder *folder;
+	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *is;
 	CamelIMAPXMailbox *mailbox;
 	GCancellable *cancellable;
@@ -3815,9 +3817,9 @@ imapx_call_idle (gpointer data)
 
 	g_rec_mutex_unlock (&is->priv->idle_lock);
 
-	g_mutex_lock (&is->priv->select_lock);
-	mailbox = g_weak_ref_get (&is->priv->select_mailbox);
-	g_mutex_unlock (&is->priv->select_lock);
+	imapx_store = camel_imapx_server_ref_store (is);
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
+	g_clear_object (&imapx_store);
 
 	if (mailbox == NULL)
 		goto exit;
@@ -3862,6 +3864,7 @@ imapx_call_idle (gpointer data)
 
 exit:
 	g_clear_object (&is);
+	g_clear_object (&mailbox);
 
 	return G_SOURCE_REMOVE;
 }
