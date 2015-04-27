@@ -1,3 +1,62 @@
+Evolution-Data-Server 3.17.1 2015-04-27
+---------------------------------------
+
+Bug Fixes:
+	Bug 663828 - Auto-add all Google calendars for GOA accounts (Milan Crha)
+	Bug 744718 - Provide backend specific extensions as public (Milan Crha)
+	Bug 692555 - Add "Personal" address book to birthdays calendar by default (Milan Crha)
+	Bug 746346 - [IMAPx] Propagate no-password authentication errors into UI (Milan Crha)
+	Bug 746732 - [IMAPx] Custom command doesn't have connection (Milan Crha)
+	Bug 746828 - [IMAPx] Server-side deleted folders still visible in UI (Milan Crha)
+	Bug 746395 - Let the provider store sent messages on its own (Milan Crha)
+	Bug 723928 - Weather backend: Replace two deprecated gweather_* functions (Milan Crha)
+	Bug 723260 - Use a strong reference to client in EBook/CalClientView (Milan Crha)
+	Bug 747500 - Mail account connection settings change requires restart (Milan Crha)
+	Bug 743996 - "FOREIGN KEY constraint failed" trying to delete contact (Milan Crha)
+	Bug 746335 - [IMAPx] Current folder not updated after message move (Milan Crha)
+	Bug 746276 - Add thread-safety into EAsyncClosure (Milan Crha)
+	Bug 747789 - Implement Refresh for WebDAV books (Milan Crha)
+	Bug 747822 - Use global gweather/gweather.h include (Giovanni Campagna)
+	Bug 691456 - Incorrectly applied MONTHLY BYMONTHDAY RRULE rule (Milan Crha)
+	Bug 691493 - [IMAPx] Show progress when fetching summary information (Milan Crha)
+	Bug 747638 - Skipped changed messages in camel_folder_summary_get_changed() (Milan Crha)
+	Bug 696552 - exists_vcard query fails with get_contacts_sync() (Milan Crha)
+	Bug 696678 - Document ESourceRegistry requires running main loop (Milan Crha)
+	Bug 745050 - GPG Signing key cannot be saved (prefer gpg again) (Milan Crha)
+	Bug 701352 - [IMAPx] Remove deleted messages in real Trash immediately (Milan Crha)
+	Bug 705268 - Run 'make check' within the build tree (Milan Crha)
+
+Miscellaneous:
+	EGoaPasswordBased - Avoid runtime warning when checking OAuth2 based accounts (Milan Crha)
+	[CalDAV] Claim error when user name is missing for authentication (Milan Crha)
+	Avoid possible crash in source_parse_dbus_data() (Milan Crha)
+	e_collection_backend_authenticate_children: Fix a memory leak (Milan Crha)
+	source_webdav_update_properties_from_soup_uri: Ignore empty user name (Milan Crha)
+	Add a new WebDAV discover widget and dialog into libedataserverui (Milan Crha)
+	[CalDAV] Stop re-trying authentication with bearer authenticator (Milan Crha)
+	[ESourceExtension] Provide common property lock (Milan Crha)
+	Drop unnecessary ldap.h include from e-source-ldap.c (Milan Crha)
+	Do not use GTask for CamelSession thread jobs (Milan Crha)
+	Avoid use of uninitialized variables (Milan Crha)
+	Bump gtk+ version requirement to 3.10 (Milan Crha)
+	Replace deprecated g_io_scheduler_push_job() in HTTP calendar backend (Milan Crha)
+	Do not use deprecated gtk_dialog_get_action_area() (Milan Crha)
+	[local book] Failure of contact remove not propagated to UI (Milan Crha)
+	Correct developer documentation for camel_provider_list() (Milan Crha)
+	[CalDAV] Fix a little memory leak (Milan Crha)
+	Fix various memory leaks (Milan Crha)
+	CamelVeeSummary::message_info_from_uid: Return referenced info (Milan Crha)
+	Fix various memory leaks (Milan Crha)
+	Revert camel-folder-thread.c part from the previous commit (Milan Crha)
+	Incorrect message info unreferenced in camel_vee_folder_get_location() (Milan Crha)
+	[NNTP] Provide feedback when updating folder content (Milan Crha)
+	[NNTP] Can fail to disconnect when the command was cancelled (Milan Crha)
+
+Translations:
+	Rūdolfs Mazurs (lv)
+	Sveinn í Felli (is)
+	Marek Černocký (cs)
+
 Evolution-Data-Server 3.16.0 2015-03-23
 ---------------------------------------
 
