@@ -107,7 +107,7 @@ connect_to_server (CamelService *service,
 	CamelNetworkSettings *network_settings;
 	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
-	CamelStream *stream;
+	CamelStream *stream = NULL;
 	CamelPOP3Engine *pop3_engine = NULL;
 	CamelPOP3Command *pc;
 	GIOStream *base_stream;
@@ -219,7 +219,7 @@ connect_to_server (CamelService *service,
 		goto stls_exception;
 	}
 
-	g_object_unref (stream);
+	g_clear_object (&stream);
 
 	/* rfc2595, section 4 states that after a successful STLS
 	 * command, the client MUST discard prior CAPA responses */
@@ -242,8 +242,7 @@ stls_exception:
 	}*/
 
 exception:
-	g_object_unref (stream);
-
+	g_clear_object (&stream);
 	g_clear_object (&pop3_engine);
 
 	success = FALSE;
@@ -699,6 +698,14 @@ pop3_store_authenticate_sync (CamelService *service,
 			pop3_engine, 0, NULL, NULL, cancellable, error,
 			"PASS %s\r\n", password);
 
+		if (error && *error) {
+			g_prefix_error (
+				error,
+				_("Unable to connect to POP server %s.\n"
+				"Error sending password: "), host);
+			result = CAMEL_AUTHENTICATION_ERROR;
+			goto exit;
+		}
 	} else if (strcmp (mechanism, "+APOP") == 0 && pop3_engine->apop) {
 		gchar *secret, *md5asc, *d;
 		gsize secret_len;
@@ -803,12 +810,13 @@ pop3_store_authenticate_sync (CamelService *service,
 		result = CAMEL_AUTHENTICATION_ACCEPTED;
 	}
 
-	camel_pop3_engine_command_free (pop3_engine, pcp);
+exit:
+	if (pcp != NULL)
+		camel_pop3_engine_command_free (pop3_engine, pcp);
 
 	if (pcu != NULL)
 		camel_pop3_engine_command_free (pop3_engine, pcu);
 
-exit:
 	g_free (host);
 	g_free (user);
 

@@ -478,6 +478,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 
 	/* check to see if we have safely written flag set */
 	if (!camel_pop3_store_cache_has (pop3_store, fi->uid)) {
+		GError *local_error = NULL;
+
 		/* Initiate retrieval, if disk backing fails, use a memory backing */
 		stream = camel_pop3_store_cache_add (pop3_store, fi->uid, NULL);
 		if (stream == NULL)
@@ -489,8 +491,18 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 			pop3_engine,
 			CAMEL_POP3_COMMAND_MULTI,
 			cmd_tocache, fi,
-			cancellable, error,
+			cancellable, &local_error,
 			"RETR %u\r\n", fi->id);
+
+		if (local_error) {
+			if (pcr)
+				camel_pop3_engine_command_free (pop3_engine, pcr);
+
+			g_propagate_error (error, local_error);
+			g_prefix_error (
+				error, _("Cannot get message %s: "), uid);
+			goto done;
+		}
 
 		/* Also initiate retrieval of some of the following
 		 * messages, assume we'll be receiving them. */
@@ -511,15 +523,25 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 							pop3_engine,
 							CAMEL_POP3_COMMAND_MULTI,
 							cmd_tocache, pfi,
-							cancellable, error,
+							cancellable, &local_error,
 							"RETR %u\r\n", pfi->id);
+
+							if (local_error) {
+								if (pcr)
+									camel_pop3_engine_command_free (pop3_engine, pcr);
+
+								g_propagate_error (error, local_error);
+								g_prefix_error (
+									error, _("Cannot get message %s: "), uid);
+								goto done;
+							}
 					}
 				}
 			}
 		}
 
 		/* now wait for the first one to finish */
-		while ((i = camel_pop3_engine_iterate (pop3_engine, pcr, cancellable, error)) > 0)
+		while (!local_error && (i = camel_pop3_engine_iterate (pop3_engine, pcr, cancellable, &local_error)) > 0)
 			;
 
 		/* getting error code? */
@@ -529,7 +551,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
 
 		/* Check to see we have safely written flag set */
-		if (i == -1) {
+		if (i == -1 || local_error) {
+			g_propagate_error (error, local_error);
 			g_prefix_error (
 				error, _("Cannot get message %s: "), uid);
 			goto done;
@@ -649,7 +672,7 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 			cmd_uidl, folder,
 			cancellable, &local_error,
 			"UIDL\r\n");
-	while ((i = camel_pop3_engine_iterate (pop3_engine, NULL, cancellable, &local_error)) > 0)
+	while (!local_error && (i = camel_pop3_engine_iterate (pop3_engine, NULL, cancellable, &local_error)) > 0)
 		;
 
 	if (local_error) {

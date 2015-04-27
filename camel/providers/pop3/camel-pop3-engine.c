@@ -91,7 +91,8 @@ camel_pop3_engine_init (CamelPOP3Engine *engine)
 
 static gint
 read_greeting (CamelPOP3Engine *pe,
-               GCancellable *cancellable)
+               GCancellable *cancellable,
+	       GError **error)
 {
 	guchar *line, *apop, *apopend;
 	guint len;
@@ -99,7 +100,7 @@ read_greeting (CamelPOP3Engine *pe,
 	g_return_val_if_fail (pe != NULL, -1);
 
 	/* first, read the greeting */
-	if (camel_pop3_stream_line (pe->stream, &line, &len, cancellable, NULL) == -1
+	if (camel_pop3_stream_line (pe->stream, &line, &len, cancellable, error) == -1
 	    || strncmp ((gchar *) line, "+OK", 3) != 0)
 		return -1;
 
@@ -142,7 +143,7 @@ camel_pop3_engine_new (CamelStream *source,
 	pe->state = CAMEL_POP3_ENGINE_AUTH;
 	pe->flags = flags;
 
-	if (read_greeting (pe, cancellable) == -1 ||
+	if (read_greeting (pe, cancellable, error) == -1 ||
 	    !get_capabilities (pe, cancellable, error)) {
 		g_object_unref (pe);
 		return NULL;
@@ -239,12 +240,12 @@ get_capabilities (CamelPOP3Engine *pe,
 	g_return_val_if_fail (pe != NULL, FALSE);
 
 	if (!(pe->flags & CAMEL_POP3_ENGINE_DISABLE_EXTENSIONS)) {
-		pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, cancellable, NULL, "CAPA\r\n");
-		while (camel_pop3_engine_iterate (pe, pc, cancellable, NULL) > 0)
+		pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_MULTI, cmd_capa, NULL, cancellable, &local_error, "CAPA\r\n");
+		while (camel_pop3_engine_iterate (pe, pc, cancellable, &local_error) > 0)
 			;
 		camel_pop3_engine_command_free (pe, pc);
 
-		if (pe->state == CAMEL_POP3_ENGINE_TRANSACTION && !(pe->capa & CAMEL_POP3_CAP_UIDL)) {
+		if (!local_error && pe->state == CAMEL_POP3_ENGINE_TRANSACTION && !(pe->capa & CAMEL_POP3_CAP_UIDL)) {
 			/* check for UIDL support manually */
 			pc = camel_pop3_engine_command_new (pe, CAMEL_POP3_COMMAND_SIMPLE, NULL, NULL, cancellable, &local_error, "UIDL 1\r\n");
 			while (camel_pop3_engine_iterate (pe, pc, cancellable, &local_error) > 0)
@@ -333,8 +334,17 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 			pc->state = CAMEL_POP3_COMMAND_DATA;
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_DATA);
 
-			if (pc->func)
-				pc->func (pe, pe->stream, cancellable, error, pc->func_data);
+			if (pc->func) {
+				GError *local_error = NULL;
+
+				pc->func (pe, pe->stream, cancellable, &local_error, pc->func_data);
+				if (local_error) {
+					pc->state = CAMEL_POP3_COMMAND_ERR;
+					pc->error_str = g_strdup (local_error->message);
+					g_propagate_error (error, local_error);
+					break;
+				}
+			}
 
 			/* Make sure we get all data before going back to command mode */
 			while (camel_pop3_stream_getd (pe->stream, &p, &len, cancellable, error) > 0)
