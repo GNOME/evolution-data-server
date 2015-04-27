@@ -3796,7 +3796,7 @@ imapx_call_idle (gpointer data)
 	CamelFolder *folder;
 	CamelIMAPXStore *imapx_store;
 	CamelIMAPXServer *is;
-	CamelIMAPXMailbox *mailbox;
+	CamelIMAPXMailbox *mailbox = NULL;
 	GCancellable *cancellable;
 	GError *local_error = NULL;
 
