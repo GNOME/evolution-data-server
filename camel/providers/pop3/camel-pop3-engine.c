@@ -370,7 +370,7 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 	}
 
 	g_queue_push_tail (&pe->done, pc);
-	pe->sentlen -= strlen (pc->data);
+	pe->sentlen -= pc->data ? strlen (pc->data) : 0;
 
 	/* Set next command */
 	pe->current = g_queue_pop_head (&pe->active);
@@ -381,14 +381,14 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 	while (link != NULL) {
 		pc = (CamelPOP3Command *) link->data;
 
-		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + strlen (pc->data)) > CAMEL_POP3_SEND_LIMIT)
+		if (((pe->capa & CAMEL_POP3_CAP_PIPE) == 0 || (pe->sentlen + (pc->data ? strlen (pc->data) : 0)) > CAMEL_POP3_SEND_LIMIT)
 		    && pe->current != NULL)
 			break;
 
-		if (camel_stream_write ((CamelStream *) pe->stream, pc->data, strlen (pc->data), cancellable, error) == -1)
+		if (camel_stream_write ((CamelStream *) pe->stream, pc->data, pc->data ? strlen (pc->data) : 0, cancellable, error) == -1)
 			goto ioerror;
 
-		pe->sentlen += strlen (pc->data);
+		pe->sentlen += (pc->data ? strlen (pc->data) : 0);
 		pc->state = CAMEL_POP3_COMMAND_DISPATCHED;
 
 		if (pe->current == NULL)
