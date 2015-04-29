@@ -53,7 +53,6 @@ struct _CamelNNTPFolder {
 	CamelNNTPFolderPrivate *priv;
 
 	struct _CamelFolderChangeInfo *changes;
-	gchar *storage_path;
 	CamelFolderSearch *search;
 };
 
