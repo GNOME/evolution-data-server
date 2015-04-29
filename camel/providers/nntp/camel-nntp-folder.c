@@ -139,6 +139,11 @@ nntp_folder_finalize (GObject *object)
 {
 	CamelNNTPFolder *nntp_folder = CAMEL_NNTP_FOLDER (object);
 
+	if (nntp_folder->changes) {
+		camel_folder_change_info_free (nntp_folder->changes);
+		nntp_folder->changes = NULL;
+	}
+
 	g_mutex_clear (&nntp_folder->priv->search_lock);
 	g_mutex_clear (&nntp_folder->priv->cache_lock);
 
@@ -783,7 +788,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelNNTPFolder *nntp_folder;
 	CamelNNTPStore *nntp_store;
 	CamelNNTPStoreSummary *nntp_store_summary;
-	gchar *root;
+	gchar *storage_path, *root;
 	CamelService *service;
 	CamelSettings *settings;
 	CamelStoreInfo *si;
@@ -812,13 +817,12 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
 
-	nntp_folder->storage_path =
-		g_build_filename (user_cache_dir, folder_name, NULL);
-
-	root = g_strdup_printf ("%s.cmeta", nntp_folder->storage_path);
+	storage_path = g_build_filename (user_cache_dir, folder_name, NULL);
+	root = g_strdup_printf ("%s.cmeta", storage_path);
 	camel_object_set_state_filename (CAMEL_OBJECT (nntp_folder), root);
 	camel_object_state_read (CAMEL_OBJECT (nntp_folder));
 	g_free (root);
+	g_free (storage_path);
 
 	folder->summary = (CamelFolderSummary *) camel_nntp_summary_new (folder);
 
