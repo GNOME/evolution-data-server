@@ -648,6 +648,20 @@ google_backend_child_added (ECollectionBackend *backend,
 	 *     Many-to-one property bindinds tend not to work so well. */
 	extension_name = E_SOURCE_EXTENSION_CALENDAR;
 	if (e_source_has_extension (child_source, extension_name)) {
+		ESourceAlarms *alarms_extension;
+
+		/* To not notify about past reminders. */
+		alarms_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_ALARMS);
+		if (!e_source_alarms_get_last_notified (alarms_extension)) {
+			GTimeVal today_tv;
+			gchar *today;
+
+			g_get_current_time (&today_tv);
+			today = g_time_val_to_iso8601 (&today_tv);
+			e_source_alarms_set_last_notified (alarms_extension, today);
+			g_free (today);
+		}
+
 		google_backend_calendar_update_auth_method (child_source);
 		g_signal_connect (
 			child_source, "notify::oauth2-support",
