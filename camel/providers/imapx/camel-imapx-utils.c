@@ -504,7 +504,7 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 				/* Put it back so that imapx_untagged() isn't unhappy */
 				camel_imapx_input_stream_ungettoken (
 					stream, tok, token, len);
-				return cinfo;
+				break;
 			case 43:
 				token = (guchar *) g_strconcat ((gchar *) token, "+", NULL);
 				free_token = TRUE;
@@ -535,6 +535,9 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 					"capability: expecting name");
 				break;
 		}
+
+		if (tok == ']')
+			break;
 
 		tok = camel_imapx_input_stream_token (
 			stream, &token, &len, cancellable, &local_error);

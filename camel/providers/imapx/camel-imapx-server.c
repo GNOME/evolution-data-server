@@ -397,6 +397,8 @@ struct _CamelIMAPXServerPrivate {
 	GHashTable *jobs_prop_folder_paths;
 	gint jobs_prop_command_count; /* without IDLE command */
 	gint jobs_prop_expensive_command_count;
+
+	gboolean is_cyrus;
 };
 
 enum {
@@ -3423,6 +3425,17 @@ imapx_completion (CamelIMAPXServer *is,
 
 	if (ic->status == NULL)
 		goto exit;
+
+	if (ic->status->condition == IMAPX_CAPABILITY) {
+		guint32 list_extended = imapx_lookup_capability ("LIST-EXTENDED");
+
+		is->priv->is_cyrus = is->priv->is_cyrus || (ic->status->text && camel_strstrcase (ic->status->text, "cyrus"));
+		if (is->priv->is_cyrus && ic->status->u.cinfo && (ic->status->u.cinfo->capa & list_extended) != 0) {
+			/* Disable LIST-EXTENDED for cyrus servers */
+			c (is->tagprefix, "Disabling LIST-EXTENDED extension for a Cyrus server\n");
+			ic->status->u.cinfo->capa &= ~list_extended;
+		}
+	}
 
 	if (ic->complete != NULL)
 		ic->complete (is, ic);
@@ -8167,6 +8180,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	g_rec_mutex_init (&is->queue_lock);
 
 	is->state = IMAPX_DISCONNECTED;
+	is->priv->is_cyrus = FALSE;
 
 	is->priv->changes = camel_folder_change_info_new ();
 
@@ -8353,6 +8367,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 		is->cinfo = NULL;
 	}
 
+	is->priv->is_cyrus = FALSE;
 	is->state = IMAPX_DISCONNECTED;
 }
 
@@ -8374,6 +8389,8 @@ camel_imapx_server_connect (CamelIMAPXServer *is,
 
 	if (is->state >= IMAPX_INITIALISED)
 		return TRUE;
+
+	is->priv->is_cyrus = FALSE;
 
 	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
