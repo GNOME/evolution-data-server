@@ -54,6 +54,8 @@ struct _CamelAsyncClosure {
 	GMainLoop *loop;
 	GMainContext *context;
 	GAsyncResult *result;
+	gboolean finished;
+	GMutex lock;
 };
 
 /**
@@ -73,10 +75,24 @@ camel_async_closure_new (void)
 	closure = g_slice_new0 (CamelAsyncClosure);
 	closure->context = g_main_context_new ();
 	closure->loop = g_main_loop_new (closure->context, FALSE);
+	closure->finished = FALSE;
+	g_mutex_init (&closure->lock);
 
 	g_main_context_push_thread_default (closure->context);
 
 	return closure;
+}
+
+static gboolean
+camel_async_closure_unlock_mutex_cb (gpointer user_data)
+{
+	CamelAsyncClosure *closure = user_data;
+
+	g_return_val_if_fail (closure != NULL, FALSE);
+
+	g_mutex_unlock (&closure->lock);
+
+	return FALSE;
 }
 
 /**
@@ -99,7 +115,22 @@ camel_async_closure_wait (CamelAsyncClosure *closure)
 {
 	g_return_val_if_fail (closure != NULL, NULL);
 
-	g_main_loop_run (closure->loop);
+	g_mutex_lock (&closure->lock);
+	if (closure->finished) {
+		g_mutex_unlock (&closure->lock);
+	} else {
+		GSource *idle_source;
+
+		/* Unlock the closure->lock in the main loop, to ensure thread safety.
+		   It should be processed before anything else, otherwise deadlock happens. */
+		idle_source = g_idle_source_new ();
+		g_source_set_callback (idle_source, camel_async_closure_unlock_mutex_cb, closure, NULL);
+		g_source_set_priority (idle_source, G_PRIORITY_HIGH * 2);
+		g_source_attach (idle_source, closure->context);
+		g_source_unref (idle_source);
+
+		g_main_loop_run (closure->loop);
+	}
 
 	return closure->result;
 }
@@ -122,8 +153,10 @@ camel_async_closure_free (CamelAsyncClosure *closure)
 	g_main_loop_unref (closure->loop);
 	g_main_context_unref (closure->context);
 
-	if (closure->result != NULL)
-		g_object_unref (closure->result);
+	g_mutex_lock (&closure->lock);
+	g_clear_object (&closure->result);
+	g_mutex_unlock (&closure->lock);
+	g_mutex_clear (&closure->lock);
 
 	g_slice_free (CamelAsyncClosure, closure);
 }
@@ -153,10 +186,15 @@ camel_async_closure_callback (GObject *source_object,
 
 	real_closure = closure;
 
+	g_mutex_lock (&real_closure->lock);
+
 	/* Replace any previous result. */
 	if (real_closure->result != NULL)
 		g_object_unref (real_closure->result);
 	real_closure->result = g_object_ref (result);
+	real_closure->finished = TRUE;
+
+	g_mutex_unlock (&real_closure->lock);
 
 	g_main_loop_quit (real_closure->loop);
 }
