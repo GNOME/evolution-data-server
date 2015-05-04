@@ -779,6 +779,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 	gint i;
 	CamelMessageInfo *info;
 	CamelMaildirMessageInfo *mdi;
+	GList *removed_uids = NULL;
 	gchar *name;
 	struct stat st;
 	GPtrArray *known_uids;
@@ -807,7 +808,7 @@ maildir_summary_sync (CamelLocalSummary *cls,
 					camel_index_delete_name (cls->index, camel_message_info_uid (info));
 
 				camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
-				camel_folder_summary_remove ((CamelFolderSummary *) cls, info);
+				removed_uids = g_list_prepend (removed_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
 			}
 			g_free (name);
 		} else if (mdi && (mdi->info.info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
@@ -844,6 +845,11 @@ maildir_summary_sync (CamelLocalSummary *cls,
 			mdi->info.info.flags &= 0xffff;
 		}
 		camel_message_info_unref (info);
+	}
+
+	if (removed_uids) {
+		camel_folder_summary_remove_uids (CAMEL_FOLDER_SUMMARY (cls), removed_uids);
+		g_list_free_full (removed_uids, (GDestroyNotify) camel_pstring_free);
 	}
 
 	camel_folder_summary_free_array (known_uids);
