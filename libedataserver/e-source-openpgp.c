@@ -49,6 +49,7 @@ struct _ESourceOpenPGPPrivate {
 	gboolean always_trust;
 	gboolean encrypt_to_self;
 	gboolean sign_by_default;
+	gboolean encrypt_by_default;
 };
 
 enum {
@@ -57,7 +58,8 @@ enum {
 	PROP_ENCRYPT_TO_SELF,
 	PROP_KEY_ID,
 	PROP_SIGNING_ALGORITHM,
-	PROP_SIGN_BY_DEFAULT
+	PROP_SIGN_BY_DEFAULT,
+	PROP_ENCRYPT_BY_DEFAULT
 };
 
 G_DEFINE_TYPE (
@@ -98,6 +100,12 @@ source_openpgp_set_property (GObject *object,
 
 		case PROP_SIGN_BY_DEFAULT:
 			e_source_openpgp_set_sign_by_default (
+				E_SOURCE_OPENPGP (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_ENCRYPT_BY_DEFAULT:
+			e_source_openpgp_set_encrypt_by_default (
 				E_SOURCE_OPENPGP (object),
 				g_value_get_boolean (value));
 			return;
@@ -145,6 +153,13 @@ source_openpgp_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_openpgp_get_sign_by_default (
+				E_SOURCE_OPENPGP (object)));
+			return;
+
+		case PROP_ENCRYPT_BY_DEFAULT:
+			g_value_set_boolean (
+				value,
+				e_source_openpgp_get_encrypt_by_default (
 				E_SOURCE_OPENPGP (object)));
 			return;
 	}
@@ -241,6 +256,19 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 			"sign-by-default",
 			"Sign By Default",
 			"Sign outgoing messages by default",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ENCRYPT_BY_DEFAULT,
+		g_param_spec_boolean (
+			"encrypt-by-default",
+			"Encrypt By Default",
+			"Encrypt outgoing messages by default",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -548,5 +576,48 @@ e_source_openpgp_set_sign_by_default (ESourceOpenPGP *extension,
 	extension->priv->sign_by_default = sign_by_default;
 
 	g_object_notify (G_OBJECT (extension), "sign-by-default");
+}
+
+/**
+ * e_source_openpgp_get_encrypt_by_default:
+ * @extension: an #ESourceOpenPGP
+ *
+ * Returns whether to digitally encrypt outgoing messages by default using
+ * OpenPGP-compliant software such as GNU Privacy Guard (GnuPG).
+ *
+ * Returns: whether to encrypt outgoing messages by default
+ *
+ * Since: 3.18
+ **/
+gboolean
+e_source_openpgp_get_encrypt_by_default (ESourceOpenPGP *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_OPENPGP (extension), FALSE);
+
+	return extension->priv->encrypt_by_default;
+}
+
+/**
+ * e_source_openpgp_set_encrypt_by_default:
+ * @extension: an #ESourceOpenPGP
+ * @encrypt_by_default: whether to encrypt outgoing messages by default
+ *
+ * Sets whether to digitally encrypt outgoing messages by default using
+ * OpenPGP-compliant software such as GNU Privacy Guard (GnuPG).
+ *
+ * Since: 3.18
+ **/
+void
+e_source_openpgp_set_encrypt_by_default (ESourceOpenPGP *extension,
+                                         gboolean encrypt_by_default)
+{
+	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
+
+	if (extension->priv->encrypt_by_default == encrypt_by_default)
+		return;
+
+	extension->priv->encrypt_by_default = encrypt_by_default;
+
+	g_object_notify (G_OBJECT (extension), "encrypt-by-default");
 }
 

@@ -103,6 +103,11 @@ gboolean	e_source_openpgp_get_sign_by_default
 void		e_source_openpgp_set_sign_by_default
 						(ESourceOpenPGP *extension,
 						 gboolean sign_by_default);
+gboolean	e_source_openpgp_get_encrypt_by_default
+						(ESourceOpenPGP *extension);
+void		e_source_openpgp_set_encrypt_by_default
+						(ESourceOpenPGP *extension,
+						 gboolean encrypt_by_default);
 
 G_END_DECLS
 
