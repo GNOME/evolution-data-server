@@ -49,6 +49,9 @@ main (gint argc,
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
+	/* Workaround https://bugzilla.gnome.org/show_bug.cgi?id=674885 */
+	g_type_ensure (G_TYPE_DBUS_CONNECTION);
+
 	prompt_user_init (&argc, &argv);
 
 	context = g_option_context_new (NULL);

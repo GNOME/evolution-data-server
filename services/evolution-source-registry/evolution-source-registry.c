@@ -156,6 +156,16 @@ main (gint argc,
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
+	/* Workaround https://bugzilla.gnome.org/show_bug.cgi?id=674885 */
+	g_type_ensure (G_TYPE_DBUS_CONNECTION);
+
+#if defined (ENABLE_MAINTAINER_MODE) && defined (HAVE_GTK)
+	if (g_getenv ("EDS_TESTING") == NULL)
+		/* This is only to load gtk-modules, like
+		 * bug-buddy's gnomesegvhandler, if possible */
+		gtk_init_check (&argc, &argv);
+#endif
+
 	context = g_option_context_new (NULL);
 	g_option_context_add_main_entries (context, entries, GETTEXT_PACKAGE);
 	g_option_context_parse (context, &argc, &argv, &error);
@@ -165,13 +175,6 @@ main (gint argc,
 		g_printerr ("%s\n", error->message);
 		exit (EXIT_FAILURE);
 	}
-
-#if defined (ENABLE_MAINTAINER_MODE) && defined (HAVE_GTK)
-	if (g_getenv ("EDS_TESTING") == NULL)
-		/* This is only to load gtk-modules, like
-		 * bug-buddy's gnomesegvhandler, if possible */
-		gtk_init_check (&argc, &argv);
-#endif
 
 	e_gdbus_templates_init_main_thread ();
 
