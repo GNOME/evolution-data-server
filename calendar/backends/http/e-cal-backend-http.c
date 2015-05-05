@@ -686,9 +686,9 @@ cal_backend_http_load (ECalBackendHttp *backend,
 		subcomp_kind = icalcomponent_isa (subcomp);
 		prop = icalcomponent_get_first_property (subcomp, ICAL_UID_PROPERTY);
 		if (!prop && subcomp_kind == kind) {
-			g_warning (" The component does not have the  mandatory property UID \n");
-			subcomp = icalcomponent_get_next_component (icalcomp, ICAL_ANY_COMPONENT);
-			continue;
+			gchar *new_uid = e_cal_component_gen_uid ();
+			icalcomponent_set_uid (subcomp, new_uid);
+			g_free (new_uid);
 		}
 
 		if (subcomp_kind == kind) {
