@@ -14,7 +14,7 @@
   <property name="UID" type="s" access="read"/>
   <!-- Data: Raw key file data describing the source. -->
   <property name="Data" type="s" access="read"/>
-  <!-- ConnectionStatus: Current ESourceConnectionStatus of the source. @since: 3.14 -->
+  <!-- ConnectionStatus: Current ESourceConnectionStatus of the source. @since: 3.16 -->
   <property name="ConnectionStatus" type="s" access="readwrite"/>
 
   <!--
@@ -25,7 +25,7 @@
       @certificate_errors: a GTlsCertificateFlags bit-or of certificate errors
       @dbus_error_name: a GDBus' error name for a failed authentication
       @dbus_error_message: actual error message corresponding to @dbus_error_name
-      @since: 3.14
+      @since: 3.16
 
       Emitted, when the source requires credentials, like for login, to be
       able to connect to its destination. The client side may listen to it
@@ -56,7 +56,7 @@
 
   <!--
       InvokeCredentialsRequired:
-      @since: 3.14
+      @since: 3.16
 
       Invokes CredentialsRequired signal on the server side, thus it can
       be received by all clients.
@@ -76,9 +76,9 @@
       @certificate_errors: (out): The 'certificate_errors' argument used in the last call of CredentialsRequired()
       @dbus_error_name: (out): The 'dbus_error_name' argument used in the last call of CredentialsRequired()
       @dbus_error_message: (out): The 'dbus_error_message' argument used in the last call of CredentialsRequired()
-      @since: 3.14
+      @since: 3.16
 
-      Returns tha last arguments used to the call of CredentialsRequired().
+      Returns the last arguments used to the call of CredentialsRequired().
       The values are automatically unset with the Authenticate() call.
   -->
   <method name="GetLastCredentialsRequiredArguments">
@@ -92,7 +92,7 @@
   <!--
       Authenticate:
       @credentials: provided credentials, in a GKeyFile format
-      @since: 3.14
+      @since: 3.16
 
       This is a response method for a signal CredentialsRequired, when
       the credentials had been obtained from a user. The @credentials is
@@ -104,7 +104,7 @@
 
   <!--
       InvokeAuthenticate:
-      @since: 3.14
+      @since: 3.16
 
       Invokes Authenticate signal on the server side, thus it can
       be received by all clients (and served by backends).

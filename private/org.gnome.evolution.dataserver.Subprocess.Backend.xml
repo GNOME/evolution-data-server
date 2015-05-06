@@ -6,7 +6,7 @@
 <!--
     org.gnome.evolution.dataserver.Subprocess.Backend:
     @short_description: Subprocess for backends objects
-    @since: 3.14
+    @since: 3.16
 
     This interface provides access to the subprocess responsible to
     create a backend instance
