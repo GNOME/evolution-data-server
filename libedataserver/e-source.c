@@ -5364,3 +5364,133 @@ e_source_get_last_credentials_required_arguments_finish (ESource *source,
 
 	return TRUE;
 }
+
+/**
+ * e_source_unset_last_credentials_required_arguments_sync:
+ * @source: an #ESource
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Unsets the last used arguments of the 'credentials-required' signal emission.
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.18
+ **/
+gboolean
+e_source_unset_last_credentials_required_arguments_sync (ESource *source,
+							 GCancellable *cancellable,
+							 GError **error)
+{
+	GDBusObject *dbus_object;
+	EDBusSource *dbus_source = NULL;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (!dbus_source)
+		return FALSE;
+
+	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source, cancellable, error);
+
+	g_object_unref (dbus_source);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return success;
+}
+
+static void
+source_unset_last_credentials_required_arguments_thread (GTask *task,
+							 gpointer source_object,
+							 gpointer task_data,
+							 GCancellable *cancellable)
+{
+	GError *local_error = NULL;
+
+	e_source_unset_last_credentials_required_arguments_sync (
+		E_SOURCE (source_object), cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, TRUE);
+	}
+}
+
+/**
+ * e_source_unset_last_credentials_required_arguments:
+ * @source: an #ESource
+ * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Asynchronously calls the UnsetLastCredentialsRequiredArguments method
+ * on the server side, to unset the last values used for the 'credentials-required'
+ * signal.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_source_unset_last_credentials_required_arguments_finish() to get
+ * the result of the operation.
+ *
+ * Since: 3.18
+ **/
+void
+e_source_unset_last_credentials_required_arguments (ESource *source,
+						    GCancellable *cancellable,
+						    GAsyncReadyCallback callback,
+						    gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	task = g_task_new (source, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_unset_last_credentials_required_arguments);
+
+	g_task_run_in_thread (task, source_unset_last_credentials_required_arguments_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_unset_last_credentials_required_arguments_finish:
+ * @source: an #ESource
+ * @result: a #GAsyncResult
+ * @error: (allow none): return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_unset_last_credentials_required_arguments().
+ *
+ * If an error occurs, the function sets @error and returns %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.18
+ **/
+gboolean
+e_source_unset_last_credentials_required_arguments_finish (ESource *source,
+							   GAsyncResult *result,
+							   GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, source), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_source_unset_last_credentials_required_arguments), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}

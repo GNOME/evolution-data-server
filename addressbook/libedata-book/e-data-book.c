@@ -1331,12 +1331,30 @@ data_book_handle_get_cursor_cb (EDBusAddressBook *dbus_interface,
 	return TRUE;
 }
 
+static void
+data_book_source_unset_last_credentials_required_arguments_cb (GObject *source_object,
+							       GAsyncResult *result,
+							       gpointer user_data)
+{
+	GError *local_error = NULL;
+
+	g_return_if_fail (E_IS_SOURCE (source_object));
+
+	e_source_unset_last_credentials_required_arguments_finish (E_SOURCE (source_object), result, &local_error);
+
+	if (local_error)
+		g_debug ("%s: Call failed: %s", G_STRFUNC, local_error->message);
+
+	g_clear_error (&local_error);
+}
+
 static gboolean
 data_book_handle_close_cb (EDBusAddressBook *dbus_interface,
                            GDBusMethodInvocation *invocation,
                            EDataBook *data_book)
 {
 	EBookBackend *backend;
+	ESource *source;
 	const gchar *sender;
 
 	/* G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED should be set on
@@ -1346,6 +1364,10 @@ data_book_handle_close_cb (EDBusAddressBook *dbus_interface,
 
 	backend = e_data_book_ref_backend (data_book);
 	g_return_val_if_fail (backend != NULL, FALSE);
+
+	source = e_backend_get_source (E_BACKEND (backend));
+	e_source_unset_last_credentials_required_arguments (source, NULL,
+		data_book_source_unset_last_credentials_required_arguments_cb, NULL);
 
 	sender = g_dbus_method_invocation_get_sender (invocation);
 	g_signal_emit_by_name (backend, "closed", sender);

@@ -416,6 +416,19 @@ gboolean	e_source_get_last_credentials_required_arguments_finish
 						 GTlsCertificateFlags *out_certificate_errors,
 						 GError **out_op_error,
 						 GError **error);
+gboolean	e_source_unset_last_credentials_required_arguments_sync
+						(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_unset_last_credentials_required_arguments
+						(ESource *source,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_unset_last_credentials_required_arguments_finish
+						(ESource *source,
+						 GAsyncResult *result,
+						 GError **error);
 
 G_END_DECLS
 

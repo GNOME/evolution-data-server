@@ -388,6 +388,23 @@ backend_source_authenticate_cb (ESource *source,
 }
 
 static void
+backend_source_unset_last_credentials_required_arguments_cb (GObject *source_object,
+							     GAsyncResult *result,
+							     gpointer user_data)
+{
+	GError *local_error = NULL;
+
+	g_return_if_fail (E_IS_SOURCE (source_object));
+
+	e_source_unset_last_credentials_required_arguments_finish (E_SOURCE (source_object), result, &local_error);
+
+	if (local_error)
+		g_debug ("%s: Call failed: %s", G_STRFUNC, local_error->message);
+
+	g_clear_error (&local_error);
+}
+
+static void
 backend_set_source (EBackend *backend,
                     ESource *source)
 {
@@ -497,6 +514,8 @@ backend_dispose (GObject *object)
 	if (priv->source) {
 		g_signal_handlers_disconnect_by_func (priv->source, backend_source_authenticate_cb, object);
 		e_source_set_connection_status (priv->source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+		e_source_unset_last_credentials_required_arguments (priv->source, NULL,
+			backend_source_unset_last_credentials_required_arguments_cb, NULL);
 	}
 
 	g_mutex_lock (&priv->authenticate_cancellable_lock);

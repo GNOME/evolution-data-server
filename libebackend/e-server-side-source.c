@@ -504,6 +504,32 @@ server_side_source_get_last_credentials_required_arguments_cb (EDBusSource *dbus
 }
 
 static gboolean
+server_side_source_unset_last_credentials_required_arguments_cb (EDBusSource *dbus_interface,
+								 GDBusMethodInvocation *invocation,
+								 EServerSideSource *source)
+{
+	g_mutex_lock (&source->priv->last_values_lock);
+
+	g_free (source->priv->last_reason);
+	g_free (source->priv->last_certificate_pem);
+	g_free (source->priv->last_certificate_errors);
+	g_free (source->priv->last_dbus_error_name);
+	g_free (source->priv->last_dbus_error_message);
+
+	source->priv->last_reason = NULL;
+	source->priv->last_certificate_pem = NULL;
+	source->priv->last_certificate_errors = NULL;
+	source->priv->last_dbus_error_name = NULL;
+	source->priv->last_dbus_error_message = NULL;
+
+	e_dbus_source_complete_unset_last_credentials_required_arguments (dbus_interface, invocation);
+
+	g_mutex_unlock (&source->priv->last_values_lock);
+
+	return TRUE;
+}
+
+static gboolean
 server_side_source_remove_cb (EDBusSourceRemovable *dbus_interface,
                               GDBusMethodInvocation *invocation,
                               EServerSideSource *source)
@@ -1493,6 +1519,9 @@ server_side_source_initable_init (GInitable *initable,
 	g_signal_connect (
 		dbus_source, "handle-get-last-credentials-required-arguments",
 		G_CALLBACK (server_side_source_get_last_credentials_required_arguments_cb), source);
+	g_signal_connect (
+		dbus_source, "handle-unset-last-credentials-required-arguments",
+		G_CALLBACK (server_side_source_unset_last_credentials_required_arguments_cb), source);
 
 	g_object_unref (dbus_source);
 

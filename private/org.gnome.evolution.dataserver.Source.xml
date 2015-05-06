@@ -79,7 +79,8 @@
       @since: 3.16
 
       Returns the last arguments used to the call of CredentialsRequired().
-      The values are automatically unset with the Authenticate() call.
+      The values are automatically unset with the Authenticate() call or
+      with an explicit call to UnsetLastCredentialsRequiredArguments().
   -->
   <method name="GetLastCredentialsRequiredArguments">
     <arg name="reason" direction="out" type="s"/>
@@ -87,6 +88,16 @@
     <arg name="certificate_errors" direction="out" type="s"/>
     <arg name="dbus_error_name" direction="out" type="s"/>
     <arg name="dbus_error_message" direction="out" type="s"/>
+  </method>
+
+  <!--
+      UnsetLastCredentialsRequiredArguments:
+      @since: 3.18
+
+      Unsets the last arguments used to the call of CredentialsRequired().
+      The values are automatically unset with the Authenticate() call too.
+  -->
+  <method name="UnsetLastCredentialsRequiredArguments">
   </method>
 
   <!--
