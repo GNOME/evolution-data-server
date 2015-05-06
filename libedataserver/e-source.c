@@ -5202,10 +5202,8 @@ e_source_get_last_credentials_required_arguments_sync (ESource *source,
 		g_object_unref (dbus_object);
 	}
 
-	if (!dbus_source) {
-		g_warn_if_fail (dbus_source != NULL);
+	if (!dbus_source)
 		return FALSE;
-	}
 
 	success = e_dbus_source_call_get_last_credentials_required_arguments_sync (dbus_source,
 		&arg_reason, out_certificate_pem, &arg_certificate_errors,
