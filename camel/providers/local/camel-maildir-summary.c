@@ -631,7 +631,14 @@ maildir_summary_check (CamelLocalSummary *cls,
 	rewinddir (dir);
 
 	while ((d = readdir (dir))) {
-		gint pc = count * 100 / total;
+		gint pc;
+
+		/* Avoid a potential division by zero if the first loop
+		 * (to calculate total) is executed on an empty
+		 * directory, then the directory is populated before
+		 * this loop is executed. */
+		total = MAX (total, count + 1);
+		pc = (total > 0) ? count * 100 / total : 0;
 
 		camel_operation_progress (cancellable, pc);
 		count++;
