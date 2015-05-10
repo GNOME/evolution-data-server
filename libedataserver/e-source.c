@@ -3544,8 +3544,6 @@ e_source_dup_secret_label (ESource *source)
 		g_string_append_printf (secret_label, "Evolution Data Source \"%s\" (%s - %s) ", display_name, type, backend_name);
 	else if (type)
 		g_string_append_printf (secret_label, "Evolution Data Source \"%s\" (%s)", display_name, type);
-	else if (backend_name)
-		g_string_append_printf (secret_label, "Evolution Data Source \"%s\" (%s)", display_name, backend_name);
 	else
 		g_string_append_printf (secret_label, "Evolution Data Source \"%s\"", display_name);
 
