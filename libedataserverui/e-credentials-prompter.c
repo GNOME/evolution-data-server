@@ -1739,7 +1739,7 @@ e_credentials_prompter_loop_prompt_sync (ECredentialsPrompter *prompter,
 		e_named_parameters_free (credentials);
 		credentials = NULL;
 
-		if (!credentials_prompter_prompt_sync (prompter, source, is_retry, &flags, local_error ? local_error->message : NULL,
+		if (!credentials_prompter_prompt_sync (prompter, source, is_retry, &flags, NULL,
 			&credentials, cancellable, error))
 			break;
 
