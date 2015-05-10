@@ -584,9 +584,6 @@ cal_backend_http_load (ECalBackendHttp *backend,
 
 		if (success) {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
-		} else if (status_code == SOUP_STATUS_SSL_FAILED) {
-			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
-			cal_backend_http_extract_ssl_failed_data (soup_message, out_certificate_pem, out_certificate_errors);
 		} else {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
