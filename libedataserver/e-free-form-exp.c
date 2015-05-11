@@ -160,7 +160,7 @@ ffe_process_word (const EFreeFormExpSymbol *symbols,
 		  GString **psexp)
 {
 	GString *sexp;
-	gchar *word = NULL, *options = NULL, *subsexp;
+	gchar *options = NULL, *subsexp;
 	const EFreeFormExpSymbol *symbol = NULL;
 	gboolean used_next_word = FALSE;
 
@@ -173,6 +173,7 @@ ffe_process_word (const EFreeFormExpSymbol *symbols,
 		   that the string was quoted */
 		in_word++;
 	} else {
+		gchar *word = NULL;
 		const gchar *dash, *colon;
 
 		/* <function>[-<options>]:values */
@@ -192,28 +193,21 @@ ffe_process_word (const EFreeFormExpSymbol *symbols,
 		if (word) {
 			symbol = ffe_find_symbol_for (symbols, word);
 			if (!symbol) {
-				g_free (word);
 				g_free (options);
-				word = NULL;
 				options = NULL;
 			} else if (colon[1]) {
-				g_free (word);
-				word = NULL;
 				in_word = colon + 1;
 			} else if (next_word) {
-				g_free (word);
-				word = NULL;
-
 				in_word = next_word;
 				if (*in_word == '\t')
 					in_word++;
 				used_next_word = TRUE;
 			} else {
-				g_free (word);
 				g_free (options);
-				word = NULL;
 				options = NULL;
 			}
+
+			g_free (word);
 		}
 	}
 
@@ -224,7 +218,7 @@ ffe_process_word (const EFreeFormExpSymbol *symbols,
 	g_return_val_if_fail (symbol->build_sexp != NULL, FALSE);
 
 	sexp = *psexp;
-	subsexp = symbol->build_sexp (word ? word : in_word, options, symbol->hint);
+	subsexp = symbol->build_sexp (in_word, options, symbol->hint);
 
 	if (subsexp && *subsexp) {
 		if (!sexp) {
@@ -234,7 +228,6 @@ ffe_process_word (const EFreeFormExpSymbol *symbols,
 		}
 	}
 
-	g_free (word);
 	g_free (options);
 	g_free (subsexp);
 
