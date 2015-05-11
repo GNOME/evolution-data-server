@@ -1,3 +1,40 @@
+Evolution-Data-Server 3.16.2 2015-05-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 743996 - "FOREIGN KEY constraint failed" trying to delete contact (Milan Crha)
+	Bug 746335 - [IMAPx] Current folder not updated after message move (Milan Crha)
+	Bug 746276 - Add thread-safety into EAsyncClosure (Milan Crha)
+	Bug 747789 - Implement Refresh for WebDAV books (Milan Crha)
+	Bug 691456 - Incorrectly applied MONTHLY BYMONTHDAY RRULE rule (Milan Crha)
+	Bug 691493 - [IMAPx] Show progress when fetching summary information (Milan Crha)
+	Bug 747638 - Skipped changed messages in camel_folder_summary_get_changed() (Milan Crha)
+	Bug 696552 - exists_vcard query fails with get_contacts_sync() (Milan Crha)
+	Bug 745050 - GPG Signing key cannot be saved (prefer gpg again) (Milan Crha)
+	Bug 701352 - [IMAPx] Remove deleted messages in real Trash immediately (Milan Crha)
+	Bug 719476 - [IMAPx] Always run IDLE on Inbox folder (Milan Crha)
+	Bug 705771 - Improve error handling in POP3 code (Milan Crha)
+	Bug 748636 - [IMAPx] Disable LIST-EXTENDED extension for Cyrus servers (Milan Crha)
+
+Miscellaneous:
+	Add a workaround for bug 674885 (Type initialisation deadlock in GObject) (Milan Crha)
+	[local book] Failure of contact remove not propagated to UI (Milan Crha)
+	[CalDAV] Fix a little memory leak (Milan Crha)
+	Fix various memory leaks (Milan Crha)
+	Fix various memory leaks (Milan Crha)
+	Revert camel-folder-thread.c part from the previous commit (Milan Crha)
+	Incorrect message info unreferenced in camel_vee_folder_get_location() (Milan Crha)
+	[NNTP] Provide feedback when updating folder content (Milan Crha)
+	[NNTP] Can fail to disconnect when the command was cancelled (Milan Crha)
+	[NNTP] Fix minor memory leaks (Milan Crha)
+	[IMAPx] Do not free uninitialized memory in imapx_call_idle() (Milan Crha)
+	[POP3] Avoid crash on folder dispose, when iterating through pending commands (Milan Crha)
+	Add thread-safety into CamelAsyncClosure (Milan Crha)
+	Slow expunge of a maildir folder (Milan Crha)
+	[http calendar] Add UID to the component, if missing (Milan Crha)
+	Remove confusing runtime warning in e-source.c (Milan Crha)
+	Correct 'since' tags in D-Bus .xml files (Milan Crha)
+
 Evolution-Data-Server 3.16.1 2015-04-13
 ---------------------------------------
 
