@@ -5215,7 +5215,7 @@ e_source_get_last_credentials_required_arguments_sync (ESource *source,
 
 	success = e_dbus_source_call_get_last_credentials_required_arguments_sync (dbus_source,
 		&arg_reason, out_certificate_pem, &arg_certificate_errors,
-		&arg_dbus_error_name, &arg_dbus_error_message, cancellable, error);
+		&arg_dbus_error_name, &arg_dbus_error_message, cancellable, &local_error);
 
 	g_object_unref (dbus_source);
 
@@ -5400,7 +5400,7 @@ e_source_unset_last_credentials_required_arguments_sync (ESource *source,
 	if (!dbus_source)
 		return FALSE;
 
-	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source, cancellable, error);
+	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source, cancellable, &local_error);
 
 	g_object_unref (dbus_source);
 
