@@ -30,6 +30,11 @@ e_backend_trust_prompt_finish
 e_backend_get_destination_address
 e_backend_is_destination_reachable
 e_backend_prepare_shutdown
+e_backend_credentials_required
+e_backend_credentials_required_finish
+e_backend_credentials_required_sync
+e_backend_schedule_authenticate
+e_backend_schedule_credentials_required
 <SUBSECTION Standard>
 EBackendPrivate
 E_BACKEND
@@ -320,6 +325,7 @@ e_book_backend_sexp_get_type
 <SECTION>
 <FILE>e-book-sqlite</FILE>
 <TITLE>EBookSqlite</TITLE>
+E_BOOK_SQL_SYNC_DATA_KEY
 E_BOOK_SQLITE_ERROR
 EbSqlChangeType
 EbSqlChangeCallback
@@ -341,6 +347,7 @@ e_book_sqlite_unlock
 e_book_sqlite_set_locale
 e_book_sqlite_get_locale
 e_book_sqlite_ref_collator
+e_book_sqlite_ref_source
 e_book_sqlite_add_contact
 e_book_sqlite_add_contacts
 e_book_sqlite_remove_contact
@@ -363,6 +370,9 @@ e_book_sqlite_cursor_set_target_alphabetic_index
 e_book_sqlite_cursor_set_sexp
 e_book_sqlite_cursor_calculate
 e_book_sqlite_cursor_compare_contact
+ebsql_get_contact_extra_unlocked
+ebsql_get_contact_unlocked
+ebsql_get_vcard_unlocked
 EbSqlCursor
 <SUBSECTION Standard>
 EBookSqlitePrivate
@@ -1408,6 +1418,8 @@ e_cal_util_component_has_rdates
 e_cal_util_component_has_rrules
 e_cal_util_component_has_attendee
 e_cal_util_event_dates_match
+e_cal_util_is_first_instance
+e_cal_util_split_at_instance
 CAL_STATIC_CAPABILITY_NO_ALARM_REPEAT
 CAL_STATIC_CAPABILITY_NO_AUDIO_ALARMS
 CAL_STATIC_CAPABILITY_NO_DISPLAY_ALARMS
@@ -1528,6 +1540,12 @@ e_client_get_backend_property_sync
 e_client_refresh
 e_client_refresh_finish
 e_client_refresh_sync
+e_client_retrieve_properties
+e_client_retrieve_properties_finish
+e_client_retrieve_properties_sync
+e_client_wait_for_connected
+e_client_wait_for_connected_finish
+e_client_wait_for_connected_sync
 e_client_util_parse_comma_strings
 e_client_dup_bus_name
 e_client_set_bus_name
@@ -1616,6 +1634,7 @@ e_collection_backend_create_resource_finish
 e_collection_backend_delete_resource_sync
 e_collection_backend_delete_resource
 e_collection_backend_delete_resource_finish
+e_collection_backend_authenticate_children
 <SUBSECTION Standard>
 ECollectionBackendPrivate
 E_COLLECTION_BACKEND
@@ -1701,6 +1720,7 @@ e_contact_pretty_name
 e_contact_vcard_attribute
 e_contact_field_id
 e_contact_field_id_from_vcard
+e_contact_field_is_string
 <SUBSECTION Standard>
 EContactPrivate
 E_CONTACT
@@ -2073,6 +2093,8 @@ e_util_utf8_data_make_valid
 e_util_utf8_normalize
 e_util_ensure_gdbus_string
 e_util_gthread_id
+e_util_safe_free_string
+e_util_win32_initialize
 e_filename_make_safe
 e_filename_mkdir_encoded
 e_utf8_strftime
@@ -2098,8 +2120,10 @@ e_util_get_prefix
 e_util_get_cp_prefix
 e_util_get_localedir
 e_util_replace_prefix
+E_TYPE_NAMED_PARAMETERS
 e_named_parameters_new
 e_named_parameters_new_strv
+e_named_parameters_new_clone
 e_named_parameters_free
 e_named_parameters_clear
 e_named_parameters_assign
@@ -2119,6 +2143,9 @@ e_util_copy_string_slist
 e_util_copy_object_slist
 e_data_server_util_get_dbus_call_timeout
 e_data_server_util_set_dbus_call_timeout
+e_binding_bind_property
+e_binding_bind_property_full
+e_binding_bind_property_with_closures
 ENamedParameters
 EAsyncClosure
 tm
@@ -2323,6 +2350,14 @@ e_flag_wait
 e_flag_wait_until
 e_flag_free
 e_flag_timed_wait
+</SECTION>
+
+<SECTION>
+<FILE>e-free-form-exp</FILE>
+<TITLE>EFreeFormExp</TITLE>
+EFreeFormExpBuildSexpFunc
+EFreeFormExpSymbol
+e_free_form_exp_to_sexp
 </SECTION>
 
 <SECTION>
@@ -2730,6 +2765,23 @@ e_server_side_source_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-server-side-source-credentials-provider</FILE>
+<TITLE>EServerSideSourceCredentialsProvider</TITLE>
+EServerSideSourceCredentialsProvider
+EServerSideSourceCredentialsProviderClass
+e_server_side_source_credentials_provider_new
+<SUBSECTION Standard>
+EServerSideSourceCredentialsProviderPrivate
+E_IS_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER
+E_IS_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER_CLASS
+E_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER
+E_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER_CLASS
+E_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER_GET_CLASS
+E_TYPE_SERVER_SIDE_SOURCE_CREDENTIALS_PROVIDER
+e_server_side_source_credentials_provider_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-sexp</FILE>
 <TITLE>ESExp</TITLE>
 ESExpResultType
@@ -2798,6 +2850,9 @@ e_soup_ssl_trust_connect
 <FILE>e-source</FILE>
 <TITLE>ESource</TITLE>
 E_SOURCE_PARAM_SETTING
+E_SOURCE_CREDENTIAL_USERNAME
+E_SOURCE_CREDENTIAL_PASSWORD
+E_SOURCE_CREDENTIAL_SSL_TRUST
 ESource
 ESourceClass
 e_source_new
@@ -2851,6 +2906,24 @@ e_source_lookup_password_finish
 e_source_delete_password_sync
 e_source_delete_password
 e_source_delete_password_finish
+e_source_get_connection_status
+e_source_set_connection_status
+e_source_emit_credentials_required
+e_source_get_last_credentials_required_arguments
+e_source_get_last_credentials_required_arguments_finish
+e_source_get_last_credentials_required_arguments_sync
+e_source_unset_last_credentials_required_arguments
+e_source_unset_last_credentials_required_arguments_finish
+e_source_unset_last_credentials_required_arguments_sync
+e_source_invoke_authenticate
+e_source_invoke_authenticate_finish
+e_source_invoke_authenticate_sync
+e_source_invoke_credentials_required
+e_source_invoke_credentials_required_finish
+e_source_invoke_credentials_required_sync
+ESourceConnectionStatus
+E_TYPE_SOURCE_CONNECTION_STATUS
+e_source_connection_status_get_type
 <SUBSECTION Standard>
 ESourcePrivate
 E_IS_SOURCE
@@ -2925,6 +2998,9 @@ e_source_authentication_set_remember_password
 e_source_authentication_get_user
 e_source_authentication_dup_user
 e_source_authentication_set_user
+e_source_authentication_dup_credential_name
+e_source_authentication_get_credential_name
+e_source_authentication_set_credential_name
 <SUBSECTION Standard>
 ESourceAuthenticationPrivate
 E_IS_SOURCE_AUTHENTICATION
@@ -2995,6 +3071,26 @@ E_SOURCE_BACKEND_SUMMARY_SETUP_CLASS
 E_SOURCE_BACKEND_SUMMARY_SETUP_GET_CLASS
 E_TYPE_SOURCE_BACKEND_SUMMARY_SETUP
 e_source_backend_summary_setup_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-source-contacts</FILE>
+<TITLE>ESourceContacts</TITLE>
+E_SOURCE_EXTENSION_CONTACTS_BACKEND
+ESourceContacts
+ESourceContactsClass
+e_source_contacts_get_type
+e_source_contacts_get_include_me
+e_source_contacts_set_include_me
+<SUBSECTION Standard>
+ESourceContactsPrivate
+E_IS_SOURCE_CONTACTS
+E_IS_SOURCE_CONTACTS_CLASS
+E_SOURCE_CONTACTS
+E_SOURCE_CONTACTS_CLASS
+E_SOURCE_CONTACTS_GET_CLASS
+E_TYPE_SOURCE_CONTACTS
+e_source_address_book_get_type
 </SECTION>
 
 <SECTION>
@@ -3097,6 +3193,75 @@ e_source_collection_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-source-credentials-provider</FILE>
+<TITLE>ESourceCredentialsProvider</TITLE>
+ESourceCredentialsProvider
+ESourceCredentialsProviderClass
+e_source_credentials_provider_new
+e_source_credentials_provider_ref_credentials_source
+e_source_credentials_provider_ref_registry
+e_source_credentials_provider_ref_source
+e_source_credentials_provider_can_prompt
+e_source_credentials_provider_can_store
+e_source_credentials_provider_delete
+e_source_credentials_provider_delete_finish
+e_source_credentials_provider_delete_sync
+e_source_credentials_provider_lookup
+e_source_credentials_provider_lookup_finish
+e_source_credentials_provider_lookup_sync
+e_source_credentials_provider_store
+e_source_credentials_provider_store_finish
+e_source_credentials_provider_store_sync
+e_source_credentials_provider_register_impl
+e_source_credentials_provider_unregister_impl
+ESourceCredentialsReason
+E_TYPE_SOURCE_CREDENTIALS_REASON
+e_source_credentials_reason_get_type
+<SUBSECTION Standard>
+ESourceCredentialsProviderPrivate
+E_IS_SOURCE_CREDENTIALS_PROVIDER
+E_IS_SOURCE_CREDENTIALS_PROVIDER_CLASS
+E_SOURCE_CREDENTIALS_PROVIDER
+E_SOURCE_CREDENTIALS_PROVIDER_CLASS
+E_SOURCE_CREDENTIALS_PROVIDER_GET_CLASS
+E_TYPE_SOURCE_CREDENTIALS_PROVIDER
+e_source_credentials_provider_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-source-credentials-provider-impl</FILE>
+<TITLE>ESourceCredentialsProviderImpl</TITLE>
+ESourceCredentialsProviderImpl
+ESourceCredentialsProviderImplClass
+ESourceCredentialsProviderImplPassword
+ESourceCredentialsProviderImplPasswordClass
+e_source_credentials_provider_impl_get_provider
+e_source_credentials_provider_impl_can_process
+e_source_credentials_provider_impl_can_prompt
+e_source_credentials_provider_impl_can_store
+e_source_credentials_provider_impl_lookup_sync
+e_source_credentials_provider_impl_store_sync
+e_source_credentials_provider_impl_delete_sync
+<SUBSECTION Standard>
+ESourceCredentialsProviderImplPrivate
+E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL
+E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS
+E_SOURCE_CREDENTIALS_PROVIDER_IMPL
+E_SOURCE_CREDENTIALS_PROVIDER_IMPL_CLASS
+E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS
+E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL
+e_source_credentials_provider_impl_get_type
+ESourceCredentialsProviderImplPasswordPrivate
+E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD
+E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD_CLASS
+E_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD
+E_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD_CLASS
+E_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD_GET_CLASS
+E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD
+e_source_credentials_provider_impl_password_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-enums</FILE>
 EMdnResponsePolicy
 EProxyMethod
@@ -3133,6 +3298,8 @@ E_SOURCE_EXTENSION_CLASS
 E_SOURCE_EXTENSION_GET_CLASS
 E_TYPE_SOURCE_EXTENSION
 e_source_extension_get_type
+e_source_extension_property_lock
+e_source_extension_property_unlock
 </SECTION>
 
 <SECTION>
@@ -3162,6 +3329,69 @@ e_source_goa_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-source-ldap</FILE>
+<TITLE>ESourceLDAP</TITLE>
+E_SOURCE_EXTENSION_LDAP_BACKEND
+ESourceLDAP
+ESourceLDAPClass
+ESourceLDAPAuthentication
+E_TYPE_SOURCE_LDAP_AUTHENTICATION
+e_source_ldap_authentication_get_type
+ESourceLDAPScope
+E_TYPE_SOURCE_LDAP_SCOPE
+e_source_ldap_scope_get_type
+ESourceLDAPSecurity
+E_TYPE_SOURCE_LDAP_SECURITY
+e_source_ldap_security_get_type
+e_source_ldap_dup_filter
+e_source_ldap_dup_root_dn
+e_source_ldap_get_authentication
+e_source_ldap_get_can_browse
+e_source_ldap_get_filter
+e_source_ldap_get_limit
+e_source_ldap_get_root_dn
+e_source_ldap_get_scope
+e_source_ldap_get_security
+e_source_ldap_get_type
+e_source_ldap_set_authentication
+e_source_ldap_set_can_browse
+e_source_ldap_set_filter
+e_source_ldap_set_limit
+e_source_ldap_set_root_dn
+e_source_ldap_set_scope
+e_source_ldap_set_security
+<SUBSECTION Standard>
+ESourceLDAPPrivate
+E_IS_SOURCE_LDAP
+E_IS_SOURCE_LDAP_CLASS
+E_SOURCE_LDAP
+E_SOURCE_LDAP_CLASS
+E_SOURCE_LDAP_GET_CLASS
+E_TYPE_SOURCE_LDAP
+e_source_autocomplete_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-source-local</FILE>
+<TITLE>ESourceLocal</TITLE>
+E_SOURCE_EXTENSION_LOCAL_BACKEND
+ESourceLocal
+ESourceLocalClass
+e_source_local_dup_custom_file
+e_source_local_get_custom_file
+e_source_local_set_custom_file
+<SUBSECTION Standard>
+ESourceLocalPrivate
+E_IS_SOURCE_LOCAL
+E_IS_SOURCE_LOCAL_CLASS
+E_SOURCE_LOCAL
+E_SOURCE_LOCAL_CLASS
+E_SOURCE_LOCAL_GET_CLASS
+E_TYPE_SOURCE_LOCAL
+e_source_local_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-mail-account</FILE>
 <TITLE>ESourceMailAccount</TITLE>
 E_SOURCE_EXTENSION_MAIL_ACCOUNT
@@ -3170,6 +3400,9 @@ ESourceMailAccountClass
 e_source_mail_account_get_identity_uid
 e_source_mail_account_dup_identity_uid
 e_source_mail_account_set_identity_uid
+e_source_mail_account_dup_archive_folder
+e_source_mail_account_get_archive_folder
+e_source_mail_account_set_archive_folder
 <SUBSECTION Standard>
 ESourceMailAccountPrivate
 E_IS_SOURCE_MAIL_ACCOUNT
@@ -3370,6 +3603,8 @@ e_source_openpgp_dup_signing_algorithm
 e_source_openpgp_set_signing_algorithm
 e_source_openpgp_get_sign_by_default
 e_source_openpgp_set_sign_by_default
+e_source_openpgp_get_encrypt_by_default
+e_source_openpgp_set_encrypt_by_default
 <SUBSECTION Standard>
 ESourceOpenPGPPrivate
 E_IS_SOURCE_OPENPGP
@@ -3506,6 +3741,8 @@ e_source_registry_ref_default_task_list
 e_source_registry_set_default_task_list
 e_source_registry_ref_default_for_extension_name
 e_source_registry_set_default_for_extension_name
+e_source_registry_debug_enabled
+e_source_registry_debug_print
 <SUBSECTION Standard>
 ESourceRegistryPrivate
 E_IS_SOURCE_REGISTRY
@@ -3537,6 +3774,7 @@ e_source_registry_server_find_extension
 e_source_registry_server_ref_backend
 e_source_registry_server_ref_backend_factory
 e_source_registry_server_load_all
+e_source_registry_server_ref_credentials_provider
 <SUBSECTION Standard>
 ESourceRegistryServerPrivate
 E_IS_SOURCE_REGISTRY_SERVER
@@ -3682,6 +3920,31 @@ e_source_uoa_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-source-weather</FILE>
+<TITLE>ESourceWeather</TITLE>
+E_SOURCE_EXTENSION_WEATHER_BACKEND
+ESourceWeather
+ESourceWeatherClass
+ESourceWeatherUnits
+E_TYPE_SOURCE_WEATHER_UNITS
+e_source_weather_units_get_type
+e_source_weather_dup_location
+e_source_weather_get_location
+e_source_weather_get_units
+e_source_weather_set_location
+e_source_weather_set_units
+<SUBSECTION Standard>
+ESourceWeatherPrivate
+E_IS_SOURCE_WEATHER
+E_IS_SOURCE_WEATHER_CLASS
+E_SOURCE_WEATHER
+E_SOURCE_WEATHER_CLASS
+E_SOURCE_WEATHER_GET_CLASS
+E_TYPE_SOURCE_WEATHER
+e_source_weather_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-source-webdav</FILE>
 <TITLE>ESourceWebdav</TITLE>
 E_SOURCE_EXTENSION_WEBDAV_BACKEND
@@ -3709,6 +3972,8 @@ e_source_webdav_set_ssl_trust
 e_source_webdav_dup_soup_uri
 e_source_webdav_set_soup_uri
 e_source_webdav_unset_temporary_ssl_trust
+e_source_webdav_update_ssl_trust
+e_source_webdav_verify_ssl_trust
 <SUBSECTION Standard>
 ESourceWebdavPrivate
 E_IS_SOURCE_WEBDAV
@@ -3718,6 +3983,59 @@ E_SOURCE_WEBDAV_CLASS
 E_SOURCE_WEBDAV_GET_CLASS
 E_TYPE_SOURCE_WEBDAV
 e_source_webdav_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-webdav-discover</FILE>
+<TITLE>WebDAV Sources Discover</TITLE>
+EWebDAVDiscoverSupports
+EWebDAVDiscoveredSource
+e_webdav_discover_free_discovered_sources
+e_webdav_discover_sources
+e_webdav_discover_sources_finish
+e_webdav_discover_sources_sync
+</SECTION>
+
+<SECTION>
+<FILE>e-subprocess-factory</FILE>
+<TITLE>ESubprocessFactory</TITLE>
+E_TYPE_SUBPROCESS_FACTORY
+</SECTION>
+
+<SECTION>
+<FILE>e-subprocess-book-factory</FILE>
+<TITLE>ESubprocessBookFactory</TITLE>
+EDS_SUBPROCESS_BOOK_PATH
+ESubprocessBookFactory
+ESubprocessBookFactoryClass
+e_subprocess_book_factory_new
+<SUBSECTION Standard>
+ESubprocessBookFactoryPrivate
+E_IS_SUBPROCESS_BOOK_FACTORY
+E_IS_SUBPROCESS_BOOK_FACTORY_CLASS
+E_SUBPROCESS_BOOK_FACTORY
+E_SUBPROCESS_BOOK_FACTORY_CLASS
+E_SUBPROCESS_BOOK_FACTORY_GET_CLASS
+E_TYPE_SUBPROCESS_BOOK_FACTORY
+e_subprocess_book_factory_get_type
+</SECTION>
+
+<SECTION>
+<FILE>e-subprocess-cal-factory</FILE>
+<TITLE>ESubprocessCalFactory</TITLE>
+EDS_SUBPROCESS_CAL_PATH
+ESubprocessCalFactory
+ESubprocessCalFactoryClass
+e_subprocess_cal_factory_new
+<SUBSECTION Standard>
+ESubprocessCalFactoryPrivate
+E_IS_SUBPROCESS_CAL_FACTORY
+E_IS_SUBPROCESS_CAL_FACTORY_CLASS
+E_SUBPROCESS_CAL_FACTORY
+E_SUBPROCESS_CAL_FACTORY_CLASS
+E_SUBPROCESS_CAL_FACTORY_GET_CLASS
+E_TYPE_SUBPROCESS_CAL_FACTORY
+e_subprocess_cal_factory_get_type
 </SECTION>
 
 <SECTION>
@@ -4052,6 +4370,7 @@ eds_check_version
 E_DATA_SERVER_EXTENSIONDIR
 E_DATA_SERVER_IMAGESDIR
 E_DATA_SERVER_UI_UIDIR
+E_DATA_SERVER_CREDENTIALMODULEDIR
 </SECTION>
 
 <SECTION>

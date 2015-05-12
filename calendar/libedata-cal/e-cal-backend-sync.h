@@ -48,14 +48,45 @@ typedef struct _ECalBackendSync ECalBackendSync;
 typedef struct _ECalBackendSyncClass ECalBackendSyncClass;
 typedef struct _ECalBackendSyncPrivate ECalBackendSyncPrivate;
 
+/**
+ * ECalBackendSync:
+ *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ **/
 struct _ECalBackendSync {
+	/*< private >*/
 	ECalBackend parent;
 	ECalBackendSyncPrivate *priv;
 };
 
+/**
+ * ECalBackendSyncClass:
+ * @open_sync: Open the calendar
+ * @refresh_sync: Refresh the calendar
+ * @set_backend_property_sync: Deprecated: Set backend property
+ * @get_object_sync: Get single object
+ * @get_object_list_sync: Get multiple objects at once
+ * @get_free_busy_sync: Get Free/Busy objects
+ * @create_objects_sync: Create objects
+ * @modify_objects_sync: Modify objects
+ * @remove_objects_sync: Remove objects
+ * @receive_objects_sync: Receive objects
+ * @send_objects_sync: Send objects
+ * @get_attachment_uris_sync: Get attachments uris for given object
+ * @discard_alarm_sync: Discard alarm
+ * @get_timezone_sync: Get specified timezone
+ * @add_timezone_sync: Add specified timezone
+ *
+ * Base class structure for the #ECalBackendSync class
+ *
+ * Since: 3.4
+ **/
 struct _ECalBackendSyncClass {
+	/*< private >*/
 	ECalBackendClass parent_class;
 
+	/*< public >*/
 	/* Virtual methods */
 	void		(*open_sync)		(ECalBackendSync *backend,
 						 EDataCal *cal,

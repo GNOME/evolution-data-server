@@ -684,6 +684,8 @@ e_cal_backend_cache_get_key_value (ECalBackendCache *cache,
  *
  * Removes the cache directory
  *
+ * Returns: %TRUE on success, %FALSE otherwise
+ *
  * Since: 2.28
  **/
 gboolean

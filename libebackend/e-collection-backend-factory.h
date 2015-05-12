@@ -58,11 +58,13 @@ typedef struct _ECollectionBackendFactoryPrivate ECollectionBackendFactoryPrivat
  * Since: 3.6
  **/
 struct _ECollectionBackendFactory {
+	/*< private >*/
 	EBackendFactory parent;
 	ECollectionBackendFactoryPrivate *priv;
 };
 
 struct _ECollectionBackendFactoryClass {
+	/*< private >*/
 	EBackendFactoryClass parent_class;
 
 	const gchar *factory_name;
@@ -74,6 +76,7 @@ struct _ECollectionBackendFactoryClass {
 					 ESource *mail_identity_source,
 					 ESource *mail_transport_source);
 
+	/*< private >*/
 	gpointer reserved[16];
 };
 

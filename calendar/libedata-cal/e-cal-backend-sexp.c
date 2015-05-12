@@ -1580,6 +1580,8 @@ e_cal_backend_sexp_func_time_day_end (ESExp *esexp,
  *
  * Determines biggest time window given by expressions "occur-in-range" in sexp.
  *
+ * Returns: %TRUE on success, %FALSE otherwise
+ *
  * Since: 2.32
  */
 gboolean

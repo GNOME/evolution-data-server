@@ -462,10 +462,15 @@ e_cal_check_timezones (icalcomponent *comp,
 
 /**
  * e_cal_tzlookup_ecal:
- * @custom: must be a valid ECal pointer
+ * @tzid: ID of the timezone to lookup
+ * @custom: must be a valid #ECal pointer
+ * @error: an error description in case of a failure
  *
  * An implementation of the tzlookup callback which clients
  * can use. Calls e_cal_get_timezone().
+ *
+ * Returns: A timezone object, or %NULL on failure. This object is owned
+ *   by the @custom, thus do not free it.
  *
  * Since: 2.24
  *
@@ -502,13 +507,18 @@ e_cal_tzlookup_ecal (const gchar *tzid,
 
 /**
  * e_cal_tzlookup_icomp:
+ * @tzid: ID of the timezone to lookup
  * @custom: must be a icalcomponent pointer which contains
  *          either a VCALENDAR with VTIMEZONEs or VTIMEZONES
  *          directly
+ * @error: an error description in case of a failure
  *
  * An implementation of the tzlookup callback which backends
  * like the file backend can use. Searches for the timezone
  * in the component list.
+ *
+ * Returns: A timezone object, or %NULL if not found inside @custom. This object is owned
+ *   by the @custom, thus do not free it.
  *
  * Since: 2.24
  *
@@ -775,10 +785,16 @@ e_cal_client_check_timezones (icalcomponent *comp,
 
 /**
  * e_cal_client_tzlookup:
- * @ecalclient: must be a valid ECalCleint pointer
+ * @tzid: ID of the timezone to lookup
+ * @ecalclient: must be a valid #ECalClient pointer
+ * @cancellable: an optional #GCancellable to use, or %NULL
+ * @error: an error description in case of a failure
  *
  * An implementation of the tzlookup callback which clients
  * can use. Calls e_cal_client_get_timezone_sync().
+ *
+ * Returns: A timezone object, or %NULL on failure. This object is owned
+ *   by the @ecalclient, thus do not free it.
  *
  * Since: 3.2
  */
@@ -814,13 +830,19 @@ e_cal_client_tzlookup (const gchar *tzid,
 
 /**
  * e_cal_client_tzlookup_icomp:
+ * @tzid: ID of the timezone to lookup
  * @custom: must be a icalcomponent pointer which contains
  *          either a VCALENDAR with VTIMEZONEs or VTIMEZONES
  *          directly
+ * @cancellable: an optional #GCancellable to use, or %NULL
+ * @error: an error description in case of a failure
  *
  * An implementation of the tzlookup callback which backends
  * like the file backend can use. Searches for the timezone
  * in the component list.
+ *
+ * Returns: A timezone object, or %NULL if not found inside @custom. This object is owned
+ *   by the @custom, thus do not free it.
  *
  * Since: 3.2
  */

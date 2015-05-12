@@ -2754,7 +2754,7 @@ get_number_cb (gpointer data,
 /**
  * camel_db_maybe_run_maintenance:
  * @cdb: a #CamelDB instance
- * @error: (allow none): a #GError or %NULL
+ * @error: (allow-none): a #GError or %NULL
  *
  * Runs a @cdb maintenance, which includes vacuum, if necessary.
  *

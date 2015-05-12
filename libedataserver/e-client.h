@@ -118,8 +118,28 @@ GQuark e_client_error_quark (void) G_GNUC_CONST;
 
 /**
  * EClientError:
- *
- * FIXME Document each code.
+ * @E_CLIENT_ERROR_INVALID_ARG: Invalid argument was used
+ * @E_CLIENT_ERROR_BUSY: The client is busy
+ * @E_CLIENT_ERROR_SOURCE_NOT_LOADED: The source is not loaded
+ * @E_CLIENT_ERROR_SOURCE_ALREADY_LOADED: The source is already loaded
+ * @E_CLIENT_ERROR_AUTHENTICATION_FAILED: Authentication failed
+ * @E_CLIENT_ERROR_AUTHENTICATION_REQUIRED: Authentication required
+ * @E_CLIENT_ERROR_REPOSITORY_OFFLINE: The repository (client) is offline
+ * @E_CLIENT_ERROR_OFFLINE_UNAVAILABLE: The operation is unavailable in offline mode
+ * @E_CLIENT_ERROR_PERMISSION_DENIED: Permission denied for the operation
+ * @E_CLIENT_ERROR_CANCELLED: The operation was cancelled
+ * @E_CLIENT_ERROR_COULD_NOT_CANCEL: The operation cannot be cancelled
+ * @E_CLIENT_ERROR_NOT_SUPPORTED: The operation is not supported
+ * @E_CLIENT_ERROR_TLS_NOT_AVAILABLE: TLS is not available
+ * @E_CLIENT_ERROR_UNSUPPORTED_AUTHENTICATION_METHOD: Requested authentication method is not supported
+ * @E_CLIENT_ERROR_SEARCH_SIZE_LIMIT_EXCEEDED: Search size limit exceeded
+ * @E_CLIENT_ERROR_SEARCH_TIME_LIMIT_EXCEEDED: Search time limit exceeded
+ * @E_CLIENT_ERROR_INVALID_QUERY: The query was invalid
+ * @E_CLIENT_ERROR_QUERY_REFUSED: The query was refused by the server side
+ * @E_CLIENT_ERROR_DBUS_ERROR: A D-Bus error occurred
+ * @E_CLIENT_ERROR_OTHER_ERROR: Other error
+ * @E_CLIENT_ERROR_NOT_OPENED: The client is not opened
+ * @E_CLIENT_ERROR_OUT_OF_SYNC: The clien tis out of sync
  *
  * Error codes for #EClient operations.
  *
@@ -165,11 +185,13 @@ typedef struct _EClientClass EClientClass;
 typedef struct _EClientPrivate EClientPrivate;
 
 struct _EClient {
+	/*< private >*/
 	GObject parent;
 	EClientPrivate *priv;
 };
 
 struct _EClientClass {
+	/*< private >*/
 	GObjectClass parent;
 
 	/* This method is deprecated. */

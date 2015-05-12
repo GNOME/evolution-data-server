@@ -1,4 +1,13 @@
 <SECTION>
+<FILE>camel</FILE>
+<TITLE>Camel miscellaneous utilities</TITLE>
+camel_application_is_exiting
+camel_binding_bind_property
+camel_binding_bind_property_full
+camel_binding_bind_property_with_closures
+</SECTION>
+
+<SECTION>
 <FILE>camel-address</FILE>
 <TITLE>CamelAddress</TITLE>
 CamelAddress
@@ -96,6 +105,8 @@ CamelCert
 camel_cert_new
 camel_cert_ref
 camel_cert_unref
+camel_cert_load_cert_file
+camel_cert_save_cert_file
 CamelCertDB
 camel_certdb_new
 camel_certdb_set_default
@@ -106,6 +117,7 @@ camel_certdb_save
 camel_certdb_touch
 camel_certdb_get_host
 camel_certdb_put
+camel_certdb_list_certs
 camel_certdb_remove_host
 camel_certdb_clear
 <SUBSECTION Standard>
@@ -304,6 +316,7 @@ camel_db_flush_in_memory_transactions
 camel_db_get_folder_preview
 camel_db_write_preview_record
 camel_db_reset_folder_version
+camel_db_maybe_run_maintenance
 <SUBSECTION Private>
 CamelDBPrivate
 </SECTION>
@@ -311,6 +324,7 @@ CamelDBPrivate
 <SECTION>
 <FILE>camel-filter-driver</FILE>
 <TITLE>CamelFilterDriver</TITLE>
+camel_filter_status_t
 CamelFilterDriver
 CamelFilterGetFolderFunc
 camel_filter_driver_new
@@ -755,6 +769,7 @@ camel_internet_address_find_name
 camel_internet_address_find_address
 camel_internet_address_encode_address
 camel_internet_address_format_address
+camel_internet_address_ensure_ascii_domains
 <SUBSECTION Standard>
 CAMEL_INTERNET_ADDRESS
 CAMEL_IS_INTERNET_ADDRESS
@@ -1441,6 +1456,7 @@ camel_network_settings_set_security_method
 camel_network_settings_get_user
 camel_network_settings_dup_user
 camel_network_settings_set_user
+camel_network_settings_dup_host_ensure_ascii
 <SUBSECTION Standard>
 CAMEL_NETWORK_SETTINGS
 CAMEL_IS_NETWORK_SETTINGS
@@ -1684,7 +1700,6 @@ CamelProviderConfType
 CamelProviderConfEntry
 CamelProviderPortEntry
 CamelProviderAutoDetectFunc
-CamelProvider
 CamelProviderModule
 camel_provider_init
 camel_provider_load
@@ -2114,6 +2129,7 @@ camel_store_rename_folder_finish
 camel_store_synchronize_sync
 camel_store_synchronize
 camel_store_synchronize_finish
+camel_store_maybe_run_db_maintenance
 <SUBSECTION Standard>
 CAMEL_STORE
 CAMEL_IS_STORE
@@ -2760,7 +2776,6 @@ camel_mktime_utc
 camel_localtime_with_offset
 CamelTransferEncoding
 camel_header_references
-camel_header_param
 CamelContentType
 camel_header_raw
 CamelContentDisposition
@@ -2980,6 +2995,7 @@ NI_NAMEREQD
 NI_DGRAM
 camel_getaddrinfo
 camel_freeaddrinfo
+camel_host_idna_to_ascii
 <SUBSECTION Private>
 addrinfo
 sockaddr
@@ -3358,6 +3374,30 @@ camel_imapx_command_queue_ref_by_tag
 </SECTION>
 
 <SECTION>
+<FILE>camel-imapx-conn-manager</FILE>
+<TITLE>CamelIMAPXConnManager</TITLE>
+CamelIMAPXConnManager
+camel_imapx_conn_manager_new
+camel_imapx_conn_manager_ref_store
+camel_imapx_conn_manager_get_connection
+camel_imapx_conn_manager_get_connections
+camel_imapx_conn_manager_update_con_info
+camel_imapx_conn_manager_close_connections
+camel_imapx_conn_manager_dump_queue_status
+<SUBSECTION Standard>
+CAMEL_IMAPX_CONN_MANAGER
+CAMEL_IMAPX_CONN_MANAGER_CLASS
+CAMEL_IMAPX_CONN_MANAGER_GET_CLASS
+CAMEL_IS_IMAPX_CONN_MANAGER
+CAMEL_IS_IMAPX_CONN_MANAGER_CLASS
+CAMEL_TYPE_IMAPX_CONN_MANAGER
+CamelIMAPXConnManagerClass
+camel_imapx_conn_manager_get_type
+<SUBSECTION Private>
+CamelIMAPXConnManagerPrivate
+</SECTION>
+
+<SECTION>
 <FILE>camel-imapx-folder</FILE>
 <TITLE>CamelIMAPXFolder</TITLE>
 CamelIMAPXFolder
@@ -3369,6 +3409,8 @@ camel_imapx_folder_copy_message_map
 camel_imapx_folder_add_move_to_real_junk
 camel_imapx_folder_add_move_to_real_trash
 camel_imapx_folder_invalidate_local_cache
+camel_imapx_folder_get_check_folder
+camel_imapx_folder_set_check_folder
 <SUBSECTION Standard>
 CAMEL_IMAPX_FOLDER
 CAMEL_IS_IMAPX_FOLDER
@@ -3438,6 +3480,7 @@ camel_imapx_job_ref_mailbox
 camel_imapx_job_set_mailbox
 camel_imapx_job_get_cancellable
 camel_imapx_job_take_error
+camel_imapx_job_set_error_if_failed
 <SUBSECTION Private>
 uidset_state
 </SECTION>
@@ -3542,6 +3585,14 @@ camel_imapx_mailbox_has_attribute
 camel_imapx_mailbox_handle_list_response
 camel_imapx_mailbox_handle_lsub_response
 camel_imapx_mailbox_handle_status_response
+camel_imapx_mailbox_dup_folder_path
+camel_imapx_mailbox_get_permanentflags
+camel_imapx_mailbox_set_permanentflags
+CamelIMAPXMailboxState
+camel_imapx_mailbox_get_state
+camel_imapx_mailbox_set_state
+camel_imapx_mailbox_lock_update
+camel_imapx_mailbox_unlock_update
 <SUBSECTION Standard>
 CAMEL_IMAPX_MAILBOX
 CAMEL_IS_IMAPX_MAILBOX
@@ -3565,6 +3616,8 @@ camel_imapx_namespace_equal
 camel_imapx_namespace_get_category
 camel_imapx_namespace_get_prefix
 camel_imapx_namespace_get_separator
+camel_imapx_namespace_response_add
+camel_imapx_namespace_response_remove
 <SUBSECTION Standard>
 CAMEL_IMAPX_NAMESPACE
 CAMEL_IS_IMAPX_NAMESPACE
@@ -3607,6 +3660,7 @@ CamelIMAPXSearch
 camel_imapx_search_new
 camel_imapx_search_ref_store
 camel_imapx_search_set_store
+camel_imapx_search_set_cancellable_and_error
 <SUBSECTION Standard>
 CAMEL_IMAPX_SEARCH
 CAMEL_IS_IMAPX_SEARCH
@@ -3649,6 +3703,15 @@ camel_imapx_server_subscribe_mailbox
 camel_imapx_server_unsubscribe_mailbox
 camel_imapx_server_update_quota_info
 camel_imapx_server_uid_search
+camel_imapx_server_dump_queue_status
+camel_imapx_server_folder_name_in_jobs
+camel_imapx_server_get_command_count
+camel_imapx_server_has_expensive_command
+camel_imapx_server_is_connected
+camel_imapx_server_ref_job
+CamelIMAPXServerError
+CAMEL_IMAPX_SERVER_ERROR
+camel_imapx_server_error_quark
 CamelIMAPXUntaggedRespHandlerDesc
 camel_imapx_server_register_untagged_handler
 <SUBSECTION Standard>
@@ -3710,6 +3773,12 @@ camel_imapx_settings_get_use_shell_command
 camel_imapx_settings_set_use_shell_command
 camel_imapx_settings_get_use_subscriptions
 camel_imapx_settings_set_use_subscriptions
+camel_imapx_settings_get_concurrent_connections
+camel_imapx_settings_get_ignore_other_users_namespace
+camel_imapx_settings_get_ignore_shared_folders_namespace
+camel_imapx_settings_set_concurrent_connections
+camel_imapx_settings_set_ignore_other_users_namespace
+camel_imapx_settings_set_ignore_shared_folders_namespace
 <SUBSECTION Standard>
 CAMEL_IMAPX_SETTINGS
 CAMEL_IS_IMAPX_SETTINGS
@@ -3755,6 +3824,19 @@ CamelIMAPXStore
 camel_imapx_store_ref_server
 camel_imapx_store_dup_quota_info
 camel_imapx_store_set_quota_info
+camel_imapx_store_dump_queue_status
+camel_imapx_store_emit_mailbox_updated
+camel_imapx_store_folder_op_done
+camel_imapx_store_handle_list_response
+camel_imapx_store_handle_lsub_response
+camel_imapx_store_handle_mailbox_rename
+camel_imapx_store_is_connecting_concurrent_connection
+camel_imapx_store_list_mailboxes
+camel_imapx_store_ref_job
+camel_imapx_store_ref_mailbox
+camel_imapx_store_ref_namespaces
+camel_imapx_store_set_connecting_server
+camel_imapx_store_set_namespaces
 <SUBSECTION Standard>
 CAMEL_IMAPX_STORE
 CAMEL_IS_IMAPX_STORE

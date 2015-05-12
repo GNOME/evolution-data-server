@@ -3338,6 +3338,9 @@ e_book_backend_set_locale (EBookBackend *backend,
  *
  * Fetches a copy of the currently configured locale for the addressbook
  *
+ * Returns: A copy of the currently configured locale for the addressbook.
+ *   Free with g_free() when done with it.
+ *
  * Since: 3.12
  */
 gchar *

@@ -49,15 +49,29 @@
 
 G_BEGIN_DECLS
 
+/**
+ * ECalComponentId:
+ * @uid: UID of the component
+ * @rid: recurrence ID of the component; can be %NULL
+ **/
 typedef struct {
 	gchar *uid;
 	gchar *rid;
 } ECalComponentId;
 
-/* Types of calendar components to be stored by a ECalComponent, as per RFC 2445.
+/**
+ * ECalComponentVType:
+ * @E_CAL_COMPONENT_NO_TYPE: Unknown or unsupported component type
+ * @E_CAL_COMPONENT_EVENT: vEvent type
+ * @E_CAL_COMPONENT_TODO: vTodo type
+ * @E_CAL_COMPONENT_JOURNAL: vJournal type
+ * @E_CAL_COMPONENT_FREEBUSY: vFreeBusy type
+ * @E_CAL_COMPONENT_TIMEZONE: vTimezone type
+ *
+ * Types of calendar components to be stored by a ECalComponent, as per RFC 2445.
  * We don't put the alarm component type here since we store alarms as separate
  * structures inside the other "real" components.
- */
+ **/
 typedef enum {
 	E_CAL_COMPONENT_NO_TYPE,
 	E_CAL_COMPONENT_EVENT,
@@ -67,9 +81,35 @@ typedef enum {
 	E_CAL_COMPONENT_TIMEZONE
 } ECalComponentVType;
 
-/* Field identifiers for a calendar component; these are used by the data model
- * for ETable.
+/**
+ * ECalComponentField:
+ * @E_CAL_COMPONENT_FIELD_CATEGORIES: Concatenation of categories
+ * @E_CAL_COMPONENT_FIELD_CLASSIFICATION: Classification
+ * @E_CAL_COMPONENT_FIELD_COMPLETED: Completed
+ * @E_CAL_COMPONENT_FIELD_DTEND: Dtend
+ * @E_CAL_COMPONENT_FIELD_DTSTART: Dtstart
+ * @E_CAL_COMPONENT_FIELD_DUE: Due
+ * @E_CAL_COMPONENT_FIELD_GEO: Geo
+ * @E_CAL_COMPONENT_FIELD_PERCENT: Percent
+ * @E_CAL_COMPONENT_FIELD_PRIORITY: Priority
+ * @E_CAL_COMPONENT_FIELD_SUMMARY: Summary
+ * @E_CAL_COMPONENT_FIELD_TRANSPARENCY: Transparency
+ * @E_CAL_COMPONENT_FIELD_URL: URL
+ * @E_CAL_COMPONENT_FIELD_HAS_ALARMS: not a real field
+ * @E_CAL_COMPONENT_FIELD_ICON: not a real field
+ * @E_CAL_COMPONENT_FIELD_COMPLETE: not a real field
+ * @E_CAL_COMPONENT_FIELD_RECURRING: not a real field
+ * @E_CAL_COMPONENT_FIELD_OVERDUE: not a real field
+ * @E_CAL_COMPONENT_FIELD_COLOR: not a real field
+ * @E_CAL_COMPONENT_FIELD_STATUS: Status
+ * @E_CAL_COMPONENT_FIELD_COMPONENT: not a real field
+ * @E_CAL_COMPONENT_FIELD_LOCATION: Location
+ * @E_CAL_COMPONENT_FIELD_NUM_FIELDS: the last member
  *
+ * Field identifiers for a calendar component.
+ **/
+
+/*
  * NOTE: These are also used in the ETable specification, and the column
  *       numbers are saved in the user settings file. So don't reorder them!
  */
@@ -100,7 +140,16 @@ typedef enum {
 
 /* Structures and enumerations to return properties and their parameters */
 
-/* CLASSIFICATION property */
+/**
+ * ECalComponentClassification:
+ * @E_CAL_COMPONENT_CLASS_NONE: None
+ * @E_CAL_COMPONENT_CLASS_PUBLIC: Public
+ * @E_CAL_COMPONENT_CLASS_PRIVATE: Private
+ * @E_CAL_COMPONENT_CLASS_CONFIDENTIAL: Confidential
+ * @E_CAL_COMPONENT_CLASS_UNKNOWN: Unknown
+ *
+ * CLASSIFICATION property
+ **/
 typedef enum {
 	E_CAL_COMPONENT_CLASS_NONE,
 	E_CAL_COMPONENT_CLASS_PUBLIC,
@@ -110,6 +159,13 @@ typedef enum {
 } ECalComponentClassification;
 
 /* Properties that have time and timezone information */
+/**
+ * ECalComponentDateTime:
+ * @value: an icaltimetype value
+ * @tzid: a timezone ID for the @value
+ *
+ * Time with timezone property
+ **/
 typedef struct {
 	/* Actual date/time value */
 	struct icaltimetype *value;
@@ -118,13 +174,25 @@ typedef struct {
 	const gchar *tzid;
 } ECalComponentDateTime;
 
-/* Way in which a period of time is specified */
+/**
+ * ECalComponentPeriodType:
+ * @E_CAL_COMPONENT_PERIOD_DATETIME: Date and time
+ * @E_CAL_COMPONENT_PERIOD_DURATION: Duration
+ *
+ * Way in which a period of time is specified
+ **/
 typedef enum {
 	E_CAL_COMPONENT_PERIOD_DATETIME,
 	E_CAL_COMPONENT_PERIOD_DURATION
 } ECalComponentPeriodType;
 
-/* Period of time, can have explicit start/end times or start/duration instead */
+/**
+ * ECalComponentPeriod:
+ * @type: An #ECalComponentPeriodType
+ * @start: When the period starts
+ *
+ * Period of time, can have explicit start/end times or start/duration instead
+ **/
 typedef struct {
 	ECalComponentPeriodType type;
 
@@ -136,20 +204,40 @@ typedef struct {
 	} u;
 } ECalComponentPeriod;
 
-/* The type of range */
+/**
+ * ECalComponentRangeType:
+ * @E_CAL_COMPONENT_RANGE_SINGLE: Single
+ * @E_CAL_COMPONENT_RANGE_THISPRIOR: This and prior
+ * @E_CAL_COMPONENT_RANGE_THISFUTURE: This and future
+ *
+ * The type of range
+ **/
 typedef enum {
 	E_CAL_COMPONENT_RANGE_SINGLE,
 	E_CAL_COMPONENT_RANGE_THISPRIOR,
 	E_CAL_COMPONENT_RANGE_THISFUTURE
 } ECalComponentRangeType;
 
+/**
+ * ECalComponentRange:
+ * @type: an #ECalComponentRangeType
+ * @datetime: an #ECalComponentDateTime of the range
+ *
+ * Describes a range
+ **/
 typedef struct {
 	ECalComponentRangeType type;
 
 	ECalComponentDateTime datetime;
 } ECalComponentRange;
 
-/* Text properties */
+/**
+ * ECalComponentText:
+ * @value: Description string
+ * @altrep: Alternate representation URI
+ *
+ * For the text properties
+ **/
 typedef struct {
 	/* Description string */
 	const gchar *value;
@@ -158,7 +246,15 @@ typedef struct {
 	const gchar *altrep;
 } ECalComponentText;
 
-/* Time transparency */
+/**
+ * ECalComponentTransparency:
+ * @E_CAL_COMPONENT_TRANSP_NONE: None
+ * @E_CAL_COMPONENT_TRANSP_TRANSPARENT: Transparent
+ * @E_CAL_COMPONENT_TRANSP_OPAQUE: Opaque
+ * @E_CAL_COMPONENT_TRANSP_UNKNOWN: Unknown
+ *
+ * Time transparency
+ **/
 typedef enum {
 	E_CAL_COMPONENT_TRANSP_NONE,
 	E_CAL_COMPONENT_TRANSP_TRANSPARENT,
@@ -166,7 +262,22 @@ typedef enum {
 	E_CAL_COMPONENT_TRANSP_UNKNOWN
 } ECalComponentTransparency;
 
-/* Organizer & Attendee */
+/**
+ * ECalComponentAttendee:
+ * @value: usually a "mailto:email" of the attendee
+ * @member: Member
+ * @cutype: Type of the attendee
+ * @role: Role of the attendee
+ * @status: Current status of the attendee
+ * @rsvp: Whether requires RSVP
+ * @delto: Delegated to
+ * @delfrom: Delegated from
+ * @sentby: Sent by
+ * @cn: Common name
+ * @language: Language
+ *
+ * Describes an attendee
+ **/
 typedef struct {
 	const gchar *value;
 
@@ -183,6 +294,15 @@ typedef struct {
 	const gchar *language;
 } ECalComponentAttendee;
 
+/**
+ * ECalComponentOrganizer:
+ * @value: usually a "mailto:email" of the organizer
+ * @sentby: Sent by
+ * @cn: Common name
+ * @language: Language
+ *
+ * Describes an organizer
+ **/
 typedef struct {
 	const gchar *value;
 	const gchar *sentby;
@@ -197,11 +317,13 @@ typedef struct _ECalComponentClass ECalComponentClass;
 typedef struct _ECalComponentPrivate ECalComponentPrivate;
 
 struct _ECalComponent {
+	/*< private >*/
 	GObject parent;
 	ECalComponentPrivate *priv;
 };
 
 struct _ECalComponentClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 
@@ -482,7 +604,15 @@ void		e_cal_component_free_attendee_list
 /* Opaque structure used to represent alarm subcomponents */
 typedef struct _ECalComponentAlarm ECalComponentAlarm;
 
-/* An alarm occurrence, i.e. a trigger instance */
+/**
+ * ECalComponentAlarmInstance:
+ * @auid: UID of the alarm
+ * @trigger: Trigger time, i.e. "5 minutes before the appointment"
+ * @occur_start: Actual event occurrence start to which this trigger corresponds
+ * @occur_end: Actual event occurrence end to which this trigger corresponds
+ *
+ * An alarm occurrence, i.e. a trigger instance
+ **/
 typedef struct {
 	/* UID of the alarm that triggered */
 	gchar *auid;
@@ -495,7 +625,13 @@ typedef struct {
 	time_t occur_end;
 } ECalComponentAlarmInstance;
 
-/* Alarm trigger instances for a particular component */
+/**
+ * ECalComponentAlarms:
+ * @comp: The actual alarm component
+ * @alarms: (element-type: ECalComponentAlarmInstance): List of #ECalComponentAlarmInstance structures
+ *
+ * Alarm trigger instances for a particular component
+ **/
 typedef struct {
 	/* The actual component */
 	ECalComponent *comp;
@@ -504,7 +640,17 @@ typedef struct {
 	GSList *alarms;
 } ECalComponentAlarms;
 
-/* Alarm types */
+/**
+ * ECalComponentAlarmAction:
+ * @E_CAL_COMPONENT_ALARM_NONE: None
+ * @E_CAL_COMPONENT_ALARM_AUDIO: Audio
+ * @E_CAL_COMPONENT_ALARM_DISPLAY: Display message
+ * @E_CAL_COMPONENT_ALARM_EMAIL: Email
+ * @E_CAL_COMPONENT_ALARM_PROCEDURE: Procedure
+ * @E_CAL_COMPONENT_ALARM_UNKNOWN: Unknown
+ *
+ * Alarm types
+ **/
 typedef enum {
 	E_CAL_COMPONENT_ALARM_NONE,
 	E_CAL_COMPONENT_ALARM_AUDIO,
@@ -514,7 +660,14 @@ typedef enum {
 	E_CAL_COMPONENT_ALARM_UNKNOWN
 } ECalComponentAlarmAction;
 
-/* Whether a trigger is relative to the start or end of an event occurrence, or
+/**
+ * ECalComponentAlarmTriggerType:
+ * @E_CAL_COMPONENT_ALARM_TRIGGER_NONE: None
+ * @E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_START: Relative to the start
+ * @E_CAL_COMPONENT_ALARM_TRIGGER_RELATIVE_END: Relative to the end
+ * @E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE: Absolute
+ *
+ * Whether a trigger is relative to the start or end of an event occurrence, or
  * whether it is specified to occur at an absolute time.
  */
 typedef enum {
@@ -524,6 +677,12 @@ typedef enum {
 	E_CAL_COMPONENT_ALARM_TRIGGER_ABSOLUTE
 } ECalComponentAlarmTriggerType;
 
+/**
+ * ECalComponentAlarmTrigger:
+ * @type: An #ECalComponentAlarmTriggerType
+ *
+ * When the alarm is supposed to be triggered
+ **/
 typedef struct {
 	ECalComponentAlarmTriggerType type;
 
@@ -533,6 +692,13 @@ typedef struct {
 	} u;
 } ECalComponentAlarmTrigger;
 
+/**
+ * ECalComponentAlarmRepeat:
+ * @repetitions: Number of extra repetitions, zero for none
+ * @duration: Interval between repetitions
+ *
+ * Whether and how the alarm repeats.
+ **/
 typedef struct {
 	/* Number of extra repetitions, zero for none */
 	gint repetitions;

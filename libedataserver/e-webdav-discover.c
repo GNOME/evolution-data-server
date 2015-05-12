@@ -1652,10 +1652,17 @@ e_webdav_discover_cancelled_cb (GCancellable *cancellable,
  * @url_use_path: (allow-none): optional URL override, or %NULL
  * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
  * @credentials: (allow-none): credentials to use for authentication to the server
+ * @out_certificate_pem: (out): (allow-none): optional return location
+ *   for a server SSL certificate in PEM format, when the operation failed
+ *   with an SSL error
+ * @out_certificate_errors: (out): (allow-none): optional #GTlsCertificateFlags,
+ *   with certificate error flags when the operation failed with SSL error
+ * @out_discovered_sources: (out): (element-type EWebDAVDiscoveredSource): a #GSList
+ *   of all discovered sources
+ * @out_calendar_user_addresses: (out): (allow-none): (element-type gchar *): a #GSList of
+ *   all discovered mail addresses for calendar sources
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: (scope async): a #GAsyncReadyCallback to call when the request
- *            is satisfied
- * @user_data: (closure): data to pass to the callback function
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Synchronously runs discovery of the WebDAV sources (CalDAV and CardDAV), eventually
  * limited by the @only_supports filter, which can be %E_WEBDAV_DISCOVER_SUPPORTS_NONE

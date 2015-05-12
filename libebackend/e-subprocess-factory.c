@@ -480,11 +480,11 @@ e_subprocess_factory_set_backend_callbacks (ESubprocessFactory *subprocess_facto
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_DBUS_SUBPROCESS_IS_BACKEND (proxy));
 
-	/**
+	/*
 	 * Install a toggle reference on the backend
 	 * so we can signal it to shutdown once all
 	 * client connections are closed
-	 **/
+	 */
 	g_object_add_toggle_ref (
 		G_OBJECT (backend),
 		subprocess_factory_toggle_notify_cb,

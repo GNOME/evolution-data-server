@@ -4716,9 +4716,9 @@ e_source_delete_password_finish (ESource *source,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
- * @error: (allow none): return location for a #GError, or %NULL
+ * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Let's the client-side know that credentials are required. The @reason defines which
  * parameters are used. The client passed the credentials with an e_source_authenitcate()
@@ -4880,8 +4880,8 @@ source_invoke_credentials_required_thread (GTask *task,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -4927,7 +4927,7 @@ e_source_invoke_credentials_required (ESource *source,
  * e_source_invoke_credentials_required_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: (allow none): return location for a #GError, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_invoke_credentials_required().
  *
@@ -4955,10 +4955,10 @@ e_source_invoke_credentials_required_finish (ESource *source,
 /**
  * e_source_invoke_authenticate_sync:
  * @source: an #ESource
- * @credentials: (allow none): an #ENamedParameters structure with credentials to use; can be %NULL
+ * @credentials: (allow-none): an #ENamedParameters structure with credentials to use; can be %NULL
  *    to use those from the last call
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
- * @error: (allow none): return location for a #GError, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Calls the InvokeAuthenticate method on the server side, thus the backend
  * knows what credentials to use to connect to its (possibly remote) data store.
@@ -5061,9 +5061,9 @@ source_invoke_authenticate_thread (GTask *task,
 /**
  * e_source_invoke_authenticate:
  * @source: an #ESource
- * @credentials: (allow none): an #ENamedParameters structure with credentials to use; can be %NULL
+ * @credentials: (allow-none): an #ENamedParameters structure with credentials to use; can be %NULL
  *    to use those from the last call
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -5103,7 +5103,7 @@ e_source_invoke_authenticate (ESource *source,
  * e_source_invoke_authenticate_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: (allow none): return location for a #GError, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_invoke_authenticate().
  *
@@ -5133,7 +5133,7 @@ e_source_invoke_authenticate_finish (ESource *source,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
  *
  * Emits localy (in this process only) the ESource::credentials-required
  * signal with given parameters. That's the difference with e_source_invoke_credentials_required(),
@@ -5160,8 +5160,8 @@ e_source_emit_credentials_required (ESource *source,
  * @out_certificate_pem: (out): PEM-encoded secure connection certificate, or an empty string
  * @out_certificate_errors: (out): a bit-or of #GTlsCertificateFlags for secure connection certificate
  * @out_op_error: (out): a #GError with a description of the previous credentials error
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
- * @error: (allow none): return location for a #GError, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Retrieves the last used arguments of the 'credentials-required' signal emission.
  * If there was none emitted yet, or a corresponding 'authenitcate' had been emitted
@@ -5274,7 +5274,7 @@ source_get_last_credentials_required_arguments_thread (GTask *task,
 /**
  * e_source_get_last_credentials_required_arguments:
  * @source: an #ESource
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -5315,7 +5315,7 @@ e_source_get_last_credentials_required_arguments (ESource *source,
  * @out_certificate_pem: (out): PEM-encoded secure connection certificate, or an empty string
  * @out_certificate_errors: (out): a bit-or of #GTlsCertificateFlags for secure connection certificate
  * @out_op_error: (out): a #GError with a description of the previous credentials error
- * @error: (allow none): return location for a #GError, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_get_last_credentials_required_arguments().
  * See e_source_get_last_credentials_required_arguments_sync() for more information
@@ -5366,8 +5366,8 @@ e_source_get_last_credentials_required_arguments_finish (ESource *source,
 /**
  * e_source_unset_last_credentials_required_arguments_sync:
  * @source: an #ESource
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
- * @error: (allow none): return location for a #GError, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Unsets the last used arguments of the 'credentials-required' signal emission.
  *
@@ -5432,7 +5432,7 @@ source_unset_last_credentials_required_arguments_thread (GTask *task,
 /**
  * e_source_unset_last_credentials_required_arguments:
  * @source: an #ESource
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
@@ -5468,7 +5468,7 @@ e_source_unset_last_credentials_required_arguments (ESource *source,
  * e_source_unset_last_credentials_required_arguments_finish:
  * @source: an #ESource
  * @result: a #GAsyncResult
- * @error: (allow none): return location for a #GError, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_source_unset_last_credentials_required_arguments().
  *

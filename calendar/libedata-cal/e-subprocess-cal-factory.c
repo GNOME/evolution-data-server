@@ -17,15 +17,11 @@
  * Authors: Fabiano Fidêncio <fidencio@redhat.com>
  */
 
-/**
- * SECTION: e-subprocess-cal-factory
- * @include: libedata-cal/libedata-cal.h
- * @short_description: Responsible for #EBackend objects.
- *
+/*
  * This class handles and creates #EBackend objects from inside
  * their own subprocesses and also serves as the layer that does
  * the communication between #EDataCalFactory and #EBackend
- **/
+ */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

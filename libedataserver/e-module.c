@@ -320,7 +320,7 @@ e_module_load_all_in_directory (const gchar *dirname)
 
 /**
  * e_module_load_file:
- * @dirname: filename of the module to load
+ * @filename: filename of the module to load
  *
  * Load the module from the specified filename into memory. If
  * you want to unload it (enabling on-demand loading) you must call

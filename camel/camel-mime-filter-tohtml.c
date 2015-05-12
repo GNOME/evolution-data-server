@@ -45,13 +45,13 @@ struct _CamelMimeFilterToHTMLPrivate {
 	guint32 pre_open : 1;
 };
 
-/**
+/*
  * TODO: convert common text/plain 'markup' to html. eg.:
  *
  * _word_ -> <u>_word_</u>
  * *word* -> <b>*word*</b>
  * /word/ -> <i>/word/</i>
- **/
+ */
 
 #define d(x)
 

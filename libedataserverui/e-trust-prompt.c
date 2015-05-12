@@ -376,12 +376,12 @@ e_trust_prompt_run_with_dialog_ready_callback (GtkWindow *parent,
 /**
  * e_trust_prompt_run_modal:
  * @parent: A #GtkWindow to use as a parent for the trust prompt dialog
- * @source_extension: (allow none): an #ESource extension, to identify a kind of the source; or %NULL
- * @source_display_name: (allow none): an #ESource display name, to identify what prompts; or %NULL
+ * @source_extension: (allow-none): an #ESource extension, to identify a kind of the source; or %NULL
+ * @source_display_name: (allow-none): an #ESource display name, to identify what prompts; or %NULL
  * @host: a host name to which the certificate belongs
  * @certificate_pem: a PEM-encoded certificate for which to show the trust prompt
  * @certificate_errors: errors of the @certificate_pem
- * @error_text: (allow none): an optional error text to show in the dialog; can be %NULL
+ * @error_text: (allow-none): an optional error text to show in the dialog; can be %NULL
  *
  * Runs modal (doesn't return until the dialog is closed) a trust prompt dialog,
  * it is a prompt whether a user wants to accept or reject the @certificate_pem
@@ -492,9 +492,9 @@ save_source_thread (GTask *task,
  * @source: an #ESource, with %E_SOURCE_EXTENSION_AUTHENTICATION
  * @certificate_pem: a PEM-encoded certificate for which to show the trust prompt
  * @certificate_errors: errors of the @certificate_pem
- * @error_text: (allow none): an optional error text to show in the dialog; can be %NULL
+ * @error_text: (allow-none): an optional error text to show in the dialog; can be %NULL
  * @allow_source_save: whether can also save any @source changes
- * @cancellable: (allow none): a #GCancellable, or %NULL
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  * @callback: a callback to call, when the prompt (an @source save) is done
  * @user_data: user data passed into @callback
  *

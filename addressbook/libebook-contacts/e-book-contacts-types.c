@@ -26,7 +26,9 @@ G_DEFINE_QUARK (e-book-client-error-quark, e_book_client_error)
  * e_book_client_error_to_string:
  * @code: an #EBookClientError code
  *
- * FIXME: Document me.
+ * Get localized human readable description of the given error code.
+ *
+ * Returns: Localized human readable description of the given error code
  *
  * Since: 3.2
  **/

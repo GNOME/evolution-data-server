@@ -80,13 +80,26 @@ typedef enum {
  * Since: 3.2
  **/
 struct _ECalClientView {
+	/*< private >*/
 	GObject object;
 	ECalClientViewPrivate *priv;
 };
 
+/**
+ * ECalClientViewClass:
+ * @objects_added: A signal emitted when new objects are added into the view
+ * @objects_modified: A signal emitted when some objects are modified in the view
+ * @objects_removed: A signal emitted when some objects are removed from the view
+ * @progress: A signal emitted when the backend notifies about the progress
+ * @complete: A signal emitted when the backend finished initial view population
+ *
+ * Base class structure for the #ECalClientView class
+ **/
 struct _ECalClientViewClass {
+	/*< private >*/
 	GObjectClass parent_class;
 
+	/*< public >*/
 	/* Signals */
 	void		(*objects_added)	(ECalClientView *client_view,
 						 const GSList *objects);

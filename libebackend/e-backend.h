@@ -69,9 +69,8 @@ struct _EBackend {
 /**
  * EBackendClass:
  * @authenticate_sync: Authenticate synchronously
- * @authenticate: Initiate authentication
- * @authenticate_finish: Complete authentication
  * @get_destination_address: Fetch the destination address
+ * @prepare_shutdown: Prepare for shutdown
  *
  * Base class structure for the #EBackend class
  *

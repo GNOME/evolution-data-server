@@ -6538,6 +6538,7 @@ ebsql_new_default (const gchar *path,
 /**
  * e_book_sqlite_new:
  * @path: location to load or create the new database
+ * @source: an optional #ESource, associated with the #EBookSqlite, or %NULL
  * @cancellable: (allow-none): A #GCancellable
  * @error: (allow-none): A location to store any error that may have occurred.
  *
@@ -6576,6 +6577,7 @@ e_book_sqlite_new (const gchar *path,
 /**
  * e_book_sqlite_new_full:
  * @path: location to load or create the new database
+ * @source: an optional #ESource, associated with the #EBookSqlite, or %NULL
  * @setup: (allow-none): an #ESourceBackendSummarySetup describing how the summary should be setup, or %NULL to use the default
  * @vcard_callback: (allow-none) (scope async) (closure user_data): A function to resolve vcards
  * @change_callback: (allow-none) (scope async) (closure user_data): A function to catch notifications of vcard changes
@@ -6865,7 +6867,7 @@ e_book_sqlite_ref_collator (EBookSqlite *ebsql)
  * use g_object_unref() when finished using the source.
  * It can be %NULL in some cases, like when running tests.
  *
- * Returns: (transfer-full): A reference to the #ESource to which @ebsql
+ * Returns: (transfer full): A reference to the #ESource to which @ebsql
  * is paired, or %NULL.
  *
  * Since: 3.16

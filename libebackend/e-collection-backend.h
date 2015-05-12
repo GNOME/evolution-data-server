@@ -60,11 +60,13 @@ typedef struct _ECollectionBackendPrivate ECollectionBackendPrivate;
  * Since: 3.6
  **/
 struct _ECollectionBackend {
+	/*< private >*/
 	EBackend parent;
 	ECollectionBackendPrivate *priv;
 };
 
 struct _ECollectionBackendClass {
+	/*< private >*/
 	EBackendClass parent_class;
 
 	/* Methods */
@@ -106,6 +108,7 @@ struct _ECollectionBackendClass {
 						 GAsyncResult *result,
 						 GError **error);
 
+	/*< private >*/
 	gpointer reserved[10];
 };
 

@@ -34,6 +34,7 @@ G_BEGIN_DECLS
  * @E_CAL_CLIENT_SOURCE_TYPE_EVENTS: Events calander
  * @E_CAL_CLIENT_SOURCE_TYPE_TASKS: Task list calendar
  * @E_CAL_CLIENT_SOURCE_TYPE_MEMOS: Memo list calendar
+ * @E_CAL_CLIENT_SOURCE_TYPE_LAST: Artificial 'last' value of the enum
  *
  * Indicates the type of calendar
  *

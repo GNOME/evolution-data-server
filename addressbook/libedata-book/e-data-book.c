@@ -361,6 +361,11 @@ data_book_convert_to_client_error (GError *error)
 
 /**
  * e_data_book_status_to_string:
+ * @status: an #EDataBookStatus
+ *
+ * Get localized human readable description of the given status code.
+ *
+ * Returns: Localized human readable description of the given status code
  *
  * Since: 2.32
  **/
@@ -477,9 +482,16 @@ e_data_book_create_error (EDataBookStatus status,
 
 /**
  * e_data_book_create_error_fmt:
+ * @status: an #EDataBookStatus
+ * @custom_msg_fmt: Custom message to use for the error. When NULL,
+ *   then uses a default message based on the @status code.
+ * @...: arguments for the @custom_msg_fmt
  *
  * Similar as e_data_book_create_error(), only here, instead of custom_msg,
  * is used a printf() format to create a custom_msg for the error.
+ *
+ * Returns: (transfer full): a new #GError populated with the values
+ *   from the parameters.
  *
  * Since: 2.32
  **/
@@ -508,9 +520,12 @@ e_data_book_create_error_fmt (EDataBookStatus status,
 
 /**
  * e_data_book_string_slist_to_comma_string:
+ * @strings: (element-type gchar *): a list of gchar *
  *
  * Takes a list of strings and converts it to a comma-separated string of
  * values; free returned pointer with g_free()
+ *
+ * Returns: (transfer full): comma-separated newly allocated text of @strings
  *
  * Since: 3.2
  **/
@@ -1377,6 +1392,14 @@ data_book_handle_close_cb (EDBusAddressBook *dbus_interface,
 	return TRUE;
 }
 
+/**
+ * e_data_book_respond_open:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ *
+ * Notifies listeners of the completion of the open method call.
+ **/
 void
 e_data_book_respond_open (EDataBook *book,
                           guint opid,
@@ -1407,8 +1430,9 @@ e_data_book_respond_open (EDataBook *book,
 
 /**
  * e_data_book_respond_refresh:
- * @book: An addressbook client interface.
- * @error: Operation error, if any, automatically freed if passed it.
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
  *
  * Notifies listeners of the completion of the refresh method call.
  *
@@ -1442,6 +1466,14 @@ e_data_book_respond_refresh (EDataBook *book,
 	g_object_unref (backend);
 }
 
+/**
+ * e_data_book_respond_get_contact:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ *
+ * Notifies listeners of the completion of the get_contact method call.
+ */
 void
 e_data_book_respond_get_contact (EDataBook *book,
                                  guint32 opid,
@@ -1480,6 +1512,17 @@ e_data_book_respond_get_contact (EDataBook *book,
 	g_object_unref (backend);
 }
 
+/**
+ * e_data_book_respond_get_contact_list:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ * @cards: (allow-none) (element-type gchar *): A list of vCard strings, or %NULL on error
+ *
+ * Finishes a call to get list of vCards which satisfy certain criteria.
+ *
+ * Since: 3.2
+ **/
 void
 e_data_book_respond_get_contact_list (EDataBook *book,
                                       guint32 opid,
@@ -1527,8 +1570,12 @@ e_data_book_respond_get_contact_list (EDataBook *book,
 
 /**
  * e_data_book_respond_get_contact_list_uids:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ * @uids: (allow-none) (element-type gchar *): A list of picked UIDs, or %NULL on error
  *
- * FIXME: Document me.
+ * Finishes a call to get list of UIDs which satisfy certain criteria.
  *
  * Since: 3.2
  **/
@@ -1574,8 +1621,12 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
 
 /**
  * e_data_book_respond_create_contacts:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ * @contacts: (allow-none) (element-type EContact): A list of created #EContact-s, or %NULL on error
  *
- * FIXME: Document me!
+ * Finishes a call to create a list contacts.
  *
  * Since: 3.4
  **/
@@ -1623,8 +1674,12 @@ e_data_book_respond_create_contacts (EDataBook *book,
 
 /**
  * e_data_book_respond_modify_contacts:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ * @contacts: (allow-none) (element-type EContact): A list of modified #EContact-s, or %NULL on error
  *
- * FIXME: Document me!
+ * Finishes a call to modify a list of contacts.
  *
  * Since: 3.4
  **/
@@ -1670,6 +1725,17 @@ e_data_book_respond_modify_contacts (EDataBook *book,
 	g_object_unref (backend);
 }
 
+/**
+ * e_data_book_respond_remove_contacts:
+ * @book: An #EDataBook
+ * @opid: An operation ID
+ * @error: Operation error, if any, automatically freed if passed it
+ * @ids: (allow-none) (element-type gchar *): A list of removed contact UID-s, or %NULL on error
+ *
+ * Finishes a call to remove a list of contacts.
+ *
+ * Since: 3.4
+ **/
 void
 e_data_book_respond_remove_contacts (EDataBook *book,
                                      guint32 opid,
@@ -1712,8 +1778,10 @@ e_data_book_respond_remove_contacts (EDataBook *book,
 
 /**
  * e_data_book_report_error:
+ * @book: An #EDataBook
+ * @message: An error message
  *
- * FIXME: Document me.
+ * Notifies the clients about an error, which happened out of any client-initiate operation.
  *
  * Since: 3.2
  **/
@@ -1729,8 +1797,11 @@ e_data_book_report_error (EDataBook *book,
 
 /**
  * e_data_book_report_backend_property_changed:
+ * @book: An #EDataBook
+ * @prop_name: Property name which changed
+ * @prop_value: The new property value
  *
- * FIXME: Document me.
+ * Notifies the clients about a property change.
  *
  * Since: 3.2
  **/

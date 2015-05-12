@@ -301,7 +301,7 @@ typedef enum {
 } CamelProviderConfType;
 
 /**
- * CamelProviderFlags;
+ * CamelProviderFlags:
  * @CAMEL_PROVIDER_IS_REMOTE:
  *   Provider works with remote data.
  * @CAMEL_PROVIDER_IS_LOCAL:

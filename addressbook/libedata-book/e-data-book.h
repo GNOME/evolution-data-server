@@ -52,11 +52,13 @@ typedef struct _EDataBookClass EDataBookClass;
 typedef struct _EDataBookPrivate EDataBookPrivate;
 
 struct _EDataBook {
+	/*< private >*/
 	GObject parent;
 	EDataBookPrivate *priv;
 };
 
 struct _EDataBookClass {
+	/*< private >*/
 	GObjectClass parent_class;
 };
 

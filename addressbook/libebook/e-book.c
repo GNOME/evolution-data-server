@@ -2100,6 +2100,8 @@ e_book_cancel (EBook *book,
  * Similar to above e_book_cancel function, only cancels last, still running,
  * asynchronous operation.
  *
+ * Returns: %TRUE on success, %FALSE otherwise
+ *
  * Since: 2.24
  *
  * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an

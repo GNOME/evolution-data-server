@@ -1270,7 +1270,7 @@ e_credentials_prompter_get_dialog_parent (ECredentialsPrompter *prompter)
 /**
  * e_credentials_prompter_register_impl:
  * @prompter: an #ECredentialsPrompter
- * @authentication_method: (allow none): an authentication method to registr @prompter_impl for; or %NULL
+ * @authentication_method: (allow-none): an authentication method to registr @prompter_impl for; or %NULL
  * @prompter_impl: an #ECredentialsPrompterImpl
  *
  * Registers a prompter implementation for a given authentication method. If there is
@@ -1324,7 +1324,7 @@ e_credentials_prompter_register_impl (ECredentialsPrompter *prompter,
 /**
  * e_credentials_prompter_unregister_impl:
  * @prompter: an #ECredentialsPrompter
- * @authentication_method: (allow none): an authentication method to registr @prompter_impl for; or %NULL
+ * @authentication_method: (allow-none): an authentication method to registr @prompter_impl for; or %NULL
  * @prompter_impl: an #ECredentialsPrompterImpl
  *
  * Unregisters previously registered @prompter_impl for the given @autnetication_method with
@@ -1471,9 +1471,9 @@ e_credentials_prompter_process_source (ECredentialsPrompter *prompter,
  * e_credentials_prompter_prompt:
  * @prompter: an #ECredentialsPrompter
  * @source: an #ESource, which prompt the credentials for
- * @error_text: (allow none): Additional error text to show to a user, or %NULL
+ * @error_text: (allow-none): Additional error text to show to a user, or %NULL
  * @flags: a bit-or of #ECredentialsPrompterPromptFlags
- * @callback: (allow none): a callback to call when the credentials are ready, or %NULL
+ * @callback: (allow-none): a callback to call when the credentials are ready, or %NULL
  * @user_data: user data passed into @callback
  *
  * Asks the @prompter to prompt for credentials, which are returned
@@ -1514,7 +1514,7 @@ e_credentials_prompter_prompt (ECredentialsPrompter *prompter,
  * e_credentials_prompter_prompt_finish:
  * @prompter: an #ECredentialsPrompter
  * @result: a #GAsyncResult
- * @out_source: (transfer full): (allow none): optionally set to an #ESource, on which the prompt was started; can be %NULL
+ * @out_source: (transfer full): (allow-none): optionally set to an #ESource, on which the prompt was started; can be %NULL
  * @out_credentials: (transfer full): set to an #ENamedParameters with provied credentials
  * @error: return location for a #GError, or %NULL
  *
@@ -1571,8 +1571,8 @@ e_credentials_prompter_prompt_finish (ECredentialsPrompter *prompter,
  * @prompter: an #ECredentialsPrompter
  * @async_result: a #GSimpleAsyncResult
  * @source: an #ESource, on which the prompt was started
- * @credentials: (allow none): credentials, as provided by a user, on %NULL, when the prompt was cancelled
- * @error: (allow none): a resulting #GError, or %NULL
+ * @credentials: (allow-none): credentials, as provided by a user, on %NULL, when the prompt was cancelled
+ * @error: (allow-none): a resulting #GError, or %NULL
  *
  * Completes an ongoing credentials prompt on idle, by finishing the @async_result.
  * This function is meant to be used by an #ECredentialsPrompterImpl implementation.
@@ -1695,8 +1695,8 @@ credentials_prompter_prompt_sync (ECredentialsPrompter *prompter,
  * @flags: a bit-or of #ECredentialsPrompterPromptFlags initial flags
  * @func: an #ECredentialsPrompterLoopPromptFunc user function to call to check provided credentials
  * @user_data: user data to pass to @func
- * @cancellable: (allow none): an optional #GCancellable, or %NULL
- * @error: (allow none): a #GError, to store any errors to, or %NULL
+ * @cancellable: (allow-none): an optional #GCancellable, or %NULL
+ * @error: (allow-none): a #GError, to store any errors to, or %NULL
  *
  * Runs a credentials prompt loop for @source, as long as the @func doesn't
  * indicate that the provided credentials can be used to successfully

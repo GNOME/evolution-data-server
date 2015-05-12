@@ -68,6 +68,8 @@ struct _EBackendFactory {
  * EBackendFactoryClass:
  * @get_hash_key: Get the hash key for this factory
  * @new_backend: Create a new #EBackend of the appropriate type for the passed #ESource
+ * @e_module: An #EModule associated with this backend factory
+ * @share_subprocess: Whether subporcesses for this backend factory should share one process
  *
  * Base class structure for the #EBackendFactory class
  *

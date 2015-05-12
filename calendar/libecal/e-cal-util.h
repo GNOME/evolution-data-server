@@ -32,9 +32,15 @@
 
 G_BEGIN_DECLS
 
-/* Instance of a calendar object.  This can be an actual occurrence, a
+/**
+ * CalObjInstance:
+ * @uid: UID of the object
+ * @start: Start time of instance
+ * @end: End time of instance
+ *
+ * Instance of a calendar object.  This can be an actual occurrence, a
  * recurrence, or an alarm trigger of a `real' calendar object.
- */
+ **/
 typedef struct {
 	gchar *uid;			/* UID of the object */
 	time_t start;			/* Start time of instance */
@@ -104,6 +110,7 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
 
 /**
  * CAL_STATIC_CAPABILITY_MEMO_START_DATE:
+ *
  * Flag indicating that the backend does not support memo's start date
  *
  * Since: 3.12

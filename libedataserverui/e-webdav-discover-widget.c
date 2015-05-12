@@ -73,7 +73,7 @@ e_webdav_discover_content_data_free (gpointer ptr)
 /**
  * e_webdav_discover_content_new:
  * @credentials_prompter: an #ECredentialsPrompter to use to ask for credentials
- * @source: (allow none): optional #ESource to use for authentication, or %NULL
+ * @source: (allow-none): optional #ESource to use for authentication, or %NULL
  * @base_url: (allow-none): optional base URL to use for discovery, or %NULL
  * @supports_filter: a bit-or of #EWebDAVDiscoverSupports, a filter to limit what source
  *    types will be shown in the dialog content; use %E_WEBDAV_DISCOVER_SUPPORTS_NONE
@@ -779,7 +779,7 @@ e_webdav_discover_info_bar_response_cb (GtkInfoBar *info_bar,
 /**
  * e_webdav_discover_content_refresh:
  * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
- * @display_name: (allow none): optional display name to use for scratch sources
+ * @display_name: (allow-none): optional display name to use for scratch sources
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: (scope async): a #GAsyncReadyCallback to call when the request
  *            is satisfied
@@ -960,7 +960,7 @@ e_webdav_discover_info_bar_error_response_cb (GtkInfoBar *info_bar,
 /**
  * e_webdav_discover_content_show_error:
  * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
- * @error: (allow none): a #GError to show in the UI, or %NULL
+ * @error: (allow-none): a #GError to show in the UI, or %NULL
  *
  * Shows the @error within @content, unless it's a #G_IO_ERROR_CANCELLED, or %NULL,
  * which are safely ignored. The advantage of this function is that the error

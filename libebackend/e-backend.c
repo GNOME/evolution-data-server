@@ -901,7 +901,7 @@ e_backend_ref_main_context (EBackend *backend)
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -985,9 +985,8 @@ backend_credentials_required_thread (GTask *task,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
  *
  * Asynchronously calls the e_backend_credentials_required_sync() on the @backend,
  * to inform clients that credentials are required.
@@ -1082,9 +1081,9 @@ backend_scheduled_credentials_required_done_cb (GObject *source_object,
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
- * @op_error: (allow none): a #GError with a description of the previous credentials error, or %NULL
+ * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
- * @who_calls: (allow none): an identification who calls this
+ * @who_calls: (allow-none): an identification who calls this
  *
  * Asynchronously invokes e_backend_credentials_required(), but installs its
  * own callback which only prints a runtime warning on the console when
@@ -1112,7 +1111,7 @@ e_backend_schedule_credentials_required (EBackend *backend,
 /**
  * e_backend_schedule_authenticate:
  * @backend: an #EBackend
- * @credentials: (allow none): a credentials to use to authenticate, or %NULL
+ * @credentials: (allow-none): a credentials to use to authenticate, or %NULL
  *
  * Schedules a new authenticate session, cancelling any previously run.
  * This is usually done automatically, when an 'authenticate' signal is

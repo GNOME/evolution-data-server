@@ -3641,6 +3641,11 @@ e_cal_component_get_percent (ECalComponent *comp,
 
 /**
  * e_cal_component_set_percent_as_int:
+ * @comp: an #ECalComponent
+ * @percent: a percent to set, or -1 to remove the property
+ *
+ * Sets percent complete as integer. The @percent can be between 0 and 100, inclusive.
+ * A special value -1 can be used to remove the percent complete property.
  *
  * Since: 2.28
  **/
@@ -3679,6 +3684,11 @@ e_cal_component_set_percent_as_int (ECalComponent *comp,
 
 /**
  * e_cal_component_get_percent_as_int:
+ * @comp: an #ECalComponent
+ *
+ * Get percent complete as an integer value
+ *
+ * Returns: percent complete as an integer value, -1 when the @comp doesn't have the property
  *
  * Since: 2.28
  **/

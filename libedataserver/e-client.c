@@ -126,8 +126,11 @@ G_DEFINE_QUARK (e-client-error-quark, e_client_error)
 
 /**
  * e_client_error_to_string:
+ * @code: an #EClientError error code
  *
- * FIXME: Document me.
+ * Get localized human readable description of the given error code.
+ *
+ * Returns: Localized human readable description of the given error code
  *
  * Since: 3.2
  **/
@@ -1870,7 +1873,7 @@ client_wait_for_connected_thread (GTask *task,
  * e_client_wait_for_connected:
  * @client: an #EClient
  * @timeout_seconds: a timeout for the wait, in seconds
- * @cancellable: (allow none): a #GCancellable; or %NULL
+ * @cancellable: (allow-none): a #GCancellable; or %NULL
  * @callback: callback to call when a result is ready
  * @user_data: user data for the @callback
  *
@@ -1906,7 +1909,7 @@ e_client_wait_for_connected (EClient *client,
  * e_client_wait_for_connected_finish:
  * @client: an #EClient
  * @result: a #GAsyncResult
- * @error: (out): (allow none): a #GError to set an error, or %NULL
+ * @error: (out): (allow-none): a #GError to set an error, or %NULL
  *
  * Finishes previous call of e_client_wait_for_connected().
  *
@@ -1950,11 +1953,11 @@ client_wait_for_connected_notify_cb (ESource *source,
 }
 
 /**
+ * e_client_wait_for_connected_sync:
  * @client: an #EClient
  * @timeout_seconds: a timeout for the wait, in seconds
- * @cancellable: (allow none): a #GCancellable; or %NULL
- * @callback: callback to call when a result is ready
- * @error: (out): (allow none): a #GError to set an error, or %NULL
+ * @cancellable: (allow-none): a #GCancellable; or %NULL
+ * @error: (out): (allow-none): a #GError to set an error, or %NULL
  *
  * Synchronously waits until the @client is connected (according
  * to @ESource::connection-status property), but not longer than @timeout_seconds.
@@ -2027,8 +2030,8 @@ e_client_wait_for_connected_sync (EClient *client,
 /**
  * e_client_retrieve_properties_sync:
  * @client: an #EClient
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
- * @error: (allow none): return location for a #GError, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Retrieves @client properties to match server-side values, without waiting
  * for the D-Bus property change notifications delivery.
@@ -2076,7 +2079,7 @@ client_retrieve_properties_thread (GTask *task,
 /**
  * e_client_retrieve_properties:
  * @client: an #EClient
- * @cancellable: (allow none): optional #GCancellable object, or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *

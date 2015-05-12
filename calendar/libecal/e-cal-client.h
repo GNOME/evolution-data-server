@@ -90,8 +90,12 @@ G_BEGIN_DECLS
 
 /**
  * ECalClientError:
- *
- * FIXME: Document me.
+ * @E_CAL_CLIENT_ERROR_NO_SUCH_CALENDAR: No such calendar
+ * @E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND: Object not found
+ * @E_CAL_CLIENT_ERROR_INVALID_OBJECT: Invalid object
+ * @E_CAL_CLIENT_ERROR_UNKNOWN_USER: Unknown user
+ * @E_CAL_CLIENT_ERROR_OBJECT_ID_ALREADY_EXISTS: Object ID already exists
+ * @E_CAL_CLIENT_ERROR_INVALID_RANGE: Invalid range
  *
  * Since: 3.2
  **/
@@ -117,15 +121,23 @@ typedef struct _ECalClientPrivate ECalClientPrivate;
  * Since: 3.2
  **/
 struct _ECalClient {
+	/*< private >*/
 	EClient parent;
 
-	/*< private >*/
 	ECalClientPrivate *priv;
 };
 
+/**
+ * ECalClientClass:
+ * @free_busy_data: signal used to notify about free/busy data
+ *
+ * Base class structure for the #ECalClient class
+ **/
 struct _ECalClientClass {
+	/*< private >*/
 	EClientClass parent;
 
+	/*< public >*/
 	/* Signals */
 	void		(*free_busy_data)	(ECalClient *client,
 						 const GSList *free_busy_ecalcomps);

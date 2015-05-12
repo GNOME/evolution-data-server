@@ -2849,6 +2849,8 @@ uid_rev_fields (GHashTable *fields_of_interest)
  * This only checks if all the fields are part of the default summary fields,
  * not part of the configured summary fields.
  *
+ * Returns: Whether all @fields_of_interest are part of the default summary fields
+ *
  * Since: 3.2
  *
  * Deprecated: 3.8: Use #EBookSqlite instead

@@ -97,7 +97,10 @@ e_book_backend_db_cache_set_filename (DB *db,
  * e_book_backend_db_cache_get_filename:
  * @db:  DB Handle
  *
- * Get the filename for db cacahe file.
+ * Get the filename for db cache file.
+ *
+ * Returns: The filename for db cache file. Free with g_free()
+ *   when done with it.
  *
  * Deprecated: 3.12: Use #EBookSqlite instead
  **/

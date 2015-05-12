@@ -2737,7 +2737,7 @@ folder_append_message_thread (GTask *task,
 
 /**
  * camel_folder_append_message:
- * @folder a #CamelFolder
+ * @folder: a #CamelFolder
  * @message: a #CamelMimeMessage
  * @info: a #CamelMessageInfo with additional flags/etc to set on the
  *        new message, or %NULL
@@ -3833,7 +3833,7 @@ folder_synchronize_message_thread (GTask *task,
 }
 
 /**
- * camel_folder_synchronize_message;
+ * camel_folder_synchronize_message:
  * @folder: a #CamelFolder
  * @message_uid: a message UID
  * @io_priority: the I/O priority of the request

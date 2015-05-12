@@ -629,7 +629,7 @@ camel_imapx_search_init (CamelIMAPXSearch *search)
 
 /**
  * camel_imapx_search_new:
- * imapx_store: a #CamelIMAPXStore to which the search belongs
+ * @imapx_store: a #CamelIMAPXStore to which the search belongs
  *
  * Returns a new #CamelIMAPXSearch instance.
  *

@@ -215,10 +215,10 @@ store_emit_folder_info_stale_cb (gpointer user_data)
 	return FALSE;
 }
 
-/**
+/*
  * ignore_no_such_table_exception:
- * Clears the exception 'ex' when it's the 'no such table' exception.
- **/
+ * Clears the error 'error' when it's the 'no such table' error.
+ */
 static void
 ignore_no_such_table_exception (GError **error)
 {
@@ -2910,7 +2910,7 @@ camel_store_synchronize_finish (CamelStore *store,
 /**
  * camel_store_maybe_run_db_maintenance:
  * @store: a #CamelStore instance
- * @error: (allow none): return location for a #GError, or %NULL
+ * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Checks the state of the current CamelDB used for the @store and eventually
  * runs maintenance routines on it.
