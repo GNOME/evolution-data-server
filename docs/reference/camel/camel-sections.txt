@@ -3605,8 +3605,8 @@ CamelIMAPXNamespaceResponsePrivate
 <TITLE>CamelIMAPXSearch</TITLE>
 CamelIMAPXSearch
 camel_imapx_search_new
-camel_imapx_search_ref_server
-camel_imapx_search_set_server
+camel_imapx_search_ref_store
+camel_imapx_search_set_store
 <SUBSECTION Standard>
 CAMEL_IMAPX_SEARCH
 CAMEL_IS_IMAPX_SEARCH
@@ -3629,10 +3629,7 @@ camel_imapx_server_ref_store
 camel_imapx_server_ref_settings
 camel_imapx_server_ref_input_stream
 camel_imapx_server_ref_output_stream
-camel_imapx_server_ref_namespaces
-camel_imapx_server_ref_mailbox
 camel_imapx_server_ref_selected
-camel_imapx_server_list_mailboxes
 camel_imapx_server_connect
 camel_imapx_server_authenticate
 camel_imapx_server_shutdown
