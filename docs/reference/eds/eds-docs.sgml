@@ -81,7 +81,6 @@
       <title>Data Sources</title>
       <xi:include href="xml/e-source.xml"/>
       <xi:include href="xml/e-source-registry.xml"/>
-      <xi:include href="xml/e-source-authenticator.xml"/>
     </chapter>
 
     <chapter>
@@ -161,8 +160,6 @@
 
     <chapter>
       <title>Registry Service Classes</title>
-      <xi:include href="xml/e-authentication-mediator.xml"/>
-      <xi:include href="xml/e-authentication-session.xml"/>
       <xi:include href="xml/e-collection-backend.xml"/>
       <xi:include href="xml/e-collection-backend-factory.xml"/>
       <xi:include href="xml/e-oauth2-support.xml"/>
