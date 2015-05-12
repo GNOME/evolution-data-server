@@ -806,6 +806,7 @@ static void
 vee_folder_freeze (CamelFolder *folder)
 {
 	CamelVeeFolder *vfolder = CAMEL_VEE_FOLDER (folder);
+	GList *link;
 
 	if (vfolder->priv->parent_vee_store &&
 	    !vee_folder_is_unmatched (vfolder)) {
@@ -816,6 +817,14 @@ vee_folder_freeze (CamelFolder *folder)
 			camel_folder_freeze (CAMEL_FOLDER (unmatched_folder));
 	}
 
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+	for (link = vfolder->priv->subfolders; link; link = g_list_next (link)) {
+		CamelFolder *subfolder = link->data;
+
+		camel_folder_freeze (subfolder);
+	}
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
+
 	/* call parent implementation */
 	CAMEL_FOLDER_CLASS (camel_vee_folder_parent_class)->freeze (folder);
 }
@@ -824,6 +833,7 @@ static void
 vee_folder_thaw (CamelFolder *folder)
 {
 	CamelVeeFolder *vfolder = CAMEL_VEE_FOLDER (folder);
+	GList *link;
 
 	if (vfolder->priv->parent_vee_store &&
 	    !vee_folder_is_unmatched (vfolder)) {
@@ -833,6 +843,14 @@ vee_folder_thaw (CamelFolder *folder)
 		if (unmatched_folder)
 			camel_folder_thaw (CAMEL_FOLDER (unmatched_folder));
 	}
+
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+	for (link = vfolder->priv->subfolders; link; link = g_list_next (link)) {
+		CamelFolder *subfolder = link->data;
+
+		camel_folder_thaw (subfolder);
+	}
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
 	/* call parent implementation */
 	CAMEL_FOLDER_CLASS (camel_vee_folder_parent_class)->thaw (folder);
@@ -1333,7 +1351,15 @@ camel_vee_folder_add_folder (CamelVeeFolder *vfolder,
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
 
 	if (g_list_find (vfolder->priv->subfolders, subfolder) == NULL) {
+		gint freeze_count;
+
 		vfolder->priv->subfolders = g_list_append (vfolder->priv->subfolders, g_object_ref (subfolder));
+
+		freeze_count = camel_folder_get_frozen_count (CAMEL_FOLDER (vfolder));
+		while (freeze_count > 0) {
+			camel_folder_freeze (subfolder);
+			freeze_count--;
+		}
 	} else {
 		/* nothing to do, it's already there */
 		g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
@@ -1365,6 +1391,8 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
                                 CamelFolder *subfolder,
                                 GCancellable *cancellable)
 {
+	gint freeze_count;
+
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
@@ -1378,6 +1406,12 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
 	g_signal_handlers_disconnect_by_func (subfolder, subfolder_deleted, vfolder);
 
 	vfolder->priv->subfolders = g_list_remove (vfolder->priv->subfolders, subfolder);
+
+	freeze_count = camel_folder_get_frozen_count (CAMEL_FOLDER (vfolder));
+	while (freeze_count > 0) {
+		camel_folder_thaw (subfolder);
+		freeze_count--;
+	}
 
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
