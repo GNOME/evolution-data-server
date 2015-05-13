@@ -155,6 +155,38 @@ hashloop (gpointer key,
 }
 
 static gchar *
+skip_list_ids (gchar *s)
+{
+	gchar *p;
+
+	while (isspace (*s))
+		s++;
+
+	while (*s == '[') {
+		p = s + 1;
+
+		while (*p && *p != ']' && !isspace (*p))
+			p++;
+
+		if (*p != ']')
+			break;
+
+		s = p + 1;
+
+		while (isspace (*s))
+			s++;
+
+		if (*s == '-' && isspace (s[1]))
+			s += 2;
+
+		while (isspace (*s))
+			s++;
+	}
+
+	return s;
+}
+
+static gchar *
 get_root_subject (CamelFolderThreadNode *c)
 {
 	gchar *s, *p;
@@ -176,6 +208,8 @@ get_root_subject (CamelFolderThreadNode *c)
 		}
 	}
 	if (s != NULL) {
+		s = skip_list_ids (s);
+
 		while (*s) {
 			while (isspace (*s))
 				s++;
@@ -188,7 +222,7 @@ get_root_subject (CamelFolderThreadNode *c)
 					p++;
 				if (*p == ':') {
 					c->re = TRUE;
-					s = p + 1;
+					s = skip_list_ids (p + 1);
 				} else
 					break;
 			} else
