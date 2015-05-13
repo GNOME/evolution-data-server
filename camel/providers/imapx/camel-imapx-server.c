@@ -3747,7 +3747,9 @@ camel_imapx_server_idle (CamelIMAPXServer *is,
 	job->start = imapx_job_idle_start;
 
 	camel_imapx_job_set_mailbox (job, mailbox);
+	QUEUE_LOCK (is);
 	imapx_maybe_select (is, job, mailbox);
+	QUEUE_UNLOCK (is);
 
 	previous_connection_timeout = imapx_server_set_connection_timeout (is->priv->connection, 0);
 
