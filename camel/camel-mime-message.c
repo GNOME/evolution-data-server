@@ -1310,9 +1310,11 @@ find_attachment (CamelMimeMessage *msg,
 
 		*found = (cd->disposition && g_ascii_strcasecmp (cd->disposition, "attachment") == 0);
 
-		for (param = cd->params; param && !(*found); param = param->next) {
-			if (param->name && param->value && *param->value && g_ascii_strcasecmp (param->name, "filename") == 0)
-				*found = TRUE;
+		if (!*found && (!cd->disposition || g_ascii_strcasecmp (cd->disposition, "inline") != 0)) {
+			for (param = cd->params; param && !(*found); param = param->next) {
+				if (param->name && param->value && *param->value && g_ascii_strcasecmp (param->name, "filename") == 0)
+					*found = TRUE;
+			}
 		}
 	}
 
