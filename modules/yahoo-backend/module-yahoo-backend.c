@@ -282,6 +282,10 @@ yahoo_backend_child_added (ECollectionBackend *backend,
 	const gchar *extension_name;
 	gboolean is_mail = FALSE;
 
+	/* Chain up to parent's child_added() method. */
+	E_COLLECTION_BACKEND_CLASS (e_yahoo_backend_parent_class)->
+		child_added (backend, child_source);
+
 	yahoo_backend = E_YAHOO_BACKEND (backend);
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
@@ -330,10 +334,6 @@ yahoo_backend_child_added (ECollectionBackend *backend,
 				auth_child_extension,
 				collection_identity);
 	}
-
-	/* Chain up to parent's child_added() method. */
-	E_COLLECTION_BACKEND_CLASS (e_yahoo_backend_parent_class)->
-		child_added (backend, child_source);
 }
 
 static void
