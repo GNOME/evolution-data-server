@@ -433,6 +433,10 @@ google_backend_child_added (ECollectionBackend *backend,
 	const gchar *extension_name;
 	gboolean is_mail = FALSE;
 
+	/* Chain up to parent's child_added() method. */
+	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->
+		child_added (backend, child_source);
+
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_ACCOUNT;
@@ -500,10 +504,6 @@ google_backend_child_added (ECollectionBackend *backend,
 			G_CALLBACK (google_backend_contacts_update_auth_method),
 			NULL);
 	}
-
-	/* Chain up to parent's child_added() method. */
-	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->
-		child_added (backend, child_source);
 }
 
 static void
