@@ -1062,7 +1062,7 @@ msgstr ""
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6441
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
-msgstr "L'EbSdbCursor només és permet realitzar consultes resum"
+msgstr "L'EbSdbCursor només permet realitzar consultes resum"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6048
 #, c-format
@@ -2834,7 +2834,7 @@ msgstr "No s'ha validat el certificat per signar"
 
 #: ../camel/camel-smime-context.c:519
 msgid "Signature algorithm unknown"
-msgstr "No és coneix l'algorisme de la signatura"
+msgstr "No es coneix l'algorisme de la signatura"
 
 #: ../camel/camel-smime-context.c:521
 msgid "Signature algorithm unsupported"
@@ -4318,7 +4318,7 @@ msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
-"No s'ha pogut connectar al servidor POP %s:\tS'ha rebut un ID APOP no vàlid."
+"No s'ha pogut connectar al servidor POP %s:\tS'ha rebut un ID APOP no vàlid. "
 "És possible que s'hagi produït un atac de personificació; és recomanable que "
 "contacteu l'administrador del sistema."
 
@@ -4746,7 +4746,7 @@ msgstr "(Obsolet) Contrasenya per l'autenticació del servidor intermediari"
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "(Deprecated) List of hosts to connect to without proxy"
 msgstr ""
-"(Obsolet) Llista d'amfitrions als que es connectarà sense servidor "
+"(Obsolet) Llista d'amfitrions als quals es connectarà sense servidor "
 "intermediari"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:10
@@ -4864,7 +4864,7 @@ msgstr "La font de dades «%s» no permet la supressió de recursos remots"
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr ""
-"La font de dades «%s» no te un rerefons de col·lecció per la supressió de "
+"La font de dades «%s» no té un rerefons de col·lecció per la supressió de "
 "recursos remots"
 
 #: ../libebackend/e-server-side-source.c:1107
@@ -5371,7 +5371,7 @@ msgstr "La data d'activació del certificat és en el futur."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:88
 msgid "The certificate has expired."
-msgstr "El certificat ha vençut."
+msgstr "El certificat ha vençut."
 
 #: ../modules/trust-prompt/module-trust-prompt.c:90
 msgid ""
