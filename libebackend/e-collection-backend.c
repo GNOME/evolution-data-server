@@ -72,6 +72,9 @@ struct _ECollectionBackendPrivate {
 	gulong source_added_handler_id;
 	gulong source_removed_handler_id;
 	gulong notify_enabled_handler_id;
+	gulong notify_collection_handler_id;
+
+	guint scheduled_populate_idle_id;
 };
 
 enum {
@@ -509,12 +512,48 @@ collection_backend_populate_idle_cb (gpointer user_data)
 
 	backend = E_COLLECTION_BACKEND (user_data);
 
+	backend->priv->scheduled_populate_idle_id = 0;
+
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
 	g_return_val_if_fail (class->populate != NULL, FALSE);
 
 	class->populate (backend);
 
 	return FALSE;
+}
+
+static void
+collection_backend_schedule_populate_idle (ECollectionBackend *backend)
+{
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	if (!backend->priv->scheduled_populate_idle_id)
+		backend->priv->scheduled_populate_idle_id = g_idle_add_full (
+			G_PRIORITY_LOW,
+			collection_backend_populate_idle_cb,
+			g_object_ref (backend),
+			(GDestroyNotify) g_object_unref);
+}
+
+static void
+collection_backend_notify_collection_cb (ESourceCollection *collection_extension,
+					 GParamSpec *param,
+					 ECollectionBackend *collection_backend)
+{
+	ESource *source;
+
+	g_return_if_fail (E_IS_SOURCE_COLLECTION (collection_extension));
+	g_return_if_fail (param != NULL);
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (collection_backend));
+
+	source = e_backend_get_source (E_BACKEND (collection_backend));
+	if (!e_source_get_enabled (source) || (
+	    g_strcmp0 (g_param_spec_get_name (param), "calendar-enabled") != 0 &&
+	    g_strcmp0 (g_param_spec_get_name (param), "contacts-enabled") != 0 &&
+	    g_strcmp0 (g_param_spec_get_name (param), "mail-enabled") != 0))
+		return;
+
+	collection_backend_schedule_populate_idle (collection_backend);
 }
 
 static void
@@ -662,6 +701,20 @@ collection_backend_dispose (GObject *object)
 		priv->notify_enabled_handler_id = 0;
 	}
 
+	if (priv->notify_collection_handler_id) {
+		ESource *source = e_backend_get_source (E_BACKEND (object));
+
+		if (source) {
+			ESourceCollection *collection_extension;
+
+			collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+			g_signal_handler_disconnect (collection_extension, priv->notify_collection_handler_id);
+		}
+
+		priv->notify_collection_handler_id = 0;
+	}
+
 	g_mutex_lock (&priv->children_lock);
 	g_hash_table_remove_all (priv->children);
 	g_mutex_unlock (&priv->children_lock);
@@ -777,14 +830,17 @@ collection_backend_constructed (GObject *object)
 	backend->priv->notify_enabled_handler_id = g_signal_connect (source, "notify::enabled",
 		G_CALLBACK (collection_backend_source_enabled_cb), backend);
 
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION)) {
+		ESourceCollection *collection_extension;
+
+		collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+		backend->priv->notify_collection_handler_id = g_signal_connect (collection_extension, "notify",
+			G_CALLBACK (collection_backend_notify_collection_cb), backend);
+	}
+
 	/* Populate the newly-added collection from an idle callback
 	 * so persistent child sources have a chance to be added first. */
-
-	g_idle_add_full (
-		G_PRIORITY_LOW,
-		collection_backend_populate_idle_cb,
-		g_object_ref (backend),
-		(GDestroyNotify) g_object_unref);
+	collection_backend_schedule_populate_idle (backend);
 }
 
 static void
