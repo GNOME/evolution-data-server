@@ -168,10 +168,40 @@ gnome_online_accounts_object_is_non_null (GBinding *binding,
                                           GValue *target_value,
                                           gpointer unused)
 {
+	GoaObject *goa_object = GOA_OBJECT (g_binding_get_source (binding));
+	ESourceExtension *source_extension = E_SOURCE_EXTENSION (g_binding_get_target (binding));
+	ESource *source;
+	ESourceGoa *goa_extension;
 	gpointer v_object;
 
 	v_object = g_value_get_object (source_value);
 	g_value_set_boolean (target_value, v_object != NULL);
+
+	g_return_val_if_fail (goa_object != NULL, TRUE);
+	g_return_val_if_fail (source_extension != NULL, TRUE);
+
+	source = e_source_extension_get_source (source_extension);
+	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+
+	if (g_strcmp0 (g_binding_get_source_property (binding), "calendar") == 0) {
+		gchar *uri = NULL;
+
+		if (v_object && GOA_IS_CALENDAR (v_object))
+			uri = goa_calendar_dup_uri (v_object);
+
+		e_source_goa_set_calendar_url (goa_extension, uri);
+
+		g_free (uri);
+	} else if (g_strcmp0 (g_binding_get_source_property (binding), "contacts") == 0) {
+		gchar *uri = NULL;
+
+		if (v_object && GOA_IS_CONTACTS (v_object))
+			uri = goa_contacts_dup_uri (v_object);
+
+		e_source_goa_set_contacts_url (goa_extension, uri);
+
+		g_free (uri);
+	}
 
 	return TRUE;
 }
