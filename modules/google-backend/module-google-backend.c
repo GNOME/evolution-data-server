@@ -357,7 +357,7 @@ google_backend_authenticate_sync (EBackend *backend,
 
 	google_backend_calendar_update_auth_method (source);
 
-	if (e_source_collection_get_calendar_enabled (collection_extension) &&
+	if (e_source_collection_get_calendar_enabled (collection_extension) && e_source_goa_get_calendar_url (goa_extension) &&
 	    e_webdav_discover_sources_sync (source, e_source_goa_get_calendar_url (goa_extension), E_WEBDAV_DISCOVER_SUPPORTS_NONE,
 		credentials, out_certificate_pem, out_certificate_errors,
 		&discovered_sources, NULL, cancellable, &local_error)) {
