@@ -1958,6 +1958,13 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	if (job != NULL)
 		return TRUE;
 
+	job = imapx_match_active_job (is, IMAPX_JOB_COPY_MESSAGE, NULL);
+	/* Ignore EXPUNGE responses when not running a COPY(MOVE)_MESSAGE job */
+	if (!job) {
+		c (is->tagprefix, "ignoring untagged expunge: %lu\n", is->priv->context->id);
+		return TRUE;
+	}
+
 	c (is->tagprefix, "expunged: %lu\n", is->priv->context->id);
 
 	g_mutex_lock (&is->priv->select_lock);
@@ -5586,6 +5593,14 @@ imapx_job_copy_messages_start (CamelIMAPXJob *job,
 	return imapx_command_copy_messages_step_start (is, job, 0, error);
 }
 
+static gboolean
+imapx_job_copy_messages_matches (CamelIMAPXJob *job,
+				 CamelIMAPXMailbox *mailbox,
+				 const gchar *uid)
+{
+	return camel_imapx_job_has_mailbox (job, mailbox);
+}
+
 /* ********************************************************************** */
 
 static void
@@ -8632,6 +8647,7 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	job->pri = IMAPX_PRIORITY_COPY_MESSAGE;
 	job->type = IMAPX_JOB_COPY_MESSAGE;
 	job->start = imapx_job_copy_messages_start;
+	job->matches = imapx_job_copy_messages_matches;
 
 	camel_imapx_job_set_mailbox (job, mailbox);
 
