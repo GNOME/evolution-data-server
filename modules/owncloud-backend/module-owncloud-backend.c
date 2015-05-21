@@ -184,9 +184,10 @@ owncloud_source_found_cb (ECollectionBackend *collection,
 		e_source_backend_set_backend_name (backend, provider);
 
 		e_source_set_display_name (source, display_name);
+
 		/* Also check whether the color format is as expected; it cannot
 		   be used gdk_rgba_parse here, because it required gdk/gtk. */
-		if (source_type != OwnCloud_Source_Contacts && color &&
+		if (is_new && source_type != OwnCloud_Source_Contacts && color &&
 		    sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3)
 			e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), color);
 
