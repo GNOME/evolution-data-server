@@ -46,7 +46,8 @@ static ECalComponent *
 		create_weather			(ECalBackendWeather *cbw,
 						 GWeatherInfo *report,
 						 GWeatherTemperatureUnit unit,
-						 gboolean is_forecast);
+						 gboolean is_forecast,
+						 GSList *same_day_forecasts);
 static void	e_cal_backend_weather_add_timezone
 						(ECalBackendSync *backend,
 						 EDataCal *cal,
@@ -157,6 +158,27 @@ put_component_to_store (ECalBackendWeather *cb,
 	e_cal_backend_store_put_component_with_time_range (priv->store, comp, time_start, time_end);
 }
 
+static gint
+compare_weather_info_by_date (gconstpointer a,
+			      gconstpointer b)
+{
+	GWeatherInfo *nfoa = (GWeatherInfo *) a, *nfob = (GWeatherInfo *) b;
+
+	if (nfoa && nfob) {
+		time_t tma, tmb;
+
+		if (!gweather_info_get_value_update (nfoa, &tma))
+			tma = 0;
+
+		if (!gweather_info_get_value_update (nfob, &tmb))
+			tmb = 0;
+
+		return tma == tmb ? 0 : (tma < tmb ? -1 : 1);
+	}
+
+	return nfoa == nfob ? 0 : (nfoa ? 1 : -1);
+}
+
 static void
 finished_retrieval_cb (GWeatherInfo *info,
                        ECalBackendWeather *cbw)
@@ -202,31 +224,83 @@ finished_retrieval_cb (GWeatherInfo *info,
 	g_slist_free (comps);
 	e_cal_backend_store_clean (priv->store);
 
-	comp = create_weather (cbw, info, unit, FALSE);
+	comp = create_weather (cbw, info, unit, FALSE, NULL);
 	if (comp) {
-		GSList *forecasts;
+		GSList *orig_forecasts;
 
 		put_component_to_store (cbw, comp);
 		e_cal_backend_notify_component_created (E_CAL_BACKEND (cbw), comp);
 		g_object_unref (comp);
 
-		forecasts = gweather_info_get_forecast_list (info);
-		if (forecasts) {
-			GSList *f;
+		orig_forecasts = gweather_info_get_forecast_list (info);
+		if (orig_forecasts) {
+			time_t info_day = 0;
+			GSList *forecasts, *f;
+
+			if (!gweather_info_get_value_update (info, &info_day))
+				info_day = 0;
+
+			info_day = info_day / (24 * 60 * 60);
 
 			/* skip the first one, it's for today, which has been added above */
-			for (f = forecasts->next; f; f = f->next) {
+			forecasts = g_slist_copy (orig_forecasts->next);
+			forecasts = g_slist_sort (forecasts, compare_weather_info_by_date);
+
+			f = forecasts;
+			while (f) {
+				time_t current_day;
 				GWeatherInfo *nfo = f->data;
 
-				if (nfo) {
-					comp = create_weather (cbw, nfo, unit, TRUE);
+				f = g_slist_next (f);
+
+				if (nfo && gweather_info_get_value_update (nfo, &current_day)) {
+					GSList *same_day_forecasts = NULL;
+					gint current_hour;
+
+					current_hour = current_day % (24 * 60 * 60);
+					current_day = current_day / (24 * 60 * 60);
+
+					if (current_day == info_day)
+						continue;
+
+					while (f) {
+						GWeatherInfo *test_nfo = f->data;
+						time_t test_day;
+
+						if (test_nfo && gweather_info_get_value_update (test_nfo, &test_day)) {
+							time_t test_hour;
+
+							test_hour = test_day % (24 * 60 * 60);
+
+							if (test_day / (24 * 60 * 60) != current_day)
+								break;
+
+							same_day_forecasts = g_slist_prepend (same_day_forecasts, test_nfo);
+
+							/* Use the main GWeatherInfo the one closest to noon */
+							if (ABS (test_hour - (12 * 60 * 60)) < ABS (current_hour - (12 * 60 * 60))) {
+								nfo = test_nfo;
+								current_hour = test_hour;
+							}
+						}
+
+						f = g_slist_next (f);
+					}
+
+					same_day_forecasts = g_slist_reverse (same_day_forecasts);
+
+					comp = create_weather (cbw, nfo, unit, TRUE, same_day_forecasts);
 					if (comp) {
 						put_component_to_store (cbw, comp);
 						e_cal_backend_notify_component_created (E_CAL_BACKEND (cbw), comp);
 						g_object_unref (comp);
 					}
+
+					g_slist_free (same_day_forecasts);
 				}
 			}
+
+			g_slist_free (forecasts);
 		}
 	}
 
@@ -341,11 +415,53 @@ cal_backend_weather_get_temp (gdouble value,
 	return g_strdup_printf (_("%.1f"), value);
 }
 
+static gchar *
+describe_forecast (GWeatherInfo *nfo,
+		   GWeatherTemperatureUnit unit)
+{
+	gchar *str, *date, *summary, *temp;
+	gdouble tmin = 0.0, tmax = 0.0, temp1 = 0.0;
+
+	date = gweather_info_get_update (nfo);
+	summary = gweather_info_get_conditions (nfo);
+	if (g_str_equal (summary, "-")) {
+	    g_free (summary);
+	    summary = gweather_info_get_sky (nfo);
+	}
+
+	if (gweather_info_get_value_temp_min (nfo, unit, &tmin) &&
+	    gweather_info_get_value_temp_max (nfo, unit, &tmax) &&
+	    tmin != tmax) {
+		gchar *min, *max;
+
+		min = cal_backend_weather_get_temp (tmin, unit);
+		max = cal_backend_weather_get_temp (tmax, unit);
+
+		temp = g_strdup_printf ("%s / %s", min, max);
+
+		g_free (min);
+		g_free (max);
+	} else if (gweather_info_get_value_temp (nfo, unit, &temp1)) {
+		temp = cal_backend_weather_get_temp (temp1, unit);
+	} else {
+		temp = gweather_info_get_temp (nfo);
+	}
+
+	str = g_strdup_printf (" * %s: %s, %s", date, summary, temp);
+
+	g_free (date);
+	g_free (summary);
+	g_free (temp);
+
+	return str;
+}
+
 static ECalComponent *
 create_weather (ECalBackendWeather *cbw,
                 GWeatherInfo *report,
                 GWeatherTemperatureUnit unit,
-                gboolean is_forecast)
+                gboolean is_forecast,
+		GSList *same_day_forecasts)
 {
 	ECalComponent             *cal_comp;
 	ECalComponentText          comp_summary;
@@ -353,7 +469,7 @@ create_weather (ECalBackendWeather *cbw,
 	struct icaltimetype        itt;
 	ECalComponentDateTime      dt;
 	gchar			  *uid;
-	GSList                    *text_list = NULL;
+	GSList                    *text_list = NULL, *link;
 	ECalComponentText         *description;
 	gchar                     *tmp, *city_name;
 	time_t			   update_time;
@@ -435,12 +551,12 @@ create_weather (ECalBackendWeather *cbw,
 	e_cal_component_set_summary (cal_comp, &comp_summary);
 	g_free ((gchar *) comp_summary.value);
 
-	tmp = gweather_info_get_forecast (report);
 	comp_summary.value = gweather_info_get_weather_summary (report);
 
 	description = g_new0 (ECalComponentText, 1);
 	{
 		GString *builder;
+		gboolean has_forecast_word = FALSE;
 
 		builder = g_string_new (NULL);
 
@@ -448,12 +564,60 @@ create_weather (ECalBackendWeather *cbw,
 			g_string_append (builder, comp_summary.value);
 			g_string_append_c (builder, '\n');
 		}
-		if (tmp) {
-			g_string_append (builder, _("Forecast"));
-			g_string_append_c (builder, ':');
-			if (!is_forecast)
-				g_string_append_c (builder, '\n');
-			g_string_append (builder, tmp);
+
+		tmp = NULL;
+
+		for (link = gweather_info_get_forecast_list (report); link; link = g_slist_next (link)) {
+			GWeatherInfo *nfo = link->data;
+
+			if (nfo) {
+				tmp = describe_forecast (nfo, unit);
+
+				if (tmp && *tmp) {
+					if (!has_forecast_word) {
+						has_forecast_word = TRUE;
+
+						g_string_append (builder, _("Forecast"));
+						g_string_append_c (builder, ':');
+						g_string_append_c (builder, '\n');
+					}
+
+					g_string_append (builder, tmp);
+					g_string_append_c (builder, '\n');
+				}
+
+				g_free (tmp);
+				tmp = NULL;
+			}
+		}
+
+		if (same_day_forecasts) {
+			g_free (tmp);
+			tmp = NULL;
+
+			for (link = same_day_forecasts; link; link = g_slist_next (link)) {
+				GWeatherInfo *nfo = link->data;
+
+				if (nfo) {
+					tmp = describe_forecast (nfo, unit);
+
+					if (tmp && *tmp) {
+						if (!has_forecast_word) {
+							has_forecast_word = TRUE;
+
+							g_string_append (builder, _("Forecast"));
+							g_string_append_c (builder, ':');
+							g_string_append_c (builder, '\n');
+						}
+
+						g_string_append (builder, tmp);
+						g_string_append_c (builder, '\n');
+					}
+
+					g_free (tmp);
+					tmp = NULL;
+				}
+			}
 		}
 
 		description->value = g_string_free (builder, FALSE);
