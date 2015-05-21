@@ -1354,9 +1354,9 @@ e_source_webdav_verify_ssl_trust (ESourceWebdav *extension,
 	gchar *old_host = NULL;
 	gchar *old_hash = NULL;
 
-	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (host != NULL, E_TRUST_PROMPT_RESPONSE_REJECT);
-	g_return_val_if_fail (cert != NULL, E_TRUST_PROMPT_RESPONSE_REJECT);
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (host != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
+	g_return_val_if_fail (cert != NULL, E_TRUST_PROMPT_RESPONSE_UNKNOWN);
 
 	/* Always reject revoked certificates */
 	if ((cert_errors & G_TLS_CERTIFICATE_REVOKED) != 0)
