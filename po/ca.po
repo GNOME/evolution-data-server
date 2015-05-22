@@ -3836,7 +3836,7 @@ msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn't get "
 "it.)"
 msgstr ""
-"El fitxer mbox està malmès, intenteu arreglar-l'ho. S'esperava una línia "
+"El fitxer mbox està malmès, intenteu arreglar-ho. S'esperava una línia "
 "From però no s'ha trobat."
 
 #: ../camel/providers/local/camel-mbox-summary.c:903
@@ -4026,7 +4026,7 @@ msgstr "No es poden copiar missatges d'una carpeta NNTP"
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"_Mostra les carpetes en notació abreujada (p.e. c.o.linux en comptes de comp."
+"_Mostra les carpetes en notació abreujada (p. ex. c.o.linux en comptes de comp."
 "os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
@@ -5444,7 +5444,7 @@ msgstr "GMail"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
 msgid "Mail"
-msgstr "Correu electrònic"
+msgstr "Correu electrònic"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
 msgid "Integrate your mailboxes"
