@@ -1261,6 +1261,7 @@ imapx_command_start (CamelIMAPXServer *is,
 	GCancellable *cancellable = NULL;
 	gboolean cp_continuation;
 	gboolean cp_literal_plus;
+	gboolean success;
 	GList *head;
 	gchar *string;
 	GError *local_error = NULL;
@@ -1326,13 +1327,13 @@ imapx_command_start (CamelIMAPXServer *is,
 	string = g_strdup_printf (
 		"%c%05u %s\r\n", is->tagprefix, ic->tag, cp->data);
 	g_mutex_lock (&is->priv->stream_lock);
-	g_output_stream_write_all (
+	success = g_output_stream_write_all (
 		output_stream, string, strlen (string),
 		NULL, cancellable, &local_error);
 	g_mutex_unlock (&is->priv->stream_lock);
 	g_free (string);
 
-	if (local_error != NULL)
+	if (local_error != NULL || !success)
 		goto fail;
 
 	while (is->literal == ic && cp_literal_plus) {
@@ -1362,7 +1363,7 @@ fail:
 	if (ic->complete != NULL)
 		ic->complete (is, ic);
 
-	g_error_free (local_error);
+	g_clear_error (&local_error);
 
 exit:
 	g_clear_object (&input_stream);
@@ -4628,6 +4629,7 @@ connected:
 
 		input_stream = camel_imapx_server_ref_input_stream (is);
 
+		token = NULL;
 		tok = camel_imapx_input_stream_token (
 			CAMEL_IMAPX_INPUT_STREAM (input_stream),
 			&token, &len, cancellable, error);

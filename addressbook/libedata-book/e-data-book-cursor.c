@@ -499,8 +499,12 @@ calculate_step_position (EDataBookCursor *cursor,
                          gint results)
 {
 	EDataBookCursorPrivate *priv = cursor->priv;
-	gint new_position = priv->position;
+	gint new_position;
 	gint offset = results;
+
+	g_return_if_fail (origin == E_BOOK_CURSOR_ORIGIN_CURRENT ||
+			  origin == E_BOOK_CURSOR_ORIGIN_BEGIN ||
+			  origin == E_BOOK_CURSOR_ORIGIN_END);
 
 	/* If we didnt get as many contacts as asked for, it indicates that
 	 * we've reached the end of the list (or beginning)... in this case
