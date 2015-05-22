@@ -2208,7 +2208,7 @@ get_parameter_index (const ENamedParameters *parameters,
 	for (ii = 0; ii < array->len; ii++) {
 		const gchar *name_and_value = g_ptr_array_index (array, ii);
 
-		if (name_and_value == NULL)
+		if (name_and_value == NULL || strlen (name_and_value) <= name_len)
 			continue;
 
 		if (name_and_value[name_len] != ':')
