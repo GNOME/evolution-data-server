@@ -2807,7 +2807,7 @@ ebsql_init_legacy_keys (EBookSqlite *ebsql,
 		}
 
 		/* Repeat for 'sync_data' */
-		success = ebsql_exec_printf (
+		success = success && ebsql_exec_printf (
 			ebsql, "SELECT sync_data FROM folders WHERE folder_id = %Q",
 			get_string_cb, &sync_data, NULL, error, ebsql->priv->folderid);
 
@@ -5492,6 +5492,7 @@ ebsql_generate_constraints (EBookSqlite *ebsql,
 		g_warn_if_fail (test->field != NULL);
 
 		/* Generate the field test */
+		/* coverity[var_deref_op] */
 		generate_test_func (ebsql, string, test);
 	}
 

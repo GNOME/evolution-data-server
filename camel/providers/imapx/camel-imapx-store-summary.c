@@ -187,6 +187,7 @@ imapx_store_summary_store_info_load (CamelStoreSummary *summary,
 
 	if (camel_file_util_decode_string (in, &mailbox_name) == -1) {
 		camel_store_summary_info_unref (summary, si);
+		g_free (separator);
 		return NULL;
 	}
 

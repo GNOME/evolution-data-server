@@ -1337,7 +1337,7 @@ e_vcard_to_string_vcard_30 (EVCard *evc)
 					gchar *value = v->data;
 					gchar *pval = value;
 					gboolean quotes = FALSE;
-					while (*pval) {
+					while (pval && *pval) {
 						if (!g_unichar_isalnum (g_utf8_get_char (pval))) {
 							quotes = TRUE;
 							break;

@@ -845,14 +845,12 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 			dinfo = g_malloc0 (sizeof (*dinfo));
 			dinfo->refcount = 1;
 			/* should be string */
-			tok = camel_imapx_input_stream_astring (
-				stream, &token, cancellable, NULL);
-
-			if (tok != IMAPX_TOK_STRING) {
-				g_set_error (
-					&local_error,
-					CAMEL_IMAPX_ERROR, 1,
-					"expecting string");
+			if (!camel_imapx_input_stream_astring (stream, &token, cancellable, &local_error)) {
+				if (!local_error)
+					g_set_error (
+						&local_error,
+						CAMEL_IMAPX_ERROR, 1,
+						"expecting string");
 				goto done;
 			}
 
@@ -1057,14 +1055,20 @@ imapx_parse_address_list (CamelIMAPXInputStream *stream,
 			addr = camel_header_address_new ();
 			addr->type = CAMEL_HEADER_ADDRESS_NAME;
 			camel_imapx_input_stream_nstring (stream, &token, cancellable, &local_error);
-			if (local_error)
+			if (local_error) {
+				camel_header_address_unref (addr);
 				goto error;
+			}
 
 			addr->name = g_strdup ((gchar *) token);
 			/* we ignore the route, nobody uses it in the real world */
 			camel_imapx_input_stream_nstring (stream, &token, cancellable, &local_error);
-			if (local_error)
+			if (local_error) {
+				camel_header_address_unref (addr);
 				goto error;
+			}
+
+			mbox = NULL;
 
 			/* [RFC-822] group syntax is indicated by a special
 			 * form of address structure in which the host name
@@ -1075,18 +1079,23 @@ imapx_parse_address_list (CamelIMAPXInputStream *stream,
 			 * mailbox name field holds the group name phrase. */
 
 			camel_imapx_input_stream_nstring (stream, (guchar **) &mbox, cancellable, &local_error);
-			if (local_error)
+			if (local_error) {
+				camel_header_address_unref (addr);
 				goto error;
+			}
 
 			mbox = g_strdup (mbox);
 
 			camel_imapx_input_stream_nstring (stream, &host, cancellable, &local_error);
-			if (local_error)
+			if (local_error) {
+				camel_header_address_unref (addr);
 				goto error;
+			}
 
 			if (host == NULL) {
 				if (mbox == NULL) {
 					group = NULL;
+					camel_header_address_unref (addr);
 				} else {
 					g_free (addr->name);
 					addr->name = mbox;
@@ -1337,10 +1346,7 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 				stream, tok, token, len);
 		} while (tok == '(');
 
-		camel_imapx_input_stream_astring (
-			stream, &token, cancellable, &local_error);
-
-		if (local_error)
+		if (!camel_imapx_input_stream_astring (stream, &token, cancellable, &local_error) || local_error)
 			goto error;
 
 		cinfo->type = camel_content_type_new (

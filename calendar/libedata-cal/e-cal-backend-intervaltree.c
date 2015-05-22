@@ -228,7 +228,7 @@ static void
 fixup_min_max_fields (EIntervalTree *tree,
                       EIntervalNode *node)
 {
-	while (node != tree->priv->root) {
+	while (node && node != tree->priv->root) {
 		node->max = MAX (node->end, MAX (node->left->max, node->right->max));
 		node->min = MIN (node->start, node->left->min);
 
@@ -319,6 +319,9 @@ intervaltree_fixup_deletion (EIntervalTree *tree,
 	EIntervalNode *w;
 
 	while ((!x->red) && (root != x)) {
+		if (!x->parent)
+			break;
+
 		if (x == x->parent->left) {
 			w = x->parent->right;
 

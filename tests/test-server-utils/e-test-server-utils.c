@@ -375,7 +375,7 @@ e_test_server_utils_source_added (ESourceRegistry *registry,
 
 		if (!pair->closure->use_async_connect &&
 		    !pair->fixture->service.book_client)
-			g_error ("Unable to create the test book: %s", error->message);
+			g_error ("Unable to create the test book: %s", error ? error->message : "Unknown error");
 
 		break;
 
