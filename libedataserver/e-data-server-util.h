@@ -190,6 +190,11 @@ gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
 						 const gchar *name,
 						 const gchar *value,
 						 gboolean case_sensitively);
+gboolean	e_named_parameters_exists	(const ENamedParameters *parameters,
+						 const gchar *name);
+guint		e_named_parameters_count	(const ENamedParameters *parameters);
+gchar *		e_named_parameters_get_name	(const ENamedParameters *parameters,
+						 gint index);
 
 #define e_named_timeout_add(interval, function, data) \
 	(e_timeout_add_with_name ( \

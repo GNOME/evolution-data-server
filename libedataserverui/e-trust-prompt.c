@@ -486,6 +486,31 @@ save_source_thread (GTask *task,
 	}
 }
 
+static gchar *
+trust_prompt_get_host_from_url (const gchar *url)
+{
+	SoupURI *suri;
+	gchar *host;
+
+	if (!url || !*url)
+		return NULL;
+
+	suri = soup_uri_new (url);
+	if (!suri)
+		return NULL;
+
+	host = g_strdup (soup_uri_get_host (suri));
+
+	if (!host || !*host) {
+		g_free (host);
+		host = NULL;
+	}
+
+	soup_uri_free (suri);
+
+	return host;
+}
+
 /**
  * e_trust_prompt_run_for_source:
  * @parent: A #GtkWindow to use as a parent for the trust prompt dialog
@@ -544,11 +569,33 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 	save_data->response = E_TRUST_PROMPT_RESPONSE_UNKNOWN;
 	save_data->call_save = FALSE;
 
+	/* Lookup used host name */
 	host = e_source_authentication_dup_host (extension_authentication);
+	if (!host || !*host) {
+		g_free (host);
+		host = NULL;
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA)) {
+			ESourceGoa *goa_extension;
+			gchar *url;
+
+			goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+
+			url = e_source_goa_dup_calendar_url (goa_extension);
+			host = trust_prompt_get_host_from_url (url);
+			g_free (url);
+
+			if (!host) {
+				url = e_source_goa_dup_contacts_url (goa_extension);
+				host = trust_prompt_get_host_from_url (url);
+				g_free (url);
+			}
+		}
+	}
 
 	certificate = g_tls_certificate_new_from_pem (certificate_pem, -1, &save_data->error);
 	if (certificate) {
-		if (extension_webdav)
+		if (extension_webdav && host)
 			save_data->response = e_source_webdav_verify_ssl_trust (extension_webdav, host, certificate, 0);
 		else
 			save_data->response = E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY;
