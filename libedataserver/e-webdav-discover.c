@@ -238,6 +238,10 @@ e_webdav_discover_new_propfind (SoupSession *session,
 
 	soup_message_headers_append (
 		message->request_headers,
+		"Connection", "close");
+
+	soup_message_headers_append (
+		message->request_headers,
 		"Depth", (depth == 0) ? "0" : "1");
 
 	output = xmlAllocOutputBuffer (NULL);
