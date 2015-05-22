@@ -359,8 +359,38 @@ server_side_source_invoke_authenticate_cb (EDBusSource *dbus_interface,
 		last_credentials_strv = e_named_parameters_to_strv (source->priv->last_credentials);
 		arg_credentials = (const gchar * const *) last_credentials_strv;
 	} else if (arg_credentials && arg_credentials[0]) {
+		ENamedParameters *credentials = e_named_parameters_new_strv (arg_credentials);
+
+		/* If only one credential value is passed in, and it's the SSL Trust,
+		   and there was any credentials already tried, then merge the previous
+		   credentials with the SSL Trust, to inherit the password, if any. */
+		if (source->priv->last_credentials &&
+		    e_named_parameters_count (credentials) == 1 &&
+		    e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_SSL_TRUST)) {
+			gint ii, count;
+
+			count = e_named_parameters_count (source->priv->last_credentials);
+			for (ii = 0; ii < count; ii++) {
+				gchar *name;
+
+				name = e_named_parameters_get_name (source->priv->last_credentials, ii);
+				if (!name)
+					continue;
+
+				if (*name && !e_named_parameters_exists (credentials, name)) {
+					e_named_parameters_set (credentials, name,
+						e_named_parameters_get (source->priv->last_credentials, name));
+				}
+
+				g_free (name);
+			}
+
+			last_credentials_strv = e_named_parameters_to_strv (credentials);
+			arg_credentials = (const gchar * const *) last_credentials_strv;
+		}
+
 		e_named_parameters_free (source->priv->last_credentials);
-		source->priv->last_credentials = e_named_parameters_new_strv (arg_credentials);
+		source->priv->last_credentials = credentials;
 	}
 
 	g_free (source->priv->last_reason);

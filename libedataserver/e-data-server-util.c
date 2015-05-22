@@ -2362,6 +2362,70 @@ e_named_parameters_to_strv (const ENamedParameters *parameters)
 	return (gchar **) g_ptr_array_free (ret, FALSE);
 }
 
+/**
+ * e_named_parameters_exists:
+ * @parameters: an #ENamedParameters
+ * @name: name of the parameter whose existence to check
+ *
+ * Returns: Whether @parameters holds a parameter named @name
+ *
+ * Since: 3.18
+ **/
+gboolean
+e_named_parameters_exists (const ENamedParameters *parameters,
+			   const gchar *name)
+{
+	g_return_val_if_fail (parameters != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	return get_parameter_index (parameters, name) != -1;
+}
+
+/**
+ * e_named_parameters_count:
+ * @parameters: an #ENamedParameters
+ *
+ * Returns: The number of stored named parameters in @parameters
+ *
+ * Since: 3.18
+ **/
+guint
+e_named_parameters_count (const ENamedParameters *parameters)
+{
+	g_return_val_if_fail (parameters != NULL, 0);
+
+	return ((GPtrArray *) parameters)->len;
+}
+
+/**
+ * e_named_parameters_get_name:
+ * @parameters: an #ENamedParameters
+ * @index: an index of the parameter whose name to retrieve
+ *
+ * Returns: (transfer full): The name of the parameters at index @index,
+ *    or %NULL, of the @index is out of bounds or other error. The returned
+ *    string should be freed with g_free() when done with it.
+ *
+ * Since: 3.18
+ **/
+gchar *
+e_named_parameters_get_name (const ENamedParameters *parameters,
+			     gint index)
+{
+	const gchar *name_and_value, *colon;
+
+	g_return_val_if_fail (parameters != NULL, NULL);
+	g_return_val_if_fail (index >= 0 && index < e_named_parameters_count (parameters), NULL);
+
+	name_and_value = g_ptr_array_index ((GPtrArray *) parameters, index);
+	colon = name_and_value ? strchr (name_and_value, ':') : NULL;
+
+	if (!colon || colon == name_and_value)
+		return NULL;
+
+	return g_strndup (name_and_value, colon - name_and_value);
+}
+
 static ENamedParameters *
 e_named_parameters_ref (ENamedParameters *params)
 {
