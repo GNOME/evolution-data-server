@@ -225,9 +225,14 @@ writeln (CamelMimeFilter *mime_filter,
 			}
 			/* otherwise, FALL THROUGH */
 		default:
-			if (u >= 20 && u <0x80)
+			if (u == '\r' && inptr >= inend) {
+				/* This constructs \r\n sequence at the end of the line, thus pass it in
+				   only if not converting the new-line breaks */
+				if (!(priv->flags & CAMEL_MIME_FILTER_TOHTML_CONVERT_NL))
+					*outptr++ = u;
+			} else if (u >= 20 && u <0x80) {
 				*outptr++ = u;
-			else {
+			} else {
 				if (priv->flags & CAMEL_MIME_FILTER_TOHTML_ESCAPE_8BIT)
 					*outptr++ = '?';
 				else
