@@ -1,3 +1,58 @@
+Evolution-Data-Server 3.17.2 2015-05-25
+---------------------------------------
+
+Bug Fixes:
+	Bug 719476 - [IMAPx] Always run IDLE on Inbox folder (Milan Crha)
+	Bug 705771 - Improve error handling in POP3 code (Milan Crha)
+	Bug 748636 - [IMAPx] Disable LIST-EXTENDED extension for Cyrus servers (Milan Crha)
+	Bug 748770 - Add "encrypt-by-default" property to ESourceOpenPGP (Daniel Kahn Gillmor)
+	Bug 749190 - Remove unused code from EFreeFormExp (Milan Crha)
+	Bug 749108 - Embedded inline images pretend message attachments (Milan Crha)
+	Bug 382684 - Skip list ID prefixes in group by subject fallback (Milan Crha)
+	Bug 728496 - GOA configured Google calendar not using OAuth2 (Milan Crha)
+	Bug 734300 - [IMAPx] Process untagged EXPUNGE response only once (Milan Crha)
+	Bug 749135 - GOA account changes not properly propagated (Milan Crha)
+	Bug 749385 - [GOA] Fails to work with ownCloud with invalid certificate (Milan Crha)
+
+Miscellaneous:
+	Add a workaround for bug 674885 (Type initialisation deadlock in GObject) (Milan Crha)
+	[IMAPx] Do not free uninitialized memory in imapx_call_idle() (Milan Crha)
+	[POP3] Avoid crash on folder dispose, when iterating through pending commands (Milan Crha)
+	[NNTP] Fix minor memory leaks (Milan Crha)
+	GOA Google Calendar - Do not notify about past events (Milan Crha)
+	GOA Google module - Update authentication method before WebDAV discovery (Milan Crha)
+	Add thread-safety into CamelAsyncClosure (Milan Crha)
+	Slow expunge of a maildir folder (Milan Crha)
+	[http calendar] Add UID to the component, if missing (Milan Crha)
+	[Win32] Use common Win32 init function in book/cal subprocesses (Milan Crha)
+	Remove confusing runtime warning in e-source.c (Milan Crha)
+	Correct 'since' tags in D-Bus .xml files (Milan Crha)
+	Add ESource::UnsetLastCredentialsRequiredArguments method (Milan Crha)
+	Fix a dead-code found by the Coverity Scan (Milan Crha)
+	camel: Avoid an unlikely division by zero on a race condition (Philip Withnall)
+	calendar: Remove dead code in HTTP backend (Philip Withnall)
+	edataserverui: Remove redundant check for an error being set (Philip Withnall)
+	edataserver: Remove redundant code path from e_source_dup_secret_label() (Philip Withnall)
+	[Camel] Freeze/thaw also subfolders of vFolders (Milan Crha)
+	Correct typos and remove dropped functions from gtk-doc definitions (Milan Crha)
+	Also remove references to dropped structures from gtk-doc in eds-docs.sgml (Milan Crha)
+	Correct and enhance developer documentation a bit (Milan Crha)
+	[Google/ownCloud backend] Discover WebDAV sources only if URL is set (Milan Crha)
+	[ESourceWebdav] Use Unknown instead of Reject result on runtime errors (Milan Crha)
+	[Weather calendar] Merge intra-day forecasts into one event (Milan Crha)
+	Change Google/ownCloud calendar color only when the source is new (Milan Crha)
+	Address some Coveriry Scan detected issues (Milan Crha)
+	Prevent read after buffer bounds in ENamedParameters::get_parameter_index() (Milan Crha)
+	Close the connection in e-webdav-discover (set the soup header for it) (Milan Crha)
+
+Translations:
+	Kjartan Maraas (nb)
+	Jordi Mas (ca)
+	Martin Srebotnjak (sl)
+	Dušan Kazik (sk)
+	Cédric Valmary (oc)
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.17.1 2015-04-27
 ---------------------------------------
 
