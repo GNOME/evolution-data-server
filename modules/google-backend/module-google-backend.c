@@ -539,8 +539,30 @@ google_backend_populate (ECollectionBackend *backend)
 {
 	GList *list, *link;
 	gboolean have_tasks = FALSE;
+	ESourceRegistryServer *server;
 	ESourceCollection *collection_extension;
 	ESource *source;
+
+	server = e_collection_backend_ref_server (backend);
+	list = e_collection_backend_claim_all_resources (backend);
+	for (link = list; link; link = g_list_next (link)) {
+		ESource *source = link->data;
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE)) {
+			ESourceResource *resource;
+			ESource *child;
+
+			resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+			child = e_collection_backend_new_child (backend, e_source_resource_get_identity (resource));
+			if (child) {
+				e_source_registry_server_add_source (server, source);
+				g_object_unref (child);
+			}
+		}
+	}
+
+	g_list_free_full (list, g_object_unref);
+	g_object_unref (server);
 
 	list = e_collection_backend_list_calendar_sources (backend);
 	for (link = list; link && !have_tasks; link = g_list_next (link)) {
