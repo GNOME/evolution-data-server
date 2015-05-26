@@ -7770,6 +7770,27 @@ imapx_abort_all_commands (CamelIMAPXServer *is,
 	}
 
 	camel_imapx_command_queue_free (queue);
+
+	QUEUE_LOCK (is);
+
+	/* Abort also any pending jobs which are not in the command queues yet */
+	if (!g_queue_is_empty (&is->jobs)) {
+		GList *jobs, *iter;
+
+		jobs = g_list_copy (g_queue_peek_head_link (&is->jobs));
+		g_list_foreach (jobs, (GFunc) camel_imapx_job_ref, NULL);
+
+		for (iter = jobs; iter != NULL; iter = g_list_next (iter)) {
+			CamelIMAPXJob *job = iter->data;
+
+			camel_imapx_job_take_error (job, g_error_copy (error));
+			camel_imapx_job_done (job);
+		}
+
+		g_list_free_full (jobs, (GDestroyNotify) camel_imapx_job_unref);
+	}
+
+	QUEUE_UNLOCK (is);
 }
 
 /* ********************************************************************** */
