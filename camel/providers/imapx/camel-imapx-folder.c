@@ -967,7 +967,7 @@ imapx_move_to_real_junk (CamelIMAPXServer *imapx_server,
 			success = camel_imapx_server_copy_message (
 				imapx_server,
 				mailbox, destination,
-				uids_to_copy, TRUE,
+				uids_to_copy, TRUE, FALSE,
 				cancellable, error);
 			*out_need_to_expunge = success;
 		} else {
@@ -1062,7 +1062,7 @@ imapx_move_to_real_trash (CamelIMAPXServer *imapx_server,
 			success = camel_imapx_server_copy_message (
 				imapx_server,
 				mailbox, destination,
-				uids_to_copy, TRUE,
+				uids_to_copy, TRUE, TRUE,
 				cancellable, error);
 			*out_need_to_expunge = success;
 		} else {
@@ -1295,7 +1295,7 @@ imapx_transfer_messages_to_sync (CamelFolder *source,
 
 	success = camel_imapx_server_copy_message (
 		imapx_server, src_mailbox, dst_mailbox, uids,
-		delete_originals, cancellable, &local_error);
+		delete_originals, FALSE, cancellable, &local_error);
 
 	camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
 
@@ -1307,7 +1307,7 @@ imapx_transfer_messages_to_sync (CamelFolder *source,
 		if (imapx_server) {
 			success = camel_imapx_server_copy_message (
 				imapx_server, src_mailbox, dst_mailbox, uids,
-				delete_originals, cancellable, &local_error);
+				delete_originals, FALSE, cancellable, &local_error);
 
 			camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
 		}

@@ -200,6 +200,7 @@ gboolean	camel_imapx_server_copy_message	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *destination,
 						 GPtrArray *uids,
 						 gboolean delete_originals,
+						 gboolean remove_deleted_flags,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_append_message

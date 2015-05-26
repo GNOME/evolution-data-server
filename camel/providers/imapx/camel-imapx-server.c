@@ -146,6 +146,7 @@ struct _CopyMessagesData {
 	GPtrArray *uids;
 	gboolean delete_originals;
 	gboolean use_move_command;
+	gboolean remove_deleted_flags;
 	gint index;
 	gint last_index;
 	struct _uidset_state uidset;
@@ -5439,6 +5440,8 @@ imapx_command_copy_messages_step_done (CamelIMAPXServer *is,
 					TRUE,
 					((CamelMessageInfoBase *) source_info)->user_tags,
 					camel_imapx_mailbox_get_permanentflags (data->destination));
+				if (data->remove_deleted_flags)
+					camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_DELETED, 0);
 				if (is_new)
 					camel_folder_summary_add (destination->summary, destination_info);
 				camel_folder_change_info_add_uid (changes, destination_info->uid);
@@ -8609,6 +8612,7 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
                                  CamelIMAPXMailbox *destination,
                                  GPtrArray *uids,
                                  gboolean delete_originals,
+				 gboolean remove_deleted_flags,
                                  GCancellable *cancellable,
                                  GError **error)
 {
@@ -8633,6 +8637,7 @@ camel_imapx_server_copy_message (CamelIMAPXServer *is,
 	data->destination = g_object_ref (destination);
 	data->uids = g_ptr_array_new ();
 	data->delete_originals = delete_originals;
+	data->remove_deleted_flags = remove_deleted_flags;
 
 	/* If we're moving messages, prefer "UID MOVE" if supported. */
 	if (data->delete_originals) {
@@ -9036,7 +9041,7 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 		camel_imapx_settings_get_use_real_trash_path (settings);
 	g_object_unref (settings);
 
-	remove_deleted_flags = use_real_trash_path && (job_type != IMAPX_JOB_EXPUNGE) != 0;
+	remove_deleted_flags = use_real_trash_path && job_type != IMAPX_JOB_EXPUNGE;
 
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
