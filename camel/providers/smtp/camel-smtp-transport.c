@@ -1456,6 +1456,34 @@ smtp_rcpt (CamelSmtpTransport *transport,
 	return TRUE;
 }
 
+static void
+smtp_maybe_update_socket_timeout (CamelStream *strm,
+				  gint timeout_seconds)
+{
+	GIOStream *base_strm = camel_stream_ref_base_stream (strm);
+
+	if (G_IS_TLS_CONNECTION (base_strm)) {
+		GIOStream *base_io_stream = NULL;
+
+		g_object_get (G_OBJECT (base_strm), "base-io-stream", &base_io_stream, NULL);
+
+		g_object_unref (base_strm);
+		base_strm = base_io_stream;
+	}
+
+	if (G_IS_SOCKET_CONNECTION (base_strm)) {
+		GSocket *socket;
+
+		socket = g_socket_connection_get_socket (G_SOCKET_CONNECTION (base_strm));
+		if (socket) {
+			if (timeout_seconds > g_socket_get_timeout (socket))
+				g_socket_set_timeout (socket, timeout_seconds);
+		}
+	}
+
+	g_clear_object (&base_strm);
+}
+
 static gboolean
 smtp_data (CamelSmtpTransport *transport,
            CamelMimeMessage *message,
@@ -1543,6 +1571,9 @@ smtp_data (CamelSmtpTransport *transport,
 	camel_data_wrapper_write_to_stream_sync (
 		CAMEL_DATA_WRAPPER (message),
 		CAMEL_STREAM (null), NULL, NULL);
+
+	/* Set the upload timeout to an equal of 512 bytes per second */
+	smtp_maybe_update_socket_timeout (transport->ostream, null->written / 512);
 
 	filtered_stream = camel_stream_filter_new (transport->ostream);
 
