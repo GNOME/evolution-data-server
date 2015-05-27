@@ -1331,6 +1331,37 @@ exit:
 }
 
 static void
+imapx_folder_changed (CamelFolder *folder,
+		      CamelFolderChangeInfo *info)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	if (info && info->uid_removed && info->uid_removed->len) {
+		CamelIMAPXFolder *imapx_folder;
+		guint ii;
+
+		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+
+		g_mutex_lock (&imapx_folder->priv->move_to_hash_table_lock);
+
+		for (ii = 0; ii < info->uid_removed->len; ii++) {
+			const gchar *message_uid = info->uid_removed->pdata[ii];
+
+			if (!message_uid)
+				continue;
+
+			g_hash_table_remove (imapx_folder->priv->move_to_real_trash_uids, message_uid);
+			g_hash_table_remove (imapx_folder->priv->move_to_real_junk_uids, message_uid);
+		}
+
+		g_mutex_unlock (&imapx_folder->priv->move_to_hash_table_lock);
+	}
+
+	/* Chain up to parent's method. */
+	CAMEL_FOLDER_CLASS (camel_imapx_folder_parent_class)->changed (folder, info);
+}
+
+static void
 imapx_rename (CamelFolder *folder,
               const gchar *new_name)
 {
@@ -1385,6 +1416,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->synchronize_sync = imapx_synchronize_sync;
 	folder_class->synchronize_message_sync = imapx_synchronize_message_sync;
 	folder_class->transfer_messages_to_sync = imapx_transfer_messages_to_sync;
+	folder_class->changed = imapx_folder_changed;
 
 	g_object_class_install_property (
 		object_class,
@@ -1428,14 +1460,14 @@ camel_imapx_folder_init (CamelIMAPXFolder *imapx_folder)
 	GHashTable *move_to_real_trash_uids;
 
 	move_to_real_junk_uids = g_hash_table_new_full (
-		(GHashFunc) g_direct_hash,
-		(GEqualFunc) g_direct_equal,
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) camel_pstring_free,
 		(GDestroyNotify) NULL);
 
 	move_to_real_trash_uids = g_hash_table_new_full (
-		(GHashFunc) g_direct_hash,
-		(GEqualFunc) g_direct_equal,
+		(GHashFunc) g_str_hash,
+		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) camel_pstring_free,
 		(GDestroyNotify) NULL);
 
@@ -1810,6 +1842,7 @@ camel_imapx_folder_add_move_to_real_junk (CamelIMAPXFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
 	g_return_if_fail (message_uid != NULL);
+	g_return_if_fail (camel_folder_summary_check_uid (CAMEL_FOLDER (folder)->summary, message_uid));
 
 	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
 
@@ -1840,6 +1873,7 @@ camel_imapx_folder_add_move_to_real_trash (CamelIMAPXFolder *folder,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
 	g_return_if_fail (message_uid != NULL);
+	g_return_if_fail (camel_folder_summary_check_uid (CAMEL_FOLDER (folder)->summary, message_uid));
 
 	g_mutex_lock (&folder->priv->move_to_hash_table_lock);
 
