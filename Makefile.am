@@ -25,10 +25,13 @@ SUBDIRS = \
 	modules \
 	services \
 	tests \
-	docs \
 	art \
 	po \
 	$(NULL)
+
+if ENABLE_GTK_DOC
+SUBDIRS += docs
+endif
 
 if BUILD_EXAMPLES
 SUBDIRS += examples
