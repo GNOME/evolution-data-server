@@ -535,21 +535,15 @@ process_contact_finish (EBookBackend *backend,
                         GDataEntry *entry)
 {
 	EContact *new_contact;
-	gboolean was_cached;
 
 	g_debug (G_STRFUNC);
 
-	was_cached = cache_has_contact (backend, gdata_entry_get_id (entry));
 	new_contact = cache_add_contact (backend, entry);
 
 	if (!new_contact)
 		return;
 
-	if (was_cached == TRUE) {
-		e_book_backend_notify_update (backend, new_contact);
-	} else {
-		e_book_backend_notify_update (backend, new_contact);
-	}
+	e_book_backend_notify_update (backend, new_contact);
 
 	g_object_unref (new_contact);
 }
