@@ -13,6 +13,8 @@ module_google_backend_la_CPPFLAGS = \
 
 module_google_backend_la_SOURCES = \
 	module-google-backend.c \
+	e-webdav-discover.h \
+	e-webdav-discover.c \
 	$(NULL)
 
 module_google_backend_la_LIBADD = \
