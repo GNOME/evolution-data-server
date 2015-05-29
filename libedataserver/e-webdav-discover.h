@@ -51,7 +51,7 @@ void		e_webdav_discover_sources		(ESource *source,
 							 const gchar *url_use_path,
 							 guint32 only_supports,
 							 const ENamedParameters *credentials,
-			 			         GCancellable *cancellable,
+							 GCancellable *cancellable,
 							 GAsyncReadyCallback callback,
 							 gpointer user_data);
 
