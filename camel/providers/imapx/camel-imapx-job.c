@@ -46,6 +46,8 @@ struct _CamelIMAPXRealJob {
 
 	CamelIMAPXMailbox *mailbox;
 	GMutex mailbox_lock;
+
+	CamelIMAPXMailbox *guard_mailbox_update; /* uses the mailbox_lock */
 };
 
 static void
@@ -123,6 +125,13 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 
 		if (real_job->destroy_data != NULL)
 			real_job->destroy_data (real_job->data);
+
+		g_mutex_lock (&real_job->mailbox_lock);
+		if (real_job->guard_mailbox_update) {
+			camel_imapx_mailbox_unlock_update (real_job->guard_mailbox_update);
+			g_clear_object (&real_job->guard_mailbox_update);
+		}
+		g_mutex_unlock (&real_job->mailbox_lock);
 
 		g_clear_object (&real_job->mailbox);
 		g_mutex_clear (&real_job->mailbox_lock);
@@ -232,6 +241,13 @@ camel_imapx_job_done (CamelIMAPXJob *job)
 
 	real_job = (CamelIMAPXRealJob *) job;
 
+	g_mutex_lock (&real_job->mailbox_lock);
+	if (real_job->guard_mailbox_update) {
+		camel_imapx_mailbox_unlock_update (real_job->guard_mailbox_update);
+		g_clear_object (&real_job->guard_mailbox_update);
+	}
+	g_mutex_unlock (&real_job->mailbox_lock);
+
 	g_mutex_lock (&real_job->done_mutex);
 	real_job->done_flag = TRUE;
 	g_cond_broadcast (&real_job->done_cond);
@@ -261,6 +277,36 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 		success = camel_imapx_job_wait (job, error);
 
 	return success;
+}
+
+void
+camel_imapx_job_guard_mailbox_update (CamelIMAPXJob *job,
+				      CamelIMAPXMailbox *mailbox)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+
+	if (mailbox)
+		g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	g_mutex_lock (&real_job->mailbox_lock);
+
+	if (mailbox != real_job->guard_mailbox_update) {
+		if (real_job->guard_mailbox_update) {
+			camel_imapx_mailbox_unlock_update (real_job->guard_mailbox_update);
+			g_clear_object (&real_job->guard_mailbox_update);
+		}
+
+		if (mailbox) {
+			real_job->guard_mailbox_update = g_object_ref (mailbox);
+			camel_imapx_mailbox_lock_update (real_job->guard_mailbox_update);
+		}
+	}
+
+	g_mutex_unlock (&real_job->mailbox_lock);
 }
 
 gboolean
