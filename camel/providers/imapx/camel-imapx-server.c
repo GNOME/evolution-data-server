@@ -8930,7 +8930,7 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 
 	if (registered)
-		camel_imapx_mailbox_lock_update (mailbox);
+		camel_imapx_job_guard_mailbox_update (job, mailbox);
 
 	if (registered && camel_imapx_job_run (job, is, error)) {
 		changes = data->changes;
@@ -8938,9 +8938,6 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	} else if (registered) {
 		imapx_unregister_job (is, job);
 	}
-
-	if (registered)
-		camel_imapx_mailbox_unlock_update (mailbox);
 
 	camel_imapx_job_unref (job);
 
@@ -9270,15 +9267,12 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 	QUEUE_UNLOCK (is);
 
 	if (job_type == IMAPX_JOB_SYNC_CHANGES && registered)
-		camel_imapx_mailbox_lock_update (mailbox);
+		camel_imapx_job_guard_mailbox_update (job, mailbox);
 
 	success = registered && camel_imapx_job_run (job, is, error);
 
 	if (!success && registered)
 		imapx_unregister_job (is, job);
-
-	if (job_type == IMAPX_JOB_SYNC_CHANGES && registered)
-		camel_imapx_mailbox_unlock_update (mailbox);
 
 	camel_imapx_job_unref (job);
 

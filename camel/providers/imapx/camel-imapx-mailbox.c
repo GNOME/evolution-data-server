@@ -51,7 +51,9 @@ struct _CamelIMAPXMailboxPrivate {
 	CamelIMAPXMailboxState state;
 
 	GMutex property_lock;
-	GRecMutex update_lock;
+	GMutex update_lock;
+	GCond update_cond;
+	gboolean update_is_locked;
 
 	/* Protected by the "property_lock". */
 	GHashTable *attributes;
@@ -98,7 +100,8 @@ imapx_mailbox_finalize (GObject *object)
 	g_free (priv->name);
 
 	g_mutex_clear (&priv->property_lock);
-	g_rec_mutex_clear (&priv->update_lock);
+	g_mutex_clear (&priv->update_lock);
+	g_cond_clear (&priv->update_cond);
 	g_hash_table_destroy (priv->attributes);
 	g_sequence_free (priv->message_map);
 	g_strfreev (priv->quota_roots);
@@ -125,7 +128,9 @@ camel_imapx_mailbox_init (CamelIMAPXMailbox *mailbox)
 	mailbox->priv = CAMEL_IMAPX_MAILBOX_GET_PRIVATE (mailbox);
 
 	g_mutex_init (&mailbox->priv->property_lock);
-	g_rec_mutex_init (&mailbox->priv->update_lock);
+	g_mutex_init (&mailbox->priv->update_lock);
+	g_cond_init (&mailbox->priv->update_cond);
+	mailbox->priv->update_is_locked = FALSE;
 	mailbox->priv->message_map = g_sequence_new (NULL);
 	mailbox->priv->permanentflags = ~0;
 	mailbox->priv->state = CAMEL_IMAPX_MAILBOX_STATE_CREATED;
@@ -1198,7 +1203,15 @@ camel_imapx_mailbox_lock_update (CamelIMAPXMailbox *mailbox)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
-	g_rec_mutex_lock (&mailbox->priv->update_lock);
+	g_mutex_lock (&mailbox->priv->update_lock);
+
+	while (mailbox->priv->update_is_locked) {
+		g_cond_wait (&mailbox->priv->update_cond, &mailbox->priv->update_lock);
+	}
+
+	mailbox->priv->update_is_locked = TRUE;
+
+	g_mutex_unlock (&mailbox->priv->update_lock);
 }
 
 /* Prevents running FETCH and STORE at the same time for the given mailbox */
@@ -1207,5 +1220,12 @@ camel_imapx_mailbox_unlock_update (CamelIMAPXMailbox *mailbox)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
-	g_rec_mutex_unlock (&mailbox->priv->update_lock);
+	g_mutex_lock (&mailbox->priv->update_lock);
+
+	if (mailbox->priv->update_is_locked) {
+		mailbox->priv->update_is_locked = FALSE;
+		g_cond_signal (&mailbox->priv->update_cond);
+	}
+
+	g_mutex_unlock (&mailbox->priv->update_lock);
 }

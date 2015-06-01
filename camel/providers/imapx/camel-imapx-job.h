@@ -64,6 +64,9 @@ void		camel_imapx_job_done		(CamelIMAPXJob *job);
 gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
 						 CamelIMAPXServer *is,
 						 GError **error);
+void		camel_imapx_job_guard_mailbox_update
+						(CamelIMAPXJob *job,
+						 CamelIMAPXMailbox *mailbox);
 gboolean	camel_imapx_job_matches		(CamelIMAPXJob *job,
 						 CamelIMAPXMailbox *mailbox,
 						 const gchar *uid);
