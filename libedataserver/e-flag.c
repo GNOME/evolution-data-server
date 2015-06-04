@@ -225,7 +225,10 @@ e_flag_free (EFlag *flag)
 {
 	g_return_if_fail (flag != NULL);
 
+	/* Just to make sure that other threads are not holding the lock. */
+	g_mutex_lock (&flag->mutex);
 	g_cond_clear (&flag->cond);
+	g_mutex_unlock (&flag->mutex);
 	g_mutex_clear (&flag->mutex);
 	g_slice_free (EFlag, flag);
 }

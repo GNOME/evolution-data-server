@@ -2007,11 +2007,11 @@ e_client_wait_for_connected_sync (EClient *client,
 		}
 	}
 
+	g_signal_handler_disconnect (source, notify_handler_id);
+
 	if (cancellable_handler_id > 0 && cancellable)
 		g_cancellable_disconnect (cancellable, cancellable_handler_id);
 
-	g_signal_handler_disconnect (source, notify_handler_id);
-	e_flag_set (flag);
 	e_flag_free (flag);
 
 	success = e_source_get_connection_status (source) == E_SOURCE_CONNECTION_STATUS_CONNECTED;
