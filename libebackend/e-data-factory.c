@@ -146,17 +146,20 @@ typedef struct _DataFactorySubprocessHelper DataFactorySubprocessHelper;
 
 struct _DataFactorySubprocessHelper {
 	EDBusSubprocessBackend *proxy;
+	gchar *factory_name;
 	gchar *bus_name;
 };
 
 static DataFactorySubprocessHelper *
 data_factory_subprocess_helper_new (EDBusSubprocessBackend *proxy,
+				    const gchar *factory_name,
 				    const gchar *bus_name)
 {
 	DataFactorySubprocessHelper *helper;
 
 	helper = g_new0 (DataFactorySubprocessHelper, 1);
 	helper->proxy = g_object_ref (proxy);
+	helper->factory_name = g_strdup (factory_name);
 	helper->bus_name = g_strdup (bus_name);
 
 	return helper;
@@ -167,6 +170,7 @@ data_factory_subprocess_helper_free (DataFactorySubprocessHelper *helper)
 {
 	if (helper != NULL) {
 		g_clear_object (&helper->proxy);
+		g_free (helper->factory_name);
 		g_free (helper->bus_name);
 
 		g_free (helper);
@@ -608,7 +612,7 @@ data_factory_subprocess_appeared_cb (GDBusConnection *connection,
 		sd->extension_name,
 		sd->module_filename);
 
-	helper = data_factory_subprocess_helper_new (proxy, sd->bus_name);
+	helper = data_factory_subprocess_helper_new (proxy, sd->factory_name, sd->bus_name);
 
 	priv = sd->data_factory->priv;
 	g_mutex_lock (&priv->mutex);
@@ -1223,6 +1227,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 			G_SUBPROCESS_FLAGS_NONE,
 			&error,
 			subprocess_path,
+			"--factory", sd->factory_name,
 			"--bus-name", sd->bus_name,
 			"--own-path", sd->path,
 			NULL);

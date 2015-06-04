@@ -47,10 +47,12 @@ struct _SubprocessData {
 	ESubprocessCalFactory *subprocess_cal_factory;
 };
 
+static const gchar *factory_name = NULL;
 static const gchar *bus_name = NULL;
 static const gchar *path = NULL;
 
 static GOptionEntry entries[] = {
+	{ "factory", 'f', 0, G_OPTION_ARG_STRING, &factory_name, "Just for easier debugging", NULL },
 	{ "bus-name", 'b', 0, G_OPTION_ARG_STRING, &bus_name, NULL, NULL },
 	{ "own-path", 'p', 0, G_OPTION_ARG_STRING, &path, NULL, NULL },
 	{ NULL }
