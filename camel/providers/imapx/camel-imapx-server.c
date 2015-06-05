@@ -7855,8 +7855,10 @@ imapx_ready_to_read (GInputStream *input_stream,
 	if (local_error != NULL) {
 		camel_imapx_debug (io, is->tagprefix, "Data read failed with error '%s'\n", local_error->message);
 
-		/* Sadly, G_IO_ERROR_FAILED is also used for 'Connection reset by peer' error */
+		/* Sadly, G_IO_ERROR_FAILED is also used for 'Connection reset by peer' error;
+		   since GLib 2.44 is used G_IO_ERROR_CONNECTION_CLOSED, which is the same as G_IO_ERROR_BROKEN_PIPE */
 		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_BROKEN_PIPE) ||
 		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT)) {
 			local_error->domain = CAMEL_IMAPX_SERVER_ERROR;
 			local_error->code = CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT;
