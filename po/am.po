@@ -6143,41 +6143,8 @@ msgstr ""
 #~ msgid "Remember this password"
 #~ msgstr "ይህንን ሚስጢራዊ ቃል አስታውሱ"
 
-#~ msgid "%a %m/%d/%Y %I:%M %p"
-#~ msgstr "d"
-
-#~ msgid "%a %m/%d/%Y %H:%M"
-#~ msgstr "d"
-
-#~ msgid "%a %m/%d/%Y %I %p"
-#~ msgstr "d"
-
-#~ msgid "%a %m/%d/%Y %H"
-#~ msgstr "d"
-
-#~ msgid "%m/%d/%Y %I:%M %p"
-#~ msgstr "d"
-
-#~ msgid "%m/%d/%Y %H:%M"
-#~ msgstr "d"
-
-#~ msgid "%m/%d/%Y %I %p"
-#~ msgstr "d"
-
-#~ msgid "%m/%d/%Y %H"
-#~ msgstr "d"
-
-#~ msgid "%I:%M:%S %p"
-#~ msgstr "i p,"
-
 #~ msgid "%H:%M:%S"
 #~ msgstr "%H:%M:%S"
-
-#~ msgid "%I:%M %p"
-#~ msgstr "i p,"
-
-#~ msgid "%H:%M"
-#~ msgstr "h"
 
 #~ msgid "%I %p"
 #~ msgstr "%I %p"
