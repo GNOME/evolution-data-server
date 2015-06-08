@@ -1,3 +1,42 @@
+Evolution-Data-Server 3.16.3 2015-06-08
+---------------------------------------
+
+Bug Fixes:
+	Bug 749190 - Remove unused code from EFreeFormExp (Milan Crha)
+	Bug 719476 - [IMAPx] Always run IDLE on Inbox folder - take ][ (Milan Crha)
+	Bug 749108 - Embedded inline images pretend message attachments (Milan Crha)
+	Bug 382684 - Skip list ID prefixes in group by subject fallback (Milan Crha)
+	Bug 728496 - GOA configured Google calendar not using OAuth2 (Milan Crha)
+	Bug 734300 - [IMAPx] Process untagged EXPUNGE response only once (Milan Crha)
+	Bug 749135 - GOA account changes not properly propagated (Milan Crha)
+	Bug 749385 - [GOA] Fails to work with ownCloud with invalid certificate (Milan Crha)
+	Bug 747988 - Adding 000D characters in plaintext mail replies (Milan Crha)
+	Bug 749292 - SMTP connection lost while reading message data (Milan Crha)
+	Bug 749664 - [IMAPx] Don't mark mail in trash folder as deleted (Milan Crha)
+	Bug 720197 - [IMAPx] Indefinite waiting for message download (Milan Crha)
+	Bug 663828 - Auto-add all Google calendars for GOA accounts (Milan Crha)
+	Bug 750146 - [IMAPx] Deadlock when FETCH and STORE run at one time (Milan Crha)
+	Bug 750416 - Crash under e_client_wait_for_connected_sync() (Milan Crha)
+
+Miscellaneous:
+	Fix a dead-code found by the Coverity Scan (Milan Crha)
+	[Camel] Freeze/thaw also subfolders of vFolders (Milan Crha)
+	[ESourceWebdav] Use Unknown instead of Reject result on runtime errors (Milan Crha)
+	[Weather calendar] Merge intra-day forecasts into one event (Milan Crha)
+	Change ownCloud calendar color only when the source is new (Milan Crha)
+	Address some Coveriry Scan detected issues (Milan Crha)
+	Prevent read after buffer bounds in ENamedParameters::get_parameter_index() (Milan Crha)
+	[IMAPx] Message moved to real Trash/Junk multiple times (Milan Crha)
+	Truly disable gtk-doc build when asked to (Milan Crha)
+	[Google book] Remove unnecessary code path found by Coverity Scan (Milan Crha)
+	[IMAPx] Consider also G_IO_ERROR_BROKEN_PIPE as 'Connection reset by peer' error (Milan Crha)
+	Add --factory parameter to factory subprocesses for easier debugging (Milan Crha)
+
+Translations:
+	Martin Srebotnjak (sl)
+	Cédric Valmary (oc)
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.16.2 2015-05-11
 ---------------------------------------
 
