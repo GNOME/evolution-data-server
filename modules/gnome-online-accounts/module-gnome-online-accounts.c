@@ -264,24 +264,6 @@ gnome_online_accounts_new_source (EGnomeOnlineAccounts *extension)
 }
 
 static void
-replace_host (gchar **url,
-              const gchar *host)
-{
-	SoupURI *uri;
-
-	uri = soup_uri_new (*url);
-	if (!uri)
-		return;
-
-	soup_uri_set_host (uri, host);
-
-	g_free (*url);
-	*url = soup_uri_to_string (uri, FALSE);
-
-	soup_uri_free (uri);
-}
-
-static void
 gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
                                        ESource *source,
                                        GoaObject *goa_object)
@@ -346,17 +328,14 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 	if (source_extension != NULL) {
 		GoaAccount *goa_account;
 		CamelSettings *settings;
-		gchar *host, *user, *email;
+		SoupURI *suri;
+		gchar *user, *email;
 
 		goa_account = goa_object_peek_account (goa_object);
-		host = goa_exchange_dup_host (goa_exchange);
 		user = goa_account_dup_identity (goa_account);
 		email = goa_account_dup_presentation_identity (goa_account);
 
-		if (host && *host) {
-			replace_host (&as_url, host);
-			replace_host (&oab_url, host);
-		}
+		suri = soup_uri_new (as_url);
 
 		g_object_set (
 			source_extension,
@@ -370,12 +349,12 @@ gnome_online_accounts_config_exchange (EGnomeOnlineAccounts *extension,
 
 		g_object_set (
 			settings,
-			"host", host,
+			"host", soup_uri_get_host (suri),
 			"user", user,
 			"email", email,
 			NULL);
 
-		g_free (host);
+		soup_uri_free (suri);
 		g_free (user);
 		g_free (email);
 	} else {
