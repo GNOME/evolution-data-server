@@ -25,6 +25,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 
 #include "camel-pop3-stream.h"
 
@@ -78,7 +79,18 @@ stream_fill (CamelPOP3Stream *is,
 			is->source, (gchar *) is->end,
 			CAMEL_POP3_STREAM_SIZE - (is->end - is->buf),
 			cancellable, &local_error);
-		if (local_error) {
+
+		/* It's the End Of Stream marker */
+		if (left == 0 && !local_error) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_BROKEN_PIPE,
+				g_strerror (
+					#ifdef EPIPE
+					EPIPE
+					#else
+					32 /* Also EPIPE; it should be always available, but just in case it isn't */
+					#endif
+				));
+		} else if (local_error) {
 			g_propagate_error (error, local_error);
 			left = 0;
 		}
