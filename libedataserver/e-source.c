@@ -130,6 +130,7 @@ struct _ESourcePrivate {
 
 	GSource *changed;
 	GMutex changed_lock;
+	guint ignore_changed_signal;
 
 	GSource *data_change;
 	GMutex data_change_lock;
@@ -2821,7 +2822,8 @@ e_source_changed (ESource *source)
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	g_mutex_lock (&source->priv->changed_lock);
-	if (source->priv->changed == NULL) {
+	if (!source->priv->ignore_changed_signal &&
+	    source->priv->changed == NULL) {
 		source->priv->changed = g_idle_source_new ();
 		g_source_set_callback (
 			source->priv->changed,
@@ -3217,6 +3219,10 @@ e_source_get_extension (ESource *source,
 
 	/* Create a new instance of the appropriate GType. */
 	if (class != NULL) {
+		g_mutex_lock (&source->priv->changed_lock);
+		source->priv->ignore_changed_signal++;
+		g_mutex_unlock (&source->priv->changed_lock);
+
 		extension = g_object_new (
 			G_TYPE_FROM_CLASS (class),
 			"source", source, NULL);
@@ -3227,6 +3233,10 @@ e_source_get_extension (ESource *source,
 		g_hash_table_insert (
 			source->priv->extensions,
 			g_strdup (extension_name), extension);
+
+		g_mutex_lock (&source->priv->changed_lock);
+		source->priv->ignore_changed_signal--;
+		g_mutex_unlock (&source->priv->changed_lock);
 	} else {
 		/* XXX Tie this into a debug setting for ESources. */
 #ifdef DEBUG
