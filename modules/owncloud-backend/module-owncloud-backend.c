@@ -111,7 +111,7 @@ owncloud_remove_unknown_sources_cb (gpointer resource_id,
 	source = e_source_registry_server_ref_source (server, uid);
 
 	if (source) {
-		e_source_registry_server_remove_source (server, source);
+		e_source_remove_sync (source, NULL, NULL);
 		g_object_unref (source);
 	}
 }
