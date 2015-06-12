@@ -451,6 +451,10 @@ google_backend_add_tasks (ECollectionBackend *backend)
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
+	/* Tasks require OAuth2, which is supported only through GOA */
+	if (!e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA))
+		return;
+
 	resource_id = GOOGLE_TASKS_RESOURCE_ID;
 	source = e_collection_backend_new_child (backend, resource_id);
 	e_source_set_display_name (source, _("Tasks"));
@@ -577,6 +581,15 @@ google_backend_populate (ECollectionBackend *backend)
 		ESource *source = link->data;
 
 		have_tasks = have_tasks || e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST);
+		if (have_tasks) {
+			source = e_backend_get_source (E_BACKEND (backend));
+
+			/* Tasks require OAuth2, which is supported only through GOA */
+			if (!e_source_has_extension (source, E_SOURCE_EXTENSION_GOA)) {
+				e_source_remove_sync (source, NULL, NULL);
+				have_tasks = FALSE;
+			}
+		}
 	}
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
