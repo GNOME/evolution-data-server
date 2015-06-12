@@ -579,6 +579,21 @@ backend_constructed (GObject *object)
 	}
 }
 
+static ESourceAuthenticationResult
+backend_authenticate_sync (EBackend *backend,
+			   const ENamedParameters *credentials,
+			   gchar **out_certificate_pem,
+			   GTlsCertificateFlags *out_certificate_errors,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	/* The default implementation just reports success, it's for backends
+	   which do not use (nor define) authentication routines, because
+	   they use different methods to get to the credentials. */
+
+	return E_SOURCE_AUTHENTICATION_ACCEPTED;
+}
+
 static gboolean
 backend_get_destination_address (EBackend *backend,
                                  gchar **host,
@@ -629,6 +644,7 @@ e_backend_class_init (EBackendClass *class)
 	object_class->finalize = backend_finalize;
 	object_class->constructed = backend_constructed;
 
+	class->authenticate_sync = backend_authenticate_sync;
 	class->get_destination_address = backend_get_destination_address;
 	class->prepare_shutdown = backend_prepare_shutdown;
 
