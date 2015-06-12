@@ -34,6 +34,8 @@
 G_BEGIN_DECLS
 
 struct tm;
+struct _ESource;
+struct _ESourceRegistry;
 
 const gchar *	e_get_user_cache_dir		(void);
 const gchar *	e_get_user_config_dir		(void);
@@ -265,6 +267,9 @@ typedef void	(*ETypeFunc)			(GType type,
 void		e_type_traverse			(GType parent_type,
 						 ETypeFunc func,
 						 gpointer user_data);
+
+gchar *		e_util_get_source_full_name	(struct _ESourceRegistry *registry,
+						 struct _ESource *source);
 
 G_END_DECLS
 

@@ -2146,6 +2146,7 @@ e_data_server_util_set_dbus_call_timeout
 e_binding_bind_property
 e_binding_bind_property_full
 e_binding_bind_property_with_closures
+e_util_get_source_full_name
 ENamedParameters
 EAsyncClosure
 tm
