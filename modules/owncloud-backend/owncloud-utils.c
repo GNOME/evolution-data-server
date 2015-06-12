@@ -516,6 +516,11 @@ owncloud_utils_search_server (ECollectionBackend *collection,
 
 	source = e_backend_get_source (E_BACKEND (collection));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+	/* Ignore the request for non-GOA ownCloud sources */
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_GOA))
+		return FALSE;
+
 	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
 
 	username = e_source_collection_dup_identity (collection_extension);
