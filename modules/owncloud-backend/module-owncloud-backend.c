@@ -298,6 +298,11 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 
 	source = e_backend_get_source (backend);
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+	/* Ignore the request for non-GOA ownCloud sources by pretending success */
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_GOA))
+		return E_SOURCE_AUTHENTICATION_ACCEPTED;
+
 	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
 
 	if (!e_source_collection_get_calendar_enabled (collection_extension) &&

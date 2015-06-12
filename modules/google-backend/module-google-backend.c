@@ -325,13 +325,14 @@ google_backend_authenticate_sync (EBackend *backend,
 {
 	ECollectionBackend *collection = E_COLLECTION_BACKEND (backend);
 	ESourceCollection *collection_extension;
-	ESourceGoa *goa_extension;
+	ESourceGoa *goa_extension = NULL;
 	ESource *source;
 	ESourceAuthenticationResult result;
 	GHashTable *known_sources;
 	GList *sources;
 	GSList *discovered_sources = NULL;
 	ENamedParameters *credentials_copy = NULL;
+	const gchar *calendar_url;
 	gboolean any_success = FALSE;
 	GError *local_error = NULL;
 
@@ -339,7 +340,8 @@ google_backend_authenticate_sync (EBackend *backend,
 
 	source = e_backend_get_source (backend);
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
-	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA))
+		goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
 
 	g_return_val_if_fail (e_source_collection_get_calendar_enabled (collection_extension) ||
 		e_source_collection_get_contacts_enabled (collection_extension), E_SOURCE_AUTHENTICATION_ERROR);
@@ -359,8 +361,13 @@ google_backend_authenticate_sync (EBackend *backend,
 
 	google_backend_calendar_update_auth_method (source);
 
-	if (e_source_collection_get_calendar_enabled (collection_extension) && e_source_goa_get_calendar_url (goa_extension) &&
-	    e_webdav_discover_sources_sync (source, e_source_goa_get_calendar_url (goa_extension), E_WEBDAV_DISCOVER_SUPPORTS_NONE,
+	if (goa_extension)
+		calendar_url = e_source_goa_get_calendar_url (goa_extension);
+	else
+		calendar_url = "https://www.google.com/calendar/dav/";
+
+	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
+	    e_webdav_discover_sources_sync (source, calendar_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE,
 		credentials, out_certificate_pem, out_certificate_errors,
 		&discovered_sources, NULL, cancellable, &local_error)) {
 		EWebDAVDiscoverSupports source_types[] = {
