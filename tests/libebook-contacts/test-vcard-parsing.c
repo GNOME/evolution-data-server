@@ -433,6 +433,24 @@ test_contact_without_uid (void)
 	g_assert (test_econtact (test_vcard_no_uid_str));
 }
 
+static void
+test_construction_vcard_attribute_with_group (void)
+{
+	EVCardAttribute *attr1, *attr2, *attr3;
+
+	attr1 = e_vcard_attribute_new (NULL, "X-TEST");
+	attr2 = e_vcard_attribute_new ("", "X-TEST");
+	attr3 = e_vcard_attribute_new ("GROUP", "X-TEST");
+
+	g_assert_cmpstr (e_vcard_attribute_get_group (attr1), ==, NULL);
+	g_assert_cmpstr (e_vcard_attribute_get_group (attr2), ==, NULL);
+	g_assert_cmpstr (e_vcard_attribute_get_group (attr3), ==, "GROUP");
+
+	e_vcard_attribute_free (attr3);
+	e_vcard_attribute_free (attr2);
+	e_vcard_attribute_free (attr1);
+}
+
 gint
 main (gint argc,
       gchar **argv)
@@ -445,6 +463,8 @@ main (gint argc,
 	g_test_add_func ("/Parsing/VCard/WithUID", test_contact_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_contact_without_uid);
 	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
+	g_test_add_func ("/Construction/VCardAttribute/WithGroup",
+	                 test_construction_vcard_attribute_with_group);
 
 	return g_test_run ();
 }

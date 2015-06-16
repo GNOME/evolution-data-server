@@ -1530,7 +1530,8 @@ e_vcard_dump_structure (EVCard *evc)
  * @attr_name: an attribute name
  *
  * Creates a new #EVCardAttribute with the specified group and
- * attribute names.
+ * attribute names. The @attr_group may be %NULL or the empty string if no
+ * group is needed.
  *
  * Returns: (transfer full): A new #EVCardAttribute.
  **/
@@ -1541,6 +1542,9 @@ e_vcard_attribute_new (const gchar *attr_group,
 	EVCardAttribute *attr;
 
 	attr = g_slice_new0 (EVCardAttribute);
+
+	if (attr_group != NULL && *attr_group == '\0')
+		attr_group = NULL;
 
 	attr->group = g_strdup (attr_group);
 	attr->name = g_strdup (attr_name);
