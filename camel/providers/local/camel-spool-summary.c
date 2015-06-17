@@ -335,7 +335,7 @@ spool_summary_check (CamelLocalSummary *cls,
 	known_uids = camel_folder_summary_get_array (s);
 	for (i = 0; !work && known_uids && i < known_uids->len; i++) {
 		CamelMboxMessageInfo *info = (CamelMboxMessageInfo *) camel_folder_summary_get (s, g_ptr_array_index (known_uids, i));
-		g_assert (info);
+		g_return_val_if_fail (info, -1);
 		work = (info->info.info.flags & (CAMEL_MESSAGE_FOLDER_NOXEV)) != 0;
 		camel_message_info_unref (info);
 	}

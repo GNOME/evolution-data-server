@@ -295,7 +295,7 @@ safe_name_for_photo (EBookBackendFile *bf,
 	gchar         *suffix = NULL;
 	gint           i = 0;
 
-	g_assert (photo->type == E_CONTACT_PHOTO_TYPE_INLINED);
+	g_return_val_if_fail (photo->type == E_CONTACT_PHOTO_TYPE_INLINED, NULL);
 
 	/* Get a suitable filename extension */
 	if (photo->data.inlined.mime_type != NULL &&
@@ -550,7 +550,7 @@ maybe_transform_vcard_field_for_photo (EBookBackendFile *bf,
 			 * logic to the file-system.
 			 */
 			filename = g_filename_from_uri (photo->data.uri, NULL, NULL);
-			g_assert (filename); /* we already checked this with 'is_backend_owned_uri ()' */
+			g_return_val_if_fail (filename, STATUS_NORMAL); /* we already checked this with 'is_backend_owned_uri ()' */
 
 			new_filename = hard_link_photo (bf, contact, field, filename, error);
 

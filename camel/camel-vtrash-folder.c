@@ -246,7 +246,7 @@ camel_vtrash_folder_new (CamelStore *parent_store,
 {
 	CamelVTrashFolder *vtrash;
 
-	g_assert (type < CAMEL_VTRASH_FOLDER_LAST);
+	g_return_val_if_fail (type < CAMEL_VTRASH_FOLDER_LAST, NULL);
 
 	vtrash = g_object_new (
 		CAMEL_TYPE_VTRASH_FOLDER,

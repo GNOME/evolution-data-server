@@ -789,14 +789,10 @@ camel_key_table_add (CamelKeyTable *ki,
 
 	kblast->used++;
 
-#if 0
-	g_assert (kblast->used < 127);
-#else
 	if (kblast->used >=127) {
 		g_warning ("Invalid value for used %d\n", kblast->used);
 		return 0;
 	}
-#endif
 
 	camel_block_file_touch_block (ki->blocks, last);
 	camel_block_file_unref_block (ki->blocks, last);

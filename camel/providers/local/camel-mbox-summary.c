@@ -530,7 +530,7 @@ summary_update (CamelLocalSummary *cls,
 		info = camel_folder_summary_info_new_from_parser (s, mp);
 		camel_folder_summary_add (s, info);
 
-		g_assert (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM_END);
+		g_warn_if_fail (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM_END);
 	}
 
 	g_object_unref (mp);

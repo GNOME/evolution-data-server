@@ -389,7 +389,10 @@ migrate_parse_commit_changes (ParseType parse_type,
 			goto exit;
 	}
 
-	g_assert (mangled_uri != NULL);
+	if (!mangled_uri) {
+		g_warn_if_reached ();
+		goto exit;
+	}
 
 	old_directory = g_build_filename (
 		cache_dir, component, mangled_uri, NULL);

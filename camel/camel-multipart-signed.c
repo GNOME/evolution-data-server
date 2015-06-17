@@ -674,7 +674,7 @@ multipart_signed_construct_from_parser (CamelMultipart *multipart,
 
 	/* we *must not* be in multipart state, otherwise the mime parser will
 	 * parse the headers which is a no no @#$@# stupid multipart/signed spec */
-	g_assert (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_HEADER);
+	g_return_val_if_fail (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_HEADER, -1);
 
 	/* All we do is copy it to a memstream */
 	content_type = camel_mime_parser_content_type (mp);

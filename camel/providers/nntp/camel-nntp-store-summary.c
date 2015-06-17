@@ -376,7 +376,7 @@ store_info_set_string (CamelStoreSummary *s,
 {
 	CamelNNTPStoreInfo *nsi = (CamelNNTPStoreInfo *) mi;
 
-	g_assert (mi != NULL);
+	g_return_if_fail (mi != NULL);
 
 	switch (type) {
 	case CAMEL_NNTP_STORE_INFO_FULL_NAME:

@@ -3311,7 +3311,7 @@ noskip:
 		if (cp->type & (CAMEL_IMAPX_COMMAND_CONTINUATION | CAMEL_IMAPX_COMMAND_LITERAL_PLUS)) {
 			newliteral = ic;
 		} else {
-			g_assert (g_list_next (link) == NULL);
+			g_warn_if_fail (g_list_next (link) == NULL);
 		}
 	} else {
 		c (is->tagprefix, "%p: queueing continuation\n", ic);

@@ -391,7 +391,7 @@ camel_msgport_pop (CamelMsgPort *msgport)
 
 	msg = g_async_queue_pop_unlocked (msgport->queue);
 
-	g_assert (msg != NULL);
+	g_return_val_if_fail (msg != NULL, NULL);
 
 	if (msg->flags & MSG_FLAG_SYNC_WITH_PIPE)
 		msgport_sync_with_pipe (msgport->pipe[0]);

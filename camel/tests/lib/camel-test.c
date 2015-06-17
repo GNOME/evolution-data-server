@@ -209,7 +209,7 @@ void camel_test_pull (void)
 
 	s = current_state ();
 
-	g_assert (s->state);
+	g_return_if_fail (s->state);
 
 	if (camel_test_verbose > 3)
 		printf ("Finish step: %s\n", s->state->what);

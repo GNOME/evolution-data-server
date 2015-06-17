@@ -66,7 +66,7 @@ mime_filter_yenc_filter (CamelMimeFilter *mime_filter,
 				(const guchar *) in, len,
 				(guchar *) mime_filter->outbuf, &priv->state,
 				&priv->pcrc, &priv->crc);
-			g_assert (newlen <= (len + 2) * 2 + 62);
+			g_return_if_fail (newlen <= (len + 2) * 2 + 62);
 			break;
 		case CAMEL_MIME_FILTER_YENC_DIRECTION_DECODE:
 			if (!(priv->state & CAMEL_MIME_YDECODE_STATE_DECODE)) {
@@ -140,7 +140,7 @@ mime_filter_yenc_filter (CamelMimeFilter *mime_filter,
 					(const guchar *) in, len,
 					(guchar *) mime_filter->outbuf,
 					&priv->state, &priv->pcrc, &priv->crc);
-				g_assert (newlen <= len + 3);
+				g_return_if_fail (newlen <= len + 3);
 			} else {
 				newlen = 0;
 			}
@@ -175,7 +175,7 @@ mime_filter_yenc_complete (CamelMimeFilter *mime_filter,
 				(const guchar *) in, len,
 				(guchar *) mime_filter->outbuf,
 				&priv->state, &priv->pcrc, &priv->crc);
-			g_assert (newlen <= (len + 2) * 2 + 62);
+			g_return_if_fail (newlen <= (len + 2) * 2 + 62);
 			break;
 		case CAMEL_MIME_FILTER_YENC_DIRECTION_DECODE:
 			if ((priv->state & CAMEL_MIME_YDECODE_STATE_DECODE) &&
@@ -188,7 +188,7 @@ mime_filter_yenc_complete (CamelMimeFilter *mime_filter,
 					(const guchar *) in, len,
 					(guchar *) mime_filter->outbuf,
 					&priv->state, &priv->pcrc, &priv->crc);
-				g_assert (newlen <= len + 3);
+				g_return_if_fail (newlen <= len + 3);
 			} else {
 				newlen = 0;
 			}
@@ -271,7 +271,7 @@ camel_mime_filter_yenc_new (CamelMimeFilterYencDirection direction)
 			priv->state = CAMEL_MIME_YDECODE_STATE_INIT;
 			break;
 		default:
-			g_assert_not_reached ();
+			g_warn_if_reached ();
 	}
 
 	return filter;

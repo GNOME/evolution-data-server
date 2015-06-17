@@ -728,7 +728,7 @@ make_valid_utf8 (const gchar *name)
 
 	g_string_append (string, remainder);
 
-	g_assert (g_utf8_validate (string->str, -1, NULL));
+	g_return_val_if_fail (g_utf8_validate (string->str, -1, NULL), g_string_free (string, TRUE));
 
 	return g_string_free (string, FALSE);
 }

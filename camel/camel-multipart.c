@@ -352,7 +352,7 @@ multipart_construct_from_parser (CamelMultipart *multipart,
 	gchar *buf;
 	gsize len;
 
-	g_assert (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_MULTIPART);
+	g_return_val_if_fail (camel_mime_parser_state (mp) == CAMEL_MIME_PARSER_STATE_MULTIPART, -1);
 
 	content_type = camel_mime_parser_content_type (mp);
 	camel_multipart_set_boundary (

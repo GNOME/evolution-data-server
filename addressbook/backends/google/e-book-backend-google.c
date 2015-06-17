@@ -795,7 +795,7 @@ get_new_contacts (EBookBackend *backend)
 
 	/* Sort out update times */
 	last_updated = cache_get_last_update (backend);
-	g_assert (last_updated == NULL || g_time_val_from_iso8601 (last_updated, &updated) == TRUE);
+	g_return_if_fail (last_updated == NULL || g_time_val_from_iso8601 (last_updated, &updated) == TRUE);
 	g_free (last_updated);
 
 	/* Prevent the cache writing each change to disk individually (thawed in get_new_contacts_cb()) */

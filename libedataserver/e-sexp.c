@@ -214,7 +214,7 @@ e_sexp_result_free (struct _ESExp *f,
 	case ESEXP_RES_UNDEFINED:
 		break;
 	default:
-		g_assert_not_reached ();
+		g_return_if_reached ();
 	}
 	e_memchunk_free (f->result_chunks, t);
 }
@@ -1233,8 +1233,8 @@ parse_values (ESExp *f,
 	terms = g_malloc (size * sizeof (*terms));
 	l = list;
 	for (i = size - 1; i >= 0; i--) {
-		g_assert (l);
-		g_assert (l->data);
+		g_return_val_if_fail (l, NULL);
+		g_return_val_if_fail (l->data, NULL);
 		terms[i] = l->data;
 		l = g_slist_next (l);
 	}
@@ -1313,7 +1313,7 @@ parse_value (ESExp *f)
 
 		str = g_scanner_cur_value (gs).v_identifier;
 
-		g_assert (str != NULL);
+		g_return_val_if_fail (str != NULL, NULL);
 		if (!(strlen (str) == 1 && (str[0] == 't' || str[0] == 'f'))) {
 			e_sexp_fatal_error (
 				f, "Invalid format for a boolean value");

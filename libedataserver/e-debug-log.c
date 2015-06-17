@@ -102,26 +102,26 @@ add_to_ring (gchar *str)
 {
 	ensure_ring ();
 
-	g_assert (str != NULL);
+	g_return_if_fail (str != NULL);
 
 	if (ring_buffer_num_lines == ring_buffer_max_lines) {
 		/* We have an overlap, and the ring_buffer_next_index pogints to
 		 * the "first" item.  Free it to make room for the new item.
 		 */
 
-		g_assert (ring_buffer[ring_buffer_next_index] != NULL);
+		g_return_if_fail (ring_buffer[ring_buffer_next_index] != NULL);
 		g_free (ring_buffer[ring_buffer_next_index]);
 	} else
 		ring_buffer_num_lines++;
 
-	g_assert (ring_buffer_num_lines <= ring_buffer_max_lines);
+	g_return_if_fail (ring_buffer_num_lines <= ring_buffer_max_lines);
 
 	ring_buffer[ring_buffer_next_index] = str;
 
 	ring_buffer_next_index++;
 	if (ring_buffer_next_index == ring_buffer_max_lines) {
 		ring_buffer_next_index = 0;
-		g_assert (ring_buffer_num_lines == ring_buffer_max_lines);
+		g_return_if_fail (ring_buffer_num_lines == ring_buffer_max_lines);
 	}
 }
 
@@ -139,7 +139,7 @@ add_to_milestones (const gchar *str)
 		milestones_head = milestones_tail = g_slist_append (NULL, str_copy);
 	}
 
-	g_assert (milestones_head != NULL && milestones_tail != NULL);
+	g_return_if_fail (milestones_head != NULL && milestones_tail != NULL);
 }
 
 /**
@@ -204,8 +204,8 @@ e_debug_log_load_configuration (const gchar *filename,
 	gint num;
 	GError *my_error;
 
-	g_assert (filename != NULL);
-	g_assert (error == NULL || *error == NULL);
+	g_return_val_if_fail (filename != NULL, FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	key_file = g_key_file_new ();
 
@@ -260,8 +260,8 @@ e_debug_log_enable_domains (const gchar **domains,
 {
 	gint i;
 
-	g_assert (domains != NULL);
-	g_assert (n_domains >= 0);
+	g_return_if_fail (domains != NULL);
+	g_return_if_fail (n_domains >= 0);
 
 	lock ();
 
@@ -269,7 +269,7 @@ e_debug_log_enable_domains (const gchar **domains,
 		domains_hash = g_hash_table_new (g_str_hash, g_str_equal);
 
 	for (i = 0; i < n_domains; i++) {
-		g_assert (domains[i] != NULL);
+		g_return_if_fail (domains[i] != NULL);
 
 		if (strcmp (domains[i], E_DEBUG_LOG_DOMAIN_USER) == 0)
 			continue; /* user actions are always enabled */
@@ -296,8 +296,8 @@ e_debug_log_disable_domains (const gchar **domains,
 {
 	gint i;
 
-	g_assert (domains != NULL);
-	g_assert (n_domains >= 0);
+	g_return_if_fail (domains != NULL);
+	g_return_if_fail (n_domains >= 0);
 
 	lock ();
 
@@ -305,7 +305,7 @@ e_debug_log_disable_domains (const gchar **domains,
 		for (i = 0; i < n_domains; i++) {
 			gchar *domain;
 
-			g_assert (domains[i] != NULL);
+			g_return_if_fail (domains[i] != NULL);
 
 			if (strcmp (domains[i], E_DEBUG_LOG_DOMAIN_USER) == 0)
 				continue; /* user actions are always enabled */
@@ -331,7 +331,7 @@ e_debug_log_is_domain_enabled (const gchar *domain)
 {
 	gboolean retval;
 
-	g_assert (domain != NULL);
+	g_return_val_if_fail (domain != NULL, FALSE);
 
 	lock ();
 	retval = is_domain_enabled (domain);
@@ -381,7 +381,7 @@ make_key_file_from_configuration (void)
 				domains_hash,
 				domains_foreach_dump_cb,
 				&closure);
-			g_assert (num_domains == closure.num_domains);
+			g_return_val_if_fail (num_domains == closure.num_domains, NULL);
 
 			g_key_file_set_string_list (
 				key_file,
@@ -531,7 +531,7 @@ e_debug_log_dump (const gchar *filename,
 	FILE *file;
 	gboolean success;
 
-	g_assert (error == NULL || *error == NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	lock ();
 
@@ -598,7 +598,7 @@ e_debug_log_dump_to_dated_file (GError **error)
 	gchar *filename;
 	gboolean retval;
 
-	g_assert (error == NULL || *error == NULL);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
 
 	t = time (NULL);
 	tm = *localtime (&t);
@@ -632,7 +632,7 @@ e_debug_log_set_max_lines (gint num_lines)
 	gchar **new_buffer;
 	gint lines_to_copy;
 
-	g_assert (num_lines > 0);
+	g_return_if_fail (num_lines > 0);
 
 	lock ();
 
@@ -655,7 +655,7 @@ e_debug_log_set_max_lines (gint num_lines)
 		else
 			start_index = ring_buffer_num_lines - lines_to_copy;
 
-		g_assert (start_index >= 0 && start_index < ring_buffer_max_lines);
+		g_return_if_fail (start_index >= 0 && start_index < ring_buffer_max_lines);
 
 		for (i = 0; i < lines_to_copy; i++) {
 			gint idx;

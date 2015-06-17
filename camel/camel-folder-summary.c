@@ -4023,7 +4023,7 @@ summary_build_content_info_message (CamelFolderSummary *summary,
 
 		for (i = 0; i < parts; i++) {
 			CamelMimePart *part = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
-			g_assert (part);
+			g_return_val_if_fail (part, info);
 			child = summary_build_content_info_message (summary, msginfo, part);
 			if (child) {
 				child->parent = info;

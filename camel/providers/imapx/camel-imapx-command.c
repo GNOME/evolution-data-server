@@ -426,7 +426,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 		case '\\':	/* only for \\ really, we dont support \n\r etc at all */
 			c = *p;
 			if (c) {
-				g_assert (c == '\\');
+				g_warn_if_fail (c == '\\');
 				g_string_append_len (buffer, ps, p - ps);
 				p++;
 				ps = p;

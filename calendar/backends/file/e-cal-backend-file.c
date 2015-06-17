@@ -156,8 +156,8 @@ save_file_when_idle (gpointer user_data)
 	gboolean writable;
 
 	priv = cbfile->priv;
-	g_assert (priv->path != NULL);
-	g_assert (priv->icalcomp != NULL);
+	g_return_val_if_fail (priv->path != NULL, FALSE);
+	g_return_val_if_fail (priv->icalcomp != NULL, FALSE);
 
 	writable = e_cal_backend_get_writable (E_CAL_BACKEND (cbfile));
 
@@ -749,7 +749,7 @@ add_component (ECalBackendFile *cbfile,
 		icalcomponent *icalcomp;
 
 		icalcomp = e_cal_component_get_icalcomponent (comp);
-		g_assert (icalcomp != NULL);
+		g_return_if_fail (icalcomp != NULL);
 
 		icalcomponent_add_component (priv->icalcomp, icalcomp);
 	}
@@ -771,7 +771,7 @@ remove_recurrence_cb (gpointer key,
 
 	/* remove the recurrence from the top-level calendar */
 	icalcomp = e_cal_component_get_icalcomponent (comp);
-	g_assert (icalcomp != NULL);
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
 	if (!remove_component_from_intervaltree (cbfile, comp)) {
 		g_message (G_STRLOC " Could not remove component from interval tree!");
@@ -803,13 +803,13 @@ remove_component (ECalBackendFile *cbfile,
 	/* Remove the icalcomp from the toplevel */
 	if (obj_data->full_object) {
 		icalcomp = e_cal_component_get_icalcomponent (obj_data->full_object);
-		g_assert (icalcomp != NULL);
+		g_return_if_fail (icalcomp != NULL);
 
 		icalcomponent_remove_component (priv->icalcomp, icalcomp);
 
 		/* Remove it from our mapping */
 		l = g_list_find (priv->comp, obj_data->full_object);
-		g_assert (l != NULL);
+		g_return_if_fail (l != NULL);
 		priv->comp = g_list_delete_link (priv->comp, l);
 
 		if (!remove_component_from_intervaltree (cbfile, obj_data->full_object)) {
@@ -833,8 +833,8 @@ scan_vcalendar (ECalBackendFile *cbfile)
 	icalcompiter iter;
 
 	priv = cbfile->priv;
-	g_assert (priv->icalcomp != NULL);
-	g_assert (priv->comp_uid_hash != NULL);
+	g_return_if_fail (priv->icalcomp != NULL);
+	g_return_if_fail (priv->comp_uid_hash != NULL);
 
 	for (iter = icalcomponent_begin_component (priv->icalcomp, ICAL_ANY_COMPONENT);
 	     icalcompiter_deref (&iter) != NULL;
@@ -1479,7 +1479,7 @@ e_cal_backend_file_get_object (ECalBackendSync *backend,
 	}
 
 	g_return_if_fail (uid != NULL);
-	g_assert (priv->comp_uid_hash != NULL);
+	g_return_if_fail (priv->comp_uid_hash != NULL);
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 
@@ -1791,7 +1791,7 @@ e_cal_backend_file_get_attachment_uris (ECalBackendSync *backend,
 	cbfile = E_CAL_BACKEND_FILE (backend);
 	priv = cbfile->priv;
 
-	g_assert (priv->comp_uid_hash != NULL);
+	g_return_if_fail (priv->comp_uid_hash != NULL);
 
 	g_rec_mutex_lock (&priv->idle_save_rmutex);
 

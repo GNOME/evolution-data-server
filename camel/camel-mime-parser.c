@@ -974,7 +974,7 @@ folder_read (struct _header_scan_state *s)
 		s->ioerrno = errno ? errno : EIO;
 	}
 
-	g_assert (s->inptr <= s->inend);
+	g_return_val_if_fail (s->inptr <= s->inend, 0);
 #ifdef PURIFY
 	inend_id = purify_watch (&s->inend);
 	inbuffer_id = purify_watch_n (s->inend + 1, SCAN_HEAD - 1, "rw");
@@ -1291,7 +1291,7 @@ folder_scan_header (struct _header_scan_state *s,
 				while ((*inptr++) != '\n')
 					;
 
-				g_assert (inptr <= s->inend + 1);
+				g_return_val_if_fail (inptr <= s->inend + 1, NULL);
 
 				/* check for sentinal or real end of line */
 				if (inptr > inend) {

@@ -183,8 +183,6 @@ mime_message_ensure_required_headers (CamelMimeMessage *message)
 	CamelMedium *medium = CAMEL_MEDIUM (message);
 
 	if (message->from == NULL) {
-		/* FIXME: should we just abort?  Should we make one up? */
-		g_warning ("No from set for message");
 		camel_medium_set_header (medium, "From", "");
 	}
 	if (!camel_medium_get_header (medium, "Date"))
@@ -448,7 +446,7 @@ camel_mime_message_set_date (CamelMimeMessage *message,
 {
 	gchar *datestr;
 
-	g_assert (message);
+	g_return_if_fail (message);
 
 	if (date == CAMEL_MESSAGE_DATE_CURRENT) {
 		struct tm local;
@@ -529,7 +527,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
 {
 	gchar *id;
 
-	g_assert (mime_message);
+	g_return_if_fail (mime_message);
 
 	g_free (mime_message->message_id);
 
@@ -568,7 +566,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
 const gchar *
 camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
 {
-	g_assert (mime_message);
+	g_return_val_if_fail (mime_message, NULL);
 
 	return mime_message->message_id;
 }
@@ -588,7 +586,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg,
 {
 	gchar *addr;
 
-	g_assert (msg);
+	g_return_if_fail (msg);
 
 	if (msg->reply_to) {
 		g_object_unref (msg->reply_to);
@@ -617,7 +615,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg,
 CamelInternetAddress *
 camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
 {
-	g_assert (mime_message);
+	g_return_val_if_fail (mime_message, NULL);
 
 	/* TODO: ref for threading? */
 
@@ -639,7 +637,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message,
 {
 	gchar *text;
 
-	g_assert (message);
+	g_return_if_fail (message);
 
 	g_free (message->subject);
 
@@ -666,7 +664,7 @@ camel_mime_message_set_subject (CamelMimeMessage *message,
 const gchar *
 camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 {
-	g_assert (mime_message);
+	g_return_val_if_fail (mime_message, NULL);
 
 	return mime_message->subject;
 }
@@ -690,7 +688,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg,
 {
 	gchar *addr;
 
-	g_assert (msg);
+	g_return_if_fail (msg);
 
 	if (msg->from) {
 		g_object_unref (msg->from);
@@ -719,7 +717,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg,
 CamelInternetAddress *
 camel_mime_message_get_from (CamelMimeMessage *mime_message)
 {
-	g_assert (mime_message);
+	g_return_val_if_fail (mime_message, NULL);
 
 	/* TODO: we should really ref this for multi-threading to work */
 
@@ -744,7 +742,7 @@ camel_mime_message_set_recipients (CamelMimeMessage *mime_message,
 	gchar *text;
 	CamelInternetAddress *addr;
 
-	g_assert (mime_message);
+	g_return_if_fail (mime_message);
 
 	addr = g_hash_table_lookup (mime_message->recipients, type);
 	if (addr == NULL) {
@@ -780,7 +778,7 @@ CamelInternetAddress *
 camel_mime_message_get_recipients (CamelMimeMessage *mime_message,
                                    const gchar *type)
 {
-	g_assert (mime_message);
+	g_return_val_if_fail (mime_message, NULL);
 
 	return g_hash_table_lookup (mime_message->recipients, type);
 }

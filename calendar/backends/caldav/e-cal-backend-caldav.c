@@ -1778,7 +1778,7 @@ caldav_server_get_object (ECalBackendCalDAV *cbdav,
 	const gchar               *hdr;
 	gchar                     *uri;
 
-	g_assert (object != NULL && object->href != NULL);
+	g_return_val_if_fail (object != NULL && object->href != NULL, FALSE);
 
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_GET, uri);
@@ -1925,7 +1925,7 @@ caldav_server_put_object (ECalBackendCalDAV *cbdav,
 
 	hdr = NULL;
 
-	g_assert (object != NULL && object->cdata != NULL);
+	g_return_val_if_fail (object != NULL && object->cdata != NULL, FALSE);
 
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_PUT, uri);
@@ -2072,7 +2072,7 @@ caldav_server_delete_object (ECalBackendCalDAV *cbdav,
 	SoupMessage              *message;
 	gchar                     *uri;
 
-	g_assert (object != NULL && object->href != NULL);
+	g_return_if_fail (object != NULL && object->href != NULL);
 
 	uri = caldav_generate_uri (cbdav, object->href);
 	message = soup_message_new (SOUP_METHOD_DELETE, uri);
@@ -3832,7 +3832,7 @@ pack_cobj (ECalBackendCalDAV *cbdav,
 	objstr = icalcomponent_as_ical_string_r (calcomp);
 	icalcomponent_free (calcomp);
 
-	g_assert (objstr);
+	g_return_val_if_fail (objstr != NULL, NULL);
 
 	return objstr;
 

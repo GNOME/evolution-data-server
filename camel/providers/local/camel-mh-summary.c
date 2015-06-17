@@ -321,7 +321,7 @@ mh_summary_sync (CamelLocalSummary *cls,
 	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
 	for (i = (known_uids ? known_uids->len : 0) - 1; i >= 0; i--) {
 		info = (CamelLocalMessageInfo *) camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
-		g_assert (info);
+		g_return_val_if_fail (info, -1);
 		if (expunge && (info->info.flags & CAMEL_MESSAGE_DELETED)) {
 			uid = camel_message_info_uid (info);
 			name = g_strdup_printf ("%s/%s", cls->folder_path, uid);

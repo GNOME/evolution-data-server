@@ -213,7 +213,7 @@ internet_address_cat (CamelAddress *dest,
 {
 	gint i;
 
-	g_assert (CAMEL_IS_INTERNET_ADDRESS (source));
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (source), -1);
 
 	for (i = 0; i < source->addresses->len; i++) {
 		struct _address *addr = g_ptr_array_index (source->addresses, i);
@@ -273,7 +273,7 @@ camel_internet_address_add (CamelInternetAddress *addr,
 	struct _address *new;
 	gint index;
 
-	g_assert (CAMEL_IS_INTERNET_ADDRESS (addr));
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), -1);
 
 	new = g_malloc (sizeof (*new));
 	new->name = g_strdup (name);
@@ -303,7 +303,7 @@ camel_internet_address_get (CamelInternetAddress *addr,
 {
 	struct _address *a;
 
-	g_assert (CAMEL_IS_INTERNET_ADDRESS (addr));
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), FALSE);
 
 	if (index < 0 || index >= ((CamelAddress *) addr)->addresses->len)
 		return FALSE;
@@ -335,7 +335,7 @@ camel_internet_address_find_name (CamelInternetAddress *addr,
 	struct _address *a;
 	gint i, len;
 
-	g_assert (CAMEL_IS_INTERNET_ADDRESS (addr));
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), -1);
 
 	len = ((CamelAddress *) addr)->addresses->len;
 	for (i = 0; i < len; i++) {
@@ -432,7 +432,7 @@ camel_internet_address_find_address (CamelInternetAddress *addr,
 	struct _address *a;
 	gint i, len;
 
-	g_assert (CAMEL_IS_INTERNET_ADDRESS (addr));
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), -1);
 
 	len = ((CamelAddress *) addr)->addresses->len;
 	for (i = 0; i < len; i++) {
@@ -503,12 +503,15 @@ camel_internet_address_encode_address (gint *inlen,
                                        const gchar *real,
                                        const gchar *addr)
 {
-	gchar *name = camel_header_encode_phrase ((const guchar *) real);
+	gchar *name;
 	gchar *ret = NULL;
 	gint len = 0;
-	GString *out = g_string_new ("");
+	GString *out;
 
-	g_assert (addr);
+	g_return_val_if_fail (addr, NULL);
+
+	name = camel_header_encode_phrase ((const guchar *) real);
+	out = g_string_new ("");
 
 	if (inlen != NULL)
 		len = *inlen;
@@ -576,7 +579,7 @@ camel_internet_address_format_address (const gchar *name,
 {
 	gchar *ret = NULL;
 
-	g_assert (addr);
+	g_return_val_if_fail (addr, NULL);
 
 	if (name && name[0]) {
 		const gchar *p = name;

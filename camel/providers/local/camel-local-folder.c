@@ -688,7 +688,7 @@ camel_local_folder_lock (CamelLocalFolder *lf,
 {
 	if (lf->locked > 0) {
 		/* lets be anal here - its important the code knows what its doing */
-		g_assert (lf->locktype == type || lf->locktype == CAMEL_LOCK_WRITE);
+		g_return_val_if_fail (lf->locktype == type || lf->locktype == CAMEL_LOCK_WRITE, -1);
 	} else {
 		if (CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->lock (lf, type, error) == -1)
 			return -1;
@@ -704,7 +704,7 @@ camel_local_folder_lock (CamelLocalFolder *lf,
 gint
 camel_local_folder_unlock (CamelLocalFolder *lf)
 {
-	g_assert (lf->locked > 0);
+	g_return_val_if_fail (lf->locked > 0, -1);
 	lf->locked--;
 	if (lf->locked == 0)
 		CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->unlock (lf);

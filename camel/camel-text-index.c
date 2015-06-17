@@ -215,8 +215,8 @@ text_index_finalize (GObject *object)
 
 	priv = CAMEL_TEXT_INDEX_GET_PRIVATE (object);
 
-	g_assert (g_queue_is_empty (&priv->word_cache));
-	g_assert (g_hash_table_size (priv->words) == 0);
+	g_warn_if_fail (g_queue_is_empty (&priv->word_cache));
+	g_warn_if_fail (g_hash_table_size (priv->words) == 0);
 
 	g_hash_table_destroy (priv->words);
 
@@ -1963,7 +1963,7 @@ main (gint argc,
 		data = camel_key_table_lookup (ki, keyid, &key, &flags);
 		m (printf (" word = '%s' %d %04x\n", key, data, flags));
 
-		g_assert (data == index && strcmp (key, line) == 0);
+		g_return_val_if_fail (data == index && strcmp (key, line) == 0, -1);
 
 		g_free (key);
 
@@ -1983,7 +1983,7 @@ main (gint argc,
 		data = camel_key_table_lookup (ki, keyid, &key, &flags);
 		m (printf (" word = '%s' %d\n", key, data));
 
-		g_assert (data == index && strcmp (key, line) == 0);
+		g_return_val_if_fail (data == index && strcmp (key, line) == 0, -1);
 
 		g_free (key);
 
