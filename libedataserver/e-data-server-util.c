@@ -2694,8 +2694,8 @@ e_type_traverse (GType parent_type,
  * @source: an #ESource
  *
  * Constructs a full name of the @source with all of its parents
- * of the form: "<account-name> : <parent>/<source>" where
- * the "<parent>/" part can be repeated zero or more times, depending
+ * of the form: "&lt;account-name&gt; : &lt;parent&gt;/&lt;source&gt;" where
+ * the "&lt;parent&gt;/" part can be repeated zero or more times, depending
  * on the deep level of the @source.
  *
  * Returns: (transfer full): Full name of the @source as a newly allocated
