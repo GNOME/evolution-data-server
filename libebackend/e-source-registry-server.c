@@ -978,7 +978,7 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 EDBusServer *
 e_source_registry_server_new (void)
 {
-	return g_object_new (E_TYPE_SOURCE_REGISTRY_SERVER, NULL);
+	return g_object_new (E_TYPE_SOURCE_REGISTRY_SERVER, "reload-supported", TRUE, NULL);
 }
 
 /**

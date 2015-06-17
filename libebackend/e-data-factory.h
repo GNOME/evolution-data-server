@@ -102,6 +102,8 @@ void		e_data_factory_spawn_subprocess_backend
 						 const gchar *uid,
 						 const gchar *extension_name,
 						 const gchar *subprocess_path);
+gboolean	e_data_factory_get_reload_supported
+						(EDataFactory *data_factory);
 
 G_END_DECLS
 

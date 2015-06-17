@@ -81,11 +81,14 @@ struct _EDataFactoryPrivate {
 	GCond spawn_subprocess_cond;
 	GMutex spawn_subprocess_lock;
 	DataFactorySpawnSubprocessStates spawn_subprocess_state;
+
+	gboolean reload_supported;
 };
 
 enum {
 	PROP_0,
-	PROP_REGISTRY
+	PROP_REGISTRY,
+	PROP_RELOAD_SUPPORTED
 };
 
 /* Forward Declarations */
@@ -794,21 +797,31 @@ data_factory_quit_server (EDBusServer *server,
 	GDBusInterfaceSkeleton *skeleton_interface;
 	EDataFactoryClass *class;
 
+	/* If the factory does not support reloading, stop the signal
+	 * emission and return without chaining up to prevent quitting. */
+	if (exit_code == E_DBUS_SERVER_EXIT_RELOAD &&
+	    !e_data_factory_get_reload_supported (E_DATA_FACTORY (server))) {
+		g_signal_stop_emission_by_name (server, "quit-server");
+		return;
+	}
+
 	class = E_DATA_FACTORY_GET_CLASS (E_DATA_FACTORY (server));
 
 	skeleton_interface = class->get_dbus_interface_skeleton (server);
 	g_dbus_interface_skeleton_unexport (skeleton_interface);
 
-	/* This factory does not support reloading, so stop the signal
-	 * emission and return without chaining up to prevent quitting. */
-	if (exit_code == E_DBUS_SERVER_EXIT_RELOAD) {
-		g_signal_stop_emission_by_name (server, "quit-server");
-		return;
-	}
-
 	/* Chain up to parent's quit_server() method. */
 	E_DBUS_SERVER_CLASS (e_data_factory_parent_class)->
 		quit_server (server, exit_code);
+}
+
+static void
+e_data_factory_set_reload_supported (EDataFactory *data_factory,
+				     gboolean is_supported)
+{
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+
+	data_factory->priv->reload_supported = is_supported;
 }
 
 static void
@@ -823,6 +836,30 @@ e_data_factory_get_property (GObject *object,
 				value,
 				e_data_factory_get_registry (
 				E_DATA_FACTORY (object)));
+			return;
+
+		case PROP_RELOAD_SUPPORTED:
+			g_value_set_boolean (
+				value,
+				e_data_factory_get_reload_supported (
+				E_DATA_FACTORY (object)));
+			return;
+	}
+
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+}
+
+static void
+e_data_factory_set_property (GObject *object,
+			     guint property_id,
+			     const GValue *value,
+			     GParamSpec *pspec)
+{
+	switch (property_id) {
+		case PROP_RELOAD_SUPPORTED:
+			e_data_factory_set_reload_supported (
+				E_DATA_FACTORY (object),
+				g_value_get_boolean (value));
 			return;
 	}
 
@@ -949,6 +986,7 @@ e_data_factory_class_init (EDataFactoryClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->get_property = e_data_factory_get_property;
+	object_class->set_property = e_data_factory_set_property;
 	object_class->dispose = data_factory_dispose;
 	object_class->finalize = data_factory_finalize;
 	object_class->constructed = data_factory_constructed;
@@ -969,6 +1007,18 @@ e_data_factory_class_init (EDataFactoryClass *class)
 			"Data source registry",
 			E_TYPE_SOURCE_REGISTRY,
 			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_RELOAD_SUPPORTED,
+		g_param_spec_boolean (
+			"reload-supported",
+			"Reload Supported",
+			"Whether the data factory supports Reload",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));
 }
 
@@ -1014,6 +1064,7 @@ e_data_factory_init (EDataFactory *data_factory)
 		(GDestroyNotify) watched_names_value_free);
 
 	data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
+	data_factory->priv->reload_supported = FALSE;
 }
 
 /**
@@ -1332,4 +1383,12 @@ e_data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		data_factory_spawn_subprocess_backend_in_thread, data);
 
 	g_thread_unref (thread);
+}
+
+gboolean
+e_data_factory_get_reload_supported (EDataFactory *data_factory)
+{
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), FALSE);
+
+	return data_factory->priv->reload_supported;
 }
