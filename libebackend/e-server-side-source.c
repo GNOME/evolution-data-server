@@ -533,11 +533,11 @@ server_side_source_get_last_credentials_required_arguments_cb (EDBusSource *dbus
 	return TRUE;
 }
 
-static gboolean
-server_side_source_unset_last_credentials_required_arguments_cb (EDBusSource *dbus_interface,
-								 GDBusMethodInvocation *invocation,
-								 EServerSideSource *source)
+static void
+server_side_source_unset_last_credentials_required_arguments (EServerSideSource *source)
 {
+	g_return_if_fail (E_IS_SERVER_SIDE_SOURCE (source));
+
 	g_mutex_lock (&source->priv->last_values_lock);
 
 	g_free (source->priv->last_reason);
@@ -552,9 +552,17 @@ server_side_source_unset_last_credentials_required_arguments_cb (EDBusSource *db
 	source->priv->last_dbus_error_name = NULL;
 	source->priv->last_dbus_error_message = NULL;
 
-	e_dbus_source_complete_unset_last_credentials_required_arguments (dbus_interface, invocation);
-
 	g_mutex_unlock (&source->priv->last_values_lock);
+}
+
+static gboolean
+server_side_source_unset_last_credentials_required_arguments_cb (EDBusSource *dbus_interface,
+								 GDBusMethodInvocation *invocation,
+								 EServerSideSource *source)
+{
+	server_side_source_unset_last_credentials_required_arguments (source);
+
+	e_dbus_source_complete_unset_last_credentials_required_arguments (dbus_interface, invocation);
 
 	return TRUE;
 }
@@ -1516,6 +1524,18 @@ server_side_source_invoke_authenticate_impl (ESource *source,
 }
 
 static gboolean
+server_side_source_unset_last_credentials_required_arguments_impl (ESource *source,
+								   GCancellable *cancellable,
+								   GError **error)
+{
+	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), FALSE);
+
+	server_side_source_unset_last_credentials_required_arguments (E_SERVER_SIDE_SOURCE (source));
+
+	return TRUE;
+}
+
+static gboolean
 server_side_source_initable_init (GInitable *initable,
                                   GCancellable *cancellable,
                                   GError **error)
@@ -1589,6 +1609,7 @@ e_server_side_source_class_init (EServerSideSourceClass *class)
 	source_class->get_oauth2_access_token_sync = server_side_source_get_oauth2_access_token_sync;
 	source_class->invoke_credentials_required_impl = server_side_source_invoke_credentials_required_impl;
 	source_class->invoke_authenticate_impl = server_side_source_invoke_authenticate_impl;
+	source_class->unset_last_credentials_required_arguments_impl = server_side_source_unset_last_credentials_required_arguments_impl;
 
 	g_object_class_install_property (
 		object_class,

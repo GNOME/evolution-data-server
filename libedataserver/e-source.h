@@ -207,9 +207,13 @@ struct _ESourceClass {
 						 const gchar * const *arg_credentials,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*unset_last_credentials_required_arguments_impl)
+						(ESource *source,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/* Reserved slots. */
-	gpointer reserved[7];
+	gpointer reserved[6];
 };
 
 GType		e_source_get_type		(void) G_GNUC_CONST;

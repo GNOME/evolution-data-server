@@ -2190,6 +2190,40 @@ source_invoke_authenticate_impl (ESource *source,
 }
 
 static gboolean
+source_unset_last_credentials_required_arguments_impl (ESource *source,
+						       GCancellable *cancellable,
+						       GError **error)
+{
+	GDBusObject *dbus_object;
+	EDBusSource *dbus_source = NULL;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	dbus_object = e_source_ref_dbus_object (source);
+	if (dbus_object != NULL) {
+		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
+		g_object_unref (dbus_object);
+	}
+
+	if (!dbus_source)
+		return FALSE;
+
+	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source, cancellable, &local_error);
+
+	g_object_unref (dbus_source);
+
+	if (local_error != NULL) {
+		g_dbus_error_strip_remote_error (local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return success;
+}
+
+static gboolean
 source_initable_init (GInitable *initable,
                       GCancellable *cancellable,
                       GError **error)
@@ -2386,6 +2420,7 @@ e_source_class_init (ESourceClass *class)
 	class->get_oauth2_access_token_finish = source_get_oauth2_access_token_finish;
 	class->invoke_credentials_required_impl = source_invoke_credentials_required_impl;
 	class->invoke_authenticate_impl = source_invoke_authenticate_impl;
+	class->unset_last_credentials_required_arguments_impl = source_unset_last_credentials_required_arguments_impl;
 
 	g_object_class_install_property (
 		object_class,
@@ -5392,33 +5427,14 @@ e_source_unset_last_credentials_required_arguments_sync (ESource *source,
 							 GCancellable *cancellable,
 							 GError **error)
 {
-	GDBusObject *dbus_object;
-	EDBusSource *dbus_source = NULL;
-	gboolean success;
-	GError *local_error = NULL;
+	ESourceClass *klass;
 
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	dbus_object = e_source_ref_dbus_object (source);
-	if (dbus_object != NULL) {
-		dbus_source = e_dbus_object_get_source (E_DBUS_OBJECT (dbus_object));
-		g_object_unref (dbus_object);
-	}
+	klass = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (klass->unset_last_credentials_required_arguments_impl != NULL, FALSE);
 
-	if (!dbus_source)
-		return FALSE;
-
-	success = e_dbus_source_call_unset_last_credentials_required_arguments_sync (dbus_source, cancellable, &local_error);
-
-	g_object_unref (dbus_source);
-
-	if (local_error != NULL) {
-		g_dbus_error_strip_remote_error (local_error);
-		g_propagate_error (error, local_error);
-		return FALSE;
-	}
-
-	return success;
+	return klass->unset_last_credentials_required_arguments_impl (source, cancellable, error);
 }
 
 static void
