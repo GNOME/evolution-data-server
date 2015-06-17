@@ -731,7 +731,7 @@ source_registry_server_source_added (ESourceRegistryServer *server,
 	object_path = g_dbus_object_get_object_path (g_dbus_object);
 	object_name = strrchr (object_path, '/') + 1;
 
-	g_debug ("Adding %s ('%s')\n", uid, object_name);
+	g_debug ("Adding %s ('%s')", uid, object_name);
 
 	g_object_unref (dbus_object);
 }
