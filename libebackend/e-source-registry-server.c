@@ -421,6 +421,51 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
                                            GFileMonitorEvent event_type,
                                            ESourceRegistryServer *server)
 {
+	gchar *uri;
+
+	if (e_source_registry_debug_enabled ()) {
+		uri = g_file_get_uri (file);
+		e_source_registry_debug_print ("Handling file monitor event %u for URI: %s", event_type, uri);
+		g_free (uri);
+	}
+
+	if (event_type == G_FILE_MONITOR_EVENT_CHANGED ||
+	    event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
+		ESource *source;
+		gchar *uid;
+		GError *error = NULL;
+
+		uid = e_server_side_source_uid_from_file (file, NULL);
+
+		if (uid == NULL)
+			return;
+
+		source = e_source_registry_server_ref_source (server, uid);
+
+		g_free (uid);
+
+		/* If the source does not exist, create it; parsing may have
+		 * failed when the file was originally created. This can happen
+		 * if the file is created (empty), then e-source-registry-server
+		 * detects it, then it’s populated and made valid.
+		 *
+		 * Otherwise, reload the file since it has changed. */
+		if (source == NULL) {
+			event_type = G_FILE_MONITOR_EVENT_CREATED;
+		} else if (!e_server_side_source_load (E_SERVER_SIDE_SOURCE (source), NULL, &error)) {
+			uri = g_file_get_uri (file);
+			g_warning ("Error reloading source ‘%s’: %s", uri, error->message);
+
+			g_free (uri);
+			g_error_free (error);
+			g_object_unref (source);
+
+			return;
+		}
+
+		g_object_unref (source);
+	}
+
 	if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
 		ESource *source;
 		GError *error = NULL;
