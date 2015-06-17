@@ -137,7 +137,7 @@ gint main (gint argc, gchar **argv)
 
 	/* dont count the terminator */
 	bytes = (G_N_ELEMENTS (tables) + 7 - 1) / 8;
-	g_assert (bytes <= 4);
+	g_return_val_if_fail (bytes <= 4, -1);
 
 	for (i = 0; i < 128; i++)
 		in[i] = i + 128;

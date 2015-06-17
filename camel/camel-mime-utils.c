@@ -4824,7 +4824,7 @@ mailing_list_init (gpointer param)
 		}
 	}
 
-	g_assert (failed == 0);
+	g_warn_if_fail (failed == 0);
 
 	return NULL;
 }

@@ -439,7 +439,7 @@ mbox_folder_lock (CamelLocalFolder *lf,
 	CamelMboxFolder *mf = (CamelMboxFolder *) lf;
 
 	/* make sure we have matching unlocks for locks, camel-local-folder class should enforce this */
-	g_assert (mf->lockfd == -1);
+	g_return_val_if_fail (mf->lockfd == -1, -1);
 
 	mf->lockfd = open (lf->folder_path, O_RDWR | O_LARGEFILE, 0);
 	if (mf->lockfd == -1) {
@@ -466,7 +466,7 @@ mbox_folder_unlock (CamelLocalFolder *lf)
 #ifndef G_OS_WIN32
 	CamelMboxFolder *mf = (CamelMboxFolder *) lf;
 
-	g_assert (mf->lockfd != -1);
+	g_return_if_fail (mf->lockfd != -1);
 	if (mf->lockfd != -1) {
 		camel_unlock_folder (lf->folder_path, mf->lockfd);
 		close (mf->lockfd);

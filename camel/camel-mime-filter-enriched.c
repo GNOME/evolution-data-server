@@ -209,7 +209,7 @@ param_parse (const gchar *enriched,
 			return enriched_tags[i].parse_param (inptr, inlen);
 	}
 
-	g_assert_not_reached ();
+	g_warn_if_reached ();
 
 	return NULL;
 }

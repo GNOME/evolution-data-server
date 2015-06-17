@@ -228,7 +228,7 @@ camel_sexp_result_free (CamelSExp *sexp,
 	case CAMEL_SEXP_RES_UNDEFINED:
 		break;
 	default:
-		g_assert_not_reached ();
+		g_return_if_reached ();
 	}
 	camel_memchunk_free (sexp->result_chunks, term);
 }
@@ -1261,8 +1261,8 @@ parse_values (CamelSExp *sexp,
 	terms = g_malloc (size * sizeof (*terms));
 	l = list;
 	for (i = size - 1; i >= 0; i--) {
-		g_assert (l);
-		g_assert (l->data);
+		g_return_val_if_fail (l, NULL);
+		g_return_val_if_fail (l->data, NULL);
 		terms[i] = l->data;
 		l = g_slist_next (l);
 	}
@@ -1337,7 +1337,7 @@ parse_value (CamelSExp *sexp)
 
 		str = g_scanner_cur_value (gs).v_identifier;
 
-		g_assert (str != NULL);
+		g_return_val_if_fail (str != NULL, NULL);
 		if (!(strlen (str) == 1 && (str[0] == 't' || str[0] == 'f'))) {
 			camel_sexp_fatal_error (sexp, "Invalid format for a boolean value");
 			return NULL;

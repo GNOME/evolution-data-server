@@ -461,7 +461,7 @@ emit_notifications_in_idle (gpointer user_data)
 	path = g_object_get_data (object, "gdbus-codegen-path");
 	connection = g_object_get_data (object, "gdbus-codegen-connection");
 	pvc = g_object_get_data (object, "gdbus-codegen-pvc");
-	g_assert (notification_queue != NULL && path != NULL && connection != NULL && pvc != NULL);
+	g_return_val_if_fail (notification_queue != NULL && path != NULL && connection != NULL && pvc != NULL, FALSE);
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_ARRAY);
 	invalidated_builder = g_variant_builder_new (G_VARIANT_TYPE ("as"));
@@ -678,7 +678,7 @@ e_gdbus_book_view_proxy_new_finish (GAsyncResult *result,
 	GObject *object;
 	GObject *source_object;
 	source_object = g_async_result_get_source_object (result);
-	g_assert (source_object != NULL);
+	g_return_val_if_fail (source_object != NULL, NULL);
 	object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object), result, error);
 	g_object_unref (source_object);
 	if (object != NULL)
@@ -780,7 +780,7 @@ e_gdbus_book_view_proxy_new_for_bus_finish (GAsyncResult *result,
 	GObject *object;
 	GObject *source_object;
 	source_object = g_async_result_get_source_object (result);
-	g_assert (source_object != NULL);
+	g_return_val_if_fail (source_object != NULL, NULL);
 	object = g_async_initable_new_finish (G_ASYNC_INITABLE (source_object), result, error);
 	g_object_unref (source_object);
 	if (object != NULL)

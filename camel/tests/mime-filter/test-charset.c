@@ -197,7 +197,6 @@ main (gint argc,
 
 	if (local_error != NULL) {
 		g_error ("%s", local_error->message);
-		g_assert_not_reached ();
 	}
 
 	while ((basename = g_dir_read_name (dir)) != NULL)

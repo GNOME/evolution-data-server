@@ -197,7 +197,7 @@ create_book (const gchar *book_id)
 		g_main_loop_run (data.loop);
 
 		/* By now we aborted or we have an addressbook created */
-		g_assert (data.book != NULL);
+		g_warn_if_fail (data.book != NULL);
 	}
 
 	g_main_loop_unref (data.loop);

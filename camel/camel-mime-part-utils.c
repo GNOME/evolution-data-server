@@ -175,8 +175,8 @@ camel_mime_message_build_preview (CamelMimePart *msg,
 		gint i, nparts;
 		CamelMultipart *mp = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) msg);
 
-		if (!CAMEL_IS_MULTIPART (mp))
-			g_assert (0);
+		g_warn_if_fail (CAMEL_IS_MULTIPART (mp));
+
 		nparts = camel_multipart_get_number (mp);
 		for (i = 0; i < nparts && !got_plain; i++) {
 			CamelMimePart *part = camel_multipart_get_part (mp, i);

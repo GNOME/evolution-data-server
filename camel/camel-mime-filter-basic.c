@@ -61,7 +61,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 			mime_filter->outbuf,
 			&priv->state,
 			&priv->save);
-		g_assert (newlen <= len * 2 + 6);
+		g_return_if_fail (newlen <= len * 2 + 6);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 		/* *4 is overly conservative, but will do */
@@ -72,7 +72,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 			(guchar *) mime_filter->outbuf,
 			&priv->state,
 			(gint *) &priv->save);
-		g_assert (newlen <= len * 4 + 4);
+		g_return_if_fail (newlen <= len * 4 + 4);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
 		/* won't go to more than 2 * (x + 2) + 62 */
@@ -84,7 +84,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 			priv->uubuf,
 			&priv->state,
 			(guint32 *) &priv->save);
-		g_assert (newlen <= (len + 2) * 2 + 62);
+		g_return_if_fail (newlen <= (len + 2) * 2 + 62);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 		/* output can't possibly exceed the input size */
@@ -94,7 +94,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 			(guchar *) mime_filter->outbuf,
 			&priv->state,
 			(guint *) &priv->save);
-		g_assert (newlen <= len + 3);
+		g_return_if_fail (newlen <= len + 3);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
 		/* output can't possibly exceed the input size */
@@ -104,7 +104,7 @@ mime_filter_basic_filter (CamelMimeFilter *mime_filter,
 			(guchar *) mime_filter->outbuf,
 			&priv->state,
 			(gint *) &priv->save);
-		g_assert (newlen <= len + 2);
+		g_return_if_fail (newlen <= len + 2);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
 		if (!(priv->state & CAMEL_UUDECODE_STATE_BEGIN)) {
@@ -203,7 +203,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 			mime_filter->outbuf,
 			&priv->state,
 			&priv->save);
-		g_assert (newlen <= len * 2 + 6);
+		g_return_if_fail (newlen <= len * 2 + 6);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_ENC:
 		/* *4 is definetly more than needed ... */
@@ -214,7 +214,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 			(guchar *) mime_filter->outbuf,
 			&priv->state,
 			&priv->save);
-		g_assert (newlen <= len * 4 + 4);
+		g_return_if_fail (newlen <= len * 4 + 4);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_UU_ENC:
 		/* won't go to more than 2 * (x + 2) + 62 */
@@ -226,7 +226,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 			priv->uubuf,
 			&priv->state,
 			(guint32 *) &priv->save);
-		g_assert (newlen <= (len + 2) * 2 + 62);
+		g_return_if_fail (newlen <= (len + 2) * 2 + 62);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_BASE64_DEC:
 		/* output can't possibly exceed the input size */
@@ -236,7 +236,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 			(guchar *) mime_filter->outbuf,
 			&priv->state,
 			(guint *) &priv->save);
-		g_assert (newlen <= len);
+		g_return_if_fail (newlen <= len);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_QP_DEC:
 		/* output can't possibly exceed the input size,
@@ -247,7 +247,7 @@ mime_filter_basic_complete (CamelMimeFilter *mime_filter,
 			(guchar *) mime_filter->outbuf,
 			&priv->state,
 			(gint *) &priv->save);
-		g_assert (newlen <= len + 2);
+		g_return_if_fail (newlen <= len + 2);
 		break;
 	case CAMEL_MIME_FILTER_BASIC_UU_DEC:
 		if ((priv->state & CAMEL_UUDECODE_STATE_BEGIN) && !(priv->state & CAMEL_UUDECODE_STATE_END)) {

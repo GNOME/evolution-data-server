@@ -509,7 +509,7 @@ camel_movemail_solaris (gint oldsfd,
 	ffrom = camel_mime_filter_from_new ();
 
 	while (camel_mime_parser_step (mp, &buffer, &len) == CAMEL_MIME_PARSER_STATE_FROM) {
-		g_assert (camel_mime_parser_from_line (mp));
+		g_return_val_if_fail (camel_mime_parser_from_line (mp), -1);
 		from = g_strdup (camel_mime_parser_from_line (mp));
 		if (camel_mime_parser_step (mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM_END) {
 			const gchar *cl;

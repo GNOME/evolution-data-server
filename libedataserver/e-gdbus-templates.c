@@ -86,7 +86,7 @@ e_gdbus_signal_emission_hook_boolean (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 1);
+	g_return_val_if_fail (n_param_values - 1 == 1, FALSE);
 	param_values++;
 	item = g_variant_new_boolean (g_value_get_boolean (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -123,7 +123,7 @@ e_gdbus_signal_emission_hook_string (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 1);
+	g_return_val_if_fail (n_param_values - 1 == 1, FALSE);
 	param_values++;
 	item = g_variant_new_string (g_value_get_string (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -161,7 +161,7 @@ e_gdbus_signal_emission_hook_strv (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 1);
+	g_return_val_if_fail (n_param_values - 1 == 1, FALSE);
 	param_values++;
 	arg_strv = g_value_get_boxed (param_values);
 	item = g_variant_new_strv (arg_strv, -1);
@@ -199,7 +199,7 @@ e_gdbus_signal_emission_hook_uint (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 1);
+	g_return_val_if_fail (n_param_values - 1 == 1, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -236,7 +236,7 @@ e_gdbus_signal_emission_hook_uint_string (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 2);
+	g_return_val_if_fail (n_param_values - 1 == 2, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -277,7 +277,7 @@ e_gdbus_signal_emission_hook_async_void (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 2);
+	g_return_val_if_fail (n_param_values - 1 == 2, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -331,7 +331,7 @@ e_gdbus_signal_emission_hook_async_boolean (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 3);
+	g_return_val_if_fail (n_param_values - 1 == 3, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -392,7 +392,7 @@ e_gdbus_signal_emission_hook_async_string (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 3);
+	g_return_val_if_fail (n_param_values - 1 == 3, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -454,7 +454,7 @@ e_gdbus_signal_emission_hook_async_strv (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 3);
+	g_return_val_if_fail (n_param_values - 1 == 3, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);
@@ -518,7 +518,7 @@ e_gdbus_signal_emission_hook_async_uint (GSignalInvocationHint *ihint,
 		return FALSE;
 
 	builder = g_variant_builder_new (G_VARIANT_TYPE_TUPLE);
-	g_assert_cmpint (n_param_values - 1, ==, 3);
+	g_return_val_if_fail (n_param_values - 1 == 3, FALSE);
 	param_values++;
 	item = g_variant_new_uint32 (g_value_get_uint (param_values));
 	g_variant_builder_add_value (builder, item);

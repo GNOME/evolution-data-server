@@ -229,8 +229,8 @@ camel_debug_hwatch (gint wp,
 {
      guint32 control, rw;
 
-     g_assert (wp <= DR_LASTADDR);
-     g_assert (sizeof (addr) == 4);
+     g_return_if_fail (wp <= DR_LASTADDR);
+     g_return_if_fail (sizeof (addr) == 4);
 
      get_dr (7, control);
      /* set watch mode + size */

@@ -371,7 +371,7 @@ e_contact_class_init (EContactClass *class)
 		GParamFlags flags;
 
 		/* Verify the table is correctly ordered */
-		g_assert (ii == field_info[ii].field_id);
+		g_return_if_fail (ii == field_info[ii].field_id);
 
 		flags = G_PARAM_READABLE |
 			G_PARAM_STATIC_NICK |

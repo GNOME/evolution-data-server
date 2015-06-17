@@ -1668,11 +1668,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	GList *list, *link;
 	gint result;
 
-	/* FIXME: make me into a g_return_if_fail/g_assert or whatever... */
-	if (message == NULL && (source == NULL || uid == NULL)) {
-		g_warning ("there is no way to fetch the message using the information provided...");
-		return -1;
-	}
+	g_return_val_if_fail (message != NULL || (source != NULL && uid != NULL), -1);
 
 	if (info == NULL) {
 		struct _camel_header_raw *h;

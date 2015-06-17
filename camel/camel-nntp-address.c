@@ -82,7 +82,7 @@ nntp_address_cat (CamelAddress *dest,
 {
 	gint ii;
 
-	g_assert (CAMEL_IS_NNTP_ADDRESS (source));
+	g_return_val_if_fail (CAMEL_IS_NNTP_ADDRESS (source), -1);
 
 	for (ii = 0; ii < source->addresses->len; ii++)
 		camel_nntp_address_add (
@@ -150,7 +150,7 @@ camel_nntp_address_add (CamelNNTPAddress *a,
 {
 	gint index, i;
 
-	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
+	g_return_val_if_fail (CAMEL_IS_NNTP_ADDRESS (a), -1);
 
 	index = ((CamelAddress *) a)->addresses->len;
 	for (i = 0; i < index; i++)
@@ -177,7 +177,7 @@ camel_nntp_address_get (CamelNNTPAddress *a,
                         gint index,
                         const gchar **namep)
 {
-	g_assert (CAMEL_IS_NNTP_ADDRESS (a));
+	g_return_val_if_fail (CAMEL_IS_NNTP_ADDRESS (a), FALSE);
 
 	if (index < 0 || index >= ((CamelAddress *) a)->addresses->len)
 		return FALSE;

@@ -465,7 +465,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 			;
 
 		/* getting error code? */
-		/*g_assert (fi->cmd->state == CAMEL_POP3_COMMAND_DATA);*/
+		/*g_warn_if_fail (fi->cmd->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free (pop3_engine, fi->cmd);
 		fi->cmd = NULL;
 
@@ -545,7 +545,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 			;
 
 		/* getting error code? */
-		/*g_assert (pcr->state == CAMEL_POP3_COMMAND_DATA);*/
+		/*g_warn_if_fail (pcr->state == CAMEL_POP3_COMMAND_DATA);*/
 		camel_pop3_engine_command_free (pop3_engine, pcr);
 		g_seekable_seek (
 			G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);

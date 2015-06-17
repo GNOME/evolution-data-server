@@ -85,7 +85,7 @@ source_backend_summary_setup_dup_literal_fields (ESourceBackendSummarySetup *ext
 			duplicate = g_strdup (extension->priv->indexed_fields);
 			break;
 		default:
-			g_assert_not_reached ();
+			g_return_val_if_reached (NULL);
 			break;
 	}
 
@@ -112,7 +112,7 @@ source_backend_summary_setup_set_literal_fields (ESourceBackendSummarySetup *ext
 			property_name = "indexed-fields";
 			break;
 		default:
-			g_assert_not_reached ();
+			g_return_if_reached ();
 			break;
 	}
 

@@ -203,7 +203,7 @@ camel_url_addrspec_start (const gchar *in,
 {
 	register const gchar *inptr = pos;
 
-	g_assert (*inptr == '@');
+	g_return_val_if_fail (*inptr == '@', FALSE);
 
 	if (inptr > in)
 		inptr--;
@@ -242,7 +242,7 @@ camel_url_addrspec_end (const gchar *in,
 	gint parts = 0, digits;
 	gboolean got_dot = FALSE;
 
-	g_assert (*inptr == '@');
+	g_return_val_if_fail (*inptr == '@', FALSE);
 
 	inptr++;
 

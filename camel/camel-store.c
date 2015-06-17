@@ -905,11 +905,11 @@ add_special_info (CamelStore *store,
 		g_free (vinfo->full_name);
 		g_free (vinfo->display_name);
 	} else {
+		g_return_if_fail (parent != NULL);
+
 		/* There wasn't a Trash/Junk folder so create a new
 		 * folder entry. */
 		vinfo = camel_folder_info_new ();
-
-		g_assert (parent != NULL);
 
 		vinfo->flags |=
 			CAMEL_FOLDER_NOINFERIORS |

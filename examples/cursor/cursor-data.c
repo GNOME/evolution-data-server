@@ -204,7 +204,7 @@ cursor_load_data (const gchar *vcard_path,
 			ESource *source = e_source_registry_ref_source (registry, CURSOR_DATA_SOURCE_ID);
 
 			g_clear_error (&error);
-			g_assert (E_IS_SOURCE (source));
+			g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 			/* Run the callback which creates the addressbook client connection */
 			cursor_data_source_added (registry, source, NULL);
@@ -224,7 +224,7 @@ cursor_load_data (const gchar *vcard_path,
 		g_main_loop_run (loop);
 
 		/* By now we aborted or we have an addressbook created */
-		g_assert (address_book != NULL);
+		g_return_val_if_fail (address_book != NULL, NULL);
 	}
 
 	/**********************************************************

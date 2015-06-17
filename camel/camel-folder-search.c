@@ -929,7 +929,6 @@ folder_search_match_all (CamelSExp *sexp,
 	if (search->summary == NULL) {
 		/* TODO: make it work - e.g. use the folder and so forth for a slower search */
 		g_warning ("No summary supplied, match-all doesn't work with no summary");
-		g_assert (0);
 		return r;
 	}
 
@@ -1936,7 +1935,10 @@ camel_folder_search_count (CamelFolderSearch *search,
 	if (!expr || !*expr)
 		expr = "(match-all)";
 
-	g_assert (search->folder);
+	if (!search->folder) {
+		g_warn_if_reached ();
+		goto fail;
+	}
 
 	p->cancellable = cancellable;
 	p->error = error;
@@ -2090,7 +2092,10 @@ camel_folder_search_search (CamelFolderSearch *search,
 	if (!expr || !*expr)
 		expr = "(match-all)";
 
-	g_assert (search->folder);
+	if (!search->folder) {
+		g_warn_if_reached ();
+		goto fail;
+	}
 
 	p->cancellable = cancellable;
 	p->error = error;
