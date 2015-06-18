@@ -424,9 +424,20 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 	if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
 		ESource *source;
 		GError *error = NULL;
+		gchar *uid;
 
-		/* it can return NULL source for hidden files */
-		source = e_server_side_source_new (server, file, &error);
+		uid = e_server_side_source_uid_from_file (file, NULL);
+		if (!uid)
+			return;
+
+		source = e_source_registry_server_ref_source (server, uid);
+
+		g_free (uid);
+
+		if (!source) {
+			/* it can return NULL source for hidden files */
+			source = e_server_side_source_new (server, file, &error);
+		}
 
 		if (!error && source) {
 			/* File monitors are only placed on directories
@@ -438,12 +449,13 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 				E_SERVER_SIDE_SOURCE (source), TRUE);
 
 			e_source_registry_server_add_source (server, source);
-			g_object_unref (source);
 		} else if (error) {
 			e_source_registry_server_load_error (
 				server, file, error);
 			g_error_free (error);
 		}
+
+		g_clear_object (&source);
 	}
 
 	if (event_type == G_FILE_MONITOR_EVENT_DELETED) {
