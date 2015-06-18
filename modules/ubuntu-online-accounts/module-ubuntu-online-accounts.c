@@ -370,9 +370,10 @@ ubuntu_online_accounts_config_collection (EUbuntuOnlineAccounts *extension,
 		g_hash_table_ref (account_services),
 		(GDestroyNotify) g_hash_table_unref);
 
+	e_server_side_source_set_writable (E_SERVER_SIDE_SOURCE (source), TRUE);
+
 	/* The data source should not be removable by clients. */
-	e_server_side_source_set_removable (
-		E_SERVER_SIDE_SOURCE (source), FALSE);
+	e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (source), FALSE);
 
 	if (supports_oauth2) {
 		/* This module provides OAuth 2.0 support to the collection.
