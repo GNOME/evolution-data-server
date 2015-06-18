@@ -660,9 +660,10 @@ gnome_online_accounts_config_collection (EGnomeOnlineAccounts *extension,
 	/* Handle optional GOA interfaces. */
 	gnome_online_accounts_config_exchange (extension, source, goa_object);
 
+	e_server_side_source_set_writable (E_SERVER_SIDE_SOURCE (source), TRUE);
+
 	/* The data source should not be removable by clients. */
-	e_server_side_source_set_removable (
-		E_SERVER_SIDE_SOURCE (source), FALSE);
+	e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (source), FALSE);
 
 	if (goa_object_peek_oauth2_based (goa_object) != NULL) {
 		/* This module provides OAuth 2.0 support to the collection.
