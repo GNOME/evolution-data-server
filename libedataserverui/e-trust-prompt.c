@@ -548,7 +548,7 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 			       GAsyncReadyCallback callback,
 			       gpointer user_data)
 {
-	ESourceAuthentication *extension_authentication;
+	ESourceAuthentication *extension_authentication = NULL;
 	ESourceWebdav *extension_webdav = NULL;
 	SaveSourceData *save_data;
 	GTlsCertificate *certificate;
@@ -559,9 +559,9 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 		g_return_if_fail (GTK_IS_WINDOW (parent));
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (certificate_pem != NULL);
-	g_return_if_fail (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION));
 
-	extension_authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
+		extension_authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND))
 		extension_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 
@@ -570,7 +570,11 @@ e_trust_prompt_run_for_source (GtkWindow *parent,
 	save_data->call_save = FALSE;
 
 	/* Lookup used host name */
-	host = e_source_authentication_dup_host (extension_authentication);
+	if (extension_authentication)
+		host = e_source_authentication_dup_host (extension_authentication);
+	else
+		host = NULL;
+
 	if (!host || !*host) {
 		g_free (host);
 		host = NULL;
