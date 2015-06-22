@@ -1,3 +1,50 @@
+Evolution-Data-Server 3.17.3 2015-06-22
+---------------------------------------
+
+Bug Fixes:
+	Bug 747988 - Adding 000D characters in plaintext mail replies (Milan Crha)
+	Bug 749292 - SMTP connection lost while reading message data (Milan Crha)
+	Bug 749664 - [IMAPx] Don't mark mail in trash folder as deleted (Milan Crha)
+	Bug 720197 - [IMAPx] Indefinite waiting for message download (Milan Crha)
+	Bug 750146 - [IMAPx] Deadlock when FETCH and STORE run at one time (Milan Crha)
+	Bug 750416 - Crash under e_client_wait_for_connected_sync() (Milan Crha)
+	Bug 750427 - Preserve EWS autodiscovered hosts in GOA accounts (Milan Crha)
+	Bug 676155 - [POP3] Use 'Broken pipe' error for end-of-stream case (Milan Crha)
+	Bug 678901 - Avoid ESource::changed notification after extension load (Milan Crha)
+	Bug 750148 - GMail account with calendar/contacts broken the next start (Milan Crha)
+	Bug 247661 - [LDAP] Cannot save contact with Calendar and Free/Busy URLs (Milan Crha)
+	Bug 471791 - Move away from g_asserts to g_ret* (Milan Crha)
+	Bug 751108 - Source registry Reload() method call broken (Milan Crha)
+	Bug 750889 - Fix error in e_util_get_source_full_name() documentation (Ting-Wei Lan)
+	Bug 751005 - [GOA/UOA] Make collection sources writeable by default (Milan Crha)
+
+Miscellaneous:
+	Google backend considers each discovered source as new (Milan Crha)
+	[IMAPx] Message moved to real Trash/Junk multiple times (Milan Crha)
+	Truly disable gtk-doc build when asked to (Milan Crha)
+	[Google book] Remove unnecessary code path found by Coverity Scan (Milan Crha)
+	Correct a white-space error (Milan Crha)
+	[IMAPx] Consider also G_IO_ERROR_BROKEN_PIPE as 'Connection reset by peer' error (Milan Crha)
+	Use e_source_remove_sync() instead of e_source_registry_server_remove_source () (Milan Crha)
+	ownCloud/Google backends - make sure discovered sources are enabled (Milan Crha)
+	Provide e_util_get_source_full_name() to describe source with parents (Milan Crha)
+	Provide default implementation of EBackend::authenticate_sync() (Milan Crha)
+	Do not add Google Tasks source for non-GOA master sources (Milan Crha)
+	Make ESource::unset_last_credentials_required_arguments() virtual method (Milan Crha)
+	source_registry_server_monitor_changed_cb: Reuse existing source (Milan Crha)
+	addressbook: Treat an empty vCard attribute group name as NULL (Philip Withnall)
+	e-source-registry-server: Watch for changes to .source files and reload (Philip Withnall)
+	e_trust_prompt_run_for_source: Do not require Authentication extension (Milan Crha)
+	[ETrustPrompt] Ensure needed extensions for GOA/UOA sources (Milan Crha)
+	Add --factory parameter to factory subprocesses for easier debugging (Milan Crha)
+	e-source-registry-server: Remove a spurious newline from a debug message (Philip Withnall)
+
+Translations:
+	Daniel Mustieles (es)
+	Balázs Úr (hu)
+	Piotr Drąg (am)
+	Dimitris Spingos (el)
+
 Evolution-Data-Server 3.17.2 2015-05-25
 ---------------------------------------
 
