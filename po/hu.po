@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-06-04 16:46+0000\n"
-"PO-Revision-Date: 2015-06-04 22:42+0200\n"
+"POT-Creation-Date: 2015-06-22 19:20+0000\n"
+"PO-Revision-Date: 2015-06-22 23:57+0200\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
@@ -2019,17 +2019,17 @@ msgstr "Levelek letöltése: %d/%d"
 msgid "Failed at message %d of %d"
 msgstr "Hiba a(z) %d / %d üzenetnél"
 
-#: ../camel/camel-filter-driver.c:1750 ../camel/camel-filter-driver.c:1777
+#: ../camel/camel-filter-driver.c:1746 ../camel/camel-filter-driver.c:1773
 #, c-format
 msgid "Execution of filter '%s' failed: "
 msgstr "A szűrő („%s”) végrehajtása meghiúsult:"
 
-#: ../camel/camel-filter-driver.c:1767
+#: ../camel/camel-filter-driver.c:1763
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "Hiba a szűrő („%s”) feldolgozása közben: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1786
+#: ../camel/camel-filter-driver.c:1782
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
 msgstr "Hiba a szűrő („%s”) végrehajtása közben: %s: %s"
@@ -2116,36 +2116,36 @@ msgid "Refreshing folder '%s'"
 msgstr "„%s” mappa frissítése"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:915 ../camel/camel-folder-search.c:958
+#: ../camel/camel-folder-search.c:915 ../camel/camel-folder-search.c:957
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "A(z) (%s) egyetlen logikai eredményt vár"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:993
+#: ../camel/camel-folder-search.c:992
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nem engedélyezett a(z) %s elemen belül"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1000 ../camel/camel-folder-search.c:1008
+#: ../camel/camel-folder-search.c:999 ../camel/camel-folder-search.c:1007
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "A(z) (%s) egy keresési típusszöveget igényel"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1036
+#: ../camel/camel-folder-search.c:1035
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "A(z) (%s) egy tömb eredményt vár"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1046
+#: ../camel/camel-folder-search.c:1045
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "A(z) (%s) a mappahalmazt igényli"
 
-#: ../camel/camel-folder-search.c:1960 ../camel/camel-folder-search.c:2126
+#: ../camel/camel-folder-search.c:1962 ../camel/camel-folder-search.c:2131
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2154,7 +2154,7 @@ msgstr ""
 "Nem sikerült értelmezni a keresőkifejezést:  %s\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1972 ../camel/camel-folder-search.c:2138
+#: ../camel/camel-folder-search.c:1974 ../camel/camel-folder-search.c:2143
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2173,18 +2173,18 @@ msgstr "Nem használt memória elengedése a következő mappánál: „%s”"
 msgid "Update preview data for folder '%s'"
 msgstr "Előnézeti adatok frissítése a következő mappánál: „%s”"
 
-#: ../camel/camel-gpg-context.c:724 ../camel/camel-gpg-context.c:729
-#: ../camel/camel-gpg-context.c:1386
+#: ../camel/camel-gpg-context.c:728 ../camel/camel-gpg-context.c:733
+#: ../camel/camel-gpg-context.c:1400
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "A gpg végrehajtása sikertelen: %s"
 
-#: ../camel/camel-gpg-context.c:729
+#: ../camel/camel-gpg-context.c:733
 #: ../camel/providers/smtp/camel-smtp-transport.c:976
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: ../camel/camel-gpg-context.c:794
+#: ../camel/camel-gpg-context.c:798
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2195,17 +2195,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:830
+#: ../camel/camel-gpg-context.c:834
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "A gpg felhasználói azonosító sikertelen elemzése."
 
-#: ../camel/camel-gpg-context.c:855 ../camel/camel-gpg-context.c:870
+#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:874
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "A gpg jelmondatkérés elemzése sikertelen."
 
-#: ../camel/camel-gpg-context.c:891
+#: ../camel/camel-gpg-context.c:895
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2214,7 +2214,7 @@ msgstr ""
 "Egy PIN szükséges a SmartCard kulcsának\n"
 "feloldásához: „%s”"
 
-#: ../camel/camel-gpg-context.c:895
+#: ../camel/camel-gpg-context.c:899
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2223,12 +2223,12 @@ msgstr ""
 "Meg kell adnia a jelmondatot „%s”\n"
 "titkos kulcsának érvényesítéséhez"
 
-#: ../camel/camel-gpg-context.c:901
+#: ../camel/camel-gpg-context.c:905
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Váratlan kérés a GnuPG-től a következőre: „%s”"
 
-#: ../camel/camel-gpg-context.c:913
+#: ../camel/camel-gpg-context.c:917
 msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2237,70 +2237,76 @@ msgstr ""
 "címzettről, így minden tárolt személyes kulcs esetén be fogja kérni a "
 "jelszót a program."
 
-#: ../camel/camel-gpg-context.c:944 ../camel/camel-net-utils.c:524
+#: ../camel/camel-gpg-context.c:948 ../camel/camel-net-utils.c:524
 #: ../camel/providers/nntp/camel-nntp-summary.c:401
 #: ../libedataserver/e-client.c:163
 #, c-format
 msgid "Cancelled"
 msgstr "Megszakítva"
 
-#: ../camel/camel-gpg-context.c:965
+#: ../camel/camel-gpg-context.c:969
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "A titkos kulcs érvényesítéséhez 3 alkalommal adott meg rossz jelmondatot."
 
-#: ../camel/camel-gpg-context.c:978
+#: ../camel/camel-gpg-context.c:982
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Váratlan válasz a GnuPG részéről: %s"
 
-#: ../camel/camel-gpg-context.c:1109
+#: ../camel/camel-gpg-context.c:1120
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Sikertelen titkosítás: Nincs érvényes címzett megadva."
 
-#: ../camel/camel-gpg-context.c:1661 ../camel/camel-smime-context.c:843
+#: ../camel/camel-gpg-context.c:1675 ../camel/camel-smime-context.c:843
 msgid "Could not generate signing data: "
 msgstr "Nem sikerült az aláírási adatok előállítása: "
 
-#: ../camel/camel-gpg-context.c:1711 ../camel/camel-gpg-context.c:1923
-#: ../camel/camel-gpg-context.c:2033 ../camel/camel-gpg-context.c:2182
+#: ../camel/camel-gpg-context.c:1725 ../camel/camel-gpg-context.c:1937
+#: ../camel/camel-gpg-context.c:2047 ../camel/camel-gpg-context.c:2198
 msgid "Failed to execute gpg."
 msgstr "A gpg végrehajtása sikertelen."
 
-#: ../camel/camel-gpg-context.c:1794 ../camel/camel-gpg-context.c:1802
-#: ../camel/camel-gpg-context.c:1810 ../camel/camel-gpg-context.c:1830
+#: ../camel/camel-gpg-context.c:1808 ../camel/camel-gpg-context.c:1816
+#: ../camel/camel-gpg-context.c:1824 ../camel/camel-gpg-context.c:1844
 #: ../camel/camel-smime-context.c:972 ../camel/camel-smime-context.c:986
 #: ../camel/camel-smime-context.c:995
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nem ellenőrizhető az üzenet aláírása: helytelen üzenetformátum"
 
-#: ../camel/camel-gpg-context.c:1876
+#: ../camel/camel-gpg-context.c:1890
 msgid "Cannot verify message signature: "
 msgstr "Nem ellenőrizhető az üzenet aláírása: "
 
-#: ../camel/camel-gpg-context.c:1999
+#: ../camel/camel-gpg-context.c:2013
 msgid "Could not generate encrypting data: "
 msgstr "Nem sikerült előállítani titkosított adatokat: "
 
-#: ../camel/camel-gpg-context.c:2052
+#: ../camel/camel-gpg-context.c:2066
 msgid "This is a digitally encrypted message part"
 msgstr "Ez egy digitálisan aláírt üzenetrész"
 
-#: ../camel/camel-gpg-context.c:2108 ../camel/camel-gpg-context.c:2117
-#: ../camel/camel-gpg-context.c:2140
+#: ../camel/camel-gpg-context.c:2122 ../camel/camel-gpg-context.c:2131
+#: ../camel/camel-gpg-context.c:2154
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nem lehet visszafejteni az üzenetet: helytelen üzenetformátum"
 
-#: ../camel/camel-gpg-context.c:2128
+#: ../camel/camel-gpg-context.c:2142
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Protokoll hiba miatt sikertelen a MIME titkosítás feloldása"
 
-#: ../camel/camel-gpg-context.c:2223 ../camel/camel-smime-context.c:1288
+#: ../camel/camel-gpg-context.c:2208
+#, c-format
+#| msgid "Failed to decrypt MIME part: protocol error"
+msgid "Failed to decrypt MIME part: Secret key not found"
+msgstr "A MIME rész visszafejtése sikertelen: a titkos kulcs nem található"
+
+#: ../camel/camel-gpg-context.c:2244 ../camel/camel-smime-context.c:1288
 msgid "Encrypted content"
 msgstr "Titkosított tartalom"
 
@@ -3379,21 +3385,21 @@ msgstr "Hiba a NOOP végrehajtásakor"
 msgid "Error syncing changes"
 msgstr "Hiba a változások szinkronizálásakor"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8511
+#: ../camel/providers/imapx/camel-imapx-server.c:8513
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nem lehet letölteni a(z) %s azonosítójú levelet: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8512
+#: ../camel/providers/imapx/camel-imapx-server.c:8514
 msgid "No such message available."
 msgstr "Nincs ilyen üzenet."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8739
-#: ../camel/providers/imapx/camel-imapx-server.c:8760
+#: ../camel/providers/imapx/camel-imapx-server.c:8741
+#: ../camel/providers/imapx/camel-imapx-server.c:8762
 msgid "Cannot create spool file: "
 msgstr "Nem lehet létrehozni a várólistafájlt: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9583
+#: ../camel/providers/imapx/camel-imapx-server.c:9585
 msgid "IMAP server does not support quotas"
 msgstr "Az IMAP kiszolgáló nem támogatja a kvótákat"
 
@@ -4787,7 +4793,7 @@ msgstr "%s nem támogatja távoli erőforrások létrehozását"
 msgid "%s does not support deleting remote resources"
 msgstr "%s nem támogatja távoli erőforrások törlését"
 
-#: ../libebackend/e-data-factory.c:1233
+#: ../libebackend/e-data-factory.c:1289
 #, c-format
 msgid "Backend factory for source '%s' and extension '%s' cannot be found."
 msgstr ""
@@ -4799,13 +4805,13 @@ msgstr ""
 msgid "Data source is missing a [%s] group"
 msgstr "Az adatforrásból hiányzik egy [%s] csoport"
 
-#: ../libebackend/e-server-side-source.c:1381
-#: ../libedataserver/e-source.c:1844
+#: ../libebackend/e-server-side-source.c:1389
+#: ../libedataserver/e-source.c:1845
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "A(z) „%s” adatforrás nem támogatja távoli erőforrások létrehozását"
 
-#: ../libebackend/e-server-side-source.c:1395
+#: ../libebackend/e-server-side-source.c:1403
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
@@ -4813,13 +4819,13 @@ msgstr ""
 "A(z) „%s” adatforrás nem rendelkezik adatgyűjtő háttérprogrammal a távoli "
 "erőforrás létrehozásához"
 
-#: ../libebackend/e-server-side-source.c:1423
-#: ../libedataserver/e-source.c:1957
+#: ../libebackend/e-server-side-source.c:1431
+#: ../libedataserver/e-source.c:1958
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "A(z) „%s” adatforrás nem támogatja távoli erőforrások törlését"
 
-#: ../libebackend/e-server-side-source.c:1437
+#: ../libebackend/e-server-side-source.c:1445
 #, c-format
 msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
@@ -4827,14 +4833,14 @@ msgstr ""
 "A(z) „%s” adatforrás nem rendelkezik adatgyűjtő háttérprogrammal a távoli "
 "erőforrás törléséhez"
 
-#: ../libebackend/e-server-side-source.c:1468
-#: ../libedataserver/e-source.c:2053
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1038
+#: ../libebackend/e-server-side-source.c:1476
+#: ../libedataserver/e-source.c:2054
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1039
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "„%s” adatforrás nem támogatja az OAuth 2.0 hitelesítést"
 
-#: ../libebackend/e-server-side-source.c:1833
+#: ../libebackend/e-server-side-source.c:1854
 #, c-format
 msgid "File must have a '.source' extension"
 msgstr "A fájlnak „.source” kiterjesztéssel kell rendelkeznie"
@@ -4989,22 +4995,22 @@ msgstr "D-Bus hiba"
 msgid "Timeout was reached"
 msgstr "Az időkorlát elérve"
 
-#: ../libedataserver/e-source.c:974
+#: ../libedataserver/e-source.c:975
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "A forrásfájlból hiányzik egy [%s] csoport"
 
-#: ../libedataserver/e-source.c:1624
+#: ../libedataserver/e-source.c:1625
 #, c-format
 msgid "Data source '%s' is not removable"
 msgstr "A(z) „%s” adatforrás nem távolítható el"
 
-#: ../libedataserver/e-source.c:1747
+#: ../libedataserver/e-source.c:1748
 #, c-format
 msgid "Data source '%s' is not writable"
 msgstr "A(z) „%s” adatforrás nem írható"
 
-#: ../libedataserver/e-source.c:2408
+#: ../libedataserver/e-source.c:2444
 msgid "Unnamed"
 msgstr "Névtelen"
 
@@ -5170,7 +5176,6 @@ msgid "HTTP Error: %s"
 msgstr "HTTP hiba: %s"
 
 #: ../libedataserver/e-webdav-discover.c:507
-#| msgid "Could not parse arguments"
 msgid "Could not parse response"
 msgstr "A válasz nem dolgozható fel"
 
@@ -5179,7 +5184,6 @@ msgid "Empty response"
 msgstr "Üres válasz"
 
 #: ../libedataserver/e-webdav-discover.c:524
-#| msgid "Code: %u - Unexpected response from server"
 msgid "Unexpected reply from server"
 msgstr "Váratlan válasz a kiszolgálótól"
 
@@ -5344,18 +5348,14 @@ msgid "The certificate's algorithm is considered insecure."
 msgstr "A tanúsítvány algoritmusa nem tekinthető biztonságosnak."
 
 #: ../libedataserverui/e-webdav-discover-widget.c:166
-#| msgctxt "CategoryName"
-#| msgid "Suppliers"
 msgid "Supports"
 msgstr "Támogatja"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:177
-#| msgid "_User Name:"
 msgid "_User mail:"
 msgstr "_Felhasználó e-mail:"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:523
-#| msgid "Contacts"
 msgctxt "WebDAVDiscover"
 msgid "Contacts"
 msgstr "Névjegyek"
@@ -5371,13 +5371,11 @@ msgid "Memos"
 msgstr "Feljegyzések"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:526
-#| msgid "Tasks"
 msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Feladatok"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:825
-#| msgid "Invalid Redirect URL"
 msgid "Invalid URL"
 msgstr "Érvénytelen URL"
 
@@ -5386,12 +5384,10 @@ msgid "User name not filled"
 msgstr "A felhasználónév nincs kitöltve"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:880
-#| msgid "_Cancel"
 msgid "Cancel"
 msgstr "Mégse"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:883
-#| msgid "Searching..."
 msgid "Searching server sources..."
 msgstr "Kiszolgálóforrások keresése…"
 
@@ -5441,7 +5437,7 @@ msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
 "Az ASUrl és OABUrl nem található az automatikus felderítésre adott válaszban"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1301
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1281
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5450,17 +5446,17 @@ msgstr ""
 "Nem található megfelelő fiók az org.gnome.OnlineAccounts szolgáltatásban, "
 "amelyből lekérhető lenne „%s” hozzáférési tokenje"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1331
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1311
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Nem sikerült beszerezni a hozzáférési tokent ehhez: „%s”:"
 
-#: ../modules/google-backend/module-google-backend.c:448
+#: ../modules/google-backend/module-google-backend.c:460
 #: ../modules/yahoo-backend/module-yahoo-backend.c:226
 msgid "Tasks"
 msgstr "Feladatok"
 
-#: ../modules/google-backend/module-google-backend.c:502
+#: ../modules/google-backend/module-google-backend.c:514
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5511,7 +5507,7 @@ msgstr "Levelek"
 msgid "Integrate your mailboxes"
 msgstr "Postafiókok integrálása"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1019
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1020
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
