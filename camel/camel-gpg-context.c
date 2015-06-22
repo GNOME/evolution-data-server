@@ -161,6 +161,8 @@ struct _GpgCtx {
 	guint nodata : 1;
 	guint trust : 3;
 	guint processing : 1;
+	guint bad_decrypt : 1;
+	guint noseckey : 1;
 	GString *signers;
 
 	guint diagflushed : 1;
@@ -224,6 +226,8 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->nopubkey = FALSE;
 	gpg->trust = GPG_TRUST_NONE;
 	gpg->processing = FALSE;
+	gpg->bad_decrypt = FALSE;
+	gpg->noseckey = FALSE;
 	gpg->signers = NULL;
 
 	gpg->istream = NULL;
@@ -1030,10 +1034,17 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			break;
 		case GPG_CTX_MODE_DECRYPT:
 			if (!strncmp ((gchar *) status, "BEGIN_DECRYPTION", 16)) {
+				gpg->bad_decrypt = FALSE;
 				/* nothing to do... but we know to expect data on stdout soon */
 				break;
 			} else if (!strncmp ((gchar *) status, "END_DECRYPTION", 14)) {
 				/* nothing to do, but we know the end is near? */
+				break;
+			} else if (!strncmp ((gchar *) status, "NO_SECKEY ", 10)) {
+				gpg->noseckey = TRUE;
+				break;
+			} else if (!strncmp ((gchar *) status, "DECRYPTION_FAILED", 17)) {
+				gpg->bad_decrypt = TRUE;
 				break;
 			}
 			/* let if fall through to verify possible signatures too */
@@ -1245,6 +1256,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 
 		do {
 			nread = read (gpg->status_fd, buffer, sizeof (buffer));
+			d (printf ("   read %d bytes (%.*s)\n", (gint) nread, (gint) nread, buffer));
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
 		if (nread == -1)
 			goto exception;
@@ -1267,6 +1279,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 
 		do {
 			nread = read (gpg->stdout_fd, buffer, sizeof (buffer));
+			d (printf ("   read %d bytes (%.*s)\n", (gint) nread, (gint) nread, buffer));
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
 		if (nread == -1)
 			goto exception;
@@ -1292,6 +1305,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 
 		do {
 			nread = read (gpg->stderr_fd, buffer, sizeof (buffer));
+			d (printf ("   read %d bytes (%.*s)\n", (gint) nread, (gint) nread, buffer));
 		} while (nread == -1 && (errno == EINTR || errno == EAGAIN));
 		if (nread == -1)
 			goto exception;
@@ -1358,7 +1372,7 @@ gpg_ctx_op_step (struct _GpgCtx *gpg,
 			if (w == -1)
 				goto exception;
 
-			d (printf ("wrote %d (out of %d) bytes to gpg's stdin\n", nwritten, nread));
+			d (printf ("wrote %d (out of %d) bytes to gpg's stdin\n", (gint) nwritten, (gint) nread));
 			wrote_data = TRUE;
 		}
 
@@ -2158,6 +2172,8 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	gpg_ctx_set_istream (gpg, istream);
 	gpg_ctx_set_ostream (gpg, ostream);
 
+	gpg->bad_decrypt = TRUE;
+
 	if (!gpg_ctx_op_start (gpg, error))
 		goto fail;
 
@@ -2172,7 +2188,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 	 * for signature of a signed and encrypted messages causes GPG to return
 	 * failure, thus count with it.
 	 */
-	if (gpg_ctx_op_wait (gpg) != 0 && gpg->nodata) {
+	if (gpg_ctx_op_wait (gpg) != 0 && (gpg->nodata || (gpg->bad_decrypt && !gpg->noseckey))) {
 		const gchar *diagnostics;
 
 		diagnostics = gpg_ctx_get_diagnostics (gpg);
@@ -2185,7 +2201,12 @@ gpg_decrypt_sync (CamelCipherContext *context,
 
 	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
 
-	if (camel_content_type_is (ct, "multipart", "encrypted")) {
+	if (gpg->bad_decrypt && gpg->noseckey) {
+		success = FALSE;
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Failed to decrypt MIME part: Secret key not found"));
+	} else if (camel_content_type_is (ct, "multipart", "encrypted")) {
 		CamelDataWrapper *dw;
 		CamelStream *null = camel_stream_null_new ();
 
