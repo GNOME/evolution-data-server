@@ -2097,6 +2097,45 @@ e_named_parameters_new_strv (const gchar * const *strv)
 }
 
 /**
+ * e_named_parameters_new_string:
+ * @str: a string to be used as a content of a newly created #ENamedParameters
+ *
+ * Creates a new instance of an #ENamedParamters, with initial content being
+ * taken from @str. This should be freed with e_named_parameters_free(),
+ * when no longer needed. Names are compared case insensitively.
+ *
+ * The @str should be created with e_named_parameters_to_string(), to be
+ * properly encoded.
+ *
+ * The structure is not thread safe, if the caller requires thread safety,
+ * then it should provide it on its own.
+ *
+ * Returns: (transfer full): newly allocated #ENamedParameters
+ *
+ * Since: 3.18
+ **/
+ENamedParameters *
+e_named_parameters_new_string (const gchar *str)
+{
+	ENamedParameters *parameters;
+	gchar **split;
+	gint ii;
+
+	g_return_val_if_fail (str != NULL, NULL);
+
+	split = g_strsplit (str, "\n", -1);
+
+	parameters = e_named_parameters_new ();
+	for (ii = 0; split && split[ii]; ii++) {
+		g_ptr_array_add ((GPtrArray *) parameters, g_strcompress (split[ii]));
+	}
+
+	g_strfreev (split);
+
+	return parameters;
+}
+
+/**
  * e_named_parameters_new_clone:
  * @parameters: an #ENamedParameters to be used as a content of a newly
  *    created #ENamedParameters
@@ -2362,6 +2401,38 @@ e_named_parameters_to_strv (const ENamedParameters *parameters)
 	g_ptr_array_add (ret, NULL);
 
 	return (gchar **) g_ptr_array_free (ret, FALSE);
+}
+
+/**
+ * e_named_parameters_to_string:
+ * @parameters: an #ENamedParameters
+ *
+ * Returns: (transfer full): Contents of @parameters as a string
+ *
+ * Since: 3.18
+ */
+gchar *
+e_named_parameters_to_string (const ENamedParameters *parameters)
+{
+	gchar **strv, *str;
+	gint ii;
+
+	strv = e_named_parameters_to_strv (parameters);
+	if (!strv)
+		return NULL;
+
+	for (ii = 0; strv[ii]; ii++) {
+		gchar *name_and_value = strv[ii];
+
+		strv[ii] = g_strescape (name_and_value, "");
+		g_free (name_and_value);
+	}
+
+	str = g_strjoinv ("\n", strv);
+
+	g_strfreev (strv);
+
+	return str;
 }
 
 /**

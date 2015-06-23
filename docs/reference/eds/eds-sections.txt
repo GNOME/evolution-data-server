@@ -2122,6 +2122,7 @@ e_util_get_localedir
 e_util_replace_prefix
 E_TYPE_NAMED_PARAMETERS
 e_named_parameters_new
+e_named_parameters_new_string
 e_named_parameters_new_strv
 e_named_parameters_new_clone
 e_named_parameters_free
@@ -2129,6 +2130,7 @@ e_named_parameters_clear
 e_named_parameters_assign
 e_named_parameters_set
 e_named_parameters_get
+e_named_parameters_to_string
 e_named_parameters_to_strv
 e_named_parameters_test
 e_named_timeout_add

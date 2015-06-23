@@ -177,6 +177,8 @@ ENamedParameters *
 ENamedParameters *
 		e_named_parameters_new_strv	(const gchar * const *strv);
 ENamedParameters *
+		e_named_parameters_new_string	(const gchar *str);
+ENamedParameters *
 		e_named_parameters_new_clone	(const ENamedParameters *parameters);
 void		e_named_parameters_free		(ENamedParameters *parameters);
 void		e_named_parameters_clear	(ENamedParameters *parameters);
@@ -188,6 +190,7 @@ void		e_named_parameters_set		(ENamedParameters *parameters,
 const gchar *	e_named_parameters_get		(const ENamedParameters *parameters,
 						 const gchar *name);
 gchar **	e_named_parameters_to_strv	(const ENamedParameters *parameters);
+gchar *		e_named_parameters_to_string	(const ENamedParameters *parameters);
 gboolean	e_named_parameters_test		(const ENamedParameters *parameters,
 						 const gchar *name,
 						 const gchar *value,
