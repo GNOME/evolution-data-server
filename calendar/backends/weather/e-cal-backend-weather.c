@@ -26,7 +26,7 @@
 #include "e-weather-source.h"
 
 #define GWEATHER_I_KNOW_THIS_IS_UNSTABLE
-#include <libgweather/gweather-weather.h>
+#include <libgweather/gweather.h>
 #undef GWEATHER_I_KNOW_THIS_IS_UNSTABLE
 
 #define WEATHER_UID_EXT "-weather"
