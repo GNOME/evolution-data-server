@@ -5236,11 +5236,8 @@ camel_header_fold (const gchar *in,
 				g_string_truncate (out, out->len - 1);
 				g_string_append_c (out, '\n');
 				g_string_append_c (out, spc);
-			} else {
-				g_string_append (out, "\n\t");
+				outlen = 1;
 			}
-
-			outlen = 1;
 
 			/* check for very long words, just cut them up */
 			while (outlen + len > CAMEL_FOLD_MAX_SIZE) {
