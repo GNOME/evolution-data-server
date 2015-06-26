@@ -468,7 +468,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	fi = imapx_store_build_folder_info (store, folder_path, flags);
 
 	/* Figure out which signals to emit, if any. */
-	if (use_subscriptions) {
+	if (use_subscriptions || camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
 		/* If we are honoring folder subscriptions, then
 		 * subscription changes are equivalent to folder
 		 * creation / deletion as far as we're concerned. */
@@ -1084,6 +1084,20 @@ get_folder_info_offline (CamelStore *store,
 		if (!si_is_match)
 			continue;
 
+		if (!use_subscriptions && !(si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) &&
+		    !(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST)) {
+			CamelIMAPXMailbox *mailbox;
+
+			mailbox = camel_imapx_store_ref_mailbox (imapx_store, ((CamelIMAPXStoreInfo *) si)->mailbox_name);
+			if (!mailbox || camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
+				/* Skip unsubscribed mailboxes which are not in the Personal namespace */
+				g_clear_object (&mailbox);
+				continue;
+			}
+
+			g_clear_object (&mailbox);
+		}
+
 		fi = imapx_store_build_folder_info (
 			imapx_store, folder_path, 0);
 		fi->unread = si->unread;
@@ -1483,6 +1497,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 {
 	CamelIMAPXServer *server;
 	GHashTable *folder_info_results;
+	gboolean update_folder_list;
 	gboolean success;
 
 	server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
@@ -1500,7 +1515,9 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	 * in imapx_store_process_mailbox_attributes(). */
 	g_atomic_int_inc (&imapx_store->priv->syncing_folders);
 
-	if (!initial_setup && (!root_folder_path || !*root_folder_path)) {
+	update_folder_list = !initial_setup && (!root_folder_path || !*root_folder_path);
+
+	if (update_folder_list) {
 		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
 		g_hash_table_foreach (imapx_store->priv->mailboxes, imapx_store_mark_mailbox_unknown_cb, imapx_store);
 		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
@@ -1513,9 +1530,9 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	} else {
 		gboolean have_folder_info_for_inbox;
 
-		/* XXX We only fetch personal mailboxes at this time. */
 		success = fetch_folder_info_for_namespace_category (
-			imapx_store, server, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags,
+			imapx_store, server, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags |
+			(update_folder_list ? CAMEL_STORE_FOLDER_INFO_SUBSCRIBED : 0),
 			folder_info_results, cancellable, error);
 
 		have_folder_info_for_inbox =
@@ -1536,7 +1553,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	if (!success)
 		goto exit;
 
-	if (!initial_setup && (!root_folder_path || !*root_folder_path)) {
+	if (update_folder_list) {
 		g_mutex_lock (&imapx_store->priv->mailboxes_lock);
 		g_hash_table_foreach_remove (imapx_store->priv->mailboxes, imapx_store_remove_unknown_mailboxes_cb, imapx_store);
 		g_mutex_unlock (&imapx_store->priv->mailboxes_lock);
