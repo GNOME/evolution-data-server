@@ -1513,6 +1513,7 @@ camel_imapx_folder_new (CamelStore *store,
 	gboolean filter_inbox;
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
+	gboolean store_offline_sync = FALSE;
 
 	d ("opening imap folder '%s'\n", folder_dir);
 
@@ -1526,6 +1527,7 @@ camel_imapx_folder_new (CamelStore *store,
 		"filter-inbox", &filter_inbox,
 		"filter-junk", &filter_junk,
 		"filter-junk-inbox", &filter_junk_inbox,
+		"stay-synchronized", &store_offline_sync,
 		NULL);
 
 	g_object_unref (settings);
@@ -1560,15 +1562,21 @@ camel_imapx_folder_new (CamelStore *store,
 		return NULL;
 	}
 
-	/* Ensure cache will never expire, otherwise
-	 * it causes redownload of messages. */
-	camel_data_cache_set_expire_age (imapx_folder->cache, -1);
-	camel_data_cache_set_expire_access (imapx_folder->cache, -1);
-
 	state_file = g_build_filename (folder_dir, "cmeta", NULL);
 	camel_object_set_state_filename (CAMEL_OBJECT (folder), state_file);
 	g_free (state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
+
+	if (store_offline_sync || camel_offline_folder_get_offline_sync (CAMEL_OFFLINE_FOLDER (folder))) {
+		/* Ensure cache will never expire, otherwise
+		 * it causes redownload of messages. */
+		camel_data_cache_set_expire_age (imapx_folder->cache, -1);
+		camel_data_cache_set_expire_access (imapx_folder->cache, -1);
+	} else {
+		/* Set cache expiration for one week. */
+		camel_data_cache_set_expire_age (imapx_folder->cache, 60 * 60 * 24 * 7);
+		camel_data_cache_set_expire_access (imapx_folder->cache, 60 * 60 * 24 * 7);
+	}
 
 	imapx_folder->search = camel_imapx_search_new (CAMEL_IMAPX_STORE (store));
 
