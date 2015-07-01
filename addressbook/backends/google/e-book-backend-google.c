@@ -766,6 +766,8 @@ get_new_contacts_cb (GDataService *service,
 		GTimeVal current_time;
 		g_get_current_time (&current_time);
 		cache_set_last_update (backend, &current_time);
+
+		e_backend_ensure_source_status_connected (E_BACKEND (backend));
 	}
 
 	/* Thaw the cache again */
@@ -926,6 +928,8 @@ get_groups_cb (GDataService *service,
 		g_rec_mutex_lock (&priv->groups_lock);
 		g_get_current_time (&(priv->groups_last_update));
 		g_rec_mutex_unlock (&priv->groups_lock);
+
+		e_backend_ensure_source_status_connected (E_BACKEND (backend));
 	}
 
 	finish_operation (backend, -2, gdata_error);
@@ -1897,6 +1901,8 @@ exit:
 		g_warn_if_fail (success == FALSE);
 		data_book_error_from_gdata_error (error, gdata_error);
 		g_error_free (gdata_error);
+	} else {
+		e_backend_ensure_source_status_connected (E_BACKEND (backend));
 	}
 
 	return success;
@@ -2113,6 +2119,8 @@ exit:
 		g_warn_if_fail (success == FALSE);
 		data_book_error_from_gdata_error (error, gdata_error);
 		g_error_free (gdata_error);
+	} else {
+		e_backend_ensure_source_status_connected (E_BACKEND (backend));
 	}
 
 	return success;
@@ -2188,6 +2196,8 @@ book_backend_google_remove_contacts_sync (EBookBackend *backend,
 		g_warn_if_fail (success == FALSE);
 		data_book_error_from_gdata_error (error, gdata_error);
 		g_error_free (gdata_error);
+	} else {
+		e_backend_ensure_source_status_connected (E_BACKEND (backend));
 	}
 
 	return success;

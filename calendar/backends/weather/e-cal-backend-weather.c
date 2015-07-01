@@ -194,6 +194,8 @@ finished_retrieval_cb (GWeatherInfo *info,
 		return;
 	}
 
+	e_backend_ensure_source_status_connected (E_BACKEND (cbw));
+
 	source = e_backend_get_source (E_BACKEND (cbw));
 	weather_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEATHER_BACKEND);
 

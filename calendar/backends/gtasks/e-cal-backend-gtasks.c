@@ -443,6 +443,10 @@ ecb_gtasks_update_thread (gpointer user_data)
 
 	feed = gdata_tasks_service_query_tasks (gtasks->priv->service, gtasks->priv->tasklist,
 		GDATA_QUERY (tasks_query), cancellable, NULL, NULL, &local_error);
+
+	if (!local_error)
+		e_backend_ensure_source_status_connected (E_BACKEND (gtasks));
+
 	if (feed) {
 		GList *link;
 		const gchar *uid;
@@ -565,6 +569,10 @@ ecb_gtasks_start_update (ECalBackendGTasks *gtasks)
 
 	/* Check whether the tasklist changed */
 	feed = gdata_tasks_service_query_all_tasklists (gtasks->priv->service, NULL, cancellable, NULL, NULL, &local_error);
+
+	if (!local_error)
+		e_backend_ensure_source_status_connected (E_BACKEND (gtasks));
+
 	if (feed) {
 		GList *link;
 
@@ -1098,6 +1106,9 @@ ecb_gtasks_modify_objects (ECalBackend *backend,
 		new_task = gdata_tasks_service_update_task (gtasks->priv->service, comp_task, cancellable, &local_error);
 		g_object_unref (comp_task);
 
+		if (!local_error)
+			e_backend_ensure_source_status_connected (E_BACKEND (backend));
+
 		if (!new_task) {
 			g_object_unref (cached_comp);
 			break;
@@ -1184,6 +1195,9 @@ ecb_gtasks_remove_objects (ECalBackend *backend,
 			g_object_unref (task);
 			break;
 		}
+
+		if (!local_error)
+			e_backend_ensure_source_status_connected (E_BACKEND (backend));
 
 		g_clear_error (&local_error);
 

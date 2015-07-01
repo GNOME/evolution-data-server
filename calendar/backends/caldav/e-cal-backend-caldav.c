@@ -1146,6 +1146,9 @@ send_and_handle_redirection (ECalBackendCalDAV *cbdav,
 	}
 
 	g_free (old_uri);
+
+	if (SOUP_STATUS_IS_SUCCESSFUL (msg->status_code))
+		e_backend_ensure_source_status_connected (E_BACKEND (cbdav));
 }
 
 static gchar *

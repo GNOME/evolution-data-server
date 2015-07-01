@@ -224,6 +224,9 @@ send_and_handle_ssl (EBookBackendWebdav *webdav,
 
 	status_code = soup_session_send_message (webdav->priv->session, message);
 
+	if (SOUP_STATUS_IS_SUCCESSFUL (status_code))
+		e_backend_ensure_source_status_connected (E_BACKEND (webdav));
+
 	return status_code;
 }
 
@@ -1423,6 +1426,8 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 			}
 
 			g_clear_error (&local_error2);
+		} else {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 		}
 
 		g_free (certificate_pem);

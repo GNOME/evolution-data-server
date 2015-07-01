@@ -35,6 +35,7 @@ e_backend_credentials_required_finish
 e_backend_credentials_required_sync
 e_backend_schedule_authenticate
 e_backend_schedule_credentials_required
+e_backend_ensure_source_status_connected
 <SUBSECTION Standard>
 EBackendPrivate
 E_BACKEND
