@@ -80,6 +80,8 @@ typedef struct _BookRecord {
 	ECalBackendContacts *cbc;
 	EBookClient *book_client;
 	EBookClientView *book_view;
+	gboolean online;
+	gulong notify_online_id;
 } BookRecord;
 
 typedef struct _ContactRecord {
@@ -170,6 +172,9 @@ book_record_unref (BookRecord *br)
 			br->cbc->priv->tracked_contacts,
 			remove_by_book, br->book_client);
 		g_rec_mutex_unlock (&br->cbc->priv->tracked_contacts_lock);
+
+		if (br->notify_online_id)
+			g_signal_handler_disconnect (br->book_client, br->notify_online_id);
 
 		g_mutex_clear (&br->lock);
 		g_object_unref (br->cbc);
@@ -315,6 +320,34 @@ exit:
 }
 
 static void
+book_client_notify_online_cb (EClient *client,
+			      GParamSpec *param,
+			      BookRecord *br)
+{
+	g_return_if_fail (E_IS_BOOK_CLIENT (client));
+	g_return_if_fail (br != NULL);
+
+	if ((br->online ? 1 : 0) == (e_client_is_online (client) ? 1 : 0))
+		return;
+
+	br->online = e_client_is_online (client);
+
+	if (br->online) {
+		ECalBackendContacts *cbc;
+		ESource *source;
+
+		cbc = g_object_ref (br->cbc);
+		source = g_object_ref (e_client_get_source (client));
+
+		cal_backend_contacts_remove_book_record (cbc, source);
+		create_book_record (cbc, source);
+
+		g_clear_object (&source);
+		g_clear_object (&cbc);
+	}
+}
+
+static void
 book_client_connected_cb (GObject *source_object,
                           GAsyncResult *result,
                           gpointer user_data)
@@ -343,6 +376,8 @@ book_client_connected_cb (GObject *source_object,
 
 	source = e_client_get_source (client);
 	br->book_client = g_object_ref (client);
+	br->online = e_client_is_online (client);
+	br->notify_online_id = g_signal_connect (client, "notify::online", G_CALLBACK (book_client_notify_online_cb), br);
 	cal_backend_contacts_insert_book_record (br->cbc, source, br);
 
 	thread = g_thread_new (

@@ -110,6 +110,13 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 
 	e_backend_set_online (backend, host_is_reachable);
 
+	if (!host_is_reachable) {
+		ESource *source;
+
+		source = e_backend_get_source (backend);
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+	}
+
 	g_object_unref (backend);
 }
 
@@ -1143,6 +1150,31 @@ e_backend_schedule_authenticate	(EBackend *backend,
 	g_thread_unref (g_thread_new (NULL, backend_source_authenticate_thread, thread_data));
 
 	g_clear_object (&cancellable);
+}
+
+/**
+ * e_backend_ensure_source_status_connected:
+ * @backend: an #EBackend
+ *
+ * Makes sure that the associated ESource::connection-status is connected. This is
+ * useful in cases when the backend can connect to the destination without invoking
+ * EBackend::authenticate_sync, possibly through e_backend_schedule_authenticate().
+ *
+ * Since: 3.16.4
+ **/
+void
+e_backend_ensure_source_status_connected (EBackend *backend)
+{
+	ESource *source;
+
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	source = e_backend_get_source (backend);
+
+	g_return_if_fail (E_IS_SOURCE (source));
+
+	if (e_source_get_connection_status (source) != E_SOURCE_CONNECTION_STATUS_CONNECTED)
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 }
 
 /**

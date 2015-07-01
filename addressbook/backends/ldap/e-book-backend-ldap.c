@@ -947,6 +947,7 @@ e_book_backend_ldap_connect (EBookBackendLDAP *bl,
 					"e_book_backend_ldap_connect took %ld.%03ld seconds\n",
 					diff / 1000,diff % 1000);
 			}
+			e_backend_ensure_source_status_connected (E_BACKEND (bl));
 			return TRUE;
 		} else if (ldap_error == LDAP_UNWILLING_TO_PERFORM) {
 			if (blpriv->ldap) {

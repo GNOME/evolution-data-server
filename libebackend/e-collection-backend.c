@@ -73,6 +73,7 @@ struct _ECollectionBackendPrivate {
 	gulong source_removed_handler_id;
 	gulong notify_enabled_handler_id;
 	gulong notify_collection_handler_id;
+	gulong notify_online_handler_id;
 
 	guint scheduled_populate_idle_id;
 };
@@ -536,6 +537,17 @@ collection_backend_schedule_populate_idle (ECollectionBackend *backend)
 }
 
 static void
+collection_backend_online_cb (EBackend *backend,
+			      GParamSpec *spec,
+			      gpointer user_data)
+{
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	if (e_backend_get_online (backend))
+		collection_backend_schedule_populate_idle (E_COLLECTION_BACKEND (backend));
+}
+
+static void
 collection_backend_notify_collection_cb (ESourceCollection *collection_extension,
 					 GParamSpec *param,
 					 ECollectionBackend *collection_backend)
@@ -715,6 +727,11 @@ collection_backend_dispose (GObject *object)
 		priv->notify_collection_handler_id = 0;
 	}
 
+	if (priv->notify_online_handler_id) {
+		g_signal_handler_disconnect (object, priv->notify_online_handler_id);
+		priv->notify_online_handler_id = 0;
+	}
+
 	g_mutex_lock (&priv->children_lock);
 	g_hash_table_remove_all (priv->children);
 	g_mutex_unlock (&priv->children_lock);
@@ -841,6 +858,9 @@ collection_backend_constructed (GObject *object)
 	/* Populate the newly-added collection from an idle callback
 	 * so persistent child sources have a chance to be added first. */
 	collection_backend_schedule_populate_idle (backend);
+
+	backend->priv->notify_online_handler_id = g_signal_connect (backend, "notify::online",
+		G_CALLBACK (collection_backend_online_cb), NULL);
 }
 
 static void

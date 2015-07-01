@@ -141,6 +141,8 @@ void		e_backend_schedule_credentials_required
 						 const gchar *who_calls);
 void		e_backend_schedule_authenticate	(EBackend *backend,
 						 const ENamedParameters *credentials);
+void		e_backend_ensure_source_status_connected
+						(EBackend *backend);
 struct _EUserPrompter *
 		e_backend_get_user_prompter	(EBackend *backend);
 ETrustPromptResponse

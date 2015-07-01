@@ -736,6 +736,20 @@ google_backend_child_added (ECollectionBackend *backend,
 	}
 }
 
+static gboolean
+google_backend_get_destination_address (EBackend *backend,
+					gchar **host,
+					guint16 *port)
+{
+	g_return_val_if_fail (host != NULL, FALSE);
+	g_return_val_if_fail (port != NULL, FALSE);
+
+	*host = g_strdup ("www.google.com");
+	*port = 443;
+
+	return TRUE;
+}
+
 static void
 e_google_backend_class_init (EGoogleBackendClass *class)
 {
@@ -744,6 +758,7 @@ e_google_backend_class_init (EGoogleBackendClass *class)
 
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->authenticate_sync = google_backend_authenticate_sync;
+	backend_class->get_destination_address = google_backend_get_destination_address;
 
 	collection_backend_class = E_COLLECTION_BACKEND_CLASS (class);
 	collection_backend_class->populate = google_backend_populate;
