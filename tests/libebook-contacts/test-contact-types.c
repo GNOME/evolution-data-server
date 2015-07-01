@@ -83,6 +83,57 @@ test_date (TypesFixture *fixture,
 	e_contact_date_free (dp);
 }
 
+/************ CERTIFICATES ***************/
+static void
+test_certificates (TypesFixture *fixture,
+		   gconstpointer user_data)
+{
+	const gchar pgp_blob[] = "fake\tpgp-certificate-blob\n\x1\x2\x3\x4\x5\x6\x7\x8\x9\x0 abc";
+	const gchar x509_blob[] = "fake\tX.509-certificate-blob\n\x1\x2\x3\x4\x5\x6\x7\x8\x9\x0 def";
+	gsize pgp_blob_length = sizeof (pgp_blob);
+	gsize x509_blob_length = sizeof (x509_blob);
+	gsize ii;
+	EContactCert *cert;
+
+	cert = e_contact_cert_new ();
+	cert->data = g_memdup (pgp_blob, pgp_blob_length);
+	cert->length = pgp_blob_length;
+	e_contact_set (fixture->contact, E_CONTACT_PGP_CERT, cert);
+	e_contact_cert_free (cert);
+
+	cert = e_contact_cert_new ();
+	cert->data = g_memdup (x509_blob, x509_blob_length);
+	cert->length = x509_blob_length;
+	e_contact_set (fixture->contact, E_CONTACT_X509_CERT, cert);
+	e_contact_cert_free (cert);
+
+	cert = e_contact_get (fixture->contact, E_CONTACT_PGP_CERT);
+	g_assert_nonnull (cert);
+	g_assert_cmpuint (cert->length, ==, pgp_blob_length);
+
+	for (ii = 0; ii < pgp_blob_length; ii++) {
+		if (cert->data[ii] != pgp_blob[ii])
+			break;
+	}
+
+	g_assert (ii == pgp_blob_length);
+
+	e_contact_cert_free (cert);
+
+	cert = e_contact_get (fixture->contact, E_CONTACT_X509_CERT);
+	g_assert_nonnull (cert);
+	g_assert_cmpuint (cert->length, ==, x509_blob_length);
+
+	for (ii = 0; ii < x509_blob_length; ii++) {
+		if (cert->data[ii] != x509_blob[ii])
+			break;
+	}
+
+	g_assert (ii == x509_blob_length);
+
+	e_contact_cert_free (cert);
+}
+
 /***************** PHOTO *****************/
 static const gchar *photo_data =
 	"/9j/4AAQSkZJRgABAQEARwBHAAD//gAXQ3JlYXRlZCB3aXRoIFRoZSBHSU1Q/9sAQwAIBgYHB"
@@ -208,6 +259,12 @@ main (gint argc,
 		TypesFixture, NULL,
 		types_setup,
 		test_date,
+		types_teardown);
+	g_test_add (
+		"/Contact/Types/Certificates",
+		TypesFixture, NULL,
+		types_setup,
+		test_certificates,
 		types_teardown);
 	g_test_add (
 		"/Contact/Types/Photo",

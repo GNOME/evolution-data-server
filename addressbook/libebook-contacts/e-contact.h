@@ -214,6 +214,7 @@ typedef enum {
 
 	/* Security Fields */
 	E_CONTACT_X509_CERT,     /* structured field (EContactCert) */
+	E_CONTACT_PGP_CERT,      /* structured field (EContactCert) */
 
 	E_CONTACT_IM_GADUGADU_HOME_1,  /* Synthetic string field */
 	E_CONTACT_IM_GADUGADU_HOME_2,  /* Synthetic string field */

@@ -294,6 +294,7 @@ static const EContactFieldInfo field_info[] = {
 
 	/* Security fields */
 	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_X509_CERT,  EVC_KEY, "x509Cert",  N_("X.509 Certificate"), FALSE, "X509", cert_getter, cert_setter, e_contact_cert_get_type),
+	ATTR_TYPE_STRUCT_FIELD (E_CONTACT_PGP_CERT,   EVC_KEY, "pgpCert",  N_("PGP Certificate"), FALSE, "PGP", cert_getter, cert_setter, e_contact_cert_get_type),
 
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GADUGADU_HOME_1,  EVC_X_GADUGADU,  "im_gadugadu_home_1",  N_("Gadu-Gadu Home ID 1"), FALSE, "HOME", 0),
 	ATTR_TYPE_STR_FIELD (E_CONTACT_IM_GADUGADU_HOME_2,  EVC_X_GADUGADU,  "im_gadugadu_home_2",  N_("Gadu-Gadu Home ID 2"), FALSE, "HOME", 1),
