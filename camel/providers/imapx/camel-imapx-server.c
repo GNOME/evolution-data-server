@@ -2150,7 +2150,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	mailbox = camel_imapx_server_ref_selected (is);
+	mailbox = camel_imapx_server_ref_pending_or_selected (is);
 
 	if (mailbox == NULL) {
 		g_warning ("%s: No mailbox available", G_STRFUNC);
@@ -2708,7 +2708,7 @@ imapx_untagged_recent (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
-	mailbox = camel_imapx_server_ref_selected (is);
+	mailbox = camel_imapx_server_ref_pending_or_selected (is);
 
 	if (mailbox == NULL) {
 		g_warning ("%s: No mailbox available", G_STRFUNC);
@@ -2889,15 +2889,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 	   overwritten with a value from a different mailbox, thus the offline
 	   cache will persist, instead of being vanished.
 	*/
-	g_mutex_lock (&is->priv->select_lock);
-
-	mailbox = g_weak_ref_get (&is->priv->select_pending);
-	if (!mailbox)
-		mailbox = g_weak_ref_get (&is->priv->select_mailbox);
-	if (!mailbox)
-		mailbox = g_weak_ref_get (&is->priv->select_closing);
-
-	g_mutex_unlock (&is->priv->select_lock);
+	mailbox = camel_imapx_server_ref_pending_or_selected (is);
 
 	is->priv->context->sinfo = imapx_parse_status (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
@@ -8389,6 +8381,28 @@ camel_imapx_server_ref_selected (CamelIMAPXServer *is)
 		mailbox = g_weak_ref_get (&is->priv->select_closing);
 	if (mailbox == NULL)
 		mailbox = g_weak_ref_get (&is->priv->select_pending);
+
+	g_mutex_unlock (&is->priv->select_lock);
+
+	return mailbox;
+}
+
+/* Some untagged responses updated pending SELECT mailbox, not the currently
+   selected or closing one, thus use this function instead. */
+CamelIMAPXMailbox *
+camel_imapx_server_ref_pending_or_selected (CamelIMAPXServer *is)
+{
+	CamelIMAPXMailbox *mailbox;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+
+	g_mutex_lock (&is->priv->select_lock);
+
+	mailbox = g_weak_ref_get (&is->priv->select_pending);
+	if (mailbox == NULL)
+		mailbox = g_weak_ref_get (&is->priv->select_mailbox);
+	if (mailbox == NULL)
+		mailbox = g_weak_ref_get (&is->priv->select_closing);
 
 	g_mutex_unlock (&is->priv->select_lock);
 
