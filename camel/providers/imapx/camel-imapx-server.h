@@ -152,6 +152,9 @@ GOutputStream *	camel_imapx_server_ref_output_stream
 						(CamelIMAPXServer *is);
 CamelIMAPXMailbox *
 		camel_imapx_server_ref_selected	(CamelIMAPXServer *is);
+CamelIMAPXMailbox *
+		camel_imapx_server_ref_pending_or_selected
+						(CamelIMAPXServer *is);
 gboolean	camel_imapx_server_connect	(CamelIMAPXServer *is,
 						 GCancellable *cancellable,
 						 GError **error);
