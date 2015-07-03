@@ -175,10 +175,11 @@ void		camel_imapx_mailbox_handle_status_response
 					(CamelIMAPXMailbox *mailbox,
 					 CamelIMAPXStatusResponse *response);
 
-void		camel_imapx_mailbox_lock_update
+gint		camel_imapx_mailbox_get_update_count
 					(CamelIMAPXMailbox *mailbox);
-void		camel_imapx_mailbox_unlock_update
-					(CamelIMAPXMailbox *mailbox);
+void		camel_imapx_mailbox_inc_update_count
+					(CamelIMAPXMailbox *mailbox,
+					 gint inc);
 
 G_END_DECLS
 
