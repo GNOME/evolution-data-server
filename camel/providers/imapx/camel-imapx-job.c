@@ -48,6 +48,7 @@ struct _CamelIMAPXRealJob {
 	GMutex mailbox_lock;
 
 	CamelIMAPXMailbox *guard_mailbox_update; /* uses the mailbox_lock */
+	gint has_update_locked;
 };
 
 static void
@@ -127,10 +128,11 @@ camel_imapx_job_unref (CamelIMAPXJob *job)
 			real_job->destroy_data (real_job->data);
 
 		g_mutex_lock (&real_job->mailbox_lock);
-		if (real_job->guard_mailbox_update) {
-			camel_imapx_mailbox_unlock_update (real_job->guard_mailbox_update);
-			g_clear_object (&real_job->guard_mailbox_update);
+		while (real_job->has_update_locked > 0) {
+			camel_imapx_mailbox_inc_update_count (real_job->guard_mailbox_update, -1);
+			real_job->has_update_locked--;
 		}
+		g_clear_object (&real_job->guard_mailbox_update);
 		g_mutex_unlock (&real_job->mailbox_lock);
 
 		g_clear_object (&real_job->mailbox);
@@ -242,10 +244,11 @@ camel_imapx_job_done (CamelIMAPXJob *job)
 	real_job = (CamelIMAPXRealJob *) job;
 
 	g_mutex_lock (&real_job->mailbox_lock);
-	if (real_job->guard_mailbox_update) {
-		camel_imapx_mailbox_unlock_update (real_job->guard_mailbox_update);
-		g_clear_object (&real_job->guard_mailbox_update);
+	while (real_job->has_update_locked > 0) {
+		camel_imapx_mailbox_inc_update_count (real_job->guard_mailbox_update, -1);
+		real_job->has_update_locked--;
 	}
+	g_clear_object (&real_job->guard_mailbox_update);
 	g_mutex_unlock (&real_job->mailbox_lock);
 
 	g_mutex_lock (&real_job->done_mutex);
@@ -277,36 +280,6 @@ camel_imapx_job_run (CamelIMAPXJob *job,
 		success = camel_imapx_job_wait (job, error);
 
 	return success;
-}
-
-void
-camel_imapx_job_guard_mailbox_update (CamelIMAPXJob *job,
-				      CamelIMAPXMailbox *mailbox)
-{
-	CamelIMAPXRealJob *real_job;
-
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
-
-	if (mailbox)
-		g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	g_mutex_lock (&real_job->mailbox_lock);
-
-	if (mailbox != real_job->guard_mailbox_update) {
-		if (real_job->guard_mailbox_update) {
-			camel_imapx_mailbox_unlock_update (real_job->guard_mailbox_update);
-			g_clear_object (&real_job->guard_mailbox_update);
-		}
-
-		if (mailbox) {
-			real_job->guard_mailbox_update = g_object_ref (mailbox);
-			camel_imapx_mailbox_lock_update (real_job->guard_mailbox_update);
-		}
-	}
-
-	g_mutex_unlock (&real_job->mailbox_lock);
 }
 
 gboolean
@@ -492,4 +465,24 @@ camel_imapx_job_set_error_if_failed (CamelIMAPXJob *job,
 	}
 
 	return g_cancellable_set_error_if_cancelled (real_job->cancellable, error);
+}
+
+void
+camel_imapx_job_inc_update_locked (CamelIMAPXJob *job,
+				   CamelIMAPXMailbox *mailbox)
+{
+	CamelIMAPXRealJob *real_job;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), TRUE);
+
+	real_job = (CamelIMAPXRealJob *) job;
+
+	g_mutex_lock (&real_job->mailbox_lock);
+	if (real_job->guard_mailbox_update) {
+		g_warn_if_fail (real_job->guard_mailbox_update == mailbox);
+	} else {
+		real_job->guard_mailbox_update = g_object_ref (mailbox);
+	}
+	real_job->has_update_locked++;
+	g_mutex_unlock (&real_job->mailbox_lock);
 }

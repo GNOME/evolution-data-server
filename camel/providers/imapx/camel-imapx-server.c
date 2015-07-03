@@ -1294,8 +1294,11 @@ imapx_command_start (CamelIMAPXServer *is,
 		camel_imapx_command_queue_remove (is->active, ic);
 		imapx_server_command_removed (is, ic);
 
-		if (ic->complete != NULL)
+		if (ic->complete != NULL) {
+			QUEUE_UNLOCK (is);
 			ic->complete (is, ic);
+			QUEUE_LOCK (is);
+		}
 
 		if (is->literal == ic)
 			is->literal = NULL;
@@ -1361,8 +1364,11 @@ fail:
 	/* Hand the error off to the command that we failed to start. */
 	camel_imapx_command_failed (ic, local_error);
 
-	if (ic->complete != NULL)
+	if (ic->complete != NULL) {
+		QUEUE_UNLOCK (is);
 		ic->complete (is, ic);
+		QUEUE_LOCK (is);
+	}
 
 	g_clear_error (&local_error);
 
@@ -8906,6 +8912,17 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 	if (!imapx_ensure_mailbox_permanentflags (is, mailbox, cancellable, error))
 		return NULL;
 
+	/* Wait for any SyncChanges jobs to finish before running the refresh */
+	while (job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_SYNC_CHANGES, NULL), job != NULL) {
+		/* Promote the existing job's priority if ours is higher. */
+		if (IMAPX_PRIORITY_REFRESH_INFO > job->pri)
+			job->pri = IMAPX_PRIORITY_REFRESH_INFO;
+
+		/* Wait for the job to finish. */
+		camel_imapx_job_wait (job, NULL);
+		camel_imapx_job_unref (job);
+	}
+
 	QUEUE_LOCK (is);
 
 	data = g_slice_new0 (RefreshInfoData);
@@ -8931,8 +8948,10 @@ camel_imapx_server_refresh_info (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	if (registered)
-		camel_imapx_job_guard_mailbox_update (job, mailbox);
+	if (registered) {
+		camel_imapx_mailbox_inc_update_count (mailbox, 1);
+		camel_imapx_job_inc_update_locked (job, mailbox);
+	}
 
 	if (registered && camel_imapx_job_run (job, is, error)) {
 		changes = data->changes;
@@ -9241,6 +9260,19 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 		own_allocated_changed_uids = TRUE;
 	}
 
+	if (job_type == IMAPX_JOB_SYNC_CHANGES) {
+		/* Wait for any RefreshInfo jobs to finish before running the sync */
+		while (job = imapx_server_ref_job (is, mailbox, IMAPX_JOB_REFRESH_INFO, NULL), job != NULL) {
+			/* Promote the existing job's priority if ours is higher. */
+			if (pri > job->pri)
+				job->pri = pri;
+
+			/* Wait for the job to finish. */
+			camel_imapx_job_wait (job, NULL);
+			camel_imapx_job_unref (job);
+		}
+	}
+
 	QUEUE_LOCK (is);
 
 	data = g_slice_new0 (SyncChangesData);
@@ -9268,8 +9300,10 @@ imapx_server_sync_changes (CamelIMAPXServer *is,
 
 	QUEUE_UNLOCK (is);
 
-	if (job_type == IMAPX_JOB_SYNC_CHANGES && registered)
-		camel_imapx_job_guard_mailbox_update (job, mailbox);
+	if (job_type == IMAPX_JOB_SYNC_CHANGES && registered) {
+		camel_imapx_mailbox_inc_update_count (mailbox, 1);
+		camel_imapx_job_inc_update_locked (job, mailbox);
+	}
 
 	success = registered && camel_imapx_job_run (job, is, error);
 
