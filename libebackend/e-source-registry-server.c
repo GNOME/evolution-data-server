@@ -425,7 +425,17 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 
 	if (e_source_registry_debug_enabled ()) {
 		uri = g_file_get_uri (file);
-		e_source_registry_debug_print ("Handling file monitor event %u for URI: %s", event_type, uri);
+		e_source_registry_debug_print ("Handling file monitor event %s (%u) for URI: %s\n",
+			event_type == G_FILE_MONITOR_EVENT_CHANGED ? "CHANGED" :
+			event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT ? "CHANGES_DONE_HINT" :
+			event_type == G_FILE_MONITOR_EVENT_DELETED ? "DELETED" :
+			event_type == G_FILE_MONITOR_EVENT_CREATED ? "CREATED" :
+			event_type == G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED ? "ATTRIBUTE_CHANGED" :
+			event_type == G_FILE_MONITOR_EVENT_PRE_UNMOUNT ? "PRE_UNMOUNT" :
+			event_type == G_FILE_MONITOR_EVENT_UNMOUNTED ? "UNMOUNTED" :
+			event_type == G_FILE_MONITOR_EVENT_MOVED ? "MOVED" : "???",
+			event_type,
+			uri);
 		g_free (uri);
 	}
 
