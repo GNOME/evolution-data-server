@@ -2777,14 +2777,16 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 	if (cdb_sql_exec (cdb->db, "PRAGMA page_count;", get_number_cb, &page_count, &local_error) == SQLITE_OK &&
 	    cdb_sql_exec (cdb->db, "PRAGMA freelist_count;", get_number_cb, &freelist_count, &local_error) == SQLITE_OK) {
 		/* Vacuum, if there's more than 5% of the free pages */
-		success = !page_count || !freelist_count || (freelist_count * 1000 / page_count > 50 &&
-		    cdb_sql_exec (cdb->db, "vacuum;", NULL, NULL, &local_error) == SQLITE_OK);
+		success = !page_count || !freelist_count || freelist_count * 1000 / page_count <= 50 ||
+		    cdb_sql_exec (cdb->db, "vacuum;", NULL, NULL, &local_error) == SQLITE_OK;
 	}
 
 	cdb_writer_unlock (cdb);
 
-	if (local_error)
+	if (local_error) {
 		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
 
 	return success;
 }
