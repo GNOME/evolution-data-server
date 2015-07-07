@@ -473,7 +473,7 @@ camel_imapx_job_inc_update_locked (CamelIMAPXJob *job,
 {
 	CamelIMAPXRealJob *real_job;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), TRUE);
+	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
 
 	real_job = (CamelIMAPXRealJob *) job;
 
