@@ -561,17 +561,24 @@ google_backend_populate (ECollectionBackend *backend)
 	list = e_collection_backend_claim_all_resources (backend);
 	for (link = list; link; link = g_list_next (link)) {
 		ESource *source = link->data;
+		ESource *child = NULL;
 
 		if (e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE)) {
 			ESourceResource *resource;
-			ESource *child;
 
 			resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
 			child = e_collection_backend_new_child (backend, e_source_resource_get_identity (resource));
-			if (child) {
-				e_source_registry_server_add_source (server, source);
-				g_object_unref (child);
-			}
+#if GDATA_CHECK_VERSION(0,15,1)
+		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST)) {
+			child = e_collection_backend_new_child (backend, GOOGLE_TASKS_RESOURCE_ID);
+#endif
+		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
+			child = e_collection_backend_new_child (backend, GOOGLE_CONTACTS_RESOURCE_ID);
+		}
+
+		if (child) {
+			e_source_registry_server_add_source (server, source);
+			g_object_unref (child);
 		}
 	}
 
