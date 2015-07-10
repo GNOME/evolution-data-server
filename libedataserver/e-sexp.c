@@ -883,7 +883,7 @@ parse_dump_term (struct _ESExpTerm *t,
 }
 #endif
 
-const gchar *time_functions[] = {
+static const gchar *time_functions[] = {
 	"time-now",
 	"make-time",
 	"time-add-day",
@@ -952,8 +952,6 @@ static const struct {
 	{"has-alarms-in-range?", binary_generator},
 	{"completed-before?", unary_generator},
 };
-
-const gint generators_count = sizeof (generators) / sizeof (generators[0]);
 
 static gboolean
 or_operator (gint argc,
@@ -1036,8 +1034,6 @@ static const struct {
 	{"or", or_operator},
 	{"and", and_operator}
 };
-
-const gint operators_count = sizeof (operators) / sizeof (operators[0]);
 
 static ESOperatorFunc *
 get_operator_function (const gchar *fname)
