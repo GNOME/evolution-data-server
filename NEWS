@@ -1,3 +1,37 @@
+Evolution-Data-Server 3.16.4 2015-07-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 750427 - Preserve EWS autodiscovered hosts in GOA accounts (Milan Crha)
+	Bug 676155 - [POP3] Use 'Broken pipe' error for end-of-stream case (Milan Crha)
+	Bug 678901 - Avoid ESource::changed notification after extension load (Milan Crha)
+	Bug 750148 - GMail account with calendar/contacts broken the next start (Milan Crha)
+	Bug 247661 - [LDAP] Cannot save contact with Calendar and Free/Busy URLs (Milan Crha)
+	Bug 471791 - Move away from g_asserts to g_ret* (Milan Crha)
+	Bug 751108 - Source registry Reload() method call broken (Milan Crha)
+	Bug 751005 - [GOA/UOA] Make collection sources writeable by default (Milan Crha)
+	Bug 751381 - Include libgweather/gweather.h in weather sources (Milan Crha)
+	Bug 751462 - Include header name length when folding long lines (Arthur de Jong)
+	Bug 751329 - [IMAPx] Shared Folder Disappearing (Milan Crha)
+	Bug 751701 - Update ESource's connection status after server connect (Milan Crha)
+	Bug 751769 - camel_db_maybe_run_maintenance() returns failure incorrectly (Milan Crha)
+	Bug 750766 - [IMAPx] Deadlock filtering and downloading messages for offline use (Milan Crha)
+	Bug 685035 - [IMAPx] Nonsensical progress report on folder update (Milan Crha)
+	Bug 752049 - Fix return value error in camel_imapx_job_inc_update_locked() (Ting-Wei Lan)
+
+Miscellaneous:
+	Use e_source_remove_sync() instead of e_source_registry_server_remove_source() (Milan Crha)
+	ownCloud/Google backends - make sure discovered sources are enabled (Milan Crha)
+	Provide default implementation of EBackend::authenticate_sync() (Milan Crha)
+	Do not add Google Tasks source for non-GOA master sources (Milan Crha)
+	source_registry_server_monitor_changed_cb: Reuse existing source (Milan Crha)
+	addressbook: Treat an empty vCard attribute group name as NULL (Philip Withnall)
+	e_trust_prompt_run_for_source: Do not require Authentication extension (Milan Crha)
+	[ETrustPrompt] Ensure needed extensions for GOA/UOA sources (Milan Crha)
+	[IMAPx] Set cache expiration for one week when not sync-for-offline (Milan Crha)
+	[Google backend] Claim Contacts and Tasks in populate() (Milan Crha)
+	Not able to select time in appointment/meeting for some locales (Milan Crha)
+
 Evolution-Data-Server 3.16.3 2015-06-08
 ---------------------------------------
 
