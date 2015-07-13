@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-06-29 04:47+0000\n"
-"PO-Revision-Date: 2015-06-30 \n"
+"POT-Creation-Date: 2015-07-13 04:48+0000\n"
+"PO-Revision-Date: 2015-07-13 \n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -58,7 +58,7 @@ msgid "Loading..."
 msgstr "Cargando…"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:992
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4351
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4352
 msgid "Searching..."
 msgstr "Buscando…"
 
@@ -99,10 +99,10 @@ msgid "Failed to rename old database from '%s' to '%s': %s"
 msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 
 #: ../addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1165
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4241
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:381
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:850
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1166
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4242
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:384
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:853
 #: ../addressbook/libebook-contacts/e-book-contacts-types.c:51
 #: ../addressbook/libebook-contacts/e-phone-number.c:56
 #: ../addressbook/libebook/e-book.c:1078
@@ -120,7 +120,7 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:585
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:616
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:633
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:269
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2334 ../calendar/libecal/e-cal-client.c:279
 #: ../calendar/libecal/e-cal-client.c:3482
 #: ../calendar/libecal/e-cal-client.c:3655
@@ -141,41 +141,41 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../calendar/libecal/e-cal-client.c:6737
 #: ../calendar/libecal/e-cal-client.c:6959
 #: ../camel/providers/imapx/camel-imapx-command.c:645
-#: ../camel/providers/imapx/camel-imapx-server.c:4904
-#: ../camel/providers/imapx/camel-imapx-server.c:4914
-#: ../camel/providers/imapx/camel-imapx-server.c:4926
+#: ../camel/providers/imapx/camel-imapx-server.c:4902
+#: ../camel/providers/imapx/camel-imapx-server.c:4912
+#: ../camel/providers/imapx/camel-imapx-server.c:4924
 #: ../libebackend/e-server-side-source.c:495 ../libedataserver/e-client.c:190
 msgid "Unknown error"
 msgstr "Error desconocido"
 
 #. Query for new contacts asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:812
+#: ../addressbook/backends/google/e-book-backend-google.c:814
 msgid "Querying for updated contacts…"
 msgstr "Solicitando actualizaciones de contactos…"
 
 #. Run the query asynchronously
-#: ../addressbook/backends/google/e-book-backend-google.c:994
+#: ../addressbook/backends/google/e-book-backend-google.c:998
 msgid "Querying for updated groups…"
 msgstr "Solicitando actualizaciones de grupos…"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1786
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4993
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1461
+#: ../addressbook/backends/google/e-book-backend-google.c:1790
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4994
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1466
 msgid "The backend does not support bulk additions"
 msgstr "El «backend» no soporta adiciones"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:1941
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5129
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1573
+#: ../addressbook/backends/google/e-book-backend-google.c:1947
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5130
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1578
 msgid "The backend does not support bulk modifications"
 msgstr "El «backend» no soporta modificaciones"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2148
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1673
+#: ../addressbook/backends/google/e-book-backend-google.c:2156
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1678
 msgid "The backend does not support bulk removals"
 msgstr "El «backend» no soporta eliminaciones"
 
-#: ../addressbook/backends/google/e-book-backend-google.c:2268
+#: ../addressbook/backends/google/e-book-backend-google.c:2278
 msgid "Loading…"
 msgstr "Cargando…"
 
@@ -213,106 +213,106 @@ msgstr "Sin conexión"
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "Falló al asociar si usar vinculaciones v3 o v2"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1015
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1016
 msgid "Reconnecting to LDAP server..."
 msgstr "Reconectando al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1146
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1147
 msgid "Invalid DN syntax"
 msgstr "Sintáxis de ND no válida"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1162
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4240
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1163
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4241
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Error de LDAP 0x%x (%s)"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1774
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2097
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:1775
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2098
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: ldap_first_entry devolvió NULL"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2027
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2155
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2028
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2156
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: devuelto tipo de resultado %d no manejado"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2288
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2415
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2289
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:2416
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: devuelto tipo de resultado de búsqueda %d no manejado"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4189
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4190
 msgid "Receiving LDAP search results..."
 msgstr "Recibiendo los resultados de la búsqueda LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4373
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4374
 msgid "Error performing search"
 msgstr "Error efectuando búsqueda"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4506
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:4507
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Descargando contactos (%d)…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5076
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5077
 msgid "Adding contact to LDAP server..."
 msgstr "Añadiendo contacto al servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5151
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5152
 msgid "Modifying contact from LDAP server..."
 msgstr "Modificando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5217
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5218
 msgid "Removing contact from LDAP server..."
 msgstr "Eliminando contacto del servidor LDAP…"
 
-#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5612
+#: ../addressbook/backends/ldap/e-book-backend-ldap.c:5613
 #, c-format
 msgid "Failed to get the DN for user '%s'"
 msgstr "Falló al crear el DN para el usuario «%s»"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:827
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:830
 msgid "Loading Addressbook summary..."
 msgstr "Cargando resumen de la libreta de direcciones…"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:847
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:850
 #, c-format
 msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
 msgstr "Falló PROPFIND en WebDav con el estado HTTP: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:866
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:869
 msgid "No response body in webdav PROPFIND result"
 msgstr "No hay cuerpo de la respuesta en el resultado PROPFIND de WebDav"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:927
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:930
 #, c-format
 msgid "Loading Contacts (%d%%)"
 msgstr "Cargando contactos (%d%%)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1339
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1342
 msgid "Cannot transform SoupURI to string"
 msgstr "No se puede transformar SoupURI a una cadena"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1502
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1507
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "Falló al crear el recurso «%s» con el estado HTTP: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1604
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1609
 msgid "Contact on server changed -> not modifying"
 msgstr "Modificado el contacto en el servidor -> no se modifica"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1612
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1617
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "Falló al modificar el contacto con el estado HTTP: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1705
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1721
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1710
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1726
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE con el estado HTTP %d"
@@ -807,7 +807,7 @@ msgid "Birth Date"
 msgstr "Fecha de nacimiento"
 
 #: ../addressbook/libebook-contacts/e-contact.c:293
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:892
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:948
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -816,108 +816,113 @@ msgstr "Aniversario"
 msgid "X.509 Certificate"
 msgstr "Certificado X.509"
 
-#: ../addressbook/libebook-contacts/e-contact.c:298
+#: ../addressbook/libebook-contacts/e-contact.c:297
+#| msgid "Certificate"
+msgid "PGP Certificate"
+msgstr "Certificado PGP"
+
+#: ../addressbook/libebook-contacts/e-contact.c:299
 msgid "Gadu-Gadu Home ID 1"
 msgstr "ID Gadu-Gadu 1 (domicilio)"
 
-#: ../addressbook/libebook-contacts/e-contact.c:299
+#: ../addressbook/libebook-contacts/e-contact.c:300
 msgid "Gadu-Gadu Home ID 2"
 msgstr "ID Gadu-Gadu 2 (domicilio)"
 
-#: ../addressbook/libebook-contacts/e-contact.c:300
+#: ../addressbook/libebook-contacts/e-contact.c:301
 msgid "Gadu-Gadu Home ID 3"
 msgstr "ID Gadu-Gadu 3 (domicilio)"
 
-#: ../addressbook/libebook-contacts/e-contact.c:301
+#: ../addressbook/libebook-contacts/e-contact.c:302
 msgid "Gadu-Gadu Work ID 1"
 msgstr "ID Gadu-Gadu 1 (trabajo)"
 
-#: ../addressbook/libebook-contacts/e-contact.c:302
+#: ../addressbook/libebook-contacts/e-contact.c:303
 msgid "Gadu-Gadu Work ID 2"
 msgstr "ID Gadu-Gadu 2 (trabajo)"
 
-#: ../addressbook/libebook-contacts/e-contact.c:303
+#: ../addressbook/libebook-contacts/e-contact.c:304
 msgid "Gadu-Gadu Work ID 3"
 msgstr "ID Gadu-Gadu 3 (trabajo)"
 
-#: ../addressbook/libebook-contacts/e-contact.c:304
+#: ../addressbook/libebook-contacts/e-contact.c:305
 msgid "Gadu-Gadu ID List"
 msgstr "Lista de ID Gadu-Gadu"
 
 #. Geo information
-#: ../addressbook/libebook-contacts/e-contact.c:307
+#: ../addressbook/libebook-contacts/e-contact.c:308
 msgid "Geographic Information"
 msgstr "Información gráfica"
 
-#: ../addressbook/libebook-contacts/e-contact.c:309
+#: ../addressbook/libebook-contacts/e-contact.c:310
 msgid "Telephone"
 msgstr "Teléfono"
 
-#: ../addressbook/libebook-contacts/e-contact.c:311
+#: ../addressbook/libebook-contacts/e-contact.c:312
 msgid "Skype Home Name 1"
 msgstr "Nombre de Skype en casa 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:312
+#: ../addressbook/libebook-contacts/e-contact.c:313
 msgid "Skype Home Name 2"
 msgstr "Nombre de Skype en casa 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:313
+#: ../addressbook/libebook-contacts/e-contact.c:314
 msgid "Skype Home Name 3"
 msgstr "Nombre de Skype en casa 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:314
+#: ../addressbook/libebook-contacts/e-contact.c:315
 msgid "Skype Work Name 1"
 msgstr "Nombre de Skype en el trabajo 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:315
+#: ../addressbook/libebook-contacts/e-contact.c:316
 msgid "Skype Work Name 2"
 msgstr "Nombre de Skype en el trabajo 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:316
+#: ../addressbook/libebook-contacts/e-contact.c:317
 msgid "Skype Work Name 3"
 msgstr "Nombre de Skype en el trabajo 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:317
+#: ../addressbook/libebook-contacts/e-contact.c:318
 msgid "Skype Name List"
 msgstr "Lista de nombres para Skype"
 
-#: ../addressbook/libebook-contacts/e-contact.c:319
+#: ../addressbook/libebook-contacts/e-contact.c:320
 msgid "SIP address"
 msgstr "Dirección SIP"
 
-#: ../addressbook/libebook-contacts/e-contact.c:321
+#: ../addressbook/libebook-contacts/e-contact.c:322
 msgid "Google Talk Home Name 1"
 msgstr "Nombre de Google Talk en casa 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:322
+#: ../addressbook/libebook-contacts/e-contact.c:323
 msgid "Google Talk Home Name 2"
 msgstr "Nombre de Google Talk en casa 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:323
+#: ../addressbook/libebook-contacts/e-contact.c:324
 msgid "Google Talk Home Name 3"
 msgstr "Nombre de Google Talk en casa 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:324
+#: ../addressbook/libebook-contacts/e-contact.c:325
 msgid "Google Talk Work Name 1"
 msgstr "Nombre de Google Talk en el trabajo 1"
 
-#: ../addressbook/libebook-contacts/e-contact.c:325
+#: ../addressbook/libebook-contacts/e-contact.c:326
 msgid "Google Talk Work Name 2"
 msgstr "Nombre de Google Talk en el trabajo 2"
 
-#: ../addressbook/libebook-contacts/e-contact.c:326
+#: ../addressbook/libebook-contacts/e-contact.c:327
 msgid "Google Talk Work Name 3"
 msgstr "Nombre de Google Talk en el trabajo 3"
 
-#: ../addressbook/libebook-contacts/e-contact.c:327
+#: ../addressbook/libebook-contacts/e-contact.c:328
 msgid "Google Talk Name List"
 msgstr "Lista de nombres para Google Talk"
 
-#: ../addressbook/libebook-contacts/e-contact.c:329
+#: ../addressbook/libebook-contacts/e-contact.c:330
 msgid "Twitter Name List"
 msgstr "Lista de nombres de Twitter"
 
-#: ../addressbook/libebook-contacts/e-contact.c:1659
+#: ../addressbook/libebook-contacts/e-contact.c:1660
 #: ../addressbook/libebook/e-destination.c:918
 msgid "Unnamed List"
 msgstr "Lista de anónimos"
@@ -1351,12 +1356,12 @@ msgstr "El «backend» CalDAV aún no se puede cargar"
 msgid "Invalid Redirect URL"
 msgstr "URL de redirección no válida"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2922
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2925
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "No se puede crear la carpeta de caché local: «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3002
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3005
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1366,40 +1371,40 @@ msgstr ""
 "lectura.\n"
 "Mensaje de error: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4083
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4086
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV no soporta adiciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4186
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4189
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV no soporta modificaciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4467
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4470
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV no soporta eliminaciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5149
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5152
 msgid "Calendar doesn't support Free/Busy"
 msgstr "El calendario no soporta disponibilidad"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5158
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5161
 msgid "Schedule outbox url not found"
 msgstr "URL de la bandeja de salida programa no encontrada"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5255
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5258
 msgid "Unexpected result in schedule-response"
 msgstr "Resultado no esperado en la respuesta programada"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:894
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:950
 msgid "Birthday"
 msgstr "Cumpleaños"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:930
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:986
 #, c-format
 msgid "Birthday: %s"
 msgstr "Cumpleaños: %s"
 
-#: ../calendar/backends/contacts/e-cal-backend-contacts.c:961
+#: ../calendar/backends/contacts/e-cal-backend-contacts.c:1017
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
@@ -1434,7 +1439,7 @@ msgid "Not a calendar."
 msgstr "No es un calendario."
 
 #: ../calendar/backends/http/e-cal-backend-http.c:954
-#: ../calendar/backends/weather/e-cal-backend-weather.c:697
+#: ../calendar/backends/weather/e-cal-backend-weather.c:699
 msgid "Could not create cache file"
 msgstr "No se pudo crear el archivo de caché"
 
@@ -1442,67 +1447,67 @@ msgstr "No se pudo crear el archivo de caché"
 msgid "Could not retrieve weather data"
 msgstr "No se pudieron obtener los datos meteorológicos"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:366
+#: ../calendar/backends/weather/e-cal-backend-weather.c:368
 msgid "Weather: Fog"
 msgstr "Meteorología: Niebla"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:367
+#: ../calendar/backends/weather/e-cal-backend-weather.c:369
 msgid "Weather: Cloudy Night"
 msgstr "Meteorología: Noche nubosa"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:368
+#: ../calendar/backends/weather/e-cal-backend-weather.c:370
 msgid "Weather: Cloudy"
 msgstr "Meteorología: Nuboso"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:369
+#: ../calendar/backends/weather/e-cal-backend-weather.c:371
 msgid "Weather: Overcast"
 msgstr "Meteorología: Cubierto"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:370
+#: ../calendar/backends/weather/e-cal-backend-weather.c:372
 msgid "Weather: Showers"
 msgstr "Meteorología: Chaparrón"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:371
+#: ../calendar/backends/weather/e-cal-backend-weather.c:373
 msgid "Weather: Snow"
 msgstr "Meteorología: Nieve"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:372
+#: ../calendar/backends/weather/e-cal-backend-weather.c:374
 msgid "Weather: Clear Night"
 msgstr "Meteorología: Noche despejada"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:373
+#: ../calendar/backends/weather/e-cal-backend-weather.c:375
 msgid "Weather: Sunny"
 msgstr "Meteorología: Soleado"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:374
+#: ../calendar/backends/weather/e-cal-backend-weather.c:376
 msgid "Weather: Thunderstorms"
 msgstr "Meteorología: Tormenta"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
-#: ../calendar/backends/weather/e-cal-backend-weather.c:400
+#: ../calendar/backends/weather/e-cal-backend-weather.c:402
 #, c-format
 msgid "%.1f °F"
 msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
-#: ../calendar/backends/weather/e-cal-backend-weather.c:403
+#: ../calendar/backends/weather/e-cal-backend-weather.c:405
 #, c-format
 msgid "%.1f °C"
 msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
-#: ../calendar/backends/weather/e-cal-backend-weather.c:406
+#: ../calendar/backends/weather/e-cal-backend-weather.c:408
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:412
+#: ../calendar/backends/weather/e-cal-backend-weather.c:414
 #, c-format
 msgid "%.1f"
 msgstr "%.1f"
 
-#: ../calendar/backends/weather/e-cal-backend-weather.c:577
-#: ../calendar/backends/weather/e-cal-backend-weather.c:605
+#: ../calendar/backends/weather/e-cal-backend-weather.c:579
+#: ../calendar/backends/weather/e-cal-backend-weather.c:607
 msgid "Forecast"
 msgstr "Pronóstico"
 
@@ -2320,7 +2325,6 @@ msgstr "Falló al descifrar la parte MIME: error del protocolo"
 
 #: ../camel/camel-gpg-context.c:2208
 #, c-format
-#| msgid "Failed to decrypt MIME part: protocol error"
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Falló al descifrar la parte MIME: no se ha encontrado el secreto"
 
@@ -2760,7 +2764,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "El GType registrado no es válido para el protocolo «%s»"
 
 #: ../camel/camel-session.c:499
-#: ../camel/providers/imapx/camel-imapx-server.c:4854
+#: ../camel/providers/imapx/camel-imapx-server.c:4852
 #: ../camel/providers/pop3/camel-pop3-store.c:308
 #: ../camel/providers/pop3/camel-pop3-store.c:775
 #: ../camel/providers/smtp/camel-smtp-transport.c:548
@@ -3137,17 +3141,17 @@ msgstr "Aplicar _filtros de mensajes a esta carpeta"
 msgid "Always check for _new mail in this folder"
 msgstr "Comprobar siempre si hay correo _nuevo en esta carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1549
+#: ../camel/providers/imapx/camel-imapx-folder.c:1551
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "No se pudo crear el resumen de carpetas para %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1558
+#: ../camel/providers/imapx/camel-imapx-folder.c:1560
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "No se pudo crear la caché para %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1773
+#: ../camel/providers/imapx/camel-imapx-folder.c:1781
 #, c-format
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "No hay un buzón IMAP disponible para la carpeta «%s»"
@@ -3255,164 +3259,164 @@ msgstr "Para leer y almacenar correo en los servidores IMAP."
 msgid "Not authenticated"
 msgstr "No está autenticado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1763
+#: ../camel/providers/imapx/camel-imapx-server.c:1769
 msgid "Server disconnected"
 msgstr "Servidor desconectado"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2278
+#: ../camel/providers/imapx/camel-imapx-server.c:2284
 msgid "Error writing to cache stream"
 msgstr "Error al escribir al flujo de caché"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3683
+#: ../camel/providers/imapx/camel-imapx-server.c:3681
 msgid "Error performing IDLE"
 msgstr "Error al estar inactivo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4695
+#: ../camel/providers/imapx/camel-imapx-server.c:4693
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4696
+#: ../camel/providers/imapx/camel-imapx-server.c:4694
 #: ../camel/providers/smtp/camel-smtp-transport.c:215
 msgid "STARTTLS not supported"
 msgstr "No se soporta STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4756
+#: ../camel/providers/imapx/camel-imapx-server.c:4754
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4843
+#: ../camel/providers/imapx/camel-imapx-server.c:4841
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "El servidor IMAP %s no soporta la autenticación %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4873
+#: ../camel/providers/imapx/camel-imapx-server.c:4871
 #: ../camel/providers/nntp/camel-nntp-store.c:393
 #: ../camel/providers/nntp/camel-nntp-store.c:535
 msgid "Cannot authenticate without a username"
 msgstr "No se pudo autenticar sin un nombre de usuario"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4882
+#: ../camel/providers/imapx/camel-imapx-server.c:4880
 #: ../camel/providers/nntp/camel-nntp-store.c:544
 #: ../camel/providers/pop3/camel-pop3-store.c:679
 #: ../camel/providers/pop3/camel-pop3-store.c:717
 msgid "Authentication password not available"
 msgstr "La contraseña de la autenticación no está disponible"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5131
-#: ../camel/providers/imapx/camel-imapx-server.c:5190
+#: ../camel/providers/imapx/camel-imapx-server.c:5129
+#: ../camel/providers/imapx/camel-imapx-server.c:5188
 msgid "Error fetching message"
 msgstr "Error al obtener el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5183
+#: ../camel/providers/imapx/camel-imapx-server.c:5181
 msgid "Failed to close the tmp stream"
 msgstr "Falló al cerrar el flujo temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5219
+#: ../camel/providers/imapx/camel-imapx-server.c:5217
 msgid "Failed to copy the tmp file"
 msgstr "Falló al copiar el archivo temporal"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5391
+#: ../camel/providers/imapx/camel-imapx-server.c:5389
 msgid "Error moving messages"
 msgstr "Error al mover los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5395
+#: ../camel/providers/imapx/camel-imapx-server.c:5393
 msgid "Error copying messages"
 msgstr "Error al copiar los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5653
+#: ../camel/providers/imapx/camel-imapx-server.c:5651
 msgid "Error appending message"
 msgstr "Error al añadir el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5889
+#: ../camel/providers/imapx/camel-imapx-server.c:5887
 msgid "Error fetching message headers"
 msgstr "Error al obtener las cabeceras de los mensajes"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6056
+#: ../camel/providers/imapx/camel-imapx-server.c:6054
 msgid "Error retrieving message"
 msgstr "Error al obtener el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6190
-#: ../camel/providers/imapx/camel-imapx-server.c:6419
+#: ../camel/providers/imapx/camel-imapx-server.c:6188
+#: ../camel/providers/imapx/camel-imapx-server.c:6417
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr ""
 "Obteniendo recopilación de información sobre los mensajes nuevos en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6242
+#: ../camel/providers/imapx/camel-imapx-server.c:6240
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Buscando mensajes modificados en «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6294
+#: ../camel/providers/imapx/camel-imapx-server.c:6292
 msgid "Error fetching new messages"
 msgstr "Error al obtener mensajes nuevos"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6567
+#: ../camel/providers/imapx/camel-imapx-server.c:6565
 msgid "Error refreshing folder"
 msgstr "Error al actualizar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6717
+#: ../camel/providers/imapx/camel-imapx-server.c:6715
 msgid "Error expunging message"
 msgstr "Error al compactar el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6823
-#: ../camel/providers/imapx/camel-imapx-server.c:6848
+#: ../camel/providers/imapx/camel-imapx-server.c:6821
+#: ../camel/providers/imapx/camel-imapx-server.c:6846
 msgid "Error fetching folders"
 msgstr "Error al obtener las carpetas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6928
+#: ../camel/providers/imapx/camel-imapx-server.c:6926
 msgid "Error creating folder"
 msgstr "Error al crear la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6980
+#: ../camel/providers/imapx/camel-imapx-server.c:6978
 msgid "Error deleting folder"
 msgstr "Error al eliminar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7056
+#: ../camel/providers/imapx/camel-imapx-server.c:7054
 msgid "Error renaming folder"
 msgstr "Error al renombrar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7130
+#: ../camel/providers/imapx/camel-imapx-server.c:7128
 msgid "Error subscribing to folder"
 msgstr "Error al suscribirse a las carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7196
+#: ../camel/providers/imapx/camel-imapx-server.c:7194
 msgid "Error unsubscribing from folder"
 msgstr "Error al desuscribirse de la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7258
+#: ../camel/providers/imapx/camel-imapx-server.c:7256
 msgid "Error retrieving quota information"
 msgstr "Error al obtener la información de la cuota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7310
+#: ../camel/providers/imapx/camel-imapx-server.c:7308
 msgid "Search failed"
 msgstr "Falló al buscar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7372
+#: ../camel/providers/imapx/camel-imapx-server.c:7370
 msgid "Error performing NOOP"
 msgstr "Error realizar la no operación"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:7479
+#: ../camel/providers/imapx/camel-imapx-server.c:7477
 msgid "Error syncing changes"
 msgstr "Error al sincronizar los cambios"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8513
+#: ../camel/providers/imapx/camel-imapx-server.c:8533
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8514
+#: ../camel/providers/imapx/camel-imapx-server.c:8534
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:8741
-#: ../camel/providers/imapx/camel-imapx-server.c:8762
+#: ../camel/providers/imapx/camel-imapx-server.c:8761
+#: ../camel/providers/imapx/camel-imapx-server.c:8782
 msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:9585
+#: ../camel/providers/imapx/camel-imapx-server.c:9633
 msgid "IMAP server does not support quotas"
 msgstr "El servidor IMAP no soporta cuotas"
 
@@ -4804,12 +4808,12 @@ msgstr "(Obsoleto) Número de puerto para peticiones SOCKS"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Obsoleto) URL para la configuración automática del proxy"
 
-#: ../libebackend/e-collection-backend.c:956
+#: ../libebackend/e-collection-backend.c:976
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s no soporta la creación de recursos remotos"
 
-#: ../libebackend/e-collection-backend.c:1015
+#: ../libebackend/e-collection-backend.c:1035
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s no soporta eliminar recursos remotos"
@@ -4866,7 +4870,7 @@ msgstr "El origen de datos %s no soporta la autenticación OAuth 2.0"
 msgid "File must have a '.source' extension"
 msgstr "El archivo debe tener una extensión «.source»"
 
-#: ../libebackend/e-source-registry-server.c:315
+#: ../libebackend/e-source-registry-server.c:319
 #, c-format
 msgid "UID '%s' is already in use"
 msgstr "el UID «%s» ya está en uso"
@@ -5065,7 +5069,7 @@ msgstr "La fuente de datos «%s» no soporta búsquedas en el proxy"
 #. * in 12-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1673 ../libedataserver/e-time-utils.c:1972
+#: ../libedataserver/e-time-utils.c:1692 ../libedataserver/e-time-utils.c:1991
 msgid "%a %m/%d/%Y %I:%M:%S %p"
 msgstr "%a %d/%m/%Y %I:%M:%S %p"
 
@@ -5073,7 +5077,7 @@ msgstr "%a %d/%m/%Y %I:%M:%S %p"
 #. * in 24-hour format.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1678 ../libedataserver/e-time-utils.c:1963
+#: ../libedataserver/e-time-utils.c:1697 ../libedataserver/e-time-utils.c:1982
 msgid "%a %m/%d/%Y %H:%M:%S"
 msgstr "%a %d/%m/%Y %H:%M:%S"
 
@@ -5081,7 +5085,7 @@ msgstr "%a %d/%m/%Y %H:%M:%S"
 #. * in 12-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 12-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1683 ../libedataserver/e-time-utils.c:1968
+#: ../libedataserver/e-time-utils.c:1702 ../libedataserver/e-time-utils.c:1987
 msgid "%a %m/%d/%Y %I:%M %p"
 msgstr "%a %d/%m/%Y %I:%M %p"
 
@@ -5089,78 +5093,78 @@ msgstr "%a %d/%m/%Y %I:%M %p"
 #. * in 24-hour format, without seconds.
 #. strftime format of a weekday, a date and a
 #. * time, in 24-hour format, without seconds.
-#: ../libedataserver/e-time-utils.c:1688 ../libedataserver/e-time-utils.c:1959
+#: ../libedataserver/e-time-utils.c:1707 ../libedataserver/e-time-utils.c:1978
 msgid "%a %m/%d/%Y %H:%M"
 msgstr "%a %d/%m/%Y %H:%M"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 12-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1693
+#: ../libedataserver/e-time-utils.c:1712
 msgid "%a %m/%d/%Y %I %p"
 msgstr "%a %d/%m/%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1698
+#: ../libedataserver/e-time-utils.c:1717
 msgid "%a %m/%d/%Y %H"
 msgstr "%a %d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. strftime format of a weekday and a date.
-#: ../libedataserver/e-time-utils.c:1701 ../libedataserver/e-time-utils.c:1821
-#: ../libedataserver/e-time-utils.c:1954
+#: ../libedataserver/e-time-utils.c:1720 ../libedataserver/e-time-utils.c:1840
+#: ../libedataserver/e-time-utils.c:1973
 msgid "%a %m/%d/%Y"
 msgstr "%a %d/%m/%Y"
 
 #. strptime format of a date and a time, in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1708
+#: ../libedataserver/e-time-utils.c:1727
 msgid "%m/%d/%Y %I:%M:%S %p"
 msgstr "%d/%m/%Y %I:%M:%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1712
+#: ../libedataserver/e-time-utils.c:1731
 msgid "%m/%d/%Y %H:%M:%S"
 msgstr "%d/%m/%Y %H:%M:%S"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1717
+#: ../libedataserver/e-time-utils.c:1736
 msgid "%m/%d/%Y %I:%M %p"
 msgstr "%d/%m/%Y %I:%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1722
+#: ../libedataserver/e-time-utils.c:1741
 msgid "%m/%d/%Y %H:%M"
 msgstr "%d/%m/%Y %H:%M"
 
 #. strptime format of a date and a time, in 12-hour format,
 #. * without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1727
+#: ../libedataserver/e-time-utils.c:1746
 msgid "%m/%d/%Y %I %p"
 msgstr "%d/%m/%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without minutes or seconds.
-#: ../libedataserver/e-time-utils.c:1732
+#: ../libedataserver/e-time-utils.c:1751
 msgid "%m/%d/%Y %H"
 msgstr "%d/%m/%Y %H"
 
 #. strptime format of a weekday and a date.
 #. This is the preferred date format for the locale.
-#: ../libedataserver/e-time-utils.c:1735 ../libedataserver/e-time-utils.c:1824
+#: ../libedataserver/e-time-utils.c:1754 ../libedataserver/e-time-utils.c:1843
 msgid "%m/%d/%Y"
 msgstr "%d/%m/%Y"
 
 #. strptime format for a time of day, in 12-hour format.
 #. strftime format of a time in 12-hour format.
-#: ../libedataserver/e-time-utils.c:1895 ../libedataserver/e-time-utils.c:2016
+#: ../libedataserver/e-time-utils.c:1914 ../libedataserver/e-time-utils.c:2035
 msgid "%I:%M:%S %p"
 msgstr "%I:%M:%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
-#: ../libedataserver/e-time-utils.c:1899 ../libedataserver/e-time-utils.c:2008
+#: ../libedataserver/e-time-utils.c:1918 ../libedataserver/e-time-utils.c:2027
 msgid "%H:%M:%S"
 msgstr "%H:%M:%S"
 
@@ -5168,25 +5172,25 @@ msgstr "%H:%M:%S"
 #. * in 12-hour format.
 #. strftime format of a time in 12-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1904 ../libedataserver/e-time-utils.c:2013
+#: ../libedataserver/e-time-utils.c:1923 ../libedataserver/e-time-utils.c:2032
 msgid "%I:%M %p"
 msgstr "%I:%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
 #. * without seconds.
-#: ../libedataserver/e-time-utils.c:1908 ../libedataserver/e-time-utils.c:2005
+#: ../libedataserver/e-time-utils.c:1927 ../libedataserver/e-time-utils.c:2024
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. strptime format for time of day, without seconds 24-hour format,
 #. * and no colon.
-#: ../libedataserver/e-time-utils.c:1912
+#: ../libedataserver/e-time-utils.c:1931
 msgid "%H%M"
 msgstr "%H%M"
 
 #. strptime format for hour and AM/PM, 12-hour format.
-#: ../libedataserver/e-time-utils.c:1916
+#: ../libedataserver/e-time-utils.c:1935
 msgid "%I %p"
 msgstr "%I %p"
 
@@ -6071,9 +6075,6 @@ msgstr "_Descartar"
 
 #~ msgid "%s = %s"
 #~ msgstr "%s = %s"
-
-#~ msgid "Certificate"
-#~ msgstr "Certificado"
 
 #~ msgid "Certificate Signature Algorithm"
 #~ msgstr "Algoritmo de firma del certificado"
