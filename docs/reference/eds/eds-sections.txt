@@ -4382,3 +4382,14 @@ E_DATA_SERVER_CREDENTIALMODULEDIR
 XIMIAN_VCARD
 </SECTION>
 
+<SECTION>
+<FILE>e-cache-reaper</FILE>
+e_cache_reaper_add_private_directory
+e_cache_reaper_remove_private_directory
+<SUBSECTION Standard>
+E_TYPE_CACHE_REAPER
+E_CACHE_REAPER
+E_IS_CACHE_REAPER
+e_cache_reaper_get_type
+</SECTION>
+

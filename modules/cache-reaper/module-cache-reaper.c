@@ -21,14 +21,8 @@
 
 #include <libebackend/libebackend.h>
 
+#include "e-cache-reaper.h"
 #include "e-cache-reaper-utils.h"
-
-/* Standard GObject macros */
-#define E_TYPE_CACHE_REAPER \
-	(e_cache_reaper_get_type ())
-#define E_CACHE_REAPER(obj) \
-	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), E_TYPE_CACHE_REAPER, ECacheReaper))
 
 /* Where abandoned directories go to die. */
 #define TRASH_DIRECTORY_NAME "trash"
@@ -53,9 +47,6 @@
  * to live in trash before reaping it. */
 #define CACHE_EXPIRY_IN_DAYS 7
 
-typedef struct _ECacheReaper ECacheReaper;
-typedef struct _ECacheReaperClass ECacheReaperClass;
-
 struct _ECacheReaper {
 	EExtension parent;
 
@@ -68,6 +59,8 @@ struct _ECacheReaper {
 	GFile **cache_trash_directories;
 
 	guint reaping_timeout_id;
+
+	GSList *private_directories;
 };
 
 struct _ECacheReaperClass {
@@ -78,13 +71,8 @@ struct _ECacheReaperClass {
 void e_module_load (GTypeModule *type_module);
 void e_module_unload (GTypeModule *type_module);
 
-/* Forward Declarations */
-GType e_cache_reaper_get_type (void);
-
-G_DEFINE_DYNAMIC_TYPE (
-	ECacheReaper,
-	e_cache_reaper,
-	E_TYPE_EXTENSION)
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (ECacheReaper, e_cache_reaper, E_TYPE_EXTENSION, 0,
+	G_IMPLEMENT_INTERFACE_DYNAMIC (E_TYPE_EXTENSIBLE, NULL))
 
 static ESourceRegistryServer *
 cache_reaper_get_server (ECacheReaper *extension)
@@ -237,6 +225,32 @@ cache_reaper_move_directory (GFile *source_directory,
 	}
 }
 
+static gboolean
+cache_reaper_skip_directory (ECacheReaper *cache_reaper,
+			     const gchar *name)
+{
+	GSList *link;
+
+	/* Skip the trash directory, obviously. */
+	if (g_strcmp0 (name, TRASH_DIRECTORY_NAME) == 0)
+		return TRUE;
+
+	/* Also skip directories named "system".  For backward
+	 * compatibility, data directories for built-in sources
+	 * are named "system" instead of "system-address-book"
+	 * or "system-calendar" or what have you. */
+	if (g_strcmp0 (name, "system") == 0)
+		return TRUE;
+
+	for (link = cache_reaper->private_directories; link; link = g_slist_next (link)) {
+		if (g_strcmp0 (name, link->data) == 0) {
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 static void
 cache_reaper_scan_directory (ECacheReaper *extension,
                              GFile *base_directory,
@@ -271,15 +285,7 @@ cache_reaper_scan_directory (ECacheReaper *extension,
 
 		name = g_file_info_get_name (file_info);
 
-		/* Skip the trash directory, obviously. */
-		if (g_strcmp0 (name, TRASH_DIRECTORY_NAME) == 0)
-			goto next;
-
-		/* Also skip directories named "system".  For backward
-		 * compatibility, data directories for built-in sources
-		 * are named "system" instead of "system-address-book"
-		 * or "system-calendar" or what have you. */
-		if (g_strcmp0 (name, "system") == 0)
+		if (cache_reaper_skip_directory (extension, name))
 			goto next;
 
 		source = e_source_registry_server_ref_source (server, name);
@@ -498,6 +504,9 @@ cache_reaper_finalize (GObject *object)
 	if (extension->reaping_timeout_id > 0)
 		g_source_remove (extension->reaping_timeout_id);
 
+	g_slist_free_full (extension->private_directories, g_free);
+	extension->private_directories = NULL;
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cache_reaper_parent_class)->finalize (object);
 }
@@ -522,6 +531,8 @@ cache_reaper_constructed (GObject *object)
 	g_signal_connect (
 		extensible, "source-removed",
 		G_CALLBACK (cache_reaper_source_removed_cb), extension);
+
+	e_extensible_load_extensions (E_EXTENSIBLE (object));
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cache_reaper_parent_class)->constructed (object);
@@ -574,6 +585,8 @@ e_cache_reaper_init (ECacheReaper *extension)
 		"sources",
 		"tasks"
 	};
+
+	extension->private_directories = NULL;
 
 	/* Setup base directories for data. */
 
@@ -648,6 +661,62 @@ e_cache_reaper_init (ECacheReaper *extension)
 	}
 
 	g_object_unref (base_directory);
+}
+
+/**
+ * e_cache_reaper_add_private_directory:
+ * @cache_reaper: an #ECacheReaper
+ * @name: directory name
+ *
+ * Let's the @cache_reaper know about a private directory named @name,
+ * thus it won't delete it from cache or data directories. The @name
+ * is just a directory name, not a path.
+ *
+ * Since 3.18
+ **/
+void
+e_cache_reaper_add_private_directory (ECacheReaper *cache_reaper,
+				      const gchar *name)
+{
+	g_return_if_fail (E_IS_CACHE_REAPER (cache_reaper));
+	g_return_if_fail (name != NULL);
+
+	if (g_slist_find_custom (cache_reaper->private_directories, name, (GCompareFunc) g_strcmp0))
+		return;
+
+	cache_reaper->private_directories = g_slist_prepend (cache_reaper->private_directories, g_strdup (name));
+}
+
+/**
+ * e_cache_reaper_remove_private_directory:
+ * @cache_reaper: an #ECacheReaper
+ * @name: directory name
+ *
+ * Remove private directory named @name from the list of private
+ * directories in the @cache_reaper, previously added with
+ * e_cache_reaper_add_private_directory().
+ *
+ * Since 3.18
+ **/
+void
+e_cache_reaper_remove_private_directory (ECacheReaper *cache_reaper,
+					 const gchar *name)
+{
+	GSList *link;
+	gchar *saved_name;
+
+	g_return_if_fail (E_IS_CACHE_REAPER (cache_reaper));
+	g_return_if_fail (name != NULL);
+
+	link = g_slist_find_custom (cache_reaper->private_directories, name, (GCompareFunc) g_strcmp0);
+	if (!link)
+		return;
+
+	saved_name = link->data;
+
+	cache_reaper->private_directories = g_slist_remove (cache_reaper->private_directories, saved_name);
+
+	g_free (saved_name);
 }
 
 G_MODULE_EXPORT void

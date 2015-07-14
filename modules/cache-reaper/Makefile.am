@@ -27,4 +27,8 @@ module_cache_reaper_la_LDFLAGS = \
 	-module -avoid-version $(NO_UNDEFINED) \
 	$(NULL)
 
+cachereaperincludedir = $(privincludedir)/cache-reaper
+
+cachereaperinclude_HEADERS = e-cache-reaper.h
+
 -include $(top_srcdir)/git.mk
