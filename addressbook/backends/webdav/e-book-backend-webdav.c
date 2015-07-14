@@ -1482,11 +1482,21 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 	if (orig_uid && *orig_uid && !e_book_backend_cache_check_contact (webdav->priv->cache, orig_uid)) {
 		uid = g_strdup (orig_uid);
 	} else {
-		/* do 3 rand() calls to construct a unique ID... poor way but should be
-		 * good enough for us */
-		uid = g_strdup_printf ("%08X-%08X-%08X", rand (), rand (), rand ());
+		uid = NULL;
+
+		do {
+			g_free (uid);
+
+			/* do 3 random() calls to construct a unique ID... poor way but should be
+			 * good enough for us */
+			uid = g_strdup_printf ("%08X-%08X-%08X", g_random_int (), g_random_int (), g_random_int ());
+
+		} while (e_book_backend_cache_check_contact (webdav->priv->cache, uid) &&
+			 !g_cancellable_is_cancelled (cancellable));
+
 		e_contact_set (contact, E_CONTACT_UID, uid);
 	}
+
 	href = g_strconcat (webdav->priv->uri, uid, ".vcf", NULL);
 
 	/* kill WEBDAV_CONTACT_ETAG field (might have been set by some other backend) */
