@@ -282,6 +282,9 @@ cache_reaper_scan_directory (ECacheReaper *extension,
 		if (g_strcmp0 (name, "system") == 0)
 			goto next;
 
+		if (g_strcmp0 (name, "rss") == 0)
+			goto next;
+
 		source = e_source_registry_server_ref_source (server, name);
 
 		if (source == NULL) {
