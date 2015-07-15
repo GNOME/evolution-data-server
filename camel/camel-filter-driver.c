@@ -1618,7 +1618,6 @@ get_message_cb (gpointer data,
 		else
 			uid = camel_message_info_uid (msgdata->priv->info);
 
-		/* FIXME Pass a GCancellable */
 		message = camel_folder_get_message_sync (
 			msgdata->priv->source, uid, cancellable, error);
 	}
