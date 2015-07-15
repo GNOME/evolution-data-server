@@ -1727,6 +1727,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		if (driver->priv->terminated)
 			break;
 
+		if (g_cancellable_set_error_if_cancelled (cancellable, &driver->priv->error))
+			goto error;
+
 		d (printf ("applying rule %s\naction %s\n", rule->match, rule->action));
 
 		data.priv = p;
