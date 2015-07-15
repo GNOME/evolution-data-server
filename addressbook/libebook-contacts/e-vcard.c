@@ -505,6 +505,9 @@ read_attribute_params (EVCardAttribute *attr,
 						param = NULL;
 						if (!colon)
 							lp = g_utf8_next_char (lp);
+					} else {
+						g_string_append_unichar (str, g_utf8_get_char (lp));
+						lp = g_utf8_next_char (lp);
 					}
 				}
 
