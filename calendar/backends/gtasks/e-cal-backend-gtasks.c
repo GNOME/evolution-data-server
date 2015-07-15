@@ -908,7 +908,7 @@ ecb_gtasks_get_free_busy (ECalBackend *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
-	e_data_cal_respond_get_free_busy (cal, opid, EDC_ERROR (NotSupported));
+	e_data_cal_respond_get_free_busy (cal, opid, EDC_ERROR (NotSupported), NULL);
 }
 
 static void

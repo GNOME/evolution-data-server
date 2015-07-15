@@ -37,12 +37,6 @@ TESTS = \
 	test-cal-client-get-view \
 	test-cal-client-revision-view \
 	test-cal-client-get-revision \
-	$(NULL)
-
-# test-cal-client-get-free-busy:
-#   broken by design, the API needs to be fixed.
-#
-BROKEN_TESTS = \
 	test-cal-client-get-free-busy \
 	$(NULL)
 

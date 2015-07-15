@@ -148,7 +148,8 @@ void		e_data_cal_respond_get_object_list
 void		e_data_cal_respond_get_free_busy
 						(EDataCal *cal,
 						 guint32 opid,
-						 GError *error);
+						 GError *error,
+						 const GSList *freebusy);
 void		e_data_cal_respond_create_objects
 						(EDataCal *cal,
 						 guint32 opid,

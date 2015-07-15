@@ -687,7 +687,7 @@ cal_backend_get_free_busy (ECalBackend *backend,
 
 	if (freebusyobjs)
 		e_data_cal_report_free_busy_data (cal, freebusyobjs);
-	e_data_cal_respond_get_free_busy (cal, opid, error);
+	e_data_cal_respond_get_free_busy (cal, opid, error, freebusyobjs);
 
 	g_slist_foreach (freebusyobjs, (GFunc) g_free, NULL);
 	g_slist_free (freebusyobjs);

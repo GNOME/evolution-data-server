@@ -833,21 +833,38 @@ data_cal_complete_get_free_busy_cb (GObject *source_object,
                                     gpointer user_data)
 {
 	AsyncContext *async_context = user_data;
+	GSList *out_freebusy = NULL;
 	GError *error = NULL;
 
 	e_cal_backend_get_free_busy_finish (
-		E_CAL_BACKEND (source_object), result, &error);
+		E_CAL_BACKEND (source_object), result, &out_freebusy, &error);
 
 	if (error == NULL) {
+		gchar **strv;
+		gint ii = 0;
+		GSList *link;
+
+		strv = g_new0 (gchar *, g_slist_length (out_freebusy) + 1);
+
+		for (link = out_freebusy; link; link = g_slist_next (link)) {
+			gchar *ical_freebusy = link->data;
+
+			strv[ii++] = e_util_utf8_make_valid (ical_freebusy);
+		}
+
 		e_dbus_calendar_complete_get_free_busy (
 			async_context->dbus_interface,
-			async_context->invocation);
+			async_context->invocation,
+			(const gchar * const *) strv);
+
+		g_strfreev (strv);
 	} else {
 		data_cal_convert_to_client_error (error);
 		g_dbus_method_invocation_take_error (
 			async_context->invocation, error);
 	}
 
+	g_slist_free_full (out_freebusy, g_free);
 	async_context_free (async_context);
 }
 
@@ -1783,33 +1800,46 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
  * e_data_cal_respond_get_free_busy:
  * @cal: A calendar client interface.
  * @error: Operation error, if any, automatically freed if passed it.
+ * @freebusy: a #GSList of iCalendar strings with all gathered free/busy components.
  *
  * Notifies listeners of the completion of the get_free_busy method call.
- * To pass actual free/busy objects to the client use e_data_cal_report_free_busy_data().
+ * To pass actual free/busy objects to the client asynchronously
+ * use e_data_cal_report_free_busy_data(), but the @freebusy should contain
+ * all the objects being used in e_data_cal_report_free_busy_data().
  *
  * Since: 3.2
  */
 void
 e_data_cal_respond_get_free_busy (EDataCal *cal,
                                   guint32 opid,
-                                  GError *error)
+                                  GError *error,
+				  const GSList *freebusy)
 {
 	ECalBackend *backend;
 	GSimpleAsyncResult *simple;
+	GQueue *queue = NULL;
+	const GSList *link;
 
 	g_return_if_fail (E_IS_DATA_CAL (cal));
 
 	backend = e_data_cal_ref_backend (cal);
 	g_return_if_fail (backend != NULL);
 
-	simple = e_cal_backend_prepare_for_completion (backend, opid, NULL);
+	simple = e_cal_backend_prepare_for_completion (backend, opid, &queue);
 	g_return_if_fail (simple != NULL);
 
 	/* Translators: This is prefix to a detailed error message */
 	g_prefix_error (&error, "%s", _("Cannot retrieve calendar free/busy list: "));
 
-	if (error != NULL)
+	if (error != NULL) {
 		g_simple_async_result_take_error (simple, error);
+	} else {
+		for (link = freebusy; link; link = g_slist_next (link)) {
+			const gchar *ical_freebusy = link->data;
+
+			g_queue_push_tail (queue, g_strdup (ical_freebusy));
+		}
+	}
 
 	g_simple_async_result_complete_in_idle (simple);
 

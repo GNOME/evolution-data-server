@@ -84,6 +84,7 @@
     <arg name="start" direction="in" type="x"/>
     <arg name="end" direction="in" type="x"/>
     <arg name="users" direction="in" type="as"/>
+    <arg name="freebusy" direction="out" type="as"/>
   </method>
 
   <method name="GetAttachmentUris">

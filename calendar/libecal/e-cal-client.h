@@ -308,11 +308,13 @@ void		e_cal_client_get_free_busy	(ECalClient *client,
 gboolean	e_cal_client_get_free_busy_finish
 						(ECalClient *client,
 						 GAsyncResult *result,
+						 GSList **out_freebusy,
 						 GError **error);
 gboolean	e_cal_client_get_free_busy_sync	(ECalClient *client,
 						 time_t start,
 						 time_t end,
 						 const GSList *users,
+						 GSList **out_freebusy,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_client_create_object	(ECalClient *client,

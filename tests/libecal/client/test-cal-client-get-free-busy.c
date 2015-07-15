@@ -109,9 +109,8 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 	ECalClient *cal_client;
 	GError *error = NULL;
 	icaltimezone *utc;
-	GSList *users = NULL;
+	GSList *users = NULL, *freebusy_data = NULL;
 	time_t start, end;
-	gulong sig_id;
 
 	cal_client = E_TEST_SERVER_UTILS_SERVICE (fixture, ECalClient);
 
@@ -123,16 +122,14 @@ test_get_free_busy_sync (ETestServerFixture *fixture,
 	end = time_add_day_with_zone (start, 2, utc);
 	users = g_slist_append (users, (gpointer) USER_EMAIL);
 
-	sig_id = g_signal_connect (cal_client, "free-busy-data", G_CALLBACK (free_busy_data_cb), (gpointer) G_STRFUNC);
-
-	if (!e_cal_client_get_free_busy_sync (cal_client, start, end, users, NULL, &error))
+	if (!e_cal_client_get_free_busy_sync (cal_client, start, end, users, &freebusy_data, NULL, &error))
 		g_error ("get free busy sync: %s", error->message);
-
-	g_signal_handler_disconnect (cal_client, sig_id);
 
 	g_slist_free (users);
 
-	g_assert (received_free_busy_data);
+	g_assert (freebusy_data);
+
+	g_slist_free_full (freebusy_data, g_object_unref);
 }
 
 static void
@@ -143,13 +140,17 @@ async_get_free_busy_result_ready (GObject *source_object,
 	ECalClient *cal_client;
 	GError *error = NULL;
 	GMainLoop *loop = (GMainLoop *) user_data;
+	GSList *freebusy_data = NULL;
 
 	cal_client = E_CAL_CLIENT (source_object);
 
-	if (!e_cal_client_get_free_busy_finish (cal_client, result, &error))
+	if (!e_cal_client_get_free_busy_finish (cal_client, result, &freebusy_data, &error))
 		g_error ("create object finish: %s", error->message);
 
 	g_assert (received_free_busy_data);
+	g_assert (freebusy_data);
+
+	g_slist_free_full (freebusy_data, g_object_unref);
 
 	g_main_loop_quit (loop);
 }

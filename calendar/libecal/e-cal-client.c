@@ -4533,6 +4533,7 @@ cal_client_get_free_busy_thread (GSimpleAsyncResult *simple,
 		async_context->start,
 		async_context->end,
 		async_context->string_list,
+		&async_context->object_list,
 		cancellable, &local_error)) {
 
 		if (!local_error)
@@ -4606,10 +4607,13 @@ e_cal_client_get_free_busy (ECalClient *client,
  * e_cal_client_get_free_busy_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
+ * @out_freebusy: (element-type ECalComponent): a #GSList of #ECalComponent-s with overall returned Free/Busy data
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_free_busy().
- * All VFREEBUSY #ECalComponent-s were received by "free-busy-data" signal.
+ * The @out_freebusy contains all VFREEBUSY #ECalComponent-s, which could be also
+ * received by "free-busy-data" signal. The client is responsible to do a merge of
+ * the components between this complete list and those received through the signal.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -4618,6 +4622,7 @@ e_cal_client_get_free_busy (ECalClient *client,
 gboolean
 e_cal_client_get_free_busy_finish (ECalClient *client,
                                    GAsyncResult *result,
+				   GSList **out_freebusy,
                                    GError **error)
 {
 	GSimpleAsyncResult *simple;
@@ -4630,7 +4635,19 @@ e_cal_client_get_free_busy_finish (ECalClient *client,
 	simple = G_SIMPLE_ASYNC_RESULT (result);
 
 	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	if (out_freebusy != NULL) {
+		AsyncContext *async_context;
+
+		async_context = g_simple_async_result_get_op_res_gpointer (simple);
+
+		*out_freebusy = async_context->object_list;
+		async_context->object_list = NULL;
+	}
+
+	return TRUE;
 }
 
 /**
@@ -4639,11 +4656,14 @@ e_cal_client_get_free_busy_finish (ECalClient *client,
  * @start: Start time for query
  * @end: End time for query
  * @users: (element-type utf8): List of users to retrieve free/busy information for
+ * @out_freebusy: (element-type ECalComponent): a #GSList of #ECalComponent-s with overall returned Free/Busy data
  * @cancellable: (allow-none): a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Gets free/busy information from the calendar server.
- * All VFREEBUSY #ECalComponent-s were received by "free-busy-data" signal.
+ * The @out_freebusy contains all VFREEBUSY #ECalComponent-s, which could be also
+ * received by "free-busy-data" signal. The client is responsible to do a merge of
+ * the components between this complete list and those received through the signal.
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -4654,10 +4674,11 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
                                  time_t start,
                                  time_t end,
                                  const GSList *users,
+				 GSList **out_freebusy,
                                  GCancellable *cancellable,
                                  GError **error)
 {
-	gchar **strv;
+	gchar **strv, **freebusy_strv = NULL;
 	gint ii = 0;
 	GError *local_error = NULL;
 
@@ -4675,6 +4696,7 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 		client->priv->dbus_proxy,
 		(gint64) start, (gint64) end,
 		(const gchar * const *) strv,
+		&freebusy_strv,
 		cancellable, &local_error);
 
 	g_strfreev (strv);
@@ -4684,6 +4706,24 @@ e_cal_client_get_free_busy_sync (ECalClient *client,
 		g_propagate_error (error, local_error);
 		return FALSE;
 	}
+
+	if (out_freebusy) {
+		*out_freebusy = NULL;
+
+		for (ii = 0; freebusy_strv && freebusy_strv[ii] != NULL; ii++) {
+			ECalComponent *comp;
+
+			comp = e_cal_component_new_from_string (freebusy_strv[ii]);
+			if (!comp)
+				continue;
+
+			*out_freebusy = g_slist_prepend (*out_freebusy, comp);
+		}
+
+		*out_freebusy = g_slist_reverse (*out_freebusy);
+	}
+
+	g_strfreev (freebusy_strv);
 
 	return TRUE;
 }

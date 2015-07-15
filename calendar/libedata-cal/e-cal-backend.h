@@ -340,6 +340,7 @@ gboolean	e_cal_backend_get_free_busy_sync
 						 time_t start,
 						 time_t end,
 						 const gchar * const *users,
+						 GSList **out_freebusy,
 						 GCancellable *cancellable,
 						 GError **error);
 void		e_cal_backend_get_free_busy	(ECalBackend *backend,
@@ -352,6 +353,7 @@ void		e_cal_backend_get_free_busy	(ECalBackend *backend,
 gboolean	e_cal_backend_get_free_busy_finish
 						(ECalBackend *backend,
 						 GAsyncResult *result,
+						 GSList **out_freebusy,
 						 GError **error);
 gboolean	e_cal_backend_create_objects_sync
 						(ECalBackend *backend,

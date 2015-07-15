@@ -1588,7 +1588,7 @@ e_cal_get_free_busy (ECal *ecal,
                      GList **freebusy,
                      GError **error)
 {
-	GSList *slist = NULL;
+	GSList *slist = NULL, *out_freebusy = NULL, *link;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -1601,16 +1601,18 @@ e_cal_get_free_busy (ECal *ecal,
 	for (; users != NULL; users = g_list_next (users))
 		slist = g_slist_prepend (slist, users->data);
 
-	/* FIXME ECalClient's API for this is a giant W.T.F.
-	 *       There's no way to populate the freebusy list
-	 *       in a way that will avoid deadlocking for all
-	 *       cases.  I guess leave the list empty and hope
-	 *       no one notices until ECalClient grows a saner
-	 *       free/busy API. */
 	success = e_cal_client_get_free_busy_sync (
-		ecal->priv->client, start, end, slist, NULL, error);
+		ecal->priv->client, start, end, slist, &out_freebusy, NULL, error);
 
 	g_slist_free (slist);
+
+	if (success) {
+		for (link = out_freebusy; link; link = g_slist_next (link)) {
+			*freebusy = g_list_prepend (*freebusy, g_object_ref (link->data));
+		}
+	}
+
+	g_slist_free_full (out_freebusy, g_object_unref);
 
 	return success;
 }

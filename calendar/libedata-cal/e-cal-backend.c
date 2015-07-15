@@ -2197,13 +2197,17 @@ e_cal_backend_get_object_list_finish (ECalBackend *backend,
  * @start: start time
  * @end: end time
  * @users: a %NULL-terminated array of user strings
+ * @out_freebusy: iCalendar strings with overall returned Free/Busy data
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Obtains a free/busy object for the list of @users in the time interval
- * between @start and @end.  The free/busy results are returned through the
- * e_data_cal_report_free_busy_data() function rather than directly through
- * this function.
+ * between @start and @end.
+ *
+ * The free/busy results can be returned through the
+ * e_data_cal_report_free_busy_data() function asynchronously. The out_freebusy
+ * will contain all the returned data, possibly again, thus the client is
+ * responsible for the data merge, if needed.
  *
  * If an error occurs, the function will set @error and return %FALSE.
  *
@@ -2216,6 +2220,7 @@ e_cal_backend_get_free_busy_sync (ECalBackend *backend,
                                   time_t start,
                                   time_t end,
                                   const gchar * const *users,
+				  GSList **out_freebusy,
                                   GCancellable *cancellable,
                                   GError **error)
 {
@@ -2235,7 +2240,7 @@ e_cal_backend_get_free_busy_sync (ECalBackend *backend,
 	result = e_async_closure_wait (closure);
 
 	success = e_cal_backend_get_free_busy_finish (
-		backend, result, error);
+		backend, result, out_freebusy, error);
 
 	e_async_closure_free (closure);
 
@@ -2353,13 +2358,15 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
  * e_cal_backend_get_free_busy_finish:
  * @backend: an #ECalBackend
  * @result: a #GAsyncResult
+ * @out_freebusy: iCalendar strings with overall returned Free/Busy data
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_cal_backend_get_free_busy().
  *
- * The free/busy results are returned through the
- * e_data_cal_report_free_busy_data() function rather than directly through
- * this function.
+ * The free/busy results can be returned through the
+ * e_data_cal_report_free_busy_data() function asynchronously. The out_freebusy
+ * will contain all the returned data, possibly again, thus the client is
+ * responsible for the data merge, if needed.
  *
  * If an error occurred, the function will set @error and return %FALSE.
  *
@@ -2370,9 +2377,12 @@ e_cal_backend_get_free_busy (ECalBackend *backend,
 gboolean
 e_cal_backend_get_free_busy_finish (ECalBackend *backend,
                                     GAsyncResult *result,
+				    GSList **out_freebusy,
                                     GError **error)
 {
 	GSimpleAsyncResult *simple;
+	AsyncContext *async_context;
+	GSList *ical_strings = NULL;
 
 	g_return_val_if_fail (
 		g_simple_async_result_is_valid (
@@ -2380,11 +2390,28 @@ e_cal_backend_get_free_busy_finish (ECalBackend *backend,
 		e_cal_backend_get_free_busy), FALSE);
 
 	simple = G_SIMPLE_ASYNC_RESULT (result);
+	async_context = g_simple_async_result_get_op_res_gpointer (simple);
 
 	cal_backend_unblock_operations (backend, simple);
 
 	/* Assume success unless a GError is set. */
-	return !g_simple_async_result_propagate_error (simple, error);
+	if (g_simple_async_result_propagate_error (simple, error))
+		return FALSE;
+
+	while (!g_queue_is_empty (&async_context->result_queue)) {
+		gchar *ical_freebusy;
+
+		ical_freebusy = g_queue_pop_head (&async_context->result_queue);
+		if (out_freebusy)
+			ical_strings = g_slist_prepend (ical_strings, ical_freebusy);
+		else
+			g_free (ical_freebusy);
+	}
+
+	if (out_freebusy)
+		*out_freebusy = g_slist_reverse (ical_strings);
+
+	return TRUE;
 }
 
 /**
