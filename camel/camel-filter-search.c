@@ -63,6 +63,7 @@ typedef struct {
 	CamelMessageInfo *info;
 	CamelFolder *folder;
 	const gchar *source;
+	GCancellable *cancellable;
 	GError **error;
 } FilterMessageSearch;
 
@@ -132,7 +133,7 @@ camel_filter_search_get_message (FilterMessageSearch *fms,
 	if (fms->message)
 		return fms->message;
 
-	fms->message = fms->get_message (fms->get_message_data, fms->error);
+	fms->message = fms->get_message (fms->get_message_data, fms->cancellable, fms->error);
 
 	if (fms->message == NULL)
 		camel_sexp_fatal_error (sexp, _("Failed to retrieve message"));
@@ -806,8 +807,8 @@ run_command (struct _CamelSExp *f,
 
 	stream = camel_stream_fs_new_with_fd (pipe_to_child);
 	camel_data_wrapper_write_to_stream_sync (
-		CAMEL_DATA_WRAPPER (message), stream, NULL, NULL);
-	camel_stream_flush (stream, NULL, NULL);
+		CAMEL_DATA_WRAPPER (message), stream, fms->cancellable, NULL);
+	camel_stream_flush (stream, fms->cancellable, NULL);
 	g_object_unref (stream);
 
 	context = g_main_context_new ();
@@ -973,7 +974,7 @@ junk_test (struct _CamelSExp *f,
 		goto done;
 
 	status = camel_junk_filter_classify (
-		junk_filter, message, NULL, &error);
+		junk_filter, message, fms->cancellable, &error);
 
 	if (error == NULL) {
 		const gchar *status_desc;
@@ -1004,7 +1005,10 @@ junk_test (struct _CamelSExp *f,
 				status_desc);
 	} else {
 		g_warn_if_fail (status == CAMEL_JUNK_STATUS_ERROR);
-		g_warning ("%s: %s", G_STRFUNC, error->message);
+		if (camel_debug ("junk"))
+			printf ("Junk classify failed with error: %s\n", error->message);
+		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+			g_warning ("%s: %s", G_STRFUNC, error->message);
 		g_error_free (error);
 		message_is_junk = FALSE;
 	}
@@ -1092,6 +1096,7 @@ message_location (struct _CamelSExp *f,
  * @source:
  * @folder: in which folder the message is stored
  * @expression:
+ * @cancellable: (allow-none): a #GCancellable, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Returns: one of CAMEL_SEARCH_MATCHED, CAMEL_SEARCH_NOMATCH, or
@@ -1105,6 +1110,7 @@ camel_filter_search_match (CamelSession *session,
                            const gchar *source,
 			   CamelFolder *folder,
                            const gchar *expression,
+			   GCancellable *cancellable,
                            GError **error)
 {
 	FilterMessageSearch fms;
@@ -1121,6 +1127,7 @@ camel_filter_search_match (CamelSession *session,
 	fms.info = info;
 	fms.source = source;
 	fms.folder = folder;
+	fms.cancellable = cancellable;
 	fms.error = &local_error;
 
 	sexp = camel_sexp_new ();

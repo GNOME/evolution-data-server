@@ -1602,6 +1602,7 @@ struct _get_message {
 
 static CamelMimeMessage *
 get_message_cb (gpointer data,
+		GCancellable *cancellable,
                 GError **error)
 {
 	struct _get_message *msgdata = data;
@@ -1619,7 +1620,7 @@ get_message_cb (gpointer data,
 
 		/* FIXME Pass a GCancellable */
 		message = camel_folder_get_message_sync (
-			msgdata->priv->source, uid, NULL, error);
+			msgdata->priv->source, uid, cancellable, error);
 	}
 
 	if (message != NULL && camel_mime_message_get_source (message) == NULL)
@@ -1727,6 +1728,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		if (driver->priv->terminated)
 			break;
 
+		if (g_cancellable_set_error_if_cancelled (cancellable, &driver->priv->error))
+			goto error;
+
 		d (printf ("applying rule %s\naction %s\n", rule->match, rule->action));
 
 		data.priv = p;
@@ -1737,7 +1741,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 		result = camel_filter_search_match (
 			driver->priv->session, get_message_cb, &data, driver->priv->info,
-			original_store_uid, source, rule->match, &driver->priv->error);
+			original_store_uid, source, rule->match, cancellable, &driver->priv->error);
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:

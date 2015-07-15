@@ -38,12 +38,17 @@ enum {
 	CAMEL_SEARCH_MATCHED = 1
 };
 
-typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, GError **error);
+typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, GCancellable *cancellable, GError **error);
 
 gint camel_filter_search_match (struct _CamelSession *session,
-				CamelFilterSearchGetMessageFunc get_message, gpointer data,
-				CamelMessageInfo *info, const gchar *source, struct _CamelFolder *folder,
-				const gchar *expression, GError **error);
+				CamelFilterSearchGetMessageFunc get_message,
+				gpointer data,
+				CamelMessageInfo *info,
+				const gchar *source,
+				struct _CamelFolder *folder,
+				const gchar *expression,
+				GCancellable *cancellable,
+				GError **error);
 
 G_END_DECLS
 
