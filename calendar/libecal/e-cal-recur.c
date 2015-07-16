@@ -321,7 +321,8 @@ static GArray *	cal_obj_generate_set_default	(RecurData	*recur_data,
 						 ECalRecurVTable *vtable,
 						 CalObjTime	*occ);
 
-static ECalRecurVTable * cal_obj_get_vtable	(icalrecurrencetype_frequency recur_type);
+static ECalRecurVTable cal_obj_get_vtable	(ECalRecurrence *recur,
+						 gboolean *vtable_valid);
 static void	cal_obj_initialize_recur_data	(RecurData	*recur_data,
 						 ECalRecurrence	*recur,
 						 CalObjTime	*event_start);
@@ -1526,11 +1527,12 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
                            CalObjTime *interval_end,
                            gboolean *finished)
 {
-	ECalRecurVTable *vtable;
+	ECalRecurVTable vtable;
 	CalObjTime *event_end = NULL, event_end_cotime;
 	RecurData recur_data;
 	CalObjTime occ, *cotime;
 	GArray *all_occs, *occs;
+	gboolean vtable_valid = FALSE;
 	gint len;
 
 	/* This is the resulting array of CalObjTime elements. */
@@ -1538,8 +1540,8 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 
 	*finished = TRUE;
 
-	vtable = cal_obj_get_vtable (recur->freq);
-	if (!vtable)
+	vtable = cal_obj_get_vtable (recur, &vtable_valid);
+	if (!vtable_valid)
 		return all_occs;
 
 	/* Calculate some useful data such as some fast lookup tables. */
@@ -1565,7 +1567,7 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 
 	/* Get the first period based on the frequency and the interval that
 	 * intersects the interval between start and end. */
-	if ((*vtable->find_start_position) (event_start, event_end,
+	if ((*vtable.find_start_position) (event_start, event_end,
 					    &recur_data,
 					    interval_start, interval_end,
 					    &occ))
@@ -1579,17 +1581,17 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 		case ICAL_YEARLY_RECURRENCE:
 			occs = cal_obj_generate_set_yearly (
 				&recur_data,
-				vtable, &occ);
+				&vtable, &occ);
 			break;
 		case ICAL_MONTHLY_RECURRENCE:
 			occs = cal_obj_generate_set_monthly (
 				&recur_data,
-				vtable, &occ);
+				&vtable, &occ);
 			break;
 		default:
 			occs = cal_obj_generate_set_default (
 				&recur_data,
-				vtable, &occ);
+				&vtable, &occ);
 			break;
 		}
 
@@ -1620,7 +1622,7 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 		g_array_free (occs, TRUE);
 
 		/* Skip to the next period, or exit the loop if finished. */
-		if ((*vtable->find_next_position) (&occ, event_end,
+		if ((*vtable.find_next_position) (&occ, event_end,
 						   &recur_data, interval_end))
 			break;
 	}
@@ -1842,35 +1844,43 @@ cal_obj_generate_set_default (RecurData *recur_data,
 }
 
 /* Returns the function table corresponding to the recurrence frequency. */
-static ECalRecurVTable * cal_obj_get_vtable (icalrecurrencetype_frequency recur_type)
+static ECalRecurVTable
+cal_obj_get_vtable (ECalRecurrence *recur,
+		    gboolean *vtable_valid)
 {
-	ECalRecurVTable * vtable;
+	ECalRecurVTable vtable;
 
-	switch (recur_type) {
+	*vtable_valid = TRUE;
+
+	switch (recur->freq) {
 	case ICAL_YEARLY_RECURRENCE:
-		vtable = &cal_obj_yearly_vtable;
+		vtable = cal_obj_yearly_vtable;
 		break;
 	case ICAL_MONTHLY_RECURRENCE:
-		vtable = &cal_obj_monthly_vtable;
+		vtable = cal_obj_monthly_vtable;
+		if (recur->bymonthday && recur->byday)
+			vtable.bymonthday_filter = cal_obj_bymonthday_filter;
+		else
+			vtable.bymonthday_filter = cal_obj_bymonthday_expand;
 		break;
 	case ICAL_WEEKLY_RECURRENCE:
-		vtable = &cal_obj_weekly_vtable;
+		vtable = cal_obj_weekly_vtable;
 		break;
 	case ICAL_DAILY_RECURRENCE:
-		vtable = &cal_obj_daily_vtable;
+		vtable = cal_obj_daily_vtable;
 		break;
 	case ICAL_HOURLY_RECURRENCE:
-		vtable = &cal_obj_hourly_vtable;
+		vtable = cal_obj_hourly_vtable;
 		break;
 	case ICAL_MINUTELY_RECURRENCE:
-		vtable = &cal_obj_minutely_vtable;
+		vtable = cal_obj_minutely_vtable;
 		break;
 	case ICAL_SECONDLY_RECURRENCE:
-		vtable = &cal_obj_secondly_vtable;
+		vtable = cal_obj_secondly_vtable;
 		break;
 	default:
 		g_warning ("Unknown recurrence frequency");
-		vtable = NULL;
+		*vtable_valid = FALSE;
 	}
 
 	return vtable;
