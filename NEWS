@@ -1,3 +1,39 @@
+Evolution-Data-Server 3.17.4 2015-07-20
+---------------------------------------
+
+Bug Fixes:
+	Bug 751462 - Include header name length when folding long lines (Arthur de Jong)
+	Bug 751329 - [IMAPx] Shared Folder Disappearing (Milan Crha)
+	Bug 751701 - Update ESource's connection status after server connect (Milan Crha)
+	Bug 751769 - camel_db_maybe_run_maintenance() returns failure incorrectly (Milan Crha)
+	Bug 751657 - ESource can be removed after its property change (Milan Crha)
+	Bug 750766 - [IMAPx] Deadlock filtering and downloading messages for offline use (Milan Crha)
+	Bug 685035 - [IMAPx] Nonsensical progress report on folder update (Milan Crha)
+	Bug 752049 - Fix return value error in camel_imapx_job_inc_update_locked() (Ting-Wei Lan)
+	Bug 752197 - Teach cache-reaper of 3rd-party private directories (Milan Crha)
+	Bug 752304 - [WebDAV book] Generated UIDs can clash with existing (Milan Crha)
+	Bug 692361 - e_cal_client_get_free_busy() broken (Milan Crha)
+	Bug 752370 - Hangs on vCard with 2 consecutive commas in the parameters list (Alex Shtyrov)
+	Bug 752373 - Monthly events do not recur correctly (Milan Crha)
+
+Miscellaneous:
+	[CamelGpgContext] Handle decryption failures better (Milan Crha)
+	[ENamedParameters] Be able to read/write values from/to a simple string (Milan Crha)
+	[IMAPx] Set cache expiration for one week when not sync-for-offline (Milan Crha)
+	Add E_CONTACT_PGP_CERT EContact field (Milan Crha)
+	Enhance debugging output of source_registry_server_monitor_changed_cb() (Milan Crha)
+	[Google backend] Claim Contacts and Tasks in populate() (Milan Crha)
+	Not able to select time in appointment/meeting for some locales (Milan Crha)
+	Doesn't honor Google settings as defined in gnome-online-accounts (Milan Crha)
+	Add GCancellable parameter to camel_filter_search_match() (Milan Crha)
+	Remove obsolete code comment (Milan Crha)
+
+Translations:
+	Balázs Úr (hu)
+	Pedro Albuquerque (pt)
+	Daniel Mustieles (es)
+	Dušan Kazik (sk)
+
 Evolution-Data-Server 3.17.3 2015-06-22
 ---------------------------------------
 
