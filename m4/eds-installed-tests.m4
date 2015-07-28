@@ -90,7 +90,7 @@ endif
 installed-tests-exec-hook:
 	@$(MKDIR_P) $(EXEC_DIRECTORY);
 	@for test in $(INSTALLED_TESTS); do						\
-	    $(LIBTOOL) --mode=install $(INSTALL) --mode=777 $$test $(EXEC_DIRECTORY);	\
+	    $(LIBTOOL) --mode=install $(INSTALL) --mode=755 $$test $(EXEC_DIRECTORY);	\
 	done
 
 installed-tests-data-hook:
