@@ -574,7 +574,8 @@ parse_propfind_response (xmlTextReaderPtr reader)
 
 static SoupMessage *
 send_propfind (EBookBackendWebdav *webdav,
-               GCancellable *cancellable)
+	       GCancellable *cancellable,
+	       GError **error)
 {
 	SoupMessage               *message;
 	EBookBackendWebdavPrivate *priv = webdav->priv;
@@ -583,6 +584,11 @@ send_propfind (EBookBackendWebdav *webdav,
 		"<propfind xmlns=\"DAV:\"><prop><getetag/></prop></propfind>";
 
 	message = soup_message_new (SOUP_METHOD_PROPFIND, priv->uri);
+	if (!message) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Malformed URI: %s"), priv->uri);
+		return NULL;
+	}
+
 	soup_message_headers_append (message->request_headers, "User-Agent", USERAGENT);
 	soup_message_headers_append (message->request_headers, "Connection", "close");
 	soup_message_headers_append (message->request_headers, "Depth", "1");
@@ -830,7 +836,15 @@ download_contacts (EBookBackendWebdav *webdav,
 				_("Loading Addressbook summary..."));
 	}
 
-	message = send_propfind (webdav, cancellable);
+	message = send_propfind (webdav, cancellable, error);
+	if (!message) {
+		g_free (new_ctag);
+		if (book_view)
+			e_data_book_view_notify_progress (book_view, -1, NULL);
+		g_mutex_unlock (&priv->update_lock);
+		return FALSE;
+	}
+
 	status = message->status_code;
 
 	if (status == SOUP_STATUS_UNAUTHORIZED ||
@@ -1223,7 +1237,9 @@ book_backend_webdav_test_can_connect (EBookBackendWebdav *webdav,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (webdav), FALSE);
 
 	/* Send a PROPFIND to test whether user/password is correct. */
-	message = send_propfind (webdav, cancellable);
+	message = send_propfind (webdav, cancellable, error);
+	if (!message)
+		return FALSE;
 
 	switch (message->status_code) {
 		case SOUP_STATUS_OK:
