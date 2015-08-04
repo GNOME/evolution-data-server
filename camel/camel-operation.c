@@ -50,6 +50,9 @@ struct _CamelOperationPrivate {
 
 enum {
 	STATUS,
+	PUSH_MESSAGE,
+	POP_MESSAGE,
+	PROGRESS,
 	LAST_SIGNAL
 };
 
@@ -174,6 +177,32 @@ camel_operation_class_init (CamelOperationClass *class)
 		G_TYPE_NONE, 2,
 		G_TYPE_STRING,
 		G_TYPE_INT);
+
+	signals[PUSH_MESSAGE] = g_signal_new (
+		"push-message",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_STRING);
+
+	signals[POP_MESSAGE] = g_signal_new (
+		"pop-message",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 0);
+
+	signals[PROGRESS] = g_signal_new (
+		"progress",
+		G_TYPE_FROM_CLASS (class),
+		G_SIGNAL_RUN_LAST,
+		NULL,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 1,
+		G_TYPE_INT);
 }
 
 static void
@@ -250,6 +279,7 @@ camel_operation_push_message (GCancellable *cancellable,
 {
 	CamelOperation *operation;
 	StatusNode *node;
+	gchar *message;
 	va_list ap;
 
 	if (cancellable == NULL)
@@ -260,14 +290,18 @@ camel_operation_push_message (GCancellable *cancellable,
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
 
+	va_start (ap, format);
+	message = g_strdup_vprintf (format, ap);
+	va_end (ap);
+
+	g_signal_emit (cancellable, signals[PUSH_MESSAGE], 0, message);
+
 	LOCK ();
 
 	operation = CAMEL_OPERATION (cancellable);
 
-	va_start (ap, format);
-
 	node = status_node_new ();
-	node->message = g_strdup_vprintf (format, ap);
+	node->message = message; /* takes ownership */
 	node->operation = g_object_ref (operation);
 
 	if (g_queue_is_empty (&operation->priv->status_stack)) {
@@ -288,8 +322,6 @@ camel_operation_push_message (GCancellable *cancellable,
 	}
 
 	g_queue_push_head (&operation->priv->status_stack, node);
-
-	va_end (ap);
 
 	UNLOCK ();
 }
@@ -317,6 +349,8 @@ camel_operation_pop_message (GCancellable *cancellable)
 		return;
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
+	g_signal_emit (cancellable, signals[POP_MESSAGE], 0);
 
 	LOCK ();
 
@@ -376,6 +410,8 @@ camel_operation_progress (GCancellable *cancellable,
 		return;
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
+
+	g_signal_emit (cancellable, signals[PROGRESS], 0, percent);
 
 	LOCK ();
 

@@ -134,6 +134,7 @@ camel/camel-vee-store.c
 camel/camel-vee-summary.c
 camel/camel-vtrash-folder.c
 camel/providers/imapx/camel-imapx-command.c
+camel/providers/imapx/camel-imapx-conn-manager.c
 camel/providers/imapx/camel-imapx-folder.c
 camel/providers/imapx/camel-imapx-input-stream.c
 camel/providers/imapx/camel-imapx-provider.c

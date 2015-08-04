@@ -14,86 +14,198 @@
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
-#include "camel-imapx-job.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <string.h>
 
-#include "camel-imapx-folder.h"
+#include "camel-imapx-job.h"
 
-typedef struct _CamelIMAPXRealJob CamelIMAPXRealJob;
+G_LOCK_DEFINE_STATIC (get_kind_name_funcs);
+static GSList *get_kind_name_funcs = NULL;
 
-/* CamelIMAPXJob + some private bits */
-struct _CamelIMAPXRealJob {
-	CamelIMAPXJob public;
-
-	volatile gint ref_count;
-
-	GCancellable *cancellable;
-
-	/* This is set by camel_imapx_job_take_error(),
-	 * and propagated through camel_imapx_job_wait(). */
-	GError *error;
-
-	/* Used for running some jobs synchronously. */
-	GCond done_cond;
-	GMutex done_mutex;
-	gboolean done_flag;
-
-	/* Extra job-specific data. */
-	gpointer data;
-	GDestroyNotify destroy_data;
-
-	CamelIMAPXMailbox *mailbox;
-	GMutex mailbox_lock;
-
-	CamelIMAPXMailbox *guard_mailbox_update; /* uses the mailbox_lock */
-	gint has_update_locked;
-};
-
-static void
-imapx_job_cancelled_cb (GCancellable *cancellable,
-                        CamelIMAPXJob *job)
+const gchar *
+camel_imapx_job_get_kind_name (guint32 job_kind)
 {
-	/* Unblock camel_imapx_run_job() immediately.
-	 *
-	 * If camel_imapx_job_done() is called sometime later,
-	 * the GCond will broadcast but no one will be listening. */
+	GSList *link;
 
-	camel_imapx_job_done (job);
+	switch ((CamelIMAPXJobKind) job_kind) {
+	case CAMEL_IMAPX_JOB_UNKNOWN:
+		return "UNKNOWN";
+	case CAMEL_IMAPX_JOB_CAPABILITY:
+		return "CAPABILITY";
+	case CAMEL_IMAPX_JOB_STARTTLS:
+		return "STARTTLS";
+	case CAMEL_IMAPX_JOB_AUTHENTICATE:
+		return "AUTHENTICATE";
+	case CAMEL_IMAPX_JOB_LOGIN:
+		return "LOGIN";
+	case CAMEL_IMAPX_JOB_NAMESPACE:
+		return "NAMESPACE";
+	case CAMEL_IMAPX_JOB_SELECT:
+		return "SELECT";
+	case CAMEL_IMAPX_JOB_STATUS:
+		return "STATUS";
+	case CAMEL_IMAPX_JOB_ENABLE:
+		return "ENABLE";
+	case CAMEL_IMAPX_JOB_NOTIFY:
+		return "NOTIFY";
+	case CAMEL_IMAPX_JOB_GET_MESSAGE:
+		return "GET_MESSAGE";
+	case CAMEL_IMAPX_JOB_SYNC_MESSAGE:
+		return "SYNC_MESSAGE";
+	case CAMEL_IMAPX_JOB_APPEND_MESSAGE:
+		return "APPEND_MESSAGE";
+	case CAMEL_IMAPX_JOB_COPY_MESSAGE:
+		return "COPY_MESSAGE";
+	case CAMEL_IMAPX_JOB_MOVE_MESSAGE:
+		return "MOVE_MESSAGE";
+	case CAMEL_IMAPX_JOB_FETCH_NEW_MESSAGES:
+		return "FETCH_NEW_MESSAGES";
+	case CAMEL_IMAPX_JOB_REFRESH_INFO:
+		return "REFRESH_INFO";
+	case CAMEL_IMAPX_JOB_SYNC_CHANGES:
+		return "SYNC_CHANGES";
+	case CAMEL_IMAPX_JOB_EXPUNGE:
+		return "EXPUNGE";
+	case CAMEL_IMAPX_JOB_NOOP:
+		return "NOOP";
+	case CAMEL_IMAPX_JOB_IDLE:
+		return "IDLE";
+	case CAMEL_IMAPX_JOB_DONE:
+		return "DONE";
+	case CAMEL_IMAPX_JOB_LIST:
+		return "LIST";
+	case CAMEL_IMAPX_JOB_LSUB:
+		return "LSUB";
+	case CAMEL_IMAPX_JOB_CREATE_MAILBOX:
+		return "CREATE_MAILBOX";
+	case CAMEL_IMAPX_JOB_DELETE_MAILBOX:
+		return "DELETE_MAILBOX";
+	case CAMEL_IMAPX_JOB_RENAME_MAILBOX:
+		return "RENAME_MAILBOX";
+	case CAMEL_IMAPX_JOB_SUBSCRIBE_MAILBOX:
+		return "SUBSCRIBE_MAILBOX";
+	case CAMEL_IMAPX_JOB_UNSUBSCRIBE_MAILBOX:
+		return "UNSUBSCRIBE_MAILBOX";
+	case CAMEL_IMAPX_JOB_UPDATE_QUOTA_INFO:
+		return "UPDATE_QUOTA_INFO";
+	case CAMEL_IMAPX_JOB_UID_SEARCH:
+		return "UID_SEARCH";
+	case CAMEL_IMAPX_JOB_LAST:
+		break;
+	}
+
+	G_LOCK (get_kind_name_funcs);
+
+	for (link = get_kind_name_funcs; link; link = g_slist_next (link)) {
+		CamelIMAPXJobGetKindNameFunc get_kind_name = link->data;
+
+		if (get_kind_name) {
+			const gchar *name = get_kind_name (job_kind);
+
+			if (name) {
+				G_UNLOCK (get_kind_name_funcs);
+				return name;
+			}
+		}
+	}
+
+	G_UNLOCK (get_kind_name_funcs);
+
+	if (job_kind == CAMEL_IMAPX_JOB_LAST)
+		return "LAST";
+
+	return "???";
 }
 
-CamelIMAPXJob *
-camel_imapx_job_new (GCancellable *cancellable)
+void
+camel_imapx_job_register_get_kind_name_func (CamelIMAPXJobGetKindNameFunc get_kind_name)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_if_fail (get_kind_name != NULL);
 
-	real_job = g_slice_new0 (CamelIMAPXRealJob);
+	G_LOCK (get_kind_name_funcs);
 
-	/* Initialize private bits. */
-	real_job->ref_count = 1;
-	g_cond_init (&real_job->done_cond);
-	g_mutex_init (&real_job->done_mutex);
+	if (!g_slist_find (get_kind_name_funcs, get_kind_name))
+		get_kind_name_funcs = g_slist_prepend (get_kind_name_funcs, get_kind_name);
 
-	if (cancellable != NULL)
-		g_object_ref (cancellable);
-	real_job->cancellable = cancellable;
+	G_UNLOCK (get_kind_name_funcs);
+}
 
-	g_mutex_init (&real_job->mailbox_lock);
+void
+camel_imapx_job_unregister_get_kind_name_func (CamelIMAPXJobGetKindNameFunc get_kind_name)
+{
+	g_return_if_fail (get_kind_name != NULL);
 
-	return (CamelIMAPXJob *) real_job;
+	G_LOCK (get_kind_name_funcs);
+
+	g_warn_if_fail (g_slist_find (get_kind_name_funcs, get_kind_name));
+	get_kind_name_funcs = g_slist_remove (get_kind_name_funcs, get_kind_name);
+
+	G_UNLOCK (get_kind_name_funcs);
+}
+
+struct _CamelIMAPXJob {
+	volatile gint ref_count;
+
+	guint32 job_kind;
+	CamelIMAPXMailbox *mailbox;
+
+	CamelIMAPXJobRunSyncFunc run_sync;
+	CamelIMAPXJobMatchesFunc matches;
+	CamelIMAPXJobCopyResultFunc copy_result;
+
+	/* Extra job-specific data. */
+	gpointer user_data;
+	GDestroyNotify destroy_user_data;
+
+	gboolean result_is_set;
+	gboolean result_success;
+	gpointer result_data;
+	GError *result_error;
+	GDestroyNotify destroy_result_data;
+
+	GCond done_cond;
+	GMutex done_mutex;
+	gboolean is_done;
+
+	GCancellable *abort_cancellable;
+};
+
+CamelIMAPXJob *
+camel_imapx_job_new (guint32 job_kind,
+		     CamelIMAPXMailbox *mailbox,
+		     CamelIMAPXJobRunSyncFunc run_sync,
+		     CamelIMAPXJobMatchesFunc matches,
+		     CamelIMAPXJobCopyResultFunc copy_result)
+{
+	CamelIMAPXJob *job;
+
+	g_return_val_if_fail (run_sync != NULL, NULL);
+
+	job = g_new0 (CamelIMAPXJob, 1);
+	job->ref_count = 1;
+	job->job_kind = job_kind;
+	job->mailbox = mailbox ? g_object_ref (mailbox) : NULL;
+	job->run_sync = run_sync;
+	job->matches = matches;
+	job->copy_result = copy_result;
+	job->abort_cancellable = camel_operation_new ();
+	job->is_done = FALSE;
+
+	g_cond_init (&job->done_cond);
+	g_mutex_init (&job->done_mutex);
+
+	return job;
 }
 
 CamelIMAPXJob *
 camel_imapx_job_ref (CamelIMAPXJob *job)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_val_if_fail (job != NULL, NULL);
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	g_atomic_int_inc (&real_job->ref_count);
+	g_atomic_int_inc (&job->ref_count);
 
 	return job;
 }
@@ -101,135 +213,269 @@ camel_imapx_job_ref (CamelIMAPXJob *job)
 void
 camel_imapx_job_unref (CamelIMAPXJob *job)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_if_fail (job != NULL);
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+	if (g_atomic_int_dec_and_test (&job->ref_count)) {
+		if (job->destroy_user_data)
+			job->destroy_user_data (job->user_data);
 
-	real_job = (CamelIMAPXRealJob *) job;
+		if (job->result_is_set && job->destroy_result_data)
+			job->destroy_result_data (job->result_data);
 
-	if (g_atomic_int_dec_and_test (&real_job->ref_count)) {
+		g_clear_object (&job->mailbox);
+		g_clear_object (&job->abort_cancellable);
+		g_clear_error (&job->result_error);
 
-		/* Free the public stuff. */
+		g_cond_clear (&job->done_cond);
+		g_mutex_clear (&job->done_mutex);
 
-		if (real_job->public.pop_operation_msg)
-			camel_operation_pop_message (real_job->cancellable);
+		job->ref_count = 0xdeadbeef;
 
-		/* Free the private stuff. */
-
-		if (real_job->cancellable != NULL)
-			g_object_unref (real_job->cancellable);
-
-		g_clear_error (&real_job->error);
-
-		g_cond_clear (&real_job->done_cond);
-		g_mutex_clear (&real_job->done_mutex);
-
-		if (real_job->destroy_data != NULL)
-			real_job->destroy_data (real_job->data);
-
-		g_mutex_lock (&real_job->mailbox_lock);
-		while (real_job->has_update_locked > 0) {
-			camel_imapx_mailbox_inc_update_count (real_job->guard_mailbox_update, -1);
-			real_job->has_update_locked--;
-		}
-		g_clear_object (&real_job->guard_mailbox_update);
-		g_mutex_unlock (&real_job->mailbox_lock);
-
-		g_clear_object (&real_job->mailbox);
-		g_mutex_clear (&real_job->mailbox_lock);
-
-		/* Fill the memory with a bit pattern before releasing
-		 * it back to the slab allocator, so we can more easily
-		 * identify dangling CamelIMAPXJob pointers. */
-		memset (real_job, 0xaa, sizeof (CamelIMAPXRealJob));
-
-		/* But leave the reference count set to zero, so
-		 * CAMEL_IS_IMAPX_JOB can identify it as bad. */
-		real_job->ref_count = 0;
-
-		g_slice_free (CamelIMAPXRealJob, real_job);
+		g_free (job);
 	}
 }
 
-gboolean
-camel_imapx_job_check (CamelIMAPXJob *job)
+guint32
+camel_imapx_job_get_kind (CamelIMAPXJob *job)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_val_if_fail (job != NULL, CAMEL_IMAPX_JOB_UNKNOWN);
 
-	real_job = (CamelIMAPXRealJob *) job;
+	return job->job_kind;
+}
 
-	return (real_job != NULL && real_job->ref_count > 0);
+CamelIMAPXMailbox *
+camel_imapx_job_get_mailbox (CamelIMAPXJob *job)
+{
+	g_return_val_if_fail (job != NULL, NULL);
+
+	return job->mailbox;
+}
+
+gpointer
+camel_imapx_job_get_user_data (CamelIMAPXJob *job)
+{
+	g_return_val_if_fail (job != NULL, NULL);
+
+	return job->user_data;
 }
 
 void
-camel_imapx_job_cancel (CamelIMAPXJob *job)
+camel_imapx_job_set_user_data (CamelIMAPXJob *job,
+			       gpointer user_data,
+			       GDestroyNotify destroy_user_data)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_if_fail (job != NULL);
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+	if (job->destroy_user_data)
+		job->destroy_user_data (job->user_data);
 
-	real_job = (CamelIMAPXRealJob *) job;
-
-	g_cancellable_cancel (real_job->cancellable);
+	job->user_data = user_data;
+	job->destroy_user_data = destroy_user_data;
 }
 
-/**
- * camel_imapx_job_wait:
- * @job: a #CamelIMAPXJob
- * @error: return location for a #GError, or %NULL
- *
- * Blocks until @job completes by way of camel_imapx_job_done().  If @job
- * completed successfully, the function returns %TRUE.  If @job was given
- * a #GError by way of camel_imapx_job_take_error(), or its #GCancellable
- * was cancelled, the function sets @error and returns %FALSE.
- *
- * Returns: whether @job completed successfully
- *
- * Since: 3.10
- **/
-gboolean
-camel_imapx_job_wait (CamelIMAPXJob *job,
-                      GError **error)
+void
+camel_imapx_job_set_result (CamelIMAPXJob *job,
+			    gboolean success,
+			    gpointer result,
+			    const GError *error,
+			    GDestroyNotify destroy_result)
 {
-	CamelIMAPXRealJob *real_job;
-	GCancellable *cancellable;
-	gulong cancel_id = 0;
-	gboolean success = TRUE;
+	g_return_if_fail (job != NULL);
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
-
-	real_job = (CamelIMAPXRealJob *) job;
-	cancellable = camel_imapx_job_get_cancellable (job);
-
-	if (G_IS_CANCELLABLE (cancellable))
-		cancel_id = g_cancellable_connect (
-			cancellable,
-			G_CALLBACK (imapx_job_cancelled_cb),
-			camel_imapx_job_ref (job),
-			(GDestroyNotify) camel_imapx_job_unref);
-
-	g_mutex_lock (&real_job->done_mutex);
-	while (!real_job->done_flag && !g_cancellable_is_cancelled (cancellable))
-		g_cond_wait (
-			&real_job->done_cond,
-			&real_job->done_mutex);
-	g_mutex_unlock (&real_job->done_mutex);
-
-	if (cancel_id > 0)
-		g_cancellable_disconnect (cancellable, cancel_id);
-
-	/* Cancellation takes priority over other errors. */
-	if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		success = FALSE;
-	} else if (real_job->error != NULL) {
-		/* Copy the error, don't propagate it.
-		 * We want our GError to remain intact. */
-		if (error != NULL) {
-			g_warn_if_fail (*error == NULL);
-			*error = g_error_copy (real_job->error);
-		}
-		success = FALSE;
+	if (job->result_is_set) {
+		if (job->destroy_result_data)
+			job->destroy_result_data (job->result_data);
+		g_clear_error (&job->result_error);
 	}
+
+	job->result_is_set = TRUE;
+	job->result_success = success;
+	job->result_data = result;
+	job->destroy_result_data = destroy_result;
+
+	if (error)
+		job->result_error = g_error_copy (error);
+}
+
+/* This doesn't return whether the job succeeded, but whether the result
+   was set for the job, thus some result copied. All out-arguments are optional. */
+gboolean
+camel_imapx_job_copy_result (CamelIMAPXJob *job,
+			     gboolean *out_success,
+			     gpointer *out_result,
+			     GError **out_error,
+			     GDestroyNotify *out_destroy_result)
+{
+	g_return_val_if_fail (job != NULL, FALSE);
+
+	if (!job->result_is_set)
+		return FALSE;
+
+	if (out_success)
+		*out_success = job->result_success;
+
+	if (out_result) {
+		*out_result = NULL;
+
+		if (job->copy_result) {
+			job->copy_result (job, job->result_data, out_result);
+		} else if (job->result_data) {
+			g_warn_if_reached ();
+		}
+	}
+
+	if (out_error) {
+		g_warn_if_fail (*out_error == NULL);
+
+		if (job->result_error)
+			*out_error = g_error_copy (job->result_error);
+	}
+
+	if (out_destroy_result)
+		*out_destroy_result = job->destroy_result_data;
+
+	return TRUE;
+}
+
+/* Similar to camel_imapx_job_copy_result() except it gives result data
+   to the caller and unsets (not frees) the data in the job. */
+gboolean
+camel_imapx_job_take_result_data (CamelIMAPXJob *job,
+				  gpointer *out_result)
+{
+	g_return_val_if_fail (job != NULL, FALSE);
+
+	if (!job->result_is_set)
+		return FALSE;
+
+	if (out_result) {
+		*out_result = job->result_data;
+	} else if (job->destroy_result_data) {
+		job->destroy_result_data (job->result_data);
+	}
+
+	job->result_data = NULL;
+	g_clear_error (&job->result_error);
+
+	job->result_is_set = FALSE;
+
+	return TRUE;
+}
+
+gboolean
+camel_imapx_job_matches (CamelIMAPXJob *job,
+			 CamelIMAPXJob *other_job)
+{
+	g_return_val_if_fail (job != NULL, FALSE);
+	g_return_val_if_fail (other_job != NULL, FALSE);
+
+	if (job->job_kind != other_job->job_kind)
+		return FALSE;
+
+	if (job->mailbox != other_job->mailbox)
+		return FALSE;
+
+	if (job->matches)
+		return job->matches (job, other_job);
+
+	return TRUE;
+}
+
+static void
+imapx_job_cancelled_cb (GCancellable *cancellable,
+			CamelIMAPXJob *job)
+{
+	camel_imapx_job_abort (job);
+}
+
+static void
+imapx_job_push_message_cb (CamelOperation *operation,
+			   const gchar *message,
+			   GCancellable *job_cancellable)
+{
+	g_return_if_fail (CAMEL_IS_OPERATION (operation));
+	g_return_if_fail (CAMEL_IS_OPERATION (job_cancellable));
+
+	camel_operation_push_message (job_cancellable, "%s", message);
+}
+
+static void
+imapx_job_pop_message_cb (CamelOperation *operation,
+			  GCancellable *job_cancellable)
+{
+	g_return_if_fail (CAMEL_IS_OPERATION (operation));
+	g_return_if_fail (CAMEL_IS_OPERATION (job_cancellable));
+
+	camel_operation_pop_message (job_cancellable);
+}
+
+static void
+imapx_job_progress_cb (CamelOperation *operation,
+		       gint percent,
+		       GCancellable *job_cancellable)
+{
+	g_return_if_fail (CAMEL_IS_OPERATION (operation));
+	g_return_if_fail (CAMEL_IS_OPERATION (job_cancellable));
+
+	camel_operation_progress (job_cancellable, percent);
+}
+
+gboolean
+camel_imapx_job_run_sync (CamelIMAPXJob *job,
+			  CamelIMAPXServer *server,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	GError *local_error = NULL;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (job != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), FALSE);
+	g_return_val_if_fail (job->run_sync != NULL, FALSE);
+
+	g_mutex_lock (&job->done_mutex);
+	job->is_done = FALSE;
+	g_mutex_unlock (&job->done_mutex);
+
+	g_cancellable_reset (job->abort_cancellable);
+
+	if (!g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		gulong cancelled_handler_id = 0;
+		gulong push_message_handler_id = 0;
+		gulong pop_message_handler_id = 0;
+		gulong progress_handler_id = 0;
+
+		/* Proxy signals between job's cancellable and the abort_cancellable */
+		if (cancellable)
+			cancelled_handler_id = g_cancellable_connect (cancellable,
+				G_CALLBACK (imapx_job_cancelled_cb), job, NULL);
+
+		if (CAMEL_IS_OPERATION (cancellable)) {
+			push_message_handler_id = g_signal_connect (job->abort_cancellable, "push-message",
+				G_CALLBACK (imapx_job_push_message_cb), cancellable);
+			pop_message_handler_id = g_signal_connect (job->abort_cancellable, "pop-message",
+				G_CALLBACK (imapx_job_pop_message_cb), cancellable);
+			progress_handler_id = g_signal_connect (job->abort_cancellable, "progress",
+				G_CALLBACK (imapx_job_progress_cb), cancellable);
+		}
+
+		success = job->run_sync (job, server, job->abort_cancellable, &local_error);
+
+		if (push_message_handler_id)
+			g_signal_handler_disconnect (job->abort_cancellable, push_message_handler_id);
+		if (pop_message_handler_id)
+			g_signal_handler_disconnect (job->abort_cancellable, pop_message_handler_id);
+		if (progress_handler_id)
+			g_signal_handler_disconnect (job->abort_cancellable, progress_handler_id);
+		if (cancelled_handler_id)
+			g_cancellable_disconnect (cancellable, cancelled_handler_id);
+	}
+
+	if (!g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT))
+		camel_imapx_job_done (job);
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return success;
 }
@@ -237,252 +483,55 @@ camel_imapx_job_wait (CamelIMAPXJob *job,
 void
 camel_imapx_job_done (CamelIMAPXJob *job)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_if_fail (job != NULL);
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	g_mutex_lock (&real_job->mailbox_lock);
-	while (real_job->has_update_locked > 0) {
-		camel_imapx_mailbox_inc_update_count (real_job->guard_mailbox_update, -1);
-		real_job->has_update_locked--;
-	}
-	g_clear_object (&real_job->guard_mailbox_update);
-	g_mutex_unlock (&real_job->mailbox_lock);
-
-	g_mutex_lock (&real_job->done_mutex);
-	real_job->done_flag = TRUE;
-	g_cond_broadcast (&real_job->done_cond);
-	g_mutex_unlock (&real_job->done_mutex);
-}
-
-gboolean
-camel_imapx_job_run (CamelIMAPXJob *job,
-                     CamelIMAPXServer *is,
-                     GError **error)
-{
-	GCancellable *cancellable;
-	gboolean success;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-	g_return_val_if_fail (job->start != NULL, FALSE);
-
-	cancellable = ((CamelIMAPXRealJob *) job)->cancellable;
-
-	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		return FALSE;
-
-	success = job->start (job, is, cancellable, error);
-
-	if (success && !job->noreply)
-		success = camel_imapx_job_wait (job, error);
-
-	return success;
-}
-
-gboolean
-camel_imapx_job_matches (CamelIMAPXJob *job,
-                         CamelIMAPXMailbox *mailbox,
-                         const gchar *uid)
-{
-	/* XXX CamelIMAPXMailbox can be NULL.  I'm less sure about
-	 *     the message UID but let's assume that can be NULL too. */
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
-
-	if (mailbox != NULL)
-		g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
-
-	if (job->matches == NULL)
-		return FALSE;
-
-	return job->matches (job, mailbox, uid);
-}
-
-gpointer
-camel_imapx_job_get_data (CamelIMAPXJob *job)
-{
-	CamelIMAPXRealJob *real_job;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	return real_job->data;
+	g_mutex_lock (&job->done_mutex);
+	job->is_done = TRUE;
+	g_cond_broadcast (&job->done_cond);
+	g_mutex_unlock (&job->done_mutex);
 }
 
 void
-camel_imapx_job_set_data (CamelIMAPXJob *job,
-                          gpointer data,
-                          GDestroyNotify destroy_data)
+camel_imapx_job_abort (CamelIMAPXJob *job)
 {
-	CamelIMAPXRealJob *real_job;
+	g_return_if_fail (job != NULL);
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	if (real_job->destroy_data != NULL)
-		real_job->destroy_data (real_job->data);
-
-	real_job->data = data;
-	real_job->destroy_data = destroy_data;
+	g_cancellable_cancel (job->abort_cancellable);
 }
 
-gboolean
-camel_imapx_job_has_mailbox (CamelIMAPXJob *job,
-                             CamelIMAPXMailbox *mailbox)
+static void
+camel_imapx_job_wait_cancelled_cb (GCancellable *cancellable,
+				   gpointer user_data)
 {
-	CamelIMAPXRealJob *real_job;
+	CamelIMAPXJob *job = user_data;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), FALSE);
+	g_return_if_fail (job != NULL);
 
-	if (mailbox != NULL)
-		g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	/* Not necessary to lock the mutex since
-	 * we're just comparing memory addresses. */
-
-	return (mailbox == real_job->mailbox);
-}
-
-CamelIMAPXMailbox *
-camel_imapx_job_ref_mailbox (CamelIMAPXJob *job)
-{
-	CamelIMAPXRealJob *real_job;
-	CamelIMAPXMailbox *mailbox = NULL;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	g_mutex_lock (&real_job->mailbox_lock);
-
-	if (real_job->mailbox != NULL)
-		mailbox = g_object_ref (real_job->mailbox);
-
-	g_mutex_unlock (&real_job->mailbox_lock);
-
-	return mailbox;
+	g_mutex_lock (&job->done_mutex);
+	g_cond_broadcast (&job->done_cond);
+	g_mutex_unlock (&job->done_mutex);
 }
 
 void
-camel_imapx_job_set_mailbox (CamelIMAPXJob *job,
-                             CamelIMAPXMailbox *mailbox)
+camel_imapx_job_wait_sync (CamelIMAPXJob *job,
+			   GCancellable *cancellable)
 {
-	CamelIMAPXRealJob *real_job;
+	gulong handler_id = 0;
 
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
+	g_return_if_fail (job != NULL);
 
-	real_job = (CamelIMAPXRealJob *) job;
+	if (g_cancellable_is_cancelled (cancellable))
+		return;
 
-	if (mailbox != NULL) {
-		g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
-		g_object_ref (mailbox);
+	if (cancellable)
+		handler_id = g_cancellable_connect (cancellable, G_CALLBACK (camel_imapx_job_wait_cancelled_cb), job, NULL);
+
+	g_mutex_lock (&job->done_mutex);
+	while (!job->is_done && !g_cancellable_is_cancelled (cancellable)) {
+		g_cond_wait (&job->done_cond, &job->done_mutex);
 	}
+	g_mutex_unlock (&job->done_mutex);
 
-	g_mutex_lock (&real_job->mailbox_lock);
-
-	g_clear_object (&real_job->mailbox);
-	real_job->mailbox = mailbox;
-
-	g_mutex_unlock (&real_job->mailbox_lock);
-}
-
-GCancellable *
-camel_imapx_job_get_cancellable (CamelIMAPXJob *job)
-{
-	CamelIMAPXRealJob *real_job;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), NULL);
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	return real_job->cancellable;
-}
-
-/**
- * camel_imapx_job_take_error:
- * @job: a #CamelIMAPXJob
- * @error: a #GError
- *
- * Takes over the caller's ownership of @error, so the caller does not
- * need to free it any more.  Call this when a #CamelIMAPXCommand fails
- * and the @job is to be aborted.
- *
- * The @error will be returned to callers of camel_imapx_job_wait() or
- * camel_imapx_job_run().
- *
- * Since: 3.10
- **/
-void
-camel_imapx_job_take_error (CamelIMAPXJob *job,
-                            GError *error)
-{
-	CamelIMAPXRealJob *real_job;
-
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
-	g_return_if_fail (error != NULL);
-
-	real_job = (CamelIMAPXRealJob *) job;
-	g_return_if_fail (real_job->error != error);
-
-	g_clear_error (&real_job->error);
-
-	real_job->error = error;  /* takes ownership */
-}
-
-/**
- * camel_imapx_job_set_error_if_failed:
- * @job: a #CamelIMAPXJob
- * @error: a location for a #GError
- *
- * Sets @error to a new GError instance and returns TRUE, if the job has set
- * an error or when it was cancelled.
- *
- * Returns: Whether the job failed.
- *
- * Since: 3.16
- **/
-gboolean
-camel_imapx_job_set_error_if_failed (CamelIMAPXJob *job,
-				     GError **error)
-{
-	CamelIMAPXRealJob *real_job;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_JOB (job), TRUE);
-	g_return_val_if_fail (error != NULL, TRUE);
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	if (real_job->error) {
-		g_propagate_error (error, g_error_copy (real_job->error));
-		return TRUE;
-	}
-
-	return g_cancellable_set_error_if_cancelled (real_job->cancellable, error);
-}
-
-void
-camel_imapx_job_inc_update_locked (CamelIMAPXJob *job,
-				   CamelIMAPXMailbox *mailbox)
-{
-	CamelIMAPXRealJob *real_job;
-
-	g_return_if_fail (CAMEL_IS_IMAPX_JOB (job));
-
-	real_job = (CamelIMAPXRealJob *) job;
-
-	g_mutex_lock (&real_job->mailbox_lock);
-	if (real_job->guard_mailbox_update) {
-		g_warn_if_fail (real_job->guard_mailbox_update == mailbox);
-	} else {
-		real_job->guard_mailbox_update = g_object_ref (mailbox);
-	}
-	real_job->has_update_locked++;
-	g_mutex_unlock (&real_job->mailbox_lock);
+	if (handler_id)
+		g_cancellable_disconnect (cancellable, handler_id);
 }

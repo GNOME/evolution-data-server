@@ -20,72 +20,102 @@
 
 #include "camel-imapx-server.h"
 
-#define CAMEL_IS_IMAPX_JOB(job) \
-	(camel_imapx_job_check (job))
-
 G_BEGIN_DECLS
 
 typedef struct _CamelIMAPXJob CamelIMAPXJob;
 
-struct _uidset_state {
-	gint entries, uids;
-	gint total, limit;
-	guint32 start;
-	guint32 last;
-};
+struct _CamelIMAPXJob;
 
-struct _CamelIMAPXJob {
-	/* Whether to pop a status message off the
-	 * GCancellable when the job is finalized. */
-	gboolean pop_operation_msg;
+typedef enum {
+	CAMEL_IMAPX_JOB_UNKNOWN = 0,
+	CAMEL_IMAPX_JOB_CAPABILITY,
+	CAMEL_IMAPX_JOB_STARTTLS,
+	CAMEL_IMAPX_JOB_AUTHENTICATE,
+	CAMEL_IMAPX_JOB_LOGIN,
+	CAMEL_IMAPX_JOB_NAMESPACE,
+	CAMEL_IMAPX_JOB_SELECT,
+	CAMEL_IMAPX_JOB_STATUS,
+	CAMEL_IMAPX_JOB_ENABLE,
+	CAMEL_IMAPX_JOB_NOTIFY,
+	CAMEL_IMAPX_JOB_GET_MESSAGE,
+	CAMEL_IMAPX_JOB_SYNC_MESSAGE,
+	CAMEL_IMAPX_JOB_APPEND_MESSAGE,
+	CAMEL_IMAPX_JOB_COPY_MESSAGE,
+	CAMEL_IMAPX_JOB_MOVE_MESSAGE,
+	CAMEL_IMAPX_JOB_FETCH_NEW_MESSAGES,
+	CAMEL_IMAPX_JOB_REFRESH_INFO,
+	CAMEL_IMAPX_JOB_SYNC_CHANGES,
+	CAMEL_IMAPX_JOB_EXPUNGE,
+	CAMEL_IMAPX_JOB_NOOP,
+	CAMEL_IMAPX_JOB_IDLE,
+	CAMEL_IMAPX_JOB_DONE,
+	CAMEL_IMAPX_JOB_LIST,
+	CAMEL_IMAPX_JOB_LSUB,
+	CAMEL_IMAPX_JOB_CREATE_MAILBOX,
+	CAMEL_IMAPX_JOB_DELETE_MAILBOX,
+	CAMEL_IMAPX_JOB_RENAME_MAILBOX,
+	CAMEL_IMAPX_JOB_SUBSCRIBE_MAILBOX,
+	CAMEL_IMAPX_JOB_UNSUBSCRIBE_MAILBOX,
+	CAMEL_IMAPX_JOB_UPDATE_QUOTA_INFO,
+	CAMEL_IMAPX_JOB_UID_SEARCH,
+	CAMEL_IMAPX_JOB_LAST
+} CamelIMAPXJobKind;
 
-	gboolean	(*start)		(CamelIMAPXJob *job,
-						 CamelIMAPXServer *is,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(*matches)		(CamelIMAPXJob *job,
+typedef const gchar *	(* CamelIMAPXJobGetKindNameFunc)(guint32 job_kind);
+
+const gchar *	camel_imapx_job_get_kind_name	(guint32 job_kind);
+void		camel_imapx_job_register_get_kind_name_func
+						(CamelIMAPXJobGetKindNameFunc get_kind_name);
+void		camel_imapx_job_unregister_get_kind_name_func
+						(CamelIMAPXJobGetKindNameFunc get_kind_name);
+
+typedef gboolean	(* CamelIMAPXJobRunSyncFunc)	(CamelIMAPXJob *job,
+							 CamelIMAPXServer *server,
+							 GCancellable *cancellable,
+							 GError **error);
+typedef gboolean	(* CamelIMAPXJobMatchesFunc)	(CamelIMAPXJob *job,
+							 CamelIMAPXJob *other_job);
+typedef void		(* CamelIMAPXJobCopyResultFunc)	(CamelIMAPXJob *job,
+							 gconstpointer set_result,
+							 gpointer *out_result);
+
+CamelIMAPXJob *	camel_imapx_job_new		(guint32 job_kind,
 						 CamelIMAPXMailbox *mailbox,
-						 const gchar *uid);
-
-	guint noreply:1;	/* dont wait for reply */
-	guint32 type;		/* operation type */
-	gint pri;		/* the command priority */
-	volatile gint commands;	/* counts how many commands are outstanding */
-};
-
-CamelIMAPXJob *	camel_imapx_job_new		(GCancellable *cancellable);
+						 CamelIMAPXJobRunSyncFunc run_sync,
+						 CamelIMAPXJobMatchesFunc matches,
+						 CamelIMAPXJobCopyResultFunc copy_result);
 CamelIMAPXJob *	camel_imapx_job_ref		(CamelIMAPXJob *job);
 void		camel_imapx_job_unref		(CamelIMAPXJob *job);
-gboolean	camel_imapx_job_check		(CamelIMAPXJob *job);
-void		camel_imapx_job_cancel		(CamelIMAPXJob *job);
-gboolean	camel_imapx_job_wait		(CamelIMAPXJob *job,
+guint32		camel_imapx_job_get_kind	(CamelIMAPXJob *job);
+CamelIMAPXMailbox *
+		camel_imapx_job_get_mailbox	(CamelIMAPXJob *job);
+gpointer	camel_imapx_job_get_user_data	(CamelIMAPXJob *job);
+void		camel_imapx_job_set_user_data	(CamelIMAPXJob *job,
+						 gpointer user_data,
+						 GDestroyNotify destroy_user_data);
+void		camel_imapx_job_set_result	(CamelIMAPXJob *job,
+						 gboolean success,
+						 gpointer result,
+						 const GError *error,
+						 GDestroyNotify destroy_result);
+gboolean	camel_imapx_job_copy_result	(CamelIMAPXJob *job,
+						 gboolean *out_success,
+						 gpointer *out_result,
+						 GError **out_error,
+						 GDestroyNotify *out_destroy_result);
+gboolean	camel_imapx_job_take_result_data
+						(CamelIMAPXJob *job,
+						 gpointer *out_result);
+gboolean	camel_imapx_job_matches		(CamelIMAPXJob *job,
+						 CamelIMAPXJob *other_job);
+gboolean	camel_imapx_job_run_sync	(CamelIMAPXJob *job,
+						 CamelIMAPXServer *server,
+						 GCancellable *cancellable,
 						 GError **error);
 void		camel_imapx_job_done		(CamelIMAPXJob *job);
-gboolean	camel_imapx_job_run		(CamelIMAPXJob *job,
-						 CamelIMAPXServer *is,
-						 GError **error);
-gboolean	camel_imapx_job_matches		(CamelIMAPXJob *job,
-						 CamelIMAPXMailbox *mailbox,
-						 const gchar *uid);
-gpointer	camel_imapx_job_get_data	(CamelIMAPXJob *job);
-void		camel_imapx_job_set_data	(CamelIMAPXJob *job,
-						 gpointer data,
-						 GDestroyNotify destroy_data);
-gboolean	camel_imapx_job_has_mailbox	(CamelIMAPXJob *job,
-						 CamelIMAPXMailbox *mailbox);
-CamelIMAPXMailbox *
-		camel_imapx_job_ref_mailbox	(CamelIMAPXJob *job);
-void		camel_imapx_job_set_mailbox	(CamelIMAPXJob *job,
-						 CamelIMAPXMailbox *mailbox);
-GCancellable *	camel_imapx_job_get_cancellable	(CamelIMAPXJob *job);
-void		camel_imapx_job_take_error	(CamelIMAPXJob *job,
-						 GError *error);
-gboolean	camel_imapx_job_set_error_if_failed
-						(CamelIMAPXJob *job,
-						 GError **error);
-void		camel_imapx_job_inc_update_locked
-						(CamelIMAPXJob *job,
-						 CamelIMAPXMailbox *mailbox);
+void		camel_imapx_job_abort		(CamelIMAPXJob *job);
+void		camel_imapx_job_wait_sync	(CamelIMAPXJob *job,
+						 GCancellable *cancellable);
 
 G_END_DECLS
 

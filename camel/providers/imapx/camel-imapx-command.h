@@ -18,7 +18,6 @@
 #ifndef CAMEL_IMAPX_COMMAND_H
 #define CAMEL_IMAPX_COMMAND_H
 
-#include "camel-imapx-mailbox.h"
 #include "camel-imapx-utils.h"
 
 #define CAMEL_IS_IMAPX_COMMAND(command) \
@@ -27,7 +26,6 @@
 G_BEGIN_DECLS
 
 /* Avoid a circular reference. */
-struct _CamelIMAPXJob;
 struct _CamelIMAPXServer;
 
 typedef struct _CamelIMAPXCommand CamelIMAPXCommand;
@@ -62,43 +60,33 @@ struct _CamelIMAPXCommandPart {
 	gpointer ob;
 };
 
+
+
 struct _CamelIMAPXCommand {
 	struct _CamelIMAPXServer *is;
 	gint pri;
 
-	/* Command name/type (e.g. FETCH) */
-	const gchar *name;
+	guint32 job_kind; /* CamelIMAPXJobKind */
 
-	/* Status for command, indicates it is complete if != NULL. */
+	/* Status for command. */
 	struct _status_info *status;
 
 	guint32 tag;
+	gboolean completed;
 
 	GQueue parts;
 	GList *current_part;
-
-	/* Responsible for free'ing the command. */
-	CamelIMAPXCommandFunc complete;
 };
 
 CamelIMAPXCommand *
 		camel_imapx_command_new		(struct _CamelIMAPXServer *is,
-						 const gchar *name,
-						 CamelIMAPXMailbox *mailbox,
+						 guint32 job_kind,
 						 const gchar *format,
 						 ...);
 CamelIMAPXCommand *
 		camel_imapx_command_ref		(CamelIMAPXCommand *ic);
 void		camel_imapx_command_unref	(CamelIMAPXCommand *ic);
 gboolean	camel_imapx_command_check	(CamelIMAPXCommand *ic);
-gint		camel_imapx_command_compare	(CamelIMAPXCommand *ic1,
-						 CamelIMAPXCommand *ic2);
-struct _CamelIMAPXJob *
-		camel_imapx_command_get_job	(CamelIMAPXCommand *ic);
-void		camel_imapx_command_set_job	(CamelIMAPXCommand *ic,
-						 struct _CamelIMAPXJob *job);
-CamelIMAPXMailbox *
-		camel_imapx_command_ref_mailbox	(CamelIMAPXCommand *ic);
 void		camel_imapx_command_add		(CamelIMAPXCommand *ic,
 						 const gchar *format,
 						 ...);
@@ -109,51 +97,6 @@ void		camel_imapx_command_add_part	(CamelIMAPXCommand *ic,
 						 CamelIMAPXCommandPartType type,
 						 gpointer data);
 void		camel_imapx_command_close	(CamelIMAPXCommand *ic);
-void		camel_imapx_command_wait	(CamelIMAPXCommand *ic);
-void		camel_imapx_command_done	(CamelIMAPXCommand *ic);
-void		camel_imapx_command_failed	(CamelIMAPXCommand *ic,
-						 const GError *error);
-gboolean	camel_imapx_command_set_error_if_failed
-						(CamelIMAPXCommand *ic,
-						 GError **error);
-
-/* These are simple GQueue wrappers for CamelIMAPXCommands.
- * They help make sure reference counting is done properly.
- * Add more wrappers as needed, don't circumvent them. */
-
-typedef struct _CamelIMAPXCommandQueue CamelIMAPXCommandQueue;
-
-CamelIMAPXCommandQueue *
-		camel_imapx_command_queue_new	(void);
-void		camel_imapx_command_queue_free	(CamelIMAPXCommandQueue *queue);
-void		camel_imapx_command_queue_transfer
-						(CamelIMAPXCommandQueue *from,
-						 CamelIMAPXCommandQueue *to);
-void		camel_imapx_command_queue_push_tail
-						(CamelIMAPXCommandQueue *queue,
-						 CamelIMAPXCommand *ic);
-void		camel_imapx_command_queue_insert_sorted
-						(CamelIMAPXCommandQueue *queue,
-						 CamelIMAPXCommand *ic);
-gboolean	camel_imapx_command_queue_is_empty
-						(CamelIMAPXCommandQueue *queue);
-guint		camel_imapx_command_queue_get_length
-						(CamelIMAPXCommandQueue *queue);
-CamelIMAPXCommand *
-		camel_imapx_command_queue_peek_head
-						(CamelIMAPXCommandQueue *queue);
-GList *		camel_imapx_command_queue_peek_head_link
-						(CamelIMAPXCommandQueue *queue);
-gboolean	camel_imapx_command_queue_remove
-						(CamelIMAPXCommandQueue *queue,
-						 CamelIMAPXCommand *ic);
-void		camel_imapx_command_queue_delete_link
-						(CamelIMAPXCommandQueue *queue,
-						 GList *link);
-CamelIMAPXCommand *
-		camel_imapx_command_queue_ref_by_tag
-						(CamelIMAPXCommandQueue *queue,
-						 guint32 tag);
 
 G_END_DECLS
 

@@ -173,33 +173,16 @@ imapx_search_process_criteria (CamelSExp *sexp,
 
 	if (mailbox != NULL) {
 		CamelIMAPXStore *imapx_store;
-		CamelIMAPXServer *imapx_server;
-		const gchar *folder_name;
+		CamelIMAPXConnManager *conn_man;
 
 		imapx_store = camel_imapx_search_ref_store (imapx_search);
 
 		/* there should always be one, held by one of the callers of this function */
 		g_warn_if_fail (imapx_store != NULL);
 
-		folder_name = camel_folder_get_full_name (search->folder);
-		imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, imapx_search->priv->cancellable, &local_error);
-		if (imapx_server) {
-			uids = camel_imapx_server_uid_search (imapx_server, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
-			camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
+		conn_man = camel_imapx_store_get_conn_manager (imapx_store);
+		uids = camel_imapx_conn_manager_uid_search_sync (conn_man, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
 
-			while (!uids && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-				g_clear_error (&local_error);
-				g_clear_object (&imapx_server);
-
-				imapx_server = camel_imapx_store_ref_server (imapx_store, folder_name, TRUE, imapx_search->priv->cancellable, &local_error);
-				if (imapx_server) {
-					uids = camel_imapx_server_uid_search (imapx_server, mailbox, criteria->str, imapx_search->priv->cancellable, &local_error);
-					camel_imapx_store_folder_op_done (imapx_store, imapx_server, folder_name);
-				}
-			}
-		}
-
-		g_clear_object (&imapx_server);
 		g_clear_object (&imapx_store);
 		g_object_unref (mailbox);
 	}

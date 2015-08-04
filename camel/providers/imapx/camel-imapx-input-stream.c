@@ -67,6 +67,9 @@ imapx_input_stream_fill (CamelIMAPXInputStream *is,
 	GInputStream *base_stream;
 	gint left = 0;
 
+	if (g_cancellable_is_cancelled (cancellable))
+		return -1;
+
 	base_stream = g_filter_input_stream_get_base_stream (
 		G_FILTER_INPUT_STREAM (is));
 
@@ -707,7 +710,7 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 		return is->priv->unget_tok;
 	}
 
-	if (is->priv->literal > 0)
+	if (is->priv->literal > 0 && !g_cancellable_is_cancelled (cancellable))
 		g_warning (
 			"stream_token called with literal %d",
 			is->priv->literal);

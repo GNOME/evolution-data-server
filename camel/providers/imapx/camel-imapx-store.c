@@ -59,7 +59,7 @@
 #define e(...) camel_imapx_debug(extra, __VA_ARGS__)
 
 struct _CamelIMAPXStorePrivate {
-	CamelIMAPXConnManager *con_man;
+	CamelIMAPXConnManager *conn_man;
 
 	CamelIMAPXServer *connecting_server;
 	gboolean is_concurrent_connection;
@@ -88,7 +88,8 @@ struct _CamelIMAPXStorePrivate {
 enum {
 	PROP_0,
 	PROP_CONNECTABLE,
-	PROP_HOST_REACHABLE
+	PROP_HOST_REACHABLE,
+	PROP_CONN_MANAGER
 };
 
 enum {
@@ -660,6 +661,13 @@ imapx_store_get_property (GObject *object,
 				camel_network_service_get_host_reachable (
 				CAMEL_NETWORK_SERVICE (object)));
 			return;
+
+		case PROP_CONN_MANAGER:
+			g_value_set_object (
+				value,
+				camel_imapx_store_get_conn_manager (
+				CAMEL_IMAPX_STORE (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -672,9 +680,9 @@ imapx_store_dispose (GObject *object)
 
 	/* Force disconnect so we don't have it run later,
 	 * after we've cleaned up some stuff. */
-	if (imapx_store->priv->con_man != NULL) {
+	if (imapx_store->priv->conn_man != NULL) {
 		camel_service_disconnect_sync (CAMEL_SERVICE (imapx_store), FALSE, NULL, NULL);
-		g_clear_object (&imapx_store->priv->con_man);
+		g_clear_object (&imapx_store->priv->conn_man);
 	}
 
 	if (imapx_store->priv->settings_notify_handler_id > 0) {
@@ -771,8 +779,6 @@ imapx_connect_sync (CamelService *service,
                     GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
-	gboolean success;
 
 	/* Chain up to parent's method. */
 	if (!CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class)->connect_sync (service, cancellable, error))
@@ -780,12 +786,7 @@ imapx_connect_sync (CamelService *service,
 
 	imapx_store = CAMEL_IMAPX_STORE (service);
 
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-	success = imapx_server != NULL;
-
-	g_clear_object (&imapx_server);
-
-	return success;
+	return camel_imapx_conn_manager_connect_sync (imapx_store->priv->conn_man, cancellable, error);
 }
 
 static gboolean
@@ -798,8 +799,8 @@ imapx_disconnect_sync (CamelService *service,
 
 	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
 
-	if (priv->con_man != NULL)
-		camel_imapx_conn_manager_close_connections (priv->con_man, NULL);
+	if (priv->conn_man != NULL)
+		camel_imapx_conn_manager_disconnect_sync (priv->conn_man, cancellable, error);
 
 	g_mutex_lock (&priv->server_lock);
 
@@ -828,7 +829,7 @@ imapx_authenticate_sync (CamelService *service,
 	imapx_server = g_object_ref (priv->connecting_server);
 	g_mutex_unlock (&priv->server_lock);
 
-	result = camel_imapx_server_authenticate (
+	result = camel_imapx_server_authenticate_sync (
 		imapx_server, mechanism, cancellable, error);
 
 	g_clear_object (&imapx_server);
@@ -856,28 +857,32 @@ imapx_query_auth_types_sync (CamelService *service,
 	GList *sasl_types = NULL;
 	GList *t, *next;
 	CamelIMAPXServer *server;
+	const struct _capability_info *cinfo;
 
 	imapx_store = CAMEL_IMAPX_STORE (service);
 
 	server = camel_imapx_server_new (imapx_store);
-	server->tagprefix = 'Z';
+	camel_imapx_server_set_tagprefix (server, 'Z');
 
-	if (!imapx_connect_to_server (server, cancellable, error))
+	g_signal_emit_by_name (imapx_store->priv->conn_man, "connection-created", 0, server);
+
+	if (!camel_imapx_server_query_auth_types_sync (server, cancellable, error))
 		goto exit;
+
+	cinfo = camel_imapx_server_get_capability_info (server);
 
 	sasl_types = camel_sasl_authtype_list (FALSE);
 	for (t = sasl_types; t; t = next) {
 		authtype = t->data;
 		next = t->next;
 
-		if (!server->cinfo || !g_hash_table_lookup (server->cinfo->auth_types, authtype->authproto)) {
+		if (!cinfo || !g_hash_table_lookup (cinfo->auth_types, authtype->authproto)) {
 			sasl_types = g_list_remove_link (sasl_types, t);
 			g_list_free_1 (t);
 		}
 	}
 
-	sasl_types = g_list_prepend (
-		sasl_types, &camel_imapx_password_authtype);
+	sasl_types = g_list_prepend (sasl_types, &camel_imapx_password_authtype);
 
 exit:
 	g_object_unref (server);
@@ -1018,6 +1023,7 @@ get_folder_info_offline (CamelStore *store,
 	GPtrArray *folders;
 	GPtrArray *array;
 	gboolean use_subscriptions;
+	gint top_len;
 	guint ii;
 
 	service = CAMEL_SERVICE (store);
@@ -1037,6 +1043,8 @@ get_folder_info_offline (CamelStore *store,
 		include_inbox = TRUE;
 		top = "";
 	}
+
+	top_len = strlen (top);
 
 	/* folder_info_build will insert parent nodes as necessary and mark
 	 * them as noselect, which is information we actually don't have at
@@ -1058,7 +1066,8 @@ get_folder_info_offline (CamelStore *store,
 		/* Filter by folder path. */
 		si_is_match =
 			(include_inbox && si_is_inbox) ||
-			g_str_has_prefix (folder_path, top);
+			(g_str_has_prefix (folder_path, top) && (top_len == 0 ||
+			!folder_path[top_len] || folder_path[top_len] == '/'));
 
 		if (!si_is_match)
 			continue;
@@ -1160,7 +1169,7 @@ collect_folder_info_for_list (CamelIMAPXStore *imapx_store,
 }
 
 static gboolean
-fetch_folder_info_for_pattern (CamelIMAPXServer *server,
+fetch_folder_info_for_pattern (CamelIMAPXConnManager *conn_man,
                                CamelIMAPXNamespace *namespace,
                                const gchar *pattern,
                                CamelStoreGetFolderInfoFlags flags,
@@ -1173,22 +1182,9 @@ fetch_folder_info_for_pattern (CamelIMAPXServer *server,
 	GError *local_error = NULL;
 	gboolean success;
 
-	g_object_ref (server);
+	imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
 
-	imapx_store = camel_imapx_server_ref_store (server);
-
-	success = camel_imapx_server_list (server, pattern, flags, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&server);
-
-		server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (server)
-			success = camel_imapx_server_list (server, pattern, flags, cancellable, &local_error);
-	}
-
-	g_clear_object (&server);
+	success = camel_imapx_conn_manager_list_sync (conn_man, pattern, flags, cancellable, &local_error);
 
 	if (!success) {
 		g_clear_object (&imapx_store);
@@ -1225,34 +1221,18 @@ fetch_folder_info_for_pattern (CamelIMAPXServer *server,
 }
 
 static gboolean
-fetch_folder_info_for_inbox (CamelIMAPXServer *server,
+fetch_folder_info_for_inbox (CamelIMAPXConnManager *conn_man,
                              CamelStoreGetFolderInfoFlags flags,
                              GHashTable *folder_info_results,
                              GCancellable *cancellable,
                              GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	GError *local_error = NULL;
 	gboolean success;
 
-	g_object_ref (server);
-	imapx_store = camel_imapx_server_ref_store (server);
+	imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
 
-	success = camel_imapx_server_list (server, "INBOX", flags, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&server);
-
-		server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (server)
-			success = camel_imapx_server_list (server, "INBOX", flags, cancellable, &local_error);
-	}
-
-	g_clear_object (&server);
-
-	if (local_error)
-		g_propagate_error (error, local_error);
+	success = camel_imapx_conn_manager_list_sync (conn_man, "INBOX", flags, cancellable, error);
 
 	if (success) {
 		CamelIMAPXMailbox *mailbox;
@@ -1271,7 +1251,7 @@ fetch_folder_info_for_inbox (CamelIMAPXServer *server,
 
 static gboolean
 fetch_folder_info_for_namespace_category (CamelIMAPXStore *imapx_store,
-					  CamelIMAPXServer *server,
+					  CamelIMAPXConnManager *conn_man,
                                           CamelIMAPXNamespaceCategory category,
                                           CamelStoreGetFolderInfoFlags flags,
                                           GHashTable *folder_info_results,
@@ -1303,7 +1283,7 @@ fetch_folder_info_for_namespace_category (CamelIMAPXStore *imapx_store,
 		pattern = g_strdup_printf ("%s*", ns_prefix);
 
 		success = fetch_folder_info_for_pattern (
-			server, namespace, pattern, flags,
+			conn_man, namespace, pattern, flags,
 			folder_info_results, cancellable, error);
 
 		g_free (pattern);
@@ -1321,7 +1301,7 @@ fetch_folder_info_for_namespace_category (CamelIMAPXStore *imapx_store,
 
 static gboolean
 fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
-				    CamelIMAPXServer *server,
+				    CamelIMAPXConnManager *conn_man,
                                     const gchar *folder_path,
                                     CamelStoreGetFolderInfoFlags flags,
                                     GHashTable *folder_info_results,
@@ -1359,7 +1339,7 @@ fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
 	pattern = g_strdup_printf ("%s*", utf7_mailbox_name);
 
 	success = fetch_folder_info_for_pattern (
-		server, namespace, pattern, flags,
+		conn_man, namespace, pattern, flags,
 		folder_info_results, cancellable, error);
 
 	g_free (pattern);
@@ -1495,14 +1475,12 @@ sync_folders (CamelIMAPXStore *imapx_store,
               GCancellable *cancellable,
               GError **error)
 {
-	CamelIMAPXServer *server;
+	CamelIMAPXConnManager *conn_man;
 	GHashTable *folder_info_results;
 	gboolean update_folder_list;
 	gboolean success;
 
-	server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-	if (server == NULL)
-		return FALSE;
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 
 	/* mailbox name -> CamelFolderInfo */
 	folder_info_results = g_hash_table_new_full (
@@ -1525,13 +1503,13 @@ sync_folders (CamelIMAPXStore *imapx_store,
 
 	if (root_folder_path != NULL && *root_folder_path != '\0') {
 		success = fetch_folder_info_from_folder_path (
-			imapx_store, server, root_folder_path, flags,
+			imapx_store, conn_man, root_folder_path, flags,
 			folder_info_results, cancellable, error);
 	} else {
 		gboolean have_folder_info_for_inbox;
 
 		success = fetch_folder_info_for_namespace_category (
-			imapx_store, server, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags |
+			imapx_store, conn_man, CAMEL_IMAPX_NAMESPACE_PERSONAL, flags |
 			(update_folder_list ? CAMEL_STORE_FOLDER_INFO_SUBSCRIBED : 0),
 			folder_info_results, cancellable, error);
 
@@ -1543,7 +1521,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 		 *     then LIST it explicitly. */
 		if (success && !have_folder_info_for_inbox)
 			success = fetch_folder_info_for_inbox (
-				server, flags, folder_info_results,
+				conn_man, flags, folder_info_results,
 				cancellable, error);
 	}
 
@@ -1593,8 +1571,6 @@ sync_folders (CamelIMAPXStore *imapx_store,
 exit:
 	g_hash_table_destroy (folder_info_results);
 
-	g_object_unref (server);
-
 	return success;
 }
 
@@ -1633,42 +1609,30 @@ static void
 discover_inbox (CamelIMAPXStore *imapx_store,
                 GCancellable *cancellable)
 {
-	CamelIMAPXServer *imapx_server;
+	CamelIMAPXConnManager *conn_man;
 	CamelIMAPXMailbox *mailbox = NULL;
 	const gchar *attribute;
 
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, NULL);
-
-	if (imapx_server == NULL)
-		return;
-
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 	mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
 
 	if (mailbox == NULL)
-		goto exit;
+		return;
 
 	attribute = CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED;
 	if (!camel_imapx_mailbox_has_attribute (mailbox, attribute)) {
 		GError *local_error = NULL;
 		gboolean success;
 
-		success = camel_imapx_server_subscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-
-		while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-			g_clear_error (&local_error);
-			g_clear_object (&imapx_server);
-
-			imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-			if (imapx_server)
-				success = camel_imapx_server_subscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
+		success = camel_imapx_conn_manager_subscribe_mailbox_sync (conn_man, mailbox, cancellable, &local_error);
+		if (!success && !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			g_warning ("%s: Failed to subscribe INBOX: %s", G_STRFUNC, local_error ? local_error->message : "Unknown error");
 		}
 
 		g_clear_error (&local_error);
 	}
 
-exit:
 	g_clear_object (&mailbox);
-	g_clear_object (&imapx_server);
 }
 
 static gboolean
@@ -1998,7 +1962,7 @@ imapx_store_create_folder_sync (CamelStore *store,
 	CamelIMAPXNamespaceResponse *namespace_response;
 	CamelIMAPXNamespace *namespace;
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
+	CamelIMAPXConnManager *conn_man;
 	CamelFolder *folder;
 	CamelIMAPXMailbox *parent_mailbox = NULL;
 	CamelFolderInfo *fi = NULL;
@@ -2008,13 +1972,9 @@ imapx_store_create_folder_sync (CamelStore *store,
 	gchar *mailbox_name = NULL;
 	gchar separator;
 	gboolean success;
-	GError *local_error = NULL;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-
-	if (imapx_server == NULL)
-		return NULL;
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 
 	if (parent_name == NULL || *parent_name == '\0')
 		goto check_namespace;
@@ -2085,19 +2045,7 @@ check_separator:
 	/* This also LISTs the mailbox after creating it, which
 	 * triggers the CamelIMAPXStore::mailbox-created signal
 	 * and all the local processing that goes along with it. */
-	success = camel_imapx_server_create_mailbox (imapx_server, mailbox_name, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&imapx_server);
-
-		imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (imapx_server)
-			success = camel_imapx_server_create_mailbox (imapx_server, mailbox_name, cancellable, &local_error);
-	}
-
-	if (local_error)
-		g_propagate_error (error, local_error);
+	success = camel_imapx_conn_manager_create_mailbox_sync (conn_man, mailbox_name, cancellable, error);
 
 	if (success) {
 		fi = imapx_store_build_folder_info (
@@ -2107,8 +2055,6 @@ check_separator:
 
 exit:
 	g_free (mailbox_name);
-
-	g_clear_object (&imapx_server);
 
 	return fi;
 }
@@ -2121,10 +2067,9 @@ imapx_store_delete_folder_sync (CamelStore *store,
 {
 	CamelFolder *folder;
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
+	CamelIMAPXConnManager *conn_man;
 	CamelIMAPXMailbox *mailbox = NULL;
 	gboolean success = FALSE;
-	GError *local_error = NULL;
 
 	folder = camel_store_get_folder_sync (
 		store, folder_name, 0, cancellable, error);
@@ -2133,29 +2078,14 @@ imapx_store_delete_folder_sync (CamelStore *store,
 		return FALSE;
 
 	imapx_store = CAMEL_IMAPX_STORE (store);
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-
-	if (imapx_server == NULL)
-		goto exit;
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 
 	mailbox = camel_imapx_folder_list_mailbox (
 		CAMEL_IMAPX_FOLDER (folder), cancellable, error);
 	if (mailbox == NULL)
 		goto exit;
 
-	success = camel_imapx_server_delete_mailbox (imapx_server, mailbox, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&imapx_server);
-
-		imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (imapx_server)
-			success = camel_imapx_server_delete_mailbox (imapx_server, mailbox, cancellable, &local_error);
-	}
-
-	if (local_error)
-		g_propagate_error (error, local_error);
+	success = camel_imapx_conn_manager_delete_mailbox_sync (conn_man, mailbox, cancellable, error);
 
 	if (success)
 		imapx_delete_folder_from_cache (imapx_store, folder_name, TRUE);
@@ -2163,7 +2093,6 @@ imapx_store_delete_folder_sync (CamelStore *store,
 exit:
 	g_clear_object (&folder);
 	g_clear_object (&mailbox);
-	g_clear_object (&imapx_server);
 
 	return success;
 }
@@ -2179,7 +2108,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	CamelService *service;
 	CamelSettings *settings;
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
+	CamelIMAPXConnManager *conn_man;
 	CamelIMAPXMailbox *mailbox = NULL;
 	CamelIMAPXMailbox *cloned_mailbox;
 	gchar *new_mailbox_name = NULL;
@@ -2202,10 +2131,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	 * in imapx_store_process_mailbox_attributes(). */
 	g_atomic_int_inc (&imapx_store->priv->syncing_folders);
 
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-
-	if (imapx_server == NULL)
-		goto exit;
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 
 	folder = camel_store_get_folder_sync (
 		store, old, 0, cancellable, error);
@@ -2226,30 +2152,11 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	new_mailbox_name = camel_imapx_folder_path_to_mailbox (new, separator);
 
 	if (use_subscriptions) {
-		success = camel_imapx_server_unsubscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-
-		while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-			g_clear_error (&local_error);
-			g_clear_object (&imapx_server);
-
-			imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-			if (imapx_server)
-				success = camel_imapx_server_unsubscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-		}
-
+		success = camel_imapx_conn_manager_unsubscribe_mailbox_sync (conn_man, mailbox, cancellable, &local_error);
 		g_clear_error (&local_error);
 	}
 
-	success = camel_imapx_server_rename_mailbox (imapx_server, mailbox, new_mailbox_name, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&imapx_server);
-
-		imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (imapx_server)
-			success = camel_imapx_server_rename_mailbox (imapx_server, mailbox, new_mailbox_name, cancellable, &local_error);
-	}
+	success = camel_imapx_conn_manager_rename_mailbox_sync (conn_man, mailbox, new_mailbox_name, cancellable, &local_error);
 
 	if (!success) {
 		if (local_error)
@@ -2259,19 +2166,14 @@ imapx_store_rename_folder_sync (CamelStore *store,
 		if (use_subscriptions) {
 			gboolean success_2;
 
-			success_2 = camel_imapx_server_subscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-
-			while (!success_2 && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-				g_clear_error (&local_error);
-				g_clear_object (&imapx_server);
-
-				imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-				if (imapx_server)
-					success_2 = camel_imapx_server_subscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
+			success_2 = camel_imapx_conn_manager_subscribe_mailbox_sync (conn_man, mailbox, cancellable, &local_error);
+			if (!success_2) {
+				g_warning ("%s: Failed to subscribe '%s': %s", G_STRFUNC, camel_imapx_mailbox_get_name (mailbox),
+					local_error ? local_error->message : "Unknown error");
 			}
-
 			g_clear_error (&local_error);
 		}
+
 		goto exit;
 	}
 
@@ -2282,23 +2184,10 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	/* Create a cloned CamelIMAPXMailbox with the new mailbox name. */
 	cloned_mailbox = camel_imapx_mailbox_clone (mailbox, new_mailbox_name);
 
-	camel_imapx_folder_set_mailbox (
-		CAMEL_IMAPX_FOLDER (folder), cloned_mailbox);
+	camel_imapx_folder_set_mailbox (CAMEL_IMAPX_FOLDER (folder), cloned_mailbox);
 
 	if (use_subscriptions) {
-		success = camel_imapx_server_subscribe_mailbox (imapx_server, cloned_mailbox, cancellable, &local_error);
-
-		while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-			g_clear_error (&local_error);
-			g_clear_object (&imapx_server);
-
-			imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-			if (imapx_server)
-				success = camel_imapx_server_subscribe_mailbox (imapx_server, cloned_mailbox, cancellable, &local_error);
-		}
-
-		if (local_error)
-			g_propagate_error (error, local_error);
+		success = camel_imapx_conn_manager_subscribe_mailbox_sync (conn_man, cloned_mailbox, cancellable, error);
 	}
 
 	g_clear_object (&cloned_mailbox);
@@ -2307,9 +2196,8 @@ exit:
 	g_free (new_mailbox_name);
 
 	g_clear_object (&mailbox);
-	g_clear_object (&imapx_server);
 
-	/* This enabled CamelStore signal emissions
+	/* This enables CamelStore signal emissions
 	 * in imapx_store_process_mailbox_attributes() again. */
 	g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
 
@@ -2478,6 +2366,8 @@ imapx_ensure_parents_subscribed (CamelIMAPXStore *imapx_store,
 
 		/* Since this is a "fake" folder node, it is not selectable. */
 		fi->flags |= CAMEL_FOLDER_NOSELECT;
+		fi->unread = -1;
+		fi->total = -1;
 
 		parents = g_slist_prepend (parents, fi);
 	}
@@ -2488,6 +2378,9 @@ imapx_ensure_parents_subscribed (CamelIMAPXStore *imapx_store,
 		camel_subscribable_folder_subscribed (subscribable, fi);
 		camel_folder_info_free (fi);
 	}
+
+	g_slist_free (parents);
+	g_free (parent);
 }
 
 static gboolean
@@ -2498,16 +2391,12 @@ imapx_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 {
 	CamelFolder *folder;
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
+	CamelIMAPXConnManager *conn_man;
 	CamelIMAPXMailbox *mailbox = NULL;
 	gboolean success = FALSE;
-	GError *local_error = NULL;
 
 	imapx_store = CAMEL_IMAPX_STORE (subscribable);
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-
-	if (imapx_server == NULL)
-		goto exit;
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 
 	folder = camel_store_get_folder_sync (
 		CAMEL_STORE (subscribable),
@@ -2522,19 +2411,7 @@ imapx_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 	if (mailbox == NULL)
 		goto exit;
 
-	success = camel_imapx_server_subscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&imapx_server);
-
-		imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (imapx_server)
-			success = camel_imapx_server_subscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-	}
-
-	if (local_error)
-		g_propagate_error (error, local_error);
+	success = camel_imapx_conn_manager_subscribe_mailbox_sync (conn_man, mailbox, cancellable, error);
 
 	if (success) {
 		CamelFolderInfo *fi;
@@ -2550,7 +2427,6 @@ imapx_store_subscribe_folder_sync (CamelSubscribable *subscribable,
 
 exit:
 	g_clear_object (&mailbox);
-	g_clear_object (&imapx_server);
 
 	return success;
 }
@@ -2563,16 +2439,12 @@ imapx_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 {
 	CamelFolder *folder;
 	CamelIMAPXStore *imapx_store;
-	CamelIMAPXServer *imapx_server;
+	CamelIMAPXConnManager *conn_man;
 	CamelIMAPXMailbox *mailbox = NULL;
 	gboolean success = FALSE;
-	GError *local_error = NULL;
 
 	imapx_store = CAMEL_IMAPX_STORE (subscribable);
-	imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, error);
-
-	if (imapx_server == NULL)
-		goto exit;
+	conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 
 	folder = camel_store_get_folder_sync (
 		CAMEL_STORE (subscribable),
@@ -2587,19 +2459,7 @@ imapx_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 	if (mailbox == NULL)
 		goto exit;
 
-	success = camel_imapx_server_unsubscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-
-	while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) {
-		g_clear_error (&local_error);
-		g_clear_object (&imapx_server);
-
-		imapx_server = camel_imapx_store_ref_server (imapx_store, NULL, FALSE, cancellable, &local_error);
-		if (imapx_server)
-			success = camel_imapx_server_unsubscribe_mailbox (imapx_server, mailbox, cancellable, &local_error);
-	}
-
-	if (local_error)
-		g_propagate_error (error, local_error);
+	success = camel_imapx_conn_manager_unsubscribe_mailbox_sync (conn_man, mailbox, cancellable, error);
 
 	if (success) {
 		CamelFolderInfo *fi;
@@ -2612,7 +2472,6 @@ imapx_store_unsubscribe_folder_sync (CamelSubscribable *subscribable,
 
 exit:
 	g_clear_object (&mailbox);
-	g_clear_object (&imapx_server);
 
 	return success;
 }
@@ -2700,6 +2559,17 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	class->mailbox_renamed = imapx_store_mailbox_renamed;
 	class->mailbox_updated = imapx_store_mailbox_updated;
 
+	g_object_class_install_property (
+		object_class,
+		PROP_CONN_MANAGER,
+		g_param_spec_object (
+			"conn-manager",
+			"Connection Manager",
+			"The Connection Manager being used for remote operations",
+			CAMEL_TYPE_IMAPX_CONN_MANAGER,
+			G_PARAM_READABLE |
+			G_PARAM_STATIC_STRINGS));
+
 	/* Inherited from CamelNetworkService. */
 	g_object_class_override_property (
 		object_class,
@@ -2769,7 +2639,7 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 {
 	store->priv = CAMEL_IMAPX_STORE_GET_PRIVATE (store);
 
-	store->priv->con_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
+	store->priv->conn_man = camel_imapx_conn_manager_new (CAMEL_STORE (store));
 
 	g_mutex_init (&store->priv->get_finfo_lock);
 
@@ -2800,70 +2670,12 @@ camel_imapx_store_init (CamelIMAPXStore *store)
 		G_CALLBACK (imapx_store_update_store_flags), NULL);
 }
 
-/**
- * camel_imapx_store_ref_server:
- * @store: a #CamelIMAPXStore
- * @folder_name: name of a folder, for which it'll be used; can be %NULL
- * @cancellable: a #GCancellable to use ofr possible new connection creation, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Returns the #CamelIMAPXServer for @store, if available.
- *
- * As a convenience, if the @store is not currently connected to an IMAP
- * server, the function sets @error to %CAMEL_SERVER_ERROR_UNAVAILABLE and
- * returns %NULL.  If an operation can possibly be executed while offline,
- * pass %NULL for @error.
- *
- * The returned #CamelIMAPXServer is referenced for thread-safety and must
- * be unreferenced with g_object_unref() when finished with it.
- *
- * Returns: a #CamelIMAPXServer, or %NULL
- *
- * Since: 3.10
- **/
-CamelIMAPXServer *
-camel_imapx_store_ref_server (CamelIMAPXStore *store,
-			      const gchar *folder_name,
-			      gboolean for_expensive_job,
-			      GCancellable *cancellable,
-                              GError **error)
+CamelIMAPXConnManager *
+camel_imapx_store_get_conn_manager (CamelIMAPXStore *store)
 {
-	CamelIMAPXServer *server = NULL;
-	CamelSession *session;
-	GError *local_error = NULL;
-
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), NULL);
 
-	session = camel_service_ref_session (CAMEL_SERVICE (store));
-
-	if (camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)) &&
-	    camel_session_get_online (session))
-		server = camel_imapx_conn_manager_get_connection (
-			store->priv->con_man, folder_name, for_expensive_job, cancellable, &local_error);
-
-	g_clear_object (&session);
-
-	if (!server && (!local_error || local_error->domain == G_RESOLVER_ERROR)) {
-		if (!local_error) {
-			g_set_error (
-				&local_error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("You must be working online to complete this operation"));
-		} else {
-			g_set_error (
-				error, CAMEL_SERVICE_ERROR,
-				CAMEL_SERVICE_ERROR_UNAVAILABLE,
-				_("You must be working online to complete this operation (%s)"),
-				local_error->message);
-
-			g_clear_error (&local_error);
-		}
-	}
-
-	if (local_error)
-		g_propagate_error (error, local_error);
-
-	return server;
+	return store->priv->conn_man;
 }
 
 /* The caller should hold the store->priv->server_lock already, when calling this */
@@ -2902,19 +2714,6 @@ camel_imapx_store_is_connecting_concurrent_connection (CamelIMAPXStore *imapx_st
 	g_mutex_unlock (&imapx_store->priv->server_lock);
 
 	return res;
-}
-
-void
-camel_imapx_store_folder_op_done (CamelIMAPXStore *store,
-				  CamelIMAPXServer *server,
-				  const gchar *folder_name)
-{
-	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
-	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (server));
-	g_return_if_fail (folder_name != NULL);
-
-	camel_imapx_conn_manager_update_con_info (
-		store->priv->con_man, server, folder_name);
 }
 
 /**
@@ -3244,8 +3043,8 @@ imapx_store_rename_mailbox_unlocked (CamelIMAPXStore *imapx_store,
 		new_child_name = g_strconcat (
 			new_mailbox_name,
 			old_child_name + old_mailbox_name_length, NULL);
-		new_child = camel_imapx_mailbox_clone (
-			old_child, new_child_name);
+
+		new_child = camel_imapx_mailbox_clone (old_child, new_child_name);
 
 		/* Add the new mailbox, remove the old mailbox.
 		 * Note we still have a reference on the old mailbox. */
@@ -3400,7 +3199,7 @@ camel_imapx_store_handle_list_response (CamelIMAPXStore *imapx_store,
 
 	/* Fabricate a CamelIMAPXNamespaceResponse if the server lacks the
 	 * NAMESPACE capability and this is the first LIST / LSUB response. */
-	if (CAMEL_IMAPX_LACK_CAPABILITY (imapx_server->cinfo, NAMESPACE)) {
+	if (CAMEL_IMAPX_LACK_CAPABILITY (camel_imapx_server_get_capability_info (imapx_server), NAMESPACE)) {
 		g_mutex_lock (&imapx_store->priv->namespaces_lock);
 		if (imapx_store->priv->namespaces == NULL) {
 			imapx_store->priv->namespaces = camel_imapx_namespace_response_faux_new (response);
@@ -3464,7 +3263,7 @@ camel_imapx_store_handle_lsub_response (CamelIMAPXStore *imapx_store,
 
 	/* Fabricate a CamelIMAPXNamespaceResponse if the server lacks the
 	 * NAMESPACE capability and this is the first LIST / LSUB response. */
-	if (CAMEL_IMAPX_LACK_CAPABILITY (imapx_server->cinfo, NAMESPACE)) {
+	if (CAMEL_IMAPX_LACK_CAPABILITY (camel_imapx_server_get_capability_info (imapx_server), NAMESPACE)) {
 		g_mutex_lock (&imapx_store->priv->namespaces_lock);
 		if (imapx_store->priv->namespaces == NULL) {
 			imapx_store->priv->namespaces = camel_imapx_namespace_response_faux_new (response);
@@ -3535,41 +3334,11 @@ camel_imapx_store_set_quota_info (CamelIMAPXStore *store,
 	g_mutex_unlock (&store->priv->quota_info_lock);
 }
 
-/* Tries to find matching job among all active connections.
-   See camel_imapx_server_ref_job() for more information on parameters
-   and return values.
-*/
-CamelIMAPXJob *
-camel_imapx_store_ref_job (CamelIMAPXStore *imapx_store,
-			   CamelIMAPXMailbox *mailbox,
-			   guint32 job_type,
-			   const gchar *uid)
-{
-	GList *servers, *siter;
-	CamelIMAPXJob *job = NULL;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), NULL);
-
-	servers = camel_imapx_conn_manager_get_connections (imapx_store->priv->con_man);
-
-	for (siter = servers; siter; siter = g_list_next (siter)) {
-		CamelIMAPXServer *imapx_server = siter->data;
-
-		job = camel_imapx_server_ref_job (imapx_server, mailbox, job_type, uid);
-		if (job)
-			break;
-	}
-
-	g_list_free_full (servers, g_object_unref);
-
-	return job;
-}
-
 /* for debugging purposes only */
 void
 camel_imapx_store_dump_queue_status (CamelIMAPXStore *imapx_store)
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
 
-	camel_imapx_conn_manager_dump_queue_status (imapx_store->priv->con_man);
+	camel_imapx_conn_manager_dump_queue_status (imapx_store->priv->conn_man);
 }

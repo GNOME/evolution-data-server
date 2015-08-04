@@ -21,6 +21,8 @@
 #ifndef _CAMEL_IMAPX_CONN_MANAGER_H
 #define _CAMEL_IMAPX_CONN_MANAGER_H
 
+#include "camel-imapx-job.h"
+#include "camel-imapx-mailbox.h"
 #include "camel-imapx-server.h"
 
 G_BEGIN_DECLS
@@ -44,6 +46,8 @@ G_BEGIN_DECLS
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_IMAPX_CONN_MANAGER, CamelIMAPXConnManagerClass))
 
+struct _CamelIMAPXStore;
+
 typedef struct _CamelIMAPXConnManager CamelIMAPXConnManager;
 typedef struct _CamelIMAPXConnManagerClass CamelIMAPXConnManagerClass;
 typedef struct _CamelIMAPXConnManagerPrivate CamelIMAPXConnManagerPrivate;
@@ -56,33 +60,129 @@ struct _CamelIMAPXConnManager {
 
 struct _CamelIMAPXConnManagerClass {
 	GObjectClass parent_class;
+
+	/* Signals */
+	void	(* connection_created) (CamelIMAPXConnManager *conn_man,
+					CamelIMAPXServer *server);
 };
 
 GType		camel_imapx_conn_manager_get_type (void);
 CamelIMAPXConnManager *
 		camel_imapx_conn_manager_new	(CamelStore *store);
-CamelStore *	camel_imapx_conn_manager_ref_store
-						(CamelIMAPXConnManager *con_man);
-CamelIMAPXServer *
-		camel_imapx_conn_manager_get_connection
-						(CamelIMAPXConnManager *con_man,
-						 const gchar *folder_name,
-						 gboolean for_expensive_job,
+struct _CamelIMAPXStore *
+		camel_imapx_conn_manager_ref_store
+						(CamelIMAPXConnManager *conn_man);
+gboolean	camel_imapx_conn_manager_connect_sync
+						(CamelIMAPXConnManager *conn_man,
 						 GCancellable *cancellable,
 						 GError **error);
-void		camel_imapx_conn_manager_close_connections
-						(CamelIMAPXConnManager *con_man,
-						 const GError *error);
-GList *		camel_imapx_conn_manager_get_connections
-						(CamelIMAPXConnManager *con_man);
-void		camel_imapx_conn_manager_update_con_info
-						(CamelIMAPXConnManager *con_man,
-						 CamelIMAPXServer *server,
-						 const gchar *folder_name);
+gboolean	camel_imapx_conn_manager_disconnect_sync
+						(CamelIMAPXConnManager *conn_man,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_run_job_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXJob *job,
+						 CamelIMAPXJobMatchesFunc finish_before_job,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_list_sync
+						(CamelIMAPXConnManager *conn_man,
+						 const gchar *pattern,
+						 CamelStoreGetFolderInfoFlags flags,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_refresh_info_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_sync_changes_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_expunge_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+CamelStream *	camel_imapx_conn_manager_get_message_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelFolderSummary *summary,
+						 CamelDataCache *message_cache,
+						 const gchar *message_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_copy_message_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelIMAPXMailbox *destination,
+						 GPtrArray *uids,
+						 gboolean delete_originals,
+						 gboolean remove_deleted_flags,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_append_message_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelFolderSummary *summary,
+						 CamelDataCache *message_cache,
+						 CamelMimeMessage *message,
+						 const CamelMessageInfo *mi,
+						 gchar **append_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_sync_message_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 CamelFolderSummary *summary,
+						 CamelDataCache *message_cache,
+						 const gchar *message_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_create_mailbox_sync
+						(CamelIMAPXConnManager *conn_man,
+						 const gchar *mailbox_name,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_delete_mailbox_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_rename_mailbox_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 const gchar *new_mailbox_name,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_subscribe_mailbox_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_unsubscribe_mailbox_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	camel_imapx_conn_manager_update_quota_info_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
+GPtrArray *	camel_imapx_conn_manager_uid_search_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 const gchar *criteria,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /* for debugging purposes only */
 void		camel_imapx_conn_manager_dump_queue_status
-						(CamelIMAPXConnManager *con_man);
+						(CamelIMAPXConnManager *conn_man);
 G_END_DECLS
 
 #endif /* _CAMEL_IMAPX_SERVER_H */
