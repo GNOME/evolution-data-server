@@ -50,7 +50,7 @@ m4_define([gcr_minimum_version], [3.4])
 m4_define([libsecret_minimum_version], [0.5])
 m4_define([libxml_minimum_version], [2.0.0])		dnl XXX Just a Guess
 m4_define([libgdata_minimum_version], [0.10])
-m4_define([sqlite_minimum_version], [3.5])
+m4_define([sqlite_minimum_version], [3.7.17])
 m4_define([libical_minimum_version], [0.43])
 
 dnl Optional Packages
