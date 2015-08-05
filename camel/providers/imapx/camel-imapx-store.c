@@ -824,8 +824,20 @@ imapx_authenticate_sync (CamelService *service,
 
 	priv = CAMEL_IMAPX_STORE_GET_PRIVATE (service);
 
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return CAMEL_AUTHENTICATION_ERROR;
+
 	/* This should have been set for us by connect_sync(). */
 	g_mutex_lock (&priv->server_lock);
+	if (!priv->connecting_server) {
+		g_mutex_unlock (&priv->server_lock);
+
+		g_set_error_literal (error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			_("No IMAPx connection object provided"));
+
+		return CAMEL_AUTHENTICATION_ERROR;
+	}
+
 	imapx_server = g_object_ref (priv->connecting_server);
 	g_mutex_unlock (&priv->server_lock);
 
