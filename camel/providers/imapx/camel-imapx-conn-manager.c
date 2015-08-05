@@ -216,7 +216,7 @@ connection_info_get_busy (ConnectionInfo *cinfo)
 	return busy;
 }
 
-static gboolean
+static void
 connection_info_set_busy (ConnectionInfo *cinfo,
 			  gboolean busy)
 {
@@ -801,7 +801,7 @@ camel_imapx_conn_manager_disconnect_sync (CamelIMAPXConnManager *conn_man,
 {
 	GList *link, *connections;
 
-	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
 	/* Do this before acquiring the write lock, because any pending
 	   connection holds the write lock, thus makes this request starve. */
