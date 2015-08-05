@@ -132,9 +132,6 @@ struct _ESourcePrivate {
 	GMutex changed_lock;
 	guint ignore_changed_signal;
 
-	GSource *data_change;
-	GMutex data_change_lock;
-
 	GSource *connection_status_change;
 	GMutex connection_status_change_lock;
 	ESourceConnectionStatus connection_status;
@@ -994,28 +991,12 @@ source_parse_dbus_data (ESource *source,
 	return TRUE;
 }
 
-static gboolean
-source_idle_data_change_cb (gpointer user_data)
+static void
+source_notify_dbus_data_cb (EDBusSource *dbus_source,
+                            GParamSpec *pspec,
+                            ESource *source)
 {
-	ESource *source = E_SOURCE (user_data);
 	GError *local_error = NULL;
-
-	if (g_source_is_destroyed (g_main_current_source ()))
-		return FALSE;
-
-	/* If the ESource is still initializing itself in a different
-	 * thread, skip the signal emission and try again on the next
-	 * main loop iteration. This is a busy wait but it should be
-	 * a very short wait. */
-	if (!source->priv->initialized)
-		return TRUE;
-
-	g_mutex_lock (&source->priv->data_change_lock);
-	if (source->priv->data_change != NULL) {
-		g_source_unref (source->priv->data_change);
-		source->priv->data_change = NULL;
-	}
-	g_mutex_unlock (&source->priv->data_change_lock);
 
 	g_rec_mutex_lock (&source->priv->lock);
 
@@ -1030,27 +1011,6 @@ source_idle_data_change_cb (gpointer user_data)
 	}
 
 	g_rec_mutex_unlock (&source->priv->lock);
-
-	return FALSE;
-}
-
-static void
-source_notify_dbus_data_cb (EDBusSource *dbus_source,
-                            GParamSpec *pspec,
-                            ESource *source)
-{
-	g_mutex_lock (&source->priv->data_change_lock);
-	if (source->priv->data_change == NULL) {
-		source->priv->data_change = g_idle_source_new ();
-		g_source_set_callback (
-			source->priv->data_change,
-			source_idle_data_change_cb,
-			source, NULL);
-		g_source_attach (
-			source->priv->data_change,
-			source->priv->main_context);
-	}
-	g_mutex_unlock (&source->priv->data_change_lock);
 }
 
 static gboolean
@@ -1496,14 +1456,6 @@ source_dispose (GObject *object)
 	}
 	g_mutex_unlock (&priv->changed_lock);
 
-	g_mutex_lock (&priv->data_change_lock);
-	if (priv->data_change != NULL) {
-		g_source_destroy (priv->data_change);
-		g_source_unref (priv->data_change);
-		priv->data_change = NULL;
-	}
-	g_mutex_unlock (&priv->data_change_lock);
-
 	g_mutex_lock (&priv->connection_status_change_lock);
 	if (priv->connection_status_change != NULL) {
 		g_source_destroy (priv->connection_status_change);
@@ -1534,7 +1486,6 @@ source_finalize (GObject *object)
 	priv = E_SOURCE_GET_PRIVATE (object);
 
 	g_mutex_clear (&priv->changed_lock);
-	g_mutex_clear (&priv->data_change_lock);
 	g_mutex_clear (&priv->connection_status_change_lock);
 	g_mutex_clear (&priv->credentials_required_call_lock);
 	g_mutex_clear (&priv->property_lock);
@@ -2680,7 +2631,6 @@ e_source_init (ESource *source)
 
 	source->priv = E_SOURCE_GET_PRIVATE (source);
 	g_mutex_init (&source->priv->changed_lock);
-	g_mutex_init (&source->priv->data_change_lock);
 	g_mutex_init (&source->priv->connection_status_change_lock);
 	g_mutex_init (&source->priv->credentials_required_call_lock);
 	g_mutex_init (&source->priv->property_lock);
