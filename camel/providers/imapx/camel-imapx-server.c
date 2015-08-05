@@ -2290,10 +2290,10 @@ exit:
 static gboolean
 imapx_step (CamelIMAPXServer *is,
             GInputStream *input_stream,
+	    GOutputStream *output_stream,
             GCancellable *cancellable,
             GError **error)
 {
-	GOutputStream *output_stream;
 	guint len;
 	guchar *token;
 	gint tok;
@@ -2302,15 +2302,6 @@ imapx_step (CamelIMAPXServer *is,
 	tok = camel_imapx_input_stream_token (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
 		&token, &len, cancellable, error);
-
-	output_stream = camel_imapx_server_ref_output_stream (is);
-	if (!output_stream) {
-		g_set_error_literal (error,
-			CAMEL_IMAPX_ERROR, 1,
-			_("Cannot issue command, no stream available"));
-
-		return FALSE;
-	}
 
 	switch (tok) {
 		case IMAPX_TOK_ERROR:
@@ -2336,8 +2327,6 @@ imapx_step (CamelIMAPXServer *is,
 				"unexpected server response:");
 			break;
 	}
-
-	g_clear_object (&output_stream);
 
 	return success;
 }
@@ -3702,7 +3691,7 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 	}
 
 	while (success && !ic->completed)
-		success = imapx_step (is, input_stream, cancellable, &local_error);
+		success = imapx_step (is, input_stream, output_stream, cancellable, &local_error);
 
 	imapx_server_reset_inactivity_timer (is);
 
