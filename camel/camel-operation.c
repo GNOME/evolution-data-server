@@ -182,7 +182,7 @@ camel_operation_class_init (CamelOperationClass *class)
 		"push-message",
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_LAST,
-		NULL,
+		0,
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_STRING);
@@ -191,7 +191,7 @@ camel_operation_class_init (CamelOperationClass *class)
 		"pop-message",
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_LAST,
-		NULL,
+		0,
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 0);
 
@@ -199,7 +199,7 @@ camel_operation_class_init (CamelOperationClass *class)
 		"progress",
 		G_TYPE_FROM_CLASS (class),
 		G_SIGNAL_RUN_LAST,
-		NULL,
+		0,
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 1,
 		G_TYPE_INT);
