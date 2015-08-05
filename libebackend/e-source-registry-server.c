@@ -66,6 +66,10 @@ struct _ESourceRegistryServerPrivate {
 	GMutex orphans_lock;
 
 	ESourceCredentialsProvider *credentials_provider;
+
+	GMutex file_monitor_lock;
+	GHashTable *file_monitor_events; /* gchar *uid ~> FileEventData * */
+	GSource *file_monitor_source;
 };
 
 enum {
@@ -414,44 +418,112 @@ source_registry_server_reload_cb (EDBusSourceManager *dbus_interface,
 	return TRUE;
 }
 
-static void
-source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
-                                           GFile *file,
-                                           GFile *other_file,
-                                           GFileMonitorEvent event_type,
-                                           ESourceRegistryServer *server)
+typedef struct _FileEventData {
+	GFile *file;
+	GFileMonitorEvent event_type;
+} FileEventData;
+
+static FileEventData *
+file_event_data_new (GFile *file,
+		     GFileMonitorEvent event_type)
 {
-	if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
+	FileEventData *fed;
+
+	fed = g_new0 (FileEventData, 1);
+	fed->file = g_object_ref (file);
+	fed->event_type = event_type;
+
+	return fed;
+}
+
+static void
+file_event_data_free (gpointer ptr)
+{
+	FileEventData *fed = ptr;
+
+	if (fed) {
+		g_clear_object (&fed->file);
+		g_free (fed);
+	}
+}
+
+static void
+source_registry_server_process_file_monitor_event (gpointer key,
+						   gpointer value,
+						   gpointer user_data)
+{
+	const gchar *uid = key;
+	const FileEventData *fed = value;
+	ESourceRegistryServer *server = user_data;
+	GFileMonitorEvent event_type;
+
+	g_return_if_fail (uid != NULL);
+	g_return_if_fail (fed != NULL);
+
+	event_type = fed->event_type;
+
+	if (e_source_registry_debug_enabled ()) {
+		e_source_registry_debug_print ("Processing file monitor event %s (%u) for UID: %s\n",
+			event_type == G_FILE_MONITOR_EVENT_CHANGED ? "CHANGED" :
+			event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT ? "CHANGES_DONE_HINT" :
+			event_type == G_FILE_MONITOR_EVENT_DELETED ? "DELETED" :
+			event_type == G_FILE_MONITOR_EVENT_CREATED ? "CREATED" :
+			event_type == G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED ? "ATTRIBUTE_CHANGED" :
+			event_type == G_FILE_MONITOR_EVENT_PRE_UNMOUNT ? "PRE_UNMOUNT" :
+			event_type == G_FILE_MONITOR_EVENT_UNMOUNTED ? "UNMOUNTED" :
+			event_type == G_FILE_MONITOR_EVENT_MOVED ? "MOVED" : "???",
+			event_type,
+			uid);
+	}
+
+	if (event_type == G_FILE_MONITOR_EVENT_CHANGED ||
+	    event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT) {
 		ESource *source;
 		GError *error = NULL;
-		gchar *uid;
-
-		uid = e_server_side_source_uid_from_file (file, NULL);
-		if (!uid)
-			return;
 
 		source = e_source_registry_server_ref_source (server, uid);
 
-		g_free (uid);
+		/* If the source does not exist, create it; parsing may have
+		 * failed when the file was originally created. This can happen
+		 * if the file is created (empty), then e-source-registry-server
+		 * detects it, then it’s populated and made valid.
+		 *
+		 * Otherwise, reload the file since it has changed. */
+		if (source == NULL) {
+			event_type = G_FILE_MONITOR_EVENT_CREATED;
+		} else if (!e_server_side_source_load (E_SERVER_SIDE_SOURCE (source), NULL, &error)) {
+			g_warning ("Error reloading source ‘%s’: %s", uid, error->message);
+
+			g_error_free (error);
+			g_object_unref (source);
+
+			return;
+		}
+
+		g_object_unref (source);
+	}
+
+	if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
+		ESource *source;
+		GError *error = NULL;
+
+		source = e_source_registry_server_ref_source (server, uid);
 
 		if (!source) {
 			/* it can return NULL source for hidden files */
-			source = e_server_side_source_new (server, file, &error);
+			source = e_server_side_source_new (server, fed->file, &error);
 		}
 
 		if (!error && source) {
 			/* File monitors are only placed on directories
 			 * where data sources are writable and removable,
 			 * so it should be safe to assume these flags. */
-			e_server_side_source_set_writable (
-				E_SERVER_SIDE_SOURCE (source), TRUE);
-			e_server_side_source_set_removable (
-				E_SERVER_SIDE_SOURCE (source), TRUE);
+			e_server_side_source_set_writable (E_SERVER_SIDE_SOURCE (source), TRUE);
+			e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (source), TRUE);
 
 			e_source_registry_server_add_source (server, source);
 		} else if (error) {
-			e_source_registry_server_load_error (
-				server, file, error);
+			e_source_registry_server_load_error (server, fed->file, error);
 			g_error_free (error);
 		}
 
@@ -460,16 +532,8 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 
 	if (event_type == G_FILE_MONITOR_EVENT_DELETED) {
 		ESource *source;
-		gchar *uid;
-
-		uid = e_server_side_source_uid_from_file (file, NULL);
-
-		if (uid == NULL)
-			return;
 
 		source = e_source_registry_server_ref_source (server, uid);
-
-		g_free (uid);
 
 		if (source == NULL)
 			return;
@@ -481,6 +545,87 @@ source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
 			e_source_registry_server_remove_source (server, source);
 
 		g_object_unref (source);
+	}
+}
+
+static gboolean
+source_registry_server_process_file_monitor_events_cb (gpointer user_data)
+{
+	ESourceRegistryServer *server = user_data;
+	GHashTable *events;
+
+	if (g_source_is_destroyed (g_main_current_source ()))
+		return FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), FALSE);
+
+	g_mutex_lock (&server->priv->file_monitor_lock);
+	events = server->priv->file_monitor_events;
+	server->priv->file_monitor_events = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, file_event_data_free);
+	g_mutex_unlock (&server->priv->file_monitor_lock);
+
+	g_hash_table_foreach (events, source_registry_server_process_file_monitor_event, server);
+	g_hash_table_destroy (events);
+
+	return FALSE;
+}
+
+static void
+source_registry_server_monitor_changed_cb (GFileMonitor *monitor,
+                                           GFile *file,
+                                           GFile *other_file,
+                                           GFileMonitorEvent event_type,
+                                           ESourceRegistryServer *server)
+{
+	if (e_source_registry_debug_enabled ()) {
+		gchar *uri;
+
+		uri = g_file_get_uri (file);
+		e_source_registry_debug_print ("Handling file monitor event %s (%u) for URI: %s\n",
+			event_type == G_FILE_MONITOR_EVENT_CHANGED ? "CHANGED" :
+			event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT ? "CHANGES_DONE_HINT" :
+			event_type == G_FILE_MONITOR_EVENT_DELETED ? "DELETED" :
+			event_type == G_FILE_MONITOR_EVENT_CREATED ? "CREATED" :
+			event_type == G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED ? "ATTRIBUTE_CHANGED" :
+			event_type == G_FILE_MONITOR_EVENT_PRE_UNMOUNT ? "PRE_UNMOUNT" :
+			event_type == G_FILE_MONITOR_EVENT_UNMOUNTED ? "UNMOUNTED" :
+			event_type == G_FILE_MONITOR_EVENT_MOVED ? "MOVED" : "???",
+			event_type,
+			uri);
+		g_free (uri);
+	}
+
+	if (event_type == G_FILE_MONITOR_EVENT_CHANGED ||
+	    event_type == G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT ||
+	    event_type == G_FILE_MONITOR_EVENT_CREATED ||
+	    event_type == G_FILE_MONITOR_EVENT_DELETED) {
+		gchar *uid;
+
+		uid = e_server_side_source_uid_from_file (file, NULL);
+
+		if (uid == NULL)
+			return;
+
+		g_mutex_lock (&server->priv->file_monitor_lock);
+		/* This overwrites any previous events, aka the last wins
+		   (overwrite can be DELETE + CREATE, which handles it correctly). */
+		g_hash_table_insert (server->priv->file_monitor_events, uid, file_event_data_new (file, event_type));
+
+		if (server->priv->file_monitor_source) {
+			g_source_destroy (server->priv->file_monitor_source);
+			g_source_unref (server->priv->file_monitor_source);
+		}
+
+		server->priv->file_monitor_source = g_timeout_source_new_seconds (3);
+		g_source_set_callback (
+			server->priv->file_monitor_source,
+			source_registry_server_process_file_monitor_events_cb,
+			server, NULL);
+		g_source_attach (
+			server->priv->file_monitor_source,
+			server->priv->main_context);
+
+		g_mutex_unlock (&server->priv->file_monitor_lock);
 	}
 }
 
@@ -587,6 +732,14 @@ source_registry_server_dispose (GObject *object)
 
 	priv = E_SOURCE_REGISTRY_SERVER_GET_PRIVATE (object);
 
+	g_mutex_lock (&priv->file_monitor_lock);
+	if (priv->file_monitor_source) {
+		g_source_destroy (priv->file_monitor_source);
+		g_source_unref (priv->file_monitor_source);
+		priv->file_monitor_source = NULL;
+	}
+	g_mutex_unlock (&priv->file_monitor_lock);
+
 	if (priv->main_context != NULL) {
 		g_main_context_unref (priv->main_context);
 		priv->main_context = NULL;
@@ -599,6 +752,7 @@ source_registry_server_dispose (GObject *object)
 	g_hash_table_remove_all (priv->sources);
 	g_hash_table_remove_all (priv->orphans);
 	g_hash_table_remove_all (priv->monitors);
+	g_hash_table_remove_all (priv->file_monitor_events);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->
@@ -615,9 +769,11 @@ source_registry_server_finalize (GObject *object)
 	g_hash_table_destroy (priv->sources);
 	g_hash_table_destroy (priv->orphans);
 	g_hash_table_destroy (priv->monitors);
+	g_hash_table_destroy (priv->file_monitor_events);
 
 	g_mutex_clear (&priv->sources_lock);
 	g_mutex_clear (&priv->orphans_lock);
+	g_mutex_clear (&priv->file_monitor_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->
@@ -966,6 +1122,10 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	server->priv->monitors = monitors;
 	g_mutex_init (&server->priv->sources_lock);
 	g_mutex_init (&server->priv->orphans_lock);
+	g_mutex_init (&server->priv->file_monitor_lock);
+
+	server->priv->file_monitor_source = NULL;
+	server->priv->file_monitor_events = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, file_event_data_free);
 
 	g_signal_connect (
 		source_manager, "handle-create-sources",
