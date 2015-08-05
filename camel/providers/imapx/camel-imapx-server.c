@@ -651,11 +651,13 @@ imapx_server_inactivity_thread (gpointer user_data)
 
 	if (imapx_in_idle (is)) {
 		/* Stop and restart the IDLE command. */
-		if (!camel_imapx_server_schedule_idle_sync (is, NULL, is->priv->cancellable, &local_error)) {
-			g_warning ("%s: Faield to restart IDLE: %s", G_STRFUNC, local_error ? local_error->message : "Unknown error");
+		if (!camel_imapx_server_schedule_idle_sync (is, NULL, is->priv->cancellable, &local_error) &&
+		    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			g_warning ("%s: Failed to restart IDLE: %s", G_STRFUNC, local_error ? local_error->message : "Unknown error");
 		}
 	} else {
-		if (!camel_imapx_server_noop_sync (is, NULL, is->priv->cancellable, &local_error))
+		if (!camel_imapx_server_noop_sync (is, NULL, is->priv->cancellable, &local_error) &&
+		    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 			g_warning ("%s: Failed to issue NOOP: %s", G_STRFUNC, local_error ? local_error->message : "Unknown error");
 	}
 
