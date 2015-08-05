@@ -334,30 +334,37 @@ read_attribute_value (EVCardAttribute *attr,
 	     lp = skip_newline ( lp, quoted_printable ) ) {
 
 		if (*lp == '=' && quoted_printable) {
-			gchar a, b;
+			gunichar a, b;
 
 			/* it's for the '=' */
 			lp++;
 			lp = skip_newline (lp, quoted_printable);
 
-			if ((a = *(lp++)) == '\0') break;
+			a = g_utf8_get_char (lp);
+			lp = g_utf8_next_char (lp);
+			if (a == '\0')
+				break;
+
 			lp = skip_newline (lp, quoted_printable);
 
-			if ((b = *(lp++)) == '\0') break;
-			if (isxdigit (a) && isxdigit (b)) {
+			b = g_utf8_get_char (lp);
+			if (b == '\0')
+				break;
+			lp = g_utf8_next_char (lp);
+
+			if (g_unichar_isxdigit (a) && g_unichar_isxdigit (b)) {
 				gchar c;
 
-				a = tolower (a);
-				b = tolower (b);
+				gint a_bin = g_unichar_xdigit_value (a);
+				gint b_bin = g_unichar_xdigit_value (b);
 
-				c = (((a >= 'a' ? a - 'a' + 10 : a - '0') & 0x0f) << 4)
-				   | ((b >= 'a' ? b - 'a' + 10 : b - '0') & 0x0f);
+				c = (a_bin << 4) | b_bin;
 
 				g_string_append_c (str, c); /* add decoded byte (this is not a unicode yet) */
 			} else {
 				g_string_append_c (str, '=');
-				g_string_append_c (str, a);
-				g_string_append_c (str, b);
+				g_string_append_unichar (str, a);
+				g_string_append_unichar (str, b);
 			}
 		} else if (*lp == '\\') {
 			/* convert back to the non-escaped version of
