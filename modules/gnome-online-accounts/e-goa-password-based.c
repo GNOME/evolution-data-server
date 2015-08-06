@@ -269,6 +269,9 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 
 	e_util_safe_free_string (password);
 
+	if (!success)
+		g_prefix_error (error, "%s", _("Failed to get password from GOA: "));
+
 	return success;
 }
 

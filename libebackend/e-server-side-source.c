@@ -463,6 +463,8 @@ server_side_source_credentials_lookup_cb (GObject *source_object,
 			fflush (stdout);
 		}
 
+		g_prefix_error (&error, "%s", _("Failed to lookup credentials: "));
+
 		if (server_side_source_credentials_reason_from_text (data->arg_reason) == E_SOURCE_CREDENTIALS_REASON_REQUIRED &&
 		    error && !e_source_credentials_provider_can_prompt (E_SOURCE_CREDENTIALS_PROVIDER (source_object), E_SOURCE (data->source))) {
 			GEnumClass *enum_class;
