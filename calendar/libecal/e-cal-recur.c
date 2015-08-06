@@ -1947,6 +1947,9 @@ cal_obj_initialize_recur_data (RecurData *recur_data,
 		weekday = GPOINTER_TO_INT (elem->data);
 		recur_data->weekdays[weekday] = 1;
 		elem = elem->next;
+		/* the second element is week_num, skip it */
+		if (elem)
+			elem = elem->next;
 	}
 
 	/* Create an array of hours from byhour for fast lookup. */
