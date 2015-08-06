@@ -1441,7 +1441,7 @@ camel_imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
 	gboolean success;
 	gint ii;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_COPY_MESSAGE, mailbox,
 		imapx_conn_manager_copy_message_run_sync,
@@ -1537,7 +1537,7 @@ camel_imapx_conn_manager_append_message_sync (CamelIMAPXConnManager *conn_man,
 	struct AppendMessageJobData *job_data;
 	gboolean success;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_APPEND_MESSAGE, mailbox,
 		imapx_conn_manager_append_message_run_sync,
@@ -1616,7 +1616,7 @@ camel_imapx_conn_manager_sync_message_sync (CamelIMAPXConnManager *conn_man,
 	struct GetMessageJobData *job_data;
 	gboolean success;
 
-	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), NULL);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_SYNC_MESSAGE, mailbox,
 		imapx_conn_manager_sync_message_run_sync,
