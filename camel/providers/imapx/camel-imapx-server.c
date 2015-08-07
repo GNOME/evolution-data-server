@@ -5782,6 +5782,7 @@ imapx_server_idle_thread (gpointer user_data)
 	GError *local_error = NULL;
 	gint previous_timeout = -1;
 	gboolean success = FALSE;
+	gboolean rather_disconnect = FALSE;
 
 	g_return_val_if_fail (itd != NULL, NULL);
 
@@ -5820,8 +5821,10 @@ imapx_server_idle_thread (gpointer user_data)
 		goto exit;
 
 	success = camel_imapx_server_ensure_selected_sync (is, mailbox, idle_cancellable, &local_error);
-	if (!success)
+	if (!success) {
+		rather_disconnect = TRUE;
 		goto exit;
+	}
 
 	ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_IDLE, "IDLE");
 	camel_imapx_command_close (ic);
@@ -5855,9 +5858,13 @@ imapx_server_idle_thread (gpointer user_data)
 	if (success)
 		c (camel_imapx_server_get_tagprefix (is), "IDLE finished successfully");
 	else if (local_error)
-		c (camel_imapx_server_get_tagprefix (is), "IDLE finished with error: %s", local_error->message);
+		c (camel_imapx_server_get_tagprefix (is), "IDLE finished with error: %s%s", local_error->message, rather_disconnect ? "; rather disconnect" : "");
 	else
-		c (camel_imapx_server_get_tagprefix (is), "IDLE finished without error");
+		c (camel_imapx_server_get_tagprefix (is), "IDLE finished without error%s", rather_disconnect ? "; rather disconnect" : "");
+
+	if (rather_disconnect) {
+		imapx_disconnect (is);
+	}
 
 	g_clear_object (&mailbox);
 	g_clear_error (&local_error);
