@@ -977,7 +977,8 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				imapx_conn_manager_remove_info (conn_man, cinfo);
 
 				if (!local_error || local_error->domain == CAMEL_IMAPX_ERROR ||
-				    g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_MISC)) {
+				    g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_MISC) ||
+				    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CLOSED)) {
 					GError *tmp = local_error;
 
 					local_error = NULL;
