@@ -710,6 +710,9 @@ camel_imapx_input_stream_token (CamelIMAPXInputStream *is,
 		return is->priv->unget_tok;
 	}
 
+	*data = NULL;
+	*len = 0;
+
 	if (is->priv->literal > 0 && !g_cancellable_is_cancelled (cancellable))
 		g_warning (
 			"stream_token called with literal %d",
