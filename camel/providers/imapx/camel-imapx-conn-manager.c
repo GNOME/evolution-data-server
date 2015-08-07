@@ -603,7 +603,6 @@ imapx_conn_manager_connection_wait_cancelled_cb (GCancellable *cancellable,
 static ConnectionInfo *
 camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 					 CamelIMAPXMailbox *mailbox,
-					 gboolean mark_as_busy,
 					 GCancellable *cancellable,
 					 GError **error)
 {
@@ -646,6 +645,7 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 
 				if (candidate && !connection_info_get_busy (candidate)) {
 					cinfo = connection_info_ref (candidate);
+					connection_info_set_busy (cinfo, TRUE);
 					break;
 				}
 			}
@@ -665,6 +665,8 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 				CON_READ_UNLOCK (conn_man);
 				CON_WRITE_LOCK (conn_man);
 				cinfo = imapx_create_new_connection_unlocked (conn_man, mailbox, cancellable, &local_error_2);
+				if (cinfo)
+					connection_info_set_busy (cinfo, TRUE);
 				CON_WRITE_UNLOCK (conn_man);
 				CON_READ_LOCK (conn_man);
 
@@ -713,9 +715,6 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 				CON_READ_LOCK (conn_man);
 			}
 		}
-
-		if (cinfo && mark_as_busy)
-			connection_info_set_busy (cinfo, TRUE);
 
 		CON_READ_UNLOCK (conn_man);
 
@@ -786,8 +785,9 @@ camel_imapx_conn_manager_connect_sync (CamelIMAPXConnManager *conn_man,
 	}
 	CON_READ_UNLOCK (conn_man);
 
-	cinfo = camel_imapx_conn_manager_ref_connection (conn_man, NULL, FALSE, cancellable, error);
+	cinfo = camel_imapx_conn_manager_ref_connection (conn_man, NULL, cancellable, error);
 	if (cinfo) {
+		imapx_conn_manager_unmark_busy (conn_man, cinfo);
 		connection_info_unref (cinfo);
 	}
 
@@ -938,7 +938,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 	do {
 		g_clear_error (&local_error);
 
-		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), TRUE, cancellable, error);
+		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), cancellable, error);
 		if (cinfo) {
 			success = camel_imapx_server_stop_idle_sync (cinfo->is, cancellable, &local_error);
 
