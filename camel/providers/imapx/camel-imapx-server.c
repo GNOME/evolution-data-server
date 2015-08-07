@@ -3555,6 +3555,9 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return FALSE;
+
 	g_mutex_lock (&is->priv->select_lock);
 	selected_mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 	if (selected_mailbox == mailbox) {
@@ -3644,6 +3647,18 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 	g_warn_if_fail (is->priv->current_command == NULL);
 
 	c (is->priv->tagprefix, "%s: %p ~> %p\n", G_STRFUNC, is->priv->current_command, ic);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
+		COMMAND_UNLOCK (is);
+
+		if (error_prefix && local_error)
+			g_prefix_error (&local_error, "%s: ", error_prefix);
+
+		if (local_error)
+			g_propagate_error (error, local_error);
+
+		return FALSE;
+	}
 
 	is->priv->current_command = ic;
 	is->priv->continuation_command = ic;
@@ -5780,6 +5795,7 @@ imapx_server_idle_thread (gpointer user_data)
 
 	if (g_cancellable_is_cancelled (idle_cancellable) ||
 	    is->priv->idle_stamp != itd->idle_stamp) {
+		is->priv->idle_running = FALSE;
 		g_rec_mutex_unlock (&is->priv->idle_lock);
 
 		g_clear_object (&itd->is);
@@ -5877,6 +5893,8 @@ imapx_server_run_idle_thread_cb (gpointer user_data)
 			itd->is = g_object_ref (is);
 			itd->idle_cancellable = g_object_ref (is->priv->idle_cancellable);
 			itd->idle_stamp = is->priv->idle_stamp;
+
+			is->priv->idle_running = TRUE;
 
 			thread = g_thread_try_new (NULL, imapx_server_idle_thread, itd, &local_error);
 			if (thread) {
