@@ -2101,7 +2101,7 @@ imapx_parse_uids (CamelIMAPXInputStream *stream,
                   GError **error)
 {
 	GArray *array;
-	guchar *token;
+	guchar *token = NULL;
 	gchar **splits;
 	guint len, str_len;
 	gint tok, ii;
@@ -2112,6 +2112,11 @@ imapx_parse_uids (CamelIMAPXInputStream *stream,
 		stream, &token, &len, cancellable, error);
 	if (tok < 0)
 		return NULL;
+
+	if (!token) {
+		g_set_error (error, CAMEL_IMAPX_ERROR, 2, "server response truncated");
+		return NULL;
+	}
 
 	array = g_array_new (FALSE, FALSE, sizeof (guint32));
 	splits = g_strsplit ((gchar *) token, ",", -1);
@@ -2188,6 +2193,7 @@ imapx_parse_status_copyuid (CamelIMAPXInputStream *stream,
 	GArray *uids;
 	guint64 number;
 	gboolean success;
+	GError *local_error = NULL;
 
 	success = camel_imapx_input_stream_number (
 		stream, &number, cancellable, error);
@@ -2197,15 +2203,37 @@ imapx_parse_status_copyuid (CamelIMAPXInputStream *stream,
 
 	sinfo->u.copyuid.uidvalidity = number;
 
-	uids = imapx_parse_uids (stream, cancellable, error);
-	if (uids == NULL)
+	uids = imapx_parse_uids (stream, cancellable, &local_error);
+	if (uids == NULL) {
+		/* Some broken servers can return truncated response, like:
+		   B00083 OK [COPYUID 4154  ] COPY completed.
+		   Just ignore such server error.
+		*/
+		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, 2)) {
+			g_clear_error (&local_error);
+			return TRUE;
+		}
+
+		if (local_error)
+			g_propagate_error (error, local_error);
+
 		return FALSE;
+	}
 
 	sinfo->u.copyuid.uids = uids;
 
 	uids = imapx_parse_uids (stream, cancellable, error);
-	if (uids == NULL)
+	if (uids == NULL) {
+		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, 2)) {
+			g_clear_error (&local_error);
+			return TRUE;
+		}
+
+		if (local_error)
+			g_propagate_error (error, local_error);
+
 		return FALSE;
+	}
 
 	sinfo->u.copyuid.copied_uids = uids;
 
