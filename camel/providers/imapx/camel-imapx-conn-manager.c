@@ -838,6 +838,24 @@ camel_imapx_conn_manager_disconnect_sync (CamelIMAPXConnManager *conn_man,
 	return TRUE;
 }
 
+static gboolean
+imapx_conn_manager_should_wait_for (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXJob *queued_job)
+{
+	guint32 job_kind;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+	g_return_val_if_fail (queued_job != NULL, FALSE);
+
+	job_kind = camel_imapx_job_get_kind (queued_job);
+
+	/* List jobs with high priority. */
+	return job_kind == CAMEL_IMAPX_JOB_GET_MESSAGE ||
+	       job_kind == CAMEL_IMAPX_JOB_COPY_MESSAGE ||
+	       job_kind == CAMEL_IMAPX_JOB_MOVE_MESSAGE ||
+	       job_kind == CAMEL_IMAPX_JOB_EXPUNGE;
+}
+
 gboolean
 camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				       CamelIMAPXJob *job,
@@ -874,7 +892,8 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 		}
 
 		matches = camel_imapx_job_matches (job, queued_job);
-		if (matches || (finish_before_job && finish_before_job (job, queued_job))) {
+		if (matches || (finish_before_job && finish_before_job (job, queued_job)) ||
+		    imapx_conn_manager_should_wait_for (conn_man, queued_job)) {
 			camel_imapx_job_ref (queued_job);
 
 			JOB_QUEUE_UNLOCK (conn_man);
