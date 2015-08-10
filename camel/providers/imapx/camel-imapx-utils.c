@@ -153,12 +153,21 @@ imapx_parse_flags (CamelIMAPXInputStream *stream,
 
 			if (!match_found && user_flagsp != NULL) {
 				const gchar *flag_name;
+				gchar *utf8;
 
 				flag_name = rename_label_flag (
 					(gchar *) token,
 					strlen ((gchar *) token), TRUE);
 
-				camel_flag_set (user_flagsp, flag_name, TRUE);
+				utf8 = camel_utf7_utf8 (flag_name);
+				if (utf8 && !g_utf8_validate (utf8, -1, NULL)) {
+					g_free (utf8);
+					utf8 = NULL;
+				}
+
+				camel_flag_set (user_flagsp, utf8 ? utf8 : flag_name, TRUE);
+
+				g_free (utf8);
 			}
 
 			g_free (upper);
@@ -240,6 +249,7 @@ imapx_write_flags (GString *string,
 
 	while (user_flags) {
 		const gchar *flag_name;
+		gchar *utf7;
 
 		flag_name = rename_label_flag (
 			user_flags->name, strlen (user_flags->name), FALSE);
@@ -247,7 +257,12 @@ imapx_write_flags (GString *string,
 		if (!first)
 			g_string_append_c (string, ' ');
 		first = FALSE;
-		g_string_append (string, flag_name);
+
+		utf7 = camel_utf8_utf7 (flag_name);
+
+		g_string_append (string, utf7 ? utf7 : flag_name);
+
+		g_free (utf7);
 
 		user_flags = user_flags->next;
 	}

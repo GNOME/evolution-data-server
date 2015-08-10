@@ -5262,7 +5262,13 @@ imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 					if (imapx_uidset_add (&uidset, ic, camel_message_info_uid (info)) == 1
 					    || (i == c->infos->len - 1 && imapx_uidset_done (&uidset, ic))) {
-						camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", c->name);
+						gchar *utf7;
+
+						utf7 = camel_utf8_utf7 (c->name);
+
+						camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", utf7 ? utf7 : c->name);
+
+						g_free (utf7);
 
 						success = camel_imapx_server_process_command_sync (is, ic, _("Error syncing changes"), cancellable, error);
 
