@@ -667,7 +667,8 @@ nntp_folder_info_from_name (CamelNNTPStore *store,
 /* handle list/newgroups response */
 static CamelStoreInfo *
 nntp_store_info_update (CamelNNTPStore *nntp_store,
-                        gchar *line)
+                        gchar *line,
+			gboolean is_folder_list)
 {
 	CamelNNTPStoreSummary *nntp_store_summary;
 	CamelStoreSummary *store_summary;
@@ -721,7 +722,7 @@ nntp_store_info_update (CamelNNTPStore *nntp_store,
 			new = last - first;
 	}
 
-	si->info.total = last > first ? last - first : 0;
+	si->info.total = last > first ? last - first : (is_folder_list ? -1 : 0);
 	si->info.unread += new;	/* this is a _guess_ */
 	si->last = last;
 	si->first = first;
@@ -881,8 +882,8 @@ nntp_push_to_hierarchy (CamelNNTPStore *store,
 			fi->full_name = g_strdup (pfi->full_name);
 			fi->display_name = g_strdup (name);
 
-			fi->unread = 0;
-			fi->total = 0;
+			fi->unread = -1;
+			fi->total = -1;
 			fi->flags =
 				CAMEL_FOLDER_NOSELECT |
 				CAMEL_FOLDER_CHILDREN;
@@ -1101,6 +1102,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 	guchar *line;
 	gint ret = -1;
 	CamelFolderInfo *fi = NULL;
+	gboolean is_folder_list = (flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST) != 0;
 
 	nntp_store_summary = camel_nntp_store_ref_summary (nntp_store);
 
@@ -1132,7 +1134,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0)
-				nntp_store_info_update (nntp_store, (gchar *) line);
+				nntp_store_info_update (nntp_store, (gchar *) line, is_folder_list);
 		} else {
 			CamelStoreSummary *store_summary;
 			CamelStoreInfo *si;
@@ -1172,7 +1174,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0) {
-				si = nntp_store_info_update (nntp_store, (gchar *) line);
+				si = nntp_store_info_update (nntp_store, (gchar *) line, is_folder_list);
 				g_hash_table_remove (all, si->path);
 			}
 

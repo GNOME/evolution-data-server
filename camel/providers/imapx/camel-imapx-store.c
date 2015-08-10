@@ -1119,8 +1119,7 @@ get_folder_info_offline (CamelStore *store,
 			g_clear_object (&mailbox);
 		}
 
-		fi = imapx_store_build_folder_info (
-			imapx_store, folder_path, 0);
+		fi = imapx_store_build_folder_info (imapx_store, folder_path, 0);
 		fi->unread = si->unread;
 		fi->total = si->total;
 		if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) != 0)
@@ -1143,6 +1142,19 @@ get_folder_info_offline (CamelStore *store,
 
 		if (!fi->child)
 			fi->flags |= CAMEL_FOLDER_NOCHILDREN;
+
+		if (fi->unread == -1 && fi->total == -1) {
+			CamelIMAPXMailbox *mailbox;
+
+			mailbox = camel_imapx_store_ref_mailbox (imapx_store, ((CamelIMAPXStoreInfo *) si)->mailbox_name);
+
+			if (mailbox) {
+				fi->unread = camel_imapx_mailbox_get_unseen (mailbox);
+				fi->total = camel_imapx_mailbox_get_messages (mailbox);
+			}
+
+			g_clear_object (&mailbox);
+		}
 
 		g_ptr_array_add (folders, fi);
 	}
