@@ -176,7 +176,9 @@ gboolean	camel_imapx_conn_manager_update_quota_info_sync
 GPtrArray *	camel_imapx_conn_manager_uid_search_sync
 						(CamelIMAPXConnManager *conn_man,
 						 CamelIMAPXMailbox *mailbox,
-						 const gchar *criteria,
+						 const gchar *criteria_prefix,
+						 const gchar *search_key,
+						 const gchar * const *words,
 						 GCancellable *cancellable,
 						 GError **error);
 

@@ -3282,3 +3282,18 @@ imapx_get_temp_uid (void)
 
 	return res;
 }
+
+gboolean
+imapx_util_all_is_ascii (const gchar *str)
+{
+	gint ii;
+	gboolean all_ascii = TRUE;
+
+	g_return_val_if_fail (str != NULL, FALSE);
+
+	for (ii = 0; str[ii] && all_ascii; ii++) {
+		all_ascii = str[ii] > 0;
+	}
+
+	return all_ascii;
+}

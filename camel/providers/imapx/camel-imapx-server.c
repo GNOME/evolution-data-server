@@ -5716,24 +5716,42 @@ camel_imapx_server_update_quota_info_sync (CamelIMAPXServer *is,
 GPtrArray *
 camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 				    CamelIMAPXMailbox *mailbox,
-				    const gchar *criteria,
+				    const gchar *criteria_prefix,
+				    const gchar *search_key,
+				    const gchar * const *words,
 				    GCancellable *cancellable,
 				    GError **error)
 {
 	CamelIMAPXCommand *ic;
 	GArray *uid_search_results;
 	GPtrArray *results = NULL;
+	gint ii;
+	gboolean need_charset = FALSE;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), NULL);
-	g_return_val_if_fail (criteria != NULL, NULL);
+	g_return_val_if_fail (criteria_prefix != NULL, NULL);
 
 	success = camel_imapx_server_ensure_selected_sync (is, mailbox, cancellable, error);
 	if (!success)
 		return FALSE;
 
-	ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_UID_SEARCH, "UID SEARCH %t", criteria);
+	for (ii = 0; !need_charset && words && words[ii]; ii++) {
+		need_charset = !imapx_util_all_is_ascii (words[ii]);
+	}
+
+	ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_UID_SEARCH, "UID SEARCH");
+	if (need_charset)
+		camel_imapx_command_add (ic, " CHARSET UTF-8");
+	if (criteria_prefix && *criteria_prefix)
+		camel_imapx_command_add (ic, " %t", criteria_prefix);
+
+	if (search_key && words) {
+		for (ii = 0; words[ii]; ii++) {
+			camel_imapx_command_add (ic, " %t %s", search_key, words[ii]);
+		}
+	}
 
 	success = camel_imapx_server_process_command_sync (is, ic, _("Search failed"), cancellable, error);
 

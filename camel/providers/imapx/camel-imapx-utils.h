@@ -393,6 +393,8 @@ gchar *		imapx_path_to_physical		(const gchar *prefix,
 						 const gchar *vpath);
 gchar *		imapx_get_temp_uid		(void);
 
+gboolean	imapx_util_all_is_ascii		(const gchar *str);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_UTILS_H */

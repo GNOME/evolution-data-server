@@ -267,7 +267,9 @@ gboolean	camel_imapx_server_update_quota_info_sync
 GPtrArray *	camel_imapx_server_uid_search_sync
 						(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox,
-						 const gchar *criteria,
+						 const gchar *criteria_prefix,
+						 const gchar *search_key,
+						 const gchar * const *words,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_schedule_idle_sync

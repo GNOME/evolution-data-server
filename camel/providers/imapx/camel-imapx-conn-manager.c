@@ -1954,14 +1954,73 @@ camel_imapx_conn_manager_update_quota_info_sync (CamelIMAPXConnManager *conn_man
 	return success;
 }
 
+static gchar **
+imapx_copy_strv (const gchar * const *words)
+{
+	gchar **copy;
+	gint ii;
+
+	if (!words || !*words)
+		return NULL;
+
+	copy = g_new0 (gchar *, g_strv_length ((gchar **) words) + 1);
+
+	for (ii = 0; words[ii]; ii++) {
+		copy[ii] = g_strdup (words[ii]);
+	}
+
+	copy[ii] = NULL;
+
+	return copy;
+}
+
+static gboolean
+imapx_equal_strv (const gchar * const *words1,
+		  const gchar * const *words2)
+{
+	gint ii;
+
+	if (words1 == words2)
+		return TRUE;
+
+	if (!words1 || !words2)
+		return FALSE;
+
+	for (ii = 0; words1[ii] && words2[ii]; ii++) {
+		if (g_strcmp0 (words1[ii], words2[ii]) != 0)
+			return FALSE;
+	}
+
+	return !words1[ii] && !words2[ii];
+}
+
+struct UidSearchJobData {
+	gchar *criteria_prefix;
+	gchar *search_key;
+	gchar **words;
+};
+
+static void
+uid_search_job_data_free (gpointer ptr)
+{
+	struct UidSearchJobData *job_data = ptr;
+
+	if (ptr) {
+		g_free (job_data->criteria_prefix);
+		g_free (job_data->search_key);
+		g_strfreev (job_data->words);
+		g_free (job_data);
+	}
+}
+
 static gboolean
 imapx_conn_manager_uid_search_run_sync (CamelIMAPXJob *job,
 					CamelIMAPXServer *server,
 					GCancellable *cancellable,
 					GError **error)
 {
+	struct UidSearchJobData *job_data;
 	CamelIMAPXMailbox *mailbox;
-	const gchar *criteria;
 	GPtrArray *uids = NULL;
 	GError *local_error = NULL;
 
@@ -1971,10 +2030,11 @@ imapx_conn_manager_uid_search_run_sync (CamelIMAPXJob *job,
 	mailbox = camel_imapx_job_get_mailbox (job);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
-	criteria = camel_imapx_job_get_user_data (job);
-	g_return_val_if_fail (criteria != NULL, FALSE);
+	job_data = camel_imapx_job_get_user_data (job);
+	g_return_val_if_fail (job_data != NULL, FALSE);
 
-	uids = camel_imapx_server_uid_search_sync (server, mailbox, criteria, cancellable, &local_error);
+	uids = camel_imapx_server_uid_search_sync (server, mailbox, job_data->criteria_prefix,
+		job_data->search_key, (const gchar * const *) job_data->words, cancellable, &local_error);
 
 	camel_imapx_job_set_result (job, uids != NULL, uids, local_error, uids ? (GDestroyNotify) g_ptr_array_free : NULL);
 
@@ -1988,7 +2048,7 @@ static gboolean
 imapx_conn_manager_uid_search_matches (CamelIMAPXJob *job,
 				       CamelIMAPXJob *other_job)
 {
-	const gchar *job_criteria, *other_job_criteria;
+	struct UidSearchJobData *job_data, *other_job_data;
 
 	g_return_val_if_fail (job != NULL, FALSE);
 	g_return_val_if_fail (other_job != NULL, FALSE);
@@ -1997,31 +2057,44 @@ imapx_conn_manager_uid_search_matches (CamelIMAPXJob *job,
 	    camel_imapx_job_get_kind (job) != camel_imapx_job_get_kind (other_job))
 		return FALSE;
 
-	job_criteria = camel_imapx_job_get_user_data (job);
-	other_job_criteria = camel_imapx_job_get_user_data (other_job);
+	job_data = camel_imapx_job_get_user_data (job);
+	other_job_data = camel_imapx_job_get_user_data (other_job);
 
-	return g_strcmp0 (job_criteria, other_job_criteria) == 0;
+	if (!job_data || !other_job_data)
+		return job_data == other_job_data;
+
+	return g_strcmp0 (job_data->criteria_prefix, other_job_data->criteria_prefix) == 0 &&
+	       g_strcmp0 (job_data->search_key, other_job_data->search_key) == 0 &&
+	       imapx_equal_strv ((const gchar * const  *) job_data->words, (const gchar * const  *) other_job_data->words);
 }
 
 GPtrArray *
 camel_imapx_conn_manager_uid_search_sync (CamelIMAPXConnManager *conn_man,
 					  CamelIMAPXMailbox *mailbox,
-					  const gchar *criteria,
+					  const gchar *criteria_prefix,
+					  const gchar *search_key,
+					  const gchar * const *words,
 					  GCancellable *cancellable,
 					  GError **error)
 {
+	struct UidSearchJobData *job_data;
 	GPtrArray *uids = NULL;
 	CamelIMAPXJob *job;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), NULL);
 
+	job_data = g_new0 (struct UidSearchJobData, 1);
+	job_data->criteria_prefix = g_strdup (criteria_prefix);
+	job_data->search_key = g_strdup (search_key);
+	job_data->words = imapx_copy_strv (words);
+
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_UID_SEARCH, mailbox,
 		imapx_conn_manager_uid_search_run_sync,
 		imapx_conn_manager_uid_search_matches,
 		NULL);
 
-	camel_imapx_job_set_user_data (job, g_strdup (criteria), g_free);
+	camel_imapx_job_set_user_data (job, job_data, uid_search_job_data_free);
 
 	success = camel_imapx_conn_manager_run_job_sync (conn_man, job, NULL, cancellable, error);
 	if (success) {
