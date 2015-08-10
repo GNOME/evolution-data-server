@@ -1,3 +1,28 @@
+Evolution-Data-Server 3.16.5 2015-08-10
+---------------------------------------
+
+Bug Fixes:
+	Bug 752197 - Cache-reaper deletes active cache of evolution-rss (Lucian Langa)
+	Bug 752304 - [WebDAV book] Generated UIDs can clash with existing (Milan Crha)
+	Bug 752370 - Hangs on vCard with 2 consecutive commas in the parameters list (Alex Shtyrov)
+	Bug 752373 - Monthly events do not recur correctly (Milan Crha)
+	Bug 722270 - Crash under WebDAV's send_propfind() (Milan Crha)
+	Bug 752233 - sexp: Eliminate some global variables which broke static linking (Philip Withnall)
+	Bug 751657 - ESource can be removed after its property change (Milan Crha)
+	Bug 752338 - Incorrect handling of multibyte characters in vCards (Alex Shtyrov)
+	Bug 752114 - Collection backend changes overwritten with old values (Milan Crha)
+
+Miscellaneous:
+	Doesn't honor Google settings as defined in gnome-online-accounts (Milan Crha)
+	Stop processing when cancelled in camel_filter_driver_filter_message() (Milan Crha)
+	Do not set write-to-all to installed tests executable (Milan Crha)
+	Bump minimum SQLite version to 3.7.17 (Tanu Kaskinen)
+	[e-cal-recur.c] Do not write out of bounds of the weekdays array (Milan Crha)
+	[IMAPx] Ignore broken (truncated) COPYUID server response (Milan Crha)
+
+Translations:
+	Pedro Albuquerque (pt)
+
 Evolution-Data-Server 3.16.4 2015-07-13
 ---------------------------------------
 
