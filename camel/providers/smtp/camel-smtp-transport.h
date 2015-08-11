@@ -50,7 +50,9 @@ typedef struct _CamelSmtpTransportClass CamelSmtpTransportClass;
 struct _CamelSmtpTransport {
 	CamelTransport parent;
 
-	CamelStream *istream, *ostream;
+	GMutex stream_lock;
+	CamelStreamBuffer *istream;
+	CamelStream *ostream;
 	GSocketAddress *local_address;
 
 	guint32 flags;
