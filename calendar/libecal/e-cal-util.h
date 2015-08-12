@@ -202,6 +202,17 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED		"refresh-supported"
 
+/**
+ * CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME:
+ *
+ * Let the client know that it should store All Day event times as time
+ * with a time zone, rather than as a date.
+ *
+ * Since: 3.18
+ **/
+#define CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME	"all-day-event-as-time"
+
+
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 						 struct icaltimetype rid);
