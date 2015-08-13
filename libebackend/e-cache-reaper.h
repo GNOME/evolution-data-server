@@ -18,7 +18,7 @@
 #ifndef E_CACHE_REAPER_H
 #define E_CACHE_REAPER_H
 
-#include <libedataserver/libedataserver.h>
+#include <glib.h>
 
 /* Standard GObject macros */
 #define E_TYPE_CACHE_REAPER \
@@ -34,6 +34,8 @@ G_BEGIN_DECLS
 
 typedef struct _ECacheReaper ECacheReaper;
 typedef struct _ECacheReaperClass ECacheReaperClass;
+
+void	e_cache_reaper_type_register (GTypeModule *type_module);
 
 GType	e_cache_reaper_get_type			(void);
 

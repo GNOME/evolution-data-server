@@ -12,8 +12,6 @@ module_cache_reaper_la_CPPFLAGS = \
 
 module_cache_reaper_la_SOURCES = \
 	module-cache-reaper.c \
-	e-cache-reaper-utils.c \
-	e-cache-reaper-utils.h \
 	$(NULL)
 
 module_cache_reaper_la_LIBADD = \
@@ -26,9 +24,5 @@ module_cache_reaper_la_LIBADD = \
 module_cache_reaper_la_LDFLAGS = \
 	-module -avoid-version $(NO_UNDEFINED) \
 	$(NULL)
-
-cachereaperincludedir = $(privincludedir)/cache-reaper
-
-cachereaperinclude_HEADERS = e-cache-reaper.h
 
 -include $(top_srcdir)/git.mk

@@ -57,6 +57,9 @@ libebackend_1_2_la_SOURCES = \
 	$(BUILT_SOURCES) \
 	e-backend.c \
 	e-backend-factory.c \
+	e-cache-reaper.c \
+	e-cache-reaper-utils.c \
+	e-cache-reaper-utils.h \
 	e-collection-backend.c \
 	e-collection-backend-factory.c \
 	e-data-factory.c \
@@ -100,6 +103,7 @@ libebackendinclude_HEADERS = \
 	e-backend-enums.h \
 	e-backend-enumtypes.h \
 	e-backend-factory.h \
+	e-cache-reaper.h \
 	e-collection-backend.h \
 	e-collection-backend-factory.h \
 	e-data-factory.h \
