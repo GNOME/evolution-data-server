@@ -600,6 +600,28 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	attr = e_vcard_attribute_new (NULL, EVC_UID);
 	e_vcard_add_attribute_with_value (vcard, attr, uid);
 
+	/* REV */
+	attr = e_vcard_attribute_new (NULL, EVC_REV);
+	if (gdata_entry_get_etag (entry)) {
+		e_vcard_add_attribute_with_value (vcard, attr, gdata_entry_get_etag (entry));
+	} else {
+		GDateTime *dt;
+		gchar *rev = NULL;
+
+		dt = g_date_time_new_from_unix_utc (gdata_entry_get_updated (entry));
+		if (dt) {
+			rev = g_date_time_format (dt, "%Y-%m-%dT%H:%M:%S");
+			g_date_time_unref (dt);
+		}
+
+		if (!rev)
+			rev = g_strdup_printf ("%" G_GINT64_FORMAT, gdata_entry_get_updated (entry));
+
+		e_vcard_add_attribute_with_value (vcard, attr, rev);
+
+		g_free (rev);
+	}
+
 	/* FN, N */
 	name = gdata_contacts_contact_get_name (GDATA_CONTACTS_CONTACT (entry));
 	if (name) {

@@ -199,10 +199,10 @@ migrate_cache (EBookBackendCache *cache)
 	g_return_if_fail (cache != NULL);
 
 	version = e_file_cache_get_object (E_FILE_CACHE (cache), version_key);
-	if (!version || atoi (version) < 1) {
-		/* not versioned yet, dump the cache and reload it from a server */
+	if (!version || atoi (version) < 2) {
+		/* not versioned yet or too old, dump the cache and reload it from the server */
 		e_file_cache_clean (E_FILE_CACHE (cache));
-		e_file_cache_add_object (E_FILE_CACHE (cache), version_key, "1");
+		e_file_cache_add_object (E_FILE_CACHE (cache), version_key, "2");
 	}
 }
 
@@ -1516,6 +1516,8 @@ book_backend_google_get_backend_property (EBookBackend *backend,
 	} else if (g_str_equal (prop_name, BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS)) {
 		return g_strjoin (
 			",",
+			e_contact_field_name (E_CONTACT_UID),
+			e_contact_field_name (E_CONTACT_REV),
 			e_contact_field_name (E_CONTACT_FULL_NAME),
 
 			e_contact_field_name (E_CONTACT_EMAIL_1),
