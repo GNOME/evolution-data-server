@@ -97,7 +97,7 @@
 static gboolean enable_debug = FALSE;
 
 static const gchar *
-		query_prop_to_ldap		(gchar *query_prop);
+		query_prop_to_ldap		(const gchar *query_prop);
 static gchar *	e_book_backend_ldap_build_query	(EBookBackendLDAP *bl,
 						 const gchar *query);
 
@@ -3390,39 +3390,40 @@ extend_query_value (gchar *str)
 
 static ESExpResult *
 func_and (struct _ESExp *f,
-          gint argc,
+          gint unused_argc,
           struct _ESExpResult **argv,
           gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 	gchar ** strings;
+	gint args = g_list_length (ldap_data->list);
 
-	if (argc > 0) {
+	if (args > 1) {
 		gint i, empty;
 
-		strings = g_new0 (gchar *, argc + 3);
+		strings = g_new0 (gchar *, args + 3);
 		strings[0] = g_strdup ("(&");
-		strings[argc + 3 - 2] = g_strdup (")");
+		strings[args + 3 - 2] = g_strdup (")");
 
 		empty = 0;
-		for (i = 0; i < argc; i++) {
+		for (i = 0; i < args; i++) {
 			GList *list_head = ldap_data->list;
 			if (!list_head)
 				break;
 			if (strlen (list_head->data) == 0)
 				empty++;
-			strings[argc - i] = list_head->data;
+			strings[args - i] = list_head->data;
 			ldap_data->list = g_list_remove_link (list_head, list_head);
 			g_list_free_1 (list_head);
 		}
 
-		if (empty == argc)
+		if (empty == args)
 			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (" "));
 		else
 			ldap_data->list = g_list_prepend (ldap_data->list, g_strjoinv (" ", strings));
 
-		for (i = 0; i < argc + 2; i++)
+		for (i = 0; i < args + 2; i++)
 			g_free (strings[i]);
 
 		g_free (strings);
@@ -3436,39 +3437,40 @@ func_and (struct _ESExp *f,
 
 static ESExpResult *
 func_or (struct _ESExp *f,
-         gint argc,
+         gint unused_argc,
          struct _ESExpResult **argv,
          gpointer data)
 {
 	EBookBackendLDAPSExpData *ldap_data = data;
 	ESExpResult *r;
 	gchar ** strings;
+	gint args = g_list_length (ldap_data->list);
 
-	if (argc > 0) {
+	if (args > 1) {
 		gint i, empty;
 
-		strings = g_new0 (gchar *, argc + 3);
+		strings = g_new0 (gchar *, args + 3);
 		strings[0] = g_strdup ("(|");
-		strings[argc + 3 - 2] = g_strdup (")");
+		strings[args + 3 - 2] = g_strdup (")");
 
 		empty = 0;
-		for (i = 0; i < argc; i++) {
+		for (i = 0; i < args; i++) {
 			GList *list_head = ldap_data->list;
 			if (!list_head)
 				break;
 			if (strlen (list_head->data) == 0)
 				empty++;
-			strings[argc - i] = list_head->data;
+			strings[args - i] = list_head->data;
 			ldap_data->list = g_list_remove_link (list_head, list_head);
 			g_list_free_1 (list_head);
 		}
 
-		if (empty == argc)
+		if (empty == args)
 			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (" "));
 		else
 			ldap_data->list = g_list_prepend (ldap_data->list, g_strjoinv (" ", strings));
 
-		for (i = 0; i < argc + 2; i++)
+		for (i = 0; i < args + 2; i++)
 			g_free (strings[i]);
 
 		g_free (strings);
@@ -3601,7 +3603,7 @@ func_is (struct _ESExp *f,
 					"(%s=%s)",
 					ldap_attr, str));
 		else {
-			g_warning ("unknown query property\n");
+			g_warning ("LDAP: unknown query property '%s'\n", propname);
 			/* we want something that'll always be false */
 			ldap_data->list = g_list_prepend (
 				ldap_data->list,
@@ -3829,7 +3831,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 
 	if (data.list) {
 		if (data.list->next) {
-			g_warning ("conversion to ldap query string failed");
+			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
 			retval = NULL;
 			g_list_foreach (data.list, (GFunc) g_free, NULL);
 		}
@@ -3850,9 +3852,9 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 				retval = g_strdup (data.list->data);
 			}
 		}
-	}
-	else {
-		g_warning ("conversion to ldap query string failed");
+	} else {
+		if (g_strcmp0 (query, "(contains \"x-evolution-any-field\" \"\")") != 0)
+			g_warning ("LDAP: conversion of '%s' to ldap query string failed", query);
 		retval = NULL;
 	}
 
@@ -3861,9 +3863,12 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 }
 
 static const gchar *
-query_prop_to_ldap (gchar *query_prop)
+query_prop_to_ldap (const gchar *query_prop)
 {
 	gint i;
+
+	if (g_strcmp0 (query_prop, "categories") == 0)
+		query_prop = "category_list";
 
 	for (i = 0; i < G_N_ELEMENTS (prop_info); i++)
 		if (!strcmp (query_prop, e_contact_field_name (prop_info[i].field_id)))
