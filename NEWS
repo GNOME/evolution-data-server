@@ -1,3 +1,50 @@
+Evolution-Data-Server 3.17.90 2015-08-17
+----------------------------------------
+
+Bug Fixes:
+	Bug 722270 - Crash under WebDAV's send_propfind() (Milan Crha)
+	Bug 752233 - sexp: Eliminate some global variables which broke static linking (Philip Withnall)
+	Bug 745545 - [IMAPx] Rewrite job queue to one central (Milan Crha)
+	Bug 753276 - Fix return value errors in camel-imapx-conn-manager.c (Ting-Wei Lan)
+	Bug 752338 - Incorrect handling of multibyte characters in vCards (Alex Shtyrov)
+	Bug 752114 - Collection backend changes overwritten with old values (Milan Crha)
+	Bug 233140 - Show message counts in subscribe folders dialog (Milan Crha)
+	Bug 533478 - [IMAPx] Support umlauts in user tags (Milan Crha)
+	Bug 752197 - Teach cache-reaper of 3rd-party private directories ][ (Milan Crha)
+	Bug 684456 - Google Contacts: Support vCard REV attribute (Milan Crha)
+	Bug 686105 - LDAP search with categories filter fails (Milan Crha)
+
+Miscellaneous:
+	Do not set write-to-all to installed tests executable (Milan Crha)
+	Bump minimum SQLite version to 3.7.17 (Tanu Kaskinen)
+	Prefix password lookup errors, thus they make more sense in UI (Milan Crha)
+	Introduce CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME (Milan Crha)
+	[camel-operation.c] Correct argument in g_signal_new() (Milan Crha)
+	[imapx_server_inactivity_thread] Do not claim 'cancelled' error on console (Milan Crha)
+	[camel-imapx-conn-manager.c] Correct return values in some functions (Milan Crha)
+	[e-cal-recur.c] Do not write out of bounds of the weekdays array (Milan Crha)
+	[IMAPx] Correct IDLE detection to not overlap running commands (Milan Crha)
+	[IMAPx] Add an 'output_stream' argument to imapx_step() (Milan Crha)
+	[IMAPx] Stop early in imapx_authenticate_sync() if cancelled (Milan Crha)
+	[IMAPx] imapx_server_inactivity_thread: Turn runtime warnings into debug messages (Milan Crha)
+	[IMAPx] Ignore broken (truncated) COPYUID server response (Milan Crha)
+	[IMAPx] Prefer Get/Copy/Move message and Expunge jobs over other (Milan Crha)
+	[IMAPx] Treat G_IO_ERROR_CLOSED as a reason to try to reconnect (Milan Crha)
+	[IMAPx] Connection could be used by two jobs at the same time (Milan Crha)
+	[IMAPx] More pending-IDLE-detection related changes (Milan Crha)
+	[IMAPx] Be able to search server with text with umlauts/UTF-8 letters (Milan Crha)
+	[SMTP] Add thread safety around istream/ostream (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Aurimas Černius (lt)
+	Pedro Albuquerque (pt)
+	Necdet Yücel (tr)
+	Kjartan Maraas (nb)
+	Daniel Mustieles (es)
+	Felipe Braga (pt_BR)
+	Jordi Mas (ca)
+
 Evolution-Data-Server 3.17.4 2015-07-20
 ---------------------------------------
 
