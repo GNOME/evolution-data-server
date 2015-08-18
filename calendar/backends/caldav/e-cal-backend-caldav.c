@@ -1249,7 +1249,8 @@ caldav_server_open_calendar (ECalBackendCalDAV *cbdav,
 	 * moment (maybe we should check more here, for REPORT eg) */
 	header = soup_message_headers_get_list (message->response_headers, "Allow");
 	if (header) {
-		put_allowed = soup_header_contains (header, "PUT");
+		/* The POST added for FastMail servers, which doesn't advertise PUT on collections. */
+		put_allowed = soup_header_contains (header, "PUT") || soup_header_contains (header, "POST");
 		delete_allowed = soup_header_contains (header, "DELETE");
 	} else
 		put_allowed = delete_allowed = FALSE;
