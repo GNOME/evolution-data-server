@@ -26,6 +26,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-imapx-conn-manager.h"
+#include "camel-imapx-folder.h"
 #include "camel-imapx-job.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
@@ -94,6 +95,16 @@ G_DEFINE_TYPE (
 	camel_imapx_conn_manager,
 	G_TYPE_OBJECT)
 
+static gboolean
+imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
+				      CamelIMAPXMailbox *mailbox,
+				      CamelIMAPXMailbox *destination,
+				      GPtrArray *uids,
+				      gboolean delete_originals,
+				      gboolean remove_deleted_flags,
+				      gboolean skip_sync_changes,
+				      GCancellable *cancellable,
+				      GError **error);
 
 typedef struct _MailboxRefreshData {
 	CamelIMAPXConnManager *conn_man;
@@ -317,6 +328,29 @@ imapx_conn_manager_abort_jobs (CamelIMAPXConnManager *conn_man)
 	}
 
 	JOB_QUEUE_UNLOCK (conn_man);
+}
+
+static CamelFolder *
+imapx_conn_manager_ref_folder_sync (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXMailbox *mailbox,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	CamelIMAPXStore *store;
+	CamelFolder *folder;
+	gchar *folder_path;
+
+	store = camel_imapx_conn_manager_ref_store (conn_man);
+	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
+
+	folder = camel_store_get_folder_sync (CAMEL_STORE (store), folder_path, 0, cancellable, NULL);
+	if (folder)
+		camel_imapx_folder_set_mailbox (CAMEL_IMAPX_FOLDER (folder), mailbox);
+
+	g_free (folder_path);
+	g_clear_object (&store);
+
+	return folder;
 }
 
 static void
@@ -1021,6 +1055,8 @@ static gboolean
 imapx_conn_manager_matches_sync_changes_or_refresh_info (CamelIMAPXJob *job,
 							 CamelIMAPXJob *other_job)
 {
+	CamelIMAPXJobKind other_job_kind;
+
 	g_return_val_if_fail (job != NULL, FALSE);
 	g_return_val_if_fail (other_job != NULL, FALSE);
 	g_return_val_if_fail (job != other_job, FALSE);
@@ -1028,8 +1064,10 @@ imapx_conn_manager_matches_sync_changes_or_refresh_info (CamelIMAPXJob *job,
 	if (camel_imapx_job_get_mailbox (job) != camel_imapx_job_get_mailbox (other_job))
 		return FALSE;
 
-	return camel_imapx_job_get_kind (other_job) == CAMEL_IMAPX_JOB_SYNC_CHANGES ||
-		camel_imapx_job_get_kind (other_job) == CAMEL_IMAPX_JOB_REFRESH_INFO;
+	other_job_kind = camel_imapx_job_get_kind (other_job);
+
+	return other_job_kind == CAMEL_IMAPX_JOB_SYNC_CHANGES ||
+	       other_job_kind == CAMEL_IMAPX_JOB_REFRESH_INFO;
 }
 
 struct ListJobData {
@@ -1158,6 +1196,9 @@ camel_imapx_conn_manager_refresh_info_sync (CamelIMAPXConnManager *conn_man,
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
+	if (!camel_imapx_conn_manager_sync_changes_sync (conn_man, mailbox, cancellable, error))
+		return FALSE;
+
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_REFRESH_INFO, mailbox,
 		imapx_conn_manager_refresh_info_run_sync, NULL, NULL);
 
@@ -1169,6 +1210,195 @@ camel_imapx_conn_manager_refresh_info_sync (CamelIMAPXConnManager *conn_man,
 
 	return success;
 }
+
+static gboolean
+imapx_conn_manager_move_to_real_junk_sync (CamelIMAPXConnManager *conn_man,
+					   CamelFolder *folder,
+					   GCancellable *cancellable,
+					   gboolean *out_need_to_expunge,
+					   GError **error)
+{
+	CamelIMAPXFolder *imapx_folder;
+	CamelIMAPXMailbox *mailbox;
+	CamelIMAPXSettings *settings;
+	GPtrArray *uids_to_copy;
+	gchar *real_junk_path = NULL;
+	gboolean success = TRUE;
+
+	*out_need_to_expunge = FALSE;
+
+	/* Caller already obtained the mailbox from the folder,
+	 * so the folder should still have it readily available. */
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
+	g_return_val_if_fail (mailbox != NULL, FALSE);
+
+	uids_to_copy = g_ptr_array_new_with_free_func (
+		(GDestroyNotify) camel_pstring_free);
+
+	settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (camel_folder_get_parent_store (folder))));
+	if (camel_imapx_settings_get_use_real_junk_path (settings)) {
+		real_junk_path = camel_imapx_settings_dup_real_junk_path (settings);
+		camel_imapx_folder_claim_move_to_real_junk_uids (imapx_folder, uids_to_copy);
+	}
+	g_object_unref (settings);
+
+	if (uids_to_copy->len > 0) {
+		CamelIMAPXStore *imapx_store;
+		CamelIMAPXMailbox *destination = NULL;
+
+		imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
+
+		if (real_junk_path != NULL) {
+			folder = camel_store_get_folder_sync (
+				CAMEL_STORE (imapx_store),
+				real_junk_path, 0,
+				cancellable, error);
+		} else {
+			g_set_error (
+				error, CAMEL_FOLDER_ERROR,
+				CAMEL_FOLDER_ERROR_INVALID_PATH,
+				_("No destination folder specified"));
+			folder = NULL;
+		}
+
+		if (folder != NULL) {
+			destination = camel_imapx_folder_list_mailbox (
+				CAMEL_IMAPX_FOLDER (folder),
+				cancellable, error);
+			g_object_unref (folder);
+		}
+
+		/* Avoid duplicating messages in the Junk folder. */
+		if (destination == mailbox) {
+			success = TRUE;
+		} else if (destination != NULL) {
+			success = imapx_conn_manager_copy_message_sync (
+				conn_man, mailbox, destination,
+				uids_to_copy, TRUE, FALSE, TRUE,
+				cancellable, error);
+			*out_need_to_expunge = success;
+		} else {
+			success = FALSE;
+		}
+
+		if (!success) {
+			g_prefix_error (
+				error, "%s: ",
+				_("Unable to move junk messages"));
+		}
+
+		g_clear_object (&destination);
+		g_clear_object (&imapx_store);
+	}
+
+	g_ptr_array_unref (uids_to_copy);
+	g_free (real_junk_path);
+
+	g_clear_object (&mailbox);
+
+	return success;
+}
+
+static gboolean
+imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
+					    CamelFolder *folder,
+					    GCancellable *cancellable,
+					    gboolean *out_need_to_expunge,
+					    GError **error)
+{
+	CamelIMAPXFolder *imapx_folder;
+	CamelIMAPXMailbox *mailbox, *destination = NULL;
+	CamelIMAPXSettings *settings;
+	CamelIMAPXStore *imapx_store;
+	GPtrArray *uids_to_copy;
+	gchar *real_trash_path = NULL;
+	guint32 folder_deleted_count = 0;
+	gboolean success = TRUE;
+
+	*out_need_to_expunge = FALSE;
+
+	/* Caller already obtained the mailbox from the folder,
+	 * so the folder should still have it readily available. */
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
+	g_return_val_if_fail (mailbox != NULL, FALSE);
+
+	uids_to_copy = g_ptr_array_new_with_free_func (
+		(GDestroyNotify) camel_pstring_free);
+
+	settings = CAMEL_IMAPX_SETTINGS (camel_service_ref_settings (CAMEL_SERVICE (camel_folder_get_parent_store (folder))));
+	if (camel_imapx_settings_get_use_real_trash_path (settings)) {
+		real_trash_path = camel_imapx_settings_dup_real_trash_path (settings);
+		camel_imapx_folder_claim_move_to_real_trash_uids (CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+	}
+	g_object_unref (settings);
+
+	imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
+
+	if (real_trash_path != NULL) {
+		folder = camel_store_get_folder_sync (
+			CAMEL_STORE (imapx_store),
+			real_trash_path, 0,
+			cancellable, error);
+	} else {
+		if (uids_to_copy->len > 0) {
+			g_set_error (
+				error, CAMEL_FOLDER_ERROR,
+				CAMEL_FOLDER_ERROR_INVALID_PATH,
+				_("No destination folder specified"));
+		}
+
+		folder = NULL;
+	}
+
+	if (folder != NULL) {
+		destination = camel_imapx_folder_list_mailbox (
+			CAMEL_IMAPX_FOLDER (folder),
+			cancellable, error);
+		folder_deleted_count = camel_folder_summary_get_deleted_count (folder->summary);
+		g_object_unref (folder);
+	}
+
+	/* Avoid duplicating messages in the Trash folder. */
+	if (destination == mailbox) {
+		success = TRUE;
+		/* Deleted messages in the real Trash folder will be permanently deleted immediately. */
+		*out_need_to_expunge = folder_deleted_count > 0 || uids_to_copy->len > 0;
+	} else if (destination != NULL) {
+		if (uids_to_copy->len > 0) {
+			success = imapx_conn_manager_copy_message_sync (
+				conn_man, mailbox, destination,
+				uids_to_copy, TRUE, TRUE, TRUE,
+				cancellable, error);
+			*out_need_to_expunge = success;
+		}
+	} else if (uids_to_copy->len > 0) {
+		success = FALSE;
+	}
+
+	if (!success) {
+		g_prefix_error (
+			error, "%s: ",
+			_("Unable to move deleted messages"));
+	}
+
+	g_ptr_array_unref (uids_to_copy);
+	g_free (real_trash_path);
+
+	g_clear_object (&imapx_store);
+	g_clear_object (&destination);
+	g_clear_object (&mailbox);
+
+	return success;
+}
+
+static gboolean
+imapx_conn_manager_expunge_sync (CamelIMAPXConnManager *conn_man,
+				 CamelIMAPXMailbox *mailbox,
+				 gboolean skip_sync_changes,
+				 GCancellable *cancellable,
+				 GError **error);
 
 static gboolean
 imapx_conn_manager_sync_changes_run_sync (CamelIMAPXJob *job,
@@ -1203,6 +1433,8 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 					    GError **error)
 {
 	CamelIMAPXJob *job;
+	CamelFolder *folder = NULL;
+	gboolean need_to_expunge = FALSE, expunge = FALSE;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
@@ -1215,6 +1447,32 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 		cancellable, error);
 
 	camel_imapx_job_unref (job);
+
+	if (success) {
+		folder = imapx_conn_manager_ref_folder_sync (conn_man, mailbox, cancellable, error);
+		if (!folder)
+			success = FALSE;
+	}
+
+	if (success) {
+		success = imapx_conn_manager_move_to_real_junk_sync (
+			conn_man, folder, cancellable,
+			&need_to_expunge, error);
+		expunge |= need_to_expunge;
+	}
+
+	if (success) {
+		success = imapx_conn_manager_move_to_real_trash_sync (
+			conn_man, folder, cancellable,
+			&need_to_expunge, error);
+		expunge |= need_to_expunge;
+	}
+
+	if (success && expunge) {
+		success = imapx_conn_manager_expunge_sync (conn_man, mailbox, TRUE, cancellable, error);
+	}
+
+	g_clear_object (&folder);
 
 	return success;
 }
@@ -1246,15 +1504,19 @@ imapx_conn_manager_expunge_run_sync (CamelIMAPXJob *job,
 }
 
 gboolean
-camel_imapx_conn_manager_expunge_sync (CamelIMAPXConnManager *conn_man,
-				       CamelIMAPXMailbox *mailbox,
-				       GCancellable *cancellable,
-				       GError **error)
+imapx_conn_manager_expunge_sync (CamelIMAPXConnManager *conn_man,
+				 CamelIMAPXMailbox *mailbox,
+				 gboolean skip_sync_changes,
+				 GCancellable *cancellable,
+				 GError **error)
 {
 	CamelIMAPXJob *job;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+
+	if (!skip_sync_changes && !camel_imapx_conn_manager_sync_changes_sync (conn_man, mailbox, cancellable, error))
+		return FALSE;
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_EXPUNGE, mailbox,
 		imapx_conn_manager_expunge_run_sync, NULL, NULL);
@@ -1264,6 +1526,15 @@ camel_imapx_conn_manager_expunge_sync (CamelIMAPXConnManager *conn_man,
 	camel_imapx_job_unref (job);
 
 	return success;
+}
+
+gboolean
+camel_imapx_conn_manager_expunge_sync (CamelIMAPXConnManager *conn_man,
+				       CamelIMAPXMailbox *mailbox,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	return imapx_conn_manager_expunge_sync (conn_man, mailbox, FALSE, cancellable, error);
 }
 
 struct GetMessageJobData {
@@ -1446,15 +1717,16 @@ imapx_conn_manager_copy_message_run_sync (CamelIMAPXJob *job,
 	return success;
 }
 
-gboolean
-camel_imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
-					    CamelIMAPXMailbox *mailbox,
-					    CamelIMAPXMailbox *destination,
-					    GPtrArray *uids,
-					    gboolean delete_originals,
-					    gboolean remove_deleted_flags,
-					    GCancellable *cancellable,
-					    GError **error)
+static gboolean
+imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
+				      CamelIMAPXMailbox *mailbox,
+				      CamelIMAPXMailbox *destination,
+				      GPtrArray *uids,
+				      gboolean delete_originals,
+				      gboolean remove_deleted_flags,
+				      gboolean skip_sync_changes,
+				      GCancellable *cancellable,
+				      GError **error)
 {
 	CamelIMAPXJob *job;
 	struct CopyMessageJobData *job_data;
@@ -1462,6 +1734,9 @@ camel_imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
 	gint ii;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+
+	if (!skip_sync_changes && !camel_imapx_conn_manager_sync_changes_sync (conn_man, mailbox, cancellable, error))
+		return FALSE;
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_COPY_MESSAGE, mailbox,
 		imapx_conn_manager_copy_message_run_sync,
@@ -1484,7 +1759,37 @@ camel_imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
 
 	camel_imapx_job_unref (job);
 
+	if (success) {
+		CamelFolder *dest;
+
+		dest = imapx_conn_manager_ref_folder_sync (conn_man, destination, cancellable, NULL);
+
+		/* Update destination folder only if it's not frozen,
+		 * to avoid updating for each "move" action on a single
+		 * message while filtering. */
+		if (dest && !camel_folder_is_frozen (dest)) {
+			/* Ignore errors here */
+			camel_imapx_conn_manager_refresh_info_sync (conn_man, destination, cancellable, NULL);
+		}
+
+		g_clear_object (&dest);
+	}
+
 	return success;
+}
+
+gboolean
+camel_imapx_conn_manager_copy_message_sync (CamelIMAPXConnManager *conn_man,
+					    CamelIMAPXMailbox *mailbox,
+					    CamelIMAPXMailbox *destination,
+					    GPtrArray *uids,
+					    gboolean delete_originals,
+					    gboolean remove_deleted_flags,
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	return imapx_conn_manager_copy_message_sync (conn_man, mailbox, destination, uids,
+		delete_originals, remove_deleted_flags, FALSE, cancellable, error);
 }
 
 struct AppendMessageJobData {
@@ -2139,7 +2444,7 @@ camel_imapx_conn_manager_dump_queue_status (CamelIMAPXConnManager *conn_man)
 
 	CON_READ_UNLOCK (conn_man);
 
-	g_rec_mutex_lock (&conn_man->priv->job_queue_lock);
+	JOB_QUEUE_LOCK (conn_man);
 
 	printf ("Queued jobs:%d\n", g_slist_length (conn_man->priv->job_queue));
 	for (slink = conn_man->priv->job_queue; slink; slink = g_slist_next (slink)) {
@@ -2150,5 +2455,5 @@ camel_imapx_conn_manager_dump_queue_status (CamelIMAPXConnManager *conn_man)
 			job && camel_imapx_job_get_mailbox (job) ? camel_imapx_mailbox_get_name (camel_imapx_job_get_mailbox (job)) : "[null]");
 	}
 
-	g_rec_mutex_unlock (&conn_man->priv->job_queue_lock);
+	JOB_QUEUE_UNLOCK (conn_man);
 }
