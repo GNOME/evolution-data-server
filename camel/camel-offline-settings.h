@@ -73,6 +73,11 @@ gboolean	camel_offline_settings_get_stay_synchronized
 void		camel_offline_settings_set_stay_synchronized
 					(CamelOfflineSettings *settings,
 					 gboolean stay_synchronized);
+gint		camel_offline_settings_get_store_changes_interval
+					(CamelOfflineSettings *settings);
+void		camel_offline_settings_set_store_changes_interval
+					(CamelOfflineSettings *settings,
+					 gint interval);
 
 G_END_DECLS
 

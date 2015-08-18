@@ -25,11 +25,13 @@
 
 struct _CamelOfflineSettingsPrivate {
 	gboolean stay_synchronized;
+	gint store_changes_interval;
 };
 
 enum {
 	PROP_0,
-	PROP_STAY_SYNCHRONIZED
+	PROP_STAY_SYNCHRONIZED,
+	PROP_STORE_CHANGES_INTERVAL
 };
 
 G_DEFINE_TYPE (
@@ -49,6 +51,12 @@ offline_settings_set_property (GObject *object,
 				CAMEL_OFFLINE_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_STORE_CHANGES_INTERVAL:
+			camel_offline_settings_set_store_changes_interval (
+				CAMEL_OFFLINE_SETTINGS (object),
+				g_value_get_int (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -65,6 +73,13 @@ offline_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_offline_settings_get_stay_synchronized (
+				CAMEL_OFFLINE_SETTINGS (object)));
+			return;
+
+		case PROP_STORE_CHANGES_INTERVAL:
+			g_value_set_int (
+				value,
+				camel_offline_settings_get_store_changes_interval (
 				CAMEL_OFFLINE_SETTINGS (object)));
 			return;
 	}
@@ -91,6 +106,20 @@ camel_offline_settings_class_init (CamelOfflineSettingsClass *class)
 			"Stay Synchronized",
 			"Stay synchronized with the remote server",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_STORE_CHANGES_INTERVAL,
+		g_param_spec_int (
+			"store-changes-interval",
+			"Store Changes Interval",
+			"Interval, in seconds, to store folder changes",
+			G_MININT,
+			G_MAXINT,
+			3,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -145,4 +174,49 @@ camel_offline_settings_set_stay_synchronized (CamelOfflineSettings *settings,
 	settings->priv->stay_synchronized = stay_synchronized;
 
 	g_object_notify (G_OBJECT (settings), "stay-synchronized");
+}
+/**
+ * camel_offline_settings_get_store_changes_interval:
+ * @settings: a #CamelOfflineSettings
+ *
+ * Returns the interval, in seconds, for the changes in the folder being
+ * saved automatically. 0 means immediately, while -1 means turning off
+ * automatic folder change saving.
+ *
+ * Returns: the interval for automatic store of folder changes
+ *
+ * Since: 3.18
+ **/
+
+gint
+camel_offline_settings_get_store_changes_interval (CamelOfflineSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings), -1);
+
+	return settings->priv->store_changes_interval;
+}
+
+/**
+ * camel_offline_settings_set_store_changes_interval:
+ * @settings: a #CamelOfflineSettings
+ * @interval: the interval, in seconds
+ *
+ * Sets the interval, in seconds, for the changes in the folder being
+ * saved automatically. 0 means immediately, while -1 means turning off
+ * automatic folder change saving.
+ *
+ * Since: 3.18
+ **/
+void
+camel_offline_settings_set_store_changes_interval (CamelOfflineSettings *settings,
+						   gint interval)
+{
+	g_return_if_fail (CAMEL_IS_OFFLINE_SETTINGS (settings));
+
+	if (settings->priv->store_changes_interval == interval)
+		return;
+
+	settings->priv->store_changes_interval = interval;
+
+	g_object_notify (G_OBJECT (settings), "store-changes-interval");
 }
