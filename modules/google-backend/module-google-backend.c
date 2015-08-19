@@ -42,13 +42,13 @@
 
 /* IMAP Configuration Details */
 #define GOOGLE_IMAP_BACKEND_NAME	"imapx"
-#define GOOGLE_IMAP_HOST		"imap.gmail.com"
+#define GOOGLE_IMAP_HOST		"imap.googlemail.com"
 #define GOOGLE_IMAP_PORT		993
 #define GOOGLE_IMAP_SECURITY_METHOD	METHOD (SSL_ON_ALTERNATE_PORT)
 
 /* SMTP Configuration Details */
 #define GOOGLE_SMTP_BACKEND_NAME	"smtp"
-#define GOOGLE_SMTP_HOST		"smtp.gmail.com"
+#define GOOGLE_SMTP_HOST		"smtp.googlemail.com"
 #define GOOGLE_SMTP_PORT		587
 #define GOOGLE_SMTP_SECURITY_METHOD	METHOD (STARTTLS_ON_STANDARD_PORT)
 
