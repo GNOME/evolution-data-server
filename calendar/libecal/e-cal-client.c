@@ -2302,6 +2302,7 @@ struct instances_info {
 	GSList **instances;
 	icaltimezone *start_zone;
 	icaltimezone *end_zone;
+	icaltimezone *default_zone;
 };
 
 /* Called from cal_recur_generate_instances(); adds an instance to the list */
@@ -2348,6 +2349,9 @@ add_instance (ECalComponent *comp,
 			g_free ((gchar *) dtstart.tzid);
 			dtstart.tzid = g_strdup (icaltimezone_get_tzid (
 				instances_hold->start_zone));
+		} else if (dtstart.value && dtstart.value->is_date && !dtstart.tzid && instances_hold->default_zone) {
+			/* Floating date, set in the default zone */
+			itt = icaltime_from_timet_with_zone (start, TRUE, instances_hold->default_zone);
 		} else {
 			itt = icaltime_from_timet (
 				start, dtstart.value && dtstart.value->is_date);
@@ -2384,6 +2388,9 @@ add_instance (ECalComponent *comp,
 			g_free ((gchar *) dtend.tzid);
 			dtend.tzid = g_strdup (icaltimezone_get_tzid (
 				instances_hold->end_zone));
+		} else if (dtend.value && dtend.value->is_date && !dtend.tzid && instances_hold->default_zone) {
+			/* Floating date, set in the default zone */
+			itt = icaltime_from_timet_with_zone (end, TRUE, instances_hold->default_zone);
 		} else {
 			itt = icaltime_from_timet (
 				end, dtend.value && dtend.value->is_date);
@@ -2658,6 +2665,7 @@ generate_instances (ECalClient *client,
 			instances_hold->instances = &instances;
 			instances_hold->start_zone = start_zone;
 			instances_hold->end_zone = end_zone;
+			instances_hold->default_zone = default_zone;
 
 			e_cal_recur_generate_instances (
 				comp, start, end, add_instance, instances_hold,
@@ -3093,6 +3101,7 @@ generate_instances_for_object_got_objects_cb (struct get_objects_async_data *goa
 	instances_hold->instances = &instances;
 	instances_hold->start_zone = goad->start_zone;
 	instances_hold->end_zone = goad->end_zone;
+	instances_hold->default_zone = e_cal_client_get_default_timezone (goad->client);
 
 	/* generate all instances in the given time range */
 	generate_instances (
@@ -3312,6 +3321,7 @@ e_cal_client_generate_instances_for_object_sync (ECalClient *client,
 	instances_hold->instances = &instances;
 	instances_hold->start_zone = start_zone;
 	instances_hold->end_zone = end_zone;
+	instances_hold->default_zone = e_cal_client_get_default_timezone (client);
 
 	/* generate all instances in the given time range */
 	generate_instances (
