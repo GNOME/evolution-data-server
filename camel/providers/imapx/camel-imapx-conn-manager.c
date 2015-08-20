@@ -874,12 +874,16 @@ camel_imapx_conn_manager_disconnect_sync (CamelIMAPXConnManager *conn_man,
 
 static gboolean
 imapx_conn_manager_should_wait_for (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXJob *new_job,
 				    CamelIMAPXJob *queued_job)
 {
 	guint32 job_kind;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 	g_return_val_if_fail (queued_job != NULL, FALSE);
+
+	if (camel_imapx_job_get_kind (new_job) == CAMEL_IMAPX_JOB_GET_MESSAGE)
+		return FALSE;
 
 	job_kind = camel_imapx_job_get_kind (queued_job);
 
@@ -927,7 +931,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 
 		matches = camel_imapx_job_matches (job, queued_job);
 		if (matches || (finish_before_job && finish_before_job (job, queued_job)) ||
-		    imapx_conn_manager_should_wait_for (conn_man, queued_job)) {
+		    imapx_conn_manager_should_wait_for (conn_man, job, queued_job)) {
 			camel_imapx_job_ref (queued_job);
 
 			JOB_QUEUE_UNLOCK (conn_man);
