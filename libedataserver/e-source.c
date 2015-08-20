@@ -3570,9 +3570,16 @@ gint
 e_source_compare_by_display_name (ESource *source1,
                                   ESource *source2)
 {
-	return g_strcmp0 (
+	gint res;
+
+	res = g_strcmp0 (
 		source1->priv->collate_key,
 		source2->priv->collate_key);
+
+	if (res == 0)
+		res = g_strcmp0 (source1->priv->uid, source2->priv->uid);
+
+	return res;
 }
 
 /**

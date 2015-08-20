@@ -1007,6 +1007,13 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 		if (account_id == NULL)
 			continue;
 
+		if (g_hash_table_lookup (extension->goa_to_eds, account_id)) {
+			/* There are more ESource-s referencing the same GOA account;
+			   delete the later. */
+			g_queue_push_tail (&trash, source);
+			continue;
+		}
+
 		/* Verify the GOA account still exists. */
 		match = g_list_find_custom (
 			goa_objects, account_id,

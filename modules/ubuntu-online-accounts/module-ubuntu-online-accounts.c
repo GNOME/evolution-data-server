@@ -787,6 +787,13 @@ ubuntu_online_accounts_populate_accounts_table (EUbuntuOnlineAccounts *extension
 		if (ag_account_id == 0)
 			continue;
 
+		if (g_hash_table_lookup (extension->uoa_to_eds, GUINT_TO_POINTER (ag_account_id))) {
+			/* There are more ESource-s referencing the same UOA account;
+			   delete the later. */
+			g_queue_push_tail (&trash, source);
+			continue;
+		}
+
 		/* Verify the UOA account still exists. */
 		match = g_list_find (
 			ag_account_ids,
