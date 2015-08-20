@@ -175,36 +175,37 @@ owncloud_add_found_source (ECollectionBackend *collection,
 	source_uid = g_hash_table_lookup (known_sources, identity);
 	is_new = !source_uid;
 	if (is_new) {
-		ESource *master_source;
-
 		source = e_collection_backend_new_child (collection, identity);
 		g_warn_if_fail (source != NULL);
-
-		if (source) {
-			ESourceCollection *collection_extension;
-			ESourceAuthentication *child_auth;
-			ESourceResource *resource;
-			ESourceWebdav *master_webdav, *child_webdav;
-
-			master_source = e_backend_get_source (E_BACKEND (collection));
-			master_webdav = e_source_get_extension (master_source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-			collection_extension = e_source_get_extension (master_source, E_SOURCE_EXTENSION_COLLECTION);
-			child_auth = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-			child_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-			resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
-
-			e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
-			e_source_webdav_set_soup_uri (child_webdav, uri);
-			e_source_resource_set_identity (resource, identity);
-
-			/* inherit ssl trust options */
-			e_source_webdav_set_ssl_trust (child_webdav, e_source_webdav_get_ssl_trust (master_webdav));
-		}
 	} else {
 		source = e_source_registry_server_ref_source (server, source_uid);
 		g_warn_if_fail (source != NULL);
 
 		g_hash_table_remove (known_sources, identity);
+	}
+
+	if (source) {
+		ESource *master_source;
+		ESourceCollection *collection_extension;
+		ESourceAuthentication *child_auth;
+		ESourceResource *resource;
+		ESourceWebdav *master_webdav, *child_webdav;
+
+		master_source = e_backend_get_source (E_BACKEND (collection));
+		master_webdav = e_source_get_extension (master_source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		collection_extension = e_source_get_extension (master_source, E_SOURCE_EXTENSION_COLLECTION);
+		child_auth = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		child_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+
+		e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
+		e_source_webdav_set_soup_uri (child_webdav, uri);
+		e_source_resource_set_identity (resource, identity);
+
+		if (is_new) {
+			/* inherit ssl trust options */
+			e_source_webdav_set_ssl_trust (child_webdav, e_source_webdav_get_ssl_trust (master_webdav));
+		}
 	}
 
 	g_free (identity);
