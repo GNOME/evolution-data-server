@@ -5356,12 +5356,12 @@ msgstr "Introduïu la contrasenya pel compte «%s»."
 #: ../libedataserverui/e-trust-prompt.c:114
 #: ../libedataserverui/e-webdav-discover-widget.c:1063
 msgid "_Cancel"
-msgstr "_Cancel·lar"
+msgstr "_Cancel·la"
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../libedataserverui/e-webdav-discover-widget.c:1064
 msgid "_OK"
-msgstr "_OK"
+msgstr "_D'acord"
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:340
 msgid "_User Name:"
@@ -5455,7 +5455,7 @@ msgstr "Suports"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:177
 msgid "_User mail:"
-msgstr "Correu de l'_usuari"
+msgstr "Correu de l'_usuari:"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:523
 msgctxt "WebDAVDiscover"
