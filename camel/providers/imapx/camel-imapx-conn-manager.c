@@ -947,7 +947,9 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				gpointer result = NULL;
 				GDestroyNotify destroy_result = NULL;
 
-				if (camel_imapx_job_copy_result (queued_job, &success, &result, &local_error, &destroy_result)) {
+				/* Do not inherit cancelled errors, just try again */
+				if (!camel_imapx_job_was_cancelled (queued_job) &&
+				    camel_imapx_job_copy_result (queued_job, &success, &result, &local_error, &destroy_result)) {
 					camel_imapx_job_set_result (job, success, result, local_error, destroy_result);
 					camel_imapx_job_unref (queued_job);
 

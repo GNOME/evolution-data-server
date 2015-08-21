@@ -273,6 +273,17 @@ camel_imapx_job_set_user_data (CamelIMAPXJob *job,
 	job->destroy_user_data = destroy_user_data;
 }
 
+gboolean
+camel_imapx_job_was_cancelled (CamelIMAPXJob *job)
+{
+	g_return_val_if_fail (job != NULL, FALSE);
+
+	if (!job->result_is_set)
+		return FALSE;
+
+	return g_error_matches (job->result_error, G_IO_ERROR, G_IO_ERROR_CANCELLED);
+}
+
 void
 camel_imapx_job_set_result (CamelIMAPXJob *job,
 			    gboolean success,

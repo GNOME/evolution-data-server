@@ -93,6 +93,7 @@ gpointer	camel_imapx_job_get_user_data	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_user_data	(CamelIMAPXJob *job,
 						 gpointer user_data,
 						 GDestroyNotify destroy_user_data);
+gboolean	camel_imapx_job_was_cancelled	(CamelIMAPXJob *job);
 void		camel_imapx_job_set_result	(CamelIMAPXJob *job,
 						 gboolean success,
 						 gpointer result,
