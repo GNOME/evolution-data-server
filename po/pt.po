@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-08-16 04:48+0000\n"
-"PO-Revision-Date: 2015-08-16 07:06+0100\n"
+"POT-Creation-Date: 2015-08-25 04:48+0000\n"
+"PO-Revision-Date: 2015-08-25 07:06+0100\n"
 "Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
 "Language-Team: Português <palbuquerque73@gmail.com>\n"
 "Language: pt\n"
@@ -114,24 +114,24 @@ msgstr "Impossível renomear a base de dados antiga de \"%s\" para \"%s\": %s"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:633
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
-#: ../calendar/libecal/e-cal-client.c:3482
-#: ../calendar/libecal/e-cal-client.c:3655
-#: ../calendar/libecal/e-cal-client.c:3919
-#: ../calendar/libecal/e-cal-client.c:4160
-#: ../calendar/libecal/e-cal-client.c:4350
-#: ../calendar/libecal/e-cal-client.c:4543
-#: ../calendar/libecal/e-cal-client.c:4752
-#: ../calendar/libecal/e-cal-client.c:4921
-#: ../calendar/libecal/e-cal-client.c:5124
-#: ../calendar/libecal/e-cal-client.c:5274
-#: ../calendar/libecal/e-cal-client.c:5468
-#: ../calendar/libecal/e-cal-client.c:5621
-#: ../calendar/libecal/e-cal-client.c:5838
-#: ../calendar/libecal/e-cal-client.c:5992
-#: ../calendar/libecal/e-cal-client.c:6218
-#: ../calendar/libecal/e-cal-client.c:6414
-#: ../calendar/libecal/e-cal-client.c:6777
-#: ../calendar/libecal/e-cal-client.c:6999
+#: ../calendar/libecal/e-cal-client.c:3492
+#: ../calendar/libecal/e-cal-client.c:3665
+#: ../calendar/libecal/e-cal-client.c:3929
+#: ../calendar/libecal/e-cal-client.c:4170
+#: ../calendar/libecal/e-cal-client.c:4360
+#: ../calendar/libecal/e-cal-client.c:4553
+#: ../calendar/libecal/e-cal-client.c:4762
+#: ../calendar/libecal/e-cal-client.c:4931
+#: ../calendar/libecal/e-cal-client.c:5134
+#: ../calendar/libecal/e-cal-client.c:5284
+#: ../calendar/libecal/e-cal-client.c:5478
+#: ../calendar/libecal/e-cal-client.c:5631
+#: ../calendar/libecal/e-cal-client.c:5848
+#: ../calendar/libecal/e-cal-client.c:6002
+#: ../calendar/libecal/e-cal-client.c:6228
+#: ../calendar/libecal/e-cal-client.c:6424
+#: ../calendar/libecal/e-cal-client.c:6787
+#: ../calendar/libecal/e-cal-client.c:7009
 #: ../camel/providers/imapx/camel-imapx-server.c:2951
 #: ../camel/providers/imapx/camel-imapx-server.c:2961
 #: ../camel/providers/imapx/camel-imapx-server.c:2973
@@ -1350,12 +1350,12 @@ msgstr "Motor CalDAV ainda não está disponível"
 msgid "Invalid Redirect URL"
 msgstr "URL de redireccionamento inválido"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2925
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2926
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Impossível criar pasta de cache local \"%s\""
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3005
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3006
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1364,27 +1364,27 @@ msgstr ""
 "Servidor indisponível, o calendário será aberto em modo só de leitura.\n"
 "Mensagem de erro: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4086
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4087
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV não suporta adições em lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4189
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4190
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV não suporta modificações em lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4470
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4471
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV não suporta remoções em lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5152
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5153
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Calendário não suporta Livre/Ocupado"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5161
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5162
 msgid "Schedule outbox url not found"
 msgstr "Impossível encontrar URL de caixa de saída de calendário"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5258
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5259
 msgid "Unexpected result in schedule-response"
 msgstr "Resultado inesperado na resposta de calendário"
 
@@ -2460,23 +2460,29 @@ msgstr ""
 msgid "Host lookup '%s' failed: %s"
 msgstr "Falha ao procurar o servidor \"%s\": %s"
 
-#: ../camel/camel-offline-folder.c:89
+#: ../camel/camel-offline-folder.c:93
 #, c-format
 msgid "Downloading new messages for offline mode in '%s'"
 msgstr "A transferir novas mensagens para o modo offline em \"%s\""
 
-#: ../camel/camel-offline-folder.c:155
+#: ../camel/camel-offline-folder.c:160
+#, c-format
+#| msgid "Syncing messages in folder '%s' to disk"
+msgid "Storing changes in folder '%s'"
+msgstr "A armazenar alterações na pasta \"%s\""
+
+#: ../camel/camel-offline-folder.c:259
 #, c-format
 msgid "Checking download of new messages for offline in '%s'"
 msgstr ""
 "A verificar a transferência de novas mensagens para o modo offline em \"%s\""
 
-#: ../camel/camel-offline-folder.c:214
+#: ../camel/camel-offline-folder.c:372
 #, c-format
 msgid "Syncing messages in folder '%s' to disk"
 msgstr "A sincronizar as mensagens na pasta \"%s\" para o disco"
 
-#: ../camel/camel-offline-folder.c:271
+#: ../camel/camel-offline-folder.c:435
 msgid "Copy folder content locally for _offline operation"
 msgstr "Copiar conteúdo da pasta localmente para trabalhar em modo _offline"
 
@@ -3104,12 +3110,12 @@ msgstr "Impossível copiar mensagens para a pasta Lixo"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Impossível copiar as mensagens para a pasta Sucata"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:735
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:769
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "Tem de estar a trabalhar online para terminar esta operação (%s)"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:743
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:777
 #: ../camel/providers/nntp/camel-nntp-store.c:1256
 #: ../camel/providers/pop3/camel-pop3-folder.c:448
 #: ../camel/providers/pop3/camel-pop3-folder.c:614
@@ -3124,45 +3130,45 @@ msgstr "Tem de estar a trabalhar online para terminar esta operação (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Tem de estar a trabalhar online para terminar esta operação"
 
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1267
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1355
+#, c-format
+msgid "No destination folder specified"
+msgstr "Nenhuma pasta de destino especificada"
+
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1294
+msgid "Unable to move junk messages"
+msgstr "Impossível mover mensagens não solicitadas"
+
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1389
+msgid "Unable to move deleted messages"
+msgstr "Impossível mover mensagens eliminadas"
+
 #: ../camel/providers/imapx/camel-imapx-folder.c:702
 #, c-format
 msgid "No quota information available for folder '%s'"
 msgstr "Nenhuma informação de quota disponível para a pasta \"%s\""
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:803
-#: ../camel/providers/imapx/camel-imapx-folder.c:895
-#, c-format
-msgid "No destination folder specified"
-msgstr "Nenhuma pasta de destino especificada"
-
-#: ../camel/providers/imapx/camel-imapx-folder.c:830
-msgid "Unable to move junk messages"
-msgstr "Impossível mover mensagens não solicitadas"
-
-#: ../camel/providers/imapx/camel-imapx-folder.c:924
-msgid "Unable to move deleted messages"
-msgstr "Impossível mover mensagens eliminadas"
-
-#: ../camel/providers/imapx/camel-imapx-folder.c:1176
+#: ../camel/providers/imapx/camel-imapx-folder.c:961
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
 msgid "Apply message _filters to this folder"
 msgstr "Aplicar _Filtros de mensagens a esta pasta"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1187
+#: ../camel/providers/imapx/camel-imapx-folder.c:972
 msgid "Always check for _new mail in this folder"
 msgstr "Verificar sempre se existem _Novas mensagens nesta pasta"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1300
+#: ../camel/providers/imapx/camel-imapx-folder.c:1085
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Impossível criar o resumo de pasta para %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1309
+#: ../camel/providers/imapx/camel-imapx-folder.c:1094
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Impossível criar a cache para %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1507
+#: ../camel/providers/imapx/camel-imapx-folder.c:1292
 #, c-format
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "Nenhuma caixa de correio IMAP para a pasta \"%s\""
@@ -3399,61 +3405,61 @@ msgstr "Erro ao obter informação da mensagem"
 msgid "Error running STATUS"
 msgstr "Erro ao executar STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5221
-#: ../camel/providers/imapx/camel-imapx-server.c:5273
+#: ../camel/providers/imapx/camel-imapx-server.c:5239
+#: ../camel/providers/imapx/camel-imapx-server.c:5291
 msgid "Error syncing changes"
 msgstr "Erro ao sincronizar alterações"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5390
+#: ../camel/providers/imapx/camel-imapx-server.c:5392
 msgid "Error expunging message"
 msgstr "Erro ao expurgar a mensagem"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5460
+#: ../camel/providers/imapx/camel-imapx-server.c:5462
 msgid "Error fetching folders"
 msgstr "Erro ao obter as pastas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5471
+#: ../camel/providers/imapx/camel-imapx-server.c:5473
 msgid "Error fetching subscribed folders"
 msgstr "Erro ao obter as pastas subscritas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5493
+#: ../camel/providers/imapx/camel-imapx-server.c:5495
 msgid "Error creating folder"
 msgstr "Erro ao criar a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5549
+#: ../camel/providers/imapx/camel-imapx-server.c:5551
 msgid "Error deleting folder"
 msgstr "Erro ao eliminar a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5595
+#: ../camel/providers/imapx/camel-imapx-server.c:5597
 msgid "Error renaming folder"
 msgstr "Erro ao renomear a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5627
+#: ../camel/providers/imapx/camel-imapx-server.c:5629
 msgid "Error subscribing to folder"
 msgstr "Erro ao subscrever a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5663
+#: ../camel/providers/imapx/camel-imapx-server.c:5665
 msgid "Error unsubscribing from folder"
 msgstr "Erro ao remover subscrição da pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5699
+#: ../camel/providers/imapx/camel-imapx-server.c:5701
 msgid "IMAP server does not support quotas"
 msgstr "Servidor IMAP não suporta quotas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5709
+#: ../camel/providers/imapx/camel-imapx-server.c:5711
 msgid "Error retrieving quota information"
 msgstr "Erro ao obter a informação de quota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5756
+#: ../camel/providers/imapx/camel-imapx-server.c:5758
 msgid "Search failed"
 msgstr "Falha na procura"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:5867
+#: ../camel/providers/imapx/camel-imapx-server.c:5869
 msgid "Error running IDLE"
 msgstr "Erro ao executar IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6059
+#: ../camel/providers/imapx/camel-imapx-server.c:6061
 msgid "Failed to issue DONE"
 msgstr "Falha ao emitir DONE"
 
@@ -4555,7 +4561,6 @@ msgid "No SASL mechanism was specified"
 msgstr "Não foi especificado nenhum mecanismo SASL"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:654
-#| msgid "AUTH command failed: "
 msgid "AUTH command failed: Not connected."
 msgstr "Falha no comando AUTH: não ligado."
 
@@ -4885,7 +4890,7 @@ msgstr ""
 
 #: ../libebackend/e-server-side-source.c:1478
 #: ../libedataserver/e-source.c:2005
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1039
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1046
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
 msgstr "Origem de dados \"%s\" não suporta autenticação OAuth 2.0"
@@ -5490,7 +5495,7 @@ msgstr "Falha ao procurar o elemento Conta"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Falha ao procurar ASUrl e OABUrl na resposta de autodescoberta"
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1228
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1235
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5499,17 +5504,17 @@ msgstr ""
 "Impossível encontrar uma conta correspondente no serviço org.gnome."
 "OnlineAccounts do qual obter uma chave de acesso para \"%s\""
 
-#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1258
+#: ../modules/gnome-online-accounts/module-gnome-online-accounts.c:1265
 #, c-format
 msgid "Failed to obtain an access token for '%s': "
 msgstr "Falha ao obter uma chave de acesso para\"%s\": "
 
-#: ../modules/google-backend/module-google-backend.c:460
+#: ../modules/google-backend/module-google-backend.c:461
 #: ../modules/yahoo-backend/module-yahoo-backend.c:226
 msgid "Tasks"
 msgstr "Tarefas"
 
-#: ../modules/google-backend/module-google-backend.c:514
+#: ../modules/google-backend/module-google-backend.c:515
 #: ../modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -5560,7 +5565,7 @@ msgstr "Correio"
 msgid "Integrate your mailboxes"
 msgstr "Integre as suas caixas de correio"
 
-#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1020
+#: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
