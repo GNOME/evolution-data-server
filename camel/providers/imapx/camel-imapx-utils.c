@@ -521,6 +521,9 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 					stream, tok, token, len);
 				break;
 			case 43:
+				/* the CAPABILITY shouldn't start with a '+', ignore it then */
+				if (!token)
+					break;
 				token = (guchar *) g_strconcat ((gchar *) token, "+", NULL);
 				free_token = TRUE;
 				/* coverity[fallthrough] */
