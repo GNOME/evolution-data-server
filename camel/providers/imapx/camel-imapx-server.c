@@ -4040,7 +4040,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 		g_propagate_error (error, local_error);
 	}
 
-	g_object_unref (cache_stream);
+	g_clear_object (&cache_stream);
 
 	return result_stream;
 }
@@ -4874,7 +4874,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	if (success && uidl != 1)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
 
-	if (success && g_hash_table_size (known_uids) > 0) {
+	if (success) {
 		CamelFolderChangeInfo *changes;
 		GList *removed = NULL;
 		GPtrArray *array;
