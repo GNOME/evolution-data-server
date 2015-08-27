@@ -134,7 +134,7 @@ camel_imapx_status_response_new (CamelIMAPXInputStream *stream,
 		goto fail;
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"status: expecting '('");
 		goto fail;
 	}
@@ -199,7 +199,7 @@ camel_imapx_status_response_new (CamelIMAPXInputStream *stream,
 
 			default:
 				g_set_error (
-					error, CAMEL_IMAPX_ERROR, 1,
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 					"unknown status attribute");
 				success = FALSE;
 				break;
@@ -218,7 +218,7 @@ camel_imapx_status_response_new (CamelIMAPXInputStream *stream,
 
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"status: expecting ')' or attribute");
 		goto fail;
 	}

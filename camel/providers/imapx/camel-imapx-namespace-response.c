@@ -117,7 +117,7 @@ imapx_namespace_response_parse_namespace (CamelIMAPXInputStream *stream,
 	}
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"namespace: expecting NIL or '('");
 		return FALSE;
 	}
@@ -129,7 +129,7 @@ repeat:
 		return FALSE;
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"namespace: expecting '('");
 		return FALSE;
 	}
@@ -140,7 +140,7 @@ repeat:
 		return FALSE;
 	if (tok != IMAPX_TOK_STRING) {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"namespace: expecting string");
 		return FALSE;
 	}
@@ -169,7 +169,7 @@ repeat:
 		return FALSE;
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"namespace: expecting ')'");
 		return FALSE;
 	}
@@ -184,7 +184,7 @@ repeat:
 	}
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"namespace: expecting '(' or ')'");
 		return FALSE;
 	}

@@ -49,6 +49,12 @@ typedef struct _CamelIMAPXInputStreamClass CamelIMAPXInputStreamClass;
 typedef struct _CamelIMAPXInputStreamPrivate CamelIMAPXInputStreamPrivate;
 
 typedef enum {
+	CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED = 1,
+	CAMEL_IMAPX_ERROR_IGNORE, /* may ignore such errors */
+	CAMEL_IMAPX_ERROR_TRY_RECONNECT
+} CamelIMAPXError;
+
+typedef enum {
 	IMAPX_TOK_ERROR = -1,
 	IMAPX_TOK_TOKEN = 256,
 	IMAPX_TOK_STRING,

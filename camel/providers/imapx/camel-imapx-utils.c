@@ -124,7 +124,7 @@ imapx_parse_flags (CamelIMAPXInputStream *stream,
 
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"expecting flag list");
 		return FALSE;
 	}
@@ -546,7 +546,7 @@ imapx_parse_capability (CamelIMAPXInputStream *stream,
 				break;
 			default:
 				g_set_error (
-					error, CAMEL_IMAPX_ERROR, 1,
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 					"capability: expecting name");
 				break;
 		}
@@ -864,7 +864,7 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 				if (!local_error)
 					g_set_error (
 						&local_error,
-						CAMEL_IMAPX_ERROR, 1,
+						CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 						"expecting string");
 				goto done;
 			}
@@ -882,7 +882,7 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 			break;
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"body_fld_disp: expecting nil or list");
 			return NULL;
 	}
@@ -907,7 +907,7 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 					g_clear_error (&local_error);
 					g_set_error (
 						&local_error,
-						CAMEL_IMAPX_ERROR, 1,
+						CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 						"expecting string");
 					break;
 				}
@@ -1062,7 +1062,7 @@ imapx_parse_address_list (CamelIMAPXInputStream *stream,
 				g_clear_error (&local_error);
 				camel_header_address_list_clear (&list);
 				g_set_error (
-					error, CAMEL_IMAPX_ERROR, 1,
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 					"missing '(' for address");
 				return NULL;
 			}
@@ -1177,7 +1177,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	if (tok != '(') {
 		g_clear_error (&local_error);
 		camel_message_info_unref (minfo);
-		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "envelope: expecting '('");
+		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED, "envelope: expecting '('");
 		return NULL;
 	}
 
@@ -1284,7 +1284,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	if (tok != ')') {
 		g_clear_error (&local_error);
 		camel_message_info_unref (minfo);
-		g_set_error (error, CAMEL_IMAPX_ERROR, 1, "expecting ')'");
+		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED, "expecting ')'");
 		return NULL;
 	}
 
@@ -1319,7 +1319,7 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 		stream, &token, &len, cancellable, &local_error);
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"body: expecting '('");
 		return NULL;
 	}
@@ -1555,7 +1555,7 @@ imapx_parse_section (CamelIMAPXInputStream *stream,
 
 	if (tok != '[') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"section: expecting '['");
 		return NULL;
 	}
@@ -1570,7 +1570,7 @@ imapx_parse_section (CamelIMAPXInputStream *stream,
 		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 	} else {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"section: expecting token");
 		return NULL;
 	}
@@ -1591,7 +1591,7 @@ imapx_parse_section (CamelIMAPXInputStream *stream,
 				/* ?do something? */
 			} else if (tok != ')') {
 				g_set_error (
-					error, CAMEL_IMAPX_ERROR, 1,
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 					"section: header fields: expecting string");
 				g_free (section);
 				return NULL;
@@ -1604,7 +1604,7 @@ imapx_parse_section (CamelIMAPXInputStream *stream,
 
 	if (tok != ']') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"section: expecting ']'");
 		g_free (section);
 		return NULL;
@@ -1632,7 +1632,7 @@ imapx_parse_modseq (CamelIMAPXInputStream *stream,
 
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"fetch: expecting '('");
 		return 0;
 	}
@@ -1651,7 +1651,7 @@ imapx_parse_modseq (CamelIMAPXInputStream *stream,
 
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"fetch: expecting '('");
 		return 0;
 	}
@@ -1808,7 +1808,7 @@ imapx_parse_fetch_body (CamelIMAPXInputStream *stream,
 	}
 
 	g_set_error (
-		error, CAMEL_IMAPX_ERROR, 1,
+		error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 		"unknown body response");
 
 	return FALSE;
@@ -1979,7 +1979,7 @@ imapx_parse_fetch_uid (CamelIMAPXInputStream *stream,
 
 	if (tok != IMAPX_TOK_INT) {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"uid not integer");
 		return FALSE;
 	}
@@ -2010,7 +2010,7 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"fetch: expecting '('");
 		goto fail;
 	}
@@ -2078,7 +2078,7 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 
 			default:
 				g_set_error (
-					error, CAMEL_IMAPX_ERROR, 1,
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 					"unknown body response");
 				break;
 		}
@@ -2095,7 +2095,7 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"missing closing ')' on fetch response");
 		goto fail;
 	}
@@ -2129,7 +2129,7 @@ imapx_parse_uids (CamelIMAPXInputStream *stream,
 		return NULL;
 
 	if (!token) {
-		g_set_error (error, CAMEL_IMAPX_ERROR, 2, "server response truncated");
+		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE, "server response truncated");
 		return NULL;
 	}
 
@@ -2224,7 +2224,7 @@ imapx_parse_status_copyuid (CamelIMAPXInputStream *stream,
 		   B00083 OK [COPYUID 4154  ] COPY completed.
 		   Just ignore such server error.
 		*/
-		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, 2)) {
+		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE)) {
 			g_clear_error (&local_error);
 			return TRUE;
 		}
@@ -2239,7 +2239,7 @@ imapx_parse_status_copyuid (CamelIMAPXInputStream *stream,
 
 	uids = imapx_parse_uids (stream, cancellable, error);
 	if (uids == NULL) {
-		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, 2)) {
+		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE)) {
 			g_clear_error (&local_error);
 			return TRUE;
 		}
@@ -2426,7 +2426,7 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 			break;
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"expecting OK/NO/BAD");
 			goto fail;
 	}
@@ -2536,7 +2536,7 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 				stream, &token, &len, cancellable, NULL);
 			if (tok == '\n' || tok < 0) {
 				g_set_error (
-					error, CAMEL_IMAPX_ERROR, 1,
+					error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 					"server response truncated");
 				goto fail;
 			}
@@ -2969,7 +2969,7 @@ camel_imapx_parse_quota (CamelIMAPXInputStream *stream,
 			break;
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"quota_response: expecting '('");
 			goto fail;
 	}

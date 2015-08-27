@@ -362,7 +362,7 @@ camel_imapx_input_stream_atom (CamelIMAPXInputStream *is,
 
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"expecting atom");
 			return FALSE;
 	}
@@ -469,7 +469,7 @@ camel_imapx_input_stream_astring (CamelIMAPXInputStream *is,
 
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"expecting astring");
 			return FALSE;
 	}
@@ -529,7 +529,7 @@ camel_imapx_input_stream_nstring (CamelIMAPXInputStream *is,
 
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"expecting nstring");
 			return FALSE;
 	}
@@ -597,7 +597,7 @@ camel_imapx_input_stream_nstring_bytes (CamelIMAPXInputStream *is,
 
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"nstring: token not string");
 			return FALSE;
 	}
@@ -629,7 +629,7 @@ camel_imapx_input_stream_number (CamelIMAPXInputStream *is,
 
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"expecting number");
 			return FALSE;
 	}
@@ -880,7 +880,7 @@ protocol_error:
 	else
 		is->priv->ptr = p;
 
-	g_set_error (error, CAMEL_IMAPX_ERROR, 1, "protocol error");
+	g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED, "protocol error");
 
 	return IMAPX_TOK_ERROR;
 }

@@ -1873,7 +1873,7 @@ imapx_untagged (CamelIMAPXServer *is,
 
 	if (is->priv->context->tok == '\n') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"truncated server response");
 		goto exit;
 	}
@@ -2133,7 +2133,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	default:
 		/* should we just ignore? */
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"continuation response for non-continuation request");
 		return FALSE;
 	}
@@ -2202,7 +2202,7 @@ imapx_completion (CamelIMAPXServer *is,
 
 	if (token[0] != is->priv->tagprefix) {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"Server sent unexpected response: %s", token);
 		return FALSE;
 	}
@@ -2220,7 +2220,7 @@ imapx_completion (CamelIMAPXServer *is,
 
 	if (ic == NULL) {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"got response tag unexpectedly: %s", token);
 		return FALSE;
 	}
@@ -2253,7 +2253,7 @@ imapx_completion (CamelIMAPXServer *is,
 
 	if (g_list_next (ic->current_part) != NULL) {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"command still has unsent parts? %s", camel_imapx_job_get_kind_name (ic->job_kind));
 		goto exit;
 	}
@@ -2326,7 +2326,7 @@ imapx_step (CamelIMAPXServer *is,
 			break;
 		default:
 			g_set_error (
-				error, CAMEL_IMAPX_ERROR, 1,
+				error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 				"unexpected server response:");
 			break;
 	}
@@ -3671,7 +3671,7 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 
 	if (output_stream == NULL) {
 		local_error = g_error_new_literal (
-			CAMEL_IMAPX_ERROR, 1,
+			CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_TRY_RECONNECT,
 			_("Cannot issue command, no stream available"));
 		goto exit;
 	}

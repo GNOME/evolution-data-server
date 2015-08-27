@@ -147,7 +147,7 @@ imapx_list_response_parse_childinfo (CamelIMAPXInputStream *stream,
 		goto fail;
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"list childinfo: expecting ')'");
 		goto fail;
 	}
@@ -197,7 +197,7 @@ imapx_list_response_parse_oldname (CamelIMAPXInputStream *stream,
 		goto fail;
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"list oldname: expecting ')'");
 		goto fail;
 	}
@@ -214,7 +214,7 @@ imapx_list_response_parse_oldname (CamelIMAPXInputStream *stream,
 		goto fail;
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"list oldname: expecting ')'");
 		goto fail;
 	}
@@ -325,7 +325,7 @@ camel_imapx_list_response_new (CamelIMAPXInputStream *stream,
 		goto fail;
 	if (tok != '(') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"list: expecting '('");
 		goto fail;
 	}
@@ -343,7 +343,7 @@ camel_imapx_list_response_new (CamelIMAPXInputStream *stream,
 		goto fail;
 	if (tok != ')') {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"list: expecting ')'");
 		goto fail;
 	}
@@ -414,7 +414,7 @@ extended_item_repeat:
 
 	} else {
 		g_set_error (
-			error, CAMEL_IMAPX_ERROR, 1,
+			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
 			"list: expecting '(' or NEWLINE");
 		goto fail;
 	}
