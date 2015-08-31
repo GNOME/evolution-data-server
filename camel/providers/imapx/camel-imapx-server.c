@@ -305,6 +305,8 @@ struct _CamelIMAPXServerPrivate {
 	CamelFolder *fetch_changes_folder; /* not referenced */
 	GHashTable *fetch_changes_infos; /* gchar *uid ~> FetchChangesInfo-s */
 	gint64 fetch_changes_last_progress; /* when was called last progress */
+
+	struct _status_info *copyuid_status;
 };
 
 enum {
@@ -1793,11 +1795,17 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			imapx_server_stash_command_arguments (is);
 		}
 		break;
+	case IMAPX_COPYUID:
+		imapx_free_status (is->priv->copyuid_status);
+		is->priv->copyuid_status = is->priv->context->sinfo;
+		is->priv->context->sinfo = NULL;
+		break;
 	default:
 		break;
 	}
 
 	imapx_free_status (is->priv->context->sinfo);
+	is->priv->context->sinfo = NULL;
 
 	return TRUE;
 }
@@ -3229,6 +3237,7 @@ imapx_server_finalize (GObject *object)
 	g_mutex_clear (&is->priv->select_lock);
 
 	camel_folder_change_info_free (is->priv->changes);
+	imapx_free_status (is->priv->copyuid_status);
 
 	g_free (is->priv->context);
 	g_hash_table_destroy (is->priv->untagged_handlers);
@@ -3332,6 +3341,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 
 	is->priv->state = IMAPX_DISCONNECTED;
 	is->priv->is_cyrus = FALSE;
+	is->priv->copyuid_status = NULL;
 
 	is->priv->changes = camel_folder_change_info_new ();
 
@@ -4082,6 +4092,8 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	gboolean use_move_command = FALSE;
 	CamelIMAPXCommand *ic;
 	CamelFolder *folder;
+	GHashTable *source_infos;
+	gboolean remove_junk_flags;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -4102,6 +4114,9 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
+	remove_deleted_flags = remove_deleted_flags || (folder->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
+	remove_junk_flags = (folder->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
+
 	/* If we're moving messages, prefer "UID MOVE" if supported. */
 	if (delete_originals) {
 		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, MOVE)) {
@@ -4110,10 +4125,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 		}
 	}
 
+	source_infos = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, camel_message_info_unref);
 	data_uids = g_ptr_array_new ();
 
 	for (ii = 0; ii < uids->len; ii++) {
-		g_ptr_array_add (data_uids, (gpointer) camel_pstring_strdup (uids->pdata[ii]));
+		gchar *uid = (gchar *) camel_pstring_strdup (uids->pdata[ii]);
+
+		g_ptr_array_add (data_uids, uid);
+		g_hash_table_insert (source_infos, uid, camel_folder_summary_get (folder->summary, uid));
 	}
 
 	g_ptr_array_sort (data_uids, (GCompareFunc) imapx_uids_array_cmp);
@@ -4143,13 +4162,17 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 		camel_imapx_command_add (ic, " %M", destination);
 
+		imapx_free_status (is->priv->copyuid_status);
+		is->priv->copyuid_status = NULL;
+
 		success = camel_imapx_server_process_command_sync (is, ic,
 			use_move_command ? _("Error moving messages") : _("Error copying messages"),
 			cancellable, error);
 
 		if (success) {
-			if (ic->status && ic->status->u.copyuid.uids && ic->status->u.copyuid.copied_uids &&
-			    ic->status->u.copyuid.uids->len == ic->status->u.copyuid.copied_uids->len) {
+			if (is->priv->copyuid_status && is->priv->copyuid_status->u.copyuid.uids &&
+			    is->priv->copyuid_status->u.copyuid.copied_uids &&
+			    is->priv->copyuid_status->u.copyuid.uids->len == is->priv->copyuid_status->u.copyuid.copied_uids->len) {
 				CamelFolder *destination_folder;
 
 				destination_folder = imapx_server_ref_folder (is, destination);
@@ -4160,18 +4183,18 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 					changes = camel_folder_change_info_new ();
 
-					for (ii = 0; ii < ic->status->u.copyuid.uids->len; ii++) {
+					for (ii = 0; ii < is->priv->copyuid_status->u.copyuid.uids->len; ii++) {
 						gchar *uid;
 						gboolean is_new = FALSE;
 
-						uid = g_strdup_printf ("%d", g_array_index (ic->status->u.copyuid.uids, guint32, ii));
-						source_info = camel_folder_summary_get (folder->summary, uid);
+						uid = g_strdup_printf ("%d", g_array_index (is->priv->copyuid_status->u.copyuid.uids, guint32, ii));
+						source_info = g_hash_table_lookup (source_infos, uid);
 						g_free (uid);
 
 						if (!source_info)
 							continue;
 
-						uid = g_strdup_printf ("%d", g_array_index (ic->status->u.copyuid.copied_uids, guint32, ii));
+						uid = g_strdup_printf ("%d", g_array_index (is->priv->copyuid_status->u.copyuid.copied_uids, guint32, ii));
 						destination_info = camel_folder_summary_get (folder->summary, uid);
 
 						if (!destination_info) {
@@ -4193,6 +4216,8 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 							camel_imapx_mailbox_get_permanentflags (destination));
 						if (remove_deleted_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_DELETED, 0);
+						if (remove_junk_flags)
+							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_JUNK, 0);
 						if (is_new)
 							camel_folder_summary_add (destination_folder->summary, destination_info);
 						camel_folder_change_info_add_uid (changes, destination_info->uid);
@@ -4247,9 +4272,13 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 			}
 		}
 
+		imapx_free_status (is->priv->copyuid_status);
+		is->priv->copyuid_status = NULL;
+
 		camel_imapx_command_unref (ic);
 	}
 
+	g_hash_table_destroy (source_infos);
 	g_ptr_array_foreach (data_uids, (GFunc) camel_pstring_free, NULL);
 	g_ptr_array_free (data_uids, TRUE);
 	g_object_unref (folder);
