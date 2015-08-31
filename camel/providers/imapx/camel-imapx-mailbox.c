@@ -745,6 +745,11 @@ camel_imapx_mailbox_set_permanentflags (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if ((permanentflags & CAMEL_MESSAGE_USER) != 0) {
+		permanentflags |= CAMEL_MESSAGE_JUNK;
+		permanentflags |= CAMEL_MESSAGE_NOTJUNK;
+	}
+
 	mailbox->priv->permanentflags = permanentflags;
 }
 
