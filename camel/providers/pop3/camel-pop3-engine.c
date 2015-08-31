@@ -342,6 +342,8 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 	case '+':
 		dd (printf ("Got + response\n"));
 		if (pc->flags & CAMEL_POP3_COMMAND_MULTI) {
+			gint fret;
+
 			pc->state = CAMEL_POP3_COMMAND_DATA;
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_DATA);
 
@@ -353,14 +355,17 @@ camel_pop3_engine_iterate (CamelPOP3Engine *pe,
 					pc->state = CAMEL_POP3_COMMAND_ERR;
 					pc->error_str = g_strdup (local_error->message);
 					g_propagate_error (error, local_error);
-					break;
+					goto ioerror;
 				}
 			}
 
 			/* Make sure we get all data before going back to command mode */
-			while (camel_pop3_stream_getd (pe->stream, &p, &len, cancellable, error) > 0)
+			while (fret = camel_pop3_stream_getd (pe->stream, &p, &len, cancellable, error), fret > 0)
 				;
 			camel_pop3_stream_set_mode (pe->stream, CAMEL_POP3_STREAM_LINE);
+
+			if (fret < 0)
+				goto ioerror;
 		} else {
 			pc->state = CAMEL_POP3_COMMAND_OK;
 		}
