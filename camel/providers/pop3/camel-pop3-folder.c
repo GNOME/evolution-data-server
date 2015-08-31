@@ -481,7 +481,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	/* check to see if we have safely written flag set */
-	if (!camel_pop3_store_cache_has (pop3_store, fi->uid)) {
+	stream = camel_pop3_store_cache_get (pop3_store, fi->uid, NULL);
+	if (!stream) {
 		GError *local_error = NULL;
 
 		/* Initiate retrieval, if disk backing fails, use a memory backing */
