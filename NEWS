@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.17.91 2015-08-31
+----------------------------------------
+
+Bug Fixes:
+	Bug 699529 - Store remote folder changes more often (Milan Crha)
+	Bug 753764 - Can't move recurring 24h calendar entries back one day (Milan Crha)
+	Bug 749773 - [IMAPx] Ignore preceding '+' in capability name (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Correct expunge and real trash/junk handling (Milan Crha)
+	[CalDAV] Add workaround for FastMail servers (Milan Crha)
+	[Google backend] Use imap/smtp.googlemail.com instead of .gmail.com (Milan Crha)
+	[IMAPx] Do not block GetMessage requests for different messages (Milan Crha)
+	[Google/ownCloud backend] Always update discovered ESource details (Milan Crha)
+	[GOA/UOA] Remove duplicate ESource-s referencing the same GOA/UOA account (Milan Crha)
+	[IMAPx] Do not inherit cancelled errors from previously running jobs (Milan Crha)
+	[IMAPx] Name CAMEL_IMAPX_ERROR codes (Milan Crha)
+	[IMAPx] Miscellaneous changes (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Dušan Kazik (sk)
+	Jordi Mas (ca)
+	Pedro Albuquerque (pt)
+	Piotr Drąg (pl)
+	Chao-Hsiung Liao (zh_TW)
+
 Evolution-Data-Server 3.17.90 2015-08-17
 ----------------------------------------
 
