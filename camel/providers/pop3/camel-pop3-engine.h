@@ -131,6 +131,10 @@ struct _CamelPOP3Engine {
 	GQueue done;	/* list of done commands, awaiting free */
 
 	CamelPOP3Command *current; /* currently busy (downloading) response */
+
+	GMutex busy_lock;
+	GCond busy_cond;
+	gboolean is_busy;
 };
 
 struct _CamelPOP3EngineClass {
@@ -151,6 +155,10 @@ gint		camel_pop3_engine_iterate	(CamelPOP3Engine *pe,
 						 CamelPOP3Command *pc,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	camel_pop3_engine_busy_lock	(CamelPOP3Engine *pe,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_pop3_engine_busy_unlock	(CamelPOP3Engine *pe);
 CamelPOP3Command *
 		camel_pop3_engine_command_new	(CamelPOP3Engine *pe,
 						 guint32 flags,
