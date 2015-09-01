@@ -3662,7 +3662,7 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 
 	if (output_stream == NULL) {
 		local_error = g_error_new_literal (
-			CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_TRY_RECONNECT,
+			CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
 			_("Cannot issue command, no stream available"));
 		goto exit;
 	}

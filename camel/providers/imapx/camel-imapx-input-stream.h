@@ -50,8 +50,7 @@ typedef struct _CamelIMAPXInputStreamPrivate CamelIMAPXInputStreamPrivate;
 
 typedef enum {
 	CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED = 1,
-	CAMEL_IMAPX_ERROR_IGNORE, /* may ignore such errors */
-	CAMEL_IMAPX_ERROR_TRY_RECONNECT
+	CAMEL_IMAPX_ERROR_IGNORE /* may ignore such errors */
 } CamelIMAPXError;
 
 typedef enum {

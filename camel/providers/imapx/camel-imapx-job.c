@@ -482,9 +482,6 @@ camel_imapx_job_run_sync (CamelIMAPXJob *job,
 			g_cancellable_disconnect (cancellable, cancelled_handler_id);
 	}
 
-	if (!g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT))
-		camel_imapx_job_done (job);
-
 	if (local_error)
 		g_propagate_error (error, local_error);
 
