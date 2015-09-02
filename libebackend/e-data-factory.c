@@ -407,11 +407,10 @@ data_factory_connections_remove (EDataFactory *data_factory,
 			removed = TRUE;
 		}
 
-		if (array->len == 0)
+		if (array->len == 0) {
 			g_hash_table_remove (connections, name);
-
-		if (g_hash_table_size (connections) == 0)
 			e_dbus_server_release (E_DBUS_SERVER (data_factory));
+		}
 	}
 
 	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
@@ -507,6 +506,7 @@ data_factory_connections_add (EDataFactory *data_factory,
 			(GDestroyNotify) g_object_unref);
 		g_hash_table_insert (
 			connections, g_strdup (name), array);
+		e_dbus_server_hold (E_DBUS_SERVER (data_factory));
 	}
 
 	g_ptr_array_add (array, g_object_ref (proxy));
@@ -551,14 +551,11 @@ data_factory_call_subprocess_backend_create_sync (EDataFactory *data_factory,
 
 		g_free (object_path);
 	} else {
-		g_rec_mutex_lock (&data_factory->priv->connections_lock);
-		if (g_hash_table_size (data_factory->priv->connections) == 0)
-			e_dbus_server_release (E_DBUS_SERVER (data_factory));
-		g_rec_mutex_unlock (&data_factory->priv->connections_lock);
-
 		g_return_if_fail (error != NULL);
 		g_dbus_method_invocation_take_error (invocation, error);
 	}
+
+	e_dbus_server_release (E_DBUS_SERVER (data_factory));
 
 	g_mutex_lock (&data_factory->priv->spawn_subprocess_lock);
 	if (data_factory->priv->spawn_subprocess_state == DATA_FACTORY_SPAWN_SUBPROCESS_BLOCKED)
@@ -759,17 +756,23 @@ data_factory_connections_remove_all (EDataFactory *data_factory)
 
 	if (g_hash_table_size (connections) > 0) {
 		GList *proxies, *l;
+		gint ii;
+
 		proxies = data_factory_list_proxies (data_factory);
 
 		for (l = proxies; l != NULL; l = g_list_next (l)) {
 			EDBusSubprocessBackend *proxy = l->data;
+
 			e_dbus_subprocess_backend_call_close_sync (proxy, NULL, NULL);
 		}
 
 		g_list_free_full (proxies, g_object_unref);
 
+		for (ii = 0; ii < g_hash_table_size (connections); ii++) {
+			e_dbus_server_release (E_DBUS_SERVER (data_factory));
+		}
+
 		g_hash_table_remove_all (connections);
-		e_dbus_server_release (E_DBUS_SERVER (data_factory));
 	}
 
 	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
@@ -1291,10 +1294,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	}
 
 	if (error != NULL) {
-		g_rec_mutex_lock (&priv->connections_lock);
-		if (g_hash_table_size (priv->connections) == 0)
-			e_dbus_server_release (E_DBUS_SERVER (data_factory));
-		g_rec_mutex_unlock (&priv->connections_lock);
+		e_dbus_server_release (E_DBUS_SERVER (data_factory));
 
 		if (sd) {
 			g_mutex_lock (&priv->subprocess_watched_ids_lock);
@@ -1371,10 +1371,7 @@ e_data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 
 	/* Make sure the server will not quit due to inactivity while
 	   the subprocess is opening */
-	g_rec_mutex_lock (&data_factory->priv->connections_lock);
-	if (g_hash_table_size (data_factory->priv->connections) == 0)
-		e_dbus_server_hold (E_DBUS_SERVER (data_factory));
-	g_rec_mutex_unlock (&data_factory->priv->connections_lock);
+	e_dbus_server_hold (E_DBUS_SERVER (data_factory));
 
 	data = data_factory_spawn_subprocess_backend_thread_data_new (
 		data_factory, invocation, uid, extension_name, subprocess_path);

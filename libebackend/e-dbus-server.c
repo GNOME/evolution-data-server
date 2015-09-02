@@ -49,6 +49,8 @@ struct _EDBusServerPrivate {
 	guint use_count;
 	gboolean wait_for_client;
 	EDBusServerExitCode exit_code;
+
+	GMutex property_lock;
 };
 
 enum {
@@ -147,6 +149,8 @@ dbus_server_finalize (GObject *object)
 
 	if (priv->inactivity_timeout_id > 0)
 		g_source_remove (priv->inactivity_timeout_id);
+
+	g_mutex_clear (&priv->property_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_dbus_server_parent_class)->finalize (object);
@@ -371,6 +375,8 @@ e_dbus_server_init (EDBusServer *server)
 	server->priv->main_loop = g_main_loop_new (NULL, FALSE);
 	server->priv->wait_for_client = FALSE;
 
+	g_mutex_init (&server->priv->property_lock);
+
 #ifdef G_OS_UNIX
 	server->priv->hang_up_id = g_unix_signal_add (
 		SIGHUP, dbus_server_hang_up_cb, server);
@@ -456,12 +462,16 @@ e_dbus_server_hold (EDBusServer *server)
 {
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
+	g_mutex_lock (&server->priv->property_lock);
+
 	if (server->priv->inactivity_timeout_id > 0) {
 		g_source_remove (server->priv->inactivity_timeout_id);
 		server->priv->inactivity_timeout_id = 0;
 	}
 
 	server->priv->use_count++;
+
+	g_mutex_unlock (&server->priv->property_lock);
 }
 
 /**
@@ -483,6 +493,8 @@ e_dbus_server_release (EDBusServer *server)
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 	g_return_if_fail (server->priv->use_count > 0);
 
+	g_mutex_lock (&server->priv->property_lock);
+
 	server->priv->use_count--;
 
 	if (server->priv->use_count == 0) {
@@ -492,6 +504,8 @@ e_dbus_server_release (EDBusServer *server)
 				dbus_server_inactivity_timeout_cb,
 				server);
 	}
+
+	g_mutex_unlock (&server->priv->property_lock);
 }
 
 /**
