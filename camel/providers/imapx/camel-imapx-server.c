@@ -4993,6 +4993,21 @@ imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
 	}
 }
 
+static void
+imapx_server_info_changed_cb (CamelIMAPXSummary *summary,
+			      CamelMessageInfo *info,
+			      gpointer user_data)
+{
+	GHashTable *changed_meanwhile = user_data;
+
+	g_return_if_fail (info != NULL);
+	g_return_if_fail (changed_meanwhile != NULL);
+
+	g_hash_table_insert (changed_meanwhile,
+		(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
+		GINT_TO_POINTER (1));
+}
+
 gboolean
 camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				      CamelIMAPXMailbox *mailbox,
@@ -5005,6 +5020,8 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	CamelFolder *folder;
 	CamelIMAPXMessageInfo *info;
 	CamelIMAPXSettings *settings;
+	GHashTable *changed_meanwhile;
+	gulong changed_meanwhile_handler_id;
 	guint32 permanentflags;
 	struct _uidset_state uidset;
 	gint unread_change = 0;
@@ -5037,6 +5054,10 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		g_object_unref (folder);
 		return TRUE;
 	}
+
+	changed_meanwhile = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
+	changed_meanwhile_handler_id = g_signal_connect (folder->summary, "info-changed",
+		G_CALLBACK (imapx_server_info_changed_cb), changed_meanwhile);
 
 	settings = camel_imapx_server_ref_settings (is);
 	use_real_junk_path = camel_imapx_settings_get_use_real_junk_path (settings);
@@ -5173,19 +5194,24 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		(off_user == NULL);
 
 	if (nothing_to_do) {
+		g_signal_handler_disconnect (folder->summary, changed_meanwhile_handler_id);
+
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
 		imapx_unset_folder_flagged_flag (folder->summary, changed_uids, remove_deleted_flags);
 		camel_folder_free_uids (folder, changed_uids);
+		g_hash_table_destroy (changed_meanwhile);
 		g_object_unref (folder);
 		return TRUE;
 	}
 
 	if (!camel_imapx_server_ensure_selected_sync (is, mailbox, cancellable, error)) {
+		g_signal_handler_disconnect (folder->summary, changed_meanwhile_handler_id);
+
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
-		imapx_unset_folder_flagged_flag (folder->summary, changed_uids, remove_deleted_flags);
 		camel_folder_free_uids (folder, changed_uids);
+		g_hash_table_destroy (changed_meanwhile);
 		g_object_unref (folder);
 		return FALSE;
 	}
@@ -5275,10 +5301,10 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			g_warn_if_fail (ic == NULL);
 		}
 
-		if (user_set && (permanentflags & CAMEL_MESSAGE_USER) != 0) {
+		if (user_set && (permanentflags & CAMEL_MESSAGE_USER) != 0 && success) {
 			CamelIMAPXCommand *ic = NULL;
 
-			for (jj = 0; jj < user_set->len; jj++) {
+			for (jj = 0; jj < user_set->len && success; jj++) {
 				struct _imapx_flag_change *c = &g_array_index (user_set, struct _imapx_flag_change, jj);
 
 				imapx_uidset_init (&uidset, 0, 100);
@@ -5311,11 +5337,15 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		}
 	}
 
+	g_signal_handler_disconnect (folder->summary, changed_meanwhile_handler_id);
+
 	if (success) {
 		CamelStore *parent_store;
 		guint32 unseen;
 
 		parent_store = camel_folder_get_parent_store (folder);
+
+		camel_folder_summary_lock (folder->summary);
 
 		for (i = 0; i < changed_uids->len; i++) {
 			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_get (folder->summary,
@@ -5338,9 +5368,14 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			    camel_flag_list_size (&xinfo->server_user_flags) == 0)
 				camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
 
+			if (g_hash_table_lookup (changed_meanwhile, changed_uids->pdata[i]))
+				xinfo->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+
 			camel_folder_summary_touch (folder->summary);
 			camel_message_info_unref (xinfo);
 		}
+
+		camel_folder_summary_unlock (folder->summary);
 
 		/* Apply the changes to server-side unread count; it won't tell
 		 * us of these changes, of course. */
@@ -5372,6 +5407,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	imapx_sync_free_user (on_user);
 	imapx_sync_free_user (off_user);
 	camel_folder_free_uids (folder, changed_uids);
+	g_hash_table_destroy (changed_meanwhile);
 	g_object_unref (folder);
 
 	return success;
