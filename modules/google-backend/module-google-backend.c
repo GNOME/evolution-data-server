@@ -606,16 +606,18 @@ google_backend_populate (ECollectionBackend *backend)
 		google_backend_add_tasks (backend);
 #endif
 
-	list = e_collection_backend_list_contacts_sources (backend);
-	if (list == NULL)
-		google_backend_add_contacts (backend);
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	source = e_backend_get_source (E_BACKEND (backend));
+	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+
+	if (e_source_collection_get_contacts_enabled (collection_extension)) {
+		list = e_collection_backend_list_contacts_sources (backend);
+		if (list == NULL)
+			google_backend_add_contacts (backend);
+		g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	}
 
 	/* Chain up to parent's populate() method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
-
-	source = e_backend_get_source (E_BACKEND (backend));
-	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 
 	if (e_source_collection_get_calendar_enabled (collection_extension)) {
 		e_backend_schedule_credentials_required (E_BACKEND (backend),
@@ -739,6 +741,36 @@ google_backend_child_added (ECollectionBackend *backend,
 			child_source, "notify::oauth2-support",
 			G_CALLBACK (google_backend_contacts_update_auth_method),
 			NULL);
+
+		if (!e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA) &&
+		    !e_source_has_extension (collection_source, E_SOURCE_EXTENSION_UOA)) {
+			/* Even the book is part of the collection it can be removed
+			   separately, if not configured through GOA or UOA. */
+			e_server_side_source_set_removable (E_SERVER_SIDE_SOURCE (child_source), TRUE);
+		}
+	}
+}
+
+static void
+google_backend_child_removed (ECollectionBackend *backend,
+			      ESource *child_source)
+{
+	ESource *collection_source;
+
+	/* Chain up to parent's method. */
+	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->child_removed (backend, child_source);
+
+	collection_source = e_backend_get_source (E_BACKEND (backend));
+
+	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_ADDRESS_BOOK) &&
+	    e_source_has_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION) &&
+	    !e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA) &&
+	    !e_source_has_extension (collection_source, E_SOURCE_EXTENSION_UOA)) {
+		ESourceCollection *collection_extension;
+
+		collection_extension = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION);
+
+		e_source_collection_set_contacts_enabled (collection_extension, FALSE);
 	}
 }
 
@@ -770,6 +802,7 @@ e_google_backend_class_init (EGoogleBackendClass *class)
 	collection_backend_class->populate = google_backend_populate;
 	collection_backend_class->dup_resource_id = google_backend_dup_resource_id;
 	collection_backend_class->child_added = google_backend_child_added;
+	collection_backend_class->child_removed = google_backend_child_removed;
 }
 
 static void
