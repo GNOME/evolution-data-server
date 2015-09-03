@@ -3636,7 +3636,11 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 
 	COMMAND_LOCK (is);
 
-	g_warn_if_fail (is->priv->current_command == NULL);
+	if (is->priv->current_command != NULL) {
+		g_warning ("%s: Starting command '%s' while still processing '%s'", G_STRFUNC,
+			camel_imapx_job_get_kind_name (ic->job_kind),
+			camel_imapx_job_get_kind_name (is->priv->current_command->job_kind));
+	}
 
 	c (is->priv->tagprefix, "%s: %p ~> %p\n", G_STRFUNC, is->priv->current_command, ic);
 

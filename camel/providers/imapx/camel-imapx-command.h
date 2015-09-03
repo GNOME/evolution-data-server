@@ -60,8 +60,6 @@ struct _CamelIMAPXCommandPart {
 	gpointer ob;
 };
 
-
-
 struct _CamelIMAPXCommand {
 	struct _CamelIMAPXServer *is;
 	gint pri;
