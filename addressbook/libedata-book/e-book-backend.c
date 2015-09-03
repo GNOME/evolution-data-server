@@ -1099,6 +1099,8 @@ book_backend_open_thread (GSimpleAsyncResult *simple,
 	if (!e_book_backend_is_opened (backend)) {
 		GError *error = NULL;
 
+		e_backend_ensure_online_state_updated (E_BACKEND (backend), cancellable);
+
 		class->open_sync (backend, cancellable, &error);
 
 		if (error != NULL)
@@ -1136,6 +1138,8 @@ book_backend_open_thread_old_style (GSimpleAsyncResult *simple,
 		guint32 opid;
 
 		opid = book_backend_stash_operation (backend, simple);
+
+		e_backend_ensure_online_state_updated (E_BACKEND (backend), cancellable);
 
 		class->open (backend, data_book, opid, cancellable, FALSE);
 	}

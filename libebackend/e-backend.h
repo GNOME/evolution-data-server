@@ -104,6 +104,9 @@ GType		e_backend_get_type		(void) G_GNUC_CONST;
 gboolean	e_backend_get_online		(EBackend *backend);
 void		e_backend_set_online		(EBackend *backend,
 						 gboolean online);
+void		e_backend_ensure_online_state_updated
+						(EBackend *backend,
+						 GCancellable *cancellable);
 ESource *	e_backend_get_source		(EBackend *backend);
 GSocketConnectable *
 		e_backend_ref_connectable	(EBackend *backend);

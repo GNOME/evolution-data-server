@@ -5551,7 +5551,10 @@ caldav_backend_initable_init (GInitable *initable,
 		auth_method = e_source_authentication_dup_method (extension);
 	}
 
-	if (g_strcmp0 (auth_method, "OAuth2") == 0) {
+	e_backend_ensure_online_state_updated (E_BACKEND (initable), cancellable);
+
+	if (g_strcmp0 (auth_method, "OAuth2") == 0 &&
+	    e_backend_get_online (E_BACKEND (initable))) {
 		ESourceWebdav *extension;
 		SoupAuth *soup_auth;
 		SoupURI *soup_uri;

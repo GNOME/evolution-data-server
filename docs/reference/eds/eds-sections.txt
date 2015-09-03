@@ -19,6 +19,7 @@ EBackend
 EBackendClass
 e_backend_get_online
 e_backend_set_online
+e_backend_ensure_online_state_updated
 e_backend_get_source
 e_backend_ref_connectable
 e_backend_set_connectable

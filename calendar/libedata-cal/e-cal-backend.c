@@ -1555,6 +1555,8 @@ cal_backend_open_thread (GSimpleAsyncResult *simple,
 
 		opid = cal_backend_stash_operation (backend, simple);
 
+		e_backend_ensure_online_state_updated (E_BACKEND (backend), cancellable);
+
 		class->open (backend, data_cal, opid, cancellable, FALSE);
 	}
 

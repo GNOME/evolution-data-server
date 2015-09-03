@@ -722,7 +722,6 @@ e_backend_init (EBackend *backend)
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
 	backend->priv->prompter = e_user_prompter_new ();
 	backend->priv->main_context = g_main_context_ref_thread_default ();
-	backend->priv->online = TRUE;
 
 	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->update_online_state_lock);
@@ -735,6 +734,7 @@ e_backend_init (EBackend *backend)
 
 	network_monitor = g_network_monitor_get_default ();
 	backend->priv->network_monitor = g_object_ref (network_monitor);
+	backend->priv->online = g_network_monitor_get_network_available (network_monitor);
 
 	handler_id = g_signal_connect (
 		backend->priv->network_monitor, "network-changed",
@@ -802,6 +802,51 @@ e_backend_set_online (EBackend *backend,
 
 	if (!backend->priv->online && backend->priv->source)
 		e_source_set_connection_status (backend->priv->source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+}
+
+/**
+ * e_backend_ensure_online_state_updated:
+ * @backend: an #EBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ *
+ * Makes sure that the "online" property is updated, that is, if there
+ * is any destination reachability test pending, it'll be done immediately
+ * and the only state will be updated as well.
+ *
+ * Since: 3.18
+ **/
+void
+e_backend_ensure_online_state_updated (EBackend *backend,
+				       GCancellable *cancellable)
+{
+	gboolean needs_update = FALSE;
+
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	g_object_ref (backend);
+
+	g_mutex_lock (&backend->priv->update_online_state_lock);
+
+	if (backend->priv->update_online_state) {
+		g_source_destroy (backend->priv->update_online_state);
+		g_source_unref (backend->priv->update_online_state);
+		backend->priv->update_online_state = NULL;
+
+		needs_update = TRUE;
+	}
+
+	g_mutex_unlock (&backend->priv->update_online_state_lock);
+
+	if (!needs_update) {
+		g_mutex_lock (&backend->priv->network_monitor_cancellable_lock);
+		needs_update = backend->priv->network_monitor_cancellable != NULL;
+		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
+	}
+
+	if (needs_update)
+		e_backend_set_online (backend, e_backend_is_destination_reachable (backend, cancellable, NULL));
+
+	g_object_unref (backend);
 }
 
 /**
