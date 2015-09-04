@@ -65,6 +65,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-module.c \
 	e-operation-pool.c \
 	e-proxy.c \
+	e-secret-store.c \
 	e-sexp.c \
 	e-soup-auth-bearer.c \
 	e-soup-ssl-trust.c \
@@ -156,6 +157,7 @@ libedataserverinclude_HEADERS = \
 	e-module.h \
 	e-operation-pool.h \
 	e-proxy.h \
+	e-secret-store.h \
 	e-sexp.h \
 	e-soup-auth-bearer.h \
 	e-soup-ssl-trust.h \

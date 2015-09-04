@@ -39,6 +39,7 @@
 #include <libedataserver/e-module.h>
 #include <libedataserver/e-operation-pool.h>
 #include <libedataserver/e-proxy.h>
+#include <libedataserver/e-secret-store.h>
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-soup-auth-bearer.h>
 #include <libedataserver/e-soup-ssl-trust.h>

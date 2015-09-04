@@ -2736,6 +2736,14 @@ e_proxy_get_type
 </SECTION>
 
 <SECTION>
+<FILE>e-secret-store</FILE>
+<TITLE>Secret store interface</TITLE>
+e_secret_store_store_sync
+e_secret_store_lookup_sync
+e_secret_store_delete_sync
+</SECTION>
+
+<SECTION>
 <FILE>e-server-side-source</FILE>
 <TITLE>EServerSideSource</TITLE>
 EServerSideSource
