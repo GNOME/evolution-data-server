@@ -256,9 +256,7 @@ vee_info_set_flags (CamelMessageInfo *mi,
 		if (ignore_changes)
 			camel_vee_folder_ignore_next_changed_event (vf, camel_folder_summary_get_folder (rmi->summary));
 
-		camel_folder_freeze (camel_folder_summary_get_folder (rmi->summary));
 		res = camel_message_info_set_flags (rmi, flags, set);
-		camel_folder_thaw (camel_folder_summary_get_folder (rmi->summary));
 
 		if (res) {
 			/* update flags on itself too */
