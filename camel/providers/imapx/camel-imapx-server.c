@@ -5015,6 +5015,7 @@ imapx_server_info_changed_cb (CamelIMAPXSummary *summary,
 gboolean
 camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				      CamelIMAPXMailbox *mailbox,
+				      gboolean can_influence_flags,
 				      GCancellable *cancellable,
 				      GError **error)
 {
@@ -5023,14 +5024,13 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelFolder *folder;
 	CamelIMAPXMessageInfo *info;
-	CamelIMAPXSettings *settings;
 	GHashTable *changed_meanwhile;
 	gulong changed_meanwhile_handler_id;
 	guint32 permanentflags;
 	struct _uidset_state uidset;
 	gint unread_change = 0;
-	gboolean use_real_junk_path;
-	gboolean use_real_trash_path;
+	gboolean use_real_junk_path = FALSE;
+	gboolean use_real_trash_path = FALSE;
 	gboolean remove_deleted_flags = FALSE;
 	gboolean nothing_to_do;
 	gboolean success;
@@ -5063,36 +5063,38 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	changed_meanwhile_handler_id = g_signal_connect (folder->summary, "info-changed",
 		G_CALLBACK (imapx_server_info_changed_cb), changed_meanwhile);
 
-	settings = camel_imapx_server_ref_settings (is);
-	use_real_junk_path = camel_imapx_settings_get_use_real_junk_path (settings);
-	use_real_trash_path = camel_imapx_settings_get_use_real_trash_path (settings);
-	if (use_real_trash_path) {
-		CamelFolder *trash_folder = NULL;
-		gchar *real_trash_path;
+	if (can_influence_flags) {
+		CamelIMAPXSettings *settings;
 
-		real_trash_path = camel_imapx_settings_dup_real_trash_path (settings);
-		if (real_trash_path)
-			trash_folder = camel_store_get_folder_sync (
-				camel_folder_get_parent_store (folder),
-				real_trash_path, 0, cancellable, NULL);
+		settings = camel_imapx_server_ref_settings (is);
+		use_real_junk_path = camel_imapx_settings_get_use_real_junk_path (settings);
+		use_real_trash_path = camel_imapx_settings_get_use_real_trash_path (settings);
+		if (use_real_trash_path) {
+			CamelFolder *trash_folder = NULL;
+			gchar *real_trash_path;
 
-		/* Remove deleted flags in all but the trash folder itself */
-		remove_deleted_flags = !trash_folder || trash_folder != folder;
+			real_trash_path = camel_imapx_settings_dup_real_trash_path (settings);
+			if (real_trash_path)
+				trash_folder = camel_store_get_folder_sync (
+					camel_folder_get_parent_store (folder),
+					real_trash_path, 0, cancellable, NULL);
 
-		use_real_trash_path = trash_folder != NULL;
+			/* Remove deleted flags in all but the trash folder itself */
+			remove_deleted_flags = !trash_folder || trash_folder != folder;
 
-		g_clear_object (&trash_folder);
-		g_free (real_trash_path);
+			use_real_trash_path = trash_folder != NULL;
+
+			g_clear_object (&trash_folder);
+			g_free (real_trash_path);
+		}
+		g_object_unref (settings);
 	}
-	g_object_unref (settings);
 
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
 		guint32 flags, sflags;
 		CamelFlag *uflags, *suflags;
 		const gchar *uid;
-		gboolean move_to_real_junk;
-		gboolean move_to_real_trash;
 		guint j = 0;
 
 		uid = g_ptr_array_index (changed_uids, i);
@@ -5111,21 +5113,26 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		flags = info->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
 		sflags = info->server_flags & CAMEL_IMAPX_SERVER_FLAGS;
 
-		move_to_real_junk =
-			use_real_junk_path &&
-			(flags & CAMEL_MESSAGE_JUNK);
+		if (can_influence_flags) {
+			gboolean move_to_real_junk;
+			gboolean move_to_real_trash;
 
-		move_to_real_trash =
-			use_real_trash_path && remove_deleted_flags &&
-			(flags & CAMEL_MESSAGE_DELETED);
+			move_to_real_junk =
+				use_real_junk_path &&
+				(flags & CAMEL_MESSAGE_JUNK);
 
-		if (move_to_real_junk)
-			camel_imapx_folder_add_move_to_real_junk (
-				CAMEL_IMAPX_FOLDER (folder), uid);
+			move_to_real_trash =
+				use_real_trash_path && remove_deleted_flags &&
+				(flags & CAMEL_MESSAGE_DELETED);
 
-		if (move_to_real_trash)
-			camel_imapx_folder_add_move_to_real_trash (
-				CAMEL_IMAPX_FOLDER (folder), uid);
+			if (move_to_real_junk)
+				camel_imapx_folder_add_move_to_real_junk (
+					CAMEL_IMAPX_FOLDER (folder), uid);
+
+			if (move_to_real_trash)
+				camel_imapx_folder_add_move_to_real_trash (
+					CAMEL_IMAPX_FOLDER (folder), uid);
+		}
 
 		if (flags != sflags) {
 			off_orset |= (flags ^ sflags) & ~flags;

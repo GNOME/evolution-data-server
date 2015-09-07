@@ -188,6 +188,7 @@ gboolean	camel_imapx_server_refresh_info_sync
 gboolean	camel_imapx_server_sync_changes_sync
 						(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox,
+						 gboolean can_influence_flags,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_imapx_server_expunge_sync	(CamelIMAPXServer *is,

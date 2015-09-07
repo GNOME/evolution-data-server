@@ -1414,7 +1414,7 @@ imapx_conn_manager_sync_changes_run_sync (CamelIMAPXJob *job,
 {
 	CamelIMAPXMailbox *mailbox;
 	GError *local_error = NULL;
-	gboolean success;
+	gboolean can_influence_flags, success;
 
 	g_return_val_if_fail (job != NULL, FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), FALSE);
@@ -1422,7 +1422,9 @@ imapx_conn_manager_sync_changes_run_sync (CamelIMAPXJob *job,
 	mailbox = camel_imapx_job_get_mailbox (job);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
-	success = camel_imapx_server_sync_changes_sync (server, mailbox, cancellable, &local_error);
+	can_influence_flags = GPOINTER_TO_INT (camel_imapx_job_get_user_data (job)) == 1;
+
+	success = camel_imapx_server_sync_changes_sync (server, mailbox, can_influence_flags, cancellable, &local_error);
 
 	camel_imapx_job_set_result (job, success, NULL, local_error, NULL);
 
@@ -1430,6 +1432,25 @@ imapx_conn_manager_sync_changes_run_sync (CamelIMAPXJob *job,
 		g_propagate_error (error, local_error);
 
 	return success;
+}
+
+static gboolean
+imapx_conn_manager_sync_changes_matches (CamelIMAPXJob *job,
+					 CamelIMAPXJob *other_job)
+{
+	gboolean job_can_influence_flags, other_job_can_influence_flags;
+
+	g_return_val_if_fail (job != NULL, FALSE);
+	g_return_val_if_fail (other_job != NULL, FALSE);
+
+	if (camel_imapx_job_get_kind (job) != CAMEL_IMAPX_JOB_SYNC_CHANGES ||
+	    camel_imapx_job_get_kind (job) != camel_imapx_job_get_kind (other_job))
+		return FALSE;
+
+	job_can_influence_flags = GPOINTER_TO_INT (camel_imapx_job_get_user_data (job)) == 1;
+	other_job_can_influence_flags = GPOINTER_TO_INT (camel_imapx_job_get_user_data (other_job)) == 1;
+
+	return job_can_influence_flags == other_job_can_influence_flags;
 }
 
 gboolean
@@ -1446,7 +1467,11 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
 
 	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_SYNC_CHANGES, mailbox,
-		imapx_conn_manager_sync_changes_run_sync, NULL, NULL);
+		imapx_conn_manager_sync_changes_run_sync,
+		imapx_conn_manager_sync_changes_matches, NULL);
+
+	/* Skip store of the \Deleted flag */
+	camel_imapx_job_set_user_data (job, GINT_TO_POINTER (1), NULL);
 
 	success = camel_imapx_conn_manager_run_job_sync (conn_man, job,
 		imapx_conn_manager_matches_sync_changes_or_refresh_info,
@@ -1475,6 +1500,19 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 	}
 
 	if (success && expunge) {
+		job = camel_imapx_job_new (CAMEL_IMAPX_JOB_SYNC_CHANGES, mailbox,
+			imapx_conn_manager_sync_changes_run_sync,
+			imapx_conn_manager_sync_changes_matches, NULL);
+
+		/* Store also the \Deleted flag */
+		camel_imapx_job_set_user_data (job, GINT_TO_POINTER (0), NULL);
+
+		success = camel_imapx_conn_manager_run_job_sync (conn_man, job,
+			imapx_conn_manager_matches_sync_changes_or_refresh_info,
+			cancellable, error);
+
+		camel_imapx_job_unref (job);
+
 		success = imapx_conn_manager_expunge_sync (conn_man, mailbox, TRUE, cancellable, error);
 	}
 
@@ -1509,7 +1547,7 @@ imapx_conn_manager_expunge_run_sync (CamelIMAPXJob *job,
 	return success;
 }
 
-gboolean
+static gboolean
 imapx_conn_manager_expunge_sync (CamelIMAPXConnManager *conn_man,
 				 CamelIMAPXMailbox *mailbox,
 				 gboolean skip_sync_changes,
