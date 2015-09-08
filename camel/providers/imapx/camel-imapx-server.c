@@ -3637,14 +3637,14 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 	COMMAND_LOCK (is);
 
 	if (is->priv->current_command != NULL) {
-		g_warning ("%s: Starting command '%s' while still processing '%s'", G_STRFUNC,
-			camel_imapx_job_get_kind_name (ic->job_kind),
-			camel_imapx_job_get_kind_name (is->priv->current_command->job_kind));
+		g_warning ("%s: Starting command %p (%s) while still processing %p (%s)", G_STRFUNC,
+			ic, camel_imapx_job_get_kind_name (ic->job_kind),
+			is->priv->current_command, camel_imapx_job_get_kind_name (is->priv->current_command->job_kind));
 	}
 
-	c (is->priv->tagprefix, "%s: %p ~> %p\n", G_STRFUNC, is->priv->current_command, ic);
-
 	if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
+		c (is->priv->tagprefix, "%s: command %p (%s) cancelled\n", G_STRFUNC, ic, camel_imapx_job_get_kind_name (ic->job_kind));
+
 		COMMAND_UNLOCK (is);
 
 		if (error_prefix && local_error)
@@ -3655,6 +3655,10 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 
 		return FALSE;
 	}
+
+	c (is->priv->tagprefix, "%s: %p (%s) ~> %p (%s)\n", G_STRFUNC, is->priv->current_command,
+		is->priv->current_command ? camel_imapx_job_get_kind_name (is->priv->current_command->job_kind) : "",
+		ic, camel_imapx_job_get_kind_name (ic->job_kind));
 
 	is->priv->current_command = ic;
 	is->priv->continuation_command = ic;
@@ -3725,6 +3729,16 @@ camel_imapx_server_process_command_sync (CamelIMAPXServer *is,
 
 		is->priv->current_command = NULL;
 		is->priv->continuation_command = NULL;
+	} else {
+		c (is->priv->tagprefix, "%s: current command:%p doesn't match passed-in command:%p success:%d local-error:%s result:%s status-text:'%s'\n", G_STRFUNC,
+			is->priv->current_command, ic, success, local_error ? local_error->message : "[null]",
+			ic->status ? (
+				ic->status->result == IMAPX_OK ? "OK" :
+				ic->status->result == IMAPX_NO ? "NO" :
+				ic->status->result == IMAPX_BAD ? "BAD" :
+				ic->status->result == IMAPX_PREAUTH ? "PREAUTH" :
+				ic->status->result == IMAPX_BYE ? "BYE" : "???") : "[null]",
+			ic->status ? ic->status->text : "[null]");
 	}
 
 	COMMAND_UNLOCK (is);
@@ -6128,9 +6142,9 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 		camel_imapx_command_unref (idle_command);
 
 		if (success)
-			c (camel_imapx_server_get_tagprefix (is), "DONE finished successfully");
+			c (camel_imapx_server_get_tagprefix (is), "DONE finished successfully\n");
 		else
-			c (camel_imapx_server_get_tagprefix (is), "DONE finished with error: %s", local_error ? local_error->message : "Unknown error");
+			c (camel_imapx_server_get_tagprefix (is), "DONE finished with error: %s\n", local_error ? local_error->message : "Unknown error");
 
 		if (!success) {
 			GError *tmp = local_error;

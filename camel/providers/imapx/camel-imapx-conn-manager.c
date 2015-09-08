@@ -1007,9 +1007,9 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 				g_clear_object (&idle_mailbox);
 
 				imapx_conn_manager_unmark_busy (conn_man, cinfo);
-			} else if (local_error && (local_error->domain == G_IO_ERROR || local_error->domain == G_TLS_ERROR || local_error->domain == CAMEL_IMAPX_ERROR ||
+			} else if (!local_error || ((local_error->domain == G_IO_ERROR || local_error->domain == G_TLS_ERROR || local_error->domain == CAMEL_IMAPX_ERROR ||
 				   g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT)) &&
-				   !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED)) {
+				   !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED))) {
 				c (camel_imapx_server_get_tagprefix (cinfo->is), "Removed connection %p (server:%p) due to error: %s\n",
 					cinfo, cinfo->is, local_error ? local_error->message : "Unknown error");
 
@@ -1030,6 +1030,9 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 					g_clear_error (&tmp);
 				}
 			} else {
+				c (camel_imapx_server_get_tagprefix (cinfo->is), "Unmark connection %p (server:%p) busy after failure, error: %s\n",
+					cinfo, cinfo->is, local_error ? local_error->message : "Unknown error");
+
 				imapx_conn_manager_unmark_busy (conn_man, cinfo);
 			}
 
