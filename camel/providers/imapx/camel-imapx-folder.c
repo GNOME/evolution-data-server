@@ -779,6 +779,9 @@ imapx_synchronize_sync (CamelFolder *folder,
 		success = mailbox != NULL;
 	} else {
 		success = camel_imapx_conn_manager_sync_changes_sync (conn_man, mailbox, cancellable, error);
+		if (success && expunge && camel_folder_summary_get_deleted_count (folder->summary) > 0) {
+			success = camel_imapx_conn_manager_expunge_sync (conn_man, mailbox, cancellable, error);
+		}
 	}
 
 	g_clear_object (&mailbox);
