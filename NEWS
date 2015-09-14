@@ -1,3 +1,34 @@
+Evolution-Data-Server 3.17.92 2015-09-14
+----------------------------------------
+
+Bug Fixes:
+	Bug 677438 - [POP3] Crash on disconnect with ongoing message download (Milan Crha)
+	Bug 752339 - [POP3] Crash due to passing set GError to glib-networking (Milan Crha)
+	Bug 402843 - Remove Junk/Deleted flag when moving out of real Junk/Trash folder (Milan Crha)
+	Bug 753432 - Can not delete GMail's account Contact source (Milan Crha)
+	Bug 750964 - Backend online state not updated before calling open() (Milan Crha)
+
+Miscellaneous:
+	[POP3] Message re-download shown as completely empty message (Milan Crha)
+	[IMAPx] Junk/NotJunk message flags not stored server-side (Milan Crha)
+	[IMAPx] Remove redundant CAMEL_IMAPX_ERROR_TRY_RECONNECT error code (Milan Crha)
+	[IMAPx] Local changes not always properly saved to the server (Milan Crha)
+	[IMAPx] Better runtime warning when running command on top of another (Milan Crha)
+	[CamelVeeSummary] Do not freeze folder when setting info flags (Milan Crha)
+	[IMAPx] Move to real Trash keeps original message with UID COPY (Milan Crha)
+	[IMAPx] Empty trash doesn't empty virtual folder Trash (Milan Crha)
+	[IMAPx] Add few more debug prints around command processing (Milan Crha)
+	Always hold EDBusServer when opening factory subprocess (Milan Crha)
+	Extract libsecret store/lookup/delete API into a public interface (Milan Crha)
+
+Translations:
+	Balázs Úr (hu)
+	Andika Triwidada (id)
+	Aurimas Černius (lt)
+	Baurzhan Muftakhidinov (kk)
+	Changwoo Ryu (ko)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.17.91 2015-08-31
 ----------------------------------------
 
