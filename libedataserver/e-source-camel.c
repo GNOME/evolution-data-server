@@ -126,12 +126,7 @@ G_DEFINE_ABSTRACT_TYPE (
 	e_source_camel,
 	E_TYPE_SOURCE_EXTENSION)
 
-/* XXX A function like this belongs in GObject.  I may yet propose it,
- *     GParamSpecClass still has some reserved slots.  This fiddles with
- *     GParamSpec fields that are supposed to be private to GObject, but
- *     I have no other choice.
- *
- * XXX Historical note, originally I tried (ab)using override properties
+/* XXX Historical note, originally I tried (ab)using override properties
  *     in ESourceCamel, which redirected to the equivalent CamelSettings
  *     property.  Seemed to work at first, and I was proud of my clever
  *     hack, but it turns out g_object_class_list_properties() excludes
@@ -141,52 +136,156 @@ static GParamSpec *
 param_spec_clone (GParamSpec *pspec)
 {
 	GParamSpec *clone;
-	GTypeQuery query;
+	GParamFlags flags;
+	const gchar *name, *nick, *blurb;
 
-	/* Query the instance size. */
-	g_type_query (G_PARAM_SPEC_TYPE (pspec), &query);
+	name = g_param_spec_get_name (pspec);
+	nick = g_param_spec_get_nick (pspec);
+	blurb = g_param_spec_get_blurb (pspec);
+	flags = (pspec->flags & ~(G_PARAM_STATIC_STRINGS));
 
-	/* Start with a memcpy()'d buffer. */
-	clone = g_slice_alloc0 (query.instance_size);
-	memcpy (clone, pspec, query.instance_size);
+	if (G_IS_PARAM_SPEC_BOOLEAN (pspec)) {
+		GParamSpecBoolean *pspec_boolean = G_PARAM_SPEC_BOOLEAN (pspec);
 
-	/* This sort of mimics g_param_spec_init(). */
+		clone = g_param_spec_boolean (name, nick, blurb,
+			pspec_boolean->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_CHAR (pspec)) {
+		GParamSpecChar *pspec_char = G_PARAM_SPEC_CHAR (pspec);
 
-#define PARAM_FLOATING_FLAG 0x2  /* from gparam.c */
-	g_datalist_set_flags (&clone->qdata, PARAM_FLOATING_FLAG);
-	clone->ref_count = 1;
+		clone = g_param_spec_char (name, nick, blurb,
+			pspec_char->minimum,
+			pspec_char->maximum,
+			pspec_char->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_UCHAR (pspec)) {
+		GParamSpecUChar *pspec_uchar = G_PARAM_SPEC_UCHAR (pspec);
 
-	/* Clear the owner_type. */
-	clone->owner_type = G_TYPE_INVALID;
+		clone = g_param_spec_uchar (name, nick, blurb,
+			pspec_uchar->minimum,
+			pspec_uchar->maximum,
+			pspec_uchar->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_INT (pspec)) {
+		GParamSpecInt *pspec_int = G_PARAM_SPEC_INT (pspec);
 
-	/* Clear the param_id. */
-	clone->param_id = 0;
+		clone = g_param_spec_int (name, nick, blurb,
+			pspec_int->minimum,
+			pspec_int->maximum,
+			pspec_int->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_UINT (pspec)) {
+		GParamSpecUInt *pspec_uint = G_PARAM_SPEC_UINT (pspec);
 
-	/* This sort of mimics g_param_spec_internal(). */
+		clone = g_param_spec_uint (name, nick, blurb,
+			pspec_uint->minimum,
+			pspec_uint->maximum,
+			pspec_uint->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_LONG (pspec)) {
+		GParamSpecLong *pspec_long = G_PARAM_SPEC_LONG (pspec);
 
-	/* Param name should already be canonicalized and interned. */
+		clone = g_param_spec_long (name, nick, blurb,
+			pspec_long->minimum,
+			pspec_long->maximum,
+			pspec_long->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_ULONG (pspec)) {
+		GParamSpecULong *pspec_ulong = G_PARAM_SPEC_ULONG (pspec);
 
-	/* Always copy the nickname. */
-	clone->flags &= ~G_PARAM_STATIC_NICK;
-	clone->_nick = g_strdup (g_param_spec_get_nick (pspec));
+		clone = g_param_spec_ulong (name, nick, blurb,
+			pspec_ulong->minimum,
+			pspec_ulong->maximum,
+			pspec_ulong->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_INT64 (pspec)) {
+		GParamSpecInt64 *pspec_int64 = G_PARAM_SPEC_INT64 (pspec);
 
-	/* Always copy the blurb. */
-	clone->flags &= ~G_PARAM_STATIC_BLURB;
-	clone->_blurb = g_strdup (g_param_spec_get_blurb (pspec));
+		clone = g_param_spec_int64 (name, nick, blurb,
+			pspec_int64->minimum,
+			pspec_int64->maximum,
+			pspec_int64->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_UINT64 (pspec)) {
+		GParamSpecUInt64 *pspec_uint64 = G_PARAM_SPEC_UINT64 (pspec);
 
-	/* Handle special cases. */
+		clone = g_param_spec_uint64 (name, nick, blurb,
+			pspec_uint64->minimum,
+			pspec_uint64->maximum,
+			pspec_uint64->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_FLOAT (pspec)) {
+		GParamSpecFloat *pspec_float = G_PARAM_SPEC_FLOAT (pspec);
 
-	if (G_IS_PARAM_SPEC_STRING (clone)) {
-		GParamSpecString *clone_s;
+		clone = g_param_spec_float (name, nick, blurb,
+			pspec_float->minimum,
+			pspec_float->maximum,
+			pspec_float->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_DOUBLE (pspec)) {
+		GParamSpecDouble *pspec_double = G_PARAM_SPEC_DOUBLE (pspec);
 
-		clone_s = (GParamSpecString *) clone;
-		clone_s->default_value = g_strdup (clone_s->default_value);
+		clone = g_param_spec_double (name, nick, blurb,
+			pspec_double->minimum,
+			pspec_double->maximum,
+			pspec_double->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_ENUM (pspec)) {
+		GParamSpecEnum *pspec_enum = G_PARAM_SPEC_ENUM (pspec);
+
+		clone = g_param_spec_enum (name, nick, blurb,
+			pspec->value_type,
+			pspec_enum->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_FLAGS (pspec)) {
+		GParamSpecFlags *pspec_flags = G_PARAM_SPEC_FLAGS (pspec);
+
+		clone = g_param_spec_flags (name, nick, blurb,
+			pspec->value_type,
+			pspec_flags->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_STRING (pspec)) {
+		GParamSpecString *pspec_string = G_PARAM_SPEC_STRING (pspec);
+
+		clone = g_param_spec_string (name, nick, blurb,
+			pspec_string->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_PARAM (pspec)) {
+		clone = g_param_spec_param (name, nick, blurb,
+			pspec->value_type,
+			flags);
+	} else if (G_IS_PARAM_SPEC_BOXED (pspec)) {
+		clone = g_param_spec_boxed (name, nick, blurb,
+			pspec->value_type,
+			flags);
+	} else if (G_IS_PARAM_SPEC_POINTER (pspec)) {
+		clone = g_param_spec_pointer (name, nick, blurb, flags);
+	} else if (G_IS_PARAM_SPEC_OBJECT (pspec)) {
+		clone = g_param_spec_object (name, nick, blurb,
+			pspec->value_type,
+			flags);
+	} else if (G_IS_PARAM_SPEC_UNICHAR (pspec)) {
+		GParamSpecUnichar *pspec_unichar = G_PARAM_SPEC_UNICHAR (pspec);
+
+		clone = g_param_spec_unichar (name, nick, blurb,
+			pspec_unichar->default_value,
+			flags);
+	} else if (G_IS_PARAM_SPEC_GTYPE (pspec)) {
+		GParamSpecGType *pspec_gtype = G_PARAM_SPEC_GTYPE (pspec);
+
+		clone = g_param_spec_gtype (name, nick, blurb,
+			pspec_gtype->is_a_type,
+			flags);
+	} else if (G_IS_PARAM_SPEC_VARIANT (pspec)) {
+		GParamSpecVariant *pspec_variant = G_PARAM_SPEC_VARIANT (pspec);
+
+		clone = g_param_spec_variant (name, nick, blurb,
+			pspec_variant->type,
+			pspec_variant->default_value,
+			flags);
+	} else {
+		g_warn_if_reached ();
 	}
-
-	/* Some types we don't handle but shouldn't need to. */
-	g_warn_if_fail (!G_IS_PARAM_SPEC_VALUE_ARRAY (clone));
-	g_warn_if_fail (!G_IS_PARAM_SPEC_OVERRIDE (clone));
-	g_warn_if_fail (!G_IS_PARAM_SPEC_VARIANT (clone));
 
 	return clone;
 }
