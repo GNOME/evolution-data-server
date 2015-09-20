@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.17.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-07 20:29+0200\n"
-"PO-Revision-Date: 2015-09-07 20:31+0200\n"
+"POT-Creation-Date: 2015-09-20 12:46+0200\n"
+"PO-Revision-Date: 2015-09-20 12:47+0200\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -3097,17 +3097,17 @@ msgstr "Du må arbeide tilkoblet for å fullføre denne operasjonen (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Du må arbeide tilknyttet for å fullføre denne operasjonen"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1267
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1355
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1270
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1358
 #, c-format
 msgid "No destination folder specified"
 msgstr "Ingen målmappe oppgitt"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1294
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1297
 msgid "Unable to move junk messages"
 msgstr "Kan ikke flytte uønskede meldinger"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1389
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1392
 msgid "Unable to move deleted messages"
 msgstr "Kan ikke flytte slettede meldinger"
 
@@ -3116,26 +3116,26 @@ msgstr "Kan ikke flytte slettede meldinger"
 msgid "No quota information available for folder '%s'"
 msgstr "Kvoteinformasjon er ikke tilgjengelig for mappe «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:961
+#: ../camel/providers/imapx/camel-imapx-folder.c:964
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
 msgid "Apply message _filters to this folder"
 msgstr "Bruk mappe_filter på denne mappen"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:972
+#: ../camel/providers/imapx/camel-imapx-folder.c:975
 msgid "Always check for _new mail in this folder"
 msgstr "Alltid se etter _nye meldinger i denne mappen"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1085
+#: ../camel/providers/imapx/camel-imapx-folder.c:1088
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Kunne ikke lage sammendrag for mappe %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1094
+#: ../camel/providers/imapx/camel-imapx-folder.c:1097
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Kunne ikke lage mellomlager for %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1292
+#: ../camel/providers/imapx/camel-imapx-folder.c:1295
 #, c-format
 msgid "No IMAP mailbox available for folder '%s'"
 msgstr "Ingen IMAP-postboks tilgjengelig for mappe «%s»"
@@ -3302,131 +3302,131 @@ msgstr "Klarte ikke å sende NOTIFY"
 msgid "Failed to select mailbox"
 msgstr "Klarte ikke å velge postboks"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3670
+#: ../camel/providers/imapx/camel-imapx-server.c:3674
 msgid "Cannot issue command, no stream available"
 msgstr "Kan ikke sende kommando, ingen strøm tilgjengelig"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3911
+#: ../camel/providers/imapx/camel-imapx-server.c:3925
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente melding med meldings-ID %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3912
+#: ../camel/providers/imapx/camel-imapx-server.c:3926
 msgid "No such message available."
 msgstr "Ingen slik melding tilgjengelig."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3946
-#: ../camel/providers/imapx/camel-imapx-server.c:3971
-#: ../camel/providers/imapx/camel-imapx-server.c:3990
+#: ../camel/providers/imapx/camel-imapx-server.c:3960
+#: ../camel/providers/imapx/camel-imapx-server.c:3985
+#: ../camel/providers/imapx/camel-imapx-server.c:4004
 msgid "Error fetching message"
 msgstr "Feil ved henting av melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3983
+#: ../camel/providers/imapx/camel-imapx-server.c:3997
 msgid "Failed to close the tmp stream"
 msgstr "Klarte ikke å lukke midlertidig strøm"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4014
+#: ../camel/providers/imapx/camel-imapx-server.c:4028
 msgid "Failed to copy the tmp file"
 msgstr "Klarte ikke å kopiere midlertidig fil"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4173
+#: ../camel/providers/imapx/camel-imapx-server.c:4187
 msgid "Error moving messages"
 msgstr "Feil ved flytting av meldinger"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4173
+#: ../camel/providers/imapx/camel-imapx-server.c:4187
 msgid "Error copying messages"
 msgstr "Feil ved kopiering av meldinger"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4353
-#: ../camel/providers/imapx/camel-imapx-server.c:4374
+#: ../camel/providers/imapx/camel-imapx-server.c:4367
+#: ../camel/providers/imapx/camel-imapx-server.c:4388
 msgid "Cannot create spool file: "
 msgstr "Kan ikke spool-fil: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4465
+#: ../camel/providers/imapx/camel-imapx-server.c:4479
 msgid "Error appending message"
 msgstr "Feil ved forsøk på å legge til en melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4555
+#: ../camel/providers/imapx/camel-imapx-server.c:4569
 msgid "Error performing NOOP"
 msgstr "Feil ved utføring av NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4703
+#: ../camel/providers/imapx/camel-imapx-server.c:4717
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Søker etter endrede meldinger i «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4706
+#: ../camel/providers/imapx/camel-imapx-server.c:4720
 msgid "Error scanning changes"
 msgstr "Feil ved søk i endringer"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4724
+#: ../camel/providers/imapx/camel-imapx-server.c:4738
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Henter sammendragsinformasjon for nye meldinger i «%s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4741
+#: ../camel/providers/imapx/camel-imapx-server.c:4755
 msgid "Error fetching message info"
 msgstr "Feil ved henting av meldingsinformasjon"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4803
+#: ../camel/providers/imapx/camel-imapx-server.c:4817
 msgid "Error running STATUS"
 msgstr "Feil ved kjøring av STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5286
-#: ../camel/providers/imapx/camel-imapx-server.c:5338
+#: ../camel/providers/imapx/camel-imapx-server.c:5300
+#: ../camel/providers/imapx/camel-imapx-server.c:5352
 msgid "Error syncing changes"
 msgstr "Feil ved synkronisering av endringer"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5449
+#: ../camel/providers/imapx/camel-imapx-server.c:5463
 msgid "Error expunging message"
 msgstr "Feil ved tømming av melding"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5519
+#: ../camel/providers/imapx/camel-imapx-server.c:5533
 msgid "Error fetching folders"
 msgstr "Feil ved henting av mapper"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5530
+#: ../camel/providers/imapx/camel-imapx-server.c:5544
 msgid "Error fetching subscribed folders"
 msgstr "Feil ved henting av abonnerte mapper"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5552
+#: ../camel/providers/imapx/camel-imapx-server.c:5566
 msgid "Error creating folder"
 msgstr "Feil ved oppretting av mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5608
+#: ../camel/providers/imapx/camel-imapx-server.c:5622
 msgid "Error deleting folder"
 msgstr "Feil ved sletting av mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5654
+#: ../camel/providers/imapx/camel-imapx-server.c:5668
 msgid "Error renaming folder"
 msgstr "Feil ved endring av navn på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5686
+#: ../camel/providers/imapx/camel-imapx-server.c:5700
 msgid "Error subscribing to folder"
 msgstr "Feil ved abonnering på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5722
+#: ../camel/providers/imapx/camel-imapx-server.c:5736
 msgid "Error unsubscribing from folder"
 msgstr "Feil ved fjerning av abonnement på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5758
+#: ../camel/providers/imapx/camel-imapx-server.c:5772
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-tjener støtter ikke kvoter"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5768
+#: ../camel/providers/imapx/camel-imapx-server.c:5782
 msgid "Error retrieving quota information"
 msgstr "Feil ved henting av kvoteinformasjon"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5815
+#: ../camel/providers/imapx/camel-imapx-server.c:5829
 msgid "Search failed"
 msgstr "Søk feilet"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:5926
+#: ../camel/providers/imapx/camel-imapx-server.c:5940
 msgid "Error running IDLE"
 msgstr "Feil ved utføring av IDLE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6118
+#: ../camel/providers/imapx/camel-imapx-server.c:6132
 msgid "Failed to issue DONE"
 msgstr "Klarte ikke å sende DONE"
 
@@ -4732,7 +4732,7 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
-msgstr ""
+msgstr "Hvorvidt migrering av den gamle innstillingen allerede er utført"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5406,9 +5406,8 @@ msgstr ""
 "OnlineAccounts-tjenesten"
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:273
-#, fuzzy
 msgid "Failed to get password from GOA: "
-msgstr "Klarte ikke å lese Fra-adresse"
+msgstr "Klarte ikke å hente passord fra GOA: "
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:219
