@@ -33,6 +33,8 @@
 #include <glib-object.h>
 
 #include "e-source.h"
+#include "e-source-authentication.h"
+#include "e-source-credentials-provider-impl-google.h"
 #include "e-source-enumtypes.h"
 #include "e-source-registry.h"
 #include "camel/camel.h"
@@ -2833,4 +2835,40 @@ e_util_get_source_full_name (ESourceRegistry *registry,
 	g_slist_free_full (parts, g_free);
 
 	return g_string_free (fullname, FALSE);
+}
+
+gboolean
+e_util_get_source_oauth2_access_token_sync (struct _ESource *source,
+					    const ENamedParameters *credentials,
+					    gchar **out_access_token,
+					    gint *out_expires_in_seconds,
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	gchar *auth_method = NULL;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *extension;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		auth_method = e_source_authentication_dup_method (extension);
+	}
+
+	if (g_strcmp0 (auth_method, "OAuth2") == 0) {
+		success = e_source_get_oauth2_access_token_sync (
+			source, cancellable, out_access_token,
+			out_expires_in_seconds, error);
+	} else if (g_strcmp0 (auth_method, "Google") == 0) {
+		success = TRUE;
+
+		e_source_credentials_google_util_extract_from_credentials (
+			credentials, out_access_token, out_expires_in_seconds);
+	}
+
+	g_free (auth_method);
+
+	return success;
 }

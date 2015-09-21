@@ -273,7 +273,13 @@ void		e_type_traverse			(GType parent_type,
 
 gchar *		e_util_get_source_full_name	(struct _ESourceRegistry *registry,
 						 struct _ESource *source);
-
+gboolean	e_util_get_source_oauth2_access_token_sync
+						(struct _ESource *source,
+						 const ENamedParameters *credentials,
+						 gchar **out_access_token,
+						 gint *out_expires_in_seconds,
+						 GCancellable *cancellable,
+						 GError **error);
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */

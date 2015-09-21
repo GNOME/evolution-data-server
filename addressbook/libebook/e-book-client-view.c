@@ -647,6 +647,8 @@ book_client_view_complete_cb (EGdbusBookView *object,
 		g_weak_ref_init (&signal_closure->client_view, client_view);
 		e_gdbus_templates_decode_error (
 			in_error_strv, &signal_closure->error);
+		if (signal_closure->error)
+			g_dbus_error_strip_remote_error (signal_closure->error);
 
 		main_context = book_client_view_ref_main_context (client_view);
 

@@ -95,8 +95,7 @@ struct _ECalBackendCalDAVPrivate {
 	gchar *uri;
 
 	/* Authentication info */
-	gchar *username; /* not NULL only as override */
-	gchar *password;
+	ENamedParameters *credentials;
 	gboolean auth_required;
 
 	/* support for 'getctag' extension */
@@ -321,6 +320,92 @@ static void put_server_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *i
 
 /* ************************************************************************* */
 /* Misc. utility functions */
+
+static gboolean
+caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
+			  ESoupAuthBearer *bearer,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	ESource *source;
+	gchar *access_token = NULL;
+	gint expires_in_seconds = -1;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
+	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), FALSE);
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+
+	success = e_util_get_source_oauth2_access_token_sync (source, cbdav->priv->credentials,
+		&access_token, &expires_in_seconds, cancellable, error);
+
+	if (success)
+		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
+
+	g_free (access_token);
+
+	return success;
+}
+
+static gboolean
+caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	ESourceWebdav *extension;
+	ESource *source;
+	SoupSessionFeature *feature;
+	SoupAuth *soup_auth;
+	SoupURI *soup_uri;
+	gchar *auth_method = NULL;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *extension;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		auth_method = e_source_authentication_dup_method (extension);
+	} else {
+		return TRUE;
+	}
+
+	if (g_strcmp0 (auth_method, "OAuth2") != 0 && g_strcmp0 (auth_method, "Google") != 0) {
+		g_free (auth_method);
+		return TRUE;
+	}
+
+	g_free (auth_method);
+
+	/* Preload the SoupAuthManager with a valid "Bearer" token
+	 * when using OAuth 2.0. This avoids an extra unauthorized
+	 * HTTP round-trip, which apparently Google doesn't like. */
+
+	feature = soup_session_get_feature (cbdav->priv->session, SOUP_TYPE_AUTH_MANAGER);
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+	soup_uri = e_source_webdav_dup_soup_uri (extension);
+
+	soup_auth = g_object_new (
+		E_TYPE_SOUP_AUTH_BEARER,
+		SOUP_AUTH_HOST, soup_uri->host, NULL);
+
+	success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
+	if (success) {
+		soup_auth_manager_use_auth (
+			SOUP_AUTH_MANAGER (feature),
+			soup_uri, soup_auth);
+	}
+
+	g_object_unref (soup_auth);
+	soup_uri_free (soup_uri);
+
+	return success;
+}
 
 static void
 update_slave_cmd (ECalBackendCalDAVPrivate *priv,
@@ -994,20 +1079,9 @@ soup_authenticate_bearer (SoupSession *session,
                           SoupAuth *auth,
                           ECalBackendCalDAV *cbdav)
 {
-	ESource *source;
-	gchar *access_token = NULL;
-	gint expires_in_seconds = -1;
 	GError *local_error = NULL;
 
-	source = e_backend_get_source (E_BACKEND (cbdav));
-
-	e_source_get_oauth2_access_token_sync (
-		source, NULL, &access_token,
-		&expires_in_seconds, &local_error);
-
-	e_soup_auth_bearer_set_access_token (
-		E_SOUP_AUTH_BEARER (auth),
-		access_token, expires_in_seconds);
+	caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (auth), NULL, &local_error);
 
 	/* Stash the error to be picked up by caldav_credentials_required_sync().
 	 * There's no way to explicitly propagate a GError directly
@@ -1026,8 +1100,6 @@ soup_authenticate_bearer (SoupSession *session,
 
 		g_mutex_unlock (&cbdav->priv->bearer_auth_error_lock);
 	}
-
-	g_free (access_token);
 }
 
 static void
@@ -1063,14 +1135,15 @@ soup_authenticate (SoupSession *session,
 
 		auth_user = e_source_authentication_dup_user (auth_extension);
 
-		username = cbdav->priv->username;
+		username = cbdav->priv->credentials ? e_named_parameters_get (cbdav->priv->credentials, E_SOURCE_CREDENTIAL_USERNAME) : NULL;
 		if (!username || !*username)
 			username = auth_user;
 
-		if (!username || !*username || !cbdav->priv->password)
+		if (!username || !*username || !cbdav->priv->credentials ||
+		    !e_named_parameters_exists (cbdav->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
 			soup_message_set_status (msg, SOUP_STATUS_FORBIDDEN);
 		else
-			soup_auth_authenticate (auth, username, cbdav->priv->password);
+			soup_auth_authenticate (auth, username, e_named_parameters_get (cbdav->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
 
 		g_free (auth_user);
 	}
@@ -1315,7 +1388,9 @@ caldav_credentials_required_sync (ECalBackendCalDAV *cbdav,
 
 	if (success) {
 		success = e_backend_credentials_required_sync (E_BACKEND (cbdav),
-			(first_attempt || !cbdav->priv->password) ? E_SOURCE_CREDENTIALS_REASON_REQUIRED :
+			(first_attempt || !cbdav->priv->credentials ||
+			 !e_named_parameters_exists (cbdav->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+			? E_SOURCE_CREDENTIALS_REASON_REQUIRED :
 			E_SOURCE_CREDENTIALS_REASON_REJECTED,
 			NULL, 0, NULL, cancellable, error);
 	}
@@ -2983,6 +3058,9 @@ open_calendar_wrapper (ECalBackendCalDAV *cbdav,
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 
+	if (!caldav_maybe_prepare_bearer_auth (cbdav, cancellable, error))
+		return FALSE;
+
 	success = caldav_server_open_calendar (cbdav, &server_unreachable, out_certificate_pem, out_certificate_errors, cancellable, &local_error);
 
 	if (first_attempt && g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed)) {
@@ -3033,6 +3111,7 @@ caldav_do_open (ECalBackendSync *backend,
 {
 	ECalBackendCalDAV *cbdav;
 	ESourceWebdav *webdav_extension;
+	ESourceAuthentication *auth_extension;
 	ESource *source;
 	gboolean online;
 
@@ -3042,6 +3121,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 	source = e_backend_get_source (E_BACKEND (cbdav));
 	webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+	auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 	e_source_webdav_unset_temporary_ssl_trust (webdav_extension);
 
 	/* let it decide the 'getctag' extension availability again */
@@ -3065,11 +3145,14 @@ caldav_do_open (ECalBackendSync *backend,
 	cbdav->priv->is_google = FALSE;
 
 	if (online) {
-		gchar *certificate_pem = NULL;
+		gchar *certificate_pem = NULL, *auth_method;
 		GTlsCertificateFlags certificate_errors = 0;
 		GError *local_error = NULL;
 
-		if (!open_calendar_wrapper (cbdav, cancellable, &local_error, TRUE, NULL, &certificate_pem, &certificate_errors) &&
+		auth_method = e_source_authentication_dup_method (auth_extension);
+
+		if ((g_strcmp0 (auth_method, "Google") == 0 ||
+		    !open_calendar_wrapper (cbdav, cancellable, &local_error, TRUE, NULL, &certificate_pem, &certificate_errors)) &&
 		    !g_cancellable_is_cancelled (cancellable)) {
 			ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
 			GError *local_error2 = NULL;
@@ -3090,7 +3173,8 @@ caldav_do_open (ECalBackendSync *backend,
 				/* These errors are treated through the authentication */
 				g_clear_error (&local_error);
 			} else {
-				g_propagate_error (perror, local_error);
+				if (local_error)
+					g_propagate_error (perror, local_error);
 				local_error = NULL;
 			}
 			g_clear_error (&local_error2);
@@ -3098,6 +3182,7 @@ caldav_do_open (ECalBackendSync *backend,
 
 		g_clear_error (&local_error);
 		g_free (certificate_pem);
+		g_free (auth_method);
 	} else {
 		e_cal_backend_set_writable (E_CAL_BACKEND (cbdav), FALSE);
 	}
@@ -5405,23 +5490,14 @@ caldav_authenticate_sync (EBackend *backend,
 {
 	ECalBackendCalDAV *cbdav;
 	ESourceAuthenticationResult result;
-	const gchar *username;
 	GError *local_error = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
 	g_mutex_lock (&cbdav->priv->busy_lock);
 
-	g_free (cbdav->priv->username);
-	cbdav->priv->username = NULL;
-
-	g_free (cbdav->priv->password);
-	cbdav->priv->password = g_strdup (e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
-
-	username = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME);
-	if (username && *username) {
-		cbdav->priv->username = g_strdup (username);
-	}
+	e_named_parameters_free (cbdav->priv->credentials);
+	cbdav->priv->credentials = e_named_parameters_new_clone (credentials);
 
 	open_calendar_wrapper (cbdav, cancellable, &local_error, FALSE, NULL, out_certificate_pem, out_certificate_errors);
 
@@ -5432,7 +5508,10 @@ caldav_authenticate_sync (EBackend *backend,
 		g_cond_signal (&cbdav->priv->cond);
 	} else if (g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationFailed) ||
 		   g_error_matches (local_error, E_DATA_CAL_ERROR, AuthenticationRequired)) {
+		const gchar *username;
 		gchar *auth_user = NULL;
+
+		username = e_named_parameters_get (cbdav->priv->credentials, E_SOURCE_CREDENTIAL_USERNAME);
 
 		if (!username || !*username) {
 			ESource *source;
@@ -5500,8 +5579,8 @@ e_cal_backend_caldav_finalize (GObject *object)
 	g_cond_clear (&priv->slave_gone_cond);
 
 	g_free (priv->uri);
-	g_free (priv->username);
-	g_free (priv->password);
+	e_named_parameters_free (priv->credentials);
+	priv->credentials = NULL;
 	g_free (priv->schedule_outbox_url);
 
 	if (priv->ctag_to_store) {
@@ -5523,72 +5602,15 @@ caldav_backend_initable_init (GInitable *initable,
 {
 	ECalBackendCalDAVPrivate *priv;
 	SoupSessionFeature *feature;
-	ESource *source;
-	const gchar *extension_name;
-	gchar *auth_method = NULL;
 	gboolean success = TRUE;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (initable);
 
-	feature = soup_session_get_feature (
-		priv->session, SOUP_TYPE_AUTH_MANAGER);
+	feature = soup_session_get_feature (priv->session, SOUP_TYPE_AUTH_MANAGER);
 
 	/* Add the "Bearer" auth type to support OAuth 2.0. */
 	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
 	g_mutex_init (&priv->bearer_auth_error_lock);
-
-	/* Preload the SoupAuthManager with a valid "Bearer" token
-	 * when using OAuth 2.0.  This avoids an extra unauthorized
-	 * HTTP round-trip, which apparently Google doesn't like. */
-
-	source = e_backend_get_source (E_BACKEND (initable));
-
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	if (e_source_has_extension (source, extension_name)) {
-		ESourceAuthentication *extension;
-
-		extension = e_source_get_extension (source, extension_name);
-		auth_method = e_source_authentication_dup_method (extension);
-	}
-
-	e_backend_ensure_online_state_updated (E_BACKEND (initable), cancellable);
-
-	if (g_strcmp0 (auth_method, "OAuth2") == 0 &&
-	    e_backend_get_online (E_BACKEND (initable))) {
-		ESourceWebdav *extension;
-		SoupAuth *soup_auth;
-		SoupURI *soup_uri;
-		gchar *access_token = NULL;
-		gint expires_in_seconds = -1;
-
-		extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
-		extension = e_source_get_extension (source, extension_name);
-		soup_uri = e_source_webdav_dup_soup_uri (extension);
-
-		soup_auth = g_object_new (
-			E_TYPE_SOUP_AUTH_BEARER,
-			SOUP_AUTH_HOST, soup_uri->host, NULL);
-
-		success = e_source_get_oauth2_access_token_sync (
-			source, cancellable, &access_token,
-			&expires_in_seconds, error);
-
-		if (success) {
-			e_soup_auth_bearer_set_access_token (
-				E_SOUP_AUTH_BEARER (soup_auth),
-				access_token, expires_in_seconds);
-
-			soup_auth_manager_use_auth (
-				SOUP_AUTH_MANAGER (feature),
-				soup_uri, soup_auth);
-		}
-
-		g_free (access_token);
-		g_object_unref (soup_auth);
-		soup_uri_free (soup_uri);
-	}
-
-	g_free (auth_method);
 
 	return success;
 }

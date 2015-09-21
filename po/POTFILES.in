@@ -186,6 +186,7 @@ libedataserver/e-categories.c
 libedataserver/e-client.c
 libedataserver/e-source.c
 libedataserver/e-source-credentials-provider-impl.c
+libedataserver/e-source-credentials-provider-impl-google.c
 libedataserver/e-source-credentials-provider-impl-password.c
 libedataserver/e-source-mail-signature.c
 libedataserver/e-source-proxy.c
@@ -194,6 +195,7 @@ libedataserver/e-source-webdav.c
 libedataserver/e-time-utils.c
 libedataserver/e-webdav-discover.c
 libedataserverui/e-credentials-prompter.c
+libedataserverui/e-credentials-prompter-impl-google.c
 libedataserverui/e-credentials-prompter-impl-password.c
 libedataserverui/e-trust-prompt.c
 libedataserverui/e-webdav-discover-widget.c

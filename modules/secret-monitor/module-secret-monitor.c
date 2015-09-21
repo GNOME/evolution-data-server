@@ -131,6 +131,10 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 		if (uid == NULL)
 			continue;
 
+		/* These are special keys, not referencing any real ESource */
+		if (g_str_has_prefix (uid, "OAuth2::"))
+			continue;
+
 		source = e_source_registry_server_ref_source (server, uid);
 
 		/* If we find a matching ESource, update the SecretItem's

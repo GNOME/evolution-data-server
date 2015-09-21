@@ -27,6 +27,7 @@ struct _EGDataOAuth2AuthorizerPrivate {
 	/* These members are protected by the global mutex. */
 	gchar *access_token;
 	GHashTable *authorization_domains;
+	ENamedParameters *credentials;
 };
 
 enum {
@@ -137,6 +138,8 @@ gdata_oauth2_authorizer_finalize (GObject *object)
 	g_hash_table_destroy (priv->authorization_domains);
 	g_weak_ref_clear (&priv->source);
 
+	e_named_parameters_free (priv->credentials);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_gdata_oauth2_authorizer_parent_class)->
 		finalize (object);
@@ -240,8 +243,8 @@ gdata_oauth2_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 	g_free (*ptr_access_token);
 	*ptr_access_token = NULL;
 
-	success = e_source_get_oauth2_access_token_sync (
-		source, cancellable, ptr_access_token, NULL, error);
+	success = e_util_get_source_oauth2_access_token_sync (source, oauth2_authorizer->priv->credentials,
+		ptr_access_token, NULL, cancellable, error);
 
 	g_mutex_unlock (&mutex);
 
@@ -323,3 +326,36 @@ e_gdata_oauth2_authorizer_ref_source (EGDataOAuth2Authorizer *authorizer)
 	return g_weak_ref_get (&authorizer->priv->source);
 }
 
+void
+e_gdata_oauth2_authorizer_set_credentials (EGDataOAuth2Authorizer *authorizer,
+					   const ENamedParameters *credentials)
+{
+	g_return_if_fail (E_IS_GDATA_OAUTH2_AUTHORIZER (authorizer));
+
+	g_mutex_lock (&mutex);
+
+	e_named_parameters_free (authorizer->priv->credentials);
+	if (credentials)
+		authorizer->priv->credentials = e_named_parameters_new_clone (credentials);
+	else
+		authorizer->priv->credentials = NULL;
+
+	g_mutex_unlock (&mutex);
+}
+
+ENamedParameters *
+e_gdata_oauth2_authorizer_clone_credentials (EGDataOAuth2Authorizer *authorizer)
+{
+	ENamedParameters *credentials = NULL;
+
+	g_return_val_if_fail (E_IS_GDATA_OAUTH2_AUTHORIZER (authorizer), NULL);
+
+	g_mutex_lock (&mutex);
+
+	if (authorizer->priv->credentials)
+		credentials = e_named_parameters_new_clone (authorizer->priv->credentials);
+
+	g_mutex_unlock (&mutex);
+
+	return credentials;
+}

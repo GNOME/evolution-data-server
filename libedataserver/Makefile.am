@@ -38,6 +38,7 @@ SHARED_COMPILER_FLAGS = \
 	$(SOUP_CFLAGS) \
 	$(CODE_COVERAGE_CFLAGS) \
 	$(ICU_CFLAGS) \
+	$(GOOGLE_AUTH_CFLAGS) \
 	$(NULL)
 
 libedataserver_1_2_la_CPPFLAGS = \
@@ -82,6 +83,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-source-contacts.c \
 	e-source-credentials-provider.c \
 	e-source-credentials-provider-impl.c \
+	e-source-credentials-provider-impl-google.c \
 	e-source-credentials-provider-impl-password.c \
 	e-source-goa.c \
 	e-source-ldap.c \
@@ -129,6 +131,7 @@ libedataserver_1_2_la_LIBADD = \
 	$(SOCKET_LIBS) \
 	$(SOUP_LIBS) \
 	$(ICU_LIBS) \
+	$(GOOGLE_AUTH_LIBS) \
 	$(NULL)
 
 libedataserver_1_2_la_LDFLAGS = \
@@ -173,6 +176,7 @@ libedataserverinclude_HEADERS = \
 	e-source-contacts.h \
 	e-source-credentials-provider.h \
 	e-source-credentials-provider-impl.h \
+	e-source-credentials-provider-impl-google.h \
 	e-source-credentials-provider-impl-password.h \
 	e-source-enums.h \
 	e-source-enumtypes.h \

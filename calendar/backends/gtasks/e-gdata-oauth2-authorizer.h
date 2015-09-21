@@ -62,6 +62,12 @@ EGDataOAuth2Authorizer *
 					(ESource *source);
 ESource *	e_gdata_oauth2_authorizer_ref_source
 					(EGDataOAuth2Authorizer *authorizer);
+void		e_gdata_oauth2_authorizer_set_credentials
+					(EGDataOAuth2Authorizer *authorizer,
+					 const ENamedParameters *credentials);
+ENamedParameters *
+		e_gdata_oauth2_authorizer_clone_credentials
+					(EGDataOAuth2Authorizer *authorizer);
 
 G_END_DECLS
 

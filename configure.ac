@@ -58,6 +58,8 @@ m4_define([goa_minimum_version], [3.8])
 m4_define([gweather_minimum_version], [3.10])
 m4_define([libaccounts_glib_minimum_version], [1.4])
 m4_define([libsignon_glib_minimum_version], [1.8])
+m4_define([webkitgtk_minimum_version], [2.4.9])
+m4_define([json_glib_minimum_version], [1.0.4])
 
 AC_SUBST([BASE_VERSION],[base_version])
 AC_SUBST([API_VERSION],[api_version])
@@ -471,6 +473,42 @@ if test "x$enable_gtk" = xyes; then
 fi
 AM_CONDITIONAL(HAVE_GTK, [test x$enable_gtk = xyes])
 
+dnl **********************************
+dnl Check for WebKitGTK+ and json-glib
+dnl **********************************
+AC_ARG_ENABLE([google-auth],
+	[AS_HELP_STRING([--enable-google-auth],
+	[enable Google authentication (default=yes)])],
+	[enable_google_auth=$enableval], [enable_google_auth=yes])
+AC_MSG_CHECKING([if Google authentication support is enabled])
+AC_MSG_RESULT([$enable_google_auth])
+if test "x$enable_google_auth" = "xyes"; then
+	PKG_CHECK_MODULES(
+		[GOOGLE_AUTH], [webkitgtk-3.0 >= webkitgtk_minimum_version
+				json-glib-1.0 >= json_glib_minimum_version],,
+		[AC_MSG_ERROR([
+
+	Libraries to support Google authentication prompts not found,
+	or versions not new enough.
+
+	If you want to disable Google authentication support,
+	please append --disable-google-auth to configure.
+
+	])])
+
+	AC_DEFINE(ENABLE_GOOGLE_AUTH, 1, [Define to 1 if Google autentication support is enabled.])
+	AC_ARG_WITH(google-client-id, [AS_HELP_STRING([--with-google-client-id], [Google OAuth 2.0 client id])], [], [])
+	if test "x$with_google_client_id" = "x"; then
+		with_google_client_id=590402290962-2i0b7rqma8b9nmtfrcp7fa06g6cf7g74.apps.googleusercontent.com
+	fi
+	AC_ARG_WITH(google-client-secret, [AS_HELP_STRING([--with-google-client-secret], [Google OAuth 2.0 client secret])], [], [])
+	if test "x$with_google_client_secret" = "x"; then
+		with_google_client_secret=mtfUe5W8Aal9DcgVipOY1T9G
+	fi
+	AC_DEFINE_UNQUOTED(GOOGLE_CLIENT_ID, ["$with_google_client_id"], [Define Google OAuth 2.0 Client ID to use])
+	AC_DEFINE_UNQUOTED(GOOGLE_CLIENT_SECRET, ["$with_google_client_secret"], [Define Google OAuth 2.0 Client Secret to use])
+fi
+AM_CONDITIONAL(ENABLE_GOOGLE_AUTH, [test x$enable_google_auth = xyes])
 
 dnl ******************************************
 dnl Check whether to build examples/demos
@@ -1884,6 +1922,7 @@ echo "
 	Vala bindings:		$enable_vala_bindings
 	GNOME Online Accounts	$enable_goa
 	Ubuntu Online Accounts	$enable_uoa
+	Google Authentication	$enable_google_auth
 	Google Contacts		$enable_google
 	Google Tasks		$have_gdata_0_15_1
 	GTK+:  			$enable_gtk

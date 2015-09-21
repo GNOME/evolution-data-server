@@ -16,6 +16,7 @@ libedataserverui_1_2_la_CPPFLAGS = \
 	$(GCR_BASE_CFLAGS) \
 	$(GCR_CFLAGS) \
 	$(GTK_CFLAGS) \
+	$(GOOGLE_AUTH_CFLAGS) \
 	$(NULL)
 
 libedataserverui_1_2_la_LIBADD = \
@@ -30,6 +31,7 @@ libedataserverui_1_2_la_LIBADD = \
 	$(GCR_BASE_LIBS) \
 	$(GCR_LIBS) \
 	$(GTK_LIBS) \
+	$(GOOGLE_AUTH_LIBS) \
 	$(NULL)
 
 libedataserverui_1_2_la_LDFLAGS = \
@@ -44,6 +46,7 @@ libedataserveruiinclude_HEADERS = \
 	e-cell-renderer-color.h \
 	e-credentials-prompter.h \
 	e-credentials-prompter-impl.h \
+	e-credentials-prompter-impl-google.h \
 	e-credentials-prompter-impl-password.h \
 	e-trust-prompt.h \
 	e-webdav-discover-widget.h \
@@ -54,6 +57,7 @@ libedataserverui_1_2_la_SOURCES = \
 	e-cell-renderer-color.c \
 	e-credentials-prompter.c \
 	e-credentials-prompter-impl.c \
+	e-credentials-prompter-impl-google.c \
 	e-credentials-prompter-impl-password.c \
 	e-trust-prompt.c \
 	e-webdav-discover-widget.c \

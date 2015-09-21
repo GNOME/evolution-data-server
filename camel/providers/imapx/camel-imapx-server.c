@@ -2874,7 +2874,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 	g_object_unref (settings);
 
 	if (mechanism != NULL) {
-		if (is->priv->cinfo && !g_hash_table_lookup (is->priv->cinfo->auth_types, mechanism)) {
+		if (is->priv->cinfo && !g_hash_table_lookup (is->priv->cinfo->auth_types, mechanism) && (
+		    !g_str_equal (mechanism, "Google") || !g_hash_table_lookup (is->priv->cinfo->auth_types, "XOAUTH2"))) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,

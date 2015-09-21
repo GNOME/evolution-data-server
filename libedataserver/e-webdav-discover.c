@@ -30,6 +30,7 @@
 #include "e-soup-auth-bearer.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
+#include "e-source-credentials-provider-impl-google.h"
 #include "e-source-webdav.h"
 #include "e-webdav-discover.h"
 
@@ -337,6 +338,31 @@ e_webdav_discover_get_xpath_string (xmlXPathContextPtr xp_ctx,
 	return string;
 }
 
+static gboolean
+e_webdav_discover_setup_bearer_auth (ESource *source,
+				     const ENamedParameters *credentials,
+				     ESoupAuthBearer *bearer,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	gchar *access_token = NULL;
+	gint expires_in_seconds = -1;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (credentials != NULL, FALSE);
+
+	success = e_util_get_source_oauth2_access_token_sync (source, credentials,
+		&access_token, &expires_in_seconds, cancellable, error);
+
+	if (success)
+		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
+
+	g_free (access_token);
+
+	return success;
+}
+
 typedef struct _AuthenticateData {
 	ESource *source;
 	const ENamedParameters *credentials;
@@ -357,26 +383,16 @@ e_webdav_discover_authenticate_cb (SoupSession *session,
 		return;
 
 	if (E_IS_SOUP_AUTH_BEARER (auth)) {
-		gchar *access_token = NULL;
-		gint expires_in_seconds = -1;
 		GError *local_error = NULL;
 
-		e_source_get_oauth2_access_token_sync (
-			auth_data->source, NULL, &access_token,
-			&expires_in_seconds, &local_error);
-
-		e_soup_auth_bearer_set_access_token (
-			E_SOUP_AUTH_BEARER (auth),
-			access_token, expires_in_seconds);
+		e_webdav_discover_setup_bearer_auth (auth_data->source, auth_data->credentials,
+			E_SOUP_AUTH_BEARER (auth), NULL, &local_error);
 
 		if (local_error != NULL) {
 			soup_message_set_status_full (msg, SOUP_STATUS_FORBIDDEN, local_error->message);
 
 			g_error_free (local_error);
 		}
-
-		g_free (access_token);
-
 	} else {
 		gchar *auth_user = NULL;
 
@@ -1792,28 +1808,20 @@ e_webdav_discover_sources_sync (ESource *source,
 		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 		auth_method = e_source_authentication_dup_method (auth_extension);
 
-		if (g_strcmp0 (auth_method, "OAuth2") == 0) {
+		if (g_strcmp0 (auth_method, "OAuth2") == 0 || g_strcmp0 (auth_method, "Google") == 0) {
 			SoupAuth *soup_auth;
-			gchar *access_token = NULL;
-			gint expires_in_seconds = -1;
 
 			soup_auth = g_object_new (E_TYPE_SOUP_AUTH_BEARER, SOUP_AUTH_HOST, soup_uri->host, NULL);
 
-			success = e_source_get_oauth2_access_token_sync (
-				source, cancellable, &access_token,
-				&expires_in_seconds, error);
+			success = e_webdav_discover_setup_bearer_auth (source, credentials,
+				E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
 
 			if (success) {
-				e_soup_auth_bearer_set_access_token (
-					E_SOUP_AUTH_BEARER (soup_auth),
-					access_token, expires_in_seconds);
-
 				soup_auth_manager_use_auth (
 					SOUP_AUTH_MANAGER (feature),
 					soup_uri, soup_auth);
 			}
 
-			g_free (access_token);
 			g_object_unref (soup_auth);
 		}
 

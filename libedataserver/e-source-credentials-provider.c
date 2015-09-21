@@ -35,6 +35,7 @@
 
 /* built-in source credentials provider implementations */
 #include "e-source-credentials-provider-impl-password.h"
+#include "e-source-credentials-provider-impl-google.h"
 
 struct _ESourceCredentialsProviderPrivate {
 	GWeakRef registry; /* The property can hold both client and server-side registry */
@@ -201,6 +202,7 @@ e_source_credentials_provider_class_init (ESourceCredentialsProviderClass *class
 
 	/* Ensure built-in credential providers implementation types */
 	g_type_ensure (E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL_PASSWORD);
+	g_type_ensure (E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL_GOOGLE);
 }
 
 static void

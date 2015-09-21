@@ -29,6 +29,7 @@
 
 /* built-in credentials prompter implementations */
 #include "e-credentials-prompter-impl-password.h"
+#include "e-credentials-prompter-impl-google.h"
 
 typedef struct _ProcessPromptData {
 	GWeakRef *prompter;
@@ -1032,6 +1033,7 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 
 	/* Ensure built-in credential providers implementation types */
 	g_type_ensure (E_TYPE_CREDENTIALS_PROMPTER_IMPL_PASSWORD);
+	g_type_ensure (E_TYPE_CREDENTIALS_PROMPTER_IMPL_GOOGLE);
 }
 
 static void

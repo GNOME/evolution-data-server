@@ -101,6 +101,90 @@ G_DEFINE_DYNAMIC_TYPE (
 	e_google_backend_factory,
 	E_TYPE_COLLECTION_BACKEND_FACTORY)
 
+static gboolean
+google_backend_can_use_google_auth (ESource *source)
+{
+	ESourceRegistryServer *registry;
+	gboolean res;
+
+	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), FALSE);
+
+	if (!e_source_credentials_google_is_supported ())
+		return FALSE;
+
+	registry = e_server_side_source_get_server (E_SERVER_SIDE_SOURCE (source));
+	g_object_ref (source);
+
+	while (source && e_source_get_parent (source)) {
+		ESource *adept_source;
+
+		adept_source = e_source_registry_server_ref_source (registry, e_source_get_parent (source));
+		if (adept_source) {
+			g_object_unref (source);
+			source = adept_source;
+		} else {
+			break;
+		}
+	}
+
+	res = !e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) &&
+	      !e_source_has_extension (source, E_SOURCE_EXTENSION_UOA);
+
+	g_object_unref (source);
+
+	return res;
+}
+
+static gboolean
+host_ends_with (const gchar *host,
+		const gchar *ends_with)
+{
+	gint host_len, ends_with_len;
+
+	if (!host || !ends_with)
+		return FALSE;
+
+	host_len = strlen (host);
+	ends_with_len = strlen (ends_with);
+
+	if (host_len <= ends_with_len)
+		return FALSE;
+
+	return g_ascii_strcasecmp (host + host_len - ends_with_len, ends_with) == 0;
+}
+
+static void
+google_backend_mail_update_auth_method (ESource *source)
+{
+	EOAuth2Support *oauth2_support;
+	const gchar *method;
+
+	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (source));
+
+	if (oauth2_support != NULL) {
+		method = "XOAUTH2";
+	} else if (google_backend_can_use_google_auth (source)) {
+		method = "Google";
+	} else {
+		method = NULL;
+	}
+
+	if (method) {
+		ESourceAuthentication *auth_extension;
+		gchar *host;
+
+		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		host = e_source_authentication_dup_host (auth_extension);
+
+		if (host && (host_ends_with (host, ".gmail.com") || host_ends_with (host, ".googlemail.com")))
+			e_source_authentication_set_method (auth_extension, method);
+
+		g_free (host);
+	}
+
+	g_clear_object (&oauth2_support);
+}
+
 static void
 google_backend_calendar_update_auth_method (ESource *source)
 {
@@ -110,11 +194,10 @@ google_backend_calendar_update_auth_method (ESource *source)
 
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (source));
 
-	/* The host name and WebDAV resource path depend on the
-	 * authentication method used, so update those here too. */
-
 	if (oauth2_support != NULL) {
 		method = "OAuth2";
+	} else if (google_backend_can_use_google_auth (source)) {
+		method = "Google";
 	} else {
 		method = "plain/password";
 	}
@@ -138,7 +221,15 @@ google_backend_contacts_update_auth_method (ESource *source)
 
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	extension = e_source_get_extension (source, extension_name);
-	method = (oauth2_support != NULL) ? "OAuth2" : "ClientLogin";
+
+	if (oauth2_support != NULL)
+		method = "OAuth2";
+	else /* if (google_backend_can_use_google_auth (source)) */
+		method = "Google";
+	/* "ClientLogin" for Contacts is not supported anymore, thus
+	   force "Google" method regardless the evolution-data-server
+	   was compiled with it or not. */
+
 	e_source_authentication_set_method (extension, method);
 
 	g_clear_object (&oauth2_support);
@@ -325,6 +416,7 @@ google_backend_authenticate_sync (EBackend *backend,
 				  GError **error)
 {
 	ECollectionBackend *collection = E_COLLECTION_BACKEND (backend);
+	ESourceAuthentication *auth_extension = NULL;
 	ESourceCollection *collection_extension;
 	ESourceGoa *goa_extension = NULL;
 	ESource *source;
@@ -343,6 +435,8 @@ google_backend_authenticate_sync (EBackend *backend,
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA))
 		goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
+		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
 
 	g_return_val_if_fail (e_source_collection_get_calendar_enabled (collection_extension) ||
 		e_source_collection_get_contacts_enabled (collection_extension), E_SOURCE_AUTHENTICATION_ERROR);
@@ -362,10 +456,19 @@ google_backend_authenticate_sync (EBackend *backend,
 
 	google_backend_calendar_update_auth_method (source);
 
-	if (goa_extension)
+	if (goa_extension) {
 		calendar_url = e_source_goa_get_calendar_url (goa_extension);
-	else
+	} else {
 		calendar_url = "https://www.google.com/calendar/dav/";
+
+		if (auth_extension) {
+			gchar *method;
+
+			method = e_source_authentication_dup_method (auth_extension);
+			if (g_strcmp0 (method, "Google") == 0)
+				calendar_url = "https://apidata.googleusercontent.com/caldav/v2/";
+		}
+	}
 
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
 	    e_webdav_discover_sources_sync (source, calendar_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE,
@@ -452,8 +555,9 @@ google_backend_add_tasks (ECollectionBackend *backend)
 
 	collection_source = e_backend_get_source (E_BACKEND (backend));
 
-	/* Tasks require OAuth2, which is supported only through GOA */
-	if (!e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA))
+	/* Tasks require OAuth2 */
+	if (!e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA) &&
+	    !e_source_credentials_google_is_supported ())
 		return;
 
 	resource_id = GOOGLE_TASKS_RESOURCE_ID;
@@ -477,7 +581,10 @@ google_backend_add_tasks (ECollectionBackend *backend)
 	extension = e_source_get_extension (source, extension_name);
 
 	e_source_authentication_set_host (E_SOURCE_AUTHENTICATION (extension), "www.google.com");
-	e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
+	if (google_backend_can_use_google_auth (collection_source))
+		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "Google");
+	else
+		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
 
 	e_binding_bind_property (
 		collection_extension, "identity",
@@ -589,15 +696,6 @@ google_backend_populate (ECollectionBackend *backend)
 		ESource *source = link->data;
 
 		have_tasks = have_tasks || e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST);
-		if (have_tasks) {
-			source = e_backend_get_source (E_BACKEND (backend));
-
-			/* Tasks require OAuth2, which is supported only through GOA */
-			if (!e_source_has_extension (source, E_SOURCE_EXTENSION_GOA)) {
-				e_source_remove_sync (source, NULL, NULL);
-				have_tasks = FALSE;
-			}
-		}
 	}
 	g_list_free_full (list, (GDestroyNotify) g_object_unref);
 
@@ -699,6 +797,15 @@ google_backend_child_added (ECollectionBackend *backend,
 			e_source_authentication_set_user (
 				auth_child_extension,
 				collection_identity);
+
+		if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_MAIL_ACCOUNT) ||
+		    e_source_has_extension (child_source, E_SOURCE_EXTENSION_MAIL_TRANSPORT)) {
+			google_backend_mail_update_auth_method (child_source);
+			g_signal_connect (
+				child_source, "notify::oauth2-support",
+				G_CALLBACK (google_backend_mail_update_auth_method),
+				NULL);
+		}
 	}
 
 	/* Keep the calendar authentication method up-to-date.

@@ -390,6 +390,8 @@ camel_imapx_command_add_part (CamelIMAPXCommand *ic,
 		/* we presume we'll need to get additional data only if we're not authenticated yet */
 		g_object_ref (ob);
 		mechanism = camel_sasl_get_mechanism (CAMEL_SASL (ob));
+		if (g_strcmp0 (mechanism, "Google") == 0)
+			mechanism = "XOAUTH2";
 		g_string_append (buffer, mechanism);
 		if (!camel_sasl_get_authenticated ((CamelSasl *) ob))
 			type |= CAMEL_IMAPX_COMMAND_CONTINUATION;

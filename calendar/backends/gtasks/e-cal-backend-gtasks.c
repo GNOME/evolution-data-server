@@ -168,7 +168,8 @@ ecb_gtasks_is_authorized (ECalBackend *backend)
 {
 	ECalBackendGTasks *gtasks = E_CAL_BACKEND_GTASKS (backend);
 
-	if (!gtasks->priv->service)
+	if (!gtasks->priv->service ||
+	    !gtasks->priv->tasklist)
 		return FALSE;
 
 	return gdata_service_is_authorized (GDATA_SERVICE (gtasks->priv->service));
@@ -181,23 +182,24 @@ ecb_gtasks_prepare_tasklist (ECalBackendGTasks *gtasks,
 {
 	ESourceResource *resource;
 	ESource *source;
+	GDataFeed *feed;
+	GDataQuery *query;
 	gchar *id;
 
 	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
-	g_return_if_fail (ecb_gtasks_is_authorized (E_CAL_BACKEND (gtasks)));
+	g_return_if_fail (gtasks->priv->service != NULL);
+	g_return_if_fail (gdata_service_is_authorized (GDATA_SERVICE (gtasks->priv->service)));
 
 	source = e_backend_get_source (E_BACKEND (gtasks));
 	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
 	id = e_source_resource_dup_identity (resource);
 
-	/* If the tasklist ID is not set, then pick the first from the list, most likely the "Default List" */
-	if (!id || !*id) {
-		GDataFeed *feed;
-		GDataQuery *query;
-
-		query = gdata_query_new_with_limits (NULL, 0, 1);
-		feed = gdata_tasks_service_query_all_tasklists (gtasks->priv->service, query, cancellable, NULL, NULL, error);
-		if (feed) {
+	query = gdata_query_new_with_limits (NULL, 0, 1);
+	/* This also verifies that the service can connect to the server with given credentials */
+	feed = gdata_tasks_service_query_all_tasklists (gtasks->priv->service, query, cancellable, NULL, NULL, error);
+	if (feed) {
+		/* If the tasklist ID is not set, then pick the first from the list, most likely the "Default List" */
+		if (!id || !*id) {
 			GList *entries;
 
 			entries = gdata_feed_get_entries (feed);
@@ -208,10 +210,10 @@ ecb_gtasks_prepare_tasklist (ECalBackendGTasks *gtasks,
 					id = g_strdup (gdata_entry_get_id (entry));
 				}
 			}
-			g_clear_object (&feed);
 		}
-		g_object_unref (query);
 	}
+	g_clear_object (&feed);
+	g_object_unref (query);
 
 	if (!id || !*id) {
 		/* But the tests for change will not work */
@@ -641,6 +643,7 @@ ecb_gtasks_time_to_refresh_data_cb (ESource *source,
 
 static gboolean
 ecb_gtasks_request_authorization (ECalBackend *backend,
+				  const ENamedParameters *credentials,
 				  GCancellable *cancellable,
 				  GError **error)
 {
@@ -651,21 +654,17 @@ ecb_gtasks_request_authorization (ECalBackend *backend,
 
 	if (!gtasks->priv->authorizer) {
 		ESource *source;
-		ESourceAuthentication *extension;
 		EGDataOAuth2Authorizer *authorizer;
-		const gchar *extension_name;
-		gchar *method;
 
-		extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 		source = e_backend_get_source (E_BACKEND (backend));
-		extension = e_source_get_extension (source, extension_name);
-		method = e_source_authentication_dup_method (extension);
 
 		/* Only OAuth2 is supported with Google Tasks */
 		authorizer = e_gdata_oauth2_authorizer_new (source);
 		gtasks->priv->authorizer = GDATA_AUTHORIZER (authorizer);
+	}
 
-		g_free (method);
+	if (E_IS_GDATA_OAUTH2_AUTHORIZER (gtasks->priv->authorizer)) {
+		e_gdata_oauth2_authorizer_set_credentials (E_GDATA_OAUTH2_AUTHORIZER (gtasks->priv->authorizer), credentials);
 	}
 
 	if (!gtasks->priv->service) {
@@ -742,6 +741,71 @@ ecb_gtasks_get_backend_property (ECalBackend *backend,
 }
 
 static void
+ecb_gtasks_update_connection_sync (ECalBackendGTasks *gtasks,
+				   const ENamedParameters *credentials,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	ECalBackend *backend;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
+
+	backend = E_CAL_BACKEND (gtasks);
+
+	success = ecb_gtasks_request_authorization (backend, credentials, cancellable, &local_error);
+	if (success)
+		success = gdata_authorizer_refresh_authorization (gtasks->priv->authorizer, cancellable, &local_error);
+
+	if (success) {
+		e_cal_backend_set_writable (backend, TRUE);
+
+		ecb_gtasks_prepare_tasklist (gtasks, cancellable, &local_error);
+		if (!local_error)
+			ecb_gtasks_start_update (gtasks);
+	} else {
+		e_cal_backend_set_writable (backend, FALSE);
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+}
+
+static ESourceAuthenticationResult
+ecb_gtasks_authenticate_sync (EBackend *backend,
+			      const ENamedParameters *credentials,
+			      gchar **out_certificate_pem,
+			      GTlsCertificateFlags *out_certificate_errors,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	ECalBackendGTasks *gtasks;
+	ESourceAuthenticationResult result;
+	GError *local_error = NULL;
+
+	gtasks = E_CAL_BACKEND_GTASKS (backend);
+
+	ecb_gtasks_update_connection_sync (gtasks, credentials, cancellable, &local_error);
+
+	if (local_error == NULL) {
+		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+	} else if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
+		if (!e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+			result = E_SOURCE_AUTHENTICATION_REQUIRED;
+		else
+			result = E_SOURCE_AUTHENTICATION_REJECTED;
+		g_clear_error (&local_error);
+	} else {
+		result = E_SOURCE_AUTHENTICATION_ERROR;
+		g_propagate_error (error, local_error);
+	}
+
+	return result;
+}
+
+static void
 ecb_gtasks_open (ECalBackend *backend,
 		 EDataCal *cal,
 		 guint32 opid,
@@ -766,19 +830,27 @@ ecb_gtasks_open (ECalBackend *backend,
 	ecb_gtasks_take_cancellable (gtasks, g_cancellable_new ());
 
 	if (e_backend_get_online (E_BACKEND (backend))) {
-		gboolean success;
+		ESource *source;
+		gchar *auth_method = NULL;
 
-		success = ecb_gtasks_request_authorization (backend, cancellable, &local_error);
-		if (success)
-			success = gdata_authorizer_refresh_authorization (gtasks->priv->authorizer, cancellable, &local_error);
+		source = e_backend_get_source (E_BACKEND (backend));
 
-		if (success) {
-			e_cal_backend_set_writable (backend, TRUE);
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+			ESourceAuthentication *auth_extension;
 
-			ecb_gtasks_prepare_tasklist (gtasks, cancellable, &local_error);
-			if (!local_error)
-				ecb_gtasks_start_update (gtasks);
+			auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+			auth_method = e_source_authentication_dup_method (auth_extension);
 		}
+
+		if (g_strcmp0 (auth_method, "Google") == 0) {
+			e_backend_credentials_required_sync (
+				E_BACKEND (backend), E_SOURCE_CREDENTIALS_REASON_REQUIRED,
+				NULL, 0, NULL, cancellable, &local_error);
+		} else {
+			ecb_gtasks_update_connection_sync (gtasks, NULL, cancellable, &local_error);
+		}
+
+		g_free (auth_method);
 	}
 
 	e_data_cal_respond_open (cal, opid, local_error);
@@ -1435,32 +1507,35 @@ static void
 e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *class)
 {
 	GObjectClass *object_class;
-	ECalBackendClass *backend_class;
-
-	object_class = (GObjectClass *) class;
-	backend_class = (ECalBackendClass *) class;
+	EBackendClass *backend_class;
+	ECalBackendClass *cal_backend_class;
 
 	g_type_class_add_private (class, sizeof (ECalBackendGTasksPrivate));
 
+	object_class = (GObjectClass *) class;
 	object_class->constructed = ecb_gtasks_constructed;
 	object_class->dispose = ecb_gtasks_dispose;
 	object_class->finalize = ecb_gtasks_finalize;
 
-	backend_class->get_backend_property = ecb_gtasks_get_backend_property;
-	backend_class->open = ecb_gtasks_open;
-	backend_class->refresh = ecb_gtasks_refresh;
-	backend_class->get_object = ecb_gtasks_get_object;
-	backend_class->get_object_list = ecb_gtasks_get_object_list;
-	backend_class->get_free_busy = ecb_gtasks_get_free_busy;
-	backend_class->create_objects = ecb_gtasks_create_objects;
-	backend_class->modify_objects = ecb_gtasks_modify_objects;
-	backend_class->remove_objects = ecb_gtasks_remove_objects;
-	backend_class->receive_objects = ecb_gtasks_receive_objects;
-	backend_class->send_objects = ecb_gtasks_send_objects;
-	backend_class->get_attachment_uris = ecb_gtasks_get_attachment_uris;
-	backend_class->discard_alarm = ecb_gtasks_discard_alarm;
-	backend_class->start_view = ecb_gtasks_start_view;
-	backend_class->stop_view = ecb_gtasks_stop_view;
-	backend_class->add_timezone = ecb_gtasks_add_timezone;
-	backend_class->shutdown = ecb_gtasks_shutdown;
+	backend_class = (EBackendClass *) class;
+	backend_class->authenticate_sync = ecb_gtasks_authenticate_sync;
+
+	cal_backend_class = (ECalBackendClass *) class;
+	cal_backend_class->get_backend_property = ecb_gtasks_get_backend_property;
+	cal_backend_class->open = ecb_gtasks_open;
+	cal_backend_class->refresh = ecb_gtasks_refresh;
+	cal_backend_class->get_object = ecb_gtasks_get_object;
+	cal_backend_class->get_object_list = ecb_gtasks_get_object_list;
+	cal_backend_class->get_free_busy = ecb_gtasks_get_free_busy;
+	cal_backend_class->create_objects = ecb_gtasks_create_objects;
+	cal_backend_class->modify_objects = ecb_gtasks_modify_objects;
+	cal_backend_class->remove_objects = ecb_gtasks_remove_objects;
+	cal_backend_class->receive_objects = ecb_gtasks_receive_objects;
+	cal_backend_class->send_objects = ecb_gtasks_send_objects;
+	cal_backend_class->get_attachment_uris = ecb_gtasks_get_attachment_uris;
+	cal_backend_class->discard_alarm = ecb_gtasks_discard_alarm;
+	cal_backend_class->start_view = ecb_gtasks_start_view;
+	cal_backend_class->stop_view = ecb_gtasks_stop_view;
+	cal_backend_class->add_timezone = ecb_gtasks_add_timezone;
+	cal_backend_class->shutdown = ecb_gtasks_shutdown;
 }

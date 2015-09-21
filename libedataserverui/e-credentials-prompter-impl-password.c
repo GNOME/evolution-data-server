@@ -53,7 +53,8 @@ password_dialog_map_event_cb (GtkWidget *dialog,
 }
 
 static void
-credentials_prompter_impl_password_get_prompt_strings (ESource *source,
+credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry,
+						       ESource *source,
 						       gchar **prompt_title,
 						       GString **prompt_description)
 {
@@ -80,7 +81,7 @@ credentials_prompter_impl_password_get_prompt_strings (ESource *source,
 	 *     if the result is ambiguous, just refer to the data source as
 	 *     an "account". */
 
-	display_name = e_source_dup_display_name (source);
+	display_name = e_util_get_source_full_name (registry, source);
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *extension;
@@ -217,7 +218,9 @@ e_credentials_prompter_impl_password_show_dialog (ECredentialsPrompterImplPasswo
 
 	dialog_parent = e_credentials_prompter_get_dialog_parent (prompter);
 
-	credentials_prompter_impl_password_get_prompt_strings (prompter_password->priv->auth_source, &title, &info_markup);
+	credentials_prompter_impl_password_get_prompt_strings (
+		e_credentials_prompter_get_registry (prompter),
+		prompter_password->priv->auth_source, &title, &info_markup);
 	if (prompter_password->priv->error_text && *prompter_password->priv->error_text) {
 		gchar *escaped = g_markup_printf_escaped ("%s", prompter_password->priv->error_text);
 

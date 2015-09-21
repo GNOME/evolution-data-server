@@ -54,6 +54,7 @@
 #include <libedataserver/e-source-contacts.h>
 #include <libedataserver/e-source-credentials-provider.h>
 #include <libedataserver/e-source-credentials-provider-impl.h>
+#include <libedataserver/e-source-credentials-provider-impl-google.h>
 #include <libedataserver/e-source-credentials-provider-impl-password.h>
 #include <libedataserver/e-source-enums.h>
 #include <libedataserver/e-source-enumtypes.h>
