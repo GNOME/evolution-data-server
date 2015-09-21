@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.18.0 2015-09-21
+---------------------------------------
+
+Bug Fixes:
+	Bug 755075 - Recent glib 2.45.8 change breaks account settings (Milan Crha)
+
+Translations:
+	Fran Dieguez (gl)
+	Claude Paroz (fr)
+	Rūdolfs Mazurs (lv)
+	Muhammet Kara (tr)
+	Stas Solovey (ru)
+	Marek Černocký (cs)
+	Anders Jonsson (sv)
+	Kjartan Maraas (nb)
+	Tom Tryfonidis (el)
+
 Evolution-Data-Server 3.17.92 2015-09-14
 ----------------------------------------
 
