@@ -2705,6 +2705,8 @@ remove_instance (ECalBackendFile *cbfile,
 		rid = NULL;
 
 	if (rid) {
+		struct icaltimetype rid_struct;
+
 		/* remove recurrence */
 		if (g_hash_table_lookup_extended (obj_data->recurrences, rid,
 						  (gpointer *) &hash_rid, (gpointer *) &comp)) {
@@ -2768,9 +2770,17 @@ remove_instance (ECalBackendFile *cbfile,
 			*old_comp = e_cal_component_clone (obj_data->full_object);
 		}
 
+		rid_struct = icaltime_from_string (rid);
+		if (!rid_struct.zone) {
+			struct icaltimetype master_dtstart = icalcomponent_get_dtstart (e_cal_component_get_icalcomponent (obj_data->full_object));
+			if (master_dtstart.zone && master_dtstart.zone != rid_struct.zone)
+				rid_struct = icaltime_convert_to_zone (rid_struct, (icaltimezone *) master_dtstart.zone);
+			rid_struct = icaltime_convert_to_zone (rid_struct, icaltimezone_get_utc_timezone ());
+		}
+
 		e_cal_util_remove_instances (
 			e_cal_component_get_icalcomponent (obj_data->full_object),
-			icaltime_from_string (rid), E_CAL_OBJ_MOD_THIS);
+			rid_struct, E_CAL_OBJ_MOD_THIS);
 
 		/* Since we are only removing one instance of recurrence
 		 * event, update the last modified time on the component */
@@ -2977,6 +2987,8 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 			comp = obj_data->full_object;
 
 			if (comp) {
+				struct icaltimetype rid_struct;
+
 				*old_components = g_slist_prepend (*old_components, e_cal_component_clone (comp));
 
 				/* remove the component from our data, temporarily */
@@ -2985,9 +2997,16 @@ e_cal_backend_file_remove_objects (ECalBackendSync *backend,
 					e_cal_component_get_icalcomponent (comp));
 				priv->comp = g_list_remove (priv->comp, comp);
 
+				rid_struct = icaltime_from_string (recur_id);
+				if (!rid_struct.zone) {
+					struct icaltimetype master_dtstart = icalcomponent_get_dtstart (e_cal_component_get_icalcomponent (comp));
+					if (master_dtstart.zone && master_dtstart.zone != rid_struct.zone)
+						rid_struct = icaltime_convert_to_zone (rid_struct, (icaltimezone *) master_dtstart.zone);
+					rid_struct = icaltime_convert_to_zone (rid_struct, icaltimezone_get_utc_timezone ());
+				}
 				e_cal_util_remove_instances (
 					e_cal_component_get_icalcomponent (comp),
-					icaltime_from_string (recur_id), mod);
+					rid_struct, mod);
 			} else {
 				*old_components = g_slist_prepend (*old_components, NULL);
 			}

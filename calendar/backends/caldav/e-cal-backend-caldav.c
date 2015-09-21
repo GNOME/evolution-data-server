@@ -3953,10 +3953,17 @@ remove_instance (ECalBackendCalDAV *cbdav,
                  gboolean also_exdate)
 {
 	icalcomponent *master = icalcomp;
+	struct icaltimetype master_dtstart;
 	gboolean res = FALSE;
 
 	g_return_val_if_fail (icalcomp != NULL, res);
 	g_return_val_if_fail (!icaltime_is_null_time (rid), res);
+
+	master_dtstart = icalcomponent_get_dtstart (master);
+	if (master_dtstart.zone && master_dtstart.zone != rid.zone)
+		rid = icaltime_convert_to_zone (rid, (icaltimezone *) master_dtstart.zone);
+
+	rid = icaltime_convert_to_zone (rid, icaltimezone_get_utc_timezone ());
 
 	/* remove an instance only */
 	if (icalcomponent_isa (icalcomp) == ICAL_VCALENDAR_COMPONENT) {
