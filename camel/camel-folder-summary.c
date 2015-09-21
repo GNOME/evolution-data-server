@@ -3840,6 +3840,9 @@ summary_build_content_info (CamelFolderSummary *summary,
 		if (calendar_header || camel_content_type_is (ct, "text", "calendar"))
 			camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);
 
+		if (camel_mime_parser_header (mp, "X-Evolution-Note", NULL))
+			camel_message_info_set_user_flag (msginfo, "$has_note", TRUE);
+
 		if (p->index && camel_content_type_is (ct, "text", "*")) {
 			gchar *encoding;
 			const gchar *charset;
@@ -3972,6 +3975,7 @@ summary_build_content_info_message (CamelFolderSummary *summary,
 	CamelMessageContentInfo *info = NULL, *child;
 	CamelContentType *ct;
 	const struct _camel_header_raw *header;
+	gboolean is_calendar = FALSE, is_note = FALSE;
 
 	if (summary->priv->build_content)
 		info = CAMEL_FOLDER_SUMMARY_GET_CLASS (summary)->content_info_new_from_message (summary, object);
@@ -4010,12 +4014,24 @@ summary_build_content_info_message (CamelFolderSummary *summary,
 
 		if (header->name && value && (
 		    (g_ascii_strcasecmp (header->name, "Content-class") == 0 && g_ascii_strcasecmp (value, "urn:content-classes:calendarmessage") == 0) ||
-		    (g_ascii_strcasecmp (header->name, "X-Calendar-Attachment") == 0)))
-			break;
+		    (g_ascii_strcasecmp (header->name, "X-Calendar-Attachment") == 0))) {
+			is_calendar = TRUE;
+			if (is_note)
+				break;
+		}
+
+		if (header->name && value && g_ascii_strcasecmp (header->name, "X-Evolution-Note") == 0) {
+			is_note = TRUE;
+			if (is_calendar)
+				break;
+		}
 	}
 
-	if (header || camel_content_type_is (ct, "text", "calendar"))
+	if (is_calendar || camel_content_type_is (ct, "text", "calendar"))
 		camel_message_info_set_user_flag (msginfo, "$has_cal", TRUE);
+
+	if (is_note)
+		camel_message_info_set_user_flag (msginfo, "$has_note", TRUE);
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {
