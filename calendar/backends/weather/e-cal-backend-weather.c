@@ -64,13 +64,16 @@ struct _ECalBackendWeatherPrivate {
 	guint reload_timeout_id;
 	guint is_loading : 1;
 
-	/* Flags */
-	gboolean opened;
-
 	/* Weather source */
 	EWeatherSource *source;
 
 	guint begin_retrival_id;
+
+	gulong source_changed_id;
+
+	GMutex last_used_mutex;
+	ESourceWeatherUnits last_used_units;
+	gchar *last_used_location;
 };
 
 static gboolean
@@ -84,7 +87,6 @@ reload_cb (gpointer user_data)
 		return TRUE;
 
 	cbw->priv->reload_timeout_id = 0;
-	cbw->priv->opened = TRUE;
 	begin_retrieval_cb (cbw);
 
 	return FALSE;
@@ -199,12 +201,20 @@ finished_retrieval_cb (GWeatherInfo *info,
 	source = e_backend_get_source (E_BACKEND (cbw));
 	weather_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEATHER_BACKEND);
 
-	if (e_source_weather_get_units (weather_extension) == E_SOURCE_WEATHER_UNITS_CENTIGRADE)
+	g_mutex_lock (&priv->last_used_mutex);
+
+	priv->last_used_units = e_source_weather_get_units (weather_extension);
+	g_free (priv->last_used_location);
+	priv->last_used_location = e_source_weather_dup_location (weather_extension);
+
+	if (priv->last_used_units == E_SOURCE_WEATHER_UNITS_CENTIGRADE)
 		unit = GWEATHER_TEMP_UNIT_CENTIGRADE;
-	else if (e_source_weather_get_units (weather_extension) == E_SOURCE_WEATHER_UNITS_KELVIN)
+	else if (priv->last_used_units == E_SOURCE_WEATHER_UNITS_KELVIN)
 		unit = GWEATHER_TEMP_UNIT_KELVIN;
 	else /* E_SOURCE_WEATHER_UNITS_FAHRENHEIT */
 		unit = GWEATHER_TEMP_UNIT_FAHRENHEIT;
+
+	g_mutex_unlock (&priv->last_used_mutex);
 
 	/* update cache */
 	comps = e_cal_backend_store_get_components (priv->store);
@@ -712,28 +722,29 @@ e_cal_backend_weather_open (ECalBackendSync *backend,
 }
 
 static void
+e_cal_backend_weather_refresh_content (ECalBackendWeather *cbw)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw));
+
+	if (!e_cal_backend_is_opened (E_CAL_BACKEND (cbw)) ||
+	    cbw->priv->is_loading)
+		return;
+
+	if (cbw->priv->reload_timeout_id)
+		g_source_remove (cbw->priv->reload_timeout_id);
+	cbw->priv->reload_timeout_id = 0;
+
+	/* wait a second, then start reloading */
+	cbw->priv->reload_timeout_id = e_named_timeout_add_seconds (1, reload_cb, cbw);
+}
+
+static void
 e_cal_backend_weather_refresh (ECalBackendSync *backend,
                                EDataCal *cal,
                                GCancellable *cancellable,
                                GError **perror)
 {
-	ECalBackendWeather *cbw;
-	ECalBackendWeatherPrivate *priv;
-
-	cbw = E_CAL_BACKEND_WEATHER (backend);
-	priv = cbw->priv;
-
-	if (!priv->opened ||
-	    priv->is_loading)
-		return;
-
-	if (priv->reload_timeout_id)
-		g_source_remove (priv->reload_timeout_id);
-	priv->reload_timeout_id = 0;
-
-	/* wait a second, then start reloading */
-	priv->reload_timeout_id =
-		e_named_timeout_add_seconds (1, reload_cb, cbw);
+	e_cal_backend_weather_refresh_content (E_CAL_BACKEND_WEATHER (backend));
 }
 
 static void
@@ -944,6 +955,54 @@ e_cal_backend_weather_notify_online_cb (ECalBackend *backend,
 }
 
 static void
+e_cal_backend_weather_source_changed_cb (ESource *source,
+					 ECalBackendWeather *cbw)
+{
+	ESourceWeather *weather_extension;
+	gchar *location;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (E_IS_CAL_BACKEND_WEATHER (cbw));
+
+	weather_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEATHER_BACKEND);
+	location = e_source_weather_dup_location (weather_extension);
+
+	g_mutex_lock (&cbw->priv->last_used_mutex);
+
+	if (cbw->priv->last_used_units != e_source_weather_get_units (weather_extension) ||
+	    g_strcmp0 (location, cbw->priv->last_used_location) != 0) {
+		g_mutex_unlock (&cbw->priv->last_used_mutex);
+
+		e_cal_backend_weather_refresh_content (cbw);
+	} else {
+		g_mutex_unlock (&cbw->priv->last_used_mutex);
+	}
+
+	g_free (location);
+}
+
+static void
+e_cal_backend_weather_constructed (GObject *object)
+{
+	ECalBackendWeather *cbw;
+	ESource *source;
+	ESourceWeather *weather_extension;
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->constructed (object);
+
+	cbw = E_CAL_BACKEND_WEATHER (object);
+	source = e_backend_get_source (E_BACKEND (cbw));
+
+	g_return_if_fail (source != NULL);
+
+	weather_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEATHER_BACKEND);
+
+	cbw->priv->last_used_units = e_source_weather_get_units (weather_extension);
+	cbw->priv->source_changed_id = g_signal_connect (source, "changed", G_CALLBACK (e_cal_backend_weather_source_changed_cb), cbw);
+}
+
+static void
 e_cal_backend_weather_dispose (GObject *object)
 {
 	ECalBackendWeatherPrivate *priv;
@@ -958,6 +1017,17 @@ e_cal_backend_weather_dispose (GObject *object)
 	if (priv->begin_retrival_id) {
 		g_source_remove (priv->begin_retrival_id);
 		priv->begin_retrival_id = 0;
+	}
+
+	if (priv->source_changed_id) {
+		ESource *source;
+
+		source = e_backend_get_source (E_BACKEND (object));
+		if (source) {
+			g_signal_handler_disconnect (source, priv->source_changed_id);
+		}
+
+		priv->source_changed_id = 0;
 	}
 
 	g_clear_object (&priv->source);
@@ -978,6 +1048,8 @@ e_cal_backend_weather_finalize (GObject *object)
 		priv->store = NULL;
 	}
 
+	g_mutex_clear (&priv->last_used_mutex);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_cal_backend_weather_parent_class)->finalize (object);
 }
@@ -987,6 +1059,8 @@ static void
 e_cal_backend_weather_init (ECalBackendWeather *cbw)
 {
 	cbw->priv = E_CAL_BACKEND_WEATHER_GET_PRIVATE (cbw);
+
+	g_mutex_init (&cbw->priv->last_used_mutex);
 
 	g_signal_connect (
 		cbw, "notify::online",
@@ -1007,6 +1081,7 @@ e_cal_backend_weather_class_init (ECalBackendWeatherClass *class)
 	backend_class = (ECalBackendClass *) class;
 	sync_class = (ECalBackendSyncClass *) class;
 
+	object_class->constructed = e_cal_backend_weather_constructed;
 	object_class->dispose = e_cal_backend_weather_dispose;
 	object_class->finalize = e_cal_backend_weather_finalize;
 
