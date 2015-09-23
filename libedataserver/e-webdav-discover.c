@@ -843,8 +843,10 @@ e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 	soup_uri_free (soup_uri);
 
 	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, error);
-	if (!doc)
+	if (!doc) {
+		g_clear_object (&message);
 		return FALSE;
+	}
 
 	xp_ctx = xmlXPathNewContext (doc);
 	xmlXPathRegisterNs (xp_ctx, XC ("D"), XC (NS_WEBDAV));
@@ -871,6 +873,8 @@ e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 
 	xmlXPathFreeContext (xp_ctx);
 	xmlFreeDoc (doc);
+
+	g_clear_object (&message);
 
 	return TRUE;
 }
@@ -1240,8 +1244,10 @@ e_webdav_discover_get_addressbook_collection_details (SoupSession *session,
 	soup_uri_free (soup_uri);
 
 	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, error);
-	if (!doc)
+	if (!doc) {
+		g_clear_object (&message);
 		return FALSE;
+	}
 
 	xp_ctx = xmlXPathNewContext (doc);
 	xmlXPathRegisterNs (xp_ctx, XC ("D"), XC (NS_WEBDAV));
@@ -1268,6 +1274,8 @@ e_webdav_discover_get_addressbook_collection_details (SoupSession *session,
 
 	xmlXPathFreeContext (xp_ctx);
 	xmlFreeDoc (doc);
+
+	g_clear_object (&message);
 
 	return TRUE;
 }
