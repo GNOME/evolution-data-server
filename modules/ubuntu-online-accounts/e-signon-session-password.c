@@ -240,7 +240,6 @@ signon_session_password_process_cb (GObject *source_object,
 	AsyncContext *async_context;
 	GVariant *session_data;
 	GVariant *secret;
-	GString *string = NULL;
 	GError *error = NULL;
 
 	simple = G_SIMPLE_ASYNC_RESULT (user_data);
@@ -276,7 +275,6 @@ signon_session_password_process_cb (GObject *source_object,
 
 	async_context->password = g_string_new (g_variant_get_string (secret, NULL));
 
-	g_string_free (string, TRUE);
 	g_variant_unref (secret);
 
 exit:
