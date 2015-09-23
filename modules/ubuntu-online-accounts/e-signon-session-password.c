@@ -316,8 +316,6 @@ e_signon_session_password_get (ESourceCredentialsProviderImpl *provider_impl,
 
 	ag_account_service = signon_session_password_new_account_service (provider_impl, source, &error);
 
-	g_object_unref (source);
-
 	/* Sanity check. */
 	g_return_if_fail (
 		((ag_account_service != NULL) && (error == NULL)) ||
