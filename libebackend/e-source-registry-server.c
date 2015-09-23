@@ -500,7 +500,7 @@ source_registry_server_process_file_monitor_event (gpointer key,
 			return;
 		}
 
-		g_object_unref (source);
+		g_clear_object (&source);
 	}
 
 	if (event_type == G_FILE_MONITOR_EVENT_CREATED) {
