@@ -150,7 +150,40 @@ ubuntu_online_accounts_ref_account_service (EUbuntuOnlineAccounts *extension,
 	const gchar *extension_name;
 	const gchar *service_type;
 
-	service_type = e_source_get_ag_service_type (source);
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION)) {
+		/* Asking for credentials on the main (collection) source, which
+		   doesn't belong to any particular service, thus try to pick any
+		   enabled service, expecting the same password/token being
+		   used for all other services. */
+		service_type = NULL;
+		account_services = g_object_get_data (G_OBJECT (source), "ag-account-services");
+		g_warn_if_fail (account_services != NULL);
+		if (account_services) {
+			AgAccountService *ag_service;
+
+			ag_service = g_hash_table_lookup (account_services, E_AG_SERVICE_TYPE_CALENDAR);
+			if (ag_service && ag_account_service_get_enabled (ag_service))
+				service_type = E_AG_SERVICE_TYPE_CALENDAR;
+
+			if (!service_type) {
+				ag_service = g_hash_table_lookup (account_services, E_AG_SERVICE_TYPE_CONTACTS);
+				if (ag_service && ag_account_service_get_enabled (ag_service))
+					service_type = E_AG_SERVICE_TYPE_CONTACTS;
+			}
+
+			if (!service_type) {
+				ag_service = g_hash_table_lookup (account_services, E_AG_SERVICE_TYPE_MAIL);
+				if (ag_service && ag_account_service_get_enabled (ag_service))
+					service_type = E_AG_SERVICE_TYPE_MAIL;
+			}
+
+			if (!service_type)
+				return NULL;
+		}
+	} else {
+		service_type = e_source_get_ag_service_type (source);
+	}
+
 	g_return_val_if_fail (service_type != NULL, NULL);
 
 	extension_name = E_SOURCE_EXTENSION_UOA;
