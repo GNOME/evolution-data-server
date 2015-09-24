@@ -34,9 +34,14 @@
  * ]|
  **/
 
-#include "e-source-mail-composition.h"
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <libedataserver/e-data-server-util.h>
+
+#include "e-source-enumtypes.h"
+#include "e-source-mail-composition.h"
 
 #define E_SOURCE_MAIL_COMPOSITION_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -48,6 +53,7 @@ struct _ESourceMailCompositionPrivate {
 	gchar *drafts_folder;
 	gchar *templates_folder;
 	gboolean sign_imip;
+	ESourceMailCompositionReplyStyle reply_style;
 };
 
 enum {
@@ -55,6 +61,7 @@ enum {
 	PROP_BCC,
 	PROP_CC,
 	PROP_DRAFTS_FOLDER,
+	PROP_REPLY_STYLE,
 	PROP_SIGN_IMIP,
 	PROP_TEMPLATES_FOLDER
 };
@@ -87,6 +94,12 @@ source_mail_composition_set_property (GObject *object,
 			e_source_mail_composition_set_drafts_folder (
 				E_SOURCE_MAIL_COMPOSITION (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_REPLY_STYLE:
+			e_source_mail_composition_set_reply_style (
+				E_SOURCE_MAIL_COMPOSITION (object),
+				g_value_get_enum (value));
 			return;
 
 		case PROP_SIGN_IMIP:
@@ -130,6 +143,13 @@ source_mail_composition_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_mail_composition_dup_drafts_folder (
+				E_SOURCE_MAIL_COMPOSITION (object)));
+			return;
+
+		case PROP_REPLY_STYLE:
+			g_value_set_enum (
+				value,
+				e_source_mail_composition_get_reply_style (
 				E_SOURCE_MAIL_COMPOSITION (object)));
 			return;
 
@@ -219,6 +239,20 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 			"Drafts Folder",
 			"Preferred folder for draft messages",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_REPLY_STYLE,
+		g_param_spec_enum (
+			"reply-style",
+			"Reply Style",
+			"What reply style to prefer",
+			E_TYPE_SOURCE_MAIL_COMPOSITION_REPLY_STYLE,
+			E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -648,3 +682,48 @@ e_source_mail_composition_set_templates_folder (ESourceMailComposition *extensio
 	g_object_notify (G_OBJECT (extension), "templates-folder");
 }
 
+/**
+ * e_source_mail_composition_get_reply_style:
+ * @extension: an #ESourceMailComposition
+ *
+ * Returns preferred reply style to be used when replying
+ * using the associated account. If no preference is set,
+ * the %E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT is returned.
+ *
+ * Returns: reply style preference
+ *
+ * Since: 3.20
+ **/
+ESourceMailCompositionReplyStyle
+e_source_mail_composition_get_reply_style (ESourceMailComposition *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension),
+		E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT);
+
+	return extension->priv->reply_style;
+}
+
+/**
+ * e_source_mail_composition_set_reply_style:
+ * @extension: an #ESourceMailComposition
+ * @reply_style: an #ESourceMailCompositionReplyStyle
+ *
+ * Sets preferred reply style to be used when replying
+ * using the associated account. To unset the preference,
+ * use the %E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT.
+ *
+ * Since: 3.20
+ **/
+void
+e_source_mail_composition_set_reply_style (ESourceMailComposition *extension,
+					   ESourceMailCompositionReplyStyle reply_style)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
+
+	if (extension->priv->reply_style == reply_style)
+		return;
+
+	extension->priv->reply_style = reply_style;
+
+	g_object_notify (G_OBJECT (extension), "reply-style");
+}

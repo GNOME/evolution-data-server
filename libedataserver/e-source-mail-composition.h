@@ -23,6 +23,7 @@
 #define E_SOURCE_MAIL_COMPOSITION_H
 
 #include <libedataserver/e-source-extension.h>
+#include <libedataserver/e-source-enums.h>
 
 /* Standard GObject macros */
 #define E_TYPE_SOURCE_MAIL_COMPOSITION \
@@ -113,6 +114,12 @@ gchar *		e_source_mail_composition_dup_templates_folder
 void		e_source_mail_composition_set_templates_folder
 					(ESourceMailComposition *extension,
 					 const gchar *templates_folder);
+ESourceMailCompositionReplyStyle
+		e_source_mail_composition_get_reply_style
+					(ESourceMailComposition *extension);
+void		e_source_mail_composition_set_reply_style
+					(ESourceMailComposition *extension,
+					 ESourceMailCompositionReplyStyle reply_style);
 
 G_END_DECLS
 

@@ -240,4 +240,29 @@ typedef enum {
 	E_SOURCE_WEATHER_UNITS_KELVIN
 } ESourceWeatherUnits;
 
+/**
+ * ESourceMailCompositionReplyStyle:
+ * @E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT:
+ *   Use default reply style.
+ * @E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_QUOTED:
+ *   Use quoted reply style.
+ * @E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DO_NOT_QUOTE:
+ *   Do not quote anything in replies.
+ * @E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_ATTACH:
+ *   Attach original message in replies.
+ * @E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_OUTLOOK:
+ *  Use Outlook reply style.
+ *
+ * Set of preferred reply styles for an #ESourceMailComposition extension.
+ *
+ * Since: 3.20
+ **/
+typedef enum {
+	E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DEFAULT = 0,
+	E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_QUOTED,
+	E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_DO_NOT_QUOTE,
+	E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_ATTACH,
+	E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_OUTLOOK
+} ESourceMailCompositionReplyStyle;
+
 #endif /* E_SOURCE_ENUMS_H */
