@@ -498,7 +498,7 @@ camel_stream_buffer_read_line (CamelStreamBuffer *sbf,
 		nread = camel_stream_buffer_gets (
 			sbf, (gchar *) p, sbf->priv->linesize -
 			(p - sbf->priv->linebuf), cancellable, &local_error);
-		if (nread <=0) {
+		if (nread <= 0) {
 			if (p > sbf->priv->linebuf)
 				break;
 			if (local_error)

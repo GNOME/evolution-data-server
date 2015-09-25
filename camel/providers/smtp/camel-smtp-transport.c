@@ -64,6 +64,16 @@ enum {
 	PROP_HOST_REACHABLE
 };
 
+#define CAMEL_SMTP_TRANSPORT_ERROR camel_smtp_transport_error_quark ()
+
+GQuark camel_smtp_transport_error_quark (void);
+
+G_DEFINE_QUARK (camel-smtp-transport-error-quark, camel_smtp_transport_error)
+
+enum {
+	CAMEL_SMTP_TRANSPORT_ERROR_CONNECTION_LOST
+};
+
 /* support prototypes */
 static GHashTable *	esmtp_get_authtypes	(const guchar *buffer);
 static gboolean		smtp_helo		(CamelSmtpTransport *transport,
@@ -527,9 +537,36 @@ smtp_transport_connect_sync (CamelService *service,
 		session = camel_service_ref_session (service);
 
 		if (g_hash_table_lookup (transport->authtypes, mechanism)) {
+			gint tries = 0;
+			GError *local_error = NULL;
+
 			success = camel_session_authenticate_sync (
 				session, service, mechanism,
-				cancellable, error);
+				cancellable, &local_error);
+
+			while (g_error_matches (local_error, CAMEL_SMTP_TRANSPORT_ERROR, CAMEL_SMTP_TRANSPORT_ERROR_CONNECTION_LOST) &&
+			       !g_cancellable_is_cancelled (cancellable) && tries < 3) {
+				d (fprintf (stderr, "[SMTP] reconnecting after dropped connection, %d. try\r\n", tries + 1));
+
+				tries++;
+
+				g_clear_error (&local_error);
+
+				transport->connected = FALSE;
+				g_mutex_lock (&transport->stream_lock);
+				g_clear_object (&transport->istream);
+				g_clear_object (&transport->ostream);
+				g_mutex_unlock (&transport->stream_lock);
+
+				success = connect_to_server (service, cancellable, error);
+				if (success)
+					success = camel_session_authenticate_sync (
+						session, service, mechanism,
+						cancellable, &local_error);
+			}
+
+			if (local_error)
+				g_propagate_error (error, local_error);
 		} else {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
@@ -668,6 +705,10 @@ smtp_transport_authenticate_sync (CamelService *service,
 
 	while (!camel_sasl_get_authenticated (sasl)) {
 		if (!respbuf) {
+			/* It's an EOF state on the input stream. */
+			if (error && !*error)
+				g_set_error (error, CAMEL_SMTP_TRANSPORT_ERROR,
+					CAMEL_SMTP_TRANSPORT_ERROR_CONNECTION_LOST, _("Connection cancelled"));
 			g_prefix_error (error, _("AUTH command failed: "));
 			transport->connected = FALSE;
 			goto lose;
