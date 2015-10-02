@@ -1745,6 +1745,17 @@ AC_ARG_WITH([dbus-service-dir],
 	[dbus_servicedir='${datadir}/dbus-1/services'])
 AC_SUBST([dbus_servicedir])
 
+# It is correct for this to be in ${prefix}/lib, even on systems where that
+# does not match ${libdir}. This is what systemd uses on such platforms.
+AC_ARG_WITH([systemduserunitdir],
+	AS_HELP_STRING([--with-systemduserunitdir=PATH],
+	[Set directory for systemd user units, or 'no' to disable]
+	[[default=${prefix}/lib/systemd/user]]),
+	[systemd_userdir="$withval"],
+	[systemd_userdir='${prefix}/lib/systemd/user'])
+AC_SUBST([systemd_userdir])
+AM_CONDITIONAL([WITH_SYSTEMD_USER_UNITS], [test "x$systemd_userdir" != "xno"])
+
 dnl ******************************
 dnl GLib stuff
 dnl ******************************

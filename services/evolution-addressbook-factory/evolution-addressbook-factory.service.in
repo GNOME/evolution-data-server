@@ -1,0 +1,7 @@
+[Unit]
+Description=Evolution address book service
+
+[Service]
+Type=dbus
+BusName=@ADDRESS_BOOK_DBUS_SERVICE_NAME@
+ExecStart=@libexecdir@/evolution-addressbook-factory

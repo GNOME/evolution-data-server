@@ -1,0 +1,7 @@
+[Unit]
+Description=Evolution source registry
+
+[Service]
+Type=dbus
+BusName=@SOURCES_DBUS_SERVICE_NAME@
+ExecStart=@libexecdir@/evolution-source-registry

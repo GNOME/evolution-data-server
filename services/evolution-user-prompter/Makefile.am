@@ -2,13 +2,22 @@ NULL =
 
 dbus_service_in_files = org.gnome.evolution.dataserver.UserPrompter.service.in
 dbus_service_DATA = $(dbus_service_in_files:.service.in=.service)
+
+systemd_user_in_files = evolution-user-prompter.service.in
+if WITH_SYSTEMD_USER_UNITS
+systemd_user_DATA = $(systemd_user_in_files:.service.in=.service)
+endif
+
+# this works for both
 @EVO_SUBST_SERVICE_RULE@
 
 CLEANFILES = \
 	$(dbus_service_DATA) \
+	$(systemd_user_DATA) \
 	$(NULL)
 EXTRA_DIST = \
 	$(dbus_service_in_files) \
+	$(systemd_user_in_files) \
 	$(NULL)
 
 PROMPT_USER_SOURCES = prompt-user-gtk.c

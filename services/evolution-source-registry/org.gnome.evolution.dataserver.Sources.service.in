@@ -1,3 +1,4 @@
 [D-BUS Service]
 Name=@SOURCES_DBUS_SERVICE_NAME@
 Exec=@libexecdir@/evolution-source-registry
+SystemdService=evolution-source-registry.service

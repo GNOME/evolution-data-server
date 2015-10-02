@@ -26,18 +26,27 @@ builtin_sources = $(builtin_sources_in_files:.source.in=.source)
 
 dbus_service_in_files = org.gnome.evolution.dataserver.Sources.service.in
 dbus_service_DATA = $(dbus_service_in_files:.service.in=.service)
+
+systemd_user_in_files = evolution-source-registry.service.in
+if WITH_SYSTEMD_USER_UNITS
+systemd_user_DATA = $(systemd_user_in_files:.service.in=.service)
+endif
+
+# this works for both
 @EVO_SUBST_SERVICE_RULE@
 
 CLEANFILES = \
 	$(BUILT_SOURCES) \
 	$(builtin_sources) \
 	$(dbus_service_DATA) \
+	$(systemd_user_DATA) \
 	$(NULL)
 
 EXTRA_DIST = \
 	evolution-source-registry-resource.xml \
 	$(builtin_sources_in_files) \
 	$(dbus_service_in_files) \
+	$(systemd_user_in_files) \
 	$(NULL)
 
 libexec_PROGRAMS = \

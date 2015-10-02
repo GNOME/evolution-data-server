@@ -1,3 +1,4 @@
 [D-BUS Service]
 Name=@CALENDAR_DBUS_SERVICE_NAME@
 Exec=@libexecdir@/evolution-calendar-factory
+SystemdService=evolution-calendar-factory.service

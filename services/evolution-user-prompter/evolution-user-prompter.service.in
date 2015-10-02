@@ -1,0 +1,7 @@
+[Unit]
+Description=Evolution user prompter
+
+[Service]
+Type=dbus
+BusName=@USER_PROMPTER_DBUS_SERVICE_NAME@
+ExecStart=@libexecdir@/evolution-user-prompter
