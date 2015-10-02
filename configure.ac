@@ -1737,6 +1737,14 @@ m4_pattern_allow([AM_V_GEN])
 EVO_SUBST_SERVICE_RULE='%.service: %.service.in Makefile ; $(AM_V_GEN) sed -e "s|\@libexecdir\@|$(servicelibexecdir)|" -e s"|\@ADDRESS_BOOK_DBUS_SERVICE_NAME\@|$(ADDRESS_BOOK_DBUS_SERVICE_NAME)|" -e "s|\@CALENDAR_DBUS_SERVICE_NAME\@|$(CALENDAR_DBUS_SERVICE_NAME)|" -e "s|\@SOURCES_DBUS_SERVICE_NAME\@|$(SOURCES_DBUS_SERVICE_NAME)|" -e "s|\@USER_PROMPTER_DBUS_SERVICE_NAME\@|$(USER_PROMPTER_DBUS_SERVICE_NAME)|" $< > $@'
 AC_SUBST(EVO_SUBST_SERVICE_RULE)
 
+AC_ARG_WITH([dbus-service-dir],
+	AS_HELP_STRING([--with-dbus-service-dir=PATH],
+	[Set directory for D-Bus service files]
+	[[default=${datadir}/dbus-1/services]]),
+	[dbus_servicedir="$withval"],
+	[dbus_servicedir='${datadir}/dbus-1/services'])
+AC_SUBST([dbus_servicedir])
+
 dnl ******************************
 dnl GLib stuff
 dnl ******************************
