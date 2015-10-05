@@ -1418,7 +1418,8 @@ compat_libxml_output_buffer_get_content (xmlOutputBufferPtr buf,
  * supports 'getctag' extension. */
 static gboolean
 check_calendar_changed_on_server (ECalBackendCalDAV *cbdav,
-				  gboolean save_ctag)
+				  gboolean save_ctag,
+				  GCancellable *cancellable)
 {
 	xmlOutputBufferPtr	  buf;
 	SoupMessage              *message;
@@ -1469,7 +1470,7 @@ check_calendar_changed_on_server (ECalBackendCalDAV *cbdav,
 		buf_content, buf_size);
 
 	/* Send the request now */
-	send_and_handle_redirection (cbdav, message, NULL, NULL, NULL);
+	send_and_handle_redirection (cbdav, message, NULL, cancellable, NULL);
 
 	/* Clean up the memory */
 	xmlOutputBufferClose (buf);
@@ -1521,7 +1522,8 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
                             gint *len,
                             GSList *only_hrefs,
                             time_t start_time,
-                            time_t end_time)
+                            time_t end_time,
+			    GCancellable *cancellable)
 {
 	xmlOutputBufferPtr   buf;
 	SoupMessage         *message;
@@ -1622,7 +1624,7 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 		buf_content, buf_size);
 
 	/* Send the request now */
-	send_and_handle_redirection (cbdav, message, NULL, NULL, NULL);
+	send_and_handle_redirection (cbdav, message, NULL, cancellable, NULL);
 
 	/* Clean up the memory */
 	xmlOutputBufferClose (buf);
@@ -1660,6 +1662,27 @@ caldav_server_list_objects (ECalBackendCalDAV *cbdav,
 	return result;
 }
 
+static void
+caldav_synchronize_cache (ECalBackendCalDAV *cbdav,
+			  time_t start_time,
+			  time_t end_time,
+			  gboolean can_check_ctag,
+			  GCancellable *cancellable);
+
+static gboolean
+caldav_server_query_google_for_uid (ECalBackendCalDAV *cbdav,
+				    const gchar *uid,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	if (!check_calendar_changed_on_server (cbdav, FALSE, cancellable))
+		return FALSE;
+
+	caldav_synchronize_cache (cbdav, 0, 0, FALSE, cancellable);
+
+	return !g_cancellable_is_cancelled (cancellable);
+}
+
 static gboolean
 caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
                              const gchar *uid,
@@ -1683,6 +1706,9 @@ caldav_server_query_for_uid (ECalBackendCalDAV *cbdav,
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), FALSE);
 	g_return_val_if_fail (uid && *uid, FALSE);
+
+	if (cbdav->priv->is_google)
+		return caldav_server_query_google_for_uid (cbdav, uid, cancellable, error);
 
 	/* Allocate the soup message */
 	message = soup_message_new ("REPORT", cbdav->priv->uri);
@@ -2368,10 +2394,11 @@ free_comp_list (gpointer cclist)
  * be still there.
 */
 static void
-synchronize_cache (ECalBackendCalDAV *cbdav,
-                   time_t start_time,
-                   time_t end_time,
-		   gboolean can_check_ctag)
+caldav_synchronize_cache (ECalBackendCalDAV *cbdav,
+			  time_t start_time,
+			  time_t end_time,
+			  gboolean can_check_ctag,
+			  GCancellable *cancellable)
 {
 	CalDAVObject *sobjs, *object;
 	GSList *c_objs, *c_iter; /* list of all items known from our cache */
@@ -2383,7 +2410,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	/* intentionally do server-side checking first, and then the bool test,
 	   to store actual ctag value first, and then update the content, to not
 	   do it again the next time this function is called */
-	if (!check_calendar_changed_on_server (cbdav, start_time == (time_t) 0) && can_check_ctag) {
+	if (!check_calendar_changed_on_server (cbdav, start_time == (time_t) 0, cancellable) && can_check_ctag) {
 		/* no changes on the server, no update required */
 		return;
 	}
@@ -2392,7 +2419,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 	sobjs = NULL;
 
 	/* get list of server objects */
-	if (!caldav_server_list_objects (cbdav, &sobjs, &len, NULL, start_time, end_time))
+	if (!caldav_server_list_objects (cbdav, &sobjs, &len, NULL, start_time, end_time, cancellable))
 		return;
 
 	c_objs = e_cal_backend_store_get_components (cbdav->priv->store);
@@ -2531,7 +2558,7 @@ synchronize_cache (ECalBackendCalDAV *cbdav,
 			}
 
 			count = 0;
-			if (!caldav_server_list_objects (cbdav, &up_sobjs, &count, to_fetch, 0, 0)) {
+			if (!caldav_server_list_objects (cbdav, &up_sobjs, &count, to_fetch, 0, 0, cancellable)) {
 				fprintf (stderr, "CalDAV - failed to retrieve bunch of items\n"); fflush (stderr);
 				break;
 			}
@@ -2603,7 +2630,9 @@ is_google_uri (const gchar *uri)
 	suri = soup_uri_new (uri);
 	g_return_val_if_fail (suri != NULL, FALSE);
 
-	res = suri->host && g_ascii_strcasecmp (suri->host, "www.google.com") == 0;
+	res = suri->host && (
+		g_ascii_strcasecmp (suri->host, "www.google.com") == 0 ||
+		g_ascii_strcasecmp (suri->host, "apidata.googleusercontent.com") == 0);
 
 	soup_uri_free (suri);
 
@@ -2697,11 +2726,11 @@ caldav_synch_slave_loop (gpointer data)
 			time (&now);
 			/* check for events in the month before/after today first,
 			 * to show user actual data as soon as possible */
-			synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc), can_check_ctag);
+			caldav_synchronize_cache (cbdav, time_add_week_with_zone (now, -5, utc), time_add_week_with_zone (now, +5, utc), can_check_ctag, NULL);
 
 			if (cbdav->priv->slave_cmd != SLAVE_SHOULD_SLEEP) {
 				/* and then check for changes in a whole calendar */
-				synchronize_cache (cbdav, 0, 0, can_check_ctag);
+				caldav_synchronize_cache (cbdav, 0, 0, can_check_ctag, NULL);
 			}
 
 			if (caldav_debug_show (DEBUG_SERVER_ITEMS)) {
