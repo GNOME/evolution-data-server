@@ -610,7 +610,7 @@ imapx_server_stash_command_arguments (CamelIMAPXServer *is)
 	is->priv->status_data_items = g_string_free (buffer, FALSE);
 
 	g_free (is->priv->list_return_opts);
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_EXTENDED)) {
+	if (!is->priv->is_cyrus && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_EXTENDED)) {
 		buffer = g_string_new ("CHILDREN SUBSCRIBED");
 		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, LIST_STATUS))
 			g_string_append_printf (
@@ -1792,6 +1792,17 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			if (cinfo)
 				imapx_free_capability (cinfo);
 			c (is->priv->tagprefix, "got capability flags %08x\n", is->priv->cinfo ? is->priv->cinfo->capa : 0xFFFFFFFF);
+
+			if (is->priv->context->sinfo->text) {
+				guint32 list_extended = imapx_lookup_capability ("LIST-EXTENDED");
+
+				is->priv->is_cyrus = is->priv->is_cyrus || camel_strstrcase (is->priv->context->sinfo->text, "cyrus");
+				if (is->priv->is_cyrus && is->priv->cinfo && (is->priv->cinfo->capa & list_extended) != 0) {
+					/* Disable LIST-EXTENDED for cyrus servers */
+					c (is->priv->tagprefix, "Disabling LIST-EXTENDED extension for a Cyrus server\n");
+					is->priv->cinfo->capa &= ~list_extended;
+				}
+			}
 			imapx_server_stash_command_arguments (is);
 		}
 		break;
