@@ -969,7 +969,9 @@ e_cal_backend_http_open (ECalBackendSync *backend,
 			&certificate_errors, cancellable, &local_error);
 
 		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) ||
+		    (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN) &&
+		    !cbhttp->priv->password)) {
 			GError *local_error2 = NULL;
 			ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
 
