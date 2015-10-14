@@ -162,6 +162,9 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 	}
 
 	if (connectable == NULL) {
+		backend->priv->network_monitor_cancellable = cancellable;
+		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
+
 		e_backend_set_online (backend, TRUE);
 	} else {
 		cancellable = g_cancellable_new ();
@@ -171,11 +174,10 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 			connectable, cancellable,
 			backend_network_monitor_can_reach_cb,
 			g_object_ref (backend));
+
+		backend->priv->network_monitor_cancellable = cancellable;
+		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 	}
-
-	backend->priv->network_monitor_cancellable = cancellable;
-
-	g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 
 	if (connectable != NULL)
 		g_object_unref (connectable);
