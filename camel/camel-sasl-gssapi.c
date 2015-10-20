@@ -78,8 +78,8 @@ extern gss_OID gss_nt_service_name;
 
 static const char spnego_OID[] = "\x2b\x06\x01\x05\x05\x02";
 static const gss_OID_desc gss_mech_spnego = {
-       6,
-       &spnego_OID
+	6,
+	(gpointer) &spnego_OID
 };
 
 #ifndef GSS_C_OID_KRBV5_DES
