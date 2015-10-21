@@ -296,6 +296,15 @@ maildir_summary_add (CamelLocalSummary *cls,
 		if (info) {
 			camel_maildir_info_set_filename (mi, camel_maildir_summary_info_to_name (mi));
 			d (printf ("Setting filename to %s\n", camel_maildir_info_filename (mi)));
+
+			/* Inherit the Received date from the passed-in info only if it is set and
+			   the new message info doesn't have it set or it's set to the default
+			   value, derived from the message UID. */
+			if (camel_message_info_date_received (info) > 0 &&
+			    (camel_message_info_date_received (mi) <= 0 ||
+			    (camel_message_info_uid (mi) &&
+			     camel_message_info_date_received (mi) == strtoul (camel_message_info_uid (mi), NULL, 10))))
+				mi->info.info.date_received = camel_message_info_date_received (info);
 		}
 	}
 
