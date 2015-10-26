@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.19.1 2015-10-26
+---------------------------------------
+
+Bug Fixes:
+	Bug 749974 - Use OAuth2 for Google sources (Milan Crha)
+	Bug 754999 - Write EXDATE times in UTC (Milan Crha)
+	Bug 255032 - Be able to write a note on a mail (Milan Crha)
+	Bug 755412 - [UOA] Update OAuth flow according to Google documentation (Alberto Mardegan)
+	Bug 755410 - [UOA] Incorrect ESource unref in e_signon_session_password_get() (Milan Crha)
+	Bug 513779 - Select reply style per mail account (Milan Crha)
+	Bug 552425 - [SMTP] Try to reconnect on connection lost during AUTH command (Milan Crha)
+	Bug 755735 - Make D-Bus session service directory configurable (Simon McVittie)
+	Bug 755735 - Add a systemd user service for each D-Bus session service (Simon McVittie)
+	Bug 732931 - Google CalDAV returns whole calendar on UID comp-filter (Milan Crha)
+	Bug 748636 - [IMAPx] Disable LIST-EXTENDED extension for Cyrus servers (Milan Crha)
+	Bug 756172 - Asks for WebCal password at every start (Milan Crha)
+	Bug 756530 - Deadlock in e_backend_set_online() (Milan Crha)
+	Bug 756842 - [Maildir] Do not overwrite received date on the message info (Milan Crha)
+
+Miscellaneous:
+	[Weather calendar] Location/Unit changes not propagate until re-open (Milan Crha)
+	Correct runtime warnings from ubuntu-online-accounts module (Milan Crha)
+	source_registry_server_process_file_monitor_event - Correct possible runtime warning (Milan Crha)
+	Fix a reference leak from e-webdav-discover (Milan Crha)
+	Avoid the compile warning when initializing SPNEGO' gss_OID_desc structure (Tomas Popela)
+
+Translations:
+	Kenneth Nielsen (da)
+	Милош Поповић (sr)
+	Christian Kirbach (de)
+	Inaki Larranaga Murgoitio (eu)
+
 Evolution-Data-Server 3.18.0 2015-09-21
 ---------------------------------------
 
