@@ -324,7 +324,8 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 }
 
 static GDataTasksTask *
-ecb_gtasks_comp_to_gdata (ECalComponent *comp)
+ecb_gtasks_comp_to_gdata (ECalComponent *comp,
+			  ECalComponent *cached_comp)
 {
 	GDataEntry *entry;
 	GDataTasksTask *task;
@@ -379,6 +380,19 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp)
 		gdata_tasks_task_set_status (task, "needsAction");
 
 	tmp = ecb_gtasks_icomp_x_prop_get (icomp, X_EVO_GTASKS_SELF_LINK);
+	if (!tmp || !*tmp) {
+		g_free (tmp);
+		tmp = NULL;
+
+		/* If the passed-in component doesn't contain the libgdata self link,
+		   then get it from the cached comp */
+		if (cached_comp) {
+			tmp = ecb_gtasks_icomp_x_prop_get (
+				e_cal_component_get_icalcomponent (cached_comp),
+				X_EVO_GTASKS_SELF_LINK);
+		}
+	}
+
 	if (tmp && *tmp) {
 		GDataLink *data_link;
 
@@ -1047,7 +1061,7 @@ ecb_gtasks_create_objects (ECalBackend *backend,
 			icalcomponent_set_uid (icomp, "");
 		}
 
-		comp_task = ecb_gtasks_comp_to_gdata (comp);
+		comp_task = ecb_gtasks_comp_to_gdata (comp, NULL);
 		if (!comp_task) {
 			g_object_unref (comp);
 			local_error = EDC_ERROR (InvalidObject);
@@ -1166,7 +1180,7 @@ ecb_gtasks_modify_objects (ECalBackend *backend,
 			break;
 		}
 
-		comp_task = ecb_gtasks_comp_to_gdata (comp);
+		comp_task = ecb_gtasks_comp_to_gdata (comp, cached_comp);
 		g_object_unref (comp);
 
 		if (!comp_task) {
@@ -1252,7 +1266,7 @@ ecb_gtasks_remove_objects (ECalBackend *backend,
 			break;
 		}
 
-		task = ecb_gtasks_comp_to_gdata (cached_comp);
+		task = ecb_gtasks_comp_to_gdata (cached_comp, NULL);
 		if (!task) {
 			g_object_unref (cached_comp);
 			local_error = EDC_ERROR (InvalidObject);
