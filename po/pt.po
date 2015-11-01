@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-10-19 04:47+0000\n"
-"PO-Revision-Date: 2015-10-29 09:40+0000\n"
-"Last-Translator: Pedro Albuquerque <palbuquerque73@gmail.com>\n"
+"POT-Creation-Date: 2015-11-01 05:58+0000\n"
+"PO-Revision-Date: 2015-11-01 08:19+0000\n"
+"Last-Translator:  <>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
@@ -3070,8 +3070,9 @@ msgstr "Impossível copiar as mensagens para a pasta Sucata"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:796
 #, c-format
-msgid "You must be working online to complete this operation (%s)"
-msgstr "Tem de estar a trabalhar online para terminar esta operação (%s)"
+#| msgid "No IMAP mailbox available for folder '%s'"
+msgid "No quota information available for folder '%s'"
+msgstr "Sem informação de quota para a pasta \"%s\""
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:936
 #: ../camel/providers/imapx/camel-imapx-folder.c:1029
@@ -3610,7 +3611,6 @@ msgstr "Impossível transferir a mensagem para a pasta de destino: %s"
 #: ../camel/providers/local/camel-maildir-store.c:131
 #: ../camel/providers/local/camel-maildir-store.c:915
 #, c-format
-#| msgid "Cannot get folder container %s"
 msgid "Cannot create folder containing '%s'"
 msgstr "Impossível criar pasta contendo \"%s\""
 
@@ -4797,8 +4797,7 @@ msgstr "Nenhum motor de fábrica para a chave de hash \"%s\""
 msgid "Data source is missing a [%s] group"
 msgstr "Falta um grupo [%s] na origem de dados"
 
-#: ../libebackend/e-server-side-source.c:1025
-#: ../libedataserver/e-source.c:1394
+#: ../libebackend/e-server-side-source.c:1025 ../libedataserver/e-source.c:1394
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "A origem de dados \"%s\" não suporta a criação de recursos remotos"
@@ -4811,8 +4810,7 @@ msgstr ""
 "A origem de dados \"%s\" não tem um motor de coleção para criar o recurso "
 "remoto"
 
-#: ../libebackend/e-server-side-source.c:1067
-#: ../libedataserver/e-source.c:1507
+#: ../libebackend/e-server-side-source.c:1067 ../libedataserver/e-source.c:1507
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "A origem de dados \"%s\" não suporta a remoção de recursos remotos"
@@ -4825,8 +4823,7 @@ msgstr ""
 "A origem de dados \"%s\" não tem um motor de coleção para eliminar o recurso "
 "remoto"
 
-#: ../libebackend/e-server-side-source.c:1112
-#: ../libedataserver/e-source.c:1603
+#: ../libebackend/e-server-side-source.c:1112 ../libedataserver/e-source.c:1603
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1027
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -5513,6 +5510,9 @@ msgstr "Não migrar dados de utilizador das versões anteriores do Evolution"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
 msgstr "_Fechar"
+
+#~ msgid "You must be working online to complete this operation (%s)"
+#~ msgstr "Tem de estar a trabalhar online para terminar esta operação (%s)"
 
 #~ msgid "No host information available"
 #~ msgstr "Nenhuma informação de servidor disponível"
