@@ -905,12 +905,42 @@ nntp_push_to_hierarchy (CamelNNTPStore *store,
 	return tree_insert (root, last, pfi);
 }
 
+static gboolean
+nntp_store_path_matches_top (const gchar *path,
+			     const gchar *top,
+			     gint toplen)
+{
+	g_return_val_if_fail (path != NULL, FALSE);
+
+	if (toplen <= 0 || !top)
+		return TRUE;
+
+	if (strncmp (path, top, toplen) != 0) {
+		gchar *short_path;
+		gboolean matches = FALSE;
+
+		short_path = nntp_newsgroup_name_short (path);
+		if (!short_path)
+			return FALSE;
+
+		if (strncmp (short_path, top, toplen) == 0) {
+			matches = path[toplen] == 0 || path[toplen] == '.';
+		}
+
+		g_free (short_path);
+
+		return matches;
+	}
+
+	return path[toplen] == 0 || path[toplen] == '.';
+}
+
 /*
  * get folder info, using the information in our StoreSummary
  */
 static CamelFolderInfo *
 nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
-                                   const gchar *orig_top,
+                                   const gchar *top,
                                    guint flags,
                                    GError **error)
 {
@@ -923,7 +953,6 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	GPtrArray *array;
 	gboolean folder_hierarchy_relative;
 	gchar *tmpname;
-	gchar *top = g_strconcat (orig_top ? orig_top:"", ".", NULL);
 	gint toplen = strlen (top);
 	gint subscribed_or_flag;
 	gint root_or_flag;
@@ -934,7 +963,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	subscribed_or_flag =
 		(flags & CAMEL_STORE_FOLDER_INFO_SUBSCRIBED) ? 0 : 1;
 	root_or_flag =
-		(orig_top == NULL || orig_top[0] == '\0') ? 1 : 0;
+		(top == NULL || top[0] == '\0') ? 1 : 0;
 	recursive_flag =
 		(flags & CAMEL_STORE_FOLDER_INFO_RECURSIVE);
 	is_folder_list =
@@ -964,15 +993,15 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 		si = g_ptr_array_index (array, ii);
 
 		if ((subscribed_or_flag || (si->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED))
-		    && (root_or_flag || strncmp (si->path, top, toplen) == 0)) {
-			if (recursive_flag || is_folder_list || strchr (si->path + toplen, '.') == NULL) {
+		    && (root_or_flag || nntp_store_path_matches_top (si->path, top, toplen))) {
+			if (recursive_flag || is_folder_list || strchr (si->path + toplen + 1, '.') == NULL) {
 				/* add the item */
 				fi = nntp_folder_info_from_store_info (nntp_store, FALSE, si);
 				if (!fi)
 					continue;
 				if (folder_hierarchy_relative) {
 					g_free (fi->display_name);
-					fi->display_name = g_strdup (si->path + ((toplen == 1) ? 0 : toplen));
+					fi->display_name = g_strdup (si->path + ((toplen <= 1) ? 0 : (toplen + 1)));
 				}
 			} else {
 				/* apparently, this is an indirect subitem. if it's not a subitem of
@@ -983,7 +1012,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 				    si->path[strlen (last->full_name)] != '.') {
 					gchar *dot;
 					tmpname = g_strdup (si->path);
-					dot = strchr (tmpname + toplen, '.');
+					dot = strchr (tmpname + toplen + 1, '.');
 					if (dot)
 						*dot = '\0';
 					fi = nntp_folder_info_from_name (nntp_store, FALSE, tmpname);
@@ -993,7 +1022,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 					fi->flags |= CAMEL_FOLDER_NOSELECT;
 					if (folder_hierarchy_relative) {
 						g_free (fi->display_name);
-						fi->display_name = g_strdup (tmpname + ((toplen == 1) ? 0 : toplen));
+						fi->display_name = g_strdup (tmpname + ((toplen <= 1) ? 0 : (toplen + 1)));
 					}
 					g_free (tmpname);
 				} else {
@@ -1028,7 +1057,6 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	camel_store_summary_array_free (store_summary, array);
 
 	g_hash_table_destroy (known);
-	g_free (top);
 
 	g_clear_object (&nntp_store_summary);
 
