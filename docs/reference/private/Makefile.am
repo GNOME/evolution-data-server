@@ -13,8 +13,8 @@ SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
 DOC_SOURCE_DIR = $(top_srcdir)/private
 
 # Used for dependencies. The docs will be rebuilt if any of these change.
-HFILE_GLOB = $(top_srcdir)/private/*.h
-CFILE_GLOB = $(top_srcdir)/private/*.c
+HFILE_GLOB = $(top_builddir)/private/*.h
+CFILE_GLOB = $(top_builddir)/private/*.c
 
 # Ignore interfaces from freedesktop.org.
 IGNORE_HFILES = \
@@ -37,7 +37,7 @@ GTKDOC_LIBS = \
 MKDB_OPTIONS = --output-format=xml --sgml-mode --name-space=e-dbus
 
 $(DOC_MAIN_SGML_FILE): $(DOC_MAIN_SGML_FILE).in
-	sed -e 's|\@SRCDIR\@|$(abs_top_srcdir)|g' $< > $(@)
+	sed -e 's|\@SRCDIR\@|$(abs_top_builddir)|g' $< > $(@)
 
 BUILT_SOURCES = $(DOC_MAIN_SGML_FILE)
 DISTCLEANFILES = $(BUILT_SOURCES)

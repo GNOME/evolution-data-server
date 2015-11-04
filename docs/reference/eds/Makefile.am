@@ -52,9 +52,9 @@ FIXXREF_OPTIONS=
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
 HFILE_GLOB = \
+	$(top_builddir)/private/*.h			\
 	$(top_srcdir)/libedataserver/*.h		\
 	$(top_srcdir)/libebackend/*.h			\
-	$(top_srcdir)/private/*.h			\
 	$(top_srcdir)/addressbook/libebook-contacts/*.h	\
 	$(top_srcdir)/addressbook/libebook/*.h		\
 	$(top_srcdir)/addressbook/libedata-book/*.h	\
@@ -63,9 +63,9 @@ HFILE_GLOB = \
 	$(top_srcdir)/tests/test-server-utils/*.h
 
 CFILE_GLOB = \
+	$(top_builddir)/private/*.c			\
 	$(top_srcdir)/libedataserver/*.c		\
 	$(top_srcdir)/libebackend/*.c			\
-	$(top_srcdir)/private/*.c			\
 	$(top_srcdir)/addressbook/libebook-contacts/*.c	\
 	$(top_srcdir)/addressbook/libebook/*.c		\
 	$(top_srcdir)/addressbook/libedata-book/*.c	\
