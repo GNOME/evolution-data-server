@@ -217,8 +217,8 @@ gchar *camel_maildir_summary_info_to_name (const CamelMaildirMessageInfo *info)
 	gint i;
 
 	uid = camel_message_info_uid (info);
-	buf = g_alloca (strlen (uid) + strlen (":2,") + G_N_ELEMENTS (flagbits) + 1);
-	p = buf + sprintf (buf, "%s:2,", uid);
+	buf = g_alloca (strlen (uid) + strlen (CAMEL_MAILDIR_FLAG_SEP_S "2,") + G_N_ELEMENTS (flagbits) + 1);
+	p = buf + sprintf (buf, "%s" CAMEL_MAILDIR_FLAG_SEP_S "2,", uid);
 	for (i = 0; i < G_N_ELEMENTS (flagbits); i++) {
 		if (info->info.info.flags & flagbits[i].flagbit)
 			*p++ = flagbits[i].flag;
@@ -237,7 +237,7 @@ gint camel_maildir_summary_name_to_info (CamelMaildirMessageInfo *info, const gc
 	/*guint32 all = 0;*/	/* all flags */
 	gint i;
 
-	p = strstr (name, ":2,");
+	p = strstr (name, CAMEL_MAILDIR_FLAG_SEP_S "2,");
 
 	if (p) {
 		p+=3;
@@ -414,7 +414,7 @@ static gchar *maildir_summary_next_uid_string (CamelFolderSummary *s)
 	if (mds->priv->current_file) {
 		gchar *cln;
 
-		cln = strchr (mds->priv->current_file, ':');
+		cln = strchr (mds->priv->current_file, CAMEL_MAILDIR_FLAG_SEP);
 		if (cln)
 			return g_strndup (mds->priv->current_file, cln - mds->priv->current_file);
 		else
@@ -487,7 +487,7 @@ maildir_summary_load (CamelLocalSummary *cls,
 			continue;
 
 		/* map the filename -> uid */
-		uid = strchr (d->d_name, ':');
+		uid = strchr (d->d_name, CAMEL_MAILDIR_FLAG_SEP);
 		if (uid) {
 			gint len = uid - d->d_name;
 			uid = camel_mempool_alloc (pool, len + 1);
@@ -660,7 +660,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 			continue;
 
 		/* map the filename -> uid */
-		uid = strchr (d->d_name, ':');
+		uid = strchr (d->d_name, CAMEL_MAILDIR_FLAG_SEP);
 		if (uid)
 			uid = g_strndup (d->d_name, uid - d->d_name);
 		else
@@ -741,7 +741,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 			} else {
 				gchar *nm;
 				newname = g_strdup (name);
-				nm =strrchr (newname, ':');
+				nm =strrchr (newname, CAMEL_MAILDIR_FLAG_SEP);
 				if (nm)
 					*nm = '\0';
 				destname = newname;
@@ -749,7 +749,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 
 			/* copy this to the destination folder, use 'standard' semantics for maildir info field */
 			src = g_strdup_printf ("%s/%s", new, name);
-			destfilename = g_strdup_printf ("%s:2,", destname);
+			destfilename = g_strdup_printf ("%s" CAMEL_MAILDIR_FLAG_SEP_S "2,", destname);
 			dest = g_strdup_printf ("%s/%s", cur, destfilename);
 
 			/* FIXME: This should probably use link/unlink */

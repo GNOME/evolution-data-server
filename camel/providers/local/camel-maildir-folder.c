@@ -132,7 +132,7 @@ maildir_folder_get_filename (CamelFolder *folder,
 				gint uid_len = strlen (uid);
 
 				while (filename = g_dir_read_name (dir), filename) {
-					if (g_str_has_prefix (filename, uid) && (filename[uid_len] == '\0' || filename[uid_len] == ':')) {
+					if (g_str_has_prefix (filename, uid) && (filename[uid_len] == '\0' || filename[uid_len] == CAMEL_MAILDIR_FLAG_SEP)) {
 						camel_maildir_info_set_filename (mdi, g_strdup (filename));
 						break;
 					}
