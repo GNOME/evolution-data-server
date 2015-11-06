@@ -40,6 +40,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_MAILDIR_SUMMARY, CamelMaildirSummaryClass))
 
+#ifdef G_OS_WIN32
+#define CAMEL_MAILDIR_FLAG_SEP '!'
+#define CAMEL_MAILDIR_FLAG_SEP_S "!"
+#else
+#define CAMEL_MAILDIR_FLAG_SEP ':'
+#define CAMEL_MAILDIR_FLAG_SEP_S ":"
+#endif
+
 G_BEGIN_DECLS
 
 typedef struct _CamelMaildirSummary CamelMaildirSummary;
