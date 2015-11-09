@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.18.2 2015-11-09
+---------------------------------------
+
+Bug Fixes:
+	Bug 756530 - Deadlock in e_backend_set_online() (Milan Crha)
+	Bug 756842 - [Maildir] Do not overwrite received date on the message info (Milan Crha)
+	Bug 757169 - Crash on GTasks save from gnome-todo (Milan Crha)
+	Bug 757465 - [NNTP] 'Mark All Messages as Read' function does not work (Milan Crha)
+	Bug 700001 - [CamelDB] Try to recover when opening corrupt database file (Milan Crha)
+
+Miscellaneous:
+	Avoid the compile warning when initializing SPNEGO' gss_OID_desc structure (Tomas Popela)
+	[Maildir] Change flag separator in file name for Win32 (Milan Crha)
+
+Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.18.1 2015-10-12
 ---------------------------------------
 
