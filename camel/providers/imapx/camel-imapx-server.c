@@ -4200,9 +4200,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 			cancellable, error);
 
 		if (success) {
-			if (is->priv->copyuid_status && is->priv->copyuid_status->u.copyuid.uids &&
-			    is->priv->copyuid_status->u.copyuid.copied_uids &&
-			    is->priv->copyuid_status->u.copyuid.uids->len == is->priv->copyuid_status->u.copyuid.copied_uids->len) {
+			struct _status_info *copyuid_status = is->priv->copyuid_status;
+
+			if (ic->status && ic->status->condition == IMAPX_COPYUID)
+				copyuid_status = ic->status;
+
+			if (copyuid_status && copyuid_status->u.copyuid.uids &&
+			    copyuid_status->u.copyuid.copied_uids &&
+			    copyuid_status->u.copyuid.uids->len == copyuid_status->u.copyuid.copied_uids->len) {
 				CamelFolder *destination_folder;
 
 				destination_folder = imapx_server_ref_folder (is, destination);
@@ -4213,18 +4218,18 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 					changes = camel_folder_change_info_new ();
 
-					for (ii = 0; ii < is->priv->copyuid_status->u.copyuid.uids->len; ii++) {
+					for (ii = 0; ii < copyuid_status->u.copyuid.uids->len; ii++) {
 						gchar *uid;
 						gboolean is_new = FALSE;
 
-						uid = g_strdup_printf ("%d", g_array_index (is->priv->copyuid_status->u.copyuid.uids, guint32, ii));
+						uid = g_strdup_printf ("%d", g_array_index (copyuid_status->u.copyuid.uids, guint32, ii));
 						source_info = g_hash_table_lookup (source_infos, uid);
 						g_free (uid);
 
 						if (!source_info)
 							continue;
 
-						uid = g_strdup_printf ("%d", g_array_index (is->priv->copyuid_status->u.copyuid.copied_uids, guint32, ii));
+						uid = g_strdup_printf ("%d", g_array_index (copyuid_status->u.copyuid.copied_uids, guint32, ii));
 						destination_info = camel_folder_summary_get (folder->summary, uid);
 
 						if (!destination_info) {
@@ -4252,7 +4257,6 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 							camel_folder_summary_add (destination_folder->summary, destination_info);
 						camel_folder_change_info_add_uid (changes, destination_info->uid);
 
-						camel_message_info_unref (source_info);
 						if (!is_new)
 							camel_message_info_unref (destination_info);
 					}
