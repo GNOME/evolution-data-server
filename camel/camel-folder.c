@@ -528,7 +528,7 @@ folder_maybe_connect_sync (CamelFolder *folder,
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
 	status = camel_service_get_connection_status (service);
-	connect = camel_session_get_online (session) && (status != CAMEL_SERVICE_CONNECTED);
+	connect = session && camel_session_get_online (session) && (status != CAMEL_SERVICE_CONNECTED);
 	g_clear_object (&session);
 
 	if (connect && CAMEL_IS_NETWORK_SERVICE (parent_store)) {
