@@ -145,8 +145,8 @@ sendmail_send_to_sync (CamelTransport *transport,
 		gboolean is_online;
 
 		session = camel_service_ref_session (CAMEL_SERVICE (transport));
-		is_online = camel_session_get_online (session);
-		g_object_unref (session);
+		is_online = session && camel_session_get_online (session);
+		g_clear_object (&session);
 
 		if (!is_online) {
 			g_set_error (

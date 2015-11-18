@@ -342,6 +342,13 @@ connect_to_server (CamelService *service,
 	nntp_store = CAMEL_NNTP_STORE (service);
 
 	session = camel_service_ref_session (service);
+	if (!session) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return FALSE;
+	}
 
 	settings = camel_service_ref_settings (service);
 
@@ -2085,6 +2092,13 @@ camel_nntp_raw_command_auth (CamelNNTPStore *nntp_store,
 
 	service = CAMEL_SERVICE (nntp_store);
 	session = camel_service_ref_session (service);
+	if (!session) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		return -1;
+	}
 
 	retry = 0;
 
@@ -2217,9 +2231,17 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 		switch (ret) {
 		case NNTP_AUTH_REQUIRED:
 			session = camel_service_ref_session (service);
-			success = camel_session_authenticate_sync (
-				session, service, NULL, cancellable, error);
-			g_object_unref (session);
+			if (session) {
+				success = camel_session_authenticate_sync (
+					session, service, NULL, cancellable, error);
+				g_object_unref (session);
+			} else {
+				success = FALSE;
+				g_set_error_literal (
+					error, CAMEL_SERVICE_ERROR,
+					CAMEL_SERVICE_ERROR_UNAVAILABLE,
+					_("You must be working online to complete this operation"));
+			}
 
 			if (!success) {
 				ret = -1;

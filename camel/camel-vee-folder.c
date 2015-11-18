@@ -1120,6 +1120,8 @@ vee_folder_folder_changed (CamelVeeFolder *vee_folder,
 	folder = CAMEL_FOLDER (vee_folder);
 	parent_store = camel_folder_get_parent_store (folder);
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+	if (!session)
+		return;
 
 	g_async_queue_lock (vee_folder->priv->change_queue);
 

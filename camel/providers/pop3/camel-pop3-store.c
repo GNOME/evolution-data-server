@@ -522,7 +522,7 @@ pop3_store_connect_sync (CamelService *service,
 
 	g_object_unref (settings);
 
-	if (!camel_session_get_online (session)) {
+	if (!session || !camel_session_get_online (session)) {
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_UNAVAILABLE,

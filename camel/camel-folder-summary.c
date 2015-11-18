@@ -2136,6 +2136,14 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+	if (!session) {
+		summary->priv->cache_load_time = 0;
+		summary->priv->timeout_handle = 0;
+		g_object_unref (summary);
+
+		return FALSE;
+	}
+
 	description = g_strdup_printf (_("Release unused memory for folder '%s'"), camel_folder_get_full_name (summary->priv->folder));
 
 	camel_session_submit_job (

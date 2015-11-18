@@ -63,8 +63,8 @@ offline_store_constructed (GObject *object)
 	G_OBJECT_CLASS (camel_offline_store_parent_class)->constructed (object);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (object));
-	priv->online = camel_session_get_online (session);
-	g_object_unref (session);
+	priv->online = session && camel_session_get_online (session);
+	g_clear_object (&session);
 }
 
 static void
@@ -226,7 +226,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		CamelSession *session;
 
 		session = camel_service_ref_session (service);
-		host_reachable = camel_session_get_online (session);
+		host_reachable = session && camel_session_get_online (session);
 		g_clear_object (&session);
 	}
 
@@ -284,7 +284,6 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
                                               GError **error)
 {
 	CamelService *service;
-	CamelSession *session;
 	CamelSettings *settings;
 	gboolean host_reachable = TRUE;
 	gboolean store_is_online;
@@ -293,9 +292,9 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
 
 	service = CAMEL_SERVICE (store);
-	session = camel_service_ref_session (service);
+	store_is_online = camel_offline_store_get_online (store);
 
-	if (CAMEL_IS_NETWORK_SERVICE (store)) {
+	if (store_is_online && CAMEL_IS_NETWORK_SERVICE (store)) {
 		/* Check with up-to-date value. The cached value is updated with
 		   few seconds timeout, thus it can be stale here. */
 		host_reachable =
@@ -304,16 +303,12 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 			cancellable, NULL);
 	}
 
-	store_is_online = camel_offline_store_get_online (store);
-
 	settings = camel_service_ref_settings (service);
 
 	sync_store = camel_offline_settings_get_stay_synchronized (
 		CAMEL_OFFLINE_SETTINGS (settings));
 
 	g_object_unref (settings);
-
-	g_object_unref (session);
 
 	if (host_reachable && store_is_online) {
 		GPtrArray *folders;
@@ -398,7 +393,7 @@ camel_offline_store_requires_downsync (CamelOfflineStore *store)
 		CamelSession *session;
 
 		session = camel_service_ref_session (service);
-		host_reachable = camel_session_get_online (session);
+		host_reachable = session && camel_session_get_online (session);
 		g_clear_object (&session);
 	}
 

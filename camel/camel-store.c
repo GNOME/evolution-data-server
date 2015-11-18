@@ -697,6 +697,8 @@ camel_store_folder_created (CamelStore *store,
 	g_return_if_fail (folder_info != NULL);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->store, store);
@@ -735,6 +737,8 @@ camel_store_folder_deleted (CamelStore *store,
 	g_return_if_fail (folder_info != NULL);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->store, store);
@@ -773,6 +777,8 @@ camel_store_folder_opened (CamelStore *store,
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->store, store);
@@ -814,6 +820,8 @@ camel_store_folder_renamed (CamelStore *store,
 	g_return_if_fail (folder_info != NULL);
 
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->store, store);
@@ -852,6 +860,8 @@ camel_store_folder_info_stale (CamelStore *store)
 	g_return_if_fail (CAMEL_IS_STORE (store));
 
 	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (!session)
+		return;
 
 	g_mutex_lock (&store->priv->signal_emission_lock);
 

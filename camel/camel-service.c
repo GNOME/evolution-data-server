@@ -454,15 +454,18 @@ service_find_old_data_dir (CamelService *service)
 	}
 
 	session = camel_service_ref_session (service);
+	if (session) {
+		base_dir = camel_session_get_user_data_dir (session);
+		old_data_dir = g_build_filename (base_dir, path->str, NULL);
 
-	base_dir = camel_session_get_user_data_dir (session);
-	old_data_dir = g_build_filename (base_dir, path->str, NULL);
-
-	g_object_unref (session);
+		g_object_unref (session);
+	} else {
+		old_data_dir = NULL;
+	}
 
 	g_string_free (path, TRUE);
 
-	if (!g_file_test (old_data_dir, G_FILE_TEST_IS_DIR)) {
+	if (old_data_dir && !g_file_test (old_data_dir, G_FILE_TEST_IS_DIR)) {
 		g_free (old_data_dir);
 		old_data_dir = NULL;
 	}

@@ -1091,6 +1091,9 @@ folder_changed (CamelFolder *folder,
 
 	parent_store = camel_folder_get_parent_store (folder);
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+	if (!session)
+		return;
+
 	junk_filter = camel_session_get_junk_filter (session);
 
 	if (junk_filter != NULL && info->uid_changed->len) {
@@ -2272,6 +2275,8 @@ camel_folder_delete (CamelFolder *folder)
 
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->folder, folder);
@@ -2325,6 +2330,8 @@ camel_folder_rename (CamelFolder *folder,
 
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->folder, folder);
@@ -2387,19 +2394,21 @@ camel_folder_changed (CamelFolder *folder,
 		service = CAMEL_SERVICE (parent_store);
 		session = camel_service_ref_session (service);
 
-		pending_changes = camel_folder_change_info_new ();
-		folder->priv->pending_changes = pending_changes;
+		if (session) {
+			pending_changes = camel_folder_change_info_new ();
+			folder->priv->pending_changes = pending_changes;
 
-		signal_closure = g_slice_new0 (SignalClosure);
-		g_weak_ref_init (&signal_closure->folder, folder);
+			signal_closure = g_slice_new0 (SignalClosure);
+			g_weak_ref_init (&signal_closure->folder, folder);
 
-		camel_session_idle_add (
-			session, G_PRIORITY_LOW,
-			folder_emit_changed_cb,
-			signal_closure,
-			(GDestroyNotify) signal_closure_free);
+			camel_session_idle_add (
+				session, G_PRIORITY_LOW,
+				folder_emit_changed_cb,
+				signal_closure,
+				(GDestroyNotify) signal_closure_free);
 
-		g_object_unref (session);
+			g_object_unref (session);
+		}
 	}
 
 	camel_folder_change_info_cat (pending_changes, changes);

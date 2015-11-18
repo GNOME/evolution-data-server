@@ -1844,16 +1844,18 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 			imapx_store->priv->last_refresh_time = time (NULL);
 
 			session = camel_service_ref_session (service);
-			description = g_strdup_printf (_("Retrieving folder list for '%s'"), camel_service_get_display_name (service));
+			if (session) {
+				description = g_strdup_printf (_("Retrieving folder list for '%s'"), camel_service_get_display_name (service));
 
-			camel_session_submit_job (
-				session, description, (CamelSessionCallback)
-				imapx_refresh_finfo,
-				g_object_ref (store),
-				(GDestroyNotify) g_object_unref);
+				camel_session_submit_job (
+					session, description, (CamelSessionCallback)
+					imapx_refresh_finfo,
+					g_object_ref (store),
+					(GDestroyNotify) g_object_unref);
 
-			g_object_unref (session);
-			g_free (description);
+				g_object_unref (session);
+				g_free (description);
+			}
 		}
 	}
 

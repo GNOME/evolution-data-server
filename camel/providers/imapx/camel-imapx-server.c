@@ -1769,12 +1769,15 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 				service = CAMEL_SERVICE (store);
 				session = camel_service_ref_session (service);
 
-				camel_session_user_alert (
-					session, service,
-					CAMEL_SESSION_ALERT_WARNING,
-					alert_message);
+				if (session) {
+					camel_session_user_alert (
+						session, service,
+						CAMEL_SESSION_ALERT_WARNING,
+						alert_message);
 
-				g_object_unref (session);
+					g_object_unref (session);
+				}
+
 				g_object_unref (store);
 			}
 
@@ -3022,6 +3025,14 @@ imapx_reconnect (CamelIMAPXServer *is,
 
 	service = CAMEL_SERVICE (store);
 	session = camel_service_ref_session (service);
+	if (!session) {
+		g_set_error_literal (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_UNAVAILABLE,
+			_("You must be working online to complete this operation"));
+		g_object_unref (store);
+		return FALSE;
+	}
 
 	settings = camel_service_ref_settings (service);
 

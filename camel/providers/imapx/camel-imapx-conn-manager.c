@@ -654,7 +654,7 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 	session = camel_service_ref_session (CAMEL_SERVICE (imapx_store));
 
 	if (camel_offline_store_get_online (CAMEL_OFFLINE_STORE (imapx_store)) &&
-	    camel_session_get_online (session)) {
+	    session && camel_session_get_online (session)) {
 
 		g_mutex_lock (&conn_man->priv->pending_connections_lock);
 		if (cancellable) {
@@ -771,7 +771,7 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 
 			g_clear_error (&local_error);
 		} else {
-			g_set_error (
+			g_set_error_literal (
 				&local_error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_UNAVAILABLE,
 				_("You must be working online to complete this operation"));

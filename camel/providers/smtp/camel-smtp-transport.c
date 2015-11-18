@@ -522,7 +522,7 @@ smtp_transport_connect_sync (CamelService *service,
 	success = connect_to_server (service, cancellable, error);
 
 	if (!success)
-		return FALSE;
+		goto exit;
 
 	/* check to see if AUTH is required, if so...then AUTH ourselves */
 	auth_required =
@@ -535,6 +535,14 @@ smtp_transport_connect_sync (CamelService *service,
 		CamelSession *session;
 
 		session = camel_service_ref_session (service);
+		if (!session) {
+			success = FALSE;
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				_("You must be working online to complete this operation"));
+			goto exit;
+		}
 
 		if (g_hash_table_lookup (transport->authtypes, g_strcmp0 (mechanism, "Google") == 0 ? "XOAUTH2" : mechanism)) {
 			gint tries = 0;

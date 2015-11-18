@@ -1021,13 +1021,15 @@ camel_vee_store_rebuild_unmatched_folder (CamelVeeStore *vstore,
 		service = CAMEL_SERVICE (vstore);
 		session = camel_service_ref_session (service);
 
-		camel_session_submit_job (
-			session, _("Updating Unmatched search folder"), (CamelSessionCallback)
-			vee_store_rebuild_unmatched_folder,
-			g_object_ref (vstore),
-			g_object_unref);
+		if (session) {
+			camel_session_submit_job (
+				session, _("Updating Unmatched search folder"), (CamelSessionCallback)
+				vee_store_rebuild_unmatched_folder,
+				g_object_ref (vstore),
+				g_object_unref);
 
-		g_object_unref (session);
+			g_object_unref (session);
+		}
 	} else {
 		vee_store_rebuild_unmatched_folder (NULL, cancellable, vstore, error);
 	}

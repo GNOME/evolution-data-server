@@ -564,6 +564,9 @@ camel_subscribable_folder_subscribed (CamelSubscribable *subscribable,
 	service = CAMEL_SERVICE (subscribable);
 	session = camel_service_ref_session (service);
 
+	if (!session)
+		return;
+
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->subscribable, subscribable);
 	signal_closure->folder_info = camel_folder_info_clone (folder_info);
@@ -603,6 +606,9 @@ camel_subscribable_folder_unsubscribed (CamelSubscribable *subscribable,
 
 	service = CAMEL_SERVICE (subscribable);
 	session = camel_service_ref_session (service);
+
+	if (!session)
+		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
 	g_weak_ref_init (&signal_closure->subscribable, subscribable);

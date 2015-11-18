@@ -237,6 +237,9 @@ offline_folder_changed (CamelFolder *folder,
 	service = CAMEL_SERVICE (parent_store);
 	session = camel_service_ref_session (service);
 
+	if (!session)
+		return;
+
 	settings = camel_service_ref_settings (service);
 
 	sync_store = camel_offline_settings_get_stay_synchronized (
