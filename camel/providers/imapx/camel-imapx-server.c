@@ -2939,11 +2939,14 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LOGIN, "LOGIN %s %s", user, password);
 	}
 
-	if (!camel_imapx_server_process_command_sync (is, ic, _("Failed to authenticate"), cancellable, error))
+	if (!camel_imapx_server_process_command_sync (is, ic, _("Failed to authenticate"), cancellable, error) && (
+	    !ic->status || ic->status->result != IMAPX_NO))
 		result = CAMEL_AUTHENTICATION_ERROR;
 	else if (ic->status->result == IMAPX_OK)
 		result = CAMEL_AUTHENTICATION_ACCEPTED;
 	else if (ic->status->result == IMAPX_NO) {
+		g_clear_error (error);
+
 		if (camel_imapx_store_is_connecting_concurrent_connection (store)) {
 			/* At least one connection succeeded, probably max connection limit
 			   set on the server had been reached, thus use special error code
