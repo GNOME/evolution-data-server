@@ -140,6 +140,14 @@ void		camel_pointer_tracker_dump	(void);
 
 GString *	camel_debug_get_backtrace	(void);
 
+void		camel_debug_ref_unref_push_backtrace
+						(const GString *backtrace,
+						 guint object_ref_count);
+void		camel_debug_ref_unref_push_backtrace_for_object
+						(gpointer _object);
+void		camel_debug_ref_unref_dump_backtraces
+						(void);
+
 G_END_DECLS
 
 #endif /* CAMEL_DEBUG_H */
