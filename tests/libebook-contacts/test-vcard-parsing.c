@@ -460,8 +460,8 @@ main (gint argc,
 
 	g_test_add_func ("/Parsing/VCard/WithUID", test_vcard_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_vcard_without_uid);
-	g_test_add_func ("/Parsing/VCard/WithUID", test_contact_with_uid);
-	g_test_add_func ("/Parsing/VCard/WithoutUID", test_contact_without_uid);
+	g_test_add_func ("/Parsing/Contact/WithUID", test_contact_with_uid);
+	g_test_add_func ("/Parsing/Contact/WithoutUID", test_contact_without_uid);
 	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
 	g_test_add_func ("/Construction/VCardAttribute/WithGroup",
 	                 test_construction_vcard_attribute_with_group);
