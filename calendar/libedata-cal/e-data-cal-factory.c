@@ -302,5 +302,6 @@ e_data_cal_factory_new (GCancellable *cancellable,
 
 	return g_initable_new (
 		E_TYPE_DATA_CAL_FACTORY,
-		cancellable, error, NULL);
+		cancellable, error,
+		"reload-supported", TRUE, NULL);
 }

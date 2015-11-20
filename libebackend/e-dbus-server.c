@@ -51,6 +51,8 @@ struct _EDBusServerPrivate {
 	EDBusServerExitCode exit_code;
 
 	GMutex property_lock;
+
+	GFileMonitor *directory_monitor;
 };
 
 enum {
@@ -154,6 +156,17 @@ dbus_server_finalize (GObject *object)
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_dbus_server_parent_class)->finalize (object);
+}
+
+static void
+dbus_server_dispose (GObject *object)
+{
+	EDBusServer *server = E_DBUS_SERVER (object);
+
+	g_clear_object (&server->priv->directory_monitor);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_dbus_server_parent_class)->dispose (object);
 }
 
 static void
@@ -273,6 +286,7 @@ e_dbus_server_class_init (EDBusServerClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = dbus_server_finalize;
+	object_class->dispose = dbus_server_dispose;
 	object_class->constructed = dbus_server_constructed;
 
 	class->bus_acquired = dbus_server_bus_acquired;
@@ -508,6 +522,44 @@ e_dbus_server_release (EDBusServer *server)
 	g_mutex_unlock (&server->priv->property_lock);
 }
 
+static void
+dbus_server_module_directory_changed_cb (GFileMonitor *monitor,
+					 GFile *file,
+					 GFile *other_file,
+					 GFileMonitorEvent event_type,
+					 gpointer user_data)
+{
+	EDBusServer *server;
+
+	g_return_if_fail (E_IS_DBUS_SERVER (user_data));
+
+	server = E_DBUS_SERVER (user_data);
+
+	if (event_type == G_FILE_MONITOR_EVENT_CREATED ||
+	    event_type == G_FILE_MONITOR_EVENT_DELETED ||
+	    event_type == G_FILE_MONITOR_EVENT_MOVED_IN ||
+	    event_type == G_FILE_MONITOR_EVENT_MOVED_OUT) {
+		gchar *filename;
+
+		filename = g_file_get_path (file);
+
+		if (filename && g_str_has_suffix (filename, "." G_MODULE_SUFFIX)) {
+			if (event_type == G_FILE_MONITOR_EVENT_CREATED ||
+			    event_type == G_FILE_MONITOR_EVENT_MOVED_IN) {
+				EModule *module;
+
+				module = e_module_load_file (filename);
+				if (module)
+					g_type_module_unuse ((GTypeModule *) module);
+			}
+
+			e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
+		}
+
+		g_free (filename);
+	}
+}
+
 /**
  * e_dbus_server_load_modules:
  * @server: an #EDBusServer
@@ -538,6 +590,19 @@ e_dbus_server_load_modules (EDBusServer *server)
 	already_loaded = g_hash_table_contains (directories_loaded, directory);
 	g_hash_table_add (directories_loaded, (gpointer) directory);
 	G_UNLOCK (directories_loaded);
+
+	if (!server->priv->directory_monitor) {
+		GFile *dir_file;
+
+		dir_file = g_file_new_for_path (class->module_directory);
+		server->priv->directory_monitor = g_file_monitor_directory (dir_file, G_FILE_MONITOR_WATCH_MOVES, NULL, NULL);
+		g_clear_object (&dir_file);
+
+		if (server->priv->directory_monitor) {
+			g_signal_connect (server->priv->directory_monitor, "changed",
+				G_CALLBACK (dbus_server_module_directory_changed_cb), server);
+		}
+	}
 
 	if (already_loaded)
 		return;

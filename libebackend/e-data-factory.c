@@ -637,11 +637,12 @@ data_factory_subprocess_vanished_cb (GDBusConnection *connection,
 {
 	DataFactorySubprocessData *sd;
 	DataFactorySubprocessHelper *helper;
+	EDataFactory *data_factory;
 	EDataFactoryPrivate *priv;
 	const gchar *sender;
-	guint watched_id;
 
 	sd = user_data;
+	data_factory = g_object_ref (sd->data_factory);
 	priv = sd->data_factory->priv;
 
 	g_mutex_lock (&priv->mutex);
@@ -650,8 +651,10 @@ data_factory_subprocess_vanished_cb (GDBusConnection *connection,
 		sd->subprocess_helpers_hash_key);
 	g_mutex_unlock (&priv->mutex);
 
-	if (helper == NULL)
+	if (helper == NULL) {
+		g_clear_object (&data_factory);
 		return;
+	}
 
 	sender = g_dbus_method_invocation_get_sender (sd->invocation);
 	data_factory_connections_remove (sd->data_factory, sender, helper->proxy);
@@ -663,12 +666,10 @@ data_factory_subprocess_vanished_cb (GDBusConnection *connection,
 	g_mutex_unlock (&priv->mutex);
 
 	g_mutex_lock (&priv->subprocess_watched_ids_lock);
-	watched_id = GPOINTER_TO_UINT (g_hash_table_lookup (priv->subprocess_watched_ids, sd->bus_name));
 	g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
-
-	if (watched_id > 0)
-		g_bus_unwatch_name (watched_id);
 	g_mutex_unlock (&priv->subprocess_watched_ids_lock);
+
+	g_clear_object (&data_factory);
 }
 
 static void
@@ -1052,7 +1053,7 @@ e_data_factory_init (EDataFactory *data_factory)
 		(GHashFunc) g_str_hash,
 		(GEqualFunc) g_str_equal,
 		(GDestroyNotify) g_free,
-		(GDestroyNotify) NULL);
+		(GDestroyNotify) watched_names_value_free);
 
 	data_factory->priv->connections = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -1298,7 +1299,8 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 
 		if (sd) {
 			g_mutex_lock (&priv->subprocess_watched_ids_lock);
-			g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name);
+			if (g_hash_table_remove (priv->subprocess_watched_ids, sd->bus_name))
+				watched_id = 0;
 			g_mutex_unlock (&priv->subprocess_watched_ids_lock);
 		}
 

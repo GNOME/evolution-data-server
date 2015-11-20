@@ -169,6 +169,8 @@ owncloud_add_found_source (ECollectionBackend *collection,
 	g_return_if_fail (backend_name != NULL);
 
 	server = e_collection_backend_ref_server (collection);
+	if (!server)
+		return;
 
 	url = soup_uri_to_string (uri, FALSE);
 	identity = g_strconcat (identity_prefix, "::", url, NULL);
@@ -376,9 +378,10 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 
 		server = e_collection_backend_ref_server (collection);
 
-		g_hash_table_foreach (known_sources, owncloud_remove_unknown_sources_cb, server);
-
-		g_object_unref (server);
+		if (server) {
+			g_hash_table_foreach (known_sources, owncloud_remove_unknown_sources_cb, server);
+			g_object_unref (server);
+		}
 	}
 
 	if (local_error == NULL) {

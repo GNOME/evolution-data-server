@@ -194,5 +194,6 @@ e_data_book_factory_new (GCancellable *cancellable,
 {
 	return g_initable_new (
 		E_TYPE_DATA_BOOK_FACTORY,
-		cancellable, error, NULL);
+		cancellable, error,
+		"reload-supported", TRUE, NULL);
 }

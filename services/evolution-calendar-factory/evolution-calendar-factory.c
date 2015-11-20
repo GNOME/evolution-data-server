@@ -49,6 +49,7 @@ main (gint argc,
 {
 	GOptionContext *context;
 	EDBusServer *server;
+	EDBusServerExitCode exit_code;
 	GError *error = NULL;
 
 #ifdef G_OS_WIN32
@@ -85,6 +86,7 @@ main (gint argc,
 
 	e_gdbus_templates_init_main_thread ();
 
+ reload:
 	server = e_data_cal_factory_new (NULL, &error);
 
 	if (error != NULL) {
@@ -99,9 +101,14 @@ main (gint argc,
 	if (opt_keep_running)
 		e_dbus_server_hold (server);
 
-	e_dbus_server_run (server, opt_wait_for_client);
+	exit_code = e_dbus_server_run (server, opt_wait_for_client);
 
 	g_object_unref (server);
+
+	if (exit_code == E_DBUS_SERVER_EXIT_RELOAD) {
+		g_debug ("Reloading...");
+		goto reload;
+	}
 
 	g_debug ("Bye.");
 
