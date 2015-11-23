@@ -1,3 +1,31 @@
+Evolution-Data-Server 3.19.2 2015-11-23
+---------------------------------------
+
+Bug Fixes:
+	Bug 757169 - Crash on GTasks save from gnome-todo (Milan Crha)
+	Bug 757465 - [NNTP] 'Mark All Messages as Read' function does not work (Milan Crha)
+	Bug 688921 - tests: Remove e-source-test (Milan Crha)
+	Bug 700001 - [CamelDB] Try to recover when opening corrupt database file (Milan Crha)
+	Bug 757789 - [IMAPx] Incorrect unref of a message info on message copy (Milan Crha)
+	Bug 702127 - Crash under cal_backend_store_save_cache_now() (Milan Crha)
+
+Miscellaneous:
+	Correct gtk-doc build references to work in out-of-source builds too (Milan Crha)
+	[Maildir] Change flag separator in file name for Win32 (Milan Crha)
+	[Camel] Check for session existence in store/folder maybe_connect (Milan Crha)
+	camel_service_ref_session() can return a NULL pointer (Milan Crha)
+	Correct test-vcard-parsing, use unique test names (Milan Crha)
+	[IMAPx] Doesn't ask for password when a wrong is entered (Milan Crha)
+	[Camel] Add some helper functions for ref count issues debugging (Milan Crha)
+	[EDBusServer] Load newly added modules on the fly (Milan Crha)
+
+Translations:
+	Pedro Albuquerque (pt)
+	Gábor Kelemen (hu)
+	Kjartan Maraas (nb)
+	Marek Černocký (cs)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.19.1 2015-10-26
 ---------------------------------------
 
