@@ -66,8 +66,8 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-static GHashTable *directories_loaded;
-G_LOCK_DEFINE_STATIC (directories_loaded);
+static GHashTable *loaded_modules;
+G_LOCK_DEFINE_STATIC (loaded_modules);
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	EDBusServer, e_dbus_server, G_TYPE_OBJECT,
@@ -254,8 +254,10 @@ dbus_server_quit_server (EDBusServer *server,
 	/* If we're reloading, voluntarily relinquish our bus
 	 * name to avoid triggering a "bus-name-lost" signal. */
 	if (code == E_DBUS_SERVER_EXIT_RELOAD) {
-		g_bus_unown_name (server->priv->bus_owner_id);
-		server->priv->bus_owner_id = 0;
+		if (server->priv->bus_owner_id) {
+			g_bus_unown_name (server->priv->bus_owner_id);
+			server->priv->bus_owner_id = 0;
+		}
 	}
 
 	server->priv->exit_code = code;
@@ -546,11 +548,19 @@ dbus_server_module_directory_changed_cb (GFileMonitor *monitor,
 		if (filename && g_str_has_suffix (filename, "." G_MODULE_SUFFIX)) {
 			if (event_type == G_FILE_MONITOR_EVENT_CREATED ||
 			    event_type == G_FILE_MONITOR_EVENT_MOVED_IN) {
-				EModule *module;
+				G_LOCK (loaded_modules);
 
-				module = e_module_load_file (filename);
-				if (module)
-					g_type_module_unuse ((GTypeModule *) module);
+				if (!g_hash_table_contains (loaded_modules, filename)) {
+					EModule *module;
+
+					g_hash_table_add (loaded_modules, g_strdup (filename));
+
+					module = e_module_load_file (filename);
+					if (module)
+						g_type_module_unuse ((GTypeModule *) module);
+				}
+
+				G_UNLOCK (loaded_modules);
 			}
 
 			e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
@@ -574,8 +584,7 @@ e_dbus_server_load_modules (EDBusServer *server)
 {
 	EDBusServerClass *class;
 	gboolean already_loaded;
-	const gchar *directory;
-	GList *list;
+	GList *list, *link;
 
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
@@ -583,13 +592,13 @@ e_dbus_server_load_modules (EDBusServer *server)
 	g_return_if_fail (class->module_directory != NULL);
 
 	/* This ensures a module directory is only loaded once. */
-	G_LOCK (directories_loaded);
-	if (directories_loaded == NULL)
-		directories_loaded = g_hash_table_new (NULL, NULL);
-	directory = g_intern_string (class->module_directory);
-	already_loaded = g_hash_table_contains (directories_loaded, directory);
-	g_hash_table_add (directories_loaded, (gpointer) directory);
-	G_UNLOCK (directories_loaded);
+	G_LOCK (loaded_modules);
+	if (loaded_modules == NULL)
+		loaded_modules = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	already_loaded = g_hash_table_contains (loaded_modules, class->module_directory);
+	if (!already_loaded)
+		g_hash_table_add (loaded_modules, g_strdup (class->module_directory));
+	G_UNLOCK (loaded_modules);
 
 	if (!server->priv->directory_monitor) {
 		GFile *dir_file;
@@ -607,6 +616,19 @@ e_dbus_server_load_modules (EDBusServer *server)
 	if (already_loaded)
 		return;
 
+	G_LOCK (loaded_modules);
+
 	list = e_module_load_all_in_directory (class->module_directory);
+	for (link = list; link; link = g_list_next (link)) {
+		EModule *module = link->data;
+
+		if (!module || !e_module_get_filename (module))
+			continue;
+
+		g_hash_table_add (loaded_modules, g_strdup (e_module_get_filename (module)));
+	}
+
+	G_UNLOCK (loaded_modules);
+
 	g_list_free_full (list, (GDestroyNotify) g_type_module_unuse);
 }

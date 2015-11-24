@@ -812,7 +812,8 @@ data_factory_quit_server (EDBusServer *server,
 	class = E_DATA_FACTORY_GET_CLASS (E_DATA_FACTORY (server));
 
 	skeleton_interface = class->get_dbus_interface_skeleton (server);
-	g_dbus_interface_skeleton_unexport (skeleton_interface);
+	if (skeleton_interface && g_dbus_interface_skeleton_get_connection (skeleton_interface))
+		g_dbus_interface_skeleton_unexport (skeleton_interface);
 
 	/* Chain up to parent's quit_server() method. */
 	E_DBUS_SERVER_CLASS (e_data_factory_parent_class)->
