@@ -137,6 +137,36 @@ ESubprocessCalFactory *
 e_subprocess_cal_factory_new (GCancellable *cancellable,
 			       GError **error)
 {
+	icalarray *builtin_timezones;
+	gint ii;
+
+#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
+	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
+#endif
+
+	/* XXX Pre-load all built-in timezones in libical.
+	 *
+	 *     Built-in time zones in libical 0.43 are loaded on demand,
+	 *     but not in a thread-safe manner, resulting in a race when
+	 *     multiple threads call icaltimezone_load_builtin_timezone()
+	 *     on the same time zone.  Until built-in time zone loading
+	 *     in libical is made thread-safe, work around the issue by
+	 *     loading all built-in time zones now, so libical's internal
+	 *     time zone array will be fully populated before any threads
+	 *     are spawned.
+	 */
+	builtin_timezones = icaltimezone_get_builtin_timezones ();
+	for (ii = 0; ii < builtin_timezones->num_elements; ii++) {
+		icaltimezone *zone;
+
+		zone = icalarray_element_at (builtin_timezones, ii);
+
+		/* We don't care about the component right now,
+		 * we just need some function that will trigger
+		 * icaltimezone_load_builtin_timezone(). */
+		icaltimezone_get_component (zone);
+	}
+
 	return g_initable_new (
 		E_TYPE_SUBPROCESS_CAL_FACTORY,
 		cancellable, error, NULL);
