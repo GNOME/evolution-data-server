@@ -395,10 +395,11 @@ pop3_folder_set_message_flags (CamelFolder *folder,
 }
 
 static CamelMimeMessage *
-pop3_folder_get_message_sync (CamelFolder *folder,
-                              const gchar *uid,
-                              GCancellable *cancellable,
-                              GError **error)
+pop3_folder_get_message_internal_sync (CamelFolder *folder,
+				       const gchar *uid,
+				       gboolean already_locked,
+				       GCancellable *cancellable,
+				       GError **error)
 {
 	CamelStore *parent_store;
 	CamelMimeMessage *message = NULL;
@@ -457,7 +458,7 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 
 	pop3_engine = camel_pop3_store_ref_engine (pop3_store);
 
-	if (!camel_pop3_engine_busy_lock (pop3_engine, cancellable, error))
+	if (!already_locked && !camel_pop3_engine_busy_lock (pop3_engine, cancellable, error))
 		goto fail;
 
 	/* If we have an oustanding retrieve message running, wait for that to complete
@@ -475,7 +476,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		if (i == -1) {
 			g_prefix_error (
 				error, _("Cannot get message %s: "), uid);
-			camel_pop3_engine_busy_unlock (pop3_engine);
+			if (!already_locked)
+				camel_pop3_engine_busy_unlock (pop3_engine);
 			goto fail;
 		}
 	}
@@ -586,7 +588,8 @@ pop3_folder_get_message_sync (CamelFolder *folder,
 		camel_medium_add_header (CAMEL_MEDIUM (message), "X-Evolution-POP3-UID", uid);
 	}
 done:
-	camel_pop3_engine_busy_unlock (pop3_engine);
+	if (!already_locked)
+		camel_pop3_engine_busy_unlock (pop3_engine);
 	g_clear_object (&stream);
 fail:
 	g_clear_object (&pop3_engine);
@@ -594,6 +597,15 @@ fail:
 	camel_operation_pop_message (cancellable);
 
 	return message;
+}
+
+static CamelMimeMessage *
+pop3_folder_get_message_sync (CamelFolder *folder,
+                              const gchar *uid,
+                              GCancellable *cancellable,
+                              GError **error)
+{
+	return pop3_folder_get_message_internal_sync (folder, uid, FALSE, cancellable, error);
 }
 
 static gboolean
@@ -1079,8 +1091,8 @@ camel_pop3_folder_delete_old (CamelFolder *folder,
 		d (printf ("%s(%d): fi->uid=[%s]\n", __FILE__, __LINE__, fi->uid));
 		if (!pop3_get_message_time_from_cache (folder, fi->uid, &message_time)) {
 			d (printf ("could not get message time from cache, trying from pop3\n"));
-			message = pop3_folder_get_message_sync (
-				folder, fi->uid, cancellable, error);
+			message = pop3_folder_get_message_internal_sync (
+				folder, fi->uid, TRUE, cancellable, error);
 			if (message) {
 				message_time = message->date + message->date_offset;
 				g_object_unref (message);
