@@ -387,18 +387,15 @@ cache_reaper_move_to_trash (ECacheReaper *extension,
 
 static void
 cache_reaper_recover_from_trash (ECacheReaper *extension,
-                                 ESource *source,
+                                 const gchar *directory_uid,
                                  GFile *base_directory,
                                  GFile *trash_directory)
 {
 	GFile *source_directory;
 	GFile *target_directory;
-	const gchar *uid;
 
-	uid = e_source_get_uid (source);
-
-	source_directory = g_file_get_child (trash_directory, uid);
-	target_directory = g_file_get_child (base_directory, uid);
+	source_directory = g_file_get_child (trash_directory, directory_uid);
+	target_directory = g_file_get_child (base_directory, directory_uid);
 
 	/* This is a no-op if the source directory does not exist. */
 	cache_reaper_move_directory (source_directory, target_directory);
@@ -408,9 +405,34 @@ cache_reaper_recover_from_trash (ECacheReaper *extension,
 }
 
 static void
+cache_reaper_recover_for_uid (ECacheReaper *extension,
+			      const gchar *uid)
+{
+	guint ii;
+
+	/* The Cache Reaper is not too proud to dig through the
+	 * trash on the off chance the newly-added source has a
+	 * recoverable data or cache directory. */
+
+	for (ii = 0; ii < extension->n_data_directories; ii++)
+		cache_reaper_recover_from_trash (
+			extension, uid,
+			extension->data_directories[ii],
+			extension->data_trash_directories[ii]);
+
+	for (ii = 0; ii < extension->n_cache_directories; ii++)
+		cache_reaper_recover_from_trash (
+			extension, uid,
+			extension->cache_directories[ii],
+			extension->cache_trash_directories[ii]);
+}
+
+static void
 cache_reaper_files_loaded_cb (ESourceRegistryServer *server,
                               ECacheReaper *extension)
 {
+	GSList *link;
+
 	cache_reaper_scan_data_directories (extension);
 	cache_reaper_scan_cache_directories (extension);
 
@@ -422,6 +444,13 @@ cache_reaper_files_loaded_cb (ESourceRegistryServer *server,
 				cache_reaper_reap_trash_directories,
 				extension);
 	}
+
+	for (link = extension->private_directories; link; link = g_slist_next (link)) {
+		const gchar *directory = link->data;
+
+		if (directory && *directory)
+			cache_reaper_recover_for_uid (extension, directory);
+	}
 }
 
 static void
@@ -429,23 +458,7 @@ cache_reaper_source_added_cb (ESourceRegistryServer *server,
                               ESource *source,
                               ECacheReaper *extension)
 {
-	guint ii;
-
-	/* The Cache Reaper is not too proud to dig through the
-	 * trash on the off chance the newly-added source has a
-	 * recoverable data or cache directory. */
-
-	for (ii = 0; ii < extension->n_data_directories; ii++)
-		cache_reaper_recover_from_trash (
-			extension, source,
-			extension->data_directories[ii],
-			extension->data_trash_directories[ii]);
-
-	for (ii = 0; ii < extension->n_cache_directories; ii++)
-		cache_reaper_recover_from_trash (
-			extension, source,
-			extension->cache_directories[ii],
-			extension->cache_trash_directories[ii]);
+	cache_reaper_recover_for_uid (extension, e_source_get_uid (source));
 }
 
 static void
@@ -681,6 +694,8 @@ e_cache_reaper_add_private_directory (ECacheReaper *cache_reaper,
 		return;
 
 	cache_reaper->private_directories = g_slist_prepend (cache_reaper->private_directories, g_strdup (name));
+
+	cache_reaper_recover_for_uid (cache_reaper, name);
 }
 
 /**
