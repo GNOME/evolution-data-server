@@ -50,6 +50,7 @@ struct _ESourceOpenPGPPrivate {
 	gboolean encrypt_to_self;
 	gboolean sign_by_default;
 	gboolean encrypt_by_default;
+	gboolean prefer_inline;
 };
 
 enum {
@@ -59,7 +60,8 @@ enum {
 	PROP_KEY_ID,
 	PROP_SIGNING_ALGORITHM,
 	PROP_SIGN_BY_DEFAULT,
-	PROP_ENCRYPT_BY_DEFAULT
+	PROP_ENCRYPT_BY_DEFAULT,
+	PROP_PREFER_INLINE
 };
 
 G_DEFINE_TYPE (
@@ -106,6 +108,12 @@ source_openpgp_set_property (GObject *object,
 
 		case PROP_ENCRYPT_BY_DEFAULT:
 			e_source_openpgp_set_encrypt_by_default (
+				E_SOURCE_OPENPGP (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_PREFER_INLINE:
+			e_source_openpgp_set_prefer_inline (
 				E_SOURCE_OPENPGP (object),
 				g_value_get_boolean (value));
 			return;
@@ -160,6 +168,13 @@ source_openpgp_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_openpgp_get_encrypt_by_default (
+				E_SOURCE_OPENPGP (object)));
+			return;
+
+		case PROP_PREFER_INLINE:
+			g_value_set_boolean (
+				value,
+				e_source_openpgp_get_prefer_inline (
 				E_SOURCE_OPENPGP (object)));
 			return;
 	}
@@ -269,6 +284,19 @@ e_source_openpgp_class_init (ESourceOpenPGPClass *class)
 			"encrypt-by-default",
 			"Encrypt By Default",
 			"Encrypt outgoing messages by default",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_PREFER_INLINE,
+		g_param_spec_boolean (
+			"prefer-inline",
+			"Prefer inline",
+			"Prefer inline sign/encrypt",
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -621,3 +649,43 @@ e_source_openpgp_set_encrypt_by_default (ESourceOpenPGP *extension,
 	g_object_notify (G_OBJECT (extension), "encrypt-by-default");
 }
 
+/**
+ * e_source_openpgp_get_prefer_inline:
+ * @extension: an #ESourceOpenPGP
+ *
+ * Returns whether to prefer inline sign/encrypt of the text/plain messages.
+ *
+ * Returns: whether to prefer inline sign/encrypt of the text/plain messages
+ *
+ * Since: 3.20
+ **/
+gboolean
+e_source_openpgp_get_prefer_inline (ESourceOpenPGP *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_OPENPGP (extension), FALSE);
+
+	return extension->priv->prefer_inline;
+}
+
+/**
+ * e_source_openpgp_set_prefer_inline:
+ * @extension: an #ESourceOpenPGP
+ * @prefer_inline: whether to prefer inline sign/encrypt of the text/plain messages
+ *
+ * Sets whether to prefer inline sign/encrypt of the text/plain messages.
+ *
+ * Since: 3.20
+ **/
+void
+e_source_openpgp_set_prefer_inline (ESourceOpenPGP *extension,
+				    gboolean prefer_inline)
+{
+	g_return_if_fail (E_IS_SOURCE_OPENPGP (extension));
+
+	if (extension->priv->prefer_inline == prefer_inline)
+		return;
+
+	extension->priv->prefer_inline = prefer_inline;
+
+	g_object_notify (G_OBJECT (extension), "prefer-inline");
+}

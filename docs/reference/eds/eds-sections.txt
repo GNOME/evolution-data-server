@@ -3618,6 +3618,8 @@ e_source_openpgp_get_sign_by_default
 e_source_openpgp_set_sign_by_default
 e_source_openpgp_get_encrypt_by_default
 e_source_openpgp_set_encrypt_by_default
+e_source_openpgp_get_prefer_inline
+e_source_openpgp_set_prefer_inline
 <SUBSECTION Standard>
 ESourceOpenPGPPrivate
 E_IS_SOURCE_OPENPGP

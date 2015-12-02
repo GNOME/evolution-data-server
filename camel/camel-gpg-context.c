@@ -82,11 +82,13 @@ static gint logid;
 
 struct _CamelGpgContextPrivate {
 	gboolean always_trust;
+	gboolean prefer_inline;
 };
 
 enum {
 	PROP_0,
-	PROP_ALWAYS_TRUST
+	PROP_ALWAYS_TRUST,
+	PROP_PREFER_INLINE
 };
 
 G_DEFINE_TYPE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
@@ -145,6 +147,7 @@ struct _GpgCtx {
 	guint seen_eof1 : 1;
 	guint seen_eof2 : 1;
 	guint always_trust : 1;
+	guint prefer_inline : 1;
 	guint armor : 1;
 	guint need_passwd : 1;
 	guint send_passwd : 1;
@@ -198,6 +201,7 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->recipients = NULL;
 	gpg->hash = CAMEL_CIPHER_HASH_DEFAULT;
 	gpg->always_trust = FALSE;
+	gpg->prefer_inline = FALSE;
 	gpg->armor = FALSE;
 
 	gpg->stdin_fd = -1;
@@ -282,6 +286,13 @@ gpg_ctx_set_always_trust (struct _GpgCtx *gpg,
                           gboolean trust)
 {
 	gpg->always_trust = trust;
+}
+
+static void
+gpg_ctx_set_prefer_inline (struct _GpgCtx *gpg,
+			   gboolean prefer_inline)
+{
+	gpg->prefer_inline = prefer_inline;
 }
 
 static void
@@ -545,10 +556,14 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 
 	switch (gpg->mode) {
 	case GPG_CTX_MODE_SIGN:
-		g_ptr_array_add (argv, (guint8 *) "--sign");
-		g_ptr_array_add (argv, (guint8 *) "--detach");
-		if (gpg->armor)
-			g_ptr_array_add (argv, (guint8 *) "--armor");
+		if (gpg->prefer_inline) {
+			g_ptr_array_add (argv, (guint8 *) "--clearsign");
+		} else {
+			g_ptr_array_add (argv, (guint8 *) "--sign");
+			g_ptr_array_add (argv, (guint8 *) "--detach");
+			if (gpg->armor)
+				g_ptr_array_add (argv, (guint8 *) "--armor");
+		}
 		hash_str = gpg_hash_str (gpg->hash);
 		if (hash_str)
 			g_ptr_array_add (argv, (guint8 *) hash_str);
@@ -577,7 +592,7 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 		break;
 	case GPG_CTX_MODE_ENCRYPT:
 		g_ptr_array_add (argv, (guint8 *) "--encrypt");
-		if (gpg->armor)
+		if (gpg->armor || gpg->prefer_inline)
 			g_ptr_array_add (argv, (guint8 *) "--armor");
 		if (gpg->always_trust)
 			g_ptr_array_add (argv, (guint8 *) "--always-trust");
@@ -1562,6 +1577,12 @@ gpg_context_set_property (GObject *object,
 				CAMEL_GPG_CONTEXT (object),
 				g_value_get_boolean (value));
 			return;
+
+		case PROP_PREFER_INLINE:
+			camel_gpg_context_set_prefer_inline (
+				CAMEL_GPG_CONTEXT (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1578,6 +1599,13 @@ gpg_context_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_gpg_context_get_always_trust (
+				CAMEL_GPG_CONTEXT (object)));
+			return;
+
+		case PROP_PREFER_INLINE:
+			g_value_set_boolean (
+				value,
+				camel_gpg_context_get_prefer_inline (
 				CAMEL_GPG_CONTEXT (object)));
 			return;
 	}
@@ -1643,6 +1671,31 @@ gpg_id_to_hash (CamelCipherContext *context,
 }
 
 static gboolean
+gpg_context_decode_to_stream (CamelMimePart *part,
+			      CamelStream *stream,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	CamelDataWrapper *wrapper;
+
+	wrapper = camel_medium_get_content (CAMEL_MEDIUM (part));
+
+	/* This is when encrypting already signed part */
+	if (CAMEL_IS_MIME_PART (wrapper))
+		wrapper = camel_medium_get_content (CAMEL_MEDIUM (wrapper));
+
+	if (camel_data_wrapper_decode_to_stream_sync (wrapper, stream, cancellable, error) == -1 ||
+	    camel_stream_flush (stream, cancellable, error) == -1)
+		return FALSE;
+
+	/* Reset stream position to beginning. */
+	if (G_IS_SEEKABLE (stream))
+		g_seekable_seek (G_SEEKABLE (stream), 0, G_SEEK_SET, NULL, NULL);
+
+	return TRUE;
+}
+
+static gboolean
 gpg_sign_sync (CamelCipherContext *context,
                const gchar *userid,
                CamelCipherHash hash,
@@ -1653,24 +1706,30 @@ gpg_sign_sync (CamelCipherContext *context,
 {
 	struct _GpgCtx *gpg = NULL;
 	CamelCipherContextClass *class;
+	CamelGpgContext *ctx = (CamelGpgContext *) context;
 	CamelStream *ostream = camel_stream_mem_new (), *istream;
 	CamelDataWrapper *dw;
 	CamelContentType *ct;
 	CamelMimePart *sigpart;
 	CamelMultipartSigned *mps;
 	gboolean success = FALSE;
+	gboolean prefer_inline;
 
 	/* Note: see rfc2015 or rfc3156, section 5 */
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
+	prefer_inline = ctx->priv->prefer_inline &&
+		camel_content_type_is (camel_mime_part_get_content_type (ipart), "text", "plain");
+
 	/* FIXME: stream this, we stream output at least */
 	istream = camel_stream_mem_new ();
-	if (camel_cipher_canonical_to_stream (
+	if ((prefer_inline && !gpg_context_decode_to_stream (ipart, istream, cancellable, error)) ||
+	    (!prefer_inline && camel_cipher_canonical_to_stream (
 		ipart, CAMEL_MIME_FILTER_CANON_STRIP |
 		CAMEL_MIME_FILTER_CANON_CRLF |
 		CAMEL_MIME_FILTER_CANON_FROM,
-		istream, NULL, error) == -1) {
+		istream, NULL, error) == -1)) {
 		g_prefix_error (
 			error, _("Could not generate signing data: "));
 		goto fail;
@@ -1704,6 +1763,7 @@ gpg_sign_sync (CamelCipherContext *context,
 	gpg_ctx_set_userid (gpg, userid);
 	gpg_ctx_set_istream (gpg, istream);
 	gpg_ctx_set_ostream (gpg, ostream);
+	gpg_ctx_set_prefer_inline (gpg, prefer_inline);
 
 	if (!gpg_ctx_op_start (gpg, error))
 		goto fail;
@@ -1731,36 +1791,59 @@ gpg_sign_sync (CamelCipherContext *context,
 
 	dw = camel_data_wrapper_new ();
 	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
-	camel_data_wrapper_construct_from_stream_sync (
-		dw, ostream, NULL, NULL);
+	camel_data_wrapper_construct_from_stream_sync (dw, ostream, NULL, NULL);
 
-	sigpart = camel_mime_part_new ();
-	ct = camel_content_type_new ("application", "pgp-signature");
-	camel_content_type_set_param (ct, "name", "signature.asc");
-	camel_data_wrapper_set_mime_type_field (dw, ct);
-	camel_content_type_unref (ct);
+	if (gpg->prefer_inline) {
+		CamelTransferEncoding encoding;
 
-	camel_medium_set_content ((CamelMedium *) sigpart, dw);
-	g_object_unref (dw);
+		encoding = camel_mime_part_get_encoding (ipart);
 
-	camel_mime_part_set_description (sigpart, "This is a digitally signed message part");
+		if (encoding != CAMEL_TRANSFER_ENCODING_BASE64 &&
+		    encoding != CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE)
+			encoding = CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE;
 
-	mps = camel_multipart_signed_new ();
-	ct = camel_content_type_new ("multipart", "signed");
-	camel_content_type_set_param (ct, "micalg", camel_cipher_context_hash_to_id (context, hash == CAMEL_CIPHER_HASH_DEFAULT ? gpg->hash : hash));
-	camel_content_type_set_param (ct, "protocol", class->sign_protocol);
-	camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mps, ct);
-	camel_content_type_unref (ct);
-	camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
+		sigpart = camel_mime_part_new ();
+		ct = camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (ipart));
+		camel_data_wrapper_set_mime_type_field (dw, ct);
 
-	camel_multipart_signed_set_signature (mps, sigpart);
-	camel_multipart_signed_set_content_stream (mps, istream);
+		camel_mime_part_set_encoding (sigpart, encoding);
+		camel_medium_set_content ((CamelMedium *) sigpart, dw);
+		g_object_unref (dw);
 
-	g_object_unref (sigpart);
+		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) sigpart);
+
+		g_object_unref (sigpart);
+	} else {
+		sigpart = camel_mime_part_new ();
+		ct = camel_content_type_new ("application", "pgp-signature");
+		camel_content_type_set_param (ct, "name", "signature.asc");
+		camel_data_wrapper_set_mime_type_field (dw, ct);
+		camel_content_type_unref (ct);
+
+		camel_medium_set_content ((CamelMedium *) sigpart, dw);
+		g_object_unref (dw);
+
+		camel_mime_part_set_description (sigpart, "This is a digitally signed message part");
+
+		mps = camel_multipart_signed_new ();
+		ct = camel_content_type_new ("multipart", "signed");
+		camel_content_type_set_param (ct, "micalg", camel_cipher_context_hash_to_id (context, hash == CAMEL_CIPHER_HASH_DEFAULT ? gpg->hash : hash));
+		camel_content_type_set_param (ct, "protocol", class->sign_protocol);
+		camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mps, ct);
+		camel_content_type_unref (ct);
+		camel_multipart_set_boundary ((CamelMultipart *) mps, NULL);
+
+		camel_multipart_signed_set_signature (mps, sigpart);
+		camel_multipart_signed_set_content_stream (mps, istream);
+
+		g_object_unref (sigpart);
+
+		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
+
+		g_object_unref (mps);
+	}
 
 	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
-
-	camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mps);
 
 fail:
 	g_object_unref (ostream);
@@ -2001,14 +2084,19 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	CamelContentType *ct;
 	CamelMultipartEncrypted *mpe;
 	gboolean success = FALSE;
+	gboolean prefer_inline;
 	gint i;
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
+	prefer_inline = ctx->priv->prefer_inline &&
+		camel_content_type_is (camel_mime_part_get_content_type (ipart), "text", "plain");
+
 	ostream = camel_stream_mem_new ();
 	istream = camel_stream_mem_new ();
-	if (camel_cipher_canonical_to_stream (
-		ipart, CAMEL_MIME_FILTER_CANON_CRLF, istream, NULL, error) == -1) {
+	if ((prefer_inline && !gpg_context_decode_to_stream (ipart, istream, cancellable, error)) ||
+	    (!prefer_inline && camel_cipher_canonical_to_stream (
+		ipart, CAMEL_MIME_FILTER_CANON_CRLF, istream, NULL, error) == -1)) {
 		g_prefix_error (
 			error, _("Could not generate encrypting data: "));
 		goto fail1;
@@ -2021,6 +2109,7 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	gpg_ctx_set_istream (gpg, istream);
 	gpg_ctx_set_ostream (gpg, ostream);
 	gpg_ctx_set_always_trust (gpg, ctx->priv->always_trust);
+	gpg_ctx_set_prefer_inline (gpg, prefer_inline);
 
 	for (i = 0; i < recipients->len; i++) {
 		gpg_ctx_add_recipient (gpg, recipients->pdata[i]);
@@ -2051,46 +2140,70 @@ gpg_encrypt_sync (CamelCipherContext *context,
 	success = TRUE;
 
 	dw = camel_data_wrapper_new ();
-	camel_data_wrapper_construct_from_stream_sync (
-		dw, ostream, NULL, NULL);
+	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
+	camel_data_wrapper_construct_from_stream_sync (dw, ostream, NULL, NULL);
 
-	encpart = camel_mime_part_new ();
-	ct = camel_content_type_new ("application", "octet-stream");
-	camel_content_type_set_param (ct, "name", "encrypted.asc");
-	camel_data_wrapper_set_mime_type_field (dw, ct);
-	camel_content_type_unref (ct);
+	if (gpg->prefer_inline) {
+		CamelTransferEncoding encoding;
 
-	camel_medium_set_content ((CamelMedium *) encpart, dw);
-	g_object_unref (dw);
+		encoding = camel_mime_part_get_encoding (ipart);
 
-	camel_mime_part_set_description (encpart, _("This is a digitally encrypted message part"));
+		if (encoding != CAMEL_TRANSFER_ENCODING_BASE64 &&
+		    encoding != CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE)
+			encoding = CAMEL_TRANSFER_ENCODING_QUOTEDPRINTABLE;
 
-	vstream = camel_stream_mem_new ();
-	camel_stream_write_string (vstream, "Version: 1\n", NULL, NULL);
-	g_seekable_seek (G_SEEKABLE (vstream), 0, G_SEEK_SET, NULL, NULL);
+		encpart = camel_mime_part_new ();
+		ct = camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (ipart));
+		camel_data_wrapper_set_mime_type_field (dw, ct);
 
-	verpart = camel_mime_part_new ();
-	dw = camel_data_wrapper_new ();
-	camel_data_wrapper_set_mime_type (dw, class->encrypt_protocol);
-	camel_data_wrapper_construct_from_stream_sync (
-		dw, vstream, NULL, NULL);
-	g_object_unref (vstream);
-	camel_medium_set_content ((CamelMedium *) verpart, dw);
-	g_object_unref (dw);
+		camel_mime_part_set_encoding (encpart, encoding);
+		camel_medium_set_content ((CamelMedium *) encpart, dw);
+		g_object_unref (dw);
 
-	mpe = camel_multipart_encrypted_new ();
-	ct = camel_content_type_new ("multipart", "encrypted");
-	camel_content_type_set_param (ct, "protocol", class->encrypt_protocol);
-	camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mpe, ct);
-	camel_content_type_unref (ct);
-	camel_multipart_set_boundary ((CamelMultipart *) mpe, NULL);
+		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) encpart);
 
-	camel_multipart_add_part ((CamelMultipart *) mpe, verpart);
-	g_object_unref (verpart);
-	camel_multipart_add_part ((CamelMultipart *) mpe, encpart);
-	g_object_unref (encpart);
+		g_object_unref (encpart);
+	} else {
+		encpart = camel_mime_part_new ();
+		ct = camel_content_type_new ("application", "octet-stream");
+		camel_content_type_set_param (ct, "name", "encrypted.asc");
+		camel_data_wrapper_set_mime_type_field (dw, ct);
+		camel_content_type_unref (ct);
 
-	camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mpe);
+		camel_medium_set_content ((CamelMedium *) encpart, dw);
+		g_object_unref (dw);
+
+		camel_mime_part_set_description (encpart, _("This is a digitally encrypted message part"));
+
+		vstream = camel_stream_mem_new ();
+		camel_stream_write_string (vstream, "Version: 1\n", NULL, NULL);
+		g_seekable_seek (G_SEEKABLE (vstream), 0, G_SEEK_SET, NULL, NULL);
+
+		verpart = camel_mime_part_new ();
+		dw = camel_data_wrapper_new ();
+		camel_data_wrapper_set_mime_type (dw, class->encrypt_protocol);
+		camel_data_wrapper_construct_from_stream_sync (
+			dw, vstream, NULL, NULL);
+		g_object_unref (vstream);
+		camel_medium_set_content ((CamelMedium *) verpart, dw);
+		g_object_unref (dw);
+
+		mpe = camel_multipart_encrypted_new ();
+		ct = camel_content_type_new ("multipart", "encrypted");
+		camel_content_type_set_param (ct, "protocol", class->encrypt_protocol);
+		camel_data_wrapper_set_mime_type_field ((CamelDataWrapper *) mpe, ct);
+		camel_content_type_unref (ct);
+		camel_multipart_set_boundary ((CamelMultipart *) mpe, NULL);
+
+		camel_multipart_add_part ((CamelMultipart *) mpe, verpart);
+		g_object_unref (verpart);
+		camel_multipart_add_part ((CamelMultipart *) mpe, encpart);
+		g_object_unref (encpart);
+
+		camel_medium_set_content ((CamelMedium *) opart, (CamelDataWrapper *) mpe);
+
+		g_object_unref (mpe);
+	}
 fail:
 	gpg_ctx_free (gpg);
 fail1:
@@ -2303,6 +2416,17 @@ camel_gpg_context_class_init (CamelGpgContextClass *class)
 			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_PREFER_INLINE,
+		g_param_spec_boolean (
+			"prefer-inline",
+			"Prefer Inline",
+			NULL,
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
 }
 
 static void
@@ -2363,4 +2487,43 @@ camel_gpg_context_set_always_trust (CamelGpgContext *context,
 	context->priv->always_trust = always_trust;
 
 	g_object_notify (G_OBJECT (context), "always-trust");
+}
+
+/**
+ * camel_gpg_context_get_prefer_inline:
+ * @context: a #CamelGpgContext
+ *
+ * Returns: Whether prefer inline sign/encrypt (%TRUE), or as multiparts (%FALSE)
+ *
+ * Since: 3.20
+ **/
+gboolean
+camel_gpg_context_get_prefer_inline (CamelGpgContext *context)
+{
+	g_return_val_if_fail (CAMEL_IS_GPG_CONTEXT (context), FALSE);
+
+	return context->priv->prefer_inline;
+}
+
+/**
+ * camel_gpg_context_set_prefer_inline:
+ * @context: gpg context
+ * @prefer_inline: whether prefer inline sign/encrypt
+ *
+ * Sets the @prefer_inline flag on the gpg context.
+ *
+ * Since: 3.20
+ **/
+void
+camel_gpg_context_set_prefer_inline (CamelGpgContext *context,
+				     gboolean prefer_inline)
+{
+	g_return_if_fail (CAMEL_IS_GPG_CONTEXT (context));
+
+	if (context->priv->prefer_inline == prefer_inline)
+		return;
+
+	context->priv->prefer_inline = prefer_inline;
+
+	g_object_notify (G_OBJECT (context), "prefer-inline");
 }

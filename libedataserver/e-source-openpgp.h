@@ -108,6 +108,11 @@ gboolean	e_source_openpgp_get_encrypt_by_default
 void		e_source_openpgp_set_encrypt_by_default
 						(ESourceOpenPGP *extension,
 						 gboolean encrypt_by_default);
+gboolean	e_source_openpgp_get_prefer_inline
+						(ESourceOpenPGP *extension);
+void		e_source_openpgp_set_prefer_inline
+						(ESourceOpenPGP *extension,
+						 gboolean prefer_inline);
 
 G_END_DECLS
 

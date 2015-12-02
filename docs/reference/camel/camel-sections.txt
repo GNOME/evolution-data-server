@@ -663,6 +663,8 @@ CamelGpgContext
 camel_gpg_context_new
 camel_gpg_context_get_always_trust
 camel_gpg_context_set_always_trust
+camel_gpg_context_get_prefer_inline
+camel_gpg_context_set_prefer_inline
 <SUBSECTION Standard>
 CAMEL_GPG_CONTEXT
 CAMEL_IS_GPG_CONTEXT

@@ -69,6 +69,11 @@ gboolean	camel_gpg_context_get_always_trust
 void		camel_gpg_context_set_always_trust
 						(CamelGpgContext *context,
 						 gboolean always_trust);
+gboolean	camel_gpg_context_get_prefer_inline
+						(CamelGpgContext *context);
+void		camel_gpg_context_set_prefer_inline
+						(CamelGpgContext *context,
+						 gboolean prefer_inline);
 
 G_END_DECLS
 
