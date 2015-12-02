@@ -546,6 +546,8 @@ dbus_server_module_directory_changed_cb (GFileMonitor *monitor,
 		filename = g_file_get_path (file);
 
 		if (filename && g_str_has_suffix (filename, "." G_MODULE_SUFFIX)) {
+			gboolean any_loaded = FALSE;
+
 			if (event_type == G_FILE_MONITOR_EVENT_CREATED ||
 			    event_type == G_FILE_MONITOR_EVENT_MOVED_IN) {
 				G_LOCK (loaded_modules);
@@ -556,14 +558,18 @@ dbus_server_module_directory_changed_cb (GFileMonitor *monitor,
 					g_hash_table_add (loaded_modules, g_strdup (filename));
 
 					module = e_module_load_file (filename);
-					if (module)
+					if (module) {
+						any_loaded = TRUE;
+
 						g_type_module_unuse ((GTypeModule *) module);
+					}
 				}
 
 				G_UNLOCK (loaded_modules);
 			}
 
-			e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
+			if (any_loaded)
+				e_dbus_server_quit (server, E_DBUS_SERVER_EXIT_RELOAD);
 		}
 
 		g_free (filename);
