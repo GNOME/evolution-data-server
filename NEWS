@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.18.3 2015-12-14
+---------------------------------------
+
+Bug Fixes:
+	Bug 757789 - [IMAPx] Incorrect unref of a message info on message copy (Milan Crha)
+	Bug 702127 - Crash under cal_backend_store_save_cache_now() (Milan Crha)
+	Bug 746675 - Workaround thread unsafety of icaltimezone_load_builtin_timezone() (Milan Crha)
+
+Miscellaneous:
+	[Camel] Check for session existence in store/folder maybe_connect (Milan Crha)
+	[IMAPx] Doesn't ask for password when a wrong is entered (Milan Crha)
+	[POP3] Avoid deadlock around pop3_folder_get_message_sync() (Milan Crha)
+	[ECacheReaper] Recover data for private folders (Milan Crha)
+	Correct test-vcard-parsing, use unique test names (Milan Crha)
+
 Evolution-Data-Server 3.18.2 2015-11-09
 ---------------------------------------
 
