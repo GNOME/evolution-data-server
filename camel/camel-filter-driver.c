@@ -79,16 +79,16 @@ struct _CamelFilterDriverPrivate {
 
 	CamelFolder *defaultfolder;        /* defualt folder */
 
-	CamelFilterStatusFunc *statusfunc; /* status callback */
+	CamelFilterStatusFunc statusfunc; /* status callback */
 	gpointer statusdata;                  /* status callback data */
 
-	CamelFilterShellFunc *shellfunc;    /* execute shell command callback */
+	CamelFilterShellFunc shellfunc;    /* execute shell command callback */
 	gpointer shelldata;                    /* execute shell command callback data */
 
-	CamelFilterPlaySoundFunc *playfunc; /* play-sound command callback */
+	CamelFilterPlaySoundFunc playfunc; /* play-sound command callback */
 	gpointer playdata;                     /* play-sound command callback data */
 
-	CamelFilterSystemBeepFunc *beep;    /* system beep callback */
+	CamelFilterSystemBeepFunc beep;    /* system beep callback */
 	gpointer beepdata;                     /* system beep callback data */
 
 	/* for callback */
@@ -321,7 +321,7 @@ camel_filter_driver_set_logfile (CamelFilterDriver *d,
 
 void
 camel_filter_driver_set_status_func (CamelFilterDriver *d,
-                                     CamelFilterStatusFunc *func,
+                                     CamelFilterStatusFunc func,
                                      gpointer data)
 {
 	d->priv->statusfunc = func;
@@ -330,7 +330,7 @@ camel_filter_driver_set_status_func (CamelFilterDriver *d,
 
 void
 camel_filter_driver_set_shell_func (CamelFilterDriver *d,
-                                    CamelFilterShellFunc *func,
+                                    CamelFilterShellFunc func,
                                     gpointer data)
 {
 	d->priv->shellfunc = func;
@@ -339,7 +339,7 @@ camel_filter_driver_set_shell_func (CamelFilterDriver *d,
 
 void
 camel_filter_driver_set_play_sound_func (CamelFilterDriver *d,
-                                         CamelFilterPlaySoundFunc *func,
+                                         CamelFilterPlaySoundFunc func,
                                          gpointer data)
 {
 	d->priv->playfunc = func;
@@ -348,7 +348,7 @@ camel_filter_driver_set_play_sound_func (CamelFilterDriver *d,
 
 void
 camel_filter_driver_set_system_beep_func (CamelFilterDriver *d,
-                                          CamelFilterSystemBeepFunc *func,
+                                          CamelFilterSystemBeepFunc func,
                                           gpointer data)
 {
 	d->priv->beep = func;
