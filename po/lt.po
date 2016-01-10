@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2015-11-28 06:11+0000\n"
-"PO-Revision-Date: 2015-11-28 17:54+0200\n"
+"POT-Creation-Date: 2016-01-05 06:13+0000\n"
+"PO-Revision-Date: 2016-01-05 15:41+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
 "%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Project-Style: gnome\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
@@ -2185,18 +2185,18 @@ msgstr "Atlaisvinti nenaudojamą atmintį aplankui „%s“"
 msgid "Update preview data for folder '%s'"
 msgstr "Atnaujinti peržiūros duomenis aplankui „%s“"
 
-#: ../camel/camel-gpg-context.c:728 ../camel/camel-gpg-context.c:733
-#: ../camel/camel-gpg-context.c:1400
+#: ../camel/camel-gpg-context.c:743 ../camel/camel-gpg-context.c:748
+#: ../camel/camel-gpg-context.c:1415
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Nepavyko paleisti gpg programos: %s"
 
-#: ../camel/camel-gpg-context.c:733
+#: ../camel/camel-gpg-context.c:748
 #: ../camel/providers/smtp/camel-smtp-transport.c:1130
 msgid "Unknown"
 msgstr "Nežinomas"
 
-#: ../camel/camel-gpg-context.c:798
+#: ../camel/camel-gpg-context.c:813
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2207,17 +2207,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/camel-gpg-context.c:834
+#: ../camel/camel-gpg-context.c:849
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Nepavyko apdoroti gpg userid patarimo."
 
-#: ../camel/camel-gpg-context.c:859 ../camel/camel-gpg-context.c:874
+#: ../camel/camel-gpg-context.c:874 ../camel/camel-gpg-context.c:889
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Nepavyko apdoroti gpg slaptažodžio užklausos."
 
-#: ../camel/camel-gpg-context.c:895
+#: ../camel/camel-gpg-context.c:910
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2226,7 +2226,7 @@ msgstr ""
 "Turite nurodyti PIN kodą norėdami atrakinti\n"
 "Jūsų SmartCard: „%s“"
 
-#: ../camel/camel-gpg-context.c:899
+#: ../camel/camel-gpg-context.c:914
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2235,12 +2235,12 @@ msgstr ""
 "Turite nurodyti slaptažodį norėdami atrakinti\n"
 "raktą naudotojui: „%s“"
 
-#: ../camel/camel-gpg-context.c:905
+#: ../camel/camel-gpg-context.c:920
 #, c-format
 msgid "Unexpected request from GnuPG for '%s'"
 msgstr "Netikėta užklausa iš GnuPG dėl „%s“"
 
-#: ../camel/camel-gpg-context.c:917
+#: ../camel/camel-gpg-context.c:932
 msgid ""
 "Note the encrypted content doesn't contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2248,75 +2248,75 @@ msgstr ""
 "Pastaba: šifruotas turinys neturi informacijos apie gavėją, todėl bus "
 "klausiama slaptažodžio kiekvienam įrašytam privačiam raktui."
 
-#: ../camel/camel-gpg-context.c:948 ../camel/camel-net-utils.c:524
+#: ../camel/camel-gpg-context.c:963 ../camel/camel-net-utils.c:524
 #: ../camel/providers/nntp/camel-nntp-summary.c:401
 #: ../libedataserver/e-client.c:163
 #, c-format
 msgid "Cancelled"
 msgstr "Atšaukta"
 
-#: ../camel/camel-gpg-context.c:969
+#: ../camel/camel-gpg-context.c:984
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
 "Nepavyko atrakinti slapto rakto: 3 kartus pateiktas blogas slaptažodis."
 
-#: ../camel/camel-gpg-context.c:982
+#: ../camel/camel-gpg-context.c:997
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Netikėtas atsakymas iš GnuPG: %s"
 
-#: ../camel/camel-gpg-context.c:1120
+#: ../camel/camel-gpg-context.c:1135
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Nepavyko užkoduoti: nenurodyti tinkami gavėjai."
 
-#: ../camel/camel-gpg-context.c:1675 ../camel/camel-smime-context.c:843
+#: ../camel/camel-gpg-context.c:1734 ../camel/camel-smime-context.c:843
 msgid "Could not generate signing data: "
 msgstr "Nepavyko sukurti pasirašymo duomenų:"
 
-#: ../camel/camel-gpg-context.c:1725 ../camel/camel-gpg-context.c:1937
-#: ../camel/camel-gpg-context.c:2047 ../camel/camel-gpg-context.c:2198
+#: ../camel/camel-gpg-context.c:1785 ../camel/camel-gpg-context.c:2020
+#: ../camel/camel-gpg-context.c:2136 ../camel/camel-gpg-context.c:2311
 msgid "Failed to execute gpg."
 msgstr "Nepavyko paleisti gpg programos."
 
-#: ../camel/camel-gpg-context.c:1808 ../camel/camel-gpg-context.c:1816
-#: ../camel/camel-gpg-context.c:1824 ../camel/camel-gpg-context.c:1844
+#: ../camel/camel-gpg-context.c:1891 ../camel/camel-gpg-context.c:1899
+#: ../camel/camel-gpg-context.c:1907 ../camel/camel-gpg-context.c:1927
 #: ../camel/camel-smime-context.c:972 ../camel/camel-smime-context.c:986
 #: ../camel/camel-smime-context.c:995
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nepavyko patikrinti laiško parašo: klaidingas laiško formatas"
 
-#: ../camel/camel-gpg-context.c:1890
+#: ../camel/camel-gpg-context.c:1973
 msgid "Cannot verify message signature: "
 msgstr "Nepavyko patikrinti laiško parašo:"
 
-#: ../camel/camel-gpg-context.c:2013
+#: ../camel/camel-gpg-context.c:2101
 msgid "Could not generate encrypting data: "
 msgstr "Nepavyko sukurti šifravimo duomenų:"
 
-#: ../camel/camel-gpg-context.c:2066
+#: ../camel/camel-gpg-context.c:2176
 msgid "This is a digitally encrypted message part"
 msgstr "Ši laiško dalis yra užšifruota skaitmeniu būdu"
 
-#: ../camel/camel-gpg-context.c:2122 ../camel/camel-gpg-context.c:2131
-#: ../camel/camel-gpg-context.c:2154
+#: ../camel/camel-gpg-context.c:2235 ../camel/camel-gpg-context.c:2244
+#: ../camel/camel-gpg-context.c:2267
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nepavyko iššifruoti laiško: netinkamas laiško formatas"
 
-#: ../camel/camel-gpg-context.c:2142
+#: ../camel/camel-gpg-context.c:2255
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Nepavyko atkoduoti MIME bloko: protokolo klaida"
 
-#: ../camel/camel-gpg-context.c:2208
+#: ../camel/camel-gpg-context.c:2321
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Nepavyko atkoduoti MIME dalies: nerastas privatus raktas"
 
-#: ../camel/camel-gpg-context.c:2244 ../camel/camel-smime-context.c:1288
+#: ../camel/camel-gpg-context.c:2357 ../camel/camel-smime-context.c:1288
 msgid "Encrypted content"
 msgstr "Užšifruotas turinys"
 
@@ -2515,7 +2515,7 @@ msgstr "Anoniminis"
 
 #: ../camel/camel-sasl-anonymous.c:34
 msgid "This option will connect to the server using an anonymous login."
-msgstr "Naudojant šią parinktį prie serverio bus jungiamasi anonimiškai."
+msgstr "Naudojant šį parametrą, prie serverio bus jungiamasi anonimiškai."
 
 #: ../camel/camel-sasl-anonymous.c:67
 #, c-format
@@ -2558,7 +2558,7 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
-"Su šia parinktimi prie serverio bus jungiamasi naudojant saugų CRAM-MD5 "
+"Su šiuo parametru, prie serverio bus jungiamasi naudojant saugų CRAM-MD5 "
 "slaptažodį, jei serveris tai palaiko."
 
 #: ../camel/camel-sasl-digest-md5.c:56
@@ -2570,7 +2570,7 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
-"Su šia parinktimi prie serverio bus jungiamasi naudojant saugų DIGEST–MD5 "
+"Su šiuo parametru, prie serverio bus jungiamasi naudojant saugų DIGEST–MD5 "
 "slaptažodį, jei serveris tai palaiko."
 
 #: ../camel/camel-sasl-digest-md5.c:854
@@ -2611,7 +2611,7 @@ msgstr "GSSAPI"
 #: ../camel/camel-sasl-gssapi.c:96
 msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
-"Ši parinktis leidžia jungtis prie serverio naudojant Kerberos 5 tapatybės "
+"Šis parametras leidžia jungtis prie serverio, naudojant Kerberos 5 tapatybės "
 "nustatymui."
 
 #: ../camel/camel-sasl-gssapi.c:148
@@ -2698,8 +2698,8 @@ msgstr "Prisijungti"
 #: ../camel/camel-sasl-login.c:39 ../camel/camel-sasl-plain.c:43
 msgid "This option will connect to the server using a simple password."
 msgstr ""
-"Naudojant šią parinktį prisijungimui prie serverio naudojamas grynojo teksto "
-"slaptažodis."
+"Naudojant šį parametrą, prisijungimui prie serverio naudojamas grynojo "
+"teksto slaptažodis."
 
 #: ../camel/camel-sasl-login.c:107
 #, c-format
@@ -2715,7 +2715,7 @@ msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
-"Naudojant šią parinktį galima prisijungti prie Windows serverio naudojant "
+"Naudojant šį parametrą, galima prisijungti prie Windows serverio naudojant "
 "tapatybės nustatymui NTLM / saugų slaptažodį."
 
 #: ../camel/camel-sasl-plain.c:41
@@ -2729,7 +2729,7 @@ msgstr "POP prieš SMTP"
 #: ../camel/camel-sasl-popb4smtp.c:45
 msgid "This option will authorise a POP connection before attempting SMTP"
 msgstr ""
-"Naudojant šią parinktį bus nustatoma POP ryšio tapatybė prieš bandant SMTP"
+"Naudojant šį parametrą bus nustatoma POP ryšio tapatybė prieš bandant SMTP"
 
 #: ../camel/camel-sasl-popb4smtp.c:83
 msgid "POP Source UID"
@@ -3229,7 +3229,7 @@ msgstr "Vardų sritis:"
 #: ../camel/providers/local/camel-local-provider.c:99
 #: ../camel/providers/nntp/camel-nntp-provider.c:38
 msgid "Options"
-msgstr "Parinktys"
+msgstr "Parametrai"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:66
 #: ../camel/providers/nntp/camel-nntp-provider.c:40
@@ -3498,7 +3498,7 @@ msgstr "Slaptažodis"
 #: ../camel/providers/imapx/camel-imapx-store.c:855
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
-"Naudojant šią parinktį jungiantis prie IMAP serverio bus naudojamas grynojo "
+"Naudojant šį parametrą, jungiantis prie IMAP serverio bus naudojamas grynojo "
 "teksto slaptažodis."
 
 #: ../camel/providers/imapx/camel-imapx-store.c:938
@@ -3574,7 +3574,7 @@ msgid ""
 "folders managed by Evolution."
 msgstr ""
 "Skirtas gauti (perkelti) vietinį paštą iš standartinių mbox formato kaupų į "
-"Evolution valdomus aplankus."
+"Evolution tvarkomus aplankus."
 
 #: ../camel/providers/local/camel-local-provider.c:79
 #: ../camel/providers/local/camel-local-provider.c:101
@@ -4125,7 +4125,7 @@ msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
 msgstr ""
-"Ši parinktis leidžia anonimiškai jungtis prie NNTP serverio be tapatybės "
+"Šis parametras leidžia anonimiškai jungtis prie NNTP serverio be tapatybės "
 "patvirtinimo."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:94
@@ -4133,7 +4133,7 @@ msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
-"Naudojant šią parinktį, tapatybės NNTP serveryje bus nustatyta naudojant "
+"Naudojant šį parametrą, tapatybės NNTP serveryje bus nustatyta naudojant "
 "paprasto teksto pavidalo slaptažodį."
 
 #: ../camel/providers/nntp/camel-nntp-store.c:377
@@ -4316,7 +4316,7 @@ msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
-"Su šia parinktimi jungiantis prie POP serverio bus naudojamas paprasto "
+"Su šiuo parametru, jungiantis prie POP serverio, bus naudojamas paprasto "
 "teksto slaptažodis. Tai vienintelė parinktis, palaikoma daugelio POP "
 "serverių."
 
@@ -4326,7 +4326,7 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
-"Su šia parinktimi jungiantis prie POP serverio bus naudojamas užšifruotas "
+"Su šiuo parametru, jungiantis prie POP serverio, bus naudojamas užšifruotas "
 "slaptažodis per APOP protokolą. Tai gali veikti ne visiems vartotojams netgi "
 "serveriuose, kurie teigia, jog jį palaiko."
 
@@ -5075,7 +5075,6 @@ msgstr "Įgaliojimų trynimas nepalaikomas"
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:114
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:169
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:208
-#| msgid "Credentials store is not supported"
 msgid "Google authentication is not supported"
 msgstr "Google tapatybės patvirtinimas nepalaikomas"
 
@@ -5088,7 +5087,6 @@ msgid "Source '%s' (%s) is not a valid Google source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas Google šaltinis"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:135
-#| msgid "Object not found"
 msgid "Google secret not found"
 msgstr "Google paslaptis nerasta"
 
@@ -5266,7 +5264,6 @@ msgstr "Šaltinis „%s“ nepalaiko įgaliojimų užklausimo"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:436
 #, c-format
-#| msgid "Failed to obtain an access token for '%s': "
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgstr "Nepavyko gauti prieigos leksemos iš adreso „%s“. Klaidos kodas %d (%s)"
 
@@ -5275,33 +5272,27 @@ msgid "Requesting access token, please wait..."
 msgstr "Prašoma prieigos leksemos, palaukite..."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:584
-#| msgid "Address book authentication request"
 msgid "Google Address book authentication request"
 msgstr "Google adresų knygos tapatybės patvirtinimo užklausa"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:587
-#| msgid "Calendar authentication request"
 msgid "Google Calendar authentication request"
 msgstr "Google kalendoriaus tapatybės patvirtinimo užklausa"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:590
-#| msgid "Mail authentication request"
 msgid "Google Memo List authentication request"
 msgstr "Google raštelių sąrašo tapatybės patvirtinimo užklausa"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:593
-#| msgid "Mail authentication request"
 msgid "Google Task List authentication request"
 msgstr "Google užduočių sąrašo tapatybės patvirtinimo užklausa"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:597
-#| msgid "Mail authentication request"
 msgid "Google Mail authentication request"
 msgstr "Google el. pašto tapatybės patvirtinimo užklausa"
 
 #. generic account prompt
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:600
-#| msgid "Calendar authentication request"
 msgid "Google account authentication request"
 msgstr "Google paskyros tapatybės patvirtinimo užklausa"
 
