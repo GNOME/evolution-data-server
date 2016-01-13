@@ -68,6 +68,10 @@ struct _CamelIMAPXConnManagerPrivate {
 
 	GMutex busy_connections_lock;
 	GCond busy_connections_cond;
+
+	GMutex busy_mailboxes_lock; /* used for both busy_mailboxes and idle_mailboxes */
+	GHashTable *busy_mailboxes; /* CamelIMAPXMailbox ~> gint */
+	GHashTable *idle_mailboxes; /* CamelIMAPXMailbox ~> gint */
 };
 
 struct _ConnectionInfo {
@@ -354,6 +358,159 @@ imapx_conn_manager_ref_folder_sync (CamelIMAPXConnManager *conn_man,
 }
 
 static void
+imapx_conn_manager_inc_mailbox_hash (CamelIMAPXConnManager *conn_man,
+				     CamelIMAPXMailbox *mailbox,
+				     GHashTable *mailboxes_hash)
+{
+	gint count;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+	g_return_if_fail (mailboxes_hash != NULL);
+
+	g_mutex_lock (&conn_man->priv->busy_mailboxes_lock);
+
+	count = GPOINTER_TO_INT (g_hash_table_lookup (mailboxes_hash, mailbox));
+	count++;
+
+	g_hash_table_insert (mailboxes_hash, g_object_ref (mailbox), GINT_TO_POINTER (count));
+
+	g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
+}
+
+static void
+imapx_conn_manager_dec_mailbox_hash (CamelIMAPXConnManager *conn_man,
+				     CamelIMAPXMailbox *mailbox,
+				     GHashTable *mailboxes_hash)
+{
+	gint count;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+	g_return_if_fail (mailboxes_hash != NULL);
+
+	g_mutex_lock (&conn_man->priv->busy_mailboxes_lock);
+
+	count = GPOINTER_TO_INT (g_hash_table_lookup (mailboxes_hash, mailbox));
+	if (!count) {
+		g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
+		g_warn_if_fail (count > 0);
+
+		return;
+	}
+
+	count--;
+
+	if (count)
+		g_hash_table_insert (mailboxes_hash, g_object_ref (mailbox), GINT_TO_POINTER (count));
+	else
+		g_hash_table_remove (mailboxes_hash, mailbox);
+
+	g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
+}
+
+static gboolean
+imapx_conn_manager_is_mailbox_hash (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXMailbox *mailbox,
+				    GHashTable *mailboxes_hash)
+{
+	gint count;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+	g_return_val_if_fail (mailboxes_hash != NULL, FALSE);
+
+	g_mutex_lock (&conn_man->priv->busy_mailboxes_lock);
+
+	count = GPOINTER_TO_INT (g_hash_table_lookup (mailboxes_hash, mailbox));
+
+	g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
+
+	return count > 0;
+}
+
+static void
+imapx_conn_manager_inc_mailbox_busy (CamelIMAPXConnManager *conn_man,
+				     CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	imapx_conn_manager_inc_mailbox_hash (conn_man, mailbox, conn_man->priv->busy_mailboxes);
+}
+
+static void
+imapx_conn_manager_dec_mailbox_busy (CamelIMAPXConnManager *conn_man,
+				     CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	imapx_conn_manager_dec_mailbox_hash (conn_man, mailbox, conn_man->priv->busy_mailboxes);
+}
+
+static gboolean
+imapx_conn_manager_is_mailbox_busy (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXMailbox *mailbox)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+
+	return imapx_conn_manager_is_mailbox_hash (conn_man, mailbox, conn_man->priv->busy_mailboxes);
+}
+
+static void
+imapx_conn_manager_inc_mailbox_idle (CamelIMAPXConnManager *conn_man,
+				     CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	imapx_conn_manager_inc_mailbox_hash (conn_man, mailbox, conn_man->priv->idle_mailboxes);
+}
+
+static void
+imapx_conn_manager_dec_mailbox_idle (CamelIMAPXConnManager *conn_man,
+				     CamelIMAPXMailbox *mailbox)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
+
+	imapx_conn_manager_dec_mailbox_hash (conn_man, mailbox, conn_man->priv->idle_mailboxes);
+}
+
+static gboolean
+imapx_conn_manager_is_mailbox_idle (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXMailbox *mailbox)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+
+	return imapx_conn_manager_is_mailbox_hash (conn_man, mailbox, conn_man->priv->idle_mailboxes);
+}
+
+static gboolean
+imapx_conn_manager_has_inbox_idle (CamelIMAPXConnManager *conn_man)
+{
+	CamelIMAPXStore *imapx_store;
+	CamelIMAPXMailbox *inbox_mailbox;
+	gboolean is_idle;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+
+	imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
+	inbox_mailbox = imapx_store ? camel_imapx_store_ref_mailbox (imapx_store, "INBOX") : NULL;
+
+	g_clear_object (&imapx_store);
+
+	is_idle = inbox_mailbox && imapx_conn_manager_is_mailbox_idle (conn_man, inbox_mailbox);
+
+	g_clear_object (&inbox_mailbox);
+
+	return is_idle;
+}
+
+static void
 imapx_conn_manager_set_store (CamelIMAPXConnManager *conn_man,
                               CamelStore *store)
 {
@@ -414,6 +571,11 @@ imapx_conn_manager_dispose (GObject *object)
 
 	g_weak_ref_set (&conn_man->priv->store, NULL);
 
+	g_mutex_lock (&conn_man->priv->busy_mailboxes_lock);
+	g_hash_table_remove_all (conn_man->priv->busy_mailboxes);
+	g_hash_table_remove_all (conn_man->priv->idle_mailboxes);
+	g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
+
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->dispose (object);
 }
@@ -434,6 +596,9 @@ imapx_conn_manager_finalize (GObject *object)
 	g_mutex_clear (&priv->busy_connections_lock);
 	g_cond_clear (&priv->busy_connections_cond);
 	g_weak_ref_clear (&priv->store);
+	g_mutex_clear (&priv->busy_mailboxes_lock);
+	g_hash_table_destroy (priv->busy_mailboxes);
+	g_hash_table_destroy (priv->idle_mailboxes);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->finalize (object);
@@ -485,8 +650,11 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *conn_man)
 	g_mutex_init (&conn_man->priv->busy_connections_lock);
 	g_cond_init (&conn_man->priv->busy_connections_cond);
 	g_weak_ref_init (&conn_man->priv->store, NULL);
+	g_mutex_init (&conn_man->priv->busy_mailboxes_lock);
 
 	conn_man->priv->last_tagprefix = 'A' - 1;
+	conn_man->priv->busy_mailboxes = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
+	conn_man->priv->idle_mailboxes = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
 }
 
 static gchar
@@ -980,20 +1148,82 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 
 		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), cancellable, error);
 		if (cinfo) {
+			CamelIMAPXMailbox *job_mailbox;
+
+			job_mailbox = camel_imapx_job_get_mailbox (job);
+
+			if (job_mailbox)
+				imapx_conn_manager_inc_mailbox_busy (conn_man, job_mailbox);
+
+			if (camel_imapx_server_is_in_idle (cinfo->is)) {
+				CamelIMAPXMailbox *idle_mailbox;
+
+				idle_mailbox = camel_imapx_server_ref_idle_mailbox (cinfo->is);
+				if (idle_mailbox)
+					imapx_conn_manager_dec_mailbox_idle (conn_man, idle_mailbox);
+				g_clear_object (&idle_mailbox);
+			}
+
 			success = camel_imapx_server_stop_idle_sync (cinfo->is, cancellable, &local_error);
+
+			if (success && camel_imapx_server_can_use_idle (cinfo->is)) {
+				GList *link, *connection_infos, *disconnected_infos = NULL;
+
+				CON_READ_LOCK (conn_man);
+				connection_infos = g_list_copy (conn_man->priv->connections);
+				g_list_foreach (connection_infos, (GFunc) connection_info_ref, NULL);
+				CON_READ_UNLOCK (conn_man);
+
+				/* Stop IDLE on all connections serving the same mailbox,
+				   to avoid notifications for changes done by itself */
+				for (link = connection_infos; link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
+					ConnectionInfo *other_cinfo = link->data;
+					CamelIMAPXMailbox *other_mailbox;
+
+					if (!other_cinfo || other_cinfo == cinfo || connection_info_get_busy (other_cinfo) ||
+					    !camel_imapx_server_is_in_idle (other_cinfo->is))
+						continue;
+
+					other_mailbox = camel_imapx_server_ref_idle_mailbox (other_cinfo->is);
+					if (job_mailbox == other_mailbox) {
+						if (!camel_imapx_server_stop_idle_sync (other_cinfo->is, cancellable, &local_error)) {
+							c (camel_imapx_server_get_tagprefix (other_cinfo->is),
+								"Failed to stop IDLE call (will be removed) on connection %p (server:%p) due to error: %s\n",
+								other_cinfo, other_cinfo->is, local_error ? local_error->message : "Unknown error");
+
+							camel_imapx_server_disconnect_sync (other_cinfo->is, cancellable, NULL);
+
+							disconnected_infos = g_list_prepend (disconnected_infos, connection_info_ref (other_cinfo));
+						} else {
+							imapx_conn_manager_dec_mailbox_idle (conn_man, other_mailbox);
+						}
+
+						g_clear_error (&local_error);
+					}
+
+					g_clear_object (&other_mailbox);
+				}
+
+				for (link = disconnected_infos; link; link = g_list_next (link)) {
+					ConnectionInfo *other_cinfo = link->data;
+
+					imapx_conn_manager_remove_info (conn_man, other_cinfo);
+				}
+
+				g_list_free_full (disconnected_infos, (GDestroyNotify) connection_info_unref);
+				g_list_free_full (connection_infos, (GDestroyNotify) connection_info_unref);
+			}
 
 			if (success)
 				success = camel_imapx_job_run_sync (job, cinfo->is, cancellable, &local_error);
 
+			if (job_mailbox)
+				imapx_conn_manager_dec_mailbox_busy (conn_man, job_mailbox);
+
 			if (success) {
 				CamelIMAPXMailbox *idle_mailbox = NULL;
-				gboolean is_first_connection;
 
-				CON_READ_LOCK (conn_man);
-				is_first_connection = conn_man->priv->connections && conn_man->priv->connections->data == cinfo;
-				CON_READ_UNLOCK (conn_man);
-
-				if (is_first_connection) {
+				if (!imapx_conn_manager_has_inbox_idle (conn_man)) {
 					CamelIMAPXStore *imapx_store;
 
 					imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
@@ -1002,7 +1232,24 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 					g_clear_object (&imapx_store);
 				}
 
-				camel_imapx_server_schedule_idle_sync (cinfo->is, idle_mailbox, cancellable, NULL);
+				if (!idle_mailbox)
+					idle_mailbox = camel_imapx_server_ref_selected (cinfo->is);
+
+				/* Can start IDLE on the connection only if the IDLE folder is not busy
+				   and not in IDLE already, to avoid multiple IDLE notifications on the same mailbox */
+				if (idle_mailbox && camel_imapx_server_can_use_idle (cinfo->is) &&
+				    !imapx_conn_manager_is_mailbox_busy (conn_man, idle_mailbox) &&
+				    !imapx_conn_manager_is_mailbox_idle (conn_man, idle_mailbox)) {
+					camel_imapx_server_schedule_idle_sync (cinfo->is, idle_mailbox, cancellable, NULL);
+
+					if (camel_imapx_server_is_in_idle (cinfo->is)) {
+						g_clear_object (&idle_mailbox);
+
+						idle_mailbox = camel_imapx_server_ref_idle_mailbox (cinfo->is);
+						if (idle_mailbox)
+							imapx_conn_manager_inc_mailbox_idle (conn_man, idle_mailbox);
+					}
+				}
 
 				g_clear_object (&idle_mailbox);
 
@@ -2482,7 +2729,9 @@ camel_imapx_conn_manager_dump_queue_status (CamelIMAPXConnManager *conn_man)
 		if (cinfo)
 			cmd = cinfo->is ? camel_imapx_server_ref_current_command (cinfo->is) : NULL;
 
-		printf ("   connection:%p server:%p busy:%d command:%s\n", cinfo, cinfo ? cinfo->is : NULL, cinfo ? cinfo->busy : FALSE,
+		printf ("   connection:%p server:[%c] %p busy:%d command:%s\n", cinfo,
+			cinfo && cinfo->is ? camel_imapx_server_get_tagprefix (cinfo->is) : '?',
+			cinfo ? cinfo->is : NULL, cinfo ? cinfo->busy : FALSE,
 			cmd ? camel_imapx_job_get_kind_name (cmd->job_kind) : "[null]");
 
 		if (cmd)
