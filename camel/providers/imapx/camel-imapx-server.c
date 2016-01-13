@@ -351,9 +351,6 @@ static gint	imapx_uids_array_cmp		(gconstpointer ap,
 						 gconstpointer bp);
 static void	imapx_sync_free_user		(GArray *user_set);
 
-static gboolean	imapx_in_idle			(CamelIMAPXServer *is);
-static gboolean	imapx_use_idle			(CamelIMAPXServer *is);
-
 G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, G_TYPE_OBJECT)
 
 typedef struct _FetchChangesInfo {
@@ -632,7 +629,7 @@ imapx_server_inactivity_thread (gpointer user_data)
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
 
-	if (imapx_in_idle (is)) {
+	if (camel_imapx_server_is_in_idle (is)) {
 		/* Stop and restart the IDLE command. */
 		if (!camel_imapx_server_schedule_idle_sync (is, NULL, is->priv->cancellable, &local_error) &&
 		    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
@@ -759,7 +756,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	camel_folder_summary_remove_uid (folder->summary, uid);
 	camel_folder_change_info_remove_uid (is->priv->changes, uid);
 
-	if (imapx_in_idle (is)) {
+	if (camel_imapx_server_is_in_idle (is)) {
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		imapx_update_store_summary (folder);
 		camel_folder_changed (folder, is->priv->changes);
@@ -1017,7 +1014,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
-	if (imapx_in_idle (is)) {
+	if (camel_imapx_server_is_in_idle (is)) {
 		guint count;
 
 		count = camel_folder_summary_count (folder->summary);
@@ -1218,7 +1215,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			}
 			g_free (uid);
 
-			if (changed && imapx_in_idle (is)) {
+			if (changed && camel_imapx_server_is_in_idle (is)) {
 				camel_folder_summary_save_to_db (select_folder->summary, NULL);
 				imapx_update_store_summary (select_folder);
 				camel_folder_changed (select_folder, is->priv->changes);
@@ -2008,7 +2005,7 @@ imapx_continuation (CamelIMAPXServer *is,
 	 * can write while we have it ... so we dont need any
 	 * ohter lock here.  All other writes go through
 	 * queue-lock */
-	if (imapx_in_idle (is)) {
+	if (camel_imapx_server_is_in_idle (is)) {
 		success = camel_imapx_input_stream_skip (
 			CAMEL_IMAPX_INPUT_STREAM (input_stream),
 			cancellable, error);
@@ -2332,40 +2329,6 @@ imapx_step (CamelIMAPXServer *is,
 	}
 
 	return success;
-}
-
-static gboolean
-imapx_use_idle (CamelIMAPXServer *is)
-{
-	gboolean use_idle = FALSE;
-
-	/* No need for IDLE if the server supports NOTIFY. */
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY))
-		return FALSE;
-
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, IDLE)) {
-		CamelIMAPXSettings *settings;
-
-		settings = camel_imapx_server_ref_settings (is);
-		use_idle = camel_imapx_settings_get_use_idle (settings);
-		g_object_unref (settings);
-	}
-
-	return use_idle;
-}
-
-static gboolean
-imapx_in_idle (CamelIMAPXServer *is)
-{
-	gboolean in_idle;
-
-	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
-
-	g_rec_mutex_lock (&is->priv->idle_lock);
-	in_idle = is->priv->idle_running || is->priv->idle_pending || is->priv->idle_thread;
-	g_rec_mutex_unlock (&is->priv->idle_lock);
-
-	return in_idle;
 }
 
 static void
@@ -6043,6 +6006,61 @@ imapx_server_run_idle_thread_cb (gpointer user_data)
 }
 
 gboolean
+camel_imapx_server_can_use_idle (CamelIMAPXServer *is)
+{
+	gboolean use_idle = FALSE;
+
+	/* No need for IDLE if the server supports NOTIFY. */
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY))
+		return FALSE;
+
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, IDLE)) {
+		CamelIMAPXSettings *settings;
+
+		settings = camel_imapx_server_ref_settings (is);
+		use_idle = camel_imapx_settings_get_use_idle (settings);
+		g_object_unref (settings);
+	}
+
+	return use_idle;
+}
+
+gboolean
+camel_imapx_server_is_in_idle (CamelIMAPXServer *is)
+{
+	gboolean in_idle;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+
+	g_rec_mutex_lock (&is->priv->idle_lock);
+	in_idle = is->priv->idle_running || is->priv->idle_pending || is->priv->idle_thread;
+	g_rec_mutex_unlock (&is->priv->idle_lock);
+
+	return in_idle;
+}
+
+CamelIMAPXMailbox *
+camel_imapx_server_ref_idle_mailbox (CamelIMAPXServer *is)
+{
+	CamelIMAPXMailbox *mailbox = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
+
+	g_rec_mutex_lock (&is->priv->idle_lock);
+
+	if (is->priv->idle_running || is->priv->idle_pending || is->priv->idle_thread) {
+		if (is->priv->idle_mailbox)
+			mailbox = g_object_ref (is->priv->idle_mailbox);
+		else
+			mailbox = camel_imapx_server_ref_selected (is);
+	}
+
+	g_rec_mutex_unlock (&is->priv->idle_lock);
+
+	return mailbox;
+}
+
+gboolean
 camel_imapx_server_schedule_idle_sync (CamelIMAPXServer *is,
 				       CamelIMAPXMailbox *mailbox,
 				       GCancellable *cancellable,
@@ -6055,7 +6073,7 @@ camel_imapx_server_schedule_idle_sync (CamelIMAPXServer *is,
 	if (!camel_imapx_server_stop_idle_sync (is, cancellable, error))
 		return FALSE;
 
-	if (!imapx_use_idle (is))
+	if (!camel_imapx_server_can_use_idle (is))
 		return TRUE;
 
 	g_rec_mutex_lock (&is->priv->idle_lock);
