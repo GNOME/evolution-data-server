@@ -115,7 +115,7 @@ e_source_credentials_provider_impl_init (ESourceCredentialsProviderImpl *provide
  *
  * Returns an #ESourceCredentialsProvider with which the @provider_impl is associated.
  *
- * Returns: an #ESourceCredentialsProvider
+ * Returns: (transfer none) : an #ESourceCredentialsProvider
  *
  * Since: 3.16
  **/
@@ -210,7 +210,7 @@ e_source_credentials_provider_impl_can_prompt (ESourceCredentialsProviderImpl *p
  * @provider_impl: an #ESourceCredentialsProviderImpl
  * @source: an #ESource
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @out_credentials: an #ENamedParameters to be set with stored credentials
+ * @out_credentials: (out): an #ENamedParameters to be set with stored credentials
  * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Asks @provider_impl to lookup for stored credentials for @source.

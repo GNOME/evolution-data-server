@@ -144,7 +144,7 @@ camel_settings_init (CamelSettings *settings)
  * to be settings, but subclasses may wish to exclude certain properties.
  * Free the returned array with g_free().
  *
- * Returns: an array of #GParamSpec which should be freed after use
+ * Returns: (transfer full): an array of #GParamSpec which should be freed after use
  *
  * Since: 3.2
  **/
@@ -169,7 +169,7 @@ camel_settings_class_list_settings (CamelSettingsClass *settings_class,
  * as @settings, and copies all #GObject property values from @settings
  * to the new instance.
  *
- * Returns: a newly-created copy of @settings
+ * Returns: (transfer full): a newly-created copy of @settings
  *
  * Since: 3.2
  **/

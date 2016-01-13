@@ -44,7 +44,6 @@ static GHashTable *debug_table = NULL;
 
 /**
  * camel_debug_init:
- * @void:
  *
  * Init camel debug.
  *

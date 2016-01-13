@@ -35,10 +35,10 @@ struct _CamelCharset {
 	gint level;
 };
 
-void camel_charset_init (CamelCharset *);
-void camel_charset_step (CamelCharset *, const gchar *in, gint len);
+void camel_charset_init (CamelCharset *c);
+void camel_charset_step (CamelCharset *cc, const gchar *in, gint len);
 
-const gchar *camel_charset_best_name (CamelCharset *);
+const gchar *camel_charset_best_name (CamelCharset *charset);
 
 /* helper function */
 const gchar *camel_charset_best (const gchar *in, gint len);

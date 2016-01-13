@@ -158,7 +158,7 @@ e_xml_save_file (const gchar *filename,
  * Attempts to find a child element of @parent named @child_name.
  * If no such child exists, the function returns %NULL.
  *
- * Returns: a child XML node structure, or %NULL
+ * Returns: (nullable): a child XML node structure, or %NULL
  **/
 xmlNode *
 e_xml_get_child_by_name (const xmlNode *parent,

@@ -96,6 +96,12 @@ typedef struct _CamelVeeDataCacheClass CamelVeeDataCacheClass;
 typedef struct _CamelVeeDataCachePrivate CamelVeeDataCachePrivate;
 
 /**
+ * CamelForeachInfoData:
+ *
+ **/
+typedef void (*CamelForeachInfoData) (CamelVeeMessageInfoData *mi_data, CamelFolder *subfolder, gpointer user_data);
+
+/**
  * CamelVeeSubfolderData:
  *
  * Since: 3.6

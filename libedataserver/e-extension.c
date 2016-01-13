@@ -178,7 +178,7 @@ e_extension_init (EExtension *extension)
  *
  * Returns the object that @extension extends.
  *
- * Returns: the object being extended
+ * Returns: (transfer none): the object being extended
  *
  * Since: 3.4
  **/

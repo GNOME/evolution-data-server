@@ -426,7 +426,7 @@ camel_stream_new (GIOStream *base_stream)
  * The returned #GIOStream is referenced for thread-safety and should be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GIOStream, or %NULL
+ * Returns: (transfer full) (nullable): a #GIOStream, or %NULL
  *
  * Since: 3.12
  **/

@@ -42,7 +42,7 @@ typedef CamelMimeMessage * (*CamelFilterSearchGetMessageFunc) (gpointer data, GC
 
 gint camel_filter_search_match (struct _CamelSession *session,
 				CamelFilterSearchGetMessageFunc get_message,
-				gpointer data,
+				gpointer user_data,
 				CamelMessageInfo *info,
 				const gchar *source,
 				struct _CamelFolder *folder,

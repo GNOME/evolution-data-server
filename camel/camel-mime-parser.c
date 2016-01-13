@@ -330,7 +330,7 @@ camel_mime_parser_header (CamelMimeParser *m,
  * current state of the parser.  These headers are valid
  * until the next call to parser_step(), or parser_drop_step().
  *
- * Returns: The raw headers, or NULL if there are no headers
+ * Returns: (transfer none): The raw headers, or NULL if there are no headers
  * defined for the current part or state.  These are READ ONLY.
  *
  * Since: 2.22
@@ -909,8 +909,8 @@ camel_mime_parser_push_state (CamelMimeParser *mp,
  * be read from directly (without saving and restoring
  * the seek position in between).
  *
- * Returns: The stream from _init_with_stream(), or NULL
- * if the parser is reading from a file descriptor or is
+ * Returns: (transfer none) (nullable): The stream from _init_with_stream(),
+ * or NULL if the parser is reading from a file descriptor or is
  * uninitialised.
  **/
 CamelStream *

@@ -566,6 +566,8 @@ camel_vee_store_new (void)
  *
  * FIXME Document me!
  *
+ * Returns: (transfer none):
+ *
  * Since: 3.6
  **/
 CamelVeeDataCache *
@@ -580,6 +582,8 @@ camel_vee_store_get_vee_data_cache (CamelVeeStore *vstore)
  * camel_vee_store_get_unmatched_folder:
  *
  * FIXME Document me!
+ *
+ * Returns: (transfer none):
  *
  * Since: 3.6
  **/

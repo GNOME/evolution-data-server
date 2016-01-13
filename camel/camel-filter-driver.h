@@ -77,23 +77,23 @@ typedef CamelFolder * (*CamelFilterGetFolderFunc) (CamelFilterDriver *driver, co
 						   gpointer data, GError **error);
 /* report status */
 typedef void (*CamelFilterStatusFunc) (CamelFilterDriver *driver, enum camel_filter_status_t status,
-				      gint pc, const gchar *desc, gpointer data);
+				      gint pc, const gchar *desc, gpointer user_data);
 
-typedef void (*CamelFilterShellFunc)      (CamelFilterDriver *driver, gint argc, gchar **argv, gpointer data);
-typedef void (*CamelFilterPlaySoundFunc)  (CamelFilterDriver *driver, const gchar *filename, gpointer data);
-typedef void (*CamelFilterSystemBeepFunc) (CamelFilterDriver *driver, gpointer data);
+typedef void (*CamelFilterShellFunc)      (CamelFilterDriver *driver, gint argc, gchar **argv, gpointer user_data);
+typedef void (*CamelFilterPlaySoundFunc)  (CamelFilterDriver *driver, const gchar *filename, gpointer user_data);
+typedef void (*CamelFilterSystemBeepFunc) (CamelFilterDriver *driver, gpointer user_data);
 
 GType          camel_filter_driver_get_type (void);
-CamelFilterDriver  *camel_filter_driver_new     (struct _CamelSession *);
+CamelFilterDriver  *camel_filter_driver_new     (struct _CamelSession *session);
 
 /* modifiers */
 void camel_filter_driver_set_logfile          (CamelFilterDriver *d, FILE *logfile);
 
-void camel_filter_driver_set_status_func      (CamelFilterDriver *d, CamelFilterStatusFunc func, gpointer data);
-void camel_filter_driver_set_shell_func       (CamelFilterDriver *d, CamelFilterShellFunc func, gpointer data);
-void camel_filter_driver_set_play_sound_func  (CamelFilterDriver *d, CamelFilterPlaySoundFunc func, gpointer data);
-void camel_filter_driver_set_system_beep_func (CamelFilterDriver *d, CamelFilterSystemBeepFunc func, gpointer data);
-void camel_filter_driver_set_folder_func      (CamelFilterDriver *d, CamelFilterGetFolderFunc fetcher, gpointer data);
+void camel_filter_driver_set_status_func      (CamelFilterDriver *d, CamelFilterStatusFunc func, gpointer user_data);
+void camel_filter_driver_set_shell_func       (CamelFilterDriver *d, CamelFilterShellFunc func, gpointer user_data);
+void camel_filter_driver_set_play_sound_func  (CamelFilterDriver *d, CamelFilterPlaySoundFunc func, gpointer user_data);
+void camel_filter_driver_set_system_beep_func (CamelFilterDriver *d, CamelFilterSystemBeepFunc func, gpointer user_data);
+void camel_filter_driver_set_folder_func      (CamelFilterDriver *d, CamelFilterGetFolderFunc get_folder, gpointer user_data);
 
 void camel_filter_driver_set_default_folder   (CamelFilterDriver *d, CamelFolder *def);
 

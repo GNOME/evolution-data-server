@@ -303,13 +303,17 @@ camel_filter_driver_new (CamelSession *session)
 	return d;
 }
 
+/**
+ * camel_filter_driver_set_folder_func:
+ * @get_folder: (scope call):
+ **/
 void
 camel_filter_driver_set_folder_func (CamelFilterDriver *d,
                                      CamelFilterGetFolderFunc get_folder,
-                                     gpointer data)
+                                     gpointer user_data)
 {
 	d->priv->get_folder = get_folder;
-	d->priv->data = data;
+	d->priv->data = user_data;
 }
 
 void
@@ -319,40 +323,56 @@ camel_filter_driver_set_logfile (CamelFilterDriver *d,
 	d->priv->logfile = logfile;
 }
 
+/**
+ * camel_filter_driver_set_status_func:
+ * @func: (scope call):
+ **/
 void
 camel_filter_driver_set_status_func (CamelFilterDriver *d,
                                      CamelFilterStatusFunc func,
-                                     gpointer data)
+                                     gpointer user_data)
 {
 	d->priv->statusfunc = func;
-	d->priv->statusdata = data;
+	d->priv->statusdata = user_data;
 }
 
+/**
+ * camel_filter_driver_set_shell_func:
+ * @func: (scope call):
+ **/
 void
 camel_filter_driver_set_shell_func (CamelFilterDriver *d,
                                     CamelFilterShellFunc func,
-                                    gpointer data)
+                                    gpointer user_data)
 {
 	d->priv->shellfunc = func;
-	d->priv->shelldata = data;
+	d->priv->shelldata = user_data;
 }
 
+/**
+ * camel_filter_driver_set_play_sound_func:
+ * @func: (scope call):
+ **/
 void
 camel_filter_driver_set_play_sound_func (CamelFilterDriver *d,
                                          CamelFilterPlaySoundFunc func,
-                                         gpointer data)
+                                         gpointer user_data)
 {
 	d->priv->playfunc = func;
-	d->priv->playdata = data;
+	d->priv->playdata = user_data;
 }
 
+/**
+ * camel_filter_driver_set_system_beep_func:
+ * @func: (scope call):
+ **/
 void
 camel_filter_driver_set_system_beep_func (CamelFilterDriver *d,
                                           CamelFilterSystemBeepFunc func,
-                                          gpointer data)
+                                          gpointer user_data)
 {
 	d->priv->beep = func;
-	d->priv->beepdata = data;
+	d->priv->beepdata = user_data;
 }
 
 void
@@ -849,9 +869,9 @@ typedef struct {
 static void
 child_watch (GPid pid,
              gint status,
-             gpointer data)
+             gpointer user_data)
 {
-	child_watch_data_t *child_watch_data = data;
+	child_watch_data_t *child_watch_data = user_data;
 
 	g_spawn_close_pid (pid);
 
@@ -1260,18 +1280,18 @@ struct _run_only_once {
 static gboolean
 run_only_once (gpointer key,
                gchar *action,
-               struct _run_only_once *data)
+               struct _run_only_once *user_data)
 {
-	CamelFilterDriver *driver = data->driver;
+	CamelFilterDriver *driver = user_data->driver;
 	CamelSExpResult *r;
 
 	d (printf ("evaluating: %s\n\n", action));
 
 	camel_sexp_input_text (driver->priv->eval, action, strlen (action));
 	if (camel_sexp_parse (driver->priv->eval) == -1) {
-		if (data->error == NULL)
+		if (user_data->error == NULL)
 			g_set_error (
-				&data->error,
+				&user_data->error,
 				CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error parsing filter: %s: %s"),
 				camel_sexp_error (driver->priv->eval), action);
@@ -1280,9 +1300,9 @@ run_only_once (gpointer key,
 
 	r = camel_sexp_eval (driver->priv->eval);
 	if (r == NULL) {
-		if (data->error == NULL)
+		if (user_data->error == NULL)
 			g_set_error (
-				&data->error,
+				&user_data->error,
 				CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("Error executing filter: %s: %s"),
 				camel_sexp_error (driver->priv->eval), action);
@@ -1488,8 +1508,8 @@ fail:
  * @driver: CamelFilterDriver
  * @folder: CamelFolder to be filtered
  * @cache: UID cache (needed for POP folders)
- * @uids: message uids to be filtered or NULL (as a shortcut to filter
- *        all messages)
+ * @uids: (element-type utf8): message uids to be filtered or NULL (as a
+ *        shortcut to filter all messages)
  * @remove: TRUE to mark filtered messages as deleted
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

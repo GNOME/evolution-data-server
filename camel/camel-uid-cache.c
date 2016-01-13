@@ -252,12 +252,12 @@ camel_uid_cache_destroy (CamelUIDCache *cache)
 /**
  * camel_uid_cache_get_new_uids:
  * @cache: a CamelUIDCache
- * @uids: an array of UIDs
+ * @uids: (element-type utf8) (transfer none): an array of UIDs
  *
  * Returns an array of UIDs from @uids that are not in @cache, and
  * removes UIDs from @cache that aren't in @uids.
  *
- * Returns: an array of new UIDs, which must be freed with
+ * Returns: (element-type utf8) (transfer full): an array of new UIDs, which must be freed with
  * camel_uid_cache_free_uids().
  **/
 GPtrArray *
@@ -322,7 +322,7 @@ camel_uid_cache_save_uid (CamelUIDCache *cache,
 
 /**
  * camel_uid_cache_free_uids:
- * @uids: an array returned from camel_uid_cache_get_new_uids()
+ * @uids: (element-type utf8) (transfer full): an array returned from camel_uid_cache_get_new_uids()
  *
  * Frees the array of UIDs.
  **/

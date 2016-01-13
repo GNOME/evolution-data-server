@@ -344,6 +344,8 @@ camel_stream_mem_set_secure (CamelStreamMem *mem)
  * camel_stream_mem_get_byte_array:
  * @mem: a #CamelStreamMem
  *
+ * Returns: (transfer none):
+ *
  * Since: 2.32
  **/
 GByteArray *

@@ -289,7 +289,7 @@ guint32		camel_folder_search_count	(CamelFolderSearch *search,
 						 GCancellable *cancellable,
 						 GError **error);
 void		camel_folder_search_free_result	(CamelFolderSearch *search,
-						 GPtrArray *);
+						 GPtrArray *result);
 
 /* XXX This belongs in a general utility file. */
 time_t		camel_folder_search_util_add_months

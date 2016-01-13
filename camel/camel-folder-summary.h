@@ -290,7 +290,7 @@ struct _CamelFolderSummaryClass {
 					 const gchar *bodystructure);
 	void		(*message_info_free)
 					(CamelFolderSummary *summary,
-					 CamelMessageInfo *info);
+					 CamelMessageInfo *ci);
 	CamelMessageInfo *
 			(*message_info_clone)
 					(CamelFolderSummary *summary,
@@ -311,7 +311,7 @@ struct _CamelFolderSummaryClass {
 					 CamelMimePart *mime_part);
 	void		(*content_info_free)
 					(CamelFolderSummary *summary,
-					 CamelMessageContentInfo *info);
+					 CamelMessageContentInfo *ci);
 	CamelMessageInfo *
 			(*message_info_from_uid)
 					(CamelFolderSummary *summary,

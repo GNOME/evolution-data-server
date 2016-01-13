@@ -145,6 +145,13 @@ const gchar *camel_html_parser_attr (CamelHTMLParser *hp, const gchar *name)
 	return NULL;
 }
 
+/**
+ * camel_html_parser_attr_list:
+ * @values: (element-type utf8) (inout):
+ *
+ * Returns: (element-type utf8) (transfer none):
+ *
+ **/
 const GPtrArray *camel_html_parser_attr_list (CamelHTMLParser *hp, const GPtrArray **values)
 {
 	if (values)

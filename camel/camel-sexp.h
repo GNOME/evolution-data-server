@@ -192,12 +192,12 @@ void		camel_sexp_add_function		(CamelSExp *sexp,
 						 guint scope,
 						 const gchar *name,
 						 CamelSExpFunc func,
-						 gpointer data);
+						 gpointer user_data);
 void		camel_sexp_add_ifunction	(CamelSExp *sexp,
 						 guint scope,
 						 const gchar *name,
 						 CamelSExpIFunc func,
-						 gpointer data);
+						 gpointer user_data);
 void		camel_sexp_add_variable		(CamelSExp *sexp,
 						 guint scope,
 						 gchar *name,

@@ -290,7 +290,7 @@ e_source_credentials_provider_new (ESourceRegistry *registry)
  *
  * Returns refenrenced registry associated with this @provider.
  *
- * Returns: Reference registry associated with this @provider. Unref it
+ * Returns: (transfer full): Reference registry associated with this @provider. Unref it
  *    with g_object_unref() when no longer needed.
  *
  * Since: 3.16
@@ -409,7 +409,7 @@ e_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
  * sources. When ther eis no such parent source, a %NULL is returned, which
  * means the @source holds credentials for itself.
  *
- * Returns: referenced parent #ESource, which holds credentials, or %NULL. Unref
+ * Returns: (transfer full): referenced parent #ESource, which holds credentials, or %NULL. Unref
  *    the returned non-NULL #ESource with g_object_unref(), when no longer needed.
  *
  * Since: 3.16

@@ -125,6 +125,12 @@ e_source_local_init (ESourceLocal *extension)
 	extension->priv = E_SOURCE_LOCAL_GET_PRIVATE (extension);
 }
 
+/**
+ * e_source_local_get_custom_file:
+ * @extension: an #ESourceLocal
+ *
+ * Returns: (transfer none): the #GFile instance
+ **/
 GFile *
 e_source_local_get_custom_file (ESourceLocal *extension)
 {
@@ -133,6 +139,12 @@ e_source_local_get_custom_file (ESourceLocal *extension)
 	return extension->priv->custom_file;
 }
 
+/**
+ * e_source_local_dup_custom_file:
+ * @extension: an #ESourceLocal
+ *
+ * Returns: (transfer full): the #GFile instance
+ **/
 GFile *
 e_source_local_dup_custom_file (ESourceLocal *extension)
 {

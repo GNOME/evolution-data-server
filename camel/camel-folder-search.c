@@ -1812,7 +1812,7 @@ camel_folder_search_set_folder (CamelFolderSearch *search,
 /**
  * camel_folder_search_set_summary:
  * @search:
- * @summary: An array of CamelMessageInfo pointers.
+ * @summary: (element-type CamelMessageInfo): An array of CamelMessageInfo pointers.
  *
  * Set the array of summary objects representing the span of the search.
  *
@@ -2057,14 +2057,14 @@ fail:
  * camel_folder_search_search:
  * @search:
  * @expr:
- * @uids: to search against, NULL for all uid's.
+ * @uids: (element-type utf8): to search against, NULL for all uid's.
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Run a search.  Search must have had Folder already set on it, and
  * it must implement summaries.
  *
- * Returns:
+ * Returns: (element-type utf8) (transfer full):
  **/
 GPtrArray *
 camel_folder_search_search (CamelFolderSearch *search,
@@ -2233,6 +2233,10 @@ fail:
 	return matches;
 }
 
+/**
+ * camel_folder_search_free_result:
+ * @result: (element-type utf8):
+ **/
 void
 camel_folder_search_free_result (CamelFolderSearch *search,
                                  GPtrArray *result)

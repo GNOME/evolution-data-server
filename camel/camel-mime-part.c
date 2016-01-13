@@ -1309,7 +1309,7 @@ camel_mime_part_set_content_md5 (CamelMimePart *mime_part,
  *
  * Get the Content-Languages set on the MIME part.
  *
- * Returns: a #GList of languages
+ * Returns: (element-type utf8) (transfer none): a #GList of languages
  **/
 const GList *
 camel_mime_part_get_content_languages (CamelMimePart *mime_part)
@@ -1322,7 +1322,7 @@ camel_mime_part_get_content_languages (CamelMimePart *mime_part)
 /**
  * camel_mime_part_set_content_languages:
  * @mime_part: a #CamelMimePart
- * @content_languages: list of languages
+ * @content_languages: (element-type utf8): list of languages
  *
  * Set the Content-Languages field of a MIME part.
  **/

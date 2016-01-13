@@ -108,7 +108,7 @@ camel_memchunk_new (gint atomcount,
  * Allocate a new atom size block of memory from an #CamelMemChunk.
  * Free the returned atom with camel_memchunk_free().
  *
- * Returns: an allocated block of memory
+ * Returns: (transfer full): an allocated block of memory
  *
  * Since: 3.4
  **/
@@ -148,7 +148,7 @@ camel_memchunk_alloc (CamelMemChunk *memchunk)
  * and fill the memory with zeros.  Free the returned atom with
  * camel_memchunk_free().
  *
- * Returns: an allocated block of memory
+ * Returns: (transfer full): an allocated block of memory
  *
  * Since: 3.4
  **/

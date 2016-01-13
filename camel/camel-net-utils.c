@@ -681,6 +681,8 @@ cs_getaddrinfo (gpointer data)
 /**
  * camel_getaddrinfo:
  *
+ * Returns: (transfer none):
+ *
  * Since: 2.22
  **/
 struct addrinfo *

@@ -473,7 +473,7 @@ camel_data_wrapper_new (void)
  *
  * Note, it's up to the caller to use this in a thread-safe manner.
  *
- * Returns: the #GByteArray for @data_wrapper
+ * Returns: (transfer none): the #GByteArray for @data_wrapper
  *
  * Since: 3.2
  **/

@@ -1494,7 +1494,7 @@ camel_service_get_provider (CamelService *service)
  * The returned #GProxyResolver is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GProxyResolver, or %NULL
+ * Returns: (transfer full): a #GProxyResolver, or %NULL
  *
  * Since: 3.12
  **/
@@ -1569,7 +1569,7 @@ camel_service_set_proxy_resolver (CamelService *service,
  * The returned #CamelSession is referenced for thread-safety.  Unreference
  * the #CamelSession with g_object_unref() when finished with it.
  *
- * Returns: the #CamelSession
+ * Returns: (transfer full): the #CamelSession
  *
  * Since: 3.8
  **/
@@ -1590,7 +1590,7 @@ camel_service_ref_session (CamelService *service)
  * The returned #CamelSettings is referenced for thread-safety and must
  * be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: the #CamelSettings
+ * Returns: (transfer full): the #CamelSettings
  *
  * Since: 3.6
  **/
@@ -1691,7 +1691,7 @@ camel_service_get_uid (CamelService *service)
  * camel_service_queue_task:
  * @service: a #CamelService
  * @task: a #GTask
- * @task_func: function to call when @task is dispatched
+ * @task_func: (scope async): function to call when @task is dispatched
  *
  * Adds @task to a queue of waiting tasks with the same source object.
  * Queued tasks execute one at a time in the order they were added.  When
@@ -2274,7 +2274,7 @@ camel_service_authenticate_finish (CamelService *service,
  * Obtains a list of authentication types supported by @service.
  * Free the returned list with g_list_free().
  *
- * Returns: a list of #CamelServiceAuthType structs
+ * Returns: (element-type CamelServiceAuthType) (transfer container): a list of #CamelServiceAuthType structs
  **/
 GList *
 camel_service_query_auth_types_sync (CamelService *service,
@@ -2361,7 +2361,7 @@ camel_service_query_auth_types (CamelService *service,
  * Finishes the operation started with camel_service_query_auth_types().
  * Free the returned list with g_list_free().
  *
- * Returns: a list of #CamelServiceAuthType structs
+ * Returns: (element-type CamelServiceAuthType) (transfer container): a list of #CamelServiceAuthType structs
  *
  * Since: 3.2
  **/

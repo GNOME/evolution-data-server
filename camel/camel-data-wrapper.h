@@ -77,7 +77,7 @@ struct _CamelDataWrapperClass {
 	CamelContentType *
 			(*get_mime_type_field)	(CamelDataWrapper *data_wrapper);
 	void		(*set_mime_type_field)	(CamelDataWrapper *data_wrapper,
-						 CamelContentType *mime_type_field);
+						 CamelContentType *mime_type);
 	gboolean	(*is_offline)		(CamelDataWrapper *data_wrapper);
 
 	/* Synchronous I/O Methods */

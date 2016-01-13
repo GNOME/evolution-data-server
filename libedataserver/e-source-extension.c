@@ -180,7 +180,7 @@ e_source_extension_init (ESourceExtension *extension)
  * The returned #ESource is referenced for thread-safety.  Unreference
  * the #ESource with g_object_unref() when finished with it.
  *
- * Returns: the #ESource instance
+ * Returns: (transfer full): the #ESource instance
  *
  * Since: 3.8
  **/

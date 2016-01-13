@@ -548,6 +548,8 @@ camel_sasl_get_mechanism (CamelSasl *sasl)
  * camel_sasl_get_service:
  * @sasl: a #CamelSasl
  *
+ * Returns: (transfer none):
+ *
  * Since: 2.32
  **/
 CamelService *
@@ -586,7 +588,7 @@ camel_sasl_get_service_name (CamelSasl *sasl)
  *
  * Free the returned #GByteArray with g_byte_array_free().
  *
- * Returns: the SASL response or %NULL. If an error occurred, @error will
+ * Returns: (transfer full): the SASL response or %NULL. If an error occurred, @error will
  * also be set.
  **/
 GByteArray *
@@ -698,7 +700,7 @@ camel_sasl_challenge (CamelSasl *sasl,
  * Finishes the operation started with camel_sasl_challenge().  Free the
  * returned #GByteArray with g_byte_array_free().
  *
- * Returns: the SASL response or %NULL.  If an error occurred, @error will
+ * Returns: (transfer full): the SASL response or %NULL.  If an error occurred, @error will
  * also be set.
  *
  * Since: 3.0
@@ -728,7 +730,7 @@ camel_sasl_challenge_finish (CamelSasl *sasl,
  * As with camel_sasl_challenge_sync(), but the challenge @token and the
  * response are both base64-encoded.
  *
- * Returns: the base64-encoded response
+ * Returns: (transfer full): the base64-encoded response
  *
  * Since: 3.0
  **/
@@ -879,7 +881,7 @@ camel_sasl_challenge_base64_finish (CamelSasl *sasl,
  * camel_sasl_authtype_list:
  * @include_plain: whether or not to include the PLAIN mechanism
  *
- * Returns: a #GList of SASL-supported authtypes. The caller must
+ * Returns: (element-type CamelServiceAuthType) (transfer container): a #GList of SASL-supported authtypes. The caller must
  * free the list, but not the contents.
  **/
 GList *

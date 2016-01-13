@@ -875,6 +875,7 @@ camel_db_close (CamelDB *cdb)
 
 /**
  * camel_db_set_collate:
+ * @func: (scope call):
  *
  * Since: 2.24
  **/
@@ -1005,6 +1006,8 @@ camel_db_add_to_transaction (CamelDB *cdb,
 
 /**
  * camel_db_transaction_command:
+ * @cdb: a #CamelDB
+ * @qry_list: (element-type utf8) (transfer none): A #GList of querries
  *
  * Since: 2.24
  **/
@@ -1264,6 +1267,7 @@ camel_db_count_total_message_info (CamelDB *cdb,
 
 /**
  * camel_db_select:
+ * @callback: (scope async):
  *
  * Since: 2.24
  **/
@@ -1271,7 +1275,7 @@ gint
 camel_db_select (CamelDB *cdb,
                  const gchar *stmt,
                  CamelDBSelectCB callback,
-                 gpointer data,
+                 gpointer user_data,
                  GError **error)
 {
 	gint ret = -1;
@@ -1283,7 +1287,7 @@ camel_db_select (CamelDB *cdb,
 	cdb_reader_lock (cdb);
 
 	START (stmt);
-	ret = cdb_sql_exec (cdb->db, stmt, callback, data, NULL, error);
+	ret = cdb_sql_exec (cdb->db, stmt, callback, user_data, NULL, error);
 	END;
 
 	cdb_reader_unlock (cdb);
@@ -1359,6 +1363,8 @@ camel_db_get_folder_uids (CamelDB *db,
 /**
  * camel_db_get_folder_junk_uids:
  *
+ * Returns: (element-type utf8) (transfer full):
+ *
  * Since: 2.24
  **/
 GPtrArray *
@@ -1385,6 +1391,8 @@ camel_db_get_folder_junk_uids (CamelDB *db,
 
 /**
  * camel_db_get_folder_deleted_uids:
+ *
+ * Returns: (element-type utf8) (transfer full):
  *
  * Since: 2.24
  **/
@@ -1451,6 +1459,8 @@ read_preview_callback (gpointer ref,
 
 /**
  * camel_db_get_folder_preview:
+ *
+ * Returns: (element-type utf8 utf8) (transfer full):
  *
  * Since: 2.28
  **/
@@ -2155,6 +2165,7 @@ camel_db_read_folder_info_record (CamelDB *cdb,
 
 /**
  * camel_db_read_message_info_record_with_uid:
+ * @read_mir_callback: (scope async) (closure user_data):
  *
  * Since: 2.24
  **/
@@ -2162,7 +2173,7 @@ gint
 camel_db_read_message_info_record_with_uid (CamelDB *cdb,
                                             const gchar *folder_name,
                                             const gchar *uid,
-                                            gpointer p,
+                                            gpointer user_data,
                                             CamelDBSelectCB read_mir_callback,
                                             GError **error)
 {
@@ -2174,7 +2185,7 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 		"mail_from, mail_to, mail_cc, mlist, part, labels, "
 		"usertags, cinfo, bdata FROM %Q WHERE uid = %Q",
 		folder_name, uid);
-	ret = camel_db_select (cdb, query, read_mir_callback, p, error);
+	ret = camel_db_select (cdb, query, read_mir_callback, user_data, error);
 	sqlite3_free (query);
 
 	return (ret);
@@ -2182,13 +2193,14 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 
 /**
  * camel_db_read_message_info_records:
+ * @read_mir_callback: (scope async) (closure user_data):
  *
  * Since: 2.24
  **/
 gint
 camel_db_read_message_info_records (CamelDB *cdb,
                                     const gchar *folder_name,
-                                    gpointer p,
+                                    gpointer user_data,
                                     CamelDBSelectCB read_mir_callback,
                                     GError **error)
 {
@@ -2199,7 +2211,7 @@ camel_db_read_message_info_records (CamelDB *cdb,
 		"SELECT uid, flags, size, dsent, dreceived, subject, "
 		"mail_from, mail_to, mail_cc, mlist, part, labels, "
 		"usertags, cinfo, bdata FROM %Q ", folder_name);
-	ret = camel_db_select (cdb, query, read_mir_callback, p, error);
+	ret = camel_db_select (cdb, query, read_mir_callback, user_data, error);
 	sqlite3_free (query);
 
 	return (ret);
@@ -2359,6 +2371,8 @@ cdb_delete_ids (CamelDB *cdb,
 
 /**
  * camel_db_delete_uids:
+ * @cdb: a #CamelDB
+ * @uids: (element-type utf8) (transfer none): A #GList of uids
  *
  * Since: 2.24
  **/

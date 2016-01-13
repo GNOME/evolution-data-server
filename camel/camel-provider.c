@@ -330,7 +330,7 @@ add_to_list (gpointer key,
  * Free the returned list with g_list_free().  The #CamelProvider structs
  * in the list are owned by Camel and should not be modified or freed.
  *
- * Returns: a #GList of #CamelProvider structs
+ * Returns: (element-type CamelProvider) (transfer container): a #GList of #CamelProvider structs
  **/
 GList *
 camel_provider_list (gboolean load)

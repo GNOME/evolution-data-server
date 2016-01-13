@@ -246,7 +246,7 @@ camel_filter_input_stream_new (GInputStream *base_stream,
  *
  * Gets the #CamelMimeFilter that is used by @filter_stream.
  *
- * Returns: a #CamelMimeFilter
+ * Returns: (transfer none): a #CamelMimeFilter
  *
  * Since: 3.12
  **/

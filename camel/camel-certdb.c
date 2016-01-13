@@ -440,6 +440,14 @@ camel_certdb_set_default (CamelCertDB *certdb)
 	g_mutex_unlock (&default_certdb_lock);
 }
 
+
+/**
+ * camel_certdb_get_default:
+ *
+ * FIXME Document me!
+ *
+ * Returns: (transfer full):
+ **/
 CamelCertDB *
 camel_certdb_get_default (void)
 {
@@ -784,7 +792,7 @@ camel_certdb_clear (CamelCertDB *certdb)
  * is referenced, thus unref it with camel_cert_unref() when done with it, the same
  * as free the list itself.
  *
- * Returns: (transfer full): (element-type CamelCert): Newly allocated list of
+ * Returns: (transfer full) (element-type CamelCert): Newly allocated list of
  *   referenced CamelCert-s, which are stored in the @certdb.
  *
  * Since: 3.16

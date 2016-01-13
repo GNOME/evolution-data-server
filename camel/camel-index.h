@@ -191,7 +191,7 @@ gint		camel_index_rename		(CamelIndex *index,
 						 const gchar *path);
 void		camel_index_set_normalize	(CamelIndex *index,
 						 CamelIndexNorm func,
-						 gpointer data);
+						 gpointer user_data);
 gint		camel_index_sync		(CamelIndex *index);
 gint		camel_index_compress		(CamelIndex *index);
 gint		camel_index_delete		(CamelIndex *index);

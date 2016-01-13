@@ -782,7 +782,7 @@ camel_multipart_signed_new (void)
  * Get the raw signed content stream of the multipart/signed MIME part
  * suitable for use with verification of the signature.
  *
- * Returns: the signed content stream
+ * Returns: (transfer full): the signed content stream
  **/
 CamelStream *
 camel_multipart_signed_get_content_stream (CamelMultipartSigned *mps,

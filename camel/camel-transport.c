@@ -80,7 +80,7 @@ camel_transport_init (CamelTransport *transport)
  * @message: a #CamelMimeMessage to send
  * @from: a #CamelAddress to send from
  * @recipients: a #CamelAddress containing all recipients
- * @out_sent_message_saved: set to %TRUE, if the sent message was also saved
+ * @out_sent_message_saved: (out): set to %TRUE, if the sent message was also saved
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -237,7 +237,7 @@ camel_transport_send_to (CamelTransport *transport,
  * camel_transport_send_to_finish:
  * @transport: a #CamelTransport
  * @result: a #GAsyncResult
- * @out_sent_message_saved: set to %TRUE, if the sent message was also saved
+ * @out_sent_message_saved: (out): set to %TRUE, if the sent message was also saved
  * @error: return locaton for a #GError, or %NULL
  *
  * Finishes the operation started with camel_transport_send_to().

@@ -1362,10 +1362,10 @@ camel_folder_summary_new (CamelFolder *folder)
 }
 
 /**
- * camel_folder_summary_get_index:
+ * camel_folder_summary_get_folder:
  * @summary: a #CamelFolderSummary object
  *
- * Returns: a #CamelFolder to which the summary if associated.
+ * Returns: (transfer none): a #CamelFolder to which the summary if associated.
  *
  * Since: 3.4
  **/
@@ -1502,7 +1502,7 @@ camel_folder_summary_set_index (CamelFolderSummary *summary,
  * camel_folder_summary_get_index:
  * @summary: a #CamelFolderSummary object
  *
- * Returns: a #CamelIndex used to index body content.
+ * Returns: (transfer none): a #CamelIndex used to index body content.
  *
  * Since: 3.4
  **/
@@ -1736,7 +1736,7 @@ folder_summary_dupe_uids_to_array (gpointer key_uid,
  *
  * Free with camel_folder_summary_free_array()
  *
- * Returns: a #GPtrArray of uids
+ * Returns: (element-type utf8) (transfer full): a #GPtrArray of uids
  *
  * Since: 3.4
  **/
@@ -1759,7 +1759,7 @@ camel_folder_summary_get_array (CamelFolderSummary *summary)
 
 /**
  * camel_folder_summary_free_array:
- * @array: a #GPtrArray returned from camel_folder_summary_get_array()
+ * @array: (element-type utf8): a #GPtrArray returned from camel_folder_summary_get_array()
  *
  * Free's array and its elements returned from camel_folder_summary_get_array().
  *
@@ -1795,6 +1795,8 @@ cfs_copy_uids_cb (gpointer key,
  * be freed with g_hash_table_destroy().
  *
  * Note: When searching for values always use uids from the string pool.
+ *
+ * Returns: (element-type utf8 gint) (transfer container):
  *
  * Since: 3.6
  **/
@@ -2030,6 +2032,8 @@ gather_changed_uids (gpointer key,
 
 /**
  * camel_folder_summary_get_changed:
+ *
+ * Returns: (element-type utf8) (transfer full):
  *
  * Since: 2.24
  **/
@@ -3386,7 +3390,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 /**
  * camel_folder_summary_remove_uids:
  * @summary: a #CamelFolderSummary object
- * @uids: a GList of uids
+ * @uids: (element-type utf8): a GList of uids
  *
  * Remove a specific info record from the summary, by @uid.
  *
@@ -4468,11 +4472,11 @@ camel_system_flag_get (CamelMessageFlags flags,
 
 /**
  * camel_message_info_new:
- * @summary: a #CamelFolderSummary object or %NULL
+ * @summary: (nullable): a #CamelFolderSummary object or %NULL
  *
  * Create a new #CamelMessageInfo.
  *
- * Returns: a new #CamelMessageInfo
+ * Returns: (transfer full): a new #CamelMessageInfo
  **/
 gpointer
 camel_message_info_new (CamelFolderSummary *summary)
@@ -4504,6 +4508,7 @@ camel_message_info_new (CamelFolderSummary *summary)
  * @info: a #CamelMessageInfo
  *
  * Reference an info.
+ * Returns: (transfer full):
  **/
 gpointer
 camel_message_info_ref (gpointer o)
@@ -4526,7 +4531,7 @@ camel_message_info_ref (gpointer o)
  * Create a new #CamelMessageInfo pre-populated with info from
  * @header.
  *
- * Returns: a new #CamelMessageInfo
+ * Returns: (transfer full): a new #CamelMessageInfo
  **/
 CamelMessageInfo *
 camel_message_info_new_from_header (CamelFolderSummary *summary,
@@ -4583,7 +4588,7 @@ camel_message_info_unref (gpointer o)
  *
  * Duplicate a #CamelMessageInfo.
  *
- * Returns: the duplicated #CamelMessageInfo
+ * Returns: (transfer full): the duplicated #CamelMessageInfo
  **/
 gpointer
 camel_message_info_clone (gconstpointer o)
@@ -4603,7 +4608,7 @@ camel_message_info_clone (gconstpointer o)
  *
  * Generic accessor method for getting pointer data.
  *
- * Returns: the pointer data
+ * Returns: (transfer none): the pointer data
  **/
 gconstpointer
 camel_message_info_ptr (const CamelMessageInfo *info,

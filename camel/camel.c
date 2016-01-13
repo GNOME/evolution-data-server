@@ -275,6 +275,8 @@ static GRecMutex camel_binding_lock;
  * Thread safe variant of g_object_bind_property(). See its documentation
  * for more information on arguments and return value.
  *
+ * Returns: (transfer none):
+ *
  * Since: 3.16
  **/
 GBinding *
@@ -297,9 +299,26 @@ camel_binding_bind_property (gpointer source,
 
 /**
  * camel_binding_bind_property_full:
+ * @source: (type GObject.Object): the source #GObject
+ * @source_property: the property on @source to bind
+ * @target: (type GObject.Object): the target #GObject
+ * @target_property: the property on @target to bind
+ * @flags: flags to pass to #GBinding
+ * @transform_to: (scope notified) (allow-none): the transformation function
+ *   from the @source to the @target, or %NULL to use the default
+ * @transform_from: (scope notified) (allow-none): the transformation function
+ *   from the @target to the @source, or %NULL to use the default
+ * @user_data: custom data to be passed to the transformation functions,
+ *   or %NULL
+ * @notify: function to be called when disposing the binding, to free the
+ *   resources used by the transformation functions
  *
  * Thread safe variant of g_object_bind_property_full(). See its documentation
  * for more information on arguments and return value.
+ *
+ * Return value: (transfer none): the #GBinding instance representing the
+ *   binding between the two #GObject instances. The binding is released
+ *   whenever the #GBinding reference count reaches zero.
  *
  * Since: 3.16
  **/
@@ -327,10 +346,23 @@ camel_binding_bind_property_full (gpointer source,
 }
 
 /**
- * camel_binding_bind_property_with_closures:
+ * camel_binding_bind_property_with_closures: (rename-to camel_binding_bind_property_full)
+ * @source: (type GObject.Object): the source #GObject
+ * @source_property: the property on @source to bind
+ * @target: (type GObject.Object): the target #GObject
+ * @target_property: the property on @target to bind
+ * @flags: flags to pass to #GBinding
+ * @transform_to: a #GClosure wrapping the transformation function
+ *   from the @source to the @target, or %NULL to use the default
+ * @transform_from: a #GClosure wrapping the transformation function
+ *   from the @target to the @source, or %NULL to use the default
  *
  * Thread safe variant of g_object_bind_property_with_closures(). See its
  * documentation for more information on arguments and return value.
+ *
+ * Return value: (transfer none): the #GBinding instance representing the
+ *   binding between the two #GObject instances. The binding is released
+ *   whenever the #GBinding reference count reaches zero.
  *
  * Since: 3.16
  **/

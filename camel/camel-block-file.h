@@ -133,8 +133,8 @@ struct _CamelBlockFile {
 struct _CamelBlockFileClass {
 	GObjectClass parent_class;
 
-	gint (*validate_root)(CamelBlockFile *);
-	gint (*init_root)(CamelBlockFile *);
+	gint (*validate_root)(CamelBlockFile *bs);
+	gint (*init_root)(CamelBlockFile *bs);
 };
 
 GType		camel_block_file_get_type	(void);

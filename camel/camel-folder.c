@@ -1611,7 +1611,7 @@ camel_folder_set_description (CamelFolder *folder,
  * camel_folder_get_parent_store:
  * @folder: a #CamelFolder
  *
- * Returns: the parent #CamelStore of the folder
+ * Returns: (transfer none): the parent #CamelStore of the folder
  **/
 CamelStore *
 camel_folder_get_parent_store (CamelFolder *folder)
@@ -1937,8 +1937,8 @@ camel_folder_has_summary_capability (CamelFolder *folder)
  * support summaries. The returned array should not be modified, and
  * must be freed by passing it to camel_folder_free_uids().
  *
- * Returns: a GPtrArray of UIDs corresponding to the messages available
- * in the folder
+ * Returns: (element-type utf8) (transfer none): a GPtrArray of UIDs
+ * corresponding to the messages available in the folder
  **/
 GPtrArray *
 camel_folder_get_uids (CamelFolder *folder)
@@ -1956,7 +1956,7 @@ camel_folder_get_uids (CamelFolder *folder)
 /**
  * camel_folder_free_uids:
  * @folder: a #CamelFolder
- * @array: the array of uids to free
+ * @array: (element-type utf8): the array of uids to free
  *
  * Frees the array of UIDs returned by camel_folder_get_uids().
  **/
@@ -1978,12 +1978,14 @@ camel_folder_free_uids (CamelFolder *folder,
 /**
  * camel_folder_get_uncached_uids:
  * @folder: a #CamelFolder
- * @uids: the array of uids to filter down to uncached ones.
+ * @uids: (element-type utf8): the array of uids to filter down to uncached ones.
  *
  * Returns the known-uncached uids from a list of uids. It may return uids
  * which are locally cached but should never filter out a uid which is not
  * locally cached. Free the result by called camel_folder_free_uids().
  * Frees the array of UIDs returned by camel_folder_get_uids().
+ *
+ * Returns: (element-type utf8) (transfer none):
  *
  * Since: 2.26
  **/
@@ -2040,7 +2042,7 @@ camel_folder_cmp_uids (CamelFolder *folder,
 /**
  * camel_folder_sort_uids:
  * @folder: a #CamelFolder
- * @uids: array of uids
+ * @uids: (element-type utf8): array of uids
  *
  * Sorts the array of UIDs.
  *
@@ -2069,7 +2071,7 @@ camel_folder_sort_uids (CamelFolder *folder,
  * should not be modified, and must be freed with
  * camel_folder_free_summary().
  *
- * Returns: an array of #CamelMessageInfo
+ * Returns: (element-type CamelMessageInfo) (transfer none): an array of #CamelMessageInfo
  **/
 GPtrArray *
 camel_folder_get_summary (CamelFolder *folder)
@@ -2087,7 +2089,7 @@ camel_folder_get_summary (CamelFolder *folder)
 /**
  * camel_folder_free_summary:
  * @folder: a #CamelFolder
- * @array: the summary array to free
+ * @array: (element-type CamelMessageInfo): the summary array to free
  *
  * Frees the summary array returned by camel_folder_get_summary().
  **/
@@ -2109,14 +2111,15 @@ camel_folder_free_summary (CamelFolder *folder,
 /**
  * camel_folder_search_by_expression:
  * @folder: a #CamelFolder
- * @expr: a search expression
+ * @expression: a search expression
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Searches the folder for messages matching the given search expression.
  *
- * Returns: a #GPtrArray of uids of matching messages. The caller must
- * free the list and each of the elements when it is done.
+ * Returns: (element-type utf8) (transfer full): a #GPtrArray of uids of
+ * matching messages. The caller must free the list and each of the elements
+ * when it is done.
  **/
 GPtrArray *
 camel_folder_search_by_expression (CamelFolder *folder,
@@ -2174,19 +2177,20 @@ camel_folder_count_by_expression (CamelFolder *folder,
 /**
  * camel_folder_search_by_uids:
  * @folder: a #CamelFolder
- * @expr: search expression
- * @uids: array of uid's to match against.
+ * @expression: search expression
+ * @uids: (element-type utf8): array of uid's to match against.
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
  * Search a subset of uid's for an expression match.
  *
- * Returns: a #GPtrArray of uids of matching messages. The caller must
- * free the list and each of the elements when it is done.
+ * Returns: (element-type utf8) (transfer full): a #GPtrArray of uids of
+ * matching messages. The caller must free the list and each of the elements
+ * when it is done.
  **/
 GPtrArray *
 camel_folder_search_by_uids (CamelFolder *folder,
-                             const gchar *expr,
+                             const gchar *expression,
                              GPtrArray *uids,
                              GCancellable *cancellable,
                              GError **error)
@@ -2201,7 +2205,7 @@ camel_folder_search_by_uids (CamelFolder *folder,
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
 
-	matches = class->search_by_uids (folder, expr, uids, cancellable, error);
+	matches = class->search_by_uids (folder, expression, uids, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, search_by_uids, matches != NULL, error);
 
 	return matches;
@@ -2210,7 +2214,7 @@ camel_folder_search_by_uids (CamelFolder *folder,
 /**
  * camel_folder_search_free:
  * @folder: a #CamelFolder
- * @result: search results to free
+ * @result: (element-type utf8): search results to free
  *
  * Free the result of a search as gotten by camel_folder_search() or
  * camel_folder_search_by_uids().
@@ -2590,7 +2594,7 @@ camel_folder_free_nop (CamelFolder *folder,
 /**
  * camel_folder_free_shallow:
  * @folder: a #CamelFolder
- * @array: an array of uids or #CamelMessageInfo
+ * @array: (element-type utf8): an array of uids or #CamelMessageInfo
  *
  * Frees the provided array but not its contents. Used by #CamelFolder
  * subclasses as an implementation for free_uids or free_summary when
@@ -2607,7 +2611,7 @@ camel_folder_free_shallow (CamelFolder *folder,
 /**
  * camel_folder_free_deep:
  * @folder: a #CamelFolder
- * @array: an array of uids
+ * @array: (element-type utf8): an array of uids
  *
  * Frees the provided array and its contents. Used by #CamelFolder
  * subclasses as an implementation for free_uids when the provided
@@ -2995,7 +2999,7 @@ camel_folder_expunge_finish (CamelFolder *folder,
  *
  * Gets the message corresponding to @message_uid from @folder.
  *
- * Returns: a #CamelMimeMessage corresponding to the requested UID
+ * Returns: (transfer none): a #CamelMimeMessage corresponding to the requested UID
  *
  * Since: 3.0
  **/
@@ -3156,7 +3160,7 @@ camel_folder_get_message (CamelFolder *folder,
  *
  * Finishes the operation started with camel_folder_get_message().
  *
- * Returns: a #CamelMimeMessage corresponding to the requested UID
+ * Returns: (transfer none): a #CamelMimeMessage corresponding to the requested UID
  *
  * Since: 3.0
  **/
@@ -3920,11 +3924,12 @@ camel_folder_synchronize_message_finish (CamelFolder *folder,
 /**
  * camel_folder_transfer_messages_to_sync:
  * @source: the source #CamelFolder
- * @message_uids: message UIDs in @source
+ * @message_uids: (element-type utf8): message UIDs in @source
  * @destination: the destination #CamelFolder
  * @delete_originals: whether or not to delete the original messages
- * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
- *                    in @destination will be stored here, if known.
+ * @transferred_uids: (element-type utf8) (out): if non-%NULL, the UIDs of the
+ *                    resulting messages in @destination will be stored here,
+ *                    if known.
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4017,7 +4022,7 @@ folder_transfer_messages_to_thread (GTask *task,
 /**
  * camel_folder_transfer_messages_to:
  * @source: the source #CamelFolder
- * @message_uids: message UIDs in @source
+ * @message_uids: (element-type utf8): message UIDs in @source
  * @destination: the destination #CamelFolder
  * @delete_originals: whether or not to delete the original messages
  * @io_priority: the I/O priority of the request
@@ -4080,8 +4085,9 @@ camel_folder_transfer_messages_to (CamelFolder *source,
  * camel_folder_transfer_messages_to_finish:
  * @source: a #CamelFolder
  * @result: a #GAsyncResult
- * @transferred_uids: if non-%NULL, the UIDs of the resulting messages
- *                    in @destination will be stored here, if known.
+ * @transferred_uids: (element-type utf8) (out): if non-%NULL, the UIDs of the
+ *                    resulting messages in @destination will be stored here,
+ *                    if known.
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with camel_folder_transfer_messages_to().
@@ -4174,7 +4180,7 @@ camel_folder_change_info_add_source (CamelFolderChangeInfo *info,
 /**
  * camel_folder_change_info_add_source_list:
  * @info: a #CamelFolderChangeInfo
- * @list: a list of uids
+ * @list: (element-type utf8) (transfer container): a list of uids
  *
  * Add a list of source uid's for generating a changeset.
  **/
@@ -4236,7 +4242,7 @@ camel_folder_change_info_add_update (CamelFolderChangeInfo *info,
 /**
  * camel_folder_change_info_add_update_list:
  * @info: a #CamelFolderChangeInfo
- * @list: a list of uids
+ * @list: (element-type utf8) (transfer container): a list of uids
  *
  * Add a list of uid's from the updated list.
  **/

@@ -187,7 +187,7 @@ struct _CamelFolderClass {
 						 const gchar *uid);
 	void		(*delete_)		(CamelFolder *folder);
 	void		(*rename)		(CamelFolder *folder,
-						 const gchar *newname);
+						 const gchar *new_name);
 	void		(*freeze)		(CamelFolder *folder);
 	void		(*thaw)			(CamelFolder *folder);
 	gboolean	(*is_frozen)		(CamelFolder *folder);
@@ -257,7 +257,7 @@ struct _CamelFolderClass {
 
 	/* Signals */
 	void		(*changed)		(CamelFolder *folder,
-						 CamelFolderChangeInfo *info);
+						 CamelFolderChangeInfo *changes);
 	void		(*deleted)		(CamelFolder *folder);
 	void		(*renamed)		(CamelFolder *folder,
 						 const gchar *old_name);
@@ -343,11 +343,11 @@ void		camel_folder_sort_uids		(CamelFolder *folder,
 						 GPtrArray *uids);
 GPtrArray *	camel_folder_search_by_expression
 						(CamelFolder *folder,
-						 const gchar *expr,
+						 const gchar *expression,
 						 GCancellable *cancellable,
 						 GError **error);
 GPtrArray *	camel_folder_search_by_uids	(CamelFolder *folder,
-						 const gchar *expr,
+						 const gchar *expression,
 						 GPtrArray *uids,
 						 GCancellable *cancellable,
 						 GError **error);

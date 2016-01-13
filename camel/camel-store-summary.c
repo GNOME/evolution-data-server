@@ -347,7 +347,7 @@ camel_store_summary_count (CamelStoreSummary *summary)
  *
  * It must be freed using camel_store_summary_array_free().
  *
- * Returns: the summary array
+ * Returns: (element-type CamelStoreInfo) (transfer full): the summary array
  **/
 GPtrArray *
 camel_store_summary_array (CamelStoreSummary *summary)
@@ -375,7 +375,7 @@ camel_store_summary_array (CamelStoreSummary *summary)
 /**
  * camel_store_summary_array_free:
  * @summary: a #CamelStoreSummary object
- * @array: the summary array as gotten from camel_store_summary_array()
+ * @array: (element-type CamelStoreInfo): the summary array as gotten from camel_store_summary_array()
  *
  * Free the folder summary array.
  **/

@@ -168,7 +168,7 @@ e_extensible_load_extensions (EExtensible *extensible)
  * The list itself should be freed with g_list_free().  The extension
  * objects are owned by @extensible and should not be unreferenced.
  *
- * Returns: a list of extension objects derived from @extension_type
+ * Returns: (element-type EExtension) (transfer container): a list of extension objects derived from @extension_type
  *
  * Since: 3.4
  **/

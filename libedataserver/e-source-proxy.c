@@ -1613,7 +1613,7 @@ e_source_proxy_set_socks_port (ESourceProxy *extension,
  *
  * Free the returned proxy URIs with g_strfreev() when finished with them.
  *
- * Returns: a %NULL-terminated array of proxy URIs, or %NULL
+ * Returns: (transfer full): a %NULL-terminated array of proxy URIs, or %NULL
  *
  * Since: 3.12
  **/
@@ -1830,7 +1830,7 @@ e_source_proxy_lookup (ESource *source,
  *
  * Free the returned proxy URIs with g_strfreev() when finished with them.
  *
- * Returns: a %NULL-terminated array of proxy URIs, or %NULL
+ * Returns: (transfer full): a %NULL-terminated array of proxy URIs, or %NULL
  *
  * Since: 3.12
  **/

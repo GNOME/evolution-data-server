@@ -1090,8 +1090,8 @@ message_location (struct _CamelSExp *f,
 /**
  * camel_filter_search_match:
  * @session:
- * @get_message: function to retrieve the message if necessary
- * @data: data for above
+ * @get_message: (scope async): function to retrieve the message if necessary
+ * @user_data: data for above
  * @info:
  * @source:
  * @folder: in which folder the message is stored
@@ -1105,7 +1105,7 @@ message_location (struct _CamelSExp *f,
 gint
 camel_filter_search_match (CamelSession *session,
                            CamelFilterSearchGetMessageFunc get_message,
-                           gpointer data,
+                           gpointer user_data,
                            CamelMessageInfo *info,
                            const gchar *source,
 			   CamelFolder *folder,
@@ -1122,7 +1122,7 @@ camel_filter_search_match (CamelSession *session,
 
 	fms.session = session;
 	fms.get_message = get_message;
-	fms.get_message_data = data;
+	fms.get_message_data = user_data;
 	fms.message = NULL;
 	fms.info = info;
 	fms.source = source;

@@ -112,20 +112,20 @@ camel_index_rename (CamelIndex *idx,
 /**
  * camel_index_set_normalize:
  * @index: a #CamelIndex
- * @func: normalization function
- * @data: user data for @func
+ * @func: (scope call): normalization function
+ * @user_data: user data for @func
  *
  * Since: 2.32
  **/
 void
 camel_index_set_normalize (CamelIndex *index,
                            CamelIndexNorm func,
-                           gpointer data)
+                           gpointer user_data)
 {
 	g_return_if_fail (CAMEL_IS_INDEX (index));
 
 	index->normalize = func;
-	index->normalize_data = data;
+	index->normalize_data = user_data;
 }
 
 gint
@@ -203,19 +203,25 @@ camel_index_has_name (CamelIndex *idx,
 		return FALSE;
 }
 
+/**
+ * camel_index_add_name:
+ * @index: a #CamelIndex
+ *
+ * Returns: (transfer none) (nullable):
+ **/
 CamelIndexName *
-camel_index_add_name (CamelIndex *idx,
+camel_index_add_name (CamelIndex *index,
                       const gchar *name)
 {
 	CamelIndexClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
-	class = CAMEL_INDEX_GET_CLASS (idx);
+	class = CAMEL_INDEX_GET_CLASS (index);
 	g_return_val_if_fail (class->add_name != NULL, NULL);
 
-	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return class->add_name (idx, name);
+	if ((index->state & CAMEL_INDEX_DELETED) == 0)
+		return class->add_name (index, name);
 	else
 		return NULL;
 }
@@ -239,19 +245,25 @@ camel_index_write_name (CamelIndex *idx,
 	}
 }
 
+/**
+ * camel_index_find_name:
+ * @index: a #CamelIndex
+ *
+ * Returns: (transfer none) (nullable):
+ **/
 CamelIndexCursor *
-camel_index_find_name (CamelIndex *idx,
+camel_index_find_name (CamelIndex *index,
                        const gchar *name)
 {
 	CamelIndexClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
-	class = CAMEL_INDEX_GET_CLASS (idx);
+	class = CAMEL_INDEX_GET_CLASS (index);
 	g_return_val_if_fail (class->find_name != NULL, NULL);
 
-	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return class->find_name (idx, name);
+	if ((index->state & CAMEL_INDEX_DELETED) == 0)
+		return class->find_name (index, name);
 	else
 		return NULL;
 }
@@ -271,26 +283,32 @@ camel_index_delete_name (CamelIndex *idx,
 		class->delete_name (idx, name);
 }
 
+/**
+ * camel_index_find:
+ * @index: a #CamelIndex
+ *
+ * Returns: (transfer none) (nullable):
+ **/
 CamelIndexCursor *
-camel_index_find (CamelIndex *idx,
+camel_index_find (CamelIndex *index,
                   const gchar *word)
 {
 	CamelIndexClass *class;
 	CamelIndexCursor *ret;
 	gchar *b = (gchar *) word;
 
-	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
-	class = CAMEL_INDEX_GET_CLASS (idx);
+	class = CAMEL_INDEX_GET_CLASS (index);
 	g_return_val_if_fail (class->find != NULL, NULL);
 
-	if ((idx->state & CAMEL_INDEX_DELETED) != 0)
+	if ((index->state & CAMEL_INDEX_DELETED) != 0)
 		return NULL;
 
-	if (idx->normalize)
-		b = idx->normalize (idx, word, idx->normalize_data);
+	if (index->normalize)
+		b = index->normalize (index, word, index->normalize_data);
 
-	ret = class->find (idx, b);
+	ret = class->find (index, b);
 
 	if (b != word)
 		g_free (b);
@@ -298,18 +316,24 @@ camel_index_find (CamelIndex *idx,
 	return ret;
 }
 
+/**
+ * camel_index_words:
+ * @index: a #CamelIndex
+ *
+ * Returns: (transfer none) (nullable):
+ **/
 CamelIndexCursor *
-camel_index_words (CamelIndex *idx)
+camel_index_words (CamelIndex *index)
 {
 	CamelIndexClass *class;
 
-	g_return_val_if_fail (CAMEL_IS_INDEX (idx), NULL);
+	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
-	class = CAMEL_INDEX_GET_CLASS (idx);
+	class = CAMEL_INDEX_GET_CLASS (index);
 	g_return_val_if_fail (class->words != NULL, NULL);
 
-	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		return class->words (idx);
+	if ((index->state & CAMEL_INDEX_DELETED) == 0)
+		return class->words (index);
 	else
 		return NULL;
 }

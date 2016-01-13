@@ -1452,7 +1452,7 @@ remove_folders (CamelFolder *folder,
 /**
  * camel_vee_folder_set_folders:
  * @vf:
- * @folders:
+ * @folders: (element-type CamelFolder) (transfer none):
  *
  * Set the whole list of folder sources on a vee folder.
  **/
@@ -1616,7 +1616,7 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
  *
  * Find the real folder (and uid)
  *
- * Returns:
+ * Returns: (transfer none):
  **/
 CamelFolder *
 camel_vee_folder_get_location (CamelVeeFolder *vf,
@@ -1652,6 +1652,8 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
  * camel_vee_folder_get_vee_uid_folder:
  *
  * FIXME Document me!
+ *
+ * Returns: (transfer none):
  *
  * Since: 3.6
  **/

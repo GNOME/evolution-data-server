@@ -1003,7 +1003,7 @@ folder_info_cmp (gconstpointer ap,
 
 /**
  * camel_folder_info_build:
- * @folders: an array of #CamelFolderInfo
+ * @folders: (element-type CamelFolderInfo): an array of #CamelFolderInfo
  * @namespace_: an ignorable prefix on the folder names
  * @separator: the hieararchy separator character
  * @short_names: %TRUE if the (short) name of a folder is the part after
@@ -1020,6 +1020,7 @@ folder_info_cmp (gconstpointer ap,
  * NOTE: This is deprected, do not use this.
  * FIXME: remove this/move it to imap, which is the only user of it now.
  *
+ * Deprecated:
  * Returns: the top level of the tree of linked folder info.
  **/
 CamelFolderInfo *
@@ -1195,7 +1196,7 @@ camel_store_can_refresh_folder (CamelStore *store,
  *
  * Gets a specific folder object from @store by name.
  *
- * Returns: the requested #CamelFolder object, or %NULL on error
+ * Returns: (transfer full): the requested #CamelFolder object, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -1471,7 +1472,7 @@ camel_store_get_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_folder().
  *
- * Returns: the requested #CamelFolder object, or %NULL on error
+ * Returns: (transfer full): the requested #CamelFolder object, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -1787,7 +1788,7 @@ camel_store_get_folder_info_finish (CamelStore *store,
  *
  * Gets the folder in @store into which new mail is delivered.
  *
- * Returns: the inbox folder for @store, or %NULL on error or if no such
+ * Returns: (transfer full): the inbox folder for @store, or %NULL on error or if no such
  * folder exists
  *
  * Since: 3.0
@@ -1880,7 +1881,7 @@ camel_store_get_inbox_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_inbox_folder().
  *
- * Returns: the inbox folder for @store, or %NULL on error or if no such
+ * Returns: (transfer full): the inbox folder for @store, or %NULL on error or if no such
  * folder exists
  *
  * Since: 3.0
@@ -1908,7 +1909,7 @@ camel_store_get_inbox_folder_finish (CamelStore *store,
  *
  * Gets the folder in @store into which junk is delivered.
  *
- * Returns: the junk folder for @store, or %NULL on error or if no such
+ * Returns: (transfer full): the junk folder for @store, or %NULL on error or if no such
  * folder exists
  *
  * Since: 3.0
@@ -2006,7 +2007,7 @@ camel_store_get_junk_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_junk_folder().
  *
- * Returns: the junk folder for @store, or %NULL on error or if no such
+ * Returns: (transfer full): the junk folder for @store, or %NULL on error or if no such
  * folder exists
  *
  * Since: 3.0
@@ -2034,7 +2035,7 @@ camel_store_get_junk_folder_finish (CamelStore *store,
  *
  * Gets the folder in @store into which trash is delivered.
  *
- * Returns: the trash folder for @store, or %NULL on error or if no such
+ * Returns:(transfer full):  the trash folder for @store, or %NULL on error or if no such
  * folder exists
  *
  * Since: 3.0
@@ -2133,7 +2134,7 @@ camel_store_get_trash_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_trash_folder().
  *
- * Returns: the trash folder for @store, or %NULL on error or if no such
+ * Returns: (transfer full): the trash folder for @store, or %NULL on error or if no such
  * folder exists
  *
  * Since: 3.0

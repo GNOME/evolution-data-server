@@ -636,7 +636,7 @@ thread_summary (CamelFolderThread *thread,
 /**
  * camel_folder_thread_messages_new:
  * @folder:
- * @uids: The subset of uid's to thread.  If NULL. then thread all
+ * @uids: (element-type utf8): The subset of uid's to thread.  If NULL. then thread all
  * uid's in @folder.
  * @thread_subject: thread based on subject also
  *
@@ -724,6 +724,10 @@ add_present_rec (CamelFolderThread *thread,
 	}
 }
 
+/**
+ * camel_folder_thread_messages_apply:
+ * @uids:(element-type utf8) (transfer none):
+ **/
 void
 camel_folder_thread_messages_apply (CamelFolderThread *thread,
                                     GPtrArray *uids)

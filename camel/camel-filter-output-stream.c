@@ -266,7 +266,7 @@ camel_filter_output_stream_new (GOutputStream *base_stream,
  *
  * Gets the #CamelMimeFilter that is used by @filter_stream.
  *
- * Returns: a #CamelMimeFilter
+ * Returns: (transfer none): a #CamelMimeFilter
  *
  * Since: 3.12
  **/

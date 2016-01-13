@@ -804,7 +804,7 @@ camel_session_get_user_cache_dir (CamelSession *session)
  * The returned #CamelService is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelService instance, or %NULL
+ * Returns: (transfer full): a #CamelService instance, or %NULL
  *
  * Since: 3.2
  **/
@@ -866,7 +866,7 @@ camel_session_remove_service (CamelSession *session,
  * The returned #CamelService is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelService instance, or %NULL
+ * Returns: (transfer full): a #CamelService instance, or %NULL
  *
  * Since: 3.6
  **/
@@ -907,7 +907,7 @@ camel_session_ref_service (CamelSession *session,
  *
  * Note this function is significantly slower than camel_session_ref_service().
  *
- * Returns: a #CamelService instance, or %NULL
+ * Returns: (transfer full): a #CamelService instance, or %NULL
  *
  * Since: 3.6
  **/
@@ -986,7 +986,7 @@ camel_session_ref_service_by_url (CamelSession *session,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: an unsorted list of #CamelService objects
+ * Returns: (element-type CamelService) (transfer full): an unsorted list of #CamelService objects
  *
  * Since: 3.2
  **/
@@ -1270,7 +1270,7 @@ camel_session_set_online (CamelSession *session,
  * @type: the type of filter (eg, "incoming")
  * @error: return location for a #GError, or %NULL
  *
- * Returns: a filter driver, loaded with applicable rules
+ * Returns:(transfer none): a filter driver, loaded with applicable rules
  **/
 CamelFilterDriver *
 camel_session_get_filter_driver (CamelSession *session,
@@ -1303,7 +1303,7 @@ camel_session_get_filter_driver (CamelSession *session,
  * must implement the interface and install a #CamelJunkFilter instance for
  * junk filtering to take place.
  *
- * Returns: a #CamelJunkFilter, or %NULL
+ * Returns: (transfer none): a #CamelJunkFilter, or %NULL
  *
  * Since: 3.2
  **/

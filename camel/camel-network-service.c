@@ -713,7 +713,7 @@ camel_network_service_get_default_port (CamelNetworkService *service,
  * The returned #GSocketConnectable is referenced for thread-safety and
  * must be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GSocketConnectable
+ * Returns: (transfer full): a #GSocketConnectable
  *
  * Since: 3.8
  **/
@@ -824,7 +824,7 @@ camel_network_service_get_host_reachable (CamelNetworkService *service)
  * connection attempt is cancelled, the function sets @error and returns
  * %NULL.
  *
- * Returns: a #GIOStream, or %NULL
+ * Returns: (transfer full): a #GIOStream, or %NULL
  *
  * Since: 3.2
  **/
@@ -856,7 +856,7 @@ camel_network_service_connect_sync (CamelNetworkService *service,
  * This should typically be called after issuing a STARTTLS command
  * to a server to initiate a Transport Layer Security handshake.
  *
- * Returns: the new #GTlsClientConnection, or %NULL on error
+ * Returns: (transfer full): the new #GTlsClientConnection, or %NULL on error
  *
  * Since: 3.12
  **/

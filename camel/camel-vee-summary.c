@@ -420,6 +420,8 @@ get_uids_for_subfolder (gpointer key,
  *
  * FIXME Document me!
  *
+ * Returns: (element-type utf8 utf8) (transfer container):
+ *
  * Since: 3.6
  **/
 GHashTable *

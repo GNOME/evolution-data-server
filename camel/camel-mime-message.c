@@ -610,7 +610,7 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg,
  *
  * Get the Reply-To of a message.
  *
- * Returns: the Reply-Toa ddress of the message
+ * Returns: (transfer none): the Reply-To address of the message
  **/
 CamelInternetAddress *
 camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
@@ -712,7 +712,7 @@ camel_mime_message_set_from (CamelMimeMessage *msg,
  *
  * Get the from address of a message.
  *
- * Returns: the from address of the message
+ * Returns: (transfer none): the from address of the message
  **/
 CamelInternetAddress *
 camel_mime_message_get_from (CamelMimeMessage *mime_message)
@@ -772,7 +772,7 @@ camel_mime_message_set_recipients (CamelMimeMessage *mime_message,
  *
  * Get the message recipients of a specified type.
  *
- * Returns: the requested recipients
+ * Returns: (transfer none): the requested recipients
  **/
 CamelInternetAddress *
 camel_mime_message_get_recipients (CamelMimeMessage *mime_message,
@@ -1178,7 +1178,7 @@ check_content_id (CamelMimeMessage *message,
  *
  * Get a MIME part by id from a message.
  *
- * Returns: the MIME part with the requested id or %NULL if not found
+ * Returns: (transfer none): the MIME part with the requested id or %NULL if not found
  **/
 CamelMimePart *
 camel_mime_message_get_part_by_content_id (CamelMimeMessage *message,

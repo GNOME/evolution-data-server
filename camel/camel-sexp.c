@@ -1532,6 +1532,7 @@ camel_sexp_new (void)
 
 /**
  * camel_sexp_add_function:
+ * @func: (scope call):
  *
  * Since: 3.4
  **/
@@ -1540,7 +1541,7 @@ camel_sexp_add_function (CamelSExp *sexp,
                          guint scope,
                          const gchar *name,
                          CamelSExpFunc func,
-                         gpointer data)
+                         gpointer user_data)
 {
 	CamelSExpSymbol *sym;
 
@@ -1553,13 +1554,14 @@ camel_sexp_add_function (CamelSExp *sexp,
 	sym->name = g_strdup (name);
 	sym->f.func = func;
 	sym->type = CAMEL_SEXP_TERM_FUNC;
-	sym->data = data;
+	sym->data = user_data;
 
 	g_scanner_scope_add_symbol (sexp->scanner, scope, sym->name, sym);
 }
 
 /**
  * camel_sexp_add_ifunction:
+ * @func: (scope call):
  *
  * Since: 3.4
  **/
@@ -1568,7 +1570,7 @@ camel_sexp_add_ifunction (CamelSExp *sexp,
                           guint scope,
                           const gchar *name,
                           CamelSExpIFunc ifunc,
-                          gpointer data)
+                          gpointer user_data)
 {
 	CamelSExpSymbol *sym;
 
@@ -1581,7 +1583,7 @@ camel_sexp_add_ifunction (CamelSExp *sexp,
 	sym->name = g_strdup (name);
 	sym->f.ifunc = ifunc;
 	sym->type = CAMEL_SEXP_TERM_IFUNC;
-	sym->data = data;
+	sym->data = user_data;
 
 	g_scanner_scope_add_symbol (sexp->scanner, scope, sym->name, sym);
 }

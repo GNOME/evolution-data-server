@@ -82,7 +82,7 @@ void camel_smime_context_set_encrypt_key (CamelSMIMEContext *context, gboolean u
 /* set signing mode, clearsigned multipart/signed or enveloped */
 void camel_smime_context_set_sign_mode (CamelSMIMEContext *context, camel_smime_sign_t type);
 
-guint32 camel_smime_context_describe_part (CamelSMIMEContext *, struct _CamelMimePart *);
+guint32 camel_smime_context_describe_part (CamelSMIMEContext *context, struct _CamelMimePart *part);
 
 G_END_DECLS
 

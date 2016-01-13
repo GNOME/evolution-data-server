@@ -1503,7 +1503,7 @@ e_webdav_discover_source_free (gpointer ptr)
 
 /**
  * e_webdav_discover_free_discovered_sources:
- * @discovered_sources: A #GSList of discovered sources
+ * @discovered_sources: (element-type EWebDAVDiscoveredSource): A #GSList of discovered sources
  *
  * Frees a @GSList of discovered sources returned from
  * e_webdav_discover_sources_finish() or e_webdav_discover_sources_sync().
@@ -1594,14 +1594,14 @@ e_webdav_discover_sources (ESource *source,
  * e_webdav_discover_sources_finish:
  * @source: an #ESource on which the operation was started
  * @result: a #GAsyncResult
- * @out_certificate_pem: (out): (allow-none): optional return location
+ * @out_certificate_pem: (out) (allow-none): optional return location
  *   for a server SSL certificate in PEM format, when the operation failed
  *   with an SSL error
- * @out_certificate_errors: (out): (allow-none): optional #GTlsCertificateFlags,
+ * @out_certificate_errors: (out) (allow-none): optional #GTlsCertificateFlags,
  *   with certificate error flags when the operation failed with SSL error
- * @out_discovered_sources: (out): (element-type EWebDAVDiscoveredSource): a #GSList
+ * @out_discovered_sources: (out) (element-type EWebDAVDiscoveredSource): a #GSList
  *   of all discovered sources
- * @out_calendar_user_addresses: (out): (allow-none): (element-type gchar *): a #GSList of
+ * @out_calendar_user_addresses: (out) (allow-none) (element-type utf8): a #GSList of
  *   all discovered mail addresses for calendar sources
  * @error: (allow-none): return location for a #GError, or %NULL
  *
@@ -1680,14 +1680,14 @@ e_webdav_discover_cancelled_cb (GCancellable *cancellable,
  * @url_use_path: (allow-none): optional URL override, or %NULL
  * @only_supports: bit-or of EWebDAVDiscoverSupports, to limit what type of sources to search
  * @credentials: (allow-none): credentials to use for authentication to the server
- * @out_certificate_pem: (out): (allow-none): optional return location
+ * @out_certificate_pem: (out) (allow-none): optional return location
  *   for a server SSL certificate in PEM format, when the operation failed
  *   with an SSL error
- * @out_certificate_errors: (out): (allow-none): optional #GTlsCertificateFlags,
+ * @out_certificate_errors: (out) (allow-none): optional #GTlsCertificateFlags,
  *   with certificate error flags when the operation failed with SSL error
- * @out_discovered_sources: (out): (element-type EWebDAVDiscoveredSource): a #GSList
+ * @out_discovered_sources: (out) (element-type EWebDAVDiscoveredSource): a #GSList
  *   of all discovered sources
- * @out_calendar_user_addresses: (out): (allow-none): (element-type gchar *): a #GSList of
+ * @out_calendar_user_addresses: (out) (allow-none) (element-type utf8): a #GSList of
  *   all discovered mail addresses for calendar sources
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
  * @error: (allow-none): return location for a #GError, or %NULL

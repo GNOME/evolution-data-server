@@ -2,6 +2,7 @@ NULL =
 
 vapidir = $(datarootdir)/vala/vapi
 vapi_DATA = \
+	libcamel-1.2.vapi \
 	libedataserver-1.2.vapi \
 	libebook-1.2.vapi \
 	libebook-contacts-1.2.vapi \
@@ -13,6 +14,7 @@ dist_vapi_DATA = \
 	$(NULL)
 
 EXTRA_DIST = \
+	Camel-1.2.metadata \
 	EBook-1.2.metadata \
 	EBookContacts-1.2.metadata \
 	libebook-contacts-1.2-custom.vala \
@@ -24,6 +26,18 @@ BUILT_SOURCES = \
 	$(NULL)
 
 pkgconfigdir = ${libdir}/pkgconfig
+
+libcamel-1.2.vapi: $(top_builddir)/camel/Camel-1.2.gir
+	$(VAPIGEN_V)$(VAPIGEN) \
+		--vapidir=. \
+		--vapidir=$(srcdir) \
+		--girdir=$(top_builddir)/camel \
+		--pkg gio-2.0 \
+		--pkg libxml-2.0 \
+		--library libcamel-1.2 \
+		--metadatadir=$(srcdir) \
+		$< \
+		$(NULL)
 
 libedataserver-1.2.vapi: $(top_builddir)/libedataserver/EDataServer-1.2.gir  libedataserver-1.2.deps
 	$(VAPIGEN_V)$(VAPIGEN) \

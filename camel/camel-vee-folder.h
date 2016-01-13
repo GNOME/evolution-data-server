@@ -66,21 +66,21 @@ struct _CamelVeeFolderClass {
 
 	/* TODO: Some of this may need some additional work/thinking through, it works for now*/
 
-	void		(*add_folder)		(CamelVeeFolder *vee_folder,
-						 CamelFolder *folder,
+	void		(*add_folder)		(CamelVeeFolder *vfolder,
+						 CamelFolder *subfolder,
 						 GCancellable *cancellable);
-	void		(*remove_folder)	(CamelVeeFolder *vee_folder,
-						 CamelFolder *folder,
+	void		(*remove_folder)	(CamelVeeFolder *vfolder,
+						 CamelFolder *subfolder,
 						 GCancellable *cancellable);
-	void		(*rebuild_folder)	(CamelVeeFolder *vee_folder,
-						 CamelFolder *folder,
+	void		(*rebuild_folder)	(CamelVeeFolder *vfolder,
+						 CamelFolder *subfolder,
 						 GCancellable *cancellable);
 
-	void		(*set_expression)	(CamelVeeFolder *vee_folder,
+	void		(*set_expression)	(CamelVeeFolder *vfolder,
 						 const gchar *expression);
 
 	/* Called for a folder-changed event on a source folder */
-	void		(*folder_changed)	(CamelVeeFolder *vee_folder,
+	void		(*folder_changed)	(CamelVeeFolder *vfolder,
 						 CamelFolder *subfolder,
 						 CamelFolderChangeInfo *changes);
 };

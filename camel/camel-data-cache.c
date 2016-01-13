@@ -370,7 +370,7 @@ data_cache_path (CamelDataCache *cdc,
  * The returned #GIOStream is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GIOStream for the new cache item, or %NULL
+ * Returns: (transfer full): a #GIOStream for the new cache item, or %NULL
  **/
 GIOStream *
 camel_data_cache_add (CamelDataCache *cdc,
@@ -424,7 +424,7 @@ camel_data_cache_add (CamelDataCache *cdc,
  * The returned #GIOStream is referenced for thread-safety and must be
  * unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #GIOStream for the requested cache item, or %NULL
+ * Returns: (transfer full): a #GIOStream for the requested cache item, or %NULL
  **/
 GIOStream *
 camel_data_cache_get (CamelDataCache *cdc,

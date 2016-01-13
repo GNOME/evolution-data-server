@@ -251,7 +251,7 @@ e_module_new (const gchar *filename)
  * Returns the filename of the shared library for @module.  The
  * string is owned by @module and should not be modified or freed.
  *
- * Returns: the filename for @module
+ * Returns: (transfer none): the filename for @module
  *
  * Since: 3.4
  **/
@@ -272,7 +272,7 @@ e_module_get_filename (EModule *module)
  * g_type_module_unuse() on all the modules.  Free the returned list
  * with g_list_free().
  *
- * Returns: a list of #EModules loaded from @dirname
+ * Returns: (element-type EModule) (transfer container): a list of #EModules loaded from @dirname
  *
  * Since: 3.4
  **/
@@ -326,7 +326,7 @@ e_module_load_all_in_directory (const gchar *dirname)
  * you want to unload it (enabling on-demand loading) you must call
  * g_type_module_unuse() on the module.
  *
- * Returns: an #EModule loaded from @filename
+ * Returns: (transfer full): an #EModule loaded from @filename
  *
  * Since: 3.16
  **/

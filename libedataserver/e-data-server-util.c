@@ -1151,7 +1151,7 @@ e_queue_transfer (GQueue *src_queue,
  *
  * Free the returned #GWeakRef with e_weak_ref_free().
  *
- * Returns: a new #GWeakRef
+ * Returns: (transfer full): a new #GWeakRef
  *
  * Since: 3.10
  **/
@@ -1331,7 +1331,7 @@ e_file_recursive_delete (GFile *file,
 /**
  * e_file_recursive_delete_finish:
  * @file: a #GFile to delete
- * @result: a #GAsyncResult
+ * @result: (transfer full): a #GAsyncResult
  * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_file_recursive_delete().
@@ -1366,6 +1366,8 @@ e_file_recursive_delete_finish (GFile *file,
  * Thread safe variant of g_object_bind_property(). See its documentation
  * for more information on arguments and return value.
  *
+ * Returns: (transfer none):
+ *
  * Since: 3.16
  **/
 GBinding *
@@ -1380,9 +1382,26 @@ e_binding_bind_property (gpointer source,
 
 /**
  * e_binding_bind_property_full:
+ * @source: (type GObject.Object): the source #GObject
+ * @source_property: the property on @source to bind
+ * @target: (type GObject.Object): the target #GObject
+ * @target_property: the property on @target to bind
+ * @flags: flags to pass to #GBinding
+ * @transform_to: (scope notified) (allow-none): the transformation function
+ *   from the @source to the @target, or %NULL to use the default
+ * @transform_from: (scope notified) (allow-none): the transformation function
+ *   from the @target to the @source, or %NULL to use the default
+ * @user_data: custom data to be passed to the transformation functions,
+ *   or %NULL
+ * @notify: function to be called when disposing the binding, to free the
+ *   resources used by the transformation functions
  *
  * Thread safe variant of g_object_bind_property_full(). See its documentation
  * for more information on arguments and return value.
+ *
+ * Return value: (transfer none): the #GBinding instance representing the
+ *   binding between the two #GObject instances. The binding is released
+ *   whenever the #GBinding reference count reaches zero.
  *
  * Since: 3.16
  **/
@@ -1402,10 +1421,23 @@ e_binding_bind_property_full (gpointer source,
 }
 
 /**
- * e_binding_bind_property_with_closures:
+ * e_binding_bind_property_with_closures: (rename-to e_binding_bind_property_full)
+ * @source: (type GObject.Object): the source #GObject
+ * @source_property: the property on @source to bind
+ * @target: (type GObject.Object): the target #GObject
+ * @target_property: the property on @target to bind
+ * @flags: flags to pass to #GBinding
+ * @transform_to: a #GClosure wrapping the transformation function
+ *   from the @source to the @target, or %NULL to use the default
+ * @transform_from: a #GClosure wrapping the transformation function
+ *   from the @target to the @source, or %NULL to use the default
  *
  * Thread safe variant of g_object_bind_property_with_closures(). See its
  * documentation for more information on arguments and return value.
+ *
+ * Return value: (transfer none): the #GBinding instance representing the
+ *   binding between the two #GObject instances. The binding is released
+ *   whenever the #GBinding reference count reaches zero.
  *
  * Since: 3.16
  **/
@@ -2721,7 +2753,7 @@ e_source_registry_debug_print (const gchar *format,
 /**
  * e_type_traverse:
  * @parent_type: the root #GType to traverse from
- * @func: the function to call for each visited #GType
+ * @func: (scope call): the function to call for each visited #GType
  * @user_data: user data to pass to the function
  *
  * Calls @func for all instantiable subtypes of @parent_type.
@@ -2837,8 +2869,28 @@ e_util_get_source_full_name (ESourceRegistry *registry,
 	return g_string_free (fullname, FALSE);
 }
 
+
+/**
+ * e_util_get_source_oauth2_access_token_sync:
+ * @source: an #ESource
+ * @credentials: an ENamedParameters
+ * @out_access_token: (allow-none) (out): return location for the access token,
+ *                    or %NULL
+ * @out_expires_in_seconds: (allow-none) (out): return location for the token expiry,
+ *                  or %NULL
+ * @cancellable: (allow-none): optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains the OAuth 2.0 access token for @source along with its expiry
+ * in seconds from the current time (or 0 if unknown).
+ *
+ * Free the returned access token with g_free() when finished with it.
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ **/
 gboolean
-e_util_get_source_oauth2_access_token_sync (struct _ESource *source,
+e_util_get_source_oauth2_access_token_sync (ESource *source,
 					    const ENamedParameters *credentials,
 					    gchar **out_access_token,
 					    gint *out_expires_in_seconds,
