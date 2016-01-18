@@ -1,3 +1,12 @@
+Evolution-Data-Server 3.18.4 2016-01-18
+---------------------------------------
+
+Miscellaneous:
+	[IMAPx] Enhance IDLE run management on folders (Milan Crha)
+
+Translations:
+	Gianvito Cavasoli (it)
+
 Evolution-Data-Server 3.18.3 2015-12-14
 ---------------------------------------
 
