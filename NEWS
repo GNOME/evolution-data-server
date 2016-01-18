@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.19.4 2016-01-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 759214 - Make CamelFilterDriver introspection friendly (Corentin Noël)
+	Bug 759458 - Enable GIR generation for the Camel library (Corentin Noël)
+	Bug 759714 - Fix annotations of EDataServer and Camel (Corentin Noël)
+
+Miscellaneous:
+	[IMAPx] Enhance IDLE run management on folders (Milan Crha)
+
+Translations:
+	Gianvito Cavasoli (it)
+	Mario Blättermann (de)
+	Aurimas Černius (lt)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.19.3 2015-12-14
 ---------------------------------------
 
