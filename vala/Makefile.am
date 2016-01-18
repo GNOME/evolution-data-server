@@ -62,6 +62,8 @@ libebook-contacts-1.2.vapi: $(top_builddir)/addressbook/libebook-contacts/EBookC
 		--pkg libedataserver-1.2 \
 		--pkg gio-2.0 \
 		--pkg libxml-2.0 \
+		--pkg libsoup-2.4 \
+		--pkg posix \
 		--library libebook-contacts-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
@@ -78,6 +80,8 @@ libebook-1.2.vapi: $(top_builddir)/addressbook/libebook/EBook-1.2.gir libedatase
 		--pkg libebook-contacts-1.2 \
 		--pkg gio-2.0 \
 		--pkg libxml-2.0 \
+		--pkg libsoup-2.4 \
+		--pkg posix \
 		--library libebook-1.2 \
 		--metadatadir=$(srcdir) \
 		$< \
