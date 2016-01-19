@@ -4,5 +4,10 @@
       <default>false</default>
       <_summary>Whether the migration of old setting was already done</_summary>
     </key>
+    <key name="camel-gpg-binary" type="s">
+      <default>''</default>
+      <_summary>An absolute path where the gpg (or gpg2) binary is</_summary>
+      <_description>An example is '/usr/bin/gpg'; if it is not filled, or doesn't exist, then it is searched for it. Change requires restart of the application.</_description>
+    </key>
   </schema>
 </schemalist>

@@ -39,6 +39,7 @@
 #include <errno.h>
 #include <ctype.h>
 
+#include <glib.h>
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
@@ -471,15 +472,41 @@ static const gchar *
 gpg_ctx_get_executable_name (void)
 {
 	static gint index = -1;
+	static gchar preset_binary[512 + 1];
 	const gchar *names[] = {
+		"",
 		"gpg",
 		"gpg2", /* Prefer gpg for now, because gpg2 doesn't save passwords (neither for the session) */
 		NULL
 	};
 
+	names[0] = preset_binary;
+
 	if (index == -1) {
+		GSettings *settings;
+		gchar *path;
+
+		settings = g_settings_new ("org.gnome.evolution-data-server");
+		path = g_settings_get_string (settings, "camel-gpg-binary");
+		g_clear_object (&settings);
+
+		preset_binary[0] = 0;
+
+		if (path && *path && g_file_test (path, G_FILE_TEST_IS_REGULAR)) {
+			if (strlen (path) > 512) {
+				g_warning ("%s: Path is longer than expected (max 512), ignoring it; value:'%s'", G_STRFUNC, path);
+			} else {
+				strcpy (preset_binary, path);
+			}
+		}
+
+		g_free (path);
+
 		for (index = 0; names[index]; index++) {
-			gchar *path = g_find_program_in_path (names[index]);
+			if (!*(names[index]))
+				continue;
+
+			path = g_find_program_in_path (names[index]);
 
 			if (path) {
 				g_free (path);
@@ -488,7 +515,7 @@ gpg_ctx_get_executable_name (void)
 		}
 
 		if (!names[index])
-			index = 0;
+			index = 1;
 	}
 
 	return names[index];
