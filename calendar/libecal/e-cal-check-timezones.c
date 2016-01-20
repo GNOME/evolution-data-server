@@ -277,10 +277,10 @@ e_cal_check_timezones (icalcomponent *comp,
 	gchar *tzid = NULL;
 	GList *l;
 
-	/** a hash from old to new tzid; strings dynamically allocated */
+	/* a hash from old to new tzid; strings dynamically allocated */
 	GHashTable *mapping = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	/** a hash of all system time zone IDs which have to be added; strings are shared with mapping hash */
+	/* a hash of all system time zone IDs which have to be added; strings are shared with mapping hash */
 	GHashTable *systemtzids = g_hash_table_new (g_str_hash, g_str_equal);
 
 	*error = NULL;

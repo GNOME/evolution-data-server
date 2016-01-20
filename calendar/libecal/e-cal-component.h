@@ -367,6 +367,7 @@ void		e_cal_component_set_uid		(ECalComponent *comp,
 ECalComponentId *
 		e_cal_component_get_id		(ECalComponent *comp);
 void		e_cal_component_free_id		(ECalComponentId *id);
+GType		e_cal_component_id_get_type	(void);
 ECalComponentId *
 		e_cal_component_id_new		(const gchar *uid,
 						 const gchar *rid);
@@ -628,7 +629,7 @@ typedef struct {
 /**
  * ECalComponentAlarms:
  * @comp: The actual alarm component
- * @alarms: (element-type: ECalComponentAlarmInstance): List of #ECalComponentAlarmInstance structures
+ * @alarms: (element-type ECalComponentAlarmInstance): List of #ECalComponentAlarmInstance structures
  *
  * Alarm trigger instances for a particular component
  **/
@@ -723,6 +724,7 @@ ECalComponentAlarm *
 void		e_cal_component_alarms_free	(ECalComponentAlarms *alarms);
 
 /* ECalComponentAlarms */
+GType		e_cal_component_alarm_get_type	(void);
 ECalComponentAlarm *
 		e_cal_component_alarm_new	(void);
 ECalComponentAlarm *

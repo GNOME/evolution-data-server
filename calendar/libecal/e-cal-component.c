@@ -48,6 +48,14 @@
 	((obj), E_TYPE_CAL_COMPONENT, ECalComponentPrivate))
 
 G_DEFINE_TYPE (ECalComponent, e_cal_component, G_TYPE_OBJECT)
+G_DEFINE_BOXED_TYPE (ECalComponentId,
+		e_cal_component_id,
+		e_cal_component_id_copy,
+		e_cal_component_free_id)
+G_DEFINE_BOXED_TYPE (ECalComponentAlarm,
+		e_cal_component_alarm,
+		e_cal_component_alarm_clone,
+		e_cal_component_alarm_free)
 
 /* Extension property for alarm components so that we can reference them by UID */
 #define EVOLUTION_ALARM_UID_PROPERTY "X-EVOLUTION-ALARM-UID"

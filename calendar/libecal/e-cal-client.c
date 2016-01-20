@@ -1667,7 +1667,7 @@ e_cal_client_init (ECalClient *client)
  * function will have a descriptive prefix that includes the display
  * name of @source.
  *
- * Returns: a new #ECalClient, or %NULL
+ * Returns: (transfer full): a new #ECalClient, or %NULL
  *
  * Since: 3.8
  **/
@@ -1930,7 +1930,7 @@ e_cal_client_connect (ESource *source,
  * function will have a descriptive prefix that includes the display
  * name of the #ESource passed to e_cal_client_connect().
  *
- * Returns: a new #ECalClient, or %NULL
+ * Returns: (transfer full): a new #ECalClient, or %NULL
  *
  * Since: 3.8
  **/
@@ -6677,7 +6677,7 @@ e_cal_client_get_view (ECalClient *client,
  * e_cal_client_get_view_finish:
  * @client: an #ECalClient
  * @result: a #GAsyncResult
- * @out_view: (out) an #ECalClientView
+ * @out_view: (out): an #ECalClientView
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_cal_client_get_view().
@@ -6720,7 +6720,7 @@ e_cal_client_get_view_finish (ECalClient *client,
  * e_cal_client_get_view_sync:
  * @client: an #ECalClient
  * @sexp: an S-expression representing the query.
- * @out_view: (out) an #ECalClientView
+ * @out_view: (out): an #ECalClientView
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *

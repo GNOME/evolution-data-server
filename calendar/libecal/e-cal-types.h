@@ -67,7 +67,7 @@ typedef enum {
 	E_CAL_OBJ_MOD_ONLY_THIS = 1 << 3
 } ECalObjModType;
 
-/** Everything below this point is deprecated. **/
+/* Everything below this point is deprecated. */
 
 #ifndef EDS_DISABLE_DEPRECATED
 
