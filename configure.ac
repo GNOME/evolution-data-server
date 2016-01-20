@@ -1511,19 +1511,33 @@ dnl *****
 	AC_SUBST(EVOLUTION_CALENDAR_CFLAGS)
 	AC_SUBST(EVOLUTION_CALENDAR_LIBS)
 
-	dnl ****************************
-	dnl Check for ical_set_unknown_token_handling_setting function
-	dnl ****************************
-	AC_MSG_CHECKING([ical_set_unknown_token_handling_setting function])
-	save_cflags=$CFLAGS; CFLAGS=$EVOLUTION_CALENDAR_CFLAGS
-	save_libs=$LIBS; LIBS="$EVOLUTION_CALENDAR_LIBS"
-	AC_LINK_IFELSE([AC_LANG_PROGRAM(
-		[[#include <libical/ical.h>]],
-		[[ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN)]])],
-		[AC_DEFINE(HAVE_ICAL_UNKNOWN_TOKEN_HANDLING, 1, [libical provides ical_set_unknown_token_handling_setting function]) ac_cv_have_iuth=yes],[ac_cv_have_iuth=no])
-	CFLAGS=$save_cflags
-	LIBS=$save_libs
-	AC_MSG_RESULT([$ac_cv_have_iuth])
+dnl ****************************
+dnl Check for ical_set_unknown_token_handling_setting function
+dnl ****************************
+AC_MSG_CHECKING([ical_set_unknown_token_handling_setting function])
+save_cflags=$CFLAGS; CFLAGS=$EVOLUTION_CALENDAR_CFLAGS
+save_libs=$LIBS; LIBS="$EVOLUTION_CALENDAR_LIBS"
+AC_LINK_IFELSE([AC_LANG_PROGRAM(
+	[[#include <libical/ical.h>]],
+	[[ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN)]])],
+	[AC_DEFINE(HAVE_ICAL_UNKNOWN_TOKEN_HANDLING, 1, [libical provides ical_set_unknown_token_handling_setting function]) ac_cv_have_iuth=yes],[ac_cv_have_iuth=no])
+CFLAGS=$save_cflags
+LIBS=$save_libs
+AC_MSG_RESULT([$ac_cv_have_iuth])
+
+dnl ****************************
+dnl Check for icaltzutil_set_exact_vtimezones_support function
+dnl ****************************
+AC_MSG_CHECKING([icaltzutil_set_exact_vtimezones_support function])
+save_cflags=$CFLAGS; CFLAGS="$EVOLUTION_DATA_SERVER_CFLAGS"
+save_libs=$LIBS; LIBS="$EVOLUTION_DATA_SERVER_LIBS"
+AC_LINK_IFELSE([AC_LANG_PROGRAM(
+	[[#include <libical/ical.h>]],
+	[[icaltzutil_set_exact_vtimezones_support (0)]])],
+	[AC_DEFINE(HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT, 1, [libical provides icaltzutil_set_exact_vtimezones_support function]) ac_cv_have_isevs=yes],[ac_cv_have_isevs=no])
+CFLAGS=$save_cflags
+LIBS=$save_libs
+AC_MSG_RESULT([$ac_cv_have_isevs])
 
 dnl ******************************
 dnl Google flags
