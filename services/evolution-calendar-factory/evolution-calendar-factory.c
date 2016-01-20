@@ -24,9 +24,7 @@
 #include <gtk/gtk.h>
 #endif
 
-#ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
 #include <libical/ical.h>
-#endif
 
 #include <libedataserver/libedataserver.h>
 #include <libedata-cal/libedata-cal.h>
@@ -82,6 +80,10 @@ main (gint argc,
 
 #ifdef HAVE_ICAL_UNKNOWN_TOKEN_HANDLING
 	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
+#endif
+
+#ifdef HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT
+	icaltzutil_set_exact_vtimezones_support (0);
 #endif
 
 	e_gdbus_templates_init_main_thread ();

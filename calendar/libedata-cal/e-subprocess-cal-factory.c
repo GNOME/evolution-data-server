@@ -144,6 +144,10 @@ e_subprocess_cal_factory_new (GCancellable *cancellable,
 	ical_set_unknown_token_handling_setting (ICAL_DISCARD_TOKEN);
 #endif
 
+#ifdef HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT
+	icaltzutil_set_exact_vtimezones_support (0);
+#endif
+
 	/* XXX Pre-load all built-in timezones in libical.
 	 *
 	 *     Built-in time zones in libical 0.43 are loaded on demand,
