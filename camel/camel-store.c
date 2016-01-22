@@ -63,6 +63,7 @@ struct _AsyncContext {
 	gchar *folder_name_2;
 	gboolean expunge;
 	guint32 flags;
+	GHashTable *save_setup;
 };
 
 struct _SignalClosure {
@@ -95,6 +96,11 @@ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 static void
 async_context_free (AsyncContext *async_context)
 {
+	if (async_context->save_setup) {
+		g_hash_table_destroy (async_context->save_setup);
+		async_context->save_setup = NULL;
+	}
+
 	g_free (async_context->folder_name_1);
 	g_free (async_context->folder_name_2);
 
@@ -510,6 +516,15 @@ store_synchronize_sync (CamelStore *store,
 }
 
 static gboolean
+store_initial_setup_sync (CamelStore *store,
+			  GHashTable *out_save_setup,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	return TRUE;
+}
+
+static gboolean
 store_initable_init (GInitable *initable,
                      GCancellable *cancellable,
                      GError **error)
@@ -579,6 +594,7 @@ camel_store_class_init (CamelStoreClass *class)
 	class->get_junk_folder_sync = store_get_junk_folder_sync;
 	class->get_trash_folder_sync = store_get_trash_folder_sync;
 	class->synchronize_sync = store_synchronize_sync;
+	class->initial_setup_sync = store_initial_setup_sync;
 
 	signals[FOLDER_CREATED] = g_signal_new (
 		"folder-created",
@@ -2914,6 +2930,175 @@ camel_store_synchronize_finish (CamelStore *store,
 	g_return_val_if_fail (
 		g_async_result_is_tagged (
 		result, camel_store_synchronize), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
+ * camel_store_initial_setup_sync:
+ * @store: a #CamelStore
+ * @out_save_setup: (out) (transfer container) (element-type utf8 utf8): setup values to save
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Runs initial setup for the @store. It's meant to preset some
+ * values the first time the account connects to the server after
+ * it had been created. The function should return %TRUE even if
+ * it didn't populate anything. The default implementation does
+ * just that.
+ *
+ * The save_setup result, if not %NULL, should be freed using
+ * g_hash_table_destroy(). It's not an error to have it %NULL,
+ * it only means the @store doesn't have anything to save.
+ * Both the key and the value in the hash are newly allocated
+ * UTF-8 strings, owned by the hash table.
+ *
+ * The @store advertises support of this function by including
+ * CAMEL_STORE_SUPPORTS_INITIAL_SETUP in CamelStore::flags.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.20
+ **/
+gboolean
+camel_store_initial_setup_sync (CamelStore *store,
+				GHashTable **out_save_setup,
+				GCancellable *cancellable,
+				GError **error)
+{
+	GHashTable *save_setup;
+	CamelStoreClass *class;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (out_save_setup != NULL, FALSE);
+
+	*out_save_setup = NULL;
+
+	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class->initial_setup_sync != NULL, FALSE);
+
+	save_setup = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+	success = class->initial_setup_sync (store, save_setup, cancellable, error);
+
+	if (!success || !g_hash_table_size (save_setup)) {
+		g_hash_table_destroy (save_setup);
+		save_setup = NULL;
+	}
+
+	CAMEL_CHECK_GERROR (store, initial_setup_sync, success, error);
+
+	*out_save_setup = save_setup;
+
+	return success;
+}
+
+static void
+store_initial_setup_thread (GTask *task,
+			    gpointer source_object,
+			    gpointer task_data,
+			    GCancellable *cancellable)
+{
+	gboolean success;
+	AsyncContext *async_context;
+	GError *local_error = NULL;
+
+	async_context = (AsyncContext *) task_data;
+
+	success = camel_store_initial_setup_sync (
+		CAMEL_STORE (source_object),
+		&async_context->save_setup,
+		cancellable, &local_error);
+
+	if (local_error != NULL) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * camel_store_initial_setup:
+ * @store: a #CamelStore
+ * @io_priority: the I/O priority of the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * Runs initial setup for the @store asynchronously.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call camel_store_initial_setup_finish() to get the result of the operation.
+ *
+ * The @store advertises support of this function by including
+ * CAMEL_STORE_SUPPORTS_INITIAL_SETUP in CamelStore::flags.
+ *
+ * Since: 3.20
+ **/
+void
+camel_store_initial_setup (CamelStore *store,
+			   gint io_priority,
+			   GCancellable *cancellable,
+			   GAsyncReadyCallback callback,
+			   gpointer user_data)
+{
+	GTask *task;
+	AsyncContext *async_context;
+
+	g_return_if_fail (CAMEL_IS_STORE (store));
+
+	async_context = g_slice_new0 (AsyncContext);
+
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_store_initial_setup);
+	g_task_set_priority (task, io_priority);
+
+	g_task_set_task_data (
+		task, async_context,
+		(GDestroyNotify) async_context_free);
+
+	g_task_run_in_thread (task, store_initial_setup_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * camel_store_initial_setup_finish:
+ * @store: a #CamelStore
+ * @result: a #GAsyncResult
+ * @out_save_setup: (out) (transfer container) (element-type utf8 utf8): setup values to save
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_store_initial_setup().
+ *
+ * The save_setup result, if not %NULL, should be freed using
+ * g_hash_table_destroy(). It's not an error to have it %NULL,
+ * it only means the @store doesn't have anything to save.
+ *
+ * Returns: %TRUE on success, %FALSE on error
+ *
+ * Since: 3.20
+ **/
+gboolean
+camel_store_initial_setup_finish (CamelStore *store,
+				  GAsyncResult *result,
+				  GHashTable **out_save_setup,
+				  GError **error)
+{
+	AsyncContext *async_context;
+
+	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
+	g_return_val_if_fail (out_save_setup != NULL, FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, camel_store_initial_setup), FALSE);
+
+	async_context = g_task_get_task_data (G_TASK (result));
+	*out_save_setup = async_context->save_setup;
+	async_context->save_setup = NULL;
 
 	return g_task_propagate_boolean (G_TASK (result), error);
 }

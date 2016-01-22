@@ -92,6 +92,11 @@ gchar *		e_source_mail_account_dup_archive_folder
 void		e_source_mail_account_set_archive_folder
 					(ESourceMailAccount *extension,
 					 const gchar *archive_folder);
+gboolean	e_source_mail_account_get_needs_initial_setup
+					(ESourceMailAccount *extension);
+void		e_source_mail_account_set_needs_initial_setup
+					(ESourceMailAccount *extension,
+					 gboolean needs_initial_setup);
 
 G_END_DECLS
 

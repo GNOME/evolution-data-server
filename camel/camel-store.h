@@ -61,6 +61,32 @@
 #define CAMEL_STORE_ERROR \
 	(camel_store_error_quark ())
 
+/**
+ * @CAMEL_STORE_SETUP_ARCHIVE_FOLDER: Name of an Archive folder key
+ * @CAMEL_STORE_SETUP_DRAFTS_FOLDER: Name of a Drafts folder key
+ * @CAMEL_STORE_SETUP_SENT_FOLDER: Name of a Sent folder key
+ * @CAMEL_STORE_SETUP_TEMPLATES_FOLDER: Name of a Templates folder key
+ *
+ * Key names to a hash table with values to preset for the account used
+ * as in the camel_store_initial_setup_sync() function.
+ *
+ * The key name consists of up to four parts: Source:Extension:Property[:Type]
+ * Source can be 'Collection', 'Account', 'Submission', 'Transport', 'Backend'.
+ * Extension is any extension name; it's up to the key creator to make sure
+ * the extension belongs to that particular Source.
+ * Property is a property name in the Extension.
+ * Type is an optional letter describing the type of the value; if not set, then
+ * string is used. Available values are: 'b' for boolean, 'i' for integer,
+ * 's' for string, 'f' for folder full path.
+ * All the part values are case sensitive.
+ *
+ * Since: 3.20
+ **/
+#define CAMEL_STORE_SETUP_ARCHIVE_FOLDER	"Account:Mail Account:archive-folder:f"
+#define CAMEL_STORE_SETUP_DRAFTS_FOLDER		"Submission:Mail Composition:drafts-folder:f"
+#define CAMEL_STORE_SETUP_SENT_FOLDER		"Submission:Mail Submission:sent-folder:f"
+#define CAMEL_STORE_SETUP_TEMPLATES_FOLDER	"Submission:Mail Composition:templates-folder:f"
+
 G_BEGIN_DECLS
 
 /**
@@ -176,9 +202,13 @@ struct _CamelStoreClass {
 						 gboolean expunge,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*initial_setup_sync)	(CamelStore *store,
+						 GHashTable *save_setup,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[21];
+	gpointer reserved_for_methods[20];
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
@@ -354,6 +384,20 @@ void		camel_store_synchronize		(CamelStore *store,
 						 gpointer user_data);
 gboolean	camel_store_synchronize_finish	(CamelStore *store,
 						 GAsyncResult *result,
+						 GError **error);
+gboolean	camel_store_initial_setup_sync	(CamelStore *store,
+						 GHashTable **out_save_setup,
+						 GCancellable *cancellable,
+						 GError **error);
+void		camel_store_initial_setup	(CamelStore *store,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_store_initial_setup_finish
+						(CamelStore *store,
+						 GAsyncResult *result,
+						 GHashTable **out_save_setup,
 						 GError **error);
 gboolean	camel_store_maybe_run_db_maintenance
 						(CamelStore *store,

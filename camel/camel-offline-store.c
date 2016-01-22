@@ -180,7 +180,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
 
-	if (store->priv->online == online)
+	if (camel_offline_store_get_online (store) == online)
 		return TRUE;
 
 	service = CAMEL_SERVICE (store);

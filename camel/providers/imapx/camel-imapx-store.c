@@ -2230,6 +2230,213 @@ exit:
 	return success;
 }
 
+static gchar *
+imapx_find_folder_for_initial_setup (CamelFolderInfo *root,
+				     const gchar *path)
+{
+	CamelFolderInfo *finfo, *next;
+	gchar *folder_fullname = NULL;
+	gchar **path_parts;
+	gint ii;
+
+	if (!root || !path)
+		return NULL;
+
+	path_parts = g_strsplit (path, "/", -1);
+	if (!path_parts)
+		return NULL;
+
+	finfo = root;
+
+	for (ii = 0; path_parts[ii] && finfo; ii++) {
+		gchar *folded_path;
+
+		folded_path = g_utf8_casefold (path_parts[ii], -1);
+		if (!folded_path)
+			break;
+
+		for (next = NULL; finfo; finfo = finfo->next) {
+			gchar *folded_display_name;
+			gint cmp;
+
+			if ((finfo->flags & (CAMEL_FOLDER_NOSELECT | CAMEL_FOLDER_VIRTUAL)) != 0)
+				continue;
+
+			folded_display_name = g_utf8_casefold (finfo->display_name, -1);
+			if (!folded_display_name)
+				continue;
+
+			cmp = g_utf8_collate (folded_path, folded_display_name);
+
+			g_free (folded_display_name);
+
+			if (cmp == 0) {
+				next = finfo;
+				break;
+			}
+		}
+
+		g_free (folded_path);
+
+		finfo = next;
+		if (finfo) {
+			if (path_parts[ii + 1])
+				finfo = finfo->child;
+			else
+				folder_fullname = g_strdup (finfo->full_name);
+		}
+	}
+
+	g_strfreev (path_parts);
+
+	return folder_fullname;
+}
+
+static void
+imapx_check_initial_setup_group (CamelFolderInfo *finfo,
+				 GHashTable *save_setup,
+				 const gchar *main_key,
+				 const gchar *additional_key,
+				 const gchar *additional_key_value,
+				 const gchar **names,
+				 guint n_names)
+{
+	gchar *folder_fullname = NULL;
+	gint ii;
+
+	g_return_if_fail (finfo != NULL);
+	g_return_if_fail (save_setup != NULL);
+	g_return_if_fail (main_key != NULL);
+	g_return_if_fail (names != NULL);
+	g_return_if_fail (n_names > 0);
+
+	/* First check the folder names in the user's locale */
+	for (ii = 0; ii < n_names && !folder_fullname; ii++) {
+		gchar *name;
+
+		/* In the same level as the Inbox */
+		folder_fullname = imapx_find_folder_for_initial_setup (finfo, g_dpgettext2 (GETTEXT_PACKAGE, "IMAPDefaults", names[ii]));
+
+		if (folder_fullname)
+			break;
+
+		/* as a subfolder of the Inbox */
+		name = g_strconcat ("INBOX/", g_dpgettext2 (GETTEXT_PACKAGE, "IMAPDefaults", names[ii]), NULL);
+		folder_fullname = imapx_find_folder_for_initial_setup (finfo, name);
+		g_free (name);
+	}
+
+	/* Then repeat with the english name (as written in the code) */
+	for (ii = 0; ii < n_names && !folder_fullname; ii++) {
+		gchar *name;
+
+		/* Do not try the same folder name twice */
+		if (g_strcmp0 (g_dpgettext2 (GETTEXT_PACKAGE, "IMAPDefaults", names[ii]), names[ii]) == 0)
+			continue;
+
+		folder_fullname = imapx_find_folder_for_initial_setup (finfo, names[ii]);
+
+		if (folder_fullname)
+			break;
+
+		name = g_strconcat ("INBOX/", names[ii], NULL);
+		folder_fullname = imapx_find_folder_for_initial_setup (finfo, name);
+		g_free (name);
+	}
+
+	if (folder_fullname) {
+		g_hash_table_insert (save_setup,
+			g_strdup (main_key),
+			g_strdup (folder_fullname));
+
+		if (additional_key) {
+			g_hash_table_insert (save_setup,
+				g_strdup (additional_key),
+				g_strdup (additional_key_value));
+		}
+
+		g_free (folder_fullname);
+	}
+}
+
+static gboolean
+imapx_initial_setup_sync (CamelStore *store,
+			  GHashTable *save_setup,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	/* Translators: The strings in "IMAPDefaults" context are folder names as can be presented
+	   by the server; There's checked for the localized version of it and for the non-localized
+	   version as well. It's always the folder name (eventually path) as provided by the server,
+	   when returned in given localization. it can be checked semi-easily in the case of
+	   the GMail variants, by changing the GMail interface language in the GMail Preferences. */
+	const gchar *draft_names[] = {
+		NC_("IMAPDefaults", "[Gmail]/Drafts"),
+		NC_("IMAPDefaults", "Drafts"),
+		NC_("IMAPDefaults", "Draft")
+	};
+	const gchar *sent_names[] = {
+		NC_("IMAPDefaults", "[Gmail]/Sent Mail"),
+		NC_("IMAPDefaults", "Sent"),
+		NC_("IMAPDefaults", "Sent Items")
+	};
+	const gchar *junk_names[] = {
+		NC_("IMAPDefaults", "[Gmail]/Spam"),
+		NC_("IMAPDefaults", "Junk"),
+		NC_("IMAPDefaults", "Junk E-mail"),
+		NC_("IMAPDefaults", "Junk Email"),
+		NC_("IMAPDefaults", "Spam"),
+		NC_("IMAPDefaults", "Bulk Mail")
+	};
+	const gchar *trash_names[] = {
+		NC_("IMAPDefaults", "[Gmail]/Trash"),
+		NC_("IMAPDefaults", "Trash"),
+		NC_("IMAPDefaults", "Deleted Items")
+	};
+	CamelFolderInfo *finfo;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (store), FALSE);
+	g_return_val_if_fail (save_setup != NULL, FALSE);
+
+	finfo = camel_store_get_folder_info_sync (store, NULL,
+		CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
+		cancellable, &local_error);
+
+	if (!finfo) {
+		if (local_error) {
+			g_propagate_error (error, local_error);
+			return FALSE;
+		}
+
+		return TRUE;
+	}
+
+	imapx_check_initial_setup_group (finfo, save_setup,
+		CAMEL_STORE_SETUP_DRAFTS_FOLDER, NULL, NULL,
+		draft_names, G_N_ELEMENTS (draft_names));
+
+	imapx_check_initial_setup_group (finfo, save_setup,
+		CAMEL_STORE_SETUP_SENT_FOLDER, NULL, NULL,
+		sent_names, G_N_ELEMENTS (sent_names));
+
+	/* It's a folder path inside the account, thus not use the 'f' type, but the 's' type. */
+	imapx_check_initial_setup_group (finfo, save_setup,
+		"Backend:Imapx Backend:real-junk-path:s",
+		"Backend:Imapx Backend:use-real-junk-path:b", "true",
+		junk_names, G_N_ELEMENTS (junk_names));
+
+	/* It's a folder path inside the account, thus not use the 'f' type, but the 's' type. */
+	imapx_check_initial_setup_group (finfo, save_setup,
+		"Backend:Imapx Backend:real-trash-path:s",
+		"Backend:Imapx Backend:use-real-trash-path:b", "true",
+		trash_names, G_N_ELEMENTS (trash_names));
+
+	camel_folder_info_free (finfo);
+
+	return TRUE;
+}
+
 static void
 imapx_migrate_to_user_cache_dir (CamelService *service)
 {
@@ -2273,7 +2480,7 @@ imapx_store_initable_init (GInitable *initable,
 	store = CAMEL_STORE (initable);
 	service = CAMEL_SERVICE (initable);
 
-	store->flags |= CAMEL_STORE_USE_CACHE_DIR;
+	store->flags |= CAMEL_STORE_USE_CACHE_DIR | CAMEL_STORE_SUPPORTS_INITIAL_SETUP;
 	imapx_migrate_to_user_cache_dir (service);
 
 	/* Chain up to parent interface's init() method. */
@@ -2580,6 +2787,7 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->create_folder_sync = imapx_store_create_folder_sync;
 	store_class->delete_folder_sync = imapx_store_delete_folder_sync;
 	store_class->rename_folder_sync = imapx_store_rename_folder_sync;
+	store_class->initial_setup_sync = imapx_initial_setup_sync;
 
 	class->mailbox_created = imapx_store_mailbox_created;
 	class->mailbox_renamed = imapx_store_mailbox_renamed;

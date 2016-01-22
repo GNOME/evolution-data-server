@@ -47,12 +47,14 @@
 struct _ESourceMailAccountPrivate {
 	gchar *identity_uid;
 	gchar *archive_folder;
+	gboolean needs_initial_setup;
 };
 
 enum {
 	PROP_0,
 	PROP_IDENTITY_UID,
-	PROP_ARCHIVE_FOLDER
+	PROP_ARCHIVE_FOLDER,
+	PROP_NEEDS_INITIAL_SETUP
 };
 
 G_DEFINE_TYPE (
@@ -78,6 +80,12 @@ source_mail_account_set_property (GObject *object,
 				E_SOURCE_MAIL_ACCOUNT (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_NEEDS_INITIAL_SETUP:
+			e_source_mail_account_set_needs_initial_setup (
+				E_SOURCE_MAIL_ACCOUNT (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -101,6 +109,13 @@ source_mail_account_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_mail_account_dup_archive_folder (
+				E_SOURCE_MAIL_ACCOUNT (object)));
+			return;
+
+		case PROP_NEEDS_INITIAL_SETUP:
+			g_value_set_boolean (
+				value,
+				e_source_mail_account_get_needs_initial_setup (
 				E_SOURCE_MAIL_ACCOUNT (object)));
 			return;
 	}
@@ -159,6 +174,19 @@ e_source_mail_account_class_init (ESourceMailAccountClass *class)
 			"Archive Folder",
 			"Folder to Archive messages in",
 			"",
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_NEEDS_INITIAL_SETUP,
+		g_param_spec_boolean (
+			"needs-initial-setup",
+			"Needs Initial Setup",
+			"Whether the account needs to do an initial setup",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -335,4 +363,45 @@ e_source_mail_account_set_archive_folder (ESourceMailAccount *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "archive-folder");
+}
+
+/**
+ * e_source_mail_account_get_needs_initial_setup:
+ * @extension: an #ESourceMailAccount
+ *
+ * Check whether the mail account needs to do its initial setup.
+ *
+ * Returns: %TRUE, when the account needs to run its initial setup
+ *
+ * Since: 3.20
+ **/
+gboolean
+e_source_mail_account_get_needs_initial_setup (ESourceMailAccount *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension), FALSE);
+
+	return extension->priv->needs_initial_setup;
+}
+
+/**
+ * e_source_mail_account_set_needs_initial_setup:
+ * @extension: an #ESourceMailAccount
+ * @needs_initial_setup: value to set
+ *
+ * Sets whether the account needs to run its initial setup.
+ *
+ * Since: 3.20
+ **/
+void
+e_source_mail_account_set_needs_initial_setup (ESourceMailAccount *extension,
+					       gboolean needs_initial_setup)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_ACCOUNT (extension));
+
+	if ((extension->priv->needs_initial_setup ? 1 : 0) == (needs_initial_setup ? 1 : 0))
+		return;
+
+	extension->priv->needs_initial_setup = needs_initial_setup;
+
+	g_object_notify (G_OBJECT (extension), "needs-initial-setup");
 }

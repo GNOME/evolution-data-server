@@ -2133,6 +2133,9 @@ camel_store_rename_folder_finish
 camel_store_synchronize_sync
 camel_store_synchronize
 camel_store_synchronize_finish
+camel_store_initial_setup_sync
+camel_store_initial_setup
+camel_store_initial_setup_finish
 camel_store_maybe_run_db_maintenance
 <SUBSECTION Standard>
 CAMEL_STORE
