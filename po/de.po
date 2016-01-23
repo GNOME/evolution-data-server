@@ -8,7 +8,7 @@
 # Hendrik Richter <hendrikr@gnome.org>, 2005-2007.
 # Christian Kintner <mail@christian-kintner.de>, 2006.
 # Andre Klapper <ak-47@gmx.net>, 2007-2009.
-# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2013, 2015, 2016.
+# Mario Blättermann <mario.blaettermann@gmail.com>, 2009-2013, 2015-2016.
 # Hendrik Knackstedt <kn.hendrik@gmail.com>, 2012.
 # Christian Kirbach <christian.kirbach@gmail.com>, 2010, 2012, 2013.
 # Bernd Homuth <dev@hmt.im>, 2015.
@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-01-19 18:34+0000\n"
-"PO-Revision-Date: 2016-01-19 20:20+0100\n"
+"POT-Creation-Date: 2016-01-23 06:12+0000\n"
+"PO-Revision-Date: 2016-01-23 18:19+0100\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -1608,7 +1608,7 @@ msgstr "Unbekannte Kalendereigenschaft »%s«"
 msgid "Cannot change value of calendar property '%s'"
 msgstr "Wert der Kalendereigenschaft »%s« kann nicht geändert werden"
 
-#: ../calendar/libecal/e-cal-component.c:1349
+#: ../calendar/libecal/e-cal-component.c:1357
 msgid "Untitled appointment"
 msgstr "Namenloser Termin"
 
@@ -3023,43 +3023,43 @@ msgstr "Hinzufügen von Daten zum Kodierer gescheitert"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME-Entschlüsselung: Kein entschlüsselter Inhalt gefunden"
 
-#: ../camel/camel-store.c:1259
+#: ../camel/camel-store.c:1275
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Ordner »%s« wird geöffnet"
 
-#: ../camel/camel-store.c:1550
+#: ../camel/camel-store.c:1566
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Ordner in »%s« werden eingelesen"
 
-#: ../camel/camel-store.c:1578 ../camel/camel-store.c:1623
+#: ../camel/camel-store.c:1594 ../camel/camel-store.c:1639
 #: ../camel/camel-vtrash-folder.c:45
 msgid "Trash"
 msgstr "Papierkorb"
 
-#: ../camel/camel-store.c:1592 ../camel/camel-store.c:1640
+#: ../camel/camel-store.c:1608 ../camel/camel-store.c:1656
 #: ../camel/camel-vtrash-folder.c:47
 msgid "Junk"
 msgstr "Unerwünscht"
 
-#: ../camel/camel-store.c:2241
+#: ../camel/camel-store.c:2257
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Ordner konnte nicht angelegt werden: %s: Ordner existiert"
 
-#: ../camel/camel-store.c:2248
+#: ../camel/camel-store.c:2264
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Ordner »%s« wird angelegt"
 
-#: ../camel/camel-store.c:2425 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2441 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:346
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Ordner konnte nicht gelöscht werden: %s: Ungültiger Vorgang"
 
-#: ../camel/camel-store.c:2615 ../camel/camel-vee-store.c:461
+#: ../camel/camel-store.c:2631 ../camel/camel-vee-store.c:461
 #: ../camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3584,6 +3584,82 @@ msgstr "Ordnerliste für »%s« wird abgerufen"
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Der Ordnername »%s« ist ungültig, da er das Zeichen »%c« enthält"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2374
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Drafts"
+msgstr "[Gmail]/Entwürfe"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2375
+msgctxt "IMAPDefaults"
+msgid "Drafts"
+msgstr "Entwürfe"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2376
+msgctxt "IMAPDefaults"
+msgid "Draft"
+msgstr "Entwurf"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2379
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Sent Mail"
+msgstr "[Gmail]/Gesendet"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2380
+msgctxt "IMAPDefaults"
+msgid "Sent"
+msgstr "Gesendet"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2381
+msgctxt "IMAPDefaults"
+msgid "Sent Items"
+msgstr "Gesendete Objekte"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2384
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Spam"
+msgstr "[Gmail]/Spam"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2385
+#| msgid "Junk"
+msgctxt "IMAPDefaults"
+msgid "Junk"
+msgstr "Unerwünscht"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2386
+msgctxt "IMAPDefaults"
+msgid "Junk E-mail"
+msgstr "Unerwünschte E-Mail"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2387
+msgctxt "IMAPDefaults"
+msgid "Junk Email"
+msgstr "Unerwünschte E-Mail"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2388
+msgctxt "IMAPDefaults"
+msgid "Spam"
+msgstr "Spam"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2389
+msgctxt "IMAPDefaults"
+msgid "Bulk Mail"
+msgstr "Massen-E-Mails"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2392
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Trash"
+msgstr "[Gmail]/Papierkorb"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2393
+msgctxt "IMAPDefaults"
+msgid "Trash"
+msgstr "Papierkorb"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2394
+msgctxt "IMAPDefaults"
+msgid "Deleted Items"
+msgstr "Gelöschte Objekte"
 
 #: ../camel/providers/local/camel-local-folder.c:194
 #, c-format
@@ -5818,13 +5894,13 @@ msgid "Yahoo! Mail"
 msgstr "Yahoo! Mail"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:36
-#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:40
+#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:38
 #: ../services/evolution-user-prompter/evolution-user-prompter.c:32
 msgid "Keep running after the last client is closed"
 msgstr "Nicht beenden, wenn der letzte Client geschlossen ist"
 
 #: ../services/evolution-addressbook-factory/evolution-addressbook-factory.c:38
-#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:42
+#: ../services/evolution-calendar-factory/evolution-calendar-factory.c:40
 msgid "Wait running until at least one client is connected"
 msgstr "Warten, bis mindestens ein Client verbunden ist"
 
