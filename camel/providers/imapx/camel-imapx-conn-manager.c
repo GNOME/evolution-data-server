@@ -216,6 +216,25 @@ connection_info_unref (ConnectionInfo *cinfo)
 }
 
 static gboolean
+connection_info_try_reserve (ConnectionInfo *cinfo)
+{
+	gboolean reserved = FALSE;
+
+	g_return_val_if_fail (cinfo != NULL, FALSE);
+
+	g_mutex_lock (&cinfo->lock);
+
+	if (!cinfo->busy) {
+		cinfo->busy = TRUE;
+		reserved = TRUE;
+	}
+
+	g_mutex_unlock (&cinfo->lock);
+
+	return reserved;
+}
+
+static gboolean
 connection_info_get_busy (ConnectionInfo *cinfo)
 {
 	gboolean busy;
@@ -845,9 +864,8 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 			for (link = conn_man->priv->connections; link; link = g_list_next (link)) {
 				ConnectionInfo *candidate = link->data;
 
-				if (candidate && !connection_info_get_busy (candidate)) {
+				if (candidate && connection_info_try_reserve (candidate)) {
 					cinfo = connection_info_ref (candidate);
-					connection_info_set_busy (cinfo, TRUE);
 					break;
 				}
 			}
