@@ -1883,6 +1883,7 @@ cal_obj_get_vtable (ECalRecurrence *recur,
 		*vtable_valid = FALSE;
 	}
 
+	/* coverity[uninit] */
 	return vtable;
 }
 

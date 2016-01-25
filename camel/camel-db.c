@@ -2314,8 +2314,17 @@ cdb_delete_ids (CamelDB *cdb,
 
 	camel_db_begin_transaction (cdb, error);
 
-	if (ins_str)
+	if (ins_str) {
 		ret = camel_db_create_deleted_table (cdb, error);
+		if (ret == -1) {
+			camel_db_abort_transaction (cdb, NULL);
+
+			g_string_free (ins_str, TRUE);
+			g_string_free (str, TRUE);
+
+			return ret;
+		}
+	}
 
 	if (ins_str) {
 		tab = sqlite3_mprintf ("%Q, strftime(\"%%s\", 'now') FROM %Q WHERE %s IN (", folder_name, folder_name, field);
@@ -2353,12 +2362,15 @@ cdb_delete_ids (CamelDB *cdb,
 	if (ins_str) {
 		g_string_append (ins_str, ")");
 		ret = camel_db_add_to_transaction (cdb, ins_str->str, error);
-		ret = camel_db_trim_deleted_table (cdb, error);
+		ret = ret == -1 ? ret : camel_db_trim_deleted_table (cdb, error);
 	}
 
-	ret = camel_db_add_to_transaction (cdb, str->str, error);
+	ret = ret == -1 ? ret : camel_db_add_to_transaction (cdb, str->str, error);
 
-	ret = camel_db_end_transaction (cdb, error);
+	if (ret == -1)
+		camel_db_abort_transaction (cdb, NULL);
+	else
+		ret = camel_db_end_transaction (cdb, error);
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 

@@ -960,7 +960,7 @@ nntp_store_get_cached_folder_info (CamelNNTPStore *nntp_store,
 	GPtrArray *array;
 	gboolean folder_hierarchy_relative;
 	gchar *tmpname;
-	gint toplen = strlen (top);
+	gint toplen = top ? strlen (top) : 0;
 	gint subscribed_or_flag;
 	gint root_or_flag;
 	gint recursive_flag;

@@ -57,7 +57,7 @@ namespace_load (FILE *in)
 	 *     delete all this cruft. */
 
 	for (j = 0; j < 3; j++) {
-		gint32 i, n;
+		gint32 i, n = 0;
 
 		if (camel_file_util_decode_fixed_int32 (in, &n) == -1)
 			goto exit;

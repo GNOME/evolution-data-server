@@ -2178,7 +2178,7 @@ imapx_store_rename_folder_sync (CamelStore *store,
 	new_mailbox_name = camel_imapx_folder_path_to_mailbox (new, separator);
 
 	if (use_subscriptions) {
-		success = camel_imapx_conn_manager_unsubscribe_mailbox_sync (conn_man, mailbox, cancellable, &local_error);
+		camel_imapx_conn_manager_unsubscribe_mailbox_sync (conn_man, mailbox, cancellable, &local_error);
 		g_clear_error (&local_error);
 	}
 

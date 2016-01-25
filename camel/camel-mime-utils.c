@@ -446,12 +446,14 @@ camel_uudecode_step (guchar *in,
 					*outptr++ = CAMEL_UUDECODE_CHAR (b2) << 6 | CAMEL_UUDECODE_CHAR (b3);
 					uulen -= 3;
 				} else {
-					if (uulen >= 1) {
+					gint orig_uulen = uulen;
+
+					if (orig_uulen >= 1) {
 						*outptr++ = CAMEL_UUDECODE_CHAR (b0) << 2 | CAMEL_UUDECODE_CHAR (b1) >> 4;
 						uulen--;
 					}
 
-					if (uulen >= 2) {
+					if (orig_uulen >= 2) {
 						*outptr++ = CAMEL_UUDECODE_CHAR (b1) << 4 | CAMEL_UUDECODE_CHAR (b2) >> 2;
 						uulen--;
 					}

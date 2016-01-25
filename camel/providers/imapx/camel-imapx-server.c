@@ -1256,7 +1256,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			folder = mailbox ? imapx_server_ref_folder (is, mailbox) : NULL;
 		}
 
-		if (!mailbox || (!(finfo->got & FETCH_FLAGS) && !is->priv->fetch_changes_infos)) {
+		if (!mailbox || !folder || (!(finfo->got & FETCH_FLAGS) && !is->priv->fetch_changes_infos)) {
 			g_clear_object (&mailbox);
 			g_clear_object (&folder);
 			imapx_free_fetch (finfo);
@@ -2035,6 +2035,7 @@ imapx_continuation (CamelIMAPXServer *is,
 		g_return_val_if_fail (ic != NULL, FALSE);
 	}
 
+	/* coverity[deadcode] */
 	link = ic ? ic->current_part : NULL;
 	g_return_val_if_fail (link != NULL, FALSE);
 	cp = (CamelIMAPXCommandPart *) link->data;

@@ -351,7 +351,7 @@ add_range_head (CamelNNTPSummary *cns,
 		if (ret == 423)
 			continue;
 		else if (ret == -1)
-			goto ioerror;
+			goto error;
 		else if (ret != 221) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,

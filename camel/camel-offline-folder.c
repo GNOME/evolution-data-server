@@ -250,7 +250,7 @@ offline_folder_changed (CamelFolder *folder,
 	sync_folder = camel_offline_folder_get_offline_sync (
 		CAMEL_OFFLINE_FOLDER (folder));
 
-	if (changes->uid_added->len > 0 && (sync_store || sync_folder)) {
+	if (changes && changes->uid_added->len > 0 && (sync_store || sync_folder)) {
 		OfflineDownsyncData *data;
 		gchar *description;
 

@@ -392,7 +392,7 @@ text_index_sync (CamelIndex *idx)
 			ret = text_index_compress_nosync (idx);
 	}
 
-	ret = camel_block_file_sync (p->blocks);
+	ret = ret == -1 ? ret : camel_block_file_sync (p->blocks);
 
 	CAMEL_TEXT_INDEX_UNLOCK (idx, lock);
 

@@ -416,7 +416,7 @@ ebook_test_utils_book_get_supported_auth_methods (EBook *book)
 		name = e_source_get_display_name (source);
 		g_warning (
 			"failed to get supported auth methods for "
-			"addressbook `%s': %s", name, error->message);
+			"addressbook `%s': %s", name, error ? error->message : "Unknown error");
 		exit (1);
 	}
 

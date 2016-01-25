@@ -935,7 +935,7 @@ backtrace_matches (const Backtrace *match_bt,
 		mline = mlink->data;
 		fline = flink->data;
 
-		if (!mline || !mline)
+		if (!mline || !fline)
 			break;
 
 		if (g_strcmp0 (mline->function, fline->function) != 0 ||
