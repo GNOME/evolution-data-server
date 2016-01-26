@@ -93,8 +93,9 @@ struct _CamelCertDBClass {
 						 FILE *ostream);
 };
 
+GType		camel_cert_get_type		(void) G_GNUC_CONST;
 CamelCert *	camel_cert_new			(void);
-void		camel_cert_ref			(CamelCert *cert);
+CamelCert *	camel_cert_ref			(CamelCert *cert);
 void		camel_cert_unref		(CamelCert *cert);
 gboolean	camel_cert_load_cert_file	(CamelCert *cert,
 						 GError **error);

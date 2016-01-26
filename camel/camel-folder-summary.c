@@ -156,6 +156,11 @@ enum {
 
 G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
+G_DEFINE_BOXED_TYPE (CamelMessageInfo,
+		camel_message_info,
+		camel_message_info_ref,
+		camel_message_info_unref)
+
 static gboolean
 remove_each_item (gpointer uid,
                   gpointer mi,
@@ -3551,7 +3556,7 @@ summary_format_address (struct _camel_header_raw *h,
                         const gchar *name,
                         const gchar *charset)
 {
-	struct _camel_header_address *addr;
+	CamelHeaderAddress *addr;
 	gchar *text, *str;
 
 	if (!(text = (gchar *) camel_header_raw_find (&h, name, NULL)))
@@ -4476,7 +4481,7 @@ camel_system_flag_get (CamelMessageFlags flags,
  *
  * Create a new #CamelMessageInfo.
  *
- * Returns: (transfer full): a new #CamelMessageInfo
+ * Returns: (transfer full) (type CamelMessageInfo): a new #CamelMessageInfo
  **/
 gpointer
 camel_message_info_new (CamelFolderSummary *summary)
@@ -4505,10 +4510,10 @@ camel_message_info_new (CamelFolderSummary *summary)
 
 /**
  * camel_message_info_ref:
- * @info: a #CamelMessageInfo
+ * @info: (type CamelMessageInfo): a #CamelMessageInfo
  *
  * Reference an info.
- * Returns: (transfer full):
+ * Returns: (transfer full) (type CamelMessageInfo):
  **/
 gpointer
 camel_message_info_ref (gpointer o)
@@ -4546,7 +4551,7 @@ camel_message_info_new_from_header (CamelFolderSummary *summary,
 
 /**
  * camel_message_info_unref:
- * @info: a #CamelMessageInfo
+ * @info: (type CamelMessageInfo): a #CamelMessageInfo
  *
  * Unref's and potentially frees a #CamelMessageInfo and its contents.
  **/
@@ -4584,11 +4589,11 @@ camel_message_info_unref (gpointer o)
 
 /**
  * camel_message_info_clone:
- * @info: a #CamelMessageInfo
+ * @info: (type CamelMessageInfo): a #CamelMessageInfo
  *
  * Duplicate a #CamelMessageInfo.
  *
- * Returns: (transfer full): the duplicated #CamelMessageInfo
+ * Returns: (transfer full) (type CamelMessageInfo): the duplicated #CamelMessageInfo
  **/
 gpointer
 camel_message_info_clone (gconstpointer o)

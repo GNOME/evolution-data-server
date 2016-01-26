@@ -125,6 +125,11 @@ static guint signals[LAST_SIGNAL];
 
 G_DEFINE_ABSTRACT_TYPE (CamelFolder, camel_folder, CAMEL_TYPE_OBJECT)
 
+G_DEFINE_BOXED_TYPE (CamelFolderQuotaInfo,
+		camel_folder_quota_info,
+		camel_folder_quota_info_clone,
+		camel_folder_quota_info_free)
+
 static void
 async_context_free (AsyncContext *async_context)
 {

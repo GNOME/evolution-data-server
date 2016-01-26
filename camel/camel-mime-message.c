@@ -1231,7 +1231,7 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 	if (tmp == NULL)
 		tmp = camel_header_raw_find (&header, "From", NULL);
 	if (tmp != NULL) {
-		struct _camel_header_address *addr = camel_header_address_decode (tmp, NULL);
+		CamelHeaderAddress *addr = camel_header_address_decode (tmp, NULL);
 
 		tmp = NULL;
 		if (addr) {

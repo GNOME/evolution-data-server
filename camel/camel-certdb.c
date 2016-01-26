@@ -55,6 +55,10 @@ struct _CamelCertDBPrivate {
 };
 
 G_DEFINE_TYPE (CamelCertDB, camel_certdb, G_TYPE_OBJECT)
+G_DEFINE_BOXED_TYPE (CamelCert,
+		camel_cert,
+		camel_cert_ref,
+		camel_cert_unref)
 
 typedef struct {
 	gchar *hostname;
@@ -270,13 +274,14 @@ camel_cert_new (void)
 	return cert;
 }
 
-void
+CamelCert *
 camel_cert_ref (CamelCert *cert)
 {
-	g_return_if_fail (cert != NULL);
-	g_return_if_fail (cert->refcount > 0);
+	g_return_val_if_fail (cert != NULL, NULL);
+	g_return_val_if_fail (cert->refcount > 0, NULL);
 
 	g_atomic_int_inc (&cert->refcount);
+	return cert;
 }
 
 void

@@ -62,6 +62,7 @@
 	(camel_store_error_quark ())
 
 /**
+ * CAMEL_STORE_SETUP
  * @CAMEL_STORE_SETUP_ARCHIVE_FOLDER: Name of an Archive folder key
  * @CAMEL_STORE_SETUP_DRAFTS_FOLDER: Name of a Drafts folder key
  * @CAMEL_STORE_SETUP_SENT_FOLDER: Name of a Sent folder key
@@ -203,7 +204,7 @@ struct _CamelStoreClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*initial_setup_sync)	(CamelStore *store,
-						 GHashTable *save_setup,
+						 GHashTable *out_save_setup,
 						 GCancellable *cancellable,
 						 GError **error);
 

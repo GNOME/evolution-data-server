@@ -36,7 +36,7 @@ static gint
 internet_address_decode (CamelAddress *a,
                          const gchar *raw)
 {
-	struct _camel_header_address *ha, *n;
+	CamelHeaderAddress *ha, *n;
 	gint count = a->addresses->len;
 
 	/* Should probably use its own decoder or something */
@@ -47,7 +47,7 @@ internet_address_decode (CamelAddress *a,
 			if (n->type == CAMEL_HEADER_ADDRESS_NAME) {
 				camel_internet_address_add ((CamelInternetAddress *) a, n->name, n->v.addr);
 			} else if (n->type == CAMEL_HEADER_ADDRESS_GROUP) {
-				struct _camel_header_address *g = n->v.members;
+				CamelHeaderAddress *g = n->v.members;
 				while (g) {
 					if (g->type == CAMEL_HEADER_ADDRESS_NAME)
 						camel_internet_address_add ((CamelInternetAddress *) a, g->name, g->v.addr);

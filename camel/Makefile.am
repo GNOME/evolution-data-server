@@ -416,6 +416,7 @@ dist-hook:
 INTROSPECTION_GIRS =
 INTROSPECTION_SCANNER_ARGS = \
 	--identifier-prefix Camel \
+	--identifier-prefix camel \
 	--pkg-export libcamel-1.2 \
 	--c-include="camel/camel.h" \
 	$(NULL)

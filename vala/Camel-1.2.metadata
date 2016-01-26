@@ -18,3 +18,11 @@ MessageContentInfo.next type="void*"
 MessageContentInfo.childs type="void*"
 MessageContentInfo.parent type="void*"
 SExpTerm.value.func.terms type="void*[]"
+
+MessageInfo.ptr name="get_ptr"
+MessageInfo.uint32 name="get_uint32"
+MessageInfo.time name="get_time" type="Posix.tm"
+localtime_with_offset.tm type="Posix.tm"
+mktime_utc.tm type="Posix.tm"
+
+HeaderAddress.new_name#constructor name="with_name"

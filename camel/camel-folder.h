@@ -169,7 +169,7 @@ struct _CamelFolderClass {
 						 GPtrArray *uids);
 	GPtrArray *	(*get_summary)		(CamelFolder *folder);
 	void		(*free_summary)		(CamelFolder *folder,
-						 GPtrArray *summary);
+						 GPtrArray *array);
 	gboolean	(*has_search_capability)(CamelFolder *folder);
 	GPtrArray *	(*search_by_expression)	(CamelFolder *folder,
 						 const gchar *expression,
@@ -369,6 +369,8 @@ void		camel_folder_freeze		(CamelFolder *folder);
 void		camel_folder_thaw		(CamelFolder *folder);
 gboolean	camel_folder_is_frozen		(CamelFolder *folder);
 gint		camel_folder_get_frozen_count	(CamelFolder *folder);
+
+GType		camel_folder_quota_info_get_type	(void) G_GNUC_CONST;
 CamelFolderQuotaInfo *
 		camel_folder_quota_info_new	(const gchar *name,
 						 guint64 used,

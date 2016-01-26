@@ -27,6 +27,7 @@
 
 #include <time.h>
 #include <glib.h>
+#include <glib-object.h>
 #include <camel/camel-enums.h>
 
 /* maximum recommended size of a line from camel_header_fold() */
@@ -82,7 +83,7 @@ typedef enum _camel_header_address_t {
 	CAMEL_HEADER_ADDRESS_GROUP
 } camel_header_address_t;
 
-struct _camel_header_address {
+typedef struct _camel_header_address {
 	struct _camel_header_address *next;
 	camel_header_address_t type;
 	gchar *name;
@@ -91,7 +92,7 @@ struct _camel_header_address {
 		struct _camel_header_address *members;
 	} v;
 	guint refcount;
-};
+} CamelHeaderAddress;
 
 struct _camel_header_newsgroup {
 	struct _camel_header_newsgroup *next;
@@ -106,25 +107,26 @@ void		camel_localtime_with_offset	(time_t tt,
 						 gint *offset);
 
 /* Address lists */
-struct _camel_header_address *camel_header_address_new (void);
-struct _camel_header_address *camel_header_address_new_name (const gchar *name, const gchar *addr);
-struct _camel_header_address *camel_header_address_new_group (const gchar *name);
-void camel_header_address_ref (struct _camel_header_address *addrlist);
-void camel_header_address_unref (struct _camel_header_address *addrlist);
-void camel_header_address_set_name (struct _camel_header_address *addrlist, const gchar *name);
-void camel_header_address_set_addr (struct _camel_header_address *addrlist, const gchar *addr);
-void camel_header_address_set_members (struct _camel_header_address *addrlist, struct _camel_header_address *group);
-void camel_header_address_add_member (struct _camel_header_address *addrlist, struct _camel_header_address *member);
-void camel_header_address_list_append_list (struct _camel_header_address **addrlistp, struct _camel_header_address **addrs);
-void camel_header_address_list_append (struct _camel_header_address **addrlistp, struct _camel_header_address *addr);
-void camel_header_address_list_clear (struct _camel_header_address **addrlistp);
+GType camel_header_address_get_type (void) G_GNUC_CONST;
+CamelHeaderAddress *camel_header_address_new (void);
+CamelHeaderAddress *camel_header_address_new_name (const gchar *name, const gchar *addr);
+CamelHeaderAddress *camel_header_address_new_group (const gchar *name);
+CamelHeaderAddress *camel_header_address_ref (CamelHeaderAddress *addrlist);
+void camel_header_address_unref (CamelHeaderAddress *addrlist);
+void camel_header_address_set_name (CamelHeaderAddress *addrlist, const gchar *name);
+void camel_header_address_set_addr (CamelHeaderAddress *addrlist, const gchar *addr);
+void camel_header_address_set_members (CamelHeaderAddress *addrlist, CamelHeaderAddress *group);
+void camel_header_address_add_member (CamelHeaderAddress *addrlist, CamelHeaderAddress *member);
+void camel_header_address_list_append_list (CamelHeaderAddress **addrlistp, CamelHeaderAddress **addrs);
+void camel_header_address_list_append (CamelHeaderAddress **addrlistp, CamelHeaderAddress *addr);
+void camel_header_address_list_clear (CamelHeaderAddress **addrlistp);
 
-struct _camel_header_address *camel_header_address_decode (const gchar *in, const gchar *charset);
-struct _camel_header_address *camel_header_mailbox_decode (const gchar *in, const gchar *charset);
+CamelHeaderAddress *camel_header_address_decode (const gchar *in, const gchar *charset);
+CamelHeaderAddress *camel_header_mailbox_decode (const gchar *in, const gchar *charset);
 /* for mailing */
-gchar *camel_header_address_list_encode (struct _camel_header_address *addrlist);
+gchar *camel_header_address_list_encode (CamelHeaderAddress *addrlist);
 /* for display */
-gchar *camel_header_address_list_format (struct _camel_header_address *addrlist);
+gchar *camel_header_address_list_format (CamelHeaderAddress *addrlist);
 
 /* structured header prameters */
 struct _camel_header_param *camel_header_param_list_decode (const gchar *in);
@@ -135,10 +137,11 @@ gchar *camel_header_param_list_format (struct _camel_header_param *params);
 void camel_header_param_list_free (struct _camel_header_param *params);
 
 /* Content-Type header */
+GType camel_content_type_get_type (void) G_GNUC_CONST;
 CamelContentType *camel_content_type_new (const gchar *type, const gchar *subtype);
 CamelContentType *camel_content_type_decode (const gchar *in);
 void camel_content_type_unref (CamelContentType *content_type);
-void camel_content_type_ref (CamelContentType *content_type);
+CamelContentType *camel_content_type_ref (CamelContentType *content_type);
 const gchar *camel_content_type_param (CamelContentType *content_type, const gchar *name);
 void camel_content_type_set_param (CamelContentType *content_type, const gchar *name, const gchar *value);
 gint camel_content_type_is (CamelContentType *content_type, const gchar *type, const gchar *subtype);
@@ -149,8 +152,9 @@ gchar *camel_content_type_simple (CamelContentType *content_type);
 void camel_content_type_dump (CamelContentType *content_type);
 
 /* Content-Disposition header */
+GType camel_content_disposition_get_type (void) G_GNUC_CONST;
 CamelContentDisposition *camel_content_disposition_decode (const gchar *in);
-void camel_content_disposition_ref (CamelContentDisposition *disposition);
+CamelContentDisposition *camel_content_disposition_ref (CamelContentDisposition *disposition);
 void camel_content_disposition_unref (CamelContentDisposition *disposition);
 gchar *camel_content_disposition_format (CamelContentDisposition *disposition);
 

@@ -214,7 +214,7 @@ struct _CamelMessageContentInfo *
 		imapx_parse_body_fields		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-struct _camel_header_address *
+CamelHeaderAddress *
 		imapx_parse_address_list	(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);

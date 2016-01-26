@@ -89,6 +89,21 @@ localtime_r (t,
 #define d(x)
 #define d2(x)
 
+G_DEFINE_BOXED_TYPE (CamelContentType,
+		camel_content_type,
+		camel_content_type_ref,
+		camel_content_type_unref)
+
+G_DEFINE_BOXED_TYPE (CamelContentDisposition,
+		camel_content_disposition,
+		camel_content_disposition_ref,
+		camel_content_disposition_unref)
+
+G_DEFINE_BOXED_TYPE (CamelHeaderAddress,
+		camel_header_address,
+		camel_header_address_ref,
+		camel_header_address_unref)
+
 /**
  * camel_mktime_utc:
  * @tm: the #tm to convert to a calendar time representation
@@ -2313,7 +2328,7 @@ camel_header_param (struct _camel_header_param *params,
  *
  * Set a parameter in the list.
  *
- * Returns: the set param
+ * Returns: (transfer none): the set param
  **/
 struct _camel_header_param *
 camel_header_set_param (struct _camel_header_param **l,
@@ -2470,11 +2485,13 @@ camel_content_type_new (const gchar *type,
  *
  * Refs the content type.
  **/
-void
+CamelContentType *
 camel_content_type_ref (CamelContentType *ct)
 {
 	if (ct)
 		ct->refcount++;
+
+	return ct;
 }
 
 /**
@@ -2619,7 +2636,7 @@ header_decode_addrspec (const gchar **in)
  * *(word) '<' [ *('@' domain ) ':' ] word *( '.' word) @ domain
  * */
 
-static struct _camel_header_address *
+static CamelHeaderAddress *
 header_decode_mailbox (const gchar **in,
                        const gchar *charset)
 {
@@ -2628,7 +2645,7 @@ header_decode_mailbox (const gchar **in,
 	gint closeme = FALSE;
 	GString *addr;
 	GString *name = NULL;
-	struct _camel_header_address *address = NULL;
+	CamelHeaderAddress *address = NULL;
 	const gchar *comment = NULL;
 
 	addr = g_string_new ("");
@@ -2881,14 +2898,14 @@ header_decode_mailbox (const gchar **in,
 	return address;
 }
 
-static struct _camel_header_address *
+static CamelHeaderAddress *
 header_decode_address (const gchar **in,
                        const gchar *charset)
 {
 	const gchar *inptr = *in;
 	gchar *pre;
 	GString *group = g_string_new ("");
-	struct _camel_header_address *addr = NULL, *member;
+	CamelHeaderAddress *addr = NULL, *member;
 
 	/* pre-scan, trying to work out format, discard results */
 	header_decode_lwsp (&inptr);
@@ -3171,7 +3188,7 @@ camel_header_references_dup (const struct _camel_header_references *list)
 	return new;
 }
 
-struct _camel_header_address *
+CamelHeaderAddress *
 camel_header_mailbox_decode (const gchar *in,
                              const gchar *charset)
 {
@@ -3181,12 +3198,12 @@ camel_header_mailbox_decode (const gchar *in,
 	return header_decode_mailbox (&in, charset);
 }
 
-struct _camel_header_address *
+CamelHeaderAddress *
 camel_header_address_decode (const gchar *in,
                              const gchar *charset)
 {
 	const gchar *inptr = in, *last;
-	struct _camel_header_address *list = NULL, *addr;
+	CamelHeaderAddress *list = NULL, *addr;
 
 	d (printf ("decoding To: '%s'\n", in));
 
@@ -3484,6 +3501,11 @@ header_decode_param_list (const gchar **in)
 	return head;
 }
 
+/**
+ * camel_header_param_list_decode:
+ *
+ * Returns: (transfer full):
+ **/
 struct _camel_header_param *
 camel_header_param_list_decode (const gchar *in)
 {
@@ -3822,11 +3844,13 @@ camel_content_disposition_decode (const gchar *in)
 	return d;
 }
 
-void
+CamelContentDisposition *
 camel_content_disposition_ref (CamelContentDisposition *d)
 {
 	if (d)
 		d->refcount++;
+
+	return d;
 }
 
 void
@@ -4872,21 +4896,21 @@ camel_header_raw_check_mailing_list (struct _camel_header_raw **list)
 }
 
 /* ok, here's the address stuff, what a mess ... */
-struct _camel_header_address *
+CamelHeaderAddress *
 camel_header_address_new (void)
 {
-	struct _camel_header_address *h;
+	CamelHeaderAddress *h;
 	h = g_malloc0 (sizeof (*h));
 	h->type = CAMEL_HEADER_ADDRESS_NONE;
 	h->refcount = 1;
 	return h;
 }
 
-struct _camel_header_address *
+CamelHeaderAddress *
 camel_header_address_new_name (const gchar *name,
                                const gchar *addr)
 {
-	struct _camel_header_address *h;
+	CamelHeaderAddress *h;
 	h = camel_header_address_new ();
 	h->type = CAMEL_HEADER_ADDRESS_NAME;
 	h->name = g_strdup (name);
@@ -4894,10 +4918,10 @@ camel_header_address_new_name (const gchar *name,
 	return h;
 }
 
-struct _camel_header_address *
+CamelHeaderAddress *
 camel_header_address_new_group (const gchar *name)
 {
-	struct _camel_header_address *h;
+	CamelHeaderAddress *h;
 
 	h = camel_header_address_new ();
 	h->type = CAMEL_HEADER_ADDRESS_GROUP;
@@ -4905,15 +4929,17 @@ camel_header_address_new_group (const gchar *name)
 	return h;
 }
 
-void
-camel_header_address_ref (struct _camel_header_address *h)
+CamelHeaderAddress *
+camel_header_address_ref (CamelHeaderAddress *h)
 {
 	if (h)
 		h->refcount++;
+
+	return h;
 }
 
 void
-camel_header_address_unref (struct _camel_header_address *h)
+camel_header_address_unref (CamelHeaderAddress *h)
 {
 	if (h) {
 		if (h->refcount <= 1) {
@@ -4931,7 +4957,7 @@ camel_header_address_unref (struct _camel_header_address *h)
 }
 
 void
-camel_header_address_set_name (struct _camel_header_address *h,
+camel_header_address_set_name (CamelHeaderAddress *h,
                                const gchar *name)
 {
 	if (h) {
@@ -4941,7 +4967,7 @@ camel_header_address_set_name (struct _camel_header_address *h,
 }
 
 void
-camel_header_address_set_addr (struct _camel_header_address *h,
+camel_header_address_set_addr (CamelHeaderAddress *h,
                                const gchar *addr)
 {
 	if (h) {
@@ -4957,8 +4983,8 @@ camel_header_address_set_addr (struct _camel_header_address *h,
 }
 
 void
-camel_header_address_set_members (struct _camel_header_address *h,
-                                  struct _camel_header_address *group)
+camel_header_address_set_members (CamelHeaderAddress *h,
+                                  CamelHeaderAddress *group)
 {
 	if (h) {
 		if (h->type == CAMEL_HEADER_ADDRESS_GROUP
@@ -4974,8 +5000,8 @@ camel_header_address_set_members (struct _camel_header_address *h,
 }
 
 void
-camel_header_address_add_member (struct _camel_header_address *h,
-                                 struct _camel_header_address *member)
+camel_header_address_add_member (CamelHeaderAddress *h,
+                                 CamelHeaderAddress *member)
 {
 	if (h) {
 		if (h->type == CAMEL_HEADER_ADDRESS_GROUP
@@ -4987,11 +5013,11 @@ camel_header_address_add_member (struct _camel_header_address *h,
 }
 
 void
-camel_header_address_list_append_list (struct _camel_header_address **l,
-                                       struct _camel_header_address **h)
+camel_header_address_list_append_list (CamelHeaderAddress **l,
+                                       CamelHeaderAddress **h)
 {
 	if (l) {
-		struct _camel_header_address *n = (struct _camel_header_address *) l;
+		CamelHeaderAddress *n = (CamelHeaderAddress *) l;
 
 		while (n->next)
 			n = n->next;
@@ -5000,8 +5026,8 @@ camel_header_address_list_append_list (struct _camel_header_address **l,
 }
 
 void
-camel_header_address_list_append (struct _camel_header_address **l,
-                                  struct _camel_header_address *h)
+camel_header_address_list_append (CamelHeaderAddress **l,
+                                  CamelHeaderAddress *h)
 {
 	if (h) {
 		camel_header_address_list_append_list (l, &h);
@@ -5010,9 +5036,9 @@ camel_header_address_list_append (struct _camel_header_address **l,
 }
 
 void
-camel_header_address_list_clear (struct _camel_header_address **l)
+camel_header_address_list_clear (CamelHeaderAddress **l)
 {
-	struct _camel_header_address *a, *n;
+	CamelHeaderAddress *a, *n;
 	a = *l;
 	while (a) {
 		n = a->next;
@@ -5027,7 +5053,7 @@ camel_header_address_list_clear (struct _camel_header_address **l)
 static void
 header_address_list_encode_append (GString *out,
                                    gint encode,
-                                   struct _camel_header_address *a)
+                                   CamelHeaderAddress *a)
 {
 	gchar *text;
 
@@ -5067,7 +5093,7 @@ header_address_list_encode_append (GString *out,
 }
 
 gchar *
-camel_header_address_list_encode (struct _camel_header_address *a)
+camel_header_address_list_encode (CamelHeaderAddress *a)
 {
 	GString *out;
 	gchar *ret;
@@ -5084,7 +5110,7 @@ camel_header_address_list_encode (struct _camel_header_address *a)
 }
 
 gchar *
-camel_header_address_list_format (struct _camel_header_address *a)
+camel_header_address_list_format (CamelHeaderAddress *a)
 {
 	GString *out;
 	gchar *ret;

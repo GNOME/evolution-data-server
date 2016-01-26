@@ -433,7 +433,7 @@ fail:
  * camel_provider_auto_detect:
  * @provider: camel provider
  * @url: a #CamelURL
- * @auto_detected: output hash table of auto-detected values
+ * @auto_detected: (inout): output hash table of auto-detected values
  * @error: return location for a #GError, or %NULL
  *
  * After filling in the standard Username/Hostname/Port/Path settings

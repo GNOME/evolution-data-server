@@ -1492,6 +1492,7 @@ camel_session_set_junk_headers (CamelSession *session,
  * camel_session_get_junk_headers:
  *
  * Since: 2.22
+ * Returns: (element-type utf8 utf8) (transfer none):
  **/
 const GHashTable *
 camel_session_get_junk_headers (CamelSession *session)

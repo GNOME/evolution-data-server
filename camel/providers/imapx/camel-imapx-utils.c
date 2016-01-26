@@ -1035,7 +1035,7 @@ error:
 	return cinfo;
 }
 
-struct _camel_header_address *
+CamelHeaderAddress *
 imapx_parse_address_list (CamelIMAPXInputStream *stream,
                           GCancellable *cancellable,
                           GError **error)
@@ -1044,7 +1044,7 @@ imapx_parse_address_list (CamelIMAPXInputStream *stream,
 	guint len;
 	guchar *token, *host;
 	gchar *mbox;
-	struct _camel_header_address *list = NULL;
+	CamelHeaderAddress *list = NULL;
 	GError *local_error = NULL;
 
 	/* "(" 1*address ")" / nil */
@@ -1057,7 +1057,7 @@ imapx_parse_address_list (CamelIMAPXInputStream *stream,
 	}
 
 	if (tok == '(') {
-		struct _camel_header_address *addr, *group = NULL;
+		CamelHeaderAddress *addr, *group = NULL;
 		while (1) {
 			/* address         ::= "(" addr_name SPACE addr_adl SPACE addr_mailbox
 			 * SPACE addr_host ")" */
@@ -1163,7 +1163,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	gint tok;
 	guint len;
 	guchar *token;
-	struct _camel_header_address *addr, *addr_from;
+	CamelHeaderAddress *addr, *addr_from;
 	gchar *addrstr;
 	struct _CamelMessageInfoBase *minfo = NULL;
 	GError *local_error = NULL;
