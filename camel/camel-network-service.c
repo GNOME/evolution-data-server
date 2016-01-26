@@ -730,10 +730,21 @@ camel_network_service_ref_connectable (CamelNetworkService *service)
 
 	g_mutex_lock (&priv->property_lock);
 
-	if (priv->connectable != NULL)
+	if (priv->connectable != NULL) {
 		connectable = g_object_ref (priv->connectable);
+		g_mutex_unlock (&priv->property_lock);
+	} else {
+		CamelNetworkServiceInterface *iface;
 
-	g_mutex_unlock (&priv->property_lock);
+		g_mutex_unlock (&priv->property_lock);
+
+		iface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
+		g_return_val_if_fail (iface->new_connectable != NULL, NULL);
+
+		/* This may return NULL if we don't have valid network
+		 * settings from which to create a GSocketConnectable. */
+		connectable = iface->new_connectable (service);
+	}
 
 	return connectable;
 }
@@ -753,24 +764,21 @@ void
 camel_network_service_set_connectable (CamelNetworkService *service,
                                        GSocketConnectable *connectable)
 {
-	CamelNetworkServiceInterface *iface;
 	CamelNetworkServicePrivate *priv;
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
 
-	iface = CAMEL_NETWORK_SERVICE_GET_INTERFACE (service);
-	g_return_if_fail (iface->new_connectable != NULL);
-
 	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
 	g_return_if_fail (priv != NULL);
 
+	/* The GNetworkAddress is not thread safe, thus rather than precache it,
+	   create a new instance whenever it's asked for it. Keep precached only
+	   the connectable which had been explicitly set, because there cannot be
+	   done exact copy of it.
+	*/
 	if (connectable != NULL) {
 		g_return_if_fail (G_IS_SOCKET_CONNECTABLE (connectable));
 		g_object_ref (connectable);
-	} else {
-		/* This may return NULL if we don't have valid network
-		 * settings from which to create a GSocketConnectable. */
-		connectable = iface->new_connectable (service);
 	}
 
 	g_mutex_lock (&priv->property_lock);
