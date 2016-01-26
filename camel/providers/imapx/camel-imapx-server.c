@@ -5930,8 +5930,17 @@ imapx_server_idle_thread (gpointer user_data)
 		previous_timeout = imapx_server_set_connection_timeout (is->priv->connection, INACTIVITY_TIMEOUT_SECONDS + 60);
 	g_mutex_unlock (&is->priv->stream_lock);
 
-	/* Blocks, until the DONE is issued or on inactivity timeout, error, ... */
-	success = camel_imapx_server_process_command_sync (is, ic, _("Error running IDLE"), idle_cancellable, &local_error);
+	g_rec_mutex_lock (&is->priv->idle_lock);
+	if (is->priv->idle_stamp == itd->idle_stamp) {
+		g_rec_mutex_unlock (&is->priv->idle_lock);
+
+		/* Blocks, until the DONE is issued or on inactivity timeout, error, ... */
+		success = camel_imapx_server_process_command_sync (is, ic, _("Error running IDLE"), idle_cancellable, &local_error);
+
+		rather_disconnect = rather_disconnect || !success || g_cancellable_is_cancelled (idle_cancellable);
+	} else {
+		g_rec_mutex_unlock (&is->priv->idle_lock);
+	}
 
 	if (previous_timeout >= 0) {
 		g_mutex_lock (&is->priv->stream_lock);
@@ -5948,11 +5957,11 @@ imapx_server_idle_thread (gpointer user_data)
 	g_rec_mutex_unlock (&is->priv->idle_lock);
 
 	if (success)
-		c (camel_imapx_server_get_tagprefix (is), "IDLE finished successfully");
+		c (camel_imapx_server_get_tagprefix (is), "IDLE finished successfully\n");
 	else if (local_error)
-		c (camel_imapx_server_get_tagprefix (is), "IDLE finished with error: %s%s", local_error->message, rather_disconnect ? "; rather disconnect" : "");
+		c (camel_imapx_server_get_tagprefix (is), "IDLE finished with error: %s%s\n", local_error->message, rather_disconnect ? "; rather disconnect" : "");
 	else
-		c (camel_imapx_server_get_tagprefix (is), "IDLE finished without error%s", rather_disconnect ? "; rather disconnect" : "");
+		c (camel_imapx_server_get_tagprefix (is), "IDLE finished without error%s\n", rather_disconnect ? "; rather disconnect" : "");
 
 	if (rather_disconnect) {
 		imapx_disconnect (is);
@@ -6154,64 +6163,42 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 
 	g_rec_mutex_unlock (&is->priv->idle_lock);
 
-	if (idle_cancellable) {
-		g_cancellable_cancel (idle_cancellable);
-		g_object_unref (idle_cancellable);
+	if (idle_command) {
+		g_mutex_lock (&is->priv->stream_lock);
+		if (is->priv->output_stream) {
+			gint previous_timeout = -1;
+
+			/* Set the connection timeout to some short time, no need to wait for it for too long */
+			if (is->priv->connection)
+				previous_timeout = imapx_server_set_connection_timeout (is->priv->connection, 5);
+
+			success = g_output_stream_flush (is->priv->output_stream, cancellable, error);
+			success = success && g_output_stream_write_all (is->priv->output_stream, "DONE\r\n", 6, NULL, cancellable, error);
+			success = success && g_output_stream_flush (is->priv->output_stream, cancellable, error);
+
+			if (previous_timeout >= 0 && is->priv->connection)
+				imapx_server_set_connection_timeout (is->priv->connection, previous_timeout);
+		} else {
+			success = FALSE;
+
+			/* This message won't get into UI. */
+			g_set_error_literal (error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
+				"Reconnect after couldn't issue DONE command");
+		}
+		g_mutex_unlock (&is->priv->stream_lock);
+
+		camel_imapx_command_unref (idle_command);
 	}
+
+	if ((!idle_command || !success) && idle_cancellable) {
+		g_cancellable_cancel (idle_cancellable);
+	}
+
+	if (idle_cancellable)
+		g_object_unref (idle_cancellable);
 
 	if (idle_thread)
 		g_thread_join (idle_thread);
-
-	if (idle_command) {
-		CamelIMAPXCommand *ic;
-		gint previous_timeout = -1;
-		GError *local_error = NULL;
-
-		g_return_val_if_fail (is->priv->current_command == NULL, FALSE);
-
-		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_DONE, "DONE");
-		ic->tag = idle_command->tag;
-
-		g_mutex_lock (&is->priv->stream_lock);
-		/* Set the connection timeout to some short time, no need to wait for it for too long */
-		if (is->priv->connection)
-			previous_timeout = imapx_server_set_connection_timeout (is->priv->connection, 15);
-		g_mutex_unlock (&is->priv->stream_lock);
-
-		success = camel_imapx_server_process_command_sync (is, ic, _("Failed to issue DONE"), cancellable, &local_error);
-
-		if (previous_timeout >= 0) {
-			g_mutex_lock (&is->priv->stream_lock);
-			if (is->priv->connection)
-				imapx_server_set_connection_timeout (is->priv->connection, previous_timeout);
-			g_mutex_unlock (&is->priv->stream_lock);
-		}
-
-		camel_imapx_command_unref (ic);
-		camel_imapx_command_unref (idle_command);
-
-		if (success)
-			c (camel_imapx_server_get_tagprefix (is), "DONE finished successfully\n");
-		else
-			c (camel_imapx_server_get_tagprefix (is), "DONE finished with error: %s\n", local_error ? local_error->message : "Unknown error");
-
-		if (!success) {
-			GError *tmp = local_error;
-
-			local_error = NULL;
-
-			g_set_error (
-				&local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
-				"Failed to finish IDLE with DONE: %s", tmp ? tmp->message : "Unknown error");
-
-			g_clear_error (&tmp);
-		}
-
-		if (local_error) {
-			g_propagate_error (error, local_error);
-			success = FALSE;
-		}
-	}
 
 	return success;
 }
