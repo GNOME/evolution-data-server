@@ -475,8 +475,8 @@ gpg_ctx_get_executable_name (void)
 	static gchar preset_binary[512 + 1];
 	const gchar *names[] = {
 		"",
+		"gpg2", /* Prefer gpg2, which the seahorse might use too */
 		"gpg",
-		"gpg2", /* Prefer gpg for now, because gpg2 doesn't save passwords (neither for the session) */
 		NULL
 	};
 
