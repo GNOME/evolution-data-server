@@ -487,6 +487,7 @@ addr_lookup (gpointer addr,
 #ifdef HAVE_ELFUTILS_LIBDWFL
 	Dwfl *dwfl = dwfl_get (FALSE);
 	struct getmodules_callback_arg arg;
+	static GMutex mutex;
 
 	if (!dwfl)
 		return NULL;
@@ -496,6 +497,8 @@ addr_lookup (gpointer addr,
 	arg.file_path = NULL;
 	arg.lineno = -1;
 
+	g_mutex_lock (&mutex);
+
 	dwfl_getmodules (dwfl, getmodules_callback, &arg, 0);
 
 	if (!arg.func_name && fallback && strstr (fallback, "/lib") != fallback && strstr (fallback, "/usr/lib") != fallback) {
@@ -503,6 +506,8 @@ addr_lookup (gpointer addr,
 		if (dwfl)
 			dwfl_getmodules (dwfl, getmodules_callback, &arg, 0);
 	}
+
+	g_mutex_unlock (&mutex);
 
 	*file_path = arg.file_path;
 	*lineno = arg.lineno;
