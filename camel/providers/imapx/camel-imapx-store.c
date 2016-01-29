@@ -2375,6 +2375,12 @@ imapx_initial_setup_sync (CamelStore *store,
 		NC_("IMAPDefaults", "Drafts"),
 		NC_("IMAPDefaults", "Draft")
 	};
+	const gchar *templates_names[] = {
+		NC_("IMAPDefaults", "Templates")
+	};
+	const gchar *archive_names[] = {
+		NC_("IMAPDefaults", "Archive")
+	};
 	const gchar *sent_names[] = {
 		NC_("IMAPDefaults", "[Gmail]/Sent Mail"),
 		NC_("IMAPDefaults", "Sent"),
@@ -2415,6 +2421,14 @@ imapx_initial_setup_sync (CamelStore *store,
 	imapx_check_initial_setup_group (finfo, save_setup,
 		CAMEL_STORE_SETUP_DRAFTS_FOLDER, NULL, NULL,
 		draft_names, G_N_ELEMENTS (draft_names));
+
+	imapx_check_initial_setup_group (finfo, save_setup,
+		CAMEL_STORE_SETUP_TEMPLATES_FOLDER, NULL, NULL,
+		templates_names, G_N_ELEMENTS (templates_names));
+
+	imapx_check_initial_setup_group (finfo, save_setup,
+		CAMEL_STORE_SETUP_ARCHIVE_FOLDER, NULL, NULL,
+		archive_names, G_N_ELEMENTS (archive_names));
 
 	imapx_check_initial_setup_group (finfo, save_setup,
 		CAMEL_STORE_SETUP_SENT_FOLDER, NULL, NULL,
