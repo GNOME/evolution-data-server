@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-01-23 06:12+0000\n"
-"PO-Revision-Date: 2016-01-23 18:19+0100\n"
+"POT-Creation-Date: 2016-01-29 18:13+0000\n"
+"PO-Revision-Date: 2016-01-29 19:31+0100\n"
 "Last-Translator: Mario Blättermann <mario.blaettermann@gmail.com>\n"
 "Language-Team: Deutsch <gnome-de@gnome.org>\n"
 "Language: de\n"
@@ -141,9 +141,9 @@ msgstr "Umbenennen der alten Datenbank von »%s« in »%s« schlug fehl: %s"
 #: ../calendar/libecal/e-cal-client.c:6424
 #: ../calendar/libecal/e-cal-client.c:6787
 #: ../calendar/libecal/e-cal-client.c:7009
-#: ../camel/providers/imapx/camel-imapx-server.c:2921
-#: ../camel/providers/imapx/camel-imapx-server.c:2931
+#: ../camel/providers/imapx/camel-imapx-server.c:2933
 #: ../camel/providers/imapx/camel-imapx-server.c:2943
+#: ../camel/providers/imapx/camel-imapx-server.c:2955
 #: ../libebackend/e-server-side-source.c:497 ../libedataserver/e-client.c:190
 msgid "Unknown error"
 msgstr "Unbekannter Fehler"
@@ -1612,127 +1612,127 @@ msgstr "Wert der Kalendereigenschaft »%s« kann nicht geändert werden"
 msgid "Untitled appointment"
 msgstr "Namenloser Termin"
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4047
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4048
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4049
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4050
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4051
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4052
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4053
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4054
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4055
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4056
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4057
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4057
+#: ../calendar/libecal/e-cal-recur.c:4058
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4058
+#: ../calendar/libecal/e-cal-recur.c:4059
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4059
+#: ../calendar/libecal/e-cal-recur.c:4060
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4060
+#: ../calendar/libecal/e-cal-recur.c:4061
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4061
+#: ../calendar/libecal/e-cal-recur.c:4062
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4062
+#: ../calendar/libecal/e-cal-recur.c:4063
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4063
+#: ../calendar/libecal/e-cal-recur.c:4064
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4064
+#: ../calendar/libecal/e-cal-recur.c:4065
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4065
+#: ../calendar/libecal/e-cal-recur.c:4066
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4066
+#: ../calendar/libecal/e-cal-recur.c:4067
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4067
+#: ../calendar/libecal/e-cal-recur.c:4068
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4068
+#: ../calendar/libecal/e-cal-recur.c:4069
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4069
+#: ../calendar/libecal/e-cal-recur.c:4070
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4070
+#: ../calendar/libecal/e-cal-recur.c:4071
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4071
+#: ../calendar/libecal/e-cal-recur.c:4072
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4072
+#: ../calendar/libecal/e-cal-recur.c:4073
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4073
+#: ../calendar/libecal/e-cal-recur.c:4074
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4074
+#: ../calendar/libecal/e-cal-recur.c:4075
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4075
+#: ../calendar/libecal/e-cal-recur.c:4076
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4076
+#: ../calendar/libecal/e-cal-recur.c:4077
 msgid "31st"
 msgstr "31."
 
@@ -2095,62 +2095,62 @@ msgstr "Ungültige Argumente bei (message-location)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Fehler beim Ausführen einer Filtersuche: %s: %s"
 
-#: ../camel/camel-folder.c:321
+#: ../camel/camel-folder.c:326
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "Unerwünschte Nachricht wird in »%s« gesucht"
 msgstr[1] "Unerwünschte Nachrichten werden in »%s« gesucht"
 
-#: ../camel/camel-folder.c:361
+#: ../camel/camel-folder.c:366
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "Erwünschte Nachricht wird in »%s« gesucht"
 msgstr[1] "Erwünschte Nachrichten werden in »%s« gesucht"
 
-#: ../camel/camel-folder.c:409
+#: ../camel/camel-folder.c:414
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "Neue Nachricht in »%s« wird gefiltert"
 msgstr[1] "Neue Nachrichten in »%s« werden gefiltert"
 
-#: ../camel/camel-folder.c:1015
+#: ../camel/camel-folder.c:1020
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Nachrichten werden verschoben"
 
-#: ../camel/camel-folder.c:1018
+#: ../camel/camel-folder.c:1023
 msgid "Copying messages"
 msgstr "Nachrichten werden kopiert"
 
-#: ../camel/camel-folder.c:1060
+#: ../camel/camel-folder.c:1065
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "Kontingent-Informationen werden für Ordner »%s« nicht unterstützt"
 
-#: ../camel/camel-folder.c:1155
+#: ../camel/camel-folder.c:1160
 #, c-format
 msgid "Filtering folder '%s'"
 msgstr "Ordner »%s« wird gefiltert"
 
-#: ../camel/camel-folder.c:2891
+#: ../camel/camel-folder.c:2896
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Ordner »%s« wird gesäubert"
 
-#: ../camel/camel-folder.c:3022
+#: ../camel/camel-folder.c:3027
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Nachricht »%s« in %s wird abgerufen"
 
-#: ../camel/camel-folder.c:3213
+#: ../camel/camel-folder.c:3218
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Kontingent-Informationen für »%s« werden abgerufen"
 
-#: ../camel/camel-folder.c:3510
+#: ../camel/camel-folder.c:3515
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Ordner »%s« wird aktualisiert"
@@ -2203,12 +2203,12 @@ msgstr ""
 "Fehler beim Ausführen eines Suchausdrucks: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-summary.c:2151
+#: ../camel/camel-folder-summary.c:2156
 #, c-format
 msgid "Release unused memory for folder '%s'"
 msgstr "Ungenutzten Speicher für Ordner »%s« freigeben"
 
-#: ../camel/camel-folder-summary.c:2363
+#: ../camel/camel-folder-summary.c:2368
 #, c-format
 msgid "Update preview data for folder '%s'"
 msgstr "Voransicht für Ordner »%s« wird aktualisiert"
@@ -2809,7 +2809,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Ungültiger GType registriert für Protokoll »%s«"
 
 #: ../camel/camel-session.c:499
-#: ../camel/providers/imapx/camel-imapx-server.c:2870
+#: ../camel/providers/imapx/camel-imapx-server.c:2882
 #: ../camel/providers/pop3/camel-pop3-store.c:308
 #: ../camel/providers/pop3/camel-pop3-store.c:786
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
@@ -3167,13 +3167,13 @@ msgstr "Nachrichten können nicht in den Papierkorb-Ordner kopiert werden"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nachrichten können nicht in den Unerwünscht-Ordner kopiert werden"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:937
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:953
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen (%s)"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:945
-#: ../camel/providers/imapx/camel-imapx-server.c:2998
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:961
+#: ../camel/providers/imapx/camel-imapx-server.c:3010
 #: ../camel/providers/nntp/camel-nntp-store.c:349
 #: ../camel/providers/nntp/camel-nntp-store.c:1291
 #: ../camel/providers/nntp/camel-nntp-store.c:2099
@@ -3192,17 +3192,17 @@ msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Sie müssen online arbeiten, um diesen Vorgang abzuschließen"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1517
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1605
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1533
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1621
 #, c-format
 msgid "No destination folder specified"
 msgstr "Kein Zielordner angegeben"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1544
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1560
 msgid "Unable to move junk messages"
 msgstr "Unerwünschte Nachrichten konnten nicht verschoben werden"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1639
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1655
 msgid "Unable to move deleted messages"
 msgstr "Gelöschte Nachrichten konnten nicht verschoben werden"
 
@@ -3330,201 +3330,197 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Zum Lesen und Speichern von E-Mails auf IMAP-Servern."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1113
+#: ../camel/providers/imapx/camel-imapx-server.c:1119
 msgid "Error writing to cache stream"
 msgstr "Fehler beim Schreiben in den Zwischenspeicher-Datenstrom"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2707
-#: ../camel/providers/imapx/camel-imapx-server.c:2781
-#: ../camel/providers/imapx/camel-imapx-server.c:3028
+#: ../camel/providers/imapx/camel-imapx-server.c:2719
+#: ../camel/providers/imapx/camel-imapx-server.c:2793
+#: ../camel/providers/imapx/camel-imapx-server.c:3040
 msgid "Failed to get capabilities"
 msgstr "Ermitteln der Fähigkeiten gescheitert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2721
+#: ../camel/providers/imapx/camel-imapx-server.c:2733
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2722
+#: ../camel/providers/imapx/camel-imapx-server.c:2734
 #: ../camel/providers/smtp/camel-smtp-transport.c:281
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nicht unterstützt"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2728
+#: ../camel/providers/imapx/camel-imapx-server.c:2740
 msgid "Failed to issue STARTTLS"
 msgstr "Fehler bei der Ausgabe von STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2772
+#: ../camel/providers/imapx/camel-imapx-server.c:2784
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Verbindung mit IMAP-Server %s im sicheren Modus ist gescheitert:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2859
+#: ../camel/providers/imapx/camel-imapx-server.c:2871
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-Server %s unterstützt den Legitimierungstyp %s nicht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2888
+#: ../camel/providers/imapx/camel-imapx-server.c:2900
 #: ../camel/providers/nntp/camel-nntp-store.c:400
 #: ../camel/providers/nntp/camel-nntp-store.c:542
 msgid "Cannot authenticate without a username"
 msgstr "Legitimierung ohne Benutzername ist nicht möglich"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2897
+#: ../camel/providers/imapx/camel-imapx-server.c:2909
 #: ../camel/providers/nntp/camel-nntp-store.c:551
 #: ../camel/providers/pop3/camel-pop3-store.c:690
 #: ../camel/providers/pop3/camel-pop3-store.c:728
 msgid "Authentication password not available"
 msgstr "Legitimierungspasswort ist nicht verfügbar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2905
+#: ../camel/providers/imapx/camel-imapx-server.c:2917
 msgid "Failed to authenticate"
 msgstr "Legitimierung gescheitert"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3045
+#: ../camel/providers/imapx/camel-imapx-server.c:3057
 msgid "Failed to issue NAMESPACE"
 msgstr "Fehler bei der Ausgabe von NAMESPACE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3059
+#: ../camel/providers/imapx/camel-imapx-server.c:3071
 msgid "Failed to enable QResync"
 msgstr "Aktivieren von QResync fehlgeschlagen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3087
+#: ../camel/providers/imapx/camel-imapx-server.c:3099
 msgid "Failed to issue NOTIFY"
 msgstr "Fehler bei der Ausgabe von NOTIFY"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3565
+#: ../camel/providers/imapx/camel-imapx-server.c:3559
 msgid "Failed to select mailbox"
 msgstr "﻿Fehler beim Auswählen des Postfachs"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3663
+#: ../camel/providers/imapx/camel-imapx-server.c:3657
 msgid "Cannot issue command, no stream available"
 msgstr "Befehl kann nicht ausgegeben werden, kein Datenstrom vorhanden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3914
+#: ../camel/providers/imapx/camel-imapx-server.c:3913
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nachricht mit Kennung %s konnte nicht abgerufen werden: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3915
+#: ../camel/providers/imapx/camel-imapx-server.c:3914
 msgid "No such message available."
 msgstr "Nachricht nicht verfügbar."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3949
-#: ../camel/providers/imapx/camel-imapx-server.c:3974
-#: ../camel/providers/imapx/camel-imapx-server.c:3993
+#: ../camel/providers/imapx/camel-imapx-server.c:3948
+#: ../camel/providers/imapx/camel-imapx-server.c:3973
+#: ../camel/providers/imapx/camel-imapx-server.c:3992
 msgid "Error fetching message"
 msgstr "Fehler beim Abrufen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3986
+#: ../camel/providers/imapx/camel-imapx-server.c:3985
 msgid "Failed to close the tmp stream"
 msgstr "Temporärer Datenstrom konnte nicht geschlossen werden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4017
+#: ../camel/providers/imapx/camel-imapx-server.c:4016
 msgid "Failed to copy the tmp file"
 msgstr "Temporäre Datei konnte nicht kopiert werden"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4176
+#: ../camel/providers/imapx/camel-imapx-server.c:4175
 msgid "Error moving messages"
 msgstr "Fehler beim Verschieben von Nachrichten"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4176
+#: ../camel/providers/imapx/camel-imapx-server.c:4175
 msgid "Error copying messages"
 msgstr "Fehler beim Kopieren von Nachrichten"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4360
-#: ../camel/providers/imapx/camel-imapx-server.c:4381
+#: ../camel/providers/imapx/camel-imapx-server.c:4359
+#: ../camel/providers/imapx/camel-imapx-server.c:4380
 msgid "Cannot create spool file: "
 msgstr "Spool-Datei konnte nicht angelegt werden:"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4472
+#: ../camel/providers/imapx/camel-imapx-server.c:4471
 msgid "Error appending message"
 msgstr "Fehler beim Anhängen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4562
+#: ../camel/providers/imapx/camel-imapx-server.c:4561
 msgid "Error performing NOOP"
 msgstr "Fehler beim Ausführen von NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4710
+#: ../camel/providers/imapx/camel-imapx-server.c:4709
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Geänderte Nachrichten werden in »%s« gesucht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4713
+#: ../camel/providers/imapx/camel-imapx-server.c:4712
 msgid "Error scanning changes"
 msgstr "Fehler beim Durchsuchen der Änderungen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4731
+#: ../camel/providers/imapx/camel-imapx-server.c:4730
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr ""
 "Zusammenfassende Informationen für neue Nachrichten in »%s« werden abgerufen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4748
+#: ../camel/providers/imapx/camel-imapx-server.c:4747
 msgid "Error fetching message info"
 msgstr "Fehler beim Abrufen der Nachrichtinfo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4810
+#: ../camel/providers/imapx/camel-imapx-server.c:4809
 msgid "Error running STATUS"
 msgstr "Fehler beim Ausführen von STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5293
-#: ../camel/providers/imapx/camel-imapx-server.c:5345
+#: ../camel/providers/imapx/camel-imapx-server.c:5292
+#: ../camel/providers/imapx/camel-imapx-server.c:5344
 msgid "Error syncing changes"
 msgstr "Fehler beim Abgleichen der Änderungen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5456
+#: ../camel/providers/imapx/camel-imapx-server.c:5455
 msgid "Error expunging message"
 msgstr "Fehler beim Löschen der Nachricht"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5526
+#: ../camel/providers/imapx/camel-imapx-server.c:5525
 msgid "Error fetching folders"
 msgstr "Fehler beim Abrufen der Ordner"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5537
+#: ../camel/providers/imapx/camel-imapx-server.c:5536
 msgid "Error fetching subscribed folders"
 msgstr "Fehler beim Abrufen der abonnierten Ordner"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5559
+#: ../camel/providers/imapx/camel-imapx-server.c:5558
 msgid "Error creating folder"
 msgstr "Fehler beim Anlegen des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5615
+#: ../camel/providers/imapx/camel-imapx-server.c:5614
 msgid "Error deleting folder"
 msgstr "Fehler beim Löschen des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5661
+#: ../camel/providers/imapx/camel-imapx-server.c:5660
 msgid "Error renaming folder"
 msgstr "Fehler beim Umbenennen des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5693
+#: ../camel/providers/imapx/camel-imapx-server.c:5692
 msgid "Error subscribing to folder"
 msgstr "Fehler beim Abonnieren des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5729
+#: ../camel/providers/imapx/camel-imapx-server.c:5728
 msgid "Error unsubscribing from folder"
 msgstr "Fehler beim Kündigen des Abonnement des Ordners"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5765
+#: ../camel/providers/imapx/camel-imapx-server.c:5764
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-Server unterstützt keine Kontingente"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5775
+#: ../camel/providers/imapx/camel-imapx-server.c:5774
 msgid "Error retrieving quota information"
 msgstr "Fehler beim Abrufen der Kontingent-Informationen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5822
+#: ../camel/providers/imapx/camel-imapx-server.c:5821
 msgid "Search failed"
 msgstr "Suche fehlgeschlagen"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:5933
+#: ../camel/providers/imapx/camel-imapx-server.c:5938
 msgid "Error running IDLE"
 msgstr "Fehler beim Ausführen von IDLE"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:6180
-msgid "Failed to issue DONE"
-msgstr "Fehler bei der Ausgabe von DONE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imapx/camel-imapx-store.c:224
@@ -3602,61 +3598,70 @@ msgstr "Entwurf"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2379
 msgctxt "IMAPDefaults"
+msgid "Templates"
+msgstr "Vorlagen"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2382
+msgctxt "IMAPDefaults"
+msgid "Archive"
+msgstr "Archiv"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2385
+msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Gesendet"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2380
+#: ../camel/providers/imapx/camel-imapx-store.c:2386
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Gesendet"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2381
+#: ../camel/providers/imapx/camel-imapx-store.c:2387
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Gesendete Objekte"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2384
+#: ../camel/providers/imapx/camel-imapx-store.c:2390
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Spam"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2385
-#| msgid "Junk"
+#: ../camel/providers/imapx/camel-imapx-store.c:2391
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Unerwünscht"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2386
+#: ../camel/providers/imapx/camel-imapx-store.c:2392
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Unerwünschte E-Mail"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2387
+#: ../camel/providers/imapx/camel-imapx-store.c:2393
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Unerwünschte E-Mail"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2388
+#: ../camel/providers/imapx/camel-imapx-store.c:2394
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Spam"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2389
+#: ../camel/providers/imapx/camel-imapx-store.c:2395
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Massen-E-Mails"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2392
+#: ../camel/providers/imapx/camel-imapx-store.c:2398
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Papierkorb"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2393
+#: ../camel/providers/imapx/camel-imapx-store.c:2399
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Papierkorb"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2394
+#: ../camel/providers/imapx/camel-imapx-store.c:2400
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Gelöschte Objekte"
@@ -5948,6 +5953,9 @@ msgstr "Benutzerdaten nicht aus früheren Versionen von Evolution übernehmen"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
 msgstr "_Verwerfen"
+
+#~ msgid "Failed to issue DONE"
+#~ msgstr "Fehler bei der Ausgabe von DONE"
 
 #~ msgid "Server disconnected"
 #~ msgstr "Serververbindung wurde getrennt"
