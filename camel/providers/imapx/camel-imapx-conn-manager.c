@@ -413,8 +413,6 @@ imapx_conn_manager_dec_mailbox_hash (CamelIMAPXConnManager *conn_man,
 	count = GPOINTER_TO_INT (g_hash_table_lookup (mailboxes_hash, mailbox));
 	if (!count) {
 		g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
-		g_warn_if_fail (count > 0);
-
 		return;
 	}
 
