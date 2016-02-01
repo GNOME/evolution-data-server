@@ -135,6 +135,12 @@ CamelIMAPXMailbox *
 const struct _capability_info *
 		camel_imapx_server_get_capability_info
 						(CamelIMAPXServer *is);
+gboolean	camel_imapx_server_have_capability
+						(CamelIMAPXServer *is,
+						 guint32 capability);
+gboolean	camel_imapx_server_lack_capability
+						(CamelIMAPXServer *is,
+						 guint32 capability);
 gchar		camel_imapx_server_get_tagprefix
 						(CamelIMAPXServer *is);
 void		camel_imapx_server_set_tagprefix

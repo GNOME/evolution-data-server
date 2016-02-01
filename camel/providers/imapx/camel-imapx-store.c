@@ -3223,7 +3223,7 @@ camel_imapx_store_handle_list_response (CamelIMAPXStore *imapx_store,
 
 	/* Fabricate a CamelIMAPXNamespaceResponse if the server lacks the
 	 * NAMESPACE capability and this is the first LIST / LSUB response. */
-	if (CAMEL_IMAPX_LACK_CAPABILITY (camel_imapx_server_get_capability_info (imapx_server), NAMESPACE)) {
+	if (camel_imapx_server_lack_capability (imapx_server, IMAPX_CAPABILITY_NAMESPACE)) {
 		g_mutex_lock (&imapx_store->priv->namespaces_lock);
 		if (imapx_store->priv->namespaces == NULL) {
 			imapx_store->priv->namespaces = camel_imapx_namespace_response_faux_new (response);
@@ -3287,7 +3287,7 @@ camel_imapx_store_handle_lsub_response (CamelIMAPXStore *imapx_store,
 
 	/* Fabricate a CamelIMAPXNamespaceResponse if the server lacks the
 	 * NAMESPACE capability and this is the first LIST / LSUB response. */
-	if (CAMEL_IMAPX_LACK_CAPABILITY (camel_imapx_server_get_capability_info (imapx_server), NAMESPACE)) {
+	if (camel_imapx_server_lack_capability (imapx_server, IMAPX_CAPABILITY_NAMESPACE)) {
 		g_mutex_lock (&imapx_store->priv->namespaces_lock);
 		if (imapx_store->priv->namespaces == NULL) {
 			imapx_store->priv->namespaces = camel_imapx_namespace_response_faux_new (response);
