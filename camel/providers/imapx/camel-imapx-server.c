@@ -291,7 +291,7 @@ struct _CamelIMAPXServerPrivate {
 
 	gboolean is_cyrus;
 
-	/* Info about the current connection */
+	/* Info about the current connection; guarded by priv->stream_lock */
 	struct _capability_info *cinfo;
 
 	GRecMutex command_lock;
@@ -782,20 +782,35 @@ imapx_untagged_capability (CamelIMAPXServer *is,
                            GCancellable *cancellable,
                            GError **error)
 {
+	struct _capability_info *cinfo;
+
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+
+	g_mutex_lock (&is->priv->stream_lock);
+
+	if (is->priv->cinfo != NULL) {
+		imapx_free_capability (is->priv->cinfo);
+		is->priv->cinfo = NULL;
+	}
+
+	g_mutex_unlock (&is->priv->stream_lock);
+
+	cinfo = imapx_parse_capability (CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
+
+	if (!cinfo)
+		return FALSE;
+
+	g_mutex_lock (&is->priv->stream_lock);
 
 	if (is->priv->cinfo != NULL)
 		imapx_free_capability (is->priv->cinfo);
-
-	is->priv->cinfo = imapx_parse_capability (
-		CAMEL_IMAPX_INPUT_STREAM (input_stream), cancellable, error);
-
-	if (is->priv->cinfo == NULL)
-		return FALSE;
+	is->priv->cinfo = cinfo;
 
 	c (is->priv->tagprefix, "got capability flags %08x\n", is->priv->cinfo->capa);
 
 	imapx_server_stash_command_arguments (is);
+
+	g_mutex_unlock (&is->priv->stream_lock);
 
 	return TRUE;
 }
@@ -1792,7 +1807,11 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 		break;
 	case IMAPX_CAPABILITY:
 		if (is->priv->context->sinfo->u.cinfo) {
-			struct _capability_info *cinfo = is->priv->cinfo;
+			struct _capability_info *cinfo;
+
+			g_mutex_lock (&is->priv->stream_lock);
+
+			cinfo = is->priv->cinfo;
 			is->priv->cinfo = is->priv->context->sinfo->u.cinfo;
 			is->priv->context->sinfo->u.cinfo = NULL;
 			if (cinfo)
@@ -1809,7 +1828,10 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 					is->priv->cinfo->capa &= ~list_extended;
 				}
 			}
+
 			imapx_server_stash_command_arguments (is);
+
+			g_mutex_unlock (&is->priv->stream_lock);
 		}
 		break;
 	case IMAPX_COPYUID:
@@ -2713,7 +2735,11 @@ connected:
 			goto exit;
 	}
 
+	g_mutex_lock (&is->priv->stream_lock);
+
 	if (!is->priv->cinfo) {
+		g_mutex_unlock (&is->priv->stream_lock);
+
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_CAPABILITY, "CAPABILITY");
 
 		success = camel_imapx_server_process_command_sync (is, ic, _("Failed to get capabilities"), cancellable, error);
@@ -2722,17 +2748,24 @@ connected:
 
 		if (!success)
 			goto exit;
+	} else {
+		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
 	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
 
+		g_mutex_lock (&is->priv->stream_lock);
+
 		if (CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, STARTTLS)) {
+			g_mutex_unlock (&is->priv->stream_lock);
 			g_set_error (
 				&local_error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
 				_("Failed to connect to IMAP server %s in secure mode: %s"),
 				host, _("STARTTLS not supported"));
 			goto exit;
+		} else {
+			g_mutex_unlock (&is->priv->stream_lock);
 		}
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_STARTTLS, "STARTTLS");
@@ -2740,6 +2773,8 @@ connected:
 		success = camel_imapx_server_process_command_sync (is, ic, _("Failed to issue STARTTLS"), cancellable, error);
 
 		if (success) {
+			g_mutex_lock (&is->priv->stream_lock);
+
 			/* See if we got new capabilities
 			 * in the STARTTLS response. */
 			imapx_free_capability (is->priv->cinfo);
@@ -2750,6 +2785,8 @@ connected:
 				c (is->priv->tagprefix, "got capability flags %08x\n", is->priv->cinfo ? is->priv->cinfo->capa : 0xFFFFFFFF);
 				imapx_server_stash_command_arguments (is);
 			}
+
+			g_mutex_unlock (&is->priv->stream_lock);
 		}
 
 		camel_imapx_command_unref (ic);
@@ -2788,13 +2825,17 @@ connected:
 		}
 
 		/* Get new capabilities if they weren't already given */
+		g_mutex_lock (&is->priv->stream_lock);
 		if (is->priv->cinfo == NULL) {
+			g_mutex_unlock (&is->priv->stream_lock);
 			ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_CAPABILITY, "CAPABILITY");
 			success = camel_imapx_server_process_command_sync (is, ic, _("Failed to get capabilities"), cancellable, error);
 			camel_imapx_command_unref (ic);
 
 			if (!success)
 				goto exit;
+		} else {
+			g_mutex_unlock (&is->priv->stream_lock);
 		}
 	}
 
@@ -2863,8 +2904,11 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 	g_object_unref (settings);
 
 	if (mechanism != NULL) {
+		g_mutex_lock (&is->priv->stream_lock);
+
 		if (is->priv->cinfo && !g_hash_table_lookup (is->priv->cinfo->auth_types, mechanism) && (
 		    !g_str_equal (mechanism, "Google") || !g_hash_table_lookup (is->priv->cinfo->auth_types, "XOAUTH2"))) {
+			g_mutex_unlock (&is->priv->stream_lock);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
@@ -2872,6 +2916,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 				"authentication"), host, mechanism);
 			result = CAMEL_AUTHENTICATION_ERROR;
 			goto exit;
+		} else {
+			g_mutex_unlock (&is->priv->stream_lock);
 		}
 
 		sasl = camel_sasl_new ("imap", mechanism, service);
@@ -2958,6 +3004,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 
 	/* Forget old capabilities after login. */
 	if (result == CAMEL_AUTHENTICATION_ACCEPTED) {
+		g_mutex_lock (&is->priv->stream_lock);
+
 		if (is->priv->cinfo) {
 			imapx_free_capability (is->priv->cinfo);
 			is->priv->cinfo = NULL;
@@ -2969,6 +3017,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 			c (is->priv->tagprefix, "got capability flags %08x\n", is->priv->cinfo ? is->priv->cinfo->capa : 0xFFFFFFFF);
 			imapx_server_stash_command_arguments (is);
 		}
+
+		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
 	camel_imapx_command_unref (ic);
@@ -3033,8 +3083,11 @@ imapx_reconnect (CamelIMAPXServer *is,
 		goto exception;
 
 	/* After login we re-capa unless the server already told us. */
+	g_mutex_lock (&is->priv->stream_lock);
 	if (is->priv->cinfo == NULL) {
 		GError *local_error = NULL;
+
+		g_mutex_unlock (&is->priv->stream_lock);
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_CAPABILITY, "CAPABILITY");
 		camel_imapx_server_process_command_sync (is, ic, _("Failed to get capabilities"), cancellable, &local_error);
@@ -3044,14 +3097,19 @@ imapx_reconnect (CamelIMAPXServer *is,
 			g_propagate_error (error, local_error);
 			goto exception;
 		}
+	} else {
+		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
 	is->priv->state = IMAPX_AUTHENTICATED;
 
 preauthed:
 	/* Fetch namespaces (if supported). */
+	g_mutex_lock (&is->priv->stream_lock);
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NAMESPACE)) {
 		GError *local_error = NULL;
+
+		g_mutex_unlock (&is->priv->stream_lock);
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NAMESPACE, "NAMESPACE");
 		camel_imapx_server_process_command_sync (is, ic, _("Failed to issue NAMESPACE"), cancellable, &local_error);
@@ -3061,11 +3119,15 @@ preauthed:
 			g_propagate_error (error, local_error);
 			goto exception;
 		}
+
+		g_mutex_lock (&is->priv->stream_lock);
 	}
 
 	/* Enable quick mailbox resynchronization (if supported). */
 	if (use_qresync && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, QRESYNC)) {
 		GError *local_error = NULL;
+
+		g_mutex_unlock (&is->priv->stream_lock);
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_ENABLE, "ENABLE CONDSTORE QRESYNC");
 		camel_imapx_server_process_command_sync (is, ic, _("Failed to enable QResync"), cancellable, &local_error);
@@ -3076,6 +3138,8 @@ preauthed:
 			goto exception;
 		}
 
+		g_mutex_lock (&is->priv->stream_lock);
+
 		is->priv->use_qresync = TRUE;
 	} else {
 		is->priv->use_qresync = FALSE;
@@ -3084,6 +3148,8 @@ preauthed:
 	/* Set NOTIFY options after enabling QRESYNC (if supported). */
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY)) {
 		GError *local_error = NULL;
+
+		g_mutex_unlock (&is->priv->stream_lock);
 
 		/* XXX The list of FETCH attributes is negotiable. */
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, "NOTIFY SET "
@@ -3103,7 +3169,11 @@ preauthed:
 			g_propagate_error (error, local_error);
 			goto exception;
 		}
+
+		g_mutex_lock (&is->priv->stream_lock);
 	}
+
+	g_mutex_unlock (&is->priv->stream_lock);
 
 	is->priv->state = IMAPX_INITIALISED;
 
@@ -3113,11 +3183,6 @@ preauthed:
 
 exception:
 	imapx_disconnect (is);
-
-	if (is->priv->cinfo) {
-		imapx_free_capability (is->priv->cinfo);
-		is->priv->cinfo = NULL;
-	}
 
 exit:
 	g_free (mechanism);
@@ -3775,17 +3840,17 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_clear_object (&is->priv->connection);
 	g_clear_object (&is->priv->subprocess);
 
+	if (is->priv->cinfo) {
+		imapx_free_capability (is->priv->cinfo);
+		is->priv->cinfo = NULL;
+	}
+
 	g_mutex_unlock (&is->priv->stream_lock);
 
 	g_mutex_lock (&is->priv->select_lock);
 	g_weak_ref_set (&is->priv->select_mailbox, NULL);
 	g_weak_ref_set (&is->priv->select_pending, NULL);
 	g_mutex_unlock (&is->priv->select_lock);
-
-	if (is->priv->cinfo) {
-		imapx_free_capability (is->priv->cinfo);
-		is->priv->cinfo = NULL;
-	}
 
 	is->priv->is_cyrus = FALSE;
 	is->priv->state = IMAPX_DISCONNECTED;
@@ -3820,10 +3885,16 @@ camel_imapx_server_connect_sync (CamelIMAPXServer *is,
 	if (!imapx_reconnect (is, cancellable, error))
 		return FALSE;
 
+	g_mutex_lock (&is->priv->stream_lock);
+
 	if (CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, NAMESPACE)) {
+		g_mutex_unlock (&is->priv->stream_lock);
+
 		/* This also creates a needed faux NAMESPACE */
 		if (!camel_imapx_server_list_sync (is, "INBOX", 0, cancellable, error))
 			return FALSE;
+	} else {
+		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
 	return TRUE;
@@ -4125,10 +4196,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 	/* If we're moving messages, prefer "UID MOVE" if supported. */
 	if (delete_originals) {
+		g_mutex_lock (&is->priv->stream_lock);
+
 		if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, MOVE)) {
 			delete_originals = FALSE;
 			use_move_command = TRUE;
 		}
+
+		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
 	source_infos = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, camel_message_info_unref);
@@ -5758,11 +5833,17 @@ camel_imapx_server_update_quota_info_sync (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
 
+	g_mutex_lock (&is->priv->stream_lock);
+
 	if (CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, QUOTA)) {
+		g_mutex_unlock (&is->priv->stream_lock);
+
 		g_set_error_literal (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
 			_("IMAP server does not support quotas"));
 		return FALSE;
+	} else {
+		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
 	success = camel_imapx_server_ensure_selected_sync (is, mailbox, cancellable, error);
@@ -6033,9 +6114,14 @@ camel_imapx_server_can_use_idle (CamelIMAPXServer *is)
 {
 	gboolean use_idle = FALSE;
 
+	g_mutex_lock (&is->priv->stream_lock);
+
 	/* No need for IDLE if the server supports NOTIFY. */
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY))
+	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY)) {
+		g_mutex_unlock (&is->priv->stream_lock);
+
 		return FALSE;
+	}
 
 	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, IDLE)) {
 		CamelIMAPXSettings *settings;
@@ -6044,6 +6130,8 @@ camel_imapx_server_can_use_idle (CamelIMAPXServer *is)
 		use_idle = camel_imapx_settings_get_use_idle (settings);
 		g_object_unref (settings);
 	}
+
+	g_mutex_unlock (&is->priv->stream_lock);
 
 	return use_idle;
 }
@@ -6295,12 +6383,43 @@ camel_imapx_server_register_untagged_handler (CamelIMAPXServer *is,
 	return previous;
 }
 
+/* This function is not thread-safe. */
 const struct _capability_info *
 camel_imapx_server_get_capability_info (CamelIMAPXServer *is)
 {
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
 
 	return is->priv->cinfo;
+}
+
+gboolean
+camel_imapx_server_have_capability (CamelIMAPXServer *is,
+				    guint32 capability)
+{
+	gboolean have;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+
+	g_mutex_lock (&is->priv->stream_lock);
+	have = is->priv->cinfo != NULL && (is->priv->cinfo->capa & capability) != 0;
+	g_mutex_unlock (&is->priv->stream_lock);
+
+	return have;
+}
+
+gboolean
+camel_imapx_server_lack_capability (CamelIMAPXServer *is,
+				    guint32 capability)
+{
+	gboolean lack;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
+
+	g_mutex_lock (&is->priv->stream_lock);
+	lack = is->priv->cinfo != NULL && (is->priv->cinfo->capa & capability) == 0;
+	g_mutex_unlock (&is->priv->stream_lock);
+
+	return lack;
 }
 
 gchar
