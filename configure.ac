@@ -1567,8 +1567,8 @@ dnl ****************************
 dnl Check for icaltzutil_set_exact_vtimezones_support function
 dnl ****************************
 AC_MSG_CHECKING([icaltzutil_set_exact_vtimezones_support function])
-save_cflags=$CFLAGS; CFLAGS="$EVOLUTION_DATA_SERVER_CFLAGS"
-save_libs=$LIBS; LIBS="$EVOLUTION_DATA_SERVER_LIBS"
+save_cflags=$CFLAGS; CFLAGS="$EVOLUTION_CALENDAR_CFLAGS"
+save_libs=$LIBS; LIBS="$EVOLUTION_CALENDAR_LIBS"
 AC_LINK_IFELSE([AC_LANG_PROGRAM(
 	[[#include <libical/ical.h>]],
 	[[icaltzutil_set_exact_vtimezones_support (0)]])],
