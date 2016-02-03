@@ -5966,6 +5966,9 @@ imapx_server_idle_thread (gpointer user_data)
 		return NULL;
 	}
 
+	is->priv->idle_state = IMAPX_IDLE_STATE_PREPARING;
+	g_cond_broadcast (&is->priv->idle_cond);
+
 	mailbox = is->priv->idle_mailbox;
 	if (mailbox)
 		g_object_ref (mailbox);
@@ -5998,9 +6001,7 @@ imapx_server_idle_thread (gpointer user_data)
 
 	g_mutex_lock (&is->priv->idle_lock);
 	if (is->priv->idle_stamp == itd->idle_stamp &&
-	    is->priv->idle_state == IMAPX_IDLE_STATE_SCHEDULED) {
-		is->priv->idle_state = IMAPX_IDLE_STATE_PREPARING;
-		g_cond_broadcast (&is->priv->idle_cond);
+	    is->priv->idle_state == IMAPX_IDLE_STATE_PREPARING) {
 		g_mutex_unlock (&is->priv->idle_lock);
 
 		/* Blocks, until the DONE is issued or on inactivity timeout, error, ... */
@@ -6230,8 +6231,7 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 				   GError **error)
 {
 	GCancellable *idle_cancellable;
-	gboolean issue_done = FALSE;
-	gboolean rather_disconnect = FALSE;
+	gulong handler_id = 0;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -6249,16 +6249,7 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 		}
 
 		is->priv->idle_state = IMAPX_IDLE_STATE_OFF;
-	} else if (is->priv->idle_state == IMAPX_IDLE_STATE_PREPARING) {
-		success = FALSE;
-
-		/* This message won't get into UI. */
-		g_set_error_literal (error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
-			"Reconnect after preparing IDLE command");
-	} else if (is->priv->idle_state == IMAPX_IDLE_STATE_RUNNING) {
-		is->priv->idle_state = IMAPX_IDLE_STATE_STOPPING;
 		g_cond_broadcast (&is->priv->idle_cond);
-		issue_done = TRUE;
 	}
 
 	idle_cancellable = is->priv->idle_cancellable ? g_object_ref (is->priv->idle_cancellable) : NULL;
@@ -6267,9 +6258,20 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 	g_clear_object (&is->priv->idle_mailbox);
 	is->priv->idle_stamp++;
 
-	g_mutex_unlock (&is->priv->idle_lock);
+	if (cancellable)
+		handler_id = g_cancellable_connect (cancellable, G_CALLBACK (imapx_server_wait_idle_stop_cancelled_cb), is, NULL);
 
-	if (issue_done) {
+	while (is->priv->idle_state == IMAPX_IDLE_STATE_PREPARING &&
+	       !g_cancellable_is_cancelled (cancellable)) {
+		g_cond_wait (&is->priv->idle_cond, &is->priv->idle_lock);
+	}
+
+	if (is->priv->idle_state == IMAPX_IDLE_STATE_RUNNING &&
+	    !g_cancellable_is_cancelled (cancellable)) {
+		is->priv->idle_state = IMAPX_IDLE_STATE_STOPPING;
+		g_cond_broadcast (&is->priv->idle_cond);
+		g_mutex_unlock (&is->priv->idle_lock);
+
 		g_mutex_lock (&is->priv->stream_lock);
 		if (is->priv->output_stream) {
 			gint previous_timeout = -1;
@@ -6292,33 +6294,38 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 				"Reconnect after couldn't issue DONE command");
 		}
 		g_mutex_unlock (&is->priv->stream_lock);
+		g_mutex_lock (&is->priv->idle_lock);
 	}
 
-	if (success) {
-		gulong handler_id = 0;
+	while (success && is->priv->idle_state != IMAPX_IDLE_STATE_OFF &&
+	       !g_cancellable_is_cancelled (cancellable)) {
+		g_cond_wait (&is->priv->idle_cond, &is->priv->idle_lock);
+	}
 
-		if (cancellable)
-			handler_id = g_cancellable_connect (cancellable, G_CALLBACK (imapx_server_wait_idle_stop_cancelled_cb), is, NULL);
+	if (cancellable && handler_id)
+		g_cancellable_disconnect (cancellable, handler_id);
 
-		g_mutex_lock (&is->priv->idle_lock);
-		while (is->priv->idle_state != IMAPX_IDLE_STATE_OFF &&
-		       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
-			g_cond_wait (&is->priv->idle_cond, &is->priv->idle_lock);
-		}
-		g_mutex_unlock (&is->priv->idle_lock);
+	if (success && g_cancellable_is_cancelled (cancellable)) {
+		g_clear_error (error);
 
-		if (cancellable && handler_id)
-			g_cancellable_disconnect (cancellable, handler_id);
-	} else {
+		success = FALSE;
+
+		/* This message won't get into UI. */
+		g_set_error_literal (error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
+			"Reconnect after cancelled IDLE stop command");
+	}
+
+	g_mutex_unlock (&is->priv->idle_lock);
+
+	if (!success) {
 		if (idle_cancellable)
 			g_cancellable_cancel (idle_cancellable);
-		if (rather_disconnect) {
-			g_mutex_lock (&is->priv->idle_lock);
-			is->priv->idle_state = IMAPX_IDLE_STATE_OFF;
-			g_mutex_unlock (&is->priv->idle_lock);
 
-			imapx_disconnect (is);
-		}
+		g_mutex_lock (&is->priv->idle_lock);
+		is->priv->idle_state = IMAPX_IDLE_STATE_OFF;
+		g_mutex_unlock (&is->priv->idle_lock);
+
+		imapx_disconnect (is);
 	}
 
 	g_clear_object (&idle_cancellable);
