@@ -135,7 +135,7 @@ G_DEFINE_ABSTRACT_TYPE (
 static GParamSpec *
 param_spec_clone (GParamSpec *pspec)
 {
-	GParamSpec *clone;
+	GParamSpec *clone = NULL;
 	GParamFlags flags;
 	const gchar *name, *nick, *blurb;
 
@@ -378,6 +378,9 @@ subclass_class_init (gpointer g_class,
 			continue;
 
 		pspec = param_spec_clone (properties[ii]);
+		if (!pspec)
+			continue;
+
 		pspec->flags |= E_SOURCE_PARAM_SETTING;
 
 		/* Clear the G_PARAM_CONSTRUCT flag.  We apply default

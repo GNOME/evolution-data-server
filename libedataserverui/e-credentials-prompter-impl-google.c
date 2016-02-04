@@ -384,14 +384,18 @@ cpi_google_get_access_token_thread (gpointer user_data)
 
 	cancellable = td->cancellable;
 
-	if (g_cancellable_is_cancelled (cancellable))
+	if (g_cancellable_is_cancelled (cancellable)) {
+		soup_status = SOUP_STATUS_CANCELLED;
 		goto exit;
+	}
 
 
 	post_data = cpi_google_create_token_post_data (td->authorization_code);
 	g_warn_if_fail (post_data != NULL);
-	if (!post_data)
+	if (!post_data) {
+		soup_status = SOUP_STATUS_NO_CONTENT;
 		goto exit;
+	}
 
 	soup_status = cpi_google_post_data_sync (GOOGLE_TOKEN_URI, post_data,
 		td->registry, td->cred_source, cancellable, &response_json);
