@@ -1533,6 +1533,10 @@ dnl evolution-calendar flags
 dnl ******************************
 EVOLUTION_CALENDAR_DEPS="gio-2.0 libical >= libical_minimum_version libsoup-2.4 libxml-2.0 libsecret-1"
 
+if `$PKG_CONFIG --atleast-version=2.0 libical`; then
+	AC_DEFINE(HAVE_LIBICAL_2_0, 1, [Define if compiled with libical 2.0])
+fi
+
 dnl *****
 dnl libical.pc from libical-0.43 has a bug in it's CFlags.
 dnl It wants apps to include <libical/ical*.h> but it's CFlags make it difficult

@@ -1056,6 +1056,7 @@ e_cal_client_check_recurrences_no_master
 e_cal_client_free_icalcomp_slist
 e_cal_client_free_ecalcomp_slist
 e_cal_client_resolve_tzid_cb
+e_cal_client_resolve_tzid_sync
 e_cal_client_generate_instances
 e_cal_client_generate_instances_sync
 e_cal_client_generate_instances_for_object
@@ -1336,6 +1337,7 @@ e_cal_component_get_type
 <TITLE>Calendar recurrences</TITLE>
 ECalRecurInstanceFn
 ECalRecurResolveTimezoneFn
+e_cal_recur_generate_instances_sync
 e_cal_recur_generate_instances
 e_cal_recur_obtain_enddate
 e_cal_recur_ensure_end_dates

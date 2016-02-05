@@ -186,6 +186,10 @@ void		e_cal_client_free_ecalcomp_slist
 
 icaltimezone *	e_cal_client_resolve_tzid_cb	(const gchar *tzid,
 						 gpointer data);
+icaltimezone *	e_cal_client_resolve_tzid_sync	(const gchar *tzid,
+						 gpointer cal_client,
+						 GCancellable *cancellable,
+						 GError **error);
 void		e_cal_client_generate_instances	(ECalClient *client,
 						 time_t start,
 						 time_t end,

@@ -2292,6 +2292,34 @@ e_cal_client_resolve_tzid_cb (const gchar *tzid,
 	return zone;
 }
 
+/**
+ * e_cal_client_resolve_tzid_sync:
+ * @tzid: ID of the timezone to resolve.
+ * @cal_client: User data for the callback, in this case #ECalClient.
+ *
+ * Resolves TZIDs for the recurrence generator.
+ *
+ * Returns: The timezone identified by the @tzid argument, or %NULL if
+ * it could not be found.
+ *
+ * Since: 3.20
+ */
+icaltimezone *
+e_cal_client_resolve_tzid_sync (const gchar *tzid,
+				gpointer cal_client,
+				GCancellable *cancellable,
+				GError **error)
+{
+	icaltimezone *zone = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), NULL);
+
+	if (!e_cal_client_get_timezone_sync (cal_client, tzid, &zone, cancellable, error))
+		return NULL;
+
+	return zone;
+}
+
 struct comp_instance {
 	ECalComponent *comp;
 	time_t start;

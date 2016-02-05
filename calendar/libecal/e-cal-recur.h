@@ -26,9 +26,36 @@
 #ifndef E_CAL_RECUR_H
 #define E_CAL_RECUR_H
 
+#include <glib.h>
+#include <gio/gio.h>
+
+#include <libical/ical.h>
 #include <libecal/e-cal-component.h>
 
 G_BEGIN_DECLS
+
+typedef icaltimezone * (* ECalRecurResolveTimezoneCb)	(const gchar *tzid,
+							 gpointer user_data,
+							 GCancellable *cancellable,
+							 GError **error);
+
+typedef gboolean (* ECalRecurInstanceCb)		(icalcomponent *comp,
+							 struct icaltimetype instance_start,
+							 struct icaltimetype instance_end,
+							 gpointer user_data,
+							 GCancellable *cancellable,
+							 GError **error);
+
+gboolean	e_cal_recur_generate_instances_sync	(icalcomponent *comp,
+							 struct icaltimetype interval_start,
+							 struct icaltimetype interval_end,
+							 ECalRecurInstanceCb callback,
+							 gpointer callback_user_data,
+							 ECalRecurResolveTimezoneCb get_tz_callback,
+							 gpointer get_tz_callback_user_data,
+							 icaltimezone *default_timezone,
+							 GCancellable *cancellable,
+							 GError **error);
 
 typedef gboolean (* ECalRecurInstanceFn) (ECalComponent *comp,
 					 time_t        instance_start,
