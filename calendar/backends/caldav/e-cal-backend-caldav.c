@@ -696,7 +696,7 @@ status_code_to_result (SoupMessage *message,
 		g_propagate_error (
 			perror,
 			e_data_cal_create_error_fmt ( OtherError,
-			_("Failed to connect to a server using SSL: %s"),
+			_("Failed to connect to a server using SSL/TLS: %s"),
 			message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
 			(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error"))));
 		if (is_opening && perror && *perror) {

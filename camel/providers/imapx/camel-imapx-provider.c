@@ -78,7 +78,7 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 
 CamelProviderPortEntry imapx_port_entries[] = {
 	{ 143, N_("Default IMAP port"), FALSE },
-	{ 993, N_("IMAP over SSL"), TRUE },
+	{ 993, N_("IMAP over TLS"), TRUE },
 	{ 0, NULL, 0 }
 };
 

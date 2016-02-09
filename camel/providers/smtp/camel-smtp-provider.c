@@ -37,7 +37,7 @@ static gint smtp_url_equal (gconstpointer a, gconstpointer b);
 
 CamelProviderPortEntry smtp_port_entries[] = {
 	{ 25, N_("Default SMTP port"), FALSE },
-	{ 465, N_("SMTP over SSL"), TRUE },
+	{ 465, N_("SMTP over TLS"), TRUE },
 	{ 587, N_("Message submission port"), FALSE },
 	{ 0, NULL, 0 }
 };

@@ -154,38 +154,38 @@ trust_prompt_show (GtkWindow *parent,
 
 		if (g_str_equal (source_extension, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
 			tmp = g_strdup_printf (
-				"An address book '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"An address book '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		} else if (g_str_equal (source_extension, E_SOURCE_EXTENSION_CALENDAR)) {
 			tmp = g_strdup_printf (
-				"A calendar '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"A calendar '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		} else if (g_str_equal (source_extension, E_SOURCE_EXTENSION_MEMO_LIST)) {
 			tmp = g_strdup_printf (
-				"A memo list '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"A memo list '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		} else if (g_str_equal (source_extension, E_SOURCE_EXTENSION_TASK_LIST)) {
 			tmp = g_strdup_printf (
-				"A task list '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"A task list '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		} else if (g_str_equal (source_extension, E_SOURCE_EXTENSION_MAIL_ACCOUNT)) {
 			tmp = g_strdup_printf (
-				"A mail account '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"A mail account '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		} else if (g_str_equal (source_extension, E_SOURCE_EXTENSION_MAIL_TRANSPORT)) {
 			tmp = g_strdup_printf (
-				"A mail transport '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"A mail transport '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		} else {
 			tmp = g_strdup_printf (
-				"An account '%s' cannot connect, because an SSL certificate for '%s' is not trusted. Do you wish to accept it?",
+				"An account '%s' cannot connect, because an SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?",
 				bsource_display_name, bhost);
 		}
 
 		g_free (bsource_display_name);
 	}
 	if (!tmp)
-		tmp = g_strdup_printf (_("SSL certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
+		tmp = g_strdup_printf (_("SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
 	g_free (bhost);
 
 	widget = gtk_label_new (NULL);
@@ -524,8 +524,8 @@ trust_prompt_get_host_from_url (const gchar *url)
  * @user_data: user data passed into @callback
  *
  * Similar to e_trust_prompt_run_modal(), except it also manages all the necessary things
- * around the @source<!-- -->'s SSL trust properties when it also contains %E_SOURCE_EXTENSION_WEBDAV,
- * thus the SSL trust on the WebDAV @source is properly updated based on the user's choice.
+ * around the @source<!-- -->'s SSL/TLS trust properties when it also contains %E_SOURCE_EXTENSION_WEBDAV,
+ * thus the SSL/TLS trust on the WebDAV @source is properly updated based on the user's choice.
  * The call is finished with e_trust_prompt_run_for_source_finish(),
  * which also returns the user's choice. The finish happens in the @callback.
  * This is necessary, because the @source can be also saved.

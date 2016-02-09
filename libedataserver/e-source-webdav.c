@@ -574,9 +574,8 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 		PROP_SSL_TRUST,
 		g_param_spec_string (
 			"ssl-trust",
-			"SSL Trust",
-			"SSL certificate trust setting, "
-			"for invalid server certificates",
+			"SSL/TLS Trust",
+			"SSL/TLS certificate trust setting, for invalid server certificates",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -1050,7 +1049,7 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
  * e_source_webdav_get_ssl_trust:
  * @extension: an #ESourceWebdav
  *
- * Returns an SSL certificate trust for the @extension.
+ * Returns an SSL/TLS certificate trust for the @extension.
  * The value encodes three parameters, divided by a pipe '|',
  * the first is users preference, can be one of "reject", "accept",
  * "temporary-reject" and "temporary-accept". The second is a host
@@ -1059,7 +1058,7 @@ e_source_webdav_set_resource_query (ESourceWebdav *extension,
  * it is supposed to be manipulated with e_source_webdav_update_ssl_trust()
  * and e_source_webdav_verify_ssl_trust().
  *
- * Returns: an SSL certificate trust for the @extension
+ * Returns: an SSL/TLS certificate trust for the @extension
  *
  * Since: 3.8
  **/
@@ -1107,7 +1106,7 @@ e_source_webdav_dup_ssl_trust (ESourceWebdav *extension)
  * @extension: an #ESourceWebdav
  * @ssl_trust: (allow-none): the ssl_trust to store, or %NULL to unset
  *
- * Sets the SSL certificate trust. See e_source_webdav_get_ssl_trust()
+ * Sets the SSL/TLS certificate trust. See e_source_webdav_get_ssl_trust()
  * for more infomation about its content and how to use it.
  *
  * Since: 3.8
@@ -1336,7 +1335,7 @@ e_source_webdav_update_ssl_trust (ESourceWebdav *extension,
  * @cert: the invalid certificate of the connection over which @host is about
  *        to be sent
  *
- * Verifies SSL trust for the given @host and @cert, as previously stored in the @extension
+ * Verifies SSL/TLS trust for the given @host and @cert, as previously stored in the @extension
  * with e_source_webdav_update_ssl_trust().
  **/
 ETrustPromptResponse

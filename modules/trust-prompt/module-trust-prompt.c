@@ -58,7 +58,7 @@ G_DEFINE_DYNAMIC_TYPE (
 /* ETrustPrompt::trust-prompt
  * The dialog expects these parameters:
  *    "host" - host from which the certificate is received
- *    "markup" - markup for the trust prompt, if not set, then "SSL certificate for '<b>host</b>' is not trusted. Do you wish to accept it?" is used
+ *    "markup" - markup for the trust prompt, if not set, then "SSL/TLS certificate for '<b>host</b>' is not trusted. Do you wish to accept it?" is used
  *    "certificate" - a base64-encoded DER certificate, for which ask on trust
  *    "certificate-errors" - a hexa-decimal integer (as string) corresponding to GTlsCertificateFlags
  *

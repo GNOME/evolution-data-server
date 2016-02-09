@@ -83,7 +83,7 @@
 /**
  * E_SOURCE_CREDENTIAL_SSL_TRUST:
  *
- * A name of the named parameter used for SSL trust in credentials,
+ * A name of the named parameter used for SSL/TLS trust in credentials,
  * used to authenticate users with e_source_invoke_authenticate_sync()
  * and e_source_invoke_authenticate(). The named parameter is optional.
  * Its value corresponds to current ESourceWebdav::ssl-trust property,

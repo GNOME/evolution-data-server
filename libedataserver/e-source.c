@@ -2326,8 +2326,8 @@ e_source_class_init (ESourceClass *class)
 	 * ESource::credentials-required:
 	 * @source: the #ESource that received the signal
 	 * @reason: an #ESourceCredentialsReason indicating why the credentials are requested
-	 * @certificate_pem: PEM-encoded secure connection certificate for failed SSL checks
-	 * @certificate_errors: what failed with the SSL certificate
+	 * @certificate_pem: PEM-encoded secure connection certificate for failed SSL/TLS checks
+	 * @certificate_errors: what failed with the SSL/TLS certificate
 	 * @error: a text description of the error, if any
 	 *
 	 * The ::credentials-required signal is emitted when the @source

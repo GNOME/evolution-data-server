@@ -50,7 +50,7 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 
 CamelProviderPortEntry pop3_port_entries[] = {
 	{ 110, N_("Default POP3 port"), FALSE },
-	{ 995, N_("POP3 over SSL"), TRUE },
+	{ 995, N_("POP3 over TLS"), TRUE },
 	{ 0, NULL, 0 }
 };
 
