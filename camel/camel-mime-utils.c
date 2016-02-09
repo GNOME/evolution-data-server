@@ -3183,7 +3183,7 @@ camel_header_newsgroups_decode (const gchar *in)
 {
 	const gchar *inptr = in;
 	register gchar c;
-	GSList *list;
+	GSList *list = NULL;
 	const gchar *start;
 
 	do {
