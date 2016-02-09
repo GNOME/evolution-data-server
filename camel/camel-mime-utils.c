@@ -863,7 +863,7 @@ header_decode_lwsp (const gchar **in)
 }
 
 static gchar *
-camel_iconv_strndup (iconv_t cd,
+camel_iconv_strndup (GIConv cd,
                      const gchar *string,
                      gsize n)
 {
@@ -873,7 +873,7 @@ camel_iconv_strndup (iconv_t cd,
 	gsize outlen;
 	gint errnosav;
 
-	if (cd == (iconv_t) -1)
+	if (cd == (GIConv) -1)
 		return g_strndup (string, n);
 
 	outlen = n * 2 + 16;
@@ -887,7 +887,7 @@ camel_iconv_strndup (iconv_t cd,
 		outbuf = out + converted;
 		outleft = outlen - converted;
 
-		converted = iconv (cd, (gchar **) &inbuf, &inleft, &outbuf, &outleft);
+		converted = g_iconv (cd, (gchar **) &inbuf, &inleft, &outbuf, &outleft);
 		if (converted == (gsize) -1) {
 			if (errno != E2BIG && errno != EINVAL)
 				goto fail;
@@ -915,7 +915,7 @@ camel_iconv_strndup (iconv_t cd,
 	 */
 
 	/* flush the iconv conversion */
-	while (iconv (cd, NULL, NULL, &outbuf, &outleft) == (gsize) -1) {
+	while (g_iconv (cd, NULL, NULL, &outbuf, &outleft) == (gsize) -1) {
 		if (errno != E2BIG)
 			break;
 
@@ -935,7 +935,7 @@ camel_iconv_strndup (iconv_t cd,
 	memset (outbuf, 0, 4);
 
 	/* reset the cd */
-	iconv (cd, NULL, NULL, NULL, NULL);
+	g_iconv (cd, NULL, NULL, NULL, NULL);
 
 	return out;
 
@@ -948,7 +948,7 @@ camel_iconv_strndup (iconv_t cd,
 	g_free (out);
 
 	/* reset the cd */
-	iconv (cd, NULL, NULL, NULL, NULL);
+	g_iconv (cd, NULL, NULL, NULL, NULL);
 
 	errno = errnosav;
 
@@ -967,7 +967,7 @@ decode_8bit (const gchar *text,
 	const gchar *locale_charset, *best;
 	gchar *out, *outbuf;
 	const gchar *inbuf;
-	iconv_t cd;
+	GIConv cd;
 	gint i = 1;
 
 	if (default_charset && g_ascii_strcasecmp (default_charset, "UTF-8") != 0)
@@ -984,7 +984,7 @@ decode_8bit (const gchar *text,
 	out = g_malloc (outlen + 1);
 
 	for (i = 0; charsets[i]; i++) {
-		if ((cd = camel_iconv_open ("UTF-8", charsets[i])) == (iconv_t) -1)
+		if ((cd = camel_iconv_open ("UTF-8", charsets[i])) == (GIConv) -1)
 			continue;
 
 		outleft = outlen;
@@ -994,7 +994,7 @@ decode_8bit (const gchar *text,
 		n = 0;
 
 		do {
-			rc = iconv (cd, (gchar **) &inbuf, &inleft, &outbuf, &outleft);
+			rc = g_iconv (cd, (gchar **) &inbuf, &inleft, &outbuf, &outleft);
 			if (rc == (gsize) -1) {
 				if (errno == EINVAL) {
 					/* incomplete sequence at the end of the input buffer */
@@ -1016,7 +1016,7 @@ decode_8bit (const gchar *text,
 			}
 		} while (inleft > 0);
 
-		while ((rc = iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
+		while ((rc = g_iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
 			if (errno != E2BIG)
 				break;
 
@@ -1044,7 +1044,7 @@ decode_8bit (const gchar *text,
 	 * try to find the one that fit the best and use that to convert what we can,
 	 * replacing any byte we can't convert with a '?' */
 
-	if ((cd = camel_iconv_open ("UTF-8", best)) == (iconv_t) -1) {
+	if ((cd = camel_iconv_open ("UTF-8", best)) == (GIConv) -1) {
 		/* this shouldn't happen... but if we are here, then
 		 * it did...  the only thing we can do at this point
 		 * is replace the 8bit garbage and pray */
@@ -1071,7 +1071,7 @@ decode_8bit (const gchar *text,
 	inbuf = text;
 
 	do {
-		rc = iconv (cd, (gchar **) &inbuf, &inleft, &outbuf, &outleft);
+		rc = g_iconv (cd, (gchar **) &inbuf, &inleft, &outbuf, &outleft);
 		if (rc == (gsize) -1) {
 			if (errno == EINVAL) {
 				/* incomplete sequence at the end of the input buffer */
@@ -1093,7 +1093,7 @@ decode_8bit (const gchar *text,
 		}
 	} while (inleft > 0);
 
-	while ((rc = iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
+	while ((rc = g_iconv (cd, NULL, NULL, &outbuf, &outleft)) == (gsize) -1) {
 		if (errno != E2BIG)
 			break;
 
@@ -1145,7 +1145,7 @@ rfc2047_decode_word (const gchar *in,
 	gssize declen;
 	gint state = 0;
 	gsize len;
-	iconv_t cd;
+	GIConv cd;
 	gchar *buf;
 
 	/* skip over the charset */
@@ -1205,7 +1205,7 @@ rfc2047_decode_word (const gchar *in,
 	if (charset[0])
 		charset = camel_iconv_charset_name (charset);
 
-	if (!charset[0] || (cd = camel_iconv_open ("UTF-8", charset)) == (iconv_t) -1) {
+	if (!charset[0] || (cd = camel_iconv_open ("UTF-8", charset)) == (GIConv) -1) {
 		w (g_warning (
 			"Cannot convert from %s to UTF-8, "
 			"header display may be corrupt: %s",
@@ -1260,10 +1260,10 @@ append_8bit (GString *out,
 {
 	gchar *outbase, *outbuf;
 	gsize outlen;
-	iconv_t ic;
+	GIConv ic;
 
 	ic = camel_iconv_open ("UTF-8", charset);
-	if (ic == (iconv_t) -1)
+	if (ic == (GIConv) -1)
 		return FALSE;
 
 	outlen = inlen * 6 + 16;
@@ -1483,7 +1483,7 @@ rfc2047_encode_word (GString *outstring,
                      const gchar *type,
                      gushort safemask)
 {
-	iconv_t ic = (iconv_t) -1;
+	GIConv ic = (GIConv) -1;
 	gchar *buffer, *out, *ascii;
 	gsize inlen, outlen, enclen, bufflen;
 	const gchar *inptr, *p;
@@ -1512,7 +1512,7 @@ rfc2047_encode_word (GString *outstring,
 		out = buffer;
 		outlen = bufflen;
 
-		if (ic == (iconv_t) -1) {
+		if (ic == (GIConv) -1) {
 			/* native encoding case, the easy one (?) */
 			/* we work out how much we can convert, and still be in length */
 			/* proclen will be the result of input characters that we can convert, to the nearest
@@ -1583,7 +1583,7 @@ rfc2047_encode_word (GString *outstring,
 		}
 	}
 
-	if (ic != (iconv_t) -1)
+	if (ic != (GIConv) -1)
 		camel_iconv_close (ic);
 }
 
@@ -2239,12 +2239,12 @@ header_convert (const gchar *to,
                 const gchar *in,
                 gsize inlen)
 {
-	iconv_t ic;
+	GIConv ic;
 	gsize outlen, ret;
 	gchar *outbuf, *outbase, *result = NULL;
 
 	ic = camel_iconv_open (to, from);
-	if (ic == (iconv_t) -1)
+	if (ic == (GIConv) -1)
 		return NULL;
 
 	outlen = inlen * 6 + 16;
@@ -3075,49 +3075,9 @@ camel_header_contentid_decode (const gchar *in)
 	return buf;
 }
 
-void
-camel_header_references_list_append_asis (struct _camel_header_references **list,
-                                          gchar *ref)
-{
-	struct _camel_header_references *w = (struct _camel_header_references *) list, *n;
-	while (w->next)
-		w = w->next;
-	n = g_malloc (sizeof (*n));
-	n->id = ref;
-	n->next = NULL;
-	w->next = n;
-}
-
-gint
-camel_header_references_list_size (struct _camel_header_references **list)
-{
-	gint count = 0;
-	struct _camel_header_references *w = *list;
-	while (w) {
-		count++;
-		w = w->next;
-	}
-	return count;
-}
-
-void
-camel_header_references_list_clear (struct _camel_header_references **list)
-{
-	struct _camel_header_references *w = *list, *n;
-	while (w) {
-		n = w->next;
-		g_free (w->id);
-		g_free (w);
-		w = n;
-	}
-	*list = NULL;
-}
-
 static void
-header_references_decode_single (const gchar **in,
-                                 struct _camel_header_references **head)
+header_references_decode_single (const gchar **in, GSList **list)
 {
-	struct _camel_header_references *ref;
 	const gchar *inptr = *in;
 	gchar *id, *word;
 
@@ -3126,10 +3086,7 @@ header_references_decode_single (const gchar **in,
 		if (*inptr == '<') {
 			id = header_msgid_decode_internal (&inptr);
 			if (id) {
-				ref = g_malloc (sizeof (struct _camel_header_references));
-				ref->next = *head;
-				ref->id = id;
-				*head = ref;
+				*list = g_slist_prepend (*list, id);
 				break;
 			}
 		} else {
@@ -3144,25 +3101,18 @@ header_references_decode_single (const gchar **in,
 	*in = inptr;
 }
 
-/* TODO: why is this needed?  Can't the other interface also work? */
-struct _camel_header_references *
-camel_header_references_inreplyto_decode (const gchar *in)
-{
-	struct _camel_header_references *ref = NULL;
-
-	if (in == NULL || in[0] == '\0')
-		return NULL;
-
-	header_references_decode_single (&in, &ref);
-
-	return ref;
-}
-
-/* generate a list of references, from most recent up */
-struct _camel_header_references *
+/**
+ * camel_header_references_decode:
+ * @in:
+ *
+ * Generate a list of references, from most recent up.
+ *
+ * Returns: (element-type utf8) (transfer full):
+ **/
+GSList *
 camel_header_references_decode (const gchar *in)
 {
-	struct _camel_header_references *refs = NULL;
+	GSList *refs = NULL;
 
 	if (in == NULL || in[0] == '\0')
 		return NULL;
@@ -3171,21 +3121,6 @@ camel_header_references_decode (const gchar *in)
 		header_references_decode_single (&in, &refs);
 
 	return refs;
-}
-
-struct _camel_header_references *
-camel_header_references_dup (const struct _camel_header_references *list)
-{
-	struct _camel_header_references *new = NULL, *tmp;
-
-	while (list) {
-		tmp = g_new (struct _camel_header_references, 1);
-		tmp->next = new;
-		tmp->id = g_strdup (list->id);
-		new = tmp;
-		list = list->next;
-	}
-	return new;
 }
 
 CamelHeaderAddress *
@@ -3237,16 +3172,19 @@ camel_header_address_decode (const gchar *in,
 	return list;
 }
 
-struct _camel_header_newsgroup *
+/**
+ * camel_header_newsgroups_decode:
+ * @in:
+ *
+ * Returns: (element-type utf8) (transfer full):
+ **/
+GSList *
 camel_header_newsgroups_decode (const gchar *in)
 {
 	const gchar *inptr = in;
 	register gchar c;
-	struct _camel_header_newsgroup *head, *last, *ng;
+	GSList *list;
 	const gchar *start;
-
-	head = NULL;
-	last = (struct _camel_header_newsgroup *) &head;
 
 	do {
 		header_decode_lwsp (&inptr);
@@ -3254,27 +3192,11 @@ camel_header_newsgroups_decode (const gchar *in)
 		while ((c = *inptr++) && !camel_mime_is_lwsp (c) && c != ',')
 			;
 		if (start != inptr - 1) {
-			ng = g_malloc (sizeof (*ng));
-			ng->newsgroup = g_strndup (start, inptr - start - 1);
-			ng->next = NULL;
-			last->next = ng;
-			last = ng;
+			list = g_slist_prepend (list, g_strndup (start, inptr - start - 1));
 		}
 	} while (c);
 
-	return head;
-}
-
-void
-camel_header_newsgroups_free (struct _camel_header_newsgroup *ng)
-{
-	while (ng) {
-		struct _camel_header_newsgroup *nng = ng->next;
-
-		g_free (ng->newsgroup);
-		g_free (ng);
-		ng = nng;
-	}
+	return list;
 }
 
 /* this must be kept in sync with the header */

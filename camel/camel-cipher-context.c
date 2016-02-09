@@ -75,6 +75,11 @@ enum {
 
 G_DEFINE_TYPE (CamelCipherContext, camel_cipher_context, G_TYPE_OBJECT)
 
+G_DEFINE_BOXED_TYPE (CamelCipherValidity,
+		camel_cipher_validity,
+		camel_cipher_validity_clone,
+		camel_cipher_validity_free)
+
 static void
 async_context_free (AsyncContext *async_context)
 {

@@ -42,17 +42,11 @@
 
 G_BEGIN_DECLS
 
-/* a list of references for this message */
-struct _camel_header_references {
-	struct _camel_header_references *next;
-	gchar *id;
-};
-
-struct _camel_header_param {
+typedef struct _camel_header_param {
 	struct _camel_header_param *next;
 	gchar *name;
 	gchar *value;
-};
+} CamelHeaderParam;
 
 /* describes a content-type */
 typedef struct {
@@ -93,12 +87,6 @@ typedef struct _camel_header_address {
 	} v;
 	guint refcount;
 } CamelHeaderAddress;
-
-struct _camel_header_newsgroup {
-	struct _camel_header_newsgroup *next;
-
-	gchar *newsgroup;
-};
 
 /* Time utilities */
 time_t		camel_mktime_utc		(struct tm *tm);
@@ -208,19 +196,13 @@ gchar *camel_header_contentid_decode (const gchar *in);
 gchar *camel_header_msgid_generate (const gchar *domain);
 
 /* decode a References or In-Reply-To header */
-struct _camel_header_references *camel_header_references_inreplyto_decode (const gchar *in);
-struct _camel_header_references *camel_header_references_decode (const gchar *in);
-void camel_header_references_list_clear (struct _camel_header_references **list);
-void camel_header_references_list_append_asis (struct _camel_header_references **list, gchar *ref);
-gint camel_header_references_list_size (struct _camel_header_references **list);
-struct _camel_header_references *camel_header_references_dup (const struct _camel_header_references *list);
+GSList *camel_header_references_decode (const gchar *in);
 
 /* decode content-location */
 gchar *camel_header_location_decode (const gchar *in);
 
 /* nntp stuff */
-struct _camel_header_newsgroup *camel_header_newsgroups_decode (const gchar *in);
-void camel_header_newsgroups_free (struct _camel_header_newsgroup *ng);
+GSList *camel_header_newsgroups_decode (const gchar *in);
 
 const gchar *camel_transfer_encoding_to_string (CamelTransferEncoding encoding);
 CamelTransferEncoding camel_transfer_encoding_from_string (const gchar *string);

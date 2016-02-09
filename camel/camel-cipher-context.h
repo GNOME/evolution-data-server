@@ -260,6 +260,7 @@ CamelCipherValidity *
 						 GError **error);
 
 /* CamelCipherValidity utility functions */
+GType		camel_cipher_validity_get_type	(void);
 CamelCipherValidity *
 		camel_cipher_validity_new	(void);
 void		camel_cipher_validity_init	(CamelCipherValidity *validity);

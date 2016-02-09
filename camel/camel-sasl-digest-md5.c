@@ -662,7 +662,7 @@ digest_response (struct _DigestResponse *resp)
 		const gchar *charset;
 		gsize len, outlen;
 		const gchar *inbuf;
-		iconv_t cd;
+		GIConv cd;
 
 		charset = camel_iconv_locale_charset ();
 		if (!charset)
@@ -675,7 +675,7 @@ digest_response (struct _DigestResponse *resp)
 
 		outbuf = username = g_malloc0 (outlen + 1);
 		inbuf = resp->username;
-		if (cd == (iconv_t) -1 || camel_iconv (cd, &inbuf, &len, &outbuf, &outlen) == (gsize) -1) {
+		if (cd == (GIConv) -1 || camel_iconv (cd, &inbuf, &len, &outbuf, &outlen) == (gsize) -1) {
 			/* We can't convert to UTF-8 - pretend we never got a charset param? */
 			g_free (resp->charset);
 			resp->charset = NULL;
@@ -685,7 +685,7 @@ digest_response (struct _DigestResponse *resp)
 			username = g_strdup (resp->username);
 		}
 
-		if (cd != (iconv_t) -1)
+		if (cd != (GIConv) -1)
 			camel_iconv_close (cd);
 
 		g_byte_array_append (buffer, (guint8 *) username, strlen (username));

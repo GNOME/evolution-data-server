@@ -3623,14 +3623,14 @@ message_info_new_from_header (CamelFolderSummary *summary,
                               struct _camel_header_raw *h)
 {
 	const gchar *received, *date, *content, *charset = NULL;
-	struct _camel_header_references *refs, *irt, *scan;
+	GSList *refs, *irt, *scan;
 	gchar *subject, *from, *to, *cc, *mlist;
 	CamelContentType *ct = NULL;
 	CamelMessageInfoBase *mi;
 	guint8 *digest;
 	gsize length;
 	gchar *msgid;
-	gint count;
+	guint count;
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -3691,7 +3691,7 @@ message_info_new_from_header (CamelFolderSummary *summary,
 
 	/* decode our references and in-reply-to headers */
 	refs = camel_header_references_decode (camel_header_raw_find (&h, "references", NULL));
-	irt = camel_header_references_inreplyto_decode (camel_header_raw_find (&h, "in-reply-to", NULL));
+	irt = camel_header_references_decode (camel_header_raw_find (&h, "in-reply-to", NULL));
 	if (refs || irt) {
 		if (irt) {
 			/* The References field is populated from the "References" and/or "In-Reply-To"
@@ -3704,24 +3704,22 @@ message_info_new_from_header (CamelFolderSummary *summary,
 			refs = irt;
 		}
 
-		count = camel_header_references_list_size (&refs);
+		count = g_slist_length (refs);
 		mi->references = g_malloc (sizeof (*mi->references) + ((count - 1) * sizeof (mi->references->references[0])));
 		count = 0;
-		scan = refs;
-		while (scan) {
+		for (scan = refs; scan != NULL; scan = g_slist_next (scan)) {
 			GChecksum *checksum;
 
 			checksum = g_checksum_new (G_CHECKSUM_MD5);
-			g_checksum_update (checksum, (guchar *) scan->id, -1);
+			g_checksum_update (checksum, (guchar *) scan->data, -1);
 			g_checksum_get_digest (checksum, digest, &length);
 			g_checksum_free (checksum);
 
 			memcpy (mi->references->references[count].id.hash, digest, sizeof (mi->message_id.id.hash));
 			count++;
-			scan = scan->next;
 		}
 		mi->references->size = count;
-		camel_header_references_list_clear (&refs);
+		g_slist_free_full (refs, g_free);
 	}
 
 	return (CamelMessageInfo *) mi;

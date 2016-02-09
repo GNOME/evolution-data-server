@@ -133,7 +133,7 @@ gint main (gint argc, gchar **argv)
 	gchar in[128];
 	gint i, j, k;
 	gint bytes;
-	iconv_t cd;
+	GIConv cd;
 
 	/* dont count the terminator */
 	bytes = (G_N_ELEMENTS (tables) + 7 - 1) / 8;
@@ -174,7 +174,7 @@ gint main (gint argc, gchar **argv)
 	/* Mutibyte tables */
 	for (; tables[j].name && tables[j].multibyte; j++) {
 		cd = iconv_open (tables[j].name, UCS);
-		if (cd == (iconv_t) -1)
+		if (cd == (GIConv) -1)
 			continue;
 
 		for (c = 128, i = 0; c < 65535 && i < 65535; c++) {

@@ -36,17 +36,15 @@ static gint
 nntp_address_decode (CamelAddress *address,
                      const gchar *raw)
 {
-	struct _camel_header_newsgroup *ha, *n;
+	GSList *ha, *n;
 	gint count = address->addresses->len;
 
 	ha = camel_header_newsgroups_decode (raw);
-	if (ha) {
-		for (n = ha; n; n = n->next)
-			camel_nntp_address_add (
-				CAMEL_NNTP_ADDRESS (address), n->newsgroup);
-		camel_header_newsgroups_free (ha);
+	for (n = ha; n != NULL; n = n->next) {
+		camel_nntp_address_add (CAMEL_NNTP_ADDRESS (address), n->data);
 	}
 
+	g_slist_free_full (ha, g_free);
 	return address->addresses->len - count;
 }
 

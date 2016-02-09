@@ -236,6 +236,7 @@ void		camel_store_folder_renamed	(CamelStore *store,
 						 const gchar *old_name,
 						 CamelFolderInfo *folder_info);
 void		camel_store_folder_info_stale	(CamelStore *store);
+GType		camel_folder_info_get_type		(void);
 CamelFolderInfo *
 		camel_folder_info_new		(void);
 void		camel_folder_info_free		(CamelFolderInfo *fi);

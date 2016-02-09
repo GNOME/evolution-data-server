@@ -62,7 +62,7 @@ struct _CamelMimeFilterToHTMLPrivate {
 
 static struct {
 	CamelMimeFilterToHTMLFlags mask;
-	urlpattern_t pattern;
+	CamelUrlPattern pattern;
 } patterns[] = {
 	{ CONVERT_WEB_URLS, { "file://",   "",        camel_url_file_start,     camel_url_file_end     } },
 	{ CONVERT_WEB_URLS, { "ftp://",    "",        camel_url_web_start,      camel_url_web_end      } },
@@ -367,7 +367,7 @@ html_convert (CamelMimeFilter *mime_filter,
 #define CONVERT_URLS (CAMEL_MIME_FILTER_TOHTML_CONVERT_URLS | CAMEL_MIME_FILTER_TOHTML_CONVERT_ADDRESSES)
 		if (priv->flags & CONVERT_URLS) {
 			gsize matchlen, len;
-			urlmatch_t match;
+			CamelUrlMatch match;
 
 			len = inptr - start;
 

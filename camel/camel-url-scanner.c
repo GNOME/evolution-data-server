@@ -58,7 +58,7 @@ camel_url_scanner_free (CamelUrlScanner *scanner)
 
 void
 camel_url_scanner_add (CamelUrlScanner *scanner,
-                       urlpattern_t *pattern)
+                       CamelUrlPattern *pattern)
 {
 	g_return_if_fail (scanner != NULL);
 
@@ -70,11 +70,11 @@ gboolean
 camel_url_scanner_scan (CamelUrlScanner *scanner,
                         const gchar *in,
                         gsize inlen,
-                        urlmatch_t *match)
+                        CamelUrlMatch *match)
 {
 	const gchar *pos;
 	const guchar *inptr, *inend;
-	urlpattern_t *pat;
+	CamelUrlPattern *pat;
 	gint pattern;
 
 	g_return_val_if_fail (scanner != NULL, FALSE);
@@ -199,7 +199,7 @@ gboolean
 camel_url_addrspec_start (const gchar *in,
                           const gchar *pos,
                           const gchar *inend,
-                          urlmatch_t *match)
+                          CamelUrlMatch *match)
 {
 	register const gchar *inptr = pos;
 
@@ -236,7 +236,7 @@ gboolean
 camel_url_addrspec_end (const gchar *in,
                         const gchar *pos,
                         const gchar *inend,
-                        urlmatch_t *match)
+                        CamelUrlMatch *match)
 {
 	const gchar *inptr = pos;
 	gint parts = 0, digits;
@@ -300,7 +300,7 @@ gboolean
 camel_url_file_start (const gchar *in,
                       const gchar *pos,
                       const gchar *inend,
-                      urlmatch_t *match)
+                      CamelUrlMatch *match)
 {
 	match->um_so = (pos - in);
 
@@ -311,7 +311,7 @@ gboolean
 camel_url_file_end (const gchar *in,
                     const gchar *pos,
                     const gchar *inend,
-                    urlmatch_t *match)
+                    CamelUrlMatch *match)
 {
 	register const gchar *inptr = pos;
 	gchar close_brace;
@@ -338,7 +338,7 @@ gboolean
 camel_url_web_start (const gchar *in,
                      const gchar *pos,
                      const gchar *inend,
-                     urlmatch_t *match)
+                     CamelUrlMatch *match)
 {
 	if (pos > in && !strncmp (pos, "www", 3)) {
 		/* make sure we aren't actually part of another word */
@@ -355,7 +355,7 @@ gboolean
 camel_url_web_end (const gchar *in,
                    const gchar *pos,
                    const gchar *inend,
-                   urlmatch_t *match)
+                   CamelUrlMatch *match)
 {
 	register const gchar *inptr = pos;
 	gboolean passwd = FALSE;

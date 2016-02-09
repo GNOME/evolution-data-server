@@ -93,6 +93,11 @@ G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		G_TYPE_INITABLE, camel_store_initable_init))
 
+G_DEFINE_BOXED_TYPE (CamelFolderInfo,
+		camel_folder_info,
+		camel_folder_info_clone,
+		camel_folder_info_free)
+
 static void
 async_context_free (AsyncContext *async_context)
 {
