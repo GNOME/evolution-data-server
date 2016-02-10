@@ -298,6 +298,8 @@ free_calendar_data (ECalBackendFile *cbfile)
 
 	priv = cbfile->priv;
 
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	e_intervaltree_destroy (priv->interval_tree);
 	priv->interval_tree = NULL;
 
@@ -307,6 +309,8 @@ free_calendar_data (ECalBackendFile *cbfile)
 
 	g_list_free (priv->comp);
 	priv->comp = NULL;
+
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 }
 
 /* Dispose handler for the file backend */
@@ -629,15 +633,15 @@ get_rid_icaltime (ECalComponent *comp)
 
 /* Adds component to the interval tree
  */
-static gboolean
+static void
 add_component_to_intervaltree (ECalBackendFile *cbfile,
                                ECalComponent *comp)
 {
 	time_t time_start = -1, time_end = -1;
 	ECalBackendFilePrivate *priv;
 
-	g_return_val_if_fail (cbfile != NULL, FALSE);
-	g_return_val_if_fail (comp != NULL, FALSE);
+	g_return_if_fail (cbfile != NULL);
+	g_return_if_fail (comp != NULL);
 
 	priv = cbfile->priv;
 
@@ -650,10 +654,11 @@ add_component_to_intervaltree (ECalBackendFile *cbfile,
 		gchar *str = e_cal_component_get_as_string (comp);
 		g_print ("Bogus component %s\n", str);
 		g_free (str);
-	} else
+	} else {
+		g_rec_mutex_lock (&priv->idle_save_rmutex);
 		e_intervaltree_insert (priv->interval_tree, time_start, time_end, comp);
-
-	return FALSE;
+		g_rec_mutex_unlock (&priv->idle_save_rmutex);
+	}
 }
 
 static gboolean
@@ -672,7 +677,11 @@ remove_component_from_intervaltree (ECalBackendFile *cbfile,
 
 	rid = e_cal_component_get_recurid_as_string (comp);
 	e_cal_component_get_uid (comp, &uid);
+
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
 	res = e_intervaltree_remove (priv->interval_tree, uid, rid);
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
+
 	g_free (rid);
 
 	return res;
@@ -776,7 +785,7 @@ remove_recurrence_cb (gpointer key,
 
 	if (!remove_component_from_intervaltree (cbfile, comp)) {
 		g_message (G_STRLOC " Could not remove component from interval tree!");
-		}
+	}
 	icalcomponent_remove_component (priv->icalcomp, icalcomp);
 
 	/* remove it from our mapping */
@@ -1127,12 +1136,16 @@ open_cal (ECalBackendFile *cbfile,
 		return;
 	}
 
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	cal_backend_file_take_icalcomp (cbfile, icalcomp);
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
 
 	priv->comp_uid_hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, free_object_data);
 	priv->interval_tree = e_intervaltree_new ();
 	scan_vcalendar (cbfile);
+
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	prepare_refresh_data (cbfile);
 }
@@ -1254,6 +1267,8 @@ reload_cal (ECalBackendFile *cbfile,
 
 	/* Keep old data for comparison - free later */
 
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	icalcomp_old = priv->icalcomp;
 	priv->icalcomp = NULL;
 
@@ -1271,6 +1286,8 @@ reload_cal (ECalBackendFile *cbfile,
 	scan_vcalendar (cbfile);
 
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
+
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	/* Compare old and new versions of calendar */
 
@@ -1304,6 +1321,8 @@ create_cal (ECalBackendFile *cbfile,
 
 	g_free (dirname);
 
+	g_rec_mutex_lock (&priv->idle_save_rmutex);
+
 	/* Create the new calendar information */
 	icalcomp = e_cal_util_new_top_level ();
 	cal_backend_file_take_icalcomp (cbfile, icalcomp);
@@ -1313,6 +1332,8 @@ create_cal (ECalBackendFile *cbfile,
 	priv->interval_tree = e_intervaltree_new ();
 
 	priv->path = uri_to_path (E_CAL_BACKEND (cbfile));
+
+	g_rec_mutex_unlock (&priv->idle_save_rmutex);
 
 	save (cbfile, TRUE);
 
@@ -2462,6 +2483,12 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 				obj_data->full_object = comp;
 
 				e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, priv->icalcomp);
+
+				if (!remove_component_from_intervaltree (cbfile, comp)) {
+					g_message (G_STRLOC " Could not remove component from interval tree!");
+				}
+
+				add_component_to_intervaltree (cbfile, comp);
 
 				icalcomponent_add_component (
 					priv->icalcomp,
