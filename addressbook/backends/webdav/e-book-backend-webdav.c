@@ -1458,6 +1458,27 @@ book_backend_webdav_open_sync (EBookBackend *backend,
 }
 
 static gboolean
+webdav_can_use_uid (const gchar *uid)
+{
+	const gchar *ptr;
+
+	if (!uid || !*uid)
+		return FALSE;
+
+	for (ptr = uid; *ptr; ptr++) {
+		if ((*ptr >= 'a' && *ptr <= 'z') ||
+		    (*ptr >= 'A' && *ptr <= 'Z') ||
+		    (*ptr >= '0' && *ptr <= '9') ||
+		    strchr (".-@", *ptr) != NULL)
+			continue;
+
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gboolean
 book_backend_webdav_create_contacts_sync (EBookBackend *backend,
                                           const gchar * const *vcards,
                                           GQueue *out_contacts,
@@ -1495,7 +1516,7 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 	contact = e_contact_new_from_vcard (vcards[0]);
 
 	orig_uid = e_contact_get_const (contact, E_CONTACT_UID);
-	if (orig_uid && *orig_uid && !e_book_backend_cache_check_contact (webdav->priv->cache, orig_uid)) {
+	if (orig_uid && *orig_uid && webdav_can_use_uid (orig_uid) && !e_book_backend_cache_check_contact (webdav->priv->cache, orig_uid)) {
 		uid = g_strdup (orig_uid);
 	} else {
 		uid = NULL;
