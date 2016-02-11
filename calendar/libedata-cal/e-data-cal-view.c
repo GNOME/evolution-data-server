@@ -1141,6 +1141,8 @@ gchar *
 e_data_cal_view_get_component_string (EDataCalView *view,
                                       ECalComponent *component)
 {
+	gchar *str = NULL, *res = NULL;
+
 	g_return_val_if_fail (E_IS_DATA_CAL_VIEW (view), NULL);
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
 
@@ -1149,12 +1151,20 @@ e_data_cal_view_get_component_string (EDataCalView *view,
 		icalcomponent *icalcomp = e_cal_component_get_icalcomponent (component);
 
 		if (filter_component (icalcomp, view->priv->fields_of_interest, string))
-			return g_string_free (string, FALSE);
-
-		g_string_free (string, TRUE);
+			str = g_string_free (string, FALSE);
+		else
+			g_string_free (string, TRUE);
 	}
 
-	return e_cal_component_get_as_string (component);
+	if (!str)
+		str = e_cal_component_get_as_string (component);
+
+	if (e_util_ensure_gdbus_string (str, &res) == str)
+		res = str;
+	else
+		g_free (str);
+
+	return res;
 }
 
 /**
