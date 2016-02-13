@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server 3.3.91\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-01-20 20:53+0000\n"
-"PO-Revision-Date: 2016-01-22 14:12+0800\n"
+"POT-Creation-Date: 2016-02-09 09:28+0000\n"
+"PO-Revision-Date: 2016-02-10 11:21+0800\n"
 "Last-Translator: Chao-Hsiung Liao <j_h_liau@yahoo.com.tw>\n"
 "Language-Team: Chinese (traditional)\n"
 "Language: zh_TW\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Project-Style: gnome\n"
 "X-Poedit-Bookmarks: -1,257,-1,-1,-1,-1,-1,-1,-1,-1\n"
 
@@ -116,27 +116,27 @@ msgstr "無法將舊資料庫「%s」重新命名為「%s」： %s"
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:718
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
-#: ../calendar/libecal/e-cal-client.c:3492
-#: ../calendar/libecal/e-cal-client.c:3665
-#: ../calendar/libecal/e-cal-client.c:3929
-#: ../calendar/libecal/e-cal-client.c:4170
-#: ../calendar/libecal/e-cal-client.c:4360
-#: ../calendar/libecal/e-cal-client.c:4553
-#: ../calendar/libecal/e-cal-client.c:4762
-#: ../calendar/libecal/e-cal-client.c:4931
-#: ../calendar/libecal/e-cal-client.c:5134
-#: ../calendar/libecal/e-cal-client.c:5284
-#: ../calendar/libecal/e-cal-client.c:5478
-#: ../calendar/libecal/e-cal-client.c:5631
-#: ../calendar/libecal/e-cal-client.c:5848
-#: ../calendar/libecal/e-cal-client.c:6002
-#: ../calendar/libecal/e-cal-client.c:6228
-#: ../calendar/libecal/e-cal-client.c:6424
-#: ../calendar/libecal/e-cal-client.c:6787
-#: ../calendar/libecal/e-cal-client.c:7009
-#: ../camel/providers/imapx/camel-imapx-server.c:2921
-#: ../camel/providers/imapx/camel-imapx-server.c:2931
-#: ../camel/providers/imapx/camel-imapx-server.c:2943
+#: ../calendar/libecal/e-cal-client.c:3520
+#: ../calendar/libecal/e-cal-client.c:3693
+#: ../calendar/libecal/e-cal-client.c:3957
+#: ../calendar/libecal/e-cal-client.c:4198
+#: ../calendar/libecal/e-cal-client.c:4388
+#: ../calendar/libecal/e-cal-client.c:4581
+#: ../calendar/libecal/e-cal-client.c:4790
+#: ../calendar/libecal/e-cal-client.c:4959
+#: ../calendar/libecal/e-cal-client.c:5162
+#: ../calendar/libecal/e-cal-client.c:5312
+#: ../calendar/libecal/e-cal-client.c:5506
+#: ../calendar/libecal/e-cal-client.c:5659
+#: ../calendar/libecal/e-cal-client.c:5876
+#: ../calendar/libecal/e-cal-client.c:6030
+#: ../calendar/libecal/e-cal-client.c:6256
+#: ../calendar/libecal/e-cal-client.c:6452
+#: ../calendar/libecal/e-cal-client.c:6815
+#: ../calendar/libecal/e-cal-client.c:7037
+#: ../camel/providers/imapx/camel-imapx-server.c:2979
+#: ../camel/providers/imapx/camel-imapx-server.c:2989
+#: ../camel/providers/imapx/camel-imapx-server.c:3001
 #: ../libebackend/e-server-side-source.c:497 ../libedataserver/e-client.c:190
 msgid "Unknown error"
 msgstr "不明的錯誤"
@@ -1317,8 +1317,8 @@ msgstr "無法連接伺服器 (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:699
 #, c-format
-msgid "Failed to connect to a server using SSL: %s"
-msgstr "無法使用 SSL 連線至伺服器：%s"
+msgid "Failed to connect to a server using SSL/TLS: %s"
+msgstr "無法使用 SSL/TLS 連線至伺服器：%s"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:715
 #, c-format
@@ -1572,127 +1572,127 @@ msgstr "不能改變行事曆屬性「%s」的數值"
 msgid "Untitled appointment"
 msgstr "未命名的約會"
 
-#: ../calendar/libecal/e-cal-recur.c:4046
+#: ../calendar/libecal/e-cal-recur.c:4744
 msgid "1st"
 msgstr "1日"
 
-#: ../calendar/libecal/e-cal-recur.c:4047
+#: ../calendar/libecal/e-cal-recur.c:4745
 msgid "2nd"
 msgstr "2日"
 
-#: ../calendar/libecal/e-cal-recur.c:4048
+#: ../calendar/libecal/e-cal-recur.c:4746
 msgid "3rd"
 msgstr "3日"
 
-#: ../calendar/libecal/e-cal-recur.c:4049
+#: ../calendar/libecal/e-cal-recur.c:4747
 msgid "4th"
 msgstr "4日"
 
-#: ../calendar/libecal/e-cal-recur.c:4050
+#: ../calendar/libecal/e-cal-recur.c:4748
 msgid "5th"
 msgstr "5日"
 
-#: ../calendar/libecal/e-cal-recur.c:4051
+#: ../calendar/libecal/e-cal-recur.c:4749
 msgid "6th"
 msgstr "6日"
 
-#: ../calendar/libecal/e-cal-recur.c:4052
+#: ../calendar/libecal/e-cal-recur.c:4750
 msgid "7th"
 msgstr "7日"
 
-#: ../calendar/libecal/e-cal-recur.c:4053
+#: ../calendar/libecal/e-cal-recur.c:4751
 msgid "8th"
 msgstr "8日"
 
-#: ../calendar/libecal/e-cal-recur.c:4054
+#: ../calendar/libecal/e-cal-recur.c:4752
 msgid "9th"
 msgstr "9日"
 
-#: ../calendar/libecal/e-cal-recur.c:4055
+#: ../calendar/libecal/e-cal-recur.c:4753
 msgid "10th"
 msgstr "10日"
 
-#: ../calendar/libecal/e-cal-recur.c:4056
+#: ../calendar/libecal/e-cal-recur.c:4754
 msgid "11th"
 msgstr "11日"
 
-#: ../calendar/libecal/e-cal-recur.c:4057
+#: ../calendar/libecal/e-cal-recur.c:4755
 msgid "12th"
 msgstr "12日"
 
-#: ../calendar/libecal/e-cal-recur.c:4058
+#: ../calendar/libecal/e-cal-recur.c:4756
 msgid "13th"
 msgstr "13日"
 
-#: ../calendar/libecal/e-cal-recur.c:4059
+#: ../calendar/libecal/e-cal-recur.c:4757
 msgid "14th"
 msgstr "14日"
 
-#: ../calendar/libecal/e-cal-recur.c:4060
+#: ../calendar/libecal/e-cal-recur.c:4758
 msgid "15th"
 msgstr "15日"
 
-#: ../calendar/libecal/e-cal-recur.c:4061
+#: ../calendar/libecal/e-cal-recur.c:4759
 msgid "16th"
 msgstr "16日"
 
-#: ../calendar/libecal/e-cal-recur.c:4062
+#: ../calendar/libecal/e-cal-recur.c:4760
 msgid "17th"
 msgstr "17日"
 
-#: ../calendar/libecal/e-cal-recur.c:4063
+#: ../calendar/libecal/e-cal-recur.c:4761
 msgid "18th"
 msgstr "18日"
 
-#: ../calendar/libecal/e-cal-recur.c:4064
+#: ../calendar/libecal/e-cal-recur.c:4762
 msgid "19th"
 msgstr "19日"
 
-#: ../calendar/libecal/e-cal-recur.c:4065
+#: ../calendar/libecal/e-cal-recur.c:4763
 msgid "20th"
 msgstr "20日"
 
-#: ../calendar/libecal/e-cal-recur.c:4066
+#: ../calendar/libecal/e-cal-recur.c:4764
 msgid "21st"
 msgstr "21日"
 
-#: ../calendar/libecal/e-cal-recur.c:4067
+#: ../calendar/libecal/e-cal-recur.c:4765
 msgid "22nd"
 msgstr "22日"
 
-#: ../calendar/libecal/e-cal-recur.c:4068
+#: ../calendar/libecal/e-cal-recur.c:4766
 msgid "23rd"
 msgstr "23日"
 
-#: ../calendar/libecal/e-cal-recur.c:4069
+#: ../calendar/libecal/e-cal-recur.c:4767
 msgid "24th"
 msgstr "24日"
 
-#: ../calendar/libecal/e-cal-recur.c:4070
+#: ../calendar/libecal/e-cal-recur.c:4768
 msgid "25th"
 msgstr "25日"
 
-#: ../calendar/libecal/e-cal-recur.c:4071
+#: ../calendar/libecal/e-cal-recur.c:4769
 msgid "26th"
 msgstr "26日"
 
-#: ../calendar/libecal/e-cal-recur.c:4072
+#: ../calendar/libecal/e-cal-recur.c:4770
 msgid "27th"
 msgstr "27日"
 
-#: ../calendar/libecal/e-cal-recur.c:4073
+#: ../calendar/libecal/e-cal-recur.c:4771
 msgid "28th"
 msgstr "28日"
 
-#: ../calendar/libecal/e-cal-recur.c:4074
+#: ../calendar/libecal/e-cal-recur.c:4772
 msgid "29th"
 msgstr "29日"
 
-#: ../calendar/libecal/e-cal-recur.c:4075
+#: ../calendar/libecal/e-cal-recur.c:4773
 msgid "30th"
 msgstr "30日"
 
-#: ../calendar/libecal/e-cal-recur.c:4076
+#: ../calendar/libecal/e-cal-recur.c:4774
 msgid "31st"
 msgstr "31日"
 
@@ -2052,59 +2052,59 @@ msgstr "無效的引數 (訊息-位置)"
 msgid "Error executing filter search: %s: %s"
 msgstr "執行過濾器搜尋發生錯誤： %s: %s"
 
-#: ../camel/camel-folder.c:321
+#: ../camel/camel-folder.c:326
 #, c-format
 msgid "Learning new spam message in '%s'"
 msgid_plural "Learning new spam messages in '%s'"
 msgstr[0] "正在學習「%s」中的新垃圾郵件"
 
-#: ../camel/camel-folder.c:361
+#: ../camel/camel-folder.c:366
 #, c-format
 msgid "Learning new ham message in '%s'"
 msgid_plural "Learning new ham messages in '%s'"
 msgstr[0] "正在學習「%s」中的 ham 郵件"
 
-#: ../camel/camel-folder.c:409
+#: ../camel/camel-folder.c:414
 #, c-format
 msgid "Filtering new message in '%s'"
 msgid_plural "Filtering new messages in '%s'"
 msgstr[0] "正在過濾「%s」中的新郵件"
 
-#: ../camel/camel-folder.c:1015
+#: ../camel/camel-folder.c:1020
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "正在移動郵件"
 
-#: ../camel/camel-folder.c:1018
+#: ../camel/camel-folder.c:1023
 msgid "Copying messages"
 msgstr "正在複製郵件"
 
-#: ../camel/camel-folder.c:1060
+#: ../camel/camel-folder.c:1065
 #, c-format
 msgid "Quota information not supported for folder '%s'"
 msgstr "資料夾「%s」不支援限額資訊"
 
-#: ../camel/camel-folder.c:1155
+#: ../camel/camel-folder.c:1160
 #, c-format
 msgid "Filtering folder '%s'"
 msgstr "過濾資料夾「%s」"
 
-#: ../camel/camel-folder.c:2891
+#: ../camel/camel-folder.c:2896
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "刪除資料夾「%s」"
 
-#: ../camel/camel-folder.c:3022
+#: ../camel/camel-folder.c:3027
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "接收 %2$s 中的郵件「%1$s」"
 
-#: ../camel/camel-folder.c:3213
+#: ../camel/camel-folder.c:3218
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "取得「%s」的用量限額資訊"
 
-#: ../camel/camel-folder.c:3510
+#: ../camel/camel-folder.c:3515
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "重新整理資料夾「%s」"
@@ -2157,12 +2157,12 @@ msgstr ""
 "執行搜尋詞句時發生錯誤：%s:\n"
 "%s"
 
-#: ../camel/camel-folder-summary.c:2151
+#: ../camel/camel-folder-summary.c:2156
 #, c-format
 msgid "Release unused memory for folder '%s'"
 msgstr "釋放資料夾「%s」未使用的記憶體"
 
-#: ../camel/camel-folder-summary.c:2363
+#: ../camel/camel-folder-summary.c:2368
 #, c-format
 msgid "Update preview data for folder '%s'"
 msgstr "更新資料夾「%s」的預覽資料"
@@ -2715,7 +2715,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "通訊協定「%s」註冊了無效的 GType"
 
 #: ../camel/camel-session.c:499
-#: ../camel/providers/imapx/camel-imapx-server.c:2870
+#: ../camel/providers/imapx/camel-imapx-server.c:2928
 #: ../camel/providers/pop3/camel-pop3-store.c:308
 #: ../camel/providers/pop3/camel-pop3-store.c:786
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
@@ -2922,43 +2922,43 @@ msgstr "無法新增資料至編碼器"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME 解密：找不到加密內容"
 
-#: ../camel/camel-store.c:1259
+#: ../camel/camel-store.c:1275
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "開啟資料夾「%s」"
 
-#: ../camel/camel-store.c:1550
+#: ../camel/camel-store.c:1566
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "掃描「%s」內的資料夾"
 
-#: ../camel/camel-store.c:1578 ../camel/camel-store.c:1623
+#: ../camel/camel-store.c:1594 ../camel/camel-store.c:1639
 #: ../camel/camel-vtrash-folder.c:45
 msgid "Trash"
 msgstr "回收筒"
 
-#: ../camel/camel-store.c:1592 ../camel/camel-store.c:1640
+#: ../camel/camel-store.c:1608 ../camel/camel-store.c:1656
 #: ../camel/camel-vtrash-folder.c:47
 msgid "Junk"
 msgstr "垃圾郵件"
 
-#: ../camel/camel-store.c:2241
+#: ../camel/camel-store.c:2257
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "無法建構資料夾：%s：資料夾已存在"
 
-#: ../camel/camel-store.c:2248
+#: ../camel/camel-store.c:2264
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "正在建立資料夾「%s」"
 
-#: ../camel/camel-store.c:2425 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2441 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:346
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "不能刪除資料夾： %s ：無效的操作"
 
-#: ../camel/camel-store.c:2615 ../camel/camel-vee-store.c:461
+#: ../camel/camel-store.c:2631 ../camel/camel-vee-store.c:461
 #: ../camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3063,13 +3063,13 @@ msgstr "無法複製訊息到「回收筒」資料夾"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "無法複製訊息到「垃圾郵件」資料夾"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:937
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:953
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "您必須於線上工作才能完成此操作 (%s)"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:945
-#: ../camel/providers/imapx/camel-imapx-server.c:2998
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:961
+#: ../camel/providers/imapx/camel-imapx-server.c:3060
 #: ../camel/providers/nntp/camel-nntp-store.c:349
 #: ../camel/providers/nntp/camel-nntp-store.c:1291
 #: ../camel/providers/nntp/camel-nntp-store.c:2099
@@ -3088,17 +3088,17 @@ msgstr "您必須於線上工作才能完成此操作 (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "您必須於線上工作才能完成此操作"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1517
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1605
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1533
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1621
 #, c-format
 msgid "No destination folder specified"
 msgstr "沒有指定目的地資料夾"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1544
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1560
 msgid "Unable to move junk messages"
 msgstr "無法移動垃圾郵件"
 
-#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1639
+#: ../camel/providers/imapx/camel-imapx-conn-manager.c:1655
 msgid "Unable to move deleted messages"
 msgstr "無法移動刪除的郵件"
 
@@ -3215,8 +3215,8 @@ msgid "Default IMAP port"
 msgstr "預設的 IMAP 連接埠"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:81
-msgid "IMAP over SSL"
-msgstr "IMAP 透過 SSL"
+msgid "IMAP over TLS"
+msgstr "IMAP 透過 TLS"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
@@ -3226,200 +3226,196 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "用作讀取及儲存郵件於 IMAP 伺服器。"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1113
+#: ../camel/providers/imapx/camel-imapx-server.c:1134
 msgid "Error writing to cache stream"
 msgstr "寫入快取串流時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2707
-#: ../camel/providers/imapx/camel-imapx-server.c:2781
-#: ../camel/providers/imapx/camel-imapx-server.c:3028
+#: ../camel/providers/imapx/camel-imapx-server.c:2745
+#: ../camel/providers/imapx/camel-imapx-server.c:2832
+#: ../camel/providers/imapx/camel-imapx-server.c:3093
 msgid "Failed to get capabilities"
 msgstr "無法取得功能"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2721
+#: ../camel/providers/imapx/camel-imapx-server.c:2764
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "以安全模式連線到 IMAP 伺服器 %s 時失敗了： %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2722
+#: ../camel/providers/imapx/camel-imapx-server.c:2765
 #: ../camel/providers/smtp/camel-smtp-transport.c:281
 msgid "STARTTLS not supported"
 msgstr "不支援 STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2728
+#: ../camel/providers/imapx/camel-imapx-server.c:2773
 msgid "Failed to issue STARTTLS"
 msgstr "無法發出 STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2772
+#: ../camel/providers/imapx/camel-imapx-server.c:2821
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "以安全模式連線到 IMAP 伺服器 %s 時失敗了： "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2859
+#: ../camel/providers/imapx/camel-imapx-server.c:2915
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP 伺服器 %s 不支援 %s 核對"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2888
+#: ../camel/providers/imapx/camel-imapx-server.c:2946
 #: ../camel/providers/nntp/camel-nntp-store.c:400
 #: ../camel/providers/nntp/camel-nntp-store.c:542
 msgid "Cannot authenticate without a username"
 msgstr "不能核對沒有使用者名稱"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2897
+#: ../camel/providers/imapx/camel-imapx-server.c:2955
 #: ../camel/providers/nntp/camel-nntp-store.c:551
 #: ../camel/providers/pop3/camel-pop3-store.c:690
 #: ../camel/providers/pop3/camel-pop3-store.c:728
 msgid "Authentication password not available"
 msgstr "沒有核對的密碼"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2905
+#: ../camel/providers/imapx/camel-imapx-server.c:2963
 msgid "Failed to authenticate"
 msgstr "無法核對"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3045
+#: ../camel/providers/imapx/camel-imapx-server.c:3115
 msgid "Failed to issue NAMESPACE"
 msgstr "無法發出 NAMESPACE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3059
+#: ../camel/providers/imapx/camel-imapx-server.c:3133
 msgid "Failed to enable QResync"
 msgstr "無法啟用 QResync"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3087
+#: ../camel/providers/imapx/camel-imapx-server.c:3165
 msgid "Failed to issue NOTIFY"
 msgstr "無法發出 NOTIFY"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3565
+#: ../camel/providers/imapx/camel-imapx-server.c:3624
 msgid "Failed to select mailbox"
 msgstr "無法選擇信箱"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3663
+#: ../camel/providers/imapx/camel-imapx-server.c:3722
 msgid "Cannot issue command, no stream available"
 msgstr "不能發出指令，沒有可用的串流"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3914
+#: ../camel/providers/imapx/camel-imapx-server.c:3984
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "無法取得郵件 ID 為 %s 的郵件： %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3915
+#: ../camel/providers/imapx/camel-imapx-server.c:3985
 msgid "No such message available."
 msgstr "沒有這個郵件。"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3949
-#: ../camel/providers/imapx/camel-imapx-server.c:3974
-#: ../camel/providers/imapx/camel-imapx-server.c:3993
+#: ../camel/providers/imapx/camel-imapx-server.c:4019
+#: ../camel/providers/imapx/camel-imapx-server.c:4044
+#: ../camel/providers/imapx/camel-imapx-server.c:4063
 msgid "Error fetching message"
 msgstr "取回郵件時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3986
+#: ../camel/providers/imapx/camel-imapx-server.c:4056
 msgid "Failed to close the tmp stream"
 msgstr "無法關閉 tmp 的串流"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4017
+#: ../camel/providers/imapx/camel-imapx-server.c:4087
 msgid "Failed to copy the tmp file"
 msgstr "無法複製 tmp 檔案"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4176
+#: ../camel/providers/imapx/camel-imapx-server.c:4250
 msgid "Error moving messages"
 msgstr "移動郵件時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4176
+#: ../camel/providers/imapx/camel-imapx-server.c:4250
 msgid "Error copying messages"
 msgstr "複製郵件時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4360
-#: ../camel/providers/imapx/camel-imapx-server.c:4381
+#: ../camel/providers/imapx/camel-imapx-server.c:4434
+#: ../camel/providers/imapx/camel-imapx-server.c:4455
 msgid "Cannot create spool file: "
 msgstr "不能建立排程器檔案："
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4472
+#: ../camel/providers/imapx/camel-imapx-server.c:4546
 msgid "Error appending message"
 msgstr "附加郵件時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4562
+#: ../camel/providers/imapx/camel-imapx-server.c:4636
 msgid "Error performing NOOP"
 msgstr "進行 NOOP 時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4710
+#: ../camel/providers/imapx/camel-imapx-server.c:4784
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "掃描「%s」中變更過的郵件"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4713
+#: ../camel/providers/imapx/camel-imapx-server.c:4787
 msgid "Error scanning changes"
 msgstr "掃描變更時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4731
+#: ../camel/providers/imapx/camel-imapx-server.c:4805
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "正取得「%s」中新郵件的摘要資訊"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4748
+#: ../camel/providers/imapx/camel-imapx-server.c:4822
 msgid "Error fetching message info"
 msgstr "取回郵件資訊時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4810
+#: ../camel/providers/imapx/camel-imapx-server.c:4884
 msgid "Error running STATUS"
 msgstr "執行STATUS 時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5293
-#: ../camel/providers/imapx/camel-imapx-server.c:5345
+#: ../camel/providers/imapx/camel-imapx-server.c:5367
+#: ../camel/providers/imapx/camel-imapx-server.c:5419
 msgid "Error syncing changes"
 msgstr "同步變更時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5456
+#: ../camel/providers/imapx/camel-imapx-server.c:5530
 msgid "Error expunging message"
 msgstr "清空郵件時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5526
+#: ../camel/providers/imapx/camel-imapx-server.c:5600
 msgid "Error fetching folders"
 msgstr "取回資料夾時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5537
+#: ../camel/providers/imapx/camel-imapx-server.c:5611
 msgid "Error fetching subscribed folders"
 msgstr "取回已訂閱的資料夾的錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5559
+#: ../camel/providers/imapx/camel-imapx-server.c:5633
 msgid "Error creating folder"
 msgstr "建立資料夾時發生錯誤。"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5615
+#: ../camel/providers/imapx/camel-imapx-server.c:5689
 msgid "Error deleting folder"
 msgstr "刪除資料夾時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5661
+#: ../camel/providers/imapx/camel-imapx-server.c:5735
 msgid "Error renaming folder"
 msgstr "重新命名資料夾時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5693
+#: ../camel/providers/imapx/camel-imapx-server.c:5767
 msgid "Error subscribing to folder"
 msgstr "訂閱到資料夾時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5729
+#: ../camel/providers/imapx/camel-imapx-server.c:5803
 msgid "Error unsubscribing from folder"
 msgstr "取消訂閱資料夾發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5765
+#: ../camel/providers/imapx/camel-imapx-server.c:5843
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 伺服器不支援限額"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5775
+#: ../camel/providers/imapx/camel-imapx-server.c:5855
 msgid "Error retrieving quota information"
 msgstr "取得用量限額資訊時發生錯誤"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5822
+#: ../camel/providers/imapx/camel-imapx-server.c:5902
 msgid "Search failed"
 msgstr "搜尋失敗"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:5933
+#: ../camel/providers/imapx/camel-imapx-server.c:6020
 msgid "Error running IDLE"
 msgstr "執行 IDLE 時發生錯誤"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:6180
-msgid "Failed to issue DONE"
-msgstr "無法發出 DONE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../camel/providers/imapx/camel-imapx-store.c:224
@@ -3477,6 +3473,91 @@ msgstr "取得「%s」的資料夾列表"
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "資料夾名稱「%s」無效，因為它包括字元「%c」"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2374
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Drafts"
+msgstr "[Gmail]/草稿"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2375
+msgctxt "IMAPDefaults"
+msgid "Drafts"
+msgstr "草稿"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2376
+msgctxt "IMAPDefaults"
+msgid "Draft"
+msgstr "草稿"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2379
+msgctxt "IMAPDefaults"
+msgid "Templates"
+msgstr "範本"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2382
+msgctxt "IMAPDefaults"
+msgid "Archive"
+msgstr "封存"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2385
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Sent Mail"
+msgstr "[Gmail]/發送郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2386
+msgctxt "IMAPDefaults"
+msgid "Sent"
+msgstr "已傳送"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2387
+msgctxt "IMAPDefaults"
+msgid "Sent Items"
+msgstr "傳送項目"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2390
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Spam"
+msgstr "[Gmail]/垃圾郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2391
+msgctxt "IMAPDefaults"
+msgid "Junk"
+msgstr "垃圾郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2392
+msgctxt "IMAPDefaults"
+msgid "Junk E-mail"
+msgstr "垃圾郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2393
+msgctxt "IMAPDefaults"
+msgid "Junk Email"
+msgstr "垃圾郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2394
+msgctxt "IMAPDefaults"
+msgid "Spam"
+msgstr "垃圾郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2395
+msgctxt "IMAPDefaults"
+msgid "Bulk Mail"
+msgstr "大宗郵件"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2398
+msgctxt "IMAPDefaults"
+msgid "[Gmail]/Trash"
+msgstr "[Gmail]/回收筒"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2399
+msgctxt "IMAPDefaults"
+msgid "Trash"
+msgstr "回收筒"
+
+#: ../camel/providers/imapx/camel-imapx-store.c:2400
+msgctxt "IMAPDefaults"
+msgid "Deleted Items"
+msgstr "已删除的項目"
 
 #: ../camel/providers/local/camel-local-folder.c:194
 #, c-format
@@ -4058,8 +4139,8 @@ msgid "Default NNTP port"
 msgstr "預設的 NNTP 連接埠"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
-msgid "NNTP over SSL"
-msgstr "NNTP 透過 SSL"
+msgid "NNTP over TLS"
+msgstr "NNTP 透過 TLS"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:61
 msgid "USENET news"
@@ -4242,8 +4323,8 @@ msgid "Default POP3 port"
 msgstr "預設 POP3 連接埠"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:53
-msgid "POP3 over SSL"
-msgstr "POP3 透過 SSL"
+msgid "POP3 over TLS"
+msgstr "POP3 透過 TLS"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:60
 msgid "POP"
@@ -4435,8 +4516,8 @@ msgid "Default SMTP port"
 msgstr "預設 SMTP 連接埠"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
-msgid "SMTP over SSL"
-msgstr "SMTP 透過 SSL"
+msgid "SMTP over TLS"
+msgstr "SMTP 透過 TLS"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "Message submission port"
@@ -5205,90 +5286,90 @@ msgstr "憑證提示已取消"
 msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "來源「%s」不支援憑證提示"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:436
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:440
 #, c-format
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgstr "無法從「%s」獲得存取記號：錯誤代碼 %d (%s)"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:482
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:486
 msgid "Requesting access token, please wait..."
 msgstr "正請求存取記號，請稍候..."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:584
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:588
 msgid "Google Address book authentication request"
 msgstr "Google 通訊錄核對要求"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:587
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:591
 msgid "Google Calendar authentication request"
 msgstr "Google 行事曆核對要求"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:590
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:594
 msgid "Google Memo List authentication request"
 msgstr "Google 備忘錄列表核對要求"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:593
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:597
 msgid "Google Task List authentication request"
 msgstr "Google 任務列表核對要求"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:597
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:601
 msgid "Google Mail authentication request"
 msgstr "Google 郵件核對要求"
 
 #. generic account prompt
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:600
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:604
 msgid "Google account authentication request"
 msgstr "Google 帳號核對要求"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:611
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:615
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來訪問您的地址簿「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:615
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:619
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來訪問您的行事曆「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:619
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:623
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來訪問您的郵件帳號「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:623
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來存取您的郵件「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:627
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來訪問您的備忘錄列表「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:631
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來訪問您的任務列表「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:635
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account \"%s\"."
 msgstr "登入您的 Google 帳號並接受條款來訪問您的帳號「%s」。"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:679
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:683
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
 #: ../libedataserverui/e-trust-prompt.c:114
 #: ../libedataserverui/e-webdav-discover-widget.c:1063
@@ -5388,8 +5469,8 @@ msgstr "永久接受(_A)"
 #: ../libedataserverui/e-trust-prompt.c:188
 #: ../modules/trust-prompt/trust-prompt-gtk.c:159
 #, c-format
-msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
-msgstr "「%s」的 SSL 憑證未受信任。您想要接受它嗎？"
+msgid "SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"
+msgstr "「%s」的 SSL/TLS 憑證未受信任。您想要接受它嗎？"
 
 #: ../libedataserverui/e-trust-prompt.c:210
 #: ../modules/trust-prompt/trust-prompt-gtk.c:174
@@ -5695,6 +5776,9 @@ msgstr "不要從前一版的 Evolution 轉換使用者資料"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
 msgstr "解除(_D)"
+
+#~ msgid "Failed to issue DONE"
+#~ msgstr "無法發出 DONE"
 
 #~ msgid "Not authenticated"
 #~ msgstr "尚未核對"
