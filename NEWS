@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.18.5 2016-02-15
+---------------------------------------
+
+Bug Fixes:
+	Bug 748996 - GNetworkAddress is not thread safe (Milan Crha)
+	Bug 759153 - Prefer gpg2 over gpg (again, to match default for seahorse) (Milan Crha)
+	Bug 761527 - Local calendar interval tree not always updated (Milan Crha)
+	Bug 760951 - Cannot copy contact from Google to WebDAV addressbook (Milan Crha)
+
+Miscellaneous:
+	Use icaltzutil_set_exact_vtimezones_support(), if available (Milan Crha)
+	[IMAPx] Connection could be used multiple times at once in certain cases (Milan Crha)
+	[IMAPx] Stop IDLE gracefully (Milan Crha)
+	[IMAPx] Change how IDLE is handled (Milan Crha)
+	[IMAPx] Remove runtime check from imapx_conn_manager_dec_mailbox_hash() (Milan Crha)
+	[IMAPx] Crash in imapx_free_capability() (Milan Crha)
+	[IMAPx] Prefer graceful IDLE stop than forced reconnect (Milan Crha)
+
 Evolution-Data-Server 3.18.4 2016-01-18
 ---------------------------------------
 
