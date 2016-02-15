@@ -3961,6 +3961,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 {
 	CamelMessageInfo *mi;
 	CamelStream *result_stream = NULL;
+	CamelIMAPXSettings *settings;
 	GIOStream *cache_stream;
 	gsize data_size;
 	gboolean use_multi_fetch;
@@ -3997,8 +3998,10 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 		return NULL;
 	}
 
+	settings = camel_imapx_server_ref_settings (is);
 	data_size = ((CamelMessageInfoBase *) mi)->size;
-	use_multi_fetch = data_size > MULTI_SIZE;
+	use_multi_fetch = data_size > MULTI_SIZE && camel_imapx_settings_get_use_multi_fetch (settings);
+	g_object_unref (settings);
 
 	g_warn_if_fail (is->priv->get_message_stream == NULL);
 

@@ -55,11 +55,11 @@ struct _CamelIMAPXSettingsClass {
 };
 
 GType		camel_imapx_settings_get_type	(void) G_GNUC_CONST;
-guint		camel_imapx_settings_get_batch_fetch_count
+guint		camel_imapx_settings_get_use_multi_fetch
 						(CamelIMAPXSettings *settings);
-void		camel_imapx_settings_set_batch_fetch_count
+void		camel_imapx_settings_set_use_multi_fetch
 						(CamelIMAPXSettings *settings,
-						 guint batch_fetch_count);
+						 guint use_multi_fetch);
 gboolean	camel_imapx_settings_get_check_all
 						(CamelIMAPXSettings *settings);
 void		camel_imapx_settings_set_check_all

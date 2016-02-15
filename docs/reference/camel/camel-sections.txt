@@ -3737,8 +3737,8 @@ imapx_connect_to_server
 <FILE>camel-imapx-settings</FILE>
 <TITLE>CamelIMAPXSettings</TITLE>
 CamelIMAPXSettings
-camel_imapx_settings_get_batch_fetch_count
-camel_imapx_settings_set_batch_fetch_count
+camel_imapx_settings_get_use_multi_fetch
+camel_imapx_settings_set_use_multi_fetch
 camel_imapx_settings_get_check_all
 camel_imapx_settings_set_check_all
 camel_imapx_settings_get_check_subscribed
