@@ -1871,6 +1871,7 @@ do_search_in_memory (CamelFolder *search_in_folder,
 		"header-full-regex",
 		"header-contains",
 		"header-has-words",
+		"header-ends-with",
 		NULL };
 	gint i;
 
