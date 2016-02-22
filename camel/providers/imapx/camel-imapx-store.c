@@ -1025,6 +1025,7 @@ static CamelFolderInfo *
 get_folder_info_offline (CamelStore *store,
                          const gchar *top,
                          CamelStoreGetFolderInfoFlags flags,
+			 GCancellable *cancellable,
                          GError **error)
 {
 	CamelIMAPXStore *imapx_store = CAMEL_IMAPX_STORE (store);
@@ -1037,6 +1038,33 @@ get_folder_info_offline (CamelStore *store,
 	gboolean use_subscriptions;
 	gint top_len;
 	guint ii;
+
+	if (g_strcmp0 (top, CAMEL_VTRASH_NAME) == 0 ||
+	    g_strcmp0 (top, CAMEL_VJUNK_NAME) == 0) {
+		CamelFolder *vfolder;
+
+		vfolder = camel_store_get_folder_sync (store, top, 0, cancellable, error);
+		if (!vfolder)
+			return NULL;
+
+		fi = imapx_store_build_folder_info (imapx_store, top, 0);
+		fi->unread = camel_folder_summary_get_unread_count (vfolder->summary);
+		fi->total = camel_folder_summary_get_saved_count (vfolder->summary);
+
+		if (g_strcmp0 (top, CAMEL_VTRASH_NAME) == 0)
+			fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) |
+				CAMEL_FOLDER_VIRTUAL |
+				CAMEL_FOLDER_VTRASH |
+				CAMEL_FOLDER_TYPE_TRASH;
+		else
+			fi->flags = (fi->flags & ~CAMEL_FOLDER_TYPE_MASK) |
+				CAMEL_FOLDER_VIRTUAL |
+				CAMEL_FOLDER_TYPE_JUNK;
+
+		g_object_unref (vfolder);
+
+		return fi;
+	}
 
 	service = CAMEL_SERVICE (store);
 
@@ -1821,7 +1849,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	g_mutex_lock (&imapx_store->priv->get_finfo_lock);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store))) {
-		fi = get_folder_info_offline (store, top, flags, error);
+		fi = get_folder_info_offline (store, top, flags, cancellable, error);
 		goto exit;
 	}
 
@@ -1861,7 +1889,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 	/* Avoid server interaction if the FAST flag is set. */
 	if (!initial_setup && flags & CAMEL_STORE_FOLDER_INFO_FAST) {
-		fi = get_folder_info_offline (store, top, flags, error);
+		fi = get_folder_info_offline (store, top, flags, cancellable, error);
 		goto exit;
 	}
 
@@ -1874,7 +1902,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 	if (initial_setup && use_subscriptions)
 		discover_inbox (imapx_store, cancellable);
 
-	fi = get_folder_info_offline (store, top, flags, error);
+	fi = get_folder_info_offline (store, top, flags, cancellable, error);
 
 exit:
 	g_mutex_unlock (&imapx_store->priv->get_finfo_lock);
