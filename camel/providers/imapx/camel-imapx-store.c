@@ -2293,8 +2293,10 @@ imapx_find_folder_for_initial_setup (CamelFolderInfo *root,
 }
 
 static void
-imapx_check_initial_setup_group (CamelFolderInfo *finfo,
+imapx_check_initial_setup_group (CamelIMAPXStore *imapx_store,
+				 CamelFolderInfo *finfo,
 				 GHashTable *save_setup,
+				 const gchar *list_attribute,
 				 const gchar *main_key,
 				 const gchar *additional_key,
 				 const gchar *additional_key_value,
@@ -2304,11 +2306,51 @@ imapx_check_initial_setup_group (CamelFolderInfo *finfo,
 	gchar *folder_fullname = NULL;
 	gint ii;
 
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store));
 	g_return_if_fail (finfo != NULL);
 	g_return_if_fail (save_setup != NULL);
 	g_return_if_fail (main_key != NULL);
 	g_return_if_fail (names != NULL);
 	g_return_if_fail (n_names > 0);
+
+	/* Prefer RFC 6154 "SPECIAL-USE" Flags, which are not locale sensitive */
+	if (list_attribute) {
+		CamelIMAPXNamespaceResponse *namespace_response;
+
+		namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
+		if (namespace_response) {
+			GList *namespaces, *mailboxes, *link;
+			CamelIMAPXNamespace *user_namespace = NULL;
+
+			namespaces = camel_imapx_namespace_response_list (namespace_response);
+			for (link = namespaces; link && !user_namespace; link = g_list_next (link)) {
+				CamelIMAPXNamespace *candidate = link->data;
+
+				if (!candidate || camel_imapx_namespace_get_category (candidate) != CAMEL_IMAPX_NAMESPACE_PERSONAL)
+					continue;
+
+				user_namespace = candidate;
+			}
+
+			if (user_namespace) {
+				mailboxes = camel_imapx_store_list_mailboxes (imapx_store, user_namespace, NULL);
+
+				for (link = mailboxes; link && !folder_fullname; link = g_list_next (link)) {
+					CamelIMAPXMailbox *mailbox = link->data;
+
+					if (!mailbox || !camel_imapx_mailbox_has_attribute (mailbox, list_attribute))
+						continue;
+
+					folder_fullname = camel_imapx_mailbox_dup_folder_path (mailbox);
+				}
+
+				g_list_free_full (mailboxes, g_object_unref);
+			}
+
+			g_list_free_full (namespaces, g_object_unref);
+			g_object_unref (namespace_response);
+		}
+	}
 
 	/* First check the folder names in the user's locale */
 	for (ii = 0; ii < n_names && !folder_fullname; ii++) {
@@ -2399,6 +2441,8 @@ imapx_initial_setup_sync (CamelStore *store,
 		NC_("IMAPDefaults", "Trash"),
 		NC_("IMAPDefaults", "Deleted Items")
 	};
+
+	CamelIMAPXStore *imapx_store;
 	CamelFolderInfo *finfo;
 	GError *local_error = NULL;
 
@@ -2418,30 +2462,37 @@ imapx_initial_setup_sync (CamelStore *store,
 		return TRUE;
 	}
 
-	imapx_check_initial_setup_group (finfo, save_setup,
+	imapx_store = CAMEL_IMAPX_STORE (store);
+
+	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
+		CAMEL_IMAPX_LIST_ATTR_DRAFTS,
 		CAMEL_STORE_SETUP_DRAFTS_FOLDER, NULL, NULL,
 		draft_names, G_N_ELEMENTS (draft_names));
 
-	imapx_check_initial_setup_group (finfo, save_setup,
+	imapx_check_initial_setup_group (imapx_store, finfo, save_setup, NULL,
 		CAMEL_STORE_SETUP_TEMPLATES_FOLDER, NULL, NULL,
 		templates_names, G_N_ELEMENTS (templates_names));
 
-	imapx_check_initial_setup_group (finfo, save_setup,
+	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
+		CAMEL_IMAPX_LIST_ATTR_ARCHIVE,
 		CAMEL_STORE_SETUP_ARCHIVE_FOLDER, NULL, NULL,
 		archive_names, G_N_ELEMENTS (archive_names));
 
-	imapx_check_initial_setup_group (finfo, save_setup,
+	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
+		CAMEL_IMAPX_LIST_ATTR_SENT,
 		CAMEL_STORE_SETUP_SENT_FOLDER, NULL, NULL,
 		sent_names, G_N_ELEMENTS (sent_names));
 
 	/* It's a folder path inside the account, thus not use the 'f' type, but the 's' type. */
-	imapx_check_initial_setup_group (finfo, save_setup,
+	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
+		CAMEL_IMAPX_LIST_ATTR_JUNK,
 		"Backend:Imapx Backend:real-junk-path:s",
 		"Backend:Imapx Backend:use-real-junk-path:b", "true",
 		junk_names, G_N_ELEMENTS (junk_names));
 
 	/* It's a folder path inside the account, thus not use the 'f' type, but the 's' type. */
-	imapx_check_initial_setup_group (finfo, save_setup,
+	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
+		CAMEL_IMAPX_LIST_ATTR_TRASH,
 		"Backend:Imapx Backend:real-trash-path:s",
 		"Backend:Imapx Backend:use-real-trash-path:b", "true",
 		trash_names, G_N_ELEMENTS (trash_names));
