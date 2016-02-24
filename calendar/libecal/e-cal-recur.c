@@ -238,8 +238,8 @@ apply_duration (struct icaltimetype *tt,
 	if (icaldurationtype_is_null_duration (*duration))
 		return;
 
-	days = duration->days + 7 * duration->weeks;
-	seconds = (duration->hours * 60 * 60) + (duration->minutes * 60) + duration->seconds;
+	days = (gint64) duration->days + 7 * ((gint64) duration->weeks);
+	seconds = ((gint64) duration->hours * 60 * 60) + ((gint64) duration->minutes * 60) + duration->seconds;
 	days += seconds / (24 * 60 * 60);
 	seconds = seconds % (24 * 60 * 60);
 

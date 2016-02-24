@@ -2302,7 +2302,7 @@ cdb_delete_ids (CamelDB *cdb,
                 GError **error)
 {
 	gchar *tmp;
-	gint ret;
+	gint ret = 0;
 	gchar *tab;
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
