@@ -1,3 +1,25 @@
+Evolution-Data-Server 3.19.91 2016-02-29
+----------------------------------------
+
+Bug Fixes:
+	Bug 725320 - [Camel] Let the store preconfigure settings the first time (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Add "use-multi-fetch" boolean option (Milan Crha)
+	[Camel] Run "headers-end-with" search rule in memory (Milan Crha)
+	[IMAPx] Cannot mark-all-read in virtual Junk and Trash folders (Milan Crha)
+	Address few issues found by Coverity Scan (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+	Rafael Fontenelle (pt_BR)
+	Aurimas Černius (lt)
+	Fran Dieguez (gl)
+	Cédric Valmary (oc)
+	Marek Černocký (cs)
+
 Evolution-Data-Server 3.19.90 2016-02-15
 ----------------------------------------
 
