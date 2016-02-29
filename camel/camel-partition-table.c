@@ -791,7 +791,8 @@ camel_key_table_add (CamelKeyTable *ki,
 
 	if (kblast->used >=127) {
 		g_warning ("Invalid value for used %d\n", kblast->used);
-		return 0;
+		keyid = 0;
+		goto fail;
 	}
 
 	camel_block_file_touch_block (ki->blocks, last);
