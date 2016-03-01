@@ -1502,7 +1502,13 @@ e_cal_backend_http_authenticate_sync (EBackend *backend,
 	}
 
 	uri = cal_backend_http_ensure_uri (cbhttp);
-	cal_backend_http_load (cbhttp, uri, out_certificate_pem, out_certificate_errors, cancellable, &local_error);
+	if (cal_backend_http_load (cbhttp, uri, out_certificate_pem, out_certificate_errors, cancellable, &local_error)) {
+		if (!cbhttp->priv->reload_timeout_id) {
+			ESource *source = e_backend_get_source (backend);
+
+			cbhttp->priv->reload_timeout_id = e_source_refresh_add_timeout (source, NULL, http_cal_reload_cb, backend, NULL);
+		}
+	}
 
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
