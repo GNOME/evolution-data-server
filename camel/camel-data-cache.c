@@ -245,6 +245,8 @@ void
 camel_data_cache_set_expire_age (CamelDataCache *cdc,
                                  time_t when)
 {
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
+
 	cdc->priv->expire_age = when;
 }
 
@@ -267,6 +269,8 @@ void
 camel_data_cache_set_expire_access (CamelDataCache *cdc,
                                     time_t when)
 {
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
+
 	cdc->priv->expire_access = when;
 }
 
@@ -382,6 +386,8 @@ camel_data_cache_add (CamelDataCache *cdc,
 	GFileIOStream *stream;
 	GFile *file;
 
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), NULL);
+
 	real = data_cache_path (cdc, TRUE, path, key);
 	/* need to loop 'cause otherwise we can call bag_add/bag_abort
 	 * after bag_reserve returned a pointer, which is an invalid
@@ -437,6 +443,8 @@ camel_data_cache_get (CamelDataCache *cdc,
 	struct stat st;
 	gchar *real;
 
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), NULL);
+
 	real = data_cache_path (cdc, FALSE, path, key);
 	stream = camel_object_bag_reserve (cdc->priv->busy_bag, real);
 	if (stream != NULL)
@@ -483,6 +491,8 @@ camel_data_cache_get_filename (CamelDataCache *cdc,
                                const gchar *path,
                                const gchar *key)
 {
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), NULL);
+
 	return data_cache_path (cdc, FALSE, path, key);
 }
 
@@ -506,6 +516,8 @@ camel_data_cache_remove (CamelDataCache *cdc,
 	GIOStream *stream;
 	gchar *real;
 	gint ret;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), -1);
 
 	real = data_cache_path (cdc, FALSE, path, key);
 	stream = camel_object_bag_get (cdc->priv->busy_bag, real);
@@ -549,7 +561,7 @@ camel_data_cache_clear (CamelDataCache *cdc,
 	const gchar *dname;
 	struct stat st;
 
-	g_return_if_fail (cdc != NULL);
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
 	g_return_if_fail (path != NULL);
 
 	base_dir = g_build_filename (cdc->priv->path, path, NULL);
