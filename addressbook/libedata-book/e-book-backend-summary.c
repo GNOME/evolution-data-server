@@ -288,6 +288,12 @@ read_string (FILE *fp,
 		return NULL;
 	}
 
+	/* Validate the string as UTF-8. */
+	if (!g_utf8_validate (buf, rv, NULL)) {
+		g_free (buf);
+		return NULL;
+	}
+
 	return buf;
 }
 
