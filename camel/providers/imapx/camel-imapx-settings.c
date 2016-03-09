@@ -492,7 +492,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 			"use-multi-fetch",
 			"Use Multi Fetch",
 			"Whether allow downloading of large messages in chunks",
-			TRUE,
+			FALSE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
