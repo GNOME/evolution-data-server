@@ -1981,7 +1981,7 @@ msgstr "Nelze vytvořit proces potomka „%s“: %s"
 #: ../camel/camel-filter-driver.c:982
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr "Přijat neplatný proud zprávy od %s: %s"
+msgstr "Přijat neplatný datový proud se zprávou od %s: %s"
 
 #: ../camel/camel-filter-driver.c:1189 ../camel/camel-filter-driver.c:1198
 msgid "Syncing folders"
@@ -3002,12 +3002,12 @@ msgstr "Nelze přejmenovat složku: %s: Neplatná operace"
 
 #: ../camel/camel-stream.c:168
 msgid "Cannot write with no base stream"
-msgstr "Nelze zapisovat bez základního proudu dat"
+msgstr "Nelze zapisovat bez základního datového proudu"
 
 #: ../camel/camel-stream.c:288 ../camel/camel-stream.c:339
 #, c-format
 msgid "Stream type '%s' is not seekable"
-msgstr "V proudu typu „%s“ není možné přeskakování"
+msgstr "V datovém proudu typu „%s“ není možné přeskakování"
 
 #: ../camel/camel-stream-filter.c:344
 msgid "Only reset to beginning is supported with CamelStreamFilter"
@@ -3170,7 +3170,7 @@ msgstr "Pro složku „%s“ není k dispozici žádná poštovní schránka IMA
 #: ../camel/providers/imapx/camel-imapx-input-stream.c:101
 #, c-format
 msgid "Source stream returned no data"
-msgstr "Zdrojový proud nevrátil žádná data"
+msgstr "Zdrojový datový proud nevrátil žádná data"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:38
 msgid "Checking for New Mail"
@@ -3264,7 +3264,7 @@ msgstr "Pro čtení a ukládání pošty na serverech IMAP."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:1134
 msgid "Error writing to cache stream"
-msgstr "Chyba při zápisu do proudu mezipaměti "
+msgstr "Chyba při zápisu do datového proudu mezipaměti "
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2745
 #: ../camel/providers/imapx/camel-imapx-server.c:2832
@@ -3331,7 +3331,7 @@ msgstr "Selhal výběr poštovní schránky"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3722
 msgid "Cannot issue command, no stream available"
-msgstr "Nelze odbavit příkaz, není k dispozici žádný proud dat"
+msgstr "Nelze odbavit příkaz, není k dispozici žádný datový proud"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3985
 #, c-format
@@ -3350,11 +3350,11 @@ msgstr "Chyba při získávání zprávy"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4059
 msgid "Failed to close the tmp stream"
-msgstr "Selhalo zavření proudu tmp"
+msgstr "Selhalo zavření dočasného datového proudu"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4090
 msgid "Failed to copy the tmp file"
-msgstr "Selhalo kopírování souboru tmp"
+msgstr "Selhalo kopírování dočasného souboru"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4253
 msgid "Error moving messages"
