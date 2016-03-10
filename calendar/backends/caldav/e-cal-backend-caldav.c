@@ -387,6 +387,9 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 
 	feature = soup_session_get_feature (cbdav->priv->session, SOUP_TYPE_AUTH_MANAGER);
 
+	/* Add the "Bearer" auth type to support OAuth 2.0. */
+	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+
 	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 	soup_uri = e_source_webdav_dup_soup_uri (extension);
 
@@ -5637,18 +5640,12 @@ caldav_backend_initable_init (GInitable *initable,
                               GError **error)
 {
 	ECalBackendCalDAVPrivate *priv;
-	SoupSessionFeature *feature;
-	gboolean success = TRUE;
 
 	priv = E_CAL_BACKEND_CALDAV_GET_PRIVATE (initable);
 
-	feature = soup_session_get_feature (priv->session, SOUP_TYPE_AUTH_MANAGER);
-
-	/* Add the "Bearer" auth type to support OAuth 2.0. */
-	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
 	g_mutex_init (&priv->bearer_auth_error_lock);
 
-	return success;
+	return TRUE;
 }
 
 static void

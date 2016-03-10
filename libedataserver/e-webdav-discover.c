@@ -1809,7 +1809,6 @@ e_webdav_discover_sources_sync (ESource *source,
 		gchar *auth_method;
 
 		feature = soup_session_get_feature (session, SOUP_TYPE_AUTH_MANAGER);
-		soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
 
 		success = TRUE;
 
@@ -1825,6 +1824,7 @@ e_webdav_discover_sources_sync (ESource *source,
 				E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
 
 			if (success) {
+				soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
 				soup_auth_manager_use_auth (
 					SOUP_AUTH_MANAGER (feature),
 					soup_uri, soup_auth);
