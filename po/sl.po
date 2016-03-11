@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-"
 "server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-03-05 22:10+0100\n"
-"PO-Revision-Date: 2016-03-05 22:11+0100\n"
+"POT-Creation-Date: 2016-03-11 21:34+0100\n"
+"PO-Revision-Date: 2016-03-11 21:39+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -2289,7 +2289,7 @@ msgstr "Odšifriranje dela MIME je spodletelo: napaka protokola"
 #: ../camel/camel-gpg-context.c:2208
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
-msgstr ""
+msgstr "Dešifriranje MIME je spodletelo: skrivnega ključa ni mogoče najti"
 
 #: ../camel/camel-gpg-context.c:2244 ../camel/camel-smime-context.c:1288
 msgid "Encrypted content"
@@ -2437,9 +2437,9 @@ msgid "Downloading new messages for offline mode in '%s'"
 msgstr "Prejemanje novih sporočil za delo brez povezave v »%s«"
 
 #: ../camel/camel-offline-folder.c:160
-#, fuzzy, c-format
+#, c-format
 msgid "Storing changes in folder '%s'"
-msgstr "Shranjevanje mape '%s'"
+msgstr "Shranjevanje sprememb v mapo '%s'"
 
 #: ../camel/camel-offline-folder.c:259
 #, c-format
@@ -3232,9 +3232,8 @@ msgstr "Napaka med pisanjem v predpomnilnik pretoka"
 #: ../camel/providers/imapx/camel-imapx-server.c:2741
 #: ../camel/providers/imapx/camel-imapx-server.c:2828
 #: ../camel/providers/imapx/camel-imapx-server.c:3081
-#, fuzzy
 msgid "Failed to get capabilities"
-msgstr "Napaka med pridobivanjem zapisa odvoda"
+msgstr "Napaka med pridobivanjem podatkov funkcionalnosti"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2760
 #, c-format
@@ -3247,9 +3246,8 @@ msgid "STARTTLS not supported"
 msgstr "STARTTLS ni podprt"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2769
-#, fuzzy
 msgid "Failed to issue STARTTLS"
-msgstr "StartTLS (priporočeno)"
+msgstr "Izvajanje ukaza STARTTLS je spodletelo"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2817
 #, c-format
@@ -3275,33 +3273,28 @@ msgid "Authentication password not available"
 msgstr "Geslo za overitev ni na voljo."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:2959
-#, fuzzy
 msgid "Failed to authenticate"
-msgstr "Overitev na strežniku LDAP ni uspela."
+msgstr "Overitev je spodletela"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3103
-#, fuzzy
 msgid "Failed to issue NAMESPACE"
-msgstr "Blokirano zaradi napake"
+msgstr "Izvajanje ukaza NAMESPACE je spodletelo"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3121
-#, fuzzy
 msgid "Failed to enable QResync"
-msgstr "_Omogoči"
+msgstr "Omogočanje QResync je spodletelo"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3153
-#, fuzzy
 msgid "Failed to issue NOTIFY"
-msgstr "Blokirano zaradi napake"
+msgstr "Izvajanje ukaza NOTIFY je spodletelo"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3612
-#, fuzzy
 msgid "Failed to select mailbox"
-msgstr "Uvažanje poštnega predala"
+msgstr "Napaka izbiranja poštnega predala"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3710
 msgid "Cannot issue command, no stream available"
-msgstr ""
+msgstr "Ni mogoče izvesti ukaza. Pretok ni na voljo."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3972
 #, c-format
@@ -3353,9 +3346,8 @@ msgid "Scanning for changed messages in '%s'"
 msgstr "Preiskovanje spremenjenih sporočil v '%s'"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4775
-#, fuzzy
 msgid "Error scanning changes"
-msgstr "Preiskovanje ..."
+msgstr "Napaka preiskovanja sprememb"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4793
 #, c-format
@@ -3363,14 +3355,12 @@ msgid "Fetching summary information for new messages in '%s'"
 msgstr "Pridobivanje podatkov povzetka za nova sporočila v '%s'."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4810
-#, fuzzy
 msgid "Error fetching message info"
-msgstr "Napaka med pridobivanjem vira."
+msgstr "Napaka med pridobivanjem podrobnosti sporočila"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4872
-#, fuzzy
 msgid "Error running STATUS"
-msgstr "Napaka med zagonom %s"
+msgstr "Napaka zagona ukaza STATUS"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:5355
 #: ../camel/providers/imapx/camel-imapx-server.c:5407
@@ -3386,9 +3376,8 @@ msgid "Error fetching folders"
 msgstr "Napaka med pridobivanjem map"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:5599
-#, fuzzy
 msgid "Error fetching subscribed folders"
-msgstr "Napaka pridobivanja nalog iz seznama"
+msgstr "Napaka pridobivanja naročenih map"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:5621
 msgid "Error creating folder"
@@ -3449,9 +3438,8 @@ msgid "IMAP service for %s on %s"
 msgstr "Storitev IMAP za %s na %s"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:836
-#, fuzzy
 msgid "No IMAPx connection object provided"
-msgstr "Predmet povezave je uporabljen"
+msgstr "Ni podanega predmeta povezave IMAPx"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:853
 #: ../camel/providers/nntp/camel-nntp-provider.c:92
@@ -4499,9 +4487,8 @@ msgid "No SASL mechanism was specified"
 msgstr "Ni določenega načina SASL"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:691
-#, fuzzy
 msgid "AUTH command failed: Not connected."
-msgstr "Napaka med izvajanjem ukaza mount"
+msgstr "Izvajanje ukaza AUTH je spodletelo: ni vzpostavljene povezave."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:698
 #: ../camel/providers/smtp/camel-smtp-transport.c:712
@@ -4795,9 +4782,8 @@ msgid "Data source is missing a [%s] group"
 msgstr "Viru podatkov manjka navedba skupine [%s]"
 
 #: ../libebackend/e-server-side-source.c:466
-#, fuzzy
 msgid "Failed to lookup credentials: "
-msgstr "Iskanje za gostitelja '%s' ni uspelo: %s"
+msgstr "Poizvedba poveril je spodletela:"
 
 #: ../libebackend/e-server-side-source.c:1391 ../libedataserver/e-source.c:1595
 #, c-format
@@ -5363,18 +5349,16 @@ msgid "Invalid URL"
 msgstr "Neveljaven naslov URL"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:839
-#, fuzzy
 msgid "User name not filled"
-msgstr "Uporabniško ime:"
+msgstr "Uporabniško ime: ni vpisano"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:880
 msgid "Cancel"
 msgstr "Prekliči"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:883
-#, fuzzy
 msgid "Searching server sources..."
-msgstr "Iskanje ..."
+msgstr "Iskanje strežniških virov..."
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:210
 #, c-format
@@ -5386,9 +5370,8 @@ msgstr ""
 "naj bi pridobili geslo za '%s'."
 
 #: ../modules/gnome-online-accounts/e-goa-password-based.c:273
-#, fuzzy
 msgid "Failed to get password from GOA: "
-msgstr "Pridobivanje vrednosti iz '{0}' je spodletelo."
+msgstr "Pridobivanje gesla iz GOA je spodletelo:"
 
 #. TODO: more specific
 #: ../modules/gnome-online-accounts/goaewsclient.c:219
