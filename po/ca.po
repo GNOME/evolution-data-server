@@ -63,7 +63,7 @@ msgstr "S'està cercant..."
 #, c-format
 msgid "Tried to modify contact '%s' with out of sync revision"
 msgstr ""
-"S'ha intentat modificar el contacte «%s» des d'una revisió dessincronitzada"
+"S'ha intentat modificar el contacte «%s» des d'una revisió no sincronitzada"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:1475
 #: ../addressbook/backends/file/e-book-backend-file.c:1560
@@ -1334,7 +1334,7 @@ msgstr "No es reconeix l'origen del cursor"
 
 #: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:336
 msgid "Out of sync revision while moving cursor"
-msgstr "La revisió està desincronitzada en moure el cursor"
+msgstr "La revisió no està sincronitzada en moure el cursor"
 
 #: ../addressbook/libedata-book/e-data-book-cursor-sqlite.c:430
 msgid "Alphabetic index was set for incorrect locale"
@@ -3358,7 +3358,7 @@ msgstr "Ha fallat la publicació NOTIFY"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3585
 msgid "Failed to select mailbox"
-msgstr "Ha fallat la sel·lecció de bústia de correu"
+msgstr "Ha fallat la selecció de bústia de correu"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:3675
 msgid "Cannot issue command, no stream available"
