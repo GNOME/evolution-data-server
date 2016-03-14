@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.19.92 2016-03-14
+----------------------------------------
+
+Bug Fixes:
+	Bug 762759 - Crash on start when ~/.cache is not accessible (Milan Crha)
+	Bug 763139 - libedata-book: Validate strings from the backend summary file as UTF-8 (Philip Withnall)
+	Bug 761096 - [IMAPx] Disable message multi-fetch by default (Milan Crha)
+
+Miscellaneous:
+	Fix locking in an error path of camel_key_table_add() function (Insu Yun)
+	[WebCal] Does not refresh when it's authenticated (Milan Crha)
+	[CalDAV] Add Bearer auth to the SoupSession only when using OAuth2 (Milan Crha)
+
+Translations:
+	Rūdolfs Mazurs (lv)
+	Stas Solovey (ru)
+	Baurzhan Muftakhidinov (kk)
+	Matej Urbančič (sl)
+	Marek Černocký (cs)
+	Jordi Mas (ca)
+	Changwoo Ryu (ko)
+	Sebastian Rasmussen (sv)
+
 Evolution-Data-Server 3.19.91 2016-02-29
 ----------------------------------------
 
