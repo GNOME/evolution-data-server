@@ -15,17 +15,17 @@ msgstr ""
 "Project-Id-Version: evolution-data-server trunk\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-03-03 18:14+0000\n"
-"PO-Revision-Date: 2016-03-03 21:37+0300\n"
-"Last-Translator: Stas Solovey <whats_up@tut.by>\n"
+"POT-Creation-Date: 2016-03-19 06:14+0000\n"
+"PO-Revision-Date: 2016-03-19 16:11+0300\n"
+"Last-Translator: Yuri Myasoedov <ymyasoedov@yandex.ru>\n"
 "Language-Team: Русский <gnome-cyr@gnome.org>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.6.9\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -115,9 +115,9 @@ msgstr "Не удалось переименовать базу данных и�
 #: ../addressbook/libebook/e-book-client.c:3424
 #: ../addressbook/libebook/e-book-client.c:3642
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:670
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:701
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:718
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:673
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:704
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:721
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
 #: ../calendar/libecal/e-cal-client.c:3520
@@ -1331,37 +1331,36 @@ msgstr "Ревизия рассинхронизировалась во врем�
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Алфавитный индекс был установлен для неверной локали"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:668
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:671
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Сервер недоступен (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:699
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:702
 #, c-format
-#| msgid "Failed to connect to a server using SSL: %s"
 msgid "Failed to connect to a server using SSL/TLS: %s"
 msgstr "Сбой при подключении к серверу с использованием SSL/TLS: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:715
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:718
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgstr "Получен неожиданный код (%d) состояния HTTP (%s) для URI: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:736
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:739
 msgid "CalDAV backend is not loaded yet"
 msgstr "Драйвер CalDAV ещё не загружен"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1173
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1176
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Неверный перенаправляющий URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3030
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3033
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Не удалось создать локальную кэш-папку «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3113
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3116
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1370,27 +1369,27 @@ msgstr ""
 "Сервер недоступен, календарь открыт в режиме «только чтение».\n"
 "Сообщение об ошибке: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4208
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4211
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV не поддерживает пакетные добавления"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4311
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4314
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV не поддерживает пакетные изменения"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4592
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4595
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV не поддерживает пакетные удаления"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5274
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5277
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Календарь не поддерживает информацию о занятости"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5283
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5286
 msgid "Schedule outbox url not found"
 msgstr "Не найден url исходящего расписания"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5380
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5383
 msgid "Unexpected result in schedule-response"
 msgstr "Неожиданный результат в ответе-расписании"
 
@@ -3273,7 +3272,6 @@ msgid "Default IMAP port"
 msgstr "Порт по умолчанию для IMAP"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:81
-#| msgid "IMAP over SSL"
 msgid "IMAP over TLS"
 msgstr "IMAP поверх TLS"
 
@@ -3581,19 +3579,16 @@ msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Спам"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2461
-#| msgid "Junk"
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Спам"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2462
-#| msgid "Email"
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Нежелательная почта"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2463
-#| msgid "Email"
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Нежелательная почта"
@@ -3604,7 +3599,6 @@ msgid "Spam"
 msgstr "Спам"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2465
-#| msgid "Mail"
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Массовые рассылки"
@@ -3615,7 +3609,6 @@ msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Корзина"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2469
-#| msgid "Trash"
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Корзина"
@@ -4211,7 +4204,6 @@ msgid "Default NNTP port"
 msgstr "Порт по умолчанию для NNTP"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
-#| msgid "NNTP over SSL"
 msgid "NNTP over TLS"
 msgstr "NNTP поверх TLS"
 
@@ -4404,7 +4396,6 @@ msgid "Default POP3 port"
 msgstr "Порт по умолчанию для POP3"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:53
-#| msgid "POP3 over SSL"
 msgid "POP3 over TLS"
 msgstr "POP3 поверх TLS"
 
@@ -4601,7 +4592,6 @@ msgid "Default SMTP port"
 msgstr "Порт по умолчанию для SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
-#| msgid "SMTP over SSL"
 msgid "SMTP over TLS"
 msgstr "SMTP поверх TLS"
 
@@ -4978,7 +4968,8 @@ msgstr "В источнике данных нет группы [%s]"
 msgid "Failed to lookup credentials: "
 msgstr "Не удалось найти учётные данные: "
 
-#: ../libebackend/e-server-side-source.c:1391 ../libedataserver/e-source.c:1595
+#: ../libebackend/e-server-side-source.c:1391
+#: ../libedataserver/e-source.c:1595
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "Источник данных «%s» не поддерживает создание удалённых ресурсов"
@@ -4989,7 +4980,8 @@ msgid ""
 "Data source '%s' has no collection backend to create the remote resource"
 msgstr "У источника данных «%s» нет бэкэнда для создания удалённого ресурса"
 
-#: ../libebackend/e-server-side-source.c:1433 ../libedataserver/e-source.c:1708
+#: ../libebackend/e-server-side-source.c:1433
+#: ../libedataserver/e-source.c:1708
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "Источник данных «%s» не поддерживает удаление удалённых ресурсов"
@@ -5000,7 +4992,8 @@ msgid ""
 "Data source '%s' has no collection backend to delete the remote resource"
 msgstr "У источника данных «%s» нет бэкэнда для удаления удалённого ресурса"
 
-#: ../libebackend/e-server-side-source.c:1478 ../libedataserver/e-source.c:1804
+#: ../libebackend/e-server-side-source.c:1478
+#: ../libedataserver/e-source.c:1804
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1079
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -5195,7 +5188,6 @@ msgstr "Удаление учётных данных не поддерживае
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:114
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:169
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:208
-#| msgid "Credentials store is not supported"
 msgid "Google authentication is not supported"
 msgstr "Аутентификация Google не поддерживается"
 
@@ -5208,7 +5200,6 @@ msgid "Source '%s' (%s) is not a valid Google source"
 msgstr "Источник «%s» (%s) не является действительным источником Google"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:135
-#| msgid "Object not found"
 msgid "Google secret not found"
 msgstr "Секретный ключ Google не найден"
 
@@ -5385,43 +5376,36 @@ msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "Источник «%s» не поддерживает запрос учётных данных"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:440
-#, fuzzy, c-format
-#| msgid "Failed to obtain an access token for '%s': "
+#, c-format
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
-msgstr "Не удалось получить маркер доступа для «%s»: "
+msgstr "Не удалось получить маркер доступа по адресу «%s». Код ошибки %d (%s)"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:486
 msgid "Requesting access token, please wait..."
-msgstr ""
+msgstr "Запрашивается маркер доступа, подождите…"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:588
-#| msgid "Address book authentication request"
 msgid "Google Address book authentication request"
 msgstr "Запрос аутентификации адресной книги Google"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:591
-#| msgid "Calendar authentication request"
 msgid "Google Calendar authentication request"
 msgstr "Запрос аутентификации календаря Google"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:594
-#| msgid "Mail authentication request"
 msgid "Google Memo List authentication request"
 msgstr "Запрос аутентификации списка заметок Google"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:597
-#| msgid "Mail authentication request"
 msgid "Google Task List authentication request"
 msgstr "Запрос аутентификации списка задач Google"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:601
-#| msgid "Mail authentication request"
 msgid "Google Mail authentication request"
 msgstr "Запрос аутентификации почты Google"
 
 #. generic account prompt
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:604
-#| msgid "Calendar authentication request"
 msgid "Google account authentication request"
 msgstr "Запрос аутентификации учётной записи Google"
 
@@ -5431,6 +5415,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своей адресной книге «%s»."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:619
 #, c-format
@@ -5438,6 +5424,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своему календарю «%s»."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:623
 #, c-format
@@ -5445,6 +5433,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своей учётной записи «%s» для электронной почты."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
@@ -5452,6 +5442,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своему почтовому транспорту «%s»."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
@@ -5459,6 +5451,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своему списку заметок «%s»."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
@@ -5466,6 +5460,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своему списку задач «%s»."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
@@ -5473,6 +5469,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account \"%s\"."
 msgstr ""
+"Войдите в свою учётную запись Google и примите условия, чтобы получить "
+"доступ к своей учётной записи «%s»."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:683
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
@@ -5573,10 +5571,10 @@ msgstr "_Принять"
 
 #: ../libedataserverui/e-trust-prompt.c:188
 #: ../modules/trust-prompt/trust-prompt-gtk.c:159
-#, fuzzy, c-format
-#| msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
+#, c-format
 msgid "SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"
-msgstr "Сертификат SSL для «%s» не является доверенным. Принять сертификат?"
+msgstr ""
+"Сертификат SSL/TLS для «%s» не является доверенным. Принять сертификат?"
 
 #: ../libedataserverui/e-trust-prompt.c:210
 #: ../modules/trust-prompt/trust-prompt-gtk.c:174
