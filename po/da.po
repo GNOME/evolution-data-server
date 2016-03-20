@@ -1,5 +1,5 @@
 # Danish translation of Evolution Data Server
-# Copyright (C) 1998-2015 Free Software Foundation, Inc.
+# Copyright (C) 1998-2016 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution-data-server package.
 # Keld Simonsen <keld@dkuug.dk>, 2001-2003.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2001.
@@ -10,7 +10,7 @@
 # Kenneth Nielsen <k.nielsen81@gail.com>, 2008-2011.
 # Kris Thomsen <lakristho@gmail.com>, 2011.
 # flemming christensen <fc@stromata.dk>, 2012, 2013.
-# Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 2010, 2014, 2015.
+# Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 2010, 2014, 2015, 16.
 #
 # Det er e-post-* og ikke e-post* iflg. DSN. fx e-post-adresse.
 # message -> brev
@@ -32,9 +32,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-07 16:38+0100\n"
-"PO-Revision-Date: 2016-02-04 19:12+0100\n"
-"Last-Translator: Kenneth Nielsen <k.nielsen81@gmail.com>\n"
+"POT-Creation-Date: 2016-03-20 15:09+0100\n"
+"PO-Revision-Date: 2016-03-20 15:07+0100\n"
+"Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Dansk <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
@@ -132,9 +132,9 @@ msgstr "Kunne ikke ændre den gamle database fra \"%s\" til \"%s\": %s"
 #: ../addressbook/libebook/e-book-client.c:3424
 #: ../addressbook/libebook/e-book-client.c:3642
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:670
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:701
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:718
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:673
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:704
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:721
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
 #: ../calendar/libecal/e-cal-client.c:3520
@@ -174,18 +174,18 @@ msgstr "Forespørger efter opdaterede grupper…"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1748
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:4999
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1482
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1503
 msgid "The backend does not support bulk additions"
 msgstr "Motoren understøtter ikke massetilføjelser"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:1905
 #: ../addressbook/backends/ldap/e-book-backend-ldap.c:5135
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1604
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1625
 msgid "The backend does not support bulk modifications"
 msgstr "Motoren understøtter ikke masseredigering"
 
 #: ../addressbook/backends/google/e-book-backend-google.c:2114
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1704
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1725
 msgid "The backend does not support bulk removals"
 msgstr "Motoren understøtter ikke massesletninger"
 
@@ -317,22 +317,22 @@ msgstr "Indlæser kontaktpersoner (%d%%)"
 msgid "Cannot transform SoupURI to string"
 msgstr "Kan ikke omdanne SoupURI til streng"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1533
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1554
 #, c-format
 msgid "Create resource '%s' failed with HTTP status %d (%s)"
 msgstr "Oprettelse af ressourcen \"%s\" mislykkedes med HTTP-status: %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1635
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1656
 msgid "Contact on server changed -> not modifying"
 msgstr "Kontaktperson på serveren ændret -> modificerer ikke"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1643
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1664
 #, c-format
 msgid "Modify contact failed with HTTP status %d (%s)"
 msgstr "Modificering af kontaktperson mislykkedes med HTTP-status %d (%s)"
 
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1736
-#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1752
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1757
+#: ../addressbook/backends/webdav/e-book-backend-webdav.c:1773
 #, c-format
 msgid "DELETE failed with HTTP status %d"
 msgstr "DELETE mislykkedes med HTTP-status %d"
@@ -1343,36 +1343,36 @@ msgstr "Usynkroniseret revision ved flytning af markør"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabetisk indeks blev sat for forkerte regionsindstillinger"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:668
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:671
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Server kan ikke nås (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:699
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:702
 #, c-format
-msgid "Failed to connect to a server using SSL: %s"
-msgstr "Kunne ikke tilslutte til en server med SSL: %s"
+msgid "Failed to connect to a server using SSL/TLS: %s"
+msgstr "Kunne ikke forbinde til en server med SSL/TLS: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:715
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:718
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgstr "Uventet HTTP-statuskode %d returneret (%s) for URI: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:736
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:739
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV-motoren er endnu ikke indlæst"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1173
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1176
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Ugyldig omdirigerings-URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3030
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3033
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Kan ikke oprette lokal mellemlager-mappe \"%s\""
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3113
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3116
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1381,27 +1381,27 @@ msgstr ""
 "Server kan ikke nås, kalender er åbnet i skrivebeskyttet tilstand.\n"
 "Fejlbesked: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4208
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4211
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV understøtter ikke massetilføjelser"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4311
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4314
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV understøtter ikke masseredigeringer"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4592
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4595
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV understøtter ikke massesfjernelser"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5274
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5277
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalender understøtter ikke ledig/optaget"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5283
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5286
 msgid "Schedule outbox url not found"
 msgstr "URL for skema-udbakke ikke fundet"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5380
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5383
 msgid "Unexpected result in schedule-response"
 msgstr "Uventet resultat i skema-svar"
 
@@ -1941,35 +1941,35 @@ msgstr "Kunne ikke indhente kalenderens tidszone: "
 msgid "Could not add calendar time zone: "
 msgstr "Kunne ikke tilføje tidszone for kalender: "
 
-#: ../camel/camel-cipher-context.c:199
+#: ../camel/camel-cipher-context.c:204
 #, c-format
 msgid "Signing is not supported by this cipher"
 msgstr "Signering er ikke understøttet af dette cipher"
 
-#: ../camel/camel-cipher-context.c:212
+#: ../camel/camel-cipher-context.c:217
 #, c-format
 msgid "Verifying is not supported by this cipher"
 msgstr "Verificering er ikke understøttet af dette cipher"
 
-#: ../camel/camel-cipher-context.c:228
+#: ../camel/camel-cipher-context.c:233
 #, c-format
 msgid "Encryption is not supported by this cipher"
 msgstr "Kryptering er ikke understøttet af dette cipher"
 
-#: ../camel/camel-cipher-context.c:242
+#: ../camel/camel-cipher-context.c:247
 #, c-format
 msgid "Decryption is not supported by this cipher"
 msgstr "Dekryptering er ikke understøttet af dette cipher"
 
-#: ../camel/camel-cipher-context.c:358
+#: ../camel/camel-cipher-context.c:363
 msgid "Signing message"
 msgstr "Underskriver brev"
 
-#: ../camel/camel-cipher-context.c:648
+#: ../camel/camel-cipher-context.c:653
 msgid "Encrypting message"
 msgstr "Krypterer brev"
 
-#: ../camel/camel-cipher-context.c:820
+#: ../camel/camel-cipher-context.c:825
 msgid "Decrypting message"
 msgstr "Dekrypterer brev"
 
@@ -1978,11 +1978,11 @@ msgstr "Dekrypterer brev"
 msgid "Unable to create cache path"
 msgstr "Kan ikke oprette cachesøgesti"
 
-#: ../camel/camel-data-cache.c:449
+#: ../camel/camel-data-cache.c:457
 msgid "Empty cache file"
 msgstr "Tom mellemlager-fil"
 
-#: ../camel/camel-data-cache.c:522
+#: ../camel/camel-data-cache.c:534
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Kunne ikke fjerne cacheindgangen: %s: %s"
@@ -2182,7 +2182,7 @@ msgstr "(%s) forventer et array-resultat"
 msgid "(%s) requires the folder set"
 msgstr "(%s) kræver angivelse af mappe"
 
-#: ../camel/camel-folder-search.c:1962 ../camel/camel-folder-search.c:2131
+#: ../camel/camel-folder-search.c:1963 ../camel/camel-folder-search.c:2132
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2191,7 +2191,7 @@ msgstr ""
 "Kan ikke fortolke søgeudtrykket: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1974 ../camel/camel-folder-search.c:2143
+#: ../camel/camel-folder-search.c:1975 ../camel/camel-folder-search.c:2144
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2989,43 +2989,43 @@ msgstr "Kunne ikke føje data til koderen"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME dekryptering: Fandt intet krypteret indhold"
 
-#: ../camel/camel-store.c:1275
+#: ../camel/camel-store.c:1280
 #, c-format
 msgid "Opening folder '%s'"
 msgstr "Åbner mappe \"%s\""
 
-#: ../camel/camel-store.c:1566
+#: ../camel/camel-store.c:1571
 #, c-format
 msgid "Scanning folders in '%s'"
 msgstr "Skanner mapper i \"%s\""
 
-#: ../camel/camel-store.c:1594 ../camel/camel-store.c:1639
+#: ../camel/camel-store.c:1599 ../camel/camel-store.c:1644
 #: ../camel/camel-vtrash-folder.c:45
 msgid "Trash"
 msgstr "Affald"
 
-#: ../camel/camel-store.c:1608 ../camel/camel-store.c:1656
+#: ../camel/camel-store.c:1613 ../camel/camel-store.c:1661
 #: ../camel/camel-vtrash-folder.c:47
 msgid "Junk"
 msgstr "Spam"
 
-#: ../camel/camel-store.c:2257
+#: ../camel/camel-store.c:2262
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kan ikke oprette mappe: %s: mappen findes"
 
-#: ../camel/camel-store.c:2264
+#: ../camel/camel-store.c:2269
 #, c-format
 msgid "Creating folder '%s'"
 msgstr "Opretter mappe \"%s\""
 
-#: ../camel/camel-store.c:2441 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2446 ../camel/camel-vee-store.c:410
 #: ../camel/providers/local/camel-maildir-store.c:346
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kan ikke slette mappe: %s: Ugyldig operation"
 
-#: ../camel/camel-store.c:2631 ../camel/camel-vee-store.c:461
+#: ../camel/camel-store.c:2636 ../camel/camel-vee-store.c:461
 #: ../camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3282,8 +3282,8 @@ msgid "Default IMAP port"
 msgstr "Standard IMAP-port"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:81
-msgid "IMAP over SSL"
-msgstr "IMAP over SSL"
+msgid "IMAP over TLS"
+msgstr "IMAP over TLS"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:88
 msgid "IMAP+"
@@ -3364,124 +3364,124 @@ msgstr "Kunne ikke vælge e-mailbakke"
 msgid "Cannot issue command, no stream available"
 msgstr "Kan ikke sende kommando, ingen strøm tilgængelig"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3984
+#: ../camel/providers/imapx/camel-imapx-server.c:3985
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan ikke hente brev med besked-id %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3985
+#: ../camel/providers/imapx/camel-imapx-server.c:3986
 msgid "No such message available."
 msgstr "Inget sådant brev tilgængeligt."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4019
-#: ../camel/providers/imapx/camel-imapx-server.c:4044
-#: ../camel/providers/imapx/camel-imapx-server.c:4063
+#: ../camel/providers/imapx/camel-imapx-server.c:4022
+#: ../camel/providers/imapx/camel-imapx-server.c:4047
+#: ../camel/providers/imapx/camel-imapx-server.c:4066
 msgid "Error fetching message"
 msgstr "Fejl under hentning af brev"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4056
+#: ../camel/providers/imapx/camel-imapx-server.c:4059
 msgid "Failed to close the tmp stream"
 msgstr "Kunne ikke lukke tmp-strømmen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4087
+#: ../camel/providers/imapx/camel-imapx-server.c:4090
 msgid "Failed to copy the tmp file"
 msgstr "Kunne ikke kopiere tmp-filen"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4250
+#: ../camel/providers/imapx/camel-imapx-server.c:4253
 msgid "Error moving messages"
 msgstr "Fejl ved flytning af breve"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4250
+#: ../camel/providers/imapx/camel-imapx-server.c:4253
 msgid "Error copying messages"
 msgstr "Fejl under kopiering af breve"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4434
-#: ../camel/providers/imapx/camel-imapx-server.c:4455
+#: ../camel/providers/imapx/camel-imapx-server.c:4437
+#: ../camel/providers/imapx/camel-imapx-server.c:4458
 msgid "Cannot create spool file: "
 msgstr "Kan ikke oprette spool-fil: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4546
+#: ../camel/providers/imapx/camel-imapx-server.c:4549
 msgid "Error appending message"
 msgstr "Fejl under tilføjelse af brev"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4636
+#: ../camel/providers/imapx/camel-imapx-server.c:4639
 msgid "Error performing NOOP"
 msgstr "Fejl under udførelse af NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4784
+#: ../camel/providers/imapx/camel-imapx-server.c:4787
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "Søger efter ændrede breve i \"%s\""
 
 # eller efter ændringer ?!?
-#: ../camel/providers/imapx/camel-imapx-server.c:4787
+#: ../camel/providers/imapx/camel-imapx-server.c:4790
 msgid "Error scanning changes"
 msgstr "Fejl under skanning af ændringer"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4805
+#: ../camel/providers/imapx/camel-imapx-server.c:4808
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "Henter sammendragsinformation for nye breve i \"%s\""
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4822
+#: ../camel/providers/imapx/camel-imapx-server.c:4825
 msgid "Error fetching message info"
 msgstr "Fejl under indhentning af brevinfo"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4884
+#: ../camel/providers/imapx/camel-imapx-server.c:4887
 msgid "Error running STATUS"
 msgstr "Fejl ved kørsel af STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5367
-#: ../camel/providers/imapx/camel-imapx-server.c:5419
+#: ../camel/providers/imapx/camel-imapx-server.c:5370
+#: ../camel/providers/imapx/camel-imapx-server.c:5422
 msgid "Error syncing changes"
 msgstr "Fejl under synkronisering af ændringer"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5530
+#: ../camel/providers/imapx/camel-imapx-server.c:5533
 msgid "Error expunging message"
 msgstr "Fejl under udrensning af brev"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5600
+#: ../camel/providers/imapx/camel-imapx-server.c:5603
 msgid "Error fetching folders"
 msgstr "Fejl under hentning af mapper"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5611
+#: ../camel/providers/imapx/camel-imapx-server.c:5614
 msgid "Error fetching subscribed folders"
 msgstr "Fejl under hentning af abonnerede mapper"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5633
+#: ../camel/providers/imapx/camel-imapx-server.c:5636
 msgid "Error creating folder"
 msgstr "Fejl under oprettelse af mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5689
+#: ../camel/providers/imapx/camel-imapx-server.c:5692
 msgid "Error deleting folder"
 msgstr "Fejl under sletning af mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5735
+#: ../camel/providers/imapx/camel-imapx-server.c:5738
 msgid "Error renaming folder"
 msgstr "Fejl under omdøbning af mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5767
+#: ../camel/providers/imapx/camel-imapx-server.c:5770
 msgid "Error subscribing to folder"
 msgstr "Fejl under abonnering på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5803
+#: ../camel/providers/imapx/camel-imapx-server.c:5806
 msgid "Error unsubscribing from folder"
 msgstr "Fejl ved annullering af abonnement på mappe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5843
+#: ../camel/providers/imapx/camel-imapx-server.c:5846
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-serveren understøtter ikke kvoter"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5855
+#: ../camel/providers/imapx/camel-imapx-server.c:5858
 msgid "Error retrieving quota information"
 msgstr "Fejl under hentning af kvoteinformation"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5902
+#: ../camel/providers/imapx/camel-imapx-server.c:5905
 msgid "Search failed"
 msgstr "Søgning slog fejl"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:6020
+#: ../camel/providers/imapx/camel-imapx-server.c:6023
 msgid "Error running IDLE"
 msgstr "Fejl under kørsel af IDLE"
 
@@ -3527,116 +3527,104 @@ msgstr ""
 msgid "No such folder %s"
 msgstr "Mappen %s eksisterer ikke"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1353
+#: ../camel/providers/imapx/camel-imapx-store.c:1381
 #, c-format
 msgid "No IMAP namespace for folder path '%s'"
 msgstr "Intet IMAP-navnerum for mappestien \"%s\""
 
-#: ../camel/providers/imapx/camel-imapx-store.c:1614
-#: ../camel/providers/imapx/camel-imapx-store.c:1848
+#: ../camel/providers/imapx/camel-imapx-store.c:1642
+#: ../camel/providers/imapx/camel-imapx-store.c:1876
 #, c-format
 msgid "Retrieving folder list for '%s'"
 msgstr "Henter mappeliste for \"%s\""
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2065
+#: ../camel/providers/imapx/camel-imapx-store.c:2093
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgstr "Mappenavnet \"%s\" er ugyldigt eftersom det indeholder tegnet \"%c\""
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2374
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2444
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
-msgstr "Skitser"
+msgstr "[Gmail]/Kladder"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2375
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2445
 msgctxt "IMAPDefaults"
 msgid "Drafts"
-msgstr "Skitser"
+msgstr "Kladder"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2376
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2446
 msgctxt "IMAPDefaults"
 msgid "Draft"
-msgstr "Skitse"
+msgstr "Kladde"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2379
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2449
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Skabeloner"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2382
+#: ../camel/providers/imapx/camel-imapx-store.c:2452
 msgctxt "IMAPDefaults"
 msgid "Archive"
-msgstr ""
+msgstr "Arkiv"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2385
+#: ../camel/providers/imapx/camel-imapx-store.c:2455
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
-msgstr ""
+msgstr "[Gmail]/Sendte e-mails"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2386
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2456
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Sendt"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2387
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2457
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Sendte objekter"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2390
+#: ../camel/providers/imapx/camel-imapx-store.c:2460
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
-msgstr ""
+msgstr "[Gmail]/Spam"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2391
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2461
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Spam"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2392
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2462
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
-msgstr "E-post"
+msgstr "Spammail"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2393
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2463
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
-msgstr "E-post"
+msgstr "Spammail"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2394
+#: ../camel/providers/imapx/camel-imapx-store.c:2464
 msgctxt "IMAPDefaults"
 msgid "Spam"
-msgstr ""
+msgstr "Spam"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2395
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2465
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
-msgstr "Offentlig post"
+msgstr "Masseforsendelse"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2398
+#: ../camel/providers/imapx/camel-imapx-store.c:2468
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
-msgstr ""
+msgstr "[Gmail]/Papirkurv"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2399
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2469
 msgctxt "IMAPDefaults"
 msgid "Trash"
-msgstr "Affald"
+msgstr "Papirkurv"
 
-#: ../camel/providers/imapx/camel-imapx-store.c:2400
-#, fuzzy
+#: ../camel/providers/imapx/camel-imapx-store.c:2470
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Slettede objekter"
@@ -4224,8 +4212,8 @@ msgid "Default NNTP port"
 msgstr "Standard NNTP-port"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:55
-msgid "NNTP over SSL"
-msgstr "NNTP over SSL"
+msgid "NNTP over TLS"
+msgstr "NNTP over TLS"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:61
 msgid "USENET news"
@@ -4417,8 +4405,8 @@ msgid "Default POP3 port"
 msgstr "Standard POP3-port"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:53
-msgid "POP3 over SSL"
-msgstr "POP3 over SSL"
+msgid "POP3 over TLS"
+msgstr "POP3 over TLS"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:60
 msgid "POP"
@@ -4615,8 +4603,8 @@ msgid "Default SMTP port"
 msgstr "Standard SMTP-port"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:40
-msgid "SMTP over SSL"
-msgstr "SMTP over SSL"
+msgid "SMTP over TLS"
+msgstr "SMTP over TLS"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:41
 msgid "Message submission port"
@@ -4889,13 +4877,15 @@ msgstr "Om overflytningen af gamle indstillinger allerede er blevet gjort"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:2
 msgid "An absolute path where the gpg (or gpg2) binary is"
-msgstr ""
+msgstr "En absolut sti til gpg- eller gpg2-programmet"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
 msgid ""
 "An example is '/usr/bin/gpg'; if it is not filled, or doesn't exist, then it "
 "is searched for it. Change requires restart of the application."
 msgstr ""
+"Et eksempel er \"/usr/bin/gpg\"; hvis denne ikke findes, søges der efter "
+"den. Ændring kræver genstart af programmet."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5208,9 +5198,8 @@ msgstr "Akkreditivsletning er ikke understøttet"
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:114
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:169
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:208
-#, fuzzy
 msgid "Google authentication is not supported"
-msgstr "Akkreditivlager er ikke understøttet"
+msgstr "Googlegodkendelse er ikke understøttet"
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:121
@@ -5218,12 +5207,11 @@ msgstr "Akkreditivlager er ikke understøttet"
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:215
 #, c-format
 msgid "Source '%s' (%s) is not a valid Google source"
-msgstr ""
+msgstr "Kilden \"%s\" (%s) er ikke en gyldig Googlekilde"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:135
-#, fuzzy
 msgid "Google secret not found"
-msgstr "Objektet blev ikke fundet"
+msgstr "Google-hemmelighed blev ikke fundet"
 
 #: ../libedataserver/e-source-credentials-provider-impl-password.c:81
 msgid "Password not found"
@@ -5398,44 +5386,39 @@ msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "Datakilden \"%s\" understøtter ikke forespørgsel om akkreditiver"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:440
-#, fuzzy, c-format
+#, c-format
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
-msgstr "Kunne ikke få noget adgangstegn til \"%s\": "
+msgstr ""
+"Kunne ikke indhente noget adgangssymbol fra adressen \"%s\". Fejlkode %d (%s)"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:486
 msgid "Requesting access token, please wait..."
-msgstr ""
+msgstr "Forespørger om adgangssymbol; vent venligst..."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:588
-#, fuzzy
 msgid "Google Address book authentication request"
-msgstr "Anmodning om adressebogs-godkendelse"
+msgstr "Anmodning om godkendelse af Google-adressebog"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:591
-#, fuzzy
 msgid "Google Calendar authentication request"
-msgstr "Anmodning om kalender-godkendelse"
+msgstr "Anmodning om godkendelse af Google-kalender"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:594
-#, fuzzy
 msgid "Google Memo List authentication request"
-msgstr "Anmodning om e-post-godkendelse"
+msgstr "Anmodning om godkendelse af Google-memoliste"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:597
-#, fuzzy
 msgid "Google Task List authentication request"
-msgstr "Anmodning om e-post-godkendelse"
+msgstr "Anmodning om godkendelse af Google-opgaveliste"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:601
-#, fuzzy
 msgid "Google Mail authentication request"
-msgstr "Anmodning om e-post-godkendelse"
+msgstr "Anmodning om godkendelse af Google-mail"
 
 #. generic account prompt
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:604
-#, fuzzy
 msgid "Google account authentication request"
-msgstr "Anmodning om kalender-godkendelse"
+msgstr "Anmodning om Google-konto-godkendelse"
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:615
 #, c-format
@@ -5443,6 +5426,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"adressebog \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:619
 #, c-format
@@ -5450,6 +5435,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"kalender \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:623
 #, c-format
@@ -5457,6 +5444,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"mailkonto \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
@@ -5464,6 +5453,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"mailtransport \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
@@ -5471,6 +5462,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"memoliste \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
@@ -5478,6 +5471,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"opgaveliste \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
@@ -5485,6 +5480,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account \"%s\"."
 msgstr ""
+"Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
+"konto \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:683
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
@@ -5586,9 +5583,9 @@ msgstr "_Accepter permanent"
 #: ../libedataserverui/e-trust-prompt.c:188
 #: ../modules/trust-prompt/trust-prompt-gtk.c:159
 #, c-format
-msgid "SSL certificate for '%s' is not trusted. Do you wish to accept it?"
+msgid "SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"
 msgstr ""
-"Der er ikke tillid tilSSL-certifikatet for \"%s\". Vil du accptere det?"
+"Der er ikke tillid til SSL/TLS-certifikatet for \"%s\". Vil du acceptere det?"
 
 #: ../libedataserverui/e-trust-prompt.c:210
 #: ../modules/trust-prompt/trust-prompt-gtk.c:174
