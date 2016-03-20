@@ -12,7 +12,6 @@
 # flemming christensen <fc@stromata.dk>, 2012, 2013.
 # Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 2010, 2014, 2015, 16.
 #
-# Det er e-post-* og ikke e-post* iflg. DSN. fx e-post-adresse.
 # message -> brev
 # trash, trash folder -> papirkurv
 #
@@ -32,10 +31,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-20 15:09+0100\n"
-"PO-Revision-Date: 2016-03-20 15:07+0100\n"
+"POT-Creation-Date: 2016-03-20 23:10+0100\n"
+"PO-Revision-Date: 2016-03-20 22:52+0100\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
-"Language-Team: Dansk <dansk@dansk-gruppen.dk>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -401,23 +400,23 @@ msgstr "Kaldenavn"
 #. Email fields
 #: ../addressbook/libebook-contacts/e-contact.c:149
 msgid "Email 1"
-msgstr "E-post 1"
+msgstr "E-mail 1"
 
 #: ../addressbook/libebook-contacts/e-contact.c:150
 msgid "Email 2"
-msgstr "E-post 2"
+msgstr "E-mail 2"
 
 #: ../addressbook/libebook-contacts/e-contact.c:151
 msgid "Email 3"
-msgstr "E-post 3"
+msgstr "E-mail 3"
 
 #: ../addressbook/libebook-contacts/e-contact.c:152
 msgid "Email 4"
-msgstr "E-post 4"
+msgstr "E-mail 4"
 
 #: ../addressbook/libebook-contacts/e-contact.c:154
 msgid "Mailer"
-msgstr "E-post-program"
+msgstr "E-mail-program"
 
 # Label skal ikke være med
 #. Address Labels
@@ -777,7 +776,7 @@ msgstr "Navn"
 
 #: ../addressbook/libebook-contacts/e-contact.c:270
 msgid "Email List"
-msgstr "E-post-liste"
+msgstr "E-mail-liste"
 
 #. Instant messaging fields
 #: ../addressbook/libebook-contacts/e-contact.c:273
@@ -806,7 +805,7 @@ msgstr "Liste over ICQ-id'er"
 
 #: ../addressbook/libebook-contacts/e-contact.c:280
 msgid "Wants HTML Mail"
-msgstr "Ønsker e-post der benytter HTML"
+msgstr "Ønsker e-mail der benytter HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
@@ -2507,11 +2506,11 @@ msgstr "Kopiér mappeindh_old lokalt til afkoblet brug"
 
 #: ../camel/camel-provider.c:55
 msgid "Virtual folder email provider"
-msgstr "E-post-udbyder for virtuelle mapper"
+msgstr "E-mail-udbyder for virtuelle mapper"
 
 #: ../camel/camel-provider.c:57
 msgid "For reading mail as a query of another set of folders"
-msgstr "For læsning af e-post som en forespørgsel på et andet sæt mapper"
+msgstr "For læsning af e-mail som en forespørgsel på et andet sæt mapper"
 
 #: ../camel/camel-provider.c:260
 #, c-format
@@ -2554,7 +2553,7 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
-"Ugyldig information til sporing af e-post-adresse:\n"
+"Ugyldig information til sporing af e-mail-adresse:\n"
 "%s"
 
 #: ../camel/camel-sasl-anonymous.c:92
@@ -3275,7 +3274,7 @@ msgstr "Kontrollér kun for spambreve i Ind_bakke-mappen"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:74
 msgid "Synchroni_ze remote mail locally in all folders"
-msgstr "_Synkronisér ekstern e-post lokalt i alle mapper"
+msgstr "_Synkronisér ekstern e-mail lokalt i alle mapper"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:80
 msgid "Default IMAP port"
@@ -3291,7 +3290,7 @@ msgstr "IMAP+"
 
 #: ../camel/providers/imapx/camel-imapx-provider.c:90
 msgid "For reading and storing mail on IMAP servers."
-msgstr "For læsning og lagring af e-post på IMAP-servere."
+msgstr "For læsning og lagring af e-mail på IMAP-servere."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:1134
 msgid "Error writing to cache stream"
@@ -3664,11 +3663,11 @@ msgstr "_Anvend mappesammenfatnings-filen \".folders\" (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:48
 msgid "MH-format mail directories"
-msgstr "E-postmapper i MH-format"
+msgstr "E-mail-mapper i MH-format"
 
 #: ../camel/providers/local/camel-local-provider.c:49
 msgid "For storing local mail in MH-like mail directories."
-msgstr "For lagring af lokal e-post i MH-lignende brevmapper."
+msgstr "For lagring af lokal e-mail i MH-lignende brevmapper."
 
 #: ../camel/providers/local/camel-local-provider.c:66
 msgid "Local delivery"
@@ -3679,7 +3678,7 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"Til at hente (flytte) lokal e-post fra mbox-formaterede standardkøer til "
+"Til at hente (flytte) lokal e-mail fra mbox-formaterede standardkøer til "
 "mapper som håndteres af Evolution."
 
 #: ../camel/providers/local/camel-local-provider.c:79
@@ -3689,11 +3688,11 @@ msgstr "_Brug filtre på nye breve i indbakke"
 
 #: ../camel/providers/local/camel-local-provider.c:86
 msgid "Maildir-format mail directories"
-msgstr "E-postmapper i \"Maildir\" format"
+msgstr "E-mail-mapper i Maildir-format"
 
 #: ../camel/providers/local/camel-local-provider.c:87
 msgid "For storing local mail in maildir directories."
-msgstr "For lagring af lokal e-post i qmail maildir brevmapper."
+msgstr "For lagring af lokal e-mail i qmail maildir brevmapper."
 
 #: ../camel/providers/local/camel-local-provider.c:102
 msgid "_Store status headers in Elm/Pine/Mutt format"
@@ -3724,7 +3723,7 @@ msgstr "Kunne ikke ændre navn på mappe %s til %s: %s"
 #: ../camel/providers/local/camel-local-store.c:170
 #, c-format
 msgid "Local mail file %s"
-msgstr "Lokal e-post-fil %s"
+msgstr "Lokal e-mail-fil %s"
 
 #: ../camel/providers/local/camel-local-store.c:213
 #: ../camel/providers/local/camel-local-store.c:373
@@ -4071,7 +4070,7 @@ msgstr "Køen \"%s\" er ingen almindelig fil eller mappe"
 #: ../camel/providers/local/camel-spool-store.c:425
 #, c-format
 msgid "Spool mail file %s"
-msgstr "Spool e-post-fil %s"
+msgstr "Spool e-mail-fil %s"
 
 #: ../camel/providers/local/camel-spool-store.c:429
 #, c-format
@@ -4205,7 +4204,7 @@ msgstr "_Vis mapper med kort navn (fx c.o.linux i stedet for comp.os.linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription _dialog, show relative folder names"
-msgstr "Vis relative mappenavne i abonnements_vinduet"
+msgstr "Vis relative mappenavne i _dialogen for abonnement"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:54
 msgid "Default NNTP port"
@@ -4414,7 +4413,7 @@ msgstr "POP"
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:62
 msgid "For connecting to and downloading mail from POP servers."
-msgstr "For tilkobling til og nedhenting af e-post på POP-servere."
+msgstr "For tilkobling til og nedhenting af e-mail på POP-servere."
 
 #: ../camel/providers/pop3/camel-pop3-provider.c:82
 msgid ""
@@ -4538,7 +4537,7 @@ msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
 msgstr ""
-"For levering af e-post ved at videresende den til \"sendmail\"-programmet på "
+"For levering af e-mail ved at videresende den til \"sendmail\"-programmet på "
 "det lokale system."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:46
@@ -4547,7 +4546,7 @@ msgstr "sendmail"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:48
 msgid "Mail delivery via the sendmail program"
-msgstr "Levering af e-post via sendmail programmet"
+msgstr "Levering af e-mail via sendmail programmet"
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:137
 #, c-format
@@ -4616,7 +4615,7 @@ msgstr "SMTP"
 
 #: ../camel/providers/smtp/camel-smtp-provider.c:49
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
-msgstr "Til levering af e-post via en ekstern e-post-server med SMTP."
+msgstr "Til levering af e-mail via en ekstern e-mail-server med SMTP."
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:237
 #: ../camel/providers/smtp/camel-smtp-transport.c:244
@@ -4647,7 +4646,7 @@ msgstr "SMTP-server %s"
 #: ../camel/providers/smtp/camel-smtp-transport.c:442
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr "SMTP e-post-levering via %s"
+msgstr "SMTP e-mail-levering via %s"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:582
 #, c-format
@@ -4731,7 +4730,7 @@ msgstr "Tjenesten er ikke tilgængelig, lukker sendekanalen"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1095
 msgid "Requested mail action okay, completed"
-msgstr "Forespurgt e-post-handling er ok, fuldført"
+msgstr "Forespurgt e-mail-handling er ok, fuldført"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1097
 msgid "User not local; will forward to <forward-path>"
@@ -4739,7 +4738,7 @@ msgstr "Ikke lokal bruger; videresender til <forward-path>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1099
 msgid "Requested mail action not taken: mailbox unavailable"
-msgstr "Forespurgt e-post-handling er ikke udført: postboks ikke tilgængelig"
+msgstr "Forespurgt e-mail-handling er ikke udført: postboks ikke tilgængelig"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1101
 msgid "Requested action not taken: mailbox unavailable"
@@ -4759,7 +4758,7 @@ msgstr "Forespurgt handling ikke udført: utilstrækkelig lagringsplads"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1109
 msgid "Requested mail action aborted: exceeded storage allocation"
-msgstr "Forespurgt e-post-handling afbrudt: lagringsallokering overskredet"
+msgstr "Forespurgt e-mail-handling afbrudt: lagringsallokering overskredet"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1111
 msgid "Requested action not taken: mailbox name not allowed"
@@ -4767,7 +4766,7 @@ msgstr "Forespurgt handling ikke udført: postboksnavn ikke tilladt"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1113
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr "Start e-post-input; slut med <CRLF>.<CRLF>"
+msgstr "Start e-mail-input; slut med <CRLF>.<CRLF>"
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1115
 msgid "Transaction failed"
@@ -5500,7 +5499,7 @@ msgstr "Anmodning om kalender-godkendelse"
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:143
 msgid "Mail authentication request"
-msgstr "Anmodning om e-post-godkendelse"
+msgstr "Anmodning om e-mail-godkendelse"
 
 #. generic account prompt
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:146
@@ -5520,12 +5519,12 @@ msgstr "Indtast venligst adgangskoden for kalenderen \"%s\"."
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
 msgid "Please enter the password for mail account \"%s\"."
-msgstr "Indtast venligst adgangskoden for e-post-kontoen \"%s\"."
+msgstr "Indtast venligst adgangskoden for e-mail-kontoen \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
 msgid "Please enter the password for mail transport \"%s\"."
-msgstr "Indtast venligst adgangskoden for e-post-transporten \"%s\"."
+msgstr "Indtast venligst adgangskoden for e-mail-transporten \"%s\"."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
@@ -5795,7 +5794,7 @@ msgstr "Post"
 
 #: ../modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
 msgid "Integrate your mailboxes"
-msgstr "Integrer dine e-postkasser"
+msgstr "Integrér dine postkasser"
 
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1060
 #, c-format
@@ -6188,10 +6187,10 @@ msgstr "_Forkast"
 #~ msgstr "SSL-server-certifikat"
 
 #~ msgid "Email Signer Certificate"
-#~ msgstr "Certifikat for underskrivelse af e-post"
+#~ msgstr "Certifikat for underskrivelse af e-mail"
 
 #~ msgid "Email Recipient Certificate"
-#~ msgstr "Certifikat for modtager ef e-post"
+#~ msgstr "Certifikat for modtager ef e-mail"
 
 #~ msgid "Issued To"
 #~ msgstr "Udstedt til"
@@ -6314,7 +6313,7 @@ msgstr "_Forkast"
 #~ msgstr "SSL-certifikat-myndighed"
 
 #~ msgid "Email Certificate Authority"
-#~ msgstr "E-post-certifikat-myndighed"
+#~ msgstr "E-mail-certifikat-myndighed"
 
 #~ msgid "Signing"
 #~ msgstr "Underskrivelse"
@@ -6411,7 +6410,7 @@ msgstr "_Forkast"
 #~ msgstr "Benytter 'distinguished name' (DN)"
 
 #~ msgid "Using Email Address"
-#~ msgstr "Benytter e-post-adresse"
+#~ msgstr "Benytter e-mail-adresse"
 
 #~ msgid "Failed to run book factory"
 #~ msgstr "Kunne ikke køre bogfabrik"
@@ -6941,7 +6940,7 @@ msgstr "_Forkast"
 #~ msgstr "Kunne ikke oprette tråd til at fylde mellemlager"
 
 #~ msgid "Cannot retrieve calendar alarm e-mail address: %s"
-#~ msgstr "Kan ikke indhente kalenderens alarm-e-post-adresse: %s"
+#~ msgstr "Kan ikke indhente kalenderens alarm-e-mail-adresse: %s"
 
 #~ msgid "Cannot retrieve calendar's LDAP attribute: %s"
 #~ msgstr "Kan ikke indhente kalenderens LDAP-attribut: %s"
@@ -7054,7 +7053,7 @@ msgstr "_Forkast"
 #~ msgstr "GroupWise-tjeneste for %s på %s"
 
 #~ msgid "GroupWise mail delivery via %s"
-#~ msgstr "GroupWise e-post-levering via %s"
+#~ msgstr "GroupWise e-mail-levering via %s"
 
 #~ msgid "Sending Message"
 #~ msgstr "Sender besked"
@@ -7224,7 +7223,7 @@ msgstr "_Forkast"
 #~ "Enable extended Mailing-List detection required for some filter and "
 #~ "vFolder rules"
 #~ msgstr ""
-#~ "Aktivér udvidet e-post-listedetektering som er påkrævet for visse filter- "
+#~ "Aktivér udvidet e-mail-listedetektering som er påkrævet for visse filter- "
 #~ "og vFolder-regler"
 
 #~ msgid "Expire cached messages that haven't been read in X seconds"
@@ -7289,7 +7288,7 @@ msgstr "_Forkast"
 #~ msgstr "IMAP4rev1"
 
 #~ msgid "For reading and storing mail on IMAPv4rev1 servers."
-#~ msgstr "For læsning og lagring af e-post på IMAPv4rev1-servere."
+#~ msgstr "For læsning og lagring af e-mail på IMAPv4rev1-servere."
 
 #~ msgid ""
 #~ "This option will connect to the IMAPv4rev1 server using a plaintext "
@@ -7428,13 +7427,13 @@ msgstr "_Forkast"
 #~ msgstr "Ugyldig svar på autenticering fra server.\n"
 
 #~ msgid "MAIL FROM command failed: %s: mail not sent"
-#~ msgstr "MAIL FROM-kommandoen mislykkedes: %s: e-post ikke sendt"
+#~ msgstr "MAIL FROM-kommandoen mislykkedes: %s: e-mail ikke sendt"
 
 #~ msgid "RCPT TO command failed: %s: mail not sent"
-#~ msgstr "RCPT TO-kommandoen mislykkedes: %s: e-post ikke sendt"
+#~ msgstr "RCPT TO-kommandoen mislykkedes: %s: e-mail ikke sendt"
 
 #~ msgid "DATA command failed: %s: mail not sent"
-#~ msgstr "DATA-kommandoen mislykkedes: %s: e-post ikke sendt"
+#~ msgstr "DATA-kommandoen mislykkedes: %s: e-mail ikke sendt"
 
 #~ msgid "RSET command failed"
 #~ msgstr "RSET-kommandoen mislykkedes"
@@ -8008,7 +8007,7 @@ msgstr "_Forkast"
 #~ msgstr "Navn begynder med"
 
 #~ msgid "Email begins with"
-#~ msgstr "E-postadresse begynder med"
+#~ msgstr "E-mailadresse begynder med"
 
 #~ msgid "Any field contains"
 #~ msgstr "Et felt indeholder"
@@ -8313,7 +8312,7 @@ msgstr "_Forkast"
 #~ "server."
 #~ msgstr ""
 #~ "Dette er den metode som evolution vil anvende til at godkende dig. Bemærk "
-#~ "at at sætte dette til \"E-postadresse\" kræver anonym adgang til din ldap-"
+#~ "at at sætte dette til \"E-mailadresse\" kræver anonym adgang til din ldap-"
 #~ "server."
 
 #~ msgid ""
@@ -8345,7 +8344,7 @@ msgstr "_Forkast"
 #~ msgstr "Bruger distinguished name (DN)"
 
 #~ msgid "Using email address"
-#~ msgstr "Bruger e-postadresse"
+#~ msgstr "Bruger e-mailadresse"
 
 #~ msgid "Whenever Possible"
 #~ msgstr "Når det er muligt"
@@ -8390,7 +8389,7 @@ msgstr "_Forkast"
 #~ msgstr "Vis kontaktinfo"
 
 #~ msgid "Send HTML Mail?"
-#~ msgstr "Send HTML-baseret e-post?"
+#~ msgstr "Send HTML-baseret e-mail?"
 
 #~ msgid "Add to Contacts"
 #~ msgstr "Tilføj i kontakter"
@@ -8463,7 +8462,7 @@ msgstr "_Forkast"
 #~ msgstr "Ægte_fælle:"
 
 #~ msgid "Wants to receive _HTML mail"
-#~ msgstr "Ønsker at modtage e-post som _HTML"
+#~ msgstr "Ønsker at modtage e-mail som _HTML"
 
 #~ msgid "_Delete"
 #~ msgstr "_Slet"
@@ -9246,14 +9245,14 @@ msgstr "_Forkast"
 #~ "The name or email address of this contact already exists\n"
 #~ "in this folder.  Would you like to add it anyway?"
 #~ msgstr ""
-#~ "Navnet eller e-postadressen for denne kontakt eksisterer allerede\n"
+#~ "Navnet eller e-mailadressen for denne kontakt eksisterer allerede\n"
 #~ "i denne mappe. Vil du tilføje den alligevel?"
 
 #~ msgid ""
 #~ "The changed email or name of this contact already\n"
 #~ "exists in this folder.  Would you like to add it anyway?"
 #~ msgstr ""
-#~ "Den nye e-post-adresse eller navnet for denne kontakt\n"
+#~ "Den nye e-mail-adresse eller navnet for denne kontakt\n"
 #~ "eksisterer allerede i denne mappe. Vil du tilføje den alligevel?"
 
 #~ msgid "Advanced Search"
@@ -9414,7 +9413,7 @@ msgstr "_Forkast"
 #~ msgstr "(ingen)"
 
 #~ msgid "Primary Email"
-#~ msgstr "Primær e-post"
+#~ msgstr "Primær e-mail"
 
 #~ msgid "Select an Action"
 #~ msgstr "Vælg en handling"
@@ -9426,7 +9425,7 @@ msgstr "_Forkast"
 #~ msgstr "Redigér kontaktinfo"
 
 #~ msgid "Merge E-Mail Address"
-#~ msgstr "Flet e-postadresse"
+#~ msgstr "Flet e-mailadresse"
 
 #~ msgid "Save in addressbook"
 #~ msgstr "Gem i adressebog"
@@ -9610,8 +9609,8 @@ msgstr "_Forkast"
 #~ "a normal reminder dialog box instead."
 #~ msgstr ""
 #~ "Evolution understøtter ikke påmindelser med besked via\n"
-#~ "e-post endnu, men denne påmindelse blev konfigureret til\n"
-#~ "at sende e-post. Evolution vil vise en normal dialog\n"
+#~ "e-mail endnu, men denne påmindelse blev konfigureret til\n"
+#~ "at sende e-mail. Evolution vil vise en normal dialog\n"
 #~ "for påmindelse i stedet."
 
 #~ msgid ""
@@ -9711,7 +9710,7 @@ msgstr "_Forkast"
 #~ msgstr "Valgmuligheder for beskedsalarmer"
 
 #~ msgid "Email Alarm Options"
-#~ msgstr "Valgmuligheder for e-post-alarm"
+#~ msgstr "Valgmuligheder for e-mail-alarm"
 
 #~ msgid "Program Alarm Options"
 #~ msgstr "Valgmuligheder for program-alarmer"
@@ -12464,7 +12463,7 @@ msgstr "_Forkast"
 #~ msgstr "Kunne ikke tilslutte POP-serveren %s (port %d): %s"
 
 #~ msgid "For delivering mail by connecting to a remote mailhub using SMTP.\n"
-#~ msgstr "For levering af e-post via en ekstern e-postserver med SMTP.\n"
+#~ msgstr "For levering af e-mail via en ekstern e-mailserver med SMTP.\n"
 
 #~ msgid "server does not appear to support SSL"
 #~ msgstr "serveren ser ikke ud til at understøtte SSL"
@@ -12757,10 +12756,10 @@ msgstr "_Forkast"
 #~ msgstr "      "
 
 #~ msgid "<b>Receiving Email</b>"
-#~ msgstr "<b>Modtager e-post</b>"
+#~ msgstr "<b>Modtager e-mail</b>"
 
 #~ msgid "<b>Sending Email:</b>"
-#~ msgstr "<b>Sender e-post:</b>"
+#~ msgstr "<b>Sender e-mail:</b>"
 
 #~ msgid ""
 #~ "<small>This page allows you to choose if you want to be notified via a "
@@ -12797,7 +12796,7 @@ msgstr "_Forkast"
 #~ "When you receive an email with a read receipt request, what should "
 #~ "Evolution do?"
 #~ msgstr ""
-#~ "Når du modtager en e-post med anmodning om læsningskvittering, hvad bør "
+#~ "Når du modtager en e-mail med anmodning om læsningskvittering, hvad bør "
 #~ "Evolution gøre?"
 
 #~ msgid ""
@@ -13045,7 +13044,7 @@ msgstr "_Forkast"
 #~ msgstr "Etiket"
 
 #~ msgid "Mailing list"
-#~ msgstr "E-post-liste"
+#~ msgstr "E-mail-liste"
 
 #~ msgid "Message Body"
 #~ msgstr "Beskedskrop"
@@ -13235,7 +13234,7 @@ msgstr "_Forkast"
 #~ "the following recipients are willing and able to receive HTML mail:\n"
 #~ msgstr ""
 #~ "Du sender et HTML-formaterat brev. Sørg for at følgende\n"
-#~ "modtagere ønsker, og kan modtage, HTML-formateret e-post:\n"
+#~ "modtagere ønsker, og kan modtage, HTML-formateret e-mail:\n"
 
 #~ msgid "Send anyway?"
 #~ msgstr "Send alligevel?"
@@ -13262,7 +13261,7 @@ msgstr "_Forkast"
 #~ "an Apparently-To header.\n"
 #~ "Send anyway?"
 #~ msgstr ""
-#~ "Det er muligt at e-post-serveren kan vise modtagerne ved at tilføje en "
+#~ "Det er muligt at e-mail-serveren kan vise modtagerne ved at tilføje en "
 #~ "\"Apparently-To\" header.\n"
 #~ "Send alligevel?"
 
@@ -13346,7 +13345,7 @@ msgstr "_Forkast"
 #~ msgstr "Virtuel mappe for modtage_re"
 
 #~ msgid "VFolder on Mailing _List"
-#~ msgstr "Virtuel mappe på e-post-_liste"
+#~ msgstr "Virtuel mappe på e-mail-_liste"
 
 #~ msgid "Filter on Sub_ject"
 #~ msgstr "Filtrér på em_ne"
@@ -13493,44 +13492,44 @@ msgstr "_Forkast"
 #~ msgid ""
 #~ "Configure mail preferences, including security and message display, here"
 #~ msgstr ""
-#~ "Konfigurér e-post-indstillinger, inklusive sikkerhed og "
+#~ "Konfigurér e-mail-indstillinger, inklusive sikkerhed og "
 #~ "meddelelsesvisning, hér"
 
 #~ msgid "Configure spell-checking, signatures, and the message composer here"
 #~ msgstr "Konfigurér stavekontrol, signaturer, og meddelelseredigeringen hér"
 
 #~ msgid "Configure your email accounts here"
-#~ msgstr "Konfigurér dine e-post-konti her"
+#~ msgstr "Konfigurér dine e-mail-konti her"
 
 #~ msgid "Evolution Mail"
-#~ msgstr "Evolution e-post"
+#~ msgstr "Evolution e-mail"
 
 #~ msgid "Evolution Mail accounts configuration control"
-#~ msgstr "Evolution e-post-kontoopsætnings-styreelement"
+#~ msgstr "Evolution e-mail-kontoopsætnings-styreelement"
 
 #~ msgid "Evolution Mail component"
-#~ msgstr "Evolutions e-post-komponent"
+#~ msgstr "Evolutions e-mail-komponent"
 
 #~ msgid "Evolution Mail composer"
-#~ msgstr "Evolutions e-post-redigering"
+#~ msgstr "Evolutions e-mail-redigering"
 
 #~ msgid "Evolution Mail composer configuration control"
-#~ msgstr "Evolutions e-post-redigereropsætnings-styreelement"
+#~ msgstr "Evolutions e-mail-redigereropsætnings-styreelement"
 
 #~ msgid "Evolution Mail folder viewer"
-#~ msgstr "Evolution e-post-mappevisning"
+#~ msgstr "Evolution e-mail-mappevisning"
 
 #~ msgid "Evolution Mail preferences control"
-#~ msgstr "Evolution e-post-indstillings-styreelement"
+#~ msgstr "Evolution e-mail-indstillings-styreelement"
 
 #~ msgid "Mail Accounts"
-#~ msgstr "E-post-konti"
+#~ msgstr "E-mail-konti"
 
 #~ msgid "Mail Preferences"
-#~ msgstr "E-post-indstillinger"
+#~ msgstr "E-mail-indstillinger"
 
 #~ msgid "Evolution is importing your old Elm mail"
-#~ msgstr "Evolution importerer gammel e-post fra Elm"
+#~ msgstr "Evolution importerer gammel e-mail fra Elm"
 
 #~ msgid "Importing..."
 #~ msgstr "Importerer..."
@@ -13548,7 +13547,7 @@ msgstr "_Forkast"
 #~ "Evolution has found Elm mail files\n"
 #~ "Would you like to import them into Evolution?"
 #~ msgstr ""
-#~ "Evolution har fundet Elm e-post-filer.\n"
+#~ "Evolution har fundet Elm e-mail-filer.\n"
 #~ "Vil du importere dem til Evolution?"
 
 #~ msgid "Elm"
@@ -13592,13 +13591,13 @@ msgstr "_Forkast"
 #~ "everything still works as intended."
 #~ msgstr ""
 #~ "En del af dine Netscape-epostfilter baseres på\n"
-#~ "e-post-prioriteter, som ikke anvendes i Evolution. Evolution\n"
+#~ "e-mail-prioriteter, som ikke anvendes i Evolution. Evolution\n"
 #~ "anvender i stedet point i intervallet -3 til 3 som kan\n"
 #~ "tildeles til breve og derefter anvendes til filtrering.\n"
 #~ "\n"
 #~ "Som en midlertidig løsning findes en samling filtre kaldet\n"
 #~ "\"Prioritetsfilter\" som kan tilføjes for at konvertere\n"
-#~ "Netscapes e-post-prioriteter til Evolutionpoint, og de\n"
+#~ "Netscapes e-mail-prioriteter til Evolutionpoint, og de\n"
 #~ "påvirkede filerne anvender point i stedet for prioriteter.\n"
 #~ "Kontroller de importerede filtre for at sikre dig at\n"
 #~ "alting stadigvæk fungerer som tiltænkt."
@@ -13631,7 +13630,7 @@ msgstr "_Forkast"
 #~ msgstr "Evolution importerer dine gamle data fra Netscape"
 
 #~ msgid "Scanning mail filters"
-#~ msgstr "Gennemsøger e-post-filtre"
+#~ msgstr "Gennemsøger e-mail-filtre"
 
 #~ msgid "Scanning directory"
 #~ msgstr "Søger i katalog"
@@ -13640,23 +13639,23 @@ msgstr "_Forkast"
 #~ msgstr "Starter import"
 
 #~ msgid "Mail Filters"
-#~ msgstr "E-post-filtre"
+#~ msgstr "E-mail-filtre"
 
 #~ msgid ""
 #~ "Evolution has found Netscape mail files.\n"
 #~ "Would you like them to be imported into Evolution?"
 #~ msgstr ""
-#~ "Evolution har fundet Netscape e-post-filer.\n"
+#~ "Evolution har fundet Netscape e-mail-filer.\n"
 #~ "Vil du importere dem til Evolution?"
 
 #~ msgid "Evolution is importing your old Pine data"
-#~ msgstr "Evolution importerer gammel e-post fra Pine"
+#~ msgstr "Evolution importerer gammel e-mail fra Pine"
 
 #~ msgid ""
 #~ "Evolution has found Pine mail files.\n"
 #~ "Would you like to import them into Evolution?"
 #~ msgstr ""
-#~ "Evolution har fundet Pine e-post-filer.\n"
+#~ "Evolution har fundet Pine e-mail-filer.\n"
 #~ "Vil du importere dem til Evolution?"
 
 #~ msgid "Pine"
@@ -13705,13 +13704,13 @@ msgstr "_Forkast"
 #~ msgstr "Du kan ikke oprette to konti med samme navn."
 
 #~ msgid "Mail to %s"
-#~ msgstr "E-post til %s"
+#~ msgstr "E-mail til %s"
 
 #~ msgid "Mail from %s"
-#~ msgstr "E-post fra %s"
+#~ msgstr "E-mail fra %s"
 
 #~ msgid "%s mailing list"
-#~ msgstr "%s e-post-liste"
+#~ msgstr "%s e-mail-liste"
 
 #~ msgid "Add Filter Rule"
 #~ msgstr "Tilføj filterregel"
@@ -13738,7 +13737,7 @@ msgstr "_Forkast"
 #~ "Some of your mail settings seem corrupt, please check that everything is "
 #~ "in order."
 #~ msgstr ""
-#~ "Nogen af dine indstillinger for e-post ser ud til at være beskadiget. "
+#~ "Nogen af dine indstillinger for e-mail ser ud til at være beskadiget. "
 #~ "Venligst tjek at alt er i orden."
 
 #~ msgid "Specify where to create the folder:"
@@ -13773,9 +13772,9 @@ msgstr "_Forkast"
 #~ "below do not need to be filled in, unless you wish to include this "
 #~ "information in email you send."
 #~ msgstr ""
-#~ "Angiv dit navn og din e-post-adresse nedenfor. De \"valfrie\" felter "
+#~ "Angiv dit navn og din e-mail-adresse nedenfor. De \"valfrie\" felter "
 #~ "nedenfor er ikke obligatoriske, medmindre du ønsker at inkludere "
-#~ "informationen i den e-post du sender."
+#~ "informationen i den e-mail du sender."
 
 #~ msgid "Receiving Mail"
 #~ msgstr "Modtager post"
@@ -13784,7 +13783,7 @@ msgstr "_Forkast"
 #~ "Please enter information about your incoming mail server below. If you "
 #~ "are not sure, ask your system administrator or Internet Service Provider."
 #~ msgstr ""
-#~ "Angiv information om din server for indkommende e-post nedenfor. Hvis du "
+#~ "Angiv information om din server for indkommende e-mail nedenfor. Hvis du "
 #~ "ikke er sikker bør du spørge din systemadministrator eller "
 #~ "Internetleverandør."
 
@@ -13798,7 +13797,7 @@ msgstr "_Forkast"
 #~ "Please enter information about the way you will send mail. If you are not "
 #~ "sure, ask your system administrator or Internet Service Provider."
 #~ msgstr ""
-#~ "Angiv information om hvordan du vil sende e-post. Hvis du ikke er sikker "
+#~ "Angiv information om hvordan du vil sende e-mail. Hvis du ikke er sikker "
 #~ "bør du spørge din systemadministrator eller Internetleverandør."
 
 #~ msgid "Account Management"
@@ -13811,8 +13810,8 @@ msgstr "_Forkast"
 #~ "Please enter a name for this account in the space below. This name will "
 #~ "be used for display purposes only."
 #~ msgstr ""
-#~ "Du er næsten færdig med din e-post-konfiguration. Identiteten, den "
-#~ "inkommende e-post-server og transportmetoden for udgående e-post som du "
+#~ "Du er næsten færdig med din e-mail-konfiguration. Identiteten, den "
+#~ "inkommende e-mail-server og transportmetoden for udgående e-mail som du "
 #~ "angav samles til en Evolution-epostkonto. Angiv et navn for denne konto "
 #~ "nedenfor. Dette navn anvendes kun til visning."
 
@@ -13832,7 +13831,7 @@ msgstr "_Forkast"
 #~ msgstr "(SSL er ikke understøttet i denne version af evolution)"
 
 #~ msgid "A_lways encrypt to myself when sending encrypted mail"
-#~ msgstr "Kryptér altid til mig selv ved sending af krypteret e-post."
+#~ msgstr "Kryptér altid til mig selv ved sending af krypteret e-mail."
 
 #~ msgid "Account Editor"
 #~ msgstr "Kontoredigeringsværktøj"
@@ -13902,9 +13901,9 @@ msgstr "_Forkast"
 #~ "\n"
 #~ "Click \"Apply\" to save your settings."
 #~ msgstr ""
-#~ "Tillykke, din e-post-konfiguration er nu fuldført.\n"
+#~ "Tillykke, din e-mail-konfiguration er nu fuldført.\n"
 #~ "\n"
-#~ "Du kan nu sende og modtage e-post \n"
+#~ "Du kan nu sende og modtage e-mail \n"
 #~ "med Evolution. \n"
 #~ "\n"
 #~ "Klik på \"Fuldfør\" for at gemme dine indstillinger."
@@ -13940,10 +13939,10 @@ msgstr "_Forkast"
 #~ msgstr "A_ktivér"
 
 #~ msgid "Email Accounts"
-#~ msgstr "E-post-konti"
+#~ msgstr "E-mail-konti"
 
 #~ msgid "Email _address:"
-#~ msgstr "E-post-_adresse:"
+#~ msgstr "E-mail-_adresse:"
 
 #~ msgid "Empty _trash folders on exit"
 #~ msgstr "Tøm _affaldsmappe ved afslutning"
@@ -13982,7 +13981,7 @@ msgstr "_Forkast"
 #~ msgstr "Etiketter og farver"
 
 #~ msgid "Mail Configuration"
-#~ msgstr "E-post-konfiguration"
+#~ msgstr "E-mail-konfiguration"
 
 #~ msgid "Mailbox location"
 #~ msgstr "Placering af postboks"
@@ -14040,7 +14039,7 @@ msgstr "_Forkast"
 #~ msgstr "Sva_r-til:"
 
 #~ msgid "Receiving Email"
-#~ msgstr "Modtager e-post"
+#~ msgstr "Modtager e-mail"
 
 #~ msgid "Receiving _Options"
 #~ msgstr "_Modtagelsesmuligheder"
@@ -14073,7 +14072,7 @@ msgstr "_Forkast"
 #~ msgstr "Vælg HTML-skrifttype med variabel bredde til udskrift"
 
 #~ msgid "Sending Email"
-#~ msgstr "Sender e-post"
+#~ msgstr "Sender e-mail"
 
 #~ msgid "Sent _messages folder:"
 #~ msgstr "Mappe til sendte _beskeder:"
@@ -14129,7 +14128,7 @@ msgstr "_Forkast"
 #~ "\n"
 #~ "Click \"Forward\" to begin. "
 #~ msgstr ""
-#~ "Velkommen til assistenten for konfiguration af Evolution e-post.\n"
+#~ "Velkommen til assistenten for konfiguration af Evolution e-mail.\n"
 #~ "\n"
 #~ "Klik \"Næste\" for at begynde. "
 
@@ -14260,7 +14259,7 @@ msgstr "_Forkast"
 #~ msgstr "Arbejder"
 
 #~ msgid "Fetching Mail"
-#~ msgstr "Henter e-post"
+#~ msgstr "Henter e-mail"
 
 #~ msgid "Sending \"%s\""
 #~ msgstr "Sender \"%s\""
@@ -14333,7 +14332,7 @@ msgstr "_Forkast"
 #~ msgstr "Type: %s"
 
 #~ msgid "Send & Receive Mail"
-#~ msgstr "Send & modtag e-post"
+#~ msgstr "Send & modtag e-mail"
 
 #~ msgid "Cancel _All"
 #~ msgstr "Afbryd _alle"
@@ -14976,7 +14975,7 @@ msgstr "_Forkast"
 #~ msgstr "_Kontakter:"
 
 #~ msgid "_Mail:"
-#~ msgstr "_E-post:"
+#~ msgstr "_E-mail:"
 
 #~ msgid "_Tasks:"
 #~ msgstr "_Opgaver:"
@@ -15019,7 +15018,7 @@ msgstr "_Forkast"
 #~ "Please click the \"Forward\" button to continue. "
 #~ msgstr ""
 #~ "Velkommen til Evolution. De næste skærme lader dig\n"
-#~ "konfigurere Evolution til at forbinde til dine e-post-konti, og\n"
+#~ "konfigurere Evolution til at forbinde til dine e-mail-konti, og\n"
 #~ "importere filer fra andre applikationer. \n"
 #~ "\n"
 #~ "Venligst klik 'Næste' for at fortsætte. "
@@ -15380,7 +15379,7 @@ msgstr "_Forkast"
 #~ msgstr "Videresend som i_Calendar"
 
 #~ msgid "Forward this item via email"
-#~ msgstr "Videresend opføring via e-post"
+#~ msgstr "Videresend opføring via e-mail"
 
 #~ msgid "Obtain the latest meeting information"
 #~ msgstr "Hent seneste mødeinformation"
@@ -15398,13 +15397,13 @@ msgstr "_Forkast"
 #~ msgstr "Tilret Min Evolution"
 
 #~ msgid "Cancel the current mail operation"
-#~ msgstr "Afbryd aktiv e-post-operation"
+#~ msgstr "Afbryd aktiv e-mail-operation"
 
 #~ msgid "Compose _New Message"
 #~ msgstr "Skriv _ny besked"
 
 #~ msgid "Create or edit rules for filtering new mail"
-#~ msgstr "Opret eller redigér regler for filtrering af ny e-post"
+#~ msgstr "Opret eller redigér regler for filtrering af ny e-mail"
 
 #~ msgid "Create or edit virtual folder definitions"
 #~ msgstr "Opret eller redigér definitioner af virtuelle mapper"
@@ -15416,7 +15415,7 @@ msgstr "_Forkast"
 #~ msgstr "Glem alle adgangskoder så du vil blive spurgt om at opgive dem igen"
 
 #~ msgid "Open a window for composing a mail message"
-#~ msgstr "Åbn et vindue for at skrive en e-post-besked"
+#~ msgstr "Åbn et vindue for at skrive en e-mail-besked"
 
 #~ msgid "Permanently remove all deleted messages from all folders"
 #~ msgstr "Fjern alle slettede beskeder fra alle mapper permanent"
@@ -15525,7 +15524,7 @@ msgstr "_Forkast"
 #~ msgstr "Skriv et svar til alle modtagere af den valgte besked"
 
 #~ msgid "Compose a reply to the mailing list of the selected message"
-#~ msgstr "Skriv et svar til e-post-listen for den valgte besked"
+#~ msgstr "Skriv et svar til e-mail-listen for den valgte besked"
 
 #~ msgid "Compose a reply to the sender of the selected message"
 #~ msgstr "Skriv et svar til afsender af den valgte besked"
@@ -15552,7 +15551,7 @@ msgstr "_Forkast"
 #~ msgstr "Lav en virtuel mappe for disse modtagere"
 
 #~ msgid "Create a virtual folder for this mailing list"
-#~ msgstr "Lav en virtuel mappe for denne e-post-liste"
+#~ msgstr "Lav en virtuel mappe for denne e-mail-liste"
 
 #~ msgid "Create a virtual folder for this sender"
 #~ msgstr "Lav en virtuel mappe for denne afsender"
@@ -15588,7 +15587,7 @@ msgstr "_Forkast"
 #~ msgstr "_Videresend"
 
 #~ msgid "Filter on Mailing _List..."
-#~ msgstr "Filtrér på e-post_liste..."
+#~ msgstr "Filtrér på e-mail_liste..."
 
 #~ msgid "Filter on Se_nder..."
 #~ msgstr "Filtrér på se_nder..."
@@ -15606,7 +15605,7 @@ msgstr "_Forkast"
 #~ msgstr "Følg _op..."
 
 #~ msgid "Force images in HTML mail to be loaded"
-#~ msgstr "Tvungen indlæsning af billeder i HTML-baseret e-post"
+#~ msgstr "Tvungen indlæsning af billeder i HTML-baseret e-mail"
 
 #~ msgid "Forward the selected message in the body of a new message"
 #~ msgstr "Videresend den valgte besked i kroppen af en ny besked"
@@ -15711,7 +15710,7 @@ msgstr "_Forkast"
 #~ msgstr "Konfigurér sideindstillingerne for din aktuelle printer"
 
 #~ msgid "Show Email _Source"
-#~ msgstr "Vis e-post-kilde"
+#~ msgstr "Vis e-mail-kilde"
 
 #~ msgid "Show Full _Headers"
 #~ msgstr "Vis brevets _kildetekst"
@@ -15720,16 +15719,16 @@ msgstr "_Forkast"
 #~ msgstr "Vis besked i normal stíl"
 
 #~ msgid "Show message with all email headers"
-#~ msgstr "Vis besked med fulde e-post-headere"
+#~ msgstr "Vis besked med fulde e-mail-headere"
 
 #~ msgid "Show the raw email source of the message"
-#~ msgstr "Vis e-post-beskeden i sin rå form"
+#~ msgstr "Vis e-mail-beskeden i sin rå form"
 
 #~ msgid "Text Si_ze"
 #~ msgstr "Tekst-større_lse"
 
 #~ msgid "VFolder on Mailing _List..."
-#~ msgstr "Virtuel mappe for e-post-_liste..."
+#~ msgstr "Virtuel mappe for e-mail-_liste..."
 
 #~ msgid "VFolder on Se_nder..."
 #~ msgstr "Virtuel mappe for afse_nder..."
@@ -16492,13 +16491,13 @@ msgstr "_Forkast"
 #~ "Vil du importere dem til Evolution?"
 
 #~ msgid "Evolution Mail configuration interface"
-#~ msgstr "Evolution e-post-opsætningsgrænseflade"
+#~ msgstr "Evolution e-mail-opsætningsgrænseflade"
 
 #~ msgid "Folder containing mail"
-#~ msgstr "Mappe som indeholder e-post"
+#~ msgstr "Mappe som indeholder e-mail"
 
 #~ msgid "Public folder containing mail"
-#~ msgstr "Offentlig mappe som indeholder e-post"
+#~ msgstr "Offentlig mappe som indeholder e-mail"
 
 #~ msgid "Virtual Trash"
 #~ msgstr "Virtuelt affald"
@@ -16513,19 +16512,19 @@ msgstr "_Forkast"
 #~ msgstr "Ændr denne mappes egenskaber"
 
 #~ msgid "You have not set a mail transport method"
-#~ msgstr "Du har ikke sat en transportmetode for e-post"
+#~ msgstr "Du har ikke sat en transportmetode for e-mail"
 
 #~ msgid "You have unsent messages, do you wish to quit anyway?"
 #~ msgstr "Du har usendte meddelelser, vil du afslutte alligevel?"
 
 #~ msgid "New Mail Message"
-#~ msgstr "Ny e-post-besked"
+#~ msgstr "Ny e-mail-besked"
 
 #~ msgid "_Mail Message"
 #~ msgstr "Send _besked"
 
 #~ msgid "Compose a new mail message"
-#~ msgstr "Skriv en ny e-post-meddelelse"
+#~ msgstr "Skriv en ny e-mail-meddelelse"
 
 #~ msgid "New Message Post"
 #~ msgstr "Postning af ny meddelelse"
@@ -16534,7 +16533,7 @@ msgstr "_Forkast"
 #~ msgstr "_Post meddelelse"
 
 #~ msgid "Post a new mail message"
-#~ msgstr "Post en ny e-post-meddelelse"
+#~ msgstr "Post en ny e-mail-meddelelse"
 
 #~ msgid "Cannot register storage with shell"
 #~ msgstr "Kan ikke registrere lagring med skallen"
@@ -16584,7 +16583,7 @@ msgstr "_Forkast"
 #~ "receive or compose mail.\n"
 #~ "Would you like to configure it now?"
 #~ msgstr ""
-#~ "Du har ikke konfigureret e-post-klienten.\n"
+#~ "Du har ikke konfigureret e-mail-klienten.\n"
 #~ "Du skal gøre dette før du kan sende,\n"
 #~ "modtage eller skrive beskeder.\n"
 #~ "Vil du konfigurere den nu?"
@@ -16594,14 +16593,14 @@ msgstr "_Forkast"
 #~ "before you can compose mail."
 #~ msgstr ""
 #~ "Du skal konfigurere en identitet\n"
-#~ "før du kan skrive e-post."
+#~ "før du kan skrive e-mail."
 
 #~ msgid ""
 #~ "You need to configure a mail transport\n"
 #~ "before you can compose mail."
 #~ msgstr ""
-#~ "Du skal konfigurere en e-post-transport\n"
-#~ "før du kan skrive e-post."
+#~ "Du skal konfigurere en e-mail-transport\n"
+#~ "før du kan skrive e-mail."
 
 #~ msgid "Move message(s) to"
 #~ msgstr "Flyt beskeder til"
@@ -16694,7 +16693,7 @@ msgstr "_Forkast"
 #~ msgstr "Gem billede som..."
 
 #~ msgid "Bad Address"
-#~ msgstr "Ugyldig e-post-adresse:"
+#~ msgstr "Ugyldig e-mail-adresse:"
 
 #~ msgid "Could not create a PGP verfication context"
 #~ msgstr "Kunne ikke oprette en PGP-verifieringskontekst"
@@ -24046,7 +24045,7 @@ msgstr "_Forkast"
 #~ msgstr "Inegn beskrivelse"
 
 #~ msgid "Mail summary"
-#~ msgstr "E-post-sammendrag"
+#~ msgstr "E-mail-sammendrag"
 
 #~ msgid "Dictionary.com Word of the Day"
 #~ msgstr "Dictionary.com Ord for dagen"
@@ -25076,7 +25075,7 @@ msgstr "_Forkast"
 #~ msgstr "Konfigurér de skrifttyper Evolution anvender her"
 
 #~ msgid "Evolution Mail font configuration control"
-#~ msgstr "Evolution e-post-skrifttypeopsætnings-styreelement"
+#~ msgstr "Evolution e-mail-skrifttypeopsætnings-styreelement"
 
 #~ msgid "Font Preferences"
 #~ msgstr "Skrifttypeindstillinger"
@@ -25106,7 +25105,7 @@ msgstr "_Forkast"
 #~ msgstr "Fjern nyhedskilde"
 
 #~ msgid "_Mail"
-#~ msgstr "_E-post"
+#~ msgstr "_E-mail"
 
 #~ msgid "Force upgrading of configuration files from Evolution 1.0.x"
 #~ msgstr "Gennemtving opgradering af konfigurationsfiler fra Evolution 1.0.x"
@@ -25327,7 +25326,7 @@ msgstr "_Forkast"
 #~ "Evolution does not yet support email notification for reminders.  You "
 #~ "will not be able to edit the options for this reminder."
 #~ msgstr ""
-#~ "Evolution understøtter endnu ikke e-postnotificering for påmindelser. Det "
+#~ "Evolution understøtter endnu ikke e-mailnotificering for påmindelser. Det "
 #~ "vil ikke være muligt at redigere mulighederne for denne påmindelse."
 
 #~ msgid "st"
@@ -25362,7 +25361,7 @@ msgstr "_Forkast"
 #~ "configured any identities in the mail component."
 #~ msgstr ""
 #~ "Kunne ikke oprette skrivevindue fordi du ikke har sat\n"
-#~ "en identitet op i e-post-komponenten."
+#~ "en identitet op i e-mail-komponenten."
 
 #~ msgid "Cannot initialize the Evolution composer."
 #~ msgstr "Kan ikke initialisere Evolution-redigeringsværktøjet."
@@ -25383,26 +25382,26 @@ msgstr "_Forkast"
 #~ msgstr "Konfigurationsværktøj for Evolutions visningsskrifttyper."
 
 #~ msgid "Configuration control for the Evolution Mail Accounts."
-#~ msgstr "Konfigurationsværktøj for Evolutions e-postkonti."
+#~ msgstr "Konfigurationsværktøj for Evolutions e-mailkonti."
 
 #~ msgid "Configuration control for the Evolution Mailer."
-#~ msgstr "Konfigurationsværktøj for Evolutions e-postkomponent."
+#~ msgstr "Konfigurationsværktøj for Evolutions e-mailkomponent."
 
 #~ msgid "Configuration control for the Evolution Message Composer."
 #~ msgstr "Konfigurationsværktøj for Evolutions meddelelsesredigeringsværktøj."
 
 #~ msgid "Evolution component for handling mail."
-#~ msgstr "Evolution komponent for håndtering af e-post."
+#~ msgstr "Evolution komponent for håndtering af e-mail."
 
 #~ msgid "Factory for the controls exported by the Evolution Mailer"
 #~ msgstr ""
 #~ "Fabrik for kontrollerne som eksporteres af Evolution-epostkomponenten"
 
 #~ msgid "Cannot initialize the Evolution mail component."
-#~ msgstr "Kan ikke initialisere Evolutions e-postkomponent."
+#~ msgstr "Kan ikke initialisere Evolutions e-mailkomponent."
 
 #~ msgid "Cannot initialize Evolution's mail config component."
-#~ msgstr "Kan ikke initiere Evolutions konfigurationskomponent for e-post."
+#~ msgstr "Kan ikke initiere Evolutions konfigurationskomponent for e-mail."
 
 #~ msgid "Cannot initialize Evolution's folder info component."
 #~ msgstr "Kan ikke initiere Evolutions mappeinfo-komponent."
@@ -25515,7 +25514,7 @@ msgstr "_Forkast"
 #~ msgstr "Fabrik for Evolution beskedsredigering."
 
 #~ msgid "Factory for the Mail Summary component."
-#~ msgstr "Fabrik for e-post sammendrag komponent."
+#~ msgstr "Fabrik for e-mail sammendrag komponent."
 
 #~ msgid "Advar"
 #~ msgstr "Advar"
