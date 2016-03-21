@@ -4011,12 +4011,17 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 
 	e_sexp_input_text (sexp, query, strlen (query));
 
-	if (e_sexp_parse (sexp) == -1)
+	if (e_sexp_parse (sexp) == -1) {
+		e_sexp_unref (sexp);
 		return NULL;
+	}
 
 	r = e_sexp_eval (sexp);
-	if (!r)
+	if (!r) {
+		e_sexp_unref (sexp);
 		return NULL;
+	}
+
 	if (r->type == ESEXP_RES_STRING) {
 		if (r->value.string && *r->value.string)
 			res = g_strdup (r->value.string);
