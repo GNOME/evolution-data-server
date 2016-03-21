@@ -4010,7 +4010,9 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 	}
 
 	e_sexp_input_text (sexp, query, strlen (query));
-	e_sexp_parse (sexp);
+
+	if (e_sexp_parse (sexp) == -1)
+		return NULL;
 
 	r = e_sexp_eval (sexp);
 	if (!r)
