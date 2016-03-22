@@ -33,6 +33,8 @@
 /* LibSoup includes */
 #include <libsoup/soup.h>
 
+#include <libedataserver/libedataserver.h>
+
 #include "e-cal-backend-caldav.h"
 
 #define d(x)
@@ -113,6 +115,9 @@ struct _ECalBackendCalDAVPrivate {
 	 * necessary parts in it, but this will give us more freedom, as also direct
 	 * caldav calendars can profit from this. */
 	gboolean is_google;
+
+	/* The iCloud.com requires timezone IDs as locations */
+	gboolean is_icloud;
 
 	/* set to true if thread for ESource::changed is invoked */
 	gboolean updating_source;
@@ -2622,24 +2627,28 @@ caldav_synchronize_cache (ECalBackendCalDAV *cbdav,
 	g_free (sobjs);
 }
 
-static gboolean
-is_google_uri (const gchar *uri)
+static void
+check_server_tweaks (ECalBackendCalDAV *cbdav)
 {
 	SoupURI *suri;
-	gboolean res;
 
-	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
-	suri = soup_uri_new (uri);
-	g_return_val_if_fail (suri != NULL, FALSE);
+	cbdav->priv->is_google = FALSE;
+	cbdav->priv->is_icloud = FALSE;
 
-	res = suri->host && (
+	g_return_if_fail (cbdav->priv->uri);
+
+	suri = soup_uri_new (cbdav->priv->uri);
+	g_return_if_fail (suri != NULL);
+
+	cbdav->priv->is_google = suri->host && (
 		g_ascii_strcasecmp (suri->host, "www.google.com") == 0 ||
 		g_ascii_strcasecmp (suri->host, "apidata.googleusercontent.com") == 0);
 
-	soup_uri_free (suri);
+	cbdav->priv->is_icloud = suri->host && e_util_utf8_strstrcase (suri->host, ".icloud.com");
 
-	return res;
+	soup_uri_free (suri);
 }
 
 static void
@@ -2703,7 +2712,7 @@ caldav_synch_slave_loop (gpointer data)
 				update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
 				g_cond_signal (&cbdav->priv->cond);
 
-				cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
+				check_server_tweaks (cbdav);
 				know_unreachable = FALSE;
 			} else {
 				ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
@@ -3102,7 +3111,7 @@ open_calendar_wrapper (ECalBackendCalDAV *cbdav,
 	}
 
 	if (success) {
-		cbdav->priv->is_google = is_google_uri (cbdav->priv->uri);
+		check_server_tweaks (cbdav);
 
 		if (!awaiting_credentials) {
 			update_slave_cmd (cbdav->priv, SLAVE_SHOULD_WORK);
@@ -3960,50 +3969,61 @@ pack_cobj (ECalBackendCalDAV *cbdav,
 }
 
 static void
-sanitize_component (ECalBackend *cb,
+maybe_correct_tzid (ECalBackendCalDAV *cbdav,
+		    ECalComponentDateTime *dt)
+{
+	icaltimezone *zone;
+
+	zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cbdav), dt->tzid);
+	if (!zone) {
+		g_free ((gchar *) dt->tzid);
+		dt->tzid = g_strdup ("UTC");
+	} else if (cbdav->priv->is_icloud && !dt->value->is_date) {
+		const gchar *location = icaltimezone_get_location (zone);
+
+		if (location && *location) {
+			g_free ((gchar *) dt->tzid);
+			dt->tzid = g_strdup (location);
+		} else {
+			/* No location available for this timezone, convert to UTC */
+			dt->value->zone = zone;
+			*dt->value = icaltime_convert_to_zone (*dt->value, icaltimezone_get_utc_timezone ());
+			g_free ((gchar *) dt->tzid);
+			dt->tzid = g_strdup ("UTC");
+		}
+	}
+}
+
+static void
+sanitize_component (ECalBackendCalDAV *cbdav,
                     ECalComponent *comp)
 {
 	ECalComponentDateTime dt;
-	icaltimezone *zone;
 
 	/* Check dtstart, dtend and due's timezone, and convert it to local
 	 * default timezone if the timezone is not in our builtin timezone
 	 * list */
 	e_cal_component_get_dtstart (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (cb), dt.tzid);
-		if (!zone) {
-			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup ("UTC");
-			e_cal_component_set_dtstart (comp, &dt);
-		}
+		maybe_correct_tzid (cbdav, &dt);
+		e_cal_component_set_dtstart (comp, &dt);
 	}
 	e_cal_component_free_datetime (&dt);
 
 	e_cal_component_get_dtend (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (cb), dt.tzid);
-		if (!zone) {
-			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup ("UTC");
-			e_cal_component_set_dtend (comp, &dt);
-		}
+		maybe_correct_tzid (cbdav, &dt);
+		e_cal_component_set_dtend (comp, &dt);
 	}
 	e_cal_component_free_datetime (&dt);
 
 	e_cal_component_get_due (comp, &dt);
 	if (dt.value && dt.tzid) {
-		zone = e_timezone_cache_get_timezone (
-			E_TIMEZONE_CACHE (cb), dt.tzid);
-		if (!zone) {
-			g_free ((gchar *) dt.tzid);
-			dt.tzid = g_strdup ("UTC");
-			e_cal_component_set_due (comp, &dt);
-		}
+		maybe_correct_tzid (cbdav, &dt);
+		e_cal_component_set_due (comp, &dt);
 	}
 	e_cal_component_free_datetime (&dt);
+
 	e_cal_component_abort_sequence (comp);
 }
 
@@ -4256,7 +4276,7 @@ do_create_objects (ECalBackendCalDAV *cbdav,
 	e_cal_component_set_last_modified (comp, &current);
 
 	/* sanitize the component*/
-	sanitize_component ((ECalBackend *) cbdav, comp);
+	sanitize_component (cbdav, comp);
 
 	if (online) {
 		CalDAVObject object;
@@ -4334,7 +4354,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 	e_cal_component_set_last_modified (comp, &current);
 
 	/* sanitize the component */
-	sanitize_component ((ECalBackend *) cbdav, comp);
+	sanitize_component (cbdav, comp);
 
 	id = e_cal_component_get_id (comp);
 	if (id == NULL) {
@@ -4501,7 +4521,7 @@ do_modify_objects (ECalBackendCalDAV *cbdav,
 				e_cal_recur_ensure_end_dates (comp, TRUE, resolve_tzid, cbdav);
 
 				/* sanitize the component */
-				sanitize_component ((ECalBackend *) cbdav, comp);
+				sanitize_component (cbdav, comp);
 
 				if (online) {
 					CalDAVObject object;
