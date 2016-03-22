@@ -2454,7 +2454,8 @@ imapx_initial_setup_sync (CamelStore *store,
 	const gchar *sent_names[] = {
 		NC_("IMAPDefaults", "[Gmail]/Sent Mail"),
 		NC_("IMAPDefaults", "Sent"),
-		NC_("IMAPDefaults", "Sent Items")
+		NC_("IMAPDefaults", "Sent Items"),
+		NC_("IMAPDefaults", "Sent Messages")
 	};
 	const gchar *junk_names[] = {
 		NC_("IMAPDefaults", "[Gmail]/Spam"),
@@ -2467,7 +2468,8 @@ imapx_initial_setup_sync (CamelStore *store,
 	const gchar *trash_names[] = {
 		NC_("IMAPDefaults", "[Gmail]/Trash"),
 		NC_("IMAPDefaults", "Trash"),
-		NC_("IMAPDefaults", "Deleted Items")
+		NC_("IMAPDefaults", "Deleted Items"),
+		NC_("IMAPDefaults", "Deleted Messages")
 	};
 
 	CamelIMAPXStore *imapx_store;
