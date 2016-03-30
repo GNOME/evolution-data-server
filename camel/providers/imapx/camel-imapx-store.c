@@ -2258,6 +2258,32 @@ exit:
 	return success;
 }
 
+static gboolean
+imapx_is_gmail_server (CamelService *service)
+{
+	CamelSettings *settings;
+	gboolean is_gmail = FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+
+	settings = camel_service_ref_settings (service);
+	if (CAMEL_IS_NETWORK_SETTINGS (settings)) {
+		gchar *host;
+
+		host = camel_network_settings_dup_host (CAMEL_NETWORK_SETTINGS (settings));
+
+		is_gmail = host && (
+			camel_strstrcase (host, ".gmail.com") != NULL ||
+			camel_strstrcase (host, ".googlemail.com") != NULL);
+
+		g_free (host);
+	}
+
+	g_clear_object (&settings);
+
+	return is_gmail;
+}
+
 static gchar *
 imapx_find_folder_for_initial_setup (CamelFolderInfo *root,
 				     const gchar *path)
@@ -2506,10 +2532,14 @@ imapx_initial_setup_sync (CamelStore *store,
 		CAMEL_STORE_SETUP_ARCHIVE_FOLDER, NULL, NULL,
 		archive_names, G_N_ELEMENTS (archive_names));
 
-	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
-		CAMEL_IMAPX_LIST_ATTR_SENT,
-		CAMEL_STORE_SETUP_SENT_FOLDER, NULL, NULL,
-		sent_names, G_N_ELEMENTS (sent_names));
+	/* Skip changing Sent folder for GMail, because GMail stores sent messages
+	   automatically, thus it would make doubled copies on the server. */
+	if (!imapx_is_gmail_server (CAMEL_SERVICE (store))) {
+		imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
+			CAMEL_IMAPX_LIST_ATTR_SENT,
+			CAMEL_STORE_SETUP_SENT_FOLDER, NULL, NULL,
+			sent_names, G_N_ELEMENTS (sent_names));
+	}
 
 	/* It's a folder path inside the account, thus not use the 'f' type, but the 's' type. */
 	imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
