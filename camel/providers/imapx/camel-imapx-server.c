@@ -4966,6 +4966,8 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		uidl = 1;
 	}
 
+	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
@@ -5173,6 +5175,9 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		}
 		g_object_unref (settings);
 	}
+
+	if (changed_uids->len > 20)
+		camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
 
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
