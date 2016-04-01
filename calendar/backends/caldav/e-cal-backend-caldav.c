@@ -5678,6 +5678,7 @@ e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 		SOUP_SESSION_TIMEOUT, 90,
 		SOUP_SESSION_SSL_STRICT, TRUE,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
+		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
 
 	e_binding_bind_property (

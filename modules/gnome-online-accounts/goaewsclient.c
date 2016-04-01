@@ -468,6 +468,7 @@ goa_ews_autodiscover (GoaObject *goa_object,
 		SOUP_SESSION_USE_NTLM, TRUE,
 		SOUP_SESSION_USE_THREAD_CONTEXT, TRUE,
 		SOUP_SESSION_TIMEOUT, 90,
+		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
 	if (G_IS_CANCELLABLE (cancellable)) {
 		data->cancellable = g_object_ref (cancellable);

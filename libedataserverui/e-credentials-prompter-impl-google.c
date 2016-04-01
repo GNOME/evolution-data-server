@@ -218,6 +218,7 @@ cpi_google_post_data_sync (const gchar *uri,
 		SOUP_SESSION_TIMEOUT, 90,
 		SOUP_SESSION_SSL_STRICT, TRUE,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
+		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
 
 	cpi_google_setup_proxy_resolver (session, registry, cred_source);
