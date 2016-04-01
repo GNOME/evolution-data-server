@@ -1778,6 +1778,10 @@ e_webdav_discover_sources_sync (ESource *source,
 	}
 
 	session = soup_session_new ();
+	g_object_set (
+		session,
+		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
+		NULL);
 	message = e_webdav_discover_new_propfind (
 		session, soup_uri, DEPTH_0,
 		NS_WEBDAV, XC ("resourcetype"),
