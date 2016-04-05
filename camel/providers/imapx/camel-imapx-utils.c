@@ -332,16 +332,13 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 		if (permanent_flags > 0)
 			server_cleared &= permanent_flags;
 
-		camel_message_info_set_flags ((
+		changed = camel_message_info_set_flags ((
 			CamelMessageInfo *) xinfo,
 			server_set | server_cleared,
 			(xinfo->info.flags | server_set) & ~server_cleared);
 
 		xinfo->server_flags = server_flags;
-		xinfo->info.flags = xinfo->info.flags & ~CAMEL_MESSAGE_FOLDER_FLAGGED;
 		xinfo->info.dirty = TRUE;
-
-		changed = TRUE;
 	}
 
 	if ((permanent_flags & CAMEL_MESSAGE_USER) != 0 && imapx_update_user_flags (info, server_user_flags))
