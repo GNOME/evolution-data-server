@@ -447,6 +447,19 @@ imapx_conn_manager_is_mailbox_hash (CamelIMAPXConnManager *conn_man,
 }
 
 static void
+imapx_conn_manager_clear_mailboxes_hashes (CamelIMAPXConnManager *conn_man)
+{
+	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+
+	g_mutex_lock (&conn_man->priv->busy_mailboxes_lock);
+
+	g_hash_table_remove_all (conn_man->priv->busy_mailboxes);
+	g_hash_table_remove_all (conn_man->priv->idle_mailboxes);
+
+	g_mutex_unlock (&conn_man->priv->busy_mailboxes_lock);
+}
+
+static void
 imapx_conn_manager_inc_mailbox_busy (CamelIMAPXConnManager *conn_man,
 				     CamelIMAPXMailbox *mailbox)
 {
@@ -1003,6 +1016,8 @@ camel_imapx_conn_manager_connect_sync (CamelIMAPXConnManager *conn_man,
 	}
 	CON_READ_UNLOCK (conn_man);
 
+	imapx_conn_manager_clear_mailboxes_hashes (conn_man);
+
 	cinfo = camel_imapx_conn_manager_ref_connection (conn_man, NULL, cancellable, error);
 	if (cinfo) {
 		imapx_conn_manager_unmark_busy (conn_man, cinfo);
@@ -1052,6 +1067,8 @@ camel_imapx_conn_manager_disconnect_sync (CamelIMAPXConnManager *conn_man,
 	}
 
 	g_list_free (connections);
+
+	imapx_conn_manager_clear_mailboxes_hashes (conn_man);
 
 	return TRUE;
 }
