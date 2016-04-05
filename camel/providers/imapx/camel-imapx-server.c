@@ -255,6 +255,8 @@ struct _CamelIMAPXServerPrivate {
 	GMutex select_lock;
 	GWeakRef select_mailbox;
 	GWeakRef select_pending;
+
+	GMutex changes_lock;
 	CamelFolderChangeInfo *changes;
 
 	/* Data items to request in STATUS commands:
@@ -760,14 +762,26 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 	g_return_if_fail (is->priv->changes != NULL);
 
 	camel_folder_summary_remove_uid (folder->summary, uid);
+
+	g_mutex_lock (&is->priv->changes_lock);
+
 	camel_folder_change_info_remove_uid (is->priv->changes, uid);
 
 	if (camel_imapx_server_is_in_idle (is)) {
+		CamelFolderChangeInfo *changes;
+
+		changes = is->priv->changes;
+		is->priv->changes = camel_folder_change_info_new ();
+
+		g_mutex_unlock (&is->priv->changes_lock);
+
 		camel_folder_summary_save_to_db (folder->summary, NULL);
 		imapx_update_store_summary (folder);
-		camel_folder_changed (folder, is->priv->changes);
+		camel_folder_changed (folder, changes);
 
-		camel_folder_change_info_clear (is->priv->changes);
+		camel_folder_change_info_free (changes);
+	} else {
+		g_mutex_unlock (&is->priv->changes_lock);
 	}
 
 	g_object_unref (folder);
@@ -938,6 +952,8 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 	g_return_val_if_fail (is->priv->changes != NULL, FALSE);
 
+	g_mutex_lock (&is->priv->changes_lock);
+
 	for (ii = 0; ii < uids->len; ii++) {
 		guint32 uid;
 		gchar *str;
@@ -951,22 +967,38 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 		camel_folder_change_info_remove_uid (is->priv->changes, str);
 	}
 
+	g_mutex_unlock (&is->priv->changes_lock);
+
 	uid_list = g_list_reverse (uid_list);
 	camel_folder_summary_remove_uids (folder->summary, uid_list);
 
-	COMMAND_LOCK (is);
-
 	/* If the response is truly unsolicited (e.g. via NOTIFY)
 	 * then go ahead and emit the change notification now. */
-	if (!is->priv->current_command && is->priv->changes->uid_removed &&
-	    is->priv->changes->uid_removed->len >= 100) {
-		camel_folder_summary_save_to_db (folder->summary, NULL);
-		imapx_update_store_summary (folder);
-		camel_folder_changed (folder, is->priv->changes);
-		camel_folder_change_info_clear (is->priv->changes);
-	}
+	COMMAND_LOCK (is);
+	if (!is->priv->current_command) {
+		COMMAND_UNLOCK (is);
 
-	COMMAND_UNLOCK (is);
+		g_mutex_lock (&is->priv->changes_lock);
+		if (is->priv->changes->uid_removed &&
+		    is->priv->changes->uid_removed->len >= 100) {
+			CamelFolderChangeInfo *changes;
+
+			changes = is->priv->changes;
+			is->priv->changes = camel_folder_change_info_new ();
+
+			g_mutex_unlock (&is->priv->changes_lock);
+
+			camel_folder_summary_save_to_db (folder->summary, NULL);
+			imapx_update_store_summary (folder);
+
+			camel_folder_changed (folder, changes);
+			camel_folder_change_info_free (changes);
+		} else {
+			g_mutex_unlock (&is->priv->changes_lock);
+		}
+	} else {
+		COMMAND_UNLOCK (is);
+	}
 
 	g_list_free_full (uid_list, (GDestroyNotify) g_free);
 	g_array_free (uids, TRUE);
@@ -1232,15 +1264,22 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			if (changed) {
 				g_return_val_if_fail (is->priv->changes != NULL, FALSE);
 
+				g_mutex_lock (&is->priv->changes_lock);
 				camel_folder_change_info_change_uid (is->priv->changes, uid);
+				g_mutex_unlock (&is->priv->changes_lock);
 			}
 			g_free (uid);
 
 			if (changed && camel_imapx_server_is_in_idle (is)) {
 				camel_folder_summary_save_to_db (select_folder->summary, NULL);
 				imapx_update_store_summary (select_folder);
+
+				g_mutex_lock (&is->priv->changes_lock);
+
 				camel_folder_changed (select_folder, is->priv->changes);
 				camel_folder_change_info_clear (is->priv->changes);
+
+				g_mutex_unlock (&is->priv->changes_lock);
 			}
 
 			if (mi)
@@ -1347,8 +1386,12 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, camel_imapx_mailbox_get_permanentflags (mailbox));
 				camel_folder_summary_add (folder->summary, mi);
 
+				g_mutex_lock (&is->priv->changes_lock);
+
 				camel_folder_change_info_add_uid (is->priv->changes, mi->uid);
 				camel_folder_change_info_recent_uid (is->priv->changes, mi->uid);
+
+				g_mutex_unlock (&is->priv->changes_lock);
 
 				if (messages > 0) {
 					gint cnt = (camel_folder_summary_count (folder->summary) * 100) / messages;
@@ -2261,9 +2304,17 @@ imapx_completion (CamelIMAPXServer *is,
 
 	c (is->priv->tagprefix, "Got completion response for command %05u '%s'\n", ic->tag, camel_imapx_job_get_kind_name (ic->job_kind));
 
+	g_mutex_lock (&is->priv->changes_lock);
+
 	if (camel_folder_change_info_changed (is->priv->changes)) {
 		CamelFolder *folder = NULL;
 		CamelIMAPXMailbox *mailbox;
+		CamelFolderChangeInfo *changes;
+
+		changes = is->priv->changes;
+		is->priv->changes = camel_folder_change_info_new ();
+
+		g_mutex_unlock (&is->priv->changes_lock);
 
 		mailbox = camel_imapx_server_ref_selected (is);
 
@@ -2276,13 +2327,15 @@ imapx_completion (CamelIMAPXServer *is,
 			camel_folder_summary_save_to_db (folder->summary, NULL);
 
 			imapx_update_store_summary (folder);
-			camel_folder_changed (folder, is->priv->changes);
+			camel_folder_changed (folder, changes);
 		}
 
-		camel_folder_change_info_clear (is->priv->changes);
+		camel_folder_change_info_free (changes);
 
 		g_clear_object (&folder);
 		g_clear_object (&mailbox);
+	} else {
+		g_mutex_unlock (&is->priv->changes_lock);
 	}
 
 	if (g_list_next (ic->current_part) != NULL) {
@@ -3290,6 +3343,7 @@ imapx_server_finalize (GObject *object)
 
 	g_mutex_clear (&is->priv->stream_lock);
 	g_mutex_clear (&is->priv->select_lock);
+	g_mutex_clear (&is->priv->changes_lock);
 
 	camel_folder_change_info_free (is->priv->changes);
 	imapx_free_status (is->priv->copyuid_status);
@@ -3382,6 +3436,7 @@ camel_imapx_server_init (CamelIMAPXServer *is)
 	g_mutex_init (&is->priv->stream_lock);
 	g_mutex_init (&is->priv->inactivity_timeout_lock);
 	g_mutex_init (&is->priv->select_lock);
+	g_mutex_init (&is->priv->changes_lock);
 	g_mutex_init (&is->priv->search_results_lock);
 	g_mutex_init (&is->priv->known_alerts_lock);
 
@@ -4593,7 +4648,9 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 
 				camel_folder_summary_add (folder->summary, mi);
 
+				g_mutex_lock (&is->priv->changes_lock);
 				camel_folder_change_info_add_uid (is->priv->changes, mi->uid);
+				g_mutex_unlock (&is->priv->changes_lock);
 
 				mi = NULL;
 
@@ -4736,7 +4793,9 @@ imapx_server_process_fetch_changes_infos (CamelIMAPXServer *is,
 			nfo->server_user_flags,
 			camel_imapx_mailbox_get_permanentflags (mailbox),
 			folder, FALSE)) {
+			g_mutex_lock (&is->priv->changes_lock);
 			camel_folder_change_info_change_uid (is->priv->changes, camel_message_info_uid (minfo));
+			g_mutex_unlock (&is->priv->changes_lock);
 		}
 
 		camel_message_info_unref (minfo);
