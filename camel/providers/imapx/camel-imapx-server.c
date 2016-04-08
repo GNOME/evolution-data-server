@@ -3100,6 +3100,7 @@ imapx_reconnect (CamelIMAPXServer *is,
 	CamelSettings *settings;
 	gchar *mechanism;
 	gboolean use_qresync;
+	gboolean use_idle;
 	gboolean success = FALSE;
 
 	store = camel_imapx_server_ref_store (is);
@@ -3120,8 +3121,8 @@ imapx_reconnect (CamelIMAPXServer *is,
 	mechanism = camel_network_settings_dup_auth_mechanism (
 		CAMEL_NETWORK_SETTINGS (settings));
 
-	use_qresync = camel_imapx_settings_get_use_qresync (
-		CAMEL_IMAPX_SETTINGS (settings));
+	use_qresync = camel_imapx_settings_get_use_qresync (CAMEL_IMAPX_SETTINGS (settings));
+	use_idle = camel_imapx_settings_get_use_idle (CAMEL_IMAPX_SETTINGS (settings));
 
 	g_object_unref (settings);
 
@@ -3199,7 +3200,7 @@ preauthed:
 	}
 
 	/* Set NOTIFY options after enabling QRESYNC (if supported). */
-	if (CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY)) {
+	if (use_idle && CAMEL_IMAPX_HAVE_CAPABILITY (is->priv->cinfo, NOTIFY)) {
 		GError *local_error = NULL;
 
 		g_mutex_unlock (&is->priv->stream_lock);
