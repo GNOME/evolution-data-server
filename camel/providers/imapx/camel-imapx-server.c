@@ -6382,6 +6382,8 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 		g_cond_wait (&is->priv->idle_cond, &is->priv->idle_lock);
 	}
 
+	g_mutex_unlock (&is->priv->idle_lock);
+
 	if (cancellable && handler_id)
 		g_cancellable_disconnect (cancellable, handler_id);
 
@@ -6394,8 +6396,6 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 		g_set_error_literal (error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT,
 			"Reconnect after cancelled IDLE stop command");
 	}
-
-	g_mutex_unlock (&is->priv->idle_lock);
 
 	if (!success) {
 		if (idle_cancellable)
