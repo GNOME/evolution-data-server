@@ -835,6 +835,7 @@ imapx_conn_manager_connection_wait_cancelled_cb (GCancellable *cancellable,
 static ConnectionInfo *
 camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 					 CamelIMAPXMailbox *mailbox,
+					 gboolean *out_is_new_connection,
 					 GCancellable *cancellable,
 					 GError **error)
 {
@@ -844,6 +845,9 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), NULL);
+
+	if (out_is_new_connection)
+		*out_is_new_connection = FALSE;
 
 	imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
 	if (!imapx_store)
@@ -926,6 +930,9 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 					}
 				} else {
 					connection_info_ref (cinfo);
+
+					if (out_is_new_connection)
+						*out_is_new_connection = TRUE;
 				}
 			}
 
@@ -1018,7 +1025,7 @@ camel_imapx_conn_manager_connect_sync (CamelIMAPXConnManager *conn_man,
 
 	imapx_conn_manager_clear_mailboxes_hashes (conn_man);
 
-	cinfo = camel_imapx_conn_manager_ref_connection (conn_man, NULL, cancellable, error);
+	cinfo = camel_imapx_conn_manager_ref_connection (conn_man, NULL, NULL, cancellable, error);
 	if (cinfo) {
 		imapx_conn_manager_unmark_busy (conn_man, cinfo);
 		connection_info_unref (cinfo);
@@ -1104,7 +1111,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 {
 	GSList *link;
 	ConnectionInfo *cinfo;
-	gboolean success = FALSE;
+	gboolean success = FALSE, is_new_connection = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
@@ -1179,7 +1186,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 	do {
 		g_clear_error (&local_error);
 
-		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), cancellable, error);
+		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), &is_new_connection, cancellable, error);
 		if (cinfo) {
 			CamelIMAPXMailbox *job_mailbox;
 
@@ -1319,7 +1326,10 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 
 			connection_info_unref (cinfo);
 		}
-	} while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT));
+
+		/* If there's a reconnect required for a new connection, then there happened
+		   something really wrong, thus rather give up. */
+	} while (!success && !is_new_connection && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT));
 
 	if (local_error)
 		g_propagate_error (error, local_error);
