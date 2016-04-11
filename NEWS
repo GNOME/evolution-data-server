@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.20.1 2016-04-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 763951 - libedata-book: Handle an error return from e_sexp_parse() (Philip Withnall)
+	Bug 764027 - [CalDAV] Use timezone location as tzid for iCloud.com (Milan Crha)
+	Bug 763670 - [IMAPx] Silently ignore G_TLS_ERROR_EOF (Milan Crha)
+	Bug 764172 - [IMAPx] Load folder summary into memory before sync/fetch (Milan Crha)
+	Bug 764434 - Set Accept-Language header for libsoup sessions (Michael Kuhn)
+	Bug 764307 - [IMAPx] Use NOTIFY only if supported and IDLE enabled (Milan Crha)
+
+Miscellaneous:
+	Fix memory leak in error paths in EBookBackendSqliteDB::sexp_to_sql_query() (Milan Crha)
+	[IMAPx] Do not change Sent folder for GMail in initial setup (Milan Crha)
+	[IMAPx] Cleanup busy/idle hashes on connect/disconnect (Milan Crha)
+	[IMAPx] Report message flag change only if really changed (Milan Crha)
+	[IMAPx] Add thread-safety locking around server's private 'changes' property (Milan Crha)
+	[IMAPx] Retry the operation only if an old connection fails (Milan Crha)
+	[CalDAV] Instead of query for UID, try to get the object directly (Milan Crha)
+
+Translations:
+	Kristjan SCHMIDT (eo)
+
 Evolution-Data-Server 3.20.0 2016-03-21
 ---------------------------------------
 
