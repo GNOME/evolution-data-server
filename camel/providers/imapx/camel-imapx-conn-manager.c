@@ -1104,7 +1104,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 {
 	GSList *link;
 	ConnectionInfo *cinfo;
-	gboolean success = FALSE, retrying;
+	gboolean success = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
@@ -1177,9 +1177,6 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 	JOB_QUEUE_UNLOCK (conn_man);
 
 	do {
-		/* Retry only once, not indefinitely */
-		retrying = g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT);
-
 		g_clear_error (&local_error);
 
 		cinfo = camel_imapx_conn_manager_ref_connection (conn_man, camel_imapx_job_get_mailbox (job), cancellable, error);
@@ -1322,7 +1319,7 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 
 			connection_info_unref (cinfo);
 		}
-	} while (!success && !retrying && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT));
+	} while (!success && g_error_matches (local_error, CAMEL_IMAPX_SERVER_ERROR, CAMEL_IMAPX_SERVER_ERROR_TRY_RECONNECT));
 
 	if (local_error)
 		g_propagate_error (error, local_error);
