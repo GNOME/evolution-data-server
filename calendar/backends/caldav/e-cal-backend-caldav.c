@@ -2809,8 +2809,8 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 	if (!g_signal_handler_find (G_OBJECT (source), G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, 0, 0, NULL, caldav_source_changed_cb, cbdav))
 		g_signal_connect (G_OBJECT (source), "changed", G_CALLBACK (caldav_source_changed_cb), cbdav);
 
+	cbdav->priv->loaded = TRUE;
 	cbdav->priv->do_offline = e_source_offline_get_stay_synchronized (offline_extension);
-
 	cbdav->priv->auth_required = e_source_authentication_required (auth_extension);
 
 	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
@@ -2937,6 +2937,9 @@ open_calendar_wrapper (ECalBackendCalDAV *cbdav,
 
 	g_return_val_if_fail (cbdav != NULL, FALSE);
 
+	if (!cbdav->priv->loaded && !initialize_backend (cbdav, error))
+		return FALSE;
+
 	if (!caldav_maybe_prepare_bearer_auth (cbdav, cancellable, error))
 		return FALSE;
 
@@ -3019,7 +3022,6 @@ caldav_do_open (ECalBackendSync *backend,
 		return;
 	}
 
-	cbdav->priv->loaded = TRUE;
 	cbdav->priv->opened = TRUE;
 	cbdav->priv->is_google = FALSE;
 
