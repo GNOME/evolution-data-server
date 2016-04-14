@@ -426,13 +426,18 @@ typedef enum { /*< flags >*/
  *   flag for requesting the list of folders available for
  *   subscription. Used in Exchange / IMAP connectors for public
  *   folder fetching.
+ * @CAMEL_STORE_FOLDER_INFO_REFRESH:
+ *   Treat this call as a request to refresh the folder summary;
+ *   for remote accounts it can be to re-fetch fresh folder
+ *   content from the server and update the local cache.
  **/
 typedef enum { /*< flags >*/
 	CAMEL_STORE_FOLDER_INFO_FAST = 1 << 0,
 	CAMEL_STORE_FOLDER_INFO_RECURSIVE = 1 << 1,
 	CAMEL_STORE_FOLDER_INFO_SUBSCRIBED = 1 << 2,
 	CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL = 1 << 3,
-	CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST = 1 << 4
+	CAMEL_STORE_FOLDER_INFO_SUBSCRIPTION_LIST = 1 << 4,
+	CAMEL_STORE_FOLDER_INFO_REFRESH = 1 << 5
 } CamelStoreGetFolderInfoFlags;
 
 typedef enum { /*< flags >*/

@@ -251,9 +251,11 @@ struct _CamelFolderClass {
 						 GPtrArray **transferred_uids,
 						 GCancellable *cancellable,
 						 GError **error);
+	void		(*prepare_content_refresh)
+						(CamelFolder *folder);
 
 	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[20];
+	gpointer reserved_for_methods[19];
 
 	/* Signals */
 	void		(*changed)		(CamelFolder *folder,
@@ -531,6 +533,8 @@ gboolean	camel_folder_transfer_messages_to_finish
 						 GAsyncResult *result,
 						 GPtrArray **transferred_uids,
 						 GError **error);
+void		camel_folder_prepare_content_refresh
+						(CamelFolder *folder);
 
 /* update functions for change info */
 CamelFolderChangeInfo *

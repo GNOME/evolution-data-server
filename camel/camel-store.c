@@ -1246,8 +1246,12 @@ camel_store_get_folder_sync (CamelStore *store,
 try_again:
 	/* Try cache first. */
 	folder = camel_object_bag_reserve (store->folders, folder_name);
-	if (folder != NULL)
+	if (folder != NULL) {
+		if ((flags & CAMEL_STORE_FOLDER_INFO_REFRESH) != 0)
+			camel_folder_prepare_content_refresh (folder);
+
 		return folder;
+	}
 
 	store_uses_vjunk =
 		((store->flags & CAMEL_STORE_VJUNK) != 0);
@@ -1403,6 +1407,9 @@ try_again:
 			goto try_again;
 		}
 	}
+
+	if (folder && (flags & CAMEL_STORE_FOLDER_INFO_REFRESH) != 0)
+		camel_folder_prepare_content_refresh (folder);
 
 	return folder;
 }

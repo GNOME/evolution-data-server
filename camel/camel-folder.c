@@ -4129,6 +4129,29 @@ camel_folder_transfer_messages_to_finish (CamelFolder *source,
 }
 
 /**
+ * camel_folder_prepare_content_refresh:
+ * @folder: a #CamelFolder
+ *
+ * Lets the @folder know that it should refresh its content
+ * the next time from fresh. This is useful for remote accounts,
+ * to fully re-check the folder content against the server.
+ *
+ * Since: 3.22
+ **/
+void
+camel_folder_prepare_content_refresh (CamelFolder *folder)
+{
+	CamelFolderClass *klass;
+
+	g_return_if_fail (CAMEL_IS_FOLDER (folder));
+
+	klass = CAMEL_FOLDER_GET_CLASS (folder);
+
+	if (klass->prepare_content_refresh)
+		klass->prepare_content_refresh (folder);
+}
+
+/**
  * camel_folder_change_info_new:
  *
  * Create a new folder change info structure.
