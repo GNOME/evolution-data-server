@@ -42,7 +42,7 @@
 #define c(x)
 #define d(x)
 
-/*#define PRESERVE_HEADERS*/
+#define PRESERVE_HEADERS
 
 /*#define PURIFY*/
 
