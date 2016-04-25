@@ -1,3 +1,36 @@
+Evolution-Data-Server 3.21.1 2016-04-25
+---------------------------------------
+
+Bug Fixes:
+	Bug 763951 - libedata-book: Handle an error return from e_sexp_parse() (Philip Withnall)
+	Bug 764027 - [CalDAV] Use timezone location as tzid for iCloud.com (Milan Crha)
+	Bug 763670 - [IMAPx] Silently ignore G_TLS_ERROR_EOF (Milan Crha)
+	Bug 764172 - [IMAPx] Load folder summary into memory before sync/fetch (Milan Crha)
+	Bug 764434 - Set Accept-Language header for libsoup sessions (Michael Kuhn)
+	Bug 764307 - [IMAPx] Use NOTIFY only if supported and IDLE enabled (Milan Crha)
+	Bug 728496 - GOA configured Google calendar not using OAuth2 (Milan Crha)
+	Bug 764977 - Manual folder Refresh should fully resync with the server (Milan Crha)
+	Bug 235681 - Preserve header's folding (Milan Crha)
+
+Miscellaneous:
+	Fix memory leak in error paths in EBookBackendSqliteDB::sexp_to_sql_query() (Milan Crha)
+	[CalDAV] Instead of query for UID, try to get the object directly (Milan Crha)
+	[CalDAV] Backend not initialized when asked to authenticate (Milan Crha)
+	[IMAPx] Add default folder names as iCloud provides them (Milan Crha)
+	[IMAPx] Do not change Sent folder for GMail in initial setup (Milan Crha)
+	[IMAPx] Cleanup busy/idle hashes on connect/disconnect (Milan Crha)
+	[IMAPx] Report message flag change only if really changed (Milan Crha)
+	[IMAPx] Add thread-safety locking around server's private 'changes' property (Milan Crha)
+	[IMAPx] Retry the operation only if an old connection fails (Milan Crha)
+	[IMAPx] Release idle_lock before disconnecting the cancellable (Milan Crha)
+	[IMAPx] Crash under imapx_server_info_changed_cb() (Milan Crha)
+
+Translations:
+	Balázs Úr (hu)
+	Kristjan SCHMIDT (eo)
+	Cédric Valmary (oc)
+	YunQiang Su (zh_CN)
+
 Evolution-Data-Server 3.20.0 2016-03-21
 ---------------------------------------
 
