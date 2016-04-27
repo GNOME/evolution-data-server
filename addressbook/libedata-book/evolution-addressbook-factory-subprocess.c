@@ -53,11 +53,14 @@ static GOptionEntry entries[] = {
 
 static void
 prepare_shutdown_and_quit (ESubprocessBookFactory *subprocess_book_factory,
-			   GMainLoop *loop)
+			   SubprocessData *sd)
 {
 	e_subprocess_factory_call_backends_prepare_shutdown (E_SUBPROCESS_FACTORY (subprocess_book_factory));
 
-	g_main_loop_quit (loop);
+	if (sd->loop) {
+		g_main_loop_quit (sd->loop);
+		sd->loop = NULL;
+	}
 }
 
 static gboolean
@@ -99,7 +102,7 @@ subprocess_backend_handle_close_cb (EDBusSubprocessBackend *proxy,
 				    GDBusMethodInvocation *invocation,
 				    SubprocessData *sd)
 {
-	prepare_shutdown_and_quit (sd->subprocess_book_factory, sd->loop);
+	prepare_shutdown_and_quit (sd->subprocess_book_factory, sd);
 
 	return TRUE;
 }
@@ -139,7 +142,7 @@ vanished_cb (GDBusConnection *connection,
 	     const gchar *name,
 	     SubprocessData *sd)
 {
-	prepare_shutdown_and_quit (sd->subprocess_book_factory, sd->loop);
+	prepare_shutdown_and_quit (sd->subprocess_book_factory, sd);
 }
 
 gint
@@ -214,12 +217,13 @@ main (gint argc,
 		NULL);
 
 	g_main_loop_run (loop);
+
 	g_bus_unown_name (id);
-	g_main_loop_unref (loop);
+	g_bus_unwatch_name (watched_id);
 
 	g_clear_object (&subprocess_book_factory);
 	g_clear_object (&manager);
-	g_bus_unwatch_name (watched_id);
+	g_main_loop_unref (loop);
 
 	return 0;
 }
