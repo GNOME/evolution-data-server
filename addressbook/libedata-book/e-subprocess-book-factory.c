@@ -123,19 +123,21 @@ subprocess_book_factory_ref_backend (ESourceRegistry *registry,
 				     ESource *source,
 				     const gchar *backend_factory_type_name)
 {
-	EBookBackend *backend;
 	EBookBackendFactoryClass *backend_factory_class;
 	GType backend_factory_type;
 
 	backend_factory_type = g_type_from_name (backend_factory_type_name);
-	backend_factory_class = g_type_class_ref (backend_factory_type);
+	if (!backend_factory_type)
+		return NULL;
 
-	backend = g_object_new (
+	backend_factory_class = g_type_class_ref (backend_factory_type);
+	if (!backend_factory_class)
+		return NULL;
+
+	return g_object_new (
 		backend_factory_class->backend_type,
 		"registry", registry,
 		"source", source, NULL);
-
-	return E_BACKEND (backend);
 }
 
 static void

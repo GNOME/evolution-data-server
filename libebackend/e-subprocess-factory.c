@@ -267,13 +267,19 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 	backend = g_hash_table_lookup (priv->backends, uid);
 	if (backend != NULL) {
 		g_object_ref (backend);
-
 		goto exit;
 	}
 
 	module = g_hash_table_lookup (priv->modules, module_filename);
 	if (module == NULL) {
 		module = e_module_load_file (module_filename);
+		if (!module) {
+			g_set_error (
+				error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+				_("Module '%s' for source UID '%s' cannot be loaded"), module_filename, uid);
+			goto exit;
+		}
+
 		g_hash_table_insert (priv->modules, g_strdup (module_filename), module);
 	}
 
@@ -288,11 +294,14 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 
 	class = E_SUBPROCESS_FACTORY_GET_CLASS (subprocess_factory);
 
-	backend = class->ref_backend (
-		registry, source, backend_factory_type_name);
+	backend = class->ref_backend (registry, source, backend_factory_type_name);
 
-	if (backend == NULL)
+	if (backend == NULL) {
+		g_set_error (
+			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Failed to create backend of type '%s' for source UID '%s'"), backend_factory_type_name, uid);
 		goto exit;
+	}
 
 	if (G_IS_INITABLE (backend)) {
 		GInitable *initable = G_INITABLE (backend);
