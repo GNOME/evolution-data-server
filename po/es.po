@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-04-26 05:26+0000\n"
-"PO-Revision-Date: 2016-04-26 10:02+0200\n"
+"POT-Creation-Date: 2016-05-03 05:25+0000\n"
+"PO-Revision-Date: 2016-05-03 13:13+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -3584,7 +3584,6 @@ msgid "Sent Items"
 msgstr "Elementos enviados"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2484
-#| msgid "Sending Message"
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Mensajes enviados"
@@ -3635,8 +3634,6 @@ msgid "Deleted Items"
 msgstr "Elementos eliminados"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2498
-#| msgctxt "IMAPDefaults"
-#| msgid "Deleted Items"
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Mensajes eliminados"
@@ -5034,10 +5031,21 @@ msgstr "El archivo debe tener una extensión «.source»"
 msgid "UID '%s' is already in use"
 msgstr "el UID «%s» ya está en uso"
 
-#: ../libebackend/e-subprocess-factory.c:285
+#: ../libebackend/e-subprocess-factory.c:279
+#, c-format
+msgid "Module '%s' for source UID '%s' cannot be loaded"
+msgstr "No se puede cargar el módulo «%s» para el UID de fuente «%s»"
+
+#: ../libebackend/e-subprocess-factory.c:291
 #, c-format
 msgid "No such source for UID '%s'"
 msgstr "No existe una fuente para el UDI «%s»"
+
+#: ../libebackend/e-subprocess-factory.c:302
+#, c-format
+#| msgid "Failed to create hardlink for resource '%s': %s"
+msgid "Failed to create backend of type '%s' for source UID '%s'"
+msgstr "Falló al crear el «backend» de tipo «%s» para el UID de fuente «%s»"
 
 #: ../libebackend/e-user-prompter-server.c:305
 #, c-format
