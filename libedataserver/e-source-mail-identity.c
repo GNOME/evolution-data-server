@@ -398,8 +398,7 @@ e_source_mail_identity_dup_name (ESourceMailIdentity *extension)
  * Sets the sender's name for this identity.
  *
  * The internal copy of @name is automatically stripped of leading and
- * trailing whitespace.  If @name is %NULL or the resulting string is
- * empty, the result of g_get_real_name() is set instead.
+ * trailing whitespace.
  *
  * Since: 3.6
  **/
@@ -419,9 +418,6 @@ e_source_mail_identity_set_name (ESourceMailIdentity *extension,
 
 	g_free (extension->priv->name);
 	extension->priv->name = e_util_strdup_strip (name);
-
-	if (extension->priv->name == NULL)
-		extension->priv->name = g_strdup (g_get_real_name ());
 
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
