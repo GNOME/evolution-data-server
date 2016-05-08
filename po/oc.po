@@ -2947,11 +2947,11 @@ msgstr "Impossible de crear un messatge CMS"
 
 #: ../camel/camel-smime-context.c:1108
 msgid "Cannot create CMS Enveloped data"
-msgstr "Impossible de crear las donadas entèstasuladas CMS"
+msgstr "Impossible de crear las donadas encapsuladas CMS"
 
 #: ../camel/camel-smime-context.c:1114
 msgid "Cannot attach CMS Enveloped data"
-msgstr "Impossible d'estacar las donadas entèstasuladas CMS"
+msgstr "Impossible d'estacar las donadas encapsuladas CMS"
 
 #: ../camel/camel-smime-context.c:1120
 msgid "Cannot attach CMS data object"
