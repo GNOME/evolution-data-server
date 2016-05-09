@@ -1463,6 +1463,10 @@ camel_session_submit_job (CamelSession *session,
 
 /**
  * camel_session_set_junk_headers:
+ * @session: a #CamelSession
+ * @headers: (array length=len):
+ * @values: (array):
+ * @len: the length of the headers and values arrays
  *
  * Since: 2.22
  **/
@@ -1506,7 +1510,7 @@ camel_session_get_junk_headers (CamelSession *session)
  * camel_session_authenticate_sync:
  * @session: a #CamelSession
  * @service: a #CamelService
- * @mechanism: a SASL mechanism name, or %NULL
+ * @mechanism: (nullable): a SASL mechanism name, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1576,7 +1580,7 @@ session_authenticate_thread (GTask *task,
  * camel_session_authenticate:
  * @session: a #CamelSession
  * @service: a #CamelService
- * @mechanism: a SASL mechanism name, or %NULL
+ * @mechanism: (nullable): a SASL mechanism name, or %NULL
  * @io_priority: the I/O priority for the request
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied

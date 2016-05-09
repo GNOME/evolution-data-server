@@ -289,6 +289,7 @@ camel_filter_driver_init (CamelFilterDriver *filter_driver)
 
 /**
  * camel_filter_driver_new:
+ * @session: (type CamelSession):
  *
  * Returns: A new CamelFilterDriver object
  **/

@@ -204,9 +204,9 @@ filter_run (CamelMimeFilter *f,
  * @in: input buffer
  * @len: length of @in
  * @prespace: amount of prespace
- * @out: pointer to the output buffer (to be set)
- * @outlen: pointer to the length of the output buffer (to be set)
- * @outprespace: pointer to the output prespace length (to be set)
+ * @out: (out): pointer to the output buffer (to be set)
+ * @outlen: (out): pointer to the length of the output buffer (to be set)
+ * @outprespace: (out): pointer to the output prespace length (to be set)
  *
  * Passes the input buffer, @in, through @filter and generates an
  * output buffer, @out.
@@ -239,9 +239,9 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
  * @in: input buffer
  * @len: length of @in
  * @prespace: amount of prespace
- * @out: pointer to the output buffer (to be set)
- * @outlen: pointer to the length of the output buffer (to be set)
- * @outprespace: pointer to the output prespace length (to be set)
+ * @out: (out): pointer to the output buffer (to be set)
+ * @outlen: (out): pointer to the length of the output buffer (to be set)
+ * @outprespace: (out): pointer to the output prespace length (to be set)
  *
  * Passes the input buffer, @in, through @filter and generates an
  * output buffer, @out and makes sure that all data is flushed to the

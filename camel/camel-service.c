@@ -2085,7 +2085,7 @@ camel_service_disconnect_finish (CamelService *service,
 /**
  * camel_service_authenticate_sync:
  * @service: a #CamelService
- * @mechanism: a SASL mechanism name, or %NULL
+ * @mechanism: (nullable): a SASL mechanism name, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -2165,7 +2165,7 @@ service_authenticate_thread (GTask *task,
 /**
  * camel_service_authenticate:
  * @service: a #CamelService
- * @mechanism: a SASL mechanism name, or %NULL
+ * @mechanism: (nullable): a SASL mechanism name, or %NULL
  * @io_priority: the I/O priority of the request
  * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied

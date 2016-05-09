@@ -2770,6 +2770,10 @@ static struct _known_column_names {
 
 /**
  * camel_db_get_column_ident:
+ * @hash: (inout):
+ * @index:
+ * @ncols: number of @col_names
+ * @col_names: (array length=ncols):
  *
  * Traverses column name from index @index into an enum
  * #CamelDBKnownColumnNames value.  The @col_names contains @ncols columns.
