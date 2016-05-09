@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.20.2 2016-05-09
+---------------------------------------
+
+Bug Fixes:
+	Bug 728496 - GOA configured Google calendar not using OAuth2 (Milan Crha)
+	Bug 235681 - Preserve header's folding (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Release idle_lock before disconnecting the cancellable (Milan Crha)
+	[IMAPx] Crash under imapx_server_info_changed_cb() (Milan Crha)
+	[CalDAV] Backend not initialized when asked to authenticate (Milan Crha)
+	Possible use-after-free on factory subprocess close (Milan Crha)
+
+Translations:
+	Cédric Valmary (oc)
+	YunQiang Su (zh_CN)
+	Kjartan Maraas (nb)
+	sujiniku (ja)
+
 Evolution-Data-Server 3.20.1 2016-04-11
 ---------------------------------------
 
