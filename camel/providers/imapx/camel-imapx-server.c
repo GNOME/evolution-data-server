@@ -2680,7 +2680,6 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	gboolean use_shell_command;
 	gboolean success = TRUE;
 	gchar *host;
-	GError *local_error = NULL;
 
 	store = camel_imapx_server_ref_store (is);
 
@@ -2716,6 +2715,7 @@ imapx_connect_to_server (CamelIMAPXServer *is,
 	if (connection != NULL) {
 		GInputStream *input_stream;
 		GOutputStream *output_stream;
+		GError *local_error = NULL;
 
 		/* Disable the Nagle algorithm with TCP_NODELAY, since IMAP
 		 * commands should be issued immediately even we've not yet
@@ -2812,10 +2812,11 @@ connected:
 		if (CAMEL_IMAPX_LACK_CAPABILITY (is->priv->cinfo, STARTTLS)) {
 			g_mutex_unlock (&is->priv->stream_lock);
 			g_set_error (
-				&local_error, CAMEL_ERROR,
+				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
 				_("Failed to connect to IMAP server %s in secure mode: %s"),
 				host, _("STARTTLS not supported"));
+			success = FALSE;
 			goto exit;
 		} else {
 			g_mutex_unlock (&is->priv->stream_lock);
