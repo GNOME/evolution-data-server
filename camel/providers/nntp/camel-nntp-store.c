@@ -226,6 +226,9 @@ check_capabilities (CamelNNTPStore *nntp_store,
 		if (len == 4 && g_ascii_strncasecmp (line, "OVER", len) == 0)
 			camel_nntp_store_add_capabilities (
 				nntp_store, CAMEL_NNTP_CAPABILITY_OVER);
+		if (len == 8 && g_ascii_strncasecmp (line, "STARTTLS", len) == 0)
+			camel_nntp_store_add_capabilities (
+				nntp_store, CAMEL_NNTP_CAPABILITY_STARTTLS);
 
 		if (len == 1 && g_ascii_strncasecmp (line, ".", len) == 0) {
 			ret = 0;
@@ -330,6 +333,7 @@ connect_to_server (CamelService *service,
 	CamelNNTPStore *nntp_store;
 	CamelNNTPStream *nntp_stream = NULL;
 	CamelNetworkSettings *network_settings;
+	CamelNetworkSecurityMethod method;
 	CamelSettings *settings;
 	CamelSession *session;
 	CamelStream *stream;
@@ -355,6 +359,7 @@ connect_to_server (CamelService *service,
 	network_settings = CAMEL_NETWORK_SETTINGS (settings);
 	host = camel_network_settings_dup_host (network_settings);
 	user = camel_network_settings_dup_user (network_settings);
+	method = camel_network_settings_get_security_method (network_settings);
 	mechanism = camel_network_settings_dup_auth_mechanism (network_settings);
 
 	g_object_unref (settings);
@@ -369,10 +374,9 @@ connect_to_server (CamelService *service,
 	nntp_stream = camel_nntp_stream_new (stream);
 	g_object_unref (stream);
 
-	g_object_unref (base_stream);
-
 	/* Read the greeting, if any. */
 	if (camel_nntp_stream_line (nntp_stream, &buf, &len, cancellable, error) == -1) {
+		g_object_unref (base_stream);
 		g_prefix_error (
 			error, _("Could not read greeting from %s: "), host);
 		goto fail;
@@ -380,6 +384,10 @@ connect_to_server (CamelService *service,
 
 	len = strtoul ((gchar *) buf, (gchar **) &buf, 10);
 	if (len != 200 && len != 201) {
+		while (buf && g_ascii_isspace (*buf))
+			buf++;
+
+		g_object_unref (base_stream);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 			_("NNTP server %s returned error code %d: %s"),
@@ -388,6 +396,57 @@ connect_to_server (CamelService *service,
 	}
 
 	nntp_store_reset_state (nntp_store, nntp_stream);
+
+	if (method == CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT) {
+		GIOStream *tls_stream;
+
+		/* May check capabilities, but they are not set yet; as the capability command can fail,
+		   try STARTTLS blindly and fail in case it'll fail too. */
+
+		buf = NULL;
+
+		if (camel_nntp_raw_command (nntp_store, cancellable, error, (gchar **) &buf, "STARTTLS") == -1) {
+			g_object_unref (base_stream);
+			g_prefix_error (
+				error,
+				_("Failed to issue STARTTLS for NNTP server %s: "),
+				host);
+			goto fail;
+		}
+
+		if (!buf || !*buf || strtoul ((gchar *) buf, (gchar **) &buf, 10) != 382) {
+			while (buf && g_ascii_isspace (*buf))
+				buf++;
+
+			g_set_error (
+				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+				_("NNTP server %s doesn't support STARTTLS: %s"),
+				host, (buf && *buf) ? (const gchar *) buf : _("Unknown error"));
+			goto exit;
+		}
+
+		tls_stream = camel_network_service_starttls (CAMEL_NETWORK_SERVICE (nntp_store), base_stream, error);
+
+		g_clear_object (&base_stream);
+		g_clear_object (&nntp_stream);
+
+		if (tls_stream != NULL) {
+			stream = camel_stream_new (tls_stream);
+			nntp_stream = camel_nntp_stream_new (stream);
+			g_object_unref (stream);
+			g_object_unref (tls_stream);
+
+			nntp_store_reset_state (nntp_store, nntp_stream);
+		} else {
+			g_prefix_error (
+				error,
+				_("Failed to connect to NNTP server %s in secure mode: "),
+				host);
+			goto exit;
+		}
+	}
+
+	g_clear_object (&base_stream);
 
 	/* backward compatibility, empty 'mechanism' is a non-migrated account */
 	if ((user != NULL && *user != '\0' && (!mechanism || !*mechanism)) ||

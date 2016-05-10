@@ -68,7 +68,8 @@ struct _xover_header {
 
 /* names of supported capabilities on the server */
 typedef enum {
-	CAMEL_NNTP_CAPABILITY_OVER = 1 << 0  /* supports OVER command */
+	CAMEL_NNTP_CAPABILITY_OVER = 1 << 0,  /* supports OVER command */
+	CAMEL_NNTP_CAPABILITY_STARTTLS = 1 << 1  /* supports STARTTLS */
 } CamelNNTPCapabilities;
 
 struct _CamelNNTPStore {
