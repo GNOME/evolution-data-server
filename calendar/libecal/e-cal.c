@@ -2323,7 +2323,7 @@ e_cal_get_error_message (ECalendarStatus status)
 	case E_CALENDAR_STATUS_PROTOCOL_NOT_SUPPORTED :
 		return _("Protocol not supported");
 	case E_CALENDAR_STATUS_CANCELLED :
-		return _("Operation has been canceled");
+		return _("Operation has been cancelled");
 	case E_CALENDAR_STATUS_COULD_NOT_CANCEL :
 		return _("Could not cancel operation");
 	case E_CALENDAR_STATUS_AUTHENTICATION_FAILED :

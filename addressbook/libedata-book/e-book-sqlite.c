@@ -1764,7 +1764,7 @@ ebsql_check_cancel (gpointer ref)
 	    g_cancellable_is_cancelled (ebsql->priv->cancel)) {
 		EBSQL_NOTE (
 			CANCEL,
-			g_printerr ("CANCEL: An operation was canceled\n"));
+			g_printerr ("CANCEL: An operation was cancelled\n"));
 		return -1;
 	}
 
