@@ -3689,6 +3689,9 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 	if (success) {
 		is->priv->state = IMAPX_SELECTED;
 		g_weak_ref_set (&is->priv->select_mailbox, mailbox);
+	} else {
+		is->priv->state = IMAPX_INITIALISED;
+		g_weak_ref_set (&is->priv->select_mailbox, NULL);
 	}
 
 	g_mutex_unlock (&is->priv->select_lock);
