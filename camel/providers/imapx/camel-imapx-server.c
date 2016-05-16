@@ -1164,6 +1164,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				g_prefix_error (
 					error, "%s: ",
 					_("Error writing to cache stream"));
+				imapx_free_fetch (finfo);
 				return FALSE;
 			}
 			g_mutex_unlock (&is->priv->stream_lock);

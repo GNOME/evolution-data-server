@@ -292,7 +292,8 @@ e_util_utf8_strstrcase (const gchar *haystack,
 		nuni[nlen++] = g_unichar_tolower (unival);
 	}
 	/* NULL means there was illegal utf-8 sequence */
-	if (!p) return NULL;
+	if (!p || !nlen)
+		return NULL;
 
 	o = haystack;
 	for (p = e_util_unicode_get_utf8 (o, &unival);

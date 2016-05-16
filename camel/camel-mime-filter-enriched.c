@@ -242,8 +242,12 @@ enriched_to_html (CamelMimeFilter *mime_filter,
 
  retry:
 	do {
-		while (inptr < inend && outptr < outend && !strchr (" <>&\n", *inptr))
-			*outptr++ = *inptr++;
+		while (inptr < inend && outptr < outend && !strchr (" <>&\n", *inptr)) {
+			*outptr = *inptr;
+
+			outptr++;
+			inptr++;
+		}
 
 		if (outptr == outend)
 			goto backup;

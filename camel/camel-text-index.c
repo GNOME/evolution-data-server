@@ -1679,6 +1679,9 @@ text_index_cursor_next (CamelIndexCursor *idc)
 		}
 
 		g_free (p->current);
+		p->current = NULL;
+		flags = 0;
+
 		camel_key_table_lookup (
 			tip->name_index, p->records[p->record_index],
 			&p->current, &flags);
