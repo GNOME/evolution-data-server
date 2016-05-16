@@ -2498,7 +2498,7 @@ e_cal_backend_file_modify_objects (ECalBackendSync *backend,
 			}
 
 			if (g_hash_table_lookup_extended (obj_data->recurrences, rid, (gpointer *) &real_rid, (gpointer *) &recurrence)) {
-				if (*old_components)
+				if (old_components)
 					*old_components = g_slist_prepend (*old_components, e_cal_component_clone (recurrence));
 
 				/* remove the component from our data */

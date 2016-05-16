@@ -1029,7 +1029,7 @@ imapx_parse_body_fields (CamelIMAPXInputStream *stream,
 error:
 	imapx_free_body (cinfo);
 
-	return cinfo;
+	return NULL;
 }
 
 CamelHeaderAddress *

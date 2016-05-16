@@ -754,6 +754,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 			goto break_and_lose;
 
 		g_free (respbuf);
+		respbuf = NULL;
 
 		/* send our challenge */
 		cmdbuf = g_strdup_printf ("%s\r\n", challenge);
