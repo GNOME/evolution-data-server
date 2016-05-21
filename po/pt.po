@@ -5,15 +5,15 @@
 # Tiago Antão <tiagoantao@bigfoot.com>, 2000.
 # Pedro Albuquerque <palbuquerque73@gmail.com>, 2015.
 # Sérgio Cardeira <cardeira.sergio@gmail.com>, 2016.
-# Tiago Santos <tiagofsantos81@sapo.pt>, 2016.
+# Tiago Santos <tiagofsantos81@sapo.pt>, 2014 - 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-04-28 12:57+0000\n"
-"PO-Revision-Date: 2016-04-29 14:19+0100\n"
+"POT-Creation-Date: 2016-05-20 21:19+0000\n"
+"PO-Revision-Date: 2016-05-21 21:17+0100\n"
 "Last-Translator: Tiago Santos <tiagofsantos81@sapo.pt>\n"
 "Language-Team: Português <gnome_pt@yahoogroups.com>\n"
 "Language: pt\n"
@@ -134,9 +134,10 @@ msgstr "Impossível renomear a base de dados antiga de \"%s\" para \"%s\": %s"
 #: ../calendar/libecal/e-cal-client.c:6452
 #: ../calendar/libecal/e-cal-client.c:6815
 #: ../calendar/libecal/e-cal-client.c:7037
-#: ../camel/providers/imapx/camel-imapx-server.c:3032
-#: ../camel/providers/imapx/camel-imapx-server.c:3042
-#: ../camel/providers/imapx/camel-imapx-server.c:3054
+#: ../camel/providers/imapx/camel-imapx-server.c:3034
+#: ../camel/providers/imapx/camel-imapx-server.c:3044
+#: ../camel/providers/imapx/camel-imapx-server.c:3056
+#: ../camel/providers/nntp/camel-nntp-store.c:424
 #: ../libebackend/e-server-side-source.c:497 ../libedataserver/e-client.c:190
 msgid "Unknown error"
 msgstr "Erro desconhecido"
@@ -1541,7 +1542,8 @@ msgid "Protocol not supported"
 msgstr "Protocolo não suportado"
 
 #: ../calendar/libecal/e-cal.c:2326
-msgid "Operation has been canceled"
+#| msgid "Operation has been canceled"
+msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
 #: ../calendar/libecal/e-cal.c:2328
@@ -1553,7 +1555,7 @@ msgid "Authentication failed"
 msgstr "Autenticação falhou"
 
 #: ../calendar/libecal/e-cal.c:2332
-#: ../camel/providers/smtp/camel-smtp-transport.c:1127
+#: ../camel/providers/smtp/camel-smtp-transport.c:1128
 #: ../libedataserver/e-client.c:152
 msgid "Authentication required"
 msgstr "Autenticação necessária"
@@ -1977,79 +1979,79 @@ msgstr "Impossível remover a entrada de cache: %s: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Impossível renomear \"%s\" para %s: %s"
 
-#: ../camel/camel-filter-driver.c:934 ../camel/camel-filter-search.c:798
+#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:798
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Falha ao criar o processo filho \"%s\": %s"
 
-#: ../camel/camel-filter-driver.c:982
+#: ../camel/camel-filter-driver.c:983
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Fluxo de mensagem inválido recebido de %s: %s"
 
-#: ../camel/camel-filter-driver.c:1189 ../camel/camel-filter-driver.c:1198
+#: ../camel/camel-filter-driver.c:1190 ../camel/camel-filter-driver.c:1199
 msgid "Syncing folders"
 msgstr "A sincronizar as pastas"
 
-#: ../camel/camel-filter-driver.c:1296
+#: ../camel/camel-filter-driver.c:1297
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Erro ao processar o filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1307
+#: ../camel/camel-filter-driver.c:1308
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Erro ao executar o filtro: %s: %s"
 
-#: ../camel/camel-filter-driver.c:1403
+#: ../camel/camel-filter-driver.c:1404
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Impossível abrir a pasta de spool"
 
-#: ../camel/camel-filter-driver.c:1415
+#: ../camel/camel-filter-driver.c:1416
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Impossível processar a pasta de spool"
 
-#: ../camel/camel-filter-driver.c:1438
+#: ../camel/camel-filter-driver.c:1439
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "A receber a mensagem %d (%d%%)"
 
-#: ../camel/camel-filter-driver.c:1447 ../camel/camel-filter-driver.c:1469
+#: ../camel/camel-filter-driver.c:1448 ../camel/camel-filter-driver.c:1470
 #, c-format
 msgid "Failed on message %d"
 msgstr "Falha na mensagem %d"
 
-#: ../camel/camel-filter-driver.c:1488 ../camel/camel-filter-driver.c:1602
+#: ../camel/camel-filter-driver.c:1489 ../camel/camel-filter-driver.c:1603
 msgid "Syncing folder"
 msgstr "A sincronizar a pasta"
 
-#: ../camel/camel-filter-driver.c:1493 ../camel/camel-filter-driver.c:1610
+#: ../camel/camel-filter-driver.c:1494 ../camel/camel-filter-driver.c:1611
 msgid "Complete"
 msgstr "Terminada"
 
-#: ../camel/camel-filter-driver.c:1556
+#: ../camel/camel-filter-driver.c:1557
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "A receber a mensagem %d de %d"
 
-#: ../camel/camel-filter-driver.c:1574
+#: ../camel/camel-filter-driver.c:1575
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Falha na mensagem %d de %d"
 
-#: ../camel/camel-filter-driver.c:1769 ../camel/camel-filter-driver.c:1796
+#: ../camel/camel-filter-driver.c:1770 ../camel/camel-filter-driver.c:1797
 #, c-format
 msgid "Execution of filter '%s' failed: "
 msgstr "Falha ao executar o filtro \"%s\": "
 
-#: ../camel/camel-filter-driver.c:1786
+#: ../camel/camel-filter-driver.c:1787
 #, c-format
 msgid "Error parsing filter '%s': %s: %s"
 msgstr "Erro ao processar o filtro \"%s\": %s: %s"
 
-#: ../camel/camel-filter-driver.c:1805
+#: ../camel/camel-filter-driver.c:1806
 #, c-format
 msgid "Error executing filter '%s': %s: %s"
 msgstr "Erro ao executar o filtro \"%s\": %s: %s"
@@ -2200,7 +2202,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "Falha ao executar o gpg: %s"
 
 #: ../camel/camel-gpg-context.c:775
-#: ../camel/providers/smtp/camel-smtp-transport.c:1130
+#: ../camel/providers/smtp/camel-smtp-transport.c:1131
 msgid "Unknown"
 msgstr "Desconhecida"
 
@@ -2695,7 +2697,7 @@ msgstr "As credenciais de referência expiraram."
 
 #: ../camel/camel-sasl-gssapi.c:222 ../camel/camel-sasl-gssapi.c:404
 #: ../camel/camel-sasl-gssapi.c:453 ../camel/camel-sasl-gssapi.c:470
-#: ../camel/providers/smtp/camel-smtp-transport.c:798
+#: ../camel/providers/smtp/camel-smtp-transport.c:799
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "Resposta de autenticação do servidor inválida."
@@ -2769,7 +2771,7 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "GType inválido registado para o protocolo \"%s\""
 
 #: ../camel/camel-session.c:499
-#: ../camel/providers/imapx/camel-imapx-server.c:2981
+#: ../camel/providers/imapx/camel-imapx-server.c:2983
 #: ../camel/providers/pop3/camel-pop3-store.c:308
 #: ../camel/providers/pop3/camel-pop3-store.c:786
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
@@ -3123,11 +3125,11 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Tem de estar a trabalhar online para terminar esta operação (%s)"
 
 #: ../camel/providers/imapx/camel-imapx-conn-manager.c:981
-#: ../camel/providers/imapx/camel-imapx-server.c:3114
-#: ../camel/providers/nntp/camel-nntp-store.c:349
-#: ../camel/providers/nntp/camel-nntp-store.c:1291
-#: ../camel/providers/nntp/camel-nntp-store.c:2099
-#: ../camel/providers/nntp/camel-nntp-store.c:2243
+#: ../camel/providers/imapx/camel-imapx-server.c:3116
+#: ../camel/providers/nntp/camel-nntp-store.c:353
+#: ../camel/providers/nntp/camel-nntp-store.c:1350
+#: ../camel/providers/nntp/camel-nntp-store.c:2158
+#: ../camel/providers/nntp/camel-nntp-store.c:2302
 #: ../camel/providers/pop3/camel-pop3-folder.c:449
 #: ../camel/providers/pop3/camel-pop3-folder.c:632
 #: ../camel/providers/pop3/camel-pop3-folder.c:834
@@ -3285,190 +3287,190 @@ msgstr "Para ler e armazenar correio em servidores IMAP."
 msgid "Error writing to cache stream"
 msgstr "Erro ao escrever no fluxo de cache"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2798
-#: ../camel/providers/imapx/camel-imapx-server.c:2885
-#: ../camel/providers/imapx/camel-imapx-server.c:3147
+#: ../camel/providers/imapx/camel-imapx-server.c:2799
+#: ../camel/providers/imapx/camel-imapx-server.c:2887
+#: ../camel/providers/imapx/camel-imapx-server.c:3149
 msgid "Failed to get capabilities"
 msgstr "Falha ao obter capacidades"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2817
+#: ../camel/providers/imapx/camel-imapx-server.c:2818
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Impossível ligar ao servidor IMAP %s em modo seguro: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2818
+#: ../camel/providers/imapx/camel-imapx-server.c:2819
 #: ../camel/providers/smtp/camel-smtp-transport.c:281
 msgid "STARTTLS not supported"
 msgstr "STARTLS não suportada"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2826
+#: ../camel/providers/imapx/camel-imapx-server.c:2828
 msgid "Failed to issue STARTTLS"
 msgstr "Falha ao emitir STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2874
+#: ../camel/providers/imapx/camel-imapx-server.c:2876
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Impossível ligar ao servidor IMAP %s em modo seguro: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2968
+#: ../camel/providers/imapx/camel-imapx-server.c:2970
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Servidor IMAP %s não suporta autenticação %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2999
-#: ../camel/providers/nntp/camel-nntp-store.c:400
-#: ../camel/providers/nntp/camel-nntp-store.c:542
+#: ../camel/providers/imapx/camel-imapx-server.c:3001
+#: ../camel/providers/nntp/camel-nntp-store.c:459
+#: ../camel/providers/nntp/camel-nntp-store.c:601
 msgid "Cannot authenticate without a username"
 msgstr "Impossível autenticar sem um nome de utilizador"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3008
-#: ../camel/providers/nntp/camel-nntp-store.c:551
+#: ../camel/providers/imapx/camel-imapx-server.c:3010
+#: ../camel/providers/nntp/camel-nntp-store.c:610
 #: ../camel/providers/pop3/camel-pop3-store.c:690
 #: ../camel/providers/pop3/camel-pop3-store.c:728
 msgid "Authentication password not available"
 msgstr "Senha de autenticação indisponível"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3016
+#: ../camel/providers/imapx/camel-imapx-server.c:3018
 msgid "Failed to authenticate"
 msgstr "Falha ao autenticar"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3169
+#: ../camel/providers/imapx/camel-imapx-server.c:3171
 msgid "Failed to issue NAMESPACE"
 msgstr "Falha ao emitir NAMESPACE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3187
+#: ../camel/providers/imapx/camel-imapx-server.c:3189
 msgid "Failed to enable QResync"
 msgstr "Falha ao ativar QResync"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3219
+#: ../camel/providers/imapx/camel-imapx-server.c:3221
 msgid "Failed to issue NOTIFY"
 msgstr "Falha ao emitir NOTIFY"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3680
+#: ../camel/providers/imapx/camel-imapx-server.c:3682
 msgid "Failed to select mailbox"
 msgstr "Falha ao selecionar caixa de correio"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3778
+#: ../camel/providers/imapx/camel-imapx-server.c:3783
 msgid "Cannot issue command, no stream available"
 msgstr "Impossível emitir o comando, sem fluxo disponível"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4041
+#: ../camel/providers/imapx/camel-imapx-server.c:4046
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Impossível obter a mensagem com o ID de mensagem %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4042
+#: ../camel/providers/imapx/camel-imapx-server.c:4047
 msgid "No such message available."
 msgstr "Mensagem indisponível."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4078
-#: ../camel/providers/imapx/camel-imapx-server.c:4103
-#: ../camel/providers/imapx/camel-imapx-server.c:4122
+#: ../camel/providers/imapx/camel-imapx-server.c:4083
+#: ../camel/providers/imapx/camel-imapx-server.c:4108
+#: ../camel/providers/imapx/camel-imapx-server.c:4127
 msgid "Error fetching message"
 msgstr "Erro ao obter uma mensagem"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4115
+#: ../camel/providers/imapx/camel-imapx-server.c:4120
 msgid "Failed to close the tmp stream"
 msgstr "Falha ao fechar o fluxo tmp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4146
+#: ../camel/providers/imapx/camel-imapx-server.c:4151
 msgid "Failed to copy the tmp file"
 msgstr "Falha ao copiar o ficheiro tmp"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4309
+#: ../camel/providers/imapx/camel-imapx-server.c:4314
 msgid "Error moving messages"
 msgstr "Erro ao mover mensagens"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4309
+#: ../camel/providers/imapx/camel-imapx-server.c:4314
 msgid "Error copying messages"
 msgstr "Erro ao copiar mensagens"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4493
-#: ../camel/providers/imapx/camel-imapx-server.c:4514
+#: ../camel/providers/imapx/camel-imapx-server.c:4498
+#: ../camel/providers/imapx/camel-imapx-server.c:4519
 msgid "Cannot create spool file: "
 msgstr "Impossível criar ficheiro de spool: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4605
+#: ../camel/providers/imapx/camel-imapx-server.c:4610
 msgid "Error appending message"
 msgstr "Erro ao anexar mensagem"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4697
+#: ../camel/providers/imapx/camel-imapx-server.c:4702
 msgid "Error performing NOOP"
 msgstr "Erro ao efetuar NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4847
+#: ../camel/providers/imapx/camel-imapx-server.c:4852
 #, c-format
 msgid "Scanning for changed messages in '%s'"
 msgstr "A procurar mensagens alteradas em \"%s\""
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4850
+#: ../camel/providers/imapx/camel-imapx-server.c:4855
 msgid "Error scanning changes"
 msgstr "Erro ao sondar alterações"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4868
+#: ../camel/providers/imapx/camel-imapx-server.c:4873
 #, c-format
 msgid "Fetching summary information for new messages in '%s'"
 msgstr "A obter a informação de resumo para novas mensagens em \"%s\""
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4885
+#: ../camel/providers/imapx/camel-imapx-server.c:4890
 msgid "Error fetching message info"
 msgstr "Erro ao obter informação da mensagem"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4947
+#: ../camel/providers/imapx/camel-imapx-server.c:4952
 msgid "Error running STATUS"
 msgstr "Erro ao executar STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5439
-#: ../camel/providers/imapx/camel-imapx-server.c:5491
+#: ../camel/providers/imapx/camel-imapx-server.c:5444
+#: ../camel/providers/imapx/camel-imapx-server.c:5496
 msgid "Error syncing changes"
 msgstr "Erro ao sincronizar alterações"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5602
+#: ../camel/providers/imapx/camel-imapx-server.c:5607
 msgid "Error expunging message"
 msgstr "Erro ao expurgar a mensagem"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5672
+#: ../camel/providers/imapx/camel-imapx-server.c:5677
 msgid "Error fetching folders"
 msgstr "Erro ao obter as pastas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5683
+#: ../camel/providers/imapx/camel-imapx-server.c:5688
 msgid "Error fetching subscribed folders"
 msgstr "Erro ao obter as pastas subscritas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5705
+#: ../camel/providers/imapx/camel-imapx-server.c:5710
 msgid "Error creating folder"
 msgstr "Erro ao criar a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5761
+#: ../camel/providers/imapx/camel-imapx-server.c:5766
 msgid "Error deleting folder"
 msgstr "Erro ao eliminar a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5807
+#: ../camel/providers/imapx/camel-imapx-server.c:5812
 msgid "Error renaming folder"
 msgstr "Erro ao renomear a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5839
+#: ../camel/providers/imapx/camel-imapx-server.c:5844
 msgid "Error subscribing to folder"
 msgstr "Erro ao subscrever a pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5875
+#: ../camel/providers/imapx/camel-imapx-server.c:5880
 msgid "Error unsubscribing from folder"
 msgstr "Erro ao remover subscrição da pasta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5915
+#: ../camel/providers/imapx/camel-imapx-server.c:5920
 msgid "IMAP server does not support quotas"
 msgstr "Servidor IMAP não suporta quotas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5927
+#: ../camel/providers/imapx/camel-imapx-server.c:5932
 msgid "Error retrieving quota information"
 msgstr "Erro ao obter a informação de quota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5974
+#: ../camel/providers/imapx/camel-imapx-server.c:5979
 msgid "Search failed"
 msgstr "Falha na procura"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:6092
+#: ../camel/providers/imapx/camel-imapx-server.c:6097
 msgid "Error running IDLE"
 msgstr "Erro ao executar IDLE"
 
@@ -3572,7 +3574,6 @@ msgid "Sent Items"
 msgstr "Itens Enviados"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2484
-#| msgid "Sending Message"
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Enviar Mensagens"
@@ -3603,7 +3604,6 @@ msgid "Spam"
 msgstr "Não solicitado"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2492
-#| msgid "Mail"
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Correio em lote"
@@ -3624,8 +3624,6 @@ msgid "Deleted Items"
 msgstr "Itens Apagados"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2498
-#| msgctxt "IMAPDefaults"
-#| msgid "Deleted Items"
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Mensagens Apagadas"
@@ -4243,22 +4241,40 @@ msgstr ""
 "Esta opção irá autenticá-lo perante o servidor NNTP utilizando uma senha em "
 "texto simples."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:377
+#: ../camel/providers/nntp/camel-nntp-store.c:381
 #, c-format
 msgid "Could not read greeting from %s: "
 msgstr "Impossível ler as boas vindas de %s: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:385
+#: ../camel/providers/nntp/camel-nntp-store.c:393
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
 msgstr "Servidor NNTP %s devolveu o código de erro %d: %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:455
+#: ../camel/providers/nntp/camel-nntp-store.c:412
+#, c-format
+#| msgid "Failed to issue STARTTLS"
+msgid "Failed to issue STARTTLS for NNTP server %s: "
+msgstr "Falha ao emitir STARTTLS para o servidor NNTP %s:"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:423
+#, c-format
+#| msgid "SMTP server %s does not support %s authentication"
+msgid "NNTP server %s doesn't support STARTTLS: %s"
+msgstr "Servidor NNTP %s não suporta STARTTLS %s"
+
+#: ../camel/providers/nntp/camel-nntp-store.c:443
+#, c-format
+#| msgid "Failed to connect to SMTP server %s in secure mode: "
+msgid "Failed to connect to NNTP server %s in secure mode: "
+msgstr "Falha ao estabelecer uma ligação ao servidor NNTP %s em modo seguro: "
+
+#: ../camel/providers/nntp/camel-nntp-store.c:514
 #, c-format
 msgid "USENET News via %s"
 msgstr "Notícias USENET via %s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1192
+#: ../camel/providers/nntp/camel-nntp-store.c:1251
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4269,24 +4285,24 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1308
+#: ../camel/providers/nntp/camel-nntp-store.c:1367
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Não pode criar uma pasta num armazenamento de Notícias: subscreva-a."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1324
+#: ../camel/providers/nntp/camel-nntp-store.c:1383
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Não pode renomear uma pasta num armazenamento de notícias."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1347
+#: ../camel/providers/nntp/camel-nntp-store.c:1406
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Não pode remover uma pasta num armazenamento de Notícias: remova a "
 "subscrição."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1557
+#: ../camel/providers/nntp/camel-nntp-store.c:1616
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4297,7 +4313,7 @@ msgstr ""
 "\n"
 "Grupo inexistente. O item selecionado é provavelmente uma pasta-mãe."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:1624
+#: ../camel/providers/nntp/camel-nntp-store.c:1683
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4308,16 +4324,16 @@ msgstr ""
 "\n"
 "O grupo de notícias não existe!"
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2050
+#: ../camel/providers/nntp/camel-nntp-store.c:2109
 msgid "NNTP Command failed: "
 msgstr "Falha no comando NNTP: "
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2155
+#: ../camel/providers/nntp/camel-nntp-store.c:2214
 #, c-format
 msgid "Not connected."
 msgstr "Desligado."
 
-#: ../camel/providers/nntp/camel-nntp-store.c:2257
+#: ../camel/providers/nntp/camel-nntp-store.c:2316
 #, c-format
 msgid "No such folder: %s"
 msgstr "Pasta inexistente: %s"
@@ -4673,171 +4689,171 @@ msgstr "Falha no comando AUTH: não ligado."
 msgid "AUTH command failed: "
 msgstr "Falha no comando AUTH: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:888
+#: ../camel/providers/smtp/camel-smtp-transport.c:889
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "Impossível enviar a mensagem: serviço desligado."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:897
+#: ../camel/providers/smtp/camel-smtp-transport.c:898
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "Impossível enviar a mensagem: endereço de remetente inválido."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:901
+#: ../camel/providers/smtp/camel-smtp-transport.c:902
 msgid "Sending message"
 msgstr "A enviar a mensagem"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:930
+#: ../camel/providers/smtp/camel-smtp-transport.c:931
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "Impossível enviar a mensagem: nenhum destinatário definido."
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:945
+#: ../camel/providers/smtp/camel-smtp-transport.c:946
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "Impossível enviar a mensagem: um ou mais destinatários inválidos"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1077
+#: ../camel/providers/smtp/camel-smtp-transport.c:1078
 msgid "Syntax error, command unrecognized"
 msgstr "Erro de sintaxe, comando desconhecido"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1079
+#: ../camel/providers/smtp/camel-smtp-transport.c:1080
 msgid "Syntax error in parameters or arguments"
 msgstr "Erro de sintaxe nos parâmetros ou argumentos"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1081
+#: ../camel/providers/smtp/camel-smtp-transport.c:1082
 msgid "Command not implemented"
 msgstr "Comando não implementado"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1083
+#: ../camel/providers/smtp/camel-smtp-transport.c:1084
 msgid "Command parameter not implemented"
 msgstr "Parâmetro de comando não implementado"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1085
+#: ../camel/providers/smtp/camel-smtp-transport.c:1086
 msgid "System status, or system help reply"
 msgstr "Resposta de estado ou ajuda de sistema"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1087
+#: ../camel/providers/smtp/camel-smtp-transport.c:1088
 msgid "Help message"
 msgstr "Mensagem de ajuda"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1089
+#: ../camel/providers/smtp/camel-smtp-transport.c:1090
 msgid "Service ready"
 msgstr "Serviço disponível"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1091
+#: ../camel/providers/smtp/camel-smtp-transport.c:1092
 msgid "Service closing transmission channel"
 msgstr "Serviço a terminar o canal de transmissão"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1093
+#: ../camel/providers/smtp/camel-smtp-transport.c:1094
 msgid "Service not available, closing transmission channel"
 msgstr "Serviço indisponível, a terminar o canal de transmissão"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1095
+#: ../camel/providers/smtp/camel-smtp-transport.c:1096
 msgid "Requested mail action okay, completed"
 msgstr "Ação de email pedida aprovada, terminada"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1097
+#: ../camel/providers/smtp/camel-smtp-transport.c:1098
 msgid "User not local; will forward to <forward-path>"
 msgstr "Utilizador não é local; a reencaminhar para <caminho-reencaminhamento>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1099
+#: ../camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "Ação de email pedida não foi efetuada: caixa de correio indisponível"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1101
+#: ../camel/providers/smtp/camel-smtp-transport.c:1102
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "Ação pedida não foi efetuada: caixa de correio indisponível"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1103
+#: ../camel/providers/smtp/camel-smtp-transport.c:1104
 msgid "Requested action aborted: error in processing"
 msgstr "Ação pedida abortada: erro no processamento"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1105
+#: ../camel/providers/smtp/camel-smtp-transport.c:1106
 msgid "User not local; please try <forward-path>"
 msgstr "Utilizador não é local; tente <caminho-reencaminhamento>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1107
+#: ../camel/providers/smtp/camel-smtp-transport.c:1108
 msgid "Requested action not taken: insufficient system storage"
 msgstr "Ação pedida não foi efetuada: armazenamento de sistema insuficiente"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1109
+#: ../camel/providers/smtp/camel-smtp-transport.c:1110
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "Ação de email pedida foi abortada: alocação de armazenamento excedida"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1111
+#: ../camel/providers/smtp/camel-smtp-transport.c:1112
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "Ação pedida não foi efetuada: nome de caixa de correio não permitido"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1113
+#: ../camel/providers/smtp/camel-smtp-transport.c:1114
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "Início de entrada de email; termine com <CRLF>.<CRLF>"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1115
+#: ../camel/providers/smtp/camel-smtp-transport.c:1116
 msgid "Transaction failed"
 msgstr "Falha na transação"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1119
+#: ../camel/providers/smtp/camel-smtp-transport.c:1120
 msgid "A password transition is needed"
 msgstr "É necessária uma transição de senha"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1121
+#: ../camel/providers/smtp/camel-smtp-transport.c:1122
 msgid "Authentication mechanism is too weak"
 msgstr "Mecanismo de autenticação é demasiado fraco"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1123
+#: ../camel/providers/smtp/camel-smtp-transport.c:1124
 msgid "Encryption required for requested authentication mechanism"
 msgstr "Requerida encriptação para o mecanismo de autenticação pedido"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1125
+#: ../camel/providers/smtp/camel-smtp-transport.c:1126
 msgid "Temporary authentication failure"
 msgstr "Falha temporária de autenticação"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1415
+#: ../camel/providers/smtp/camel-smtp-transport.c:1416
 msgid "SMTP Greeting"
 msgstr "Boas vindas SMTP"
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1424
-#: ../camel/providers/smtp/camel-smtp-transport.c:1437
-#: ../camel/providers/smtp/camel-smtp-transport.c:1444
+#: ../camel/providers/smtp/camel-smtp-transport.c:1425
+#: ../camel/providers/smtp/camel-smtp-transport.c:1438
+#: ../camel/providers/smtp/camel-smtp-transport.c:1445
 msgid "HELO command failed: "
 msgstr "Falha no comando HELO: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1520
-#: ../camel/providers/smtp/camel-smtp-transport.c:1534
-#: ../camel/providers/smtp/camel-smtp-transport.c:1543
+#: ../camel/providers/smtp/camel-smtp-transport.c:1521
+#: ../camel/providers/smtp/camel-smtp-transport.c:1535
+#: ../camel/providers/smtp/camel-smtp-transport.c:1544
 msgid "MAIL FROM command failed: "
 msgstr "Falha no comando MAIL FROM: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1571
+#: ../camel/providers/smtp/camel-smtp-transport.c:1572
 msgid "RCPT TO command failed: "
 msgstr "Falha no comando RCPT TO: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1587
-#: ../camel/providers/smtp/camel-smtp-transport.c:1596
+#: ../camel/providers/smtp/camel-smtp-transport.c:1588
+#: ../camel/providers/smtp/camel-smtp-transport.c:1597
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "Falha no RCPT TO <%s>: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1668
-#: ../camel/providers/smtp/camel-smtp-transport.c:1679
-#: ../camel/providers/smtp/camel-smtp-transport.c:1690
-#: ../camel/providers/smtp/camel-smtp-transport.c:1752
-#: ../camel/providers/smtp/camel-smtp-transport.c:1770
-#: ../camel/providers/smtp/camel-smtp-transport.c:1783
-#: ../camel/providers/smtp/camel-smtp-transport.c:1791
+#: ../camel/providers/smtp/camel-smtp-transport.c:1669
+#: ../camel/providers/smtp/camel-smtp-transport.c:1680
+#: ../camel/providers/smtp/camel-smtp-transport.c:1691
+#: ../camel/providers/smtp/camel-smtp-transport.c:1753
+#: ../camel/providers/smtp/camel-smtp-transport.c:1771
+#: ../camel/providers/smtp/camel-smtp-transport.c:1784
+#: ../camel/providers/smtp/camel-smtp-transport.c:1792
 msgid "DATA command failed: "
 msgstr "Falha no comando DATA: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1817
-#: ../camel/providers/smtp/camel-smtp-transport.c:1831
-#: ../camel/providers/smtp/camel-smtp-transport.c:1839
+#: ../camel/providers/smtp/camel-smtp-transport.c:1818
+#: ../camel/providers/smtp/camel-smtp-transport.c:1832
+#: ../camel/providers/smtp/camel-smtp-transport.c:1840
 msgid "RSET command failed: "
 msgstr "Falha no comando RSET: "
 
-#: ../camel/providers/smtp/camel-smtp-transport.c:1865
-#: ../camel/providers/smtp/camel-smtp-transport.c:1877
-#: ../camel/providers/smtp/camel-smtp-transport.c:1883
+#: ../camel/providers/smtp/camel-smtp-transport.c:1866
+#: ../camel/providers/smtp/camel-smtp-transport.c:1878
+#: ../camel/providers/smtp/camel-smtp-transport.c:1884
 msgid "QUIT command failed: "
 msgstr "Falha no comando QUIT: "
 
@@ -5032,7 +5048,6 @@ msgstr "Origem inexistente para o UID \"%s\""
 
 #: ../libebackend/e-subprocess-factory.c:302
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to create backend of type '%s' for source UID '%s'"
 msgstr "Falha ao criar ligação física para o recurso '%s' da fonte UID '%s'"
 
