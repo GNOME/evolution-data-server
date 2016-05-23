@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.21.2 2016-05-23
+---------------------------------------
+
+Bug Fixes:
+	Bug 765857 - Allow blank "Full Name" for email account (Milan Crha)
+	Bug 765646 - [Camel] Add some missing annotations (Corentin Noël)
+	Bug 687038 - Support STARTTLS for NNTP servers (Milan Crha)
+	Bug 740627 - [IMAPx] Cannot append to a write-only folder (Milan Crha)
+	Bug 571723 - Prefer "Cancelled" over "Canceled" in translatable strings (Milan Crha)
+
+Miscellaneous:
+	Possible use-after-free on factory subprocess close (Milan Crha)
+	Add error checks around factory subprocess backend loading (Milan Crha)
+	[IMAPx] 'STARTTLS not supported' error ignored (Milan Crha)
+	Fix some issues found by Coverity Scan, cppcheck and clang (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Balázs Meskó (hu)
+	sujiniku (ja)
+	Cédric Valmary (oc)
+	Tiago Santos (pt)
+
 Evolution-Data-Server 3.21.1 2016-04-25
 ---------------------------------------
 
