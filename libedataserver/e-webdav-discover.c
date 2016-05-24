@@ -943,8 +943,8 @@ e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 
 		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
 		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-			/* Ignore these errors */
-			g_clear_error (&local_error);
+			/* Ignore these errors, but still propagate them. */
+			g_propagate_error (error, local_error);
 			return TRUE;
 		} else if (local_error) {
 			g_propagate_error (error, local_error);
@@ -1002,8 +1002,8 @@ e_webdav_discover_process_calendar_home_set (SoupSession *session,
 	if (!doc) {
 		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
 		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-			/* Ignore these errors */
-			g_clear_error (&local_error);
+			/* Ignore these errors, but still propagate them. */
+			g_propagate_error (error, local_error);
 			return TRUE;
 		} else if (local_error) {
 			g_propagate_error (error, local_error);
@@ -1369,8 +1369,8 @@ e_webdav_discover_get_addressbook_collection_details (SoupSession *session,
 
 		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
 		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-			/* Ignore these errors */
-			g_clear_error (&local_error);
+			/* Ignore these errors, but still propagate them. */
+			g_propagate_error (error, local_error);
 			return TRUE;
 		} else if (local_error) {
 			g_propagate_error (error, local_error);
@@ -1426,8 +1426,8 @@ e_webdav_discover_process_addressbook_home_set (SoupSession *session,
 	if (!doc) {
 		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
 		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-			/* Ignore these errors */
-			g_clear_error (&local_error);
+			/* Ignore these errors, but still propagate them. */
+			g_propagate_error (error, local_error);
 			return TRUE;
 		} else if (local_error) {
 			g_propagate_error (error, local_error);
@@ -2018,7 +2018,7 @@ e_webdav_discover_sources_sync (ESource *source,
 		if (success && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0)) {
 			success = e_webdav_discover_process_addressbook_home_set (session, message, source, out_certificate_pem,
-				out_certificate_errors, &addressbooks, cancellable, &local_error);
+				out_certificate_errors, &addressbooks, cancellable, local_error ? NULL : &local_error);
 
 			if (!addressbooks && !g_cancellable_is_cancelled (cancellable) && (!soup_uri_get_path (soup_uri) ||
 			    !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
