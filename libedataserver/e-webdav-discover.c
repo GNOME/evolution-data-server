@@ -614,7 +614,8 @@ e_webdav_discover_process_user_address_set (xmlXPathContextPtr xp_ctx,
 
 static guint32
 e_webdav_discover_get_supported_component_set (xmlXPathContextPtr xp_ctx,
-					       gint index)
+					       gint response_index,
+					       gint propstat_index)
 {
 	xmlXPathObjectPtr xp_obj;
 	guint32 set = 0;
@@ -624,10 +625,12 @@ e_webdav_discover_get_supported_component_set (xmlXPathContextPtr xp_ctx,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/C:supported-calendar-component-set"
-		"/C:comp", index);
+		"/C:comp",
+		response_index,
+		propstat_index);
 
 	/* If the property is not present, assume all component
 	 * types are supported.  (RFC 4791, Section 5.2.3) */
@@ -645,11 +648,14 @@ e_webdav_discover_get_supported_component_set (xmlXPathContextPtr xp_ctx,
 			xp_ctx,
 			"/D:multistatus"
 			"/D:response[%d]"
-			"/D:propstat"
+			"/D:propstat[%d]"
 			"/D:prop"
 			"/C:supported-calendar-component-set"
 			"/C:comp[%d]"
-			"/@name", index, ii + 1);
+			"/@name",
+			response_index,
+			propstat_index,
+			ii + 1);
 
 		if (name == NULL)
 			continue;
@@ -670,10 +676,11 @@ e_webdav_discover_get_supported_component_set (xmlXPathContextPtr xp_ctx,
 }
 
 static void
-e_webdav_discover_process_calendar_response (SoupMessage *message,
-					     xmlXPathContextPtr xp_ctx,
-					     gint index,
-					     GSList **out_discovered_sources)
+e_webdav_discover_process_calendar_response_propstat (SoupMessage *message,
+						      xmlXPathContextPtr xp_ctx,
+						      gint response_index,
+						      gint propstat_index,
+						      GSList **out_discovered_sources)
 {
 	xmlXPathObjectPtr xp_obj;
 	guint32 comp_set;
@@ -693,9 +700,10 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:status",
-		index);
+		response_index,
+		propstat_index);
 
 	if (status_line == NULL)
 		return;
@@ -708,7 +716,7 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 	if (!success || status != SOUP_STATUS_OK)
 		return;
 
-	comp_set = e_webdav_discover_get_supported_component_set (xp_ctx, index);
+	comp_set = e_webdav_discover_get_supported_component_set (xp_ctx, response_index, propstat_index);
 	if (comp_set == E_WEBDAV_DISCOVER_SUPPORTS_NONE)
 		return;
 
@@ -717,7 +725,7 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 		"/D:multistatus"
 		"/D:response[%d]"
 		"/D:href",
-		index);
+		response_index);
 
 	if (href_encoded == NULL)
 		return;
@@ -728,11 +736,12 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/D:resourcetype"
 		"/C:calendar",
-		index);
+		response_index,
+		propstat_index);
 
 	if (xp_obj == NULL) {
 		g_free (href_encoded);
@@ -747,10 +756,11 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/D:displayname",
-		index);
+		response_index,
+		propstat_index);
 
 	if (display_name == NULL) {
 		gchar *href_decoded = soup_uri_decode (href_encoded);
@@ -776,10 +786,11 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/C:calendar-description",
-		index);
+		response_index,
+		propstat_index);
 
 	/* Get the color specification string. */
 
@@ -787,10 +798,11 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/IC:calendar-color",
-		index);
+		response_index,
+		propstat_index);
 
 	discovered_source = g_new0 (EWebDAVDiscoveredSource, 1);
 	discovered_source->href = e_webdav_discover_make_href_full_uri (soup_message_get_uri (message), href_encoded);
@@ -807,6 +819,56 @@ e_webdav_discover_process_calendar_response (SoupMessage *message,
 	g_free (color_spec);
 }
 
+static void
+e_webdav_discover_traverse_responses (SoupMessage *message,
+				      xmlXPathContextPtr xp_ctx,
+				      GSList **out_discovered_sources,
+				      void (* func) (
+						SoupMessage *message,
+						xmlXPathContextPtr xp_ctx,
+						gint response_index,
+						gint propstat_index,
+						GSList **out_discovered_sources))
+{
+	xmlXPathObjectPtr xp_obj_response;
+
+	xp_obj_response = e_webdav_discover_get_xpath (
+		xp_ctx,
+		"/D:multistatus"
+		"/D:response");
+
+	if (xp_obj_response != NULL) {
+		gint response_index, response_length;
+
+		response_length = xmlXPathNodeSetGetLength (xp_obj_response->nodesetval);
+
+		for (response_index = 0; response_index < response_length; response_index++) {
+			xmlXPathObjectPtr xp_obj_propstat;
+
+			xp_obj_propstat = e_webdav_discover_get_xpath (
+				xp_ctx,
+				"/D:multistatus"
+				"/D:response[%d]"
+				"/D:propstat",
+				response_index + 1);
+
+			if (xp_obj_propstat != NULL) {
+				gint propstat_index, propstat_length;
+
+				propstat_length = xmlXPathNodeSetGetLength (xp_obj_propstat->nodesetval);
+
+				for (propstat_index = 0; propstat_index < propstat_length; propstat_index++) {
+					func (message, xp_ctx, response_index + 1, propstat_index + 1, out_discovered_sources);
+				}
+
+				xmlXPathFreeObject (xp_obj_propstat);
+			}
+		}
+
+		xmlXPathFreeObject (xp_obj_response);
+	}
+}
+
 static gboolean
 e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 						   SoupMessage *message,
@@ -820,8 +882,8 @@ e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 {
 	xmlDocPtr doc;
 	xmlXPathContextPtr xp_ctx;
-	xmlXPathObjectPtr xp_obj;
 	SoupURI *soup_uri;
+	GError *local_error = NULL;
 
 	if (g_cancellable_is_cancelled (cancellable))
 		return FALSE;
@@ -856,11 +918,38 @@ e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 	/* This takes ownership of the message. */
 	soup_session_send_message (session, message);
 
+	if (message->status_code == SOUP_STATUS_BAD_REQUEST) {
+		g_clear_object (&message);
+
+		message = e_webdav_discover_new_propfind (
+			session, soup_uri, DEPTH_0,
+			NS_WEBDAV, XC ("displayname"),
+			NS_WEBDAV, XC ("resourcetype"),
+			NS_CALDAV, XC ("calendar-description"),
+			NS_CALDAV, XC ("supported-calendar-component-set"),
+			NS_CALDAV, XC ("calendar-user-address-set"),
+			NS_ICAL,   XC ("calendar-color"),
+			NULL);
+
+		e_soup_ssl_trust_connect (message, source);
+		soup_session_send_message (session, message);
+	}
+
 	soup_uri_free (soup_uri);
 
-	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, error);
+	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, &local_error);
 	if (!doc) {
 		g_clear_object (&message);
+
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+			/* Ignore these errors */
+			g_clear_error (&local_error);
+			return TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+
 		return FALSE;
 	}
 
@@ -870,22 +959,8 @@ e_webdav_discover_get_calendar_collection_details (SoupSession *session,
 	xmlXPathRegisterNs (xp_ctx, XC ("A"), XC (NS_CARDDAV));
 	xmlXPathRegisterNs (xp_ctx, XC ("IC"), XC (NS_ICAL));
 
-	xp_obj = e_webdav_discover_get_xpath (
-		xp_ctx,
-		"/D:multistatus"
-		"/D:response");
-
-	if (xp_obj != NULL) {
-		gint length, ii;
-
-		length = xmlXPathNodeSetGetLength (xp_obj->nodesetval);
-
-		for (ii = 0; ii < length; ii++)
-			e_webdav_discover_process_calendar_response (
-				message, xp_ctx, ii + 1, out_discovered_sources);
-
-		xmlXPathFreeObject (xp_obj);
-	}
+	e_webdav_discover_traverse_responses (message, xp_ctx, out_discovered_sources,
+		e_webdav_discover_process_calendar_response_propstat);
 
 	xmlXPathFreeContext (xp_ctx);
 	xmlFreeDoc (doc);
@@ -911,6 +986,7 @@ e_webdav_discover_process_calendar_home_set (SoupSession *session,
 	xmlXPathContextPtr xp_ctx;
 	xmlXPathObjectPtr xp_obj;
 	gchar *calendar_home_set;
+	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (SOUP_IS_SESSION (session), FALSE);
@@ -921,10 +997,20 @@ e_webdav_discover_process_calendar_home_set (SoupSession *session,
 	if (g_cancellable_is_cancelled (cancellable))
 		return FALSE;
 
-	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, error);
+	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, &local_error);
 
-	if (!doc)
+	if (!doc) {
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+			/* Ignore these errors */
+			g_clear_error (&local_error);
+			return TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+
 		return FALSE;
+	}
 
 	xp_ctx = xmlXPathNewContext (doc);
 	xmlXPathRegisterNs (xp_ctx, XC ("D"), XC (NS_WEBDAV));
@@ -1078,6 +1164,19 @@ e_webdav_discover_process_calendar_home_set (SoupSession *session,
 	/* This takes ownership of the message. */
 	soup_session_send_message (session, message);
 
+	if (message->status_code == SOUP_STATUS_BAD_REQUEST) {
+		g_clear_object (&message);
+
+		message = e_webdav_discover_new_propfind (
+			session, soup_uri, DEPTH_0,
+			NS_CALDAV, XC ("calendar-home-set"),
+			NS_CALDAV, XC ("calendar-user-address-set"),
+			NULL);
+
+		e_soup_ssl_trust_connect (message, source);
+		soup_session_send_message (session, message);
+	}
+
 	soup_uri_free (soup_uri);
 
 	g_free (calendar_home_set);
@@ -1092,10 +1191,11 @@ e_webdav_discover_process_calendar_home_set (SoupSession *session,
 }
 
 static void
-e_webdav_discover_process_addressbook_response (SoupMessage *message,
-						xmlXPathContextPtr xp_ctx,
-						gint index,
-						GSList **out_discovered_sources)
+e_webdav_discover_process_addressbook_response_propstat (SoupMessage *message,
+							 xmlXPathContextPtr xp_ctx,
+							 gint response_index,
+							 gint propstat_index,
+							 GSList **out_discovered_sources)
 {
 	xmlXPathObjectPtr xp_obj;
 	gchar *display_name;
@@ -1113,9 +1213,10 @@ e_webdav_discover_process_addressbook_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:status",
-		index);
+		response_index,
+		propstat_index);
 
 	if (status_line == NULL)
 		return;
@@ -1133,7 +1234,7 @@ e_webdav_discover_process_addressbook_response (SoupMessage *message,
 		"/D:multistatus"
 		"/D:response[%d]"
 		"/D:href",
-		index);
+		response_index);
 
 	if (href_encoded == NULL)
 		return;
@@ -1144,11 +1245,12 @@ e_webdav_discover_process_addressbook_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/D:resourcetype"
 		"/A:addressbook",
-		index);
+		response_index,
+		propstat_index);
 
 	if (xp_obj == NULL) {
 		g_free (href_encoded);
@@ -1163,10 +1265,11 @@ e_webdav_discover_process_addressbook_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/D:displayname",
-		index);
+		response_index,
+		propstat_index);
 
 	if (display_name == NULL) {
 		gchar *href_decoded = soup_uri_decode (href_encoded);
@@ -1192,10 +1295,11 @@ e_webdav_discover_process_addressbook_response (SoupMessage *message,
 		xp_ctx,
 		"/D:multistatus"
 		"/D:response[%d]"
-		"/D:propstat"
+		"/D:propstat[%d]"
 		"/D:prop"
 		"/A:addressbook-description",
-		index);
+		response_index,
+		propstat_index);
 
 	discovered_source = g_new0 (EWebDAVDiscoveredSource, 1);
 	discovered_source->href = e_webdav_discover_make_href_full_uri (soup_message_get_uri (message), href_encoded);
@@ -1224,8 +1328,8 @@ e_webdav_discover_get_addressbook_collection_details (SoupSession *session,
 {
 	xmlDocPtr doc;
 	xmlXPathContextPtr xp_ctx;
-	xmlXPathObjectPtr xp_obj;
 	SoupURI *soup_uri;
+	GError *local_error = NULL;
 
 	if (g_cancellable_is_cancelled (cancellable))
 		return FALSE;
@@ -1259,9 +1363,19 @@ e_webdav_discover_get_addressbook_collection_details (SoupSession *session,
 
 	soup_uri_free (soup_uri);
 
-	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, error);
+	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, &local_error);
 	if (!doc) {
 		g_clear_object (&message);
+
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+			/* Ignore these errors */
+			g_clear_error (&local_error);
+			return TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+
 		return FALSE;
 	}
 
@@ -1271,22 +1385,8 @@ e_webdav_discover_get_addressbook_collection_details (SoupSession *session,
 	xmlXPathRegisterNs (xp_ctx, XC ("A"), XC (NS_CARDDAV));
 	xmlXPathRegisterNs (xp_ctx, XC ("IC"), XC (NS_ICAL));
 
-	xp_obj = e_webdav_discover_get_xpath (
-		xp_ctx,
-		"/D:multistatus"
-		"/D:response");
-
-	if (xp_obj != NULL) {
-		gint length, ii;
-
-		length = xmlXPathNodeSetGetLength (xp_obj->nodesetval);
-
-		for (ii = 0; ii < length; ii++)
-			e_webdav_discover_process_addressbook_response (
-				message, xp_ctx, ii + 1, out_discovered_sources);
-
-		xmlXPathFreeObject (xp_obj);
-	}
+	e_webdav_discover_traverse_responses (message, xp_ctx, out_discovered_sources,
+		e_webdav_discover_process_addressbook_response_propstat);
 
 	xmlXPathFreeContext (xp_ctx);
 	xmlFreeDoc (doc);
@@ -1311,6 +1411,7 @@ e_webdav_discover_process_addressbook_home_set (SoupSession *session,
 	xmlXPathContextPtr xp_ctx;
 	xmlXPathObjectPtr xp_obj;
 	gchar *addressbook_home_set;
+	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (SOUP_IS_SESSION (session), FALSE);
@@ -1321,10 +1422,19 @@ e_webdav_discover_process_addressbook_home_set (SoupSession *session,
 	if (g_cancellable_is_cancelled (cancellable))
 		return FALSE;
 
-	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, error);
+	doc = e_webdav_discover_parse_xml (message, "multistatus", out_certificate_pem, out_certificate_errors, &local_error);
+	if (!doc) {
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_FAILED) ||
+		    g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+			/* Ignore these errors */
+			g_clear_error (&local_error);
+			return TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
 
-	if (!doc)
 		return FALSE;
+	}
 
 	xp_ctx = xmlXPathNewContext (doc);
 	xmlXPathRegisterNs (xp_ctx, XC ("D"), XC (NS_WEBDAV));
@@ -1782,6 +1892,7 @@ e_webdav_discover_sources_sync (ESource *source,
 		session,
 		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
+
 	message = e_webdav_discover_new_propfind (
 		session, soup_uri, DEPTH_0,
 		NS_WEBDAV, XC ("resourcetype"),
@@ -1872,11 +1983,14 @@ e_webdav_discover_sources_sync (ESource *source,
 
 			if (!calendars && !g_cancellable_is_cancelled (cancellable) && (!soup_uri_get_path (soup_uri) ||
 			    !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
-				g_clear_object (&message);
+				SoupMessage *well_known_message;
+				gchar *saved_path;
+
+				saved_path = g_strdup (soup_uri_get_path (soup_uri));
 
 				soup_uri_set_path (soup_uri, "/.well-known/caldav");
 
-				message = e_webdav_discover_new_propfind (
+				well_known_message = e_webdav_discover_new_propfind (
 					session, soup_uri, DEPTH_0,
 					NS_WEBDAV, XC ("resourcetype"),
 					NS_WEBDAV, XC ("current-user-principal"),
@@ -1885,12 +1999,18 @@ e_webdav_discover_sources_sync (ESource *source,
 					NS_CALDAV, XC ("calendar-user-address-set"),
 					NULL);
 
-				if (message) {
-					soup_session_send_message (session, message);
+				soup_uri_set_path (soup_uri, saved_path);
+				g_free (saved_path);
+
+				if (well_known_message) {
+					e_soup_ssl_trust_connect (well_known_message, source);
+					soup_session_send_message (session, well_known_message);
 
 					/* Ignore errors here */
-					e_webdav_discover_process_calendar_home_set (session, message, source, out_certificate_pem,
+					e_webdav_discover_process_calendar_home_set (session, well_known_message, source, out_certificate_pem,
 						out_certificate_errors, &calendars, out_calendar_user_addresses, cancellable, NULL);
+
+					g_clear_object (&well_known_message);
 				}
 			}
 		}
@@ -1900,7 +2020,8 @@ e_webdav_discover_sources_sync (ESource *source,
 			success = e_webdav_discover_process_addressbook_home_set (session, message, source, out_certificate_pem,
 				out_certificate_errors, &addressbooks, cancellable, &local_error);
 
-			if (!addressbooks && !g_cancellable_is_cancelled (cancellable)) {
+			if (!addressbooks && !g_cancellable_is_cancelled (cancellable) && (!soup_uri_get_path (soup_uri) ||
+			    !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 				g_clear_object (&message);
 
 				soup_uri_set_path (soup_uri, "/.well-known/carddav");
@@ -1915,6 +2036,7 @@ e_webdav_discover_sources_sync (ESource *source,
 					NULL);
 
 				if (message) {
+					e_soup_ssl_trust_connect (message, source);
 					soup_session_send_message (session, message);
 
 					/* Ignore errors here */
