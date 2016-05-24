@@ -509,7 +509,7 @@ e_webdav_discover_content_fill_discovered_sources (GtkTreeView *tree_view,
 				source->display_name);
 		}
 
-		supports_bits = supports_filter ? (source->supports & supports_filter) : source->supports;
+		supports_bits = source->supports;
 		supports = g_string_new ("");
 
 		#define addbit(flg, cpt) { \
