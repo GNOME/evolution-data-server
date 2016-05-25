@@ -458,4 +458,20 @@ typedef enum {
 	CAMEL_TRANSFER_NUM_ENCODINGS
 } CamelTransferEncoding;
 
+/**
+ * CamelThreeState:
+ * @CAMEL_THREE_STATE_OFF: the three-state value is Off
+ * @CAMEL_THREE_STATE_ON: the three-state value is On
+ * @CAMEL_THREE_STATE_INCONSISTENT: the three-state value is neither On, nor Off
+ *
+ * Describes a three-state value, which can be either Off, On or Inconsistent.
+ *
+ * Since: 3.22
+ **/
+typedef enum {
+	CAMEL_THREE_STATE_OFF = 0,
+	CAMEL_THREE_STATE_ON,
+	CAMEL_THREE_STATE_INCONSISTENT
+} CamelThreeState;
+
 #endif /* CAMEL_ENUMS_H */

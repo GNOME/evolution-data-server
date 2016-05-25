@@ -24,6 +24,7 @@
 #ifndef CAMEL_OFFLINE_FOLDER_H
 #define CAMEL_OFFLINE_FOLDER_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-folder.h>
 
 /* Standard GObject macros */
@@ -70,12 +71,13 @@ struct _CamelOfflineFolderClass {
 };
 
 GType		camel_offline_folder_get_type	(void);
-gboolean	camel_offline_folder_get_offline_sync
+CamelThreeState	camel_offline_folder_get_offline_sync
 						(CamelOfflineFolder *folder);
 void		camel_offline_folder_set_offline_sync
 						(CamelOfflineFolder *folder,
-						 gboolean offline_sync);
-
+						 CamelThreeState offline_sync);
+gboolean	camel_offline_folder_can_downsync
+						(CamelOfflineFolder *folder);
 gboolean	camel_offline_folder_downsync_sync
 						(CamelOfflineFolder *folder,
 						 const gchar *expression,
