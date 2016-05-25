@@ -1459,6 +1459,9 @@ camel_sexp_finalize (GObject *object)
 	g_scanner_scope_foreach_symbol (sexp->scanner, 0, free_symbol, NULL);
 	g_scanner_destroy (sexp->scanner);
 
+	g_free (sexp->error);
+	sexp->error = NULL;
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_sexp_parent_class)->finalize (object);
 }

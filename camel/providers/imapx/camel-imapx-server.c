@@ -3376,6 +3376,7 @@ imapx_server_finalize (GObject *object)
 	g_weak_ref_clear (&is->priv->store);
 	g_weak_ref_clear (&is->priv->select_mailbox);
 	g_weak_ref_clear (&is->priv->select_pending);
+	g_clear_object (&is->priv->cancellable);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_server_parent_class)->finalize (object);
