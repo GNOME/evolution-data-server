@@ -244,6 +244,41 @@ camel_pstring_peek (const gchar *string)
 }
 
 /**
+ * camel_pstring_contains:
+ * @string: string to look up in the string pool
+ *
+ * Returns whether the @string exists in the string pool.
+ *
+ * The %NULL and empty strings are special cased to constant values.
+ *
+ * Returns: Whether the @string exists in the string pool
+ *
+ * Since: 3.22
+ **/
+gboolean
+camel_pstring_contains (const gchar *string)
+{
+	StringPoolNode static_node = { (gchar *) string, };
+	gboolean contains;
+
+	if (string == NULL)
+		return FALSE;
+
+	if (*string == '\0')
+		return FALSE;
+
+	g_mutex_lock (&string_pool_lock);
+
+	string_pool_init ();
+
+	contains = g_hash_table_contains (string_pool, &static_node);
+
+	g_mutex_unlock (&string_pool_lock);
+
+	return contains;
+}
+
+/**
  * camel_pstring_strdup:
  * @string: string to copy
  *

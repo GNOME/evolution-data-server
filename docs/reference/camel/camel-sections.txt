@@ -136,9 +136,11 @@ CamelCertDBPrivate
 <SECTION>
 <FILE>camel-cipher-context</FILE>
 <TITLE>CamelCipherContext</TITLE>
+CAMEL_CIPHER_CERT_INFO_PROPERTY_PHOTO_FILENAME
 CamelCipherContext
 CamelCipherValidity
 CamelCipherCertInfo
+CamelCipherCertInfoProperty
 CamelCipherHash
 camel_cipher_validity_sign_t
 camel_cipher_validity_encrypt_t
@@ -169,9 +171,14 @@ camel_cipher_validity_clear
 camel_cipher_validity_clone
 camel_cipher_validity_add_certinfo
 camel_cipher_validity_add_certinfo_ex
+camel_cipher_validity_get_certinfo_property
+camel_cipher_validity_set_certinfo_property
 camel_cipher_validity_envelope
 camel_cipher_validity_free
+camel_cipher_certinfo_get_property
+camel_cipher_certinfo_set_property
 camel_cipher_canonical_to_stream
+camel_cipher_can_load_photos
 <SUBSECTION Standard>
 CAMEL_CIPHER_CONTEXT
 CAMEL_IS_CIPHER_CONTEXT
@@ -2894,6 +2901,7 @@ camel_pstring_add
 camel_pstring_strdup
 camel_pstring_free
 camel_pstring_peek
+camel_pstring_contains
 camel_pstring_dump_stat
 </SECTION>
 

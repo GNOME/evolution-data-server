@@ -39,6 +39,7 @@ const gchar *camel_pstring_add (gchar *string, gboolean own);
 const gchar *camel_pstring_strdup (const gchar *string);
 void camel_pstring_free (const gchar *string);
 const gchar * camel_pstring_peek (const gchar *string);
+gboolean camel_pstring_contains (const gchar *string);
 void camel_pstring_dump_stat (void);
 
 G_END_DECLS

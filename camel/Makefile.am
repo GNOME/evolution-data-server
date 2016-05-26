@@ -26,7 +26,7 @@ pkgconfig_DATA = $(pkgconfig_in_files:.pc.in=-$(API_VERSION).pc)
 libcamelincludedir = $(privincludedir)/camel
 
 camellibexecdir = $(libexecdir)
-camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2
+camellibexec_PROGRAMS =	$(LOCK_HELPER) camel-index-control-1.2 camel-gpg-photo-saver
 
 lib_LTLIBRARIES = libcamel-1.2.la
 
@@ -353,6 +353,28 @@ camel_index_control_1_2_SOURCES = \
 camel_index_control_1_2_LDADD = \
 	libcamel-1.2.la \
 	$(libcamel_1_2_la_LIBADD) \
+	$(NULL)
+
+camel_gpg_photo_saver_SOURCES = \
+	camel-gpg-photo-saver.c \
+	$(NULL)
+
+camel_gpg_photo_saver_CPPFLAGS = \
+	$(AM_CPPFLAGS) \
+	-I$(top_srcdir) \
+	-I$(top_builddir) \
+	-I$(srcdir) \
+	-DG_LOG_DOMAIN=\"camel-gpg-photo-saver\" \
+	$(GNOME_PLATFORM_CFLAGS) \
+	$(NULL)
+
+camel_gpg_photo_saver_LDADD = \
+	$(GNOME_PLATFORM_LIBS) \
+	$(NULL)
+
+camel_gpg_photo_saver_LDFLAGS = \
+	$(NO_UNDEFINED) \
+	$(CODE_COVERAGE_LDFLAGS) \
 	$(NULL)
 
 camel-mime-tables.c: $(srcdir)/gentables.pl

@@ -64,6 +64,7 @@
 #include "camel-stream-fs.h"
 #include "camel-stream-mem.h"
 #include "camel-stream-null.h"
+#include "camel-string-utils.h"
 
 #define d(x)
 
@@ -141,6 +142,9 @@ struct _GpgCtx {
 	GByteArray *diagbuf;
 	CamelStream *diagnostics;
 
+	gchar *photos_filename;
+	gchar *viewer_cmd;
+
 	gint exit_status;
 
 	guint exited : 1;
@@ -152,6 +156,7 @@ struct _GpgCtx {
 	guint armor : 1;
 	guint need_passwd : 1;
 	guint send_passwd : 1;
+	guint load_photos : 1;
 
 	guint bad_passwds : 2;
 	guint anonymous_recipient : 1;
@@ -168,6 +173,7 @@ struct _GpgCtx {
 	guint bad_decrypt : 1;
 	guint noseckey : 1;
 	GString *signers;
+	GHashTable *signers_keyid;
 
 	guint diagflushed : 1;
 
@@ -204,6 +210,9 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->always_trust = FALSE;
 	gpg->prefer_inline = FALSE;
 	gpg->armor = FALSE;
+	gpg->load_photos = FALSE;
+	gpg->photos_filename = NULL;
+	gpg->viewer_cmd = NULL;
 
 	gpg->stdin_fd = -1;
 	gpg->stdout_fd = -1;
@@ -234,6 +243,7 @@ gpg_ctx_new (CamelCipherContext *context)
 	gpg->bad_decrypt = FALSE;
 	gpg->noseckey = FALSE;
 	gpg->signers = NULL;
+	gpg->signers_keyid = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	gpg->istream = NULL;
 	gpg->ostream = NULL;
@@ -365,6 +375,13 @@ gpg_ctx_set_armor (struct _GpgCtx *gpg,
 }
 
 static void
+gpg_ctx_set_load_photos (struct _GpgCtx *gpg,
+			 gboolean load_photos)
+{
+	gpg->load_photos = load_photos;
+}
+
+static void
 gpg_ctx_set_istream (struct _GpgCtx *gpg,
                      CamelStream *istream)
 {
@@ -464,6 +481,13 @@ gpg_ctx_free (struct _GpgCtx *gpg)
 
 	if (gpg->signers)
 		g_string_free (gpg->signers, TRUE);
+
+	g_hash_table_destroy (gpg->signers_keyid);
+	if (gpg->photos_filename)
+		g_unlink (gpg->photos_filename);
+
+	g_free (gpg->photos_filename);
+	g_free (gpg->viewer_cmd);
 
 	g_free (gpg);
 }
@@ -579,6 +603,31 @@ gpg_ctx_get_argv (struct _GpgCtx *gpg,
 	if (passwd_fd != -1) {
 		*pfd = buf = g_strdup_printf ("--command-fd=%d", passwd_fd);
 		g_ptr_array_add (argv, buf);
+	}
+
+	if (gpg->load_photos) {
+		if (!gpg->viewer_cmd) {
+			gint filefd;
+
+			filefd = g_file_open_tmp ("camel-gpg-photo-state-XXXXXX", &gpg->photos_filename, NULL);
+			if (filefd) {
+				gchar *viewer_filename;
+
+				close (filefd);
+
+				viewer_filename = g_build_filename (CAMEL_LIBEXECDIR, "camel-gpg-photo-saver", NULL);
+				gpg->viewer_cmd = g_strdup_printf ("%s --state \"%s\" --photo \"%%i\" --keyid \"%%K\" --type \"%%t\"", viewer_filename, gpg->photos_filename);
+				g_free (viewer_filename);
+			}
+		}
+
+		if (gpg->viewer_cmd) {
+			g_ptr_array_add (argv, (guint8 *) "--verify-options");
+			g_ptr_array_add (argv, (guint8 *) "show-photos");
+
+			g_ptr_array_add (argv, (guint8 *) "--photo-viewer");
+			g_ptr_array_add (argv, (guint8 *) gpg->viewer_cmd);
+		}
 	}
 
 	switch (gpg->mode) {
@@ -802,6 +851,53 @@ next_token (const gchar *in,
 		*token = g_strndup (start, inptr - start);
 
 	return inptr;
+}
+
+static void
+gpg_ctx_extract_signer_from_status (struct _GpgCtx *gpg,
+				    const gchar *status)
+{
+	const gchar *tmp;
+
+	g_return_if_fail (gpg != NULL);
+	g_return_if_fail (status != NULL);
+
+	/* there's a key ID, then the email address */
+	tmp = status;
+
+	status = strchr (status, ' ');
+	if (status) {
+		gchar *keyid;
+		const gchar *str = status + 1;
+		const gchar *eml = strchr (str, '<');
+
+		keyid = g_strndup (tmp, status - tmp);
+
+		if (eml && eml > str) {
+			eml--;
+			if (strchr (str, ' ') >= eml)
+				eml = NULL;
+		} else {
+			eml = NULL;
+		}
+
+		if (gpg->signers) {
+			g_string_append (gpg->signers, ", ");
+		} else {
+			gpg->signers = g_string_new ("");
+		}
+
+		if (eml) {
+			g_string_append (gpg->signers, "\"");
+			g_string_append_len (gpg->signers, str, eml - str);
+			g_string_append (gpg->signers, "\"");
+			g_string_append (gpg->signers, eml);
+		} else {
+			g_string_append (gpg->signers, str);
+		}
+
+		g_hash_table_insert (gpg->signers_keyid, g_strdup (str), keyid);
+	}
 }
 
 static gint
@@ -1108,41 +1204,17 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			} else if (!strncmp ((gchar *) status, "GOODSIG ", 8)) {
 				gpg->goodsig = TRUE;
 				gpg->hadsig = TRUE;
-				status += 8;
-				/* there's a key ID, then the email address */
-				status = (const guchar *) strchr ((const gchar *) status, ' ');
-				if (status) {
-					const gchar *str = (const gchar *) status + 1;
-					const gchar *eml = strchr (str, '<');
 
-					if (eml && eml > str) {
-						eml--;
-						if (strchr (str, ' ') >= eml)
-							eml = NULL;
-					} else {
-						eml = NULL;
-					}
-
-					if (gpg->signers) {
-						g_string_append (gpg->signers, ", ");
-					} else {
-						gpg->signers = g_string_new ("");
-					}
-
-					if (eml) {
-						g_string_append (gpg->signers, "\"");
-						g_string_append_len (gpg->signers, str, eml - str);
-						g_string_append (gpg->signers, "\"");
-						g_string_append (gpg->signers, eml);
-					} else {
-						g_string_append (gpg->signers, str);
-					}
-				}
+				gpg_ctx_extract_signer_from_status (gpg, (const gchar *) status + 8);
+			} else if (!strncmp ((gchar *) status, "EXPKEYSIG ", 10)) {
+				gpg_ctx_extract_signer_from_status (gpg, (const gchar *) status + 10);
 			} else if (!strncmp ((gchar *) status, "VALIDSIG ", 9)) {
 				gpg->validsig = TRUE;
 			} else if (!strncmp ((gchar *) status, "BADSIG ", 7)) {
 				gpg->badsig = FALSE;
 				gpg->hadsig = TRUE;
+
+				gpg_ctx_extract_signer_from_status (gpg, (const gchar *) status + 7);
 			} else if (!strncmp ((gchar *) status, "ERRSIG ", 7)) {
 				/* Note: NO_PUBKEY often comes after an ERRSIG */
 				gpg->errsig = FALSE;
@@ -1562,11 +1634,68 @@ swrite (CamelMimePart *sigpart,
 	return path;
 }
 
+static const gchar *
+gpg_context_find_photo (GHashTable *photos, /* keyid ~> filename in tmp */
+			GHashTable *signers_keyid, /* signer ~> keyid */
+			const gchar *name,
+			const gchar *email)
+{
+	GHashTableIter iter;
+	gpointer key, value;
+	const gchar *keyid = NULL;
+
+	if (!photos || !signers_keyid || ((!name || !*name) && (!email || !*email)))
+		return NULL;
+
+	g_hash_table_iter_init (&iter, signers_keyid);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		if ((email && *email && strstr (key, email)) ||
+		    (name && *name && strstr (key, name))) {
+			keyid = value;
+			break;
+		}
+	}
+
+	if (keyid) {
+		const gchar *filename;
+
+		filename = g_hash_table_lookup (photos, keyid);
+		if (filename)
+			return camel_pstring_strdup (filename);
+	}
+
+	return NULL;
+}
+
+static void
+camel_gpg_context_free_photo_filename (gpointer ptr)
+{
+	gchar *tmp_filename = g_strdup (ptr);
+
+	camel_pstring_free (ptr);
+
+	if (!camel_pstring_contains (tmp_filename) &&
+	    g_file_test (tmp_filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
+		g_unlink (tmp_filename);
+	}
+
+	g_free (tmp_filename);
+}
+
+static gpointer
+camel_gpg_context_clone_photo_filename (gpointer ptr)
+{
+	return (gpointer) camel_pstring_strdup (ptr);
+}
+
 static void
 add_signers (CamelCipherValidity *validity,
-             const GString *signers)
+	     const GString *signers,
+	     GHashTable *signers_keyid,
+	     const gchar *photos_filename)
 {
 	CamelInternetAddress *address;
+	GHashTable *photos = NULL;
 	gint i, count;
 
 	g_return_if_fail (validity != NULL);
@@ -1577,16 +1706,69 @@ add_signers (CamelCipherValidity *validity,
 	address = camel_internet_address_new ();
 	g_return_if_fail (address != NULL);
 
+	if (photos_filename) {
+		/* A short file is expected */
+		gchar *content = NULL;
+		GError *error = NULL;
+
+		if (g_file_get_contents (photos_filename, &content, NULL, &error)) {
+			gchar **lines;
+			gint ii;
+
+			/* Each line is encoded as: KeyID\tPhotoFilename */
+			lines = g_strsplit (content, "\n", -1);
+
+			for (ii = 0; lines && lines[ii]; ii++) {
+				gchar *line, *filename;
+
+				line = lines[ii];
+				filename = strchr (line, '\t');
+
+				if (filename) {
+					*filename = '\0';
+					filename++;
+				}
+
+				if (filename && g_file_test (filename, G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR)) {
+					if (!photos)
+						photos = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, camel_gpg_context_free_photo_filename);
+
+					g_hash_table_insert (photos, g_strdup (line), (gpointer) camel_pstring_strdup (filename));
+				}
+			}
+
+			g_strfreev (lines);
+		} else {
+			g_warning ("CamelGPGContext: Failed to open photos file '%s': %s", photos_filename, error ? error->message : "Unknown error");
+		}
+
+		g_free (content);
+		g_clear_error (&error);
+	}
+
 	count = camel_address_decode (CAMEL_ADDRESS (address), signers->str);
 	for (i = 0; i < count; i++) {
 		const gchar *name = NULL, *email = NULL;
+		const gchar *photo_filename; /* allocated on the string pool */
+		gint index;
 
 		if (!camel_internet_address_get (address, i, &name, &email))
 			break;
 
-		camel_cipher_validity_add_certinfo (validity, CAMEL_CIPHER_VALIDITY_SIGN, name, email);
+		photo_filename = gpg_context_find_photo (photos, signers_keyid, name, email);
+		index = camel_cipher_validity_add_certinfo (validity, CAMEL_CIPHER_VALIDITY_SIGN, name, email);
+
+		if (index != -1 && photo_filename) {
+			camel_cipher_validity_set_certinfo_property (validity, CAMEL_CIPHER_VALIDITY_SIGN, index,
+				CAMEL_CIPHER_CERT_INFO_PROPERTY_PHOTO_FILENAME, (gpointer) photo_filename,
+				camel_gpg_context_free_photo_filename, camel_gpg_context_clone_photo_filename);
+		} else if (photo_filename) {
+			camel_gpg_context_free_photo_filename ((gpointer) photo_filename);
+		}
 	}
 
+	if (photos)
+		g_hash_table_destroy (photos);
 	g_object_unref (address);
 }
 
@@ -2022,6 +2204,7 @@ gpg_verify_sync (CamelCipherContext *context,
 
 	gpg = gpg_ctx_new (context);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_VERIFY);
+	gpg_ctx_set_load_photos (gpg, camel_cipher_can_load_photos ());
 	if (sigfile)
 		gpg_ctx_set_sigfile (gpg, sigfile);
 	gpg_ctx_set_istream (gpg, canon_stream);
@@ -2064,7 +2247,7 @@ gpg_verify_sync (CamelCipherContext *context,
 		validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 	}
 
-	add_signers (validity, gpg->signers);
+	add_signers (validity, gpg->signers, gpg->signers_keyid, gpg->photos_filename);
 
 	gpg_ctx_free (gpg);
 
@@ -2309,6 +2492,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 
 	gpg = gpg_ctx_new (context);
 	gpg_ctx_set_mode (gpg, GPG_CTX_MODE_DECRYPT);
+	gpg_ctx_set_load_photos (gpg, camel_cipher_can_load_photos ());
 	gpg_ctx_set_istream (gpg, istream);
 	gpg_ctx_set_ostream (gpg, ostream);
 
@@ -2398,7 +2582,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 			}
 
-			add_signers (valid, gpg->signers);
+			add_signers (valid, gpg->signers, gpg->signers_keyid, gpg->photos_filename);
 		}
 	}
 
