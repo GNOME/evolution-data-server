@@ -2646,6 +2646,26 @@ e_name_western_free
 </SECTION>
 
 <SECTION>
+<FILE>e-network-monitor</FILE>
+<TITLE>ENetworkMonitor</TITLE>
+ENetworkMonitor
+ENetworkMonitorClass
+e_network_monitor_get_default
+e_network_monitor_list_gio_names
+e_network_monitor_dup_gio_name
+e_network_monitor_set_gio_name
+<SUBSECTION Standard>
+ENetworkMonitorPrivate
+E_IS_NETWORK_MONITOR
+E_IS_NETWORK_MONITOR_CLASS
+E_NETWORK_MONITOR
+E_NETWORK_MONITOR_CLASS
+E_NETWORK_MONITOR_GET_CLASS
+E_TYPE_NETWORK_MONITOR
+e_network_monitor_get_type
+</SECTION>
+
+<SECTION>
 <FILE>e-oauth2-support</FILE>
 <TITLE>EOAuth2Support</TITLE>
 EOAuth2SupportInterface

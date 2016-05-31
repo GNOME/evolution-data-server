@@ -64,6 +64,7 @@ libedataserver_1_2_la_SOURCES = \
 	e-list-iterator.c \
 	e-memory.c \
 	e-module.c \
+	e-network-monitor.c \
 	e-operation-pool.c \
 	e-proxy.c \
 	e-secret-store.c \
@@ -158,6 +159,7 @@ libedataserverinclude_HEADERS = \
 	e-list-iterator.h \
 	e-memory.h \
 	e-module.h \
+	e-network-monitor.h \
 	e-operation-pool.h \
 	e-proxy.h \
 	e-secret-store.h \

@@ -70,6 +70,9 @@ struct _CamelSessionPrivate {
 
 	GMainContext *main_context;
 
+	GMutex property_lock;
+	GNetworkMonitor *network_monitor;
+
 	guint online : 1;
 };
 
@@ -102,6 +105,7 @@ enum {
 	PROP_0,
 	PROP_JUNK_FILTER,
 	PROP_MAIN_CONTEXT,
+	PROP_NETWORK_MONITOR,
 	PROP_ONLINE,
 	PROP_USER_DATA_DIR,
 	PROP_USER_CACHE_DIR
@@ -284,6 +288,12 @@ session_set_property (GObject *object,
 				g_value_get_object (value));
 			return;
 
+		case PROP_NETWORK_MONITOR:
+			camel_session_set_network_monitor (
+				CAMEL_SESSION (object),
+				g_value_get_object (value));
+			return;
+
 		case PROP_ONLINE:
 			camel_session_set_online (
 				CAMEL_SESSION (object),
@@ -325,6 +335,12 @@ session_get_property (GObject *object,
 				CAMEL_SESSION (object)));
 			return;
 
+		case PROP_NETWORK_MONITOR:
+			g_value_take_object (
+				value, camel_session_ref_network_monitor (
+				CAMEL_SESSION (object)));
+			return;
+
 		case PROP_ONLINE:
 			g_value_set_boolean (
 				value, camel_session_get_online (
@@ -356,10 +372,8 @@ session_dispose (GObject *object)
 
 	g_hash_table_remove_all (priv->services);
 
-	if (priv->junk_filter != NULL) {
-		g_object_unref (priv->junk_filter);
-		priv->junk_filter = NULL;
-	}
+	g_clear_object (&priv->junk_filter);
+	g_clear_object (&priv->network_monitor);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_session_parent_class)->dispose (object);
@@ -381,6 +395,7 @@ session_finalize (GObject *object)
 		g_main_context_unref (priv->main_context);
 
 	g_mutex_clear (&priv->services_lock);
+	g_mutex_clear (&priv->property_lock);
 
 	if (priv->junk_headers) {
 		g_hash_table_remove_all (priv->junk_headers);
@@ -629,6 +644,17 @@ camel_session_class_init (CamelSessionClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_NETWORK_MONITOR,
+		g_param_spec_object (
+			"network-monitor",
+			"Network Monitor",
+			NULL,
+			G_TYPE_NETWORK_MONITOR,
+			G_PARAM_READWRITE |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_ONLINE,
 		g_param_spec_boolean (
 			"online",
@@ -720,6 +746,7 @@ camel_session_init (CamelSession *session)
 
 	session->priv->services = services;
 	g_mutex_init (&session->priv->services_lock);
+	g_mutex_init (&session->priv->property_lock);
 	session->priv->junk_headers = NULL;
 
 	session->priv->main_context = g_main_context_ref_thread_default ();
@@ -778,6 +805,74 @@ camel_session_get_user_cache_dir (CamelSession *session)
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
 
 	return session->priv->user_cache_dir;
+}
+
+/**
+ * camel_session_set_network_monitor:
+ * @session: a #CamelSession
+ * @network_monitor: (nullable): a #GNetworkMonitor or %NULL
+ *
+ * Sets a network monitor instance for the @session. This can be used
+ * to override which #GNetworkMonitor should be used to check network
+ * availability and whether a server is reachable.
+ *
+ * Since: 3.22
+ **/
+void
+camel_session_set_network_monitor (CamelSession *session,
+				   GNetworkMonitor *network_monitor)
+{
+	gboolean changed = FALSE;
+
+	g_return_if_fail (CAMEL_IS_SESSION (session));
+	if (network_monitor)
+		g_return_if_fail (G_IS_NETWORK_MONITOR (network_monitor));
+
+	g_mutex_lock (&session->priv->property_lock);
+
+	if (network_monitor != session->priv->network_monitor) {
+		g_clear_object (&session->priv->network_monitor);
+		session->priv->network_monitor = network_monitor ? g_object_ref (network_monitor) : NULL;
+
+		changed = TRUE;
+	}
+
+	g_mutex_unlock (&session->priv->property_lock);
+
+	if (changed)
+		g_object_notify (G_OBJECT (session), "network-monitor");
+}
+
+/**
+ * camel_session_ref_network_monitor:
+ * @session: a #CamelSession
+ *
+ * References a #GNetworkMonitor instance, which had been previously set
+ * by camel_session_set_network_monitor(). If none is set, then the default
+ * #GNetworkMonitor is returned, as provided by g_network_monitor_get_default().
+ * The returned pointer is referenced for thread safety, unref it with
+ * g_object_unref() when no longer needed.
+ *
+ * Returns: (transfer full): A referenced #GNetworkMonitor instance to use
+ *   for network availability tests.
+ *
+ * Since:3.22
+ **/
+GNetworkMonitor *
+camel_session_ref_network_monitor (CamelSession *session)
+{
+	GNetworkMonitor *network_monitor;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), NULL);
+
+	g_mutex_lock (&session->priv->property_lock);
+
+	network_monitor = g_object_ref (session->priv->network_monitor ?
+		session->priv->network_monitor : g_network_monitor_get_default ());
+
+	g_mutex_unlock (&session->priv->property_lock);
+
+	return network_monitor;
 }
 
 /**

@@ -49,6 +49,9 @@ struct _CamelNetworkServicePrivate {
 	gboolean host_reachable;
 	gboolean host_reachable_set;
 
+	GWeakRef session_weakref;
+	gulong session_notify_network_monitor_handler_id;
+
 	GNetworkMonitor *network_monitor;
 	gulong network_changed_handler_id;
 
@@ -467,11 +470,63 @@ network_service_network_changed_cb (GNetworkMonitor *network_monitor,
 	network_service_update_host_reachable (service);
 }
 
+static void
+network_service_session_notify_network_monitor_cb (GObject *object,
+						   GParamSpec *param,
+						   gpointer user_data)
+{
+	CamelSession *session;
+	CamelNetworkService *service = user_data;
+	CamelNetworkServicePrivate *priv;
+	GNetworkMonitor *network_monitor;
+	gboolean update_host_reachable = FALSE;
+
+	g_return_if_fail (CAMEL_IS_SESSION (object));
+	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
+
+	priv = CAMEL_NETWORK_SERVICE_GET_PRIVATE (service);
+	g_return_if_fail (priv != NULL);
+
+	g_object_ref (service);
+
+	session = CAMEL_SESSION (object);
+
+	network_monitor = camel_session_ref_network_monitor (session);
+
+	g_mutex_lock (&priv->property_lock);
+
+	if (network_monitor != priv->network_monitor) {
+		if (priv->network_monitor) {
+			g_signal_handler_disconnect (
+				priv->network_monitor,
+				priv->network_changed_handler_id);
+			g_object_unref (priv->network_monitor);
+		}
+
+		priv->network_monitor = g_object_ref (network_monitor);
+
+		priv->network_changed_handler_id = g_signal_connect (
+			priv->network_monitor, "network-changed",
+			G_CALLBACK (network_service_network_changed_cb), service);
+
+		update_host_reachable = TRUE;
+	}
+
+	g_mutex_unlock (&priv->property_lock);
+
+	g_clear_object (&network_monitor);
+
+	if (update_host_reachable)
+		network_service_update_host_reachable (service);
+
+	g_object_unref (service);
+}
+
 static CamelNetworkServicePrivate *
 network_service_private_new (CamelNetworkService *service)
 {
 	CamelNetworkServicePrivate *priv;
-	GNetworkMonitor *network_monitor;
+	CamelSession *session;
 	gulong handler_id;
 
 	priv = g_slice_new0 (CamelNetworkServicePrivate);
@@ -482,13 +537,26 @@ network_service_private_new (CamelNetworkService *service)
 
 	/* Configure network monitoring. */
 
-	network_monitor = g_network_monitor_get_default ();
-	priv->network_monitor = g_object_ref (network_monitor);
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
+	if (session) {
+		priv->network_monitor = camel_session_ref_network_monitor (session);
 
-	handler_id = g_signal_connect (
-		priv->network_monitor, "network-changed",
-		G_CALLBACK (network_service_network_changed_cb), service);
-	priv->network_changed_handler_id = handler_id;
+		priv->session_notify_network_monitor_handler_id =
+			g_signal_connect (session, "notify::network-monitor",
+				G_CALLBACK (network_service_session_notify_network_monitor_cb), service);
+
+		g_weak_ref_init (&priv->session_weakref, session);
+
+		g_object_unref (session);
+	} else
+		g_weak_ref_init (&priv->session_weakref, NULL);
+
+	if (priv->network_monitor) {
+		handler_id = g_signal_connect (
+			priv->network_monitor, "network-changed",
+			G_CALLBACK (network_service_network_changed_cb), service);
+		priv->network_changed_handler_id = handler_id;
+	}
 
 	return priv;
 }
@@ -496,13 +564,28 @@ network_service_private_new (CamelNetworkService *service)
 static void
 network_service_private_free (CamelNetworkServicePrivate *priv)
 {
-	g_signal_handler_disconnect (
-		priv->network_monitor,
-		priv->network_changed_handler_id);
+	if (priv->network_changed_handler_id) {
+		g_signal_handler_disconnect (
+			priv->network_monitor,
+			priv->network_changed_handler_id);
+	}
+
+	if (priv->session_notify_network_monitor_handler_id) {
+		CamelSession *session;
+
+		session = g_weak_ref_get (&priv->session_weakref);
+		if (session) {
+			g_signal_handler_disconnect (
+				session,
+				priv->session_notify_network_monitor_handler_id);
+			g_object_unref (session);
+		}
+	}
 
 	g_clear_object (&priv->connectable);
 	g_clear_object (&priv->network_monitor);
 	g_clear_object (&priv->network_monitor_cancellable);
+	g_weak_ref_clear (&priv->session_weakref);
 
 	if (priv->update_host_reachable != NULL) {
 		g_source_destroy (priv->update_host_reachable);

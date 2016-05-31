@@ -734,7 +734,7 @@ e_backend_init (EBackend *backend)
 
 	/* Configure network monitoring. */
 
-	network_monitor = g_network_monitor_get_default ();
+	network_monitor = e_network_monitor_get_default ();
 	backend->priv->network_monitor = g_object_ref (network_monitor);
 	backend->priv->online = g_network_monitor_get_network_available (network_monitor);
 

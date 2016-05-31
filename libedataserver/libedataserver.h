@@ -37,6 +37,7 @@
 #include <libedataserver/e-list.h>
 #include <libedataserver/e-memory.h>
 #include <libedataserver/e-module.h>
+#include <libedataserver/e-network-monitor.h>
 #include <libedataserver/e-operation-pool.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-secret-store.h>

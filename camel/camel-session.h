@@ -152,6 +152,12 @@ GMainContext *	camel_session_ref_main_context	(CamelSession *session);
 const gchar *	camel_session_get_user_data_dir	(CamelSession *session);
 const gchar *	camel_session_get_user_cache_dir
 						(CamelSession *session);
+void		camel_session_set_network_monitor
+						(CamelSession *session,
+						 GNetworkMonitor *network_monitor);
+GNetworkMonitor *
+		camel_session_ref_network_monitor
+						(CamelSession *session);
 CamelService *	camel_session_add_service	(CamelSession *session,
 						 const gchar *uid,
 						 const gchar *protocol,

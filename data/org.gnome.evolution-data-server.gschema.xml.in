@@ -14,5 +14,10 @@
       <_summary>Whether to load photos of signers/encrypters</_summary>
       <_description>When set to 'true', tries to load also photo of the signers/encrypters, if available in the key/certificate.</_description>
     </key>
+    <key name="network-monitor-gio-name" type="s">
+      <default>''</default>
+      <_summary>GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance</_summary>
+      <_description>When set to an unknown value, then the default GNetworkMonitor is used in the background. A special value 'always-online' is used for no network monitoring.</_description>
+    </key>
   </schema>
 </schemalist>
