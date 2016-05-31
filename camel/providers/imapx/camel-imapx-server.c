@@ -4571,6 +4571,16 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		}
 	}
 
+	if (!camel_message_info_size (info)) {
+		CamelStreamNull *sn = (CamelStreamNull *) camel_stream_null_new ();
+
+		camel_data_wrapper_write_to_stream_sync (
+			CAMEL_DATA_WRAPPER (message),
+			CAMEL_STREAM (sn), NULL, NULL);
+		((CamelMessageInfoBase *) info)->size = sn->written;
+		g_object_unref (sn);
+	}
+
 	g_free (uid);
 
 	if (camel_mime_message_has_attachment (message))
