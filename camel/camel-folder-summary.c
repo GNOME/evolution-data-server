@@ -505,11 +505,11 @@ summary_header_from_db (CamelFolderSummary *summary,
 	return TRUE;
 }
 
-static	CamelFIRecord *
+static CamelFIRecord *
 summary_header_to_db (CamelFolderSummary *summary,
                       GError **error)
 {
-	CamelFIRecord * record = g_new0 (CamelFIRecord, 1);
+	CamelFIRecord *record = g_new0 (CamelFIRecord, 1);
 	CamelStore *parent_store;
 	CamelDB *db;
 	const gchar *table_name;
@@ -518,7 +518,7 @@ summary_header_to_db (CamelFolderSummary *summary,
 	 * so lets use it that way. */
 	table_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
-	db = parent_store->cdb_w;
+	db = parent_store ? parent_store->cdb_w : NULL;
 
 	io (printf ("Savining header to db\n"));
 
@@ -530,7 +530,7 @@ summary_header_to_db (CamelFolderSummary *summary,
 	record->nextuid = summary->priv->nextuid;
 	record->time = summary->time;
 
-	if (!is_in_memory_summary (summary)) {
+	if (db && !is_in_memory_summary (summary)) {
 		/* FIXME: Ever heard of Constructors and initializing ? */
 		if (camel_db_count_total_message_info (db, table_name, &(record->saved_count), NULL))
 			record->saved_count = 0;
@@ -1878,8 +1878,12 @@ message_info_from_uid (CamelFolderSummary *summary,
 			return NULL;
 		}
 
-		parent_store =
-			camel_folder_get_parent_store (summary->priv->folder);
+		parent_store = camel_folder_get_parent_store (summary->priv->folder);
+		if (!parent_store) {
+			camel_folder_summary_unlock (summary);
+			return NULL;
+		}
+
 		cdb = parent_store->cdb_r;
 
 		data.columns_hash = NULL;
@@ -2144,6 +2148,14 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 		return TRUE;
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store) {
+		summary->priv->cache_load_time = 0;
+		summary->priv->timeout_handle = 0;
+		g_object_unref (summary);
+
+		return FALSE;
+	}
+
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
 	if (!session) {
 		summary->priv->cache_load_time = 0;
@@ -2228,7 +2240,7 @@ msg_update_preview (const gchar *uid,
 	msg = camel_folder_get_message_sync (folder, uid, NULL, NULL);
 	if (msg != NULL) {
 		if (camel_mime_message_build_preview ((CamelMimePart *) msg, (CamelMessageInfo *) info) && info->preview) {
-			if (!is_in_memory_summary (folder->summary))
+			if (parent_store && !is_in_memory_summary (folder->summary))
 				camel_db_write_preview_record (parent_store->cdb_w, full_name, info->uid, info->preview, NULL);
 		}
 	}
@@ -2291,7 +2303,7 @@ preview_update (CamelSession *session,
 
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
-	preview_data = is_in_memory ? NULL : camel_db_get_folder_preview (parent_store->cdb_r, full_name, NULL);
+	preview_data = (!parent_store || is_in_memory) ? NULL : camel_db_get_folder_preview (parent_store->cdb_r, full_name, NULL);
 	if (preview_data) {
 		g_hash_table_foreach_remove (preview_data, (GHRFunc) fill_mi, folder);
 		g_hash_table_destroy (preview_data);
@@ -2306,10 +2318,10 @@ preview_update (CamelSession *session,
 	}
 
 	camel_folder_lock (folder);
-	if (!is_in_memory)
+	if (parent_store && !is_in_memory)
 		camel_db_begin_transaction (parent_store->cdb_w, NULL);
 	g_hash_table_foreach (uids_hash, (GHFunc) msg_update_preview, folder);
-	if (!is_in_memory)
+	if (parent_store && !is_in_memory)
 		camel_db_end_transaction (parent_store->cdb_w, NULL);
 	camel_folder_unlock (folder);
 	camel_folder_free_uids (folder, uids_uncached);
@@ -2318,14 +2330,13 @@ preview_update (CamelSession *session,
 
 /* end */
 
-static gint
+static void
 cfs_reload_from_db (CamelFolderSummary *summary,
                     GError **error)
 {
 	CamelDB *cdb;
 	CamelStore *parent_store;
 	const gchar *folder_name;
-	gint ret = 0;
 	struct _db_pass_data data;
 
 	/* FIXME[disk-summary] baseclass this, and vfolders we may have to
@@ -2333,17 +2344,20 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 	d (printf ("\ncamel_folder_summary_reload_from_db called \n"));
 
 	if (is_in_memory_summary (summary))
-		return 0;
+		return;
+
+	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store)
+		return;
 
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
-	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	cdb = parent_store->cdb_r;
 
 	data.columns_hash = NULL;
 	data.summary = summary;
 	data.add = FALSE;
 
-	ret = camel_db_read_message_info_records (
+	camel_db_read_message_info_records (
 		cdb, folder_name, (gpointer) &data,
 		camel_read_mir_callback, NULL);
 
@@ -2378,7 +2392,7 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 		}
 	}
 
-	return ret == 0 ? 0 : -1;
+	return;
 }
 
 /**
@@ -2458,6 +2472,11 @@ camel_folder_summary_load_from_db (CamelFolderSummary *summary,
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	if (!camel_folder_summary_header_load_from_db (summary, parent_store, full_name, error)) {
+		camel_folder_summary_unlock (summary);
+		return FALSE;
+	}
+
+	if (!parent_store) {
 		camel_folder_summary_unlock (summary);
 		return FALSE;
 	}
@@ -2683,6 +2702,9 @@ save_to_db_cb (gpointer key,
 
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store)
+		return;
+
 	cdb = parent_store->cdb_w;
 
 	if (!mi->dirty)
@@ -2727,6 +2749,9 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 
 	full_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store)
+		return 0;
+
 	cdb = parent_store->cdb_w;
 
 	if (camel_db_prepare_message_info_table (cdb, full_name, error) != 0)
@@ -2756,8 +2781,10 @@ msg_save_preview (const gchar *uid,
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
-	camel_db_write_preview_record (
-		parent_store->cdb_w, full_name, uid, (gchar *) value, NULL);
+	if (parent_store) {
+		camel_db_write_preview_record (
+			parent_store->cdb_w, full_name, uid, (gchar *) value, NULL);
+	}
 }
 
 /**
@@ -2781,6 +2808,9 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		return TRUE;
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store)
+		return FALSE;
+
 	cdb = parent_store->cdb_w;
 
 	camel_folder_summary_lock (summary);
@@ -2876,6 +2906,9 @@ camel_folder_summary_header_save_to_db (CamelFolderSummary *summary,
 		return TRUE;
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store)
+		return FALSE;
+
 	cdb = parent_store->cdb_w;
 	camel_folder_summary_lock (summary);
 
@@ -3297,6 +3330,11 @@ camel_folder_summary_clear (CamelFolderSummary *summary,
 
 	folder_name = camel_folder_get_full_name (summary->priv->folder);
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
+	if (!parent_store) {
+		camel_folder_summary_unlock (summary);
+		return FALSE;
+	}
+
 	cdb = parent_store->cdb_w;
 
 	if (!is_in_memory_summary (summary))
@@ -3380,7 +3418,7 @@ camel_folder_summary_remove_uid (CamelFolderSummary *summary,
 	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
 		parent_store = camel_folder_get_parent_store (summary->priv->folder);
-		if (camel_db_delete_uid (parent_store->cdb_w, full_name, uid_copy, NULL) != 0)
+		if (!parent_store || camel_db_delete_uid (parent_store->cdb_w, full_name, uid_copy, NULL) != 0)
 			res = FALSE;
 	}
 
@@ -3439,7 +3477,7 @@ camel_folder_summary_remove_uids (CamelFolderSummary *summary,
 	if (!is_in_memory_summary (summary)) {
 		full_name = camel_folder_get_full_name (summary->priv->folder);
 		parent_store = camel_folder_get_parent_store (summary->priv->folder);
-		if (camel_db_delete_uids (parent_store->cdb_w, full_name, uids, NULL) != 0)
+		if (!parent_store || camel_db_delete_uids (parent_store->cdb_w, full_name, uids, NULL) != 0)
 			res = FALSE;
 	}
 

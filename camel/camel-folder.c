@@ -1623,7 +1623,8 @@ camel_folder_get_parent_store (CamelFolder *folder)
 {
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	return CAMEL_STORE (folder->priv->parent_store);
+	/* Can be NULL, thus do not use CAMEL_STORE() macro. */
+	return (CamelStore *) (folder->priv->parent_store);
 }
 
 /**
