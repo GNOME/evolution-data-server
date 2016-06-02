@@ -104,23 +104,19 @@ local_folder_dispose (GObject *object)
 	folder = CAMEL_FOLDER (object);
 	local_folder = CAMEL_LOCAL_FOLDER (object);
 
-	if (folder->summary != NULL) {
-		camel_local_summary_sync (
-			CAMEL_LOCAL_SUMMARY (folder->summary),
-			FALSE, local_folder->changes, NULL, NULL);
-		g_object_unref (folder->summary);
-		folder->summary = NULL;
+	if (folder->summary) {
+		/* Something can hold the reference to the folder longer than
+		   the parent store is alive, thus count with it. */
+		if (camel_folder_get_parent_store (folder)) {
+			camel_local_summary_sync (
+				CAMEL_LOCAL_SUMMARY (folder->summary),
+				FALSE, local_folder->changes, NULL, NULL);
+		}
 	}
 
-	if (local_folder->search != NULL) {
-		g_object_unref (local_folder->search);
-		local_folder->search = NULL;
-	}
-
-	if (local_folder->index != NULL) {
-		g_object_unref (local_folder->index);
-		local_folder->index = NULL;
-	}
+	g_clear_object (&folder->summary);
+	g_clear_object (&local_folder->search);
+	g_clear_object (&local_folder->index);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_local_folder_parent_class)->dispose (object);
