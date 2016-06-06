@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.20.3 2016-06-06
+---------------------------------------
+
+Bug Fixes:
+	Bug 740627 - [IMAPx] Cannot append to a write-only folder (Milan Crha)
+	Bug 766747 - WebDAV discovery for GMX CalDAV server fails (Milan Crha)
+	Bug 767056 - [IMAPx] Calculate message size on Append when not known (Milan Crha)
+	Bug 767134 - [Camel] Avoid possible NULL dereference on folder dispose (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] 'STARTTLS not supported' error ignored (Milan Crha)
+	Fix some issues found by Coverity Scan, cppcheck and clang (Milan Crha)
+	e-webdav-discover-widget - Show all supported types for the source in the table (Milan Crha)
+	Fix two memory leaks (Milan Crha)
+
+Translations:
+	Tiago Santos (pt)
+
 Evolution-Data-Server 3.20.2 2016-05-09
 ---------------------------------------
 
