@@ -947,8 +947,8 @@ static GArray *	cal_obj_generate_set_default	(RecurData	*recur_data,
 						 ECalRecurVTable *vtable,
 						 CalObjTime	*occ);
 
-static ECalRecurVTable cal_obj_get_vtable	(ECalRecurrence *recur,
-						 gboolean *vtable_valid);
+static gboolean cal_obj_get_vtable		(ECalRecurrence *recur,
+						 ECalRecurVTable *out_vtable);
 static void	cal_obj_initialize_recur_data	(RecurData	*recur_data,
 						 ECalRecurrence	*recur,
 						 CalObjTime	*event_start);
@@ -2229,7 +2229,6 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 	RecurData recur_data;
 	CalObjTime occ, *cotime;
 	GArray *all_occs, *occs;
-	gboolean vtable_valid = FALSE;
 	gint len;
 
 	/* This is the resulting array of CalObjTime elements. */
@@ -2237,8 +2236,7 @@ cal_obj_expand_recurrence (CalObjTime *event_start,
 
 	*finished = TRUE;
 
-	vtable = cal_obj_get_vtable (recur, &vtable_valid);
-	if (!vtable_valid)
+	if (!cal_obj_get_vtable (recur, &vtable))
 		return all_occs;
 
 	/* Calculate some useful data such as some fast lookup tables. */
@@ -2541,47 +2539,44 @@ cal_obj_generate_set_default (RecurData *recur_data,
 }
 
 /* Returns the function table corresponding to the recurrence frequency. */
-static ECalRecurVTable
+static gboolean
 cal_obj_get_vtable (ECalRecurrence *recur,
-		    gboolean *vtable_valid)
+		    ECalRecurVTable *out_vtable)
 {
-	ECalRecurVTable vtable;
-
-	*vtable_valid = TRUE;
+	gboolean valid = TRUE;
 
 	switch (recur->freq) {
 	case ICAL_YEARLY_RECURRENCE:
-		vtable = cal_obj_yearly_vtable;
+		*out_vtable = cal_obj_yearly_vtable;
 		break;
 	case ICAL_MONTHLY_RECURRENCE:
-		vtable = cal_obj_monthly_vtable;
+		*out_vtable = cal_obj_monthly_vtable;
 		if (recur->bymonthday && recur->byday)
-			vtable.bymonthday_filter = cal_obj_bymonthday_filter;
+			out_vtable->bymonthday_filter = cal_obj_bymonthday_filter;
 		else
-			vtable.bymonthday_filter = cal_obj_bymonthday_expand;
+			out_vtable->bymonthday_filter = cal_obj_bymonthday_expand;
 		break;
 	case ICAL_WEEKLY_RECURRENCE:
-		vtable = cal_obj_weekly_vtable;
+		*out_vtable = cal_obj_weekly_vtable;
 		break;
 	case ICAL_DAILY_RECURRENCE:
-		vtable = cal_obj_daily_vtable;
+		*out_vtable = cal_obj_daily_vtable;
 		break;
 	case ICAL_HOURLY_RECURRENCE:
-		vtable = cal_obj_hourly_vtable;
+		*out_vtable = cal_obj_hourly_vtable;
 		break;
 	case ICAL_MINUTELY_RECURRENCE:
-		vtable = cal_obj_minutely_vtable;
+		*out_vtable = cal_obj_minutely_vtable;
 		break;
 	case ICAL_SECONDLY_RECURRENCE:
-		vtable = cal_obj_secondly_vtable;
+		*out_vtable = cal_obj_secondly_vtable;
 		break;
 	default:
 		g_warning ("Unknown recurrence frequency");
-		*vtable_valid = FALSE;
+		valid = FALSE;
 	}
 
-	/* coverity[uninit] */
-	return vtable;
+	return valid;
 }
 
 /* This creates a number of fast lookup tables used when filtering with the

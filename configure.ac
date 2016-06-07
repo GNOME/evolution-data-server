@@ -199,11 +199,16 @@ dnl ******************************
 dnl Compiler Warning Flags
 dnl ******************************
 proposed_warning_flags=
+append_c_warning_flags=
 
 if test "x$enable_maintainer_mode" = "xyes" ; then
 	proposed_warning_flags="-Wall -Wextra -Wdeprecated-declarations"
 else
 	proposed_warning_flags="-Wno-deprecated-declarations"
+fi
+
+if test "$CC" = "clang" ; then
+	append_c_warning_flags="-Wno-parentheses-equality -Wno-format-nonliteral"
 fi
 
 proposed_warning_flags="$proposed_warning_flags
@@ -218,7 +223,8 @@ proposed_c_warning_flags="$proposed_warning_flags
 	-Wno-missing-field-initializers
 	-Wno-sign-compare
 	-Wno-unused-parameter
-	-Wnested-externs"
+	-Wnested-externs
+	$append_c_warning_flags"
 
 proposed_cxx_warning_flags="$proposed_warning_flags
 	-Wabi -Wnoexcept"

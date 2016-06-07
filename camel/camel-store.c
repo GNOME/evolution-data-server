@@ -438,7 +438,7 @@ store_synchronize_sync (CamelStore *store,
 		/* ensure all folders are used when expunging */
 		CamelFolderInfo *root, *fi;
 
-		g_atomic_int_add (&store->priv->maintenance_lock, 1);
+		(void) g_atomic_int_add (&store->priv->maintenance_lock, 1);
 
 		folders = g_ptr_array_new ();
 		root = camel_store_get_folder_info_sync (
@@ -504,7 +504,7 @@ store_synchronize_sync (CamelStore *store,
 
 	/* Unlock it before the call, thus it's actually done. */
 	if (expunge)
-		g_atomic_int_add (&store->priv->maintenance_lock, -1);
+		(void) g_atomic_int_add (&store->priv->maintenance_lock, -1);
 
 	if (!local_error && expunge) {
 		camel_store_maybe_run_db_maintenance (store, &local_error);

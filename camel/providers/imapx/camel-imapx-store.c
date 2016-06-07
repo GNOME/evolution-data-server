@@ -466,7 +466,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	}
 
 	folder_path = camel_imapx_mailbox_to_folder_path (mailbox_name, separator);
-	fi = imapx_store_build_folder_info (store, folder_path, flags);
+	fi = imapx_store_build_folder_info (store, folder_path, (CamelFolderInfoFlags) flags);
 
 	/* Figure out which signals to emit, if any. */
 	if (use_subscriptions || camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
@@ -1435,7 +1435,7 @@ imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 
 		folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
 		fi = imapx_store_build_folder_info (imapx_store, folder_path,
-			imapx_store_mailbox_attributes_to_flags (mailbox));
+			(CamelFolderInfoFlags) imapx_store_mailbox_attributes_to_flags (mailbox));
 		camel_store_folder_created (CAMEL_STORE (imapx_store), fi);
 		camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
 		camel_folder_info_free (fi);
@@ -1578,7 +1578,7 @@ sync_folders (CamelIMAPXStore *imapx_store,
 	}
 
 	/* Don't need to test for zero, just decrement atomically. */
-	g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
+	(void) g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
 
 	if (!success)
 		goto exit;
@@ -2253,7 +2253,7 @@ exit:
 
 	/* This enables CamelStore signal emissions
 	 * in imapx_store_process_mailbox_attributes() again. */
-	g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
+	(void) g_atomic_int_dec_and_test (&imapx_store->priv->syncing_folders);
 
 	return success;
 }

@@ -4052,7 +4052,7 @@ e_cal_backend_get_timezone_finish (ECalBackend *backend,
 	if (!tzobject)
 		g_set_error_literal (error,
 			E_CAL_CLIENT_ERROR, E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND,
-			e_client_error_to_string (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
+			e_cal_client_error_to_string (E_CAL_CLIENT_ERROR_OBJECT_NOT_FOUND));
 
 	g_warn_if_fail (g_queue_is_empty (&async_context->result_queue));
 

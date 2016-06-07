@@ -127,26 +127,51 @@ ebsql_init_debug (void)
 	}
 }
 
+static const gchar *
+ebsql_error_str (EBookSqliteError code)
+{
+	switch (code) {
+		case E_BOOK_SQLITE_ERROR_ENGINE:
+			return "engine";
+		case E_BOOK_SQLITE_ERROR_CONSTRAINT:
+			return "constraint";
+		case E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND:
+			return "contact not found";
+		case E_BOOK_SQLITE_ERROR_INVALID_QUERY:
+			return "invalid query";
+		case E_BOOK_SQLITE_ERROR_UNSUPPORTED_QUERY:
+			return "unsupported query";
+		case E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD:
+			return "unsupported field";
+		case E_BOOK_SQLITE_ERROR_END_OF_LIST:
+			return "end of list";
+		case E_BOOK_SQLITE_ERROR_LOAD:
+			return "load";
+	}
+
+	return "(unknown)";
+}
+
+static const gchar *
+ebsql_origin_str (EbSqlCursorOrigin origin)
+{
+	switch (origin) {
+		case EBSQL_CURSOR_ORIGIN_CURRENT:
+			return "current";
+		case EBSQL_CURSOR_ORIGIN_BEGIN:
+			return "begin";
+		case EBSQL_CURSOR_ORIGIN_END:
+			return "end";
+	}
+
+	return "(invalid)";
+}
+
 #define EBSQL_NOTE(type,action) \
 	G_STMT_START { \
 		if (ebsql_debug_flags & EBSQL_DEBUG_##type) \
 			{ action; }; \
 	} G_STMT_END
-
-#define EBSQL_ERROR_STR(code) \
-	((code) == E_BOOK_SQLITE_ERROR_ENGINE ? "engine" : \
-	 (code) == E_BOOK_SQLITE_ERROR_CONSTRAINT ? "constraint" : \
-	 (code) == E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND ? "contact not found" : \
-	 (code) == E_BOOK_SQLITE_ERROR_INVALID_QUERY ? "invalid query" : \
-	 (code) == E_BOOK_SQLITE_ERROR_UNSUPPORTED_QUERY ? "unsupported query" : \
-	 (code) == E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD ? "unsupported field" : \
-	 (code) == E_BOOK_SQLITE_ERROR_END_OF_LIST ? "end of list" : \
-	 (code) == E_BOOK_SQLITE_ERROR_LOAD ? "load" : "(unknown)")
-
-#define EBSQL_ORIGIN_STR(origin) \
-	((origin) == EBSQL_CURSOR_ORIGIN_CURRENT ? "current" : \
-	 (origin) == EBSQL_CURSOR_ORIGIN_BEGIN ? "begin" : \
-	 (origin) == EBSQL_CURSOR_ORIGIN_END ? "end" : "(invalid)")
 
 #define EBSQL_LOCK_MUTEX(mutex) \
 	G_STMT_START { \
@@ -177,7 +202,7 @@ ebsql_init_debug (void)
 			gchar *format = g_strdup_printf ( \
 				"ERR [%%s]: Set error code '%%s': %s\n", fmt); \
 			g_printerr (format, G_STRFUNC, \
-				    EBSQL_ERROR_STR (code), ## args); \
+				    ebsql_error_str (code), ## args); \
 			g_free (format); \
 		} \
 		g_set_error (error, E_BOOK_SQLITE_ERROR, code, fmt, ## args); \
@@ -189,7 +214,7 @@ ebsql_init_debug (void)
 			g_printerr ("ERR [%s]: " \
 				    "Set error code %s: %s\n", \
 				    G_STRFUNC, \
-				    EBSQL_ERROR_STR (code), detail); \
+				    ebsql_error_str (code), detail); \
 		} \
 		g_set_error_literal (error, E_BOOK_SQLITE_ERROR, code, detail); \
 	} G_STMT_END
@@ -4111,21 +4136,6 @@ constraints_insert (GPtrArray *array,
 
 	array->pdata[idx] = data;
 #endif
-}
-
-static inline QueryElement *
-constraints_take (GPtrArray *array,
-                  gint idx)
-{
-	QueryElement *element;
-
-	g_return_val_if_fail (idx >= 0 && idx < (gint) array->len, NULL);
-
-	element = array->pdata[idx];
-	array->pdata[idx] = NULL;
-	g_ptr_array_remove_index (array, idx);
-
-	return element;
 }
 
 static inline void
@@ -8090,7 +8100,7 @@ e_book_sqlite_cursor_step (EBookSqlite *ebsql,
 		CURSOR,
 		g_printerr (
 			"Cursor requested to step by %d with origin %s will move: %s will fetch: %s\n",
-			count, EBSQL_ORIGIN_STR (origin),
+			count, ebsql_origin_str (origin),
 			(flags & EBSQL_CURSOR_STEP_MOVE) ? "yes" : "no",
 			(flags & EBSQL_CURSOR_STEP_FETCH) ? "yes" : "no"));
 

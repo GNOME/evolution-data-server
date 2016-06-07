@@ -246,7 +246,6 @@ e_dbhash_compare (EDbHash *edbh,
 	g_return_val_if_fail (edbh != NULL, FALSE);
 	g_return_val_if_fail (edbh->priv != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (compare_hash != NULL, FALSE);
 
 	db = edbh->priv->db;
 
