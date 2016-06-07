@@ -454,7 +454,7 @@ ep_manipulate_ipv4 (ProxyHostAddr *host_addr,
 			mask->s_addr = 0;
 			addr->s_addr = 0;
 		} else {
-			mask->s_addr = htonl (~0 << width);
+			mask->s_addr = htonl (~0U << width);
 			addr->s_addr &= mask->s_addr;
 		}
 	} else {
