@@ -376,9 +376,64 @@ e_network_monitor_can_reach (GNetworkMonitor *monitor,
 }
 
 static void
+e_network_monitor_can_reach_async_thread (GTask *task,
+					  gpointer source_object,
+					  gpointer task_data,
+					  GCancellable *cancellable)
+{
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = e_network_monitor_can_reach (source_object, task_data, cancellable, &local_error);
+
+	if (local_error)
+		g_task_return_error (task, local_error);
+	else
+		g_task_return_boolean (task, success);
+}
+
+static void
+e_network_monitor_can_reach_async (GNetworkMonitor *monitor,
+				   GSocketConnectable *connectable,
+				   GCancellable *cancellable,
+				   GAsyncReadyCallback callback,
+				   gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_NETWORK_MONITOR (monitor));
+	g_return_if_fail (G_IS_SOCKET_CONNECTABLE (connectable));
+
+	task = g_task_new (monitor, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_network_monitor_can_reach_async);
+	g_task_set_task_data (task, g_object_ref (connectable), g_object_unref);
+
+	g_task_run_in_thread (task, e_network_monitor_can_reach_async_thread);
+
+	g_object_unref (task);
+}
+
+static gboolean
+e_network_monitor_can_reach_finish (GNetworkMonitor *monitor,
+				    GAsyncResult *result,
+				    GError **error)
+{
+	g_return_val_if_fail (E_IS_NETWORK_MONITOR (monitor), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, monitor), FALSE);
+
+	g_return_val_if_fail (
+		g_async_result_is_tagged (
+		result, e_network_monitor_can_reach_async), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+static void
 e_network_monitor_gio_iface_init (GNetworkMonitorInterface *iface)
 {
 	iface->can_reach = e_network_monitor_can_reach;
+	iface->can_reach_async = e_network_monitor_can_reach_async;
+	iface->can_reach_finish = e_network_monitor_can_reach_finish;
 
 	if (!network_changed_signal)
 		network_changed_signal = g_signal_lookup ("network-changed", G_TYPE_NETWORK_MONITOR);
