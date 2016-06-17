@@ -190,7 +190,14 @@ ensure_timezone (icalcomponent *comp,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
 
-	if (!tt || tt->zone || tt->is_utc)
+	if (!tt)
+		return TRUE;
+
+	/* Do not trust the 'zone' set on the structure, as it can come from
+	   a different icalcomponent and cause use-after-free. */
+	tt->zone = NULL;
+
+	if (tt->is_utc || tt->is_date)
 		return TRUE;
 
 	if (!prop)
@@ -344,10 +351,8 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 	times = g_hash_table_new_full (e_instance_time_hash, e_instance_time_equal, g_free, NULL);
 
 	dtstart = icalcomponent_get_dtstart (comp);
-	if (!dtstart.is_date) {
-		success = ensure_timezone (comp, &dtstart, ICAL_DTSTART_PROPERTY, NULL,
-			get_tz_callback, get_tz_callback_user_data, default_timezone, cancellable, error);
-	}
+	success = ensure_timezone (comp, &dtstart, ICAL_DTSTART_PROPERTY, NULL,
+		get_tz_callback, get_tz_callback_user_data, default_timezone, cancellable, error);
 
 	duration_seconds = 0;
 	dtend = icalcomponent_get_dtend (comp);
@@ -388,9 +393,8 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 	}
 
 	if (success && !icaltime_is_null_time (dtend)) {
-		if (!dtend.is_date)
-			success = ensure_timezone (comp, &dtend, ICAL_DTEND_PROPERTY, NULL,
-				get_tz_callback, get_tz_callback_user_data, default_timezone, cancellable, error);
+		success = ensure_timezone (comp, &dtend, ICAL_DTEND_PROPERTY, NULL,
+			get_tz_callback, get_tz_callback_user_data, default_timezone, cancellable, error);
 		duration_seconds = (gint64) icaltime_as_timet_with_zone (dtend, dtend.zone) -
 			(gint64) icaltime_as_timet_with_zone (dtstart, dtstart.zone);
 		if (duration_seconds < 0)
@@ -412,7 +416,7 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 			struct icalrecurrencetype rrule = icalproperty_get_rrule (prop);
 			icalrecur_iterator *riter;
 
-			if (!icaltime_is_null_time (rrule.until) && !rrule.until.is_date) {
+			if (!icaltime_is_null_time (rrule.until)) {
 				success = ensure_timezone (comp, &rrule.until, 0, prop,
 					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
 					cancellable, error);
@@ -501,13 +505,11 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 			}
 
 			if (!icaltime_is_null_time (tt)) {
-				if (!tt.is_date) {
-					success = ensure_timezone (comp, &tt, 0, prop,
-						get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
-						cancellable, error);
-					if (!success)
-						break;
-				}
+				success = ensure_timezone (comp, &tt, 0, prop,
+					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
+					cancellable, error);
+				if (!success)
+					break;
 
 				if (intersects_interval (&tt, &duration, duration_days, duration_seconds, &interval_start, &interval_end)) {
 					g_hash_table_insert (times, e_instance_time_new (&tt, &duration), NULL);
@@ -521,7 +523,7 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 			struct icalrecurrencetype exrule = icalproperty_get_exrule (prop);
 			icalrecur_iterator *riter;
 
-			if (!icaltime_is_null_time (exrule.until) && !exrule.until.is_date) {
+			if (!icaltime_is_null_time (exrule.until)) {
 				success = ensure_timezone (comp, &exrule.until, 0, prop,
 					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
 					cancellable, error);
@@ -575,13 +577,11 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 			if (icaltime_is_null_time (exdate))
 				continue;
 
-			if (!exdate.is_date) {
-				success = ensure_timezone (comp, &exdate, 0, prop,
-					get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
-					cancellable, error);
-				if (!success)
-					break;
-			}
+			success = ensure_timezone (comp, &exdate, 0, prop,
+				get_tz_callback, get_tz_callback_user_data, (icaltimezone *) dtstart.zone,
+				cancellable, error);
+			if (!success)
+				break;
 
 			if (!exdate.zone)
 				exdate.zone = dtstart.zone;
