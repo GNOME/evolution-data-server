@@ -592,7 +592,12 @@ network_service_new_connectable (CamelNetworkService *service)
 	port = camel_network_settings_get_port (network_settings);
 
 	if (host && *host)
-		connectable = g_network_address_new (host, port);
+		connectable = g_object_new (G_TYPE_NETWORK_ADDRESS,
+			"scheme", "socks",
+			"hostname", host,
+			"port", port,
+			NULL);
+
 
 	g_free (host);
 
