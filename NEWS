@@ -1,3 +1,29 @@
+Evolution-Data-Server 3.21.3 2016-06-20
+---------------------------------------
+
+Bug Fixes:
+	Bug 766747 - WebDAV discovery for GMX CalDAV server fails (Milan Crha)
+	Bug 766682 - Three-state value for 'download messages for offline' per folder (Milan Crha)
+	Bug 767056 - [IMAPx] Calculate message size on Append when not known (Milan Crha)
+	Bug 767134 - [Camel] Avoid possible NULL dereference on folder dispose (Milan Crha)
+	Bug 634294 - Calendar factory crash under e-cal-recur (Milan Crha)
+
+Miscellaneous:
+	e-webdav-discover-widget - Show all supported types for the source in the table (Milan Crha)
+	Fix two memory leaks (Milan Crha)
+	[CamelGpgContext] Provide signer photos when available (Milan Crha)
+	Introduce an ENetworkMonitor (Milan Crha)
+	Fix a GCC compiler warning (Milan Crha)
+	Address some of the clang compiler warnings (Milan Crha)
+	ENetworkMonitor: Implement also the async part of the GNetworkMonitor interface (Milan Crha)
+	[Camel] Set default connection timeout to 90 seconds (Milan Crha)
+
+Translations:
+	Cédric Valmary (oc)
+	Mario Blättermann (de)
+	Dušan Kazik (sk)
+	Rafael Fontenelle (pt_BR)
+
 Evolution-Data-Server 3.21.2 2016-05-23
 ---------------------------------------
 
