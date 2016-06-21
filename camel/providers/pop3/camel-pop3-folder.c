@@ -1100,7 +1100,7 @@ camel_pop3_folder_delete_old (CamelFolder *folder,
 		}
 
 		if (message_time) {
-			gdouble time_diff = difftime (temp,message_time);
+			gdouble time_diff = difftime (temp, message_time);
 			gint day_lag = time_diff / (60 * 60 * 24);
 
 			d (printf (
@@ -1110,7 +1110,7 @@ camel_pop3_folder_delete_old (CamelFolder *folder,
 				"%s(%d): day_lag=[%d] \t days_to_delete=[%d]\n",
 				__FILE__, __LINE__, day_lag, days_to_delete));
 
-			if (day_lag > days_to_delete) {
+			if (day_lag >= days_to_delete) {
 				if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
 					camel_pop3_engine_busy_unlock (pop3_engine);
 					g_clear_object (&pop3_cache);
