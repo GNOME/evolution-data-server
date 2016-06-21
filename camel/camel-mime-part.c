@@ -170,26 +170,32 @@ write_references (gpointer stream,
 	if (!isspace (value[0]))
 		g_string_append_c (buffer, ' ');
 
-	len = buffer->len;
+	/* Fold only when not folded already */
+	if (!strchr (value, '\n')) {
+		len = buffer->len;
 
-	while (*value) {
-		ids = value;
-		ide = strchr (ids + 1, '>');
-		if (ide)
-			value = ++ide;
-		else
-			ide = value = strlen (ids) + ids;
+		while (*value) {
+			ids = value;
+			ide = strchr (ids + 1, '>');
+			if (ide)
+				value = ++ide;
+			else
+				ide = value = strlen (ids) + ids;
 
-		if (len > 0 && len + (ide - ids) >= CAMEL_FOLD_SIZE) {
-			g_string_append_len (buffer, "\n\t", 2);
-			len = 0;
+			if (len > 0 && len + (ide - ids) >= CAMEL_FOLD_SIZE) {
+				g_string_append_len (buffer, "\n\t", 2);
+				len = 0;
+			}
+
+			g_string_append_len (buffer, ids, ide - ids);
+			len += (ide - ids);
 		}
-
-		g_string_append_len (buffer, ids, ide - ids);
-		len += (ide - ids);
+	} else {
+		g_string_append (buffer, value);
 	}
 
-	g_string_append_c (buffer, '\n');
+	if (buffer->len > 0 && buffer->str[buffer->len - 1] != '\n')
+		g_string_append_c (buffer, '\n');
 
 	/* XXX For now we handle both types of streams. */
 
