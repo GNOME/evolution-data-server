@@ -89,7 +89,7 @@ vee_info_ptr (const CamelMessageInfo *mi,
 
 	rmi = camel_folder_summary_get (vmi->orig_summary, mi->uid + 8);
 	HANDLE_NULL_INFO (NULL);
-	p = (gpointer) camel_message_info_ptr (rmi, id);
+	p = (gpointer) camel_message_info_get_ptr (rmi, id);
 	camel_message_info_unref (rmi);
 
 	return p;
@@ -103,7 +103,7 @@ vee_info_uint32 (const CamelMessageInfo *mi,
 	guint32 ret;
 
 	HANDLE_NULL_INFO (0);
-	ret = camel_message_info_uint32 (rmi, id);
+	ret = camel_message_info_get_uint32 (rmi, id);
 	camel_message_info_unref (rmi);
 
 	return ret;
@@ -118,7 +118,7 @@ vee_info_time (const CamelMessageInfo *mi,
 	time_t ret;
 
 	HANDLE_NULL_INFO (0);
-	ret = camel_message_info_time (rmi, id);
+	ret = camel_message_info_get_time (rmi, id);
 	camel_message_info_unref (rmi);
 
 	return ret;
@@ -132,7 +132,7 @@ vee_info_user_flag (const CamelMessageInfo *mi,
 	gboolean ret;
 
 	HANDLE_NULL_INFO (FALSE);
-	ret = camel_message_info_user_flag (rmi, id);
+	ret = camel_message_info_get_user_flag (rmi, id);
 	camel_message_info_unref (rmi);
 
 	return ret;
@@ -146,7 +146,7 @@ vee_info_user_tag (const CamelMessageInfo *mi,
 	const gchar *ret;
 
 	HANDLE_NULL_INFO ("");
-	ret = camel_message_info_user_tag (rmi, id);
+	ret = camel_message_info_get_user_tag (rmi, id);
 	camel_message_info_unref (rmi);
 
 	return ret;
@@ -163,7 +163,7 @@ vee_summary_notify_mi_changed (CamelVeeFolder *vfolder,
 
 	changes = camel_folder_change_info_new ();
 
-	camel_folder_change_info_change_uid (changes, camel_message_info_uid (mi));
+	camel_folder_change_info_change_uid (changes, camel_message_info_get_uid (mi));
 	camel_folder_changed (CAMEL_FOLDER (vfolder), changes);
 	camel_folder_change_info_free (changes);
 }

@@ -216,7 +216,7 @@ gchar *camel_maildir_summary_info_to_name (const CamelMaildirMessageInfo *info)
 	gchar *p, *buf;
 	gint i;
 
-	uid = camel_message_info_uid (info);
+	uid = camel_message_info_get_uid (info);
 	buf = g_alloca (strlen (uid) + strlen (CAMEL_MAILDIR_FLAG_SEP_S "2,") + G_N_ELEMENTS (flagbits) + 1);
 	p = buf + sprintf (buf, "%s" CAMEL_MAILDIR_FLAG_SEP_S "2,", uid);
 	for (i = 0; i < G_N_ELEMENTS (flagbits); i++) {
@@ -300,11 +300,11 @@ maildir_summary_add (CamelLocalSummary *cls,
 			/* Inherit the Received date from the passed-in info only if it is set and
 			   the new message info doesn't have it set or it's set to the default
 			   value, derived from the message UID. */
-			if (camel_message_info_date_received (info) > 0 &&
-			    (camel_message_info_date_received (mi) <= 0 ||
-			    (camel_message_info_uid (mi) &&
-			     camel_message_info_date_received (mi) == strtoul (camel_message_info_uid (mi), NULL, 10))))
-				mi->info.info.date_received = camel_message_info_date_received (info);
+			if (camel_message_info_get_date_received (info) > 0 &&
+			    (camel_message_info_get_date_received (mi) <= 0 ||
+			    (camel_message_info_get_uid (mi) &&
+			     camel_message_info_get_date_received (mi) == strtoul (camel_message_info_get_uid (mi), NULL, 10))))
+				mi->info.info.date_received = camel_message_info_get_date_received (info);
 		}
 	}
 
@@ -325,7 +325,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 	if (mi) {
 		mdi = (CamelMaildirMessageInfo *) mi;
 
-		uid = camel_message_info_uid (mi);
+		uid = camel_message_info_get_uid (mi);
 		if (uid == NULL || uid[0] == 0)
 			mdi->info.info.uid = camel_pstring_add (camel_folder_summary_next_uid_string (s), TRUE);
 
@@ -339,7 +339,7 @@ message_info_new_from_header (CamelFolderSummary *s,
 
 		if (mdi->info.info.date_received <= 0) {
 			/* with maildir we know the real received date, from the filename */
-			mdi->info.info.date_received = strtoul (camel_message_info_uid (mi), NULL, 10);
+			mdi->info.info.date_received = strtoul (camel_message_info_get_uid (mi), NULL, 10);
 		}
 
 		if (mds->priv->current_file) {
@@ -569,7 +569,7 @@ remove_summary (gchar *key,
 {
 	d (printf ("removing message %s from summary\n", key));
 	if (rd->cls->index)
-		camel_index_delete_name (rd->cls->index, camel_message_info_uid (info));
+		camel_index_delete_name (rd->cls->index, camel_message_info_get_uid (info));
 	if (rd->changes)
 		camel_folder_change_info_remove_uid (rd->changes, key);
 	camel_folder_summary_remove ((CamelFolderSummary *) rd->cls, info);
@@ -630,7 +630,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	for (i = 0; known_uids && i < known_uids->len; i++) {
 		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
 		if (info) {
-			g_hash_table_insert (left, (gchar *) camel_message_info_uid (info), info);
+			g_hash_table_insert (left, (gchar *) camel_message_info_get_uid (info), info);
 		}
 	}
 
@@ -823,10 +823,10 @@ maildir_summary_sync (CamelLocalSummary *cls,
 
 				/* FIXME: put this in folder_summary::remove()? */
 				if (cls->index)
-					camel_index_delete_name (cls->index, camel_message_info_uid (info));
+					camel_index_delete_name (cls->index, camel_message_info_get_uid (info));
 
-				camel_folder_change_info_remove_uid (changes, camel_message_info_uid (info));
-				removed_uids = g_list_prepend (removed_uids, (gpointer) camel_pstring_strdup (camel_message_info_uid (info)));
+				camel_folder_change_info_remove_uid (changes, camel_message_info_get_uid (info));
+				removed_uids = g_list_prepend (removed_uids, (gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)));
 			}
 			g_free (name);
 		} else if (mdi && (mdi->info.info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {

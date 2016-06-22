@@ -892,7 +892,7 @@ vee_folder_get_message_sync (CamelFolder *folder,
 	mi = (CamelVeeMessageInfo *) camel_folder_summary_get (folder->summary, uid);
 	if (mi) {
 		msg = camel_folder_get_message_sync (
-			camel_folder_summary_get_folder (mi->orig_summary), camel_message_info_uid (mi) + 8,
+			camel_folder_summary_get_folder (mi->orig_summary), camel_message_info_get_uid (mi) + 8,
 			cancellable, error);
 		camel_message_info_unref (mi);
 	} else {
@@ -1636,13 +1636,13 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
 		CamelFolder *res;
 		const CamelVeeMessageInfo *vfinfo;
 
-		vfinfo = (CamelVeeMessageInfo *) camel_folder_get_message_info (folder, camel_message_info_uid (vinfo) + 8);
+		vfinfo = (CamelVeeMessageInfo *) camel_folder_get_message_info (folder, camel_message_info_get_uid (vinfo) + 8);
 		res = camel_vee_folder_get_location ((CamelVeeFolder *) folder, vfinfo, realuid);
 		camel_message_info_unref ((CamelMessageInfo *) vfinfo);
 		return res;
 	} else {
 		if (realuid)
-			*realuid = g_strdup (camel_message_info_uid (vinfo)+8);
+			*realuid = g_strdup (camel_message_info_get_uid (vinfo)+8);
 
 		return folder;
 	}

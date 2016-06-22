@@ -177,7 +177,7 @@ check_header_in_message_info (CamelMessageInfo *info,
 		gint jj;
 
 		for (jj = 0; jj < G_N_ELEMENTS (known_headers); jj++) {
-			value = camel_message_info_ptr (info, known_headers[jj].info_key);
+			value = camel_message_info_get_ptr (info, known_headers[jj].info_key);
 			if (!value)
 				continue;
 
@@ -203,7 +203,7 @@ check_header_in_message_info (CamelMessageInfo *info,
 	for (ii = 0; ii < G_N_ELEMENTS (known_headers); ii++) {
 		found = g_ascii_strcasecmp (name, known_headers[ii].header_name) == 0;
 		if (found) {
-			value = camel_message_info_ptr (info, known_headers[ii].info_key);
+			value = camel_message_info_get_ptr (info, known_headers[ii].info_key);
 			if (known_headers[ii].info_key != CAMEL_MESSAGE_INFO_SUBJECT)
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
 			break;
@@ -240,7 +240,7 @@ check_header (struct _CamelSExp *f,
 			matched = argv[i]->type == CAMEL_SEXP_RES_STRING && argv[i]->value.string[0] == 0;
 
 		if (g_ascii_strcasecmp (name, "x-camel-mlist") == 0) {
-			const gchar *list = camel_message_info_mlist (fms->info);
+			const gchar *list = camel_message_info_get_mlist (fms->info);
 
 			if (list) {
 				for (i = 1; i < argc && !matched; i++) {
@@ -514,7 +514,7 @@ user_flag (struct _CamelSExp *f,
 	/* performs an OR of all words */
 	for (i = 0; i < argc && !truth; i++) {
 		if (argv[i]->type == CAMEL_SEXP_RES_STRING
-		    && camel_message_info_user_flag (fms->info, argv[i]->value.string)) {
+		    && camel_message_info_get_user_flag (fms->info, argv[i]->value.string)) {
 			truth = TRUE;
 			break;
 		}
@@ -538,7 +538,7 @@ system_flag (struct _CamelSExp *f,
 		camel_sexp_fatal_error (f, _("Invalid arguments to (system-flag)"));
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
-	r->value.boolean = camel_system_flag_get (camel_message_info_flags (fms->info), argv[0]->value.string);
+	r->value.boolean = camel_system_flag_get (camel_message_info_get_flags (fms->info), argv[0]->value.string);
 
 	return r;
 }
@@ -555,7 +555,7 @@ user_tag (struct _CamelSExp *f,
 	if (argc != 1 || argv[0]->type != CAMEL_SEXP_RES_STRING)
 		camel_sexp_fatal_error (f, _("Invalid arguments to (user-tag)"));
 
-	tag = camel_message_info_user_tag (fms->info, argv[0]->value.string);
+	tag = camel_message_info_get_user_tag (fms->info, argv[0]->value.string);
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
 	r->value.string = g_strdup (tag ? tag : "");
@@ -719,7 +719,7 @@ get_size (struct _CamelSExp *f,
 	CamelSExpResult *r;
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_INT);
-	r->value.number = camel_message_info_size (fms->info) / 1024;
+	r->value.number = camel_message_info_get_size (fms->info) / 1024;
 
 	return r;
 }
@@ -872,14 +872,14 @@ junk_test (struct _CamelSExp *f,
 	CamelMimeMessage *message;
 	CamelJunkStatus status;
 	const GHashTable *ht;
-	const struct _camel_header_param *node;
+	const CamelHeaderParam *node;
 	gboolean sender_is_known;
 	gboolean message_is_junk = FALSE;
 	GError *error = NULL;
 
 	/* Check if the message is already classified. */
 
-	flags = camel_message_info_flags (info);
+	flags = camel_message_info_get_flags (info);
 
 	if (flags & CAMEL_MESSAGE_JUNK) {
 		message_is_junk = TRUE;
@@ -902,11 +902,11 @@ junk_test (struct _CamelSExp *f,
 	   Do this before header test, to be able to override server-side set headers. */
 
 	sender_is_known = camel_session_lookup_addressbook (
-		fms->session, camel_message_info_from (info));
+		fms->session, camel_message_info_get_from (info));
 	if (camel_debug ("junk"))
 		printf (
 			"Sender '%s' in book? %d\n",
-			camel_message_info_from (info),
+			camel_message_info_get_from (info),
 			sender_is_known);
 	if (sender_is_known)
 		goto done;
@@ -914,7 +914,7 @@ junk_test (struct _CamelSExp *f,
 	/* Check the headers for a junk designation. */
 
 	ht = camel_session_get_junk_headers (fms->session);
-	node = camel_message_info_headers (info);
+	node = camel_message_info_get_headers (info);
 
 	while (node != NULL) {
 		const gchar *value = NULL;

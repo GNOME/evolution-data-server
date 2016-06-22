@@ -546,7 +546,7 @@ nntp_folder_expunge_sync (CamelFolder *folder,
 		uid = g_ptr_array_index (known_uids, ii);
 		info = camel_folder_summary_get (summary, uid);
 
-		if (camel_message_info_flags (info) & CAMEL_MESSAGE_DELETED) {
+		if (camel_message_info_get_flags (info) & CAMEL_MESSAGE_DELETED) {
 			camel_folder_change_info_remove_uid (changes, uid);
 			camel_folder_summary_remove (summary, info);
 		}

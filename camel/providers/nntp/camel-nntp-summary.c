@@ -274,9 +274,9 @@ add_range_xover (CamelNNTPSummary *cns,
 				camel_folder_summary_add (s, mi);
 
 				cns->high = n;
-				camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
+				camel_folder_change_info_add_uid (changes, camel_message_info_get_uid (mi));
 				if (folder_filter_recent)
-					camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
+					camel_folder_change_info_recent_uid (changes, camel_message_info_get_uid (mi));
 			}
 		}
 
@@ -379,9 +379,9 @@ add_range_head (CamelNNTPSummary *cns,
 					goto error;
 				}
 				cns->high = i;
-				camel_folder_change_info_add_uid (changes, camel_message_info_uid (mi));
+				camel_folder_change_info_add_uid (changes, camel_message_info_get_uid (mi));
 				if (folder_filter_recent)
-					camel_folder_change_info_recent_uid (changes, camel_message_info_uid (mi));
+					camel_folder_change_info_recent_uid (changes, camel_message_info_get_uid (mi));
 			}
 			if (cns->priv->uid) {
 				g_free (cns->priv->uid);

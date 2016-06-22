@@ -230,7 +230,7 @@ add_thread_results (CamelFolderThreadNode *root,
                     GHashTable *result_hash)
 {
 	while (root) {
-		g_hash_table_insert (result_hash, (gchar *) camel_message_info_uid (root->message), GINT_TO_POINTER (1));
+		g_hash_table_insert (result_hash, (gchar *) camel_message_info_get_uid (root->message), GINT_TO_POINTER (1));
 		if (root->child)
 			add_thread_results (root->child, result_hash);
 		root = root->next;
@@ -250,7 +250,7 @@ fill_thread_table (CamelFolderThreadNode *root,
                    GHashTable *id_hash)
 {
 	while (root) {
-		g_hash_table_insert (id_hash, (gchar *) camel_message_info_uid (root->message), root);
+		g_hash_table_insert (id_hash, (gchar *) camel_message_info_get_uid (root->message), root);
 		if (root->child)
 			fill_thread_table (root->child, id_hash);
 		root = root->next;
@@ -295,24 +295,24 @@ check_header (CamelSExp *sexp,
 		/* only a subset of headers are supported .. */
 		headername = argv[0]->value.string;
 		if (!g_ascii_strcasecmp (headername, "subject")) {
-			header = camel_message_info_subject (search->current);
+			header = camel_message_info_get_subject (search->current);
 		} else if (!g_ascii_strcasecmp (headername, "date")) {
 			/* FIXME: not a very useful form of the date */
 			g_snprintf (
 				strbuf, sizeof (strbuf), "%d",
-				(gint) camel_message_info_date_sent (search->current));
+				(gint) camel_message_info_get_date_sent (search->current));
 			header = strbuf;
 		} else if (!g_ascii_strcasecmp (headername, "from")) {
-			header = camel_message_info_from (search->current);
+			header = camel_message_info_get_from (search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp (headername, "to")) {
-			header = camel_message_info_to (search->current);
+			header = camel_message_info_get_to (search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp (headername, "cc")) {
-			header = camel_message_info_cc (search->current);
+			header = camel_message_info_get_cc (search->current);
 			type = CAMEL_SEARCH_TYPE_ADDRESS;
 		} else if (!g_ascii_strcasecmp (headername, "x-camel-mlist")) {
-			header = camel_message_info_mlist (search->current);
+			header = camel_message_info_get_mlist (search->current);
 			type = CAMEL_SEARCH_TYPE_MLIST;
 		} else {
 			message = get_current_message (search);
@@ -836,7 +836,7 @@ folder_search_not (CamelSExp *sexp,
 			if (search->current) {
 				gint found = FALSE;
 
-				uid = camel_message_info_uid (search->current);
+				uid = camel_message_info_get_uid (search->current);
 				for (i = 0; !found && i < v->len; i++) {
 					if (strcmp (uid, v->pdata[i]) == 0)
 						found = TRUE;
@@ -900,7 +900,7 @@ folder_search_match_all (CamelSExp *sexp,
 
 	/* we are only matching a single message?  or already inside a match-all? */
 	if (search->current) {
-		d (printf ("matching against 1 message: %s\n", camel_message_info_subject (search->current)));
+		d (printf ("matching against 1 message: %s\n", camel_message_info_get_subject (search->current)));
 
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 		r->value.boolean = FALSE;
@@ -944,7 +944,7 @@ folder_search_match_all (CamelSExp *sexp,
 		search->current = camel_folder_summary_get (search->folder->summary, v->pdata[i]);
 		if (!search->current)
 			continue;
-		uid = camel_message_info_uid (search->current);
+		uid = camel_message_info_get_uid (search->current);
 
 		if (argc > 0) {
 			r1 = camel_sexp_term_eval (sexp, argv[0]);
@@ -1069,20 +1069,20 @@ folder_search_match_threads (CamelSExp *sexp,
 		/* select messages in thread according to search criteria */
 		if (type == 4) {
 			if (node->child == NULL && node->parent == NULL)
-				g_hash_table_insert (results, (gchar *) camel_message_info_uid (node->message), GINT_TO_POINTER (1));
+				g_hash_table_insert (results, (gchar *) camel_message_info_get_uid (node->message), GINT_TO_POINTER (1));
 		} else {
 			if (type == 3) {
 				scan = node;
 				/* coverity[check_after_deref] */
 				while (scan && scan->parent) {
 					scan = scan->parent;
-					g_hash_table_insert (results, (gchar *) camel_message_info_uid (scan->message), GINT_TO_POINTER (1));
+					g_hash_table_insert (results, (gchar *) camel_message_info_get_uid (scan->message), GINT_TO_POINTER (1));
 				}
 			} else if (type == 1) {
 				while (node != NULL && node->parent)
 					node = node->parent;
 			}
-			g_hash_table_insert (results, (gchar *) camel_message_info_uid (node->message), GINT_TO_POINTER (1));
+			g_hash_table_insert (results, (gchar *) camel_message_info_get_uid (node->message), GINT_TO_POINTER (1));
 			if (node->child)
 				add_thread_results (node->child, results);
 		}
@@ -1124,14 +1124,14 @@ folder_search_body_contains (CamelSExp *sexp,
 						for (j = 0; j < words->len && truth; j++)
 							truth = match_message_index (
 								search->body_index,
-								camel_message_info_uid (search->current),
+								camel_message_info_get_uid (search->current),
 								words->words[j]->word,
 								error);
 					} else {
 						/* TODO: cache current message incase of multiple body search terms */
 						truth = match_words_message (
 							search->folder,
-							camel_message_info_uid (search->current),
+							camel_message_info_get_uid (search->current),
 							words,
 							search->priv->cancellable,
 							error);
@@ -1425,7 +1425,7 @@ folder_search_user_tag (CamelSExp *sexp,
 	r (printf ("executing user-tag\n"));
 
 	if (search->current && argc == 1)
-		value = camel_message_info_user_tag (search->current, argv[0]->value.string);
+		value = camel_message_info_get_user_tag (search->current, argv[0]->value.string);
 
 	r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_STRING);
 	r->value.string = g_strdup (value ? value : "");
@@ -1450,7 +1450,7 @@ folder_search_user_flag (CamelSExp *sexp,
 		/* performs an OR of all words */
 		for (i = 0; i < argc && !truth; i++) {
 			if (argv[i]->type == CAMEL_SEXP_RES_STRING
-			    && camel_message_info_user_flag (search->current, argv[i]->value.string)) {
+			    && camel_message_info_get_user_flag (search->current, argv[i]->value.string)) {
 				truth = TRUE;
 				break;
 			}
@@ -1479,7 +1479,7 @@ folder_search_system_flag (CamelSExp *sexp,
 		gboolean truth = FALSE;
 
 		if (argc == 1)
-			truth = camel_system_flag_get (camel_message_info_flags (search->current), argv[0]->value.string);
+			truth = camel_system_flag_get (camel_message_info_get_flags (search->current), argv[0]->value.string);
 
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 		r->value.boolean = truth;
@@ -1505,7 +1505,7 @@ folder_search_get_sent_date (CamelSExp *sexp,
 	if (search->current) {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
 
-		r->value.number = camel_message_info_date_sent (search->current);
+		r->value.number = camel_message_info_get_date_sent (search->current);
 	} else {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
@@ -1528,7 +1528,7 @@ folder_search_get_received_date (CamelSExp *sexp,
 	if (search->current) {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
 
-		r->value.number = camel_message_info_date_received (search->current);
+		r->value.number = camel_message_info_get_date_received (search->current);
 	} else {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
@@ -1588,7 +1588,7 @@ folder_search_get_size (CamelSExp *sexp,
 	/* are we inside a match-all? */
 	if (search->current) {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
-		r->value.number = camel_message_info_size (search->current) / 1024;
+		r->value.number = camel_message_info_get_size (search->current) / 1024;
 	} else {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
@@ -1611,7 +1611,7 @@ folder_search_uid (CamelSExp *sexp,
 	/* are we inside a match-all? */
 	if (search->current) {
 		gint truth = FALSE;
-		const gchar *uid = camel_message_info_uid (search->current);
+		const gchar *uid = camel_message_info_get_uid (search->current);
 
 		/* performs an OR of all words */
 		for (i = 0; i < argc && !truth; i++) {

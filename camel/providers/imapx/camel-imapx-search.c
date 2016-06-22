@@ -382,7 +382,7 @@ imapx_search_body_contains (CamelSExp *sexp,
 		const gchar *uid;
 
 		/* Limit the search to a single UID. */
-		uid = camel_message_info_uid (search->current);
+		uid = camel_message_info_get_uid (search->current);
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 
@@ -460,7 +460,7 @@ imapx_search_header_contains (CamelSExp *sexp,
 		const gchar *uid;
 
 		/* Limit the search to a single UID. */
-		uid = camel_message_info_uid (search->current);
+		uid = camel_message_info_get_uid (search->current);
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 
@@ -549,7 +549,7 @@ imapx_search_header_exists (CamelSExp *sexp,
 		const gchar *uid;
 
 		/* Limit the search to a single UID. */
-		uid = camel_message_info_uid (search->current);
+		uid = camel_message_info_get_uid (search->current);
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 

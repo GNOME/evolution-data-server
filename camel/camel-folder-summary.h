@@ -538,84 +538,73 @@ CamelMessageInfo *
 void		camel_message_info_unref	(gpointer info);
 gpointer	camel_message_info_clone	(gconstpointer info);
 
+/* These will be fully removed soon, left only for a backward compatibility */
+#define camel_message_info_ptr			camel_message_info_get_ptr
+#define camel_message_info_uint32		camel_message_info_get_uint32
+#define camel_message_info_time			camel_message_info_get_time
+#define camel_message_info_uid			camel_message_info_get_uid
+#define camel_message_info_subject		camel_message_info_get_subject
+#define camel_message_info_preview		camel_message_info_get_preview
+#define camel_message_info_from			camel_message_info_get_from
+#define camel_message_info_to			camel_message_info_get_to
+#define camel_message_info_cc			camel_message_info_get_cc
+#define camel_message_info_mlist		camel_message_info_get_mlist
+#define camel_message_info_flags		camel_message_info_get_flags
+#define camel_message_info_size			camel_message_info_get_size
+#define camel_message_info_date_sent		camel_message_info_get_date_sent
+#define camel_message_info_date_received	camel_message_info_get_date_received
+#define camel_message_info_message_id		camel_message_info_get_message_id
+#define camel_message_info_references		camel_message_info_get_references
+#define camel_message_info_user_flags		camel_message_info_get_user_flags
+#define camel_message_info_user_tags		camel_message_info_get_user_tags
+#define camel_message_info_headers		camel_message_info_get_headers
+#define camel_message_info_content		camel_message_info_get_content
+#define camel_message_info_user_flag		camel_message_info_get_user_flag
+#define camel_message_info_user_tag		camel_message_info_get_user_tag
+
 /* accessors */
-gconstpointer	camel_message_info_ptr		(const CamelMessageInfo *info,
+gconstpointer	camel_message_info_get_ptr	(gconstpointer info,
 						 gint id);
-guint32		camel_message_info_uint32	(const CamelMessageInfo *info,
+guint32		camel_message_info_get_uint32	(gconstpointer info,
 						 gint id);
-time_t		camel_message_info_time		(const CamelMessageInfo *info,
+time_t		camel_message_info_get_time	(gconstpointer info,
 						 gint id);
 
-#define camel_message_info_uid(mi) \
-	((const gchar *)((const CamelMessageInfo *) mi)->uid)
+const gchar *	camel_message_info_get_uid	(gconstpointer info);
+const gchar *	camel_message_info_get_subject	(gconstpointer info);
+const gchar *	camel_message_info_get_preview	(gconstpointer info);
+const gchar *	camel_message_info_get_from	(gconstpointer info);
+const gchar *	camel_message_info_get_to	(gconstpointer info);
 
-#define camel_message_info_subject(mi) \
-	((const gchar *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_SUBJECT))
+const gchar *	camel_message_info_get_cc	(gconstpointer info);
+const gchar *	camel_message_info_get_mlist	(gconstpointer info);
+guint32		camel_message_info_get_flags	(gconstpointer info);
+guint32		camel_message_info_get_size	(gconstpointer info);
 
-/**
- * camel_message_info_preview:
- * @mi: a #CamelMessageInfo
- *
- * FIXME Document me!
- *
- * Since: 2.28
- **/
-#define camel_message_info_preview(mi) \
-	((const gchar *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_PREVIEW))
+time_t		camel_message_info_get_date_sent
+						(gconstpointer info);
+time_t		camel_message_info_get_date_received
+						(gconstpointer info);
 
-#define camel_message_info_from(mi) \
-	((const gchar *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_FROM))
-#define camel_message_info_to(mi) \
-	((const gchar *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_TO))
-#define camel_message_info_cc(mi) \
-	((const gchar *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_CC))
-#define camel_message_info_mlist(mi) \
-	((const gchar *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_MLIST))
-
-#define camel_message_info_flags(mi) \
-	camel_message_info_uint32 ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_FLAGS)
-#define camel_message_info_size(mi) \
-	camel_message_info_uint32 ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_SIZE)
-
-#define camel_message_info_date_sent(mi) \
-	camel_message_info_time ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_DATE_SENT)
-#define camel_message_info_date_received(mi) \
-	camel_message_info_time ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_DATE_RECEIVED)
-
-#define camel_message_info_message_id(mi) \
-	((const CamelSummaryMessageID *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_MESSAGE_ID))
-#define camel_message_info_references(mi) \
-	((const CamelSummaryReferences *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_REFERENCES))
-#define camel_message_info_user_flags(mi) \
-	((const CamelFlag *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_USER_FLAGS))
-#define camel_message_info_user_tags(mi) \
-	((const CamelTag *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_USER_TAGS))
-
-/**
- * camel_message_info_headers:
- * @mi: a #CamelMessageInfo
- *
- * FIXME Document me!
- *
- * Since: 2.24
- **/
-#define camel_message_info_headers(mi) \
-	((const struct _camel_header_param *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_HEADERS))
-
-/**
- * camel_message_info_content:
- * @mi: a #CamelMessageInfo
- *
- * FIXME Document me!
- *
- * Since: 2.30
- **/
-#define camel_message_info_content(mi) \
-	((const CamelMessageContentInfo *) camel_message_info_ptr ((const CamelMessageInfo *) mi, CAMEL_MESSAGE_INFO_CONTENT))
-
-gboolean	camel_message_info_user_flag	(const CamelMessageInfo *info,
+const CamelSummaryMessageID *
+		camel_message_info_get_message_id
+						(gconstpointer info);
+const CamelSummaryReferences *
+		camel_message_info_get_references
+						(gconstpointer info);
+const CamelFlag *
+		camel_message_info_get_user_flags
+						(gconstpointer info);
+const CamelTag *
+		camel_message_info_get_user_tags
+						(gconstpointer info);
+const CamelHeaderParam *
+		camel_message_info_get_headers	(gconstpointer info);
+const CamelMessageContentInfo *
+		camel_message_info_get_content	(gconstpointer info);
+gboolean	camel_message_info_get_user_flag(gconstpointer info,
 						 const gchar *id);
-const gchar *	camel_message_info_user_tag	(const CamelMessageInfo *info,
+const gchar *	camel_message_info_get_user_tag	(gconstpointer info,
 						 const gchar *id);
 
 gboolean	camel_message_info_set_flags	(CamelMessageInfo *info,

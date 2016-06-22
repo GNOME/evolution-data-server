@@ -4534,10 +4534,10 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		const CamelFlag *flag;
 		const CamelTag *tag;
 
-		base_info->flags = camel_message_info_flags (mi);
-		base_info->size = camel_message_info_size (mi);
+		base_info->flags = camel_message_info_get_flags (mi);
+		base_info->size = camel_message_info_get_size (mi);
 
-		flag = camel_message_info_user_flags (mi);
+		flag = camel_message_info_get_user_flags (mi);
 		while (flag != NULL) {
 			if (*flag->name != '\0')
 				camel_flag_set (
@@ -4546,7 +4546,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 			flag = flag->next;
 		}
 
-		tag = camel_message_info_user_tags (mi);
+		tag = camel_message_info_get_user_tags (mi);
 		while (tag != NULL) {
 			if (*tag->name != '\0')
 				camel_tag_set (
@@ -4562,7 +4562,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		}
 
 		if (date_time <= 0)
-			date_time = camel_message_info_date_received (mi);
+			date_time = camel_message_info_get_date_received (mi);
 
 		if (date_time > 0) {
 			icaltime = icaltime_from_timet (date_time, FALSE);
@@ -4571,7 +4571,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		}
 	}
 
-	if (!camel_message_info_size (info)) {
+	if (!camel_message_info_get_size (info)) {
 		CamelStreamNull *sn = (CamelStreamNull *) camel_stream_null_new ();
 
 		camel_data_wrapper_write_to_stream_sync (
@@ -4811,7 +4811,7 @@ imapx_server_process_fetch_changes_infos (CamelIMAPXServer *is,
 			camel_imapx_mailbox_get_permanentflags (mailbox),
 			folder, FALSE)) {
 			g_mutex_lock (&is->priv->changes_lock);
-			camel_folder_change_info_change_uid (is->priv->changes, camel_message_info_uid (minfo));
+			camel_folder_change_info_change_uid (is->priv->changes, camel_message_info_get_uid (minfo));
 			g_mutex_unlock (&is->priv->changes_lock);
 		}
 
@@ -5171,9 +5171,9 @@ imapx_server_info_changed_cb (CamelIMAPXSummary *summary,
 
 	/* The UID can be NULL in case of a newly fetched message, for example when creating
 	   the message info in imapx_untagged_fetch() by camel_folder_summary_info_new_from_parser() */
-	if (camel_message_info_uid (info)) {
+	if (camel_message_info_get_uid (info)) {
 		g_hash_table_insert (changed_meanwhile,
-			(gpointer) camel_pstring_strdup (camel_message_info_uid (info)),
+			(gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)),
 			GINT_TO_POINTER (1));
 	}
 }
@@ -5447,7 +5447,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					if (ic == NULL) {
 						ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_SYNC_CHANGES, "UID STORE ");
 					}
-					send = imapx_uidset_add (&uidset, ic, camel_message_info_uid (info));
+					send = imapx_uidset_add (&uidset, ic, camel_message_info_get_uid (info));
 				}
 				if (send == 1 || (i == changed_uids->len - 1 && ic && imapx_uidset_done (&uidset, ic))) {
 					camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", flags_table[jj].name);
@@ -5494,7 +5494,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 					if (ic == NULL)
 						ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_SYNC_CHANGES, "UID STORE ");
 
-					if (imapx_uidset_add (&uidset, ic, camel_message_info_uid (info)) == 1
+					if (imapx_uidset_add (&uidset, ic, camel_message_info_get_uid (info)) == 1
 					    || (i == c->infos->len - 1 && imapx_uidset_done (&uidset, ic))) {
 						gchar *utf7;
 

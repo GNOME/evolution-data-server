@@ -120,7 +120,7 @@ struct _CamelPartitionTableClass {
 
 GType		camel_partition_table_get_type	(void);
 CamelPartitionTable *
-		camel_partition_table_new	(struct _CamelBlockFile *bs,
+		camel_partition_table_new	(CamelBlockFile *bs,
 						 camel_block_t root);
 gint		camel_partition_table_sync	(CamelPartitionTable *cpi);
 gint		camel_partition_table_add	(CamelPartitionTable *cpi,

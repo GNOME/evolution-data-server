@@ -78,15 +78,15 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		goto check_changed;
 
 	has_attachment = camel_mime_message_has_attachment (message);
-	if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
-	    ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+	if (((camel_message_info_get_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+	    ((camel_message_info_get_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
 		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
 	}
 
-	d (printf ("Appending message: uid is %s\n", camel_message_info_uid (mi)));
+	d (printf ("Appending message: uid is %s\n", camel_message_info_get_uid (mi)));
 
 	/* write it out, use the uid we got from the summary */
-	name = g_strdup_printf ("%s/%s", lf->folder_path, camel_message_info_uid (mi));
+	name = g_strdup_printf ("%s/%s", lf->folder_path, camel_message_info_get_uid (mi));
 	output_stream = camel_stream_fs_new_with_name (
 		name, O_WRONLY | O_CREAT, 0600, error);
 	if (output_stream == NULL)
@@ -103,7 +103,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 	g_free (name);
 
 	if (appended_uid)
-		*appended_uid = g_strdup(camel_message_info_uid(mi));
+		*appended_uid = g_strdup(camel_message_info_get_uid(mi));
 
 	goto check_changed;
 

@@ -531,8 +531,8 @@ local_summary_add (CamelLocalSummary *cls,
 	mi_base = (CamelMessageInfoBase *) mi;
 
 	if (info) {
-		const CamelTag *tag = camel_message_info_user_tags (info);
-		const CamelFlag *flag = camel_message_info_user_flags (info);
+		const CamelTag *tag = camel_message_info_get_user_tags (info);
+		const CamelFlag *flag = camel_message_info_get_user_flags (info);
 
 		while (flag) {
 			camel_message_info_set_user_flag (mi, flag->name, TRUE);
@@ -544,12 +544,12 @@ local_summary_add (CamelLocalSummary *cls,
 			tag = tag->next;
 		}
 
-		camel_message_info_set_flags (mi, 0xffff, camel_message_info_flags (info));
-		mi_base->size = camel_message_info_size (info);
+		camel_message_info_set_flags (mi, 0xffff, camel_message_info_get_flags (info));
+		mi_base->size = camel_message_info_get_size (info);
 	}
 
 	/* we need to calculate the size ourselves */
-	if (camel_message_info_size (mi) == 0) {
+	if (camel_message_info_get_size (mi) == 0) {
 		CamelStreamNull *sn = (CamelStreamNull *) camel_stream_null_new ();
 
 		camel_data_wrapper_write_to_stream_sync (
@@ -564,7 +564,7 @@ local_summary_add (CamelLocalSummary *cls,
 		cls, (CamelLocalMessageInfo *) mi);
 	camel_medium_set_header ((CamelMedium *) msg, "X-Evolution", xev);
 	g_free (xev);
-	camel_folder_change_info_add_uid (ci, camel_message_info_uid (mi));
+	camel_folder_change_info_add_uid (ci, camel_message_info_get_uid (mi));
 
 	return mi;
 }
@@ -583,7 +583,7 @@ local_summary_encode_x_evolution (CamelLocalSummary *cls,
 
 	/* FIXME: work out what to do with uid's that aren't stored here? */
 	/* FIXME: perhaps make that a mbox folder only issue?? */
-	p = uidstr = camel_message_info_uid (mi);
+	p = uidstr = camel_message_info_get_uid (mi);
 	while (*p && isdigit (*p))
 		p++;
 	if (*p == 0 && sscanf (uidstr, "%u", &uid) == 1) {
@@ -759,11 +759,11 @@ message_info_new_from_header (CamelFolderSummary *s,
 		if (cls->index
 		    && (doindex
 			|| cls->index_force
-			|| !camel_index_has_name (cls->index, camel_message_info_uid (mi)))) {
-			d (printf ("Am indexing message %s\n", camel_message_info_uid (mi)));
+			|| !camel_index_has_name (cls->index, camel_message_info_get_uid (mi)))) {
+			d (printf ("Am indexing message %s\n", camel_message_info_get_uid (mi)));
 			camel_folder_summary_set_index (s, cls->index);
 		} else {
-			d (printf ("Not indexing message %s\n", camel_message_info_uid (mi)));
+			d (printf ("Not indexing message %s\n", camel_message_info_get_uid (mi)));
 			camel_folder_summary_set_index (s, NULL);
 		}
 	}

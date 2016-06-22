@@ -642,7 +642,7 @@ imapx_get_message_sync (CamelFolder *folder,
 			CamelMessageFlags flags;
 			gboolean has_attachment;
 
-			flags = camel_message_info_flags (mi);
+			flags = camel_message_info_get_flags (mi);
 			has_attachment = camel_mime_message_has_attachment (msg);
 			if (((flags & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
 			    ((flags & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {

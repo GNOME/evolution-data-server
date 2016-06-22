@@ -718,7 +718,7 @@ folder_get_message_flags (CamelFolder *folder,
 	if (info == NULL)
 		return 0;
 
-	flags = camel_message_info_flags (info);
+	flags = camel_message_info_get_flags (info);
 	camel_message_info_unref (info);
 
 	return flags;
@@ -759,7 +759,7 @@ folder_get_message_user_flag (CamelFolder *folder,
 	if (info == NULL)
 		return FALSE;
 
-	ret = camel_message_info_user_flag (info, name);
+	ret = camel_message_info_get_user_flag (info, name);
 	camel_message_info_unref (info);
 
 	return ret;
@@ -797,7 +797,7 @@ folder_get_message_user_tag (CamelFolder *folder,
 	if (info == NULL)
 		return NULL;
 
-	ret = camel_message_info_user_tag (info, name);
+	ret = camel_message_info_get_user_tag (info, name);
 	camel_message_info_unref (info);
 
 	return ret;

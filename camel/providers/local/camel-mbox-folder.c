@@ -180,11 +180,11 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	if (mi == NULL)
 		goto fail;
 
-	d (printf ("Appending message: uid is %s\n", camel_message_info_uid (mi)));
+	d (printf ("Appending message: uid is %s\n", camel_message_info_get_uid (mi)));
 
 	has_attachment = camel_mime_message_has_attachment (message);
-	if (((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
-	    ((camel_message_info_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
+	if (((camel_message_info_get_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) && !has_attachment) ||
+	    ((camel_message_info_get_flags (mi) & CAMEL_MESSAGE_ATTACHMENTS) == 0 && has_attachment)) {
 		camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
 	}
 
@@ -253,7 +253,7 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	}
 
 	if (appended_uid)
-		*appended_uid = g_strdup(camel_message_info_uid(mi));
+		*appended_uid = g_strdup(camel_message_info_get_uid(mi));
 
 	return TRUE;
 
