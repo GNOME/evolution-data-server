@@ -3337,7 +3337,7 @@ e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 	}
 
 	e_sexp_result_free (sexp, r);
-	e_sexp_unref (sexp);
+	g_object_unref (sexp);
 
 	return retval;
 }
@@ -4012,13 +4012,13 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 	e_sexp_input_text (sexp, query, strlen (query));
 
 	if (e_sexp_parse (sexp) == -1) {
-		e_sexp_unref (sexp);
+		g_object_unref (sexp);
 		return NULL;
 	}
 
 	r = e_sexp_eval (sexp);
 	if (!r) {
-		e_sexp_unref (sexp);
+		g_object_unref (sexp);
 		return NULL;
 	}
 
@@ -4033,7 +4033,7 @@ sexp_to_sql_query (EBookBackendSqliteDB *ebsdb,
 	}
 
 	e_sexp_result_free (sexp, r);
-	e_sexp_unref (sexp);
+	g_object_unref (sexp);
 
 	return res;
 }

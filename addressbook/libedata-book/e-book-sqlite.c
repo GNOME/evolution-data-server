@@ -4561,7 +4561,7 @@ query_preflight_initialize (PreflightContext *context,
 		e_sexp_result_free (sexp_parser, result);
 	}
 
-	e_sexp_unref (sexp_parser);
+	g_object_unref (sexp_parser);
 
 	EBSQL_NOTE (
 		PREFLIGHT,

@@ -776,14 +776,14 @@ e_book_query_from_string (const gchar *query_string)
 	e_sexp_input_text (sexp, query_string, strlen (query_string));
 
 	if (e_sexp_parse (sexp) == -1) {
-		g_warning ("%s: Error in parsing: %s", G_STRFUNC, sexp->error);
+		g_warning ("%s: Error in parsing: %s", G_STRFUNC, e_sexp_get_error (sexp));
 		return NULL;
 	}
 
 	r = e_sexp_eval (sexp);
 
 	e_sexp_result_free (sexp, r);
-	e_sexp_unref (sexp);
+	g_object_unref (sexp);
 
 	if (list && list->next == NULL) {
 		retval = list->data;

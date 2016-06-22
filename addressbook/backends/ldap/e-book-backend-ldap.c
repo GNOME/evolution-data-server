@@ -3827,7 +3827,7 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	r = e_sexp_eval (sexp);
 
 	e_sexp_result_free (sexp, r);
-	e_sexp_unref (sexp);
+	g_object_unref (sexp);
 
 	if (data.list) {
 		if (data.list->next) {

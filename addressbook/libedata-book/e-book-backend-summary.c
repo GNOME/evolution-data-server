@@ -1025,7 +1025,7 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
 	esexp_error = e_sexp_parse (sexp);
 
 	if (esexp_error == -1) {
-		e_sexp_unref (sexp);
+		g_object_unref (sexp);
 		return FALSE;
 	}
 
@@ -1035,7 +1035,7 @@ e_book_backend_summary_is_summary_query (EBookBackendSummary *summary,
 
 	e_sexp_result_free (sexp, r);
 
-	e_sexp_unref (sexp);
+	g_object_unref (sexp);
 
 	return retval;
 }
@@ -1289,7 +1289,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary,
 
 	e_sexp_result_free (sexp, r);
 
-	e_sexp_unref (sexp);
+	g_object_unref (sexp);
 
 	return retval;
 }

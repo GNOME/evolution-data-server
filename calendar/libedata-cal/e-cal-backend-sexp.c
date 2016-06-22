@@ -1102,7 +1102,7 @@ cal_backend_sexp_finalize (GObject *object)
 
 	priv = E_CAL_BACKEND_SEXP_GET_PRIVATE (object);
 
-	e_sexp_unref (priv->search_sexp);
+	g_object_unref (priv->search_sexp);
 	g_free (priv->text);
 	g_free (priv->search_context);
 	g_mutex_clear (&priv->search_context_lock);
@@ -1203,7 +1203,7 @@ e_cal_backend_sexp_new (const gchar *text)
 	if (e_sexp_parse (sexp->priv->search_sexp) == -1) {
 		g_warning (
 			"%s: Error in parsing: %s",
-			G_STRFUNC, sexp->priv->search_sexp->error);
+			G_STRFUNC, e_sexp_get_error (sexp->priv->search_sexp));
 		g_object_unref (sexp);
 		sexp = NULL;
 	}

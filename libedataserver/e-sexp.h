@@ -24,32 +24,20 @@
 #include <time.h>
 #include <glib.h>
 
-/* Don't define E_SEXP_IS_G_OBJECT as this object is now used by camel */
-
-#ifdef E_SEXP_IS_G_OBJECT
 #include <glib-object.h>
-#endif
 
-#ifdef E_SEXP_IS_G_OBJECT
 #define E_TYPE_SEXP            (e_sexp_get_type ())
 #define E_SEXP(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), E_TYPE_SEXP, ESExp))
 #define E_SEXP_CLASS(cls)      (G_TYPE_CHECK_CLASS_CAST ((cls), E_TYPE_SEXP, ESExpClass))
-#define IS_E_SEXP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SEXP))
-#define IS_E_SEXP_CLASS(cls)   (G_TYPE_CHECK_CLASS_TYPE ((cls), E_TYPE_SEXP))
+#define E_IS_SEXP(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), E_TYPE_SEXP))
+#define E_IS_SEXP_CLASS(cls)   (G_TYPE_CHECK_CLASS_TYPE ((cls), E_TYPE_SEXP))
 #define E_SEXP_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), E_TYPE_SEXP, ESExpClass))
-#else
-#define E_TYPE_SEXP            (0)
-#define E_SEXP(obj)            ((struct _ESExp *) (obj))
-#define E_SEXP_CLASS(cls)      ((struct _ESExpClass *) (cls))
-#define IS_E_SEXP(obj)         (1)
-#define IS_E_SEXP_CLASS(obj)   (1)
-#define E_SEXP_GET_CLASS(obj)  (NULL)
-#endif
 
 G_BEGIN_DECLS
 
-typedef struct _ESExp      ESExp;
-typedef struct _ESExpClass ESExpClass;
+typedef struct _ESExp        ESExp;
+typedef struct _ESExpClass   ESExpClass;
+typedef struct _ESExpPrivate ESExpPrivate;
 
 typedef struct _ESExpSymbol ESExpSymbol;
 typedef struct _ESExpResult ESExpResult;
@@ -123,76 +111,79 @@ struct _ESExpTerm {
 };
 
 struct _ESExp {
-#ifdef E_SEXP_IS_G_OBJECT
 	GObject parent_object;
-#else
-	gint refcount;
-#endif
-	GScanner *scanner;	/* for parsing text version */
-	ESExpTerm *tree;	/* root of expression tree */
 
-	/* private stuff */
-	jmp_buf failenv;
-	gchar *error;
-	GSList *operators;
-
-	/* TODO: may also need a pool allocator for term strings, so we dont lose them
-	 * in error conditions? */
-	struct _EMemChunk *term_chunks;
-	struct _EMemChunk *result_chunks;
+	ESExpPrivate *priv;
 };
 
 struct _ESExpClass {
-#ifdef E_SEXP_IS_G_OBJECT
 	GObjectClass parent_class;
-#else
-	gint dummy;
-#endif
 };
 
-#ifdef E_SEXP_IS_G_OBJECT
 GType           e_sexp_get_type		(void);
-#endif
 ESExp	       *e_sexp_new		(void);
-#ifdef E_SEXP_IS_G_OBJECT
-#define         e_sexp_ref(f)           g_object_ref (f)
-#define         e_sexp_unref(f)         g_object_unref (f)
-#else
-void		e_sexp_ref		(ESExp *f);
-void		e_sexp_unref		(ESExp *f);
-#endif
-void		e_sexp_add_function	(ESExp *f, gint scope, const gchar *name, ESExpFunc *func, gpointer data);
-void		e_sexp_add_ifunction	(ESExp *f, gint scope, const gchar *name, ESExpIFunc *func, gpointer data);
-void		e_sexp_add_variable	(ESExp *f, gint scope, gchar *name, ESExpTerm *value);
-void		e_sexp_remove_symbol	(ESExp *f, gint scope, const gchar *name);
-gint		e_sexp_set_scope	(ESExp *f, gint scope);
+void		e_sexp_add_function	(ESExp *sexp,
+					 gint scope,
+					 const gchar *name,
+					 ESExpFunc *func,
+					 gpointer data);
+void		e_sexp_add_ifunction	(ESExp *sexp,
+					 gint scope,
+					 const gchar *name,
+					 ESExpIFunc *func,
+					 gpointer data);
+void		e_sexp_add_variable	(ESExp *sexp,
+					 gint scope,
+					 gchar *name,
+					 ESExpTerm *value);
+void		e_sexp_remove_symbol	(ESExp *sexp,
+					 gint scope,
+					 const gchar *name);
+gint		e_sexp_set_scope	(ESExp *sexp,
+					 gint scope);
 
-void		e_sexp_input_text	(ESExp *f, const gchar *text, gint len);
-void		e_sexp_input_file	(ESExp *f, gint fd);
+void		e_sexp_input_text	(ESExp *sexp,
+					 const gchar *text,
+					 gint len);
+void		e_sexp_input_file	(ESExp *sexp,
+					 gint fd);
 
-gint		e_sexp_parse		(ESExp *f);
-ESExpResult    *e_sexp_eval		(ESExp *f);
+gint		e_sexp_parse		(ESExp *sexp);
+ESExpResult    *e_sexp_eval		(ESExp *sexp);
 
-ESExpResult    *e_sexp_term_eval	(struct _ESExp *f, struct _ESExpTerm *t);
-ESExpResult    *e_sexp_result_new	(struct _ESExp *f, gint type);
-void		e_sexp_result_free	(struct _ESExp *f, struct _ESExpResult *t);
+ESExpResult    *e_sexp_term_eval	(ESExp *sexp,
+					 ESExpTerm *t);
+ESExpResult    *e_sexp_result_new	(ESExp *sexp,
+					 gint type);
+void		e_sexp_result_free	(ESExp *sexp,
+					 ESExpResult *t);
 
 /* used in normal functions if they have to abort, to free their arguments */
-void		e_sexp_resultv_free	(struct _ESExp *f, gint argc, struct _ESExpResult **argv);
+void		e_sexp_resultv_free	(ESExp *sexp,
+					 gint argc,
+					 ESExpResult **argv);
 
 /* utility functions for creating s-exp strings. */
-void		e_sexp_encode_bool	(GString *s, gboolean state);
-void		e_sexp_encode_string	(GString *s, const gchar *string);
+void		e_sexp_encode_bool	(GString *s,
+					 gboolean state);
+void		e_sexp_encode_string	(GString *s,
+					 const gchar *string);
 
 /* only to be called from inside a callback to signal a fatal execution error */
-void		e_sexp_fatal_error	(struct _ESExp *f, const gchar *why, ...) G_GNUC_NORETURN;
+void		e_sexp_fatal_error	(ESExp *sexp,
+					 const gchar *why,
+					 ...) G_GNUC_NORETURN;
 
 /* return the error string */
-const gchar     *e_sexp_error		(struct _ESExp *f);
+const gchar *	e_sexp_get_error	(ESExp *sexp);
 
-ESExpTerm * e_sexp_parse_value (ESExp *f);
+ESExpTerm * 	e_sexp_parse_value	(ESExp *sexp);
 
-gboolean	e_sexp_evaluate_occur_times	(ESExp *f, time_t *start, time_t *end);
+gboolean	e_sexp_evaluate_occur_times
+					(ESExp *sexp,
+					 time_t *start,
+					 time_t *end);
+
 G_END_DECLS
 
 #endif /* _E_SEXP_H */
