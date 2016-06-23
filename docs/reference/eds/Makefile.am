@@ -28,11 +28,27 @@ DOC_SOURCE_DIR = \
 	$(top_srcdir)/calendar/libedata-cal		\
 	$(top_srcdir)/tests/test-server-utils
 
+# Exceptions, files which should not be documented
+IGNORE_HFILES = \
+	e-alphabet-index-private.h	\
+	e-backend-enumtypes.h		\
+	e-book-enumtypes.h		\
+	e-book-contacts-enumtypes.h	\
+	e-cal-enumtypes.h		\
+	e-client-private.h		\
+	e-data-cal-types.h		\
+	e-phone-number-private.h	\
+	e-source-enumtypes.h		\
+	e-transliterator-private.h	\
+	libedataserver-private.h	\
+	ximian-vcard.h
+	$(NULL)
+
 # Extra options to pass to gtkdoc-scangobj. Not normally needed.
 SCANGOBJ_OPTIONS =
 
 # Extra options to supply to gtkdoc-scan
-SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
+SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED" --rebuild-sections --rebuild-types
 
 # Extra options to supply to gtkdoc-mkdb
 # We must enable the SGML mode so that we can have HTML tables
@@ -72,20 +88,6 @@ CFILE_GLOB = \
 	$(top_srcdir)/calendar/libecal/*.c		\
 	$(top_srcdir)/calendar/libedata-cal/*.c		\
 	$(top_srcdir)/tests/test-server-utils/*.c
-
-# Exceptions, files which should not be documented
-LIBEBOOK_IGNORE_FILES =	\
-	e-book-enumtypes.h		\
-	e-book-contacts-enumtypes.h	\
-	e-phone-number-private.h
-
-LIBECAL_IGNORE_FILES = \
-	e-cal-enumtypes.h		\
-	e-data-cal-types.h
-
-IGNORE_HFILES = config.h \
-	$(LIBEBOOK_IGNORE_FILES)	\
-	$(LIBECAL_IGNORE_FILES)
 
 HTML_IMAGES = \
 	$(IMAGE_DIR)/cursor-positions.png		\
@@ -138,11 +140,18 @@ GTKDOC_LIBS = \
 	$(CAMEL_LIBS) $(E_DATA_SERVER_LIBS) $(E_BACKEND_LIBS)			\
 	$(EVOLUTION_ADDRESSBOOK_LIBS) $(EVOLUTION_CALENDAR_LIBS)
 
+GITIGNOREFILES = \
+	$(DOC_MODULE)-overrides.txt \
+	$(DOC_MODULE)-sections.txt \
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).types \
+	$(NULL)
+
 eds-cursor-example.sgml: eds-cursor-example.sgml.in
 	sed -e 's|\@SRCDIR\@|$(abs_top_srcdir)|g' $< > $(@)
 
 BUILT_SOURCES = eds-cursor-example.sgml
-DISTCLEANFILES = $(BUILT_SOURCES)
+DISTCLEANFILES = $(BUILT_SOURCES) $(GITIGNOREFILES)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make

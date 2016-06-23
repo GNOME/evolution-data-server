@@ -12,7 +12,7 @@ DOC_SOURCE_DIR = $(top_srcdir)/camel
 HTML_DIR = $(datadir)/gtk-doc/html
 
 # Extra options to supply to gtkdoc-scan
-SCAN_OPTIONS = --deprecated-guards="CAMEL_DISABLE_DEPRECATED"
+SCAN_OPTIONS = --deprecated-guards="CAMEL_DISABLE_DEPRECATED" --rebuild-sections --rebuild-types
 
 # Extra options to pass to gtkdoc-scangobj
 SCANGOBJ_OPTIONS =
@@ -64,15 +64,23 @@ IGNORE_HFILES = \
 	tests \
 	$(NULL)
 
+GITIGNOREFILES = \
+	$(DOC_MODULE)-overrides.txt \
+	$(DOC_MODULE)-sections.txt \
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).types \
+	$(NULL)
+
+DISTCLEANFILES = $(GITIGNOREFILES)
+
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
 
 # Other files to distribute
 EXTRA_DIST += \
 	$(content_files) \
+	$(GITIGNOREFILES) \
 	$(DOC_MODULE)-docs.sgml \
-	$(DOC_MODULE)-sections.txt \
-	camel.hierarchy \
 	$(NULL)
 
 #TESTS = $(GTKDOC_CHECK)

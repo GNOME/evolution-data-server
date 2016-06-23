@@ -424,7 +424,7 @@ camel_imapx_mailbox_get_separator (CamelIMAPXMailbox *mailbox)
  *
  * Returns: the mailbox name as folder path.
  *
- * Since: 3.12.1
+ * Since: 3.16
  **/
 gchar *
 camel_imapx_mailbox_dup_folder_path (CamelIMAPXMailbox *mailbox)

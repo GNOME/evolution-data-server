@@ -10,21 +10,16 @@
 
   <chapter>
     <title>D-Bus API Reference</title>
-    <xi:include href="xml/e-dbus-object.xml"/>
-    <xi:include href="xml/e-dbus-source.xml"/>
-    <xi:include href="xml/e-dbus-source-removable.xml"/>
-    <xi:include href="xml/e-dbus-source-writable.xml"/>
-    <xi:include href="xml/e-dbus-source-remote-creatable.xml"/>
-    <xi:include href="xml/e-dbus-source-remote-deletable.xml"/>
-    <xi:include href="xml/e-dbus-source-oauth2-support.xml"/>
-    <xi:include href="xml/e-dbus-source-manager.xml"/>
-    <xi:include href="xml/e-dbus-object-manager-client.xml"/>
-    <xi:include href="xml/e-dbus-authenticator.xml"/>
-    <xi:include href="xml/e-dbus-address-book.xml"/>
     <xi:include href="xml/e-dbus-address-book-cursor.xml"/>
     <xi:include href="xml/e-dbus-address-book-factory.xml"/>
-    <xi:include href="xml/e-dbus-calendar.xml"/>
+    <xi:include href="xml/e-dbus-address-book.xml"/>
+    <xi:include href="xml/e-dbus-authenticator.xml"/>
     <xi:include href="xml/e-dbus-calendar-factory.xml"/>
+    <xi:include href="xml/e-dbus-calendar.xml"/>
+    <xi:include href="xml/e-dbus-direct-book.xml"/>
+    <xi:include href="xml/e-dbus-source-manager.xml"/>
+    <xi:include href="xml/e-dbus-source.xml"/>
+    <xi:include href="xml/e-dbus-subprocess-backend.xml"/>
     <xi:include href="xml/e-dbus-user-prompter.xml"/>
   </chapter>
 
@@ -48,6 +43,23 @@
   <index id="api-index-full">
     <title>Index</title>
     <xi:include href="xml/api-index-full.xml"><xi:fallback /></xi:include>
+  </index>
+
+  <index id="api-index-3.18" role="3.18">
+    <title>Index of new symbols in 3.18</title>
+    <xi:include href="xml/api-index-3.18.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.16" role="3.16">
+    <title>Index of new symbols in 3.16</title>
+    <xi:include href="xml/api-index-3.16.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.10" role="3.10">
+    <title>Index of new symbols in 3.10</title>
+    <xi:include href="xml/api-index-3.10.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.8" role="3.8">
+    <title>Index of new symbols in 3.8</title>
+    <xi:include href="xml/api-index-3.8.xml"><xi:fallback /></xi:include>
   </index>
 
   <xi:include href="xml/annotation-glossary.xml"><xi:fallback /></xi:include>

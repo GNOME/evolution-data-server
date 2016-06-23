@@ -7,7 +7,7 @@ DOC_MODULE = libedbus-private
 DOC_MAIN_SGML_FILE = $(DOC_MODULE)-docs.sgml
 
 # Extra options to supply to gtkdoc-scan
-SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED"
+SCAN_OPTIONS = --deprecated-guards="EDS_DISABLE_DEPRECATED" --rebuild-sections --rebuild-types
 
 # The directory containing the source code. Relative to $(srcdir).
 DOC_SOURCE_DIR = $(top_srcdir)/private
@@ -39,8 +39,15 @@ MKDB_OPTIONS = --output-format=xml --sgml-mode --name-space=e-dbus
 $(DOC_MAIN_SGML_FILE): $(DOC_MAIN_SGML_FILE).in
 	sed -e 's|\@SRCDIR\@|$(abs_top_builddir)|g' $< > $(@)
 
+GITIGNOREFILES = \
+	$(DOC_MODULE)-overrides.txt \
+	$(DOC_MODULE)-sections.txt \
+	$(DOC_MODULE).hierarchy \
+	$(DOC_MODULE).types \
+	$(NULL)
+
 BUILT_SOURCES = $(DOC_MAIN_SGML_FILE)
-DISTCLEANFILES = $(BUILT_SOURCES)
+DISTCLEANFILES = $(BUILT_SOURCES) $(GITIGNOREFILES)
 
 # This includes the standard gtk-doc make rules, copied by gtkdocize.
 include $(top_srcdir)/gtk-doc.make
