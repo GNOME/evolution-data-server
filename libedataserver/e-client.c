@@ -1199,7 +1199,7 @@ e_client_set_online (EClient *client,
  *
  * Returns: always %TRUE
  *
- * Since: 3.2.
+ * Since: 3.2
  *
  * Deprecated: 3.8: Clients don't need to care if they're fully opened
  *                  anymore.  This function always returns %TRUE.
