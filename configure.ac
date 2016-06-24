@@ -1706,6 +1706,9 @@ AC_SUBST(privincludedir)
 privlibdir='${libdir}'/evolution-data-server
 AC_SUBST(privlibdir)
 
+privlibexecdir='${libexecdir}'/evolution-data-server
+AC_SUBST(privlibexecdir)
+
 if test "$os_win32" = yes; then
 	dnl On Win32 there is no "rpath" mechanism. We install the private
 	dnl shared libraries in $libdir, meaning the DLLs will actually be in
@@ -1919,6 +1922,9 @@ services/evolution-addressbook-factory/Makefile
 services/evolution-calendar-factory/Makefile
 services/evolution-source-registry/Makefile
 services/evolution-user-prompter/Makefile
+tools/Makefile
+tools/addressbook-export/Makefile
+tools/addressbook-export/csv2vcard
 tests/Makefile
 tests/libedata-book/Makefile
 tests/libebook/Makefile

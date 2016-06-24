@@ -24,6 +24,7 @@ SUBDIRS = \
 	calendar \
 	modules \
 	services \
+	tools \
 	tests \
 	art \
 	po \
