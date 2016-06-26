@@ -15,14 +15,14 @@
 # Jonh Wendell <jwendell@gnome.org>, 2012.
 # Enrico Nicoletto <liverig@gmail.com>, 2013, 2015.
 # Felipe Braga <fbobraga@gmail.com>, 2015.
-## Rafael Fontenelle <rafaelff@gnome.org>, 2012, 2013, 2014, 2016.
+# # Rafael Fontenelle <rafaelff@gnome.org>, 2012, 2013, 2014, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product"
 "=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-05-31 22:21+0000\n"
-"PO-Revision-Date: 2016-06-17 22:06-0200\n"
+"POT-Creation-Date: 2016-06-24 10:21+0000\n"
+"PO-Revision-Date: 2016-06-26 18:33-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -75,8 +75,8 @@ msgstr "Foi tentado modificar o contato \"%s\" com revisão sem sincronia"
 #: ../addressbook/backends/file/e-book-backend-file.c:1475
 #: ../addressbook/backends/file/e-book-backend-file.c:1560
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
-#: ../addressbook/libedata-book/e-book-sqlite.c:7332
-#: ../addressbook/libedata-book/e-book-sqlite.c:7401
+#: ../addressbook/libedata-book/e-book-sqlite.c:7342
+#: ../addressbook/libedata-book/e-book-sqlite.c:7411
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "O contato \"%s\" não foi encontrado"
@@ -996,18 +996,18 @@ msgid "Client disappeared"
 msgstr "O cliente desapareceu"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:905
-#: ../addressbook/libedata-book/e-book-sqlite.c:2229
+#: ../addressbook/libedata-book/e-book-sqlite.c:2254
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Ocorreu erro ao inspecionar campo de resumo \"%s\" desconhecido"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
-#: ../addressbook/libedata-book/e-book-sqlite.c:1368
+#: ../addressbook/libedata-book/e-book-sqlite.c:1393
 msgid "Error parsing regular expression"
 msgstr "Erro ao analisar expressão regular"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../addressbook/libedata-book/e-book-sqlite.c:1852 ../camel/camel-db.c:751
+#: ../addressbook/libedata-book/e-book-sqlite.c:1877 ../camel/camel-db.c:751
 #, c-format
 msgid "Insufficient memory"
 msgstr "Memória insuficiente"
@@ -1018,7 +1018,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "Campo de contato \"%d\" inválido especificado no resumo"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
-#: ../addressbook/libedata-book/e-book-sqlite.c:579
+#: ../addressbook/libedata-book/e-book-sqlite.c:604
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1038,7 +1038,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4307
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4400
-#: ../addressbook/libedata-book/e-book-sqlite.c:5807
+#: ../addressbook/libedata-book/e-book-sqlite.c:5817
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "A consulta contém elementos sem suporte"
@@ -1103,7 +1103,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Não é possível ordenar por um campo que pode ter múltiplos valores"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: ../addressbook/libedata-book/e-book-sqlite.c:8106
+#: ../addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1113,7 +1113,7 @@ msgstr ""
 "lista de contatos"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6226
-#: ../addressbook/libedata-book/e-book-sqlite.c:8114
+#: ../addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1122,12 +1122,12 @@ msgstr ""
 "Tentou mover um cursor para frente, mas o cursor já estava no fim da lista "
 "de contatos"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:570
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Campo de contato \"%d\" sem suporte especificado no resumo"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1925
+#: ../addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1136,21 +1136,21 @@ msgstr ""
 "dados legado com mais de um catálogo de endereços. Exclua um dos registros "
 "na tabela \"folder\" primeiro."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5800
+#: ../addressbook/libedata-book/e-book-sqlite.c:5810
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Consulta inválida: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5975
+#: ../addressbook/libedata-book/e-book-sqlite.c:5985
 msgid "Invalid query for EbSqlCursor"
 msgstr "Consulta inválida de EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7928
+#: ../addressbook/libedata-book/e-book-sqlite.c:7938
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Ao menos um campo de ordenação deve ser especificado para usar um EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7946
+#: ../addressbook/libedata-book/e-book-sqlite.c:7956
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Não foi possível ordenar por um campo que não é um tipo string"
 
@@ -1555,7 +1555,6 @@ msgid "Protocol not supported"
 msgstr "Não há suporte ao protocolo"
 
 #: ../calendar/libecal/e-cal.c:2326
-#| msgid "Operation has been canceled"
 msgid "Operation has been cancelled"
 msgstr "A operação foi cancelada"
 
@@ -1605,127 +1604,127 @@ msgstr "Não é possível modificar o valor da propriedade da agenda \"%s\""
 msgid "Untitled appointment"
 msgstr "Compromisso sem nome"
 
-#: ../calendar/libecal/e-cal-recur.c:4744
+#: ../calendar/libecal/e-cal-recur.c:4739
 msgid "1st"
 msgstr "1º de"
 
-#: ../calendar/libecal/e-cal-recur.c:4745
+#: ../calendar/libecal/e-cal-recur.c:4740
 msgid "2nd"
 msgstr "2 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4746
+#: ../calendar/libecal/e-cal-recur.c:4741
 msgid "3rd"
 msgstr "3 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4747
+#: ../calendar/libecal/e-cal-recur.c:4742
 msgid "4th"
 msgstr "4 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4748
+#: ../calendar/libecal/e-cal-recur.c:4743
 msgid "5th"
 msgstr "5 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4749
+#: ../calendar/libecal/e-cal-recur.c:4744
 msgid "6th"
 msgstr "6 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4750
+#: ../calendar/libecal/e-cal-recur.c:4745
 msgid "7th"
 msgstr "7 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4751
+#: ../calendar/libecal/e-cal-recur.c:4746
 msgid "8th"
 msgstr "8 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4752
+#: ../calendar/libecal/e-cal-recur.c:4747
 msgid "9th"
 msgstr "9 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4753
+#: ../calendar/libecal/e-cal-recur.c:4748
 msgid "10th"
 msgstr "10 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4754
+#: ../calendar/libecal/e-cal-recur.c:4749
 msgid "11th"
 msgstr "11 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4755
+#: ../calendar/libecal/e-cal-recur.c:4750
 msgid "12th"
 msgstr "12 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4756
+#: ../calendar/libecal/e-cal-recur.c:4751
 msgid "13th"
 msgstr "13 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4757
+#: ../calendar/libecal/e-cal-recur.c:4752
 msgid "14th"
 msgstr "14 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4758
+#: ../calendar/libecal/e-cal-recur.c:4753
 msgid "15th"
 msgstr "15 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4759
+#: ../calendar/libecal/e-cal-recur.c:4754
 msgid "16th"
 msgstr "16 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4760
+#: ../calendar/libecal/e-cal-recur.c:4755
 msgid "17th"
 msgstr "17 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4761
+#: ../calendar/libecal/e-cal-recur.c:4756
 msgid "18th"
 msgstr "18 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4762
+#: ../calendar/libecal/e-cal-recur.c:4757
 msgid "19th"
 msgstr "19 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4763
+#: ../calendar/libecal/e-cal-recur.c:4758
 msgid "20th"
 msgstr "20 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4764
+#: ../calendar/libecal/e-cal-recur.c:4759
 msgid "21st"
 msgstr "21 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4765
+#: ../calendar/libecal/e-cal-recur.c:4760
 msgid "22nd"
 msgstr "22 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4766
+#: ../calendar/libecal/e-cal-recur.c:4761
 msgid "23rd"
 msgstr "23 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4767
+#: ../calendar/libecal/e-cal-recur.c:4762
 msgid "24th"
 msgstr "24 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4768
+#: ../calendar/libecal/e-cal-recur.c:4763
 msgid "25th"
 msgstr "25 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4769
+#: ../calendar/libecal/e-cal-recur.c:4764
 msgid "26th"
 msgstr "26 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4770
+#: ../calendar/libecal/e-cal-recur.c:4765
 msgid "27th"
 msgstr "27 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4771
+#: ../calendar/libecal/e-cal-recur.c:4766
 msgid "28th"
 msgstr "28 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4772
+#: ../calendar/libecal/e-cal-recur.c:4767
 msgid "29th"
 msgstr "29 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4773
+#: ../calendar/libecal/e-cal-recur.c:4768
 msgid "30th"
 msgstr "30 de"
 
-#: ../calendar/libecal/e-cal-recur.c:4774
+#: ../calendar/libecal/e-cal-recur.c:4769
 msgid "31st"
 msgstr "31 de"
 
@@ -1833,9 +1832,9 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"\"%s\" espera que o primeiro argumento seja um de \"any\", \"summary\", ou \""
-"description\", ou \"location\", ou \"attendee\", ou \"organizer\", ou \""
-"classification\""
+"\"%s\" espera que o primeiro argumento seja um de \"any\", \"summary\", ou "
+"\"description\", ou \"location\", ou \"attendee\", ou \"organizer\", ou "
+"\"classification\""
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:885
 #, c-format
@@ -2129,22 +2128,22 @@ msgstr "Não tem suporte a informação de cota para a pasta \"%s\""
 msgid "Filtering folder '%s'"
 msgstr "Filtrando pasta \"%s\""
 
-#: ../camel/camel-folder.c:2896
+#: ../camel/camel-folder.c:2897
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Excluindo pasta \"%s\""
 
-#: ../camel/camel-folder.c:3027
+#: ../camel/camel-folder.c:3028
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Recuperando mensagem \"%s\" em %s"
 
-#: ../camel/camel-folder.c:3218
+#: ../camel/camel-folder.c:3219
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Recuperando informação de cota para \"%s\""
 
-#: ../camel/camel-folder.c:3515
+#: ../camel/camel-folder.c:3516
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Atualizando pasta \"%s\""
@@ -2197,12 +2196,12 @@ msgstr ""
 "Erro ao executar expressão de pesquisa: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-summary.c:2156
+#: ../camel/camel-folder-summary.c:2168
 #, c-format
 msgid "Release unused memory for folder '%s'"
 msgstr "Liberar memória inutilizada para a pasta \"%s\""
 
-#: ../camel/camel-folder-summary.c:2368
+#: ../camel/camel-folder-summary.c:2382
 #, c-format
 msgid "Update preview data for folder '%s'"
 msgstr "Atualizar previsão de dados para a pasta \"%s\""
@@ -2385,7 +2384,8 @@ msgstr "Não foi possível executar \"fork\" para o auxiliar de bloqueio: %s"
 #: ../camel/camel-lock-client.c:218 ../camel/camel-lock-client.c:246
 #, c-format
 msgid "Could not lock '%s': protocol error with lock-helper"
-msgstr "Não foi possível bloquear \"%s\": erro de protocolo com \"lock-helper\""
+msgstr ""
+"Não foi possível bloquear \"%s\": erro de protocolo com \"lock-helper\""
 
 #: ../camel/camel-lock-client.c:234
 #, c-format
@@ -3592,7 +3592,6 @@ msgid "Sent Items"
 msgstr "Itens enviados"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2484
-#| msgid "Sending message"
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Mensagens enviadas"
@@ -3643,33 +3642,31 @@ msgid "Deleted Items"
 msgstr "Itens excluídos"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2498
-#| msgctxt "IMAPDefaults"
-#| msgid "Deleted Items"
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Mensagens excluídas"
 
-#: ../camel/providers/local/camel-local-folder.c:194
+#: ../camel/providers/local/camel-local-folder.c:190
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:204
-#: ../camel/providers/local/camel-local-folder.c:213
+#: ../camel/providers/local/camel-local-folder.c:200
+#: ../camel/providers/local/camel-local-folder.c:209
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "caixa de correio: %s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:222
+#: ../camel/providers/local/camel-local-folder.c:218
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:499
+#: ../camel/providers/local/camel-local-folder.c:495
 msgid "_Index message body data"
 msgstr "_Indexar dados do corpo da mensagem"
 
-#: ../camel/providers/local/camel-local-folder.c:727
+#: ../camel/providers/local/camel-local-folder.c:723
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3729,8 +3726,8 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Para ler e armazenar correio local em arquivos de fila mbox padrão externos."
-"\n"
+"Para ler e armazenar correio local em arquivos de fila mbox padrão "
+"externos.\n"
 "Pode também ser usado para ler uma árvore de pastas do Elm, Pine ou Mutt."
 
 #: ../camel/providers/local/camel-local-provider.c:123
@@ -4223,8 +4220,8 @@ msgstr "Você não pode copiar mensagens de uma pasta NNTP"
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
-"Mo_strar pastas usando notação reduzida (ex.: c.o.linux no lugar de "
-"comp.os.linux)"
+"Mo_strar pastas usando notação reduzida (ex.: c.o.linux no lugar de comp.os."
+"linux)"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription _dialog, show relative folder names"
@@ -4244,7 +4241,8 @@ msgstr "Notícias USENET"
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:63
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr "Este é um provedor para ler e publicar em grupos de notícias da USENET."
+msgstr ""
+"Este é um provedor para ler e publicar em grupos de notícias da USENET."
 
 #: ../camel/providers/nntp/camel-nntp-provider.c:84
 msgid ""
@@ -4273,19 +4271,16 @@ msgstr "O servidor NNTP %s retornou o código de erro %d: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:412
 #, c-format
-#| msgid "Failed to issue STARTTLS"
 msgid "Failed to issue STARTTLS for NNTP server %s: "
 msgstr "Falha ao emitir STARTTLS para servidor NNTP %s: "
 
 #: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
-#| msgid "SMTP server %s does not support %s authentication"
 msgid "NNTP server %s doesn't support STARTTLS: %s"
 msgstr "O servidor NNTP %s não oferece suporte a STARTTLS: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:443
 #, c-format
-#| msgid "Failed to connect to SMTP server %s in secure mode: "
 msgid "Failed to connect to NNTP server %s in secure mode: "
 msgstr "Falha ao conectar-se ao servidor NNTP %s em modo seguro: "
 
@@ -4905,8 +4900,8 @@ msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
-"Unidades para o lembrete de aniversário e bodas, \"minutos\", \"horas\" ou \""
-"dias\""
+"Unidades para o lembrete de aniversário e bodas, \"minutos\", \"horas\" ou "
+"\"dias\""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -5095,7 +5090,6 @@ msgstr "Não existe a fonte para o UID \"%s\""
 
 #: ../libebackend/e-subprocess-factory.c:302
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to create backend of type '%s' for source UID '%s'"
 msgstr "Falha ao criar um backend do tipo \"%s\" para UID fonte \"%s\""
 
@@ -5976,6 +5970,54 @@ msgstr "Não migre os dados do usuário de versões anteriores do Evolution"
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
 msgstr "_Descartar"
+
+#: ../tools/addressbook-export/addressbook-export.c:70
+#: ../tools/addressbook-export/addressbook-export.c:767
+#| msgid "Cannot open calendar: "
+msgid "Can not open file"
+msgstr "Não foi possível abrir o arquivo"
+
+#: ../tools/addressbook-export/addressbook-export.c:100
+#, c-format
+#| msgid "Failed to remove file '%s': %s"
+msgid "Failed to open client '%s': %s"
+msgstr "Falha ao abrir o cliente \"%s\": %s"
+
+#: ../tools/addressbook-export/addressbook-export.c:877
+#| msgid "Detailed error:"
+msgid "Unhandled error"
+msgstr "Erro não tratado"
+
+#: ../tools/addressbook-export/addressbook-export.c:910
+msgid "Specify the output file instead of standard output"
+msgstr "Especifica o arquivo de saída ao invés da saída padrão"
+
+#: ../tools/addressbook-export/addressbook-export.c:911
+msgid "OUTPUTFILE"
+msgstr "ARQUIVO-SAÍDA"
+
+#: ../tools/addressbook-export/addressbook-export.c:914
+msgid "List local address book folders"
+msgstr "Lista pastas locais de catálogo de endereços"
+
+#: ../tools/addressbook-export/addressbook-export.c:917
+msgid "Show cards as vcard or csv file"
+msgstr "Mostra cartas como arquivo vcard ou csv"
+
+#: ../tools/addressbook-export/addressbook-export.c:918
+msgid "[vcard|csv]"
+msgstr "[vcard|csv]"
+
+#: ../tools/addressbook-export/addressbook-export.c:966
+msgid ""
+"Command line arguments error, please use --help option to see the usage."
+msgstr ""
+"Erro nos argumentos de linha de comando; por favor, use a opção --help para "
+"ver o uso."
+
+#: ../tools/addressbook-export/addressbook-export.c:980
+msgid "Only support csv or vcard format."
+msgstr "Há suporte apenas aos formatos csv ou vcard."
 
 #~ msgid "Server disconnected"
 #~ msgstr "Servidor desconectado"
