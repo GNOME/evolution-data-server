@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-06-18 01:10+0000\n"
-"PO-Revision-Date: 2016-06-20 11:29+0200\n"
+"POT-Creation-Date: 2016-06-26 22:49+0000\n"
+"PO-Revision-Date: 2016-06-27 09:16+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -5967,6 +5967,55 @@ msgstr ""
 msgid "_Dismiss"
 msgstr "_Descartar"
 
+#: ../tools/addressbook-export/addressbook-export.c:70
+#: ../tools/addressbook-export/addressbook-export.c:767
+#| msgid "Cannot open message"
+msgid "Can not open file"
+msgstr "No se puede abrir el archivo"
+
+#: ../tools/addressbook-export/addressbook-export.c:100
+#, c-format
+#| msgid "Failed to remove file '%s': %s"
+msgid "Failed to open client '%s': %s"
+msgstr "Falló al abrir el cliente «%s»: %s"
+
+#: ../tools/addressbook-export/addressbook-export.c:877
+#| msgid "Detailed error:"
+msgid "Unhandled error"
+msgstr "Error no manejado"
+
+#: ../tools/addressbook-export/addressbook-export.c:910
+msgid "Specify the output file instead of standard output"
+msgstr "Especifique el archivo de salida en lugar de la salida estándar"
+
+#: ../tools/addressbook-export/addressbook-export.c:911
+msgid "OUTPUTFILE"
+msgstr "ARCHIVOSALIDA"
+
+#: ../tools/addressbook-export/addressbook-export.c:914
+#| msgid "Error loading address book: %s"
+msgid "List local address book folders"
+msgstr "Listar carpetas de libretas de direcciones"
+
+#: ../tools/addressbook-export/addressbook-export.c:917
+msgid "Show cards as vcard or csv file"
+msgstr "Mostrar tarjetas como archivos vcard o csv"
+
+#: ../tools/addressbook-export/addressbook-export.c:918
+msgid "[vcard|csv]"
+msgstr "[vcard|csv]"
+
+#: ../tools/addressbook-export/addressbook-export.c:966
+msgid ""
+"Command line arguments error, please use --help option to see the usage."
+msgstr ""
+"Error en los argumentos de la línea de comandos. Use la opción --help para "
+"ve el modo de uso."
+
+#: ../tools/addressbook-export/addressbook-export.c:980
+msgid "Only support csv or vcard format."
+msgstr "Sólo se soportan los formatos csv o vcard."
+
 #~ msgid "Failed to issue DONE"
 #~ msgstr "Falló al emitir DONE"
 
@@ -6726,9 +6775,6 @@ msgstr "_Descartar"
 #~ msgid "_Remove"
 #~ msgstr "_Quitar"
 
-#~ msgid "Error loading address book: %s"
-#~ msgstr "Error al cargar la libreta de direcciones: %s"
-
 #~ msgid "E_xpand %s Inline"
 #~ msgstr "E_xpandir %s en línea"
 
@@ -7334,9 +7380,6 @@ msgstr "_Descartar"
 
 #~ msgid "Cannot complete operation"
 #~ msgstr "No se puede completar la operación"
-
-#~ msgid "Cannot open message"
-#~ msgstr "No se pudo abrir el mensaje"
 
 #~ msgid "Canceled."
 #~ msgstr "Cancelado."
