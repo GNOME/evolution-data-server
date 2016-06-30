@@ -310,7 +310,7 @@ try_sasl (CamelPOP3Store *store,
 		goto exit;
 	}
 
-	string = g_strdup_printf ("AUTH %s\r\n", mechanism);
+	string = g_strdup_printf ("AUTH %s\r\n", g_strcmp0 (mechanism, "Google") == 0 ? "XOAUTH2" : mechanism);
 	ret = camel_stream_write_string (
 		CAMEL_STREAM (pop3_stream), string, cancellable, error);
 	g_free (string);
@@ -766,12 +766,16 @@ pop3_store_authenticate_sync (CamelService *service,
 
 	} else {
 		GList *link;
+		const gchar *test_mechanism = mechanism;
+
+		if (g_strcmp0 (test_mechanism, "Google") == 0)
+			test_mechanism = "XOAUTH2";
 
 		link = pop3_engine->auth;
 		while (link != NULL) {
 			CamelServiceAuthType *auth = link->data;
 
-			if (g_strcmp0 (auth->authproto, mechanism) == 0) {
+			if (g_strcmp0 (auth->authproto, test_mechanism) == 0) {
 				result = try_sasl (
 					store, mechanism,
 					cancellable, error);
