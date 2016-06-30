@@ -35,7 +35,7 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "storage", NULL,
 	  N_("Message Storage") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "keep-on-server", NULL,
-	  N_("_Leave messages on server"), "0" },
+	  N_("_Leave messages on server"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "delete-after-days", "keep-on-server",
 	  /* Translators: '%s' is replaced with a widget, where user can
 	   * select how many days can be message left on the server. */
