@@ -625,76 +625,6 @@ match_words_messages (CamelFolderSearch *search,
 	return matches;
 }
 
-static const gchar *
-get_default_charset (CamelMimeMessage *msg)
-{
-	CamelContentType *ct;
-	const gchar *charset;
-
-	g_return_val_if_fail (msg != NULL, NULL);
-
-	ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (msg));
-	charset = camel_content_type_param (ct, "charset");
-	if (!charset)
-		charset = "utf-8";
-
-	charset = camel_iconv_charset_name (charset);
-
-	return charset;
-}
-
-static gchar *
-get_header_decoded (const gchar *header_value,
-                    const gchar *default_charset)
-{
-	gchar *unfold, *decoded;
-
-	if (!header_value || !*header_value)
-		return NULL;
-
-	unfold = camel_header_unfold (header_value);
-	decoded = camel_header_decode_string (unfold, default_charset);
-	g_free (unfold);
-
-	return decoded;
-}
-
-static gchar *
-get_full_header (CamelMimeMessage *message,
-                 const gchar *default_charset)
-{
-	CamelMimePart *mp = CAMEL_MIME_PART (message);
-	GString *str = g_string_new ("");
-	struct _camel_header_raw *h;
-
-	for (h = mp->headers; h; h = h->next) {
-		if (h->value != NULL) {
-			g_string_append (str, h->name);
-			if (isspace (h->value[0]))
-				g_string_append (str, ":");
-			else
-				g_string_append (str, ": ");
-			if (g_ascii_strcasecmp (h->name, "From") == 0 ||
-			    g_ascii_strcasecmp (h->name, "To") == 0 ||
-			    g_ascii_strcasecmp (h->name, "CC") == 0 ||
-			    g_ascii_strcasecmp (h->name, "BCC") == 0 ||
-			    g_ascii_strcasecmp (h->name, "Subject") == 0) {
-				gchar *decoded = get_header_decoded (h->value, default_charset);
-				if (decoded)
-					g_string_append (str, decoded);
-				else
-					g_string_append (str, h->value);
-				g_free (decoded);
-			} else {
-				g_string_append (str, h->value);
-			}
-			g_string_append_c (str, '\n');
-		}
-	}
-
-	return g_string_free (str, FALSE);
-}
-
 static gint
 read_uid_callback (gpointer ref,
                    gint ncol,
@@ -1342,18 +1272,12 @@ folder_search_header_regex (CamelSExp *sexp,
 				CAMEL_SEARCH_MATCH_ICASE,
 				argc - 1, argv + 1,
 				search->priv->error) == 0) {
-			gchar *decoded = NULL;
-			const gchar *hader_name = argv[0]->value.string;
+			gchar *decoded;
+			const gchar *header_name = argv[0]->value.string;
 
-			if (g_ascii_strcasecmp (hader_name, "From") == 0 ||
-			    g_ascii_strcasecmp (hader_name, "To") == 0 ||
-			    g_ascii_strcasecmp (hader_name, "CC") == 0 ||
-			    g_ascii_strcasecmp (hader_name, "BCC") == 0 ||
-			    g_ascii_strcasecmp (hader_name, "Subject") == 0) {
-				decoded = get_header_decoded (contents, get_default_charset (msg));
-				if (decoded)
-					contents = decoded;
-			}
+			decoded = camel_search_get_header_decoded (header_name, contents, camel_search_get_default_charset_from_message (msg));
+			if (decoded)
+				contents = decoded;
 
 			r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 			regfree (&pattern);
@@ -1396,7 +1320,7 @@ folder_search_header_full_regex (CamelSExp *sexp,
 				search->priv->error) == 0) {
 			gchar *contents;
 
-			contents = get_full_header (msg, get_default_charset (msg));
+			contents = camel_search_get_all_headers_decoded (msg);
 			r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 
 			g_free (contents);

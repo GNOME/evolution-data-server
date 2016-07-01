@@ -259,8 +259,7 @@ check_header (struct _CamelSExp *f,
 			message = camel_filter_search_get_message (fms, f);
 			mime_part = CAMEL_MIME_PART (message);
 
-			/* FIXME: what about Resent-To, Resent-Cc and Resent-From? */
-			if (g_ascii_strcasecmp ("to", name) == 0 || g_ascii_strcasecmp ("cc", name) == 0 || g_ascii_strcasecmp ("from", name) == 0)
+			if (camel_search_header_is_address (name))
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
 			else if (message) {
 				ct = camel_mime_part_get_content_type (mime_part);
@@ -375,47 +374,23 @@ header_regex (struct _CamelSExp *f,
 	CamelSExpResult *r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
 	CamelMimeMessage *message;
 	regex_t pattern;
-	const gchar *contents;
+	gchar *contents = NULL;
 
 	message = camel_filter_search_get_message (fms, f);
 
 	if (argc > 1 && argv[0]->type == CAMEL_SEXP_RES_STRING
-	    && (contents = camel_medium_get_header (CAMEL_MEDIUM (message), argv[0]->value.string))
+	    && (contents = camel_search_get_header_decoded (argv[0]->value.string,
+		    camel_medium_get_header (CAMEL_MEDIUM (message), argv[0]->value.string),
+		    camel_search_get_default_charset_from_message (message)))
 	    && camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_ICASE, argc - 1, argv + 1, fms->error) == 0) {
 		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		regfree (&pattern);
 	} else
 		r->value.boolean = FALSE;
 
+	g_free (contents);
+
 	return r;
-}
-
-static gchar *
-get_full_header (CamelMimeMessage *message)
-{
-	CamelMimePart *mime_part;
-	GString *str = g_string_new ("");
-	gchar   *ret;
-	struct _camel_header_raw *h;
-
-	mime_part = CAMEL_MIME_PART (message);
-
-	for (h = mime_part->headers; h; h = h->next) {
-		if (h->value != NULL) {
-			g_string_append (str, h->name);
-			if (isspace (h->value[0]))
-				g_string_append (str, ":");
-			else
-				g_string_append (str, ": ");
-			g_string_append (str, h->value);
-			g_string_append_c (str, '\n');
-		}
-	}
-
-	ret = str->str;
-	g_string_free (str, FALSE);
-
-	return ret;
 }
 
 static CamelSExpResult *
@@ -432,7 +407,7 @@ header_full_regex (struct _CamelSExp *f,
 	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_ICASE | CAMEL_SEARCH_MATCH_NEWLINE,
 					   argc, argv, fms->error) == 0) {
 		message = camel_filter_search_get_message (fms, f);
-		contents = get_full_header (message);
+		contents = camel_search_get_all_headers_decoded (message);
 		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		g_free (contents);
 		regfree (&pattern);

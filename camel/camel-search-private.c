@@ -717,3 +717,160 @@ camel_search_words_free (struct _camel_search_words *words)
 	g_free (words);
 }
 
+/**
+ * camel_search_header_is_address:
+ * @header_name: A header name, like "Subject"
+ *
+ * Returns: Whether the @header_name is a header with a mail address
+ *
+ * Since: 3.22
+ **/
+gboolean
+camel_search_header_is_address (const gchar *header_name)
+{
+	const gchar *headers[] = {
+		"Reply-To",
+		"From",
+		"To",
+		"Cc",
+		"Bcc",
+		"Resent-From",
+		"Resent-To",
+		"Resent-Cc",
+		"Resent-Bcc",
+		NULL };
+	gint ii;
+
+	if (!header_name || !*header_name)
+		return FALSE;
+
+	for (ii = 0; headers[ii]; ii++) {
+		if (g_ascii_strcasecmp (headers[ii], header_name) == 0)
+			return TRUE;
+	}
+
+	return FALSE;
+}
+
+/**
+ * camel_search_get_default_charset_from_message:
+ * @message: a #CamelMimeMessage
+ *
+ * Returns: Default charset of the @message; if none cannot be determined,
+ *    UTF-8 is returned.
+ *
+ * Since: 3.22
+ **/
+const gchar *
+camel_search_get_default_charset_from_message (CamelMimeMessage *message)
+{
+	CamelContentType *ct;
+	const gchar *charset;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
+
+	ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
+	charset = camel_content_type_param (ct, "charset");
+	if (!charset)
+		charset = "utf-8";
+
+	charset = camel_iconv_charset_name (charset);
+
+	return charset;
+}
+
+/**
+ * camel_search_get_header_decoded:
+ * @header_name: the header name
+ * @header_value: the header value
+ * @default_charset: (nullable): the default charset to use for the decode, or %NULL
+ *
+ * Decodes @header_value, if needed, either from an address header
+ * or the Subject header. Other @header_name headers are returned
+ * as is.
+ *
+ * Returns: (transfer full): decoded header value, suitable for text comparison.
+ *    Free the returned pointer with g_free() when done with it.
+ *
+ * Since: 3.22
+ **/
+gchar *
+camel_search_get_header_decoded (const gchar *header_name,
+				 const gchar *header_value,
+				 const gchar *default_charset)
+{
+	gchar *unfold, *decoded;
+
+	if (!header_value || !*header_value)
+		return NULL;
+
+	unfold = camel_header_unfold (header_value);
+
+	if (g_ascii_strcasecmp (header_name, "Subject") == 0 ||
+	    camel_search_header_is_address (header_name)) {
+		decoded = camel_header_decode_string (unfold, default_charset);
+	} else {
+		decoded = unfold;
+		unfold = NULL;
+	}
+
+	g_free (unfold);
+
+	return decoded;
+}
+
+/**
+ * camel_search_get_all_headers_decoded:
+ * @message: a #CamelMessage
+ *
+ * Returns: (transfer full): All headers of the @message, decoded where needed.
+ *    Free the returned pointer with g_free() when done with it.
+ *
+ * Since: 3.22
+ **/
+gchar *
+camel_search_get_all_headers_decoded (CamelMimeMessage *message)
+{
+	CamelMedium *medium;
+	GString *str;
+	GArray *headers;
+	const gchar *default_charset;
+	guint ii;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
+
+	medium = CAMEL_MEDIUM (message);
+	headers = camel_medium_get_headers (medium);
+	if (!headers)
+		return NULL;
+
+	default_charset = camel_search_get_default_charset_from_message (message);
+	str = g_string_new ("");
+
+	for (ii = 0; ii < headers->len; ii++) {
+		CamelMediumHeader *header;
+		gchar *content;
+
+		header = &g_array_index (headers, CamelMediumHeader, ii);
+		if (!header->value)
+			continue;
+
+		content = camel_search_get_header_decoded (header->name, header->value, default_charset);
+		if (!content)
+			continue;
+
+		g_string_append (str, header->name);
+		if (isspace (content[0]))
+			g_string_append (str, ":");
+		else
+			g_string_append (str, ": ");
+		g_string_append (str, content);
+		g_string_append_c (str, '\n');
+
+		g_free (content);
+	}
+
+	camel_medium_free_headers (medium, headers);
+
+	return g_string_free (str, FALSE);
+}
