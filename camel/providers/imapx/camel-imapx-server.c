@@ -6358,8 +6358,15 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 	g_clear_object (&is->priv->idle_mailbox);
 	is->priv->idle_stamp++;
 
-	if (cancellable)
+	if (cancellable) {
+		g_mutex_unlock (&is->priv->idle_lock);
+
+		/* Do not hold the idle_lock here, because the callback can be called
+		   immediately, which leads to a deadlock inside it. */
 		handler_id = g_cancellable_connect (cancellable, G_CALLBACK (imapx_server_wait_idle_stop_cancelled_cb), is, NULL);
+
+		g_mutex_lock (&is->priv->idle_lock);
+	}
 
 	while (is->priv->idle_state == IMAPX_IDLE_STATE_PREPARING &&
 	       !g_cancellable_is_cancelled (cancellable)) {
