@@ -269,7 +269,7 @@ camel_stream_mem_new (void)
 
 /**
  * camel_stream_mem_new_with_buffer:
- * @buffer: a memory buffer to use as the stream data
+ * @buffer: (array length=len): a memory buffer to use as the stream data
  * @len: length of @buffer
  *
  * Create a new memory stream using @buffer as the stream data.
@@ -387,7 +387,7 @@ camel_stream_mem_set_byte_array (CamelStreamMem *mem,
 /**
  * camel_stream_mem_set_buffer:
  * @mem: a #CamelStreamMem object
- * @buffer: a memory buffer
+ * @buffer: (array length=len): a memory buffer
  * @len: length of @buffer
  *
  * Set @buffer to be the backing data to the existing #CamelStreamMem, @mem.

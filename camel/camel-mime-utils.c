@@ -179,12 +179,12 @@ static const guchar tohex[16] = {
 
 /**
  * camel_uuencode_close:
- * @in: input stream
+ * @in: (array length=len): input stream
  * @len: input stream length
- * @out: output stream
- * @uubuf: temporary buffer of 60 bytes
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been encoded
+ * @out: (inout) (array): output stream
+ * @uubuf: (inout) (array fixed-size=60): temporary buffer of 60 bytes
+ * @state: (inout): holds the number of bits that are stored in @save
+ * @save: (inout) (array length=state): leftover bits that have not yet been encoded
  *
  * Uuencodes a chunk of data. Call this when finished encoding data
  * with camel_uuencode_step() to flush off the last little bit.
@@ -263,12 +263,12 @@ camel_uuencode_close (guchar *in,
 
 /**
  * camel_uuencode_step:
- * @in: input stream
+ * @in: (array length=len): input stream
  * @len: input stream length
- * @out: output stream
- * @uubuf: temporary buffer of 60 bytes
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been encoded
+ * @out: (inout) (array): output stream
+ * @uubuf: (inout) (array fixed-size=60): temporary buffer of 60 bytes
+ * @state: (inout): holds the number of bits that are stored in @save
+ * @save: (inout) (array length=state): leftover bits that have not yet been encoded
  *
  * Uuencodes a chunk of data. Performs an 'encode step', only encodes
  * blocks of 45 characters to the output at a time, saves left-over
@@ -381,11 +381,11 @@ camel_uuencode_step (guchar *in,
 
 /**
  * camel_uudecode_step:
- * @in: input stream
+ * @in: (array length=inlen): input stream
  * @inlen: max length of data to decode
- * @out: output stream
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been decoded
+ * @out: (inout) (array): output stream
+ * @state: (inout): holds the number of bits that are stored in @save
+ * @save: (inout) (array length=state): leftover bits that have not yet been decoded
  *
  * Uudecodes a chunk of data. Performs a 'decode step' on a chunk of
  * uuencoded data. Assumes the "begin mode filename" line has
@@ -490,11 +490,11 @@ camel_uudecode_step (guchar *in,
 
 /**
  * camel_quoted_encode_close:
- * @in: input stream
+ * @in: (array length=len): input stream
  * @len: length of the input
- * @out: output string
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been encoded
+ * @out: (inout) (array): output string
+ * @state: (inout): holds the number of bits that are stored in @save
+ * @save: (inout) (array length=state): leftover bits that have not yet been encoded
  *
  * Quoted-printable encodes a block of text. Call this when finished
  * encoding data with camel_quoted_encode_step() to flush off
@@ -536,11 +536,11 @@ camel_quoted_encode_close (guchar *in,
 
 /**
  * camel_quoted_encode_step:
- * @in: input stream
+ * @in: (array length=len): input stream
  * @len: length of the input
- * @out: output string
- * @state: holds the number of bits that are stored in @save
- * @save: leftover bits that have not yet been encoded
+ * @out: (inout) (array): output string
+ * @state: (inout): holds the number of bits that are stored in @save
+ * @save: (inout) (array length=state): leftover bits that have not yet been encoded
  *
  * Quoted-printable encodes a block of text. Performs an 'encode
  * step', saves left-over state in state and save (initialise to -1 on
@@ -645,11 +645,11 @@ camel_quoted_encode_step (guchar *in,
 
 /**
  * camel_quoted_decode_step:
- * @in: input stream
+ * @in: (array length=len): input stream
  * @len: max length of data to decode
- * @out: output stream
- * @savestate: holds the number of bits that are stored in @save
- * @saveme: leftover bits that have not yet been decoded
+ * @out: (inout) (array): output stream
+ * @savestate: (inout): holds the number of bits that are stored in @saveme
+ * @saveme: (inout) (array length=savestate): leftover bits that have not yet been decoded
  *
  * Decodes a block of quoted-printable encoded data. Performs a
  * 'decode step' on a chunk of QP encoded data.

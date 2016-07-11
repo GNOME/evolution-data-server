@@ -1134,9 +1134,9 @@ camel_mime_part_new (void)
 /**
  * camel_mime_part_set_content:
  * @mime_part: a #CamelMimePart
- * @data: data to put into the part
+ * @data: (array length=length) (nullable): data to put into the part
  * @length: length of @data
- * @type: Content-Type of the data
+ * @type: (nullable): Content-Type of the data
  *
  * Utility function used to set the content of a mime part object to
  * be the provided data. If @length is 0, this routine can be used as
@@ -1353,7 +1353,7 @@ camel_mime_part_set_content_languages (CamelMimePart *mime_part,
  *
  * Get the Content-Type of a MIME part.
  *
- * Returns: the parsed #CamelContentType of the MIME part
+ * Returns: (transfer none): the parsed #CamelContentType of the MIME part
  **/
 CamelContentType *
 camel_mime_part_get_content_type (CamelMimePart *mime_part)

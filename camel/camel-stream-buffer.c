@@ -402,7 +402,7 @@ camel_stream_buffer_new (CamelStream *stream,
 /**
  * camel_stream_buffer_gets:
  * @sbf: a #CamelStreamBuffer object
- * @buf: Memory to write the string to.
+ * @buf: (out) (array): Memory to write the string to.
  * @max: Maxmimum number of characters to store.
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -480,7 +480,7 @@ camel_stream_buffer_gets (CamelStreamBuffer *sbf,
  * and returns it in allocated memory. The trailing newline (and carriage
  * return if any) are not included in the returned string.
  *
- * Returns: the line read, which the caller must free when done with,
+ * Returns: (nullable): the line read, which the caller must free when done with,
  * or %NULL on eof. If an error occurs, @error will be set.
  **/
 gchar *

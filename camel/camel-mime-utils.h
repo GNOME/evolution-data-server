@@ -35,9 +35,12 @@
 /* maximum hard size of a line from camel_header_fold() */
 #define CAMEL_FOLD_MAX_SIZE (998)
 
-#define CAMEL_UUDECODE_STATE_INIT   (0)
-#define CAMEL_UUDECODE_STATE_BEGIN  (1 << 16)
-#define CAMEL_UUDECODE_STATE_END    (1 << 17)
+typedef enum {
+	CAMEL_UUDECODE_STATE_INIT = 0,
+	CAMEL_UUDECODE_STATE_BEGIN = (1 << 16),
+	CAMEL_UUDECODE_STATE_END = (1 << 17)
+} CamelUUDecodeState;
+
 #define CAMEL_UUDECODE_STATE_MASK   (CAMEL_UUDECODE_STATE_BEGIN | CAMEL_UUDECODE_STATE_END)
 
 G_BEGIN_DECLS
@@ -75,11 +78,11 @@ typedef enum _camel_header_address_t {
 	CAMEL_HEADER_ADDRESS_NONE,	/* uninitialised */
 	CAMEL_HEADER_ADDRESS_NAME,
 	CAMEL_HEADER_ADDRESS_GROUP
-} camel_header_address_t;
+} CamelHeaderAddressType;
 
 typedef struct _camel_header_address {
 	struct _camel_header_address *next;
-	camel_header_address_t type;
+	CamelHeaderAddressType type;
 	gchar *name;
 	union {
 		gchar *addr;

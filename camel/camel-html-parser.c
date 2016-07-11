@@ -40,7 +40,7 @@ struct _CamelHTMLParserPrivate {
 		*inptr,
 		*inend,
 		*start;
-	enum _camel_html_parser_t state;
+	CamelHTMLParserState state;
 	gchar *charset;
 	gint eof;
 	GString *tag;
@@ -111,7 +111,7 @@ void camel_html_parser_set_data (CamelHTMLParser *hp, const gchar *start, gint l
 	p->eof = last;
 }
 
-camel_html_parser_t camel_html_parser_step (CamelHTMLParser *hp, const gchar **datap, gint *lenp)
+CamelHTMLParserState camel_html_parser_step (CamelHTMLParser *hp, const gchar **datap, gint *lenp)
 {
 	return tokenize_step (hp->priv, (gchar **) datap, lenp);
 }

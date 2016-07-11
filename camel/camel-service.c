@@ -1562,7 +1562,7 @@ camel_service_set_proxy_resolver (CamelService *service,
 
 /**
  * camel_service_ref_session:
- * @service: a #CamelService
+ * @service: (type CamelService): a #CamelService
  *
  * Returns the #CamelSession associated with the service.
  *

@@ -1172,7 +1172,7 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
  **/
 gint
 camel_cipher_validity_add_certinfo (CamelCipherValidity *vin,
-                                    enum _camel_cipher_validity_mode_t mode,
+                                    CamelCipherValidityMode mode,
                                     const gchar *name,
                                     const gchar *email)
 {
@@ -1190,7 +1190,7 @@ camel_cipher_validity_add_certinfo (CamelCipherValidity *vin,
  **/
 gint
 camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin,
-                                       camel_cipher_validity_mode_t mode,
+                                       CamelCipherValidityMode mode,
                                        const gchar *name,
                                        const gchar *email,
                                        gpointer cert_data,
@@ -1242,7 +1242,7 @@ camel_cipher_validity_add_certinfo_ex (CamelCipherValidity *vin,
  **/
 gpointer
 camel_cipher_validity_get_certinfo_property (CamelCipherValidity *vin,
-					     camel_cipher_validity_mode_t mode,
+					     CamelCipherValidityMode mode,
 					     gint info_index,
 					     const gchar *name)
 {
@@ -1285,7 +1285,7 @@ camel_cipher_validity_get_certinfo_property (CamelCipherValidity *vin,
  **/
 void
 camel_cipher_validity_set_certinfo_property (CamelCipherValidity *vin,
-					     camel_cipher_validity_mode_t mode,
+					     CamelCipherValidityMode mode,
 					     gint info_index,
 					     const gchar *name,
 					     gpointer value,

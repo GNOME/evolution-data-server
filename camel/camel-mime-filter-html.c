@@ -77,7 +77,7 @@ mime_filter_html_run (CamelMimeFilter *mime_filter,
                       gint last)
 {
 	CamelMimeFilterHTMLPrivate *priv;
-	camel_html_parser_t state;
+	CamelHTMLParserState state;
 	gchar *outp;
 
 	priv = CAMEL_MIME_FILTER_HTML_GET_PRIVATE (mime_filter);

@@ -201,10 +201,10 @@ filter_run (CamelMimeFilter *f,
 /**
  * camel_mime_filter_filter:
  * @filter: a #CamelMimeFilter object
- * @in: input buffer
+ * @in: (array length=len): input buffer
  * @len: length of @in
  * @prespace: amount of prespace
- * @out: (out): pointer to the output buffer (to be set)
+ * @out: (out) (array length=outlen): pointer to the output buffer (to be set)
  * @outlen: (out): pointer to the length of the output buffer (to be set)
  * @outprespace: (out): pointer to the output prespace length (to be set)
  *
@@ -236,10 +236,10 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
 /**
  * camel_mime_filter_complete:
  * @filter: a #CamelMimeFilter object
- * @in: input buffer
+ * @in: (array length=len): input buffer
  * @len: length of @in
  * @prespace: amount of prespace
- * @out: (out): pointer to the output buffer (to be set)
+ * @out: (out) (array length=outlen): pointer to the output buffer (to be set)
  * @outlen: (out): pointer to the length of the output buffer (to be set)
  * @outprespace: (out): pointer to the output prespace length (to be set)
  *
@@ -296,7 +296,7 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
 /**
  * camel_mime_filter_backup:
  * @filter: a #CamelMimeFilter object
- * @data: data buffer to backup
+ * @data (array length=length): data buffer to backup
  * @length: length of @data
  *
  * Saves @data to be used as prespace input data to the next call to

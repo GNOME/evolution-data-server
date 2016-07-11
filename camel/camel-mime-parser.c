@@ -64,7 +64,7 @@ struct _header_scan_state {
 
     /* global state */
 
-	camel_mime_parser_state_t state;
+	CamelMimeParserState state;
 
 	/* for building headers during scanning */
 	gchar *outbuf;
@@ -111,7 +111,7 @@ struct _header_scan_state {
 struct _header_scan_stack {
 	struct _header_scan_stack *parent;
 
-	camel_mime_parser_state_t savestate; /* state at invocation of this part */
+	CamelMimeParserState savestate; /* state at invocation of this part */
 
 #ifdef MEMPOOL
 	CamelMemPool *pool;	/* memory pool to keep track of headers/etc at this level */
@@ -625,10 +625,10 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
 /**
  * camel_mime_parser_step:
  * @parser: MIME parser object
- * @databuffer: Pointer to accept a pointer to the data
+ * @databuffer: (inout) (array length=datalength) (nullable): Pointer to accept a pointer to the data
  * associated with this step (if any).  May be %NULL,
  * in which case datalength is also ingored.
- * @datalength: Pointer to accept a pointer to the data
+ * @datalength: (inout) (nullable): Pointer to accept a pointer to the data
  * length associated with this step (if any).
  *
  * Parse the next part of the MIME message.  If _unstep()
@@ -647,7 +647,7 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
  * Returns: The current new state of the parser
  * is returned.
  **/
-camel_mime_parser_state_t
+CamelMimeParserState
 camel_mime_parser_step (CamelMimeParser *parser,
                         gchar **databuffer,
                         gsize *datalength)
@@ -677,8 +677,8 @@ camel_mime_parser_step (CamelMimeParser *parser,
 /**
  * camel_mime_parser_read:
  * @parser: MIME parser object
- * @databuffer:
- * @len:
+ * @databuffer: (out) (array): The data buffer
+ * @len: The length of data to read
  * @error: return location for a #GError, or %NULL
  *
  * Read at most @len bytes from the internal mime parser buffer.
@@ -864,7 +864,7 @@ camel_mime_parser_seek (CamelMimeParser *parser,
  *
  * Returns: The current parser state.
  **/
-camel_mime_parser_state_t
+CamelMimeParserState
 camel_mime_parser_state (CamelMimeParser *parser)
 {
 	struct _header_scan_state *s = _PRIVATE (parser);
@@ -883,7 +883,7 @@ camel_mime_parser_state (CamelMimeParser *parser)
  **/
 void
 camel_mime_parser_push_state (CamelMimeParser *mp,
-                              camel_mime_parser_state_t newstate,
+                              CamelMimeParserState newstate,
                               const gchar *boundary)
 {
 	struct _header_scan_stack *h;

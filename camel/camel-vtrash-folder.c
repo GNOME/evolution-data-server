@@ -242,7 +242,7 @@ camel_vtrash_folder_init (CamelVTrashFolder *vtrash_folder)
  **/
 CamelFolder *
 camel_vtrash_folder_new (CamelStore *parent_store,
-                         camel_vtrash_folder_t type)
+                         CamelVTrashFolderType type)
 {
 	CamelVTrashFolder *vtrash;
 

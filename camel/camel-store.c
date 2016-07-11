@@ -281,7 +281,7 @@ cs_delete_cached_folder (CamelStore *store,
 
 static CamelFolder *
 store_get_special (CamelStore *store,
-                   camel_vtrash_folder_t type)
+                   CamelVTrashFolderType type)
 {
 	CamelFolder *folder;
 	GPtrArray *folders;

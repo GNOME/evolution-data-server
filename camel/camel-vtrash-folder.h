@@ -58,12 +58,12 @@ typedef enum {
 	CAMEL_VTRASH_FOLDER_TRASH,
 	CAMEL_VTRASH_FOLDER_JUNK,
 	CAMEL_VTRASH_FOLDER_LAST
-} camel_vtrash_folder_t;
+} CamelVTrashFolderType;
 
 struct _CamelVTrashFolder {
 	CamelVeeFolder parent;
 
-	camel_vtrash_folder_t type;
+	CamelVTrashFolderType type;
 	guint32 bit;
 };
 
@@ -73,7 +73,7 @@ struct _CamelVTrashFolderClass {
 
 GType		camel_vtrash_folder_get_type	(void);
 CamelFolder *	camel_vtrash_folder_new		(CamelStore *parent_store,
-						 camel_vtrash_folder_t type);
+						 CamelVTrashFolderType type);
 
 G_END_DECLS
 

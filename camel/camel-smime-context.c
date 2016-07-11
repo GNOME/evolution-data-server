@@ -66,7 +66,7 @@ struct _CamelSMIMEContextPrivate {
 	CERTCertDBHandle *certdb;
 
 	gchar *encrypt_key;
-	camel_smime_sign_t sign_mode;
+	CamelSMIMESign sign_mode;
 
 	gint password_tries;
 	guint send_encrypt_key_prefs : 1;
@@ -1355,7 +1355,7 @@ camel_smime_context_set_encrypt_key (CamelSMIMEContext *context,
 /* set signing mode, clearsigned multipart/signed or enveloped */
 void
 camel_smime_context_set_sign_mode (CamelSMIMEContext *context,
-                                   camel_smime_sign_t type)
+                                   CamelSMIMESign type)
 {
 	context->priv->sign_mode = type;
 }

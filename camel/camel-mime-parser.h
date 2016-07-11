@@ -76,7 +76,7 @@ typedef enum _camel_mime_parser_state_t {
 	CAMEL_MIME_PARSER_STATE_BODY_END,       /* end of message */
 	CAMEL_MIME_PARSER_STATE_MULTIPART_END,  /* end of multipart  */
 	CAMEL_MIME_PARSER_STATE_MESSAGE_END     /* end of message */
-} camel_mime_parser_state_t;
+} CamelMimeParserState;
 
 struct _CamelMimeParser {
 	GObject parent;
@@ -113,11 +113,11 @@ void camel_mime_parser_scan_pre_from (CamelMimeParser *parser, gboolean scan_pre
 gint camel_mime_parser_set_header_regex (CamelMimeParser *parser, gchar *matchstr);
 
 /* normal interface */
-camel_mime_parser_state_t camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *datalength);
+CamelMimeParserState camel_mime_parser_step (CamelMimeParser *parser, gchar **databuffer, gsize *datalength);
 void camel_mime_parser_unstep (CamelMimeParser *parser);
 void camel_mime_parser_drop_step (CamelMimeParser *parser);
-camel_mime_parser_state_t camel_mime_parser_state (CamelMimeParser *parser);
-void camel_mime_parser_push_state (CamelMimeParser *mp, camel_mime_parser_state_t newstate, const gchar *boundary);
+CamelMimeParserState camel_mime_parser_state (CamelMimeParser *parser);
+void camel_mime_parser_push_state (CamelMimeParser *mp, CamelMimeParserState newstate, const gchar *boundary);
 
 /* read through the parser */
 gssize camel_mime_parser_read (CamelMimeParser *parser, const gchar **databuffer, gssize len, GError **error);

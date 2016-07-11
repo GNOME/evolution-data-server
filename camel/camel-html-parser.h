@@ -73,7 +73,7 @@ typedef enum _camel_html_parser_t {
 	CAMEL_HTML_PARSER_VAL_ENT,		/* entity in value */
 	CAMEL_HTML_PARSER_EOD,			/* end of current data */
 	CAMEL_HTML_PARSER_EOF			/* end of file */
-} camel_html_parser_t;
+} CamelHTMLParserState;
 
 struct _CamelHTMLParser {
 	GObject parent;
@@ -88,7 +88,7 @@ GType		camel_html_parser_get_type	(void);
 CamelHTMLParser      *camel_html_parser_new	(void);
 
 void camel_html_parser_set_data (CamelHTMLParser *hp, const gchar *start, gint len, gint last);
-camel_html_parser_t camel_html_parser_step (CamelHTMLParser *hp, const gchar **datap, gint *lenp);
+CamelHTMLParserState camel_html_parser_step (CamelHTMLParser *hp, const gchar **datap, gint *lenp);
 const gchar *camel_html_parser_left (CamelHTMLParser *hp, gint *lenp);
 const gchar *camel_html_parser_tag (CamelHTMLParser *hp);
 const gchar *camel_html_parser_attr (CamelHTMLParser *hp, const gchar *name);
