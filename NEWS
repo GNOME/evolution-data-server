@@ -1,3 +1,20 @@
+Evolution-Data-Server 3.20.4 2016-07-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 634294 - Calendar factory crash under e-cal-recur (Milan Crha)
+	Bug 767786 - Use socks:// scheme for Camel accounts proxy lookup (Milan Crha)
+	Bug 767865 - [POP3] Correct Delete message after X days comparison (Milan Crha)
+	Bug 767780 - The "References" header folded twice (Milan Crha)
+	Bug 768000 - [POP3] Make it understand Google authentication mechanism (Milan Crha)
+
+Miscellaneous:
+	[Camel] Set default connection timeout to 90 seconds (Milan Crha)
+	[IMAPx] Possible deadlock in camel_imapx_server_stop_idle_sync() (Milan Crha)
+
+Translations:
+	Andika Triwidada (id)
+
 Evolution-Data-Server 3.20.3 2016-06-06
 ---------------------------------------
 
