@@ -1525,6 +1525,7 @@ gint
 camel_db_create_folders_table (CamelDB *cdb,
                                GError **error)
 {
+	gint ret;
 	const gchar *query = "CREATE TABLE IF NOT EXISTS folders ( "
 		"folder_name TEXT PRIMARY KEY, "
 		"version REAL, "
@@ -1539,7 +1540,15 @@ camel_db_create_folders_table (CamelDB *cdb,
 		"jnd_count INTEGER, "
 		"bdata TEXT )";
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
-	return ((camel_db_command (cdb, query, error)));
+
+	ret = camel_db_command (cdb, query, error);
+
+	if (ret != -1) {
+		/* Drop 'Deletes' table, leftover from the previous versions. */
+		ret = camel_db_command (cdb, "DROP TABLE IF EXISTS 'Deletes'", error);
+	}
+
+	return ret;
 }
 
 static gint
@@ -2218,41 +2227,6 @@ camel_db_read_message_info_records (CamelDB *cdb,
 }
 
 /**
- * camel_db_create_deleted_table:
- *
- * Since: 2.24
- **/
-static gint
-camel_db_create_deleted_table (CamelDB *cdb,
-                               GError **error)
-{
-	gint ret;
-	gchar *table_creation_query;
-	table_creation_query = sqlite3_mprintf (
-		"CREATE TABLE IF NOT EXISTS Deletes ("
-			"id INTEGER primary key AUTOINCREMENT not null, "
-			"uid TEXT, "
-			"time TEXT, "
-			"mailbox TEXT)");
-	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
-	sqlite3_free (table_creation_query);
-	return ret;
-}
-
-static gint
-camel_db_trim_deleted_table (CamelDB *cdb,
-                             GError **error)
-{
-	gint ret = 0;
-
-	/* TODO: We need a mechanism to get rid of very old deletes, or something
-	 * that keeps the list trimmed at a certain max (deleting upfront when
-	 * appending at the back) */
-
-	return ret;
-}
-
-/**
  * camel_db_delete_uid:
  *
  * Since: 2.24
@@ -2267,17 +2241,6 @@ camel_db_delete_uid (CamelDB *cdb,
 	gint ret;
 
 	camel_db_begin_transaction (cdb, error);
-
-	ret = camel_db_create_deleted_table (cdb, error);
-
-	tab = sqlite3_mprintf (
-		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
-		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q "
-		"WHERE uid = %Q", folder, folder, uid);
-	ret = camel_db_add_to_transaction (cdb, tab, error);
-	sqlite3_free (tab);
-
-	ret = camel_db_trim_deleted_table (cdb, error);
 
 	tab = sqlite3_mprintf ("DELETE FROM '%q_bodystructure' WHERE uid = %Q", folder, uid);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
@@ -2303,34 +2266,11 @@ cdb_delete_ids (CamelDB *cdb,
 {
 	gchar *tmp;
 	gint ret = 0;
-	gchar *tab;
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
 	GList *iterator;
-	GString *ins_str = NULL;
-
-	if (strcmp (field, "vuid") != 0)
-		ins_str = g_string_new ("INSERT OR REPLACE INTO Deletes (uid, mailbox, time) SELECT uid, ");
 
 	camel_db_begin_transaction (cdb, error);
-
-	if (ins_str) {
-		ret = camel_db_create_deleted_table (cdb, error);
-		if (ret == -1) {
-			camel_db_abort_transaction (cdb, NULL);
-
-			g_string_free (ins_str, TRUE);
-			g_string_free (str, TRUE);
-
-			return ret;
-		}
-	}
-
-	if (ins_str) {
-		tab = sqlite3_mprintf ("%Q, strftime(\"%%s\", 'now') FROM %Q WHERE %s IN (", folder_name, folder_name, field);
-		g_string_append_printf (ins_str, "%s ", tab);
-		sqlite3_free (tab);
-	}
 
 	tmp = sqlite3_mprintf ("%Q WHERE %s IN (", folder_name, field);
 	g_string_append_printf (str, "%s ", tmp);
@@ -2346,24 +2286,15 @@ cdb_delete_ids (CamelDB *cdb,
 
 		if (first == TRUE) {
 			g_string_append_printf (str, " %s ", tmp);
-			if (ins_str)
-				g_string_append_printf (ins_str, " %s ", tmp);
 			first = FALSE;
 		} else {
 			g_string_append_printf (str, ", %s ", tmp);
-			if (ins_str)
-				g_string_append_printf (ins_str, ", %s ", tmp);
 		}
 
 		sqlite3_free (tmp);
 	}
 
 	g_string_append (str, ")");
-	if (ins_str) {
-		g_string_append (ins_str, ")");
-		ret = camel_db_add_to_transaction (cdb, ins_str->str, error);
-		ret = ret == -1 ? ret : camel_db_trim_deleted_table (cdb, error);
-	}
 
 	ret = ret == -1 ? ret : camel_db_add_to_transaction (cdb, str->str, error);
 
@@ -2374,8 +2305,6 @@ cdb_delete_ids (CamelDB *cdb,
 
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
-	if (ins_str)
-		g_string_free (ins_str, TRUE);
 	g_string_free (str, TRUE);
 
 	return ret;
@@ -2411,28 +2340,15 @@ camel_db_clear_folder_summary (CamelDB *cdb,
                                GError **error)
 {
 	gint ret;
-
 	gchar *folders_del;
 	gchar *msginfo_del;
 	gchar *bstruct_del;
-	gchar *tab;
 
 	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
 	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder);
 	bstruct_del = sqlite3_mprintf ("DELETE FROM '%q_bodystructure' ", folder);
 
 	camel_db_begin_transaction (cdb, error);
-
-	ret = camel_db_create_deleted_table (cdb, error);
-
-	tab = sqlite3_mprintf (
-		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
-		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q",
-		folder, folder);
-	ret = camel_db_add_to_transaction (cdb, tab, error);
-	sqlite3_free (tab);
-
-	ret = camel_db_trim_deleted_table (cdb, error);
 
 	camel_db_add_to_transaction (cdb, msginfo_del, error);
 	camel_db_add_to_transaction (cdb, folders_del, error);
@@ -2459,20 +2375,8 @@ camel_db_delete_folder (CamelDB *cdb,
 {
 	gint ret;
 	gchar *del;
-	gchar *tab;
 
 	camel_db_begin_transaction (cdb, error);
-
-	ret = camel_db_create_deleted_table (cdb, error);
-
-	tab = sqlite3_mprintf (
-		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
-		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q",
-		folder, folder);
-	ret = camel_db_add_to_transaction (cdb, tab, error);
-	sqlite3_free (tab);
-
-	ret = camel_db_trim_deleted_table (cdb, error);
 
 	del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
 	ret = camel_db_add_to_transaction (cdb, del, error);
@@ -2504,20 +2408,9 @@ camel_db_rename_folder (CamelDB *cdb,
                         GError **error)
 {
 	gint ret;
-	gchar *cmd, *tab;
+	gchar *cmd;
 
 	camel_db_begin_transaction (cdb, error);
-
-	ret = camel_db_create_deleted_table (cdb, error);
-
-	tab = sqlite3_mprintf (
-		"INSERT OR REPLACE INTO Deletes (uid, mailbox, time) "
-		"SELECT uid, %Q, strftime(\"%%s\", 'now') FROM %Q",
-		old_folder, old_folder);
-	ret = camel_db_add_to_transaction (cdb, tab, error);
-	sqlite3_free (tab);
-
-	ret = camel_db_trim_deleted_table (cdb, error);
 
 	cmd = sqlite3_mprintf ("ALTER TABLE %Q RENAME TO  %Q", old_folder, new_folder);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);
