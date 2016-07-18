@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.21.4 2016-07-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 767786 - Use socks:// scheme for Camel accounts proxy lookup (Milan Crha)
+	Bug 767865 - [POP3] Correct Delete message after X days comparison (Milan Crha)
+	Bug 767780 - The "References" header folded twice (Milan Crha)
+	Bug 764065 - [Camel] Use get methods for CamelMessageInfo fields (Corentin Noël)
+	Bug 443716 - Move evolution-addressbook-export to e-d-s (Milan Crha)
+	Bug 768000 - [POP3] Make it understand Google authentication mechanism (Milan Crha)
+	Bug 768258 - Decode headers before passing to regex comparison (Milan Crha)
+	Bug 768496 - Fix some Camel annotations and rename structures (Corentin Noël)
+
+Miscellaneous:
+	Move Camel dependency into Requires.private in libedataserver/ui.pc (Milan Crha)
+	Always build ESExp structure as a GObject descendant (Milan Crha)
+	Correct version number reference in a developer comment (Milan Crha)
+	Build developer documentation sections and types on the fly (Milan Crha)
+	[POP3] Default to "Leave messages on server" for new accounts (Milan Crha)
+	[IMAPx] Possible deadlock in camel_imapx_server_stop_idle_sync() (Milan Crha)
+	Add Language headers to po files (Piotr Drąg)
+
+Translations:
+	Daniel Mustieles (es)
+	Tiago Santos (pt)
+	Rafael Fontenelle (pt_BR)
+	Andika Triwidada (id)
+	Chao-Hsiung Liao (zh_TW)
+
 Evolution-Data-Server 3.21.3 2016-06-20
 ---------------------------------------
 
