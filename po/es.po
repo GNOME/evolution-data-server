@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-06-26 22:49+0000\n"
+"POT-Creation-Date: 2016-07-15 23:17+0000\n"
 "PO-Revision-Date: 2016-06-27 09:16+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
@@ -1987,7 +1987,7 @@ msgstr "No se pudo quitar la entrada de caché: %s: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "No se pudo renombrar «%s» a %s: %s"
 
-#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:798
+#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:773
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
@@ -2068,19 +2068,19 @@ msgstr "Error al ejecutar el filtro «%s»: %s: %s"
 msgid "Failed to retrieve message"
 msgstr "Falló al obtener el mensaje"
 
-#: ../camel/camel-filter-search.c:538
+#: ../camel/camel-filter-search.c:513
 msgid "Invalid arguments to (system-flag)"
 msgstr "Argumentos no válidos a (system-flag)"
 
-#: ../camel/camel-filter-search.c:556
+#: ../camel/camel-filter-search.c:531
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argumentos no válidos a (user-tag)"
 
-#: ../camel/camel-filter-search.c:1068
+#: ../camel/camel-filter-search.c:1043
 msgid "Invalid arguments to (message-location)"
 msgstr "Argumentos no válidos a (message-location)"
 
-#: ../camel/camel-filter-search.c:1149 ../camel/camel-filter-search.c:1160
+#: ../camel/camel-filter-search.c:1124 ../camel/camel-filter-search.c:1135
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
@@ -2146,36 +2146,36 @@ msgid "Refreshing folder '%s'"
 msgstr "Actualizando la carpeta «%s»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:915 ../camel/camel-folder-search.c:957
+#: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) requiere un único resultado booleano"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:992
+#: ../camel/camel-folder-search.c:922
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) no se permite dentro de (%s)"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:999 ../camel/camel-folder-search.c:1007
+#: ../camel/camel-folder-search.c:929 ../camel/camel-folder-search.c:937
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) requiere una cadena de coincidencia"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1035
+#: ../camel/camel-folder-search.c:965
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) espera un resultado «array»"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1045
+#: ../camel/camel-folder-search.c:975
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) requiere que se establezca una carpeta"
 
-#: ../camel/camel-folder-search.c:1963 ../camel/camel-folder-search.c:2132
+#: ../camel/camel-folder-search.c:1887 ../camel/camel-folder-search.c:2056
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2184,7 +2184,7 @@ msgstr ""
 "No se pudo analizar la expresión de búsqueda: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1975 ../camel/camel-folder-search.c:2144
+#: ../camel/camel-folder-search.c:1899 ../camel/camel-folder-search.c:2068
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2778,7 +2778,7 @@ msgstr "El GType registrado no es válido para el protocolo «%s»"
 #: ../camel/camel-session.c:514
 #: ../camel/providers/imapx/camel-imapx-server.c:2983
 #: ../camel/providers/pop3/camel-pop3-store.c:308
-#: ../camel/providers/pop3/camel-pop3-store.c:786
+#: ../camel/providers/pop3/camel-pop3-store.c:790
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
 #, c-format
 msgid "No support for %s authentication"
@@ -3146,7 +3146,7 @@ msgstr ""
 #: ../camel/providers/pop3/camel-pop3-store.c:529
 #: ../camel/providers/pop3/camel-pop3-store.c:577
 #: ../camel/providers/pop3/camel-pop3-store.c:672
-#: ../camel/providers/pop3/camel-pop3-store.c:1103
+#: ../camel/providers/pop3/camel-pop3-store.c:1107
 #: ../camel/providers/smtp/camel-smtp-transport.c:543
 #, c-format
 msgid "You must be working online to complete this operation"
@@ -4514,7 +4514,7 @@ msgstr "Servidor POP3 para %s en %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:702
 #: ../camel/providers/pop3/camel-pop3-store.c:715
-#: ../camel/providers/pop3/camel-pop3-store.c:797
+#: ../camel/providers/pop3/camel-pop3-store.c:801
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4534,7 +4534,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:812
+#: ../camel/providers/pop3/camel-pop3-store.c:816
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4543,12 +4543,12 @@ msgstr ""
 "No se pudo conectar con el servidor POP %s.\n"
 "Error al enviar nombre de usuario %s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:896
+#: ../camel/providers/pop3/camel-pop3-store.c:900
 #, c-format
 msgid "No such folder '%s'."
 msgstr "No existe la carpeta «%s»."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:913
+#: ../camel/providers/pop3/camel-pop3-store.c:917
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "Los almacenamientos POP3 no tienen jerarquía de carpetas"
@@ -5029,8 +5029,7 @@ msgstr "Falta [%s] grupo en la fuente de datos"
 msgid "Failed to lookup credentials: "
 msgstr "Fallo al buscar las credenciales:"
 
-#: ../libebackend/e-server-side-source.c:1391
-#: ../libedataserver/e-source.c:1595
+#: ../libebackend/e-server-side-source.c:1391 ../libedataserver/e-source.c:1595
 #, c-format
 msgid "Data source '%s' does not support creating remote resources"
 msgstr "La fuente de datos «%s» no soporta crear recursos remotos"
@@ -5043,8 +5042,7 @@ msgstr ""
 "La fuente de datos «%s» no tiene una colección de «backend» para crear el "
 "recurso remoto"
 
-#: ../libebackend/e-server-side-source.c:1433
-#: ../libedataserver/e-source.c:1708
+#: ../libebackend/e-server-side-source.c:1433 ../libedataserver/e-source.c:1708
 #, c-format
 msgid "Data source '%s' does not support deleting remote resources"
 msgstr "La fuente de datos «%s» no soporta eliminar recursos remotos"
@@ -5057,8 +5055,7 @@ msgstr ""
 "La fuente de datos «%s» no tiene una colección de «backend» para eliminar el "
 "recurso remoto"
 
-#: ../libebackend/e-server-side-source.c:1478
-#: ../libedataserver/e-source.c:1804
+#: ../libebackend/e-server-side-source.c:1478 ../libedataserver/e-source.c:1804
 #: ../modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1079
 #, c-format
 msgid "Data source '%s' does not support OAuth 2.0 authentication"
@@ -5969,18 +5966,15 @@ msgstr "_Descartar"
 
 #: ../tools/addressbook-export/addressbook-export.c:70
 #: ../tools/addressbook-export/addressbook-export.c:767
-#| msgid "Cannot open message"
 msgid "Can not open file"
 msgstr "No se puede abrir el archivo"
 
 #: ../tools/addressbook-export/addressbook-export.c:100
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Failed to open client '%s': %s"
 msgstr "Falló al abrir el cliente «%s»: %s"
 
 #: ../tools/addressbook-export/addressbook-export.c:877
-#| msgid "Detailed error:"
 msgid "Unhandled error"
 msgstr "Error no manejado"
 
@@ -5993,7 +5987,6 @@ msgid "OUTPUTFILE"
 msgstr "ARCHIVOSALIDA"
 
 #: ../tools/addressbook-export/addressbook-export.c:914
-#| msgid "Error loading address book: %s"
 msgid "List local address book folders"
 msgstr "Listar carpetas de libretas de direcciones"
 
