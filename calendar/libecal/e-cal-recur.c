@@ -197,7 +197,12 @@ ensure_timezone (icalcomponent *comp,
 	   a different icalcomponent and cause use-after-free. */
 	tt->zone = NULL;
 
-	if (tt->is_utc || tt->is_date)
+	if (tt->is_utc)
+		return TRUE;
+
+	tt->zone = default_timezone;
+
+	if (tt->is_date)
 		return TRUE;
 
 	if (!prop)
@@ -1256,12 +1261,12 @@ backward_compatibility_instance_cb (icalcomponent *comp,
 	if (bcd && bcd->cb) {
 		time_t istart, iend;
 
-		if (instance_start.zone && !instance_start.is_date)
+		if (instance_start.zone)
 			istart = icaltime_as_timet_with_zone (instance_start, instance_start.zone);
 		else
 			istart = icaltime_as_timet (instance_start);
 
-		if (instance_end.zone && !instance_end.is_date)
+		if (instance_end.zone)
 			iend = icaltime_as_timet_with_zone (instance_end, instance_end.zone);
 		else
 			iend = icaltime_as_timet (instance_end);
