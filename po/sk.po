@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-05-31 22:21+0000\n"
-"PO-Revision-Date: 2016-06-12 12:16+0200\n"
+"POT-Creation-Date: 2016-08-02 14:43+0000\n"
+"PO-Revision-Date: 2016-08-05 12:48+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n<=4 && n>=2) ? 2 : 0;\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.8\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -66,8 +66,8 @@ msgstr "Vyskúšaná úprava kontaktu „%s“ s nesynchronizovanou revíziou"
 #: ../addressbook/backends/file/e-book-backend-file.c:1475
 #: ../addressbook/backends/file/e-book-backend-file.c:1560
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
-#: ../addressbook/libedata-book/e-book-sqlite.c:7332
-#: ../addressbook/libedata-book/e-book-sqlite.c:7401
+#: ../addressbook/libedata-book/e-book-sqlite.c:7342
+#: ../addressbook/libedata-book/e-book-sqlite.c:7411
 #, c-format
 msgid "Contact '%s' not found"
 msgstr "Kontakt „%s“ sa nenašiel"
@@ -983,18 +983,18 @@ msgid "Client disappeared"
 msgstr "Klient zmizol"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:905
-#: ../addressbook/libedata-book/e-book-sqlite.c:2229
+#: ../addressbook/libedata-book/e-book-sqlite.c:2254
 #, c-format
 msgid "Error introspecting unknown summary field '%s'"
 msgstr "Chyba vnútornej analýzy neznámeho poľa súhrnu „%s“"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
-#: ../addressbook/libedata-book/e-book-sqlite.c:1368
+#: ../addressbook/libedata-book/e-book-sqlite.c:1393
 msgid "Error parsing regular expression"
 msgstr "Chyba pri analyzovaní regulárneho výrazu"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../addressbook/libedata-book/e-book-sqlite.c:1852 ../camel/camel-db.c:751
+#: ../addressbook/libedata-book/e-book-sqlite.c:1877 ../camel/camel-db.c:751
 #, c-format
 msgid "Insufficient memory"
 msgstr "Nedostatok pamäte"
@@ -1005,7 +1005,7 @@ msgid "Invalid contact field '%d' specified in summary"
 msgstr "Neplatné pole kontaktu „%d“ špecifikované v súhrne"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
-#: ../addressbook/libedata-book/e-book-sqlite.c:579
+#: ../addressbook/libedata-book/e-book-sqlite.c:604
 #, c-format
 msgid ""
 "Contact field '%s' of type '%s' specified in summary, but only boolean, "
@@ -1025,7 +1025,7 @@ msgstr ""
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4307
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4400
-#: ../addressbook/libedata-book/e-book-sqlite.c:5807
+#: ../addressbook/libedata-book/e-book-sqlite.c:5817
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Požiadavka obsahuje nepodporované prvky"
@@ -1090,7 +1090,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Nedá sa usporiadať podľa poľa, ktoré môže obsahovať viacero hodnôt"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
-#: ../addressbook/libedata-book/e-book-sqlite.c:8106
+#: ../addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
@@ -1100,7 +1100,7 @@ msgstr ""
 "kontaktov"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:6226
-#: ../addressbook/libedata-book/e-book-sqlite.c:8114
+#: ../addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
@@ -1109,12 +1109,12 @@ msgstr ""
 "Vykonal sa pokus o posun kurzora dopredu, ale kurzor je už na konci zoznamu "
 "kontaktov"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:545
+#: ../addressbook/libedata-book/e-book-sqlite.c:570
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
 msgstr "Nepodporované pole kontaktu „%d“ špecifikované v súhrne"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:1925
+#: ../addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the 'folders' table first."
@@ -1123,21 +1123,21 @@ msgstr ""
 "jedným adresárom kontaktov. Najskôr odstráňte jednu z položiek v tabuľke "
 "„priečinky“."
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5800
+#: ../addressbook/libedata-book/e-book-sqlite.c:5810
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Neplatná požiadavka: %s"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:5975
+#: ../addressbook/libedata-book/e-book-sqlite.c:5985
 msgid "Invalid query for EbSqlCursor"
 msgstr "Neplatná požiadavka pre EbSqlCursor"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7928
+#: ../addressbook/libedata-book/e-book-sqlite.c:7938
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Pre použitie EbSqlCursor musí byť určené aspoň jedno pole na usporiadanie"
 
-#: ../addressbook/libedata-book/e-book-sqlite.c:7946
+#: ../addressbook/libedata-book/e-book-sqlite.c:7956
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Nedá sa usporiadať podľa poľa, ktoré nie je typu reťazec"
 
@@ -1974,7 +1974,7 @@ msgstr "Nepodarilo sa odstrániť položku vyrovnávacej pamäte: %s: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Nepodarilo sa premenovať „%s“ na %s: %s"
 
-#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:798
+#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:773
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Zlyhalo vytvorenie dcérskeho procesu „%s“: %s"
@@ -2058,20 +2058,20 @@ msgid "Failed to retrieve message"
 msgstr "Zlyhalo získanie správy"
 
 # MČ: sú to symboly ku vstavaným funkciám (asi filtre), prakticky ich názvy. Neviem či je ich vhodné preložiť, hlavne keď nasledujúca chybová hláška ich dopĺňa cez %s.
-#: ../camel/camel-filter-search.c:538
+#: ../camel/camel-filter-search.c:513
 msgid "Invalid arguments to (system-flag)"
 msgstr "Neplatné parametre pre (system-flag)"
 
-#: ../camel/camel-filter-search.c:556
+#: ../camel/camel-filter-search.c:531
 msgid "Invalid arguments to (user-tag)"
 msgstr "Neplatné parametre pre (user-tag)"
 
 # MČ: sú to symboly ku vstavaným funkciám (asi filtre), prakticky ich názvy. Neviem či je ich vhodné preložiť, hlavne keď nasledujúca chybová hláška ich dopĺňa cez %s.
-#: ../camel/camel-filter-search.c:1068
+#: ../camel/camel-filter-search.c:1043
 msgid "Invalid arguments to (message-location)"
 msgstr "Neplatné parametre pre (message-location)"
 
-#: ../camel/camel-filter-search.c:1149 ../camel/camel-filter-search.c:1160
+#: ../camel/camel-filter-search.c:1124 ../camel/camel-filter-search.c:1135
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Chyba pri vykonávaní vyhľadávacieho filtra: %s: %s"
@@ -2119,57 +2119,57 @@ msgstr "Informácie o kvóte nie sú podporované pre priečinok „%s“"
 msgid "Filtering folder '%s'"
 msgstr "Filtruje sa priečinok „%s“"
 
-#: ../camel/camel-folder.c:2896
+#: ../camel/camel-folder.c:2897
 #, c-format
 msgid "Expunging folder '%s'"
 msgstr "Prečisťuje sa priečinok „%s“"
 
-#: ../camel/camel-folder.c:3027
+#: ../camel/camel-folder.c:3028
 #, c-format
 msgid "Retrieving message '%s' in %s"
 msgstr "Získava sa správa „%s“ v %s"
 
-#: ../camel/camel-folder.c:3218
+#: ../camel/camel-folder.c:3219
 #, c-format
 msgid "Retrieving quota information for '%s'"
 msgstr "Získavajú sa informácie o kvóte pre „%s“"
 
-#: ../camel/camel-folder.c:3515
+#: ../camel/camel-folder.c:3516
 #, c-format
 msgid "Refreshing folder '%s'"
 msgstr "Obnovuje sa priečinok „%s“"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:915 ../camel/camel-folder-search.c:957
+#: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) vyžaduje jeden výsledok ako logickú hodnotu"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:992
+#: ../camel/camel-folder-search.c:922
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nie je povolené vnútri %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:999 ../camel/camel-folder-search.c:1007
+#: ../camel/camel-folder-search.c:929 ../camel/camel-folder-search.c:937
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) vyžaduje reťazcový typ"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1035
+#: ../camel/camel-folder-search.c:965
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) očakáva ako výsledok pole"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1045
+#: ../camel/camel-folder-search.c:975
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) vyžaduje množinu priečinkov"
 
-#: ../camel/camel-folder-search.c:1963 ../camel/camel-folder-search.c:2132
+#: ../camel/camel-folder-search.c:1887 ../camel/camel-folder-search.c:2056
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2178,7 +2178,7 @@ msgstr ""
 "Nedá sa analyzovať vyhľadávací výraz: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1975 ../camel/camel-folder-search.c:2144
+#: ../camel/camel-folder-search.c:1899 ../camel/camel-folder-search.c:2068
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2187,12 +2187,12 @@ msgstr ""
 "Chyba pri vykonávaní vyhľadávacieho výrazu: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-summary.c:2156
+#: ../camel/camel-folder-summary.c:2168
 #, c-format
 msgid "Release unused memory for folder '%s'"
 msgstr "Uvoľniť nevyužitú pamäť pre priečinok „%s“"
 
-#: ../camel/camel-folder-summary.c:2368
+#: ../camel/camel-folder-summary.c:2382
 #, c-format
 msgid "Update preview data for folder '%s'"
 msgstr "Aktualizovať prehľad údajov priečinku „%s“"
@@ -2781,7 +2781,7 @@ msgstr "Neplatný GType registrovaný pre protokol „%s“"
 #: ../camel/camel-session.c:514
 #: ../camel/providers/imapx/camel-imapx-server.c:2983
 #: ../camel/providers/pop3/camel-pop3-store.c:308
-#: ../camel/providers/pop3/camel-pop3-store.c:786
+#: ../camel/providers/pop3/camel-pop3-store.c:790
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
 #, c-format
 msgid "No support for %s authentication"
@@ -3160,7 +3160,7 @@ msgstr "Na dokončenie tejto operácie musíte pracovať v pripojenom režime (%
 #: ../camel/providers/pop3/camel-pop3-store.c:529
 #: ../camel/providers/pop3/camel-pop3-store.c:577
 #: ../camel/providers/pop3/camel-pop3-store.c:672
-#: ../camel/providers/pop3/camel-pop3-store.c:1103
+#: ../camel/providers/pop3/camel-pop3-store.c:1107
 #: ../camel/providers/smtp/camel-smtp-transport.c:543
 #, c-format
 msgid "You must be working online to complete this operation"
@@ -3664,7 +3664,7 @@ msgstr "Odstránené správy"
 #  * for folders being under $HOME.  The first %s is replaced
 #  * with a relative path under $HOME, the second %s is
 #  * replaced with a protocol name, like mbox/maldir/... */
-#: ../camel/providers/local/camel-local-folder.c:194
+#: ../camel/providers/local/camel-local-folder.c:190
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
@@ -3678,8 +3678,8 @@ msgstr "~%s (%s)"
 #  * folders being under /var/mail.  The first %s is replaced
 #  * with a relative path under /var/mail, the second %s is
 #  * replaced with a protocol name, like mbox/maldir/... */
-#: ../camel/providers/local/camel-local-folder.c:204
-#: ../camel/providers/local/camel-local-folder.c:213
+#: ../camel/providers/local/camel-local-folder.c:200
+#: ../camel/providers/local/camel-local-folder.c:209
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "poštová schránka: %s (%s)"
@@ -3688,16 +3688,16 @@ msgstr "poštová schránka: %s (%s)"
 #  * The first %s is replaced with a folder's full path,
 #  * the second %s is replaced with a protocol name, like
 #  * mbox/maldir/... */
-#: ../camel/providers/local/camel-local-folder.c:222
+#: ../camel/providers/local/camel-local-folder.c:218
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../camel/providers/local/camel-local-folder.c:499
+#: ../camel/providers/local/camel-local-folder.c:495
 msgid "_Index message body data"
 msgstr "_Indexovať údaje v tele správy"
 
-#: ../camel/providers/local/camel-local-folder.c:727
+#: ../camel/providers/local/camel-local-folder.c:723
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -4571,7 +4571,7 @@ msgstr "Server POP3 pre %s na %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:702
 #: ../camel/providers/pop3/camel-pop3-store.c:715
-#: ../camel/providers/pop3/camel-pop3-store.c:797
+#: ../camel/providers/pop3/camel-pop3-store.c:801
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4591,7 +4591,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:812
+#: ../camel/providers/pop3/camel-pop3-store.c:816
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4600,14 +4600,14 @@ msgstr ""
 "Nepodarilo sa pripojiť k serveru POP %s.\n"
 "Chyba pri posielaní používateľského mena%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:896
+#: ../camel/providers/pop3/camel-pop3-store.c:900
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Priečinok „%s“ neexistuje."
 
 # PM: Úložiská POP3 mi tiež nedáva zmysel
 # MČ: „Servery s uloženými prijatými srávami prístupnými prokolom POP3“ bude asi výstižnejšie.
-#: ../camel/providers/pop3/camel-pop3-store.c:913
+#: ../camel/providers/pop3/camel-pop3-store.c:917
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "Úložiská POP3 nemajú hierarchiu priečinkov"
@@ -4974,7 +4974,7 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
 msgid "Whether to load photos of signers/encrypters"
-msgstr ""
+msgstr "Či sa majú načítať fotografie podpisovateľov/šifrovateľov"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
 msgid ""
@@ -6028,6 +6028,54 @@ msgstr "Nemigrovať používateľské údaje z predošlých verzií programu Evo
 #: ../services/evolution-user-prompter/prompt-user-gtk.c:121
 msgid "_Dismiss"
 msgstr "_Zavrhnúť"
+
+#: ../tools/addressbook-export/addressbook-export.c:70
+#: ../tools/addressbook-export/addressbook-export.c:767
+msgid "Can not open file"
+msgstr "Nedá sa otvoriť súbor"
+
+#: ../tools/addressbook-export/addressbook-export.c:100
+#, c-format
+msgid "Failed to open client '%s': %s"
+msgstr "Zlyhalo otvorenie klienta „%s“: %s"
+
+#: ../tools/addressbook-export/addressbook-export.c:877
+msgid "Unhandled error"
+msgstr "Neošetrená chyba"
+
+# cmd line desc
+#: ../tools/addressbook-export/addressbook-export.c:910
+msgid "Specify the output file instead of standard output"
+msgstr "Určí výstupný súbor namiesto štandardného výstupu"
+
+#: ../tools/addressbook-export/addressbook-export.c:911
+msgid "OUTPUTFILE"
+msgstr "VÝSTUPNÝ_SÚBOR"
+
+# cmd line desc
+#: ../tools/addressbook-export/addressbook-export.c:914
+msgid "List local address book folders"
+msgstr "Vypíše zoznam miestnych priečinkov s adresármi kontaktov"
+
+# cmd line desc
+#: ../tools/addressbook-export/addressbook-export.c:917
+msgid "Show cards as vcard or csv file"
+msgstr "Zobrazí vizitky ako súbor vcard alebo csv"
+
+#: ../tools/addressbook-export/addressbook-export.c:918
+msgid "[vcard|csv]"
+msgstr "[vcard|csv]"
+
+#: ../tools/addressbook-export/addressbook-export.c:966
+msgid ""
+"Command line arguments error, please use --help option to see the usage."
+msgstr ""
+"Chyba parametrov príkazového riadka. Prosím, použite parameter --help na "
+"zobrazenie pomocníka s použitím."
+
+#: ../tools/addressbook-export/addressbook-export.c:980
+msgid "Only support csv or vcard format."
+msgstr "Podporovaný je iba formát csv alebo vcard."
 
 #~ msgid "Failed to issue DONE"
 #~ msgstr "Zlyhalo vystavovanie príkazu DONE"
