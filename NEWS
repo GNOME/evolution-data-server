@@ -1,3 +1,9 @@
+Evolution-Data-Server 3.20.5 2016-08-08
+---------------------------------------
+
+Bug Fixes:
+	Bug 766346 - Incorrect times provided in e_cal_recur_generate_instances() (Milan Crha)
+
 Evolution-Data-Server 3.20.4 2016-07-11
 ---------------------------------------
 
