@@ -58,7 +58,7 @@ m4_define([goa_minimum_version], [3.8])
 m4_define([gweather_minimum_version], [3.10])
 m4_define([libaccounts_glib_minimum_version], [1.4])
 m4_define([libsignon_glib_minimum_version], [1.8])
-m4_define([webkitgtk_minimum_version], [2.4.9])
+m4_define([webkitgtk_minimum_version], [2.11.91])
 m4_define([json_glib_minimum_version], [1.0.4])
 
 AC_SUBST([BASE_VERSION],[base_version])
@@ -490,7 +490,7 @@ AC_MSG_CHECKING([if Google authentication support is enabled])
 AC_MSG_RESULT([$enable_google_auth])
 if test "x$enable_google_auth" = "xyes"; then
 	PKG_CHECK_MODULES(
-		[GOOGLE_AUTH], [webkitgtk-3.0 >= webkitgtk_minimum_version
+		[GOOGLE_AUTH], [webkit2gtk-4.0 >= webkitgtk_minimum_version
 				json-glib-1.0 >= json_glib_minimum_version],,
 		[AC_MSG_ERROR([
 

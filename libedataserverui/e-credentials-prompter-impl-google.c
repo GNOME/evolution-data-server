@@ -30,7 +30,7 @@
 #include "e-credentials-prompter-impl-google.h"
 
 #ifdef ENABLE_GOOGLE_AUTH
-#include <webkit/webkit.h>
+#include <webkit2/webkit2.h>
 
 /* https://developers.google.com/identity/protocols/OAuth2InstalledApp */
 #define GOOGLE_AUTH_URI "https://accounts.google.com/o/oauth2/auth"
@@ -318,7 +318,7 @@ e_credentials_prompter_impl_google_show_html (WebKitWebView *web_view,
 		"</html>",
 		title,
 		body_text);
-	webkit_web_view_load_string (web_view, html, "text/html", "UTF-8", "none-local://");
+	webkit_web_view_load_html (web_view, html, "none-local://");
 	g_free (html);
 }
 
@@ -455,19 +455,19 @@ cpi_google_get_access_token_thread (gpointer user_data)
 }
 
 static void
-cpi_google_document_load_finished_cb (WebKitWebView *web_view,
-				      WebKitWebFrame *frame,
-				      ECredentialsPrompterImplGoogle *prompter_google)
+cpi_google_document_load_changed_cb (WebKitWebView *web_view,
+				     WebKitLoadEvent load_event,
+				     ECredentialsPrompterImplGoogle *prompter_google)
 {
 	const gchar *title;
 
 	g_return_if_fail (WEBKIT_IS_WEB_VIEW (web_view));
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_GOOGLE (prompter_google));
 
-	if (frame != webkit_web_view_get_main_frame (web_view))
+	if (load_event != WEBKIT_LOAD_FINISHED)
 		return;
 
-	title = webkit_web_frame_get_title (frame);
+	title = webkit_web_view_get_title (web_view);
 	if (!title)
 		return;
 
@@ -508,16 +508,16 @@ cpi_google_document_load_finished_cb (WebKitWebView *web_view,
 }
 
 static void
-cpi_google_notify_progress_cb (WebKitWebView *web_view,
-			       GParamSpec *param,
-			       GtkProgressBar *progress_bar)
+cpi_google_notify_estimated_load_progress_cb (WebKitWebView *web_view,
+					      GParamSpec *param,
+					      GtkProgressBar *progress_bar)
 {
 	gboolean visible;
 	gdouble progress;
 
 	g_return_if_fail (GTK_IS_PROGRESS_BAR (progress_bar));
 
-	progress = webkit_web_view_get_progress (web_view);
+	progress = webkit_web_view_get_estimated_load_progress (web_view);
 	visible = progress > 1e-9 && progress < 1 - 1e-9;
 
 	gtk_progress_bar_set_fraction (progress_bar, visible ? progress : 0.0);
@@ -785,10 +785,10 @@ e_credentials_prompter_impl_google_show_dialog (ECredentialsPrompterImplGoogle *
 		WebKitWebView *web_view = prompter_google->priv->web_view;
 		gulong load_finished_handler_id, progress_handler_id;
 
-		load_finished_handler_id = g_signal_connect (web_view, "document-load-finished",
-			G_CALLBACK (cpi_google_document_load_finished_cb), prompter_google);
-		progress_handler_id = g_signal_connect (web_view, "notify::progress",
-			G_CALLBACK (cpi_google_notify_progress_cb), progress_bar);
+		load_finished_handler_id = g_signal_connect (web_view, "load-changed",
+			G_CALLBACK (cpi_google_document_load_changed_cb), prompter_google);
+		progress_handler_id = g_signal_connect (web_view, "notify::estimated-load-progress",
+			G_CALLBACK (cpi_google_notify_estimated_load_progress_cb), progress_bar);
 
 		webkit_web_view_load_uri (web_view, uri);
 
