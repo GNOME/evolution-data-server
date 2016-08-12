@@ -255,6 +255,7 @@ struct _CamelIMAPXServerPrivate {
 	GMutex select_lock;
 	GWeakRef select_mailbox;
 	GWeakRef select_pending;
+	gint last_selected_mailbox_change_stamp;
 
 	GMutex changes_lock;
 	CamelFolderChangeInfo *changes;
@@ -1792,8 +1793,14 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 			select_mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 			select_pending = g_weak_ref_get (&is->priv->select_pending);
 
-			if (select_mailbox == NULL)
+			if (select_mailbox == NULL) {
 				g_weak_ref_set (&is->priv->select_mailbox, select_pending);
+
+				if (select_pending)
+					is->priv->last_selected_mailbox_change_stamp = camel_imapx_mailbox_get_change_stamp (select_pending);
+				else
+					is->priv->last_selected_mailbox_change_stamp = 0;
+			}
 
 			g_mutex_unlock (&is->priv->select_lock);
 
@@ -3660,8 +3667,24 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 	g_mutex_lock (&is->priv->select_lock);
 	selected_mailbox = g_weak_ref_get (&is->priv->select_mailbox);
 	if (selected_mailbox == mailbox) {
+		gboolean request_noop;
+		gint change_stamp;
+
+		change_stamp = selected_mailbox ? camel_imapx_mailbox_get_change_stamp (selected_mailbox) : 0;
+		request_noop = selected_mailbox && is->priv->last_selected_mailbox_change_stamp != change_stamp;
+
+		if (request_noop)
+			is->priv->last_selected_mailbox_change_stamp = change_stamp;
+
 		g_mutex_unlock (&is->priv->select_lock);
 		g_clear_object (&selected_mailbox);
+
+		if (request_noop) {
+			c (is->priv->tagprefix, "%s: Selected mailbox '%s' changed, do NOOP instead\n", G_STRFUNC, camel_imapx_mailbox_get_name (mailbox));
+
+			return camel_imapx_server_noop_sync (is, mailbox, cancellable, error);
+		}
+
 		return TRUE;
 	}
 
@@ -3690,9 +3713,11 @@ camel_imapx_server_ensure_selected_sync (CamelIMAPXServer *is,
 
 	if (success) {
 		is->priv->state = IMAPX_SELECTED;
+		is->priv->last_selected_mailbox_change_stamp = camel_imapx_mailbox_get_change_stamp (mailbox);
 		g_weak_ref_set (&is->priv->select_mailbox, mailbox);
 	} else {
 		is->priv->state = IMAPX_INITIALISED;
+		is->priv->last_selected_mailbox_change_stamp = 0;
 		g_weak_ref_set (&is->priv->select_mailbox, NULL);
 	}
 
@@ -3910,6 +3935,7 @@ imapx_disconnect (CamelIMAPXServer *is)
 	g_mutex_unlock (&is->priv->stream_lock);
 
 	g_mutex_lock (&is->priv->select_lock);
+	is->priv->last_selected_mailbox_change_stamp = 0;
 	g_weak_ref_set (&is->priv->select_mailbox, NULL);
 	g_weak_ref_set (&is->priv->select_pending, NULL);
 	g_mutex_unlock (&is->priv->select_lock);
@@ -4027,7 +4053,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 	GIOStream *cache_stream;
 	gsize data_size;
 	gboolean use_multi_fetch;
-	gboolean success;
+	gboolean success, retrying = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), NULL);
@@ -4069,6 +4095,7 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 
 	is->priv->get_message_stream = cache_stream;
 
+ try_again:
 	if (use_multi_fetch) {
 		CamelIMAPXCommand *ic;
 		gsize fetch_offset = 0;
@@ -4109,6 +4136,26 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 		success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching message"), cancellable, &local_error);
 
 		camel_imapx_command_unref (ic);
+	}
+
+	if (success && !retrying && !g_seekable_tell (G_SEEKABLE (is->priv->get_message_stream))) {
+		/* Nothing had been read from the server. Maybe this connection
+		   doesn't know about the message on the server side yet, thus
+		   invoke NOOP and retry. */
+		CamelIMAPXCommand *ic;
+
+		retrying = TRUE;
+
+		c (is->priv->tagprefix, "%s: Returned no message data, retrying after NOOP\n", G_STRFUNC);
+
+		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOOP, "NOOP");
+
+		success = camel_imapx_server_process_command_sync (is, ic, _("Error performing NOOP"), cancellable, &local_error);
+
+		camel_imapx_command_unref (ic);
+
+		if (success)
+			goto try_again;
 	}
 
 	is->priv->get_message_stream = NULL;
