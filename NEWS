@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.21.90 2016-08-15
+----------------------------------------
+
+Bug Fixes:
+	Bug 768599 - Drop unused 'Deletes' table from folders.db (Milan Crha)
+	Bug 766346 - Incorrect times provided in e_cal_recur_generate_instances() (Milan Crha)
+	Bug 751588 - Port to WebKit2 (Milan Crha)
+	Bug 767564 - Junk check fails due to empty cache file (Milan Crha)
+
+Translations:
+	Aurimas Černius (lt)
+	Daniel Mustieles (es)
+	Mario Blättermann (de)
+	Dušan Kazik (sk)
+
 Evolution-Data-Server 3.21.4 2016-07-18
 ---------------------------------------
 
