@@ -674,13 +674,17 @@ network_service_new_connectable (CamelNetworkService *service)
 	host = camel_network_settings_dup_host_ensure_ascii (network_settings);
 	port = camel_network_settings_get_port (network_settings);
 
-	if (host && *host)
+	if (host && *host) {
+		CamelProvider *provider;
+
+		provider = camel_service_get_provider (CAMEL_SERVICE (service));
+
 		connectable = g_object_new (G_TYPE_NETWORK_ADDRESS,
-			"scheme", "socks",
+			"scheme", provider ? provider->protocol : "socks",
 			"hostname", host,
 			"port", port,
 			NULL);
-
+	}
 
 	g_free (host);
 
