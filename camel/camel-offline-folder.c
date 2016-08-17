@@ -91,7 +91,8 @@ offline_folder_downsync_background (CamelSession *session,
 {
 	camel_operation_push_message (
 		cancellable,
-		_("Downloading new messages for offline mode in '%s'"),
+		_("Downloading new messages for offline mode in '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (data->folder))),
 		camel_folder_get_full_name (data->folder));
 
 	if (data->changes) {
@@ -158,7 +159,8 @@ offline_folder_schedule_store_changes_job (gpointer user_data)
 		if (session) {
 			gchar *description;
 
-			description = g_strdup_printf (_("Storing changes in folder '%s'"),
+			description = g_strdup_printf (_("Storing changes in folder '%s : %s'"),
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder)))),
 				camel_folder_get_full_name (CAMEL_FOLDER (offline_folder)));
 
 			camel_session_submit_job (session, description,
@@ -244,7 +246,9 @@ offline_folder_changed (CamelFolder *folder,
 		camel_folder_change_info_cat (data->changes, changes);
 		data->folder = g_object_ref (folder);
 
-		description = g_strdup_printf (_("Checking download of new messages for offline in '%s'"), camel_folder_get_full_name (folder));
+		description = g_strdup_printf (_("Checking download of new messages for offline in '%s : %s'"),
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+			camel_folder_get_full_name (folder));
 
 		camel_session_submit_job (
 			session, description, (CamelSessionCallback)
@@ -353,13 +357,11 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 {
 	CamelFolder *folder = (CamelFolder *) offline;
 	GPtrArray *uids, *uncached_uids = NULL;
-	const gchar *display_name;
-	const gchar *message;
 	gint i;
 
-	message = _("Syncing messages in folder '%s' to disk");
-	display_name = camel_folder_get_display_name (folder);
-	camel_operation_push_message (cancellable, message, display_name);
+	camel_operation_push_message (cancellable, _("Syncing messages in folder '%s : %s' to disk"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	if (expression)
 		uids = camel_folder_search_by_expression (folder, expression, cancellable, NULL);

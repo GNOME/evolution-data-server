@@ -4907,8 +4907,9 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	is->priv->fetch_changes_last_progress = 0;
 
 	camel_operation_push_message (cancellable,
-		_("Scanning for changed messages in '%s'"),
-		camel_folder_get_display_name (folder));
+		_("Scanning for changed messages in '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	success = camel_imapx_server_process_command_sync (is, ic, _("Error scanning changes"), cancellable, error);
 
@@ -4928,8 +4929,9 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 		imapx_uidset_init (&uidset, 0, 100);
 
 		camel_operation_push_message (cancellable,
-			_("Fetching summary information for new messages in '%s'"),
-			camel_folder_get_display_name (folder));
+			_("Fetching summary information for new messages in '%s : %s'"),
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+			camel_folder_get_full_name (folder));
 
 		fetch_summary_uids = g_slist_sort (fetch_summary_uids, imapx_uids_desc_cmp);
 

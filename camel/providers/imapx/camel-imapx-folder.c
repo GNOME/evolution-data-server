@@ -699,7 +699,8 @@ imapx_get_quota_info_sync (CamelFolder *folder,
 	if (quota_info == NULL)
 		g_set_error (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-			_("No quota information available for folder '%s'"),
+			_("No quota information available for folder '%s : %s'"),
+			camel_service_get_display_name (CAMEL_SERVICE (store)),
 			camel_folder_get_full_name (folder));
 
 exit:
@@ -1290,8 +1291,9 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_STATE,
-			_("No IMAP mailbox available for folder '%s'"),
-			camel_folder_get_display_name (CAMEL_FOLDER (folder)));
+			_("No IMAP mailbox available for folder '%s : %s'"),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			camel_folder_get_full_name (CAMEL_FOLDER (folder)));
 	}
 
 exit:

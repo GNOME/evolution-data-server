@@ -283,9 +283,9 @@ folder_filter (CamelSession *session,
 	gint i, status = 0;
 	CamelJunkFilter *junk_filter;
 	gboolean synchronize = FALSE;
-	const gchar *display_name;
+	const gchar *full_name;
 
-	display_name = camel_folder_get_display_name (data->folder);
+	full_name = camel_folder_get_full_name (data->folder);
 	parent_store = camel_folder_get_parent_store (data->folder);
 	junk_filter = camel_session_get_junk_filter (session);
 
@@ -319,13 +319,15 @@ folder_filter (CamelSession *session,
 	if (data->junk) {
 		gboolean success = TRUE;
 
-		/* Translators: The %s is replaced with the
-		 * folder name where the operation is running. */
+		/* Translators: The first %s is replaced with account name and
+		 * the second %s with the folder name where the operation is running. */
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
-			"Learning new spam message in '%s'",
-			"Learning new spam messages in '%s'",
-			data->junk->len), display_name);
+			"Learning new spam message in '%s : %s'",
+			"Learning new spam messages in '%s : %s'",
+			data->junk->len),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			full_name);
 
 		for (i = 0; success && i < data->junk->len; i++) {
 			CamelMimeMessage *message;
@@ -359,13 +361,15 @@ folder_filter (CamelSession *session,
 	if (data->notjunk) {
 		gboolean success = TRUE;
 
-		/* Translators: The %s is replaced with the
-		 * folder name where the operation is running. */
+		/* Translators: The first %s is replaced with account name and
+		 * the second %s with the folder name where the operation is running. */
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
-			"Learning new ham message in '%s'",
-			"Learning new ham messages in '%s'",
-			data->notjunk->len), display_name);
+			"Learning new ham message in '%s : %s'",
+			"Learning new ham messages in '%s : %s'",
+			data->notjunk->len),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			full_name);
 
 		for (i = 0; success && i < data->notjunk->len; i++) {
 			CamelMimeMessage *message;
@@ -407,13 +411,15 @@ folder_filter (CamelSession *session,
 		CamelService *service;
 		const gchar *store_uid;
 
-		/* Translators: The %s is replaced with the
-		 * folder name where the operation is running. */
+		/* Translators: The first %s is replaced with account name and
+		 * the second %s with the folder name where the operation is running. */
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
-			"Filtering new message in '%s'",
-			"Filtering new messages in '%s'",
-			data->recents->len), display_name);
+			"Filtering new message in '%s : %s'",
+			"Filtering new messages in '%s : %s'",
+			data->recents->len),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			full_name);
 
 		service = CAMEL_SERVICE (parent_store);
 		store_uid = camel_service_get_uid (service);
@@ -428,8 +434,8 @@ folder_filter (CamelSession *session,
 				data->folder, uid);
 			if (info == NULL) {
 				g_warning (
-					"uid '%s' vanished from folder '%s'",
-					uid, display_name);
+					"uid '%s' vanished from folder '%s : %s'",
+					uid, camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
 				continue;
 			}
 
@@ -1062,8 +1068,9 @@ folder_get_quota_info_sync (CamelFolder *folder,
 {
 	g_set_error (
 		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		_("Quota information not supported for folder '%s'"),
-		camel_folder_get_display_name (folder));
+		_("Quota information not supported for folder '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	return NULL;
 }
@@ -1157,7 +1164,9 @@ folder_changed (CamelFolder *folder,
 			folder->priv->changed_frozen, info);
 		g_mutex_unlock (&folder->priv->change_lock);
 
-		description = g_strdup_printf (_("Filtering folder '%s'"), camel_folder_get_full_name (folder));
+		description = g_strdup_printf (_("Filtering folder '%s : %s'"),
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+			camel_folder_get_full_name (folder));
 
 		camel_session_submit_job (
 			session, description, (CamelSessionCallback) folder_filter,
@@ -2872,8 +2881,6 @@ camel_folder_expunge_sync (CamelFolder *folder,
                            GError **error)
 {
 	CamelFolderClass *class;
-	const gchar *display_name;
-	const gchar *message;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -2894,9 +2901,9 @@ camel_folder_expunge_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	message = _("Expunging folder '%s'");
-	display_name = camel_folder_get_display_name (folder);
-	camel_operation_push_message (cancellable, message, display_name);
+	camel_operation_push_message (cancellable, _("Expunging folder '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	if (!(folder->folder_flags & CAMEL_FOLDER_HAS_BEEN_DELETED)) {
 		success = class->expunge_sync (folder, cancellable, error);
@@ -3025,8 +3032,9 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->get_message_sync != NULL, NULL);
 
 	camel_operation_push_message (
-		cancellable, _("Retrieving message '%s' in %s"),
-		message_uid, camel_folder_get_display_name (folder));
+		cancellable, _("Retrieving message '%s' in '%s : %s'"),
+		message_uid, camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	if (class->get_message_cached) {
 		/* Return cached message, if available locally; this should
@@ -3208,17 +3216,15 @@ camel_folder_get_quota_info_sync (CamelFolder *folder,
 {
 	CamelFolderClass *class;
 	CamelFolderQuotaInfo *quota_info;
-	const gchar *display_name;
-	const gchar *message;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->get_quota_info_sync != NULL, NULL);
 
-	message = _("Retrieving quota information for '%s'");
-	display_name = camel_folder_get_display_name (folder);
-	camel_operation_push_message (cancellable, message, display_name);
+	camel_operation_push_message (cancellable, _("Retrieving quota information for '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	quota_info = class->get_quota_info_sync (folder, cancellable, error);
 	CAMEL_CHECK_GERROR (
@@ -3491,8 +3497,6 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
                                 GError **error)
 {
 	CamelFolderClass *class;
-	const gchar *display_name;
-	const gchar *message;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
@@ -3513,9 +3517,9 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	message = _("Refreshing folder '%s'");
-	display_name = camel_folder_get_display_name (folder);
-	camel_operation_push_message (cancellable, message, display_name);
+	camel_operation_push_message (cancellable, _("Refreshing folder '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+		camel_folder_get_full_name (folder));
 
 	success = class->refresh_info_sync (folder, cancellable, error);
 	CAMEL_CHECK_GERROR (folder, refresh_info_sync, success, error);

@@ -2165,7 +2165,9 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 		return FALSE;
 	}
 
-	description = g_strdup_printf (_("Release unused memory for folder '%s'"), camel_folder_get_full_name (summary->priv->folder));
+	description = g_strdup_printf (_("Release unused memory for folder '%s : %s'"),
+		camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+		camel_folder_get_full_name (summary->priv->folder));
 
 	camel_session_submit_job (
 		session, description,
@@ -2379,7 +2381,9 @@ cfs_reload_from_db (CamelFolderSummary *summary,
 		if (session) {
 			gchar *description;
 
-			description = g_strdup_printf (_("Update preview data for folder '%s'"), camel_folder_get_full_name (summary->priv->folder));
+			description = g_strdup_printf (_("Update preview data for folder '%s : %s'"),
+				camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+				camel_folder_get_full_name (summary->priv->folder));
 
 			camel_session_submit_job (
 				session, description,
@@ -2847,7 +2851,8 @@ camel_folder_summary_save_to_db (CamelFolderSummary *summary,
 		const gchar *full_name;
 
 		full_name = camel_folder_get_full_name (summary->priv->folder);
-		g_warning ("Fixing up a broken summary migration on %s\n", full_name);
+		g_warning ("Fixing up a broken summary migration on '%s : %s'\n",
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
 
 		/* Begin everything again. */
 		camel_db_begin_transaction (cdb, NULL);

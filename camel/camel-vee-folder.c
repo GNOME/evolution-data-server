@@ -899,8 +899,9 @@ vee_folder_get_message_sync (CamelFolder *folder,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_UID,
-			_("No such message %s in %s"), uid,
-			camel_folder_get_display_name (folder));
+			_("No such message %s in '%s : %s'"), uid,
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+			camel_folder_get_full_name (folder));
 	}
 
 	return msg;
