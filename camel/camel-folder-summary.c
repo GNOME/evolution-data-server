@@ -3719,6 +3719,14 @@ message_info_new_from_header (CamelFolderSummary *summary,
 	else
 		mi->date_received = 0;
 
+	/* Fallback to Received date, when the Date header is missing */
+	if (!mi->date_sent)
+		mi->date_sent = mi->date_received;
+
+	/* If neither Received is available, then use the current time. */
+	if (!mi->date_sent)
+		mi->date_sent = time (NULL);
+
 	msgid = camel_header_msgid_decode (camel_header_raw_find (&h, "message-id", NULL));
 	if (msgid) {
 		GChecksum *checksum;
