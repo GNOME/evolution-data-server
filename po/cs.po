@@ -7,15 +7,15 @@
 # Michal Bukovjan <bukm@centrum.cz>, 2003.
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
 # Petr Kovar <pknbe@volny.cz>, 2008.
-# Jiří Eischmann <jiri@eischmann.cz> 2008, 2009, 2010, 2011, 2012, 2013, 2016.
 # Marek Černocký <marek@manet.cz>, 2010, 2013, 2014, 2015, 2016.
+# Jiří Eischmann <jiri@eischmann.cz> 2008, 2009, 2010, 2011, 2012, 2013, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=evolution-data-server&keywords=I18N+L10N&component=Misc.\n"
-"POT-Creation-Date: 2016-06-24 10:21+0000\n"
+"product=evolution-data-server&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2016-08-18 19:27+0000\n"
 "PO-Revision-Date: 2016-08-12 16:53+0200\n"
 "Last-Translator: Jiří Eischmann <jiri@eischmann.cz>\n"
 "Language-Team: čeština <>\n"
@@ -137,9 +137,9 @@ msgstr "Nelze přejmenovat starou databázi z „%s“ na „%s“: %s"
 #: ../calendar/libecal/e-cal-client.c:6452
 #: ../calendar/libecal/e-cal-client.c:6815
 #: ../calendar/libecal/e-cal-client.c:7037
-#: ../camel/providers/imapx/camel-imapx-server.c:3034
-#: ../camel/providers/imapx/camel-imapx-server.c:3044
-#: ../camel/providers/imapx/camel-imapx-server.c:3056
+#: ../camel/providers/imapx/camel-imapx-server.c:3041
+#: ../camel/providers/imapx/camel-imapx-server.c:3051
+#: ../camel/providers/imapx/camel-imapx-server.c:3063
 #: ../camel/providers/nntp/camel-nntp-store.c:424
 #: ../libebackend/e-server-side-source.c:497 ../libedataserver/e-client.c:190
 msgid "Unknown error"
@@ -1541,7 +1541,6 @@ msgid "Protocol not supported"
 msgstr "Protokol není podporován"
 
 #: ../calendar/libecal/e-cal.c:2326
-#| msgid "Operation has been canceled"
 msgid "Operation has been cancelled"
 msgstr "Operace byla zrušena"
 
@@ -1591,127 +1590,127 @@ msgstr "Nelze změnit hodnotu vlastnictví kalendáře: „%s“"
 msgid "Untitled appointment"
 msgstr "Nepojmenovaná událost"
 
-#: ../calendar/libecal/e-cal-recur.c:4739
+#: ../calendar/libecal/e-cal-recur.c:4744
 msgid "1st"
 msgstr "1."
 
-#: ../calendar/libecal/e-cal-recur.c:4740
+#: ../calendar/libecal/e-cal-recur.c:4745
 msgid "2nd"
 msgstr "2."
 
-#: ../calendar/libecal/e-cal-recur.c:4741
+#: ../calendar/libecal/e-cal-recur.c:4746
 msgid "3rd"
 msgstr "3."
 
-#: ../calendar/libecal/e-cal-recur.c:4742
+#: ../calendar/libecal/e-cal-recur.c:4747
 msgid "4th"
 msgstr "4."
 
-#: ../calendar/libecal/e-cal-recur.c:4743
+#: ../calendar/libecal/e-cal-recur.c:4748
 msgid "5th"
 msgstr "5."
 
-#: ../calendar/libecal/e-cal-recur.c:4744
+#: ../calendar/libecal/e-cal-recur.c:4749
 msgid "6th"
 msgstr "6."
 
-#: ../calendar/libecal/e-cal-recur.c:4745
+#: ../calendar/libecal/e-cal-recur.c:4750
 msgid "7th"
 msgstr "7."
 
-#: ../calendar/libecal/e-cal-recur.c:4746
+#: ../calendar/libecal/e-cal-recur.c:4751
 msgid "8th"
 msgstr "8."
 
-#: ../calendar/libecal/e-cal-recur.c:4747
+#: ../calendar/libecal/e-cal-recur.c:4752
 msgid "9th"
 msgstr "9."
 
-#: ../calendar/libecal/e-cal-recur.c:4748
+#: ../calendar/libecal/e-cal-recur.c:4753
 msgid "10th"
 msgstr "10."
 
-#: ../calendar/libecal/e-cal-recur.c:4749
+#: ../calendar/libecal/e-cal-recur.c:4754
 msgid "11th"
 msgstr "11."
 
-#: ../calendar/libecal/e-cal-recur.c:4750
+#: ../calendar/libecal/e-cal-recur.c:4755
 msgid "12th"
 msgstr "12."
 
-#: ../calendar/libecal/e-cal-recur.c:4751
+#: ../calendar/libecal/e-cal-recur.c:4756
 msgid "13th"
 msgstr "13."
 
-#: ../calendar/libecal/e-cal-recur.c:4752
+#: ../calendar/libecal/e-cal-recur.c:4757
 msgid "14th"
 msgstr "14."
 
-#: ../calendar/libecal/e-cal-recur.c:4753
+#: ../calendar/libecal/e-cal-recur.c:4758
 msgid "15th"
 msgstr "15."
 
-#: ../calendar/libecal/e-cal-recur.c:4754
+#: ../calendar/libecal/e-cal-recur.c:4759
 msgid "16th"
 msgstr "16."
 
-#: ../calendar/libecal/e-cal-recur.c:4755
+#: ../calendar/libecal/e-cal-recur.c:4760
 msgid "17th"
 msgstr "17."
 
-#: ../calendar/libecal/e-cal-recur.c:4756
+#: ../calendar/libecal/e-cal-recur.c:4761
 msgid "18th"
 msgstr "18."
 
-#: ../calendar/libecal/e-cal-recur.c:4757
+#: ../calendar/libecal/e-cal-recur.c:4762
 msgid "19th"
 msgstr "19."
 
-#: ../calendar/libecal/e-cal-recur.c:4758
+#: ../calendar/libecal/e-cal-recur.c:4763
 msgid "20th"
 msgstr "20."
 
-#: ../calendar/libecal/e-cal-recur.c:4759
+#: ../calendar/libecal/e-cal-recur.c:4764
 msgid "21st"
 msgstr "21."
 
-#: ../calendar/libecal/e-cal-recur.c:4760
+#: ../calendar/libecal/e-cal-recur.c:4765
 msgid "22nd"
 msgstr "22."
 
-#: ../calendar/libecal/e-cal-recur.c:4761
+#: ../calendar/libecal/e-cal-recur.c:4766
 msgid "23rd"
 msgstr "23."
 
-#: ../calendar/libecal/e-cal-recur.c:4762
+#: ../calendar/libecal/e-cal-recur.c:4767
 msgid "24th"
 msgstr "24."
 
-#: ../calendar/libecal/e-cal-recur.c:4763
+#: ../calendar/libecal/e-cal-recur.c:4768
 msgid "25th"
 msgstr "25."
 
-#: ../calendar/libecal/e-cal-recur.c:4764
+#: ../calendar/libecal/e-cal-recur.c:4769
 msgid "26th"
 msgstr "26."
 
-#: ../calendar/libecal/e-cal-recur.c:4765
+#: ../calendar/libecal/e-cal-recur.c:4770
 msgid "27th"
 msgstr "27."
 
-#: ../calendar/libecal/e-cal-recur.c:4766
+#: ../calendar/libecal/e-cal-recur.c:4771
 msgid "28th"
 msgstr "28."
 
-#: ../calendar/libecal/e-cal-recur.c:4767
+#: ../calendar/libecal/e-cal-recur.c:4772
 msgid "29th"
 msgstr "29."
 
-#: ../calendar/libecal/e-cal-recur.c:4768
+#: ../calendar/libecal/e-cal-recur.c:4773
 msgid "30th"
 msgstr "30."
 
-#: ../calendar/libecal/e-cal-recur.c:4769
+#: ../calendar/libecal/e-cal-recur.c:4774
 msgid "31st"
 msgstr "31."
 
@@ -1975,7 +1974,7 @@ msgstr "Nelze odstranit položku mezipaměti: %s: %s"
 msgid "Could not rename '%s' to %s: %s"
 msgstr "Nelze přejmenovat „%s“ na %s: %s"
 
-#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:798
+#: ../camel/camel-filter-driver.c:935 ../camel/camel-filter-search.c:773
 #, c-format
 msgid "Failed to create child process '%s': %s"
 msgstr "Nelze vytvořit proces potomka „%s“: %s"
@@ -2056,117 +2055,117 @@ msgstr "Chyba „%s“ při spouštění filtru: %s: %s"
 msgid "Failed to retrieve message"
 msgstr "Nelze stáhnout zprávu"
 
-#: ../camel/camel-filter-search.c:538
+#: ../camel/camel-filter-search.c:513
 msgid "Invalid arguments to (system-flag)"
 msgstr "Neplatné parametry pro (system-flag)"
 
-#: ../camel/camel-filter-search.c:556
+#: ../camel/camel-filter-search.c:531
 msgid "Invalid arguments to (user-tag)"
 msgstr "Neplatné parametry pro (user-tag)"
 
-#: ../camel/camel-filter-search.c:1068
+#: ../camel/camel-filter-search.c:1043
 msgid "Invalid arguments to (message-location)"
 msgstr "Neplatné parametry pro (message-location)"
 
-#: ../camel/camel-filter-search.c:1149 ../camel/camel-filter-search.c:1160
+#: ../camel/camel-filter-search.c:1124 ../camel/camel-filter-search.c:1135
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Chyba při spuštění vyhledávání filtru: %s: %s"
 
 #: ../camel/camel-folder.c:326
 #, c-format
-msgid "Learning new spam message in '%s'"
-msgid_plural "Learning new spam messages in '%s'"
-msgstr[0] "Učí se na nové nevyžádaná zprávě v „%s“"
-msgstr[1] "Učí se na nových nevyžádaných zprávách v „%s“"
-msgstr[2] "Učí se na nových nevyžádaných zprávách v „%s“"
+msgid "Learning new spam message in '%s : %s'"
+msgid_plural "Learning new spam messages in '%s : %s'"
+msgstr[0] "Učí se na nové nevyžádaná zprávě v „%s : %s“"
+msgstr[1] "Učí se na nových nevyžádaných zprávách v „%s : %s“"
+msgstr[2] "Učí se na nových nevyžádaných zprávách v „%s : %s“"
 
-#: ../camel/camel-folder.c:366
+#: ../camel/camel-folder.c:368
 #, c-format
-msgid "Learning new ham message in '%s'"
-msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] "Učí se na nové korektní zprávě v „%s“"
-msgstr[1] "Učí se na nové korektních zprávách v „%s“"
-msgstr[2] "Učí se na nové korektních zprávách v „%s“"
+msgid "Learning new ham message in '%s : %s'"
+msgid_plural "Learning new ham messages in '%s : %s'"
+msgstr[0] "Učí se na nové korektní zprávě v „%s : %s“"
+msgstr[1] "Učí se na nové korektních zprávách v „%s : %s“"
+msgstr[2] "Učí se na nové korektních zprávách v „%s : %s“"
 
-#: ../camel/camel-folder.c:414
+#: ../camel/camel-folder.c:418
 #, c-format
-msgid "Filtering new message in '%s'"
-msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "Filtruje se nová zpráva v „%s“"
-msgstr[1] "Filtrují se nové zprávy v „%s“"
-msgstr[2] "Filtrují se nové zprávy v „%s“"
+msgid "Filtering new message in '%s : %s'"
+msgid_plural "Filtering new messages in '%s : %s'"
+msgstr[0] "Filtruje se nová zpráva v „%s : %s“"
+msgstr[1] "Filtrují se nové zprávy v „%s : %s“"
+msgstr[2] "Filtrují se nové zprávy v „%s : %s“"
 
-#: ../camel/camel-folder.c:1020
+#: ../camel/camel-folder.c:1026
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Přesouvají se zprávy"
 
-#: ../camel/camel-folder.c:1023
+#: ../camel/camel-folder.c:1029
 msgid "Copying messages"
 msgstr "Kopírují se zprávy"
 
-#: ../camel/camel-folder.c:1065
+#: ../camel/camel-folder.c:1071
 #, c-format
-msgid "Quota information not supported for folder '%s'"
-msgstr "Informace o kvótě nejsou podporovány pro složku „%s“"
+msgid "Quota information not supported for folder '%s : %s'"
+msgstr "Informace o kvótě nejsou podporovány pro složku „%s : %s“"
 
-#: ../camel/camel-folder.c:1160
+#: ../camel/camel-folder.c:1167
 #, c-format
-msgid "Filtering folder '%s'"
-msgstr "Filtruje se složka „%s“"
+msgid "Filtering folder '%s : %s'"
+msgstr "Filtruje se složka „%s : %s“"
 
-#: ../camel/camel-folder.c:2897
+#: ../camel/camel-folder.c:2904
 #, c-format
-msgid "Expunging folder '%s'"
-msgstr "Čistí se složka „%s“"
+msgid "Expunging folder '%s : %s'"
+msgstr "Čistí se složka „%s : %s“"
 
-#: ../camel/camel-folder.c:3028
+#: ../camel/camel-folder.c:3035
 #, c-format
-msgid "Retrieving message '%s' in %s"
-msgstr "Získává se zpráva „%s“ v %s"
+msgid "Retrieving message '%s' in '%s : %s'"
+msgstr "Získává se zpráva „%s“ v „%s : %s“"
 
-#: ../camel/camel-folder.c:3219
+#: ../camel/camel-folder.c:3225
 #, c-format
-msgid "Retrieving quota information for '%s'"
-msgstr "Stahují se informace o kvótě pro „%s“"
+msgid "Retrieving quota information for '%s : %s'"
+msgstr "Stahují se informace o kvótě pro „%s : %s“"
 
-#: ../camel/camel-folder.c:3516
+#: ../camel/camel-folder.c:3520
 #, c-format
-msgid "Refreshing folder '%s'"
-msgstr "Aktualizuje se složka „%s“"
+msgid "Refreshing folder '%s : %s'"
+msgstr "Aktualizuje se složka „%s : %s“"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:915 ../camel/camel-folder-search.c:957
+#: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) vyžaduje jeden výsledek pravdivostního typu"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:992
+#: ../camel/camel-folder-search.c:922
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) není povoleno uvnitř %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:999 ../camel/camel-folder-search.c:1007
+#: ../camel/camel-folder-search.c:929 ../camel/camel-folder-search.c:937
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) vyžaduje řetězec s typem porovnávání"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1035
+#: ../camel/camel-folder-search.c:965
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) očekává jako výsledek pole"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:1045
+#: ../camel/camel-folder-search.c:975
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) vyžaduje nastavenou složku"
 
-#: ../camel/camel-folder-search.c:1963 ../camel/camel-folder-search.c:2132
+#: ../camel/camel-folder-search.c:1887 ../camel/camel-folder-search.c:2056
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2175,7 +2174,7 @@ msgstr ""
 "Nelze zpracovat vyhledávací výraz: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1975 ../camel/camel-folder-search.c:2144
+#: ../camel/camel-folder-search.c:1899 ../camel/camel-folder-search.c:2068
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2186,13 +2185,13 @@ msgstr ""
 
 #: ../camel/camel-folder-summary.c:2168
 #, c-format
-msgid "Release unused memory for folder '%s'"
-msgstr "Uvolňuje se nepoužitá paměť pro složku „%s“"
+msgid "Release unused memory for folder '%s : %s'"
+msgstr "Uvolňuje se nepoužitá paměť pro složku „%s : %s“"
 
-#: ../camel/camel-folder-summary.c:2382
+#: ../camel/camel-folder-summary.c:2384
 #, c-format
-msgid "Update preview data for folder '%s'"
-msgstr "Aktualizuje se náhled dat pro složku „%s“"
+msgid "Update preview data for folder '%s : %s'"
+msgstr "Aktualizuje se náhled dat pro složku „%s : %s“"
 
 #: ../camel/camel-gpg-context.c:819 ../camel/camel-gpg-context.c:824
 #: ../camel/camel-gpg-context.c:1514
@@ -2464,25 +2463,25 @@ msgstr "Vyhledání hostitele „%s“ selhalo: %s"
 
 #: ../camel/camel-offline-folder.c:94
 #, c-format
-msgid "Downloading new messages for offline mode in '%s'"
-msgstr "Stahují se nové zprávy pro režim odpojení v „%s“"
+msgid "Downloading new messages for offline mode in '%s : %s'"
+msgstr "Stahují se nové zprávy pro režim odpojení v „%s : %s“"
 
-#: ../camel/camel-offline-folder.c:161
+#: ../camel/camel-offline-folder.c:162
 #, c-format
-msgid "Storing changes in folder '%s'"
-msgstr "Ukládají se změny ve složce „%s“"
+msgid "Storing changes in folder '%s : %s'"
+msgstr "Ukládají se změny ve složce „%s : %s“"
 
-#: ../camel/camel-offline-folder.c:247
+#: ../camel/camel-offline-folder.c:249
 #, c-format
-msgid "Checking download of new messages for offline in '%s'"
-msgstr "Kontroluje se stažení nových zpráv pro režim odpojení v „%s“"
+msgid "Checking download of new messages for offline in '%s : %s'"
+msgstr "Kontroluje se stažení nových zpráv pro režim odpojení v „%s : %s“"
 
-#: ../camel/camel-offline-folder.c:360
+#: ../camel/camel-offline-folder.c:362
 #, c-format
-msgid "Syncing messages in folder '%s' to disk"
-msgstr "Synchronizují se zprávy ve složce „%s“ na disk"
+msgid "Syncing messages in folder '%s : %s' to disk"
+msgstr "Synchronizují se zprávy ve složce „%s : %s“ na disk"
 
-#: ../camel/camel-offline-folder.c:423
+#: ../camel/camel-offline-folder.c:425
 msgid "Copy folder content locally for _offline operation"
 msgstr "Zkopírovat obsah složky lokálně pro práci při _odpojení"
 
@@ -2753,9 +2752,9 @@ msgid "Invalid GType registered for protocol '%s'"
 msgstr "Neplatný GType registrovaný pro protokol „%s“"
 
 #: ../camel/camel-session.c:514
-#: ../camel/providers/imapx/camel-imapx-server.c:2983
+#: ../camel/providers/imapx/camel-imapx-server.c:2990
 #: ../camel/providers/pop3/camel-pop3-store.c:308
-#: ../camel/providers/pop3/camel-pop3-store.c:786
+#: ../camel/providers/pop3/camel-pop3-store.c:790
 #: ../camel/providers/smtp/camel-smtp-transport.c:672
 #, c-format
 msgid "No support for %s authentication"
@@ -3050,22 +3049,22 @@ msgstr "Nelze zpracovat adresu URL „%s“"
 msgid "Updating folder '%s'"
 msgstr "Aktualizace složky „%s“"
 
-#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:979
+#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:980
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nelze kopírovat nebo přesunout zprávy do Virtuální složky"
 
 #: ../camel/camel-vee-folder.c:902
 #, c-format
-msgid "No such message %s in %s"
-msgstr "Taková zpráva %s v %s neexistuje"
+msgid "No such message %s in '%s : %s'"
+msgstr "Taková zpráva %s v „%s : %s“ neexistuje"
 
-#: ../camel/camel-vee-folder.c:955
+#: ../camel/camel-vee-folder.c:956
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Chyba při ukládání „%s“: "
 
-#: ../camel/camel-vee-folder.c:1193
+#: ../camel/camel-vee-folder.c:1194
 msgid "Automatically _update on change in source folders"
 msgstr "Automaticky _aktualizovat po každé změně ve zdrojových složkách"
 
@@ -3107,7 +3106,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Pro dokončení této operace musíte pracovat připojeni (%s)"
 
 #: ../camel/providers/imapx/camel-imapx-conn-manager.c:981
-#: ../camel/providers/imapx/camel-imapx-server.c:3116
+#: ../camel/providers/imapx/camel-imapx-server.c:3123
 #: ../camel/providers/nntp/camel-nntp-store.c:353
 #: ../camel/providers/nntp/camel-nntp-store.c:1350
 #: ../camel/providers/nntp/camel-nntp-store.c:2158
@@ -3120,7 +3119,7 @@ msgstr "Pro dokončení této operace musíte pracovat připojeni (%s)"
 #: ../camel/providers/pop3/camel-pop3-store.c:529
 #: ../camel/providers/pop3/camel-pop3-store.c:577
 #: ../camel/providers/pop3/camel-pop3-store.c:672
-#: ../camel/providers/pop3/camel-pop3-store.c:1103
+#: ../camel/providers/pop3/camel-pop3-store.c:1107
 #: ../camel/providers/smtp/camel-smtp-transport.c:543
 #, c-format
 msgid "You must be working online to complete this operation"
@@ -3142,32 +3141,32 @@ msgstr "Nelze přesunout odstraněné zprávy"
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:702
 #, c-format
-msgid "No quota information available for folder '%s'"
-msgstr "Informace o kvótě nejsou dostupné pro složku „%s“"
+msgid "No quota information available for folder '%s : %s'"
+msgstr "Informace o kvótě nejsou dostupné pro složku „%s : %s“"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:964
+#: ../camel/providers/imapx/camel-imapx-folder.c:965
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
 msgid "Apply message _filters to this folder"
 msgstr "Použít _filtry zpráv v této složce"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:975
+#: ../camel/providers/imapx/camel-imapx-folder.c:976
 msgid "Always check for _new mail in this folder"
 msgstr "Vždy kontrolovat nové zprávy v této složce"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1086
+#: ../camel/providers/imapx/camel-imapx-folder.c:1087
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nelze vytvořit shrnutí složky pro %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1095
+#: ../camel/providers/imapx/camel-imapx-folder.c:1096
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nelze vytvořit mezipaměť pro %s:"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1293
+#: ../camel/providers/imapx/camel-imapx-folder.c:1294
 #, c-format
-msgid "No IMAP mailbox available for folder '%s'"
-msgstr "Pro složku „%s“ není k dispozici žádná poštovní schránka IMAP"
+msgid "No IMAP mailbox available for folder '%s : %s'"
+msgstr "Pro složku „%s : %s“ není k dispozici žádná poštovní schránka IMAP"
 
 #: ../camel/providers/imapx/camel-imapx-input-stream.c:101
 #, c-format
@@ -3264,194 +3263,195 @@ msgstr "IMAP+"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Pro čtení a ukládání pošty na serverech IMAP."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:1166
+#: ../camel/providers/imapx/camel-imapx-server.c:1167
 msgid "Error writing to cache stream"
 msgstr "Chyba při zápisu do datového proudu mezipaměti "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2799
-#: ../camel/providers/imapx/camel-imapx-server.c:2887
-#: ../camel/providers/imapx/camel-imapx-server.c:3149
+#: ../camel/providers/imapx/camel-imapx-server.c:2806
+#: ../camel/providers/imapx/camel-imapx-server.c:2894
+#: ../camel/providers/imapx/camel-imapx-server.c:3156
 msgid "Failed to get capabilities"
 msgstr "Selhalo zjištění schopností"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2818
+#: ../camel/providers/imapx/camel-imapx-server.c:2825
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2819
+#: ../camel/providers/imapx/camel-imapx-server.c:2826
 #: ../camel/providers/smtp/camel-smtp-transport.c:281
 msgid "STARTTLS not supported"
 msgstr "STARTTLS není podporováno"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2828
+#: ../camel/providers/imapx/camel-imapx-server.c:2835
 msgid "Failed to issue STARTTLS"
 msgstr "Selhalo odbavení příkazu STARTTLS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2876
+#: ../camel/providers/imapx/camel-imapx-server.c:2883
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: "
 
-#: ../camel/providers/imapx/camel-imapx-server.c:2970
+#: ../camel/providers/imapx/camel-imapx-server.c:2977
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s nepodporuje ověřování totožnosti %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3001
+#: ../camel/providers/imapx/camel-imapx-server.c:3008
 #: ../camel/providers/nntp/camel-nntp-store.c:459
 #: ../camel/providers/nntp/camel-nntp-store.c:601
 msgid "Cannot authenticate without a username"
 msgstr "Nelze ověřit totožnost bez uživatelského jména"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3010
+#: ../camel/providers/imapx/camel-imapx-server.c:3017
 #: ../camel/providers/nntp/camel-nntp-store.c:610
 #: ../camel/providers/pop3/camel-pop3-store.c:690
 #: ../camel/providers/pop3/camel-pop3-store.c:728
 msgid "Authentication password not available"
 msgstr "Heslo pro ověření totožnosti není k dispozici"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3018
+#: ../camel/providers/imapx/camel-imapx-server.c:3025
 msgid "Failed to authenticate"
 msgstr "Selhalo ověření"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3171
+#: ../camel/providers/imapx/camel-imapx-server.c:3178
 msgid "Failed to issue NAMESPACE"
 msgstr "Selhalo odbavení příkazu NAMESPACE"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3189
+#: ../camel/providers/imapx/camel-imapx-server.c:3196
 msgid "Failed to enable QResync"
 msgstr "Selhalo povolení QResync"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3221
+#: ../camel/providers/imapx/camel-imapx-server.c:3228
 msgid "Failed to issue NOTIFY"
 msgstr "Selhalo odbavení příkazu NOTIFY"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3683
+#: ../camel/providers/imapx/camel-imapx-server.c:3706
 msgid "Failed to select mailbox"
 msgstr "Selhal výběr poštovní schránky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:3784
+#: ../camel/providers/imapx/camel-imapx-server.c:3809
 msgid "Cannot issue command, no stream available"
 msgstr "Nelze odbavit příkaz, není k dispozici žádný datový proud"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4047
+#: ../camel/providers/imapx/camel-imapx-server.c:4073
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nelze získat zprávu s ID %s: %s"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4048
+#: ../camel/providers/imapx/camel-imapx-server.c:4074
 msgid "No such message available."
 msgstr "Žádná taková zpráva není k dispozici."
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4084
-#: ../camel/providers/imapx/camel-imapx-server.c:4109
-#: ../camel/providers/imapx/camel-imapx-server.c:4128
+#: ../camel/providers/imapx/camel-imapx-server.c:4111
+#: ../camel/providers/imapx/camel-imapx-server.c:4136
+#: ../camel/providers/imapx/camel-imapx-server.c:4175
 msgid "Error fetching message"
 msgstr "Chyba při získávání zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4121
-msgid "Failed to close the tmp stream"
-msgstr "Selhalo zavření dočasného datového proudu"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4152
-msgid "Failed to copy the tmp file"
-msgstr "Selhalo kopírování dočasného souboru"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4315
-msgid "Error moving messages"
-msgstr "Chyba při přesouvání zpráv"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4315
-msgid "Error copying messages"
-msgstr "Chyba při kopírování zpráv"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4499
-#: ../camel/providers/imapx/camel-imapx-server.c:4520
-msgid "Cannot create spool file: "
-msgstr "Nelze vytvořit soubor fronty: "
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4621
-msgid "Error appending message"
-msgstr "Chyba při přidávání zprávy"
-
-#: ../camel/providers/imapx/camel-imapx-server.c:4713
+#: ../camel/providers/imapx/camel-imapx-server.c:4153
+#: ../camel/providers/imapx/camel-imapx-server.c:4760
 msgid "Error performing NOOP"
 msgstr "Chyba při vykonávání příkazu NOOP"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4863
-#, c-format
-msgid "Scanning for changed messages in '%s'"
-msgstr "Hledání změněných zpráv v „%s“"
+#: ../camel/providers/imapx/camel-imapx-server.c:4168
+msgid "Failed to close the tmp stream"
+msgstr "Selhalo zavření dočasného datového proudu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4866
+#: ../camel/providers/imapx/camel-imapx-server.c:4199
+msgid "Failed to copy the tmp file"
+msgstr "Selhalo kopírování dočasného souboru"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4362
+msgid "Error moving messages"
+msgstr "Chyba při přesouvání zpráv"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4362
+msgid "Error copying messages"
+msgstr "Chyba při kopírování zpráv"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4546
+#: ../camel/providers/imapx/camel-imapx-server.c:4567
+msgid "Cannot create spool file: "
+msgstr "Nelze vytvořit soubor fronty: "
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4668
+msgid "Error appending message"
+msgstr "Chyba při přidávání zprávy"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4910
+#, c-format
+msgid "Scanning for changed messages in '%s : %s'"
+msgstr "Hledání změněných zpráv v „%s : %s“"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4914
 msgid "Error scanning changes"
 msgstr "Chyba při zjišťování změn"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4884
+#: ../camel/providers/imapx/camel-imapx-server.c:4932
 #, c-format
-msgid "Fetching summary information for new messages in '%s'"
-msgstr "Stahování souhrnných informací o nových zprávách v „%s“"
+msgid "Fetching summary information for new messages in '%s : %s'"
+msgstr "Stahování souhrnných informací o nových zprávách v „%s : %s“"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4901
+#: ../camel/providers/imapx/camel-imapx-server.c:4950
 msgid "Error fetching message info"
 msgstr "Chyba při získávání informací o zprávě"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4963
+#: ../camel/providers/imapx/camel-imapx-server.c:5012
 msgid "Error running STATUS"
 msgstr "Chyba při vykonávání příkazu STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5455
-#: ../camel/providers/imapx/camel-imapx-server.c:5507
+#: ../camel/providers/imapx/camel-imapx-server.c:5504
+#: ../camel/providers/imapx/camel-imapx-server.c:5556
 msgid "Error syncing changes"
 msgstr "Chyba při synchronizaci změn"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5618
+#: ../camel/providers/imapx/camel-imapx-server.c:5667
 msgid "Error expunging message"
 msgstr "Chyba při trvalém odstranění zprávy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5688
+#: ../camel/providers/imapx/camel-imapx-server.c:5737
 msgid "Error fetching folders"
 msgstr "Chyba při získávání složek"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5699
+#: ../camel/providers/imapx/camel-imapx-server.c:5748
 msgid "Error fetching subscribed folders"
 msgstr "Chyba při získávání přihlášených složek"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5721
+#: ../camel/providers/imapx/camel-imapx-server.c:5770
 msgid "Error creating folder"
 msgstr "Chyba při vytváření složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5777
+#: ../camel/providers/imapx/camel-imapx-server.c:5826
 msgid "Error deleting folder"
 msgstr "Chyba při odstraňování složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5823
+#: ../camel/providers/imapx/camel-imapx-server.c:5872
 msgid "Error renaming folder"
 msgstr "Chyba při přejmenovávání složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5855
+#: ../camel/providers/imapx/camel-imapx-server.c:5904
 msgid "Error subscribing to folder"
 msgstr "Chyba při přihlašování ke složce"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5891
+#: ../camel/providers/imapx/camel-imapx-server.c:5940
 msgid "Error unsubscribing from folder"
 msgstr "Chyba při odhlašování od složky"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5931
+#: ../camel/providers/imapx/camel-imapx-server.c:5980
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP nepodporuje kvóty"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5943
+#: ../camel/providers/imapx/camel-imapx-server.c:5992
 msgid "Error retrieving quota information"
 msgstr "Chyba při získávání informací o kvótě"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5990
+#: ../camel/providers/imapx/camel-imapx-server.c:6039
 msgid "Search failed"
 msgstr "Hledání selhalo"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:6108
+#: ../camel/providers/imapx/camel-imapx-server.c:6157
 msgid "Error running IDLE"
 msgstr "Chyba při vykonávání příkazu IDLE"
 
@@ -3554,7 +3554,6 @@ msgid "Sent Items"
 msgstr "Odeslané položky"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2484
-#| msgid "Sending message"
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Odeslané zprávy"
@@ -3605,8 +3604,6 @@ msgid "Deleted Items"
 msgstr "Smazané položky"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2498
-#| msgctxt "IMAPDefaults"
-#| msgid "Deleted Items"
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Smazané zprávy"
@@ -4233,19 +4230,16 @@ msgstr "Server NNTP %s vrátil chybový kód %d: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:412
 #, c-format
-#| msgid "Failed to issue STARTTLS"
 msgid "Failed to issue STARTTLS for NNTP server %s: "
 msgstr "Selhalo vydání STARTTLS pro server NNTP %s:"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
-#| msgid "SMTP server %s does not support %s authentication"
 msgid "NNTP server %s doesn't support STARTTLS: %s"
 msgstr "Server NNTP %s nepodporuje STARTTLS: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:443
 #, c-format
-#| msgid "Failed to connect to SMTP server %s in secure mode: "
 msgid "Failed to connect to NNTP server %s in secure mode: "
 msgstr "Nelze se připojit k serveru NTTP %s v zabezpečeném režimu: "
 
@@ -4487,7 +4481,7 @@ msgstr "Služba PO3 služba pro %s na %s"
 
 #: ../camel/providers/pop3/camel-pop3-store.c:702
 #: ../camel/providers/pop3/camel-pop3-store.c:715
-#: ../camel/providers/pop3/camel-pop3-store.c:797
+#: ../camel/providers/pop3/camel-pop3-store.c:801
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4507,7 +4501,7 @@ msgstr ""
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
-#: ../camel/providers/pop3/camel-pop3-store.c:812
+#: ../camel/providers/pop3/camel-pop3-store.c:816
 #, c-format
 msgid ""
 "Unable to connect to POP server %s.\n"
@@ -4516,12 +4510,12 @@ msgstr ""
 "Nelze se připojit k serveru POP %s.\n"
 "Chyba při posílání uživatelského jména%s"
 
-#: ../camel/providers/pop3/camel-pop3-store.c:896
+#: ../camel/providers/pop3/camel-pop3-store.c:900
 #, c-format
 msgid "No such folder '%s'."
 msgstr "Složka „%s“ neexistuje."
 
-#: ../camel/providers/pop3/camel-pop3-store.c:913
+#: ../camel/providers/pop3/camel-pop3-store.c:917
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
 msgstr "Úložiště POP3 nemá hierarchii složek"
@@ -4896,7 +4890,8 @@ msgstr ""
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
 msgstr ""
-"Název GIO pro GNetworkMonitor, který se má použít pro instanci ENetworkMonitor"
+"Název GIO pro GNetworkMonitor, který se má použít pro instanci "
+"ENetworkMonitor"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
 msgid ""
@@ -5048,7 +5043,6 @@ msgstr "Žádný takový zdroj pro UID „%s“ neexistuje"
 
 #: ../libebackend/e-subprocess-factory.c:302
 #, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to create backend of type '%s' for source UID '%s'"
 msgstr "Selhalo vytvoření podpůrné vrstvy typu „%s“ pro zdrojové UID „%s“"
 
@@ -5927,18 +5921,15 @@ msgstr "_Zahodit"
 
 #: ../tools/addressbook-export/addressbook-export.c:70
 #: ../tools/addressbook-export/addressbook-export.c:767
-#| msgid "Cannot open calendar: "
 msgid "Can not open file"
 msgstr "Soubor nelze otevřít"
 
 #: ../tools/addressbook-export/addressbook-export.c:100
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Failed to open client '%s': %s"
 msgstr "Selhalo otevření klienta „%s“: %s"
 
 #: ../tools/addressbook-export/addressbook-export.c:877
-#| msgid "Detailed error:"
 msgid "Unhandled error"
 msgstr "Neošetřená chyba"
 
