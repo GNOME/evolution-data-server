@@ -90,8 +90,10 @@ offline_folder_downsync_background (CamelSession *session,
                                     GError **error)
 {
 	camel_operation_push_message (
-		cancellable,
-		_("Downloading new messages for offline mode in '%s : %s'"),
+		/* Translators: The first '%s' is replaced with an account name and the second '%s'
+		   is replaced with a full path name. The spaces around ':' are intentional, as
+		   the whole '%s : %s' is meant as an absolute identification of the folder. */
+		cancellable, _("Downloading new messages for offline mode in '%s : %s'"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (data->folder))),
 		camel_folder_get_full_name (data->folder));
 
@@ -159,6 +161,9 @@ offline_folder_schedule_store_changes_job (gpointer user_data)
 		if (session) {
 			gchar *description;
 
+			/* Translators: The first '%s' is replaced with an account name and the second '%s'
+			   is replaced with a full path name. The spaces around ':' are intentional, as
+			   the whole '%s : %s' is meant as an absolute identification of the folder. */
 			description = g_strdup_printf (_("Storing changes in folder '%s : %s'"),
 				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (CAMEL_FOLDER (offline_folder)))),
 				camel_folder_get_full_name (CAMEL_FOLDER (offline_folder)));
@@ -246,6 +251,9 @@ offline_folder_changed (CamelFolder *folder,
 		camel_folder_change_info_cat (data->changes, changes);
 		data->folder = g_object_ref (folder);
 
+		/* Translators: The first '%s' is replaced with an account name and the second '%s'
+		   is replaced with a full path name. The spaces around ':' are intentional, as
+		   the whole '%s : %s' is meant as an absolute identification of the folder. */
 		description = g_strdup_printf (_("Checking download of new messages for offline in '%s : %s'"),
 			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 			camel_folder_get_full_name (folder));
@@ -359,6 +367,9 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 	GPtrArray *uids, *uncached_uids = NULL;
 	gint i;
 
+	/* Translators: The first '%s' is replaced with an account name and the second '%s'
+	   is replaced with a full path name. The spaces around ':' are intentional, as
+	   the whole '%s : %s' is meant as an absolute identification of the folder. */
 	camel_operation_push_message (cancellable, _("Syncing messages in folder '%s : %s' to disk"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));

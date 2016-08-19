@@ -4907,6 +4907,9 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	is->priv->fetch_changes_last_progress = 0;
 
 	camel_operation_push_message (cancellable,
+		/* Translators: The first '%s' is replaced with an account name and the second '%s'
+		   is replaced with a full path name. The spaces around ':' are intentional, as
+		   the whole '%s : %s' is meant as an absolute identification of the folder. */
 		_("Scanning for changed messages in '%s : %s'"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
@@ -4929,6 +4932,9 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 		imapx_uidset_init (&uidset, 0, 100);
 
 		camel_operation_push_message (cancellable,
+			/* Translators: The first '%s' is replaced with an account name and the second '%s'
+			   is replaced with a full path name. The spaces around ':' are intentional, as
+			   the whole '%s : %s' is meant as an absolute identification of the folder. */
 			_("Fetching summary information for new messages in '%s : %s'"),
 			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 			camel_folder_get_full_name (folder));

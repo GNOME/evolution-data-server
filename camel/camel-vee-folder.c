@@ -899,6 +899,10 @@ vee_folder_get_message_sync (CamelFolder *folder,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_UID,
+			/* Translators: The first '%s' is replaced with a message UID, the second '%s'
+			   is replaced with an account name and the third '%s' is replaced with a full
+			   path name. The spaces around ':' are intentional, as the whole '%s : %s' is
+			   meant as an absolute identification of the folder. */
 			_("No such message %s in '%s : %s'"), uid,
 			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 			camel_folder_get_full_name (folder));
