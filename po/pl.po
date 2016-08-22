@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-15 11:07+0200\n"
-"PO-Revision-Date: 2016-08-15 11:08+0200\n"
+"POT-Creation-Date: 2016-08-22 18:54+0200\n"
+"PO-Revision-Date: 2016-08-22 18:55+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -2077,68 +2077,86 @@ msgstr "Nieprawidłowe parametry funkcji (message-location)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Błąd podczas wykonywania wyszukiwania przez filtr: %s: %s"
 
-#: ../camel/camel-folder.c:326
+#: ../camel/camel-folder.c:327
 #, c-format
-msgid "Learning new spam message in '%s'"
-msgid_plural "Learning new spam messages in '%s'"
-msgstr[0] "Rozpoznawanie nowej niechcianej wiadomości w „%s”"
-msgstr[1] "Rozpoznawanie nowych niechcianych wiadomości w „%s”"
-msgstr[2] "Rozpoznawanie nowych niechcianych wiadomości w „%s”"
+msgid "Learning new spam message in '%s : %s'"
+msgid_plural "Learning new spam messages in '%s : %s'"
+msgstr[0] "Rozpoznawanie nowej niechcianej wiadomości w „%s : %s”"
+msgstr[1] "Rozpoznawanie nowych niechcianych wiadomości w „%s : %s”"
+msgstr[2] "Rozpoznawanie nowych niechcianych wiadomości w „%s : %s”"
 
-#: ../camel/camel-folder.c:366
+#: ../camel/camel-folder.c:370
 #, c-format
-msgid "Learning new ham message in '%s'"
-msgid_plural "Learning new ham messages in '%s'"
-msgstr[0] "Rozpoznawanie nowej pożądanej wiadomości w „%s”"
-msgstr[1] "Rozpoznawanie nowych pożądanych wiadomości w „%s”"
-msgstr[2] "Rozpoznawanie nowych pożądanych wiadomości w „%s”"
+msgid "Learning new ham message in '%s : %s'"
+msgid_plural "Learning new ham messages in '%s : %s'"
+msgstr[0] "Rozpoznawanie nowej pożądanej wiadomości w „%s : %s”"
+msgstr[1] "Rozpoznawanie nowych pożądanych wiadomości w „%s : %s”"
+msgstr[2] "Rozpoznawanie nowych pożądanych wiadomości w „%s : %s”"
 
-#: ../camel/camel-folder.c:414
+#: ../camel/camel-folder.c:421
 #, c-format
-msgid "Filtering new message in '%s'"
-msgid_plural "Filtering new messages in '%s'"
-msgstr[0] "Filtrowanie nowej wiadomości w „%s”"
-msgstr[1] "Filtrowanie nowych wiadomości w „%s”"
-msgstr[2] "Filtrowanie nowych wiadomości w „%s”"
+msgid "Filtering new message in '%s : %s'"
+msgid_plural "Filtering new messages in '%s : %s'"
+msgstr[0] "Filtrowanie nowej wiadomości w „%s : %s”"
+msgstr[1] "Filtrowanie nowych wiadomości w „%s : %s”"
+msgstr[2] "Filtrowanie nowych wiadomości w „%s : %s”"
 
-#: ../camel/camel-folder.c:1020
+#: ../camel/camel-folder.c:1029
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Przenoszenie wiadomości"
 
-#: ../camel/camel-folder.c:1023
+#: ../camel/camel-folder.c:1032
 msgid "Copying messages"
 msgstr "Kopiowanie wiadomości"
 
-#: ../camel/camel-folder.c:1065
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:1077
 #, c-format
-msgid "Quota information not supported for folder '%s'"
-msgstr "Informacje o przydziale nie są obsługiwane dla katalogu „%s”"
+msgid "Quota information not supported for folder '%s : %s'"
+msgstr "Informacje o przydziale nie są obsługiwane dla katalogu „%s : %s”"
 
-#: ../camel/camel-folder.c:1160
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:1176
 #, c-format
-msgid "Filtering folder '%s'"
-msgstr "Filtrowanie katalogu „%s”"
+msgid "Filtering folder '%s : %s'"
+msgstr "Filtrowanie katalogu „%s : %s”"
 
-#: ../camel/camel-folder.c:2897
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:2916
 #, c-format
-msgid "Expunging folder '%s'"
-msgstr "Czyszczenie katalogu „%s”"
+msgid "Expunging folder '%s : %s'"
+msgstr "Czyszczenie katalogu „%s : %s”"
 
-#: ../camel/camel-folder.c:3028
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:3050
 #, c-format
-msgid "Retrieving message '%s' in %s"
-msgstr "Pobieranie wiadomości „%s” w %s"
+msgid "Retrieving message '%s' in '%s : %s'"
+msgstr "Pobieranie wiadomości „%s” w „%s : %s”"
 
-#: ../camel/camel-folder.c:3219
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:3243
 #, c-format
-msgid "Retrieving quota information for '%s'"
-msgstr "Pobieranie informacji o przydziale dla „%s”"
+msgid "Retrieving quota information for '%s : %s'"
+msgstr "Pobieranie informacji o przydziale dla „%s : %s”"
 
-#: ../camel/camel-folder.c:3516
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:3541
 #, c-format
-msgid "Refreshing folder '%s'"
-msgstr "Odświeżanie katalogu „%s”"
+msgid "Refreshing folder '%s : %s'"
+msgstr "Odświeżanie katalogu „%s : %s”"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
@@ -2188,15 +2206,21 @@ msgstr ""
 "Błąd podczas wykonywania wyrażenia wyszukiwania %s:\n"
 "%s"
 
-#: ../camel/camel-folder-summary.c:2168
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder-summary.c:2171
 #, c-format
-msgid "Release unused memory for folder '%s'"
-msgstr "Zwolnij nieużywaną pamięć dla katalogu „%s”"
+msgid "Release unused memory for folder '%s : %s'"
+msgstr "Zwolnij nieużywaną pamięć dla katalogu „%s : %s”"
 
-#: ../camel/camel-folder-summary.c:2382
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder-summary.c:2390
 #, c-format
-msgid "Update preview data for folder '%s'"
-msgstr "Zaktualizuj dane podglądu dla katalogu „%s”"
+msgid "Update preview data for folder '%s : %s'"
+msgstr "Zaktualizuj dane podglądu dla katalogu „%s : %s”"
 
 #: ../camel/camel-gpg-context.c:819 ../camel/camel-gpg-context.c:824
 #: ../camel/camel-gpg-context.c:1514
@@ -2471,27 +2495,40 @@ msgstr ""
 msgid "Host lookup '%s' failed: %s"
 msgstr "Wyszukanie komputera „%s” się nie powiodło: %s"
 
-#: ../camel/camel-offline-folder.c:94
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:96
 #, c-format
-msgid "Downloading new messages for offline mode in '%s'"
-msgstr "Pobieranie nowych wiadomości dla trybu offline w „%s”"
+msgid "Downloading new messages for offline mode in '%s : %s'"
+msgstr "Pobieranie nowych wiadomości dla trybu offline w „%s : %s”"
 
-#: ../camel/camel-offline-folder.c:161
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:167
 #, c-format
-msgid "Storing changes in folder '%s'"
-msgstr "Zapisywanie zmian w katalogu „%s”"
+msgid "Storing changes in folder '%s : %s'"
+msgstr "Zapisywanie zmian w katalogu „%s : %s”"
 
-#: ../camel/camel-offline-folder.c:247
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:257
 #, c-format
-msgid "Checking download of new messages for offline in '%s'"
-msgstr "Sprawdzanie pobierania nowych wiadomości dla trybu offline w „%s”"
+msgid "Checking download of new messages for offline in '%s : %s'"
+msgstr ""
+"Sprawdzanie pobierania nowych wiadomości dla trybu offline w „%s : %s””"
 
-#: ../camel/camel-offline-folder.c:360
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:373
 #, c-format
-msgid "Syncing messages in folder '%s' to disk"
-msgstr "Synchronizowanie wiadomości w katalogu „%s” na dysku"
+msgid "Syncing messages in folder '%s : %s' to disk"
+msgstr "Synchronizowanie wiadomości w katalogu „%s : %s” na dysku"
 
-#: ../camel/camel-offline-folder.c:423
+#: ../camel/camel-offline-folder.c:436
 msgid "Copy folder content locally for _offline operation"
 msgstr "Lokalne kopiowanie zawartości katalogu dla działania w trybie _offline"
 
@@ -3072,22 +3109,26 @@ msgstr "Nie można przetworzyć adresu URL „%s”"
 msgid "Updating folder '%s'"
 msgstr "Aktualizowanie katalogu „%s”"
 
-#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:979
+#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:984
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nie można skopiować lub przenieść wiadomości do katalogu wirtualnego"
 
-#: ../camel/camel-vee-folder.c:902
+#. Translators: The first '%s' is replaced with a message UID, the second '%s'
+#. is replaced with an account name and the third '%s' is replaced with a full
+#. path name. The spaces around ':' are intentional, as the whole '%s : %s' is
+#. meant as an absolute identification of the folder.
+#: ../camel/camel-vee-folder.c:906
 #, c-format
-msgid "No such message %s in %s"
-msgstr "Brak wiadomości %s w %s"
+msgid "No such message %s in '%s : %s'"
+msgstr "Brak wiadomości %s w „%s : %s”"
 
-#: ../camel/camel-vee-folder.c:955
+#: ../camel/camel-vee-folder.c:960
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Błąd podczas zapisywania „%s”: "
 
-#: ../camel/camel-vee-folder.c:1193
+#: ../camel/camel-vee-folder.c:1198
 msgid "Automatically _update on change in source folders"
 msgstr "A_utomatyczne aktualizowanie po zmianie w katalogach źródłowych"
 
@@ -3162,34 +3203,40 @@ msgstr "Nie można przenieść niechcianych wiadomości"
 msgid "Unable to move deleted messages"
 msgstr "Nie można przenieść usuniętych wiadomości"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:702
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-folder.c:705
 #, c-format
-msgid "No quota information available for folder '%s'"
-msgstr "Informacje o przydziale nie są dostępne dla katalogu „%s”"
+msgid "No quota information available for folder '%s : %s'"
+msgstr "Informacje o przydziale nie są dostępne dla katalogu „%s : %s”"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:964
+#: ../camel/providers/imapx/camel-imapx-folder.c:968
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
 msgid "Apply message _filters to this folder"
 msgstr "_Filtrowanie wiadomości w tym katalogu"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:975
+#: ../camel/providers/imapx/camel-imapx-folder.c:979
 msgid "Always check for _new mail in this folder"
 msgstr "Sprawdzanie _nowych wiadomości w tym katalogu przez cały czas"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1086
+#: ../camel/providers/imapx/camel-imapx-folder.c:1090
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nie można utworzyć podsumowania katalogu dla %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1095
+#: ../camel/providers/imapx/camel-imapx-folder.c:1099
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nie można utworzyć bufora dla %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1293
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-folder.c:1300
 #, c-format
-msgid "No IMAP mailbox available for folder '%s'"
-msgstr "Brak dostępnej skrzynki pocztowej IMAP dla katalogu „%s”"
+msgid "No IMAP mailbox available for folder '%s : %s'"
+msgstr "Brak dostępnej skrzynki pocztowej IMAP dla katalogu „%s : %s”"
 
 #: ../camel/providers/imapx/camel-imapx-input-stream.c:101
 #, c-format
@@ -3403,79 +3450,86 @@ msgstr "Nie można utworzyć pliku kolejki: "
 msgid "Error appending message"
 msgstr "Błąd podczas dołączania wiadomości"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4910
-#, c-format
-msgid "Scanning for changed messages in '%s'"
-msgstr "Wyszukiwanie zmodyfikowanych wiadomości w „%s”"
-
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4913
+#, c-format
+msgid "Scanning for changed messages in '%s : %s'"
+msgstr "Wyszukiwanie zmodyfikowanych wiadomości w „%s : %s”"
+
+#: ../camel/providers/imapx/camel-imapx-server.c:4917
 msgid "Error scanning changes"
 msgstr "Błąd podczas skanowania zmian"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4931
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-server.c:4938
 #, c-format
-msgid "Fetching summary information for new messages in '%s'"
-msgstr "Pobieranie informacji podsumowujących dla nowych wiadomości w „%s”"
+msgid "Fetching summary information for new messages in '%s : %s'"
+msgstr ""
+"Pobieranie informacji podsumowujących dla nowych wiadomości w „%s : %s”"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4948
+#: ../camel/providers/imapx/camel-imapx-server.c:4956
 msgid "Error fetching message info"
 msgstr "Błąd podczas pobierania informacji o wiadomości"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5010
+#: ../camel/providers/imapx/camel-imapx-server.c:5018
 msgid "Error running STATUS"
 msgstr "Błąd podczas wykonywania STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5502
-#: ../camel/providers/imapx/camel-imapx-server.c:5554
+#: ../camel/providers/imapx/camel-imapx-server.c:5510
+#: ../camel/providers/imapx/camel-imapx-server.c:5562
 msgid "Error syncing changes"
 msgstr "Błąd podczas synchronizowania zmian"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5665
+#: ../camel/providers/imapx/camel-imapx-server.c:5673
 msgid "Error expunging message"
 msgstr "Błąd podczas czyszczenia wiadomości"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5735
+#: ../camel/providers/imapx/camel-imapx-server.c:5743
 msgid "Error fetching folders"
 msgstr "Błąd podczas pobierania katalogów"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5746
+#: ../camel/providers/imapx/camel-imapx-server.c:5754
 msgid "Error fetching subscribed folders"
 msgstr "Błąd podczas pobierania subskrybowanych katalogów"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5768
+#: ../camel/providers/imapx/camel-imapx-server.c:5776
 msgid "Error creating folder"
 msgstr "Błąd podczas tworzenia katalogu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5824
+#: ../camel/providers/imapx/camel-imapx-server.c:5832
 msgid "Error deleting folder"
 msgstr "Błąd podczas usuwania katalogu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5870
+#: ../camel/providers/imapx/camel-imapx-server.c:5878
 msgid "Error renaming folder"
 msgstr "Błąd podczas zmieniania nazwy katalogu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5902
+#: ../camel/providers/imapx/camel-imapx-server.c:5910
 msgid "Error subscribing to folder"
 msgstr "Błąd podczas subskrybowania katalogu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5938
+#: ../camel/providers/imapx/camel-imapx-server.c:5946
 msgid "Error unsubscribing from folder"
 msgstr "Błąd podczas usuwania subskrypcji katalogu"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5978
+#: ../camel/providers/imapx/camel-imapx-server.c:5986
 msgid "IMAP server does not support quotas"
 msgstr "Serwer IMAP nie obsługuje przydziałów"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5990
+#: ../camel/providers/imapx/camel-imapx-server.c:5998
 msgid "Error retrieving quota information"
 msgstr "Błąd podczas pobierania informacji o przydziale"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6037
+#: ../camel/providers/imapx/camel-imapx-server.c:6045
 msgid "Search failed"
 msgstr "Wyszukiwanie się nie powiodło"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:6155
+#: ../camel/providers/imapx/camel-imapx-server.c:6163
 msgid "Error running IDLE"
 msgstr "Błąd podczas wykonywania IDLE"
 
@@ -5998,7 +6052,7 @@ msgstr "Wyświetla listę lokalnych katalogów książki adresowej"
 
 #: ../tools/addressbook-export/addressbook-export.c:917
 msgid "Show cards as vcard or csv file"
-msgstr "Wyświetla karty jako plik vCard lub CSV"
+msgstr "Wyświetla wizytówki jako plik vCard lub CSV"
 
 #: ../tools/addressbook-export/addressbook-export.c:918
 msgid "[vcard|csv]"
