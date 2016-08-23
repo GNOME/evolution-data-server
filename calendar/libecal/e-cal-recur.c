@@ -437,7 +437,7 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 				rrule.until.minute = 0;
 				rrule.until.second = 0;
 
-				if (!rrule.until.zone)
+				if (!rrule.until.zone && !rrule.until.is_utc)
 					rrule.until.zone = dtstart.zone;
 			}
 
@@ -544,7 +544,7 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 				exrule.until.minute = 0;
 				exrule.until.second = 0;
 
-				if (!exrule.until.zone)
+				if (!exrule.until.zone && !exrule.until.is_utc)
 					exrule.until.zone = dtstart.zone;
 			}
 
@@ -588,7 +588,7 @@ e_cal_recur_generate_instances_sync (icalcomponent *comp,
 			if (!success)
 				break;
 
-			if (!exdate.zone)
+			if (!exdate.zone && !exdate.is_utc)
 				exdate.zone = dtstart.zone;
 
 			if (intersects_interval (&exdate, NULL, duration_days, duration_seconds, &interval_start, &interval_end)) {
