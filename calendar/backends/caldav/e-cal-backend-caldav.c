@@ -404,6 +404,8 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 
 	success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
 	if (success) {
+		cbdav->priv->using_bearer_auth = TRUE;
+
 		soup_auth_manager_use_auth (
 			SOUP_AUTH_MANAGER (feature),
 			soup_uri, soup_auth);
@@ -690,7 +692,24 @@ status_code_to_result (SoupMessage *message,
 		break;
 
 	case SOUP_STATUS_FORBIDDEN:
-		g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+		if (cbdav->priv->using_bearer_auth && message->response_body &&
+		    message->response_body->data && message->response_body->length) {
+			gchar *body = g_strndup (message->response_body->data, message->response_body->length);
+
+			/* Do not localize this string, it is returned by the server. */
+			if (body && (e_util_strstrcase (body, "Daily Limit Exceeded") ||
+			    e_util_strstrcase (body, "https://console.developers.google.com/"))) {
+				/* Special-case this condition and provide this error up to the UI. */
+				g_propagate_error (perror,
+					e_data_cal_create_error_fmt (OtherError, _("Failed to login to the server: %s"), body));
+			} else {
+				g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+			}
+
+			g_free (body);
+		} else {
+			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+		}
 		break;
 
 	case SOUP_STATUS_UNAUTHORIZED:
