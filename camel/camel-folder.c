@@ -1119,7 +1119,7 @@ folder_changed (CamelFolder *folder,
 
 		for (i = 0; i < info->uid_changed->len; i++) {
 			flags = camel_folder_summary_get_info_flags (folder->summary, info->uid_changed->pdata[i]);
-			if (flags & CAMEL_MESSAGE_JUNK_LEARN) {
+			if (flags != (~0) && (flags & CAMEL_MESSAGE_JUNK_LEARN) != 0) {
 				if (flags & CAMEL_MESSAGE_JUNK) {
 					if (!junk)
 						junk = g_ptr_array_new ();
