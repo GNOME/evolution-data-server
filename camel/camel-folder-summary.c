@@ -2126,12 +2126,35 @@ remove_cache (CamelSession *session,
 	summary->priv->cache_load_time = time (NULL);
 }
 
-static gboolean
-cfs_try_release_memory (CamelFolderSummary *summary)
+static void
+cfs_free_weakref (gpointer ptr)
 {
+	GWeakRef *weakref = ptr;
+
+	if (weakref) {
+		g_weak_ref_set (weakref, NULL);
+		g_weak_ref_clear (weakref);
+		g_free (weakref);
+	}
+}
+
+static gboolean
+cfs_try_release_memory (gpointer user_data)
+{
+	GWeakRef *weakref = user_data;
+	CamelFolderSummary *summary;
 	CamelStore *parent_store;
 	CamelSession *session;
 	gchar *description;
+
+	g_return_val_if_fail (weakref != NULL, FALSE);
+
+	summary = g_weak_ref_get (weakref);
+
+	if (!summary)
+		return FALSE;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), FALSE);
 
 	/* If folder is freed or if the cache is nil then clean up */
 	if (!summary->priv->folder ||
@@ -2144,8 +2167,10 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 		return FALSE;
 	}
 
-	if (time (NULL) - summary->priv->cache_load_time < SUMMARY_CACHE_DROP)
+	if (time (NULL) - summary->priv->cache_load_time < SUMMARY_CACHE_DROP) {
+		g_object_unref (summary);
 		return TRUE;
+	}
 
 	parent_store = camel_folder_get_parent_store (summary->priv->folder);
 	if (!parent_store) {
@@ -2175,8 +2200,8 @@ cfs_try_release_memory (CamelFolderSummary *summary)
 	camel_session_submit_job (
 		session, description,
 		(CamelSessionCallback) remove_cache,
-		g_object_ref (summary),
-		(GDestroyNotify) g_object_unref);
+		/* Consumes the reference of the 'summary'. */
+		summary, g_object_unref);
 
 	g_object_unref (session);
 	g_free (description);
@@ -2202,10 +2227,15 @@ cfs_schedule_info_release_timer (CamelFolderSummary *summary)
 
 		/* FIXME[disk-summary] LRU please and not timeouts */
 		if (can_do) {
-			summary->priv->timeout_handle = g_timeout_add_seconds (
-				SUMMARY_CACHE_DROP,
-				(GSourceFunc) cfs_try_release_memory,
-				g_object_ref (summary));
+			GWeakRef *weakref;
+
+			weakref = g_new0 (GWeakRef, 1);
+			g_weak_ref_init (weakref, summary);
+
+			summary->priv->timeout_handle = g_timeout_add_seconds_full (
+				G_PRIORITY_DEFAULT, SUMMARY_CACHE_DROP,
+				cfs_try_release_memory,
+				weakref, cfs_free_weakref);
 			g_source_set_name_by_id (
 				summary->priv->timeout_handle,
 				"[camel] cfs_try_release_memory");
