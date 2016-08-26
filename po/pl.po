@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-22 18:54+0200\n"
-"PO-Revision-Date: 2016-08-22 18:55+0200\n"
+"POT-Creation-Date: 2016-08-26 13:52+0200\n"
+"PO-Revision-Date: 2016-08-26 13:53+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -113,9 +113,9 @@ msgstr ""
 #: ../addressbook/libebook/e-book-client.c:3424
 #: ../addressbook/libebook/e-book-client.c:3642
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:678
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:709
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:726
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:680
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:728
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:745
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
 #: ../calendar/libecal/e-cal-client.c:3520
@@ -1328,36 +1328,41 @@ msgstr "Niezsynchronizowana wersja podczas przenoszenia kursora"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Indeks alfabetyczny został ustawiony dla niepoprawnej lokalizacji"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:676
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:678
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Nie można połączyć z serwerem (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:707
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:704
+#, c-format
+msgid "Failed to login to the server: %s"
+msgstr "Zalogowanie do serwera się nie powiodło: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:726
 #, c-format
 msgid "Failed to connect to a server using SSL/TLS: %s"
 msgstr "Połączenie z serwerem używając SSL/TLS się nie powiodło: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:723
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:742
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgstr "Zwrócono nieoczekiwany kod stanu HTTP %d (%s) dla adresu URI: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:744
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:763
 msgid "CalDAV backend is not loaded yet"
 msgstr "Mechanizm CalDAV nie został jeszcze wczytany"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1181
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1200
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Nieprawidłowy adres URL przekierowania"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2880
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2899
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nie można utworzyć lokalnego katalogu bufora „%s”"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2966
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2985
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1367,27 +1372,27 @@ msgstr ""
 "odczytu.\n"
 "Komunikat błędu: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4071
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4090
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV nie obsługuje dodawania całości"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4174
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4193
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV nie obsługuje modyfikacji całości"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4455
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4474
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV nie obsługuje usuwania całości"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5202
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5221
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendarz nie obsługuje zajętości"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5211
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5230
 msgid "Schedule outbox url not found"
 msgstr "Nie odnaleziono adresu URL terminarza wychodzącego"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5308
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5327
 msgid "Unexpected result in schedule-response"
 msgstr "Nieoczekiwany wynik w odpowiedzi terminarza"
 
@@ -2209,7 +2214,7 @@ msgstr ""
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2171
+#: ../camel/camel-folder-summary.c:2196
 #, c-format
 msgid "Release unused memory for folder '%s : %s'"
 msgstr "Zwolnij nieużywaną pamięć dla katalogu „%s : %s”"
@@ -2217,7 +2222,7 @@ msgstr "Zwolnij nieużywaną pamięć dla katalogu „%s : %s”"
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2390
+#: ../camel/camel-folder-summary.c:2420
 #, c-format
 msgid "Update preview data for folder '%s : %s'"
 msgstr "Zaktualizuj dane podglądu dla katalogu „%s : %s”"
