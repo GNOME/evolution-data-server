@@ -15,7 +15,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolutio"
 "n-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2016-08-24 15:50+0000\n"
-"PO-Revision-Date: 2016-08-28 19:26+0200\n"
+"PO-Revision-Date: 2016-08-28 19:30+0200\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -2076,34 +2076,34 @@ msgid "Error executing filter search: %s: %s"
 msgstr "Kļūda, izpildot filtra meklēšanu — %s: %s"
 
 #: ../camel/camel-folder.c:327
-#, fuzzy, c-format
+#, c-format
 #| msgid "Learning new spam message in '%s'"
 #| msgid_plural "Learning new spam messages in '%s'"
 msgid "Learning new spam message in '%s : %s'"
 msgid_plural "Learning new spam messages in '%s : %s'"
-msgstr[0] "Iemācās jaunu mēstuli iekš “%s” — %s"
-msgstr[1] "Iemācās jaunas mēstules iekš “%s” — %s"
-msgstr[2] "Iemācās jaunas mēstules iekš “%s” — %s"
+msgstr[0] "Iemācās jaunu mēstuli iekš “%s : %s”"
+msgstr[1] "Iemācās jaunas mēstules iekš “%s : %s”"
+msgstr[2] "Iemācās jaunas mēstules iekš “%s : %s”"
 
 #: ../camel/camel-folder.c:370
-#, fuzzy, c-format
+#, c-format
 #| msgid "Learning new ham message in '%s'"
 #| msgid_plural "Learning new ham messages in '%s'"
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
-msgstr[0] "Iemācās jaunu īstu vēstuli iekš “%s” — %s"
-msgstr[1] "Iemācās jaunas īstas vēstules iekš “%s” — %s"
-msgstr[2] "Iemācās jaunas īstas vēstules iekš “%s” — %s"
+msgstr[0] "Iemācās jaunu īstu vēstuli iekš “%s : %s”"
+msgstr[1] "Iemācās jaunas īstas vēstules iekš “%s : %s”"
+msgstr[2] "Iemācās jaunas īstas vēstules iekš “%s : %s”"
 
 #: ../camel/camel-folder.c:421
-#, fuzzy, c-format
+#, c-format
 #| msgid "Filtering new message in '%s'"
 #| msgid_plural "Filtering new messages in '%s'"
 msgid "Filtering new message in '%s : %s'"
 msgid_plural "Filtering new messages in '%s : %s'"
-msgstr[0] "Filtrē jauno vēstuli iekš “%s” — %s"
-msgstr[1] "Filtrē jaunās vēstules iekš “%s” — %s"
-msgstr[2] "Filtrē jaunās vēstules iekš “%s” — %s"
+msgstr[0] "Filtrē jauno vēstuli iekš “%s : %s”"
+msgstr[1] "Filtrē jaunās vēstules iekš “%s : %s”"
+msgstr[2] "Filtrē jaunās vēstules iekš “%s : %s”"
 
 #: ../camel/camel-folder.c:1029
 #: ../camel/providers/local/camel-maildir-folder.c:330
@@ -6052,4 +6052,5 @@ msgstr ""
 #: ../tools/addressbook-export/addressbook-export.c:980
 msgid "Only support csv or vcard format."
 msgstr "Atbalstīt vienīgi csv vai vcard formātus."
+
 
