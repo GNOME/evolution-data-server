@@ -64,6 +64,17 @@ struct _CamelFolderSearchPrivate {
 
 	CamelFolderThread *threads;
 	GHashTable *threads_hash;
+
+	/* Pointers to strings that were pooled with camel_pstring_strdup()
+	 * or camel_pstring_add() during matching, where we own the reference(s).
+	 *
+	 * A pointer value may occur multiple times, once for each reference held.
+	 * These references are released once references have been added to the final
+	 * set of matches.
+	 *
+	 * This saves us having to perform more complex UID life cycle management
+	 * and the overhead from the additional refs/unrefs it would require. */
+	GPtrArray *owned_pstrings;
 };
 
 typedef enum {
@@ -435,6 +446,7 @@ match_words_index (CamelFolderSearch *search,
                    GCancellable *cancellable,
                    GError **error)
 {
+	CamelFolderSearchPrivate *p;
 	GPtrArray *result = g_ptr_array_new ();
 	struct IterData lambdafoo;
 	CamelIndexCursor *wc, *nc;
@@ -443,6 +455,10 @@ match_words_index (CamelFolderSearch *search,
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return result;
+
+	p = search->priv;
+
+	g_return_val_if_fail (p->owned_pstrings != NULL, result);
 
 	/* we can have a maximum of 32 words, as we use it as the AND mask */
 
@@ -457,12 +473,16 @@ match_words_index (CamelFolderSearch *search,
 					nc = camel_index_find (search->body_index, word);
 					if (nc) {
 						while ((name = camel_index_cursor_next (nc))) {
+								gchar *name_owned;
 								gint mask;
 
-								mask = (GPOINTER_TO_INT (g_hash_table_lookup (ht, name))) | (1 << i);
+								name_owned = (gchar *) camel_pstring_strdup (name);
+								g_ptr_array_add (p->owned_pstrings, name_owned);
+
+								mask = (GPOINTER_TO_INT (g_hash_table_lookup (ht, name_owned))) | (1 << i);
 								g_hash_table_insert (
 									ht,
-									(gchar *) camel_pstring_peek (name),
+									name_owned,
 									GINT_TO_POINTER (mask));
 						}
 						g_object_unref (nc);
@@ -1819,6 +1839,16 @@ do_search_in_memory (CamelFolder *search_in_folder,
 	return !*psql_query;
 }
 
+static void
+free_pstring_array (GPtrArray *array)
+{
+	if (!array)
+		return;
+
+	g_ptr_array_foreach (array, (GFunc) camel_pstring_free, NULL);
+	g_ptr_array_free (array, TRUE);
+}
+
 /**
  * camel_folder_search_count:
  * @search:
@@ -1865,6 +1895,7 @@ camel_folder_search_count (CamelFolderSearch *search,
 		goto fail;
 	}
 
+	p->owned_pstrings = g_ptr_array_new ();
 	p->cancellable = cancellable;
 	p->error = error;
 
@@ -1965,6 +1996,8 @@ fail:
 	if (search->summary)
 		camel_folder_free_summary (search->folder, search->summary);
 
+	free_pstring_array (p->owned_pstrings);
+	p->owned_pstrings = NULL;
 	p->cancellable = NULL;
 	p->error = NULL;
 	p->threads = NULL;
@@ -2022,6 +2055,7 @@ camel_folder_search_search (CamelFolderSearch *search,
 		goto fail;
 	}
 
+	p->owned_pstrings = g_ptr_array_new ();
 	p->cancellable = cancellable;
 	p->error = error;
 
@@ -2140,6 +2174,8 @@ fail:
 	if (search->summary)
 		camel_folder_free_summary (search->folder, search->summary);
 
+	free_pstring_array (p->owned_pstrings);
+	p->owned_pstrings = NULL;
 	p->cancellable = NULL;
 	p->error = NULL;
 	p->threads = NULL;
@@ -2166,11 +2202,7 @@ void
 camel_folder_search_free_result (CamelFolderSearch *search,
                                  GPtrArray *result)
 {
-	if (!result)
-		return;
-
-	g_ptr_array_foreach (result, (GFunc) camel_pstring_free, NULL);
-	g_ptr_array_free (result, TRUE);
+	free_pstring_array (result);
 }
 
 /**
