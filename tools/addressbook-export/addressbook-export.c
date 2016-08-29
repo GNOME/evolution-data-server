@@ -234,6 +234,9 @@ enum _EContactFieldCSV
 	E_CONTACT_CSV_GIVEN_NAME,
 	E_CONTACT_CSV_WANTS_HTML,
 	E_CONTACT_CSV_IS_LIST,
+	E_CONTACT_CSV_MIDDLE_NAME,
+	E_CONTACT_CSV_NAME_TITLE,
+	E_CONTACT_CSV_NAME_SUFFIX,
 	E_CONTACT_CSV_LAST
 };
 
@@ -253,7 +256,7 @@ struct _EContactCSVFieldData
 #define NOMAP -1
 static EContactCSVFieldData csv_field_data[] = {
 	{E_CONTACT_CSV_FILE_AS,		E_CONTACT_FILE_AS,	   "", DT_STRING},
-	{E_CONTACT_CSV_FULL_NAME,	E_CONTACT_CSV_FULL_NAME,   "", DT_STRING},
+	{E_CONTACT_CSV_FULL_NAME,	E_CONTACT_FULL_NAME,       "", DT_STRING},
 	{E_CONTACT_CSV_EMAIL_1,		E_CONTACT_EMAIL_1,	   "", DT_STRING},
 	{E_CONTACT_CSV_EMAIL_2,		E_CONTACT_EMAIL_2,	   "", DT_STRING},
 	{E_CONTACT_CSV_EMAIL_3,		E_CONTACT_EMAIL_3,	   "", DT_STRING},
@@ -326,6 +329,9 @@ static EContactCSVFieldData csv_field_data[] = {
 	{E_CONTACT_CSV_GIVEN_NAME,       E_CONTACT_GIVEN_NAME,  "", DT_STRING},
 	{E_CONTACT_CSV_WANTS_HTML,       E_CONTACT_WANTS_HTML,  "", DT_BOOLEAN},
 	{E_CONTACT_CSV_IS_LIST,          E_CONTACT_IS_LIST,     "", DT_BOOLEAN},
+	{E_CONTACT_CSV_MIDDLE_NAME,      NOMAP, "middle_name", DT_STRING},
+	{E_CONTACT_CSV_NAME_TITLE,       NOMAP, "name_title", DT_STRING},
+	{E_CONTACT_CSV_NAME_SUFFIX,      NOMAP, "name_suffix", DT_STRING},
 	{E_CONTACT_CSV_LAST,             NOMAP,                 "", DT_STRING}
 
 };
@@ -465,11 +471,12 @@ e_contact_csv_get (EContact *contact,
                    EContactFieldCSV csv_field)
 {
 	gint contact_field;
-	gchar *field_value;
+	gchar *field_value = NULL;
 	gchar *quoted_field_value;
 
 	EContactAddress *delivery_address = NULL;
 	EContactDate *date;
+	EContactName *name;
 
 	contact_field = e_contact_csv_get_contact_field (csv_field);
 
@@ -534,9 +541,6 @@ e_contact_csv_get (EContact *contact,
 				field_value = g_strdup_printf ("%04d", date->year);
 				e_contact_date_free (date);
 			}
-			else {
-				field_value = g_strdup ("");
-			}
 			break;
 
 		case E_CONTACT_CSV_BIRTH_DATE_MONTH:
@@ -544,9 +548,6 @@ e_contact_csv_get (EContact *contact,
 			if (date) {
 				field_value = g_strdup_printf ("%04d", date->month);
 				e_contact_date_free (date);
-			}
-			else {
-				field_value = g_strdup ("");
 			}
 			break;
 
@@ -556,17 +557,30 @@ e_contact_csv_get (EContact *contact,
 				field_value = g_strdup_printf ("%04d", date->day);
 				e_contact_date_free (date);
 			}
-			else {
-				field_value = g_strdup ("");
+			break;
+		case E_CONTACT_CSV_NAME_TITLE:
+		case E_CONTACT_CSV_MIDDLE_NAME:
+		case E_CONTACT_CSV_NAME_SUFFIX:
+			field_value = NULL;
+			name = e_contact_get (contact, E_CONTACT_NAME);
+			if (name) {
+				if (csv_field == E_CONTACT_CSV_NAME_TITLE)
+					field_value = g_strdup (name->prefixes);
+				else if (csv_field == E_CONTACT_CSV_MIDDLE_NAME)
+					field_value = g_strdup (name->additional);
+				else if (csv_field == E_CONTACT_CSV_NAME_SUFFIX)
+					field_value = g_strdup (name->suffixes);
+
+				e_contact_name_free (name);
 			}
 			break;
 
 		default:
-			field_value = g_strdup ("");
+			break;
 		}
 	}
 
-	/*checking to avoid the NULL pointer */
+	/* checking to avoid the NULL pointer */
 	if (field_value == NULL)
 		field_value = g_strdup ("");
 
@@ -667,8 +681,11 @@ set_pre_defined_field (GSList **pre_defined_fields)
 
 	#define add(x) *pre_defined_fields = g_slist_append (*pre_defined_fields, GINT_TO_POINTER (x))
 
+	add (E_CONTACT_CSV_NAME_TITLE);
 	add (E_CONTACT_CSV_GIVEN_NAME);
+	add (E_CONTACT_CSV_MIDDLE_NAME);
 	add (E_CONTACT_CSV_FAMILY_NAME);
+	add (E_CONTACT_CSV_NAME_SUFFIX);
 	add (E_CONTACT_CSV_FULL_NAME);
 	add (E_CONTACT_CSV_NICKNAME);
 	add (E_CONTACT_CSV_EMAIL_1);
