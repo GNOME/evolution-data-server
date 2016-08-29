@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.21.91 2016-08-29
+----------------------------------------
+
+Bug Fixes:
+	Bug 767786 - Don't hardcode socks:// scheme for Camel accounts proxy lookup (Milan Crha)
+	Bug 768672 - Show account name and full folder path in UI messages (Milan Crha)
+	Bug 769620 - Ensure Date field is filled in the folder summary (Milan Crha)
+	Bug 770198 - Do not override UTC time with a DTSTART zone in e-cal-recur (Milan Crha)
+	Bug 761450 - CalDAV fails to recognize "Daily Limit Exceeded" error from Google/GOA (Milan Crha)
+	Bug 742117 - Loops on "Learning new spam message in INBOX" (Milan Crha)
+
+Miscellaneous:
+	Rename webkitgtk_minimum_version to webkit2gtk_minimum_version (Milan Crha)
+	Add translator comments above '%s : %s' explaining its purpose (Milan Crha)
+	[Camel] Folder summary can be leaked after its folder is freed (Milan Crha)
+
+Translations:
+	Piotr Drąg (pl)
+	Dušan Kazik (sk)
+	Jiří Eischmann (cs)
+	Marek Černocký (cs)
+	Andika Triwidada (id)
+	Balázs Úr (hu)
+	Daniel Mustieles (es)
+	Enrico Nicoletto (pt_BR)
+	Mario Blättermann (de)
+	Balázs Úr (hu)
+	Flo H (de)
+	Rūdolfs Mazurs (lv)
+
 Evolution-Data-Server 3.21.90 2016-08-15
 ----------------------------------------
 
