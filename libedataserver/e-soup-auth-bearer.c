@@ -200,6 +200,8 @@ e_soup_auth_bearer_is_expired (ESoupAuthBearer *bearer)
 {
 	gboolean expired = TRUE;
 
+	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), TRUE);
+
 	if (bearer->priv->expiry != EXPIRY_INVALID)
 		expired = (bearer->priv->expiry < time (NULL));
 
