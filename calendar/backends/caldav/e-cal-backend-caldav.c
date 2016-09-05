@@ -131,7 +131,7 @@ struct _ECalBackendCalDAVPrivate {
 	 * message than a generic SOUP_STATUS_UNAUTHORIZED description. */
 	GError *bearer_auth_error;
 	GMutex bearer_auth_error_lock;
-	gboolean using_bearer_auth;
+	ESoupAuthBearer *using_bearer_auth;
 };
 
 /* Forward Declarations */
@@ -404,7 +404,7 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 
 	success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
 	if (success) {
-		cbdav->priv->using_bearer_auth = TRUE;
+		cbdav->priv->using_bearer_auth = g_object_ref (soup_auth);
 
 		soup_auth_manager_use_auth (
 			SOUP_AUTH_MANAGER (feature),
@@ -1147,7 +1147,11 @@ soup_authenticate (SoupSession *session,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
-	cbdav->priv->using_bearer_auth = E_IS_SOUP_AUTH_BEARER (auth);
+	if (E_IS_SOUP_AUTH_BEARER (auth)) {
+		g_warn_if_fail ((gpointer) cbdav->priv->using_bearer_auth == (gpointer) auth);
+		g_clear_object (&cbdav->priv->using_bearer_auth);
+		cbdav->priv->using_bearer_auth = g_object_ref (auth);
+	}
 
 	if (retrying)
 		return;
@@ -1230,6 +1234,21 @@ send_and_handle_redirection (ECalBackendCalDAV *cbdav,
 		old_uri = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
 
 	e_soup_ssl_trust_connect (msg, e_backend_get_source (E_BACKEND (cbdav)));
+
+	if (cbdav->priv->using_bearer_auth &&
+	    e_soup_auth_bearer_is_expired (cbdav->priv->using_bearer_auth)) {
+		GError *local_error = NULL;
+
+		if (!caldav_setup_bearer_auth (cbdav, cbdav->priv->using_bearer_auth, cancellable, &local_error)) {
+			if (local_error) {
+				soup_message_set_status_full (msg, SOUP_STATUS_BAD_REQUEST, local_error->message);
+				g_propagate_error (error, local_error);
+			} else {
+				soup_message_set_status (msg, SOUP_STATUS_BAD_REQUEST);
+			}
+			return;
+		}
+	}
 
 	soup_message_set_flags (msg, SOUP_MESSAGE_NO_REDIRECT);
 	soup_message_add_header_handler (msg, "got_body", "Location", G_CALLBACK (redirect_handler), cbdav->priv->session);
@@ -5545,6 +5564,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 
 	g_clear_object (&priv->store);
 	g_clear_object (&priv->session);
+	g_clear_object (&priv->using_bearer_auth);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (parent_class)->dispose (object);
