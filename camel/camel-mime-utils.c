@@ -3040,7 +3040,7 @@ camel_header_contentid_decode (const gchar *in)
 	}
 
 	/* Eudora has been known to use <.@> as a content-id */
-	if (!(buf = header_decode_word (&inptr)) && !strchr (".@", *inptr))
+	if (!(buf = header_decode_word (&inptr)) && (*inptr == '\0' || !strchr (".@", *inptr)))
 		return NULL;
 
 	addr = g_string_new ("");
@@ -3061,7 +3061,7 @@ camel_header_contentid_decode (const gchar *in)
 				buf = header_decode_word (&inptr);
 				at = TRUE;
 			}
-		} else if (strchr (".[]", *inptr)) {
+		} else if (*inptr != '\0' && strchr (".[]", *inptr)) {
 			g_string_append_c (addr, *inptr++);
 			buf = header_decode_atom (&inptr);
 		}
