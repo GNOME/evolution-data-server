@@ -5954,7 +5954,7 @@ msgstr "V tomto počítači"
 
 #: ../services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
-msgstr "Prohledávané složky"
+msgstr "Vyhledávací složky"
 
 #: ../services/evolution-source-registry/builtin/weather-stub.source.in.h:1
 msgid "Weather"
