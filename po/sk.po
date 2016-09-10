@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-17 10:50+0000\n"
-"PO-Revision-Date: 2016-08-17 11:14+0200\n"
+"POT-Creation-Date: 2016-08-24 15:50+0000\n"
+"PO-Revision-Date: 2016-09-10 16:50+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -112,9 +112,9 @@ msgstr "Zlyhalo premenovanie starej databázy „%s“ na „%s“: %s"
 #: ../addressbook/libebook/e-book-client.c:3424
 #: ../addressbook/libebook/e-book-client.c:3642
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:678
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:709
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:726
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:680
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:728
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:745
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
 #: ../calendar/libecal/e-cal-client.c:3520
@@ -1327,36 +1327,41 @@ msgstr "Počas pohybu kurzora sa rozpadla synchronizácia revízie"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Abecedný index bol nastavený pre nesprávny jazyk"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:676
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:678
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "Server je nedostupný (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:707
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:704
+#, c-format
+msgid "Failed to login to the server: %s"
+msgstr "Zlyhalo prihlásenie k serveru: %s"
+
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:726
 #, c-format
 msgid "Failed to connect to a server using SSL/TLS: %s"
 msgstr "Zlyhalo pripojenie k serveru pomocou SSL/TLS: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:723
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:742
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgstr "Vrátený neočakávaný stavový kód HTTP %d (%s) pre URI: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:744
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:763
 msgid "CalDAV backend is not loaded yet"
 msgstr "Obslužný program CalDAV nie je ešte načítaný"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1181
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1200
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Neplatná URL presmerovania"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2880
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2899
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nedá sa vytvoriť miestny priečinok vyrovnávacej pamäte „%s“"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2966
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2985
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1365,28 +1370,28 @@ msgstr ""
 "Server je nedostupný, kalendár je otvorený v režime iba-na-čítanie.\n"
 "Chybová správa: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4071
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4090
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV nepodporuje hromadné pridávanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4174
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4193
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV nepodporuje hromadné úpravy"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4455
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4474
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV nepodporuje hromadné odstraňovanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5202
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5221
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendár nepodporuje diár"
 
 # MČ: 	/* with 'calendar-schedule' supported, here's an outbox url for queries of free/busy information */
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5211
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5230
 msgid "Schedule outbox url not found"
 msgstr "Nebola nájdená url výstupu diára"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5308
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5327
 msgid "Unexpected result in schedule-response"
 msgstr "Neočakávaný výsledok v odpovedi diára"
 
@@ -2076,7 +2081,7 @@ msgstr "Neplatné parametre pre (message-location)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Chyba pri vykonávaní vyhľadávacieho filtra: %s: %s"
 
-#: ../camel/camel-folder.c:326
+#: ../camel/camel-folder.c:327
 #, c-format
 msgid "Learning new spam message in '%s : %s'"
 msgid_plural "Learning new spam messages in '%s : %s'"
@@ -2084,7 +2089,7 @@ msgstr[0] "Učenie pomocou nových nevyžiadaných správ v „%s : %s“"
 msgstr[1] "Učenie pomocou novej nevyžiadanej správy v „%s : %s“"
 msgstr[2] "Učenie pomocou nových nevyžiadaných správ v „%s : %s“"
 
-#: ../camel/camel-folder.c:368
+#: ../camel/camel-folder.c:370
 #, c-format
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
@@ -2092,7 +2097,7 @@ msgstr[0] "Učenie pomocou nových očakávaných správ v „%s : %s“"
 msgstr[1] "Učenie pomocou novej očakávanej správy v „%s : %s“"
 msgstr[2] "Učenie pomocou nových očakávaných správ v „%s : %s“"
 
-#: ../camel/camel-folder.c:418
+#: ../camel/camel-folder.c:421
 #, c-format
 msgid "Filtering new message in '%s : %s'"
 msgid_plural "Filtering new messages in '%s : %s'"
@@ -2100,41 +2105,59 @@ msgstr[0] "Filtrujú sa nové správy v „%s : %s“"
 msgstr[1] "Filtruje sa nová správa v „%s : %s“"
 msgstr[2] "Filtrujú sa nové správy v „%s : %s“"
 
-#: ../camel/camel-folder.c:1026
+#: ../camel/camel-folder.c:1029
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Presúvajú sa správy"
 
-#: ../camel/camel-folder.c:1029
+#: ../camel/camel-folder.c:1032
 msgid "Copying messages"
 msgstr "Kopírujú sa správy"
 
-#: ../camel/camel-folder.c:1071
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:1077
 #, c-format
 msgid "Quota information not supported for folder '%s : %s'"
 msgstr "Informácie o kvóte nie sú podporované pre priečinok „%s : %s“"
 
-#: ../camel/camel-folder.c:1167
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:1176
 #, c-format
 msgid "Filtering folder '%s : %s'"
 msgstr "Filtruje sa priečinok „%s : %s“"
 
-#: ../camel/camel-folder.c:2904
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:2916
 #, c-format
 msgid "Expunging folder '%s : %s'"
 msgstr "Prečisťuje sa priečinok „%s : %s“"
 
-#: ../camel/camel-folder.c:3035
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:3050
 #, c-format
 msgid "Retrieving message '%s' in '%s : %s'"
 msgstr "Získava sa správa „%s“ v „%s : %s“"
 
-#: ../camel/camel-folder.c:3225
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:3243
 #, c-format
 msgid "Retrieving quota information for '%s : %s'"
 msgstr "Získavajú sa informácie o kvóte pre „%s : %s“"
 
-#: ../camel/camel-folder.c:3520
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder.c:3541
 #, c-format
 msgid "Refreshing folder '%s : %s'"
 msgstr "Obnovuje sa priečinok „%s : %s“"
@@ -2187,12 +2210,18 @@ msgstr ""
 "Chyba pri vykonávaní vyhľadávacieho výrazu: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-summary.c:2168
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder-summary.c:2171
 #, c-format
 msgid "Release unused memory for folder '%s : %s'"
 msgstr "Uvoľniť nevyužitú pamäť pre priečinok „%s : %s“"
 
-#: ../camel/camel-folder-summary.c:2384
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-folder-summary.c:2390
 #, c-format
 msgid "Update preview data for folder '%s : %s'"
 msgstr "Aktualizovať prehľad údajov priečinku „%s : %s“"
@@ -2473,27 +2502,39 @@ msgstr ""
 msgid "Host lookup '%s' failed: %s"
 msgstr "Hľadanie hostiteľa „%s“ zlyhalo: %s"
 
-#: ../camel/camel-offline-folder.c:94
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:96
 #, c-format
 msgid "Downloading new messages for offline mode in '%s : %s'"
 msgstr "Preberajú sa nové správy pre odpojený režim do „%s : %s“"
 
-#: ../camel/camel-offline-folder.c:162
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:167
 #, c-format
 msgid "Storing changes in folder '%s : %s'"
 msgstr "Ukladajú sa zmeny do priečinka „%s : %s“"
 
-#: ../camel/camel-offline-folder.c:249
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:257
 #, c-format
 msgid "Checking download of new messages for offline in '%s : %s'"
 msgstr "Kontroluje sa preberanie nových správ v „%s : %s“ pre odpojený režim"
 
-#: ../camel/camel-offline-folder.c:362
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/camel-offline-folder.c:373
 #, c-format
 msgid "Syncing messages in folder '%s : %s' to disk"
 msgstr "Synchronizujú sa správy v priečinku „%s : %s“ so správami na disku"
 
-#: ../camel/camel-offline-folder.c:425
+#: ../camel/camel-offline-folder.c:436
 msgid "Copy folder content locally for _offline operation"
 msgstr "Vytvoriť lokálnu kópiu priečinka pre operácie v _odpojenom režime"
 
@@ -3089,23 +3130,27 @@ msgstr "Aktualizuje sa priečinok „%s“"
 
 # PM: prečo je VF kapitálkami nie je to názov priečinka?
 # MČ: netuším. Ide o nejaký Virtual Folder object, ale používajú to aj malými písmenami
-#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:980
+#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:984
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
 "Nepodarilo sa skopírovať alebo presunúť správu do virtuálneho priečinka"
 
-#: ../camel/camel-vee-folder.c:902
+#. Translators: The first '%s' is replaced with a message UID, the second '%s'
+#. is replaced with an account name and the third '%s' is replaced with a full
+#. path name. The spaces around ':' are intentional, as the whole '%s : %s' is
+#. meant as an absolute identification of the folder.
+#: ../camel/camel-vee-folder.c:906
 #, c-format
 msgid "No such message %s in '%s : %s'"
 msgstr "Správa %s neexistuje v „%s : %s“"
 
-#: ../camel/camel-vee-folder.c:956
+#: ../camel/camel-vee-folder.c:960
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Chyba pri ukladaní „%s“: "
 
-#: ../camel/camel-vee-folder.c:1194
+#: ../camel/camel-vee-folder.c:1198
 msgid "Automatically _update on change in source folders"
 msgstr "Automaticky _aktualizovať pri zmene v zdrojových priečinkoch"
 
@@ -3181,31 +3226,37 @@ msgstr "Nepodarilo sa presunúť nevyžiadanú správu"
 msgid "Unable to move deleted messages"
 msgstr "Nepodarilo sa presunúť odstránenú správu"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:702
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-folder.c:705
 #, c-format
 msgid "No quota information available for folder '%s : %s'"
 msgstr "Informácie o kvóte nie sú dostupné pre priečinok „%s : %s“"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:965
+#: ../camel/providers/imapx/camel-imapx-folder.c:968
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
 msgid "Apply message _filters to this folder"
 msgstr "Aplikovať _filtre na správy v tomto priečinku"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:976
+#: ../camel/providers/imapx/camel-imapx-folder.c:979
 msgid "Always check for _new mail in this folder"
 msgstr "Vždy kontrolovať _novú poštu v tomto priečinku"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1087
+#: ../camel/providers/imapx/camel-imapx-folder.c:1090
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nepodarilo sa vytvoriť súhrn o priečinku pre %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1096
+#: ../camel/providers/imapx/camel-imapx-folder.c:1099
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nepodarilo sa vytvoriť vyrovnávaciu pamäť pre %s: "
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1294
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-folder.c:1300
 #, c-format
 msgid "No IMAP mailbox available for folder '%s : %s'"
 msgstr ""
@@ -3427,74 +3478,80 @@ msgstr "Nedá sa vytvoriť zoraďovací súbor: "
 msgid "Error appending message"
 msgstr "Chyba pri pridávaní správy"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4910
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-server.c:4913
 #, c-format
 msgid "Scanning for changed messages in '%s : %s'"
 msgstr "Prehľadávajú sa zmenené správy v „%s : %s“"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4914
+#: ../camel/providers/imapx/camel-imapx-server.c:4917
 msgid "Error scanning changes"
 msgstr "Chyba počas zisťovania zmien"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4932
+#. Translators: The first '%s' is replaced with an account name and the second '%s'
+#. is replaced with a full path name. The spaces around ':' are intentional, as
+#. the whole '%s : %s' is meant as an absolute identification of the folder.
+#: ../camel/providers/imapx/camel-imapx-server.c:4938
 #, c-format
 msgid "Fetching summary information for new messages in '%s : %s'"
 msgstr "Získavajú sa súhrnné informácie pre nové správy v „%s : %s“"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4950
+#: ../camel/providers/imapx/camel-imapx-server.c:4956
 msgid "Error fetching message info"
 msgstr "Chyba pri získavaní informácií o správe"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5012
+#: ../camel/providers/imapx/camel-imapx-server.c:5018
 msgid "Error running STATUS"
 msgstr "Chyba počas spúšťania príkazu STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5504
-#: ../camel/providers/imapx/camel-imapx-server.c:5556
+#: ../camel/providers/imapx/camel-imapx-server.c:5510
+#: ../camel/providers/imapx/camel-imapx-server.c:5562
 msgid "Error syncing changes"
 msgstr "Chyba pri synchronizácii zmien"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5667
+#: ../camel/providers/imapx/camel-imapx-server.c:5673
 msgid "Error expunging message"
 msgstr "Chyba pri prečisťovaní správ"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5737
+#: ../camel/providers/imapx/camel-imapx-server.c:5743
 msgid "Error fetching folders"
 msgstr "Chyba pri získavaní priečinka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5748
+#: ../camel/providers/imapx/camel-imapx-server.c:5754
 msgid "Error fetching subscribed folders"
 msgstr "Chyba pri získavaní priečinkov prihlásených na odber"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5770
+#: ../camel/providers/imapx/camel-imapx-server.c:5776
 msgid "Error creating folder"
 msgstr "Chyba pri vytváraní priečinka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5826
+#: ../camel/providers/imapx/camel-imapx-server.c:5832
 msgid "Error deleting folder"
 msgstr "Chyba pri rušení priečinka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5872
+#: ../camel/providers/imapx/camel-imapx-server.c:5878
 msgid "Error renaming folder"
 msgstr "Chyba pri premenovávaní priečinka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5904
+#: ../camel/providers/imapx/camel-imapx-server.c:5910
 msgid "Error subscribing to folder"
 msgstr "Chyba pri prihlasovaní sa k odberu priečinka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5940
+#: ../camel/providers/imapx/camel-imapx-server.c:5946
 msgid "Error unsubscribing from folder"
 msgstr "Chyba pri odhlasovaní sa z odberu priečinka"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5980
+#: ../camel/providers/imapx/camel-imapx-server.c:5986
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP nepodporuje kvóty"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5992
+#: ../camel/providers/imapx/camel-imapx-server.c:5998
 msgid "Error retrieving quota information"
 msgstr "Chyba pri získavaní informácie o kvóte"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6039
+#: ../camel/providers/imapx/camel-imapx-server.c:6045
 msgid "Search failed"
 msgstr "Vyhľadávanie zlyhalo"
 
@@ -3502,7 +3559,7 @@ msgstr "Vyhľadávanie zlyhalo"
 # PM: mne tu chýba preklad performing Chyba počas vykonávania/nastavovania stavu IDLE alebo niečo v tom duchu - pozri všetky výskyty performing
 # MČ: vyčerpávajúco by malo byť: „Chyba počas čakania v stave IDLE“, ale sa mi to zdá zbytočné.
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:6157
+#: ../camel/providers/imapx/camel-imapx-server.c:6163
 msgid "Error running IDLE"
 msgstr "Chyba počas spúšťania príkazu IDLE"
 
