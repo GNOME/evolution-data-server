@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-24 15:50+0000\n"
-"PO-Revision-Date: 2016-09-03 22:34+0500\n"
+"POT-Creation-Date: 2016-09-03 17:36+0000\n"
+"PO-Revision-Date: 2016-09-11 15:50+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk@li.org>\n"
 "Language: kk\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -814,7 +814,7 @@ msgstr "X.509 сертификаты"
 
 #: ../addressbook/libebook-contacts/e-contact.c:297
 msgid "PGP Certificate"
-msgstr ""
+msgstr "PGP сертификаты"
 
 #: ../addressbook/libebook-contacts/e-contact.c:299
 msgid "Gadu-Gadu Home ID 1"
@@ -1023,7 +1023,7 @@ msgstr ""
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4311
 #, c-format
 msgid "Invalid Query"
-msgstr ""
+msgstr "Жарамсыз сұраным"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4335
 #, c-format
@@ -1039,7 +1039,7 @@ msgstr ""
 #: ../calendar/libedata-cal/e-data-cal.c:1427 ../libedataserver/e-client.c:177
 #, c-format
 msgid "Invalid query"
-msgstr ""
+msgstr "Жарамсыз сұраным"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:4447
 #, c-format
@@ -1103,7 +1103,7 @@ msgstr ""
 #: ../addressbook/libedata-book/e-book-sqlite.c:5810
 #, c-format
 msgid "Invalid query: %s"
-msgstr ""
+msgstr "Жарамсыз сұраным: %s"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:5985
 msgid "Invalid query for EbSqlCursor"
@@ -1142,7 +1142,7 @@ msgstr "Рұқсат етілмеген"
 #: ../addressbook/libedata-book/e-data-book.c:386
 #: ../calendar/libedata-cal/e-data-cal.c:417
 msgid "Authentication Failed"
-msgstr ""
+msgstr "Аутентификация сәтсіз аяқталды"
 
 #: ../addressbook/libedata-book/e-data-book.c:387
 #: ../calendar/libedata-cal/e-data-cal.c:418
@@ -1195,20 +1195,20 @@ msgstr ""
 #: ../addressbook/libedata-book/e-data-book.c:398
 #: ../calendar/libedata-cal/e-data-cal.c:430 ../libedataserver/e-client.c:165
 msgid "Could not cancel"
-msgstr ""
+msgstr "Бас тарту мүмкін емес"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
 #: ../addressbook/libedata-book/e-data-book.c:400
 #: ../calendar/libedata-cal/e-data-cal.c:432
 msgid "Invalid server version"
-msgstr ""
+msgstr "Сервер нұсқасы қате"
 
 #: ../addressbook/libedata-book/e-data-book.c:402
 #: ../calendar/libecal/e-cal.c:2302 ../calendar/libedata-cal/e-data-cal.c:433
 #: ../libedataserver/e-client.c:142
 msgid "Invalid argument"
-msgstr ""
+msgstr "Аргумент қате"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../addressbook/libedata-book/e-data-book.c:404
@@ -1437,7 +1437,7 @@ msgstr ""
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:383
 msgid "Weather: Snow"
-msgstr ""
+msgstr "Ауа райы: Қар"
 
 #: ../calendar/backends/weather/e-cal-backend-weather.c:384
 msgid "Weather: Clear Night"
@@ -2048,21 +2048,18 @@ msgstr ""
 
 #: ../camel/camel-folder.c:327
 #, c-format
-#| msgid "Scanning for changed messages in '%s'"
 msgid "Learning new spam message in '%s : %s'"
 msgid_plural "Learning new spam messages in '%s : %s'"
 msgstr[0] ""
 
 #: ../camel/camel-folder.c:370
 #, c-format
-#| msgid "Scanning for changed messages in '%s'"
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
 msgstr[0] ""
 
 #: ../camel/camel-folder.c:421
 #, c-format
-#| msgid "Scanning for changed messages in '%s'"
 msgid "Filtering new message in '%s : %s'"
 msgid_plural "Filtering new messages in '%s : %s'"
 msgstr[0] ""
@@ -2089,7 +2086,6 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:1176
 #, c-format
-#| msgid "Cannot get folder: %s: %s"
 msgid "Filtering folder '%s : %s'"
 msgstr ""
 
@@ -2098,7 +2094,6 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:2916
 #, c-format
-#| msgid "Cannot get folder: %s: %s"
 msgid "Expunging folder '%s : %s'"
 msgstr ""
 
@@ -2115,7 +2110,6 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3243
 #, c-format
-#| msgid "Error retrieving quota information"
 msgid "Retrieving quota information for '%s : %s'"
 msgstr ""
 
@@ -2124,48 +2118,47 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3541
 #, c-format
-#| msgid "Error refreshing folder"
 msgid "Refreshing folder '%s : %s'"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
+#: ../camel/camel-folder-search.c:865 ../camel/camel-folder-search.c:907
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr ""
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:922
+#: ../camel/camel-folder-search.c:942
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:929 ../camel/camel-folder-search.c:937
+#: ../camel/camel-folder-search.c:949 ../camel/camel-folder-search.c:957
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:965
+#: ../camel/camel-folder-search.c:985
 #, c-format
 msgid "(%s) expects an array result"
 msgstr ""
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:975
+#: ../camel/camel-folder-search.c:995
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr ""
 
-#: ../camel/camel-folder-search.c:1887 ../camel/camel-folder-search.c:2056
+#: ../camel/camel-folder-search.c:1918 ../camel/camel-folder-search.c:2090
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
 
-#: ../camel/camel-folder-search.c:1899 ../camel/camel-folder-search.c:2068
+#: ../camel/camel-folder-search.c:1930 ../camel/camel-folder-search.c:2102
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2175,7 +2168,7 @@ msgstr ""
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2171
+#: ../camel/camel-folder-summary.c:2196
 #, c-format
 msgid "Release unused memory for folder '%s : %s'"
 msgstr ""
@@ -2183,9 +2176,8 @@ msgstr ""
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2390
+#: ../camel/camel-folder-summary.c:2420
 #, c-format
-#| msgid "Cannot create folder '%s': %s"
 msgid "Update preview data for folder '%s : %s'"
 msgstr ""
 
@@ -2395,7 +2387,7 @@ msgstr ""
 
 #: ../camel/camel-movemail.c:253
 msgid "(Unknown error)"
-msgstr ""
+msgstr "(Белгісіз қате)"
 
 #: ../camel/camel-movemail.c:280
 #, c-format
@@ -2459,7 +2451,6 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:167
 #, c-format
-#| msgid "Storing changes in folder '%s'"
 msgid "Storing changes in folder '%s : %s'"
 msgstr ""
 
@@ -2476,7 +2467,6 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:373
 #, c-format
-#| msgid "Storing changes in folder '%s'"
 msgid "Syncing messages in folder '%s : %s' to disk"
 msgstr ""
 
@@ -2549,7 +2539,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-cram-md5.c:43
 msgid "CRAM-MD5"
-msgstr ""
+msgstr "CRAM-MD5"
 
 #: ../camel/camel-sasl-cram-md5.c:45
 msgid ""
@@ -2559,7 +2549,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-digest-md5.c:56
 msgid "DIGEST-MD5"
-msgstr ""
+msgstr "DIGEST-MD5"
 
 #: ../camel/camel-sasl-digest-md5.c:58
 msgid ""
@@ -2599,7 +2589,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-gssapi.c:94
 msgid "GSSAPI"
-msgstr ""
+msgstr "GSSAPI"
 
 #: ../camel/camel-sasl-gssapi.c:96
 msgid "This option will connect to the server using Kerberos 5 authentication."
@@ -2687,7 +2677,7 @@ msgstr ""
 
 #: ../camel/camel-sasl-ntlm.c:46
 msgid "NTLM / SPA"
-msgstr ""
+msgstr "NTLM / SPA"
 
 #: ../camel/camel-sasl-ntlm.c:48
 msgid ""
@@ -3040,7 +3030,6 @@ msgstr ""
 #. meant as an absolute identification of the folder.
 #: ../camel/camel-vee-folder.c:906
 #, c-format
-#| msgid "No such message"
 msgid "No such message %s in '%s : %s'"
 msgstr ""
 
@@ -3375,7 +3364,6 @@ msgstr "Хабарламаны жалғау қатесі"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4913
 #, c-format
-#| msgid "Scanning for changed messages in '%s'"
 msgid "Scanning for changed messages in '%s : %s'"
 msgstr ""
 
@@ -3388,7 +3376,6 @@ msgstr "Өзгерістерді анықтау қатесі"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4938
 #, c-format
-#| msgid "Scanning for changed messages in '%s'"
 msgid "Fetching summary information for new messages in '%s : %s'"
 msgstr ""
 
@@ -3514,7 +3501,7 @@ msgstr ""
 #: ../camel/providers/imapx/camel-imapx-store.c:2470
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
-msgstr ""
+msgstr "[Gmail]/Шимай қағаздар"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2471
 msgctxt "IMAPDefaults"
@@ -3524,7 +3511,7 @@ msgstr "Шимайлар"
 #: ../camel/providers/imapx/camel-imapx-store.c:2472
 msgctxt "IMAPDefaults"
 msgid "Draft"
-msgstr ""
+msgstr "Шимай қағаз"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2475
 msgctxt "IMAPDefaults"
@@ -3539,7 +3526,7 @@ msgstr "Архив"
 #: ../camel/providers/imapx/camel-imapx-store.c:2481
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
-msgstr ""
+msgstr "[Gmail]/Жіберілген пошта"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2482
 msgctxt "IMAPDefaults"
@@ -3549,18 +3536,17 @@ msgstr "Жіберілген"
 #: ../camel/providers/imapx/camel-imapx-store.c:2483
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
-msgstr ""
+msgstr "Жіберілген нәрселер"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2484
-#| msgid "Sending message"
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
-msgstr ""
+msgstr "Жіберілген хабарламалар"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2487
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
-msgstr ""
+msgstr "[Gmail]/Спам"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2488
 msgctxt "IMAPDefaults"
@@ -3600,13 +3586,12 @@ msgstr "Қоқыс шелегі"
 #: ../camel/providers/imapx/camel-imapx-store.c:2497
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
-msgstr ""
+msgstr "Өшірілген нәрселер"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2498
-#| msgid "Help message"
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
-msgstr ""
+msgstr "Өшірілген хабарламалар"
 
 #: ../camel/providers/local/camel-local-folder.c:190
 #, c-format
@@ -3904,11 +3889,13 @@ msgid ""
 "Could not delete folder '%s':\n"
 "%s"
 msgstr ""
+"\"%s\" бумасын өшіру мүмкін емес:\n"
+"%s"
 
 #: ../camel/providers/local/camel-mbox-store.c:673
 #, c-format
 msgid "'%s' is not a regular file."
-msgstr ""
+msgstr "\"%s\" қалыпты файл емес."
 
 #: ../camel/providers/local/camel-mbox-store.c:682
 #, c-format
@@ -4054,7 +4041,7 @@ msgstr ""
 #: ../camel/providers/local/camel-spool-store.c:481
 #, c-format
 msgid "Folder '%s/%s' does not exist."
-msgstr ""
+msgstr "%s/%s\" бумасы жоқ болып тұр."
 
 #: ../camel/providers/local/camel-spool-store.c:494
 #, c-format
@@ -4062,11 +4049,13 @@ msgid ""
 "Could not open folder '%s':\n"
 "%s"
 msgstr ""
+"\"%s\" бумасын ашу мүмкін емес:\n"
+"%s"
 
 #: ../camel/providers/local/camel-spool-store.c:500
 #, c-format
 msgid "Folder '%s' does not exist."
-msgstr ""
+msgstr "\"%s\" бумасы жоқ болып тұр."
 
 #: ../camel/providers/local/camel-spool-store.c:508
 #, c-format
@@ -4074,6 +4063,8 @@ msgid ""
 "Could not create folder '%s':\n"
 "%s"
 msgstr ""
+"\"%s\" бумасын жасау мүмкін емес:\n"
+"%s"
 
 #: ../camel/providers/local/camel-spool-store.c:521
 #, c-format
@@ -4215,7 +4206,6 @@ msgstr ""
 
 #: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
-#| msgid "IMAP server does not support quotas"
 msgid "NNTP server %s doesn't support STARTTLS: %s"
 msgstr ""
 
@@ -4578,7 +4568,7 @@ msgstr ""
 #: ../camel/providers/smtp/camel-smtp-transport.c:302
 #: ../camel/providers/smtp/camel-smtp-transport.c:309
 msgid "STARTTLS command failed: "
-msgstr ""
+msgstr "STARTTLS командасы сәтсіз аяқталды: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:328
 #, c-format
@@ -4743,7 +4733,7 @@ msgstr "SMTP қарсы алуы"
 #: ../camel/providers/smtp/camel-smtp-transport.c:1438
 #: ../camel/providers/smtp/camel-smtp-transport.c:1445
 msgid "HELO command failed: "
-msgstr ""
+msgstr "HELO командасы сәтсіз аяқталды: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1521
 #: ../camel/providers/smtp/camel-smtp-transport.c:1535
@@ -4753,7 +4743,7 @@ msgstr "MAIL FROM командасы сәтсіз: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1572
 msgid "RCPT TO command failed: "
-msgstr ""
+msgstr "RCPT TO командасы сәтсіз аяқталды: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1588
 #: ../camel/providers/smtp/camel-smtp-transport.c:1597
@@ -4769,13 +4759,13 @@ msgstr "RCPT TO <%s> сәтсіз: "
 #: ../camel/providers/smtp/camel-smtp-transport.c:1784
 #: ../camel/providers/smtp/camel-smtp-transport.c:1792
 msgid "DATA command failed: "
-msgstr ""
+msgstr "DATA командасы сәтсіз аяқталды: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1818
 #: ../camel/providers/smtp/camel-smtp-transport.c:1832
 #: ../camel/providers/smtp/camel-smtp-transport.c:1840
 msgid "RSET command failed: "
-msgstr ""
+msgstr "RSET командасы сәтсіз аяқталды: "
 
 #: ../camel/providers/smtp/camel-smtp-transport.c:1866
 #: ../camel/providers/smtp/camel-smtp-transport.c:1878
@@ -5007,7 +4997,7 @@ msgstr "Іскерлік"
 #: ../libedataserver/e-categories.c:52
 msgctxt "CategoryName"
 msgid "Competition"
-msgstr ""
+msgstr "Сайыс"
 
 #: ../libedataserver/e-categories.c:53
 msgctxt "CategoryName"
@@ -5017,22 +5007,22 @@ msgstr "Таңдамалы"
 #: ../libedataserver/e-categories.c:54
 msgctxt "CategoryName"
 msgid "Gifts"
-msgstr ""
+msgstr "Сыйлықтар"
 
 #: ../libedataserver/e-categories.c:55
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
-msgstr ""
+msgstr "Мақсаттар"
 
 #: ../libedataserver/e-categories.c:56
 msgctxt "CategoryName"
 msgid "Holiday"
-msgstr ""
+msgstr "Мейрам"
 
 #: ../libedataserver/e-categories.c:57
 msgctxt "CategoryName"
 msgid "Holiday Cards"
-msgstr ""
+msgstr "Ашықхаттар"
 
 #. important people (e.g. new business partners)
 #: ../libedataserver/e-categories.c:59
@@ -5048,7 +5038,7 @@ msgstr ""
 #: ../libedataserver/e-categories.c:61
 msgctxt "CategoryName"
 msgid "International"
-msgstr ""
+msgstr "Халықаралық"
 
 #: ../libedataserver/e-categories.c:62
 msgctxt "CategoryName"
@@ -5385,6 +5375,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" адрестік кітапшаңызға қатынау "
+"үшін шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:620
 #, c-format
@@ -5392,6 +5384,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" күнтізбеңізге қатынау үшін "
+"шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:624
 #, c-format
@@ -5399,6 +5393,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" пошта тіркелгіңізге қатынау "
+"үшін шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:628
 #, c-format
@@ -5406,6 +5402,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" пошта тасымалдау қызметіне "
+"қатынау үшін шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:632
 #, c-format
@@ -5413,6 +5411,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" естеліктер тізіміне қатынау "
+"үшін шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:636
 #, c-format
@@ -5420,6 +5420,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" тапсырмалар тізіміне қатынау "
+"үшін шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:640
 #, c-format
@@ -5427,6 +5429,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account \"%s\"."
 msgstr ""
+"Өзіңіздің Google тіркелгіңізге кіріп, \"%s\" тіркелгіңізге қатынау үшін "
+"шарттарды қабылдаңыз."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:684
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
@@ -5503,7 +5507,7 @@ msgstr "_Пароль:"
 #. Remember password check
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:371
 msgid "_Add this password to your keyring"
-msgstr ""
+msgstr "Бұл парольді сіздің кілттер б_ауыңызға қосу"
 
 #: ../libedataserverui/e-trust-prompt.c:113
 #: ../modules/trust-prompt/trust-prompt-gtk.c:119
@@ -5518,12 +5522,12 @@ msgstr "Та_йдыру"
 #: ../libedataserverui/e-trust-prompt.c:116
 #: ../modules/trust-prompt/trust-prompt-gtk.c:121
 msgid "Accept _Temporarily"
-msgstr ""
+msgstr "Уақы_тша қабылдау"
 
 #: ../libedataserverui/e-trust-prompt.c:117
 #: ../modules/trust-prompt/trust-prompt-gtk.c:122
 msgid "_Accept Permanently"
-msgstr ""
+msgstr "Тұр_ақты қабылдау"
 
 #: ../libedataserverui/e-trust-prompt.c:188
 #: ../modules/trust-prompt/trust-prompt-gtk.c:159
@@ -5576,7 +5580,7 @@ msgstr "Сертификат алгоритмі қауіпсіз емес рет
 
 #: ../libedataserverui/e-webdav-discover-widget.c:166
 msgid "Supports"
-msgstr ""
+msgstr "Қолдайды"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:177
 msgid "_User mail:"
@@ -5595,7 +5599,7 @@ msgstr "Оқиғалар"
 #: ../libedataserverui/e-webdav-discover-widget.c:525
 msgctxt "WebDAVDiscover"
 msgid "Memos"
-msgstr ""
+msgstr "Естеліктер"
 
 #: ../libedataserverui/e-webdav-discover-widget.c:526
 msgctxt "WebDAVDiscover"
@@ -5833,8 +5837,7 @@ msgid "_Dismiss"
 msgstr "_Елемеу"
 
 #: ../tools/addressbook-export/addressbook-export.c:70
-#: ../tools/addressbook-export/addressbook-export.c:767
-#| msgid "Command not implemented"
+#: ../tools/addressbook-export/addressbook-export.c:784
 msgid "Can not open file"
 msgstr "Файлды ашу мүмкін емес"
 
@@ -5843,37 +5846,36 @@ msgstr "Файлды ашу мүмкін емес"
 msgid "Failed to open client '%s': %s"
 msgstr ""
 
-#: ../tools/addressbook-export/addressbook-export.c:877
-#| msgid "Unknown error"
+#: ../tools/addressbook-export/addressbook-export.c:894
 msgid "Unhandled error"
 msgstr "Өнделмеген қате"
 
-#: ../tools/addressbook-export/addressbook-export.c:910
+#: ../tools/addressbook-export/addressbook-export.c:927
 msgid "Specify the output file instead of standard output"
 msgstr ""
 
-#: ../tools/addressbook-export/addressbook-export.c:911
+#: ../tools/addressbook-export/addressbook-export.c:928
 msgid "OUTPUTFILE"
-msgstr ""
+msgstr "ШЫҒЫСФАЙЛЫ"
 
-#: ../tools/addressbook-export/addressbook-export.c:914
+#: ../tools/addressbook-export/addressbook-export.c:931
 msgid "List local address book folders"
 msgstr ""
 
-#: ../tools/addressbook-export/addressbook-export.c:917
+#: ../tools/addressbook-export/addressbook-export.c:934
 msgid "Show cards as vcard or csv file"
 msgstr ""
 
-#: ../tools/addressbook-export/addressbook-export.c:918
+#: ../tools/addressbook-export/addressbook-export.c:935
 msgid "[vcard|csv]"
-msgstr ""
+msgstr "[vcard|csv]"
 
-#: ../tools/addressbook-export/addressbook-export.c:966
+#: ../tools/addressbook-export/addressbook-export.c:983
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 
-#: ../tools/addressbook-export/addressbook-export.c:980
+#: ../tools/addressbook-export/addressbook-export.c:997
 msgid "Only support csv or vcard format."
 msgstr ""
 
