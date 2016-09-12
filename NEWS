@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.21.92 2016-09-12
+----------------------------------------
+
+Bug Fixes:
+	Bug 770452 - Stop using camel_pstring_peek() (Hans Petter Jansson)
+	Bug 770570 - [addressbook-export] Add broken Full Name into the CSV output (Milan Crha)
+	Bug 770746 - [csv2vcard] Ensure @PERL@ is properly substituted (Michael Biebl)
+	Bug 761450 - [CalDAV] Refresh expired OAuth2 token beforehand (Milan Crha)
+	Bug 770854 - [Camel] Fix buffer over-read due to strchr() misuse (Hans Petter Jansson)
+
+Translations:
+	Daniel Mustieles (es)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+	Alexandre Franke (fr)
+	Changwoo Ryu (ko)
+	Baurzhan Muftakhidinov (kk)
+	Jeremy Bicha (es)
+	Jiri Grönroos (fi)
+	Aurimas Černius (lt)
+	David King (en_GB)
+	Piotr Drąg (pl)
+	Fran Dieguez (gl)
+	Marek Černocký (cs)
+	Dušan Kazik (sk)
+	Ask Hjorth Larsen (da)
+	Anders Jonsson (sv)
+	Reinout van Schouwen (nl)
+
 Evolution-Data-Server 3.21.91 2016-08-29
 ----------------------------------------
 
