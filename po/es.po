@@ -11,15 +11,15 @@
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2005, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
 # 
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2014, 2015., 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-24 15:50+0000\n"
-"PO-Revision-Date: 2016-08-29 13:57+0200\n"
+"POT-Creation-Date: 2016-08-17 10:50+0000\n"
+"PO-Revision-Date: 2016-08-22 12:00+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -118,9 +118,9 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../addressbook/libebook/e-book-client.c:3424
 #: ../addressbook/libebook/e-book-client.c:3642
 #: ../addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:680
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:728
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:745
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:678
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:709
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:726
 #: ../calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../calendar/libecal/e-cal.c:2336 ../calendar/libecal/e-cal-client.c:279
 #: ../calendar/libecal/e-cal-client.c:3520
@@ -1337,43 +1337,37 @@ msgstr ""
 "Se ha establecido el índice alfabético para la configuración regional "
 "incorrecta"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:678
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:676
 #, c-format
 msgid "Server is unreachable (%s)"
 msgstr "No se puede llegar al servidor (%s)"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:704
-#, c-format
-#| msgid "Failed to send command to IMAP server %s: %s"
-msgid "Failed to login to the server: %s"
-msgstr "Falló al iniciar sesión en el servidor: %s"
-
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:726
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:707
 #, c-format
 msgid "Failed to connect to a server using SSL/TLS: %s"
 msgstr "Falló al conectar a un servidor usando SSL/TLS: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:742
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:723
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgstr ""
 "Se devolvió un código de estado HTTP %d inesperado (%s) para el URI: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:763
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:744
 msgid "CalDAV backend is not loaded yet"
 msgstr "El «backend» CalDAV aún no se puede cargar"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1200
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1181
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "URL de redirección no válida"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2899
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2880
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "No se puede crear la carpeta de caché local: «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2985
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2966
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1383,27 +1377,27 @@ msgstr ""
 "lectura.\n"
 "Mensaje de error: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4090
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4071
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV no soporta adiciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4193
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4174
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV no soporta modificaciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4474
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4455
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV no soporta eliminaciones"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5221
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5202
 msgid "Calendar doesn't support Free/Busy"
 msgstr "El calendario no soporta disponibilidad"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5230
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5211
 msgid "Schedule outbox url not found"
 msgstr "URL de la bandeja de salida programa no encontrada"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5327
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5308
 msgid "Unexpected result in schedule-response"
 msgstr "Resultado no esperado en la respuesta programada"
 
@@ -2091,81 +2085,75 @@ msgstr "Argumentos no válidos a (message-location)"
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
 
-#: ../camel/camel-folder.c:327
+#: ../camel/camel-folder.c:326
 #, c-format
+#| msgid "Learning new spam message in '%s'"
+#| msgid_plural "Learning new spam messages in '%s'"
 msgid "Learning new spam message in '%s : %s'"
 msgid_plural "Learning new spam messages in '%s : %s'"
 msgstr[0] "Aprendiendo del mensaje SPAM en «%s : %s»"
 msgstr[1] "Aprendiendo de los mensajes SPAM en «%s : %s»"
 
-#: ../camel/camel-folder.c:370
+#: ../camel/camel-folder.c:368
 #, c-format
+#| msgid "Learning new ham message in '%s'"
+#| msgid_plural "Learning new ham messages in '%s'"
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
 msgstr[0] "Aprendiendo del mensaje auténtico en «%s : %s»"
 msgstr[1] "Aprendiendo de los mensajes auténtico en «%s : %s»"
 
-#: ../camel/camel-folder.c:421
+#: ../camel/camel-folder.c:418
 #, c-format
+#| msgid "Filtering new message in '%s'"
+#| msgid_plural "Filtering new messages in '%s'"
 msgid "Filtering new message in '%s : %s'"
 msgid_plural "Filtering new messages in '%s : %s'"
 msgstr[0] "Filtrando el mensaje nuevo en «%s : %s»"
 msgstr[1] "Filtrando los mensajes nuevos en «%s : %s»"
 
-#: ../camel/camel-folder.c:1029
+#: ../camel/camel-folder.c:1026
 #: ../camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Moviendo mensajes"
 
-#: ../camel/camel-folder.c:1032
+#: ../camel/camel-folder.c:1029
 msgid "Copying messages"
 msgstr "Copiando mensajes"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder.c:1077
+#: ../camel/camel-folder.c:1071
 #, c-format
+#| msgid "Quota information not supported for folder '%s'"
 msgid "Quota information not supported for folder '%s : %s'"
 msgstr "Información de cuota no soportada para la carpeta «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder.c:1176
+#: ../camel/camel-folder.c:1167
 #, c-format
+#| msgid "Filtering folder '%s'"
 msgid "Filtering folder '%s : %s'"
 msgstr "Filtrando carpeta «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder.c:2916
+#: ../camel/camel-folder.c:2904
 #, c-format
+#| msgid "Expunging folder '%s'"
 msgid "Expunging folder '%s : %s'"
 msgstr "Compactando la carpeta «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder.c:3050
+#: ../camel/camel-folder.c:3035
 #, c-format
+#| msgid "Retrieving message '%s' in %s"
 msgid "Retrieving message '%s' in '%s : %s'"
 msgstr "Obteniendo mensaje «%s» en «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder.c:3243
+#: ../camel/camel-folder.c:3225
 #, c-format
+#| msgid "Retrieving quota information for '%s'"
 msgid "Retrieving quota information for '%s : %s'"
 msgstr "Obteniendo la información de la cuota «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder.c:3541
+#: ../camel/camel-folder.c:3520
 #, c-format
+#| msgid "Refreshing folder '%s'"
 msgid "Refreshing folder '%s : %s'"
 msgstr "Actualizando la carpeta «%s : %s»"
 
@@ -2217,19 +2205,15 @@ msgstr ""
 "Error ejecutando la búsqueda según la expresión: %s:\n"
 "%s"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2171
+#: ../camel/camel-folder-summary.c:2168
 #, c-format
+#| msgid "Release unused memory for folder '%s'"
 msgid "Release unused memory for folder '%s : %s'"
 msgstr "Liberar la memoria sin usar para la carpeta «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2390
+#: ../camel/camel-folder-summary.c:2384
 #, c-format
+#| msgid "Update preview data for folder '%s'"
 msgid "Update preview data for folder '%s : %s'"
 msgstr "Actualizar la vista previa de datos para la carpeta «%s : %s»"
 
@@ -2505,41 +2489,33 @@ msgstr ""
 msgid "Host lookup '%s' failed: %s"
 msgstr "Falló al resolver el servidor %s: %s"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-offline-folder.c:96
+#: ../camel/camel-offline-folder.c:94
 #, c-format
+#| msgid "Downloading new messages for offline mode in '%s'"
 msgid "Downloading new messages for offline mode in '%s : %s'"
 msgstr "Descargando mensajes nuevos para modo desconectado en «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-offline-folder.c:167
+#: ../camel/camel-offline-folder.c:162
 #, c-format
+#| msgid "Storing changes in folder '%s'"
 msgid "Storing changes in folder '%s : %s'"
 msgstr "Guardando cambios en la carpeta «%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-offline-folder.c:257
+#: ../camel/camel-offline-folder.c:249
 #, c-format
+#| msgid "Checking download of new messages for offline in '%s'"
 msgid "Checking download of new messages for offline in '%s : %s'"
 msgstr ""
 "Comprobando la descarga de mensajes nuevos para el modo desconectado en "
 "«%s : %s»"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-offline-folder.c:373
+#: ../camel/camel-offline-folder.c:362
 #, c-format
+#| msgid "Syncing messages in folder '%s' to disk"
 msgid "Syncing messages in folder '%s : %s' to disk"
 msgstr "Sincronizando mensajes de la carpeta «%s : %s» al disco"
 
-#: ../camel/camel-offline-folder.c:436
+#: ../camel/camel-offline-folder.c:425
 msgid "Copy folder content locally for _offline operation"
 msgstr ""
 "Copiar el contenido de la carpeta localmente para _operación desconectada"
@@ -3118,26 +3094,23 @@ msgstr "No se pudo analizar el URL «%s»"
 msgid "Updating folder '%s'"
 msgstr "Actualizando la carpeta «%s»"
 
-#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:984
+#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:980
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "No se pueden copiar o mover mensajes a una Carpeta Virtual"
 
-#. Translators: The first '%s' is replaced with a message UID, the second '%s'
-#. is replaced with an account name and the third '%s' is replaced with a full
-#. path name. The spaces around ':' are intentional, as the whole '%s : %s' is
-#. meant as an absolute identification of the folder.
-#: ../camel/camel-vee-folder.c:906
+#: ../camel/camel-vee-folder.c:902
 #, c-format
+#| msgid "No such message %s in %s"
 msgid "No such message %s in '%s : %s'"
 msgstr "El mensaje %s no existe en «%s : %s»"
 
-#: ../camel/camel-vee-folder.c:960
+#: ../camel/camel-vee-folder.c:956
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Error al almacenar «%s»: "
 
-#: ../camel/camel-vee-folder.c:1198
+#: ../camel/camel-vee-folder.c:1194
 msgid "Automatically _update on change in source folders"
 msgstr "Actualizar a_utomáticamente al cambiar las carpetas de fuentes"
 
@@ -3213,38 +3186,34 @@ msgstr "No se pudieron mover los mensajes de spam"
 msgid "Unable to move deleted messages"
 msgstr "No se pudieron mover los mensajes eliminados"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/providers/imapx/camel-imapx-folder.c:705
+#: ../camel/providers/imapx/camel-imapx-folder.c:702
 #, c-format
+#| msgid "No quota information available for folder '%s'"
 msgid "No quota information available for folder '%s : %s'"
 msgstr "Información de cuota no disponible para la carpeta «%s : %s»"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:968
+#: ../camel/providers/imapx/camel-imapx-folder.c:965
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
 msgid "Apply message _filters to this folder"
 msgstr "Aplicar _filtros de mensajes a esta carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:979
+#: ../camel/providers/imapx/camel-imapx-folder.c:976
 msgid "Always check for _new mail in this folder"
 msgstr "Comprobar siempre si hay correo _nuevo en esta carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1090
+#: ../camel/providers/imapx/camel-imapx-folder.c:1087
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "No se pudo crear el resumen de carpetas para %s"
 
-#: ../camel/providers/imapx/camel-imapx-folder.c:1099
+#: ../camel/providers/imapx/camel-imapx-folder.c:1096
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "No se pudo crear la caché para %s: "
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/providers/imapx/camel-imapx-folder.c:1300
+#: ../camel/providers/imapx/camel-imapx-folder.c:1294
 #, c-format
+#| msgid "No IMAP mailbox available for folder '%s'"
 msgid "No IMAP mailbox available for folder '%s : %s'"
 msgstr "No hay un buzón IMAP disponible para la carpeta «%s : %s»"
 
@@ -3461,86 +3430,82 @@ msgstr "No se puede crear el archivo de cola de correo: "
 msgid "Error appending message"
 msgstr "Error al añadir el mensaje"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/providers/imapx/camel-imapx-server.c:4913
+#: ../camel/providers/imapx/camel-imapx-server.c:4910
 #, c-format
+#| msgid "Scanning for changed messages in '%s'"
 msgid "Scanning for changed messages in '%s : %s'"
 msgstr "Buscando mensajes modificados en «%s : %s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4917
+#: ../camel/providers/imapx/camel-imapx-server.c:4914
 msgid "Error scanning changes"
 msgstr "Error al analizar los cambios"
 
-#. Translators: The first '%s' is replaced with an account name and the second '%s'
-#. is replaced with a full path name. The spaces around ':' are intentional, as
-#. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/providers/imapx/camel-imapx-server.c:4938
+#: ../camel/providers/imapx/camel-imapx-server.c:4932
 #, c-format
+#| msgid "Fetching summary information for new messages in '%s'"
 msgid "Fetching summary information for new messages in '%s : %s'"
 msgstr ""
 "Obteniendo recopilación de información sobre los mensajes nuevos en «%s : %s»"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:4956
+#: ../camel/providers/imapx/camel-imapx-server.c:4950
 msgid "Error fetching message info"
 msgstr "Error al obtener la información del mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5018
+#: ../camel/providers/imapx/camel-imapx-server.c:5012
 msgid "Error running STATUS"
 msgstr "Error al ejecutar STATUS"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5510
-#: ../camel/providers/imapx/camel-imapx-server.c:5562
+#: ../camel/providers/imapx/camel-imapx-server.c:5504
+#: ../camel/providers/imapx/camel-imapx-server.c:5556
 msgid "Error syncing changes"
 msgstr "Error al sincronizar los cambios"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5673
+#: ../camel/providers/imapx/camel-imapx-server.c:5667
 msgid "Error expunging message"
 msgstr "Error al compactar el mensaje"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5743
+#: ../camel/providers/imapx/camel-imapx-server.c:5737
 msgid "Error fetching folders"
 msgstr "Error al obtener las carpetas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5754
+#: ../camel/providers/imapx/camel-imapx-server.c:5748
 msgid "Error fetching subscribed folders"
 msgstr "Error al obtener las carpetas suscritas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5776
+#: ../camel/providers/imapx/camel-imapx-server.c:5770
 msgid "Error creating folder"
 msgstr "Error al crear la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5832
+#: ../camel/providers/imapx/camel-imapx-server.c:5826
 msgid "Error deleting folder"
 msgstr "Error al eliminar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5878
+#: ../camel/providers/imapx/camel-imapx-server.c:5872
 msgid "Error renaming folder"
 msgstr "Error al renombrar la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5910
+#: ../camel/providers/imapx/camel-imapx-server.c:5904
 msgid "Error subscribing to folder"
 msgstr "Error al suscribirse a las carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5946
+#: ../camel/providers/imapx/camel-imapx-server.c:5940
 msgid "Error unsubscribing from folder"
 msgstr "Error al desuscribirse de la carpeta"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5986
+#: ../camel/providers/imapx/camel-imapx-server.c:5980
 msgid "IMAP server does not support quotas"
 msgstr "El servidor IMAP no soporta cuotas"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:5998
+#: ../camel/providers/imapx/camel-imapx-server.c:5992
 msgid "Error retrieving quota information"
 msgstr "Error al obtener la información de la cuota"
 
-#: ../camel/providers/imapx/camel-imapx-server.c:6045
+#: ../camel/providers/imapx/camel-imapx-server.c:6039
 msgid "Search failed"
 msgstr "Falló al buscar"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../camel/providers/imapx/camel-imapx-server.c:6163
+#: ../camel/providers/imapx/camel-imapx-server.c:6157
 msgid "Error running IDLE"
 msgstr "Error al ejecuter IDLE"
 
@@ -7566,6 +7531,9 @@ msgstr "Sólo se soportan los formatos csv o vcard."
 
 #~ msgid "Cannot select folder '%s': Bad command"
 #~ msgstr "No se pudo seleccionar la carpeta «%s»: Comando erróneo"
+
+#~ msgid "Failed to send command to IMAP server %s: %s"
+#~ msgstr "Falló al enviar el comando al servidor IMAP %s: %s"
 
 #~ msgid "IMAP4 server %s unexpectedly disconnected: %s"
 #~ msgstr "El servidor IMAP4 %s se desconectó inesperadamente: %s"
