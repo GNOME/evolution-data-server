@@ -2093,7 +2093,7 @@ msgstr[1] "Mezu baztergarri berriak ikasten '%s : %s'(e)n"
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
 msgstr[0] "Mezu onargarri berria ikasten '%s : %s'(e)n"
-msgstr[1] "Mezu onargarri berriak ikasten %s(e)n"
+msgstr[1] "Mezu onargarri berriak ikasten %s : %s'(e)n"
 
 #: ../camel/camel-folder.c:421
 #, c-format
@@ -5161,7 +5161,7 @@ msgstr "Ez dago halako iturbururik '%s' UIDarentzako"
 #, c-format
 #| msgid "Failed to create hardlink for resource '%s': %s"
 msgid "Failed to create backend of type '%s' for source UID '%s'"
-msgstr "Huts egin du '%2$s' UIDaren iturburuaren '%s' motako motorra sortzean"
+msgstr "Huts egin du '%2$s' UIDaren iturburuaren '%1$s' motako motorra sortzean"
 
 #: ../libebackend/e-user-prompter-server.c:305
 #, c-format
