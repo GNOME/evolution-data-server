@@ -697,7 +697,7 @@ status_code_to_result (SoupMessage *message,
 			gchar *body = g_strndup (message->response_body->data, message->response_body->length);
 
 			/* Do not localize this string, it is returned by the server. */
-			if (body && (e_util_strstrcase (body, "Daily Limit Exceeded") ||
+			if (body && (e_util_strstrcase (body, "Daily Limit") ||
 			    e_util_strstrcase (body, "https://console.developers.google.com/"))) {
 				/* Special-case this condition and provide this error up to the UI. */
 				g_propagate_error (perror,

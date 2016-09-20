@@ -152,7 +152,7 @@ credentials_prompter_lookup_source_details_thread (GTask *task,
 	provider = e_credentials_prompter_get_provider (prompter);
 	cred_source = e_source_credentials_provider_ref_credentials_source (provider, source);
 
-	e_source_credentials_provider_lookup_sync (prompter->priv->provider, cred_source ? cred_source : source, cancellable, &credentials, &local_error);
+	e_source_credentials_provider_lookup_sync (provider, cred_source ? cred_source : source, cancellable, &credentials, &local_error);
 
 	/* Interested only in the cancelled error, which means the prompter is freed. */
 	if (local_error != NULL && g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
@@ -760,19 +760,29 @@ credentials_prompter_credentials_required_cb (ESourceRegistry *registry,
 					      const GError *op_error,
 					      ECredentialsPrompter *prompter)
 {
+	ESource *cred_source;
+
 	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
 	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER (prompter));
 
 	/* Only these two reasons are meant to be used to prompt the user for credentials. */
 	if (reason != E_SOURCE_CREDENTIALS_REASON_REQUIRED &&
-	    reason != E_SOURCE_CREDENTIALS_REASON_REJECTED)
+	    reason != E_SOURCE_CREDENTIALS_REASON_REJECTED) {
 		return;
+	}
+
+	cred_source = e_source_credentials_provider_ref_credentials_source (e_credentials_prompter_get_provider (prompter), source);
 
 	/* Global auto-prompt or the source's auto-prompt is disabled. */
 	if (!e_credentials_prompter_get_auto_prompt (prompter) ||
-	    e_credentials_prompter_get_auto_prompt_disabled_for (prompter, source))
+	    (e_credentials_prompter_get_auto_prompt_disabled_for (prompter, source) &&
+	    (!cred_source || e_credentials_prompter_get_auto_prompt_disabled_for (prompter, cred_source)))) {
+		g_clear_object (&cred_source);
 		return;
+	}
+
+	g_clear_object (&cred_source);
 
 	/* This is a re-prompt, but the source cannot be prompted for credentials. */
 	if (reason == E_SOURCE_CREDENTIALS_REASON_REJECTED &&
