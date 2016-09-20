@@ -465,7 +465,7 @@ e_source_credentials_google_util_extract_from_credentials (const ENamedParameter
 
 	if (out_expires_in_seconds) {
 		now = g_get_real_time () / G_USEC_PER_SEC;
-		if (now < expires_after_tm)
+		if (now > expires_after_tm)
 			now = expires_after_tm;
 
 		*out_expires_in_seconds = (gint) (expires_after_tm - now);

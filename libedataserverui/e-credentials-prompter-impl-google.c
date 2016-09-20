@@ -291,9 +291,9 @@ cpi_google_update_prompter_credentials (GWeakRef *prompter_google_wr,
 			success = TRUE;
 		}
 
-		g_object_unref (prompter_google);
 		g_free (secret);
 	}
+	g_clear_object (&prompter_google);
 
 	g_free (expires_after);
 
@@ -332,8 +332,10 @@ e_credentials_prompter_impl_google_finish_dialog_idle_cb (gpointer user_data)
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_GOOGLE (prompter_google), FALSE);
 
+	g_mutex_lock (&prompter_google->priv->property_lock);
 	if (g_source_get_id (g_main_current_source ()) == prompter_google->priv->show_dialog_idle_id) {
 		prompter_google->priv->show_dialog_idle_id = 0;
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 
 		g_warn_if_fail (prompter_google->priv->dialog != NULL);
 
@@ -343,6 +345,8 @@ e_credentials_prompter_impl_google_finish_dialog_idle_cb (gpointer user_data)
 			e_credentials_prompter_impl_google_show_html (prompter_google->priv->web_view,
 				"Finished with error", prompter_google->priv->error_text);
 		}
+	} else {
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 	}
 
 	return FALSE;
@@ -442,9 +446,11 @@ cpi_google_get_access_token_thread (gpointer user_data)
 				GOOGLE_TOKEN_URI, soup_status, soup_status_get_phrase (soup_status));
 		}
 
+		g_mutex_lock (&prompter_google->priv->property_lock);
 		prompter_google->priv->show_dialog_idle_id = g_idle_add (
 			e_credentials_prompter_impl_google_finish_dialog_idle_cb,
 			prompter_google);
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 	}
 
 	g_clear_object (&prompter_google);
@@ -843,10 +849,12 @@ e_credentials_prompter_impl_google_manage_dialog_idle_cb (gpointer user_data)
 
 	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_GOOGLE (prompter_google), FALSE);
 
+	g_mutex_lock (&prompter_google->priv->property_lock);
 	if (g_source_get_id (g_main_current_source ()) == prompter_google->priv->show_dialog_idle_id) {
 		gboolean success;
 
 		prompter_google->priv->show_dialog_idle_id = 0;
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 
 		g_warn_if_fail (prompter_google->priv->dialog == NULL);
 
@@ -861,6 +869,8 @@ e_credentials_prompter_impl_google_manage_dialog_idle_cb (gpointer user_data)
 			success ? prompter_google->priv->credentials : NULL);
 
 		e_credentials_prompter_impl_google_free_prompt_data (prompter_google);
+	} else {
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 	}
 
 	return FALSE;
@@ -942,9 +952,11 @@ cpi_google_check_existing_token_thread (gpointer user_data)
  exit:
 	prompter_google = g_weak_ref_get (td->prompter_google);
 	if (prompter_google && !g_cancellable_is_cancelled (cancellable)) {
+		g_mutex_lock (&prompter_google->priv->property_lock);
 		prompter_google->priv->show_dialog_idle_id = g_idle_add (
 			e_credentials_prompter_impl_google_manage_dialog_idle_cb,
 			prompter_google);
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 	}
 
 	g_clear_object (&prompter_google);
@@ -970,7 +982,14 @@ e_credentials_prompter_impl_google_process_prompt (ECredentialsPrompterImpl *pro
 
 	prompter_google = E_CREDENTIALS_PROMPTER_IMPL_GOOGLE (prompter_impl);
 	g_return_if_fail (prompter_google->priv->prompt_id == NULL);
-	g_return_if_fail (prompter_google->priv->show_dialog_idle_id == 0);
+
+	g_mutex_lock (&prompter_google->priv->property_lock);
+	if (prompter_google->priv->show_dialog_idle_id != 0) {
+		g_mutex_unlock (&prompter_google->priv->property_lock);
+		g_warning ("%s: Already processing other prompt", G_STRFUNC);
+		return;
+	}
+	g_mutex_unlock (&prompter_google->priv->property_lock);
 
 	prompter_google->priv->prompt_id = prompt_id;
 	prompter_google->priv->auth_source = g_object_ref (auth_source);
@@ -1021,9 +1040,11 @@ e_credentials_prompter_impl_google_process_prompt (ECredentialsPrompterImpl *pro
 		g_thread_unref (thread);
 	} else {
 #endif /* ENABLE_GOOGLE_AUTH */
+		g_mutex_lock (&prompter_google->priv->property_lock);
 		prompter_google->priv->show_dialog_idle_id = g_idle_add (
 			e_credentials_prompter_impl_google_manage_dialog_idle_cb,
 			prompter_google);
+		g_mutex_unlock (&prompter_google->priv->property_lock);
 #ifdef ENABLE_GOOGLE_AUTH
 	}
 #endif /* ENABLE_GOOGLE_AUTH */
@@ -1053,10 +1074,12 @@ e_credentials_prompter_impl_google_dispose (GObject *object)
 {
 	ECredentialsPrompterImplGoogle *prompter_google = E_CREDENTIALS_PROMPTER_IMPL_GOOGLE (object);
 
+	g_mutex_lock (&prompter_google->priv->property_lock);
 	if (prompter_google->priv->show_dialog_idle_id) {
 		g_source_remove (prompter_google->priv->show_dialog_idle_id);
 		prompter_google->priv->show_dialog_idle_id = 0;
 	}
+	g_mutex_unlock (&prompter_google->priv->property_lock);
 
 	if (prompter_google->priv->cancellable) {
 		g_cancellable_cancel (prompter_google->priv->cancellable);
