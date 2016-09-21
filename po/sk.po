@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-24 15:50+0000\n"
+"POT-Creation-Date: 2016-09-19 08:02+0000\n"
 "PO-Revision-Date: 2016-09-10 16:50+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
@@ -1351,17 +1351,17 @@ msgstr "Vrátený neočakávaný stavový kód HTTP %d (%s) pre URI: %s"
 msgid "CalDAV backend is not loaded yet"
 msgstr "Obslužný program CalDAV nie je ešte načítaný"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1200
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1204
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Neplatná URL presmerovania"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2899
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2918
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nedá sa vytvoriť miestny priečinok vyrovnávacej pamäte „%s“"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2985
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3004
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1370,28 +1370,28 @@ msgstr ""
 "Server je nedostupný, kalendár je otvorený v režime iba-na-čítanie.\n"
 "Chybová správa: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4090
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4109
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV nepodporuje hromadné pridávanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4193
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4212
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV nepodporuje hromadné úpravy"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4474
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4493
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV nepodporuje hromadné odstraňovanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5221
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5240
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendár nepodporuje diár"
 
 # MČ: 	/* with 'calendar-schedule' supported, here's an outbox url for queries of free/busy information */
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5230
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5249
 msgid "Schedule outbox url not found"
 msgstr "Nebola nájdená url výstupu diára"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5327
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5346
 msgid "Unexpected result in schedule-response"
 msgstr "Neočakávaný výsledok v odpovedi diára"
 
@@ -2163,36 +2163,36 @@ msgid "Refreshing folder '%s : %s'"
 msgstr "Obnovuje sa priečinok „%s : %s“"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
+#: ../camel/camel-folder-search.c:865 ../camel/camel-folder-search.c:907
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) vyžaduje jeden výsledok ako logickú hodnotu"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:922
+#: ../camel/camel-folder-search.c:942
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nie je povolené vnútri %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:929 ../camel/camel-folder-search.c:937
+#: ../camel/camel-folder-search.c:949 ../camel/camel-folder-search.c:957
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) vyžaduje reťazcový typ"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:965
+#: ../camel/camel-folder-search.c:985
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) očakáva ako výsledok pole"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:975
+#: ../camel/camel-folder-search.c:995
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) vyžaduje množinu priečinkov"
 
-#: ../camel/camel-folder-search.c:1887 ../camel/camel-folder-search.c:2056
+#: ../camel/camel-folder-search.c:1918 ../camel/camel-folder-search.c:2090
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2201,7 +2201,7 @@ msgstr ""
 "Nedá sa analyzovať vyhľadávací výraz: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1899 ../camel/camel-folder-search.c:2068
+#: ../camel/camel-folder-search.c:1930 ../camel/camel-folder-search.c:2102
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2213,7 +2213,7 @@ msgstr ""
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2171
+#: ../camel/camel-folder-summary.c:2196
 #, c-format
 msgid "Release unused memory for folder '%s : %s'"
 msgstr "Uvoľniť nevyužitú pamäť pre priečinok „%s : %s“"
@@ -2221,7 +2221,7 @@ msgstr "Uvoľniť nevyužitú pamäť pre priečinok „%s : %s“"
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2390
+#: ../camel/camel-folder-summary.c:2420
 #, c-format
 msgid "Update preview data for folder '%s : %s'"
 msgstr "Aktualizovať prehľad údajov priečinku „%s : %s“"
@@ -5039,18 +5039,18 @@ msgstr "Či sa majú načítať fotografie podpisovateľov/šifrovateľov"
 msgid ""
 "When set to 'true', tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
-msgstr ""
+msgstr "Keď je nastavené na „true“, pokúsi sa načítať aj fotografie podpisovateľov/šifrovateľov ak sú dostupné v kľúči/certifikáte"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr ""
+msgstr "Názov GIO objektu GNetworkMonitorm, ktorý sa pužije v inštancii ENetworkMonitor"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value 'always-online' is used for no network "
 "monitoring."
-msgstr ""
+msgstr "Keď je nastavená neznáma hodnota, potom sa v pozadí použije predvolená hodnota triedy GNetworkMonitor. Špeciálna hodnota „always-online“ sa používa na sledovanie bez siete."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -6089,7 +6089,7 @@ msgid "_Dismiss"
 msgstr "_Zavrhnúť"
 
 #: ../tools/addressbook-export/addressbook-export.c:70
-#: ../tools/addressbook-export/addressbook-export.c:767
+#: ../tools/addressbook-export/addressbook-export.c:784
 msgid "Can not open file"
 msgstr "Nedá sa otvoriť súbor"
 
@@ -6098,41 +6098,41 @@ msgstr "Nedá sa otvoriť súbor"
 msgid "Failed to open client '%s': %s"
 msgstr "Zlyhalo otvorenie klienta „%s“: %s"
 
-#: ../tools/addressbook-export/addressbook-export.c:877
+#: ../tools/addressbook-export/addressbook-export.c:894
 msgid "Unhandled error"
 msgstr "Neošetrená chyba"
 
 # cmd line desc
-#: ../tools/addressbook-export/addressbook-export.c:910
+#: ../tools/addressbook-export/addressbook-export.c:927
 msgid "Specify the output file instead of standard output"
 msgstr "Určí výstupný súbor namiesto štandardného výstupu"
 
-#: ../tools/addressbook-export/addressbook-export.c:911
+#: ../tools/addressbook-export/addressbook-export.c:928
 msgid "OUTPUTFILE"
 msgstr "VÝSTUPNÝ_SÚBOR"
 
 # cmd line desc
-#: ../tools/addressbook-export/addressbook-export.c:914
+#: ../tools/addressbook-export/addressbook-export.c:931
 msgid "List local address book folders"
 msgstr "Vypíše zoznam miestnych priečinkov s adresármi kontaktov"
 
 # cmd line desc
-#: ../tools/addressbook-export/addressbook-export.c:917
+#: ../tools/addressbook-export/addressbook-export.c:934
 msgid "Show cards as vcard or csv file"
 msgstr "Zobrazí vizitky ako súbor vcard alebo csv"
 
-#: ../tools/addressbook-export/addressbook-export.c:918
+#: ../tools/addressbook-export/addressbook-export.c:935
 msgid "[vcard|csv]"
 msgstr "[vcard|csv]"
 
-#: ../tools/addressbook-export/addressbook-export.c:966
+#: ../tools/addressbook-export/addressbook-export.c:983
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Chyba parametrov príkazového riadka. Prosím, použite parameter --help na "
 "zobrazenie pomocníka s použitím."
 
-#: ../tools/addressbook-export/addressbook-export.c:980
+#: ../tools/addressbook-export/addressbook-export.c:997
 msgid "Only support csv or vcard format."
 msgstr "Podporovaný je iba formát csv alebo vcard."
 
