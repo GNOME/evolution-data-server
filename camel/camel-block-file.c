@@ -242,8 +242,10 @@ block_file_use (CamelBlockFile *bs)
 
 	CAMEL_BLOCK_FILE_LOCK (bs, io_lock);
 
-	if (bs->fd != -1)
+	if (bs->fd != -1) {
+		CAMEL_BLOCK_FILE_UNLOCK (bs, io_lock);
 		return 0;
+	}
 	else if (bs->priv->deleted) {
 		CAMEL_BLOCK_FILE_UNLOCK (bs, io_lock);
 		errno = ENOENT;
