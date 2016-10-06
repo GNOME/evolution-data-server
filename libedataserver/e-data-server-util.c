@@ -2915,18 +2915,8 @@ e_util_get_source_oauth2_access_token_sync (ESource *source,
 			source, cancellable, out_access_token,
 			out_expires_in_seconds, error);
 	} else if (g_strcmp0 (auth_method, "Google") == 0) {
-		gint expires_in_seconds = -1;
-
-		success = e_source_credentials_google_util_extract_from_credentials (
-			credentials, out_access_token, &expires_in_seconds);
-		if (!success || expires_in_seconds <= 0) {
-			/* Ask to refresh the token, if it's expired */
-			e_source_invoke_credentials_required_sync (source,
-				expires_in_seconds < 0 ? E_SOURCE_AUTHENTICATION_REQUIRED : E_SOURCE_AUTHENTICATION_REJECTED,
-				NULL, 0, NULL, cancellable, error);
-		} else if (out_expires_in_seconds) {
-			*out_expires_in_seconds = expires_in_seconds;
-		}
+		success = e_source_credentials_google_get_access_token_sync (
+			source, credentials, out_access_token, out_expires_in_seconds, cancellable, error);
 	}
 
 	g_free (auth_method);

@@ -174,7 +174,7 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 	bearer->priv->access_token = g_strdup (access_token);
 
 	if (expires_in_seconds > 0)
-		bearer->priv->expiry = time (NULL) + expires_in_seconds;
+		bearer->priv->expiry = time (NULL) + expires_in_seconds - 1;
 	else
 		bearer->priv->expiry = EXPIRY_INVALID;
 
@@ -203,7 +203,7 @@ e_soup_auth_bearer_is_expired (ESoupAuthBearer *bearer)
 	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), TRUE);
 
 	if (bearer->priv->expiry != EXPIRY_INVALID)
-		expired = (bearer->priv->expiry < time (NULL));
+		expired = (bearer->priv->expiry <= time (NULL));
 
 	return expired;
 }

@@ -1148,9 +1148,10 @@ soup_authenticate (SoupSession *session,
 	auth_extension = e_source_get_extension (source, extension_name);
 
 	if (E_IS_SOUP_AUTH_BEARER (auth)) {
+		g_object_ref (auth);
 		g_warn_if_fail ((gpointer) cbdav->priv->using_bearer_auth == (gpointer) auth);
 		g_clear_object (&cbdav->priv->using_bearer_auth);
-		cbdav->priv->using_bearer_auth = g_object_ref (auth);
+		cbdav->priv->using_bearer_auth = E_SOUP_AUTH_BEARER (auth);
 	}
 
 	if (retrying)
