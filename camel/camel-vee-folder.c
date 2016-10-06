@@ -269,6 +269,10 @@ vee_folder_merge_matching (CamelVeeFolder *vfolder,
 	g_return_if_fail (vsummary != NULL);
 
 	data_cache = vee_folder_get_data_cache (vfolder);
+	/* It can be NULL on dispose of the CamelVeeStore */
+	if (!data_cache)
+		return;
+
 	for (ii = 0; ii < match->len; ii++) {
 		const gchar *uid = match->pdata[ii];
 
@@ -385,8 +389,12 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 	}
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
-	changes = camel_folder_change_info_new ();
 	data_cache = vee_folder_get_data_cache (vfolder);
+	/* It can be NULL on dispose of the CamelVeeStore */
+	if (!data_cache)
+		return;
+
+	changes = camel_folder_change_info_new ();
 	v_folder = CAMEL_FOLDER (vfolder);
 	vsummary = CAMEL_VEE_SUMMARY (v_folder->summary);
 
@@ -663,8 +671,15 @@ vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 		CamelFolder *v_folder;
 		CamelVeeDataCache *data_cache;
 
-		changes = camel_folder_change_info_new ();
 		data_cache = vee_folder_get_data_cache (vf);
+
+		/* It can be NULL on dispose of the CamelVeeStore */
+		if (!data_cache) {
+			g_rec_mutex_unlock (&vf->priv->changed_lock);
+			return;
+		}
+
+		changes = camel_folder_change_info_new ();
 		v_folder = CAMEL_FOLDER (vf);
 		vsummary = CAMEL_VEE_SUMMARY (v_folder->summary);
 
@@ -1078,6 +1093,14 @@ vee_folder_remove_folder (CamelVeeFolder *vfolder,
 		rud.data_cache = vee_folder_get_data_cache (vfolder);
 		rud.changes = changes;
 		rud.is_orig_message_uid = FALSE;
+
+		/* It can be NULL on dispose of the CamelVeeStore */
+		if (!rud.data_cache) {
+			camel_folder_thaw (v_folder);
+			camel_folder_change_info_free (changes);
+			g_hash_table_destroy (uids);
+			return;
+		}
 
 		g_hash_table_foreach (uids, vee_folder_remove_unmatched_cb, &rud);
 
@@ -1609,7 +1632,10 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
 
 	vsummary = CAMEL_VEE_SUMMARY (CAMEL_FOLDER (vfolder)->summary);
 	data_cache = vee_folder_get_data_cache (vfolder);
-	vee_folder_note_unmatch_uid (vfolder, vsummary, subfolder, data_cache, mi_data, changes);
+
+	/* It can be NULL on dispose of the CamelVeeStore */
+	if (data_cache)
+		vee_folder_note_unmatch_uid (vfolder, vsummary, subfolder, data_cache, mi_data, changes);
 }
 
 /**

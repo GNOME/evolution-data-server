@@ -149,14 +149,26 @@ vee_store_get_property (GObject *object,
 }
 
 static void
+vee_store_dispose (GObject *object)
+{
+	CamelVeeStorePrivate *priv;
+
+	priv = CAMEL_VEE_STORE_GET_PRIVATE (object);
+
+	g_clear_object (&priv->vee_data_cache);
+	g_clear_object (&priv->unmatched_folder);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_vee_store_parent_class)->dispose (object);
+}
+
+static void
 vee_store_finalize (GObject *object)
 {
 	CamelVeeStorePrivate *priv;
 
 	priv = CAMEL_VEE_STORE_GET_PRIVATE (object);
 
-	g_object_unref (priv->unmatched_folder);
-	g_object_unref (priv->vee_data_cache);
 	g_hash_table_destroy (priv->subfolder_usage_counts);
 	g_hash_table_destroy (priv->vuid_usage_counts);
 	g_mutex_clear (&priv->sf_counts_mutex);
@@ -510,6 +522,7 @@ camel_vee_store_class_init (CamelVeeStoreClass *class)
 	object_class = G_OBJECT_CLASS (class);
 	object_class->set_property = vee_store_set_property;
 	object_class->get_property = vee_store_get_property;
+	object_class->dispose = vee_store_dispose;
 	object_class->finalize = vee_store_finalize;
 	object_class->constructed = vee_store_constructed;
 
