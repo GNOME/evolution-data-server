@@ -80,6 +80,12 @@ struct _ESourceCredentialsProviderImplGoogleClass {
 GType		e_source_credentials_provider_impl_google_get_type	(void);
 
 gboolean	e_source_credentials_google_is_supported		(void);
+gboolean	e_source_credentials_google_get_access_token_sync	(ESource *source,
+									 const ENamedParameters *credentials,
+									 gchar **out_access_token,
+									 gint *out_expires_in_seconds,
+									 GCancellable *cancellable,
+									 GError **error);
 gboolean	e_source_credentials_google_util_generate_secret_uid	(ESource *source,
 									 gchar **out_uid);
 gboolean	e_source_credentials_google_util_encode_to_secret	(gchar **out_secret,

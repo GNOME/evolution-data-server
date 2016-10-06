@@ -346,6 +346,7 @@ e_credentials_prompter_impl_google_finish_dialog_idle_cb (gpointer user_data)
 				"Finished with error", prompter_google->priv->error_text);
 		}
 	} else {
+		g_warning ("%s: Source was cancelled? current:%d expected:%d", G_STRFUNC, (gint) g_source_get_id (g_main_current_source ()), (gint) prompter_google->priv->show_dialog_idle_id);
 		g_mutex_unlock (&prompter_google->priv->property_lock);
 	}
 
@@ -870,7 +871,17 @@ e_credentials_prompter_impl_google_manage_dialog_idle_cb (gpointer user_data)
 
 		e_credentials_prompter_impl_google_free_prompt_data (prompter_google);
 	} else {
+		gpointer prompt_id = prompter_google->priv->prompt_id;
+
+		g_warning ("%s: Prompt's %p source cancelled? current:%d expected:%d", G_STRFUNC, prompt_id, (gint) g_source_get_id (g_main_current_source ()), (gint) prompter_google->priv->show_dialog_idle_id);
+
+		if (!prompter_google->priv->show_dialog_idle_id)
+			e_credentials_prompter_impl_google_free_prompt_data (prompter_google);
+
 		g_mutex_unlock (&prompter_google->priv->property_lock);
+
+		if (prompt_id)
+			e_credentials_prompter_impl_prompt_finish (E_CREDENTIALS_PROMPTER_IMPL (prompter_google), prompt_id, NULL);
 	}
 
 	return FALSE;
