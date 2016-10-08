@@ -293,6 +293,7 @@ e_source_credentials_google_is_supported (void)
 static gchar *
 cpi_google_create_refresh_token_post_data (const gchar *refresh_token)
 {
+#ifdef ENABLE_GOOGLE_AUTH
 	g_return_val_if_fail (refresh_token != NULL, NULL);
 
 	return soup_form_encode (
@@ -301,6 +302,9 @@ cpi_google_create_refresh_token_post_data (const gchar *refresh_token)
 		"client_secret", GOOGLE_CLIENT_SECRET,
 		"grant_type", "refresh_token",
 		NULL);
+#else
+        return NULL;
+#endif /* ENABLE_GOOGLE_AUTH */
 }
 
 static void
