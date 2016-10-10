@@ -31,18 +31,19 @@
  * advertise available data sources on a remote server.
  **/
 
-#include "e-source-registry-server.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
 /* Private D-Bus classes. */
-#include <e-dbus-source.h>
-#include <e-dbus-source-manager.h>
+#include "e-dbus-source.h"
+#include "e-dbus-source-manager.h"
 
 #include "e-server-side-source.h"
 #include "e-server-side-source-credentials-provider.h"
+
+#include "e-source-registry-server.h"
 
 #define E_SOURCE_REGISTRY_SERVER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

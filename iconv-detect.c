@@ -17,9 +17,9 @@
  * Authors: Jeffrey Stedfast <fejj@ximian.com>
  */
 
-#include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <iconv.h>
 
 enum {
@@ -87,18 +87,50 @@ static CharInfo iso10646_tests[] = {
 
 static int num_iso10646_tests = sizeof (iso10646_tests) / sizeof (CharInfo);
 
+static int
+test_iconv (void)
+{
+	char *jp = "\x1B\x24\x42\x46\x7C\x4B\x5C\x38\x6C";
+	char *utf8 = "\xE6\x97\xA5\xE6\x9C\xAC\xE8\xAA\x9E";
+	char *transbuf = malloc (10), *trans = transbuf;
+	iconv_t cd;
+	size_t jp_len = strlen (jp), utf8_len = 10;
+	size_t utf8_real_len = strlen (utf8);
 
-int main (int argc, char **argv)
+	cd = iconv_open ("UTF-8", "ISO-2022-JP");
+	if (cd == (iconv_t) -1)
+		return 0;
+
+	if (iconv (cd, &jp, &jp_len, &trans, &utf8_len) == -1 || jp_len != 0) {
+		iconv_close (cd);
+		return 0;
+	}
+	if (memcmp (utf8, transbuf, utf8_real_len) != 0) {
+		iconv_close (cd);
+		return 0;
+	}
+
+	iconv_close (cd);
+
+	return 1;
+}
+
+int
+main (int argc,
+      char **argv)
 {
 	unsigned int iso8859, iso2022, iso10646;
 	CharInfo *info;
-	GIConv cd;
+	iconv_t cd;
 	FILE *fp;
 	int i;
 
+	if (!test_iconv ())
+		return 1;
+
 	fp = fopen ("iconv-detect.h", "w");
 	if (fp == NULL)
-		exit (255);
+		return 255;
 
 	fprintf (fp, "/* This is an auto-generated header, DO NOT EDIT! */\n\n");
 
@@ -106,8 +138,8 @@ int main (int argc, char **argv)
 	info = iso8859_tests;
 	/*printf ("#define DEFAULT_ISO_FORMAT(iso,codepage)\t");*/
 	for (i = 0; i < num_iso8859_tests; i++) {
-		cd = g_iconv_open (info[i].charset, "UTF-8");
-		if (cd != (GIConv) -1) {
+		cd = iconv_open (info[i].charset, "UTF-8");
+		if (cd != (iconv_t) -1) {
 			iconv_close (cd);
 			/*printf ("(\"%s\", (iso), (codepage))\n", info[i].format);*/
 			fprintf (stderr, "System prefers %s\n", info[i].charset);
@@ -119,9 +151,6 @@ int main (int argc, char **argv)
 	if (iso8859 == ISO_UNSUPPORTED) {
 		fprintf (stderr, "System doesn't support any ISO-8859-1 formats\n");
 		fprintf (fp, "#define ICONV_ISO_D_FORMAT \"%s\"\n", info[0].format);
-#ifdef CONFIGURE_IN
-		exit (1);
-#endif
 	} else {
 		fprintf (fp, "#define ICONV_ISO_D_FORMAT \"%s\"\n", info[i].format);
 	}
@@ -131,8 +160,8 @@ int main (int argc, char **argv)
 	/*printf ("#define ISO_2022_FORMAT(iso,codepage)\t");*/
 	for (i = 0; i < num_iso2022_tests; i++) {
 		cd = iconv_open (info[i].charset, "UTF-8");
-		if (cd != (GIConv) -1) {
-			g_iconv_close (cd);
+		if (cd != (iconv_t) -1) {
+			iconv_close (cd);
 			/*printf ("(\"%s\", (iso), (codepage))\n", info[i].format);*/
 			fprintf (stderr, "System prefers %s\n", info[i].charset);
 			iso2022 = info[i].id;
@@ -143,9 +172,6 @@ int main (int argc, char **argv)
 	if (iso2022 == ISO_UNSUPPORTED) {
 		fprintf (stderr, "System doesn't support any ISO-2022 formats\n");
 		fprintf (fp, "#define ICONV_ISO_S_FORMAT \"%s\"\n", info[0].format);
-#ifdef CONFIGURE_IN
-		exit (3);
-#endif
 	} else {
 		fprintf (fp, "#define ICONV_ISO_S_FORMAT \"%s\"\n", info[i].format);
 	}
@@ -155,8 +181,8 @@ int main (int argc, char **argv)
 	/*printf ("#define ISO_10646_FORMAT(iso,codepage)\t");*/
 	for (i = 0; i < num_iso10646_tests; i++) {
 		cd = iconv_open (info[i].charset, "UTF-8");
-		if (cd != (GIConv) -1) {
-			g_iconv_close (cd);
+		if (cd != (iconv_t) -1) {
+			iconv_close (cd);
 			/*if (info[i].id < ISO_DASH_D_LOWER)
 				printf ("(\"%s\", (iso), (codepage))\n", info[i].format);
 			else
@@ -171,14 +197,11 @@ int main (int argc, char **argv)
 	if (iso10646 == ISO_UNSUPPORTED) {
 		fprintf (stderr, "System doesn't support any ISO-10646-1 formats\n");
 		fprintf (fp, "#define ICONV_10646 \"%s\"\n", info[0].charset);
-#ifdef CONFIGURE_IN
-		exit (2);
-#endif
 	} else {
 		fprintf (fp, "#define ICONV_10646 \"%s\"\n", info[i].charset);
 	}
 
 	fclose (fp);
 
-	exit (0);
+	return 0;
 }

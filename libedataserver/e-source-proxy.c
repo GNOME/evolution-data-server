@@ -35,13 +35,14 @@
  * ]|
  **/
 
-#include "e-source-proxy.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include <libedataserver/e-source-enumtypes.h>
 #include <libedataserver/e-data-server-util.h>
+
+#include "e-source-proxy.h"
 
 #define E_SOURCE_PROXY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

@@ -19,7 +19,8 @@
  *          Philip Withnall <philip@tecnocode.co.uk>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 #include <errno.h>
 

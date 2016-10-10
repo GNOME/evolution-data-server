@@ -34,9 +34,7 @@
  * and e_test_server_utils_teardown() in thier fixture's setup and teardown routines.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include "e-test-server-utils.h"
 

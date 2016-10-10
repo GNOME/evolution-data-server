@@ -15,6 +15,8 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 /* XXX Yeah, yeah... */
 #define SECRET_API_SUBJECT_TO_CHANGE
 

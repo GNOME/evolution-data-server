@@ -18,10 +18,7 @@
  *          Srinivasa Ragavan <sragavan@novell.com>
  */
 
-#include "camel-db.h"
-#include "camel-string-utils.h"
-
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <errno.h>
 #include <ctype.h>
@@ -34,6 +31,9 @@
 
 #include "camel-debug.h"
 #include "camel-object.h"
+#include "camel-string-utils.h"
+
+#include "camel-db.h"
 
 /* how long to wait before invoking sync on the file */
 #define SYNC_TIMEOUT_SECONDS 5

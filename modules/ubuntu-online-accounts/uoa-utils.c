@@ -15,13 +15,14 @@
  *
  */
 
-#include "uoa-utils.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 #include <rest/rest-proxy.h>
 #include <json-glib/json-glib.h>
 #include <libsignon-glib/signon-glib.h>
+
+#include "uoa-utils.h"
 
 #define GOOGLE_USERINFO_URI \
 	"https://www.googleapis.com/oauth2/v2/userinfo"

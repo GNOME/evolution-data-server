@@ -15,12 +15,12 @@
  *
  */
 
-#include "camel-junk-filter.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-operation.h"
+#include "camel-junk-filter.h"
 
 G_DEFINE_INTERFACE (CamelJunkFilter, camel_junk_filter, G_TYPE_OBJECT)
 

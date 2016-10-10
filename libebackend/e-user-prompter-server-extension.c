@@ -35,9 +35,7 @@
  * e_user_prompter_server_extension_response() call.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif /* HAVE_CONFIG_H */
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 

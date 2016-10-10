@@ -29,7 +29,8 @@
  * _get_*() functions.
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include "e-destination.h"
 
 #include <stdlib.h>

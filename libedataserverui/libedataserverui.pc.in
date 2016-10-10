@@ -1,9 +1,9 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
-datarootdir=@datarootdir@
-datadir=@datadir@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@LIB_INSTALL_DIR@
+libexecdir=@LIBEXEC_INSTALL_DIR@
+includedir=@INCLUDE_INSTALL_DIR@
+datarootdir=@SHARE_INSTALL_DIR@
+datadir=@SHARE_INSTALL_DIR@
 
 privlibdir=@privlibdir@
 privincludedir=@privincludedir@
@@ -12,7 +12,7 @@ credentialmoduledir=@credentialmoduledir@
 
 Name: libedataserverui
 Description: UI utility library for Evolution Data Server
-Version: @VERSION@
+Version: @PROJECT_VERSION@
 Requires: gio-2.0 gmodule-2.0 libsecret-1 libxml-2.0 libsoup-2.4 gtk+-3.0 libedataserver-@API_VERSION@
 Requires.private: camel-@API_VERSION@
 Libs: -L${libdir} -ledataserver-@API_VERSION@ -ledataserverui-@API_VERSION@

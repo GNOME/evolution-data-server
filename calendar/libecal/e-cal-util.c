@@ -17,7 +17,8 @@
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <glib/gstdio.h>

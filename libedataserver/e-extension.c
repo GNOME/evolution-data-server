@@ -38,9 +38,7 @@
  *    registered in the library module's e_module_load() function.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include "e-extension.h"
 

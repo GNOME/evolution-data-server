@@ -22,9 +22,7 @@
  * @short_description: An abstract base class for a backend-subprocess server
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>
 

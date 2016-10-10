@@ -16,9 +16,7 @@
  * Authors: Milan Crha <mcrha@redhat.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>
 #include <gdata/gdata.h>

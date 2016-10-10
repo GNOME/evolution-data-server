@@ -16,7 +16,7 @@
  * Authors: Milan Crha <mcrha@redhat.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-cal-backend-gtasks.h"
 

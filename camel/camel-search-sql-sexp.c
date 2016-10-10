@@ -21,9 +21,7 @@
  * It implements enough to do basic searches on folders that can provide
  * an in-memory summary and a body index. */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <stdio.h>
 #include <string.h>

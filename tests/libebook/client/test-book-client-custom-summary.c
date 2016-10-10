@@ -18,7 +18,7 @@
  *          Mathias Hasselmann <mathias@openismus.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <stdlib.h>
 #include <libebook/libebook.h>

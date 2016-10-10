@@ -25,7 +25,7 @@
  * file for permanent storage.
  **/
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-dbhash.h"
 

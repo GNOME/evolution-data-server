@@ -26,7 +26,8 @@
  * This API is deprecated, use #EBookSqlite instead.
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <stdlib.h>
 #include <string.h>
 

@@ -17,9 +17,7 @@
  * Authors: Gilbert Fang <gilbert.fang@sun.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <stdlib.h>
 #include <string.h>

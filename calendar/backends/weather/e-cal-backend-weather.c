@@ -17,7 +17,8 @@
  * Authors: David Trowbridge <trowbrds@cs.colorado.edu>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <glib/gi18n-lib.h>
 #include <string.h>
 

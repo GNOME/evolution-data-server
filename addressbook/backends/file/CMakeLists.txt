@@ -1,0 +1,57 @@
+set(DEPENDENCIES
+	ebackend
+	ebook
+	ebook-contacts
+	edataserver
+	edata-book
+)
+
+set(SOURCES
+	e-book-backend-file.c
+	e-book-backend-file.h
+	e-book-backend-file-factory.c
+)
+
+if(HAVE_LIBDB)
+	list(APPEND SOURCES
+		e-book-backend-file-migrate-bdb.c
+		e-book-backend-file-migrate-bdb.h
+	)
+endif(HAVE_LIBDB)
+
+add_library(ebookbackendfile MODULE
+	${SOURCES}
+)
+
+add_dependencies(ebookbackendfile
+	${DEPENDENCIES}
+)
+
+target_compile_definitions(ebookbackendfile PRIVATE
+	-DG_LOG_DOMAIN=\"e-book-backend-file\"
+	-DBACKENDDIR=\"${ebook_backenddir}\"
+)
+
+target_compile_options(ebookbackendfile PUBLIC
+	${ADDRESSBOOK_CFLAGS}
+	${LIBDB_CFLAGS}
+)
+
+target_include_directories(ebookbackendfile PUBLIC
+	${CMAKE_BINARY_DIR}
+	${CMAKE_SOURCE_DIR}
+	${CMAKE_BINARY_DIR}/addressbook
+	${CMAKE_SOURCE_DIR}/addressbook
+	${ADDRESSBOOK_INCLUDE_DIRS}
+	${LIBDB_INCLUDE_DIRS}
+)
+
+target_link_libraries(ebookbackendfile
+	${DEPENDENCIES}
+	${ADDRESSBOOK_LDFLAGS}
+	${LIBDB_LIBS}
+)
+
+install(TARGETS ebookbackendfile
+	DESTINATION ${ebook_backenddir}
+)

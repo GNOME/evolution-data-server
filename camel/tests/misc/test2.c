@@ -13,7 +13,7 @@
  *
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <ctype.h>
 #include <stdio.h>

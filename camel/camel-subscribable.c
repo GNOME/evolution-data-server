@@ -15,15 +15,16 @@
  *
  */
 
-#include "camel-subscribable.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel-async-closure.h"
 #include "camel-debug.h"
 #include "camel-session.h"
 #include "camel-vtrash-folder.h"
+
+#include "camel-subscribable.h"
 
 typedef struct _AsyncContext AsyncContext;
 typedef struct _SignalClosure SignalClosure;

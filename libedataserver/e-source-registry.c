@@ -41,9 +41,8 @@
  * thus it requires a running main loop for its proper functionality.
  **/
 
-#include "e-source-registry.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
 
@@ -53,18 +52,20 @@
 #include <gcr/gcr-base.h>
 
 /* Private D-Bus classes. */
-#include <e-dbus-source.h>
-#include <e-dbus-source-manager.h>
+#include "e-dbus-source.h"
+#include "e-dbus-source-manager.h"
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-source-collection.h>
-#include <libedataserver/e-source-enumtypes.h>
+#include "e-data-server-util.h"
+#include "e-source-collection.h"
+#include "e-source-enumtypes.h"
 
 /* Needed for the defaults API. */
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-calendar.h>
-#include <libedataserver/e-source-mail-account.h>
-#include <libedataserver/e-source-mail-identity.h>
+#include "e-source-address-book.h"
+#include "e-source-calendar.h"
+#include "e-source-mail-account.h"
+#include "e-source-mail-identity.h"
+
+#include "e-source-registry.h"
 
 #define E_SOURCE_REGISTRY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

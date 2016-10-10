@@ -21,7 +21,8 @@
  *     as a placeholder with hopes that Microsoft will eventually provide
  *     access to calendar+contacts via CalDAV/CardDAV or even EWS. */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <glib/gi18n-lib.h>
 
 #include <libebackend/libebackend.h>

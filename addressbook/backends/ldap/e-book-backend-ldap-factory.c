@@ -19,9 +19,7 @@
  * Authors: Chris Toshok <toshok@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include "e-book-backend-ldap.h"
 

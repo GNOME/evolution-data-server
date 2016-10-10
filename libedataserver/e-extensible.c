@@ -55,9 +55,7 @@
  * </informalexample>
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include "e-extension.h"
 #include "e-data-server-util.h"

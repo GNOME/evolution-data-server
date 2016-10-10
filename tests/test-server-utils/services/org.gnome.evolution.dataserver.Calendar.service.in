@@ -1,3 +1,3 @@
 [D-BUS Service]
 Name=@CALENDAR_DBUS_SERVICE_NAME@
-Exec=@abs_top_builddir@/services/evolution-calendar-factory/evolution-calendar-factory
+Exec=@CMAKE_BINARY_DIR@/services/evolution-calendar-factory/evolution-calendar-factory

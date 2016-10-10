@@ -19,9 +19,7 @@
 /* This is *identical* to the camel-nntp-stream, so should probably
  * work out a way to merge them */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <stdio.h>
 #include <string.h>

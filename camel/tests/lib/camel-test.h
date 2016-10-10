@@ -14,7 +14,7 @@
 
 /* some utilities for testing */
 
-#include "config.h"
+#include "evolution-data-server-config.h"
 
 #include <stdlib.h>
 #include <glib/gstdio.h>

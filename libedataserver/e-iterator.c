@@ -17,7 +17,7 @@
  * Authors: Christopher James Lahey <clahey@umich.edu>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-iterator.h"
 

@@ -1,3 +1,4 @@
+build/
 camel/camel-news-address.c
 camel/camel-process.c
 camel/providers/nntp/camel-nntp-auth.c

@@ -16,9 +16,7 @@
  * Authors: Not Zed <notzed@lostzed.mmc.com.au>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <ctype.h>
 #include <dirent.h>

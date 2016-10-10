@@ -33,7 +33,8 @@
  * Deprecated: 3.2: Use #EBookClient instead.
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <unistd.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>

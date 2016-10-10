@@ -17,9 +17,7 @@
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>

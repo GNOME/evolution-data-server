@@ -27,10 +27,6 @@
 #ifndef E_OFFLINE_LISTENER_H
 #define E_OFFLINE_LISTENER_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <glib-object.h>
 
 /* Standard GObject macros */

@@ -15,9 +15,8 @@
  *
  */
 
-#include "camel-imapx-input-stream.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -29,6 +28,8 @@
 
 #include "camel-imapx-server.h"
 #include "camel-imapx-utils.h"
+
+#include "camel-imapx-input-stream.h"
 
 #define CAMEL_IMAPX_INPUT_STREAM_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

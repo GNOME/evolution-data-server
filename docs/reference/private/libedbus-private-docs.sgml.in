@@ -5,7 +5,7 @@
 ]>
 <book id="index" xmlns:xi="http://www.w3.org/2001/XInclude">
   <bookinfo>
-    <title>Evolution-Data-Server Manual: Private</title>
+    <title>Evolution-Data-Server Manual: Private, version @PROJECT_VERSION@</title>
   </bookinfo>
 
   <chapter>
@@ -25,19 +25,19 @@
 
   <chapter>
     <title>D-Bus Interfaces</title>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.Removable.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.Writable.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteCreatable.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteDeletable.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.OAuth2Support.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-address-book-org.gnome.evolution.dataserver.AddressBook.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-address-book-factory-org.gnome.evolution.dataserver.AddressBookFactory.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-calendar-org.gnome.evolution.dataserver.Calendar.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-calendar-factory-org.gnome.evolution.dataserver.CalendarFactory.xml"/>
-    <xi:include href="@SRCDIR@/private/e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.Removable.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.Writable.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteCreatable.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.RemoteDeletable.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-org.gnome.evolution.dataserver.Source.OAuth2Support.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-source-manager-org.gnome.evolution.dataserver.SourceManager.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-authenticator-org.gnome.evolution.dataserver.Authenticator.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-address-book-org.gnome.evolution.dataserver.AddressBook.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-address-book-factory-org.gnome.evolution.dataserver.AddressBookFactory.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-calendar-org.gnome.evolution.dataserver.Calendar.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-calendar-factory-org.gnome.evolution.dataserver.CalendarFactory.xml"/>
+    <xi:include href="@CMAKE_BINARY_DIR@/private/e-dbus-user-prompter-org.gnome.evolution.dataserver.UserPrompter.xml"/>
   </chapter>
 
   <index id="api-index-full">

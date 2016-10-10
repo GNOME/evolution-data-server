@@ -18,7 +18,8 @@
  * Authors: Chenthill Palanisamy <pchenthill@novell.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <libebook-contacts/libebook-contacts.h>
 #include "e-book-backend-sqlitedb.h"
 

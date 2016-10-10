@@ -34,9 +34,7 @@
  * ]|
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <libedataserver/e-data-server-util.h>
 

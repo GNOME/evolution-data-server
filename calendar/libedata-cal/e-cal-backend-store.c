@@ -26,7 +26,7 @@
  * This class can be used by backends to store calendar components.
  **/
 
-#include "e-cal-backend-store.h"
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <glib/gstdio.h>
@@ -34,6 +34,8 @@
 #include <libebackend/libebackend.h>
 
 #include "e-cal-backend-intervaltree.h"
+
+#include "e-cal-backend-store.h"
 
 #define E_CAL_BACKEND_STORE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

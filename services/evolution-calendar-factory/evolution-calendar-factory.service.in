@@ -4,4 +4,4 @@ Description=Evolution calendar service
 [Service]
 Type=dbus
 BusName=@CALENDAR_DBUS_SERVICE_NAME@
-ExecStart=@libexecdir@/evolution-calendar-factory
+ExecStart=@LIBEXEC_INSTALL_DIR@/evolution-calendar-factory

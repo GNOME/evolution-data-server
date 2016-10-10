@@ -31,9 +31,7 @@
  * Deprecated: 3.2: Use #ECalClient instead.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <unistd.h>
 #include <string.h>

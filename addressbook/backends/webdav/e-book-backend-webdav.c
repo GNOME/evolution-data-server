@@ -23,7 +23,7 @@
  *   ETags are saved in the WEBDAV_CONTACT_ETAG field so we know which cached contacts
  *   are outdated.
  */
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

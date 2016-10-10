@@ -24,9 +24,7 @@
  * lookup and delete secrets from the keyring.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <glib.h>
 

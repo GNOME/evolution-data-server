@@ -26,7 +26,8 @@
  * backend types.
  **/
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 
 #include "e-book-backend.h"

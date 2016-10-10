@@ -1,16 +1,15 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
-datarootdir=@datarootdir@
-datadir=@datadir@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@LIB_INSTALL_DIR@
+includedir=@INCLUDE_INSTALL_DIR@
+datarootdir=@SHARE_INSTALL_DIR@
+datadir=@SHARE_INSTALL_DIR@
 
 privincludedir=@privincludedir@
 
 Name: libebook
 Description: Client library for evolution address books
-Version: @VERSION@
-Requires: libedataserver-1.2 libebook-contacts-1.2 libedata-book-1.2
-Requires.private: camel-1.2
-Libs: -L${libdir} -lebook-1.2
+Version: @PROJECT_VERSION@
+Requires: libedataserver-@API_VERSION@ libebook-contacts-@API_VERSION@ libedata-book-@API_VERSION@
+Requires.private: camel-@API_VERSION@
+Libs: -L${libdir} -lebook-@API_VERSION@
 Cflags: -I${privincludedir}

@@ -16,9 +16,10 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 #include <sqlite3.h>
 #include <glib.h>
-#include <config.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>

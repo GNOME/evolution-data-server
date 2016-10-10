@@ -31,9 +31,7 @@
  * will be created and #EBookBackendClass.configure_direct() will be
  * called on the corresponding client side instance.
  **/
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 

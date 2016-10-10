@@ -1,4 +1,4 @@
 [D-BUS Service]
 Name=@USER_PROMPTER_DBUS_SERVICE_NAME@
-Exec=@libexecdir@/evolution-user-prompter
-SystemdService=evolution-user-prompter.service
+Exec=@LIBEXEC_INSTALL_DIR@/evolution-user-prompter
+@SYSTEMD_SERVICE@

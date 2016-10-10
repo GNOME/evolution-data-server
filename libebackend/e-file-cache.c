@@ -27,7 +27,8 @@
  * the cache is temporarily frozen with e_file_cache_freeze_changes().
  **/
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 #include <unistd.h>
 

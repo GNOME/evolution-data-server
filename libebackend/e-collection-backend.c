@@ -37,15 +37,16 @@
  * its own #EAuthenticationSession instances to the #ESourceRegistryServer.
  **/
 
-#include "e-collection-backend.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-server-side-source.h>
 #include <libebackend/e-source-registry-server.h>
+
+#include "e-collection-backend.h"
 
 #define E_COLLECTION_BACKEND_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

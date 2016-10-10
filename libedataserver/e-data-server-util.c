@@ -19,7 +19,7 @@
  *          Tristan Van Berkom <tristanvb@openismus.com>
  */
 
-#include "config.h"
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <sys/stat.h>
@@ -1808,9 +1808,7 @@ static const gchar *prefix = NULL;
 static const gchar *cp_prefix;
 
 static const gchar *localedir;
-static const gchar *extensiondir;
 static const gchar *imagesdir;
-static const gchar *ui_uidir;
 static const gchar *credentialmoduledir;
 
 static HMODULE hmodule;
@@ -1918,9 +1916,7 @@ setup (void)
 	g_free (cp_pfx);
 
 	localedir = replace_prefix (cp_prefix, E_DATA_SERVER_LOCALEDIR);
-	extensiondir = replace_prefix (prefix, E_DATA_SERVER_EXTENSIONDIR);
 	imagesdir = replace_prefix (prefix, E_DATA_SERVER_IMAGESDIR);
-	ui_uidir = replace_prefix (prefix, E_DATA_SERVER_UI_UIDIR);
 	credentialmoduledir = replace_prefix (prefix, E_DATA_SERVER_CREDENTIALMODULEDIR);
 
 	G_UNLOCK (mutex);
@@ -1944,9 +1940,7 @@ const gchar * \
 e_util_get_##varbl (void) \
 	GETTER_IMPL (varbl)
 
-PRIVATE_GETTER (extensiondir)
 PRIVATE_GETTER (imagesdir)
-PRIVATE_GETTER (ui_uidir)
 PRIVATE_GETTER (credentialmoduledir);
 
 PUBLIC_GETTER (prefix)

@@ -16,9 +16,7 @@
  *
  */
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <errno.h>
 #include <string.h>

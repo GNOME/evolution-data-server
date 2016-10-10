@@ -18,12 +18,13 @@
  * Authors: Bertrand Guiheneuf <bertrand@helixcode.com>
  */
 
-#include "camel-stream.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include <camel/camel-debug.h>
+
+#include "camel-stream.h"
 
 #define CAMEL_STREAM_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

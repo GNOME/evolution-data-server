@@ -21,9 +21,9 @@
  * @short_description: An abstract base class for a D-Bus server
  **/
 
-#include "e-dbus-server.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
+#include <glib.h>
 
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
@@ -32,6 +32,8 @@
 #include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-backend-enumtypes.h>
+
+#include "e-dbus-server.h"
 
 #define E_DBUS_SERVER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

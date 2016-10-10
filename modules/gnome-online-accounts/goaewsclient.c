@@ -23,7 +23,8 @@
  * evolution-ews/src/server/e-ews-connection.c
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <glib/gi18n-lib.h>
 
 #include <libsoup/soup.h>

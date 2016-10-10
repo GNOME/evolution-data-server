@@ -18,7 +18,8 @@
  * Authors: Hans Petter Jansson <hpj@ximian.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 #include <unistd.h>
 #include <glib/gi18n-lib.h>

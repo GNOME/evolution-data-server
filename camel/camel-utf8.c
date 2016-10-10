@@ -17,9 +17,7 @@
  * Authors: Michael Zucchi <notzed@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <sys/types.h>

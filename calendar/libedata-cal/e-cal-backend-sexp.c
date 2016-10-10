@@ -24,9 +24,7 @@
  * and is used by various backends to implement component filtering and searching.
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <glib/gi18n-lib.h>

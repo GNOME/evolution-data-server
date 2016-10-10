@@ -24,9 +24,7 @@
 /* need a way to configure and save this data, if this header is to
  * be installed.  For now, dont install it */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 G_BEGIN_DECLS
 

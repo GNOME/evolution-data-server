@@ -18,7 +18,8 @@
  * Authors: Christian Kellner <gicmo@gnome.org>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 #include <unistd.h>
 #include <glib/gstdio.h>

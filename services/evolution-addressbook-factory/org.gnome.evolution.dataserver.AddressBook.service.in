@@ -1,4 +1,4 @@
 [D-BUS Service]
 Name=@ADDRESS_BOOK_DBUS_SERVICE_NAME@
-Exec=@libexecdir@/evolution-addressbook-factory
-SystemdService=evolution-addressbook-factory.service
+Exec=@LIBEXEC_INSTALL_DIR@/evolution-addressbook-factory
+@SYSTEMD_SERVICE@

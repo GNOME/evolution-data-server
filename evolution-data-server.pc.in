@@ -1,15 +1,14 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-includedir=@includedir@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@LIB_INSTALL_DIR@
+includedir=@INCLUDE_INSTALL_DIR@
 privlibdir=@privlibdir@
-datarootdir=@datarootdir@
-datadir=@datadir@
+datarootdir=@SHARE_INSTALL_DIR@
+datadir=@SHARE_INSTALL_DIR@
 privdatadir=@privdatadir@
 
 execversion=@BASE_VERSION@
 
 Name: evolution-data-server
 Description: The evolution data server for the calendar and addressbook
-Version: @VERSION@
-Requires: gio-2.0, @mozilla_nss@, @mozilla_nspr@
+Version: @PROJECT_VERSION@
+Requires: gio-2.0 @mozilla_nss@ @mozilla_nspr@

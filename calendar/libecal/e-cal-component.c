@@ -26,7 +26,8 @@
  * or other component in a given calendar.
  **/
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>

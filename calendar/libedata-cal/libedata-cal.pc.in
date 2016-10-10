@@ -1,10 +1,9 @@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-libdir=@libdir@
-libexecdir=@libexecdir@
-includedir=@includedir@
-datarootdir=@datarootdir@
-datadir=@datadir@
+prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@LIB_INSTALL_DIR@
+libexecdir=@LIBEXEC_INSTALL_DIR@
+includedir=@INCLUDE_INSTALL_DIR@
+datarootdir=@SHARE_INSTALL_DIR@
+datadir=@SHARE_INSTALL_DIR@
 
 privlibdir=@privlibdir@
 privincludedir=@privincludedir@
@@ -13,7 +12,7 @@ backenddir=@ecal_backenddir@
 
 Name: libedata-cal
 Description: Backend library for evolution calendars
-Version: @VERSION@
-Requires: libical >= @LIBICAL_REQUIRED@ libebackend-1.2 libecal-1.2
-Libs: -L${libdir} -ledata-cal-1.2
+Version: @PROJECT_VERSION@
+Requires: libical libebackend-@API_VERSION@ libecal-@API_VERSION@
+Libs: -L${libdir} -ledata-cal-@API_VERSION@
 Cflags: -I${privincludedir}

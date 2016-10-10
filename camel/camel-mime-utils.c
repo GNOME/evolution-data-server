@@ -18,9 +18,7 @@
  *          Jeffrey Stedfast <fejj@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

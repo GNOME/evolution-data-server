@@ -28,7 +28,8 @@
  * the #EDataBook layer for server side addressbooks to communicate
  * with client side #EBookClient objects.
  **/
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <locale.h>
 #include <stdlib.h>
 #include <string.h>

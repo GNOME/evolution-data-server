@@ -30,7 +30,8 @@
  * All #EBackend instances are created by an #EBackendFactory.
  **/
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <glib/gi18n-lib.h>
 
 #include <gio/gio.h>

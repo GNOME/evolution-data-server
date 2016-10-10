@@ -21,9 +21,7 @@
 /* Strips PGP message headers from the input stream and also performs
  * pgp decoding as described in section 7.1 of RFC2440 */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <ctype.h>
 #include <string.h>

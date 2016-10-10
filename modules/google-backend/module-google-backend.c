@@ -15,12 +15,13 @@
  *
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <glib/gi18n-lib.h>
 
 #include <libebackend/libebackend.h>
 
-#ifdef HAVE_GOOGLE
+#ifdef HAVE_LIBGDATA
 #include <gdata/gdata.h>
 #endif
 

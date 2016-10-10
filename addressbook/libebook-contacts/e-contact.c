@@ -30,9 +30,7 @@
  * vCards in the form of an #EContact for your convenience.
  **/
 
-#if HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <stdio.h>
 #include <ctype.h>

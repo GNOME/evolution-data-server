@@ -22,9 +22,7 @@
 
 /* FIXME: Shouldn't we add a version number to providers ? */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <errno.h>
 #include <stdio.h>

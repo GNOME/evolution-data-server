@@ -22,9 +22,7 @@
 
 #define DEBUG
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <stdlib.h>
 #include <fcntl.h>

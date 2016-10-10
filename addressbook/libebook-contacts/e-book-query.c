@@ -31,15 +31,15 @@
  * #EBookClientView and #EBookClientCursor interfaces.
  **/
 
-#include "e-book-query.h"
-
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <locale.h>
 #include <stdarg.h>
 #include <string.h>
 
 #include <libedataserver/libedataserver.h>
+
+#include "e-book-query.h"
 
 #ifdef G_OS_WIN32
 #ifndef LC_MESSAGES

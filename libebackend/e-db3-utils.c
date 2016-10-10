@@ -21,7 +21,7 @@
  * Utilities for coping with Berkeley DB file format changes.
  **/
 
-#include "config.h"
+#include "evolution-data-server-config.h"
 
 #include <errno.h>
 #include <sys/stat.h>

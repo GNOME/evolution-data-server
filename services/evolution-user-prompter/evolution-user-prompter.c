@@ -15,7 +15,8 @@
  *
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <locale.h>
 #include <libintl.h>
 #include <glib/gi18n.h>

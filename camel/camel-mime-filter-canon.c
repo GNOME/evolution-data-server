@@ -20,9 +20,7 @@
 
 /* canonicalisation filter, used for secure mime incoming and outgoing */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <ctype.h>
 #include <string.h>

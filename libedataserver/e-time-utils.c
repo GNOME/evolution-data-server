@@ -18,7 +18,8 @@
  * Authors: Damon Chaplin (damon@ximian.com)
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #define _XOPEN_SOURCE
 #define _XOPEN_SOURCE_EXTENDED 1  /* for strptime */
 
@@ -197,9 +198,7 @@ enum ptime_locale_status { not, loc, raw };
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110 - 1301 USA.  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <assert.h>
 #include <ctype.h>

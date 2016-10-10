@@ -30,9 +30,7 @@
  * and pass the results to e_soup_auth_bearer_set_access_token().
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include "e-soup-auth-bearer.h"
 

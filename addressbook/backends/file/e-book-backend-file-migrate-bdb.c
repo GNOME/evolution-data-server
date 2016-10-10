@@ -21,7 +21,7 @@
  * Based on work by Nat Friedman, Chris Toshok and Hans Petter Jansson.
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -15,7 +15,8 @@
  *
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <glib/gi18n-lib.h>
 #include <libsignon-glib/signon-glib.h>
 #include <libaccounts-glib/accounts-glib.h>

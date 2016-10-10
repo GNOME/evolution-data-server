@@ -19,7 +19,8 @@
  *          Rodrigo Moya <rodrigo@ximian.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>

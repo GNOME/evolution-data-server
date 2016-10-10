@@ -19,9 +19,7 @@
 
 /* TODO: This could probably be made a camel object, but it isn't really required */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <ctype.h>
 #include <errno.h>

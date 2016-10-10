@@ -33,13 +33,13 @@
  * to pair with the requested #ESource.
  **/
 
-#include "e-backend-factory.h"
-
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <libedataserver/libedataserver.h>
 
 #include <libebackend/e-data-factory.h>
+
+#include "e-backend-factory.h"
 
 G_DEFINE_ABSTRACT_TYPE (EBackendFactory, e_backend_factory, E_TYPE_EXTENSION)
 

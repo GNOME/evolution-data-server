@@ -16,7 +16,7 @@
  *
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include <unistd.h>
 #include <fcntl.h>

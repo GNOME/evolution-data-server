@@ -17,7 +17,7 @@
  * Authors: David Trowbridge <trowbrds@cs.colorado.edu>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-cal-backend-weather.h"
 

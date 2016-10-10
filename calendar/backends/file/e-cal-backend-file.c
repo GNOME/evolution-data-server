@@ -20,9 +20,7 @@
  *          Jan Brittenson <bson@gnu.ai.mit.edu>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <unistd.h>

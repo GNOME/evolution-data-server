@@ -20,9 +20,7 @@
  *          Ross Burton <ross@linux.intel.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include "e-cal.h"

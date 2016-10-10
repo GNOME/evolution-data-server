@@ -18,9 +18,7 @@
  * Authors: Dan Winship <danw@ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -57,7 +55,7 @@ static void movemail_external (const gchar *source, const gchar *dest,
 			       GError **error);
 #endif
 
-#ifdef HAVE_BROKEN_SPOOL
+#ifdef ENABLE_BROKEN_SPOOL
 static gint camel_movemail_copy_filter (gint fromfd, gint tofd, goffset start, gsize bytes, CamelMimeFilter *filter);
 static gint camel_movemail_solaris (gint oldsfd, gint dfd, GError **error);
 #else
@@ -147,7 +145,7 @@ camel_movemail (const gchar *source,
 		return -1;
 	}
 
-#ifdef HAVE_BROKEN_SPOOL
+#ifdef ENABLE_BROKEN_SPOOL
 	res = camel_movemail_solaris (sfd, dfd, ex);
 #else
 	res = camel_movemail_copy_file (sfd, dfd, error);
@@ -256,7 +254,7 @@ movemail_external (const gchar *source,
 }
 #endif
 
-#ifndef HAVE_BROKEN_SPOOL
+#ifndef ENABLE_BROKEN_SPOOL
 static gint
 camel_movemail_copy_file (gint sfd,
                           gint dfd,
@@ -358,7 +356,7 @@ camel_movemail_copy (gint fromfd,
 
 #define PRE_SIZE (32)
 
-#ifdef HAVE_BROKEN_SPOOL
+#ifdef ENABLE_BROKEN_SPOOL
 static gint
 camel_movemail_copy_filter (gint fromfd,
                             gint tofd,
@@ -574,5 +572,5 @@ fail:
 
 	return -1;
 }
-#endif /* HAVE_BROKEN_SPOOL */
+#endif /* ENABLE_BROKEN_SPOOL */
 

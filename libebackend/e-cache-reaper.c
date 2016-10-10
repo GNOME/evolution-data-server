@@ -15,6 +15,8 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 #include <errno.h>
 #include <time.h>
 #include <glib/gstdio.h>

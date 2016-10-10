@@ -18,7 +18,8 @@
  * Authors: Federico Mena-Quintero <federico@novell.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
+
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>

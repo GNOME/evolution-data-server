@@ -26,9 +26,7 @@
  * This class can be used by backends to store calendar components.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <glib/gstdio.h>

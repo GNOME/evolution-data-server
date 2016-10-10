@@ -21,9 +21,7 @@
  * @short_description: A module loader
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <glib.h>
 

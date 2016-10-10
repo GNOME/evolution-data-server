@@ -18,9 +18,7 @@
  *	    Michael Zucchi <NotZed@Ximian.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 /* POSIX requires <sys/types.h> be included before <regex.h> */
 #include <sys/types.h>

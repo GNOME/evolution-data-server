@@ -15,13 +15,14 @@
  *
  */
 
-#include "e-signon-session-password.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 #include <libsignon-glib/signon-glib.h>
 
 #include "uoa-utils.h"
+
+#include "e-signon-session-password.h"
 
 #define SIGNON_METHOD_PASSWORD    "password"
 #define SIGNON_MECHANISM_PASSWORD "password"

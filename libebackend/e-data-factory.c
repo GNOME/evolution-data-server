@@ -21,9 +21,8 @@
  * @short_description: An abstract base class for a backend-based server
  **/
 
-#include "e-data-factory.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <glib/gi18n-lib.h>
 
 #include <libedataserver/libedataserver.h>
@@ -32,6 +31,8 @@
 #include <libebackend/e-dbus-server.h>
 
 #include <e-dbus-subprocess-backend.h>
+
+#include "e-data-factory.h"
 
 #define E_DATA_FACTORY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

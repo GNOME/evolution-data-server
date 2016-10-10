@@ -23,9 +23,7 @@
  * Acting as a global singleton for user prompts from backends.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif /* HAVE_CONFIG_H */
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <glib/gi18n-lib.h>

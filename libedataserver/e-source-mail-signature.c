@@ -34,13 +34,14 @@
  * ]|
  **/
 
-#include "e-source-mail-signature.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
 #include <libedataserver/e-data-server-util.h>
+
+#include "e-source-mail-signature.h"
 
 #define E_SOURCE_MAIL_SIGNATURE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

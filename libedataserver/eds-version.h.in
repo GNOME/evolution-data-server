@@ -29,7 +29,7 @@
  * time, rather than from the library linked against at application run
  * time.
  **/
-#define EDS_MAJOR_VERSION @EDS_MAJOR_VERSION@
+#define EDS_MAJOR_VERSION @PROJECT_VERSION_MAJOR@
 
 /**
  * EDS_MINOR_VERSION:
@@ -39,7 +39,7 @@
  * time, rather than from the library linked against at application run
  * time.
  **/
-#define EDS_MINOR_VERSION @EDS_MINOR_VERSION@
+#define EDS_MINOR_VERSION @PROJECT_VERSION_MINOR@
 
 /**
  * EDS_MICRO_VERSION:
@@ -49,7 +49,7 @@
  * time, rather than from the library linked against at application run
  * time.
  **/
-#define EDS_MICRO_VERSION @EDS_MICRO_VERSION@
+#define EDS_MICRO_VERSION @PROJECT_VERSION_PATCH@
 
 /**
  * EDS_CHECK_VERSION:

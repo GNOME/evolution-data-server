@@ -17,9 +17,7 @@
  *          Veerapuram Varadhan <vvaradhan@novell.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <string.h>
 #include <stdlib.h>

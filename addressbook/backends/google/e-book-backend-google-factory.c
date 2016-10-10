@@ -17,7 +17,7 @@
  * Authors: Joergen Scheibengruber <joergen.scheibengruber AT googlemail.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-book-backend-google.h"
 

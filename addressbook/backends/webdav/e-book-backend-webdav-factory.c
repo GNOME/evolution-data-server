@@ -17,7 +17,7 @@
  * Authors: Matthias Braun <matze@braunis.de>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-book-backend-webdav.h"
 

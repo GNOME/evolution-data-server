@@ -23,9 +23,7 @@
  * Use this to initiate a user prompt from an #EBackend descendant.
  **/
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif /* HAVE_CONFIG_H */
+#include "evolution-data-server-config.h"
 
 #include <libedataserver/libedataserver.h>
 

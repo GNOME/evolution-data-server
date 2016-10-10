@@ -16,9 +16,7 @@
  * Authors: Patrick Ohly <patrick.ohly@gmx.de>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <libical/ical.h>
 

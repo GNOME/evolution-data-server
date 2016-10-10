@@ -1,0 +1,5 @@
+add_subdirectory(backends)
+add_subdirectory(libebook)
+add_subdirectory(libebook-contacts)
+add_subdirectory(libedata-book)
+add_subdirectory(libegdbus)

@@ -18,9 +18,7 @@
  * Authors: Chenthill Palanisamy <pchenthill@novell.com>
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 #include <glib.h>
 #include <glib/gi18n-lib.h>

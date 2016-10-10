@@ -65,14 +65,13 @@
  * fail with %G_IO_ERROR_NOT_SUPPORTED.
  **/
 
-#include "e-source.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
 
 /* Private D-Bus classes. */
-#include <e-dbus-source.h>
+#include "e-dbus-source.h"
 
 #include "e-data-server-util.h"
 #include "e-secret-store.h"
@@ -111,6 +110,8 @@
 #include "e-source-uoa.h"
 #include "e-source-weather.h"
 #include "e-source-webdav.h"
+
+#include "e-source.h"
 
 #define E_SOURCE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \

@@ -19,7 +19,7 @@
  * Authors: Chris Toshok <toshok@ximian.com>
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-book-backend-file.h"
 

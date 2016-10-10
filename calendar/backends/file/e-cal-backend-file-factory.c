@@ -17,7 +17,7 @@
  * Authors: Chris Toshok (toshok@ximian.com)
  */
 
-#include <config.h>
+#include "evolution-data-server-config.h"
 
 #include "e-cal-backend-file-events.h"
 #include "e-cal-backend-file-journal.h"

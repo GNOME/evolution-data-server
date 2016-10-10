@@ -15,9 +15,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "evolution-data-server-config.h"
 
 /* XXX Yeah, yeah... */
 #define GOA_API_IS_SUBJECT_TO_CHANGE

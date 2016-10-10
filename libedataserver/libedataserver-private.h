@@ -23,19 +23,11 @@
 
 #ifdef G_OS_WIN32
 
-const gchar *	_libedataserver_get_extensiondir	(void) G_GNUC_CONST;
 const gchar *	_libedataserver_get_imagesdir		(void) G_GNUC_CONST;
-const gchar *	_libedataserver_get_ui_uidir		(void) G_GNUC_CONST;
 const gchar *	_libedataserver_get_credentialmoduledir	(void) G_GNUC_CONST;
-
-#undef E_DATA_SERVER_EXTENSIONDIR
-#define E_DATA_SERVER_EXTENSIONDIR _libedataserver_get_extensiondir ()
 
 #undef E_DATA_SERVER_IMAGESDIR
 #define E_DATA_SERVER_IMAGESDIR _libedataserver_get_imagesdir ()
-
-#undef E_DATA_SERVER_UI_UIDIR
-#define E_DATA_SERVER_UI_UIDIR _libedataserver_get_ui_uidir ()
 
 #undef E_DATA_SERVER_CREDENTIALMODULEDIR
 #define E_DATA_SERVER_CREDENTIALMODULEDIR _libedataserver_get_credentialmoduledir ()

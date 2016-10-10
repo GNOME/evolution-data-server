@@ -15,9 +15,8 @@
  *
  */
 
-#include "camel-imapx-command.h"
+#include "evolution-data-server-config.h"
 
-#include <config.h>
 #include <string.h>
 #include <glib/gstdio.h>
 #include <glib/gi18n-lib.h>
@@ -25,6 +24,8 @@
 #include "camel-imapx-job.h"
 #include "camel-imapx-server.h"
 #include "camel-imapx-store.h"
+
+#include "camel-imapx-command.h"
 
 #define c(...) camel_imapx_debug(command, __VA_ARGS__)
 
