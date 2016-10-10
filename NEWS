@@ -1,3 +1,23 @@
+Evolution-Data-Server 3.22.1 2016-10-10
+---------------------------------------
+
+Bug Fixes:
+	Bug 771547 - Internal Google OAuth2 authentication fails with expired token (Milan Crha)
+
+Miscellaneous:
+	Fix console runtime warnings from vFolder/vStore code on application quit (Milan Crha)
+	Fix build with --disable-google-auth (Owen W. Taylor)
+
+Translations:
+	Peter Mráz (sk)
+	Gianvito Cavasoli (it)
+	gogo (hr)
+	Rafael Fontenelle (pt_BR)
+	Marek Černocký (cs)
+	Balázs Meskó (hu)
+	Rūdolfs Mazurs (lv)
+	Ask Hjorth Larsen (da)
+
 Evolution-Data-Server 3.22.0 2016-09-19
 ---------------------------------------
 
