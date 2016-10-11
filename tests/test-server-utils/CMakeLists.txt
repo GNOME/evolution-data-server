@@ -14,13 +14,13 @@ set(extra_defines
 	-DEDS_TEST_DBUS_SERVICE_DIR=\"${CMAKE_BINARY_DIR}/tests/test-server-utils/services\"
 	-DEDS_TEST_WORK_DIR=\"${CMAKE_BINARY_DIR}/tests/test-server-utils/cache\"
 	-DEDS_TEST_SCHEMA_DIR=\"${CMAKE_BINARY_DIR}/data\"
-	-DEDS_TEST_ADDRESS_BOOK_DIR=\"${CMAKE_BINARY_DIR}/addressbook/backends/file\"
-	-DEDS_TEST_CALENDAR_DIR=\"${CMAKE_BINARY_DIR}/calendar/backends/file\"
-	-DEDS_TEST_REGISTRY_DIR=\"${CMAKE_BINARY_DIR}/modules/cache-reaper\"
-	-DEDS_TEST_CAMEL_DIR=\"${CMAKE_BINARY_DIR}/camel/providers/local\"
-	-DEDS_TEST_SUBPROCESS_CAL_PATH=\"${CMAKE_BINARY_DIR}/calendar/libedata-cal/evolution-calendar-factory-subprocess\"
-	-DEDS_TEST_SUBPROCESS_BOOK_PATH=\"${CMAKE_BINARY_DIR}/addressbook/libedata-book/evolution-addressbook-factory-subprocess\"
-	-DEDS_TEST_TOP_BUILD_DIR=\"${CMAKE_BINARY_DIR}\"
+	-DEDS_TEST_ADDRESS_BOOK_DIR=\"${CMAKE_BINARY_DIR}/src/addressbook/backends/file\"
+	-DEDS_TEST_CALENDAR_DIR=\"${CMAKE_BINARY_DIR}/src/calendar/backends/file\"
+	-DEDS_TEST_REGISTRY_DIR=\"${CMAKE_BINARY_DIR}/src/modules/cache-reaper\"
+	-DEDS_TEST_CAMEL_DIR=\"${CMAKE_BINARY_DIR}/src/camel/providers/local\"
+	-DEDS_TEST_SUBPROCESS_CAL_PATH=\"${CMAKE_BINARY_DIR}/src/calendar/libedata-cal/evolution-calendar-factory-subprocess\"
+	-DEDS_TEST_SUBPROCESS_BOOK_PATH=\"${CMAKE_BINARY_DIR}/src/addressbook/libedata-book/evolution-addressbook-factory-subprocess\"
+	-DEDS_TEST_TOP_BUILD_DIR=\"${CMAKE_BINARY_DIR}/src\"
 )
 
 set(extra_cflags
@@ -68,7 +68,8 @@ target_compile_options(etestserverutils PUBLIC
 
 target_include_directories(etestserverutils PUBLIC
 	${CMAKE_BINARY_DIR}
-	${CMAKE_SOURCE_DIR}
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_SOURCE_DIR}/src
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${extra_incdirs}

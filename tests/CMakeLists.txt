@@ -27,8 +27,9 @@ macro(build_only_installable_test _test_ident _sourcesvar _depsvar _defsvar _cfl
 
 	target_include_directories(${_test_ident} PUBLIC
 		${CMAKE_BINARY_DIR}
+		${CMAKE_BINARY_DIR}/src
 		${CMAKE_BINARY_DIR}/tests/test-server-utils
-		${CMAKE_SOURCE_DIR}
+		${CMAKE_SOURCE_DIR}/src
 		${CMAKE_SOURCE_DIR}/tests/test-server-utils
 		${BACKEND_INCLUDE_DIRS}
 		${DATA_SERVER_INCLUDE_DIRS}

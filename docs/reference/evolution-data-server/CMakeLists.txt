@@ -4,14 +4,14 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/evolution-data-server-cursor-example.
 )
 
 set(SOURCEDIRS
-	${CMAKE_SOURCE_DIR}/libebackend
-	${CMAKE_SOURCE_DIR}/libedataserver
-	${CMAKE_BINARY_DIR}/libedataserver
-	${CMAKE_SOURCE_DIR}/addressbook/libebook
-	${CMAKE_SOURCE_DIR}/addressbook/libebook-contacts
-	${CMAKE_SOURCE_DIR}/addressbook/libedata-book
-	${CMAKE_SOURCE_DIR}/calendar/libecal
-	${CMAKE_SOURCE_DIR}/calendar/libedata-cal
+	${CMAKE_SOURCE_DIR}/src/libebackend
+	${CMAKE_SOURCE_DIR}/src/libedataserver
+	${CMAKE_BINARY_DIR}/src/libedataserver
+	${CMAKE_SOURCE_DIR}/src/addressbook/libebook
+	${CMAKE_SOURCE_DIR}/src/addressbook/libebook-contacts
+	${CMAKE_SOURCE_DIR}/src/addressbook/libedata-book
+	${CMAKE_SOURCE_DIR}/src/calendar/libecal
+	${CMAKE_SOURCE_DIR}/src/calendar/libedata-cal
 	${CMAKE_SOURCE_DIR}/tests/test-server-utils
 )
 

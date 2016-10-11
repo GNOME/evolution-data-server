@@ -12,8 +12,8 @@ set(extra_cflags
 )
 
 set(extra_incdirs
-	${CMAKE_BINARY_DIR}/calendar
-	${CMAKE_SOURCE_DIR}/calendar
+	${CMAKE_BINARY_DIR}/src/calendar
+	${CMAKE_SOURCE_DIR}/src/calendar
 	${CALENDAR_INCLUDE_DIRS}
 )
 
@@ -48,7 +48,8 @@ target_compile_options(ecal-test-utils PUBLIC
 
 target_include_directories(ecal-test-utils PUBLIC
 	${CMAKE_BINARY_DIR}
-	${CMAKE_SOURCE_DIR}
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_SOURCE_DIR}/src
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${extra_incdirs}

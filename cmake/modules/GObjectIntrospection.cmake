@@ -178,8 +178,10 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 	set(${gir_vars_prefix}_CFLAGS
 		-I${CMAKE_CURRENT_BINARY_DIR}
 		-I${CMAKE_BINARY_DIR}
+		-I${CMAKE_BINARY_DIR}/src
 		-I${CMAKE_CURRENT_SOURCE_DIR}
 		-I${CMAKE_SOURCE_DIR}
+		-I${CMAKE_SOURCE_DIR}/src
 		${${extra_cflags_var}}
 	)
 	set(${gir_vars_prefix}_LIBS ${${gir_libs_var}})
@@ -194,11 +196,14 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 
 	set(INTROSPECTION_SCANNER_ARGS
 		--add-include-path=${CMAKE_BINARY_DIR}
+		--add-include-path=${CMAKE_BINARY_DIR}/src
 		--add-include-path=${CMAKE_SOURCE_DIR}
+		--add-include-path=${CMAKE_SOURCE_DIR}/src
 		--add-include-path=${CMAKE_CURRENT_BINARY_DIR}
 		--add-include-path=${CMAKE_CURRENT_SOURCE_DIR}
 		--library-path=${LIB_INSTALL_DIR}
 		--library-path=${CMAKE_BINARY_DIR}
+		--library-path=${CMAKE_BINARY_DIR}/src
 		--library-path=${CMAKE_CURRENT_BINARY_DIR}
 		${_gir_extra_libdirs}
 		${_gir_identifies_prefixes}

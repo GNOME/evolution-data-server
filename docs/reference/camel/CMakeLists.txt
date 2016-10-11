@@ -1,11 +1,11 @@
 set(SOURCEDIRS
-	${CMAKE_SOURCE_DIR}/camel
-	${CMAKE_SOURCE_DIR}/camel/providers/local
-	${CMAKE_SOURCE_DIR}/camel/providers/imapx
-	${CMAKE_SOURCE_DIR}/camel/providers/nntp
-	${CMAKE_SOURCE_DIR}/camel/providers/pop3
-	${CMAKE_SOURCE_DIR}/camel/providers/sendmail
-	${CMAKE_SOURCE_DIR}/camel/providers/smtp
+	${CMAKE_SOURCE_DIR}/src/camel
+	${CMAKE_SOURCE_DIR}/src/camel/providers/local
+	${CMAKE_SOURCE_DIR}/src/camel/providers/imapx
+	${CMAKE_SOURCE_DIR}/src/camel/providers/nntp
+	${CMAKE_SOURCE_DIR}/src/camel/providers/pop3
+	${CMAKE_SOURCE_DIR}/src/camel/providers/sendmail
+	${CMAKE_SOURCE_DIR}/src/camel/providers/smtp
 )
 
 set(DEPENDENCIES

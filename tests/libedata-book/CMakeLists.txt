@@ -61,7 +61,8 @@ target_compile_options(data-test-utils PUBLIC
 
 target_include_directories(data-test-utils PUBLIC
 	${CMAKE_BINARY_DIR}
-	${CMAKE_SOURCE_DIR}
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_SOURCE_DIR}/src
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${extra_incdirs}

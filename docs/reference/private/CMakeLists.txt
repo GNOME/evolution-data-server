@@ -1,5 +1,5 @@
 set(SOURCEDIRS
-	${CMAKE_BINARY_DIR}/private
+	${CMAKE_BINARY_DIR}/src/private
 )
 
 set(DEPENDENCIES

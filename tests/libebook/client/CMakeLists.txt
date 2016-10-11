@@ -52,13 +52,14 @@ target_compile_options(client-test-utils PUBLIC
 
 target_include_directories(client-test-utils PUBLIC
 	${CMAKE_BINARY_DIR}
-	${CMAKE_BINARY_DIR}/addressbook
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/src/addressbook
+	${CMAKE_BINARY_DIR}/src/private
 	${CMAKE_BINARY_DIR}/tests/test-server-utils
-	${CMAKE_BINARY_DIR}/private
-	${CMAKE_SOURCE_DIR}
-	${CMAKE_SOURCE_DIR}/addressbook
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/addressbook
+	${CMAKE_SOURCE_DIR}/src/private
 	${CMAKE_SOURCE_DIR}/tests/test-server-utils
-	${CMAKE_SOURCE_DIR}/private
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${extra_incdirs}

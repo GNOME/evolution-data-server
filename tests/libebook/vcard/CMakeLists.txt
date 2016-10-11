@@ -23,9 +23,10 @@ target_compile_options(dump-vcard PUBLIC
 
 target_include_directories(dump-vcard PUBLIC
 	${CMAKE_BINARY_DIR}
-	${CMAKE_BINARY_DIR}/addressbook
-	${CMAKE_SOURCE_DIR}
-	${CMAKE_SOURCE_DIR}/addressbook
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/src/addressbook
+	${CMAKE_SOURCE_DIR}/src
+	${CMAKE_SOURCE_DIR}/src/addressbook
 	${BACKEND_INCLUDE_DIRS}
 	${DATA_SERVER_INCLUDE_DIRS}
 	${ADDRESSBOOK_INCLUDE_DIRS}

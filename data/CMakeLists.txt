@@ -1,8 +1,13 @@
+# ********************************
+# GSettings schemas
+# ********************************
+
 set(SCHEMAS
 	org.gnome.Evolution.DefaultSources.gschema.xml
 	org.gnome.evolution-data-server.gschema.xml
 	org.gnome.evolution-data-server.calendar.gschema.xml
 	org.gnome.evolution-data-server.addressbook.gschema.xml
+	org.gnome.evolution.eds-shell.gschema.xml
 	org.gnome.evolution.shell.network-config.gschema.xml
 )
 
@@ -22,6 +27,39 @@ add_custom_target(data-files ALL
 
 add_gsettings_schemas(data-files ${BUILT_SCHEMAS})
 
+# ********************************
+# GConf convert file
+# ********************************
+
 install(FILES evolution-data-server.convert
 	DESTINATION ${SHARE_INSTALL_DIR}/GConf/gsettings
+)
+
+# ********************************
+# Images
+# ********************************
+
+set(IMAGES
+	category_birthday_16.png
+	category_business_16.png
+	category_favorites_16.png
+	category_gifts_16.png
+	category_goals_16.png
+	category_holiday_16.png
+	category_holiday-cards_16.png
+	category_hot-contacts_16.png
+	category_ideas_16.png
+	category_international_16.png
+	category_key-customer_16.png
+	category_miscellaneous_16.png
+	category_personal_16.png
+	category_phonecalls_16.png
+	category_status_16.png
+	category_strategies_16.png
+	category_suppliers_16.png
+	category_time-and-expenses_16.png
+)
+
+install(FILES ${IMAGES}
+	DESTINATION ${imagesdir}
 )

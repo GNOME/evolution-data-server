@@ -895,32 +895,11 @@ print_build_options()
 
 add_pkgconfig_file(evolution-data-server.pc.in evolution-data-server-${API_VERSION}.pc)
 
-add_subdirectory(art)
-add_subdirectory(addressbook)
-add_subdirectory(calendar)
-add_subdirectory(camel)
 add_subdirectory(data)
-add_subdirectory(libebackend)
-add_subdirectory(libedataserver)
-add_subdirectory(modules)
-add_subdirectory(private)
 add_subdirectory(po)
-add_subdirectory(services)
+add_subdirectory(src)
 add_subdirectory(tests)
-add_subdirectory(tools)
-
-if(HAVE_GTK)
-	add_subdirectory(libedataserverui)
-endif(HAVE_GTK)
 
 if(ENABLE_GTK_DOC)
 	add_subdirectory(docs)
 endif(ENABLE_GTK_DOC)
-
-if(ENABLE_EXAMPLES)
-	add_subdirectory(examples)
-endif(ENABLE_EXAMPLES)
-
-if(ENABLE_VALA_BINDINGS)
-	add_subdirectory(vala)
-endif(ENABLE_VALA_BINDINGS)
