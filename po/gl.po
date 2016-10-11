@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-09 01:03+0200\n"
-"PO-Revision-Date: 2016-09-09 01:11+0200\n"
+"POT-Creation-Date: 2016-10-11 15:37+0200\n"
+"PO-Revision-Date: 2016-10-11 15:39+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -1363,17 +1363,17 @@ msgstr ""
 msgid "CalDAV backend is not loaded yet"
 msgstr "Non é posíbel cargar a infraestrutura de CalDAV"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1204
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1205
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "URL de redirección non válido"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2918
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2919
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Non é posíbel crear o cartafol de caché local: «%s»"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3004
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3005
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1383,27 +1383,27 @@ msgstr ""
 "lectura.\n"
 "Mensaxe de erro: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4109
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4110
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV non permite adicións en lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4212
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4213
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV non permite modificacións en lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4493
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4494
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV non permite retiradas en lote"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5240
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5241
 msgid "Calendar doesn't support Free/Busy"
 msgstr "O calendario non admite Libre/Ocupado"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5249
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5250
 msgid "Schedule outbox url not found"
 msgstr "URL da bandexa de saída programada non atopada"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5346
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5347
 msgid "Unexpected result in schedule-response"
 msgstr "Resultado non agardado na resposta programada"
 
@@ -3072,13 +3072,13 @@ msgstr "Non é posíbel crear o cartafol: %s: o cartafol xa existe"
 msgid "Creating folder '%s'"
 msgstr "Creando o cartafol «%s»"
 
-#: ../camel/camel-store.c:2453 ../camel/camel-vee-store.c:410
+#: ../camel/camel-store.c:2453 ../camel/camel-vee-store.c:422
 #: ../camel/providers/local/camel-maildir-store.c:346
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Non é posíbel eliminar o cartafol: %s: a operación non é valida"
 
-#: ../camel/camel-store.c:2643 ../camel/camel-vee-store.c:461
+#: ../camel/camel-store.c:2643 ../camel/camel-vee-store.c:473
 #: ../camel/providers/local/camel-maildir-store.c:914
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3127,12 +3127,12 @@ msgstr "Desuscribíndose do cartafol «%s»"
 msgid "Could not parse URL '%s'"
 msgstr "Non foi posíbel analizar o URL «%s»"
 
-#: ../camel/camel-vee-folder.c:491
+#: ../camel/camel-vee-folder.c:499
 #, c-format
 msgid "Updating folder '%s'"
 msgstr "Actualizando cartafol «%s»"
 
-#: ../camel/camel-vee-folder.c:869 ../camel/camel-vee-folder.c:984
+#: ../camel/camel-vee-folder.c:884 ../camel/camel-vee-folder.c:999
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
@@ -3141,17 +3141,17 @@ msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
 #. is replaced with an account name and the third '%s' is replaced with a full
 #. path name. The spaces around ':' are intentional, as the whole '%s : %s' is
 #. meant as an absolute identification of the folder.
-#: ../camel/camel-vee-folder.c:906
+#: ../camel/camel-vee-folder.c:921
 #, c-format
 msgid "No such message %s in '%s : %s'"
 msgstr "Non existe a mensaxe %s en «%s: %s»"
 
-#: ../camel/camel-vee-folder.c:960
+#: ../camel/camel-vee-folder.c:975
 #, c-format
 msgid "Error storing '%s': "
 msgstr "Produciuse un erro ao almacenar «%s»:"
 
-#: ../camel/camel-vee-folder.c:1198
+#: ../camel/camel-vee-folder.c:1221
 msgid "Automatically _update on change in source folders"
 msgstr "Actualizar a_utomaticamente ao cambiar os cartafoles de fontes"
 
@@ -3161,21 +3161,21 @@ msgstr "Actualizar a_utomaticamente ao cambiar os cartafoles de fontes"
 msgid "Unmatched"
 msgstr "Sen equivalencia"
 
-#: ../camel/camel-vee-store.c:436
+#: ../camel/camel-vee-store.c:448
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Non é posíbel eliminar o cartafol: %s: ese cartafol non existe"
 
-#: ../camel/camel-vee-store.c:471
+#: ../camel/camel-vee-store.c:483
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Non é posíbel renomear o cartafol: %s: ese cartafol non existe"
 
-#: ../camel/camel-vee-store.c:533
+#: ../camel/camel-vee-store.c:546
 msgid "Enable _Unmatched folder"
 msgstr "Activar o cartafol non _coincidente"
 
-#: ../camel/camel-vee-store.c:1030
+#: ../camel/camel-vee-store.c:1043
 msgid "Updating Unmatched search folder"
 msgstr "Actualizando o cartafol de búsqueda Sen coincidir"
 
@@ -5335,23 +5335,51 @@ msgstr "Non se admite o almacenamento de credenciais"
 msgid "Credentials delete is not supported"
 msgstr "Non se admite a eliminación de credenciais"
 
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:114
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:169
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:208
-msgid "Google authentication is not supported"
-msgstr "Non se admite a autenticación de Google"
-
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:121
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:176
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:215
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:81
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:145
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:242
 #, c-format
 msgid "Source '%s' (%s) is not a valid Google source"
 msgstr "A orixe «%s» (%s) non é unha orixe de Google válida"
 
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:135
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:159
 msgid "Google secret not found"
 msgstr "Non se atopou o segredo de Google"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:190
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:212
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:235
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:525
+msgid "Google authentication is not supported"
+msgstr "Non se admite a autenticación de Google"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:401
+msgid "Failed to get Google secret from credentials"
+msgstr "Produciuse un fallo ao obter o segredo de Google desde as credenciais:"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:408
+msgid "Refresh token not found in Google secret"
+msgstr "Non se atopou o token de refresco no segredo de Google"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:416
+msgid "Failed to construct refresh_token request"
+msgstr "Produciuse un fallo ao construír a solicitude de refresh_token"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:449
+msgid "Failed to encode new access token to Google secret"
+msgstr ""
+"Produciuse un erro ao codificar un novo token de acceso ao segredo de Google"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:459
+msgid "Failed to get access token from refresh_token server response"
+msgstr ""
+"Produciuse un fallo ao obter un token de acceso desde a resposta do servidor "
+"a refresh_token"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:465
+msgid "Failed to refresh token"
+msgstr "Produciuse un erro ao actualizar o token"
 
 #: ../libedataserver/e-source-credentials-provider-impl-password.c:81
 msgid "Password not found"
@@ -5516,8 +5544,8 @@ msgid "Unexpected reply from server"
 msgstr "Resposta inesperada desde o servidor"
 
 #: ../libedataserverui/e-credentials-prompter.c:260
-#: ../libedataserverui/e-credentials-prompter.c:1563
-#: ../libedataserverui/e-credentials-prompter.c:1607
+#: ../libedataserverui/e-credentials-prompter.c:1573
+#: ../libedataserverui/e-credentials-prompter.c:1617
 msgid "Credentials prompt was cancelled"
 msgstr "A consulta de credenciais foi cancelado"
 
@@ -5526,43 +5554,43 @@ msgstr "A consulta de credenciais foi cancelado"
 msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "A orixe de datos «%s» non permite a consulta de credenciais"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:441
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:446
 #, c-format
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgstr ""
 "Produciuse un fallo ao obter un token de acceso desde o enderezo «%s». "
 "Código de erro %d (%s)"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:487
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:494
 msgid "Requesting access token, please wait..."
 msgstr "Solicitando token de acceso, por favor agarde…"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:589
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:596
 msgid "Google Address book authentication request"
 msgstr "Solicitude de autenticación á axenda de enderezos de Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:592
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:599
 msgid "Google Calendar authentication request"
 msgstr "Solicitude de autenticación ao Calendario de Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:595
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:602
 msgid "Google Memo List authentication request"
 msgstr "Solicitude de autenticación á lista de recordatorios de Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:598
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:605
 msgid "Google Task List authentication request"
 msgstr "Solicitude de autenticación á lista de tarefas de Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:602
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:609
 msgid "Google Mail authentication request"
 msgstr "Solicitude de autenticación ao Correo de Google"
 
 #. generic account prompt
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:605
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:612
 msgid "Google account authentication request"
 msgstr "Solicitude de autenticación para a conta de Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:616
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:623
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5571,7 +5599,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder á "
 "súa axenda de enderezos «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:620
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5580,7 +5608,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder ao "
 "seu calendario «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:624
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5589,7 +5617,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder á "
 "súa conta de correo «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:628
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5598,7 +5626,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder ao "
 "seu transporte de correo «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:632
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5607,7 +5635,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder á "
 "súa lista de recordatorios «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:636
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:643
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5616,7 +5644,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder á "
 "súa lista de tarefas «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:640
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:647
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5625,7 +5653,7 @@ msgstr ""
 "Inicine sesión na súa conta de Google e acepte as condicións para acceder á "
 "súa conta «%s»."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:684
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:691
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
 #: ../libedataserverui/e-trust-prompt.c:114
 #: ../libedataserverui/e-webdav-discover-widget.c:1063
