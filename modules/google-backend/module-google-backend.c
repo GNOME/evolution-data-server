@@ -754,7 +754,7 @@ google_backend_populate (ECollectionBackend *backend)
 	/* Chain up to parent's populate() method. */
 	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
 
-	if (e_source_collection_get_calendar_enabled (collection_extension)) {
+	if (e_source_get_enabled (source) && e_source_collection_get_calendar_enabled (collection_extension)) {
 		e_backend_schedule_credentials_required (E_BACKEND (backend),
 			E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL, NULL, G_STRFUNC);
 	}
