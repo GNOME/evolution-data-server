@@ -55,6 +55,11 @@ add_dependencies(etestserverutils
 	${extra_deps}
 )
 
+set_target_properties(etestserverutils PROPERTIES
+	VERSION "0.0.0"
+	SOVERSION 0
+)
+
 target_compile_definitions(etestserverutils PRIVATE
 	-DG_LOG_DOMAIN=\"e-test-server-utils\"
 	${extra_defines}
@@ -83,11 +88,11 @@ target_link_libraries(etestserverutils
 	${extra_ldflags}
 )
 
-if(ENABLE_INSTALLED_FLAGS)
+if(ENABLE_INSTALLED_TESTS)
 	install(TARGETS etestserverutils
 		DESTINATION ${LIB_INSTALL_DIR}
 	)
-endif(ENABLE_INSTALLED_FLAGS)
+endif(ENABLE_INSTALLED_TESTS)
 
 # ***************************
 # Local Unit Test
