@@ -439,8 +439,9 @@ owncloud_backend_populate (ECollectionBackend *collection)
 	source = e_backend_get_source (E_BACKEND (collection));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 
-	if (e_source_collection_get_calendar_enabled (collection_extension) ||
-	    e_source_collection_get_contacts_enabled (collection_extension)) {
+	if (e_source_get_enabled (source) && (
+	    e_source_collection_get_calendar_enabled (collection_extension) ||
+	    e_source_collection_get_contacts_enabled (collection_extension))) {
 		e_backend_schedule_credentials_required (E_BACKEND (collection),
 			E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL, NULL, G_STRFUNC);
 	}
