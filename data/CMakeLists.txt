@@ -32,7 +32,7 @@ add_gsettings_schemas(data-files ${BUILT_SCHEMAS})
 # ********************************
 
 install(FILES evolution-data-server.convert
-	DESTINATION ${SHARE_INSTALL_DIR}/GConf/gsettings
+	DESTINATION ${SHARE_INSTALL_PREFIX}/GConf/gsettings
 )
 
 # ********************************

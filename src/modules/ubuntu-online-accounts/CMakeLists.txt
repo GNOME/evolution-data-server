@@ -60,7 +60,7 @@ foreach(_file IN LISTS service_files)
 	list(APPEND filedeps ${CMAKE_CURRENT_BINARY_DIR}/${_file})
 endforeach(_file)
 
-set(desktopdir ${SHARE_INSTALL_DIR}/applications)
+set(desktopdir ${SHARE_INSTALL_PREFIX}/applications)
 pkg_check_variable(libaccountsprefixdir libaccounts-glib prefix)
 pkg_check_variable(applicationdir libaccounts-glib applicationfilesdir)
 pkg_check_variable(servicetypedir libaccounts-glib servicetypefilesdir)

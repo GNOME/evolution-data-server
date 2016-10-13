@@ -123,7 +123,7 @@ macro(gir_add_introspection gir)
 			VERBATIM
 		)
 		list(APPEND _gir_girs ${CMAKE_CURRENT_BINARY_DIR}/${gir})
-		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${gir} DESTINATION ${SHARE_INSTALL_DIR}/gir-1.0)
+		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${gir} DESTINATION ${SHARE_INSTALL_PREFIX}/gir-1.0)
 		add_custom_target(gir-girs-${_gir_name} ALL DEPENDS ${_gir_girs})
 
 		if(NOT DEFINED ${_gir_name}_SKIP_TYPELIB OR NOT ${${_gir_name}_SKIP_TYPELIB})

@@ -137,5 +137,5 @@ add_custom_target(vala-files
 add_dependencies(vala vala-files)
 
 install(FILES ${valafiles}
-	DESTINATION ${SHARE_INSTALL_DIR}/vala/vapi
+	DESTINATION ${SHARE_INSTALL_PREFIX}/vala/vapi
 )
