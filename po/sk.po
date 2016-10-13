@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-09-19 08:02+0000\n"
-"PO-Revision-Date: 2016-09-10 16:50+0200\n"
+"POT-Creation-Date: 2016-10-06 15:55+0000\n"
+"PO-Revision-Date: 2016-10-13 20:51+0200\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: Slovak <gnome-sk-list@gnome.org>\n"
 "Language: sk\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n<=4 && n>=2) ? 2 : 0;\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: ../addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -1351,17 +1351,17 @@ msgstr "Vrátený neočakávaný stavový kód HTTP %d (%s) pre URI: %s"
 msgid "CalDAV backend is not loaded yet"
 msgstr "Obslužný program CalDAV nie je ešte načítaný"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1204
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1205
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Neplatná URL presmerovania"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2918
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2919
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nedá sa vytvoriť miestny priečinok vyrovnávacej pamäte „%s“"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3004
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3005
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1370,28 +1370,28 @@ msgstr ""
 "Server je nedostupný, kalendár je otvorený v režime iba-na-čítanie.\n"
 "Chybová správa: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4109
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4110
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV nepodporuje hromadné pridávanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4212
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4213
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV nepodporuje hromadné úpravy"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4493
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4494
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV nepodporuje hromadné odstraňovanie"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5240
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5241
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendár nepodporuje diár"
 
 # MČ: 	/* with 'calendar-schedule' supported, here's an outbox url for queries of free/busy information */
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5249
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5250
 msgid "Schedule outbox url not found"
 msgstr "Nebola nájdená url výstupu diára"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5346
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5347
 msgid "Unexpected result in schedule-response"
 msgstr "Neočakávaný výsledok v odpovedi diára"
 
@@ -5039,18 +5039,25 @@ msgstr "Či sa majú načítať fotografie podpisovateľov/šifrovateľov"
 msgid ""
 "When set to 'true', tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
-msgstr "Keď je nastavené na „true“, pokúsi sa načítať aj fotografie podpisovateľov/šifrovateľov ak sú dostupné v kľúči/certifikáte"
+msgstr ""
+"Keď je nastavené na „true“, pokúsi sa načítať aj fotografie podpisovateľov/"
+"šifrovateľov ak sú dostupné v kľúči/certifikáte"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr "Názov GIO objektu GNetworkMonitorm, ktorý sa pužije v inštancii ENetworkMonitor"
+msgstr ""
+"Názov GIO objektu GNetworkMonitorm, ktorý sa pužije v inštancii "
+"ENetworkMonitor"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
 msgid ""
 "When set to an unknown value, then the default GNetworkMonitor is used in "
 "the background. A special value 'always-online' is used for no network "
 "monitoring."
-msgstr "Keď je nastavená neznáma hodnota, potom sa v pozadí použije predvolená hodnota triedy GNetworkMonitor. Špeciálna hodnota „always-online“ sa používa na sledovanie bez siete."
+msgstr ""
+"Keď je nastavená neznáma hodnota, potom sa v pozadí použije predvolená "
+"hodnota triedy GNetworkMonitor. Špeciálna hodnota „always-online“ sa používa "
+"na sledovanie bez siete."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5371,23 +5378,49 @@ msgstr "Ukladanie poverení nie je podporované"
 msgid "Credentials delete is not supported"
 msgstr "Odstránenie poverení nie je podporované"
 
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:114
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:169
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:208
-msgid "Google authentication is not supported"
-msgstr "Overenie totožnosti na serveri Google nie je podporované"
-
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:121
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:176
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:215
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:81
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:145
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:242
 #, c-format
 msgid "Source '%s' (%s) is not a valid Google source"
 msgstr "Zdroj „%s“ (%s) nie je platným zdrojom servera Google"
 
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:135
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:159
 msgid "Google secret not found"
 msgstr "Tajomstvo servera Google sa nenašlo"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:190
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:212
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:235
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:521
+msgid "Google authentication is not supported"
+msgstr "Overenie totožnosti na serveri Google nie je podporované"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:397
+msgid "Failed to get Google secret from credentials"
+msgstr "Zlyhalo získanie tajomstva servera Google z poverení"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:404
+msgid "Refresh token not found in Google secret"
+msgstr "Nenašiel sa obnovovací token v tajomstve servera Google"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:412
+msgid "Failed to construct refresh_token request"
+msgstr "Zlyhalo zostavenie požiadavky refresh_token"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:445
+msgid "Failed to encode new access token to Google secret"
+msgstr ""
+"Zlyhalo kódovanie nového prístupového tokenu do tajomstva servera Google"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:455
+msgid "Failed to get access token from refresh_token server response"
+msgstr "Zlyhalo získanie prístupového tokenu z odpovede servera refresh_token"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:461
+msgid "Failed to refresh token"
+msgstr "Zlyhalo obnovenie tokena"
 
 #: ../libedataserver/e-source-credentials-provider-impl-password.c:81
 msgid "Password not found"
@@ -5560,8 +5593,8 @@ msgid "Unexpected reply from server"
 msgstr "Neočakávaná odpoveď zo servera"
 
 #: ../libedataserverui/e-credentials-prompter.c:260
-#: ../libedataserverui/e-credentials-prompter.c:1563
-#: ../libedataserverui/e-credentials-prompter.c:1607
+#: ../libedataserverui/e-credentials-prompter.c:1573
+#: ../libedataserverui/e-credentials-prompter.c:1617
 msgid "Credentials prompt was cancelled"
 msgstr "Požiadavka na poverenia bola zrušená"
 
@@ -5570,42 +5603,42 @@ msgstr "Požiadavka na poverenia bola zrušená"
 msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "Zdroj „%s“ nepodporuje požadovanie poverení"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:441
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:446
 #, c-format
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgstr ""
 "Zlyhalo získanie prístupového tokenu z adresy „%s“. Chybový kód %d (%s)"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:487
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:494
 msgid "Requesting access token, please wait..."
 msgstr "Požaduje sa prístupový token, prosím, čakajte..."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:589
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:596
 msgid "Google Address book authentication request"
 msgstr "Požiadavka overenia totožnosti k adresáru kontaktov na serveri Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:592
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:599
 msgid "Google Calendar authentication request"
 msgstr "Požiadavka overenia totožnosti ku kalendáru na serveri Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:595
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:602
 msgid "Google Memo List authentication request"
 msgstr "Požiadavka overenia totožnosti k zoznamu poznámok na serveri Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:598
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:605
 msgid "Google Task List authentication request"
 msgstr "Požiadavka overenia totožnosti k zoznamu úloh na serveri Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:602
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:609
 msgid "Google Mail authentication request"
 msgstr "Požiadavka overenia totožnosti k pošte na serveri Google"
 
 #. generic account prompt
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:605
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:612
 msgid "Google account authentication request"
 msgstr "Požiadavka overenia totožnosti servera Google"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:616
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:623
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5614,7 +5647,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu adresáru kontaktov „%s“, prihláste sa do "
 "vášho účtu Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:620
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5623,7 +5656,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu kalendáru „%s“, prihláste sa do vášho účtu "
 "Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:624
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5632,7 +5665,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu poštovému účtu „%s“, prihláste sa do vášho "
 "účtu Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:628
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5641,7 +5674,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu poštovému transportu „%s“, prihláste sa do "
 "vášho účtu Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:632
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5650,7 +5683,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu zoznamu poznámok „%s“, prihláste sa do "
 "vášho účtu Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:636
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:643
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5659,7 +5692,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu zoznamu úloh „%s“, prihláste sa do vášho "
 "účtu Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:640
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:647
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5668,7 +5701,7 @@ msgstr ""
 "Ak chcete získať prístup k vášmu účtu „%s“, prihláste sa do vášho účtu "
 "Google a prijmite podmienky."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:684
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:691
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
 #: ../libedataserverui/e-trust-prompt.c:114
 #: ../libedataserverui/e-webdav-discover-widget.c:1063
@@ -5951,7 +5984,7 @@ msgstr "Začleniť svoje kontakty"
 
 #: ../modules/ubuntu-online-accounts/e-signon-session-password.c:272
 msgid "Signon service did not return a secret"
-msgstr "Služba signon nevrátila tajnosť"
+msgstr "Služba Signon nevrátila tajnosť"
 
 #: ../modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:1
 msgid "Evolution Data Server"
