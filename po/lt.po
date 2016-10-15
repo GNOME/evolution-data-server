@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-08-24 15:50+0000\n"
-"PO-Revision-Date: 2016-09-05 18:00+0300\n"
+"POT-Creation-Date: 2016-10-06 15:55+0000\n"
+"PO-Revision-Date: 2016-10-15 22:02+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -1327,7 +1327,6 @@ msgstr "Serveris nepasiekiamas (%s)"
 
 #: ../calendar/backends/caldav/e-cal-backend-caldav.c:704
 #, c-format
-#| msgid "Failed to get the DN for user '%s'"
 msgid "Failed to login to the server: %s"
 msgstr "Nepavyko prisijungti prie serverio: %s"
 
@@ -1345,17 +1344,17 @@ msgstr "URI grąžintas netikėtas HTTP būsenos kodas %d (%s): %s"
 msgid "CalDAV backend is not loaded yet"
 msgstr "CalDAV realizacija dar neįkelta"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1200
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:1205
 #: ../libedataserver/e-webdav-discover.c:147
 msgid "Invalid Redirect URL"
 msgstr "Netinkamas nukreipimo URL"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2899
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2919
 #, c-format
 msgid "Cannot create local cache folder '%s'"
 msgstr "Nepavyko sukurti vietinio podėlio aplanko „%s“"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:2985
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:3005
 #, c-format
 msgid ""
 "Server is unreachable, calendar is opened in read-only mode.\n"
@@ -1364,27 +1363,27 @@ msgstr ""
 "Serveris nepasiekiamas, kalendorius atvertas tik skaitymo veiksenoje.\n"
 "Klaidos pranešimas: %s"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4090
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4110
 msgid "CalDAV does not support bulk additions"
 msgstr "CalDAV nepalaiko masinių pridėjimų"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4193
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4213
 msgid "CalDAV does not support bulk modifications"
 msgstr "CalDAV nepalaiko masinių pakeitimų"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4474
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:4494
 msgid "CalDAV does not support bulk removals"
 msgstr "CalDAV nepalaiko masinių pašalinimų"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5221
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5241
 msgid "Calendar doesn't support Free/Busy"
 msgstr "Kalendorius nepalaiko užimtumo informacijos"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5230
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5250
 msgid "Schedule outbox url not found"
 msgstr "Tvarkaraščio siuntimo dėžutės url nerastas"
 
-#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5327
+#: ../calendar/backends/caldav/e-cal-backend-caldav.c:5347
 msgid "Unexpected result in schedule-response"
 msgstr "Nelaukas rezultatas tvarkaraščio atsake"
 
@@ -2073,8 +2072,6 @@ msgstr "Klaida vykdant filtro paiešką: %s: %s"
 
 #: ../camel/camel-folder.c:327
 #, c-format
-#| msgid "Learning new spam message in '%s'"
-#| msgid_plural "Learning new spam messages in '%s'"
 msgid "Learning new spam message in '%s : %s'"
 msgid_plural "Learning new spam messages in '%s : %s'"
 msgstr[0] "Mokomasi atpažinti naują brukalą „%s : %s“"
@@ -2083,8 +2080,6 @@ msgstr[2] "Mokomasi atpažinti naują brukalą „%s : %s“"
 
 #: ../camel/camel-folder.c:370
 #, c-format
-#| msgid "Learning new ham message in '%s'"
-#| msgid_plural "Learning new ham messages in '%s'"
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
 msgstr[0] "Mokomasi atpažinti naują pageidaujamą laišką „%s : %s“"
@@ -2093,8 +2088,6 @@ msgstr[2] "Mokomasi atpažinti naujus pageidaujamus laiškus „%s : %s“"
 
 #: ../camel/camel-folder.c:421
 #, c-format
-#| msgid "Filtering new message in '%s'"
-#| msgid_plural "Filtering new messages in '%s'"
 msgid "Filtering new message in '%s : %s'"
 msgid_plural "Filtering new messages in '%s : %s'"
 msgstr[0] "Filtruojamas naujas laiškas aplanke „%s : %s“"
@@ -2115,7 +2108,6 @@ msgstr "Kopijuojami pranešimai"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:1077
 #, c-format
-#| msgid "Quota information not supported for folder '%s'"
 msgid "Quota information not supported for folder '%s : %s'"
 msgstr "Kvotos informacija nepalaikoma aplankui „%s : %s“"
 
@@ -2124,7 +2116,6 @@ msgstr "Kvotos informacija nepalaikoma aplankui „%s : %s“"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:1176
 #, c-format
-#| msgid "Filtering folder '%s'"
 msgid "Filtering folder '%s : %s'"
 msgstr "Filtruojamas aplankas „%s : %s“"
 
@@ -2133,7 +2124,6 @@ msgstr "Filtruojamas aplankas „%s : %s“"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:2916
 #, c-format
-#| msgid "Expunging folder '%s'"
 msgid "Expunging folder '%s : %s'"
 msgstr "Išbraukiamas aplankas „%s : %s“"
 
@@ -2142,7 +2132,6 @@ msgstr "Išbraukiamas aplankas „%s : %s“"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3050
 #, c-format
-#| msgid "Retrieving message '%s' in %s"
 msgid "Retrieving message '%s' in '%s : %s'"
 msgstr "Atsiunčiamas laiškas „%s“ aplanke „%s : %s“"
 
@@ -2151,7 +2140,6 @@ msgstr "Atsiunčiamas laiškas „%s“ aplanke „%s : %s“"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3243
 #, c-format
-#| msgid "Retrieving quota information for '%s'"
 msgid "Retrieving quota information for '%s : %s'"
 msgstr "Gaunama „%s : %s“ kvotos informacija"
 
@@ -2160,41 +2148,40 @@ msgstr "Gaunama „%s : %s“ kvotos informacija"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3541
 #, c-format
-#| msgid "Refreshing folder '%s'"
 msgid "Refreshing folder '%s : %s'"
 msgstr "Atnaujinamas aplankas „%s : %s“"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:845 ../camel/camel-folder-search.c:887
+#: ../camel/camel-folder-search.c:865 ../camel/camel-folder-search.c:907
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) reikalauja vienintelio loginio rezultato"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:922
+#: ../camel/camel-folder-search.c:942
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) neleistinas viduje %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:929 ../camel/camel-folder-search.c:937
+#: ../camel/camel-folder-search.c:949 ../camel/camel-folder-search.c:957
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) reikalauja atitikties tipo eilutės"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:965
+#: ../camel/camel-folder-search.c:985
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) tikisi masyvinio rezultato"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../camel/camel-folder-search.c:975
+#: ../camel/camel-folder-search.c:995
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) reikalauja aplankų rinkinio"
 
-#: ../camel/camel-folder-search.c:1887 ../camel/camel-folder-search.c:2056
+#: ../camel/camel-folder-search.c:1918 ../camel/camel-folder-search.c:2090
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2203,7 +2190,7 @@ msgstr ""
 "Nepavyko apdoroti paieškos išraiškos: %s:\n"
 "%s"
 
-#: ../camel/camel-folder-search.c:1899 ../camel/camel-folder-search.c:2068
+#: ../camel/camel-folder-search.c:1930 ../camel/camel-folder-search.c:2102
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2215,18 +2202,16 @@ msgstr ""
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2171
+#: ../camel/camel-folder-summary.c:2196
 #, c-format
-#| msgid "Release unused memory for folder '%s'"
 msgid "Release unused memory for folder '%s : %s'"
 msgstr "Atlaisvinti nenaudojamą atmintį aplankui „%s : %s“"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
-#: ../camel/camel-folder-summary.c:2390
+#: ../camel/camel-folder-summary.c:2420
 #, c-format
-#| msgid "Update preview data for folder '%s'"
 msgid "Update preview data for folder '%s : %s'"
 msgstr "Atnaujinti peržiūros duomenis aplankui „%s : %s“"
 
@@ -2506,7 +2491,6 @@ msgstr "Nepavyko rasti kompiuterio „%s“: %s"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:96
 #, c-format
-#| msgid "Downloading new messages for offline mode in '%s'"
 msgid "Downloading new messages for offline mode in '%s : %s'"
 msgstr "Parsiunčiami nauji laiškai darbui atsijungus aplanke „%s : %s“"
 
@@ -2515,7 +2499,6 @@ msgstr "Parsiunčiami nauji laiškai darbui atsijungus aplanke „%s : %s“"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:167
 #, c-format
-#| msgid "Storing changes in folder '%s'"
 msgid "Storing changes in folder '%s : %s'"
 msgstr "Įrašomi pakeitimai aplanke „%s : %s“"
 
@@ -2524,7 +2507,6 @@ msgstr "Įrašomi pakeitimai aplanke „%s : %s“"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:257
 #, c-format
-#| msgid "Checking download of new messages for offline in '%s'"
 msgid "Checking download of new messages for offline in '%s : %s'"
 msgstr ""
 "Tikrinamas naujų laiškų parsiuntimas darbui atsijungus aplanke „%s : %s“"
@@ -2534,7 +2516,6 @@ msgstr ""
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:373
 #, c-format
-#| msgid "Syncing messages in folder '%s' to disk"
 msgid "Syncing messages in folder '%s : %s' to disk"
 msgstr "Laiškai aplanke „%s : %s“ sinchronizuojami su disku"
 
@@ -3127,7 +3108,6 @@ msgstr "Nepavyko nukopijuoti arba perkelti laiškų į virtualų aplanką"
 #. meant as an absolute identification of the folder.
 #: ../camel/camel-vee-folder.c:906
 #, c-format
-#| msgid "No such message %s in %s"
 msgid "No such message %s in '%s : %s'"
 msgstr "Nėra tokio laiško %s aplanke „%s : %s“"
 
@@ -3216,7 +3196,6 @@ msgstr "Nepavyko perkelti ištrintų laiškų"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-folder.c:705
 #, c-format
-#| msgid "No quota information available for folder '%s'"
 msgid "No quota information available for folder '%s : %s'"
 msgstr "Nėra kvotos informacijos aplankui „%s : %s“"
 
@@ -3244,7 +3223,6 @@ msgstr "Nepavyko %s sukurti podėlio:"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-folder.c:1300
 #, c-format
-#| msgid "No IMAP mailbox available for folder '%s'"
 msgid "No IMAP mailbox available for folder '%s : %s'"
 msgstr "Nėra IMAP pašto dėžės aplankui „%s : %s“"
 
@@ -3465,7 +3443,6 @@ msgstr "Klaida pridedant laišką"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4913
 #, c-format
-#| msgid "Scanning for changed messages in '%s'"
 msgid "Scanning for changed messages in '%s : %s'"
 msgstr "Ieškoma pakeistų laiškų aplanke „%s : %s“"
 
@@ -3478,7 +3455,6 @@ msgstr "Klaida skaitant pakeitimus"
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4938
 #, c-format
-#| msgid "Fetching summary information for new messages in '%s'"
 msgid "Fetching summary information for new messages in '%s : %s'"
 msgstr "Gaunama naujų laiškų santrauka aplankui „%s : %s“"
 
@@ -5310,23 +5286,52 @@ msgstr "Įgaliojimų saugykla nepalaikoma"
 msgid "Credentials delete is not supported"
 msgstr "Įgaliojimų trynimas nepalaikomas"
 
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:114
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:169
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:208
-msgid "Google authentication is not supported"
-msgstr "Google tapatybės patvirtinimas nepalaikomas"
-
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:121
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:176
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:215
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:81
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:145
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:242
 #, c-format
 msgid "Source '%s' (%s) is not a valid Google source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas Google šaltinis"
 
-#: ../libedataserver/e-source-credentials-provider-impl-google.c:135
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:159
 msgid "Google secret not found"
 msgstr "Google paslaptis nerasta"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:190
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:212
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:235
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:521
+msgid "Google authentication is not supported"
+msgstr "Google tapatybės patvirtinimas nepalaikomas"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:397
+#| msgid "Failed to lookup credentials: "
+msgid "Failed to get Google secret from credentials"
+msgstr "Nepavyko gauti Google paslapčių iš įgaliojimų"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:404
+msgid "Refresh token not found in Google secret"
+msgstr "Atnaujinimo leksema nerasta Google paslaptyje"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:412
+msgid "Failed to construct refresh_token request"
+msgstr "Nepavyko sukonstruoti refresh_token užklausos"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:445
+#| msgid "Failed to obtain an access token for '%s': "
+msgid "Failed to encode new access token to Google secret"
+msgstr "Nepavyko užkoduoti naujos prieigos leksemos Google paslaptyje"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:455
+#| msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
+msgid "Failed to get access token from refresh_token server response"
+msgstr "Nepavyko gauti prieigos leksemos iš serverio atsako į refresh_token"
+
+#: ../libedataserver/e-source-credentials-provider-impl-google.c:461
+#| msgid "Failed to retrieve message"
+msgid "Failed to refresh token"
+msgstr "Nepavyko atnaujinti leksemos"
 
 #: ../libedataserver/e-source-credentials-provider-impl-password.c:81
 msgid "Password not found"
@@ -5490,8 +5495,8 @@ msgid "Unexpected reply from server"
 msgstr "Netikėtas atsakas iš serverio"
 
 #: ../libedataserverui/e-credentials-prompter.c:260
-#: ../libedataserverui/e-credentials-prompter.c:1563
-#: ../libedataserverui/e-credentials-prompter.c:1607
+#: ../libedataserverui/e-credentials-prompter.c:1573
+#: ../libedataserverui/e-credentials-prompter.c:1617
 msgid "Credentials prompt was cancelled"
 msgstr "Įgaliojimų užklausa atšaukta"
 
@@ -5500,41 +5505,41 @@ msgstr "Įgaliojimų užklausa atšaukta"
 msgid "Source '%s' doesn't support prompt for credentials"
 msgstr "Šaltinis „%s“ nepalaiko įgaliojimų užklausimo"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:441
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:446
 #, c-format
 msgid "Failed to obtain access token from address '%s'. Error code %d (%s)"
 msgstr "Nepavyko gauti prieigos leksemos iš adreso „%s“. Klaidos kodas %d (%s)"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:487
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:494
 msgid "Requesting access token, please wait..."
 msgstr "Prašoma prieigos leksemos, palaukite..."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:589
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:596
 msgid "Google Address book authentication request"
 msgstr "Google adresų knygos tapatybės patvirtinimo užklausa"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:592
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:599
 msgid "Google Calendar authentication request"
 msgstr "Google kalendoriaus tapatybės patvirtinimo užklausa"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:595
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:602
 msgid "Google Memo List authentication request"
 msgstr "Google raštelių sąrašo tapatybės patvirtinimo užklausa"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:598
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:605
 msgid "Google Task List authentication request"
 msgstr "Google užduočių sąrašo tapatybės patvirtinimo užklausa"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:602
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:609
 msgid "Google Mail authentication request"
 msgstr "Google el. pašto tapatybės patvirtinimo užklausa"
 
 #. generic account prompt
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:605
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:612
 msgid "Google account authentication request"
 msgstr "Google paskyros tapatybės patvirtinimo užklausa"
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:616
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:623
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5543,7 +5548,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo adresų "
 "knygai „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:620
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5552,7 +5557,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo "
 "kalendoriui „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:624
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5561,7 +5566,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo el. "
 "pašto paskyrai „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:628
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5570,7 +5575,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo el. "
 "pašto transportui „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:632
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5579,7 +5584,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo "
 "raštelių sąrašui „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:636
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:643
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5588,7 +5593,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo "
 "užduočių sąrašui „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:640
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:647
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5597,7 +5602,7 @@ msgstr ""
 "Prisijunkite prie savo Google paskyros ir sutikite su sąlygomis savo "
 "paskyrai „%s“ pasiekti."
 
-#: ../libedataserverui/e-credentials-prompter-impl-google.c:684
+#: ../libedataserverui/e-credentials-prompter-impl-google.c:691
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
 #: ../libedataserverui/e-trust-prompt.c:114
 #: ../libedataserverui/e-webdav-discover-widget.c:1063
@@ -6009,7 +6014,7 @@ msgid "_Dismiss"
 msgstr "_Pašalinti"
 
 #: ../tools/addressbook-export/addressbook-export.c:70
-#: ../tools/addressbook-export/addressbook-export.c:767
+#: ../tools/addressbook-export/addressbook-export.c:784
 msgid "Can not open file"
 msgstr "Nepavyko atverti failo"
 
@@ -6018,38 +6023,38 @@ msgstr "Nepavyko atverti failo"
 msgid "Failed to open client '%s': %s"
 msgstr "Nepavyko atverti kliento „%s“: %s"
 
-#: ../tools/addressbook-export/addressbook-export.c:877
+#: ../tools/addressbook-export/addressbook-export.c:894
 msgid "Unhandled error"
 msgstr "Neapdorota klaida"
 
-#: ../tools/addressbook-export/addressbook-export.c:910
+#: ../tools/addressbook-export/addressbook-export.c:927
 msgid "Specify the output file instead of standard output"
 msgstr "Nurodyti išvesties failą vietoj standartinės išvesties"
 
-#: ../tools/addressbook-export/addressbook-export.c:911
+#: ../tools/addressbook-export/addressbook-export.c:928
 msgid "OUTPUTFILE"
 msgstr "IŠVESTIES FAILAS"
 
-#: ../tools/addressbook-export/addressbook-export.c:914
+#: ../tools/addressbook-export/addressbook-export.c:931
 msgid "List local address book folders"
 msgstr "Išvardinti vietinius adresų knygos aplankus"
 
-#: ../tools/addressbook-export/addressbook-export.c:917
+#: ../tools/addressbook-export/addressbook-export.c:934
 msgid "Show cards as vcard or csv file"
 msgstr "Rodyti korteles kaip vcard arba csv failą"
 
-#: ../tools/addressbook-export/addressbook-export.c:918
+#: ../tools/addressbook-export/addressbook-export.c:935
 msgid "[vcard|csv]"
 msgstr "[vcard|csv]"
 
-#: ../tools/addressbook-export/addressbook-export.c:966
+#: ../tools/addressbook-export/addressbook-export.c:983
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Komandų eilutės argumentų klaida, naudokite --help parametrą naudojimo "
 "pagalbai pamatyti."
 
-#: ../tools/addressbook-export/addressbook-export.c:980
+#: ../tools/addressbook-export/addressbook-export.c:997
 msgid "Only support csv or vcard format."
 msgstr "Palaikomi tik csv arba vcard formatai."
 
