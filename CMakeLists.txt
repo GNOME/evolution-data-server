@@ -848,21 +848,18 @@ set(E_DATA_SERVER_LDFLAGS ${E_DATA_SERVER_LDFLAGS} ${MANUAL_NSPR_LIBS} ${MANUAL_
 pkg_check_modules(BACKEND REQUIRED gio-2.0 gmodule-2.0 libsecret-1 libsoup-2.4 libxml-2.0)
 pkg_check_modules(ADDRESSBOOK REQUIRED gio-2.0 libxml-2.0 libsoup-2.4 libsecret-1)
 pkg_check_modules(CALENDAR REQUIRED gio-2.0 libical>=${libical_minimum_version} libsoup-2.4 libxml-2.0 libsecret-1)
-set(CALENDAR_CFLAGS "${CALENDAR_CFLAGS} ${LIBICAL_EXTRA_CFLAGS}")
+set(CALENDAR_CFLAGS ${CALENDAR_CFLAGS} ${LIBICAL_EXTRA_CFLAGS})
 
 pkg_check_modules(CAMEL REQUIRED gio-2.0 gmodule-2.0 ${mozilla_nss} ${mozilla_nspr} sqlite3>=${sqlite_minimum_version})
-set(CAMEL_CFLAGS "${CAMEL_CFLAGS} ${KRB5_CFLAGS} ${MANUAL_NSS_CFLAGS} ${MANUAL_NSPR_CFLAGS} ${ICU_CFLAGS}")
-set(CAMEL_LDFLAGS "${CAMEL_LDFLAGS} -lz ${KRB5_LDFLAGS} ${MANUAL_NSS_LIBS} ${MANUAL_NSPR_LIBS} ${ICU_LDFLAGS}")
-
-string(STRIP "${CAMEL_CFLAGS}" CAMEL_CFLAGS)
-string(STRIP "${CAMEL_LDFLAGS}" CAMEL_LDFLAGS)
+set(CAMEL_CFLAGS ${CAMEL_CFLAGS} ${KRB5_CFLAGS} ${MANUAL_NSS_CFLAGS} ${MANUAL_NSPR_CFLAGS} ${ICU_CFLAGS})
+set(CAMEL_LDFLAGS ${CAMEL_LDFLAGS} -lz ${KRB5_LDFLAGS} ${MANUAL_NSS_LIBS} ${MANUAL_NSPR_LIBS} ${ICU_LDFLAGS})
 
 # ******************************
 # libical tweaks, part II (re-using CALENDAR_CFLAGS/CALENDAR_LDFLAGS)
 # ******************************
 
-set(CMAKE_REQUIRED_FLAGS "${CALENDAR_CFLAGS}")
-set(CMAKE_REQUIRED_LIBRARIES "${CALENDAR_LDFLAGS}")
+set(CMAKE_REQUIRED_FLAGS ${CALENDAR_CFLAGS})
+set(CMAKE_REQUIRED_LIBRARIES ${CALENDAR_LDFLAGS})
 
 CHECK_C_SOURCE_COMPILES("#include <libical/ical.h>
 			int main(void) {

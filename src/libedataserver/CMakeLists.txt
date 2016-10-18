@@ -265,8 +265,8 @@ set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
 set(gir_includes GObject-2.0 Gio-2.0 Soup-2.4 libxml2-2.0)
 set(gir_cflags
-	${CAMEL_CFLAGS}
-	${DATA_SERVER_CFLAGS}
+	${CAMEL_INCLUDE_DIRS}
+	${DATA_SERVER_INCLUDE_DIRS}
 	-DLIBEDATASERVER_COMPILATION
 )
 set(gir_libdirs
