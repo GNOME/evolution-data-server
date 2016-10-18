@@ -113,6 +113,15 @@ gchar *		e_source_mail_identity_dup_signature_uid
 void		e_source_mail_identity_set_signature_uid
 					(ESourceMailIdentity *extension,
 					 const gchar *signature_uid);
+const gchar *	e_source_mail_identity_get_aliases
+					(ESourceMailIdentity *extension);
+gchar *		e_source_mail_identity_dup_aliases
+					(ESourceMailIdentity *extension);
+void		e_source_mail_identity_set_aliases
+					(ESourceMailIdentity *extension,
+					 const gchar *aliases);
+GHashTable *	e_source_mail_identity_get_aliases_as_hash_table
+					(ESourceMailIdentity *extension);
 
 G_END_DECLS
 

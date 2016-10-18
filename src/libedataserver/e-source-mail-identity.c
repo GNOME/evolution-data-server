@@ -35,9 +35,13 @@
  * ]|
  **/
 
-#include "e-source-mail-identity.h"
+#include "evolution-data-server-config.h"
 
-#include <libedataserver/e-data-server-util.h>
+#include "camel/camel.h"
+
+#include "e-data-server-util.h"
+
+#include "e-source-mail-identity.h"
 
 #define E_SOURCE_MAIL_IDENTITY_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -49,11 +53,13 @@ struct _ESourceMailIdentityPrivate {
 	gchar *organization;
 	gchar *reply_to;
 	gchar *signature_uid;
+	gchar *aliases;
 };
 
 enum {
 	PROP_0,
 	PROP_ADDRESS,
+	PROP_ALIASES,
 	PROP_NAME,
 	PROP_ORGANIZATION,
 	PROP_REPLY_TO,
@@ -74,6 +80,12 @@ source_mail_identity_set_property (GObject *object,
 	switch (property_id) {
 		case PROP_ADDRESS:
 			e_source_mail_identity_set_address (
+				E_SOURCE_MAIL_IDENTITY (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_ALIASES:
+			e_source_mail_identity_set_aliases (
 				E_SOURCE_MAIL_IDENTITY (object),
 				g_value_get_string (value));
 			return;
@@ -117,6 +129,13 @@ source_mail_identity_get_property (GObject *object,
 			g_value_take_string (
 				value,
 				e_source_mail_identity_dup_address (
+				E_SOURCE_MAIL_IDENTITY (object)));
+			return;
+
+		case PROP_ALIASES:
+			g_value_take_string (
+				value,
+				e_source_mail_identity_dup_aliases (
 				E_SOURCE_MAIL_IDENTITY (object)));
 			return;
 
@@ -164,6 +183,7 @@ source_mail_identity_finalize (GObject *object)
 	g_free (priv->organization);
 	g_free (priv->reply_to);
 	g_free (priv->signature_uid);
+	g_free (priv->aliases);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_mail_identity_parent_class)->finalize (object);
@@ -192,6 +212,19 @@ e_source_mail_identity_class_init (ESourceMailIdentityClass *class)
 			"address",
 			"Address",
 			"Sender's email address",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ALIASES,
+		g_param_spec_string (
+			"aliases",
+			"Aliases",
+			"Sender's email address aliases",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -684,3 +717,145 @@ e_source_mail_identity_set_signature_uid (ESourceMailIdentity *extension,
 	g_object_notify (G_OBJECT (extension), "signature-uid");
 }
 
+/**
+ * e_source_mail_identity_get_aliases:
+ * @extension: an #ESourceMailIdentity
+ *
+ * Returns the email address aliases for this identity. These are comma-separated
+ * email addresses which may or may not contain also different name.
+ * This may be an empty string, but will never be %NULL.
+ * There can be used camel_address_decode() on a #CamelInternetAddress
+ * to decode the list of aliases.
+ *
+ * Returns: (transfer none): the sender's email address aliases
+ *
+ * Since: 3.24
+ **/
+const gchar *
+e_source_mail_identity_get_aliases (ESourceMailIdentity *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_IDENTITY (extension), NULL);
+
+	return extension->priv->aliases;
+}
+
+/**
+ * e_source_mail_identity_dup_aliases:
+ * @extension: an #ESourceMailIdentity
+ *
+ * Thread-safe variation of e_source_mail_identity_get_aliases().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: (transfer full): a newly-allocated copy of #ESourceMailIdentity:aliases
+ *
+ * Since: 3.24
+ **/
+gchar *
+e_source_mail_identity_dup_aliases (ESourceMailIdentity *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_IDENTITY (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_mail_identity_get_aliases (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_mail_identity_set_aliases:
+ * @extension: an #ESourceMailIdentity
+ * @aliases: (allow-none): the sender's email address aliases, or %NULL
+ *
+ * Sets the email address aliases for this identity. These are comma-separated
+ * email addresses which may or may not contain also different name.
+ *
+ * The internal copy of @aliases is automatically stripped of leading and
+ * trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.24
+ **/
+void
+e_source_mail_identity_set_aliases (ESourceMailIdentity *extension,
+                                    const gchar *aliases)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_IDENTITY (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->aliases, aliases) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->aliases);
+	extension->priv->aliases = e_util_strdup_strip (aliases);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "aliases");
+}
+
+/**
+ * e_source_mail_identity_get_aliases_as_hash_table:
+ * @extension: an #ESourceMailIdentity
+ *
+ * Returns a set aliases as a hash table with address as key and
+ * name as value of the hash table. The name can be sometimes
+ * empty or NULL, thus rather use g_hash_table_contains() when
+ * checking for particular address. The addresses are
+ * compared case insensitively. The same addresses with a different
+ * name are included only once, the last variant of it. Use
+ * e_source_mail_identity_get_aliases() if you need more fine-grained
+ * control on the list of aliases.
+ *
+ * Returns: (transfer full): A newly created #GHashTable will
+ *   all the aliases. Returns %NULL if there are none set. Use
+ *   g_hash_table_destroy() to free the returned hash table.
+ *
+ * Since: 3.24
+ **/
+GHashTable *
+e_source_mail_identity_get_aliases_as_hash_table (ESourceMailIdentity *extension)
+{
+	GHashTable *aliases = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_IDENTITY (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (extension->priv->aliases && *extension->priv->aliases) {
+		CamelInternetAddress *inet_address;
+		gint ii, len;
+
+		inet_address = camel_internet_address_new ();
+		len = camel_address_decode (CAMEL_ADDRESS (inet_address), extension->priv->aliases);
+
+		if (len > 0) {
+			aliases = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, g_free);
+
+			for (ii = 0; ii < len; ii++) {
+				const gchar *name = NULL, *address = NULL;
+
+				if (camel_internet_address_get (inet_address, ii, &name, &address) && address && *address) {
+					g_hash_table_insert (aliases, g_strdup (address), g_strdup (name));
+				}
+			}
+		}
+
+		g_clear_object (&inet_address);
+	}
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return aliases;
+}

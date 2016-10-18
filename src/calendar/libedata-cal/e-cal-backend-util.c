@@ -77,7 +77,7 @@ e_cal_backend_mail_account_get_default (ESourceRegistry *registry,
  */
 gboolean
 e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
-                                     gchar *user,
+                                     const gchar *user,
                                      gchar **name)
 {
 	GList *list, *iter;
@@ -126,6 +126,16 @@ e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
 			g_free (address);
 		}
 
+		if (!match) {
+			GHashTable *aliases;
+
+			aliases = e_source_mail_identity_get_aliases_as_hash_table (mail_identity);
+			if (aliases) {
+				match = g_hash_table_contains (aliases, user);
+				g_hash_table_destroy (aliases);
+			}
+		}
+
 		if (match && name != NULL)
 			*name = e_source_dup_display_name (source);
 
@@ -142,56 +152,29 @@ e_cal_backend_mail_account_is_valid (ESourceRegistry *registry,
 	return valid;
 }
 
-/**
- * is_attendee_declined:
- * @icalcomp: Component where to check the attendee list.
- * @email: Attendee's email to look for.
- *
- * Returns: Whether the required attendee declined or not.
- *          It's not necessary to have this attendee in the list.
- **/
 static gboolean
-is_attendee_declined (icalcomponent *icalcomp,
-                      const gchar *email)
+is_attendee_declined (GSList *declined_attendees,
+                      const gchar *email,
+		      GHashTable *aliases)
 {
-	icalproperty *prop;
-	icalparameter *param;
+	GSList *iter;
 
-	g_return_val_if_fail (icalcomp != NULL, FALSE);
-	g_return_val_if_fail (email != NULL, FALSE);
+	if (!email && !aliases)
+		return FALSE;
 
-	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
-	     prop != NULL;
-	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
-		gchar *attendee;
-		gchar *text;
+	for (iter = declined_attendees; iter; iter = g_slist_next (iter)) {
+		const gchar *attendee = iter->data;
 
-		attendee = icalproperty_get_value_as_string_r (prop);
 		if (!attendee)
 			continue;
 
-		if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
-			text = g_strdup (attendee + 7);
-		else
-			text = g_strdup (attendee);
-
-		text = g_strstrip (text);
-
-		if (!g_ascii_strcasecmp (email, text)) {
-			g_free (text);
-			g_free (attendee);
-			break;
+		if ((email && g_ascii_strcasecmp (email, attendee) == 0) ||
+		    (aliases && g_hash_table_contains (aliases, attendee))) {
+			return TRUE;
 		}
-		g_free (text);
-		g_free (attendee);
 	}
 
-	if (!prop)
-		return FALSE;
-
-	param = icalproperty_get_first_parameter (prop, ICAL_PARTSTAT_PARAMETER);
-
-	return param && icalparameter_get_partstat (param) == ICAL_PARTSTAT_DECLINED;
+	return FALSE;
 }
 
 /**
@@ -209,35 +192,66 @@ e_cal_backend_user_declined (ESourceRegistry *registry,
                              icalcomponent *icalcomp)
 {
 	GList *list, *iter;
-	const gchar *extension_name;
+	GSList *declined_attendees = NULL;
 	gboolean declined = FALSE;
+	icalproperty *prop;
+	icalparameter *param;
 
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
 	g_return_val_if_fail (icalcomp != NULL, FALSE);
 
-	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
+	/* First test whether there is any declined attendee at all and remember his/her address */
+	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_ATTENDEE_PROPERTY);
+	     prop != NULL;
+	     prop = icalcomponent_get_next_property (icalcomp, ICAL_ATTENDEE_PROPERTY)) {
+		param = icalproperty_get_first_parameter (prop, ICAL_PARTSTAT_PARAMETER);
 
-	list = e_source_registry_list_enabled (registry, extension_name);
+		if (param && icalparameter_get_partstat (param) == ICAL_PARTSTAT_DECLINED) {
+			gchar *attendee;
+			gchar *address;
 
-	for (iter = list; iter != NULL; iter = g_list_next (iter)) {
-		ESource *source = E_SOURCE (iter->data);
-		ESourceMailIdentity *extension;
-		const gchar *address;
+			attendee = icalproperty_get_value_as_string_r (prop);
+			if (attendee) {
+				if (!g_ascii_strncasecmp (attendee, "mailto:", 7))
+					address = g_strdup (attendee + 7);
+				else
+					address = g_strdup (attendee);
 
-		extension = e_source_get_extension (source, extension_name);
-		address = e_source_mail_identity_get_address (extension);
+				address = g_strstrip (address);
 
-		if (address == NULL)
-			continue;
+				if (address && *address)
+					declined_attendees = g_slist_prepend (declined_attendees, address);
+				else
+					g_free (address);
 
-		if (is_attendee_declined (icalcomp, address)) {
-			declined = TRUE;
-			break;
+				g_free (attendee);
+			}
 		}
 	}
 
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
+	if (!declined_attendees)
+		return FALSE;
+
+	list = e_source_registry_list_enabled (registry, E_SOURCE_EXTENSION_MAIL_IDENTITY);
+
+	for (iter = list; iter != NULL && !declined; iter = g_list_next (iter)) {
+		ESource *source = E_SOURCE (iter->data);
+		ESourceMailIdentity *extension;
+		GHashTable *aliases;
+		const gchar *address;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_MAIL_IDENTITY);
+		address = e_source_mail_identity_get_address (extension);
+		aliases = e_source_mail_identity_get_aliases_as_hash_table (extension);
+
+		declined = is_attendee_declined (declined_attendees, address, aliases);
+
+		if (aliases)
+			g_hash_table_destroy (aliases);
+	}
+
+	g_slist_free_full (declined_attendees, g_free);
+	g_list_free_full (list, g_object_unref);
 
 	return declined;
 }
-
