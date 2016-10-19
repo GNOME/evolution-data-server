@@ -717,7 +717,7 @@ if(WIN32 AND ENABLE_DOT_LOCKING)
 	set(ENABLE_DOT_LOCKING OFF)
 	set(USE_DOT_LOCKING OFF)
 else(WIN32 AND ENABLE_DOT_LOCKING)
-	set(USE_DOT_LOCKING ENABLE_DOT_LOCKING)
+	set(USE_DOT_LOCKING ${ENABLE_DOT_LOCKING})
 endif(WIN32 AND ENABLE_DOT_LOCKING)
 
 add_printable_variable(ENABLE_FILE_LOCKING "Enable support for locking mail files with file locking (one of fcntl/flock/no)" "fcntl")
