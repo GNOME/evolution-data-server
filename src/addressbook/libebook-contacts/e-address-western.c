@@ -33,6 +33,8 @@ static const gchar *extended_keywords[] = {
 	"apt", "apartment", "suite", NULL
 };
 
+G_DEFINE_BOXED_TYPE (EAddressWestern, e_address_western, e_address_western_copy, e_address_western_free)
+
 static gboolean
 e_address_western_is_line_blank (gchar *line)
 {
@@ -324,14 +326,7 @@ e_address_western_parse (const gchar *in_address)
 	if (in_address == NULL)
 		return NULL;
 
-	eaw = (EAddressWestern *) g_malloc (sizeof (EAddressWestern));
-	eaw->po_box = NULL;
-	eaw->extended = NULL;
-	eaw->street = NULL;
-	eaw->locality = NULL;
-	eaw->region = NULL;
-	eaw->postal_code = NULL;
-	eaw->country = NULL;
+	eaw = g_new0 (EAddressWestern, 1);
 
 	address = g_strndup (in_address, 2047);
 
@@ -435,24 +430,45 @@ e_address_western_parse (const gchar *in_address)
 void
 e_address_western_free (EAddressWestern *eaw)
 {
-	if (eaw == NULL)
+	if (!eaw)
 		return;
 
-	if (eaw->po_box != NULL)
-		g_free (eaw->po_box);
-	if (eaw->extended != NULL)
-		g_free (eaw->extended);
-	if (eaw->street != NULL)
-		g_free (eaw->street);
-	if (eaw->locality != NULL)
-		g_free (eaw->locality);
-	if (eaw->region != NULL)
-		g_free (eaw->region);
-	if (eaw->postal_code != NULL)
-		g_free (eaw->postal_code);
-	if (eaw->country != NULL)
-		g_free (eaw->country);
-
+	g_free (eaw->po_box);
+	g_free (eaw->extended);
+	g_free (eaw->street);
+	g_free (eaw->locality);
+	g_free (eaw->region);
+	g_free (eaw->postal_code);
+	g_free (eaw->country);
 	g_free (eaw);
 }
 
+/**
+ * e_address_western_copy:
+ * @eaw: an #EAddressWestern
+ *
+ * Creates a copy of @eaw.
+ *
+ * Returns: (transfer full): A new #EAddressWestern struct identical to @eaw.
+ *
+ * Since: 3.24
+ **/
+EAddressWestern *
+e_address_western_copy (EAddressWestern *eaw)
+{
+	EAddressWestern *waddress;
+
+	if (!eaw)
+		return NULL;
+
+	waddress = g_new0 (EAddressWestern, 1);
+	waddress->po_box = g_strdup (eaw->po_box);
+	waddress->extended = g_strdup (eaw->extended);
+	waddress->street = g_strdup (eaw->street);
+	waddress->locality = g_strdup (eaw->locality);
+	waddress->region = g_strdup (eaw->region);
+	waddress->postal_code = g_strdup (eaw->postal_code);
+	waddress->country = g_strdup (eaw->country);
+
+	return waddress;
+}

@@ -1971,7 +1971,7 @@ e_contact_name_from_string (const gchar *name_str)
  *
  * Creates a copy of @n.
  *
- * Returns: A new #EContactName identical to @n.
+ * Returns: (transfer full): A new #EContactName identical to @n.
  **/
 EContactName *
 e_contact_name_copy (EContactName *n)
@@ -2119,7 +2119,7 @@ e_contact_date_equal (EContactDate *dt1,
  *
  * Creates a copy of @dt.
  *
- * Returns: A new #EContactDate struct identical to @dt.
+ * Returns: (transfer full): A new #EContactDate struct identical to @dt.
  **/
 static EContactDate *
 e_contact_date_copy (EContactDate *dt)
@@ -2208,7 +2208,7 @@ e_contact_photo_free (EContactPhoto *photo)
  *
  * Creates a copy of @photo.
  *
- * Returns: A new #EContactPhoto struct identical to @photo.
+ * Returns: (transfer full): A new #EContactPhoto struct identical to @photo.
  *
  * Since: 3.8
  **/
@@ -2533,6 +2533,14 @@ e_contact_geo_free (EContactGeo *geo)
 	g_free (geo);
 }
 
+/**
+ * e_contact_geo_copy:
+ * @geo: an #EContactGeo
+ *
+ * Creates a copy of @geo.
+ *
+ * Returns: (transfer full): A new #EContactGeo struct identical to @geo.
+ **/
 static EContactGeo *
 e_contact_geo_copy (EContactGeo *geo)
 {
@@ -2584,6 +2592,14 @@ e_contact_address_free (EContactAddress *address)
 	g_free (address);
 }
 
+/**
+ * e_contact_address_copy:
+ * @address: an #EContactAddress
+ *
+ * Creates a copy of @address.
+ *
+ * Returns: (transfer full): A new #EContactAddress struct identical to @address.
+ **/
 static EContactAddress *
 e_contact_address_copy (EContactAddress *address)
 {
@@ -2636,6 +2652,14 @@ e_contact_cert_free (EContactCert *cert)
 	g_free (cert);
 }
 
+/**
+ * e_contact_cert_copy:
+ * @cert: an #EContactCert
+ *
+ * Creates a copy of @cert.
+ *
+ * Returns: (transfer full): A new #EContactCert struct identical to @cert.
+ **/
 static EContactCert *
 e_contact_cert_copy (EContactCert *cert)
 {
@@ -2651,13 +2675,13 @@ E_CONTACT_DEFINE_BOXED_TYPE (e_contact_cert, "EContactCert")
 
 /**
  * e_contact_attr_list_copy:
- * @list: A #GList of strings
+ * @list: (element-type utf8): A #GList of strings
  *
  * Copies a list of allocated strings, specifically
  * for the #EContactAttrList boxed type used for multi valued
  * contact fields.
  *
- * Returns: (transfer full): A copy of @list
+ * Returns: (transfer full) (element-type utf8): A copy of @list
  *
  * Since: 3.8
  */
@@ -2669,7 +2693,7 @@ e_contact_attr_list_copy (GList *list)
 
 /**
  * e_contact_attr_list_free:
- * @list: A #GList of strings
+ * @list: (element-type utf8): A #GList of strings
  *
  * Frees a list of allocated strings, specifically
  * for the #EContactAttrList boxed type used for multi valued

@@ -3992,7 +3992,7 @@ e_book_client_get_view_finish (EBookClient *client,
  * e_book_client_get_view_sync:
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
- * @out_view: (out) an #EBookClientView
+ * @out_view: (out): an #EBookClientView
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *

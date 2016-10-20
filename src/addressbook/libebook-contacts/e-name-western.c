@@ -23,6 +23,8 @@
  * <jwz> Are you going down that rat hole?  Bring a flashlight.
  */
 
+#include "evolution-data-server-config.h"
+
 #include <ctype.h>
 #include <string.h>
 
@@ -37,6 +39,8 @@ typedef struct {
 	gint last_idx;
 	gint suffix_idx;
 } ENameWesternIdxs;
+
+G_DEFINE_BOXED_TYPE (ENameWestern, e_name_western, e_name_western_copy, e_name_western_free)
 
 static gint
 e_name_western_str_count_words (const gchar *str)
@@ -1029,14 +1033,45 @@ void
 e_name_western_free (ENameWestern *w)
 {
 
+	if (!w)
+		return;
+
 	g_free (w->prefix);
 	g_free (w->first);
 	g_free (w->middle);
 	g_free (w->nick);
 	g_free (w->last);
 	g_free (w->suffix);
-
 	g_free (w->full);
-
 	g_free (w);
+}
+
+/**
+ * e_name_western_copy:
+ * @w: an #ENameWestern
+ *
+ * Creates a copy of @w.
+ *
+ * Returns: (transfer full): A new #ENameWestern struct identical to @w.
+ *
+ * Since: 3.24
+ **/
+ENameWestern *
+e_name_western_copy (ENameWestern *w)
+{
+	ENameWestern *wname;
+
+	if (!w)
+		return NULL;
+
+	wname = g_new0 (ENameWestern, 1);
+	wname->prefix = g_strdup (w->prefix);
+	wname->first = g_strdup (w->first);
+	wname->middle = g_strdup (w->middle);
+	wname->nick = g_strdup (w->nick);
+	wname->last = g_strdup (w->last);
+	wname->suffix = g_strdup (w->suffix);
+	wname->full = g_strdup (w->full);
+
+	return wname;
 }

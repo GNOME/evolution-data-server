@@ -48,8 +48,10 @@ typedef struct {
 	gchar *country;
 } EAddressWestern;
 
+GType         e_address_western_get_type (void) G_GNUC_CONST;
 EAddressWestern *e_address_western_parse (const gchar *in_address);
 void e_address_western_free (EAddressWestern *eaw);
+EAddressWestern *e_address_western_copy (EAddressWestern *eaw);
 
 G_END_DECLS
 

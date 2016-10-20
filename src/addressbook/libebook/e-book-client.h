@@ -51,7 +51,7 @@
 	((obj), E_TYPE_BOOK_CLIENT, EBookClientClass))
 
 /**
- * BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS:
+ * BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS: (value "required-fields")
  *
  * FIXME: Document me.
  *
@@ -60,7 +60,7 @@
 #define BOOK_BACKEND_PROPERTY_REQUIRED_FIELDS		"required-fields"
 
 /**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS:
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_FIELDS: (value "supported-fields")
  *
  * FIXME: Document me.
  *
@@ -319,7 +319,7 @@ const gchar *	e_book_client_get_locale	(EBookClient *client);
 
 #ifndef EDS_DISABLE_DEPRECATED
 /**
- * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS:
+ * BOOK_BACKEND_PROPERTY_SUPPORTED_AUTH_METHODS: (value "supported-auth-methods")
  *
  * Since: 3.2
  *

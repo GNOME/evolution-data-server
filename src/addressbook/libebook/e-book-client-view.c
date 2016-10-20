@@ -1067,7 +1067,7 @@ e_book_client_view_init (EBookClientView *client_view)
  * The returned #EBookClient is referenced for thread-safety.  Unreference
  * the #EBookClient with g_object_unref() when finished with it.
  *
- * Returns: an #EBookClient
+ * Returns: (transfer full): an #EBookClient
  *
  * Since: 3.10
  **/

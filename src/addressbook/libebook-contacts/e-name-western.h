@@ -20,6 +20,7 @@
 #endif
 
 #include <glib.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -37,8 +38,10 @@ typedef struct {
 	gchar *full;
 } ENameWestern;
 
+GType         e_name_western_get_type (void) G_GNUC_CONST;
 ENameWestern *e_name_western_parse (const gchar   *full_name);
 void          e_name_western_free  (ENameWestern *w);
+ENameWestern *e_name_western_copy  (ENameWestern *w);
 
 G_END_DECLS
 

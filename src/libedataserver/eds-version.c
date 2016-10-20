@@ -23,7 +23,7 @@ const guint eds_minor_version = EDS_MINOR_VERSION;
 const guint eds_micro_version = EDS_MICRO_VERSION;
 
 /**
- * eds_check_version: (rename-to e_check_version)
+ * eds_check_version:
  * @required_major: the required major version
  * @required_minor: the required minor version
  * @required_micro: the required micro version

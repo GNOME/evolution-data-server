@@ -49,7 +49,7 @@ typedef struct _ENetworkMonitorClass ENetworkMonitorClass;
 typedef struct _ENetworkMonitorPrivate ENetworkMonitorPrivate;
 
 /**
- * @E_NETWORK_MONITOR_ALWAYS_ONLINE_NAME:
+ * E_NETWORK_MONITOR_ALWAYS_ONLINE_NAME: (value "always-online")
  *
  * A special name, which can be used as a GIO name in the call
  * to e_network_monitor_set_gio_name(), which is used to report

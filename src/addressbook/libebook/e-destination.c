@@ -823,7 +823,7 @@ e_destination_set_auto_recipient (EDestination *dest,
  *
  * Gets the contact @dest is pointing to, if any.
  *
- * Returns: (transfer none): An #EContact, or %NULL if none was set.
+ * Returns: (transfer none) (nullable): An #EContact, or %NULL if none was set.
  **/
 EContact *
 e_destination_get_contact (const EDestination *dest)
@@ -839,7 +839,7 @@ e_destination_get_contact (const EDestination *dest)
  *
  * Gets the unique contact ID @dest is pointing to, if any.
  *
- * Returns: A unique contact ID, or %NULL if none was set.
+ * Returns: (nullable): A unique contact ID, or %NULL if none was set.
  */
 const gchar *
 e_destination_get_contact_uid (const EDestination *dest)
@@ -856,7 +856,7 @@ e_destination_get_contact_uid (const EDestination *dest)
  * Gets the unique source ID @dest is pointing to, if any. The source
  * ID specifies which address book @dest's contact came from.
  *
- * Returns: A unique source ID, or %NULL if none was set.
+ * Returns: (nullable): A unique source ID, or %NULL if none was set.
  */
 const gchar *
 e_destination_get_source_uid (const EDestination *dest)
@@ -893,7 +893,7 @@ e_destination_get_email_num (const EDestination *dest)
  * Gets the full name of @dest's addressee, or if the addressee is
  * a contact list, the name the list was filed under.
  *
- * Returns: The full name of the addressee, or %NULL if none was set.
+ * Returns: (nullable): The full name of the addressee, or %NULL if none was set.
  **/
 const gchar *
 e_destination_get_name (const EDestination *dest)
@@ -1058,7 +1058,7 @@ destination_get_address (const EDestination *dest,
  * encoded list of email addresses, from @dest.  The returned string is
  * suitable for use in an email header, but not for displaying to users.
  *
- * Returns: an encoded destination string suitable for use in an
+ * Returns: (nullable): an encoded destination string suitable for use in an
  *          email header, or %NULL if the destination was empty
  **/
 const gchar *
@@ -1302,7 +1302,7 @@ e_destination_set_html_mail_pref (EDestination *dest,
 
 /**
  * e_destination_get_textrepv:
- * @destv: %NULL-terminated array of pointers to #EDestination
+ * @destv: (array zero-terminated=1): %NULL-terminated array of pointers to #EDestination
  *
  * Generates a joint text representation of all the #EDestination
  * elements in @destv.
@@ -1655,7 +1655,7 @@ e_destination_export (const EDestination *dest)
  *
  * Creates an #EDestination from an XML document.
  *
- * Returns: (transfer full): An #EDestination, or %NULL if the document was not
+ * Returns: (transfer full) (nullable): An #EDestination, or %NULL if the document was not
  * well-formed.
  **/
 EDestination *
@@ -1682,7 +1682,7 @@ e_destination_import (const gchar *str)
 
 /**
  * e_destination_exportv:
- * @destv: a %NULL-terminated array of pointers to #EDestination
+ * @destv: (array zero-terminated=1): a %NULL-terminated array of pointers to #EDestination
  *
  * Exports multiple #EDestination elements to a single XML document.
  *
@@ -1728,8 +1728,8 @@ e_destination_exportv (EDestination **destv)
  * Creates an array of pointers to #EDestination elements
  * from an XML document.
  *
- * Returns: (transfer full):A %NULL-terminated array of pointers to
- * #EDestination elements.
+ * Returns: (transfer full) (array zero-terminated=1): A %NULL-terminated
+ * array of pointers to #EDestination elements.
  **/
 EDestination **
 e_destination_importv (const gchar *str)
@@ -1782,7 +1782,7 @@ e_destination_importv (const gchar *str)
 
 /**
  * e_destination_freev:
- * @destv: a %NULL-terminated array of pointers to #EDestination
+ * @destv: (array zero-terminated=1): a %NULL-terminated array of pointers to #EDestination
  *
  * Unrefs the elements of @destv and frees @destv itself.
  **/
