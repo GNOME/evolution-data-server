@@ -1306,7 +1306,17 @@ find_attachment (CamelMimeMessage *msg,
 
 		*found = (cd->disposition && g_ascii_strcasecmp (cd->disposition, "attachment") == 0);
 
-		if (!*found && (!cd->disposition || g_ascii_strcasecmp (cd->disposition, "inline") != 0)) {
+		/* If the Content-Disposition isn't an attachment, then call everything with a "filename"
+		   parameter an attachment, but only if there is no Content-Disposition header, or it's
+		   not the "inline" or it's neither text/... nor image/... Content-Type, which can be usually
+		   shown in the UI inline.
+
+		   The test for Content-Type was added for Apple Mail, which marks also for example .pdf
+		   attachments as 'inline', which broke the previous logic here.
+		*/
+		if (!*found && (!cd->disposition ||
+		    g_ascii_strcasecmp (cd->disposition, "inline") != 0 ||
+		    (!camel_content_type_is (ct, "text", "*") && !camel_content_type_is (ct, "image", "*")))) {
 			for (param = cd->params; param && !(*found); param = param->next) {
 				if (param->name && param->value && *param->value && g_ascii_strcasecmp (param->name, "filename") == 0)
 					*found = TRUE;
