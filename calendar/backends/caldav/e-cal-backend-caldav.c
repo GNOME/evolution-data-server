@@ -326,6 +326,40 @@ static void put_server_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *i
 /* ************************************************************************* */
 /* Misc. utility functions */
 
+static void
+caldav_ensure_bearer_auth_usage (ECalBackendCalDAV *cbdav,
+				 ESoupAuthBearer *bearer)
+{
+	SoupSessionFeature *feature;
+	SoupURI *soup_uri;
+	ESourceWebdav *extension;
+	ESource *source;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+
+	/* Preload the SoupAuthManager with a valid "Bearer" token
+	 * when using OAuth 2.0. This avoids an extra unauthorized
+	 * HTTP round-trip, which apparently Google doesn't like. */
+
+	feature = soup_session_get_feature (cbdav->priv->session, SOUP_TYPE_AUTH_MANAGER);
+
+	if (!soup_session_feature_has_feature (feature, E_TYPE_SOUP_AUTH_BEARER)) {
+		/* Add the "Bearer" auth type to support OAuth 2.0. */
+		soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+	}
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+	soup_uri = e_source_webdav_dup_soup_uri (extension);
+
+	soup_auth_manager_use_auth (
+		SOUP_AUTH_MANAGER (feature),
+		soup_uri, SOUP_AUTH (bearer));
+
+	soup_uri_free (soup_uri);
+}
+
 static gboolean
 caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
 			  ESoupAuthBearer *bearer,
@@ -345,8 +379,10 @@ caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
 	success = e_util_get_source_oauth2_access_token_sync (source, cbdav->priv->credentials,
 		&access_token, &expires_in_seconds, cancellable, error);
 
-	if (success)
+	if (success) {
 		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
+		caldav_ensure_bearer_auth_usage (cbdav, bearer);
+	}
 
 	g_free (access_token);
 
@@ -358,11 +394,7 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 				  GCancellable *cancellable,
 				  GError **error)
 {
-	ESourceWebdav *extension;
 	ESource *source;
-	SoupSessionFeature *feature;
-	SoupAuth *soup_auth;
-	SoupURI *soup_uri;
 	gchar *auth_method = NULL;
 	gboolean success;
 
@@ -386,33 +418,27 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 
 	g_free (auth_method);
 
-	/* Preload the SoupAuthManager with a valid "Bearer" token
-	 * when using OAuth 2.0. This avoids an extra unauthorized
-	 * HTTP round-trip, which apparently Google doesn't like. */
+	if (cbdav->priv->using_bearer_auth) {
+		success = caldav_setup_bearer_auth (cbdav, cbdav->priv->using_bearer_auth, cancellable, error);
+	} else {
+		ESourceWebdav *extension;
+		SoupAuth *soup_auth;
+		SoupURI *soup_uri;
 
-	feature = soup_session_get_feature (cbdav->priv->session, SOUP_TYPE_AUTH_MANAGER);
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		soup_uri = e_source_webdav_dup_soup_uri (extension);
 
-	/* Add the "Bearer" auth type to support OAuth 2.0. */
-	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+		soup_auth = g_object_new (
+			E_TYPE_SOUP_AUTH_BEARER,
+			SOUP_AUTH_HOST, soup_uri->host, NULL);
 
-	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	soup_uri = e_source_webdav_dup_soup_uri (extension);
+		success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
+		if (success)
+			cbdav->priv->using_bearer_auth = g_object_ref (soup_auth);
 
-	soup_auth = g_object_new (
-		E_TYPE_SOUP_AUTH_BEARER,
-		SOUP_AUTH_HOST, soup_uri->host, NULL);
-
-	success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
-	if (success) {
-		cbdav->priv->using_bearer_auth = g_object_ref (soup_auth);
-
-		soup_auth_manager_use_auth (
-			SOUP_AUTH_MANAGER (feature),
-			soup_uri, soup_auth);
+		g_object_unref (soup_auth);
+		soup_uri_free (soup_uri);
 	}
-
-	g_object_unref (soup_auth);
-	soup_uri_free (soup_uri);
 
 	return success;
 }
