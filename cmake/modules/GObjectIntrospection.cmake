@@ -202,13 +202,13 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 		--add-include-path=${CMAKE_SOURCE_DIR}/src
 		--add-include-path=${CMAKE_CURRENT_BINARY_DIR}
 		--add-include-path=${CMAKE_CURRENT_SOURCE_DIR}
-		--library-path=${LIB_INSTALL_DIR}
 		--library-path=${CMAKE_BINARY_DIR}
 		--library-path=${CMAKE_BINARY_DIR}/src
 		--library-path=${CMAKE_CURRENT_BINARY_DIR}
 		${_gir_extra_libdirs}
 		${_gir_identifies_prefixes}
 		${_gir_deps}
+		--library-path=${LIB_INSTALL_DIR}
 		--pkg-export ${pkg_export_prefix}-${gir_library_version}
 		--c-include=${c_include}
 		--cflags-begin
