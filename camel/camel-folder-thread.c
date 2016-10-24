@@ -360,12 +360,7 @@ dump_tree_rec (struct _tree_info *info,
                CamelFolderThreadNode *c,
                gint depth)
 {
-	gchar *p;
-	gint count = 0;
-
-	p = alloca (depth * 2 + 1);
-	memset (p, ' ', depth * 2);
-	p[depth * 2] = 0;
+	gint count = 0, indent = depth * 2;
 
 	while (c) {
 		if (g_hash_table_lookup (info->visited, c)) {
@@ -375,14 +370,14 @@ dump_tree_rec (struct _tree_info *info,
 		}
 		if (c->message) {
 			printf (
-				"%s %p Subject: %s <%08x%08x>\n",
-				p, (gpointer) c,
+				"%*s %p Subject: %s <%08x%08x>\n",
+				indent, "", (gpointer) c,
 				camel_message_info_get_subject (c->message),
 				camel_message_info_get_message_id (c->message)->id.part.hi,
 				camel_message_info_get_message_id (c->message)->id.part.lo);
 			count += 1;
 		} else {
-			printf ("%s %p <empty>\n", p, (gpointer) c);
+			printf ("%*s %p <empty>\n", indent, "", (gpointer) c);
 		}
 		if (c->child)
 			count += dump_tree_rec (info, c->child, depth + 1);
@@ -441,7 +436,9 @@ sort_thread (CamelFolderThreadNode **cp)
 	}
 	if (size < 2)
 		return;
-	carray = alloca (size * sizeof (CamelFolderThreadNode *));
+
+	carray = g_new (CamelFolderThreadNode *, size);
+
 	c = *cp;
 	size = 0;
 	while (c) {
@@ -461,6 +458,8 @@ sort_thread (CamelFolderThreadNode **cp)
 		size--;
 	} while (size >= 0);
 	*cp = head;
+
+	g_free (carray);
 }
 
 static guint
