@@ -212,6 +212,16 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define CAL_STATIC_CAPABILITY_ALL_DAY_EVENT_AS_TIME	"all-day-event-as-time"
 
+/**
+ * CAL_STATIC_CAPABILITY_TASK_DATE_ONLY:
+ *
+ * Let the client know that the Task Start date, Due date and Completed date
+ * can be entered only as dates. When the capability is not set, then these
+ * can be date and time.
+ *
+ * Since: 3.24
+ **/
+#define CAL_STATIC_CAPABILITY_TASK_DATE_ONLY		"task-date-only"
 
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
