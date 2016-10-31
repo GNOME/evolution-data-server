@@ -132,8 +132,6 @@ set(gir_sources ${SOURCES} ${HEADERS})
 set(gir_identifies_prefixes E)
 set(gir_includes GObject-2.0 GLib-2.0 Gio-2.0 libxml2-2.0)
 set(gir_cflags
-	${CAMEL_INCLUDE_DIRS}
-	${DATA_SERVER_INCLUDE_DIRS}
 	-DLIBEBOOK_CONTACTS_COMPILATION
 	-I${CMAKE_BINARY_DIR}/src/addressbook
 	-I${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts
@@ -142,6 +140,7 @@ set(gir_cflags
 )
 set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/private
+	${CMAKE_BINARY_DIR}/src/camel
 	${CMAKE_BINARY_DIR}/src/libedataserver
 )
 set(gir_libs

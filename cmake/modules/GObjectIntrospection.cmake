@@ -101,8 +101,9 @@ macro(gir_add_introspection gir)
 		set(_gir_libtool "--no-libtool")
 
 		add_custom_command(
-			COMMAND ${CMAKE_COMMAND} -E env "CC='${CMAKE_C_COMPILER}'"
-                                ${G_IR_SCANNER}
+			COMMAND ${CMAKE_COMMAND} -E env "CC='${CMAKE_C_COMPILER}'" LDFLAGS=
+				${INTROSPECTION_SCANNER_ENV}
+				${G_IR_SCANNER}
 				${INTROSPECTION_SCANNER_ARGS}
 				--namespace=${_gir_namespace}
 				--nsversion=${_gir_version}
@@ -167,8 +168,8 @@ endmacro(_gir_deps_to_includedir)
 macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_version c_include gir_identifies_prefixes_var gir_includes_var extra_cflags_var gir_extra_libdirs_var gir_libs_var gir_deps_var gir_sources_var)
 	gir_construct_names(${gir_library} ${gir_library_version} gir_name gir_vars_prefix)
 
-	unset(INTROSPECTION_SCANNER_FLAGS)
 	unset(INTROSPECTION_SCANNER_ARGS)
+	unset(INTROSPECTION_SCANNER_ENV)
 	unset(INTROSPECTION_COMPILER_ARGS)
 
 	set(${gir_vars_prefix} ${gir_library})
@@ -215,6 +216,51 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 		${${gir_vars_prefix}_CFLAGS}
 		--cflags-end
 		--verbose
+	)
+
+	if(WIN32)
+		set(_loader_library_path_var "PATH")
+		set(_loader_library_path_native "$ENV{PATH}")
+	elseif(APPLE)
+		set(_loader_library_path_var "DYLD_LIBRARY_PATH")
+		set(_loader_library_path_native "$ENV{DYLD_LIBRARY_PATH}")
+	else()
+		set(_loader_library_path_var "LD_LIBRARY_PATH")
+		set(_loader_library_path_native "$ENV{LD_LIBRARY_PATH}")
+	endif ()
+
+	file(TO_CMAKE_PATH
+		"${_loader_library_path_native}"
+		_loader_library_path_cmake
+	)
+
+	set(_extra_loader_library_path_cmake
+		${CMAKE_BINARY_DIR}
+		${CMAKE_BINARY_DIR}/src
+		${CMAKE_CURRENT_BINARY_DIR}
+		${${gir_extra_libdirs_var}}
+		${LIB_INSTALL_DIR}
+		${_loader_library_path_cmake}
+	)
+
+	file(TO_NATIVE_PATH
+		"${_extra_loader_library_path_cmake}"
+		_extra_loader_library_path_native
+	)
+
+	if(UNIX)
+		string(REPLACE ";" ":"
+			_extra_loader_library_path_native
+			"${_extra_loader_library_path_native}"
+		)
+		string(REPLACE "\\ " " "
+			_extra_loader_library_path_native
+			"${_extra_loader_library_path_native}"
+		)
+	endif(UNIX)
+
+	set(INTROSPECTION_SCANNER_ENV
+		${_loader_library_path_var}="${_extra_loader_library_path_native}"
 	)
 
 	gir_add_introspection(${gir_name})
