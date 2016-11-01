@@ -42,6 +42,18 @@ macro(_gir_list_prefix_libs _outvar _listvar _prefix)
 	endforeach()
 endmacro(_gir_list_prefix_libs)
 
+macro(_gir_list_prefix_path_to_string _outvar _listvar _prefix)
+	set(${_outvar})
+	foreach(_item IN LISTS ${_listvar})
+		get_filename_component(_dir "${_item}" DIRECTORY)
+		if(_dir STREQUAL "")
+			set(${_outvar} "${${_outvar}}${_prefix}/${_item}\n")
+		else(_dir STREQUAL "")
+			set(${_outvar} "${${_outvar}}${_item}\n")
+		endif(_dir STREQUAL "")
+	endforeach()
+endmacro(_gir_list_prefix_path_to_string)
+
 macro(gir_construct_names _prefix _version _out_girname _out_varsprefix)
 	set(${_out_girname} "${_prefix}-${_version}.gir")
 	set(_varsprefix ${${_out_girname}})
@@ -100,6 +112,9 @@ macro(gir_add_introspection gir)
 		# Reuse the LIBTOOL variable from by automake if it's set
 		set(_gir_libtool "--no-libtool")
 
+		_gir_list_prefix_path_to_string(_gir_files ${${_gir_name}_FILES} "${CMAKE_CURRENT_SOURCE_DIR}")
+		file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${_gir_name}_files "${_gir_files}")
+
 		add_custom_command(
 			COMMAND ${CMAKE_COMMAND} -E env "CC='${CMAKE_C_COMPILER}'" LDFLAGS=
 				${INTROSPECTION_SCANNER_ENV}
@@ -114,14 +129,14 @@ macro(gir_add_introspection gir)
 				${_gir_includes}
 				${${_gir_name}_SCANNERFLAGS}
 				${${_gir_name}_CFLAGS}
-				${${_gir_name}_FILES}
+				--filelist=${CMAKE_CURRENT_BINARY_DIR}/${_gir_name}_files
 				--output ${CMAKE_CURRENT_BINARY_DIR}/${gir}
 				--accept-unprefixed
-			DEPENDS ${${_gir_name}_FILES}
+			DEPENDS ${${${_gir_name}_FILES}}
 				${${_gir_name}_LIBS}
 				${${_gir_name}_DEPS}
 			OUTPUT ${gir}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			VERBATIM
 		)
 		list(APPEND _gir_girs ${CMAKE_CURRENT_BINARY_DIR}/${gir})
@@ -133,12 +148,12 @@ macro(gir_add_introspection gir)
 			add_custom_command(
 				COMMAND ${G_IR_COMPILER}
 					${INTROSPECTION_COMPILER_ARGS}
-					--includedir=.
+					--includedir=${CMAKE_CURRENT_SOURCE_DIR}
 					${CMAKE_CURRENT_BINARY_DIR}/${gir}
 					-o ${CMAKE_CURRENT_BINARY_DIR}/${_typelib}
 				DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${gir}
 				OUTPUT ${_typelib}
-				WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+				WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 			)
 			list(APPEND _gir_typelibs ${CMAKE_CURRENT_BINARY_DIR}/${_typelib})
 			install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${_typelib} DESTINATION ${LIB_INSTALL_DIR}/girepository-1.0)
@@ -187,7 +202,7 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 		${${extra_cflags_var}}
 	)
 	set(${gir_vars_prefix}_LIBS ${${gir_libs_var}})
-	set(${gir_vars_prefix}_FILES ${${gir_sources_var}})
+	set(${gir_vars_prefix}_FILES ${gir_sources_var})
 
 	_gir_deps_to_includedir(INTROSPECTION_COMPILER_ARGS ${gir_deps_var})
 	_gir_deps_to_cmake_targets(${gir_vars_prefix}_DEPS ${gir_deps_var})
