@@ -228,9 +228,9 @@ gboolean e_cal_get_alarms_for_object (ECal *ecal, const ECalComponentId *id,
 				      ECalComponentAlarms **alarms);
 
 gboolean e_cal_create_object (ECal *ecal, icalcomponent *icalcomp, gchar **uid, GError **error);
-gboolean e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, CalObjModType mod, GError **error);
+gboolean e_cal_modify_object (ECal *ecal, icalcomponent *icalcomp, ECalObjModType mod, GError **error);
 gboolean e_cal_remove_object (ECal *ecal, const gchar *uid, GError **error);
-gboolean e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid, const gchar *rid, CalObjModType mod, GError **error);
+gboolean e_cal_remove_object_with_mod (ECal *ecal, const gchar *uid, const gchar *rid, ECalObjModType mod, GError **error);
 
 gboolean e_cal_discard_alarm (ECal *ecal, ECalComponent *comp, const gchar *auid, GError **error);
 

@@ -298,10 +298,10 @@ intersects_interval (const struct icaltimetype *tt,
  * @comp: an icalcomponent
  * @interval_start: an interval start, for which generate instances
  * @interval_end: an interval end, for which generate instances
- * @callback: a callback to be called for each instance
- * @callback_user_data: user data for @callback
- * @get_tz_callback: a callback to call when resolving timezone
- * @get_tz_callback_user_data: user data for @get_tz_callback
+ * @callback: (scope call): a callback to be called for each instance
+ * @callback_user_data: (closure callback): user data for @callback
+ * @get_tz_callback: (scope call): a callback to call when resolving timezone
+ * @get_tz_callback_user_data: (closure get_tz_callback): user data for @get_tz_callback
  * @default_timezone: a default icaltimezone
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any

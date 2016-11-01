@@ -60,7 +60,7 @@ gboolean	e_cal_recur_generate_instances_sync	(icalcomponent *comp,
 typedef gboolean (* ECalRecurInstanceFn) (ECalComponent *comp,
 					 time_t        instance_start,
 					 time_t        instance_end,
-					 gpointer      data);
+					 gpointer      user_data);
 
 typedef icaltimezone * (* ECalRecurResolveTimezoneFn)	(const gchar   *tzid,
 							 gpointer      data);

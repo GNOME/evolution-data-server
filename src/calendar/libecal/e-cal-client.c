@@ -86,7 +86,7 @@ struct _AsyncContext {
 	gchar *uid;
 	gchar *rid;
 	gchar *auid;
-	CalObjModType mod;
+	ECalObjModType mod;
 	time_t start;
 	time_t end;
 };

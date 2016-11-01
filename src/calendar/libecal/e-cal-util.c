@@ -34,7 +34,7 @@
 
 /**
  * cal_obj_instance_list_free:
- * @list: List of #CalObjInstance structures.
+ * @list: (element-type CalObjInstance): List of #CalObjInstance structures.
  *
  * Frees a list of #CalObjInstance structures.
  **/
@@ -59,7 +59,7 @@ cal_obj_instance_list_free (GList *list)
 
 /**
  * cal_obj_uid_list_free:
- * @list: List of strings with unique identifiers.
+ * @list: (element-type utf8): List of strings with unique identifiers.
  *
  * Frees a list of unique identifiers for calendar objects.
  **/

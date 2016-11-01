@@ -1985,7 +1985,7 @@ e_cal_create_object (ECal *ecal,
 gboolean
 e_cal_modify_object (ECal *ecal,
                      icalcomponent *icalcomp,
-                     CalObjModType mod,
+                     ECalObjModType mod,
                      GError **error)
 {
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);
@@ -2046,7 +2046,7 @@ gboolean
 e_cal_remove_object_with_mod (ECal *ecal,
                               const gchar *uid,
                               const gchar *rid,
-                              CalObjModType mod,
+                              ECalObjModType mod,
                               GError **error)
 {
 	g_return_val_if_fail (E_IS_CAL (ecal), FALSE);

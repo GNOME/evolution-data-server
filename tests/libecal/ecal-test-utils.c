@@ -239,7 +239,7 @@ ecal_test_utils_cal_get_object (ECal *cal,
 void
 ecal_test_utils_cal_modify_object (ECal *cal,
                                    icalcomponent *component,
-                                   CalObjModType mod_type)
+                                   ECalObjModType mod_type)
 {
 	GError *error = NULL;
 

@@ -1485,7 +1485,7 @@ e_cal_component_get_id (ECalComponent *comp)
 /**
  * e_cal_component_get_uid:
  * @comp: A calendar component object.
- * @uid: Return value for the UID string.
+ * @uid: (out) (transfer none): Return value for the UID string.
  *
  * Queries the unique identifier of a calendar component object.
  **/
@@ -1807,7 +1807,7 @@ e_cal_component_get_num_attachments (ECalComponent *comp)
 /**
  * e_cal_component_get_categories:
  * @comp: A calendar component object.
- * @categories: Return holder for the categories.
+ * @categories: (out) (transfer none): Return holder for the categories.
  *
  * Queries the categories of the given calendar component. The categories
  * are returned in the @categories argument, which, on success, will contain
@@ -2006,7 +2006,7 @@ e_cal_component_set_categories_list (ECalComponent *comp,
 /**
  * e_cal_component_get_classification:
  * @comp: A calendar component object.
- * @classif: Return value for the classification.
+ * @classif: (out): Return value for the classification.
  *
  * Queries the classification of a calendar component object.  If the
  * classification property is not set on this component, this function returns
@@ -2351,7 +2351,7 @@ set_icaltimetype (ECalComponent *comp,
 /**
  * e_cal_component_get_completed:
  * @comp: A calendar component object.
- * @t: Return value for the completion date.  This should be freed using the
+ * @t: (out): Return value for the completion date.  This should be freed using the
  * e_cal_component_free_icaltimetype() function.
  *
  * Queries the date at which a calendar compoment object was completed.
@@ -2401,7 +2401,7 @@ e_cal_component_set_completed (ECalComponent *comp,
 /**
  * e_cal_component_get_created:
  * @comp: A calendar component object.
- * @t: Return value for the creation date.  This should be freed using the
+ * @t: (out): Return value for the creation date.  This should be freed using the
  * e_cal_component_free_icaltimetype() function.
  *
  * Queries the date in which a calendar component object was created in the
@@ -2483,12 +2483,12 @@ e_cal_component_get_description_list (ECalComponent *comp,
 /**
  * e_cal_component_set_description_list:
  * @comp: A calendar component object.
- * @text_list: (element-type ECalComponentSummary): List of
- * #ECalComponentSummary structures.
+ * @text_list: (element-type ECalComponentText): List of
+ * #ECalComponentText structures.
  *
  * Sets the description of a calendar component object.  Journal components may
  * have more than one description, and as such this function takes in a list of
- * #ECalComponentDescription structures.  All other types of components can have
+ * #ECalComponentText structures.  All other types of components can have
  * at most one description.
  **/
 void
@@ -2636,7 +2636,7 @@ e_cal_component_get_start_plus_duration (ECalComponent *comp,
 /**
  * e_cal_component_get_dtend:
  * @comp: A calendar component object.
- * @dt: Return value for the date/time end.  This should be freed with the
+ * @dt: (out): Return value for the date/time end.  This should be freed with the
  * e_cal_component_free_datetime() function.
  *
  * Queries the date/time end of a calendar component object.
@@ -2706,7 +2706,7 @@ e_cal_component_set_dtend (ECalComponent *comp,
 /**
  * e_cal_component_get_dtstamp:
  * @comp: A calendar component object.
- * @t: A value for the date/timestamp.
+ * @t: (out): A value for the date/timestamp.
  *
  * Queries the date/timestamp property of a calendar component object, which is
  * the last time at which the object was modified by a calendar user agent.
@@ -2761,7 +2761,7 @@ e_cal_component_set_dtstamp (ECalComponent *comp,
 /**
  * e_cal_component_get_dtstart:
  * @comp: A calendar component object.
- * @dt: Return value for the date/time start.  This should be freed with the
+ * @dt: (out): Return value for the date/time start.  This should be freed with the
  * e_cal_component_free_datetime() function.
  *
  * Queries the date/time start of a calendar component object.
@@ -2817,7 +2817,7 @@ e_cal_component_set_dtstart (ECalComponent *comp,
 /**
  * e_cal_component_get_due:
  * @comp: A calendar component object.
- * @dt: Return value for the due date/time.  This should be freed with the
+ * @dt: (out): Return value for the due date/time.  This should be freed with the
  * e_cal_component_free_datetime() function.
  *
  * Queries the due date/time of a calendar component object.
@@ -3343,7 +3343,7 @@ e_cal_component_has_exceptions (ECalComponent *comp)
 /**
  * e_cal_component_get_geo:
  * @comp: A calendar component object.
- * @geo: Return value for the geographic position property.  This should be
+ * @geo: (out): Return value for the geographic position property.  This should be
  * freed using the e_cal_component_free_geo() function.
  *
  * Gets the geographic position property of a calendar component object.
@@ -3459,7 +3459,7 @@ e_cal_component_set_last_modified (ECalComponent *comp,
 /**
  * e_cal_component_get_organizer:
  * @comp:  A calendar component object
- * @organizer: A value for the organizer
+ * @organizer: (out): A value for the organizer
  *
  * Queries the organizer property of a calendar component object
  **/
@@ -3623,7 +3623,7 @@ e_cal_component_has_organizer (ECalComponent *comp)
 /**
  * e_cal_component_get_percent:
  * @comp: A calendar component object.
- * @percent: Return value for the percent-complete property.  This should be
+ * @percent: (out): Return value for the percent-complete property.  This should be
  * freed using the e_cal_component_free_percent() function.
  *
  * Queries the percent-complete property of a calendar component object.
@@ -3760,7 +3760,7 @@ e_cal_component_set_percent (ECalComponent *comp,
 /**
  * e_cal_component_get_priority:
  * @comp: A calendar component object.
- * @priority: Return value for the priority property.  This should be freed using
+ * @priority: (out): Return value for the priority property.  This should be freed using
  * the e_cal_component_free_priority() function.
  *
  * Queries the priority property of a calendar component object.
@@ -3827,7 +3827,7 @@ e_cal_component_set_priority (ECalComponent *comp,
 /**
  * e_cal_component_get_recurid:
  * @comp: A calendar component object.
- * @recur_id: Return value for the recurrence id property
+ * @recur_id: (out): Return value for the recurrence id property
  *
  * Queries the recurrence id property of a calendar component object.
  **/
@@ -4300,7 +4300,7 @@ e_cal_component_is_instance (ECalComponent *comp)
 /**
  * e_cal_component_get_sequence:
  * @comp: A calendar component object.
- * @sequence: Return value for the sequence number.  This should be freed using
+ * @sequence: (out): Return value for the sequence number.  This should be freed using
  * e_cal_component_free_sequence().
  *
  * Queries the sequence number of a calendar component object.
@@ -4440,7 +4440,7 @@ e_cal_component_set_status (ECalComponent *comp,
 /**
  * e_cal_component_get_summary:
  * @comp: A calendar component object.
- * @summary: Return value for the summary property and its parameters.
+ * @summary: (out): Return value for the summary property and its parameters.
  *
  * Queries the summary of a calendar component object.
  **/
@@ -4595,7 +4595,7 @@ e_cal_component_set_summary (ECalComponent *comp,
 /**
  * e_cal_component_get_transparency:
  * @comp: A calendar component object.
- * @transp: Return value for the time transparency.
+ * @transp: (out): Return value for the time transparency.
  *
  * Queries the time transparency of a calendar component object.
  **/
@@ -4694,7 +4694,7 @@ e_cal_component_set_transparency (ECalComponent *comp,
 /**
  * e_cal_component_get_url:
  * @comp: A calendar component object.
- * @url: Return value for the URL.
+ * @url: (out) (transfer none): Return value for the URL.
  *
  * Queries the uniform resource locator property of a calendar component object.
  **/
@@ -4971,7 +4971,7 @@ e_cal_component_has_attendees (ECalComponent *comp)
 /**
  * e_cal_component_get_location:
  * @comp: A calendar component object
- * @location: Return value for the location.
+ * @location: (out) (transfer none): Return value for the location.
  *
  * Queries the location property of a calendar component object.
  **/
@@ -5801,7 +5801,7 @@ e_cal_component_alarm_get_uid (ECalComponentAlarm *alarm)
 /**
  * e_cal_component_alarm_get_action:
  * @alarm: An alarm.
- * @action: Return value for the alarm's action type.
+ * @action: (out): Return value for the alarm's action type.
  *
  * Queries the action type of an alarm.
  **/
@@ -5899,7 +5899,7 @@ e_cal_component_alarm_set_action (ECalComponentAlarm *alarm,
 /**
  * e_cal_component_alarm_get_attach:
  * @alarm: An alarm.
- * @attach: Return value for the attachment; should be freed using icalattach_unref().
+ * @attach: (out): Return value for the attachment; should be freed using icalattach_unref().
  *
  * Queries the attachment property of an alarm.
  **/
@@ -5947,7 +5947,7 @@ e_cal_component_alarm_set_attach (ECalComponentAlarm *alarm,
 /**
  * e_cal_component_alarm_get_description:
  * @alarm: An alarm.
- * @description: Return value for the description property and its parameters.
+ * @description: (out): Return value for the description property and its parameters.
  *
  * Queries the description property of an alarm.
  **/
@@ -6012,7 +6012,7 @@ e_cal_component_alarm_set_description (ECalComponentAlarm *alarm,
 /**
  * e_cal_component_alarm_get_repeat:
  * @alarm: An alarm.
- * @repeat: Return value for the repeat/duration properties.
+ * @repeat: (out): Return value for the repeat/duration properties.
  *
  * Queries the repeat/duration properties of an alarm.
  **/
@@ -6079,7 +6079,7 @@ e_cal_component_alarm_set_repeat (ECalComponentAlarm *alarm,
 /**
  * e_cal_component_alarm_get_trigger:
  * @alarm: An alarm.
- * @trigger: Return value for the trigger time.
+ * @trigger: (out): Return value for the trigger time.
  *
  * Queries the trigger time for an alarm.
  **/

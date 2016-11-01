@@ -674,7 +674,7 @@ time_from_isodate (const gchar *str)
  *
  * Convers an icaltimetype structure into a GLibc's struct tm.
  *
- * Returns: The converted time as a struct tm. All fields will be
+ * Returns: (transfer full): The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
  *
  * Since: 2.22
@@ -710,7 +710,7 @@ icaltimetype_to_tm (struct icaltimetype *itt)
  * Converts a time value from one timezone to another, and returns a struct tm
  * representation of the time.
  *
- * Returns: The converted time as a struct tm. All fields will be
+ * Returns: (transfer full): The converted time as a struct tm. All fields will be
  * set properly except for tm.tm_yday.
  *
  * Since: 2.22
@@ -743,7 +743,7 @@ icaltimetype_to_tm_with_zone (struct icaltimetype *itt,
  *
  * Converts a struct tm into an icaltimetype.
  *
- * Returns: The converted time as an icaltimetype.
+ * Returns: (transfer full): The converted time as an icaltimetype.
  *
  * Since: 2.22
  */
