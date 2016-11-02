@@ -454,15 +454,19 @@ endif(NOT WIN32)
 # ******************************
 # libdb checking
 # ******************************
-add_printable_variable(WITH_LIBDB "Prefix where libdb is installed" "")
+add_printable_variable(WITH_LIBDB "Prefix where libdb is installed" ON)
 add_printable_variable(WITH_LIBDB_CFLAGS "Arguments required to compile with libdb" "")
 add_printable_variable(WITH_LIBDB_LIBS "Arguments required to link with libdb" "")
 
-if(NOT ("${WITH_LIBDB}" STREQUAL "NO"))
-	if(NOT (("${WITH_LIBDB}" STREQUAL "") OR ("${WITH_LIBDB}" STREQUAL "YES")))
+if(WITH_LIBDB STREQUAL "")
+	set(WITH_LIBDB ON)
+endif(WITH_LIBDB STREQUAL "")
+
+if(WITH_LIBDB)
+	if(NOT (WITH_LIBDB OR ("${WITH_LIBDB}" STREQUAL "YES")))
 		set(LIBDB_CFLAGS "-I${WITH_LIBDB}/include")
 		set(LIBDB_LIBS "-L${WITH_LIBDB}/lib -ldb")
-	else(NOT (("${WITH_LIBDB}" STREQUAL "") OR ("${WITH_LIBDB}" STREQUAL "YES")))
+	else(NOT (WITH_LIBDB OR ("${WITH_LIBDB}" STREQUAL "YES")))
 		if(("${WITH_LIBDB_CFLAGS}" STREQUAL "") AND ("${WITH_LIBDB_LIBS}" STREQUAL ""))
 			set(LIBDB_CFLAGS "")
 			set(LIBDB_LIBS "-ldb")
@@ -470,7 +474,7 @@ if(NOT ("${WITH_LIBDB}" STREQUAL "NO"))
 			set(LIBDB_CFLAGS ${WITH_LIBDB_CFLAGS})
 			set(LIBDB_LIBS ${WITH_LIBDB_LIBS})
 		endif(("${WITH_LIBDB_CFLAGS}" STREQUAL "") AND ("${WITH_LIBDB_LIBS}" STREQUAL ""))
-	endif(NOT (("${WITH_LIBDB}" STREQUAL "") OR ("${WITH_LIBDB}" STREQUAL "YES")))
+	endif(NOT (WITH_LIBDB OR ("${WITH_LIBDB}" STREQUAL "YES")))
 
 	set(CMAKE_REQUIRED_FLAGS ${LIBDB_CFLAGS})
 	set(CMAKE_REQUIRED_LIBRARIES ${LIBDB_LIBS})
@@ -482,7 +486,7 @@ if(NOT ("${WITH_LIBDB}" STREQUAL "NO"))
 	if(NOT HAVE_LIBDB)
 		message(FATAL_ERROR "libdb not found. Use -DWITH_LIBDB=PATH to specify the library prefix, or use -DWITH_LIBDB_CFLAGS=-I/path/to/db/include and -DWITH_LIBDB_LIBS=/path/to/db/lib to specify arguments for compiling and linking. If you want to disable libdb, please use -DWITH_LIBDB=OFF")
 	endif(NOT HAVE_LIBDB)
-endif(NOT ("${WITH_LIBDB}" STREQUAL "NO"))
+endif(WITH_LIBDB)
 
 # ******************************
 # iconv checking
