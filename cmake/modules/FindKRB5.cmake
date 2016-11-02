@@ -76,6 +76,7 @@ if(HAVE_KRB5)
 	set(HAVE_MIT_KRB5 ON)
 	message(STATUS "Found MIT Kerberos 5")
 else(HAVE_KRB5)
+	unset(HAVE_KRB5 CACHE)
 	set(CMAKE_REQUIRED_INCLUDES "-I${heimdal_includes}")
 	set(CMAKE_REQUIRED_LIBRARIES "-L${krb_libs} ${heimdal_libs}")
 	CHECK_C_SOURCE_COMPILES("#include <krb5.h>
@@ -88,6 +89,7 @@ else(HAVE_KRB5)
 endif(HAVE_KRB5)
 
 if(NOT HAVE_KRB5)
+	unset(HAVE_KRB5 CACHE)
 	set(CMAKE_REQUIRED_INCLUDES "-I${sun_includes}")
 	set(CMAKE_REQUIRED_LIBRARIES "-L${krb_libs} ${sun_libs}")
 	CHECK_C_SOURCE_COMPILES("#include <krb5/krb5.h>
