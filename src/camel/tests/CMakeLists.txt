@@ -31,7 +31,7 @@ macro(add_camel_test_one _part _name _src_file)
 	)
 
 	set_target_properties(${_test_ident} PROPERTIES
-		OUTPUT_NAME ${_name}}
+		OUTPUT_NAME ${_name}
 	)
 
 	add_check_test(${_test_ident})
