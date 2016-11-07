@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.22.2 2016-11-07
+---------------------------------------
+
+Bug Fixes:
+	Bug 772095 - Don't check available sources for disabled accounts (Google/ownCloud) (Milan Crha)
+	Bug 772347 - [IMAPx] NOTIFY responses stuck in stream until read from it (Milan Crha)
+	Bug 767807 - Inline non-text/image attachments hidden in message list (Milan Crha)
+	Bug 773248 - [CalDAV] Google OAuth authentication can fail on refresh (Milan Crha)
+	Bug 773363 - Do not use alloca() in camel-folder-thread.c (Glen Whitney)
+
+Miscellaneous:
+	[IMAPx] Avoid crash when untagged response doesn't have a token (Milan Crha)
+
+Translations:
+	Fran Dieguez (gl)
+	Dušan Kazik (sk)
+	Kjartan Maraas (nb)
+	Aurimas Černius (lt)
+	Piotr Drąg (pl)
+	Benjamin Steinwender (de)
+	Anders Jonsson (sv)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+
 Evolution-Data-Server 3.22.1 2016-10-10
 ---------------------------------------
 
