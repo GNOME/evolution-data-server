@@ -1145,7 +1145,7 @@ e_queue_transfer (GQueue *src_queue,
 }
 
 /**
- * e_weak_ref_new:
+ * e_weak_ref_new: (skip)
  * @object: (allow-none): a #GObject or %NULL
  *
  * Allocates a new #GWeakRef and calls g_weak_ref_set() with @object.
@@ -1168,7 +1168,7 @@ e_weak_ref_new (gpointer object)
 }
 
 /**
- * e_weak_ref_free:
+ * e_weak_ref_free: (skip)
  * @weak_ref: a #GWeakRef
  *
  * Frees a #GWeakRef created by e_weak_ref_new().
@@ -1650,7 +1650,7 @@ struct _EAsyncClosure {
 };
 
 /**
- * e_async_closure_new:
+ * e_async_closure_new: (skip)
  *
  * Creates a new #EAsyncClosure for use with asynchronous functions.
  *
@@ -1687,7 +1687,7 @@ e_async_closure_unlock_mutex_cb (gpointer user_data)
 }
 
 /**
- * e_async_closure_wait:
+ * e_async_closure_wait: (skip)
  * @closure: an #EAsyncClosure
  *
  * Call this function immediately after starting an asynchronous operation.
@@ -1727,7 +1727,7 @@ e_async_closure_wait (EAsyncClosure *closure)
 }
 
 /**
- * e_async_closure_free:
+ * e_async_closure_free: (skip)
  * @closure: an #EAsyncClosure
  *
  * Frees the @closure and the resources it holds.
@@ -1753,7 +1753,7 @@ e_async_closure_free (EAsyncClosure *closure)
 }
 
 /**
- * e_async_closure_callback:
+ * e_async_closure_callback: (skip)
  * @object: a #GObject or %NULL, it is not used by the function at all
  * @result: a #GAsyncResult
  * @closure: an #EAsyncClosure

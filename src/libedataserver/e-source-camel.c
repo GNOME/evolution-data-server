@@ -741,7 +741,7 @@ e_source_camel_generate_subtype (const gchar *protocol,
  * This is essentially the glue that binds #ESource to #CamelService.
  * See e_source_camel_configure_service().
  *
- * Returns: a configured #CamelSettings instance
+ * Returns: (transfer none): a configured #CamelSettings instance
  *
  * Since: 3.6
  **/

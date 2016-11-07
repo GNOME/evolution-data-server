@@ -33,7 +33,7 @@ gboolean	g_cond_timed_wait		(GCond *cond,
 #endif /* G_DISABLE_DEPRECATED */
 
 /**
- * e_flag_new:
+ * e_flag_new: (skip)
  *
  * Creates a new #EFlag object.  It is initially unset.
  *
@@ -55,7 +55,7 @@ e_flag_new (void)
 }
 
 /**
- * e_flag_is_set:
+ * e_flag_is_set: (skip)
  * @flag: an #EFlag
  *
  * Returns the state of @flag.
@@ -79,7 +79,7 @@ e_flag_is_set (EFlag *flag)
 }
 
 /**
- * e_flag_set:
+ * e_flag_set: (skip)
  * @flag: an #EFlag
  *
  * Sets @flag.  All threads waiting on @flag are woken up.  Threads that
@@ -100,7 +100,7 @@ e_flag_set (EFlag *flag)
 }
 
 /**
- * e_flag_clear:
+ * e_flag_clear: (skip)
  * @flag: an #EFlag
  *
  * Unsets @flag.  Subsequent calls to e_flag_wait() or e_flag_wait_until()
@@ -119,7 +119,7 @@ e_flag_clear (EFlag *flag)
 }
 
 /**
- * e_flag_wait:
+ * e_flag_wait: (skip)
  * @flag: an #EFlag
  *
  * Blocks until @flag is set.  If @flag is already set, the function returns
@@ -139,7 +139,7 @@ e_flag_wait (EFlag *flag)
 }
 
 /**
- * e_flag_timed_wait:
+ * e_flag_timed_wait: (skip)
  * @flag: an #EFlag
  * @abs_time: a #GTimeVal, determining the final time
  *
@@ -179,7 +179,7 @@ e_flag_timed_wait (EFlag *flag,
 G_GNUC_END_IGNORE_DEPRECATIONS
 
 /**
- * e_flag_wait_until:
+ * e_flag_wait_until: (skip)
  * @flag: an #EFlag
  * @end_time: the monotonic time to wait until
  *
@@ -213,7 +213,7 @@ e_flag_wait_until (EFlag *flag,
 }
 
 /**
- * e_flag_free:
+ * e_flag_free: (skip)
  * @flag: an #EFlag
  *
  * Destroys @flag.

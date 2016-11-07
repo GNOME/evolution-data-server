@@ -118,7 +118,7 @@ foreach_save_func (gpointer key,
 }
 
 /**
- * e_xml_from_hash:
+ * e_xml_from_hash: (skip)
  * @hash: (element-type utf8 utf8): The #GHashTable to extract the XML from
  * @type: The #EXmlHashType used to store the XML
  * @root_name: The name to call the new #xmlDoc
@@ -126,7 +126,7 @@ foreach_save_func (gpointer key,
  * Uses the key/value pair representation of an XML structure in @hash
  * to build an equivalent #xmlDoc. This is the reverse of e_xml_to_hash().
  *
- * Returns: the #xmlDoc created from the data in @hash
+ * Returns: (transfer full): the #xmlDoc created from the data in @hash
  **/
 xmlDoc *
 e_xml_from_hash (GHashTable *hash,
@@ -180,13 +180,13 @@ struct EXmlHash {
 };
 
 /**
- * e_xmlhash_new:
+ * e_xmlhash_new: (skip)
  * @filename: the name of an XML file
  *
  * Creates a new #EXmlHash from the file @filename. If @filename does
  * not already exist, an empty #EXmlHash will be created.
  *
- * Returns: The new #EXmlHash structure, or %NULL if unable to parse
+ * Returns: (transfer full): The new #EXmlHash structure, or %NULL if unable to parse
  *          @filename.
  **/
 EXmlHash *

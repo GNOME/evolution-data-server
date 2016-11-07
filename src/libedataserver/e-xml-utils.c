@@ -38,14 +38,14 @@
 #endif
 
 /**
- * e_xml_parse_file:
+ * e_xml_parse_file: (skip)
  * @filename: path to an XML file
  *
  * Reads a local XML file and parses the contents into an XML document
  * structure.  If the XML file cannot be read or its contents are malformed,
  * the function returns %NULL.
  *
- * Returns: an XML document structure, or %NULL
+ * Returns: (transfer full): an XML document structure, or %NULL
  **/
 xmlDocPtr
 e_xml_parse_file (const gchar *filename)
@@ -151,7 +151,7 @@ e_xml_save_file (const gchar *filename,
 }
 
 /**
- * e_xml_get_child_by_name:
+ * e_xml_get_child_by_name: (skip)
  * @parent: an XML node structure
  * @child_name: element name of a child node
  *

@@ -65,7 +65,7 @@ struct _EMemChunk {
 };
 
 /**
- * e_memchunk_new:
+ * e_memchunk_new: (skip)
  * @atomcount: the number of atoms stored in a single malloc'd block of memory
  * @atomsize: the size of each allocation
  *
@@ -93,7 +93,7 @@ e_memchunk_new (gint atomcount,
 }
 
 /**
- * e_memchunk_alloc:
+ * e_memchunk_alloc: (skip)
  * @memchunk: an #EMemChunk
  *
  * Allocate a new atom size block of memory from an #EMemChunk.
@@ -130,7 +130,7 @@ e_memchunk_alloc (EMemChunk *memchunk)
 }
 
 /**
- * e_memchunk_alloc0:
+ * e_memchunk_alloc0: (skip)
  * @memchunk: an #EMemChunk
  *
  * Allocate a new atom size block of memory from an #EMemChunk,
@@ -151,7 +151,7 @@ e_memchunk_alloc0 (EMemChunk *memchunk)
 }
 
 /**
- * e_memchunk_free:
+ * e_memchunk_free: (skip)
  * @memchunk: an #EMemChunk
  * @mem: address of atom to free
  *
@@ -179,7 +179,7 @@ e_memchunk_free (EMemChunk *memchunk,
 }
 
 /**
- * e_memchunk_empty:
+ * e_memchunk_empty: (skip)
  * @memchunk: an #EMemChunk
  *
  * Clean out the memchunk buffers.  Marks all allocated memory as free blocks,
@@ -233,7 +233,7 @@ tree_search (struct _cleaninfo *a,
 }
 
 /**
- * e_memchunk_clean:
+ * e_memchunk_clean: (skip)
  * @memchunk: an #EMemChunk
  *
  * Scan all empty blocks and check for blocks which can be free'd
@@ -310,7 +310,7 @@ e_memchunk_clean (EMemChunk *memchunk)
 }
 
 /**
- * e_memchunk_destroy:
+ * e_memchunk_destroy: (skip)
  * @memchunk: an #EMemChunk
  *
  * Free the memchunk header, and all associated memory.
