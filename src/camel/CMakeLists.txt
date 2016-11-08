@@ -307,7 +307,7 @@ target_link_libraries(camel
 	${SOCKET_LDFLAGS}
 	${ICONV_LDFLAGS}
 	${REGEX_LDFLAGS}
-	${LIBDWFL_LDFLAGS}
+	${LIBDWFL_LIBS}
 )
 
 install(TARGETS camel

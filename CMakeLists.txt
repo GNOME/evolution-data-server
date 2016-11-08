@@ -526,9 +526,9 @@ add_printable_option(ENABLE_BACKTRACES "Enable backtraces for camel_pointer_trac
 
 if(ENABLE_BACKTRACES)
 	CHECK_C_SOURCE_COMPILES("#include <execinfo.h>
-				int main(void) { void *bt[1]; backtrace_symbols (bt, backtrace(bt, 1)); return 0; }" _have_bsf)
+				int main(void) { void *bt[1]; backtrace_symbols (bt, backtrace (bt, 1)); return 0; }" HAVE_BACKTRACE_SYMBOLS)
 
-	if(_have_bsf)
+	if(HAVE_BACKTRACE_SYMBOLS)
 		set(CMAKE_REQUIRED_LIBRARIES -ldw)
 		CHECK_C_SOURCE_COMPILES("#include <elfutils/libdwfl.h>
 					int main(void) {
@@ -555,7 +555,7 @@ if(ENABLE_BACKTRACES)
 			set(HAVE_ELFUTILS_LIBDWFL ON)
 			set(LIBDWFL_LIBS "-ldw")
 		endif(_have_elfdwlf)
-	endif(_have_bsf)
+	endif(HAVE_BACKTRACE_SYMBOLS)
 endif(ENABLE_BACKTRACES)
 
 # ******************************
