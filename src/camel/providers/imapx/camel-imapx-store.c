@@ -395,6 +395,34 @@ imapx_store_mailbox_attributes_to_flags (CamelIMAPXMailbox *mailbox)
 	/* XXX Does "\Marked" mean CAMEL_STORE_INFO_FOLDER_FLAGGED?
 	 *     Who the heck knows; the enum value is undocumented. */
 
+	attribute = CAMEL_IMAPX_LIST_ATTR_FLAGGED;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_FLAGGED;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_ALL;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_TYPE_ALL;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_ARCHIVE;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_TYPE_ARCHIVE;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_DRAFTS;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_TYPE_DRAFTS;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_JUNK;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_TYPE_JUNK;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_SENT;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_TYPE_SENT;
+
+	attribute = CAMEL_IMAPX_LIST_ATTR_TRASH;
+	if (camel_imapx_mailbox_has_attribute (mailbox, attribute))
+		store_info_flags |= CAMEL_STORE_INFO_FOLDER_TYPE_TRASH;
+
 	return store_info_flags;
 }
 

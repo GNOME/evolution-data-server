@@ -97,6 +97,18 @@ typedef enum { /*< flags >*/
  *    The folder contains memos, instead of mail messages.
  * @CAMEL_FOLDER_TYPE_TASKS:
  *    The folder contains tasks, instead of mail messages.
+ * @CAMEL_FOLDER_TYPE_ALL
+ *    This folder contains all the messages. Used by RFC 6154.
+ * @CAMEL_FOLDER_TYPE_ARCHIVE
+ *    This folder contains archived messages. Used by RFC 6154.
+ * @CAMEL_FOLDER_TYPE_DRAFTS
+ *    This folder contains drafts. Used by RFC 6154.
+ * @CAMEL_FOLDER_READONLY:
+ *    The folder is read only.
+ * @CAMEL_FOLDER_WRITEONLY:
+ *    The folder is write only.
+ * @CAMEL_FOLDER_FLAGGED:
+ *    This folder contains flagged messages. Some clients call this "starred". Used by RFC 6154.
  *
  * These flags are abstractions.  It's up to the CamelProvider to give
  * them suitable interpretations.  Use #CAMEL_FOLDER_TYPE_MASK to isolate
@@ -115,6 +127,7 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_VTRASH = 1 << 7,
 	CAMEL_FOLDER_SHARED_TO_ME = 1 << 8,
 	CAMEL_FOLDER_SHARED_BY_ME = 1 << 9,
+
 	CAMEL_FOLDER_TYPE_NORMAL = 0 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_INBOX = 1 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_OUTBOX = 2 << CAMEL_FOLDER_TYPE_BIT,
@@ -125,14 +138,18 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_TYPE_EVENTS = 7 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_MEMOS = 8 << CAMEL_FOLDER_TYPE_BIT,
 	CAMEL_FOLDER_TYPE_TASKS = 9 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_ALL = 10 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_ARCHIVE = 11 << CAMEL_FOLDER_TYPE_BIT,
+	CAMEL_FOLDER_TYPE_DRAFTS = 12 << CAMEL_FOLDER_TYPE_BIT,
+
 	CAMEL_FOLDER_READONLY = 1 << 16,
-	/* empty gap from unused flag removal */
+	CAMEL_FOLDER_WRITEONLY = 1 << 17,
 	CAMEL_FOLDER_FLAGGED = 1 << 18,
 
 	CAMEL_FOLDER_FLAGS_LAST    = 1 << 24  /*< skip >*/
 } CamelFolderInfoFlags;
 
-#define CAMEL_FOLDER_TYPE_MASK (63 << CAMEL_FOLDER_TYPE_BIT)
+#define CAMEL_FOLDER_TYPE_MASK (0x3F << CAMEL_FOLDER_TYPE_BIT)
 
 /* Note: The HTML elements are escaped in the doc comment intentionally,
  *       to have them shown as expected in generated documentation. */
@@ -179,6 +196,8 @@ typedef enum { /*< flags >*/
 	CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION = 1 << 10
 } CamelMimeFilterToHTMLFlags;
 
+#define CAMEL_STORE_INFO_FOLDER_TYPE_BIT (10)
+
 /* WARNING: This enum and CamelFolderInfoFlags must stay in sync.
  * FIXME: Eliminate the need for two separate types. */
 typedef enum { /*< flags >*/
@@ -192,12 +211,29 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_INFO_FOLDER_VTRASH = 1 << 7,
 	CAMEL_STORE_INFO_FOLDER_SHARED_TO_ME = 1 << 8,
 	CAMEL_STORE_INFO_FOLDER_SHARED_BY_ME = 1 << 9,
+
+	CAMEL_STORE_INFO_FOLDER_TYPE_NORMAL = 0 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_INBOX = 1 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_OUTBOX = 2 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_TRASH = 3 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_JUNK = 4 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_SENT = 5 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_CONTACTS = 6 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_EVENTS = 7 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_MEMOS = 8 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_TASKS = 9 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_ALL = 10 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_ARCHIVE = 11 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+	CAMEL_STORE_INFO_FOLDER_TYPE_DRAFTS = 12 << CAMEL_STORE_INFO_FOLDER_TYPE_BIT,
+
 	CAMEL_STORE_INFO_FOLDER_READONLY = 1 << 16,
-	/* empty gap from unused flag removal */
+	CAMEL_STORE_INFO_FOLDER_WRITEONLY = 1 << 17,
 	CAMEL_STORE_INFO_FOLDER_FLAGGED = 1 << 18,
 
 	CAMEL_STORE_INFO_FOLDER_LAST          = 1 << 24  /*< skip >*/
 } CamelStoreInfoFlags;
+
+#define CAMEL_STORE_INFO_FOLDER_TYPE_MASK  (0x3F << CAMEL_STORE_INFO_FOLDER_TYPE_BIT)
 
 /**
  * CamelFetchHeadersType:
