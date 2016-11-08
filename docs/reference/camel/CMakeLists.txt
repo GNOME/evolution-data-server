@@ -19,6 +19,7 @@ set(DEPENDENCIES
 )
 
 set(IGNORE_HEADERS
+	addresses.h
 	camel-charset-map-private.h
 	camel-enumtypes.h
 	camel-i18n.h
@@ -28,7 +29,12 @@ set(IGNORE_HEADERS
 	camel-nntp-private.h
 	camel-nntp-resp-codes.h
 	camel-search-private.h
+	camel-test.h
+	camel-test-provider.h
 	camel-win32.h
+	folders.h
+	messages.h
+	session.h
 )
 
 add_gtkdoc(camel camel "CAMEL_DISABLE_DEPRECATED" SOURCEDIRS DEPENDENCIES IGNORE_HEADERS)
