@@ -51,6 +51,9 @@ struct _CamelMhFolder {
 
 struct _CamelMhFolderClass {
 	CamelLocalFolderClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mh_folder_get_type	(void);

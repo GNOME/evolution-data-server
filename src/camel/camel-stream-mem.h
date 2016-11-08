@@ -61,6 +61,9 @@ struct _CamelStreamMem {
 
 struct _CamelStreamMemClass {
 	CamelStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_stream_mem_get_type	(void);

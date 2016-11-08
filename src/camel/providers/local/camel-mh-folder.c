@@ -71,7 +71,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		return FALSE;
 
 	/* add it to the summary/assign the uid, etc */
-	mi = camel_local_summary_add ((CamelLocalSummary *) folder->summary, message, info, lf->changes, error);
+	mi = camel_local_summary_add ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), message, info, lf->changes, error);
 	if (mi == NULL)
 		goto check_changed;
 
@@ -108,7 +108,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
  fail_write:
 
 	/* remove the summary info so we are not out-of-sync with the mh folder */
-	camel_folder_summary_remove (CAMEL_FOLDER_SUMMARY (folder->summary), mi);
+	camel_folder_summary_remove (camel_folder_get_folder_summary (folder), mi);
 
 	g_prefix_error (
 		error, _("Cannot append message to mh folder: %s: "), name);
@@ -127,6 +127,8 @@ mh_folder_append_message_sync (CamelFolder *folder,
 		camel_folder_changed (folder, lf->changes);
 		camel_folder_change_info_clear (lf->changes);
 	}
+
+	g_clear_object (&mi);
 
 	return TRUE;
 }
@@ -149,7 +151,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 		return NULL;
 
 	/* get the message summary info */
-	if ((info = camel_folder_summary_get (folder->summary, uid)) == NULL) {
+	if ((info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid)) == NULL) {
 		set_cannot_get_message_ex (
 			error, CAMEL_FOLDER_ERROR_INVALID_UID,
 			uid, lf->folder_path, _("No such message"));
@@ -157,7 +159,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	/* we only need it to check the message exists */
-	camel_message_info_unref (info);
+	g_clear_object (&info);
 
 	name = g_strdup_printf ("%s/%s", lf->folder_path, uid);
 	message_stream = camel_stream_fs_new_with_name (

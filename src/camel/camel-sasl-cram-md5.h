@@ -58,6 +58,9 @@ struct _CamelSaslCramMd5 {
 
 struct _CamelSaslCramMd5Class {
 	CamelSaslClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_sasl_cram_md5_get_type (void);

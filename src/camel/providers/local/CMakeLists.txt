@@ -10,12 +10,16 @@ set(SOURCES
 	camel-local-provider.c
 	camel-maildir-folder.c
 	camel-maildir-folder.h
+	camel-maildir-message-info.c
+	camel-maildir-message-info.h
 	camel-maildir-store.c
 	camel-maildir-store.h
 	camel-maildir-summary.c
 	camel-maildir-summary.h
 	camel-mbox-folder.c
 	camel-mbox-folder.h
+	camel-mbox-message-info.c
+	camel-mbox-message-info.h
 	camel-mbox-store.c
 	camel-mbox-store.h
 	camel-mbox-summary.c

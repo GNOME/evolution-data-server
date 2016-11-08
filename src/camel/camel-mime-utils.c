@@ -41,6 +41,7 @@
 #include "camel-iconv.h"
 #include "camel-mime-utils.h"
 #include "camel-net-utils.h"
+#include "camel-string-utils.h"
 #ifdef G_OS_WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
@@ -4464,191 +4465,6 @@ camel_header_location_decode (const gchar *in)
 	return res;
 }
 
-/* extra rfc checks */
-#define CHECKS
-
-#ifdef CHECKS
-static void
-check_header (struct _camel_header_raw *header)
-{
-	guchar *cp;
-
-	cp = (guchar *) header->value;
-	while (cp && *cp) {
-		if (!isascii (*cp)) {
-			w (g_warning ("Appending header violates rfc: %s: %s", header->name, header->value));
-			return;
-		}
-		cp++;
-	}
-}
-#endif
-
-void
-camel_header_raw_append_parse (struct _camel_header_raw **list,
-                               const gchar *header,
-                               gint offset)
-{
-	register const gchar *in;
-	gsize fieldlen;
-	gchar *name;
-
-	in = header;
-	while (camel_mime_is_fieldname (*in) || *in == ':')
-		in++;
-	fieldlen = in - header - 1;
-	while (camel_mime_is_lwsp (*in))
-		in++;
-	if (fieldlen == 0 || header[fieldlen] != ':') {
-		printf ("Invalid header line: '%s'\n", header);
-		return;
-	}
-	name = g_alloca (fieldlen + 1);
-	memcpy (name, header, fieldlen);
-	name[fieldlen] = 0;
-
-	camel_header_raw_append (list, name, in, offset);
-}
-
-void
-camel_header_raw_append (struct _camel_header_raw **list,
-                         const gchar *name,
-                         const gchar *value,
-                         gint offset)
-{
-	struct _camel_header_raw *l, *n;
-
-	d (printf ("Header: %s: %s\n", name, value));
-
-	n = g_malloc (sizeof (*n));
-	n->next = NULL;
-	n->name = g_strdup (name);
-	n->value = g_strdup (value);
-	n->offset = offset;
-#ifdef CHECKS
-	check_header (n);
-#endif
-	l = (struct _camel_header_raw *) list;
-	while (l->next) {
-		l = l->next;
-	}
-	l->next = n;
-
-	/* debug */
-#if 0
-	if (!g_ascii_strcasecmp (name, "To")) {
-		printf ("- Decoding To\n");
-		camel_header_to_decode (value);
-	} else if (!g_ascii_strcasecmp (name, "Content-type")) {
-		printf ("- Decoding content-type\n");
-		camel_content_type_dump (camel_content_type_decode (value));
-	} else if (!g_ascii_strcasecmp (name, "MIME-Version")) {
-		printf ("- Decoding mime version\n");
-		camel_header_mime_decode (value);
-	}
-#endif
-}
-
-static struct _camel_header_raw *
-header_raw_find_node (struct _camel_header_raw **list,
-                      const gchar *name)
-{
-	struct _camel_header_raw *l;
-
-	l = *list;
-	while (l) {
-		if (!g_ascii_strcasecmp (l->name, name))
-			break;
-		l = l->next;
-	}
-	return l;
-}
-
-const gchar *
-camel_header_raw_find (struct _camel_header_raw **list,
-                       const gchar *name,
-                       gint *offset)
-{
-	struct _camel_header_raw *l;
-
-	l = header_raw_find_node (list, name);
-	if (l) {
-		if (offset)
-			*offset = l->offset;
-		return l->value;
-	} else
-		return NULL;
-}
-
-const gchar *
-camel_header_raw_find_next (struct _camel_header_raw **list,
-                            const gchar *name,
-                            gint *offset,
-                            const gchar *last)
-{
-	struct _camel_header_raw *l;
-
-	if (last == NULL || name == NULL)
-		return NULL;
-
-	l = *list;
-	while (l && l->value != last)
-		l = l->next;
-	return camel_header_raw_find (&l, name, offset);
-}
-
-static void
-header_raw_free (struct _camel_header_raw *l)
-{
-	g_free (l->name);
-	g_free (l->value);
-	g_free (l);
-}
-
-void
-camel_header_raw_remove (struct _camel_header_raw **list,
-                         const gchar *name)
-{
-	struct _camel_header_raw *l, *p;
-
-	/* the next pointer is at the head of the structure, so this is safe */
-	p = (struct _camel_header_raw *) list;
-	l = *list;
-	while (l) {
-		if (!g_ascii_strcasecmp (l->name, name)) {
-			p->next = l->next;
-			header_raw_free (l);
-			l = p->next;
-		} else {
-			p = l;
-			l = l->next;
-		}
-	}
-}
-
-void
-camel_header_raw_replace (struct _camel_header_raw **list,
-                          const gchar *name,
-                          const gchar *value,
-                          gint offset)
-{
-	camel_header_raw_remove (list, name);
-	camel_header_raw_append (list, name, value, offset);
-}
-
-void
-camel_header_raw_clear (struct _camel_header_raw **list)
-{
-	struct _camel_header_raw *l, *n;
-	l = *list;
-	while (l) {
-		n = l->next;
-		header_raw_free (l);
-		l = n;
-	}
-	*list = NULL;
-}
-
 /**
  * camel_header_msgid_generate:
  * @domain: domain to use (like "example.com") for the ID suffix; can be NULL
@@ -4775,8 +4591,17 @@ mailing_list_init (gpointer param)
 	return NULL;
 }
 
+/**
+ * camel_headers_dup_mailing_list:
+ * @headers: a #CamelNameValueArray with headers
+ *
+ * Searches for a mailing list information among known headers and returns
+ * a newly allocated string with its value.
+ *
+ * Returns: (nullable) (transfer full): The mailing list header, or %NULL, if none is found
+ **/
 gchar *
-camel_header_raw_check_mailing_list (struct _camel_header_raw **list)
+camel_headers_dup_mailing_list (const CamelNameValueArray *headers)
 {
 	static GOnce once = G_ONCE_INIT;
 	const gchar *v;
@@ -4786,7 +4611,7 @@ camel_header_raw_check_mailing_list (struct _camel_header_raw **list)
 	g_once (&once, mailing_list_init, NULL);
 
 	for (i = 0; i < G_N_ELEMENTS (mail_list_magic); i++) {
-		v = camel_header_raw_find (list, mail_list_magic[i].name, NULL);
+		v = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, mail_list_magic[i].name);
 		for (j = 0; j < 3; j++) {
 			match[j].rm_so = -1;
 			match[j].rm_eo = -1;
@@ -4850,69 +4675,77 @@ camel_header_address_new_group (const gchar *name)
 }
 
 CamelHeaderAddress *
-camel_header_address_ref (CamelHeaderAddress *h)
+camel_header_address_ref (CamelHeaderAddress *addrlist)
 {
-	if (h)
-		h->refcount++;
+	if (addrlist)
+		addrlist->refcount++;
 
-	return h;
+	return addrlist;
 }
 
 void
-camel_header_address_unref (CamelHeaderAddress *h)
+camel_header_address_unref (CamelHeaderAddress *addrlist)
 {
-	if (h) {
-		if (h->refcount <= 1) {
-			if (h->type == CAMEL_HEADER_ADDRESS_GROUP) {
-				camel_header_address_list_clear (&h->v.members);
-			} else if (h->type == CAMEL_HEADER_ADDRESS_NAME) {
-				g_free (h->v.addr);
+	if (addrlist) {
+		if (addrlist->refcount <= 1) {
+			if (addrlist->type == CAMEL_HEADER_ADDRESS_GROUP) {
+				camel_header_address_list_clear (&addrlist->v.members);
+			} else if (addrlist->type == CAMEL_HEADER_ADDRESS_NAME) {
+				g_free (addrlist->v.addr);
 			}
-			g_free (h->name);
-			g_free (h);
+			g_free (addrlist->name);
+			g_free (addrlist);
 		} else {
-			h->refcount--;
+			addrlist->refcount--;
 		}
 	}
 }
 
 void
-camel_header_address_set_name (CamelHeaderAddress *h,
+camel_header_address_set_name (CamelHeaderAddress *addrlist,
                                const gchar *name)
 {
-	if (h) {
-		g_free (h->name);
-		h->name = g_strdup (name);
+	if (addrlist) {
+		g_free (addrlist->name);
+		addrlist->name = g_strdup (name);
 	}
 }
 
 void
-camel_header_address_set_addr (CamelHeaderAddress *h,
+camel_header_address_set_addr (CamelHeaderAddress *addrlist,
                                const gchar *addr)
 {
-	if (h) {
-		if (h->type == CAMEL_HEADER_ADDRESS_NAME
-		    || h->type == CAMEL_HEADER_ADDRESS_NONE) {
-			h->type = CAMEL_HEADER_ADDRESS_NAME;
-			g_free (h->v.addr);
-			h->v.addr = g_strdup (addr);
+	if (addrlist) {
+		if (addrlist->type == CAMEL_HEADER_ADDRESS_NAME
+		    || addrlist->type == CAMEL_HEADER_ADDRESS_NONE) {
+			addrlist->type = CAMEL_HEADER_ADDRESS_NAME;
+			g_free (addrlist->v.addr);
+			addrlist->v.addr = g_strdup (addr);
 		} else {
 			g_warning ("Trying to set the address on a group");
 		}
 	}
 }
 
+/**
+ * camel_header_address_set_members:
+ * @addrlist: a #CamelHeaderAddress object
+ * @group: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress
+ *
+ * TODO: Document me.
+ *
+ **/
 void
-camel_header_address_set_members (CamelHeaderAddress *h,
+camel_header_address_set_members (CamelHeaderAddress *addrlist,
                                   CamelHeaderAddress *group)
 {
-	if (h) {
-		if (h->type == CAMEL_HEADER_ADDRESS_GROUP
-		    || h->type == CAMEL_HEADER_ADDRESS_NONE) {
-			h->type = CAMEL_HEADER_ADDRESS_GROUP;
-			camel_header_address_list_clear (&h->v.members);
+	if (addrlist) {
+		if (addrlist->type == CAMEL_HEADER_ADDRESS_GROUP
+		    || addrlist->type == CAMEL_HEADER_ADDRESS_NONE) {
+			addrlist->type = CAMEL_HEADER_ADDRESS_GROUP;
+			camel_header_address_list_clear (&addrlist->v.members);
 			/* should this ref them? */
-			h->v.members = group;
+			addrlist->v.members = group;
 		} else {
 			g_warning ("Trying to set the members on a name, not group");
 		}
@@ -4920,52 +4753,75 @@ camel_header_address_set_members (CamelHeaderAddress *h,
 }
 
 void
-camel_header_address_add_member (CamelHeaderAddress *h,
+camel_header_address_add_member (CamelHeaderAddress *addrlist,
                                  CamelHeaderAddress *member)
 {
-	if (h) {
-		if (h->type == CAMEL_HEADER_ADDRESS_GROUP
-		    || h->type == CAMEL_HEADER_ADDRESS_NONE) {
-			h->type = CAMEL_HEADER_ADDRESS_GROUP;
-			camel_header_address_list_append (&h->v.members, member);
+	if (addrlist) {
+		if (addrlist->type == CAMEL_HEADER_ADDRESS_GROUP
+		    || addrlist->type == CAMEL_HEADER_ADDRESS_NONE) {
+			addrlist->type = CAMEL_HEADER_ADDRESS_GROUP;
+			camel_header_address_list_append (&addrlist->v.members, member);
 		}
 	}
 }
 
+/**
+ * camel_header_address_list_append_list:
+ * @addrlistp: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress objects
+ * @addrs: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress to add
+ *
+ * TODO: Document me.
+ *
+ **/
 void
-camel_header_address_list_append_list (CamelHeaderAddress **l,
-                                       CamelHeaderAddress **h)
+camel_header_address_list_append_list (CamelHeaderAddress **addrlistp,
+                                       CamelHeaderAddress **addrs)
 {
-	if (l) {
-		CamelHeaderAddress *n = (CamelHeaderAddress *) l;
+	if (addrlistp) {
+		CamelHeaderAddress *n = (CamelHeaderAddress *) addrlistp;
 
 		while (n->next)
 			n = n->next;
-		n->next = *h;
+		n->next = *addrs;
 	}
 }
 
+/**
+ * camel_header_address_list_append:
+ * @addrlistp: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress objects
+ * @addr: the #CamelHeaderAddress to add
+ *
+ * TODO: Document me.
+ *
+ **/
 void
-camel_header_address_list_append (CamelHeaderAddress **l,
-                                  CamelHeaderAddress *h)
+camel_header_address_list_append (CamelHeaderAddress **addrlistp,
+                                  CamelHeaderAddress *addr)
 {
-	if (h) {
-		camel_header_address_list_append_list (l, &h);
-		h->next = NULL;
+	if (addr) {
+		camel_header_address_list_append_list (addrlistp, &addr);
+		addr->next = NULL;
 	}
 }
 
+/**
+ * camel_header_address_list_clear:
+ * @addrlistp: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress objects
+ *
+ * TODO: Document me.
+ *
+ **/
 void
-camel_header_address_list_clear (CamelHeaderAddress **l)
+camel_header_address_list_clear (CamelHeaderAddress **addrlistp)
 {
 	CamelHeaderAddress *a, *n;
-	a = *l;
+	a = *addrlistp;
 	while (a) {
 		n = a->next;
 		camel_header_address_unref (a);
 		a = n;
 	}
-	*l = NULL;
+	*addrlistp = NULL;
 }
 
 /* if encode is true, then the result is suitable for mailing, otherwise
@@ -5012,35 +4868,49 @@ header_address_list_encode_append (GString *out,
 	}
 }
 
+/**
+ * camel_header_address_list_encode:
+ * @addrlist: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress objects
+ *
+ * TODO: Document me.
+ *
+ **/
 gchar *
-camel_header_address_list_encode (CamelHeaderAddress *a)
+camel_header_address_list_encode (CamelHeaderAddress *addrlist)
 {
 	GString *out;
 	gchar *ret;
 
-	if (a == NULL)
+	if (!addrlist)
 		return NULL;
 
 	out = g_string_new ("");
-	header_address_list_encode_append (out, TRUE, a);
+	header_address_list_encode_append (out, TRUE, addrlist);
 	ret = out->str;
 	g_string_free (out, FALSE);
 
 	return ret;
 }
 
+/**
+ * camel_header_address_list_format:
+ * @addrlist: (array zero-terminated=1): a NULL-terminated list of #CamelHeaderAddress objects
+ *
+ * TODO: Document me.
+ *
+ **/
 gchar *
-camel_header_address_list_format (CamelHeaderAddress *a)
+camel_header_address_list_format (CamelHeaderAddress *addrlist)
 {
 	GString *out;
 	gchar *ret;
 
-	if (a == NULL)
+	if (!addrlist)
 		return NULL;
 
 	out = g_string_new ("");
 
-	header_address_list_encode_append (out, FALSE, a);
+	header_address_list_encode_append (out, FALSE, addrlist);
 	ret = out->str;
 	g_string_free (out, FALSE);
 

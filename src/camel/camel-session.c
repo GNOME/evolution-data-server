@@ -704,7 +704,7 @@ camel_session_class_init (CamelSessionClass *class)
 		NULL, NULL, NULL,
 		G_TYPE_NONE, 2,
 		G_TYPE_CANCELLABLE,
-		G_TYPE_POINTER);
+		G_TYPE_ERROR);
 
 	/**
 	 * CamelSession::user-alert:

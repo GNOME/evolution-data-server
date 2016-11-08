@@ -29,6 +29,8 @@
 #include <glib/gi18n-lib.h>
 #include <glib/gstdio.h>
 
+#include <sqlite3.h>
+
 #include "camel-debug.h"
 #include "camel-object.h"
 #include "camel-string-utils.h"
@@ -437,6 +439,9 @@ init_sqlite_vfs (void)
 
 	sqlite3_vfs_register (&vfs, 1);
 
+	if (g_getenv ("CAMEL_SQLITE_SHARED_CACHE"))
+		sqlite3_enable_shared_cache (TRUE);
+
 	return NULL;
 }
 
@@ -481,13 +486,55 @@ init_sqlite_vfs (void)
 	}
 
 struct _CamelDBPrivate {
+	sqlite3 *db;
 	GTimer *timer;
 	GRWLock rwlock;
-	gchar *file_name;
+	gchar *filename;
 	GMutex transaction_lock;
 	GThread *transaction_thread;
 	guint32 transaction_level;
 };
+
+G_DEFINE_TYPE (CamelDB, camel_db, G_TYPE_OBJECT)
+
+static void
+camel_db_finalize (GObject *object)
+{
+	CamelDB *cdb = CAMEL_DB (object);
+
+	sqlite3_close (cdb->priv->db);
+	g_rw_lock_clear (&cdb->priv->rwlock);
+	g_mutex_clear (&cdb->priv->transaction_lock);
+	g_free (cdb->priv->filename);
+
+	d (g_print ("\nDatabase succesfully closed \n"));
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_db_parent_class)->finalize (object);
+}
+
+static void
+camel_db_class_init (CamelDBClass *class)
+{
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelDBPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = camel_db_finalize;
+}
+
+static void
+camel_db_init (CamelDB *cdb)
+{
+	cdb->priv = G_TYPE_INSTANCE_GET_PRIVATE (cdb, CAMEL_TYPE_DB, CamelDBPrivate);
+
+	g_rw_lock_init (&cdb->priv->rwlock);
+	g_mutex_init (&cdb->priv->transaction_lock);
+	cdb->priv->transaction_thread = NULL;
+	cdb->priv->transaction_level = 0;
+	cdb->priv->timer = NULL;
+}
 
 /**
  * cdb_sql_exec 
@@ -713,7 +760,7 @@ camel_db_command_internal (CamelDB *cdb,
 	cdb_writer_lock (cdb);
 
 	START (stmt);
-	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, out_sqlite_error_code, error);
+	ret = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, out_sqlite_error_code, error);
 	END;
 
 	cdb_writer_unlock (cdb);
@@ -722,13 +769,18 @@ camel_db_command_internal (CamelDB *cdb,
 }
 
 /**
- * camel_db_open:
+ * camel_db_new:
+ * @filename: A filename with the database to open/create
+ * @error: (out): a #GError for error messages
  *
- * Since: 2.24
+ * Returns: (transfer full): A new #CamelDB with @filename as its database file.
+ *   Free it with g_object_unref() when no longer needed.
+ *
+ * Since: 3.24
  **/
 CamelDB *
-camel_db_open (const gchar *path,
-               GError **error)
+camel_db_new (const gchar *filename,
+              GError **error)
 {
 	static GOnce vfs_once = G_ONCE_INIT;
 	CamelDB *cdb;
@@ -739,10 +791,8 @@ camel_db_open (const gchar *path,
 
 	g_once (&vfs_once, (GThreadFunc) init_sqlite_vfs, NULL);
 
-	CAMEL_DB_USE_SHARED_CACHE;
-
  reopen:
-	ret = sqlite3_open (path, &db);
+	ret = sqlite3_open (filename, &db);
 	if (ret) {
 		if (!db) {
 			g_set_error (
@@ -752,7 +802,7 @@ camel_db_open (const gchar *path,
 		} else {
 			const gchar *errmsg;
 			errmsg = sqlite3_errmsg (db);
-			d (g_print ("Can't open database %s: %s\n", path, errmsg));
+			d (g_print ("Can't open database %s: %s\n", filename, errmsg));
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC, "%s", errmsg);
@@ -761,15 +811,9 @@ camel_db_open (const gchar *path,
 		return NULL;
 	}
 
-	cdb = g_new (CamelDB, 1);
-	cdb->db = db;
-	cdb->priv = g_new0 (CamelDBPrivate, 1);
-	cdb->priv->file_name = g_strdup (path);
-	g_rw_lock_init (&cdb->priv->rwlock);
-	g_mutex_init (&cdb->priv->transaction_lock);
-	cdb->priv->transaction_thread = NULL;
-	cdb->priv->transaction_level = 0;
-	cdb->priv->timer = NULL;
+	cdb = g_object_new (CAMEL_TYPE_DB, NULL);
+	cdb->priv->db = db;
+	cdb->priv->filename = g_strdup (filename);
 	d (g_print ("\nDatabase succesfully opened  \n"));
 
 	sqlite3_create_function (db, "MATCH", 2, SQLITE_UTF8, NULL, cdb_match_func, NULL, NULL);
@@ -799,16 +843,16 @@ camel_db_open (const gchar *path,
 	    cdb_sqlite_error_code == SQLITE_NOTADB)) {
 		gchar *second_filename;
 
-		camel_db_close (cdb);
+		g_clear_object (&cdb);
 
 		reopening = TRUE;
 
-		second_filename = g_strconcat (path, ".corrupt", NULL);
-		if (g_rename (path, second_filename) == -1) {
+		second_filename = g_strconcat (filename, ".corrupt", NULL);
+		if (g_rename (filename, second_filename) == -1) {
 			if (!local_error) {
 				g_set_error (&local_error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Could not rename '%s' to %s: %s"),
-					path, second_filename, g_strerror (errno));
+					filename, second_filename, g_strerror (errno));
 			}
 
 			g_propagate_error (error, local_error);
@@ -820,7 +864,7 @@ camel_db_open (const gchar *path,
 
 		g_free (second_filename);
 
-		g_warning ("%s: Failed to open '%s', renamed old file to .corrupt; code:%s (%d) error:%s", G_STRFUNC, path,
+		g_warning ("%s: Failed to open '%s', renamed old file to .corrupt; code:%s (%d) error:%s", G_STRFUNC, filename,
 			cdb_sqlite_error_code == SQLITE_CANTOPEN ? "SQLITE_CANTOPEN" :
 			cdb_sqlite_error_code == SQLITE_CORRUPT ? "SQLITE_CORRUPT" :
 			cdb_sqlite_error_code == SQLITE_NOTADB ? "SQLITE_NOTADB" : "???",
@@ -833,44 +877,29 @@ camel_db_open (const gchar *path,
 
 	if (local_error) {
 		g_propagate_error (error, local_error);
-		camel_db_close (cdb);
+		g_clear_object (&cdb);
 		return NULL;
 	}
 
-	sqlite3_busy_timeout (cdb->db, CAMEL_DB_SLEEP_INTERVAL);
+	sqlite3_busy_timeout (cdb->priv->db, CAMEL_DB_SLEEP_INTERVAL);
 
 	return cdb;
 }
 
 /**
- * camel_db_clone:
+ * camel_db_get_filename:
+ * @cdb: a #CamelDB
  *
- * Since: 2.26
+ * Returns: (transfer none): A filename associated with @cdb.
+ *
+ * Since: 3.24
  **/
-CamelDB *
-camel_db_clone (CamelDB *cdb,
-                GError **error)
+const gchar *
+camel_db_get_filename (CamelDB *cdb)
 {
-	return camel_db_open (cdb->priv->file_name, error);
-}
+	g_return_val_if_fail (CAMEL_IS_DB (cdb), NULL);
 
-/**
- * camel_db_close:
- *
- * Since: 2.24
- **/
-void
-camel_db_close (CamelDB *cdb)
-{
-	if (cdb) {
-		sqlite3_close (cdb->db);
-		g_rw_lock_clear (&cdb->priv->rwlock);
-		g_mutex_clear (&cdb->priv->transaction_lock);
-		g_free (cdb->priv->file_name);
-		g_free (cdb->priv);
-		g_free (cdb);
-		d (g_print ("\nDatabase succesfully closed \n"));
-	}
+	return cdb->priv->filename;
 }
 
 /**
@@ -885,18 +914,18 @@ camel_db_set_collate (CamelDB *cdb,
                       const gchar *collate,
                       CamelDBCollate func)
 {
-		gint ret = 0;
+	gint ret = 0;
 
-		if (!cdb)
-			return 0;
+	if (!cdb)
+		return 0;
 
-		cdb_writer_lock (cdb);
-		d (g_print ("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
-		if (collate && func)
-			ret = sqlite3_create_collation (cdb->db, collate, SQLITE_UTF8,  NULL, func);
-		cdb_writer_unlock (cdb);
+	cdb_writer_lock (cdb);
+	d (g_print ("Creating Collation %s on %s with %p\n", collate, col, (gpointer) func));
+	if (collate && func)
+		ret = sqlite3_create_collation (cdb->priv->db, collate, SQLITE_UTF8,  NULL, func);
+	cdb_writer_unlock (cdb);
 
-		return ret;
+	return ret;
 }
 
 /**
@@ -932,7 +961,7 @@ camel_db_begin_transaction (CamelDB *cdb,
 	stmt = cdb_construct_transaction_stmt (cdb, "SAVEPOINT ");
 
 	STARTTS (stmt);
-	res = cdb_sql_exec (cdb->db, stmt, NULL, NULL, NULL, error);
+	res = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
 	return res;
@@ -954,12 +983,12 @@ camel_db_end_transaction (CamelDB *cdb,
 		return -1;
 
 	stmt = cdb_construct_transaction_stmt (cdb, "RELEASE SAVEPOINT ");
-	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, NULL, error);
+	ret = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
 	ENDTS;
 	cdb_writer_unlock (cdb);
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 
 	return ret;
 }
@@ -977,11 +1006,11 @@ camel_db_abort_transaction (CamelDB *cdb,
 	gint ret;
 
 	stmt = cdb_construct_transaction_stmt (cdb, "ROLLBACK TO SAVEPOINT ");
-	ret = cdb_sql_exec (cdb->db, stmt, NULL, NULL, NULL, error);
+	ret = cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error);
 	g_free (stmt);
 
 	cdb_writer_unlock (cdb);
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 
 	return ret;
 }
@@ -1001,7 +1030,7 @@ camel_db_add_to_transaction (CamelDB *cdb,
 
 	g_return_val_if_fail (cdb_is_in_transaction (cdb), -1);
 
-	return (cdb_sql_exec (cdb->db, stmt, NULL, NULL, NULL, error));
+	return (cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error));
 }
 
 /**
@@ -1031,7 +1060,7 @@ camel_db_transaction_command (CamelDB *cdb,
 
 	while (qry_list) {
 		query = qry_list->data;
-		ret = cdb_sql_exec (cdb->db, query, NULL, NULL, NULL, error);
+		ret = cdb_sql_exec (cdb->priv->db, query, NULL, NULL, NULL, error);
 		if (ret)
 			goto end;
 		qry_list = g_list_next (qry_list);
@@ -1079,12 +1108,12 @@ camel_db_count_message_info (CamelDB *cdb,
 	cdb_reader_lock (cdb);
 
 	START (query);
-	ret = cdb_sql_exec (cdb->db, query, count_cb, count, NULL, error);
+	ret = cdb_sql_exec (cdb->priv->db, query, count_cb, count, NULL, error);
 	END;
 
 	cdb_reader_unlock (cdb);
 
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 
 	return ret;
 }
@@ -1287,11 +1316,11 @@ camel_db_select (CamelDB *cdb,
 	cdb_reader_lock (cdb);
 
 	START (stmt);
-	ret = cdb_sql_exec (cdb->db, stmt, callback, user_data, NULL, error);
+	ret = cdb_sql_exec (cdb->priv->db, stmt, callback, user_data, NULL, error);
 	END;
 
 	cdb_reader_unlock (cdb);
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 
 	return ret;
 }
@@ -1369,7 +1398,7 @@ camel_db_get_folder_uids (CamelDB *db,
  **/
 GPtrArray *
 camel_db_get_folder_junk_uids (CamelDB *db,
-                               gchar *folder_name,
+                               const gchar *folder_name,
                                GError **error)
 {
 	 gchar *sel_query;
@@ -1418,104 +1447,6 @@ camel_db_get_folder_deleted_uids (CamelDB *db,
 	 return array;
 }
 
-struct ReadPreviewData
-{
-	GHashTable *columns_hash;
-	GHashTable *hash;
-};
-
-static gint
-read_preview_callback (gpointer ref,
-                       gint ncol,
-                       gchar **cols,
-                       gchar **name)
-{
-	struct ReadPreviewData *rpd = ref;
-	const gchar *uid = NULL;
-	gchar *msg = NULL;
-	gint i;
-
-	for (i = 0; i < ncol; ++i) {
-		if (!name[i] || !cols[i])
-			continue;
-
-		switch (camel_db_get_column_ident (&rpd->columns_hash, i, ncol, name)) {
-			case CAMEL_DB_COLUMN_UID:
-				uid = camel_pstring_strdup (cols[i]);
-				break;
-			case CAMEL_DB_COLUMN_PREVIEW:
-				msg = g_strdup (cols[i]);
-				break;
-			default:
-				g_warn_if_reached ();
-				break;
-		}
-	}
-
-	g_hash_table_insert (rpd->hash, (gchar *) uid, msg);
-
-	return 0;
-}
-
-/**
- * camel_db_get_folder_preview:
- *
- * Returns: (element-type utf8 utf8) (transfer full):
- *
- * Since: 2.28
- **/
-GHashTable *
-camel_db_get_folder_preview (CamelDB *db,
-                             const gchar *folder_name,
-                             GError **error)
-{
-	gchar *sel_query;
-	gint ret;
-	struct ReadPreviewData rpd;
-	GHashTable *hash = g_hash_table_new (g_str_hash, g_str_equal);
-
-	sel_query = sqlite3_mprintf ("SELECT uid, preview FROM '%q_preview'", folder_name);
-
-	rpd.columns_hash = NULL;
-	rpd.hash = hash;
-
-	ret = camel_db_select (db, sel_query, read_preview_callback, &rpd, error);
-	sqlite3_free (sel_query);
-
-	if (rpd.columns_hash)
-		g_hash_table_destroy (rpd.columns_hash);
-
-	if (!g_hash_table_size (hash) || ret != 0) {
-		g_hash_table_destroy (hash);
-		hash = NULL;
-	}
-
-	return hash;
-}
-
-/**
- * camel_db_write_preview_record:
- *
- * Since: 2.28
- **/
-gint
-camel_db_write_preview_record (CamelDB *db,
-                               const gchar *folder_name,
-                               const gchar *uid,
-                               const gchar *msg,
-                               GError **error)
-{
-	gchar *query;
-	gint ret;
-
-	query = sqlite3_mprintf ("INSERT OR REPLACE INTO '%q_preview' VALUES(%Q,%Q)", folder_name, uid, msg);
-
-	ret = camel_db_add_to_transaction (db, query, error);
-	sqlite3_free (query);
-
-	return ret;
-}
-
 /**
  * camel_db_create_folders_table:
  *
@@ -1539,7 +1470,7 @@ camel_db_create_folders_table (CamelDB *cdb,
 		"visible_count INTEGER, "
 		"jnd_count INTEGER, "
 		"bdata TEXT )";
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 
 	ret = camel_db_command (cdb, query, error);
 
@@ -1598,29 +1529,9 @@ camel_db_create_message_info_table (CamelDB *cdb,
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	sqlite3_free (table_creation_query);
 
-	table_creation_query = sqlite3_mprintf (
-		"CREATE TABLE IF NOT EXISTS '%q_bodystructure' ( "
-			"uid TEXT PRIMARY KEY , "
-			"bodystructure TEXT )",
-			folder_name);
-	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
-	sqlite3_free (table_creation_query);
-
-	/* Create message preview table. */
-	table_creation_query = sqlite3_mprintf ("CREATE TABLE IF NOT EXISTS '%q_preview' (  uid TEXT PRIMARY KEY , preview TEXT)", folder_name);
-	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
-	sqlite3_free (table_creation_query);
-
 	/* FIXME: sqlize folder_name before you create the index */
 	safe_index = g_strdup_printf ("SINDEX-%s", folder_name);
 	table_creation_query = sqlite3_mprintf ("DROP INDEX IF EXISTS %Q", safe_index);
-	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
-	g_free (safe_index);
-	sqlite3_free (table_creation_query);
-
-	/* INDEX on preview */
-	safe_index = g_strdup_printf ("SINDEX-%s-preview", folder_name);
-	table_creation_query = sqlite3_mprintf ("CREATE INDEX IF NOT EXISTS %Q ON '%q_preview' (uid, preview)", safe_index, folder_name);
 	ret = camel_db_add_to_transaction (cdb, table_creation_query, error);
 	g_free (safe_index);
 	sqlite3_free (table_creation_query);
@@ -1974,8 +1885,8 @@ write_mir (CamelDB *cdb,
 		record->attachment,
 		record->dirty,
 		record->size,
-		(gint64) record->dsent,
-		(gint64) record->dreceived,
+		record->dsent,
+		record->dreceived,
 		record->subject,
 		record->from,
 		record->to,
@@ -1993,15 +1904,6 @@ write_mir (CamelDB *cdb,
 	ret = camel_db_add_to_transaction (cdb, ins_query, error);
 
 	sqlite3_free (ins_query);
-
-	if (ret == 0) {
-		ins_query = sqlite3_mprintf (
-			"INSERT OR REPLACE INTO "
-			"'%q_bodystructure' VALUES (%Q, %Q )",
-			folder_name, record->uid, record->bodystructure);
-		ret = camel_db_add_to_transaction (cdb, ins_query, error);
-		sqlite3_free (ins_query);
-	}
 
 	return ret;
 }
@@ -2051,12 +1953,12 @@ camel_db_write_folder_info_record (CamelDB *cdb,
 
 	ins_query = sqlite3_mprintf (
 		"INSERT INTO folders VALUES ("
-		"%Q, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %Q ) ",
+		"%Q, %d, %d, %d, %lld, %d, %d, %d, %d, %d, %d, %Q ) ",
 		record->folder_name,
 		record->version,
 		record->flags,
 		record->nextuid,
-		record->time,
+		record->timestamp,
 		record->saved_count,
 		record->unread_count,
 		record->deleted_count,
@@ -2112,7 +2014,7 @@ read_fir_callback (gpointer ref,
 				rfd->record->nextuid = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
 				break;
 			case CAMEL_DB_COLUMN_TIME:
-				rfd->record->time = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
+				rfd->record->timestamp = cols[i] ? g_ascii_strtoll (cols[i], NULL, 10) : 0;
 				break;
 			case CAMEL_DB_COLUMN_SAVED_COUNT:
 				rfd->record->saved_count = cols[i] ? strtoul (cols[i], NULL, 10) : 0;
@@ -2242,17 +2144,13 @@ camel_db_delete_uid (CamelDB *cdb,
 
 	camel_db_begin_transaction (cdb, error);
 
-	tab = sqlite3_mprintf ("DELETE FROM '%q_bodystructure' WHERE uid = %Q", folder, uid);
-	ret = camel_db_add_to_transaction (cdb, tab, error);
-	sqlite3_free (tab);
-
 	tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder, uid);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
 	ret = camel_db_end_transaction (cdb, error);
 
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 	return ret;
 }
 
@@ -2303,7 +2201,7 @@ cdb_delete_ids (CamelDB *cdb,
 	else
 		ret = camel_db_end_transaction (cdb, error);
 
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 
 	g_string_free (str, TRUE);
 
@@ -2342,23 +2240,19 @@ camel_db_clear_folder_summary (CamelDB *cdb,
 	gint ret;
 	gchar *folders_del;
 	gchar *msginfo_del;
-	gchar *bstruct_del;
 
 	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
 	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder);
-	bstruct_del = sqlite3_mprintf ("DELETE FROM '%q_bodystructure' ", folder);
 
 	camel_db_begin_transaction (cdb, error);
 
 	camel_db_add_to_transaction (cdb, msginfo_del, error);
 	camel_db_add_to_transaction (cdb, folders_del, error);
-	camel_db_add_to_transaction (cdb, bstruct_del, error);
 
 	ret = camel_db_end_transaction (cdb, error);
 
 	sqlite3_free (folders_del);
 	sqlite3_free (msginfo_del);
-	sqlite3_free (bstruct_del);
 
 	return ret;
 }
@@ -2386,13 +2280,9 @@ camel_db_delete_folder (CamelDB *cdb,
 	ret = camel_db_add_to_transaction (cdb, del, error);
 	sqlite3_free (del);
 
-	del = sqlite3_mprintf ("DROP TABLE '%q_bodystructure' ", folder);
-	ret = camel_db_add_to_transaction (cdb, del, error);
-	sqlite3_free (del);
-
 	ret = camel_db_end_transaction (cdb, error);
 
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 	return ret;
 }
 
@@ -2430,7 +2320,7 @@ camel_db_rename_folder (CamelDB *cdb,
 
 	ret = camel_db_end_transaction (cdb, error);
 
-	CAMEL_DB_RELEASE_SQLITE_MEMORY;
+	camel_db_release_cache_memory ();
 	return ret;
 }
 
@@ -2444,20 +2334,19 @@ camel_db_camel_mir_free (CamelMIRecord *record)
 {
 	if (record) {
 		camel_pstring_free (record->uid);
-		camel_pstring_free (record->subject);
-		camel_pstring_free (record->from);
-		camel_pstring_free (record->to);
-		camel_pstring_free (record->cc);
-		camel_pstring_free (record->mlist);
-		camel_pstring_free (record->followup_flag);
-		camel_pstring_free (record->followup_completed_on);
-		camel_pstring_free (record->followup_due_by);
+		g_free (record->subject);
+		g_free (record->from);
+		g_free (record->to);
+		g_free (record->cc);
+		g_free (record->mlist);
+		g_free (record->followup_flag);
+		g_free (record->followup_completed_on);
+		g_free (record->followup_due_by);
 		g_free (record->part);
 		g_free (record->labels);
 		g_free (record->usertags);
 		g_free (record->cinfo);
 		g_free (record->bdata);
-		g_free (record->bodystructure);
 
 		g_free (record);
 	}
@@ -2624,7 +2513,6 @@ static struct _known_column_names {
 } known_column_names[] = {
 	{ "attachment",			CAMEL_DB_COLUMN_ATTACHMENT },
 	{ "bdata",			CAMEL_DB_COLUMN_BDATA },
-	{ "bodystructure",		CAMEL_DB_COLUMN_BODYSTRUCTURE },
 	{ "cinfo",			CAMEL_DB_COLUMN_CINFO },
 	{ "deleted",			CAMEL_DB_COLUMN_DELETED },
 	{ "deleted_count",		CAMEL_DB_COLUMN_DELETED_COUNT },
@@ -2646,7 +2534,6 @@ static struct _known_column_names {
 	{ "mlist",			CAMEL_DB_COLUMN_MLIST },
 	{ "nextuid",			CAMEL_DB_COLUMN_NEXTUID },
 	{ "part",			CAMEL_DB_COLUMN_PART },
-	{ "preview",			CAMEL_DB_COLUMN_PREVIEW },
 	{ "read",			CAMEL_DB_COLUMN_READ },
 	{ "replied",			CAMEL_DB_COLUMN_REPLIED },
 	{ "saved_count",		CAMEL_DB_COLUMN_SAVED_COUNT },
@@ -2760,11 +2647,11 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 
 	cdb_writer_lock (cdb);
 
-	if (cdb_sql_exec (cdb->db, "PRAGMA page_count;", get_number_cb, &page_count, NULL, &local_error) == SQLITE_OK &&
-	    cdb_sql_exec (cdb->db, "PRAGMA freelist_count;", get_number_cb, &freelist_count, NULL, &local_error) == SQLITE_OK) {
+	if (cdb_sql_exec (cdb->priv->db, "PRAGMA page_count;", get_number_cb, &page_count, NULL, &local_error) == SQLITE_OK &&
+	    cdb_sql_exec (cdb->priv->db, "PRAGMA freelist_count;", get_number_cb, &freelist_count, NULL, &local_error) == SQLITE_OK) {
 		/* Vacuum, if there's more than 5% of the free pages */
 		success = !page_count || !freelist_count || freelist_count * 1000 / page_count <= 50 ||
-		    cdb_sql_exec (cdb->db, "vacuum;", NULL, NULL, NULL, &local_error) == SQLITE_OK;
+		    cdb_sql_exec (cdb->priv->db, "vacuum;", NULL, NULL, NULL, &local_error) == SQLITE_OK;
 	}
 
 	cdb_writer_unlock (cdb);
@@ -2775,4 +2662,24 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 	}
 
 	return success;
+}
+
+/**
+ * camel_db_release_cache_memory:
+ *
+ * Instructs sqlite to release its memory, if possible. This can be avoided
+ * when CAMEL_SQLITE_FREE_CACHE environment variable is set.
+ *
+ * Since: 3.24
+ **/
+void
+camel_db_release_cache_memory (void)
+{
+	static gint env_set = -1;
+
+	if (env_set == -1)
+		env_set = g_getenv("CAMEL_SQLITE_FREE_CACHE") ? 1 : 0;
+
+	if (!env_set)
+		sqlite3_release_memory (CAMEL_DB_FREE_CACHE_SIZE);
 }

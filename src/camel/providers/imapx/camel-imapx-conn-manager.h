@@ -64,6 +64,9 @@ struct _CamelIMAPXConnManagerClass {
 	/* Signals */
 	void	(* connection_created) (CamelIMAPXConnManager *conn_man,
 					CamelIMAPXServer *server);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_conn_manager_get_type (void);

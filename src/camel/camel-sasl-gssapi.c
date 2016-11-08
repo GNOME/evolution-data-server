@@ -578,8 +578,8 @@ camel_sasl_gssapi_is_available (void)
 
 /**
  * camel_sasl_gssapi_override_host_and_user:
- * @override_host: Host name to use during challenge processing; can be %NULL
- * @override_user: User name to use during challenge processing; can be %NULL
+ * @override_host: (nullable): Host name to use during challenge processing; can be %NULL
+ * @override_user: (nullable): User name to use during challenge processing; can be %NULL
  *
  * Set host and user to use, instead of those in CamelService's settings.
  * It's both or none, aka either set both, or the settings values are used.

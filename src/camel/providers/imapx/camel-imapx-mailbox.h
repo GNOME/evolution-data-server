@@ -69,6 +69,9 @@ struct _CamelIMAPXMailbox {
 
 struct _CamelIMAPXMailboxClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_mailbox_get_type

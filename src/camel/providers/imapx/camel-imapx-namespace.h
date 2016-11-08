@@ -78,6 +78,9 @@ struct _CamelIMAPXNamespace {
 
 struct _CamelIMAPXNamespaceClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_namespace_get_type

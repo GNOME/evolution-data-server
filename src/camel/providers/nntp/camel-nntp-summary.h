@@ -59,6 +59,9 @@ struct _CamelNNTPSummary {
 
 struct _CamelNNTPSummaryClass {
 	CamelFolderSummaryClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_summary_get_type	(void);

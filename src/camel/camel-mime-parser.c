@@ -60,6 +60,15 @@ gint inend_id = -1,
 #define _header_scan_state _CamelMimeParserPrivate
 #define _PRIVATE(obj) (((CamelMimeParser *)(obj))->priv)
 
+/* a raw rfc822 header */
+/* the value MUST be US-ASCII */
+typedef struct _camel_header_raw {
+	struct _camel_header_raw *next;
+	gchar *name;
+	gchar *value;
+	gint offset;		/* in file, if known */
+} CamelHeaderRaw;
+
 struct _header_scan_state {
 
     /* global state */
@@ -116,7 +125,7 @@ struct _header_scan_stack {
 #ifdef MEMPOOL
 	CamelMemPool *pool;	/* memory pool to keep track of headers/etc at this level */
 #endif
-	struct _camel_header_raw *headers;	/* headers for this part */
+	CamelHeaderRaw *headers;	/* headers for this part */
 
 	CamelContentType *content_type;
 
@@ -154,8 +163,13 @@ static goffset folder_tell (struct _header_scan_state *s);
 static gint folder_read (struct _header_scan_state *s);
 static void folder_push_part (struct _header_scan_state *s, struct _header_scan_stack *h);
 
+static const gchar * header_raw_find (CamelHeaderRaw **list, const gchar *name, gint *offset);
+
 #ifdef MEMPOOL
 static void header_append_mempool (struct _header_scan_state *s, struct _header_scan_stack *h, gchar *header, gint offset);
+#else
+static void header_raw_free (CamelHeaderRaw *l);
+static void header_raw_clear (CamelHeaderRaw *l);
 #endif
 
 #if d(!)0
@@ -317,7 +331,7 @@ camel_mime_parser_header (CamelMimeParser *m,
 	struct _header_scan_state *s = _PRIVATE (m);
 
 	if (s->parts && s->parts->headers)
-		return camel_header_raw_find (&s->parts->headers, name, offset);
+		return header_raw_find (&s->parts->headers, name, offset);
 
 	return NULL;
 }
@@ -330,18 +344,26 @@ camel_mime_parser_header (CamelMimeParser *m,
  * current state of the parser.  These headers are valid
  * until the next call to parser_step(), or parser_drop_step().
  *
- * Returns: (transfer none): The raw headers, or NULL if there are no headers
- * defined for the current part or state.  These are READ ONLY.
+ * Returns: (transfer full): The headers, or %NULL, if there are no headers
+ * defined for the current part or state. Free it with camel_name_value_array_free().
  *
- * Since: 2.22
+ * Since: 3.24
  **/
-struct _camel_header_raw *
-camel_mime_parser_headers_raw (CamelMimeParser *m)
+CamelNameValueArray *
+camel_mime_parser_dup_headers (CamelMimeParser *m)
 {
 	struct _header_scan_state *s = _PRIVATE (m);
 
-	if (s->parts)
-		return s->parts->headers;
+	if (s->parts) {
+		CamelHeaderRaw *header = s->parts->headers;
+		CamelNameValueArray *header_copy = camel_name_value_array_new ();
+		while (header) {
+			camel_name_value_array_append (header_copy, header->name, header->value);
+			header = header->next;
+		}
+
+		return header_copy;
+	}
 	return NULL;
 }
 
@@ -1180,7 +1202,7 @@ header_append_mempool (struct _header_scan_state *s,
                        gchar *header,
                        gint offset)
 {
-	struct _camel_header_raw *l, *n;
+	CamelHeaderRaw *l, *n;
 	gchar *content;
 
 	content = strchr (header, ':');
@@ -1203,7 +1225,7 @@ header_append_mempool (struct _header_scan_state *s,
 
 		n->offset = offset;
 
-		l = (struct _camel_header_raw *) &h->headers;
+		l = (CamelHeaderRaw *) &h->headers;
 		while (l->next) {
 			l = l->next;
 		}
@@ -1688,7 +1710,7 @@ tail_recurse:
 		/* FIXME: should this check for MIME-Version: 1.0 as well? */
 
 		type = CAMEL_MIME_PARSER_STATE_HEADER;
-		if ((content = camel_header_raw_find (&h->headers, "Content-Type", NULL))
+		if ((content = header_raw_find (&h->headers, "Content-Type", NULL))
 		     && (ct = camel_content_type_decode (content))) {
 			if (!g_ascii_strcasecmp (ct->type, "multipart")) {
 				if (!camel_content_type_is (ct, "multipart", "signed")
@@ -1892,6 +1914,60 @@ folder_scan_drop_step (struct _header_scan_state *s)
 	}
 }
 
+static CamelHeaderRaw *
+header_raw_find_node (CamelHeaderRaw **list,
+                      const gchar *name)
+{
+	CamelHeaderRaw *l;
+
+	l = *list;
+	while (l) {
+		if (!g_ascii_strcasecmp (l->name, name))
+			break;
+		l = l->next;
+	}
+	return l;
+}
+
+static const gchar *
+header_raw_find (CamelHeaderRaw **list,
+		 const gchar *name,
+		 gint *offset)
+{
+	CamelHeaderRaw *l;
+
+	l = header_raw_find_node (list, name);
+	if (l) {
+		if (offset)
+			*offset = l->offset;
+		return l->value;
+	} else
+		return NULL;
+}
+
+#ifndef MEMPOOL
+static void
+header_raw_free (CamelHeaderRaw *l)
+{
+	g_free (l->name);
+	g_free (l->value);
+	g_free (l);
+}
+
+static void
+header_raw_clear (CamelHeaderRaw **list)
+{
+	CamelHeaderRaw *l, *n;
+	l = *list;
+	while (l) {
+		n = l->next;
+		header_raw_free (l);
+		l = n;
+	}
+	*list = NULL;
+}
+#endif
+
 #ifdef STANDALONE
 gint main (gint argc, gchar **argv)
 {
@@ -1948,7 +2024,7 @@ gint main (gint argc, gchar **argv)
 					charset = NULL;
 				}
 
-				encoding = camel_header_raw_find (&s->parts->headers, "Content-transfer-encoding", 0);
+				encoding = header_raw_find (&s->parts->headers, "Content-transfer-encoding", NULL);
 				printf ("encoding = '%s'\n", encoding);
 				if (encoding && !g_ascii_strncasecmp (encoding, " base64", 7)) {
 					printf ("adding base64 filter\n");

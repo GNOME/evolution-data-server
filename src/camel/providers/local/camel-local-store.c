@@ -532,7 +532,7 @@ local_store_rename_folder_sync (CamelStore *store,
 
 	d (printf ("local rename folder '%s' '%s'\n", old, new));
 
-	folder = camel_object_bag_get (store->folders, old);
+	folder = camel_object_bag_get (camel_store_get_folders_bag (store), old);
 	if (folder && folder->index) {
 		if (camel_index_rename (folder->index, newibex) == -1)
 			goto ibex_failed;

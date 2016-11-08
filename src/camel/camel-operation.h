@@ -61,6 +61,9 @@ struct _CamelOperationClass {
 	void		(*status)		(CamelOperation *operation,
 						 const gchar *what,
 						 gint pc);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_operation_get_type	(void);

@@ -49,6 +49,8 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_FOLDER, CamelFolderClass))
 
+#define CAMEL_TYPE_FOLDER_CHANGE_INFO (camel_folder_change_info_get_type ())
+
 /**
  * CAMEL_FOLDER_ERROR:
  *
@@ -100,6 +102,7 @@ struct _CamelFolderChangeInfo {
 	GPtrArray *uid_changed;
 	GPtrArray *uid_recent;
 
+	/*< private >*/
 	CamelFolderChangeInfoPrivate *priv;
 };
 
@@ -121,14 +124,6 @@ struct _CamelFolderQuotaInfo {
 struct _CamelFolder {
 	CamelObject parent;
 	CamelFolderPrivate *priv;
-
-	CamelFolderSummary *summary;
-
-	CamelFolderFlags folder_flags;
-	CamelMessageFlags permanent_flags;
-
-	/* Future ABI expansion */
-	gpointer later[4];
 };
 
 struct _CamelFolderClass {
@@ -136,15 +131,13 @@ struct _CamelFolderClass {
 
 	/* Non-Blocking Methods */
 	gint		(*get_message_count)	(CamelFolder *folder);
-	CamelMessageFlags
-			(*get_permanent_flags)	(CamelFolder *folder);
-	CamelMessageFlags
-			(*get_message_flags)	(CamelFolder *folder,
+	guint32		(*get_permanent_flags)	(CamelFolder *folder);
+	guint32		(*get_message_flags)	(CamelFolder *folder,
 						 const gchar *uid);
 	gboolean	(*set_message_flags)	(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelMessageFlags flags,
-						 CamelMessageFlags set);
+						 guint32 mask,
+						 guint32 set);
 	gboolean	(*get_message_user_flag)(CamelFolder *folder,
 						 const gchar *uid,
 						 const gchar *name);
@@ -254,8 +247,8 @@ struct _CamelFolderClass {
 	void		(*prepare_content_refresh)
 						(CamelFolder *folder);
 
-	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[19];
+	/* Padding for future expansion */
+	gpointer reserved_methods[20];
 
 	/* Signals */
 	void		(*changed)		(CamelFolder *folder,
@@ -263,6 +256,9 @@ struct _CamelFolderClass {
 	void		(*deleted)		(CamelFolder *folder);
 	void		(*renamed)		(CamelFolder *folder,
 						 const gchar *old_name);
+
+	/* Padding for future expansion */
+	gpointer reserved_signals[20];
 };
 
 GType		camel_folder_get_type		(void);
@@ -271,6 +267,11 @@ void		camel_folder_set_lock_async	(CamelFolder *folder,
 						 gboolean skip_folder_lock);
 struct _CamelStore *
 		camel_folder_get_parent_store	(CamelFolder *folder);
+CamelFolderSummary *
+		camel_folder_get_folder_summary	(CamelFolder *folder);
+void		camel_folder_take_folder_summary
+						(CamelFolder *folder,
+						 CamelFolderSummary *summary);
 const gchar *	camel_folder_get_full_name	(CamelFolder *folder);
 gchar *		camel_folder_dup_full_name	(CamelFolder *folder);
 void		camel_folder_set_full_name	(CamelFolder *folder,
@@ -283,17 +284,18 @@ const gchar *	camel_folder_get_description	(CamelFolder *folder);
 gchar *		camel_folder_dup_description	(CamelFolder *folder);
 void		camel_folder_set_description	(CamelFolder *folder,
 						 const gchar *description);
-CamelMessageFlags
-		camel_folder_get_permanent_flags
+guint32		camel_folder_get_flags		(CamelFolder *folder);
+void		camel_folder_set_flags		(CamelFolder *folder,
+						 guint32 folder_flags);
+guint32		camel_folder_get_permanent_flags
 						(CamelFolder *folder);
 #ifndef CAMEL_DISABLE_DEPRECATED
-CamelMessageFlags
-		camel_folder_get_message_flags	(CamelFolder *folder,
+guint32		camel_folder_get_message_flags	(CamelFolder *folder,
 						 const gchar *uid);
 gboolean	camel_folder_set_message_flags	(CamelFolder *folder,
 						 const gchar *uid,
-						 CamelMessageFlags flags,
-						 CamelMessageFlags set);
+						 guint32 mask,
+						 guint32 set);
 gboolean	camel_folder_get_message_user_flag
 						(CamelFolder *folder,
 						 const gchar *uid,
@@ -380,8 +382,6 @@ CamelFolderQuotaInfo *
 CamelFolderQuotaInfo *
 		camel_folder_quota_info_clone	(const CamelFolderQuotaInfo *info);
 void		camel_folder_quota_info_free	(CamelFolderQuotaInfo *info);
-void		camel_folder_free_nop		(CamelFolder *folder,
-						 GPtrArray *array);
 void		camel_folder_free_shallow	(CamelFolder *folder,
 						 GPtrArray *array);
 void		camel_folder_free_deep		(CamelFolder *folder,
@@ -537,11 +537,23 @@ void		camel_folder_prepare_content_refresh
 						(CamelFolder *folder);
 
 /* update functions for change info */
+GType		camel_folder_change_info_get_type
+						(void) G_GNUC_CONST;
 CamelFolderChangeInfo *
 		camel_folder_change_info_new	(void);
+CamelFolderChangeInfo *
+		camel_folder_change_info_copy	(CamelFolderChangeInfo *src);
 void		camel_folder_change_info_clear	(CamelFolderChangeInfo *info);
 void		camel_folder_change_info_free	(CamelFolderChangeInfo *info);
 gboolean	camel_folder_change_info_changed (CamelFolderChangeInfo *info);
+GPtrArray *	camel_folder_change_info_get_added_uids
+						(CamelFolderChangeInfo *info);
+GPtrArray *	camel_folder_change_info_get_removed_uids
+						(CamelFolderChangeInfo *info);
+GPtrArray *	camel_folder_change_info_get_changed_uids
+						(CamelFolderChangeInfo *info);
+GPtrArray *	camel_folder_change_info_get_recent_uids
+						(CamelFolderChangeInfo *info);
 
 /* for building diff's automatically */
 void		camel_folder_change_info_add_source

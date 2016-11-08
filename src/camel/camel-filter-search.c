@@ -148,16 +148,18 @@ check_header_in_message_info (CamelMessageInfo *info,
 {
 	struct _KnownHeaders {
 		const gchar *header_name;
-		guint info_key;
+		const gchar *info_name;
+		camel_search_t type;
 	} known_headers[] = {
-		{ "Subject", CAMEL_MESSAGE_INFO_SUBJECT },
-		{ "From", CAMEL_MESSAGE_INFO_FROM },
-		{ "To", CAMEL_MESSAGE_INFO_TO },
-		{ "Cc", CAMEL_MESSAGE_INFO_CC }
+		{ "Subject", "subject", CAMEL_SEARCH_TYPE_ENCODED },
+		{ "From", "from", CAMEL_SEARCH_TYPE_ADDRESS_ENCODED },
+		{ "To", "to", CAMEL_SEARCH_TYPE_ADDRESS_ENCODED },
+		{ "Cc", "cc", CAMEL_SEARCH_TYPE_ADDRESS_ENCODED }
 	};
-	camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
-	const gchar *name, *value;
+	const gchar *name;
+	gchar *value;
 	gboolean found = FALSE;
+	camel_search_t use_type;
 	gint ii;
 
 	g_return_val_if_fail (argc > 1, FALSE);
@@ -175,19 +177,19 @@ check_header_in_message_info (CamelMessageInfo *info,
 		gint jj;
 
 		for (jj = 0; jj < G_N_ELEMENTS (known_headers); jj++) {
-			value = camel_message_info_get_ptr (info, known_headers[jj].info_key);
+			value = NULL;
+
+			g_object_get (G_OBJECT (info), known_headers[jj].info_name, &value, NULL);
+
 			if (!value)
 				continue;
 
-			if (known_headers[jj].info_key == CAMEL_MESSAGE_INFO_SUBJECT)
-				type = CAMEL_SEARCH_TYPE_ENCODED;
-			else
-				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
-
 			for (ii = 1; ii < argc && !*matched; ii++) {
 				if (argv[ii]->type == CAMEL_SEXP_RES_STRING)
-					*matched = camel_search_header_match (value, argv[ii]->value.string, how, type, NULL);
+					*matched = camel_search_header_match (value, argv[ii]->value.string, how, known_headers[jj].type, NULL);
 			}
+
+			g_free (value);
 
 			if (*matched)
 				return TRUE;
@@ -201,20 +203,23 @@ check_header_in_message_info (CamelMessageInfo *info,
 	for (ii = 0; ii < G_N_ELEMENTS (known_headers); ii++) {
 		found = g_ascii_strcasecmp (name, known_headers[ii].header_name) == 0;
 		if (found) {
-			value = camel_message_info_get_ptr (info, known_headers[ii].info_key);
-			if (known_headers[ii].info_key != CAMEL_MESSAGE_INFO_SUBJECT)
-				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
+			g_object_get (G_OBJECT (info), known_headers[ii].info_name, &value, NULL);
+			use_type = known_headers[ii].type;
 			break;
 		}
 	}
 
-	if (!found || !value)
+	if (!found || !value) {
+		g_free (value);
 		return FALSE;
+	}
 
 	for (ii = 1; ii < argc && !*matched; ii++) {
 		if (argv[ii]->type == CAMEL_SEXP_RES_STRING)
-			*matched = camel_search_header_match (value, argv[ii]->value.string, how, type, NULL);
+			*matched = camel_search_header_match (value, argv[ii]->value.string, how, use_type, NULL);
 	}
+
+	g_free (value);
 
 	return TRUE;
 }
@@ -249,10 +254,12 @@ check_header (struct _CamelSExp *f,
 		} else if (fms->message || !check_header_in_message_info (fms->info, argc, argv, how, &matched)) {
 			CamelMimeMessage *message;
 			CamelMimePart *mime_part;
-			struct _camel_header_raw *header;
+			const CamelNameValueArray *headers;
 			const gchar *charset = NULL;
 			camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
 			CamelContentType *ct;
+			guint ii;
+			const gchar *header_name = NULL, *header_value = NULL;
 
 			message = camel_filter_search_get_message (fms, f);
 			mime_part = CAMEL_MIME_PART (message);
@@ -267,12 +274,13 @@ check_header (struct _CamelSExp *f,
 				}
 			}
 
-			for (header = mime_part->headers; header && !matched; header = header->next) {
+			headers = camel_medium_get_headers (CAMEL_MEDIUM (mime_part));
+			for (ii = 0; camel_name_value_array_get (headers, ii, &header_name, &header_value); ii++) {
 				/* empty name means any header */
-				if (!name || !*name || !g_ascii_strcasecmp (header->name, name)) {
+				if (!name || !*name || !g_ascii_strcasecmp (header_name, name)) {
 					for (i = 1; i < argc && !matched; i++) {
 						if (argv[i]->type == CAMEL_SEXP_RES_STRING)
-							matched = camel_search_header_match (header->value, argv[i]->value.string, how, type, charset);
+							matched = camel_search_header_match (header_value, argv[i]->value.string, how, type, charset);
 					}
 				}
 			}
@@ -845,7 +853,7 @@ junk_test (struct _CamelSExp *f,
 	CamelMimeMessage *message;
 	CamelJunkStatus status;
 	const GHashTable *ht;
-	const CamelHeaderParam *node;
+	const CamelNameValueArray *info_headers;
 	gboolean sender_is_known;
 	gboolean message_is_junk = FALSE;
 	GError *error = NULL;
@@ -887,52 +895,69 @@ junk_test (struct _CamelSExp *f,
 	/* Check the headers for a junk designation. */
 
 	ht = camel_session_get_junk_headers (fms->session);
-	node = camel_message_info_get_headers (info);
 
-	while (node != NULL) {
-		const gchar *value = NULL;
+	camel_message_info_property_lock (info);
 
-		if (node->name != NULL)
-			value = g_hash_table_lookup (
-				(GHashTable *) ht, node->name);
+	info_headers = camel_message_info_get_headers (info);
+	if (info_headers) {
+		guint len, ii;
 
-		message_is_junk =
-			(value != NULL) &&
-			(camel_strstrcase (node->value, value) != NULL);
+		len = camel_name_value_array_get_length (info_headers);
+		for (ii = 0; ii < len; ii++) {
+			const gchar *hdr_name = NULL;
+			const gchar *hdr_value = NULL;
+			const gchar *junk_value = NULL;
 
-		if (message_is_junk) {
-			if (camel_debug ("junk"))
-				printf (
-					"Message contains \"%s: %s\"",
-					node->name, value);
-			goto done;
-		}
-
-		node = node->next;
-	}
-
-	/* Not every message info has headers available, thus try headers of the message itself */
-	message = camel_filter_search_get_message (fms, f);
-	if (message) {
-		struct _camel_header_raw *h;
-
-		for (h = CAMEL_MIME_PART (message)->headers; h; h = h->next) {
-			const gchar *value;
-
-			if (!h->name)
+			if (!camel_name_value_array_get (info_headers, ii, &hdr_name, &hdr_value))
 				continue;
 
-			value = g_hash_table_lookup ((GHashTable *) ht, h->name);
-			if (!value)
+			if (!hdr_name || !hdr_value)
 				continue;
 
-			message_is_junk = camel_strstrcase (h->value, value) != NULL;
+			junk_value = g_hash_table_lookup ((GHashTable *) ht, hdr_name);
+
+			message_is_junk =
+				(junk_value != NULL) &&
+				(camel_strstrcase (hdr_value, junk_value) != NULL);
 
 			if (message_is_junk) {
 				if (camel_debug ("junk"))
 					printf (
 						"Message contains \"%s: %s\"",
-						h->name, value);
+						hdr_name, junk_value);
+				camel_message_info_property_unlock (info);
+				goto done;
+			}
+		}
+	}
+
+	camel_message_info_property_unlock (info);
+
+	/* Not every message info has headers available, thus try headers of the message itself */
+	message = camel_filter_search_get_message (fms, f);
+	if (message) {
+		const CamelNameValueArray *headers;
+		const gchar *raw_name = NULL, *raw_value = NULL;
+		guint ii;
+
+		headers = camel_medium_get_headers (CAMEL_MEDIUM (message));
+		for (ii = 0; camel_name_value_array_get (headers, ii, &raw_name, &raw_value); ii++) {
+			const gchar *value;
+			if (!raw_name)
+				continue;
+
+			value = g_hash_table_lookup ((GHashTable *) ht, raw_name);
+			if (!value)
+				continue;
+
+			message_is_junk = camel_strstrcase (raw_value, value) != NULL;
+
+			if (message_is_junk) {
+				if (camel_debug ("junk")) {
+					printf (
+						"Message contains \"%s: %s\"",
+						raw_name, value);
+				}
 				goto done;
 			}
 		}

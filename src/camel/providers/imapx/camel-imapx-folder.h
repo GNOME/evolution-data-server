@@ -65,6 +65,9 @@ struct _CamelIMAPXFolder {
 
 struct _CamelIMAPXFolderClass {
 	CamelOfflineFolderClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_folder_get_type	(void);

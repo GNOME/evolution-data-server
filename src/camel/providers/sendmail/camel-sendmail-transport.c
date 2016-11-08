@@ -112,7 +112,8 @@ sendmail_send_to_sync (CamelTransport *transport,
                        GCancellable *cancellable,
                        GError **error)
 {
-	struct _camel_header_raw *header, *savedbcc, *n, *tail;
+	CamelNameValueArray *previous_headers = NULL;
+	const gchar *header_name = NULL, *header_value = NULL;
 	const gchar *from_addr, *addr;
 	GPtrArray *argv_arr;
 	gint i, len, fd[2], nullfd, wstat;
@@ -125,6 +126,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 	gchar *custom_binary = NULL, *custom_args = NULL;
 	gboolean success;
 	pid_t pid;
+	guint ii;
 
 	success = camel_internet_address_get (
 		CAMEL_INTERNET_ADDRESS (from), 0, NULL, &from_addr);
@@ -203,23 +205,8 @@ sendmail_send_to_sync (CamelTransport *transport,
 	}
 
 	/* unlink the bcc headers */
-	savedbcc = NULL;
-	tail = (struct _camel_header_raw *) &savedbcc;
-
-	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (message)->headers;
-	n = header->next;
-	while (n != NULL) {
-		if (!g_ascii_strcasecmp (n->name, "Bcc")) {
-			header->next = n->next;
-			tail->next = n;
-			n->next = NULL;
-			tail = n;
-		} else {
-			header = n;
-		}
-
-		n = header->next;
-	}
+	previous_headers = camel_medium_dup_headers (CAMEL_MEDIUM (message));
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
 
 	if (pipe (fd) == -1) {
 		g_set_error (
@@ -229,7 +216,13 @@ sendmail_send_to_sync (CamelTransport *transport,
 			"mail not sent"), binary, g_strerror (errno));
 
 		/* restore the bcc headers */
-		header->next = savedbcc;
+		for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
+			if (!g_ascii_strcasecmp (header_name, "Bcc")) {
+				camel_medium_add_header (CAMEL_MEDIUM (message), header_name, header_value);
+			}
+		}
+
+		camel_name_value_array_free (previous_headers);
 		g_free (custom_binary);
 		g_free (custom_args);
 		g_ptr_array_free (argv_arr, TRUE);
@@ -257,7 +250,13 @@ sendmail_send_to_sync (CamelTransport *transport,
 		sigprocmask (SIG_SETMASK, &omask, NULL);
 
 		/* restore the bcc headers */
-		header->next = savedbcc;
+		for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
+			if (!g_ascii_strcasecmp (header_name, "Bcc")) {
+				camel_medium_add_header (CAMEL_MEDIUM (message), header_name, header_value);
+			}
+		}
+
+		camel_name_value_array_free (previous_headers);
 		g_free (custom_binary);
 		g_free (custom_args);
 		g_ptr_array_free (argv_arr, TRUE);
@@ -308,7 +307,13 @@ sendmail_send_to_sync (CamelTransport *transport,
 		sigprocmask (SIG_SETMASK, &omask, NULL);
 
 		/* restore the bcc headers */
-		header->next = savedbcc;
+		for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
+			if (!g_ascii_strcasecmp (header_name, "Bcc")) {
+				camel_medium_add_header (CAMEL_MEDIUM (message), header_name, header_value);
+			}
+		}
+
+		camel_name_value_array_free (previous_headers);
 		g_free (custom_binary);
 		g_free (custom_args);
 
@@ -324,7 +329,13 @@ sendmail_send_to_sync (CamelTransport *transport,
 	sigprocmask (SIG_SETMASK, &omask, NULL);
 
 	/* restore the bcc headers */
-	header->next = savedbcc;
+	for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
+		if (!g_ascii_strcasecmp (header_name, "Bcc")) {
+			camel_medium_add_header (CAMEL_MEDIUM (message), header_name, header_value);
+		}
+	}
+
+	camel_name_value_array_free (previous_headers);
 
 	if (!WIFEXITED (wstat)) {
 		g_set_error (

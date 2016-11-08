@@ -59,6 +59,9 @@ struct _CamelMimeFilterGZip {
 
 struct _CamelMimeFilterGZipClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_gzip_get_type (void);

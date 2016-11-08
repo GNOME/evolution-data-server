@@ -52,12 +52,6 @@ enum {
 	CAMEL_MESSAGE_FOLDER_NOTSEEN = 1 << 19 /* have we seen this in processing this loop? */
 };
 
-typedef struct _CamelLocalMessageInfo CamelLocalMessageInfo;
-
-struct _CamelLocalMessageInfo {
-	CamelMessageInfoBase info;
-};
-
 struct _CamelLocalSummary {
 	CamelFolderSummary parent;
 
@@ -78,9 +72,12 @@ struct _CamelLocalSummaryClass {
 	gint (*sync)(CamelLocalSummary *cls, gboolean expunge, CamelFolderChangeInfo *changeinfo, GCancellable *cancellable, GError **error);
 	CamelMessageInfo *(*add)(CamelLocalSummary *cls, CamelMimeMessage *msg, const CamelMessageInfo *info, CamelFolderChangeInfo *, GError **error);
 
-	gchar *(*encode_x_evolution)(CamelLocalSummary *cls, const CamelLocalMessageInfo *info);
-	gint (*decode_x_evolution)(CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *info);
+	gchar *(*encode_x_evolution)(CamelLocalSummary *cls, const CamelMessageInfo *info);
+	gint (*decode_x_evolution)(CamelLocalSummary *cls, const gchar *xev, CamelMessageInfo *info);
 	gint (*need_index)(void);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType	camel_local_summary_get_type	(void);
@@ -99,11 +96,11 @@ CamelMessageInfo *camel_local_summary_add (CamelLocalSummary *cls, CamelMimeMess
 void camel_local_summary_check_force (CamelLocalSummary *cls);
 
 /* generate an X-Evolution header line */
-gchar *camel_local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelLocalMessageInfo *info);
-gint camel_local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelLocalMessageInfo *info);
+gchar *camel_local_summary_encode_x_evolution (CamelLocalSummary *cls, const CamelMessageInfo *info);
+gint camel_local_summary_decode_x_evolution (CamelLocalSummary *cls, const gchar *xev, CamelMessageInfo *info);
 
 /* utility functions - write headers to a file with optional X-Evolution header and/or status header */
-gint camel_local_summary_write_headers (gint fd, struct _camel_header_raw *header, const gchar *xevline, const gchar *status, const gchar *xstatus);
+gint camel_local_summary_write_headers (gint fd, CamelNameValueArray *headers, const gchar *xevline, const gchar *status, const gchar *xstatus);
 
 G_END_DECLS
 

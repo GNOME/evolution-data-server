@@ -112,7 +112,7 @@ fill_fi (CamelStore *store,
 
 	fi->unread = -1;
 	fi->total = -1;
-	folder = camel_object_bag_peek (store->folders, fi->full_name);
+	folder = camel_object_bag_peek (camel_store_get_folders_bag (store), fi->full_name);
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 			camel_folder_refresh_info_sync (folder, NULL, NULL);
@@ -134,7 +134,7 @@ fill_fi (CamelStore *store,
 		mbs = (CamelMboxSummary *) camel_mbox_summary_new (
 			NULL, folderpath, NULL);
 		/* FIXME[disk-summary] track exception */
-		if (camel_folder_summary_header_load_from_db ((CamelFolderSummary *) mbs, store, fi->full_name, NULL)) {
+		if (camel_folder_summary_header_load ((CamelFolderSummary *) mbs, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (
 				(CamelFolderSummary *) mbs);
 			fi->total = camel_folder_summary_get_saved_count (
@@ -830,7 +830,7 @@ mbox_store_rename_folder_sync (CamelStore *store,
 		newdir = NULL;
 	}
 
-	folder = camel_object_bag_get (store->folders, old);
+	folder = camel_object_bag_get (camel_store_get_folders_bag (store), old);
 	if (folder && folder->index) {
 		if (camel_index_rename (folder->index, newibex) == -1 && errno != ENOENT) {
 			errnosav = errno;

@@ -60,6 +60,9 @@ struct _CamelMimeFilterEnriched {
 
 struct _CamelMimeFilterEnrichedClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_enriched_get_type (void);

@@ -22,6 +22,7 @@
 
 #define MAX_LOOP (10000)
 #define MAX_THREADS (5)
+#define GC(x) ((gchar *) (x))
 
 static const gchar *local_drivers[] = { "local" };
 
@@ -30,25 +31,25 @@ static CamelSession *session;
 /* FIXME: flags aren't really right yet */
 /* ASCII sorted on full_name */
 static CamelFolderInfo fi_list_1[] = {
-	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "testbox/foo", "foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("."), GC ("Inbox"), CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC (".#evolution/Junk"), GC ("Junk"), CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC (".#evolution/Trash"), GC ("Trash"), CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox"), GC ("testbox"), CAMEL_FOLDER_CHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox/foo"), GC ("foo"), CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox2"), GC ("testbox2"), CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static CamelFolderInfo fi_list_2[] = {
-	{ NULL, NULL, NULL, ".", "Inbox", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Junk", "Junk", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, ".#evolution/Trash", "Trash", CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "testbox2", "testbox2", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("."), GC ("Inbox"), CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC (".#evolution/Junk"), GC ("Junk"), CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC (".#evolution/Trash"), GC ("Trash"), CAMEL_FOLDER_SYSTEM | CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox"), GC ("testbox"), CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox2"), GC ("testbox2"), CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static CamelFolderInfo fi_list_3[] = {
-	{ NULL, NULL, NULL, "testbox", "testbox", CAMEL_FOLDER_CHILDREN, -1, -1 },
-	{ NULL, NULL, NULL, "testbox/foo", "foo", CAMEL_FOLDER_NOCHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox"), GC ("testbox"), CAMEL_FOLDER_CHILDREN, -1, -1 },
+	{ NULL, NULL, NULL, GC ("testbox/foo"), GC ("foo"), CAMEL_FOLDER_NOCHILDREN, -1, -1 },
 };
 
 static gint

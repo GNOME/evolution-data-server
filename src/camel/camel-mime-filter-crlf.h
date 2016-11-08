@@ -60,6 +60,9 @@ struct _CamelMimeFilterCRLF {
 
 struct _CamelMimeFilterCRLFClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_crlf_get_type	(void);

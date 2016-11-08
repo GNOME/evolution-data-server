@@ -113,6 +113,9 @@ struct _CamelVeeSubfolderData {
 
 struct _CamelVeeSubfolderDataClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_vee_subfolder_data_get_type
@@ -138,6 +141,9 @@ struct _CamelVeeMessageInfoData {
 
 struct _CamelVeeMessageInfoDataClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_vee_message_info_data_get_type
@@ -168,6 +174,9 @@ struct _CamelVeeDataCache {
 
 struct _CamelVeeDataCacheClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_vee_data_cache_get_type	(void) G_GNUC_CONST;
@@ -199,9 +208,7 @@ CamelVeeMessageInfoData *
 void		camel_vee_data_cache_foreach_message_info_data
 						(CamelVeeDataCache *data_cache,
 						 CamelFolder *fromfolder,
-						 void (* func) (CamelVeeMessageInfoData *mi_data,
-						 CamelFolder *subfolder,
-						 gpointer user_data),
+						 CamelForeachInfoData func,
 						 gpointer user_data);
 void		camel_vee_data_cache_remove_message_info_data
 						(CamelVeeDataCache *data_cache,

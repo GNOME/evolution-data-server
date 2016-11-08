@@ -75,6 +75,9 @@ struct _CamelJunkFilterInterface {
 	gboolean	(*synchronize)		(CamelJunkFilter *junk_filter,
 						 GCancellable *cancellable,
 						 GError **error);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_junk_filter_get_type	(void) G_GNUC_CONST;

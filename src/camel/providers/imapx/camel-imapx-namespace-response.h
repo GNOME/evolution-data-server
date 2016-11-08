@@ -61,6 +61,9 @@ struct _CamelIMAPXNamespaceResponse {
 
 struct _CamelIMAPXNamespaceResponseClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_namespace_response_get_type

@@ -16,6 +16,8 @@ set(SOURCES
 	camel-imapx-logger.h
 	camel-imapx-mailbox.c
 	camel-imapx-mailbox.h
+	camel-imapx-message-info.c
+	camel-imapx-message-info.h
 	camel-imapx-namespace.c
 	camel-imapx-namespace.h
 	camel-imapx-namespace-response.c

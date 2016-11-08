@@ -35,8 +35,43 @@ gboolean	camel_mime_part_construct_content_from_parser
 						 CamelMimeParser *mp,
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	camel_mime_message_build_preview (CamelMimePart *mime_part,
-						 CamelMessageInfo *info);
+
+typedef struct _CamelMessageContentInfo CamelMessageContentInfo;
+
+/* A tree of message content info structures
+ * describe the content structure of the message (if it has any) */
+struct _CamelMessageContentInfo {
+	CamelMessageContentInfo *next;
+
+	CamelMessageContentInfo *childs;
+	CamelMessageContentInfo *parent;
+
+	CamelContentType *type;
+	gchar *id;
+	gchar *description;
+	gchar *encoding;
+	guint32 size;
+};
+
+GType		camel_message_content_info_get_type
+						(void) G_GNUC_CONST;
+CamelMessageContentInfo *
+		camel_message_content_info_new	(void);
+CamelMessageContentInfo *
+		camel_message_content_info_copy	(const CamelMessageContentInfo *src);
+void		camel_message_content_info_free	(CamelMessageContentInfo *ci);
+CamelMessageContentInfo *
+		camel_message_content_info_new_from_headers
+						(const CamelNameValueArray *headers);
+CamelMessageContentInfo *
+		camel_message_content_info_new_from_parser
+						(CamelMimeParser *parser);
+CamelMessageContentInfo *
+		camel_message_content_info_new_from_message
+						(CamelMimePart *mime_part);
+/* debugging functions */
+void		camel_message_content_info_dump	(CamelMessageContentInfo *ci,
+						 gint depth);
 
 G_END_DECLS
 

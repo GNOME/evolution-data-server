@@ -193,7 +193,8 @@ gint main (gint argc, gchar **argv)
 				info->id = i * MAX_MESSAGES;
 				info->folder = folder;
 
-				threads[i] = g_thread_new (NULL, worker, info);
+				threads[i] = g_thread_try_new (NULL, worker, info, &error);
+				check_msg (error == NULL, "g_thread_try_new() failed: %s", error->message);
 			}
 
 			for (i = 0; i < MAX_THREADS; i++) {

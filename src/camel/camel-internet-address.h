@@ -58,6 +58,9 @@ struct _CamelInternetAddress {
 
 struct _CamelInternetAddressClass {
 	CamelAddressClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_internet_address_get_type	(void);

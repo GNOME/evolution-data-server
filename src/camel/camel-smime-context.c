@@ -871,7 +871,7 @@ smime_context_sign_sync (CamelCipherContext *context,
 	g_seekable_seek (G_SEEKABLE (ostream), 0, G_SEEK_SET, NULL, NULL);
 	camel_data_wrapper_construct_from_stream_sync (
 		dw, ostream, cancellable, NULL);
-	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
+	camel_data_wrapper_set_encoding (dw, CAMEL_TRANSFER_ENCODING_BINARY);
 
 	if (((CamelSMIMEContext *) context)->priv->sign_mode == CAMEL_SMIME_SIGN_CLEARSIGN) {
 		CamelMultipartSigned *mps;
@@ -951,7 +951,7 @@ smime_context_verify_sync (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
 	dw = camel_medium_get_content ((CamelMedium *) ipart);
-	ct = dw->mime_type;
+	ct = camel_data_wrapper_get_mime_type_field (dw);
 
 	/* FIXME: we should stream this to the decoder */
 	buffer = g_byte_array_new ();
@@ -1175,7 +1175,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 	camel_data_wrapper_construct_from_stream_sync (
 		dw, ostream, NULL, NULL);
 	g_object_unref (ostream);
-	dw->encoding = CAMEL_TRANSFER_ENCODING_BINARY;
+	camel_data_wrapper_set_encoding (dw, CAMEL_TRANSFER_ENCODING_BINARY);
 
 	ct = camel_content_type_new ("application", "x-pkcs7-mime");
 	camel_content_type_set_param (ct, "name", "smime.p7m");

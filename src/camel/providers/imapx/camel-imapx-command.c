@@ -188,7 +188,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 	gint d;
 	glong l;
 	guint32 f;
-	CamelFlag *F;
+	const CamelNamedFlags *F;
 	CamelDataWrapper *D;
 	CamelSasl *A;
 	gchar literal_format[16];
@@ -307,7 +307,7 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 				goto output_string;
 			case 'F': /* IMAP flags set */
 				f = va_arg (ap, guint32);
-				F = va_arg (ap, CamelFlag *);
+				F = va_arg (ap, const CamelNamedFlags *);
 				imapx_write_flags (buffer, f, F);
 				break;
 			case 'c':

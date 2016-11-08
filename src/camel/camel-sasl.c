@@ -341,7 +341,7 @@ camel_sasl_init (CamelSasl *sasl)
  * @mechanism: the SASL mechanism
  * @service: the CamelService that will be using this SASL
  *
- * Returns: a new #CamelSasl object for the given @service_name,
+ * Returns: (nullable): a new #CamelSasl object for the given @service_name,
  * @mechanism, and @service, or %NULL if the mechanism is not
  * supported.
  **/

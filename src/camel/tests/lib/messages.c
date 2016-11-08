@@ -238,8 +238,6 @@ test_message_compare (CamelMimeMessage *msg)
 	g_seekable_seek (G_SEEKABLE (stream2), 0, G_SEEK_SET, NULL, NULL);
 
 	if (byte_array1->len != byte_array2->len) {
-		CamelDataWrapper *content;
-
 		printf ("stream1 stream:\n%.*s\n", byte_array1->len, byte_array1->data);
 		printf ("stream2 stream:\n%.*s\n\n", byte_array2->len, byte_array2->data);
 
@@ -247,8 +245,6 @@ test_message_compare (CamelMimeMessage *msg)
 		test_message_dump_structure (msg);
 		printf ("msg2:\n");
 		test_message_dump_structure (msg2);
-
-		content = camel_medium_get_content ((CamelMedium *) msg);
 	}
 
 	check_unref (msg2, 1);
@@ -298,7 +294,7 @@ message_dump_rec (CamelMimeMessage *msg,
 	printf ("%sPart <%s>\n", s, G_OBJECT_TYPE_NAME (part));
 	printf ("%sContent-Type: %s\n", s, mime_type);
 	g_free (mime_type);
-	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (((CamelDataWrapper *) part)->encoding));
+	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (camel_data_wrapper_get_encoding ((CamelDataWrapper *) part)));
 	printf ("%s part encoding: %s\n", s, camel_transfer_encoding_to_string (camel_mime_part_get_encoding (part)));
 
 	containee = camel_medium_get_content (CAMEL_MEDIUM (part));
@@ -310,7 +306,7 @@ message_dump_rec (CamelMimeMessage *msg,
 	printf ("%sContent <%s>\n", s, G_OBJECT_TYPE_NAME (containee));
 	printf ("%sContent-Type: %s\n", s, mime_type);
 	g_free (mime_type);
-	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (((CamelDataWrapper *) containee)->encoding));
+	printf ("%s encoding: %s\n", s, camel_transfer_encoding_to_string (camel_data_wrapper_get_encoding ((CamelDataWrapper *) containee)));
 
 	/* using the object types is more accurate than using the mime/types */
 	if (CAMEL_IS_MULTIPART (containee)) {

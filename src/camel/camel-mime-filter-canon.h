@@ -65,6 +65,9 @@ struct _CamelMimeFilterCanon {
 
 struct _CamelMimeFilterCanonClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_canon_get_type (void);

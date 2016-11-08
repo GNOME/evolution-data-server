@@ -38,6 +38,8 @@ set(SOURCES
 	camel-medium.c
 	camel-memchunk.c
 	camel-mempool.c
+	camel-message-info.c
+	camel-message-info-base.c
 	camel-mime-filter-basic.c
 	camel-mime-filter-bestenc.c
 	camel-mime-filter-canon.c
@@ -64,6 +66,8 @@ set(SOURCES
 	camel-multipart-encrypted.c
 	camel-multipart-signed.c
 	camel-multipart.c
+	camel-named-flags.c
+	camel-name-value-array.c
 	camel-net-utils.c
 	camel-network-service.c
 	camel-network-settings.c
@@ -111,8 +115,10 @@ set(SOURCES
 	camel-url-scanner.c
 	camel-url.c
 	camel-utf8.c
+	camel-utils.c
 	camel-vee-data-cache.c
 	camel-vee-folder.c
+	camel-vee-message-info.c
 	camel-vee-store.c
 	camel-vee-summary.c
 	camel-vtrash-folder.c
@@ -167,6 +173,8 @@ set(HEADERS
 	camel-medium.h
 	camel-memchunk.h
 	camel-mempool.h
+	camel-message-info.h
+	camel-message-info-base.h
 	camel-mime-filter-basic.h
 	camel-mime-filter-bestenc.h
 	camel-mime-filter-canon.h
@@ -194,6 +202,8 @@ set(HEADERS
 	camel-multipart-encrypted.h
 	camel-multipart-signed.h
 	camel-multipart.h
+	camel-named-flags.h
+	camel-name-value-array.h
 	camel-net-utils.h
 	camel-network-service.h
 	camel-network-settings.h
@@ -242,8 +252,10 @@ set(HEADERS
 	camel-url-scanner.h
 	camel-url.h
 	camel-utf8.h
+	camel-utils.h
 	camel-vee-data-cache.h
 	camel-vee-folder.h
+	camel-vee-message-info.h
 	camel-vee-store.h
 	camel-vee-summary.h
 	camel-vtrash-folder.h

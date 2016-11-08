@@ -196,6 +196,9 @@ struct _CamelProviderModule {
 	guint loaded : 1;
 };
 
+/* Introspection function */
+GType		camel_provider_get_type		(void) G_GNUC_CONST;
+
 void		camel_provider_init		(void);
 gboolean	camel_provider_load		(const gchar *path,
 						 GError **error);

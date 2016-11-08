@@ -47,6 +47,42 @@ static GRecMutex provider_lock;
 #define LOCK()		(g_rec_mutex_lock(&provider_lock))
 #define UNLOCK()	(g_rec_mutex_unlock(&provider_lock))
 
+CamelProvider *	camel_provider_copy		(CamelProvider *provider);
+void		camel_provider_free		(CamelProvider *provider);
+
+G_DEFINE_BOXED_TYPE (CamelProvider, camel_provider, camel_provider_copy, camel_provider_free)
+
+/*
+ * camel_provider_copy:
+ * @provider: a #CamelProvider to copy
+ *
+ * The function returns @provider, because providers are not allocated
+ * on heap. It's defined only for the introspection purposes.
+ *
+ * Returns: (transfer full): the @provider
+ *
+ * Since: 3.24
+ */
+CamelProvider *
+camel_provider_copy (CamelProvider *provider)
+{
+	return provider;
+}
+
+/*
+ * camel_provider_free:
+ * @provider: a #CamelProvider to copy
+ *
+ * The function does nothing, because providers are not allocated
+ * on heap. It's defined only for the introspection purposes.
+ *
+ * Since: 3.24
+ */
+void
+camel_provider_free (CamelProvider *provider)
+{
+}
+
 /* The vfolder provider is always available */
 static CamelProvider vee_provider = {
 	"vfolder",
@@ -138,8 +174,8 @@ provider_setup (gpointer param)
 		(GEqualFunc) camel_strcase_equal);
 
 	vee_provider.object_types[CAMEL_PROVIDER_STORE] = CAMEL_TYPE_VEE_STORE;
-	vee_provider.url_hash = camel_url_hash;
-	vee_provider.url_equal = camel_url_equal;
+	vee_provider.url_hash = (GHashFunc) camel_url_hash;
+	vee_provider.url_equal = (GEqualFunc) camel_url_equal;
 	provider_register_internal (&vee_provider);
 
 	return NULL;

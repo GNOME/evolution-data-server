@@ -46,6 +46,11 @@
 
 extern gint camel_verbose_debug;
 
+struct _CamelStreamProcessPrivate {
+	gint sockfd;
+	pid_t childpid;
+};
+
 G_DEFINE_TYPE (CamelStreamProcess, camel_stream_process, CAMEL_TYPE_STREAM)
 
 static void
@@ -67,7 +72,7 @@ stream_process_read (CamelStream *stream,
                      GError **error)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
-	gint fd = stream_process->sockfd;
+	gint fd = stream_process->priv->sockfd;
 
 	return camel_read (fd, buffer, n, cancellable, error);
 }
@@ -80,7 +85,7 @@ stream_process_write (CamelStream *stream,
                       GError **error)
 {
 	CamelStreamProcess *stream_process = CAMEL_STREAM_PROCESS (stream);
-	gint fd = stream_process->sockfd;
+	gint fd = stream_process->priv->sockfd;
 
 	return camel_write (fd, buffer, n, cancellable, error);
 }
@@ -96,23 +101,23 @@ stream_process_close (CamelStream *object,
 		fprintf (
 			stderr,
 			"Process stream close. sockfd %d, childpid %d\n",
-			stream->sockfd, stream->childpid);
+			stream->priv->sockfd, stream->priv->childpid);
 
-	if (stream->sockfd != -1) {
-		close (stream->sockfd);
-		stream->sockfd = -1;
+	if (stream->priv->sockfd != -1) {
+		close (stream->priv->sockfd);
+		stream->priv->sockfd = -1;
 	}
 
-	if (stream->childpid) {
+	if (stream->priv->childpid) {
 		gint ret, i;
 		for (i = 0; i < 4; i++) {
-			ret = waitpid (stream->childpid, NULL, WNOHANG);
+			ret = waitpid (stream->priv->childpid, NULL, WNOHANG);
 			if (camel_verbose_debug)
 				fprintf (
 					stderr,
 					"waitpid() for pid %d returned %d (errno %d)\n",
-					stream->childpid, ret, ret == -1 ? errno : 0);
-			if (ret == stream->childpid || errno == ECHILD)
+					stream->priv->childpid, ret, ret == -1 ? errno : 0);
+			if (ret == stream->priv->childpid || errno == ECHILD)
 				break;
 			switch (i) {
 			case 0:
@@ -120,16 +125,16 @@ stream_process_close (CamelStream *object,
 					fprintf (
 						stderr,
 						"Sending SIGTERM to pid %d\n",
-						stream->childpid);
-				kill (stream->childpid, SIGTERM);
+						stream->priv->childpid);
+				kill (stream->priv->childpid, SIGTERM);
 				break;
 			case 2:
 				if (camel_verbose_debug)
 					fprintf (
 						stderr,
 						"Sending SIGKILL to pid %d\n",
-						stream->childpid);
-				kill (stream->childpid, SIGKILL);
+						stream->priv->childpid);
+				kill (stream->priv->childpid, SIGKILL);
 				break;
 			case 1:
 			case 3:
@@ -138,7 +143,7 @@ stream_process_close (CamelStream *object,
 			}
 		}
 
-		stream->childpid = 0;
+		stream->priv->childpid = 0;
 	}
 
 	return 0;
@@ -158,6 +163,8 @@ camel_stream_process_class_init (CamelStreamProcessClass *class)
 	GObjectClass *object_class;
 	CamelStreamClass *stream_class;
 
+	g_type_class_add_private (class, sizeof (CamelStreamProcessPrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = stream_process_finalize;
 
@@ -171,8 +178,9 @@ camel_stream_process_class_init (CamelStreamProcessClass *class)
 static void
 camel_stream_process_init (CamelStreamProcess *stream)
 {
-	stream->sockfd = -1;
-	stream->childpid = 0;
+	stream->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream, CAMEL_TYPE_STREAM_PROCESS, CamelStreamProcessPrivate);
+	stream->priv->sockfd = -1;
+	stream->priv->childpid = 0;
 }
 
 /**
@@ -247,24 +255,24 @@ camel_stream_process_connect (CamelStreamProcess *stream,
 	g_return_val_if_fail (CAMEL_IS_STREAM_PROCESS (stream), -1);
 	g_return_val_if_fail (command != NULL, -1);
 
-	if (stream->sockfd != -1 || stream->childpid)
+	if (stream->priv->sockfd != -1 || stream->priv->childpid)
 		camel_stream_close (CAMEL_STREAM (stream), NULL, NULL);
 
 	if (socketpair (AF_UNIX, SOCK_STREAM, 0, sockfds))
 		goto fail;
 
-	stream->childpid = fork ();
-	if (!stream->childpid) {
+	stream->priv->childpid = fork ();
+	if (!stream->priv->childpid) {
 		do_exec_command (sockfds[1], command, (gchar **) env);
-	} else if (stream->childpid == -1) {
+	} else if (stream->priv->childpid == -1) {
 		close (sockfds[0]);
 		close (sockfds[1]);
-		stream->sockfd = -1;
+		stream->priv->sockfd = -1;
 		goto fail;
 	}
 
 	close (sockfds[1]);
-	stream->sockfd = sockfds[0];
+	stream->priv->sockfd = sockfds[0];
 
 	return 0;
 

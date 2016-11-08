@@ -66,8 +66,8 @@ struct _CamelOfflineFolderClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Reserved slots. */
-	gpointer reserved[2];
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_offline_folder_get_type	(void);

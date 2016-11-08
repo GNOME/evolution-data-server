@@ -1639,13 +1639,15 @@ smtp_data (CamelSmtpTransport *transport,
            GCancellable *cancellable,
            GError **error)
 {
-	struct _camel_header_raw *header, *savedbcc, *n, *tail;
+	CamelNameValueArray *previous_headers;
+	const gchar *header_name = NULL, *header_value = NULL;
 	CamelBestencEncoding enctype = CAMEL_BESTENC_8BIT;
 	CamelStream *filtered_stream;
 	gchar *cmdbuf, *respbuf = NULL;
 	CamelMimeFilter *filter;
-	CamelStreamNull *null;
+	gsize bytes_written;
 	gint ret;
+	guint ii;
 
 	/* If the server doesn't support 8BITMIME, set our required encoding to be 7bit */
 	if (!(transport->flags & CAMEL_SMTP_TRANSPORT_8BITMIME))
@@ -1694,42 +1696,23 @@ smtp_data (CamelSmtpTransport *transport,
 	g_free (respbuf);
 	respbuf = NULL;
 
-	/* unlink the bcc headers */
-	savedbcc = NULL;
-	tail = (struct _camel_header_raw *) &savedbcc;
-
-	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (message)->headers;
-	n = header->next;
-	while (n != NULL) {
-		if (!g_ascii_strcasecmp (n->name, "Bcc")) {
-			header->next = n->next;
-			tail->next = n;
-			n->next = NULL;
-			tail = n;
-		} else {
-			header = n;
-		}
-
-		n = header->next;
-	}
+	/* unlink the bcc headers and keep a copy of them */
+	previous_headers = camel_medium_dup_headers (CAMEL_MEDIUM (message));
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
 
 	/* find out how large the message is... */
-	null = CAMEL_STREAM_NULL (camel_stream_null_new ());
-	camel_data_wrapper_write_to_stream_sync (
-		CAMEL_DATA_WRAPPER (message),
-		CAMEL_STREAM (null), NULL, NULL);
+	bytes_written = camel_data_wrapper_calculate_size_sync (CAMEL_DATA_WRAPPER (message), NULL, NULL);
 
 	/* Set the upload timeout to an equal of 512 bytes per second */
-	smtp_maybe_update_socket_timeout (ostream, null->written / 512);
+	smtp_maybe_update_socket_timeout (ostream, bytes_written / 512);
 
 	filtered_stream = camel_stream_filter_new (ostream);
 
 	/* setup progress reporting for message sending... */
-	filter = camel_mime_filter_progress_new (cancellable, null->written);
+	filter = camel_mime_filter_progress_new (cancellable, bytes_written);
 	camel_stream_filter_add (
 		CAMEL_STREAM_FILTER (filtered_stream), filter);
 	g_object_unref (filter);
-	g_object_unref (null);
 
 	/* setup LF->CRLF conversion */
 	filter = camel_mime_filter_crlf_new (
@@ -1745,7 +1728,13 @@ smtp_data (CamelSmtpTransport *transport,
 		filtered_stream, cancellable, error);
 
 	/* restore the bcc headers */
-	header->next = savedbcc;
+	for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
+		if (!g_ascii_strcasecmp (header_name, "Bcc")) {
+			camel_medium_add_header (CAMEL_MEDIUM (message), header_name, header_value);
+		}
+	}
+
+	camel_name_value_array_free (previous_headers);
 
 	if (ret == -1) {
 		g_prefix_error (error, _("DATA command failed: "));

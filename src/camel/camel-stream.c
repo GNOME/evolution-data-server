@@ -33,6 +33,7 @@
 struct _CamelStreamPrivate {
 	GIOStream *base_stream;
 	GMutex base_stream_lock;
+	gboolean eos;
 };
 
 enum {
@@ -135,7 +136,7 @@ stream_read (CamelStream *stream,
 		g_object_unref (base_stream);
 	}
 
-	stream->eos = n_bytes_read <= 0;
+	stream->priv->eos = n_bytes_read <= 0;
 
 	return n_bytes_read;
 }
@@ -157,7 +158,7 @@ stream_write (CamelStream *stream,
 		gsize n_written = 0;
 
 		output_stream = g_io_stream_get_output_stream (base_stream);
-		stream->eos = FALSE;
+		stream->priv->eos = FALSE;
 
 		if (g_output_stream_write_all (output_stream, buffer, n, &n_written, cancellable, error))
 			n_bytes_written = (gssize) n_written;
@@ -219,7 +220,7 @@ stream_flush (CamelStream *stream,
 static gboolean
 stream_eos (CamelStream *stream)
 {
-	return stream->eos;
+	return stream->priv->eos;
 }
 
 static goffset
@@ -278,7 +279,7 @@ stream_seek (GSeekable *seekable,
 	base_stream = camel_stream_ref_base_stream (stream);
 
 	if (G_IS_SEEKABLE (base_stream)) {
-		stream->eos = FALSE;
+		stream->priv->eos = FALSE;
 		success = g_seekable_seek (
 			G_SEEKABLE (base_stream),
 			offset, type, cancellable, error);
@@ -479,12 +480,12 @@ camel_stream_set_base_stream (CamelStream *stream,
 /**
  * camel_stream_read:
  * @stream: a #CamelStream object.
- * @buffer: output buffer
+ * @buffer: (array length=n) (type gchar): output buffer
  * @n: max number of bytes to read.
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Attempts to read up to @len bytes from @stream into @buf.
+ * Attempts to read up to @n bytes from @stream into @buffer.
  *
  * Returns: the number of bytes actually read, or %-1 on error and set
  * errno.
@@ -514,7 +515,7 @@ camel_stream_read (CamelStream *stream,
 /**
  * camel_stream_write:
  * @stream: a #CamelStream object
- * @buffer: buffer to write.
+ * @buffer: (array length=n) (type gchar): buffer to write.
  * @n: number of bytes to write
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

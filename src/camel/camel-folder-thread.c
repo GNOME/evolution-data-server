@@ -367,12 +367,16 @@ dump_tree_rec (struct _tree_info *info,
 			g_hash_table_insert (info->visited, c, c);
 		}
 		if (c->message) {
+			CamelSummaryMessageID message_id;
+
+			message_id.id.id = camel_message_info_get_message_id (c->message);
+
 			printf (
 				"%*s %p Subject: %s <%08x%08x>\n",
 				indent, "", (gpointer) c,
 				camel_message_info_get_subject (c->message),
-				camel_message_info_get_message_id (c->message)->id.part.hi,
-				camel_message_info_get_message_id (c->message)->id.part.lo);
+				message_id.id.part.hi,
+				message_id.id.part.lo);
 			count += 1;
 		} else {
 			printf ("%*s %p <empty>\n", indent, "", (gpointer) c);
@@ -461,18 +465,18 @@ sort_thread (CamelFolderThreadNode **cp)
 }
 
 static guint
-id_hash (gpointer key)
+id_hash (gconstpointer key)
 {
-	CamelSummaryMessageID *id = (CamelSummaryMessageID *) key;
+	const CamelSummaryMessageID *id = key;
 
 	return id->id.part.lo;
 }
 
-static gint
-id_equal (gpointer a,
-          gpointer b)
+static gboolean
+id_equal (gconstpointer a,
+          gconstpointer b)
 {
-	return ((CamelSummaryMessageID *) a)->id.id == ((CamelSummaryMessageID *) b)->id.id;
+	return ((const CamelSummaryMessageID *) a)->id.id == ((const CamelSummaryMessageID *) b)->id.id;
 }
 
 /* perform actual threading */
@@ -490,15 +494,20 @@ thread_summary (CamelFolderThread *thread,
 	gettimeofday (&start, NULL);
 #endif
 
-	id_table = g_hash_table_new ((GHashFunc) id_hash, (GCompareFunc) id_equal);
+	id_table = g_hash_table_new_full (id_hash, id_equal, g_free, NULL);
 	no_id_table = g_hash_table_new (NULL, NULL);
 	for (i = 0; i < summary->len; i++) {
 		CamelMessageInfo *mi = summary->pdata[i];
-		const CamelSummaryMessageID *mid = camel_message_info_get_message_id (mi);
-		const CamelSummaryReferences *references = camel_message_info_get_references (mi);
+		CamelSummaryMessageID *message_id_copy, message_id;
+		const GArray *references;
 
-		if (mid != NULL && mid->id.id) {
-			c = g_hash_table_lookup (id_table, mid);
+		camel_message_info_property_lock (mi);
+
+		message_id.id.id = camel_message_info_get_message_id (mi);
+		references = camel_message_info_get_references (mi);
+
+		if (message_id.id.id) {
+			c = g_hash_table_lookup (id_table, &message_id);
 			/* check for duplicate messages */
 			if (c && c->order) {
 				/* if duplicate, just make out it is a no-id message,  but try and insert it
@@ -507,9 +516,11 @@ thread_summary (CamelFolderThread *thread,
 				c = camel_memchunk_alloc0 (thread->node_chunks);
 				g_hash_table_insert (no_id_table, (gpointer) mi, c);
 			} else if (!c) {
-				d (printf ("doing : %08x%08x (%s)\n", mid->id.part.hi, mid->id.part.lo, camel_message_info_get_subject (mi)));
+				d (printf ("doing : %08x%08x (%s)\n", message_id.id.part.hi, message_id.id.part.lo, camel_message_info_get_subject (mi)));
 				c = camel_memchunk_alloc0 (thread->node_chunks);
-				g_hash_table_insert (id_table, (gpointer) mid, c);
+				message_id_copy = g_new0 (CamelSummaryMessageID, 1);
+				message_id_copy->id.id = message_id.id.id;
+				g_hash_table_insert (id_table, message_id_copy, c);
 			}
 		} else {
 			d (printf ("doing : (no message id)\n"));
@@ -521,21 +532,26 @@ thread_summary (CamelFolderThread *thread,
 		c->order = i + 1;
 		child = c;
 		if (references) {
-			gint j;
+			guint jj;
 
 			d (printf ("%s (%s) references:\n", G_STRLOC, G_STRFUNC); )
-			for (j = 0; j < references->size; j++) {
+
+			for (jj = 0; jj < references->len; jj++) {
 				gboolean found = FALSE;
 
+				message_id.id.id = g_array_index (references, guint64, jj);
+
 				/* should never be empty, but just incase */
-				if (references->references[j].id.id == 0)
+				if (!message_id.id.id)
 					continue;
 
-				c = g_hash_table_lookup (id_table, &references->references[j]);
+				c = g_hash_table_lookup (id_table, &message_id);
 				if (c == NULL) {
 					d (printf ("%s (%s) not found\n", G_STRLOC, G_STRFUNC));
 					c = camel_memchunk_alloc0 (thread->node_chunks);
-					g_hash_table_insert (id_table, (gpointer) &references->references[j], c);
+					message_id_copy = g_new0 (CamelSummaryMessageID, 1);
+					message_id_copy->id.id = message_id.id.id;
+					g_hash_table_insert (id_table, message_id_copy, c);
 				} else
 					found = TRUE;
 				if (c != child) {
@@ -549,6 +565,8 @@ thread_summary (CamelFolderThread *thread,
 				child = c;
 			}
 		}
+
+		camel_message_info_property_unlock (mi);
 	}
 
 	d (printf ("\n\n"));
@@ -631,7 +649,7 @@ thread_summary (CamelFolderThread *thread,
 }
 
 /**
- * camel_folder_thread_messages_new:
+ * camel_folder_thread_messages_new: (skip)
  * @folder:
  * @uids: (element-type utf8): The subset of uid's to thread.  If NULL. then thread all
  * uid's in @folder.
@@ -666,12 +684,12 @@ camel_folder_thread_messages_new (CamelFolder *folder,
 	thread->node_chunks = camel_memchunk_new (32, sizeof (CamelFolderThreadNode));
 	thread->folder = g_object_ref (folder);
 
-	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+	camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
 	thread->summary = summary = g_ptr_array_new ();
 
 	/* prefer given order from the summary order */
 	if (!uids) {
-		fsummary = camel_folder_summary_get_array (folder->summary);
+		fsummary = camel_folder_summary_get_array (camel_folder_get_folder_summary (folder));
 		uids = fsummary;
 	}
 
@@ -712,7 +730,7 @@ add_present_rec (CamelFolderThread *thread,
 			g_hash_table_remove (have, uid);
 			g_ptr_array_add (summary, info);
 		} else {
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 		}
 
 		if (node->child)
@@ -781,7 +799,7 @@ camel_folder_thread_messages_unref (CamelFolderThread *thread)
 		gint i;
 
 		for (i = 0; i < thread->summary->len; i++)
-			camel_message_info_unref (thread->summary->pdata[i]);
+			g_clear_object (&thread->summary->pdata[i]);
 		g_ptr_array_free (thread->summary, TRUE);
 		g_object_unref (thread->folder);
 	}

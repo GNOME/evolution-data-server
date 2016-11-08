@@ -132,8 +132,8 @@ struct _CamelSessionClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[4];
+	/* Padding for future expansion */
+	gpointer reserved_methods[20];
 
 	/* Signals */
 	void		(*job_started)		(CamelSession *session,
@@ -145,6 +145,9 @@ struct _CamelSessionClass {
 						 CamelService *service,
 						 CamelSessionAlertType type,
 						 const gchar *message);
+
+	/* Padding for future expansion */
+	gpointer reserved_signals[20];
 };
 
 GType		camel_session_get_type		(void);

@@ -29,6 +29,10 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <camel/camel-enums.h>
+#include <camel/camel-utils.h>
+#include <camel/camel-name-value-array.h>
+
+G_BEGIN_DECLS
 
 /* maximum recommended size of a line from camel_header_fold() */
 #define CAMEL_FOLD_SIZE (77)
@@ -42,8 +46,6 @@ typedef enum {
 } CamelUUDecodeState;
 
 #define CAMEL_UUDECODE_STATE_MASK   (CAMEL_UUDECODE_STATE_BEGIN | CAMEL_UUDECODE_STATE_END)
-
-G_BEGIN_DECLS
 
 typedef struct _camel_header_param {
 	struct _camel_header_param *next;
@@ -59,15 +61,6 @@ typedef struct {
 	guint refcount;
 } CamelContentType;
 
-/* a raw rfc822 header */
-/* the value MUST be US-ASCII */
-struct _camel_header_raw {
-	struct _camel_header_raw *next;
-	gchar *name;
-	gchar *value;
-	gint offset;		/* in file, if known */
-};
-
 typedef struct _CamelContentDisposition {
 	gchar *disposition;
 	struct _camel_header_param *params;
@@ -81,6 +74,7 @@ typedef enum _camel_header_address_t {
 } CamelHeaderAddressType;
 
 typedef struct _camel_header_address {
+	/* < private > */
 	struct _camel_header_address *next;
 	CamelHeaderAddressType type;
 	gchar *name;
@@ -152,22 +146,12 @@ gchar *camel_content_disposition_format (CamelContentDisposition *disposition);
 /* decode the contents of a content-encoding header */
 gchar *camel_content_transfer_encoding_decode (const gchar *in);
 
-/* raw headers */
-void camel_header_raw_append (struct _camel_header_raw **list, const gchar *name, const gchar *value, gint offset);
-void camel_header_raw_append_parse (struct _camel_header_raw **list, const gchar *header, gint offset);
-const gchar *camel_header_raw_find (struct _camel_header_raw **list, const gchar *name, gint *offset);
-const gchar *camel_header_raw_find_next (struct _camel_header_raw **list, const gchar *name, gint *offset, const gchar *last);
-void camel_header_raw_replace (struct _camel_header_raw **list, const gchar *name, const gchar *value, gint offset);
-void camel_header_raw_remove (struct _camel_header_raw **list, const gchar *name);
-void camel_header_raw_fold (struct _camel_header_raw **list);
-void camel_header_raw_clear (struct _camel_header_raw **list);
-
-gchar *camel_header_raw_check_mailing_list (struct _camel_header_raw **list);
-
 /* fold a header */
 gchar *camel_header_address_fold (const gchar *in, gsize headerlen);
 gchar *camel_header_fold (const gchar *in, gsize headerlen);
 gchar *camel_header_unfold (const gchar *in);
+
+gchar *camel_headers_dup_mailing_list (const CamelNameValueArray *headers);
 
 /* decode a header which is a simple token */
 gchar *camel_header_token_decode (const gchar *in);

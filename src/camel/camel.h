@@ -56,6 +56,8 @@
 #include <camel/camel-medium.h>
 #include <camel/camel-memchunk.h>
 #include <camel/camel-mempool.h>
+#include <camel/camel-message-info.h>
+#include <camel/camel-message-info-base.h>
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-mime-filter-basic.h>
 #include <camel/camel-mime-filter-bestenc.h>
@@ -83,6 +85,8 @@
 #include <camel/camel-multipart.h>
 #include <camel/camel-multipart-encrypted.h>
 #include <camel/camel-multipart-signed.h>
+#include <camel/camel-named-flags.h>
+#include <camel/camel-name-value-array.h>
 #include <camel/camel-net-utils.h>
 #include <camel/camel-network-service.h>
 #include <camel/camel-nntp-address.h>
@@ -128,8 +132,10 @@
 #include <camel/camel-url.h>
 #include <camel/camel-url-scanner.h>
 #include <camel/camel-utf8.h>
+#include <camel/camel-utils.h>
 #include <camel/camel-vee-data-cache.h>
 #include <camel/camel-vee-folder.h>
+#include <camel/camel-vee-message-info.h>
 #include <camel/camel-vee-store.h>
 #include <camel/camel-vee-summary.h>
 #include <camel/camel-vtrash-folder.h>

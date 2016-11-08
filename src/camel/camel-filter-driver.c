@@ -1345,7 +1345,7 @@ camel_filter_driver_flush (CamelFilterDriver *driver,
 
 static gint
 decode_flags_from_xev (const gchar *xev,
-                       CamelMessageInfoBase *mi)
+                       CamelMessageInfo *mi)
 {
 	guint32 uid, flags = 0;
 	gchar *header;
@@ -1359,7 +1359,8 @@ decode_flags_from_xev (const gchar *xev,
 	}
 	g_free (header);
 
-	mi->flags = flags;
+	camel_message_info_set_flags (mi, ~0, flags);
+
 	return 0;
 }
 
@@ -1421,6 +1422,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 	while (camel_mime_parser_step (mp, NULL, NULL) == CAMEL_MIME_PARSER_STATE_FROM) {
 		CamelMessageInfo *info;
 		CamelMimeMessage *message;
+		const CamelNameValueArray *headers;
 		CamelMimePart *mime_part;
 		gint pc = 0;
 		const gchar *xev;
@@ -1448,13 +1450,14 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 			goto fail;
 		}
 
-		info = camel_message_info_new_from_header (NULL, mime_part->headers);
+		headers = camel_medium_get_headers (CAMEL_MEDIUM (mime_part));
+		info = camel_message_info_new_from_headers (NULL, headers);
 		/* Try and see if it has X-Evolution headers */
-		xev = camel_header_raw_find (&mime_part->headers, "X-Evolution", NULL);
+		xev = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "X-Evolution");
 		if (xev)
-			decode_flags_from_xev (xev, (CamelMessageInfoBase *) info);
+			decode_flags_from_xev (xev, info);
 
-		((CamelMessageInfoBase *) info)->size = camel_mime_parser_tell (mp) - last;
+		camel_message_info_set_size (info, camel_mime_parser_tell (mp) - last);
 
 		last = camel_mime_parser_tell (mp);
 		status = camel_filter_driver_filter_message (
@@ -1466,7 +1469,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 			report_status (
 				driver, CAMEL_FILTER_STATUS_END,
 				100, _("Failed on message %d"), i);
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 			g_propagate_error (error, local_error);
 			goto fail;
 		}
@@ -1476,7 +1479,7 @@ camel_filter_driver_filter_mbox (CamelFilterDriver *driver,
 		/* skip over the FROM_END state */
 		camel_mime_parser_step (mp, NULL, NULL);
 
-		camel_message_info_unref (info);
+		g_clear_object (&info);
 	}
 
 	camel_operation_progress (cancellable, 100);
@@ -1565,7 +1568,7 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 			store_uid, store_uid, cancellable, &local_error);
 
 		if (camel_folder_has_summary_capability (folder))
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 
 		if (local_error != NULL || status == -1) {
 			report_status (
@@ -1690,7 +1693,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	g_return_val_if_fail (message != NULL || (source != NULL && uid != NULL), -1);
 
 	if (info == NULL) {
-		struct _camel_header_raw *h;
+		const CamelNameValueArray *headers;
 
 		if (message) {
 			g_object_ref (message);
@@ -1701,8 +1704,8 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				return -1;
 		}
 
-		h = CAMEL_MIME_PART (message)->headers;
-		info = camel_message_info_new_from_header (NULL, h);
+		headers = camel_medium_get_headers (CAMEL_MEDIUM (message));
+		info = camel_message_info_new_from_headers (NULL, headers);
 		freeinfo = TRUE;
 	} else {
 		if (camel_message_info_get_flags (info) & CAMEL_MESSAGE_DELETED)
@@ -1865,7 +1868,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		g_object_unref (driver->priv->message);
 
 	if (freeinfo)
-		camel_message_info_unref (info);
+		g_clear_object (&info);
 
 	return 0;
 
@@ -1877,7 +1880,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		g_object_unref (driver->priv->message);
 
 	if (freeinfo)
-		camel_message_info_unref (info);
+		g_clear_object (&info);
 
 	g_propagate_error (error, driver->priv->error);
 	driver->priv->error = NULL;

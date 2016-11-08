@@ -52,7 +52,7 @@ test_folder_counts (CamelFolder *folder,
 		info = camel_folder_get_message_info (folder, s->pdata[i]);
 		if (camel_message_info_get_flags (info) & CAMEL_MESSAGE_SEEN)
 			myunread--;
-		camel_message_info_unref (info);
+		g_clear_object (&info);
 	}
 	check (unread == myunread);
 	camel_folder_free_uids (folder, s);
@@ -109,7 +109,7 @@ test_folder_message (CamelFolder *folder,
 	info = camel_folder_get_message_info (folder, uid);
 	check (info != NULL);
 	check (strcmp (camel_message_info_get_uid (info), uid) == 0);
-	camel_message_info_unref (info);
+	g_clear_object (&info);
 
 	/* then, getting message */
 	msg = camel_folder_get_message_sync (folder, uid, NULL, &error);
@@ -462,7 +462,7 @@ test_folder_message_ops (CamelSession *session,
 				check_msg (
 					strcmp (camel_message_info_get_subject (info), subject) == 0,
 					"info->subject %s", camel_message_info_get_subject (info));
-				camel_message_info_unref (info);
+				g_clear_object (&info);
 			}
 			camel_folder_free_uids (folder, uids);
 			pull ();
@@ -515,7 +515,7 @@ test_folder_message_ops (CamelSession *session,
 				strcmp (camel_message_info_get_subject (info), subject) == 0,
 				"info->subject %s", camel_message_info_get_subject (info));
 			test_free (subject);
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 			pull ();
 		}
 
@@ -544,7 +544,7 @@ test_folder_message_ops (CamelSession *session,
 				strcmp (camel_message_info_get_subject (info), subject) == 0,
 				"info->subject %s", camel_message_info_get_subject (info));
 			test_free (subject);
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 			pull ();
 		}
 		pull ();
@@ -575,7 +575,7 @@ test_folder_message_ops (CamelSession *session,
 				strcmp (camel_message_info_get_subject (info), subject) == 0,
 				"info->subject %s", camel_message_info_get_subject (info));
 			test_free (subject);
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 			pull ();
 		}
 		pull ();

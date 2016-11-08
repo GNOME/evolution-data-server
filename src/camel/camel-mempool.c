@@ -41,7 +41,7 @@ struct _CamelMemPool {
 };
 
 /**
- * camel_mempool_new:
+ * camel_mempool_new: (skip)
  * @blocksize: The base blocksize to use for all system alocations.
  * @threshold: If the allocation exceeds the threshold, then it is
  * allocated separately and stored in a separate list.
@@ -94,7 +94,7 @@ camel_mempool_new (gint blocksize,
 }
 
 /**
- * camel_mempool_alloc:
+ * camel_mempool_alloc: (skip)
  * @pool: a #CamelMemPool
  * @size:
  *
@@ -137,7 +137,7 @@ camel_mempool_alloc (CamelMemPool *pool,
 }
 
 /**
- * camel_mempool_strdup:
+ * camel_mempool_strdup: (skip)
  * @pool: a #CamelMemPool
  * @str:
  *
@@ -158,7 +158,7 @@ camel_mempool_strdup (CamelMemPool *pool,
 }
 
 /**
- * camel_mempool_flush:
+ * camel_mempool_flush: (skip)
  * @pool: a #CamelMemPool
  * @freeall: free all system allocated blocks as well
  *
@@ -203,7 +203,7 @@ camel_mempool_flush (CamelMemPool *pool,
 }
 
 /**
- * camel_mempool_destroy:
+ * camel_mempool_destroy: (skip)
  * @pool: a #CamelMemPool
  *
  * Free all memory associated with a mempool.

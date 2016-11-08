@@ -72,8 +72,8 @@ struct _CamelSaslClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Reserved slots. */
-	gpointer reserved[4];
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_sasl_get_type		(void);

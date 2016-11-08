@@ -69,6 +69,9 @@ struct _CamelMultipartSigned {
 
 struct _CamelMultipartSignedClass {
 	CamelMultipartClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_multipart_signed_get_type (void) G_GNUC_CONST;

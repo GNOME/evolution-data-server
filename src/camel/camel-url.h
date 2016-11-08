@@ -62,9 +62,9 @@ CamelURL *	camel_url_new			(const gchar *url_string,
 						 GError **error);
 gchar *		camel_url_to_string		(CamelURL *url,
 						 CamelURLFlags flags);
-guint		camel_url_hash			(gconstpointer v);
-gint		camel_url_equal			(gconstpointer v,
-						 gconstpointer v2);
+guint		camel_url_hash			(const CamelURL *u);
+gboolean		camel_url_equal			(const CamelURL *u,
+						 const CamelURL *u2);
 CamelURL *	camel_url_copy			(CamelURL *in);
 void		camel_url_free			(CamelURL *url);
 

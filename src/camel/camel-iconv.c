@@ -369,12 +369,18 @@ flush_entry (struct _iconv_cache *ic)
 	g_free (ic);
 }
 
-/* This should run pretty quick, its called a lot */
+/**
+ * camel_iconv_open: (skip)
+ * @to: charset to convert to
+ * @from: charset to covert from
+ *
+ * Returns: a #GIConv for the conversion from charset @from to charset @to, or (GIConv) -1 on error.
+ **/
 GIConv
-camel_iconv_open (const gchar *oto,
-                  const gchar *ofrom)
+camel_iconv_open (const gchar *to,
+                  const gchar *from)
 {
-	const gchar *to, *from;
+	const gchar *nto, *nfrom;
 	gchar *tofrom;
 	gsize tofrom_len;
 	struct _iconv_cache *ic;
@@ -382,16 +388,16 @@ camel_iconv_open (const gchar *oto,
 	gint errnosav;
 	GIConv ip;
 
-	if (oto == NULL || ofrom == NULL) {
+	if (to == NULL || from == NULL) {
 		errno = EINVAL;
 		return (GIConv) -1;
 	}
 
-	to = camel_iconv_charset_name (oto);
-	from = camel_iconv_charset_name (ofrom);
-	tofrom_len = strlen (to) + strlen (from) + 2;
+	nto = camel_iconv_charset_name (to);
+	nfrom = camel_iconv_charset_name (from);
+	tofrom_len = strlen (nto) + strlen (nfrom) + 2;
 	tofrom = g_alloca (tofrom_len);
-	g_snprintf (tofrom, tofrom_len, "%s%%%s", to, from);
+	g_snprintf (tofrom, tofrom_len, "%s%%%s", nto, nfrom);
 
 	G_LOCK (iconv);
 
@@ -449,7 +455,7 @@ camel_iconv_open (const gchar *oto,
 		}
 	} else {
 		cd (printf ("creating new iconv converter '%s'\n", ic->conv));
-		ip = g_iconv_open (to, from);
+		ip = g_iconv_open (nto, nfrom);
 		in = g_malloc (sizeof (*in));
 		in->ip = ip;
 		in->parent = ic;
@@ -459,7 +465,7 @@ camel_iconv_open (const gchar *oto,
 			in->busy = TRUE;
 		} else {
 			errnosav = errno;
-			g_warning ("Could not open converter for '%s' to '%s' charset", from, to);
+			g_warning ("Could not open converter for '%s' to '%s' charset", nfrom, nto);
 			in->busy = FALSE;
 			errno = errnosav;
 		}

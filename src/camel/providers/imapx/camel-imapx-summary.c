@@ -28,16 +28,13 @@
 
 #include <camel/camel.h>
 
+#include "camel-imapx-message-info.h"
 #include "camel-imapx-summary.h"
 
+/* Don't do DB sort. Its pretty slow to load */
+/* #define SORT_DB 1 */
+
 #define CAMEL_IMAPX_SUMMARY_VERSION (4)
-
-enum {
-	INFO_CHANGED,
-	LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (
 	CamelIMAPXSummary,
@@ -45,15 +42,13 @@ G_DEFINE_TYPE (
 	CAMEL_TYPE_FOLDER_SUMMARY)
 
 static gboolean
-imapx_summary_summary_header_from_db (CamelFolderSummary *s,
-                                      CamelFIRecord *mir)
+imapx_summary_summary_header_load (CamelFolderSummary *s,
+				   CamelFIRecord *mir)
 {
 	gboolean success;
 
-	/* Chain up to parent's summary_header_from_db() method. */
-	success = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class)->
-		summary_header_from_db (s, mir);
+	/* Chain up to parent's summary_header_load() method. */
+	success = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->summary_header_load (s, mir);
 
 	if (success) {
 		CamelIMAPXSummary *ims;
@@ -61,12 +56,12 @@ imapx_summary_summary_header_from_db (CamelFolderSummary *s,
 
 		ims = CAMEL_IMAPX_SUMMARY (s);
 
-		ims->version = bdata_extract_digit (&part);
-		ims->validity = bdata_extract_digit (&part);
+		ims->version = camel_util_bdata_get_number (&part, 0);
+		ims->validity = camel_util_bdata_get_number (&part, 0);
 
 		if (ims->version >= 4) {
-			ims->uidnext = bdata_extract_digit (&part);
-			ims->modseq = bdata_extract_digit (&part);
+			ims->uidnext = camel_util_bdata_get_number (&part, 0);
+			ims->modseq = camel_util_bdata_get_number (&part, 0);
 		}
 
 		if (ims->version > CAMEL_IMAPX_SUMMARY_VERSION) {
@@ -80,15 +75,13 @@ imapx_summary_summary_header_from_db (CamelFolderSummary *s,
 }
 
 static CamelFIRecord *
-imapx_summary_summary_header_to_db (CamelFolderSummary *s,
-                                    GError **error)
+imapx_summary_summary_header_save (CamelFolderSummary *s,
+				   GError **error)
 {
 	struct _CamelFIRecord *fir;
 
-	/* Chain up to parent's summary_header_to_db() method. */
-	fir = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class)->
-		summary_header_to_db (s, error);
+	/* Chain up to parent's summary_header_save() method. */
+	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->summary_header_save (s, error);
 
 	if (fir != NULL) {
 		CamelIMAPXSummary *ims;
@@ -109,236 +102,19 @@ imapx_summary_summary_header_to_db (CamelFolderSummary *s,
 	return fir;
 }
 
-static CamelMessageInfo *
-imapx_summary_message_info_from_db (CamelFolderSummary *s,
-                                    CamelMIRecord *mir)
-{
-	CamelMessageInfo *info;
-
-	/* Chain up parent's message_info_from_db() method. */
-	info = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class)->
-		message_info_from_db (s, mir);
-
-	if (info != NULL) {
-		CamelIMAPXMessageInfo *imapx_info;
-		gchar *part = mir->bdata;
-
-		imapx_info = (CamelIMAPXMessageInfo *) info;
-		imapx_info->server_flags = bdata_extract_digit (&part);
-	}
-
-	return info;
-}
-
-static CamelMIRecord *
-imapx_summary_message_info_to_db (CamelFolderSummary *s,
-                                  CamelMessageInfo *info)
-{
-	struct _CamelMIRecord *mir;
-
-	/* Chain up to parent's message_info_to_db() method. */
-	mir = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class)->
-		message_info_to_db (s, info);
-
-	if (mir != NULL) {
-		CamelIMAPXMessageInfo *imapx_info;
-
-		imapx_info = (CamelIMAPXMessageInfo *) info;
-		mir->bdata = g_strdup_printf ("%u", imapx_info->server_flags);
-	}
-
-	return mir;
-}
-
-static CamelMessageContentInfo *
-imapx_summary_content_info_from_db (CamelFolderSummary *summary,
-                                    CamelMIRecord *mir)
-{
-	gchar *part = mir->cinfo;
-	guint32 type = 0;
-
-	if (part != NULL) {
-		if (*part == ' ')
-			part++;
-		if (part != NULL)
-			type = bdata_extract_digit (&part);
-	}
-	mir->cinfo = part;
-
-	if (type) {
-		/* Chain up to parent's content_info_from_db() method. */
-		return CAMEL_FOLDER_SUMMARY_CLASS (
-			camel_imapx_summary_parent_class)->
-			content_info_from_db (summary, mir);
-	} else {
-		return camel_folder_summary_content_info_new (summary);
-	}
-}
-
-static gboolean
-imapx_summary_content_info_to_db (CamelFolderSummary *summary,
-                                  CamelMessageContentInfo *info,
-                                  CamelMIRecord *mir)
-{
-	gchar *oldr;
-
-	if (info->type) {
-		oldr = mir->cinfo;
-		if (oldr != NULL)
-			mir->cinfo = g_strdup_printf ("%s 1", oldr);
-		else
-			mir->cinfo = g_strdup ("1");
-		g_free (oldr);
-
-		/* Chain up to parent's content_info_to_db() method. */
-		return CAMEL_FOLDER_SUMMARY_CLASS (
-			camel_imapx_summary_parent_class)->
-			content_info_to_db (summary, info, mir);
-
-	} else {
-		oldr = mir->cinfo;
-		if (oldr != NULL)
-			mir->cinfo = g_strdup_printf ("%s 0", oldr);
-		else
-			mir->cinfo = g_strdup ("0");
-		g_free (oldr);
-
-		return TRUE;
-	}
-}
-
-static void
-imapx_summary_message_info_free (CamelFolderSummary *summary,
-                                 CamelMessageInfo *info)
-{
-	CamelIMAPXMessageInfo *imapx_info;
-
-	imapx_info = (CamelIMAPXMessageInfo *) info;
-	camel_flag_list_free (&imapx_info->server_user_flags);
-
-	/* Chain up to parent's message_info_free() method. */
-	CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->
-		message_info_free (summary, info);
-}
-
-static CamelMessageInfo *
-imapx_summary_message_info_clone (CamelFolderSummary *summary,
-                                  const CamelMessageInfo *info)
-{
-	CamelMessageInfo *copy;
-	CamelIMAPXMessageInfo *imapx_copy;
-	CamelIMAPXMessageInfo *imapx_info;
-
-	/* Chain up to parent's message_info_clone() method. */
-	copy = CAMEL_FOLDER_SUMMARY_CLASS (
-		camel_imapx_summary_parent_class)->
-		message_info_clone (summary, info);
-
-	imapx_info = (CamelIMAPXMessageInfo *) info;
-	imapx_copy = (CamelIMAPXMessageInfo *) copy;
-
-	if (imapx_info->server_user_flags) {
-		camel_flag_list_copy (
-			&imapx_copy->server_user_flags,
-			&imapx_info->server_user_flags);
-	}
-
-	imapx_copy->server_flags = imapx_info->server_flags;
-
-	/* FIXME: parent clone should do this */
-	imapx_copy->info.content =
-		camel_folder_summary_content_info_new (summary);
-
-	return copy;
-}
-
-static void
-imapx_summary_emit_info_changed (CamelMessageInfo *info)
-{
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (CAMEL_IS_IMAPX_SUMMARY (info->summary));
-
-	g_signal_emit (info->summary, signals[INFO_CHANGED], 0, info);
-}
-
-static gboolean
-imapx_summary_info_set_user_flag (CamelMessageInfo *info,
-                                  const gchar *id,
-                                  gboolean state)
-{
-	gboolean changed;
-
-	/* Chain up to parent's method. */
-	changed = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->info_set_user_flag (info, id, state);
-
-	if (changed)
-		imapx_summary_emit_info_changed (info);
-
-	return changed;
-}
-
-static gboolean
-imapx_summary_info_set_user_tag (CamelMessageInfo *info,
-				 const gchar *name,
-				 const gchar *value)
-{
-	gboolean changed;
-
-	/* Chain up to parent's method. */
-	changed = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->info_set_user_tag (info, name, value);
-
-	if (changed)
-		imapx_summary_emit_info_changed (info);
-
-	return changed;
-}
-
-static gboolean
-imapx_summary_info_set_flags (CamelMessageInfo *info,
-			      guint32 flags,
-			      guint32 set)
-{
-	gboolean changed;
-
-	/* Chain up to parent's method. */
-	changed = CAMEL_FOLDER_SUMMARY_CLASS (camel_imapx_summary_parent_class)->info_set_flags (info, flags, set);
-
-	if (changed)
-		imapx_summary_emit_info_changed (info);
-
-	return changed;
-}
-
 static void
 camel_imapx_summary_class_init (CamelIMAPXSummaryClass *class)
 {
 	CamelFolderSummaryClass *folder_summary_class;
 
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
-	folder_summary_class->message_info_size = sizeof (CamelIMAPXMessageInfo);
-	folder_summary_class->content_info_size = sizeof (CamelIMAPXMessageContentInfo);
-	folder_summary_class->summary_header_from_db = imapx_summary_summary_header_from_db;
-	folder_summary_class->summary_header_to_db = imapx_summary_summary_header_to_db;
-	folder_summary_class->message_info_from_db = imapx_summary_message_info_from_db;
-	folder_summary_class->message_info_to_db = imapx_summary_message_info_to_db;
-	folder_summary_class->content_info_from_db = imapx_summary_content_info_from_db;
-	folder_summary_class->content_info_to_db = imapx_summary_content_info_to_db;
-	folder_summary_class->message_info_free = imapx_summary_message_info_free;
-	folder_summary_class->message_info_clone = imapx_summary_message_info_clone;
-	folder_summary_class->info_set_user_flag = imapx_summary_info_set_user_flag;
-	folder_summary_class->info_set_user_tag = imapx_summary_info_set_user_tag;
-	folder_summary_class->info_set_flags = imapx_summary_info_set_flags;
-
-	signals[INFO_CHANGED] = g_signal_new (
-		"info-changed",
-		G_OBJECT_CLASS_TYPE (class),
-		G_SIGNAL_RUN_LAST,
-		0 /* G_STRUCT_OFFSET (CamelIMAPXSummaryClass, info_changed) */,
-		NULL, NULL, NULL,
-		G_TYPE_NONE, 1,
-		G_TYPE_POINTER /* CamelMessageInfo * */);
+	folder_summary_class->message_info_type = CAMEL_TYPE_IMAPX_MESSAGE_INFO;
+#ifdef SORT_DB
+	folder_summary_class->sort_by = "uid";
+	folder_summary_class->collate = "imapx_uid_sort";
+#endif
+	folder_summary_class->summary_header_load = imapx_summary_summary_header_load;
+	folder_summary_class->summary_header_save = imapx_summary_summary_header_save;
 }
 
 static void
@@ -346,6 +122,7 @@ camel_imapx_summary_init (CamelIMAPXSummary *obj)
 {
 }
 
+#ifdef SORT_DB
 static gint
 sort_uid_cmp (gpointer enc,
               gint len1,
@@ -373,6 +150,7 @@ sort_uid_cmp (gpointer enc,
 
 	return (a1 < a2) ? -1 : (a1 > a2) ? 1 : 0;
 }
+#endif
 
 /**
  * camel_imapx_summary_new:
@@ -386,24 +164,20 @@ sort_uid_cmp (gpointer enc,
 CamelFolderSummary *
 camel_imapx_summary_new (CamelFolder *folder)
 {
+#ifdef SORT_DB
 	CamelStore *parent_store;
+#endif
 	CamelFolderSummary *summary;
 	GError *local_error = NULL;
 
-	parent_store = camel_folder_get_parent_store (folder);
-
 	summary = g_object_new (CAMEL_TYPE_IMAPX_SUMMARY, "folder", folder, NULL);
 
-	/* Don't do DB sort. Its pretty slow to load */
-	if (folder && 0) {
-		camel_db_set_collate (parent_store->cdb_r, "uid", "imapx_uid_sort", (CamelDBCollate) sort_uid_cmp);
-		summary->sort_by = "uid";
-		summary->collate = "imapx_uid_sort";
-	}
+#ifdef SORT_DB
+	parent_store = camel_folder_get_parent_store (folder);
+	camel_db_set_collate (camel_store_get_db (parent_store), "uid", "imapx_uid_sort", (CamelDBCollate) sort_uid_cmp);
+#endif
 
-	camel_folder_summary_set_build_content (summary, TRUE);
-
-	if (!camel_folder_summary_load_from_db (summary, &local_error)) {
+	if (!camel_folder_summary_load (summary, &local_error)) {
 		/* FIXME: Isn't this dangerous ? We clear the summary
 		if it cannot be loaded, for some random reason.
 		We need to pass the error and find out why it is not loaded etc. ? */
@@ -414,4 +188,3 @@ camel_imapx_summary_new (CamelFolder *folder)
 
 	return summary;
 }
-

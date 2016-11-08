@@ -103,7 +103,7 @@ main (gint argc,
 		do {
 			u = tests[i].unicode[j++];
 			camel_utf8_putc ((guchar **) &p, u);
-			g_string_append_u (out, u);
+			g_string_append_unichar (out, u);
 		} while (u);
 
 		check (strcmp (utf8enc, out->str) == 0);

@@ -73,7 +73,8 @@ struct _CamelNetworkServiceInterface {
 			(*new_connectable)
 					(CamelNetworkService *service);
 
-	gpointer reserved[15];
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_network_service_get_type	(void) G_GNUC_CONST;

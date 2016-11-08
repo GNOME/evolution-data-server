@@ -64,6 +64,9 @@ struct _CamelOfflineSettings {
 
 struct _CamelOfflineSettingsClass {
 	CamelStoreSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_offline_settings_get_type

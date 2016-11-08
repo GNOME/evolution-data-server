@@ -139,6 +139,9 @@ struct _CamelPOP3Engine {
 
 struct _CamelPOP3EngineClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_pop3_engine_get_type	(void);

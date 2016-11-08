@@ -27,6 +27,7 @@
 #include <camel/camel-mime-utils.h>
 #include <camel/camel-mime-filter.h>
 #include <camel/camel-stream.h>
+#include <camel/camel-name-value-array.h>
 
 /* Stardard GObject macros */
 #define CAMEL_TYPE_MIME_PARSER \
@@ -89,6 +90,9 @@ struct _CamelMimeParserClass {
 	void (*message) (CamelMimeParser *parser, gpointer headers);
 	void (*part) (CamelMimeParser *parser);
 	void (*content) (CamelMimeParser *parser);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_mime_parser_get_type (void);
@@ -128,8 +132,8 @@ CamelContentType *camel_mime_parser_content_type (CamelMimeParser *parser);
 /* get/change raw header by name */
 const gchar *camel_mime_parser_header (CamelMimeParser *m, const gchar *name, gint *offset);
 
-/* get all raw headers. READ ONLY! */
-struct _camel_header_raw *camel_mime_parser_headers_raw (CamelMimeParser *m);
+/* get all raw headers */
+CamelNameValueArray *camel_mime_parser_dup_headers (CamelMimeParser *m);
 
 /* get multipart pre/postface */
 const gchar *camel_mime_parser_preface (CamelMimeParser *m);

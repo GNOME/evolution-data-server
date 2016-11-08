@@ -48,7 +48,24 @@
 #endif
 #define d(x)
 
-extern gint camel_verbose_debug;
+struct _CamelMimeMessagePrivate {
+	/* header fields */
+	time_t date;
+	gint date_offset;	/* GMT offset */
+
+	/* cached internal copy */
+	time_t date_received;
+	gint date_received_offset;	/* GMT offset */
+
+	gchar *subject;
+
+	gchar *message_id;
+
+	CamelInternetAddress *reply_to;
+	CamelInternetAddress *from;
+
+	GHashTable *recipients;	/* hash table of CamelInternetAddress's */
+};
 
 /* these 2 below should be kept in sync */
 typedef enum {
@@ -100,9 +117,9 @@ process_header (CamelMedium *medium,
 		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
 			g_object_unref (addr);
 		} else {
-			if (message->from)
-				g_object_unref (message->from);
-			message->from = addr;
+			if (message->priv->from)
+				g_object_unref (message->priv->from);
+			message->priv->from = addr;
 		}
 		g_free (unfolded);
 		break;
@@ -112,22 +129,22 @@ process_header (CamelMedium *medium,
 		if (camel_address_decode ((CamelAddress *) addr, unfolded) <= 0) {
 			g_object_unref (addr);
 		} else {
-			if (message->reply_to)
-				g_object_unref (message->reply_to);
-			message->reply_to = addr;
+			if (message->priv->reply_to)
+				g_object_unref (message->priv->reply_to);
+			message->priv->reply_to = addr;
 		}
 		g_free (unfolded);
 		break;
 	case HEADER_SUBJECT:
-		g_free (message->subject);
-		if (((CamelDataWrapper *) message)->mime_type) {
-			charset = camel_content_type_param (((CamelDataWrapper *) message)->mime_type, "charset");
+		g_free (message->priv->subject);
+		if (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (message))) {
+			charset = camel_content_type_param (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (message)), "charset");
 			charset = camel_iconv_charset_name (charset);
 		} else
 			charset = NULL;
 
 		unfolded = camel_header_unfold (value);
-		message->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
+		message->priv->subject = g_strstrip (camel_header_decode_string (unfolded, charset));
 		g_free (unfolded);
 		break;
 	case HEADER_TO:
@@ -136,7 +153,7 @@ process_header (CamelMedium *medium,
 	case HEADER_RESENT_TO:
 	case HEADER_RESENT_CC:
 	case HEADER_RESENT_BCC:
-		addr = g_hash_table_lookup (message->recipients, name);
+		addr = g_hash_table_lookup (message->priv->recipients, name);
 		if (value) {
 			unfolded = camel_header_unfold (value);
 			camel_address_decode (CAMEL_ADDRESS (addr), unfolded);
@@ -147,18 +164,18 @@ process_header (CamelMedium *medium,
 		return FALSE;
 	case HEADER_DATE:
 		if (value) {
-			message->date = camel_header_decode_date (value, &message->date_offset);
+			message->priv->date = camel_header_decode_date (value, &message->priv->date_offset);
 		} else {
-			message->date = CAMEL_MESSAGE_DATE_CURRENT;
-			message->date_offset = 0;
+			message->priv->date = CAMEL_MESSAGE_DATE_CURRENT;
+			message->priv->date_offset = 0;
 		}
 		break;
 	case HEADER_MESSAGE_ID:
-		g_free (message->message_id);
+		g_free (message->priv->message_id);
 		if (value)
-			message->message_id = camel_header_msgid_decode (value);
+			message->priv->message_id = camel_header_msgid_decode (value);
 		else
-			message->message_id = NULL;
+			message->priv->message_id = NULL;
 		break;
 	default:
 		return FALSE;
@@ -180,17 +197,17 @@ mime_message_ensure_required_headers (CamelMimeMessage *message)
 {
 	CamelMedium *medium = CAMEL_MEDIUM (message);
 
-	if (message->from == NULL) {
+	if (message->priv->from == NULL) {
 		camel_medium_set_header (medium, "From", "");
 	}
 	if (!camel_medium_get_header (medium, "Date"))
 		camel_mime_message_set_date (
 			message, CAMEL_MESSAGE_DATE_CURRENT, 0);
 
-	if (message->subject == NULL)
+	if (message->priv->subject == NULL)
 		camel_mime_message_set_subject (message, "No Subject");
 
-	if (message->message_id == NULL)
+	if (message->priv->message_id == NULL)
 		camel_mime_message_set_message_id (message, NULL);
 
 	/* FIXME: "To" header needs to be set explicitly as well ... */
@@ -204,15 +221,8 @@ mime_message_dispose (GObject *object)
 {
 	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
 
-	if (message->reply_to != NULL) {
-		g_object_unref (message->reply_to);
-		message->reply_to = NULL;
-	}
-
-	if (message->from != NULL) {
-		g_object_unref (message->from);
-		message->from = NULL;
-	}
+	g_clear_object (&message->priv->reply_to);
+	g_clear_object (&message->priv->from);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (camel_mime_message_parent_class)->dispose (object);
@@ -223,12 +233,11 @@ mime_message_finalize (GObject *object)
 {
 	CamelMimeMessage *message = CAMEL_MIME_MESSAGE (object);
 
-	g_free (message->subject);
+	g_free (message->priv->subject);
+	g_free (message->priv->message_id);
 
-	g_free (message->message_id);
-
-	g_hash_table_foreach (message->recipients, unref_recipient, NULL);
-	g_hash_table_destroy (message->recipients);
+	g_hash_table_foreach (message->priv->recipients, unref_recipient, NULL);
+	g_hash_table_destroy (message->priv->recipients);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_mime_message_parent_class)->finalize (object);
@@ -271,7 +280,7 @@ mime_message_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 static void
 mime_message_add_header (CamelMedium *medium,
                          const gchar *name,
-                         gconstpointer value)
+                         const gchar *value)
 {
 	CamelMediumClass *medium_class;
 
@@ -287,7 +296,7 @@ mime_message_add_header (CamelMedium *medium,
 static void
 mime_message_set_header (CamelMedium *medium,
                          const gchar *name,
-                         gconstpointer value)
+                         const gchar *value)
 {
 	process_header (medium, name, value);
 
@@ -363,6 +372,8 @@ camel_mime_message_class_init (CamelMimeMessageClass *class)
 	CamelMediumClass *medium_class;
 	gint ii;
 
+	g_type_class_add_private (class, sizeof (CamelMimeMessagePrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->dispose = mime_message_dispose;
 	object_class->finalize = mime_message_finalize;
@@ -395,23 +406,25 @@ camel_mime_message_init (CamelMimeMessage *mime_message)
 {
 	gint ii;
 
-	mime_message->recipients = g_hash_table_new (
+	mime_message->priv = G_TYPE_INSTANCE_GET_PRIVATE (mime_message, CAMEL_TYPE_MIME_MESSAGE, CamelMimeMessagePrivate);
+
+	mime_message->priv->recipients = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);
 	for (ii = 0; recipient_names[ii] != NULL; ii++) {
 		g_hash_table_insert (
-			mime_message->recipients,
+			mime_message->priv->recipients,
 			(gpointer) recipient_names[ii],
 			camel_internet_address_new ());
 	}
 
-	mime_message->subject = NULL;
-	mime_message->reply_to = NULL;
-	mime_message->from = NULL;
-	mime_message->date = CAMEL_MESSAGE_DATE_CURRENT;
-	mime_message->date_offset = 0;
-	mime_message->date_received = CAMEL_MESSAGE_DATE_CURRENT;
-	mime_message->date_received_offset = 0;
-	mime_message->message_id = NULL;
+	mime_message->priv->subject = NULL;
+	mime_message->priv->reply_to = NULL;
+	mime_message->priv->from = NULL;
+	mime_message->priv->date = CAMEL_MESSAGE_DATE_CURRENT;
+	mime_message->priv->date_offset = 0;
+	mime_message->priv->date_received = CAMEL_MESSAGE_DATE_CURRENT;
+	mime_message->priv->date_received_offset = 0;
+	mime_message->priv->message_id = NULL;
 }
 
 /**
@@ -454,8 +467,8 @@ camel_mime_message_set_date (CamelMimeMessage *message,
 		camel_localtime_with_offset (date, &local, &tz);
 		offset = (((tz / 60 / 60) * 100) + (tz / 60 % 60));
 	}
-	message->date = date;
-	message->date_offset = offset;
+	message->priv->date = date;
+	message->priv->date_offset = offset;
 
 	datestr = camel_header_format_date (date, offset);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header ((CamelMedium *) message, "Date", datestr);
@@ -476,9 +489,9 @@ camel_mime_message_get_date (CamelMimeMessage *msg,
                              gint *offset)
 {
 	if (offset)
-		*offset = msg->date_offset;
+		*offset = msg->priv->date_offset;
 
-	return msg->date;
+	return msg->priv->date;
 }
 
 /**
@@ -494,20 +507,20 @@ time_t
 camel_mime_message_get_date_received (CamelMimeMessage *msg,
                                       gint *offset)
 {
-	if (msg->date_received == CAMEL_MESSAGE_DATE_CURRENT) {
+	if (msg->priv->date_received == CAMEL_MESSAGE_DATE_CURRENT) {
 		const gchar *received;
 
 		received = camel_medium_get_header ((CamelMedium *) msg, "received");
 		if (received)
 			received = strrchr (received, ';');
 		if (received)
-			msg->date_received = camel_header_decode_date (received + 1, &msg->date_received_offset);
+			msg->priv->date_received = camel_header_decode_date (received + 1, &msg->priv->date_received_offset);
 	}
 
 	if (offset)
-		*offset = msg->date_received_offset;
+		*offset = msg->priv->date_received_offset;
 
-	return msg->date_received;
+	return msg->priv->date_received;
 }
 
 /* **** Message-ID: */
@@ -527,7 +540,7 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
 
 	g_return_if_fail (mime_message);
 
-	g_free (mime_message->message_id);
+	g_free (mime_message->priv->message_id);
 
 	if (message_id) {
 		id = g_strstrip (g_strdup (message_id));
@@ -547,8 +560,8 @@ camel_mime_message_set_message_id (CamelMimeMessage *mime_message,
 		id = camel_header_msgid_generate (domain);
 	}
 
-	mime_message->message_id = id;
-	id = g_strdup_printf ("<%s>", mime_message->message_id);
+	mime_message->priv->message_id = id;
+	id = g_strdup_printf ("<%s>", mime_message->priv->message_id);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (mime_message), "Message-ID", id);
 	g_free (id);
 }
@@ -566,7 +579,7 @@ camel_mime_message_get_message_id (CamelMimeMessage *mime_message)
 {
 	g_return_val_if_fail (mime_message, NULL);
 
-	return mime_message->message_id;
+	return mime_message->priv->message_id;
 }
 
 /* **** Reply-To: */
@@ -586,18 +599,15 @@ camel_mime_message_set_reply_to (CamelMimeMessage *msg,
 
 	g_return_if_fail (msg);
 
-	if (msg->reply_to) {
-		g_object_unref (msg->reply_to);
-		msg->reply_to = NULL;
-	}
+	g_clear_object (&msg->priv->reply_to);
 
 	if (reply_to == NULL) {
 		CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (CAMEL_MEDIUM (msg), "Reply-To");
 		return;
 	}
 
-	msg->reply_to = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) reply_to);
-	addr = camel_address_encode ((CamelAddress *) msg->reply_to);
+	msg->priv->reply_to = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) reply_to);
+	addr = camel_address_encode ((CamelAddress *) msg->priv->reply_to);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (msg), "Reply-To", addr);
 	g_free (addr);
 }
@@ -617,7 +627,7 @@ camel_mime_message_get_reply_to (CamelMimeMessage *mime_message)
 
 	/* TODO: ref for threading? */
 
-	return mime_message->reply_to;
+	return mime_message->priv->reply_to;
 }
 
 /* **** Subject: */
@@ -637,13 +647,13 @@ camel_mime_message_set_subject (CamelMimeMessage *message,
 
 	g_return_if_fail (message);
 
-	g_free (message->subject);
+	g_free (message->priv->subject);
 
 	if (subject) {
-		message->subject = g_strstrip (g_strdup (subject));
-		text = camel_header_encode_string ((guchar *) message->subject);
+		message->priv->subject = g_strstrip (g_strdup (subject));
+		text = camel_header_encode_string ((guchar *) message->priv->subject);
 	} else {
-		message->subject = NULL;
+		message->priv->subject = NULL;
 		text = NULL;
 	}
 
@@ -664,7 +674,7 @@ camel_mime_message_get_subject (CamelMimeMessage *mime_message)
 {
 	g_return_val_if_fail (mime_message, NULL);
 
-	return mime_message->subject;
+	return mime_message->priv->subject;
 }
 
 /* *** From: */
@@ -688,18 +698,15 @@ camel_mime_message_set_from (CamelMimeMessage *msg,
 
 	g_return_if_fail (msg);
 
-	if (msg->from) {
-		g_object_unref (msg->from);
-		msg->from = NULL;
-	}
+	g_clear_object (&msg->priv->from);
 
 	if (from == NULL || camel_address_length ((CamelAddress *) from) == 0) {
 		CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->remove_header (CAMEL_MEDIUM (msg), "From");
 		return;
 	}
 
-	msg->from = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) from);
-	addr = camel_address_encode ((CamelAddress *) msg->from);
+	msg->priv->from = (CamelInternetAddress *) camel_address_new_clone ((CamelAddress *) from);
+	addr = camel_address_encode ((CamelAddress *) msg->priv->from);
 	CAMEL_MEDIUM_CLASS (camel_mime_message_parent_class)->set_header (CAMEL_MEDIUM (msg), "From", addr);
 	g_free (addr);
 }
@@ -719,7 +726,7 @@ camel_mime_message_get_from (CamelMimeMessage *mime_message)
 
 	/* TODO: we should really ref this for multi-threading to work */
 
-	return mime_message->from;
+	return mime_message->priv->from;
 }
 
 /*  **** To: Cc: Bcc: */
@@ -742,7 +749,7 @@ camel_mime_message_set_recipients (CamelMimeMessage *mime_message,
 
 	g_return_if_fail (mime_message);
 
-	addr = g_hash_table_lookup (mime_message->recipients, type);
+	addr = g_hash_table_lookup (mime_message->priv->recipients, type);
 	if (addr == NULL) {
 		g_warning ("trying to set a non-valid receipient type: %s", type);
 		return;
@@ -778,7 +785,7 @@ camel_mime_message_get_recipients (CamelMimeMessage *mime_message,
 {
 	g_return_val_if_fail (mime_message, NULL);
 
-	return g_hash_table_lookup (mime_message->recipients, type);
+	return g_hash_table_lookup (mime_message->priv->recipients, type);
 }
 
 void
@@ -951,7 +958,7 @@ find_best_encoding (CamelMimePart *part,
 		return CAMEL_TRANSFER_ENCODING_DEFAULT;
 	}
 
-	istext = camel_content_type_is (((CamelDataWrapper *) part)->mime_type, "text", "*");
+	istext = camel_content_type_is (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (part)), "text", "*");
 	if (istext) {
 		flags = CAMEL_BESTENC_GET_CHARSET | CAMEL_BESTENC_GET_ENCODING;
 		enctype |= CAMEL_BESTENC_TEXT;
@@ -971,7 +978,7 @@ find_best_encoding (CamelMimePart *part,
 
 	/* if we're looking for the best charset, then we need to convert to UTF-8 */
 	if (istext && (required & CAMEL_BESTENC_GET_CHARSET) != 0
-	    && (charsetin = camel_content_type_param (content->mime_type, "charset"))) {
+	    && (charsetin = camel_content_type_param (camel_data_wrapper_get_mime_type_field (content), "charset"))) {
 		charenc = camel_mime_filter_charset_new (charsetin, "UTF-8");
 		if (charenc != NULL)
 			idc = camel_stream_filter_add (
@@ -997,7 +1004,7 @@ find_best_encoding (CamelMimePart *part,
 		d (printf ("best charset = %s\n", charsetin ? charsetin : "(null)"));
 		charset = g_strdup (charsetin);
 
-		charsetin = camel_content_type_param (content->mime_type, "charset");
+		charsetin = camel_content_type_param (camel_data_wrapper_get_mime_type_field (content), "charset");
 	} else {
 		charset = NULL;
 	}
@@ -1081,14 +1088,14 @@ best_encoding (CamelMimeMessage *msg,
 		camel_mime_part_set_encoding (part, encoding);
 
 		if ((data->required & CAMEL_BESTENC_GET_CHARSET) != 0) {
-			if (camel_content_type_is (((CamelDataWrapper *) part)->mime_type, "text", "*")) {
+			if (camel_content_type_is (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (part)), "text", "*")) {
 				gchar *newct;
 
 				/* FIXME: ick, the part content_type interface needs fixing bigtime */
 				camel_content_type_set_param (
-					((CamelDataWrapper *) part)->mime_type, "charset",
+					camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (part)), "charset",
 					charset ? charset : "us-ascii");
-				newct = camel_content_type_format (((CamelDataWrapper *) part)->mime_type);
+				newct = camel_content_type_format (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (part)));
 				if (newct) {
 					d (printf ("Setting content-type to %s\n", newct));
 
@@ -1217,7 +1224,7 @@ static const gchar tz_days[][4] = {
 gchar *
 camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 {
-	struct _camel_header_raw *header = ((CamelMimePart *) message)->headers;
+	const CamelNameValueArray *headers;
 	GString *out = g_string_new ("From ");
 	gchar *ret;
 	const gchar *tmp;
@@ -1225,9 +1232,10 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 	gint offset;
 	struct tm tm;
 
-	tmp = camel_header_raw_find (&header, "Sender", NULL);
+	headers = camel_medium_get_headers (CAMEL_MEDIUM (message));
+	tmp = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Sender");
 	if (tmp == NULL)
-		tmp = camel_header_raw_find (&header, "From", NULL);
+		tmp = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "From");
 	if (tmp != NULL) {
 		CamelHeaderAddress *addr = camel_header_address_decode (tmp, NULL);
 
@@ -1245,7 +1253,7 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 		g_string_append (out, "unknown@nodomain.now.au");
 
 	/* try use the received header to get the date */
-	tmp = camel_header_raw_find (&header, "Received", NULL);
+	tmp = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Received");
 	if (tmp) {
 		tmp = strrchr (tmp, ';');
 		if (tmp)
@@ -1254,7 +1262,7 @@ camel_mime_message_build_mbox_from (CamelMimeMessage *message)
 
 	/* if there isn't one, try the Date field */
 	if (tmp == NULL)
-		tmp = camel_header_raw_find (&header, "Date", NULL);
+		tmp = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Date");
 
 	thetime = camel_header_decode_date (tmp, &offset);
 	thetime += ((offset / 100) * (60 * 60)) + (offset % 100) * 60;
@@ -1393,7 +1401,7 @@ cmm_dump_rec (CamelMimeMessage *msg,
 	s[depth] = 0;
 	/* yes this leaks, so what its only debug stuff */
 	printf ("%sclass: %s\n", s, G_OBJECT_TYPE_NAME (part));
-	printf ("%smime-type: %s\n", s, camel_content_type_format (((CamelDataWrapper *) part)->mime_type));
+	printf ("%smime-type: %s\n", s, camel_content_type_format (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (part))));
 
 	containee = camel_medium_get_content ((CamelMedium *) part);
 
@@ -1401,7 +1409,7 @@ cmm_dump_rec (CamelMimeMessage *msg,
 		return;
 
 	printf ("%scontent class: %s\n", s, G_OBJECT_TYPE_NAME (containee));
-	printf ("%scontent mime-type: %s\n", s, camel_content_type_format (((CamelDataWrapper *) containee)->mime_type));
+	printf ("%scontent mime-type: %s\n", s, camel_content_type_format (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (containee))));
 
 	data = camel_data_wrapper_get_byte_array (containee);
 	if (body && data) {

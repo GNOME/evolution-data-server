@@ -72,7 +72,7 @@ struct _CamelMemChunk {
 };
 
 /**
- * camel_memchunk_new:
+ * camel_memchunk_new: (skip)
  * @atomcount: the number of atoms stored in a single malloc'd block of memory
  * @atomsize: the size of each allocation
  *
@@ -102,7 +102,7 @@ camel_memchunk_new (gint atomcount,
 }
 
 /**
- * camel_memchunk_alloc:
+ * camel_memchunk_alloc: (skip)
  * @memchunk: an #CamelMemChunk
  *
  * Allocate a new atom size block of memory from an #CamelMemChunk.
@@ -141,7 +141,7 @@ camel_memchunk_alloc (CamelMemChunk *memchunk)
 }
 
 /**
- * camel_memchunk_alloc0:
+ * camel_memchunk_alloc0: (skip)
  * @memchunk: an #CamelMemChunk
  *
  * Allocate a new atom size block of memory from an #CamelMemChunk,
@@ -164,7 +164,7 @@ camel_memchunk_alloc0 (CamelMemChunk *memchunk)
 }
 
 /**
- * camel_memchunk_free:
+ * camel_memchunk_free: (skip)
  * @memchunk: an #CamelMemChunk
  * @mem: address of atom to free
  *
@@ -194,7 +194,7 @@ camel_memchunk_free (CamelMemChunk *memchunk,
 }
 
 /**
- * camel_memchunk_empty:
+ * camel_memchunk_empty: (skip)
  * @memchunk: an #CamelMemChunk
  *
  * Clean out the memchunk buffers.  Marks all allocated memory as free blocks,
@@ -250,7 +250,7 @@ tree_search (struct _cleaninfo *a,
 }
 
 /**
- * camel_memchunk_clean:
+ * camel_memchunk_clean: (skip)
  * @memchunk: an #CamelMemChunk
  *
  * Scan all empty blocks and check for blocks which can be free'd
@@ -328,7 +328,7 @@ camel_memchunk_clean (CamelMemChunk *memchunk)
 }
 
 /**
- * camel_memchunk_destroy:
+ * camel_memchunk_destroy: (skip)
  * @memchunk: an #CamelMemChunk
  *
  * Free the memchunk header, and all associated memory.

@@ -114,7 +114,7 @@ nntp_folder_dispose (GObject *object)
 	CamelStore *store;
 
 	folder = CAMEL_FOLDER (object);
-	camel_folder_summary_save_to_db (folder->summary, NULL);
+	camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 
 	store = camel_folder_get_parent_store (folder);
 	if (store != NULL) {
@@ -124,7 +124,7 @@ nntp_folder_dispose (GObject *object)
 			CAMEL_NNTP_STORE (store));
 		camel_store_summary_disconnect_folder_summary (
 			CAMEL_STORE_SUMMARY (nntp_store_summary),
-			folder->summary);
+			camel_folder_get_folder_summary (folder));
 		g_clear_object (&nntp_store_summary);
 	}
 
@@ -163,7 +163,7 @@ camel_nntp_folder_selected (CamelNNTPFolder *nntp_folder,
 	parent_store = camel_folder_get_parent_store (folder);
 
 	res = camel_nntp_summary_check (
-		CAMEL_NNTP_SUMMARY (folder->summary),
+		CAMEL_NNTP_SUMMARY (camel_folder_get_folder_summary (folder)),
 		CAMEL_NNTP_STORE (parent_store),
 		line, nntp_folder->changes,
 		cancellable, error);
@@ -189,14 +189,8 @@ unset_flagged_flag (const gchar *uid,
 
 	info = camel_folder_summary_get (summary, uid);
 	if (info) {
-		CamelMessageInfoBase *base = (CamelMessageInfoBase *) info;
-
-		if ((base->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0) {
-			base->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-			base->dirty = TRUE;
-		}
-
-		camel_message_info_unref (info);
+		camel_message_info_set_folder_flagged (info, FALSE);
+		g_clear_object (&info);
 	}
 }
 
@@ -410,8 +404,9 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 	CamelStream *filtered_stream;
 	CamelMimeFilter *crlffilter;
 	gint ret;
-	guint u;
-	struct _camel_header_raw *header, *savedhdrs, *n, *tail;
+	guint u, ii;
+	CamelNameValueArray *previous_headers = NULL;
+	const gchar *header_name = NULL, *header_value = NULL;
 	const gchar *full_name;
 	gchar *group, *line;
 	gboolean success = TRUE;
@@ -445,24 +440,11 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 	/* the 'Newsgroups: ' header */
 	group = g_strdup_printf ("Newsgroups: %s\r\n", full_name);
 
-	/* remove mail 'To', 'CC', and 'BCC' headers */
-	savedhdrs = NULL;
-	tail = (struct _camel_header_raw *) &savedhdrs;
-
-	header = (struct _camel_header_raw *) &CAMEL_MIME_PART (message)->headers;
-	n = header->next;
-	while (n != NULL) {
-		if (!g_ascii_strcasecmp (n->name, "To") || !g_ascii_strcasecmp (n->name, "Cc") || !g_ascii_strcasecmp (n->name, "Bcc")) {
-			header->next = n->next;
-			tail->next = n;
-			n->next = NULL;
-			tail = n;
-		} else {
-			header = n;
-		}
-
-		n = header->next;
-	}
+	/* remove mail 'To', 'Cc', and 'Bcc' headers */
+	previous_headers = camel_medium_dup_headers (CAMEL_MEDIUM (message));
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "To");
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Cc");
+	camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
 
 	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
@@ -509,7 +491,16 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 
 	g_object_unref (filtered_stream);
 	g_free (group);
-	header->next = savedhdrs;
+	/* restore the bcc headers */
+	for (ii = 0; camel_name_value_array_get (previous_headers, ii, &header_name, &header_value); ii++) {
+		if (!g_ascii_strcasecmp (header_name, "To") ||
+		    !g_ascii_strcasecmp (header_name, "Cc") ||
+		    !g_ascii_strcasecmp (header_name, "Bcc")) {
+			camel_medium_add_header (CAMEL_MEDIUM (message), header_name, header_value);
+		}
+	}
+
+	camel_name_value_array_free (previous_headers);
 
 exit:
 	g_clear_object (&nntp_stream);
@@ -527,7 +518,7 @@ nntp_folder_expunge_sync (CamelFolder *folder,
 	GPtrArray *known_uids;
 	guint ii;
 
-	summary = folder->summary;
+	summary = camel_folder_get_folder_summary (folder);
 
 	camel_folder_summary_prepare_fetch_all (summary, NULL);
 	known_uids = camel_folder_summary_get_array (summary);
@@ -549,10 +540,10 @@ nntp_folder_expunge_sync (CamelFolder *folder,
 			camel_folder_summary_remove (summary, info);
 		}
 
-		camel_message_info_unref (info);
+		g_clear_object (&info);
 	}
 
-	camel_folder_summary_save_to_db (summary, NULL);
+	camel_folder_summary_save (summary, NULL);
 	camel_folder_changed (folder, changes);
 
 	camel_folder_change_info_free (changes);
@@ -695,7 +686,7 @@ nntp_folder_synchronize_sync (CamelFolder *folder,
 			return FALSE;
 	}
 
-	summary = folder->summary;
+	summary = camel_folder_get_folder_summary (folder);
 
 	changed = camel_folder_summary_get_changed (summary);
 	if (changed != NULL) {
@@ -707,7 +698,7 @@ nntp_folder_synchronize_sync (CamelFolder *folder,
 		g_ptr_array_free (changed, TRUE);
 	}
 
-	return camel_folder_summary_save_to_db (summary, error);
+	return camel_folder_summary_save (summary, error);
 }
 
 static gboolean
@@ -813,7 +804,7 @@ camel_nntp_folder_new (CamelStore *parent,
 		"parent-store", parent, NULL);
 	nntp_folder = (CamelNNTPFolder *) folder;
 
-	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
+	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
 
 	storage_path = g_build_filename (user_cache_dir, folder_name, NULL);
 	root = g_strdup_printf ("%s.cmeta", storage_path);
@@ -822,12 +813,12 @@ camel_nntp_folder_new (CamelStore *parent,
 	g_free (root);
 	g_free (storage_path);
 
-	folder->summary = (CamelFolderSummary *) camel_nntp_summary_new (folder);
+	camel_folder_take_folder_summary (folder, (CamelFolderSummary *) camel_nntp_summary_new (folder));
 
 	if (filter_all || nntp_folder_get_apply_filters (nntp_folder))
-		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+		camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_FILTER_RECENT);
 
-	camel_folder_summary_load_from_db (folder->summary, NULL);
+	camel_folder_summary_load (camel_folder_get_folder_summary (folder), NULL);
 
 	nntp_store = CAMEL_NNTP_STORE (parent);
 	nntp_store_summary = camel_nntp_store_ref_summary (nntp_store);
@@ -843,7 +834,7 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	camel_store_summary_connect_folder_summary (
 		CAMEL_STORE_SUMMARY (nntp_store_summary),
-		folder_name, folder->summary);
+		folder_name, camel_folder_get_folder_summary (folder));
 
 	g_clear_object (&nntp_store_summary);
 

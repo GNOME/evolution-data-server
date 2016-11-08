@@ -56,6 +56,9 @@ typedef struct _CamelNetworkSettingsInterface CamelNetworkSettingsInterface;
 
 struct _CamelNetworkSettingsInterface {
 	GTypeInterface parent_interface;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_network_settings_get_type

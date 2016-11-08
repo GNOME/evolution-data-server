@@ -58,14 +58,17 @@ struct _CamelNNTPAddress {
 
 struct _CamelNNTPAddressClass {
 	CamelAddressClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_address_get_type	(void);
 CamelNNTPAddress *
 		camel_nntp_address_new		(void);
-gint		camel_nntp_address_add		(CamelNNTPAddress *a,
+gint		camel_nntp_address_add		(CamelNNTPAddress *addr,
 						 const gchar *name);
-gboolean	camel_nntp_address_get		(CamelNNTPAddress *a,
+gboolean	camel_nntp_address_get		(CamelNNTPAddress *addr,
 						 gint index,
 						 const gchar **namep);
 

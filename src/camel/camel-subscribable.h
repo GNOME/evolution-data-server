@@ -73,8 +73,8 @@ struct _CamelSubscribableInterface {
 					 GCancellable *cancellable,
 					 GError **error);
 
-	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[4];
+	/* Padding for future expansion */
+	gpointer reserved_methods[20];
 
 	/* Signals */
 	void		(*folder_subscribed)
@@ -83,6 +83,9 @@ struct _CamelSubscribableInterface {
 	void		(*folder_unsubscribed)
 					(CamelSubscribable *subscribable,
 					 CamelFolderInfo *folder_info);
+
+	/* Padding for future expansion */
+	gpointer reserved_signals[20];
 };
 
 GType		camel_subscribable_get_type

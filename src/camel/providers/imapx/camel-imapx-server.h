@@ -114,6 +114,9 @@ struct _CamelIMAPXServerClass {
 	/* Signals */
 	void		(*refresh_mailbox)	(CamelIMAPXServer *is,
 						 CamelIMAPXMailbox *mailbox);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_server_get_type	(void);

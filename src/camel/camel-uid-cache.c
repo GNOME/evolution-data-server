@@ -38,7 +38,7 @@ struct _uid_state {
 };
 
 /**
- * camel_uid_cache_new:
+ * camel_uid_cache_new: (skip)
  * @filename: path to load the cache from
  *
  * Creates a new UID cache, initialized from @filename. If @filename

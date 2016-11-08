@@ -54,6 +54,9 @@ struct _CamelMhStore {
 
 struct _CamelMhStoreClass {
 	CamelLocalStoreClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mh_store_get_type		(void);

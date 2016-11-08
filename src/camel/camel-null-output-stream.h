@@ -56,6 +56,9 @@ struct _CamelNullOutputStream {
 
 struct _CamelNullOutputStreamClass {
 	GOutputStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_null_output_stream_get_type

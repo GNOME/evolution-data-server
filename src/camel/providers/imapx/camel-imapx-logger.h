@@ -60,6 +60,9 @@ struct _CamelIMAPXLogger {
 
 struct _CamelIMAPXLoggerClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_logger_get_type	(void) G_GNUC_CONST;

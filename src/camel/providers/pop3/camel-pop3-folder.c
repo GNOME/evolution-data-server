@@ -90,10 +90,12 @@ cmd_builduid (CamelPOP3Engine *pe,
 {
 	GChecksum *checksum;
 	CamelPOP3FolderInfo *fi = data;
-	struct _camel_header_raw *h;
+	CamelNameValueArray *h;
 	CamelMimeParser *mp;
 	guint8 *digest;
 	gsize length;
+	guint ii;
+	const gchar *header_name = NULL, *header_value = NULL;
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -109,15 +111,16 @@ cmd_builduid (CamelPOP3Engine *pe,
 	case CAMEL_MIME_PARSER_STATE_HEADER:
 	case CAMEL_MIME_PARSER_STATE_MESSAGE:
 	case CAMEL_MIME_PARSER_STATE_MULTIPART:
-		h = camel_mime_parser_headers_raw (mp);
-		while (h) {
-			if (g_ascii_strcasecmp (h->name, "status") != 0
-			    && g_ascii_strcasecmp (h->name, "x-status") != 0) {
-				g_checksum_update (checksum, (guchar *) h->name, -1);
-				g_checksum_update (checksum, (guchar *) h->value, -1);
+		h = camel_mime_parser_dup_headers (mp);
+		for (ii = 0; camel_name_value_array_get (h, ii, &header_name, &header_value); ii++) {
+			if (g_ascii_strcasecmp (header_name, "status") != 0
+			    && g_ascii_strcasecmp (header_name, "x-status") != 0) {
+				g_checksum_update (checksum, (guchar *) header_name, -1);
+				g_checksum_update (checksum, (guchar *) header_value, -1);
 			}
-			h = h->next;
 		}
+
+		camel_name_value_array_free (h);
 	default:
 		break;
 	}
@@ -372,8 +375,8 @@ pop3_folder_get_filename (CamelFolder *folder,
 static gboolean
 pop3_folder_set_message_flags (CamelFolder *folder,
                                const gchar *uid,
-                               CamelMessageFlags flags,
-                               CamelMessageFlags set)
+                               guint32 flags,
+                               guint32 set)
 {
 	CamelPOP3Folder *pop3_folder = CAMEL_POP3_FOLDER (folder);
 	CamelPOP3FolderInfo *fi;
@@ -1005,8 +1008,10 @@ pop3_get_message_time_from_cache (CamelFolder *folder,
 		}
 
 		if (message) {
+			gint date_offset = 0;
+
 			res = TRUE;
-			*message_time = message->date + message->date_offset;
+			*message_time = camel_mime_message_get_date (message, &date_offset) + date_offset;
 
 			g_object_unref (message);
 		}
@@ -1092,7 +1097,8 @@ camel_pop3_folder_delete_old (CamelFolder *folder,
 			message = pop3_folder_get_message_internal_sync (
 				folder, fi->uid, TRUE, cancellable, error);
 			if (message) {
-				message_time = message->date + message->date_offset;
+				gint date_offset = 0;
+				message_time = camel_mime_message_get_date (message, &date_offset) + date_offset;
 				g_object_unref (message);
 			}
 		}

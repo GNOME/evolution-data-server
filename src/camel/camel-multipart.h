@@ -73,6 +73,9 @@ struct _CamelMultipartClass {
 	gint		(*construct_from_parser)
 						(CamelMultipart *multipart,
 						 CamelMimeParser *parser);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_multipart_get_type	(void) G_GNUC_CONST;

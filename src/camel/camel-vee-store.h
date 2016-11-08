@@ -60,6 +60,9 @@ struct _CamelVeeStore {
 
 struct _CamelVeeStoreClass {
 	CamelStoreClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType			camel_vee_store_get_type			(void);

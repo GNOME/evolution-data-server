@@ -25,6 +25,7 @@
 #define CAMEL_VEE_SUMMARY_H
 
 #include <camel/camel-folder-summary.h>
+#include <camel/camel-vee-message-info.h>
 
 /* Standard GObject macros */
 #define CAMEL_TYPE_VEE_SUMMARY \
@@ -55,28 +56,24 @@ typedef struct _CamelVeeSummary CamelVeeSummary;
 typedef struct _CamelVeeSummaryClass CamelVeeSummaryClass;
 typedef struct _CamelVeeSummaryPrivate CamelVeeSummaryPrivate;
 
-typedef struct _CamelVeeMessageInfo CamelVeeMessageInfo;
-
-struct _CamelVeeMessageInfo {
-	CamelMessageInfoBase info;
-	CamelFolderSummary *orig_summary;
-};
-
 struct _CamelVeeSummary {
-	CamelFolderSummary summary;
+	CamelFolderSummary parent;
 
 	CamelVeeSummaryPrivate *priv;
 };
 
 struct _CamelVeeSummaryClass {
 	CamelFolderSummaryClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_vee_summary_get_type	(void);
 CamelFolderSummary *
-		camel_vee_summary_new		(struct _CamelFolder *parent);
+		camel_vee_summary_new		(CamelFolder *parent);
 CamelVeeMessageInfo *
-		camel_vee_summary_add		(CamelVeeSummary *s,
+		camel_vee_summary_add		(CamelVeeSummary *summary,
 						 struct _CamelVeeMessageInfoData *mi_data);
 void		camel_vee_summary_remove	(CamelVeeSummary *summary,
 						 const gchar *vuid,

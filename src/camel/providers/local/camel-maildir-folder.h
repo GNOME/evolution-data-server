@@ -52,6 +52,9 @@ struct _CamelMaildirFolder {
 
 struct _CamelMaildirFolderClass {
 	CamelLocalFolderClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_maildir_folder_get_type	(void);

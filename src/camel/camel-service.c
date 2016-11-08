@@ -35,8 +35,8 @@
 #include "camel-network-service.h"
 #include "camel-network-settings.h"
 #include "camel-operation.h"
-#include "camel-service.h"
 #include "camel-session.h"
+#include "camel-service.h"
 
 #define d(x)
 #define w(x)
@@ -121,6 +121,7 @@ static void	service_task_dispatch		(CamelService *service,
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (
 	CamelService, camel_service, CAMEL_TYPE_OBJECT,
 	G_IMPLEMENT_INTERFACE (G_TYPE_INITABLE, camel_service_initable_init))
+G_DEFINE_BOXED_TYPE (CamelServiceAuthType, camel_service_auth_type, camel_service_auth_type_copy, camel_service_auth_type_free);
 
 static void
 async_context_free (AsyncContext *async_context)
@@ -1560,14 +1561,14 @@ camel_service_set_proxy_resolver (CamelService *service,
 
 /**
  * camel_service_ref_session:
- * @service: (type CamelService): a #CamelService
+ * @service: a #CamelService
  *
  * Returns the #CamelSession associated with the service.
  *
  * The returned #CamelSession is referenced for thread-safety.  Unreference
  * the #CamelSession with g_object_unref() when finished with it.
  *
- * Returns: (transfer full): the #CamelSession
+ * Returns: (transfer full) (type CamelSession): the #CamelSession
  *
  * Since: 3.8
  **/
@@ -2378,3 +2379,39 @@ camel_service_query_auth_types_finish (CamelService *service,
 	return g_task_propagate_pointer (G_TASK (result), error);
 }
 
+/**
+ * camel_service_auth_type_copy:
+ * @service_auth_type: an #CamelServiceAuthType
+ *
+ * Copies the @service_auth_type struct.
+ * Does nothing and returns the given object in reality, needed for the introspection.
+ *
+ * Returns: (transfer full): the copy of @service_auth_type
+ *
+ * Since: 3.24
+ **/
+CamelServiceAuthType *
+camel_service_auth_type_copy (const CamelServiceAuthType *service_auth_type)
+{
+	/* This is needed for the introspection.
+	 * In the reality, each CamelSasl subclass has a static reference of it.
+	 */
+	return (CamelServiceAuthType *) service_auth_type;
+}
+
+/**
+ * camel_service_auth_type_free:
+ * @service_auth_type: an #CamelServiceAuthType
+ *
+ * Frees the @service_auth_type struct.
+ * Does nothing in reality, needed for the introspection.
+ *
+ * Since: 3.24
+ **/
+void
+camel_service_auth_type_free (CamelServiceAuthType *service_auth_type)
+{
+	/* This is needed for the introspection.
+	 * In the reality, each CamelSasl subclass has a static reference of it.
+	 */
+}

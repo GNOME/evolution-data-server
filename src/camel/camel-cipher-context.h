@@ -182,8 +182,8 @@ struct _CamelCipherContextClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Reserved slots. */
-	gpointer reserved[8];
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_cipher_context_get_type	(void);

@@ -24,6 +24,10 @@
 
 #include "camel-stream-null.h"
 
+struct _CamelStreamNullPrivate {
+	gsize written;
+};
+
 static void camel_stream_null_seekable_init (GSeekableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (CamelStreamNull, camel_stream_null, CAMEL_TYPE_STREAM,
@@ -36,7 +40,7 @@ stream_null_write (CamelStream *stream,
                    GCancellable *cancellable,
                    GError **error)
 {
-	CAMEL_STREAM_NULL (stream)->written += n;
+	CAMEL_STREAM_NULL (stream)->priv->written += n;
 
 	return n;
 }
@@ -73,7 +77,7 @@ stream_null_seek (GSeekable *seekable,
 		return FALSE;
 	}
 
-	CAMEL_STREAM_NULL (seekable)->written = 0;
+	CAMEL_STREAM_NULL (seekable)->priv->written = 0;
 
 	return TRUE;
 }
@@ -103,6 +107,8 @@ camel_stream_null_class_init (CamelStreamNullClass *class)
 {
 	CamelStreamClass *stream_class;
 
+	g_type_class_add_private (class, sizeof (CamelStreamNullPrivate));
+
 	stream_class = CAMEL_STREAM_CLASS (class);
 	stream_class->write = stream_null_write;
 	stream_class->eos = stream_null_eos;
@@ -121,6 +127,7 @@ camel_stream_null_seekable_init (GSeekableIface *iface)
 static void
 camel_stream_null_init (CamelStreamNull *stream_null)
 {
+	stream_null->priv = G_TYPE_INSTANCE_GET_PRIVATE (stream_null, CAMEL_TYPE_STREAM_NULL, CamelStreamNullPrivate);
 }
 
 /**
@@ -129,10 +136,27 @@ camel_stream_null_init (CamelStreamNull *stream_null)
  * Returns a null stream.  A null stream is always at eof, and
  * always returns success for all reads and writes.
  *
- * Returns: a new #CamelStreamNull
+ * Returns: (transfer full): a new #CamelStreamNull
  **/
 CamelStream *
 camel_stream_null_new (void)
 {
 	return g_object_new (CAMEL_TYPE_STREAM_NULL, NULL);
+}
+
+/**
+ * camel_stream_null_get_bytes_written:
+ * @stream_null: a #CamelStreamNull
+ *
+ * Returns: how many bytes had been written to the @stream_null since
+ *   it was created or rewind to the beginning.
+ *
+ * Since: 3.24
+ **/
+gsize
+camel_stream_null_get_bytes_written (CamelStreamNull *stream_null)
+{
+	g_return_val_if_fail (CAMEL_IS_STREAM_NULL (stream_null), -1);
+
+	return stream_null->priv->written;
 }

@@ -72,6 +72,9 @@ struct _CamelIMAPXStoreClass {
 						 const gchar *oldname);
 	void		(*mailbox_updated)	(CamelIMAPXStore *imapx_store,
 						 CamelIMAPXMailbox *mailbox);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_store_get_type	(void);

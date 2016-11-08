@@ -69,6 +69,9 @@ struct _CamelPOP3Folder {
 
 struct _CamelPOP3FolderClass {
 	CamelFolderClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_pop3_folder_get_type	(void);

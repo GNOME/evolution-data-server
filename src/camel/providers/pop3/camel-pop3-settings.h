@@ -52,6 +52,9 @@ struct _CamelPOP3Settings {
 
 struct _CamelPOP3SettingsClass {
 	CamelStoreSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_pop3_settings_get_type	(void) G_GNUC_CONST;

@@ -65,6 +65,9 @@ struct _CamelMimeFilterProgress {
 
 struct _CamelMimeFilterProgressClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_progress_get_type (void);

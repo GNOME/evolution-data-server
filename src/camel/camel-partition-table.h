@@ -103,19 +103,13 @@ struct _CamelPartitionMapBlock {
 struct _CamelPartitionTable {
 	GObject parent;
 	CamelPartitionTablePrivate *priv;
-
-	CamelBlockFile *blocks;
-	camel_block_t rootid;
-
-	gint (*is_key)(CamelPartitionTable *cpi, const gchar *key, camel_key_t keyid, gpointer data);
-	gpointer is_key_data;
-
-	/* we keep a list of partition blocks active at all times */
-	GQueue partition;
 };
 
 struct _CamelPartitionTableClass {
 	GObjectClass parent;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_partition_table_get_type	(void);
@@ -168,17 +162,13 @@ struct _CamelKeyBlock {
 struct _CamelKeyTable {
 	GObject parent;
 	CamelKeyTablePrivate *priv;
-
-	CamelBlockFile *blocks;
-
-	camel_block_t rootid;
-
-	CamelKeyRootBlock *root;
-	CamelBlock *root_block;
 };
 
 struct _CamelKeyTableClass {
 	GObjectClass parent;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_key_table_get_type	(void);

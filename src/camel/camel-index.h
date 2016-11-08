@@ -94,7 +94,7 @@ typedef struct _CamelIndexCursor CamelIndexCursor;
 typedef struct _CamelIndexCursorClass CamelIndexCursorClass;
 typedef struct _CamelIndexCursorPrivate CamelIndexCursorPrivate;
 
-typedef gchar * (*CamelIndexNorm)(CamelIndex *index, const gchar *word, gpointer data);
+typedef gchar * (*CamelIndexNorm)(CamelIndex *index, const gchar *word, gpointer user_data);
 
 /* ********************************************************************** */
 
@@ -109,6 +109,9 @@ struct _CamelIndexCursorClass {
 	GObjectClass parent;
 
 	const gchar * (*next) (CamelIndexCursor *idc);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType           camel_index_cursor_get_type (void);

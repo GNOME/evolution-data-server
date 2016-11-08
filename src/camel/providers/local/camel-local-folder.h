@@ -89,6 +89,9 @@ struct _CamelLocalFolderClass {
 
 	/* Unlock the folder for my operations */
 	void		(*unlock)		(CamelLocalFolder *);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_local_folder_get_type	(void);

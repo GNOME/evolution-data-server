@@ -52,6 +52,9 @@ struct _CamelMhSettings {
 
 struct _CamelMhSettingsClass {
 	CamelLocalSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mh_settings_get_type	(void) G_GNUC_CONST;

@@ -54,14 +54,13 @@ typedef struct _CamelAddressPrivate CamelAddressPrivate;
 struct _CamelAddress {
 	GObject parent;
 
-	GPtrArray *addresses;
-
 	CamelAddressPrivate *priv;
 };
 
 struct _CamelAddressClass {
 	GObjectClass parent_class;
 
+	gint		(*length)		(CamelAddress *addr);
 	gint		(*decode)		(CamelAddress *addr,
 						 const gchar *raw);
 	gchar *		(*encode)		(CamelAddress *addr);
@@ -72,6 +71,9 @@ struct _CamelAddressClass {
 						 CamelAddress *source);
 	void		(*remove)		(CamelAddress *addr,
 						 gint index);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_address_get_type		(void);

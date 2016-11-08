@@ -58,6 +58,9 @@ struct _CamelNNTPFolder {
 
 struct _CamelNNTPFolderClass {
 	CamelOfflineFolderClass parent;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_folder_get_type	(void);

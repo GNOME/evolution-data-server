@@ -81,6 +81,9 @@ struct _CamelNNTPStore {
 
 struct _CamelNNTPStoreClass {
 	CamelOfflineStoreClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_store_get_type	(void);

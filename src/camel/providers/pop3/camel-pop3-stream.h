@@ -68,6 +68,9 @@ struct _CamelPOP3Stream {
 
 struct _CamelPOP3StreamClass {
 	CamelStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_pop3_stream_get_type	(void);

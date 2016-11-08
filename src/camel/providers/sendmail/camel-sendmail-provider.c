@@ -52,8 +52,8 @@ camel_provider_module_init (void)
 	sendmail_provider.object_types[CAMEL_PROVIDER_TRANSPORT] =
 		CAMEL_TYPE_SENDMAIL_TRANSPORT;
 
-	sendmail_provider.url_hash = camel_url_hash;
-	sendmail_provider.url_equal = camel_url_equal;
+	sendmail_provider.url_hash = (GHashFunc) camel_url_hash;
+	sendmail_provider.url_equal = (GEqualFunc) camel_url_equal;
 	sendmail_provider.translation_domain = GETTEXT_PACKAGE;
 
 	camel_provider_register (&sendmail_provider);

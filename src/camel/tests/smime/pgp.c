@@ -49,7 +49,6 @@ G_DEFINE_TYPE (CamelPgpSession, camel_pgp_session, camel_test_session_get_type (
 static gchar *
 pgp_session_get_password (CamelSession *session,
                           CamelService *service,
-                          const gchar *domain,
                           const gchar *prompt,
                           const gchar *item,
                           guint32 flags,

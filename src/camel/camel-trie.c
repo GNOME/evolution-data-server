@@ -101,7 +101,7 @@ trie_utf8_getc (const guchar **in,
 }
 
 /**
- * camel_trie_new:
+ * camel_trie_new: (skip)
  * @icase: Case sensitivity for the #CamelTrie.
  *
  * Creates a new #CamelTrie. If @icase is %TRUE, then pattern matching
@@ -132,7 +132,7 @@ camel_trie_new (gboolean icase)
 }
 
 /**
- * camel_trie_free:
+ * camel_trie_free: (skip)
  * @trie: The #CamelTrie to free.
  *
  * Frees the memory associated with the #CamelTrie @trie.
@@ -232,7 +232,7 @@ dump_trie (struct _trie_state *s,
 */
 
 /**
- * camel_trie_add:
+ * camel_trie_add: (skip)
  * @trie: The #CamelTrie to add a pattern to.
  * @pattern: The pattern to add.
  * @pattern_id: The id to use for the pattern.
@@ -329,15 +329,15 @@ camel_trie_add (CamelTrie *trie,
  */
 
 /**
- * camel_trie_search:
+ * camel_trie_search: (skip)
  * @trie: The #CamelTrie to search in.
- * @buffer: The string to match against a pattern in @trie.
+ * @buffer: (array length=buflen) (type gchar): The string to match against a pattern in @trie.
  * @buflen: The length of @buffer.
- * @matched_id: An integer address to store the matched pattern id in.
+ * @matched_id: (out): An integer address to store the matched pattern id in.
  *
  * Try to match the string @buffer with a pattern in @trie.
  *
- * Returns: The matched pattern, or %NULL if no pattern is matched.
+ * Returns: (nullable): The matched pattern, or %NULL if no pattern is matched.
  *
  * Since: 2.24
  **/

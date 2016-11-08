@@ -64,6 +64,9 @@ struct _CamelStoreSettings {
 
 struct _CamelStoreSettingsClass {
 	CamelSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_store_settings_get_type	(void) G_GNUC_CONST;

@@ -441,7 +441,7 @@ fill_fi (CamelStore *store,
 {
 	CamelFolder *folder;
 
-	folder = camel_object_bag_peek (store->folders, fi->full_name);
+	folder = camel_object_bag_peek (camel_store_get_folders_bag (store), fi->full_name);
 	if (folder) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_FAST) == 0)
 			camel_folder_refresh_info_sync (folder, cancellable, NULL);
@@ -476,7 +476,7 @@ fill_fi (CamelStore *store,
 		g_free (root);
 
 		s = (CamelFolderSummary *) camel_maildir_summary_new (NULL, folderpath, NULL);
-		if (camel_folder_summary_header_load_from_db (s, store, fi->full_name, NULL)) {
+		if (camel_folder_summary_header_load (s, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (s);
 			fi->total = camel_folder_summary_get_saved_count (s);
 		}

@@ -80,8 +80,7 @@ test_case (const gchar *basename)
 	}
 	g_free (filename);
 
-	filename = g_strdup_printf (
-		"%s/%.*s.out", SOURCEDIR, ext - basename, basename);
+	filename = g_strdup_printf ("%s/%.*s.out", SOURCEDIR, (gint) (ext - basename), basename);
 
 	file = g_file_new_for_path (filename);
 	correct_stream = g_file_read (file, NULL, &local_error);

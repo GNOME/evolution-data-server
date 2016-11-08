@@ -57,8 +57,6 @@ typedef struct _CamelVeeFolderPrivate CamelVeeFolderPrivate;
 struct _CamelVeeFolder {
 	CamelFolder parent;
 	CamelVeeFolderPrivate *priv;
-
-	guint32 flags;		/* folder open flags */
 };
 
 struct _CamelVeeFolderClass {
@@ -83,6 +81,9 @@ struct _CamelVeeFolderClass {
 	void		(*folder_changed)	(CamelVeeFolder *vfolder,
 						 CamelFolder *subfolder,
 						 CamelFolderChangeInfo *changes);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 #define CAMEL_UNMATCHED_NAME "UNMATCHED"
@@ -93,9 +94,9 @@ CamelFolder *	camel_vee_folder_new			(CamelStore *parent_store,
 							 guint32 flags);
 void		camel_vee_folder_construct		(CamelVeeFolder *vf,
 							 guint32 flags);
-
+guint32		camel_vee_folder_get_flags		(CamelVeeFolder *vf);
 CamelFolder *	camel_vee_folder_get_location		(CamelVeeFolder *vf,
-							 const struct _CamelVeeMessageInfo *vinfo,
+							 const CamelVeeMessageInfo *vinfo,
 							 gchar **realuid);
 CamelFolder *	camel_vee_folder_get_vee_uid_folder	(CamelVeeFolder *vf,
 							 const gchar *vee_message_uid);

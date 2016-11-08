@@ -400,7 +400,7 @@ camel_stream_buffer_new (CamelStream *stream,
 /**
  * camel_stream_buffer_gets:
  * @sbf: a #CamelStreamBuffer object
- * @buf: (out) (array): Memory to write the string to.
+ * @buf: (array length=max) (type gchar): Memory to write the string to.
  * @max: Maxmimum number of characters to store.
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

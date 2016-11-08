@@ -19,6 +19,7 @@
 #ifndef CAMEL_MAILDIR_SUMMARY_H
 #define CAMEL_MAILDIR_SUMMARY_H
 
+#include "camel-maildir-message-info.h"
 #include "camel-local-summary.h"
 
 /* Standard GObject macros */
@@ -54,12 +55,6 @@ typedef struct _CamelMaildirSummary CamelMaildirSummary;
 typedef struct _CamelMaildirSummaryClass CamelMaildirSummaryClass;
 typedef struct _CamelMaildirSummaryPrivate CamelMaildirSummaryPrivate;
 
-typedef struct _CamelMaildirMessageInfo {
-	CamelLocalMessageInfo info;
-
-	gchar *filename;		/* maildir has this annoying status on the end of the filename, use this to get the real message id */
-} CamelMaildirMessageInfo;
-
 struct _CamelMaildirSummary {
 	CamelLocalSummary parent;
 	CamelMaildirSummaryPrivate *priv;
@@ -67,18 +62,17 @@ struct _CamelMaildirSummary {
 
 struct _CamelMaildirSummaryClass {
 	CamelLocalSummaryClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType	 camel_maildir_summary_get_type	(void);
 CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, const gchar *maildirdir, CamelIndex *index);
 
 /* convert some info->flags to/from the messageinfo */
-gchar *camel_maildir_summary_info_to_name (const CamelMaildirMessageInfo *info);
-gint camel_maildir_summary_name_to_info (CamelMaildirMessageInfo *info, const gchar *name);
-
-/* TODO: could proably use get_string stuff */
-#define camel_maildir_info_filename(x) (((CamelMaildirMessageInfo *)x)->filename)
-#define camel_maildir_info_set_filename(x, s) (g_free(((CamelMaildirMessageInfo *)x)->filename),((CamelMaildirMessageInfo *)x)->filename = s)
+gchar *camel_maildir_summary_info_to_name (const CamelMessageInfo *info);
+gboolean camel_maildir_summary_name_to_info (CamelMessageInfo *info, const gchar *name);
 
 G_END_DECLS
 

@@ -56,17 +56,6 @@ typedef struct _CamelFolderSearchPrivate CamelFolderSearchPrivate;
 struct _CamelFolderSearch {
 	GObject parent;
 	CamelFolderSearchPrivate *priv;
-
-	CamelSExp *sexp;		/* s-exp evaluator */
-	gchar *last_search;	/* last searched expression */
-
-	/* these are only valid during the search, and are reset afterwards */
-	CamelFolder *folder;	/* folder for current search */
-	GPtrArray *summary;	/* summary array for current search */
-	GPtrArray *summary_set;	/* subset of summary to actually include in search */
-	CamelMessageInfo *current; /* current message info, when searching one by one */
-	CamelMimeMessage *current_message; /* cache of current message, if required */
-	CamelIndex *body_index;
 };
 
 struct _CamelFolderSearchClass {
@@ -263,18 +252,36 @@ struct _CamelFolderSearchClass {
 						 gint argc,
 						 CamelSExpResult **argv,
 						 CamelFolderSearch *search);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_folder_search_get_type	(void) G_GNUC_CONST;
 CamelFolderSearch *
 		camel_folder_search_new		(void);
+void		camel_folder_search_set_current_message_info
+						(CamelFolderSearch *search,
+						 CamelMessageInfo *info);
+void		camel_folder_search_take_current_message_info
+						(CamelFolderSearch *search,
+						 CamelMessageInfo *info);
+CamelMessageInfo *
+		camel_folder_search_get_current_message_info
+						(CamelFolderSearch *search);
+GPtrArray *	camel_folder_search_get_current_summary
+						(CamelFolderSearch *search);
 
 /* XXX This stuff currently gets cleared when you run a search.
  *     What on earth was i thinking ... */
 void		camel_folder_search_set_folder	(CamelFolderSearch *search,
 						 CamelFolder *folder);
+CamelFolder *	camel_folder_search_get_folder	(CamelFolderSearch *search);
 void		camel_folder_search_set_summary	(CamelFolderSearch *search,
 						 GPtrArray *summary);
+GPtrArray *	camel_folder_search_get_summary	(CamelFolderSearch *search);
+gboolean	camel_folder_search_get_summary_empty
+						(CamelFolderSearch *search);
 void		camel_folder_search_set_body_index
 						(CamelFolderSearch *search,
 						 CamelIndex *body_index);
@@ -295,10 +302,6 @@ void		camel_folder_search_free_result	(CamelFolderSearch *search,
 time_t		camel_folder_search_util_add_months
 						(time_t t,
 						 gint months);
-
-#ifndef CAMEL_DISABLE_DEPRECATED
-void		camel_folder_search_construct	(CamelFolderSearch *search);
-#endif /* CAMEL_DISABLE_DEPRECATED */
 
 G_END_DECLS
 

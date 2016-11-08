@@ -59,7 +59,7 @@ struct _CamelAsyncClosure {
 };
 
 /**
- * camel_async_closure_new:
+ * camel_async_closure_new: (skip)
  *
  * Creates a new #CamelAsyncClosure for use with asynchronous functions.
  *
@@ -96,7 +96,7 @@ camel_async_closure_unlock_mutex_cb (gpointer user_data)
 }
 
 /**
- * camel_async_closure_wait:
+ * camel_async_closure_wait: (skip)
  * @closure: a #CamelAsyncClosure
  *
  * Call this function immediately after starting an asynchronous operation.
@@ -136,7 +136,7 @@ camel_async_closure_wait (CamelAsyncClosure *closure)
 }
 
 /**
- * camel_async_closure_free:
+ * camel_async_closure_free: (skip)
  * @closure: a #CamelAsyncClosure
  *
  * Frees the @closure and the resources it holds.
@@ -162,7 +162,7 @@ camel_async_closure_free (CamelAsyncClosure *closure)
 }
 
 /**
- * camel_async_closure_callback:
+ * camel_async_closure_callback: (skip)
  * @source_object: a #GObject or %NULL
  * @result: a #GAsyncResult
  * @closure: a #CamelAsyncClosure

@@ -78,7 +78,7 @@ main (gint argc,
 	for (i = 0; i < G_N_ELEMENTS (split_tests); i++) {
 		camel_test_push ("split %d '%s'", i, split_tests[i].word);
 
-		words = camel_search_words_split (split_tests[i].word);
+		words = camel_search_words_split ((const guchar *) split_tests[i].word);
 		check (words != NULL);
 		check_msg (words->len == split_tests[i].count, "words->len = %d, count = %d", words->len, split_tests[i].count);
 
@@ -100,7 +100,7 @@ main (gint argc,
 	for (i = 0; i < G_N_ELEMENTS (simple_tests); i++) {
 		camel_test_push ("simple split %d '%s'", i, simple_tests[i].word);
 
-		tmp = camel_search_words_split (simple_tests[i].word);
+		tmp = camel_search_words_split ((const guchar *) simple_tests[i].word);
 		check (tmp != NULL);
 
 		words = camel_search_words_simple (tmp);

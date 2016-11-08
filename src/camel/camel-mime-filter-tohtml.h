@@ -59,6 +59,9 @@ struct _CamelMimeFilterToHTML {
 
 struct _CamelMimeFilterToHTMLClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_tohtml_get_type (void);

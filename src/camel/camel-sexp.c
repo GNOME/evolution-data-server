@@ -91,6 +91,21 @@
 #define r(x)			/* run debug */
 #define d(x)			/* general debug */
 
+struct _CamelSExpPrivate {
+	GScanner *scanner;	/* for parsing text version */
+	CamelSExpTerm *tree;	/* root of expression tree */
+
+	/* private stuff */
+	jmp_buf failenv;
+	gchar *error;
+	GSList *operators;
+
+	/* TODO: may also need a pool allocator for term strings,
+	 *       so we dont lose them in error conditions? */
+	CamelMemChunk *term_chunks;
+	CamelMemChunk *result_chunks;
+};
+
 G_DEFINE_TYPE (CamelSExp, camel_sexp, G_TYPE_OBJECT)
 
 static CamelSExpTerm * parse_list (CamelSExp *sexp, gint gotbrace);
@@ -159,17 +174,17 @@ camel_sexp_fatal_error (CamelSExp *sexp,
 {
 	va_list args;
 
-	/* jumps back to the caller of sexp->failenv,
+	/* jumps back to the caller of sexp->priv->failenv,
 	 * only to be called from inside a callback */
 
-	if (sexp->error)
-		g_free (sexp->error);
+	if (sexp->priv->error)
+		g_free (sexp->priv->error);
 
 	va_start (args, why);
-	sexp->error = g_strdup_vprintf (why, args);
+	sexp->priv->error = g_strdup_vprintf (why, args);
 	va_end (args);
 
-	longjmp (sexp->failenv, 1);
+	longjmp (sexp->priv->failenv, 1);
 }
 
 /**
@@ -180,11 +195,11 @@ camel_sexp_fatal_error (CamelSExp *sexp,
 const gchar *
 camel_sexp_error (CamelSExp *sexp)
 {
-	return sexp->error;
+	return sexp->priv->error;
 }
 
 /**
- * camel_sexp_result_new:
+ * camel_sexp_result_new: (skip)
  *
  * Since: 3.4
  **/
@@ -194,7 +209,7 @@ camel_sexp_result_new (CamelSExp *sexp,
 {
 	CamelSExpResult *result;
 
-	result = camel_memchunk_alloc0 (sexp->result_chunks);
+	result = camel_memchunk_alloc0 (sexp->priv->result_chunks);
 	result->type = type;
 	result->occuring_start = 0;
 	result->occuring_end = _TIME_MAX;
@@ -231,7 +246,7 @@ camel_sexp_result_free (CamelSExp *sexp,
 	default:
 		g_return_if_reached ();
 	}
-	camel_memchunk_free (sexp->result_chunks, term);
+	camel_memchunk_free (sexp->priv->result_chunks, term);
 }
 
 /**
@@ -301,7 +316,7 @@ term_eval_and (CamelSExp *sexp,
 	result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_UNDEFINED);
 
 	oper = "AND";
-	sexp->operators = g_slist_prepend (sexp->operators, (gpointer) oper);
+	sexp->priv->operators = g_slist_prepend (sexp->priv->operators, (gpointer) oper);
 
 	for (i = 0; bool && i < argc; i++) {
 		r1 = camel_sexp_term_eval (sexp, argv[i]);
@@ -343,7 +358,7 @@ term_eval_and (CamelSExp *sexp,
 	}
 
 	g_hash_table_destroy (ht);
-	sexp->operators = g_slist_remove (sexp->operators, oper);
+	sexp->priv->operators = g_slist_remove (sexp->priv->operators, oper);
 
 	return result;
 }
@@ -365,7 +380,7 @@ term_eval_or (CamelSExp *sexp,
 	r (printf ("(or \n"));
 
 	oper = "OR";
-	sexp->operators = g_slist_prepend (sexp->operators, (gpointer) oper);
+	sexp->priv->operators = g_slist_prepend (sexp->priv->operators, (gpointer) oper);
 
 	result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_UNDEFINED);
 
@@ -405,7 +420,7 @@ term_eval_or (CamelSExp *sexp,
 	}
 	g_hash_table_destroy (ht);
 
-	sexp->operators = g_slist_remove (sexp->operators, oper);
+	sexp->priv->operators = g_slist_remove (sexp->priv->operators, oper);
 	return result;
 }
 
@@ -753,7 +768,7 @@ term_eval_begin (CamelSExp *sexp,
 }
 
 /**
- * camel_sexp_term_eval:
+ * camel_sexp_term_eval: (skip)
  *
  * Since: 3.4
  **/
@@ -1195,7 +1210,7 @@ parse_term_new (CamelSExp *sexp,
 {
 	CamelSExpTerm *term;
 
-	term = camel_memchunk_alloc0 (sexp->term_chunks);
+	term = camel_memchunk_alloc0 (sexp->priv->term_chunks);
 	term->type = type;
 
 	return term;
@@ -1233,7 +1248,7 @@ parse_term_free (CamelSExp *sexp,
 	default:
 		printf ("parse_term_free: unknown type: %d\n", term->type);
 	}
-	camel_memchunk_free (sexp->term_chunks, term);
+	camel_memchunk_free (sexp->priv->term_chunks, term);
 }
 
 static CamelSExpTerm **
@@ -1243,7 +1258,7 @@ parse_values (CamelSExp *sexp,
 	gint token;
 	CamelSExpTerm **terms;
 	gint i, size = 0;
-	GScanner *gs = sexp->scanner;
+	GScanner *gs = sexp->priv->scanner;
 	GSList *list = NULL, *l;
 
 	p (printf ("parsing values\n"));
@@ -1273,7 +1288,7 @@ parse_values (CamelSExp *sexp,
 }
 
 /**
- * camel_sexp_parse_value:
+ * camel_sexp_parse_value: (skip)
  *
  * Since: 3.4
  **/
@@ -1288,7 +1303,7 @@ parse_value (CamelSExp *sexp)
 {
 	gint token, negative = FALSE;
 	CamelSExpTerm *term = NULL;
-	GScanner *gs = sexp->scanner;
+	GScanner *gs = sexp->priv->scanner;
 	CamelSExpSymbol *sym;
 
 	p (printf ("parsing value\n"));
@@ -1382,7 +1397,7 @@ parse_list (CamelSExp *sexp,
 {
 	gint token;
 	CamelSExpTerm *term = NULL;
-	GScanner *gs = sexp->scanner;
+	GScanner *gs = sexp->priv->scanner;
 
 	p (printf ("parsing list\n"));
 	if (gotbrace)
@@ -1449,19 +1464,19 @@ camel_sexp_finalize (GObject *object)
 {
 	CamelSExp *sexp = (CamelSExp *) object;
 
-	if (sexp->tree) {
-		parse_term_free (sexp, sexp->tree);
-		sexp->tree = NULL;
+	if (sexp->priv->tree) {
+		parse_term_free (sexp, sexp->priv->tree);
+		sexp->priv->tree = NULL;
 	}
 
-	camel_memchunk_destroy (sexp->term_chunks);
-	camel_memchunk_destroy (sexp->result_chunks);
+	camel_memchunk_destroy (sexp->priv->term_chunks);
+	camel_memchunk_destroy (sexp->priv->result_chunks);
 
-	g_scanner_scope_foreach_symbol (sexp->scanner, 0, free_symbol, NULL);
-	g_scanner_destroy (sexp->scanner);
+	g_scanner_scope_foreach_symbol (sexp->priv->scanner, 0, free_symbol, NULL);
+	g_scanner_destroy (sexp->priv->scanner);
 
-	g_free (sexp->error);
-	sexp->error = NULL;
+	g_free (sexp->priv->error);
+	sexp->priv->error = NULL;
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_sexp_parent_class)->finalize (object);
@@ -1471,6 +1486,8 @@ static void
 camel_sexp_class_init (CamelSExpClass *class)
 {
 	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelSExpPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = camel_sexp_finalize;
@@ -1503,9 +1520,11 @@ camel_sexp_init (CamelSExp *sexp)
 {
 	gint i;
 
-	sexp->scanner = g_scanner_new (&scanner_config);
-	sexp->term_chunks = camel_memchunk_new (16, sizeof (CamelSExpTerm));
-	sexp->result_chunks = camel_memchunk_new (16, sizeof (CamelSExpResult));
+	sexp->priv = G_TYPE_INSTANCE_GET_PRIVATE (sexp, CAMEL_TYPE_SEXP, CamelSExpPrivate);
+
+	sexp->priv->scanner = g_scanner_new (&scanner_config);
+	sexp->priv->term_chunks = camel_memchunk_new (16, sizeof (CamelSExpTerm));
+	sexp->priv->result_chunks = camel_memchunk_new (16, sizeof (CamelSExpResult));
 
 	/* load in builtin symbols? */
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
@@ -1560,7 +1579,7 @@ camel_sexp_add_function (CamelSExp *sexp,
 	sym->type = CAMEL_SEXP_TERM_FUNC;
 	sym->data = user_data;
 
-	g_scanner_scope_add_symbol (sexp->scanner, scope, sym->name, sym);
+	g_scanner_scope_add_symbol (sexp->priv->scanner, scope, sym->name, sym);
 }
 
 /**
@@ -1589,7 +1608,7 @@ camel_sexp_add_ifunction (CamelSExp *sexp,
 	sym->type = CAMEL_SEXP_TERM_IFUNC;
 	sym->data = user_data;
 
-	g_scanner_scope_add_symbol (sexp->scanner, scope, sym->name, sym);
+	g_scanner_scope_add_symbol (sexp->priv->scanner, scope, sym->name, sym);
 }
 
 /**
@@ -1613,7 +1632,7 @@ camel_sexp_add_variable (CamelSExp *sexp,
 	sym->type = CAMEL_SEXP_TERM_VAR;
 	sym->data = value;
 
-	g_scanner_scope_add_symbol (sexp->scanner, scope, sym->name, sym);
+	g_scanner_scope_add_symbol (sexp->priv->scanner, scope, sym->name, sym);
 }
 
 /**
@@ -1632,10 +1651,10 @@ camel_sexp_remove_symbol (CamelSExp *sexp,
 	g_return_if_fail (CAMEL_IS_SEXP (sexp));
 	g_return_if_fail (name != NULL);
 
-	oldscope = g_scanner_set_scope (sexp->scanner, scope);
-	sym = g_scanner_lookup_symbol (sexp->scanner, name);
-	g_scanner_scope_remove_symbol (sexp->scanner, scope, name);
-	g_scanner_set_scope (sexp->scanner, oldscope);
+	oldscope = g_scanner_set_scope (sexp->priv->scanner, scope);
+	sym = g_scanner_lookup_symbol (sexp->priv->scanner, name);
+	g_scanner_scope_remove_symbol (sexp->priv->scanner, scope, name);
+	g_scanner_set_scope (sexp->priv->scanner, oldscope);
 	if (sym != NULL) {
 		g_free (sym->name);
 		g_free (sym);
@@ -1653,7 +1672,7 @@ camel_sexp_set_scope (CamelSExp *sexp,
 {
 	g_return_val_if_fail (CAMEL_IS_SEXP (sexp), 0);
 
-	return g_scanner_set_scope (sexp->scanner, scope);
+	return g_scanner_set_scope (sexp->priv->scanner, scope);
 }
 
 /**
@@ -1669,7 +1688,7 @@ camel_sexp_input_text (CamelSExp *sexp,
 	g_return_if_fail (CAMEL_IS_SEXP (sexp));
 	g_return_if_fail (text != NULL);
 
-	g_scanner_input_text (sexp->scanner, text, len);
+	g_scanner_input_text (sexp->priv->scanner, text, len);
 }
 
 /**
@@ -1683,7 +1702,7 @@ camel_sexp_input_file (CamelSExp *sexp,
 {
 	g_return_if_fail (CAMEL_IS_SEXP (sexp));
 
-	g_scanner_input_file (sexp->scanner, fd);
+	g_scanner_input_file (sexp->priv->scanner, fd);
 }
 
 /**
@@ -1696,21 +1715,21 @@ camel_sexp_parse (CamelSExp *sexp)
 {
 	g_return_val_if_fail (CAMEL_IS_SEXP (sexp), -1);
 
-	if (setjmp (sexp->failenv)) {
-		g_warning ("Error in parsing: %s", sexp->error);
+	if (setjmp (sexp->priv->failenv)) {
+		g_warning ("Error in parsing: %s", sexp->priv->error);
 		return -1;
 	}
 
-	if (sexp->tree)
-		parse_term_free (sexp, sexp->tree);
+	if (sexp->priv->tree)
+		parse_term_free (sexp, sexp->priv->tree);
 
-	sexp->tree = parse_value (sexp);
+	sexp->priv->tree = parse_value (sexp);
 
 	return 0;
 }
 
 /**
- * camel_sexp_eval:
+ * camel_sexp_eval: (skip)
  *
  * Since: 3.4
  **/
@@ -1718,14 +1737,14 @@ CamelSExpResult *
 camel_sexp_eval (CamelSExp *sexp)
 {
 	g_return_val_if_fail (CAMEL_IS_SEXP (sexp), NULL);
-	g_return_val_if_fail (sexp->tree != NULL, NULL);
+	g_return_val_if_fail (sexp->priv->tree != NULL, NULL);
 
-	if (setjmp (sexp->failenv)) {
-		g_warning ("Error in execution: %s", sexp->error);
+	if (setjmp (sexp->priv->failenv)) {
+		g_warning ("Error in execution: %s", sexp->priv->error);
 		return NULL;
 	}
 
-	return camel_sexp_term_eval (sexp, sexp->tree);
+	return camel_sexp_term_eval (sexp, sexp->priv->tree);
 }
 
 /**
@@ -1746,19 +1765,19 @@ camel_sexp_evaluate_occur_times (CamelSExp *sexp,
 	CamelSExpResult *result;
 	gboolean generator;
 	g_return_val_if_fail (CAMEL_IS_SEXP (sexp), FALSE);
-	g_return_val_if_fail (sexp->tree != NULL, FALSE);
+	g_return_val_if_fail (sexp->priv->tree != NULL, FALSE);
 	g_return_val_if_fail (start != NULL, FALSE);
 	g_return_val_if_fail (end != NULL, FALSE);
 
 	*start = *end = -1;
 
-	if (setjmp (sexp->failenv)) {
-		g_warning ("Error in execution: %s", sexp->error);
+	if (setjmp (sexp->priv->failenv)) {
+		g_warning ("Error in execution: %s", sexp->priv->error);
 		return FALSE;
 	}
 
 	result = camel_sexp_term_evaluate_occur_times (
-		sexp, sexp->tree, start, end);
+		sexp, sexp->priv->tree, start, end);
 	generator = result->time_generator;
 
 	if (generator) {
@@ -1841,8 +1860,8 @@ main (gint argc,
 	camel_sexp_input_text (sexp, t, t);
 	camel_sexp_parse (sexp);
 
-	if (sexp->tree)
-		parse_dump_term (sexp->tree, 0);
+	if (sexp->priv->tree)
+		parse_dump_term (sexp->priv->tree, 0);
 
 	result = camel_sexp_eval (sexp);
 	if (result) {

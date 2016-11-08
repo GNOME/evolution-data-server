@@ -101,6 +101,9 @@ struct _CamelObjectClass {
 						 FILE *fp);
 	gint		(*state_write)		(CamelObject *object,
 						 FILE *fp);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_object_get_type		(void);

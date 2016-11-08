@@ -59,6 +59,9 @@ struct _CamelGpgContext {
 
 struct _CamelGpgContextClass {
 	CamelCipherContextClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_gpg_context_get_type	(void);

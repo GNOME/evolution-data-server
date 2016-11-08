@@ -53,6 +53,9 @@ struct _CamelMhSummary {
 
 struct _CamelMhSummaryClass {
 	CamelLocalSummaryClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mh_summary_get_type	(void);

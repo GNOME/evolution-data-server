@@ -63,6 +63,9 @@ struct _CamelMimeFilterLinewrap {
 
 struct _CamelMimeFilterLinewrapClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_linewrap_get_type (void);

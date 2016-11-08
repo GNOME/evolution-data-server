@@ -57,6 +57,9 @@ struct _CamelFilterInputStream {
 
 struct _CamelFilterInputStreamClass {
 	GFilterInputStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_filter_input_stream_get_type

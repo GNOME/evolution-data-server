@@ -1,7 +1,8 @@
 macro(add_camel_test_one _part _name _src_file)
 	set(_test_ident cameltest-${_part}-${_name})
 
-	add_executable(${_test_ident} EXCLUDE_FROM_ALL ${_src_file})
+	# Not using EXCLUDE_FROM_ALL here, to have these built always
+	add_executable(${_test_ident} ${_src_file})
 
 	target_compile_definitions(${_test_ident} PRIVATE
 		-DG_LOG_DOMAIN=\"${_test_ident}\"

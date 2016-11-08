@@ -31,6 +31,11 @@
 #include "camel-vtrash-folder.h"
 #include "camel-string-utils.h"
 
+struct _CamelVTrashFolderPrivate {
+	CamelVTrashFolderType type;
+	guint32 bit;
+};
+
 static struct {
 	const gchar *full_name;
 	const gchar *name;
@@ -79,7 +84,7 @@ transfer_messages (CamelFolder *folder,
 		CamelMessageInfo *mi = camel_folder_get_message_info (md->source_folder, md->source_uids->pdata[i]);
 		if (mi) {
 			camel_message_info_set_flags (mi, md->sbit, md->sbit);
-			camel_message_info_unref (mi);
+			g_clear_object (&mi);
 		}
 	}
 
@@ -104,7 +109,7 @@ vtrash_folder_append_message_sync (CamelFolder *folder,
 {
 	g_set_error (
 		error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
-		_(vdata[((CamelVTrashFolder *) folder)->type].error_copy));
+		_(vdata[((CamelVTrashFolder *) folder)->priv->type].error_copy));
 
 	return FALSE;
 }
@@ -123,7 +128,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 	GHashTable *batch = NULL;
 	const gchar *tuid;
 	struct _transfer_data *md;
-	guint32 sbit = ((CamelVTrashFolder *) source)->bit;
+	guint32 sbit = ((CamelVTrashFolder *) source)->priv->bit;
 
 	/* This is a special case of transfer_messages_to: Either the
 	 * source or the destination is a vtrash folder (but not both
@@ -138,7 +143,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 		if (!delete_originals) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
-				_(vdata[((CamelVTrashFolder *) dest)->type].error_copy));
+				_(vdata[((CamelVTrashFolder *) dest)->priv->type].error_copy));
 			return FALSE;
 		}
 
@@ -146,7 +151,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 		for (i = 0; i < uids->len; i++)
 			camel_folder_set_message_flags (
 				source, uids->pdata[i],
-				((CamelVTrashFolder *) dest)->bit, ~0);
+				((CamelVTrashFolder *) dest)->priv->bit, ~0);
 		return TRUE;
 	}
 
@@ -166,18 +171,18 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 			continue;
 		}
 
-		if (dest == camel_folder_summary_get_folder (mi->orig_summary)) {
+		if (dest == camel_vee_message_info_get_original_folder (mi)) {
 			/* Just unset the flag on the original message */
 			camel_folder_set_message_flags (
 				source, uids->pdata[i], sbit, 0);
 		} else {
 			if (batch == NULL)
 				batch = g_hash_table_new (NULL, NULL);
-			md = g_hash_table_lookup (batch, camel_folder_summary_get_folder (mi->orig_summary));
+			md = g_hash_table_lookup (batch, camel_vee_message_info_get_original_folder (mi));
 			if (md == NULL) {
 				md = g_malloc0 (sizeof (*md));
 				md->cancellable = cancellable;
-				md->folder = g_object_ref (camel_folder_summary_get_folder (mi->orig_summary));
+				md->folder = g_object_ref (camel_vee_message_info_get_original_folder (mi));
 				md->uids = g_ptr_array_new ();
 				md->dest = dest;
 				md->delete = delete_originals;
@@ -187,7 +192,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 				if (cancellable != NULL)
 					g_object_ref (cancellable);
 				camel_folder_freeze (md->folder);
-				g_hash_table_insert (batch, camel_folder_summary_get_folder (mi->orig_summary), md);
+				g_hash_table_insert (batch, camel_vee_message_info_get_original_folder (mi), md);
 			}
 
 			/* unset the bit temporarily */
@@ -199,7 +204,7 @@ vtrash_folder_transfer_messages_to_sync (CamelFolder *source,
 			g_ptr_array_add (md->uids, g_strdup (tuid));
 			g_ptr_array_add (md->source_uids, uids->pdata[i]);
 		}
-		camel_message_info_unref (mi);
+		g_clear_object (&mi);
 	}
 
 	if (batch) {
@@ -218,6 +223,8 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 {
 	CamelFolderClass *folder_class;
 
+	g_type_class_add_private (class, sizeof (CamelVTrashFolderPrivate));
+
 	folder_class = CAMEL_FOLDER_CLASS (class);
 	folder_class->append_message_sync = vtrash_folder_append_message_sync;
 	folder_class->transfer_messages_to_sync = vtrash_folder_transfer_messages_to_sync;
@@ -226,6 +233,7 @@ camel_vtrash_folder_class_init (CamelVTrashFolderClass *class)
 static void
 camel_vtrash_folder_init (CamelVTrashFolder *vtrash_folder)
 {
+	vtrash_folder->priv = G_TYPE_INSTANCE_GET_PRIVATE (vtrash_folder, CAMEL_TYPE_VTRASH_FOLDER, CamelVTrashFolderPrivate);
 }
 
 /**
@@ -257,10 +265,26 @@ camel_vtrash_folder_new (CamelStore *parent_store,
 		CAMEL_STORE_FOLDER_PRIVATE |
 		CAMEL_STORE_FOLDER_CREATE);
 
-	((CamelFolder *) vtrash)->folder_flags |= vdata[type].flags;
+	camel_folder_set_flags (CAMEL_FOLDER (vtrash), camel_folder_get_flags (CAMEL_FOLDER (vtrash)) | vdata[type].flags);
 	camel_vee_folder_set_expression ((CamelVeeFolder *) vtrash, vdata[type].expr);
-	vtrash->bit = vdata[type].bit;
-	vtrash->type = type;
+	vtrash->priv->bit = vdata[type].bit;
+	vtrash->priv->type = type;
 
 	return (CamelFolder *) vtrash;
+}
+
+/**
+ * camel_vtrash_folder_get_folder_type:
+ * @vtrash_folder: a #CamelVTrashFolder
+ *
+ * Returns: a @vtrash_folder folder type (#CamelVTrashFolderType)
+ *
+ * Since: 3.24
+ **/
+CamelVTrashFolderType
+camel_vtrash_folder_get_folder_type (CamelVTrashFolder *vtrash_folder)
+{
+	g_return_val_if_fail (CAMEL_IS_VTRASH_FOLDER (vtrash_folder), CAMEL_VTRASH_FOLDER_LAST);
+
+	return vtrash_folder->priv->type;
 }

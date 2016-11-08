@@ -62,6 +62,9 @@ struct _CamelIMAPXStatusResponse {
 
 struct _CamelIMAPXStatusResponseClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_status_response_get_type

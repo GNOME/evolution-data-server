@@ -116,19 +116,23 @@ imapx_search_result_match_all (CamelSExp *sexp,
 
 	g_return_val_if_fail (search != NULL, NULL);
 
-	if (search->current != NULL) {
+	if (camel_folder_search_get_current_message_info (search)) {
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 		result->value.boolean = TRUE;
 	} else {
+		GPtrArray *summary;
 		gint ii;
+
+		summary = camel_folder_search_get_summary (search);
 
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
 		result->value.ptrarray = g_ptr_array_new ();
 
-		for (ii = 0; ii < search->summary->len; ii++)
+		for (ii = 0; summary && ii < summary->len; ii++) {
 			g_ptr_array_add (
 				result->value.ptrarray,
-				(gpointer) search->summary->pdata[ii]);
+				(gpointer) summary->pdata[ii]);
+		}
 	}
 
 	return result;
@@ -142,7 +146,7 @@ imapx_search_result_match_none (CamelSExp *sexp,
 
 	g_return_val_if_fail (search != NULL, NULL);
 
-	if (search->current != NULL) {
+	if (camel_folder_search_get_current_message_info (search)) {
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 		result->value.boolean = FALSE;
 	} else {
@@ -169,7 +173,7 @@ imapx_search_process_criteria (CamelSExp *sexp,
 	GError *local_error = NULL;
 
 	mailbox = camel_imapx_folder_list_mailbox (
-		CAMEL_IMAPX_FOLDER (search->folder), imapx_search->priv->cancellable, &local_error);
+		CAMEL_IMAPX_FOLDER (camel_folder_search_get_folder (search)), imapx_search->priv->cancellable, &local_error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
@@ -205,7 +209,7 @@ imapx_search_process_criteria (CamelSExp *sexp,
 		uids = g_ptr_array_new ();
 	}
 
-	if (search->current != NULL) {
+	if (camel_folder_search_get_current_message_info (search)) {
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
 		result->value.boolean = (uids && uids->len > 0);
 	} else {
@@ -234,7 +238,7 @@ imapx_search_match_all (CamelSExp *sexp,
 		return imapx_search_result_match_none (sexp, search);
 
 	imapx_store = camel_imapx_search_ref_store (CAMEL_IMAPX_SEARCH (search));
-	if (!imapx_store || search->current || !search->summary) {
+	if (!imapx_store || camel_folder_search_get_current_message_info (search) || !camel_folder_search_get_summary (search)) {
 		g_clear_object (&imapx_store);
 
 		/* Chain up to parent's method. */
@@ -247,19 +251,18 @@ imapx_search_match_all (CamelSExp *sexp,
 	prev_local_data_search = imapx_search->priv->local_data_search;
 	imapx_search->priv->local_data_search = &local_data_search;
 
-	summary = search->summary_set ? search->summary_set : search->summary;
+	summary = camel_folder_search_get_current_summary (search);
 
-	if (!CAMEL_IS_VEE_FOLDER (search->folder)) {
-		camel_folder_summary_prepare_fetch_all (search->folder->summary, NULL);
+	if (!CAMEL_IS_VEE_FOLDER (camel_folder_search_get_folder (search))) {
+		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (camel_folder_search_get_folder (search)), NULL);
 	}
 
 	for (ii = 0; ii < summary->len; ii++) {
-		search->current = camel_folder_summary_get (search->folder->summary, summary->pdata[ii]);
-		if (search->current) {
+		camel_folder_search_take_current_message_info (search, camel_folder_summary_get (camel_folder_get_folder_summary (camel_folder_search_get_folder (search)), summary->pdata[ii]));
+		if (camel_folder_search_get_current_message_info (search)) {
 			result = camel_sexp_term_eval (sexp, argv[0]);
 			camel_sexp_result_free (sexp, result);
-			camel_message_info_unref (search->current);
-			search->current = NULL;
+			camel_folder_search_set_current_message_info (search, NULL);
 			break;
 		}
 	}
@@ -360,7 +363,7 @@ imapx_search_body_contains (CamelSExp *sexp,
 		return imapx_search_result_match_all (sexp, search);
 
 	/* Match nothing if empty argv or empty summary. */
-	if (argc == 0 || search->summary->len == 0)
+	if (argc == 0 || camel_folder_search_get_summary_empty (search))
 		return imapx_search_result_match_none (sexp, search);
 
 	imapx_store = camel_imapx_search_ref_store (CAMEL_IMAPX_SEARCH (search));
@@ -376,11 +379,11 @@ imapx_search_body_contains (CamelSExp *sexp,
 
 	criteria = g_string_sized_new (128);
 
-	if (search->current != NULL) {
+	if (camel_folder_search_get_current_message_info (search)) {
 		const gchar *uid;
 
 		/* Limit the search to a single UID. */
-		uid = camel_message_info_get_uid (search->current);
+		uid = camel_message_info_get_uid (camel_folder_search_get_current_message_info (search));
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 
@@ -421,7 +424,7 @@ imapx_search_header_contains (CamelSExp *sexp,
 	/* Match nothing if empty argv or empty summary. */
 	if (argc <= 1 ||
 	    argv[0]->type != CAMEL_SEXP_RES_STRING ||
-	    search->summary->len == 0)
+	    camel_folder_search_get_summary_empty (search))
 		return imapx_search_result_match_none (sexp, search);
 
 	headername = argv[0]->value.string;
@@ -454,11 +457,11 @@ imapx_search_header_contains (CamelSExp *sexp,
 
 	criteria = g_string_sized_new (128);
 
-	if (search->current != NULL) {
+	if (camel_folder_search_get_current_message_info (search)) {
 		const gchar *uid;
 
 		/* Limit the search to a single UID. */
-		uid = camel_message_info_get_uid (search->current);
+		uid = camel_message_info_get_uid (camel_folder_search_get_current_message_info (search));
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 
@@ -501,7 +504,7 @@ imapx_search_header_exists (CamelSExp *sexp,
 	gint ii;
 
 	/* Match nothing if empty argv or empty summary. */
-	if (argc == 0 || search->summary->len == 0)
+	if (argc == 0 || camel_folder_search_get_summary_empty (search))
 		return imapx_search_result_match_none (sexp, search);
 
 	/* Check if asking for locally stored headers only */
@@ -543,11 +546,11 @@ imapx_search_header_exists (CamelSExp *sexp,
 
 	criteria = g_string_sized_new (128);
 
-	if (search->current != NULL) {
+	if (camel_folder_search_get_current_message_info (search)) {
 		const gchar *uid;
 
 		/* Limit the search to a single UID. */
-		uid = camel_message_info_get_uid (search->current);
+		uid = camel_message_info_get_uid (camel_folder_search_get_current_message_info (search));
 		g_string_append_printf (criteria, "UID %s", uid);
 	}
 

@@ -297,7 +297,7 @@ multipart_set_boundary (CamelMultipart *multipart,
 	gsize length;
 	gint state, save;
 
-	g_return_if_fail (cdw->mime_type != NULL);
+	g_return_if_fail (camel_data_wrapper_get_mime_type_field (cdw) != NULL);
 
 	length = g_checksum_type_get_length (G_CHECKSUM_MD5);
 	digest = g_alloca (length);
@@ -328,7 +328,7 @@ multipart_set_boundary (CamelMultipart *multipart,
 		boundary = bbuf;
 	}
 
-	camel_content_type_set_param (cdw->mime_type, "boundary", boundary);
+	camel_content_type_set_param (camel_data_wrapper_get_mime_type_field (cdw), "boundary", boundary);
 }
 
 static const gchar *
@@ -336,8 +336,8 @@ multipart_get_boundary (CamelMultipart *multipart)
 {
 	CamelDataWrapper *cdw = CAMEL_DATA_WRAPPER (multipart);
 
-	g_return_val_if_fail (cdw->mime_type != NULL, NULL);
-	return camel_content_type_param (cdw->mime_type, "boundary");
+	g_return_val_if_fail (camel_data_wrapper_get_mime_type_field (cdw) != NULL, NULL);
+	return camel_content_type_param (camel_data_wrapper_get_mime_type_field (cdw), "boundary");
 }
 
 static gint

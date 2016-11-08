@@ -24,6 +24,7 @@
 
 #include "camel-imapx-command.h"
 #include "camel-imapx-folder.h"
+#include "camel-imapx-message-info.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-summary.h"
 #include "camel-imapx-store.h"
@@ -101,7 +102,7 @@ static struct {
 gboolean
 imapx_parse_flags (CamelIMAPXInputStream *stream,
                    guint32 *flagsp,
-                   CamelFlag **user_flagsp,
+                   CamelNamedFlags *user_flags,
                    GCancellable *cancellable,
                    GError **error)
 {
@@ -149,7 +150,7 @@ imapx_parse_flags (CamelIMAPXInputStream *stream,
 				}
 			}
 
-			if (!match_found && user_flagsp != NULL) {
+			if (!match_found && user_flags) {
 				const gchar *flag_name;
 				gchar *utf8;
 
@@ -163,7 +164,7 @@ imapx_parse_flags (CamelIMAPXInputStream *stream,
 					utf8 = NULL;
 				}
 
-				camel_flag_set (user_flagsp, utf8 ? utf8 : flag_name, TRUE);
+				camel_named_flags_insert (user_flags, utf8 ? utf8 : flag_name);
 
 				g_free (utf8);
 			}
@@ -225,44 +226,50 @@ rename_label_flag (const gchar *flag,
 void
 imapx_write_flags (GString *string,
                    guint32 flags,
-                   CamelFlag *user_flags)
+                   const CamelNamedFlags *user_flags)
 {
-	gint i;
+	guint ii;
 	gboolean first = TRUE;
 
 	g_string_append_c (string, '(');
 
-	for (i = 0; flags != 0 && i< G_N_ELEMENTS (flag_table); i++) {
-		if (flag_table[i].flag & flags) {
-			if (flag_table[i].flag & CAMEL_IMAPX_MESSAGE_RECENT)
+	for (ii = 0; flags != 0 && ii < G_N_ELEMENTS (flag_table); ii++) {
+		if (flag_table[ii].flag & flags) {
+			if (flag_table[ii].flag & CAMEL_IMAPX_MESSAGE_RECENT)
 				continue;
 			if (!first)
 				g_string_append_c (string, ' ');
 			first = FALSE;
-			g_string_append (string, flag_table[i].name);
+			g_string_append (string, flag_table[ii].name);
 
-			flags &= ~flag_table[i].flag;
+			flags &= ~flag_table[ii].flag;
 		}
 	}
 
-	while (user_flags) {
-		const gchar *flag_name;
-		gchar *utf7;
+	if (user_flags) {
+		guint len = camel_named_flags_get_length (user_flags);
 
-		flag_name = rename_label_flag (
-			user_flags->name, strlen (user_flags->name), FALSE);
+		for (ii = 0; ii < len; ii++) {
+			const gchar *name = camel_named_flags_get (user_flags, ii);
+			const gchar *flag_name;
+			gchar *utf7;
 
-		if (!first)
-			g_string_append_c (string, ' ');
-		first = FALSE;
+			if (!name || !*name)
+				continue;
 
-		utf7 = camel_utf8_utf7 (flag_name);
 
-		g_string_append (string, utf7 ? utf7 : flag_name);
+			flag_name = rename_label_flag (name, strlen (name), FALSE);
 
-		g_free (utf7);
+			if (!first)
+				g_string_append_c (string, ' ');
+			first = FALSE;
 
-		user_flags = user_flags->next;
+			utf7 = camel_utf8_utf7 (flag_name);
+
+			g_string_append (string, utf7 ? utf7 : flag_name);
+
+			g_free (utf7);
+		}
 	}
 
 	g_string_append_c (string, ')');
@@ -270,26 +277,38 @@ imapx_write_flags (GString *string,
 
 static gboolean
 imapx_update_user_flags (CamelMessageInfo *info,
-                         CamelFlag *server_user_flags)
+			 const CamelNamedFlags *server_user_flags)
 {
 	gboolean changed = FALSE;
-	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
-	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
+	const CamelNamedFlags *mi_user_flags;
 	gboolean set_cal = FALSE, set_note = FALSE;
 
-	if (camel_flag_get (&binfo->user_flags, "$has_cal"))
+	mi_user_flags = camel_message_info_get_user_flags (info);
+	if (camel_named_flags_equal (mi_user_flags, server_user_flags)) {
+		mi_user_flags = camel_imapx_message_info_get_server_user_flags (CAMEL_IMAPX_MESSAGE_INFO (info));
+
+		if (!camel_named_flags_equal (mi_user_flags, server_user_flags)) {
+			camel_imapx_message_info_take_server_user_flags (CAMEL_IMAPX_MESSAGE_INFO (info),
+				camel_named_flags_copy (server_user_flags));
+		}
+
+		return FALSE;
+	}
+
+	if (mi_user_flags && camel_named_flags_contains (mi_user_flags, "$has_cal"))
 		set_cal = TRUE;
-	if (camel_flag_get (&binfo->user_flags, "$has_note"))
+	if (mi_user_flags && camel_named_flags_contains (mi_user_flags, "$has_note"))
 		set_note = TRUE;
 
-	changed = camel_flag_list_copy (&binfo->user_flags, &server_user_flags);
-	camel_flag_list_copy (&xinfo->server_user_flags, &server_user_flags);
+	changed = camel_message_info_take_user_flags (info, camel_named_flags_copy (server_user_flags));
+	camel_imapx_message_info_take_server_user_flags (CAMEL_IMAPX_MESSAGE_INFO (info),
+		camel_named_flags_copy (server_user_flags));
 
 	/* reset the flags as they were set in messageinfo before */
 	if (set_cal)
-		camel_flag_set (&binfo->user_flags, "$has_cal", TRUE);
+		camel_message_info_set_user_flag (info, "$has_cal", TRUE);
 	if (set_note)
-		camel_flag_set (&binfo->user_flags, "$has_note", TRUE);
+		camel_message_info_set_user_flag (info, "$has_note", TRUE);
 
 	return changed;
 }
@@ -297,16 +316,16 @@ imapx_update_user_flags (CamelMessageInfo *info,
 gboolean
 imapx_update_message_info_flags (CamelMessageInfo *info,
                                  guint32 server_flags,
-                                 CamelFlag *server_user_flags,
+                                 const CamelNamedFlags *server_user_flags,
                                  guint32 permanent_flags,
                                  CamelFolder *folder,
                                  gboolean unsolicited)
 {
 	gboolean changed = FALSE;
-	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
+	CamelIMAPXMessageInfo *xinfo = CAMEL_IMAPX_MESSAGE_INFO (info);
 
 	/* Locally made changes should not be overwritten, it'll be (re)saved later */
-	if ((camel_message_info_get_flags (info) & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0) {
+	if (camel_message_info_get_folder_flagged (info)) {
 		d ('?', "Skipping update of locally changed uid:'%s'\n", camel_message_info_get_uid (info));
 		return FALSE;
 	}
@@ -314,15 +333,21 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 	/* This makes sure that server flags has precedence from locally stored flags,
 	 * thus a user actually sees what is stored on the server */
 	if ((camel_message_info_get_flags (info) & CAMEL_IMAPX_SERVER_FLAGS) != (server_flags & CAMEL_IMAPX_SERVER_FLAGS)) {
-		xinfo->server_flags = (xinfo->server_flags & ~CAMEL_IMAPX_SERVER_FLAGS) |
-				      (camel_message_info_get_flags (info) & CAMEL_IMAPX_SERVER_FLAGS);
+		guint32 old_server_flags;
+
+		old_server_flags = camel_imapx_message_info_get_server_flags (xinfo);
+
+		camel_imapx_message_info_set_server_flags (xinfo,
+			(old_server_flags & ~CAMEL_IMAPX_SERVER_FLAGS) |
+			(camel_message_info_get_flags (info) & CAMEL_IMAPX_SERVER_FLAGS));
 	}
 
-	if (server_flags != xinfo->server_flags) {
-		guint32 server_set, server_cleared;
+	if (server_flags != camel_imapx_message_info_get_server_flags (xinfo)) {
+		guint32 server_set, server_cleared, old_server_flags;
 
-		server_set = server_flags & ~xinfo->server_flags;
-		server_cleared = xinfo->server_flags & ~server_flags;
+		old_server_flags = camel_imapx_message_info_get_server_flags (xinfo);
+		server_set = server_flags & ~old_server_flags;
+		server_cleared = old_server_flags & ~server_flags;
 
 		/* Don't clear non-permanent server-side flags.
 		 * This avoids overwriting local flags that we
@@ -330,13 +355,11 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 		if (permanent_flags > 0)
 			server_cleared &= permanent_flags;
 
-		changed = camel_message_info_set_flags ((
-			CamelMessageInfo *) xinfo,
+		changed = camel_message_info_set_flags (info,
 			server_set | server_cleared,
-			(xinfo->info.flags | server_set) & ~server_cleared);
+			(camel_message_info_get_flags (info) | server_set) & ~server_cleared);
 
-		xinfo->server_flags = server_flags;
-		xinfo->info.dirty = TRUE;
+		camel_imapx_message_info_set_server_flags (xinfo, server_flags);
 	}
 
 	if ((permanent_flags & CAMEL_MESSAGE_USER) != 0 && imapx_update_user_flags (info, server_user_flags))
@@ -348,29 +371,22 @@ imapx_update_message_info_flags (CamelMessageInfo *info,
 void
 imapx_set_message_info_flags_for_new_message (CamelMessageInfo *info,
                                               guint32 server_flags,
-                                              CamelFlag *server_user_flags,
+                                              const CamelNamedFlags *server_user_flags,
 					      gboolean force_user_flags,
-					      CamelTag *user_tags,
+					      const CamelNameValueArray *user_tags,
 					      guint32 permanent_flags)
 {
-	CamelMessageInfoBase *binfo = (CamelMessageInfoBase *) info;
-	CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) info;
+	CamelIMAPXMessageInfo *xinfo = CAMEL_IMAPX_MESSAGE_INFO (info);
 
-	binfo->flags |= server_flags;
-	camel_message_info_set_flags (info, server_flags, binfo->flags | server_flags);
-
-	xinfo->server_flags = server_flags;
+	camel_message_info_set_flags (info, server_flags, camel_message_info_get_flags (info) | server_flags);
+	camel_imapx_message_info_set_server_flags (xinfo, server_flags);
 
 	if (force_user_flags || (permanent_flags & CAMEL_MESSAGE_USER) != 0)
 		imapx_update_user_flags (info, server_user_flags);
 
-	while (user_tags) {
-		camel_message_info_set_user_tag (info, user_tags->name, user_tags->value);
-		user_tags = user_tags->next;
-	}
+	camel_message_info_take_user_tags (info, camel_name_value_array_copy (user_tags));
 
-	binfo->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-	binfo->dirty = TRUE;
+	camel_message_info_set_folder_flagged (info, FALSE);
 }
 
 void
@@ -394,8 +410,8 @@ imapx_update_store_summary (CamelFolder *folder)
 	if (si == NULL)
 		return;
 
-	total = camel_folder_summary_count (folder->summary);
-	unread = camel_folder_summary_get_unread_count (folder->summary);
+	total = camel_folder_summary_count (camel_folder_get_folder_summary (folder));
+	unread = camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder));
 
 	if (si->unread != unread || si->total != total) {
 		si->unread = unread;
@@ -416,7 +432,7 @@ camel_imapx_dup_uid_from_summary_index (CamelFolder *folder,
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
-	summary = folder->summary;
+	summary = camel_folder_get_folder_summary (folder);
 	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
 
 	array = camel_folder_summary_get_array (summary);
@@ -1150,7 +1166,7 @@ imapx_parse_address_list (CamelIMAPXInputStream *stream,
 	return list;
 }
 
-struct _CamelMessageInfo *
+CamelMessageInfo *
 imapx_parse_envelope (CamelIMAPXInputStream *stream,
                       GCancellable *cancellable,
                       GError **error)
@@ -1160,7 +1176,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	guchar *token;
 	CamelHeaderAddress *addr, *addr_from;
 	gchar *addrstr;
-	struct _CamelMessageInfoBase *minfo = NULL;
+	CamelMessageInfo *info;
 	GError *local_error = NULL;
 
 	/* envelope        ::= "(" env_date SPACE env_subject SPACE env_from
@@ -1168,7 +1184,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	 * SPACE env_cc SPACE env_bcc SPACE env_in_reply_to
 	 * SPACE env_message_id ")" */
 
-	minfo = (CamelMessageInfoBase *) camel_message_info_new (NULL);
+	info = camel_message_info_new (NULL);
 
 	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, &local_error);
@@ -1178,7 +1194,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 
 	if (tok != '(') {
 		g_clear_error (&local_error);
-		camel_message_info_unref (minfo);
+		g_clear_object (&info);
 		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED, "envelope: expecting '('");
 		return NULL;
 	}
@@ -1188,14 +1204,14 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	if (local_error)
 		goto error;
 
-	minfo->date_sent = camel_header_decode_date ((gchar *) token, NULL);
+	camel_message_info_set_date_sent (info, camel_header_decode_date ((gchar *) token, NULL));
 
 	/* env_subject     ::= nstring */
 	camel_imapx_input_stream_nstring (stream, &token, cancellable, &local_error);
 	if (local_error)
 		goto error;
 
-	minfo->subject = camel_pstring_strdup ((gchar *) token);
+	camel_message_info_set_subject (info, (const gchar *) token);
 
 	/* we merge from/sender into from, append should probably merge more smartly? */
 
@@ -1218,7 +1234,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 
 	if (addr_from) {
 		addrstr = camel_header_address_list_format (addr_from);
-		minfo->from = camel_pstring_strdup (addrstr);
+		camel_message_info_set_from (info, addrstr);
 		g_free (addrstr);
 		camel_header_address_list_clear (&addr_from);
 	}
@@ -1236,7 +1252,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	addr = imapx_parse_address_list (stream, cancellable, &local_error);
 	if (addr) {
 		addrstr = camel_header_address_list_format (addr);
-		minfo->to = camel_pstring_strdup (addrstr);
+		camel_message_info_set_to (info, addrstr);
 		g_free (addrstr);
 		camel_header_address_list_clear (&addr);
 	}
@@ -1248,7 +1264,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	addr = imapx_parse_address_list (stream, cancellable, &local_error);
 	if (addr) {
 		addrstr = camel_header_address_list_format (addr);
-		minfo->cc = camel_pstring_strdup (addrstr);
+		camel_message_info_set_cc (info, addrstr);
 		g_free (addrstr);
 		camel_header_address_list_clear (&addr);
 	}
@@ -1285,7 +1301,7 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 
 	if (tok != ')') {
 		g_clear_error (&local_error);
-		camel_message_info_unref (minfo);
+		g_clear_object (&info);
 		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED, "expecting ')'");
 		return NULL;
 	}
@@ -1294,15 +1310,14 @@ imapx_parse_envelope (CamelIMAPXInputStream *stream,
 	/* CHEN TODO handle exceptions better */
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
-		if (minfo)
-			camel_message_info_unref (minfo);
+		g_clear_object (&info);
 		return NULL;
 	}
 
-	return (CamelMessageInfo *) minfo;
+	return info;
 }
 
-struct _CamelMessageContentInfo *
+CamelMessageContentInfo *
 imapx_parse_body (CamelIMAPXInputStream *stream,
                   GCancellable *cancellable,
                   GError **error)
@@ -1449,7 +1464,7 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 
 			/* what do we do with the message content info?? */
 			//((CamelMessageInfoBase *) minfo)->content = imapx_parse_body (stream);
-			camel_message_info_unref (minfo);
+			g_clear_object (&minfo);
 			minfo = NULL;
 		}
 
@@ -1673,11 +1688,10 @@ imapx_free_fetch (struct _fetch_info *finfo)
 		g_bytes_unref (finfo->text);
 	if (finfo->header)
 		g_bytes_unref (finfo->header);
-	if (finfo->minfo)
-		camel_message_info_unref (finfo->minfo);
 	if (finfo->cinfo)
 		imapx_free_body (finfo->cinfo);
-	camel_flag_list_free (&finfo->user_flags);
+	camel_named_flags_free (finfo->user_flags);
+	g_clear_object (&finfo->minfo);
 	g_free (finfo->date);
 	g_free (finfo->section);
 	g_free (finfo->uid);
@@ -1853,7 +1867,7 @@ imapx_parse_fetch_flags (CamelIMAPXInputStream *stream,
 	gboolean success;
 
 	success = imapx_parse_flags (
-		stream, &finfo->flags, &finfo->user_flags,
+		stream, &finfo->flags, finfo->user_flags,
 		cancellable, error);
 
 	if (success)
@@ -2003,6 +2017,7 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 	struct _fetch_info *finfo;
 
 	finfo = g_malloc0 (sizeof (*finfo));
+	finfo->user_flags = camel_named_flags_new ();
 
 	tok = camel_imapx_input_stream_token (
 		stream, &token, &len, cancellable, error);
@@ -2632,7 +2647,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), FALSE);
 
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
-	imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
+	imapx_summary = CAMEL_IMAPX_SUMMARY (camel_folder_get_folder_summary (folder));
 
 	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
 	if (!mailbox)
@@ -2644,7 +2659,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 	/* XXX This should return an unsigned integer to
 	 *     avoid the possibility of a negative count. */
-	summary_total = camel_folder_summary_count (folder->summary);
+	summary_total = camel_folder_summary_count (camel_folder_get_folder_summary (folder));
 	g_return_val_if_fail (summary_total >= 0, FALSE);
 
 	if (summary_total > 0) {

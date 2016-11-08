@@ -30,7 +30,6 @@ G_BEGIN_DECLS
  *       enum/struct definitions and helper macros, so we don't
  *       have these conflicting header dependencies. */
 struct _CamelIMAPXCommand;
-struct _CamelFlag;
 struct _CamelIMAPXStore;
 
 /* list of strings we know about that can be *quickly* tokenised */
@@ -136,24 +135,24 @@ GArray *	imapx_parse_uids		(CamelIMAPXInputStream *stream,
 						 GError **error);
 gboolean	imapx_parse_flags		(CamelIMAPXInputStream *stream,
 						 guint32 *flagsp,
-						 struct _CamelFlag **user_flagsp,
+						 CamelNamedFlags *user_flags,
 						 GCancellable *cancellable,
 						 GError **error);
 void		imapx_write_flags		(GString *string,
 						 guint32 flags,
-						 struct _CamelFlag *user_flags);
+						 const CamelNamedFlags *user_flags);
 gboolean	imapx_update_message_info_flags	(CamelMessageInfo *info,
 						 guint32 server_flags,
-						 CamelFlag *server_user_flags,
+						 const CamelNamedFlags *server_user_flags,
 						 guint32 permanent_flags,
 						 CamelFolder *folder,
 						 gboolean unsolicited);
 void		imapx_set_message_info_flags_for_new_message
 						(CamelMessageInfo *info,
 						 guint32 server_flags,
-						 CamelFlag *server_user_flags,
+						 const CamelNamedFlags *server_user_flags,
 						 gboolean force_user_flags,
-						 CamelTag *user_tags,
+						 const CamelNameValueArray *user_tags,
 						 guint32 permanent_flags);
 void		imapx_update_store_summary	(CamelFolder *folder);
 
@@ -218,11 +217,11 @@ CamelHeaderAddress *
 		imapx_parse_address_list	(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-struct _CamelMessageInfo *
+CamelMessageInfo *
 		imapx_parse_envelope		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-struct _CamelMessageContentInfo *
+CamelMessageContentInfo *
 		imapx_parse_body		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -245,7 +244,7 @@ struct _fetch_info {
 	guint32 offset;		/* start offset of a BODY[]<offset.length> request */
 	guint32 flags;		/* FLAGS */
 	guint64 modseq;		/* MODSEQ */
-	CamelFlag *user_flags;
+	CamelNamedFlags *user_flags;
 	gchar *date;		/* INTERNALDATE */
 	gchar *section;		/* section for a BODY[section] request */
 	gchar *uid;		/* UID */

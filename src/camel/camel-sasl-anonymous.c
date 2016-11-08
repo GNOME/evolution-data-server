@@ -26,6 +26,11 @@
 #include "camel-internet-address.h"
 #include "camel-sasl-anonymous.h"
 
+struct _CamelSaslAnonymousPrivate {
+	gchar *trace_info;
+	CamelSaslAnonTraceType type;
+};
+
 static CamelServiceAuthType sasl_anonymous_auth_type = {
 	N_("Anonymous"),
 
@@ -42,7 +47,7 @@ sasl_anonymous_finalize (GObject *object)
 {
 	CamelSaslAnonymous *sasl = CAMEL_SASL_ANONYMOUS (object);
 
-	g_free (sasl->trace_info);
+	g_free (sasl->priv->trace_info);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_sasl_anonymous_parent_class)->finalize (object);
@@ -66,33 +71,33 @@ sasl_anonymous_challenge_sync (CamelSasl *sasl,
 		return NULL;
 	}
 
-	switch (sasl_anon->type) {
+	switch (sasl_anon->priv->type) {
 	case CAMEL_SASL_ANON_TRACE_EMAIL:
 		cia = camel_internet_address_new ();
-		if (camel_internet_address_add (cia, NULL, sasl_anon->trace_info) != 1) {
+		if (camel_internet_address_add (cia, NULL, sasl_anon->priv->trace_info) != 1) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Invalid email address trace information:\n%s"),
-				sasl_anon->trace_info);
+				sasl_anon->priv->trace_info);
 			g_object_unref (cia);
 			return NULL;
 		}
 		g_object_unref (cia);
 		ret = g_byte_array_new ();
-		g_byte_array_append (ret, (guint8 *) sasl_anon->trace_info, strlen (sasl_anon->trace_info));
+		g_byte_array_append (ret, (guint8 *) sasl_anon->priv->trace_info, strlen (sasl_anon->priv->trace_info));
 		break;
 	case CAMEL_SASL_ANON_TRACE_OPAQUE:
-		if (strchr (sasl_anon->trace_info, '@')) {
+		if (strchr (sasl_anon->priv->trace_info, '@')) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Invalid opaque trace information:\n%s"),
-				sasl_anon->trace_info);
+				sasl_anon->priv->trace_info);
 			return NULL;
 		}
 		ret = g_byte_array_new ();
-		g_byte_array_append (ret, (guint8 *) sasl_anon->trace_info, strlen (sasl_anon->trace_info));
+		g_byte_array_append (ret, (guint8 *) sasl_anon->priv->trace_info, strlen (sasl_anon->priv->trace_info));
 		break;
 	case CAMEL_SASL_ANON_TRACE_EMPTY:
 		ret = g_byte_array_new ();
@@ -102,7 +107,7 @@ sasl_anonymous_challenge_sync (CamelSasl *sasl,
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 			_("Invalid trace information:\n%s"),
-			sasl_anon->trace_info);
+			sasl_anon->priv->trace_info);
 		return NULL;
 	}
 
@@ -116,6 +121,8 @@ camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *class)
 	GObjectClass *object_class;
 	CamelSaslClass *sasl_class;
 
+	g_type_class_add_private (class, sizeof (CamelSaslAnonymousPrivate));
+
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = sasl_anonymous_finalize;
 
@@ -127,6 +134,7 @@ camel_sasl_anonymous_class_init (CamelSaslAnonymousClass *class)
 static void
 camel_sasl_anonymous_init (CamelSaslAnonymous *sasl_anonymous)
 {
+	sasl_anonymous->priv = G_TYPE_INSTANCE_GET_PRIVATE (sasl_anonymous, CAMEL_TYPE_SASL_ANONYMOUS, CamelSaslAnonymousPrivate);
 }
 
 /**
@@ -148,8 +156,8 @@ camel_sasl_anonymous_new (CamelSaslAnonTraceType type,
 		return NULL;
 
 	sasl_anon = g_object_new (CAMEL_TYPE_SASL_ANONYMOUS, NULL);
-	sasl_anon->trace_info = g_strdup (trace_info);
-	sasl_anon->type = type;
+	sasl_anon->priv->trace_info = g_strdup (trace_info);
+	sasl_anon->priv->type = type;
 
 	return CAMEL_SASL (sasl_anon);
 }

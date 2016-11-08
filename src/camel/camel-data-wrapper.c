@@ -29,6 +29,7 @@
 #include "camel-mime-filter-crlf.h"
 #include "camel-stream-filter.h"
 #include "camel-stream-mem.h"
+#include "camel-stream-null.h"
 
 #define d(x)
 
@@ -41,6 +42,12 @@ typedef struct _AsyncContext AsyncContext;
 struct _CamelDataWrapperPrivate {
 	GMutex stream_lock;
 	GByteArray *byte_array;
+
+	CamelTransferEncoding encoding;
+
+	CamelContentType *mime_type;
+
+	guint offline : 1;
 };
 
 struct _AsyncContext {
@@ -66,9 +73,9 @@ data_wrapper_dispose (GObject *object)
 {
 	CamelDataWrapper *data_wrapper = CAMEL_DATA_WRAPPER (object);
 
-	if (data_wrapper->mime_type != NULL) {
-		camel_content_type_unref (data_wrapper->mime_type);
-		data_wrapper->mime_type = NULL;
+	if (data_wrapper->priv->mime_type != NULL) {
+		camel_content_type_unref (data_wrapper->priv->mime_type);
+		data_wrapper->priv->mime_type = NULL;
 	}
 
 	/* Chain up to parent's dispose() method. */
@@ -93,21 +100,21 @@ static void
 data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
                             const gchar *mime_type)
 {
-	if (data_wrapper->mime_type)
-		camel_content_type_unref (data_wrapper->mime_type);
-	data_wrapper->mime_type = camel_content_type_decode (mime_type);
+	if (data_wrapper->priv->mime_type)
+		camel_content_type_unref (data_wrapper->priv->mime_type);
+	data_wrapper->priv->mime_type = camel_content_type_decode (mime_type);
 }
 
 static gchar *
 data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
 {
-	return camel_content_type_simple (data_wrapper->mime_type);
+	return camel_content_type_simple (data_wrapper->priv->mime_type);
 }
 
 static CamelContentType *
 data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
 {
-	return data_wrapper->mime_type;
+	return data_wrapper->priv->mime_type;
 }
 
 static void
@@ -116,15 +123,15 @@ data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 {
 	if (mime_type)
 		camel_content_type_ref (mime_type);
-	if (data_wrapper->mime_type)
-		camel_content_type_unref (data_wrapper->mime_type);
-	data_wrapper->mime_type = mime_type;
+	if (data_wrapper->priv->mime_type)
+		camel_content_type_unref (data_wrapper->priv->mime_type);
+	data_wrapper->priv->mime_type = mime_type;
 }
 
 static gboolean
 data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 {
-	return data_wrapper->offline;
+	return data_wrapper->priv->offline;
 }
 
 static gssize
@@ -173,7 +180,7 @@ data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
 
 	fstream = camel_stream_filter_new (stream);
 
-	switch (data_wrapper->encoding) {
+	switch (data_wrapper->priv->encoding) {
 	case CAMEL_TRANSFER_ENCODING_BASE64:
 		filter = camel_mime_filter_basic_new (CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
 		camel_stream_filter_add (CAMEL_STREAM_FILTER (fstream), filter);
@@ -290,7 +297,7 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	gboolean content_type_is_text;
 	gssize bytes_written;
 
-	switch (data_wrapper->encoding) {
+	switch (data_wrapper->priv->encoding) {
 		case CAMEL_TRANSFER_ENCODING_BASE64:
 			filter = camel_mime_filter_basic_new (
 				CAMEL_MIME_FILTER_BASIC_BASE64_DEC);
@@ -325,10 +332,8 @@ data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	}
 
 	content_type_is_text =
-		camel_content_type_is (
-		data_wrapper->mime_type, "text", "*") &&
-		!camel_content_type_is (
-		data_wrapper->mime_type, "text", "pdf");
+		camel_content_type_is (data_wrapper->priv->mime_type, "text", "*") &&
+		!camel_content_type_is (data_wrapper->priv->mime_type, "text", "pdf");
 
 	if (content_type_is_text) {
 		GOutputStream *temp_stream;
@@ -444,10 +449,9 @@ camel_data_wrapper_init (CamelDataWrapper *data_wrapper)
 	g_mutex_init (&data_wrapper->priv->stream_lock);
 	data_wrapper->priv->byte_array = g_byte_array_new ();
 
-	data_wrapper->mime_type = camel_content_type_new (
-		"application", "octet-stream");
-	data_wrapper->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
-	data_wrapper->offline = FALSE;
+	data_wrapper->priv->mime_type = camel_content_type_new ("application", "octet-stream");
+	data_wrapper->priv->encoding = CAMEL_TRANSFER_ENCODING_DEFAULT;
+	data_wrapper->priv->offline = FALSE;
 }
 
 /**
@@ -481,6 +485,41 @@ camel_data_wrapper_get_byte_array (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), NULL);
 
 	return data_wrapper->priv->byte_array;
+}
+
+/**
+ * camel_data_wrapper_get_encoding:
+ * @data_wrapper: a #CamelDataWrapper
+ *
+ * Returns: An encoding (#CamelTransferEncoding) of the @data_wrapper
+ *
+ * Since: 3.24
+ **/
+CamelTransferEncoding
+camel_data_wrapper_get_encoding (CamelDataWrapper *data_wrapper)
+{
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), CAMEL_TRANSFER_ENCODING_DEFAULT);
+
+	return data_wrapper->priv->encoding;
+}
+
+/**
+ * camel_data_wrapper_set_encoding:
+ * @data_wrapper: a #CamelDataWrapper
+ * @encoding: an encoding to set
+ *
+ * Sets encoding (#CamelTransferEncoding) for the @data_wrapper.
+ * It doesn't re-encode the content, if the encoding changes.
+ *
+ * Since: 3.24
+ **/
+void
+camel_data_wrapper_set_encoding (CamelDataWrapper *data_wrapper,
+				 CamelTransferEncoding encoding)
+{
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+
+	data_wrapper->priv->encoding = encoding;
 }
 
 /**
@@ -552,10 +591,12 @@ camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
 /**
  * camel_data_wrapper_set_mime_type_field:
  * @data_wrapper: a #CamelDataWrapper
- * @mime_type: a #CamelContentType
+ * @mime_type: (nullable): a #CamelContentType
  *
- * This sets the data wrapper's MIME type. It suffers from the same
- * flaws as camel_data_wrapper_set_mime_type().
+ * This sets the data wrapper's MIME type. It adds its own reference
+ * to @mime_type, if not %NULL.
+ *
+ * It suffers from the same flaws as camel_data_wrapper_set_mime_type().
  **/
 void
 camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
@@ -570,6 +611,32 @@ camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 	g_return_if_fail (class->set_mime_type_field != NULL);
 
 	class->set_mime_type_field (data_wrapper, mime_type);
+}
+
+/**
+ * camel_data_wrapper_take_mime_type_field:
+ * @data_wrapper: a #CamelDataWrapper
+ * @mime_type: (nullable) (transfer full): a #CamelContentType
+ *
+ * Sets mime-type filed to be @mime_type and consumes it, aka unlike
+ * camel_data_wrapper_set_mime_type_field(), this doesn't add its own
+ * reference to @mime_type.
+ *
+ * It suffers from the same flaws as camel_data_wrapper_set_mime_type().
+ *
+ * Since: 3.24
+ **/
+void
+camel_data_wrapper_take_mime_type_field (CamelDataWrapper *data_wrapper,
+					 CamelContentType *mime_type)
+{
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+	g_return_if_fail (mime_type != NULL);
+
+	camel_data_wrapper_set_mime_type_field (data_wrapper, mime_type);
+
+	if (mime_type)
+		camel_content_type_unref (mime_type);
 }
 
 /**
@@ -591,6 +658,25 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (class->is_offline != NULL, TRUE);
 
 	return class->is_offline (data_wrapper);
+}
+
+/**
+ * camel_data_wrapper_set_offline:
+ * @data_wrapper: a #CamelDataWrapper
+ * @offline: whether the @data_wrapper is "offline"
+ *
+ * Sets whether the @data_wrapper is "offline". It applies only to this
+ * concrete instance. See camel_data_wrapper_is_offline().
+ *
+ * Since: 3.24
+ **/
+void
+camel_data_wrapper_set_offline (CamelDataWrapper *data_wrapper,
+				gboolean offline)
+{
+	g_return_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper));
+
+	data_wrapper->priv->offline = offline;
 }
 
 /**
@@ -1459,3 +1545,72 @@ camel_data_wrapper_construct_from_input_stream_finish (CamelDataWrapper *data_wr
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
+/**
+ * camel_data_wrapper_calculate_size_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Calculates size of the @data_wrapper by saving it to a null-stream
+ * and returns how many bytes had been written. It's using
+ * camel_data_wrapper_write_to_stream_sync() internally.
+ *
+ * Returns: how many bytes the @data_wrapper would use when saved,
+ *   or -1 on error.
+ *
+ * Since: 3.24
+ **/
+gsize
+camel_data_wrapper_calculate_size_sync (CamelDataWrapper *data_wrapper,
+					GCancellable *cancellable,
+					GError **error)
+{
+	CamelStream *stream;
+	gsize bytes_written = -1;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+
+	stream = camel_stream_null_new ();
+
+	if (camel_data_wrapper_write_to_stream_sync (data_wrapper, stream, cancellable, error))
+		bytes_written = camel_stream_null_get_bytes_written (CAMEL_STREAM_NULL (stream));
+
+	g_object_unref (stream);
+
+	return bytes_written;
+}
+
+/**
+ * camel_data_wrapper_calculate_decoded_size_sync:
+ * @data_wrapper: a #CamelDataWrapper
+ * @cancellable: a #GCancellable, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Calculates decoded size of the @data_wrapper by saving it to a null-stream
+ * and returns how many bytes had been written. It's using
+ * camel_data_wrapper_decode_to_stream_sync() internally.
+ *
+ * Returns: how many bytes the @data_wrapper would use when saved,
+ *   or -1 on error.
+ *
+ * Since: 3.24
+ **/
+gsize
+camel_data_wrapper_calculate_decoded_size_sync (CamelDataWrapper *data_wrapper,
+						GCancellable *cancellable,
+						GError **error)
+{
+	CamelStream *stream;
+	gsize bytes_written = -1;
+
+	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), -1);
+
+	stream = camel_stream_null_new ();
+
+	if (camel_data_wrapper_decode_to_stream_sync (data_wrapper, stream, cancellable, error))
+		bytes_written = camel_stream_null_get_bytes_written (CAMEL_STREAM_NULL (stream));
+
+	g_object_unref (stream);
+
+	return bytes_written;
+}

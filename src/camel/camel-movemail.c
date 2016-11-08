@@ -431,22 +431,24 @@ camel_movemail_copy_filter (gint fromfd,
  * want	to maintain it! */
 static gint
 solaris_header_write (gint fd,
-                      struct _camel_header_raw *header)
+                      CamelNameValueArray *headers)
 {
 	struct iovec iv[4];
 	gint outlen = 0, len;
+	guint ii;
+	const gchar *header_name = NULL, *header_value = NULL;
 
 	iv[1].iov_base = ":";
 	iv[1].iov_len = 1;
 	iv[3].iov_base = "\n";
 	iv[3].iov_len = 1;
 
-	while (header) {
-		if (g_ascii_strcasecmp (header->name, "Content-Length")) {
-			iv[0].iov_base = header->name;
-			iv[0].iov_len = strlen (header->name);
-			iv[2].iov_base = header->value;
-			iv[2].iov_len = strlen (header->value);
+	for (ii = 0; camel_name_value_array_get (headers, ii, &header_name, &header_value); ii++) {
+		if (g_ascii_strcasecmp (header_name, "Content-Length")) {
+			iv[0].iov_base = header_name;
+			iv[0].iov_len = strlen (header_name);
+			iv[2].iov_base = header_value;
+			iv[2].iov_len = strlen (header_value);
 
 			do {
 				len = writev (fd, iv, 4);
@@ -456,7 +458,6 @@ solaris_header_write (gint fd,
 				return -1;
 			outlen += len;
 		}
-		header = header->next;
 	}
 
 	do {
@@ -510,6 +511,7 @@ camel_movemail_solaris (gint oldsfd,
 		g_return_val_if_fail (camel_mime_parser_from_line (mp), -1);
 		from = g_strdup (camel_mime_parser_from_line (mp));
 		if (camel_mime_parser_step (mp, &buffer, &len) != CAMEL_MIME_PARSER_STATE_FROM_END) {
+			CamelNameValueArray *headers;
 			const gchar *cl;
 			gint length;
 			gint start, body;
@@ -524,9 +526,13 @@ camel_movemail_solaris (gint oldsfd,
 				goto fail;
 
 			/* write out headers, but NOT content-length header */
-			if (solaris_header_write (dfd, camel_mime_parser_headers_raw (mp)) == -1)
+			headers = camel_mime_parser_dup_headers (mp);
+			if (solaris_header_write (dfd, headers) == -1) {
+				camel_name_value_array_free (headers);
 				goto fail;
+			}
 
+			camel_name_value_array_free (headers);
 			cl = camel_mime_parser_header (mp, "content-length", NULL);
 			if (cl == NULL) {
 				g_warning ("Required Content-Length header is missing from solaris mail box @ %d", (gint) camel_mime_parser_tell (mp));

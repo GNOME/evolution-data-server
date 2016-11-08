@@ -52,6 +52,9 @@ struct _CamelSpoolSettings {
 
 struct _CamelSpoolSettingsClass {
 	CamelLocalSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_spool_settings_get_type	(void) G_GNUC_CONST;

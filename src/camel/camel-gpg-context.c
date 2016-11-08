@@ -2082,7 +2082,7 @@ gpg_verify_sync (CamelCipherContext *context,
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
 	mps = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) ipart);
-	ct = ((CamelDataWrapper *) mps)->mime_type;
+	ct = camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (mps));
 
 	/* Inline signature (using our fake mime type) or PGP/Mime signature */
 	if (camel_content_type_is (ct, "multipart", "signed")) {

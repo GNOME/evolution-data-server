@@ -62,6 +62,9 @@ struct _CamelIMAPXSearch {
 
 struct _CamelIMAPXSearchClass {
 	CamelFolderSearchClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_search_get_type	(void) G_GNUC_CONST;

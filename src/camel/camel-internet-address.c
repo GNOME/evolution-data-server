@@ -25,6 +25,10 @@
 
 #define d(x)
 
+struct _CamelInternetAddressPrivate {
+	GPtrArray *addresses;
+};
+
 struct _address {
 	gchar *name;
 	gchar *address;
@@ -33,11 +37,21 @@ struct _address {
 G_DEFINE_TYPE (CamelInternetAddress, camel_internet_address, CAMEL_TYPE_ADDRESS)
 
 static gint
-internet_address_decode (CamelAddress *a,
+internet_address_length (CamelAddress *paddr)
+{
+	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
+
+	g_return_val_if_fail (inet_addr != NULL, -1);
+
+	return inet_addr->priv->addresses->len;
+}
+
+static gint
+internet_address_decode (CamelAddress *addr,
                          const gchar *raw)
 {
 	CamelHeaderAddress *ha, *n;
-	gint count = a->addresses->len;
+	gint count = camel_address_length (addr);
 
 	/* Should probably use its own decoder or something */
 	ha = camel_header_address_decode (raw, NULL);
@@ -45,12 +59,12 @@ internet_address_decode (CamelAddress *a,
 		n = ha;
 		while (n) {
 			if (n->type == CAMEL_HEADER_ADDRESS_NAME) {
-				camel_internet_address_add ((CamelInternetAddress *) a, n->name, n->v.addr);
+				camel_internet_address_add ((CamelInternetAddress *) addr, n->name, n->v.addr);
 			} else if (n->type == CAMEL_HEADER_ADDRESS_GROUP) {
 				CamelHeaderAddress *g = n->v.members;
 				while (g) {
 					if (g->type == CAMEL_HEADER_ADDRESS_NAME)
-						camel_internet_address_add ((CamelInternetAddress *) a, g->name, g->v.addr);
+						camel_internet_address_add ((CamelInternetAddress *) addr, g->name, g->v.addr);
 					/* otherwise, it's an error, infact */
 					g = g->next;
 				}
@@ -60,24 +74,25 @@ internet_address_decode (CamelAddress *a,
 		camel_header_address_list_clear (&ha);
 	}
 
-	return a->addresses->len - count;
+	return camel_address_length (addr) - count;
 }
 
 static gchar *
-internet_address_encode (CamelAddress *a)
+internet_address_encode (CamelAddress *paddr)
 {
+	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
 	gint i;
 	GString *out;
 	gchar *ret;
 	gint len = 6;		/* "From: ", assume longer of the address headers */
 
-	if (a->addresses->len == 0)
+	if (inet_addr->priv->addresses->len == 0)
 		return NULL;
 
 	out = g_string_new ("");
 
-	for (i = 0; i < a->addresses->len; i++) {
-		struct _address *addr = g_ptr_array_index (a->addresses, i);
+	for (i = 0; i < inet_addr->priv->addresses->len; i++) {
+		struct _address *addr = g_ptr_array_index (inet_addr->priv->addresses, i);
 		gchar *enc;
 
 		if (i != 0)
@@ -95,12 +110,13 @@ internet_address_encode (CamelAddress *a)
 }
 
 static gint
-internet_address_unformat (CamelAddress *a,
+internet_address_unformat (CamelAddress *paddr,
                            const gchar *raw)
 {
+	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
 	gchar *buffer, *p, *name, *addr;
 	gint c;
-	gint count = a->addresses->len;
+	gint count = inet_addr->priv->addresses->len;
 
 	if (raw == NULL)
 		return 0;
@@ -148,7 +164,7 @@ internet_address_unformat (CamelAddress *a,
 			addr = g_strstrip (addr);
 			if (addr[0]) {
 				d (printf ("found address: '%s' <%s>\n", name, addr));
-				camel_internet_address_add ((CamelInternetAddress *) a, name, addr);
+				camel_internet_address_add (inet_addr, name, addr);
 			}
 			name = NULL;
 			addr = p;
@@ -158,23 +174,24 @@ internet_address_unformat (CamelAddress *a,
 
 	g_free (buffer);
 
-	return a->addresses->len - count;
+	return inet_addr->priv->addresses->len - count;
 }
 
 static gchar *
-internet_address_format (CamelAddress *a)
+internet_address_format (CamelAddress *paddr)
 {
+	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
 	gint i;
 	GString *out;
 	gchar *ret;
 
-	if (a->addresses->len == 0)
+	if (inet_addr->priv->addresses->len == 0)
 		return NULL;
 
 	out = g_string_new ("");
 
-	for (i = 0; i < a->addresses->len; i++) {
-		struct _address *addr = g_ptr_array_index (a->addresses, i);
+	for (i = 0; i < inet_addr->priv->addresses->len; i++) {
+		struct _address *addr = g_ptr_array_index (inet_addr->priv->addresses, i);
 		gchar *enc;
 
 		if (i != 0)
@@ -192,43 +209,69 @@ internet_address_format (CamelAddress *a)
 }
 
 static void
-internet_address_remove (CamelAddress *a,
+internet_address_remove (CamelAddress *paddr,
                          gint index)
 {
+	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (paddr);
 	struct _address *addr;
 
-	if (index < 0 || index >= a->addresses->len)
+	if (index < 0 || index >= inet_addr->priv->addresses->len)
 		return;
 
-	addr = g_ptr_array_index (a->addresses, index);
+	addr = g_ptr_array_index (inet_addr->priv->addresses, index);
 	g_free (addr->name);
 	g_free (addr->address);
 	g_free (addr);
-	g_ptr_array_remove_index (a->addresses, index);
+	g_ptr_array_remove_index (inet_addr->priv->addresses, index);
 }
 
 static gint
 internet_address_cat (CamelAddress *dest,
                       CamelAddress *source)
 {
+	CamelInternetAddress *dest_inet_addr;
+	CamelInternetAddress *source_inet_addr;
 	gint i;
 
+	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (dest), -1);
 	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (source), -1);
 
-	for (i = 0; i < source->addresses->len; i++) {
-		struct _address *addr = g_ptr_array_index (source->addresses, i);
-		camel_internet_address_add ((CamelInternetAddress *) dest, addr->name, addr->address);
+	dest_inet_addr = CAMEL_INTERNET_ADDRESS (dest);
+	source_inet_addr = CAMEL_INTERNET_ADDRESS (source);
+
+	for (i = 0; i < source_inet_addr->priv->addresses->len; i++) {
+		struct _address *addr = g_ptr_array_index (source_inet_addr->priv->addresses, i);
+		camel_internet_address_add (dest_inet_addr, addr->name, addr->address);
 	}
 
 	return i;
 }
 
 static void
+internet_address_finalize (GObject *object)
+{
+	CamelInternetAddress *inet_addr = CAMEL_INTERNET_ADDRESS (object);
+
+	camel_address_remove (CAMEL_ADDRESS (inet_addr), -1);
+	g_ptr_array_free (inet_addr->priv->addresses, TRUE);
+
+	/* Chain up to parent's finalize() method. */
+	G_OBJECT_CLASS (camel_internet_address_parent_class)->finalize (object);
+}
+
+static void
 camel_internet_address_class_init (CamelInternetAddressClass *class)
 {
 	CamelAddressClass *address_class;
+	GObjectClass *object_class;
+
+	g_type_class_add_private (class, sizeof (CamelInternetAddressPrivate));
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->finalize = internet_address_finalize;
 
 	address_class = CAMEL_ADDRESS_CLASS (class);
+	address_class->length = internet_address_length;
 	address_class->decode = internet_address_decode;
 	address_class->encode = internet_address_encode;
 	address_class->unformat = internet_address_unformat;
@@ -240,6 +283,8 @@ camel_internet_address_class_init (CamelInternetAddressClass *class)
 static void
 camel_internet_address_init (CamelInternetAddress *internet_address)
 {
+	internet_address->priv = G_TYPE_INSTANCE_GET_PRIVATE (internet_address, CAMEL_TYPE_INTERNET_ADDRESS, CamelInternetAddressPrivate);
+	internet_address->priv->addresses = g_ptr_array_new ();
 }
 
 /**
@@ -278,8 +323,8 @@ camel_internet_address_add (CamelInternetAddress *addr,
 	new = g_malloc (sizeof (*new));
 	new->name = g_strdup (name);
 	new->address = g_strdup (address);
-	index = ((CamelAddress *) addr)->addresses->len;
-	g_ptr_array_add (((CamelAddress *) addr)->addresses, new);
+	index = addr->priv->addresses->len;
+	g_ptr_array_add (addr->priv->addresses, new);
 
 	return index;
 }
@@ -305,10 +350,10 @@ camel_internet_address_get (CamelInternetAddress *addr,
 
 	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), FALSE);
 
-	if (index < 0 || index >= ((CamelAddress *) addr)->addresses->len)
+	if (index < 0 || index >= addr->priv->addresses->len)
 		return FALSE;
 
-	a = g_ptr_array_index (((CamelAddress *) addr)->addresses, index);
+	a = g_ptr_array_index (addr->priv->addresses, index);
 	if (namep)
 		*namep = a->name;
 	if (addressp)
@@ -337,9 +382,9 @@ camel_internet_address_find_name (CamelInternetAddress *addr,
 
 	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), -1);
 
-	len = ((CamelAddress *) addr)->addresses->len;
+	len = addr->priv->addresses->len;
 	for (i = 0; i < len; i++) {
-		a = g_ptr_array_index (((CamelAddress *) addr)->addresses, i);
+		a = g_ptr_array_index (addr->priv->addresses, i);
 		if (a->name && !strcmp (a->name, name)) {
 			if (addressp)
 				*addressp = a->address;
@@ -391,10 +436,10 @@ camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
 
 	g_return_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr));
 
-	len = ((CamelAddress *) addr)->addresses->len;
+	len = addr->priv->addresses->len;
 	for (i = 0; i < len; i++) {
 		gint at_pos = -1;
-		a = g_ptr_array_index (((CamelAddress *) addr)->addresses, i);
+		a = g_ptr_array_index (addr->priv->addresses, i);
 		if (a->address && !domain_contains_only_ascii (a->address, &at_pos)) {
 			gchar *address, *domain;
 
@@ -434,9 +479,9 @@ camel_internet_address_find_address (CamelInternetAddress *addr,
 
 	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), -1);
 
-	len = ((CamelAddress *) addr)->addresses->len;
+	len = addr->priv->addresses->len;
 	for (i = 0; i < len; i++) {
-		a = g_ptr_array_index (((CamelAddress *) addr)->addresses, i);
+		a = g_ptr_array_index (addr->priv->addresses, i);
 		if (!strcmp (a->address, address)) {
 			if (namep)
 				*namep = a->name;

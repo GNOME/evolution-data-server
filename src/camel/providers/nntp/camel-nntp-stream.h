@@ -65,6 +65,9 @@ struct _CamelNNTPStream {
 
 struct _CamelNNTPStreamClass {
 	CamelStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_stream_get_type	(void);

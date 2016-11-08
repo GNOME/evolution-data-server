@@ -159,15 +159,14 @@ camel_spool_folder_new (CamelStore *parent_store,
 		"parent-store", parent_store, NULL);
 
 	if (filter_inbox && strcmp (full_name, "INBOX") == 0)
-		folder->folder_flags |= CAMEL_FOLDER_FILTER_RECENT;
+		camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_FILTER_RECENT);
 	flags &= ~CAMEL_STORE_FOLDER_BODY_INDEX;
 
 	folder = (CamelFolder *) camel_local_folder_construct (
 		(CamelLocalFolder *) folder, flags, cancellable, error);
 
 	if (folder != NULL && use_xstatus_headers)
-		camel_mbox_summary_xstatus (
-			CAMEL_MBOX_SUMMARY (folder->summary), TRUE);
+		camel_mbox_summary_xstatus (CAMEL_MBOX_SUMMARY (camel_folder_get_folder_summary (folder)), TRUE);
 
 	g_free (basename);
 

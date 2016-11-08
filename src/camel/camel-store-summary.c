@@ -31,8 +31,8 @@
 #include <glib/gstdio.h>
 
 #include "camel-file-utils.h"
-#include "camel-store-summary.h"
 #include "camel-folder-summary.h"
+#include "camel-store-summary.h"
 #include "camel-url.h"
 #include "camel-win32.h"
 
@@ -66,6 +66,9 @@ struct _CamelStoreSummaryPrivate {
 	GHashTable *folder_summaries; /* CamelFolderSummary->path; doesn't add reference to CamelFolderSummary */
 
 	guint scheduled_save_id;
+
+	GPtrArray *folders;	/* CamelStoreInfo's */
+	GHashTable *folders_path; /* CamelStoreInfo's by path name */
 };
 
 G_DEFINE_TYPE (CamelStoreSummary, camel_store_summary, G_TYPE_OBJECT)
@@ -76,15 +79,15 @@ store_summary_finalize (GObject *object)
 	CamelStoreSummary *summary = CAMEL_STORE_SUMMARY (object);
 	guint ii;
 
-	for (ii = 0; ii < summary->folders->len; ii++) {
+	for (ii = 0; ii < summary->priv->folders->len; ii++) {
 		CamelStoreInfo *info;
 
-		info = g_ptr_array_index (summary->folders, ii);
+		info = g_ptr_array_index (summary->priv->folders, ii);
 		camel_store_summary_info_unref (summary, info);
 	}
 
-	g_ptr_array_free (summary->folders, TRUE);
-	g_hash_table_destroy (summary->folders_path);
+	g_ptr_array_free (summary->priv->folders, TRUE);
+	g_hash_table_destroy (summary->priv->folders_path);
 	g_hash_table_destroy (summary->priv->folder_summaries);
 
 	g_free (summary->priv->summary_path);
@@ -240,10 +243,10 @@ store_summary_store_info_set_string (CamelStoreSummary *summary,
 {
 	switch (type) {
 	case CAMEL_STORE_INFO_PATH:
-		g_hash_table_remove (summary->folders_path, (gchar *) camel_store_info_path (summary, info));
+		g_hash_table_remove (summary->priv->folders_path, (gchar *) camel_store_info_path (summary, info));
 		g_free (info->path);
 		info->path = g_strdup (str);
-		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
+		g_hash_table_insert (summary->priv->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		summary->priv->dirty = TRUE;
 		break;
 	}
@@ -277,8 +280,8 @@ camel_store_summary_init (CamelStoreSummary *summary)
 
 	summary->priv->version = CAMEL_STORE_SUMMARY_VERSION;
 
-	summary->folders = g_ptr_array_new ();
-	summary->folders_path = g_hash_table_new (g_str_hash, g_str_equal);
+	summary->priv->folders = g_ptr_array_new ();
+	summary->priv->folders_path = g_hash_table_new (g_str_hash, g_str_equal);
 	summary->priv->folder_summaries = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
 	summary->priv->scheduled_save_id = 0;
 
@@ -333,7 +336,7 @@ camel_store_summary_count (CamelStoreSummary *summary)
 {
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), -1);
 
-	return summary->folders->len;
+	return summary->priv->folders->len;
 }
 
 /**
@@ -358,9 +361,9 @@ camel_store_summary_array (CamelStoreSummary *summary)
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 
-	res = g_ptr_array_sized_new (summary->folders->len);
-	for (i = 0; i < summary->folders->len; i++) {
-		info = g_ptr_array_index (summary->folders, i);
+	res = g_ptr_array_sized_new (summary->priv->folders->len);
+	for (i = 0; i < summary->priv->folders->len; i++) {
+		info = g_ptr_array_index (summary->priv->folders, i);
 		camel_store_summary_info_ref (summary, info);
 		g_ptr_array_add (res, info);
 	}
@@ -393,7 +396,7 @@ camel_store_summary_array_free (CamelStoreSummary *summary,
 }
 
 /**
- * camel_store_summary_path:
+ * camel_store_summary_path: (skip)
  * @summary: a #CamelStoreSummary object
  * @path: path to the item
  *
@@ -416,7 +419,7 @@ camel_store_summary_path (CamelStoreSummary *summary,
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 
-	info = g_hash_table_lookup (summary->folders_path, path);
+	info = g_hash_table_lookup (summary->priv->folders_path, path);
 
 	if (info != NULL)
 		camel_store_summary_info_ref (summary, info);
@@ -552,9 +555,9 @@ camel_store_summary_save (CamelStoreSummary *summary)
 
 	/* FIXME: Locking? */
 
-	count = summary->folders->len;
+	count = summary->priv->folders->len;
 	for (i = 0; i < count; i++) {
-		info = summary->folders->pdata[i];
+		info = summary->priv->folders->pdata[i];
 		class->store_info_save (summary, out, info);
 	}
 
@@ -604,21 +607,21 @@ camel_store_summary_add (CamelStoreSummary *summary,
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 
-	g_ptr_array_add (summary->folders, info);
-	g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
+	g_ptr_array_add (summary->priv->folders, info);
+	g_hash_table_insert (summary->priv->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 	summary->priv->dirty = TRUE;
 
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 }
 
 /**
- * camel_store_summary_add_from_path:
+ * camel_store_summary_add_from_path: (skip)
  * @summary: a #CamelStoreSummary object
  * @path: item path
  *
  * Build a new info record based on the name, and add it to the summary.
  *
- * Returns: the newly added record
+ * Returns: (transfer none): the newly added record
  **/
 CamelStoreInfo *
 camel_store_summary_add_from_path (CamelStoreSummary *summary,
@@ -631,7 +634,7 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
 
-	info = g_hash_table_lookup (summary->folders_path, path);
+	info = g_hash_table_lookup (summary->priv->folders_path, path);
 	if (info != NULL) {
 		g_warning ("Trying to add folder '%s' to summary that already has it", path);
 		info = NULL;
@@ -643,8 +646,8 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 
 		info = class->store_info_new (summary, path);
 
-		g_ptr_array_add (summary->folders, info);
-		g_hash_table_insert (summary->folders_path, (gchar *) camel_store_info_path (summary, info), info);
+		g_ptr_array_add (summary->priv->folders, info);
+		g_hash_table_insert (summary->priv->folders_path, (gchar *) camel_store_info_path (summary, info), info);
 		summary->priv->dirty = TRUE;
 	}
 
@@ -654,13 +657,13 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 }
 
 /**
- * camel_store_summary_info_ref:
+ * camel_store_summary_info_ref: (skip)
  * @summary: a #CamelStoreSummary object
  * @info: a #CamelStoreInfo
  *
  * Add an extra reference to @info.
  *
- * Returns: the @info argument
+ * Returns: (transfer full): the @info argument
  **/
 CamelStoreInfo *
 camel_store_summary_info_ref (CamelStoreSummary *summary,
@@ -731,8 +734,8 @@ camel_store_summary_remove (CamelStoreSummary *summary,
 	g_return_if_fail (info != NULL);
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
-	g_hash_table_remove (summary->folders_path, camel_store_info_path (summary, info));
-	g_ptr_array_remove (summary->folders, info);
+	g_hash_table_remove (summary->priv->folders_path, camel_store_info_path (summary, info));
+	g_ptr_array_remove (summary->priv->folders, info);
 	summary->priv->dirty = TRUE;
 	g_rec_mutex_unlock (&summary->priv->summary_lock);
 
@@ -757,7 +760,7 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 	g_return_if_fail (path != NULL);
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);
-	if (g_hash_table_lookup_extended (summary->folders_path, path, (gpointer) &oldpath, (gpointer) &oldinfo)) {
+	if (g_hash_table_lookup_extended (summary->priv->folders_path, path, (gpointer) &oldpath, (gpointer) &oldinfo)) {
 		/* make sure it doesn't vanish while we're removing it */
 		camel_store_summary_info_ref (summary, oldinfo);
 		g_rec_mutex_unlock (&summary->priv->summary_lock);
@@ -769,7 +772,7 @@ camel_store_summary_remove_path (CamelStoreSummary *summary,
 }
 
 /**
- * camel_store_summary_info_new:
+ * camel_store_summary_info_new: (skip)
  * @summary: a #CamelStoreSummary object
  *
  * Allocate a new #CamelStoreInfo, suitable for adding to this
@@ -866,6 +869,27 @@ camel_store_info_name (CamelStoreSummary *summary,
 
 	/* XXX Not thread-safe; should return a duplicate. */
 	return (cp != NULL) ? cp + 1 : info->path;
+}
+
+/**
+ * camel_store_summary_sort:
+ * @summary: a #CamelStoreSummary
+ * @compare_func: (scope call) (closure user_data): a compare function
+ * @user_data: user data passed to the @compare_func
+ *
+ * Sorts the array of the folders using the @compare_func.
+ *
+ * Since: 3.24
+ **/
+void
+camel_store_summary_sort (CamelStoreSummary *summary,
+			  GCompareDataFunc compare_func,
+			  gpointer user_data)
+{
+	g_return_if_fail (CAMEL_IS_STORE_SUMMARY (summary));
+	g_return_if_fail (compare_func != NULL);
+
+	g_ptr_array_sort_with_data (summary->priv->folders, compare_func, user_data);
 }
 
 static gboolean

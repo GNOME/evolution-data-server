@@ -57,6 +57,9 @@ struct _CamelSpoolFolder {
 
 struct _CamelSpoolFolderClass {
 	CamelMboxFolderClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_spool_folder_get_type	(void);

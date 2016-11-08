@@ -52,6 +52,9 @@ struct _CamelIMAPXSettings {
 
 struct _CamelIMAPXSettingsClass {
 	CamelOfflineSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_settings_get_type	(void) G_GNUC_CONST;

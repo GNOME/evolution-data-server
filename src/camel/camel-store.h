@@ -27,9 +27,7 @@
 #ifndef CAMEL_STORE_H
 #define CAMEL_STORE_H
 
-/* for mode_t */
-#include <sys/types.h>
-
+#include <camel/camel-db.h>
 #include <camel/camel-enums.h>
 #include <camel/camel-folder.h>
 #include <camel/camel-service.h>
@@ -53,6 +51,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_STORE, CamelStoreClass))
 
+#define CAMEL_TYPE_FOLDER_INFO \
+	(camel_folder_info_get_type ())
+#define CAMEL_FOLDER_INFO(obj) \
+	(G_TYPE_CHECK_INSTANCE_CAST \
+	((obj), CAMEL_TYPE_FOLDER_INFO, CamelFolderInfo))
+#define CAMEL_IS_FOLDER_INFO(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), CAMEL_TYPE_FOLDER_INFO))
 /**
  * CAMEL_STORE_ERROR:
  *
@@ -113,8 +119,6 @@ typedef struct _CamelFolderInfo {
 	gint32 total;
 } CamelFolderInfo;
 
-struct _CamelDB;
-
 typedef struct _CamelStore CamelStore;
 typedef struct _CamelStoreClass CamelStoreClass;
 typedef struct _CamelStorePrivate CamelStorePrivate;
@@ -133,21 +137,6 @@ typedef enum {
 struct _CamelStore {
 	CamelService parent;
 	CamelStorePrivate *priv;
-
-	CamelObjectBag *folders;
-	struct _CamelDB *cdb_r;
-	struct _CamelDB *cdb_w;
-
-	CamelStoreFlags flags;
-
-	/* XXX The default "mode" (read/write) is changed only by
-	 *     evolution-groupwise for non-writable proxy accounts.
-	 *     The mode is only checked by the account combo box in
-	 *     Evolution's composer window. */
-	CamelStorePermissionFlags mode;
-
-	/* Future ABI expansion */
-	gpointer later[4];
 };
 
 struct _CamelStoreClass {
@@ -208,8 +197,8 @@ struct _CamelStoreClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
-	/* Reserved slots for methods. */
-	gpointer reserved_for_methods[20];
+	/* Padding for future expansion */
+	gpointer reserved_methods[20];
 
 	/* Signals */
 	void		(*folder_created)	(CamelStore *store,
@@ -222,10 +211,22 @@ struct _CamelStoreClass {
 						 const gchar *old_name,
 						 CamelFolderInfo *folder_info);
 	void		(*folder_info_stale)	(CamelStore *store);
+
+	/* Padding for future expansion */
+	gpointer reserved_signals[20];
 };
 
 GType		camel_store_get_type		(void);
 GQuark		camel_store_error_quark		(void) G_GNUC_CONST;
+CamelDB *	camel_store_get_db		(CamelStore *store);
+CamelObjectBag *camel_store_get_folders_bag	(CamelStore *store);
+GPtrArray *	camel_store_dup_opened_folders	(CamelStore *store);
+guint32		camel_store_get_flags		(CamelStore *store);
+void		camel_store_set_flags		(CamelStore *store,
+						 guint32 flags);
+guint32		camel_store_get_permissions	(CamelStore *store);
+void		camel_store_set_permissions	(CamelStore *store,
+						 guint32 permissions);
 void		camel_store_folder_created	(CamelStore *store,
 						 CamelFolderInfo *folder_info);
 void		camel_store_folder_deleted	(CamelStore *store,
@@ -404,6 +405,9 @@ gboolean	camel_store_initial_setup_finish
 gboolean	camel_store_maybe_run_db_maintenance
 						(CamelStore *store,
 						 GError **error);
+void		camel_store_delete_cached_folder
+						(CamelStore *store,
+						 const gchar *folder_name);
 
 G_END_DECLS
 

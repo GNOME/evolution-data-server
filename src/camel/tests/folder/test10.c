@@ -101,7 +101,8 @@ main (gint argc,
 			for (i = 0; i < MAX_THREADS; i++) {
 				GError *error = NULL;
 
-				threads[i] = g_thread_new (NULL, worker, NULL);
+				threads[i] = g_thread_try_new (NULL, worker, NULL, &error);
+				check_msg (error == NULL, "g_thread_try_new() failed: %s", error->message);
 			}
 
 			for (i = 0; i < MAX_THREADS; i++) {

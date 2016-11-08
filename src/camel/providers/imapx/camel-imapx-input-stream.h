@@ -68,6 +68,9 @@ struct _CamelIMAPXInputStream {
 
 struct _CamelIMAPXInputStreamClass {
 	GFilterInputStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GQuark		camel_imapx_error_quark		(void) G_GNUC_CONST;

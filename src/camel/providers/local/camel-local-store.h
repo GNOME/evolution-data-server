@@ -62,6 +62,9 @@ struct _CamelLocalStoreClass {
 	gchar *		(*get_meta_path)	(CamelLocalStore *ls,
 						 const gchar *full_name,
 						 const gchar *ext);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_local_store_get_type	(void);

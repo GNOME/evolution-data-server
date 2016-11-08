@@ -703,10 +703,15 @@ camel_url_decode (gchar *part)
 	} while (*s++);
 }
 
+/**
+ * camel_url_hash:
+ * @u: the base URL
+ *
+ * Returns: the url hash
+ */
 guint
-camel_url_hash (gconstpointer v)
+camel_url_hash (const CamelURL *u)
 {
-	const CamelURL *u = v;
 	guint hash = 0;
 
 #define ADD_HASH(s) if (s) hash ^= g_str_hash (s);
@@ -722,7 +727,7 @@ camel_url_hash (gconstpointer v)
 	return hash;
 }
 
-static gint
+static gboolean
 check_equal (gchar *s1,
              gchar *s2)
 {
@@ -739,19 +744,24 @@ check_equal (gchar *s1,
 	return strcmp (s1, s2) == 0;
 }
 
-gint
-camel_url_equal (gconstpointer v,
-                 gconstpointer v2)
+/**
+ * camel_url_equal:
+ * @u: the base URL
+ * @u2: the URL to compare
+ *
+ * Returns: return %TRUE if the two urls are equal
+ */
+gboolean
+camel_url_equal (const CamelURL *u,
+                 const CamelURL *u2)
 {
-	const CamelURL *u1 = v, *u2 = v2;
-
-	return check_equal (u1->protocol, u2->protocol)
-		&& check_equal (u1->user, u2->user)
-		&& check_equal (u1->authmech, u2->authmech)
-		&& check_equal (u1->host, u2->host)
-		&& check_equal (u1->path, u2->path)
-		&& check_equal (u1->query, u2->query)
-		&& u1->port == u2->port;
+	return check_equal (u->protocol, u2->protocol)
+		&& check_equal (u->user, u2->user)
+		&& check_equal (u->authmech, u2->authmech)
+		&& check_equal (u->host, u2->host)
+		&& check_equal (u->path, u2->path)
+		&& check_equal (u->query, u2->query)
+		&& u->port == u2->port;
 }
 
 /**
@@ -760,7 +770,7 @@ camel_url_equal (gconstpointer v,
  *
  * Copy a #CamelURL.
  *
- * Returns: a duplicate copy of @in
+ * Returns:(transfer full): a duplicate copy of @in
  **/
 CamelURL *
 camel_url_copy (CamelURL *in)

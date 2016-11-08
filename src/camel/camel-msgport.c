@@ -238,7 +238,7 @@ msgport_sync_with_prpipe (PRFileDesc *prfd)
 }
 
 /**
- * camel_msgport_new:
+ * camel_msgport_new: (skip)
  *
  * Since: 2.24
  **/
@@ -258,7 +258,7 @@ camel_msgport_new (void)
 }
 
 /**
- * camel_msgport_destroy:
+ * camel_msgport_destroy: (skip)
  *
  * Since: 2.24
  **/
@@ -281,7 +281,7 @@ camel_msgport_destroy (CamelMsgPort *msgport)
 }
 
 /**
- * camel_msgport_fd:
+ * camel_msgport_fd: (skip)
  *
  * Since: 2.24
  **/
@@ -302,7 +302,9 @@ camel_msgport_fd (CamelMsgPort *msgport)
 }
 
 /**
- * camel_msgport_prfd:
+ * camel_msgport_prfd: (skip)
+ *
+ * Returns: (transfer none):
  *
  * Since: 2.24
  **/
@@ -323,7 +325,7 @@ camel_msgport_prfd (CamelMsgPort *msgport)
 }
 
 /**
- * camel_msgport_push:
+ * camel_msgport_push: (skip)
  *
  * Since: 2.24
  **/
@@ -374,7 +376,7 @@ camel_msgport_push (CamelMsgPort *msgport,
 }
 
 /**
- * camel_msgport_pop:
+ * camel_msgport_pop: (skip)
  *
  * Since: 2.24
  **/
@@ -402,7 +404,7 @@ camel_msgport_pop (CamelMsgPort *msgport)
 }
 
 /**
- * camel_msgport_try_pop:
+ * camel_msgport_try_pop: (skip)
  *
  * Since: 2.24
  **/
@@ -428,7 +430,7 @@ camel_msgport_try_pop (CamelMsgPort *msgport)
 }
 
 /**
- * camel_msgport_timeout_pop:
+ * camel_msgport_timeout_pop: (skip)
  * @msgport: a #CamelMsgPort
  * @timeout: number of microseconds to wait
  *
@@ -457,7 +459,7 @@ camel_msgport_timeout_pop (CamelMsgPort *msgport,
 }
 
 /**
- * camel_msgport_reply:
+ * camel_msgport_reply: (skip)
  *
  * Since: 2.24
  **/

@@ -30,6 +30,7 @@
 
 #include "camel-charset-map.h"
 #include "camel-html-parser.h"
+#include "camel-iconv.h"
 #include "camel-mime-filter-basic.h"
 #include "camel-mime-filter-charset.h"
 #include "camel-mime-filter-crlf.h"
@@ -137,7 +138,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 
 	if (content) {
 		if (encoding)
-			content->encoding = camel_transfer_encoding_from_string (encoding);
+			camel_data_wrapper_set_encoding (content, camel_transfer_encoding_from_string (encoding));
 
 		/* would you believe you have to set this BEFORE you set the content object???  oh my god !!!! */
 		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (dw));
@@ -150,91 +151,188 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 	return success;
 }
 
+G_DEFINE_BOXED_TYPE (CamelMessageContentInfo,
+		camel_message_content_info,
+		camel_message_content_info_copy,
+		camel_message_content_info_free)
+
 /**
- * camel_mime_message_build_preview:
+ * camel_message_content_info_new:
  *
- * <note>
- *   <para>
- *     This function blocks like crazy.
- *   </para>
- * </note>
+ * Allocate a new #CamelMessageContentInfo.
  *
- * Since: 2.28
+ * Returns: (transfer full): a newly allocated #CamelMessageContentInfo
  **/
-gboolean
-camel_mime_message_build_preview (CamelMimePart *msg,
-                                  CamelMessageInfo *info)
+CamelMessageContentInfo *
+camel_message_content_info_new (void)
 {
-	CamelDataWrapper *dw;
-	gboolean got_plain = FALSE;
+	return g_slice_alloc0 (sizeof (CamelMessageContentInfo));
+}
 
-	dw = camel_medium_get_content ((CamelMedium *) msg);
-	if (camel_content_type_is (dw->mime_type, "multipart", "*")) {
-		gint i, nparts;
-		CamelMultipart *mp = (CamelMultipart *) camel_medium_get_content ((CamelMedium *) msg);
+/**
+ * camel_message_content_info_copy:
+ * @src: (nullable): a source #CamelMessageContentInfo to copy
+ *
+ * Returns: a copy of @src, or %NULL, if @src was %NULL
+ *
+ * Since: 3.24
+ **/
+CamelMessageContentInfo *
+camel_message_content_info_copy (const CamelMessageContentInfo *src)
+{
+	CamelMessageContentInfo *res;
 
-		g_warn_if_fail (CAMEL_IS_MULTIPART (mp));
+	if (!src)
+		return NULL;
 
-		nparts = camel_multipart_get_number (mp);
-		for (i = 0; i < nparts && !got_plain; i++) {
-			CamelMimePart *part = camel_multipart_get_part (mp, i);
-			got_plain = camel_mime_message_build_preview (part, info);
-		}
+	res = camel_message_content_info_new ();
 
-	} else if (camel_content_type_is (dw->mime_type, "text", "*") &&
-		/*    !camel_content_type_is (dw->mime_type, "text", "html") && */
-		    !camel_content_type_is (dw->mime_type, "text", "calendar")) {
-		CamelStream *mstream, *bstream;
+	if (src->type) {
+		gchar *content_type;
 
-		/* FIXME Pass a GCancellable and GError here. */
-		mstream = camel_stream_mem_new ();
-		if (camel_data_wrapper_decode_to_stream_sync (dw, mstream, NULL, NULL) > 0) {
-			gchar *line = NULL;
-			GString *str = g_string_new (NULL);
+		content_type = camel_content_type_format (src->type);
+		res->type = camel_content_type_decode (content_type);
 
-			g_seekable_seek (
-				G_SEEKABLE (mstream), 0,
-				G_SEEK_SET, NULL, NULL);
-
-			bstream = camel_stream_buffer_new (mstream, CAMEL_STREAM_BUFFER_READ | CAMEL_STREAM_BUFFER_BUFFER);
-
-			/* We should fetch just 200 unquoted lines. */
-			while ((line = camel_stream_buffer_read_line ((CamelStreamBuffer *) bstream, NULL, NULL)) && str->len < 200) {
-				gchar *tmp = line;
-
-				if (*line == '>' || strstr (line, "wrote:")) {
-					g_free (tmp);
-					continue;
-				}
-				if (g_str_has_prefix (line, "--")) {
-					g_free (tmp);
-					line = NULL;
-					break;
-				}
-				while (*line && ((*line == ' ') || *line == '\t'))
-					line++;
-				if (*line == '\0' || *line == '\n') {
-					g_free (tmp);
-					continue;
-				}
-
-				g_string_append (str, " ");
-				g_string_append (str, line);
-				g_free (tmp);
-				line = NULL;
-			}
-			if (str->len > 100) {
-				g_string_insert (str, 100, "\n");
-			}
-			/* We don't mark dirty, as we don't store these */
-			((CamelMessageInfoBase *) info)->preview = camel_utf8_make_valid (str->str);
-			g_string_free (str, TRUE);
-
-			g_object_unref (bstream);
-		}
-		g_object_unref (mstream);
-		return TRUE;
+		g_free (content_type);
 	}
 
-	return got_plain;
+	res->id = g_strdup (src->id);
+	res->description = g_strdup (src->description);
+	res->encoding = g_strdup (src->encoding);
+	res->size = src->size;
+
+	res->next = camel_message_content_info_copy (src->next);
+	res->childs = camel_message_content_info_copy (src->childs);
+
+	if (res->childs) {
+		CamelMessageContentInfo *child;
+
+		for (child = res->childs; child; child = child->next) {
+			child->parent = res;
+		}
+	}
+
+	return res;
+}
+
+/**
+ * camel_message_content_info_free:
+ * @ci: a #CamelMessageContentInfo
+ *
+ * Recursively frees the content info @ci, and all associated memory.
+ **/
+void
+camel_message_content_info_free (CamelMessageContentInfo *ci)
+{
+	CamelMessageContentInfo *pw, *pn;
+
+	pw = ci->childs;
+
+	camel_content_type_unref (ci->type);
+	g_free (ci->id);
+	g_free (ci->description);
+	g_free (ci->encoding);
+	g_slice_free1 (sizeof (CamelMessageContentInfo), ci);
+
+	while (pw) {
+		pn = pw->next;
+		camel_message_content_info_free (pw);
+		pw = pn;
+	}
+}
+
+CamelMessageContentInfo *
+camel_message_content_info_new_from_parser (CamelMimeParser *mp)
+{
+	CamelMessageContentInfo *ci = NULL;
+	CamelNameValueArray *headers = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), NULL);
+
+	switch (camel_mime_parser_state (mp)) {
+	case CAMEL_MIME_PARSER_STATE_HEADER:
+	case CAMEL_MIME_PARSER_STATE_MESSAGE:
+	case CAMEL_MIME_PARSER_STATE_MULTIPART:
+		headers = camel_mime_parser_dup_headers (mp);
+		ci = camel_message_content_info_new_from_headers (headers);
+		camel_name_value_array_free (headers);
+		if (ci) {
+			if (ci->type)
+				camel_content_type_unref (ci->type);
+			ci->type = camel_mime_parser_content_type (mp);
+			camel_content_type_ref (ci->type);
+		}
+		break;
+	default:
+		g_error ("Invalid parser state");
+	}
+
+	return ci;
+}
+
+CamelMessageContentInfo *
+camel_message_content_info_new_from_message (CamelMimePart *mp)
+{
+	CamelMessageContentInfo *ci = NULL;
+	const CamelNameValueArray *headers = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mp), NULL);
+
+	headers = camel_medium_get_headers (CAMEL_MEDIUM (mp));
+	ci = camel_message_content_info_new_from_headers (headers);
+
+	return ci;
+}
+
+CamelMessageContentInfo *
+camel_message_content_info_new_from_headers (const CamelNameValueArray *headers)
+{
+	CamelMessageContentInfo *ci;
+	const gchar *charset;
+
+	ci = camel_message_content_info_new ();
+
+	charset = camel_iconv_locale_charset ();
+	ci->id = camel_header_msgid_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-ID"));
+	ci->description = camel_header_decode_string (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Description"), charset);
+	ci->encoding = camel_content_transfer_encoding_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Transfer-Encoding"));
+	ci->type = camel_content_type_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Type"));
+
+	return ci;
+}
+
+void
+camel_message_content_info_dump (CamelMessageContentInfo *ci,
+				 gint depth)
+{
+	gchar *p;
+
+	p = alloca (depth * 4 + 1);
+	memset (p, ' ', depth * 4);
+	p[depth * 4] = 0;
+
+	if (ci == NULL) {
+		printf ("%s<empty>\n", p);
+		return;
+	}
+
+	if (ci->type)
+		printf (
+			"%scontent-type: %s/%s\n",
+			p, ci->type->type ? ci->type->type : "(null)",
+			ci->type->subtype ? ci->type->subtype : "(null)");
+	else
+		printf ("%scontent-type: <unset>\n", p);
+	printf (
+		"%scontent-transfer-encoding: %s\n",
+		p, ci->encoding ? ci->encoding : "(null)");
+	printf (
+		"%scontent-description: %s\n",
+		p, ci->description ? ci->description : "(null)");
+	printf ("%ssize: %lu\n", p, (gulong) ci->size);
+	ci = ci->childs;
+	while (ci) {
+		camel_message_content_info_dump (ci, depth + 1);
+		ci = ci->next;
+	}
 }

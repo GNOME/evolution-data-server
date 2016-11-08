@@ -223,8 +223,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		GPtrArray *folders;
 		guint ii;
 
-		folders = camel_object_bag_list (
-			CAMEL_STORE (store)->folders);
+		folders = camel_store_dup_opened_folders (CAMEL_STORE (store));
 
 		for (ii = 0; ii < folders->len; ii++) {
 			CamelFolder *folder = folders->pdata[ii];
@@ -288,8 +287,7 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 		GPtrArray *folders;
 		guint ii;
 
-		folders = camel_object_bag_list (
-			CAMEL_STORE (store)->folders);
+		folders = camel_store_dup_opened_folders (CAMEL_STORE (store));
 
 		for (ii = 0; ii < folders->len; ii++) {
 			CamelFolder *folder = folders->pdata[ii];
@@ -359,8 +357,7 @@ camel_offline_store_requires_downsync (CamelOfflineStore *store)
 		GPtrArray *folders;
 		guint ii;
 
-		folders = camel_object_bag_list (
-			CAMEL_STORE (store)->folders);
+		folders = camel_store_dup_opened_folders (CAMEL_STORE (store));
 
 		for (ii = 0; ii < folders->len && !sync_any_folder; ii++) {
 			CamelFolder *folder = folders->pdata[ii];

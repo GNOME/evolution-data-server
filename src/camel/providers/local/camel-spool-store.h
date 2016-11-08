@@ -54,6 +54,9 @@ struct _CamelSpoolStore {
 
 struct _CamelSpoolStoreClass {
 	CamelMboxStoreClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_spool_store_get_type	(void);

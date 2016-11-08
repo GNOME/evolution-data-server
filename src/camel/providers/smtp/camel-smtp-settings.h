@@ -52,6 +52,9 @@ struct _CamelSmtpSettings {
 
 struct _CamelSmtpSettingsClass {
 	CamelSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_smtp_settings_get_type	(void) G_GNUC_CONST;

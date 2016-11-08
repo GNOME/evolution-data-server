@@ -72,6 +72,9 @@ struct _CamelSettingsClass {
 	CamelSettings *	(*clone)		(CamelSettings *settings);
 	gboolean	(*equal)		(CamelSettings *settings_a,
 						 CamelSettings *settings_b);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_settings_get_type		(void) G_GNUC_CONST;

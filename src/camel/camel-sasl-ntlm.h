@@ -57,6 +57,9 @@ struct _CamelSaslNTLM {
 
 struct _CamelSaslNTLMClass {
 	CamelSaslClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_sasl_ntlm_get_type (void);

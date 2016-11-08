@@ -58,6 +58,9 @@ struct _CamelSaslPOPB4SMTP {
 
 struct _CamelSaslPOPB4SMTPClass {
 	CamelSaslClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_sasl_popb4smtp_get_type (void);

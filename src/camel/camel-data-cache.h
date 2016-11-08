@@ -59,6 +59,9 @@ struct _CamelDataCache {
 
 struct _CamelDataCacheClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_data_cache_get_type	(void);

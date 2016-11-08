@@ -1654,7 +1654,7 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 		destination = camel_imapx_folder_list_mailbox (
 			CAMEL_IMAPX_FOLDER (folder),
 			cancellable, error);
-		folder_deleted_count = camel_folder_summary_get_deleted_count (folder->summary);
+		folder_deleted_count = camel_folder_summary_get_deleted_count (camel_folder_get_folder_summary (folder));
 		g_object_unref (folder);
 	}
 

@@ -474,4 +474,18 @@ typedef enum {
 	CAMEL_THREE_STATE_INCONSISTENT
 } CamelThreeState;
 
+/**
+ * CamelCompareType:
+ * @CAMEL_COMPARE_CASE_INSENSITIVE: compare case insensitively
+ * @CAMEL_COMPARE_CASE_SENSITIVE: compare case sensitively
+ *
+ * Declares the compare type to use.
+ *
+ * Since: 3.24
+ **/
+typedef enum {
+	CAMEL_COMPARE_CASE_INSENSITIVE,
+	CAMEL_COMPARE_CASE_SENSITIVE
+} CamelCompareType;
+
 #endif /* CAMEL_ENUMS_H */

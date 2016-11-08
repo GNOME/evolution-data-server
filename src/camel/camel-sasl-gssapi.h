@@ -59,6 +59,9 @@ struct _CamelSaslGssapi {
 
 struct _CamelSaslGssapiClass {
 	CamelSaslClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_sasl_gssapi_get_type	(void);

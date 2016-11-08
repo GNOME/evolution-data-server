@@ -65,6 +65,8 @@ struct _CamelMultipartEncrypted {
 struct _CamelMultipartEncryptedClass {
 	CamelMultipartClass parent_class;
 
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_multipart_encrypted_get_type	(void) G_GNUC_CONST;

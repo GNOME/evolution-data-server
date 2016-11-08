@@ -82,6 +82,9 @@ struct _CamelHTMLParser {
 
 struct _CamelHTMLParserClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_html_parser_get_type	(void);

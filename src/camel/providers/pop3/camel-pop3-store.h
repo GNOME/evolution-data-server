@@ -58,6 +58,9 @@ struct _CamelPOP3Store {
 
 struct _CamelPOP3StoreClass {
 	CamelStoreClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_pop3_store_get_type	(void);

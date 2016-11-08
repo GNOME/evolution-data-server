@@ -76,6 +76,9 @@ struct _CamelNNTPStoreSummary {
 
 struct _CamelNNTPStoreSummaryClass {
 	CamelStoreSummaryClass summary_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_store_summary_get_type

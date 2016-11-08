@@ -380,12 +380,12 @@ static const gint yenc_crc_table[256] = {
 
 /**
  * camel_ydecode_step:
- * @in: input buffer
+ * @in: (type guchar) (array length=inlen): input buffer
  * @inlen: input buffer length
- * @out: output buffer
- * @state: ydecode state
- * @pcrc: part crc state
- * @crc: crc state
+ * @out: (out) (array): output buffer
+ * @state: (out): ydecode state
+ * @pcrc: (out): part crc state
+ * @crc: (out): crc state
  *
  * Performs a 'decode step' on a chunk of yEncoded data of length
  * @inlen pointed to by @in and writes to @out. Assumes the =ybegin
@@ -463,12 +463,12 @@ camel_ydecode_step (const guchar *in,
 
 /**
  * camel_yencode_step:
- * @in: input buffer
+ * @in: (type guchar) (array length=inlen): input buffer
  * @inlen: input buffer length
- * @out: output buffer
- * @state: yencode state
- * @pcrc: part crc state
- * @crc: crc state
+ * @out: (array) (out): output buffer
+ * @state: (out): yencode state
+ * @pcrc: (out): part crc state
+ * @crc: (out): crc state
  *
  * Performs an yEncode 'encode step' on a chunk of raw data of length
  * @inlen pointed to by @in and writes to @out.
@@ -532,12 +532,12 @@ camel_yencode_step (const guchar *in,
 
 /**
  * camel_yencode_close:
- * @in: input buffer
+ * @in: (type guchar) (array length=inlen): input buffer
  * @inlen: input buffer length
- * @out: output buffer
- * @state: yencode state
- * @pcrc: part crc state
- * @crc: crc state
+ * @out: (array) (out): output buffer
+ * @state: (out): yencode state
+ * @pcrc: (out): part crc state
+ * @crc: (out): crc state
  *
  * Call this function when finished encoding data with
  * camel_yencode_step() to flush off the remaining state.

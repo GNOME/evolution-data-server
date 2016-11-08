@@ -127,6 +127,9 @@ struct _CamelTextIndexCursor {
 
 struct _CamelTextIndexCursorClass {
 	CamelIndexCursorClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_text_index_cursor_get_type (void);
@@ -140,6 +143,9 @@ struct _CamelTextIndexKeyCursor {
 
 struct _CamelTextIndexKeyCursorClass {
 	CamelIndexCursorClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_text_index_key_cursor_get_type (void);
@@ -153,6 +159,9 @@ struct _CamelTextIndexName {
 
 struct _CamelTextIndexNameClass {
 	CamelIndexNameClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_text_index_name_get_type (void);
@@ -166,6 +175,9 @@ struct _CamelTextIndex {
 
 struct _CamelTextIndexClass {
 	CamelIndexClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_text_index_get_type	(void);

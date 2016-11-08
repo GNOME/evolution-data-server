@@ -58,8 +58,6 @@ typedef struct _CamelStreamPrivate CamelStreamPrivate;
 struct _CamelStream {
 	GObject parent;
 	CamelStreamPrivate *priv;
-
-	gboolean eos;
 };
 
 struct _CamelStreamClass {
@@ -82,6 +80,9 @@ struct _CamelStreamClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(*eos)			(CamelStream *stream);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_stream_get_type		(void);

@@ -52,6 +52,9 @@ struct _CamelNNTPSettings {
 
 struct _CamelNNTPSettingsClass {
 	CamelOfflineSettingsClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_nntp_settings_get_type

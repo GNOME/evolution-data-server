@@ -77,6 +77,9 @@ struct _CamelStreamBufferClass {
 					 CamelStreamBufferMode mode,
 					 gchar *buf,
 					 guint32 size);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_stream_buffer_get_type	(void);

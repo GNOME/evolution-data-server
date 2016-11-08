@@ -47,7 +47,7 @@ gint main (gint argc, gchar **argv)
 
 	/* we iterate over all stores we want to test, with indexing or indexing turned on or off */
 	for (i = 0; i < G_N_ELEMENTS (stores); i++) {
-		gchar *name = stores[i];
+		const gchar *name = stores[i];
 
 		test_folder_message_ops (session, name, TRUE, "testbox");
 	}

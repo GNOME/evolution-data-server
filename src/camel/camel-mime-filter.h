@@ -88,6 +88,9 @@ struct _CamelMimeFilterClass {
 						 gsize *outlen,
 						 gsize *outprespace);
 	void		(*reset)		(CamelMimeFilter *filter);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_get_type	(void);

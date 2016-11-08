@@ -49,20 +49,25 @@ G_BEGIN_DECLS
 
 typedef struct _CamelStreamNull CamelStreamNull;
 typedef struct _CamelStreamNullClass CamelStreamNullClass;
+typedef struct _CamelStreamNullPrivate CamelStreamNullPrivate;
 
 struct _CamelStreamNull {
 	CamelStream parent;
-
-	gsize written;
+	CamelStreamNullPrivate *priv;
 };
 
 struct _CamelStreamNullClass {
 	CamelStreamClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_stream_null_get_type (void);
 
-CamelStream *camel_stream_null_new (void);
+CamelStream *	camel_stream_null_new		(void);
+gsize		camel_stream_null_get_bytes_written
+						(CamelStreamNull *stream_null);
 
 G_END_DECLS
 

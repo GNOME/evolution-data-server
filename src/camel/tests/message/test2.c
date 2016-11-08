@@ -41,13 +41,13 @@ static gchar *convert (const gchar *in, const gchar *from, const gchar *to)
 	outp = out = g_malloc (outlen);
 	inp = in;
 
-	if (iconv (ic, &inp, &inlen, &outp, &outlen) == -1) {
+	if (camel_iconv (ic, &inp, &inlen, &outp, &outlen) == -1) {
 		test_free (out);
 		g_iconv_close (ic);
 		return g_strdup (in);
 	}
 
-	if (iconv (ic, NULL, 0, &outp, &outlen) == -1) {
+	if (camel_iconv (ic, NULL, 0, &outp, &outlen) == -1) {
 		test_free (out);
 		g_iconv_close (ic);
 		return g_strdup (in);

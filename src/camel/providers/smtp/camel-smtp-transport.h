@@ -65,6 +65,9 @@ struct _CamelSmtpTransport {
 
 struct _CamelSmtpTransportClass {
 	CamelTransportClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType camel_smtp_transport_get_type (void);

@@ -163,18 +163,6 @@ loop:
 	return 0xffff;
 }
 
-void
-g_string_append_u (GString *out,
-                   guint32 c)
-{
-	guchar buffer[8];
-	guchar *p = buffer;
-
-	camel_utf8_putc (&p, c);
-	*p = 0;
-	g_string_append (out, (const gchar *) buffer);
-}
-
 static const gchar utf7_alphabet[] =
 	"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
 
@@ -251,11 +239,11 @@ camel_utf7_utf8 (const gchar *ptr)
 				i+=6;
 				if (i >= 16) {
 					x = (v >> (i - 16)) & 0xffff;
-					g_string_append_u (out, x);
+					g_string_append_unichar (out, x);
 					i-=16;
 				}
 			} else {
-				g_string_append_u (out, c);
+				g_string_append_unichar (out, c);
 				state = 0;
 			}
 			break;
@@ -379,7 +367,8 @@ camel_utf8_ucs2 (const gchar *pptr)
  *
  * Returns:
  **/
-gchar *camel_ucs2_utf8 (const gchar *ptr)
+gchar *
+camel_ucs2_utf8 (const gchar *ptr)
 {
 	guint16 *ucs = (guint16 *) ptr;
 	guint32 c;
@@ -387,7 +376,7 @@ gchar *camel_ucs2_utf8 (const gchar *ptr)
 	gchar *out;
 
 	while ((c = *ucs++))
-		g_string_append_u (work, g_ntohs (c));
+		g_string_append_unichar (work, g_ntohs (c));
 
 	out = g_strdup (work->str);
 	g_string_free (work, TRUE);

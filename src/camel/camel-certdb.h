@@ -91,6 +91,9 @@ struct _CamelCertDBClass {
 	gint		(*cert_save)		(CamelCertDB *certdb,
 						 CamelCert *cert,
 						 FILE *ostream);
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_cert_get_type		(void) G_GNUC_CONST;

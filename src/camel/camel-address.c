@@ -18,33 +18,22 @@
 
 #include "camel-address.h"
 
+struct _CamelAddressPrivate {
+	guint dummy;
+};
+
 G_DEFINE_TYPE (CamelAddress, camel_address, G_TYPE_OBJECT)
-
-static void
-address_finalize (GObject *object)
-{
-	CamelAddress *address = CAMEL_ADDRESS (object);
-
-	camel_address_remove (address, -1);
-	g_ptr_array_free (address->addresses, TRUE);
-
-	/* Chain up to parent's finalize() method. */
-	G_OBJECT_CLASS (camel_address_parent_class)->finalize (object);
-}
 
 static void
 camel_address_class_init (CamelAddressClass *class)
 {
-	GObjectClass *object_class;
-
-	object_class = G_OBJECT_CLASS (class);
-	object_class->finalize = address_finalize;
+	g_type_class_add_private (class, sizeof (CamelAddressPrivate));
 }
 
 static void
 camel_address_init (CamelAddress *address)
 {
-	address->addresses = g_ptr_array_new ();
+	address->priv = G_TYPE_INSTANCE_GET_PRIVATE (address, CAMEL_TYPE_ADDRESS, CamelAddressPrivate);
 }
 
 /**
@@ -90,7 +79,14 @@ camel_address_new_clone (CamelAddress *addr)
 gint
 camel_address_length (CamelAddress *addr)
 {
-	return addr->addresses->len;
+	CamelAddressClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_ADDRESS (addr), -1);
+
+	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_val_if_fail (class->length != NULL, -1);
+
+	return class->length (addr);
 }
 
 /**
@@ -236,7 +232,7 @@ camel_address_copy (CamelAddress *dest,
  **/
 void
 camel_address_remove (CamelAddress *addr,
-                      gint index)
+		      gint index)
 {
 	CamelAddressClass *class;
 
@@ -246,8 +242,12 @@ camel_address_remove (CamelAddress *addr,
 	g_return_if_fail (class->remove != NULL);
 
 	if (index == -1) {
-		for (index = addr->addresses->len; index>-1; index--)
+		gint len = camel_address_length (addr);
+
+		for (index = len - 1; index >= 0; index--) {
 			class->remove (addr, index);
-	} else
+		}
+	} else {
 		class->remove (addr, index);
+	}
 }

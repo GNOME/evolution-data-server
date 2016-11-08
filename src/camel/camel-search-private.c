@@ -46,6 +46,9 @@
  *
  * A small issue is that case-insenstivity won't work entirely correct
  * for utf8 strings. */
+/**
+ * camel_search_build_match_regex: (skip)
+ **/
 gint
 camel_search_build_match_regex (regex_t *pattern,
                                 camel_search_flags_t type,
@@ -500,6 +503,9 @@ camel_search_header_match (const gchar *value,
 
 /* Performs a 'slow' content-based match. */
 /* There is also an identical copy of this in camel-filter-search.c. */
+/**
+ * camel_search_message_body_contains: (skip)
+ **/
 gboolean
 camel_search_message_body_contains (CamelDataWrapper *object,
                                     regex_t *pattern)
@@ -524,8 +530,8 @@ camel_search_message_body_contains (CamelDataWrapper *object,
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		/* For messages we only look at its contents. */
 		truth = camel_search_message_body_contains ((CamelDataWrapper *) containee, pattern);
-	} else if (camel_content_type_is (CAMEL_DATA_WRAPPER (containee)->mime_type, "text", "*")
-		|| camel_content_type_is (CAMEL_DATA_WRAPPER (containee)->mime_type, "x-evolution", "evolution-rss-feed")) {
+	} else if (camel_content_type_is (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (containee)), "text", "*")
+		|| camel_content_type_is (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (containee)), "x-evolution", "evolution-rss-feed")) {
 		/* For all other text parts we look
 		 * inside, otherwise we don't care. */
 		CamelStream *stream;
@@ -535,7 +541,7 @@ camel_search_message_body_contains (CamelDataWrapper *object,
 		byte_array = g_byte_array_new ();
 		stream = camel_stream_mem_new_with_byte_array (byte_array);
 
-		charset = camel_content_type_param (CAMEL_DATA_WRAPPER (containee)->mime_type, "charset");
+		charset = camel_content_type_param (camel_data_wrapper_get_mime_type_field (CAMEL_DATA_WRAPPER (containee)), "charset");
 		if (charset && *charset) {
 			CamelMimeFilter *filter = camel_mime_filter_charset_new (charset, "UTF-8");
 			if (filter) {
@@ -831,9 +837,9 @@ camel_search_get_all_headers_decoded (CamelMimeMessage *message)
 {
 	CamelMedium *medium;
 	GString *str;
-	GArray *headers;
+	const CamelNameValueArray *headers;
 	const gchar *default_charset;
-	guint ii;
+	guint ii, length;
 
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
 
@@ -845,19 +851,23 @@ camel_search_get_all_headers_decoded (CamelMimeMessage *message)
 	default_charset = camel_search_get_default_charset_from_message (message);
 	str = g_string_new ("");
 
-	for (ii = 0; ii < headers->len; ii++) {
-		CamelMediumHeader *header;
+	length = camel_name_value_array_get_length (headers);
+	for (ii = 0; ii < length; ii++) {
 		gchar *content;
+		const gchar *header_name = NULL;
+		const gchar *header_value = NULL;
 
-		header = &g_array_index (headers, CamelMediumHeader, ii);
-		if (!header->value)
+		if (!camel_name_value_array_get (headers, ii, &header_name, &header_value))
 			continue;
 
-		content = camel_search_get_header_decoded (header->name, header->value, default_charset);
+		if (!header_name || !header_value)
+			continue;
+
+		content = camel_search_get_header_decoded (header_name, header_value, default_charset);
 		if (!content)
 			continue;
 
-		g_string_append (str, header->name);
+		g_string_append (str, header_name);
 		if (isspace (content[0]))
 			g_string_append (str, ":");
 		else
@@ -867,8 +877,6 @@ camel_search_get_all_headers_decoded (CamelMimeMessage *message)
 
 		g_free (content);
 	}
-
-	camel_medium_free_headers (medium, headers);
 
 	return g_string_free (str, FALSE);
 }

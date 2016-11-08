@@ -41,6 +41,7 @@
 #include "camel-imapx-input-stream.h"
 #include "camel-imapx-job.h"
 #include "camel-imapx-logger.h"
+#include "camel-imapx-message-info.h"
 #include "camel-imapx-settings.h"
 #include "camel-imapx-store.h"
 #include "camel-imapx-summary.h"
@@ -362,7 +363,7 @@ G_DEFINE_TYPE (CamelIMAPXServer, camel_imapx_server, G_TYPE_OBJECT)
 
 typedef struct _FetchChangesInfo {
 	guint32 server_flags;
-	CamelFlag *server_user_flags;
+	CamelNamedFlags *server_user_flags;
 } FetchChangesInfo;
 
 static void
@@ -371,7 +372,7 @@ fetch_changes_info_free (gpointer ptr)
 	FetchChangesInfo *nfo = ptr;
 
 	if (nfo) {
-		camel_flag_list_free (&nfo->server_user_flags);
+		camel_named_flags_free (nfo->server_user_flags);
 		g_free (nfo);
 	}
 }
@@ -760,7 +761,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 
 	g_return_if_fail (is->priv->changes != NULL);
 
-	camel_folder_summary_remove_uid (folder->summary, uid);
+	camel_folder_summary_remove_uid (camel_folder_get_folder_summary (folder), uid);
 
 	g_mutex_lock (&is->priv->changes_lock);
 
@@ -774,7 +775,7 @@ imapx_expunge_uid_from_summary (CamelIMAPXServer *is,
 
 		g_mutex_unlock (&is->priv->changes_lock);
 
-		camel_folder_summary_save_to_db (folder->summary, NULL);
+		camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 		imapx_update_store_summary (folder);
 		camel_folder_changed (folder, changes);
 
@@ -969,7 +970,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 	g_mutex_unlock (&is->priv->changes_lock);
 
 	uid_list = g_list_reverse (uid_list);
-	camel_folder_summary_remove_uids (folder->summary, uid_list);
+	camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), uid_list);
 
 	/* If the response is truly unsolicited (e.g. via NOTIFY)
 	 * then go ahead and emit the change notification now. */
@@ -987,7 +988,7 @@ imapx_untagged_vanished (CamelIMAPXServer *is,
 
 			g_mutex_unlock (&is->priv->changes_lock);
 
-			camel_folder_summary_save_to_db (folder->summary, NULL);
+			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 			imapx_update_store_summary (folder);
 
 			camel_folder_changed (folder, changes);
@@ -1069,7 +1070,7 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 	if (camel_imapx_server_is_in_idle (is)) {
 		guint count;
 
-		count = camel_folder_summary_count (folder->summary);
+		count = camel_folder_summary_count (camel_folder_get_folder_summary (folder));
 		if (count < exists)
 			g_signal_emit (is, signals[REFRESH_MAILBOX], 0, mailbox);
 	}
@@ -1243,7 +1244,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			}
 
 			if (uid) {
-				mi = camel_folder_summary_get (select_folder->summary, uid);
+				mi = camel_folder_summary_get (camel_folder_get_folder_summary (select_folder), uid);
 				if (mi) {
 					/* It's unsolicited _unless_ select_pending (i.e. during
 					 * a QRESYNC SELECT */
@@ -1271,7 +1272,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			g_free (uid);
 
 			if (changed && camel_imapx_server_is_in_idle (is)) {
-				camel_folder_summary_save_to_db (select_folder->summary, NULL);
+				camel_folder_summary_save (camel_folder_get_folder_summary (select_folder), NULL);
 				imapx_update_store_summary (select_folder);
 
 				g_mutex_lock (&is->priv->changes_lock);
@@ -1282,8 +1283,7 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 				g_mutex_unlock (&is->priv->changes_lock);
 			}
 
-			if (mi)
-				camel_message_info_unref (mi);
+			g_clear_object (&mi);
 
 			g_object_unref (select_folder);
 		}
@@ -1332,16 +1332,17 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 		mp = camel_mime_parser_new ();
 		camel_mime_parser_init_with_bytes (mp, finfo->header);
-		mi = camel_folder_summary_info_new_from_parser (folder->summary, mp);
+		mi = camel_folder_summary_info_new_from_parser (camel_folder_get_folder_summary (folder), mp);
 		g_object_unref (mp);
 
 		if (mi != NULL) {
 			guint32 server_flags;
-			CamelFlag *server_user_flags;
-			CamelMessageInfoBase *binfo;
+			CamelNamedFlags *server_user_flags;
 			gboolean free_user_flags = FALSE;
 
-			mi->uid = camel_pstring_strdup (finfo->uid);
+			camel_message_info_set_abort_notifications (mi, TRUE);
+
+			camel_message_info_set_uid (mi, finfo->uid);
 
 			if (!(finfo->got & FETCH_FLAGS) && is->priv->fetch_changes_infos) {
 				FetchChangesInfo *nfo;
@@ -1367,45 +1368,44 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			if (!(server_flags & CAMEL_MESSAGE_SEEN)) {
 				guint64 uidl;
 
-				uidl = strtoull (mi->uid, NULL, 10);
+				uidl = strtoull (finfo->uid, NULL, 10);
 
 				if (uidl >= uidnext) {
-					c (is->priv->tagprefix, "Updating unseen count for new message %s\n", mi->uid);
+					c (is->priv->tagprefix, "Updating unseen count for new message %s\n", finfo->uid);
 					camel_imapx_mailbox_set_unseen (mailbox, unseen + 1);
 				} else {
-					c (is->priv->tagprefix, "Not updating unseen count for new message %s\n", mi->uid);
+					c (is->priv->tagprefix, "Not updating unseen count for new message %s\n", finfo->uid);
 				}
 			}
 
-			binfo = (CamelMessageInfoBase *) mi;
-			binfo->size = finfo->size;
+			camel_message_info_set_size (mi, finfo->size);
+			camel_message_info_set_abort_notifications (mi, FALSE);
 
-			camel_folder_summary_lock (folder->summary);
+			camel_folder_summary_lock (camel_folder_get_folder_summary (folder));
 
-			if (!camel_folder_summary_check_uid (folder->summary, mi->uid)) {
+			if (!camel_folder_summary_check_uid (camel_folder_get_folder_summary (folder), finfo->uid)) {
 				imapx_set_message_info_flags_for_new_message (mi, server_flags, server_user_flags, FALSE, NULL, camel_imapx_mailbox_get_permanentflags (mailbox));
-				camel_folder_summary_add (folder->summary, mi);
+				camel_folder_summary_add (camel_folder_get_folder_summary (folder), mi, FALSE);
 
 				g_mutex_lock (&is->priv->changes_lock);
 
-				camel_folder_change_info_add_uid (is->priv->changes, mi->uid);
-				camel_folder_change_info_recent_uid (is->priv->changes, mi->uid);
+				camel_folder_change_info_add_uid (is->priv->changes, finfo->uid);
+				camel_folder_change_info_recent_uid (is->priv->changes, finfo->uid);
 
 				g_mutex_unlock (&is->priv->changes_lock);
 
 				if (messages > 0) {
-					gint cnt = (camel_folder_summary_count (folder->summary) * 100) / messages;
+					gint cnt = (camel_folder_summary_count (camel_folder_get_folder_summary (folder)) * 100) / messages;
 
 					camel_operation_progress (cancellable, cnt ? cnt : 1);
 				}
-			} else {
-				camel_message_info_unref (mi);
 			}
 
-			camel_folder_summary_unlock (folder->summary);
+			g_clear_object (&mi);
+			camel_folder_summary_unlock (camel_folder_get_folder_summary (folder));
 
-			if (free_user_flags && server_user_flags)
-				camel_flag_list_free (&server_user_flags);
+			if (free_user_flags)
+				camel_named_flags_free (server_user_flags);
 		}
 
 		g_clear_object (&mailbox);
@@ -2332,7 +2332,7 @@ imapx_completion (CamelIMAPXServer *is,
 			folder = imapx_server_ref_folder (is, mailbox);
 			g_return_val_if_fail (folder != NULL, FALSE);
 
-			camel_folder_summary_save_to_db (folder->summary, NULL);
+			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 
 			imapx_update_store_summary (folder);
 			camel_folder_changed (folder, changes);
@@ -4082,12 +4082,12 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 
 	cache_stream = camel_data_cache_add (message_cache, "tmp", message_uid, error);
 	if (cache_stream == NULL) {
-		camel_message_info_unref (mi);
+		g_clear_object (&mi);
 		return NULL;
 	}
 
 	settings = camel_imapx_server_ref_settings (is);
-	data_size = ((CamelMessageInfoBase *) mi)->size;
+	data_size = camel_message_info_get_size (mi);
 	use_multi_fetch = data_size > MULTI_SIZE && camel_imapx_settings_get_use_multi_fetch (settings);
 	g_object_unref (settings);
 
@@ -4303,8 +4303,8 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
-	remove_deleted_flags = remove_deleted_flags || (folder->folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
-	remove_junk_flags = (folder->folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
+	remove_deleted_flags = remove_deleted_flags || (camel_folder_get_flags (folder) & CAMEL_FOLDER_IS_TRASH) != 0;
+	remove_junk_flags = (camel_folder_get_flags (folder) & CAMEL_FOLDER_IS_JUNK) != 0;
 
 	/* If we're moving messages, prefer "UID MOVE" if supported. */
 	if (delete_originals) {
@@ -4318,14 +4318,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 		g_mutex_unlock (&is->priv->stream_lock);
 	}
 
-	source_infos = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, camel_message_info_unref);
+	source_infos = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, g_object_unref);
 	data_uids = g_ptr_array_new ();
 
 	for (ii = 0; ii < uids->len; ii++) {
 		gchar *uid = (gchar *) camel_pstring_strdup (uids->pdata[ii]);
 
 		g_ptr_array_add (data_uids, uid);
-		g_hash_table_insert (source_infos, uid, camel_folder_summary_get (folder->summary, uid));
+		g_hash_table_insert (source_infos, uid, camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid));
 	}
 
 	g_ptr_array_sort (data_uids, (GCompareFunc) imapx_uids_array_cmp);
@@ -4393,40 +4393,41 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 							continue;
 
 						uid = g_strdup_printf ("%d", g_array_index (copyuid_status->u.copyuid.copied_uids, guint32, ii));
-						destination_info = camel_folder_summary_get (folder->summary, uid);
+						destination_info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
 
 						if (!destination_info) {
 							is_new = TRUE;
-							destination_info = camel_message_info_clone (source_info);
-							destination_info->summary = destination_folder->summary;
-							camel_pstring_free (destination_info->uid);
-							destination_info->uid = camel_pstring_strdup (uid);
+							destination_info = camel_message_info_clone (source_info, camel_folder_get_folder_summary (destination_folder));
+							camel_message_info_set_uid (destination_info, uid);
 						}
 
 						g_free (uid);
 
+						camel_message_info_property_lock (source_info);
+
 						imapx_set_message_info_flags_for_new_message (
 							destination_info,
-							((CamelMessageInfoBase *) source_info)->flags,
-							((CamelMessageInfoBase *) source_info)->user_flags,
+							camel_message_info_get_flags (source_info),
+							camel_message_info_get_user_flags (source_info),
 							TRUE,
-							((CamelMessageInfoBase *) source_info)->user_tags,
+							camel_message_info_get_user_tags (source_info),
 							camel_imapx_mailbox_get_permanentflags (destination));
 						if (remove_deleted_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_DELETED, 0);
 						if (remove_junk_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_JUNK, 0);
 						if (is_new)
-							camel_folder_summary_add (destination_folder->summary, destination_info);
-						camel_folder_change_info_add_uid (changes, destination_info->uid);
+							camel_folder_summary_add (camel_folder_get_folder_summary (destination_folder), destination_info, FALSE);
+						camel_folder_change_info_add_uid (changes, camel_message_info_get_uid (destination_info));
 
-						if (!is_new)
-							camel_message_info_unref (destination_info);
+						camel_message_info_property_unlock (source_info);
+
+						g_clear_object (&destination_info);
 					}
 
 					if (camel_folder_change_info_changed (changes)) {
-						camel_folder_summary_touch (destination_folder->summary);
-						camel_folder_summary_save_to_db (destination_folder->summary, NULL);
+						camel_folder_summary_touch (camel_folder_get_folder_summary (destination_folder));
+						camel_folder_summary_save (camel_folder_get_folder_summary (destination_folder), NULL);
 						camel_folder_changed (destination_folder, changes);
 					}
 
@@ -4447,7 +4448,7 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 					if (delete_originals) {
 						camel_folder_delete_message (folder, uid);
 					} else {
-						if (camel_folder_summary_remove_uid (folder->summary, uid)) {
+						if (camel_folder_summary_remove_uid (camel_folder_get_folder_summary (folder), uid)) {
 							if (!changes)
 								changes = camel_folder_change_info_new ();
 
@@ -4457,8 +4458,8 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 				}
 
 				if (changes && camel_folder_change_info_changed (changes)) {
-					camel_folder_summary_touch (folder->summary);
-					camel_folder_summary_save_to_db (folder->summary, NULL);
+					camel_folder_summary_touch (camel_folder_get_folder_summary (folder));
+					camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 					camel_folder_changed (folder, changes);
 				}
 
@@ -4572,35 +4573,22 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 
 	date_time = camel_mime_message_get_date (message, NULL);
 	path = camel_data_cache_get_filename (message_cache, "new", uid);
-	info = camel_folder_summary_info_new_from_message (summary, message, NULL);
-	info->uid = camel_pstring_strdup (uid);
+	info = camel_folder_summary_info_new_from_message (summary, message);
+
+	camel_message_info_set_abort_notifications (info, TRUE);
+	camel_message_info_set_uid (info, uid);
 
 	if (mi != NULL) {
 		struct icaltimetype icaltime;
-		CamelMessageInfoBase *base_info = (CamelMessageInfoBase *) info;
-		const CamelFlag *flag;
-		const CamelTag *tag;
 
-		base_info->flags = camel_message_info_get_flags (mi);
-		base_info->size = camel_message_info_get_size (mi);
+		camel_message_info_property_lock (mi);
 
-		flag = camel_message_info_get_user_flags (mi);
-		while (flag != NULL) {
-			if (*flag->name != '\0')
-				camel_flag_set (
-					&base_info->user_flags,
-					flag->name, TRUE);
-			flag = flag->next;
-		}
-
-		tag = camel_message_info_get_user_tags (mi);
-		while (tag != NULL) {
-			if (*tag->name != '\0')
-				camel_tag_set (
-					&base_info->user_tags,
-					tag->name, tag->value);
-			tag = tag->next;
-		}
+		camel_message_info_set_flags (info, ~0, camel_message_info_get_flags (mi));
+		camel_message_info_set_size (info, camel_message_info_get_size (mi));
+		camel_message_info_take_user_flags (info,
+			camel_named_flags_copy (camel_message_info_get_user_flags (mi)));
+		camel_message_info_take_user_tags (info,
+			camel_name_value_array_copy (camel_message_info_get_user_tags (mi)));
 
 		if (date_time > 0) {
 			icaltime = icaltime_from_timet (date_time, FALSE);
@@ -4616,22 +4604,18 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 			if (!icaltime_is_valid_time (icaltime))
 				date_time = -1;
 		}
+
+		camel_message_info_property_unlock (mi);
 	}
 
 	if (!camel_message_info_get_size (info)) {
-		CamelStreamNull *sn = (CamelStreamNull *) camel_stream_null_new ();
-
-		camel_data_wrapper_write_to_stream_sync (
-			CAMEL_DATA_WRAPPER (message),
-			CAMEL_STREAM (sn), NULL, NULL);
-		((CamelMessageInfoBase *) info)->size = sn->written;
-		g_object_unref (sn);
+		camel_message_info_set_size (info, camel_data_wrapper_calculate_size_sync (CAMEL_DATA_WRAPPER (message), NULL, NULL));
 	}
 
 	g_free (uid);
 
 	if (camel_mime_message_has_attachment (message))
-		((CamelMessageInfoBase *) info)->flags |= CAMEL_MESSAGE_ATTACHMENTS;
+		camel_message_info_set_flags (info, CAMEL_MESSAGE_ATTACHMENTS, CAMEL_MESSAGE_ATTACHMENTS);
 
 	if (date_time > 0) {
 		gchar *date_time_str;
@@ -4651,8 +4635,8 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_APPEND_MESSAGE, "APPEND %M %F %t %P",
 			mailbox,
-			((CamelMessageInfoBase *) info)->flags,
-			((CamelMessageInfoBase *) info)->user_flags,
+			camel_message_info_get_flags (info),
+			camel_message_info_get_user_flags (info),
 			date_time_str,
 			path);
 
@@ -4660,10 +4644,12 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 	} else {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_APPEND_MESSAGE, "APPEND %M %F %P",
 			mailbox,
-			((CamelMessageInfoBase *) info)->flags,
-			((CamelMessageInfoBase *) info)->user_flags,
+			camel_message_info_get_flags (info),
+			camel_message_info_get_user_flags (info),
 			path);
 	}
+
+	camel_message_info_set_abort_notifications (info, FALSE);
 
 	success = camel_imapx_server_process_command_sync (is, ic, _("Error appending message"), cancellable, error);
 
@@ -4687,36 +4673,42 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		 * numbered MessageInfo, without losing any information.  Otherwise
 		 * we have to wait for the server to let us know it was appended. */
 
-		mi = camel_message_info_clone (info);
-		old_uid = g_strdup (info->uid);
+		mi = camel_message_info_clone (info, NULL);
+		old_uid = g_strdup (camel_message_info_get_uid (info));
 
 		if (ic->status && ic->status->condition == IMAPX_APPENDUID) {
 			c (is->priv->tagprefix, "Got appenduid %d %d\n", (gint) ic->status->u.appenduid.uidvalidity, (gint) ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == uidvalidity) {
-				if (appended_uid)
-					*appended_uid = g_strdup_printf ("%u", (guint) ic->status->u.appenduid.uid);
-				mi->uid = camel_pstring_add (g_strdup_printf ("%u", (guint) ic->status->u.appenduid.uid), TRUE);
+				gchar *uid;
 
-				cur = camel_data_cache_get_filename  (imapx_folder->cache, "cur", mi->uid);
+				uid = g_strdup_printf ("%u", (guint) ic->status->u.appenduid.uid);
+				camel_message_info_set_uid (mi, uid);
+
+				cur = camel_data_cache_get_filename  (imapx_folder->cache, "cur", uid);
 				if (g_rename (path, cur) == -1 && errno != ENOENT) {
 					g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, path, cur, g_strerror (errno));
 				}
 
 				imapx_set_message_info_flags_for_new_message (
 					mi,
-					((CamelMessageInfoBase *) info)->flags,
-					((CamelMessageInfoBase *) info)->user_flags,
+					camel_message_info_get_flags (info),
+					camel_message_info_get_user_flags (info),
 					TRUE,
-					((CamelMessageInfoBase *) info)->user_tags,
+					camel_message_info_get_user_tags (info),
 					camel_imapx_mailbox_get_permanentflags (mailbox));
 
-				camel_folder_summary_add (folder->summary, mi);
+				camel_folder_summary_add (camel_folder_get_folder_summary (folder), mi, FALSE);
 
 				g_mutex_lock (&is->priv->changes_lock);
-				camel_folder_change_info_add_uid (is->priv->changes, mi->uid);
+				camel_folder_change_info_add_uid (is->priv->changes, camel_message_info_get_uid (mi));
 				g_mutex_unlock (&is->priv->changes_lock);
 
-				mi = NULL;
+				if (appended_uid)
+					*appended_uid = uid;
+				else
+					g_free (uid);
+
+				g_clear_object (&mi);
 
 				g_free (cur);
 			} else {
@@ -4728,8 +4720,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		g_free (old_uid);
 
 		camel_imapx_command_unref (ic);
-		if (mi)
-			camel_message_info_unref (mi);
+		g_clear_object (&mi);
 		g_object_unref (folder);
 	}
 
@@ -4827,7 +4818,7 @@ imapx_server_process_fetch_changes_infos (CamelIMAPXServer *is,
 	if (out_fetch_summary_uids)
 		g_return_if_fail (*out_fetch_summary_uids == NULL);
 
-	summary = folder->summary;
+	summary = camel_folder_get_folder_summary (folder);
 
 	g_hash_table_iter_init (&iter, infos);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -4862,7 +4853,7 @@ imapx_server_process_fetch_changes_infos (CamelIMAPXServer *is,
 			g_mutex_unlock (&is->priv->changes_lock);
 		}
 
-		camel_message_info_unref (minfo);
+		g_clear_object (&minfo);
 	}
 }
 
@@ -5027,20 +5018,20 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	folder = imapx_server_ref_folder (is, mailbox);
 	g_return_val_if_fail (folder != NULL, FALSE);
 
-	imapx_summary = CAMEL_IMAPX_SUMMARY (folder->summary);
+	imapx_summary = CAMEL_IMAPX_SUMMARY (camel_folder_get_folder_summary (folder));
 
 	messages = camel_imapx_mailbox_get_messages (mailbox);
 	unseen = camel_imapx_mailbox_get_unseen (mailbox);
 	uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
 	uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
 	highestmodseq = camel_imapx_mailbox_get_highestmodseq (mailbox);
-	total = camel_folder_summary_count (folder->summary);
+	total = camel_folder_summary_count (camel_folder_get_folder_summary (folder));
 
 	need_rescan =
 		(uidvalidity > 0 && uidvalidity != imapx_summary->validity) ||
 		total != messages ||
 		imapx_summary->uidnext != uidnext ||
-		camel_folder_summary_get_unread_count (folder->summary) != unseen ||
+		camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)) != unseen ||
 		imapx_summary->modseq != highestmodseq;
 
 	if (!need_rescan) {
@@ -5056,7 +5047,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	if (is->priv->use_qresync && imapx_summary->modseq > 0 && uidvalidity > 0) {
 		imapx_summary->modseq = highestmodseq;
 		if (total != messages ||
-		    camel_folder_summary_get_unread_count (folder->summary) != unseen ||
+		    camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)) != unseen ||
 		    imapx_summary->modseq != highestmodseq) {
 			c (
 				is->priv->tagprefix,
@@ -5064,7 +5055,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				"total %u / %u, unread %u / %u, modseq %"
 				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				total, messages,
-				camel_folder_summary_get_unread_count (folder->summary),
+				camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)),
 				unseen,
 				imapx_summary->modseq,
 				highestmodseq);
@@ -5075,7 +5066,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				"total %u / %u, unread %u / %u, modseq %"
 				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				total, messages,
-				camel_folder_summary_get_unread_count (folder->summary),
+				camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)),
 				unseen,
 				imapx_summary->modseq,
 				highestmodseq);
@@ -5097,7 +5088,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		uidl = 1;
 	}
 
-	camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+	camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
 
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
@@ -5111,11 +5102,11 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		GPtrArray *array;
 		gint ii;
 
-		camel_folder_summary_lock (folder->summary);
+		camel_folder_summary_lock (camel_folder_get_folder_summary (folder));
 
 		changes = camel_folder_change_info_new ();
 
-		array = camel_folder_summary_get_array (folder->summary);
+		array = camel_folder_summary_get_array (camel_folder_get_folder_summary (folder));
 		for (ii = 0; array && ii < array->len; ii++) {
 			const gchar *uid = array->pdata[ii];
 
@@ -5128,18 +5119,18 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 			}
 		}
 
-		camel_folder_summary_unlock (folder->summary);
+		camel_folder_summary_unlock (camel_folder_get_folder_summary (folder));
 
 		if (removed != NULL) {
-			camel_folder_summary_remove_uids (folder->summary, removed);
-			camel_folder_summary_touch (folder->summary);
+			camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), removed);
+			camel_folder_summary_touch (camel_folder_get_folder_summary (folder));
 
 			/* Shares UIDs with the 'array'. */
 			g_list_free (removed);
 		}
 
 		if (camel_folder_change_info_changed (changes)) {
-			camel_folder_summary_save_to_db (folder->summary, NULL);
+			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 			imapx_update_store_summary (folder);
 			camel_folder_changed (folder, changes);
 		}
@@ -5169,7 +5160,7 @@ imapx_sync_free_user (GArray *user_set)
 
 		for (j = 0; j < infos->len; j++) {
 			CamelMessageInfo *info = g_ptr_array_index (infos, j);
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 		}
 
 		g_ptr_array_free (infos, TRUE);
@@ -5194,42 +5185,20 @@ imapx_unset_folder_flagged_flag (CamelFolderSummary *summary,
 		info = camel_folder_summary_get (summary, changed_uids->pdata[ii]);
 
 		if (info) {
-			CamelMessageInfoBase *mi = (CamelMessageInfoBase *) info;
-
 			/* some infos could be only 'dirty' (needed to save into summary) */
-			if ((mi->flags & CAMEL_MESSAGE_FOLDER_FLAGGED) != 0 &&
-			   (!except_deleted_messages || (mi->flags & CAMEL_MESSAGE_DELETED) == 0)) {
-				mi->flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
-				mi->dirty = TRUE;
+			if (camel_message_info_get_folder_flagged (info) &&
+			   (!except_deleted_messages || (camel_message_info_get_flags (info) & CAMEL_MESSAGE_DELETED) == 0)) {
+				camel_message_info_set_folder_flagged (info, FALSE);
 				changed = TRUE;
 			}
 
-			camel_message_info_unref (info);
+			g_clear_object (&info);
 		}
 	}
 
 	if (changed) {
 		camel_folder_summary_touch (summary);
-		camel_folder_summary_save_to_db (summary, NULL);
-	}
-}
-
-static void
-imapx_server_info_changed_cb (CamelIMAPXSummary *summary,
-			      CamelMessageInfo *info,
-			      gpointer user_data)
-{
-	GHashTable *changed_meanwhile = user_data;
-
-	g_return_if_fail (info != NULL);
-	g_return_if_fail (changed_meanwhile != NULL);
-
-	/* The UID can be NULL in case of a newly fetched message, for example when creating
-	   the message info in imapx_untagged_fetch() by camel_folder_summary_info_new_from_parser() */
-	if (camel_message_info_get_uid (info)) {
-		g_hash_table_insert (changed_meanwhile,
-			(gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)),
-			GINT_TO_POINTER (1));
+		camel_folder_summary_save (summary, NULL);
 	}
 }
 
@@ -5244,9 +5213,8 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	GPtrArray *changed_uids;
 	GArray *on_user = NULL, *off_user = NULL;
 	CamelFolder *folder;
-	CamelIMAPXMessageInfo *info;
-	GHashTable *changed_meanwhile;
-	gulong changed_meanwhile_handler_id;
+	CamelMessageInfo *info;
+	GHashTable *stamps;
 	guint32 permanentflags;
 	struct _uidset_state uidset;
 	gint unread_change = 0;
@@ -5272,7 +5240,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	 * one for each flag being turned off, including each
 	 * info being turned off, and one for each flag being turned on.
 	 */
-	changed_uids = camel_folder_summary_get_changed (folder->summary);
+	changed_uids = camel_folder_summary_get_changed (camel_folder_get_folder_summary (folder));
 
 	if (changed_uids->len == 0) {
 		camel_folder_free_uids (folder, changed_uids);
@@ -5280,9 +5248,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		return TRUE;
 	}
 
-	changed_meanwhile = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
-	changed_meanwhile_handler_id = g_signal_connect (folder->summary, "info-changed",
-		G_CALLBACK (imapx_server_info_changed_cb), changed_meanwhile);
+	stamps = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	if (can_influence_flags) {
 		CamelIMAPXSettings *settings;
@@ -5312,30 +5278,38 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	}
 
 	if (changed_uids->len > 20)
-		camel_folder_summary_prepare_fetch_all (folder->summary, NULL);
+		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
 
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
+		CamelIMAPXMessageInfo *xinfo;
 		guint32 flags, sflags;
-		CamelFlag *uflags, *suflags;
+		const CamelNamedFlags *local_uflags, *server_uflags;
 		const gchar *uid;
 		guint j = 0;
 
 		uid = g_ptr_array_index (changed_uids, i);
 
-		info = (CamelIMAPXMessageInfo *)
-			camel_folder_summary_get (folder->summary, uid);
+		info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
+		xinfo = info ? CAMEL_IMAPX_MESSAGE_INFO (info) : NULL;
 
-		if (info == NULL)
-			continue;
-
-		if (!(info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
-			camel_message_info_unref (info);
+		if (!info || !xinfo) {
+			g_clear_object (&info);
 			continue;
 		}
 
-		flags = info->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
-		sflags = info->server_flags & CAMEL_IMAPX_SERVER_FLAGS;
+		if (!camel_message_info_get_folder_flagged (info)) {
+			g_clear_object (&info);
+			continue;
+		}
+
+		camel_message_info_property_lock (info);
+
+		g_hash_table_insert (stamps, (gpointer) camel_message_info_pooldup_uid (info),
+			GUINT_TO_POINTER (camel_message_info_get_folder_flagged_stamp (info)));
+
+		flags = camel_message_info_get_flags (info) & CAMEL_IMAPX_SERVER_FLAGS;
+		sflags = camel_imapx_message_info_get_server_flags (xinfo) & CAMEL_IMAPX_SERVER_FLAGS;
 
 		if (can_influence_flags) {
 			gboolean move_to_real_junk;
@@ -5363,63 +5337,76 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			on_orset |= (flags ^ sflags) & flags;
 		}
 
-		uflags = info->info.user_flags;
-		suflags = info->server_user_flags;
-		while (uflags || suflags) {
-			gint res;
+		local_uflags = camel_message_info_get_user_flags (info);
+		server_uflags = camel_imapx_message_info_get_server_user_flags (xinfo);
 
-			if (uflags) {
-				if (suflags)
-					res = strcmp (uflags->name, suflags->name);
-				else if (*uflags->name)
-					res = -1;
-				else {
-					uflags = uflags->next;
-					continue;
-				}
-			} else {
-				res = 1;
-			}
+		if (!camel_named_flags_equal (local_uflags, server_uflags)) {
+			guint ii, jj, llen, slen;
 
-			if (res == 0) {
-				uflags = uflags->next;
-				suflags = suflags->next;
-			} else {
-				GArray *user_set;
-				CamelFlag *user_flag;
-				struct _imapx_flag_change *change = NULL, add = { 0 };
+			llen = local_uflags ? camel_named_flags_get_length (local_uflags) : 0;
+			slen = server_uflags ? camel_named_flags_get_length (server_uflags) : 0;
+			for (ii = 0, jj = 0; ii < llen || jj < slen;) {
+				gint res;
 
-				if (res < 0) {
-					if (on_user == NULL)
-						on_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
-					user_set = on_user;
-					user_flag = uflags;
-					uflags = uflags->next;
+				if (ii < llen) {
+					const gchar *local_name = camel_named_flags_get (local_uflags, ii);
+
+					if (jj < slen) {
+						const gchar *server_name = camel_named_flags_get (server_uflags, jj);
+
+						res = g_strcmp0 (local_name, server_name);
+					} else if (local_name && *local_name)
+						res = -1;
+					else {
+						ii++;
+						continue;
+					}
 				} else {
-					if (off_user == NULL)
-						off_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
-					user_set = off_user;
-					user_flag = suflags;
-					suflags = suflags->next;
+					res = 1;
 				}
 
-				/* Could sort this and binary search */
-				for (j = 0; j < user_set->len; j++) {
-					change = &g_array_index (user_set, struct _imapx_flag_change, j);
-					if (strcmp (change->name, user_flag->name) == 0)
-						goto found;
+				if (res == 0) {
+					ii++;
+					jj++;
+				} else {
+					GArray *user_set;
+					const gchar *user_flag_name;
+					struct _imapx_flag_change *change = NULL, add = { 0 };
+
+					if (res < 0) {
+						if (on_user == NULL)
+							on_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
+						user_set = on_user;
+						user_flag_name = camel_named_flags_get (local_uflags, ii);
+						ii++;
+					} else {
+						if (off_user == NULL)
+							off_user = g_array_new (FALSE, FALSE, sizeof (struct _imapx_flag_change));
+						user_set = off_user;
+						user_flag_name = camel_named_flags_get (server_uflags, jj);
+						jj++;
+					}
+
+					/* Could sort this and binary search */
+					for (j = 0; j < user_set->len; j++) {
+						change = &g_array_index (user_set, struct _imapx_flag_change, j);
+						if (g_strcmp0 (change->name, user_flag_name) == 0)
+							goto found;
+					}
+					add.name = g_strdup (user_flag_name);
+					add.infos = g_ptr_array_new ();
+					g_array_append_val (user_set, add);
+					change = &add;
+				found:
+					g_object_ref (info);
+					g_ptr_array_add (change->infos, info);
 				}
-				add.name = g_strdup (user_flag->name);
-				add.infos = g_ptr_array_new ();
-				g_array_append_val (user_set, add);
-				change = &add;
-			found:
-				camel_message_info_ref (info);
-				g_ptr_array_add (change->infos, info);
 			}
 		}
 
-		camel_message_info_unref (info);
+		camel_message_info_property_unlock (info);
+
+		g_clear_object (&info);
 	}
 
 	nothing_to_do =
@@ -5429,24 +5416,20 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		(off_user == NULL);
 
 	if (nothing_to_do) {
-		g_signal_handler_disconnect (folder->summary, changed_meanwhile_handler_id);
-
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
-		imapx_unset_folder_flagged_flag (folder->summary, changed_uids, remove_deleted_flags);
+		imapx_unset_folder_flagged_flag (camel_folder_get_folder_summary (folder), changed_uids, remove_deleted_flags);
 		camel_folder_free_uids (folder, changed_uids);
-		g_hash_table_destroy (changed_meanwhile);
+		g_hash_table_destroy (stamps);
 		g_object_unref (folder);
 		return TRUE;
 	}
 
 	if (!camel_imapx_server_ensure_selected_sync (is, mailbox, cancellable, error)) {
-		g_signal_handler_disconnect (folder->summary, changed_meanwhile_handler_id);
-
 		imapx_sync_free_user (on_user);
 		imapx_sync_free_user (off_user);
 		camel_folder_free_uids (folder, changed_uids);
-		g_hash_table_destroy (changed_meanwhile);
+		g_hash_table_destroy (stamps);
 		g_object_unref (folder);
 		return FALSE;
 	}
@@ -5468,22 +5451,23 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			c (is->priv->tagprefix, "checking/storing %s flags '%s'\n", on ? "on" : "off", flags_table[jj].name);
 			imapx_uidset_init (&uidset, 0, 100);
 			for (i = 0; i < changed_uids->len && success; i++) {
-				CamelIMAPXMessageInfo *info;
+				CamelMessageInfo *info;
+				CamelIMAPXMessageInfo *xinfo;
 				gboolean remove_deleted_flag;
 				guint32 flags;
 				guint32 sflags;
 				gint send;
 
-				info = (CamelIMAPXMessageInfo *)
-					camel_folder_summary_get (
-						folder->summary,
-						changed_uids->pdata[i]);
+				info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), changed_uids->pdata[i]);
+				xinfo = info ? CAMEL_IMAPX_MESSAGE_INFO (info) : NULL;
 
-				if (info == NULL)
+				if (!info || !xinfo) {
+					g_clear_object (&info);
 					continue;
+				}
 
-				flags = (info->info.flags & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
-				sflags = (info->server_flags & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
+				flags = (camel_message_info_get_flags (info) & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
+				sflags = (camel_imapx_message_info_get_server_flags (xinfo) & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
 				send = 0;
 
 				remove_deleted_flag =
@@ -5527,10 +5511,11 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				/* The second round and the server doesn't support saving user flags,
 				   thus store them at least locally */
 				if (on && (permanentflags & CAMEL_MESSAGE_USER) == 0) {
-					camel_flag_list_copy (&info->server_user_flags, &info->info.user_flags);
+					camel_imapx_message_info_take_server_user_flags (xinfo,
+						camel_message_info_dup_user_flags (info));
 				}
 
-				camel_message_info_unref (info);
+				g_clear_object (&info);
 			}
 
 			g_warn_if_fail (ic == NULL);
@@ -5544,7 +5529,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 				imapx_uidset_init (&uidset, 0, 100);
 				for (i = 0; i < c->infos->len; i++) {
-					CamelIMAPXMessageInfo *info = c->infos->pdata[i];
+					CamelMessageInfo *info = c->infos->pdata[i];
 
 					if (ic == NULL)
 						ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_SYNC_CHANGES, "UID STORE ");
@@ -5572,45 +5557,64 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		}
 	}
 
-	g_signal_handler_disconnect (folder->summary, changed_meanwhile_handler_id);
-
 	if (success) {
+		CamelFolderSummary *folder_summary;
 		CamelStore *parent_store;
 		guint32 unseen;
 
 		parent_store = camel_folder_get_parent_store (folder);
+		folder_summary = camel_folder_get_folder_summary (folder);
 
-		camel_folder_summary_lock (folder->summary);
+		camel_folder_summary_lock (folder_summary);
 
 		for (i = 0; i < changed_uids->len; i++) {
-			CamelIMAPXMessageInfo *xinfo = (CamelIMAPXMessageInfo *) camel_folder_summary_get (folder->summary,
-					changed_uids->pdata[i]);
+			CamelMessageInfo *info;
+			CamelIMAPXMessageInfo *xinfo;
+			gboolean set_folder_flagged;
+			guint32 has_flags, set_server_flags;
+			gboolean changed_meanwhile;
 
-			if (!xinfo)
+			info = camel_folder_summary_get (folder_summary, changed_uids->pdata[i]);
+			xinfo = info ? CAMEL_IMAPX_MESSAGE_INFO (info) : NULL;
+
+			if (!info || !xinfo) {
+				g_clear_object (&info);
 				continue;
+			}
 
-			xinfo->server_flags = xinfo->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
+			camel_message_info_property_lock (info);
+
+			changed_meanwhile = camel_message_info_get_folder_flagged_stamp (info) !=
+				GPOINTER_TO_UINT (g_hash_table_lookup (stamps, changed_uids->pdata[i]));
+
+			has_flags = camel_message_info_get_flags (info);
+			set_server_flags = has_flags & CAMEL_IMAPX_SERVER_FLAGS;
 			if (!remove_deleted_flags ||
-			    !(xinfo->info.flags & CAMEL_MESSAGE_DELETED)) {
-				xinfo->info.flags &= ~CAMEL_MESSAGE_FOLDER_FLAGGED;
+			    !(has_flags & CAMEL_MESSAGE_DELETED)) {
+				set_folder_flagged = FALSE;
 			} else {
 				/* to stare back the \Deleted flag */
-				xinfo->server_flags &= ~CAMEL_MESSAGE_DELETED;
-				xinfo->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+				set_server_flags &= ~CAMEL_MESSAGE_DELETED;
+				set_folder_flagged = TRUE;
 			}
-			xinfo->info.dirty = TRUE;
+
 			if ((permanentflags & CAMEL_MESSAGE_USER) != 0 ||
-			    camel_flag_list_size (&xinfo->server_user_flags) == 0)
-				camel_flag_list_copy (&xinfo->server_user_flags, &xinfo->info.user_flags);
+			    !camel_named_flags_get_length (camel_imapx_message_info_get_server_user_flags (xinfo))) {
+				camel_imapx_message_info_take_server_user_flags (xinfo, camel_message_info_dup_user_flags (info));
+			}
 
-			if (g_hash_table_lookup (changed_meanwhile, changed_uids->pdata[i]))
-				xinfo->info.flags |= CAMEL_MESSAGE_FOLDER_FLAGGED;
+			if (changed_meanwhile)
+				set_folder_flagged = TRUE;
 
-			camel_folder_summary_touch (folder->summary);
-			camel_message_info_unref (xinfo);
+			camel_imapx_message_info_set_server_flags (xinfo, set_server_flags);
+			camel_message_info_set_folder_flagged (info, set_folder_flagged);
+
+			camel_message_info_property_unlock (info);
+			camel_folder_summary_touch (folder_summary);
+			g_clear_object (&info);
 		}
 
-		camel_folder_summary_unlock (folder->summary);
+		camel_folder_summary_unlock (folder_summary);
 
 		/* Apply the changes to server-side unread count; it won't tell
 		 * us of these changes, of course. */
@@ -5618,16 +5622,16 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		unseen += unread_change;
 		camel_imapx_mailbox_set_unseen (mailbox, unseen);
 
-		if (folder->summary && (folder->summary->flags & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
+		if ((camel_folder_summary_get_flags (folder_summary) & CAMEL_FOLDER_SUMMARY_DIRTY) != 0) {
 			CamelStoreInfo *si;
 
 			/* ... and store's summary when folder's summary is dirty */
 			si = camel_store_summary_path (CAMEL_IMAPX_STORE (parent_store)->summary, camel_folder_get_full_name (folder));
 			if (si) {
-				if (si->total != camel_folder_summary_get_saved_count (folder->summary) ||
-				    si->unread != camel_folder_summary_get_unread_count (folder->summary)) {
-					si->total = camel_folder_summary_get_saved_count (folder->summary);
-					si->unread = camel_folder_summary_get_unread_count (folder->summary);
+				if (si->total != camel_folder_summary_get_saved_count (folder_summary) ||
+				    si->unread != camel_folder_summary_get_unread_count (folder_summary)) {
+					si->total = camel_folder_summary_get_saved_count (folder_summary);
+					si->unread = camel_folder_summary_get_unread_count (folder_summary);
 					camel_store_summary_touch (CAMEL_IMAPX_STORE (parent_store)->summary);
 				}
 
@@ -5635,14 +5639,14 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			}
 		}
 
-		camel_folder_summary_save_to_db (folder->summary, NULL);
+		camel_folder_summary_save (folder_summary, NULL);
 		camel_store_summary_save (CAMEL_IMAPX_STORE (parent_store)->summary);
 	}
 
 	imapx_sync_free_user (on_user);
 	imapx_sync_free_user (off_user);
 	camel_folder_free_uids (folder, changed_uids);
-	g_hash_table_destroy (changed_meanwhile);
+	g_hash_table_destroy (stamps);
 	g_object_unref (folder);
 
 	return success;
@@ -5674,15 +5678,17 @@ camel_imapx_server_expunge_sync (CamelIMAPXServer *is,
 		if (success) {
 			GPtrArray *uids;
 			CamelStore *parent_store;
+			CamelFolderSummary *folder_summary;
 			const gchar *full_name;
 
 			full_name = camel_folder_get_full_name (folder);
 			parent_store = camel_folder_get_parent_store (folder);
+			folder_summary = camel_folder_get_folder_summary (folder);
 
-			camel_folder_summary_lock (folder->summary);
+			camel_folder_summary_lock (folder_summary);
 
-			camel_folder_summary_save_to_db (folder->summary, NULL);
-			uids = camel_db_get_folder_deleted_uids (parent_store->cdb_r, full_name, NULL);
+			camel_folder_summary_save (folder_summary, NULL);
+			uids = camel_db_get_folder_deleted_uids (camel_store_get_db (parent_store), full_name, NULL);
 
 			if (uids && uids->len) {
 				CamelFolderChangeInfo *changes;
@@ -5695,8 +5701,8 @@ camel_imapx_server_expunge_sync (CamelIMAPXServer *is,
 					removed = g_list_prepend (removed, (gpointer) uids->pdata[i]);
 				}
 
-				camel_folder_summary_remove_uids (folder->summary, removed);
-				camel_folder_summary_save_to_db (folder->summary, NULL);
+				camel_folder_summary_remove_uids (folder_summary, removed);
+				camel_folder_summary_save (folder_summary, NULL);
 
 				camel_folder_changed (folder, changes);
 				camel_folder_change_info_free (changes);
@@ -5708,7 +5714,7 @@ camel_imapx_server_expunge_sync (CamelIMAPXServer *is,
 			if (uids)
 				g_ptr_array_free (uids, TRUE);
 
-			camel_folder_summary_unlock (folder->summary);
+			camel_folder_summary_unlock (folder_summary);
 		}
 
 		camel_imapx_command_unref (ic);

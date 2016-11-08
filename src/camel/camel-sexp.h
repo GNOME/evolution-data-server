@@ -51,6 +51,7 @@ G_BEGIN_DECLS
 
 typedef struct _CamelSExp CamelSExp;
 typedef struct _CamelSExpClass CamelSExpClass;
+typedef struct _CamelSExpPrivate CamelSExpPrivate;
 
 typedef struct _CamelSExpSymbol CamelSExpSymbol;
 typedef struct _CamelSExpResult CamelSExpResult;
@@ -91,6 +92,7 @@ struct _CamelSExpResult {
 
 /**
  * CamelSExpFunc:
+ * @argv: (inout) (array length=argc):
  *
  * Since: 3.4
  **/
@@ -98,17 +100,18 @@ typedef CamelSExpResult *
 			(*CamelSExpFunc)	(CamelSExp *sexp,
 						 gint argc,
 						 CamelSExpResult **argv,
-						 gpointer data);
+						 gpointer user_data);
 
 /**
  * CamelSExpIFunc:
+ * @argv: (inout) (array length=argc):
  *
  * Since: 3.4
  **/
 typedef CamelSExpResult *
 			(*CamelSExpIFunc)	(CamelSExp *sexp, gint argc,
 						 CamelSExpTerm **argv,
-						 gpointer data);
+						 gpointer user_data);
 
 /**
  * CamelSExpTermType:
@@ -168,22 +171,14 @@ struct _CamelSExpTerm {
  **/
 struct _CamelSExp {
 	GObject parent;
-	GScanner *scanner;	/* for parsing text version */
-	CamelSExpTerm *tree;	/* root of expression tree */
-
-	/* private stuff */
-	jmp_buf failenv;
-	gchar *error;
-	GSList *operators;
-
-	/* TODO: may also need a pool allocator for term strings,
-	 *       so we dont lose them in error conditions? */
-	CamelMemChunk *term_chunks;
-	CamelMemChunk *result_chunks;
+	CamelSExpPrivate *priv;
 };
 
 struct _CamelSExpClass {
 	GObjectClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_sexp_get_type		(void) G_GNUC_CONST;

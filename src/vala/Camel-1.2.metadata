@@ -6,7 +6,9 @@ FilterDriver.set* skip=false
 
 // We need to skip the methods because the signals and virtual methods have the same name
 Object.state_read#method skip
+Object.state_read.fp type="GLib.FileStream"
 Object.state_write#method skip
+Object.state_write.fp type="GLib.FileStream"
 Operation.pop_message skip
 Operation.progress skip
 
@@ -23,3 +25,13 @@ localtime_with_offset.tm type="Posix.tm"
 mktime_utc.tm type="Posix.tm"
 
 HeaderAddress.new_name#constructor name="with_name"
+
+// FILE* are supported by Vala
+StoreSummary.store_info_save.file type="GLib.FileStream"
+StoreSummary.summary_header_load.file type="GLib.FileStream"
+StoreSummary.summary_header_save.file type="GLib.FileStream"
+CertDB.cert_load.istream type="GLib.FileStream"
+CertDB.cert_save.ostream type="GLib.FileStream"
+CertDB.header_load.istream type="GLib.FileStream"
+CertDB.header_save.ostream type="GLib.FileStream"
+FilterDriver.set_logfile.logfile type="GLib.FileStream"

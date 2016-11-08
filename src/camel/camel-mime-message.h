@@ -65,30 +65,18 @@ G_BEGIN_DECLS
 
 typedef struct _CamelMimeMessage CamelMimeMessage;
 typedef struct _CamelMimeMessageClass CamelMimeMessageClass;
+typedef struct _CamelMimeMessagePrivate CamelMimeMessagePrivate;
 
 struct _CamelMimeMessage {
 	CamelMimePart parent;
-
-	/* header fields */
-	time_t date;
-	gint date_offset;	/* GMT offset */
-
-	/* cached internal copy */
-	time_t date_received;
-	gint date_received_offset;	/* GMT offset */
-
-	gchar *subject;
-
-	gchar *message_id;
-
-	CamelInternetAddress *reply_to;
-	CamelInternetAddress *from;
-
-	GHashTable *recipients;	/* hash table of CamelInternetAddress's */
+	CamelMimeMessagePrivate *priv;
 };
 
 struct _CamelMimeMessageClass {
 	CamelMimePartClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_message_get_type	(void);

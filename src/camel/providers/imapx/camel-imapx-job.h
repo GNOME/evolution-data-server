@@ -121,4 +121,3 @@ void		camel_imapx_job_wait_sync	(CamelIMAPXJob *job,
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_JOB_H */
-

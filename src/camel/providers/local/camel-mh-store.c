@@ -189,7 +189,7 @@ fill_fi (CamelStore *store,
 	CamelFolder *folder;
 
 	local_store = CAMEL_LOCAL_STORE (store);
-	folder = camel_object_bag_peek (store->folders, fi->full_name);
+	folder = camel_object_bag_peek (camel_store_get_folders_bag (store), fi->full_name);
 
 	if (folder != NULL) {
 		fi->unread = camel_folder_get_unread_message_count (folder);
@@ -220,10 +220,8 @@ fill_fi (CamelStore *store,
 		 * every file, i.e. very very slow */
 
 		folderpath = g_strdup_printf ("%s/%s", path, fi->full_name);
-		s = (CamelFolderSummary *) camel_mh_summary_new (
-			NULL, folderpath, NULL);
-		if (camel_folder_summary_header_load_from_db (
-			s, store, fi->full_name, NULL)) {
+		s = (CamelFolderSummary *) camel_mh_summary_new (NULL, folderpath, NULL);
+		if (camel_folder_summary_header_load (s, store, fi->full_name, NULL)) {
 			fi->unread = camel_folder_summary_get_unread_count (s);
 			fi->total = camel_folder_summary_get_saved_count (s);
 		}

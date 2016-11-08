@@ -102,17 +102,16 @@ local_folder_dispose (GObject *object)
 	folder = CAMEL_FOLDER (object);
 	local_folder = CAMEL_LOCAL_FOLDER (object);
 
-	if (folder->summary) {
+	if (camel_folder_get_folder_summary (folder)) {
 		/* Something can hold the reference to the folder longer than
 		   the parent store is alive, thus count with it. */
 		if (camel_folder_get_parent_store (folder)) {
 			camel_local_summary_sync (
-				CAMEL_LOCAL_SUMMARY (folder->summary),
+				CAMEL_LOCAL_SUMMARY (camel_folder_get_folder_summary (folder)),
 				FALSE, local_folder->changes, NULL, NULL);
 		}
 	}
 
-	g_clear_object (&folder->summary);
 	g_clear_object (&local_folder->search);
 	g_clear_object (&local_folder->index);
 
@@ -223,6 +222,18 @@ local_folder_constructed (GObject *object)
 	g_free (path);
 }
 
+static guint32
+local_folder_get_permanent_flags (CamelFolder *folder)
+{
+	return CAMEL_MESSAGE_ANSWERED |
+		CAMEL_MESSAGE_DELETED |
+		CAMEL_MESSAGE_DRAFT |
+		CAMEL_MESSAGE_FLAGGED |
+		CAMEL_MESSAGE_SEEN |
+		CAMEL_MESSAGE_ANSWERED_ALL |
+		CAMEL_MESSAGE_USER;
+}
+
 static GPtrArray *
 local_folder_search_by_expression (CamelFolder *folder,
                                    const gchar *expression,
@@ -331,8 +342,8 @@ local_folder_rename (CamelFolder *folder,
 	g_free (statepath);
 
 	/* FIXME: Poke some internals, sigh */
-	g_free (((CamelLocalSummary *) folder->summary)->folder_path);
-	((CamelLocalSummary *) folder->summary)->folder_path = g_strdup (lf->folder_path);
+	g_free (((CamelLocalSummary *) camel_folder_get_folder_summary (folder))->folder_path);
+	((CamelLocalSummary *) camel_folder_get_folder_summary (folder))->folder_path = g_strdup (lf->folder_path);
 
 	CAMEL_FOLDER_CLASS (camel_local_folder_parent_class)->rename (folder, newname);
 }
@@ -399,7 +410,7 @@ local_folder_refresh_info_sync (CamelFolder *folder,
 		CAMEL_LOCAL_STORE (parent_store));
 
 	if (need_summary_check &&
-	    camel_local_summary_check ((CamelLocalSummary *) folder->summary, lf->changes, cancellable, error) == -1)
+	    camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, cancellable, error) == -1)
 		return FALSE;
 
 	if (camel_folder_change_info_changed (lf->changes)) {
@@ -428,7 +439,7 @@ local_folder_synchronize_sync (CamelFolder *folder,
 
 	/* if sync fails, we'll pass it up on exit through ex */
 	success = (camel_local_summary_sync (
-		(CamelLocalSummary *) folder->summary,
+		(CamelLocalSummary *) camel_folder_get_folder_summary (folder),
 		expunge, lf->changes, cancellable, error) == 0);
 	camel_local_folder_unlock (lf);
 
@@ -470,6 +481,7 @@ camel_local_folder_class_init (CamelLocalFolderClass *class)
 	object_class->constructed = local_folder_constructed;
 
 	folder_class = CAMEL_FOLDER_CLASS (class);
+	folder_class->get_permanent_flags = local_folder_get_permanent_flags;
 	folder_class->search_by_expression = local_folder_search_by_expression;
 	folder_class->search_by_uids = local_folder_search_by_uids;
 	folder_class->search_free = local_folder_search_free;
@@ -504,14 +516,8 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 	local_folder->priv = CAMEL_LOCAL_FOLDER_GET_PRIVATE (local_folder);
 	g_mutex_init (&local_folder->priv->search_lock);
 
-	folder->folder_flags |= CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY;
+	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
 
-	folder->permanent_flags = CAMEL_MESSAGE_ANSWERED |
-	    CAMEL_MESSAGE_DELETED | CAMEL_MESSAGE_DRAFT |
-	    CAMEL_MESSAGE_FLAGGED | CAMEL_MESSAGE_SEEN |
-	    CAMEL_MESSAGE_ANSWERED_ALL | CAMEL_MESSAGE_USER;
-
-	folder->summary = NULL;
 	local_folder->search = NULL;
 }
 
@@ -622,13 +628,13 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		forceindex = FALSE;
 	}
 
-	folder->summary = (CamelFolderSummary *) CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->folder_path, lf->index);
-	if (!(flags & CAMEL_STORE_IS_MIGRATING) && !camel_local_summary_load ((CamelLocalSummary *) folder->summary, forceindex, NULL)) {
+	camel_folder_take_folder_summary (folder, CAMEL_FOLDER_SUMMARY (CAMEL_LOCAL_FOLDER_GET_CLASS (lf)->create_summary (lf, lf->folder_path, lf->index)));
+	if (!(flags & CAMEL_STORE_IS_MIGRATING) && !camel_local_summary_load ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), forceindex, NULL)) {
 		/* ? */
 		if (need_summary_check &&
-		    camel_local_summary_check ((CamelLocalSummary *) folder->summary, lf->changes, cancellable, error) == 0) {
+		    camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, cancellable, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
-			if (camel_local_summary_sync ((CamelLocalSummary *) folder->summary, FALSE, lf->changes, cancellable, error) == -1) {
+			if (camel_local_summary_sync ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), FALSE, lf->changes, cancellable, error) == -1) {
 				g_object_unref (folder);
 				return NULL;
 			}

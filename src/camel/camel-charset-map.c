@@ -316,6 +316,10 @@ camel_charset_init (CamelCharset *c)
 	c->level = 0;
 }
 
+/**
+ * camel_charset_step:
+ * @in: (array length=len) (type gchar):
+ **/
 void
 camel_charset_step (CamelCharset *cc,
                     const gchar *in,
@@ -381,7 +385,13 @@ camel_charset_best_name (CamelCharset *charset)
 		return NULL;
 }
 
-/* finds the minimum charset for this string NULL means US-ASCII */
+/**
+ * camel_charset_best:
+ * @in: (array length=len) (type gchar):
+ *
+ * finds the minimum charset for this string NULL means US-ASCII
+ * Returns: (nullable): the minimum charset or NULL for US_ASCII.
+ **/
 const gchar *
 camel_charset_best (const gchar *in,
                     gint len)

@@ -39,6 +39,7 @@
 	((obj), CAMEL_TYPE_STREAM_FS, CamelStreamFsPrivate))
 
 struct _CamelStreamFsPrivate {
+	gboolean eos;
 	gint fd;	/* file descriptor on the underlying file */
 };
 
@@ -78,7 +79,7 @@ stream_fs_read (CamelStream *stream,
 	nread = camel_read (priv->fd, buffer, n, cancellable, error);
 
 	if (nread == 0)
-		stream->eos = TRUE;
+		priv->eos = TRUE;
 
 	return nread;
 }
@@ -145,6 +146,14 @@ stream_fs_close (CamelStream *stream,
 	return 0;
 }
 
+static gboolean
+stream_fs_eos (CamelStream *stream)
+{
+	CamelStreamFs *fs = CAMEL_STREAM_FS (stream);
+
+	return fs->priv->eos;
+}
+
 static goffset
 stream_fs_tell (GSeekable *seekable)
 {
@@ -201,7 +210,7 @@ stream_fs_seek (GSeekable *seekable,
 		return FALSE;
 	}
 
-	CAMEL_STREAM (seekable)->eos = FALSE;
+	priv->eos = FALSE;
 
 	return TRUE;
 }
@@ -242,6 +251,7 @@ camel_stream_fs_class_init (CamelStreamFsClass *class)
 	stream_class->write = stream_fs_write;
 	stream_class->flush = stream_fs_flush;
 	stream_class->close = stream_fs_close;
+	stream_class->eos = stream_fs_eos;
 }
 
 static void
@@ -259,6 +269,7 @@ camel_stream_fs_init (CamelStreamFs *stream)
 {
 	stream->priv = CAMEL_STREAM_FS_GET_PRIVATE (stream);
 	stream->priv->fd = -1;
+	stream->priv->eos = FALSE;
 }
 
 /**
@@ -292,7 +303,7 @@ camel_stream_fs_new_with_fd (gint fd)
  * camel_stream_fs_new_with_name:
  * @name: a local filename
  * @flags: flags as in open(2)
- * @mode: a file mode
+ * @mode: (type guint32): a file mode
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new #CamelStreamFs corresponding to the named file, flags,

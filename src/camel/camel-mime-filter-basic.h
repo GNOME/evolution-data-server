@@ -59,6 +59,9 @@ struct _CamelMimeFilterBasic {
 
 struct _CamelMimeFilterBasicClass {
 	CamelMimeFilterClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_mime_filter_basic_get_type (void);

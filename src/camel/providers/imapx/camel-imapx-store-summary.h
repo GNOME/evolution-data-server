@@ -60,6 +60,9 @@ struct _CamelIMAPXStoreSummary {
 
 struct _CamelIMAPXStoreSummaryClass {
 	CamelStoreSummaryClass parent_class;
+
+	/* Padding for future expansion */
+	gpointer reserved[20];
 };
 
 GType		camel_imapx_store_summary_get_type
