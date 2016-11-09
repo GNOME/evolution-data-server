@@ -207,6 +207,12 @@ imapx_store_build_folder_info (CamelIMAPXStore *imapx_store,
 	CamelFolderInfo *fi;
 	const gchar *name;
 
+	/* Do not inherit folder types, because those are advertised by the server,
+	   while it might not always match what the user has set. In that case
+	   there could be for example two Trash folders highlighted in the UI,
+	   while only one of them would be the correct one. */
+	flags = flags & ~CAMEL_FOLDER_TYPE_MASK;
+
 	store = CAMEL_STORE (imapx_store);
 	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
 
@@ -1178,12 +1184,18 @@ get_folder_info_offline (CamelStore *store,
 		fi = imapx_store_build_folder_info (imapx_store, folder_path, 0);
 		fi->unread = si->unread;
 		fi->total = si->total;
-		if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) != 0)
+
+		/* Do not inherit folder types, because those are advertised by the server,
+		   while it might not always match what the user has set. In that case
+		   there could be for example two Trash folders highlighted in the UI,
+		   while only one of them would be the correct one. */
+		if ((fi->flags & CAMEL_FOLDER_TYPE_MASK) != 0) {
 			fi->flags =
 				(fi->flags & CAMEL_FOLDER_TYPE_MASK) |
 				(si->flags & ~CAMEL_FOLDER_TYPE_MASK);
-		else
-			fi->flags = si->flags;
+		} else {
+			fi->flags = si->flags & ~CAMEL_FOLDER_TYPE_MASK;
+		}
 
 		/* blah, this gets lost somewhere, i can't be bothered finding out why */
 		if (si_is_inbox) {
