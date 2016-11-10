@@ -40,8 +40,12 @@ void camel_debug_end (void);
 
 /**
  * CAMEL_CHECK_GERROR:
+ * @object: a #GObject descendant
+ * @method: a method which was run
+ * @expr: an expression to test, which evaluates to %TRUE or %FALSE
+ * @error: a pointer to a pointer of a #GError, set by the @method
  *
- * This sanity checks return values and #GErrors.  If returning
+ * This sanity checks return values and #GError.  If returning
  * failure, make sure the #GError is set.  If returning success,
  * make sure the #GError is NOT set.
  *
@@ -79,6 +83,10 @@ void camel_debug_end (void);
 
 /**
  * CAMEL_CHECK_LOCAL_GERROR:
+ * @object: a #GObject descendant
+ * @method: a method which was run
+ * @expr: an expression to test, which evaluates to %TRUE or %FALSE
+ * @error: a pointer to a #GError, set by the @method
  *
  * Same as CAMEL_CHECK_GERROR, but for direct #GError pointers.
  *

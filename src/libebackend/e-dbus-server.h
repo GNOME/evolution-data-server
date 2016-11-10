@@ -59,6 +59,7 @@ typedef struct _EDBusServerPrivate EDBusServerPrivate;
  * Since: 3.4
  **/
 struct _EDBusServer {
+	/*< private >*/
 	GObject parent;
 	EDBusServerPrivate *priv;
 };

@@ -497,13 +497,13 @@ camel_data_cache_get_filename (CamelDataCache *cdc,
 /**
  * camel_data_cache_remove:
  * @cdc: A #CamelDataCache
- * @path:
- * @key:
+ * @path: Path to the (sub) cache the item exists in.
+ * @key: Key for the cache item.
  * @error: return location for a #GError, or %NULL
  *
  * Remove/expire a cache item.
  *
- * Returns:
+ * Returns: 0 on success, -1 on error
  **/
 gint
 camel_data_cache_remove (CamelDataCache *cdc,

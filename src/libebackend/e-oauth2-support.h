@@ -49,12 +49,17 @@ typedef struct _EOAuth2SupportInterface EOAuth2SupportInterface;
 
 /**
  * EOAuth2SupportInterface:
+ * @get_access_token_sync: synchronous interface method to get the access token
+ * @get_access_token: asynchronous interface method to get the access token
+ * @get_access_token_finish: counterpart of the asynchronous interface method to finishd get of the access token
  *
  * Since: 3.8
  **/
 struct _EOAuth2SupportInterface {
+	/*< private >*/
 	GTypeInterface parent_interface;
 
+	/*< public >*/
 	/* Synchronous I/O Methods */
 	gboolean	(*get_access_token_sync)
 						(EOAuth2Support *support,

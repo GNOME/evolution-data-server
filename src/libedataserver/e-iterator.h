@@ -64,6 +64,7 @@ typedef struct _EIteratorClass EIteratorClass;
  * functions below.
  **/
 struct _EIterator {
+	/*< private >*/
 	GObject parent;
 };
 

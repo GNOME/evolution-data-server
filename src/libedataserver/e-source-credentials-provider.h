@@ -65,6 +65,7 @@ typedef struct _ESourceCredentialsProviderPrivate ESourceCredentialsProviderPriv
  * Since: 3.16
  **/
 struct _ESourceCredentialsProvider {
+	/*< private >*/
 	GObject parent;
 	ESourceCredentialsProviderPrivate *priv;
 };

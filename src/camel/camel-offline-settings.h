@@ -58,6 +58,7 @@ typedef struct _CamelOfflineSettingsClass CamelOfflineSettingsClass;
 typedef struct _CamelOfflineSettingsPrivate CamelOfflineSettingsPrivate;
 
 struct _CamelOfflineSettings {
+	/*< private >*/
 	CamelStoreSettings parent;
 	CamelOfflineSettingsPrivate *priv;
 };

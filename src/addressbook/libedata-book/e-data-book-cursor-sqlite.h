@@ -49,6 +49,7 @@ typedef struct _EDataBookCursorSqlitePrivate EDataBookCursorSqlitePrivate;
  * Since: 3.12
  */
 struct _EDataBookCursorSqlite {
+	/*< private >*/
 	EDataBookCursor parent;
 	EDataBookCursorSqlitePrivate *priv;
 };
@@ -61,6 +62,7 @@ struct _EDataBookCursorSqlite {
  * Since: 3.12
  */
 struct _EDataBookCursorSqliteClass {
+	/*< private >*/
 	EDataBookCursorClass parent;
 };
 

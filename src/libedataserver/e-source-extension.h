@@ -58,6 +58,7 @@ typedef struct _ESourceExtensionPrivate ESourceExtensionPrivate;
  * Since: 3.6
  **/
 struct _ESourceExtension {
+	/*< private >*/
 	GObject parent;
 	ESourceExtensionPrivate *priv;
 };

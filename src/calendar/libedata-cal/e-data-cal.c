@@ -393,6 +393,9 @@ e_data_cal_error_quark (void)
 
 /**
  * e_data_cal_status_to_string:
+ * @status: an #EDataCalCallStatus
+ *
+ * Returns: A localized text representation of the @status.
  *
  * Since: 2.32
  **/
@@ -448,7 +451,7 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
  * @custom_msg: Custom message to use for the error. When NULL,
  *              then uses a default message based on the @status code.
  *
- * Returns: NULL, when the @status is Success,
+ * Returns: (nullable) (transfer full): %NULL, when the @status is Success,
  *          or a newly allocated GError, which should be freed
  *          with g_error_free() call.
  *
@@ -466,9 +469,17 @@ e_data_cal_create_error (EDataCalCallStatus status,
 
 /**
  * e_data_cal_create_error_fmt:
+ * @status: an #EDataCalCallStatus
+ * @custom_msg_fmt: (nullable): message format, or %NULL to use the default message for the @status
+ * @...: arguments for the format
  *
  * Similar as e_data_cal_create_error(), only here, instead of custom_msg,
- * is used a printf() format to create a custom_msg for the error.
+ * is used a printf() format to create a custom message for the error.
+ *
+ * Returns: (nullable) (transfer full): %NULL, when the @status is Success,
+ *   or a newly allocated #GError, which should be freed with g_error_free() call.
+ *   The #GError has set the custom message, or the default message for
+ *   @status, when @custom_msg_fmt is %NULL.
  *
  * Since: 2.32
  **/
@@ -1617,6 +1628,7 @@ data_cal_handle_close_cb (EDBusCalendar *dbus_interface,
 /**
  * e_data_cal_respond_open:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the open method call.
@@ -1654,6 +1666,7 @@ e_data_cal_respond_open (EDataCal *cal,
 /**
  * e_data_cal_respond_refresh:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the refresh method call.
@@ -1691,6 +1704,7 @@ e_data_cal_respond_refresh (EDataCal *cal,
 /**
  * e_data_cal_respond_get_object:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @object: The object retrieved as an iCalendar string.
  *
@@ -1743,6 +1757,7 @@ e_data_cal_respond_get_object (EDataCal *cal,
 /**
  * e_data_cal_respond_get_object_list:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @objects: List of retrieved objects.
  *
@@ -1797,6 +1812,7 @@ e_data_cal_respond_get_object_list (EDataCal *cal,
 /**
  * e_data_cal_respond_get_free_busy:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @freebusy: a #GSList of iCalendar strings with all gathered free/busy components.
  *
@@ -1848,6 +1864,7 @@ e_data_cal_respond_get_free_busy (EDataCal *cal,
 /**
  * e_data_cal_respond_create_objects:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @uids: UIDs of the objects created.
  * @new_components: The newly created #ECalComponent objects.
@@ -1916,6 +1933,7 @@ e_data_cal_respond_create_objects (EDataCal *cal,
 /**
  * e_data_cal_respond_modify_objects:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @old_components: The old #ECalComponents.
  * @new_components: The new #ECalComponents.
@@ -1991,6 +2009,7 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
 /**
  * e_data_cal_respond_remove_objects:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @ids: IDs of the removed objects.
  * @old_components: The old #ECalComponents.
@@ -2086,6 +2105,7 @@ e_data_cal_respond_remove_objects (EDataCal *cal,
 /**
  * e_data_cal_respond_receive_objects:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the receive_objects method call.
@@ -2123,6 +2143,7 @@ e_data_cal_respond_receive_objects (EDataCal *cal,
 /**
  * e_data_cal_respond_send_objects:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @users: List of users.
  * @calobj: An iCalendar string representing the object sent.
@@ -2177,6 +2198,7 @@ e_data_cal_respond_send_objects (EDataCal *cal,
 /**
  * e_data_cal_respond_get_attachment_uris:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @attachment_uris: List of retrieved attachment uri's.
  *
@@ -2226,6 +2248,7 @@ e_data_cal_respond_get_attachment_uris (EDataCal *cal,
 /**
  * e_data_cal_respond_discard_alarm:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the discard_alarm method call.
@@ -2263,6 +2286,7 @@ e_data_cal_respond_discard_alarm (EDataCal *cal,
 /**
  * e_data_cal_respond_get_timezone:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  * @tzobject: The requested timezone as an iCalendar string.
  *
@@ -2307,6 +2331,7 @@ e_data_cal_respond_get_timezone (EDataCal *cal,
 /**
  * e_data_cal_respond_add_timezone:
  * @cal: A calendar client interface.
+ * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
  *
  * Notifies listeners of the completion of the add_timezone method call.
@@ -2343,8 +2368,10 @@ e_data_cal_respond_add_timezone (EDataCal *cal,
 
 /**
  * e_data_cal_report_error:
+ * @cal: an #EDataCal
+ * @message: an error message to report
  *
- * FIXME: Document me.
+ * Emits an error message, thus the clients can be notified about it.
  *
  * Since: 3.2
  **/
@@ -2360,8 +2387,10 @@ e_data_cal_report_error (EDataCal *cal,
 
 /**
  * e_data_cal_report_free_busy_data:
+ * @cal: an #EDataCal
+ * @freebusy: (element-type utf8): a #GSList of free/busy components encoded as string
  *
- * FIXME: Document me.
+ * Reports result of a free/busy query on the @cal.
  *
  * Since: 3.2
  **/
@@ -2392,6 +2421,9 @@ e_data_cal_report_free_busy_data (EDataCal *cal,
 
 /**
  * e_data_cal_report_backend_property_changed:
+ * @cal: an #EDataCal
+ * @prop_name: property name
+ * @prop_value: new property value
  *
  * Notifies client about certain property value change 
  *

@@ -58,6 +58,7 @@ typedef struct _CamelStoreSettingsClass CamelStoreSettingsClass;
 typedef struct _CamelStoreSettingsPrivate CamelStoreSettingsPrivate;
 
 struct _CamelStoreSettings {
+	/*< private >*/
 	CamelSettings parent;
 	CamelStoreSettingsPrivate *priv;
 };

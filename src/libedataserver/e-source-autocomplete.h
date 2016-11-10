@@ -68,6 +68,7 @@ typedef struct _ESourceAutocompletePrivate ESourceAutocompletePrivate;
  * Since: 3.6
  **/
 struct _ESourceAutocomplete {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceAutocompletePrivate *priv;
 };

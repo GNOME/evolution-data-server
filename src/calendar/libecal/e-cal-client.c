@@ -2294,6 +2294,8 @@ e_cal_client_resolve_tzid_cb (const gchar *tzid,
  * e_cal_client_resolve_tzid_sync:
  * @tzid: ID of the timezone to resolve.
  * @cal_client: User data for the callback, in this case #ECalClient.
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
  * Resolves TZIDs for the recurrence generator.
  *

@@ -72,6 +72,7 @@ typedef struct _CamelIMAPXNamespacePrivate CamelIMAPXNamespacePrivate;
  * Since: 3.12
  **/
 struct _CamelIMAPXNamespace {
+	/*< private >*/
 	GObject parent;
 	CamelIMAPXNamespacePrivate *priv;
 };

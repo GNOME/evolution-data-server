@@ -65,6 +65,7 @@ typedef struct _EUserPrompterServerPrivate EUserPrompterServerPrivate;
  * Since: 3.8
  **/
 struct _EUserPrompterServer {
+	/*< private >*/
 	EDBusServer parent;
 	EUserPrompterServerPrivate *priv;
 };

@@ -52,6 +52,7 @@ typedef struct _ESourceContactsClass ESourceContactsClass;
 typedef struct _ESourceContactsPrivate ESourceContactsPrivate;
 
 struct _ESourceContacts {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceContactsPrivate *priv;
 };

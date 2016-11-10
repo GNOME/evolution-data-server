@@ -1468,9 +1468,11 @@ e_data_book_respond_refresh (EDataBook *book,
  * e_data_book_respond_get_contact:
  * @book: An #EDataBook
  * @opid: An operation ID
- * @error: Operation error, if any, automatically freed if passed it
+ * @error: (nullable) (transfer full): Operation error, if any, automatically freed if passed it
+ * @vcard: (nullable): the found vCard, as string, or %NULL, if it could not be found
  *
  * Notifies listeners of the completion of the get_contact method call.
+ * Only one of @error and @vcard can be set.
  */
 void
 e_data_book_respond_get_contact (EDataBook *book,

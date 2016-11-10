@@ -1058,6 +1058,8 @@ backend_credentials_required_thread (GTask *task,
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate
  * @op_error: (allow-none): a #GError with a description of the previous credentials error, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: (closure user_data) (scope async): a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
  *
  * Asynchronously calls the e_backend_credentials_required_sync() on the @backend,
  * to inform clients that credentials are required.
@@ -1321,7 +1323,7 @@ e_backend_trust_prompt_sync (EBackend *backend,
  * @backend: an #EBackend
  * @parameters: an #ENamedParameters with values for the trust prompt
  * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @callback: (closure user_data) (scope async): a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *
  * Initiates a user trust prompt with given @parameters.

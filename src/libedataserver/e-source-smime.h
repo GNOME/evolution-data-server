@@ -68,6 +68,7 @@ typedef struct _ESourceSMIMEPrivate ESourceSMIMEPrivate;
  * Since: 3.6
  **/
 struct _ESourceSMIME {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceSMIMEPrivate *priv;
 };

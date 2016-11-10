@@ -536,14 +536,14 @@ camel_db_init (CamelDB *cdb)
 	cdb->priv->timer = NULL;
 }
 
-/**
+/*
  * cdb_sql_exec 
  * @db: 
  * @stmt: 
  * @error: 
  * 
  * Callers should hold the lock
- **/
+ */
 static gint
 cdb_sql_exec (sqlite3 *db,
               const gchar *stmt,
@@ -771,7 +771,7 @@ camel_db_command_internal (CamelDB *cdb,
 /**
  * camel_db_new:
  * @filename: A filename with the database to open/create
- * @error: (out): a #GError for error messages
+ * @error: return location for a #GError, or %NULL
  *
  * Returns: (transfer full): A new #CamelDB with @filename as its database file.
  *   Free it with g_object_unref() when no longer needed.
@@ -904,7 +904,14 @@ camel_db_get_filename (CamelDB *cdb)
 
 /**
  * camel_db_set_collate:
- * @func: (scope call):
+ * @cdb: a #CamelDB
+ * @col: a column name; currently unused
+ * @collate: collation name
+ * @func: (scope call): a #CamelDBCollate collation function
+ *
+ * Defines a collation @collate, which can be used in SQL (SQLite)
+ * statement as a collation function. The @func is called when
+ * colation is used.
  *
  * Since: 2.24
  **/
@@ -930,6 +937,13 @@ camel_db_set_collate (CamelDB *cdb,
 
 /**
  * camel_db_command:
+ * @cdb: a #CamelDB
+ * @stmt: an SQL (SQLite) statement to execute
+ * @error: return location for a #GError, or %NULL
+ *
+ * Executes an SQLite command.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -943,6 +957,12 @@ camel_db_command (CamelDB *cdb,
 
 /**
  * camel_db_begin_transaction:
+ * @cdb: a #CamelDB
+ * @error: return location for a #GError, or %NULL
+ *
+ * Begins transaction. End it with camel_db_end_transaction() or camel_db_abort_transaction().
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -969,6 +989,12 @@ camel_db_begin_transaction (CamelDB *cdb,
 
 /**
  * camel_db_end_transaction:
+ * @cdb: a #CamelDB
+ * @error: return location for a #GError, or %NULL
+ *
+ * Ends an ongoing transaction by committing the changes.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -995,6 +1021,12 @@ camel_db_end_transaction (CamelDB *cdb,
 
 /**
  * camel_db_abort_transaction:
+ * @cdb: a #CamelDB
+ * @error: return location for a #GError, or %NULL
+ *
+ * Ends an ongoing transaction by ignoring the changes.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1017,12 +1049,19 @@ camel_db_abort_transaction (CamelDB *cdb,
 
 /**
  * camel_db_add_to_transaction:
+ * @cdb: a #CamelDB
+ * @query: an SQL (SQLite) statement
+ * @error: return location for a #GError, or %NULL
+ *
+ * Adds a statement to an ongoing transaction.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_add_to_transaction (CamelDB *cdb,
-                             const gchar *stmt,
+                             const gchar *query,
                              GError **error)
 {
 	if (!cdb)
@@ -1030,19 +1069,24 @@ camel_db_add_to_transaction (CamelDB *cdb,
 
 	g_return_val_if_fail (cdb_is_in_transaction (cdb), -1);
 
-	return (cdb_sql_exec (cdb->priv->db, stmt, NULL, NULL, NULL, error));
+	return (cdb_sql_exec (cdb->priv->db, query, NULL, NULL, NULL, error));
 }
 
 /**
  * camel_db_transaction_command:
  * @cdb: a #CamelDB
  * @qry_list: (element-type utf8) (transfer none): A #GList of querries
+ * @error: return location for a #GError, or %NULL
+ *
+ * Runs the list of commands as a single transaction.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_transaction_command (CamelDB *cdb,
-                              GList *qry_list,
+                              const GList *qry_list,
                               GError **error)
 {
 	gboolean in_transaction = FALSE;
@@ -1094,6 +1138,15 @@ count_cb (gpointer data,
 
 /**
  * camel_db_count_message_info:
+ * @cdb: a #CamelDB
+ * @query: a COUNT() query
+ * @count: (out): the result of the query
+ * @error: return location for a #GError, or %NULL
+ *
+ * Executes a COUNT() query (like "SELECT COUNT(*) FROM table") and provides
+ * the result of it as an unsigned 32-bit integer.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.26
  **/
@@ -1120,6 +1173,14 @@ camel_db_count_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_junk_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many junk messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1145,6 +1206,14 @@ camel_db_count_junk_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_unread_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many unread messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1170,6 +1239,14 @@ camel_db_count_unread_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_visible_unread_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many visible (not deleted and not junk) and unread messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1195,6 +1272,14 @@ camel_db_count_visible_unread_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_visible_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many visible (not deleted and not junk) messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1220,6 +1305,14 @@ camel_db_count_visible_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_junk_not-deleted_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many junk, but not deleted, messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1245,6 +1338,14 @@ camel_db_count_junk_not_deleted_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_deleted_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many deleted messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1270,6 +1371,14 @@ camel_db_count_deleted_message_info (CamelDB *cdb,
 
 /**
  * camel_db_count_total_message_info:
+ * @cdb: a #CamelDB
+ * @table_name: name of the table
+ * @count: (out): where to store the resulting count
+ * @error: return location for a #GError, or %NULL
+ *
+ * Counts how many messages is stored in the given table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1296,7 +1405,15 @@ camel_db_count_total_message_info (CamelDB *cdb,
 
 /**
  * camel_db_select:
- * @callback: (scope async):
+ * @cdb: a #CamelDB
+ * @stmt: a SELECT statment to execute
+ * @callback: (scope call) (closure user_data): a callback to call for each row
+ * @user_data: user data for the @callback
+ * @error: return location for a #GError, or %NULL
+ *
+ * Executes a SELECT staement and calls the @callback for each selected row.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1359,23 +1476,32 @@ read_uids_to_hash_callback (gpointer ref_hash,
 
 /**
  * camel_db_get_folder_uids:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @sort_by: (nullable): optional ORDER BY clause (without the "ORDER BY" prefix)
+ * @collate: (nullable): optional collate function name to use
+ * @hash: (element-type utf8 guint32): a hash table to fill
+ * @error: return location for a #GError, or %NULL
  *
- * Fills hash with uid->GUINT_TO_POINTER (flag)
+ * Fills hash with uid->GUINT_TO_POINTER (flag). Use camel_pstring_free()
+ * to free the keys of the @hash.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
-camel_db_get_folder_uids (CamelDB *db,
+camel_db_get_folder_uids (CamelDB *cdb,
                           const gchar *folder_name,
                           const gchar *sort_by,
                           const gchar *collate,
                           GHashTable *hash,
                           GError **error)
 {
-	 gchar *sel_query;
-	 gint ret;
+	gchar *sel_query;
+	gint ret;
 
-		sel_query = sqlite3_mprintf (
+	sel_query = sqlite3_mprintf (
 		"SELECT uid,flags FROM %Q%s%s%s%s",
 		folder_name,
 		sort_by ? " order by " : "",
@@ -1383,72 +1509,89 @@ camel_db_get_folder_uids (CamelDB *db,
 		(sort_by && collate) ? " collate " : "",
 		(sort_by && collate) ? collate : "");
 
-	 ret = camel_db_select (db, sel_query, read_uids_to_hash_callback, hash, error);
-	 sqlite3_free (sel_query);
+	ret = camel_db_select (cdb, sel_query, read_uids_to_hash_callback, hash, error);
+	sqlite3_free (sel_query);
 
-	 return ret;
+	return ret;
 }
 
 /**
  * camel_db_get_folder_junk_uids:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @error: return location for a #GError, or %NULL
  *
- * Returns: (element-type utf8) (transfer full):
+ * Returns: (element-type utf8) (transfer full) (nullable): An array
+ *   of the UID-s of the junk messages in the given folder. Use
+ *   camel_pstring_free() to free the elements.
  *
  * Since: 2.24
  **/
 GPtrArray *
-camel_db_get_folder_junk_uids (CamelDB *db,
+camel_db_get_folder_junk_uids (CamelDB *cdb,
                                const gchar *folder_name,
                                GError **error)
 {
-	 gchar *sel_query;
-	 gint ret;
-	 GPtrArray *array = g_ptr_array_new ();
+	gchar *sel_query;
+	gint ret;
+	GPtrArray *array = g_ptr_array_new ();
 
-	 sel_query = sqlite3_mprintf ("SELECT uid FROM %Q where junk=1", folder_name);
+	sel_query = sqlite3_mprintf ("SELECT uid FROM %Q where junk=1", folder_name);
 
-	 ret = camel_db_select (db, sel_query, read_uids_callback, array, error);
+	ret = camel_db_select (cdb, sel_query, read_uids_callback, array, error);
 
-	 sqlite3_free (sel_query);
+	sqlite3_free (sel_query);
 
-	 if (!array->len || ret != 0) {
-		 g_ptr_array_free (array, TRUE);
-		 array = NULL;
-	 }
-	 return array;
+	if (!array->len || ret != 0) {
+		g_ptr_array_free (array, TRUE);
+		array = NULL;
+	}
+
+	return array;
 }
 
 /**
  * camel_db_get_folder_deleted_uids:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @error: return location for a #GError, or %NULL
  *
- * Returns: (element-type utf8) (transfer full):
+ * Returns: (element-type utf8) (transfer full) (nullable): An array
+ *   of the UID-s of the deleted messages in the given folder. Use
+ *   camel_pstring_free() to free the elements.
  *
  * Since: 2.24
  **/
 GPtrArray *
-camel_db_get_folder_deleted_uids (CamelDB *db,
+camel_db_get_folder_deleted_uids (CamelDB *cdb,
                                   const gchar *folder_name,
                                   GError **error)
 {
-	 gchar *sel_query;
-	 gint ret;
-	 GPtrArray *array = g_ptr_array_new ();
+	gchar *sel_query;
+	gint ret;
+	GPtrArray *array = g_ptr_array_new ();
 
-	 sel_query = sqlite3_mprintf ("SELECT uid FROM %Q where deleted=1", folder_name);
+	sel_query = sqlite3_mprintf ("SELECT uid FROM %Q where deleted=1", folder_name);
 
-	 ret = camel_db_select (db, sel_query, read_uids_callback, array, error);
-	 sqlite3_free (sel_query);
+	ret = camel_db_select (cdb, sel_query, read_uids_callback, array, error);
+	sqlite3_free (sel_query);
 
-	 if (!array->len || ret != 0) {
-		 g_ptr_array_free (array, TRUE);
-		 array = NULL;
-	 }
+	if (!array->len || ret != 0) {
+		g_ptr_array_free (array, TRUE);
+		array = NULL;
+	}
 
-	 return array;
+	return array;
 }
 
 /**
  * camel_db_create_folders_table:
+ * @cdb: a #CamelDB
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a 'folders' table, if it doesn't exist yet.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1700,6 +1843,14 @@ camel_db_migrate_folder_recreate (CamelDB *cdb,
 
 /**
  * camel_db_reset_folder_version:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @reset_version: version number to set
+ * @error: return location for a #GError, or %NULL
+ *
+ * Sets a version number for the given folder.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.28
  **/
@@ -1787,6 +1938,13 @@ camel_db_get_folder_version (CamelDB *cdb,
 
 /**
  * camel_db_prepare_message_info_table:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @error: return location for a #GError, or %NULL
+ *
+ * Prepares message info table for the given folder.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -1846,23 +2004,32 @@ exit:
 	return ret;
 }
 
-static gint
-write_mir (CamelDB *cdb,
-           const gchar *folder_name,
-           CamelMIRecord *record,
-           GError **error,
-           gboolean delete_old_record)
+/**
+ * camel_db_write_message_info_record:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @record: a #CamelMIRecord
+ * @error: return location for a #GError, or %NULL
+ *
+ * Write the @record to the message info table of the given folder.
+ *
+ * Returns: 0 on success, -1 on error
+ *
+ * Since: 2.24
+ **/
+gint
+camel_db_write_message_info_record (CamelDB *cdb,
+                                    const gchar *folder_name,
+                                    CamelMIRecord *record,
+                                    GError **error)
 {
 	gint ret;
-	/*char *del_query;*/
 	gchar *ins_query;
 
 	if (!record) {
 		g_warn_if_reached ();
 		return -1;
 	}
-
-	/* FIXME: We should migrate from this DELETE followed by INSERT model to an INSERT OR REPLACE model as pointed out by pvanhoof */
 
 	/* NB: UGLIEST Hack. We can't modify the schema now. We are using dirty (an unsed one to notify of FLAGGED/Dirty infos */
 
@@ -1909,35 +2076,14 @@ write_mir (CamelDB *cdb,
 }
 
 /**
- * camel_db_write_fresh_message_info_record:
- *
- * Since: 2.26
- **/
-gint
-camel_db_write_fresh_message_info_record (CamelDB *cdb,
-                                          const gchar *folder_name,
-                                          CamelMIRecord *record,
-                                          GError **error)
-{
-	return write_mir (cdb, folder_name, record, error, FALSE);
-}
-
-/**
- * camel_db_write_message_info_record:
- *
- * Since: 2.24
- **/
-gint
-camel_db_write_message_info_record (CamelDB *cdb,
-                                    const gchar *folder_name,
-                                    CamelMIRecord *record,
-                                    GError **error)
-{
-	return write_mir (cdb, folder_name, record, error, TRUE);
-}
-
-/**
  * camel_db_write_folder_info_record:
+ * @cdb: a #CamelDB
+ * @record: a #CamelFIRecord
+ * @error: return location for a #GError, or %NULL
+ *
+ * Write the @record to the 'folders' table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -2048,6 +2194,14 @@ read_fir_callback (gpointer ref,
 
 /**
  * camel_db_read_folder_info_record:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @record: (out caller-allocates): a #CamelFIRecord
+ * @error: return location for a #GError, or %NULL
+ *
+ * reads folder information for the given folder and stores it into the @record.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -2076,7 +2230,17 @@ camel_db_read_folder_info_record (CamelDB *cdb,
 
 /**
  * camel_db_read_message_info_record_with_uid:
- * @read_mir_callback: (scope async) (closure user_data):
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @uid: a message info UID to read the record for
+ * @user_data: user data of the @callback
+ * @callback: (scope call) (closure user_data): callback to call for the found row
+ * @error: return location for a #GError, or %NULL
+ *
+ * Selects single message info for the given @uid in folder @folder_name and calls
+ * the @callback for it.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -2085,7 +2249,7 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
                                             const gchar *folder_name,
                                             const gchar *uid,
                                             gpointer user_data,
-                                            CamelDBSelectCB read_mir_callback,
+                                            CamelDBSelectCB callback,
                                             GError **error)
 {
 	gchar *query;
@@ -2096,7 +2260,7 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 		"mail_from, mail_to, mail_cc, mlist, part, labels, "
 		"usertags, cinfo, bdata FROM %Q WHERE uid = %Q",
 		folder_name, uid);
-	ret = camel_db_select (cdb, query, read_mir_callback, user_data, error);
+	ret = camel_db_select (cdb, query, callback, user_data, error);
 	sqlite3_free (query);
 
 	return (ret);
@@ -2104,7 +2268,15 @@ camel_db_read_message_info_record_with_uid (CamelDB *cdb,
 
 /**
  * camel_db_read_message_info_records:
- * @read_mir_callback: (scope async) (closure user_data):
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @user_data: user data for the @callback
+ * @callback: (scope async) (closure user_data): callback to call for each found row
+ * @error: return location for a #GError, or %NULL
+ *
+ * Reads all mesasge info records for the given folder and calls @callback for them.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
@@ -2112,7 +2284,7 @@ gint
 camel_db_read_message_info_records (CamelDB *cdb,
                                     const gchar *folder_name,
                                     gpointer user_data,
-                                    CamelDBSelectCB read_mir_callback,
+                                    CamelDBSelectCB callback,
                                     GError **error)
 {
 	gchar *query;
@@ -2122,7 +2294,7 @@ camel_db_read_message_info_records (CamelDB *cdb,
 		"SELECT uid, flags, size, dsent, dreceived, subject, "
 		"mail_from, mail_to, mail_cc, mlist, part, labels, "
 		"usertags, cinfo, bdata FROM %Q ", folder_name);
-	ret = camel_db_select (cdb, query, read_mir_callback, user_data, error);
+	ret = camel_db_select (cdb, query, callback, user_data, error);
 	sqlite3_free (query);
 
 	return (ret);
@@ -2130,12 +2302,21 @@ camel_db_read_message_info_records (CamelDB *cdb,
 
 /**
  * camel_db_delete_uid:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @uid: a message info UID to delete
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes single mesage info in the given folder with
+ * the given UID.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_delete_uid (CamelDB *cdb,
-                     const gchar *folder,
+                     const gchar *folder_name,
                      const gchar *uid,
                      GError **error)
 {
@@ -2144,7 +2325,7 @@ camel_db_delete_uid (CamelDB *cdb,
 
 	camel_db_begin_transaction (cdb, error);
 
-	tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder, uid);
+	tab = sqlite3_mprintf ("DELETE FROM %Q WHERE uid = %Q", folder_name, uid);
 	ret = camel_db_add_to_transaction (cdb, tab, error);
 	sqlite3_free (tab);
 
@@ -2157,7 +2338,7 @@ camel_db_delete_uid (CamelDB *cdb,
 static gint
 cdb_delete_ids (CamelDB *cdb,
                 const gchar *folder_name,
-                GList *uids,
+                const GList *uids,
                 const gchar *uid_prefix,
                 const gchar *field,
                 GError **error)
@@ -2166,7 +2347,7 @@ cdb_delete_ids (CamelDB *cdb,
 	gint ret = 0;
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
-	GList *iterator;
+	const GList *iterator;
 
 	camel_db_begin_transaction (cdb, error);
 
@@ -2211,14 +2392,20 @@ cdb_delete_ids (CamelDB *cdb,
 /**
  * camel_db_delete_uids:
  * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
  * @uids: (element-type utf8) (transfer none): A #GList of uids
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes a list of message UIDs as one transaction.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_delete_uids (CamelDB *cdb,
                       const gchar *folder_name,
-                      GList *uids,
+                      const GList *uids,
                       GError **error)
 {
 	if (!uids || !uids->data)
@@ -2229,20 +2416,28 @@ camel_db_delete_uids (CamelDB *cdb,
 
 /**
  * camel_db_clear_folder_summary:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes the given folder from the 'folders' table and empties
+ * its message info table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_clear_folder_summary (CamelDB *cdb,
-                               const gchar *folder,
+                               const gchar *folder_name,
                                GError **error)
 {
 	gint ret;
 	gchar *folders_del;
 	gchar *msginfo_del;
 
-	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
-	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder);
+	folders_del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder_name);
+	msginfo_del = sqlite3_mprintf ("DELETE FROM %Q ", folder_name);
 
 	camel_db_begin_transaction (cdb, error);
 
@@ -2259,12 +2454,20 @@ camel_db_clear_folder_summary (CamelDB *cdb,
 
 /**
  * camel_db_delete_folder:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes the given folder from the 'folders' table and also drops
+ * its message info table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_delete_folder (CamelDB *cdb,
-                        const gchar *folder,
+                        const gchar *folder_name,
                         GError **error)
 {
 	gint ret;
@@ -2272,11 +2475,11 @@ camel_db_delete_folder (CamelDB *cdb,
 
 	camel_db_begin_transaction (cdb, error);
 
-	del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder);
+	del = sqlite3_mprintf ("DELETE FROM folders WHERE folder_name = %Q", folder_name);
 	ret = camel_db_add_to_transaction (cdb, del, error);
 	sqlite3_free (del);
 
-	del = sqlite3_mprintf ("DROP TABLE %Q ", folder);
+	del = sqlite3_mprintf ("DROP TABLE %Q ", folder_name);
 	ret = camel_db_add_to_transaction (cdb, del, error);
 	sqlite3_free (del);
 
@@ -2288,13 +2491,21 @@ camel_db_delete_folder (CamelDB *cdb,
 
 /**
  * camel_db_rename_folder:
+ * @cdb: a #CamelDB
+ * @old_folder_name: full name of the existing folder
+ * @new_folder_name: full name of the folder to rename it to
+ * @error: return location for a #GError, or %NULL
+ *
+ * Renames tables for the @old_folder_name to be used with @new_folder_name.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.24
  **/
 gint
 camel_db_rename_folder (CamelDB *cdb,
-                        const gchar *old_folder,
-                        const gchar *new_folder,
+                        const gchar *old_folder_name,
+                        const gchar *new_folder_name,
                         GError **error)
 {
 	gint ret;
@@ -2302,19 +2513,19 @@ camel_db_rename_folder (CamelDB *cdb,
 
 	camel_db_begin_transaction (cdb, error);
 
-	cmd = sqlite3_mprintf ("ALTER TABLE %Q RENAME TO  %Q", old_folder, new_folder);
+	cmd = sqlite3_mprintf ("ALTER TABLE %Q RENAME TO  %Q", old_folder_name, new_folder_name);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);
 	sqlite3_free (cmd);
 
-	cmd = sqlite3_mprintf ("ALTER TABLE '%q_version' RENAME TO  '%q_version'", old_folder, new_folder);
+	cmd = sqlite3_mprintf ("ALTER TABLE '%q_version' RENAME TO  '%q_version'", old_folder_name, new_folder_name);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);
 	sqlite3_free (cmd);
 
-	cmd = sqlite3_mprintf ("UPDATE %Q SET modified=strftime(\"%%s\", 'now'), created=strftime(\"%%s\", 'now')", new_folder);
+	cmd = sqlite3_mprintf ("UPDATE %Q SET modified=strftime(\"%%s\", 'now'), created=strftime(\"%%s\", 'now')", new_folder_name);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);
 	sqlite3_free (cmd);
 
-	cmd = sqlite3_mprintf ("UPDATE folders SET folder_name = %Q WHERE folder_name = %Q", new_folder, old_folder);
+	cmd = sqlite3_mprintf ("UPDATE folders SET folder_name = %Q WHERE folder_name = %Q", new_folder_name, old_folder_name);
 	ret = camel_db_add_to_transaction (cdb, cmd, error);
 	sqlite3_free (cmd);
 
@@ -2326,6 +2537,9 @@ camel_db_rename_folder (CamelDB *cdb,
 
 /**
  * camel_db_camel_mir_free:
+ * @record: (nullable): a #CamelMIRecord
+ *
+ * Frees the @record and all of its associated data.
  *
  * Since: 2.24
  **/
@@ -2354,6 +2568,12 @@ camel_db_camel_mir_free (CamelMIRecord *record)
 
 /**
  * camel_db_sqlize_string:
+ * @string: a string to "sqlize"
+ *
+ * Converts the @string to be usable in the SQLite statements.
+ *
+ * Returns: (transfer full): A newly allocated sqlized @string. The returned
+ *    value should be freed with camel_db_sqlize_string(), when no longer needed.
  *
  * Since: 2.24
  **/
@@ -2365,14 +2585,17 @@ camel_db_sqlize_string (const gchar *string)
 
 /**
  * camel_db_free_sqlized_string:
+ * @string: (nullable): a string to free
+ *
+ * Frees a string previosuly returned by camel_db_sqlize_string().
  *
  * Since: 2.24
  **/
 void
 camel_db_free_sqlized_string (gchar *string)
 {
-	sqlite3_free (string);
-	string = NULL;
+	if (string)
+		sqlite3_free (string);
 }
 
 /*
@@ -2391,6 +2614,10 @@ followup_due_by TEXT ," */
 
 /**
  * camel_db_get_column_name:
+ * @raw_name: raw name to find the column name for
+ *
+ * Returns: (nullable): A corresponding column name in the message info table
+ *   for the @raw_name, or %NULL, when there is no corresponding column in the summary.
  *
  * Since: 2.24
  **/
@@ -2430,6 +2657,13 @@ camel_db_get_column_name (const gchar *raw_name)
 
 /**
  * camel_db_start_in_memory_transactions:
+ * @cdb: a #CamelDB
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates an in-memory table for a batch transactions. Use camel_db_flush_in_memory_transactions()
+ * to commit the changes and free the in-memory table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.26
  **/
@@ -2482,6 +2716,14 @@ camel_db_start_in_memory_transactions (CamelDB *cdb,
 
 /**
  * camel_db_flush_in_memory_transactions:
+ * @cdb: a #CamelDB
+ * @folder_name: full name of the folder
+ * @error: return location for a #GError, or %NULL
+ *
+ * A pair function for camel_db_start_in_memory_transactions(),
+ * to commit the changes to @folder_name and free the in-memory table.
+ *
+ * Returns: 0 on success, -1 on error
  *
  * Since: 2.26
  **/
@@ -2550,10 +2792,10 @@ static struct _known_column_names {
 
 /**
  * camel_db_get_column_ident:
- * @hash: (inout):
- * @index:
+ * @hash: (inout): a #GHashTable
+ * @index: an index to start with, between 0 and @ncols
  * @ncols: number of @col_names
- * @col_names: (array length=ncols):
+ * @col_names: (array length=ncols): column names to traverse
  *
  * Traverses column name from index @index into an enum
  * #CamelDBKnownColumnNames value.  The @col_names contains @ncols columns.
@@ -2626,7 +2868,7 @@ get_number_cb (gpointer data,
 
 /**
  * camel_db_maybe_run_maintenance:
- * @cdb: a #CamelDB instance
+ * @cdb: a #CamelDB
  * @error: (allow-none): a #GError or %NULL
  *
  * Runs a @cdb maintenance, which includes vacuum, if necessary.

@@ -137,6 +137,7 @@ typedef struct _ESourceTaskListPrivate ESourceTaskListPrivate;
  * Since: 3.6
  **/
 struct _ESourceCalendar {
+	/*< private >*/
 	ESourceSelectable parent;
 	ESourceCalendarPrivate *priv;
 };
@@ -154,6 +155,7 @@ struct _ESourceCalendarClass {
  * Since: 3.6
  **/
 struct _ESourceMemoList {
+	/*< private >*/
 	ESourceSelectable parent;
 	ESourceMemoListPrivate *priv;
 };
@@ -171,6 +173,7 @@ struct _ESourceMemoListClass {
  * Since: 3.6
  **/
 struct _ESourceTaskList {
+	/*< private >*/
 	ESourceSelectable parent;
 	ESourceTaskListPrivate *priv;
 };

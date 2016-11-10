@@ -1268,6 +1268,9 @@ parse_values (ESExp *sexp,
 
 /**
  * e_sexp_parse_value:
+ * @sexp: an #ESExp
+ *
+ * Returns: (nullable) (transfer none): an #ESExpTerm of the next token, or %NULL when there is none.
  *
  * Since: 2.28
  **/

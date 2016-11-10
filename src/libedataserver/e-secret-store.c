@@ -269,6 +269,7 @@ static SecretSchema password_schema = {
  * e_secret_store_store_sync:
  * @uid: a unique identifier of the secret
  * @secret: the secret to store
+ * @label: human readable description of the secret
  * @permanently: store permanently or just for the session
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

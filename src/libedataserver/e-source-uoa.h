@@ -68,6 +68,7 @@ typedef struct _ESourceUoaPrivate ESourceUoaPrivate;
  * Since: 3.8
  **/
 struct _ESourceUoa {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceUoaPrivate *priv;
 };

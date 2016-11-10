@@ -69,6 +69,7 @@ typedef struct _ESourceMailCompositionPrivate ESourceMailCompositionPrivate;
  * Since: 3.6
  **/
 struct _ESourceMailComposition {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceMailCompositionPrivate *priv;
 };

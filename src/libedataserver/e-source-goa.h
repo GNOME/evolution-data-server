@@ -68,6 +68,7 @@ typedef struct _ESourceGoaPrivate ESourceGoaPrivate;
  * Since: 3.6
  **/
 struct _ESourceGoa {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceGoaPrivate *priv;
 };

@@ -65,6 +65,7 @@ struct _ESourceCredentialsProvider;
  * Since: 3.16
  **/
 struct _ESourceCredentialsProviderImpl {
+	/*< private >*/
 	EExtension parent;
 	ESourceCredentialsProviderImplPrivate *priv;
 };

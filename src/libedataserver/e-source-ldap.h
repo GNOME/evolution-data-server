@@ -53,6 +53,7 @@ typedef struct _ESourceLDAPClass ESourceLDAPClass;
 typedef struct _ESourceLDAPPrivate ESourceLDAPPrivate;
 
 struct _ESourceLDAP {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceLDAPPrivate *priv;
 };

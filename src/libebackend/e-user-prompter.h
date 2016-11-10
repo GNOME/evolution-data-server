@@ -54,9 +54,13 @@ typedef struct _EUserPrompterPrivate EUserPrompterPrivate;
 /**
  * EUserPrompter:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 3.8
  **/
 struct _EUserPrompter {
+	/*< private >*/
 	GObject parent;
 	EUserPrompterPrivate *priv;
 };

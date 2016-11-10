@@ -65,6 +65,7 @@ typedef struct _EProxyPrivate EProxyPrivate;
  * Since: 2.24
  **/
 struct _EProxy {
+	/*< private >*/
 	GObject parent;
 	EProxyPrivate *priv;
 };

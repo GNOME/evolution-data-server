@@ -2110,7 +2110,8 @@ e_client_retrieve_properties (EClient *client,
 /**
  * e_client_retrieve_properties_finish:
  * @client: an #EClient
- * If an error occurs, the function sets @error and returns %FALSE.
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
  *
  * Finishes the operation started with e_client_retrieve_properties().
  *

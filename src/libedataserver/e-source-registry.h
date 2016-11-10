@@ -58,6 +58,7 @@ typedef struct _ESourceRegistryPrivate ESourceRegistryPrivate;
  * Since: 3.6
  **/
 struct _ESourceRegistry {
+	/*< private >*/
 	GObject parent;
 	ESourceRegistryPrivate *priv;
 };

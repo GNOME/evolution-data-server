@@ -63,6 +63,7 @@ typedef struct _EServerSideSourceCredentialsProviderPrivate EServerSideSourceCre
  * Since: 3.16
  **/
 struct _EServerSideSourceCredentialsProvider {
+	/*< private >*/
 	ESourceCredentialsProvider parent;
 	EServerSideSourceCredentialsProviderPrivate *priv;
 };

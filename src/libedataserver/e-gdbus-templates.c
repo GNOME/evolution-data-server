@@ -1832,6 +1832,8 @@ e_gdbus_proxy_call_sync_string__string (GDBusProxy *proxy,
 /**
  * e_gdbus_proxy_call_sync_string__strv:
  * @proxy:
+ * @in_string:
+ * @out_strv: (out):
  * @cancellable: (allow-none):
  * @error:
  * @start_func: (scope call):

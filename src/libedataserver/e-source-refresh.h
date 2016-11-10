@@ -68,6 +68,7 @@ typedef struct _ESourceRefreshPrivate ESourceRefreshPrivate;
  * Since: 3.6
  **/
 struct _ESourceRefresh {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceRefreshPrivate *priv;
 };

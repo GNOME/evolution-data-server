@@ -69,6 +69,7 @@ typedef struct _ESourceProxyPrivate ESourceProxyPrivate;
  * Since: 3.12
  **/
 struct _ESourceProxy {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceProxyPrivate *priv;
 };

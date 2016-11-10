@@ -58,6 +58,7 @@ typedef struct _ESoupAuthBearerPrivate ESoupAuthBearerPrivate;
  * Since: 3.10
  **/
 struct _ESoupAuthBearer {
+	/*< private >*/
 	SoupAuth parent;
 	ESoupAuthBearerPrivate *priv;
 };

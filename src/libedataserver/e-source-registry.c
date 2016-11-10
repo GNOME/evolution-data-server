@@ -2613,7 +2613,7 @@ source_registry_prune_nodes (GNode *node,
 }
 
 /**
- * e_source_registry_build_display_tree: (skip):
+ * e_source_registry_build_display_tree: (skip)
  * @registry: an #ESourceRegistry
  * @extension_name: (allow-none): an extension name, or %NULL
  *

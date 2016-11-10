@@ -75,6 +75,7 @@ typedef struct _ESourceWebdavPrivate ESourceWebdavPrivate;
  * Since: 3.6
  **/
 struct _ESourceWebdav {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceWebdavPrivate *priv;
 };

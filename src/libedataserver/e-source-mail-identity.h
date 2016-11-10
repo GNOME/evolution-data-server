@@ -68,6 +68,7 @@ typedef struct _ESourceMailIdentityPrivate ESourceMailIdentityPrivate;
  * Since: 3.6
  **/
 struct _ESourceMailIdentity {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceMailIdentityPrivate *priv;
 };

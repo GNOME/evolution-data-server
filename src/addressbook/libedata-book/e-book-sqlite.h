@@ -384,7 +384,7 @@ gboolean	e_book_sqlite_get_contact	(EBookSqlite *ebsql,
 gboolean	ebsql_get_contact_unlocked	(EBookSqlite *ebsql,
 						 const gchar *uid,
 						 gboolean meta_contact,
-						 EContact **ret_contact,
+						 EContact **contact,
 						 GError **error);
 gboolean	e_book_sqlite_get_vcard		(EBookSqlite *ebsql,
 						 const gchar *uid,

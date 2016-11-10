@@ -45,6 +45,7 @@ typedef struct _ECredentialsPrivate ECredentialsPrivate;
  * Since: 3.2
  **/
 struct _ECredentials {
+	/*< private >*/
 	ECredentialsPrivate *priv;
 };
 
@@ -132,8 +133,17 @@ struct _ECredentials {
 
 /**
  * ECredentialsPromptFlags:
+ * @E_CREDENTIALS_PROMPT_FLAG_REMEMBER_NEVER: never remember the credentials
+ * @E_CREDENTIALS_PROMPT_FLAG_REMEMBER_SESSION: remember the credentials only for the current session
+ * @E_CREDENTIALS_PROMPT_FLAG_REMEMBER_FOREVER: remember the credentials forever
+ * @E_CREDENTIALS_PROMPT_FLAG_REMEMBER_MASK: a bit-mask of the 'remember' flags
+ * @E_CREDENTIALS_PROMPT_FLAG_SECRET: whether hide password letters in the UI
+ * @E_CREDENTIALS_PROMPT_FLAG_REPROMPT: whether this is a re-prompt
+ * @E_CREDENTIALS_PROMPT_FLAG_ONLINE: only ask if we're online
+ * @E_CREDENTIALS_PROMPT_FLAG_DISABLE_REMEMBER: disable the 'remember password' checkbox
+ * @E_CREDENTIALS_PROMPT_FLAG_PASSPHRASE: we are asking a passphrase
  *
- * FIXME Document me.
+ * Flags for a credentials prompt.
  *
  * Since: 3.2
  **/

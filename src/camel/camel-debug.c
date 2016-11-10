@@ -78,16 +78,17 @@ camel_debug_init (void)
 
 /**
  * camel_debug:
- * @mode:
+ * @mode: string name of the mode to check for
  *
  * Check to see if a debug mode is activated.  @mode takes one of two forms,
  * a fully qualified 'module:target', or a wildcard 'module' name.  It
  * returns a boolean to indicate if the module or module and target is
  * currently activated for debug output.
  *
- * Returns:
+ * Returns: Whether the debug @mode is activated
  **/
-gboolean camel_debug (const gchar *mode)
+gboolean
+camel_debug (const gchar *mode)
 {
 	if (camel_verbose_debug)
 		return TRUE;
@@ -124,13 +125,13 @@ gboolean camel_debug (const gchar *mode)
 static GMutex debug_lock;
 /**
  * camel_debug_start:
- * @mode:
+ * @mode: string name of the mode to start the debug for
  *
  * Start debug output for a given mode, used to make sure debug output
  * is output atomically and not interspersed with unrelated stuff.
  *
- * Returns: Returns true if mode is set, and in which case, you must
- * call debug_end when finished any screen output.
+ * Returns: %TRUE if mode is set, and in which case, you must
+ * call camel_debug_end() when finished any screen output.
  **/
 gboolean
 camel_debug_start (const gchar *mode)

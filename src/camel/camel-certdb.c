@@ -654,8 +654,12 @@ camel_certdb_touch (CamelCertDB *certdb)
 
 /**
  * camel_certdb_get_host:
+ * @certdb: a #CamelCertDB
+ * @hostname: a host name of a certificate
+ * @fingerprint: a fingerprint of a certificate
  *
- * FIXME Document me!
+ * Returns: (nullable) (transfer full): a #CamelCert corresponding to the pair of @hostname
+ *   and @fingerprint, or %NULL, if no such certificate is stored in the @certdb.
  *
  * Since: 3.6
  **/
@@ -686,8 +690,12 @@ camel_certdb_get_host (CamelCertDB *certdb,
 
 /**
  * camel_certdb_put:
+ * @certdb: a #CamelCertDB
+ * @cert: a #CamelCert
  *
- * FIXME Document me!
+ * Puts a certificate to the database. In case there exists a certificate
+ * with the same hostname and fingerprint, then it is replaced. This adds
+ * its own reference on the @cert.
  *
  * Since: 3.6
  **/
@@ -724,8 +732,11 @@ camel_certdb_put (CamelCertDB *certdb,
 
 /**
  * camel_certdb_remove_host:
+ * @certdb: a #CamelCertDB
+ * @hostname: a host name of a certificate
+ * @fingerprint: a fingerprint of a certificate
  *
- * FIXME Document me!
+ * Removes a certificate identified by the @hostname and @fingerprint.
  *
  * Since: 3.6
  **/

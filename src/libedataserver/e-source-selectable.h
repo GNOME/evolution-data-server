@@ -58,6 +58,7 @@ typedef struct _ESourceSelectablePrivate ESourceSelectablePrivate;
  * Since: 3.6
  **/
 struct _ESourceSelectable {
+	/*< private >*/
 	ESourceBackend parent;
 	ESourceSelectablePrivate *priv;
 };

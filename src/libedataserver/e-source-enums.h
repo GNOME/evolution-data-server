@@ -92,8 +92,13 @@ typedef enum {
 
 /**
  * ETrustPromptResponse:
+ * @E_TRUST_PROMPT_RESPONSE_UNKNOWN: Unknown response, usually due to some error
+ * @E_TRUST_PROMPT_RESPONSE_REJECT: Reject permanently
+ * @E_TRUST_PROMPT_RESPONSE_ACCEPT: Accept permanently
+ * @E_TRUST_PROMPT_RESPONSE_ACCEPT_TEMPORARILY: Accept temporarily
+ * @E_TRUST_PROMPT_RESPONSE_REJECT_TEMPORARILY: Reject temporarily
  *
- * XXX Document me!
+ * Response codes for the trust prompt.
  *
  * Since: 3.8
  **/

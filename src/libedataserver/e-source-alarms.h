@@ -68,6 +68,7 @@ typedef struct _ESourceAlarmsPrivate ESourceAlarmsPrivate;
  * Since: 3.6
  **/
 struct _ESourceAlarms {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceAlarmsPrivate *priv;
 };

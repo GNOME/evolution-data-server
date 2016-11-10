@@ -68,6 +68,7 @@ typedef struct _ESourceOfflinePrivate ESourceOfflinePrivate;
  * Since: 3.6
  **/
 struct _ESourceOffline {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceOfflinePrivate *priv;
 };

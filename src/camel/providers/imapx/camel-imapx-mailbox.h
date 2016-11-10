@@ -63,6 +63,7 @@ typedef enum {
  * Since: 3.12
  **/
 struct _CamelIMAPXMailbox {
+	/*< private >*/
 	GObject parent;
 	CamelIMAPXMailboxPrivate *priv;
 };

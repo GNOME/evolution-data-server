@@ -56,6 +56,7 @@ typedef struct _CamelIMAPXSearchPrivate CamelIMAPXSearchPrivate;
  * Since: 3.8
  **/
 struct _CamelIMAPXSearch {
+	/*< private >*/
 	CamelFolderSearch parent;
 	CamelIMAPXSearchPrivate *priv;
 };

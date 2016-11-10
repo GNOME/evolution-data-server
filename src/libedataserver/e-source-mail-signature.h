@@ -68,6 +68,7 @@ typedef struct _ESourceMailSignaturePrivate ESourceMailSignaturePrivate;
  * Since: 3.6
  **/
 struct _ESourceMailSignature {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceMailSignaturePrivate *priv;
 };

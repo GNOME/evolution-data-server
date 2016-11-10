@@ -55,6 +55,7 @@ typedef struct _CamelIMAPXNamespaceResponsePrivate CamelIMAPXNamespaceResponsePr
  * Since: 3.12
  **/
 struct _CamelIMAPXNamespaceResponse {
+	/*< private >*/
 	GObject parent;
 	CamelIMAPXNamespaceResponsePrivate *priv;
 };

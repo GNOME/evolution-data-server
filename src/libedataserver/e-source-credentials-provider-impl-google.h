@@ -69,6 +69,7 @@ typedef struct _ESourceCredentialsProviderImplGooglePrivate ESourceCredentialsPr
  * Since: 3.20
  **/
 struct _ESourceCredentialsProviderImplGoogle {
+	/*< private >*/
 	ESourceCredentialsProviderImpl parent;
 	ESourceCredentialsProviderImplGooglePrivate *priv;
 };

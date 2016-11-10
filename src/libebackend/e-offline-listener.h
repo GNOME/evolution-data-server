@@ -79,6 +79,7 @@ typedef enum {
  * Since: 2.30
  **/
 struct _EOfflineListener {
+	/*< private >*/
 	GObject parent;
 	EOfflineListenerPrivate *priv;
 };

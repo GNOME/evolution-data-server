@@ -58,6 +58,7 @@ typedef struct _ESubprocessFactoryPrivate ESubprocessFactoryPrivate;
  * Since: 3.16
  **/
 struct _ESubprocessFactory {
+	/*< private >*/
 	GObject parent;
 	ESubprocessFactoryPrivate *priv;
 };
@@ -89,8 +90,8 @@ GType		e_subprocess_factory_get_type
 EBackend *	e_subprocess_factory_ref_initable_backend
 						(ESubprocessFactory *subprocess_factory,
 						 const gchar *uid,
-						 const gchar *type_name,
-						 const gchar *module_file_name,
+						 const gchar *backend_factory_type_name,
+						 const gchar *module_filename,
 						 GCancellable *cancellable,
 						 GError **error);
 ESourceRegistry *
@@ -100,8 +101,8 @@ gchar *		e_subprocess_factory_open_backend
 						(ESubprocessFactory *subprocess_factory,
 						 GDBusConnection *connection,
 						 const gchar *uid,
-						 const gchar *type_name,
-						 const gchar *module_file_name,
+						 const gchar *backend_factory_type_name,
+						 const gchar *module_filename,
 						 GDBusInterfaceSkeleton *proxy,
 						 GCancellable *cancellable,
 						 GError **error);

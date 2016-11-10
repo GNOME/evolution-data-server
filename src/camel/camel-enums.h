@@ -97,11 +97,11 @@ typedef enum { /*< flags >*/
  *    The folder contains memos, instead of mail messages.
  * @CAMEL_FOLDER_TYPE_TASKS:
  *    The folder contains tasks, instead of mail messages.
- * @CAMEL_FOLDER_TYPE_ALL
+ * @CAMEL_FOLDER_TYPE_ALL:
  *    This folder contains all the messages. Used by RFC 6154.
- * @CAMEL_FOLDER_TYPE_ARCHIVE
+ * @CAMEL_FOLDER_TYPE_ARCHIVE:
  *    This folder contains archived messages. Used by RFC 6154.
- * @CAMEL_FOLDER_TYPE_DRAFTS
+ * @CAMEL_FOLDER_TYPE_DRAFTS:
  *    This folder contains drafts. Used by RFC 6154.
  * @CAMEL_FOLDER_READONLY:
  *    The folder is read only.
@@ -109,6 +109,9 @@ typedef enum { /*< flags >*/
  *    The folder is write only.
  * @CAMEL_FOLDER_FLAGGED:
  *    This folder contains flagged messages. Some clients call this "starred". Used by RFC 6154.
+ * @CAMEL_FOLDER_FLAGS_LAST:
+ *    The last define bit of the flags. The #CamelProvider can use this and
+ *    upper bits to store its own flags.
  *
  * These flags are abstractions.  It's up to the CamelProvider to give
  * them suitable interpretations.  Use #CAMEL_FOLDER_TYPE_MASK to isolate
@@ -146,7 +149,7 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_WRITEONLY = 1 << 17,
 	CAMEL_FOLDER_FLAGGED = 1 << 18,
 
-	CAMEL_FOLDER_FLAGS_LAST    = 1 << 24  /*< skip >*/
+	CAMEL_FOLDER_FLAGS_LAST          = 1 << 24
 } CamelFolderInfoFlags;
 
 #define CAMEL_FOLDER_TYPE_MASK (0x3F << CAMEL_FOLDER_TYPE_BIT)
@@ -358,6 +361,10 @@ typedef enum {
  *   Provider may use a real trash folder instead of a virtual folder.
  * @CAMEL_PROVIDER_ALLOW_REAL_JUNK_FOLDER:
  *   Provider may use a real junk folder instead of a virtual folder.
+ * @CAMEL_PROVIDER_DISABLE_SENT_FOLDER:
+ *   Provider requests to not use the Sent folder when sending with it.
+ * @CAMEL_PROVIDER_SUPPORTS_SSL:
+ *   Provider supports SSL/TLS connections.
  * @CAMEL_PROVIDER_SUPPORTS_MOBILE_DEVICES:
  *  Download limited set of emails instead of operating on full cache.
  * @CAMEL_PROVIDER_SUPPORTS_BATCH_FETCH:

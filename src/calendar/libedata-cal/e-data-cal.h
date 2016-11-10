@@ -70,8 +70,35 @@ struct _EDataCalClass {
 
 /**
  * EDataCalCallStatus:
+ * @Success: call finished successfully
+ * @Busy: the backend is busy
+ * @RepositoryOffline: the backend is offline
+ * @PermissionDenied: the call failed due to permission restrictions
+ * @InvalidRange: the provided range for the call is invalid
+ * @ObjectNotFound: the requested object could not be found
+ * @InvalidObject: the provided object is invalid
+ * @ObjectIdAlreadyExists: the provided object has an ID which already exists
+ * @AuthenticationFailed: failed to authenticate with given credentials
+ * @AuthenticationRequired: authentication credentials are required to connect to the calendar
+ * @UnsupportedField: requested field is not supported
+ * @UnsupportedMethod: requested method is not supported
+ * @UnsupportedAuthenticationMethod: requested authentication method is not supported
+ * @TLSNotAvailable: TLS for connection is not available for the calendar
+ * @NoSuchCal: requested calendar does not exist
+ * @UnknownUser: provided user is unknown
+ * @OfflineUnavailable: requested data are not available in offline
+ * @SearchSizeLimitExceeded: a successful search doesn't contain all responses due to size limit
+ * @SearchTimeLimitExceeded: a successful search doesn't contain all responses due to time limit
+ * @InvalidQuery: a requested search query is invalid
+ * @QueryRefused: a requested search query had been refused, possibly by the server
+ * @CouldNotCancel: an ongoing operation cannot be cancelled
+ * @OtherError: a generic error happened
+ * @InvalidServerVersion: server version is invalid
+ * @InvalidArg: one of the arguments of the call was invalid
+ * @NotSupported: the operation is not supported
+ * @NotOpened: the calendar is not opened
  *
- * FIXME Document me!
+ * Response statuses of the calls.
  *
  * Since: 3.6
  **/

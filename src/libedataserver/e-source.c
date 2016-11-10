@@ -4870,6 +4870,7 @@ e_source_invoke_authenticate_finish (ESource *source,
 
 /**
  * e_source_emit_credentials_required:
+ * @source: an #ESource
  * @reason: an #ESourceCredentialsReason, why the credentials are required
  * @certificate_pem: PEM-encoded secure connection certificate, or an empty string
  * @certificate_errors: a bit-or of #GTlsCertificateFlags for secure connection certificate

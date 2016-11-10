@@ -343,9 +343,10 @@ block_file_unuse (CamelBlockFile *bs)
 
 /**
  * camel_block_file_new:
- * @path:
- * @:
- * @block_size:
+ * @path: a path with file name of the the new #CamelBlockFile
+ * @flags: file open flags to use
+ * @version: a version string
+ * @block_size: block size, currently ignored
  *
  * Allocate a new block file, stored at @path.  @version contains an 8 character
  * version string which must match the head of the file, or the file will be
@@ -470,6 +471,15 @@ camel_block_file_set_cache_limit (CamelBlockFile *bs,
 	bs->priv->block_cache_limit = block_cache_limit;
 }
 
+/**
+ * camel_block_file_rename:
+ * @bs: a #CamelBlockFile
+ * @path: path with filename to rename to
+ *
+ * Renames existing block file to a new @path.
+ *
+ * Returns: 0 on success, -1 on error; errno is set on failure
+ **/
 gint
 camel_block_file_rename (CamelBlockFile *bs,
                          const gchar *path)
@@ -504,6 +514,14 @@ camel_block_file_rename (CamelBlockFile *bs,
 	return ret;
 }
 
+/**
+ * camel_block_file_delete:
+ * @bs: a #CamelBlockFile
+ *
+ * Deletes existing block file.
+ *
+ * Returns: 0 on success, -1 on error.
+ **/
 gint
 camel_block_file_delete (CamelBlockFile *bs)
 {
@@ -532,7 +550,7 @@ camel_block_file_delete (CamelBlockFile *bs)
 
 /**
  * camel_block_file_new_block: (skip)
- * @bs:
+ * @bs: a #CamelBlockFile
  *
  * Allocate a new block, return a pointer to it.  Old blocks
  * may be flushed to disk during this call.
@@ -572,8 +590,8 @@ fail:
 
 /**
  * camel_block_file_free_block:
- * @bs:
- * @id:
+ * @bs: a #CamelBlockFile
+ * @id: a #camel_block_t
  *
  *
  **/
@@ -604,8 +622,8 @@ camel_block_file_free_block (CamelBlockFile *bs,
 
 /**
  * camel_block_file_get_block: (skip)
- * @bs:
- * @id:
+ * @bs: a #CamelBlockFile
+ * @id: a #camel_block_t
  *
  * Retreive a block @id.
  *
@@ -699,8 +717,8 @@ camel_block_file_get_block (CamelBlockFile *bs,
 
 /**
  * camel_block_file_detach_block:
- * @bs:
- * @bl:
+ * @bs: a #CamelBlockFile
+ * @bl: a #CamelBlock
  *
  * Detatch a block from the block file's cache.  The block should
  * be unref'd or attached when finished with.  The block file will
@@ -725,8 +743,8 @@ camel_block_file_detach_block (CamelBlockFile *bs,
 
 /**
  * camel_block_file_attach_block:
- * @bs:
- * @bl:
+ * @bs: a #CamelBlockFile
+ * @bl: a #CamelBlock
  *
  * Reattach a block that has been detached.
  **/
@@ -748,8 +766,8 @@ camel_block_file_attach_block (CamelBlockFile *bs,
 
 /**
  * camel_block_file_touch_block:
- * @bs:
- * @bl:
+ * @bs: a #CamelBlockFile
+ * @bl: a #CamelBlock
  *
  * Mark a block as dirty.  The block will be written to disk if
  * it ever expires from the cache.
@@ -779,8 +797,8 @@ camel_block_file_touch_block (CamelBlockFile *bs,
 
 /**
  * camel_block_file_unref_block:
- * @bs:
- * @bl:
+ * @bs: a #CamelBlockFile
+ * @bl: a #CamelBlock
  *
  * Mark a block as unused.  If a block is used it will not be
  * written to disk, or flushed from memory.
@@ -855,8 +873,8 @@ sync_nolock (CamelBlockFile *bs)
 
 /**
  * camel_block_file_sync_block:
- * @bs:
- * @bl:
+ * @bs: a #CamelBlockFile
+ * @bl: a #CamelBlock
  *
  * Flush a block to disk immediately.  The block will only
  * be flushed to disk if it is marked as dirty (touched).
@@ -885,7 +903,7 @@ camel_block_file_sync_block (CamelBlockFile *bs,
 
 /**
  * camel_block_file_sync:
- * @bs:
+ * @bs: a #CamelBlockFile
  *
  * Sync all dirty blocks to disk, including the root block.
  *
@@ -1095,7 +1113,7 @@ key_file_unuse (CamelKeyFile *kf)
 
 /**
  * camel_key_file_new:
- * @path:
+ * @path: a filename with path of the #CamelKeyFile to create
  * @flags: open flags
  * @version: Version string (header) of file.  Currently
  * written but not checked.
@@ -1211,10 +1229,10 @@ camel_key_file_delete (CamelKeyFile *kf)
 
 /**
  * camel_key_file_write:
- * @kf:
- * @parent:
- * @len:
- * @records:
+ * @kf: a #CamelKeyFile
+ * @parent: a #camel_block_t
+ * @len: how many @records to write
+ * @records: an array of #camel_key_t to write
  *
  * Write a new list of records to the key file.
  *
@@ -1274,7 +1292,7 @@ camel_key_file_write (CamelKeyFile *kf,
 
 /**
  * camel_key_file_read:
- * @kf:
+ * @kf: a #CamelKeyFile
  * @start: The record pointer.  This will be set to the next record pointer on success.
  * @len: Number of records read, if != NULL.
  * @records: Records, allocated, must be freed with g_free, if != NULL.

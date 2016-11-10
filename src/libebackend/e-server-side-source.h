@@ -59,6 +59,7 @@ typedef struct _EServerSideSourcePrivate EServerSideSourcePrivate;
  * Since: 3.6
  **/
 struct _EServerSideSource {
+	/*< private >*/
 	ESource parent;
 	EServerSideSourcePrivate *priv;
 };

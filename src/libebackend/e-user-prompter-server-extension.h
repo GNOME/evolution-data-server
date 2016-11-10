@@ -57,6 +57,7 @@ struct _EUserPrompterServer;
  * Since: 3.8
  **/
 struct _EUserPrompterServerExtension {
+	/*< private >*/
 	EExtension parent;
 	EUserPrompterServerExtensionPrivate *priv;
 };

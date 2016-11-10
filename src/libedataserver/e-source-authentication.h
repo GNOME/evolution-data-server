@@ -68,6 +68,7 @@ typedef struct _ESourceAuthenticationPrivate ESourceAuthenticationPrivate;
  * Since: 3.6
  **/
 struct _ESourceAuthentication {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceAuthenticationPrivate *priv;
 };

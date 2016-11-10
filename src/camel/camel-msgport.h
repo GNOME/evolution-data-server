@@ -38,11 +38,14 @@ typedef struct _CamelMsgPort CamelMsgPort;
 
 /**
  * CamelMsg:
+ * @reply_port: a #CamelMsgPort this #CamelMsg belongs to
  *
  * Since: 2.24
  **/
 struct _CamelMsg {
 	CamelMsgPort *reply_port;
+
+	/*< private >*/
 	gint flags;
 };
 

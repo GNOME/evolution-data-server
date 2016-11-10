@@ -68,6 +68,7 @@ typedef struct _ESourceMailAccountPrivate ESourceMailAccountPrivate;
  * Since: 3.6
  **/
 struct _ESourceMailAccount {
+	/*< private >*/
 	ESourceBackend parent;
 	ESourceMailAccountPrivate *priv;
 };

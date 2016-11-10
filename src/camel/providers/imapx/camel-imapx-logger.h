@@ -54,6 +54,7 @@ typedef struct _CamelIMAPXLoggerPrivate CamelIMAPXLoggerPrivate;
  * Since: 3.12
  **/
 struct _CamelIMAPXLogger {
+	/*< private >*/
 	GObject parent;
 	CamelIMAPXLoggerPrivate *priv;
 };

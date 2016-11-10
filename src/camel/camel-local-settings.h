@@ -58,11 +58,13 @@ typedef struct _CamelLocalSettingsClass CamelLocalSettingsClass;
 typedef struct _CamelLocalSettingsPrivate CamelLocalSettingsPrivate;
 
 struct _CamelLocalSettings {
+	/*< private >*/
 	CamelStoreSettings parent;
 	CamelLocalSettingsPrivate *priv;
 };
 
 struct _CamelLocalSettingsClass {
+	/*< private >*/
 	CamelStoreSettingsClass parent_class;
 
 	/* Padding for future expansion */

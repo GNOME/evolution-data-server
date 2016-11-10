@@ -115,6 +115,9 @@ typedef struct {
 
 /**
  * CamelProviderPortEntry:
+ * @port: port number
+ * @desc: human description of the port
+ * @is_ssl: a boolean whether the port is used together with TLS/SSL
  *
  * Since: 3.2
  **/

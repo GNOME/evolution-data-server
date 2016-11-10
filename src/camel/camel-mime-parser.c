@@ -231,7 +231,7 @@ camel_mime_parser_init (CamelMimeParser *parser)
  *
  * Create a new CamelMimeParser object.
  *
- * Returns: A new CamelMimeParser widget.
+ * Returns: (transfer full): A new CamelMimeParser widget.
  **/
 CamelMimeParser *
 camel_mime_parser_new (void)
@@ -241,8 +241,8 @@ camel_mime_parser_new (void)
 
 /**
  * camel_mime_parser_filter_add:
- * @m:
- * @mf:
+ * @m: a #CamelMimeParser
+ * @mf: a #CamelMimeFilter
  *
  * Add a filter that will be applied to any body content before it is passed
  * to the caller.  Filters may be pipelined to perform multi-pass operations
@@ -282,8 +282,8 @@ camel_mime_parser_filter_add (CamelMimeParser *m,
 
 /**
  * camel_mime_parser_filter_remove:
- * @m:
- * @id:
+ * @m: a #CamelMimeParser
+ * @id: id of the filter to remove, as returned from camel_mime_parser_filter_add()
  *
  * Remove a processing filter from the pipeline.  There is no
  * restriction on the order the filters can be removed.
@@ -313,7 +313,7 @@ camel_mime_parser_filter_remove (CamelMimeParser *m,
 
 /**
  * camel_mime_parser_header:
- * @m:
+ * @m: a #CamelMimeParser
  * @name: Name of header.
  * @offset: Pointer that can receive the offset of the header in
  * the stream from the start of parsing.
@@ -337,8 +337,8 @@ camel_mime_parser_header (CamelMimeParser *m,
 }
 
 /**
- * camel_mime_parser_headers_raw:
- * @m:
+ * camel_mime_parser_dup_headers:
+ * @m: a #CamelMimeParser
  *
  * Get the list of the raw headers which are defined for the
  * current state of the parser.  These headers are valid
@@ -381,7 +381,7 @@ byte_array_to_string (GByteArray *array)
 
 /**
  * camel_mime_parser_preface:
- * @m:
+ * @m: a #CamelMimeParser
  *
  * Retrieve the preface text for the current multipart.
  * Can only be used when the state is CAMEL_MIME_PARSER_STATE_MULTIPART_END.
@@ -403,7 +403,7 @@ camel_mime_parser_preface (CamelMimeParser *m)
 
 /**
  * camel_mime_parser_postface:
- * @m:
+ * @m: a #CamelMimeParser
  *
  * Retrieve the postface text for the current multipart.
  * Only returns valid data when the current state if
@@ -426,7 +426,7 @@ camel_mime_parser_postface (CamelMimeParser *m)
 
 /**
  * camel_mime_parser_from_line:
- * @m:
+ * @m: a #CamelMimeParser
  *
  * Get the last scanned "From " line, from a recently scanned from.
  * This should only be called in the CAMEL_MIME_PARSER_STATE_FROM state.  The
@@ -452,7 +452,7 @@ camel_mime_parser_from_line (CamelMimeParser *m)
 
 /**
  * camel_mime_parser_init_with_fd:
- * @m:
+ * @m: a #CamelMimeParser
  * @fd: A valid file descriptor.
  *
  * Initialise the scanner with an fd.  The scanner's offsets
@@ -473,8 +473,8 @@ camel_mime_parser_init_with_fd (CamelMimeParser *m,
 
 /**
  * camel_mime_parser_init_with_stream:
- * @m:
- * @stream:
+ * @m: a #CamelMimeParser
+ * @stream: a #CamelStream to init with
  * @error: return location for a #GError, or %NULL
  *
  * Initialise the scanner with a source stream.  The scanner's

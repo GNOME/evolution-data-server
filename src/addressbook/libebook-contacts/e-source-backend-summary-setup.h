@@ -74,6 +74,7 @@ typedef struct _ESourceBackendSummarySetupPrivate ESourceBackendSummarySetupPriv
  * Since: 3.8
  **/
 struct _ESourceBackendSummarySetup {
+	/*< private >*/
 	ESourceBackend parent;
 	ESourceBackendSummarySetupPrivate *priv;
 };

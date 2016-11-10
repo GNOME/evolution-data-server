@@ -53,6 +53,7 @@ typedef struct _ESourceWeatherClass ESourceWeatherClass;
 typedef struct _ESourceWeatherPrivate ESourceWeatherPrivate;
 
 struct _ESourceWeather {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceWeatherPrivate *priv;
 };

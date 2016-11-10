@@ -68,6 +68,7 @@ typedef struct _ENetworkMonitorPrivate ENetworkMonitorPrivate;
  * Since: 3.22
  **/
 struct _ENetworkMonitor {
+	/*< private >*/
 	GObject parent;
 	ENetworkMonitorPrivate *priv;
 };

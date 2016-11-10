@@ -59,6 +59,7 @@ typedef struct _EModulePrivate EModulePrivate;
  * Since: 3.4
  **/
 struct _EModule {
+	/*< private >*/
 	GTypeModule parent;
 	EModulePrivate *priv;
 };

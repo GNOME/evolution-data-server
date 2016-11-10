@@ -58,6 +58,7 @@ typedef struct _EExtensionPrivate EExtensionPrivate;
  * Since: 3.4
  **/
 struct _EExtension {
+	/*< private >*/
 	GObject parent;
 	EExtensionPrivate *priv;
 };

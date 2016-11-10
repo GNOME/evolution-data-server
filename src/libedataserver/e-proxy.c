@@ -982,6 +982,8 @@ e_proxy_init (EProxy *proxy)
 /**
  * e_proxy_new:
  *
+ * Returns: (transfer full): a new instance of an #EProxy
+ *
  * Since: 2.24
  **/
 EProxy *
@@ -992,6 +994,9 @@ e_proxy_new (void)
 
 /**
  * e_proxy_setup_proxy:
+ * @proxy: an #EProxy
+ *
+ * Sets up internal structure members and reads the proxy settings.
  *
  * Since: 2.24
  **/
@@ -1011,6 +1016,11 @@ e_proxy_setup_proxy (EProxy *proxy)
 
 /**
  * e_proxy_peek_uri_for:
+ * @proxy: an #EProxy
+ * @uri: a URI
+ *
+ * Returns: (transfer none): A proxy URI (as a #SoupURI) which the given @uri
+ *   may use, based on its scheme
  *
  * Since: 2.26
  **/
@@ -1042,6 +1052,10 @@ e_proxy_peek_uri_for (EProxy *proxy,
 
 /**
  * e_proxy_require_proxy_for_uri:
+ * @proxy: an #EProxy
+ * @uri: a URI
+ *
+ * Returns: Whether the @uri requires proxy to connect to it
  *
  * Since: 2.24
  **/

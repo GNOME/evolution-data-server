@@ -88,6 +88,8 @@ typedef enum {
 
 /**
  * CamelFetchType:
+ * @CAMEL_FETCH_OLD_MESSAGES: fetch old messages
+ * @CAMEL_FETCH_NEW_MESSAGES: fetch new messages
  *
  * Since: 3.4
  **/
@@ -110,6 +112,10 @@ typedef struct _CamelFolderQuotaInfo CamelFolderQuotaInfo;
 
 /**
  * CamelFolderQuotaInfo:
+ * @name: name, aka identification, of the quota type
+ * @used: how many bytes is currently in use
+ * @total: what is the maximum quota to use
+ * @next: a reference to a follwing #CamelFolderQuotaInfo
  *
  * Since: 2.24
  **/

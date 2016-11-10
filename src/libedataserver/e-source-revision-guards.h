@@ -71,6 +71,7 @@ typedef struct _ESourceRevisionGuardsPrivate ESourceRevisionGuardsPrivate;
  * Since: 3.8
  **/
 struct _ESourceRevisionGuards {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceRevisionGuardsPrivate *priv;
 };

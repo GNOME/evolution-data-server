@@ -59,6 +59,7 @@ typedef struct _EDataFactoryPrivate EDataFactoryPrivate;
  * Since: 3.4
  **/
 struct _EDataFactory {
+	/*< private >*/
 	EDBusServer parent;
 	EDataFactoryPrivate *priv;
 };

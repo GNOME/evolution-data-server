@@ -936,6 +936,7 @@ e_data_book_view_notify_update (EDataBookView *view,
 /**
  * e_data_book_view_notify_update_vcard:
  * @view: an #EDataBookView
+ * @id: a unique id of the @vcard
  * @vcard: a plain vCard
  *
  * Notify listeners that @vcard has changed. This can

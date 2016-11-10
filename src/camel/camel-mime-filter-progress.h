@@ -59,6 +59,7 @@ typedef struct _CamelMimeFilterProgressPrivate CamelMimeFilterProgressPrivate;
  * Since: 2.24
  **/
 struct _CamelMimeFilterProgress {
+	/*< private >*/
 	CamelMimeFilter parent;
 	CamelMimeFilterProgressPrivate *priv;
 };

@@ -81,6 +81,7 @@ typedef struct _ESourceRegistryServerPrivate ESourceRegistryServerPrivate;
  * Since: 3.6
  **/
 struct _ESourceRegistryServer {
+	/*< private >*/
 	EDataFactory parent;
 	ESourceRegistryServerPrivate *priv;
 };

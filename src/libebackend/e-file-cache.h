@@ -59,6 +59,7 @@ typedef struct _EFileCachePrivate EFileCachePrivate;
  * functions below.
  **/
 struct _EFileCache {
+	/*< private >*/
 	GObject parent;
 	EFileCachePrivate *priv;
 };

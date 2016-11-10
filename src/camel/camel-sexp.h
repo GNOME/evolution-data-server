@@ -59,6 +59,14 @@ typedef struct _CamelSExpTerm CamelSExpTerm;
 
 /**
  * CamelSExpResultType:
+ * @CAMEL_SEXP_RES_ARRAY_PTR: type is a ptrarray, what it points to is implementation dependant
+ * @CAMEL_SEXP_RES_INT: type is a number
+ * @CAMEL_SEXP_RES_STRING: type is a pointer to a single string
+ * @CAMEL_SEXP_RES_BOOL: boolean type
+ * @CAMEL_SEXP_RES_TIME: time_t type
+ * @CAMEL_SEXP_RES_UNDEFINED: unknown type
+ *
+ * Defines type of a #CamelSExpResult.
  *
  * Since: 3.4
  **/
@@ -73,6 +81,11 @@ typedef enum {
 
 /**
  * CamelSExpResult:
+ * @type: a #CamelSExpResultType, defining the @value type
+ * @value: a union with the actual value
+ * @time_generator: a boolean whether the occuring times are used
+ * @occuring_start: start time
+ * @occuring_end: end time
  *
  * Since: 3.4
  **/
@@ -115,6 +128,15 @@ typedef CamelSExpResult *
 
 /**
  * CamelSExpTermType:
+ * @CAMEL_SEXP_TERM_INT: integer literal
+ * @CAMEL_SEXP_TERM_BOOL: boolean literal
+ * @CAMEL_SEXP_TERM_STRING: string literal
+ * @CAMEL_SEXP_TERM_TIME: time_t literal (number of seconds past the epoch)
+ * @CAMEL_SEXP_TERM_FUNC: normal function, arguments are evaluated before calling
+ * @CAMEL_SEXP_TERM_IFUNC: immediate function, raw terms are arguments
+ * @CAMEL_SEXP_TERM_VAR: variable reference
+ *
+ * Defines type of a #CamelSExpTerm and partly also #CamelSExpSymbol
  *
  * Since: 3.4
  **/
@@ -130,6 +152,12 @@ typedef enum {
 
 /**
  * CamelSExpSymbol:
+ * @type: a type of the symbol, either CAMEL_SEXP_TERM_FUNC or CAMEL_SEXP_TERM_VAR
+ * @name: name of the symbol
+ * @data: user data for the callback
+ * @f: a #CamelSExpFunc or a #CamelSExpIFunc callback
+ *
+ * Describes a function or a variable symbol
  *
  * Since: 3.4
  **/
@@ -145,6 +173,8 @@ struct _CamelSExpSymbol {
 
 /**
  * CamelSExpTerm:
+ * @type: a type of the term; one of #CamelSExpTermType
+ * @value: value of the term
  *
  * Since: 3.4
  **/
@@ -170,6 +200,7 @@ struct _CamelSExpTerm {
  * Since: 3.4
  **/
 struct _CamelSExp {
+	/*< private >*/
 	GObject parent;
 	CamelSExpPrivate *priv;
 };

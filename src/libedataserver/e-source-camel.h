@@ -59,6 +59,7 @@ typedef struct _ESourceCamelPrivate ESourceCamelPrivate;
  * Since: 3.6
  **/
 struct _ESourceCamel {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceCamelPrivate *priv;
 };

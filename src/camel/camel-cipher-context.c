@@ -1159,10 +1159,10 @@ camel_cipher_validity_clone (CamelCipherValidity *vin)
 
 /**
  * camel_cipher_validity_add_certinfo:
- * @vin:
- * @mode:
- * @name:
- * @email:
+ * @vin: a #CamelCipherValidity
+ * @mode: a #CamelCipherValidityMode, where to add the additional certificate information
+ * @name: a name to add
+ * @email: an e-mail address to add
  *
  * Add a cert info to the signer or encrypter info.
  *
@@ -1319,8 +1319,8 @@ camel_cipher_validity_set_certinfo_property (CamelCipherValidity *vin,
 
 /**
  * camel_cipher_validity_envelope:
- * @parent:
- * @valid:
+ * @parent: a #CamelCipherValidity
+ * @valid: a new #CamelCipherValidity to conglomerate the @parent with
  *
  * Calculate a conglomerate validity based on wrapping one secure part inside
  * another one.

@@ -68,6 +68,7 @@ typedef struct _ESourceSecurityPrivate ESourceSecurityPrivate;
  * Since: 3.6
  **/
 struct _ESourceSecurity {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceSecurityPrivate *priv;
 };

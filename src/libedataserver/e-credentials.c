@@ -48,7 +48,7 @@ key_equal (gconstpointer str1,
 /**
  * e_credentials_new:
  *
- * FIXME: Document me.
+ * Returns: (transfer full): a new empty #ECredentials. Free with e_credentials_free() when done with it.
  *
  * Since: 3.2
  **/
@@ -67,27 +67,28 @@ e_credentials_new (void)
 
 /**
  * e_credentials_new_strv:
+ * @strv: an array of key/value-s to prefill
  *
- * FIXME: Document me.
+ * Creates a new #ECredentials with prefilled key/value-s from @strv. It expects
+ * the @strv as a NULL-terminated list of strings "key:encoded_value".
+ * The same can be returned from e_credentials_to_strv ().
+ *
+ * Returns: (transfer full): a new #ECredentials. Free with e_credentials_free() when done with it.
  *
  * Since: 3.2
  **/
 ECredentials *
-e_credentials_new_strv (const gchar * const *keys)
+e_credentials_new_strv (const gchar * const *strv)
 {
 	ECredentials *credentials;
 	gint ii;
 
-	/* Expects @keys as NULL terminated list of strings
-	 * "key:encoded_value".  The same can be returned from
-	 * e_credentials_to_strv (). */
-
-	g_return_val_if_fail (keys != NULL, NULL);
+	g_return_val_if_fail (strv != NULL, NULL);
 
 	credentials = e_credentials_new ();
 
-	for (ii = 0; keys[ii]; ii++) {
-		const gchar *key = keys[ii], *sep;
+	for (ii = 0; strv[ii]; ii++) {
+		const gchar *key = strv[ii], *sep;
 
 		sep = strchr (key, ':');
 
@@ -101,8 +102,13 @@ e_credentials_new_strv (const gchar * const *keys)
 
 /**
  * e_credentials_new_args:
+ * @key: the first key name
+ * @...: value, followed by key,value pairs, terminated with %NULL
  *
- * FIXME: Document me.
+ * Creates a new #ECredentials with prefilled keys. The arguments is
+ * a NULL-terminated list of string pairs &lt;key, value&gt;; value is in a clear form.
+ *
+ * Returns: (transfer full): a new #ECredentials. Free with e_credentials_free() when done with it.
  *
  * Since: 3.2
  **/
@@ -146,8 +152,10 @@ copy_keys_cb (gpointer key,
 
 /**
  * e_credentials_new_clone:
+ * @credentials: an #ECredentials
  *
- * FIXME: Document me.
+ * Returns: (transfer full): Creates a clone (copy) of the given @credentials.
+ *   Free with e_credentials_free() when done with it.
  *
  * Since: 3.2
  **/
@@ -169,8 +177,10 @@ e_credentials_new_clone (const ECredentials *credentials)
 
 /**
  * e_credentials_free:
+ * @credentials: an #ECredentials
  *
- * FIXME: Document me.
+ * Frees the @credentials. Any peek-ed values are invalidated
+ * by this call.
  *
  * Since: 3.2
  **/
@@ -206,12 +216,12 @@ add_to_array_cb (gpointer key,
  * e_credentials_to_strv:
  * @credentials: an #ECredentials
  *
- * Returns %NULL-terminated array of strings with keys and encoded values;
+ * Returns NULL-terminated array of strings with keys and encoded values;
  * To read them back pass this pointer to e_credentials_new(). As it returns
  * newly allocated string then this should be freed with g_strfreev() when no
  * longer needed.
  *
- * Returns: (transfer full): a %NULL-terminated array of key/value strings
+ * Returns: (transfer full): a NULL-terminated array of key/value strings
  *
  * Since: 3.2
  **/
@@ -323,8 +333,12 @@ e_credentials_set (ECredentials *credentials,
 
 /**
  * e_credentials_get:
+ * @credentials: an #ECredentials
+ * @key: a key name
  *
- * FIXME: Document me.
+ * Returns: (transfer full) (nullable): A copy of the key's value, or %NULL,
+ *   if no such key is stored in the @credentuals. Free returned string with
+ *   e_credentials_util_safe_free_string(), when done with it.
  *
  * Since: 3.2
  **/
@@ -454,6 +468,8 @@ e_credentials_equal (const ECredentials *credentials1,
  * e_credentials_equal_keys:
  * @credentials1: an #ECredentials
  * @credentials2: another #ECredentials
+ * @key1: the first key name
+ * @...: other key names, terminated with %NULL
  *
  * Returns whether two #ECredentials structures have the same keys. Key names
  * are NULL-terminated.
@@ -580,8 +596,9 @@ e_credentials_list_keys (const ECredentials *credentials)
 
 /**
  * e_credentials_clear:
+ * @credentials: an #ECredentials
  *
- * FIXME: Document me.
+ * Clears all the stored keys (and their peek-ed values).
  *
  * Since: 3.2
  **/
@@ -599,8 +616,9 @@ e_credentials_clear (ECredentials *credentials)
 
 /**
  * e_credentials_clear_peek:
+ * @credentials: an #ECredentials
  *
- * FIXME: Document me.
+ * Clears cache of peek-ed values.
  *
  * Since: 3.2
  **/
@@ -616,8 +634,11 @@ e_credentials_clear_peek (ECredentials *credentials)
 
 /**
  * e_credentials_util_safe_free_string:
+ * @str: (nullable): a string to safely free
  *
- * FIXME Document me.
+ * Frees a nul-terminated string safely, which means it
+ * overwrites the content first and only then calls g_free()
+ * on it. If @str is %NULL, then does nothing.
  *
  * Since: 3.2
  **/
@@ -651,8 +672,13 @@ static struct _PromptFlags {
 
 /**
  * e_credentials_util_prompt_flags_to_string:
+ * @prompt_flags: bit-or of #ECredentialsPromptFlags
  *
- * FIXME: Document me.
+ * Converts bit-or of # to a string representation. Use
+ * e_credentials_util_string_to_prompt_flags() to convert
+ * the string back to the numeric representation.
+ *
+ * Returns: (transfer full): text representation of the @prompt_flags
  *
  * Since: 3.2
  **/
@@ -691,8 +717,13 @@ e_credentials_util_prompt_flags_to_string (guint prompt_flags)
 
 /**
  * e_credentials_util_string_to_prompt_flags:
+ * @prompt_flags_string: flags encoded as string
  *
- * FIXME: Document me.
+ * Converts #ECredentialsPromptFlags represented as string back to
+ * the numeric representation. This is a reverse function of
+ * e_credentials_util_prompt_flags_to_string().
+ *
+ * Returns: decoded bit-or of #ECredentialsPromptFlags
  *
  * Since: 3.2
  **/

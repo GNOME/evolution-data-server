@@ -58,6 +58,7 @@ typedef struct _ESourceBackendPrivate ESourceBackendPrivate;
  * Since: 3.6
  **/
 struct _ESourceBackend {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceBackendPrivate *priv;
 };

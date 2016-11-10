@@ -68,6 +68,7 @@ typedef struct _ESourceMailSubmissionPrivate ESourceMailSubmissionPrivate;
  * Since: 3.6
  **/
 struct _ESourceMailSubmission {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceMailSubmissionPrivate *priv;
 };

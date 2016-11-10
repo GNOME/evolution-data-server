@@ -97,16 +97,24 @@ typedef struct _CamelVeeDataCachePrivate CamelVeeDataCachePrivate;
 
 /**
  * CamelForeachInfoData:
+ * @mi_data: a #CamelVeeMessageInfoData
+ * @subfolder: a #CameFolder which @mi_data references
+ * @user_data: custom user data
  *
+ * A callback prototype for camel_vee_data_cache_foreach_message_info_data()
  **/
 typedef void (*CamelForeachInfoData) (CamelVeeMessageInfoData *mi_data, CamelFolder *subfolder, gpointer user_data);
 
 /**
  * CamelVeeSubfolderData:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 3.6
  **/
 struct _CamelVeeSubfolderData {
+	/*< private >*/
 	GObject parent;
 	CamelVeeSubfolderDataPrivate *priv;
 };
@@ -132,9 +140,13 @@ const gchar *	camel_vee_subfolder_data_get_folder_id
 /**
  * CamelVeeMessageInfoData:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 3.6
  **/
 struct _CamelVeeMessageInfoData {
+	/*< private >*/
 	GObject parent;
 	CamelVeeMessageInfoDataPrivate *priv;
 };
@@ -165,9 +177,13 @@ const gchar *	camel_vee_message_info_data_get_vee_message_uid
 /**
  * CamelVeeDataCache:
  *
+ * Contains only private data that should be read and manipulated using the
+ * functions below.
+ *
  * Since: 3.6
  **/
 struct _CamelVeeDataCache {
+	/*< private >*/
 	GObject parent;
 	CamelVeeDataCachePrivate *priv;
 };

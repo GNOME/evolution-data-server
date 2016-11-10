@@ -68,6 +68,7 @@ typedef struct _ESourceAddressBookPrivate ESourceAddressBookPrivate;
  * Since: 3.6
  **/
 struct _ESourceAddressBook {
+	/*< private >*/
 	ESourceBackend parent;
 	ESourceAddressBookPrivate *priv;
 };

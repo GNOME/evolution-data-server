@@ -68,6 +68,7 @@ typedef struct _ESourceOpenPGPPrivate ESourceOpenPGPPrivate;
  * Since: 3.6
  **/
 struct _ESourceOpenPGP {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceOpenPGPPrivate *priv;
 };

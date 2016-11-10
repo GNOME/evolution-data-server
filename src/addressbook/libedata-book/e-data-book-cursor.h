@@ -244,8 +244,8 @@ typedef gboolean (*EDataBookCursorLoadLocaleFunc) (EDataBookCursor     *cursor,
  * Since: 3.12
  */
 struct _EDataBookCursor {
+	/*< private >*/
 	GObject parent;
-
 	EDataBookCursorPrivate *priv;
 };
 

@@ -46,9 +46,6 @@ e_iterator_class_init (EIteratorClass *class)
 		G_TYPE_NONE, 0);
 }
 
-/**
- * e_iterator_init:
- */
 static void
 e_iterator_init (EIterator *card)
 {
@@ -61,9 +58,10 @@ e_iterator_init (EIterator *card)
 
 /**
  * e_iterator_get:
+ * @iterator: an #EIterator
  *
- * Returns: (transfer none): the iterator.
- */
+ * Returns: (transfer none): the iterator value
+ **/
 gconstpointer
 e_iterator_get (EIterator *iterator)
 {
@@ -73,6 +71,12 @@ e_iterator_get (EIterator *iterator)
 		return NULL;
 }
 
+/**
+ * e_iterator_reset:
+ * @iterator: an #EIterator
+ *
+ * Resets the iterator to the beginning.
+ **/
 void
 e_iterator_reset (EIterator *iterator)
 {
@@ -80,6 +84,12 @@ e_iterator_reset (EIterator *iterator)
 		E_ITERATOR_GET_CLASS (iterator)->reset (iterator);
 }
 
+/**
+ * e_iterator_last:
+ * @iterator: an #EIterator
+ *
+ * Moves the iterator to the last item.
+ **/
 void
 e_iterator_last (EIterator *iterator)
 {
@@ -87,6 +97,14 @@ e_iterator_last (EIterator *iterator)
 		E_ITERATOR_GET_CLASS (iterator)->last (iterator);
 }
 
+/**
+ * e_iterator_next:
+ * @iterator: an #EIterator
+ *
+ * Moves the iterator to the next item.
+ *
+ * Returns: Whether succeeded
+ **/
 gboolean
 e_iterator_next (EIterator *iterator)
 {
@@ -96,6 +114,14 @@ e_iterator_next (EIterator *iterator)
 		return FALSE;
 }
 
+/**
+ * e_iterator_prev:
+ * @iterator: an #EIterator
+ *
+ * Moves the iterator to the previous item.
+ *
+ * Returns: Whether succeeded
+ **/
 gboolean
 e_iterator_prev (EIterator *iterator)
 {
@@ -105,6 +131,12 @@ e_iterator_prev (EIterator *iterator)
 		return FALSE;
 }
 
+/**
+ * e_iterator_delete:
+ * @iterator: an #EIterator
+ *
+ * Deletes the item in the current position of the iterator.
+ **/
 void
 e_iterator_delete (EIterator *iterator)
 {
@@ -112,6 +144,14 @@ e_iterator_delete (EIterator *iterator)
 		E_ITERATOR_GET_CLASS (iterator)->remove (iterator);
 }
 
+/**
+ * e_iterator_insert:
+ * @iterator: an #EIterator
+ * @object: an object to insert
+ * @before: where to insert the object
+ *
+ * Inserts the @object before or after the current position of the iterator.
+ **/
 void
 e_iterator_insert (EIterator *iterator,
                    gconstpointer object,
@@ -121,6 +161,13 @@ e_iterator_insert (EIterator *iterator,
 		E_ITERATOR_GET_CLASS (iterator)->insert (iterator, object, before);
 }
 
+/**
+ * e_iterator_set:
+ * @iterator: an #EIterator
+ * @object: an object to set
+ *
+ * Sets value of the current position of the iterator to the @object.
+ **/
 void
 e_iterator_set (EIterator *iterator,
                 gconstpointer object)
@@ -129,6 +176,12 @@ e_iterator_set (EIterator *iterator,
 		E_ITERATOR_GET_CLASS (iterator)->set (iterator, object);
 }
 
+/**
+ * e_iterator_is_valid:
+ * @iterator: an #EIterator
+ *
+ * Returns: whether the iterator is valid.
+ **/
 gboolean
 e_iterator_is_valid (EIterator *iterator)
 {
@@ -141,6 +194,12 @@ e_iterator_is_valid (EIterator *iterator)
 		return FALSE;
 }
 
+/**
+ * e_iterator_invalidate:
+ * @iterator: an #EIterator
+ *
+ * Invalidates the iterator.
+ **/
 void
 e_iterator_invalidate (EIterator *iterator)
 {

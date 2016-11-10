@@ -58,6 +58,13 @@ unlock (void)
 
 /**
  * e_debug_log:
+ * @is_milestone: the debug information is a milestone
+ * @domain: for which domain the debug information belongs
+ * @format: print format
+ * @...: arguments for the format
+ *
+ * Records debug information for the given @domain, if enabled, or always,
+ * when @is_milestone is set to TRUE.
  *
  * Since: 2.32
  **/
@@ -145,6 +152,13 @@ add_to_milestones (const gchar *str)
 
 /**
  * e_debug_logv:
+ * @is_milestone: the debug information is a milestone
+ * @domain: for which domain the debug information belongs
+ * @format: print format
+ * @args: arguments for the format
+ *
+ * Records debug information for the given @domain, if enabled, or always,
+ * when @is_milestone is set to TRUE.
  *
  * Since: 2.32
  **/
@@ -192,6 +206,12 @@ e_debug_logv (gboolean is_milestone,
 
 /**
  * e_debug_log_load_configuration:
+ * @filename: a configuration file name
+ * @error: return location for a #GError, or %NULL
+ *
+ * Loads configuration for the logging from the given @filename.
+ *
+ * Returns: whether succeeded
  *
  * Since: 2.32
  **/
@@ -252,6 +272,10 @@ e_debug_log_load_configuration (const gchar *filename,
 
 /**
  * e_debug_log_enable_domains:
+ * @domains: (array length=n_domains): an array of domains to enable
+ * @n_domains: legth of the @domains array
+ *
+ * Enables all domains from the @domains array.
  *
  * Since: 2.32
  **/
@@ -288,6 +312,10 @@ e_debug_log_enable_domains (const gchar **domains,
 
 /**
  * e_debug_log_disable_domains:
+ * @domains: (array length=n_domains): an array of domains to disable
+ * @n_domains: legth of the @domains array
+ *
+ * Disables all domains from the @domains array.
  *
  * Since: 2.32
  **/
@@ -324,6 +352,10 @@ e_debug_log_disable_domains (const gchar **domains,
 
 /**
  * e_debug_log_is_domain_enabled:
+ * @domain: a log domain
+ *
+ * Returns: whether the given log domain is enabled, which means
+ *   that any logging to this domain is recorded.
  *
  * Since: 2.32
  **/
@@ -522,6 +554,12 @@ dump_ring_buffer (const gchar *filename,
 
 /**
  * e_debug_log_dump:
+ * @filename: a filename to save logged information to
+ * @error: return location for a #GError, or %NULL
+ *
+ * Saves current log information to the given @filename.
+ *
+ * Returns: whether succeeded
  *
  * Since: 2.32
  **/
@@ -587,6 +625,12 @@ e_debug_log_dump (const gchar *filename,
 
 /**
  * e_debug_log_dump_to_dated_file:
+ * @error: return location for a #GError, or %NULL
+ *
+ * Saves current log information to a file "e-debug-log-YYYY-MM-DD-HH-mm-ss.txt"
+ * in the user's HOME directory.
+ *
+ * Returns: whether succeeded
  *
  * Since: 2.32
  **/
@@ -624,6 +668,9 @@ e_debug_log_dump_to_dated_file (GError **error)
 
 /**
  * e_debug_log_set_max_lines:
+ * @num_lines: number of lines
+ *
+ * Limits how many lines the log can have.
  *
  * Since: 2.32
  **/

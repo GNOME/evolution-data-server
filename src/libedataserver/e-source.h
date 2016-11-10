@@ -114,6 +114,7 @@ typedef struct _ESourcePrivate ESourcePrivate;
  * Since: 3.6
  **/
 struct _ESource {
+	/*< private >*/
 	GObject parent;
 	ESourcePrivate *priv;
 };

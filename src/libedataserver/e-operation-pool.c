@@ -33,7 +33,8 @@ struct _EOperationPool {
  * @thread_func: Function to run for a given thread
  * @user_data: The user data to pass to @thread_func
  *
- * FIXME: Document me.
+ * Returns: (transfer full): a new #EOperationPool with the given settings.
+ *   Free it with e_operation_pool_free(), when no longer needed.
  *
  * Since: 3.2
  **/
@@ -69,8 +70,9 @@ e_operation_pool_new (guint max_threads,
 
 /**
  * e_operation_pool_free:
+ * @pool: an #EOperationPool
  *
- * FIXME: Document me.
+ * Frees previously created @pool.
  *
  * Since: 3.2
  **/

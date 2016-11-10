@@ -136,7 +136,7 @@ void		camel_block_file_set_cache_limit(CamelBlockFile *bs,
 						 gint block_cache_limit);
 gint		camel_block_file_rename		(CamelBlockFile *bs,
 						 const gchar *path);
-gint		camel_block_file_delete		(CamelBlockFile *kf);
+gint		camel_block_file_delete		(CamelBlockFile *bs);
 CamelBlock *	camel_block_file_new_block	(CamelBlockFile *bs);
 gint		camel_block_file_free_block	(CamelBlockFile *bs,
 						 camel_block_t id);

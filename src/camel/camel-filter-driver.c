@@ -304,7 +304,11 @@ camel_filter_driver_new (CamelSession *session)
 
 /**
  * camel_filter_driver_set_folder_func:
- * @get_folder: (scope call):
+ * @d: a #CamelFilterDriver
+ * @get_folder: (scope call) (closure user_data): a callback to get a folder
+ * @user_data: user data to pass to @get_folder
+ *
+ * Sets a callback (of type #CamelFilterGetFolderFunc) to get a folder.
  **/
 void
 camel_filter_driver_set_folder_func (CamelFilterDriver *d,
@@ -315,6 +319,13 @@ camel_filter_driver_set_folder_func (CamelFilterDriver *d,
 	d->priv->data = user_data;
 }
 
+/**
+ * camel_filter_driver_set_logfile:
+ * @d: a #CamelFilterDriver
+ * @logfile: (nullable): a FILE handle where to write logging
+ *
+* Sets a log file to use for logging.
+ **/
 void
 camel_filter_driver_set_logfile (CamelFilterDriver *d,
                                  FILE *logfile)
@@ -324,7 +335,11 @@ camel_filter_driver_set_logfile (CamelFilterDriver *d,
 
 /**
  * camel_filter_driver_set_status_func:
- * @func: (scope call):
+ * @d: a #CamelFilterDriver
+ * @func: (scope call) (closure user_data): a callback to report progress
+ * @user_data: user data to pass to @func
+ *
+ * Sets a status callback, which is used to report progress/status.
  **/
 void
 camel_filter_driver_set_status_func (CamelFilterDriver *d,
@@ -337,7 +352,12 @@ camel_filter_driver_set_status_func (CamelFilterDriver *d,
 
 /**
  * camel_filter_driver_set_shell_func:
- * @func: (scope call):
+ * @d: a #CamelFilterDriver
+ * @func: (scope call) (closure user_data): a shell command callback
+ * @user_data: user data to pass to @func
+ *
+ * Sets a shell command callback, which is called when a shell command
+ * execution is requested.
  **/
 void
 camel_filter_driver_set_shell_func (CamelFilterDriver *d,
@@ -350,7 +370,11 @@ camel_filter_driver_set_shell_func (CamelFilterDriver *d,
 
 /**
  * camel_filter_driver_set_play_sound_func:
- * @func: (scope call):
+ * @d: a #CamelFilterDriver
+ * @func: (scope call) (closure user_data): a callback to play a sound
+ * @user_data: user data to pass to @func
+ *
+ * Sets a callback to call when a play of a sound is requested.
  **/
 void
 camel_filter_driver_set_play_sound_func (CamelFilterDriver *d,
@@ -363,7 +387,11 @@ camel_filter_driver_set_play_sound_func (CamelFilterDriver *d,
 
 /**
  * camel_filter_driver_set_system_beep_func:
- * @func: (scope call):
+ * @d: a #CamelFilterDriver
+ * @func: (scope call) (closure user_data): a system beep callback
+ * @user_data: user data to pass to @func
+ *
+ * Sets a callback to use for system beep.
  **/
 void
 camel_filter_driver_set_system_beep_func (CamelFilterDriver *d,
@@ -374,10 +402,21 @@ camel_filter_driver_set_system_beep_func (CamelFilterDriver *d,
 	d->priv->beepdata = user_data;
 }
 
+/**
+ * camel_filter_driver_set_default_folder:
+ * @d: a #CamelFilterDriver
+ * @def: (nullable): a default #CamelFolder
+ *
+ * Sets a default folder for the driver. The function adds
+ * its own reference for the folder.
+ **/
 void
 camel_filter_driver_set_default_folder (CamelFilterDriver *d,
                                         CamelFolder *def)
 {
+	if (d->priv->defaultfolder == def)
+		return;
+
 	if (d->priv->defaultfolder) {
 		camel_folder_thaw (d->priv->defaultfolder);
 		g_object_unref (d->priv->defaultfolder);
@@ -391,6 +430,15 @@ camel_filter_driver_set_default_folder (CamelFilterDriver *d,
 	}
 }
 
+/**
+ * camel_filter_driver_add_rule:
+ * @d: a #CamelFilterDriver
+ * @name: name of the rule
+ * @match: a code (#CamelSExp) to execute to check whether the rule can be applied
+ * @action: an action code (#CamelSExp) to execute, when the @match evaluates to %TRUE
+ *
+ * Adds a new rule to set of rules to process by the filter driver.
+ **/
 void
 camel_filter_driver_add_rule (CamelFilterDriver *d,
                               const gchar *name,
@@ -407,7 +455,16 @@ camel_filter_driver_add_rule (CamelFilterDriver *d,
 	g_queue_push_tail (&d->priv->rules, node);
 }
 
-gint
+/**
+ * camel_filter_driver_remove_rule_by_name:
+ * @d: a #CamelFilterDriver
+ * @name: rule name
+ *
+ * Removes a rule by name, added by camel_filter_driver_add_rule().
+ *
+ * Returns: Whether the rule had been found and removed.
+ **/
+gboolean
 camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d,
                                          const gchar *name)
 {
@@ -427,10 +484,10 @@ camel_filter_driver_remove_rule_by_name (CamelFilterDriver *d,
 		g_free (rule->name);
 		g_free (rule);
 
-		return 0;
+		return TRUE;
 	}
 
-	return -1;
+	return FALSE;
 }
 
 static void
@@ -1320,7 +1377,7 @@ run_only_once (gpointer key,
 
 /**
  * camel_filter_driver_flush:
- * @driver:
+ * @driver: a #CamelFilterDriver
  * @error: return location for a #GError, or %NULL
  *
  * Flush all of the only-once filter actions.
@@ -1368,7 +1425,7 @@ decode_flags_from_xev (const gchar *xev,
  * camel_filter_driver_filter_mbox:
  * @driver: CamelFilterDriver
  * @mbox: mbox filename to be filtered
- * @original_source_url:
+ * @original_source_url: (nullable): URI of the @mbox, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *

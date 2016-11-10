@@ -78,6 +78,7 @@ typedef struct _CamelIMAPXListResponsePrivate CamelIMAPXListResponsePrivate;
  * Since: 3.10
  **/
 struct _CamelIMAPXListResponse {
+	/*< private >*/
 	GObject parent;
 	CamelIMAPXListResponsePrivate *priv;
 };

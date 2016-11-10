@@ -68,6 +68,7 @@ typedef struct _ESourceResourcePrivate ESourceResourcePrivate;
  * Since: 3.6
  **/
 struct _ESourceResource {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceResourcePrivate *priv;
 };

@@ -56,6 +56,7 @@ typedef struct _CamelIMAPXStatusResponsePrivate CamelIMAPXStatusResponsePrivate;
  * Since: 3.10
  **/
 struct _CamelIMAPXStatusResponse {
+	/*< private >*/
 	GObject parent;
 	CamelIMAPXStatusResponsePrivate *priv;
 };

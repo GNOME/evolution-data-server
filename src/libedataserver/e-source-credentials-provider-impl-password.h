@@ -60,6 +60,7 @@ typedef struct _ESourceCredentialsProviderImplPasswordPrivate ESourceCredentials
  * Since: 3.16
  **/
 struct _ESourceCredentialsProviderImplPassword {
+	/*< private >*/
 	ESourceCredentialsProviderImpl parent;
 	ESourceCredentialsProviderImplPasswordPrivate *priv;
 };

@@ -1332,6 +1332,8 @@ e_source_webdav_update_ssl_trust (ESourceWebdav *extension,
  * @host: a host name to store the certificate for
  * @cert: the invalid certificate of the connection over which @host is about
  *        to be sent
+ * @cert_errors: a bit-or of #GTlsCertificateFlags describing the reason
+ *   for the @cert to be considered invalid
  *
  * Verifies SSL/TLS trust for the given @host and @cert, as previously stored in the @extension
  * with e_source_webdav_update_ssl_trust().

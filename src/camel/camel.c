@@ -269,6 +269,11 @@ static GRecMutex camel_binding_lock;
 
 /**
  * camel_binding_bind_property:
+ * @source: (type GObject.Object): the source #GObject
+ * @source_property: the property on @source to bind
+ * @target: (type GObject.Object): the target #GObject
+ * @target_property: the property on @target to bind
+ * @flags: flags to pass to #GBinding
  *
  * Thread safe variant of g_object_bind_property(). See its documentation
  * for more information on arguments and return value.

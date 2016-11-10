@@ -66,12 +66,10 @@ typedef struct _CamelIMAPXServerClass CamelIMAPXServerClass;
 typedef struct _CamelIMAPXServerPrivate CamelIMAPXServerPrivate;
 
 /* untagged response handling */
-typedef gboolean
-		(*CamelIMAPXUntaggedRespHandler)
-					(CamelIMAPXServer *server,
-					 GInputStream *input_stream,
-					 GCancellable *cancellable,
-					 GError **error);
+typedef gboolean (* CamelIMAPXUntaggedRespHandler) (CamelIMAPXServer *server,
+						    GInputStream *input_stream,
+						    GCancellable *cancellable,
+						    GError **error);
 
 /**
  * CamelIMAPXUntaggedRespHandlerDesc:

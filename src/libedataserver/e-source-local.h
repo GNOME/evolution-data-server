@@ -52,6 +52,7 @@ typedef struct _ESourceLocalClass ESourceLocalClass;
 typedef struct _ESourceLocalPrivate ESourceLocalPrivate;
 
 struct _ESourceLocal {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceLocalPrivate *priv;
 };

@@ -68,6 +68,7 @@ typedef struct _ESourceCollectionPrivate ESourceCollectionPrivate;
  * Since: 3.6
  **/
 struct _ESourceCollection {
+	/*< private >*/
 	ESourceBackend parent;
 	ESourceCollectionPrivate *priv;
 };

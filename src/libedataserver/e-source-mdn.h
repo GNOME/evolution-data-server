@@ -69,6 +69,7 @@ typedef struct _ESourceMDNPrivate ESourceMDNPrivate;
  * Since: 3.6
  **/
 struct _ESourceMDN {
+	/*< private >*/
 	ESourceExtension parent;
 	ESourceMDNPrivate *priv;
 };

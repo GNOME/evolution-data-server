@@ -482,6 +482,7 @@ typedef struct _EClientErrorsList EClientErrorsList;
  * Deprecated: 3.8: This structure is no longer used.
  **/
 struct _EClientErrorsList {
+	/*< private >*/
 	const gchar *name;
 	gint err_code;
 };

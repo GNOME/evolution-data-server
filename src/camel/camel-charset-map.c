@@ -318,7 +318,11 @@ camel_charset_init (CamelCharset *c)
 
 /**
  * camel_charset_step:
- * @in: (array length=len) (type gchar):
+ * @cc: a #CamelCharset
+ * @in: (array length=len) (type gchar): input text
+ * @len: length of the input text
+ *
+ * Processes more input text with the @cc.
  **/
 void
 camel_charset_step (CamelCharset *cc,
@@ -387,9 +391,11 @@ camel_charset_best_name (CamelCharset *charset)
 
 /**
  * camel_charset_best:
- * @in: (array length=len) (type gchar):
+ * @in: (array length=len) (type gchar): input text
+ * @len: length of the input text
  *
- * finds the minimum charset for this string NULL means US-ASCII
+ * Finds the minimum charset for this string NULL means US-ASCII.
+ *
  * Returns: (nullable): the minimum charset or NULL for US_ASCII.
  **/
 const gchar *
