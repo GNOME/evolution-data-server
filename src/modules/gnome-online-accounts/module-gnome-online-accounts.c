@@ -650,8 +650,8 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
                                             GoaObject *goa_object)
 {
 	GoaMail *goa_mail;
-	ESourceExtension *source_extension;
 	EServerSideSource *server_side_source;
+	ESourceMailIdentity *mail_identity;
 	ESourceMailSubmission *mail_submission;
 	ESourceMailComposition *mail_composition;
 	const gchar *extension_name;
@@ -663,11 +663,24 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
 		return;
 
 	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
-	source_extension = e_source_get_extension (source, extension_name);
+	mail_identity = e_source_get_extension (source, extension_name);
+
+	tmp = e_source_mail_identity_dup_address (mail_identity);
+	if (!tmp || !*tmp) {
+		/* Set the Name only if the mail is not set yet, because users can change the Name,
+		   even to an empty string, but the email is fixed with the one from GoaMail.
+		*/
+		g_free (tmp);
+
+		tmp = goa_mail_dup_name (goa_mail);
+		if (tmp && *tmp)
+			e_source_mail_identity_set_name (mail_identity, tmp);
+	}
+	g_free (tmp);
 
 	e_binding_bind_property (
 		goa_mail, "email-address",
-		source_extension, "address",
+		mail_identity, "address",
 		G_BINDING_SYNC_CREATE);
 
 	g_object_unref (goa_mail);
