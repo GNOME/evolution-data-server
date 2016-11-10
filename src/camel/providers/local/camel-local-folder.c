@@ -544,6 +544,7 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 	CamelStore *parent_store;
 	const gchar *full_name;
 	gboolean need_summary_check;
+	gboolean filter_all = FALSE, filter_junk = TRUE;
 
 	folder = CAMEL_FOLDER (lf);
 	full_name = camel_folder_get_full_name (folder);
@@ -555,11 +556,20 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 
 	local_settings = CAMEL_LOCAL_SETTINGS (settings);
 	lf->base_path = camel_local_settings_dup_path (local_settings);
+	filter_all = camel_local_settings_get_filter_all (local_settings);
+	filter_junk = camel_local_settings_get_filter_junk (local_settings);
 
 	g_object_unref (settings);
 
 	ls = CAMEL_LOCAL_STORE (parent_store);
 	need_summary_check = camel_local_store_get_need_summary_check (ls);
+
+	filter_junk = filter_junk || camel_local_store_is_main_store (CAMEL_LOCAL_STORE (parent_store));
+	if (filter_all || filter_junk) {
+		camel_folder_set_flags (folder, camel_folder_get_flags (folder) |
+			(filter_all ? CAMEL_FOLDER_FILTER_RECENT : 0) |
+			(filter_junk ? CAMEL_FOLDER_FILTER_JUNK : 0));
+	}
 
 	lf->folder_path = camel_local_store_get_full_path (ls, full_name);
 	lf->index_path = camel_local_store_get_meta_path (ls, full_name, ".ibex");

@@ -1144,7 +1144,7 @@ folder_changed (CamelFolder *folder,
 		driver = camel_session_get_filter_driver (
 			session,
 			(camel_folder_get_flags (folder) & CAMEL_FOLDER_FILTER_RECENT)
-			? "incoming" : "junktest", NULL);
+			? "incoming" : "junktest", folder, NULL);
 
 	if (driver) {
 		recents = g_ptr_array_new ();

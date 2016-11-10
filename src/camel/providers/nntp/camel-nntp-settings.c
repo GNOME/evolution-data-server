@@ -23,6 +23,7 @@
 
 struct _CamelNNTPSettingsPrivate {
 	gboolean filter_all;
+	gboolean filter_junk;
 	gboolean folder_hierarchy_relative;
 	gboolean short_folder_names;
 };
@@ -31,6 +32,7 @@ enum {
 	PROP_0,
 	PROP_AUTH_MECHANISM,
 	PROP_FILTER_ALL,
+	PROP_FILTER_JUNK,
 	PROP_FOLDER_HIERARCHY_RELATIVE,
 	PROP_HOST,
 	PROP_PORT,
@@ -61,6 +63,12 @@ nntp_settings_set_property (GObject *object,
 
 		case PROP_FILTER_ALL:
 			camel_nntp_settings_set_filter_all (
+				CAMEL_NNTP_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_FILTER_JUNK:
+			camel_nntp_settings_set_filter_junk (
 				CAMEL_NNTP_SETTINGS (object),
 				g_value_get_boolean (value));
 			return;
@@ -123,6 +131,13 @@ nntp_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_nntp_settings_get_filter_all (
+				CAMEL_NNTP_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_JUNK:
+			g_value_set_boolean (
+				value,
+				camel_nntp_settings_get_filter_junk (
 				CAMEL_NNTP_SETTINGS (object)));
 			return;
 
@@ -248,6 +263,18 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_JUNK,
+		g_param_spec_boolean (
+			"filter-junk",
+			"Filter Junk",
+			"Whether to check new messages for junk",
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 }
 
 static void
@@ -295,6 +322,47 @@ camel_nntp_settings_set_filter_all (CamelNNTPSettings *settings,
 	settings->priv->filter_all = filter_all;
 
 	g_object_notify (G_OBJECT (settings), "filter-all");
+}
+
+/**
+ * camel_nntp_settings_get_filter_junk:
+ * @settings: a #CamelNNTPSettings
+ *
+ * Returns whether to check new messages for junk.
+ *
+ * Returns: whether to check new messages for junk
+ *
+ * Since: 3.24
+ **/
+gboolean
+camel_nntp_settings_get_filter_junk (CamelNNTPSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NNTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_junk;
+}
+
+/**
+ * camel_nntp_settings_set_filter_junk:
+ * @settings: a #CamelNNTPSettings
+ * @filter_junk: whether to check new messages for junk
+ *
+ * Sets whether to check new messages for junk.
+ *
+ * Since: 3.24
+ **/
+void
+camel_nntp_settings_set_filter_junk (CamelNNTPSettings *settings,
+				     gboolean filter_junk)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
+
+	if (settings->priv->filter_junk == filter_junk)
+		return;
+
+	settings->priv->filter_junk = filter_junk;
+
+	g_object_notify (G_OBJECT (settings), "filter-junk");
 }
 
 /**

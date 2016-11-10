@@ -36,6 +36,8 @@ static CamelProviderConfEntry nntp_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
 	  N_("Apply _filters to new messages in all folders"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
+	  N_("Check new messages for _Junk contents"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "folders", NULL,
 	  N_("Folders") },

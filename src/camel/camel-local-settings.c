@@ -26,10 +26,14 @@
 struct _CamelLocalSettingsPrivate {
 	GMutex property_lock;
 	gchar *path;
+	gboolean filter_all;
+	gboolean filter_junk;
 };
 
 enum {
 	PROP_0,
+	PROP_FILTER_ALL,
+	PROP_FILTER_JUNK,
 	PROP_PATH
 };
 
@@ -45,6 +49,18 @@ local_settings_set_property (GObject *object,
                              GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_FILTER_ALL:
+			camel_local_settings_set_filter_all (
+				CAMEL_LOCAL_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_FILTER_JUNK:
+			camel_local_settings_set_filter_junk (
+				CAMEL_LOCAL_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
 		case PROP_PATH:
 			camel_local_settings_set_path (
 				CAMEL_LOCAL_SETTINGS (object),
@@ -62,6 +78,20 @@ local_settings_get_property (GObject *object,
                              GParamSpec *pspec)
 {
 	switch (property_id) {
+		case PROP_FILTER_ALL:
+			g_value_set_boolean (
+				value,
+				camel_local_settings_get_filter_all (
+				CAMEL_LOCAL_SETTINGS (object)));
+			return;
+
+		case PROP_FILTER_JUNK:
+			g_value_set_boolean (
+				value,
+				camel_local_settings_get_filter_junk (
+				CAMEL_LOCAL_SETTINGS (object)));
+			return;
+
 		case PROP_PATH:
 			g_value_take_string (
 				value,
@@ -108,6 +138,30 @@ camel_local_settings_class_init (CamelLocalSettingsClass *class)
 			"Path",
 			"File path to the local store",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_ALL,
+		g_param_spec_boolean (
+			"filter-all",
+			"Filter All",
+			"Whether to apply filters in all folders",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_FILTER_JUNK,
+		g_param_spec_boolean (
+			"filter-junk",
+			"Filter Junk",
+			"Whether to check new messages for junk",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -218,3 +272,84 @@ camel_local_settings_set_path (CamelLocalSettings *settings,
 	g_object_notify (G_OBJECT (settings), "path");
 }
 
+/**
+ * camel_local_settings_get_filter_all:
+ * @settings: a #CamelLocalSettings
+ *
+ * Returns whether apply filters in all folders.
+ *
+ * Returns: whether to apply filters in all folders
+ *
+ * Since: 3.24
+ **/
+gboolean
+camel_local_settings_get_filter_all (CamelLocalSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_all;
+}
+
+/**
+ * camel_local_settings_set_filter_all:
+ * @settings: a #CamelLocalSettings
+ * @filter_all: whether to apply filters in all folders
+ *
+ * Sets whether to apply filters in all folders.
+ *
+ * Since: 3.24
+ **/
+void
+camel_local_settings_set_filter_all (CamelLocalSettings *settings,
+				     gboolean filter_all)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings));
+
+	if (settings->priv->filter_all == filter_all)
+		return;
+
+	settings->priv->filter_all = filter_all;
+
+	g_object_notify (G_OBJECT (settings), "filter-all");
+}
+
+/**
+ * camel_local_settings_get_filter_junk:
+ * @settings: a #CamelLocalSettings
+ *
+ * Returns whether to check new messages for junk.
+ *
+ * Returns: whether to check new messages for junk
+ *
+ * Since: 3.24
+ **/
+gboolean
+camel_local_settings_get_filter_junk (CamelLocalSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings), FALSE);
+
+	return settings->priv->filter_junk;
+}
+
+/**
+ * camel_local_settings_set_filter_junk:
+ * @settings: a #CamelLocalSettings
+ * @filter_junk: whether to check new messages for junk
+ *
+ * Sets whether to check new messages for junk.
+ *
+ * Since: 3.24
+ **/
+void
+camel_local_settings_set_filter_junk (CamelLocalSettings *settings,
+				      gboolean filter_junk)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_SETTINGS (settings));
+
+	if (settings->priv->filter_junk == filter_junk)
+		return;
+
+	settings->priv->filter_junk = filter_junk;
+
+	g_object_notify (G_OBJECT (settings), "filter-junk");
+}

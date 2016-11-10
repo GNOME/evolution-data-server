@@ -64,6 +64,11 @@ gboolean	camel_nntp_settings_get_filter_all
 void		camel_nntp_settings_set_filter_all
 					(CamelNNTPSettings *settings,
 					 gboolean filter_all);
+gboolean	camel_nntp_settings_get_filter_junk
+					(CamelNNTPSettings *settings);
+void		camel_nntp_settings_set_filter_junk
+					(CamelNNTPSettings *settings,
+					 gboolean filter_junk);
 gboolean	camel_nntp_settings_get_folder_hierarchy_relative
 					(CamelNNTPSettings *settings);
 void		camel_nntp_settings_set_folder_hierarchy_relative

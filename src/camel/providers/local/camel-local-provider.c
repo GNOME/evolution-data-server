@@ -35,6 +35,10 @@
 
 static CamelProviderConfEntry mh_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
+	  N_("Apply _filters to new messages in all folders"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
+	  N_("Check new messages for _Junk contents"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-dot-folders", NULL,
 	  N_("_Use the '.folders' folder summary file (exmh)"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
@@ -56,6 +60,11 @@ static CamelProvider mh_provider = {
 #endif
 
 static CamelProviderConfEntry mbox_conf_entries[] = {
+	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-all", NULL,
+	  N_("Apply _filters to new messages"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
+	  N_("Check new messages for _Junk contents"), "1" },
 	{ CAMEL_PROVIDER_CONF_END }
 };
 
@@ -75,6 +84,8 @@ static CamelProviderConfEntry maildir_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in Inbox"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
+	  N_("Check new messages for _Junk contents"), "1" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
@@ -97,6 +108,8 @@ static CamelProviderConfEntry spool_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_SECTION_START, "general", NULL, N_("Options") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-inbox", NULL,
 	  N_("_Apply filters to new messages in Inbox"), "0" },
+	{ CAMEL_PROVIDER_CONF_CHECKBOX, "filter-junk", NULL,
+	  N_("Check new messages for _Junk contents"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "use-xstatus-headers", NULL, N_("_Store status headers in Elm/Pine/Mutt format"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }

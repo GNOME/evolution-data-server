@@ -115,6 +115,7 @@ struct _CamelSessionClass {
 	CamelFilterDriver *
 			(*get_filter_driver)	(CamelSession *session,
 						 const gchar *type,
+						 CamelFolder *for_folder,
 						 GError **error);
 	gboolean	(*lookup_addressbook)	(CamelSession *session,
 						 const gchar *name);
@@ -200,6 +201,7 @@ void		camel_session_set_online	(CamelSession *session,
 CamelFilterDriver *
 		camel_session_get_filter_driver	(CamelSession *session,
 						 const gchar *type,
+						 CamelFolder *for_folder,
 						 GError **error);
 CamelJunkFilter *
 		camel_session_get_junk_filter	(CamelSession *session);

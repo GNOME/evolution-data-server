@@ -783,7 +783,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	CamelStoreInfo *si;
 	const gchar *user_cache_dir;
 	gboolean subscribed = TRUE;
-	gboolean filter_all;
+	gboolean filter_all = FALSE, filter_junk = TRUE;
 
 	service = CAMEL_SERVICE (parent);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
@@ -793,6 +793,7 @@ camel_nntp_folder_new (CamelStore *parent,
 	g_object_get (
 		settings,
 		"filter-all", &filter_all,
+		"filter-junk", &filter_junk,
 		NULL);
 
 	g_object_unref (settings);
@@ -817,6 +818,9 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	if (filter_all || nntp_folder_get_apply_filters (nntp_folder))
 		camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_FILTER_RECENT);
+
+	if (filter_junk)
+		camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_FILTER_JUNK);
 
 	camel_folder_summary_load (camel_folder_get_folder_summary (folder), NULL);
 

@@ -1361,14 +1361,19 @@ camel_session_set_online (CamelSession *session,
  * camel_session_get_filter_driver:
  * @session: a #CamelSession
  * @type: the type of filter (eg, "incoming")
+ * @for_folder: (nullable): an optional #CamelFolder, for which the filter driver will run, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Returns:(transfer none): a filter driver, loaded with applicable rules
+ * The optional @for_folder can be used to determine which filters
+ * to add and which not.
+ *
+ * Returns: (transfer none): a filter driver, loaded with applicable rules
  **/
 CamelFilterDriver *
 camel_session_get_filter_driver (CamelSession *session,
-                                 const gchar *type,
-                                 GError **error)
+				 const gchar *type,
+				 CamelFolder *for_folder,
+				 GError **error)
 {
 	CamelSessionClass *class;
 	CamelFilterDriver *driver;
@@ -1379,7 +1384,7 @@ camel_session_get_filter_driver (CamelSession *session,
 	class = CAMEL_SESSION_GET_CLASS (session);
 	g_return_val_if_fail (class->get_filter_driver != NULL, NULL);
 
-	driver = class->get_filter_driver (session, type, error);
+	driver = class->get_filter_driver (session, type, for_folder, error);
 	CAMEL_CHECK_GERROR (session, get_filter_driver, driver != NULL, error);
 
 	return driver;
