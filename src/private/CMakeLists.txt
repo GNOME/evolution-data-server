@@ -164,6 +164,10 @@ add_library(edbus-private SHARED
 	${GENERATED_DBUS_SUBPROCESS_BACKEND}
 )
 
+set_target_properties(edbus-private PROPERTIES
+	INSTALL_RPATH ""
+)
+
 target_compile_definitions(edbus-private PRIVATE
 	-DG_LOG_DOMAIN=\"libedbus-private\"
 )

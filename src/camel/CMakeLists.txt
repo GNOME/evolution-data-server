@@ -271,6 +271,7 @@ set_target_properties(camel PROPERTIES
 	VERSION "${LIBCAMEL_CURRENT}.${LIBCAMEL_REVISION}.${LIBCAMEL_AGE}"
 	SOVERSION ${LIBCAMEL_CURRENT}
 	OUTPUT_NAME camel-${API_VERSION}
+	INSTALL_RPATH ""
 )
 
 target_compile_definitions(camel PRIVATE
@@ -357,6 +358,7 @@ if(NOT WIN32)
 
 	set_target_properties(camel-lock-helper PROPERTIES
 		OUTPUT_NAME camel-lock-helper-${API_VERSION}
+		INSTALL_RPATH ""
 	)
 
 	target_compile_definitions(camel-lock-helper PRIVATE
@@ -444,6 +446,10 @@ install(TARGETS camel-index-control
 
 add_executable(camel-gpg-photo-saver
 	camel-gpg-photo-saver.c
+)
+
+set_target_properties(camel-gpg-photo-saver PROPERTIES
+	INSTALL_RPATH ""
 )
 
 target_compile_definitions(camel-gpg-photo-saver PRIVATE
