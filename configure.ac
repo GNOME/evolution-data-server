@@ -338,8 +338,8 @@ AM_CONDITIONAL(WITH_PRIVATE_DOCS, [test x$with_private_docs = xyes])
 
 dnl This must appear after AC_CANONICAL_HOST, which defines $host.
 case "$host" in
-*openbsd*|*freebsd*)
-	dnl Do not set '-Wl,--no-undefined' on freebsd/openbsd
+*openbsd*|*freebsd*|*darwin*)
+	dnl Do not set '-Wl,--no-undefined' on freebsd/openbsd/darwin
 	;;
 *)
 	LDFLAGS="$LDFLAGS -Wl,--no-undefined"
