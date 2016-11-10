@@ -123,8 +123,7 @@ typedef struct {
  * Marked all these deprecated errors as private to avoid
  * warnings from gtk-doc
  */
-typedef enum {
-	/*< private >*/
+typedef enum { /*< private >*/
 	E_CALENDAR_STATUS_OK,
 	E_CALENDAR_STATUS_INVALID_ARG,
 	E_CALENDAR_STATUS_BUSY,
@@ -164,8 +163,7 @@ typedef enum {
  *
  * Deprecated
  **/
-typedef enum {
-	/*< private >*/
+typedef enum { /*< private >*/
 	Event = 1 << 0,
 	Todo = 1 << 1,
 	Journal = 1 << 2,
@@ -179,8 +177,7 @@ typedef enum {
  *
  * Deprecated
  **/
-typedef enum {
-	/*< private >*/
+typedef enum { /*< private >*/
 	This = 1 << 0,
 	ThisAndPrior = 1 << 1,
 	ThisAndFuture = 1 << 2,

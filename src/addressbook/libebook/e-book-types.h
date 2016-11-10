@@ -56,8 +56,7 @@ GQuark e_book_error_quark (void) G_GNUC_CONST;
 /* Marked these all as private, since they are deprecated
  * and we just avoid gtk-doc warnings this way
  */
-typedef enum {
-	/*< private >*/
+typedef enum { /*< private >*/
 	E_BOOK_ERROR_OK,
 	E_BOOK_ERROR_INVALID_ARG,
 	E_BOOK_ERROR_BUSY,
