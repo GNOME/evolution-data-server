@@ -47,12 +47,14 @@
 
 #include <glib/gi18n-lib.h>
 
-#include <libedataserver/e-data-server-util.h>
-#include <libedataserver/e-source-address-book.h>
-#include <libedataserver/e-source-authentication.h>
-#include <libedataserver/e-source-calendar.h>
-#include <libedataserver/e-source-registry.h>
-#include <libedataserver/e-source-security.h>
+#include "e-data-server-util.h"
+#include "e-source-address-book.h"
+#include "e-source-authentication.h"
+#include "e-source-calendar.h"
+#include "e-source-memo-list.h"
+#include "e-source-registry.h"
+#include "e-source-security.h"
+#include "e-source-task-list.h"
 
 #include "e-source-webdav.h"
 

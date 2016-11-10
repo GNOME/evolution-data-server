@@ -70,6 +70,7 @@
 #include <libedataserver/e-source-mail-submission.h>
 #include <libedataserver/e-source-mail-transport.h>
 #include <libedataserver/e-source-mdn.h>
+#include <libedataserver/e-source-memo-list.h>
 #include <libedataserver/e-source-offline.h>
 #include <libedataserver/e-source-openpgp.h>
 #include <libedataserver/e-source-proxy.h>
@@ -80,6 +81,7 @@
 #include <libedataserver/e-source-security.h>
 #include <libedataserver/e-source-selectable.h>
 #include <libedataserver/e-source-smime.h>
+#include <libedataserver/e-source-task-list.h>
 #include <libedataserver/e-source-uoa.h>
 #include <libedataserver/e-source-webdav.h>
 #include <libedataserver/e-source-weather.h>

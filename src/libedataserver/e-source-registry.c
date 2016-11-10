@@ -64,6 +64,8 @@
 #include "e-source-calendar.h"
 #include "e-source-mail-account.h"
 #include "e-source-mail-identity.h"
+#include "e-source-memo-list.h"
+#include "e-source-task-list.h"
 
 #include "e-source-registry.h"
 

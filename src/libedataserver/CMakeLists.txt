@@ -95,6 +95,7 @@ set(SOURCES
 	e-source-mail-submission.c
 	e-source-mail-transport.c
 	e-source-mdn.c
+	e-source-memo-list.c
 	e-source-offline.c
 	e-source-openpgp.c
 	e-source-proxy.c
@@ -105,6 +106,7 @@ set(SOURCES
 	e-source-security.c
 	e-source-selectable.c
 	e-source-smime.c
+	e-source-task-list.c
 	e-source-uoa.c
 	e-source-weather.c
 	e-source-webdav.c
@@ -172,6 +174,7 @@ set(HEADERS
 	e-source-mail-submission.h
 	e-source-mail-transport.h
 	e-source-mdn.h
+	e-source-memo-list.h
 	e-source-offline.h
 	e-source-openpgp.h
 	e-source-proxy.h
@@ -182,6 +185,7 @@ set(HEADERS
 	e-source-security.h
 	e-source-selectable.h
 	e-source-smime.h
+	e-source-task-list.h
 	e-source-uoa.h
 	e-source-weather.h
 	e-source-webdav.h
