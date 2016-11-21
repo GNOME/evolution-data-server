@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.0)
 
 project(evolution-data-server
-	VERSION 3.23.2
+	VERSION 3.23.3
 	LANGUAGES C CXX)
 set(PROJECT_BUGREPORT "http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server")
 
