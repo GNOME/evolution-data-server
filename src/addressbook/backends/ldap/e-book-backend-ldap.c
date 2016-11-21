@@ -107,9 +107,7 @@ typedef struct LDAPOp LDAPOp;
 	(e_data_book_create_error (E_DATA_BOOK_STATUS_ ## _code, _msg))
 /* Translators: An error message shown to a user when trying to do an
  * operation on the LDAP address book which is not connected to the server */
-#define EDB_ERROR_NOT_CONNECTED() \
-	(e_data_book_create_error ( \
-	E_DATA_BOOK_STATUS_OTHER_ERROR, _("Not connected")))
+#define EDB_ERROR_NOT_CONNECTED() (e_data_book_create_error (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Not connected")))
 #define EDB_ERROR_MSG_TYPE(_msg_type) \
 	(e_data_book_create_error_fmt ( \
 	E_DATA_BOOK_STATUS_INVALID_ARG, \

@@ -733,10 +733,10 @@ pop3_store_authenticate_sync (CamelService *service,
 		while (*d != '\0') {
 			if (!isascii ((gint) * d)) {
 
-				/* Translators: Do not translate APOP. */
 				g_set_error (
 					error, CAMEL_SERVICE_ERROR,
 					CAMEL_SERVICE_ERROR_URL_INVALID,
+					/* Translators: Do not translate APOP. */
 					_("Unable to connect to POP server %s:	"
 					"Invalid APOP ID received. Impersonation "
 					"attack suspected. Please contact your admin."),

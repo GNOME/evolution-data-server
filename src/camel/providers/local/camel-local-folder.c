@@ -179,39 +179,39 @@ local_folder_constructed (GObject *object)
 	path = g_strdup_printf ("%s/%s", root_path, full_name);
 
 	if ((tmp = getenv ("HOME")) && strncmp (tmp, path, strlen (tmp)) == 0)
-		/* Translators: This is used for a folder description,
-		 * for folders being under $HOME.  The first %s is replaced
-		 * with a relative path under $HOME, the second %s is
-		 * replaced with a protocol name, like mbox/maldir/... */
 		description = g_strdup_printf (
+			/* Translators: This is used for a folder description,
+			 * for folders being under $HOME.  The first %s is replaced
+			 * with a relative path under $HOME, the second %s is
+			 * replaced with a protocol name, like mbox/maldir/... */
 			_("~%s (%s)"),
 			path + strlen (tmp),
 			provider->protocol);
 	else if ((tmp = "/var/spool/mail") && strncmp (tmp, path, strlen (tmp)) == 0)
-		/* Translators: This is used for a folder description, for
-		 * folders being under /var/spool/mail.  The first %s is
-		 * replaced with a relative path under /var/spool/mail,
-		 * the second %s is replaced with a protocol name, like
-		 * mbox/maldir/... */
 		description = g_strdup_printf (
+			/* Translators: This is used for a folder description, for
+			 * folders being under /var/spool/mail.  The first %s is
+			 * replaced with a relative path under /var/spool/mail,
+			 * the second %s is replaced with a protocol name, like
+			 * mbox/maldir/... */
 			_("mailbox: %s (%s)"),
 			path + strlen (tmp),
 			provider->protocol);
 	else if ((tmp = "/var/mail") && strncmp (tmp, path, strlen (tmp)) == 0)
-		/* Translators: This is used for a folder description, for
-		 * folders being under /var/mail.  The first %s is replaced
-		 * with a relative path under /var/mail, the second %s is
-		 * replaced with a protocol name, like mbox/maldir/... */
 		description = g_strdup_printf (
+			/* Translators: This is used for a folder description, for
+			 * folders being under /var/mail.  The first %s is replaced
+			 * with a relative path under /var/mail, the second %s is
+			 * replaced with a protocol name, like mbox/maldir/... */
 			_("mailbox: %s (%s)"),
 			path + strlen (tmp),
 			provider->protocol);
 	else
-		/* Translators: This is used for a folder description.
-		 * The first %s is replaced with a folder's full path,
-		 * the second %s is replaced with a protocol name, like
-		 * mbox/maldir/... */
 		description = g_strdup_printf (
+			/* Translators: This is used for a folder description.
+			 * The first %s is replaced with a folder's full path,
+			 * the second %s is replaced with a protocol name, like
+			 * mbox/maldir/... */
 			_("%s (%s)"), path,
 			provider->protocol);
 
@@ -729,11 +729,11 @@ set_cannot_get_message_ex (GError **error,
                            const gchar *folder_path,
                            const gchar *detailErr)
 {
-	/* Translators: The first %s is replaced with a message ID,
-	 * the second %s is replaced with the folder path,
-	 * the third %s is replaced with a detailed error string */
 	g_set_error (
 		error, CAMEL_ERROR, err_code,
+		/* Translators: The first %s is replaced with a message ID,
+		 * the second %s is replaced with the folder path,
+		 * the third %s is replaced with a detailed error string */
 		_("Cannot get message %s from folder %s\n%s"),
 		msgID, folder_path, detailErr);
 }

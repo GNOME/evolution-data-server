@@ -2501,12 +2501,12 @@ imapx_initial_setup_sync (CamelStore *store,
 			  GCancellable *cancellable,
 			  GError **error)
 {
-	/* Translators: The strings in "IMAPDefaults" context are folder names as can be presented
-	   by the server; There's checked for the localized version of it and for the non-localized
-	   version as well. It's always the folder name (eventually path) as provided by the server,
-	   when returned in given localization. it can be checked semi-easily in the case of
-	   the GMail variants, by changing the GMail interface language in the GMail Preferences. */
 	const gchar *draft_names[] = {
+		/* Translators: The strings in "IMAPDefaults" context are folder names as can be presented
+		   by the server; There's checked for the localized version of it and for the non-localized
+		   version as well. It's always the folder name (eventually path) as provided by the server,
+		   when returned in given localization. it can be checked semi-easily in the case of
+		   the GMail variants, by changing the GMail interface language in the GMail Preferences. */
 		NC_("IMAPDefaults", "[Gmail]/Drafts"),
 		NC_("IMAPDefaults", "Drafts"),
 		NC_("IMAPDefaults", "Draft")

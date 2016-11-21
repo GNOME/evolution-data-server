@@ -320,11 +320,11 @@ folder_filter (CamelSession *session,
 	if (data->junk) {
 		gboolean success = TRUE;
 
-		/* Translators: The first '%s' is replaced with an account name and the second '%s'
-		   is replaced with a full path name. The spaces around ':' are intentional, as
-		   the whole '%s : %s' is meant as an absolute identification of the folder. */
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
+			/* Translators: The first '%s' is replaced with an account name and the second '%s'
+			   is replaced with a full path name. The spaces around ':' are intentional, as
+			   the whole '%s : %s' is meant as an absolute identification of the folder. */
 			"Learning new spam message in '%s : %s'",
 			"Learning new spam messages in '%s : %s'",
 			data->junk->len),
@@ -363,11 +363,11 @@ folder_filter (CamelSession *session,
 	if (data->notjunk) {
 		gboolean success = TRUE;
 
-		/* Translators: The first '%s' is replaced with an account name and the second '%s'
-		   is replaced with a full path name. The spaces around ':' are intentional, as
-		   the whole '%s : %s' is meant as an absolute identification of the folder. */
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
+			/* Translators: The first '%s' is replaced with an account name and the second '%s'
+			   is replaced with a full path name. The spaces around ':' are intentional, as
+			   the whole '%s : %s' is meant as an absolute identification of the folder. */
 			"Learning new ham message in '%s : %s'",
 			"Learning new ham messages in '%s : %s'",
 			data->notjunk->len),
@@ -414,11 +414,11 @@ folder_filter (CamelSession *session,
 		CamelService *service;
 		const gchar *store_uid;
 
-		/* Translators: The first '%s' is replaced with an account name and the second '%s'
-		   is replaced with a full path name. The spaces around ':' are intentional, as
-		   the whole '%s : %s' is meant as an absolute identification of the folder. */
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
+			/* Translators: The first '%s' is replaced with an account name and the second '%s'
+			   is replaced with a full path name. The spaces around ':' are intentional, as
+			   the whole '%s : %s' is meant as an absolute identification of the folder. */
 			"Filtering new message in '%s : %s'",
 			"Filtering new messages in '%s : %s'",
 			data->recents->len),
