@@ -1,3 +1,40 @@
+Evolution-Data-Server 3.23.2 2016-11-21
+---------------------------------------
+
+Bug Fixes:
+	Bug 773360 - Prefer in-tree libraries when scanning introspection data (Milan Crha)
+	Bug 773363 - Do not use alloca() in camel-folder-thread.c (Glen Whitney)
+	Bug 769573 - Allow also time part set for Tasks, not only date part (Milan Crha)
+	Bug 773656 - Fix various g-ir-scanner failures after switching to cmake (Ting-Wei Lan)
+	Bug 773659 - Don't set CFLAGS returned by pkg-config as CMAKE_REQUIRED_FLAGS (Milan Crha)
+	Bug 773723 - Fix a few annotations in libecal (Corentin Noël)
+	Bug 773427 - Do not run gobject-introspection in the source directory (Milan Crha)
+	Bug 773657 - Fix JHBuild issues on FreeBSD after switching to cmake (Ting-Wei Lan)
+	Bug 764065 - [Camel] Port more classes to GObject (Corentin Noël)
+	Bug 767821 - Recognize X-GM-EXT-1 as SPECIAL-USE for Gmail IMAP (Zisu Andrei)
+	Bug 772947 - Global junk test option doesn't respect account settings (Milan Crha)
+	Bug 774103 - GOA mail account doesn't inherit GoaMail::name (Milan Crha)
+	Bug 774234 - Unset INSTALL_RPATH for libs not linking libedbus-private (Dominique Leuenberger)
+	Bug 774522 - Translator comments are missing in the .pot/.po files (Piotr Drąg)
+
+Miscellaneous:
+	[IMAPx] Avoid crash when untagged response doesn't have a token (Milan Crha)
+	Correct WITH_LIBDB configure option processing (Milan Crha)
+	Correct typo in the output name of camel tests (Milan Crha)
+	Mute/fix some of the libedataserver annotation warnings (Milan Crha)
+	Correct ENABLE_BACKTRACES configure option handling (Milan Crha)
+	Correct gtkdoc-scan --ignore-headers argument value (Milan Crha)
+	Update gtk-doc sgml input files (Milan Crha)
+	Fix some of the gtk-doc warnings (Milan Crha)
+	Split e-source-calendar.h/.c into three separate files (Milan Crha)
+	Correct how private enums (for gtk-doc) are defined (Milan Crha)
+	SetupBuildFlags.cmake: Check C++ flags only if C++ is enabled (Milan Crha)
+	Ensure CMAKE_SKIP_RPATH is OFF, the RPATH is used here (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Mario Blättermann (de)
+
 Evolution-Data-Server 3.23.1 2016-10-24
 ---------------------------------------
 
