@@ -212,7 +212,7 @@ void		camel_message_info_property_lock
 void		camel_message_info_property_unlock
 						(const CamelMessageInfo *mi);
 gboolean	camel_message_info_get_dirty	(const CamelMessageInfo *mi);
-void		camel_message_info_set_dirty	(const CamelMessageInfo *mi,
+void		camel_message_info_set_dirty	(CamelMessageInfo *mi,
 						 gboolean dirty);
 gboolean	camel_message_info_get_folder_flagged
 						(const CamelMessageInfo *mi);

@@ -1228,13 +1228,12 @@ camel_message_info_get_dirty (const CamelMessageInfo *mi)
  * @dirty: a dirty state to set
  *
  * Marks the @mi as dirty, which means a save to the local summary
- * is required. In case the @dirty is %TRUE and the @mi is not aborting notifications,
- * the 'dirty-stamp' changes too.
+ * is required.
  *
  * Since: 3.24
  **/
 void
-camel_message_info_set_dirty (const CamelMessageInfo *mi,
+camel_message_info_set_dirty (CamelMessageInfo *mi,
 			      gboolean dirty)
 {
 	gboolean changed, abort_notifications;
