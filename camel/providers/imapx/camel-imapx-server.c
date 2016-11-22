@@ -5484,6 +5484,11 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				if (info == NULL)
 					continue;
 
+				if (!(info->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
+					camel_message_info_unref (info);
+					continue;
+				}
+
 				flags = (info->info.flags & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
 				sflags = (info->server_flags & CAMEL_IMAPX_SERVER_FLAGS) & permanentflags;
 				send = 0;
@@ -5533,6 +5538,18 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				}
 
 				camel_message_info_unref (info);
+			}
+
+			if (ic && imapx_uidset_done (&uidset, ic)) {
+				camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", flags_table[jj].name);
+
+				success = camel_imapx_server_process_command_sync (is, ic, _("Error syncing changes"), cancellable, error);
+
+				camel_imapx_command_unref (ic);
+				ic = NULL;
+
+				if (!success)
+					break;
 			}
 
 			g_warn_if_fail (ic == NULL);
@@ -5590,6 +5607,11 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 			if (!xinfo)
 				continue;
+
+			if (!(xinfo->info.flags & CAMEL_MESSAGE_FOLDER_FLAGGED)) {
+				camel_message_info_unref (xinfo);
+				continue;
+			}
 
 			xinfo->server_flags = xinfo->info.flags & CAMEL_IMAPX_SERVER_FLAGS;
 			if (!remove_deleted_flags ||
