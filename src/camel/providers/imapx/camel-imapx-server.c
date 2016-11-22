@@ -5573,8 +5573,16 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			gboolean set_folder_flagged;
 			guint32 has_flags, set_server_flags;
 			gboolean changed_meanwhile;
+			const gchar *uid;
 
-			info = camel_folder_summary_get (folder_summary, changed_uids->pdata[i]);
+			uid = g_ptr_array_index (changed_uids, i);
+
+			/* the 'stamps' hash table contains only those uid-s,
+			   which were also flagged, not only 'dirty' */
+			if (!g_hash_table_lookup (stamps, uid))
+				continue;
+
+			info = camel_folder_summary_get (folder_summary, uid);
 			xinfo = info ? CAMEL_IMAPX_MESSAGE_INFO (info) : NULL;
 
 			if (!info || !xinfo) {
@@ -5585,7 +5593,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			camel_message_info_property_lock (info);
 
 			changed_meanwhile = camel_message_info_get_folder_flagged_stamp (info) !=
-				GPOINTER_TO_UINT (g_hash_table_lookup (stamps, changed_uids->pdata[i]));
+				GPOINTER_TO_UINT (g_hash_table_lookup (stamps, uid));
 
 			has_flags = camel_message_info_get_flags (info);
 			set_server_flags = has_flags & CAMEL_IMAPX_SERVER_FLAGS;
