@@ -615,7 +615,7 @@ camel_name_value_array_equal (const CamelNameValueArray *array_a,
 		return TRUE;
 
 	if (!array_a || !array_b)
-		return FALSE;
+		return camel_name_value_array_get_length (array_a) == camel_name_value_array_get_length (array_b);
 
 	len = camel_name_value_array_get_length (array_a);
 	if (len != camel_name_value_array_get_length (array_b))

@@ -304,7 +304,7 @@ camel_named_flags_equal (const CamelNamedFlags *named_flags_a,
 		return TRUE;
 
 	if (!named_flags_a || !named_flags_b)
-		return FALSE;
+		return camel_named_flags_get_length (named_flags_a) == camel_named_flags_get_length (named_flags_b);
 
 	len = camel_named_flags_get_length (named_flags_a);
 	if (len != camel_named_flags_get_length (named_flags_b))
