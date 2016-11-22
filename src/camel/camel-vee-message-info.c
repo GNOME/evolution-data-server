@@ -149,6 +149,13 @@ vee_message_info_set_flags_real (CamelMessageInfo *mi,
 				 guint32 mask,
 				 guint32 set)
 {
+	/* Do not propagate the only folder-flagged flag change to the original
+	   message info, because this flag is managed by the original summary/folder,
+	   rather than the virtual folder. The base summary also uses it to mark
+	   new message infos as flagged, which is odd for virtual folders. */
+	if (mask == CAMEL_MESSAGE_FOLDER_FLAGGED)
+		return FALSE;
+
 	vee_call_from_parent_mi (FALSE, gboolean, camel_message_info_set_flags, (orig_mi, mask, set), TRUE);
 }
 
