@@ -5458,6 +5458,11 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				guint32 sflags;
 				gint send;
 
+				/* the 'stamps' hash table contains only those uid-s,
+				   which were also flagged, not only 'dirty' */
+				if (!g_hash_table_lookup (stamps, changed_uids->pdata[i]))
+					continue;
+
 				info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), changed_uids->pdata[i]);
 				xinfo = info ? CAMEL_IMAPX_MESSAGE_INFO (info) : NULL;
 
@@ -5516,6 +5521,18 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				}
 
 				g_clear_object (&info);
+			}
+
+			if (ic && imapx_uidset_done (&uidset, ic)) {
+				camel_imapx_command_add (ic, " %tFLAGS.SILENT (%t)", on ? "+" : "-", flags_table[jj].name);
+
+				success = camel_imapx_server_process_command_sync (is, ic, _("Error syncing changes"), cancellable, error);
+
+				camel_imapx_command_unref (ic);
+				ic = NULL;
+
+				if (!success)
+					break;
 			}
 
 			g_warn_if_fail (ic == NULL);
