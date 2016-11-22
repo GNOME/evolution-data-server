@@ -73,6 +73,7 @@ imapx_message_info_load (CamelMessageInfo *mi,
 			 /* const */ gchar **bdata_ptr)
 {
 	CamelIMAPXMessageInfo *imi;
+	guint ii, len;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MESSAGE_INFO (mi), FALSE);
 	g_return_val_if_fail (record != NULL, FALSE);
@@ -84,11 +85,55 @@ imapx_message_info_load (CamelMessageInfo *mi,
 
 	imi = CAMEL_IMAPX_MESSAGE_INFO (mi);
 
+	/* The first are stored server flags */
 	camel_imapx_message_info_set_server_flags (imi, camel_util_bdata_get_number (bdata_ptr, 0));
 
-	/* Reset server-side information, which is not saved into the summary. */
-	camel_imapx_message_info_take_server_user_flags (imi, NULL);
-	camel_imapx_message_info_take_server_user_tags (imi, NULL);
+	/* then the server user flags */
+	len = camel_util_bdata_get_number (bdata_ptr, 0);
+	if (len) {
+		CamelNamedFlags *named_flags;
+
+		named_flags = camel_named_flags_new_sized (len);
+
+		for (ii = 0; ii < len; ii++) {
+			gchar *name;
+
+			name = camel_util_bdata_get_string (bdata_ptr, NULL);
+			if (name && *name)
+				camel_named_flags_insert (named_flags, name);
+
+			g_free (name);
+		}
+
+		camel_imapx_message_info_take_server_user_flags (imi, named_flags);
+	} else {
+		camel_imapx_message_info_take_server_user_flags (imi, NULL);
+	}
+
+	/* and then server user tags */
+	len = camel_util_bdata_get_number (bdata_ptr, 0);
+	if (len) {
+		CamelNameValueArray *array;
+
+		array = camel_name_value_array_new_sized (len);
+
+		for (ii = 0; ii < len; ii++) {
+			gchar *name, *value;
+
+			name = camel_util_bdata_get_string (bdata_ptr, NULL);
+			value = camel_util_bdata_get_string (bdata_ptr, NULL);
+
+			if (name && *name && value)
+				camel_name_value_array_append (array, name, value);
+
+			g_free (name);
+			g_free (value);
+		}
+
+		camel_imapx_message_info_take_server_user_tags (imi, array);
+	} else {
+		camel_imapx_message_info_take_server_user_tags (imi, NULL);
+	}
 
 	return TRUE;
 }
@@ -99,6 +144,9 @@ imapx_message_info_save (const CamelMessageInfo *mi,
 			 GString *bdata_str)
 {
 	CamelIMAPXMessageInfo *imi;
+	CamelNamedFlags *named_flags;
+	CamelNameValueArray *array;
+	guint ii, len;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MESSAGE_INFO (mi), FALSE);
 	g_return_val_if_fail (record != NULL, FALSE);
@@ -110,7 +158,37 @@ imapx_message_info_save (const CamelMessageInfo *mi,
 
 	imi = CAMEL_IMAPX_MESSAGE_INFO (mi);
 
+	/* The first are stored server flags */
 	camel_util_bdata_put_number (bdata_str, camel_imapx_message_info_get_server_flags (imi));
+
+	/* then the server user flags */
+	named_flags = camel_imapx_message_info_dup_server_user_flags (imi);
+	len = camel_named_flags_get_length (named_flags);
+
+	camel_util_bdata_put_number (bdata_str, len);
+
+	for (ii = 0; ii < len; ii++) {
+		camel_util_bdata_put_string (bdata_str, camel_named_flags_get (named_flags, ii));
+	}
+
+	camel_named_flags_free (named_flags);
+
+	/* and then server user tags */
+	array = camel_imapx_message_info_dup_server_user_tags (imi);
+	len = camel_name_value_array_get_length (array);
+
+	camel_util_bdata_put_number (bdata_str, len);
+
+	for (ii = 0; ii < len; ii++) {
+		const gchar *name = NULL, *value = NULL;
+
+		if (camel_name_value_array_get (array, ii, &name, &value) && name && *name && value) {
+			camel_util_bdata_put_string (bdata_str, name);
+			camel_util_bdata_put_string (bdata_str, value);
+		}
+	}
+
+	camel_name_value_array_free (array);
 
 	return TRUE;
 }
