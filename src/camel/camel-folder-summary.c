@@ -1591,10 +1591,10 @@ cfs_try_release_memory (gpointer user_data)
 		return FALSE;
 	}
 
-	/* Translators: The first '%s' is replaced with an account name and the second '%s'
-	   is replaced with a full path name. The spaces around ':' are intentional, as
-	   the whole '%s : %s' is meant as an absolute identification of the folder. */
-	description = g_strdup_printf (_("Release unused memory for folder '%s : %s'"),
+	/* Translators: The first “%s” is replaced with an account name and the second “%s”
+	   is replaced with a full path name. The spaces around “:” are intentional, as
+	   the whole “%s : %s” is meant as an absolute identification of the folder. */
+	description = g_strdup_printf (_("Release unused memory for folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 		camel_folder_get_full_name (summary->priv->folder));
 

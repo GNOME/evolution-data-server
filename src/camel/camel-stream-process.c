@@ -286,7 +286,7 @@ fail:
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not connect with command \"%s\": %s"),
+			_("Could not connect with command “%s”: %s"),
 			command, g_strerror (errno));
 
 	return -1;

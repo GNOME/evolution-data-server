@@ -1060,7 +1060,7 @@ cal_client_get_backend_property_sync (EClient *client,
 
 	g_set_error (
 		error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
-		_("Unknown calendar property '%s'"), prop_name);
+		_("Unknown calendar property “%s”"), prop_name);
 
 	return FALSE;
 }
@@ -1075,7 +1075,7 @@ cal_client_set_backend_property_sync (EClient *client,
 	g_set_error (
 		error, E_CLIENT_ERROR,
 		E_CLIENT_ERROR_NOT_SUPPORTED,
-		_("Cannot change value of calendar property '%s'"),
+		_("Cannot change value of calendar property “%s”"),
 		prop_name);
 
 	return FALSE;
@@ -1712,7 +1712,7 @@ e_cal_client_connect_sync (ESource *source,
 		g_dbus_error_strip_remote_error (local_error);
 		g_propagate_error (error, local_error);
 		g_prefix_error (
-			error,_("Unable to connect to '%s': "),
+			error,_("Unable to connect to “%s”: "),
 			e_source_get_display_name (source));
 		g_object_unref (client);
 		return NULL;
@@ -1950,7 +1950,7 @@ e_cal_client_connect_finish (GAsyncResult *result,
 
 	if (g_simple_async_result_propagate_error (simple, error)) {
 		g_prefix_error (
-			error, _("Unable to connect to '%s': "),
+			error, _("Unable to connect to “%s”: "),
 			e_source_get_display_name (closure->source));
 		return NULL;
 	}

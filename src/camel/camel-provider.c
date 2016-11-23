@@ -455,7 +455,7 @@ camel_provider_get (const gchar *protocol,
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_URL_INVALID,
-			_("No provider available for protocol '%s'"),
+			_("No provider available for protocol “%s”"),
 			protocol);
 fail:
 	UNLOCK ();

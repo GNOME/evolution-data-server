@@ -441,7 +441,7 @@ cpi_google_get_access_token_thread (gpointer user_data)
 			prompter_google->priv->error_text = NULL;
 
 			prompter_google->priv->error_text = g_strdup_printf (
-				_("Failed to obtain access token from address '%s'. Error code %d (%s)"),
+				_("Failed to obtain access token from address “%s”. Error code %d (%s)"),
 				GOOGLE_TOKEN_URI, soup_status, soup_status_get_phrase (soup_status));
 		}
 
@@ -618,31 +618,31 @@ credentials_prompter_impl_google_get_prompt_strings (ESourceRegistry *registry,
 	switch (type) {
 		case TYPE_ADDRESS_BOOK:
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your address book \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your address book “%s”."), display_name);
 			break;
 		case TYPE_CALENDAR:
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your calendar \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your calendar “%s”."), display_name);
 			break;
 		case TYPE_MAIL_ACCOUNT:
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your mail account \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your mail account “%s”."), display_name);
 			break;
 		case TYPE_MAIL_TRANSPORT:
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your mail transport \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your mail transport “%s”."), display_name);
 			break;
 		case TYPE_MEMO_LIST:
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your memo list \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your memo list “%s”."), display_name);
 			break;
 		case TYPE_TASK_LIST:
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your task list \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your task list “%s”."), display_name);
 			break;
 		default:  /* generic account prompt */
 			g_string_append_printf (description,
-				_("Login to your Google account and accept conditions in order to access your account \"%s\"."), display_name);
+				_("Login to your Google account and accept conditions in order to access your account “%s”."), display_name);
 			break;
 	}
 

@@ -851,7 +851,7 @@ camel_db_new (const gchar *filename,
 		if (g_rename (filename, second_filename) == -1) {
 			if (!local_error) {
 				g_set_error (&local_error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-					_("Could not rename '%s' to %s: %s"),
+					_("Could not rename “%s” to %s: %s"),
 					filename, second_filename, g_strerror (errno));
 			}
 

@@ -659,7 +659,7 @@ credentials_prompter_prompt_with_source_details (ECredentialsPrompter *prompter,
 			GError *error;
 
 			error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-				_("Source '%s' doesn't support prompt for credentials"),
+				_("Source “%s” doesn’t support prompt for credentials"),
 				e_source_get_display_name (data->cred_source));
 
 			if (async_result)

@@ -90,7 +90,7 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Spool '%s' cannot be opened: %s"),
+			_("Spool “%s” cannot be opened: %s"),
 			path, g_strerror (errno));
 		type = CAMEL_SPOOL_STORE_INVALID;
 
@@ -104,7 +104,7 @@ spool_store_get_type (CamelSpoolStore *spool_store,
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Spool '%s' is not a regular file or directory"),
+			_("Spool “%s” is not a regular file or directory"),
 			path);
 		type = CAMEL_SPOOL_STORE_INVALID;
 	}
@@ -207,7 +207,7 @@ scan_dir (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not scan folder '%s': %s"),
+			_("Could not scan folder “%s”: %s"),
 			name, g_strerror (errno));
 	} else if (S_ISREG (st.st_mode)) {
 		/* incase we start scanning from a file.  messy duplication :-/ */
@@ -226,7 +226,7 @@ scan_dir (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not scan folder '%s': %s"),
+			_("Could not scan folder “%s”: %s"),
 			name, g_strerror (errno));
 		return -1;
 	}
@@ -475,7 +475,7 @@ spool_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("Folder '%s/%s' does not exist."),
+				_("Folder “%s/%s” does not exist."),
 				path, folder_name);
 		} else {
 			folder = camel_spool_folder_new (
@@ -488,13 +488,13 @@ spool_store_get_folder_sync (CamelStore *store,
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
-					_("Could not open folder '%s':\n%s"),
+					_("Could not open folder “%s”:\n%s"),
 					folder_name, g_strerror (errno));
 			} else if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
 				g_set_error (
 					error, CAMEL_STORE_ERROR,
 					CAMEL_STORE_ERROR_NO_FOLDER,
-					_("Folder '%s' does not exist."),
+					_("Folder “%s” does not exist."),
 					folder_name);
 			} else {
 				gint fd = creat (name, 0600);
@@ -502,7 +502,7 @@ spool_store_get_folder_sync (CamelStore *store,
 					g_set_error (
 						error, G_IO_ERROR,
 						g_io_error_from_errno (errno),
-						_("Could not create folder '%s':\n%s"),
+						_("Could not create folder “%s”:\n%s"),
 						folder_name, g_strerror (errno));
 				} else {
 					close (fd);
@@ -515,7 +515,7 @@ spool_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("'%s' is not a mailbox file."), name);
+				_("“%s” is not a mailbox file."), name);
 		} else {
 			folder = camel_spool_folder_new (
 				store, folder_name, flags, cancellable, error);

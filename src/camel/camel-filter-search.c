@@ -776,7 +776,7 @@ run_command (struct _CamelSExp *f,
 
 		g_set_error (
 			fms->error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Failed to create child process '%s': %s"),
+			_("Failed to create child process “%s”: %s"),
 			argv[0]->value.string, error->message);
 		g_error_free (error);
 		return -1;

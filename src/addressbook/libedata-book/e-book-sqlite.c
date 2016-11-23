@@ -567,7 +567,7 @@ summary_field_append (GArray *array,
 	if (field_id < 1 || field_id >= E_CONTACT_FIELD_LAST) {
 		EBSQL_SET_ERROR (
 			error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
-			_("Unsupported contact field '%d' specified in summary"),
+			_("Unsupported contact field “%d” specified in summary"),
 			field_id);
 		return NULL;
 	}
@@ -601,7 +601,7 @@ summary_field_append (GArray *array,
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
 		EBSQL_SET_ERROR (
 			error, E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
-			_("Contact field '%s' of type '%s' specified in summary, "
+			_("Contact field “%s” of type “%s” specified in summary, "
 			"but only boolean, string and string list field types are supported"),
 			e_contact_pretty_name (field_id), g_type_name (type));
 		return NULL;
@@ -1949,7 +1949,7 @@ ebsql_resolve_folderid (EBookSqlite *ebsql,
 			E_BOOK_SQLITE_ERROR_LOAD,
 			_("Cannot upgrade contacts database from a legacy "
 			"database with more than one addressbook. "
-			"Delete one of the entries in the 'folders' table first."));
+			"Delete one of the entries in the “folders” table first."));
 		success = FALSE;
 	}
 
@@ -2251,7 +2251,7 @@ ebsql_introspect_summary (EBookSqlite *ebsql,
 			EBSQL_SET_ERROR (
 				error,
 				E_BOOK_SQLITE_ERROR_UNSUPPORTED_FIELD,
-				_("Error introspecting unknown summary field '%s'"),
+				_("Error introspecting unknown summary field “%s”"),
 				col);
 			success = FALSE;
 			g_free (freeme);
@@ -7339,7 +7339,7 @@ e_book_sqlite_get_vcard (EBookSqlite *ebsql,
 		EBSQL_SET_ERROR (
 			error,
 			E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND,
-			_("Contact '%s' not found"), uid);
+			_("Contact “%s” not found"), uid);
 		success = FALSE;
 	}
 
@@ -7408,7 +7408,7 @@ ebsql_get_vcard_unlocked (EBookSqlite *ebsql,
 	if (success && !vcard) {
 		EBSQL_SET_ERROR (error,
 				 E_BOOK_SQLITE_ERROR_CONTACT_NOT_FOUND,
-				 _("Contact '%s' not found"), uid);
+				 _("Contact “%s” not found"), uid);
 		success = FALSE;
 	}
 

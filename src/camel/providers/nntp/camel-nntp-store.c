@@ -418,7 +418,7 @@ connect_to_server (CamelService *service,
 
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("NNTP server %s doesn't support STARTTLS: %s"),
+				_("NNTP server %s doesn’t support STARTTLS: %s"),
 				host, (buf && *buf) ? (const gchar *) buf : _("Unknown error"));
 			goto exit;
 		}

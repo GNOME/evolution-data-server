@@ -212,7 +212,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not create pipe to '%s': %s: "
+			_("Could not create pipe to “%s”: %s: "
 			"mail not sent"), binary, g_strerror (errno));
 
 		/* restore the bcc headers */
@@ -243,7 +243,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not fork '%s': %s: "
+			_("Could not fork “%s”: %s: "
 			"mail not sent"), binary, g_strerror (errno));
 		close (fd[0]);
 		close (fd[1]);
@@ -340,7 +340,7 @@ sendmail_send_to_sync (CamelTransport *transport,
 	if (!WIFEXITED (wstat)) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("'%s' exited with signal %s: mail not sent."),
+			_("“%s” exited with signal %s: mail not sent."),
 			binary, g_strsignal (WTERMSIG (wstat)));
 		g_free (custom_binary);
 		g_free (custom_args);
@@ -350,12 +350,12 @@ sendmail_send_to_sync (CamelTransport *transport,
 		if (WEXITSTATUS (wstat) == 255) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Could not execute '%s': mail not sent."),
+				_("Could not execute “%s”: mail not sent."),
 				binary);
 		} else {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("'%s' exited with status %d: "
+				_("“%s” exited with status %d: "
 				"mail not sent."),
 				binary, WEXITSTATUS (wstat));
 		}

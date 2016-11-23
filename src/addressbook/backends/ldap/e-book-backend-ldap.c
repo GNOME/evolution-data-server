@@ -5612,7 +5612,7 @@ book_backend_ldap_authenticate_sync (EBackend *backend,
 					error, G_IO_ERROR,
 					G_IO_ERROR_INVALID_DATA,
 					_("Failed to get the DN "
-					"for user '%s'"), username);
+					"for user “%s”"), username);
 
 				g_free (method);
 				g_free (auth_user);

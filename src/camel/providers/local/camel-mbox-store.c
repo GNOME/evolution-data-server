@@ -362,7 +362,7 @@ mbox_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Cannot get folder '%s': %s"),
+				_("Cannot get folder “%s”: %s"),
 				folder_name, g_strerror (errno));
 			g_free (name);
 			return NULL;
@@ -372,7 +372,7 @@ mbox_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("Cannot get folder '%s': folder does not exist."),
+				_("Cannot get folder “%s”: folder does not exist."),
 				folder_name);
 			g_free (name);
 			return NULL;
@@ -396,7 +396,7 @@ mbox_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Cannot create folder '%s': %s"),
+				_("Cannot create folder “%s”: %s"),
 				folder_name, g_strerror (errno));
 			g_free (dirname);
 			g_free (name);
@@ -417,7 +417,7 @@ mbox_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Cannot create folder '%s': %s"),
+				_("Cannot create folder “%s”: %s"),
 				folder_name, g_strerror (errno));
 			g_free (name);
 			return NULL;
@@ -428,7 +428,7 @@ mbox_store_get_folder_sync (CamelStore *store,
 	} else if (!S_ISREG (st.st_mode)) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot get folder '%s': not a regular file."),
+			_("Cannot get folder “%s”: not a regular file."),
 			folder_name);
 		g_free (name);
 		return NULL;
@@ -591,7 +591,7 @@ mbox_store_create_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Cannot create directory '%s': %s."),
+			_("Cannot create directory “%s”: %s."),
 			dir, g_strerror (errno));
 		g_free (dir);
 		goto exit;
@@ -645,7 +645,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s':\n%s"),
+			_("Could not delete folder “%s”:\n%s"),
 			folder_name, g_strerror (errno));
 		g_free (path);
 		g_free (name);
@@ -658,7 +658,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s':\n%s"),
+			_("Could not delete folder “%s”:\n%s"),
 			folder_name, g_strerror (errno));
 		g_free (name);
 		return FALSE;
@@ -668,7 +668,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("'%s' is not a regular file."), name);
+			_("“%s” is not a regular file."), name);
 		g_free (name);
 		return FALSE;
 	}
@@ -677,7 +677,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_NON_EMPTY,
-			_("Folder '%s' is not empty. Not deleted."),
+			_("Folder “%s” is not empty. Not deleted."),
 			folder_name);
 		g_free (name);
 		return FALSE;
@@ -687,7 +687,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s':\n%s"),
+			_("Could not delete folder “%s”:\n%s"),
 			name, g_strerror (errno));
 		g_free (name);
 		return FALSE;
@@ -704,7 +704,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder summary file '%s': %s"),
+			_("Could not delete folder summary file “%s”: %s"),
 			path, g_strerror (errno));
 		g_free (path);
 		g_free (name);
@@ -719,7 +719,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder summary file '%s': %s"),
+			_("Could not delete folder summary file “%s”: %s"),
 			path, g_strerror (errno));
 		g_free (path);
 		g_free (name);
@@ -734,7 +734,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder index file '%s': %s"),
+			_("Could not delete folder index file “%s”: %s"),
 			path, g_strerror (errno));
 		g_free (path);
 		g_free (name);
@@ -764,7 +764,7 @@ mbox_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder meta file '%s': %s"),
+			_("Could not delete folder meta file “%s”: %s"),
 			path, g_strerror (errno));
 
 		g_free (path);
@@ -817,7 +817,7 @@ mbox_store_rename_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Could not rename '%s': '%s': %s"),
+				_("Could not rename “%s”: “%s”: %s"),
 				old, new, g_strerror (errno));
 			g_free (oldibex);
 			g_free (newibex);
@@ -901,7 +901,7 @@ ibex_failed:
 	g_set_error (
 		error, G_IO_ERROR,
 		g_io_error_from_errno (errnosav),
-		_("Could not rename '%s' to %s: %s"),
+		_("Could not rename “%s” to %s: %s"),
 		old, new, g_strerror (errnosav));
 
 	g_free (newibex);

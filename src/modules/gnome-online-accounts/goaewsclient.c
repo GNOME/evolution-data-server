@@ -217,7 +217,7 @@ ews_autodiscover_response_cb (SoupSession *session,
 		g_set_error (
 			&error, GOA_ERROR,
 			GOA_ERROR_FAILED, /* TODO: more specific */
-			_("Code: %u - Unexpected response from server"),
+			_("Code: %u — Unexpected response from server"),
 			status);
 		goto out;
 	}

@@ -734,11 +734,11 @@ camel_getaddrinfo (const gchar *name,
 		if (msg->result == EAI_NONAME || msg->result == EAI_FAIL) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_URL_INVALID,
-				_("Host lookup '%s' failed. Check your host name for spelling errors."), name);
+				_("Host lookup “%s” failed. Check your host name for spelling errors."), name);
 		} else if (msg->result != 0) {
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_URL_INVALID,
-				_("Host lookup '%s' failed: %s"),
+				_("Host lookup “%s” failed: %s"),
 				name, gai_strerror (msg->result));
 		}
 	} else

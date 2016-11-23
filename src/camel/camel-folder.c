@@ -322,11 +322,11 @@ folder_filter (CamelSession *session,
 
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
-			/* Translators: The first '%s' is replaced with an account name and the second '%s'
-			   is replaced with a full path name. The spaces around ':' are intentional, as
-			   the whole '%s : %s' is meant as an absolute identification of the folder. */
-			"Learning new spam message in '%s : %s'",
-			"Learning new spam messages in '%s : %s'",
+			/* Translators: The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			"Learning new spam message in “%s : %s”",
+			"Learning new spam messages in “%s : %s”",
 			data->junk->len),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 			full_name);
@@ -365,11 +365,11 @@ folder_filter (CamelSession *session,
 
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
-			/* Translators: The first '%s' is replaced with an account name and the second '%s'
-			   is replaced with a full path name. The spaces around ':' are intentional, as
-			   the whole '%s : %s' is meant as an absolute identification of the folder. */
-			"Learning new ham message in '%s : %s'",
-			"Learning new ham messages in '%s : %s'",
+			/* Translators: The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			"Learning new ham message in “%s : %s”",
+			"Learning new ham messages in “%s : %s”",
 			data->notjunk->len),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 			full_name);
@@ -416,11 +416,11 @@ folder_filter (CamelSession *session,
 
 		camel_operation_push_message (
 			cancellable, dngettext (GETTEXT_PACKAGE,
-			/* Translators: The first '%s' is replaced with an account name and the second '%s'
-			   is replaced with a full path name. The spaces around ':' are intentional, as
-			   the whole '%s : %s' is meant as an absolute identification of the folder. */
-			"Filtering new message in '%s : %s'",
-			"Filtering new messages in '%s : %s'",
+			/* Translators: The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			"Filtering new message in “%s : %s”",
+			"Filtering new messages in “%s : %s”",
 			data->recents->len),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 			full_name);
@@ -1075,10 +1075,10 @@ folder_get_quota_info_sync (CamelFolder *folder,
 {
 	g_set_error (
 		error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-		/* Translators: The first '%s' is replaced with an account name and the second '%s'
-		   is replaced with a full path name. The spaces around ':' are intentional, as
-		   the whole '%s : %s' is meant as an absolute identification of the folder. */
-		_("Quota information not supported for folder '%s : %s'"),
+		/* Translators: The first “%s” is replaced with an account name and the second “%s”
+		   is replaced with a full path name. The spaces around “:” are intentional, as
+		   the whole “%s : %s” is meant as an absolute identification of the folder. */
+		_("Quota information not supported for folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 
@@ -1174,10 +1174,10 @@ folder_changed (CamelFolder *folder,
 			folder->priv->changed_frozen, info);
 		g_mutex_unlock (&folder->priv->change_lock);
 
-		/* Translators: The first '%s' is replaced with an account name and the second '%s'
-		   is replaced with a full path name. The spaces around ':' are intentional, as
-		   the whole '%s : %s' is meant as an absolute identification of the folder. */
-		description = g_strdup_printf (_("Filtering folder '%s : %s'"),
+		/* Translators: The first “%s” is replaced with an account name and the second “%s”
+		   is replaced with a full path name. The spaces around “:” are intentional, as
+		   the whole “%s : %s” is meant as an absolute identification of the folder. */
+		description = g_strdup_printf (_("Filtering folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 			camel_folder_get_full_name (folder));
 
@@ -2968,10 +2968,10 @@ camel_folder_expunge_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	/* Translators: The first '%s' is replaced with an account name and the second '%s'
-	   is replaced with a full path name. The spaces around ':' are intentional, as
-	   the whole '%s : %s' is meant as an absolute identification of the folder. */
-	camel_operation_push_message (cancellable, _("Expunging folder '%s : %s'"),
+	/* Translators: The first “%s” is replaced with an account name and the second “%s”
+	   is replaced with a full path name. The spaces around “:” are intentional, as
+	   the whole “%s : %s” is meant as an absolute identification of the folder. */
+	camel_operation_push_message (cancellable, _("Expunging folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 
@@ -3102,10 +3102,10 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (class->get_message_sync != NULL, NULL);
 
 	camel_operation_push_message (
-		/* Translators: The first '%s' is replaced with an account name and the second '%s'
-		   is replaced with a full path name. The spaces around ':' are intentional, as
-		   the whole '%s : %s' is meant as an absolute identification of the folder. */
-		cancellable, _("Retrieving message '%s' in '%s : %s'"),
+		/* Translators: The first “%s” is replaced with an account name and the second “%s”
+		   is replaced with a full path name. The spaces around “:” are intentional, as
+		   the whole “%s : %s” is meant as an absolute identification of the folder. */
+		cancellable, _("Retrieving message “%s” in “%s : %s”"),
 		message_uid, camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 
@@ -3295,10 +3295,10 @@ camel_folder_get_quota_info_sync (CamelFolder *folder,
 	class = CAMEL_FOLDER_GET_CLASS (folder);
 	g_return_val_if_fail (class->get_quota_info_sync != NULL, NULL);
 
-	/* Translators: The first '%s' is replaced with an account name and the second '%s'
-	   is replaced with a full path name. The spaces around ':' are intentional, as
-	   the whole '%s : %s' is meant as an absolute identification of the folder. */
-	camel_operation_push_message (cancellable, _("Retrieving quota information for '%s : %s'"),
+	/* Translators: The first “%s” is replaced with an account name and the second “%s”
+	   is replaced with a full path name. The spaces around “:” are intentional, as
+	   the whole “%s : %s” is meant as an absolute identification of the folder. */
+	camel_operation_push_message (cancellable, _("Retrieving quota information for “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 
@@ -3593,10 +3593,10 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	/* Translators: The first '%s' is replaced with an account name and the second '%s'
-	   is replaced with a full path name. The spaces around ':' are intentional, as
-	   the whole '%s : %s' is meant as an absolute identification of the folder. */
-	camel_operation_push_message (cancellable, _("Refreshing folder '%s : %s'"),
+	/* Translators: The first “%s” is replaced with an account name and the second “%s”
+	   is replaced with a full path name. The spaces around “:” are intentional, as
+	   the whole “%s : %s” is meant as an absolute identification of the folder. */
+	camel_operation_push_message (cancellable, _("Refreshing folder “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 

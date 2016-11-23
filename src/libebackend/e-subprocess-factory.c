@@ -274,7 +274,7 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 		if (!module) {
 			g_set_error (
 				error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-				_("Module '%s' for source UID '%s' cannot be loaded"), module_filename, uid);
+				_("Module “%s” for source UID “%s” cannot be loaded"), module_filename, uid);
 			goto exit;
 		}
 
@@ -286,7 +286,7 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 	if (source == NULL) {
 		g_set_error (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("No such source for UID '%s'"), uid);
+			_("No such source for UID “%s”"), uid);
 		goto exit;
 	}
 
@@ -297,7 +297,7 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 	if (backend == NULL) {
 		g_set_error (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("Failed to create backend of type '%s' for source UID '%s'"), backend_factory_type_name, uid);
+			_("Failed to create backend of type “%s” for source UID “%s”"), backend_factory_type_name, uid);
 		goto exit;
 	}
 

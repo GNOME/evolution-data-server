@@ -1029,16 +1029,16 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 		if (!strncmp ((gchar *) status, "passphrase.pin.ask", 18)) {
 			prompt = g_markup_printf_escaped (
 				_("You need a PIN to unlock the key for your\n"
-				"SmartCard: \"%s\""), name);
+				"SmartCard: “%s”"), name);
 		} else if (!strncmp ((gchar *) status, "passphrase.enter", 16)) {
 			prompt = g_markup_printf_escaped (
 				_("You need a passphrase to unlock the key for\n"
-				"user: \"%s\""), name);
+				"user: “%s”"), name);
 		} else {
 			next_token ((gchar *) status, &prompt);
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Unexpected request from GnuPG for '%s'"),
+				_("Unexpected request from GnuPG for “%s”"),
 				prompt);
 			g_free (prompt);
 			return -1;
@@ -1050,7 +1050,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 			/* FIXME Reword prompt message. */
 			prompt = g_strconcat (
 				tmp, "\n",
-				_("Note the encrypted content doesn't contain "
+				_("Note the encrypted content doesn’t contain "
 				"information about a recipient, thus there "
 				"will be a password prompt for each of stored "
 				"private key."), NULL);

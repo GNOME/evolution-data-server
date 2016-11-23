@@ -343,7 +343,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 					     NULL)) == NULL) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot find certificate for '%s'"), nick);
+			_("Cannot find certificate for “%s”"), nick);
 		return NULL;
 	}
 
@@ -431,7 +431,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 				     certUsageEmailRecipient, PR_TRUE, NULL)) == NULL) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-					_("Encryption certificate for '%s' does not exist"),
+					_("Encryption certificate for “%s” does not exist"),
 					p->encrypt_key);
 				goto fail;
 			}
@@ -446,7 +446,7 @@ sm_signing_cmsmessage (CamelSMIMEContext *context,
 				     certUsageEmailRecipient, PR_TRUE, NULL)) == NULL) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-					_("Encryption certificate for '%s' does not exist"), nick);
+					_("Encryption certificate for “%s” does not exist"), nick);
 				goto fail;
 			}
 			enccert = ekpcert;
@@ -1070,7 +1070,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 		if (recipient_certs[i] == NULL) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("Cannot find certificate for '%s'"),
+				_("Cannot find certificate for “%s”"),
 				(gchar *) recipients->pdata[i]);
 			goto fail;
 		}

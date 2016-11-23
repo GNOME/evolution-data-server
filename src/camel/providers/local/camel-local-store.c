@@ -441,7 +441,7 @@ local_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder index file '%s': %s"),
+			_("Could not delete folder index file “%s”: %s"),
 			str, g_strerror (errno));
 		success = FALSE;
 		goto exit;
@@ -469,7 +469,7 @@ local_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder meta file '%s': %s"),
+			_("Could not delete folder meta file “%s”: %s"),
 			str, g_strerror (errno));
 		success = FALSE;
 		goto exit;
@@ -582,7 +582,7 @@ ibex_failed:
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not rename '%s': %s"),
+			_("Could not rename “%s”: %s"),
 			old, g_strerror (errno));
 
 	g_free (newibex);

@@ -207,7 +207,7 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
 			_("Cannot find a corresponding account in "
 			"the org.gnome.OnlineAccounts service from "
-			"which to obtain a password for '%s'"),
+			"which to obtain a password for “%s”"),
 			e_source_get_display_name (source));
 		goto exit;
 	}

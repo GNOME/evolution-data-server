@@ -1292,7 +1292,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		g_object_unref (subprocess);
 	} else {
 		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-			_("Backend factory for source '%s' and extension '%s' cannot be found."),
+			_("Backend factory for source “%s” and extension “%s” cannot be found."),
 			uid, extension_name);
 	}
 

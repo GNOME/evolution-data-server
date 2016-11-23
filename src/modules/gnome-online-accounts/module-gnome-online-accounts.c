@@ -1248,7 +1248,7 @@ gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
 			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
 			_("Cannot find a corresponding account in "
 			"the org.gnome.OnlineAccounts service from "
-			"which to obtain an access token for '%s'"),
+			"which to obtain an access token for “%s”"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}
@@ -1276,7 +1276,7 @@ gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
 
 	g_prefix_error (
 		error,
-		_("Failed to obtain an access token for '%s': "),
+		_("Failed to obtain an access token for “%s”: "),
 		e_source_get_display_name (source));
 
 	return success;

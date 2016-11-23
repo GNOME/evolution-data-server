@@ -797,7 +797,7 @@ mbox_summary_sync_quick (CamelMboxSummary *mbs,
 		if (camel_mime_parser_step (mp, NULL, NULL) != CAMEL_MIME_PARSER_STATE_FROM) {
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-				_("MBOX file is corrupted, please fix it. (Expected a From line, but didn't get it.)"));
+				_("MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get it.)"));
 			goto error;
 		}
 
@@ -1071,7 +1071,7 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 			g_set_error (
 				error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 				_("MBOX file is corrupted, please fix it. "
-				"(Expected a From line, but didn't get it.)"));
+				"(Expected a From line, but didn’t get it.)"));
 			goto error;
 		}
 

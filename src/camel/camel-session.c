@@ -431,7 +431,7 @@ session_add_service (CamelSession *session,
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_URL_INVALID,
-			_("No provider available for protocol '%s'"),
+			_("No provider available for protocol “%s”"),
 			protocol);
 		return NULL;
 	}
@@ -440,7 +440,7 @@ session_add_service (CamelSession *session,
 		g_set_error (
 			error, CAMEL_SERVICE_ERROR,
 			CAMEL_SERVICE_ERROR_INVALID,
-			_("Invalid GType registered for protocol '%s'"),
+			_("Invalid GType registered for protocol “%s”"),
 			protocol);
 		return NULL;
 	}

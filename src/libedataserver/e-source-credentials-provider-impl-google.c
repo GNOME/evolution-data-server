@@ -76,7 +76,7 @@ e_source_credentials_google_util_store_secret_for_source_sync (ESource *source,
 	if (!e_source_credentials_google_util_generate_secret_uid (source, &uid)) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
 			/* Translators: The first %s is a display name of the source, the second is its UID. */
-			_("Source '%s' (%s) is not a valid Google source"),
+			_("Source “%s” (%s) is not a valid Google source"),
 			e_source_get_display_name (source),
 			e_source_get_uid (source));
 		return FALSE;
@@ -140,7 +140,7 @@ e_source_credentials_google_util_lookup_secret_for_source_sync (ESource *source,
 	if (!e_source_credentials_google_util_generate_secret_uid (source, &uid)) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
 			/* Translators: The first %s is a display name of the source, the second is its UID. */
-			_("Source '%s' (%s) is not a valid Google source"),
+			_("Source “%s” (%s) is not a valid Google source"),
 			e_source_get_display_name (source),
 			e_source_get_uid (source));
 		return FALSE;
@@ -237,7 +237,7 @@ e_source_credentials_provider_impl_google_delete_sync (ESourceCredentialsProvide
 	if (!e_source_credentials_google_util_generate_secret_uid (source, &uid)) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
 			/* Translators: The first %s is a display name of the source, the second is its UID. */
-			_("Source '%s' (%s) is not a valid Google source"),
+			_("Source “%s” (%s) is not a valid Google source"),
 			e_source_get_display_name (source),
 			e_source_get_uid (source));
 		return FALSE;

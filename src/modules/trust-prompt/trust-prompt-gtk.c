@@ -154,7 +154,7 @@ trust_prompt_show (EUserPrompterServerExtension *extension,
 		gchar *bhost;
 
 		bhost = g_strconcat ("<b>", host, "</b>", NULL);
-		tmp = g_strdup_printf (_("SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
+		tmp = g_strdup_printf (_("SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"), bhost);
 		g_free (bhost);
 
 		markup = tmp;

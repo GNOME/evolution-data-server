@@ -287,7 +287,7 @@ stream_seek (GSeekable *seekable,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
-			_("Stream type '%s' is not seekable"),
+			_("Stream type “%s” is not seekable"),
 			G_OBJECT_TYPE_NAME (base_stream));
 	} else {
 		g_warn_if_reached ();
@@ -338,7 +338,7 @@ stream_truncate (GSeekable *seekable,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
-			_("Stream type '%s' is not seekable"),
+			_("Stream type “%s” is not seekable"),
 			G_OBJECT_TYPE_NAME (base_stream));
 	} else {
 		g_warn_if_reached ();

@@ -1060,7 +1060,7 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 			simple, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
 			_("Cannot find a corresponding account "
 			"service in the accounts database from "
-			"which to obtain an access token for '%s'"),
+			"which to obtain an access token for “%s”"),
 			e_source_get_display_name (source));
 		g_simple_async_result_complete_in_idle (simple);
 		g_object_unref (simple);
@@ -1077,7 +1077,7 @@ ubuntu_online_accounts_get_access_token (EOAuth2Support *support,
 	if (!ubuntu_online_accounts_supports_oauth2 (ag_account_service)) {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-			_("Data source '%s' does not "
+			_("Data source “%s” does not "
 			"support OAuth 2.0 authentication"),
 			e_source_get_display_name (source));
 		g_simple_async_result_complete_in_idle (simple);

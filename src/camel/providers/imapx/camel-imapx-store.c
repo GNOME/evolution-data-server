@@ -1418,7 +1418,7 @@ fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_INVALID,
-			_("No IMAP namespace for folder path '%s'"),
+			_("No IMAP namespace for folder path “%s”"),
 			folder_path);
 		goto exit;
 	}
@@ -1679,7 +1679,7 @@ imapx_refresh_finfo (CamelSession *session,
 	display_name = camel_service_get_display_name (service);
 
 	camel_operation_push_message (
-		cancellable, _("Retrieving folder list for '%s'"),
+		cancellable, _("Retrieving folder list for “%s”"),
 		display_name);
 
 	if (!camel_offline_store_get_online (CAMEL_OFFLINE_STORE (store)))
@@ -1913,7 +1913,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 
 			session = camel_service_ref_session (service);
 			if (session) {
-				description = g_strdup_printf (_("Retrieving folder list for '%s'"), camel_service_get_display_name (service));
+				description = g_strdup_printf (_("Retrieving folder list for “%s”"), camel_service_get_display_name (service));
 
 				camel_session_submit_job (
 					session, description, (CamelSessionCallback)
@@ -2130,8 +2130,8 @@ check_separator:
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_PATH,
-			_("The folder name \"%s\" is invalid "
-			"because it contains the character \"%c\""),
+			_("The folder name “%s” is invalid "
+			"because it contains the character “%c”"),
 			folder_name, separator);
 		goto exit;
 	}

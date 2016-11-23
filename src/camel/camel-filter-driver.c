@@ -987,7 +987,7 @@ pipe_to_system (struct _CamelSExp *f,
 
 		g_set_error (
 			&driver->priv->error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Failed to create child process '%s': %s"),
+			_("Failed to create child process “%s”: %s"),
 			argv[0]->value.string, error->message);
 		g_error_free (error);
 		return -1;
@@ -1825,7 +1825,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		case CAMEL_SEARCH_ERROR:
 			g_prefix_error (
 				&driver->priv->error,
-				_("Execution of filter '%s' failed: "),
+				_("Execution of filter “%s” failed: "),
 				rule->name);
 			goto error;
 		case CAMEL_SEARCH_MATCHED:
@@ -1842,7 +1842,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				g_set_error (
 					error, CAMEL_ERROR,
 					CAMEL_ERROR_GENERIC,
-					_("Error parsing filter '%s': %s: %s"),
+					_("Error parsing filter “%s”: %s: %s"),
 					rule->name,
 					camel_sexp_error (driver->priv->eval),
 					rule->action);
@@ -1852,7 +1852,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 			if (driver->priv->error != NULL) {
 				g_prefix_error (
 					&driver->priv->error,
-					_("Execution of filter '%s' failed: "),
+					_("Execution of filter “%s” failed: "),
 					rule->name);
 				goto error;
 			}
@@ -1861,7 +1861,7 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				g_set_error (
 					error, CAMEL_ERROR,
 					CAMEL_ERROR_GENERIC,
-					_("Error executing filter '%s': %s: %s"),
+					_("Error executing filter “%s”: %s: %s"),
 					rule->name,
 					camel_sexp_error (driver->priv->eval),
 					rule->action);

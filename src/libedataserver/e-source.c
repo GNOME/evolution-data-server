@@ -1375,7 +1375,7 @@ source_remove_sync (ESource *source,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_PERMISSION_DENIED,
-			_("Data source '%s' is not removable"),
+			_("Data source “%s” is not removable"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}
@@ -1498,7 +1498,7 @@ source_write_sync (ESource *source,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_PERMISSION_DENIED,
-			_("Data source '%s' is not writable"),
+			_("Data source “%s” is not writable"),
 			e_source_get_display_name (source));
 		return FALSE;
 	}
@@ -1595,7 +1595,7 @@ source_remote_create_sync (ESource *source,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
-			_("Data source '%s' does not "
+			_("Data source “%s” does not "
 			"support creating remote resources"),
 			e_source_get_display_name (source));
 		return FALSE;
@@ -1708,7 +1708,7 @@ source_remote_delete_sync (ESource *source,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
-			_("Data source '%s' does not "
+			_("Data source “%s” does not "
 			"support deleting remote resources"),
 			e_source_get_display_name (source));
 		return FALSE;
@@ -1804,7 +1804,7 @@ source_get_oauth2_access_token_sync (ESource *source,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
-			_("Data source '%s' does not "
+			_("Data source “%s” does not "
 			"support OAuth 2.0 authentication"),
 			e_source_get_display_name (source));
 		return FALSE;

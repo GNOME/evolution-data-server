@@ -37,7 +37,7 @@ static gboolean opt_disable_migration = FALSE;
 
 static GOptionEntry entries[] = {
 	{ "disable-migration", 'd', 0, G_OPTION_ARG_NONE, &opt_disable_migration,
-	  N_("Don't migrate user data from previous versions of Evolution"), NULL },
+	  N_("Don’t migrate user data from previous versions of Evolution"), NULL },
 	{ NULL }
 };
 

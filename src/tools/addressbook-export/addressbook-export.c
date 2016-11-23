@@ -95,7 +95,7 @@ action_list_folders_init (ActionContext *p_actctx)
 
 		if (error != NULL) {
 			g_warning (
-				_("Failed to open client '%s': %s"),
+				_("Failed to open client “%s”: %s"),
 				e_source_get_display_name (source),
 				error->message);
 			g_error_free (error);

@@ -300,7 +300,7 @@ user_prompter_server_extension_prompt_cb (EDBusUserPrompter *dbus_prompter,
 
 		g_dbus_method_invocation_return_error (
 			invocation, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-			_("Extension dialog '%s' not found."),
+			_("Extension dialog “%s” not found."),
 			dialog_name ? dialog_name : "[null]");
 
 		return TRUE;

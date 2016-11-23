@@ -1639,7 +1639,7 @@ e_source_proxy_lookup_sync (ESource *source,
 		g_set_error (
 			error, G_IO_ERROR,
 			G_IO_ERROR_NOT_SUPPORTED,
-			_("Source '%s' does not support proxy lookups"),
+			_("Source “%s” does not support proxy lookups"),
 			e_source_get_display_name (source));
 		return NULL;
 	}

@@ -1366,7 +1366,7 @@ try_again:
 	}
 
 	camel_operation_push_message (
-		cancellable, _("Opening folder '%s'"), folder_name);
+		cancellable, _("Opening folder “%s”"), folder_name);
 
 	if (folder_name_is_vtrash) {
 		folder = class->get_trash_folder_sync (
@@ -1660,7 +1660,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
 
 	name = camel_service_get_name (CAMEL_SERVICE (store), TRUE);
 	camel_operation_push_message (
-		cancellable, _("Scanning folders in '%s'"), name);
+		cancellable, _("Scanning folders in “%s”"), name);
 	g_free (name);
 
 	/* Recover from a dropped connection, unless we're offline. */
@@ -2358,7 +2358,7 @@ store_create_folder_thread (GTask *task,
 	}
 
 	camel_operation_push_message (
-		cancellable, _("Creating folder '%s'"), folder_name);
+		cancellable, _("Creating folder “%s”"), folder_name);
 
 	folder_info = class->create_folder_sync (
 		store, parent_name, folder_name, cancellable, &local_error);

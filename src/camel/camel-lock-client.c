@@ -213,7 +213,7 @@ again:
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
-				_("Could not lock '%s': protocol "
+				_("Could not lock “%s”: protocol "
 				"error with lock-helper"), path);
 			goto fail;
 		}
@@ -229,7 +229,7 @@ again:
 			g_set_error (
 				error, CAMEL_ERROR,
 				CAMEL_ERROR_GENERIC,
-				_("Could not lock '%s'"), path);
+				_("Could not lock “%s”"), path);
 			d (printf ("locking failed ! status = %d\n", msg->id));
 			break;
 		}
@@ -241,7 +241,7 @@ again:
 		g_set_error (
 			error, CAMEL_ERROR,
 			CAMEL_ERROR_GENERIC,
-			_("Could not lock '%s': protocol "
+			_("Could not lock “%s”: protocol "
 			"error with lock-helper"), path);
 	}
 

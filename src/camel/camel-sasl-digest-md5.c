@@ -869,7 +869,7 @@ sasl_digest_md5_challenge_sync (CamelSasl *sasl,
 				error, CAMEL_SERVICE_ERROR,
 				CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
 				_("Server challenge contained invalid "
-				"\"Quality of Protection\" token"));
+				"“Quality of Protection” token"));
 			goto exit;
 		}
 

@@ -322,7 +322,7 @@ camel_url_new (const gchar *url_string,
 		camel_url_free (url);
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Could not parse URL '%s'"), url_string);
+			_("Could not parse URL “%s”"), url_string);
 		return NULL;
 	}
 	return url;

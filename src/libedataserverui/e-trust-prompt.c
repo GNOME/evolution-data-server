@@ -183,7 +183,7 @@ trust_prompt_show (GtkWindow *parent,
 		g_free (bsource_display_name);
 	}
 	if (!tmp)
-		tmp = g_strdup_printf (_("SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"), bhost);
+		tmp = g_strdup_printf (_("SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"), bhost);
 	g_free (bhost);
 
 	widget = gtk_label_new (NULL);
@@ -274,13 +274,13 @@ e_trust_prompt_describe_certificate_errors (GTlsCertificateFlags flags)
 		{ G_TLS_CERTIFICATE_BAD_IDENTITY,
 		  N_("The certificate does not match the expected identity of the site that it was retrieved from.") },
 		{ G_TLS_CERTIFICATE_NOT_ACTIVATED,
-		  N_("The certificate's activation time is still in the future.") },
+		  N_("The certificate’s activation time is still in the future.") },
 		{ G_TLS_CERTIFICATE_EXPIRED,
 		  N_("The certificate has expired.") },
 		{ G_TLS_CERTIFICATE_REVOKED,
-		  N_("The certificate has been revoked according to the connection's certificate revocation list.") },
+		  N_("The certificate has been revoked according to the connection’s certificate revocation list.") },
 		{ G_TLS_CERTIFICATE_INSECURE,
-		  N_("The certificate's algorithm is considered insecure.") }
+		  N_("The certificate’s algorithm is considered insecure.") }
 	};
 
 	GString *reason = g_string_new ("");

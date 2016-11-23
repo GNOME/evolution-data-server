@@ -317,7 +317,7 @@ source_registry_server_create_source (ESourceRegistryServer *server,
 	if (source != NULL) {
 		g_set_error (
 			error, G_IO_ERROR, G_IO_ERROR_EXISTS,
-			_("UID '%s' is already in use"), uid);
+			_("UID “%s” is already in use"), uid);
 		g_object_unref (source);
 		return FALSE;
 	}

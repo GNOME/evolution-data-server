@@ -7,17 +7,17 @@
     <key name="camel-gpg-binary" type="s">
       <default>''</default>
       <_summary>An absolute path where the gpg (or gpg2) binary is</_summary>
-      <_description>An example is '/usr/bin/gpg'; if it is not filled, or doesn't exist, then it is searched for it. Change requires restart of the application.</_description>
+      <_description>An example is “/usr/bin/gpg”; if it is not filled, or doesn’t exist, then it is searched for it. Change requires restart of the application.</_description>
     </key>
     <key name="camel-cipher-load-photos" type="b">
       <default>true</default>
       <_summary>Whether to load photos of signers/encrypters</_summary>
-      <_description>When set to 'true', tries to load also photo of the signers/encrypters, if available in the key/certificate.</_description>
+      <_description>When set to “true”, tries to load also photo of the signers/encrypters, if available in the key/certificate.</_description>
     </key>
     <key name="network-monitor-gio-name" type="s">
       <default>''</default>
       <_summary>GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance</_summary>
-      <_description>When set to an unknown value, then the default GNetworkMonitor is used in the background. A special value 'always-online' is used for no network monitoring.</_description>
+      <_description>When set to an unknown value, then the default GNetworkMonitor is used in the background. A special value “always-online” is used for no network monitoring.</_description>
     </key>
   </schema>
 </schemalist>

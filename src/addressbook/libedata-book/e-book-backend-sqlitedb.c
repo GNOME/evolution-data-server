@@ -902,7 +902,7 @@ introspect_summary (EBookBackendSqliteDB *ebsdb,
 		if (field == 0) {
 			g_set_error (
 				error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
-				_("Error introspecting unknown summary field '%s'"), col);
+				_("Error introspecting unknown summary field “%s”"), col);
 			success = FALSE;
 			break;
 		}
@@ -1694,7 +1694,7 @@ append_summary_field (GArray *array,
 	if (field < 1 || field >= E_CONTACT_FIELD_LAST) {
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
-			_("Invalid contact field '%d' specified in summary"), field);
+			_("Invalid contact field “%d” specified in summary"), field);
 		return NULL;
 	}
 
@@ -1728,7 +1728,7 @@ append_summary_field (GArray *array,
 	    type != E_TYPE_CONTACT_ATTR_LIST) {
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_OTHER,
-			_("Contact field '%s' of type '%s' specified in summary, "
+			_("Contact field “%s” of type “%s” specified in summary, "
 			"but only boolean, string and string list field types are supported"),
 			e_contact_pretty_name (field), g_type_name (type));
 		return NULL;
@@ -3082,7 +3082,7 @@ e_book_backend_sqlitedb_get_vcard_string (EBookBackendSqliteDB *ebsdb,
 	if (!vcard_str && error && !*error)
 		g_set_error (
 			error, E_BOOK_SDB_ERROR, E_BOOK_SDB_ERROR_CONTACT_NOT_FOUND,
-			_("Contact '%s' not found"), uid);
+			_("Contact “%s” not found"), uid);
 
 	return vcard_str;
 }

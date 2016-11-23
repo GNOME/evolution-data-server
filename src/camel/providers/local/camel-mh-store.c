@@ -516,7 +516,7 @@ mh_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Cannot get folder '%s': %s"),
+				_("Cannot get folder “%s”: %s"),
 				folder_name, g_strerror (errno));
 			goto exit;
 		}
@@ -525,7 +525,7 @@ mh_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("Cannot get folder '%s': "
+				_("Cannot get folder “%s”: "
 				"folder does not exist."),
 				folder_name);
 			goto exit;
@@ -535,7 +535,7 @@ mh_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Could not create folder '%s': %s"),
+				_("Could not create folder “%s”: %s"),
 				folder_name, g_strerror (errno));
 			goto exit;
 		}
@@ -551,7 +551,7 @@ mh_store_get_folder_sync (CamelStore *store,
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_NO_FOLDER,
-			_("Cannot get folder '%s': not a directory."),
+			_("Cannot get folder “%s”: not a directory."),
 			folder_name);
 		goto exit;
 	}
@@ -669,7 +669,7 @@ mh_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s': %s"),
+			_("Could not delete folder “%s”: %s"),
 			folder_name, g_strerror (errno));
 		g_free (name);
 		g_free (path);

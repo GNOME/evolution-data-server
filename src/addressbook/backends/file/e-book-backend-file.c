@@ -117,7 +117,7 @@ remove_file (const gchar *filename,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_OTHER_ERROR,
-				_("Failed to remove file '%s': %s"),
+				_("Failed to remove file “%s”: %s"),
 				filename, g_strerror (errno));
 		}
 		return FALSE;
@@ -416,7 +416,7 @@ hard_link_photo (EBookBackendFile *bf,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_OTHER_ERROR,
-				_("Failed to create hardlink for resource '%s': %s"),
+				_("Failed to create hardlink for resource “%s”: %s"),
 				src_filename, g_strerror (errno));
 		}
 		g_free (fullname);
@@ -1281,7 +1281,7 @@ book_backend_file_modify_contacts_sync (EBookBackend *backend,
 				g_set_error (
 					error, E_CLIENT_ERROR,
 					E_CLIENT_ERROR_OUT_OF_SYNC,
-					_("Tried to modify contact '%s' with out of sync revision"),
+					_("Tried to modify contact “%s” with out of sync revision"),
 					(gchar *) e_contact_get_const (mod_contact, E_CONTACT_UID));
 
 				status = STATUS_ERROR;
@@ -1472,7 +1472,7 @@ book_backend_file_remove_contacts_sync (EBookBackend *backend,
 				g_set_error (
 					error, E_BOOK_CLIENT_ERROR,
 					E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-					_("Contact '%s' not found"), uids[ii]);
+					_("Contact “%s” not found"), uids[ii]);
 				g_error_free (local_error);
 			} else {
 				g_warning ("Failed to fetch contact to be removed: %s", local_error->message);
@@ -1557,7 +1557,7 @@ book_backend_file_get_contact_sync (EBookBackend *backend,
 			g_set_error (
 				error, E_BOOK_CLIENT_ERROR,
 				E_BOOK_CLIENT_ERROR_CONTACT_NOT_FOUND,
-				_("Contact '%s' not found"), uid);
+				_("Contact “%s” not found"), uid);
 			g_error_free (local_error);
 		} else
 			g_propagate_error (error, local_error);
@@ -1617,7 +1617,7 @@ book_backend_file_get_contact_list_sync (EBookBackend *backend,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_NOT_SUPPORTED,
-				_("Query '%s' not supported"), query);
+				_("Query “%s” not supported"), query);
 			g_error_free (local_error);
 
 		} else if (g_error_matches (local_error,
@@ -1626,7 +1626,7 @@ book_backend_file_get_contact_list_sync (EBookBackend *backend,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_INVALID_QUERY,
-				_("Invalid Query '%s'"), query);
+				_("Invalid Query “%s”"), query);
 			g_error_free (local_error);
 
 		} else {
@@ -1698,7 +1698,7 @@ book_backend_file_get_contact_list_uids_sync (EBookBackend *backend,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_NOT_SUPPORTED,
-				_("Query '%s' not supported"), query);
+				_("Query “%s” not supported"), query);
 			g_error_free (local_error);
 
 		} else if (g_error_matches (local_error,
@@ -1707,7 +1707,7 @@ book_backend_file_get_contact_list_uids_sync (EBookBackend *backend,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_INVALID_QUERY,
-				_("Invalid Query '%s'"), query);
+				_("Invalid Query “%s”"), query);
 			g_error_free (local_error);
 
 		} else {
@@ -2044,7 +2044,7 @@ book_backend_file_initable_init (GInitable *initable,
 				error, G_FILE_ERROR,
 				g_file_error_from_errno (errno),
 				_("Failed to rename old database from "
-				"'%s' to '%s': %s"), filename, backup,
+				"“%s” to “%s”: %s"), filename, backup,
 				g_strerror (errno));
 			success = FALSE;
 			goto exit;

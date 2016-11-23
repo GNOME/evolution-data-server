@@ -231,7 +231,7 @@ subscribable_subscribe_folder_thread (GTask *task,
 		return;
 	}
 
-	message = _("Subscribing to folder '%s'");
+	message = _("Subscribing to folder “%s”");
 	camel_operation_push_message (cancellable, message, folder_name);
 
 	success = iface->subscribe_folder_sync (
@@ -400,7 +400,7 @@ subscribable_unsubscribe_folder_thread (GTask *task,
 		return;
 	}
 
-	message = _("Unsubscribing from folder '%s'");
+	message = _("Unsubscribing from folder “%s”");
 	camel_operation_push_message (cancellable, message, folder_name);
 
 	success = iface->unsubscribe_folder_sync (

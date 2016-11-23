@@ -495,7 +495,7 @@ vee_folder_process_changes (CamelSession *session,
 
 	change_queue = vee_folder->priv->change_queue;
 
-	message = _("Updating folder '%s'");
+	message = _("Updating folder “%s”");
 	display_name = camel_folder_get_display_name (folder);
 	camel_operation_push_message (cancellable, message, display_name);
 
@@ -924,11 +924,11 @@ vee_folder_get_message_sync (CamelFolder *folder,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_UID,
-			/* Translators: The first '%s' is replaced with a message UID, the second '%s'
-			   is replaced with an account name and the third '%s' is replaced with a full
-			   path name. The spaces around ':' are intentional, as the whole '%s : %s' is
+			/* Translators: The first “%s” is replaced with a message UID, the second “%s”
+			   is replaced with an account name and the third “%s” is replaced with a full
+			   path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 			   meant as an absolute identification of the folder. */
-			_("No such message %s in '%s : %s'"), uid,
+			_("No such message %s in “%s : %s”"), uid,
 			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 			camel_folder_get_full_name (folder));
 	}
@@ -982,7 +982,7 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 				desc = camel_folder_get_description (subfolder);
 				g_propagate_prefixed_error (
 					error, local_error,
-					_("Error storing '%s': "), desc);
+					_("Error storing “%s”: "), desc);
 
 				res = FALSE;
 			} else

@@ -117,7 +117,7 @@ e_ag_account_google_got_userinfo_cb (RestProxyCall *call,
 	} else {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
-			_("Didn't find 'email' in JSON data"));
+			_("Didn’t find “email” in JSON data"));
 	}
 
 	g_object_unref (json_parser);
@@ -314,12 +314,12 @@ e_ag_account_windows_live_got_me_cb (RestProxyCall *call,
 	if (id == NULL) {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
-			_("Didn't find 'id' in JSON data"));
+			_("Didn’t find “id” in JSON data"));
 		g_free (email);
 	} else if (email == NULL) {
 		g_simple_async_result_set_error (
 			simple, G_IO_ERROR, G_IO_ERROR_FAILED,
-			_("Didn't find 'emails.account' in JSON data"));
+			_("Didn’t find “emails.account” in JSON data"));
 	} else {
 		async_context->user_identity = id;
 		async_context->email_address = email;

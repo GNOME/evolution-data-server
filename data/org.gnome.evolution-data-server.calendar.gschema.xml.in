@@ -21,7 +21,7 @@
     <key name="contacts-reminder-units" enum='org.gnome.evolution-data-server.calendar.Duration'>
       <default>'minutes'</default>
       <_summary>Birthday and anniversary reminder units</_summary>
-      <_description>Units for a birthday or anniversary reminder, "minutes", "hours" or "days"</_description>
+      <_description>Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”</_description>
     </key>
   </schema>
 

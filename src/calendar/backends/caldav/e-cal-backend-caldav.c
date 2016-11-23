@@ -2943,7 +2943,7 @@ initialize_backend (ECalBackendCalDAV *cbdav,
 
 	/* Set the local attachment store */
 	if (g_mkdir_with_parents (cache_dir, 0700) < 0) {
-		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, _("Cannot create local cache folder '%s'"), cache_dir));
+		g_propagate_error (perror, e_data_cal_create_error_fmt (OtherError, _("Cannot create local cache folder “%s”"), cache_dir));
 		return FALSE;
 	}
 
@@ -5265,7 +5265,7 @@ caldav_get_free_busy (ECalBackendSync *backend,
 	cbdav = E_CAL_BACKEND_CALDAV (backend);
 
 	if (!cbdav->priv->calendar_schedule) {
-		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("Calendar doesn't support Free/Busy")));
+		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("Calendar doesn’t support Free/Busy")));
 		return;
 	}
 

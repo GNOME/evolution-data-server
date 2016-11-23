@@ -699,10 +699,10 @@ imapx_get_quota_info_sync (CamelFolder *folder,
 	if (quota_info == NULL)
 		g_set_error (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-			/* Translators: The first '%s' is replaced with an account name and the second '%s'
-			   is replaced with a full path name. The spaces around ':' are intentional, as
-			   the whole '%s : %s' is meant as an absolute identification of the folder. */
-			_("No quota information available for folder '%s : %s'"),
+			/* Translators: The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			_("No quota information available for folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (store)),
 			camel_folder_get_full_name (folder));
 
@@ -1306,10 +1306,10 @@ camel_imapx_folder_list_mailbox (CamelIMAPXFolder *folder,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID_STATE,
-			/* Translators: The first '%s' is replaced with an account name and the second '%s'
-			   is replaced with a full path name. The spaces around ':' are intentional, as
-			   the whole '%s : %s' is meant as an absolute identification of the folder. */
-			_("No IMAP mailbox available for folder '%s : %s'"),
+			/* Translators: The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			_("No IMAP mailbox available for folder “%s : %s”"),
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 			camel_folder_get_full_name (CAMEL_FOLDER (folder)));
 	}

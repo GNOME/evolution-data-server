@@ -126,7 +126,7 @@ maildir_store_create_folder_sync (CamelStore *store,
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_INVALID,
-			_("Cannot create folder containing '%s'"), HIER_SEP);
+			_("Cannot create folder containing “%s”"), HIER_SEP);
 		goto exit;
 	}
 
@@ -261,7 +261,7 @@ maildir_store_get_folder_sync (CamelStore *store,
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
-					_("Cannot create folder '%s': %s"),
+					_("Cannot create folder “%s”: %s"),
 					folder_name, g_strerror (errno));
 				rmdir (tmp);
 				rmdir (cur);
@@ -276,13 +276,13 @@ maildir_store_get_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Cannot get folder '%s': %s"),
+				_("Cannot get folder “%s”: %s"),
 				folder_name, g_strerror (errno));
 		} else if ((flags & CAMEL_STORE_FOLDER_CREATE) == 0) {
 			g_set_error (
 				error, CAMEL_STORE_ERROR,
 				CAMEL_STORE_ERROR_NO_FOLDER,
-				_("Cannot get folder '%s': folder does not exist."),
+				_("Cannot get folder “%s”: folder does not exist."),
 				folder_name);
 		} else {
 			if ((g_mkdir (name, 0700) != 0 && errno != EEXIST)
@@ -292,7 +292,7 @@ maildir_store_get_folder_sync (CamelStore *store,
 				g_set_error (
 					error, G_IO_ERROR,
 					g_io_error_from_errno (errno),
-					_("Cannot create folder '%s': %s"),
+					_("Cannot create folder “%s”: %s"),
 					folder_name, g_strerror (errno));
 				rmdir (tmp);
 				rmdir (cur);
@@ -309,7 +309,7 @@ maildir_store_get_folder_sync (CamelStore *store,
 		/* folder exists, but not maildir */
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-			_("Cannot get folder '%s': not a maildir directory."),
+			_("Cannot get folder “%s”: not a maildir directory."),
 			name);
 	} else {
 		folder = camel_maildir_folder_new (store, folder_name, flags, cancellable, error);
@@ -373,7 +373,7 @@ maildir_store_delete_folder_sync (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not delete folder '%s': %s"),
+			_("Could not delete folder “%s”: %s"),
 			folder_name, errno ? g_strerror (errno) :
 			_("not a maildir directory"));
 	} else {
@@ -413,7 +413,7 @@ maildir_store_delete_folder_sync (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (err),
-				_("Could not delete folder '%s': %s"),
+				_("Could not delete folder “%s”: %s"),
 				folder_name, g_strerror (err));
 		} else {
 			CamelStoreClass *store_class;
@@ -661,7 +661,7 @@ scan_dirs (CamelStore *store,
 		g_set_error (
 			error, G_IO_ERROR,
 			g_io_error_from_errno (errno),
-			_("Could not scan folder '%s': %s"),
+			_("Could not scan folder “%s”: %s"),
 			path, g_strerror (errno));
 		goto exit;
 	}
@@ -926,7 +926,7 @@ maildir_store_rename_folder_sync (CamelStore *store,
 		g_set_error (
 			error, CAMEL_STORE_ERROR,
 			CAMEL_STORE_ERROR_INVALID,
-			_("Cannot create folder containing '%s'"), HIER_SEP);
+			_("Cannot create folder containing “%s”"), HIER_SEP);
 		return FALSE;
 	}
 
@@ -1141,7 +1141,7 @@ scan_old_dir_info (CamelStore *store,
 			g_set_error (
 				error, G_IO_ERROR,
 				g_io_error_from_errno (errno),
-				_("Could not scan folder '%s': %s"),
+				_("Could not scan folder “%s”: %s"),
 				path, g_strerror (errno));
 			goto exit;
 		}

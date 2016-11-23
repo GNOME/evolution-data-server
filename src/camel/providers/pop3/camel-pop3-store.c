@@ -895,7 +895,7 @@ pop3_store_get_folder_sync (CamelStore *store,
 		g_set_error (
 			error, CAMEL_FOLDER_ERROR,
 			CAMEL_FOLDER_ERROR_INVALID,
-			_("No such folder '%s'."), folder_name);
+			_("No such folder “%s”."), folder_name);
 		return NULL;
 	}
 

@@ -152,31 +152,31 @@ credentials_prompter_impl_password_get_prompt_strings (ESourceRegistry *registry
 	switch (type) {
 		case TYPE_ADDRESS_BOOK:
 			g_string_append_printf (description,
-				_("Please enter the password for address book \"%s\"."), display_name);
+				_("Please enter the password for address book “%s”."), display_name);
 			break;
 		case TYPE_CALENDAR:
 			g_string_append_printf (description,
-				_("Please enter the password for calendar \"%s\"."), display_name);
+				_("Please enter the password for calendar “%s”."), display_name);
 			break;
 		case TYPE_MAIL_ACCOUNT:
 			g_string_append_printf (description,
-				_("Please enter the password for mail account \"%s\"."), display_name);
+				_("Please enter the password for mail account “%s”."), display_name);
 			break;
 		case TYPE_MAIL_TRANSPORT:
 			g_string_append_printf (description,
-				_("Please enter the password for mail transport \"%s\"."), display_name);
+				_("Please enter the password for mail transport “%s”."), display_name);
 			break;
 		case TYPE_MEMO_LIST:
 			g_string_append_printf (description,
-				_("Please enter the password for memo list \"%s\"."), display_name);
+				_("Please enter the password for memo list “%s”."), display_name);
 			break;
 		case TYPE_TASK_LIST:
 			g_string_append_printf (description,
-				_("Please enter the password for task list \"%s\"."), display_name);
+				_("Please enter the password for task list “%s”."), display_name);
 			break;
 		default:  /* generic account prompt */
 			g_string_append_printf (description,
-				_("Please enter the password for account \"%s\"."), display_name);
+				_("Please enter the password for account “%s”."), display_name);
 			break;
 	}
 

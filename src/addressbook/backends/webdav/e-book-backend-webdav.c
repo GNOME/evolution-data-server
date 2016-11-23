@@ -1552,7 +1552,7 @@ book_backend_webdav_create_contacts_sync (EBookBackend *backend,
 			g_set_error (
 				error, E_CLIENT_ERROR,
 				E_CLIENT_ERROR_OTHER_ERROR,
-				_("Create resource '%s' failed with HTTP status %d (%s)"),
+				_("Create resource “%s” failed with HTTP status %d (%s)"),
 				uid, status, status_reason);
 		}
 		g_free (uid);
