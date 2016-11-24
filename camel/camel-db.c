@@ -487,6 +487,7 @@ struct _CamelDBPrivate {
 	GMutex transaction_lock;
 	GThread *transaction_thread;
 	guint32 transaction_level;
+	gboolean is_foldersdb;
 };
 
 /**
@@ -1525,7 +1526,6 @@ gint
 camel_db_create_folders_table (CamelDB *cdb,
                                GError **error)
 {
-	gint ret;
 	const gchar *query = "CREATE TABLE IF NOT EXISTS folders ( "
 		"folder_name TEXT PRIMARY KEY, "
 		"version REAL, "
@@ -1539,16 +1539,14 @@ camel_db_create_folders_table (CamelDB *cdb,
 		"visible_count INTEGER, "
 		"jnd_count INTEGER, "
 		"bdata TEXT )";
+
+	g_return_val_if_fail (cdb != NULL, -1);
+
 	CAMEL_DB_RELEASE_SQLITE_MEMORY;
 
-	ret = camel_db_command (cdb, query, error);
+	cdb->priv->is_foldersdb = TRUE;
 
-	if (ret != -1) {
-		/* Drop 'Deletes' table, leftover from the previous versions. */
-		ret = camel_db_command (cdb, "DROP TABLE IF EXISTS 'Deletes'", error);
-	}
-
-	return ret;
+	return camel_db_command (cdb, query, error);
 }
 
 static gint
@@ -2753,17 +2751,24 @@ camel_db_maybe_run_maintenance (CamelDB *cdb,
 				GError **error)
 {
 	GError *local_error = NULL;
-	guint64 page_count = 0, freelist_count = 0;
+	guint64 page_count = 0, page_size = 0, freelist_count = 0;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (cdb != NULL, FALSE);
 
+	if (cdb->priv->is_foldersdb) {
+		/* Drop 'Deletes' table, leftover from the previous versions. */
+		if (camel_db_command (cdb, "DROP TABLE IF EXISTS 'Deletes'", error) == -1)
+			return FALSE;
+	}
+
 	cdb_writer_lock (cdb);
 
 	if (cdb_sql_exec (cdb->db, "PRAGMA page_count;", get_number_cb, &page_count, NULL, &local_error) == SQLITE_OK &&
+	    cdb_sql_exec (cdb->db, "PRAGMA page_size;", get_number_cb, &page_size, NULL, &local_error) == SQLITE_OK &&
 	    cdb_sql_exec (cdb->db, "PRAGMA freelist_count;", get_number_cb, &freelist_count, NULL, &local_error) == SQLITE_OK) {
-		/* Vacuum, if there's more than 5% of the free pages */
-		success = !page_count || !freelist_count || freelist_count * 1000 / page_count <= 50 ||
+		/* Vacuum, if there's more than 5% of the free pages, or when free pages use more than 10MB */
+		success = !page_count || !freelist_count || (freelist_count * page_size < 1024 * 1024 * 10 && freelist_count * 1000 / page_count <= 50) ||
 		    cdb_sql_exec (cdb->db, "vacuum;", NULL, NULL, NULL, &local_error) == SQLITE_OK;
 	}
 
