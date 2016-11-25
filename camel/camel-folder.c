@@ -94,7 +94,7 @@ struct _CamelFolderChangeInfoPrivate {
 };
 
 struct _SignalClosure {
-	GWeakRef folder;
+	CamelFolder *folder;
 	gchar *folder_name;
 };
 
@@ -164,7 +164,7 @@ async_context_free (AsyncContext *async_context)
 static void
 signal_closure_free (SignalClosure *signal_closure)
 {
-	g_weak_ref_clear (&signal_closure->folder);
+	g_clear_object (&signal_closure->folder);
 
 	g_free (signal_closure->folder_name);
 
@@ -176,23 +176,18 @@ folder_emit_changed_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
 	CamelFolder *folder;
+	CamelFolderChangeInfo *changes;
 
-	folder = g_weak_ref_get (&signal_closure->folder);
+	folder = signal_closure->folder;
 
-	if (folder != NULL) {
-		CamelFolderChangeInfo *changes;
+	g_mutex_lock (&folder->priv->change_lock);
+	changes = folder->priv->pending_changes;
+	folder->priv->pending_changes = NULL;
+	g_mutex_unlock (&folder->priv->change_lock);
 
-		g_mutex_lock (&folder->priv->change_lock);
-		changes = folder->priv->pending_changes;
-		folder->priv->pending_changes = NULL;
-		g_mutex_unlock (&folder->priv->change_lock);
+	g_signal_emit (folder, signals[CHANGED], 0, changes);
 
-		g_signal_emit (folder, signals[CHANGED], 0, changes);
-
-		camel_folder_change_info_free (changes);
-
-		g_object_unref (folder);
-	}
+	camel_folder_change_info_free (changes);
 
 	return FALSE;
 }
@@ -201,14 +196,8 @@ static gboolean
 folder_emit_deleted_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
-	CamelFolder *folder;
 
-	folder = g_weak_ref_get (&signal_closure->folder);
-
-	if (folder != NULL) {
-		g_signal_emit (folder, signals[DELETED], 0);
-		g_object_unref (folder);
-	}
+	g_signal_emit (signal_closure->folder, signals[DELETED], 0);
 
 	return FALSE;
 }
@@ -217,17 +206,11 @@ static gboolean
 folder_emit_renamed_cb (gpointer user_data)
 {
 	SignalClosure *signal_closure = user_data;
-	CamelFolder *folder;
 
-	folder = g_weak_ref_get (&signal_closure->folder);
-
-	if (folder != NULL) {
-		g_signal_emit (
-			folder,
-			signals[RENAMED], 0,
-			signal_closure->folder_name);
-		g_object_unref (folder);
-	}
+	g_signal_emit (
+		signal_closure->folder,
+		signals[RENAMED], 0,
+		signal_closure->folder_name);
 
 	return FALSE;
 }
@@ -2307,7 +2290,7 @@ camel_folder_delete (CamelFolder *folder)
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_init (&signal_closure->folder, folder);
+	signal_closure->folder = g_object_ref (folder);
 
 	/* Prioritize ahead of GTK+ redraws. */
 	camel_session_idle_add (
@@ -2362,7 +2345,7 @@ camel_folder_rename (CamelFolder *folder,
 		return;
 
 	signal_closure = g_slice_new0 (SignalClosure);
-	g_weak_ref_init (&signal_closure->folder, folder);
+	signal_closure->folder = g_object_ref (folder);
 	signal_closure->folder_name = old_name;  /* transfer ownership */
 
 	/* Prioritize ahead of GTK+ redraws. */
@@ -2427,7 +2410,7 @@ camel_folder_changed (CamelFolder *folder,
 			folder->priv->pending_changes = pending_changes;
 
 			signal_closure = g_slice_new0 (SignalClosure);
-			g_weak_ref_init (&signal_closure->folder, folder);
+			signal_closure->folder = g_object_ref (folder);
 
 			camel_session_idle_add (
 				session, G_PRIORITY_LOW,
