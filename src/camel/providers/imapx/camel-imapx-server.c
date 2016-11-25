@@ -2312,38 +2312,42 @@ imapx_completion (CamelIMAPXServer *is,
 
 	c (is->priv->tagprefix, "Got completion response for command %05u '%s'\n", ic->tag, camel_imapx_job_get_kind_name (ic->job_kind));
 
-	g_mutex_lock (&is->priv->changes_lock);
+	/* The camel_imapx_server_refresh_info_sync() gets any piled change
+	   notifications and will emit the signal with all of them at once. */
+	if (!is->priv->fetch_changes_mailbox && !is->priv->fetch_changes_folder && !is->priv->fetch_changes_infos) {
+		g_mutex_lock (&is->priv->changes_lock);
 
-	if (camel_folder_change_info_changed (is->priv->changes)) {
-		CamelFolder *folder = NULL;
-		CamelIMAPXMailbox *mailbox;
-		CamelFolderChangeInfo *changes;
+		if (camel_folder_change_info_changed (is->priv->changes)) {
+			CamelFolder *folder = NULL;
+			CamelIMAPXMailbox *mailbox;
+			CamelFolderChangeInfo *changes;
 
-		changes = is->priv->changes;
-		is->priv->changes = camel_folder_change_info_new ();
+			changes = is->priv->changes;
+			is->priv->changes = camel_folder_change_info_new ();
 
-		g_mutex_unlock (&is->priv->changes_lock);
+			g_mutex_unlock (&is->priv->changes_lock);
 
-		mailbox = camel_imapx_server_ref_selected (is);
+			mailbox = camel_imapx_server_ref_selected (is);
 
-		g_warn_if_fail (mailbox != NULL);
+			g_warn_if_fail (mailbox != NULL);
 
-		if (mailbox) {
-			folder = imapx_server_ref_folder (is, mailbox);
-			g_return_val_if_fail (folder != NULL, FALSE);
+			if (mailbox) {
+				folder = imapx_server_ref_folder (is, mailbox);
+				g_return_val_if_fail (folder != NULL, FALSE);
 
-			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+				camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 
-			imapx_update_store_summary (folder);
-			camel_folder_changed (folder, changes);
+				imapx_update_store_summary (folder);
+				camel_folder_changed (folder, changes);
+			}
+
+			camel_folder_change_info_free (changes);
+
+			g_clear_object (&folder);
+			g_clear_object (&mailbox);
+		} else {
+			g_mutex_unlock (&is->priv->changes_lock);
 		}
-
-		camel_folder_change_info_free (changes);
-
-		g_clear_object (&folder);
-		g_clear_object (&mailbox);
-	} else {
-		g_mutex_unlock (&is->priv->changes_lock);
 	}
 
 	if (g_list_next (ic->current_part) != NULL) {
@@ -4986,6 +4990,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	CamelIMAPXMailbox *selected_mailbox;
 	CamelIMAPXSummary *imapx_summary;
 	CamelFolder *folder;
+	CamelFolderChangeInfo *changes;
 	GHashTable *known_uids;
 	guint32 messages;
 	guint32 unseen;
@@ -5096,15 +5101,19 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	if (success && uidl != 1)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
 
+	g_mutex_lock (&is->priv->changes_lock);
+
+	changes = is->priv->changes;
+	is->priv->changes = camel_folder_change_info_new ();
+
+	g_mutex_unlock (&is->priv->changes_lock);
+
 	if (success) {
-		CamelFolderChangeInfo *changes;
 		GList *removed = NULL;
 		GPtrArray *array;
 		gint ii;
 
 		camel_folder_summary_lock (camel_folder_get_folder_summary (folder));
-
-		changes = camel_folder_change_info_new ();
 
 		array = camel_folder_summary_get_array (camel_folder_get_folder_summary (folder));
 		for (ii = 0; array && ii < array->len; ii++) {
@@ -5129,15 +5138,16 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 			g_list_free (removed);
 		}
 
-		if (camel_folder_change_info_changed (changes)) {
-			camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
-			imapx_update_store_summary (folder);
-			camel_folder_changed (folder, changes);
-		}
-
-		camel_folder_change_info_free (changes);
 		camel_folder_summary_free_array (array);
 	}
+
+	if (camel_folder_change_info_changed (changes)) {
+		camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+		imapx_update_store_summary (folder);
+		camel_folder_changed (folder, changes);
+	}
+
+	camel_folder_change_info_free (changes);
 
 	g_hash_table_destroy (known_uids);
 	g_object_unref (folder);
