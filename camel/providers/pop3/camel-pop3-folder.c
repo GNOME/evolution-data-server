@@ -522,7 +522,7 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 			for (; i < last; i++) {
 				CamelPOP3FolderInfo *pfi = pop3_folder->uids->pdata[i];
 
-				if (pfi->uid && pfi->cmd == NULL) {
+				if (pfi->uid && !pfi->cmd && !camel_pop3_store_cache_has (pop3_store, pfi->uid)) {
 					pfi->stream = camel_pop3_store_cache_add (
 						pop3_store, pfi->uid, NULL);
 					if (pfi->stream != NULL) {
@@ -533,15 +533,15 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 							cancellable, &local_error,
 							"RETR %u\r\n", pfi->id);
 
-							if (local_error) {
-								if (pcr)
-									camel_pop3_engine_command_free (pop3_engine, pcr);
+						if (local_error) {
+							if (pcr)
+								camel_pop3_engine_command_free (pop3_engine, pcr);
 
-								g_propagate_error (error, local_error);
-								g_prefix_error (
-									error, _("Cannot get message %s: "), uid);
-								goto done;
-							}
+							g_propagate_error (error, local_error);
+							g_prefix_error (
+								error, _("Cannot get message %s: "), uid);
+							goto done;
+						}
 					}
 				}
 			}
