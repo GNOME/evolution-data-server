@@ -1810,10 +1810,7 @@ camel_service_connect (CamelService *service,
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	if (cancellable)
-		g_object_ref (cancellable);
-	else
-		cancellable = g_cancellable_new ();
+	cancellable = camel_operation_new_proxy (cancellable);
 
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_service_connect);
@@ -1982,10 +1979,7 @@ camel_service_disconnect (CamelService *service,
 
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
-	if (cancellable)
-		g_object_ref (cancellable);
-	else
-		cancellable = g_cancellable_new ();
+	cancellable = camel_operation_new_proxy (cancellable);
 
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_service_disconnect);

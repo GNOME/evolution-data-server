@@ -46,6 +46,8 @@ struct _StatusNode {
 
 struct _CamelOperationPrivate {
 	GQueue status_stack;
+	GCancellable *proxying;
+	gulong proxying_handler_id;
 };
 
 enum {
@@ -137,6 +139,15 @@ operation_emit_status_cb (gpointer user_data)
 }
 
 static void
+proxying_cancellable_cancelled_cb (GCancellable *cancellable,
+				   GCancellable *operation)
+{
+	g_return_if_fail (CAMEL_IS_OPERATION (operation));
+
+	g_cancellable_cancel (operation);
+}
+
+static void
 operation_finalize (GObject *object)
 {
 	CamelOperationPrivate *priv;
@@ -144,6 +155,13 @@ operation_finalize (GObject *object)
 	priv = CAMEL_OPERATION_GET_PRIVATE (object);
 
 	LOCK ();
+
+	if (priv->proxying && priv->proxying_handler_id) {
+		g_cancellable_disconnect (priv->proxying, priv->proxying_handler_id);
+		priv->proxying_handler_id = 0;
+	}
+
+	g_clear_object (&priv->proxying);
 
 	g_queue_remove (&operation_list, object);
 
@@ -211,6 +229,8 @@ camel_operation_init (CamelOperation *operation)
 	operation->priv = CAMEL_OPERATION_GET_PRIVATE (operation);
 
 	g_queue_init (&operation->priv->status_stack);
+	operation->priv->proxying = NULL;
+	operation->priv->proxying_handler_id = 0;
 
 	LOCK ();
 	g_queue_push_tail (&operation_list, operation);
@@ -226,12 +246,56 @@ camel_operation_init (CamelOperation *operation)
  * operations and to obtain notification messages of the internal
  * status of messages.
  *
- * Returns: A new operation handle.
+ * Returns: (transfer full): A new operation handle.
  **/
 GCancellable *
 camel_operation_new (void)
 {
 	return g_object_new (CAMEL_TYPE_OPERATION, NULL);
+}
+
+/**
+ * camel_operation_new_proxy:
+ * @cancellable: (nullable): a #GCancellable to proxy
+ *
+ * Proxies the @cancellable in a way that if it is cancelled,
+ * then the returned cancellable is also cancelled, but when
+ * the returned cancellable is cancelled, then it doesn't
+ * influence the original cancellable. Other CamelOperation
+ * actions being done on the returned cancellable are also
+ * propagated to the @cancellable.
+ *
+ * The passed-in @cancellable can be %NULL, in which case
+ * a plain CamelOperation is returned.
+ *
+ * This is useful when some operation can be cancelled from
+ * elsewhere (like by a user), but also by the code on its own,
+ * when it doesn't make sense to cancel also any larger operation
+ * to which the passed-in cancellable belongs.
+ *
+ * Returns: (transfer full): A new operation handle, proxying @cancellable.
+ *
+ * Since: 3.24
+ **/
+GCancellable *
+camel_operation_new_proxy (GCancellable *cancellable)
+{
+	GCancellable *operation;
+	CamelOperationPrivate *priv;
+
+	operation = camel_operation_new ();
+
+	if (!G_IS_CANCELLABLE (cancellable))
+		return operation;
+
+	priv = CAMEL_OPERATION_GET_PRIVATE (operation);
+	g_return_val_if_fail (priv != NULL, operation);
+
+	priv->proxying = g_object_ref (cancellable);
+	priv->proxying_handler_id = g_cancellable_connect (cancellable,
+		G_CALLBACK (proxying_cancellable_cancelled_cb), operation, NULL);
+
+	return operation;
 }
 
 /**
@@ -294,11 +358,14 @@ camel_operation_push_message (GCancellable *cancellable,
 	message = g_strdup_vprintf (format, ap);
 	va_end (ap);
 
+	operation = CAMEL_OPERATION (cancellable);
+
 	g_signal_emit (cancellable, signals[PUSH_MESSAGE], 0, message);
 
-	LOCK ();
+	if (operation->priv->proxying)
+		camel_operation_push_message (operation->priv->proxying, "%s", message);
 
-	operation = CAMEL_OPERATION (cancellable);
+	LOCK ();
 
 	node = status_node_new ();
 	node->message = message; /* takes ownership */
@@ -350,11 +417,15 @@ camel_operation_pop_message (GCancellable *cancellable)
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
 
+	operation = CAMEL_OPERATION (cancellable);
+
 	g_signal_emit (cancellable, signals[POP_MESSAGE], 0);
+
+	if (operation->priv->proxying)
+		camel_operation_pop_message (operation->priv->proxying);
 
 	LOCK ();
 
-	operation = CAMEL_OPERATION (cancellable);
 	node = g_queue_pop_head (&operation->priv->status_stack);
 
 	if (node != NULL) {
@@ -411,11 +482,15 @@ camel_operation_progress (GCancellable *cancellable,
 
 	g_return_if_fail (CAMEL_IS_OPERATION (cancellable));
 
+	operation = CAMEL_OPERATION (cancellable);
+
 	g_signal_emit (cancellable, signals[PROGRESS], 0, percent);
+
+	if (operation->priv->proxying)
+		camel_operation_progress (operation->priv->proxying, percent);
 
 	LOCK ();
 
-	operation = CAMEL_OPERATION (cancellable);
 	node = g_queue_peek_head (&operation->priv->status_stack);
 
 	if (node != NULL) {
@@ -436,4 +511,3 @@ camel_operation_progress (GCancellable *cancellable,
 
 	UNLOCK ();
 }
-

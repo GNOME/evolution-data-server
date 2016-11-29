@@ -857,11 +857,7 @@ camel_imapx_conn_manager_ref_connection (CamelIMAPXConnManager *conn_man,
 	    session && camel_session_get_online (session)) {
 
 		g_mutex_lock (&conn_man->priv->pending_connections_lock);
-		if (cancellable) {
-			g_object_ref (cancellable);
-		} else {
-			cancellable = g_cancellable_new ();
-		}
+		cancellable = camel_operation_new_proxy (cancellable);
 		conn_man->priv->pending_connections = g_slist_prepend (conn_man->priv->pending_connections, cancellable);
 		g_mutex_unlock (&conn_man->priv->pending_connections_lock);
 
