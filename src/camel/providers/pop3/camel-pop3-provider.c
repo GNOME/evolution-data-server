@@ -38,6 +38,8 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	  /* Translators: '%s' is replaced with a widget, where user can
 	   * select how many days can be message left on the server. */
 	  N_("_Delete after %s day(s)"), "0:1:7:365" },
+	{ CAMEL_PROVIDER_CONF_LABEL, "delete-after-days-hint", "keep-on-server",
+	  N_("Hint: Use 0 days to keep messages on the server indefinitely.") },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "delete-expunged", "keep-on-server",
 	  N_("Delete _expunged from local Inbox"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable-extensions", NULL,
