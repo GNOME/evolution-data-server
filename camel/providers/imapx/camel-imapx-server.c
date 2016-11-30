@@ -1959,8 +1959,10 @@ imapx_untagged (CamelIMAPXServer *is,
 
 	e (is->priv->tagprefix, "Have token '%s' id %lu\n", is->priv->context->token, is->priv->context->id);
 	p = is->priv->context->token;
-	while ((c = *p))
+	while (p && *p) {
+		c = *p;
 		*p++ = g_ascii_toupper ((gchar) c);
+	}
 
 	token = (const gchar *) is->priv->context->token; /* FIXME need 'guchar *token' here */
 	while (token != NULL) {
