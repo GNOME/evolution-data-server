@@ -180,6 +180,8 @@ gint		camel_imapx_mailbox_get_update_count
 void		camel_imapx_mailbox_inc_update_count
 					(CamelIMAPXMailbox *mailbox,
 					 gint inc);
+gint		camel_imapx_mailbox_get_change_stamp
+					(CamelIMAPXMailbox *mailbox);
 
 G_END_DECLS
 

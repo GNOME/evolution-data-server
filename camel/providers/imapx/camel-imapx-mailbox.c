@@ -48,6 +48,8 @@ struct _CamelIMAPXMailboxPrivate {
 	guint64 highestmodseq;
 	guint32 permanentflags;
 
+	volatile gint change_stamp;
+
 	CamelIMAPXMailboxState state;
 
 	GMutex property_lock;
@@ -131,6 +133,7 @@ camel_imapx_mailbox_init (CamelIMAPXMailbox *mailbox)
 	mailbox->priv->permanentflags = ~0;
 	mailbox->priv->state = CAMEL_IMAPX_MAILBOX_STATE_CREATED;
 	mailbox->priv->update_count = 0;
+	mailbox->priv->change_stamp = 0;
 }
 
 /**
@@ -494,7 +497,12 @@ camel_imapx_mailbox_set_messages (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if (mailbox->priv->messages == messages)
+		return;
+
 	mailbox->priv->messages = messages;
+
+	g_atomic_int_add (&mailbox->priv->change_stamp, 1);
 }
 
 /**
@@ -536,7 +544,12 @@ camel_imapx_mailbox_set_recent (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if (mailbox->priv->recent == recent)
+		return;
+
 	mailbox->priv->recent = recent;
+
+	g_atomic_int_add (&mailbox->priv->change_stamp, 1);
 }
 
 /**
@@ -580,7 +593,12 @@ camel_imapx_mailbox_set_unseen (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if (mailbox->priv->unseen == unseen)
+		return;
+
 	mailbox->priv->unseen = unseen;
+
+	g_atomic_int_add (&mailbox->priv->change_stamp, 1);
 }
 
 /**
@@ -622,7 +640,12 @@ camel_imapx_mailbox_set_uidnext (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if (mailbox->priv->uidnext == uidnext)
+		return;
+
 	mailbox->priv->uidnext = uidnext;
+
+	g_atomic_int_add (&mailbox->priv->change_stamp, 1);
 }
 
 /**
@@ -664,7 +687,12 @@ camel_imapx_mailbox_set_uidvalidity (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if (mailbox->priv->uidvalidity == uidvalidity)
+		return;
+
 	mailbox->priv->uidvalidity = uidvalidity;
+
+	g_atomic_int_add (&mailbox->priv->change_stamp, 1);
 }
 
 /**
@@ -710,7 +738,12 @@ camel_imapx_mailbox_set_highestmodseq (CamelIMAPXMailbox *mailbox,
 {
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 
+	if (mailbox->priv->highestmodseq == highestmodseq)
+		return;
+
 	mailbox->priv->highestmodseq = highestmodseq;
+
+	g_atomic_int_add (&mailbox->priv->change_stamp, 1);
 }
 
 /**
@@ -1181,22 +1214,22 @@ camel_imapx_mailbox_handle_status_response (CamelIMAPXMailbox *mailbox,
 	g_return_if_fail (CAMEL_IS_IMAPX_STATUS_RESPONSE (response));
 
 	if (camel_imapx_status_response_get_messages (response, &value32))
-		mailbox->priv->messages = value32;
+		camel_imapx_mailbox_set_messages (mailbox, value32);
 
 	if (camel_imapx_status_response_get_recent (response, &value32))
-		mailbox->priv->recent = value32;
+		camel_imapx_mailbox_set_recent (mailbox, value32);
 
 	if (camel_imapx_status_response_get_unseen (response, &value32))
-		mailbox->priv->unseen = value32;
+		camel_imapx_mailbox_set_unseen (mailbox, value32);
 
 	if (camel_imapx_status_response_get_uidnext (response, &value32))
-		mailbox->priv->uidnext = value32;
+		camel_imapx_mailbox_set_uidnext (mailbox, value32);
 
 	if (camel_imapx_status_response_get_uidvalidity (response, &value32))
-		mailbox->priv->uidvalidity = value32;
+		camel_imapx_mailbox_set_uidvalidity (mailbox, value32);
 
 	if (camel_imapx_status_response_get_highestmodseq (response, &value64))
-		mailbox->priv->highestmodseq = value64;
+		camel_imapx_mailbox_set_highestmodseq (mailbox, value64);
 }
 
 gint
@@ -1218,4 +1251,12 @@ camel_imapx_mailbox_inc_update_count (CamelIMAPXMailbox *mailbox,
 	g_mutex_lock (&mailbox->priv->update_lock);
 	mailbox->priv->update_count += inc;
 	g_mutex_unlock (&mailbox->priv->update_lock);
+}
+
+gint
+camel_imapx_mailbox_get_change_stamp (CamelIMAPXMailbox *mailbox)
+{
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), 0);
+
+	return mailbox->priv->change_stamp;
 }
