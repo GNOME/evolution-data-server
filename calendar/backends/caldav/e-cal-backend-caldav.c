@@ -131,7 +131,7 @@ struct _ECalBackendCalDAVPrivate {
 	 * message than a generic SOUP_STATUS_UNAUTHORIZED description. */
 	GError *bearer_auth_error;
 	GMutex bearer_auth_error_lock;
-	gboolean using_bearer_auth;
+	ESoupAuthBearer *using_bearer_auth;
 };
 
 /* Forward Declarations */
@@ -326,6 +326,40 @@ static void put_server_comp_to_cache (ECalBackendCalDAV *cbdav, icalcomponent *i
 /* ************************************************************************* */
 /* Misc. utility functions */
 
+static void
+caldav_ensure_bearer_auth_usage (ECalBackendCalDAV *cbdav,
+				 ESoupAuthBearer *bearer)
+{
+	SoupSessionFeature *feature;
+	SoupURI *soup_uri;
+	ESourceWebdav *extension;
+	ESource *source;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+
+	/* Preload the SoupAuthManager with a valid "Bearer" token
+	 * when using OAuth 2.0. This avoids an extra unauthorized
+	 * HTTP round-trip, which apparently Google doesn't like. */
+
+	feature = soup_session_get_feature (cbdav->priv->session, SOUP_TYPE_AUTH_MANAGER);
+
+	if (!soup_session_feature_has_feature (feature, E_TYPE_SOUP_AUTH_BEARER)) {
+		/* Add the "Bearer" auth type to support OAuth 2.0. */
+		soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+	}
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+	soup_uri = e_source_webdav_dup_soup_uri (extension);
+
+	soup_auth_manager_use_auth (
+		SOUP_AUTH_MANAGER (feature),
+		soup_uri, SOUP_AUTH (bearer));
+
+	soup_uri_free (soup_uri);
+}
+
 static gboolean
 caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
 			  ESoupAuthBearer *bearer,
@@ -345,8 +379,10 @@ caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
 	success = e_util_get_source_oauth2_access_token_sync (source, cbdav->priv->credentials,
 		&access_token, &expires_in_seconds, cancellable, error);
 
-	if (success)
+	if (success) {
 		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
+		caldav_ensure_bearer_auth_usage (cbdav, bearer);
+	}
 
 	g_free (access_token);
 
@@ -358,11 +394,7 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 				  GCancellable *cancellable,
 				  GError **error)
 {
-	ESourceWebdav *extension;
 	ESource *source;
-	SoupSessionFeature *feature;
-	SoupAuth *soup_auth;
-	SoupURI *soup_uri;
 	gchar *auth_method = NULL;
 	gboolean success;
 
@@ -386,31 +418,27 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 
 	g_free (auth_method);
 
-	/* Preload the SoupAuthManager with a valid "Bearer" token
-	 * when using OAuth 2.0. This avoids an extra unauthorized
-	 * HTTP round-trip, which apparently Google doesn't like. */
+	if (cbdav->priv->using_bearer_auth) {
+		success = caldav_setup_bearer_auth (cbdav, cbdav->priv->using_bearer_auth, cancellable, error);
+	} else {
+		ESourceWebdav *extension;
+		SoupAuth *soup_auth;
+		SoupURI *soup_uri;
 
-	feature = soup_session_get_feature (cbdav->priv->session, SOUP_TYPE_AUTH_MANAGER);
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		soup_uri = e_source_webdav_dup_soup_uri (extension);
 
-	/* Add the "Bearer" auth type to support OAuth 2.0. */
-	soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+		soup_auth = g_object_new (
+			E_TYPE_SOUP_AUTH_BEARER,
+			SOUP_AUTH_HOST, soup_uri->host, NULL);
 
-	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-	soup_uri = e_source_webdav_dup_soup_uri (extension);
+		success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
+		if (success)
+			cbdav->priv->using_bearer_auth = g_object_ref (soup_auth);
 
-	soup_auth = g_object_new (
-		E_TYPE_SOUP_AUTH_BEARER,
-		SOUP_AUTH_HOST, soup_uri->host, NULL);
-
-	success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
-	if (success) {
-		soup_auth_manager_use_auth (
-			SOUP_AUTH_MANAGER (feature),
-			soup_uri, soup_auth);
+		g_object_unref (soup_auth);
+		soup_uri_free (soup_uri);
 	}
-
-	g_object_unref (soup_auth);
-	soup_uri_free (soup_uri);
 
 	return success;
 }
@@ -690,7 +718,24 @@ status_code_to_result (SoupMessage *message,
 		break;
 
 	case SOUP_STATUS_FORBIDDEN:
-		g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+		if (cbdav->priv->using_bearer_auth && message->response_body &&
+		    message->response_body->data && message->response_body->length) {
+			gchar *body = g_strndup (message->response_body->data, message->response_body->length);
+
+			/* Do not localize this string, it is returned by the server. */
+			if (body && (e_util_strstrcase (body, "Daily Limit") ||
+			    e_util_strstrcase (body, "https://console.developers.google.com/"))) {
+				/* Special-case this condition and provide this error up to the UI. */
+				g_propagate_error (perror,
+					e_data_cal_create_error_fmt (OtherError, _("Failed to login to the server: %s"), body));
+			} else {
+				g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+			}
+
+			g_free (body);
+		} else {
+			g_propagate_error (perror, EDC_ERROR (AuthenticationRequired));
+		}
 		break;
 
 	case SOUP_STATUS_UNAUTHORIZED:
@@ -1128,7 +1173,12 @@ soup_authenticate (SoupSession *session,
 	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
 	auth_extension = e_source_get_extension (source, extension_name);
 
-	cbdav->priv->using_bearer_auth = E_IS_SOUP_AUTH_BEARER (auth);
+	if (E_IS_SOUP_AUTH_BEARER (auth)) {
+		g_object_ref (auth);
+		g_warn_if_fail ((gpointer) cbdav->priv->using_bearer_auth == (gpointer) auth);
+		g_clear_object (&cbdav->priv->using_bearer_auth);
+		cbdav->priv->using_bearer_auth = E_SOUP_AUTH_BEARER (auth);
+	}
 
 	if (retrying)
 		return;
@@ -1211,6 +1261,21 @@ send_and_handle_redirection (ECalBackendCalDAV *cbdav,
 		old_uri = soup_uri_to_string (soup_message_get_uri (msg), FALSE);
 
 	e_soup_ssl_trust_connect (msg, e_backend_get_source (E_BACKEND (cbdav)));
+
+	if (cbdav->priv->using_bearer_auth &&
+	    e_soup_auth_bearer_is_expired (cbdav->priv->using_bearer_auth)) {
+		GError *local_error = NULL;
+
+		if (!caldav_setup_bearer_auth (cbdav, cbdav->priv->using_bearer_auth, cancellable, &local_error)) {
+			if (local_error) {
+				soup_message_set_status_full (msg, SOUP_STATUS_BAD_REQUEST, local_error->message);
+				g_propagate_error (error, local_error);
+			} else {
+				soup_message_set_status (msg, SOUP_STATUS_BAD_REQUEST);
+			}
+			return;
+		}
+	}
 
 	soup_message_set_flags (msg, SOUP_MESSAGE_NO_REDIRECT);
 	soup_message_add_header_handler (msg, "got_body", "Location", G_CALLBACK (redirect_handler), cbdav->priv->session);
@@ -5526,6 +5591,7 @@ e_cal_backend_caldav_dispose (GObject *object)
 
 	g_clear_object (&priv->store);
 	g_clear_object (&priv->session);
+	g_clear_object (&priv->using_bearer_auth);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (parent_class)->dispose (object);

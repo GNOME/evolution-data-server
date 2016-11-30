@@ -63,6 +63,38 @@ e_source_credentials_provider_impl_google_can_prompt (ESourceCredentialsProvider
 }
 
 static gboolean
+e_source_credentials_google_util_store_secret_for_source_sync (ESource *source,
+							       const gchar *secret,
+							       gboolean permanently,
+							       GCancellable *cancellable,
+							       GError **error)
+{
+	gchar *uid = NULL, *label;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (secret != NULL, FALSE);
+
+	if (!e_source_credentials_google_util_generate_secret_uid (source, &uid)) {
+		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
+			/* Translators: The first %s is a display name of the source, the second is its UID. */
+			_("Source '%s' (%s) is not a valid Google source"),
+			e_source_get_display_name (source),
+			e_source_get_uid (source));
+		return FALSE;
+	}
+
+	label = g_strdup_printf ("Evolution Data Source - %s", strstr (uid, "::") + 2);
+
+	success = e_secret_store_store_sync (uid, secret, label, permanently, cancellable, error);
+
+	g_free (label);
+	g_free (uid);
+
+	return success;
+}
+
+static gboolean
 e_source_credentials_google_util_get_access_token_from_secret (const gchar *secret,
 							       gchar **out_access_token)
 {
@@ -95,25 +127,17 @@ e_source_credentials_google_util_get_access_token_from_secret (const gchar *secr
 }
 
 static gboolean
-e_source_credentials_provider_impl_google_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
-						       ESource *source,
-						       GCancellable *cancellable,
-						       ENamedParameters **out_credentials,
-						       GError **error)
+e_source_credentials_google_util_lookup_secret_for_source_sync (ESource *source,
+								GCancellable *cancellable,
+								ENamedParameters **out_credentials,
+								GError **error)
 {
 	gchar *uid = NULL, *secret = NULL, *access_token = NULL;
 
-	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_GOOGLE (provider_impl), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (out_credentials != NULL, FALSE);
 
 	*out_credentials = NULL;
-
-	if (!e_source_credentials_google_is_supported ()) {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-			_("Google authentication is not supported"));
-		return FALSE;
-	}
 
 	if (!e_source_credentials_google_util_generate_secret_uid (source, &uid)) {
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
@@ -149,6 +173,28 @@ e_source_credentials_provider_impl_google_lookup_sync (ESourceCredentialsProvide
 }
 
 static gboolean
+e_source_credentials_provider_impl_google_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
+						       ESource *source,
+						       GCancellable *cancellable,
+						       ENamedParameters **out_credentials,
+						       GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_GOOGLE (provider_impl), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+	g_return_val_if_fail (out_credentials != NULL, FALSE);
+
+	*out_credentials = NULL;
+
+	if (!e_source_credentials_google_is_supported ()) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Google authentication is not supported"));
+		return FALSE;
+	}
+
+	return e_source_credentials_google_util_lookup_secret_for_source_sync (source, cancellable, out_credentials, error);
+}
+
+static gboolean
 e_source_credentials_provider_impl_google_store_sync (ESourceCredentialsProviderImpl *provider_impl,
 						      ESource *source,
 						      const ENamedParameters *credentials,
@@ -156,9 +202,6 @@ e_source_credentials_provider_impl_google_store_sync (ESourceCredentialsProvider
 						      GCancellable *cancellable,
 						      GError **error)
 {
-	gchar *uid = NULL, *label;
-	gboolean success;
-
 	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_GOOGLE (provider_impl), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (credentials != NULL, FALSE);
@@ -170,25 +213,9 @@ e_source_credentials_provider_impl_google_store_sync (ESourceCredentialsProvider
 		return FALSE;
 	}
 
-	if (!e_source_credentials_google_util_generate_secret_uid (source, &uid)) {
-		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
-			/* Translators: The first %s is a display name of the source, the second is its UID. */
-			_("Source '%s' (%s) is not a valid Google source"),
-			e_source_get_display_name (source),
-			e_source_get_uid (source));
-		return FALSE;
-	}
-
-	label = g_strdup_printf ("Evolution Data Source - %s", strstr (uid, "::") + 2);
-
-	success = e_secret_store_store_sync (uid,
+	return e_source_credentials_google_util_store_secret_for_source_sync (source,
 		e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_GOOGLE_SECRET),
-		label, permanently, cancellable, error);
-
-	g_free (label);
-	g_free (uid);
-
-	return success;
+		permanently, cancellable, error);
 }
 
 static gboolean
@@ -256,6 +283,268 @@ e_source_credentials_google_is_supported (void)
 #else
 	return FALSE;
 #endif
+}
+
+/* The "refresh token" code is mostly copied from e-credentials-prompter-impl-google.c,
+   which cannot be linked here, because the build dependency is opposite. */
+
+#define GOOGLE_TOKEN_URI "https://www.googleapis.com/oauth2/v3/token"
+
+static gchar *
+cpi_google_create_refresh_token_post_data (const gchar *refresh_token)
+{
+	g_return_val_if_fail (refresh_token != NULL, NULL);
+
+#ifdef ENABLE_GOOGLE_AUTH
+	return soup_form_encode (
+		"refresh_token", refresh_token,
+		"client_id", GOOGLE_CLIENT_ID,
+		"client_secret", GOOGLE_CLIENT_SECRET,
+		"grant_type", "refresh_token",
+		NULL);
+#else
+	return NULL;
+#endif
+}
+
+static void
+cpi_google_abort_session_cb (GCancellable *cancellable,
+			     SoupSession *session)
+{
+	soup_session_abort (session);
+}
+
+static guint
+cpi_google_post_data_sync (const gchar *uri,
+			   const gchar *post_data,
+			   /* ESourceRegistry *registry, */
+			   ESource *cred_source,
+			   GCancellable *cancellable,
+			   gchar **out_response_data)
+{
+	SoupSession *session;
+	SoupMessage *message;
+	guint status_code = SOUP_STATUS_CANCELLED;
+
+	g_return_val_if_fail (uri != NULL, SOUP_STATUS_MALFORMED);
+	g_return_val_if_fail (post_data != NULL, SOUP_STATUS_MALFORMED);
+	/* g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), SOUP_STATUS_MALFORMED); */
+	g_return_val_if_fail (E_IS_SOURCE (cred_source), SOUP_STATUS_MALFORMED);
+	g_return_val_if_fail (out_response_data != NULL, SOUP_STATUS_MALFORMED);
+
+	*out_response_data = NULL;
+
+	message = soup_message_new (SOUP_METHOD_POST, uri);
+	g_return_val_if_fail (message != NULL, SOUP_STATUS_MALFORMED);
+
+	soup_message_set_request (message, "application/x-www-form-urlencoded",
+		SOUP_MEMORY_TEMPORARY, post_data, strlen (post_data));
+
+	e_soup_ssl_trust_connect (message, cred_source);
+
+	session = soup_session_new ();
+	g_object_set (
+		session,
+		SOUP_SESSION_TIMEOUT, 90,
+		SOUP_SESSION_SSL_STRICT, TRUE,
+		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
+		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
+		NULL);
+
+	/* Oops, doesn't honor proxy settings (neither EWebDAVDiscover) */
+	/* cpi_google_setup_proxy_resolver (session, registry, cred_source); */
+
+	soup_message_headers_append (message->request_headers, "Connection", "close");
+
+	if (!g_cancellable_is_cancelled (cancellable)) {
+		gulong cancel_handler_id = 0;
+
+		if (cancellable)
+			cancel_handler_id = g_cancellable_connect (cancellable, G_CALLBACK (cpi_google_abort_session_cb), session, NULL);
+
+		status_code = soup_session_send_message (session, message);
+
+		if (cancel_handler_id)
+			g_cancellable_disconnect (cancellable, cancel_handler_id);
+	}
+
+	if (SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
+		if (message->response_body) {
+			*out_response_data = g_strndup (message->response_body->data, message->response_body->length);
+		} else {
+			status_code = SOUP_STATUS_MALFORMED;
+		}
+	}
+
+	g_object_unref (message);
+	g_object_unref (session);
+
+	return status_code;
+}
+
+static gboolean
+e_source_credentials_google_refresh_token_sync (ESource *source,
+						const ENamedParameters *credentials,
+						gchar **out_access_token,
+						gint *out_expires_in_seconds,
+						GCancellable *cancellable,
+						GError **error)
+{
+	const gchar *secret;
+	gchar *refresh_token = NULL;
+	gchar *post_data, *response_json = NULL;
+	guint soup_status;
+	gboolean success = FALSE;
+
+	secret = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_GOOGLE_SECRET);
+	if (!secret) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to get Google secret from credentials"));
+		return FALSE;
+	}
+
+	if (!e_source_credentials_google_util_decode_from_secret (secret, E_GOOGLE_SECRET_REFRESH_TOKEN, &refresh_token, NULL) ||
+	    !refresh_token || !*refresh_token) {
+		g_free (refresh_token);
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Refresh token not found in Google secret"));
+		return FALSE;
+	}
+
+	post_data = cpi_google_create_refresh_token_post_data (refresh_token);
+	g_warn_if_fail (post_data != NULL);
+	if (!post_data) {
+		g_free (refresh_token);
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to construct refresh_token request"));
+		return FALSE;
+	}
+
+	soup_status = cpi_google_post_data_sync (GOOGLE_TOKEN_URI, post_data, source, cancellable, &response_json);
+
+	if (SOUP_STATUS_IS_SUCCESSFUL (soup_status) && response_json) {
+		gchar *access_token = NULL, *expires_in = NULL;
+
+		if (e_source_credentials_google_util_decode_from_secret (response_json,
+			"access_token", &access_token,
+			"expires_in", &expires_in,
+			NULL) && access_token && expires_in) {
+			gint64 expires_after_tm, expires_in_tm;
+			gchar *expires_after;
+			gchar *new_secret = NULL;
+
+			expires_in_tm = g_ascii_strtoll (expires_in, NULL, 10) - 1;
+			expires_after_tm = g_get_real_time () / G_USEC_PER_SEC;
+			expires_after_tm += expires_in_tm;
+			expires_after = g_strdup_printf ("%" G_GINT64_FORMAT, expires_after_tm);
+
+			if (e_source_credentials_google_util_encode_to_secret (&new_secret,
+				E_GOOGLE_SECRET_REFRESH_TOKEN, refresh_token,
+				E_GOOGLE_SECRET_ACCESS_TOKEN, access_token,
+				E_GOOGLE_SECRET_EXPIRES_AFTER, expires_after, NULL)) {
+				/* Oops, always storing permanently, though it makes more sense here.
+				   Otherwise can read RememberPassword from [Authentication] and use
+				   it here. */
+				success = e_source_credentials_google_util_store_secret_for_source_sync (source,
+					new_secret, TRUE, cancellable, error);
+				g_free (new_secret);
+			} else {
+				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to encode new access token to Google secret"));
+			}
+
+			if (success) {
+				if (out_access_token)
+					*out_access_token = g_strdup (access_token);
+				if (out_expires_in_seconds)
+					*out_expires_in_seconds = expires_in_tm;
+			}
+		} else {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to get access token from refresh_token server response"));
+		}
+
+		g_free (access_token);
+		g_free (expires_in);
+	} else {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to refresh token"));
+	}
+
+	g_free (refresh_token);
+	g_free (response_json);
+	g_free (post_data);
+
+	return success;
+}
+
+static gboolean
+e_source_credentials_google_extract_from_credentials_valid_only (const ENamedParameters *credentials,
+								 gchar **out_access_token,
+								 gint *out_expires_in_seconds)
+{
+	gchar *access_token = NULL;
+	gint expires_in_seconds = -1;
+
+	if (!credentials)
+		return FALSE;
+
+	if (e_source_credentials_google_util_extract_from_credentials (credentials, &access_token, &expires_in_seconds)) {
+		if (expires_in_seconds <= 0) {
+			g_free (access_token);
+			access_token = NULL;
+		}
+	} else {
+		access_token = NULL;
+	}
+
+	/* The token exists and is valid, just use it. */
+	if (access_token) {
+		if (out_access_token)
+			*out_access_token = access_token;
+		else
+			g_free (access_token);
+
+		if (out_expires_in_seconds)
+			*out_expires_in_seconds = expires_in_seconds;
+
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+gboolean
+e_source_credentials_google_get_access_token_sync (ESource *source,
+						   const ENamedParameters *credentials,
+						   gchar **out_access_token,
+						   gint *out_expires_in_seconds,
+						   GCancellable *cancellable,
+						   GError **error)
+{
+	ENamedParameters *tmp_credentials = NULL;
+
+	g_return_val_if_fail (credentials != NULL, FALSE);
+
+	if (!e_source_credentials_google_is_supported ()) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+			_("Google authentication is not supported"));
+		return FALSE;
+	}
+
+	/* The token exists and is valid, just use it. */
+	if (e_source_credentials_google_extract_from_credentials_valid_only (credentials, out_access_token, out_expires_in_seconds)) {
+		return TRUE;
+	}
+
+	/* Maybe some other part refreshed the token already and stored it into the secret store,
+	   thus try to read it and use it, if it contains proper data.
+	*/
+	if (e_source_credentials_google_util_lookup_secret_for_source_sync (source, cancellable, &tmp_credentials, error) &&
+	    e_source_credentials_google_extract_from_credentials_valid_only (tmp_credentials, out_access_token, out_expires_in_seconds)) {
+		e_named_parameters_free (tmp_credentials);
+
+		return TRUE;
+	}
+
+	e_named_parameters_free (tmp_credentials);
+
+	/* Try to refresh the token */
+	return e_source_credentials_google_refresh_token_sync (source, credentials, out_access_token, out_expires_in_seconds, cancellable, error);
 }
 
 gboolean
@@ -465,10 +754,12 @@ e_source_credentials_google_util_extract_from_credentials (const ENamedParameter
 
 	if (out_expires_in_seconds) {
 		now = g_get_real_time () / G_USEC_PER_SEC;
-		if (now < expires_after_tm)
-			now = expires_after_tm;
+		if (expires_after_tm <= now)
+			expires_after_tm = now;
 
 		*out_expires_in_seconds = (gint) (expires_after_tm - now);
+		if (*out_expires_in_seconds > 0)
+			*out_expires_in_seconds = (*out_expires_in_seconds) - 1;
 	}
 
 	return TRUE;

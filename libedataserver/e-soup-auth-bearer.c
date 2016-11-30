@@ -56,17 +56,6 @@ G_DEFINE_TYPE (
 	e_soup_auth_bearer,
 	SOUP_TYPE_AUTH)
 
-static gboolean
-e_soup_auth_bearer_is_expired (ESoupAuthBearer *bearer)
-{
-	gboolean expired = FALSE;
-
-	if (bearer->priv->expiry != EXPIRY_INVALID)
-		expired = (bearer->priv->expiry < time (NULL));
-
-	return expired;
-}
-
 static void
 e_soup_auth_bearer_finalize (GObject *object)
 {
@@ -185,7 +174,7 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 	bearer->priv->access_token = g_strdup (access_token);
 
 	if (expires_in_seconds > 0)
-		bearer->priv->expiry = time (NULL) + expires_in_seconds;
+		bearer->priv->expiry = time (NULL) + expires_in_seconds - 1;
 	else
 		bearer->priv->expiry = EXPIRY_INVALID;
 
@@ -197,3 +186,24 @@ e_soup_auth_bearer_set_access_token (ESoupAuthBearer *bearer,
 			SOUP_AUTH_IS_AUTHENTICATED);
 }
 
+/**
+ * e_soup_auth_bearer_is_expired:
+ * @bearer: an #ESoupAuthBearer
+ *
+ * Returns: Whether the set token is expired. It is considered expired even
+ *   if the e_soup_auth_bearer_set_access_token() was called set yet.
+ *
+ * Since: 3.24
+ **/
+gboolean
+e_soup_auth_bearer_is_expired (ESoupAuthBearer *bearer)
+{
+	gboolean expired = TRUE;
+
+	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), TRUE);
+
+	if (bearer->priv->expiry != EXPIRY_INVALID)
+		expired = (bearer->priv->expiry <= time (NULL));
+
+	return expired;
+}

@@ -2915,10 +2915,8 @@ e_util_get_source_oauth2_access_token_sync (ESource *source,
 			source, cancellable, out_access_token,
 			out_expires_in_seconds, error);
 	} else if (g_strcmp0 (auth_method, "Google") == 0) {
-		success = TRUE;
-
-		e_source_credentials_google_util_extract_from_credentials (
-			credentials, out_access_token, out_expires_in_seconds);
+		success = e_source_credentials_google_get_access_token_sync (
+			source, credentials, out_access_token, out_expires_in_seconds, cancellable, error);
 	}
 
 	g_free (auth_method);
