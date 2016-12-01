@@ -4977,6 +4977,25 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	g_slist_free_full (fetch_summary_uids, (GDestroyNotify) camel_pstring_free);
 	g_hash_table_destroy (infos);
 
+	g_mutex_lock (&is->priv->changes_lock);
+
+	/* Notify about new messages, thus they are shown in the UI early. */
+	if (camel_folder_change_info_changed (is->priv->changes)) {
+		CamelFolderChangeInfo *changes;
+
+		changes = is->priv->changes;
+		is->priv->changes = camel_folder_change_info_new ();
+
+		g_mutex_unlock (&is->priv->changes_lock);
+
+		camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+		imapx_update_store_summary (folder);
+		camel_folder_changed (folder, changes);
+		camel_folder_change_info_free (changes);
+	} else {
+		g_mutex_unlock (&is->priv->changes_lock);
+	}
+
 	return success;
 }
 
