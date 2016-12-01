@@ -443,8 +443,12 @@ e_webdav_discover_check_successful (SoupMessage *message,
 			error_code = G_IO_ERROR_NOT_FOUND;
 			break;
 		case SOUP_STATUS_UNAUTHORIZED:
-		case SOUP_STATUS_PAYMENT_REQUIRED:
 		case SOUP_STATUS_FORBIDDEN:
+			g_set_error (
+				error, SOUP_HTTP_ERROR, message->status_code,
+				_("HTTP Error: %s"), message->reason_phrase);
+			return FALSE;
+		case SOUP_STATUS_PAYMENT_REQUIRED:
 			error_code = G_IO_ERROR_PERMISSION_DENIED;
 			break;
 		case SOUP_STATUS_REQUEST_TIMEOUT:
