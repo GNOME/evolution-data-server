@@ -22,7 +22,12 @@ set(PHONENUMBER_CXXFLAGS -DI18N_PHONENUMBERS_USE_BOOST)
 set(PHONENUMBER_LDFLAGS -lphonenumber)
 
 string(LENGTH "${CMAKE_BINARY_DIR}" bindirlen)
-string(SUBSTRING "${WITH_PHONENUMBER}" 0 ${bindirlen} substr)
+string(LENGTH "${WITH_PHONENUMBER}" maxlen)
+if(maxlen LESS bindirlen)
+	set(substr "***")
+else(maxlen LESS bindirlen)
+	string(SUBSTRING "${WITH_PHONENUMBER}" 0 ${bindirlen} substr)
+endif(maxlen LESS bindirlen)
 string(TOUPPER "${WITH_PHONENUMBER}" optupper)
 
 if(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
@@ -33,6 +38,7 @@ else(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}
 endif(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
 
 unset(bindirlen)
+unset(maxlen)
 unset(substr)
 unset(optupper)
 

@@ -1,7 +1,7 @@
 # Evolution-Data-Server build script
 
-cmake_minimum_required(VERSION 3.0)
-cmake_policy(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
+cmake_policy(VERSION 3.1)
 
 project(evolution-data-server
 	VERSION 3.23.3
@@ -217,7 +217,12 @@ add_printable_variable_path(WITH_DBUS_SERVICE_DIR "Set directory for D-Bus servi
 add_printable_variable_path(WITH_SYSTEMDUSERUNITDIR "Set directory for systemd user units, or 'no' to disable" "${CMAKE_INSTALL_PREFIX}/lib/systemd/user")
 
 string(LENGTH "${CMAKE_BINARY_DIR}" bindirlen)
-string(SUBSTRING "${WITH_SYSTEMDUSERUNITDIR}" 0 ${bindirlen} substr)
+string(LENGTH "${WITH_SYSTEMDUSERUNITDIR}" maxlen)
+if(maxlen LESS bindirlen)
+	set(substr "***")
+else(maxlen LESS bindirlen)
+	string(SUBSTRING "${WITH_SYSTEMDUSERUNITDIR}" 0 ${bindirlen} substr)
+endif(maxlen LESS bindirlen)
 string(TOUPPER "${WITH_SYSTEMDUSERUNITDIR}" optupper)
 
 if(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
@@ -230,6 +235,7 @@ else()
 endif()
 
 unset(bindirlen)
+unset(maxlen)
 unset(substr)
 unset(optupper)
 
