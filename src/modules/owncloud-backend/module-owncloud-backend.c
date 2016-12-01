@@ -380,6 +380,8 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 			g_hash_table_foreach (known_sources, owncloud_remove_unknown_sources_cb, server);
 			g_object_unref (server);
 		}
+
+		g_clear_error (&local_error);
 	}
 
 	if (local_error == NULL) {
