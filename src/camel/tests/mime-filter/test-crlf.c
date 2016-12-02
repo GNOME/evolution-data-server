@@ -62,7 +62,8 @@ test_case (gint test_num)
 		outfile = g_strdup_printf ("%s/crlf-%d.in", SOURCEDIR, 1);
 		break;
 	default:
-		break;
+		g_warn_if_reached ();
+		return;
 	}
 
 	camel_test_push ("Initializing objects");
