@@ -105,7 +105,14 @@ struct _CamelSExpResult {
 
 /**
  * CamelSExpFunc:
- * @argv: (inout) (array length=argc):
+ * @sexp: a #CamelSExp
+ * @argc: count of arguments
+ * @argv: (in) (array length=argc): array of values of the arguments
+ * @user_data: user data as passed to camel_sexp_add_function()
+ *
+ * Callback type for function symbols used with camel_sexp_add_function().
+ *
+ * Returns: Result of the function call, allocated by camel_sexp_result_new().
  *
  * Since: 3.4
  **/
@@ -117,12 +124,19 @@ typedef CamelSExpResult *
 
 /**
  * CamelSExpIFunc:
- * @argv: (inout) (array length=argc):
+ * @argc: count of arguments
+ * @argv: (in) (array length=argc): array of values of the arguments
+ * @user_data: user data as passed to camel_sexp_add_ifunction()
+ *
+ * Callback type for function symbols used with camel_sexp_add_ifunction().
+ *
+ * Returns: Result of the function call, allocated by camel_sexp_result_new().
  *
  * Since: 3.4
  **/
 typedef CamelSExpResult *
-			(*CamelSExpIFunc)	(CamelSExp *sexp, gint argc,
+			(*CamelSExpIFunc)	(CamelSExp *sexp,
+						 gint argc,
 						 CamelSExpTerm **argv,
 						 gpointer user_data);
 
@@ -222,11 +236,11 @@ void		camel_sexp_add_function		(CamelSExp *sexp,
 void		camel_sexp_add_ifunction	(CamelSExp *sexp,
 						 guint scope,
 						 const gchar *name,
-						 CamelSExpIFunc func,
+						 CamelSExpIFunc ifunc,
 						 gpointer user_data);
 void		camel_sexp_add_variable		(CamelSExp *sexp,
 						 guint scope,
-						 gchar *name,
+						 const gchar *name,
 						 CamelSExpTerm *value);
 void		camel_sexp_remove_symbol	(CamelSExp *sexp,
 						 guint scope,
@@ -248,7 +262,7 @@ CamelSExpResult *
 		camel_sexp_result_new		(CamelSExp *sexp,
 						 gint type);
 void		camel_sexp_result_free		(CamelSExp *sexp,
-						 CamelSExpResult *term);
+						 CamelSExpResult *result);
 
 /* used in normal functions if they have to abort, to free their arguments */
 void		camel_sexp_resultv_free		(CamelSExp *sexp,

@@ -147,12 +147,18 @@ const gchar *camel_html_parser_attr (CamelHTMLParser *hp, const gchar *name)
 
 /**
  * camel_html_parser_attr_list:
- * @values: (element-type utf8) (inout):
+ * @hp: a #CamelHTMLParser
+ * @values: (nullable) (element-type utf8) (inout): an output #GPtrArray with values, or %NULL
  *
- * Returns: (element-type utf8) (transfer none):
+ * Provides parsed array of values and attributes. Both arrays are
+ * owned by the @hp.
+ *
+ * Returns: (element-type utf8) (transfer none): a #GPtrArray of parsed attributes
  *
  **/
-const GPtrArray *camel_html_parser_attr_list (CamelHTMLParser *hp, const GPtrArray **values)
+const GPtrArray *
+camel_html_parser_attr_list (CamelHTMLParser *hp,
+			     const GPtrArray **values)
 {
 	if (values)
 		*values = hp->priv->values;

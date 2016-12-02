@@ -678,8 +678,16 @@ cs_getaddrinfo (gpointer data)
 
 /**
  * camel_getaddrinfo:
+ * @name: an address name to resolve
+ * @service: a service name to use
+ * @hints: (nullable): an #addrinfo hints, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
- * Returns: (transfer none):
+ * Resolves a host @name and returns an information about its address.
+ *
+ * Returns: (transfer full) (nullable): a newly allocated #addrinfo. Free it
+ *    with camel_freeaddrinfo() when done with it.
  *
  * Since: 2.22
  **/
@@ -754,12 +762,19 @@ camel_getaddrinfo (const gchar *name,
 
 /**
  * camel_freeaddrinfo:
+ * @host: (nullable): a host address information structure to free, or %NULL
+ *
+ * Frees a structure returned with camel_getaddrinfo(). It does
+ * nothing when the @host is %NULL.
  *
  * Since: 2.22
  **/
 void
 camel_freeaddrinfo (struct addrinfo *host)
 {
+	if (!host)
+		return;
+
 #ifdef NEED_ADDRINFO
 	while (host) {
 		struct addrinfo *next = host->ai_next;

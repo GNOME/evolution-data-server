@@ -1304,6 +1304,12 @@ camel_session_user_alert (CamelSession *session,
 
 /**
  * camel_session_lookup_addressbook:
+ * @session: a #CamelSession
+ * @name: a name/address to lookup for
+ *
+ * Looks up for the @name in address books.
+ *
+ * Returns: whether found the @name in any address book.
  *
  * Since: 2.22
  **/
@@ -1592,9 +1598,12 @@ camel_session_set_junk_headers (CamelSession *session,
 
 /**
  * camel_session_get_junk_headers:
+ * @session: a #CamelSession
+ *
+ * Returns: (element-type utf8 utf8) (transfer none): Currently used junk
+ *    headers as a hash table, previously set by camel_session_set_junk_headers().
  *
  * Since: 2.22
- * Returns: (element-type utf8 utf8) (transfer none):
  **/
 const GHashTable *
 camel_session_get_junk_headers (CamelSession *session)

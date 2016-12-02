@@ -3102,11 +3102,11 @@ header_references_decode_single (const gchar **in, GSList **list)
 
 /**
  * camel_header_references_decode:
- * @in:
+ * @in: References header value
  *
  * Generate a list of references, from most recent up.
  *
- * Returns: (element-type utf8) (transfer full):
+ * Returns: (element-type utf8) (transfer full): a list of references decoedd from @in
  **/
 GSList *
 camel_header_references_decode (const gchar *in)
@@ -3424,8 +3424,10 @@ header_decode_param_list (const gchar **in)
 
 /**
  * camel_header_param_list_decode:
+ * @in: (nullable): a header param value to decode
  *
- * Returns: (transfer full):
+ * Returns: (nullable) (transfer full): Decode list of parameters.
+ *    Free with camel_header_param_list_free() when done with it.
  **/
 struct _camel_header_param *
 camel_header_param_list_decode (const gchar *in)

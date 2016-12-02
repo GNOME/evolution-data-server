@@ -564,7 +564,7 @@ camel_vee_store_init (CamelVeeStore *vee_store)
  *
  * Create a new #CamelVeeStore object.
  *
- * Returns: new #CamelVeeStore object
+ * Returns: (transfer full): new #CamelVeeStore object
  **/
 CamelVeeStore *
 camel_vee_store_new (void)
@@ -574,10 +574,9 @@ camel_vee_store_new (void)
 
 /**
  * camel_vee_store_get_vee_data_cache:
+ * @vstore: a #CamelVeeStore
  *
- * FIXME Document me!
- *
- * Returns: (type CamelVeeFolder) (transfer none):
+ * Returns: (type CamelVeeFolder) (transfer none): the associated #CamelVeeDataCache
  *
  * Since: 3.6
  **/
@@ -591,10 +590,10 @@ camel_vee_store_get_vee_data_cache (CamelVeeStore *vstore)
 
 /**
  * camel_vee_store_get_unmatched_folder:
+ * @vstore: a #CamelVeeStore
  *
- * FIXME Document me!
- *
- * Returns: (transfer none):
+ * Returns: (transfer none): the Unmatched folder instance, or %NULL,
+ *    when it's disabled.
  *
  * Since: 3.6
  **/
@@ -611,8 +610,9 @@ camel_vee_store_get_unmatched_folder (CamelVeeStore *vstore)
 
 /**
  * camel_vee_store_get_unmatched_enabled:
+ * @vstore: a #CamelVeeStore
  *
- * FIXME Document me!
+ * Returns: whether Unmatched folder processing is enabled
  *
  * Since: 3.6
  **/
@@ -626,8 +626,10 @@ camel_vee_store_get_unmatched_enabled (CamelVeeStore *vstore)
 
 /**
  * camel_vee_store_set_unmatched_enabled:
+ * @vstore: a #CamelVeeStore
+ * @is_enabled: value to set
  *
- * FIXME Document me!
+ * Sets whether the Unmatched folder processing is enabled.
  *
  * Since: 3.6
  **/
@@ -686,11 +688,13 @@ add_to_unmatched_folder_cb (CamelVeeMessageInfoData *mi_data,
 
 /**
  * camel_vee_store_note_subfolder_used:
- * @vstore:
- * @subfolder:
- * @used_by: (type CamelVeeFolder):
+ * @vstore: a #CamelVeeStore
+ * @subfolder: a #CamelFolder
+ * @used_by: (type CamelVeeFolder): a #CamelVeeFolder
  *
- * FIXME Document me!
+ * Notes that the @subfolder is used by @used_by folder, which
+ * is used to determine what folders will be included in
+ * the Unmatched folders.
  *
  * Since: 3.6
  **/
@@ -768,11 +772,13 @@ remove_vuid_count_record_cb (CamelVeeMessageInfoData *mi_data,
 
 /**
  * camel_vee_store_note_subfolder_unused:
- * @vstore:
- * @subfolder:
- * @unused_by: (type CamelVeeFolder):
+ * @vstore: a #CamelVeeStore
+ * @subfolder: a #CamelFolder
+ * @unused_by: (type CamelVeeFolder): a #CamelVeeFolder
  *
- * FIXME Document me!
+ * This is a counter part of camel_vee_store_note_subfolder_used(). Once
+ * the @subfolder is claimed to be not used by all folders its message infos
+ * are removed from the Unmatched folder.
  *
  * Since: 3.6
  **/
@@ -820,11 +826,12 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 
 /**
  * camel_vee_store_note_vuid_used:
- * @vstore:
- * @mi_data:
- * @used_by: (type CamelVeeFolder):
+ * @vstore: a #CamelVeeStore
+ * @mi_data: a #CamelVeeMessageInfoData
+ * @used_by: (type CamelVeeFolder): a #CamelVeeFolder
  *
- * FIXME Document me!
+ * Notes the @mi_data is used by the @used_by virtual folder, which
+ * removes it from the Unmatched folder, if not used anywhere else.
  *
  * Since: 3.6
  **/
@@ -880,11 +887,13 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 
 /**
  * camel_vee_store_note_vuid_unused:
- * @vstore:
- * @mi_data:
- * @unused_by: (type CamelVeeFolder):
+ * @vstore: a #CamelVeeStore
+ * @mi_data: a #CamelVeeMessageInfoData
+ * @unused_by: (type CamelVeeFolder): a #CamelVeeFolder
  *
- * FIXME Document me!
+ * A counter part of camel_vee_store_note_vuid_used(). Once the @unused_by
+ * claims the @mi_data is not used by it anymore, and neither any other
+ * virtual folder is using it, then the Unmatched folder will have it added.
  *
  * Since: 3.6
  **/
@@ -1027,8 +1036,13 @@ vee_store_rebuild_unmatched_folder (CamelSession *session,
 
 /**
  * camel_vee_store_rebuild_unmatched_folder:
+ * @vstore: a #CamelVeeStore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
  *
- * FIXME Document me!
+ * Let's the @vstore know to rebuild the Unmatched folder. This is done
+ * as a separate job, when the @cancellable is %NULL, otherwise it's run
+ * synchronously.
  *
  * Since: 3.6
  **/

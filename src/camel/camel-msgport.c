@@ -240,6 +240,8 @@ msgport_sync_with_prpipe (PRFileDesc *prfd)
 /**
  * camel_msgport_new: (skip)
  *
+ * Returns: (transfer full): a new #CamelMsgPort
+ *
  * Since: 2.24
  **/
 CamelMsgPort *
@@ -259,6 +261,7 @@ camel_msgport_new (void)
 
 /**
  * camel_msgport_destroy: (skip)
+ * @msgport: a #CamelMsgPort
  *
  * Since: 2.24
  **/
@@ -282,6 +285,7 @@ camel_msgport_destroy (CamelMsgPort *msgport)
 
 /**
  * camel_msgport_fd: (skip)
+ * @msgport: a #CamelMsgPort
  *
  * Since: 2.24
  **/
@@ -303,6 +307,7 @@ camel_msgport_fd (CamelMsgPort *msgport)
 
 /**
  * camel_msgport_prfd: (skip)
+ * @msgport: a #CamelMsgPort
  *
  * Returns: (transfer none):
  *
@@ -326,6 +331,8 @@ camel_msgport_prfd (CamelMsgPort *msgport)
 
 /**
  * camel_msgport_push: (skip)
+ * @msgport: a #CamelMsgPort
+ * @msg: a #CamelMsg
  *
  * Since: 2.24
  **/
@@ -377,6 +384,7 @@ camel_msgport_push (CamelMsgPort *msgport,
 
 /**
  * camel_msgport_pop: (skip)
+ * @msgport: a #CamelMsgPort
  *
  * Since: 2.24
  **/
@@ -405,6 +413,7 @@ camel_msgport_pop (CamelMsgPort *msgport)
 
 /**
  * camel_msgport_try_pop: (skip)
+ * @msgport: a #CamelMsgPort
  *
  * Since: 2.24
  **/
@@ -460,6 +469,7 @@ camel_msgport_timeout_pop (CamelMsgPort *msgport,
 
 /**
  * camel_msgport_reply: (skip)
+ * @msg: a #CamelMsg
  *
  * Since: 2.24
  **/

@@ -176,7 +176,7 @@ camel_nntp_address_new (void)
 /**
  * camel_nntp_address_add:
  * @addr: nntp address object
- * @name:
+ * @name: a new NNTP address to add
  *
  * Add a new nntp address to the address object.  Duplicates are not added twice.
  *

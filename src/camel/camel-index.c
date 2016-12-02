@@ -204,8 +204,11 @@ camel_index_has_name (CamelIndex *idx,
 /**
  * camel_index_add_name:
  * @index: a #CamelIndex
+ * @name: a name to add
  *
- * Returns: (transfer none) (nullable):
+ * Returns: (transfer none) (nullable): a #CamelIndexName with
+ *    added given @name, or %NULL, when the @name could not be
+ *    added.
  **/
 CamelIndexName *
 camel_index_add_name (CamelIndex *index,
@@ -246,8 +249,10 @@ camel_index_write_name (CamelIndex *idx,
 /**
  * camel_index_find_name:
  * @index: a #CamelIndex
+ * @name: a name to find
  *
- * Returns: (transfer none) (nullable):
+ * Returns: (transfer none) (nullable): a #CamelIndexCursor with
+ *    the given @name, or %NULL< when not found.
  **/
 CamelIndexCursor *
 camel_index_find_name (CamelIndex *index,
@@ -266,26 +271,35 @@ camel_index_find_name (CamelIndex *index,
 		return NULL;
 }
 
+/**
+ * camel_index_delete_name:
+ * @index: a #CamelIndex
+ * @name: a name to delete
+ *
+ * Deletes the given @name from @index.
+ **/
 void
-camel_index_delete_name (CamelIndex *idx,
+camel_index_delete_name (CamelIndex *index,
                          const gchar *name)
 {
 	CamelIndexClass *class;
 
-	g_return_if_fail (CAMEL_IS_INDEX (idx));
+	g_return_if_fail (CAMEL_IS_INDEX (index));
 
-	class = CAMEL_INDEX_GET_CLASS (idx);
+	class = CAMEL_INDEX_GET_CLASS (index);
 	g_return_if_fail (class->delete_name != NULL);
 
-	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
-		class->delete_name (idx, name);
+	if ((index->state & CAMEL_INDEX_DELETED) == 0)
+		class->delete_name (index, name);
 }
 
 /**
  * camel_index_find:
  * @index: a #CamelIndex
+ * @word: a word to find
  *
- * Returns: (transfer none) (nullable):
+ * Returns: (transfer none) (nullable): a #CamelIndexCursor object with
+ *    the given @word, or %NULL, when not found
  **/
 CamelIndexCursor *
 camel_index_find (CamelIndex *index,
@@ -318,7 +332,8 @@ camel_index_find (CamelIndex *index,
  * camel_index_words:
  * @index: a #CamelIndex
  *
- * Returns: (transfer none) (nullable):
+ * Returns: (transfer none) (nullable): a #CamelIndexCursor containing
+ *    all words of the @index, or %NULL, when there are none
  **/
 CamelIndexCursor *
 camel_index_words (CamelIndex *index)

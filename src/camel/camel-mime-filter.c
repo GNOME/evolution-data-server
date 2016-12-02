@@ -296,7 +296,7 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
 /**
  * camel_mime_filter_backup:
  * @filter: a #CamelMimeFilter object
- * @data (array length=length): data buffer to backup
+ * @data: (array length=length): data buffer to backup
  * @length: length of @data
  *
  * Saves @data to be used as prespace input data to the next call to

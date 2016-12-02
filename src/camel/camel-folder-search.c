@@ -1725,7 +1725,7 @@ camel_folder_search_init (CamelFolderSearch *search)
  * Particular methods may be overriden by an implementation to
  * implement a search for any sort of backend.
  *
- * Returns: A new CamelFolderSearch widget.
+ * Returns: (transfer full): A new CamelFolderSearch intstance.
  **/
 CamelFolderSearch *
 camel_folder_search_new (void)
@@ -1905,8 +1905,8 @@ camel_folder_search_get_summary_empty (CamelFolderSearch *search)
 
 /**
  * camel_folder_search_set_body_index:
- * @search:
- * @body_index:
+ * @search: a #CamelFolderSearch
+ * @body_index: (nullable): a #CamelIndex
  *
  * Set the index representing the contents of all messages
  * in this folder.  If this is not set, then the folder implementation
@@ -1982,8 +1982,8 @@ free_pstring_array (GPtrArray *array)
 
 /**
  * camel_folder_search_count:
- * @search:
- * @expr:
+ * @search: a #CamelFolderSearch
+ * @expr: a search expression to run
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
  *
@@ -2144,8 +2144,8 @@ fail:
 
 /**
  * camel_folder_search_search:
- * @search:
- * @expr:
+ * @search: a #CamelFolderSearch
+ * @expr: a search expression to run
  * @uids: (element-type utf8): to search against, NULL for all uid's.
  * @cancellable: a #GCancellable
  * @error: return location for a #GError, or %NULL
@@ -2153,7 +2153,9 @@ fail:
  * Run a search.  Search must have had Folder already set on it, and
  * it must implement summaries.
  *
- * Returns: (element-type utf8) (transfer full):
+ * Returns: (element-type utf8) (transfer full): a #GPtrArray with matching UIDs,
+ *    or %NULL on error. Use camel_folder_search_free_result() to free it when
+ *    no longer needed.
  **/
 GPtrArray *
 camel_folder_search_search (CamelFolderSearch *search,
@@ -2327,13 +2329,17 @@ fail:
 
 /**
  * camel_folder_search_free_result:
- * @result: (element-type utf8):
+ * @search: a #CamelFolderSearch
+ * @result: (element-type utf8) (nullable): a result to free
+ *
+ * Frees result of camel_folder_search_search() call.
  **/
 void
 camel_folder_search_free_result (CamelFolderSearch *search,
                                  GPtrArray *result)
 {
-	free_pstring_array (result);
+	if (result)
+		free_pstring_array (result);
 }
 
 /**

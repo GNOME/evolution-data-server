@@ -650,9 +650,9 @@ thread_summary (CamelFolderThread *thread,
 
 /**
  * camel_folder_thread_messages_new: (skip)
- * @folder:
- * @uids: (element-type utf8): The subset of uid's to thread.  If NULL. then thread all
- * uid's in @folder.
+ * @folder: a #CamelFolder
+ * @uids: (element-type utf8): The subset of uid's to thread. If %NULL, then thread
+ *    all UID-s in the @folder
  * @thread_subject: thread based on subject also
  *
  * Thread a (subset) of the messages in a folder.  And sort the result
@@ -741,7 +741,10 @@ add_present_rec (CamelFolderThread *thread,
 
 /**
  * camel_folder_thread_messages_apply:
- * @uids:(element-type utf8) (transfer none):
+ * @thread: a #CamelFolderThread
+ * @uids: (element-type utf8) (transfer none): a #GPtrArray array of UID-s
+ *
+ * Adds new @uids into the threaded tree.
  **/
 void
 camel_folder_thread_messages_apply (CamelFolderThread *thread,
@@ -783,7 +786,7 @@ camel_folder_thread_messages_ref (CamelFolderThread *thread)
 
 /**
  * camel_folder_thread_messages_unref:
- * @thread:
+ * @thread: a #CamelFolderThread
  *
  * Free all memory associated with the thread descriptor @thread.
  **/

@@ -72,6 +72,14 @@ typedef struct _CamelFolderPrivate CamelFolderPrivate;
 
 /**
  * CamelFolderError:
+ * @CAMEL_FOLDER_ERROR_INVALID: a generic error about invalid operation with the folder
+ * @CAMEL_FOLDER_ERROR_INVALID_STATE: the folder is in an invalid state
+ * @CAMEL_FOLDER_ERROR_NON_EMPTY: the folder is not empty
+ * @CAMEL_FOLDER_ERROR_NON_UID: requested UID is not a UID
+ * @CAMEL_FOLDER_ERROR_INSUFFICIENT_PERMISSION: insufficient permissions for the requested operation
+ * @CAMEL_FOLDER_ERROR_INVALID_PATH: the folder path is invalid
+ * @CAMEL_FOLDER_ERROR_INVALID_UID: requested UID is invalid/cannot be found
+ * @CAMEL_FOLDER_ERROR_SUMMARY_INVALID: the folder's summary is invalid/broken
  *
  * Since: 2.32
  **/

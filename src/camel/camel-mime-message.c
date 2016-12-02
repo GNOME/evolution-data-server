@@ -1437,8 +1437,8 @@ cmm_dump_rec (CamelMimeMessage *msg,
 
 /**
  * camel_mime_message_dump:
- * @message:
- * @body:
+ * @message: a #CamelMimeMessage
+ * @body: whether to dump also message body
  *
  * Dump information about the mime message to stdout.
  *

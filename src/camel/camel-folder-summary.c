@@ -1259,8 +1259,13 @@ camel_folder_summary_get_hash (CamelFolderSummary *summary)
 
 /**
  * camel_folder_summary_peek_loaded:
+ * @summary: a #CamelFolderSummary
+ * @uid: a message UID to look for
  *
- * Returns: (nullable) (transfer full):
+ * Returns: (nullable) (transfer full): a #CamelMessageInfo for the given @uid,
+ *    if it's currently loaded in memoru, or %NULL otherwise. Unref the non-NULL
+ *    info with g_object_unref() when done with it.
+ *
  * Since: 2.26
  **/
 CamelMessageInfo *
@@ -1443,8 +1448,14 @@ gather_changed_uids (gpointer key,
 
 /**
  * camel_folder_summary_get_changed:
+ * @summary: a #CamelFolderSummary
  *
- * Returns: (element-type utf8) (transfer full):
+ * Returns an array of changed UID-s. A UID is considered changed
+ * when its corresponding CamelMesageInfo is 'dirty' or when it has
+ * set the #CAMEL_MESSAGE_FOLDER_FLAGGED flag.
+ *
+ * Returns: (element-type utf8) (transfer full): a #GPtrArray with changed UID-s.
+ *    Free it with camel_folder_summary_free_array() when no longer needed.
  *
  * Since: 2.24
  **/
@@ -1452,7 +1463,11 @@ GPtrArray *
 camel_folder_summary_get_changed (CamelFolderSummary *summary)
 {
 	GPtrArray *res;
-	GHashTable *hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
+	GHashTable *hash;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary), NULL);
+
+	hash = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	camel_folder_summary_lock (summary);
 
@@ -1729,6 +1744,13 @@ camel_folder_summary_prepare_fetch_all (CamelFolderSummary *summary,
 
 /**
  * camel_folder_summary_load:
+ * @summary: a #CamelFolderSummary
+ * @error: return location for a #GError, or %NULL
+ *
+ * Loads the summary from the disk. It also saves any pending
+ * changes first.
+ *
+ * Returns: whether succeeded
  *
  * Since: 3.24
  **/
@@ -2029,6 +2051,14 @@ save_message_infos_to_db (CamelFolderSummary *summary,
 
 /**
  * camel_folder_summary_save:
+ * @summary: a #CamelFolderSummary
+ * @error: return location for a #GError, or %NULL
+ *
+ * Saves the content of the @summary to disk. It does nothing,
+ * when the summary is not changed or when it doesn't support
+ * permanent save.
+ *
+ * Returns: whether succeeded
  *
  * Since: 3.24
  **/
@@ -2125,6 +2155,13 @@ camel_folder_summary_save (CamelFolderSummary *summary,
 
 /**
  * camel_folder_summary_header_save:
+ * @summary: a #CamelFolderSummary
+ * @error: return location for a #GError, or %NULL
+ *
+ * Saves summary header information into the disk. The function does
+ * nothing, if the summary doesn't support save to disk.
+ *
+ * Returns: whether succeeded
  *
  * Since: 3.24
  **/
@@ -2175,6 +2212,15 @@ camel_folder_summary_header_save (CamelFolderSummary *summary,
 
 /**
  * camel_folder_summary_header_load:
+ * @summary: a #CamelFolderSummary
+ * @store: a #CamelStore
+ * @folder_name: a folder name corresponding to @summary
+ * @error: return location for a #GError, or %NULL
+ *
+ * Loads a summary header for the @summary, which corresponds to @folder_name
+ * provided by @store.
+ *
+ * Returns: whether succeeded
  *
  * Since: 3.24
  **/
@@ -2496,8 +2542,11 @@ camel_folder_summary_touch (CamelFolderSummary *summary)
 /**
  * camel_folder_summary_clear:
  * @summary: a #CamelFolderSummary object
+ * @error: return location for a #GError, or %NULL
  *
  * Empty the summary contents.
+ *
+ * Returns: whether succeeded
  **/
 gboolean
 camel_folder_summary_clear (CamelFolderSummary *summary,

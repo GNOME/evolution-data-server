@@ -1482,7 +1482,7 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
  * camel_vee_folder_rebuild_folder:
  * @vfolder: Virtual Folder object
  * @subfolder: source CamelFolder to add to @vfolder
- * @cancellable:
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Rebuild the folder @subfolder, if it should be.
  **/

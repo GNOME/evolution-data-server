@@ -72,6 +72,11 @@ typedef struct _CamelServicePrivate CamelServicePrivate;
 
 /**
  * CamelServiceError:
+ * @CAMEL_SERVICE_ERROR_INVALID: a generic service error code
+ * @CAMEL_SERVICE_ERROR_URL_INVALID: the URL for the service is invalid
+ * @CAMEL_SERVICE_ERROR_UNAVAILABLE: the service is unavailable
+ * @CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE: failed to authenitcate
+ * @CAMEL_SERVICE_ERROR_NOT_CONNECTED: the service is not connected
  *
  * Since: 2.32
  **/

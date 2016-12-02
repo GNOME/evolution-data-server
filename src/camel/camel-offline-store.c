@@ -259,6 +259,14 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 
 /**
  * camel_offline_store_prepare_for_offline_sync:
+ * @store: a #CamelOfflineStore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Downloads messages for offline, when setup to do so and when
+ * the host is reachable.
+ *
+ * Returns: whether succeeded
  *
  * Since: 2.22
  **/

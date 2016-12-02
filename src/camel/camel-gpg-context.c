@@ -2679,7 +2679,7 @@ camel_gpg_context_get_always_trust (CamelGpgContext *context)
 /**
  * camel_gpg_context_set_always_trust:
  * @context: gpg context
- * @always_trust always truct flag
+ * @always_trust: always trust flag
  *
  * Sets the @always_trust flag on the gpg context which is used for
  * encryption.

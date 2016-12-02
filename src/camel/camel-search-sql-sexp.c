@@ -741,39 +741,48 @@ static struct {
 
 /**
  * camel_sexp_to_sql_sexp:
+ * @sexp: a search expression to convert
+ *
+ * Converts a search expression to an SQL 'WHERE' part statement,
+ * without the 'WHERE' keyword.
+ *
+ * Returns: (transfer full): a newly allocated string, an SQL 'WHERE' part statement,
+ *    or %NULL, when could not convert it. Free it with g_free(), when done with it.
  *
  * Since: 2.26
  **/
 gchar *
-camel_sexp_to_sql_sexp (const gchar *sql)
+camel_sexp_to_sql_sexp (const gchar *sexp)
 {
-	CamelSExp *sexp;
+	CamelSExp *sexpobj;
 	CamelSExpResult *r;
 	gint i;
 	gchar *res = NULL;
 	gboolean contains_unknown_column = FALSE;
 
-	sexp = camel_sexp_new ();
+	g_return_val_if_fail (sexp != NULL, NULL);
+
+	sexpobj = camel_sexp_new ();
 
 	for (i = 0; i < G_N_ELEMENTS (symbols); i++) {
 		if (symbols[i].immediate)
-			camel_sexp_add_ifunction (sexp, 0, symbols[i].name,
+			camel_sexp_add_ifunction (sexpobj, 0, symbols[i].name,
 					     (CamelSExpIFunc) symbols[i].func, &contains_unknown_column);
 		else
 			camel_sexp_add_function (
-				sexp, 0, symbols[i].name,
+				sexpobj, 0, symbols[i].name,
 				symbols[i].func, &contains_unknown_column);
 	}
 
-	camel_sexp_input_text (sexp, sql, strlen (sql));
-	if (camel_sexp_parse (sexp)) {
-		g_object_unref (sexp);
+	camel_sexp_input_text (sexpobj, sexp, strlen (sexp));
+	if (camel_sexp_parse (sexpobj)) {
+		g_object_unref (sexpobj);
 		return NULL;
 	}
 
-	r = camel_sexp_eval (sexp);
+	r = camel_sexp_eval (sexpobj);
 	if (!r) {
-		g_object_unref (sexp);
+		g_object_unref (sexpobj);
 		return NULL;
 	}
 
@@ -781,8 +790,8 @@ camel_sexp_to_sql_sexp (const gchar *sql)
 		res = g_strdup (r->value.string);
 	}
 
-	camel_sexp_result_free (sexp, r);
-	g_object_unref (sexp);
+	camel_sexp_result_free (sexpobj, r);
+	g_object_unref (sexpobj);
 
 	return res;
 }

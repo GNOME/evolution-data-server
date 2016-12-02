@@ -60,7 +60,7 @@ struct _CamelMemPool {
  * However, each allocation cannot be freed individually, only all
  * or nothing.
  *
- * Returns:
+ * Returns: (transfer full): a newly allocated #CamelMemPool
  *
  * Since: 2.32
  **/
@@ -96,7 +96,7 @@ camel_mempool_new (gint blocksize,
 /**
  * camel_mempool_alloc: (skip)
  * @pool: a #CamelMemPool
- * @size:
+ * @size: requested size to allocate
  *
  * Allocate a new data block in the mempool.  Size will
  * be rounded up to the mempool's alignment restrictions

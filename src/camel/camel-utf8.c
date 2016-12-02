@@ -26,8 +26,8 @@
 
 /**
  * camel_utf8_putc:
- * @ptr:
- * @c:
+ * @ptr: (inout): pointer to write the character to
+ * @c: a Unicode character to write
  *
  * Output a 32 bit unicode character as utf8 octets.  At most 4 octets will
  * be written to @ptr.  @ptr will be advanced to the next character position.
@@ -60,7 +60,7 @@ camel_utf8_putc (guchar **ptr,
 
 /**
  * camel_utf8_getc:
- * @ptr:
+ * @ptr: (inout): a pointer to read the characted from
  *
  * Get a Unicode character from a utf8 stream.  @ptr will be advanced
  * to the next character position.  Invalid utf8 characters will be

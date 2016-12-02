@@ -62,11 +62,14 @@
 
 /**
  * camel_lock_dot:
- * @path:
+ * @path: a path to lock
  * @error: return location for a #GError, or %NULL
  *
  * Create an exclusive lock using .lock semantics.
  * All locks are equivalent to write locks (exclusive).
+ *
+ * The function does nothing and returns success (zero),
+ * when dot locking had not been compiled.
  *
  * Returns: -1 on error, sets @ex appropriately.
  **/
@@ -158,9 +161,11 @@ camel_lock_dot (const gchar *path,
 
 /**
  * camel_unlock_dot:
- * @path:
+ * @path: a path to unlock
  *
  * Attempt to unlock a .lock lock.
+ *
+ * The function does nothing, when dot locking had not been compiled.
  **/
 void
 camel_unlock_dot (const gchar *path)
@@ -179,14 +184,17 @@ camel_unlock_dot (const gchar *path)
 
 /**
  * camel_lock_fcntl:
- * @fd:
- * @type:
+ * @fd: a file descriptor
+ * @type: a #CamelLockType
  * @error: return location for a #GError, or %NULL
  *
  * Create a lock using fcntl(2).
  *
  * @type is CAMEL_LOCK_WRITE or CAMEL_LOCK_READ,
  * to create exclusive or shared read locks
+ *
+ * The function does nothing and returns success (zero),
+ * when fcntl locking had not been compiled.
  *
  * Returns: -1 on error.
  **/
@@ -227,9 +235,11 @@ camel_lock_fcntl (gint fd,
 
 /**
  * camel_unlock_fcntl:
- * @fd:
+ * @fd: a file descriptor
  *
  * Unlock an fcntl lock.
+ *
+ * The function does nothing, when fcntl locking had not been compiled.
  **/
 void
 camel_unlock_fcntl (gint fd)
@@ -247,14 +257,17 @@ camel_unlock_fcntl (gint fd)
 
 /**
  * camel_lock_flock:
- * @fd:
- * @type:
+ * @fd: a file descriptor
+ * @type: a #CamelLockType
  * @error: return location for a #GError, or %NULL
  *
  * Create a lock using flock(2).
  *
  * @type is CAMEL_LOCK_WRITE or CAMEL_LOCK_READ,
  * to create exclusive or shared read locks
+ *
+ * The function does nothing and returns success (zero),
+ * when flock locking had not been compiled.
  *
  * Returns: -1 on error.
  **/
@@ -287,9 +300,11 @@ camel_lock_flock (gint fd,
 
 /**
  * camel_unlock_flock:
- * @fd:
+ * @fd: a file descriptor
  *
  * Unlock an flock lock.
+ *
+ * The function does nothing, when flock locking had not been compiled.
  **/
 void
 camel_unlock_flock (gint fd)

@@ -1338,9 +1338,11 @@ G_DEFINE_QUARK (camel-folder-error-quark, camel_folder_error)
 /**
  * camel_folder_set_lock_async:
  * @folder: a #CamelFolder
- * @skip_folder_lock:
+ * @skip_folder_lock: a value to set
  *
- * FIXME Document me!
+ * Sets whether folder locking (camel_folder_lock() and camel_folder_unlock())
+ * should be used. When set to %FALSE, the two functions do nothing and simply
+ * return.
  *
  * Since: 2.30
  **/
@@ -1355,6 +1357,13 @@ camel_folder_set_lock_async (CamelFolder *folder,
 
 /**
  * camel_folder_get_filename:
+ * @folder: a #CamelFolder
+ * @uid: a message UID
+ * @error: return location for a #GError, or %NULL
+ *
+ * Returns: (transfer full): a file name corresponding to a message
+ *   with UID @uid. Free the returned string with g_free(), when
+ *   no longer needed.
  *
  * Since: 2.26
  **/
@@ -2060,6 +2069,7 @@ camel_folder_free_uids (CamelFolder *folder,
  * camel_folder_get_uncached_uids:
  * @folder: a #CamelFolder
  * @uids: (element-type utf8): the array of uids to filter down to uncached ones.
+ * @error: return location for a #GError, or %NULL
  *
  * Returns the known-uncached uids from a list of uids. It may return uids
  * which are locally cached but should never filter out a uid which is not

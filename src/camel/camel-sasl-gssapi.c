@@ -578,6 +578,7 @@ camel_sasl_gssapi_is_available (void)
 
 /**
  * camel_sasl_gssapi_override_host_and_user:
+ * @sasl: a #CamelSaslGssapi
  * @override_host: (nullable): Host name to use during challenge processing; can be %NULL
  * @override_user: (nullable): User name to use during challenge processing; can be %NULL
  *

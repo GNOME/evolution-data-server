@@ -81,11 +81,19 @@ simple_data_wrapper_construct_from_parser (CamelDataWrapper *dw,
 
 /**
  * camel_mime_part_construct_content_from_parser:
+ * @mime_part: a #CamelMimePart
+ * @mp: a #CamelMimeParser
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Constructs the contnet of @mime_part from the given mime parser.
+ *
+ * Returns: whether succeeded
  *
  * Since: 2.24
  **/
 gboolean
-camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
+camel_mime_part_construct_content_from_parser (CamelMimePart *mime_part,
                                                CamelMimeParser *mp,
                                                GCancellable *cancellable,
                                                GError **error)
@@ -95,7 +103,7 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 	gchar *encoding;
 	gboolean success = TRUE;
 
-	g_return_val_if_fail (CAMEL_IS_MIME_PART (dw), FALSE);
+	g_return_val_if_fail (CAMEL_IS_MIME_PART (mime_part), FALSE);
 
 	ct = camel_mime_parser_content_type (mp);
 
@@ -140,9 +148,8 @@ camel_mime_part_construct_content_from_parser (CamelMimePart *dw,
 		if (encoding)
 			camel_data_wrapper_set_encoding (content, camel_transfer_encoding_from_string (encoding));
 
-		/* would you believe you have to set this BEFORE you set the content object???  oh my god !!!! */
-		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (dw));
-		camel_medium_set_content ((CamelMedium *) dw, content);
+		camel_data_wrapper_set_mime_type_field (content, camel_mime_part_get_content_type (mime_part));
+		camel_medium_set_content (CAMEL_MEDIUM (mime_part), content);
 		g_object_unref (content);
 	}
 

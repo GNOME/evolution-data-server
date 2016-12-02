@@ -82,6 +82,7 @@ typedef enum {
 
 /**
  * CamelError:
+ * @CAMEL_ERROR_GENERIC: a generic (fallback) error code
  *
  * Since: 2.32
  **/

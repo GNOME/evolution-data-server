@@ -1291,7 +1291,7 @@ camel_message_info_get_folder_flagged (const CamelMessageInfo *mi)
 /**
  * camel_message_info_set_folder_flagged:
  * @mi: a #CamelMessageInfo
- * folder_flagged: a value to set to
+ * @folder_flagged: a value to set to
  *
  * Changes the folder-flagged flag to the @folder_flagged value. See
  * camel_message_info_get_folder_flagged() for more information about
@@ -1880,6 +1880,7 @@ camel_message_info_get_user_tag (const CamelMessageInfo *mi,
 /**
  * camel_message_info_dup_user_tag:
  * @mi: a #CamelMessageInfo
+ * @name: user tag name
  *
  * Returns: (transfer full) (nullable): Value of the user tag as newly allocated
  *   string, or %NULL when it is not set. Free it with g_free() when no longer needed.

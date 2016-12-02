@@ -164,6 +164,12 @@ static const GScannerConfig scanner_config =
 
 /**
  * camel_sexp_fatal_error:
+ * @sexp: a #CamelSExp
+ * @why: a string format to use
+ * @...: parameters for the format
+ *
+ * Sets an error from the given format and stops execution.
+ * Int replaces previously set error, if any.
  *
  * Since: 3.4
  **/
@@ -189,6 +195,9 @@ camel_sexp_fatal_error (CamelSExp *sexp,
 
 /**
  * camel_sexp_error:
+ * @sexp: a #CamelSExp
+ *
+ * Returns: (nullable): Set error string on the @sexp, or %NULL, when none is set
  *
  * Since: 3.4
  **/
@@ -200,6 +209,11 @@ camel_sexp_error (CamelSExp *sexp)
 
 /**
  * camel_sexp_result_new: (skip)
+ * @sexp: a #CamelSExp
+ * @type: type of the result, one of #CamelSExpResultType
+ *
+ * Returns: (transfer full): A new #CamelSExpResult result structure, associated with @sexp.
+ *    Free with camel_sexp_result_free(), when no longer needed.
  *
  * Since: 3.4
  **/
@@ -220,37 +234,47 @@ camel_sexp_result_new (CamelSExp *sexp,
 
 /**
  * camel_sexp_result_free:
+ * @sexp: a #CamelSExp
+ * @result: (nullable): a #CamelSExpResult to free
+ *
+ * Frees the @result and its internal data. Does nothing,
+ * when the @result is %NULL.
  *
  * Since: 3.4
  **/
 void
 camel_sexp_result_free (CamelSExp *sexp,
-                        CamelSExpResult *term)
+                        CamelSExpResult *result)
 {
-	if (term == NULL)
+	if (result == NULL)
 		return;
 
-	switch (term->type) {
+	switch (result->type) {
 	case CAMEL_SEXP_RES_ARRAY_PTR:
-		g_ptr_array_free (term->value.ptrarray, TRUE);
+		g_ptr_array_free (result->value.ptrarray, TRUE);
 		break;
 	case CAMEL_SEXP_RES_BOOL:
 	case CAMEL_SEXP_RES_INT:
 	case CAMEL_SEXP_RES_TIME:
 		break;
 	case CAMEL_SEXP_RES_STRING:
-		g_free (term->value.string);
+		g_free (result->value.string);
 		break;
 	case CAMEL_SEXP_RES_UNDEFINED:
 		break;
 	default:
 		g_return_if_reached ();
 	}
-	camel_memchunk_free (sexp->priv->result_chunks, term);
+	camel_memchunk_free (sexp->priv->result_chunks, result);
 }
 
 /**
  * camel_sexp_resultv_free:
+ * @sexp: a #CamelSExp
+ * @argc: a count of the @argv
+ * @argv: (array length=argc): an array of #CamelSExpResult to free
+ *
+ * Frees an array of results.
  *
  * Since: 3.4
  **/
@@ -769,6 +793,13 @@ term_eval_begin (CamelSExp *sexp,
 
 /**
  * camel_sexp_term_eval: (skip)
+ * @sexp: a #CamelSExp
+ * @term: a #CamelSExpTerm to evaluate
+ *
+ * Evaluates a part of the expression.
+ *
+ * Returns: (transfer full): a newly allocated result of the evaluation. Free
+ *    the returned pointer with camel_sexp_result_free(), when no longer needed.
  *
  * Since: 3.4
  **/
@@ -1289,6 +1320,9 @@ parse_values (CamelSExp *sexp,
 
 /**
  * camel_sexp_parse_value: (skip)
+ * @sexp: a #CamelSExp
+ *
+ * Returns: (nullable) (transfer none): a #CamelSExpTerm of the next token, or %NULL when there is none.
  *
  * Since: 3.4
  **/
@@ -1545,6 +1579,8 @@ camel_sexp_init (CamelSExp *sexp)
 /**
  * camel_sexp_new:
  *
+ * Returns: (transfer full): a new #CamelSExp
+ *
  * Since: 3.4
  **/
 CamelSExp *
@@ -1555,7 +1591,14 @@ camel_sexp_new (void)
 
 /**
  * camel_sexp_add_function:
- * @func: (scope call):
+ * @sexp: a #CamelSExp
+ * @scope: a scope
+ * @name: a function name
+ * @func: (scope call) (closure user_data): a function callback
+ * @user_data: user data for @func
+ *
+ * Adds a function symbol which can not perform short evaluation.
+ * Use camel_sexp_add_ifunction() for functions which can.
  *
  * Since: 3.4
  **/
@@ -1584,7 +1627,15 @@ camel_sexp_add_function (CamelSExp *sexp,
 
 /**
  * camel_sexp_add_ifunction:
- * @func: (scope call):
+ * @sexp: a #CamelSExp
+ * @scope: a scope
+ * @name: a function name
+ * @ifunc: (scope call) (closure user_data): a function callback
+ * @user_data: user data for @ifunc
+ *
+ * Adds a function symbol which can perform short evaluation,
+ * or doesn't execute everything. Use camel_sexp_add_function()
+ * for any other types of the function symbols.
  *
  * Since: 3.4
  **/
@@ -1613,13 +1664,19 @@ camel_sexp_add_ifunction (CamelSExp *sexp,
 
 /**
  * camel_sexp_add_variable:
+ * @sexp: a #CamelSExp
+ * @scope: a scope
+ * @name: a variable name
+ * @value: a variable value, as a #CamelSExpTerm
+ *
+ * Adds a variable named @name to the given @scope, set to the given @value.
  *
  * Since: 3.4
  **/
 void
 camel_sexp_add_variable (CamelSExp *sexp,
                          guint scope,
-                         gchar *name,
+                         const gchar *name,
                          CamelSExpTerm *value)
 {
 	CamelSExpSymbol *sym;
@@ -1637,6 +1694,11 @@ camel_sexp_add_variable (CamelSExp *sexp,
 
 /**
  * camel_sexp_remove_symbol:
+ * @sexp: a #CamelSExp
+ * @scope: a scope
+ * @name: a symbol name
+ *
+ * Revoes a symbol from a scope.
  *
  * Since: 3.4
  **/
@@ -1663,6 +1725,12 @@ camel_sexp_remove_symbol (CamelSExp *sexp,
 
 /**
  * camel_sexp_set_scope:
+ * @sexp: a #CamelSExp
+ * @scope: a scope to set
+ *
+ * sets the current scope for the scanner.
+ *
+ * Returns: the previous scope id
  *
  * Since: 3.4
  **/
@@ -1677,6 +1745,11 @@ camel_sexp_set_scope (CamelSExp *sexp,
 
 /**
  * camel_sexp_input_text:
+ * @sexp: a #CamelSExp
+ * @text: a text buffer to scan
+ * @len: the length of the text buffer
+ *
+ * Prepares to scan a text buffer.
  *
  * Since: 3.4
  **/
@@ -1693,6 +1766,10 @@ camel_sexp_input_text (CamelSExp *sexp,
 
 /**
  * camel_sexp_input_file:
+ * @sexp: a #CamelSExp
+ * @fd: a file descriptor
+ *
+ * Prepares to scan a file.
  *
  * Since: 3.4
  **/
@@ -1707,6 +1784,7 @@ camel_sexp_input_file (CamelSExp *sexp,
 
 /**
  * camel_sexp_parse:
+ * @sexp: a #CamelSExp
  *
  * Since: 3.4
  **/
@@ -1730,6 +1808,7 @@ camel_sexp_parse (CamelSExp *sexp)
 
 /**
  * camel_sexp_eval: (skip)
+ * @sexp: a #CamelSExp
  *
  * Since: 3.4
  **/
@@ -1749,7 +1828,7 @@ camel_sexp_eval (CamelSExp *sexp)
 
 /**
  * e_cal_backend_sexp_evaluate_occur_times:
- * @f: An #CamelSExp object.
+ * @sexp: a #CamelSExp
  * @start: Start of the time window will be stored here.
  * @end: End of the time window will be stored here.
  *
@@ -1792,8 +1871,8 @@ camel_sexp_evaluate_occur_times (CamelSExp *sexp,
 
 /**
  * camel_sexp_encode_bool:
- * @string:
- * @v_bool:
+ * @string: Destination #GString
+ * @v_bool: the value
  *
  * Encode a bool into an s-expression @string.  Bools are
  * encoded using #t #f syntax.
@@ -1812,7 +1891,7 @@ camel_sexp_encode_bool (GString *string,
 
 /**
  * camel_sexp_encode_string:
- * @string: Destination string.
+ * @string: Destination #Gstring
  * @v_string: String expression.
  *
  * Add a c string @v_string to the s-expression stored in
