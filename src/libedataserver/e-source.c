@@ -84,6 +84,7 @@
 #include "e-source-alarms.h"
 #include "e-source-authentication.h"
 #include "e-source-autocomplete.h"
+#include "e-source-autoconfig.h"
 #include "e-source-calendar.h"
 #include "e-source-camel.h"
 #include "e-source-collection.h"
@@ -2371,6 +2372,7 @@ e_source_class_init (ESourceClass *class)
 	g_type_ensure (E_TYPE_SOURCE_ALARMS);
 	g_type_ensure (E_TYPE_SOURCE_AUTHENTICATION);
 	g_type_ensure (E_TYPE_SOURCE_AUTOCOMPLETE);
+	g_type_ensure (E_TYPE_SOURCE_AUTOCONFIG);
 	g_type_ensure (E_TYPE_SOURCE_CALENDAR);
 	g_type_ensure (E_TYPE_SOURCE_COLLECTION);
 	g_type_ensure (E_TYPE_SOURCE_CONTACTS);

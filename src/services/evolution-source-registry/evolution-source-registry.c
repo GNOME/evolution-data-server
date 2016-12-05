@@ -51,6 +51,9 @@ gboolean	evolution_source_registry_migrate_imap_to_imapx
 						 const gchar *uid);
 void		evolution_source_registry_migrate_proxies
 						(ESourceRegistryServer *server);
+gboolean	evolution_source_registry_merge_autoconfig_sources
+						(ESourceRegistryServer *server,
+						 GError **error);
 
 static void
 evolution_source_registry_load_error (ESourceRegistryServer *server,
@@ -128,6 +131,14 @@ evolution_source_registry_load_sources (ESourceRegistryServer *server,
 					GDBusConnection *connection)
 {
 	GError *error = NULL;
+
+	if (!evolution_source_registry_merge_autoconfig_sources (server, &error)) {
+		e_source_registry_debug_print (
+			"Autoconfig: evolution_source_registry_merge_autoconfig_sources() failed: %s",
+			error ? error->message : "Unknown error");
+	}
+
+	g_clear_error (&error);
 
 	/* Failure here is fatal.  Don't even try to keep going. */
 	evolution_source_registry_load_all (server, &error);

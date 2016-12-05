@@ -48,6 +48,7 @@
 #include <libedataserver/e-source-alarms.h>
 #include <libedataserver/e-source-authentication.h>
 #include <libedataserver/e-source-autocomplete.h>
+#include <libedataserver/e-source-autoconfig.h>
 #include <libedataserver/e-source-backend.h>
 #include <libedataserver/e-source-calendar.h>
 #include <libedataserver/e-source-camel.h>

@@ -76,6 +76,7 @@ set(SOURCES
 	e-source-alarms.c
 	e-source-authentication.c
 	e-source-autocomplete.c
+	e-source-autoconfig.c
 	e-source-backend.c
 	e-source-calendar.c
 	e-source-camel.c
@@ -153,6 +154,7 @@ set(HEADERS
 	e-source-alarms.h
 	e-source-authentication.h
 	e-source-autocomplete.h
+	e-source-autoconfig.h
 	e-source-backend.h
 	e-source-calendar.h
 	e-source-camel.h
