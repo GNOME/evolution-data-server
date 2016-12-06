@@ -1525,11 +1525,27 @@ gdata_gd_postal_address_from_attribute (EVCardAttribute *attr,
 		value = value->next;
 		if (!value)
 			return address;
-		gdata_gd_postal_address_set_house_name (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
+		label = (*((gchar *) value->data) != '\0') ? value->data : NULL;
 		value = value->next;
-		if (!value)
+		if (!value) {
+			gdata_gd_postal_address_set_street (address, label);
 			return address;
-		gdata_gd_postal_address_set_street (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
+		}
+		if (label) {
+			const gchar *value_str = (*((gchar *) value->data) != '\0') ? value->data : NULL;
+
+			if (value_str) {
+				gchar *tmp;
+
+				tmp = g_strconcat (value_str, "\n", label, NULL);
+				gdata_gd_postal_address_set_street (address, tmp);
+				g_free (tmp);
+			} else {
+				gdata_gd_postal_address_set_street (address, label);
+			}
+		} else {
+			gdata_gd_postal_address_set_street (address, (*((gchar *) value->data) != '\0') ? value->data : NULL);
+		}
 		value = value->next;
 		if (!value)
 			return address;
