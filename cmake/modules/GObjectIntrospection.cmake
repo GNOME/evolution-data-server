@@ -211,6 +211,9 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 	_gir_list_prefix(_gir_extra_libdirs ${gir_extra_libdirs_var} "--library-path=")
 	_gir_list_prefix(_gir_deps ${gir_deps_var} "--include-uninstalled=")
 
+	string(REGEX MATCHALL "-L[^ ]*"
+		_extra_library_path "${CMAKE_SHARED_LINKER_FLAGS}")
+
 	set(INTROSPECTION_SCANNER_ARGS
 		--add-include-path=${CMAKE_BINARY_DIR}
 		--add-include-path=${CMAKE_BINARY_DIR}/src
@@ -225,6 +228,7 @@ macro(gir_add_introspection_simple gir_library pkg_export_prefix gir_library_ver
 		${_gir_identifies_prefixes}
 		${_gir_deps}
 		--library-path=${LIB_INSTALL_DIR}
+		${_extra_library_path}
 		--pkg-export ${pkg_export_prefix}-${gir_library_version}
 		--c-include=${c_include}
 		--cflags-begin
