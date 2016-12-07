@@ -1095,6 +1095,9 @@ folder_changed (CamelFolder *folder,
 	g_mutex_unlock (&folder->priv->change_lock);
 
 	parent_store = camel_folder_get_parent_store (folder);
+	if (!parent_store)
+		return;
+
 	session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
 	if (!session)
 		return;
@@ -2485,24 +2488,25 @@ camel_folder_changed (CamelFolder *folder,
 		SignalClosure *signal_closure;
 
 		parent_store = camel_folder_get_parent_store (folder);
+		if (parent_store) {
+			service = CAMEL_SERVICE (parent_store);
+			session = camel_service_ref_session (service);
 
-		service = CAMEL_SERVICE (parent_store);
-		session = camel_service_ref_session (service);
+			if (session) {
+				pending_changes = camel_folder_change_info_new ();
+				folder->priv->pending_changes = pending_changes;
 
-		if (session) {
-			pending_changes = camel_folder_change_info_new ();
-			folder->priv->pending_changes = pending_changes;
+				signal_closure = g_slice_new0 (SignalClosure);
+				signal_closure->folder = g_object_ref (folder);
 
-			signal_closure = g_slice_new0 (SignalClosure);
-			signal_closure->folder = g_object_ref (folder);
+				camel_session_idle_add (
+					session, G_PRIORITY_LOW,
+					folder_emit_changed_cb,
+					signal_closure,
+					(GDestroyNotify) signal_closure_free);
 
-			camel_session_idle_add (
-				session, G_PRIORITY_LOW,
-				folder_emit_changed_cb,
-				signal_closure,
-				(GDestroyNotify) signal_closure_free);
-
-			g_object_unref (session);
+				g_object_unref (session);
+			}
 		}
 	}
 
