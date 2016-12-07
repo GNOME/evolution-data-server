@@ -66,7 +66,7 @@ struct _CamelVeeFolderPrivate {
 
 	/* only set-up if our parent is a vee-store, used also as a flag to
 	 * say that this folder is part of the unmatched folder */
-	CamelVeeStore *parent_vee_store;
+	gpointer parent_vee_store; /* CamelVeeStore *, weak pointer */
 
 	CamelVeeDataCache *vee_data_cache;
 };
@@ -553,15 +553,14 @@ subfolder_deleted (CamelFolder *subfolder,
 static void
 vee_folder_dispose (GObject *object)
 {
+	CamelVeeFolder *vfolder;
 	CamelFolder *folder;
 
 	folder = CAMEL_FOLDER (object);
+	vfolder = CAMEL_VEE_FOLDER (object);
 
 	/* parent's class frees summary on dispose, thus depend on it */
 	if (camel_folder_get_folder_summary (folder)) {
-		CamelVeeFolder *vfolder;
-
-		vfolder = CAMEL_VEE_FOLDER (object);
 		vfolder->priv->destroyed = TRUE;
 
 		camel_folder_freeze ((CamelFolder *) vfolder);
@@ -570,6 +569,11 @@ vee_folder_dispose (GObject *object)
 			camel_vee_folder_remove_folder (vfolder, subfolder, NULL);
 		}
 		camel_folder_thaw ((CamelFolder *) vfolder);
+	}
+
+	if (vfolder->priv->parent_vee_store) {
+		g_object_remove_weak_pointer (G_OBJECT (vfolder->priv->parent_vee_store), &vfolder->priv->parent_vee_store);
+		vfolder->priv->parent_vee_store = NULL;
 	}
 
 	/* Chain up to parent's dispose () method. */
@@ -1288,6 +1292,8 @@ camel_vee_folder_construct (CamelVeeFolder *vf,
 	if (vf->priv->parent_vee_store) {
 		const gchar *user_data_dir;
 		gchar *state_file, *folder_name, *filename;
+
+		g_object_add_weak_pointer (G_OBJECT (vf->priv->parent_vee_store), &vf->priv->parent_vee_store);
 
 		user_data_dir = camel_service_get_user_data_dir (CAMEL_SERVICE (parent_store));
 
