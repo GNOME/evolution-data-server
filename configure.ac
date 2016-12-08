@@ -1612,6 +1612,17 @@ if test "x$enable_google" = xyes; then
 	if `$PKG_CONFIG --atleast-version=0.15.1 libgdata`; then
 		have_gdata_0_15_1=yes
 	fi
+
+	AC_MSG_CHECKING([for libgdata GTasks pagination functions])
+	save_cflags=$CFLAGS; CFLAGS="$GDATA_CFLAGS"
+	save_libs=$LIBS; LIBS="$GDATA_LIBS"
+	AC_LINK_IFELSE([AC_LANG_PROGRAM(
+		[[#include <gdata/gdata.h>]],
+		[[const gchar *next_page_token; next_page_token = gdata_feed_get_next_page_token (NULL); gdata_tasks_query_set_page_token (NULL, next_page_token);]])],
+		[AC_DEFINE(HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS, 1, [Define to 1 when the libgdata provides GTasks pagination functions]) ac_cv_have_gdgtpf=yes],[ac_cv_have_gdgtpf=no])
+	CFLAGS=$save_cflags
+	LIBS=$save_libs
+	AC_MSG_RESULT([$ac_cv_have_gdgtpf])
 fi
 AM_CONDITIONAL(HAVE_GOOGLE, [test x$enable_google = xyes])
 AM_CONDITIONAL(HAVE_GDATA_0_15_1, [test x$have_gdata_0_15_1 = xyes])
