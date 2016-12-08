@@ -776,6 +776,22 @@ add_printable_option(ENABLE_GOOGLE "Enable Google support" ON)
 if(ENABLE_GOOGLE)
 	pkg_check_modules_for_option(ENABLE_GOOGLE "Google" LIBGDATA libgdata>=${libgdata_minimum_version})
 	set(HAVE_LIBGDATA ON)
+
+	set(CMAKE_REQUIRED_DEFINITIONS ${LIBGDATA_CFLAGS_OTHER})
+	set(CMAKE_REQUIRED_INCLUDES ${LIBGDATA_INCLUDE_DIRS})
+	set(CMAKE_REQUIRED_LIBRARIES ${LIBGDATA_LDFLAGS})
+
+	CHECK_C_SOURCE_COMPILES("#include <gdata/gdata.h>
+				int main(void) {
+					const gchar *next_page_token;
+					next_page_token = gdata_feed_get_next_page_token (NULL);
+					gdata_tasks_query_set_page_token (NULL, next_page_token);
+					return 0;
+				}" HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS)
+
+	unset(CMAKE_REQUIRED_DEFINITIONS)
+	unset(CMAKE_REQUIRED_INCLUDES)
+	unset(CMAKE_REQUIRED_LIBRARIES)
 endif(ENABLE_GOOGLE)
 
 # ******************************

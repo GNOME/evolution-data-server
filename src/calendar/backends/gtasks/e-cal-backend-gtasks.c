@@ -445,8 +445,7 @@ ecb_gtasks_update_thread (gpointer user_data)
 	cancellable = ecb_gtasks_ref_cancellable (gtasks);
 
 	tasks_query = gdata_tasks_query_new (NULL);
-	gdata_query_set_start_index (GDATA_QUERY (tasks_query), 0);
-	gdata_query_set_max_results (GDATA_QUERY (tasks_query), G_MAXINT);
+	gdata_query_set_max_results (GDATA_QUERY (tasks_query), 100);
 	gdata_tasks_query_set_show_completed (tasks_query, TRUE);
 	gdata_tasks_query_set_show_hidden (tasks_query, TRUE);
 
@@ -461,7 +460,12 @@ ecb_gtasks_update_thread (gpointer user_data)
 	if (!local_error)
 		e_backend_ensure_source_status_connected (E_BACKEND (gtasks));
 
+#ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
+	while (feed && !g_cancellable_is_cancelled (cancellable) && !local_error) {
+		const gchar *next_page_token;
+#else
 	if (feed) {
+#endif
 		GList *link;
 		const gchar *uid;
 
@@ -532,6 +536,19 @@ ecb_gtasks_update_thread (gpointer user_data)
 		e_cal_backend_store_thaw_changes (gtasks->priv->store);
 
 		PROPERTY_UNLOCK (gtasks);
+
+#ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
+		next_page_token = gdata_feed_get_next_page_token (feed);
+		if (!next_page_token || !*next_page_token)
+			break;
+
+		gdata_tasks_query_set_page_token (tasks_query, next_page_token);
+
+		g_clear_object (&feed);
+
+		feed = gdata_tasks_service_query_tasks (gtasks->priv->service, gtasks->priv->tasklist,
+			GDATA_QUERY (tasks_query), cancellable, NULL, NULL, &local_error);
+#endif
 	}
 
 	g_clear_object (&tasks_query);
