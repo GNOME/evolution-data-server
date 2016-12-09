@@ -52,6 +52,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSI
 	COMMAND ${VAPIGEN}
 		--vapidir=${CMAKE_CURRENT_SOURCE_DIR}
 		--vapidir=${CMAKE_CURRENT_BINARY_DIR}
+		--girdir=${CMAKE_BINARY_DIR}/src/camel
 		--girdir=${CMAKE_BINARY_DIR}/src/libedataserver
 		--pkg gio-2.0
 		--pkg libxml-2.0
@@ -78,6 +79,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libebook-contacts-${API_VE
 	COMMAND ${VAPIGEN}
 		--vapidir=${CMAKE_CURRENT_SOURCE_DIR}
 		--vapidir=${CMAKE_CURRENT_BINARY_DIR}
+		--girdir=${CMAKE_BINARY_DIR}/src/camel
 		--girdir=${CMAKE_BINARY_DIR}/src/libedataserver
 		--pkg libedataserver-${API_VERSION}
 		--pkg gio-2.0
@@ -108,6 +110,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libebook-${API_VERSION}.va
 	COMMAND ${VAPIGEN}
 		--vapidir=${CMAKE_CURRENT_SOURCE_DIR}
 		--vapidir=${CMAKE_CURRENT_BINARY_DIR}
+		--girdir=${CMAKE_BINARY_DIR}/src/camel
 		--girdir=${CMAKE_BINARY_DIR}/src/libedataserver
 		--girdir=${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts
 		--pkg libedataserver-${API_VERSION}

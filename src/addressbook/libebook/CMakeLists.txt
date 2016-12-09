@@ -107,12 +107,14 @@ set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/addressbook/libedata-book
 )
 set(gir_libs
+	camel
 	ebook
 	ebook-contacts
 	edata-book
 	edataserver
 )
 set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
 	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
 	${CMAKE_BINARY_DIR}/src/addressbook/libebook-contacts/EBookContacts-${API_VERSION}.gir
 )

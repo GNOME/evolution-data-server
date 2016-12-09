@@ -148,6 +148,7 @@ set(gir_libs
 	edataserver
 )
 set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
 	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
 )
 

@@ -123,13 +123,13 @@ struct _CamelCipherCertInfo {
 struct _CamelCipherValidity {
 	GQueue children;
 
-	struct {
+	struct _sign {
 		CamelCipherValiditySign status;
 		gchar *description;
 		GQueue signers;	/* CamelCipherCertInfo's */
 	} sign;
 
-	struct {
+	struct _encrypt {
 		CamelCipherValidityEncrypt status;
 		gchar *description;
 		GQueue encrypters;	/* CamelCipherCertInfo's */

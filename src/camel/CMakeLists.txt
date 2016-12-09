@@ -329,11 +329,6 @@ set(gir_libdirs)
 set(gir_libs camel)
 set(gir_deps)
 
-# Remove the below set() once the typelib will be buildable; the gi-r-compiler crashes with
-#    ERROR:girepository/girparser.c:343:state_switch: assertion failed: (ctx->state != newstate)
-gir_construct_names(Camel ${API_VERSION} camel_gir_name camel_gir_vars_prefix)
-set(${camel_gir_vars_prefix}_SKIP_TYPELIB ON)
-
 gir_add_introspection_simple(
 	Camel
 	camel
