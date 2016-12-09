@@ -124,6 +124,7 @@ typedef CamelSExpResult *
 
 /**
  * CamelSExpIFunc:
+ * @sexp: a #CamelSExp
  * @argc: count of arguments
  * @argv: (in) (array length=argc): array of values of the arguments
  * @user_data: user data as passed to camel_sexp_add_ifunction()

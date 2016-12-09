@@ -164,14 +164,17 @@ camel_maildir_summary_init (CamelMaildirSummary *maildir_summary)
 /**
  * camel_maildir_summary_new:
  * @folder: parent folder.
- * @index: Index if one is reqiured.
+ * @maildirdir: a maildir directory for the new summary
+ * @index: (nullable): an optional #CamelIndex to use, or %NULL
  *
  * Create a new CamelMaildirSummary object.
  *
- * Returns: A new #CamelMaildirSummary object.
+ * Returns: (transfer full): A new #CamelMaildirSummary object
  **/
-CamelMaildirSummary
-*camel_maildir_summary_new(struct _CamelFolder *folder, const gchar *maildirdir, CamelIndex *index)
+CamelMaildirSummary *
+camel_maildir_summary_new (struct _CamelFolder *folder,
+			   const gchar *maildirdir,
+			   CamelIndex *index)
 {
 	CamelMaildirSummary *o;
 

@@ -165,10 +165,15 @@ get_uids_for_subfolder (gpointer key,
 
 /**
  * camel_vee_summary_get_uids_for_subfolder:
+ * @summary: a #CamelVeeSummary
+ * @subfolder: a #CamelFolder
  *
- * FIXME Document me!
+ * Returns a hash table of all virtual message info UID-s known to the @summary.
+ * The key of the hash table is the virtual message info UID, the value is
+ * only the number 1.
  *
- * Returns: (element-type utf8 utf8) (transfer container):
+ * Returns: (element-type utf8 gint) (transfer container): a #GHashTable with
+ *    all the virtual mesasge info UID-s knwn to the @summary.
  *
  * Since: 3.6
  **/
@@ -254,8 +259,11 @@ camel_vee_summary_add (CamelVeeSummary *summary,
 
 /**
  * camel_vee_summary_remove:
+ * @summary: a #CamelVeeSummary
+ * @vuid: a virtual message info UID to remove
+ * @subfolder: a #CamelFolder to which @vuid belongs
  *
- * FIXME Document me!
+ * Removes the given @vuid of the @subfolder from the @summary.
  *
  * Since: 3.6
  **/

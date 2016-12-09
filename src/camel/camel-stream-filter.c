@@ -418,10 +418,12 @@ camel_stream_filter_init (CamelStreamFilter *stream)
 
 /**
  * camel_stream_filter_new:
+ * @source: a #CamelStream to filter
  *
- * Create a new #CamelStreamFilter object.
+ * Create a new #CamelStreamFilter object. The @source stream
+ * is referenced, thus the caller can unref it, if not needed.
  *
- * Returns: a new #CamelStreamFilter object.
+ * Returns: (transfer full): a new #CamelStreamFilter object.
  *
  * Since: 2.32
  **/

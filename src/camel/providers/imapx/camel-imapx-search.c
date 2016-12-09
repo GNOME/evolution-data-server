@@ -670,7 +670,7 @@ camel_imapx_search_ref_store (CamelIMAPXSearch *search)
 /**
  * camel_imapx_search_set_store:
  * @search: a #CamelIMAPXSearch
- * @imapx_server: a #CamelIMAPXStore, or %NULL
+ * @imapx_store: a #CamelIMAPXStore, or %NULL
  *
  * Sets a #CamelIMAPXStore to use for server-side searches. Generally
  * this is set for the duration of a single search when online, and then

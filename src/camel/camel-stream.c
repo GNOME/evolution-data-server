@@ -633,6 +633,7 @@ camel_stream_eos (CamelStream *stream)
  * camel_stream_write_string:
  * @stream: a #CamelStream object
  * @string: a string
+ * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Writes the string to the stream.

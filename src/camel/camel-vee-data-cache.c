@@ -125,8 +125,13 @@ vee_subfolder_data_hash_folder (CamelFolder *folder,
 
 /**
  * camel_vee_subfolder_data_new:
+ * @folder: a #CamelFolder for which create the object
  *
- * FIXME Document me!
+ * Creates a new #CamelVeeSubfolderData object for the given @folder.
+ * The @folder is referenced for later use.
+ *
+ * Returns: (transfer full): a new #CamelVeeSubfolderData. Use g_object_unref()
+ *    to unref it, when no longer needed.
  *
  * Since: 3.6
  **/
@@ -151,10 +156,9 @@ camel_vee_subfolder_data_new (CamelFolder *folder)
 
 /**
  * camel_vee_subfolder_data_get_folder:
+ * @data: a CamelVeeSubfolderData
  *
- * FIXME Document me!
- *
- * Returns: (transfer none):
+ * Returns: (transfer none): a #CamelFolder to which this @data was created
  *
  * Since: 3.6
  **/
@@ -168,8 +172,9 @@ camel_vee_subfolder_data_get_folder (CamelVeeSubfolderData *data)
 
 /**
  * camel_vee_subfolder_data_get_folder_id:
+ * @data: a CamelVeeSubfolderData
  *
- * FIXME Document me!
+ * Returns: (transfer none): a folder ID for this subfolder @data
  *
  * Since: 3.6
  **/
@@ -251,8 +256,12 @@ camel_vee_message_info_data_init (CamelVeeMessageInfoData *data)
 
 /**
  * camel_vee_message_info_data_new:
+ * @subfolder_data: a #CamelVeeSubfolderData
+ * @orig_message_uid: original message info's UID
  *
- * FIXME Document me!
+ * Returns: (transfer full): a new #CamelVeeMessageInfoData which references
+ *    message info with UID @orig_message_uid froma folder managed by @subfolder_data.
+ *    Unref the returned object with g_object_unref(), when no longer needed.
  *
  * Since: 3.6
  **/
@@ -279,10 +288,10 @@ camel_vee_message_info_data_new (CamelVeeSubfolderData *subfolder_data,
 
 /**
  * camel_vee_message_info_data_get_subfolder_data:
+ * @data: a CamelVeeMessageInfoData
  *
- * FIXME Document me!
- *
- * Returns: (transfer none):
+ * Returns: (transfer none): A #CamelVeeSubfolderData for which
+ *    the @data had been created.
  *
  * Since: 3.6
  **/
@@ -296,8 +305,10 @@ camel_vee_message_info_data_get_subfolder_data (CamelVeeMessageInfoData *data)
 
 /**
  * camel_vee_message_info_data_get_orig_message_uid:
+ * @data: a CamelVeeMessageInfoData
  *
- * FIXME Document me!
+ * Returns: (transfer none): The original message info's UID, for which
+ *    the @data had been created.
  *
  * Since: 3.6
  **/
@@ -311,8 +322,10 @@ camel_vee_message_info_data_get_orig_message_uid (CamelVeeMessageInfoData *data)
 
 /**
  * camel_vee_message_info_data_get_vee_message_uid:
+ * @data: a CamelVeeMessageInfoData
  *
- * FIXME Document me!
+ * Returns: (transfer none): Message UID corresponding to this virtual
+ *    message info @data.
  *
  * Since: 3.6
  **/
@@ -441,7 +454,8 @@ camel_vee_data_cache_init (CamelVeeDataCache *data_cache)
 /**
  * camel_vee_data_cache_new:
  *
- * FIXME Document me!
+ * Returns: (transfer full): a new #CamelVeeDataCache; unref it
+ *    with g_object_unref(), when no longer needed.
  *
  * Since: 3.6
  **/
@@ -453,8 +467,13 @@ camel_vee_data_cache_new (void)
 
 /**
  * camel_vee_data_cache_add_subfolder:
+ * @data_cache: a #CamelVeeDataCache
+ * @subfolder: a #CamelFolder
  *
- * FIXME Document me!
+ * Adds the @subfolder to the @data_cache to be tracked by it. The @subfolder
+ * is referenced for later use. The function does nothing when the @subfolder
+ * is already in the @data_cache. The subfolders can be removed with
+ * camel_vee_data_cache_remove_subfolder().
  *
  * Since: 3.6
  **/
@@ -549,8 +568,13 @@ remove_orig_by_folder_cb (gpointer key,
 
 /**
  * camel_vee_data_cache_remove_subfolder:
+ * @data_cache: a #CamelVeeDataCache
+ * @subfolder: a #CamelFolder to remove
  *
- * FIXME Document me!
+ * Removes given @subfolder from the @data_cache, which had been
+ * previously added with camel_vee_data_cache_add_subfolder().
+ * The function does nothing, when the @subfolder is not part
+ * of the @data_cache.
  *
  * Since: 3.6
  **/
@@ -574,10 +598,13 @@ camel_vee_data_cache_remove_subfolder (CamelVeeDataCache *data_cache,
 
 /**
  * camel_vee_data_cache_get_subfolder_data:
+ * @data_cache: a #CamelVeeDataCache
+ * @folder: a #CamelFolder for which to return subfolder data
  *
- * FIXME Document me!
+ * Returns a #CamelVeeSubfolderData for the given @folder.
  *
- * Returns: (transfer full):
+ * Returns: (transfer full): a referenced #CamelVeeSubfolderData; unref it
+ *    with g_object_unref(), when no longer needed.
  *
  * Since: 3.6
  **/
@@ -607,10 +634,13 @@ camel_vee_data_cache_get_subfolder_data (CamelVeeDataCache *data_cache,
 
 /**
  * camel_vee_data_cache_contains_message_info_data:
+ * @data_cache: a #CamelVeeDataCache
+ * @folder: a #CamelFolder to which the @orig_message_uid belongs
+ * @orig_message_uid: a message UID from the @folder to check
  *
- * Returns whether data_cache contains certain UID for certain folder;
- * instead of camel_vee_data_cache_get_message_info_data() only
- * returns FALSE if not, while camel_vee_data_cache_get_message_info_data()
+ * Returns whether data_cache contains given @orig_message_uid for the given @folder.
+ * Unlike camel_vee_data_cache_get_message_info_data(), this only
+ * returns %FALSE if not, while camel_vee_data_cache_get_message_info_data()
  * auto-adds it to data_cache.
  *
  * Since: 3.6
@@ -644,10 +674,17 @@ camel_vee_data_cache_contains_message_info_data (CamelVeeDataCache *data_cache,
 
 /**
  * camel_vee_data_cache_get_message_info_data:
+ * @data_cache: a #CamelVeeDataCache
+ * @folder: a #CamelFolder to which the @orig_message_uid belongs
+ * @orig_message_uid: a message UID from the @folder to return
  *
- * FIXME Document me!
+ * Returns a referenced #CamelVeeMessageInfoData referencing the given @folder
+ * and @orig_message_uid. If it's not part of the @data_cache, then it is
+ * created and auto-added. Use camel_vee_data_cache_contains_message_info_data()
+ * when you only want to check the existence, without adding it to the @data_cache.
  *
- * Returns: (transfer full):
+ * Returns: (transfer full): a referenced #CamelVeeMessageInfoData; unref it
+ *    with g_object_unref(), when no longer needed.
  *
  * Since: 3.6
  **/
@@ -708,10 +745,13 @@ camel_vee_data_cache_get_message_info_data (CamelVeeDataCache *data_cache,
 
 /**
  * camel_vee_data_cache_get_message_info_data_by_vuid:
+ * @data_cache: a #CamelVeeDataCache
+ * @vee_message_uid: a message UID in the virtual folder
  *
- * FIXME Document me!
- *
- * Returns: (transfer full):
+ * Returns: (transfer full) (nullable): a referenced #CamelVeeMessageInfoData,
+ *    which corresponds to the given @vee_message_uid, or %NULL, when no such
+ *    message info with that virtual UID exists. Unref it with g_object_unref(),
+ *    when no longer needed.
  *
  * Since: 3.6
  **/
@@ -766,8 +806,12 @@ cvdc_foreach_mi_data_cb (gpointer key,
 
 /**
  * camel_vee_data_cache_foreach_message_info_data:
- * @func: (scope call) (closure user_data):
- * FIXME Document me!
+ * @data_cache: a #CamelVeeDataCache
+ * @fromfolder: a #CamelFolder
+ * @func: (scope call) (closure user_data): a #CamelForeachInfoData function to call
+ * @user_data: user data to pass to the @func
+ *
+ * Calls the @func for each message info data from the given @fromfolder
  *
  * Since: 3.6
  **/
@@ -795,8 +839,10 @@ camel_vee_data_cache_foreach_message_info_data (CamelVeeDataCache *data_cache,
 
 /**
  * camel_vee_data_cache_remove_message_info_data:
+ * @data_cache: a #CamelVeeDataCache
+ * @mi_data: a #CamelVeeMessageInfoData to remove
  *
- * FIXME Document me!
+ * Removes given @mi_data from the @data_cache.
  *
  * Since: 3.6
  **/

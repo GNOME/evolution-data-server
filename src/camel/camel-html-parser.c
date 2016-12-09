@@ -94,7 +94,7 @@ camel_html_parser_init (CamelHTMLParser *parser)
  *
  * Create a new CamelHTMLParser object.
  *
- * Returns: A new CamelHTMLParser widget.
+ * Returns: (transfer full): A new #CamelHTMLParser object
  **/
 CamelHTMLParser *
 camel_html_parser_new (void)

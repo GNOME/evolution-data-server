@@ -98,6 +98,8 @@ G_BEGIN_DECLS
 
 /**
  * CamelStoreError:
+ * @CAMEL_STORE_ERROR_INVALID: an invalid store operation had been requested
+ * @CAMEL_STORE_ERROR_NO_FOLDER: requested operation cannot be performed with the given folder
  *
  * Since: 2.32
  **/

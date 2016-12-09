@@ -146,10 +146,13 @@ camel_mbox_summary_init (CamelMboxSummary *mbox_summary)
 
 /**
  * camel_mbox_summary_new:
+ * @folder: a parent #CamelFolder
+ * @mbox_name: filename of the mbox
+ * @index: (nullable): an optional #CamelIndex to use, or %NULL
  *
- * Create a new CamelMboxSummary object.
+ * Create a new #CamelMboxSummary object.
  *
- * Returns: A new CamelMboxSummary widget.
+ * Returns: (transfer full): A new #CamelMboxSummary object
  **/
 CamelMboxSummary *
 camel_mbox_summary_new (CamelFolder *folder,

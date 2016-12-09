@@ -88,10 +88,13 @@ camel_mh_summary_init (CamelMhSummary *mh_summary)
 
 /**
  * camel_mh_summary_new:
+ * @folder: a parent #CamelFolder
+ * @mhdir: an MH directory for the new summary
+ * @index: (nullable): an optional #CamelIndex to use, or %NULL
  *
- * Create a new CamelMhSummary object.
+ * Create a new #CamelMhSummary object.
  *
- * Returns: A new #CamelMhSummary object.
+ * Returns: (transfer full): A new #CamelMhSummary object.
  **/
 CamelMhSummary *
 camel_mh_summary_new (CamelFolder *folder,

@@ -1334,9 +1334,8 @@ camel_vee_folder_get_flags (CamelVeeFolder *vf)
  * @full: the full path to the vfolder.
  * @flags: flags of some kind
  *
- * Create a new CamelVeeFolder object.
- *
- * Returns: A new CamelVeeFolder widget.
+ * Returns: (transfer full): A new @CamelVeeFolder object. Unref it
+ *    with g_object_unref() when no longer needed.
  **/
 CamelFolder *
 camel_vee_folder_new (CamelStore *parent_store,
@@ -1371,17 +1370,29 @@ camel_vee_folder_new (CamelStore *parent_store,
 	return (CamelFolder *) vf;
 }
 
+/**
+ * camel_vee_folder_set_expression:
+ * @vfolder: a #CamelVeeFolder
+ * @expression: an SExp expression to set
+ *
+ * Sets an SExp expression to be used for this @vfolder
+ *
+ * Since: 3.6
+ **/
 void
 camel_vee_folder_set_expression (CamelVeeFolder *vfolder,
-                                 const gchar *expr)
+                                 const gchar *expression)
 {
-	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->set_expression (vfolder, expr);
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+
+	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->set_expression (vfolder, expression);
 }
 
 /**
  * camel_vee_folder_get_expression:
+ * @vfolder: a #CamelVeeFolder
  *
- * FIXME Document me!
+ * Returns: (transfer none): a SExp expression used for this @vfolder
  *
  * Since: 3.6
  **/
@@ -1395,8 +1406,9 @@ camel_vee_folder_get_expression (CamelVeeFolder *vfolder)
 
 /**
  * camel_vee_folder_add_folder:
- * @vfolder: Virtual Folder object
+ * @vfolder: a #CamelVeeFolder
  * @subfolder: source CamelFolder to add to @vfolder
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Adds @subfolder as a source folder to @vfolder.
  **/
@@ -1445,8 +1457,9 @@ camel_vee_folder_add_folder (CamelVeeFolder *vfolder,
 
 /**
  * camel_vee_folder_remove_folder:
- * @vfolder: Virtual Folder object
+ * @vfolder: a #CamelVeeFolder
  * @subfolder: source CamelFolder to remove from @vfolder
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Removed the source folder, @subfolder, from the virtual folder, @vfolder.
  **/
@@ -1486,7 +1499,7 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
 
 /**
  * camel_vee_folder_rebuild_folder:
- * @vfolder: Virtual Folder object
+ * @vfolder: a #CamelVeeFolder
  * @subfolder: source CamelFolder to add to @vfolder
  * @cancellable: optional #GCancellable object, or %NULL
  *
@@ -1513,32 +1526,36 @@ remove_folders (CamelFolder *folder,
 
 /**
  * camel_vee_folder_set_folders:
- * @vf:
- * @folders: (element-type CamelFolder) (transfer none):
+ * @vfolder: a #CamelVeeFolder
+ * @folders: (element-type CamelFolder) (transfer none): a #GList of #CamelFolder to add
+ * @cancellable: optional #GCancellable object, or %NULL
  *
  * Set the whole list of folder sources on a vee folder.
  **/
 void
-camel_vee_folder_set_folders (CamelVeeFolder *vf,
+camel_vee_folder_set_folders (CamelVeeFolder *vfolder,
                               GList *folders,
                               GCancellable *cancellable)
 {
-	CamelVeeFolderPrivate *p = CAMEL_VEE_FOLDER_GET_PRIVATE (vf);
-	GHashTable *remove = g_hash_table_new (NULL, NULL);
+	GHashTable *remove;
 	GList *l, *to_add = NULL;
 	CamelFolder *folder;
 
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+
+	remove = g_hash_table_new (NULL, NULL);
+
 	/* setup a table of all folders we have currently */
-	g_rec_mutex_lock (&vf->priv->subfolder_lock);
-	l = p->subfolders;
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+	l = vfolder->priv->subfolders;
 	while (l) {
 		g_hash_table_insert (remove, l->data, l->data);
 		g_object_ref (l->data);
 		l = l->next;
 	}
-	g_rec_mutex_unlock (&vf->priv->subfolder_lock);
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
-	camel_folder_freeze (CAMEL_FOLDER (vf));
+	camel_folder_freeze (CAMEL_FOLDER (vfolder));
 
 	/* if we already have the folder, ignore it, otherwise mark to add it */
 	l = folders;
@@ -1553,25 +1570,28 @@ camel_vee_folder_set_folders (CamelVeeFolder *vf,
 	}
 
 	/* first remove any we still have */
-	g_hash_table_foreach (remove, (GHFunc) remove_folders, vf);
+	g_hash_table_foreach (remove, (GHFunc) remove_folders, vfolder);
 	g_hash_table_destroy (remove);
 
 	/* then add those new */
 	for (l = to_add; l; l = l->next) {
-		camel_vee_folder_add_folder (vf, l->data, cancellable);
+		camel_vee_folder_add_folder (vfolder, l->data, cancellable);
 	}
 	g_list_free_full (to_add, g_object_unref);
 
-	camel_folder_thaw (CAMEL_FOLDER (vf));
+	camel_folder_thaw (CAMEL_FOLDER (vfolder));
 }
 
 /**
  * camel_vee_folder_add_vuid:
- * @vfolder:
- * @mi_data: (type CamelVeeMessageInfoData):
- * @changes:
+ * @vfolder: a #CamelVeeFolder
+ * @mi_data: a #CamelVeeMessageInfoData to add
+ * @changes: (nullable): an optional #CamelFolderChangeInfo to update with the made change, or %NULL
  *
- * FIXME Document me!
+ * Adds the @mi_data to the @vfolder. The @changes can be
+ * updated with the made change and later used to notify others
+ * with came_folder_changed() on the @vfolder. This can be used
+ * only for the Unmatched folder.
  *
  * Since: 3.6
  **/
@@ -1621,11 +1641,14 @@ camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
 
 /**
  * camel_vee_folder_remove_vuid:
- * @vfolder:
- * @mi_data: (type CamelVeeMessageInfoData):
- * @changes:
+ * @vfolder: a #CamelVeeFolder
+ * @mi_data: a #CamelVeeMessageInfoData to remove
+ * @changes: (nullable): an optional #CamelFolderChangeInfo to update with the made change, or %NULL
  *
- * FIXME Document me!
+ * Removes given @mi_data from the @vfolder. The @changes can be
+ * updated with the made change and later used to notify others
+ * with came_folder_changed() on the @vfolder. This can be used
+ * only for the Unmatched folder.
  *
  * Since: 3.6
  **/
@@ -1680,14 +1703,15 @@ camel_vee_folder_remove_vuid (CamelVeeFolder *vfolder,
 
 /**
  * camel_vee_folder_get_location:
- * @vf:
- * @vinfo:
- * @realuid: if not NULL, set to the uid of the real message, must be
- * g_free'd by caller.
+ * @vf: a #CamelVeeFolder
+ * @vinfo: a #CamelVeeMessageInfo to search for
+ * @realuid: (out) (transfer full) (nullable): if not %NULL, set to the UID of the real message info
  *
- * Find the real folder (and uid)
+ * Find the real folder (and message info UID) for the given @vinfo.
+ * When the @realuid is not %NULL and it's set, then use g_free() to
+ * free it, when no longer needed.
  *
- * Returns: (transfer none):
+ * Returns: (transfer none): a real (not virtual) #CamelFolder, which the @vinfo is for.
  **/
 CamelFolder *
 camel_vee_folder_get_location (CamelVeeFolder *vf,
@@ -1725,15 +1749,16 @@ camel_vee_folder_get_location (CamelVeeFolder *vf,
 
 /**
  * camel_vee_folder_get_vee_uid_folder:
+ * @vfolder: a #CamelVeeFolder
+ * @vee_message_uid: a virtual message info UID
  *
- * FIXME Document me!
- *
- * Returns: (transfer none):
+ * Returns: (transfer none) (nullable): a #CamelFolder to which the @vee_message_info
+ *    belongs, or %NULL, when it could not be found.
  *
  * Since: 3.6
  **/
 CamelFolder *
-camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
+camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vfolder,
                                      const gchar *vee_message_uid)
 {
 	CamelFolder *res;
@@ -1741,12 +1766,12 @@ camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
 	CamelVeeMessageInfoData *mi_data;
 	CamelVeeSubfolderData *sf_data;
 
-	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (vf), NULL);
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (vfolder), NULL);
 	g_return_val_if_fail (vee_message_uid, NULL);
 
 	res = NULL;
 
-	data_cache = vee_folder_get_data_cache (vf);
+	data_cache = vee_folder_get_data_cache (vfolder);
 	g_return_val_if_fail (data_cache != NULL, NULL);
 
 	mi_data = camel_vee_data_cache_get_message_info_data_by_vuid (data_cache, vee_message_uid);
@@ -1761,8 +1786,11 @@ camel_vee_folder_get_vee_uid_folder (CamelVeeFolder *vf,
 
 /**
  * camel_vee_folder_set_auto_update:
+ * @vfolder: a #CamelVeeFolder
+ * @auto_update: a value to set
  *
- * FIXME Document me!
+ * Sets whether the @vfolder can automatically update when of its
+ * subfolders changes.
  *
  * Since: 3.6
  **/
@@ -1782,8 +1810,10 @@ camel_vee_folder_set_auto_update (CamelVeeFolder *vfolder,
 
 /**
  * camel_vee_folder_get_auto_update:
+ * @vfolder: a #CamelVeeFolder
  *
- * FIXME Document me!
+ * Returns: whether the @vfolder can automatically update when any
+ *    of its subfolders changes.
  *
  * Since: 3.6
  **/

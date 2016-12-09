@@ -255,11 +255,12 @@ camel_pop3_stream_init (CamelPOP3Stream *is)
 
 /**
  * camel_pop3_stream_new:
+ * @source: a #CamelStream to operate on
  *
- * Returns a NULL stream.  A null stream is always at eof, and
- * always returns success for all reads and writes.
+ * Creates a new #CamelPOP3Stream which operates on the @source.
+ * The @source stream is referenced for later use.
  *
- * Returns: the stream
+ * Returns: (transfer full): a new #CamelPOP3Stream
  **/
 CamelStream *
 camel_pop3_stream_new (CamelStream *source)

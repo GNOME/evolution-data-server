@@ -98,7 +98,7 @@ guint32		camel_vee_folder_get_flags		(CamelVeeFolder *vf);
 CamelFolder *	camel_vee_folder_get_location		(CamelVeeFolder *vf,
 							 const CamelVeeMessageInfo *vinfo,
 							 gchar **realuid);
-CamelFolder *	camel_vee_folder_get_vee_uid_folder	(CamelVeeFolder *vf,
+CamelFolder *	camel_vee_folder_get_vee_uid_folder	(CamelVeeFolder *vfolder,
 							 const gchar *vee_message_uid);
 void		camel_vee_folder_set_auto_update	(CamelVeeFolder *vfolder,
 							 gboolean auto_update);
@@ -109,7 +109,7 @@ void		camel_vee_folder_add_folder		(CamelVeeFolder *vfolder,
 void		camel_vee_folder_remove_folder		(CamelVeeFolder *vfolder,
 							 CamelFolder *subfolder,
 							 GCancellable *cancellable);
-void		camel_vee_folder_set_folders		(CamelVeeFolder *vf,
+void		camel_vee_folder_set_folders		(CamelVeeFolder *vfolder,
 							 GList *folders,
 							 GCancellable *cancellable);
 void		camel_vee_folder_add_vuid		(CamelVeeFolder *vfolder,
@@ -123,7 +123,7 @@ void		camel_vee_folder_rebuild_folder		(CamelVeeFolder *vfolder,
 							 CamelFolder *subfolder,
 							 GCancellable *cancellable);
 void		camel_vee_folder_set_expression		(CamelVeeFolder *vfolder,
-							 const gchar *expr);
+							 const gchar *expression);
 const gchar *	camel_vee_folder_get_expression		(CamelVeeFolder *vfolder);
 
 void		camel_vee_folder_ignore_next_changed_event

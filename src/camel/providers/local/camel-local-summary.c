@@ -372,13 +372,13 @@ camel_local_summary_add (CamelLocalSummary *cls,
 
 /**
  * camel_local_summary_write_headers:
- * @fd:
- * @headers:
- * @xevline:
- * @status:
- * @xstatus:
+ * @fd: a file descriptor to write to
+ * @headers: a #CamelNameValueArray with headers to write
+ * @xevline: (nullable): an optional value of X-Evolution header to add
+ * @status: (nullable): an optional value of Status header to add
+ * @xstatus: (nullable): an optional value of X-Status header to add
  *
- * Write a bunch of headers to the file @fd.  IF xevline is non NULL, then
+ * Write a bunch of headers to the file @fd.  If xevline is non NULL, then
  * an X-Evolution header line is created at the end of all of the headers.
  * If @status is non NULL, then a Status header line is also written.
  * The headers written are termianted with a blank line.

@@ -75,7 +75,7 @@ camel_nntp_store_summary_init (CamelNNTPStoreSummary *nntp_store_summary)
  *
  * Create a new CamelNNTPStoreSummary object.
  *
- * Returns: A new CamelNNTPStoreSummary widget.
+ * Returns: (transfer full): A new #CamelNNTPStoreSummary object
  **/
 CamelNNTPStoreSummary *
 camel_nntp_store_summary_new (void)
@@ -85,16 +85,16 @@ camel_nntp_store_summary_new (void)
 
 /**
  * camel_nntp_store_summary_full_name:
- * @s:
- * @full_name:
+ * @s: a #CamelNNTPStoreSummary
+ * @full_name: a full name of the summary item to search for
  *
  * Retrieve a summary item by full name.
  *
  * The returned #CamelNNTPStoreInfo is referenced for thread-safety and should
  * be unreferenced with camel_store_summary_info_unref() when finished with it.
  *
- * Returns: The summary item, or NULL if the @full_name name
- * is not available.
+ * Returns: (transfer full) (nullable): The summary item, or %NULL if the @full_name name
+ *    is not available.
  **/
 CamelNNTPStoreInfo *
 camel_nntp_store_summary_full_name (CamelNNTPStoreSummary *s,

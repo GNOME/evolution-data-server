@@ -231,7 +231,7 @@ camel_mime_parser_init (CamelMimeParser *parser)
  *
  * Create a new CamelMimeParser object.
  *
- * Returns: (transfer full): A new CamelMimeParser widget.
+ * Returns: (transfer full): A new #CamelMimeParser object
  **/
 CamelMimeParser *
 camel_mime_parser_new (void)
