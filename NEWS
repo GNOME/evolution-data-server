@@ -1,3 +1,46 @@
+Evolution-Data-Server 3.23.3 2016-12-12
+---------------------------------------
+
+Bug Fixes:
+	Bug 774331 - Use Unicode in translatable strings (Piotr Drąg)
+	Bug 774698 - [Camel] Do not drop leftover 'Deletes' table on open (Milan Crha)
+	Bug 772292 - [IMAPx] New mail not shown in UI until folder refresh (Milan Crha)
+	Bug 774496 - [POP3] Downloads messages multiple times with auto-fetch (Milan Crha)
+	Bug 774666 - Tell users how to keep messages on POP server indefinitely (Milan Crha)
+	Bug 775363 - Fails to build with minimum CMake version (Milan Crha)
+	Bug 775395 - Allow to override some (most) of the RPATH related settings (Dominique Leuenberger)
+	Bug 774841 - [EWebDAVDiscover] One part failure caused credentials reject (Milan Crha)
+	Bug 773156 - Allow system-wide ESource configurations (Autoconfig) (Iago López Galeiras)
+	Bug 775597 - Add -L flags set in LDFLAGS to g-ir-scanner command line (Ting-Wei Lan)
+	Bug 775618 - Contacts on Google does not accept a second address line (Milan Crha)
+	Bug 775699 - Only latest 100 tasks downloaded from the Google (Milan Crha)
+
+Miscellaneous:
+	Set also HAVE_KRB5 when found Kerberos 5 with pkg-config (Milan Crha)
+	[Camel] Consider NULL and empty arrays/sets equal (Milan Crha)
+	Correct const/no-const argument of the camel_message_info_set_dirty() (Milan Crha)
+	Do not propagate only folder-flagged flag change in CamelVeeMessageInfo (Milan Crha)
+	[IMAPx] Save also server user flags and tags into the folder summary (Milan Crha)
+	[IMAPx] Unnecessary local summary rewrites after folder update (Milan Crha)
+	[IMAPx] Local flag changes could be missed and left unsaved on the server (Milan Crha)
+	[Camel] Introduce camel_operation_new_proxy() (Milan Crha)
+	[IMAPx] Notify about new messages early during folder update (Milan Crha)
+	Fix a possible uninitialized variable use in a Camel test (Milan Crha)
+	Fix some of the gtk-doc warnings in Camel (Milan Crha)
+	Fix possible use-after-free in CamelVeeFolder with parent_vee_store (Milan Crha)
+	Test for parent_store availability around camel_folder_changed() (Milan Crha)
+	Let Camel build its .typelib for the introspection (Milan Crha)
+	Fix a vapigen warning from EDataServer-1.2.metadata (Milan Crha)
+	Make glib_mkenums() files depend on the source enum file (Milan Crha)
+
+Translations:
+	Mario Blättermann (de)
+	Piotr Drąg (pl)
+	Marek Cernocky (cs)
+	Daniel Mustieles (es)
+	Gábor Kelemen (hu)
+	Baurzhan Muftakhidinov (kk)
+
 Evolution-Data-Server 3.23.2 2016-11-21
 ---------------------------------------
 
