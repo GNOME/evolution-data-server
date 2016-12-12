@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.22.3 2016-12-12
+---------------------------------------
+
+Bug Fixes:
+	Bug 774180 - Don't use --no-undefined on Darwin (Philip Chimento)
+	Bug 774103 - GOA mail account doesn't inherit GoaMail::name (Milan Crha)
+	Bug 774698 - [Camel] Do not drop leftover 'Deletes' table on open (Milan Crha)
+	Bug 772292 - [IMAPx] New mail not shown in UI until folder refresh (Milan Crha)
+	Bug 774496 - [POP3] Downloads messages multiple times with auto-fetch (Milan Crha)
+	Bug 774841 - [EWebDAVDiscover] One part failure caused credentials reject (Milan Crha)
+	Bug 775618 - Contacts on Google does not accept a second address line (Milan Crha)
+	Bug 775699 - Only latest 100 tasks downloaded from the Google (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Local flag changes could be missed and left unsaved on the server (Milan Crha)
+	[IMAPx] Notify about new messages early during folder update (Milan Crha)
+	Fix possible use-after-free in CamelVeeFolder with parent_vee_store (Milan Crha)
+	Test for parent_store availability around camel_folder_changed() (Milan Crha)
+
 Evolution-Data-Server 3.22.2 2016-11-07
 ---------------------------------------
 
