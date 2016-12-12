@@ -70,6 +70,7 @@ CamelProviderConfEntry imapx_conf_entries[] = {
 	  N_("Only check for Junk messages in the In_box folder"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "stay-synchronized", NULL,
 	  N_("Synchroni_ze remote mail locally in all folders"), "0" },
+	{ CAMEL_PROVIDER_CONF_PLACEHOLDER, "imapx-limit-by-age-placeholder", NULL },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

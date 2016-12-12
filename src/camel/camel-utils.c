@@ -171,3 +171,74 @@ camel_util_bdata_put_string (GString *bdata_str,
 
 	g_string_append_printf (bdata_str, "-%s", value);
 }
+
+/**
+ * camel_time_value_apply:
+ * @src_time: a time_t to apply the value to, or -1 to use the current time
+ * @unit: a #CamelTimeUnit
+ * @value: a value to apply
+ *
+ * Applies the given time @value in unit @unit to the @src_time.
+ * Use negative value to subtract it. The time part is rounded
+ * to the beginning of the day.
+ *
+ * Returns: @src_time modified by the given parameters as date, with
+ *    the time part being beginning of the day.
+ *
+ * Since: 3.24
+ **/
+time_t
+camel_time_value_apply (time_t src_time,
+			CamelTimeUnit unit,
+			gint value)
+{
+	GDate dt;
+	struct tm tm;
+
+	g_return_val_if_fail (unit >= CAMEL_TIME_UNIT_DAYS && unit <= CAMEL_TIME_UNIT_YEARS, src_time);
+
+	if (src_time == (time_t) -1)
+		src_time = time (NULL);
+
+	if (!value)
+		return src_time;
+
+	g_date_clear (&dt, 1);
+
+	g_date_set_time_t (&dt, src_time);
+
+	switch (unit) {
+	case CAMEL_TIME_UNIT_DAYS:
+		if (value > 0)
+			g_date_add_days (&dt, value);
+		else
+			g_date_subtract_days (&dt, (-1) * value);
+		break;
+	case CAMEL_TIME_UNIT_WEEKS:
+		if (value > 0)
+			g_date_add_days (&dt, value * 7);
+		else
+			g_date_subtract_days (&dt, (-1) * value * 7);
+		break;
+	case CAMEL_TIME_UNIT_MONTHS:
+		if (value > 0)
+			g_date_add_months (&dt, value);
+		else
+			g_date_subtract_months (&dt, (-1) * value);
+		break;
+	case CAMEL_TIME_UNIT_YEARS:
+		if (value > 0)
+			g_date_add_years (&dt, value);
+		else
+			g_date_subtract_years (&dt, (-1) * value);
+		break;
+	}
+
+	g_date_to_struct_tm (&dt, &tm);
+
+	tm.tm_sec = 0;
+	tm.tm_min = 0;
+	tm.tm_hour = 0;
+
+	return mktime (&tm);
+}

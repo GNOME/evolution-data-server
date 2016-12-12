@@ -336,7 +336,8 @@ typedef enum {
 	CAMEL_PROVIDER_CONF_ENTRY,
 	CAMEL_PROVIDER_CONF_LABEL,
 	CAMEL_PROVIDER_CONF_HIDDEN,
-	CAMEL_PROVIDER_CONF_OPTIONS
+	CAMEL_PROVIDER_CONF_OPTIONS,
+	CAMEL_PROVIDER_CONF_PLACEHOLDER
 } CamelProviderConfType;
 
 /**
@@ -530,5 +531,24 @@ typedef enum {
 	CAMEL_COMPARE_CASE_INSENSITIVE,
 	CAMEL_COMPARE_CASE_SENSITIVE
 } CamelCompareType;
+
+/**
+ * CamelTimeUnit:
+ * @CAMEL_TIME_UNIT_DAYS: days
+ * @CAMEL_TIME_UNIT_WEEKS: weeks
+ * @CAMEL_TIME_UNIT_MONTHS: months
+ * @CAMEL_TIME_UNIT_YEARS: years
+ *
+ * Declares time unit, which serves to interpret the time value,
+ * like in #CamelOfflineSettings.
+ *
+ * Since: 3.24
+ **/
+typedef enum {
+	CAMEL_TIME_UNIT_DAYS = 1,
+	CAMEL_TIME_UNIT_WEEKS,
+	CAMEL_TIME_UNIT_MONTHS,
+	CAMEL_TIME_UNIT_YEARS
+} CamelTimeUnit;
 
 #endif /* CAMEL_ENUMS_H */

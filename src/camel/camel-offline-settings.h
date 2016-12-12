@@ -22,6 +22,7 @@
 #ifndef CAMEL_OFFLINE_SETTINGS_H
 #define CAMEL_OFFLINE_SETTINGS_H
 
+#include <camel/camel-enums.h>
 #include <camel/camel-store-settings.h>
 
 /* Standard GObject macros */
@@ -82,6 +83,21 @@ gint		camel_offline_settings_get_store_changes_interval
 void		camel_offline_settings_set_store_changes_interval
 					(CamelOfflineSettings *settings,
 					 gint interval);
+gboolean	camel_offline_settings_get_limit_by_age
+					(CamelOfflineSettings *settings);
+void		camel_offline_settings_set_limit_by_age
+					(CamelOfflineSettings *settings,
+					 gboolean limit_by_age);
+CamelTimeUnit	camel_offline_settings_get_limit_unit
+					(CamelOfflineSettings *settings);
+void		camel_offline_settings_set_limit_unit
+					(CamelOfflineSettings *settings,
+					 CamelTimeUnit limit_unit);
+gint		camel_offline_settings_get_limit_value
+					(CamelOfflineSettings *settings);
+void		camel_offline_settings_set_limit_value
+					(CamelOfflineSettings *settings,
+					 gboolean limit_value);
 
 G_END_DECLS
 

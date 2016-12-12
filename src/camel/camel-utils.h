@@ -23,6 +23,8 @@
 #define CAMEL_UTILS_H
 
 #include <glib-object.h>
+#include <time.h>
+#include <camel/camel-enums.h>
 
 G_BEGIN_DECLS
 
@@ -34,6 +36,10 @@ gchar *		camel_util_bdata_get_string	(/* const */ gchar **bdata_ptr,
 						 const gchar *default_value);
 void		camel_util_bdata_put_string	(GString *bdata_str,
 						 const gchar *value);
+
+time_t		camel_time_value_apply		(time_t src_time,
+						 CamelTimeUnit unit,
+						 gint value);
 
 G_END_DECLS
 

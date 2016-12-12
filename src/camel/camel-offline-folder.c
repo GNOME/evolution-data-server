@@ -28,6 +28,7 @@
 #include "camel-offline-store.h"
 #include "camel-operation.h"
 #include "camel-session.h"
+#include "camel-utils.h"
 
 #define CAMEL_OFFLINE_FOLDER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -81,12 +82,42 @@ offline_downsync_data_free (OfflineDownsyncData *data)
 	g_slice_free (OfflineDownsyncData, data);
 }
 
+/* Returns 0, if not set any limit */
+static gint64
+offline_folder_get_limit_time (CamelFolder *folder)
+{
+	CamelStore *parent_store;
+	CamelSettings *settings;
+	gint64 limit_time = 0;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
+
+	parent_store = camel_folder_get_parent_store (folder);
+	if (!parent_store)
+		return limit_time;
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (parent_store));
+
+	if (CAMEL_IS_OFFLINE_SETTINGS (settings) &&
+	    camel_offline_settings_get_limit_by_age (CAMEL_OFFLINE_SETTINGS (settings))) {
+		limit_time = camel_time_value_apply (-1,
+			camel_offline_settings_get_limit_unit (CAMEL_OFFLINE_SETTINGS (settings)),
+			-camel_offline_settings_get_limit_value (CAMEL_OFFLINE_SETTINGS (settings)));
+	}
+
+	g_clear_object (&settings);
+
+	return limit_time;
+}
+
 static void
 offline_folder_downsync_background (CamelSession *session,
                                     GCancellable *cancellable,
                                     OfflineDownsyncData *data,
                                     GError **error)
 {
+	gint64 limit_time;
+
 	camel_operation_push_message (
 		/* Translators: The first “%s” is replaced with an account name and the second “%s”
 		   is replaced with a full path name. The spaces around “:” are intentional, as
@@ -94,6 +125,8 @@ offline_folder_downsync_background (CamelSession *session,
 		cancellable, _("Downloading new messages for offline mode in “%s : %s”"),
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (data->folder))),
 		camel_folder_get_full_name (data->folder));
+
+	limit_time = offline_folder_get_limit_time (data->folder);
 
 	if (data->changes) {
 		GPtrArray *uid_added;
@@ -111,13 +144,36 @@ offline_folder_downsync_background (CamelSession *session,
 
 			camel_operation_progress (cancellable, percent);
 
+			if (limit_time > 0) {
+				CamelMessageInfo *mi;
+				gboolean download;
+
+				mi = camel_folder_get_message_info (data->folder, uid);
+				if (!mi)
+					continue;
+
+				download = camel_message_info_get_date_sent (mi) > limit_time;
+
+				g_clear_object (&mi);
+
+				if (!download)
+					continue;
+			}
+
 			success = camel_folder_synchronize_message_sync (
 				data->folder, uid, cancellable, error);
 		}
 	} else {
+		gchar *expression = NULL;
+
+		if (limit_time > 0)
+			expression = g_strdup_printf ("(match-all (> (get-sent-date) %" G_GINT64_FORMAT ")", limit_time);
+
 		camel_offline_folder_downsync_sync (
 			CAMEL_OFFLINE_FOLDER (data->folder),
-			"(match-all)", cancellable, error);
+			expression ? expression : "(match-all)", cancellable, error);
+
+		g_free (expression);
 	}
 
 	camel_operation_pop_message (cancellable);
@@ -363,6 +419,7 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 {
 	CamelFolder *folder = (CamelFolder *) offline;
 	GPtrArray *uids, *uncached_uids = NULL;
+	gint64 limit_time;
 	gint i;
 
 	/* Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -390,14 +447,36 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 	if (!uncached_uids)
 		goto done;
 
-	for (i = 0; i < uncached_uids->len; i++) {
-		camel_folder_synchronize_message_sync (
-			folder, uncached_uids->pdata[i], cancellable, NULL);
-		camel_operation_progress (
-			cancellable, i * 100 / uncached_uids->len);
+	limit_time = offline_folder_get_limit_time (folder);
+	if (limit_time > 0 && camel_folder_get_folder_summary (folder))
+		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
+
+	for (i = 0; i < uncached_uids->len && !g_cancellable_is_cancelled (cancellable); i++) {
+		const gchar *uid = uncached_uids->pdata[i];
+		gboolean download = limit_time <= 0;
+
+		if (limit_time > 0) {
+			CamelMessageInfo *mi;
+
+			mi = camel_folder_get_message_info (folder, uid);
+			if (!mi)
+				continue;
+
+			download = camel_message_info_get_date_sent (mi) > limit_time;
+
+			g_clear_object (&mi);
+		}
+
+		if (download) {
+			/* Stop on failure */
+			if (!camel_folder_synchronize_message_sync (folder, uid, cancellable, NULL))
+				break;
+		}
+
+		camel_operation_progress (cancellable, i * 100 / uncached_uids->len);
 	}
 
-done:
+ done:
 	if (uncached_uids)
 		camel_folder_free_uids (folder, uncached_uids);
 
