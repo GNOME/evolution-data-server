@@ -1059,6 +1059,9 @@ camel_imapx_folder_new (CamelStore *store,
 	gboolean filter_inbox;
 	gboolean filter_junk;
 	gboolean filter_junk_inbox;
+	gboolean offline_limit_by_age = FALSE;
+	CamelTimeUnit offline_limit_unit;
+	gint offline_limit_value;
 	guint32 add_folder_flags = 0;
 
 	d ("opening imap folder '%s'\n", folder_dir);
@@ -1073,6 +1076,9 @@ camel_imapx_folder_new (CamelStore *store,
 		"filter-inbox", &filter_inbox,
 		"filter-junk", &filter_junk,
 		"filter-junk-inbox", &filter_junk_inbox,
+		"limit-by-age", &offline_limit_by_age,
+		"limit-unit", &offline_limit_unit,
+		"limit-value", &offline_limit_value,
 		NULL);
 
 	g_object_unref (settings);
@@ -1117,10 +1123,18 @@ camel_imapx_folder_new (CamelStore *store,
 	camel_object_state_read (CAMEL_OBJECT (folder));
 
 	if (camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder))) {
-		/* Ensure cache will never expire, otherwise
-		 * it causes redownload of messages. */
-		camel_data_cache_set_expire_age (imapx_folder->cache, -1);
-		camel_data_cache_set_expire_access (imapx_folder->cache, -1);
+		time_t when = (time_t) 0;
+
+		if (offline_limit_by_age)
+			when = camel_time_value_apply (when, offline_limit_unit, offline_limit_value);
+
+		if (when <= (time_t) 0)
+			when = (time_t) -1;
+
+		/* Ensure cache will expire when set up, otherwise
+		 * it causes redownload of messages too soon. */
+		camel_data_cache_set_expire_age (imapx_folder->cache, when);
+		camel_data_cache_set_expire_access (imapx_folder->cache, when);
 	} else {
 		/* Set cache expiration for one week. */
 		camel_data_cache_set_expire_age (imapx_folder->cache, 60 * 60 * 24 * 7);
