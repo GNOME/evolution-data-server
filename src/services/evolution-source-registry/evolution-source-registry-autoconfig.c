@@ -22,16 +22,12 @@
 #include <glib/gstdio.h>
 
 #include <libebackend/libebackend.h>
+#include <camel/camel.h>
 
 typedef struct _MergeSourceData {
 	gchar *path;
 	GKeyFile *key_file;
 } MergeSourceData;
-
-typedef struct _EnvVarMap {
-	const gchar *from;
-	const gchar *to;
-} EnvVarMap;
 
 typedef void (*MergeSourcePopulateHashtableFunc)(GHashTable *source,
                                                  GKeyFile *key_file,
@@ -194,31 +190,30 @@ evolution_source_registry_clean_orphans (GHashTable *autoconfig_sources,
 	g_list_free (keys);
 }
 
+typedef struct _ReplaceVariablesData {
+	const gchar *source_path;
+	GHashTable *user_variables;
+} ReplaceVariablesData;
+
 static gboolean
-evolution_source_registry_replace_env_vars_eval_cb (const GMatchInfo *match_info,
-                                                    GString *result,
-                                                    gpointer user_data)
+evolution_source_registry_replace_vars_eval_cb (const GMatchInfo *match_info,
+						GString *result,
+						gpointer user_data)
 {
-	gchar *var_name, *source_path;
-	const gchar *val;
-	gint ii;
-	EnvVarMap map[] = {
-		{ "USER", g_get_user_name () },
-		{ "REALNAME", g_get_real_name () },
-		{ "HOST", g_get_host_name () }
-	};
+	gchar *var_name;
+	const gchar *val = NULL;
+	ReplaceVariablesData *rvd = user_data;
+
+	g_return_val_if_fail (rvd != NULL, FALSE);
 
 	var_name = g_match_info_fetch (match_info, 1);
-	source_path = user_data;
 
-	for (ii = 0; ii < G_N_ELEMENTS (map); ++ii) {
-		if (g_strcmp0 (var_name, map[ii].from) == 0) {
-			g_string_append (result, map[ii].to);
-			goto exit;
-		}
+	if (var_name) {
+		val = g_hash_table_lookup (rvd->user_variables, var_name);
+
+		if (!val)
+			val = g_getenv (var_name);
 	}
-
-	val = g_getenv (var_name);
 
 	if (val != NULL) {
 		g_string_append (result, val);
@@ -227,20 +222,22 @@ evolution_source_registry_replace_env_vars_eval_cb (const GMatchInfo *match_info
 		e_source_registry_debug_print (
 			"Autoconfig: Variable '${%s}' not found, used in '%s'.\n",
 			var_name,
-			source_path);
+			rvd->source_path);
 	}
 
- exit:
 	g_free (var_name);
 
 	return FALSE;
 }
 
 static gchar *
-evolution_source_registry_replace_env_vars (const gchar *old, MergeSourceData *source)
+evolution_source_registry_replace_vars (const gchar *old,
+					MergeSourceData *source,
+					GHashTable *user_variables)
 {
 	GRegex *regex;
 	gchar *new;
+	ReplaceVariablesData rvd;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (old != NULL, NULL);
@@ -249,14 +246,17 @@ evolution_source_registry_replace_env_vars (const gchar *old, MergeSourceData *s
 
 	g_return_val_if_fail (regex != NULL, g_strdup (old));
 
+	rvd.source_path = source->path;
+	rvd.user_variables = user_variables;
+
 	new = g_regex_replace_eval (
 				regex,
 				old,
 				-1,
 				0,
 				0,
-				evolution_source_registry_replace_env_vars_eval_cb,
-				source->path,
+				evolution_source_registry_replace_vars_eval_cb,
+				&rvd,
 				&local_error);
 
 	g_regex_unref (regex);
@@ -274,7 +274,8 @@ evolution_source_registry_replace_env_vars (const gchar *old, MergeSourceData *s
 
 static void
 evolution_source_registry_copy_source (MergeSourceData *target,
-                                       MergeSourceData *source)
+                                       MergeSourceData *source,
+				       GHashTable *user_variables)
 {
 	gchar **groups = NULL;
 	gsize ngroups;
@@ -301,7 +302,7 @@ evolution_source_registry_copy_source (MergeSourceData *target,
 					keys[jj],
 					NULL);
 
-			new_val = evolution_source_registry_replace_env_vars (val, source);
+			new_val = evolution_source_registry_replace_vars (val, source, user_variables);
 			g_free (val);
 
 			g_key_file_set_value (
@@ -322,6 +323,7 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
                                         const gchar *key,
                                         MergeSourceData *autoconfig_key_file,
                                         GList **key_files_to_copy,
+					GHashTable *user_variables,
                                         GError **error)
 {
 	GKeyFile *new_keyfile;
@@ -403,7 +405,7 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
 	new_data->path = g_strdup (home_key_file->path);
 	new_data->key_file = new_keyfile;
 
-	evolution_source_registry_copy_source (new_data, autoconfig_key_file);
+	evolution_source_registry_copy_source (new_data, autoconfig_key_file, user_variables);
 
 	*key_files_to_copy = g_list_prepend (*key_files_to_copy, new_data);
 
@@ -412,8 +414,9 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
 
 static void
 evolution_source_registry_generate_source_from_autoconfig (const gchar *key,
-                                                           MergeSourceData *autoconfig_key_file,
-                                                           GList **key_files_to_copy)
+							   MergeSourceData *autoconfig_key_file,
+							   GList **key_files_to_copy,
+							   GHashTable *user_variables)
 {
 	GKeyFile *new_keyfile;
 	MergeSourceData *new_data;
@@ -448,7 +451,7 @@ evolution_source_registry_generate_source_from_autoconfig (const gchar *key,
 	new_data->path = dest_source_path;
 	new_data->key_file = new_keyfile;
 
-	evolution_source_registry_copy_source (new_data, autoconfig_key_file);
+	evolution_source_registry_copy_source (new_data, autoconfig_key_file, user_variables);
 
 	*key_files_to_copy = g_list_prepend (*key_files_to_copy, new_data);
 
@@ -460,7 +463,8 @@ evolution_source_registry_generate_source_from_autoconfig (const gchar *key,
 
 static GList *
 evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
-                                         GHashTable *home_sources)
+                                         GHashTable *home_sources,
+					 GHashTable *user_variables)
 {
 	GHashTableIter iter;
 	GList *key_files_to_copy = NULL;
@@ -481,6 +485,7 @@ evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
 					key,
 					autoconfig_key_file,
 					&key_files_to_copy,
+					user_variables,
 					&local_error)) {
 				e_source_registry_debug_print (
 						"Autoconfig: evolution_source_registry_merge_source() failed: %s.\n",
@@ -492,7 +497,8 @@ evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
 			evolution_source_registry_generate_source_from_autoconfig (
 				key,
 				autoconfig_key_file,
-				&key_files_to_copy);
+				&key_files_to_copy,
+				user_variables);
 		}
 	}
 
@@ -527,16 +533,70 @@ evolution_source_registry_write_key_files (GList *list,
 	return TRUE;
 }
 
+static GHashTable *
+read_user_variables (GSettings *settings)
+{
+	GHashTable *variables;
+	gchar **strv;
+	gint ii;
+
+	g_return_val_if_fail (G_IS_SETTINGS (settings), NULL);
+
+	variables = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, g_free);
+
+	strv = g_settings_get_strv (settings, "autoconfig-variables");
+	if (!strv || !strv[0]) {
+		g_strfreev (strv);
+
+		return variables;
+	}
+
+	for (ii = 0; strv[ii]; ii++) {
+		const gchar *line = strv[ii];
+		gchar *name, *value, *sep;
+
+		sep = strchr (line, '=');
+		if (!sep || sep == line) {
+			e_source_registry_debug_print ("Autoconfig: GSettings' autoconf-variables line '%s' doesn't conform format 'name=value'.\n", line);
+			continue;
+		}
+
+		name = g_strdup (line);
+		sep = strchr (name, '=');
+		if (!sep || sep == name) {
+			g_free (name);
+			g_warn_if_reached ();
+			continue;
+		}
+
+		*sep = '\0';
+		value = sep + 1;
+
+		if (g_hash_table_contains (variables, name))
+			e_source_registry_debug_print ("Autoconfig: GSettings' autoconf-variables key contains multiple '%s' variables.\n", name);
+
+		g_hash_table_insert (variables, name, g_strdup (value));
+	}
+
+	g_strfreev (strv);
+
+	return variables;
+}
+
 gboolean
 evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *server,
                                                     GError **error)
 {
-	GHashTable *home_sources = NULL, *autoconfig_sources = NULL;
+	GHashTable *home_sources = NULL, *autoconfig_sources = NULL, *user_variables = NULL;
 	GList *key_files_to_copy = NULL;
+	GSettings *settings;
 	GError *local_error = NULL;
 	gboolean success = FALSE;
 	const gchar * const *config_dirs;
+	gchar *autoconfig_directory;
 	gint ii;
+
+	settings = g_settings_new ("org.gnome.evolution-data-server");
 
 	autoconfig_sources = g_hash_table_new_full (
 				g_str_hash,
@@ -561,7 +621,7 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 
 		if (!success) {
 			if (local_error != NULL &&
-				g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+			    g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
 				g_clear_error (&local_error);
 				continue;
 			}
@@ -569,6 +629,31 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 			goto exit;
 		}
 	}
+
+	autoconfig_directory = g_settings_get_string (settings, "autoconfig-directory");
+	if (autoconfig_directory && *autoconfig_directory) {
+		if (g_file_test (autoconfig_directory, G_FILE_TEST_IS_DIR)) {
+			success = evolution_source_registry_read_directory (
+				autoconfig_directory,
+				autoconfig_sources,
+				populate_hashtable_autoconfig,
+				&local_error);
+
+			if (!success) {
+				if (local_error != NULL &&
+				    g_error_matches (local_error, G_FILE_ERROR, G_FILE_ERROR_NOENT)) {
+					g_clear_error (&local_error);
+				} else {
+					g_free (autoconfig_directory);
+					goto exit;
+				}
+			}
+		} else {
+			e_source_registry_debug_print ("Autoconfig: GSettings' directory '%s' doesn't exist, or it's currently unavailable. Skipping it.\n", autoconfig_directory);
+		}
+	}
+
+	g_free (autoconfig_directory);
 
 	home_sources = g_hash_table_new_full (
 			g_str_hash,
@@ -585,7 +670,15 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 	if (!success)
 		goto exit;
 
-	key_files_to_copy = evolution_source_registry_merge_sources (autoconfig_sources, home_sources);
+	user_variables = read_user_variables (settings);
+	g_warn_if_fail (user_variables != NULL);
+
+	/* Add these last, to override any user-specified */
+	g_hash_table_insert (user_variables, g_strdup ("USER"), g_strdup (g_get_user_name ()));
+	g_hash_table_insert (user_variables, g_strdup ("REALNAME"), g_strdup (g_get_real_name ()));
+	g_hash_table_insert (user_variables, g_strdup ("HOST"), g_strdup (g_get_host_name ()));
+
+	key_files_to_copy = evolution_source_registry_merge_sources (autoconfig_sources, home_sources, user_variables);
 
 	success = evolution_source_registry_write_key_files (key_files_to_copy, error);
 
@@ -594,8 +687,11 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 		g_hash_table_unref (autoconfig_sources);
 	if (home_sources != NULL)
 		g_hash_table_unref (home_sources);
+	if (user_variables)
+		g_hash_table_unref (user_variables);
 	if (key_files_to_copy != NULL)
 		g_list_free_full (key_files_to_copy, evolution_source_registry_free_merge_source_data);
+	g_clear_object (&settings);
 
 	if (local_error != NULL)
 		g_propagate_error (error, local_error);

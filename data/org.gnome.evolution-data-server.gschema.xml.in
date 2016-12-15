@@ -19,5 +19,15 @@
       <_summary>GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance</_summary>
       <_description>When set to an unknown value, then the default GNetworkMonitor is used in the background. A special value “always-online” is used for no network monitoring.</_description>
     </key>
+    <key name="autoconfig-directory" type="s">
+      <default>''</default>
+      <_summary>A full path to a directory where .source files with preconfigured options can be stored</_summary>
+      <_description>This directory, if filled with an existing path, is checked additionally to XDG configure directories.</_description>
+    </key>
+    <key name="autoconfig-variables" type="as">
+      <default>['']</default>
+      <_summary>A list of variables which can be part of the autoconfig .source files</_summary>
+      <_description>Each item of the array is expected to be of the form: name=value. These variables are checked before environment variables, but after the predefined USER, REALNAME and HOST variables.</_description>
+    </key>
   </schema>
 </schemalist>

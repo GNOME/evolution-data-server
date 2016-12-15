@@ -54,6 +54,7 @@ endforeach(_file)
 glib_compile_resources(${CMAKE_CURRENT_BINARY_DIR}/builtin evolution-source-registry-resource evolution_source_registry evolution-source-registry-resource.xml ${builtin_sources})
 
 set(DEPENDENCIES
+	camel
 	ebackend
 	edataserver
 )
