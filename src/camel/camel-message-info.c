@@ -119,10 +119,12 @@ message_info_clone (const CamelMessageInfo *mi,
 		GArray *copy;
 		guint ii;
 
-		copy = g_array_sized_new (FALSE, FALSE, references->len, sizeof (guint64));
+		copy = g_array_sized_new (FALSE, FALSE, sizeof (guint64), references->len);
 
 		for (ii = 0; ii < references->len; ii++) {
-			g_array_append_val (copy, g_array_index (references, guint64, ii));
+			guint64 refr = g_array_index (references, guint64, ii);
+
+			g_array_append_val (copy, refr);
 		}
 
 		camel_message_info_take_references (result, copy);
