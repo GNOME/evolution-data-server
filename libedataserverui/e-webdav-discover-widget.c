@@ -722,7 +722,9 @@ e_webdav_discover_content_refresh_done_cb (GObject *source_object,
 				NULL, FALSE, rd->cancellable, e_webdav_discover_content_trust_prompt_done_cb, rd);
 			rd = NULL;
 		} else if (g_cancellable_is_cancelled (rd->cancellable) ||
-		    !g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED)) {
+		    (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_PERMISSION_DENIED) &&
+		    !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+		    !g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN))) {
 			g_simple_async_result_take_error (rd->simple, local_error);
 			local_error = NULL;
 			g_simple_async_result_complete (rd->simple);
