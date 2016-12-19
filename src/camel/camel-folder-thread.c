@@ -40,6 +40,11 @@
 #include <sys/time.h>
 #endif
 
+G_DEFINE_BOXED_TYPE (CamelFolderThread,
+		camel_folder_thread_messages,
+		camel_folder_thread_messages_ref,
+		camel_folder_thread_messages_unref)
+
 static void
 container_add_child (CamelFolderThreadNode *node,
                      CamelFolderThreadNode *child)
@@ -649,7 +654,7 @@ thread_summary (CamelFolderThread *thread,
 }
 
 /**
- * camel_folder_thread_messages_new: (skip)
+ * camel_folder_thread_messages_new:
  * @folder: a #CamelFolder
  * @uids: (element-type utf8): The subset of uid's to thread. If %NULL, then thread
  *    all UID-s in the @folder
@@ -778,10 +783,19 @@ camel_folder_thread_messages_apply (CamelFolderThread *thread,
 	thread->summary = all;
 }
 
-void
+/**
+ * camel_folder_thread_messages_ref:
+ * @thread: a #CamelFolderThread
+ *
+ * Increase the reference of @thread
+ *
+ * Returns: the referenced @thread
+ **/
+CamelFolderThread *
 camel_folder_thread_messages_ref (CamelFolderThread *thread)
 {
 	thread->refcount++;
+	return thread;
 }
 
 /**
