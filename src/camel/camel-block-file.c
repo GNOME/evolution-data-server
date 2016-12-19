@@ -1232,7 +1232,7 @@ camel_key_file_delete (CamelKeyFile *kf)
  * @kf: a #CamelKeyFile
  * @parent: a #camel_block_t
  * @len: how many @records to write
- * @records: an array of #camel_key_t to write
+ * @records: (array length=len): an array of #camel_key_t to write
  *
  * Write a new list of records to the key file.
  *
@@ -1295,7 +1295,7 @@ camel_key_file_write (CamelKeyFile *kf,
  * @kf: a #CamelKeyFile
  * @start: The record pointer.  This will be set to the next record pointer on success.
  * @len: Number of records read, if != NULL.
- * @records: Records, allocated, must be freed with g_free, if != NULL.
+ * @records: (array length=len) (nullable): Records, allocated, must be freed with g_free, if != NULL.
  *
  * Read the next block of data from the key file.  Returns the number of
  * records.

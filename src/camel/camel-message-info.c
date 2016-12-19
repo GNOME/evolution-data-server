@@ -950,7 +950,7 @@ camel_message_info_init (CamelMessageInfo *mi)
 
 /**
  * camel_message_info_new:
- * @summary: (nullable): parent #CamelFolderSummary object, or %NULL
+ * @summary: (nullable) (type CamelFolderSummary): parent #CamelFolderSummary object, or %NULL
  *
  * Create a new #CamelMessageInfo object, optionally for given @summary.
  *
@@ -980,7 +980,7 @@ camel_message_info_new (CamelFolderSummary *summary)
 /**
  * camel_message_info_clone:
  * @mi: a #CamelMessageInfo to clone
- * @assign_summary: (nullable): parent #CamelFolderSummary object, or %NULL, to set on the clone
+ * @assign_summary: (nullable) (type CamelFolderSummary): parent #CamelFolderSummary object, or %NULL, to set on the clone
  *
  * Clones the @mi as a new #CamelMessageInfo and eventually assigns
  * a new #CamelFolderSummary to it. If it's not set, then the same
@@ -1010,7 +1010,7 @@ camel_message_info_clone (const CamelMessageInfo *mi,
 /**
  * camel_message_info_load:
  * @mi: a #CamelMessageInfo to load
- * @record: a #CamelMIRecord to load the @mi from
+ * @record: (type CamelMIRecord): a #CamelMIRecord to load the @mi from
  * @bdata_ptr: a backend specific data (bdata) pointer
  *
  * Load content of @mi from the data stored in @record. The @bdata_ptr points
@@ -1059,7 +1059,7 @@ camel_message_info_load (CamelMessageInfo *mi,
 /**
  * camel_message_info_save:
  * @mi: a #CamelMessageInfo
- * @record: a #CamelMIRecord to populate
+ * @record: (type CamelMIRecord): a #CamelMIRecord to populate
  * @bdata_str: a #GString with a string to save as backend specific data (bdata)
  *
  * Save the @mi content to the message info record @record. It can populate all
