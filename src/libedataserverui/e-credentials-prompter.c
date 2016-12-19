@@ -1029,6 +1029,9 @@ e_credentials_prompter_class_init (ECredentialsPrompterClass *class)
 	 * window for it. If the result of the call is %NULL, then it tries
 	 * to get the window from the default GtkApplication.
 	 *
+	 * Returns: (transfer none): a #GtkWindow, to be used as a dialog parent,
+	 * or %NULL.
+	 *
 	 * Since: 3.16
 	 **/
 	signals[GET_DIALOG_PARENT] = g_signal_new (
@@ -1170,6 +1173,7 @@ e_credentials_prompter_set_auto_prompt (ECredentialsPrompter *prompter,
 }
 
 /**
+ * e_credentials_prompter_set_auto_prompt_disabled_for:
  * @prompter: an #ECredentialsPrompter
  * @source: an #ESource
  * @is_disabled: whether the auto-prompt should be disabled for this @source
@@ -1202,6 +1206,7 @@ e_credentials_prompter_set_auto_prompt_disabled_for (ECredentialsPrompter *promp
 }
 
 /**
+ * e_credentials_prompter_get_auto_prompt_disabled_for:
  * @prompter: an #ECredentialsPrompter
  * @source: an #ESource
  *
@@ -1703,7 +1708,7 @@ credentials_prompter_prompt_sync (ECredentialsPrompter *prompter,
  * @prompter: an #ECredentialsPrompter
  * @source: an #ESource to be prompted credentials for
  * @flags: a bit-or of #ECredentialsPrompterPromptFlags initial flags
- * @func: an #ECredentialsPrompterLoopPromptFunc user function to call to check provided credentials
+ * @func: (scope call): an #ECredentialsPrompterLoopPromptFunc user function to call to check provided credentials
  * @user_data: user data to pass to @func
  * @cancellable: (allow-none): an optional #GCancellable, or %NULL
  * @error: (allow-none): a #GError, to store any errors to, or %NULL

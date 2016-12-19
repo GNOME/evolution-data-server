@@ -99,7 +99,7 @@ e_credentials_prompter_impl_class_init (ECredentialsPrompterImplClass *klass)
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ECredentialsPrompterImplClass, prompt_finished),
 		NULL, NULL, NULL,
-		G_TYPE_NONE, 2, G_TYPE_POINTER, G_TYPE_POINTER);
+		G_TYPE_NONE, 2, G_TYPE_POINTER, E_TYPE_NAMED_PARAMETERS);
 }
 
 static void
@@ -117,7 +117,7 @@ e_credentials_prompter_impl_init (ECredentialsPrompterImpl *prompter_impl)
  *
  * Returns an #ECredentialsPrompter with which the @prompter_impl is associated.
  *
- * Returns: an #ECredentialsPrompter
+ * Returns: (transfer none): an #ECredentialsPrompter
  *
  * Since: 3.16
  **/

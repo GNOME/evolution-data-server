@@ -95,3 +95,38 @@ install(TARGETS edataserverui
 install(FILES ${HEADERS}
 	DESTINATION ${privincludedir}/libedataserverui
 )
+
+set(gir_sources ${SOURCES} ${HEADERS})
+set(gir_identifies_prefixes E)
+set(gir_includes GObject-2.0 Gio-2.0 Gtk-3.0 Soup-2.4)
+set(gir_cflags
+	-DLIBEDATASERVERUI_COMPILATION
+)
+set(gir_libdirs
+	${CMAKE_BINARY_DIR}/src/private
+	${CMAKE_BINARY_DIR}/src/camel
+	${CMAKE_BINARY_DIR}/src/libedataserver
+)
+set(gir_libs
+	camel
+	edataserver
+	edataserverui
+)
+set(gir_deps
+	${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir
+	${CMAKE_BINARY_DIR}/src/libedataserver/EDataServer-${API_VERSION}.gir
+)
+
+gir_add_introspection_simple(
+	EDataServerUI
+	libedataserverui
+	${API_VERSION}
+	"libedataserverui/libedataserverui.h"
+	gir_identifies_prefixes
+	gir_includes
+	gir_cflags
+	gir_libdirs
+	gir_libs
+	gir_deps
+	gir_sources
+)

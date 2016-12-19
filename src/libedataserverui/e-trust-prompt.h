@@ -30,7 +30,7 @@
 #include <libedataserver/libedataserver.h>
 
 gchar *		e_trust_prompt_describe_certificate_errors
-					(GTlsCertificateFlags certificate_errors);
+					(GTlsCertificateFlags flags);
 ETrustPromptResponse
 		e_trust_prompt_run_modal(GtkWindow *parent,
 					 const gchar *source_extension,

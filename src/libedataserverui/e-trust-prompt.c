@@ -257,7 +257,7 @@ trust_prompt_show (GtkWindow *parent,
  * bit description per line. If no bit is set, then an empty string is
  * returned.
  *
- * Returns: (transfer-full): A newly allocated string with text description
+ * Returns: A newly allocated string with text description
  *  of @flags. Free the returned pointer with g_free() when no longer needed.
  *
  * Since: 3.16

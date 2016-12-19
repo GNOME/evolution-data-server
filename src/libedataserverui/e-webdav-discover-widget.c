@@ -333,7 +333,7 @@ e_webdav_discover_content_get_base_url (GtkWidget *content)
 }
 
 /**
- * e_webdav_discover_content_get_base_url:
+ * e_webdav_discover_content_get_selected:
  * @content: a WebDAV discovery content, created by e_webdav_discover_content_new()
  * @index: an index of the selected source; counts from 0
  * @out_href: (out): an output location for the URL of the selected source
