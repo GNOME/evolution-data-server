@@ -93,6 +93,8 @@ enum {
 
 G_DEFINE_TYPE (CamelGpgContext, camel_gpg_context, CAMEL_TYPE_CIPHER_CONTEXT)
 
+static const gchar *gpg_ctx_get_executable_name (void);
+
 enum _GpgCtxMode {
 	GPG_CTX_MODE_SIGN,
 	GPG_CTX_MODE_VERIFY,
@@ -404,13 +406,28 @@ static const gchar *
 gpg_ctx_get_diagnostics (struct _GpgCtx *gpg)
 {
 	if (!gpg->diagflushed) {
+		gchar *prefix;
+
 		gpg->diagflushed = TRUE;
 		camel_stream_flush (gpg->diagnostics, NULL, NULL);
 		if (gpg->diagbuf->len == 0)
 			return NULL;
 
+		/* Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2' */
+		prefix = g_strdup_printf (_("Output from %s:"), gpg_ctx_get_executable_name ());
+
+		if (prefix && *prefix) {
+			g_byte_array_prepend (gpg->diagbuf, (const guint8 *) "\n", 1);
+			g_byte_array_prepend (gpg->diagbuf, (const guint8 *) prefix, strlen (prefix));
+		}
+
 		g_byte_array_append (gpg->diagbuf, (guchar *) "", 1);
+
+		g_free (prefix);
 	}
+
+	if (gpg->diagbuf->len == 0)
+		return NULL;
 
 	return (const gchar *) gpg->diagbuf->data;
 }
@@ -1230,6 +1247,20 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					_("Failed to encrypt: No valid recipients specified."));
+				return -1;
+			} else if (!strncmp ((gchar *) status, "INV_RECP ", 9)) {
+				const gchar *addr;
+
+				addr = strchr ((gchar *) status, '<');
+				if (!addr)
+					addr = ((gchar *) status) + 10;
+
+				g_set_error (
+					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+					/* Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
+					   the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2' */
+					_("Failed to encrypt: Invalid recipient %s specified. A common issue is that the %s doesn't have imported public key for this recipient."),
+					addr, gpg_ctx_get_executable_name ());
 				return -1;
 			}
 			break;
