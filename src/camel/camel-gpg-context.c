@@ -1259,7 +1259,7 @@ gpg_ctx_parse_status (struct _GpgCtx *gpg,
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
 					/* Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 					   the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2' */
-					_("Failed to encrypt: Invalid recipient %s specified. A common issue is that the %s doesn't have imported public key for this recipient."),
+					_("Failed to encrypt: Invalid recipient %s specified. A common issue is that the %s doesn’t have imported public key for this recipient."),
 					addr, gpg_ctx_get_executable_name ());
 				return -1;
 			}
