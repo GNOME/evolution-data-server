@@ -540,10 +540,21 @@ dbus_server_module_directory_changed_cb (GFileMonitor *monitor,
 	if (event_type == G_FILE_MONITOR_EVENT_CREATED ||
 	    event_type == G_FILE_MONITOR_EVENT_DELETED ||
 	    event_type == G_FILE_MONITOR_EVENT_MOVED_IN ||
-	    event_type == G_FILE_MONITOR_EVENT_MOVED_OUT) {
+	    event_type == G_FILE_MONITOR_EVENT_MOVED_OUT ||
+	    event_type == G_FILE_MONITOR_EVENT_RENAMED) {
 		gchar *filename;
 
 		filename = g_file_get_path (file);
+
+		if (event_type == G_FILE_MONITOR_EVENT_RENAMED && other_file) {
+			G_LOCK (loaded_modules);
+			if (!g_hash_table_contains (loaded_modules, filename)) {
+				g_free (filename);
+				filename = g_file_get_path (other_file);
+				event_type = G_FILE_MONITOR_EVENT_CREATED;
+			}
+			G_UNLOCK (loaded_modules);
+		}
 
 		if (filename && g_str_has_suffix (filename, "." G_MODULE_SUFFIX)) {
 			gboolean any_loaded = FALSE;
