@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-12-16 14:06+0000\n"
-"PO-Revision-Date: 2016-12-17 11:14+0100\n"
+"POT-Creation-Date: 2016-12-21 00:05+0000\n"
+"PO-Revision-Date: 2016-12-22 00:05+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -2259,18 +2259,24 @@ msgstr ""
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Uvolňuje se nepoužitá paměť pro složku „%s : %s“"
 
-#: ../src/camel/camel-gpg-context.c:817 ../src/camel/camel-gpg-context.c:822
-#: ../src/camel/camel-gpg-context.c:1512
+#. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#: ../src/camel/camel-gpg-context.c:417
+#, c-format
+msgid "Output from %s:"
+msgstr "Výstup z %s:"
+
+#: ../src/camel/camel-gpg-context.c:834 ../src/camel/camel-gpg-context.c:839
+#: ../src/camel/camel-gpg-context.c:1543
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Nelze spustit gpg: %s"
 
-#: ../src/camel/camel-gpg-context.c:822
+#: ../src/camel/camel-gpg-context.c:839
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1129
 msgid "Unknown"
 msgstr "Neznámá"
 
-#: ../src/camel/camel-gpg-context.c:934
+#: ../src/camel/camel-gpg-context.c:951
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2281,17 +2287,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/camel-gpg-context.c:970
+#: ../src/camel/camel-gpg-context.c:987
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Nelze zpracovat nápovědy gpg userid."
 
-#: ../src/camel/camel-gpg-context.c:995 ../src/camel/camel-gpg-context.c:1010
+#: ../src/camel/camel-gpg-context.c:1012 ../src/camel/camel-gpg-context.c:1027
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Nelze zpracovat požadavek hesla gpg."
 
-#: ../src/camel/camel-gpg-context.c:1031
+#: ../src/camel/camel-gpg-context.c:1048
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2300,7 +2306,7 @@ msgstr ""
 "K odemknutí klíče své čipové karty\n"
 "potřebujete PIN: „%s“"
 
-#: ../src/camel/camel-gpg-context.c:1035
+#: ../src/camel/camel-gpg-context.c:1052
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2309,12 +2315,12 @@ msgstr ""
 "K odemknutí klíče uživatele potřebujete\n"
 "heslo: „%s“"
 
-#: ../src/camel/camel-gpg-context.c:1041
+#: ../src/camel/camel-gpg-context.c:1058
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Neočekávaný požadavek od GnuPG pro „%s“"
 
-#: ../src/camel/camel-gpg-context.c:1053
+#: ../src/camel/camel-gpg-context.c:1070
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2322,39 +2328,50 @@ msgstr ""
 "Upozorňujeme, že šifrovaný obsah neobsahuje informace o příjemci, proto se "
 "objeví výzva pro zadání hesla u každého uloženého soukromého klíče."
 
-#: ../src/camel/camel-gpg-context.c:1084 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:398
 #: ../src/libedataserver/e-client.c:161
 #, c-format
 msgid "Cancelled"
 msgstr "Zrušeno"
 
-#: ../src/camel/camel-gpg-context.c:1105
+#: ../src/camel/camel-gpg-context.c:1122
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Nelze odemknout tajný klíč. Byla zadána tři chybná hesla."
 
-#: ../src/camel/camel-gpg-context.c:1118
+#: ../src/camel/camel-gpg-context.c:1135
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Neočekávaná odpověď od GnuPG: %s"
 
-#: ../src/camel/camel-gpg-context.c:1232
+#: ../src/camel/camel-gpg-context.c:1249
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr "Nelze zašifrovat zprávu: Nejsou určeni platní příjemci."
 
-#: ../src/camel/camel-gpg-context.c:1941 ../src/camel/camel-smime-context.c:841
+#. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
+#. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#: ../src/camel/camel-gpg-context.c:1262
+#, c-format
+msgid ""
+"Failed to encrypt: Invalid recipient %s specified. A common issue is that "
+"the %s doesn’t have imported public key for this recipient."
+msgstr ""
+"Selhalo zašifrování: Byl zadán neplatný příjemce %s. Běžným problémem bývá, "
+"že %s nemá pro tohoto příjemce naimportovaný veřejný klíč."
+
+#: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
 msgstr "Nelze vygenerovat data podpisu: "
 
-#: ../src/camel/camel-gpg-context.c:1992 ../src/camel/camel-gpg-context.c:2228
-#: ../src/camel/camel-gpg-context.c:2344 ../src/camel/camel-gpg-context.c:2520
+#: ../src/camel/camel-gpg-context.c:2023 ../src/camel/camel-gpg-context.c:2259
+#: ../src/camel/camel-gpg-context.c:2375 ../src/camel/camel-gpg-context.c:2551
 msgid "Failed to execute gpg."
 msgstr "Nelze spustit gpg."
 
-#: ../src/camel/camel-gpg-context.c:2098 ../src/camel/camel-gpg-context.c:2106
-#: ../src/camel/camel-gpg-context.c:2114 ../src/camel/camel-gpg-context.c:2134
+#: ../src/camel/camel-gpg-context.c:2129 ../src/camel/camel-gpg-context.c:2137
+#: ../src/camel/camel-gpg-context.c:2145 ../src/camel/camel-gpg-context.c:2165
 #: ../src/camel/camel-smime-context.c:970
 #: ../src/camel/camel-smime-context.c:984
 #: ../src/camel/camel-smime-context.c:993
@@ -2362,35 +2379,35 @@ msgstr "Nelze spustit gpg."
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nelze ověřit podpis zprávy: nesprávný formát zprávy"
 
-#: ../src/camel/camel-gpg-context.c:2180
+#: ../src/camel/camel-gpg-context.c:2211
 msgid "Cannot verify message signature: "
 msgstr "Nelze ověřit podpis zprávy: "
 
-#: ../src/camel/camel-gpg-context.c:2309
+#: ../src/camel/camel-gpg-context.c:2340
 msgid "Could not generate encrypting data: "
 msgstr "Nelze vygenerovat data šifrování: "
 
-#: ../src/camel/camel-gpg-context.c:2384
+#: ../src/camel/camel-gpg-context.c:2415
 msgid "This is a digitally encrypted message part"
 msgstr "Toto je digitálně šifrovaná část zprávy"
 
-#: ../src/camel/camel-gpg-context.c:2443 ../src/camel/camel-gpg-context.c:2452
-#: ../src/camel/camel-gpg-context.c:2475
+#: ../src/camel/camel-gpg-context.c:2474 ../src/camel/camel-gpg-context.c:2483
+#: ../src/camel/camel-gpg-context.c:2506
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nelze dešifrovat zprávu: Nesprávný formát zprávy"
 
-#: ../src/camel/camel-gpg-context.c:2463
+#: ../src/camel/camel-gpg-context.c:2494
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Nelze dešifrovat část MIME: chyba protokolu"
 
-#: ../src/camel/camel-gpg-context.c:2530
+#: ../src/camel/camel-gpg-context.c:2561
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "Nelze dešifrovat část MIME: tajný klíč nebyl nalezen"
 
-#: ../src/camel/camel-gpg-context.c:2566
+#: ../src/camel/camel-gpg-context.c:2597
 #: ../src/camel/camel-smime-context.c:1286
 msgid "Encrypted content"
 msgstr "Šifrovaný obsah"
@@ -3050,43 +3067,43 @@ msgstr "Nelze přidat data ke kodéru"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Dešifrování S/MIME: Nenalezen šifrovaný obsah"
 
-#: ../src/camel/camel-store.c:1369
+#: ../src/camel/camel-store.c:1370
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Otevírání složky „%s“"
 
-#: ../src/camel/camel-store.c:1663
+#: ../src/camel/camel-store.c:1665
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Prohledávání složek v „%s“"
 
-#: ../src/camel/camel-store.c:1691 ../src/camel/camel-store.c:1736
+#: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Koš"
 
-#: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1753
+#: ../src/camel/camel-store.c:1707 ../src/camel/camel-store.c:1755
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Nevyžádané"
 
-#: ../src/camel/camel-store.c:2354
+#: ../src/camel/camel-store.c:2356
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nelze vytvořit složku: %s: složka existuje"
 
-#: ../src/camel/camel-store.c:2361
+#: ../src/camel/camel-store.c:2363
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Vytváření složky „%s“"
 
-#: ../src/camel/camel-store.c:2538 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2540 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nelze odstranit složku: %s: Neplatná operace"
 
-#: ../src/camel/camel-store.c:2728 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2730 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -5616,8 +5633,8 @@ msgid "Unexpected reply from server"
 msgstr "Neočekávaná odpověď ze serveru"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1571
-#: ../src/libedataserverui/e-credentials-prompter.c:1615
+#: ../src/libedataserverui/e-credentials-prompter.c:1576
+#: ../src/libedataserverui/e-credentials-prompter.c:1620
 msgid "Credentials prompt was cancelled"
 msgstr "Výzva k zadání pověření byla zrušena"
 
