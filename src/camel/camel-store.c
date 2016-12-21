@@ -1302,7 +1302,8 @@ camel_store_can_refresh_folder (CamelStore *store,
  *
  * Gets a specific folder object from @store by name.
  *
- * Returns: (transfer full): the requested #CamelFolder object, or %NULL on error
+ * Returns: (transfer full) (nullable): the requested #CamelFolder object, or
+ * %NULL on error
  *
  * Since: 3.0
  **/
@@ -1585,7 +1586,8 @@ camel_store_get_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_folder().
  *
- * Returns: (transfer full): the requested #CamelFolder object, or %NULL on error
+ * Returns: (transfer full) (nullable): the requested #CamelFolder object, or
+ * %NULL on error
  *
  * Since: 3.0
  **/
@@ -1607,7 +1609,7 @@ camel_store_get_folder_finish (CamelStore *store,
 /**
  * camel_store_get_folder_info_sync:
  * @store: a #CamelStore
- * @top: the name of the folder to start from
+ * @top: (nullable): the name of the folder to start from
  * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -1634,7 +1636,7 @@ camel_store_get_folder_finish (CamelStore *store,
  * supplied or not.  The only guaranteed way to get updated folder
  * counts is to both open the folder and invoke refresh_info() it.
  *
- * Returns: a #CamelFolderInfo tree, or %NULL on error
+ * Returns: (nullable): a #CamelFolderInfo tree, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -1816,7 +1818,7 @@ store_get_folder_info_thread (GTask *task,
 /**
  * camel_store_get_folder_info:
  * @store: a #CamelStore
- * @top: the name of the folder to start from
+ * @top: (nullable): the name of the folder to start from
  * @flags: various CAMEL_STORE_FOLDER_INFO_* flags to control behavior
  * @io_priority: the I/O priority of the request
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1868,13 +1870,13 @@ camel_store_get_folder_info (CamelStore *store,
  * camel_store_get_folder_info_finish:
  * @store: a #CamelStore
  * @result: a #GAsyncResult
- * @error: return location for a #GError, or %NULL
+ * @error: (nullable): return location for a #GError, or %NULL
  *
  * Finishes the operation started with camel_store_get_folder_info().
  * The returned #CamelFolderInfo tree should be freed with
  * camel_folder_info_free().
  *
- * Returns: a #CamelFolderInfo tree, or %NULL on error
+ * Returns: (nullable): a #CamelFolderInfo tree, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -1901,8 +1903,8 @@ camel_store_get_folder_info_finish (CamelStore *store,
  *
  * Gets the folder in @store into which new mail is delivered.
  *
- * Returns: (transfer full): the inbox folder for @store, or %NULL on error or if no such
- * folder exists
+ * Returns: (transfer full) (nullable): the inbox folder for @store, or %NULL on
+ * error or if no such folder exists
  *
  * Since: 3.0
  **/
@@ -1994,8 +1996,8 @@ camel_store_get_inbox_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_inbox_folder().
  *
- * Returns: (transfer full): the inbox folder for @store, or %NULL on error or if no such
- * folder exists
+ * Returns: (transfer full) (nullable): the inbox folder for @store, or %NULL on
+ * error or if no such folder exists
  *
  * Since: 3.0
  **/
@@ -2022,8 +2024,8 @@ camel_store_get_inbox_folder_finish (CamelStore *store,
  *
  * Gets the folder in @store into which junk is delivered.
  *
- * Returns: (transfer full): the junk folder for @store, or %NULL on error or if no such
- * folder exists
+ * Returns: (transfer full) (nullable): the junk folder for @store, or %NULL on
+ * error or if no such folder exists
  *
  * Since: 3.0
  **/
@@ -2120,8 +2122,8 @@ camel_store_get_junk_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_junk_folder().
  *
- * Returns: (transfer full): the junk folder for @store, or %NULL on error or if no such
- * folder exists
+ * Returns: (transfer full) (nullable): the junk folder for @store, or %NULL on 
+ * error or if no such folder exists
  *
  * Since: 3.0
  **/
@@ -2148,8 +2150,8 @@ camel_store_get_junk_folder_finish (CamelStore *store,
  *
  * Gets the folder in @store into which trash is delivered.
  *
- * Returns:(transfer full):  the trash folder for @store, or %NULL on error or if no such
- * folder exists
+ * Returns: (transfer full) (nullable): the trash folder for @store, or %NULL on
+ * error or if no such folder exists
  *
  * Since: 3.0
  **/
@@ -2247,8 +2249,8 @@ camel_store_get_trash_folder (CamelStore *store,
  *
  * Finishes the operation started with camel_store_get_trash_folder().
  *
- * Returns: (transfer full): the trash folder for @store, or %NULL on error or if no such
- * folder exists
+ * Returns: (transfer full) (nullable): the trash folder for @store, or %NULL on
+ * error or if no such folder exists
  *
  * Since: 3.0
  **/
@@ -2270,7 +2272,7 @@ camel_store_get_trash_folder_finish (CamelStore *store,
 /**
  * camel_store_create_folder_sync:
  * @store: a #CamelStore
- * @parent_name: name of the new folder's parent, or %NULL
+ * @parent_name: (nullable): name of the new folder's parent, or %NULL
  * @folder_name: name of the folder to create
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2280,7 +2282,7 @@ camel_store_get_trash_folder_finish (CamelStore *store,
  * The returned #CamelFolderInfo struct should be freed with
  * camel_folder_info_free().
  *
- * Returns: info about the created folder, or %NULL on error
+ * Returns: (nullable): info about the created folder, or %NULL on error
  *
  * Since: 3.0
  **/
@@ -2380,7 +2382,7 @@ store_create_folder_thread (GTask *task,
 /**
  * camel_store_create_folder:
  * @store: a #CamelStore
- * @parent_name: name of the new folder's parent, or %NULL
+ * @parent_name: (nullable): name of the new folder's parent, or %NULL
  * @folder_name: name of the folder to create
  * @io_priority: the I/O priority of the request
  * @cancellable: optional #GCancellable object, or %NULL
@@ -2441,7 +2443,7 @@ camel_store_create_folder (CamelStore *store,
  * The returned #CamelFolderInfo struct should be freed with
  * camel_folder_info_free().
  *
- * Returns: info about the created folder, or %NULL on error
+ * Returns: (nullable): info about the created folder, or %NULL on error
  *
  * Since: 3.0
  **/
