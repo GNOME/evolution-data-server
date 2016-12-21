@@ -729,7 +729,7 @@ service_set_property (GObject *object,
 		case PROP_PROVIDER:
 			service_set_provider (
 				CAMEL_SERVICE (object),
-				g_value_get_pointer (value));
+				g_value_get_boxed (value));
 			return;
 
 		case PROP_PROXY_RESOLVER:
@@ -789,7 +789,7 @@ service_get_property (GObject *object,
 			return;
 
 		case PROP_PROVIDER:
-			g_value_set_pointer (
+			g_value_set_boxed (
 				value,
 				camel_service_get_provider (
 				CAMEL_SERVICE (object)));
@@ -1018,10 +1018,11 @@ camel_service_class_init (CamelServiceClass *class)
 	g_object_class_install_property (
 		object_class,
 		PROP_PROVIDER,
-		g_param_spec_pointer (
+		g_param_spec_boxed (
 			"provider",
 			"Provider",
 			"The CamelProvider for the service",
+			CAMEL_TYPE_PROVIDER,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT_ONLY |
 			G_PARAM_STATIC_STRINGS));

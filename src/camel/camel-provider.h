@@ -33,6 +33,8 @@
 #include <camel/camel-url.h>
 
 #define CAMEL_PROVIDER(obj) ((CamelProvider *)(obj))
+#define CAMEL_TYPE_PROVIDER \
+	(camel_provider_get_type ())
 
 /**
  * EDS_CAMEL_PROVIDER_DIR:
