@@ -25,6 +25,7 @@
 #include <camel/camel.h>
 
 typedef struct _MergeSourceData {
+	gchar *source_filename;
 	gchar *path;
 	GKeyFile *key_file;
 } MergeSourceData;
@@ -47,6 +48,7 @@ evolution_source_registry_free_merge_source_data (gpointer mem)
 	if (source_data == NULL)
 		return;
 
+	g_free (source_data->source_filename);
 	g_free (source_data->path);
 	g_key_file_unref (source_data->key_file);
 	g_free (source_data);
@@ -158,12 +160,46 @@ evolution_source_registry_read_directory (const gchar *path,
 	return TRUE;
 }
 
+static gchar *
+autoconfig_build_signature_filename (const gchar *path,
+				     const gchar *source_filename)
+{
+	const gchar *use_path;
+	gchar *filename, *tmp_basename, *tmp_path = NULL;
+
+	tmp_basename = g_path_get_basename (source_filename);
+	g_return_val_if_fail (tmp_basename != NULL, NULL);
+	g_return_val_if_fail (g_str_has_suffix (tmp_basename, ".source"), NULL);
+
+	/* Remove the ".source" extension */
+	tmp_basename[strlen (tmp_basename) - 7] = '\0';
+
+	if (path) {
+		use_path = path;
+	} else {
+		const gchar *config_dir = e_get_user_config_dir ();
+
+		tmp_path = g_build_filename (config_dir, "signatures", NULL);
+		g_mkdir_with_parents (tmp_path, 0700);
+
+		use_path = tmp_path;
+	}
+
+	filename = g_build_filename (use_path, tmp_basename, NULL);
+
+	g_free (tmp_basename);
+	g_free (tmp_path);
+
+	return filename;
+}
+
 static void
 evolution_source_registry_clean_orphans (GHashTable *autoconfig_sources,
                                          GHashTable *home_sources)
 {
 	GList *keys;
 	GList *index;
+
 	keys = g_hash_table_get_keys (home_sources);
 
 	for (index = keys; index != NULL; index = g_list_next (index)) {
@@ -177,12 +213,37 @@ evolution_source_registry_clean_orphans (GHashTable *autoconfig_sources,
 								"Autoconfig: Error cleaning orphan source '%s': %s.\n",
 								data->path,
 								g_strerror (errno));
+				} else {
+					e_source_registry_debug_print (
+								"Autoconfig: Removed orphan autoconfig source '%s'.\n",
+								data->path);
 				}
-				e_source_registry_debug_print (
-							"Autoconfig: Removed orphan autoconfig source '%s'.\n",
-							data->path);
 
 				g_hash_table_remove (home_sources, data->path);
+
+				if (g_key_file_has_group (data->key_file, E_SOURCE_EXTENSION_MAIL_SIGNATURE)) {
+					gchar *filename;
+
+					filename = autoconfig_build_signature_filename (NULL, data->path);
+					if (filename && g_file_test (filename, G_FILE_TEST_EXISTS)) {
+						if (g_unlink (filename) == -1) {
+							e_source_registry_debug_print (
+										"Autoconfig: Error cleaning orphan signature '%s': %s.\n",
+										filename,
+										g_strerror (errno));
+						} else {
+							e_source_registry_debug_print (
+										"Autoconfig: Removed orphan autoconfig signature '%s'.\n",
+										filename);
+						}
+					} else if (filename) {
+						e_source_registry_debug_print (
+									"Autoconfig: Error cleaning orphan signature '%s': File not found.\n",
+									filename);
+					}
+
+					g_free (filename);
+				}
 			}
 		}
 	}
@@ -232,7 +293,7 @@ evolution_source_registry_replace_vars_eval_cb (const GMatchInfo *match_info,
 
 static gchar *
 evolution_source_registry_replace_vars (const gchar *old,
-					MergeSourceData *source,
+					const gchar *source_path,
 					GHashTable *user_variables)
 {
 	GRegex *regex;
@@ -246,7 +307,7 @@ evolution_source_registry_replace_vars (const gchar *old,
 
 	g_return_val_if_fail (regex != NULL, g_strdup (old));
 
-	rvd.source_path = source->path;
+	rvd.source_path = source_path;
 	rvd.user_variables = user_variables;
 
 	new = g_regex_replace_eval (
@@ -302,7 +363,7 @@ evolution_source_registry_copy_source (MergeSourceData *target,
 					keys[jj],
 					NULL);
 
-			new_val = evolution_source_registry_replace_vars (val, source, user_variables);
+			new_val = evolution_source_registry_replace_vars (val, source->path, user_variables);
 			g_free (val);
 
 			g_key_file_set_value (
@@ -402,6 +463,7 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
 	}
 
 	new_data = g_new0 (MergeSourceData, 1);
+	new_data->source_filename = g_strdup (autoconfig_key_file->path);
 	new_data->path = g_strdup (home_key_file->path);
 	new_data->key_file = new_keyfile;
 
@@ -448,6 +510,7 @@ evolution_source_registry_generate_source_from_autoconfig (const gchar *key,
 	new_keyfile = g_key_file_new ();
 
 	new_data = g_new0 (MergeSourceData, 1);
+	new_data->source_filename = g_strdup (autoconfig_key_file->path);
 	new_data->path = dest_source_path;
 	new_data->key_file = new_keyfile;
 
@@ -474,9 +537,8 @@ evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
 
 	g_hash_table_iter_init (&iter, autoconfig_sources);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		MergeSourceData *autoconfig_key_file;
+		MergeSourceData *autoconfig_key_file = value;
 
-		autoconfig_key_file = (MergeSourceData *)value;
 		if (g_hash_table_contains (home_sources, key)) {
 			GError *local_error = NULL;
 
@@ -513,12 +575,92 @@ evolution_source_registry_write_key_file (MergeSourceData *key_file_data,
 }
 
 static gboolean
+evolution_source_registry_write_signature (MergeSourceData *key_file_data,
+					   GHashTable *user_variables,
+					   GError **error)
+{
+	gchar *tmp, *signature_src, *signature_dest;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (key_file_data != NULL, FALSE);
+	g_return_val_if_fail (key_file_data->source_filename != NULL, FALSE);
+	g_return_val_if_fail (g_str_has_suffix (key_file_data->source_filename, ".source"), FALSE);
+
+	/* filename with path, without the ".source" extension */
+	tmp = g_strndup (key_file_data->source_filename, strlen (key_file_data->source_filename) - 7);
+
+	signature_src = g_strconcat (tmp, ".signature", NULL);
+
+	g_free (tmp);
+
+	if (!g_file_test (signature_src, G_FILE_TEST_EXISTS)) {
+		e_source_registry_debug_print ("Autoconfig: Missing signature file '%s', skipping it.", signature_src);
+		g_free (signature_src);
+
+		/* return TRUE, to keep going */
+		return TRUE;
+	}
+
+	signature_dest = autoconfig_build_signature_filename (NULL, key_file_data->source_filename);
+
+	tmp = NULL;
+
+	success = g_file_get_contents (signature_src, &tmp, NULL, &local_error);
+	if (success) {
+		gchar *value;
+
+		value = evolution_source_registry_replace_vars (tmp, signature_src, user_variables);
+		if (value) {
+			success = g_file_set_contents (signature_dest, value, -1, &local_error);
+			if (!success)
+				e_source_registry_debug_print ("Autoconfig: Failed to write signature file '%s': %s",
+					signature_dest, local_error ? local_error->message : "Unknown error");
+
+			g_free (value);
+		} else {
+			success = FALSE;
+			e_source_registry_debug_print ("Autoconfig: Failed to replace variables in signature file '%s'",
+				signature_src);
+		}
+	} else {
+		e_source_registry_debug_print ("Autoconfig: Failed to read signature file '%s': %s",
+			signature_src, local_error ? local_error->message : "Unknown error");
+	}
+
+	if (success) {
+		GStatBuf sb;
+
+		if (g_stat (signature_src, &sb) != -1 &&
+		    g_chmod (signature_dest, sb.st_mode) == -1) {
+			e_source_registry_debug_print (
+				"Autoconfig: Failed to chmod() for '%s': %s\n",
+				signature_dest, g_strerror (errno));
+		}
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	g_free (signature_src);
+	g_free (signature_dest);
+	g_free (tmp);
+
+	if (success)
+		success = evolution_source_registry_write_key_file (key_file_data, error);
+
+	return success;
+}
+
+static gboolean
 evolution_source_registry_write_key_files (GList *list,
+					   GHashTable *user_variables,
                                            GError **error)
 {
 	GList *index;
+	gboolean success = TRUE;
 
-	for (index = list; index != NULL; index = g_list_next (index)) {
+	for (index = list; index && success; index = g_list_next (index)) {
 		MergeSourceData *data;
 
 		data = index->data;
@@ -526,8 +668,10 @@ evolution_source_registry_write_key_files (GList *list,
 		if (data == NULL)
 			continue;
 
-		if (!evolution_source_registry_write_key_file (data, error))
-			return FALSE;
+		if (g_key_file_has_group (data->key_file, E_SOURCE_EXTENSION_MAIL_SIGNATURE))
+			success = evolution_source_registry_write_signature (data, user_variables, error);
+		else
+			success = evolution_source_registry_write_key_file (data, error);
 	}
 
 	return TRUE;
@@ -680,7 +824,7 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 
 	key_files_to_copy = evolution_source_registry_merge_sources (autoconfig_sources, home_sources, user_variables);
 
-	success = evolution_source_registry_write_key_files (key_files_to_copy, error);
+	success = evolution_source_registry_write_key_files (key_files_to_copy, user_variables, error);
 
  exit:
 	if (autoconfig_sources != NULL)
