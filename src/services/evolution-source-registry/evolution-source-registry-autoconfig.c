@@ -31,9 +31,9 @@ typedef struct _MergeSourceData {
 } MergeSourceData;
 
 typedef void (*MergeSourcePopulateHashtableFunc)(GHashTable *source,
-                                                 GKeyFile *key_file,
-                                                 const gchar *basename,
-                                                 const gchar *filename);
+						 GKeyFile *key_file,
+						 const gchar *basename,
+						 const gchar *filename);
 
 /* Forward Declarations */
 gboolean	evolution_source_registry_merge_autoconfig_sources
@@ -41,7 +41,7 @@ gboolean	evolution_source_registry_merge_autoconfig_sources
 						 GError **error);
 
 static void
-evolution_source_registry_free_merge_source_data (gpointer mem)
+e_autoconfig_free_merge_source_data (gpointer mem)
 {
 	MergeSourceData *source_data = (MergeSourceData *) mem;
 
@@ -64,11 +64,7 @@ populate_hashtable_autoconfig (GHashTable *sources,
 	GError *local_error = NULL;
 	gchar *uid, *val;
 
-	val = g_key_file_get_value (
-				key_file,
-				E_SOURCE_EXTENSION_AUTOCONFIG,
-				"Revision",
-				&local_error);
+	val = g_key_file_get_value (key_file, E_SOURCE_EXTENSION_AUTOCONFIG, "Revision", &local_error);
 	if (val == NULL) {
 		e_source_registry_debug_print (
 					"Autoconfig: Failed to read '%s': %s.\n",
@@ -112,10 +108,10 @@ populate_hashtable_home (GHashTable *sources,
 }
 
 static gboolean
-evolution_source_registry_read_directory (const gchar *path,
-                                          GHashTable *sources,
-                                          MergeSourcePopulateHashtableFunc func,
-                                          GError **error)
+e_autoconfig_read_directory (const gchar *path,
+			     GHashTable *sources,
+			     MergeSourcePopulateHashtableFunc func,
+			     GError **error)
 {
 	GDir *dir;
 	const gchar *basename;
@@ -135,15 +131,8 @@ evolution_source_registry_read_directory (const gchar *path,
 		filename = g_build_filename (path, basename, NULL);
 
 		key_file = g_key_file_new ();
-		if (!g_key_file_load_from_file (
-				key_file,
-				filename,
-				G_KEY_FILE_NONE,
-				error)) {
-			g_prefix_error (
-				error,
-				"Failed to load key file '%s': ",
-				filename);
+		if (!g_key_file_load_from_file (key_file, filename, G_KEY_FILE_NONE, error)) {
+			g_prefix_error (error, "Failed to load key file '%s': ", filename);
 			g_free (filename);
 			g_dir_close (dir);
 			g_key_file_unref (key_file);
@@ -194,8 +183,8 @@ autoconfig_build_signature_filename (const gchar *path,
 }
 
 static void
-evolution_source_registry_clean_orphans (GHashTable *autoconfig_sources,
-                                         GHashTable *home_sources)
+e_autoconfig_clean_orphans (GHashTable *autoconfig_sources,
+			    GHashTable *home_sources)
 {
 	GList *keys;
 	GList *index;
@@ -210,13 +199,13 @@ evolution_source_registry_clean_orphans (GHashTable *autoconfig_sources,
 				/* if we fail to remove it, keep going */
 				if (g_unlink (data->path) == -1) {
 					e_source_registry_debug_print (
-								"Autoconfig: Error cleaning orphan source '%s': %s.\n",
-								data->path,
-								g_strerror (errno));
+						"Autoconfig: Error removing orphan source '%s': %s.\n",
+						data->path,
+						g_strerror (errno));
 				} else {
 					e_source_registry_debug_print (
-								"Autoconfig: Removed orphan autoconfig source '%s'.\n",
-								data->path);
+						"Autoconfig: Removed orphan source '%s'.\n",
+						data->path);
 				}
 
 				g_hash_table_remove (home_sources, data->path);
@@ -228,18 +217,18 @@ evolution_source_registry_clean_orphans (GHashTable *autoconfig_sources,
 					if (filename && g_file_test (filename, G_FILE_TEST_EXISTS)) {
 						if (g_unlink (filename) == -1) {
 							e_source_registry_debug_print (
-										"Autoconfig: Error cleaning orphan signature '%s': %s.\n",
-										filename,
-										g_strerror (errno));
+								"Autoconfig: Error removing orphan signature '%s': %s.\n",
+								filename,
+								g_strerror (errno));
 						} else {
 							e_source_registry_debug_print (
-										"Autoconfig: Removed orphan autoconfig signature '%s'.\n",
-										filename);
+								"Autoconfig: Removed orphan signature '%s'.\n",
+								filename);
 						}
 					} else if (filename) {
 						e_source_registry_debug_print (
-									"Autoconfig: Error cleaning orphan signature '%s': File not found.\n",
-									filename);
+							"Autoconfig: Error removing orphan signature '%s': File not found.\n",
+							filename);
 					}
 
 					g_free (filename);
@@ -257,9 +246,9 @@ typedef struct _ReplaceVariablesData {
 } ReplaceVariablesData;
 
 static gboolean
-evolution_source_registry_replace_vars_eval_cb (const GMatchInfo *match_info,
-						GString *result,
-						gpointer user_data)
+e_autoconfig_replace_vars_eval_cb (const GMatchInfo *match_info,
+				   GString *result,
+				   gpointer user_data)
 {
 	gchar *var_name;
 	const gchar *val = NULL;
@@ -292,9 +281,9 @@ evolution_source_registry_replace_vars_eval_cb (const GMatchInfo *match_info,
 }
 
 static gchar *
-evolution_source_registry_replace_vars (const gchar *old,
-					const gchar *source_path,
-					GHashTable *user_variables)
+e_autoconfig_replace_vars (const gchar *old,
+			   const gchar *source_path,
+			   GHashTable *user_variables)
 {
 	GRegex *regex;
 	gchar *new;
@@ -316,7 +305,7 @@ evolution_source_registry_replace_vars (const gchar *old,
 				-1,
 				0,
 				0,
-				evolution_source_registry_replace_vars_eval_cb,
+				e_autoconfig_replace_vars_eval_cb,
 				&rvd,
 				&local_error);
 
@@ -324,8 +313,8 @@ evolution_source_registry_replace_vars (const gchar *old,
 
 	if (new == NULL) {
 		e_source_registry_debug_print (
-					"Autoconfig: Replacing variables failed: %s.\n",
-					local_error ? local_error->message : "Unknown error");;
+			"Autoconfig: Replacing variables failed: %s.\n",
+			local_error ? local_error->message : "Unknown error");
 		g_error_free (local_error);
 		return g_strdup (old);
 	}
@@ -334,9 +323,9 @@ evolution_source_registry_replace_vars (const gchar *old,
 }
 
 static void
-evolution_source_registry_copy_source (MergeSourceData *target,
-                                       MergeSourceData *source,
-				       GHashTable *user_variables)
+e_autoconfig_copy_source (MergeSourceData *target,
+			  MergeSourceData *source,
+			  GHashTable *user_variables)
 {
 	gchar **groups = NULL;
 	gsize ngroups;
@@ -349,28 +338,18 @@ evolution_source_registry_copy_source (MergeSourceData *target,
 		gint jj;
 		gchar **keys;
 
-		keys = g_key_file_get_keys (
-				source->key_file,
-				groups[ii],
-				&nkeys,
-				NULL);
+		keys = g_key_file_get_keys (source->key_file, groups[ii], &nkeys, NULL);
 
 		for (jj = 0; jj < nkeys; jj++) {
 			gchar *new_val;
-			gchar *val = g_key_file_get_value (
-					source->key_file,
-					groups[ii],
-					keys[jj],
-					NULL);
+			gchar *val = g_key_file_get_value (source->key_file, groups[ii], keys[jj], NULL);
 
-			new_val = evolution_source_registry_replace_vars (val, source->path, user_variables);
+			new_val = e_autoconfig_replace_vars (val, source->path, user_variables);
+
 			g_free (val);
 
-			g_key_file_set_value (
-				target->key_file,
-				groups[ii],
-				keys[jj],
-				new_val);
+			g_key_file_set_value (target->key_file, groups[ii], keys[jj], new_val);
+
 			g_free (new_val);
 		}
 		g_strfreev (keys);
@@ -380,12 +359,12 @@ evolution_source_registry_copy_source (MergeSourceData *target,
 }
 
 static gboolean
-evolution_source_registry_merge_source (GHashTable *home_sources,
-                                        const gchar *key,
-                                        MergeSourceData *autoconfig_key_file,
-                                        GList **key_files_to_copy,
-					GHashTable *user_variables,
-                                        GError **error)
+e_autoconfig_merge_source (GHashTable *home_sources,
+			   const gchar *key,
+			   MergeSourceData *autoconfig_key_file,
+			   GList **key_files_to_copy,
+			   GHashTable *user_variables,
+			   GError **error)
 {
 	GKeyFile *new_keyfile;
 	MergeSourceData *home_key_file;
@@ -428,32 +407,28 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
 
 	if (skip_copy) {
 		e_source_registry_debug_print (
-					"Autoconfig: Revisions of '%s' and '%s' are the same ('%s'). Skipping update.\n",
-					home_key_file->path,
-					autoconfig_key_file->path,
-					home_revision);
+			"Autoconfig: Skipping update, revisions of '%s' and '%s' are the same ('%s').\n",
+			home_key_file->path,
+			autoconfig_key_file->path,
+			home_revision);
 		g_free (autoconfig_revision);
 		g_free (home_revision);
 		return TRUE;
 	}
 
 	e_source_registry_debug_print (
-				"Autoconfig: '%s' (Revision '%s') will be updated from '%s' (Revision '%s').\n",
-				home_key_file->path,
-				home_revision,
-				autoconfig_key_file->path,
-				autoconfig_revision);
+		"Autoconfig: Going to update '%s' (Revision '%s') with '%s' (Revision '%s').\n",
+		home_key_file->path,
+		home_revision,
+		autoconfig_key_file->path,
+		autoconfig_revision);
 
 	g_free (autoconfig_revision);
 	g_free (home_revision);
 
 	new_keyfile = g_key_file_new ();
 
-	if (!g_key_file_load_from_file (
-			new_keyfile,
-			home_key_file->path,
-			G_KEY_FILE_NONE,
-			error)) {
+	if (!g_key_file_load_from_file (new_keyfile, home_key_file->path, G_KEY_FILE_NONE, error)) {
 		g_prefix_error (
 			error,
 			"Failed to load key file '%s': ",
@@ -467,7 +442,7 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
 	new_data->path = g_strdup (home_key_file->path);
 	new_data->key_file = new_keyfile;
 
-	evolution_source_registry_copy_source (new_data, autoconfig_key_file, user_variables);
+	e_autoconfig_copy_source (new_data, autoconfig_key_file, user_variables);
 
 	*key_files_to_copy = g_list_prepend (*key_files_to_copy, new_data);
 
@@ -475,10 +450,10 @@ evolution_source_registry_merge_source (GHashTable *home_sources,
 }
 
 static void
-evolution_source_registry_generate_source_from_autoconfig (const gchar *key,
-							   MergeSourceData *autoconfig_key_file,
-							   GList **key_files_to_copy,
-							   GHashTable *user_variables)
+e_autoconfig_generate_source_from_autoconfig (const gchar *key,
+					      MergeSourceData *autoconfig_key_file,
+					      GList **key_files_to_copy,
+					      GHashTable *user_variables)
 {
 	GKeyFile *new_keyfile;
 	MergeSourceData *new_data;
@@ -514,26 +489,26 @@ evolution_source_registry_generate_source_from_autoconfig (const gchar *key,
 	new_data->path = dest_source_path;
 	new_data->key_file = new_keyfile;
 
-	evolution_source_registry_copy_source (new_data, autoconfig_key_file, user_variables);
+	e_autoconfig_copy_source (new_data, autoconfig_key_file, user_variables);
 
 	*key_files_to_copy = g_list_prepend (*key_files_to_copy, new_data);
 
 	e_source_registry_debug_print (
-			"Autoconfig: New autoconfig source '%s'. It will be copied to '%s'.\n",
-			autoconfig_key_file->path,
-			new_data->path);
+		"Autoconfig: New source '%s'. It will be copied to '%s'.\n",
+		autoconfig_key_file->path,
+		new_data->path);
 }
 
 static GList *
-evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
-                                         GHashTable *home_sources,
-					 GHashTable *user_variables)
+e_autoconfig_merge_sources (GHashTable *autoconfig_sources,
+			    GHashTable *home_sources,
+			    GHashTable *user_variables)
 {
 	GHashTableIter iter;
 	GList *key_files_to_copy = NULL;
 	gpointer key, value;
 
-	evolution_source_registry_clean_orphans (autoconfig_sources, home_sources);
+	e_autoconfig_clean_orphans (autoconfig_sources, home_sources);
 
 	g_hash_table_iter_init (&iter, autoconfig_sources);
 	while (g_hash_table_iter_next (&iter, &key, &value)) {
@@ -542,25 +517,15 @@ evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
 		if (g_hash_table_contains (home_sources, key)) {
 			GError *local_error = NULL;
 
-			if (!evolution_source_registry_merge_source (
-					home_sources,
-					key,
-					autoconfig_key_file,
-					&key_files_to_copy,
-					user_variables,
-					&local_error)) {
+			if (!e_autoconfig_merge_source (home_sources, key, autoconfig_key_file, &key_files_to_copy, user_variables, &local_error)) {
 				e_source_registry_debug_print (
-						"Autoconfig: evolution_source_registry_merge_source() failed: %s.\n",
-						local_error ? local_error->message : "Unknown error");
+					"Autoconfig: Merge source failed: %s.\n",
+					local_error ? local_error->message : "Unknown error");
 				g_clear_error (&local_error);
 				continue;
 			}
 		} else {
-			evolution_source_registry_generate_source_from_autoconfig (
-				key,
-				autoconfig_key_file,
-				&key_files_to_copy,
-				user_variables);
+			e_autoconfig_generate_source_from_autoconfig (key, autoconfig_key_file, &key_files_to_copy, user_variables);
 		}
 	}
 
@@ -568,16 +533,16 @@ evolution_source_registry_merge_sources (GHashTable *autoconfig_sources,
 }
 
 static gboolean
-evolution_source_registry_write_key_file (MergeSourceData *key_file_data,
-                                          GError **error)
+e_autoconfig_write_key_file (MergeSourceData *key_file_data,
+			     GError **error)
 {
 	return g_key_file_save_to_file (key_file_data->key_file, key_file_data->path, error);
 }
 
 static gboolean
-evolution_source_registry_write_signature (MergeSourceData *key_file_data,
-					   GHashTable *user_variables,
-					   GError **error)
+e_autoconfig_write_signature (MergeSourceData *key_file_data,
+			      GHashTable *user_variables,
+			      GError **error)
 {
 	gchar *tmp, *signature_src, *signature_dest;
 	gboolean success;
@@ -610,12 +575,13 @@ evolution_source_registry_write_signature (MergeSourceData *key_file_data,
 	if (success) {
 		gchar *value;
 
-		value = evolution_source_registry_replace_vars (tmp, signature_src, user_variables);
+		value = e_autoconfig_replace_vars (tmp, signature_src, user_variables);
 		if (value) {
 			success = g_file_set_contents (signature_dest, value, -1, &local_error);
-			if (!success)
+			if (!success) {
 				e_source_registry_debug_print ("Autoconfig: Failed to write signature file '%s': %s",
 					signature_dest, local_error ? local_error->message : "Unknown error");
+			}
 
 			g_free (value);
 		} else {
@@ -647,15 +613,15 @@ evolution_source_registry_write_signature (MergeSourceData *key_file_data,
 	g_free (tmp);
 
 	if (success)
-		success = evolution_source_registry_write_key_file (key_file_data, error);
+		success = e_autoconfig_write_key_file (key_file_data, error);
 
 	return success;
 }
 
 static gboolean
-evolution_source_registry_write_key_files (GList *list,
-					   GHashTable *user_variables,
-                                           GError **error)
+e_autoconfig_write_key_files (GList *list,
+			      GHashTable *user_variables,
+			      GError **error)
 {
 	GList *index;
 	gboolean success = TRUE;
@@ -669,16 +635,16 @@ evolution_source_registry_write_key_files (GList *list,
 			continue;
 
 		if (g_key_file_has_group (data->key_file, E_SOURCE_EXTENSION_MAIL_SIGNATURE))
-			success = evolution_source_registry_write_signature (data, user_variables, error);
+			success = e_autoconfig_write_signature (data, user_variables, error);
 		else
-			success = evolution_source_registry_write_key_file (data, error);
+			success = e_autoconfig_write_key_file (data, error);
 	}
 
 	return TRUE;
 }
 
 static GHashTable *
-read_user_variables (GSettings *settings)
+e_autoconfig_read_user_variables (GSettings *settings)
 {
 	GHashTable *variables;
 	gchar **strv;
@@ -701,7 +667,7 @@ read_user_variables (GSettings *settings)
 
 		sep = strchr (line, '=');
 		if (!sep || sep == line) {
-			e_source_registry_debug_print ("Autoconfig: GSettings' autoconf-variables line '%s' doesn't conform format 'name=value'.\n", line);
+			e_source_registry_debug_print ("Autoconfig: GSettings' autoconfig-variables line '%s' doesn't conform format 'name=value'.\n", line);
 			continue;
 		}
 
@@ -717,7 +683,7 @@ read_user_variables (GSettings *settings)
 		value = sep + 1;
 
 		if (g_hash_table_contains (variables, name))
-			e_source_registry_debug_print ("Autoconfig: GSettings' autoconf-variables key contains multiple '%s' variables.\n", name);
+			e_source_registry_debug_print ("Autoconfig: GSettings' autoconfig-variables key contains multiple '%s' variables.\n", name);
 
 		g_hash_table_insert (variables, name, g_strdup (value));
 	}
@@ -729,7 +695,7 @@ read_user_variables (GSettings *settings)
 
 gboolean
 evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *server,
-                                                    GError **error)
+						    GError **error)
 {
 	GHashTable *home_sources = NULL, *autoconfig_sources = NULL, *user_variables = NULL;
 	GList *key_files_to_copy = NULL;
@@ -742,24 +708,14 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 
 	settings = g_settings_new ("org.gnome.evolution-data-server");
 
-	autoconfig_sources = g_hash_table_new_full (
-				g_str_hash,
-				g_str_equal,
-				g_free,
-				evolution_source_registry_free_merge_source_data);
+	autoconfig_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_autoconfig_free_merge_source_data);
 
 	config_dirs = g_get_system_config_dirs ();
 	for (ii = 0; config_dirs[ii]; ii++) {
-		gchar *path = g_build_filename (
-				config_dirs[ii],
-				"evolution-data-server",
-				"autoconfig",
-				NULL);
-		success = evolution_source_registry_read_directory (
-				path,
-				autoconfig_sources,
-				populate_hashtable_autoconfig,
-				&local_error);
+		gchar *path;
+
+		path = g_build_filename (config_dirs[ii], "evolution-data-server", "autoconfig", NULL);
+		success = e_autoconfig_read_directory (path, autoconfig_sources, populate_hashtable_autoconfig, &local_error);
 
 		g_free (path);
 
@@ -777,11 +733,7 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 	autoconfig_directory = g_settings_get_string (settings, "autoconfig-directory");
 	if (autoconfig_directory && *autoconfig_directory) {
 		if (g_file_test (autoconfig_directory, G_FILE_TEST_IS_DIR)) {
-			success = evolution_source_registry_read_directory (
-				autoconfig_directory,
-				autoconfig_sources,
-				populate_hashtable_autoconfig,
-				&local_error);
+			success = e_autoconfig_read_directory (autoconfig_directory, autoconfig_sources, populate_hashtable_autoconfig, &local_error);
 
 			if (!success) {
 				if (local_error != NULL &&
@@ -793,28 +745,20 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 				}
 			}
 		} else {
-			e_source_registry_debug_print ("Autoconfig: GSettings' directory '%s' doesn't exist, or it's currently unavailable. Skipping it.\n", autoconfig_directory);
+			e_source_registry_debug_print ("Autoconfig: Skipping GSettings' autoconfig-directory '%s', either it doesn't exist, or it's currently unavailable.\n", autoconfig_directory);
 		}
 	}
 
 	g_free (autoconfig_directory);
 
-	home_sources = g_hash_table_new_full (
-			g_str_hash,
-			g_str_equal,
-			g_free,
-			evolution_source_registry_free_merge_source_data);
+	home_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_autoconfig_free_merge_source_data);
 
-	success = evolution_source_registry_read_directory (
-			e_server_side_source_get_user_dir (),
-			home_sources,
-			populate_hashtable_home,
-			&local_error);
+	success = e_autoconfig_read_directory (e_server_side_source_get_user_dir (), home_sources, populate_hashtable_home, &local_error);
 
 	if (!success)
 		goto exit;
 
-	user_variables = read_user_variables (settings);
+	user_variables = e_autoconfig_read_user_variables (settings);
 	g_warn_if_fail (user_variables != NULL);
 
 	/* Add these last, to override any user-specified */
@@ -822,9 +766,9 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 	g_hash_table_insert (user_variables, g_strdup ("REALNAME"), g_strdup (g_get_real_name ()));
 	g_hash_table_insert (user_variables, g_strdup ("HOST"), g_strdup (g_get_host_name ()));
 
-	key_files_to_copy = evolution_source_registry_merge_sources (autoconfig_sources, home_sources, user_variables);
+	key_files_to_copy = e_autoconfig_merge_sources (autoconfig_sources, home_sources, user_variables);
 
-	success = evolution_source_registry_write_key_files (key_files_to_copy, user_variables, error);
+	success = e_autoconfig_write_key_files (key_files_to_copy, user_variables, error);
 
  exit:
 	if (autoconfig_sources != NULL)
@@ -834,7 +778,7 @@ evolution_source_registry_merge_autoconfig_sources (ESourceRegistryServer *serve
 	if (user_variables)
 		g_hash_table_unref (user_variables);
 	if (key_files_to_copy != NULL)
-		g_list_free_full (key_files_to_copy, evolution_source_registry_free_merge_source_data);
+		g_list_free_full (key_files_to_copy, e_autoconfig_free_merge_source_data);
 	g_clear_object (&settings);
 
 	if (local_error != NULL)
