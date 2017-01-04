@@ -1,4 +1,6 @@
 set(valafiles
+	${CMAKE_CURRENT_SOURCE_DIR}/camel-${API_VERSION}.deps
+	${CMAKE_CURRENT_BINARY_DIR}/camel-${API_VERSION}.vapi
 	${CMAKE_CURRENT_SOURCE_DIR}/libedataserver-${API_VERSION}.deps
 	${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSION}.vapi
 	${CMAKE_CURRENT_SOURCE_DIR}/libebook-${API_VERSION}.deps
@@ -22,11 +24,6 @@ add_custom_target(vala ALL)
 
 set(gir_fullname ${CMAKE_BINARY_DIR}/src/camel/Camel-${API_VERSION}.gir)
 gir_girfilename_to_target(gir_deps Camel-${API_VERSION}.gir)
-
-list(APPEND valafiles
-	${CMAKE_CURRENT_SOURCE_DIR}/camel-${API_VERSION}.deps
-	${CMAKE_CURRENT_BINARY_DIR}/camel-${API_VERSION}.vapi
-)
 
 add_dependencies(vala ${gir_deps})
 
@@ -69,6 +66,7 @@ add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/libedataserver-${API_VERSI
 		--metadatadir=${CMAKE_CURRENT_SOURCE_DIR}
 		${gir_fullname}
 	DEPENDS libedataserver-${API_VERSION}.deps
+		${CMAKE_CURRENT_BINARY_DIR}/camel-${API_VERSION}.vapi
 		${gir_deps}
 		${gir_fullname}
 )
