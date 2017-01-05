@@ -153,11 +153,11 @@ create_test_component (time_t start,
 	ECalComponentDateTime dtstart, dtend;
 	struct icaltimetype time_start, time_end;
  *
-	time_start = icaltime_from_timet (start, 0);
-	dtstart.value = icaltime_from_timet (start, 0);
+	time_start = icaltime_from_timet_with_zone (start, 0, NULL);
+	dtstart.value = icaltime_from_timet_with_zone (start, 0, NULL);
 	dtstart.zone = icaltimezone_get_utc_timezone ();
  *
-	dtend.value = icaltime_from_timet (end, 0);
+	dtend.value = icaltime_from_timet_with_zone (end, 0, NULL);
 	dtend.value = icaltimezone_get_utc_timezone ();
 	e_cal_component_set_dtstart (comp, &dtstart);
 	e_cal_component_set_dtend (comp, &dtend);
@@ -170,7 +170,7 @@ create_test_component (time_t start,
 
 	g_free ((gchar *) summary.value);
 
-	current = icaltime_from_timet (time (NULL), 0);
+	current = icaltime_from_timet_with_zone (time (NULL), 0, NULL);
 	e_cal_component_set_created (comp, &current);
 	e_cal_component_set_last_modified (comp, &current);
 

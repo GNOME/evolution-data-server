@@ -1390,11 +1390,7 @@ check_first_instance_cb (ECalComponent *comp,
 		struct icaltimetype dtstart;
 
 		dtstart = icalcomponent_get_dtstart (icalcomp);
-		if (dtstart.zone) {
-			rid = icaltime_from_timet_with_zone (instance_start, dtstart.is_date, dtstart.zone);
-		} else {
-			rid = icaltime_from_timet (instance_start, dtstart.is_date);
-		}
+		rid = icaltime_from_timet_with_zone (instance_start, dtstart.is_date, dtstart.zone);
 	}
 
 	ifs->matches = icaltime_compare (ifs->rid, rid) == 0;

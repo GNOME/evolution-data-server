@@ -160,7 +160,7 @@ alter_cal_client (gpointer user_data)
 	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 	icalcomponent_set_summary (icalcomp, "Initial event summary");
 	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
+	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
 
 	if (!e_cal_client_create_object_sync (cal_client, icalcomp, &uid, NULL, &error))
 		g_error ("create object sync: %s", error->message);
