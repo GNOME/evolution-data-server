@@ -2564,7 +2564,7 @@ set_datetime (ECalComponent *comp,
 
 	if (datetime->prop) {
 		/* make sure no VALUE property is left if not needed */
-		icalproperty_remove_parameter (datetime->prop, ICAL_VALUE_PARAMETER);
+		icalproperty_remove_parameter_by_kind (datetime->prop, ICAL_VALUE_PARAMETER);
 
 		(* prop_set_func) (datetime->prop, *dt->value);
 	} else {
@@ -2583,7 +2583,7 @@ set_datetime (ECalComponent *comp,
 			icalproperty_add_parameter (datetime->prop, datetime->tzid_param);
 		}
 	} else if (datetime->tzid_param) {
-		icalproperty_remove_parameter (datetime->prop, ICAL_TZID_PARAMETER);
+		icalproperty_remove_parameter_by_kind (datetime->prop, ICAL_TZID_PARAMETER);
 		datetime->tzid_param = NULL;
 	}
 }
@@ -3554,7 +3554,7 @@ e_cal_component_set_organizer (ECalComponent *comp,
 				priv->organizer.sentby_param);
 		}
 	} else if (priv->organizer.sentby_param) {
-		icalproperty_remove_parameter (priv->organizer.prop, ICAL_SENTBY_PARAMETER);
+		icalproperty_remove_parameter_by_kind (priv->organizer.prop, ICAL_SENTBY_PARAMETER);
 		priv->organizer.sentby_param = NULL;
 	}
 
@@ -3573,7 +3573,7 @@ e_cal_component_set_organizer (ECalComponent *comp,
 				priv->organizer.cn_param);
 		}
 	} else if (priv->organizer.cn_param) {
-		icalproperty_remove_parameter (priv->organizer.prop, ICAL_CN_PARAMETER);
+		icalproperty_remove_parameter_by_kind (priv->organizer.prop, ICAL_CN_PARAMETER);
 		priv->organizer.cn_param = NULL;
 	}
 
@@ -3592,7 +3592,7 @@ e_cal_component_set_organizer (ECalComponent *comp,
 				priv->organizer.language_param);
 		}
 	} else if (priv->organizer.language_param) {
-		icalproperty_remove_parameter (priv->organizer.prop, ICAL_LANGUAGE_PARAMETER);
+		icalproperty_remove_parameter_by_kind (priv->organizer.prop, ICAL_LANGUAGE_PARAMETER);
 		priv->organizer.language_param = NULL;
 	}
 
@@ -4582,7 +4582,7 @@ e_cal_component_set_summary (ECalComponent *comp,
 				priv->summary.altrep_param);
 		}
 	} else if (priv->summary.altrep_param) {
-		icalproperty_remove_parameter (priv->summary.prop, ICAL_ALTREP_PARAMETER);
+		icalproperty_remove_parameter_by_kind (priv->summary.prop, ICAL_ALTREP_PARAMETER);
 		priv->summary.altrep_param = NULL;
 	}
 
