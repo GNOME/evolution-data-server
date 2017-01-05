@@ -64,7 +64,7 @@ setup_cal (ECalClient *cal_client)
 	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 	icalcomponent_set_summary (icalcomp, "Test event summary");
 	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
+	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
 	add_attach (icalcomp, ATTACH1);
 	add_attach (icalcomp, ATTACH2);
 	add_attach (icalcomp, ATTACH3);

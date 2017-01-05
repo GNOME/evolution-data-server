@@ -2381,8 +2381,7 @@ add_instance (ECalComponent *comp,
 			/* Floating date, set in the default zone */
 			itt = icaltime_from_timet_with_zone (start, TRUE, instances_hold->default_zone);
 		} else {
-			itt = icaltime_from_timet (
-				start, dtstart.value && dtstart.value->is_date);
+			itt = icaltime_from_timet_with_zone (start, dtstart.value && dtstart.value->is_date, NULL);
 			if (dtstart.tzid) {
 				g_free ((gchar *) dtstart.tzid);
 				dtstart.tzid = NULL;
@@ -2420,8 +2419,7 @@ add_instance (ECalComponent *comp,
 			/* Floating date, set in the default zone */
 			itt = icaltime_from_timet_with_zone (end, TRUE, instances_hold->default_zone);
 		} else {
-			itt = icaltime_from_timet (
-				end, dtend.value && dtend.value->is_date);
+			itt = icaltime_from_timet_with_zone (end, dtend.value && dtend.value->is_date, NULL);
 			if (dtend.tzid) {
 				g_free ((gchar *) dtend.tzid);
 				dtend.tzid = NULL;

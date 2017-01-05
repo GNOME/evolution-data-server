@@ -4595,7 +4595,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 			camel_name_value_array_copy (camel_message_info_get_user_tags (mi)));
 
 		if (date_time > 0) {
-			icaltime = icaltime_from_timet (date_time, FALSE);
+			icaltime = icaltime_from_timet_with_zone (date_time, FALSE, NULL);
 			if (!icaltime_is_valid_time (icaltime))
 				date_time = -1;
 		}
@@ -4604,7 +4604,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 			date_time = camel_message_info_get_date_received (mi);
 
 		if (date_time > 0) {
-			icaltime = icaltime_from_timet (date_time, FALSE);
+			icaltime = icaltime_from_timet_with_zone (date_time, FALSE, NULL);
 			if (!icaltime_is_valid_time (icaltime))
 				date_time = -1;
 		}

@@ -38,7 +38,7 @@ get_revision_compare_cycle (ECalClient *client)
 	icalcomp = icalcomponent_new (ICAL_VEVENT_COMPONENT);
 	icalcomponent_set_summary (icalcomp, "Test event summary");
 	icalcomponent_set_dtstart (icalcomp, now);
-	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet (icaltime_as_timet (now) + 60 * 60 * 60, 0));
+	icalcomponent_set_dtend   (icalcomp, icaltime_from_timet_with_zone (icaltime_as_timet (now) + 60 * 60 * 60, 0, NULL));
 
 	if (!e_client_get_backend_property_sync (E_CLIENT (client), CLIENT_BACKEND_PROPERTY_REVISION,
 						&revision_before, NULL, &error))
