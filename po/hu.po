@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-12-20 11:30+0000\n"
-"PO-Revision-Date: 2016-12-19 17:09+0100\n"
+"POT-Creation-Date: 2017-01-02 15:06+0000\n"
+"PO-Revision-Date: 2017-01-03 16:48+0100\n"
 "Last-Translator: Meskó Balázs <meskobalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
@@ -2253,7 +2253,7 @@ msgstr "Nem használt memória elengedése a következő mappánál: „%s : %s�
 #: ../src/camel/camel-gpg-context.c:417
 #, c-format
 msgid "Output from %s:"
-msgstr ""
+msgstr "Kimenet innen: %s:"
 
 #: ../src/camel/camel-gpg-context.c:834 ../src/camel/camel-gpg-context.c:839
 #: ../src/camel/camel-gpg-context.c:1543
@@ -2348,8 +2348,10 @@ msgstr "Sikertelen titkosítás: Nincs érvényes címzett megadva."
 #, c-format
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
-"the %s doesn't have imported public key for this recipient."
+"the %s doesn’t have imported public key for this recipient."
 msgstr ""
+"Sikertelen titkosítás: Érvénytelen címzett megadva: %s. Gyakori hiba, hogy "
+"a(z) %s nem rendelkezik importált nyilvános kulccsal ehhez a címzetthez."
 
 #: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
@@ -3072,43 +3074,43 @@ msgstr "Nem sikerült hozzáadni az adatokat a kódolóhoz"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME visszafejtés: nem található titkosított tartalom"
 
-#: ../src/camel/camel-store.c:1369
+#: ../src/camel/camel-store.c:1370
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "„%s” mappa megnyitása"
 
-#: ../src/camel/camel-store.c:1663
+#: ../src/camel/camel-store.c:1665
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Mappák keresése a következőn: „%s”"
 
-#: ../src/camel/camel-store.c:1691 ../src/camel/camel-store.c:1736
+#: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Kuka"
 
-#: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1753
+#: ../src/camel/camel-store.c:1707 ../src/camel/camel-store.c:1755
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Levélszemét"
 
-#: ../src/camel/camel-store.c:2354
+#: ../src/camel/camel-store.c:2356
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nem lehet létrehozni a(z) „%s” mappát: a mappa létezik"
 
-#: ../src/camel/camel-store.c:2361
+#: ../src/camel/camel-store.c:2363
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "„%s” mappa létrehozása"
 
-#: ../src/camel/camel-store.c:2538 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2540 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nem sikerült törölni a mappát: %s: Érvénytelen művelet"
 
-#: ../src/camel/camel-store.c:2728 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2730 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -5099,8 +5101,8 @@ msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
 msgstr ""
-"Ez a könyvtár, ha egy létező útvonallal van kitöltve, is ellenőrzésre kerül az "
-"XDG beállítási könyvtárak mellett."
+"Ez a könyvtár, ha egy létező útvonallal van kitöltve, is ellenőrzésre kerül "
+"az XDG beállítási könyvtárak mellett."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "A list of variables which can be part of the autoconfig .source files"
