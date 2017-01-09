@@ -1260,7 +1260,6 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					 * happen during a SELECT (QRESYNC). We should use it. */
 					c (is->priv->tagprefix, "flags changed for unknown uid %s\n.", uid);
 				}
-				finfo->user_flags = NULL;
 			}
 
 			if (changed) {
