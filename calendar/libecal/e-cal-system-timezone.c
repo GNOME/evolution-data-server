@@ -43,6 +43,10 @@ system_timezone_strip_path_if_valid (const gchar *filename)
 {
 	gint skip;
 
+	/* In case it's a relative path the '../' references the root (from the /etc) */
+	if (filename && g_str_has_prefix (filename, "../"))
+		filename += 2;
+
 	if (!filename || !g_str_has_prefix (filename, SYSTEM_ZONEINFODIR "/"))
 		return NULL;
 
