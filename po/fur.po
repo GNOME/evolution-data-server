@@ -9,15 +9,15 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-01-10 09:50+0100\n"
-"Language-Team: Friulian <fur@li.org>\n"
+"PO-Revision-Date: 2017-01-11 11:44+0100\n"
+"Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Gtranslator 2.91.7\n"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -275,7 +275,7 @@ msgstr "URI malformât: %s"
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:836
 msgid "Loading Addressbook summary..."
-msgstr "Daûr a cjariâ la sintesi de rubriche..."
+msgstr "Daûr a cjariâ il somari de rubriche..."
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:864
 #, c-format
@@ -705,92 +705,92 @@ msgstr "ID di ICQ di vore 3"
 #. Last modified time
 #: ../src/addressbook/libebook-contacts/e-contact.c:246
 msgid "Last Revision"
-msgstr ""
+msgstr "Ultime revision"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * virtual field, which returns either name of the contact or the organization
 #. * name, recognized by multiple other fields, where the first filled is used.
 #: ../src/addressbook/libebook-contacts/e-contact.c:250
 msgid "Name or Org"
-msgstr ""
+msgstr "Non o org"
 
 #. Address fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:253
 msgid "Address List"
-msgstr ""
+msgstr "Liste recapits"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:254
 msgid "Home Address"
-msgstr ""
+msgstr "Recapit di cjase"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:255
 msgid "Work Address"
-msgstr ""
+msgstr "Recapit di vore"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:256
 msgid "Other Address"
-msgstr ""
+msgstr "Altri recapit"
 
 #. Contact categories
 #: ../src/addressbook/libebook-contacts/e-contact.c:259
 msgid "Category List"
-msgstr ""
+msgstr "Liste categoriis"
 
 #. Photo/Logo
 #: ../src/addressbook/libebook-contacts/e-contact.c:262
 msgid "Photo"
-msgstr ""
+msgstr "Fotografie"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:263
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #. Translators: This is an EContact field description, in this case it's a name
 #. * of the contact, as specified in http://tools.ietf.org/html/rfc6350#section-6.2.2
 #: ../src/addressbook/libebook-contacts/e-contact.c:267
 #: ../src/libedataserverui/e-webdav-discover-widget.c:151
 msgid "Name"
-msgstr ""
+msgstr "Non"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:268
 msgid "Email List"
-msgstr ""
+msgstr "Liste des e-mail"
 
 #. Instant messaging fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:271
 msgid "AIM Screen Name List"
-msgstr ""
+msgstr "Liste dai nominatîfs pubics AIM"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:272
 msgid "GroupWise ID List"
-msgstr ""
+msgstr "Liste di ID GroupWise"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:273
 msgid "Jabber ID List"
-msgstr ""
+msgstr "Liste di ID Jabber"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:274
 msgid "Yahoo! Screen Name List"
-msgstr ""
+msgstr "Liste di nominatîfs publics Yahoo!"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:275
 msgid "MSN Screen Name List"
-msgstr ""
+msgstr "Liste di nominatîfs publics MSN"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:276
 msgid "ICQ ID List"
-msgstr ""
+msgstr "Liste di ID ICQ"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:278
 msgid "Wants HTML Mail"
-msgstr ""
+msgstr "Al vûl pueste in HTML"
 
 #. Translators: This is an EContact field description, in this case it's a
 #. * field describing whether it's a Contact list (list of email addresses) or a
 #. * regular contact for one person/organization/...
 #: ../src/addressbook/libebook-contacts/e-contact.c:283
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 #. Translators: This is an EContact field description, in this case it's a flag
 #. * used to determine whether when sending to Contact lists the addresses should be
@@ -798,170 +798,175 @@ msgstr ""
 #. * message header when sending messages to this Contact list.
 #: ../src/addressbook/libebook-contacts/e-contact.c:288
 msgid "List Shows Addresses"
-msgstr ""
+msgstr "Liste mostre direzions"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:290
 msgid "Birth Date"
-msgstr ""
+msgstr "Date di nassite"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:946
 msgid "Anniversary"
-msgstr ""
+msgstr "Aniversari"
 
 #. Security fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:294
 msgid "X.509 Certificate"
-msgstr ""
+msgstr "Certificât X.509"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:295
 msgid "PGP Certificate"
-msgstr ""
+msgstr "Certificât PGP"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:297
 msgid "Gadu-Gadu Home ID 1"
-msgstr ""
+msgstr "ID Gadu-Gadu personâl 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:298
 msgid "Gadu-Gadu Home ID 2"
-msgstr ""
+msgstr "ID Gadu-Gadu personâl 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:299
 msgid "Gadu-Gadu Home ID 3"
-msgstr ""
+msgstr "ID Gadu-Gadu personâl 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:300
 msgid "Gadu-Gadu Work ID 1"
-msgstr ""
+msgstr "ID Gadu-Gadu di vore 1 "
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:301
 msgid "Gadu-Gadu Work ID 2"
-msgstr ""
+msgstr "ID Gadu-Gadu di vore 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:302
 msgid "Gadu-Gadu Work ID 3"
-msgstr ""
+msgstr "ID Gadu-Gadu di vore 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:303
 msgid "Gadu-Gadu ID List"
-msgstr ""
+msgstr "Liste ID Gadu-Gadu"
 
 #. Geo information
 #: ../src/addressbook/libebook-contacts/e-contact.c:306
 msgid "Geographic Information"
-msgstr ""
+msgstr "Informazion gjeografiche"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:308
 msgid "Telephone"
-msgstr ""
+msgstr "Telefon"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:310
 msgid "Skype Home Name 1"
-msgstr ""
+msgstr "Nominatîf Skype personâl 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:311
 msgid "Skype Home Name 2"
-msgstr ""
+msgstr "Nominatîf Skype personâl 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:312
 msgid "Skype Home Name 3"
-msgstr ""
+msgstr "Nominatîf Skype personâl 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:313
 msgid "Skype Work Name 1"
-msgstr ""
+msgstr "Nominatîf Skype di vore 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:314
 msgid "Skype Work Name 2"
-msgstr ""
+msgstr "Nominatîf Skype di vore 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:315
 msgid "Skype Work Name 3"
-msgstr ""
+msgstr "Nominatîf Skype di vore 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:316
 msgid "Skype Name List"
-msgstr ""
+msgstr "Liste nominatîfs Skype"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:318
 msgid "SIP address"
-msgstr ""
+msgstr "Direzion SIP"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:320
 msgid "Google Talk Home Name 1"
-msgstr ""
+msgstr "Nominatîf Google Talk personâl 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:321
 msgid "Google Talk Home Name 2"
-msgstr ""
+msgstr "Nominatîf Google Talk personâl 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:322
 msgid "Google Talk Home Name 3"
-msgstr ""
+msgstr "Nominatîf Google Talk personâl 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:323
 msgid "Google Talk Work Name 1"
-msgstr ""
+msgstr "Nominatîf Google Talk di vore 1"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:324
 msgid "Google Talk Work Name 2"
-msgstr ""
+msgstr "Nominatîf Google Talk di vore 2"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:325
 msgid "Google Talk Work Name 3"
-msgstr ""
+msgstr "Nominatîf Google Talk di vore 3"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:326
 msgid "Google Talk Name List"
-msgstr ""
+msgstr "Liste nominatîfs Google Talk"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:328
 msgid "Twitter Name List"
-msgstr ""
+msgstr "Liste nominatîfs Twitter"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:1658
 #: ../src/addressbook/libebook/e-destination.c:919
 msgid "Unnamed List"
-msgstr ""
+msgstr "Liste cence non"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:39
 msgid "The library was built without phone number support."
 msgstr ""
+"La librarie e je stade compilade cence il supuart pai numars di telefon."
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:41
 msgid "The phone number parser reported a yet unknown error code."
 msgstr ""
+"L'analizadôr di numars di telefon al à segnalât un codiç di erôr ancjemò no "
+"cognossût."
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:43
 msgid "Not a phone number"
-msgstr ""
+msgstr "Nol è un numar di telefon"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:45
 msgid "Invalid country calling code"
-msgstr ""
+msgstr "Codiç di clamade internazionâl no valit"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:47
 msgid ""
 "Remaining text after the country calling code is too short for a phone number"
 msgstr ""
+"Il test restant daspò il codiç di clamade internazionâl al è masse curt par "
+"jessi un numar di telefon"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:49
 msgid "Text is too short for a phone number"
-msgstr ""
+msgstr "Test masse curt par jessi un numar di telefon"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:51
 msgid "Text is too long for a phone number"
-msgstr ""
+msgstr "Test masse lunc par jessi un numar di telefon"
 
 #: ../src/addressbook/libebook/e-book-client.c:929
 #, c-format
 msgid "Unknown book property “%s”"
-msgstr ""
+msgstr "Proprietât di rubriche “%s” no cognossude"
 
 #: ../src/addressbook/libebook/e-book-client.c:944
 #, c-format
 msgid "Cannot change value of book property “%s”"
-msgstr ""
+msgstr "Impussibil cambiâ valôr de proprietât di rubriche “%s”"
 
 #: ../src/addressbook/libebook/e-book-client.c:1388
 #: ../src/addressbook/libebook/e-book-client.c:1619
@@ -970,19 +975,19 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-client.c:1953
 #, c-format
 msgid "Unable to connect to “%s”: "
-msgstr ""
+msgstr "Impussibil tacâsi a “%s”: "
 
 #: ../src/addressbook/libebook/e-book-client-view.c:868
 #: ../src/calendar/libecal/e-cal-client-view.c:679
 #, c-format
 msgid "Client disappeared"
-msgstr ""
+msgstr "Client sparît"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:905
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2254
 #, c-format
 msgid "Error introspecting unknown summary field “%s”"
-msgstr ""
+msgstr "Erôr tal eseguî la introspezion dal cjamp somari “%s”"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
