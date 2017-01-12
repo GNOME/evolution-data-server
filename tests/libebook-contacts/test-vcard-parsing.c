@@ -434,6 +434,140 @@ test_contact_without_uid (void)
 }
 
 static void
+test_phone_params_and_value (EContact *contact,
+			     EContactField field_id,
+			     const gchar *expected_value,
+			     const gchar *expected_value_type)
+{
+	GList *attributes, *params, *link;
+	EVCardAttribute *attr = NULL;
+
+	g_assert (E_IS_CONTACT (contact));
+	g_assert (expected_value != NULL);
+	g_assert (expected_value_type != NULL);
+
+	g_assert_nonnull (e_contact_get_const (contact, field_id));
+	g_assert_cmpstr (e_contact_get_const (contact, field_id), ==, expected_value);
+
+	attributes = e_contact_get_attributes (contact, field_id);
+
+	g_assert (attributes != NULL);
+	g_assert (attributes->next != NULL);
+	g_assert (attributes->next->next != NULL);
+	g_assert (attributes->next->next->next == NULL);
+
+	for (link = attributes; link; link = g_list_next (link)) {
+		gchar *value;
+
+		attr = link->data;
+
+		g_assert (attr != NULL);
+
+		value = e_vcard_attribute_get_value (attr);
+
+		g_assert (value != NULL);
+
+		if (g_strcmp0 (value, expected_value) == 0) {
+			g_free (value);
+			break;
+		}
+
+		g_free (value);
+		attr = NULL;
+	}
+
+	g_assert (attr != NULL);
+
+	g_assert (e_vcard_attribute_get_name (attr) != NULL);
+
+	params = e_vcard_attribute_get_params (attr);
+	g_assert (params != NULL);
+	g_assert (params->next != NULL);
+	g_assert (params->next->next == NULL);
+
+	for (link = params; link; link = g_list_next (link)) {
+		EVCardAttributeParam *param = link->data;
+		const gchar *name;
+
+		g_assert (param != NULL);
+
+		name = e_vcard_attribute_param_get_name (param);
+
+		g_assert (name != NULL);
+		g_assert (g_ascii_strcasecmp (name, EVC_TYPE) == 0 ||
+			  g_ascii_strcasecmp (name, EVC_X_E164) == 0);
+
+		if (g_ascii_strcasecmp (name, EVC_X_E164) == 0) {
+			GList *values;
+			const gchar *value;
+
+			values = e_vcard_attribute_param_get_values (param);
+
+			g_assert (values != NULL);
+			g_assert (values->next == NULL || values->next->next == NULL);
+
+			value = values->data;
+
+			g_assert (value != NULL);
+			g_assert_cmpstr (value, ==, expected_value);
+
+			if (values->next) {
+				value = values->next->data;
+
+				if (value != NULL)
+					g_assert_cmpstr (value, ==, "");
+			}
+		} else {
+			GList *values;
+			const gchar *value1, *value2;
+
+			values = e_vcard_attribute_param_get_values (param);
+
+			g_assert (values != NULL);
+			g_assert (values->next != NULL);
+			g_assert (values->next->next == NULL);
+
+			value1 = values->data;
+			value2 = values->next->data;
+
+			g_assert (value1 != NULL);
+			g_assert (value2 != NULL);
+			g_assert_cmpstr (value1, ==, expected_value_type);
+			g_assert_cmpstr (value2, ==, "VOICE");
+		}
+	}
+
+	g_list_free_full (attributes, (GDestroyNotify) e_vcard_attribute_free);
+}
+
+static void
+test_contact_empty_value (void)
+{
+	EContact *contact;
+
+	contact = e_contact_new_from_vcard (
+		"BEGIN:VCARD\r\n"
+		"VERSION:3.0\r\n"
+		"UID:some-uid\r\n"
+		"REV:2017-01-12T11:34:36Z(0)\r\n"
+		"FN:zyx\r\n"
+		"N:zyx;;;;\r\n"
+		"EMAIL;TYPE=WORK:work@no.where\r\n"
+		"TEL;X-EVOLUTION-E164=00123456789,;TYPE=WORK,VOICE:00123456789\r\n"
+		"TEL;TYPE=WORK;TYPE=VOICE;X-EVOLUTION-E164=11123456789,:11123456789\r\n"
+		"TEL;X-EVOLUTION-E164=002233445566;TYPE=HOME,VOICE:002233445566\r\n"
+		"END:VCARD\r\n");
+
+	g_assert (E_IS_CONTACT (contact));
+
+	test_phone_params_and_value (contact, E_CONTACT_PHONE_BUSINESS, "00123456789", "WORK");
+	test_phone_params_and_value (contact, E_CONTACT_PHONE_BUSINESS_2, "11123456789", "WORK");
+	test_phone_params_and_value (contact, E_CONTACT_PHONE_HOME, "002233445566", "HOME");
+
+	g_clear_object (&contact);
+}
+
+static void
 test_construction_vcard_attribute_with_group (void)
 {
 	EVCardAttribute *attr1, *attr2, *attr3;
@@ -460,9 +594,10 @@ main (gint argc,
 
 	g_test_add_func ("/Parsing/VCard/WithUID", test_vcard_with_uid);
 	g_test_add_func ("/Parsing/VCard/WithoutUID", test_vcard_without_uid);
+	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
 	g_test_add_func ("/Parsing/Contact/WithUID", test_contact_with_uid);
 	g_test_add_func ("/Parsing/Contact/WithoutUID", test_contact_without_uid);
-	g_test_add_func ("/Parsing/VCard/QuotedPrintable", test_vcard_quoted_printable);
+	g_test_add_func ("/Parsing/Contact/EmptyValue", test_contact_empty_value);
 	g_test_add_func ("/Construction/VCardAttribute/WithGroup",
 	                 test_construction_vcard_attribute_with_group);
 
