@@ -6,7 +6,8 @@
 # The output is:
 #    ENABLE_PHONENUMBER - ON, when the libphonenumber is used
 #    PHONENUMBER_RAW_INPUT_NEEDED - Whether Parse() or ParseAndKeepRawInput() must be used to get the country-code source
-#    PHONENUMBER_CXXFLAGS - CXXFLAGS to use with target_compile_options() and similar commands
+#    PHONENUMBER_DEFINITIONS - definitions to use with target_compile_definitions() and similar commands
+#    PHONENUMBER_INCLUDE_DIRS - include directories to use with target_include_directories() and similar commands
 #    PHONENUMBER_LDFLAGS - LDFLAGS to use with target_link_libraries() and similar commands
 
 include(PrintableOptions)
@@ -18,7 +19,8 @@ if(NOT WITH_PHONENUMBER)
 	return()
 endif(NOT WITH_PHONENUMBER)
 
-set(PHONENUMBER_CXXFLAGS -DI18N_PHONENUMBERS_USE_BOOST)
+set(PHONENUMBER_DEFINITIONS -DI18N_PHONENUMBERS_USE_BOOST)
+set(PHONENUMBER_INCLUDE_DIRS)
 set(PHONENUMBER_LDFLAGS -lphonenumber)
 
 string(LENGTH "${CMAKE_BINARY_DIR}" bindirlen)
@@ -32,9 +34,11 @@ string(TOUPPER "${WITH_PHONENUMBER}" optupper)
 
 if(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
 	set(WITH_PHONENUMBER "ON")
+	set(PHONENUMBER_INCLUDE_DIRS "${INCLUDE_INSTALL_DIR}")
+	set(PHONENUMBER_LDFLAGS -L${LIB_INSTALL_DIR} ${PHONENUMBER_LDFLAGS})
 else(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
-	set(PHONENUMBER_CXXFLAGS "-I${WITH_PHONENUMBER}/include ${PHONENUMBER_CXXFLAGS}")
-	set(PHONENUMBER_LDFLAGS "-L${WITH_PHONENUMBER}/lib${LIB_SUFFIX} ${PHONENUMBER_LDFLAGS}")
+	set(PHONENUMBER_INCLUDE_DIRS "${WITH_PHONENUMBER}/include")
+	set(PHONENUMBER_LDFLAGS -L${WITH_PHONENUMBER}/lib${LIB_SUFFIX} ${PHONENUMBER_LDFLAGS})
 endif(("${optupper}" STREQUAL "ON") OR ("${substr}" STREQUAL "${CMAKE_BINARY_DIR}"))
 
 unset(bindirlen)
@@ -42,10 +46,11 @@ unset(maxlen)
 unset(substr)
 unset(optupper)
 
-set(CMAKE_REQUIRED_FLAGS "${PHONENUMBER_CXXFLAGS}")
+set(CMAKE_REQUIRED_DEFINITIONS ${PHONENUMBER_DEFINITIONS})
+set(CMAKE_REQUIRED_INCLUDES ${PHONENUMBER_INCLUDE_DIRS})
 
 foreach(lib boost_thread-mt boost_thread)
-	set(CMAKE_REQUIRED_LIBRARIES "${PHONENUMBER_LDFLAGS} -l${lib}")
+	set(CMAKE_REQUIRED_LIBRARIES ${PHONENUMBER_LDFLAGS} -l${lib})
 	CHECK_CXX_SOURCE_COMPILES("#include <phonenumbers/phonenumberutil.h>
 
 				int main(void) {
@@ -54,7 +59,7 @@ foreach(lib boost_thread-mt boost_thread)
 				}" phone_number_with_${lib})
 	if(phone_number_with_${lib})
 		set(ENABLE_PHONENUMBER ON)
-		set(PHONENUMBER_LDFLAGS "${CMAKE_REQUIRED_LIBRARIES}")
+		set(PHONENUMBER_LDFLAGS ${CMAKE_REQUIRED_LIBRARIES})
 		break()
 	endif(phone_number_with_${lib})
 endforeach(lib)
@@ -79,5 +84,6 @@ CHECK_CXX_SOURCE_COMPILES("#include <phonenumbers/phonenumberutil.h>
 				return EXIT_FAILURE;
 			}" PHONENUMBER_RAW_INPUT_NEEDED)
 
-unset(CMAKE_REQUIRED_FLAGS)
+unset(CMAKE_REQUIRED_DEFINITIONS)
+unset(CMAKE_REQUIRED_INCLUDES)
 unset(CMAKE_REQUIRED_LIBRARIES)

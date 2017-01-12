@@ -47,27 +47,29 @@ if(ENABLE_PHONENUMBER)
 	# disabled.
 
 	add_library(ephonenumber-private STATIC
-		e-alphabet-index-private.cpp
-		e-transliterator-private.cpp
+		e-phone-number-private.cpp
 	)
 
 	target_compile_definitions(ephonenumber-private PRIVATE
 		-DG_LOG_DOMAIN=\"e-phone-number\"
 		-DLIBEBOOK_CONTACTS_COMPILATION
+		${PHONENUMBER_DEFINITIONS}
 	)
 
 	target_compile_options(ephonenumber-private PUBLIC
-		${PHONENUMBER_CXXFLAGS}
+		${ADDRESSBOOK_CFLAGS}
 	)
 
 	target_include_directories(ephonenumber-private PUBLIC
 		${CMAKE_BINARY_DIR}
 		${CMAKE_BINARY_DIR}/src
 		${CMAKE_CURRENT_BINARY_DIR}
+		${ADDRESSBOOK_INCLUDE_DIRS}
 		${PHONENUMBER_INCLUDE_DIRS}
 	)
 
 	target_link_libraries(ephonenumber-private
+		${ADDRESSBOOK_LDFLAGS}
 		${PHONENUMBER_LDFLAGS}
 	)
 
