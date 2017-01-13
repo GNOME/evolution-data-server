@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-01-11 11:44+0100\n"
+"PO-Revision-Date: 2017-01-13 15:49+0100\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.11\n"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -992,19 +992,19 @@ msgstr "Erôr tal eseguî la introspezion dal cjamp somari “%s”"
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
 msgid "Error parsing regular expression"
-msgstr ""
+msgstr "Erôr tal analizâ la espression regolâr"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
 #: ../src/camel/camel-db.c:802
 #, c-format
 msgid "Insufficient memory"
-msgstr ""
+msgstr "Memorie insuficient"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1697
 #, c-format
 msgid "Invalid contact field “%d” specified in summary"
-msgstr ""
+msgstr "Cjamp di contat “%d”, specificât tal somari, no valit"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:604
@@ -1013,6 +1013,8 @@ msgid ""
 "Contact field “%s” of type “%s” specified in summary, but only boolean, "
 "string and string list field types are supported"
 msgstr ""
+"Cjamp contat “%s” di gjenar “%s” specificât tal somari, ma a son supuartâts "
+"nome cjamps booleans, stringhis e listis di stringhis"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3073
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4176
@@ -1026,12 +1028,12 @@ msgstr ""
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5817
 #, c-format
 msgid "Query contained unsupported elements"
-msgstr ""
+msgstr "La interogazion e contignive elements no supuartâts"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4311
 #, c-format
 msgid "Invalid Query"
-msgstr ""
+msgstr "Interogazion no valide"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4335
 #, c-format
@@ -1048,7 +1050,7 @@ msgstr ""
 #: ../src/libedataserver/e-client.c:175
 #, c-format
 msgid "Invalid query"
-msgstr ""
+msgstr "Interogazion no valide"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4447
 #, c-format
@@ -1056,10 +1058,11 @@ msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 
+# controle se al va ben erôr num.
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5270
-#, c-format
+#, fuzzy, c-format
 msgid "Unable to remove the db file: errno %d"
-msgstr ""
+msgstr "Impussibil gjavâ il file db: erôr num. %d"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6057
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6457
@@ -1112,11 +1115,11 @@ msgstr ""
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
 #, c-format
 msgid "Invalid query: %s"
-msgstr ""
+msgstr "Interogazion no valide: %s"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5985
 msgid "Invalid query for EbSqlCursor"
-msgstr ""
+msgstr "Interogazion no valide par EbSqlCursor"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7938
 msgid "At least one sort field must be specified to use an EbSqlCursor"
@@ -1136,7 +1139,7 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-data-cal.c:411
 #: ../src/libedataserver/e-client.c:142
 msgid "Backend is busy"
-msgstr ""
+msgstr "Backend impegnât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:380
 #: ../src/calendar/libedata-cal/e-data-cal.c:412
@@ -1149,42 +1152,42 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-data-cal.c:413
 #: ../src/libedataserver/e-client.c:159
 msgid "Permission denied"
-msgstr ""
+msgstr "Permès dineât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:384
 #: ../src/calendar/libedata-cal/e-data-cal.c:418
 msgid "Authentication Failed"
-msgstr ""
+msgstr "Autenticazion falide"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:385
 #: ../src/calendar/libedata-cal/e-data-cal.c:419
 msgid "Authentication Required"
-msgstr ""
+msgstr "Autenticazion necessarie"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:386
 #: ../src/calendar/libedata-cal/e-data-cal.c:420
 msgid "Unsupported field"
-msgstr ""
+msgstr "Cjamp no supuartât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:387
 #: ../src/calendar/libedata-cal/e-data-cal.c:422
 #: ../src/libedataserver/e-client.c:167
 msgid "Unsupported authentication method"
-msgstr ""
+msgstr "Metodi di autenticazion no supuartât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:388
 #: ../src/calendar/libedata-cal/e-data-cal.c:423
 #: ../src/libedataserver/e-client.c:169
 msgid "TLS not available"
-msgstr ""
+msgstr "TLS no disponibil"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:389
 msgid "Address book does not exist"
-msgstr ""
+msgstr "La rubriche no esist"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:390
 msgid "Book removed"
-msgstr ""
+msgstr "Rubriche gjavade"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:391
 #: ../src/calendar/libedata-cal/e-data-cal.c:426
@@ -1195,39 +1198,39 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-data-cal.c:427
 #: ../src/libedataserver/e-client.c:171
 msgid "Search size limit exceeded"
-msgstr ""
+msgstr "Limit di dimension di ricercje superât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:393
 #: ../src/calendar/libedata-cal/e-data-cal.c:428
 #: ../src/libedataserver/e-client.c:173
 msgid "Search time limit exceeded"
-msgstr ""
+msgstr "Limit di timp di ricercje superât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:395
 #: ../src/calendar/libedata-cal/e-data-cal.c:430
 #: ../src/libedataserver/e-client.c:177
 msgid "Query refused"
-msgstr ""
+msgstr "Interogazion refudade"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:396
 #: ../src/calendar/libedata-cal/e-data-cal.c:431
 #: ../src/libedataserver/e-client.c:163
 msgid "Could not cancel"
-msgstr ""
+msgstr "Impussibil anulâ"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
 #: ../src/addressbook/libedata-book/e-data-book.c:398
 #: ../src/calendar/libedata-cal/e-data-cal.c:433
 msgid "Invalid server version"
-msgstr ""
+msgstr "Version di servidôr no valide"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:400
 #: ../src/calendar/libecal/e-cal.c:2300
 #: ../src/calendar/libedata-cal/e-data-cal.c:434
 #: ../src/libedataserver/e-client.c:140
 msgid "Invalid argument"
-msgstr ""
+msgstr "Argoment no valit"
 
 #. Translators: The string for NOT_SUPPORTED error
 #: ../src/addressbook/libedata-book/e-data-book.c:402
@@ -1237,69 +1240,69 @@ msgstr ""
 #: ../src/libedataserver/e-client.c:165
 #, c-format
 msgid "Not supported"
-msgstr ""
+msgstr "No supuartât"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:403
 #: ../src/calendar/libedata-cal/e-data-cal.c:437
 #: ../src/libedataserver/e-client.c:183
 msgid "Backend is not opened yet"
-msgstr ""
+msgstr "Il backend nol è ancjemò vierzût"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:404
 #: ../src/libedataserver/e-client.c:185
 msgid "Object is out of sync"
-msgstr ""
+msgstr "L'ogjet al è fûr sincronie"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:412
 #: ../src/calendar/libedata-cal/e-data-cal.c:445
 #: ../src/libedataserver/e-client.c:181
 msgid "Other error"
-msgstr ""
+msgstr "Altri erôr"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:1169
 #: ../src/calendar/libedata-cal/e-data-cal.c:1461
 msgid "Invalid query: "
-msgstr ""
+msgstr "Interogazion no valide: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1418
 msgid "Cannot open book: "
-msgstr ""
+msgstr "Impussibil vierzi la rubriche: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1456
 msgid "Cannot refresh address book: "
-msgstr ""
+msgstr "Impussibil inzornâ la rubriche: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1497
 msgid "Cannot get contact: "
-msgstr ""
+msgstr "Impussibil otignî il contat: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1546
 msgid "Cannot get contact list: "
-msgstr ""
+msgstr "Impussibil otignî la liste contats: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1602
 msgid "Cannot get contact list uids: "
-msgstr ""
+msgstr "Impussibil otignî i uid de liste contats: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1653
 msgid "Cannot add contact: "
-msgstr ""
+msgstr "Impussibil zontâ il contat: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1706
 msgid "Cannot modify contacts: "
-msgstr ""
+msgstr "Impussibil modificâ i contats: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1759
 msgid "Cannot remove contacts: "
-msgstr ""
+msgstr "Impussibil gjavâ i contats: "
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:774
 msgid "Cursor does not support setting the search expression"
@@ -1333,31 +1336,31 @@ msgstr ""
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:731
 #, c-format
 msgid "Failed to login to the server: %s"
-msgstr ""
+msgstr "No si è rivâts a acedi al servidôr: %s"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:753
 #, c-format
 msgid "Failed to connect to a server using SSL/TLS: %s"
-msgstr ""
+msgstr "No si è rivâts a conetisi a un servidôr doprant SSL/TLS: %s"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:769
 #, c-format
 msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
-msgstr ""
+msgstr "Tornât codiç di stât HTTP %d inspietât (%s) pal URI: %s"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:790
 msgid "CalDAV backend is not loaded yet"
-msgstr ""
+msgstr "Il backend CalDAV nol è ancjemò cjariât"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1232
 #: ../src/libedataserver/e-webdav-discover.c:145
 msgid "Invalid Redirect URL"
-msgstr ""
+msgstr "URL di indreçament no valit"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2946
 #, c-format
 msgid "Cannot create local cache folder “%s”"
-msgstr ""
+msgstr "Impussibil creâ la cartele di cache locâl “%s”"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:3032
 #, c-format
@@ -1368,19 +1371,19 @@ msgstr ""
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4137
 msgid "CalDAV does not support bulk additions"
-msgstr ""
+msgstr "CalDAV nol supuarte lis zontis in tasse"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4240
 msgid "CalDAV does not support bulk modifications"
-msgstr ""
+msgstr "CalDAV nol supuarte lis modifichis in tasse"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4521
 msgid "CalDAV does not support bulk removals"
-msgstr ""
+msgstr "CalDAV nol supuarte il gjavâ in tasse"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5268
 msgid "Calendar doesn’t support Free/Busy"
-msgstr ""
+msgstr "Il calendari nol supuarte Libar/Impegnât"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5277
 msgid "Schedule outbox url not found"
@@ -1392,31 +1395,31 @@ msgstr ""
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:948
 msgid "Birthday"
-msgstr ""
+msgstr "Complean"
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:984
 #, c-format
 msgid "Birthday: %s"
-msgstr ""
+msgstr "Complean: %s"
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1015
 #, c-format
 msgid "Anniversary: %s"
-msgstr ""
+msgstr "Aniversari: %s"
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:243
 msgid "Cannot save calendar data: Malformed URI."
-msgstr ""
+msgstr "Impussibil salvâ i dâts calendari: URI malformât."
 
 #: ../src/calendar/backends/file/e-cal-backend-file.c:250
 #: ../src/calendar/backends/file/e-cal-backend-file.c:256
 msgid "Cannot save calendar data"
-msgstr ""
+msgstr "Impussibil salvâ i dâts calendari"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:583
 #, c-format
 msgid "Redirected to Invalid URI"
-msgstr ""
+msgstr "Indreçât suntun URI no valit"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:642
 #, c-format
@@ -1426,16 +1429,16 @@ msgstr ""
 #: ../src/calendar/backends/http/e-cal-backend-http.c:652
 #, c-format
 msgid "Not a calendar."
-msgstr ""
+msgstr "Nol è un calendari."
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:956
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:710
 msgid "Could not create cache file"
-msgstr ""
+msgstr "Impussibil creâ file cache"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:196
 msgid "Could not retrieve weather data"
-msgstr ""
+msgstr "Impussibil otignî dâts meteorologjics"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:379
 msgid "Weather: Fog"
@@ -1477,29 +1480,29 @@ msgstr ""
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:413
 #, c-format
 msgid "%.1f °F"
-msgstr ""
+msgstr "%.1f °F"
 
 #. TRANSLATOR: This is the temperature in degrees Celsius (\302\260 is U+00B0 DEGREE SIGN)
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:416
 #, c-format
 msgid "%.1f °C"
-msgstr ""
+msgstr "%.1f °C"
 
 #. TRANSLATOR: This is the temperature in kelvin
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:419
 #, c-format
 msgid "%.1f K"
-msgstr ""
+msgstr "%.1f K"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:425
 #, c-format
 msgid "%.1f"
-msgstr ""
+msgstr "%.1f"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:590
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:618
 msgid "Forecast"
-msgstr ""
+msgstr "Prevision"
 
 #: ../src/calendar/libecal/e-cal.c:2304
 msgid "Repository is offline"
@@ -1514,57 +1517,57 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-client.c:266
 #: ../src/calendar/libedata-cal/e-data-cal.c:415
 msgid "Object not found"
-msgstr ""
+msgstr "Ogjet no cjatât"
 
 #: ../src/calendar/libecal/e-cal.c:2310
 #: ../src/calendar/libecal/e-cal-client.c:268
 #: ../src/calendar/libedata-cal/e-data-cal.c:416
 msgid "Invalid object"
-msgstr ""
+msgstr "Ogjet no valit"
 
 #: ../src/calendar/libecal/e-cal.c:2312
 msgid "URI not loaded"
-msgstr ""
+msgstr "URI no cjariât"
 
 #: ../src/calendar/libecal/e-cal.c:2314
 msgid "URI already loaded"
-msgstr ""
+msgstr "URI za cjariât"
 
 #: ../src/calendar/libecal/e-cal.c:2318
 msgid "Unknown User"
-msgstr ""
+msgstr "Utent no cognossût"
 
 #: ../src/calendar/libecal/e-cal.c:2320
 #: ../src/calendar/libecal/e-cal-client.c:272
 #: ../src/calendar/libedata-cal/e-data-cal.c:417
 msgid "Object ID already exists"
-msgstr ""
+msgstr "ID ogjet al esist za"
 
 #: ../src/calendar/libecal/e-cal.c:2322
 msgid "Protocol not supported"
-msgstr ""
+msgstr "Protocol no supuartât"
 
 #: ../src/calendar/libecal/e-cal.c:2324
 msgid "Operation has been cancelled"
-msgstr ""
+msgstr "La operazion e je stade anulade"
 
 #: ../src/calendar/libecal/e-cal.c:2326
 msgid "Could not cancel operation"
-msgstr ""
+msgstr "Impussibil anulâ la operazion"
 
 #: ../src/calendar/libecal/e-cal.c:2328 ../src/libedataserver/e-client.c:148
 msgid "Authentication failed"
-msgstr ""
+msgstr "Autenticazion falide"
 
 #: ../src/calendar/libecal/e-cal.c:2330
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1126
 #: ../src/libedataserver/e-client.c:150
 msgid "Authentication required"
-msgstr ""
+msgstr "Autenticazion necessarie"
 
 #: ../src/calendar/libecal/e-cal.c:2332
 msgid "A D-Bus exception has occurred"
-msgstr ""
+msgstr "E je capitade une ecezion D-Bus"
 
 #: ../src/calendar/libecal/e-cal.c:2336
 msgid "No error"
@@ -1573,7 +1576,7 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-client.c:270
 #: ../src/calendar/libedata-cal/e-data-cal.c:425
 msgid "Unknown user"
-msgstr ""
+msgstr "Utent no cognossût"
 
 #: ../src/calendar/libecal/e-cal-client.c:274
 #: ../src/calendar/libedata-cal/e-data-cal.c:414
@@ -1583,164 +1586,164 @@ msgstr ""
 #: ../src/calendar/libecal/e-cal-client.c:1063
 #, c-format
 msgid "Unknown calendar property “%s”"
-msgstr ""
+msgstr "Proprietât calendari “%s” no cognossude"
 
 #: ../src/calendar/libecal/e-cal-client.c:1078
 #, c-format
 msgid "Cannot change value of calendar property “%s”"
-msgstr ""
+msgstr "Impussibil cambiâ il valôr de proprietât di calendari “%s”"
 
 #: ../src/calendar/libecal/e-cal-component.c:1358
 msgid "Untitled appointment"
-msgstr ""
+msgstr "Apontament cence titul"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4739
 msgid "1st"
-msgstr ""
+msgstr "1ⁿ"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4740
 msgid "2nd"
-msgstr ""
+msgstr "2"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4741
 msgid "3rd"
-msgstr ""
+msgstr "3"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4742
 msgid "4th"
-msgstr ""
+msgstr "4"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4743
 msgid "5th"
-msgstr ""
+msgstr "5"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4744
 msgid "6th"
-msgstr ""
+msgstr "6"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4745
 msgid "7th"
-msgstr ""
+msgstr "7"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4746
 msgid "8th"
-msgstr ""
+msgstr "8"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4747
 msgid "9th"
-msgstr ""
+msgstr "9"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4748
 msgid "10th"
-msgstr ""
+msgstr "10"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4749
 msgid "11th"
-msgstr ""
+msgstr "11"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4750
 msgid "12th"
-msgstr ""
+msgstr "12"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "13th"
-msgstr ""
+msgstr "13"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "14th"
-msgstr ""
+msgstr "14"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "15th"
-msgstr ""
+msgstr "15"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "16th"
-msgstr ""
+msgstr "16"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "17th"
-msgstr ""
+msgstr "17"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "18th"
-msgstr ""
+msgstr "18"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "19th"
-msgstr ""
+msgstr "19"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "20th"
-msgstr ""
+msgstr "20"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "21st"
-msgstr ""
+msgstr "21"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "22nd"
-msgstr ""
+msgstr "22"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "23rd"
-msgstr ""
+msgstr "23"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "24th"
-msgstr ""
+msgstr "24"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "25th"
-msgstr ""
+msgstr "25"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "26th"
-msgstr ""
+msgstr "26"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "27th"
-msgstr ""
+msgstr "27"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "28th"
-msgstr ""
+msgstr "28"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "29th"
-msgstr ""
+msgstr "29"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "30th"
-msgstr ""
+msgstr "30"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "31st"
-msgstr ""
+msgstr "31"
 
 #: ../src/calendar/libecal/e-cal-util.c:707
 #: ../src/calendar/libecal/e-cal-util.c:734
 msgctxt "Priority"
 msgid "High"
-msgstr ""
+msgstr "Elevade"
 
 #: ../src/calendar/libecal/e-cal-util.c:709
 #: ../src/calendar/libecal/e-cal-util.c:736
 msgctxt "Priority"
 msgid "Normal"
-msgstr ""
+msgstr "Normâl"
 
 #: ../src/calendar/libecal/e-cal-util.c:711
 #: ../src/calendar/libecal/e-cal-util.c:738
 msgctxt "Priority"
 msgid "Low"
-msgstr ""
+msgstr "Basse"
 
 #. An empty string is the same as 'None'.
 #: ../src/calendar/libecal/e-cal-util.c:732
 msgctxt "Priority"
 msgid "Undefined"
-msgstr ""
+msgstr "No definide"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1061
@@ -1749,7 +1752,7 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1553
 #, c-format
 msgid "“%s” expects one argument"
-msgstr ""
+msgstr "“%s” si spiete un argoment"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:672
@@ -1757,12 +1760,12 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1392
 #, c-format
 msgid "“%s” expects the first argument to be a string"
-msgstr ""
+msgstr "“%s” si spiete che il prin argoment al sedi une stringhe"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:165
 #, c-format
 msgid "“%s” expects two or three arguments"
-msgstr ""
+msgstr "“%s” si spiete doi o trê argoments"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
@@ -1774,7 +1777,7 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1560
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
-msgstr ""
+msgstr "“%s” si spiete che il prin argoment al sedi un time_t"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
@@ -1782,17 +1785,17 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:831
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
-msgstr ""
+msgstr "“%s” si spiete che il secont argoment al sedi un time_t"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:191
 #, c-format
 msgid "“%s” expects the third argument to be a string"
-msgstr ""
+msgstr "“%s” si spiete che il tierç argoment al sedi un stringhe"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:253
 #, c-format
 msgid "“%s” expects none or two arguments"
-msgstr ""
+msgstr "“%s” si spiete nissun o doi argoments"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:665
@@ -1800,7 +1803,7 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1446
 #, c-format
 msgid "“%s” expects two arguments"
-msgstr ""
+msgstr "“%s” si spiete doi argoments"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:601
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:624
@@ -1811,12 +1814,12 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1338
 #, c-format
 msgid "“%s” expects no arguments"
-msgstr ""
+msgstr "“%s” no si spiete nissun argoment"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:681
 #, c-format
 msgid "“%s” expects the second argument to be a string"
-msgstr ""
+msgstr "“%s” si spiete che il secont argoment al sedi une stringhe"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:712
 #, c-format
@@ -1829,7 +1832,7 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:883
 #, c-format
 msgid "“%s” expects at least one argument"
-msgstr ""
+msgstr "“%s” si spiete almancul un argoment"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:898
 #, c-format
@@ -1850,21 +1853,21 @@ msgstr ""
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
-msgstr ""
+msgstr "Metodi no supuartât"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:424
 msgid "Calendar does not exist"
-msgstr ""
+msgstr "Il calendari nol esist"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1655
 msgid "Cannot open calendar: "
-msgstr ""
+msgstr "Impussibil vierzi il calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1693
 msgid "Cannot refresh calendar: "
-msgstr ""
+msgstr "Impussibil inzornâ il calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1735
