@@ -10,15 +10,15 @@
 # Pablo Gonzalo del Campo <pablodc@bigfoot.com>,2003 (revisión).
 # Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003, 2004, 2005, 2006.
 # Jorge González <jorgegonz@svn.gnome.org>, 2007, 2008, 2009, 2010, 2011.
-# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016.
+# Daniel Mustieles <daniel.mustieles@gmail.com>, 2011, 2012, 2013, 2014, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-12-20 11:30+0000\n"
-"PO-Revision-Date: 2016-12-20 15:31+0100\n"
+"POT-Creation-Date: 2017-01-10 08:51+0000\n"
+"PO-Revision-Date: 2017-01-11 09:30+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -123,27 +123,27 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3520
-#: ../src/calendar/libecal/e-cal-client.c:3693
-#: ../src/calendar/libecal/e-cal-client.c:3957
-#: ../src/calendar/libecal/e-cal-client.c:4198
-#: ../src/calendar/libecal/e-cal-client.c:4388
-#: ../src/calendar/libecal/e-cal-client.c:4581
-#: ../src/calendar/libecal/e-cal-client.c:4790
-#: ../src/calendar/libecal/e-cal-client.c:4959
-#: ../src/calendar/libecal/e-cal-client.c:5162
-#: ../src/calendar/libecal/e-cal-client.c:5312
-#: ../src/calendar/libecal/e-cal-client.c:5506
-#: ../src/calendar/libecal/e-cal-client.c:5659
-#: ../src/calendar/libecal/e-cal-client.c:5876
-#: ../src/calendar/libecal/e-cal-client.c:6030
-#: ../src/calendar/libecal/e-cal-client.c:6256
-#: ../src/calendar/libecal/e-cal-client.c:6452
-#: ../src/calendar/libecal/e-cal-client.c:6815
-#: ../src/calendar/libecal/e-cal-client.c:7037
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3055
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3067
+#: ../src/calendar/libecal/e-cal-client.c:3518
+#: ../src/calendar/libecal/e-cal-client.c:3691
+#: ../src/calendar/libecal/e-cal-client.c:3955
+#: ../src/calendar/libecal/e-cal-client.c:4196
+#: ../src/calendar/libecal/e-cal-client.c:4386
+#: ../src/calendar/libecal/e-cal-client.c:4579
+#: ../src/calendar/libecal/e-cal-client.c:4788
+#: ../src/calendar/libecal/e-cal-client.c:4957
+#: ../src/calendar/libecal/e-cal-client.c:5160
+#: ../src/calendar/libecal/e-cal-client.c:5310
+#: ../src/calendar/libecal/e-cal-client.c:5504
+#: ../src/calendar/libecal/e-cal-client.c:5657
+#: ../src/calendar/libecal/e-cal-client.c:5874
+#: ../src/calendar/libecal/e-cal-client.c:6028
+#: ../src/calendar/libecal/e-cal-client.c:6254
+#: ../src/calendar/libecal/e-cal-client.c:6450
+#: ../src/calendar/libecal/e-cal-client.c:6813
+#: ../src/calendar/libecal/e-cal-client.c:7035
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3044
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3054
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3066
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
@@ -1626,127 +1626,127 @@ msgstr "No se puede cambiar el valor de la propiedad «%s» del calendario"
 msgid "Untitled appointment"
 msgstr "Cita sin título"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4742
+#: ../src/calendar/libecal/e-cal-recur.c:4739
 msgid "1st"
 msgstr "1"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4743
+#: ../src/calendar/libecal/e-cal-recur.c:4740
 msgid "2nd"
 msgstr "2"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4744
+#: ../src/calendar/libecal/e-cal-recur.c:4741
 msgid "3rd"
 msgstr "3"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4745
+#: ../src/calendar/libecal/e-cal-recur.c:4742
 msgid "4th"
 msgstr "4"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4746
+#: ../src/calendar/libecal/e-cal-recur.c:4743
 msgid "5th"
 msgstr "5"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4747
+#: ../src/calendar/libecal/e-cal-recur.c:4744
 msgid "6th"
 msgstr "6"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4748
+#: ../src/calendar/libecal/e-cal-recur.c:4745
 msgid "7th"
 msgstr "7"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4749
+#: ../src/calendar/libecal/e-cal-recur.c:4746
 msgid "8th"
 msgstr "8"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4750
+#: ../src/calendar/libecal/e-cal-recur.c:4747
 msgid "9th"
 msgstr "9"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4748
 msgid "10th"
 msgstr "10"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4749
 msgid "11th"
 msgstr "11"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4750
 msgid "12th"
 msgstr "12"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "13th"
 msgstr "13"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "14th"
 msgstr "14"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "15th"
 msgstr "15"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "16th"
 msgstr "16"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "17th"
 msgstr "17"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "18th"
 msgstr "18"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "19th"
 msgstr "19"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "20th"
 msgstr "20"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "21st"
 msgstr "21"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "22nd"
 msgstr "22"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "23rd"
 msgstr "23"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "24th"
 msgstr "24"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "25th"
 msgstr "25"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "26th"
 msgstr "26"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "27th"
 msgstr "27"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "28th"
 msgstr "28"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4770
+#: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "29th"
 msgstr "29"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4771
+#: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "30th"
 msgstr "30"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4772
+#: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "31st"
 msgstr "31"
 
@@ -2364,9 +2364,12 @@ msgstr "No se pudo cifrar este mensaje: no hay destinatarios."
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: ../src/camel/camel-gpg-context.c:1262
 #, c-format
+#| msgid ""
+#| "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
+#| "the %s doesn't have imported public key for this recipient."
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
-"the %s doesn't have imported public key for this recipient."
+"the %s doesn’t have imported public key for this recipient."
 msgstr ""
 "Falló al cifrar: destinatario %s especificado no válido. Un error habitual "
 "es que %s no tenga importada la clave pública para este destinatario."
@@ -2878,7 +2881,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "GType registrado no válido para el protocolo «%s»"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2994
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2993
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3095,43 +3098,43 @@ msgstr "Falló al añadir datos al codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descifrado S/MIME: No se ha encontrado contenido cifrado"
 
-#: ../src/camel/camel-store.c:1369
+#: ../src/camel/camel-store.c:1370
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Abriendo carpeta «%s»"
 
-#: ../src/camel/camel-store.c:1663
+#: ../src/camel/camel-store.c:1665
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Analizando carpetas en «%s»"
 
-#: ../src/camel/camel-store.c:1691 ../src/camel/camel-store.c:1736
+#: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Papelera"
 
-#: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1753
+#: ../src/camel/camel-store.c:1707 ../src/camel/camel-store.c:1755
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "SPAM"
 
-#: ../src/camel/camel-store.c:2354
+#: ../src/camel/camel-store.c:2356
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "No se pudo crear la carpeta: %s: la carpeta existe"
 
-#: ../src/camel/camel-store.c:2361
+#: ../src/camel/camel-store.c:2363
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Creando carpeta «%s»"
 
-#: ../src/camel/camel-store.c:2538 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2540 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No se pudo eliminar la carpeta: %s: Operación no válida"
 
-#: ../src/camel/camel-store.c:2728 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2730 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3247,7 +3250,7 @@ msgstr ""
 "Para completar esta operación debe estar trabajando conectado a la red (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3127
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3126
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -3423,199 +3426,199 @@ msgstr "Para leer y almacenar correo en los servidores IMAP."
 msgid "Error writing to cache stream"
 msgstr "Error al escribir al flujo de caché"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2810
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2898
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3160
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2809
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2897
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3159
 msgid "Failed to get capabilities"
 msgstr "Falló al obtener las capacidades"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2829
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2828
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2830
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2829
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "No se soporta STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2839
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2838
 msgid "Failed to issue STARTTLS"
 msgstr "Falló al emitir STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2887
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2886
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Falló al conectar al servidor IMAP %s en modo seguro: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2981
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2980
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "El servidor IMAP %s no soporta la autenticación %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3012
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3011
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "No se pudo autenticar sin un nombre de usuario"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3021
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3020
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "La contraseña de la autenticación no está disponible"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3028
 msgid "Failed to authenticate"
 msgstr "Falló al autenticar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3182
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3181
 msgid "Failed to issue NAMESPACE"
 msgstr "Falló al emitir NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3199
 msgid "Failed to enable QResync"
 msgstr "Falló al activar QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3231
 msgid "Failed to issue NOTIFY"
 msgstr "Falló al emitir NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3710
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3709
 msgid "Failed to select mailbox"
 msgstr "Falló al selecionar la bandera de correo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3813
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3812
 msgid "Cannot issue command, no stream available"
 msgstr "No se puede emitir el comando, el flujo no está disponible"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4077
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4076
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "No se puede obtener el mensaje con ID de mensaje %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4077
 msgid "No such message available."
 msgstr "Dicho mensaje no está disponible."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4115
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4140
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4179
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4114
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4139
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4178
 msgid "Error fetching message"
 msgstr "Error al obtener el mensaje"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4157
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4755
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4156
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4754
 msgid "Error performing NOOP"
 msgstr "Error realizar la no operación"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4172
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4171
 msgid "Failed to close the tmp stream"
 msgstr "Falló al cerrar el flujo temporal"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4203
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4202
 msgid "Failed to copy the tmp file"
 msgstr "Falló al copiar el archivo temporal"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4365
 msgid "Error moving messages"
 msgstr "Error al mover los mensajes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4365
 msgid "Error copying messages"
 msgstr "Error al copiar los mensajes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4551
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4572
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4550
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4571
 msgid "Cannot create spool file: "
 msgstr "No se puede crear el archivo de cola de correo: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4658
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4657
 msgid "Error appending message"
 msgstr "Error al añadir el mensaje"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4908
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4907
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Buscando mensajes modificados en «%s : %s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4912
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error scanning changes"
 msgstr "Error al analizar los cambios"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4933
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4932
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 "Obteniendo resumen de información sobre los mensajes nuevos en «%s : %s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4951
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4950
 msgid "Error fetching message info"
 msgstr "Error al obtener la información del mensaje"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5033
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5032
 msgid "Error running STATUS"
 msgstr "Error al ejecutar STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5528
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5558
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5593
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5527
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5557
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5592
 msgid "Error syncing changes"
 msgstr "Error al sincronizar los cambios"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5731
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5730
 msgid "Error expunging message"
 msgstr "Error al compactar el mensaje"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5803
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5802
 msgid "Error fetching folders"
 msgstr "Error al obtener las carpetas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5814
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5813
 msgid "Error fetching subscribed folders"
 msgstr "Error al obtener las carpetas suscritas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5836
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5835
 msgid "Error creating folder"
 msgstr "Error al crear la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5892
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5891
 msgid "Error deleting folder"
 msgstr "Error al eliminar la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5938
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5937
 msgid "Error renaming folder"
 msgstr "Error al renombrar la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5970
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5969
 msgid "Error subscribing to folder"
 msgstr "Error al suscribirse a las carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6006
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6005
 msgid "Error unsubscribing from folder"
 msgstr "Error al desuscribirse de la carpeta"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6046
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
 msgid "IMAP server does not support quotas"
 msgstr "El servidor IMAP no soporta cuotas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6057
 msgid "Error retrieving quota information"
 msgstr "Error al obtener la información de la cuota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6105
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6104
 msgid "Search failed"
 msgstr "Falló al buscar"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6223
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6222
 msgid "Error running IDLE"
 msgstr "Error al ejecuter IDLE"
 
