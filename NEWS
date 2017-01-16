@@ -1,3 +1,18 @@
+Evolution-Data-Server 3.22.4 2017-01-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 776152 - Cannot search for WebDAV/CalDAV sources (Milan Crha)
+	Bug 774304 - Cover relative path in /etc/localtime symlink (Milan Crha)
+	Bug 777085 - vCard empty value could break next parameter name parsing (Milan Crha)
+
+Miscellaneous:
+	Correct new module detection when installed by file rename (Milan Crha)
+	camel-stream-process: Avoid call of g_debug() in the fork process (Milan Crha)
+	Replace deprecated icalproperty_remove_parameter() with icalproperty_remove_parameter_by_kind() (Milan Crha)
+	Replace deprecated icaltime_from_timet() with icaltime_from_timet_with_zone() (Milan Crha)
+	[IMAPx] Fix a memory leak (Milan Crha)
+
 Evolution-Data-Server 3.22.3 2016-12-12
 ---------------------------------------
 
