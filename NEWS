@@ -1,3 +1,42 @@
+Evolution-Data-Server 3.23.4 2017-01-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 773419 - Age limit for offline message download (Milan Crha)
+	Bug 775640 - Autoconfig: Use GSettings keys for folders and variables (Milan Crha)
+	Bug 776152 - Cannot search for WebDAV/CalDAV sources (Milan Crha)
+	Bug 776127 - Replies sometimes not grouped by thread (Milan Crha)
+	Bug 776254 - Introspection for libedataserverui (Corentin Noël)
+	Bug 776258 - Make CamelFolderThread a boxed type (Corentin Noël)
+	Bug 776194 - [Gpg] Better encrypt error message when no key for recipient (Milan Crha)
+	Bug 775643 - Autoconfig: Support also Signature sources (Milan Crha)
+	Bug 776328 - Set the provider field in CamelService as boxed (Corentin Noël)
+	Bug 776365 - Correct vapi build dependencies (Milan Crha)
+	Bug 774304 - Cover relative path in /etc/localtime symlink (Milan Crha)
+	Bug 777085 - vCard empty value could break next parameter name parsing (Milan Crha)
+
+Miscellaneous:
+	vala: libedataserver-1.2 depends on camel-1.2 (Michael Catanzaro)
+	[Vala] Add Posix dependency to camel-1.2 (Corentin Noël)
+	[Camel] Fix some introspection annotations (Corentin Noël)
+	Use a Unicode apostrophe in a new translatable string (Piotr Drąg)
+	Correct new module detection when installed by file rename (Milan Crha)
+	[Camel] Fix CamelStore annotations (Corentin Noël)
+	Various clean-ups of evolution-source-registry-autoconfig.c (Milan Crha)
+	Build vala bindings of libedataserverui only if it's built as well (Milan Crha)
+	camel-stream-process: Avoid call of g_debug() in the fork process (Milan Crha)
+	Replace deprecated icalproperty_remove_parameter() with icalproperty_remove_parameter_by_kind() (Milan Crha)
+	Replace deprecated icaltime_from_timet() with icaltime_from_timet_with_zone() (Milan Crha)
+	[IMAPx] Fix a memory leak (Milan Crha)
+	Fix a build with libphonenumber (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Marek Černocký (cs)
+	Balázs Meskó (hu)
+	Fabio Tomat (fur)
+	Rafael Fontenelle (pt_BR)
+
 Evolution-Data-Server 3.23.3 2016-12-12
 ---------------------------------------
 
