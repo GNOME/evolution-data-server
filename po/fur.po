@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-01-13 15:49+0100\n"
+"PO-Revision-Date: 2017-01-17 21:25+0100\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -1442,39 +1442,39 @@ msgstr "Impussibil otignî dâts meteorologjics"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:379
 msgid "Weather: Fog"
-msgstr ""
+msgstr "Timp: fumate"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:380
 msgid "Weather: Cloudy Night"
-msgstr ""
+msgstr "Timp: gnot nulade"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:381
 msgid "Weather: Cloudy"
-msgstr ""
+msgstr "Timp: nulât"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:382
 msgid "Weather: Overcast"
-msgstr ""
+msgstr "Timp: nulât"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
 msgid "Weather: Showers"
-msgstr ""
+msgstr "Timp: sglavinadis"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:384
 msgid "Weather: Snow"
-msgstr ""
+msgstr "Timp: nêf"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:385
 msgid "Weather: Clear Night"
-msgstr ""
+msgstr "Timp: gnot stelade"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
 msgid "Weather: Sunny"
-msgstr ""
+msgstr "Timp: soreli"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:387
 msgid "Weather: Thunderstorms"
-msgstr ""
+msgstr "Timp: temporâi"
 
 #. TRANSLATOR: This is the temperature in degrees Fahrenheit (\302\260 is U+00B0 DEGREE SIGN)
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:413
@@ -2452,7 +2452,7 @@ msgstr ""
 
 #: ../src/camel/camel-movemail.c:251
 msgid "(Unknown error)"
-msgstr ""
+msgstr "(Erôr no cognossût)"
 
 #: ../src/camel/camel-movemail.c:278
 #, c-format
@@ -2479,12 +2479,12 @@ msgstr ""
 #: ../src/camel/camel-multipart-signed.c:438
 #, c-format
 msgid "No signature available"
-msgstr ""
+msgstr "Nissune firme disponibile"
 
 #: ../src/camel/camel-multipart-signed.c:804
 #, c-format
 msgid "parse error"
-msgstr ""
+msgstr "erôr tal analizâ"
 
 #: ../src/camel/camel-net-utils.c:714
 #, c-format
@@ -2572,7 +2572,7 @@ msgstr ""
 #: ../src/camel/camel-sasl-anonymous.c:35
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:82
 msgid "Anonymous"
-msgstr ""
+msgstr "Anonim"
 
 #: ../src/camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
@@ -2581,7 +2581,7 @@ msgstr ""
 #: ../src/camel/camel-sasl-anonymous.c:70
 #, c-format
 msgid "Authentication failed."
-msgstr ""
+msgstr "Autenticazion falide."
 
 #: ../src/camel/camel-sasl-anonymous.c:81
 #, c-format
@@ -2606,7 +2606,7 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-cram-md5.c:41
 msgid "CRAM-MD5"
-msgstr ""
+msgstr "CRAM-MD5"
 
 #: ../src/camel/camel-sasl-cram-md5.c:43
 msgid ""
@@ -2616,7 +2616,7 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-digest-md5.c:54
 msgid "DIGEST-MD5"
-msgstr ""
+msgstr "DIGEST-MD5"
 
 #: ../src/camel/camel-sasl-digest-md5.c:56
 msgid ""
@@ -2758,7 +2758,7 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-popb4smtp.c:41
 msgid "POP before SMTP"
-msgstr ""
+msgstr "POP prime di SMTP"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:43
 msgid "This option will authorise a POP connection before attempting SMTP"
@@ -3018,12 +3018,12 @@ msgstr ""
 #: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
-msgstr ""
+msgstr "Scovacere"
 
 #: ../src/camel/camel-store.c:1707 ../src/camel/camel-store.c:1755
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
-msgstr ""
+msgstr "Malvolût"
 
 #: ../src/camel/camel-store.c:2356
 #, c-format
@@ -3260,7 +3260,7 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:52
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:43
 msgid "Folders"
-msgstr ""
+msgstr "Cartelis"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:54
 msgid "_Show only subscribed folders"
@@ -3281,7 +3281,7 @@ msgstr ""
 #: ../src/camel/providers/local/camel-local-provider.c:108
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:36
 msgid "Options"
-msgstr ""
+msgstr "Opzions"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:64
 #: ../src/camel/providers/local/camel-local-provider.c:39
@@ -3312,15 +3312,15 @@ msgstr ""
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:79
 msgid "Default IMAP port"
-msgstr ""
+msgstr "Puarte IMAP predefinide"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:80
 msgid "IMAP over TLS"
-msgstr ""
+msgstr "IMAP sore TLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:87
 msgid "IMAP+"
-msgstr ""
+msgstr "IMAP+"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "For reading and storing mail on IMAP servers."
@@ -3518,7 +3518,7 @@ msgstr ""
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6104
 msgid "Search failed"
-msgstr ""
+msgstr "Ricercje falide"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6222
@@ -3534,7 +3534,7 @@ msgstr ""
 #: ../src/camel/providers/local/camel-maildir-store.c:913
 #: ../src/camel/providers/local/camel-spool-store.c:390
 msgid "Inbox"
-msgstr ""
+msgstr "In jentrade"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:800
 #, c-format
@@ -3554,7 +3554,7 @@ msgstr ""
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:92
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:890
 msgid "This option will connect to the IMAP server using a plaintext password."
@@ -4412,7 +4412,7 @@ msgstr ""
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:576
 msgid "Unknown reason"
-msgstr ""
+msgstr "Motîf no cognossût"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:645
 msgid "Retrieving POP summary"
@@ -4463,15 +4463,15 @@ msgstr ""
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:52
 msgid "Default POP3 port"
-msgstr ""
+msgstr "Puarte POP3 predefinide"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:53
 msgid "POP3 over TLS"
-msgstr ""
+msgstr "POP3 sore TLS"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:60
 msgid "POP"
-msgstr ""
+msgstr "POP"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:62
 msgid "For connecting to and downloading mail from POP servers."
@@ -4493,7 +4493,7 @@ msgstr ""
 #. Translators: This is the separator between an error and an explanation
 #: ../src/camel/providers/pop3/camel-pop3-store.c:93
 msgid ": "
-msgstr ""
+msgstr ": "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:160
 #, c-format
@@ -4647,11 +4647,11 @@ msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:37
 msgid "Default SMTP port"
-msgstr ""
+msgstr "Puarte SMTP predefinide"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:38
 msgid "SMTP over TLS"
-msgstr ""
+msgstr "SMTP sore TLS"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:39
 msgid "Message submission port"
@@ -4659,7 +4659,7 @@ msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:45
 msgid "SMTP"
-msgstr ""
+msgstr "SMTP"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:47
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
@@ -4762,11 +4762,11 @@ msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1086
 msgid "Help message"
-msgstr ""
+msgstr "Messaç di jutori"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1088
 msgid "Service ready"
-msgstr ""
+msgstr "Servizi pront"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1090
 msgid "Service closing transmission channel"
@@ -4818,7 +4818,7 @@ msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1114
 msgid "Transaction failed"
-msgstr ""
+msgstr "Transazion falide"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1118
 msgid "A password transition is needed"
@@ -5244,7 +5244,7 @@ msgstr ""
 
 #: ../src/libedataserver/e-client.c:179
 msgid "D-Bus error"
-msgstr ""
+msgstr "Erôr D-Bus"
 
 #: ../src/libedataserver/e-client.c:2021
 msgid "Timeout was reached"
@@ -5595,7 +5595,7 @@ msgstr ""
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1063
 msgid "_Cancel"
-msgstr ""
+msgstr "_Anule"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:132
 msgid "Address book authentication request"
@@ -5652,15 +5652,15 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1064
 msgid "_OK"
-msgstr ""
+msgstr "_OK"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:341
 msgid "_User Name:"
-msgstr ""
+msgstr "Non _utent:"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:353
 msgid "_Password:"
-msgstr ""
+msgstr "_Password:"
 
 #. Remember password check
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:369
@@ -5675,7 +5675,7 @@ msgstr ""
 #: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
 msgid "_Reject"
-msgstr ""
+msgstr "_Refude"
 
 #: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
@@ -5696,7 +5696,7 @@ msgstr ""
 #: ../src/libedataserverui/e-trust-prompt.c:208
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:172
 msgid "Reason:"
-msgstr ""
+msgstr "Reson:"
 
 #: ../src/libedataserverui/e-trust-prompt.c:211
 msgid "Detailed error:"
@@ -5766,7 +5766,7 @@ msgstr ""
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:825
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL no valit"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:839
 msgid "User name not filled"
@@ -5774,7 +5774,7 @@ msgstr ""
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:880
 msgid "Cancel"
-msgstr ""
+msgstr "Anule"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:883
 msgid "Searching server sources..."
