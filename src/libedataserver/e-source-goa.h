@@ -90,6 +90,14 @@ const gchar *	e_source_goa_get_contacts_url	(ESourceGoa *extension);
 gchar *		e_source_goa_dup_contacts_url	(ESourceGoa *extension);
 void		e_source_goa_set_contacts_url	(ESourceGoa *extension,
 						 const gchar *contacts_url);
+const gchar *	e_source_goa_get_name		(ESourceGoa *extension);
+gchar *		e_source_goa_dup_name		(ESourceGoa *extension);
+void		e_source_goa_set_name		(ESourceGoa *extension,
+						 const gchar *name);
+const gchar *	e_source_goa_get_address	(ESourceGoa *extension);
+gchar *		e_source_goa_dup_address	(ESourceGoa *extension);
+void		e_source_goa_set_address	(ESourceGoa *extension,
+						 const gchar *address);
 
 G_END_DECLS
 

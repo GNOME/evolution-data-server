@@ -47,13 +47,17 @@ struct _ESourceGoaPrivate {
 	gchar *account_id;
 	gchar *calendar_url;
 	gchar *contacts_url;
+	gchar *name;
+	gchar *address;
 };
 
 enum {
 	PROP_0,
 	PROP_ACCOUNT_ID,
 	PROP_CALENDAR_URL,
-	PROP_CONTACTS_URL
+	PROP_CONTACTS_URL,
+	PROP_NAME,
+	PROP_ADDRESS
 };
 
 G_DEFINE_TYPE (
@@ -82,6 +86,18 @@ source_goa_set_property (GObject *object,
 
 		case PROP_CONTACTS_URL:
 			e_source_goa_set_contacts_url (
+				E_SOURCE_GOA (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_NAME:
+			e_source_goa_set_name (
+				E_SOURCE_GOA (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_ADDRESS:
+			e_source_goa_set_address (
 				E_SOURCE_GOA (object),
 				g_value_get_string (value));
 			return;
@@ -117,6 +133,20 @@ source_goa_get_property (GObject *object,
 				e_source_goa_dup_contacts_url (
 				E_SOURCE_GOA (object)));
 			return;
+
+		case PROP_NAME:
+			g_value_take_string (
+				value,
+				e_source_goa_dup_name (
+				E_SOURCE_GOA (object)));
+			return;
+
+		case PROP_ADDRESS:
+			g_value_take_string (
+				value,
+				e_source_goa_dup_address (
+				E_SOURCE_GOA (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -132,6 +162,8 @@ source_goa_finalize (GObject *object)
 	g_free (priv->account_id);
 	g_free (priv->calendar_url);
 	g_free (priv->contacts_url);
+	g_free (priv->name);
+	g_free (priv->address);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_goa_parent_class)->finalize (object);
@@ -186,6 +218,32 @@ e_source_goa_class_init (ESourceGoaClass *class)
 			"contacts-url",
 			"Contacts URL",
 			"GNOME Online Contacts URL",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_NAME,
+		g_param_spec_string (
+			"name",
+			"Name",
+			"GNOME Online Account's original Name",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_ADDRESS,
+		g_param_spec_string (
+			"address",
+			"Address",
+			"GNOME Online Account's original Address",
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
@@ -456,4 +514,176 @@ e_source_goa_set_contacts_url (ESourceGoa *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "contacts-url");
+}
+
+/**
+ * e_source_goa_get_name:
+ * @extension: an #ESourceGoa
+ *
+ * Returns the original Name of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs. Can be %NULL or an empty
+ * string when not filled.
+ *
+ * Returns: the associated GNOME Online Account's Name
+ *
+ * Since: 3.24
+ **/
+const gchar *
+e_source_goa_get_name (ESourceGoa *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	return extension->priv->name;
+}
+
+/**
+ * e_source_goa_dup_name:
+ * @extension: an #ESourceGoa
+ *
+ * Thread-safe variation of e_source_goa_get_name().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceGoa:name
+ *
+ * Since: 3.24
+ **/
+gchar *
+e_source_goa_dup_name (ESourceGoa *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_goa_get_name (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_goa_set_name:
+ * @extension: an #ESourceGoa
+ * @name: (nullable): the associated GNOME Online Account's Name, or %NULL
+ *
+ * Sets the Name of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs.
+ *
+ * The internal copy of @name is automatically stripped of leading
+ * and trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.24
+ **/
+void
+e_source_goa_set_name (ESourceGoa *extension,
+		       const gchar *name)
+{
+	g_return_if_fail (E_IS_SOURCE_GOA (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->name, name) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->name);
+	extension->priv->name = e_util_strdup_strip (name);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "name");
+}
+
+/**
+ * e_source_goa_get_address:
+ * @extension: an #ESourceGoa
+ *
+ * Returns the original Address of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs. Can be %NULL or an empty
+ * string when not filled.
+ *
+ * Returns: the associated GNOME Online Account's Address
+ *
+ * Since: 3.24
+ **/
+const gchar *
+e_source_goa_get_address (ESourceGoa *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	return extension->priv->address;
+}
+
+/**
+ * e_source_goa_dup_address:
+ * @extension: an #ESourceGoa
+ *
+ * Thread-safe variation of e_source_goa_get_address().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceGoa:address
+ *
+ * Since: 3.24
+ **/
+gchar *
+e_source_goa_dup_address (ESourceGoa *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_GOA (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_goa_get_address (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_goa_set_address:
+ * @extension: an #ESourceGoa
+ * @address: (nullable): the associated GNOME Online Account's Address, or %NULL
+ *
+ * Sets the Address of the GNOME Online Account associated
+ * with the #ESource to which @extension belongs.
+ *
+ * The internal copy of @address is automatically stripped of leading
+ * and trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.24
+ **/
+void
+e_source_goa_set_address (ESourceGoa *extension,
+			  const gchar *address)
+{
+	g_return_if_fail (E_IS_SOURCE_GOA (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->address, address) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->address);
+	extension->priv->address = e_util_strdup_strip (address);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "address");
 }

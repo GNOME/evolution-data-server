@@ -31,6 +31,9 @@
 #define E_GNOME_ONLINE_ACCOUNTS(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
 	((obj), E_TYPE_GNOME_ONLINE_ACCOUNTS, EGnomeOnlineAccounts))
+#define E_IS_GNOME_ONLINE_ACCOUNTS(obj) \
+	(G_TYPE_CHECK_INSTANCE_TYPE \
+	((obj), E_TYPE_GNOME_ONLINE_ACCOUNTS))
 
 #define CAMEL_IMAP_PROVIDER_NAME    "imapx"
 #define CAMEL_SMTP_PROVIDER_NAME    "smtp"
@@ -644,6 +647,76 @@ gnome_online_accounts_config_mail_account (EGnomeOnlineAccounts *extension,
 	e_server_side_source_set_removable (server_side_source, FALSE);
 }
 
+static gboolean
+e_goa_transform_only_when_original_same_cb (GBinding *binding,
+					    const GValue *from_value,
+					    GValue *to_value,
+					    gpointer user_data)
+{
+	EGnomeOnlineAccounts *extension = user_data;
+	ESourceMailIdentity *mail_identity;
+	ESourceRegistryServer *registry_server;
+	ESource *collection, *source;
+	const gchar *new_value;
+	gboolean to_value_set = FALSE;
+
+	g_return_val_if_fail (E_IS_GNOME_ONLINE_ACCOUNTS (extension), TRUE);
+
+	new_value = g_value_get_string (from_value);
+	if (new_value && !*new_value)
+		new_value = NULL;
+
+	mail_identity = E_SOURCE_MAIL_IDENTITY (g_binding_get_target (binding));
+	source = e_source_extension_ref_source (E_SOURCE_EXTENSION (mail_identity));
+
+	registry_server = gnome_online_accounts_get_server (extension);
+	collection = e_source_registry_server_ref_source (registry_server, e_source_get_parent (source));
+
+	/* The collection can be NULL when the account was just created. */
+	if (source && collection) {
+		ESourceGoa *goa_extension;
+		gchar *set_value = NULL, *old_value = NULL;
+		const gchar *prop_name;
+		gboolean changed;
+
+		g_warn_if_fail (e_source_has_extension (collection, E_SOURCE_EXTENSION_GOA));
+
+		prop_name = g_binding_get_target_property (binding);
+		goa_extension = e_source_get_extension (collection, E_SOURCE_EXTENSION_GOA);
+
+		g_object_get (G_OBJECT (goa_extension), prop_name, &old_value, NULL);
+
+		changed = g_strcmp0 (old_value, new_value) != 0;
+
+		if (changed) {
+			g_object_set (G_OBJECT (goa_extension), prop_name, new_value, NULL);
+
+			g_object_get (G_OBJECT (mail_identity), prop_name, &set_value, NULL);
+
+			if (g_strcmp0 (set_value, old_value) != 0) {
+				to_value_set = TRUE;
+
+				g_value_set_string (to_value, set_value);
+			}
+		} else {
+			g_object_get (G_OBJECT (mail_identity), prop_name, &set_value, NULL);
+			to_value_set = TRUE;
+			g_value_set_string (to_value, set_value);
+		}
+
+		g_free (set_value);
+		g_free (old_value);
+	}
+
+	g_clear_object (&collection);
+	g_clear_object (&source);
+
+	if (!to_value_set)
+		g_value_set_string (to_value, new_value);
+
+	return TRUE;
+}
+
 static void
 gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
                                             ESource *source,
@@ -665,23 +738,23 @@ gnome_online_accounts_config_mail_identity (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_MAIL_IDENTITY;
 	mail_identity = e_source_get_extension (source, extension_name);
 
-	tmp = e_source_mail_identity_dup_address (mail_identity);
-	if (!tmp || !*tmp) {
-		/* Set the Name only if the mail is not set yet, because users can change the Name,
-		   even to an empty string, but the email is fixed with the one from GoaMail.
-		*/
-		g_free (tmp);
+	e_binding_bind_property_full (
+		goa_mail, "name",
+		mail_identity, "name",
+		G_BINDING_SYNC_CREATE,
+		e_goa_transform_only_when_original_same_cb,
+		NULL,
+		g_object_ref (extension),
+		g_object_unref);
 
-		tmp = goa_mail_dup_name (goa_mail);
-		if (tmp && *tmp)
-			e_source_mail_identity_set_name (mail_identity, tmp);
-	}
-	g_free (tmp);
-
-	e_binding_bind_property (
+	e_binding_bind_property_full (
 		goa_mail, "email-address",
 		mail_identity, "address",
-		G_BINDING_SYNC_CREATE);
+		G_BINDING_SYNC_CREATE,
+		e_goa_transform_only_when_original_same_cb,
+		NULL,
+		g_object_ref (extension),
+		g_object_unref);
 
 	g_object_unref (goa_mail);
 
@@ -774,6 +847,7 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
                                          GoaObject *goa_object)
 {
 	GoaAccount *goa_account;
+	GoaMail *goa_mail;
 	ESourceRegistryServer *server;
 	ESource *collection_source;
 	ESource *mail_account_source = NULL;
@@ -791,17 +865,34 @@ gnome_online_accounts_create_collection (EGnomeOnlineAccounts *extension,
 		extension, collection_source, goa_object);
 	parent_uid = e_source_get_uid (collection_source);
 
-	if (goa_object_peek_mail (goa_object)) {
-		mail_account_source =
-			gnome_online_accounts_new_source (extension);
+	goa_mail = goa_object_get_mail (goa_object);
+	if (goa_mail) {
+		ESourceGoa *goa_extension;
+		gchar *name = NULL, *address = NULL;
+
+		goa_extension = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_GOA);
+
+		g_object_get (G_OBJECT (goa_mail),
+			"name", &name,
+			"email-address", &address,
+			NULL);
+
+		g_object_set (G_OBJECT (goa_extension),
+			"name", name,
+			"address", address,
+			NULL);
+
+		g_object_unref (goa_mail);
+		g_free (name);
+		g_free (address);
+
+		mail_account_source = gnome_online_accounts_new_source (extension);
 		g_return_if_fail (E_IS_SOURCE (mail_account_source));
 
-		mail_identity_source =
-			gnome_online_accounts_new_source (extension);
+		mail_identity_source = gnome_online_accounts_new_source (extension);
 		g_return_if_fail (E_IS_SOURCE (mail_identity_source));
 
-		mail_transport_source =
-			gnome_online_accounts_new_source (extension);
+		mail_transport_source = gnome_online_accounts_new_source (extension);
 		g_return_if_fail (E_IS_SOURCE (mail_transport_source));
 
 		/* Configure parent/child relationships. */
