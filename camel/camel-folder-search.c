@@ -589,7 +589,7 @@ match_words_message (CamelFolder *folder,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return truth;
 
-	msg = camel_folder_get_message_sync (folder, uid, cancellable, error);
+	msg = camel_folder_get_message_sync (folder, uid, cancellable, NULL);
 	if (msg) {
 		mask = 0;
 		truth = match_words_1message ((CamelDataWrapper *) msg, words, &mask, cancellable);
