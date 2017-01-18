@@ -2258,15 +2258,15 @@ exit:
 	return success;
 }
 
-static gboolean
-imapx_is_gmail_server (CamelService *service)
+gboolean
+camel_imapx_store_is_gmail_server (CamelIMAPXStore *imapx_store)
 {
 	CamelSettings *settings;
 	gboolean is_gmail = FALSE;
 
-	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), FALSE);
 
-	settings = camel_service_ref_settings (service);
+	settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
 	if (CAMEL_IS_NETWORK_SETTINGS (settings)) {
 		gchar *host;
 
@@ -2536,7 +2536,7 @@ imapx_initial_setup_sync (CamelStore *store,
 
 	/* Skip changing Sent folder for GMail, because GMail stores sent messages
 	   automatically, thus it would make doubled copies on the server. */
-	if (!imapx_is_gmail_server (CAMEL_SERVICE (store))) {
+	if (!camel_imapx_store_is_gmail_server (imapx_store)) {
 		imapx_check_initial_setup_group (imapx_store, finfo, save_setup,
 			CAMEL_IMAPX_LIST_ATTR_SENT,
 			CAMEL_STORE_SETUP_SENT_FOLDER, NULL, NULL,

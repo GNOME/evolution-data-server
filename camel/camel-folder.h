@@ -437,6 +437,10 @@ CamelMimeMessage *
 		camel_folder_get_message_finish	(CamelFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
+CamelMimeMessage *
+		camel_folder_get_message_cached	(CamelFolder *folder,
+						 const gchar *message_uid,
+						 GCancellable *cancellable);
 CamelFolderQuotaInfo *
 		camel_folder_get_quota_info_sync
 						(CamelFolder *folder,

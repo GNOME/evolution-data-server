@@ -268,6 +268,11 @@ struct _CamelFolderSearchClass {
 GType		camel_folder_search_get_type	(void) G_GNUC_CONST;
 CamelFolderSearch *
 		camel_folder_search_new		(void);
+void		camel_folder_search_set_only_cached_messages
+						(CamelFolderSearch *search,
+						 gboolean only_cached_messages);
+gboolean	camel_folder_search_get_only_cached_messages
+						(CamelFolderSearch *search);
 
 /* XXX This stuff currently gets cleared when you run a search.
  *     What on earth was i thinking ... */

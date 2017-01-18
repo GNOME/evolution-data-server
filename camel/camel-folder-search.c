@@ -75,6 +75,8 @@ struct _CamelFolderSearchPrivate {
 	 * This saves us having to perform more complex UID life cycle management
 	 * and the overhead from the additional refs/unrefs it would require. */
 	GPtrArray *owned_pstrings;
+
+	gboolean only_cached_messages;
 };
 
 typedef enum {
@@ -269,13 +271,28 @@ fill_thread_table (CamelFolderThreadNode *root,
 }
 
 static CamelMimeMessage *
+search_get_message_sync (CamelFolderSearch *search,
+			 CamelFolder *folder,
+			 const gchar *uid,
+			 GCancellable *cancellable)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SEARCH (search), NULL);
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	if (camel_folder_search_get_only_cached_messages (search))
+		return camel_folder_get_message_cached (folder, uid, cancellable);
+
+	return camel_folder_get_message_sync (folder, uid, cancellable, NULL);
+}
+
+static CamelMimeMessage *
 get_current_message (CamelFolderSearch *search)
 {
 	if (!search || !search->folder || !search->current)
 		return NULL;
 
-	return camel_folder_get_message_sync (
-		search->folder, search->current->uid, search->priv->cancellable, NULL);
+	return search_get_message_sync (search, search->folder, search->current->uid, search->priv->cancellable);
 }
 
 static CamelSExpResult *
@@ -576,7 +593,8 @@ match_words_1message (CamelDataWrapper *object,
 }
 
 static gboolean
-match_words_message (CamelFolder *folder,
+match_words_message (CamelFolderSearch *search,
+		     CamelFolder *folder,
                      const gchar *uid,
                      struct _camel_search_words *words,
                      GCancellable *cancellable,
@@ -589,7 +607,7 @@ match_words_message (CamelFolder *folder,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return truth;
 
-	msg = camel_folder_get_message_sync (folder, uid, cancellable, NULL);
+	msg = search_get_message_sync (search, folder, uid, cancellable);
 	if (msg) {
 		mask = 0;
 		truth = match_words_1message ((CamelDataWrapper *) msg, words, &mask, cancellable);
@@ -622,7 +640,7 @@ match_words_messages (CamelFolderSearch *search,
 		for (i = 0; i < indexed->len && !g_cancellable_is_cancelled (cancellable); i++) {
 			const gchar *uid = g_ptr_array_index (indexed, i);
 
-			if (match_words_message (
+			if (match_words_message (search,
 					search->folder, uid, words,
 					cancellable, error))
 				g_ptr_array_add (matches, (gchar *) uid);
@@ -635,7 +653,7 @@ match_words_messages (CamelFolderSearch *search,
 		for (i = 0; i < v->len && !g_cancellable_is_cancelled (cancellable); i++) {
 			gchar *uid = g_ptr_array_index (v, i);
 
-			if (match_words_message (
+			if (match_words_message (search,
 				search->folder, uid, words,
 				cancellable, error))
 				g_ptr_array_add (matches, (gchar *) uid);
@@ -1079,7 +1097,7 @@ folder_search_body_contains (CamelSExp *sexp,
 								error);
 					} else {
 						/* TODO: cache current message incase of multiple body search terms */
-						truth = match_words_message (
+						truth = match_words_message (search,
 							search->folder,
 							camel_message_info_get_uid (search->current),
 							words,
@@ -1181,8 +1199,7 @@ folder_search_body_regex (CamelSExp *sexp,
 			for (i = 0; i < v->len && !g_cancellable_is_cancelled (search->priv->cancellable); i++) {
 				gchar *uid = g_ptr_array_index (v, i);
 
-				message = camel_folder_get_message_sync (
-					search->folder, uid, search->priv->cancellable, NULL);
+				message = search_get_message_sync (search, search->folder, uid, search->priv->cancellable);
 				if (message) {
 					if (camel_search_message_body_contains ((CamelDataWrapper *) message, &pattern)) {
 						g_ptr_array_add (r->value.ptrarray, uid);
@@ -1698,6 +1715,7 @@ static void
 camel_folder_search_init (CamelFolderSearch *search)
 {
 	search->priv = CAMEL_FOLDER_SEARCH_GET_PRIVATE (search);
+	search->priv->only_cached_messages = FALSE;
 	search->sexp = camel_sexp_new ();
 }
 
@@ -1732,6 +1750,44 @@ CamelFolderSearch *
 camel_folder_search_new (void)
 {
 	return g_object_new (CAMEL_TYPE_FOLDER_SEARCH, NULL);
+}
+
+/**
+ * camel_folder_search_set_only_cached_messages:
+ * @search: a #CamelFolderSearch
+ * @only_cached_messages: a value to set
+ *
+ * Sets whether only locally cached messages can be searched. The default
+ * value is %FALSE, which means that when a message is required and it is
+ * not available locally, then it is downloaded from the server, if possible.
+ *
+ * Since: 3.22.5
+ **/
+void
+camel_folder_search_set_only_cached_messages (CamelFolderSearch *search,
+					      gboolean only_cached_messages)
+{
+	g_return_if_fail (CAMEL_IS_FOLDER_SEARCH (search));
+
+	search->priv->only_cached_messages = only_cached_messages;
+}
+
+/**
+ * camel_folder_search_get_only_cached_messages:
+ * @search: a #CamelFolderSearch
+ *
+ * Returns: Whether only cached messages can be searched. See
+ *    camel_folder_search_set_only_cached_messages() for more
+ *    information what it means.
+ *
+ * Since: 3.22.5
+ **/
+gboolean
+camel_folder_search_get_only_cached_messages (CamelFolderSearch *search)
+{
+	g_return_val_if_fail (CAMEL_IS_FOLDER_SEARCH (search), FALSE);
+
+	return search->priv->only_cached_messages;
 }
 
 /**

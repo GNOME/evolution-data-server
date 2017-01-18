@@ -3022,7 +3022,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
                                GError **error)
 {
 	CamelFolderClass *class;
-	CamelMimeMessage *message = NULL;
+	CamelMimeMessage *message;
 
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 	g_return_val_if_fail (message_uid != NULL, NULL);
@@ -3038,21 +3038,14 @@ camel_folder_get_message_sync (CamelFolder *folder,
 		message_uid, camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 
-	if (class->get_message_cached) {
-		/* Return cached message, if available locally; this should
-		 * not do any network I/O, only check if message is already
-		 * downloaded and return it quicker, not being blocked by
-		 * the folder's lock.  Returning NULL is not considered as
-		 * an error, it just means that the message is still
-		 * to-be-downloaded. */
-		message = class->get_message_cached (
-			folder, message_uid, cancellable);
-	}
+	message = camel_folder_get_message_cached (folder, message_uid, cancellable);
 
 	if (message == NULL) {
 		/* Recover from a dropped connection, unless we're offline. */
-		if (!folder_maybe_connect_sync (folder, cancellable, error))
+		if (!folder_maybe_connect_sync (folder, cancellable, error)) {
+			camel_operation_pop_message (cancellable);
 			return NULL;
+		}
 
 		camel_folder_lock (folder);
 
@@ -3092,6 +3085,42 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	}
 
 	return message;
+}
+
+/**
+ * camel_folder_get_message_cached:
+ * @folder: a #CamelFolder
+ * @message_uid: the message UID
+ * @cancellable: optional #GCancellable object, or %NULL
+ *
+ * Gets the message corresponding to @message_uid from the @folder cache,
+ * if available locally. This should not do any network I/O, only check
+ * if message is already downloaded and return it quickly, not being
+ * blocked by the folder's lock. Returning NULL is not considered as
+ * an error, it just means that the message is still to-be-downloaded.
+ *
+ * Note: This function is called automatically within camel_folder_get_message_sync().
+ *
+ * Returns: (transfer full) (nullable): a cached #CamelMimeMessage corresponding
+ *    to the requested UID
+ *
+ * Since: 3.22.5
+ **/
+CamelMimeMessage *
+camel_folder_get_message_cached (CamelFolder *folder,
+				 const gchar *message_uid,
+				 GCancellable *cancellable)
+{
+	CamelFolderClass *class;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
+	g_return_val_if_fail (message_uid != NULL, NULL);
+
+	class = CAMEL_FOLDER_GET_CLASS (folder);
+	if (!class->get_message_cached)
+		return NULL;
+
+	return class->get_message_cached (folder, message_uid, cancellable);
 }
 
 /* Helper for camel_folder_get_message() */

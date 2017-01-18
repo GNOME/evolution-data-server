@@ -350,6 +350,7 @@ imapx_search_body_contains (CamelSExp *sexp,
 	CamelSExpResult *result;
 	GString *criteria;
 	GPtrArray *words;
+	gboolean is_gmail;
 
 	/* Always do body-search server-side */
 	if (imapx_search->priv->local_data_search) {
@@ -390,9 +391,72 @@ imapx_search_body_contains (CamelSExp *sexp,
 
 	result = imapx_search_process_criteria (sexp, search, imapx_store, criteria, "BODY", words, G_STRFUNC);
 
+	is_gmail = camel_imapx_store_is_gmail_server (imapx_store);
+
 	g_string_free (criteria, TRUE);
 	g_ptr_array_free (words, TRUE);
 	g_object_unref (imapx_store);
+
+	if (is_gmail && result && (result->type == CAMEL_SEXP_RES_ARRAY_PTR || (result->type == CAMEL_SEXP_RES_BOOL && !result->value.boolean))) {
+		/* Gmail returns BODY matches on whole words only, which is not it should be,
+		   thus try also locally cached messages to provide any better results. */
+		gboolean was_only_cached_messages;
+		CamelSExpResult *cached_result;
+
+		was_only_cached_messages = camel_folder_search_get_only_cached_messages (search);
+		camel_folder_search_set_only_cached_messages (search, TRUE);
+
+		cached_result = CAMEL_FOLDER_SEARCH_CLASS (camel_imapx_search_parent_class)->body_contains (sexp, argc, argv, search);
+
+		camel_folder_search_set_only_cached_messages (search, was_only_cached_messages);
+
+		if (cached_result && cached_result->type == result->type) {
+			if (result->type == CAMEL_SEXP_RES_BOOL) {
+				result->value.boolean = cached_result->value.boolean;
+			} else {
+				/* Merge the two UID arrays */
+				GHashTable *merge;
+				GHashTableIter iter;
+				GPtrArray *array;
+				gpointer key;
+				guint ii;
+
+				/* UID-s are strings from the string pool, thus can be compared directly */
+				merge = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+				array = result->value.ptrarray;
+				for (ii = 0; array && ii < array->len; ii++) {
+					gpointer uid = g_ptr_array_index (array, ii);
+
+					if (uid)
+						g_hash_table_insert (merge, uid, NULL);
+				}
+
+				array = cached_result->value.ptrarray;
+				for (ii = 0; array && ii < array->len; ii++) {
+					gpointer uid = g_ptr_array_index (array, ii);
+
+					if (uid)
+						g_hash_table_insert (merge, uid, NULL);
+				}
+
+				array = g_ptr_array_new_full (g_hash_table_size (merge), (GDestroyNotify) camel_pstring_free);
+
+				g_hash_table_iter_init (&iter, merge);
+				while (g_hash_table_iter_next (&iter, &key, NULL)) {
+					g_ptr_array_add (array, (gpointer) camel_pstring_strdup (key));
+				}
+
+				g_hash_table_destroy (merge);
+
+				g_ptr_array_unref (result->value.ptrarray);
+
+				result->value.ptrarray = array;
+			}
+		}
+
+		camel_sexp_result_free (sexp, cached_result);
+	}
 
 	return result;
 }
