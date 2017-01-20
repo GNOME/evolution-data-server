@@ -182,7 +182,10 @@ test_photo (TypesFixture *fixture,
 	g_assert_cmpint (new_photo->data.inlined.length, ==, photo->data.inlined.length);
 
 	if (memcmp (new_photo->data.inlined.data, photo->data.inlined.data, photo->data.inlined.length))
-	  g_error ("photo data differs");
+		g_error ("photo data differs");
+
+	e_contact_photo_free (photo);
+	e_contact_photo_free (new_photo);
 }
 
 /************* CATEGORIES *****************/
@@ -214,6 +217,9 @@ test_categories_convert_to_string (TypesFixture *fixture,
 
 	/* Test conversion of list to string */
 	g_assert_cmpstr (categories, ==, "Birthday,Business,Competition");
+
+	g_list_free (category_list);
+	g_free (categories);
 }
 
 static void
@@ -231,6 +237,8 @@ test_categories_convert_to_list (TypesFixture *fixture,
 	g_assert_cmpstr ((gchar *) g_list_nth_data (category_list, 0), ==, "Birthday");
 	g_assert_cmpstr ((gchar *) g_list_nth_data (category_list, 1), ==, "Business");
 	g_assert_cmpstr ((gchar *) g_list_nth_data (category_list, 2), ==, "Competition");
+
+	g_list_free_full (category_list, g_free);
 }
 
 gint
