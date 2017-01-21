@@ -1,18 +1,18 @@
 # Polish translation for evolution-data-server.
-# Copyright © 2000-2016 the evolution-data-server authors.
+# Copyright © 2000-2017 the evolution-data-server authors.
 # This file is distributed under the same license as the evolution-data-server package.
 # Zbigniew Chyla <chyla@alice.ci.pwr.wroc.pl>, 2000-2002.
 # Artur Flinta <aflinta@at.kernel.pl>, 2004-2007.
 # Wadim Dziedzic <wdziedzic@aviary.pl>, 2007-2010.
-# Piotr Drąg <piotrdrag@gmail.com>, 2009-2016.
-# Aviary.pl <community-poland@mozilla.org>, 2007-2016.
+# Piotr Drąg <piotrdrag@gmail.com>, 2009-2017.
+# Aviary.pl <community-poland@mozilla.org>, 2007-2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-27 21:58+0100\n"
-"PO-Revision-Date: 2016-11-27 21:59+0100\n"
+"POT-Creation-Date: 2017-01-21 20:44+0100\n"
+"PO-Revision-Date: 2017-01-21 20:45+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -119,27 +119,27 @@ msgstr ""
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3520
-#: ../src/calendar/libecal/e-cal-client.c:3693
-#: ../src/calendar/libecal/e-cal-client.c:3957
-#: ../src/calendar/libecal/e-cal-client.c:4198
-#: ../src/calendar/libecal/e-cal-client.c:4388
-#: ../src/calendar/libecal/e-cal-client.c:4581
-#: ../src/calendar/libecal/e-cal-client.c:4790
-#: ../src/calendar/libecal/e-cal-client.c:4959
-#: ../src/calendar/libecal/e-cal-client.c:5162
-#: ../src/calendar/libecal/e-cal-client.c:5312
-#: ../src/calendar/libecal/e-cal-client.c:5506
-#: ../src/calendar/libecal/e-cal-client.c:5659
-#: ../src/calendar/libecal/e-cal-client.c:5876
-#: ../src/calendar/libecal/e-cal-client.c:6030
-#: ../src/calendar/libecal/e-cal-client.c:6256
-#: ../src/calendar/libecal/e-cal-client.c:6452
-#: ../src/calendar/libecal/e-cal-client.c:6815
-#: ../src/calendar/libecal/e-cal-client.c:7037
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3055
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3067
+#: ../src/calendar/libecal/e-cal-client.c:3518
+#: ../src/calendar/libecal/e-cal-client.c:3691
+#: ../src/calendar/libecal/e-cal-client.c:3955
+#: ../src/calendar/libecal/e-cal-client.c:4196
+#: ../src/calendar/libecal/e-cal-client.c:4386
+#: ../src/calendar/libecal/e-cal-client.c:4579
+#: ../src/calendar/libecal/e-cal-client.c:4788
+#: ../src/calendar/libecal/e-cal-client.c:4957
+#: ../src/calendar/libecal/e-cal-client.c:5160
+#: ../src/calendar/libecal/e-cal-client.c:5310
+#: ../src/calendar/libecal/e-cal-client.c:5504
+#: ../src/calendar/libecal/e-cal-client.c:5657
+#: ../src/calendar/libecal/e-cal-client.c:5874
+#: ../src/calendar/libecal/e-cal-client.c:6028
+#: ../src/calendar/libecal/e-cal-client.c:6254
+#: ../src/calendar/libecal/e-cal-client.c:6450
+#: ../src/calendar/libecal/e-cal-client.c:6813
+#: ../src/calendar/libecal/e-cal-client.c:7035
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3044
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3054
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3066
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
@@ -178,7 +178,7 @@ msgid "Loading…"
 msgstr "Wczytywanie…"
 
 #. System Group: My Contacts
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1654
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1670
 #: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -187,17 +187,17 @@ msgid "Personal"
 msgstr "Osobiste"
 
 #. System Group: Friends
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1656
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1672
 msgid "Friends"
 msgstr "Przyjaciele"
 
 #. System Group: Family
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1658
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1674
 msgid "Family"
 msgstr "Rodzina"
 
 #. System Group: Coworkers
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1660
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1676
 msgid "Coworkers"
 msgstr "Współpracownicy"
 
@@ -1617,127 +1617,127 @@ msgstr "Nie można zmienić wartości właściwości kalendarza „%s”"
 msgid "Untitled appointment"
 msgstr "Termin pozbawiony nazwy"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4742
+#: ../src/calendar/libecal/e-cal-recur.c:4739
 msgid "1st"
 msgstr "1."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4743
+#: ../src/calendar/libecal/e-cal-recur.c:4740
 msgid "2nd"
 msgstr "2."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4744
+#: ../src/calendar/libecal/e-cal-recur.c:4741
 msgid "3rd"
 msgstr "3."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4745
+#: ../src/calendar/libecal/e-cal-recur.c:4742
 msgid "4th"
 msgstr "4."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4746
+#: ../src/calendar/libecal/e-cal-recur.c:4743
 msgid "5th"
 msgstr "5."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4747
+#: ../src/calendar/libecal/e-cal-recur.c:4744
 msgid "6th"
 msgstr "6."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4748
+#: ../src/calendar/libecal/e-cal-recur.c:4745
 msgid "7th"
 msgstr "7."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4749
+#: ../src/calendar/libecal/e-cal-recur.c:4746
 msgid "8th"
 msgstr "8."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4750
+#: ../src/calendar/libecal/e-cal-recur.c:4747
 msgid "9th"
 msgstr "9."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4748
 msgid "10th"
 msgstr "10."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4749
 msgid "11th"
 msgstr "11."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4750
 msgid "12th"
 msgstr "12."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "13th"
 msgstr "13."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "14th"
 msgstr "14."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "15th"
 msgstr "15."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "16th"
 msgstr "16."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "17th"
 msgstr "17."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "18th"
 msgstr "18."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "19th"
 msgstr "19."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "20th"
 msgstr "20."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "21st"
 msgstr "21."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "22nd"
 msgstr "22."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "23rd"
 msgstr "23."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "24th"
 msgstr "24."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "25th"
 msgstr "25."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "26th"
 msgstr "26."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "27th"
 msgstr "27."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "28th"
 msgstr "28."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4770
+#: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "29th"
 msgstr "29."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4771
+#: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "30th"
 msgstr "30."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4772
+#: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "31st"
 msgstr "31."
 
@@ -2167,7 +2167,7 @@ msgstr "Informacje o przydziale nie są obsługiwane dla katalogu „%s : %s”
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1163
+#: ../src/camel/camel-folder.c:1166
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Filtrowanie katalogu „%s : %s”"
@@ -2175,7 +2175,7 @@ msgstr "Filtrowanie katalogu „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2957
+#: ../src/camel/camel-folder.c:2971
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Czyszczenie katalogu „%s : %s”"
@@ -2183,7 +2183,7 @@ msgstr "Czyszczenie katalogu „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3091
+#: ../src/camel/camel-folder.c:3105
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Pobieranie wiadomości „%s” w „%s : %s”"
@@ -2191,7 +2191,7 @@ msgstr "Pobieranie wiadomości „%s” w „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3284
+#: ../src/camel/camel-folder.c:3327
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Pobieranie informacji o przydziale dla „%s : %s”"
@@ -2199,45 +2199,45 @@ msgstr "Pobieranie informacji o przydziale dla „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3582
+#: ../src/camel/camel-folder.c:3625
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Odświeżanie katalogu „%s : %s”"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:879
-#: ../src/camel/camel-folder-search.c:921
+#: ../src/camel/camel-folder-search.c:898
+#: ../src/camel/camel-folder-search.c:940
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) wymaga pojedynczego wyniku logicznego"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:956
+#: ../src/camel/camel-folder-search.c:975
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) nie jest dopuszczalne wewnątrz %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:963
-#: ../src/camel/camel-folder-search.c:971
+#: ../src/camel/camel-folder-search.c:982
+#: ../src/camel/camel-folder-search.c:990
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) wymaga pasującego typu ciągu"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:999
+#: ../src/camel/camel-folder-search.c:1018
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) oczekuje wyniku tablicowego"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1009
+#: ../src/camel/camel-folder-search.c:1028
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) wymaga zbioru katalogów"
 
-#: ../src/camel/camel-folder-search.c:2049
-#: ../src/camel/camel-folder-search.c:2221
+#: ../src/camel/camel-folder-search.c:2106
+#: ../src/camel/camel-folder-search.c:2280
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2246,8 +2246,8 @@ msgstr ""
 "Nie można przetworzyć wyrażenia wyszukiwania: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2061
-#: ../src/camel/camel-folder-search.c:2233
+#: ../src/camel/camel-folder-search.c:2118
+#: ../src/camel/camel-folder-search.c:2292
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2259,23 +2259,29 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1597
+#: ../src/camel/camel-folder-summary.c:1612
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Zwolnij nieużywaną pamięć dla katalogu „%s : %s”"
 
-#: ../src/camel/camel-gpg-context.c:817 ../src/camel/camel-gpg-context.c:822
-#: ../src/camel/camel-gpg-context.c:1512
+#. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#: ../src/camel/camel-gpg-context.c:417
+#, c-format
+msgid "Output from %s:"
+msgstr "Wyjście z „%s”:"
+
+#: ../src/camel/camel-gpg-context.c:834 ../src/camel/camel-gpg-context.c:839
+#: ../src/camel/camel-gpg-context.c:1543
 #, c-format
 msgid "Failed to execute gpg: %s"
 msgstr "Wykonanie polecenia gpg się nie powiodło: %s"
 
-#: ../src/camel/camel-gpg-context.c:822
+#: ../src/camel/camel-gpg-context.c:839
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1129
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: ../src/camel/camel-gpg-context.c:934
+#: ../src/camel/camel-gpg-context.c:951
 #, c-format
 msgid ""
 "Unexpected GnuPG status message encountered:\n"
@@ -2286,17 +2292,17 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/camel-gpg-context.c:970
+#: ../src/camel/camel-gpg-context.c:987
 #, c-format
 msgid "Failed to parse gpg userid hint."
 msgstr "Przetworzenie identyfikatora użytkownika gpg się nie powiodło."
 
-#: ../src/camel/camel-gpg-context.c:995 ../src/camel/camel-gpg-context.c:1010
+#: ../src/camel/camel-gpg-context.c:1012 ../src/camel/camel-gpg-context.c:1027
 #, c-format
 msgid "Failed to parse gpg passphrase request."
 msgstr "Przetworzenie żądania podania hasła od gpg się nie powiodło."
 
-#: ../src/camel/camel-gpg-context.c:1031
+#: ../src/camel/camel-gpg-context.c:1048
 #, c-format
 msgid ""
 "You need a PIN to unlock the key for your\n"
@@ -2305,7 +2311,7 @@ msgstr ""
 "Należy podać kod PIN, aby odblokować klucz\n"
 "SmartCard: „%s”"
 
-#: ../src/camel/camel-gpg-context.c:1035
+#: ../src/camel/camel-gpg-context.c:1052
 #, c-format
 msgid ""
 "You need a passphrase to unlock the key for\n"
@@ -2314,12 +2320,12 @@ msgstr ""
 "Należy podać hasło odblokowujące klucz dla\n"
 "użytkownika: „%s”"
 
-#: ../src/camel/camel-gpg-context.c:1041
+#: ../src/camel/camel-gpg-context.c:1058
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
 msgstr "Nieoczekiwana żądanie programu GnuPG dla „%s”"
 
-#: ../src/camel/camel-gpg-context.c:1053
+#: ../src/camel/camel-gpg-context.c:1070
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
@@ -2327,40 +2333,52 @@ msgstr ""
 "Proszę zauważyć, że zaszyfrowana treść nie zawiera informacji o odbiorcy, "
 "więc dla każdego klucza prywatnego będzie wymagane podanie hasła."
 
-#: ../src/camel/camel-gpg-context.c:1084 ../src/camel/camel-net-utils.c:522
+#: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:398
 #: ../src/libedataserver/e-client.c:161
 #, c-format
 msgid "Cancelled"
 msgstr "Anulowano"
 
-#: ../src/camel/camel-gpg-context.c:1105
+#: ../src/camel/camel-gpg-context.c:1122
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr "Odblokowanie tajnego klucza się nie powiodło: podano 3 błędne hasła."
 
-#: ../src/camel/camel-gpg-context.c:1118
+#: ../src/camel/camel-gpg-context.c:1135
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
 msgstr "Nieoczekiwana odpowiedź od programu GnuPG: %s"
 
-#: ../src/camel/camel-gpg-context.c:1232
+#: ../src/camel/camel-gpg-context.c:1249
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
 msgstr ""
 "Zaszyfrowanie wiadomości się nie powiodło: nie podano prawidłowych odbiorców."
 
-#: ../src/camel/camel-gpg-context.c:1941 ../src/camel/camel-smime-context.c:841
+#. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
+#. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
+#: ../src/camel/camel-gpg-context.c:1262
+#, c-format
+msgid ""
+"Failed to encrypt: Invalid recipient %s specified. A common issue is that "
+"the %s doesn’t have imported public key for this recipient."
+msgstr ""
+"Zaszyfrowanie się nie powiodło: podano nieprawidłowego odbiorcę %s. Częstym "
+"problemem jest brak zaimportowanego klucza publicznego dla danego odbiorcy "
+"przez %s."
+
+#: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
 msgstr "Nie można utworzyć danych podpisujących: "
 
-#: ../src/camel/camel-gpg-context.c:1992 ../src/camel/camel-gpg-context.c:2228
-#: ../src/camel/camel-gpg-context.c:2344 ../src/camel/camel-gpg-context.c:2520
+#: ../src/camel/camel-gpg-context.c:2023 ../src/camel/camel-gpg-context.c:2259
+#: ../src/camel/camel-gpg-context.c:2375 ../src/camel/camel-gpg-context.c:2551
 msgid "Failed to execute gpg."
 msgstr "Wykonanie polecenia gpg się nie powiodło."
 
-#: ../src/camel/camel-gpg-context.c:2098 ../src/camel/camel-gpg-context.c:2106
-#: ../src/camel/camel-gpg-context.c:2114 ../src/camel/camel-gpg-context.c:2134
+#: ../src/camel/camel-gpg-context.c:2129 ../src/camel/camel-gpg-context.c:2137
+#: ../src/camel/camel-gpg-context.c:2145 ../src/camel/camel-gpg-context.c:2165
 #: ../src/camel/camel-smime-context.c:970
 #: ../src/camel/camel-smime-context.c:984
 #: ../src/camel/camel-smime-context.c:993
@@ -2368,36 +2386,36 @@ msgstr "Wykonanie polecenia gpg się nie powiodło."
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Nie można zweryfikować podpisu wiadomości: niepoprawny format"
 
-#: ../src/camel/camel-gpg-context.c:2180
+#: ../src/camel/camel-gpg-context.c:2211
 msgid "Cannot verify message signature: "
 msgstr "Nie można zweryfikować podpisu wiadomości: "
 
-#: ../src/camel/camel-gpg-context.c:2309
+#: ../src/camel/camel-gpg-context.c:2340
 msgid "Could not generate encrypting data: "
 msgstr "Nie można utworzyć danych szyfrujących: "
 
-#: ../src/camel/camel-gpg-context.c:2384
+#: ../src/camel/camel-gpg-context.c:2415
 msgid "This is a digitally encrypted message part"
 msgstr "To jest część wiadomości zaszyfrowana cyfrowo"
 
-#: ../src/camel/camel-gpg-context.c:2443 ../src/camel/camel-gpg-context.c:2452
-#: ../src/camel/camel-gpg-context.c:2475
+#: ../src/camel/camel-gpg-context.c:2474 ../src/camel/camel-gpg-context.c:2483
+#: ../src/camel/camel-gpg-context.c:2506
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "Nie można odszyfrować wiadomości: niepoprawny format"
 
-#: ../src/camel/camel-gpg-context.c:2463
+#: ../src/camel/camel-gpg-context.c:2494
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "Odszyfrowanie części MIME się nie powiodło: błąd na poziomie protokołu"
 
-#: ../src/camel/camel-gpg-context.c:2530
+#: ../src/camel/camel-gpg-context.c:2561
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr ""
 "Odszyfrowanie części MIME się nie powiodło: nie odnaleziono tajnego klucza"
 
-#: ../src/camel/camel-gpg-context.c:2566
+#: ../src/camel/camel-gpg-context.c:2597
 #: ../src/camel/camel-smime-context.c:1286
 msgid "Encrypted content"
 msgstr "Zaszyfrowana zawartość"
@@ -2406,24 +2424,24 @@ msgstr "Zaszyfrowana zawartość"
 msgid "Synchronizing junk database"
 msgstr "Synchronizowanie bazy danych niechcianych wiadomości"
 
-#: ../src/camel/camel-lock.c:108
+#: ../src/camel/camel-lock.c:111
 #, c-format
 msgid "Could not create lock file for %s: %s"
 msgstr "Nie można utworzyć pliku blokady dla %s: %s"
 
-#: ../src/camel/camel-lock.c:151
+#: ../src/camel/camel-lock.c:154
 #, c-format
 msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr ""
 "Upłynął czas przeznaczony na uzyskanie blokady pliku %s. Proszę spróbować "
 "ponownie później."
 
-#: ../src/camel/camel-lock.c:213
+#: ../src/camel/camel-lock.c:221
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
 msgstr "Uzyskanie blokady za pomocą fcntl(2) się nie powiodło: %s"
 
-#: ../src/camel/camel-lock.c:280
+#: ../src/camel/camel-lock.c:293
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
 msgstr "Uzyskanie blokady za pomocą flock(2) się nie powiodło: %s"
@@ -2520,23 +2538,23 @@ msgstr "Brak dostępnego podpisu"
 msgid "parse error"
 msgstr "błąd przetwarzania"
 
-#: ../src/camel/camel-net-utils.c:706
+#: ../src/camel/camel-net-utils.c:714
 #, c-format
 msgid "Resolving: %s"
 msgstr "Wyszukiwanie: %s"
 
-#: ../src/camel/camel-net-utils.c:731
+#: ../src/camel/camel-net-utils.c:739
 msgid "Host lookup failed"
 msgstr "Wyszukanie adresu się nie powiodło"
 
-#: ../src/camel/camel-net-utils.c:737
+#: ../src/camel/camel-net-utils.c:745
 #, c-format
 msgid "Host lookup “%s” failed. Check your host name for spelling errors."
 msgstr ""
 "Wyszukanie komputera „%s” się nie powiodło. Proszę sprawdzić, czy poprawnie "
 "podano nazwę komputera."
 
-#: ../src/camel/camel-net-utils.c:741
+#: ../src/camel/camel-net-utils.c:749
 #, c-format
 msgid "Host lookup “%s” failed: %s"
 msgstr "Wyszukanie komputera „%s” się nie powiodło: %s"
@@ -2544,7 +2562,7 @@ msgstr "Wyszukanie komputera „%s” się nie powiodło: %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:94
+#: ../src/camel/camel-offline-folder.c:125
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
 msgstr "Pobieranie nowych wiadomości dla trybu offline w „%s : %s”"
@@ -2552,7 +2570,7 @@ msgstr "Pobieranie nowych wiadomości dla trybu offline w „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:165
+#: ../src/camel/camel-offline-folder.c:221
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
 msgstr "Zapisywanie zmian w katalogu „%s : %s”"
@@ -2560,7 +2578,7 @@ msgstr "Zapisywanie zmian w katalogu „%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:255
+#: ../src/camel/camel-offline-folder.c:311
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr "Sprawdzanie pobierania nowych wiadomości dla trybu offline w „%s : %s”"
@@ -2568,12 +2586,12 @@ msgstr "Sprawdzanie pobierania nowych wiadomości dla trybu offline w „%s : %
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-offline-folder.c:371
+#: ../src/camel/camel-offline-folder.c:428
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "Synchronizowanie wiadomości w katalogu „%s : %s” na dysku"
 
-#: ../src/camel/camel-offline-folder.c:434
+#: ../src/camel/camel-offline-folder.c:513
 msgid "Copy folder content locally for _offline operation"
 msgstr "Lokalne kopiowanie zawartości katalogu dla działania w trybie _offline"
 
@@ -2855,7 +2873,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Zarejestrowano nieprawidłowe GType dla protokołu „%s”"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2994
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2993
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3072,43 +3090,43 @@ msgstr "Dodanie danych do szyfratora się nie powiodło"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Deszyfrowanie S/MIME: nie odnaleziono zaszyfrowanej zawartości"
 
-#: ../src/camel/camel-store.c:1369
+#: ../src/camel/camel-store.c:1370
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Otwieranie katalogu „%s”"
 
-#: ../src/camel/camel-store.c:1663
+#: ../src/camel/camel-store.c:1665
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Skanowanie katalogów w „%s”"
 
-#: ../src/camel/camel-store.c:1691 ../src/camel/camel-store.c:1736
+#: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Kosz"
 
-#: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1753
+#: ../src/camel/camel-store.c:1707 ../src/camel/camel-store.c:1755
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Niechciane"
 
-#: ../src/camel/camel-store.c:2354
+#: ../src/camel/camel-store.c:2356
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Nie można utworzyć katalogu: %s: katalog istnieje"
 
-#: ../src/camel/camel-store.c:2361
+#: ../src/camel/camel-store.c:2363
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Tworzenie katalogu „%s”"
 
-#: ../src/camel/camel-store.c:2538 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2540 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Nie można usunąć katalogu: %s: nieprawidłowe działanie"
 
-#: ../src/camel/camel-store.c:2728 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2730 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3164,7 +3182,7 @@ msgstr "Nie można przetworzyć adresu URL „%s”"
 msgid "Updating folder “%s”"
 msgstr "Aktualizowanie katalogu „%s”"
 
-#: ../src/camel/camel-vee-folder.c:894 ../src/camel/camel-vee-folder.c:1009
+#: ../src/camel/camel-vee-folder.c:898 ../src/camel/camel-vee-folder.c:1013
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Nie można skopiować lub przenieść wiadomości do katalogu wirtualnego"
@@ -3173,17 +3191,17 @@ msgstr "Nie można skopiować lub przenieść wiadomości do katalogu wirtualneg
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:931
+#: ../src/camel/camel-vee-folder.c:935
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Brak wiadomości %s w „%s : %s”"
 
-#: ../src/camel/camel-vee-folder.c:985
+#: ../src/camel/camel-vee-folder.c:989
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Błąd podczas zapisywania „%s”: "
 
-#: ../src/camel/camel-vee-folder.c:1232
+#: ../src/camel/camel-vee-folder.c:1236
 msgid "Automatically _update on change in source folders"
 msgstr "A_utomatyczne aktualizowanie po zmianie w katalogach źródłowych"
 
@@ -3207,7 +3225,7 @@ msgstr "Nie można zmienić nazwy katalogu %s: katalog nie istnieje"
 msgid "Enable _Unmatched folder"
 msgstr "Włączenie katalogu _Niepasujące"
 
-#: ../src/camel/camel-vee-store.c:1053
+#: ../src/camel/camel-vee-store.c:1067
 msgid "Updating Unmatched search folder"
 msgstr "Aktualizowanie katalogu wyszukiwania _Niepasujące"
 
@@ -3219,13 +3237,13 @@ msgstr "Nie można skopiować wiadomości do katalogu kosza"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nie można skopiować wiadomości do katalogu niechcianych wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:971
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:967
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "Do ukończenia tego działania konieczne jest połączenie z siecią (%s)"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:979
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3127
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3126
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -3244,17 +3262,17 @@ msgstr "Do ukończenia tego działania konieczne jest połączenie z siecią (%
 msgid "You must be working online to complete this operation"
 msgstr "Do ukończenia tego działania konieczne jest połączenie z siecią"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1559
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1647
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1555
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1643
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nie podano katalogu docelowego"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1586
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1582
 msgid "Unable to move junk messages"
 msgstr "Nie można przenieść niechcianych wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1681
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1677
 msgid "Unable to move deleted messages"
 msgstr "Nie można przenieść usuniętych wiadomości"
 
@@ -3275,12 +3293,12 @@ msgstr "_Filtrowanie wiadomości w tym katalogu"
 msgid "Always check for _new mail in this folder"
 msgstr "Sprawdzanie _nowych wiadomości w tym katalogu przez cały czas"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1096
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1102
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "Nie można utworzyć podsumowania katalogu dla %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1108
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1114
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "Nie można utworzyć bufora dla %s: "
@@ -3288,7 +3306,7 @@ msgstr "Nie można utworzyć bufora dla %s: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1312
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1326
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Brak dostępnej skrzynki pocztowej IMAP dla katalogu „%s : %s”"
@@ -3379,19 +3397,19 @@ msgstr "Szukanie niechcianych tylko w katalogu _Odebrane"
 msgid "Synchroni_ze remote mail locally in all folders"
 msgstr "Synch_ronizowanie zdalnej poczty lokalnie we wszystkich katalogach"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:78
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:79
 msgid "Default IMAP port"
 msgstr "Domyślny port IMAP"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:79
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:80
 msgid "IMAP over TLS"
 msgstr "IMAP przez TLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:86
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:87
 msgid "IMAP+"
 msgstr "IMAP+"
 
-#: ../src/camel/providers/imapx/camel-imapx-provider.c:88
+#: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Przeglądanie i przechowywanie poczty na serwerach IMAP."
 
@@ -3399,200 +3417,200 @@ msgstr "Przeglądanie i przechowywanie poczty na serwerach IMAP."
 msgid "Error writing to cache stream"
 msgstr "Błąd podczas zapisywania do potoku bufora"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2810
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2898
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3160
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2809
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2897
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3159
 msgid "Failed to get capabilities"
 msgstr "Uzyskanie możliwości się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2829
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2828
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "Połączenie z serwerem IMAP %s w trybie bezpiecznym się nie powiodło: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2830
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2829
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nie jest obsługiwane"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2839
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2838
 msgid "Failed to issue STARTTLS"
 msgstr "Wydanie STARTTLS się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2887
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2886
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Połączenie z serwerem IMAP %s w trybie bezpiecznym się nie powiodło: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2981
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2980
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Serwer IMAP %s nie obsługuje uwierzytelniania %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3012
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3011
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Nie można uwierzytelnić bez nazwy użytkownika"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3021
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3020
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "Hasło uwierzytelnienia jest niedostępne"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3028
 msgid "Failed to authenticate"
 msgstr "Uwierzytelnienie się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3182
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3181
 msgid "Failed to issue NAMESPACE"
 msgstr "Wydanie NAMESPACE się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3199
 msgid "Failed to enable QResync"
 msgstr "Włączenie QResync się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3231
 msgid "Failed to issue NOTIFY"
 msgstr "Wydanie NOTIFY się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3710
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3709
 msgid "Failed to select mailbox"
 msgstr "Wybranie skrzynki się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3813
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3812
 msgid "Cannot issue command, no stream available"
 msgstr "Nie można wydać polecenia, żaden potok nie jest dostępny"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4077
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4076
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nie można pobrać wiadomości z identyfikatorem %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4077
 msgid "No such message available."
 msgstr "Nie ma takiej wiadomości."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4115
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4140
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4179
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4114
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4139
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4178
 msgid "Error fetching message"
 msgstr "Błąd podczas pobierania wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4157
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4755
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4156
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4754
 msgid "Error performing NOOP"
 msgstr "Błąd podczas wykonywania NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4172
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4171
 msgid "Failed to close the tmp stream"
 msgstr "Zamknięcie potoku tymczasowego się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4203
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4202
 msgid "Failed to copy the tmp file"
 msgstr "Skopiowanie pliku tymczasowego się nie powiodło"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4365
 msgid "Error moving messages"
 msgstr "Błąd podczas przenoszenia wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4365
 msgid "Error copying messages"
 msgstr "Błąd podczas kopiowania wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4551
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4572
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4550
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4571
 msgid "Cannot create spool file: "
 msgstr "Nie można utworzyć pliku kolejki: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4658
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4657
 msgid "Error appending message"
 msgstr "Błąd podczas dołączania wiadomości"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4908
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4907
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Wyszukiwanie zmodyfikowanych wiadomości w „%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4912
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error scanning changes"
 msgstr "Błąd podczas skanowania zmian"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4933
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4932
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 "Pobieranie informacji podsumowujących dla nowych wiadomości w „%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4951
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4950
 msgid "Error fetching message info"
 msgstr "Błąd podczas pobierania informacji o wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5014
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5032
 msgid "Error running STATUS"
 msgstr "Błąd podczas wykonywania STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5509
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5539
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5574
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5527
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5557
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5592
 msgid "Error syncing changes"
 msgstr "Błąd podczas synchronizowania zmian"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5712
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5730
 msgid "Error expunging message"
 msgstr "Błąd podczas czyszczenia wiadomości"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5784
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5802
 msgid "Error fetching folders"
 msgstr "Błąd podczas pobierania katalogów"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5795
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5813
 msgid "Error fetching subscribed folders"
 msgstr "Błąd podczas pobierania subskrybowanych katalogów"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5817
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5835
 msgid "Error creating folder"
 msgstr "Błąd podczas tworzenia katalogu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5873
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5891
 msgid "Error deleting folder"
 msgstr "Błąd podczas usuwania katalogu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5919
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5937
 msgid "Error renaming folder"
 msgstr "Błąd podczas zmieniania nazwy katalogu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5951
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5969
 msgid "Error subscribing to folder"
 msgstr "Błąd podczas subskrybowania katalogu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5987
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6005
 msgid "Error unsubscribing from folder"
 msgstr "Błąd podczas usuwania subskrypcji katalogu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6027
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
 msgid "IMAP server does not support quotas"
 msgstr "Serwer IMAP nie obsługuje przydziałów"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6039
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6057
 msgid "Error retrieving quota information"
 msgstr "Błąd podczas pobierania informacji o przydziale"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6086
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6104
 msgid "Search failed"
 msgstr "Wyszukiwanie się nie powiodło"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6204
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6222
 msgid "Error running IDLE"
 msgstr "Błąd podczas wykonywania IDLE"
 
@@ -3623,7 +3641,7 @@ msgstr "Nie podano żadnego obiektu połączenia IMAPx"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:888
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:92
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:78
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Hasło"
 
@@ -4011,24 +4029,24 @@ msgstr "to nie katalog z wiadomościami w formacie maildir"
 msgid "Could not scan folder “%s”: %s"
 msgstr "Nie można przeszukać katalogu „%s”: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:445
-#: ../src/camel/providers/local/camel-maildir-summary.c:586
+#: ../src/camel/providers/local/camel-maildir-summary.c:448
+#: ../src/camel/providers/local/camel-maildir-summary.c:589
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Nie można otworzyć katalogu z wiadomościami ze ścieżki: %s: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:577
+#: ../src/camel/providers/local/camel-maildir-summary.c:580
 msgid "Checking folder consistency"
 msgstr "Sprawdzanie spójności katalogu"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:676
+#: ../src/camel/providers/local/camel-maildir-summary.c:679
 msgid "Checking for new messages"
 msgstr "Wyszukiwanie nowych wiadomości"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:779
-#: ../src/camel/providers/local/camel-mbox-summary.c:364
-#: ../src/camel/providers/local/camel-mbox-summary.c:582
-#: ../src/camel/providers/local/camel-mbox-summary.c:736
+#: ../src/camel/providers/local/camel-maildir-summary.c:782
+#: ../src/camel/providers/local/camel-mbox-summary.c:367
+#: ../src/camel/providers/local/camel-mbox-summary.c:585
+#: ../src/camel/providers/local/camel-mbox-summary.c:739
 #: ../src/camel/providers/local/camel-spool-summary.c:141
 msgid "Storing folder"
 msgstr "Zapisywanie katalogu"
@@ -4115,53 +4133,53 @@ msgstr "Nowa nazwa katalogu jest niedozwolona."
 msgid "Could not rename “%s”: “%s”: %s"
 msgstr "Nie można zmienić nazwy „%s”: „%s”: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:374
+#: ../src/camel/providers/local/camel-mbox-summary.c:377
 #, c-format
 msgid "Could not open folder: %s: %s"
 msgstr "Nie można otworzyć katalogu: %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:506
+#: ../src/camel/providers/local/camel-mbox-summary.c:509
 #, c-format
 msgid "Cannot check folder: %s: %s"
 msgstr "Nie można sprawdzić katalogu: %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:591
-#: ../src/camel/providers/local/camel-mbox-summary.c:745
+#: ../src/camel/providers/local/camel-mbox-summary.c:594
+#: ../src/camel/providers/local/camel-mbox-summary.c:748
 #: ../src/camel/providers/local/camel-spool-summary.c:148
 #, c-format
 msgid "Could not open file: %s: %s"
 msgstr "Nie można otworzyć pliku: %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:610
+#: ../src/camel/providers/local/camel-mbox-summary.c:613
 #: ../src/camel/providers/local/camel-spool-summary.c:163
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
 msgstr "Nie można otworzyć tymczasowej skrzynki: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:627
-#: ../src/camel/providers/local/camel-mbox-summary.c:867
+#: ../src/camel/providers/local/camel-mbox-summary.c:630
+#: ../src/camel/providers/local/camel-mbox-summary.c:870
 #, c-format
 msgid "Could not close source folder %s: %s"
 msgstr "Nie można zamknąć katalogu źródłowego %s: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:640
+#: ../src/camel/providers/local/camel-mbox-summary.c:643
 #, c-format
 msgid "Could not close temporary folder: %s"
 msgstr "Nie można zamknąć katalogu tymczasowego: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:659
+#: ../src/camel/providers/local/camel-mbox-summary.c:662
 #, c-format
 msgid "Could not rename folder: %s"
 msgstr "Nie można zmienić nazwy katalogu: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:759
-#: ../src/camel/providers/local/camel-mbox-summary.c:1030
+#: ../src/camel/providers/local/camel-mbox-summary.c:762
+#: ../src/camel/providers/local/camel-mbox-summary.c:1033
 #, c-format
 msgid "Could not store folder: %s"
 msgstr "Nie można zapisać katalogu: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:800
-#: ../src/camel/providers/local/camel-mbox-summary.c:1073
+#: ../src/camel/providers/local/camel-mbox-summary.c:803
+#: ../src/camel/providers/local/camel-mbox-summary.c:1076
 #, c-format
 msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
@@ -4170,25 +4188,25 @@ msgstr ""
 "Plik MBOX jest uszkodzony, proszę go naprawić (oczekiwano wiersza Od:, ale "
 "go nie otrzymano)."
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:810
-#: ../src/camel/providers/local/camel-mbox-summary.c:1085
+#: ../src/camel/providers/local/camel-mbox-summary.c:813
+#: ../src/camel/providers/local/camel-mbox-summary.c:1088
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
 msgstr "Niezgodność katalogu z zestawieniem, nawet po synchronizacji"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:977
+#: ../src/camel/providers/local/camel-mbox-summary.c:980
 #: ../src/camel/providers/local/camel-spool-summary.c:358
 #, c-format
 msgid "Unknown error: %s"
 msgstr "Nieznany błąd: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1146
-#: ../src/camel/providers/local/camel-mbox-summary.c:1176
+#: ../src/camel/providers/local/camel-mbox-summary.c:1149
+#: ../src/camel/providers/local/camel-mbox-summary.c:1179
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
 msgstr "Zapisanie do tymczasowej skrzynki się nie powiodło: %s"
 
-#: ../src/camel/providers/local/camel-mbox-summary.c:1165
+#: ../src/camel/providers/local/camel-mbox-summary.c:1168
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Zapisanie do tymczasowej skrzynki się nie powiodło: %s: %s"
@@ -4208,7 +4226,7 @@ msgstr "Nie można utworzyć katalogu „%s”: %s"
 msgid "Cannot get folder “%s”: not a directory."
 msgstr "Nie można pobrać katalogu „%s”: nie jest katalogiem."
 
-#: ../src/camel/providers/local/camel-mh-summary.c:235
+#: ../src/camel/providers/local/camel-mh-summary.c:238
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
 msgstr "Nie można otworzyć ścieżki katalogu MH: %s: %s"
@@ -4563,30 +4581,36 @@ msgid "_Delete after %s day(s)"
 msgstr "_Usuwanie po %s dniach"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:42
+msgid "Hint: Use 0 days to keep messages on the server indefinitely."
+msgstr ""
+"Wskazówka: wpisanie 0 dni spowoduje pozostawianie wiadomości na serwerze "
+"bezterminowo."
+
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:44
 msgid "Delete _expunged from local Inbox"
 msgstr "Usuń _oczyszczone z lokalnej skrzynki odbiorczej"
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:44
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable _support for all POP3 extensions"
 msgstr "_Bez obsługi jakichkolwiek rozszerzeń POP3"
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:50
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:52
 msgid "Default POP3 port"
 msgstr "Domyślny port POP3"
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:51
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:53
 msgid "POP3 over TLS"
 msgstr "POP3 przez TLS"
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:58
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:60
 msgid "POP"
 msgstr "POP"
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:60
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:62
 msgid "For connecting to and downloading mail from POP servers."
 msgstr "Łączenie się i pobieranie poczty z serwerów POP."
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:80
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:82
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
@@ -4594,7 +4618,7 @@ msgstr ""
 "Przy tej opcji uwierzytelnianie na serwerze POP nastąpi za pomocą hasła "
 "w postaci czystego tekstu. Wiele serwerów POP obsługuje tylko tę opcję."
 
-#: ../src/camel/providers/pop3/camel-pop3-provider.c:90
+#: ../src/camel/providers/pop3/camel-pop3-provider.c:92
 msgid ""
 "This option will connect to the POP server using an encrypted password via "
 "the APOP protocol. This may not work for all users even on servers that "
@@ -5090,6 +5114,38 @@ msgstr ""
 "GNetworkMonitor w tle. Specjalna wartość „always-online” jest używana, aby "
 "wyłączyć monitorowanie sieci."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
+msgid ""
+"A full path to a directory where .source files with preconfigured options "
+"can be stored"
+msgstr ""
+"Pełna ścieżka do katalogu z plikami .source zawierającymi wcześniej "
+"skonfigurowane opcje"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
+msgid ""
+"This directory, if filled with an existing path, is checked additionally to "
+"XDG configure directories."
+msgstr ""
+"Ten katalog, jeśli istnieje, jest przeszukiwany dodatkowo do katalogów "
+"konfiguracji XDG."
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
+msgid "A list of variables which can be part of the autoconfig .source files"
+msgstr ""
+"Lista zmiennych mogących być częścią plików .source automatycznej "
+"konfiguracji"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
+msgid ""
+"Each item of the array is expected to be of the form: name=value. These "
+"variables are checked before environment variables, but after the predefined "
+"USER, REALNAME and HOST variables."
+msgstr ""
+"Każdy element macierzy musi mieć formę „nazwa=wartość”. Te zmienne są "
+"sprawdzane przed zmiennymi środowiskowymi, ale po wcześniej określonych "
+"zmiennych „USER”, „REALNAME” i „HOST”."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Przestarzałe) typ używanego pośrednika"
@@ -5179,7 +5235,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Wyszukanie danych uwierzytelniających się nie powiodło: "
 
 #: ../src/libebackend/e-server-side-source.c:1392
-#: ../src/libedataserver/e-source.c:1598
+#: ../src/libedataserver/e-source.c:1599
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Źródło danych „%s” nie obsługuje tworzenia zdalnych zasobów"
@@ -5192,7 +5248,7 @@ msgstr ""
 "Źródło danych „%s” nie ma mechanizmu kolekcji do tworzenia zdalnych zasobów"
 
 #: ../src/libebackend/e-server-side-source.c:1434
-#: ../src/libedataserver/e-source.c:1711
+#: ../src/libedataserver/e-source.c:1712
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Źródło danych „%s” nie obsługuje usuwania zdalnych zasobów"
@@ -5205,7 +5261,7 @@ msgstr ""
 "Źródło danych „%s” nie ma mechanizmu kolekcji do usuwania zdalnych zasobów"
 
 #: ../src/libebackend/e-server-side-source.c:1479
-#: ../src/libedataserver/e-source.c:1807
+#: ../src/libedataserver/e-source.c:1808
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5377,22 +5433,22 @@ msgstr "Błąd usługi D-Bus"
 msgid "Timeout was reached"
 msgstr "Przekroczono czas oczekiwania"
 
-#: ../src/libedataserver/e-source.c:774
+#: ../src/libedataserver/e-source.c:775
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "Brak grupy [%s] w pliku źródła"
 
-#: ../src/libedataserver/e-source.c:1378
+#: ../src/libedataserver/e-source.c:1379
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Źródło danych „%s” nie jest usuwalne"
 
-#: ../src/libedataserver/e-source.c:1501
+#: ../src/libedataserver/e-source.c:1502
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Źródło danych „%s” nie jest zapisywalne"
 
-#: ../src/libedataserver/e-source.c:2197
+#: ../src/libedataserver/e-source.c:2198
 msgid "Unnamed"
 msgstr "Bez nazwy"
 
@@ -5606,27 +5662,28 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-discover.c:482
-#: ../src/libedataserver/e-webdav-discover.c:491
+#: ../src/libedataserver/e-webdav-discover.c:447
+#: ../src/libedataserver/e-webdav-discover.c:486
+#: ../src/libedataserver/e-webdav-discover.c:495
 #, c-format
 msgid "HTTP Error: %s"
 msgstr "Błąd HTTP: %s"
 
-#: ../src/libedataserver/e-webdav-discover.c:521
+#: ../src/libedataserver/e-webdav-discover.c:525
 msgid "Could not parse response"
 msgstr "Nie można przetworzyć odpowiedzi"
 
-#: ../src/libedataserver/e-webdav-discover.c:530
+#: ../src/libedataserver/e-webdav-discover.c:534
 msgid "Empty response"
 msgstr "Pusta odpowiedź"
 
-#: ../src/libedataserver/e-webdav-discover.c:538
+#: ../src/libedataserver/e-webdav-discover.c:542
 msgid "Unexpected reply from server"
 msgstr "Nieoczekiwana odpowiedź od serwera"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
-#: ../src/libedataserverui/e-credentials-prompter.c:1571
-#: ../src/libedataserverui/e-credentials-prompter.c:1615
+#: ../src/libedataserverui/e-credentials-prompter.c:1576
+#: ../src/libedataserverui/e-credentials-prompter.c:1620
 msgid "Credentials prompt was cancelled"
 msgstr "Anulowano zapytanie o dane uwierzytelniające"
 
@@ -5736,7 +5793,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:689
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1061
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1063
 msgid "_Cancel"
 msgstr "_Anuluj"
 
@@ -5793,7 +5850,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Proszę podać hasło dla konta „%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1062
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1064
 msgid "_OK"
 msgstr "_OK"
 
@@ -5911,19 +5968,19 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Zadania"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:823
+#: ../src/libedataserverui/e-webdav-discover-widget.c:825
 msgid "Invalid URL"
 msgstr "Nieprawidłowy adres URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:837
+#: ../src/libedataserverui/e-webdav-discover-widget.c:839
 msgid "User name not filled"
 msgstr "Nie wypełniono nazwy użytkownika"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:878
+#: ../src/libedataserverui/e-webdav-discover-widget.c:880
 msgid "Cancel"
 msgstr "Anuluj"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:881
+#: ../src/libedataserverui/e-webdav-discover-widget.c:883
 msgid "Searching server sources..."
 msgstr "Wyszukiwanie źródeł serwera…"
 
@@ -5979,7 +6036,7 @@ msgstr ""
 "Odnalezienie ASUrl i OABUrl w odpowiedzi automatycznego wykrywania się nie "
 "powiodło"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1249
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1340
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5988,17 +6045,17 @@ msgstr ""
 "Nie można odnaleźć odpowiedniego konta w usłudze org.gnome.OnlineAccounts, "
 "z której ma zostać uzyskany token dostępu dla „%s”"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1279
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1370
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Uzyskanie tokenu dostępu dla „%s” się nie powiodło: "
 
-#: ../src/modules/google-backend/module-google-backend.c:603
+#: ../src/modules/google-backend/module-google-backend.c:605
 #: ../src/modules/yahoo-backend/module-yahoo-backend.c:227
 msgid "Tasks"
 msgstr "Zadania"
 
-#: ../src/modules/google-backend/module-google-backend.c:660
+#: ../src/modules/google-backend/module-google-backend.c:662
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
