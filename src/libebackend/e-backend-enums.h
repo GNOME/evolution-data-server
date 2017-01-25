@@ -82,4 +82,47 @@ typedef enum { /*< flags >*/
 	E_SOURCE_PERMISSION_REMOVABLE = 1 << 1
 } ESourcePermissionFlags;
 
+/**
+ * EOfflineState:
+ * @E_OFFLINE_STATE_UNKNOWN: Unknown offline state.
+ * @E_OFFLINE_STATE_SYNCED: The object if synchnized with no local changes.
+ * @E_OFFLINE_STATE_LOCALLY_CREATED: The object is locally created.
+ * @E_OFFLINE_STATE_LOCALLY_MODIFIED: The object is locally modified.
+ * @E_OFFLINE_STATE_LOCALLY_DELETED: The object is locally deleted.
+ *
+ * Defines offline state of an object. Locally changed objects require
+ * synchronization with their remote storage.
+ *
+ * Since: 3.26
+ **/
+typedef enum {
+	E_OFFLINE_STATE_UNKNOWN = -1,
+	E_OFFLINE_STATE_SYNCED,
+	E_OFFLINE_STATE_LOCALLY_CREATED,
+	E_OFFLINE_STATE_LOCALLY_MODIFIED,
+	E_OFFLINE_STATE_LOCALLY_DELETED
+} EOfflineState;
+
+/**
+ * EConflictResolution:
+ * @E_CONFLICT_RESOLUTION_FAIL: Fail when a write-conflict occurs.
+ * @E_CONFLICT_RESOLUTION_USE_NEWER: Use newer version of the object,
+ *    which can be either the server version or the local version of it.
+ * @E_CONFLICT_RESOLUTION_KEEP_SERVER: Keep server object on conflict.
+ * @E_CONFLICT_RESOLUTION_KEEP_LOCAL: Write local version of the object on conflict.
+ * @E_CONFLICT_RESOLUTION_WRITE_COPY: Create a new copy of the object on conflict.
+ *
+ * Defines what to do when a conflict between the locally stored and
+ * remotely stored object versions happen during object modify or remove.
+ *
+ * Since: 3.26
+ **/
+typedef enum {
+	E_CONFLICT_RESOLUTION_FAIL = 0,
+	E_CONFLICT_RESOLUTION_USE_NEWER,
+	E_CONFLICT_RESOLUTION_KEEP_SERVER,
+	E_CONFLICT_RESOLUTION_KEEP_LOCAL,
+	E_CONFLICT_RESOLUTION_WRITE_COPY
+} EConflictResolution;
+
 #endif /* E_BACKEND_ENUMS_H */

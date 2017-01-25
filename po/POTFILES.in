@@ -176,6 +176,7 @@ data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 data/org.gnome.evolution-data-server.gschema.xml.in
 data/org.gnome.evolution.shell.network-config.gschema.xml.in
 src/libebackend/e-backend.c
+src/libebackend/e-cache.c
 src/libebackend/e-collection-backend.c
 src/libebackend/e-data-factory.c
 src/libebackend/e-server-side-source.c
