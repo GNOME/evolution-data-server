@@ -444,8 +444,12 @@ camel_search_header_match (const gchar *value,
 	const guchar *ptr;
 	gint truth = FALSE, i;
 	CamelInternetAddress *cia;
-	gchar *v, *vdom, *mdom;
+	gchar *v, *vdom, *mdom, *unfolded;
 	gunichar c;
+
+	unfolded = camel_header_unfold (value);
+	if (unfolded)
+		value = unfolded;
 
 	ptr = (const guchar *) value;
 	while ((c = camel_utf8_getc (&ptr)) && g_unichar_isspace (c))
@@ -478,8 +482,10 @@ camel_search_header_match (const gchar *value,
 	case CAMEL_SEARCH_TYPE_ADDRESS_ENCODED:
 	case CAMEL_SEARCH_TYPE_ADDRESS:
 		/* Possible simple case to save some work if we can. */
-		if (header_match (value, match, how))
-			return TRUE;
+		if (header_match (value, match, how)) {
+			truth = TRUE;
+			break;
+		}
 
 		/* Now we decode any addresses, and try
 		 * as-is matches on name and address parts. */
@@ -497,6 +503,8 @@ camel_search_header_match (const gchar *value,
 		g_object_unref (cia);
 		break;
 	}
+
+	g_free (unfolded);
 
 	return truth;
 }
