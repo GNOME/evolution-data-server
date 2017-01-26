@@ -3470,10 +3470,10 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	vcal_string = g_string_new (NULL);
 	g_string_append (
 		vcal_string,
-		"BEGIN:VCALENDAR\n"
-		"PRODID:-//Ximian//NONSGML Evolution Calendar//EN\n"
-		"VERSION:2.0\n"
-		"METHOD:PUBLISH\n");
+		"BEGIN:VCALENDAR\r\n"
+		"PRODID:-//Ximian//NONSGML Evolution Calendar//EN\r\n"
+		"VERSION:2.0\r\n"
+		"METHOD:PUBLISH\r\n");
 
 	/* Now concatenate all the timezone strings. This also frees the
 	 * timezone strings as it goes. */
@@ -3485,7 +3485,7 @@ e_cal_client_get_component_as_string (ECalClient *client,
 	/* If there were any timezones to send, create a complete VCALENDAR,
 	 * else just send the VEVENT/VTODO string. */
 	g_string_append (vcal_string, obj_string);
-	g_string_append (vcal_string, "END:VCALENDAR\n");
+	g_string_append (vcal_string, "END:VCALENDAR\r\n");
 	g_free (obj_string);
 
 	obj_string = g_string_free (vcal_string, FALSE);
