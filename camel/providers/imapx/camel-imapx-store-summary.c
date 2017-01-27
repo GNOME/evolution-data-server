@@ -325,6 +325,8 @@ camel_imapx_store_summary_mailbox (CamelStoreSummary *summary,
 	return (CamelIMAPXStoreInfo *) match;
 }
 
+/* The returned CamelIMAPXStoreInfo is referenced, unref it with
+   camel_store_summary_info_unref() when no longer needed */
 CamelIMAPXStoreInfo *
 camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
                                             CamelIMAPXMailbox *mailbox)
@@ -341,11 +343,8 @@ camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
 	separator = camel_imapx_mailbox_get_separator (mailbox);
 
 	info = camel_imapx_store_summary_mailbox (summary, mailbox_name);
-	if (info != NULL) {
-		camel_store_summary_info_unref (
-			summary, (CamelStoreInfo *) info);
+	if (info != NULL)
 		return info;
-	}
 
 	folder_path = camel_imapx_mailbox_to_folder_path (
 		mailbox_name, separator);
@@ -356,6 +355,8 @@ camel_imapx_store_summary_add_from_mailbox (CamelStoreSummary *summary,
 	g_free (folder_path);
 
 	g_return_val_if_fail (info != NULL, NULL);
+
+	camel_store_summary_info_ref (summary, (CamelStoreInfo *) info);
 
 	info->mailbox_name = g_strdup (mailbox_name);
 	info->separator = separator;
