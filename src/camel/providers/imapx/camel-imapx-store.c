@@ -503,6 +503,8 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 	folder_path = camel_imapx_mailbox_to_folder_path (mailbox_name, separator);
 	fi = imapx_store_build_folder_info (store, folder_path, (CamelFolderInfoFlags) flags);
 
+	camel_store_summary_info_unref (store->summary, (CamelStoreInfo *) si);
+
 	/* Figure out which signals to emit, if any. */
 	if (use_subscriptions || camel_imapx_namespace_get_category (camel_imapx_mailbox_get_namespace (mailbox)) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
 		/* If we are honoring folder subscriptions, then
@@ -1258,6 +1260,8 @@ collect_folder_info_for_list (CamelIMAPXStore *imapx_store,
 
 	/* Takes ownership of the CamelFolderInfo. */
 	g_hash_table_insert (folder_info_results, g_strdup (mailbox_name), fi);
+
+	camel_store_summary_info_unref (imapx_store->summary, (CamelStoreInfo *) si);
 }
 
 static gboolean
