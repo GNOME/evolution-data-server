@@ -996,7 +996,7 @@ remove_matching_ref_backtrace (GQueue *backtraces,
 			BacktraceLine *btline = bt->lines->next->data;
 
 			if (g_strcmp0 ("g_weak_ref_get()", btline->function) == 0)
-				inc_up_lines = 1;
+				inc_up_lines = 2;
 		}
 
 		if (backtrace_matches_ref (bt, unref_backtrace, up_lines + inc_up_lines)) {

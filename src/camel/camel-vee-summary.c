@@ -293,9 +293,9 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (summary), vuid);
 
 	if (mi) {
-		/* under twice, the first for camel_folder_summary_peek_loaded(),
+		/* unref twice, the first for camel_folder_summary_peek_loaded(),
 		 * the second to actually free the mi */
-		g_clear_object (&mi);
+		g_object_unref (mi);
 		g_clear_object (&mi);
 	}
 
