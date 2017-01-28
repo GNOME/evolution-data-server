@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-01-17 21:25+0100\n"
+"PO-Revision-Date: 2017-01-28 17:01+0100\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -1424,7 +1424,7 @@ msgstr "Indreçât suntun URI no valit"
 #: ../src/calendar/backends/http/e-cal-backend-http.c:642
 #, c-format
 msgid "Bad file format."
-msgstr ""
+msgstr "Formât di file sbaliât."
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:652
 #, c-format
@@ -1506,12 +1506,12 @@ msgstr "Prevision"
 
 #: ../src/calendar/libecal/e-cal.c:2304
 msgid "Repository is offline"
-msgstr ""
+msgstr "Il repository al è fûr rêt"
 
 #: ../src/calendar/libecal/e-cal.c:2306
 #: ../src/calendar/libecal/e-cal-client.c:264
 msgid "No such calendar"
-msgstr ""
+msgstr "Calendari inesistent"
 
 #: ../src/calendar/libecal/e-cal.c:2308
 #: ../src/calendar/libecal/e-cal-client.c:266
@@ -1571,7 +1571,7 @@ msgstr "E je capitade une ecezion D-Bus"
 
 #: ../src/calendar/libecal/e-cal.c:2336
 msgid "No error"
-msgstr ""
+msgstr "Nissun erôr"
 
 #: ../src/calendar/libecal/e-cal-client.c:270
 #: ../src/calendar/libedata-cal/e-data-cal.c:425
@@ -1581,7 +1581,7 @@ msgstr "Utent no cognossût"
 #: ../src/calendar/libecal/e-cal-client.c:274
 #: ../src/calendar/libedata-cal/e-data-cal.c:414
 msgid "Invalid range"
-msgstr ""
+msgstr "Interval no valit"
 
 #: ../src/calendar/libecal/e-cal-client.c:1063
 #, c-format
@@ -1872,140 +1872,140 @@ msgstr "Impussibil inzornâ il calendari: "
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1735
 msgid "Cannot retrieve calendar object path: "
-msgstr ""
+msgstr "Impussibil recuperâ il percors dal ogjet di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1788
 msgid "Cannot retrieve calendar object list: "
-msgstr ""
+msgstr "Impussibil recuperâ la liste dal ogjet di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1846
 msgid "Cannot retrieve calendar free/busy list: "
-msgstr ""
+msgstr "Impussibil recuperâ la liste libar/impegnât di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1897
 msgid "Cannot create calendar object: "
-msgstr ""
+msgstr "Impussibil creâ l'ogjet di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1966
 msgid "Cannot modify calendar object: "
-msgstr ""
+msgstr "Impussibil modificâ l'ogjet di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2045
 msgid "Cannot remove calendar object: "
-msgstr ""
+msgstr "Impussibil gjavâ l'ogjet di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2132
 msgid "Cannot receive calendar objects: "
-msgstr ""
+msgstr "Impussibil ricevi i ogjets di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2176
 msgid "Cannot send calendar objects: "
-msgstr ""
+msgstr "Impussibil inviâ i ogjets di calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2229
 msgid "Could not retrieve attachment uris: "
-msgstr ""
+msgstr "Impussibil otignî i URI des zontis: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2275
 msgid "Could not discard reminder: "
-msgstr ""
+msgstr "Impussibil scartâ il promemorie: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2317
 msgid "Could not retrieve calendar time zone: "
-msgstr ""
+msgstr "Impussibil otignî il fûs orari dal calendari: "
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2358
 msgid "Could not add calendar time zone: "
-msgstr ""
+msgstr "Impussibil zontâ il fûs orari dal calendari: "
 
 #: ../src/camel/camel-cipher-context.c:202
 #, c-format
 msgid "Signing is not supported by this cipher"
-msgstr ""
+msgstr "Chest cifrari nol supuarte la firme"
 
 #: ../src/camel/camel-cipher-context.c:215
 #, c-format
 msgid "Verifying is not supported by this cipher"
-msgstr ""
+msgstr "Chest cifrari nol supuarte la verifiche"
 
 #: ../src/camel/camel-cipher-context.c:231
 #, c-format
 msgid "Encryption is not supported by this cipher"
-msgstr ""
+msgstr "Chest cifrari nol supuarte la cifradure"
 
 #: ../src/camel/camel-cipher-context.c:245
 #, c-format
 msgid "Decryption is not supported by this cipher"
-msgstr ""
+msgstr "Chest cifrari nol supuarte la decifradure"
 
 #: ../src/camel/camel-cipher-context.c:361
 msgid "Signing message"
-msgstr ""
+msgstr "Messaç di firme"
 
 #: ../src/camel/camel-cipher-context.c:651
 msgid "Encrypting message"
-msgstr ""
+msgstr "Messaç di cifradure"
 
 #: ../src/camel/camel-cipher-context.c:823
 msgid "Decrypting message"
-msgstr ""
+msgstr "Messaç di decifradure"
 
 #: ../src/camel/camel-data-cache.c:177
 #, c-format
 msgid "Unable to create cache path"
-msgstr ""
+msgstr "Impussibil creâ il percors pe cache"
 
 #: ../src/camel/camel-data-cache.c:455
 msgid "Empty cache file"
-msgstr ""
+msgstr "File di cache vueit"
 
 #: ../src/camel/camel-data-cache.c:532
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
-msgstr ""
+msgstr "Impussibil gjavâ la vôs cache: %s: %s"
 
 #: ../src/camel/camel-db.c:855
 #: ../src/camel/providers/local/camel-mbox-store.c:904
 #, c-format
 msgid "Could not rename “%s” to %s: %s"
-msgstr ""
+msgstr "Impussibil cambiâ non a “%s” in %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:990
 #: ../src/camel/camel-filter-search.c:779
 #, c-format
 msgid "Failed to create child process “%s”: %s"
-msgstr ""
+msgstr "No si è rivâts a creâ il procès fi “%s”: %s"
 
 #: ../src/camel/camel-filter-driver.c:1038
 #, c-format
 msgid "Invalid message stream received from %s: %s"
-msgstr ""
+msgstr "Flus di messaçs no valit ricevût di %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:1245
 #: ../src/camel/camel-filter-driver.c:1254
 msgid "Syncing folders"
-msgstr ""
+msgstr "Sincronizazion cartelis"
 
 #: ../src/camel/camel-filter-driver.c:1352
 #, c-format
 msgid "Error parsing filter: %s: %s"
-msgstr ""
+msgstr "Erôr tal analizâ il filtri: %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:1363
 #, c-format
 msgid "Error executing filter: %s: %s"
-msgstr ""
+msgstr "Erôr tal eseguî il filtri: %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:1460
 #, c-format
@@ -2020,71 +2020,71 @@ msgstr ""
 #: ../src/camel/camel-filter-driver.c:1496
 #, c-format
 msgid "Getting message %d (%d%%)"
-msgstr ""
+msgstr "Ricezion dal messaç %d (%d%%)"
 
 #: ../src/camel/camel-filter-driver.c:1505
 #: ../src/camel/camel-filter-driver.c:1528
 #, c-format
 msgid "Failed on message %d"
-msgstr ""
+msgstr "Falît al messaç %d"
 
 #: ../src/camel/camel-filter-driver.c:1547
 #: ../src/camel/camel-filter-driver.c:1661
 msgid "Syncing folder"
-msgstr ""
+msgstr "Sincronizazion cartele"
 
 #: ../src/camel/camel-filter-driver.c:1552
 #: ../src/camel/camel-filter-driver.c:1669
 msgid "Complete"
-msgstr ""
+msgstr "Completât"
 
 #: ../src/camel/camel-filter-driver.c:1615
 #, c-format
 msgid "Getting message %d of %d"
-msgstr ""
+msgstr "Ricezion dal messaç %d di %d"
 
 #: ../src/camel/camel-filter-driver.c:1633
 #, c-format
 msgid "Failed at message %d of %d"
-msgstr ""
+msgstr "Falît al messaç %d di %d"
 
 #: ../src/camel/camel-filter-driver.c:1828
 #: ../src/camel/camel-filter-driver.c:1855
 #, c-format
 msgid "Execution of filter “%s” failed: "
-msgstr ""
+msgstr "Esecuzion dal filtri “%s” falide: "
 
 #: ../src/camel/camel-filter-driver.c:1845
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
-msgstr ""
+msgstr "Erôr tal analizâ il filtri “%s”: %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:1864
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
-msgstr ""
+msgstr "Erôr tal eseguî il filtri “%s”: %s: %s"
 
 #: ../src/camel/camel-filter-search.c:137
 msgid "Failed to retrieve message"
-msgstr ""
+msgstr "No si è rivâts a recuperâ il messaç"
 
 #: ../src/camel/camel-filter-search.c:519
 msgid "Invalid arguments to (system-flag)"
-msgstr ""
+msgstr "Argoments no valits par (system-flag)"
 
 #: ../src/camel/camel-filter-search.c:537
 msgid "Invalid arguments to (user-tag)"
-msgstr ""
+msgstr "Argoments no valits par (user-tag)"
 
 #: ../src/camel/camel-filter-search.c:1066
 msgid "Invalid arguments to (message-location)"
-msgstr ""
+msgstr "Argoments no valits par (message-location)"
 
 #: ../src/camel/camel-filter-search.c:1147
 #: ../src/camel/camel-filter-search.c:1158
 #, c-format
 msgid "Error executing filter search: %s: %s"
-msgstr ""
+msgstr "Erôr tal eseguî la ricercje tai filtris: %s: %s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2093,8 +2093,8 @@ msgstr ""
 #, c-format
 msgid "Learning new spam message in “%s : %s”"
 msgid_plural "Learning new spam messages in “%s : %s”"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Daûr a imparâ un gnûf messaç di spam in “%s : %s”"
+msgstr[1] "Daûr a imparâ i gnûfs messaçs di spam in “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2103,8 +2103,8 @@ msgstr[1] ""
 #, c-format
 msgid "Learning new ham message in “%s : %s”"
 msgid_plural "Learning new ham messages in “%s : %s”"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Daûr a imparâ un gnûf messaç autentic in “%s : %s”"
+msgstr[1] "Daûr a imparâ i gnûfs messaçs autentics in “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2113,17 +2113,17 @@ msgstr[1] ""
 #, c-format
 msgid "Filtering new message in “%s : %s”"
 msgid_plural "Filtering new messages in “%s : %s”"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Daûr a filtrâ un gnûf messaç in “%s : %s”"
+msgstr[1] "Daûr a filtrâ i gnûfs messaçs in “%s : %s”"
 
 #: ../src/camel/camel-folder.c:1016
 #: ../src/camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
-msgstr ""
+msgstr "Daûr a spostâ messaçs"
 
 #: ../src/camel/camel-folder.c:1019
 msgid "Copying messages"
-msgstr ""
+msgstr "Daûr a copiâ messaçs"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
