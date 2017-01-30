@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-01-28 17:01+0100\n"
+"PO-Revision-Date: 2017-01-30 13:50+0100\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -1145,7 +1145,7 @@ msgstr "Backend impegnât"
 #: ../src/calendar/libedata-cal/e-data-cal.c:412
 #: ../src/libedataserver/e-client.c:152
 msgid "Repository offline"
-msgstr ""
+msgstr "Repository fûr rêt"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:381
 #: ../src/calendar/libecal/e-cal.c:2316
@@ -1192,7 +1192,7 @@ msgstr "Rubriche gjavade"
 #: ../src/addressbook/libedata-book/e-data-book.c:391
 #: ../src/calendar/libedata-cal/e-data-cal.c:426
 msgid "Not available in offline mode"
-msgstr ""
+msgstr "No disponibil in modalitât fûr rêt"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:392
 #: ../src/calendar/libedata-cal/e-data-cal.c:427
@@ -1828,6 +1828,8 @@ msgid ""
 "“description”, or “location”, or “attendee”, or “organizer”, or "
 "“classification”"
 msgstr ""
+"“%s” si spiete che il prin argoment al sedi un tra ”any”, “summary”, "
+"“description”, “location”, “attendee”, “organizer” o “classification”"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:883
 #, c-format
@@ -1840,16 +1842,19 @@ msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
 "a boolean false (#f)"
 msgstr ""
+"“%s” si spiete che ducj i argoments a sedin stringhis o che un e dome un "
+"argoment al sedi un boolean fals (#f)"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1401
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
+"“%s” si spiete che il prin argoment al sedi une stringhe date/ore ISO 8601"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1462
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
-msgstr ""
+msgstr "“%s” si spiete che il secont argoment al sedi un intîr"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
@@ -2131,7 +2136,7 @@ msgstr "Daûr a copiâ messaçs"
 #: ../src/camel/camel-folder.c:1064
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
-msgstr ""
+msgstr "Informazion su la cuote no supuartade pe cartele “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2139,7 +2144,7 @@ msgstr ""
 #: ../src/camel/camel-folder.c:1166
 #, c-format
 msgid "Filtering folder “%s : %s”"
-msgstr ""
+msgstr "Filtrament cartele “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2147,7 +2152,7 @@ msgstr ""
 #: ../src/camel/camel-folder.c:2971
 #, c-format
 msgid "Expunging folder “%s : %s”"
-msgstr ""
+msgstr "Netisie cartele “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2155,7 +2160,7 @@ msgstr ""
 #: ../src/camel/camel-folder.c:3105
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
-msgstr ""
+msgstr "Daûr a recuperâ il messaç “%s” in “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2163,7 +2168,7 @@ msgstr ""
 #: ../src/camel/camel-folder.c:3298
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
-msgstr ""
+msgstr "Daûr a recuperâ informazions su la cuote par “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2171,39 +2176,39 @@ msgstr ""
 #: ../src/camel/camel-folder.c:3596
 #, c-format
 msgid "Refreshing folder “%s : %s”"
-msgstr ""
+msgstr "Inzornament cartele “%s : %s”"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:879
 #: ../src/camel/camel-folder-search.c:921
 #, c-format
 msgid "(%s) requires a single bool result"
-msgstr ""
+msgstr "(%s) al à bisugne di un singul risultât boolean"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:956
 #, c-format
 msgid "(%s) not allowed inside %s"
-msgstr ""
+msgstr "(%s) no permetût dentri %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:963
 #: ../src/camel/camel-folder-search.c:971
 #, c-format
 msgid "(%s) requires a match type string"
-msgstr ""
+msgstr "(%s) al à bisugne di une stringhe di coincidence"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:999
 #, c-format
 msgid "(%s) expects an array result"
-msgstr ""
+msgstr "(%s) si spiete un risultât array"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:1009
 #, c-format
 msgid "(%s) requires the folder set"
-msgstr ""
+msgstr "(%s) i covente che la cartele e sedi stabilide"
 
 #: ../src/camel/camel-folder-search.c:2049
 #: ../src/camel/camel-folder-search.c:2223
@@ -2212,6 +2217,8 @@ msgid ""
 "Cannot parse search expression: %s:\n"
 "%s"
 msgstr ""
+"Impussibil analizâ la espression di ricercje: %s:\n"
+"%s"
 
 #: ../src/camel/camel-folder-search.c:2061
 #: ../src/camel/camel-folder-search.c:2235
@@ -2220,6 +2227,8 @@ msgid ""
 "Error executing search expression: %s:\n"
 "%s"
 msgstr ""
+"Erôr tal eseguî la espression di ricercje: %s:\n"
+"%s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2227,7 +2236,7 @@ msgstr ""
 #: ../src/camel/camel-folder-summary.c:1612
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
-msgstr ""
+msgstr "Liberâ memorie no doprade pe cartele “%s : %s”"
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: ../src/camel/camel-gpg-context.c:417
@@ -2239,12 +2248,12 @@ msgstr ""
 #: ../src/camel/camel-gpg-context.c:1543
 #, c-format
 msgid "Failed to execute gpg: %s"
-msgstr ""
+msgstr "No si è rivâts a eseguî gpg: %s"
 
 #: ../src/camel/camel-gpg-context.c:839
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1129
 msgid "Unknown"
-msgstr ""
+msgstr "No cognossût"
 
 #: ../src/camel/camel-gpg-context.c:951
 #, c-format
@@ -2253,6 +2262,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Incontrât messaç di stât di GnuPG inspietât:\n"
+"\n"
+"%s"
 
 #: ../src/camel/camel-gpg-context.c:987
 #, c-format
@@ -2262,7 +2274,7 @@ msgstr ""
 #: ../src/camel/camel-gpg-context.c:1012 ../src/camel/camel-gpg-context.c:1027
 #, c-format
 msgid "Failed to parse gpg passphrase request."
-msgstr ""
+msgstr "No si è rivâts a analizâ la domande di passphrase di gpg."
 
 #: ../src/camel/camel-gpg-context.c:1048
 #, c-format
@@ -2270,6 +2282,8 @@ msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: “%s”"
 msgstr ""
+"Al covente un PIN par sblocâ la clâf pe tô\n"
+"SmartCard: “%s”"
 
 #: ../src/camel/camel-gpg-context.c:1052
 #, c-format
@@ -2277,39 +2291,44 @@ msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: “%s”"
 msgstr ""
+"E covente une passphrase par sblocâ la clâf pal\n"
+"utent: “%s”"
 
 #: ../src/camel/camel-gpg-context.c:1058
 #, c-format
 msgid "Unexpected request from GnuPG for “%s”"
-msgstr ""
+msgstr "Domande inspietade di GnuPG par “%s”"
 
 #: ../src/camel/camel-gpg-context.c:1070
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
 msgstr ""
+"Viôt che il contignût cifrât nol ten informazions suntun destinatari, duncje "
+"e vignarà domandade une password par ogni clâf privade memorizade."
 
 #: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:398
 #: ../src/libedataserver/e-client.c:161
 #, c-format
 msgid "Cancelled"
-msgstr ""
+msgstr "Anulât"
 
 #: ../src/camel/camel-gpg-context.c:1122
 #, c-format
 msgid "Failed to unlock secret key: 3 bad passphrases given."
 msgstr ""
+"No si è rivâts a sblocâ la clâf segrete: furnidis 3 passphrase sbaliadis."
 
 #: ../src/camel/camel-gpg-context.c:1135
 #, c-format
 msgid "Unexpected response from GnuPG: %s"
-msgstr ""
+msgstr "Rispueste inspietade di GnuPG: %s"
 
 #: ../src/camel/camel-gpg-context.c:1249
 #, c-format
 msgid "Failed to encrypt: No valid recipients specified."
-msgstr ""
+msgstr "No si è rivâts a cifrâ: Nissun destinatari valit specificât."
 
 #. Translators: The first '%s' is replaced with the e-mail address, like '<user@example.com>';
 #. the second '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
@@ -2319,15 +2338,18 @@ msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
 msgstr ""
+"No si è rivâts a cifrâ: il destinatari specificât %s nol è valit. Un "
+"probleme comun al è che %s nol à impuartât clâf publiche par chest "
+"destinatari."
 
 #: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
-msgstr ""
+msgstr "Impussibil gjenerâ i dâts de firme: "
 
 #: ../src/camel/camel-gpg-context.c:2023 ../src/camel/camel-gpg-context.c:2259
 #: ../src/camel/camel-gpg-context.c:2375 ../src/camel/camel-gpg-context.c:2551
 msgid "Failed to execute gpg."
-msgstr ""
+msgstr "No si è rivâts a eseguî gpg."
 
 #: ../src/camel/camel-gpg-context.c:2129 ../src/camel/camel-gpg-context.c:2137
 #: ../src/camel/camel-gpg-context.c:2145 ../src/camel/camel-gpg-context.c:2165
