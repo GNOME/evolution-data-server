@@ -4738,6 +4738,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		g_object_unref (folder);
 	}
 
+	camel_message_info_unref (info);
 	g_free (path);
 
 	return success;
