@@ -37,6 +37,8 @@ set(extra_ldflags
 set(SOURCES
 	data-test-utils.c
 	data-test-utils.h
+	test-cache-utils.c
+	test-cache-utils.h
 )
 
 add_library(data-test-utils STATIC
@@ -94,6 +96,16 @@ set(extra_defines)
 # This is because each migrated test changes the
 # locale and reloads the same addressbook of the previous test.
 set(TESTS
+	test-cache-get-contact
+	test-cache-create-cursor
+	test-cache-cursor-move-by-posix
+	test-cache-cursor-move-by-en-US
+	test-cache-cursor-move-by-fr-CA
+	test-cache-cursor-move-by-de-DE
+	test-cache-cursor-set-target
+	test-cache-cursor-calculate
+	test-cache-cursor-set-sexp
+	test-cache-cursor-change-locale
 	test-sqlite-get-contact
 	test-sqlite-create-cursor
 	test-sqlite-cursor-move-by-posix

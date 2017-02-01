@@ -129,6 +129,13 @@ enum {
 	PROP_LOCALE
 };
 
+enum {
+	E164_CHANGED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_TYPE_WITH_CODE (EBookCache, e_book_cache, E_TYPE_CACHE,
 			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
 
@@ -265,6 +272,9 @@ column_info_new (SummaryField *field,
 	gchar *index = NULL;
 
 	g_return_val_if_fail (column_name != NULL, NULL);
+
+	if (field->type == E_TYPE_CONTACT_ATTR_LIST)
+		column_name = "value";
 
 	if (!column_type) {
 		if (field->type == G_TYPE_STRING)
@@ -1009,7 +1019,7 @@ ebc_run_multi_insert_one (ECache *cache,
 
 	normal = e_util_utf8_normalize (value);
 
-	e_cache_sqlite_stmt_append_printf (stmt, "INSERT INTO %Q (uid, %s", field->aux_table, field->dbname);
+	e_cache_sqlite_stmt_append_printf (stmt, "INSERT INTO %Q (uid, value", field->aux_table);
 
 	if ((field->index & INDEX_FLAG (SUFFIX)) != 0) {
 		g_string_append (stmt, ", value_" EBC_SUFFIX_REVERSE);
@@ -1237,26 +1247,10 @@ ebc_upgrade_cb (ECache *cache,
 
 	g_clear_object (&contact);
 
-	if (g_hash_table_size (other_columns) > 0) {
-		gint ii;
-
-		for (ii = 0; ii < ncols; ii++) {
-			if (!column_names[ii] ||
-			    !g_hash_table_contains (other_columns, column_names[ii]))
-				continue;
-
-			if (g_strcmp0 (g_hash_table_lookup (other_columns, column_names[ii]), column_values[ii]) == 0) {
-				/* Do not try to store values which did not change */
-				g_hash_table_remove (other_columns, column_names[ii]);
-			}
-		}
-	}
-
-	if (g_hash_table_size (other_columns) > 0) {
-		*out_other_columns = other_columns;
-	} else {
-		g_hash_table_destroy (other_columns);
-	}
+	/* This will cause rewrite even when no values changed, but it's
+	   necessary, because the locale changed, which can influence
+	   other tables, not only the other columns. */
+	*out_other_columns = other_columns;
 
 	return TRUE;
 }
@@ -3891,6 +3885,178 @@ cursor_count_position_locked (EBookCache *book_cache,
 	return success;
 }
 
+typedef struct {
+	gint country_code;
+	gchar *national;
+} E164Number;
+
+static E164Number *
+ebc_e164_number_new (gint country_code,
+		     const gchar *national)
+{
+	E164Number *number = g_slice_new (E164Number);
+
+	number->country_code = country_code;
+	number->national = g_strdup (national);
+
+	return number;
+}
+
+static void
+ebc_e164_number_free (E164Number *number)
+{
+	if (number) {
+		g_free (number->national);
+		g_slice_free (E164Number, number);
+	}
+}
+
+static gint
+ebc_e164_number_find (E164Number *number_a,
+		      E164Number *number_b)
+{
+	gint ret;
+
+	ret = number_a->country_code - number_b->country_code;
+
+	if (ret == 0) {
+		ret = g_strcmp0 (
+			number_a->national,
+			number_b->national);
+	}
+
+	return ret;
+}
+
+static GList *
+extract_e164_attribute_params (EContact *contact)
+{
+	EVCard *vcard = E_VCARD (contact);
+	GList *extracted = NULL;
+	GList *attr_list;
+
+	for (attr_list = e_vcard_get_attributes (vcard); attr_list; attr_list = attr_list->next) {
+		EVCardAttribute *const attr = attr_list->data;
+		EVCardAttributeParam *param = NULL;
+		GList *param_list, *values, *l;
+		gchar *this_national = NULL;
+		gint this_country = 0;
+
+		/* We only attach E164 parameters to TEL attributes. */
+		if (strcmp (e_vcard_attribute_get_name (attr), EVC_TEL) != 0)
+			continue;
+
+		/* Find already exisiting parameter, so that we can reuse it. */
+		for (param_list = e_vcard_attribute_get_params (attr); param_list; param_list = param_list->next) {
+			if (strcmp (e_vcard_attribute_param_get_name (param_list->data), EVC_X_E164) == 0) {
+				param = param_list->data;
+				break;
+			}
+		}
+
+		if (!param)
+			continue;
+
+		values = e_vcard_attribute_param_get_values (param);
+		for (l = values; l; l = l->next) {
+			const gchar *value = l->data;
+
+			if (value[0] == '+')
+				this_country = g_ascii_strtoll (&value[1], NULL, 10);
+			else if (this_national == NULL)
+				this_national = g_strdup (value);
+		}
+
+		if (this_national) {
+			E164Number *number;
+
+			number = ebc_e164_number_new (this_country, this_national);
+			extracted = g_list_prepend (extracted, number);
+		}
+
+		g_free (this_national);
+
+		/* Clear the values, we'll insert new ones */
+		e_vcard_attribute_param_remove_values (param);
+		e_vcard_attribute_remove_param (attr, EVC_X_E164);
+	}
+
+	return extracted;
+}
+
+static gboolean
+update_e164_attribute_params (EBookCache *book_cache,
+			      EContact *contact,
+			      const gchar *default_region)
+{
+	GList *original_numbers = NULL;
+	GList *attr_list;
+	gboolean changed = FALSE;
+	gint n_numbers = 0;
+	EVCard *vcard = E_VCARD (contact);
+
+	original_numbers = extract_e164_attribute_params (contact);
+
+	for (attr_list = e_vcard_get_attributes (vcard); attr_list; attr_list = attr_list->next) {
+		EVCardAttribute *const attr = attr_list->data;
+		EVCardAttributeParam *param = NULL;
+		const gchar *original_number = NULL;
+		gchar *country_string;
+		GList *values;
+		E164Number number = { 0, NULL };
+
+		/* We only attach E164 parameters to TEL attributes. */
+		if (strcmp (e_vcard_attribute_get_name (attr), EVC_TEL) != 0)
+			continue;
+
+		/* Fetch the TEL value */
+		values = e_vcard_attribute_get_values (attr);
+
+		/* Compute E164 number based on the TEL value */
+		if (values && values->data) {
+			original_number = (const gchar *) values->data;
+			number.national = convert_phone (original_number, book_cache->priv->region_code, &(number.country_code));
+		}
+
+		if (number.national == NULL)
+			continue;
+
+		/* Count how many we successfully parsed in this region code */
+		n_numbers++;
+
+		/* Check if we have a differing e164 number, if there is no match
+		 * in the old existing values then the vcard changed
+		 */
+		if (!g_list_find_custom (original_numbers, &number, (GCompareFunc) ebc_e164_number_find))
+			changed = TRUE;
+
+		if (number.country_code != 0)
+			country_string = g_strdup_printf ("+%d", number.country_code);
+		else
+			country_string = g_strdup ("");
+
+		param = e_vcard_attribute_param_new (EVC_X_E164);
+		e_vcard_attribute_add_param (attr, param);
+
+		/* Assign the parameter values. It seems odd that we revert
+		 * the order of NN and CC, but at least EVCard's parser doesn't
+		 * permit an empty first param value. Which of course could be
+		 * fixed - in order to create a nice potential IOP problem with
+		 ** other vCard parsers. */
+		e_vcard_attribute_param_add_values (param, number.national, country_string, NULL);
+
+		g_free (number.national);
+		g_free (country_string);
+	}
+
+	if (!changed && n_numbers != g_list_length (original_numbers))
+		changed = TRUE;
+
+	g_list_free_full (original_numbers, (GDestroyNotify) ebc_e164_number_free);
+
+	return changed;
+}
+
 static gboolean
 e_book_cache_get_string (ECache *cache,
 			 gint ncols,
@@ -5580,15 +5746,37 @@ e_book_cache_put_locked (ECache *cache,
 			 GCancellable *cancellable,
 			 GError **error)
 {
+	EBookCache *book_cache;
+	EContact *contact;
+	gchar *updated_vcard = NULL;
+	gboolean e164_changed;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (cache), FALSE);
 	g_return_val_if_fail (E_CACHE_CLASS (e_book_cache_parent_class)->put_locked != NULL, FALSE);
 
+	book_cache = E_BOOK_CACHE (cache);
+
+	contact = e_contact_new_from_vcard_with_uid (object, uid);
+
+	/* Update E.164 parameters in vcard if needed */
+	e164_changed = update_e164_attribute_params (book_cache, contact, book_cache->priv->region_code);
+
+	if (e164_changed) {
+		updated_vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+		object = updated_vcard;
+	}
+
 	success = E_CACHE_CLASS (e_book_cache_parent_class)->put_locked (cache, uid, revision, object, other_columns, offline_state,
 		is_replace, cancellable, error);
 
 	success = success && ebc_update_aux_tables (cache, uid, revision, object, cancellable, error);
+
+	if (success && e164_changed)
+		g_signal_emit (book_cache, signals[E164_CHANGED], 0, contact, is_replace);
+
+	g_clear_object (&contact);
+	g_free (updated_vcard);
 
 	return success;
 }
@@ -5693,6 +5881,18 @@ e_book_cache_class_init (EBookCacheClass *class)
 			NULL,
 			G_PARAM_READABLE |
 			G_PARAM_STATIC_STRINGS));
+
+	signals[E164_CHANGED] = g_signal_new (
+		"e164-changed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (EBookCacheClass, e164_changed),
+		NULL,
+		NULL,
+		g_cclosure_marshal_generic,
+		G_TYPE_NONE, 2,
+		E_TYPE_CONTACT,
+		G_TYPE_BOOLEAN);
 }
 
 static void

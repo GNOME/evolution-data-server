@@ -112,6 +112,11 @@ struct _EBookCacheClass {
 	/*< private >*/
 	ECacheClass parent_class;
 
+	/* Signals */
+	void	(* e164_changed)	(EBookCache *book_cache,
+					 EContact *contact,
+					 gboolean is_replace);
+
 	/* Padding for future expansion */
 	gpointer reserved[10];
 };

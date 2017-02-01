@@ -54,7 +54,7 @@
 #define E_CACHE_CANCEL_BATCH_SIZE	200
 
 /* How many rows to read when e_cache_foreach_update() */
-#define E_CACHE_UPDATE_BATCH_SIZE	200
+#define E_CACHE_UPDATE_BATCH_SIZE	100
 
 struct _ECachePrivate {
 	gchar *filename;
@@ -999,7 +999,6 @@ e_cache_put_locked (ECache *cache,
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (revision != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	if (!other_columns) {
@@ -1034,7 +1033,7 @@ e_cache_put_locked (ECache *cache,
  * e_cache_put:
  * @cache: an #ECache
  * @uid: a unique identifier of an object
- * @revision: a revision of the object
+ * @revision: (nullable): a revision of the object
  * @object: the object itself
  * @other_columns: (nullable) (element-type utf8 utf8): what other columns to set; can be %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1063,7 +1062,6 @@ e_cache_put (ECache *cache,
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (revision != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	g_rec_mutex_lock (&cache->priv->lock);
@@ -2336,7 +2334,7 @@ e_cache_sqlite_stmt_append_printf (GString *stmt,
 
 	g_string_append (stmt, tmp_stmt);
 
-	g_free (tmp_stmt);
+	sqlite3_free (tmp_stmt);
 }
 
 /**
@@ -2444,7 +2442,6 @@ e_cache_put_locked_default (ECache *cache,
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (revision != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	statement = g_string_sized_new (255);
@@ -2485,7 +2482,7 @@ e_cache_put_locked_default (ECache *cache,
 
 	g_string_append (statement, ") VALUES (");
 
-	e_cache_sqlite_stmt_append_printf (statement, "%Q,%Q,%Q,%d", uid, revision, object, offline_state);
+	e_cache_sqlite_stmt_append_printf (statement, "%Q,%Q,%Q,%d", uid, revision ? revision : "", object, offline_state);
 
 	if (other_values)
 		g_string_append (statement, other_values->str);
