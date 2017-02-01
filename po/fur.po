@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-01-30 13:50+0100\n"
+"PO-Revision-Date: 2017-02-01 08:40+0100\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -2358,114 +2358,116 @@ msgstr "No si è rivâts a eseguî gpg."
 #: ../src/camel/camel-smime-context.c:993
 #, c-format
 msgid "Cannot verify message signature: Incorrect message format"
-msgstr ""
+msgstr "Impussibil verificâ la firme dal messaç: formât messaç no just"
 
 #: ../src/camel/camel-gpg-context.c:2211
 msgid "Cannot verify message signature: "
-msgstr ""
+msgstr "Impussibil verificâ la firme dal messaç: "
 
 #: ../src/camel/camel-gpg-context.c:2340
 msgid "Could not generate encrypting data: "
-msgstr ""
+msgstr "Impussibil gjenerâ i dâts pe cifradure: "
 
 #: ../src/camel/camel-gpg-context.c:2415
 msgid "This is a digitally encrypted message part"
-msgstr ""
+msgstr "Cheste e je une part dal messaç cifrade in digjitâl"
 
 #: ../src/camel/camel-gpg-context.c:2474 ../src/camel/camel-gpg-context.c:2483
 #: ../src/camel/camel-gpg-context.c:2506
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
-msgstr ""
+msgstr "Impussibil decifrâ il messaç: formât dal messaç no just"
 
 #: ../src/camel/camel-gpg-context.c:2494
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
-msgstr ""
+msgstr "No si è rivâts a decifrâ la part MIME: erôr di protocol"
 
 #: ../src/camel/camel-gpg-context.c:2561
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
-msgstr ""
+msgstr "No si è rivâts a decifrâ la part MIME: clâf segrete no cjatade"
 
 #: ../src/camel/camel-gpg-context.c:2597
 #: ../src/camel/camel-smime-context.c:1286
 msgid "Encrypted content"
-msgstr ""
+msgstr "Contignût cifrât"
 
 #: ../src/camel/camel-junk-filter.c:167
 msgid "Synchronizing junk database"
-msgstr ""
+msgstr "Sincronizazion base di dâts de malvolude"
 
 #: ../src/camel/camel-lock.c:111
 #, c-format
 msgid "Could not create lock file for %s: %s"
-msgstr ""
+msgstr "Impussibil creâ file di bloc par %s: %s"
 
 #: ../src/camel/camel-lock.c:154
 #, c-format
 msgid "Timed out trying to get lock file on %s.  Try again later."
 msgstr ""
+"Timp scjadût cirint di vê il file di bloc su %s.  Torne prove plui tart."
 
 #: ../src/camel/camel-lock.c:221
 #, c-format
 msgid "Failed to get lock using fcntl(2): %s"
-msgstr ""
+msgstr "No si è rivâts a ve il bloc doprant fcntl(2): %s"
 
 #: ../src/camel/camel-lock.c:293
 #, c-format
 msgid "Failed to get lock using flock(2): %s"
-msgstr ""
+msgstr "No si è rivâts a ve il bloc doprant flock(2): %s"
 
 #: ../src/camel/camel-lock-client.c:105
 #, c-format
 msgid "Cannot build locking helper pipe: %s"
-msgstr ""
+msgstr "Impussibil creâ un aiutant di condot (pipe helper) di bloc: %s"
 
 #: ../src/camel/camel-lock-client.c:129
 #, c-format
 msgid "Cannot fork locking helper: %s"
-msgstr ""
+msgstr "Impussibil sdopleâ il aiutant di bloc (locking helper): %s"
 
 #: ../src/camel/camel-lock-client.c:216 ../src/camel/camel-lock-client.c:244
 #, c-format
 msgid "Could not lock “%s”: protocol error with lock-helper"
 msgstr ""
+"Impussibil blocâ “%s”: erôr di protocol cul aiutant di bloc (lock-helper)"
 
 #: ../src/camel/camel-lock-client.c:232
 #, c-format
 msgid "Could not lock “%s”"
-msgstr ""
+msgstr "Impussibil blocâ “%s”"
 
 #: ../src/camel/camel-movemail.c:99
 #, c-format
 msgid "Could not open mail file %s: %s"
-msgstr ""
+msgstr "Impussibil vierzi il file di pueste %s: %s"
 
 #: ../src/camel/camel-movemail.c:119
 #, c-format
 msgid "Could not check mail file %s: %s"
-msgstr ""
+msgstr "Impussibil controlâ il file di pueste %s: %s"
 
 #: ../src/camel/camel-movemail.c:134
 #, c-format
 msgid "Could not open temporary mail file %s: %s"
-msgstr ""
+msgstr "Impussibil vierzi il file di pueste temporani %s: %s"
 
 #: ../src/camel/camel-movemail.c:164
 #, c-format
 msgid "Failed to store mail in temp file %s: %s"
-msgstr ""
+msgstr "No si è rivâts a archiviâ la pueste intal file temporani %s: %s"
 
 #: ../src/camel/camel-movemail.c:198
 #, c-format
 msgid "Could not create pipe: %s"
-msgstr ""
+msgstr "Impussibil creâ il condot (pipe): %s"
 
 #: ../src/camel/camel-movemail.c:212
 #, c-format
 msgid "Could not fork: %s"
-msgstr ""
+msgstr "Impussibil sdopleâ: %s"
 
 #: ../src/camel/camel-movemail.c:250
 #, c-format
@@ -2479,23 +2481,23 @@ msgstr "(Erôr no cognossût)"
 #: ../src/camel/camel-movemail.c:278
 #, c-format
 msgid "Error reading mail file: %s"
-msgstr ""
+msgstr "Erôr tal lei il file di pueste: %s"
 
 #: ../src/camel/camel-movemail.c:291
 #, c-format
 msgid "Error writing mail temp file: %s"
-msgstr ""
+msgstr "Erôr tal scrivi il file temporani di pueste: %s"
 
 #: ../src/camel/camel-movemail.c:499 ../src/camel/camel-movemail.c:573
 #, c-format
 msgid "Error copying mail temp file: %s"
-msgstr ""
+msgstr "Erôr tal copiâ il file temporani di pueste: %s"
 
 #: ../src/camel/camel-multipart-signed.c:277
 #: ../src/camel/camel-multipart-signed.c:430
 #, c-format
 msgid "No content available"
-msgstr ""
+msgstr "Nissun contignût disponibil"
 
 #: ../src/camel/camel-multipart-signed.c:285
 #: ../src/camel/camel-multipart-signed.c:438
@@ -2511,21 +2513,23 @@ msgstr "erôr tal analizâ"
 #: ../src/camel/camel-net-utils.c:714
 #, c-format
 msgid "Resolving: %s"
-msgstr ""
+msgstr "Daûr a risolvi: %s"
 
 #: ../src/camel/camel-net-utils.c:739
 msgid "Host lookup failed"
-msgstr ""
+msgstr "Ricercje dal host falide"
 
 #: ../src/camel/camel-net-utils.c:745
 #, c-format
 msgid "Host lookup “%s” failed. Check your host name for spelling errors."
 msgstr ""
+"Ricercje dal host “%s” falide. Controle che il non dal host nol vedi erôrs "
+"di scriture."
 
 #: ../src/camel/camel-net-utils.c:749
 #, c-format
 msgid "Host lookup “%s” failed: %s"
-msgstr ""
+msgstr "Ricercje dal host “%s” falide: %s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2533,7 +2537,7 @@ msgstr ""
 #: ../src/camel/camel-offline-folder.c:125
 #, c-format
 msgid "Downloading new messages for offline mode in “%s : %s”"
-msgstr ""
+msgstr "Daûr a discjariâ i gnûfs messaçs pe modalitât fûr rêt in “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2541,7 +2545,7 @@ msgstr ""
 #: ../src/camel/camel-offline-folder.c:221
 #, c-format
 msgid "Storing changes in folder “%s : %s”"
-msgstr ""
+msgstr "Salvament des modifichis inte cartele “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2550,6 +2554,7 @@ msgstr ""
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
 msgstr ""
+"Control discjariaments dai gnûfs messaçs pe modalitât fûr rêt in “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2557,39 +2562,40 @@ msgstr ""
 #: ../src/camel/camel-offline-folder.c:428
 #, c-format
 msgid "Syncing messages in folder “%s : %s” to disk"
-msgstr ""
+msgstr "Sincronizazion sul disc dai messaçs te cartele “%s : %s”"
 
 #: ../src/camel/camel-offline-folder.c:513
 msgid "Copy folder content locally for _offline operation"
-msgstr ""
+msgstr "Copiâ il contignût de cartele in locâl pe _operazion fûr rêt"
 
 #: ../src/camel/camel-provider.c:89
 msgid "Virtual folder email provider"
-msgstr ""
+msgstr "Furnidôr des cartelis e-mail virtuâls"
 
 #: ../src/camel/camel-provider.c:91
 msgid "For reading mail as a query of another set of folders"
-msgstr ""
+msgstr "Par lei la pueste come une interogazion di altri grup di cartelis"
 
 #: ../src/camel/camel-provider.c:294
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
+"Impussibil cjariâ %s: chest sisteme nol supuarte il cjariament dai modui."
 
 #: ../src/camel/camel-provider.c:303
 #, c-format
 msgid "Could not load %s: %s"
-msgstr ""
+msgstr "Impussibil cjariâ %s: %s"
 
 #: ../src/camel/camel-provider.c:312
 #, c-format
 msgid "Could not load %s: No initialization code in module."
-msgstr ""
+msgstr "Impussibil cjariâ %s: Nissun codiç di inizializion tal modul."
 
 #: ../src/camel/camel-provider.c:458 ../src/camel/camel-session.c:434
 #, c-format
 msgid "No provider available for protocol “%s”"
-msgstr ""
+msgstr "Nissun furnidôr disponibil pal protocol “%s”"
 
 #: ../src/camel/camel-sasl-anonymous.c:35
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:82
@@ -2598,7 +2604,7 @@ msgstr "Anonim"
 
 #: ../src/camel/camel-sasl-anonymous.c:37
 msgid "This option will connect to the server using an anonymous login."
-msgstr ""
+msgstr "Cheste opzion e conetarà al servidôr doprant un acès anonim."
 
 #: ../src/camel/camel-sasl-anonymous.c:70
 #, c-format
@@ -2611,6 +2617,8 @@ msgid ""
 "Invalid email address trace information:\n"
 "%s"
 msgstr ""
+"Informazions segnadure de direzion e-mail no validis:\n"
+"%s"
 
 #: ../src/camel/camel-sasl-anonymous.c:95
 #, c-format
@@ -2618,6 +2626,8 @@ msgid ""
 "Invalid opaque trace information:\n"
 "%s"
 msgstr ""
+"Informazions di segnadure opache no validis:\n"
+"%s"
 
 #: ../src/camel/camel-sasl-anonymous.c:109
 #, c-format
@@ -2625,6 +2635,8 @@ msgid ""
 "Invalid trace information:\n"
 "%s"
 msgstr ""
+"Informazions di segnadure no validis:\n"
+"%s"
 
 #: ../src/camel/camel-sasl-cram-md5.c:41
 msgid "CRAM-MD5"
