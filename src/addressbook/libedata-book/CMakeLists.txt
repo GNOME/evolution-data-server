@@ -16,6 +16,7 @@ set(SOURCES
 	e-book-backend-cache.c
 	e-book-backend-sqlitedb.c
 	e-book-backend.c
+	e-book-cache.c
 	e-book-sqlite.c
 	e-data-book.c
 	e-data-book-cursor.c
@@ -33,6 +34,7 @@ set(HEADERS
 	e-book-backend-sexp.h
 	e-book-backend-summary.h
 	e-book-backend.h
+	e-book-cache.h
 	e-data-book-factory.h
 	e-data-book-view.h
 	e-data-book.h

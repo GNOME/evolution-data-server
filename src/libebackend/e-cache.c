@@ -15,6 +15,20 @@
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * SECTION: e-cache
+ * @include: libebackend/libebackend.h
+ * @short_description: An SQLite data cache
+ *
+ * The #ECache is an abstract class which consists of the common
+ * parts which can be used by its descendants. It also allows
+ * storing offline state for the stored objects.
+ *
+ * The API is thread safe, with special considerations to be made
+ * around e_cache_lock() and e_cache_unlock() for
+ * the sake of isolating transactions across threads.
+ **/
+
 #include "evolution-data-server-config.h"
 
 #include <errno.h>
@@ -38,6 +52,9 @@
  * checked between each batch of evaluated instructions.
  */
 #define E_CACHE_CANCEL_BATCH_SIZE	200
+
+/* How many rows to read when e_cache_foreach_update() */
+#define E_CACHE_UPDATE_BATCH_SIZE	200
 
 struct _ECachePrivate {
 	gchar *filename;
@@ -201,7 +218,7 @@ e_cache_column_info_free (gpointer info)
 	}
 }
 
-#define E_CACHE_SET_ERROR_FROM_SQLITE(error, code, message) \
+#define E_CACHE_SET_ERROR_FROM_SQLITE(error, code, message, stmt) \
 	G_STMT_START { \
 		if (code == SQLITE_CONSTRAINT) { \
 			g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_CONSTRAINT, message); \
@@ -209,7 +226,7 @@ e_cache_column_info_free (gpointer info)
 			g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, "Operation cancelled: %s", message); \
 		} else { \
 			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE, \
-				"SQLite error code '%d': %s", code, message); \
+				"SQLite error code '%d': %s (statement:%s)", code, message, stmt); \
 		} \
 	} G_STMT_END
 
@@ -285,7 +302,7 @@ e_cache_sqlite_exec_internal (ECache *cache,
 	g_rec_mutex_unlock (&cache->priv->lock);
 
 	if (ret != SQLITE_OK) {
-		E_CACHE_SET_ERROR_FROM_SQLITE (error, ret, errmsg);
+		E_CACHE_SET_ERROR_FROM_SQLITE (error, ret, errmsg, stmt);
 		sqlite3_free (errmsg);
 		return FALSE;
 	}
@@ -332,7 +349,7 @@ e_cache_read_key_value (ECache *cache,
 {
 	gchar **pvalue = user_data;
 
-	g_return_val_if_fail (ncols != 1, FALSE);
+	g_return_val_if_fail (ncols == 1, FALSE);
 	g_return_val_if_fail (column_names != NULL, FALSE);
 	g_return_val_if_fail (column_values != NULL, FALSE);
 	g_return_val_if_fail (pvalue != NULL, FALSE);
@@ -512,7 +529,7 @@ e_cache_init_tables (ECache *cache,
 
 	if (!e_cache_sqlite_exec_internal (cache,
 		"CREATE TABLE IF NOT EXISTS " E_CACHE_TABLE_KEYS " ("
-		"key TEXT PRIMARY INDEX,"
+		"key TEXT PRIMARY KEY,"
 		"value TEXT)",
 		NULL, NULL, cancellable, error)) {
 		return FALSE;
@@ -521,7 +538,7 @@ e_cache_init_tables (ECache *cache,
 	objects_stmt = g_string_new ("");
 
 	g_string_append (objects_stmt, "CREATE TABLE IF NOT EXISTS " E_CACHE_TABLE_OBJECTS " ("
-		E_CACHE_COLUMN_UID " TEXT PRIMARY INDEX,"
+		E_CACHE_COLUMN_UID " TEXT PRIMARY KEY,"
 		E_CACHE_COLUMN_REVISION " TEXT,"
 		E_CACHE_COLUMN_OBJECT " TEXT,"
 		E_CACHE_COLUMN_STATE " INTEGER");
@@ -967,15 +984,15 @@ e_cache_get (ECache *cache,
 }
 
 static gboolean
-e_cache_put_with_offline_state (ECache *cache,
-				const gchar *uid,
-				const gchar *revision,
-				const gchar *object,
-				const GHashTable *other_columns,
-				EOfflineState offline_state,
-				gboolean is_replace,
-				GCancellable *cancellable,
-				GError **error)
+e_cache_put_locked (ECache *cache,
+		    const gchar *uid,
+		    const gchar *revision,
+		    const gchar *object,
+		    GHashTable *other_columns,
+		    EOfflineState offline_state,
+		    gboolean is_replace,
+		    GCancellable *cancellable,
+		    GError **error)
 {
 	GHashTable *my_other_columns = NULL;
 	gboolean success = TRUE;
@@ -1053,7 +1070,7 @@ e_cache_put (ECache *cache,
 
 	is_replace = e_cache_contains_internal (cache, uid, FALSE);
 
-	success = e_cache_put_with_offline_state (cache, uid, revision, object, other_columns,
+	success = e_cache_put_locked (cache, uid, revision, object, other_columns,
 		E_OFFLINE_STATE_SYNCED, is_replace, cancellable, error);
 
 	g_rec_mutex_unlock (&cache->priv->lock);
@@ -1082,21 +1099,21 @@ e_cache_remove (ECache *cache,
 		GCancellable *cancellable,
 		GError **error)
 {
-	gboolean success = TRUE;
+	ECacheClass *klass;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	g_signal_emit (cache,
-		       signals[BEFORE_REMOVE],
-		       0,
-		       uid, cancellable, error,
-		       &success);
+	klass = E_CACHE_GET_CLASS (cache);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->remove_locked != NULL, FALSE);
 
-	success = success && e_cache_sqlite_exec_printf (cache,
-		"DELETE FROM " E_CACHE_TABLE_OBJECTS " WHERE " E_CACHE_COLUMN_UID " = %Q",
-		NULL, NULL, cancellable, error,
-		uid);
+	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
+
+	success = klass->remove_locked (cache, uid, cancellable, error);
+
+	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;
 }
@@ -1118,35 +1135,27 @@ e_cache_remove_all (ECache *cache,
 		    GCancellable *cancellable,
 		    GError **error)
 {
-	GSList *uids = NULL, *link;
+	ECacheClass *klass;
+	GSList *uids = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 
-	g_rec_mutex_lock (&cache->priv->lock);
+	klass = E_CACHE_GET_CLASS (cache);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->remove_all_locked != NULL, FALSE);
+
+	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
 	success = e_cache_get_uids (cache, TRUE, &uids, NULL, cancellable, error);
 
-	for (link = uids; link && success; link = g_slist_next (link)) {
-		const gchar *uid = link->data;
-
-		g_signal_emit (cache,
-			       signals[BEFORE_REMOVE],
-			       0,
-			       uid, cancellable, error,
-			       &success);
-	}
-
-	if (success) {
-		success = e_cache_sqlite_exec_printf (cache,
-			"DELETE FROM " E_CACHE_TABLE_OBJECTS,
-			NULL, NULL, cancellable, error);
-	}
+	if (success && uids)
+		success = klass->remove_all_locked (cache, uids, cancellable, error);
 
 	if (success)
 		e_cache_sqlite_maybe_vacuum (cache, cancellable, NULL);
 
-	g_rec_mutex_unlock (&cache->priv->lock);
+	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	g_slist_free_full (uids, g_free);
 
@@ -1478,6 +1487,271 @@ e_cache_foreach (ECache *cache,
 	return success;
 }
 
+struct ForeachUpdateRowData {
+	gchar *uid;
+	gchar *revision;
+	gchar *object;
+	EOfflineState offline_state;
+	gint ncols;
+	GPtrArray *column_values;
+};
+
+static void
+foreach_update_row_data_free (gpointer ptr)
+{
+	struct ForeachUpdateRowData *fr = ptr;
+
+	if (fr) {
+		g_free (fr->uid);
+		g_free (fr->revision);
+		g_free (fr->object);
+		g_ptr_array_free (fr->column_values, TRUE);
+		g_free (fr);
+	}
+}
+
+struct ForeachUpdateData {
+	gint uid_index;
+	gint revision_index;
+	gint object_index;
+	gint state_index;
+	GSList *rows; /* struct ForeachUpdateRowData * */
+	GPtrArray *column_names;
+};
+
+static gboolean
+e_cache_foreach_update_cb (ECache *cache,
+			   gint ncols,
+			   const gchar *column_names[],
+			   const gchar *column_values[],
+			   gpointer user_data)
+{
+	struct ForeachUpdateData *fu = user_data;
+	struct ForeachUpdateRowData *rd;
+	EOfflineState offline_state;
+	GPtrArray *cnames, *cvalues;
+	gint ii;
+
+	g_return_val_if_fail (fu != NULL, FALSE);
+	g_return_val_if_fail (column_names != NULL, FALSE);
+	g_return_val_if_fail (column_values != NULL, FALSE);
+
+	if (fu->uid_index == -1 ||
+	    fu->revision_index == -1 ||
+	    fu->object_index == -1 ||
+	    fu->state_index == -1) {
+		gint ii;
+
+		for (ii = 0; ii < ncols && (fu->uid_index == -1 ||
+		     fu->revision_index == -1 ||
+		     fu->object_index == -1 ||
+		     fu->state_index == -1); ii++) {
+			if (!column_names[ii])
+				continue;
+
+			if (fu->uid_index == -1 && g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_UID) == 0) {
+				fu->uid_index = ii;
+			} else if (fu->revision_index == -1 && g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_REVISION) == 0) {
+				fu->revision_index = ii;
+			} else if (fu->object_index == -1 && g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_OBJECT) == 0) {
+				fu->object_index = ii;
+			} else if (fu->state_index == -1 && g_ascii_strcasecmp (column_names[ii], E_CACHE_COLUMN_STATE) == 0) {
+				fu->state_index = ii;
+			}
+		}
+	}
+
+	g_return_val_if_fail (fu->uid_index >= 0 && fu->uid_index < ncols, FALSE);
+	g_return_val_if_fail (fu->revision_index >= 0 && fu->revision_index < ncols, FALSE);
+	g_return_val_if_fail (fu->object_index >= 0 && fu->object_index < ncols, FALSE);
+	g_return_val_if_fail (fu->state_index >= 0 && fu->state_index < ncols, FALSE);
+
+	if (!column_values[fu->state_index])
+		offline_state = E_OFFLINE_STATE_UNKNOWN;
+	else
+		offline_state = g_ascii_strtoull (column_values[fu->state_index], NULL, 10);
+
+	cnames = fu->column_names ? NULL : g_ptr_array_new_full (ncols, g_free);
+	cvalues = g_ptr_array_new_full (ncols, g_free);
+
+	for (ii = 0; ii < ncols; ii++) {
+		if (fu->uid_index == ii ||
+		    fu->revision_index == ii ||
+		    fu->object_index == ii ||
+		    fu->state_index == ii) {
+			continue;
+		}
+
+		if (cnames)
+			g_ptr_array_add (cnames, g_strdup (column_names[ii]));
+
+		g_ptr_array_add (cvalues, g_strdup (column_values[ii]));
+	}
+
+	rd = g_new0 (struct ForeachUpdateRowData, 1);
+	rd->uid = g_strdup (column_values[fu->uid_index]);
+	rd->revision = g_strdup (column_values[fu->revision_index]);
+	rd->object = g_strdup (column_values[fu->object_index]);
+	rd->offline_state = offline_state;
+	rd->ncols = ncols;
+	rd->column_values = cvalues;
+
+	if (cnames)
+		fu->column_names = cnames;
+
+	fu->rows = g_slist_prepend (fu->rows, rd);
+
+	g_return_val_if_fail ((gint) fu->column_names->len != ncols, FALSE);
+
+	return TRUE;
+}
+
+/**
+ * e_cache_foreach_update:
+ * @cache: an #ECache
+ * @include_deleted: set to %TRUE, when consider also objects marked as locally deleted
+ * @where_clause: (nullable): an optional SQLite WHERE clause part, or %NULL
+ * @func: an #ECacheUpdateFunc function to call for each object
+ * @user_data: user data for the @func
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Calls @func for each found object, which satisfies the criteria for both
+ * @include_deleted and @where_clause, letting the caller update values where
+ * necessary. The return value of @func is used to determine whether the call
+ * was successful, not whether there are any changes to be saved. If anything
+ * fails during the call then the all changes are reverted.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cache_foreach_update (ECache *cache,
+			gboolean include_deleted,
+			const gchar *where_clause,
+			ECacheUpdateFunc func,
+			gpointer user_data,
+			GCancellable *cancellable,
+			GError **error)
+{
+	GString *stmt_begin;
+	gchar *uid = NULL;
+	gint n_results;
+	gboolean has_where = TRUE;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+	g_return_val_if_fail (func, FALSE);
+
+	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
+
+	stmt_begin = g_string_new ("SELECT * FROM " E_CACHE_TABLE_OBJECTS);
+
+	if (where_clause) {
+		g_string_append (stmt_begin, " WHERE ");
+
+		if (include_deleted) {
+			g_string_append (stmt_begin, where_clause);
+		} else {
+			g_string_append_printf (stmt_begin, E_CACHE_COLUMN_STATE "!=%d AND (%s)",
+				E_OFFLINE_STATE_LOCALLY_DELETED, where_clause);
+		}
+	} else if (!include_deleted) {
+		g_string_append_printf (stmt_begin, " WHERE " E_CACHE_COLUMN_STATE "!=%d", E_OFFLINE_STATE_LOCALLY_DELETED);
+	} else {
+		has_where = FALSE;
+	}
+
+	do {
+		GString *stmt;
+		GSList *link;
+		struct ForeachUpdateData fu;
+
+		fu.uid_index = -1;
+		fu.revision_index = -1;
+		fu.object_index = -1;
+		fu.state_index = -1;
+		fu.rows = NULL;
+		fu.column_names = NULL;
+
+		stmt = g_string_new (stmt_begin->str);
+
+		if (uid) {
+			if (has_where)
+				g_string_append (stmt, " AND ");
+			else
+				g_string_append (stmt, " WHERE ");
+
+			e_cache_sqlite_stmt_append_printf (stmt, E_CACHE_COLUMN_UID ">%Q", uid);
+		}
+
+		g_string_append_printf (stmt, " ORDER BY " E_CACHE_COLUMN_UID " ASC LIMIT %d", E_CACHE_UPDATE_BATCH_SIZE);
+
+		success = e_cache_sqlite_exec_internal (cache, stmt->str, e_cache_foreach_update_cb, &fu, cancellable, error);
+
+		g_string_free (stmt, TRUE);
+
+		if (success) {
+			n_results = 0;
+			fu.rows = g_slist_reverse (fu.rows);
+
+			for (link = fu.rows; success && link; link = g_slist_next (link), n_results++) {
+				struct ForeachUpdateRowData *fr = link->data;
+
+				success = fr && fr->column_values && fu.column_names;
+				if (success) {
+					gchar *new_revision = NULL;
+					gchar *new_object = NULL;
+					EOfflineState new_offline_state = fr->offline_state;
+					GHashTable *new_other_columns = NULL;
+
+					success = func (cache, fr->uid, fr->revision, fr->object, fr->offline_state,
+						fr->ncols, (const gchar **) fu.column_names->pdata,
+						(const gchar **) fr->column_values->pdata,
+						&new_revision, &new_object, &new_offline_state, &new_other_columns,
+						user_data);
+
+					if (success && (
+					    (new_revision && g_strcmp0 (new_revision, fr->revision) != 0) ||
+					    (new_object && g_strcmp0 (new_object, fr->object) != 0) ||
+					    (new_offline_state != fr->offline_state) ||
+					    (new_other_columns && g_hash_table_size (new_other_columns) > 0))) {
+						success = e_cache_put_locked (cache,
+							fr->uid,
+							new_revision ? new_revision : fr->revision,
+							new_object ? new_object : fr->object,
+							new_other_columns,
+							new_offline_state,
+							TRUE, cancellable, error);
+					}
+
+					g_free (new_revision);
+					g_free (new_object);
+					if (new_other_columns)
+						g_hash_table_unref (new_other_columns);
+
+					if (!g_slist_next (link)) {
+						g_free (uid);
+						uid = g_strdup (fr->uid);
+					}
+				}
+			}
+		}
+
+		g_slist_free_full (fu.rows, foreach_update_row_data_free);
+		if (fu.column_names)
+			g_ptr_array_free (fu.column_names, TRUE);
+	} while (success && n_results == E_CACHE_UPDATE_BATCH_SIZE);
+
+	g_string_free (stmt_begin, TRUE);
+	g_free (uid);
+
+	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
+
+	return success;
+}
+
 /**
  * e_cache_put_offline:
  * @cache: an #ECache
@@ -1501,7 +1775,7 @@ e_cache_put_offline (ECache *cache,
 		     const gchar *uid,
 		     const gchar *revision,
 		     const gchar *object,
-		     const GHashTable *other_columns,
+		     GHashTable *other_columns,
 		     GCancellable *cancellable,
 		     GError **error)
 {
@@ -1531,7 +1805,7 @@ e_cache_put_offline (ECache *cache,
 		offline_state = E_OFFLINE_STATE_LOCALLY_CREATED;
 	}
 
-	success = success && e_cache_put_with_offline_state (cache, uid, revision, object, other_columns,
+	success = success && e_cache_put_locked (cache, uid, revision, object, other_columns,
 		offline_state, is_replace, cancellable, error);
 
 	g_rec_mutex_unlock (&cache->priv->lock);
@@ -2034,11 +2308,43 @@ e_cache_sqlite_select (ECache *cache,
 }
 
 /**
+ * e_cache_sqlite_stmt_append_printf:
+ * @stmt: a #GString statement to append to
+ * @format: a printf-like format
+ * @...: arguments for the @format
+ *
+ * Appends an SQLite statement fragment based on the @format and
+ * its arguments to the @stmt.
+ * The @format can contain any values recognized by sqlite3_mprintf().
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_sqlite_stmt_append_printf (GString *stmt,
+				   const gchar *format,
+				   ...)
+{
+	va_list args;
+	gchar *tmp_stmt;
+
+	g_return_if_fail (stmt != NULL);
+	g_return_if_fail (format != NULL);
+
+	va_start (args, format);
+	tmp_stmt = sqlite3_vmprintf (format, args);
+	va_end (args);
+
+	g_string_append (stmt, tmp_stmt);
+
+	g_free (tmp_stmt);
+}
+
+/**
  * e_cache_sqlite_stmt_printf:
  * @format: a printf-like format
  * @...: arguments for the @format
  *
- * Creates and SQLite statement based on the @format and its arguments.
+ * Creates an SQLite statement based on the @format and its arguments.
  * The @format can contain any values recognized by sqlite3_mprintf().
  *
  * Returns: (transfer full): A new SQLite statement. Free the returned
@@ -2127,14 +2433,13 @@ e_cache_put_locked_default (ECache *cache,
 			    const gchar *uid,
 			    const gchar *revision,
 			    const gchar *object,
-			    const GHashTable *other_columns,
+			    GHashTable *other_columns,
 			    EOfflineState offline_state,
 			    gboolean is_replace,
 			    GCancellable *cancellable,
 			    GError **error)
 {
 	GString *statement, *other_names = NULL, *other_values = NULL;
-	gchar *tmp;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
@@ -2142,15 +2447,14 @@ e_cache_put_locked_default (ECache *cache,
 	g_return_val_if_fail (revision != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
-	tmp = e_cache_sqlite_stmt_printf ("INSERT OR REPLACE INTO %Q ("
+	statement = g_string_sized_new (255);
+
+	e_cache_sqlite_stmt_append_printf (statement, "INSERT OR REPLACE INTO %Q ("
 		E_CACHE_COLUMN_UID ","
 		E_CACHE_COLUMN_REVISION ","
 		E_CACHE_COLUMN_OBJECT ","
-		E_CACHE_COLUMN_STATE);
-
-	statement = g_string_new (tmp);
-
-	e_cache_sqlite_stmt_free (tmp);
+		E_CACHE_COLUMN_STATE,
+		E_CACHE_TABLE_OBJECTS);
 
 	if (other_columns) {
 		GHashTableIter iter;
@@ -2162,18 +2466,14 @@ e_cache_put_locked_default (ECache *cache,
 				other_names = g_string_new ("");
 			g_string_append (other_names, ",");
 
-			tmp = e_cache_sqlite_stmt_printf ("%Q", key);
-			g_string_append (other_names, tmp);
-			e_cache_sqlite_stmt_free (tmp);
+			e_cache_sqlite_stmt_append_printf (other_names, "%Q", key);
 
 			if (!other_values)
 				other_values = g_string_new ("");
 
 			g_string_append (other_values, ",");
 			if (value) {
-				tmp = e_cache_sqlite_stmt_printf ("%Q", value);
-				g_string_append (other_values, tmp);
-				e_cache_sqlite_stmt_free (tmp);
+				e_cache_sqlite_stmt_append_printf (other_values, "%Q", value);
 			} else {
 				g_string_append (other_values, "NULL");
 			}
@@ -2185,9 +2485,7 @@ e_cache_put_locked_default (ECache *cache,
 
 	g_string_append (statement, ") VALUES (");
 
-	tmp = e_cache_sqlite_stmt_printf ("%Q,%Q,%Q,%d", uid, revision, object, offline_state);
-	g_string_append (statement, tmp);
-	e_cache_sqlite_stmt_free (tmp);
+	e_cache_sqlite_stmt_append_printf (statement, "%Q,%Q,%Q,%d", uid, revision, object, offline_state);
 
 	if (other_values)
 		g_string_append (statement, other_values->str);
@@ -2201,6 +2499,61 @@ e_cache_put_locked_default (ECache *cache,
 	if (other_values)
 		g_string_free (other_values, TRUE);
 	g_string_free (statement, TRUE);
+
+	return success;
+}
+
+static gboolean
+e_cache_remove_locked_default (ECache *cache,
+			       const gchar *uid,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	g_signal_emit (cache,
+		       signals[BEFORE_REMOVE],
+		       0,
+		       uid, cancellable, error,
+		       &success);
+
+	success = success && e_cache_sqlite_exec_printf (cache,
+		"DELETE FROM " E_CACHE_TABLE_OBJECTS " WHERE " E_CACHE_COLUMN_UID " = %Q",
+		NULL, NULL, cancellable, error,
+		uid);
+
+	return success;
+}
+
+static gboolean
+e_cache_remove_all_locked_default (ECache *cache,
+				   const GSList *uids,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	const GSList *link;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+
+	for (link = uids; link && success; link = g_slist_next (link)) {
+		const gchar *uid = link->data;
+
+		g_signal_emit (cache,
+			       signals[BEFORE_REMOVE],
+			       0,
+			       uid, cancellable, error,
+			       &success);
+	}
+
+	if (success) {
+		success = e_cache_sqlite_exec_printf (cache,
+			"DELETE FROM " E_CACHE_TABLE_OBJECTS,
+			NULL, NULL, cancellable, error);
+	}
 
 	return success;
 }
@@ -2274,6 +2627,8 @@ e_cache_class_init (ECacheClass *class)
 	object_class->finalize = e_cache_finalize;
 
 	class->put_locked = e_cache_put_locked_default;
+	class->remove_locked = e_cache_remove_locked_default;
+	class->remove_all_locked = e_cache_remove_all_locked_default;
 	class->before_put = e_cache_before_put_default;
 	class->before_remove = e_cache_before_remove_default;
 
@@ -2292,7 +2647,7 @@ e_cache_class_init (ECacheClass *class)
 		G_TYPE_HASH_TABLE,
 		G_TYPE_BOOLEAN,
 		G_TYPE_CANCELLABLE,
-		G_TYPE_ERROR);
+		G_TYPE_POINTER);
 
 	signals[BEFORE_REMOVE] = g_signal_new (
 		"before-remove",
@@ -2305,7 +2660,7 @@ e_cache_class_init (ECacheClass *class)
 		G_TYPE_BOOLEAN, 3,
 		G_TYPE_STRING,
 		G_TYPE_CANCELLABLE,
-		G_TYPE_ERROR);
+		G_TYPE_POINTER);
 
 	e_sqlite3_vfs_init ();
 }

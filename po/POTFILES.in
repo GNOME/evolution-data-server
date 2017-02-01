@@ -18,6 +18,7 @@ src/addressbook/libebook/e-destination.c
 src/addressbook/libedata-book/e-book-backend.c
 src/addressbook/libedata-book/e-book-backend-sexp.c
 src/addressbook/libedata-book/e-book-backend-sqlitedb.c
+src/addressbook/libedata-book/e-book-cache.c
 src/addressbook/libedata-book/e-book-sqlite.c
 src/addressbook/libedata-book/e-data-book.c
 src/addressbook/libedata-book/e-data-book-cursor.c

@@ -47,13 +47,13 @@
 
 G_BEGIN_DECLS
 
+#define E_CACHE_TABLE_OBJECTS	"ECacheObjects"
+#define E_CACHE_TABLE_KEYS	"ECacheKeys"
+
 #define E_CACHE_COLUMN_UID	"ECacheUID"
 #define E_CACHE_COLUMN_REVISION	"ECacheREV"
 #define E_CACHE_COLUMN_OBJECT	"ECacheOBJ"
 #define E_CACHE_COLUMN_STATE	"ECacheState"
-
-#define E_CACHE_TABLE_OBJECTS	"ECacheObjects"
-#define E_CACHE_TABLE_KEYS	"ECacheKeys"
 
 /**
  * E_CACHE_ERROR:
@@ -74,6 +74,7 @@ GQuark		e_cache_error_quark	(void);
  * @E_CACHE_ERROR_NOT_FOUND: An object was not found by UID (this is
  *    different from a query that returns no results, which is not an error).
  * @E_CACHE_ERROR_INVALID_QUERY: A query was invalid.
+ * @E_CACHE_ERROR_UNSUPPORTED_FIELD: A field requested for inclusion in summary is not supported.
  * @E_CACHE_ERROR_UNSUPPORTED_QUERY: A query was not supported.
  * @E_CACHE_ERROR_END_OF_LIST: An attempt was made to fetch results past the end of a the list.
  * @E_CACHE_ERROR_LOAD: An error occured while loading or creating the database.
@@ -87,6 +88,7 @@ typedef enum {
 	E_CACHE_ERROR_CONSTRAINT,
 	E_CACHE_ERROR_NOT_FOUND,
 	E_CACHE_ERROR_INVALID_QUERY,
+	E_CACHE_ERROR_UNSUPPORTED_FIELD,
 	E_CACHE_ERROR_UNSUPPORTED_QUERY,
 	E_CACHE_ERROR_END_OF_LIST,
 	E_CACHE_ERROR_LOAD
@@ -186,6 +188,43 @@ typedef gboolean (* ECacheForeachFunc)	(ECache *cache,
 					 gpointer user_data);
 
 /**
+ * ECacheUpdateFunc:
+ * @cache: an #ECache
+ * @uid: a unique object identifier
+ * @revision: the object revision
+ * @object: the object itself
+ * @offline_state: objects offline state, one of #EOfflineState
+ * @ncols: count of columns, items in column_names and column_values
+ * @column_names: column names
+ * @column_values: column values
+ * @out_revision: (out): the new object revision to set; keep it untouched to not change
+ * @out_object: (out): the new object to set; keep it untouched to not change
+ * @out_offline_state: (out): the offline state to set; the default is the same as @offline_state
+ * @out_other_columns: (out) (element-type utf8 utf8) (transfer full): other columns to set; keep it untouched to not change any
+ * @user_data: user data, as used in e_cache_foreach_update()
+ *
+ * A callback called for each object row when using e_cache_foreach_update() function.
+ * When all out parameters are left untouched, then the row is not changed.
+ *
+ * Returns: %TRUE to continue, %FALSE to stop walk through.
+ *
+ * Since: 3.26
+ **/
+typedef gboolean (* ECacheUpdateFunc)	(ECache *cache,
+					 const gchar *uid,
+					 const gchar *revision,
+					 const gchar *object,
+					 EOfflineState offline_state,
+					 gint ncols,
+					 const gchar *column_names[],
+					 const gchar *column_values[],
+					 gchar **out_revision,
+					 gchar **out_object,
+					 EOfflineState *out_offline_state,
+					 GHashTable **out_other_columns,
+					 gpointer user_data);
+
+/**
  * ECacheSelectFunc:
  * @cache: an #ECache
  * @ncols: count of columns, items in column_names and column_values
@@ -212,7 +251,7 @@ typedef gboolean (* ECacheSelectFunc)	(ECache *cache,
  * Contains only private data that should be read and manipulated using the
  * functions below.
  *
- * Since: 3.24
+ * Since: 3.26
  **/
 struct _ECache {
 	/*< private >*/
@@ -228,9 +267,17 @@ struct _ECacheClass {
 						 const gchar *uid,
 						 const gchar *revision,
 						 const gchar *object,
-						 const GHashTable *other_columns,
+						 GHashTable *other_columns,
 						 EOfflineState offline_state,
 						 gboolean is_replace,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(* remove_locked)	(ECache *cache,
+						 const gchar *uid,
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(* remove_all_locked)	(ECache *cache,
+						 const GSList *uids,
 						 GCancellable *cancellable,
 						 GError **error);
 	void		(* erase)		(ECache *cache);
@@ -249,6 +296,7 @@ struct _ECacheClass {
 						 GCancellable *cancellable,
 						 GError **error);
 
+	/* Padding for future expansion */
 	gpointer reserved[10];
 };
 
@@ -312,13 +360,20 @@ gboolean	e_cache_foreach			(ECache *cache,
 						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cache_foreach_update		(ECache *cache,
+						 gboolean include_deleted,
+						 const gchar *where_clause,
+						 ECacheUpdateFunc func,
+						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
 
 /* Offline support */
 gboolean	e_cache_put_offline		(ECache *cache,
 						 const gchar *uid,
 						 const gchar *revision,
 						 const gchar *object,
-						 const GHashTable *other_columns,
+						 GHashTable *other_columns,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_remove_offline		(ECache *cache,
@@ -379,6 +434,10 @@ gboolean	e_cache_sqlite_maybe_vacuum	(ECache *cache,
 						 GCancellable *cancellable,
 						 GError **error);
 
+void		e_cache_sqlite_stmt_append_printf
+						(GString *stmt,
+						 const gchar *format,
+						 ...);
 gchar *		e_cache_sqlite_stmt_printf	(const gchar *format,
 						 ...);
 void		e_cache_sqlite_stmt_free	(gchar *stmt);
