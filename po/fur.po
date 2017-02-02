@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-01-09 18:35+0000\n"
-"PO-Revision-Date: 2017-02-01 08:40+0100\n"
+"PO-Revision-Date: 2017-02-02 20:59+0100\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
 "MIME-Version: 1.0\n"
@@ -2647,6 +2647,8 @@ msgid ""
 "This option will connect to the server using a secure CRAM-MD5 password, if "
 "the server supports it."
 msgstr ""
+"Opzion par conessions al servidôr doprant une password sigure CRAM-MD5, se "
+"il servidôr la supuarte."
 
 #: ../src/camel/camel-sasl-digest-md5.c:54
 msgid "DIGEST-MD5"
@@ -2657,6 +2659,8 @@ msgid ""
 "This option will connect to the server using a secure DIGEST-MD5 password, "
 "if the server supports it."
 msgstr ""
+"Opzion par conessions al servidôr doprant une password sigure DIGEST-MD5, se "
+"il servidôr la supuarte."
 
 #: ../src/camel/camel-sasl-digest-md5.c:852
 #, c-format
@@ -2676,64 +2680,74 @@ msgstr ""
 #: ../src/camel/camel-sasl-digest-md5.c:904
 #, c-format
 msgid "Server response did not contain authorization data"
-msgstr ""
+msgstr "La rispueste dal servidôr no conten dâts di autorizazion"
 
 #: ../src/camel/camel-sasl-digest-md5.c:925
 #, c-format
 msgid "Server response contained incomplete authorization data"
-msgstr ""
+msgstr "La rispueste dal servidôr e contignive dâts di autorizazion incomplets"
 
 #: ../src/camel/camel-sasl-digest-md5.c:938
 #, c-format
 msgid "Server response does not match"
-msgstr ""
+msgstr "La rispueste dal servidôr no corispuint"
 
 #: ../src/camel/camel-sasl-gssapi.c:92
 msgid "GSSAPI"
-msgstr ""
+msgstr "GSSAPI"
 
 #: ../src/camel/camel-sasl-gssapi.c:94
 msgid "This option will connect to the server using Kerberos 5 authentication."
-msgstr ""
+msgstr "Opzion par conessions al servidôr doprant Kerberos 5 pe autenticazion."
 
 #: ../src/camel/camel-sasl-gssapi.c:146
 #, c-format
 msgid "(Unknown GSSAPI mechanism code: %x)"
-msgstr ""
+msgstr "(Codiç mecanisim GSSAPI no cognossût: %x)"
 
 #: ../src/camel/camel-sasl-gssapi.c:179
 msgid ""
 "The specified mechanism is not supported by the provided credential, or is "
 "unrecognized by the implementation."
 msgstr ""
+"Il mecanisim specificât nol è supuartât des credenziâls furnidis o nol è "
+"stât ricognossût de implementazion."
 
 #: ../src/camel/camel-sasl-gssapi.c:184
 msgid "The provided target_name parameter was ill-formed."
-msgstr ""
+msgstr "Il parametri target_name furnît al jere malformât."
 
 #: ../src/camel/camel-sasl-gssapi.c:187
 msgid ""
 "The provided target_name parameter contained an invalid or unsupported type "
 "of name."
 msgstr ""
+"Il parametri target_name furnît al contignive un gjenar di non no valit o no "
+"supuartât."
 
 #: ../src/camel/camel-sasl-gssapi.c:191
 msgid ""
 "The input_token contains different channel bindings to those specified via "
 "the input_chan_bindings parameter."
 msgstr ""
+"Il input_token al conten vincui di canâl diferents a chei specificâts cul "
+"parametri input_chan_bindings."
 
 #: ../src/camel/camel-sasl-gssapi.c:196
 msgid ""
 "The input_token contains an invalid signature, or a signature that could not "
 "be verified."
 msgstr ""
+"Il input_token al conten une firme no valide o une firme che no pues jessi "
+"verificade."
 
 #: ../src/camel/camel-sasl-gssapi.c:200
 msgid ""
 "The supplied credentials were not valid for context initiation, or the "
 "credential handle did not reference any credentials."
 msgstr ""
+"Lis credenziâls furnidis no jerin validis pe inizializazion dal contest o il "
+"gjestôr des credenziâls no si riferive a nissune credenziâl."
 
 #: ../src/camel/camel-sasl-gssapi.c:205
 msgid "The supplied context handle did not refer to a valid context."
@@ -2761,34 +2775,36 @@ msgstr ""
 #: ../src/camel/camel-sasl-gssapi.c:480
 #, c-format
 msgid "Unsupported security layer."
-msgstr ""
+msgstr "Nivel di sigurece no supuartât."
 
 #: ../src/camel/camel-sasl-login.c:35
 msgid "Login"
-msgstr ""
+msgstr "Acès"
 
 #: ../src/camel/camel-sasl-login.c:37 ../src/camel/camel-sasl-plain.c:41
 msgid "This option will connect to the server using a simple password."
-msgstr ""
+msgstr "Opzion par conessions al servidôr doprant une password semplice."
 
 #: ../src/camel/camel-sasl-login.c:105
 #, c-format
 msgid "Unknown authentication state."
-msgstr ""
+msgstr "Stât di autenticazion no cognossût."
 
 #: ../src/camel/camel-sasl-ntlm.c:44
 msgid "NTLM / SPA"
-msgstr ""
+msgstr "NTLM / SPA"
 
 #: ../src/camel/camel-sasl-ntlm.c:46
 msgid ""
 "This option will connect to a Windows-based server using NTLM / Secure "
 "Password Authentication."
 msgstr ""
+"Opzion par conessions a un servidôr basât su Windows doprant NTLM / Secure "
+"Password Authentication."
 
 #: ../src/camel/camel-sasl-plain.c:39
 msgid "PLAIN"
-msgstr ""
+msgstr "IN CLÂR"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:41
 msgid "POP before SMTP"
@@ -2796,22 +2812,22 @@ msgstr "POP prime di SMTP"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:43
 msgid "This option will authorise a POP connection before attempting SMTP"
-msgstr ""
+msgstr "Cheste opzion e autorizarà une conession POP prime di provâ SMTP"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:81
 msgid "POP Source UID"
-msgstr ""
+msgstr "UID sorzint POP"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:95
 #, c-format
 msgid "POP Before SMTP authentication using an unknown transport"
-msgstr ""
+msgstr "Autenticazion POP prime di SMTP doprant un traspuart no cognossût"
 
 #: ../src/camel/camel-sasl-popb4smtp.c:107
 #: ../src/camel/camel-sasl-popb4smtp.c:116
 #, c-format
 msgid "POP Before SMTP authentication attempted with a %s service"
-msgstr ""
+msgstr "Provade autenticazion POP prime di SMTP cuntun servizi %s"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -2830,117 +2846,117 @@ msgstr ""
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
 #, c-format
 msgid "No support for %s authentication"
-msgstr ""
+msgstr "Nissun supuart pe autenticazion %s"
 
 #: ../src/camel/camel-session.c:527
 #, c-format
 msgid "%s authentication failed"
-msgstr ""
+msgstr "Autenticazion %s falide"
 
 #: ../src/camel/camel-session.c:596
 msgid "Forwarding messages is not supported"
-msgstr ""
+msgstr "Il mandâ indenant messaçs nol è supuartât"
 
 #: ../src/camel/camel-smime-context.c:346
 #: ../src/camel/camel-smime-context.c:1073
 #, c-format
 msgid "Cannot find certificate for “%s”"
-msgstr ""
+msgstr "Impussibil cjatâ il certificât par “%s”"
 
 #: ../src/camel/camel-smime-context.c:374
 msgid "Cannot create CMS message"
-msgstr ""
+msgstr "Impussibil creâ messaç CMS"
 
 #: ../src/camel/camel-smime-context.c:379
 msgid "Cannot create CMS signed data"
-msgstr ""
+msgstr "Impussibil creâ dâts firmâts CMS"
 
 #: ../src/camel/camel-smime-context.c:385
 msgid "Cannot attach CMS signed data"
-msgstr ""
+msgstr "Impussibil alegâ dâts firmâts CMS"
 
 #: ../src/camel/camel-smime-context.c:392
 msgid "Cannot attach CMS data"
-msgstr ""
+msgstr "Impussibil alegâ dâts CMS"
 
 #: ../src/camel/camel-smime-context.c:398
 msgid "Cannot create CMS Signer information"
-msgstr ""
+msgstr "Impussibil creâ lis informazions dal firmatari CMS"
 
 #: ../src/camel/camel-smime-context.c:404
 msgid "Cannot find certificate chain"
-msgstr ""
+msgstr "Impussibil cjatâ la cjadene dal certificât"
 
 #: ../src/camel/camel-smime-context.c:410
 msgid "Cannot add CMS Signing time"
-msgstr ""
+msgstr "Impussibil zontâ la date/ore de firme CMS"
 
 #: ../src/camel/camel-smime-context.c:434
 #: ../src/camel/camel-smime-context.c:449
 #, c-format
 msgid "Encryption certificate for “%s” does not exist"
-msgstr ""
+msgstr "Il certificât di cifradure par “%s” nol esist"
 
 #: ../src/camel/camel-smime-context.c:456
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
-msgstr ""
+msgstr "Impussibil zontâ l'atribût SMIMEEncKeyPrefs"
 
 #: ../src/camel/camel-smime-context.c:461
 msgid "Cannot add MS SMIMEEncKeyPrefs attribute"
-msgstr ""
+msgstr "Impussibil zontâ l'atribût MS SMIMEEncKeyPrefs"
 
 #: ../src/camel/camel-smime-context.c:466
 msgid "Cannot add encryption certificate"
-msgstr ""
+msgstr "Impussibil zontâ il certificât di cifradure"
 
 #: ../src/camel/camel-smime-context.c:472
 msgid "Cannot add CMS Signer information"
-msgstr ""
+msgstr "Impussibil zontâ lis informazions dal firmatari CMS"
 
 #. Translators: A fallback message when couldn't verify an SMIME signature
 #: ../src/camel/camel-smime-context.c:505
 msgid "Unverified"
-msgstr ""
+msgstr "No verificade"
 
 #: ../src/camel/camel-smime-context.c:507
 msgid "Good signature"
-msgstr ""
+msgstr "Firme buine"
 
 #: ../src/camel/camel-smime-context.c:509
 msgid "Bad signature"
-msgstr ""
+msgstr "Firme no juste"
 
 #: ../src/camel/camel-smime-context.c:511
 msgid "Content tampered with or altered in transit"
-msgstr ""
+msgstr "Il contignût al è stât alterât o falsificât tal transit"
 
 #: ../src/camel/camel-smime-context.c:513
 msgid "Signing certificate not found"
-msgstr ""
+msgstr "Certificât di firme no cjatât"
 
 #: ../src/camel/camel-smime-context.c:515
 msgid "Signing certificate not trusted"
-msgstr ""
+msgstr "Certificât di firme no fidât"
 
 #: ../src/camel/camel-smime-context.c:517
 msgid "Signature algorithm unknown"
-msgstr ""
+msgstr "Algoritmi di firme no cognossût"
 
 #: ../src/camel/camel-smime-context.c:519
 msgid "Signature algorithm unsupported"
-msgstr ""
+msgstr "Algoritmi di firme no supuartât"
 
 #: ../src/camel/camel-smime-context.c:521
 msgid "Malformed signature"
-msgstr ""
+msgstr "Firme malformade"
 
 #: ../src/camel/camel-smime-context.c:523
 msgid "Processing error"
-msgstr ""
+msgstr "Erôr di elaborazion"
 
 #: ../src/camel/camel-smime-context.c:568
 msgid "No signed data in signature"
-msgstr ""
+msgstr "Nissun dât firmât te firme"
 
 #: ../src/camel/camel-smime-context.c:573
 msgid "Digests missing from enveloped data"
@@ -2959,7 +2975,7 @@ msgstr ""
 #: ../src/camel/camel-smime-context.c:618
 #: ../src/camel/camel-smime-context.c:623
 msgid "Certificate import failed"
-msgstr ""
+msgstr "Importazion certificât falide"
 
 #: ../src/camel/camel-smime-context.c:633
 #, c-format
@@ -2978,7 +2994,7 @@ msgstr ""
 #: ../src/camel/camel-smime-context.c:657
 #, c-format
 msgid "Signer: %s <%s>: %s\n"
-msgstr ""
+msgstr "Firmatari: %s <%s>: %s\n"
 
 #: ../src/camel/camel-smime-context.c:853
 #: ../src/camel/camel-smime-context.c:1147
@@ -3009,7 +3025,7 @@ msgstr ""
 
 #: ../src/camel/camel-smime-context.c:1100
 msgid "Cannot create CMS Message"
-msgstr ""
+msgstr "Impussibil creâ Messaç CMS"
 
 #: ../src/camel/camel-smime-context.c:1106
 msgid "Cannot create CMS Enveloped data"
@@ -3042,12 +3058,12 @@ msgstr ""
 #: ../src/camel/camel-store.c:1370
 #, c-format
 msgid "Opening folder “%s”"
-msgstr ""
+msgstr "Daûr a vierzi la cartele “%s”"
 
 #: ../src/camel/camel-store.c:1665
 #, c-format
 msgid "Scanning folders in “%s”"
-msgstr ""
+msgstr "Analisi cartelis in “%s”"
 
 #: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
 #: ../src/camel/camel-vtrash-folder.c:48
@@ -3062,33 +3078,33 @@ msgstr "Malvolût"
 #: ../src/camel/camel-store.c:2356
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
-msgstr ""
+msgstr "Impussibil creâ cartele: %s: la cartele e esist"
 
 #: ../src/camel/camel-store.c:2363
 #, c-format
 msgid "Creating folder “%s”"
-msgstr ""
+msgstr "Creazion cartele “%s”"
 
 #: ../src/camel/camel-store.c:2540 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
-msgstr ""
+msgstr "Impussibil eliminâ cartele: %s: operazion no valide"
 
 #: ../src/camel/camel-store.c:2730 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
-msgstr ""
+msgstr "Impussibil cambiâ non ae cartele: %s: operazion no valide"
 
 #: ../src/camel/camel-stream.c:170
 msgid "Cannot write with no base stream"
-msgstr ""
+msgstr "Impussibil scrivi cence un flus base"
 
 #: ../src/camel/camel-stream.c:290 ../src/camel/camel-stream.c:341
 #, c-format
 msgid "Stream type “%s” is not seekable"
-msgstr ""
+msgstr "Tal gjenar di flus “%s” no si pues cirî"
 
 #: ../src/camel/camel-stream-filter.c:342
 msgid "Only reset to beginning is supported with CamelStreamFilter"
@@ -3102,7 +3118,7 @@ msgstr ""
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:717
 #, c-format
 msgid "Connection cancelled"
-msgstr ""
+msgstr "Conession anulade"
 
 #: ../src/camel/camel-stream-process.c:289
 #, c-format
@@ -3112,27 +3128,27 @@ msgstr ""
 #: ../src/camel/camel-subscribable.c:234
 #, c-format
 msgid "Subscribing to folder “%s”"
-msgstr ""
+msgstr "Sotscrizion ae cartele “%s”"
 
 #: ../src/camel/camel-subscribable.c:403
 #, c-format
 msgid "Unsubscribing from folder “%s”"
-msgstr ""
+msgstr "Anulament sotscrizion de cartele “%s”"
 
 #: ../src/camel/camel-url.c:325
 #, c-format
 msgid "Could not parse URL “%s”"
-msgstr ""
+msgstr "Impussibil analizâ il URL “%s”"
 
 #: ../src/camel/camel-vee-folder.c:498
 #, c-format
 msgid "Updating folder “%s”"
-msgstr ""
+msgstr "Daûr a inzornâ la cartele “%s”"
 
 #: ../src/camel/camel-vee-folder.c:898 ../src/camel/camel-vee-folder.c:1013
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
-msgstr ""
+msgstr "Impussibil copiâ o spostâ messaçs intune Cartele Virtuâl"
 
 #. Translators: The first “%s” is replaced with a message UID, the second “%s”
 #. is replaced with an account name and the third “%s” is replaced with a full
@@ -3141,53 +3157,56 @@ msgstr ""
 #: ../src/camel/camel-vee-folder.c:935
 #, c-format
 msgid "No such message %s in “%s : %s”"
-msgstr ""
+msgstr "Messaç %s in “%s : %s” inesistent"
 
 #: ../src/camel/camel-vee-folder.c:989
 #, c-format
 msgid "Error storing “%s”: "
-msgstr ""
+msgstr "Erôr tal archiviâ “%s”: "
 
 #: ../src/camel/camel-vee-folder.c:1236
 msgid "Automatically _update on change in source folders"
-msgstr ""
+msgstr "Inzorne in a_utomatic ai cambiaments des cartelis sorzint"
 
 #. Translators: 'Unmatched' is a folder name under Search folders where are shown
 #. * all messages not belonging into any other configured search folder
 #: ../src/camel/camel-vee-store.c:38
 msgid "Unmatched"
-msgstr ""
+msgstr "No corispondents"
 
 #: ../src/camel/camel-vee-store.c:446
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
-msgstr ""
+msgstr "Impussibil eliminâ la cartele: %s: cartele inesistent"
 
 #: ../src/camel/camel-vee-store.c:481
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
-msgstr ""
+msgstr "Impussibil cambiâ non ae cartele: %s: cartele inesistent"
 
 #: ../src/camel/camel-vee-store.c:544
 msgid "Enable _Unmatched folder"
-msgstr ""
+msgstr "Abilitâ cartele _cence corispondence"
 
 #: ../src/camel/camel-vee-store.c:1067
 msgid "Updating Unmatched search folder"
-msgstr ""
+msgstr "Inzornament cartele di ricercje cence corispondence"
 
 #: ../src/camel/camel-vtrash-folder.c:49
 msgid "Cannot copy messages to the Trash folder"
-msgstr ""
+msgstr "Impussibil copiâ messaçs su la cartele “Scovacere”"
 
+# malvolûts malvolude malvolût malvolude
+# ?? definî un non precîs pe cartele in cuistion
 #: ../src/camel/camel-vtrash-folder.c:51
+#, fuzzy
 msgid "Cannot copy messages to the Junk folder"
-msgstr ""
+msgstr "Impussibil copiâ messaçs su la cartele “Malvolûts”"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:967
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
-msgstr ""
+msgstr "Si scugne lavorâ in rêt par completâ cheste operazion (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3126
@@ -3207,21 +3226,21 @@ msgstr ""
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:541
 #, c-format
 msgid "You must be working online to complete this operation"
-msgstr ""
+msgstr "Si scugne lavorâ in rêt par completâ cheste operazion"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1555
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1643
 #, c-format
 msgid "No destination folder specified"
-msgstr ""
+msgstr "Nissune cartele di destinazion specificade"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1582
 msgid "Unable to move junk messages"
-msgstr ""
+msgstr "Impussibil spostâ i messaçs malvolûts"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1677
 msgid "Unable to move deleted messages"
-msgstr ""
+msgstr "Impussibil spostâ i messaçs eliminâts"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3229,26 +3248,26 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:705
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
-msgstr ""
+msgstr "Nissune informazion di cuote disponibile pe cartele “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:980
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:754
 msgid "Apply message _filters to this folder"
-msgstr ""
+msgstr "Apliche _filtris messaç a cheste cartele"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:991
 msgid "Always check for _new mail in this folder"
-msgstr ""
+msgstr "Controle simpri se si à _gnove pueste in cheste cartele"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1102
 #, c-format
 msgid "Could not create folder summary for %s"
-msgstr ""
+msgstr "Impussibil creâ il somari di cartele par %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1114
 #, c-format
 msgid "Could not create cache for %s: "
-msgstr ""
+msgstr "Impussibil creâ la cache par %s: "
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3256,24 +3275,24 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1326
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
-msgstr ""
+msgstr "Nissune casele di pueste IMAP disponibile pe cartele “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-input-stream.c:102
 #, c-format
 msgid "Source stream returned no data"
-msgstr ""
+msgstr "Il flus sorzint nol à tornâ tornât nissun dât"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:36
 msgid "Checking for New Mail"
-msgstr ""
+msgstr "Control di gnove pueste"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:38
 msgid "C_heck for new messages in all folders"
-msgstr ""
+msgstr "_Controle la presince di gnûfs messaçs in dutis lis cartelis"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:40
 msgid "Ch_eck for new messages in subscribed folders"
-msgstr ""
+msgstr "Controle la pr_esince di gnûfs messaçs intes cartelis sotscritis"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
@@ -3281,11 +3300,11 @@ msgstr ""
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:44
 msgid "_Listen for server change notifications"
-msgstr ""
+msgstr "_Reste in scolte pes notifichis di modifiche dal servidôr"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:47
 msgid "Connection to Server"
-msgstr ""
+msgstr "Conession al servidôr"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:49
 msgid "Numbe_r of concurrent connections to use"
