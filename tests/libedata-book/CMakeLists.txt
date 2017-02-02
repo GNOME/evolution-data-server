@@ -106,6 +106,7 @@ set(TESTS
 	test-cache-cursor-calculate
 	test-cache-cursor-set-sexp
 	test-cache-cursor-change-locale
+	test-cache-offline
 	test-sqlite-get-contact
 	test-sqlite-create-cursor
 	test-sqlite-cursor-move-by-posix

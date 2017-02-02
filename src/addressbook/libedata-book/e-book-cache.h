@@ -85,7 +85,7 @@ EBookCacheSearchData *
 						 const gchar *extra);
 EBookCacheSearchData *
 		e_book_cache_search_data_copy	(const EBookCacheSearchData *data);
-void		e_book_cache_search_data_free	(EBookCacheSearchData *data);
+void		e_book_cache_search_data_free	(/* EBookCacheSearchData * */ gpointer data);
 
 /**
  * EBookCache:

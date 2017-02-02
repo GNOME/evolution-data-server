@@ -72,7 +72,7 @@ test_cursor_calculate_move_forward (TCUCursorFixture *fixture,
 		"sorted-5",
 		"sorted-6",
 		NULL);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 
 	/* Check new position */
 	if (!e_book_cache_cursor_calculate (((TCUFixture *) fixture)->book_cache,
@@ -111,7 +111,7 @@ test_cursor_calculate_move_backwards (TCUCursorFixture *fixture,
 		"sorted-13",
 		"sorted-12",
 		NULL);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 
 	/* Check new position */
 	if (!e_book_cache_cursor_calculate (((TCUFixture *) fixture)->book_cache,
@@ -141,7 +141,7 @@ test_cursor_calculate_back_and_forth (TCUCursorFixture *fixture,
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 7);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */
@@ -163,7 +163,7 @@ test_cursor_calculate_back_and_forth (TCUCursorFixture *fixture,
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 4);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */
@@ -185,7 +185,7 @@ test_cursor_calculate_back_and_forth (TCUCursorFixture *fixture,
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */
@@ -313,7 +313,7 @@ test_cursor_calculate_filtered_move_forward (TCUCursorFixture *fixture,
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */
@@ -344,7 +344,7 @@ test_cursor_calculate_filtered_move_backwards (TCUCursorFixture *fixture,
 		g_error ("Error fetching cursor results: %s", error->message);
 
 	g_assert_cmpint (g_slist_length (results), ==, 5);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */
@@ -458,7 +458,7 @@ test_cursor_calculate_descending_move_forward (TCUCursorFixture *fixture,
 		"sorted-13",
 		"sorted-12",
 		NULL);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */
@@ -497,7 +497,7 @@ test_cursor_calculate_descending_move_backwards (TCUCursorFixture *fixture,
 		"sorted-5",
 		"sorted-6",
 		NULL);
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Check new position */

@@ -96,6 +96,8 @@ tcu_add_contact_from_test_case (TCUFixture *fixture,
 
 	if (ret_contact)
 		*ret_contact = g_object_ref (contact);
+
+	g_clear_object (&contact);
 }
 
 static void
@@ -593,7 +595,7 @@ test_step (TCUCursorFixture *fixture,
 
 		tcu_print_results (results);
 		assert_step (fixture, data, assertion, results, n_results, TRUE);
-		g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+		g_slist_free_full (results, e_book_cache_search_data_free);
 		results = NULL;
 
 		/* Do it again, this time only moving the cursor */
@@ -610,7 +612,7 @@ test_step (TCUCursorFixture *fixture,
 
 		tcu_print_results (results);
 		assert_step (fixture, data, assertion, results, n_results, FALSE);
-		g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+		g_slist_free_full (results, e_book_cache_search_data_free);
 		results = NULL;
 	}
 }

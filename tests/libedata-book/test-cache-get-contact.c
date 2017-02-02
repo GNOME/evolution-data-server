@@ -22,7 +22,7 @@
 
 static void
 test_get_contact (TCUFixture *fixture,
-                  gconstpointer user_data)
+		  gconstpointer user_data)
 {
 	EContact *contact = NULL;
 	EContact *other = NULL;

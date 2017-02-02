@@ -201,8 +201,10 @@ e_book_cache_search_data_copy (const EBookCacheSearchData *data)
  * Since: 3.26
  **/
 void
-e_book_cache_search_data_free (EBookCacheSearchData *data)
+e_book_cache_search_data_free (gpointer ptr)
 {
+	EBookCacheSearchData *data = ptr;
+
 	if (data) {
 		g_free (data->uid);
 		g_free (data->vcard);
@@ -3015,6 +3017,7 @@ ebc_generate_select (EBookCache *book_cache,
 	case SEARCH_FULL:
 		callback = ebc_search_full_contacts_cb;
 		g_string_append (string, "summary." E_CACHE_COLUMN_UID ",");
+		g_string_append (string, "summary." E_CACHE_COLUMN_REVISION ",");
 		g_string_append (string, "summary." E_CACHE_COLUMN_OBJECT ",");
 		g_string_append (string, "summary." EBC_COLUMN_EXTRA " ");
 		break;
@@ -3024,7 +3027,8 @@ ebc_generate_select (EBookCache *book_cache,
 		break;
 	case SEARCH_UID:
 		callback = ebc_search_uids_cb;
-		g_string_append (string, "summary." E_CACHE_COLUMN_UID " ");
+		g_string_append (string, "summary." E_CACHE_COLUMN_UID ",");
+		g_string_append (string, "summary." E_CACHE_COLUMN_REVISION " ");
 		break;
 	case SEARCH_COUNT:
 		if (context->aux_mask != 0)
@@ -3149,7 +3153,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 		context->left_join_mask = 0;
 
 		callback = ebc_generate_select (book_cache, string, search_type, context, error);
-		g_string_append (string, " WHERE ");
+		e_cache_sqlite_stmt_append_printf (string, " WHERE summary." E_CACHE_COLUMN_STATE "!=%d AND (", E_OFFLINE_STATE_LOCALLY_DELETED);
 		context->aux_mask = aux_mask;
 		context->left_join_mask = left_join_mask;
 		if (!callback)
@@ -3158,7 +3162,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 		generate_test_func = field_test_func_table[test->query];
 		generate_test_func (book_cache, string, test);
 
-		g_string_append (string, " UNION ");
+		g_string_append (string, ") UNION ");
 	}
 
 	/* Finally, generate the SELECT for the primary fields. */
@@ -3168,7 +3172,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 	if (!callback)
 		return NULL;
 
-	g_string_append (string, " WHERE ");
+	e_cache_sqlite_stmt_append_printf (string, " WHERE summary." E_CACHE_COLUMN_STATE "!=%d AND (", E_OFFLINE_STATE_LOCALLY_DELETED);
 
 	for (ii = 0; ii < n_elements; ii++) {
 		GenerateFieldTest generate_test_func = NULL;
@@ -3190,6 +3194,8 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 		generate_test_func = field_test_func_table[test->query];
 		generate_test_func (book_cache, string, test);
 	}
+
+	g_string_append (string, ")");
 
 	return callback;
 }
@@ -3292,12 +3298,22 @@ ebc_do_search_query (EBookCache *book_cache,
 		/* Generate the leading SELECT statement */
 		sd.func = ebc_generate_select (book_cache, stmt, search_type, context, error);
 
-		if (sd.func && EBC_STATUS_GEN_CONSTRAINTS (context->status)) {
-			/*
-			 * Now generate the search expression on the main contacts table
-			 */
-			g_string_append (stmt, " WHERE ");
-			ebc_generate_constraints (book_cache, stmt, context->constraints, sexp);
+		if (sd.func) {
+			e_cache_sqlite_stmt_append_printf (stmt,
+				" WHERE summary." E_CACHE_COLUMN_STATE "!=%d",
+				E_OFFLINE_STATE_LOCALLY_DELETED);
+
+			if (EBC_STATUS_GEN_CONSTRAINTS (context->status)) {
+				GString *where_clause = g_string_new ("");
+
+				/*
+				 * Now generate the search expression on the main contacts table
+				 */
+				ebc_generate_constraints (book_cache, where_clause, context->constraints, sexp);
+				if (where_clause->len)
+					e_cache_sqlite_stmt_append_printf (stmt, " AND (%s)", where_clause->str);
+				g_string_free (where_clause, TRUE);
+			}
 		}
 	}
 
@@ -3506,7 +3522,7 @@ ebc_cursor_setup_query (EBookCache *book_cache,
 			GError **error)
 {
 	PreflightContext context = PREFLIGHT_CONTEXT_INIT;
-	GString *string;
+	GString *string, *where_clause;
 
 	/* Preflighting and error checking */
 	if (sexp) {
@@ -3536,17 +3552,24 @@ ebc_cursor_setup_query (EBookCache *book_cache,
 	ebc_generate_select (book_cache, string, SEARCH_COUNT, &context, NULL);
 	cursor->select_count = g_string_free (string, FALSE);
 
+	where_clause = g_string_new ("");
+
+	e_cache_sqlite_stmt_append_printf (where_clause, "summary." E_CACHE_COLUMN_STATE "!=%d",
+		E_OFFLINE_STATE_LOCALLY_DELETED);
+
 	if (!sexp || context.status == PREFLIGHT_LIST_ALL) {
-		cursor->query = NULL;
 		cursor->sexp = NULL;
 	} else {
-		/* Generate the constraints for our queries
-		 */
+		cursor->sexp = e_book_backend_sexp_new (sexp);
+
 		string = g_string_new (NULL);
 		ebc_generate_constraints (book_cache, string, context.constraints, sexp);
-		cursor->query = g_string_free (string, FALSE);
-		cursor->sexp = e_book_backend_sexp_new (sexp);
+		if (string->len)
+			e_cache_sqlite_stmt_append_printf (where_clause, " AND (%s)", string->str);
+		g_string_free (string, TRUE);
 	}
+
+	cursor->query = g_string_free (where_clause, FALSE);
 
 	preflight_context_clear (&context);
 
@@ -4179,7 +4202,7 @@ e_book_cache_migrate (ECache *cache,
 			e_cache_sqlite_maybe_vacuum (cache, cancellable, NULL);
 		}
 
-		g_slist_free_full (old_contacts, (GDestroyNotify) e_book_cache_search_data_free);
+		g_slist_free_full (old_contacts, e_book_cache_search_data_free);
 	}
 
 	/* Add any version-related changes here */
@@ -4945,6 +4968,11 @@ e_book_cache_set_contact_extra (EBookCache *book_cache,
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
+	if (!e_cache_contains (E_CACHE (book_cache), uid, TRUE)) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+		return FALSE;
+	}
+
 	if (extra) {
 		stmt = e_cache_sqlite_stmt_printf (
 			"UPDATE " E_CACHE_TABLE_OBJECTS " SET " EBC_COLUMN_EXTRA "=%Q"
@@ -4992,6 +5020,11 @@ e_book_cache_get_contact_extra (EBookCache *book_cache,
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
+	if (!e_cache_contains (E_CACHE (book_cache), uid, TRUE)) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+		return FALSE;
+	}
+
 	stmt = e_cache_sqlite_stmt_printf (
 		"SELECT " EBC_COLUMN_EXTRA " FROM " E_CACHE_TABLE_OBJECTS
 		" WHERE " E_CACHE_COLUMN_UID "=%Q",
@@ -5020,7 +5053,7 @@ e_book_cache_get_contact_extra (EBookCache *book_cache,
  * the search should always be quick, when searching for other #EContactFields
  * a fallback will be used.
  *
- * The returned @out_list list should be freed with g_slist_free_full(list, e_book_cache_search_data_free)
+ * The returned @out_list list should be freed with g_slist_free_full (list, e_book_cache_search_data_free)
  * when no longer needed.
  *
  * If @meta_contact is specified, then shallow vCard representations will be
@@ -5040,6 +5073,8 @@ e_book_cache_search (EBookCache *book_cache,
 {
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (out_list != NULL, FALSE);
+
+	*out_list = NULL;
 
 	return ebc_search_internal (book_cache, sexp,
 		meta_contacts ? SEARCH_UID_AND_REV : SEARCH_FULL,
@@ -5072,6 +5107,8 @@ e_book_cache_search_uids (EBookCache *book_cache,
 {
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (out_list != NULL, FALSE);
+
+	*out_list = NULL;
 
 	return ebc_search_internal (book_cache, sexp, SEARCH_UID, out_list, cancellable, error);
 }
@@ -5282,7 +5319,7 @@ ebc_collect_results_for_cursor_cb (ECache *cache,
  * a %NULL #GSList pointer should be provided for the @out_results parameter.
  *
  * The result list will be stored to @out_results and should be freed
- * with g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+ * with g_slist_free_full (results, e_book_cache_search_data_free);
  * when no longer needed.
  *
  * Returns: The number of contacts traversed if successful, otherwise -1 is
@@ -5466,7 +5503,7 @@ e_book_cache_cursor_step (EBookCache *book_cache,
 
 	/* Cleanup what was allocated by collect_results_for_cursor_cb() */
 	if (data.results)
-		g_slist_free_full (data.results, (GDestroyNotify) e_book_cache_search_data_free);
+		g_slist_free_full (data.results, e_book_cache_search_data_free);
 	g_free (data.alloc_vcard);
 
 	/* Free the copy state if we were working with a copy */

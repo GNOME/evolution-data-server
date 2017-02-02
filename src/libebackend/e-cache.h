@@ -316,7 +316,8 @@ void		e_cache_set_revision		(ECache *cache,
 						 const gchar *revision);
 void		e_cache_erase			(ECache *cache);
 gboolean	e_cache_contains		(ECache *cache,
-						 const gchar *uid);
+						 const gchar *uid,
+						 gboolean include_deleted);
 gchar *		e_cache_get			(ECache *cache,
 						 const gchar *uid,
 						 gchar **out_revision,

@@ -46,7 +46,7 @@ test_cursor_sexp_calculate_position (TCUCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-16");
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 
 	/* Check position */
 	if (!e_book_cache_cursor_calculate (((TCUFixture *) fixture)->book_cache,
@@ -108,7 +108,7 @@ test_cursor_sexp_and_step (TCUCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-8");
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Step 6 results more, gets up to contact 'sorted-12' */
@@ -124,7 +124,7 @@ test_cursor_sexp_and_step (TCUCursorFixture *fixture,
 	g_assert (node);
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-12");
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 }
 
 gint

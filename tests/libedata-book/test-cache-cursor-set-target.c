@@ -51,7 +51,7 @@ test_cursor_set_target_reset_cursor (TCUCursorFixture *fixture,
 		"sorted-6",
 		NULL);
 
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 	results = NULL;
 
 	/* Second batch reset (same results) */
@@ -75,7 +75,7 @@ test_cursor_set_target_reset_cursor (TCUCursorFixture *fixture,
 		"sorted-6",
 		NULL);
 
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 }
 
 /*****************************************************
@@ -122,7 +122,7 @@ test_cursor_set_target_c_next_results (TCUCursorFixture *fixture,
 		"sorted-9",
 		NULL);
 
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 }
 
 /*****************************************************
@@ -169,7 +169,7 @@ test_cursor_set_target_c_prev_results (TCUCursorFixture *fixture,
 		"sorted-8",
 		NULL);
 
-	g_slist_free_full (results, (GDestroyNotify) e_book_cache_search_data_free);
+	g_slist_free_full (results, e_book_cache_search_data_free);
 }
 
 static TCUCursorClosure closures[] = {

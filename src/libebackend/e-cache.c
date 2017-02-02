@@ -827,10 +827,23 @@ e_cache_count_rows_cb (ECache *cache,
 	return TRUE;
 }
 
-static gboolean
-e_cache_contains_internal (ECache *cache,
-			   const gchar *uid,
-			   gboolean include_deleted)
+/**
+ * e_cache_contains:
+ * @cache: an #ECache
+ * @uid: a unique identifier of an object
+ * @include_deleted: set to %TRUE, when check also objects marked as locally deleted
+ *
+ * Checkes whether the @cache contains an object with
+ * the given @uid.
+ *
+ * Returns: Whether the cache contains an object with the given @uid.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cache_contains (ECache *cache,
+		  const gchar *uid,
+		  gboolean include_deleted)
 {
 	guint nrows = 0;
 
@@ -840,13 +853,15 @@ e_cache_contains_internal (ECache *cache,
 	if (include_deleted) {
 		e_cache_sqlite_exec_printf (cache,
 			"SELECT " E_CACHE_COLUMN_UID " FROM " E_CACHE_TABLE_OBJECTS
-			" WHERE " E_CACHE_COLUMN_UID " = %Q",
+			" WHERE " E_CACHE_COLUMN_UID " = %Q"
+			" LIMIT 2",
 			e_cache_count_rows_cb, &nrows, NULL, NULL,
 			uid);
 	} else {
 		e_cache_sqlite_exec_printf (cache,
 			"SELECT " E_CACHE_COLUMN_UID " FROM " E_CACHE_TABLE_OBJECTS
-			" WHERE " E_CACHE_COLUMN_UID " = %Q AND " E_CACHE_COLUMN_STATE " != %d",
+			" WHERE " E_CACHE_COLUMN_UID " = %Q AND " E_CACHE_COLUMN_STATE " != %d"
+			" LIMIT 2",
 			e_cache_count_rows_cb, &nrows, NULL, NULL,
 			uid, E_OFFLINE_STATE_LOCALLY_DELETED);
 	}
@@ -854,30 +869,6 @@ e_cache_contains_internal (ECache *cache,
 	g_warn_if_fail (nrows <= 1);
 
 	return nrows > 0;
-}
-
-/**
- * e_cache_contains:
- * @cache: an #ECache
- * @uid: a unique identifier of an object
- *
- * Checkes whether the @cache contains an object with
- * the given @uid. The objects deleted in offline are
- * not considered. Use e_cache_get_offline_changes()
- * to get those.
- *
- * Returns: Whether the cache contains an object with the given @uid.
- *
- * Since: 3.26
- **/
-gboolean
-e_cache_contains (ECache *cache,
-		  const gchar *uid)
-{
-	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
-	g_return_val_if_fail (uid != NULL, FALSE);
-
-	return e_cache_contains_internal (cache, uid, FALSE);
 }
 
 struct GetObjectData {
@@ -1066,7 +1057,7 @@ e_cache_put (ECache *cache,
 
 	g_rec_mutex_lock (&cache->priv->lock);
 
-	is_replace = e_cache_contains_internal (cache, uid, FALSE);
+	is_replace = e_cache_contains (cache, uid, FALSE);
 
 	success = e_cache_put_locked (cache, uid, revision, object, other_columns,
 		E_OFFLINE_STATE_SYNCED, is_replace, cancellable, error);
@@ -1787,7 +1778,7 @@ e_cache_put_offline (ECache *cache,
 
 	g_rec_mutex_lock (&cache->priv->lock);
 
-	is_replace = e_cache_contains_internal (cache, uid, TRUE);
+	is_replace = e_cache_contains (cache, uid, TRUE);
 	if (is_replace) {
 		GError *local_error = NULL;
 
@@ -1882,10 +1873,15 @@ e_cache_get_offline_state (ECache *cache,
 			   GError **error)
 {
 	EOfflineState offline_state = E_OFFLINE_STATE_UNKNOWN;
-	gint64 value;
+	gint64 value = offline_state;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), E_OFFLINE_STATE_UNKNOWN);
 	g_return_val_if_fail (uid != NULL, E_OFFLINE_STATE_UNKNOWN);
+
+	if (!e_cache_contains (cache, uid, TRUE)) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+		return offline_state;
+	}
 
 	if (e_cache_sqlite_exec_printf (cache,
 		"SELECT " E_CACHE_COLUMN_STATE " FROM " E_CACHE_TABLE_OBJECTS
@@ -1921,6 +1917,11 @@ e_cache_set_offline_state (ECache *cache,
 {
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
+
+	if (!e_cache_contains (cache, uid, TRUE)) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+		return FALSE;
+	}
 
 	return e_cache_sqlite_exec_printf (cache,
 		"UPDATE " E_CACHE_TABLE_OBJECTS " SET " E_CACHE_COLUMN_STATE "=%d"
