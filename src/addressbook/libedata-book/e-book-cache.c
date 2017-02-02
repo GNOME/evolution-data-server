@@ -1190,6 +1190,39 @@ ebc_delete_from_aux_tables (ECache *cache,
 }
 
 static gboolean
+ebc_delete_from_aux_tables_offline_deleted (ECache *cache,
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	EBookCache *book_cache;
+	gint ii;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (cache), FALSE);
+
+	book_cache = E_BOOK_CACHE (cache);
+
+	for (ii = 0; ii < book_cache->priv->n_summary_fields && success; ii++) {
+		SummaryField *field = &(book_cache->priv->summary_fields[ii]);
+		gchar *stmt;
+
+		if (field->type != E_TYPE_CONTACT_ATTR_LIST)
+			continue;
+
+		stmt = e_cache_sqlite_stmt_printf ("DELETE FROM %Q WHERE uid IN ("
+			"SELECT " E_CACHE_COLUMN_UID " FROM " E_CACHE_TABLE_OBJECTS
+			" WHERE " E_CACHE_COLUMN_STATE "=%d)",
+			field->aux_table, E_OFFLINE_STATE_LOCALLY_DELETED);
+
+		success = e_cache_sqlite_exec (cache, stmt, cancellable, error);
+
+		e_cache_sqlite_stmt_free (stmt);
+	}
+
+	return success;
+}
+
+static gboolean
 ebc_empty_aux_tables (ECache *cache,
 		      GCancellable *cancellable,
 		      GError **error)
@@ -5854,6 +5887,27 @@ e_book_cache_remove_all_locked (ECache *cache,
 	return success;
 }
 
+static gboolean
+e_book_cache_clear_offline_changes_locked (ECache *cache,
+					   GCancellable *cancellable,
+					   GError **error)
+{
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (cache), FALSE);
+	g_return_val_if_fail (E_CACHE_CLASS (e_book_cache_parent_class)->clear_offline_changes_locked != NULL, FALSE);
+
+	/* First check whether there are any locally deleted objects at all */
+	if (e_cache_count (cache, TRUE, cancellable, error) > e_cache_count (cache, FALSE, cancellable, error))
+		success = ebc_delete_from_aux_tables_offline_deleted (cache, cancellable, error);
+	else
+		success = TRUE;
+
+	success = success && E_CACHE_CLASS (e_book_cache_parent_class)->clear_offline_changes_locked (cache, cancellable, error);
+
+	return success;
+}
+
 static void
 e_book_cache_get_property (GObject *object,
 			   guint property_id,
@@ -5892,21 +5946,22 @@ e_book_cache_finalize (GObject *object)
 }
 
 static void
-e_book_cache_class_init (EBookCacheClass *class)
+e_book_cache_class_init (EBookCacheClass *klass)
 {
 	GObjectClass *object_class;
 	ECacheClass *cache_class;
 
-	g_type_class_add_private (class, sizeof (EBookCachePrivate));
+	g_type_class_add_private (klass, sizeof (EBookCachePrivate));
 
-	object_class = G_OBJECT_CLASS (class);
+	object_class = G_OBJECT_CLASS (klass);
 	object_class->get_property = e_book_cache_get_property;
 	object_class->finalize = e_book_cache_finalize;
 
-	cache_class = E_CACHE_CLASS (class);
+	cache_class = E_CACHE_CLASS (klass);
 	cache_class->put_locked = e_book_cache_put_locked;
 	cache_class->remove_locked = e_book_cache_remove_locked;
 	cache_class->remove_all_locked = e_book_cache_remove_all_locked;
+	cache_class->clear_offline_changes_locked = e_book_cache_clear_offline_changes_locked;
 
 	g_object_class_install_property (
 		object_class,
@@ -5921,7 +5976,7 @@ e_book_cache_class_init (EBookCacheClass *class)
 
 	signals[E164_CHANGED] = g_signal_new (
 		"e164-changed",
-		G_OBJECT_CLASS_TYPE (class),
+		G_OBJECT_CLASS_TYPE (klass),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (EBookCacheClass, e164_changed),
 		NULL,

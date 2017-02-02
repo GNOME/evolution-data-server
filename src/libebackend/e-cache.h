@@ -280,6 +280,10 @@ struct _ECacheClass {
 						 const GSList *uids,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(* clear_offline_changes_locked)
+						(ECache *cache,
+						 GCancellable *cancellable,
+						 GError **error);
 	void		(* erase)		(ECache *cache);
 
 	/* Signals */

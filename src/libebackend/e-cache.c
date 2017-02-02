@@ -789,18 +789,18 @@ e_cache_set_revision (ECache *cache,
 void
 e_cache_erase (ECache *cache)
 {
-	ECacheClass *class;
+	ECacheClass *klass;
 
 	g_return_if_fail (E_IS_CACHE (cache));
 
 	if (!cache->priv->db)
 		return;
 
-	class = E_CACHE_GET_CLASS (cache);
-	g_return_if_fail (class != NULL);
+	klass = E_CACHE_GET_CLASS (cache);
+	g_return_if_fail (klass != NULL);
 
-	if (class->erase)
-		class->erase (cache);
+	if (klass->erase)
+		klass->erase (cache);
 
 	sqlite3_close (cache->priv->db);
 	cache->priv->db = NULL;
@@ -1005,13 +1005,13 @@ e_cache_put_locked (ECache *cache,
 		       &success);
 
 	if (success) {
-		ECacheClass *class;
+		ECacheClass *klass;
 
-		class = E_CACHE_GET_CLASS (cache);
-		g_return_val_if_fail (class != NULL, FALSE);
-		g_return_val_if_fail (class->put_locked != NULL, FALSE);
+		klass = E_CACHE_GET_CLASS (cache);
+		g_return_val_if_fail (klass != NULL, FALSE);
+		g_return_val_if_fail (klass->put_locked != NULL, FALSE);
 
-		success = class->put_locked (cache, uid, revision, object, other_columns, offline_state, is_replace, cancellable, error);
+		success = klass->put_locked (cache, uid, revision, object, other_columns, offline_state, is_replace, cancellable, error);
 	}
 
 	if (my_other_columns)
@@ -1745,7 +1745,7 @@ e_cache_foreach_update (ECache *cache,
  * e_cache_put_offline:
  * @cache: an #ECache
  * @uid: a unique identifier of an object
- * @revision: a revision of the object
+ * @revision: (nullable): a revision of the object
  * @object: the object itself
  * @other_columns: (nullable) (element-type utf8 utf8): what other columns to set; can be %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1773,7 +1773,6 @@ e_cache_put_offline (ECache *cache,
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (revision != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	g_rec_mutex_lock (&cache->priv->lock);
@@ -2011,24 +2010,20 @@ e_cache_clear_offline_changes (ECache *cache,
 			       GCancellable *cancellable,
 			       GError **error)
 {
+	ECacheClass *klass;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 
-	g_rec_mutex_lock (&cache->priv->lock);
+	klass = E_CACHE_GET_CLASS (cache);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->clear_offline_changes_locked != NULL, FALSE);
 
-	success = e_cache_sqlite_exec_printf (cache,
-		"DELETE FROM " E_CACHE_TABLE_OBJECTS " WHERE " E_CACHE_COLUMN_STATE "=%d",
-		NULL, NULL, cancellable, error,
-		E_OFFLINE_STATE_LOCALLY_DELETED);
+	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
-	success = success && e_cache_sqlite_exec_printf (cache,
-		"UPDATE " E_CACHE_TABLE_OBJECTS " SET " E_CACHE_COLUMN_STATE "=%d"
-		" WHERE " E_CACHE_COLUMN_STATE "!=%d",
-		NULL, NULL, cancellable, error,
-		E_OFFLINE_STATE_SYNCED, E_OFFLINE_STATE_SYNCED);
+	success = klass->clear_offline_changes_locked (cache, cancellable, error);
 
-	g_rec_mutex_unlock (&cache->priv->lock);
+	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;
 }
@@ -2557,6 +2552,29 @@ e_cache_remove_all_locked_default (ECache *cache,
 }
 
 static gboolean
+e_cache_clear_offline_changes_locked_default (ECache *cache,
+					      GCancellable *cancellable,
+					      GError **error)
+{
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+
+	success = e_cache_sqlite_exec_printf (cache,
+		"DELETE FROM " E_CACHE_TABLE_OBJECTS " WHERE " E_CACHE_COLUMN_STATE "=%d",
+		NULL, NULL, cancellable, error,
+		E_OFFLINE_STATE_LOCALLY_DELETED);
+
+	success = success && e_cache_sqlite_exec_printf (cache,
+		"UPDATE " E_CACHE_TABLE_OBJECTS " SET " E_CACHE_COLUMN_STATE "=%d"
+		" WHERE " E_CACHE_COLUMN_STATE "!=%d",
+		NULL, NULL, cancellable, error,
+		E_OFFLINE_STATE_SYNCED, E_OFFLINE_STATE_SYNCED);
+
+	return success;
+}
+
+static gboolean
 e_cache_signals_accumulator (GSignalInvocationHint *ihint,
 			     GValue *return_accu,
 			     const GValue *handler_return,
@@ -2615,24 +2633,25 @@ e_cache_finalize (GObject *object)
 }
 
 static void
-e_cache_class_init (ECacheClass *class)
+e_cache_class_init (ECacheClass *klass)
 {
 	GObjectClass *object_class;
 
-	g_type_class_add_private (class, sizeof (ECachePrivate));
+	g_type_class_add_private (klass, sizeof (ECachePrivate));
 
-	object_class = G_OBJECT_CLASS (class);
+	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = e_cache_finalize;
 
-	class->put_locked = e_cache_put_locked_default;
-	class->remove_locked = e_cache_remove_locked_default;
-	class->remove_all_locked = e_cache_remove_all_locked_default;
-	class->before_put = e_cache_before_put_default;
-	class->before_remove = e_cache_before_remove_default;
+	klass->put_locked = e_cache_put_locked_default;
+	klass->remove_locked = e_cache_remove_locked_default;
+	klass->remove_all_locked = e_cache_remove_all_locked_default;
+	klass->clear_offline_changes_locked = e_cache_clear_offline_changes_locked_default;
+	klass->before_put = e_cache_before_put_default;
+	klass->before_remove = e_cache_before_remove_default;
 
 	signals[BEFORE_PUT] = g_signal_new (
 		"before-put",
-		G_OBJECT_CLASS_TYPE (class),
+		G_OBJECT_CLASS_TYPE (klass),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ECacheClass, before_put),
 		e_cache_signals_accumulator,
@@ -2649,7 +2668,7 @@ e_cache_class_init (ECacheClass *class)
 
 	signals[BEFORE_REMOVE] = g_signal_new (
 		"before-remove",
-		G_OBJECT_CLASS_TYPE (class),
+		G_OBJECT_CLASS_TYPE (klass),
 		G_SIGNAL_RUN_LAST,
 		G_STRUCT_OFFSET (ECacheClass, before_remove),
 		e_cache_signals_accumulator,
