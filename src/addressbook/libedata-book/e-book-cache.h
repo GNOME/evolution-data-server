@@ -188,23 +188,23 @@ ECollator *	e_book_cache_ref_collator	(EBookCache *book_cache);
 gboolean	e_book_cache_put_contact	(EBookCache *book_cache,
 						 EContact *contact,
 						 const gchar *extra,
-						 gboolean is_offline,
+						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_put_contacts	(EBookCache *book_cache,
 						 const GSList *contacts,
 						 const GSList *extras,
-						 gboolean is_offline,
+						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_remove_contact	(EBookCache *book_cache,
 						 const gchar *uid,
-						 gboolean is_offline,
+						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_remove_contacts	(EBookCache *book_cache,
 						 const GSList *uids,
-						 gboolean is_offline,
+						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_get_contact	(EBookCache *book_cache,

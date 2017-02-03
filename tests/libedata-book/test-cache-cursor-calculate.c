@@ -259,7 +259,7 @@ test_cursor_calculate_after_modification (TCUCursorFixture *fixture,
 	if (!e_book_cache_put_contact (((TCUFixture *) fixture)->book_cache,
 					fixture->contacts[19 - 1],
 					e_contact_get_const (fixture->contacts[19 - 1], E_CONTACT_UID),
-					FALSE, NULL, &error))
+					E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to modify contact: %s", error->message);
 
 	/* Rename Müller -> Sade Adu */
@@ -268,7 +268,7 @@ test_cursor_calculate_after_modification (TCUCursorFixture *fixture,
 	if (!e_book_cache_put_contact (((TCUFixture *) fixture)->book_cache,
 					fixture->contacts[20 - 1],
 					e_contact_get_const (fixture->contacts[20 - 1], E_CONTACT_UID),
-					FALSE, NULL, &error))
+					E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to modify contact: %s", error->message);
 
 	/* Check new position */
@@ -409,7 +409,7 @@ test_cursor_calculate_filtered_after_modification (TCUCursorFixture *fixture,
 	if (!e_book_cache_put_contact (((TCUFixture *) fixture)->book_cache,
 					fixture->contacts[18 - 1],
 					e_contact_get_const (fixture->contacts[18 - 1], E_CONTACT_UID),
-					FALSE, NULL, &error))
+					E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to modify contact: %s", error->message);
 
 	/* 'black-birds' -> Sade Adu */
@@ -418,7 +418,7 @@ test_cursor_calculate_filtered_after_modification (TCUCursorFixture *fixture,
 	if (!e_book_cache_put_contact (((TCUFixture *) fixture)->book_cache,
 					fixture->contacts[17 - 1],
 					e_contact_get_const (fixture->contacts[17 - 1], E_CONTACT_UID),
-					FALSE, NULL, &error))
+					E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to modify contact: %s", error->message);
 
 	/* Check new position */
@@ -572,7 +572,7 @@ test_cursor_calculate_descending_after_modification (TCUCursorFixture *fixture,
 	if (!e_book_cache_put_contact (((TCUFixture *) fixture)->book_cache,
 					fixture->contacts[19 - 1],
 					e_contact_get_const (fixture->contacts[19 - 1], E_CONTACT_UID),
-					FALSE, NULL, &error))
+					E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to modify contact: %s", error->message);
 
 	/* Rename Müller -> Sade Adu */
@@ -581,7 +581,7 @@ test_cursor_calculate_descending_after_modification (TCUCursorFixture *fixture,
 	if (!e_book_cache_put_contact (((TCUFixture *) fixture)->book_cache,
 					fixture->contacts[20 - 1],
 					e_contact_get_const (fixture->contacts[20 - 1], E_CONTACT_UID),
-					FALSE, NULL, &error))
+					E_CACHE_IS_ONLINE, NULL, &error))
 		g_error ("Failed to modify contact: %s", error->message);
 
 	/* Check new position */

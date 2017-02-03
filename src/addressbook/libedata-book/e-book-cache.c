@@ -1298,7 +1298,7 @@ ebc_upgrade (EBookCache *book_cache,
 {
 	gboolean success;
 
-	success = e_cache_foreach_update (E_CACHE (book_cache), FALSE, NULL,
+	success = e_cache_foreach_update (E_CACHE (book_cache), E_CACHE_EXCLUDE_DELETED, NULL,
 		ebc_upgrade_cb, NULL, cancellable, error);
 
 	/* Store the new locale & country code */
@@ -4199,7 +4199,7 @@ e_book_cache_migrate (ECache *cache,
 				if (!contact)
 					continue;
 
-				success = e_book_cache_put_contact (book_cache, contact, data->extra, FALSE, cancellable, error);
+				success = e_book_cache_put_contact (book_cache, contact, data->extra, E_CACHE_IS_ONLINE, cancellable, error);
 			}
 		}
 
@@ -4664,9 +4664,9 @@ e_book_cache_ref_collator (EBookCache *book_cache)
 /**
  * e_book_cache_put_contact:
  * @book_cache: An #EBookCache
- * @contact: EContact to be added
- * @extra: Extra data to store in association with this contact
- * @is_offline: Whether putting this contact in offline
+ * @contact: an #EContact to be added
+ * @extra: extra data to store in association with this contact
+ * @offline_flag: one of #ECacheOfflineFlag, whether putting this contact in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4681,7 +4681,7 @@ gboolean
 e_book_cache_put_contact (EBookCache *book_cache,
 			  EContact *contact,
 			  const gchar *extra,
-			  gboolean is_offline,
+			  ECacheOfflineFlag offline_flag,
 			  GCancellable *cancellable,
 			  GError **error)
 {
@@ -4694,7 +4694,7 @@ e_book_cache_put_contact (EBookCache *book_cache,
 	contacts = g_slist_append (NULL, contact);
 	extras = g_slist_append (NULL, (gpointer) extra);
 
-	success = e_book_cache_put_contacts (book_cache, contacts, extras, is_offline, cancellable, error);
+	success = e_book_cache_put_contacts (book_cache, contacts, extras, offline_flag, cancellable, error);
 
 	g_slist_free (contacts);
 	g_slist_free (extras);
@@ -4707,7 +4707,7 @@ e_book_cache_put_contact (EBookCache *book_cache,
  * @book_cache: An #EBookCache
  * @contacts: (element-type EContact): A list of contacts to add to @book_cache
  * @extras: (nullable) (element-type utf8): A list of extra data to store in association with the @contacts
- * @is_offline: Whether putting these contacts in offline
+ * @offline_flag: one of #ECacheOfflineFlag offline_flag, whether putting these contacts in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4725,7 +4725,7 @@ gboolean
 e_book_cache_put_contacts (EBookCache *book_cache,
 			   const GSList *contacts,
 			   const GSList *extras,
-			   gboolean is_offline,
+			   ECacheOfflineFlag offline_flag,
 			   GCancellable *cancellable,
 			   GError **error)
 {
@@ -4763,10 +4763,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 
 		ebc_fill_other_columns (book_cache, contact, other_columns);
 
-		if (is_offline)
-			success = e_cache_put_offline (cache, uid, rev, vcard, other_columns, cancellable, error);
-		else
-			success = e_cache_put (cache, uid, rev, vcard, other_columns, cancellable, error);
+		success = e_cache_put (cache, uid, rev, vcard, other_columns, offline_flag, cancellable, error);
 
 		g_free (vcard);
 		g_free (rev);
@@ -4787,7 +4784,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
  * e_book_cache_remove_contact:
  * @book_cache: An #EBookCache
  * @uid: the uid of the contact to remove
- * @is_offline: Whether removing this contact in offline
+ * @offline_flag: one of #ECacheOfflineFlag, whether removing this contact in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4800,7 +4797,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 gboolean
 e_book_cache_remove_contact (EBookCache *book_cache,
 			     const gchar *uid,
-			     gboolean is_offline,
+			     ECacheOfflineFlag offline_flag,
 			     GCancellable *cancellable,
 			     GError **error)
 {
@@ -4812,7 +4809,7 @@ e_book_cache_remove_contact (EBookCache *book_cache,
 
 	uids = g_slist_append (NULL, (gpointer) uid);
 
-	success = e_book_cache_remove_contacts (book_cache, uids, is_offline, cancellable, error);
+	success = e_book_cache_remove_contacts (book_cache, uids, offline_flag, cancellable, error);
 
 	g_slist_free (uids);
 
@@ -4823,7 +4820,7 @@ e_book_cache_remove_contact (EBookCache *book_cache,
  * e_book_cache_remove_contacts:
  * @book_cache: An #EBookCache
  * @uids: (element-type utf8): a #GSList of uids indicating which contacts to remove
- * @is_offline: Whether removing this contact in offline
+ * @offline_flag: one of #ECacheOfflineFlag, whether removing these contacts in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4836,7 +4833,7 @@ e_book_cache_remove_contact (EBookCache *book_cache,
 gboolean
 e_book_cache_remove_contacts (EBookCache *book_cache,
 			      const GSList *uids,
-			      gboolean is_offline,
+			      ECacheOfflineFlag offline_flag,
 			      GCancellable *cancellable,
 			      GError **error)
 {
@@ -4854,10 +4851,7 @@ e_book_cache_remove_contacts (EBookCache *book_cache,
 	for (link = uids; success && link; link = g_slist_next (link)) {
 		const gchar *uid = link->data;
 
-		if (is_offline)
-			success = e_cache_remove_offline (cache, uid, cancellable, error);
-		else
-			success = e_cache_remove (cache, uid, cancellable, error);
+		success = e_cache_remove (cache, uid, offline_flag, cancellable, error);
 	}
 
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
@@ -5001,7 +4995,7 @@ e_book_cache_set_contact_extra (EBookCache *book_cache,
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (!e_cache_contains (E_CACHE (book_cache), uid, TRUE)) {
+	if (!e_cache_contains (E_CACHE (book_cache), uid, E_CACHE_INCLUDE_DELETED)) {
 		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
 		return FALSE;
 	}
@@ -5053,7 +5047,7 @@ e_book_cache_get_contact_extra (EBookCache *book_cache,
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (!e_cache_contains (E_CACHE (book_cache), uid, TRUE)) {
+	if (!e_cache_contains (E_CACHE (book_cache), uid, E_CACHE_INCLUDE_DELETED)) {
 		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
 		return FALSE;
 	}
@@ -5898,7 +5892,8 @@ e_book_cache_clear_offline_changes_locked (ECache *cache,
 	g_return_val_if_fail (E_CACHE_CLASS (e_book_cache_parent_class)->clear_offline_changes_locked != NULL, FALSE);
 
 	/* First check whether there are any locally deleted objects at all */
-	if (e_cache_count (cache, TRUE, cancellable, error) > e_cache_count (cache, FALSE, cancellable, error))
+	if (e_cache_get_count (cache, E_CACHE_INCLUDE_DELETED, cancellable, error) >
+	    e_cache_get_count (cache, E_CACHE_EXCLUDE_DELETED, cancellable, error))
 		success = ebc_delete_from_aux_tables_offline_deleted (cache, cancellable, error);
 	else
 		success = TRUE;

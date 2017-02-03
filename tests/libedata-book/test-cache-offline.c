@@ -387,8 +387,8 @@ test_verify_storage (TCUFixture *fixture,
 	offline_state = test_check_offline_state (fixture, uid, expect_offline_state);
 
 	if (offline_state == E_OFFLINE_STATE_UNKNOWN) {
-		g_assert (!e_cache_contains (E_CACHE (fixture->book_cache), uid, TRUE));
-		g_assert (!e_cache_contains (E_CACHE (fixture->book_cache), uid, FALSE));
+		g_assert (!e_cache_contains (E_CACHE (fixture->book_cache), uid, E_CACHE_EXCLUDE_DELETED));
+		g_assert (!e_cache_contains (E_CACHE (fixture->book_cache), uid, E_CACHE_INCLUDE_DELETED));
 		test_check_offline_changes (fixture, NULL);
 		return;
 	}
@@ -466,7 +466,7 @@ test_offline_basics (TCUFixture *fixture,
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_assert_nonnull (uid);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	g_assert (e_book_cache_set_contact_extra (fixture->book_cache, uid, "extra-0", NULL, &error));
@@ -496,10 +496,10 @@ test_offline_basics (TCUFixture *fixture,
 			test_check_offline_changes (fixture, uid, states[ii], NULL);
 
 		if (states[ii] == E_OFFLINE_STATE_LOCALLY_DELETED) {
-			g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
+			g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
 			g_assert_no_error (error);
 
-			g_assert (!e_cache_contains (E_CACHE (fixture->book_cache), uid, FALSE));
+			g_assert (!e_cache_contains (E_CACHE (fixture->book_cache), uid, E_CACHE_EXCLUDE_DELETED));
 
 			g_assert (e_book_cache_set_contact_extra (fixture->book_cache, uid, "extra-1", NULL, &error));
 			g_assert_no_error (error);
@@ -514,18 +514,18 @@ test_offline_basics (TCUFixture *fixture,
 			/* Search when locally deleted */
 			test_basic_search (fixture, EXPECT_DEFAULT);
 		} else {
-			g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+			g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 			g_assert_no_error (error);
 
-			g_assert (e_cache_contains (E_CACHE (fixture->book_cache), uid, FALSE));
+			g_assert (e_cache_contains (E_CACHE (fixture->book_cache), uid, E_CACHE_EXCLUDE_DELETED));
 
 			/* Search when locally available */
 			test_basic_search (fixture, EXPECT_CUSTOM_1);
 		}
 
-		g_assert (e_cache_contains (E_CACHE (fixture->book_cache), uid, TRUE));
+		g_assert (e_cache_contains (E_CACHE (fixture->book_cache), uid, E_CACHE_INCLUDE_DELETED));
 
-		g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 3);
+		g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 3);
 		g_assert_no_error (error);
 	}
 
@@ -534,7 +534,7 @@ test_offline_basics (TCUFixture *fixture,
 	/* Edit in online */
 	e_contact_set (contact, E_CONTACT_REV, "rev-1");
 
-	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, FALSE, NULL, &error));
+	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, E_CACHE_IS_ONLINE, NULL, &error));
 	g_assert_no_error (error);
 
 	test_verify_storage (fixture, uid, "rev-1", NULL, E_OFFLINE_STATE_SYNCED);
@@ -542,20 +542,20 @@ test_offline_basics (TCUFixture *fixture,
 
 	e_contact_set (contact, E_CONTACT_REV, "rev-2");
 
-	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, "extra-2", FALSE, NULL, &error));
+	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, "extra-2", E_CACHE_IS_ONLINE, NULL, &error));
 	g_assert_no_error (error);
 
 	test_verify_storage (fixture, uid, "rev-2", "extra-2", E_OFFLINE_STATE_SYNCED);
 	test_check_offline_changes (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	/* Search before delete */
 	test_basic_search (fixture, EXPECT_CUSTOM_1);
 
 	/* Delete in online */
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, FALSE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_ONLINE, NULL, &error));
 	g_assert_no_error (error);
 
 	g_assert (!e_cache_set_offline_state (E_CACHE (fixture->book_cache), uid, E_OFFLINE_STATE_LOCALLY_MODIFIED, NULL, &error));
@@ -565,8 +565,8 @@ test_offline_basics (TCUFixture *fixture,
 	test_verify_storage (fixture, uid, NULL, NULL, E_OFFLINE_STATE_UNKNOWN);
 	test_check_offline_changes (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 2);
 	g_assert_no_error (error);
 
 	g_assert (!e_book_cache_set_contact_extra (fixture->book_cache, uid, "extra-3", NULL, &error));
@@ -605,7 +605,7 @@ test_offline_add_one (TCUFixture *fixture,
 		test_check_offline_state (fixture, uid, E_OFFLINE_STATE_UNKNOWN);
 
 		/* Add a contact in offline */
-		g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, TRUE, NULL, &error));
+		g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 		g_assert_no_error (error);
 	} else {
 		uid = case_name;
@@ -617,7 +617,7 @@ test_offline_add_one (TCUFixture *fixture,
 		test_check_offline_state (fixture, uid, E_OFFLINE_STATE_UNKNOWN);
 	}
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, expect_total);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, expect_total);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, flags);
@@ -637,7 +637,7 @@ test_offline_add (TCUFixture *fixture,
 	/* Add in online */
 	test_fill_cache (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -668,7 +668,7 @@ test_offline_add_edit (TCUFixture *fixture,
 	/* Add in online */
 	test_fill_cache (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -684,7 +684,7 @@ test_offline_add_edit (TCUFixture *fixture,
 	/* Modify added in offline */
 	e_contact_set (contact, E_CONTACT_REV, "rev-2");
 
-	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, TRUE, NULL, &error));
+	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
 	test_offline_add_one (fixture, "simple-1", 4, EXPECT_SIMPLE_1 | EXPECT_CUSTOM_1 | SKIP_CONTACT_PUT, NULL);
@@ -709,7 +709,7 @@ test_offline_add_delete (TCUFixture *fixture,
 	/* Add in online */
 	test_fill_cache (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -727,7 +727,7 @@ test_offline_add_delete (TCUFixture *fixture,
 
 	/* Delete added in offline */
 
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
 	test_offline_add_one (fixture, "simple-1", 3, EXPECT_CUSTOM_1 | SKIP_CONTACT_PUT, NULL);
@@ -748,7 +748,7 @@ test_offline_add_delete_add (TCUFixture *fixture,
 	/* Add in online */
 	test_fill_cache (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -765,7 +765,7 @@ test_offline_add_delete_add (TCUFixture *fixture,
 	g_assert_nonnull (uid);
 
 	/* Delete added in offline */
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
 	test_offline_add_one (fixture, "simple-1", 3, EXPECT_CUSTOM_1 | SKIP_CONTACT_PUT, NULL);
@@ -791,7 +791,7 @@ test_offline_add_resync (TCUFixture *fixture,
 	/* Add in online */
 	test_fill_cache (fixture, NULL);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -807,7 +807,7 @@ test_offline_add_resync (TCUFixture *fixture,
 	g_assert (e_cache_clear_offline_changes (E_CACHE (fixture->book_cache), NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 4);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 4);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_SIMPLE_1 | EXPECT_CUSTOM_1);
@@ -830,7 +830,7 @@ test_offline_edit_common (TCUFixture *fixture,
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_assert_nonnull (uid);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -839,10 +839,10 @@ test_offline_edit_common (TCUFixture *fixture,
 	/* Modify in offline */
 	e_contact_set (contact, E_CONTACT_REV, "rev-2");
 
-	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, TRUE, NULL, &error));
+	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_edit_saved (fixture, uid, "rev-2");
@@ -877,11 +877,11 @@ test_offline_edit_delete (TCUFixture *fixture,
 	test_offline_edit_common (fixture, &uid);
 
 	/* Delete the modified contact in offline */
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_DEFAULT);
@@ -911,7 +911,7 @@ test_offline_edit_resync (TCUFixture *fixture,
 	g_assert (e_cache_clear_offline_changes (E_CACHE (fixture->book_cache), NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_CUSTOM_1);
@@ -936,18 +936,18 @@ test_offline_delete (TCUFixture *fixture,
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_assert_nonnull (uid);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
 	test_check_offline_state (fixture, uid, E_OFFLINE_STATE_SYNCED);
 
 	/* Delete in offline */
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_DEFAULT);
@@ -974,7 +974,7 @@ test_offline_delete_add (TCUFixture *fixture,
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_assert_nonnull (uid);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
@@ -982,11 +982,11 @@ test_offline_delete_add (TCUFixture *fixture,
 
 	/* Delete locally created in offline */
 	test_offline_add_one (fixture, "simple-1", 4, EXPECT_SIMPLE_1 | EXPECT_CUSTOM_1, NULL);
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, "simple-1", TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, "simple-1", E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_CUSTOM_1);
@@ -995,11 +995,11 @@ test_offline_delete_add (TCUFixture *fixture,
 	test_check_offline_state (fixture, "simple-1", E_OFFLINE_STATE_UNKNOWN);
 
 	/* Delete synced in offline */
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_DEFAULT);
@@ -1022,11 +1022,11 @@ test_offline_delete_add (TCUFixture *fixture,
 	/* Modify the previous contact and add it again */
 	e_contact_set (contact, E_CONTACT_REV, "rev-3");
 
-	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, TRUE, NULL, &error));
+	g_assert (e_book_cache_put_contact (fixture->book_cache, contact, NULL, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 4);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 4);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 4);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 4);
 	g_assert_no_error (error);
 
 	test_check_edit_saved (fixture, uid, "rev-3");
@@ -1057,18 +1057,18 @@ test_offline_delete_resync (TCUFixture *fixture,
 	uid = e_contact_get_const (contact, E_CONTACT_UID);
 	g_assert_nonnull (uid);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_check_offline_changes (fixture, NULL);
 	test_check_offline_state (fixture, uid, E_OFFLINE_STATE_SYNCED);
 
 	/* Delete in offline */
-	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, TRUE, NULL, &error));
+	g_assert (e_book_cache_remove_contact (fixture->book_cache, uid, E_CACHE_IS_OFFLINE, NULL, &error));
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 3);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_DEFAULT);
@@ -1081,8 +1081,8 @@ test_offline_delete_resync (TCUFixture *fixture,
 	e_cache_clear_offline_changes (E_CACHE (fixture->book_cache), NULL, &error);
 	g_assert_no_error (error);
 
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
-	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 2);
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 2);
 	g_assert_no_error (error);
 
 	test_basic_search (fixture, EXPECT_DEFAULT);

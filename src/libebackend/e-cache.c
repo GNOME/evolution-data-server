@@ -84,6 +84,8 @@ G_DEFINE_BOXED_TYPE (ECacheColumnInfo, e_cache_column_info, e_cache_column_info_
 /**
  * e_cache_offline_change_new:
  * @uid: a unique object identifier
+ * @revision: (nullable): a revision of the object
+ * @object: (nullable): object itself
  * @state: an #EOfflineState
  *
  * Creates a new #ECacheOfflineChange with the offline @state
@@ -96,6 +98,8 @@ G_DEFINE_BOXED_TYPE (ECacheColumnInfo, e_cache_column_info, e_cache_column_info_
  **/
 ECacheOfflineChange *
 e_cache_offline_change_new (const gchar *uid,
+			    const gchar *revision,
+			    const gchar *object,
 			    EOfflineState state)
 {
 	ECacheOfflineChange *change;
@@ -104,6 +108,8 @@ e_cache_offline_change_new (const gchar *uid,
 
 	change = g_new0 (ECacheOfflineChange, 1);
 	change->uid = g_strdup (uid);
+	change->revision = g_strdup (revision);
+	change->object = g_strdup (object);
 	change->state = state;
 
 	return change;
@@ -125,7 +131,7 @@ e_cache_offline_change_copy (const ECacheOfflineChange *change)
 	if (!change)
 		return NULL;
 
-	return e_cache_offline_change_new (change->uid, change->state);
+	return e_cache_offline_change_new (change->uid, change->revision, change->object, change->state);
 }
 
 /**
@@ -144,6 +150,8 @@ e_cache_offline_change_free (gpointer change)
 
 	if (chng) {
 		g_free (chng->uid);
+		g_free (chng->revision);
+		g_free (chng->object);
 		g_free (chng);
 	}
 }
@@ -831,7 +839,7 @@ e_cache_count_rows_cb (ECache *cache,
  * e_cache_contains:
  * @cache: an #ECache
  * @uid: a unique identifier of an object
- * @include_deleted: set to %TRUE, when check also objects marked as locally deleted
+ * @deleted_flag: one of #ECacheDeletedFlag enum
  *
  * Checkes whether the @cache contains an object with
  * the given @uid.
@@ -843,14 +851,14 @@ e_cache_count_rows_cb (ECache *cache,
 gboolean
 e_cache_contains (ECache *cache,
 		  const gchar *uid,
-		  gboolean include_deleted)
+		  ECacheDeletedFlag deleted_flag)
 {
 	guint nrows = 0;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (include_deleted) {
+	if (deleted_flag == E_CACHE_INCLUDE_DELETED) {
 		e_cache_sqlite_exec_printf (cache,
 			"SELECT " E_CACHE_COLUMN_UID " FROM " E_CACHE_TABLE_OBJECTS
 			" WHERE " E_CACHE_COLUMN_UID " = %Q"
@@ -1027,14 +1035,16 @@ e_cache_put_locked (ECache *cache,
  * @revision: (nullable): a revision of the object
  * @object: the object itself
  * @other_columns: (nullable) (element-type utf8 utf8): what other columns to set; can be %NULL
+ * @offline_flag: one of #ECacheOfflineFlag, whether putting this object in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Stores an object into the cache. This sets the object's offline state
- * to #E_OFFLINE_STATE_SYNCED, like to be fully synchronized with the server,
- * regardless of its previous offline state. Use e_cache_put_offline() to
- * add objects in offline mode. Overwriting locally deleted object behaves
- * like an addition of a completely new object.
+ * Stores an object into the cache. Depending on @offline_flag, this update
+ * the object's offline state accordingly. When the @offline_flag is set
+ * to %E_CACHE_IS_ONLINE, then it's set to #E_OFFLINE_STATE_SYNCED, like
+ * to be fully synchronized with the server, regardless of its previous
+ * offline state. Overwriting locally deleted object behaves like an addition
+ * of a completely new object.
  *
  * Returns: Whether succeeded.
  *
@@ -1046,23 +1056,44 @@ e_cache_put (ECache *cache,
 	     const gchar *revision,
 	     const gchar *object,
 	     GHashTable *other_columns,
+	     ECacheOfflineFlag offline_flag,
 	     GCancellable *cancellable,
 	     GError **error)
 {
-	gboolean success, is_replace;
+	EOfflineState offline_state;
+	gboolean success = TRUE, is_replace;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (object != NULL, FALSE);
 
-	g_rec_mutex_lock (&cache->priv->lock);
+	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
-	is_replace = e_cache_contains (cache, uid, FALSE);
+	if (offline_flag == E_CACHE_IS_ONLINE) {
+		is_replace = e_cache_contains (cache, uid, E_CACHE_EXCLUDE_DELETED);
+		offline_state = E_OFFLINE_STATE_SYNCED;
+	} else {
+		is_replace = e_cache_contains (cache, uid, E_CACHE_INCLUDE_DELETED);
+		if (is_replace) {
+			GError *local_error = NULL;
 
-	success = e_cache_put_locked (cache, uid, revision, object, other_columns,
-		E_OFFLINE_STATE_SYNCED, is_replace, cancellable, error);
+			offline_state = e_cache_get_offline_state (cache, uid, cancellable, &local_error);
 
-	g_rec_mutex_unlock (&cache->priv->lock);
+			if (local_error) {
+				success = FALSE;
+				g_propagate_error (error, local_error);
+			} else if (offline_state != E_OFFLINE_STATE_LOCALLY_CREATED) {
+				offline_state = E_OFFLINE_STATE_LOCALLY_MODIFIED;
+			}
+		} else {
+			offline_state = E_OFFLINE_STATE_LOCALLY_CREATED;
+		}
+	}
+
+	success = success && e_cache_put_locked (cache, uid, revision, object, other_columns,
+		offline_state, is_replace, cancellable, error);
+
+	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;
 }
@@ -1071,12 +1102,14 @@ e_cache_put (ECache *cache,
  * e_cache_remove:
  * @cache: an #ECache
  * @uid: a unique identifier of an object
+ * @offline_flag: one of #ECacheOfflineFlag, whether removing the object in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Removes the object with the given @uid from the @cache. It removes also any
- * information about locally made offline changes. Use e_cache_remove_offline()
- * to still remember the removed object for later use with e_cache_get_offline_changes().
+ * Removes the object with the given @uid from the @cache. Based on the @offline_flag,
+ * it can remove also any information about locally made offline changes. Removing
+ * the object with %E_CACHE_IS_OFFLINE will still remember it for later use
+ * with e_cache_get_offline_changes().
  *
  * Returns: Whether succeeded.
  *
@@ -1085,11 +1118,12 @@ e_cache_put (ECache *cache,
 gboolean
 e_cache_remove (ECache *cache,
 		const gchar *uid,
+		ECacheOfflineFlag offline_flag,
 		GCancellable *cancellable,
 		GError **error)
 {
 	ECacheClass *klass;
-	gboolean success;
+	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -1100,7 +1134,29 @@ e_cache_remove (ECache *cache,
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
-	success = klass->remove_locked (cache, uid, cancellable, error);
+	if (offline_flag == E_CACHE_IS_ONLINE) {
+		success = klass->remove_locked (cache, uid, cancellable, error);
+	} else {
+		EOfflineState offline_state;
+
+		offline_state = e_cache_get_offline_state (cache, uid, cancellable, error);
+		if (offline_state == E_OFFLINE_STATE_UNKNOWN) {
+			success = FALSE;
+		} else if (offline_state == E_OFFLINE_STATE_LOCALLY_CREATED) {
+			success = klass->remove_locked (cache, uid, cancellable, error);
+		} else {
+			g_signal_emit (cache,
+				       signals[BEFORE_REMOVE],
+				       0,
+				       uid, cancellable, error,
+				       &success);
+
+			if (success) {
+				success = e_cache_set_offline_state (cache, uid,
+					E_OFFLINE_STATE_LOCALLY_DELETED, cancellable, error);
+			}
+		}
+	}
 
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
@@ -1136,7 +1192,7 @@ e_cache_remove_all (ECache *cache,
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
-	success = e_cache_get_uids (cache, TRUE, &uids, NULL, cancellable, error);
+	success = e_cache_get_uids (cache, E_CACHE_INCLUDE_DELETED, &uids, NULL, cancellable, error);
 
 	if (success && uids)
 		success = klass->remove_all_locked (cache, uids, cancellable, error);
@@ -1192,9 +1248,9 @@ e_cache_get_int64_cb (ECache *cache,
 }
 
 /**
- * e_cache_count:
+ * e_cache_get_count:
  * @cache: an #ECache
- * @include_deleted: set to %TRUE, when count also objects marked as locally deleted
+ * @deleted_flag: one of #ECacheDeletedFlag enum
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1203,16 +1259,16 @@ e_cache_get_int64_cb (ECache *cache,
  * Since: 3.26
  **/
 guint
-e_cache_count (ECache *cache,
-	       gboolean include_deleted,
-	       GCancellable *cancellable,
-	       GError **error)
+e_cache_get_count (ECache *cache,
+		   ECacheDeletedFlag deleted_flag,
+		   GCancellable *cancellable,
+		   GError **error)
 {
 	guint64 nobjects = 0;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), 0);
 
-	if (include_deleted) {
+	if (deleted_flag == E_CACHE_INCLUDE_DELETED) {
 		e_cache_sqlite_exec_printf (cache,
 			"SELECT COUNT(*) FROM " E_CACHE_TABLE_OBJECTS,
 			e_cache_get_uint64_cb, &nobjects, cancellable, error);
@@ -1263,7 +1319,7 @@ e_cache_gather_rows_data_cb (ECache *cache,
 /**
  * e_cache_get_uids:
  * @cache: an #ECache
- * @include_deleted: set to %TRUE, when consider also objects marked as locally deleted
+ * @deleted_flag: one of #ECacheDeletedFlag enum
  * @out_uids: (out) (transfer full) (element-type utf8): a pointer to #GSList to store the found uid to
  * @out_revisions: (out) (transfer full) (element-type utf8) (nullable): a pointer to #GSList to store
  *    the found revisions to, or %NULL
@@ -1285,7 +1341,7 @@ e_cache_gather_rows_data_cb (ECache *cache,
  **/
 gboolean
 e_cache_get_uids (ECache *cache,
-		  gboolean include_deleted,
+		  ECacheDeletedFlag deleted_flag,
 		  GSList **out_uids,
 		  GSList **out_revisions,
 		  GCancellable *cancellable,
@@ -1300,14 +1356,14 @@ e_cache_get_uids (ECache *cache,
 	gr.out_revisions = out_revisions;
 	gr.out_objects = NULL;
 
-	return e_cache_foreach (cache, include_deleted, NULL,
+	return e_cache_foreach (cache, deleted_flag, NULL,
 		e_cache_gather_rows_data_cb, &gr, cancellable, error);
 }
 
 /**
  * e_cache_get_objects:
  * @cache: an #ECache
- * @include_deleted: set to %TRUE, when consider also objects marked as locally deleted
+ * @deleted_flag: one of #ECacheDeletedFlag enum
  * @out_objects: (out) (transfer full) (element-type utf8): a pointer to #GSList to store the found objects to
  * @out_revisions: (out) (transfer full) (element-type utf8) (nullable): a pointer to #GSList to store
  *    the found revisions to, or %NULL
@@ -1329,7 +1385,7 @@ e_cache_get_uids (ECache *cache,
  **/
 gboolean
 e_cache_get_objects (ECache *cache,
-		     gboolean include_deleted,
+		     ECacheDeletedFlag deleted_flag,
 		     GSList **out_objects,
 		     GSList **out_revisions,
 		     GCancellable *cancellable,
@@ -1344,7 +1400,7 @@ e_cache_get_objects (ECache *cache,
 	gr.out_revisions = out_revisions;
 	gr.out_objects = out_objects;
 
-	return e_cache_foreach (cache, include_deleted, NULL,
+	return e_cache_foreach (cache, deleted_flag, NULL,
 		e_cache_gather_rows_data_cb, &gr, cancellable, error);
 }
 
@@ -1414,7 +1470,7 @@ e_cache_foreach_cb (ECache *cache,
 /**
  * e_cache_foreach:
  * @cache: an #ECache
- * @include_deleted: set to %TRUE, when consider also objects marked as locally deleted
+ * @deleted_flag: one of #ECacheDeletedFlag enum
  * @where_clause: (nullable): an optional SQLite WHERE clause part, or %NULL
  * @func: an #ECacheForeachFunc function to call for each object
  * @user_data: user data for the @func
@@ -1422,7 +1478,7 @@ e_cache_foreach_cb (ECache *cache,
  * @error: return location for a #GError, or %NULL
  *
  * Calls @func for each found object, which satisfies the criteria
- * for both @include_deleted and @where_clause.
+ * for both @deleted_flag and @where_clause.
  *
  * Note the @func should not call any SQLite commands, because it's invoked
  * within a SELECT statement execution.
@@ -1433,7 +1489,7 @@ e_cache_foreach_cb (ECache *cache,
  **/
 gboolean
 e_cache_foreach (ECache *cache,
-		 gboolean include_deleted,
+		 ECacheDeletedFlag deleted_flag,
 		 const gchar *where_clause,
 		 ECacheForeachFunc func,
 		 gpointer user_data,
@@ -1452,13 +1508,13 @@ e_cache_foreach (ECache *cache,
 	if (where_clause) {
 		g_string_append (stmt, " WHERE ");
 
-		if (include_deleted) {
+		if (deleted_flag == E_CACHE_INCLUDE_DELETED) {
 			g_string_append (stmt, where_clause);
 		} else {
 			g_string_append_printf (stmt, E_CACHE_COLUMN_STATE "!=%d AND (%s)",
 				E_OFFLINE_STATE_LOCALLY_DELETED, where_clause);
 		}
-	} else if (!include_deleted) {
+	} else if (deleted_flag != E_CACHE_INCLUDE_DELETED) {
 		g_string_append_printf (stmt, " WHERE " E_CACHE_COLUMN_STATE "!=%d", E_OFFLINE_STATE_LOCALLY_DELETED);
 	}
 
@@ -1598,7 +1654,7 @@ e_cache_foreach_update_cb (ECache *cache,
 /**
  * e_cache_foreach_update:
  * @cache: an #ECache
- * @include_deleted: set to %TRUE, when consider also objects marked as locally deleted
+ * @deleted_flag: one of #ECacheDeletedFlag enum
  * @where_clause: (nullable): an optional SQLite WHERE clause part, or %NULL
  * @func: an #ECacheUpdateFunc function to call for each object
  * @user_data: user data for the @func
@@ -1606,7 +1662,7 @@ e_cache_foreach_update_cb (ECache *cache,
  * @error: return location for a #GError, or %NULL
  *
  * Calls @func for each found object, which satisfies the criteria for both
- * @include_deleted and @where_clause, letting the caller update values where
+ * @deleted_flag and @where_clause, letting the caller update values where
  * necessary. The return value of @func is used to determine whether the call
  * was successful, not whether there are any changes to be saved. If anything
  * fails during the call then the all changes are reverted.
@@ -1617,7 +1673,7 @@ e_cache_foreach_update_cb (ECache *cache,
  **/
 gboolean
 e_cache_foreach_update (ECache *cache,
-			gboolean include_deleted,
+			ECacheDeletedFlag deleted_flag,
 			const gchar *where_clause,
 			ECacheUpdateFunc func,
 			gpointer user_data,
@@ -1640,13 +1696,13 @@ e_cache_foreach_update (ECache *cache,
 	if (where_clause) {
 		g_string_append (stmt_begin, " WHERE ");
 
-		if (include_deleted) {
+		if (deleted_flag == E_CACHE_INCLUDE_DELETED) {
 			g_string_append (stmt_begin, where_clause);
 		} else {
 			g_string_append_printf (stmt_begin, E_CACHE_COLUMN_STATE "!=%d AND (%s)",
 				E_OFFLINE_STATE_LOCALLY_DELETED, where_clause);
 		}
-	} else if (!include_deleted) {
+	} else if (deleted_flag != E_CACHE_INCLUDE_DELETED) {
 		g_string_append_printf (stmt_begin, " WHERE " E_CACHE_COLUMN_STATE "!=%d", E_OFFLINE_STATE_LOCALLY_DELETED);
 	} else {
 		has_where = FALSE;
@@ -1742,117 +1798,6 @@ e_cache_foreach_update (ECache *cache,
 }
 
 /**
- * e_cache_put_offline:
- * @cache: an #ECache
- * @uid: a unique identifier of an object
- * @revision: (nullable): a revision of the object
- * @object: the object itself
- * @other_columns: (nullable) (element-type utf8 utf8): what other columns to set; can be %NULL
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Stores an object into the cache with an appropriate offline state.
- * Use e_cache_put() to store an object into the @cache as fully
- * synchronized. Use e_cache_get_offline_changes() to get list of offline changes.
- *
- * Returns: Whether succeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_cache_put_offline (ECache *cache,
-		     const gchar *uid,
-		     const gchar *revision,
-		     const gchar *object,
-		     GHashTable *other_columns,
-		     GCancellable *cancellable,
-		     GError **error)
-{
-	EOfflineState offline_state;
-	gboolean success = TRUE, is_replace;
-
-	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
-	g_return_val_if_fail (uid != NULL, FALSE);
-	g_return_val_if_fail (object != NULL, FALSE);
-
-	g_rec_mutex_lock (&cache->priv->lock);
-
-	is_replace = e_cache_contains (cache, uid, TRUE);
-	if (is_replace) {
-		GError *local_error = NULL;
-
-		offline_state = e_cache_get_offline_state (cache, uid, cancellable, &local_error);
-
-		if (local_error) {
-			success = FALSE;
-			g_propagate_error (error, local_error);
-		} else if (offline_state != E_OFFLINE_STATE_LOCALLY_CREATED) {
-			offline_state = E_OFFLINE_STATE_LOCALLY_MODIFIED;
-		}
-	} else {
-		offline_state = E_OFFLINE_STATE_LOCALLY_CREATED;
-	}
-
-	success = success && e_cache_put_locked (cache, uid, revision, object, other_columns,
-		offline_state, is_replace, cancellable, error);
-
-	g_rec_mutex_unlock (&cache->priv->lock);
-
-	return success;
-}
-
-/**
- * e_cache_remove_offline:
- * @cache: an #ECache
- * @uid: a unique identifier of an object
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Marks the object with the given @uid as removed offline, eventually removes
- * it when it had been created in the offline. Use e_cache_get_offline_changes()
- * to get list of offline changes.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_cache_remove_offline (ECache *cache,
-			const gchar *uid,
-			GCancellable *cancellable,
-			GError **error)
-{
-	EOfflineState offline_state;
-	gboolean success = TRUE;
-
-	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
-
-	g_rec_mutex_lock (&cache->priv->lock);
-
-	offline_state = e_cache_get_offline_state (cache, uid, cancellable, error);
-	if (offline_state == E_OFFLINE_STATE_UNKNOWN) {
-		success = FALSE;
-	} else if (offline_state == E_OFFLINE_STATE_LOCALLY_CREATED) {
-		success = e_cache_remove (cache, uid, cancellable, error);
-	} else {
-		g_signal_emit (cache,
-			       signals[BEFORE_REMOVE],
-			       0,
-			       uid, cancellable, error,
-			       &success);
-
-		if (success) {
-			success = e_cache_set_offline_state (cache, uid,
-				E_OFFLINE_STATE_LOCALLY_DELETED, cancellable, error);
-		}
-	}
-
-	g_rec_mutex_unlock (&cache->priv->lock);
-
-	return success;
-}
-
-/**
  * e_cache_get_offline_state:
  * @cache: an #ECache
  * @uid: a unique identifier of an object
@@ -1877,7 +1822,7 @@ e_cache_get_offline_state (ECache *cache,
 	g_return_val_if_fail (E_IS_CACHE (cache), E_OFFLINE_STATE_UNKNOWN);
 	g_return_val_if_fail (uid != NULL, E_OFFLINE_STATE_UNKNOWN);
 
-	if (!e_cache_contains (cache, uid, TRUE)) {
+	if (!e_cache_contains (cache, uid, E_CACHE_INCLUDE_DELETED)) {
 		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
 		return offline_state;
 	}
@@ -1917,7 +1862,7 @@ e_cache_set_offline_state (ECache *cache,
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 
-	if (!e_cache_contains (cache, uid, TRUE)) {
+	if (!e_cache_contains (cache, uid, E_CACHE_INCLUDE_DELETED)) {
 		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
 		return FALSE;
 	}
@@ -1947,7 +1892,7 @@ e_cache_get_offline_changes_cb (ECache *cache,
 	if (offline_state == E_OFFLINE_STATE_LOCALLY_CREATED ||
 	    offline_state == E_OFFLINE_STATE_LOCALLY_MODIFIED ||
 	    offline_state == E_OFFLINE_STATE_LOCALLY_DELETED) {
-		*pchanges = g_slist_prepend (*pchanges, e_cache_offline_change_new (uid, offline_state));
+		*pchanges = g_slist_prepend (*pchanges, e_cache_offline_change_new (uid, revision, object, offline_state));
 	}
 
 	return TRUE;
@@ -1982,7 +1927,7 @@ e_cache_get_offline_changes (ECache *cache,
 
 	stmt = e_cache_sqlite_stmt_printf (E_CACHE_COLUMN_STATE "!=%d", E_OFFLINE_STATE_SYNCED);
 
-	if (!e_cache_foreach (cache, TRUE, stmt, e_cache_get_offline_changes_cb, &changes, cancellable, error)) {
+	if (!e_cache_foreach (cache, E_CACHE_INCLUDE_DELETED, stmt, e_cache_get_offline_changes_cb, &changes, cancellable, error)) {
 		g_slist_free_full (changes, e_cache_offline_change_free);
 		changes = NULL;
 	}

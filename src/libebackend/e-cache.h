@@ -96,6 +96,8 @@ typedef enum {
 
 typedef struct {
 	gchar *uid;
+	gchar *revision;
+	gchar *object;
 	EOfflineState state;
 } ECacheOfflineChange;
 
@@ -104,6 +106,8 @@ typedef struct {
 GType		e_cache_offline_change_get_type	(void) G_GNUC_CONST;
 ECacheOfflineChange *
 		e_cache_offline_change_new	(const gchar *uid,
+						 const gchar *revision,
+						 const gchar *object,
 						 EOfflineState state);
 ECacheOfflineChange *
 		e_cache_offline_change_copy	(const ECacheOfflineChange *change);
@@ -132,7 +136,7 @@ void		e_cache_column_info_free	(/* ECacheColumnInfo */ gpointer info);
  *
  * Indicates the type of lock requested in e_cache_lock().
  *
- * Since: 3.24
+ * Since: 3.26
  **/
 typedef enum {
 	E_CACHE_LOCK_READ,
@@ -147,13 +151,42 @@ typedef enum {
  *
  * Indicates what type of action to take while unlocking the cache with e_cache_unlock().
  *
- * Since: 3.24
+ * Since: 3.26
  **/
 typedef enum {
 	E_CACHE_UNLOCK_NONE,
 	E_CACHE_UNLOCK_COMMIT,
 	E_CACHE_UNLOCK_ROLLBACK
 } ECacheUnlockAction;
+
+/**
+ * ECacheDeletedFlag:
+ * @E_CACHE_EXCLUDE_DELETED: Do not include locally deleted objects
+ * @E_CACHE_INCLUDE_DELETED: Include locally deleted objects
+ *
+ * Declares whether to exclude or include locally deleted objects.
+ *
+ * Since: 3.26
+ **/
+typedef enum {
+	E_CACHE_EXCLUDE_DELETED = 0,
+	E_CACHE_INCLUDE_DELETED
+} ECacheDeletedFlag;
+
+/**
+ * ECacheOfflineFlag:
+ * @E_CACHE_IS_ONLINE: The operation is done in online
+ * @E_CACHE_IS_OFFLINE: The operation is done in offline
+ *
+ * Declares whether the operation is done in online or offline.
+ * This influences the offline state of the related obejcts.
+ *
+ * Since: 3.26
+ **/
+typedef enum {
+	E_CACHE_IS_ONLINE = 0,
+	E_CACHE_IS_OFFLINE
+} ECacheOfflineFlag;
 
 typedef struct _ECache ECache;
 typedef struct _ECacheClass ECacheClass;
@@ -321,7 +354,7 @@ void		e_cache_set_revision		(ECache *cache,
 void		e_cache_erase			(ECache *cache);
 gboolean	e_cache_contains		(ECache *cache,
 						 const gchar *uid,
-						 gboolean include_deleted);
+						 ECacheDeletedFlag deleted_flag);
 gchar *		e_cache_get			(ECache *cache,
 						 const gchar *uid,
 						 gchar **out_revision,
@@ -333,40 +366,42 @@ gboolean	e_cache_put			(ECache *cache,
 						 const gchar *revision,
 						 const gchar *object,
 						 GHashTable *other_columns,
+						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_remove			(ECache *cache,
 						 const gchar *uid,
+						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_remove_all		(ECache *cache,
 						 GCancellable *cancellable,
 						 GError **error);
-guint		e_cache_count			(ECache *cache,
-						 gboolean include_deleted,
+guint		e_cache_get_count		(ECache *cache,
+						 ECacheDeletedFlag deleted_flag,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_get_uids		(ECache *cache,
-						 gboolean include_deleted,
+						 ECacheDeletedFlag deleted_flag,
 						 GSList **out_uids,
 						 GSList **out_revisions,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_get_objects		(ECache *cache,
-						 gboolean include_deleted,
+						 ECacheDeletedFlag deleted_flag,
 						 GSList **out_objects,
 						 GSList **out_revisions,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_foreach			(ECache *cache,
-						 gboolean include_deleted,
+						 ECacheDeletedFlag deleted_flag,
 						 const gchar *where_clause,
 						 ECacheForeachFunc func,
 						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_foreach_update		(ECache *cache,
-						 gboolean include_deleted,
+						 ECacheDeletedFlag deleted_flag,
 						 const gchar *where_clause,
 						 ECacheUpdateFunc func,
 						 gpointer user_data,
@@ -374,17 +409,6 @@ gboolean	e_cache_foreach_update		(ECache *cache,
 						 GError **error);
 
 /* Offline support */
-gboolean	e_cache_put_offline		(ECache *cache,
-						 const gchar *uid,
-						 const gchar *revision,
-						 const gchar *object,
-						 GHashTable *other_columns,
-						 GCancellable *cancellable,
-						 GError **error);
-gboolean	e_cache_remove_offline		(ECache *cache,
-						 const gchar *uid,
-						 GCancellable *cancellable,
-						 GError **error);
 EOfflineState	e_cache_get_offline_state	(ECache *cache,
 						 const gchar *uid,
 						 GCancellable *cancellable,
