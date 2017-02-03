@@ -560,12 +560,10 @@ test_offline_basics (TCUFixture *fixture,
 
 	g_assert (!e_cache_set_offline_state (E_CACHE (fixture->book_cache), uid, E_OFFLINE_STATE_LOCALLY_MODIFIED, NULL, &error));
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
+	g_clear_error (&error);
 
 	test_verify_storage (fixture, uid, NULL, NULL, E_OFFLINE_STATE_UNKNOWN);
 	test_check_offline_changes (fixture, NULL);
-
-	g_clear_object (&contact);
-	g_clear_error (&error);
 
 	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), FALSE, NULL, &error), ==, 2);
 	g_assert_cmpint (e_cache_count (E_CACHE (fixture->book_cache), TRUE, NULL, &error), ==, 2);
@@ -579,6 +577,8 @@ test_offline_basics (TCUFixture *fixture,
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
 	g_assert_null (saved_extra);
 	g_clear_error (&error);
+
+	g_clear_object (&contact);
 
 	/* Search after delete */
 	test_basic_search (fixture, EXPECT_DEFAULT);

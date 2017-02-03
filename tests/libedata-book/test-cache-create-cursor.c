@@ -77,8 +77,8 @@ test_create_cursor_invalid_sort (TCUFixture *fixture,
 		sort_fields, sort_types, 1, &error);
 
 	g_assert (cursor == NULL);
-	g_assert (error);
-	g_assert (g_error_matches (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY));
+	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY);
+	g_clear_error (&error);
 }
 
 static void
@@ -91,8 +91,8 @@ test_create_cursor_missing_sort (TCUFixture *fixture,
 	cursor = e_book_cache_cursor_new (fixture->book_cache, NULL, NULL, NULL, 0, &error);
 
 	g_assert (cursor == NULL);
-	g_assert (error);
-	g_assert (g_error_matches (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY));
+	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY);
+	g_clear_error (&error);
 }
 
 gint

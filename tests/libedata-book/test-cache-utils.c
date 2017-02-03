@@ -426,6 +426,8 @@ step_test_free (TCUStepData *data)
 		g_slice_free (TCUStepAssertion, assertion);
 	}
 
+	g_list_free (data->assertions);
+
 	g_slice_free (TCUStepData, data);
 }
 

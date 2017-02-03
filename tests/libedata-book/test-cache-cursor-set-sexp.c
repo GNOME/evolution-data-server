@@ -74,6 +74,8 @@ test_cursor_sexp_calculate_position (TCUCursorFixture *fixture,
 	/* 'blackbird' is now at position 8 out of 13, with a filtered set of contacts in en_US locale */
 	g_assert_cmpint (position, ==, 8);
 	g_assert_cmpint (total, ==, 13);
+
+	g_free (sexp);
 }
 
 static void
@@ -125,6 +127,8 @@ test_cursor_sexp_and_step (TCUCursorFixture *fixture,
 	data = node->data;
 	g_assert_cmpstr (data->uid, ==, "sorted-12");
 	g_slist_free_full (results, e_book_cache_search_data_free);
+
+	g_free (sexp);
 }
 
 gint

@@ -5939,7 +5939,11 @@ e_book_cache_finalize (GObject *object)
 
 	g_free (book_cache->priv->locale);
 	g_free (book_cache->priv->region_code);
-	g_free (book_cache->priv->summary_fields);
+
+	if (book_cache->priv->summary_fields) {
+		summary_fields_array_free (book_cache->priv->summary_fields, book_cache->priv->n_summary_fields);
+		book_cache->priv->summary_fields = NULL;
+	}
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_book_cache_parent_class)->finalize (object);
