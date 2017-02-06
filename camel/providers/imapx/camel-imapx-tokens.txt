@@ -1,7 +1,6 @@
 /* This contains all of the keywords we care about.  These
    can be converted to an id very efficiently */
 struct _imapx_keyword {const gchar *name; camel_imapx_id_t id; };
-struct _imapx_keyword *imapx_tokenise_struct (register const char *str, register unsigned int len);
 %%
 ALERT,			IMAPX_ALERT
 ALREADYEXISTS,		IMAPX_ALREADYEXISTS
