@@ -1683,6 +1683,10 @@ imapx_untagged_status (CamelIMAPXServer *is,
 	if (mailbox != NULL) {
 		camel_imapx_mailbox_handle_status_response (mailbox, response);
 		camel_imapx_store_emit_mailbox_updated (imapx_store, mailbox);
+
+		if (camel_imapx_server_is_in_idle (is))
+			g_signal_emit (is, signals[REFRESH_MAILBOX], 0, mailbox);
+
 		g_object_unref (mailbox);
 	}
 
