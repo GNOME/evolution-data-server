@@ -402,9 +402,10 @@ e_source_credentials_google_refresh_token_sync (ESource *source,
 		return FALSE;
 	}
 
-	if (error && g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+	/* The caller can have set an error from the secret lookup,
+	   which are propagated, but otherwise a success is reported. */
+	if (error && *error)
 		g_clear_error (error);
-	}
 
 	if (!e_source_credentials_google_util_decode_from_secret (secret, E_GOOGLE_SECRET_REFRESH_TOKEN, &refresh_token, NULL) ||
 	    !refresh_token || !*refresh_token) {
