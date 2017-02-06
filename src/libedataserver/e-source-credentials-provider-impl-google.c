@@ -396,8 +396,14 @@ e_source_credentials_google_refresh_token_sync (ESource *source,
 
 	secret = e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_GOOGLE_SECRET);
 	if (!secret) {
-		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to get Google secret from credentials"));
+		if (error && !*error)
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Failed to get Google secret from credentials"));
+
 		return FALSE;
+	}
+
+	if (error && g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+		g_clear_error (error);
 	}
 
 	if (!e_source_credentials_google_util_decode_from_secret (secret, E_GOOGLE_SECRET_REFRESH_TOKEN, &refresh_token, NULL) ||
