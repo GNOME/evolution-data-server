@@ -300,6 +300,7 @@ struct _status_info {
 struct _status_info *
 		imapx_parse_status		(CamelIMAPXInputStream *stream,
 						 CamelIMAPXMailbox *mailbox,
+						 gboolean is_ok_no_bad,
 						 GCancellable *cancellable,
 						 GError **error);
 struct _status_info *

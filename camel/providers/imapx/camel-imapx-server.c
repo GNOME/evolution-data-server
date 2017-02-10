@@ -1775,7 +1775,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 
 	is->priv->context->sinfo = imapx_parse_status (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
-		mailbox, cancellable, error);
+		mailbox, TRUE, cancellable, error);
 
 	g_clear_object (&mailbox);
 
@@ -2366,7 +2366,7 @@ imapx_completion (CamelIMAPXServer *is,
 
 	ic->status = imapx_parse_status (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
-		mailbox, cancellable, error);
+		mailbox, FALSE, cancellable, error);
 
 	g_clear_object (&mailbox);
 
@@ -5084,7 +5084,6 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	}
 
 	if (is->priv->use_qresync && imapx_summary->modseq > 0 && uidvalidity > 0) {
-		imapx_summary->modseq = highestmodseq;
 		if (total != messages ||
 		    camel_folder_summary_get_unread_count (folder->summary) != unseen ||
 		    imapx_summary->modseq != highestmodseq) {
@@ -5099,6 +5098,12 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				imapx_summary->modseq,
 				highestmodseq);
 		} else {
+			imapx_summary->uidnext = uidnext;
+
+			camel_folder_summary_touch (folder->summary);
+			camel_folder_summary_save_to_db (folder->summary, NULL);
+			imapx_update_store_summary (folder);
+
 			c (
 				is->priv->tagprefix,
 				"OK, after QRESYNC we're still in sync. "
@@ -5134,6 +5139,13 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
 	if (success && uidl != 1)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
+
+	if (success) {
+		imapx_summary->modseq = highestmodseq;
+		imapx_summary->uidnext = uidnext;
+
+		camel_folder_summary_touch (folder->summary);
+	}
 
 	g_mutex_lock (&is->priv->changes_lock);
 
@@ -5175,11 +5187,11 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		camel_folder_summary_free_array (array);
 	}
 
-	if (camel_folder_change_info_changed (changes)) {
-		camel_folder_summary_save_to_db (folder->summary, NULL);
-		imapx_update_store_summary (folder);
+	camel_folder_summary_save_to_db (folder->summary, NULL);
+	imapx_update_store_summary (folder);
+
+	if (camel_folder_change_info_changed (changes))
 		camel_folder_changed (folder, changes);
-	}
 
 	camel_folder_change_info_free (changes);
 

@@ -2391,6 +2391,7 @@ imapx_parse_status_unseen (CamelIMAPXInputStream *stream,
 struct _status_info *
 imapx_parse_status (CamelIMAPXInputStream *stream,
                     CamelIMAPXMailbox *mailbox,
+		    gboolean is_ok_no_bad,
                     GCancellable *cancellable,
                     GError **error)
 {
@@ -2503,7 +2504,9 @@ imapx_parse_status (CamelIMAPXInputStream *stream,
 				break;
 
 			case IMAPX_UNSEEN:
-				success = imapx_parse_status_unseen (
+				/* Ignore UNSEEN in OK/NO/BAD, because it's not count of unseen
+				   messages, but the sequence number of the first unseen message. */
+				success = is_ok_no_bad || imapx_parse_status_unseen (
 					stream, mailbox, cancellable, error);
 				break;
 
