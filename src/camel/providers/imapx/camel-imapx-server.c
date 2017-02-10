@@ -1773,7 +1773,7 @@ imapx_untagged_ok_no_bad (CamelIMAPXServer *is,
 
 	is->priv->context->sinfo = imapx_parse_status (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
-		mailbox, cancellable, error);
+		mailbox, TRUE, cancellable, error);
 
 	g_clear_object (&mailbox);
 
@@ -2364,7 +2364,7 @@ imapx_completion (CamelIMAPXServer *is,
 
 	ic->status = imapx_parse_status (
 		CAMEL_IMAPX_INPUT_STREAM (input_stream),
-		mailbox, cancellable, error);
+		mailbox, FALSE, cancellable, error);
 
 	g_clear_object (&mailbox);
 
@@ -5053,13 +5053,13 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	uidnext = camel_imapx_mailbox_get_uidnext (mailbox);
 	uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
 	highestmodseq = camel_imapx_mailbox_get_highestmodseq (mailbox);
-	total = camel_folder_summary_count (camel_folder_get_folder_summary (folder));
+	total = camel_folder_summary_count (CAMEL_FOLDER_SUMMARY (imapx_summary));
 
 	need_rescan =
 		(uidvalidity > 0 && uidvalidity != imapx_summary->validity) ||
 		total != messages ||
 		imapx_summary->uidnext != uidnext ||
-		camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)) != unseen ||
+		camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)) != unseen ||
 		imapx_summary->modseq != highestmodseq;
 
 	if (!need_rescan) {
@@ -5073,9 +5073,8 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	}
 
 	if (is->priv->use_qresync && imapx_summary->modseq > 0 && uidvalidity > 0) {
-		imapx_summary->modseq = highestmodseq;
 		if (total != messages ||
-		    camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)) != unseen ||
+		    camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)) != unseen ||
 		    imapx_summary->modseq != highestmodseq) {
 			c (
 				is->priv->tagprefix,
@@ -5083,18 +5082,24 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				"total %u / %u, unread %u / %u, modseq %"
 				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				total, messages,
-				camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)),
+				camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)),
 				unseen,
 				imapx_summary->modseq,
 				highestmodseq);
 		} else {
+			imapx_summary->uidnext = uidnext;
+
+			camel_folder_summary_touch (CAMEL_FOLDER_SUMMARY (imapx_summary));
+			camel_folder_summary_save (CAMEL_FOLDER_SUMMARY (imapx_summary), NULL);
+			imapx_update_store_summary (folder);
+
 			c (
 				is->priv->tagprefix,
 				"OK, after QRESYNC we're still in sync. "
 				"total %u / %u, unread %u / %u, modseq %"
 				G_GUINT64_FORMAT " / %" G_GUINT64_FORMAT "\n",
 				total, messages,
-				camel_folder_summary_get_unread_count (camel_folder_get_folder_summary (folder)),
+				camel_folder_summary_get_unread_count (CAMEL_FOLDER_SUMMARY (imapx_summary)),
 				unseen,
 				imapx_summary->modseq,
 				highestmodseq);
@@ -5116,13 +5121,20 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		uidl = 1;
 	}
 
-	camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
+	camel_folder_summary_prepare_fetch_all (CAMEL_FOLDER_SUMMARY (imapx_summary), NULL);
 
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
 	if (success && uidl != 1)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
+
+	if (success) {
+		imapx_summary->modseq = highestmodseq;
+		imapx_summary->uidnext = uidnext;
+
+		camel_folder_summary_touch (CAMEL_FOLDER_SUMMARY (imapx_summary));
+	}
 
 	g_mutex_lock (&is->priv->changes_lock);
 
@@ -5136,9 +5148,9 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		GPtrArray *array;
 		gint ii;
 
-		camel_folder_summary_lock (camel_folder_get_folder_summary (folder));
+		camel_folder_summary_lock (CAMEL_FOLDER_SUMMARY (imapx_summary));
 
-		array = camel_folder_summary_get_array (camel_folder_get_folder_summary (folder));
+		array = camel_folder_summary_get_array (CAMEL_FOLDER_SUMMARY (imapx_summary));
 		for (ii = 0; array && ii < array->len; ii++) {
 			const gchar *uid = array->pdata[ii];
 
@@ -5151,11 +5163,11 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 			}
 		}
 
-		camel_folder_summary_unlock (camel_folder_get_folder_summary (folder));
+		camel_folder_summary_unlock (CAMEL_FOLDER_SUMMARY (imapx_summary));
 
 		if (removed != NULL) {
-			camel_folder_summary_remove_uids (camel_folder_get_folder_summary (folder), removed);
-			camel_folder_summary_touch (camel_folder_get_folder_summary (folder));
+			camel_folder_summary_remove_uids (CAMEL_FOLDER_SUMMARY (imapx_summary), removed);
+			camel_folder_summary_touch (CAMEL_FOLDER_SUMMARY (imapx_summary));
 
 			/* Shares UIDs with the 'array'. */
 			g_list_free (removed);
@@ -5164,11 +5176,11 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 		camel_folder_summary_free_array (array);
 	}
 
-	if (camel_folder_change_info_changed (changes)) {
-		camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
-		imapx_update_store_summary (folder);
+	camel_folder_summary_save (CAMEL_FOLDER_SUMMARY (imapx_summary), NULL);
+	imapx_update_store_summary (folder);
+
+	if (camel_folder_change_info_changed (changes))
 		camel_folder_changed (folder, changes);
-	}
 
 	camel_folder_change_info_free (changes);
 
