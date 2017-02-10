@@ -1508,6 +1508,10 @@ nntp_store_initable_init (GInitable *initable,
 	camel_data_cache_set_expire_age (nntp_cache, 60 * 60 * 24 * 14);
 	camel_data_cache_set_expire_access (nntp_cache, 60 * 60 * 24 * 5);
 
+	camel_binding_bind_property (nntp_store, "online",
+		nntp_cache, "expire-enabled",
+		G_BINDING_SYNC_CREATE);
+
 	nntp_store->priv->cache = nntp_cache;  /* takes ownership */
 
 	return TRUE;

@@ -54,6 +54,7 @@ struct _CamelDataCachePrivate {
 
 	gchar *path;
 
+	gboolean expire_enabled;
 	time_t expire_age;
 	time_t expire_access;
 
@@ -62,7 +63,8 @@ struct _CamelDataCachePrivate {
 
 enum {
 	PROP_0,
-	PROP_PATH
+	PROP_PATH,
+	PROP_EXPIRE_ENABLED
 };
 
 G_DEFINE_TYPE (CamelDataCache, camel_data_cache, G_TYPE_OBJECT)
@@ -79,6 +81,12 @@ data_cache_set_property (GObject *object,
 				CAMEL_DATA_CACHE (object),
 				g_value_get_string (value));
 			return;
+
+		case PROP_EXPIRE_ENABLED:
+			camel_data_cache_set_expire_enabled (
+				CAMEL_DATA_CACHE (object),
+				g_value_get_boolean (value));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -94,6 +102,12 @@ data_cache_get_property (GObject *object,
 		case PROP_PATH:
 			g_value_set_string (
 				value, camel_data_cache_get_path (
+				CAMEL_DATA_CACHE (object)));
+			return;
+
+		case PROP_EXPIRE_ENABLED:
+			g_value_set_boolean (
+				value, camel_data_cache_get_expire_enabled (
 				CAMEL_DATA_CACHE (object)));
 			return;
 	}
@@ -137,6 +151,17 @@ camel_data_cache_class_init (CamelDataCacheClass *class)
 			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_EXPIRE_ENABLED,
+		g_param_spec_boolean (
+			"expire-enabled",
+			"Expire Enabled",
+			NULL,
+			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT));
 }
 
 static void
@@ -151,6 +176,7 @@ camel_data_cache_init (CamelDataCache *data_cache)
 
 	data_cache->priv = CAMEL_DATA_CACHE_GET_PRIVATE (data_cache);
 	data_cache->priv->busy_bag = busy_bag;
+	data_cache->priv->expire_enabled = TRUE;
 	data_cache->priv->expire_age = -1;
 	data_cache->priv->expire_access = -1;
 }
@@ -222,6 +248,59 @@ camel_data_cache_set_path (CamelDataCache *cdc,
 	cdc->priv->path = g_strdup (path);
 
 	g_object_notify (G_OBJECT (cdc), "path");
+}
+
+/**
+ * camel_data_cache_get_expire_enabled:
+ * @cdc: a #CamelDataCache
+ *
+ * Gets whether expire of cache data is enabled.
+ *
+ * This is a complementary property for camel_data_cache_set_expire_age()
+ * and camel_data_cache_set_expire_access(), which allows to disable expiry
+ * without touching the two values. Having expire enabled, but not have set
+ * any of the two times, still behaves like not having expiry enabled.
+ *
+ * Returns: Whether expire is enabled.
+ *
+ * Since: 3.24
+ **/
+gboolean
+camel_data_cache_get_expire_enabled (CamelDataCache *cdc)
+{
+	g_return_val_if_fail (CAMEL_IS_DATA_CACHE (cdc), FALSE);
+
+	return cdc->priv->expire_enabled;
+}
+
+/**
+ * camel_data_cache_set_expire_enabled:
+ * @cdc: a #CamelDataCache
+ * @expire_enabled: a value to set
+ *
+ * Sets whether expire of cache data is enabled.
+ *
+ * This is a complementary property for camel_data_cache_set_expire_age()
+ * and camel_data_cache_set_expire_access(), which allows to disable expiry
+ * without touching the two values. Having expire enabled, but not have set
+ * any of the two times, still behaves like not having expiry enabled.
+ *
+ * Returns: Whether expire is enabled.
+ *
+ * Since: 3.24
+ **/
+void
+camel_data_cache_set_expire_enabled (CamelDataCache *cdc,
+				     gboolean expire_enabled)
+{
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
+
+	if (!cdc->priv->expire_enabled == !expire_enabled)
+		return;
+
+	cdc->priv->expire_enabled = expire_enabled;
+
+	g_object_notify (G_OBJECT (cdc), "expire-enabled");
 }
 
 /**
@@ -337,7 +416,7 @@ data_cache_path (CamelDataCache *cdc,
 	if (g_access (dir, F_OK) == -1) {
 		if (create)
 			g_mkdir_with_parents (dir, 0700);
-	} else if (cdc->priv->expire_age != -1 || cdc->priv->expire_access != -1) {
+	} else if (cdc->priv->expire_enabled && (cdc->priv->expire_age != -1 || cdc->priv->expire_access != -1)) {
 		time_t now;
 
 		/* This has a race, but at worst we re-run an expire cycle which is safe */

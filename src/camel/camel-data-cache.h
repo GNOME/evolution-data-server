@@ -70,6 +70,11 @@ CamelDataCache *camel_data_cache_new		(const gchar *path,
 const gchar *	camel_data_cache_get_path	(CamelDataCache *cdc);
 void		camel_data_cache_set_path	(CamelDataCache *cdc,
 						 const gchar *path);
+gboolean	camel_data_cache_get_expire_enabled
+						(CamelDataCache *cdc);
+void		camel_data_cache_set_expire_enabled
+						(CamelDataCache *cdc,
+						 gboolean expire_enabled);
 void		camel_data_cache_set_expire_age	(CamelDataCache *cdc,
 						 time_t when);
 void		camel_data_cache_set_expire_access
