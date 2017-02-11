@@ -8,15 +8,15 @@
 # Miloslav Trmac <mitr@volny.cz>, 2003, 2004, 2005.
 # Petr Kovar <pknbe@volny.cz>, 2008.
 # Jiří Eischmann <jiri@eischmann.cz> 2008, 2009, 2010, 2011, 2012, 2013, 2016.
-# Marek Černocký <marek@manet.cz>, 2010, 2013, 2014, 2015, 2016.
+# Marek Černocký <marek@manet.cz>, 2010, 2013, 2014, 2015, 2016, 2017.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2016-12-21 00:05+0000\n"
-"PO-Revision-Date: 2016-12-22 00:05+0100\n"
+"POT-Creation-Date: 2017-02-07 09:39+0000\n"
+"PO-Revision-Date: 2017-02-11 15:19+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -120,27 +120,27 @@ msgstr "Nelze přejmenovat starou databázi z „%s“ na „%s“: %s"
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3520
-#: ../src/calendar/libecal/e-cal-client.c:3693
-#: ../src/calendar/libecal/e-cal-client.c:3957
-#: ../src/calendar/libecal/e-cal-client.c:4198
-#: ../src/calendar/libecal/e-cal-client.c:4388
-#: ../src/calendar/libecal/e-cal-client.c:4581
-#: ../src/calendar/libecal/e-cal-client.c:4790
-#: ../src/calendar/libecal/e-cal-client.c:4959
-#: ../src/calendar/libecal/e-cal-client.c:5162
-#: ../src/calendar/libecal/e-cal-client.c:5312
-#: ../src/calendar/libecal/e-cal-client.c:5506
-#: ../src/calendar/libecal/e-cal-client.c:5659
-#: ../src/calendar/libecal/e-cal-client.c:5876
-#: ../src/calendar/libecal/e-cal-client.c:6030
-#: ../src/calendar/libecal/e-cal-client.c:6256
-#: ../src/calendar/libecal/e-cal-client.c:6452
-#: ../src/calendar/libecal/e-cal-client.c:6815
-#: ../src/calendar/libecal/e-cal-client.c:7037
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3055
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3067
+#: ../src/calendar/libecal/e-cal-client.c:3518
+#: ../src/calendar/libecal/e-cal-client.c:3691
+#: ../src/calendar/libecal/e-cal-client.c:3955
+#: ../src/calendar/libecal/e-cal-client.c:4196
+#: ../src/calendar/libecal/e-cal-client.c:4386
+#: ../src/calendar/libecal/e-cal-client.c:4579
+#: ../src/calendar/libecal/e-cal-client.c:4788
+#: ../src/calendar/libecal/e-cal-client.c:4957
+#: ../src/calendar/libecal/e-cal-client.c:5160
+#: ../src/calendar/libecal/e-cal-client.c:5310
+#: ../src/calendar/libecal/e-cal-client.c:5504
+#: ../src/calendar/libecal/e-cal-client.c:5657
+#: ../src/calendar/libecal/e-cal-client.c:5874
+#: ../src/calendar/libecal/e-cal-client.c:6028
+#: ../src/calendar/libecal/e-cal-client.c:6254
+#: ../src/calendar/libecal/e-cal-client.c:6450
+#: ../src/calendar/libecal/e-cal-client.c:6813
+#: ../src/calendar/libecal/e-cal-client.c:7035
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3048
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3070
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
@@ -1616,127 +1616,127 @@ msgstr "Nelze změnit hodnotu vlastnosti „%s“ kalendáře"
 msgid "Untitled appointment"
 msgstr "Nepojmenovaná událost"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4742
+#: ../src/calendar/libecal/e-cal-recur.c:4739
 msgid "1st"
 msgstr "1."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4743
+#: ../src/calendar/libecal/e-cal-recur.c:4740
 msgid "2nd"
 msgstr "2."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4744
+#: ../src/calendar/libecal/e-cal-recur.c:4741
 msgid "3rd"
 msgstr "3."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4745
+#: ../src/calendar/libecal/e-cal-recur.c:4742
 msgid "4th"
 msgstr "4."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4746
+#: ../src/calendar/libecal/e-cal-recur.c:4743
 msgid "5th"
 msgstr "5."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4747
+#: ../src/calendar/libecal/e-cal-recur.c:4744
 msgid "6th"
 msgstr "6."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4748
+#: ../src/calendar/libecal/e-cal-recur.c:4745
 msgid "7th"
 msgstr "7."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4749
+#: ../src/calendar/libecal/e-cal-recur.c:4746
 msgid "8th"
 msgstr "8."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4750
+#: ../src/calendar/libecal/e-cal-recur.c:4747
 msgid "9th"
 msgstr "9."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4748
 msgid "10th"
 msgstr "10."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4749
 msgid "11th"
 msgstr "11."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4750
 msgid "12th"
 msgstr "12."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "13th"
 msgstr "13."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "14th"
 msgstr "14."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "15th"
 msgstr "15."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "16th"
 msgstr "16."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "17th"
 msgstr "17."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "18th"
 msgstr "18."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "19th"
 msgstr "19."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "20th"
 msgstr "20."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "21st"
 msgstr "21."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "22nd"
 msgstr "22."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "23rd"
 msgstr "23."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "24th"
 msgstr "24."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "25th"
 msgstr "25."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "26th"
 msgstr "26."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "27th"
 msgstr "27."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "28th"
 msgstr "28."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4770
+#: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "29th"
 msgstr "29."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4771
+#: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "30th"
 msgstr "30."
 
-#: ../src/calendar/libecal/e-cal-recur.c:4772
+#: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "31st"
 msgstr "31."
 
@@ -2186,7 +2186,7 @@ msgstr "Získává se zpráva „%s“ v „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3298
+#: ../src/camel/camel-folder.c:3327
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Stahují se informace o kvótě pro „%s : %s“"
@@ -2194,45 +2194,45 @@ msgstr "Stahují se informace o kvótě pro „%s : %s“"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3596
+#: ../src/camel/camel-folder.c:3625
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Aktualizuje se složka „%s : %s“"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:879
-#: ../src/camel/camel-folder-search.c:921
+#: ../src/camel/camel-folder-search.c:898
+#: ../src/camel/camel-folder-search.c:940
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s) vyžaduje jeden výsledek pravdivostního typu"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:956
+#: ../src/camel/camel-folder-search.c:975
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s) není povoleno uvnitř %s"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:963
-#: ../src/camel/camel-folder-search.c:971
+#: ../src/camel/camel-folder-search.c:982
+#: ../src/camel/camel-folder-search.c:990
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s) vyžaduje řetězec s typem porovnávání"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:999
+#: ../src/camel/camel-folder-search.c:1018
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s) očekává jako výsledek pole"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1009
+#: ../src/camel/camel-folder-search.c:1028
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s) vyžaduje nastavenou složku"
 
-#: ../src/camel/camel-folder-search.c:2049
-#: ../src/camel/camel-folder-search.c:2223
+#: ../src/camel/camel-folder-search.c:2106
+#: ../src/camel/camel-folder-search.c:2280
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2241,8 +2241,8 @@ msgstr ""
 "Nelze zpracovat vyhledávací výraz: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2061
-#: ../src/camel/camel-folder-search.c:2235
+#: ../src/camel/camel-folder-search.c:2118
+#: ../src/camel/camel-folder-search.c:2292
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2852,7 +2852,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Neplatný GType registrovaný pro protokol „%s“"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2994
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2997
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3218,7 +3218,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Pro dokončení této operace musíte pracovat připojeni (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3127
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3130
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1348
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2156
@@ -3392,198 +3392,198 @@ msgstr "Pro čtení a ukládání pošty na serverech IMAP."
 msgid "Error writing to cache stream"
 msgstr "Chyba při zápisu do datového proudu mezipaměti "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2810
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2898
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3160
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2901
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3163
 msgid "Failed to get capabilities"
 msgstr "Selhalo zjištění schopností"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2829
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2832
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2830
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2833
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTTLS není podporováno"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2839
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2842
 msgid "Failed to issue STARTTLS"
 msgstr "Selhalo odbavení příkazu STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2887
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2890
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Nelze se připojit k serveru IMAP %s v zabezpečeném režimu: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2981
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2984
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Server IMAP %s nepodporuje ověřování totožnosti %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3012
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3015
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Nelze ověřit totožnost bez uživatelského jména"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3021
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3024
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "Heslo pro ověření totožnosti není k dispozici"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3032
 msgid "Failed to authenticate"
 msgstr "Selhalo ověření"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3182
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3185
 msgid "Failed to issue NAMESPACE"
 msgstr "Selhalo odbavení příkazu NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3200
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3203
 msgid "Failed to enable QResync"
 msgstr "Selhalo povolení QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3232
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3235
 msgid "Failed to issue NOTIFY"
 msgstr "Selhalo odbavení příkazu NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3710
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3713
 msgid "Failed to select mailbox"
 msgstr "Selhal výběr poštovní schránky"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3813
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3816
 msgid "Cannot issue command, no stream available"
 msgstr "Nelze odbavit příkaz, není k dispozici žádný datový proud"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4077
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4080
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nelze získat zprávu s ID %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4081
 msgid "No such message available."
 msgstr "Žádná taková zpráva není k dispozici."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4115
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4140
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4179
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4118
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4143
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4182
 msgid "Error fetching message"
 msgstr "Chyba při získávání zprávy"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4157
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4755
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4160
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4759
 msgid "Error performing NOOP"
 msgstr "Chyba při vykonávání příkazu NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4172
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4175
 msgid "Failed to close the tmp stream"
 msgstr "Selhalo zavření dočasného datového proudu"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4203
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4206
 msgid "Failed to copy the tmp file"
 msgstr "Selhalo kopírování dočasného souboru"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
 msgid "Error moving messages"
 msgstr "Chyba při přesouvání zpráv"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4366
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
 msgid "Error copying messages"
 msgstr "Chyba při kopírování zpráv"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4551
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4572
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4554
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4575
 msgid "Cannot create spool file: "
 msgstr "Nelze vytvořit soubor fronty: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4658
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4661
 msgid "Error appending message"
 msgstr "Chyba při přidávání zprávy"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4908
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4912
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Hledají se změněné zprávy v „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4912
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4916
 msgid "Error scanning changes"
 msgstr "Chyba při zjišťování změn"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4933
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4937
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Stahují se souhrnné informace o nových zprávách v „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4951
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4955
 msgid "Error fetching message info"
 msgstr "Chyba při získávání informací o zprávě"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5033
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5037
 msgid "Error running STATUS"
 msgstr "Chyba při vykonávání příkazu STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5528
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5558
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5593
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5532
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5562
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5597
 msgid "Error syncing changes"
 msgstr "Chyba při synchronizaci změn"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5731
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5735
 msgid "Error expunging message"
 msgstr "Chyba při trvalém odstranění zprávy"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5803
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5807
 msgid "Error fetching folders"
 msgstr "Chyba při získávání složek"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5814
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5818
 msgid "Error fetching subscribed folders"
 msgstr "Chyba při získávání přihlášených složek"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5836
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5840
 msgid "Error creating folder"
 msgstr "Chyba při vytváření složky"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5892
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5896
 msgid "Error deleting folder"
 msgstr "Chyba při odstraňování složky"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5938
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5942
 msgid "Error renaming folder"
 msgstr "Chyba při přejmenovávání složky"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5970
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5974
 msgid "Error subscribing to folder"
 msgstr "Chyba při přihlašování ke složce"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6006
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6010
 msgid "Error unsubscribing from folder"
 msgstr "Chyba při odhlašování od složky"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6046
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6050
 msgid "IMAP server does not support quotas"
 msgstr "Server IMAP nepodporuje kvóty"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6062
 msgid "Error retrieving quota information"
 msgstr "Chyba při získávání informací o kvótě"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6105
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6109
 msgid "Search failed"
 msgstr "Hledání selhalo"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6223
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6227
 msgid "Error running IDLE"
 msgstr "Chyba při vykonávání příkazu IDLE"
 
@@ -3598,48 +3598,48 @@ msgstr "Chyba při vykonávání příkazu IDLE"
 msgid "Inbox"
 msgstr "Přijatá"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:800
+#: ../src/camel/providers/imapx/camel-imapx-store.c:802
 #, c-format
 msgid "IMAP server %s"
 msgstr "Server IMAP %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:803
+#: ../src/camel/providers/imapx/camel-imapx-store.c:805
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "Služba IMAP pro %s na %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:871
+#: ../src/camel/providers/imapx/camel-imapx-store.c:873
 msgid "No IMAPx connection object provided"
 msgstr "Není poskytován žádný objekt připojení IMAPx"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:888
+#: ../src/camel/providers/imapx/camel-imapx-store.c:890
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:92
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Heslo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:890
+#: ../src/camel/providers/imapx/camel-imapx-store.c:892
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Tato volba vás připojí server IMAP pomocí hesel přenášených v prostém textu."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:973
+#: ../src/camel/providers/imapx/camel-imapx-store.c:975
 #, c-format
 msgid "No such folder %s"
 msgstr "Složka %s neexistuje"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1421
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1425
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Pro cestu ke složce „%s“ není žádný jmenný prostor IMAP"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1682
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1916
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1686
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1920
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Získává se seznam složek pro „%s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2133
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2137
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Název složky „%s“ je neplatný, protože obsahuje znak „%c“"
@@ -3649,97 +3649,97 @@ msgstr "Název složky „%s“ je neplatný, protože obsahuje znak „%c“"
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2510
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2514
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Koncepty"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2511
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2515
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Koncepty"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2512
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2516
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Koncept"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2515
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2519
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Šablony"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2518
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2522
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Archiv"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2521
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2525
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Odeslaná pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2522
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2526
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Odeslané"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2523
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2527
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Odeslané položky"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2524
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2528
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Odeslané zprávy"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2527
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2531
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2528
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2532
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Nevyžádané"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2529
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2533
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Nevyžádané e-maily"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2530
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2534
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Nevyžádaná pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2531
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2535
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Nechtěná"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2532
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2536
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Nechtěná pošta"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2535
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2539
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Koš"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2536
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2540
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Koš"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2537
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2541
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Smazané položky"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2538
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2542
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Smazané zprávy"
@@ -5034,11 +5034,12 @@ msgstr "Absolutní cesta ke spustitelnému programu gpg (nebo gpg2)"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
 msgid ""
-"An example is “/usr/bin/gpg”; if it is not filled, or doesn’t exist, then it "
-"is searched for it. Change requires restart of the application."
+"An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value "
+"is set, then it will be searched for. Change requires restart of the "
+"application."
 msgstr ""
-"Například „/usr/bin/gpg“. Pokud není vyplněno nebo neexistuje, bude "
-"vyhledán. Provedení změny vyžaduje restart aplikace."
+"Například „/usr/bin/gpg“. Pokud je ponecháno prázdné nebo je nastavena "
+"nesprávná hodnota, bude vyhledáno. Provedení změny vyžaduje restart aplikace."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
 msgid "Whether to load photos of signers/encrypters"
@@ -5432,31 +5433,31 @@ msgstr "Přihlašovací data pro Google nebyla nalezena"
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:188
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:210
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:233
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:523
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:530
 msgid "Google authentication is not supported"
 msgstr "Ověření u Googlu není podporováno"
 
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:399
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:400
 msgid "Failed to get Google secret from credentials"
 msgstr "Selhalo získání tajemství Googlu z pověření"
 
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:406
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:413
 msgid "Refresh token not found in Google secret"
 msgstr "Aktualizační tiket nebyl v tajemství Googlu nalezen"
 
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:414
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:421
 msgid "Failed to construct refresh_token request"
 msgstr "Selhalo sestavení požadavku refresh_token"
 
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:447
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:454
 msgid "Failed to encode new access token to Google secret"
 msgstr "Selhalo zakódování nového přistupového tiketu k tajemství Googlu"
 
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:457
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:464
 msgid "Failed to get access token from refresh_token server response"
 msgstr "Selhalo získání přístupového tiketu z odpovědi serveru refresh_token"
 
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:463
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:470
 msgid "Failed to refresh token"
 msgstr "Selhala aktualizace tiketu"
 
@@ -5744,7 +5745,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:689
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1063
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1064
 msgid "_Cancel"
 msgstr "_Zrušit"
 
@@ -5801,7 +5802,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Zadejte prosím heslo pro účet „%s“."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1064
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1065
 msgid "_OK"
 msgstr "_Budiž"
 
@@ -5917,19 +5918,19 @@ msgctxt "WebDAVDiscover"
 msgid "Tasks"
 msgstr "Úkoly"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:825
+#: ../src/libedataserverui/e-webdav-discover-widget.c:826
 msgid "Invalid URL"
 msgstr "Neplatná adresa URL"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:839
+#: ../src/libedataserverui/e-webdav-discover-widget.c:840
 msgid "User name not filled"
 msgstr "Není vyplněno uživatelovo jméno"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:880
+#: ../src/libedataserverui/e-webdav-discover-widget.c:881
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../src/libedataserverui/e-webdav-discover-widget.c:883
+#: ../src/libedataserverui/e-webdav-discover-widget.c:884
 msgid "Searching server sources..."
 msgstr "Vyhledávají se zdroje na serveru…"
 
@@ -5982,7 +5983,7 @@ msgstr "Nelze najít prvek Účet"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Nelze najít odpovědi autodiscover ASUrl a OABUrl"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1249
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1340
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -5991,7 +5992,7 @@ msgstr ""
 "Nelze nalézt odpovídající účet ve službě org.gnome.OnlineAccounts, ze které "
 "se získává přístupový tiket pro „%s“"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1279
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1370
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Selhalo získání přístupového tiketu pro „%s“:"
@@ -6199,3 +6200,4 @@ msgstr ""
 #: ../src/tools/addressbook-export/addressbook-export.c:995
 msgid "Only support csv or vcard format."
 msgstr "Podporuje pouze formáty csv nebo vcard."
+
