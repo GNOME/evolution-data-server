@@ -61,6 +61,8 @@ struct _CamelNNTPStream {
 
 	guchar *buf, *ptr, *end;
 	guchar *linebuf, *lineptr, *lineend;
+
+	GRecMutex lock;
 };
 
 struct _CamelNNTPStreamClass {
