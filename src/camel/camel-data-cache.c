@@ -285,8 +285,6 @@ camel_data_cache_get_expire_enabled (CamelDataCache *cdc)
  * without touching the two values. Having expire enabled, but not have set
  * any of the two times, still behaves like not having expiry enabled.
  *
- * Returns: Whether expire is enabled.
- *
  * Since: 3.24
  **/
 void
