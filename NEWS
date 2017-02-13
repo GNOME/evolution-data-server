@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.22.5 2017-02-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 777431 - [IMAPx] Gmail's BODY search returns only whole word matches (Milan Crha)
+	Bug 777695 - [ECalClient] Produce CRLF line endings in iCalendar string (Tim Ruffing)
+	Bug 777781 - Unfold header values before comparing them (Milan Crha)
+	Bug 778222 - Fix a build break with gperf 3.1 (Milan Crha)
+	Bug 778069 - UI not updated after IMAP NOTIFY notifications (Milan Crha)
+	Bug 778265 - Serialize access to underlying NNTP stream (Milan Crha)
+
+Miscellaneous:
+	Ignore errors when getting message for a body-contains search (Milan Crha)
+	Fix a ref/unref imbalance of CamelIMAPXStoreInfo (Milan Crha)
+	Fix a memory leak in camel_imapx_server_append_message_sync() (Milan Crha)
+	Unable to add additional Google calendar (Milan Crha)
+	[IMAPx] Avoid unneeded full flags folder update when no changes made (Milan Crha)
+
 Evolution-Data-Server 3.22.4 2017-01-16
 ---------------------------------------
 
