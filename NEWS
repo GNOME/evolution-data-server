@@ -1,3 +1,37 @@
+Evolution-Data-Server 3.23.90 2017-02-13
+----------------------------------------
+
+Bug Fixes:
+	Bug 777207 - Allow e-mail address change for GOA configured accounts (Milan Crha)
+	Bug 777431 - [IMAPx] Gmail's BODY search returns only whole word matches (Milan Crha)
+	Bug 771289 - Memory leaks in test-contact-types.c (Milan Crha)
+	Bug 777695 - [ECalClient] Produce CRLF line endings in iCalendar string (Tim Ruffing)
+	Bug 777781 - Unfold header values before comparing them (Milan Crha)
+	Bug 778222 - Fix a build break with gperf 3.1 (Milan Crha)
+	Bug 778069 - UI not updated after IMAP NOTIFY notifications (Milan Crha)
+	Bug 777660 - Strange sentence in gschema string (Milan Crha)
+	Bug 778265 - Serialize access to underlying NNTP stream (Milan Crha)
+
+Miscellaneous:
+	Ignore errors when getting message for a body-contains search (Milan Crha)
+	Correct config.h inclusion in some recent Camel source files (Milan Crha)
+	Fix a CamelVeeMessageInfo memory leak (Milan Crha)
+	Fix a ref/unref imbalance of CamelIMAPXStoreInfo (Milan Crha)
+	Fix a memory leak in camel_imapx_server_append_message_sync() (Milan Crha)
+	Unable to add additional Google calendar (Milan Crha)
+	Avoid local message cache expiry clean up when being offline (Milan Crha)
+	[IMAPx] Avoid unneeded full flags folder update when no changes made (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Fabio Tomat (fur)
+	Piotr Drąg (pl)
+	Dušan Kazik (sk)
+	Mario Blättermann (de)
+	Aurimas Černius (lt)
+	Marek Černocký (cs)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.23.4 2017-01-16
 ---------------------------------------
 
