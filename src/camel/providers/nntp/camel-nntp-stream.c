@@ -58,6 +58,8 @@ nntp_stream_finalize (GObject *object)
 	g_free (stream->buf);
 	g_free (stream->linebuf);
 
+	g_rec_mutex_clear (&stream->lock);
+
 	/* Chain up to parent's finalize () method. */
 	G_OBJECT_CLASS (camel_nntp_stream_parent_class)->finalize (object);
 }
@@ -109,8 +111,12 @@ nntp_stream_read (CamelStream *stream,
 	guchar *p, *e, c;
 	gint state;
 
-	if (is->mode != CAMEL_NNTP_STREAM_DATA || n == 0)
+	g_rec_mutex_lock (&is->lock);
+
+	if (is->mode != CAMEL_NNTP_STREAM_DATA || n == 0) {
+		g_rec_mutex_unlock (&is->lock);
 		return 0;
+	}
 
 	o = buffer;
 	oe = buffer + n;
@@ -125,8 +131,10 @@ nntp_stream_read (CamelStream *stream,
 	case 0:		/* start of line, always read at least 3 chars */
 		while (e - p < 3) {
 			is->ptr = p;
-			if (nntp_stream_fill (is, cancellable, error) == -1)
+			if (nntp_stream_fill (is, cancellable, error) == -1) {
+				g_rec_mutex_unlock (&is->lock);
 				return -1;
+			}
 			p = is->ptr;
 			e = is->end;
 		}
@@ -135,6 +143,7 @@ nntp_stream_read (CamelStream *stream,
 				is->ptr = p + 3;
 				is->mode = CAMEL_NNTP_STREAM_EOD;
 				is->state = 0;
+				g_rec_mutex_unlock (&is->lock);
 				return o - buffer;
 			}
 			p++;
@@ -148,8 +157,10 @@ nntp_stream_read (CamelStream *stream,
 				/* end of input sentinal check */
 				if (p > e) {
 					is->ptr = e;
-					if (nntp_stream_fill (is, cancellable, error) == -1)
+					if (nntp_stream_fill (is, cancellable, error) == -1) {
+						g_rec_mutex_unlock (&is->lock);
 						return -1;
+					}
 					p = is->ptr;
 					e = is->end;
 				} else {
@@ -167,6 +178,8 @@ nntp_stream_read (CamelStream *stream,
 	is->ptr = p;
 	is->state = state;
 
+	g_rec_mutex_unlock (&is->lock);
+
 	return o - buffer;
 }
 
@@ -178,8 +191,13 @@ nntp_stream_write (CamelStream *stream,
                    GError **error)
 {
 	CamelNNTPStream *is = (CamelNNTPStream *) stream;
+	gssize written;
 
-	return camel_stream_write (is->source, buffer, n, cancellable, error);
+	g_rec_mutex_lock (&is->lock);
+	written = camel_stream_write (is->source, buffer, n, cancellable, error);
+	g_rec_mutex_unlock (&is->lock);
+
+	return written;
 }
 
 static gint
@@ -239,6 +257,8 @@ camel_nntp_stream_init (CamelNNTPStream *is)
 
 	is->state = 0;
 	is->mode = CAMEL_NNTP_STREAM_LINE;
+
+	g_rec_mutex_init (&is->lock);
 }
 
 CamelNNTPStream *
@@ -268,7 +288,10 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 	g_return_val_if_fail (data != NULL, -1);
 	g_return_val_if_fail (len != NULL, -1);
 
+	g_rec_mutex_lock (&is->lock);
+
 	if (is->mode == CAMEL_NNTP_STREAM_EOD) {
+		g_rec_mutex_unlock (&is->lock);
 		*data = is->linebuf;
 		*len = 0;
 		return 0;
@@ -285,8 +308,10 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 		/* need at least 3 chars in buffer */
 		while (e - p < 3) {
 			is->ptr = p;
-			if (nntp_stream_fill (is, cancellable, error) == -1)
+			if (nntp_stream_fill (is, cancellable, error) == -1) {
+				g_rec_mutex_unlock (&is->lock);
 				return -1;
+			}
 			p = is->ptr;
 			e = is->end;
 		}
@@ -302,6 +327,8 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 
 				dd (printf ("NNTP_STREAM_LINE (END)\n"));
 
+				g_rec_mutex_unlock (&is->lock);
+
 				return 0;
 			}
 			p++;
@@ -315,8 +342,10 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 				/* sentinal? */
 				if (p> e) {
 					is->ptr = e;
-					if (nntp_stream_fill (is, cancellable, error) == -1)
+					if (nntp_stream_fill (is, cancellable, error) == -1) {
+						g_rec_mutex_unlock (&is->lock);
 						return -1;
+					}
 					p = is->ptr;
 					e = is->end;
 				} else {
@@ -324,6 +353,8 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 					*data = is->linebuf;
 					*len = o - is->linebuf;
 					*o = 0;
+
+					g_rec_mutex_unlock (&is->lock);
 
 					dd (printf ("NNTP_STREAM_LINE (%d): '%s'\n", *len, *data));
 
@@ -342,6 +373,8 @@ camel_nntp_stream_line (CamelNNTPStream *is,
 		oe = is->lineend - 1;
 		o = is->linebuf + oldlen;
 	}
+
+	g_rec_mutex_unlock (&is->lock);
 }
 
 /* returns -1 on error, 0 if last lot of data, >0 if more remaining */
@@ -361,11 +394,15 @@ camel_nntp_stream_gets (CamelNNTPStream *is,
 
 	*len = 0;
 
+	g_rec_mutex_lock (&is->lock);
+
 	max = is->end - is->ptr;
 	if (max == 0) {
 		max = nntp_stream_fill (is, cancellable, error);
-		if (max <= 0)
+		if (max <= 0) {
+			g_rec_mutex_unlock (&is->lock);
 			return max;
+		}
 	}
 
 	*start = is->ptr;
@@ -375,6 +412,8 @@ camel_nntp_stream_gets (CamelNNTPStream *is,
 	*start = is->ptr;
 	*len = max;
 	is->ptr += max;
+
+	g_rec_mutex_unlock (&is->lock);
 
 	return end == NULL ? 1 : 0;
 }
@@ -405,10 +444,15 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 
 	*len = 0;
 
-	if (is->mode == CAMEL_NNTP_STREAM_EOD)
+	g_rec_mutex_lock (&is->lock);
+
+	if (is->mode == CAMEL_NNTP_STREAM_EOD) {
+		g_rec_mutex_unlock (&is->lock);
 		return 0;
+	}
 
 	if (is->mode == CAMEL_NNTP_STREAM_LINE) {
+		g_rec_mutex_unlock (&is->lock);
 		g_warning ("nntp_stream reading data in line mode\n");
 		return 0;
 	}
@@ -419,8 +463,10 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 
 	while (e - p < 3) {
 		is->ptr = p;
-		if (nntp_stream_fill (is, cancellable, error) == -1)
+		if (nntp_stream_fill (is, cancellable, error) == -1) {
+			g_rec_mutex_unlock (&is->lock);
 			return -1;
+		}
 		p = is->ptr;
 		e = is->end;
 	}
@@ -438,6 +484,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 					*start = s;
 					is->mode = CAMEL_NNTP_STREAM_EOD;
 					is->state = 0;
+					g_rec_mutex_unlock (&is->lock);
 
 					return 0;
 				}
@@ -452,6 +499,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 					*len = p-s;
 					*start = s;
 					is->state = 1;
+					g_rec_mutex_unlock (&is->lock);
 
 					return 1;
 				}
@@ -477,6 +525,7 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 	*len = p-s;
 	*start = s;
 
+	g_rec_mutex_unlock (&is->lock);
+
 	return 1;
 }
-
