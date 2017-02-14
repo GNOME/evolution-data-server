@@ -78,8 +78,279 @@ G_DEFINE_QUARK (e-cache-error-quark, e_cache_error)
 
 G_DEFINE_ABSTRACT_TYPE (ECache, e_cache, G_TYPE_OBJECT)
 
+G_DEFINE_BOXED_TYPE (ECacheColumnValues, e_cache_column_values, e_cache_column_values_copy, e_cache_column_values_free)
 G_DEFINE_BOXED_TYPE (ECacheOfflineChange, e_cache_offline_change, e_cache_offline_change_copy, e_cache_offline_change_free)
 G_DEFINE_BOXED_TYPE (ECacheColumnInfo, e_cache_column_info, e_cache_column_info_copy, e_cache_column_info_free)
+
+/**
+ * e_cache_column_values_new:
+ *
+ * Creates a new #ECacheColumnValues to store values for additional columns.
+ * The column names are compared case insensitively.
+ *
+ * Returns: (transfer full): a new #ECacheColumnValues. Free with e_cache_column_values_free(),
+ *    when no longer needed.
+ *
+ * Since: 3.26
+ **/
+ECacheColumnValues *
+e_cache_column_values_new (void)
+{
+	return (ECacheColumnValues *) g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, g_free);
+}
+
+/**
+ * e_cache_column_values_copy:
+ * @other_columns: (nullable): an #ECacheColumnValues
+ *
+ * Returns: (transfer full): Copy of the @other_columns. Free with
+ *    e_cache_column_values_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+ECacheColumnValues *
+e_cache_column_values_copy (ECacheColumnValues *other_columns)
+{
+	GHashTableIter iter;
+	gpointer name, value;
+	ECacheColumnValues *copy;
+
+	if (!other_columns)
+		return NULL;
+
+	copy = e_cache_column_values_new ();
+
+	e_cache_column_values_init_iter (other_columns, &iter);
+	while (g_hash_table_iter_next (&iter, &name, &value)) {
+		e_cache_column_values_put (copy, name, value);
+	}
+
+	return copy;
+}
+
+/**
+ * e_cache_column_values_free:
+ * @other_columns: (nullable): an #ECacheColumnValues
+ *
+ * Frees previously allocated @other_columns with
+ * e_cache_column_values_new() or e_cache_column_values_copy().
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_column_values_free (ECacheColumnValues *other_columns)
+{
+	if (other_columns)
+		g_hash_table_destroy ((GHashTable *) other_columns);
+}
+
+/**
+ * e_cache_column_values_put:
+ * @other_columns: an #ECacheColumnValues
+ * @name: a column name
+ * @value: (nullable): a column value
+ *
+ * Puts the @value for column @name. If contains a value for the same
+ * column, then it is replaced. This creates a copy of both @name
+ * and @value.
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_column_values_put (ECacheColumnValues *other_columns,
+			   const gchar *name,
+			   const gchar *value)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_if_fail (other_columns != NULL);
+	g_return_if_fail (name != NULL);
+
+	g_hash_table_insert (hash_table, g_strdup (name), g_strdup (value));
+}
+
+/**
+ * e_cache_column_values_take_value:
+ * @other_columns: an #ECacheColumnValues
+ * @name: a column name
+ * @value: (nullable) (in) (transfer full): a column value
+ *
+ * Puts the @value for column @name. If contains a value for the same
+ * column, then it is replaced. This creates a copy of the @name, but
+ * takes owner ship of the @value.
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_column_values_take_value (ECacheColumnValues *other_columns,
+				  const gchar *name,
+				  gchar *value)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_if_fail (other_columns != NULL);
+	g_return_if_fail (name != NULL);
+
+	g_hash_table_insert (hash_table, g_strdup (name), value);
+}
+
+/**
+ * e_cache_column_values_take:
+ * @other_columns: an #ECacheColumnValues
+ * @name: (in) (transfer full): a column name
+ * @value: (nullable) (in) (transfer full): a column value
+ *
+ * Puts the @value for column @name. If contains a value for the same
+ * column, then it is replaced. This creates takes ownership of both
+ * the @name and the @value.
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_column_values_take (ECacheColumnValues *other_columns,
+			    gchar *name,
+			    gchar *value)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_if_fail (other_columns != NULL);
+	g_return_if_fail (name != NULL);
+
+	g_hash_table_insert (hash_table, name, value);
+}
+
+/**
+ * e_cache_column_values_contains:
+ * @other_columns: an #ECacheColumnValues
+ * @name: a column name
+ *
+ * Returns: Whether @other_columns contains column named @name.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cache_column_values_contains (ECacheColumnValues *other_columns,
+				const gchar *name)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_val_if_fail (other_columns != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	return g_hash_table_contains (hash_table, name);
+}
+
+/**
+ * e_cache_column_values_remove:
+ * @other_columns: an #ECacheColumnValues
+ * @name: a column name
+ *
+ * Removes value for the column named @name from @other_columns.
+ *
+ * Returns: Whether such column existed and had been removed.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cache_column_values_remove (ECacheColumnValues *other_columns,
+			      const gchar *name)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_val_if_fail (other_columns != NULL, FALSE);
+	g_return_val_if_fail (name != NULL, FALSE);
+
+	return g_hash_table_remove (hash_table, name);
+}
+
+/**
+ * e_cache_column_values_remove_all:
+ * @other_columns: an #ECacheColumnValues
+ *
+ * Removes all values from the @other_columns, leaving it empty.
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_column_values_remove_all (ECacheColumnValues *other_columns)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_if_fail (other_columns != NULL);
+
+	g_hash_table_remove_all (hash_table);
+}
+
+/**
+ * e_cache_column_values_lookup:
+ * @other_columns: an #ECacheColumnValues
+ * @name: a column name
+ *
+ * Looks up currently stored value for the column named @name.
+ * As the values can be %NULL one cannot distinguish between
+ * a column which doesn't have stored any value and a column
+ * which has stored %NULL value. Use e_cache_column_values_contains()
+ * to check whether such column exitst in the @other_columns.
+ * The returned pointer is owned by @other_columns and is valid until
+ * the value is overwritten of the @other_columns freed.
+ *
+ * Returns: Stored value for the column named @name, or %NULL, if
+ *    no such column values is stored.
+ *
+ * Since: 3.26
+ **/
+const gchar *
+e_cache_column_values_lookup (ECacheColumnValues *other_columns,
+			      const gchar *name)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_val_if_fail (other_columns != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	return g_hash_table_lookup (hash_table, name);
+}
+
+/**
+ * e_cache_column_values_get_size:
+ * @other_columns: an #ECacheColumnValues
+ *
+ * Returns: How many columns are stored in the @other_columns.
+ *
+ * Since: 3.26
+ **/
+guint
+e_cache_column_values_get_size (ECacheColumnValues *other_columns)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_val_if_fail (other_columns != NULL, 0);
+
+	return g_hash_table_size (hash_table);
+}
+
+/**
+ * e_cache_column_values_init_iter:
+ * @other_columns: an #ECacheColumnValues
+ * @iter: a #GHashTableIter
+ *
+ * Initialized the @iter, thus the @other_columns can be traversed
+ * with g_hash_table_iter_next(). The key is a column name and
+ * the value is the corresponding column value.
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_column_values_init_iter (ECacheColumnValues *other_columns,
+				 GHashTableIter *iter)
+{
+	GHashTable *hash_table = (GHashTable *) other_columns;
+
+	g_return_if_fail (other_columns != NULL);
+	g_return_if_fail (iter != NULL);
+
+	g_hash_table_iter_init (iter, hash_table);
+}
 
 /**
  * e_cache_offline_change_new:
@@ -394,7 +665,7 @@ e_cache_set_key_internal (ECache *cache,
 
 	if (value) {
 		success = e_cache_sqlite_exec_printf (cache,
-			"INSERT or REPLACE INTO " E_CACHE_TABLE_KEYS " (key, value) values (%Q, %Q)",
+			"INSERT or REPLACE INTO " E_CACHE_TABLE_KEYS " (key, value) VALUES (%Q, %Q)",
 			NULL, NULL, NULL, error,
 			usekey, value);
 	} else {
@@ -882,7 +1153,7 @@ e_cache_contains (ECache *cache,
 struct GetObjectData {
 	gchar *object;
 	gchar **out_revision;
-	GHashTable **out_other_columns;
+	ECacheColumnValues **out_other_columns;
 };
 
 static gboolean
@@ -910,9 +1181,9 @@ e_cache_get_object_cb (ECache *cache,
 			gd->object = g_strdup (column_values[ii]);
 		} else if (gd->out_other_columns) {
 			if (!*gd->out_other_columns)
-				*gd->out_other_columns = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, g_free);
+				*gd->out_other_columns = e_cache_column_values_new ();
 
-			g_hash_table_insert (*gd->out_other_columns, g_strdup (column_names[ii]), g_strdup (column_values[ii]));
+			e_cache_column_values_put (*gd->out_other_columns, column_names[ii], column_values[ii]);
 		} else if (gd->object && (!gd->out_revision || *gd->out_revision)) {
 			/* Short-break the cycle when the other columns are not requested and
 			   the object/revision values were already read. */
@@ -929,8 +1200,8 @@ e_cache_get_object_cb (ECache *cache,
  * @uid: a unique identifier of an object
  * @out_revision: (out) (nullable) (transfer full): an out variable for a revision
  *    of the object, or %NULL to ignore
- * @out_other_columns: (out) (nullable) (transfer full) (element-type utf8 utf8): an out
- *    variable for other columns, as defined when crating the @cache, or %NULL to ignore
+ * @out_other_columns: (out) (nullable) (transfer full): an out
+ *    variable for #ECacheColumnValues other columns, as defined when creating the @cache, or %NULL to ignore
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -939,7 +1210,8 @@ e_cache_get_object_cb (ECache *cache,
  * Free it with g_free() when no longer needed. Similarly the @out_other_columns
  * contains a column name to column value strings for additional columns which had
  * been requested when calling e_cache_initialize_sync(), if not %NULL.
- * Free the returned #GHashTable with g_hash_table_unref(), when no longer needed.
+ * Free the returned #ECacheColumnValues with e_cache_column_values_free(), when
+ * no longer needed.
  *
  * Returns: (nullable) (transfer full): An object with the given @uid. Free it
  *    with g_free(), when no longer needed. Returns %NULL on error, like when
@@ -951,7 +1223,7 @@ gchar *
 e_cache_get (ECache *cache,
 	     const gchar *uid,
 	     gchar **out_revision,
-	     GHashTable **out_other_columns,
+	     ECacheColumnValues **out_other_columns,
 	     GCancellable *cancellable,
 	     GError **error)
 {
@@ -987,13 +1259,13 @@ e_cache_put_locked (ECache *cache,
 		    const gchar *uid,
 		    const gchar *revision,
 		    const gchar *object,
-		    GHashTable *other_columns,
+		    ECacheColumnValues *other_columns,
 		    EOfflineState offline_state,
 		    gboolean is_replace,
 		    GCancellable *cancellable,
 		    GError **error)
 {
-	GHashTable *my_other_columns = NULL;
+	ECacheColumnValues *my_other_columns = NULL;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
@@ -1001,7 +1273,7 @@ e_cache_put_locked (ECache *cache,
 	g_return_val_if_fail (object != NULL, FALSE);
 
 	if (!other_columns) {
-		my_other_columns = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, g_free, g_free);
+		my_other_columns = e_cache_column_values_new ();
 		other_columns = my_other_columns;
 	}
 
@@ -1022,8 +1294,7 @@ e_cache_put_locked (ECache *cache,
 		success = klass->put_locked (cache, uid, revision, object, other_columns, offline_state, is_replace, cancellable, error);
 	}
 
-	if (my_other_columns)
-		g_hash_table_unref (my_other_columns);
+	e_cache_column_values_free (my_other_columns);
 
 	return success;
 }
@@ -1034,7 +1305,7 @@ e_cache_put_locked (ECache *cache,
  * @uid: a unique identifier of an object
  * @revision: (nullable): a revision of the object
  * @object: the object itself
- * @other_columns: (nullable) (element-type utf8 utf8): what other columns to set; can be %NULL
+ * @other_columns: (nullable): an #ECacheColumnValues with other columns to set; can be %NULL
  * @offline_flag: one of #ECacheOfflineFlag, whether putting this object in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -1055,7 +1326,7 @@ e_cache_put (ECache *cache,
 	     const gchar *uid,
 	     const gchar *revision,
 	     const gchar *object,
-	     GHashTable *other_columns,
+	     ECacheColumnValues *other_columns,
 	     ECacheOfflineFlag offline_flag,
 	     GCancellable *cancellable,
 	     GError **error)
@@ -1749,7 +2020,7 @@ e_cache_foreach_update (ECache *cache,
 					gchar *new_revision = NULL;
 					gchar *new_object = NULL;
 					EOfflineState new_offline_state = fr->offline_state;
-					GHashTable *new_other_columns = NULL;
+					ECacheColumnValues *new_other_columns = NULL;
 
 					success = func (cache, fr->uid, fr->revision, fr->object, fr->offline_state,
 						fr->ncols, (const gchar **) fu.column_names->pdata,
@@ -1761,7 +2032,7 @@ e_cache_foreach_update (ECache *cache,
 					    (new_revision && g_strcmp0 (new_revision, fr->revision) != 0) ||
 					    (new_object && g_strcmp0 (new_object, fr->object) != 0) ||
 					    (new_offline_state != fr->offline_state) ||
-					    (new_other_columns && g_hash_table_size (new_other_columns) > 0))) {
+					    (new_other_columns && e_cache_column_values_get_size (new_other_columns) > 0))) {
 						success = e_cache_put_locked (cache,
 							fr->uid,
 							new_revision ? new_revision : fr->revision,
@@ -1773,8 +2044,7 @@ e_cache_foreach_update (ECache *cache,
 
 					g_free (new_revision);
 					g_free (new_object);
-					if (new_other_columns)
-						g_hash_table_unref (new_other_columns);
+					e_cache_column_values_free (new_other_columns);
 
 					if (!g_slist_next (link)) {
 						g_free (uid);
@@ -2372,7 +2642,7 @@ e_cache_put_locked_default (ECache *cache,
 			    const gchar *uid,
 			    const gchar *revision,
 			    const gchar *object,
-			    GHashTable *other_columns,
+			    ECacheColumnValues *other_columns,
 			    EOfflineState offline_state,
 			    gboolean is_replace,
 			    GCancellable *cancellable,
@@ -2398,7 +2668,7 @@ e_cache_put_locked_default (ECache *cache,
 		GHashTableIter iter;
 		gpointer key, value;
 
-		g_hash_table_iter_init (&iter, (GHashTable *) other_columns);
+		e_cache_column_values_init_iter (other_columns, &iter);
 		while (g_hash_table_iter_next (&iter, &key, &value)) {
 			if (!other_names)
 				other_names = g_string_new ("");
@@ -2538,7 +2808,7 @@ e_cache_before_put_default (ECache *cache,
 			    const gchar *uid,
 			    const gchar *revision,
 			    const gchar *object,
-			    GHashTable *other_columns,
+			    ECacheColumnValues *other_columns,
 			    gboolean is_replace,
 			    GCancellable *cancellable,
 			    GError **error)

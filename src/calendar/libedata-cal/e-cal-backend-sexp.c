@@ -427,8 +427,8 @@ matches_attendee (ECalComponent *comp,
 	for (l = a_list; l; l = l->next) {
 		ECalComponentAttendee *att = l->data;
 
-		if ((att->value && e_util_strstrcase (att->value, str)) || (att->cn != NULL &&
-					e_util_strstrcase (att->cn, str))) {
+		if ((att->value && e_util_utf8_strstrcasedecomp (att->value, str)) ||
+		    (att->cn != NULL && e_util_utf8_strstrcasedecomp (att->cn, str))) {
 			matches = TRUE;
 			break;
 		}
@@ -451,8 +451,8 @@ matches_organizer (ECalComponent *comp,
 	if (str && !*str)
 		return TRUE;
 
-	if ((org.value && e_util_strstrcase (org.value, str)) ||
-			(org.cn && e_util_strstrcase (org.cn, str)))
+	if ((org.value && e_util_utf8_strstrcasedecomp (org.value, str)) ||
+	    (org.cn && e_util_utf8_strstrcasedecomp (org.cn, str)))
 		return TRUE;
 
 	return FALSE;
@@ -565,24 +565,34 @@ matches_status (ECalComponent *comp ,const gchar *str)
 
 	e_cal_component_get_status (comp, &status);
 
-	if (g_str_equal (str, "NOT STARTED") && status == ICAL_STATUS_NONE)
-			return TRUE;
-	else if (g_str_equal (str, "COMPLETED") && status == ICAL_STATUS_COMPLETED)
-			return TRUE;
-	else if (g_str_equal (str, "CANCELLED") && status == ICAL_STATUS_CANCELLED)
-			return TRUE;
-	else if (g_str_equal (str, "IN PROGRESS") && status == ICAL_STATUS_INPROCESS)
-			return TRUE;
-	else if (g_str_equal (str, "NEEDS ACTION") && status == ICAL_STATUS_NEEDSACTION)
-			return TRUE;
-	else if (g_str_equal (str, "TENTATIVE") && status == ICAL_STATUS_TENTATIVE)
-			return TRUE;
-	else if (g_str_equal (str, "CONFIRMED") && status == ICAL_STATUS_CONFIRMED)
-			return TRUE;
-	else if (g_str_equal (str, "DRAFT") && status == ICAL_STATUS_DRAFT)
-			return TRUE;
-	else if (g_str_equal (str, "FINAL") && status == ICAL_STATUS_FINAL)
-			return TRUE;
+	switch (status) {
+	case ICAL_STATUS_NONE:
+		return g_str_equal (str, "NOT STARTED");
+	case ICAL_STATUS_COMPLETED:
+		return g_str_equal (str, "COMPLETED");
+	case ICAL_STATUS_CANCELLED:
+		return g_str_equal (str, "CANCELLED");
+	case ICAL_STATUS_INPROCESS:
+		return g_str_equal (str, "IN PROGRESS");
+	case ICAL_STATUS_NEEDSACTION:
+		return g_str_equal (str, "NEEDS ACTION");
+	case ICAL_STATUS_TENTATIVE:
+		return g_str_equal (str, "TENTATIVE");
+	case ICAL_STATUS_CONFIRMED:
+		return g_str_equal (str, "CONFIRMED");
+	case ICAL_STATUS_DRAFT:
+		return g_str_equal (str, "DRAFT");
+	case ICAL_STATUS_FINAL:
+		return g_str_equal (str, "FINAL");
+	case ICAL_STATUS_SUBMITTED:
+		return g_str_equal (str, "SUBMITTED");
+	case ICAL_STATUS_PENDING:
+		return g_str_equal (str, "PENDING");
+	case ICAL_STATUS_FAILED:
+		return g_str_equal (str, "FAILED");
+	case ICAL_STATUS_X:
+		break;
+	}
 
 	return FALSE;
 }

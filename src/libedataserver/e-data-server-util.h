@@ -55,6 +55,7 @@ const gchar *	e_util_utf8_strstrcasedecomp	(const gchar *haystack,
 gint		e_util_utf8_strcasecmp		(const gchar *s1,
 						 const gchar *s2);
 gchar *		e_util_utf8_remove_accents	(const gchar *str);
+gchar *		e_util_utf8_decompose		(const gchar *text);
 gchar *		e_util_utf8_make_valid		(const gchar *str);
 gchar *		e_util_utf8_data_make_valid	(const gchar *data,
 						 gsize data_bytes);

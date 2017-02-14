@@ -63,7 +63,8 @@ typedef struct _EBookCachePrivate EBookCachePrivate;
  * such as e_book_cache_search().
  *
  * The @extra parameter will contain any data which was
- * previously passed for this contact in e_book_cache_add_contact().
+ * previously passed for this contact in e_book_cache_put_contact()
+ * or set with e_book_cache_set_contact_extra().
  *
  * These should be freed with e_book_cache_search_data_free().
  *
@@ -86,6 +87,31 @@ EBookCacheSearchData *
 EBookCacheSearchData *
 		e_book_cache_search_data_copy	(const EBookCacheSearchData *data);
 void		e_book_cache_search_data_free	(/* EBookCacheSearchData * */ gpointer data);
+
+/**
+ * EBookCacheSearchFunc:
+ * @cache: an #ECache
+ * @uid: a unique object identifier
+ * @revision: the object revision
+ * @object: the object itself
+ * @extra: extra data stored with the object
+ * @offline_state: objects offline state, one of #EOfflineState
+ * @user_data: user data, as used in e_book_cache_search_with_callback()
+ *
+ * A callback called for each object row when using
+ * e_book_cache_search_with_callback() function.
+ *
+ * Returns: %TRUE to continue, %FALSE to stop walk through.
+ *
+ * Since: 3.26
+ **/
+typedef gboolean (* EBookCacheSearchFunc)	(ECache *cache,
+						 const gchar *uid,
+						 const gchar *revision,
+						 const gchar *object,
+						 const gchar *extra,
+						 EOfflineState offline_state,
+						 gpointer user_data);
 
 /**
  * EBookCache:
@@ -238,6 +264,13 @@ gboolean	e_book_cache_search		(EBookCache *book_cache,
 gboolean	e_book_cache_search_uids	(EBookCache *book_cache,
 						 const gchar *sexp,
 						 GSList **out_list,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_cache_search_with_callback
+						(EBookCache *book_cache,
+						 const gchar *sexp,
+						 EBookCacheSearchFunc func,
+						 gpointer user_data,
 						 GCancellable *cancellable,
 						 GError **error);
 /* Cursor API */

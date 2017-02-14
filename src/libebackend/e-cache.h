@@ -94,6 +94,35 @@ typedef enum {
 	E_CACHE_ERROR_LOAD
 } ECacheError;
 
+typedef struct _ECacheColumnValues ECacheColumnValues;
+
+#define E_TYPE_CACHE_COLUMN_VALUES (e_cache_column_values_get_type ())
+GType		e_cache_column_values_get_type	(void) G_GNUC_CONST;
+ECacheColumnValues *
+		e_cache_column_values_new	(void);
+ECacheColumnValues *
+		e_cache_column_values_copy	(ECacheColumnValues *other_columns);
+void		e_cache_column_values_free	(ECacheColumnValues *other_columns);
+void		e_cache_column_values_put	(ECacheColumnValues *other_columns,
+						 const gchar *name,
+						 const gchar *value);
+void		e_cache_column_values_take_value(ECacheColumnValues *other_columns,
+						 const gchar *name,
+						 gchar *value);
+void		e_cache_column_values_take	(ECacheColumnValues *other_columns,
+						 gchar *name,
+						 gchar *value);
+gboolean	e_cache_column_values_contains	(ECacheColumnValues *other_columns,
+						 const gchar *name);
+gboolean	e_cache_column_values_remove	(ECacheColumnValues *other_columns,
+						 const gchar *name);
+void		e_cache_column_values_remove_all(ECacheColumnValues *other_columns);
+const gchar *	e_cache_column_values_lookup	(ECacheColumnValues *other_columns,
+						 const gchar *name);
+guint		e_cache_column_values_get_size	(ECacheColumnValues *other_columns);
+void		e_cache_column_values_init_iter	(ECacheColumnValues *other_columns,
+						 GHashTableIter *iter);
+
 typedef struct {
 	gchar *uid;
 	gchar *revision;
@@ -233,7 +262,7 @@ typedef gboolean (* ECacheForeachFunc)	(ECache *cache,
  * @out_revision: (out): the new object revision to set; keep it untouched to not change
  * @out_object: (out): the new object to set; keep it untouched to not change
  * @out_offline_state: (out): the offline state to set; the default is the same as @offline_state
- * @out_other_columns: (out) (element-type utf8 utf8) (transfer full): other columns to set; keep it untouched to not change any
+ * @out_other_columns: (out) (transfer full): an #ECacheColumnValues with other columns to set; keep it untouched to not change any
  * @user_data: user data, as used in e_cache_foreach_update()
  *
  * A callback called for each object row when using e_cache_foreach_update() function.
@@ -254,7 +283,7 @@ typedef gboolean (* ECacheUpdateFunc)	(ECache *cache,
 					 gchar **out_revision,
 					 gchar **out_object,
 					 EOfflineState *out_offline_state,
-					 GHashTable **out_other_columns,
+					 ECacheColumnValues **out_other_columns,
 					 gpointer user_data);
 
 /**
@@ -300,7 +329,7 @@ struct _ECacheClass {
 						 const gchar *uid,
 						 const gchar *revision,
 						 const gchar *object,
-						 GHashTable *other_columns,
+						 ECacheColumnValues *other_columns,
 						 EOfflineState offline_state,
 						 gboolean is_replace,
 						 GCancellable *cancellable,
@@ -324,7 +353,7 @@ struct _ECacheClass {
 						 const gchar *uid,
 						 const gchar *revision,
 						 const gchar *object,
-						 GHashTable *other_columns,
+						 ECacheColumnValues *other_columns,
 						 gboolean is_replace,
 						 GCancellable *cancellable,
 						 GError **error);
@@ -358,14 +387,14 @@ gboolean	e_cache_contains		(ECache *cache,
 gchar *		e_cache_get			(ECache *cache,
 						 const gchar *uid,
 						 gchar **out_revision,
-						 GHashTable **out_other_columns,
+						 ECacheColumnValues **out_other_columns,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_put			(ECache *cache,
 						 const gchar *uid,
 						 const gchar *revision,
 						 const gchar *object,
-						 GHashTable *other_columns,
+						 ECacheColumnValues *other_columns,
 						 ECacheOfflineFlag offline_flag,
 						 GCancellable *cancellable,
 						 GError **error);

@@ -25,7 +25,7 @@
  * The #EBookCache is an API for storing and looking up #EContacts
  * in an #ECache. It also supports cursors.
  *
- * The API is thread safe, in the similar was as the #ECache is.
+ * The API is thread safe, in the similar way as the #ECache is.
  *
  * Any operations which can take a lot of time to complete (depending
  * on the size of your addressbook) can be cancelled using a #GCancellable.
@@ -145,7 +145,7 @@ G_DEFINE_BOXED_TYPE (EBookCacheSearchData, e_book_cache_search_data, e_book_cach
  * e_book_cache_search_data_new:
  * @uid: a contact UID; cannot be %NULL
  * @vcard: the contact as a vCard string; cannot be %NULL
- * @extra: (nullable): any extra data stoed with the contact, or %NULL
+ * @extra: (nullable): any extra data stored with the contact, or %NULL
  *
  * Creates a new EBookCacheSearchData prefilled with the given values.
  *
@@ -836,7 +836,7 @@ remove_leading_zeros (gchar *number)
 static void
 ebc_fill_other_columns (EBookCache *book_cache,
 			EContact *contact,
-			GHashTable *other_columns)
+			ECacheColumnValues *other_columns)
 {
 	gint ii;
 
@@ -860,7 +860,7 @@ ebc_fill_other_columns (EBookCache *book_cache,
 			val = e_contact_get (contact, field->field_id);
 			normal = e_util_utf8_normalize (val);
 
-			g_hash_table_insert (other_columns, (gpointer) field->dbname, normal);
+			e_cache_column_values_take_value (other_columns, field->dbname, normal);
 
 			if ((field->index & INDEX_FLAG (SORT_KEY)) != 0) {
 				if (val)
@@ -868,7 +868,7 @@ ebc_fill_other_columns (EBookCache *book_cache,
 				else
 					str = g_strdup ("");
 
-				g_hash_table_insert (other_columns, field->dbname_idx_sort_key, str);
+				e_cache_column_values_take_value (other_columns, field->dbname_idx_sort_key, str);
 			}
 
 			if ((field->index & INDEX_FLAG (SUFFIX)) != 0) {
@@ -877,7 +877,7 @@ ebc_fill_other_columns (EBookCache *book_cache,
 				else
 					str = NULL;
 
-				g_hash_table_insert (other_columns, field->dbname_idx_suffix, str);
+				e_cache_column_values_take_value (other_columns, field->dbname_idx_suffix, str);
 			}
 
 			if ((field->index & INDEX_FLAG (PHONE)) != 0) {
@@ -886,11 +886,11 @@ ebc_fill_other_columns (EBookCache *book_cache,
 				str = convert_phone (normal, book_cache->priv->region_code, &country_code);
 				str = remove_leading_zeros (str);
 
-				g_hash_table_insert (other_columns, field->dbname_idx_phone, str);
+				e_cache_column_values_take_value (other_columns, field->dbname_idx_phone, str);
 
 				str = g_strdup_printf ("%d", country_code);
 
-				g_hash_table_insert (other_columns, field->dbname_idx_country, str);
+				e_cache_column_values_take_value (other_columns, field->dbname_idx_country, str);
 			}
 
 			g_free (val);
@@ -899,7 +899,7 @@ ebc_fill_other_columns (EBookCache *book_cache,
 
 			val = e_contact_get (contact, field->field_id) ? TRUE : FALSE;
 
-			g_hash_table_insert (other_columns, (gpointer) field->dbname, g_strdup_printf ("%d", val ? 1 : 0));
+			e_cache_column_values_take_value (other_columns, field->dbname, g_strdup_printf ("%d", val ? 1 : 0));
 		} else if (field->type == E_TYPE_CONTACT_CERT) {
 			EContactCert *cert = NULL;
 
@@ -907,7 +907,7 @@ ebc_fill_other_columns (EBookCache *book_cache,
 
 			/* We don't actually store the cert; only a boolean to indicate
 			 * that is *has* a cert. */
-			g_hash_table_insert (other_columns, (gpointer) field->dbname, g_strdup_printf ("%d", cert ? 1 : 0));
+			e_cache_column_values_take_value (other_columns, field->dbname, g_strdup_printf ("%d", cert ? 1 : 0));
 			e_contact_cert_free (cert);
 		} else if (field->type != E_TYPE_CONTACT_ATTR_LIST) {
 			g_warn_if_reached ();
@@ -1262,11 +1262,11 @@ ebc_upgrade_cb (ECache *cache,
 		gchar **out_revision,
 		gchar **out_object,
 		EOfflineState *out_offline_state,
-		GHashTable **out_other_columns,
+		ECacheColumnValues **out_other_columns,
 		gpointer user_data)
 {
 	EContact *contact;
-	GHashTable *other_columns;
+	ECacheColumnValues *other_columns;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (cache), FALSE);
 
@@ -1276,7 +1276,7 @@ ebc_upgrade_cb (ECache *cache,
 	if (!contact)
 		return TRUE;
 
-	other_columns = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, NULL, g_free);
+	other_columns = e_cache_column_values_new ();
 
 	ebc_fill_other_columns (E_BOOK_CACHE (cache), contact, other_columns);
 
@@ -3013,12 +3013,12 @@ ebc_search_uids_cb (ECache *cache,
 	*out_list = g_slist_prepend (*out_list, g_strdup (uid));
 }
 
-typedef void (* EBookCacheSearchFunc)	(ECache *cache,
-					 const gchar *uid,
-					 const gchar *revision,
-					 const gchar *object,
-					 const gchar *extra,
-					 gpointer out_value);
+typedef void (* EBookCacheInternalSearchFunc)	(ECache *cache,
+						 const gchar *uid,
+						 const gchar *revision,
+						 const gchar *object,
+						 const gchar *extra,
+						 gpointer out_value);
 
 /* Generates the SELECT portion of the query, this will take care of
  * preparing the context of the query, and add the needed JOIN statements
@@ -3027,14 +3027,14 @@ typedef void (* EBookCacheSearchFunc)	(ECache *cache,
  * This also handles getting the correct callback and asking for the
  * right data depending on the 'search_type'
  */
-static EBookCacheSearchFunc
+static EBookCacheInternalSearchFunc
 ebc_generate_select (EBookCache *book_cache,
 		     GString *string,
 		     SearchType search_type,
 		     PreflightContext *context,
 		     GError **error)
 {
-	EBookCacheSearchFunc callback = NULL;
+	EBookCacheInternalSearchFunc callback = NULL;
 	gboolean add_auxiliary_tables = FALSE;
 	gint ii;
 
@@ -3052,6 +3052,7 @@ ebc_generate_select (EBookCache *book_cache,
 		g_string_append (string, "summary." E_CACHE_COLUMN_UID ",");
 		g_string_append (string, "summary." E_CACHE_COLUMN_REVISION ",");
 		g_string_append (string, "summary." E_CACHE_COLUMN_OBJECT ",");
+		g_string_append (string, "summary." E_CACHE_COLUMN_STATE ",");
 		g_string_append (string, "summary." EBC_COLUMN_EXTRA " ");
 		break;
 	case SEARCH_UID_AND_REV:
@@ -3149,7 +3150,7 @@ ebc_is_autocomplete_query (PreflightContext *context)
 	return non_aux_fields != 0;
 }
 
-static EBookCacheSearchFunc
+static EBookCacheInternalSearchFunc
 ebc_generate_autocomplete_query (EBookCache *book_cache,
 				 GString *string,
 				 SearchType search_type,
@@ -3160,7 +3161,7 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 	gint n_elements, ii;
 	guint64 aux_mask = context->aux_mask;
 	guint64 left_join_mask = context->left_join_mask;
-	EBookCacheSearchFunc callback;
+	EBookCacheInternalSearchFunc callback;
 	gboolean first = TRUE;
 
 	elements = (QueryElement **) context->constraints->pdata;
@@ -3238,9 +3239,13 @@ struct EBCSearchData {
 	gint revision_index;
 	gint object_index;
 	gint extra_index;
+	gint state_index;
 
-	EBookCacheSearchFunc func;
+	EBookCacheInternalSearchFunc func;
 	gpointer out_value;
+
+	EBookCacheSearchFunc user_func;
+	gpointer user_func_user_data;
 };
 
 static gboolean
@@ -3252,21 +3257,24 @@ ebc_search_select_cb (ECache *cache,
 {
 	struct EBCSearchData *sd = user_data;
 	const gchar *object = NULL, *extra = NULL;
+	EOfflineState offline_state = E_OFFLINE_STATE_UNKNOWN;
 
 	g_return_val_if_fail (sd != NULL, FALSE);
-	g_return_val_if_fail (sd->func != NULL, FALSE);
-	g_return_val_if_fail (sd->out_value != NULL, FALSE);
+	g_return_val_if_fail (sd->func != NULL || sd->user_func != NULL, FALSE);
+	g_return_val_if_fail (sd->out_value != NULL || sd->user_func != NULL, FALSE);
 
 	if (sd->uid_index == -1 ||
 	    sd->revision_index == -1 ||
 	    sd->object_index == -1 ||
-	    sd->extra_index == -1) {
+	    sd->extra_index == -1 ||
+	    sd->state_index == -1) {
 		gint ii;
 
 		for (ii = 0; ii < ncols && (sd->uid_index == -1 ||
 		     sd->revision_index == -1 ||
 		     sd->object_index == -1 ||
-		     sd->extra_index == -1); ii++) {
+		     sd->extra_index == -1 ||
+		     sd->state_index == -1); ii++) {
 			const gchar *cname = column_names[ii];
 
 			if (!cname)
@@ -3283,6 +3291,8 @@ ebc_search_select_cb (ECache *cache,
 				sd->object_index = ii;
 			} else if (sd->extra_index == -1 && g_ascii_strcasecmp (cname, EBC_COLUMN_EXTRA) == 0) {
 				sd->extra_index = ii;
+			} else if (sd->state_index == -1 && g_ascii_strcasecmp (cname, E_CACHE_COLUMN_STATE) == 0) {
+				sd->state_index = ii;
 			}
 		}
 	}
@@ -3300,6 +3310,20 @@ ebc_search_select_cb (ECache *cache,
 		extra = column_values[sd->extra_index];
 	}
 
+	if (sd->state_index != -2) {
+		g_return_val_if_fail (sd->extra_index >= 0 && sd->extra_index < ncols, FALSE);
+
+		if (!column_values[sd->state_index])
+			offline_state = E_OFFLINE_STATE_UNKNOWN;
+		else
+			offline_state = g_ascii_strtoull (column_values[sd->state_index], NULL, 10);
+	}
+
+	if (sd->user_func) {
+		return sd->user_func (cache, column_values[sd->uid_index], column_values[sd->revision_index],
+			object, extra, offline_state, sd->user_func_user_data);
+	}
+
 	sd->func (cache, column_values[sd->uid_index], column_values[sd->revision_index], object, extra, sd->out_value);
 
 	return TRUE;
@@ -3311,6 +3335,8 @@ ebc_do_search_query (EBookCache *book_cache,
 		     const gchar *sexp,
 		     SearchType search_type,
 		     gpointer out_value,
+		     EBookCacheSearchFunc func,
+		     gpointer func_user_data,
 		     GCancellable *cancellable,
 		     GError **error)
 {
@@ -3355,7 +3381,10 @@ ebc_do_search_query (EBookCache *book_cache,
 		sd.revision_index = -1;
 		sd.object_index = search_type == SEARCH_FULL ? -1 : -2;
 		sd.extra_index = search_type == SEARCH_UID ? -2 : -1;
+		sd.state_index = search_type == SEARCH_FULL ? -1 : -2;
 		sd.out_value = out_value;
+		sd.user_func = func;
+		sd.user_func_user_data = func_user_data;
 
 		success = e_cache_sqlite_select (E_CACHE (book_cache), stmt->str,
 			ebc_search_select_cb, &sd, cancellable, error);
@@ -3371,6 +3400,8 @@ ebc_search_internal (EBookCache *book_cache,
 		     const gchar *sexp,
 		     SearchType search_type,
 		     gpointer out_value,
+		     EBookCacheSearchFunc func,
+		     gpointer func_user_data,
 		     GCancellable *cancellable,
 		     GError **error)
 {
@@ -3387,7 +3418,7 @@ ebc_search_internal (EBookCache *book_cache,
 		/* No errors, let's really search */
 		success = ebc_do_search_query (
 			book_cache, &context, sexp,
-			search_type, out_value,
+			search_type, out_value, func, func_user_data,
 			cancellable, error);
 		break;
 
@@ -4707,7 +4738,7 @@ e_book_cache_put_contact (EBookCache *book_cache,
  * @book_cache: An #EBookCache
  * @contacts: (element-type EContact): A list of contacts to add to @book_cache
  * @extras: (nullable) (element-type utf8): A list of extra data to store in association with the @contacts
- * @offline_flag: one of #ECacheOfflineFlag offline_flag, whether putting these contacts in offline
+ * @offline_flag: one of #ECacheOfflineFlag, whether putting these contacts in offline
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -4731,7 +4762,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 {
 	const GSList *clink, *elink;
 	ECache *cache;
-	GHashTable *other_columns;
+	ECacheColumnValues *other_columns;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
@@ -4739,7 +4770,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 	g_return_val_if_fail (extras == NULL || g_slist_length ((GSList *) extras) == g_slist_length ((GSList *) contacts), FALSE);
 
 	cache = E_CACHE (book_cache);
-	other_columns = g_hash_table_new_full (camel_strcase_hash, camel_strcase_equal, NULL, g_free);
+	other_columns = e_cache_column_values_new ();
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
@@ -4753,10 +4784,10 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 		vcard = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 		g_return_val_if_fail (vcard != NULL, FALSE);
 
-		g_hash_table_remove_all (other_columns);
+		e_cache_column_values_remove_all (other_columns);
 
 		if (extra)
-			g_hash_table_insert (other_columns, (gpointer) EBC_COLUMN_EXTRA, g_strdup (extra));
+			e_cache_column_values_take_value (other_columns, EBC_COLUMN_EXTRA, g_strdup (extra));
 
 		uid = e_contact_get (contact, E_CONTACT_UID);
 		rev = e_contact_get (contact, E_CONTACT_REV);
@@ -4775,7 +4806,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
-	g_hash_table_destroy (other_columns);
+	e_cache_column_values_free (other_columns);
 
 	return success;
 }
@@ -5105,7 +5136,7 @@ e_book_cache_search (EBookCache *book_cache,
 
 	return ebc_search_internal (book_cache, sexp,
 		meta_contacts ? SEARCH_UID_AND_REV : SEARCH_FULL,
-		out_list, cancellable, error);
+		out_list, NULL, NULL, cancellable, error);
 }
 
 /**
@@ -5137,7 +5168,36 @@ e_book_cache_search_uids (EBookCache *book_cache,
 
 	*out_list = NULL;
 
-	return ebc_search_internal (book_cache, sexp, SEARCH_UID, out_list, cancellable, error);
+	return ebc_search_internal (book_cache, sexp, SEARCH_UID, out_list, NULL, NULL, cancellable, error);
+}
+
+/**
+ * e_book_cache_search_with_callback:
+ * @book_cache: An #EBookCache
+ * @sexp: (nullable): search expression; use %NULL or an empty string to get all stored contacts
+ * @func: an #EBookCacheSearchFunc callback to call for each found row
+ * @user_data: user data for @func
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Similar to e_book_cache_search(), but calls the @func for each found contact.
+ *
+ * Returns: %TRUE on success, otherwise %FALSE is returned and @error is set appropriately.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_book_cache_search_with_callback (EBookCache *book_cache,
+				   const gchar *sexp,
+				   EBookCacheSearchFunc func,
+				   gpointer user_data,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	return ebc_search_internal (book_cache, sexp, SEARCH_FULL, NULL, func, user_data, cancellable, error);
 }
 
 /**
@@ -5804,7 +5864,7 @@ e_book_cache_put_locked (ECache *cache,
 			 const gchar *uid,
 			 const gchar *revision,
 			 const gchar *object,
-			 GHashTable *other_columns,
+			 ECacheColumnValues *other_columns,
 			 EOfflineState offline_state,
 			 gboolean is_replace,
 			 GCancellable *cancellable,
