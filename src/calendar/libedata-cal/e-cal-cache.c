@@ -32,9 +32,12 @@
 #include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>
+#include <sqlite3.h>
 
 #include <libebackend/libebackend.h>
 #include <libecal/libecal.h>
+
+#include "e-cal-backend-sexp.h"
 
 #include "e-cal-cache.h"
 
@@ -55,15 +58,21 @@
 #define ECC_COLUMN_CLASSIFICATION	"classification"
 #define ECC_COLUMN_STATUS		"status"
 #define ECC_COLUMN_PRIORITY		"priority"
+#define ECC_COLUMN_PERCENT_COMPLETE	"percent_complete"
 #define ECC_COLUMN_CATEGORIES		"categories"
 #define ECC_COLUMN_HAS_ALARM		"has_alarm"
+#define ECC_COLUMN_HAS_ATTACHMENT	"has_attachment"
 #define ECC_COLUMN_HAS_START		"has_start"
 #define ECC_COLUMN_HAS_RECURRENCES	"has_recurrences"
 #define ECC_COLUMN_EXTRA		"bdata"
 
 struct _ECalCachePrivate {
 	GHashTable *loaded_timezones; /* gchar *tzid ~> icaltimezone * */
-	GMutex loaded_timezones_lock;
+	GHashTable *modified_timezones; /* gchar *tzid ~> icaltimezone * */
+	GRecMutex timezones_lock;
+
+	GHashTable *sexps; /* gint ~> ECalBackendSExp * */
+	GMutex sexps_lock;
 };
 
 enum {
@@ -73,8 +82,11 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
+static void ecc_timezone_cache_init (ETimezoneCacheInterface *iface);
+
 G_DEFINE_TYPE_WITH_CODE (ECalCache, e_cal_cache, E_TYPE_CACHE,
-			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
+			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL)
+			 G_IMPLEMENT_INTERFACE (E_TYPE_TIMEZONE_CACHE, ecc_timezone_cache_init))
 
 G_DEFINE_BOXED_TYPE (ECalCacheSearchData, e_cal_cache_search_data, e_cal_cache_search_data_copy, e_cal_cache_search_data_free)
 
@@ -154,6 +166,96 @@ e_cal_cache_search_data_free (gpointer ptr)
 	}
 }
 
+static gint
+ecc_take_sexp_object (ECalCache *cal_cache,
+		      ECalBackendSExp *sexp)
+{
+	gint sexp_id;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), 0);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_SEXP (sexp), 0);
+
+	g_mutex_lock (&cal_cache->priv->sexps_lock);
+
+	sexp_id = GPOINTER_TO_INT (sexp);
+	while (g_hash_table_contains (cal_cache->priv->sexps, GINT_TO_POINTER (sexp_id))) {
+		sexp_id++;
+	}
+
+	g_hash_table_insert (cal_cache->priv->sexps, GINT_TO_POINTER (sexp_id), sexp);
+
+	g_mutex_unlock (&cal_cache->priv->sexps_lock);
+
+	return sexp_id;
+}
+
+static void
+ecc_free_sexp_object (ECalCache *cal_cache,
+		      gint sexp_id)
+{
+	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
+
+	g_mutex_lock (&cal_cache->priv->sexps_lock);
+
+	g_warn_if_fail (g_hash_table_remove (cal_cache->priv->sexps, GINT_TO_POINTER (sexp_id)));
+
+	g_mutex_unlock (&cal_cache->priv->sexps_lock);
+}
+
+static ECalBackendSExp *
+ecc_ref_sexp_object (ECalCache *cal_cache,
+		     gint sexp_id)
+{
+	ECalBackendSExp *sexp;
+
+	g_mutex_lock (&cal_cache->priv->sexps_lock);
+
+	sexp = g_hash_table_lookup (cal_cache->priv->sexps, GINT_TO_POINTER (sexp_id));
+	if (sexp)
+		g_object_ref (sexp);
+
+	g_mutex_unlock (&cal_cache->priv->sexps_lock);
+
+	return sexp;
+}
+
+/* check_sexp(sexp_id, icalstring) */
+static void
+ecc_check_sexp_func (sqlite3_context *context,
+		     gint argc,
+		     sqlite3_value **argv)
+{
+	ECalCache *cal_cache;
+	ECalBackendSExp *sexp_obj;
+	gint sexp_id;
+	const gchar *icalstring;
+
+	g_return_if_fail (context != NULL);
+	g_return_if_fail (argc != 2);
+
+	cal_cache = sqlite3_user_data (context);
+	sexp_id = sqlite3_value_int (argv[0]);
+	icalstring = (const gchar *) sqlite3_value_text (argv[1]);
+
+	if (!E_IS_CAL_CACHE (cal_cache) || !icalstring || !*icalstring) {
+		sqlite3_result_int (context, 0);
+		return;
+	}
+
+	sexp_obj = ecc_ref_sexp_object (cal_cache, sexp_id);
+	if (!sexp_obj) {
+		sqlite3_result_int (context, 0);
+		return;
+	}
+
+	if (e_cal_backend_sexp_match_object (sexp_obj, icalstring, E_TIMEZONE_CACHE (cal_cache)))
+		sqlite3_result_int (context, 1);
+	else
+		sqlite3_result_int (context, 0);
+
+	g_object_unref (sexp_obj);
+}
+
 static gboolean
 e_cal_cache_get_string (ECache *cache,
 			gint ncols,
@@ -218,8 +320,10 @@ e_cal_cache_populate_other_columns (ECalCache *cal_cache,
 	add_column (ECC_COLUMN_CLASSIFICATION, "TEXT", NULL);
 	add_column (ECC_COLUMN_STATUS, "TEXT", NULL);
 	add_column (ECC_COLUMN_PRIORITY, "INTEGER", NULL);
+	add_column (ECC_COLUMN_PERCENT_COMPLETE, "INTEGER", NULL);
 	add_column (ECC_COLUMN_CATEGORIES, "TEXT", NULL);
 	add_column (ECC_COLUMN_HAS_ALARM, "INTEGER", NULL);
+	add_column (ECC_COLUMN_HAS_ATTACHMENT, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_START, "INTEGER", NULL);
 	add_column (ECC_COLUMN_HAS_RECURRENCES, "INTEGER", NULL);
 	add_column (ECC_COLUMN_EXTRA, "TEXT", NULL);
@@ -241,7 +345,7 @@ ecc_encode_id_sql (const gchar *uid,
 	return g_strdup (uid);
 }
 
-/*static gboolean
+static gboolean
 ecc_decode_id_sql (const gchar *id,
 		   gchar **out_uid,
 		   gchar **out_rid)
@@ -270,11 +374,11 @@ ecc_decode_id_sql (const gchar *id,
 	if (split[1])
 		*out_rid = split[1];
 
-	/ * array elements are taken by the out arguments * /
+	/* array elements are taken by the out arguments */
 	g_free (split);
 
 	return TRUE;
-}*/
+}
 
 static gchar *
 ecc_encode_itt_to_sql (struct icaltimetype itt)
@@ -591,7 +695,7 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 	icalproperty_status status;
 	struct icaltimetype *itt;
 	const gchar *str = NULL;
-	gint *priority = NULL;
+	gint *pint = NULL;
 	gboolean has;
 
 	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
@@ -631,10 +735,16 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 	e_cal_component_get_status (comp, &status);
 	add_value (ECC_COLUMN_STATUS, g_strdup (ecc_get_status_as_string (status)));
 
-	e_cal_component_get_priority (comp, &priority);
-	add_value (ECC_COLUMN_PRIORITY, priority && *priority ? g_strdup_printf ("%d", *priority) : NULL);
+	e_cal_component_get_priority (comp, &pint);
+	add_value (ECC_COLUMN_PRIORITY, pint && *pint ? g_strdup_printf ("%d", *pint) : NULL);
+
+	e_cal_component_get_percent (comp, &pint);
+	add_value (ECC_COLUMN_PERCENT_COMPLETE, pint && *pint ? g_strdup_printf ("%d", *pint) : NULL);
 
 	has = e_cal_component_has_alarms (comp);
+	add_value (ECC_COLUMN_HAS_ALARM, g_strdup (has ? "1" : "0"));
+
+	has = e_cal_component_has_attachments (comp);
 	add_value (ECC_COLUMN_HAS_ALARM, g_strdup (has ? "1" : "0"));
 
 	e_cal_component_get_dtstart (comp, &dt);
@@ -653,6 +763,699 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 	add_value (ECC_COLUMN_CATEGORIES, ecc_extract_categories (comp));
 }
 
+typedef struct _SExpToSqlContext {
+	ECalCache *cal_cache;
+	gint sexp_id;
+} SExpToSqlContext;
+
+static ESExpResult *
+ecc_sexp_func_and_or (ESExp *esexp,
+		      gint argc,
+		      ESExpTerm **argv,
+		      gpointer user_data,
+		      const gchar *oper)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result, *r1;
+	GString *stmt;
+	gint ii;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	stmt = g_string_new ("(");
+
+	for (ii = 0; ii < argc; ii++) {
+		r1 = e_sexp_term_eval (esexp, argv[ii]);
+
+		if (stmt->len > 1)
+			g_string_append_printf (stmt, " %s ", oper);
+
+		if (r1 && r1->type == ESEXP_RES_STRING) {
+			g_string_append_printf (stmt, "(%s)", r1->value.string);
+		} else {
+			g_string_append_printf (stmt, "check_sexp(%d,%s)",
+				ctx->sexp_id, E_CACHE_COLUMN_OBJECT);
+		}
+
+		e_sexp_result_free (esexp, r1);
+	}
+
+	if (stmt->len == 1) {
+		if (g_str_equal (oper, "AND"))
+			g_string_append_c (stmt, '1');
+		else
+			g_string_append_c (stmt, '0');
+	}
+
+	g_string_append_c (stmt, ')');
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_string_free (stmt, FALSE);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_and (ESExp *esexp,
+		   gint argc,
+		   ESExpTerm **argv,
+		   gpointer user_data)
+{
+	return ecc_sexp_func_and_or (esexp, argc, argv, user_data, "AND");
+}
+
+static ESExpResult *
+ecc_sexp_func_or (ESExp *esexp,
+		   gint argc,
+		   ESExpTerm **argv,
+		   gpointer user_data)
+{
+	return ecc_sexp_func_and_or (esexp, argc, argv, user_data, "OR");
+}
+
+static ESExpResult *
+ecc_sexp_func_not (ESExp *esexp,
+		   gint argc,
+		   ESExpResult **argv,
+		   gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc != 1)
+		return NULL;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+
+	if (!argv[0] || argv[0]->type != ESEXP_RES_STRING) {
+		result->value.string =
+			g_strdup_printf ("check_sexp(%d,%s)",
+				ctx->sexp_id,
+				E_CACHE_COLUMN_OBJECT);
+	} else {
+		result->value.string = g_strdup_printf ("NOT (%s)", argv[0]->value.string);
+	}
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_uid (ESExp *esexp,
+		   gint argc,
+		   ESExpResult **argv,
+		   gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+	const gchar *uid;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc != 1 ||
+	    argv[0]->type != ESEXP_RES_STRING) {
+		return NULL;
+	}
+
+	uid = argv[0]->value.string;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+
+	if (!uid) {
+		result->value.string = g_strdup (E_CACHE_COLUMN_UID " IS NULL");
+	} else {
+		gchar *stmt;
+
+		stmt = e_cache_sqlite_stmt_printf (E_CACHE_COLUMN_UID "=%Q OR " E_CACHE_COLUMN_UID " LIKE '%q\n%%'", uid, uid);
+
+		result->value.string = g_strdup (stmt);
+
+		e_cache_sqlite_stmt_free (stmt);
+	}
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_occur_in_time_range (ESExp *esexp,
+				   gint argc,
+				   ESExpResult **argv,
+				   gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+	icaltimezone *default_zone = NULL;
+	struct icaltimetype itt_start, itt_end;
+	gchar *start_str, *end_str;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if ((argc != 2 && argc != 3) ||
+	    argv[0]->type != ESEXP_RES_TIME ||
+	    argv[1]->type != ESEXP_RES_TIME ||
+	    (argc == 3 && argv[2]->type != ESEXP_RES_STRING)) {
+		return NULL;
+	}
+
+	if (argc == 3)
+		default_zone = ecc_resolve_tzid_cb (argv[2]->value.string, ctx->cal_cache);
+
+	itt_start = icaltime_from_timet_with_zone (argv[0]->value.time, 0, default_zone);
+	itt_end = icaltime_from_timet_with_zone (argv[1]->value.time, 0, default_zone);
+
+	start_str = ecc_encode_itt_to_sql (itt_start);
+	end_str = ecc_encode_itt_to_sql (itt_end);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf (
+		"((" ECC_COLUMN_OCCUR_START " IS NULL OR " ECC_COLUMN_OCCUR_START "<'%s')"
+		" AND (" ECC_COLUMN_OCCUR_END " IS NULL OR " ECC_COLUMN_OCCUR_END ">'%s'))",
+		start_str, end_str);
+
+	g_free (start_str);
+	g_free (end_str);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_due_in_time_range (ESExp *esexp,
+				 gint argc,
+				 ESExpResult **argv,
+				 gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+	gchar *start_str, *end_str;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc != 2 ||
+	    argv[0]->type != ESEXP_RES_TIME ||
+	    argv[1]->type != ESEXP_RES_TIME) {
+		return NULL;
+	}
+
+	start_str = ecc_encode_timet_to_sql (ctx->cal_cache, argv[0]->value.time);
+	end_str = ecc_encode_timet_to_sql (ctx->cal_cache, argv[1]->value.time);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s>='%s' AND %s<='%s')",
+		ECC_COLUMN_DUE, ECC_COLUMN_DUE, start_str,
+		ECC_COLUMN_DUE, end_str);
+
+	g_free (start_str);
+	g_free (end_str);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_contains (ESExp *esexp,
+			gint argc,
+			ESExpResult **argv,
+			gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+	const gchar *field, *column = NULL;
+	gchar *str;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc != 2 ||
+	    argv[0]->type != ESEXP_RES_STRING ||
+	    argv[1]->type != ESEXP_RES_STRING) {
+		return NULL;
+	}
+
+	field = argv[0]->value.string;
+	str = e_util_utf8_decompose (argv[1]->value.string);
+
+	if (g_str_equal (field, "comment"))
+		column = ECC_COLUMN_COMMENT;
+	else if (g_str_equal (field, "description"))
+		column = ECC_COLUMN_DESCRIPTION;
+	else if (g_str_equal (field, "summary"))
+		column = ECC_COLUMN_SUMMARY;
+	else if (g_str_equal (field, "location"))
+		column = ECC_COLUMN_LOCATION;
+	else if (g_str_equal (field, "attendee"))
+		column = ECC_COLUMN_ATTENDEES;
+	else if (g_str_equal (field, "organizer"))
+		column = ECC_COLUMN_ORGANIZER;
+	else if (g_str_equal (field, "classification"))
+		column = ECC_COLUMN_CLASSIFICATION;
+	else if (g_str_equal (field, "status"))
+		column = ECC_COLUMN_STATUS;
+	else if (g_str_equal (field, "priority"))
+		column = ECC_COLUMN_PRIORITY;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+
+	/* everything matches an empty string */
+	if (!str || !*str) {
+		result->value.string = g_strdup ("1=1");
+	} else if (column) {
+		gchar *stmt;
+
+		stmt = e_cache_sqlite_stmt_printf ("%s LIKE '%%%q%%'", column, str);
+		result->value.string = g_strdup (stmt);
+		e_cache_sqlite_stmt_free (stmt);
+	} else if (g_str_equal (field, "any")) {
+		GString *stmt;
+
+		stmt = g_string_new ("");
+
+		e_cache_sqlite_stmt_append_printf (stmt, "(%s LIKE '%%%q%%'", ECC_COLUMN_COMMENT, str);
+		e_cache_sqlite_stmt_append_printf (stmt, " OR %s LIKE '%%%q%%'", ECC_COLUMN_DESCRIPTION, str);
+		e_cache_sqlite_stmt_append_printf (stmt, " OR %s LIKE '%%%q%%'", ECC_COLUMN_SUMMARY, str);
+		e_cache_sqlite_stmt_append_printf (stmt, " OR %s LIKE '%%%q%%')", ECC_COLUMN_LOCATION, str);
+
+		result->value.string = g_string_free (stmt, FALSE);
+	} else {
+		g_strdup_printf ("check_sexp(%d,%s)",
+			ctx->sexp_id,
+			E_CACHE_COLUMN_OBJECT);
+	}
+
+	g_free (str);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_has_start (ESExp *esexp,
+			 gint argc,
+			 ESExpResult **argv,
+			 gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
+		ECC_COLUMN_HAS_START, ECC_COLUMN_HAS_START);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_has_alarms (ESExp *esexp,
+			  gint argc,
+			  ESExpResult **argv,
+			  gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
+		ECC_COLUMN_HAS_ALARM, ECC_COLUMN_HAS_ALARM);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_has_recurrences (ESExp *esexp,
+			       gint argc,
+			       ESExpResult **argv,
+			       gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
+		ECC_COLUMN_HAS_RECURRENCES, ECC_COLUMN_HAS_RECURRENCES);
+
+	return result;
+}
+
+/* (has-categories? STR+)
+ * (has-categories? #f)
+ */
+static ESExpResult *
+ecc_sexp_func_has_categories (ESExp *esexp,
+			      gint argc,
+			      ESExpResult **argv,
+			      gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+	gboolean unfiled;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc < 1)
+		return NULL;
+
+	unfiled = argc == 1 && argv[0]->type == ESEXP_RES_BOOL;
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+
+	if (unfiled) {
+		result->value.string = g_strdup_printf ("%s IS NULL",
+			ECC_COLUMN_CATEGORIES);
+	} else {
+		GString *tmp;
+		gint ii;
+
+		tmp = g_string_new ("(" ECC_COLUMN_CATEGORIES " NOT NULL");
+
+		for (ii = 0; ii < argc; ii++) {
+			if (argv[ii]->type != ESEXP_RES_STRING) {
+				g_warn_if_reached ();
+				continue;
+			}
+
+			e_cache_sqlite_stmt_append_printf (tmp, " AND " ECC_COLUMN_CATEGORIES " LIKE '%%\n%q\n%%'",
+				argv[ii]->value.string);
+		}
+
+		g_string_append_c (tmp, ')');
+
+		result->value.string = g_string_free (tmp, FALSE);
+	}
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_is_completed (ESExp *esexp,
+			    gint argc,
+			    ESExpResult **argv,
+			    gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("%s NOT NULL",
+		ECC_COLUMN_COMPLETED);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_completed_before (ESExp *esexp,
+				gint argc,
+				ESExpResult **argv,
+				gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	gchar *tmp;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	if (argc != 1 ||
+	    argv[0]->type != ESEXP_RES_TIME) {
+		return NULL;
+	}
+
+	tmp = ecc_encode_timet_to_sql (ctx->cal_cache, argv[0]->value.time);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s<'%s')",
+		ECC_COLUMN_COMPLETED, ECC_COLUMN_COMPLETED, tmp);
+
+	g_free (tmp);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_has_attachment (ESExp *esexp,
+			      gint argc,
+			      ESExpResult **argv,
+			      gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup_printf ("(%s NOT NULL AND %s=1)",
+		ECC_COLUMN_HAS_ATTACHMENT, ECC_COLUMN_HAS_ATTACHMENT);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_percent_complete (ESExp *esexp,
+				gint argc,
+				ESExpResult **argv,
+				gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string = g_strdup (ECC_COLUMN_PERCENT_COMPLETE);
+
+	return result;
+}
+
+/* check_sexp(sexp_id, icalstring); that's a fallback for anything
+   not being part of the summary */
+static ESExpResult *
+ecc_sexp_func_check_sexp (ESExp *esexp,
+			  gint argc,
+			  ESExpResult **argv,
+			  gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string =
+		g_strdup_printf ("check_sexp(%d,%s)",
+			ctx->sexp_id,
+			E_CACHE_COLUMN_OBJECT);
+
+	return result;
+}
+
+static ESExpResult *
+ecc_sexp_func_icheck_sexp (ESExp *esexp,
+			   gint argc,
+			   ESExpTerm **argv,
+			   gpointer user_data)
+{
+	SExpToSqlContext *ctx = user_data;
+	ESExpResult *result;
+
+	g_return_val_if_fail (ctx != NULL, NULL);
+
+	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
+	result->value.string =
+		g_strdup_printf ("check_sexp(%d,%s)",
+			ctx->sexp_id,
+			E_CACHE_COLUMN_OBJECT);
+
+	return result;
+}
+
+static struct {
+	const gchar *name;
+	gpointer func;
+	gint type; /* 1 for term-function, 0 for result-function */
+} symbols[] = {
+	{ "and",			ecc_sexp_func_and, 1 },
+	{ "or",				ecc_sexp_func_or, 1 },
+	{ "not",			ecc_sexp_func_not, 0 },
+	{ "<",				ecc_sexp_func_icheck_sexp, 1 },
+	{ ">",				ecc_sexp_func_icheck_sexp, 1 },
+	{ "=",				ecc_sexp_func_icheck_sexp, 1 },
+	{ "+",				ecc_sexp_func_check_sexp, 0 },
+	{ "-",				ecc_sexp_func_check_sexp, 0 },
+	{ "cast-int",			ecc_sexp_func_check_sexp, 0 },
+	{ "cast-string",		ecc_sexp_func_check_sexp, 0 },
+	{ "if",				ecc_sexp_func_icheck_sexp, 1 },
+	{ "begin",			ecc_sexp_func_icheck_sexp, 1 },
+
+	/* Time-related functions */
+	{ "time-now",			e_cal_backend_sexp_func_time_now, 0 },
+	{ "make-time",			e_cal_backend_sexp_func_make_time, 0 },
+	{ "time-add-day",		e_cal_backend_sexp_func_time_add_day, 0 },
+	{ "time-day-begin",		e_cal_backend_sexp_func_time_day_begin, 0 },
+	{ "time-day-end",		e_cal_backend_sexp_func_time_day_end, 0 },
+
+	/* Component-related functions */
+	{ "uid?",			ecc_sexp_func_uid, 0 },
+	{ "occur-in-time-range?",	ecc_sexp_func_occur_in_time_range, 0 },
+	{ "due-in-time-range?",		ecc_sexp_func_due_in_time_range, 0 },
+	{ "contains?",			ecc_sexp_func_contains, 0 },
+	{ "has-start?",			ecc_sexp_func_has_start, 0 },
+	{ "has-alarms?",		ecc_sexp_func_has_alarms, 0 },
+	{ "has-alarms-in-range?",	ecc_sexp_func_check_sexp, 0 },
+	{ "has-recurrences?",		ecc_sexp_func_has_recurrences, 0 },
+	{ "has-categories?",		ecc_sexp_func_has_categories, 0 },
+	{ "is-completed?",		ecc_sexp_func_is_completed, 0 },
+	{ "completed-before?",		ecc_sexp_func_completed_before, 0 },
+	{ "has-attachments?",		ecc_sexp_func_has_attachment, 0 },
+	{ "percent-complete?",		ecc_sexp_func_percent_complete, 0 },
+	{ "occurrences-count?",		ecc_sexp_func_check_sexp, 0 }
+};
+
+static gboolean
+ecc_convert_sexp_to_sql (ECalCache *cal_cache,
+			 const gchar *sexp_str,
+			 gint sexp_id,
+			 gchar **out_where_clause,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	SExpToSqlContext ctx;
+	ESExp *sexp_parser;
+	gint esexp_error, ii;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (out_where_clause != NULL, FALSE);
+
+	*out_where_clause = NULL;
+
+	/* Include everything */
+	if (!sexp_str || !*sexp_str)
+		return TRUE;
+
+	ctx.cal_cache = cal_cache;
+	ctx.sexp_id = sexp_id;
+
+	sexp_parser = e_sexp_new ();
+
+	for (ii = 0; ii < G_N_ELEMENTS (symbols); ii++) {
+		if (symbols[ii].type == 1) {
+			e_sexp_add_ifunction (sexp_parser, 0, symbols[ii].name, symbols[ii].func, &ctx);
+		} else {
+			e_sexp_add_function (sexp_parser, 0, symbols[ii].name, symbols[ii].func, &ctx);
+		}
+	}
+
+	e_sexp_input_text (sexp_parser, sexp_str, strlen (sexp_str));
+	esexp_error = e_sexp_parse (sexp_parser);
+
+	if (esexp_error != -1) {
+		ESExpResult *result;
+
+		result = e_sexp_eval (sexp_parser);
+
+		if (result) {
+			if (result->type == ESEXP_RES_STRING) {
+				/* Just steal the string from the ESexpResult */
+				*out_where_clause = result->value.string;
+				result->value.string = NULL;
+				success = TRUE;
+			}
+		}
+
+		e_sexp_result_free (sexp_parser, result);
+	}
+
+	g_object_unref (sexp_parser);
+
+	if (!success) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY,
+			_("Invalid query: %s"), sexp_str);
+	}
+
+	return success;
+}
+
+typedef struct {
+	gint extra_idx;
+	ECalCacheSearchFunc func;
+	gpointer func_user_data;
+} SearchContext;
+
+static gboolean
+ecc_search_foreach_cb (ECache *cache,
+		       const gchar *uid,
+		       const gchar *revision,
+		       const gchar *object,
+		       EOfflineState offline_state,
+		       gint ncols,
+		       const gchar *column_names[],
+		       const gchar *column_values[],
+		       gpointer user_data)
+{
+	SearchContext *ctx = user_data;
+	gchar *comp_uid = NULL, *comp_rid = NULL;
+	gboolean can_continue;
+
+	g_return_val_if_fail (ctx != NULL, FALSE);
+	g_return_val_if_fail (ctx->func != NULL, FALSE);
+
+	if (ctx->extra_idx == -1) {
+		gint ii;
+
+		for (ii = 0; ii < ncols; ii++) {
+			if (column_names[ii] && g_ascii_strcasecmp (column_names[ii], ECC_COLUMN_EXTRA) == 0) {
+				ctx->extra_idx = ii;
+				break;
+			}
+		}
+	}
+
+	g_return_val_if_fail (ctx->extra_idx == -1, FALSE);
+
+	g_warn_if_fail (ecc_decode_id_sql (uid, &comp_uid, &comp_rid));
+
+	/* This type-cast for performance reason */
+	can_continue = ctx->func ((ECalCache *) cache, comp_uid, comp_rid, revision, object,
+		column_values[ctx->extra_idx], offline_state, ctx->func_user_data);
+
+	g_free (comp_uid);
+	g_free (comp_rid);
+
+	return can_continue;
+}
+
+static gboolean
+ecc_search_internal (ECalCache *cal_cache,
+		     const gchar *sexp_str,
+		     gint sexp_id,
+		     ECalCacheSearchFunc func,
+		     gpointer user_data,
+		     GCancellable *cancellable,
+		     GError **error)
+{
+	gchar *where_clause = NULL;
+	SearchContext ctx;
+	gboolean success;
+
+	if (!ecc_convert_sexp_to_sql (cal_cache, sexp_str, sexp_id, &where_clause, cancellable, error)) {
+		return FALSE;
+	}
+
+	ctx.extra_idx = -1;
+	ctx.func = func;
+	ctx.func_user_data = user_data;
+
+	success = e_cache_foreach (E_CACHE (cal_cache), E_CACHE_EXCLUDE_DELETED,
+		where_clause, ecc_search_foreach_cb, &ctx,
+		cancellable, error);
+
+	g_free (where_clause);
+
+	return success;
+}
+
 static gboolean
 ecc_init_aux_tables (ECalCache *cal_cache,
 		     GCancellable *cancellable,
@@ -669,6 +1472,38 @@ ecc_init_aux_tables (ECalCache *cal_cache,
 	e_cache_sqlite_stmt_free (stmt);
 
 	return success;
+}
+
+static gboolean
+ecc_init_sqlite_functions (ECalCache *cal_cache,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	gint ret;
+	gpointer sqlitedb;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+
+	sqlitedb = e_cache_get_sqlitedb (E_CACHE (cal_cache));
+	g_return_val_if_fail (sqlitedb != NULL, FALSE);
+
+	/* check_sexp(sexp_id, icalstring) */
+	ret = sqlite3_create_function (sqlitedb,
+		"check_sexp", 2, SQLITE_UTF8 | SQLITE_DETERMINISTIC,
+		cal_cache, ecc_check_sexp_func,
+		NULL, NULL);
+
+	if (ret != SQLITE_OK) {
+		const gchar *errmsg = sqlite3_errmsg (sqlitedb);
+
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE,
+			_("Failed to create SQLite function, error code '%d': %s"),
+			ret, errmsg ? errmsg : _("Unknown error"));
+
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -711,6 +1546,8 @@ e_cal_cache_initialize (ECalCache *cal_cache,
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
 
 	success = success && ecc_init_aux_tables (cal_cache, cancellable, error);
+
+	success = success && ecc_init_sqlite_functions (cal_cache, cancellable, error);
 
 	/* Check for data migration */
 	success = success && e_cal_cache_migrate (cache, e_cache_get_version (cache), cancellable, error);
@@ -1408,7 +2245,7 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 }
 
 static gboolean
-ecc_search_components_cb (ECache *cache,
+ecc_search_components_cb (ECalCache *cal_cache,
 			  const gchar *uid,
 			  const gchar *rid,
 			  const gchar *revision,
@@ -1429,7 +2266,7 @@ ecc_search_components_cb (ECache *cache,
 }
 
 static gboolean
-ecc_search_icalstrings_cb (ECache *cache,
+ecc_search_icalstrings_cb (ECalCache *cal_cache,
 			   const gchar *uid,
 			   const gchar *rid,
 			   const gchar *revision,
@@ -1449,7 +2286,7 @@ ecc_search_icalstrings_cb (ECache *cache,
 }
 
 static gboolean
-ecc_search_ids_cb (ECache *cache,
+ecc_search_ids_cb (ECalCache *cal_cache,
 		   const gchar *uid,
 		   const gchar *rid,
 		   const gchar *revision,
@@ -1625,9 +2462,28 @@ e_cal_cache_search_with_callback (ECalCache *cal_cache,
 				  GCancellable *cancellable,
 				  GError **error)
 {
+	ECalBackendSExp *bsexp = NULL;
+	gint sexp_id = -1;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	if (sexp && *sexp) {
+		bsexp = e_cal_backend_sexp_new (sexp);
+		if (!bsexp) {
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY,
+				_("Invalid query: %s"), sexp);
+			return FALSE;
+		}
+
+		sexp_id = ecc_take_sexp_object (cal_cache, bsexp);
+	}
+
+	success = ecc_search_internal (cal_cache, sexp, sexp_id, func, user_data, cancellable, error);
+
+	if (bsexp)
+		ecc_free_sexp_object (cal_cache, sexp_id);
 
 	return success;
 }
@@ -1748,11 +2604,17 @@ e_cal_cache_get_timezone (ECalCache *cal_cache,
 	g_return_val_if_fail (tzid != NULL, FALSE);
 	g_return_val_if_fail (out_zone != NULL, FALSE);
 
-	g_mutex_lock (&cal_cache->priv->loaded_timezones_lock);
+	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
 
 	*out_zone = g_hash_table_lookup (cal_cache->priv->loaded_timezones, tzid);
 	if (*out_zone) {
-		g_mutex_unlock (&cal_cache->priv->loaded_timezones_lock);
+		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+		return TRUE;
+	}
+
+	*out_zone = g_hash_table_lookup (cal_cache->priv->modified_timezones, tzid);
+	if (*out_zone) {
+		g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 		return TRUE;
 	}
 
@@ -1770,7 +2632,7 @@ e_cal_cache_get_timezone (ECalCache *cal_cache,
 		}
 	}
 
-	g_mutex_unlock (&cal_cache->priv->loaded_timezones_lock);
+	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	g_free (zone_str);
 
@@ -1895,7 +2757,7 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (out_timezones != NULL, FALSE);
 
-	g_mutex_lock (&cal_cache->priv->loaded_timezones_lock);
+	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
 
 	success = e_cache_sqlite_select (E_CACHE (cal_cache),
 		"SELECT COUNT(*) FROM " ECC_TABLE_TIMEZONES,
@@ -1908,10 +2770,19 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 		e_cache_sqlite_stmt_free (stmt);
 	}
 
-	if (success)
-		*out_timezones = g_hash_table_get_values (cal_cache->priv->loaded_timezones);
+	if (success) {
+		GList *loaded, *modified;
 
-	g_mutex_unlock (&cal_cache->priv->loaded_timezones_lock);
+		loaded = g_hash_table_get_values (cal_cache->priv->loaded_timezones);
+		modified = g_hash_table_get_values (cal_cache->priv->modified_timezones);
+
+		if (loaded && modified)
+			*out_timezones = g_list_concat (loaded, modified);
+		else
+			*out_timezones = loaded ? loaded : modified;
+	}
+
+	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	return success;
 }
@@ -2030,7 +2901,7 @@ e_cal_cache_remove_all_locked (ECache *cache,
 	g_return_val_if_fail (E_IS_CAL_CACHE (cache), FALSE);
 	g_return_val_if_fail (E_CACHE_CLASS (e_cal_cache_parent_class)->remove_all_locked != NULL, FALSE);
 
-	/* Cannot free content of priv->loaded_timezones, because those can be used anywhere */
+	/* Cannot free content of priv->loaded_timezones and priv->modified_timezones, because those can be used anywhere */
 	success = ecc_empty_aux_tables (cache, cancellable, error);
 
 	success = success && E_CACHE_CLASS (e_cal_cache_parent_class)->remove_all_locked (cache, uids, cancellable, error);
@@ -2048,13 +2919,118 @@ cal_cache_free_zone (gpointer ptr)
 }
 
 static void
+ecc_add_cached_timezone (ETimezoneCache *cache,
+			 icaltimezone *zone)
+{
+	ECalCache *cal_cache;
+	const gchar *tzid;
+
+	cal_cache = E_CAL_CACHE (cache);
+
+	tzid = icaltimezone_get_tzid (zone);
+	if (tzid == NULL)
+		return;
+
+	e_cal_cache_put_timezone (cal_cache, zone, NULL, NULL);
+}
+
+static icaltimezone *
+ecc_get_cached_timezone (ETimezoneCache *cache,
+			 const gchar *tzid)
+{
+	ECalCache *cal_cache;
+	icaltimezone *zone = NULL;
+	icaltimezone *builtin_zone = NULL;
+	icalcomponent *icalcomp;
+	icalproperty *prop;
+	const gchar *builtin_tzid;
+
+	cal_cache = E_CAL_CACHE (cache);
+
+	if (g_str_equal (tzid, "UTC"))
+		return icaltimezone_get_utc_timezone ();
+
+	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+
+	/* See if we already have it in the cache. */
+	zone = g_hash_table_lookup (cal_cache->priv->loaded_timezones, tzid);
+
+	if (zone != NULL)
+		goto exit;
+
+	/* Try to replace the original time zone with a more complete
+	 * and/or potentially updated built-in time zone.  Note this also
+	 * applies to TZIDs which match built-in time zones exactly: they
+	 * are extracted via icaltimezone_get_builtin_timezone_from_tzid(). */
+
+	builtin_tzid = e_cal_match_tzid (tzid);
+
+	if (builtin_tzid != NULL)
+		builtin_zone = icaltimezone_get_builtin_timezone_from_tzid (builtin_tzid);
+
+	if (builtin_zone == NULL) {
+		e_cal_cache_get_timezone (cal_cache, tzid, &zone, NULL, NULL);
+		goto exit;
+	}
+
+	/* Use the built-in time zone *and* rename it.  Likely the caller
+	 * is asking for a specific TZID because it has an event with such
+	 * a TZID.  Returning an icaltimezone with a different TZID would
+	 * lead to broken VCALENDARs in the caller. */
+
+	icalcomp = icaltimezone_get_component (builtin_zone);
+	icalcomp = icalcomponent_new_clone (icalcomp);
+
+	prop = icalcomponent_get_first_property (icalcomp, ICAL_ANY_PROPERTY);
+
+	while (prop != NULL) {
+		if (icalproperty_isa (prop) == ICAL_TZID_PROPERTY) {
+			icalproperty_set_value_from_string (prop, tzid, "NO");
+			break;
+		}
+
+		prop = icalcomponent_get_next_property (icalcomp, ICAL_ANY_PROPERTY);
+	}
+
+	if (icalcomp != NULL) {
+		zone = icaltimezone_new ();
+		if (icaltimezone_set_component (zone, icalcomp)) {
+			tzid = icaltimezone_get_tzid (zone);
+			g_hash_table_insert (cal_cache->priv->modified_timezones, g_strdup (tzid), zone);
+		} else {
+			icalcomponent_free (icalcomp);
+			icaltimezone_free (zone, 1);
+			zone = NULL;
+		}
+	}
+
+ exit:
+	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+
+	return zone;
+}
+
+static GList *
+ecc_list_cached_timezones (ETimezoneCache *cache)
+{
+	GList *timezones = NULL;
+
+	e_cal_cache_list_timezones (E_CAL_CACHE (cache), &timezones, NULL, NULL);
+
+	return timezones;
+}
+
+static void
 e_cal_cache_finalize (GObject *object)
 {
 	ECalCache *cal_cache = E_CAL_CACHE (object);
 
 	g_hash_table_destroy (cal_cache->priv->loaded_timezones);
+	g_hash_table_destroy (cal_cache->priv->modified_timezones);
+	g_hash_table_destroy (cal_cache->priv->sexps);
 
-	g_mutex_clear (&cal_cache->priv->loaded_timezones_lock);
+	g_rec_mutex_clear (&cal_cache->priv->timezones_lock);
+	g_mutex_clear (&cal_cache->priv->sexps_lock);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_cache_parent_class)->finalize (object);
@@ -2096,10 +3072,22 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 }
 
 static void
+ecc_timezone_cache_init (ETimezoneCacheInterface *iface)
+{
+	iface->add_timezone = ecc_add_cached_timezone;
+	iface->get_timezone = ecc_get_cached_timezone;
+	iface->list_timezones = ecc_list_cached_timezones;
+}
+
+static void
 e_cal_cache_init (ECalCache *cal_cache)
 {
 	cal_cache->priv = G_TYPE_INSTANCE_GET_PRIVATE (cal_cache, E_TYPE_CAL_CACHE, ECalCachePrivate);
 	cal_cache->priv->loaded_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
+	cal_cache->priv->modified_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 
-	g_mutex_init (&cal_cache->priv->loaded_timezones_lock);
+	cal_cache->priv->sexps = g_hash_table_new_full (g_int_hash, g_int_equal, NULL, g_object_unref);
+
+	g_rec_mutex_init (&cal_cache->priv->timezones_lock);
+	g_mutex_init (&cal_cache->priv->sexps_lock);
 }

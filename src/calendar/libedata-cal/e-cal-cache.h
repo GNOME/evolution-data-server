@@ -91,7 +91,7 @@ void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer data);
 
 /**
  * ECalCacheSearchFunc:
- * @cache: an #ECache
+ * @cal_cache: an #ECalCache
  * @uid: a unique object identifier
  * @rid: (nullable): an optional Recurrence-ID of the object
  * @revision: the object revision
@@ -107,7 +107,7 @@ void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer data);
  *
  * Since: 3.26
  **/
-typedef gboolean (* ECalCacheSearchFunc)	(ECache *cache,
+typedef gboolean (* ECalCacheSearchFunc)	(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
 						 const gchar *revision,
