@@ -122,6 +122,7 @@ set(SOURCES
 	camel-vee-store.c
 	camel-vee-summary.c
 	camel-vtrash-folder.c
+	camel-weak-ref-group.c
 	${CMAKE_CURRENT_BINARY_DIR}/camel-enumtypes.c
 	${CMAKE_CURRENT_BINARY_DIR}/camel-mime-tables.c
 )
@@ -259,6 +260,7 @@ set(HEADERS
 	camel-vee-store.h
 	camel-vee-summary.h
 	camel-vtrash-folder.h
+	camel-weak-ref-group.h
 	${CMAKE_CURRENT_BINARY_DIR}/camel-enumtypes.h
 )
 

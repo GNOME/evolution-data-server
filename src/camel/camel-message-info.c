@@ -25,15 +25,16 @@
 #include "camel-folder-summary.h"
 #include "camel-message-info-base.h"
 #include "camel-string-utils.h"
+#include "camel-weak-ref-group.h"
 
 #include "camel-message-info.h"
 
 struct _CamelMessageInfoPrivate {
 	GRecMutex property_lock;
 
-	GWeakRef summary;	/* CamelFolderSummary * */
-	gboolean dirty;		/* whether requires save to local disk/summary */
-	const gchar *uid;	/* allocated in the string pool */
+	CamelWeakRefGroup *summary_wrg;	/* CamelFolderSummary * */
+	gboolean dirty;			/* whether requires save to local disk/summary */
+	const gchar *uid;		/* allocated in the string pool */
 	gboolean abort_notifications;
 	gboolean thaw_notify_folder;
 	gboolean thaw_notify_folder_with_counts;
@@ -364,7 +365,7 @@ message_info_set_property (GObject *object,
 
 	switch (property_id) {
 	case PROP_SUMMARY:
-		g_weak_ref_set (&mi->priv->summary, g_value_get_object (value));
+		camel_weak_ref_group_set (mi->priv->summary_wrg, g_value_get_object (value));
 		return;
 
 	case PROP_DIRTY:
@@ -541,7 +542,7 @@ message_info_dispose (GObject *object)
 {
 	CamelMessageInfo *mi = CAMEL_MESSAGE_INFO (object);
 
-	g_weak_ref_set (&mi->priv->summary, NULL);
+	camel_weak_ref_group_set (mi->priv->summary_wrg, NULL);
 	camel_pstring_free (mi->priv->uid);
 	mi->priv->uid = NULL;
 
@@ -554,7 +555,7 @@ message_info_finalize (GObject *object)
 {
 	CamelMessageInfo *mi = CAMEL_MESSAGE_INFO (object);
 
-	g_weak_ref_clear (&mi->priv->summary);
+	camel_weak_ref_group_unref (mi->priv->summary_wrg);
 	g_rec_mutex_clear (&mi->priv->property_lock);
 
 	/* Chain up to parent's method. */
@@ -941,9 +942,9 @@ static void
 camel_message_info_init (CamelMessageInfo *mi)
 {
 	mi->priv = G_TYPE_INSTANCE_GET_PRIVATE (mi, CAMEL_TYPE_MESSAGE_INFO, CamelMessageInfoPrivate);
+	mi->priv->summary_wrg = camel_weak_ref_group_new ();
 
 	g_rec_mutex_init (&mi->priv->property_lock);
-	g_weak_ref_init (&mi->priv->summary, NULL);
 }
 
 /**
@@ -1107,7 +1108,7 @@ camel_message_info_ref_summary (const CamelMessageInfo *mi)
 {
 	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (mi), NULL);
 
-	return g_weak_ref_get (&mi->priv->summary);
+	return camel_weak_ref_group_get (mi->priv->summary_wrg);
 }
 
 /**
