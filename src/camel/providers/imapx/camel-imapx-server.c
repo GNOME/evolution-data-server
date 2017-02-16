@@ -4680,7 +4680,7 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		 * numbered MessageInfo, without losing any information.  Otherwise
 		 * we have to wait for the server to let us know it was appended. */
 
-		mi = camel_message_info_clone (info, NULL);
+		mi = camel_message_info_clone (info, camel_folder_get_folder_summary (folder));
 		old_uid = g_strdup (camel_message_info_get_uid (info));
 
 		if (ic->status && ic->status->condition == IMAPX_APPENDUID) {
