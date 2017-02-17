@@ -122,7 +122,7 @@ foreach(_test ${TESTS})
 endforeach(_test)
 
 if(ENABLE_INSTALLED_TESTS)
-	file(GLOB ${CMAKE_CURRENT_SOURCE_DIR}/data/vcards/*.vcf VCARDS)
+	file(GLOB VCARDS ${CMAKE_SOURCE_DIR}/tests/libebook/data/vcards/*.vcf)
 
 	install(FILES ${VCARDS}
 		DESTINATION ${INSTALLED_TESTS_EXEC_DIR}/vcards
