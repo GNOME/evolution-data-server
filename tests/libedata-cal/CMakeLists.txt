@@ -4,7 +4,14 @@ set(extra_deps
 	edata-cal
 )
 
-set(extra_defines)
+set(extra_defines
+	-DSRCDIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+	-DINSTALLED_TEST_DIR=\"${INSTALLED_TESTS_EXEC_DIR}\"
+	-DBACKENDDIR=\"${ecal_backenddir}\"
+	-DDATADIR=\"${SHARE_INSTALL_PREFIX}\"
+	-DBUILDDIR=\"${CAMKE_BINARY_DIR}\"
+	-DCAMEL_PROVIDERDIR=\"${camel_providerdir}\"
+)
 
 set(extra_cflags
 	${CALENDAR_CFLAGS}
@@ -18,10 +25,60 @@ set(extra_ldflags
 	${CALENDAR_LDFLAGS}
 )
 
+set(SOURCES
+	test-cal-cache-utils.c
+	test-cal-cache-utils.h
+)
+
+add_library(data-cal-test-utils STATIC
+	${SOURCES}
+)
+
+add_dependencies(data-cal-test-utils
+	edataserver
+	${extra_deps}
+)
+target_compile_definitions(data-cal-test-utils PRIVATE
+	-DG_LOG_DOMAIN=\"data-cal-test-utils\"
+	${extra_defines}
+)
+
+target_compile_options(data-cal-test-utils PUBLIC
+	${BACKEND_CFLAGS}
+	${DATA_SERVER_CFLAGS}
+	${extra_cflags}
+)
+
+target_include_directories(data-cal-test-utils PUBLIC
+	${CMAKE_BINARY_DIR}
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_SOURCE_DIR}/src
+	${BACKEND_INCLUDE_DIRS}
+	${DATA_SERVER_INCLUDE_DIRS}
+	${extra_incdirs}
+)
+
+target_link_libraries(data-cal-test-utils
+	edataserver
+	${extra_deps}
+	${BACKEND_LDFLAGS}
+	${DATA_SERVER_LDFLAGS}
+	${extra_ldflags}
+)
+
+set(extra_deps
+	ecal
+	edata-cal
+	data-cal-test-utils
+)
+
+set(extra_defines)
+
 # Should be kept ordered approximately from least to most difficult/complex
 set(TESTS
 	test-cal-backend-sexp
 	test-intervaltree
+	test-cal-cache-offline
 )
 
 foreach(_test ${TESTS})
@@ -38,3 +95,11 @@ foreach(_test ${TESTS})
 		"TEST_INSTALLED_SERVICES=1"
 	)
 endforeach(_test)
+
+if(ENABLE_INSTALLED_TESTS)
+	file(GLOB COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/components/*.ics)
+
+	install(FILES ${COMPONENTS}
+		DESTINATION ${INSTALLED_TESTS_EXEC_DIR}/components
+	)
+endif(ENABLE_INSTALLED_TESTS)

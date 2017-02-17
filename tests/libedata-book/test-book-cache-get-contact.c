@@ -18,7 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
-#include "test-cache-utils.h"
+#include "test-book-cache-utils.h"
 
 static void
 test_get_contact (TCUFixture *fixture,

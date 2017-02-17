@@ -17,10 +17,12 @@
  * Authors: Tristan Van Berkom <tristanvb@openismus.com>
  */
 
-#ifndef TEST_CACHE_UTILS_H
-#define TEST_CACHE_UTILS_H
+#ifndef TEST_BOOK_CACHE_UTILS_H
+#define TEST_BOOK_CACHE_UTILS_H
 
 #include <libedata-book/libedata-book.h>
+
+G_BEGIN_DECLS
 
 /* This legend shows the add order, and various sort order of the sorted
  * vcards. The UIDs of these contacts are formed as 'sorted-1', 'sorted-2' etc
@@ -171,4 +173,6 @@ TCUStepData *	tcu_step_test_new_full			(const gchar *test_prefix,
 void		tcu_step_test_add			(TCUStepData *data,
 							 gboolean filtered);
 
-#endif /* TEST_CACHE_UTILS_H */
+G_END_DECLS
+
+#endif /* TEST_BOOK_CACHE_UTILS_H */

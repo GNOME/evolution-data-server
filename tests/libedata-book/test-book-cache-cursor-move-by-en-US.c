@@ -18,7 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
-#include "test-cache-utils.h"
+#include "test-book-cache-utils.h"
 
 struct {
 	gboolean empty_book;
@@ -43,39 +43,57 @@ main (gint argc,
 	for (ii = 0; ii < G_N_ELEMENTS (params); ii++) {
 
 		data = tcu_step_test_new (
-			params[ii].path, "/de_DE/Move/Forward", "de_DE.UTF-8",
+			params[ii].path, "/en_US/Move/Forward", "en_US.UTF-8",
 			params[ii].empty_book);
 		tcu_step_test_add_assertion (data, 5, 11, 1, 2, 5, 6);
-		tcu_step_test_add_assertion (data, 6, 7, 8, 4, 3, 15, 17);
+		tcu_step_test_add_assertion (data, 6, 4, 3, 7, 8, 15, 17);
 		tcu_step_test_add (data, FALSE);
 
 		data = tcu_step_test_new (
-			params[ii].path, "/de_DE/Move/ForwardOnNameless", "de_DE.UTF-8",
+			params[ii].path, "/en_US/Move/ForwardOnNameless", "en_US.UTF-8",
 			params[ii].empty_book);
 		tcu_step_test_add_assertion (data, 1, 11);
 		tcu_step_test_add_assertion (data, 3, 1, 2, 5);
 		tcu_step_test_add (data, FALSE);
 
 		data = tcu_step_test_new (
-			params[ii].path, "/de_DE/Move/Backwards", "de_DE.UTF-8",
+			params[ii].path, "/en_US/Move/Backwards", "en_US.UTF-8",
 			params[ii].empty_book);
-		tcu_step_test_add_assertion (data, -5, 19, 20, 9, 13, 12);
-		tcu_step_test_add_assertion (data, -8, 14, 10, 18, 16, 17, 15, 3, 4);
+		tcu_step_test_add_assertion (data, -5, 20, 19, 9, 13, 12);
+		tcu_step_test_add_assertion (data, -8, 14, 10, 18, 16, 17, 15, 8, 7);
 		tcu_step_test_add (data, FALSE);
 
 		data = tcu_step_test_new (
-			params[ii].path, "/de_DE/Filtered/Move/Forward", "de_DE.UTF-8",
+			params[ii].path, "/en_US/Filtered/Move/Forward", "en_US.UTF-8",
 			params[ii].empty_book);
-		tcu_step_test_add_assertion (data, 5, 11, 1, 2, 5, 8);
-		tcu_step_test_add_assertion (data, 8, 3, 17, 16, 18, 10, 14, 12, 9);
+		tcu_step_test_add_assertion (data, 5, 11, 1, 2, 5, 3);
+		tcu_step_test_add_assertion (data, 8, 8, 17, 16, 18, 10, 14, 12, 9);
 		tcu_step_test_add (data, TRUE);
 
 		data = tcu_step_test_new (
-			params[ii].path, "/de_DE/Filtered/Move/Backwards", "de_DE.UTF-8",
+			params[ii].path, "/en_US/Filtered/Move/Backwards", "en_US.UTF-8",
 			params[ii].empty_book);
 		tcu_step_test_add_assertion (data, -5, 9, 12, 14, 10, 18);
-		tcu_step_test_add_assertion (data, -8, 16, 17, 3, 8, 5, 2, 1, 11);
+		tcu_step_test_add_assertion (data, -8, 16, 17, 8, 3, 5, 2, 1, 11);
 		tcu_step_test_add (data, TRUE);
+
+		data = tcu_step_test_new_full (
+			params[ii].path, "/en_US/Move/Descending/Forward", "en_US.UTF-8",
+			params[ii].empty_book,
+			E_BOOK_CURSOR_SORT_DESCENDING);
+		tcu_step_test_add_assertion (data, 5, 20, 19, 9,  13, 12);
+		tcu_step_test_add_assertion (data, 5, 14, 10, 18, 16, 17);
+		tcu_step_test_add_assertion (data, 5, 15, 8,  7,  3,  4);
+		tcu_step_test_add_assertion (data, 5, 6,  5,  2,  1,  11);
+		tcu_step_test_add (data, FALSE);
+
+		data = tcu_step_test_new_full (
+			params[ii].path, "/en_US/Move/Descending/Backwards", "en_US.UTF-8",
+			params[ii].empty_book,
+			E_BOOK_CURSOR_SORT_DESCENDING);
+		tcu_step_test_add_assertion (data, -10, 11, 1,  2,  5,  6,  4,  3,  7,  8, 15);
+		tcu_step_test_add_assertion (data, -10, 17, 16, 18, 10, 14, 12, 13, 9, 19, 20);
+		tcu_step_test_add (data, FALSE);
 	}
 
 	return g_test_run ();

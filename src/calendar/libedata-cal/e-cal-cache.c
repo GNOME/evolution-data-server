@@ -231,7 +231,7 @@ ecc_check_sexp_func (sqlite3_context *context,
 	const gchar *icalstring;
 
 	g_return_if_fail (context != NULL);
-	g_return_if_fail (argc != 2);
+	g_return_if_fail (argc == 2);
 
 	cal_cache = sqlite3_user_data (context);
 	sexp_id = sqlite3_value_int (argv[0]);
@@ -577,6 +577,9 @@ ecc_extract_organizer (ECalComponent *comp)
 	g_return_val_if_fail (E_IS_CAL_COMPONENT (comp), NULL);
 
 	e_cal_component_get_organizer (comp, &org);
+
+	if (!org.value)
+		return NULL;
 
 	value = g_string_new ("");
 
@@ -1412,7 +1415,7 @@ ecc_search_foreach_cb (ECache *cache,
 		}
 	}
 
-	g_return_val_if_fail (ctx->extra_idx == -1, FALSE);
+	g_return_val_if_fail (ctx->extra_idx != -1, FALSE);
 
 	g_warn_if_fail (ecc_decode_id_sql (uid, &comp_uid, &comp_rid));
 
@@ -1465,7 +1468,7 @@ ecc_init_aux_tables (ECalCache *cal_cache,
 	gboolean success;
 
 	stmt = e_cache_sqlite_stmt_printf ("CREATE TABLE IF NOT EXISTS %Q ("
-		"tzid TEXT PRIMARY INDEX, "
+		"tzid TEXT PRIMARY KEY, "
 		"zone TEXT)",
 		ECC_TABLE_TIMEZONES);
 	success = e_cache_sqlite_exec (E_CACHE (cal_cache), stmt, cancellable, error);
@@ -1623,6 +1626,43 @@ e_cal_cache_dup_component_revision (ECalCache *cal_cache,
 	g_signal_emit (cal_cache, signals[DUP_COMPONENT_REVISION], 0, component, &revision);
 
 	return revision;
+}
+
+/**
+ * e_cal_cache_contains:
+ * @cal_cache: an #ECalCache
+ * @uid: component UID
+ * @rid: (nullable): optional component Recurrence-ID or %NULL
+ * @deleted_flag: one of #ECacheDeletedFlag enum
+ *
+ * Checkes whether the @cal_cache contains an object with
+ * the given @uid and @rid. The @rid can be an empty string
+ * or %NULL to search for the master object, otherwise the check
+ * is done for a detached instance, not for a recurrence instance.
+ *
+ * Returns: Whether the the object had been found.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_cache_contains (ECalCache *cal_cache,
+		      const gchar *uid,
+		      const gchar *rid,
+		      ECacheDeletedFlag deleted_flag)
+{
+	gchar *id;
+	gboolean found;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	id = ecc_encode_id_sql (uid, rid);
+
+	found = e_cache_contains (E_CACHE (cal_cache), id, deleted_flag);
+
+	g_free (id);
+
+	return found;
 }
 
 /**
@@ -2245,6 +2285,27 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 }
 
 static gboolean
+ecc_search_data_cb (ECalCache *cal_cache,
+		    const gchar *uid,
+		    const gchar *rid,
+		    const gchar *revision,
+		    const gchar *object,
+		    const gchar *extra,
+		    EOfflineState offline_state,
+		    gpointer user_data)
+{
+	GSList **out_data = user_data;
+
+	g_return_val_if_fail (out_data != NULL, FALSE);
+	g_return_val_if_fail (object != NULL, FALSE);
+
+	*out_data = g_slist_prepend (*out_data,
+		e_cal_cache_search_data_new (uid, rid, object, extra));
+
+	return TRUE;
+}
+
+static gboolean
 ecc_search_components_cb (ECalCache *cal_cache,
 			  const gchar *uid,
 			  const gchar *rid,
@@ -2261,26 +2322,6 @@ ecc_search_components_cb (ECalCache *cal_cache,
 
 	*out_components = g_slist_prepend (*out_components,
 		e_cal_component_new_from_string (object));
-
-	return TRUE;
-}
-
-static gboolean
-ecc_search_icalstrings_cb (ECalCache *cal_cache,
-			   const gchar *uid,
-			   const gchar *rid,
-			   const gchar *revision,
-			   const gchar *object,
-			   const gchar *extra,
-			   EOfflineState offline_state,
-			   gpointer user_data)
-{
-	GSList **out_icalstrings = user_data;
-
-	g_return_val_if_fail (out_icalstrings != NULL, FALSE);
-	g_return_val_if_fail (object != NULL, FALSE);
-
-	*out_icalstrings = g_slist_prepend (*out_icalstrings, g_strdup (object));
 
 	return TRUE;
 }
@@ -2309,6 +2350,51 @@ ecc_search_ids_cb (ECalCache *cal_cache,
  * e_cal_cache_search:
  * @cal_cache: an #ECalCache
  * @sexp: (nullable): search expression; use %NULL or an empty string to list all stored components
+ * @out_data: (out) (transfer full) (element-type ECalCacheSearchData): stored components, as search data, satisfied by @sexp
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Searches the @cal_cache with the given @sexp and
+ * returns those components which satisfy the search
+ * expression as a #GSList of #ECalCacheSearchData.
+ * The @out_data should be freed with
+ * g_slist_free_full (data, e_cal_cache_search_data_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_cache_search (ECalCache *cal_cache,
+		    const gchar *sexp,
+		    GSList **out_data,
+		    GCancellable *cancellable,
+		    GError **error)
+{
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (out_data != NULL, FALSE);
+
+	*out_data = NULL;
+
+	success = e_cal_cache_search_with_callback (cal_cache, sexp, ecc_search_data_cb,
+		out_data, cancellable, error);
+	if (success) {
+		*out_data = g_slist_reverse (*out_data);
+	} else {
+		g_slist_free_full (*out_data, e_cal_cache_search_data_free);
+		*out_data = NULL;
+	}
+
+	return success;
+}
+
+/**
+ * e_cal_cache_search_components:
+ * @cal_cache: an #ECalCache
+ * @sexp: (nullable): search expression; use %NULL or an empty string to list all stored components
  * @out_components: (out) (transfer full) (element-type ECalComponent): stored components satisfied by @sexp
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -2324,11 +2410,11 @@ ecc_search_ids_cb (ECalCache *cal_cache,
  * Since: 3.26
  **/
 gboolean
-e_cal_cache_search (ECalCache *cal_cache,
-		    const gchar *sexp,
-		    GSList **out_components,
-		    GCancellable *cancellable,
-		    GError **error)
+e_cal_cache_search_components (ECalCache *cal_cache,
+			       const gchar *sexp,
+			       GSList **out_components,
+			       GCancellable *cancellable,
+			       GError **error)
 {
 	gboolean success;
 
@@ -2344,50 +2430,6 @@ e_cal_cache_search (ECalCache *cal_cache,
 	} else {
 		g_slist_free_full (*out_components, g_object_unref);
 		*out_components = NULL;
-	}
-
-	return success;
-}
-
-/**
- * e_cal_cache_search_as_strings:
- * @cal_cache: an #ECalCache
- * @sexp: (nullable): search expression; use %NULL or an empty string to list all stored components
- * @out_icalstrings: (out) (transfer full) (element-type utf8): stored components satisfied by @sexp as iCal strings
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Searches the @cal_cache with the given @sexp and returns those
- * components which satisfy the search expression as iCal strings.
- * The @out_icalstrings should be freed with
- * g_slist_free_full (components, g_free); when
- * no longer needed.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_cal_cache_search_as_strings (ECalCache *cal_cache,
-			       const gchar *sexp,
-			       GSList **out_icalstrings,
-			       GCancellable *cancellable,
-			       GError **error)
-{
-	gboolean success;
-
-	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
-	g_return_val_if_fail (out_icalstrings != NULL, FALSE);
-
-	*out_icalstrings = NULL;
-
-	success = e_cal_cache_search_with_callback (cal_cache, sexp, ecc_search_icalstrings_cb,
-		out_icalstrings, cancellable, error);
-	if (success) {
-		*out_icalstrings = g_slist_reverse (*out_icalstrings);
-	} else {
-		g_slist_free_full (*out_icalstrings, g_free);
-		*out_icalstrings = NULL;
 	}
 
 	return success;
@@ -3086,7 +3128,7 @@ e_cal_cache_init (ECalCache *cal_cache)
 	cal_cache->priv->loaded_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 	cal_cache->priv->modified_timezones = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, cal_cache_free_zone);
 
-	cal_cache->priv->sexps = g_hash_table_new_full (g_int_hash, g_int_equal, NULL, g_object_unref);
+	cal_cache->priv->sexps = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 
 	g_rec_mutex_init (&cal_cache->priv->timezones_lock);
 	g_mutex_init (&cal_cache->priv->sexps_lock);

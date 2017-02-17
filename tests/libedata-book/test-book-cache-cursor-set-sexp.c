@@ -18,7 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
-#include "test-cache-utils.h"
+#include "test-book-cache-utils.h"
 
 static TCUCursorClosure book_closure = { { NULL }, NULL, E_BOOK_CURSOR_SORT_ASCENDING };
 

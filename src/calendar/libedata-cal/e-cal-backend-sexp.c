@@ -1209,9 +1209,6 @@ e_cal_backend_sexp_new (const gchar *text)
 	e_sexp_input_text (sexp->priv->search_sexp, text, strlen (text));
 
 	if (e_sexp_parse (sexp->priv->search_sexp) == -1) {
-		g_warning (
-			"%s: Error in parsing: %s",
-			G_STRFUNC, e_sexp_get_error (sexp->priv->search_sexp));
 		g_object_unref (sexp);
 		sexp = NULL;
 	}

@@ -52,10 +52,10 @@ typedef struct _ECalCachePrivate ECalCachePrivate;
 
 /**
  * ECalCacheSearchData:
- * @uid: The UID of this component
- * @rid: (nullable): The Recurrence-ID of this component
- * @object: The component string
- * @extra: Any extra data associated with the component
+ * @uid: the UID of this component
+ * @rid: (nullable): the Recurrence-ID of this component
+ * @object: the component string
+ * @extra: any extra data associated with the component
  *
  * This structure is used to represent components returned
  * by the #ECalCache from various functions
@@ -158,6 +158,10 @@ ECalCache *	e_cal_cache_new			(const gchar *filename,
 gchar *		e_cal_cache_dup_component_revision
 						(ECalCache *cal_cache,
 						 ECalComponent *component);
+gboolean	e_cal_cache_contains		(ECalCache *cal_cache,
+						 const gchar *uid,
+						 const gchar *rid,
+						 ECacheDeletedFlag deleted_flag);
 gboolean	e_cal_cache_put_component	(ECalCache *cal_cache,
 						 ECalComponent *component,
 						 const gchar *extra,
@@ -234,12 +238,12 @@ gboolean	e_cal_cache_get_components_in_range_as_strings
 						 GError **error);
 gboolean	e_cal_cache_search		(ECalCache *cal_cache,
 						 const gchar *sexp,
-						 GSList **out_components, /* ECalComponent * */
+						 GSList **out_data, /* ECalCacheSearchData * * */
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	e_cal_cache_search_as_strings	(ECalCache *cal_cache,
+gboolean	e_cal_cache_search_components	(ECalCache *cal_cache,
 						 const gchar *sexp,
-						 GSList **out_icalstrings, /* gchar * */
+						 GSList **out_components, /* ECalComponent * */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_search_ids		(ECalCache *cal_cache,

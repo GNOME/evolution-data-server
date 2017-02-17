@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "test-cache-utils.h"
+#include "test-book-cache-utils.h"
 
 gchar *
 tcu_new_vcard_from_test_case (const gchar *case_name)

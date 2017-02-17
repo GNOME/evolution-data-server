@@ -18,7 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
-#include "test-cache-utils.h"
+#include "test-book-cache-utils.h"
 
 static TCUClosure closure = { NULL };
 

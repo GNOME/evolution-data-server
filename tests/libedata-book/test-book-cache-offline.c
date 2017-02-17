@@ -18,7 +18,7 @@
 #include <locale.h>
 #include <libebook/libebook.h>
 
-#include "test-cache-utils.h"
+#include "test-book-cache-utils.h"
 
 static void
 test_fill_cache (TCUFixture *fixture,
@@ -260,10 +260,12 @@ test_basic_search (TCUFixture *fixture,
 	/* Invalid expression */
 	g_assert (!e_book_cache_search (fixture->book_cache, "invalid expression here", TRUE, &list, NULL, &error));
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY);
+	g_assert_null (list);
 	g_clear_error (&error);
 
 	g_assert (!e_book_cache_search_uids (fixture->book_cache, "invalid expression here", &list, NULL, &error));
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY);
+	g_assert_null (list);
 	g_clear_error (&error);
 }
 
