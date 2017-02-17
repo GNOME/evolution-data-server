@@ -17,7 +17,7 @@
           <setting name="RedirectUri">https://localhost/</setting>
           <setting name="ClientId">796629365126-a2o58ak3l6nuk9bto6sr5aoku0vh5enc.apps.googleusercontent.com</setting>
           <setting name="ClientSecret">YVigZ5Po5p83_CrwQk-p5SwP</setting>
-          <setting type="as" name="Scope">['https://www.googleapis.com/auth/userinfo.email','https://mail.google.com/','https://www.google.com/m8/feeds/','https://www.googleapis.com/auth/calendar']</setting>
+          <setting type="as" name="Scope">['https://www.googleapis.com/auth/userinfo.email','https://mail.google.com/','https://www.google.com/m8/feeds/','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/carddav']</setting>
         </group>
       </group>
     </group>
