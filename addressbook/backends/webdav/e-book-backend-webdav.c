@@ -1641,7 +1641,7 @@ book_backend_webdav_modify_contacts_sync (EBookBackend *backend,
 	href = webdav_contact_get_href (contact);
 	status = upload_contact (webdav, href, contact, &status_reason, cancellable);
 	g_free (href);
-	if (status != 201 && status != 204) {
+	if (status != 200 && status != 201 && status != 204) {
 		g_object_unref (contact);
 		if (status == 401 || status == 407) {
 			webdav_handle_auth_request (webdav, error);
