@@ -7,9 +7,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 3.23.x\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-02-11 14:22+0000\n"
-"PO-Revision-Date: 2017-02-12 13:37+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-02-18 10:52+0000\n"
+"PO-Revision-Date: 2017-02-19 17:10+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -1087,7 +1088,7 @@ msgstr "Kan ikke sortere på et felt som kan ha flere verdier"
 msgid ""
 "Tried to step a cursor in reverse, but cursor is already at the beginning of "
 "the contact list"
-msgstr ""
+msgstr "Prøvde å flytte en markør bakover, men markøren var allerede ved starten av kontaktlisten"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6226
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
@@ -1095,7 +1096,7 @@ msgstr ""
 msgid ""
 "Tried to step a cursor forwards, but cursor is already at the end of the "
 "contact list"
-msgstr ""
+msgstr "Prøvde å flytte en markør fremover, men markøren er allerede ved slutten av kontaktlisten"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:570
 #, c-format
@@ -1320,7 +1321,7 @@ msgstr "Ukjent opprinnelse for markør"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:334
 msgid "Out of sync revision while moving cursor"
-msgstr ""
+msgstr "Revisjon ute av synk ved flytting av markør"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:428
 msgid "Alphabetic index was set for incorrect locale"
@@ -1971,11 +1972,11 @@ msgstr "Dekrypterer melding"
 msgid "Unable to create cache path"
 msgstr "Kunne ikke opprette sti til buffer"
 
-#: ../src/camel/camel-data-cache.c:534
+#: ../src/camel/camel-data-cache.c:532
 msgid "Empty cache file"
 msgstr "Tom bufferfil"
 
-#: ../src/camel/camel-data-cache.c:611
+#: ../src/camel/camel-data-cache.c:609
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Kunne ikke fjerne cache-oppføring: %s: %s"
@@ -2303,7 +2304,9 @@ msgstr "Uventet forespørsel fra GnuPG for «%s»"
 msgid ""
 "Note the encrypted content doesn’t contain information about a recipient, "
 "thus there will be a password prompt for each of stored private key."
-msgstr "Merk at kryptert innhold ikke inneholder informasjon om en mottaker. Du vil bli spurt om passord for hver enkelt lagret privat nøkkel."
+msgstr ""
+"Merk at kryptert innhold ikke inneholder informasjon om en mottaker. Du vil "
+"bli spurt om passord for hver enkelt lagret privat nøkkel."
 
 #: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:398
@@ -2334,7 +2337,7 @@ msgstr "Kan ikke kryptere: Ingen gyldige mottakere spesifisert."
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
-msgstr ""
+msgstr "Klarte ikke å kryptere: Ugyldig mottaker %s oppgitt. En vanlig problemstilling er at %s ikke har importert offentlig nøkkel for denne mottakeren."
 
 #: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
@@ -3633,7 +3636,7 @@ msgstr "Mappenavn «%s» er ugyldig fordi det inneholder tegnet «%c»"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2514
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
-msgstr ""
+msgstr "[Gmail]/Skisser"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2515
 msgctxt "IMAPDefaults"
@@ -3701,10 +3704,9 @@ msgid "Spam"
 msgstr "Spam"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2536
-#, fuzzy
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
-msgstr "E-post"
+msgstr "Masseutsendelser"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2539
 msgctxt "IMAPDefaults"
@@ -5136,7 +5138,7 @@ msgstr "%s støtter ikke sletting av eksterne ressurser"
 #: ../src/libebackend/e-data-factory.c:1295
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
-msgstr ""
+msgstr "Motorfabrikk for kilde «%s» og utvidelse «%s» ble ikke funnet."
 
 #: ../src/libebackend/e-server-side-source.c:142
 #, c-format
@@ -5399,27 +5401,23 @@ msgstr "Klarte ikke å finne hemmelighet for Google i påloggingsinformasjonen"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:413
 msgid "Refresh token not found in Google secret"
-msgstr ""
+msgstr "Oppdateringstegn ble ikke funnet i Google-hemmelighet"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:421
 msgid "Failed to construct refresh_token request"
-msgstr ""
+msgstr "Klarte ikke å bygge refresh_token-forespørsel"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:454
-#, fuzzy
 msgid "Failed to encode new access token to Google secret"
-msgstr "Klarte ikke å hente et adgangstegn for «%s»: "
+msgstr "Klarte ikke å kode nytt adgangstegn til Google-hemmelighet"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:464
-#, fuzzy
 msgid "Failed to get access token from refresh_token server response"
-msgstr "Klarte ikke å hente et adgangstegn for «%s»: "
+msgstr "Klarte ikke å hente adgangstegn fra refresh_token tjenersvar"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:470
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to refresh token"
-msgstr "Feil under henting av melding"
+msgstr "Klarte ikke å oppdatere adgangstegn"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-password.c:79
 msgid "Password not found"
@@ -5611,7 +5609,7 @@ msgstr "Klarte ikke å hente et adgangstegn for «%s»: Feilkode %d (%s)"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:492
 msgid "Requesting access token, please wait..."
-msgstr ""
+msgstr "Ber om adgangstegn, vennligst vent …"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:594
 msgid "Google Address book authentication request"
@@ -5652,7 +5650,9 @@ msgstr ""
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar “%s”."
-msgstr "Logg inn til din Google-konto og godta betingelsene for å aksessere din kalender «%s»."
+msgstr ""
+"Logg inn til din Google-konto og godta betingelsene for å aksessere din "
+"kalender «%s»."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:629
 #, c-format
@@ -5947,7 +5947,9 @@ msgstr "Klarte ikke å finne ASUrl og OABUrl i svar fra automatisk gjenkjenning"
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
-msgstr "Kan ikke finne samsvarende konto å finne adgangstegn for «%s» i org.gnome.OnlineAccounts-tjenesten"
+msgstr ""
+"Kan ikke finne samsvarende konto å finne adgangstegn for «%s» i org.gnome."
+"OnlineAccounts-tjenesten"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1370
 #, c-format
@@ -6015,7 +6017,9 @@ msgstr "Integrer dine postbokser"
 msgid ""
 "Cannot find a corresponding account service in the accounts database from "
 "which to obtain an access token for “%s”"
-msgstr "Finner ingen samsvarende kontotjeneste i kontodatabasen hvor det er mulig å få et adgangstegn for «%s»"
+msgstr ""
+"Finner ingen samsvarende kontotjeneste i kontodatabasen hvor det er mulig å "
+"få et adgangstegn for «%s»"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:85
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:282
@@ -6148,8 +6152,8 @@ msgstr "[vcard|csv]"
 #: ../src/tools/addressbook-export/addressbook-export.c:981
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
-msgstr ""
+msgstr "Feil i kommandolinjeargumenter. Bruk alternativet --help for å se bruksinformasjon."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:995
 msgid "Only support csv or vcard format."
-msgstr ""
+msgstr "Støtt bare csv- eller vcard-format."
