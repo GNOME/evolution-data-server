@@ -2148,6 +2148,9 @@ imapx_parse_uids (CamelIMAPXInputStream *stream,
 
 	if (!token) {
 		g_set_error (error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE, "server response truncated");
+
+		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
+
 		return NULL;
 	}
 
@@ -2238,8 +2241,10 @@ imapx_parse_status_copyuid (CamelIMAPXInputStream *stream,
 
 	uids = imapx_parse_uids (stream, cancellable, &local_error);
 	if (uids == NULL) {
-		/* Some broken servers can return truncated response, like:
+		/* Sometimes the server can return truncated response, like:
 		   B00083 OK [COPYUID 4154  ] COPY completed.
+		   It's for example when moving/copying messages which are not
+		   available on the serer any more.
 		   Just ignore such server error.
 		*/
 		if (g_error_matches (local_error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_IGNORE)) {
@@ -2615,8 +2620,10 @@ imapx_free_status (struct _status_info *sinfo)
 		g_free (sinfo->u.newname.newname);
 		break;
 	case IMAPX_COPYUID:
-		g_array_free (sinfo->u.copyuid.uids, TRUE);
-		g_array_free (sinfo->u.copyuid.copied_uids, TRUE);
+		if (sinfo->u.copyuid.uids)
+			g_array_free (sinfo->u.copyuid.uids, TRUE);
+		if (sinfo->u.copyuid.copied_uids)
+			g_array_free (sinfo->u.copyuid.copied_uids, TRUE);
 		break;
 	case IMAPX_CAPABILITY:
 		if (sinfo->u.cinfo)
