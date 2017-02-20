@@ -79,6 +79,7 @@ set(TESTS
 	test-cal-backend-sexp
 	test-intervaltree
 	test-cal-cache-offline
+	test-cal-cache-intervals
 )
 
 foreach(_test ${TESTS})

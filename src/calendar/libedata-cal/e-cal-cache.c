@@ -766,6 +766,40 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 	add_value (ECC_COLUMN_CATEGORIES, ecc_extract_categories (comp));
 }
 
+static gchar *
+ecc_range_as_where_clause (const gchar *start_str,
+			   const gchar *end_str)
+{
+	GString *stmt;
+
+	if (!start_str && !end_str)
+		return NULL;
+
+	stmt = g_string_new ("");
+
+	if (start_str) {
+		e_cache_sqlite_stmt_append_printf (stmt,
+			"(" ECC_COLUMN_OCCUR_END " IS NULL OR " ECC_COLUMN_OCCUR_END ">=%Q)",
+			start_str);
+	}
+
+	if (end_str) {
+		if (start_str) {
+			g_string_prepend (stmt, "(");
+			g_string_append (stmt, " AND ");
+		}
+
+		e_cache_sqlite_stmt_append_printf (stmt,
+			"(" ECC_COLUMN_OCCUR_START " IS NULL OR " ECC_COLUMN_OCCUR_START "<=%Q)",
+			end_str);
+
+		if (start_str)
+			g_string_append (stmt, ")");
+	}
+
+	return g_string_free (stmt, FALSE);
+}
+
 typedef struct _SExpToSqlContext {
 	ECalCache *cal_cache;
 	gint sexp_id;
@@ -931,10 +965,10 @@ ecc_sexp_func_occur_in_time_range (ESExp *esexp,
 	end_str = ecc_encode_itt_to_sql (itt_end);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = g_strdup_printf (
-		"((" ECC_COLUMN_OCCUR_START " IS NULL OR " ECC_COLUMN_OCCUR_START "<'%s')"
-		" AND (" ECC_COLUMN_OCCUR_END " IS NULL OR " ECC_COLUMN_OCCUR_END ">'%s'))",
-		start_str, end_str);
+	result->value.string = ecc_range_as_where_clause (start_str, end_str);
+
+	if (!result->value.string)
+		result->value.string = g_strdup ("1==1");
 
 	g_free (start_str);
 	g_free (end_str);
@@ -2256,7 +2290,8 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 						GCancellable *cancellable,
 						GError **error)
 {
-	gchar *stmt, *range_start_str, *range_end_str;
+	GString *stmt;
+	gchar *range_start_str, *range_end_str, *range_where_clause;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
@@ -2266,18 +2301,22 @@ e_cal_cache_get_components_in_range_as_strings (ECalCache *cal_cache,
 
 	range_start_str = ecc_encode_timet_to_sql (cal_cache, range_start);
 	range_end_str = ecc_encode_timet_to_sql (cal_cache, range_end);
+	range_where_clause = ecc_range_as_where_clause (range_start_str, range_end_str);
 
 	/* Using 'ORDER BY' to get the master object first */
-	stmt = e_cache_sqlite_stmt_printf (
-		"SELECT " E_CACHE_COLUMN_OBJECT " FROM " E_CACHE_TABLE_OBJECTS
-		" WHERE (" ECC_COLUMN_OCCUR_START " IS NULL OR " ECC_COLUMN_OCCUR_START "<%Q)"
-		" AND (" ECC_COLUMN_OCCUR_END " IS NULL OR " ECC_COLUMN_OCCUR_END ">%Q)"
-		" ORDER BY " E_CACHE_COLUMN_UID,
-		range_end, range_start);
+	stmt = g_string_new ("SELECT " E_CACHE_COLUMN_OBJECT " FROM " E_CACHE_TABLE_OBJECTS);
 
-	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_strings, out_icalstrings, cancellable, error);
+	if (range_where_clause) {
+		g_string_append (stmt, " WHERE ");
+		g_string_append (stmt, range_where_clause);
+	}
 
-	e_cache_sqlite_stmt_free (stmt);
+	g_string_append (stmt, " ORDER BY " E_CACHE_COLUMN_UID);
+
+	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt->str, e_cal_cache_get_strings, out_icalstrings, cancellable, error);
+
+	g_string_free (stmt, TRUE);
+	g_free (range_where_clause);
 	g_free (range_start_str);
 	g_free (range_end_str);
 

@@ -1578,6 +1578,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 	} else {
 		/* ALARMS, EVENTS: DTEND and reccurences */
 
+		time_t may_end = _TIME_MIN;
+
 		if (e_cal_component_has_recurrences (comp)) {
 			GSList *rrules = NULL;
 			GSList *exrules = NULL;
@@ -1600,9 +1602,9 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					&ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
-					*end = _TIME_MAX;
-				else if (rule_end > *end) /* new maximum */
-					*end = rule_end;
+					may_end = _TIME_MAX;
+				else if (rule_end > may_end) /* new maximum */
+					may_end = rule_end;
 			}
 
 			/* Do the EXRULEs. */
@@ -1617,9 +1619,9 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					&ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
-					*end = _TIME_MAX;
-				else if (rule_end > *end)
-					*end = rule_end;
+					may_end = _TIME_MAX;
+				else if (rule_end > may_end)
+					may_end = rule_end;
 			}
 
 			/* Do the RDATEs */
@@ -1639,12 +1641,14 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					rdate_end = icaltime_as_timet (p->u.end);
 
 				if (rdate_end == -1) /* repeats forever */
-					*end = _TIME_MAX;
-				else if (rdate_end > *end)
-					*end = rdate_end;
+					may_end = _TIME_MAX;
+				else if (rdate_end > may_end)
+					may_end = rdate_end;
 			}
 
 			e_cal_component_free_period_list (rdates);
+		} else if (*start != _TIME_MIN) {
+			may_end = *start;
 		}
 
 		/* Get dtend of the component and convert it to UTC */
@@ -1656,11 +1660,15 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 			dtend_time = componenttime_to_utc_timet (
 				&dt_end, tz_cb, tz_cb_data, default_timezone);
 
-			if (dtend_time == -1 || (dtend_time > *end))
-				*end = dtend_time;
+			if (dtend_time == -1 || (dtend_time > may_end))
+				may_end = dtend_time;
+		} else {
+			may_end = _TIME_MAX;
 		}
 
 		e_cal_component_free_datetime (&dt_end);
+
+		*end = may_end == _TIME_MIN ? _TIME_MAX : may_end;
 	}
 }
 
