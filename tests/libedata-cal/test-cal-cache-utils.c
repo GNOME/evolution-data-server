@@ -54,7 +54,7 @@ void
 tcu_fixture_setup (TCUFixture *fixture,
 		   gconstpointer user_data)
 {
-	/* TCUClosure *closure = (TCUClosure *) user_data; */
+	const TCUClosure *closure = user_data;
 	gchar *filename, *directory;
 	GError *error = NULL;
 
@@ -75,6 +75,31 @@ tcu_fixture_setup (TCUFixture *fixture,
 		g_error ("Failed to create the ECalCache: %s", error->message);
 
 	g_free (filename);
+
+	if (closure) {
+		if (closure->load_set == TCU_LOAD_COMPONENT_SET_EVENTS) {
+			tcu_add_component_from_test_case (fixture, "event-1", NULL);
+			tcu_add_component_from_test_case (fixture, "event-2", NULL);
+			tcu_add_component_from_test_case (fixture, "event-3", NULL);
+			tcu_add_component_from_test_case (fixture, "event-4", NULL);
+			tcu_add_component_from_test_case (fixture, "event-5", NULL);
+			tcu_add_component_from_test_case (fixture, "event-6", NULL);
+			tcu_add_component_from_test_case (fixture, "event-6-a", NULL);
+			tcu_add_component_from_test_case (fixture, "event-7", NULL);
+			tcu_add_component_from_test_case (fixture, "event-8", NULL);
+			tcu_add_component_from_test_case (fixture, "event-9", NULL);
+		} else if (closure->load_set == TCU_LOAD_COMPONENT_SET_TASKS) {
+			tcu_add_component_from_test_case (fixture, "task-1", NULL);
+			tcu_add_component_from_test_case (fixture, "task-2", NULL);
+			tcu_add_component_from_test_case (fixture, "task-3", NULL);
+			tcu_add_component_from_test_case (fixture, "task-4", NULL);
+			tcu_add_component_from_test_case (fixture, "task-5", NULL);
+			tcu_add_component_from_test_case (fixture, "task-6", NULL);
+			tcu_add_component_from_test_case (fixture, "task-7", NULL);
+			tcu_add_component_from_test_case (fixture, "task-8", NULL);
+			tcu_add_component_from_test_case (fixture, "task-9", NULL);
+		}
+	}
 }
 
 void

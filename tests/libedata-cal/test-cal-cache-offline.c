@@ -1003,7 +1003,7 @@ gint
 main (gint argc,
       gchar **argv)
 {
-	TCUClosure closure = { 0 };
+	TCUClosure closure = { TCU_LOAD_COMPONENT_SET_NONE };
 
 #if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();

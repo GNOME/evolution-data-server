@@ -536,23 +536,24 @@ matches_any (ECalComponent *comp,
 static gboolean
 matches_priority (ECalComponent *comp ,const gchar *pr)
 {
+	gboolean res = FALSE;
 	gint *priority = NULL;
 
 	e_cal_component_get_priority (comp, &priority);
 
-	if (!priority || !*priority)
-		return FALSE;
+	if (!priority)
+		return g_str_equal (pr, "UNDEFINED");
 
 	if (g_str_equal (pr, "HIGH") && *priority <= 4)
-		return TRUE;
+		res = TRUE;
 	else if (g_str_equal (pr, "NORMAL") && *priority == 5)
-		return TRUE;
+		res = TRUE;
 	else if (g_str_equal (pr, "LOW") && *priority > 5)
-		return TRUE;
-	else if (g_str_equal (pr, "UNDEFINED") && (!priority || !*priority))
-		return TRUE;
+		res = TRUE;
 
-	return FALSE;
+	e_cal_component_free_priority (priority);
+
+	return res;
 }
 
 static gboolean
@@ -638,10 +639,13 @@ func_percent_complete (ESExp *esexp,
 
 	e_cal_component_get_percent (ctx->comp, &percent);
 
-	if (percent && *percent) {
-		result = e_sexp_result_new (esexp, ESEXP_RES_INT);
-		result->value.number = *percent;
+	result = e_sexp_result_new (esexp, ESEXP_RES_INT);
 
+	if (percent) {
+		result->value.number = *percent;
+		e_cal_component_free_percent (percent);
+	} else {
+		result->value.number = -1;
 	}
 
 	return result;
@@ -934,6 +938,8 @@ func_has_categories (ESExp *esexp,
 	if (unfiled) {
 		result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
 		result->value.boolean = FALSE;
+
+		e_cal_component_free_categories_list (categories);
 
 		return result;
 	}

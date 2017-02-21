@@ -80,6 +80,7 @@ set(TESTS
 	test-intervaltree
 	test-cal-cache-offline
 	test-cal-cache-intervals
+	test-cal-cache-search
 )
 
 foreach(_test ${TESTS})

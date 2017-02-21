@@ -22,12 +22,18 @@
 
 G_BEGIN_DECLS
 
+typedef enum {
+	TCU_LOAD_COMPONENT_SET_NONE,
+	TCU_LOAD_COMPONENT_SET_EVENTS,
+	TCU_LOAD_COMPONENT_SET_TASKS
+} TCULoadComponentSet;
+
 typedef struct {
 	ECalCache *cal_cache;
 } TCUFixture;
 
 typedef struct {
-	gint dummy;
+	TCULoadComponentSet load_set;
 } TCUClosure;
 
 void		tcu_fixture_setup			(TCUFixture *fixture,
