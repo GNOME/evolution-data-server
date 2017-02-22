@@ -2253,7 +2253,7 @@ e_cal_cache_get_components_by_uid (ECalCache *cal_cache,
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_components != NULL, FALSE);
 
-	success = e_cal_cache_get_components_by_uid_as_strings (cal_cache, uid, &icalstrings, cancellable, error);
+	success = e_cal_cache_get_components_by_uid_as_string (cal_cache, uid, &icalstrings, cancellable, error);
 	if (success) {
 		*out_components = ecc_icalstrings_to_components (icalstrings);
 	}
@@ -2262,7 +2262,7 @@ e_cal_cache_get_components_by_uid (ECalCache *cal_cache,
 }
 
 /**
- * e_cal_cache_get_components_by_uid_as_strings:
+ * e_cal_cache_get_components_by_uid_as_string:
  * @cal_cache: an #ECalCache
  * @uid: a UID of the component
  * @out_icalstrings: (out) (transfer full) (element-type utf8): return location for the iCal strings
@@ -2278,7 +2278,7 @@ e_cal_cache_get_components_by_uid (ECalCache *cal_cache,
  * Since: 3.26
  **/
 gboolean
-e_cal_cache_get_components_by_uid_as_strings (ECalCache *cal_cache,
+e_cal_cache_get_components_by_uid_as_string (ECalCache *cal_cache,
 					      const gchar *uid,
 					      GSList **out_icalstrings,
 					      GCancellable *cancellable,

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2016 Red Hat, Inc. (www.redhat.com)
+ * Copyright (C) 2017 Red Hat, Inc. (www.redhat.com)
  *
  * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -356,7 +356,7 @@ test_search_has_categories (TCUFixture *fixture,
 			    gconstpointer user_data)
 {
 	test_search (fixture, "(has-categories? #f)", "!event-2");
-	test_search (fixture, "(has-categories? \"Holiday\")", "event-4");
+	test_search (fixture, "(has-categories? \"Holiday\")", "event-7");
 	test_search (fixture, "(has-categories? \"Hard\" \"Work\")", "event-2");
 	test_search (fixture, "(has-categories? \"Hard\" \"Work\")", "!event-4");
 }

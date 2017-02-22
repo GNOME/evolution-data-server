@@ -78,8 +78,9 @@ set(extra_defines)
 set(TESTS
 	test-cal-backend-sexp
 	test-intervaltree
-	test-cal-cache-offline
+	test-cal-cache-getters
 	test-cal-cache-intervals
+	test-cal-cache-offline
 	test-cal-cache-search
 )
 

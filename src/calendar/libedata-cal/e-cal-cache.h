@@ -188,14 +188,14 @@ gboolean	e_cal_cache_remove_components	(ECalCache *cal_cache,
 gboolean	e_cal_cache_get_component	(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
-						 ECalComponent **out_component, /* ECalComponent * */
+						 ECalComponent **out_component,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_get_component_as_string
 						(ECalCache *cal_cache,
 						 const gchar *uid,
 						 const gchar *rid,
-						 gchar **out_icalstring, /* gchar * */
+						 gchar **out_icalstring,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_set_component_extra	(ECalCache *cal_cache,
@@ -216,7 +216,7 @@ gboolean	e_cal_cache_get_components_by_uid
 						 GSList **out_components, /* ECalComponent * */
 						 GCancellable *cancellable,
 						 GError **error);
-gboolean	e_cal_cache_get_components_by_uid_as_strings
+gboolean	e_cal_cache_get_components_by_uid_as_string
 						(ECalCache *cal_cache,
 						 const gchar *uid,
 						 GSList **out_icalstrings, /* gchar * */
