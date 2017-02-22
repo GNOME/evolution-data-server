@@ -311,4 +311,6 @@ gint		e_book_cache_cursor_compare_contact
 						 EContact *contact,
 						 gboolean *out_matches_sexp);
 
+G_END_DECLS
+
 #endif /* E_BOOK_CACHE_H */

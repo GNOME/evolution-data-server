@@ -279,4 +279,6 @@ gboolean	e_cal_cache_list_timezones	(ECalCache *cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);
 
+G_END_DECLS
+
 #endif /* E_CAL_CACHE_H */
