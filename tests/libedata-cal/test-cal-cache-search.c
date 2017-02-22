@@ -260,6 +260,9 @@ test_search_occur_in_time_range (TCUFixture *fixture,
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T000000Z\") (make-time \"20170210T000000Z\"))", "event-1");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T020000Z\") (make-time \"20170209T023000Z\"))", "event-1");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20111231T000000Z\") (make-time \"20111231T595959Z\"))", "event-5");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T160100Z\") (make-time \"20170225T160200Z\") \"America/New_York\")", "event-8");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T160100Z\") (make-time \"20170225T160200Z\") \"Europe/Berlin\")", "event-8");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T160100Z\") (make-time \"20170225T160200Z\") \"UTC\")", "event-8");
 
 	/* the second instance of event-6 */
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T130000Z\") (make-time \"20170221T140000Z\"))", "event-6");
