@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * Copyright (C) 2016 Red Hat, Inc. (www.redhat.com)
+ * Copyright (C) 2017 Red Hat, Inc. (www.redhat.com)
  *
  * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -97,7 +97,7 @@ G_DEFINE_BOXED_TYPE (ECalCacheSearchData, e_cal_cache_search_data, e_cal_cache_s
  * @object: the component as an iCal string; cannot be %NULL
  * @extra: (nullable): any extra data stored with the component, or %NULL
  *
- * Creates a new ECalCacheSearchData prefilled with the given values.
+ * Creates a new #ECalCacheSearchData prefilled with the given values.
  *
  * Returns: (transfer full): A new #ECalCacheSearchData. Free it with
  *    e_cal_cache_search_data_free() when no longer needed.
@@ -145,9 +145,9 @@ e_cal_cache_search_data_copy (const ECalCacheSearchData *data)
 
 /**
  * e_cal_cache_search_data_free:
- * @data: (nullable): an #ECalCacheSearchData
+ * @ptr: (nullable): an #ECalCacheSearchData
  *
- * Frees the @data structure, previously allocated with e_cal_cache_search_data_new()
+ * Frees the @ptr structure, previously allocated with e_cal_cache_search_data_new()
  * or e_cal_cache_search_data_copy().
  *
  * Since: 3.26

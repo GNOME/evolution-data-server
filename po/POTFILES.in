@@ -40,6 +40,7 @@ src/calendar/libedata-cal/e-cal-backend-sexp.c
 src/calendar/libedata-cal/e-cal-backend-sync.c
 src/calendar/libedata-cal/e-cal-backend-util.c
 src/calendar/libedata-cal/e-cal-cache.c
+src/calendar/libedata-cal/e-cal-meta-backend.c
 src/calendar/libedata-cal/e-data-cal.c
 src/calendar/libedata-cal/e-data-cal-factory.c
 src/camel/camel-address.c
