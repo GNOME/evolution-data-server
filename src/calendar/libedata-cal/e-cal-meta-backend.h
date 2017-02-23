@@ -80,7 +80,7 @@ typedef struct _ECalMetaBackendPrivate ECalMetaBackendPrivate;
  **/
 struct _ECalMetaBackend {
 	/*< private >*/
-	ECache parent;
+	ECalBackend parent;
 	ECalMetaBackendPrivate *priv;
 };
 
@@ -93,7 +93,7 @@ struct _ECalMetaBackend {
  */
 struct _ECalMetaBackendClass {
 	/*< private >*/
-	ECacheClass parent_class;
+	ECalBackendClass parent_class;
 
 	/* Virtual methods */
 	gboolean	(* connect_sync)	(ECalMetaBackend *meta_backend,

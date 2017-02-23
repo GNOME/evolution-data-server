@@ -315,12 +315,12 @@ typedef struct {
 
 static void
 add_timezone_cb (icalparameter *param,
-                 gpointer data)
+                 gpointer user_data)
 {
 	icaltimezone *tz;
 	const gchar *tzid;
 	icalcomponent *vtz_comp;
-	ForeachTzidData *f_data = (ForeachTzidData *) data;
+	ForeachTzidData *f_data = user_data;
 
 	tzid = icalparameter_get_tzid (param);
 	if (!tzid)
@@ -414,7 +414,6 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 	for (link = sorted; link; link = g_slist_next (link)) {
 		ECalComponent *comp = link->data;
 		icalcomponent *icalcomp;
-		ForeachTzidData f_data;
 
 		if (!E_IS_CAL_COMPONENT (comp)) {
 			g_warn_if_reached ();
@@ -433,6 +432,24 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 	g_slist_free (sorted);
 
 	return vcalendar;
+}
+
+static void
+ecmb_remove_all_but_filename_parameter (icalproperty *prop)
+{
+	icalparameter *param;
+
+	g_return_if_fail (prop != NULL);
+
+	while (param = icalproperty_get_first_parameter (prop, ICAL_ANY_PARAMETER), param) {
+		if (icalparameter_isa (param) == ICAL_FILENAME_PARAMETER) {
+			param = icalproperty_get_next_parameter (prop, ICAL_ANY_PARAMETER);
+			if (!param)
+				break;
+		}
+
+		icalproperty_remove_parameter_by_ref (prop, param);
+	}
 }
 
 /**
@@ -493,9 +510,7 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 					g_free (content);
 					g_free (base64);
 
-					while (param = icalproperty_get_first_parameter (prop, ICAL_ANY_PARAMETER), param) {
-						icalproperty_remove_parameter_by_ref (prop, param);
-					}
+					ecmb_remove_all_but_filename_parameter (prop);
 
 					icalproperty_set_attach (prop, new_attach);
 					icalattach_unref (new_attach);
@@ -506,8 +521,11 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 					param = icalparameter_new_encoding (ICAL_ENCODING_BASE64);
 					icalproperty_add_parameter (prop, param);
 
-					param = icalparameter_new_filename (basename);
-					icalproperty_add_parameter (prop, param);
+					/* Preserve existing FILENAME parameter */
+					if (!icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER)) {
+						param = icalparameter_new_filename (basename);
+						icalproperty_add_parameter (prop, param);
+					}
 				} else {
 					success = FALSE;
 				}
@@ -582,6 +600,8 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
 					icalattach *new_attach;
 					gchar *url;
 
+					ecmb_remove_all_but_filename_parameter (prop);
+
 					url = g_filename_to_uri (local_filename, NULL, NULL);
 					new_attach = icalattach_new_from_url (url);
 
@@ -592,6 +612,8 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
 				} else {
 					success = FALSE;
 				}
+
+				g_free (decoded);
 			}
 
 			g_free (local_filename);

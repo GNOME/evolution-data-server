@@ -82,6 +82,7 @@ set(TESTS
 	test-cal-cache-intervals
 	test-cal-cache-offline
 	test-cal-cache-search
+	test-cal-meta-backend
 )
 
 foreach(_test ${TESTS})

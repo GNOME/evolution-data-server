@@ -1,8 +1,8 @@
 BEGIN:VEVENT
 UID:event-7
 DTSTAMP:20170221T121736Z
-DTSTART;TZID=America/New_York:20170221T135000
-DTEND;TZID=America/New_York:20170221T145000
+DTSTART;TZID=/freeassociation.sourceforge.net/America/New_York:20170221T135000
+DTEND;TZID=/freeassociation.sourceforge.net/America/New_York:20170221T145000
 SEQUENCE:1
 SUMMARY:With attachment
 TRANSP:OPAQUE
