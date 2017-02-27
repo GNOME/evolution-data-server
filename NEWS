@@ -1,3 +1,32 @@
+Evolution-Data-Server 3.23.91 2017-02-27
+----------------------------------------
+
+Bug Fixes:
+	Bug 778775 - Add carddav scope to google-contacts.service for Ubuntu online accounts (Khurshid Alam)
+	Bug 778768 - Fails to modify contact with Yandex CardDAV server (Milan Crha)
+	Bug 778235 - [IMAPx] Ignore truncated COPYUID server response (Milan Crha)
+	Bug 775699 - Only latest 100 tasks downloaded from the Google ][ (Milan Crha)
+
+Miscellaneous:
+	Fix a performance issue caused by GWeakRef usage in CamelMessageInfo (Milan Crha)
+	[IMAPx] Declare summary to use when cloning message info after message append (Milan Crha)
+	Correct how data for installed tests are searched for (Milan Crha)
+
+Translations:
+	Inaki Larranaga Murgoitio (eu)
+	Ask Hjorth Larsen (da)
+	Mingye Wang (Arthur2e5) (zh_CN)
+	Chao-Hsiung Liao (zh_TW)
+	Anders Jonsson (sv)
+	Jiri Grönroos (fi)
+	Kjartan Maraas (nb)
+	Claude Paroz (fr)
+	Balazs Mesko (hu)
+	Mario Blättermann (de)
+	Rafael Fontenelle (pt_BR)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+
 Evolution-Data-Server 3.23.90 2017-02-13
 ----------------------------------------
 
