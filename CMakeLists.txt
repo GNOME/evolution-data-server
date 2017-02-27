@@ -783,9 +783,8 @@ if(ENABLE_GOOGLE)
 
 	CHECK_C_SOURCE_COMPILES("#include <gdata/gdata.h>
 				int main(void) {
-					const gchar *next_page_token;
-					next_page_token = gdata_feed_get_next_page_token (NULL);
-					gdata_tasks_query_set_page_token (NULL, next_page_token);
+					gdata_feed_get_next_page_token (NULL);
+					gdata_query_next_page (NULL);
 					return 0;
 				}" HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS)
 

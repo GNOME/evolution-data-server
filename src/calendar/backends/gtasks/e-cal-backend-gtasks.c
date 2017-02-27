@@ -34,7 +34,12 @@
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
 #define GTASKS_KEY_LAST_UPDATED "last-updated"
+#define GTASKS_KEY_VERSION	"version"
 #define X_EVO_GTASKS_SELF_LINK	"X-EVOLUTION-GTASKS-SELF-LINK"
+
+/* Current data version; when doesn't match with the stored,
+   then fetches everything again. */
+#define GTASKS_DATA_VERSION	"1"
 
 #define PROPERTY_LOCK(_gtasks) g_mutex_lock (&(_gtasks)->priv->property_mutex)
 #define PROPERTY_UNLOCK(_gtasks) g_mutex_unlock (&(_gtasks)->priv->property_mutex)
@@ -52,6 +57,26 @@ struct _ECalBackendGTasksPrivate {
 };
 
 G_DEFINE_TYPE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_BACKEND)
+
+static gboolean
+ecb_gtasks_check_data_version_locked (ECalBackendGTasks *gtasks)
+{
+	const gchar *key;
+	gboolean data_version_correct;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks), FALSE);
+
+	key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_VERSION);
+	data_version_correct = g_strcmp0 (key, GTASKS_DATA_VERSION) == 0;
+
+	return data_version_correct;
+}
+
+static void
+ecb_gtasks_store_data_version_locked (ECalBackendGTasks *gtasks)
+{
+	e_cal_backend_store_put_key_value (gtasks->priv->store, GTASKS_KEY_VERSION, GTASKS_DATA_VERSION);
+}
 
 static GCancellable *
 ecb_gtasks_ref_cancellable (ECalBackendGTasks *gtasks)
@@ -436,9 +461,13 @@ ecb_gtasks_update_thread (gpointer user_data)
 
 	PROPERTY_LOCK (gtasks);
 
-	key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED);
-	if (!key || !g_time_val_from_iso8601 (key, &last_updated))
+	if (ecb_gtasks_check_data_version_locked (gtasks)) {
+		key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED);
+		if (!key || !g_time_val_from_iso8601 (key, &last_updated))
+			last_updated.tv_sec = 0;
+	} else {
 		last_updated.tv_sec = 0;
+	}
 
 	PROPERTY_UNLOCK (gtasks);
 
@@ -462,7 +491,6 @@ ecb_gtasks_update_thread (gpointer user_data)
 
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
 	while (feed && !g_cancellable_is_cancelled (cancellable) && !local_error) {
-		const gchar *next_page_token;
 #else
 	if (feed) {
 #endif
@@ -538,11 +566,10 @@ ecb_gtasks_update_thread (gpointer user_data)
 		PROPERTY_UNLOCK (gtasks);
 
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
-		next_page_token = gdata_feed_get_next_page_token (feed);
-		if (!next_page_token || !*next_page_token)
+		if (!gdata_feed_get_entries (feed))
 			break;
 
-		gdata_tasks_query_set_page_token (tasks_query, next_page_token);
+		gdata_query_next_page (GDATA_QUERY (tasks_query));
 
 		g_clear_object (&feed);
 
@@ -565,6 +592,8 @@ ecb_gtasks_update_thread (gpointer user_data)
 		strtm = g_time_val_to_iso8601 (&last_updated);
 		e_cal_backend_store_put_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED, strtm);
 		g_free (strtm);
+
+		ecb_gtasks_store_data_version_locked (gtasks);
 
 		PROPERTY_UNLOCK (gtasks);
 	}
@@ -614,14 +643,16 @@ ecb_gtasks_start_update (ECalBackendGTasks *gtasks)
 				taskslist_time = gdata_entry_get_updated (entry);
 
 				if (taskslist_time > 0) {
-					GTimeVal stored;
-					const gchar *key;
-
 					PROPERTY_LOCK (gtasks);
 
-					key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED);
-					if (key && g_time_val_from_iso8601 (key, &stored))
-						changed = taskslist_time != stored.tv_sec;
+					if (ecb_gtasks_check_data_version_locked (gtasks)) {
+						GTimeVal stored;
+						const gchar *key;
+
+						key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED);
+						if (key && g_time_val_from_iso8601 (key, &stored))
+							changed = taskslist_time != stored.tv_sec;
+					}
 
 					PROPERTY_UNLOCK (gtasks);
 				}
