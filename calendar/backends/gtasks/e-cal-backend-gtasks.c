@@ -63,6 +63,7 @@ G_DEFINE_TYPE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_BACKEND)
 static gboolean
 ecb_gtasks_check_data_version_locked (ECalBackendGTasks *gtasks)
 {
+#ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
 	const gchar *key;
 	gboolean data_version_correct;
 
@@ -72,12 +73,17 @@ ecb_gtasks_check_data_version_locked (ECalBackendGTasks *gtasks)
 	data_version_correct = g_strcmp0 (key, GTASKS_DATA_VERSION) == 0;
 
 	return data_version_correct;
+#else
+	return TRUE;
+#endif
 }
 
 static void
 ecb_gtasks_store_data_version_locked (ECalBackendGTasks *gtasks)
 {
+#ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
 	e_cal_backend_store_put_key_value (gtasks->priv->store, GTASKS_KEY_VERSION, GTASKS_DATA_VERSION);
+#endif
 }
 
 static GCancellable *
