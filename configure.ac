@@ -1618,7 +1618,7 @@ if test "x$enable_google" = xyes; then
 	save_libs=$LIBS; LIBS="$GDATA_LIBS"
 	AC_LINK_IFELSE([AC_LANG_PROGRAM(
 		[[#include <gdata/gdata.h>]],
-		[[const gchar *next_page_token; next_page_token = gdata_feed_get_next_page_token (NULL); gdata_tasks_query_set_page_token (NULL, next_page_token);]])],
+		[[gdata_feed_get_next_page_token (NULL); gdata_query_next_page (NULL);]])],
 		[AC_DEFINE(HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS, 1, [Define to 1 when the libgdata provides GTasks pagination functions]) ac_cv_have_gdgtpf=yes],[ac_cv_have_gdgtpf=no])
 	CFLAGS=$save_cflags
 	LIBS=$save_libs
