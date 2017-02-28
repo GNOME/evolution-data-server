@@ -89,6 +89,11 @@ gboolean	camel_imapx_conn_manager_run_job_sync
 						 CamelIMAPXJobMatchesFunc finish_before_job,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	camel_imapx_conn_manager_noop_sync
+						(CamelIMAPXConnManager *conn_man,
+						 CamelIMAPXMailbox *mailbox,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	camel_imapx_conn_manager_list_sync
 						(CamelIMAPXConnManager *conn_man,
 						 const gchar *pattern,
