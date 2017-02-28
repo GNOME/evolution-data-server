@@ -56,6 +56,7 @@ struct _ECredentialsPrompterImplGooglePrivate {
 	ESource *cred_source;
 	gchar *error_text;
 	ENamedParameters *credentials;
+	gboolean refresh_failed_with_transport_error;
 
 	GtkDialog *dialog;
 #ifdef ENABLE_GOOGLE_AUTH
@@ -850,15 +851,19 @@ e_credentials_prompter_impl_google_manage_dialog_idle_cb (gpointer user_data)
 
 	g_mutex_lock (&prompter_google->priv->property_lock);
 	if (g_source_get_id (g_main_current_source ()) == prompter_google->priv->show_dialog_idle_id) {
-		gboolean success;
+		gboolean success, refresh_failed_with_transport_error;
 
 		prompter_google->priv->show_dialog_idle_id = 0;
+		refresh_failed_with_transport_error = prompter_google->priv->refresh_failed_with_transport_error;
+
 		g_mutex_unlock (&prompter_google->priv->property_lock);
 
 		g_warn_if_fail (prompter_google->priv->dialog == NULL);
 
 		if (e_named_parameters_exists (prompter_google->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
 			success = TRUE;
+		else if (refresh_failed_with_transport_error)
+			success = FALSE;
 		else
 			success = e_credentials_prompter_impl_google_show_dialog (prompter_google);
 
@@ -921,11 +926,19 @@ cpi_google_check_existing_token_thread (gpointer user_data)
 
 	cancellable = td->cancellable;
 
+	prompter_google = g_weak_ref_get (td->prompter_google);
+	if (!prompter_google)
+		goto exit;
+
 	if (g_cancellable_is_cancelled (cancellable))
 		goto exit;
 
 	if (!e_source_credentials_google_util_decode_from_secret (td->secret, E_GOOGLE_SECRET_REFRESH_TOKEN, &refresh_token, NULL))
 		goto exit;
+
+	g_mutex_lock (&prompter_google->priv->property_lock);
+	prompter_google->priv->refresh_failed_with_transport_error = FALSE;
+	g_mutex_unlock (&prompter_google->priv->property_lock);
 
 	if (refresh_token) {
 		gchar *post_data, *response_json = NULL;
@@ -952,6 +965,10 @@ cpi_google_check_existing_token_thread (gpointer user_data)
 
 			g_free (access_token);
 			g_free (expires_in);
+		} else if (SOUP_STATUS_IS_TRANSPORT_ERROR (soup_status)) {
+			g_mutex_lock (&prompter_google->priv->property_lock);
+			prompter_google->priv->refresh_failed_with_transport_error = TRUE;
+			g_mutex_unlock (&prompter_google->priv->property_lock);
 		}
 
 		g_free (response_json);
@@ -959,7 +976,6 @@ cpi_google_check_existing_token_thread (gpointer user_data)
 	}
 
  exit:
-	prompter_google = g_weak_ref_get (td->prompter_google);
 	if (prompter_google && !g_cancellable_is_cancelled (cancellable)) {
 		g_mutex_lock (&prompter_google->priv->property_lock);
 		prompter_google->priv->show_dialog_idle_id = g_idle_add (
@@ -1050,6 +1066,7 @@ e_credentials_prompter_impl_google_process_prompt (ECredentialsPrompterImpl *pro
 	} else {
 #endif /* ENABLE_GOOGLE_AUTH */
 		g_mutex_lock (&prompter_google->priv->property_lock);
+		prompter_google->priv->refresh_failed_with_transport_error = FALSE;
 		prompter_google->priv->show_dialog_idle_id = g_idle_add (
 			e_credentials_prompter_impl_google_manage_dialog_idle_cb,
 			prompter_google);

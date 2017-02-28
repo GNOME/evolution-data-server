@@ -671,7 +671,7 @@ e_source_credentials_google_util_decode_from_secret (const gchar *secret,
 	g_return_val_if_fail (key1_name != NULL, FALSE);
 	g_return_val_if_fail (out_value1 != NULL, FALSE);
 
-	if (!secret)
+	if (!secret || !*secret)
 		return FALSE;
 
 	parser = json_parser_new ();
