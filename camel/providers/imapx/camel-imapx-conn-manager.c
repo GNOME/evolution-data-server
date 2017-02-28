@@ -1344,6 +1344,53 @@ camel_imapx_conn_manager_run_job_sync (CamelIMAPXConnManager *conn_man,
 }
 
 static gboolean
+imapx_conn_manager_noop_run_sync (CamelIMAPXJob *job,
+				  CamelIMAPXServer *server,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	CamelIMAPXMailbox *mailbox;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (job != NULL, FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (server), FALSE);
+
+	mailbox = camel_imapx_job_get_mailbox (job);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+
+	success = camel_imapx_server_noop_sync (server, mailbox, cancellable, &local_error);
+
+	camel_imapx_job_set_result (job, success, NULL, local_error, NULL);
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
+}
+
+gboolean
+camel_imapx_conn_manager_noop_sync (CamelIMAPXConnManager *conn_man,
+				    CamelIMAPXMailbox *mailbox,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	CamelIMAPXJob *job;
+	gboolean success;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man), FALSE);
+
+	job = camel_imapx_job_new (CAMEL_IMAPX_JOB_NOOP, mailbox,
+		imapx_conn_manager_noop_run_sync, NULL, NULL);
+
+	success = camel_imapx_conn_manager_run_job_sync (conn_man, job, NULL, cancellable, error);
+
+	camel_imapx_job_unref (job);
+
+	return success;
+}
+
+static gboolean
 imapx_conn_manager_nothing_matches (CamelIMAPXJob *job,
 				    CamelIMAPXJob *other_job)
 {

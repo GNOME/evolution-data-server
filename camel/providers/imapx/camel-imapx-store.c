@@ -781,6 +781,7 @@ imapx_connect_sync (CamelService *service,
                     GError **error)
 {
 	CamelIMAPXStore *imapx_store;
+	CamelIMAPXMailbox *mailbox;
 
 	/* Chain up to parent's method. */
 	if (!CAMEL_SERVICE_CLASS (camel_imapx_store_parent_class)->connect_sync (service, cancellable, error))
@@ -788,7 +789,21 @@ imapx_connect_sync (CamelService *service,
 
 	imapx_store = CAMEL_IMAPX_STORE (service);
 
-	return camel_imapx_conn_manager_connect_sync (imapx_store->priv->conn_man, cancellable, error);
+	if (!camel_imapx_conn_manager_connect_sync (imapx_store->priv->conn_man, cancellable, error))
+		return FALSE;
+
+	mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
+	if (mailbox) {
+		/* To eventually start IDLE/NOTIFY listener */
+		if (!camel_imapx_conn_manager_noop_sync (imapx_store->priv->conn_man, mailbox, cancellable, error)) {
+			g_clear_object (&mailbox);
+			return FALSE;
+		}
+
+		g_clear_object (&mailbox);
+	}
+
+	return TRUE;
 }
 
 static gboolean
