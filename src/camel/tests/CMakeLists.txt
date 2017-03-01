@@ -1,4 +1,4 @@
-macro(add_camel_test_one _part _name _src_file)
+macro(add_camel_test_one _part _name _src_file _in_check)
 	set(_test_ident cameltest-${_part}-${_name})
 
 	# Not using EXCLUDE_FROM_ALL here, to have these built always
@@ -35,13 +35,15 @@ macro(add_camel_test_one _part _name _src_file)
 		OUTPUT_NAME ${_name}
 	)
 
-	add_check_test(${_test_ident})
+	if(_in_check)
+		add_check_test(${_test_ident})
+	endif(_in_check)
 endmacro(add_camel_test_one)
 
-macro(add_camel_tests _part _tests)
+macro(add_camel_tests _part _tests _in_check)
 	foreach(test IN LISTS ${_tests})
 		if(NOT "${test}" STREQUAL "")
-			add_camel_test_one(${_part} ${test} ${test}.c)
+			add_camel_test_one(${_part} ${test} ${test}.c ${_in_check})
 		endif(NOT "${test}" STREQUAL "")
 	endforeach(test)
 endmacro(add_camel_tests)

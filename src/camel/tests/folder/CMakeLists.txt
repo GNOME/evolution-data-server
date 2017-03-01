@@ -1,4 +1,4 @@
-set(TESTS
+set(TESTS_SKIP
 	test1
 	test2
 	test3
@@ -12,4 +12,4 @@ set(TESTS
 	test11
 )
 
-add_camel_tests(folder TESTS)
+add_camel_tests(folder TESTS_SKIP OFF)
