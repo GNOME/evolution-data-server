@@ -1855,7 +1855,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 	const GSList *clink, *elink;
 	ECache *cache;
 	ECacheColumnValues *other_columns;
-	gboolean success;
+	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (extras == NULL || g_slist_length ((GSList *) components) == g_slist_length ((GSList *) extras), FALSE);
@@ -1918,9 +1918,9 @@ e_cal_cache_put_components (ECalCache *cal_cache,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Removes a component idenitified by @uid and @rid from the @cal_cache.
+ * Removes a component identified by @uid and @rid from the @cal_cache.
  * When the @rid is %NULL, or an empty string, then removes the master
- * object and all detached instances identified by @uid.
+ * object only, without any detached instance.
  *
  * Returns: Whether succeeded.
  *
@@ -1960,9 +1960,9 @@ e_cal_cache_remove_component (ECalCache *cal_cache,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Removes components idenitified by @uid and @rid from the @cal_cache
+ * Removes components identified by @uid and @rid from the @cal_cache
  * in the @ids list. When the @rid is %NULL, or an empty string, then
- * removes the master object and all detached instances identified by @uid.
+ * removes the master object only, without any detached instance.
  *
  * Returns: Whether succeeded.
  *
@@ -2679,8 +2679,8 @@ e_cal_cache_search_with_callback (ECalCache *cal_cache,
  * @error: return location for a #GError, or %NULL
  *
  * Puts the @zone into the @cal_cache using its timezone ID as
- * an identificator. The function does nothing if any such already
- * exists in the @cal_cache.
+ * an identificator. The function adds a new or replaces existing,
+ * if any such already exists in the @cal_cache.
  *
  * Returns: Whether succeeded.
  *
@@ -2688,7 +2688,7 @@ e_cal_cache_search_with_callback (ECalCache *cal_cache,
  **/
 gboolean
 e_cal_cache_put_timezone (ECalCache *cal_cache,
-			  icaltimezone *zone,
+			  const icaltimezone *zone,
 			  GCancellable *cancellable,
 			  GError **error)
 {
@@ -2701,13 +2701,13 @@ e_cal_cache_put_timezone (ECalCache *cal_cache,
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (zone != NULL, FALSE);
 
-	tzid = icaltimezone_get_tzid (zone);
+	tzid = icaltimezone_get_tzid ((icaltimezone *) zone);
 	if (!tzid) {
 		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Cannot add timezone without tzid"));
 		return FALSE;
 	}
 
-	component = icaltimezone_get_component (zone);
+	component = icaltimezone_get_component ((icaltimezone *) zone);
 	if (!component) {
 		g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Cannot add timezone without component"));
 		return FALSE;
@@ -2968,6 +2968,56 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	return success;
+}
+
+/**
+ * e_cal_cache_resolve_timezone_cb:
+ * @tzid: a timezone ID
+ * @cal_cache: an #ECalCache
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * An #ECalRecurResolveTimezoneCb callback, which can be used
+ * with e_cal_recur_generate_instances_sync(). The @cal_cache
+ * is supposed to be an #ECalCache instance. See also
+ * e_cal_cache_resolve_timezone_simple_cb().
+ *
+ * Returns: (transfer none) (nullable): the resolved icaltimezone, or %NULL, if not found
+ *
+ * Since: 3.26
+ **/
+icaltimezone *
+e_cal_cache_resolve_timezone_cb (const gchar *tzid,
+				 gpointer cal_cache,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+
+	return e_cal_cache_resolve_timezone_simple_cb (tzid, cal_cache);
+}
+
+/**
+ * e_cal_cache_resolve_timezone_simple_cb:
+ * @tzid: a timezone ID
+ * @cal_cache: an #ECalCache
+ *
+ * An #ECalRecurResolveTimezoneFn callback, which can be used
+ * with e_cal_recur_ensure_end_dates() and simialr functions.
+ * The @cal_cache is supposed to be an #ECalCache instance. See
+ * also e_cal_cache_resolve_timezone_cb().
+ *
+ * Returns: (transfer none) (nullable): the resolved icaltimezone, or %NULL, if not found
+ *
+ * Since: 3.26
+ **/
+icaltimezone *
+e_cal_cache_resolve_timezone_simple_cb (const gchar *tzid,
+					gpointer cal_cache)
+{
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+
+	return e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cal_cache), tzid);
 }
 
 static gboolean

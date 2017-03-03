@@ -204,15 +204,17 @@ typedef enum {
 
 /**
  * ECacheOfflineFlag:
+ * @E_CACHE_OFFLINE_UNKNOWN: Do not know current online/offline state
  * @E_CACHE_IS_ONLINE: The operation is done in online
  * @E_CACHE_IS_OFFLINE: The operation is done in offline
  *
  * Declares whether the operation is done in online or offline.
- * This influences the offline state of the related obejcts.
+ * This influences the offline state of the related objects.
  *
  * Since: 3.26
  **/
 typedef enum {
+	E_CACHE_OFFLINE_UNKNOWN = -1,
 	E_CACHE_IS_ONLINE = 0,
 	E_CACHE_IS_OFFLINE
 } ECacheOfflineFlag;

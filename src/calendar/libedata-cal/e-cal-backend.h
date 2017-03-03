@@ -529,6 +529,30 @@ GSimpleAsyncResult *
 						 guint opid,
 						 GQueue **result_queue);
 
+/**
+ * ECalBackendCustomOpFunc:
+ * @cal_backend: an #ECalBackend
+ * @user_data: a function user data, as provided to e_cal_backend_schedule_custom_operation()
+ * @cancellable: an optional #GCancellable, as provided to e_cal_backend_schedule_custom_operation()
+ * @error: return location for a #GError, or %NULL
+ *
+ * A callback prototype being called in a dedicated thread, scheduled
+ * by e_cal_backend_schedule_custom_operation().
+ *
+ * Since: 3.26
+ **/
+typedef void	(* ECalBackendCustomOpFunc)	(ECalBackend *cal_backend,
+						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
+
+void		e_cal_backend_schedule_custom_operation
+						(ECalBackend *backend,
+						 GCancellable *use_cancellable,
+						 ECalBackendCustomOpFunc func,
+						 gpointer user_data,
+						 GDestroyNotify user_data_free);
+
 G_END_DECLS
 
 #endif /* E_CAL_BACKEND_H */

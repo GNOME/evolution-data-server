@@ -80,7 +80,7 @@ typedef struct _ECalMetaBackendPrivate ECalMetaBackendPrivate;
  **/
 struct _ECalMetaBackend {
 	/*< private >*/
-	ECalBackend parent;
+	ECalBackendSync parent;
 	ECalMetaBackendPrivate *priv;
 };
 
@@ -93,7 +93,7 @@ struct _ECalMetaBackend {
  */
 struct _ECalMetaBackendClass {
 	/*< private >*/
-	ECalBackendClass parent_class;
+	ECalBackendSyncClass parent_class;
 
 	/* Virtual methods */
 	gboolean	(* connect_sync)	(ECalMetaBackend *meta_backend,
@@ -104,12 +104,16 @@ struct _ECalMetaBackendClass {
 						 GError **error);
 
 	gboolean	(* get_changes_sync)	(ECalMetaBackend *meta_backend,
+						 const gchar *last_sync_tag,
+						 gchar **out_new_sync_tag,
+						 gboolean *out_repeat,
 						 GSList **out_created_objects, /* ECalMetaBackendInfo * */
 						 GSList **out_modified_objects, /* ECalMetaBackendInfo * */
 						 GSList **out_removed_objects, /* ECalMetaBackendInfo * */
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* list_existing_sync)	(ECalMetaBackend *meta_backend,
+						 gchar **out_new_sync_tag,
 						 GSList **out_existing_objects, /* ECalMetaBackendInfo * */
 						 GCancellable *cancellable,
 						 GError **error);
@@ -118,27 +122,21 @@ struct _ECalMetaBackendClass {
 						 gboolean overwrite_existing,
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
+						 const gchar *extra,
+						 gchar **out_new_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* load_component_sync)	(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
-						 const gchar *rid,
 						 icalcomponent **out_instances,
+						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
-
-	/* Optional methods from ECalBackend */
-	gboolean	(* get_free_busy_sync)	(ECalMetaBackend *meta_backend,
-						 const GSList *users,
-						 time_t start,
-						 time_t end,
-						 GSList **out_freebusy, /* gchar * (iCal strings) */
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(* discard_alarm_sync)	(ECalMetaBackend *meta_backend,
+	gboolean	(* remove_component_sync)
+						(ECalMetaBackend *meta_backend,
+						 EConflictResolution conflict_resolution,
 						 const gchar *uid,
-						 const gchar *rid,
-						 const gchar *auid,
+						 const gchar *extra,
 						 GCancellable *cancellable,
 						 GError **error);
 
@@ -148,6 +146,8 @@ struct _ECalMetaBackendClass {
 
 GType		e_cal_meta_backend_get_type	(void) G_GNUC_CONST;
 
+const gchar *	e_cal_meta_backend_get_capabilities
+						(ECalMetaBackend *meta_backend);
 void		e_cal_meta_backend_set_cache	(ECalMetaBackend *meta_backend,
 						 ECalCache *cache);
 ECalCache *	e_cal_meta_backend_ref_cache	(ECalMetaBackend *meta_backend);
@@ -174,6 +174,9 @@ gboolean	e_cal_meta_backend_disconnect_sync
 						 GError **error);
 gboolean	e_cal_meta_backend_get_changes_sync
 						(ECalMetaBackend *meta_backend,
+						 const gchar *last_sync_tag,
+						 gchar **out_new_sync_tag,
+						 gboolean *out_repeat,
 						 GSList **out_created_objects, /* ECalMetaBackendInfo * */
 						 GSList **out_modified_objects, /* ECalMetaBackendInfo * */
 						 GSList **out_removed_objects, /* ECalMetaBackendInfo * */
@@ -181,6 +184,7 @@ gboolean	e_cal_meta_backend_get_changes_sync
 						 GError **error);
 gboolean	e_cal_meta_backend_list_existing_sync
 						(ECalMetaBackend *meta_backend,
+						 gchar **out_new_sync_tag,
 						 GSList **out_existing_objects, /* ECalMetaBackendInfo * */
 						 GCancellable *cancellable,
 						 GError **error);
@@ -189,32 +193,22 @@ gboolean	e_cal_meta_backend_save_component_sync
 						 gboolean overwrite_existing,
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
+						 const gchar *extra,
+						 gchar **out_new_uid,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_load_component_sync
 						(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
-						 const gchar *rid,
 						 icalcomponent **out_component,
+						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
-
-gboolean	e_cal_meta_backend_get_free_busy_sync
+gboolean	e_cal_meta_backend_remove_component_sync
 						(ECalMetaBackend *meta_backend,
-						 const GSList *users,
-						 time_t start,
-						 time_t end,
-						 GSList **out_freebusy, /* gchar * */
-						 GCancellable *cancellable,
-						 GError **error);
-void		e_cal_meta_backend_notify_free_busy
-						(ECalMetaBackend *meta_backend,
-						 const GSList *freebusy); /* gchar * */
-gboolean	e_cal_meta_backend_discard_alarm_sync
-						(ECalMetaBackend *meta_backend,
+						 EConflictResolution conflict_resolution,
 						 const gchar *uid,
-						 const gchar *rid,
-						 const gchar *auid,
+						 const gchar *extra,
 						 GCancellable *cancellable,
 						 GError **error);
 

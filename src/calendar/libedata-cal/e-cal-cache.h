@@ -260,7 +260,7 @@ gboolean	e_cal_cache_search_with_callback
 						 GError **error);
 
 gboolean	e_cal_cache_put_timezone	(ECalCache *cal_cache,
-						 icaltimezone *zone,
+						 const icaltimezone *zone,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_get_timezone	(ECalCache *cal_cache,
@@ -278,6 +278,13 @@ gboolean	e_cal_cache_list_timezones	(ECalCache *cal_cache,
 						 GList **out_timezones,
 						 GCancellable *cancellable,
 						 GError **error);
+icaltimezone *	e_cal_cache_resolve_timezone_cb	(const gchar *tzid,
+						 gpointer cal_cache,
+						 GCancellable *cancellable,
+						 GError **error);
+icaltimezone *	e_cal_cache_resolve_timezone_simple_cb
+						(const gchar *tzid,
+						 gpointer cal_cache);
 
 G_END_DECLS
 

@@ -2968,3 +2968,47 @@ e_util_get_source_oauth2_access_token_sync (ESource *source,
 
 	return success;
 }
+
+static gpointer
+unref_object_in_thread (gpointer ptr)
+{
+	GObject *object = ptr;
+
+	g_return_val_if_fail (object != NULL, NULL);
+
+	g_object_unref (object);
+
+	return NULL;
+}
+
+/**
+ * e_util_unref_in_thread:
+ * @object: a #GObject
+ *
+ * Unrefs the given @object in a dedicated thread. This is useful when unreffing
+ * object deep in call stack when the caller might still use the object and
+ * this being the last reference to it.
+ *
+ * Since: 3.26
+ **/
+void
+e_util_unref_in_thread (gpointer object)
+{
+	GThread *thread;
+	GError *error = NULL;
+
+	if (!object)
+		return;
+
+	g_return_if_fail (G_IS_OBJECT (object));
+
+	thread = g_thread_try_new (NULL, unref_object_in_thread, object, &error);
+	if (thread) {
+		g_thread_unref (thread);
+	} else {
+		g_warning ("%s: Failed to run thread: %s", G_STRFUNC, error ? error->message : "Unknown error");
+		g_object_unref (object);
+	}
+
+	g_clear_error (&error);
+}

@@ -281,6 +281,9 @@ gboolean	e_util_get_source_oauth2_access_token_sync
 						 gint *out_expires_in_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
+
+void		e_util_unref_in_thread		(gpointer object);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */
