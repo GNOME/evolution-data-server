@@ -186,6 +186,30 @@ ecmb_steal_view_cancellable (ECalMetaBackend *meta_backend,
 }
 
 static gboolean
+ecmb_gather_locally_cached_objects_cb (ECalCache *cal_cache,
+				       const gchar *uid,
+				       const gchar *rid,
+				       const gchar *revision,
+				       const gchar *object,
+				       const gchar *extra,
+				       EOfflineState offline_state,
+				       gpointer user_data)
+{
+	GHashTable *locally_cached = user_data;
+
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (locally_cached != NULL, FALSE);
+
+	if (offline_state == E_OFFLINE_STATE_SYNCED) {
+		g_hash_table_insert (locally_cached,
+			e_cal_component_id_new (uid, rid),
+			g_strdup (revision));
+	}
+
+	return TRUE;
+}
+
+static gboolean
 ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 		       const gchar *last_sync_tag,
 		       gchar **out_new_sync_tag,
@@ -196,7 +220,97 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 		       GCancellable *cancellable,
 		       GError **error)
 {
-	return FALSE;
+	GHashTable *locally_cached; /* ECalComponentId * ~> gchar *revision */
+	GHashTableIter iter;
+	GSList *existing_objects = NULL, *link;
+	ECalCache *cal_cache;
+	gpointer key, value;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_created_objects, FALSE);
+	g_return_val_if_fail (out_modified_objects, FALSE);
+	g_return_val_if_fail (out_removed_objects, FALSE);
+
+	*out_created_objects = NULL;
+	*out_modified_objects = NULL;
+	*out_removed_objects = NULL;
+
+	if (!e_backend_get_online (E_BACKEND (meta_backend)))
+		return TRUE;
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache) {
+		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
+		return FALSE;
+	}
+
+	if (!e_cal_meta_backend_connect_sync (meta_backend, cancellable, error) ||
+	    !e_cal_meta_backend_list_existing_sync (meta_backend, out_new_sync_tag, &existing_objects, cancellable, error)) {
+		g_object_unref (cal_cache);
+		return FALSE;
+	}
+
+	locally_cached = g_hash_table_new_full (
+		(GHashFunc) e_cal_component_id_hash,
+		(GEqualFunc) e_cal_component_id_equal,
+		(GDestroyNotify) e_cal_component_free_id,
+		g_free);
+
+	g_warn_if_fail (e_cal_cache_search_with_callback (cal_cache, NULL,
+		ecmb_gather_locally_cached_objects_cb, locally_cached, cancellable, error));
+
+	for (link = existing_objects; link; link = g_slist_next (link)) {
+		ECalMetaBackendInfo *nfo = link->data;
+		ECalComponentId id;
+
+		if (!nfo)
+			continue;
+
+		id.uid = nfo->uid;
+		id.rid = nfo->rid;
+
+		if (!g_hash_table_contains (locally_cached, &id)) {
+			link->data = NULL;
+
+			*out_created_objects = g_slist_prepend (*out_created_objects, nfo);
+		} else {
+			const gchar *local_revision = g_hash_table_lookup (locally_cached, &id);
+
+			if (g_strcmp0 (local_revision, nfo->revision) != 0) {
+				link->data = NULL;
+
+				*out_modified_objects = g_slist_prepend (*out_modified_objects, nfo);
+			}
+
+			g_hash_table_remove (locally_cached, &id);
+		}
+	}
+
+	/* What left in the hash table is removed from the remote side */
+	g_hash_table_iter_init (&iter, locally_cached);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		const ECalComponentId *id = key;
+		const gchar *revision = value;
+		ECalMetaBackendInfo *nfo;
+
+		if (!id) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		nfo = e_cal_meta_backend_info_new (id->uid, id->rid, revision);
+		*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
+	}
+
+	g_slist_free_full (existing_objects, e_cal_meta_backend_info_free);
+	g_hash_table_destroy (locally_cached);
+	g_object_unref (cal_cache);
+
+	*out_created_objects = g_slist_reverse (*out_created_objects);
+	*out_modified_objects = g_slist_reverse (*out_modified_objects);
+	*out_removed_objects = g_slist_reverse (*out_removed_objects);
+
+	return TRUE;
 }
 
 static void
