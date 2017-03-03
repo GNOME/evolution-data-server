@@ -123,6 +123,17 @@ guint		e_cache_column_values_get_size	(ECacheColumnValues *other_columns);
 void		e_cache_column_values_init_iter	(ECacheColumnValues *other_columns,
 						 GHashTableIter *iter);
 
+/**
+ * ECacheOfflineChange:
+ * @uid: UID of the object
+ * @revision: stored revision of the object
+ * @object: the object itself
+ * @state: an #EOfflineState of the object
+ *
+ * Holds the information about offline change for one object.
+ *
+ * Since: 3.26
+ **/
 typedef struct {
 	gchar *uid;
 	gchar *revision;

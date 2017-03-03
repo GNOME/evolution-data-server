@@ -51,6 +51,40 @@ typedef struct _ECalCacheClass ECalCacheClass;
 typedef struct _ECalCachePrivate ECalCachePrivate;
 
 /**
+ * ECalCacheOfflineChange:
+ * @uid: UID of the component
+ * @rid: Recurrence-ID of the component
+ * @revision: stored revision of the component
+ * @object: the component itself, as iCalalendar string
+ * @state: an #EOfflineState of the component
+ *
+ * Holds the information about offline change for one component.
+ *
+ * Since: 3.26
+ **/
+typedef struct {
+	gchar *uid;
+	gchar *rid;
+	gchar *revision;
+	gchar *object;
+	EOfflineState state;
+} ECalCacheOfflineChange;
+
+#define E_TYPE_CAL_CACHE_OFFLINE_CHANGE (e_cal_cache_offline_change_get_type ())
+
+GType		e_cal_cache_offline_change_get_type
+						(void) G_GNUC_CONST;
+ECalCacheOfflineChange *
+		e_cal_cache_offline_change_new	(const gchar *uid,
+						 const gchar *rid,
+						 const gchar *revision,
+						 const gchar *object,
+						 EOfflineState state);
+ECalCacheOfflineChange *
+		e_cal_cache_offline_change_copy	(const ECalCacheOfflineChange *change);
+void		e_cal_cache_offline_change_free	(/* ECalCacheOfflineChange */ gpointer change);
+
+/**
  * ECalCacheSearchData:
  * @uid: the UID of this component
  * @rid: (nullable): the Recurrence-ID of this component
@@ -256,6 +290,9 @@ gboolean	e_cal_cache_search_with_callback
 						 const gchar *sexp,
 						 ECalCacheSearchFunc func,
 						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
+GSList *	e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);
 

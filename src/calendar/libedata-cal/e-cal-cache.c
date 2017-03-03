@@ -88,7 +88,87 @@ G_DEFINE_TYPE_WITH_CODE (ECalCache, e_cal_cache, E_TYPE_CACHE,
 			 G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL)
 			 G_IMPLEMENT_INTERFACE (E_TYPE_TIMEZONE_CACHE, ecc_timezone_cache_init))
 
+G_DEFINE_BOXED_TYPE (ECalCacheOfflineChange, e_cal_cache_offline_change, e_cal_cache_offline_change_copy, e_cal_cache_offline_change_free)
 G_DEFINE_BOXED_TYPE (ECalCacheSearchData, e_cal_cache_search_data, e_cal_cache_search_data_copy, e_cal_cache_search_data_free)
+
+/**
+ * e_cal_cache_offline_change_new:
+ * @uid: a unique component identifier
+ * @rid: (nullable):  a Recurrence-ID of the component
+ * @revision: (nullable): a revision of the component
+ * @object: (nullable): component itself
+ * @state: an #EOfflineState
+ *
+ * Creates a new #ECalCacheOfflineChange with the offline @state
+ * information for the given @uid.
+ *
+ * Returns: (transfer full): A new #ECalCacheOfflineChange. Free it with
+ *    e_cal_cache_offline_change_free() when no longer needed.
+ *
+ * Since: 3.26
+ **/
+ECalCacheOfflineChange *
+e_cal_cache_offline_change_new (const gchar *uid,
+				const gchar *rid,
+				const gchar *revision,
+				const gchar *object,
+				EOfflineState state)
+{
+	ECalCacheOfflineChange *change;
+
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	change = g_new0 (ECalCacheOfflineChange, 1);
+	change->uid = g_strdup (uid);
+	change->rid = g_strdup (rid);
+	change->revision = g_strdup (revision);
+	change->object = g_strdup (object);
+	change->state = state;
+
+	return change;
+}
+
+/**
+ * e_cal_cache_offline_change_copy:
+ * @change: (nullable): a source #ECalCacheOfflineChange to copy, or %NULL
+ *
+ * Returns: (transfer full): Copy of the given @change. Free it with
+ *    e_cal_cache_offline_change_free() when no longer needed.
+ *    If the @change is %NULL, then returns %NULL as well.
+ *
+ * Since: 3.26
+ **/
+ECalCacheOfflineChange *
+e_cal_cache_offline_change_copy (const ECalCacheOfflineChange *change)
+{
+	if (!change)
+		return NULL;
+
+	return e_cal_cache_offline_change_new (change->uid, change->rid, change->revision, change->object, change->state);
+}
+
+/**
+ * e_cal_cache_offline_change_free:
+ * @change: (nullable): an #ECalCacheOfflineChange
+ *
+ * Frees the @change structure, previously allocated with e_cal_cache_offline_change_new()
+ * or e_cal_cache_offline_change_copy().
+ *
+ * Since: 3.26
+ **/
+void
+e_cal_cache_offline_change_free (gpointer change)
+{
+	ECalCacheOfflineChange *chng = change;
+
+	if (chng) {
+		g_free (chng->uid);
+		g_free (chng->rid);
+		g_free (chng->revision);
+		g_free (chng->object);
+		g_free (chng);
+	}
+}
 
 /**
  * e_cal_cache_search_data_new:
@@ -2669,6 +2749,57 @@ e_cal_cache_search_with_callback (ECalCache *cal_cache,
 		ecc_free_sexp_object (cal_cache, sexp_id);
 
 	return success;
+}
+
+/**
+ * e_cal_cache_get_offline_changes:
+ * @cal_cache: an #ECalCache
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * The same as e_cache_get_offline_changes(), only splits the saved UID
+ * into UID and RID and saved the data into #ECalCacheOfflineChange structure.
+ *
+ * Returns: (transfer full) (element-type ECalCacheOfflineChange): A newly allocated list of all
+ *    offline changes. Free it with g_slist_free_full (slist, e_cal_cache_offline_change_free);
+ *    when no longer needed.
+ *
+ * Since: 3.26
+ **/
+GSList *
+e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	GSList *changes, *link;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+
+	changes = e_cache_get_offline_changes (E_CACHE (cal_cache), cancellable, error);
+
+	for (link = changes; link; link = g_slist_next (link)) {
+		ECacheOfflineChange *cache_change = link->data;
+		ECalCacheOfflineChange *cal_change;
+		gchar *uid = NULL, *rid = NULL;
+
+		if (!cache_change || !ecc_decode_id_sql (cache_change->uid, &uid, &rid)) {
+			g_warn_if_reached ();
+
+			e_cache_offline_change_free (cache_change);
+			link->data = NULL;
+
+			continue;
+		}
+
+		cal_change = e_cal_cache_offline_change_new (uid, rid, cache_change->revision, cache_change->object, cache_change->state);
+		link->data = cal_change;
+
+		e_cache_offline_change_free (cache_change);
+		g_free (uid);
+		g_free (rid);
+	}
+
+	return changes;
 }
 
 /**

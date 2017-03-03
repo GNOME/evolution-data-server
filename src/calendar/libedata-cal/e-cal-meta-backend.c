@@ -43,6 +43,9 @@
 #include "e-cal-backend-util.h"
 #include "e-cal-meta-backend.h"
 
+#define ECMB_KEY_SYNC_TAG "sync-tag"
+#define ECMB_KEY_DID_CONNECT "did-connect"
+
 #define LOCAL_PREFIX "file://"
 
 struct _ECalMetaBackendPrivate {
@@ -71,6 +74,21 @@ G_DEFINE_BOXED_TYPE (ECalMetaBackendInfo, e_cal_meta_backend_info, e_cal_meta_ba
 static void ecmb_schedule_refresh (ECalMetaBackend *meta_backend);
 static void ecmb_schedule_source_changed (ECalMetaBackend *meta_backend);
 static void ecmb_schedule_go_offline (ECalMetaBackend *meta_backend);
+static gboolean ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
+						  ECalCache *cal_cache,
+						  const gchar *uid,
+						  GCancellable *cancellable,
+						  GError **error);
+static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
+						  ECalCache *cal_cache,
+						  gboolean overwrite_existing,
+						  EConflictResolution conflict_resolution,
+						  const GSList *in_instances,
+						  const gchar *extra,
+						  const gchar *orig_uid,
+						  gboolean *requires_put,
+						  GCancellable *cancellable,
+						  GError **error);
 
 /**
  * e_cal_cache_search_data_new:
@@ -350,6 +368,83 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 	}
 }
 
+static gboolean
+ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
+				ECalCache *cal_cache,
+				EConflictResolution conflict_resolution,
+				GCancellable *cancellable,
+				GError **error)
+{
+	GSList *offline_changes, *link;
+	GHashTable *covered_uids;
+	ECache *cache;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+
+	cache = E_CACHE (cal_cache);
+	covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
+
+	offline_changes = e_cal_cache_get_offline_changes (cal_cache, cancellable, error);
+	for (link = offline_changes; link && success; link = g_slist_next (link)) {
+		ECalCacheOfflineChange *change = link->data;
+		gchar *extra = NULL;
+
+		success = !g_cancellable_set_error_if_cancelled (cancellable, error);
+		if (!success)
+			break;
+
+		if (!change || g_hash_table_contains (covered_uids, change->uid))
+			continue;
+
+		g_hash_table_insert (covered_uids, change->uid, NULL);
+
+		if (!e_cal_cache_get_component_extra (cal_cache, change->uid, NULL, &extra, cancellable, NULL))
+			extra = NULL;
+
+		if (change->state == E_OFFLINE_STATE_LOCALLY_CREATED ||
+		    change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED) {
+			GSList *instances = NULL;
+
+			success = e_cal_cache_get_components_by_uid (cal_cache, change->uid, &instances, cancellable, error);
+			if (success) {
+				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache,
+					change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED,
+					conflict_resolution, instances, extra, change->uid, NULL, cancellable, error);
+			}
+
+			g_slist_free_full (instances, g_object_unref);
+		} else if (change->state == E_OFFLINE_STATE_LOCALLY_DELETED) {
+			GError *local_error = NULL;
+
+			success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution,
+				change->uid, extra, cancellable, &local_error);
+
+			if (!success) {
+				if (g_error_matches (local_error, E_DATA_CAL_ERROR, ObjectNotFound)) {
+					g_clear_error (&local_error);
+					success = TRUE;
+				} else if (local_error) {
+					g_propagate_error (error, local_error);
+				}
+			}
+		} else {
+			g_warn_if_reached ();
+		}
+
+		g_free (extra);
+	}
+
+	g_slist_free_full (offline_changes, e_cal_cache_offline_change_free);
+	g_hash_table_destroy (covered_uids);
+
+	if (success)
+		success = e_cache_clear_offline_changes (cache, cancellable, error);
+
+	return success;
+}
+
 static void
 ecmb_refresh_thread_func (ECalBackend *cal_backend,
 			  gpointer user_data,
@@ -357,6 +452,9 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 			  GError **error)
 {
 	ECalMetaBackend *meta_backend;
+	ECalCache *cal_cache;
+	ECacheOfflineFlag offline_flag = E_CACHE_IS_ONLINE;
+	gboolean success, repeat = TRUE;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 
@@ -365,8 +463,104 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 
 	meta_backend = E_CAL_META_BACKEND (cal_backend);
 
-	if (!e_backend_get_online (E_BACKEND (meta_backend)))
+	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
+	    !e_cal_meta_backend_connect_sync (meta_backend, cancellable, NULL)) {
+		/* Ignore connection errors here */
 		return;
+	}
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache) {
+		return;
+	}
+
+	success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_KEEP_LOCAL, cancellable, error);
+
+	while (repeat && success &&
+	       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL, *link;
+		gchar *last_sync_tag, *new_sync_tag = NULL;
+
+		repeat = FALSE;
+
+		last_sync_tag = e_cache_dup_key (E_CACHE (cal_cache), ECMB_KEY_SYNC_TAG, NULL);
+		if (last_sync_tag && !*last_sync_tag) {
+			g_free (last_sync_tag);
+			last_sync_tag = NULL;
+		}
+
+		success = e_cal_meta_backend_get_changes_sync (meta_backend, last_sync_tag, &new_sync_tag, &repeat,
+			&created_objects, &modified_objects, &removed_objects, cancellable, error);
+
+		if (success) {
+			GHashTable *covered_uids;
+
+			covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
+
+			/* Removed objects first */
+			for (link = removed_objects; link && success; link = g_slist_next (link)) {
+				ECalMetaBackendInfo *nfo = link->data;
+				ECalComponentId id;
+
+				if (!nfo) {
+					g_warn_if_reached ();
+					continue;
+				}
+
+				id.uid = nfo->uid;
+				id.rid = nfo->rid;
+
+				success = e_cal_cache_remove_component (cal_cache, id.uid, id.rid, offline_flag, cancellable, error);
+				if (success)
+					e_cal_backend_notify_component_removed (cal_backend, &id, NULL, NULL);
+			}
+
+			/* Then modified objects */
+			for (link = modified_objects; link && success; link = g_slist_next (link)) {
+				ECalMetaBackendInfo *nfo = link->data;
+
+				if (!nfo || !nfo->uid) {
+					g_warn_if_reached ();
+					continue;
+				}
+
+				if (g_hash_table_contains (covered_uids, nfo->uid))
+					continue;
+
+				g_hash_table_insert (covered_uids, nfo->uid, NULL);
+
+				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, cancellable, error);
+			}
+
+			g_hash_table_remove_all (covered_uids);
+
+			/* Finally created objects */
+			for (link = created_objects; link && success; link = g_slist_next (link)) {
+				ECalMetaBackendInfo *nfo = link->data;
+
+				if (!nfo || !nfo->uid) {
+					g_warn_if_reached ();
+					continue;
+				}
+
+				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, cancellable, error);
+			}
+
+			g_hash_table_destroy (covered_uids);
+		}
+
+		if (success) {
+			e_cache_set_key (E_CACHE (cal_cache), ECMB_KEY_SYNC_TAG, new_sync_tag ? new_sync_tag : "", NULL);
+		}
+
+		g_slist_free_full (created_objects, e_cal_meta_backend_info_free);
+		g_slist_free_full (modified_objects, e_cal_meta_backend_info_free);
+		g_slist_free_full (removed_objects, e_cal_meta_backend_info_free);
+		g_free (last_sync_tag);
+		g_free (new_sync_tag);
+	}
+
+	g_object_unref (cal_cache);
 }
 
 static void
@@ -713,15 +907,18 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 
 static gboolean
 ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
+				  ECalCache *cal_cache,
 				  gboolean overwrite_existing,
 				  EConflictResolution conflict_resolution,
 				  const GSList *in_instances,
 				  const gchar *extra,
-				  gchar **out_new_uid,
+				  const gchar *orig_uid,
+				  gboolean *out_requires_put,
 				  GCancellable *cancellable,
 				  GError **error)
 {
 	GSList *link, *instances = NULL;
+	gchar *new_uid = NULL;
 	gboolean has_attachments = FALSE, success = TRUE;
 
 	for (link = (GSList *) in_instances; link && !has_attachments; link = g_slist_next (link)) {
@@ -748,7 +945,19 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	}
 
 	success = success && e_cal_meta_backend_save_component_sync (meta_backend, overwrite_existing, conflict_resolution,
-		instances ? instances : in_instances, extra, out_new_uid, cancellable, error);
+		instances ? instances : in_instances, extra, &new_uid, cancellable, error);
+
+	if (success && new_uid) {
+		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, cancellable, error);
+
+		if (success && g_strcmp0 (new_uid, orig_uid) != 0)
+		    success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, orig_uid, cancellable, error);
+
+		g_free (new_uid);
+
+		if (out_requires_put)
+			*out_requires_put = FALSE;
+	}
 
 	g_slist_free_full (instances, g_object_unref);
 
@@ -1084,33 +1293,15 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_IS_ONLINE) {
 		GSList *instances;
-		gchar *new_uid = NULL;
 
 		instances = g_slist_prepend (NULL, comp);
 
-		if (!ecmb_save_component_wrapper_sync (meta_backend, FALSE, conflict_resolution, instances, NULL, &new_uid, cancellable, error)) {
+		if (!ecmb_save_component_wrapper_sync (meta_backend, cal_cache, FALSE, conflict_resolution, instances, NULL, uid, &requires_put, cancellable, error)) {
 			g_slist_free (instances);
 			return FALSE;
 		}
 
 		g_slist_free (instances);
-
-		if (new_uid) {
-			if (!ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, cancellable, error)) {
-				g_free (new_uid);
-				return FALSE;
-			}
-
-			if (g_strcmp0 (new_uid, uid) != 0 &&
-			    !ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, cancellable, error)) {
-				g_free (new_uid);
-				return FALSE;
-			}
-
-			g_free (new_uid);
-
-			requires_put = FALSE;
-		}
 	}
 
 	if (requires_put) {
@@ -1384,21 +1575,8 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (success && *offline_flag == E_CACHE_IS_ONLINE) {
-		gchar *new_uid = NULL;
-
-		success = ecmb_save_component_wrapper_sync (meta_backend, TRUE, conflict_resolution,
-			instances, extra, &new_uid, cancellable, error);
-
-		if (success && new_uid) {
-			success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, cancellable, error);
-
-			if (success && g_strcmp0 (new_uid, id->uid) != 0)
-			    success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, id->uid, cancellable, error);
-
-			g_free (new_uid);
-
-			requires_put = FALSE;
-		}
+		success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
+			instances, extra, id->uid, &requires_put, cancellable, error);
 	}
 
 	if (success && requires_put)
@@ -1688,26 +1866,12 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			}
 
 			if (*offline_flag == E_CACHE_IS_ONLINE) {
-				gchar *new_uid = NULL;
-
-				success = ecmb_save_component_wrapper_sync (meta_backend, TRUE, conflict_resolution,
-					instances, extra, &new_uid, cancellable, error);
-
-				if (success && new_uid) {
-					success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, cancellable, error);
-
-					if (success && g_strcmp0 (new_uid, uid) != 0)
-					    success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, cancellable, error);
-
-					g_free (new_uid);
-
-					requires_put = FALSE;
-				}
+				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
+					instances, extra, uid, &requires_put, cancellable, error);
 			}
 
 			if (success && requires_put)
 				success = ecmb_put_instances (meta_backend, cal_cache, uid, *offline_flag, instances, extra, cancellable, error);
-
 		}
 
 		g_free (extra);
