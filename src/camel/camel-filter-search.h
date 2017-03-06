@@ -25,6 +25,8 @@
 #ifndef CAMEL_FILTER_SEARCH_H
 #define CAMEL_FILTER_SEARCH_H
 
+#include <stdio.h>
+
 #include <camel/camel-mime-message.h>
 #include <camel/camel-folder-summary.h>
 
@@ -49,6 +51,17 @@ gint camel_filter_search_match (struct _CamelSession *session,
 				const gchar *expression,
 				GCancellable *cancellable,
 				GError **error);
+gint camel_filter_search_match_with_log
+				(struct _CamelSession *session,
+				 CamelFilterSearchGetMessageFunc get_message,
+				 gpointer user_data,
+				 CamelMessageInfo *info,
+				 const gchar *source,
+				 struct _CamelFolder *folder,
+				 const gchar *expression,
+				 FILE *logfile,
+				 GCancellable *cancellable,
+				 GError **error);
 
 G_END_DECLS
 

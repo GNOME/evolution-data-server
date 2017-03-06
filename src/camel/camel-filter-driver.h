@@ -131,6 +131,9 @@ gint		camel_filter_driver_filter_folder
 						 gboolean remove,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_filter_driver_log_info	(CamelFilterDriver *driver,
+						 const gchar *format,
+						 ...) G_GNUC_PRINTF (2, 3);
 
 G_END_DECLS
 

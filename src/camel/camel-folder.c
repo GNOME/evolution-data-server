@@ -408,6 +408,9 @@ folder_filter (CamelSession *session,
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
 			full_name);
 
+		camel_filter_driver_log_info (data->driver, "\nReported %d recent messages in '%s : %s'",
+			data->recents->len, camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
+
 		service = CAMEL_SERVICE (parent_store);
 		store_uid = camel_service_get_uid (service);
 
@@ -436,6 +439,9 @@ folder_filter (CamelSession *session,
 		camel_operation_pop_message (cancellable);
 
 		camel_filter_driver_flush (data->driver, error);
+	} else if (data->driver) {
+		camel_filter_driver_log_info (data->driver, "No recent messages reported in '%s : %s'",
+			camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
 	}
 
 exit:

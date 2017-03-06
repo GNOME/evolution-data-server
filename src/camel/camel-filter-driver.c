@@ -60,6 +60,7 @@ enum filter_log_t {
 	FILTER_LOG_NONE,
 	FILTER_LOG_START,       /* start of new log entry */
 	FILTER_LOG_ACTION,      /* an action performed */
+	FILTER_LOG_INFO,        /* a generic information log */
 	FILTER_LOG_END          /* end of log */
 };
 
@@ -1316,6 +1317,9 @@ camel_filter_driver_log (CamelFilterDriver *driver,
 		case FILTER_LOG_ACTION:
 			fprintf (driver->priv->logfile, "Action: %s\n", str);
 			break;
+		case FILTER_LOG_INFO:
+			fprintf (driver->priv->logfile, "%s\n", str);
+			break;
 		case FILTER_LOG_END:
 			fprintf (driver->priv->logfile, "\n");
 			break;
@@ -1325,6 +1329,8 @@ camel_filter_driver_log (CamelFilterDriver *driver,
 		}
 
 		g_free (str);
+
+		fflush (driver->priv->logfile);
 	}
 }
 
@@ -1798,16 +1804,21 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 
 	list = g_queue_peek_head_link (&driver->priv->rules);
 	result = CAMEL_SEARCH_NOMATCH;
+	filtered = list != NULL;
 
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		struct _filter_rule *rule = link->data;
 		struct _get_message data;
 
-		if (driver->priv->terminated)
+		if (driver->priv->terminated) {
+			camel_filter_driver_log (driver, FILTER_LOG_INFO, "Stopped processing per request");
 			break;
+		}
 
-		if (g_cancellable_set_error_if_cancelled (cancellable, &driver->priv->error))
+		if (g_cancellable_set_error_if_cancelled (cancellable, &driver->priv->error)) {
+			camel_filter_driver_log (driver, FILTER_LOG_INFO, "Stopped processing on cancel");
 			goto error;
+		}
 
 		d (printf ("applying rule %s\naction %s\n", rule->match, rule->action));
 
@@ -1817,22 +1828,24 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 		if (original_store_uid == NULL)
 			original_store_uid = store_uid;
 
-		result = camel_filter_search_match (
+		camel_filter_driver_log (driver, FILTER_LOG_START, "%s", rule->name);
+
+		result = camel_filter_search_match_with_log (
 			driver->priv->session, get_message_cb, &data, driver->priv->info,
-			original_store_uid, source, rule->match, cancellable, &driver->priv->error);
+			original_store_uid, source, rule->match, driver->priv->logfile, cancellable, &driver->priv->error);
 
 		switch (result) {
 		case CAMEL_SEARCH_ERROR:
+			camel_filter_driver_log (driver, FILTER_LOG_INFO, "   Execution of filter '%s' failed: %s\n",
+				rule->name, driver->priv->error ? driver->priv->error->message : "Unknown error");
+
 			g_prefix_error (
 				&driver->priv->error,
 				_("Execution of filter “%s” failed: "),
 				rule->name);
 			goto error;
 		case CAMEL_SEARCH_MATCHED:
-			filtered = TRUE;
-			camel_filter_driver_log (
-				driver, FILTER_LOG_START,
-				"%s", rule->name);
+			camel_filter_driver_log (driver, FILTER_LOG_INFO, "   Filter '%s' matched\n", rule->name);
 
 			/* perform necessary filtering actions */
 			camel_sexp_input_text (
@@ -1868,6 +1881,9 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 				goto error;
 			}
 			camel_sexp_result_free (driver->priv->eval, r);
+		case CAMEL_SEARCH_NOMATCH:
+			camel_filter_driver_log (driver, FILTER_LOG_INFO, "   Filter '%s' did not match\n", rule->name);
+			break;
 		default:
 			break;
 		}
@@ -1943,4 +1959,38 @@ camel_filter_driver_filter_message (CamelFilterDriver *driver,
 	driver->priv->error = NULL;
 
 	return -1;
+}
+
+/**
+ * camel_filter_driver_log_info:
+ * @driver: (nullable): a #CamelFilterDriver, or %NULL
+ * @format: a printf-like format to use for the informational log entry
+ * @...: arguments for @format
+ *
+ * Logs an informational message to a filter log. The function does
+ * nothing when @driver is %NULL or when there is no log file being
+ * set in @driver.
+ *
+ * Since: 3.24
+ **/
+void
+camel_filter_driver_log_info (CamelFilterDriver *driver,
+			      const gchar *format,
+			      ...)
+{
+	gchar *str;
+	va_list ap;
+
+	if (!driver || !driver->priv->logfile)
+		return;
+
+	g_return_if_fail (format != NULL);
+
+	va_start (ap, format);
+	str = g_strdup_vprintf (format, ap);
+	va_end (ap);
+
+	camel_filter_driver_log (driver, FILTER_LOG_INFO, "%s", str);
+
+	g_free (str);
 }
