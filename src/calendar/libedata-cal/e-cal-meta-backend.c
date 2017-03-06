@@ -51,6 +51,7 @@
 struct _ECalMetaBackendPrivate {
 	GMutex property_lock;
 	ECalCache *cache;
+	ENamedParameters *last_credentials;
 	GHashTable *view_cancellables;
 	GCancellable *refresh_cancellable;	/* Set when refreshing the content */
 	GCancellable *source_changed_cancellable; /* Set when processing source changed signal */
@@ -204,6 +205,73 @@ ecmb_steal_view_cancellable (ECalMetaBackend *meta_backend,
 }
 
 static gboolean
+ecmb_connect_wrapper_sync (ECalMetaBackend *meta_backend,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	ENamedParameters *credentials;
+	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
+	ESourceCredentialsReason creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+	gchar *certificate_pem = NULL;
+	GTlsCertificateFlags certificate_errors = 0;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+
+	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
+			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
+
+		return FALSE;
+	}
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+	credentials = e_named_parameters_new_clone (meta_backend->priv->last_credentials);
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	if (e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
+		cancellable, &local_error)) {
+		e_named_parameters_free (credentials);
+		return TRUE;
+	}
+
+	e_named_parameters_free (credentials);
+
+	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
+
+	switch (auth_result) {
+	case E_SOURCE_AUTHENTICATION_UNKNOWN:
+		if (local_error)
+			g_propagate_error (error, local_error);
+		g_free (certificate_pem);
+		return FALSE;
+	case E_SOURCE_AUTHENTICATION_ERROR:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+		break;
+	case E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+		break;
+	case E_SOURCE_AUTHENTICATION_ACCEPTED:
+		g_warn_if_reached ();
+		break;
+	case E_SOURCE_AUTHENTICATION_REJECTED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
+		break;
+	case E_SOURCE_AUTHENTICATION_REQUIRED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+		break;
+	}
+
+	e_backend_schedule_credentials_required (E_BACKEND (meta_backend), creds_reason, certificate_pem, certificate_errors,
+		local_error, cancellable, G_STRFUNC);
+
+	g_clear_error (&local_error);
+	g_free (certificate_pem);
+
+	return FALSE;
+}
+
+static gboolean
 ecmb_gather_locally_cached_objects_cb (ECalCache *cal_cache,
 				       const gchar *uid,
 				       const gchar *rid,
@@ -262,7 +330,7 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	if (!e_cal_meta_backend_connect_sync (meta_backend, cancellable, error) ||
+	if (!ecmb_connect_wrapper_sync (meta_backend, cancellable, error) ||
 	    !e_cal_meta_backend_list_existing_sync (meta_backend, out_new_sync_tag, &existing_objects, cancellable, error)) {
 		g_object_unref (cal_cache);
 		return FALSE;
@@ -464,7 +532,7 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 	meta_backend = E_CAL_META_BACKEND (cal_backend);
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !e_cal_meta_backend_connect_sync (meta_backend, cancellable, NULL)) {
+	    !ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
 		/* Ignore connection errors here */
 		return;
 	}
@@ -993,7 +1061,7 @@ ecmb_refresh_sync (ECalBackendSync *sync_backend,
 	if (!e_backend_get_online (E_BACKEND (sync_backend)))
 		return;
 
-	if (e_cal_meta_backend_connect_sync (meta_backend, cancellable, error))
+	if (ecmb_connect_wrapper_sync (meta_backend, cancellable, error))
 		ecmb_schedule_refresh (meta_backend);
 }
 
@@ -1030,7 +1098,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 
 		/* Ignore errors here, just try whether it's on the remote side, but not in the local cache */
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_connect_sync (meta_backend, cancellable, NULL) &&
+		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL) &&
 		    ecmb_load_component_wrapper_sync (meta_backend, cal_cache, uid, cancellable, NULL)) {
 			found = e_cal_cache_get_component_as_string (cal_cache, uid, rid, calobj, cancellable, NULL);
 		}
@@ -1284,7 +1352,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_connect_sync (meta_backend, cancellable, NULL)) {
+		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -1567,7 +1635,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 	if (success && *offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_connect_sync (meta_backend, cancellable, NULL)) {
+		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -1724,7 +1792,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    e_cal_meta_backend_connect_sync (meta_backend, cancellable, NULL)) {
+		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -2420,6 +2488,52 @@ ecmb_stop_view (ECalBackend *cal_backend,
 	}
 }
 
+static ESourceAuthenticationResult
+ecmb_authenticate_sync (EBackend *backend,
+			const ENamedParameters *credentials,
+			gchar **out_certificate_pem,
+			GTlsCertificateFlags *out_certificate_errors,
+			GCancellable *cancellable,
+			GError **error)
+{
+	ECalMetaBackend *meta_backend;
+	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
+
+	meta_backend = E_CAL_META_BACKEND (backend);
+
+	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
+			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
+
+		return E_SOURCE_AUTHENTICATION_ERROR;
+	}
+
+	success = e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result,
+		out_certificate_pem, out_certificate_errors, cancellable, error);
+
+	if (success) {
+		auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+	} else {
+		if (auth_result == E_SOURCE_AUTHENTICATION_UNKNOWN)
+			auth_result = E_SOURCE_AUTHENTICATION_ERROR;
+	}
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	e_named_parameters_free (meta_backend->priv->last_credentials);
+	if (success)
+		meta_backend->priv->last_credentials = e_named_parameters_new_clone (credentials);
+	else
+		meta_backend->priv->last_credentials = NULL;
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	return auth_result;
+}
+
 static void
 ecmb_schedule_refresh (ECalMetaBackend *meta_backend)
 {
@@ -2635,6 +2749,9 @@ e_cal_meta_backend_dispose (GObject *object)
 		g_clear_object (&meta_backend->priv->go_offline_cancellable);
 	}
 
+	e_named_parameters_free (meta_backend->priv->last_credentials);
+	meta_backend->priv->last_credentials = NULL;
+
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	/* Chain up to parent's method. */
@@ -2662,6 +2779,7 @@ static void
 e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 {
 	GObjectClass *object_class;
+	EBackendClass *backend_class;
 	ECalBackendClass *cal_backend_class;
 	ECalBackendSyncClass *cal_backend_sync_class;
 
@@ -2688,6 +2806,9 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	cal_backend_class->get_backend_property = ecmb_get_backend_property;
 	cal_backend_class->start_view = ecmb_start_view;
 	cal_backend_class->stop_view = ecmb_stop_view;
+
+	backend_class = E_BACKEND_CLASS (klass);
+	backend_class->authenticate_sync = ecmb_authenticate_sync;
 
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->set_property = e_cal_meta_backend_set_property;
@@ -3148,6 +3269,10 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
 /**
  * e_cal_meta_backend_connect_sync:
  * @meta_backend: an #ECalMetaBackend
+ * @credentials: (nullable): an #ENamedParameters with previously used credentials, or %NULL
+ * @out_auth_result: (out): an #ESourceAuthenticationResult with an authentication result
+ * @out_certificate_pem: (out) (transfer full): a PEM encoded certificate on failure, or %NULL
+ * @out_certificate_errors: (out): a #GTlsCertificateFlags on failure, or 0
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3158,6 +3283,21 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
  * errors are propagated to the caller/client side.
  * This method is not called when the backend is not online.
  *
+ * The @credentials parameter consists of the previously used credentials.
+ * It's always %NULL with the first connection attempt. To get the credentials,
+ * just set the @out_auth_result to %E_SOURCE_AUTHENTICATION_REQUIRED for
+ * the first time and the function will be called again once the credentials
+ * are available. See the documentation of #ESourceAuthenticationResult for
+ * other available reasons.
+ *
+ * The out parameters are passed to e_backend_schedule_credentials_required()
+ * and are ignored when the descendant returns %TRUE, aka they are used
+ * only if the connection fails. The @out_certificate_pem and @out_certificate_errors
+ * should be used together and they can be left untouched if the failure reason was
+ * not related to certificate. Use @out_auth_result %E_SOURCE_AUTHENTICATION_UNKNOWN
+ * to indicate other error than @credentials error, otherwise the @error is used
+ * according to @out_auth_result value.
+ *
  * It is mandatory to implement this virtual method by the descendant.
  *
  * Returns: Whether succeeded.
@@ -3166,6 +3306,10 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
  **/
 gboolean
 e_cal_meta_backend_connect_sync	(ECalMetaBackend *meta_backend,
+				 const ENamedParameters *credentials,
+				 ESourceAuthenticationResult *out_auth_result,
+				 gchar **out_certificate_pem,
+				 GTlsCertificateFlags *out_certificate_errors,
 				 GCancellable *cancellable,
 				 GError **error)
 {
@@ -3177,7 +3321,7 @@ e_cal_meta_backend_connect_sync	(ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->connect_sync != NULL, FALSE);
 
-	return klass->connect_sync (meta_backend, cancellable, error);
+	return klass->connect_sync (meta_backend, credentials, out_auth_result, out_certificate_pem, out_certificate_errors, cancellable, error);
 }
 
 /**

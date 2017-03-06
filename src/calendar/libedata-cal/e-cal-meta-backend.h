@@ -97,6 +97,10 @@ struct _ECalMetaBackendClass {
 
 	/* Virtual methods */
 	gboolean	(* connect_sync)	(ECalMetaBackend *meta_backend,
+						 const ENamedParameters *credentials,
+						 ESourceAuthenticationResult *out_auth_result,
+						 gchar **out_certificate_pem,
+						 GTlsCertificateFlags *out_certificate_errors,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* disconnect_sync)	(ECalMetaBackend *meta_backend,
@@ -166,6 +170,10 @@ gboolean	e_cal_meta_backend_store_inline_attachments_sync
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_connect_sync	(ECalMetaBackend *meta_backend,
+						 const ENamedParameters *credentials,
+						 ESourceAuthenticationResult *out_auth_result,
+						 gchar **out_certificate_pem,
+						 GTlsCertificateFlags *out_certificate_errors,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_disconnect_sync

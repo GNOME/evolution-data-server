@@ -67,6 +67,8 @@ typedef enum {
 
 /**
  * ESourceAuthenticationResult:
+ * @E_SOURCE_AUTHENTICATION_UNKNOWN:
+ *   Unknown error occurred while authenticating. Since: 3.26
  * @E_SOURCE_AUTHENTICATION_ERROR:
  *   An error occurred while authenticating.
  * @E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
@@ -83,6 +85,7 @@ typedef enum {
  * Since: 3.6
  **/
 typedef enum {
+	E_SOURCE_AUTHENTICATION_UNKNOWN = -1,
 	E_SOURCE_AUTHENTICATION_ERROR,
 	E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED,
 	E_SOURCE_AUTHENTICATION_ACCEPTED,

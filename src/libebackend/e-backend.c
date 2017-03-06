@@ -314,6 +314,7 @@ backend_source_authenticate_thread (gpointer user_data)
 		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
 
 		switch (auth_result) {
+		case E_SOURCE_AUTHENTICATION_UNKNOWN:
 		case E_SOURCE_AUTHENTICATION_ERROR:
 			reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
 			break;
