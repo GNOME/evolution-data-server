@@ -34,7 +34,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-03-01 14:36+0000\n"
-"PO-Revision-Date: 2017-03-05 23:49+0100\n"
+"PO-Revision-Date: 2017-03-07 21:43+0100\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -2378,7 +2378,7 @@ msgstr "Kryptering mislykkedes: ingen gyldige modtagere angivet."
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
-msgstr "Kryptering mislykkedes: Ugyldig modtager %s angivet. Et almindeligt problem er at %s ikke har importeret en offentlig nøgle for denne modtager."
+msgstr "Kryptering mislykkedes: Ugyldig modtager %s angivet. Et almindeligt problem er, at %s ikke har importeret en offentlig nøgle for denne modtager."
 
 #: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
@@ -5112,7 +5112,7 @@ msgstr "En fuld sti til en mappe hvor .source-filerne med forudindstillede valg 
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
-msgstr "Denne mappe, hvis udfylt med en eksisterende sti, kontrolleres ud over XDG-konfigurationsmapperne."
+msgstr "Denne mappe, hvis udfyldt med en eksisterende sti, kontrolleres ud over XDG-konfigurationsmapperne."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "A list of variables which can be part of the autoconfig .source files"
