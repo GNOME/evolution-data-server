@@ -1,5 +1,5 @@
 # Danish translation of Evolution Data Server
-# Copyright (C) 1998-2016 Free Software Foundation, Inc.
+# Copyright (C) 1998-2017 Free Software Foundation, Inc.
 # This file is distributed under the same license as the evolution-data-server package.
 # Keld Simonsen <keld@dkuug.dk>, 2001-2003.
 # Kjartan Maraas <kmaraas@gnome.org>, 1998-2001.
@@ -10,7 +10,7 @@
 # Kenneth Nielsen <k.nielsen81@gail.com>, 2008-2011.
 # Kris Thomsen <lakristho@gmail.com>, 2011.
 # flemming christensen <fc@stromata.dk>, 2012, 2013.
-# Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 2010, 2014, 2015, 16.
+# Ask Hjorth Larsen <asklarsen@gmail.com>, 2007, 2010, 2014, 2015, 16, 17.
 #
 # message -> brev
 # trash, trash folder -> papirkurv
@@ -31,10 +31,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: "
-"http://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-02-07 09:39+0000\n"
-"PO-Revision-Date: 2017-02-16 00:40+0100\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-03-01 14:36+0000\n"
+"PO-Revision-Date: 2017-03-05 23:49+0100\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -1886,8 +1886,8 @@ msgstr ""
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
-"\"%s\" forventer at det første argument er en ISO-8601 formateret "
-"dato-/tids-streng"
+"\"%s\" forventer at det første argument er en ISO-8601 formateret dato-/tids-"
+"streng"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1462
 #, c-format
@@ -2004,16 +2004,16 @@ msgstr "Krypterer brev"
 msgid "Decrypting message"
 msgstr "Dekrypterer brev"
 
-#: ../src/camel/camel-data-cache.c:177
+#: ../src/camel/camel-data-cache.c:203
 #, c-format
 msgid "Unable to create cache path"
 msgstr "Kan ikke oprette cachesøgesti"
 
-#: ../src/camel/camel-data-cache.c:455
+#: ../src/camel/camel-data-cache.c:532
 msgid "Empty cache file"
 msgstr "Tom mellemlager-fil"
 
-#: ../src/camel/camel-data-cache.c:532
+#: ../src/camel/camel-data-cache.c:609
 #, c-format
 msgid "Could not remove cache entry: %s: %s"
 msgstr "Kunne ikke fjerne cacheindgangen: %s: %s"
@@ -2280,10 +2280,9 @@ msgstr "Frigiv ubrugt hukommelse for mappen \"%s : %s\""
 
 #. Translators: The '%s' is replaced with the actual path and filename of the used gpg, like '/usr/bin/gpg2'
 #: ../src/camel/camel-gpg-context.c:417
-#, c-format, fuzzy
-#| msgid "From %s:"
+#, c-format
 msgid "Output from %s:"
-msgstr "Fra %s:"
+msgstr "Output fra %s:"
 
 #: ../src/camel/camel-gpg-context.c:834 ../src/camel/camel-gpg-context.c:839
 #: ../src/camel/camel-gpg-context.c:1543
@@ -2379,7 +2378,7 @@ msgstr "Kryptering mislykkedes: ingen gyldige modtagere angivet."
 msgid ""
 "Failed to encrypt: Invalid recipient %s specified. A common issue is that "
 "the %s doesn’t have imported public key for this recipient."
-msgstr ""
+msgstr "Kryptering mislykkedes: Ugyldig modtager %s angivet. Et almindeligt problem er at %s ikke har importeret en offentlig nøgle for denne modtager."
 
 #: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
@@ -2591,8 +2590,7 @@ msgstr "Gemmer ændringer i mappen \"%s : %s\""
 #: ../src/camel/camel-offline-folder.c:311
 #, c-format
 msgid "Checking download of new messages for offline in “%s : %s”"
-msgstr ""
-"Kontrollerer hentning af nye breve til afkoblet tilstand i \"%s : %s\""
+msgstr "Kontrollerer hentning af nye breve til afkoblet tilstand i \"%s : %s\""
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2737,8 +2735,7 @@ msgid "GSSAPI"
 msgstr "GSSAPI"
 
 #: ../src/camel/camel-sasl-gssapi.c:94
-msgid ""
-"This option will connect to the server using Kerberos 5 authentication."
+msgid "This option will connect to the server using Kerberos 5 authentication."
 msgstr ""
 "Denne indstilling gør brug af Kerberos 5-godkendelse ved opkobling til "
 "serveren."
@@ -3254,8 +3251,8 @@ msgstr "Du skal arbejde opkoblet for at fuldføre denne operation (%s)"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3130
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1348
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2156
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2300
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2160
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2304
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:835
@@ -3270,17 +3267,17 @@ msgstr "Du skal arbejde opkoblet for at fuldføre denne operation (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Du skal arbejde opkoblet for at fuldføre denne operation"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1555
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1643
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1602
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1690
 #, c-format
 msgid "No destination folder specified"
 msgstr "Målmappe ikke angivet"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1582
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1629
 msgid "Unable to move junk messages"
 msgstr "Kunne ikke flytte spammeddelelser"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1677
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1724
 msgid "Unable to move deleted messages"
 msgstr "Kunne ikke flytte slettede meddelelser"
 
@@ -3314,7 +3311,7 @@ msgstr "Kunne ikke danne mellemlager for %s: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1326
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1330
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "Ingen IMAP-postboks tilgængelig for mappen \"%s : %s\""
@@ -3566,58 +3563,58 @@ msgstr "Fejl under indhentning af brevinfo"
 msgid "Error running STATUS"
 msgstr "Fejl ved kørsel af STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5532
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5562
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5597
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5544
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5574
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5609
 msgid "Error syncing changes"
 msgstr "Fejl under synkronisering af ændringer"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5735
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5747
 msgid "Error expunging message"
 msgstr "Fejl under udrensning af brev"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5807
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5819
 msgid "Error fetching folders"
 msgstr "Fejl under hentning af mapper"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5818
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
 msgid "Error fetching subscribed folders"
 msgstr "Fejl under hentning af abonnerede mapper"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5840
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5852
 msgid "Error creating folder"
 msgstr "Fejl under oprettelse af mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5896
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5908
 msgid "Error deleting folder"
 msgstr "Fejl under sletning af mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5942
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5954
 msgid "Error renaming folder"
 msgstr "Fejl under omdøbning af mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5974
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5986
 msgid "Error subscribing to folder"
 msgstr "Fejl under abonnering på mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6010
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6022
 msgid "Error unsubscribing from folder"
 msgstr "Fejl ved annullering af abonnement på mappe"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6050
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6062
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-serveren understøtter ikke kvoter"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6062
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6074
 msgid "Error retrieving quota information"
 msgstr "Fejl under hentning af kvoteinformation"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6109
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6121
 msgid "Search failed"
 msgstr "Søgning slog fejl"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6227
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6239
 msgid "Error running IDLE"
 msgstr "Fejl under kørsel af IDLE"
 
@@ -3642,40 +3639,39 @@ msgstr "IMAP-server %s"
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-tjeneste for %s på %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:873
+#: ../src/camel/providers/imapx/camel-imapx-store.c:888
 msgid "No IMAPx connection object provided"
 msgstr "Intet IMAPx-forbindelsesobjekt givet"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:890
+#: ../src/camel/providers/imapx/camel-imapx-store.c:905
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:92
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Adgangskode"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:892
-msgid ""
-"This option will connect to the IMAP server using a plaintext password."
+#: ../src/camel/providers/imapx/camel-imapx-store.c:907
+msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Denne indstilling vil lade dig koble til en IMAP-server ved at bruge en "
 "klartekst-adgangskode."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:975
+#: ../src/camel/providers/imapx/camel-imapx-store.c:990
 #, c-format
 msgid "No such folder %s"
 msgstr "Mappen %s eksisterer ikke"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1425
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1440
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Intet IMAP-navnerum for mappestien \"%s\""
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1686
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1920
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1701
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1935
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Henter mappeliste for \"%s\""
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2137
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2152
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Mappenavnet \"%s\" er ugyldigt eftersom det indeholder tegnet \"%c\""
@@ -3685,97 +3681,97 @@ msgstr "Mappenavnet \"%s\" er ugyldigt eftersom det indeholder tegnet \"%c\""
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2514
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2529
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Kladder"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2515
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2530
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Kladder"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2516
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2531
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Kladde"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2519
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2534
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Skabeloner"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2522
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2537
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arkiv"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2525
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2540
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Sendte e-mails"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2526
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2541
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Sendt"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2527
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2542
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Sendte objekter"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2528
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2543
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Afsendte breve"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2531
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2546
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2532
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2547
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2533
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2548
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Spammail"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2534
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2549
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Spammail"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2535
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2550
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Spam"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2536
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2551
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Masseforsendelse"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2539
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2554
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Papirkurv"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2540
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2555
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Papirkurv"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2541
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2556
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Slettede objekter"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2542
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2557
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Slettede breve"
@@ -3842,10 +3838,8 @@ msgid "For storing local mail in MH-like mail directories."
 msgstr "For lagring af lokal e-mail i MH-lignende brevmapper."
 
 #: ../src/camel/providers/local/camel-local-provider.c:65
-#, fuzzy
-#| msgid "_Apply filters to new messages in Inbox"
 msgid "Apply _filters to new messages"
-msgstr "_Brug filtre på nye breve i indbakke"
+msgstr "Brug _filtre på nye breve"
 
 #: ../src/camel/providers/local/camel-local-provider.c:73
 msgid "Local delivery"
@@ -3991,18 +3985,16 @@ msgstr "Mappen %s findes allerede"
 #: ../src/camel/providers/local/camel-maildir-store.c:295
 #: ../src/camel/providers/local/camel-mbox-store.c:399
 #: ../src/camel/providers/local/camel-mbox-store.c:420
-#, c-format, fuzzy
-#| msgid "Cannot create folder: %s: %s"
+#, c-format
 msgid "Cannot create folder “%s”: %s"
-msgstr "Kan ikke oprette mappen: %s: %s"
+msgstr "Kan ikke oprette mappen \"%s\": %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:279
 #: ../src/camel/providers/local/camel-mbox-store.c:365
 #: ../src/camel/providers/local/camel-mh-store.c:519
-#, c-format, fuzzy
-#| msgid "Cannot get folder: %s: %s"
+#, c-format
 msgid "Cannot get folder “%s”: %s"
-msgstr "Finder ikke mappe: %s: %s"
+msgstr "Kan ikke hente mappen \"%s\": %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:285
 #: ../src/camel/providers/local/camel-mbox-store.c:375
@@ -4401,8 +4393,8 @@ msgstr "USENET nyheder"
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:63
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
-"Dette er en udbyder for læsning og postning af indlæg til "
-"USENET-nyhedsgrupper."
+"Dette er en udbyder for læsning og postning af indlæg til USENET-"
+"nyhedsgrupper."
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:84
 msgid ""
@@ -4478,7 +4470,7 @@ msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Du kan ikke fjerne en mappe i et nyhedsgruppelager: opsig abonnement istedet."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1614
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1618
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4490,7 +4482,7 @@ msgstr ""
 "Nyhedsgruppen findes ikke. Det valgte element er sandsynligvis en "
 "forældremappe."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1681
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1685
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4501,16 +4493,16 @@ msgstr ""
 "\n"
 "nyhedsgruppen findes ikke!"
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2107
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2111
 msgid "NNTP Command failed: "
 msgstr "NNTP-kommandoen mislykkedes: "
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2212
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2216
 #, c-format
 msgid "Not connected."
 msgstr "Ingen forbindelse."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2314
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2318
 #, c-format
 msgid "No such folder: %s"
 msgstr "Der findes ingen sådan mappe: %s"
@@ -4588,7 +4580,7 @@ msgstr "_Slet efter %s dag(e)"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Hint: Use 0 days to keep messages on the server indefinitely."
-msgstr ""
+msgstr "Fif: Brug 0 dage for at beholde breve på serveren uendeligt."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:44
 msgid "Delete _expunged from local Inbox"
@@ -4620,8 +4612,8 @@ msgid ""
 "is the only option supported by many POP servers."
 msgstr ""
 "Denne indstilling lader dig koble til POP-serveren ved brug af adgangskode i "
-"klartekst. Dette er det eneste alternativ som er understøttet af mange "
-"POP-servere."
+"klartekst. Dette er det eneste alternativ som er understøttet af mange POP-"
+"servere."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:92
 msgid ""
@@ -4718,10 +4710,9 @@ msgstr ""
 "Fejl ved afsendelse af brugernavn%s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:898
-#, c-format, fuzzy
-#| msgid "No such folder %s"
+#, c-format
 msgid "No such folder “%s”."
-msgstr "Mappen %s eksisterer ikke"
+msgstr "Mappen \"%s\" findes ikke."
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:915
 #, c-format
@@ -5066,8 +5057,8 @@ msgstr "Enheder for påmindelse om fødselsdage og mærkedage"
 msgid ""
 "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
 msgstr ""
-"Enheder for en påmindelse om fødselsdag eller mærkedag: \"minutter\", "
-"\"timer\" eller \"dage\""
+"Enheder for en påmindelse om fødselsdag eller mærkedag: \"minutter\", \"timer"
+"\" eller \"dage\""
 
 # Lidt dårlig på engelsk, men er GConf...
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
@@ -5079,17 +5070,11 @@ msgid "An absolute path where the gpg (or gpg2) binary is"
 msgstr "En absolut sti til gpg- eller gpg2-programmet"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:3
-#, fuzzy
-#| msgid ""
-#| "An example is '/usr/bin/gpg'; if it is not filled, or doesn't exist, then it "
-#| "is searched for it. Change requires restart of the application."
 msgid ""
 "An example is “/usr/bin/gpg”; when it is left empty, or an incorrect value "
 "is set, then it will be searched for. Change requires restart of the "
 "application."
-msgstr ""
-"Et eksempel er \"/usr/bin/gpg\"; hvis denne ikke findes, søges der efter "
-"den. Ændring kræver genstart af programmet."
+msgstr "Et eksempel er \"/usr/bin/gpg\"; hvis denne er tom, eller der er angivet en ugyldig værdi, søges der efter den. Ændring kræver genstart af programmet."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
 msgid "Whether to load photos of signers/encrypters"
@@ -5105,8 +5090,7 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr ""
-"GIO-navn for GNetworkMonitor som bruges med en ENetworkMonitor-instans"
+msgstr "GIO-navn for GNetworkMonitor som bruges med en ENetworkMonitor-instans"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
 msgid ""
@@ -5122,24 +5106,24 @@ msgstr ""
 msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
-msgstr ""
+msgstr "En fuld sti til en mappe hvor .source-filerne med forudindstillede valg kan gemmes"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
 msgid ""
 "This directory, if filled with an existing path, is checked additionally to "
 "XDG configure directories."
-msgstr ""
+msgstr "Denne mappe, hvis udfylt med en eksisterende sti, kontrolleres ud over XDG-konfigurationsmapperne."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "A list of variables which can be part of the autoconfig .source files"
-msgstr ""
+msgstr "En liste af variable som kan være del af .source-autokonfigurationsfilerne"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:11
 msgid ""
 "Each item of the array is expected to be of the form: name=value. These "
 "variables are checked before environment variables, but after the predefined "
 "USER, REALNAME and HOST variables."
-msgstr ""
+msgstr "Hvert element i arrayet forventes at have formen navn=værdi. Disse variable tjekkes før miljøvariablene, men efter de forudindstillede variable USER, REALNAME og HOST."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5232,8 +5216,7 @@ msgstr "Fejl under låsning ved akkreditiver: "
 #: ../src/libedataserver/e-source.c:1599
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
-msgstr ""
-"Datakilden \"%s\" understøtter ikke oprettelsen af eksterne ressourcer"
+msgstr "Datakilden \"%s\" understøtter ikke oprettelsen af eksterne ressourcer"
 
 #: ../src/libebackend/e-server-side-source.c:1406
 #, c-format
@@ -5687,42 +5670,42 @@ msgstr "Forespørgsel om akkreditiver annulleret"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Datakilden \"%s\" understøtter ikke forespørgsel om akkreditiver"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:444
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:445
 #, c-format
 msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
 msgstr ""
 "Kunne ikke indhente noget adgangssymbol fra adressen \"%s\". Fejlkode %d (%s)"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:492
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:493
 msgid "Requesting access token, please wait..."
 msgstr "Forespørger om adgangssymbol; vent venligst …"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:594
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:595
 msgid "Google Address book authentication request"
 msgstr "Anmodning om godkendelse af Google-adressebog"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:597
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:598
 msgid "Google Calendar authentication request"
 msgstr "Anmodning om godkendelse af Google-kalender"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:600
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:601
 msgid "Google Memo List authentication request"
 msgstr "Anmodning om godkendelse af Google-memoliste"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:603
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:604
 msgid "Google Task List authentication request"
 msgstr "Anmodning om godkendelse af Google-opgaveliste"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:607
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:608
 msgid "Google Mail authentication request"
 msgstr "Anmodning om godkendelse af Google-mail"
 
 #. generic account prompt
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:610
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:611
 msgid "Google account authentication request"
 msgstr "Anmodning om Google-konto-godkendelse"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:621
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:622
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5731,7 +5714,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "adressebog \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:625
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:626
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5740,7 +5723,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "kalender \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:629
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:630
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5749,7 +5732,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "mailkonto \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:633
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:634
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5758,7 +5741,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "mailtransport \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:637
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:638
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5767,7 +5750,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "memoliste \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:641
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:642
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5776,7 +5759,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "opgaveliste \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:645
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:646
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
@@ -5785,7 +5768,7 @@ msgstr ""
 "Log ind med din Googlekonto og acceptér betingelserne for at kunne tilgå din "
 "konto \"%s\"."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:689
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:690
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1064
@@ -5995,10 +5978,9 @@ msgstr "Kunne ikke indhente adgangskode fra GOA: "
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:220
-#, c-format, fuzzy
-#| msgid "Code: %u - Unexpected response from server"
+#, c-format
 msgid "Code: %u — Unexpected response from server"
-msgstr "Kode: %u - Uventet svar fra serveren"
+msgstr "Kode: %u — Uventet svar fra serveren"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:241
@@ -6299,15 +6281,15 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Brugeren nægtede godkendelse"
 
 #~ msgid ""
-#~ "SSL certificate for host '%s', used by address book '%s', is not trusted. Do "
-#~ "you wish to accept it?"
+#~ "SSL certificate for host '%s', used by address book '%s', is not trusted. "
+#~ "Do you wish to accept it?"
 #~ msgstr ""
 #~ "Der er ikke tillid til SSL-certifikatet for værten \"%s\", som bruges af "
 #~ "adressebogen \"%s\". Vil du acceptere det?"
 
 #~ msgid ""
-#~ "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do you "
-#~ "wish to accept it?"
+#~ "SSL certificate for host '%s', used by calendar '%s', is not trusted. Do "
+#~ "you wish to accept it?"
 #~ msgstr ""
 #~ "Der er ikke tillid til SSL-certifikatet for værten \"%s\", som bruges af "
 #~ "kalenderen \"%s\". Vil du acceptere det?"
@@ -6492,8 +6474,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "What proxy type to use. \"0\" means system, \"1\" means no proxy, \"2\" "
 #~ "means manual proxy."
 #~ msgstr ""
-#~ "Hvilken proxy-type skal anvendes. \"0\" betyder system, \"1\" betyder ingen "
-#~ "proxy, \"2\" betyder manuel proxy."
+#~ "Hvilken proxy-type skal anvendes. \"0\" betyder system, \"1\" betyder "
+#~ "ingen proxy, \"2\" betyder manuel proxy."
 
 #~ msgid "Whether to use proxy for HTTP requests."
 #~ msgstr "Om proxy skal bruges til HTTP-anmodninger."
@@ -6754,7 +6736,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Kan ikke skrive afkoblet journal for mappen \"%s\": %s"
 
 #~ msgid "Clients cannot set backend properties"
-#~ msgstr "Klienter kan ikke indstille egenskaber for det underliggende program"
+#~ msgstr ""
+#~ "Klienter kan ikke indstille egenskaber for det underliggende program"
 
 #~ msgid "Cannot retrieve backend property: "
 #~ msgstr "Kan ikke indhente egenskab for underliggende program: "
@@ -6793,16 +6776,17 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Ugyldigt motornavn \"%s\" i kilde \"%s\""
 
 #~ msgid ""
-#~ "Failed to connect to a server using SSL. One possible reason is an invalid "
-#~ "certificate being used by the server. If this is expected, like self-signed "
-#~ "certificate being used on the server, then disable certificate validity "
-#~ "tests by selecting 'Ignore invalid SSL certificate' option in Properties"
+#~ "Failed to connect to a server using SSL. One possible reason is an "
+#~ "invalid certificate being used by the server. If this is expected, like "
+#~ "self-signed certificate being used on the server, then disable "
+#~ "certificate validity tests by selecting 'Ignore invalid SSL certificate' "
+#~ "option in Properties"
 #~ msgstr ""
-#~ "Kunne ikke tilslutte til en server ved hjælp af SSL. Det skyldes muligvis at "
-#~ "serveren bruger et ugyldigt certifikat. Bruger serveren for eksempel et "
-#~ "selvsigneret certifikat, kan det forventes, og så kan man deaktivere "
-#~ "gyldighedstest for certifikater ved at vælge \"Ignorér ugyldigt "
-#~ "SSL-certifikat\" i Egenskaber"
+#~ "Kunne ikke tilslutte til en server ved hjælp af SSL. Det skyldes muligvis "
+#~ "at serveren bruger et ugyldigt certifikat. Bruger serveren for eksempel "
+#~ "et selvsigneret certifikat, kan det forventes, og så kan man deaktivere "
+#~ "gyldighedstest for certifikater ved at vælge \"Ignorér ugyldigt SSL-"
+#~ "certifikat\" i Egenskaber"
 
 #~ msgid "Cannot create local store"
 #~ msgstr "Kan ikke oprette lokalt lager"
@@ -6908,7 +6892,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Henter sammendragsinformation for nye breve i %s"
 
 #~ msgid "Incomplete server response: no information provided for message %d"
-#~ msgstr "Ufuldstændigt svar fra server: ingen information givet for brevet %d"
+#~ msgstr ""
+#~ "Ufuldstændigt svar fra server: ingen information givet for brevet %d"
 
 #~ msgid "Incomplete server response: no UID provided for message %d"
 #~ msgstr "Ufuldstændigt svar fra server: ingen uid givet for brevet %d"
@@ -7022,7 +7007,7 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "_Remove"
 #~ msgstr "Fje_rn"
 
-#~ # Jeg synes ikke ligefrem kommentaren kaster meget lys over sagen
+# Jeg synes ikke ligefrem kommentaren kaster meget lys over sagen
 #~ msgid "E_xpand %s Inline"
 #~ msgstr "_Udfold %s"
 
@@ -7065,7 +7050,7 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Evolution Source Viewer"
 #~ msgstr "Evolutions kildeviser"
 
-#~ # Display er her et navneord - det brugernavn som vises på skærmen, jfr http://bugzilla.gnome.org/show_bug.cgi?id=521175.
+# Display er her et navneord - det brugernavn som vises på skærmen, jfr http://bugzilla.gnome.org/show_bug.cgi?id=521175.
 #~ msgid "Display Name"
 #~ msgstr "Skærmnavn"
 
@@ -7228,8 +7213,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "TLS understøttes ikke i denne udgave"
 
 #~ msgid ""
-#~ "Unable to connect to POP server %s: No support for requested authentication "
-#~ "mechanism."
+#~ "Unable to connect to POP server %s: No support for requested "
+#~ "authentication mechanism."
 #~ msgstr ""
 #~ "Kan ikke tilslutte POP-serveren %s: Ingen understøttelse for ønskede "
 #~ "godkendelsesmekanisme."
@@ -7268,7 +7253,7 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Cannot get changes: %s"
 #~ msgstr "Kan ikke indhente ændringer: %s"
 
-#~ # ved ikke om det er en annullerings-operation eller annulleringen af en operation i almindelighed.  Sandsynligvis er det underordnet
+# ved ikke om det er en annullerings-operation eller annulleringen af en operation i almindelighed.  Sandsynligvis er det underordnet
 #~ msgid "Cancel operation failed: %s"
 #~ msgstr "Annullering mislykkedes: %s"
 
@@ -7377,15 +7362,17 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "For at tilgå Novell GroupWise-servere"
 
 #~ msgid ""
-#~ "This option will connect to the GroupWise server using a plaintext password."
+#~ "This option will connect to the GroupWise server using a plaintext "
+#~ "password."
 #~ msgstr ""
-#~ "Denne indstilling koble til en GroupWise-server ved at bruge en "
-#~ "klartekst-adgangskode."
+#~ "Denne indstilling koble til en GroupWise-server ved at bruge en klartekst-"
+#~ "adgangskode."
 
 #~ msgid "Host or user not available in url"
 #~ msgstr "Vært eller bruger er ikke tilgængelig i adressen"
 
-#~ msgid "Some features may not work correctly with your current server version"
+#~ msgid ""
+#~ "Some features may not work correctly with your current server version"
 #~ msgstr ""
 #~ "Nogle funktioner vil ikke fungere korrekt med din nuværende serverversion"
 
@@ -7410,15 +7397,15 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Cannot get folder: Invalid operation on this store"
 #~ msgstr "Kan ikke finde mappe: Ugyldig operation på dette lager"
 
-#~ # Bemærk: Det er bekræftet at knappen "Send/modtag" hedder netop dette i evolution. Tak til Kenneth Nielsen
+# Bemærk: Det er bekræftet at knappen "Send/modtag" hedder netop dette i evolution. Tak til Kenneth Nielsen
 #~ msgid ""
-#~ "You have exceeded this account's storage limit. Your messages are queued in "
-#~ "your Outbox. Resend by pressing Send/Receive after deleting/archiving some "
-#~ "of your mail.\n"
+#~ "You have exceeded this account's storage limit. Your messages are queued "
+#~ "in your Outbox. Resend by pressing Send/Receive after deleting/archiving "
+#~ "some of your mail.\n"
 #~ msgstr ""
-#~ "Du har oversteget denne kontos lagergrænse. Dine meddelelser sættes i kø i "
-#~ "din udboks. Send igen ved at trykke Send/modtag efter at have "
-#~ "slettet/arkiveret noget af din post.\n"
+#~ "Du har oversteget denne kontos lagergrænse. Dine meddelelser sættes i kø "
+#~ "i din udboks. Send igen ved at trykke Send/modtag efter at have slettet/"
+#~ "arkiveret noget af din post.\n"
 
 #~ msgid "Could not send message: %s"
 #~ msgstr "Kunne ikke sende beskeden: %s"
@@ -7532,8 +7519,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid ""
 #~ "This option will connect to the Hula server using a plaintext password."
 #~ msgstr ""
-#~ "Denne indstilling vil koble til en Hula-server ved brug af en "
-#~ "klartekst-adgangskode."
+#~ "Denne indstilling vil koble til en Hula-server ved brug af en klartekst-"
+#~ "adgangskode."
 
 #~ msgid "Unexpected response status '%s' after APPEND command"
 #~ msgstr "Uventet svarstatus \"%s\" efter APPEND-kommando"
@@ -7563,11 +7550,11 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "IMAP4-serveren %s koblede uventet fra: %s"
 
 #~ msgid ""
-#~ "Enable extended Mailing-List detection required for some filter and vFolder "
-#~ "rules"
+#~ "Enable extended Mailing-List detection required for some filter and "
+#~ "vFolder rules"
 #~ msgstr ""
-#~ "Aktivér udvidet e-mail-listedetektering som er påkrævet for visse filter- og "
-#~ "vFolder-regler"
+#~ "Aktivér udvidet e-mail-listedetektering som er påkrævet for visse filter- "
+#~ "og vFolder-regler"
 
 #~ msgid "Expire cached messages that haven't been read in X seconds"
 #~ msgstr ""
@@ -7634,20 +7621,22 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "For læsning og lagring af e-mail på IMAPv4rev1-servere."
 
 #~ msgid ""
-#~ "This option will connect to the IMAPv4rev1 server using a plaintext password."
+#~ "This option will connect to the IMAPv4rev1 server using a plaintext "
+#~ "password."
 #~ msgstr ""
-#~ "Denne indstilling vil lade dig tilslutte en IMAPv4rev1-server ved at bruge "
-#~ "en klartekst-adgangskode."
+#~ "Denne indstilling vil lade dig tilslutte en IMAPv4rev1-server ved at "
+#~ "bruge en klartekst-adgangskode."
 
 #~ msgid ""
-#~ "Failed to connect to IMAP server %s in secure mode: Server does not support "
-#~ "STARTTLS"
+#~ "Failed to connect to IMAP server %s in secure mode: Server does not "
+#~ "support STARTTLS"
 #~ msgstr ""
 #~ "Kunne ikke tilslutte IMAP-serveren %s i sikker tilstand: Serveren "
 #~ "understøtter ikke STARTTLS"
 
 #~ msgid ""
-#~ "Cannot authenticate to IMAP server %s using the %s authentication mechanism"
+#~ "Cannot authenticate to IMAP server %s using the %s authentication "
+#~ "mechanism"
 #~ msgstr ""
 #~ "Godkendelse mislykkedes på IMAP-serveren %s ved brug af %s "
 #~ "godkendelsesmekanismenen"
@@ -7895,19 +7884,21 @@ msgstr "Understøt kun csv- eller vcard-format."
 
 #~ msgid ""
 #~ "Experimental IMAP 4(.1) client\n"
-#~ "This is untested and unsupported code, you want to use plain imap instead.\n"
+#~ "This is untested and unsupported code, you want to use plain imap "
+#~ "instead.\n"
 #~ "\n"
 #~ " !!! DO NOT USE THIS FOR PRODUCTION EMAIL  !!!\n"
 #~ msgstr ""
 #~ "Eksperimental IMAP 4(.1)-klient\n"
-#~ "Dette kode er ikke testet eller understøttet. Brug ordinær IMAP i stedet.\n"
+#~ "Dette kode er ikke testet eller understøttet. Brug ordinær IMAP i "
+#~ "stedet.\n"
 #~ "\n"
 #~ " !!! BRUG IKKE DENNE I PRODUKTION  !!!\n"
 
 #~ msgid "Could not connect to POP server on %s"
 #~ msgstr "Kunne ikke tilslutte POP-serveren på %s"
 
-#~ # Jeg har ikke adgang til en dansk session af outlook. Kan nogen kontrollere dette?
+# Jeg har ikke adgang til en dansk session af outlook. Kan nogen kontrollere dette?
 #~ msgid "Owner"
 #~ msgstr "Ejer"
 
@@ -8159,7 +8150,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 
 #~ msgid ""
 #~ "Unexpected server response: Identical UIDs provided for messages %d and %d"
-#~ msgstr "Uventet svar fra server: identiske uid'er givet for beskeden %d og %d"
+#~ msgstr ""
+#~ "Uventet svar fra server: identiske uid'er givet for beskeden %d og %d"
 
 #~ msgid "Could not save summary: %s: %s"
 #~ msgstr "Kunne ikke gemme sammendrag: %s: %s"
@@ -8370,8 +8362,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "more specific or raise the time limit in the directory server\n"
 #~ "preferences for this addressbook."
 #~ msgstr ""
-#~ "Udførelsestiden for denne forespørgsel overskred serverens grænse eller den "
-#~ "grænse\n"
+#~ "Udførelsestiden for denne forespørgsel overskred serverens grænse eller "
+#~ "den grænse\n"
 #~ "som du har konfigureret for denne adressbog. Gør din søgning mere\n"
 #~ "specifik eller øg resultatgrænsen i katalogserverindstillingerne\n"
 #~ "for denne adressbog."
@@ -8459,7 +8451,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "Tillykke, du er nu færdig med konfiguration af denne LDAP-server. Du er\n"
 #~ "nu klar til at tilgå dette katalog.\n"
 #~ "\n"
-#~ "Klik på knappen \"Afslut\" for at gemme de indstillinger du har angivet her."
+#~ "Klik på knappen \"Afslut\" for at gemme de indstillinger du har angivet "
+#~ "her."
 
 #~ msgid "Connecting"
 #~ msgstr "Tilslutter"
@@ -8495,8 +8488,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "these protocols."
 #~ msgstr ""
 #~ "Du skal nu angive hvordan du vil tilslutte LDAP-serveren. Protokollen SSL "
-#~ "(Secure Sockets Layer) og TLS (Transport Layer Security) anvendes af en del "
-#~ "serverer for kryptografisk at beskytte din tilslutning. Spørg din "
+#~ "(Secure Sockets Layer) og TLS (Transport Layer Security) anvendes af en "
+#~ "del serverer for kryptografisk at beskytte din tilslutning. Spørg din "
 #~ "systemadministratør om din LDAP-server anvender disse protokoller."
 
 #~ msgid "S_earch scope: "
@@ -8513,30 +8506,31 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "server if\n"
 #~ "your LDAP server supports SSL or TLS."
 #~ msgstr ""
-#~ "At vælge dette alternativ indebærer at Evolution kun vil tilslutte til din\n"
+#~ "At vælge dette alternativ indebærer at Evolution kun vil tilslutte til "
+#~ "din\n"
 #~ "LDAP-server hvis den understøtter SSL eller TLS."
 
 #~ msgid ""
-#~ "Selecting this option means that Evolution will only try to use SSL/TLS if "
-#~ "you are in a \n"
-#~ "insecure environment. For example, if you and your LDAP server are behind a "
-#~ "firewall\n"
-#~ "at work, then Evolution doesn't need to use SSL/TLS because your connection "
-#~ "is already\n"
+#~ "Selecting this option means that Evolution will only try to use SSL/TLS "
+#~ "if you are in a \n"
+#~ "insecure environment. For example, if you and your LDAP server are behind "
+#~ "a firewall\n"
+#~ "at work, then Evolution doesn't need to use SSL/TLS because your "
+#~ "connection is already\n"
 #~ "secure."
 #~ msgstr ""
 #~ "At vælge dette alternativ betyder at Evolution kun vil forsøge at bruge "
 #~ "SSL/TLS\n"
 #~ "hvis du er i et usikkert miljø. Hvis du og din LDAP-server eksempelvis er "
 #~ "bag en brandvæg\n"
-#~ "på arbejdet behøver Evolution ikke at anvende SSL/TLS eftersom forbindelsen "
-#~ "allerede er sikker."
+#~ "på arbejdet behøver Evolution ikke at anvende SSL/TLS eftersom "
+#~ "forbindelsen allerede er sikker."
 
 #~ msgid ""
-#~ "Selecting this option means that your server does not support either SSL or "
-#~ "TLS.  This \n"
-#~ "means that your connection will be insecure, and that you will be vulnerable "
-#~ "to security\n"
+#~ "Selecting this option means that your server does not support either SSL "
+#~ "or TLS.  This \n"
+#~ "means that your connection will be insecure, and that you will be "
+#~ "vulnerable to security\n"
 #~ "exploits. "
 #~ msgstr ""
 #~ "At vælge dette alternativ betyder at din server hverken understøtter SSL "
@@ -8545,19 +8539,19 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "sårbar overfor angreb."
 
 #~ msgid ""
-#~ "Selecting this option will let you change Evolution's default settings for "
-#~ "LDAP\n"
+#~ "Selecting this option will let you change Evolution's default settings "
+#~ "for LDAP\n"
 #~ "searches, and for creating and editing contacts. "
 #~ msgstr ""
 #~ "At vælge dette alternativ vil lade dig ændre Evolutions indstillinger\n"
 #~ "for LDAP-søgninger, og for at oprette og redigere kontakter."
 
 #~ msgid ""
-#~ "Specifying a display name is the last required step in configuring an LDAP "
-#~ "server."
+#~ "Specifying a display name is the last required step in configuring an "
+#~ "LDAP server."
 #~ msgstr ""
-#~ "At vælge et visningsnavn er det sidste nødvendige skridt ved konfiguration "
-#~ "af en LDAP-server."
+#~ "At vælge et visningsnavn er det sidste nødvendige skridt ved "
+#~ "konfiguration af en LDAP-server."
 
 #~ msgid "Step 1: Server Information"
 #~ msgstr "Skridt 1: Serverinformation"
@@ -8580,25 +8574,25 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid ""
 #~ "The first step in configuring an LDAP server is to provide its name, and "
 #~ "your log in\n"
-#~ "information. Please ask your system administrator if you are unsure of this "
-#~ "information."
+#~ "information. Please ask your system administrator if you are unsure of "
+#~ "this information."
 #~ msgstr ""
-#~ "Det første skridt ved konfiguration af en LDAP-server er at angive dens navn "
-#~ "og din\n"
-#~ "brugerinformation. Spørg din systemadministratør hvis du er usikker på denne "
-#~ "information."
+#~ "Det første skridt ved konfiguration af en LDAP-server er at angive dens "
+#~ "navn og din\n"
+#~ "brugerinformation. Spørg din systemadministratør hvis du er usikker på "
+#~ "denne information."
 
 #~ msgid ""
 #~ "The options on this page control how many entries should be included in "
 #~ "your\n"
-#~ "searches, and how long a search should take. Ask your system administrator "
-#~ "if you\n"
+#~ "searches, and how long a search should take. Ask your system "
+#~ "administrator if you\n"
 #~ "need to change these options."
 #~ msgstr ""
 #~ "Mulighederne på denne side styrer hvor mange poster der skal inkluderes i "
 #~ "dine søgninger,\n"
-#~ "og hvor lang tid en søgning må tage. Spørg din systemadministrator hvis du "
-#~ "skal ændre\n"
+#~ "og hvor lang tid en søgning må tage. Spørg din systemadministrator hvis "
+#~ "du skal ændre\n"
 #~ "disse."
 
 #~ msgid ""
@@ -8613,8 +8607,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "katalogtræet."
 
 #~ msgid ""
-#~ "The search scope defines how deep you would like the search to extend down "
-#~ "the \n"
+#~ "The search scope defines how deep you would like the search to extend "
+#~ "down the \n"
 #~ "directory tree. A search scope of \"sub\" will include all entries below "
 #~ "your search base.\n"
 #~ "A search scope of \"one\" will only include the entries one level beneath "
@@ -8623,19 +8617,19 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "Søgomfanget angiver hvor dybt du ønsker at søgningen skal gå ned i "
 #~ "katalogtræet.\n"
 #~ "Søgeomfanget \"sub\" vil inkludere alle poster under din søgbase.\n"
-#~ "Søgeomfanget \"one\" inkluderer alene de poster som er et niveau under din "
-#~ "søgebase.\n"
+#~ "Søgeomfanget \"one\" inkluderer alene de poster som er et niveau under "
+#~ "din søgebase.\n"
 
 #~ msgid ""
-#~ "This is the full name of your ldap server. For example, "
-#~ "\"ldap.mycompany.com\"."
+#~ "This is the full name of your ldap server. For example, \"ldap.mycompany."
+#~ "com\"."
 #~ msgstr ""
-#~ "Dette er det komplette navn på din ldap-server. For eksempel "
-#~ "\"ldap.mitfirma.dk\"."
+#~ "Dette er det komplette navn på din ldap-server. For eksempel \"ldap."
+#~ "mitfirma.dk\"."
 
 #~ msgid ""
-#~ "This is the maximum number of entries to download. Setting this number to be "
-#~ "\n"
+#~ "This is the maximum number of entries to download. Setting this number to "
+#~ "be \n"
 #~ "too large will slow down your addressbook."
 #~ msgstr ""
 #~ "Dette er det største antal poster der skal hentes. Sættes dette tal for "
@@ -8647,27 +8641,28 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "setting this to \"Email Address\" requires anonymous access to your ldap "
 #~ "server."
 #~ msgstr ""
-#~ "Dette er den metode som evolution vil anvende til at godkende dig. Bemærk at "
-#~ "at sætte dette til \"E-mailadresse\" kræver anonym adgang til din "
-#~ "ldap-server."
+#~ "Dette er den metode som evolution vil anvende til at godkende dig. Bemærk "
+#~ "at at sætte dette til \"E-mailadresse\" kræver anonym adgang til din ldap-"
+#~ "server."
 
 #~ msgid ""
-#~ "This is the name for this server that will appear in your Evolution folder "
-#~ "list.\n"
+#~ "This is the name for this server that will appear in your Evolution "
+#~ "folder list.\n"
 #~ "It is for display purposes only. "
 #~ msgstr ""
 #~ "Dette er navnet på denne server, som vises i din Evolution-mappliste.\n"
 #~ "Det anvends kun i forbindelse med visning."
 
 #~ msgid ""
-#~ "This is the port on the LDAP server that Evolution will try to connect to. A "
-#~ "\n"
+#~ "This is the port on the LDAP server that Evolution will try to connect "
+#~ "to. A \n"
 #~ "list of standard ports has been provided. Ask your system administrator\n"
 #~ "what port you should specify."
 #~ msgstr ""
-#~ "Dette er den port på LDAP-servern som Evolution vil forsøge at tilslutte.\n"
-#~ "En liste med standard er givet. Spørg din systemadministrator hvilken port "
-#~ "du skal bruge."
+#~ "Dette er den port på LDAP-servern som Evolution vil forsøge at "
+#~ "tilslutte.\n"
+#~ "En liste med standard er givet. Spørg din systemadministrator hvilken "
+#~ "port du skal bruge."
 
 #~ msgid "This option controls how long a search will be run."
 #~ msgstr "Denne indstilling styrer hvor lang tid en søgning må køre."
@@ -9243,9 +9238,9 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Nepal"
 #~ msgstr "Nepal"
 
-#~ # Holland udgør kun 2 af Nederland(ene)s 12 provinser.
-#~ # og der skelnes mellem Holland og Nederland på sproget.
-#~ # Off. danske navn iflg. udenrigsministeriet er Nederlandene.
+# Holland udgør kun 2 af Nederland(ene)s 12 provinser.
+# og der skelnes mellem Holland og Nederland på sproget.
+# Off. danske navn iflg. udenrigsministeriet er Nederlandene.
 #~ msgid "Netherlands"
 #~ msgstr "Nederlandene (\"Holland\")"
 
@@ -9569,7 +9564,7 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Dr."
 #~ msgstr "Dr."
 
-#~ # Som betyder?
+# Som betyder?
 #~ msgid "Esq."
 #~ msgstr "Esq."
 
@@ -9906,7 +9901,7 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Could not read pilot's ToDo application block"
 #~ msgstr "Kunne ikke læse pilotens programblok for opgaveliste"
 
-#~ # Konteksten er planlægning af opgaver. Dette er tidspunktet for begyndelsen
+# Konteksten er planlægning af opgaver. Dette er tidspunktet for begyndelsen
 #~ msgid "Starting:"
 #~ msgstr "Begynder:"
 
@@ -10276,8 +10271,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "før hvert møde"
 
 #~ msgid ""
-#~ "The event being deleted is a meeting, would you like to send a cancellation "
-#~ "notice?"
+#~ "The event being deleted is a meeting, would you like to send a "
+#~ "cancellation notice?"
 #~ msgstr "Hændelsen som fjernes er et møde. Vil du sende en aflysningsbesked?"
 
 #~ msgid "Are you sure you want to cancel and delete this meeting?"
@@ -10310,10 +10305,11 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "This journal entry has been deleted."
 #~ msgstr "Denne journalopføring er slettet."
 
-#~ msgid "%s  You have made changes. Forget those changes and close the editor?"
+#~ msgid ""
+#~ "%s  You have made changes. Forget those changes and close the editor?"
 #~ msgstr ""
-#~ "%s  Du har lavet ændringer. Skal disse ændringer forkastes og redigeringen "
-#~ "lukkes?"
+#~ "%s  Du har lavet ændringer. Skal disse ændringer forkastes og "
+#~ "redigeringen lukkes?"
 
 #~ msgid "%s  You have made no changes, close the editor?"
 #~ msgstr "%s  Du har ikke lavet ændringer. Skal redigeringen lukkes?"
@@ -10327,10 +10323,11 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "This journal entry has been changed."
 #~ msgstr "Denne journalopføring er ændret."
 
-#~ msgid "%s  You have made changes. Forget those changes and update the editor?"
+#~ msgid ""
+#~ "%s  You have made changes. Forget those changes and update the editor?"
 #~ msgstr ""
-#~ "%s  Du har lavet ændringer. Skal disse ændringer forkastes og redigeringen "
-#~ "opdateres?"
+#~ "%s  Du har lavet ændringer. Skal disse ændringer forkastes og "
+#~ "redigeringen opdateres?"
 
 #~ msgid "%s  You have made no changes, update the editor?"
 #~ msgstr "%s  Du har ikke gjort ændringer. Opdater redigering?"
@@ -10420,7 +10417,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Begivenheden kunne ikke fjernes da du ikke har rettigheder hertil"
 
 #~ msgid "The journal entry could not be deleted because permission was denied"
-#~ msgstr "Journalindgangen kunne ikke fjernes da du ikke har rettigheder hertil"
+#~ msgstr ""
+#~ "Journalindgangen kunne ikke fjernes da du ikke har rettigheder hertil"
 
 #~ msgid "The item could not be deleted because permission was denied"
 #~ msgstr "Punktet kunne ikke fjernes da du ikke har rettigheder hertil"
@@ -10976,8 +10974,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "en ukendt afsender"
 
 #~ msgid ""
-#~ "<br> Please review the following information, and then select an action from "
-#~ "the menu below."
+#~ "<br> Please review the following information, and then select an action "
+#~ "from the menu below."
 #~ msgstr ""
 #~ "<br>Kontrollér venligst følgende information og vælg så en handling fra "
 #~ "menuen nedenfor."
@@ -11157,7 +11155,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 
 #~ msgid "This response is not from a current attendee.  Add as an attendee?"
 #~ msgstr ""
-#~ "Dette svar er ikke fra en nuværende mødesdeltager. Tilføj som mødesdeltager?"
+#~ "Dette svar er ikke fra en nuværende mødesdeltager. Tilføj som "
+#~ "mødesdeltager?"
 
 #~ msgid "Attendee status could not be updated because of an invalid status!\n"
 #~ msgstr "Deltagerstatus kunne ikke opdateres pga. ugyldig status!\n"
@@ -11539,13 +11538,14 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "URIen til opgavemappen, der skal vises"
 
 #~ msgid ""
-#~ "This operation will permanently erase all tasks marked as completed. If you "
-#~ "continue, you will not be able to recover these tasks.\n"
+#~ "This operation will permanently erase all tasks marked as completed. If "
+#~ "you continue, you will not be able to recover these tasks.\n"
 #~ "\n"
 #~ "Really erase these tasks?"
 #~ msgstr ""
-#~ "Denne handling vil permanent fjerne alle opgaver markeret som udførte Hvis "
-#~ "du fortsætter vil du ikke længere kunne tilvejebringe disse opgaver.\n"
+#~ "Denne handling vil permanent fjerne alle opgaver markeret som udførte "
+#~ "Hvis du fortsætter vil du ikke længere kunne tilvejebringe disse "
+#~ "opgaver.\n"
 #~ "\n"
 #~ "Vil du virkelig fjerne disse opgaver?"
 
@@ -12760,7 +12760,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "SSL/TLS-udvidelsen understøttes ikke."
 
 #~ msgid ""
-#~ "The folder name \"%s\" is invalid because it containes the character \"%c\""
+#~ "The folder name \"%s\" is invalid because it containes the character \"%c"
+#~ "\""
 #~ msgstr "Mappnavnet \"%s\" er ugyldigt eftersom det indeholder tegnet \"%c\""
 
 #~ msgid "`%s' is not a maildir directory."
@@ -12831,7 +12832,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Fejl i DATA-svar"
 
 #~ msgid "DATA send timed out: message termination: %s: mail not sent"
-#~ msgstr "Tidsafbrud for DATA-send: beskedsterminering: %s: besked ikke sendt."
+#~ msgstr ""
+#~ "Tidsafbrud for DATA-send: beskedsterminering: %s: besked ikke sendt."
 
 #~ msgid "DATA termination response error"
 #~ msgstr "Fejl i DATA-termineringssvar"
@@ -12906,8 +12908,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Bcc:"
 
 #~ msgid ""
-#~ "Enter the addresses that will receive a carbon copy of the message without "
-#~ "appearing in the recipient list of the message."
+#~ "Enter the addresses that will receive a carbon copy of the message "
+#~ "without appearing in the recipient list of the message."
 #~ msgstr ""
 #~ "Indtast adresserne som skal modtage en kopi af beskeden uden at komme til "
 #~ "syne i modtagerlisten for beskeden."
@@ -13017,8 +13019,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "<b>(The composer contains a non-text message body, which cannot be "
 #~ "edited.)<b>"
 #~ msgstr ""
-#~ "<b>(Redigeringsværktøjet indeholder en besked som ikke er text og som ikke "
-#~ "kan redigeres.)<b>"
+#~ "<b>(Redigeringsværktøjet indeholder en besked som ikke er text og som "
+#~ "ikke kan redigeres.)<b>"
 
 #~ msgid "The Evolution groupware suite"
 #~ msgstr "Gruppevaresuiten Evolution"
@@ -13087,14 +13089,15 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "<b>Sender e-mail:</b>"
 
 #~ msgid ""
-#~ "<small>This page allows you to choose if you want to be notified via a read "
-#~ "receipt when a message you\n"
-#~ "sent is read, and to specify what Evolution should do when someone requests "
-#~ "a receipt from you.</small>"
+#~ "<small>This page allows you to choose if you want to be notified via a "
+#~ "read receipt when a message you\n"
+#~ "sent is read, and to specify what Evolution should do when someone "
+#~ "requests a receipt from you.</small>"
 #~ msgstr ""
-#~ "<small>Denne side lader dig vælge om du ønsker at blive underrettet med en "
-#~ "læsningskvittering, når en besked som du har sendt bliver læst, og at angive "
-#~ "hvad Evolution bør gøre når nogen anmoder om en kvittering fra dig.</small>"
+#~ "<small>Denne side lader dig vælge om du ønsker at blive underrettet med "
+#~ "en læsningskvittering, når en besked som du har sendt bliver læst, og at "
+#~ "angive hvad Evolution bør gøre når nogen anmoder om en kvittering fra dig."
+#~ "</small>"
 
 #~ msgid "Always send back a read reciept"
 #~ msgstr "Send altid en læsningskvittering tilbage"
@@ -13111,13 +13114,14 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Request a read receipt for all messages I send"
 #~ msgstr "Anmod om en læsningskvittering for alle beskeder jeg sender"
 
-#~ msgid "Unless the message is sent to a mailing list, and not to me personally"
+#~ msgid ""
+#~ "Unless the message is sent to a mailing list, and not to me personally"
 #~ msgstr ""
 #~ "med mindre beskeden sendes til en posyliste, og ikke til mig personligt"
 
 #~ msgid ""
-#~ "When you receive an email with a read receipt request, what should Evolution "
-#~ "do?"
+#~ "When you receive an email with a read receipt request, what should "
+#~ "Evolution do?"
 #~ msgstr ""
 #~ "Når du modtager en e-mail med anmodning om læsningskvittering, hvad bør "
 #~ "Evolution gøre?"
@@ -13570,8 +13574,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "Send alligevel?"
 
 #~ msgid ""
-#~ "Since the contact list you are sending to is configured to hide the list's "
-#~ "addresses, this message will contain only Bcc recipients."
+#~ "Since the contact list you are sending to is configured to hide the "
+#~ "list's addresses, this message will contain only Bcc recipients."
 #~ msgstr ""
 #~ "Siden kontaktlisten du sender til er konfigureret til at skjule listens "
 #~ "adresser vil denne besked kun indeholde Bcc-modtagere."
@@ -13580,8 +13584,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Denne besked indeholder kun Bcc-modtagere."
 
 #~ msgid ""
-#~ "It is possible that the mail server may reveal the recipients by adding an "
-#~ "Apparently-To header.\n"
+#~ "It is possible that the mail server may reveal the recipients by adding "
+#~ "an Apparently-To header.\n"
 #~ "Send anyway?"
 #~ msgstr ""
 #~ "Det er muligt at e-mail-serveren kan vise modtagerne ved at tilføje en "
@@ -13689,7 +13693,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Udskriv besked"
 
 #~ msgid ""
-#~ "This message is digitally signed. Click the lock icon for more information."
+#~ "This message is digitally signed. Click the lock icon for more "
+#~ "information."
 #~ msgstr ""
 #~ "Denne besked er digitalt signeret. For flere informationer, klik på "
 #~ "låsikonen."
@@ -13796,12 +13801,14 @@ msgstr "Understøt kun csv- eller vcard-format."
 
 #~ msgid ""
 #~ "This operation will permanently erase all messages marked as\n"
-#~ "deleted. If you continue, you will not be able to recover these messages.\n"
+#~ "deleted. If you continue, you will not be able to recover these "
+#~ "messages.\n"
 #~ "\n"
 #~ "Really erase these messages?"
 #~ msgstr ""
 #~ "Denne handling vil permanent fjerne de meddelelser der er\n"
-#~ "markeret som slettede. Hvis du fortsætter kan du ikke længere tilvejebringe\n"
+#~ "markeret som slettede. Hvis du fortsætter kan du ikke længere "
+#~ "tilvejebringe\n"
 #~ "disse meddelelser.\n"
 #~ "\n"
 #~ "Vil du virkelig fjerne disse meddelelser?"
@@ -13812,8 +13819,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid ""
 #~ "Configure mail preferences, including security and message display, here"
 #~ msgstr ""
-#~ "Konfigurér e-mail-indstillinger, inklusive sikkerhed og meddelelsesvisning, "
-#~ "hér"
+#~ "Konfigurér e-mail-indstillinger, inklusive sikkerhed og "
+#~ "meddelelsesvisning, hér"
 
 #~ msgid "Configure spell-checking, signatures, and the message composer here"
 #~ msgstr "Konfigurér stavekontrol, signaturer, og meddelelseredigeringen hér"
@@ -14054,8 +14061,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Denne mappe kan ikke indeholde beskeder."
 
 #~ msgid ""
-#~ "Some of your mail settings seem corrupt, please check that everything is in "
-#~ "order."
+#~ "Some of your mail settings seem corrupt, please check that everything is "
+#~ "in order."
 #~ msgstr ""
 #~ "Nogen af dine indstillinger for e-mail ser ud til at være beskadiget. "
 #~ "Venligst tjek at alt er i orden."
@@ -14100,8 +14107,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Modtager post"
 
 #~ msgid ""
-#~ "Please enter information about your incoming mail server below. If you are "
-#~ "not sure, ask your system administrator or Internet Service Provider."
+#~ "Please enter information about your incoming mail server below. If you "
+#~ "are not sure, ask your system administrator or Internet Service Provider."
 #~ msgstr ""
 #~ "Angiv information om din server for indkommende e-mail nedenfor. Hvis du "
 #~ "ikke er sikker bør du spørge din systemadministrator eller "
@@ -14117,18 +14124,18 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "Please enter information about the way you will send mail. If you are not "
 #~ "sure, ask your system administrator or Internet Service Provider."
 #~ msgstr ""
-#~ "Angiv information om hvordan du vil sende e-mail. Hvis du ikke er sikker bør "
-#~ "du spørge din systemadministrator eller Internetleverandør."
+#~ "Angiv information om hvordan du vil sende e-mail. Hvis du ikke er sikker "
+#~ "bør du spørge din systemadministrator eller Internetleverandør."
 
 #~ msgid "Account Management"
 #~ msgstr "Håndtering af konti"
 
 #~ msgid ""
 #~ "You are almost done with the mail configuration process. The identity, "
-#~ "incoming mail server and outgoing mail transport method which you provided "
-#~ "will be grouped together to make an Evolution mail account. Please enter a "
-#~ "name for this account in the space below. This name will be used for display "
-#~ "purposes only."
+#~ "incoming mail server and outgoing mail transport method which you "
+#~ "provided will be grouped together to make an Evolution mail account. "
+#~ "Please enter a name for this account in the space below. This name will "
+#~ "be used for display purposes only."
 #~ msgstr ""
 #~ "Du er næsten færdig med din e-mail-konfiguration. Identiteten, den "
 #~ "inkommende e-mail-server og transportmetoden for udgående e-mail som du "
@@ -14319,7 +14326,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "Note: you will not be prompted for a password until you connect for the "
 #~ "first time"
 #~ msgstr ""
-#~ "Bemærk: du bliver ikke spurgt om adgangskoden før du tilslutter første gange"
+#~ "Bemærk: du bliver ikke spurgt om adgangskoden før du tilslutter første "
+#~ "gange"
 
 #~ msgid "Optional Information"
 #~ msgstr "Yderligere information"
@@ -14424,12 +14432,13 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ "anvendas for visning."
 
 #~ msgid ""
-#~ "This page allows you to configure spell checking behavior and language. The "
-#~ "list of languages here reflects only the languages for which you have a "
-#~ "dictionary installed."
+#~ "This page allows you to configure spell checking behavior and language. "
+#~ "The list of languages here reflects only the languages for which you have "
+#~ "a dictionary installed."
 #~ msgstr ""
-#~ "Denne side lader dig konfigurere opførsel af stavekontrol og sprog. Listen "
-#~ "med sprog her viser kun de sprog for hvilke en ordbog er installeret."
+#~ "Denne side lader dig konfigurere opførsel af stavekontrol og sprog. "
+#~ "Listen med sprog her viser kun de sprog for hvilke en ordbog er "
+#~ "installeret."
 
 #~ msgid ""
 #~ "Type the name by which you would like to refer to this account.\n"
@@ -14906,14 +14915,14 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Vælg type importerer som skal køres:"
 
 #~ msgid ""
-#~ "Choose the file that you want to import into Evolution, and select what type "
-#~ "of file it is from the list.\n"
+#~ "Choose the file that you want to import into Evolution, and select what "
+#~ "type of file it is from the list.\n"
 #~ "\n"
-#~ "You can select \"Automatic\" if you do not know, and Evolution will attempt "
-#~ "to work it out."
+#~ "You can select \"Automatic\" if you do not know, and Evolution will "
+#~ "attempt to work it out."
 #~ msgstr ""
-#~ "Vælg filen du ønsker at importere til Evolution og vælg hvilken type fil det "
-#~ "er fra listen.\n"
+#~ "Vælg filen du ønsker at importere til Evolution og vælg hvilken type fil "
+#~ "det er fra listen.\n"
 #~ "\n"
 #~ "Du kan vælge \"Automatisk\" hvis du ikke véd, så vil Evolution prøve at "
 #~ "finde ud af hvilken type det er for dig."
@@ -15040,7 +15049,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 
 #~ msgid "The GNOME Pilot tools do not appear to be installed on this system."
 #~ msgstr ""
-#~ "GNOME pilotværktøjerne ser ikke ud til at være installeret på dette system."
+#~ "GNOME pilotværktøjerne ser ikke ud til at være installeret på dette "
+#~ "system."
 
 #~ msgid "Error executing %s."
 #~ msgstr "Fejl under kørsel af %s."
@@ -15085,17 +15095,21 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "(Ingen)"
 
 #~ msgid ""
-#~ "Ximian Evolution is currently online.  Click on this button to work offline."
+#~ "Ximian Evolution is currently online.  Click on this button to work "
+#~ "offline."
 #~ msgstr ""
-#~ "Ximian Evolution er koblet til. Klik på denne knap for at arbejde frakoblet."
+#~ "Ximian Evolution er koblet til. Klik på denne knap for at arbejde "
+#~ "frakoblet."
 
 #~ msgid "Ximian Evolution is in the process of going offline."
 #~ msgstr "Ximian Evolution er i færd med at koble fra."
 
 #~ msgid ""
-#~ "Ximian Evolution is currently offline.  Click on this button to work online."
+#~ "Ximian Evolution is currently offline.  Click on this button to work "
+#~ "online."
 #~ msgstr ""
-#~ "Ximian Evolution er frakoblet. Klik på denne knap for at arbejde tilkoblet."
+#~ "Ximian Evolution er frakoblet. Klik på denne knap for at arbejde "
+#~ "tilkoblet."
 
 #~ msgid "Invalid arguments"
 #~ msgstr "Ugyldige argumenter"
@@ -16658,8 +16672,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "%d cards"
 #~ msgstr "%d kort"
 
-#~ # Skal vi tilføje tyske og svenske ö, ä og ü, da de bruges i danske navne?
-#~ #
+# Skal vi tilføje tyske og svenske ö, ä og ü, da de bruges i danske navne?
+#
 #~ msgid ",123,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z"
 #~ msgstr ",123,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,æ,ø,å"
 
@@ -16676,10 +16690,11 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Fejl under kommunikation med kalenderserveren"
 
 #~ msgid ""
-#~ "Could not create the calendar view.  Please check your ORBit and OAF setup."
+#~ "Could not create the calendar view.  Please check your ORBit and OAF "
+#~ "setup."
 #~ msgstr ""
-#~ "Kunne ikke oprette kalendervisning. Kontrollér venligs din konfiguration af "
-#~ "ORBit og OAF."
+#~ "Kunne ikke oprette kalendervisning. Kontrollér venligs din konfiguration "
+#~ "af ORBit og OAF."
 
 #~ msgid "Folder containing appointments and events"
 #~ msgstr "Mappe som indeholder aftaler og hændelser"
@@ -24965,7 +24980,7 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgid "Freezing haze"
 #~ msgstr "Frysende dis"
 
-#~ # Spray betyder støvregn men her bruges det om regn
+# Spray betyder støvregn men her bruges det om regn
 #~ msgid "Spray"
 #~ msgstr "Støvregn"
 
@@ -25360,7 +25375,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Spørgsmål"
 
 #~ msgid ""
-#~ "ping_timeout_callback: could not determine if the CORBA object is nil or not"
+#~ "ping_timeout_callback: could not determine if the CORBA object is nil or "
+#~ "not"
 #~ msgstr ""
 #~ "ping_timeout_callback: kunne ikke afgøra om CORBA-objektet er nil eller ej"
 
@@ -25519,8 +25535,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "_Genskab standardalternativ"
 
 #~ msgid ""
-#~ "To add an attribute to the DN, select it from the list and click the \"Add "
-#~ "Attribute\" button.\n"
+#~ "To add an attribute to the DN, select it from the list and click the "
+#~ "\"Add Attribute\" button.\n"
 #~ "Any values that you add to the DN will become required values for any new "
 #~ "contacts\n"
 #~ "that you add to the directory on the LDAP server. "
@@ -25625,8 +25641,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Alarm-tjeneste"
 
 #~ msgid ""
-#~ "Evolution does not yet support email notification for reminders.  You will "
-#~ "not be able to edit the options for this reminder."
+#~ "Evolution does not yet support email notification for reminders.  You "
+#~ "will not be able to edit the options for this reminder."
 #~ msgstr ""
 #~ "Evolution understøtter endnu ikke e-mailnotificering for påmindelser. Det "
 #~ "vil ikke være muligt at redigere mulighederne for denne påmindelse."
@@ -25696,7 +25712,8 @@ msgstr "Understøt kun csv- eller vcard-format."
 #~ msgstr "Evolution komponent for håndtering af e-mail."
 
 #~ msgid "Factory for the controls exported by the Evolution Mailer"
-#~ msgstr "Fabrik for kontrollerne som eksporteres af Evolution-epostkomponenten"
+#~ msgstr ""
+#~ "Fabrik for kontrollerne som eksporteres af Evolution-epostkomponenten"
 
 #~ msgid "Cannot initialize the Evolution mail component."
 #~ msgstr "Kan ikke initialisere Evolutions e-mailkomponent."
@@ -25850,4 +25867,3 @@ msgstr "Understøt kun csv- eller vcard-format."
 
 #~ msgid "Bug buddy was not found in your $PATH."
 #~ msgstr "Bug buddy blev ikke fundet i din $PATH."
-
