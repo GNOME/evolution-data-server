@@ -352,7 +352,7 @@ struct _ECacheClass {
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* remove_all_locked)	(ECache *cache,
-						 const GSList *uids,
+						 const GSList *uids, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* clear_offline_changes_locked)
@@ -425,14 +425,14 @@ guint		e_cache_get_count		(ECache *cache,
 						 GError **error);
 gboolean	e_cache_get_uids		(ECache *cache,
 						 ECacheDeletedFlag deleted_flag,
-						 GSList **out_uids,
-						 GSList **out_revisions,
+						 GSList **out_uids, /* gchar * */
+						 GSList **out_revisions, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_get_objects		(ECache *cache,
 						 ECacheDeletedFlag deleted_flag,
-						 GSList **out_objects,
-						 GSList **out_revisions,
+						 GSList **out_objects, /* gchar * */
+						 GSList **out_revisions, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cache_foreach			(ECache *cache,

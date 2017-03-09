@@ -68,6 +68,13 @@ enum {
 	PROP_CACHE
 };
 
+enum {
+	REFRESH_COMPLETED,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_ABSTRACT_TYPE (ECalMetaBackend, e_cal_meta_backend, E_TYPE_CAL_BACKEND_SYNC)
 
 G_DEFINE_BOXED_TYPE (ECalMetaBackendInfo, e_cal_meta_backend_info, e_cal_meta_backend_info_copy, e_cal_meta_backend_info_free)
@@ -384,6 +391,17 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 			continue;
 		}
 
+		/* Skit detached instances, if the master object is still in the cache */
+		if (id->rid && *id->rid) {
+			ECalComponentId master_id;
+
+			master_id.uid = id->uid;
+			master_id.rid = NULL;
+
+			if (!g_hash_table_contains (locally_cached, &master_id))
+				continue;
+		}
+
 		nfo = e_cal_meta_backend_info_new (id->uid, id->rid, revision);
 		*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
 	}
@@ -527,20 +545,19 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
-		return;
+		goto done;
 
 	meta_backend = E_CAL_META_BACKEND (cal_backend);
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
 	    !ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
 		/* Ignore connection errors here */
-		return;
+		goto done;
 	}
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		return;
-	}
+	if (!cal_cache)
+		goto done;
 
 	success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_KEEP_LOCAL, cancellable, error);
 
@@ -629,6 +646,16 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 	}
 
 	g_object_unref (cal_cache);
+
+ done:
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	if (meta_backend->priv->refresh_cancellable == cancellable)
+		g_clear_object (&meta_backend->priv->refresh_cancellable);
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	g_signal_emit (cal_backend, signals[REFRESH_COMPLETED], 0, NULL);
 }
 
 static void
@@ -1214,7 +1241,7 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 	ECalMetaBackend *meta_backend;
 	ECalCache *cal_cache;
 	GSList *link, *components = NULL;
-	gchar *cal_email_address;
+	gchar *cal_email_address, *mailto;
 	icalcomponent *vfreebusy, *icalcomp;
 	icalproperty *prop;
 	icaltimezone *utc_zone;
@@ -1247,15 +1274,19 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
-	if (!e_cal_cache_get_components_in_range (cal_cache, start, end, &components, cancellable, error)) {
+	if (!cal_cache || !e_cal_cache_get_components_in_range (cal_cache, start, end, &components, cancellable, error)) {
 		g_clear_object (&cal_cache);
 		g_free (cal_email_address);
 		return;
 	}
 
 	vfreebusy = icalcomponent_new_vfreebusy ();
-	prop = icalproperty_new_organizer (cal_email_address);
-	if (prop != NULL)
+
+	mailto = g_strconcat ("mailto:", cal_email_address, NULL);
+	prop = icalproperty_new_organizer (mailto);
+	g_free (mailto);
+
+	if (prop)
 		icalcomponent_add_property (vfreebusy, prop);
 
 	utc_zone = icaltimezone_get_utc_timezone ();
@@ -1297,6 +1328,7 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 
 	g_slist_free_full (components, g_object_unref);
 	icalcomponent_free (vfreebusy);
+	g_object_unref (cal_cache);
 	g_free (cal_email_address);
 }
 
@@ -1505,6 +1537,15 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	if (e_cal_component_is_instance (comp)) {
 		/* Set detached instance as the old object */
 		existing_comp = ecmb_find_in_instances (instances, id->uid, id->rid);
+
+		if (!existing_comp && mod == E_CAL_OBJ_MOD_ONLY_THIS) {
+			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
+
+			g_slist_free_full (instances, g_object_unref);
+			e_cal_component_free_id (id);
+
+			return FALSE;
+		}
 	}
 
 	if (!existing_comp)
@@ -2317,6 +2358,25 @@ ecmb_get_attachment_uris_sync (ECalBackendSync *sync_backend,
 }
 
 static void
+ecmb_discard_alarm_sync (ECalBackendSync *sync_backend,
+			 EDataCal *cal,
+			 GCancellable *cancellable,
+			 const gchar *uid,
+			 const gchar *rid,
+			 const gchar *auid,
+			 GError **error)
+{
+	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
+	g_return_if_fail (uid != NULL);
+
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return;
+
+	g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED,
+		e_client_error_to_string (E_CLIENT_ERROR_NOT_SUPPORTED));
+}
+
+static void
 ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 			EDataCal *cal,
 			GCancellable *cancellable,
@@ -2360,7 +2420,8 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 
 	*tzobject = timezone_str;
 
-	g_propagate_error (error, local_error);
+	if (local_error)
+		g_propagate_error (error, local_error);
 }
 
 static void
@@ -2799,6 +2860,7 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	cal_backend_sync_class->receive_objects_sync = ecmb_receive_objects_sync;
 	cal_backend_sync_class->send_objects_sync = ecmb_send_objects_sync;
 	cal_backend_sync_class->get_attachment_uris_sync = ecmb_get_attachment_uris_sync;
+	cal_backend_sync_class->discard_alarm_sync = ecmb_discard_alarm_sync;
 	cal_backend_sync_class->get_timezone_sync = ecmb_get_timezone_sync;
 	cal_backend_sync_class->add_timezone_sync = ecmb_add_timezone_sync;
 
@@ -2832,6 +2894,16 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 			E_TYPE_CAL_CACHE,
 			G_PARAM_READWRITE |
 			G_PARAM_STATIC_STRINGS));
+
+	/* This signal is meant for testing purposes mainly */
+	signals[REFRESH_COMPLETED] = g_signal_new (
+		"refresh-completed",
+		G_OBJECT_CLASS_TYPE (klass),
+		G_SIGNAL_RUN_LAST,
+		0,
+		NULL, NULL,
+		NULL,
+		G_TYPE_NONE, 0, G_TYPE_NONE);
 }
 
 static void
@@ -2861,7 +2933,10 @@ e_cal_meta_backend_get_capabilities (ECalMetaBackend *meta_backend)
 {
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
 
-	return CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED;
+	return CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED ","
+		CAL_STATIC_CAPABILITY_BULK_ADDS ","
+		CAL_STATIC_CAPABILITY_BULK_MODIFIES ","
+		CAL_STATIC_CAPABILITY_BULK_REMOVES;
 }
 
 /**
