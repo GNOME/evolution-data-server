@@ -101,7 +101,6 @@ attributetype ( 1.3.6.1.4.1.8506.1.2.14
 	EQUALITY caseIgnoreMatch
 	SUBSTR caseIgnoreSubstringsMatch
 	SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{4096} )
-	)
 
 attributetype ( 1.3.6.1.4.1.8506.1.2.15
 	NAME 'fileAs'
