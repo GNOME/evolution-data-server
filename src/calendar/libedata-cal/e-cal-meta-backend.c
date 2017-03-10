@@ -70,6 +70,7 @@ enum {
 
 enum {
 	REFRESH_COMPLETED,
+	SOURCE_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -655,7 +656,7 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
-	g_signal_emit (cal_backend, signals[REFRESH_COMPLETED], 0, NULL);
+	g_signal_emit (meta_backend, signals[REFRESH_COMPLETED], 0, NULL);
 }
 
 static void
@@ -699,6 +700,8 @@ ecmb_source_changed_thread_func (ECalBackend *cal_backend,
 		}
 	}
 	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	g_signal_emit (meta_backend, signals[SOURCE_CHANGED], 0, NULL);
 
 	if (e_backend_get_online (E_BACKEND (meta_backend)) &&
 	    e_cal_meta_backend_disconnect_sync (meta_backend, cancellable, error)) {
@@ -2901,8 +2904,25 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 		G_OBJECT_CLASS_TYPE (klass),
 		G_SIGNAL_RUN_LAST,
 		0,
-		NULL, NULL,
-		NULL,
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 0, G_TYPE_NONE);
+
+	/**
+	 * ECalMetaBackend::source-changed
+	 *
+	 * This signal is emitted whenever the underlying backend #ESource
+	 * changes. Unlike the #ESource's 'changed' signal this one is
+	 * tight to the #ECalMetaBackend itself and is emitted from
+	 * a dedicated thread, thus it doesn't block the main thread.
+	 *
+	 * Since: 3.26
+	 **/
+	signals[SOURCE_CHANGED] = g_signal_new (
+		"source-changed",
+		G_OBJECT_CLASS_TYPE (klass),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ECalMetaBackendClass, source_changed),
+		NULL, NULL, NULL,
 		G_TYPE_NONE, 0, G_TYPE_NONE);
 }
 
@@ -3554,71 +3574,6 @@ e_cal_meta_backend_list_existing_sync (ECalMetaBackend *meta_backend,
 }
 
 /**
- * e_cal_meta_backend_save_component_sync:
- * @meta_backend: an #ECalMetaBackend
- * @overwrite_existing: %TRUE when can overwrite existing components, %FALSE otherwise
- * @conflict_resolution: one of #EConflictResolution, what to do on conflicts
- * @instances: (element-type ECalComponent): instances of the component to save
- * @extra: (nullable): extra data saved with the components in an #ECalCache
- * @out_new_uid: (out) (transfer full): return location for the UID of the saved component
- * @cancellable: optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Saves one component into the remote side. The @instances contain the master
- * object and all the detached instances of the same component (all have the same UID).
- * When the @overwrite_existing is %TRUE, then the descendant can overwrite an object
- * with the same UID on the remote side (usually used for modify). The @conflict_resolution
- * defines what to do when the remote side had made any changes to the object since
- * the last update.
- *
- * The descendant can use e_cal_meta_backend_merge_instances() to merge
- * the instances into one VCALENDAR component, which will contain also
- * used time zones.
- *
- * The components in @instances have already converted locally stored attachments
- * into inline attachments, thus it's not needed to call
- * e_cal_meta_backend_inline_local_attachments_sync() by the descendant.
- *
- * The @out_new_uid can be populated with a UID of the saved component as the server
- * assigned it to it. This UID, if set, is loaded from the remote side afterwards,
- * also to see whether any changes had been made to the component by the remote side.
- *
- * The descendant can use an #E_CLIENT_ERROR_OUT_OF_SYNC error to indicate that
- * the save failed due to made changes on the remote side, and let the @meta_backend
- * to resolve this conflict based on the @conflict_resolution on its own.
- * The #E_CLIENT_ERROR_OUT_OF_SYNC error should not be used when the descendant
- * is able to resolve the conflicts itself.
- *
- * It is mandatory to implement this virtual method by the descendant.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_cal_meta_backend_save_component_sync (ECalMetaBackend *meta_backend,
-					gboolean overwrite_existing,
-					EConflictResolution conflict_resolution,
-					const GSList *instances,
-					const gchar *extra,
-					gchar **out_new_uid,
-					GCancellable *cancellable,
-					GError **error)
-{
-	ECalMetaBackendClass *klass;
-
-	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
-	g_return_val_if_fail (instances != NULL, FALSE);
-	g_return_val_if_fail (out_new_uid != NULL, FALSE);
-
-	klass = E_CAL_META_BACKEND_GET_CLASS (meta_backend);
-	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->save_component_sync != NULL, FALSE);
-
-	return klass->save_component_sync (meta_backend, overwrite_existing, conflict_resolution, instances, extra, out_new_uid, cancellable, error);
-}
-
-/**
  * e_cal_meta_backend_load_component_sync:
  * @meta_backend: an #ECalMetaBackend
  * @uid: a component UID
@@ -3665,6 +3620,75 @@ e_cal_meta_backend_load_component_sync (ECalMetaBackend *meta_backend,
 }
 
 /**
+ * e_cal_meta_backend_save_component_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @overwrite_existing: %TRUE when can overwrite existing components, %FALSE otherwise
+ * @conflict_resolution: one of #EConflictResolution, what to do on conflicts
+ * @instances: (element-type ECalComponent): instances of the component to save
+ * @extra: (nullable): extra data saved with the components in an #ECalCache
+ * @out_new_uid: (out) (transfer full): return location for the UID of the saved component
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Saves one component into the remote side. The @instances contain the master
+ * object and all the detached instances of the same component (all have the same UID).
+ * When the @overwrite_existing is %TRUE, then the descendant can overwrite an object
+ * with the same UID on the remote side (usually used for modify). The @conflict_resolution
+ * defines what to do when the remote side had made any changes to the object since
+ * the last update.
+ *
+ * The descendant can use e_cal_meta_backend_merge_instances() to merge
+ * the instances into one VCALENDAR component, which will contain also
+ * used time zones.
+ *
+ * The components in @instances have already converted locally stored attachments
+ * into inline attachments, thus it's not needed to call
+ * e_cal_meta_backend_inline_local_attachments_sync() by the descendant.
+ *
+ * The @out_new_uid can be populated with a UID of the saved component as the server
+ * assigned it to it. This UID, if set, is loaded from the remote side afterwards,
+ * also to see whether any changes had been made to the component by the remote side.
+ *
+ * The descendant can use an #E_CLIENT_ERROR_OUT_OF_SYNC error to indicate that
+ * the save failed due to made changes on the remote side, and let the @meta_backend
+ * to resolve this conflict based on the @conflict_resolution on its own.
+ * The #E_CLIENT_ERROR_OUT_OF_SYNC error should not be used when the descendant
+ * is able to resolve the conflicts itself.
+ *
+ * It is mandatory to implement this virtual method by the writable descendant.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_save_component_sync (ECalMetaBackend *meta_backend,
+					gboolean overwrite_existing,
+					EConflictResolution conflict_resolution,
+					const GSList *instances,
+					const gchar *extra,
+					gchar **out_new_uid,
+					GCancellable *cancellable,
+					GError **error)
+{
+	ECalMetaBackendClass *klass;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (instances != NULL, FALSE);
+	g_return_val_if_fail (out_new_uid != NULL, FALSE);
+
+	klass = E_CAL_META_BACKEND_GET_CLASS (meta_backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
+	if (!klass->save_component_sync) {
+		g_propagate_error (error, e_data_cal_create_error (NotSupported, NULL));
+		return FALSE;
+	}
+
+	return klass->save_component_sync (meta_backend, overwrite_existing, conflict_resolution, instances, extra, out_new_uid, cancellable, error);
+}
+
+/**
  * e_cal_meta_backend_remove_component_sync:
  * @meta_backend: an #ECalMetaBackend
  * @conflict_resolution: an #EConflictResolution to use
@@ -3675,7 +3699,7 @@ e_cal_meta_backend_load_component_sync (ECalMetaBackend *meta_backend,
  *
  * Removes a component from the remote side, with all its detached instances.
  *
- * It is mandatory to implement this virtual method by the descendant.
+ * It is mandatory to implement this virtual method by the writable descendant.
  *
  * Returns: Whether succeeded.
  *
@@ -3696,7 +3720,11 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	klass = E_CAL_META_BACKEND_GET_CLASS (meta_backend);
 	g_return_val_if_fail (klass != NULL, FALSE);
-	g_return_val_if_fail (klass->remove_component_sync != NULL, FALSE);
+
+	if (!klass->remove_component_sync) {
+		g_propagate_error (error, e_data_cal_create_error (NotSupported, NULL));
+		return FALSE;
+	}
 
 	return klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, cancellable, error);
 }

@@ -121,19 +121,18 @@ struct _ECalMetaBackendClass {
 						 GSList **out_existing_objects, /* ECalMetaBackendInfo * */
 						 GCancellable *cancellable,
 						 GError **error);
-
+	gboolean	(* load_component_sync)	(ECalMetaBackend *meta_backend,
+						 const gchar *uid,
+						 icalcomponent **out_instances,
+						 gchar **out_extra,
+						 GCancellable *cancellable,
+						 GError **error);
 	gboolean	(* save_component_sync)	(ECalMetaBackend *meta_backend,
 						 gboolean overwrite_existing,
 						 EConflictResolution conflict_resolution,
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
 						 gchar **out_new_uid,
-						 GCancellable *cancellable,
-						 GError **error);
-	gboolean	(* load_component_sync)	(ECalMetaBackend *meta_backend,
-						 const gchar *uid,
-						 icalcomponent **out_instances,
-						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* remove_component_sync)
@@ -143,6 +142,9 @@ struct _ECalMetaBackendClass {
 						 const gchar *extra,
 						 GCancellable *cancellable,
 						 GError **error);
+
+	/* Signals */
+	void		(* source_changed)	(ECalMetaBackend *meta_backend);
 
 	/* Padding for future expansion */
 	gpointer reserved[10];
@@ -196,6 +198,13 @@ gboolean	e_cal_meta_backend_list_existing_sync
 						 GSList **out_existing_objects, /* ECalMetaBackendInfo * */
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cal_meta_backend_load_component_sync
+						(ECalMetaBackend *meta_backend,
+						 const gchar *uid,
+						 icalcomponent **out_component,
+						 gchar **out_extra,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_cal_meta_backend_save_component_sync
 						(ECalMetaBackend *meta_backend,
 						 gboolean overwrite_existing,
@@ -203,13 +212,6 @@ gboolean	e_cal_meta_backend_save_component_sync
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
 						 gchar **out_new_uid,
-						 GCancellable *cancellable,
-						 GError **error);
-gboolean	e_cal_meta_backend_load_component_sync
-						(ECalMetaBackend *meta_backend,
-						 const gchar *uid,
-						 icalcomponent **out_component,
-						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_remove_component_sync
