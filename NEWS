@@ -1,3 +1,23 @@
+Evolution-Data-Server 3.23.92 2017-03-13
+----------------------------------------
+
+Bug Fixes:
+	Bug 779156 - [IMAPx] Not listening for changes after resume from suspend (Milan Crha)
+	Bug 779161 - [Google Auth] Asks for re-sign when cannot reach server to refresh token (Milan Crha)
+	Bug 779761 - Duplicate parenthesis in LDAP schema file (Milan Crha)
+	Bug 779886 - Add NULL checks to camel_content_type_set_param/camel_content_type_simple (Milan Crha)
+
+Miscellaneous:
+	Disable support for all POP3 extensions by default (Milan Crha)
+	Skip outdated Camel tests in 'make check' (Milan Crha)
+	[Camel] Extend filter debug logging (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Ask Hjorth Larsen (da)
+	Fran Dieguez (gl)
+	Changwoo Ryu (ko)
+
 Evolution-Data-Server 3.23.91 2017-02-27
 ----------------------------------------
 
