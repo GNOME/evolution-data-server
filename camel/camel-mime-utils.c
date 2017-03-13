@@ -2401,6 +2401,8 @@ camel_content_type_set_param (CamelContentType *t,
                               const gchar *name,
                               const gchar *value)
 {
+	g_return_if_fail (t != NULL);
+
 	camel_header_set_param (&t->params, name, value);
 }
 
@@ -3725,6 +3727,9 @@ camel_content_type_format (CamelContentType *ct)
 gchar *
 camel_content_type_simple (CamelContentType *ct)
 {
+	if (!ct)
+		return NULL;
+
 	if (ct->type == NULL) {
 		w (g_warning ("Content-Type with no main type"));
 		return g_strdup ("text/plain");
