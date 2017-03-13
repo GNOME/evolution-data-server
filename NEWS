@@ -1,3 +1,23 @@
+Evolution-Data-Server 3.22.6 2017-03-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 778775 - Add carddav scope to google-contacts.service for Ubuntu online accounts (Khurshid Alam)
+	Bug 778768 - Fails to modify contact with Yandex CardDAV server (Milan Crha)
+	Bug 778235 - [IMAPx] Ignore truncated COPYUID server response (Milan Crha)
+	Bug 775699 - Only latest 100 tasks downloaded from the Google (Milan Crha)
+	Bug 779156 - [IMAPx] Not listening for changes after resume from suspend (Milan Crha)
+	Bug 779161 - [Google Auth] Asks for re-sign when cannot reach server to refresh token (Milan Crha)
+	Bug 779761 - Duplicate parenthesis in LDAP schema file (Milan Crha)
+	Bug 779886 - Add NULL checks to camel_content_type_set_param/camel_content_type_simple (Milan Crha)
+
+Miscellaneous:
+	Disable support for all POP3 extensions by default (Milan Crha)
+
+Translations:
+	Tong Hui (zh_CN)
+	Anders Jonsson (sv)
+
 Evolution-Data-Server 3.22.5 2017-02-13
 ---------------------------------------
 
