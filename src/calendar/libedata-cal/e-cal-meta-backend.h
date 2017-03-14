@@ -171,6 +171,16 @@ gboolean	e_cal_meta_backend_store_inline_attachments_sync
 						 icalcomponent *component,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cal_meta_backend_gather_timezones_sync
+						(ECalMetaBackend *meta_backend,
+						 icalcomponent *vcalendar,
+						 gboolean remove_existing,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_meta_backend_empty_cache_sync
+						(ECalMetaBackend *meta_backend,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_cal_meta_backend_connect_sync	(ECalMetaBackend *meta_backend,
 						 const ENamedParameters *credentials,
 						 ESourceAuthenticationResult *out_auth_result,

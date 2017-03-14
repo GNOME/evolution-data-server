@@ -1801,27 +1801,27 @@ e_cal_cache_new (const gchar *filename,
 /**
  * e_cal_cache_dup_component_revision:
  * @cal_cache: an #ECalCache
- * @component: an #ECalComponent
+ * @icalcomp: an icalcomponent
  *
- * Returns the @component revision, used to detect changes.
+ * Returns the @icalcomp revision, used to detect changes.
  * The returned string should be freed with g_free(), when
  * no longer needed.
  *
  * Returns: (transfer full): A newly allocated string containing
- *    revision of the @component.
+ *    revision of the @icalcomp.
  *
  * Since: 3.26
  **/
 gchar *
 e_cal_cache_dup_component_revision (ECalCache *cal_cache,
-				    ECalComponent *component)
+				    icalcomponent *icalcomp)
 {
 	gchar *revision = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
+	g_return_val_if_fail (icalcomp != NULL, NULL);
 
-	g_signal_emit (cal_cache, signals[DUP_COMPONENT_REVISION], 0, component, &revision);
+	g_signal_emit (cal_cache, signals[DUP_COMPONENT_REVISION], 0, icalcomp, &revision);
 
 	return revision;
 }
@@ -1970,7 +1970,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 		}
 		e_cal_component_free_id (id);
 
-		rev = e_cal_cache_dup_component_revision (cal_cache, component);
+		rev = e_cal_cache_dup_component_revision (cal_cache, e_cal_component_get_icalcomponent (component));
 
 		success = e_cache_put (cache, uid, rev, icalstring, other_columns, offline_flag, cancellable, error);
 
@@ -3027,7 +3027,7 @@ e_cal_cache_load_zones_cb (ECache *cache,
 	GHashTable *loaded_zones = user_data;
 
 	g_return_val_if_fail (loaded_zones != NULL, FALSE);
-	g_return_val_if_fail (ncols != 2, FALSE);
+	g_return_val_if_fail (ncols == 2, FALSE);
 
 	/* Do not overwrite already loaded timezones, they can be used anywhere around */
 	if (!g_hash_table_lookup (loaded_zones, column_values[0])) {
@@ -3054,6 +3054,10 @@ e_cal_cache_load_zones_cb (ECache *cache,
  * when no longer needed; the icaltimezone-s are owned
  * by the @cal_cache.
  *
+ * Note: The list can contain timezones previously stored
+ * in the cache, but removed from it since they were loaded,
+ * because these are freed only when also the @cal_cache is freed.
+ *
  * Returns: Whether succeeded.
  *
  * Since: 3.26
@@ -3078,6 +3082,13 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 		e_cal_cache_get_uint64_cb, &n_stored, cancellable, error);
 
 	if (success && n_stored != g_hash_table_size (cal_cache->priv->loaded_timezones)) {
+		if (n_stored == 0) {
+			g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+			*out_timezones = NULL;
+
+			return TRUE;
+		}
+
 		stmt = e_cache_sqlite_stmt_printf ("SELECT tzid, zone FROM " ECC_TABLE_TIMEZONES);
 		success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt,
 			e_cal_cache_load_zones_cb, cal_cache->priv->loaded_timezones, cancellable, error);
@@ -3099,6 +3110,56 @@ e_cal_cache_list_timezones (ECalCache *cal_cache,
 	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 
 	return success;
+}
+
+/**
+ * e_cal_cache_remove_timezones:
+ * @cal_cache: an #ECalCache
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Removes all stored timezones from the @cal_cache.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_cache_remove_timezones (ECalCache *cal_cache,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
+
+	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+
+	success = e_cache_sqlite_exec (E_CACHE (cal_cache), "DELETE FROM " ECC_TABLE_TIMEZONES, cancellable, error);
+
+	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
+
+	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
+
+	return success;
+}
+
+void _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache);
+
+/* Private function, not meant to be part of the public API */
+void
+_e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache)
+{
+	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
+
+	g_rec_mutex_lock (&cal_cache->priv->timezones_lock);
+
+	g_hash_table_remove_all (cal_cache->priv->loaded_timezones);
+	g_hash_table_remove_all (cal_cache->priv->modified_timezones);
+
+	g_rec_mutex_unlock (&cal_cache->priv->timezones_lock);
 }
 
 /**
@@ -3172,16 +3233,13 @@ ecc_empty_aux_tables (ECache *cache,
    <DTSTAMP> "-" <LAST-MODIFIED> "-" <SEQUENCE> */
 static gchar *
 ecc_dup_component_revision (ECalCache *cal_cache,
-			    ECalComponent *component)
+			    icalcomponent *icalcomp)
 {
-	icalcomponent *icalcomp;
 	struct icaltimetype itt;
 	icalproperty *prop;
 	GString *revision;
 
-	g_return_val_if_fail (E_IS_CAL_COMPONENT (component), NULL);
-
-	icalcomp = e_cal_component_get_icalcomponent (component);
+	g_return_val_if_fail (icalcomp != NULL, NULL);
 
 	revision = g_string_sized_new (48);
 
@@ -3427,7 +3485,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 
 	/**
 	 * @ECalCache:dup-component-revision:
-	 * A signal being called to get revision of an #ECalComponent.
+	 * A signal being called to get revision of an icalcomponent.
 	 * The default implementation uses a concatenation of
 	 * DTSTAMP '-' LASTMODIFIED '-' SEQUENCE.
 	 **/
@@ -3440,7 +3498,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 		NULL,
 		g_cclosure_marshal_generic,
 		G_TYPE_STRING, 1,
-		E_TYPE_CAL_COMPONENT);
+		G_TYPE_POINTER);
 }
 
 static void

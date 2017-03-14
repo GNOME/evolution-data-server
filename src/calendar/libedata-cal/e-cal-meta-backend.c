@@ -1069,9 +1069,21 @@ ecmb_open_sync (ECalBackendSync *sync_backend,
 		gboolean only_if_exists,
 		GError **error)
 {
+	ESource *source;
+
 	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
 
-	/* Not much to do here, just confirm and schedule refresh */
+	if (e_cal_backend_is_opened (E_CAL_BACKEND (sync_backend)))
+		return;
+
+	source = e_backend_get_source (E_BACKEND (sync_backend));
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		e_source_webdav_unset_temporary_ssl_trust (webdav_extension);
+	}
+
 	ecmb_schedule_refresh (E_CAL_META_BACKEND (sync_backend));
 }
 
@@ -2515,6 +2527,8 @@ ecmb_get_backend_property (ECalBackend *cal_backend,
 		g_object_unref (comp);
 
 		return prop_value;
+	} else if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		return g_strdup (e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (cal_backend)));
 	}
 
 	/* Chain up to parent's method. */
@@ -3357,6 +3371,119 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
 			g_free (local_filename);
 		}
 	}
+
+	return success;
+}
+
+/**
+ * e_cal_meta_backend_gather_timezones_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @vcalendar: a VCALENDAR icalcomponent
+ * @remove_existing: whether to remove any existing first
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Extracts all VTIMEZONE components from the @vcalendar and adds them
+ * to the cache, thus they are available when needed. The function does
+ * nothing when the @vcalendar doesn't hold a VCALENDAR component.
+ *
+ * Set the @remove_existing argument to %TRUE to remove all cached timezones
+ * first and then add the existing in the @vcalendar, or set it to %FALSE
+ * to preserver existing timezones and merge them with those in @vcalendar.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_gather_timezones_sync (ECalMetaBackend *meta_backend,
+					  icalcomponent *vcalendar,
+					  gboolean remove_existing,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	ECalCache *cal_cache;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (vcalendar != NULL, FALSE);
+
+	if (icalcomponent_isa (vcalendar) != ICAL_VCALENDAR_COMPONENT)
+		return TRUE;
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache)
+		return FALSE;
+
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
+
+	if (remove_existing)
+		success = e_cal_cache_remove_timezones (cal_cache, cancellable, error);
+
+	if (success)
+		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (cal_cache), vcalendar);
+
+	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
+
+	g_object_unref (cal_cache);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_meta_backend_empty_cache_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Empties the local cache by removing all known components from it
+ * and notifies about such removal any opened views. It removes also
+ * all known time zones.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	ECalBackend *cal_backend;
+	ECalCache *cal_cache;
+	GSList *ids = NULL, *link;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache)
+		return FALSE;
+
+	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
+
+	cal_backend = E_CAL_BACKEND (meta_backend);
+
+	success = e_cal_cache_search_ids (cal_cache, NULL, &ids, cancellable, error);
+	if (success)
+		success = e_cache_remove_all (E_CACHE (cal_cache), cancellable, error);
+
+	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
+
+	g_object_unref (cal_cache);
+
+	if (success) {
+		for (link = ids; link; link = g_slist_next (link)) {
+			ECalComponentId *id = link->data;
+
+			if (!id)
+				continue;
+
+			e_cal_backend_notify_component_removed (cal_backend, id, NULL, NULL);
+		}
+	}
+
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
 
 	return success;
 }

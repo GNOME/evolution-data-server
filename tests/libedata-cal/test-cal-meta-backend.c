@@ -24,6 +24,8 @@
 
 #include "test-cal-cache-utils.h"
 
+void _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache); /* e-cal-cache.c, private function */
+
 #define EXPECTED_TZID		"/freeassociation.sourceforge.net/America/New_York"
 #define EXPECTED_LOCATION	"America/New_York"
 #define REMOTE_URL		"https://www.gnome.org/wp-content/themes/gnome-grass/images/gnome-logo.svg"
@@ -384,7 +386,6 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 	     icalcomp = icalcomponent_get_next_component (test_backend->vcalendar, ICAL_VEVENT_COMPONENT)) {
 		const gchar *uid;
 		gchar *revision;
-		ECalComponent *comp;
 		ECalMetaBackendInfo *nfo;
 
 		/* Detached instances are stored together with the master object */
@@ -392,10 +393,7 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 			continue;
 
 		uid = icalcomponent_get_uid (icalcomp);
-
-		comp = e_cal_component_new_from_icalcomponent (icalcomponent_new_clone (icalcomp));
-		revision = e_cal_cache_dup_component_revision (cal_cache, comp);
-		g_object_unref (comp);
+		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
 
 		nfo = e_cal_meta_backend_info_new (uid, NULL, revision);
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
@@ -1139,6 +1137,77 @@ test_attachments (TCUFixture *fixture,
 }
 
 static void
+test_empty_cache (TCUFixture *fixture,
+		  gconstpointer user_data)
+{
+	#define TZID "/meta/backend/test/timezone"
+	#define TZLOC "test/timezone"
+
+	const gchar *in_tzobj =
+		"BEGIN:VTIMEZONE\r\n"
+		"TZID:" TZID "\r\n"
+		"X-LIC-LOCATION:" TZLOC "\r\n"
+		"BEGIN:STANDARD\r\n"
+		"TZNAME:Test-ST\r\n"
+		"DTSTART:19701106T020000\r\n"
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n"
+		"TZOFFSETFROM:-0400\r\n"
+		"TZOFFSETTO:-0500\r\n"
+		"END:STANDARD\r\n"
+		"BEGIN:DAYLIGHT\r\n"
+		"TZNAME:Test-DT\r\n"
+		"DTSTART:19700313T020000\r\n"
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n"
+		"TZOFFSETFROM:-0500\r\n"
+		"TZOFFSETTO:-0400\r\n"
+		"END:DAYLIGHT\r\n"
+		"END:VTIMEZONE\r\n";
+	ECalMetaBackend *meta_backend;
+	GList *zones;
+	gboolean success;
+	GError *error = NULL;
+
+	meta_backend = e_cal_meta_backend_test_new (fixture->cal_cache);
+	g_assert_nonnull (meta_backend);
+
+	/* Add timezone to the cache */
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, in_tzobj, &error);
+	g_assert_no_error (error);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (fixture->cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 1);
+	g_list_free (zones);
+
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), >, 0);
+	g_assert_no_error (error);
+
+	/* Empty the cache */
+	success = e_cal_meta_backend_empty_cache_sync (meta_backend, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	/* Verify the cache is truly empty */
+	zones = NULL;
+	success = e_cal_cache_list_timezones (fixture->cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+	g_list_free (zones);
+
+	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_INCLUDE_DELETED, NULL, &error), ==, 0);
+	g_assert_no_error (error);
+
+	g_object_unref (meta_backend);
+
+	#undef TZID
+	#undef TZLOC
+}
+
+static void
 test_send_objects (ECalMetaBackend *meta_backend)
 {
 	GSList *users = NULL;
@@ -1235,7 +1304,11 @@ test_timezones (ECalMetaBackend *meta_backend)
 		"TZOFFSETTO:-0400\r\n"
 		"END:DAYLIGHT\r\n"
 		"END:VTIMEZONE\r\n";
+	ECalCache *cal_cache;
+	icalcomponent *vcalendar;
 	gchar *tzobj = NULL;
+	GList *zones;
+	gboolean success;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
@@ -1273,7 +1346,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert_null (tzobj);
 	g_clear_error (&error);
 
-	/* Try also internal timezone */
+	/* Try also internal timezone, which will be renamed and added to the cache too */
 	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "America/New_York", &tzobj, &error);
 	g_assert_no_error (error);
@@ -1281,6 +1354,119 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert (strstr (tzobj, "America/New_York") != NULL);
 	g_free (tzobj);
 	tzobj = NULL;
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_assert_nonnull (cal_cache);
+
+	vcalendar = icalcomponent_new_from_string (
+		"BEGIN:VCALENDAR\r\n"
+		"BEGIN:VTIMEZONE\r\n"
+		"TZID:tzid1\r\n"
+		"X-LIC-LOCATION:tzid/1\r\n"
+		"BEGIN:STANDARD\r\n"
+		"TZNAME:Test-ST\r\n"
+		"DTSTART:19701106T020000\r\n"
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n"
+		"TZOFFSETFROM:-0400\r\n"
+		"TZOFFSETTO:-0500\r\n"
+		"END:STANDARD\r\n"
+		"BEGIN:DAYLIGHT\r\n"
+		"TZNAME:Test-DT\r\n"
+		"DTSTART:19700313T020000\r\n"
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n"
+		"TZOFFSETFROM:-0500\r\n"
+		"TZOFFSETTO:-0400\r\n"
+		"END:DAYLIGHT\r\n"
+		"END:VTIMEZONE\r\n"
+		"BEGIN:VTIMEZONE\r\n"
+		"TZID:tzid2\r\n"
+		"X-LIC-LOCATION:tzid/2\r\n"
+		"BEGIN:STANDARD\r\n"
+		"TZNAME:Test-ST\r\n"
+		"DTSTART:19701106T020000\r\n"
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n"
+		"TZOFFSETFROM:-0400\r\n"
+		"TZOFFSETTO:-0500\r\n"
+		"END:STANDARD\r\n"
+		"BEGIN:DAYLIGHT\r\n"
+		"TZNAME:Test-DT\r\n"
+		"DTSTART:19700313T020000\r\n"
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n"
+		"TZOFFSETFROM:-0500\r\n"
+		"TZOFFSETTO:-0400\r\n"
+		"END:DAYLIGHT\r\n"
+		"END:VTIMEZONE\r\n"
+		"BEGIN:VEVENT\r\n"
+		"UID:test-event\r\n"
+		"DTSTAMP:20170130T000000Z\r\n"
+		"CREATED:20170216T155507Z\r\n"
+		"LAST-MODIFIED:20170216T155543Z\r\n"
+		"SEQUENCE:1\r\n"
+		"DTSTART:20170209T013000Z\r\n"
+		"DTEND:20170209T030000Z\r\n"
+		"SUMMARY:Test Event\r\n"
+		"END:VEVENT\r\n"
+		"END:VCALENDAR\r\n");
+	g_assert_nonnull (vcalendar);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 2);
+	g_list_free (zones);
+
+	/* Merge with existing */
+	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, FALSE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 4);
+	g_list_free (zones);
+
+	success = e_cal_cache_remove_timezones (cal_cache, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, in_tzobj, &error);
+	g_assert_no_error (error);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 1);
+	g_list_free (zones);
+
+	/* Remove existing and add the new */
+	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, TRUE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 2);
+	g_list_free (zones);
+
+	icalcomponent_free (vcalendar);
+	g_object_unref (cal_cache);
 
 	#undef TZLOC
 	#undef TZID
@@ -2465,6 +2651,8 @@ main (gint argc,
 		tcu_fixture_setup, test_merge_instances, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/Attachments", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_attachments, tcu_fixture_teardown);
+	g_test_add ("/ECalMetaBackend/EmptyCache", TCUFixture, &closure_events,
+		tcu_fixture_setup, test_empty_cache, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/SendObjects", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_send_objects_tcu, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/GetAttachmentUris", TCUFixture, &closure_events,

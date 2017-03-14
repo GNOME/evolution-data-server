@@ -953,6 +953,7 @@ e_cal_backend_class_init (ECalBackendClass *class)
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->prepare_shutdown = cal_backend_prepare_shutdown;
 
+	class->use_serial_dispatch_queue = TRUE;
 	class->get_backend_property = cal_backend_get_backend_property;
 	class->shutdown = cal_backend_shutdown;
 

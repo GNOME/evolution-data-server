@@ -116,7 +116,7 @@ struct _ECalBackend {
 /**
  * ECalBackendClass:
  * @use_serial_dispatch_queue: Whether a serial dispatch queue should
- *                             be used for this backend or not.
+ *                             be used for this backend or not. The default is %TRUE.
  * @get_backend_property: Fetch a property value by name from the backend
  * @open: Open the backend
  * @refresh: Refresh the backend
