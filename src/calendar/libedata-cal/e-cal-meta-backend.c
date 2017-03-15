@@ -50,6 +50,7 @@
 
 struct _ECalMetaBackendPrivate {
 	GMutex property_lock;
+	GError *create_cache_error;
 	ECalCache *cache;
 	ENamedParameters *last_credentials;
 	GHashTable *view_cancellables;
@@ -333,10 +334,7 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 		return TRUE;
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return FALSE;
-	}
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
 
 	if (!ecmb_connect_wrapper_sync (meta_backend, cancellable, error) ||
 	    !e_cal_meta_backend_list_existing_sync (meta_backend, out_new_sync_tag, &existing_objects, cancellable, error)) {
@@ -427,6 +425,7 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 	EDataCalView *view = user_data;
 	ECalBackendSExp *sexp;
 	ECalCache *cal_cache;
+	GSList *components = NULL;
 	const gchar *expr = NULL;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
@@ -441,18 +440,16 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 		expr = e_cal_backend_sexp_text (sexp);
 
 	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cal_backend));
-	if (cal_cache) {
-		GSList *components = NULL;
+	g_return_if_fail (cal_cache != NULL);
 
-		if (e_cal_cache_search_components (cal_cache, expr, &components, cancellable, error) && components) {
-			if (!g_cancellable_is_cancelled (cancellable))
-				e_data_cal_view_notify_components_added (view, components);
+	if (e_cal_cache_search_components (cal_cache, expr, &components, cancellable, error) && components) {
+		if (!g_cancellable_is_cancelled (cancellable))
+			e_data_cal_view_notify_components_added (view, components);
 
-			g_slist_free_full (components, g_object_unref);
-		}
-
-		g_object_unref (cal_cache);
+		g_slist_free_full (components, g_object_unref);
 	}
+
+	g_object_unref (cal_cache);
 }
 
 static gboolean
@@ -557,8 +554,10 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 	}
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache)
+	if (!cal_cache) {
+		g_warn_if_reached ();
 		goto done;
+	}
 
 	success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_KEEP_LOCAL, cancellable, error);
 
@@ -1069,6 +1068,7 @@ ecmb_open_sync (ECalBackendSync *sync_backend,
 		gboolean only_if_exists,
 		GError **error)
 {
+	ECalMetaBackend *meta_backend;
 	ESource *source;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
@@ -1076,7 +1076,20 @@ ecmb_open_sync (ECalBackendSync *sync_backend,
 	if (e_cal_backend_is_opened (E_CAL_BACKEND (sync_backend)))
 		return;
 
+	meta_backend = E_CAL_META_BACKEND (sync_backend);
+	if (meta_backend->priv->create_cache_error) {
+		g_propagate_error (error, meta_backend->priv->create_cache_error);
+		meta_backend->priv->create_cache_error = NULL;
+		return;
+	}
+
 	source = e_backend_get_source (E_BACKEND (sync_backend));
+
+	if (!meta_backend->priv->source_changed_id) {
+		meta_backend->priv->source_changed_id = g_signal_connect_swapped (source, "changed",
+			G_CALLBACK (ecmb_schedule_source_changed), meta_backend);
+	}
+
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
 		ESourceWebdav *webdav_extension;
 
@@ -1127,10 +1140,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	if (!e_cal_cache_get_component_as_string (cal_cache, uid, rid, calobj, cancellable, &local_error) &&
 	    g_error_matches (local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND)) {
@@ -1171,10 +1181,7 @@ ecmb_get_object_list_sync (ECalBackendSync *sync_backend,
 	*calobjs = NULL;
 	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (sync_backend));
 
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	if (e_cal_cache_search (cal_cache, sexp, calobjs, cancellable, error)) {
 		GSList *link;
@@ -1288,8 +1295,13 @@ ecmb_get_free_busy_sync (ECalBackendSync *sync_backend,
 	}
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache) {
+		g_warn_if_reached ();
+		g_free (cal_email_address);
+		return;
+	}
 
-	if (!cal_cache || !e_cal_cache_get_components_in_range (cal_cache, start, end, &components, cancellable, error)) {
+	if (!e_cal_cache_get_components_in_range (cal_cache, start, end, &components, cancellable, error)) {
 		g_clear_object (&cal_cache);
 		g_free (cal_email_address);
 		return;
@@ -1467,10 +1479,7 @@ ecmb_create_objects_sync (ECalBackendSync *sync_backend,
 
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	backend_kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
 
@@ -1753,10 +1762,7 @@ ecmb_modify_objects_sync (ECalBackendSync *sync_backend,
 
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	backend_kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
 
@@ -2045,10 +2051,7 @@ ecmb_remove_objects_sync (ECalBackendSync *sync_backend,
 
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	for (link = (GSList *) ids; link && success; link = g_slist_next (link)) {
 		ECalComponent *old_comp = NULL, *new_comp = NULL;
@@ -2187,10 +2190,7 @@ ecmb_receive_objects_sync (ECalBackendSync *sync_backend,
 
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	icalcomp = icalparser_parse_string (calobj);
 	if (!icalcomp) {
@@ -2334,10 +2334,7 @@ ecmb_get_attachment_uris_sync (ECalBackendSync *sync_backend,
 
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache) {
-		g_propagate_error (error, e_data_cal_create_error (OtherError, NULL));
-		return;
-	}
+	g_return_if_fail (cal_cache != NULL);
 
 	if (rid && *rid) {
 		if (e_cal_cache_get_component (cal_cache, uid, rid, &comp, cancellable, &local_error) && comp) {
@@ -2400,6 +2397,7 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 			GError **error)
 {
 	ECalCache *cal_cache;
+	icaltimezone *zone;
 	gchar *timezone_str = NULL;
 	GError *local_error = NULL;
 
@@ -2411,24 +2409,22 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 		return;
 
 	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (sync_backend));
-	if (cal_cache) {
-		icaltimezone *zone;
+	g_return_if_fail (cal_cache != NULL);
 
-		zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cal_cache), tzid);
-		if (zone) {
-			icalcomponent *icalcomp;
+	zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cal_cache), tzid);
+	if (zone) {
+		icalcomponent *icalcomp;
 
-			icalcomp = icaltimezone_get_component (zone);
+		icalcomp = icaltimezone_get_component (zone);
 
-			if (!icalcomp) {
-				local_error = e_data_cal_create_error (InvalidObject, NULL);
-			} else {
-				timezone_str = icalcomponent_as_ical_string_r (icalcomp);
-			}
+		if (!icalcomp) {
+			local_error = e_data_cal_create_error (InvalidObject, NULL);
+		} else {
+			timezone_str = icalcomponent_as_ical_string_r (icalcomp);
 		}
-
-		g_object_unref (cal_cache);
 	}
+
+	g_object_unref (cal_cache);
 
 	if (!local_error && !timezone_str)
 		local_error = e_data_cal_create_error (ObjectNotFound, NULL);
@@ -2476,6 +2472,8 @@ ecmb_add_timezone_sync (ECalBackendSync *sync_backend,
 			e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (cal_cache), zone);
 			icaltimezone_free (zone, 1);
 			g_object_unref (cal_cache);
+		} else {
+			g_warn_if_reached ();
 		}
 	}
 
@@ -2498,6 +2496,8 @@ ecmb_get_backend_property (ECalBackend *cal_backend,
 		if (cal_cache) {
 			revision = e_cache_dup_revision (E_CACHE (cal_cache));
 			g_object_unref (cal_cache);
+		} else {
+			g_warn_if_reached ();
 		}
 
 		return revision;
@@ -2770,19 +2770,30 @@ static void
 e_cal_meta_backend_constructed (GObject *object)
 {
 	ECalMetaBackend *meta_backend = E_CAL_META_BACKEND (object);
-	ESource *source;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_meta_backend_parent_class)->constructed (object);
 
 	meta_backend->priv->current_online_state = e_backend_get_online (E_BACKEND (meta_backend));
 
-	source = e_backend_get_source (E_BACKEND (meta_backend));
-	meta_backend->priv->source_changed_id = g_signal_connect_swapped (source, "changed",
-		G_CALLBACK (ecmb_schedule_source_changed), meta_backend);
-
 	meta_backend->priv->notify_online_id = g_signal_connect (meta_backend, "notify::online",
 		G_CALLBACK (ecmb_notify_online_cb), meta_backend);
+
+	if (!meta_backend->priv->cache) {
+		ECalCache *cache;
+		gchar *filename;
+
+		filename = g_build_filename (e_cal_backend_get_cache_dir (E_CAL_BACKEND (meta_backend)), "cache.db", NULL);
+		cache = e_cal_cache_new (filename, NULL, &meta_backend->priv->create_cache_error);
+		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache ”%s”:"), filename);
+
+		g_free (filename);
+
+		if (cache) {
+			e_cal_meta_backend_set_cache (meta_backend, cache);
+			g_clear_object (&cache);
+		}
+	}
 }
 
 static void
@@ -2845,6 +2856,7 @@ e_cal_meta_backend_finalize (GObject *object)
 	g_clear_object (&meta_backend->priv->refresh_cancellable);
 	g_clear_object (&meta_backend->priv->source_changed_cancellable);
 	g_clear_object (&meta_backend->priv->go_offline_cancellable);
+	g_clear_error (&meta_backend->priv->create_cache_error);
 
 	g_mutex_clear (&meta_backend->priv->property_lock);
 	g_hash_table_destroy (meta_backend->priv->view_cancellables);
@@ -2979,9 +2991,9 @@ e_cal_meta_backend_get_capabilities (ECalMetaBackend *meta_backend)
  * @cache: an #ECalCache to use
  *
  * Sets the @cache as the cache to be used by the @meta_backend.
- * This should be done as soon as possible, like at the end
- * of the constructed() method, thus the other places can
- * safely use it.
+ * By default, a cache.db in ECalBackend::cache-dir is created
+ * in the constructed method. This function can be used to override
+ * the default.
  *
  * Note the @meta_backend adds its own reference to the @cache.
  *
@@ -3148,6 +3160,7 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 				    const GSList *instances,
 				    gboolean replace_tzid_with_location)
 {
+	ECalCache *cal_cache;
 	ForeachTzidData f_data;
 	icalcomponent *vcalendar;
 	GSList *link, *sorted;
@@ -3155,11 +3168,14 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
 	g_return_val_if_fail (instances != NULL, NULL);
 
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (cal_cache != NULL, NULL);
+
 	sorted = g_slist_sort (g_slist_copy ((GSList *) instances), sort_master_first_cb);
 
 	vcalendar = e_cal_util_new_top_level ();
 
-	f_data.cache = e_cal_meta_backend_ref_cache (meta_backend);
+	f_data.cache = cal_cache;
 	f_data.replace_tzid_with_location = replace_tzid_with_location;
 	f_data.vcalendar = vcalendar;
 
@@ -3412,8 +3428,7 @@ e_cal_meta_backend_gather_timezones_sync (ECalMetaBackend *meta_backend,
 		return TRUE;
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache)
-		return FALSE;
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
 
 	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
 
@@ -3457,8 +3472,7 @@ e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	if (!cal_cache)
-		return FALSE;
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
 
 	e_cache_lock (E_CACHE (cal_cache), E_CACHE_LOCK_WRITE);
 

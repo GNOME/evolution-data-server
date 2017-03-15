@@ -588,6 +588,22 @@ e_cal_meta_backend_test_reset_counters (ECalMetaBackendTest *test_backend)
 	test_backend->remove_count = 0;
 }
 
+static ECalCache *glob_use_cache = NULL;
+
+static void
+e_cal_meta_backend_test_constructed (GObject *object)
+{
+	ECalMetaBackendTest *test_backend = E_CAL_META_BACKEND_TEST (object);
+
+	g_assert_nonnull (glob_use_cache);
+
+	/* Set it before ECalMetaBackend::constucted() creates its own cache */
+	e_cal_meta_backend_set_cache (E_CAL_META_BACKEND (test_backend), glob_use_cache);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_cal_meta_backend_test_parent_class)->constructed (object);
+}
+
 static void
 e_cal_meta_backend_test_finalize (GObject *object)
 {
@@ -621,6 +637,7 @@ e_cal_meta_backend_test_class_init (ECalMetaBackendTestClass *klass)
 	cal_backend_class->get_backend_property = e_cal_meta_backend_test_get_backend_property;
 
 	object_class = G_OBJECT_CLASS (klass);
+	object_class->constructed = e_cal_meta_backend_test_constructed;
 	object_class->finalize = e_cal_meta_backend_test_finalize;
 }
 
@@ -662,6 +679,9 @@ e_cal_meta_backend_test_new (ECalCache *cache)
 	g_assert (E_IS_CAL_CACHE (cache));
 
 	g_assert_nonnull (glob_registry);
+	g_assert_null (glob_use_cache);
+
+	glob_use_cache = cache;
 
 	scratch = e_source_new_with_uid ("test-source", NULL, &error);
 	g_assert_no_error (error);
@@ -673,6 +693,9 @@ e_cal_meta_backend_test_new (ECalCache *cache)
 		"kind", ICAL_VEVENT_COMPONENT,
 		NULL);
 	g_assert_nonnull (meta_backend);
+
+	g_assert (glob_use_cache == cache);
+	glob_use_cache = NULL;
 
 	g_object_unref (scratch);
 
