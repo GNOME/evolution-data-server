@@ -47,12 +47,12 @@ typedef struct _ECalBackendHttpClass ECalBackendHttpClass;
 typedef struct _ECalBackendHttpPrivate ECalBackendHttpPrivate;
 
 struct _ECalBackendHttp {
-	ECalBackendSync backend;
+	ECalMetaBackend backend;
 	ECalBackendHttpPrivate *priv;
 };
 
 struct _ECalBackendHttpClass {
-	ECalBackendSyncClass parent_class;
+	ECalMetaBackendClass parent_class;
 };
 
 GType		e_cal_backend_http_get_type	(void);
