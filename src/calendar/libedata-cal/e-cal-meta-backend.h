@@ -142,6 +142,7 @@ struct _ECalMetaBackendClass {
 						 const gchar *extra,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(* requires_reconnect)	(ECalMetaBackend *meta_backend);
 
 	/* Signals */
 	void		(* source_changed)	(ECalMetaBackend *meta_backend);
@@ -231,6 +232,8 @@ gboolean	e_cal_meta_backend_remove_component_sync
 						 const gchar *extra,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cal_meta_backend_requires_reconnect
+						(ECalMetaBackend *meta_backend);
 
 G_END_DECLS
 

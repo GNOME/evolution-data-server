@@ -62,6 +62,17 @@ struct _ECalMetaBackendPrivate {
 	gulong source_changed_id;
 	gulong notify_online_id;
 	guint refresh_timeout_id;
+
+	gboolean refresh_after_authenticate;
+
+	/* Last successful connect data, for some extensions */
+	guint16 authentication_port;
+	gchar *authentication_host;
+	gchar *authentication_user;
+	gchar *authentication_method;
+	gchar *authentication_proxy_uid;
+	gchar *authentication_credential_name;
+	SoupURI *webdav_soup_uri;
 };
 
 enum {
@@ -213,6 +224,49 @@ ecmb_steal_view_cancellable (ECalMetaBackend *meta_backend,
 	return cancellable;
 }
 
+static void
+ecmb_update_connection_values (ECalMetaBackend *meta_backend)
+{
+	ESource *source;
+
+	g_return_if_fail (E_IS_CAL_META_BACKEND (meta_backend));
+
+	source = e_backend_get_source (E_BACKEND (meta_backend));
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	meta_backend->priv->authentication_port = 0;
+	g_clear_pointer (&meta_backend->priv->authentication_host, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_user, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_method, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_proxy_uid, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_credential_name, g_free);
+	g_clear_pointer (&meta_backend->priv->webdav_soup_uri, (GDestroyNotify) soup_uri_free);
+
+	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *auth_extension;
+
+		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+		meta_backend->priv->authentication_port = e_source_authentication_get_port (auth_extension);
+		meta_backend->priv->authentication_host = e_source_authentication_dup_host (auth_extension);
+		meta_backend->priv->authentication_user = e_source_authentication_dup_user (auth_extension);
+		meta_backend->priv->authentication_method = e_source_authentication_dup_method (auth_extension);
+		meta_backend->priv->authentication_proxy_uid = e_source_authentication_dup_proxy_uid (auth_extension);
+		meta_backend->priv->authentication_credential_name = e_source_authentication_dup_credential_name (auth_extension);
+	}
+
+	if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+		meta_backend->priv->webdav_soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+	}
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+}
+
 static gboolean
 ecmb_connect_wrapper_sync (ECalMetaBackend *meta_backend,
 			   GCancellable *cancellable,
@@ -240,7 +294,9 @@ ecmb_connect_wrapper_sync (ECalMetaBackend *meta_backend,
 
 	if (e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
 		cancellable, &local_error)) {
+		ecmb_update_connection_values (meta_backend);
 		e_named_parameters_free (credentials);
+
 		return TRUE;
 	}
 
@@ -416,6 +472,56 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 	return TRUE;
 }
 
+static gboolean
+ecmb_requires_reconnect (ECalMetaBackend *meta_backend)
+{
+	ESource *source;
+	gboolean requires = FALSE;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+
+	source = e_backend_get_source (E_BACKEND (meta_backend));
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *auth_extension;
+
+		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+		e_source_extension_property_lock (E_SOURCE_EXTENSION (auth_extension));
+
+		requires = meta_backend->priv->authentication_port != e_source_authentication_get_port (auth_extension) ||
+			g_strcmp0 (meta_backend->priv->authentication_host, e_source_authentication_get_host (auth_extension)) != 0 ||
+			g_strcmp0 (meta_backend->priv->authentication_user, e_source_authentication_get_user (auth_extension)) != 0 ||
+			g_strcmp0 (meta_backend->priv->authentication_method, e_source_authentication_get_method (auth_extension)) != 0 ||
+			g_strcmp0 (meta_backend->priv->authentication_proxy_uid, e_source_authentication_get_proxy_uid (auth_extension)) != 0 ||
+			g_strcmp0 (meta_backend->priv->authentication_credential_name, e_source_authentication_get_credential_name (auth_extension)) != 0;
+
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (auth_extension));
+	}
+
+	if (!requires && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		ESourceWebdav *webdav_extension;
+		SoupURI *soup_uri;
+
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+
+		requires = (!meta_backend->priv->webdav_soup_uri && soup_uri) ||
+			(soup_uri && meta_backend->priv->webdav_soup_uri &&
+			!soup_uri_equal (meta_backend->priv->webdav_soup_uri, soup_uri));
+
+		if (soup_uri)
+			soup_uri_free (soup_uri);
+	}
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	return requires;
+}
+
 static void
 ecmb_start_view_thread_func (ECalBackend *cal_backend,
 			     gpointer user_data,
@@ -550,8 +656,15 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
 	    !ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
 		/* Ignore connection errors here */
+		g_mutex_lock (&meta_backend->priv->property_lock);
+		meta_backend->priv->refresh_after_authenticate = TRUE;
+		g_mutex_unlock (&meta_backend->priv->property_lock);
 		goto done;
 	}
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+	meta_backend->priv->refresh_after_authenticate = FALSE;
+	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 	if (!cal_cache) {
@@ -634,9 +747,8 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 			g_hash_table_destroy (covered_uids);
 		}
 
-		if (success) {
-			e_cache_set_key (E_CACHE (cal_cache), ECMB_KEY_SYNC_TAG, new_sync_tag ? new_sync_tag : "", NULL);
-		}
+		if (success && new_sync_tag)
+			e_cache_set_key (E_CACHE (cal_cache), ECMB_KEY_SYNC_TAG, new_sync_tag, NULL);
 
 		g_slist_free_full (created_objects, e_cal_meta_backend_info_free);
 		g_slist_free_full (modified_objects, e_cal_meta_backend_info_free);
@@ -703,9 +815,17 @@ ecmb_source_changed_thread_func (ECalBackend *cal_backend,
 	g_signal_emit (meta_backend, signals[SOURCE_CHANGED], 0, NULL);
 
 	if (e_backend_get_online (E_BACKEND (meta_backend)) &&
+	    e_cal_meta_backend_requires_reconnect (meta_backend) &&
 	    e_cal_meta_backend_disconnect_sync (meta_backend, cancellable, error)) {
 		ecmb_schedule_refresh (meta_backend);
 	}
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	if (meta_backend->priv->source_changed_cancellable == cancellable)
+		g_clear_object (&meta_backend->priv->source_changed_cancellable);
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
 }
 
 static void
@@ -714,12 +834,23 @@ ecmb_go_offline_thread_func (ECalBackend *cal_backend,
 			     GCancellable *cancellable,
 			     GError **error)
 {
+	ECalMetaBackend *meta_backend;
+
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return;
 
-	e_cal_meta_backend_disconnect_sync (E_CAL_META_BACKEND (cal_backend), cancellable, error);
+	meta_backend = E_CAL_META_BACKEND (cal_backend);
+
+	e_cal_meta_backend_disconnect_sync (meta_backend, cancellable, error);
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	if (meta_backend->priv->go_offline_cancellable == cancellable)
+		g_clear_object (&meta_backend->priv->go_offline_cancellable);
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
 }
 
 static ECalComponent *
@@ -2576,7 +2707,7 @@ ecmb_authenticate_sync (EBackend *backend,
 {
 	ECalMetaBackend *meta_backend;
 	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
-	gboolean success;
+	gboolean success, refresh_after_authenticate = FALSE;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
 
@@ -2593,6 +2724,7 @@ ecmb_authenticate_sync (EBackend *backend,
 		out_certificate_pem, out_certificate_errors, cancellable, error);
 
 	if (success) {
+		ecmb_update_connection_values (meta_backend);
 		auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	} else {
 		if (auth_result == E_SOURCE_AUTHENTICATION_UNKNOWN)
@@ -2602,12 +2734,19 @@ ecmb_authenticate_sync (EBackend *backend,
 	g_mutex_lock (&meta_backend->priv->property_lock);
 
 	e_named_parameters_free (meta_backend->priv->last_credentials);
-	if (success)
+	if (success) {
 		meta_backend->priv->last_credentials = e_named_parameters_new_clone (credentials);
-	else
+
+		refresh_after_authenticate = meta_backend->priv->refresh_after_authenticate;
+		meta_backend->priv->refresh_after_authenticate = FALSE;
+	} else {
 		meta_backend->priv->last_credentials = NULL;
+	}
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	if (refresh_after_authenticate)
+		ecmb_schedule_refresh (meta_backend);
 
 	return auth_result;
 }
@@ -2674,11 +2813,15 @@ ecmb_schedule_go_offline (ECalMetaBackend *meta_backend)
 	g_mutex_lock (&meta_backend->priv->property_lock);
 
 	/* Cancel anything ongoing now, but disconnect in a dedicated thread */
-	if (meta_backend->priv->refresh_cancellable)
+	if (meta_backend->priv->refresh_cancellable) {
 		g_cancellable_cancel (meta_backend->priv->refresh_cancellable);
+		g_clear_object (&meta_backend->priv->refresh_cancellable);
+	}
 
-	if (meta_backend->priv->source_changed_cancellable)
+	if (meta_backend->priv->source_changed_cancellable) {
 		g_cancellable_cancel (meta_backend->priv->source_changed_cancellable);
+		g_clear_object (&meta_backend->priv->source_changed_cancellable);
+	}
 
 	if (meta_backend->priv->go_offline_cancellable) {
 		/* Already going offline */
@@ -2857,6 +3000,12 @@ e_cal_meta_backend_finalize (GObject *object)
 	g_clear_object (&meta_backend->priv->source_changed_cancellable);
 	g_clear_object (&meta_backend->priv->go_offline_cancellable);
 	g_clear_error (&meta_backend->priv->create_cache_error);
+	g_clear_pointer (&meta_backend->priv->authentication_host, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_user, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_method, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_proxy_uid, g_free);
+	g_clear_pointer (&meta_backend->priv->authentication_credential_name, g_free);
+	g_clear_pointer (&meta_backend->priv->webdav_soup_uri, (GDestroyNotify) soup_uri_free);
 
 	g_mutex_clear (&meta_backend->priv->property_lock);
 	g_hash_table_destroy (meta_backend->priv->view_cancellables);
@@ -2876,6 +3025,7 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	g_type_class_add_private (klass, sizeof (ECalMetaBackendPrivate));
 
 	klass->get_changes_sync = ecmb_get_changes_sync;
+	klass->requires_reconnect = ecmb_requires_reconnect;
 
 	cal_backend_sync_class = E_CAL_BACKEND_SYNC_CLASS (klass);
 	cal_backend_sync_class->open_sync = ecmb_open_sync;
@@ -2961,6 +3111,7 @@ e_cal_meta_backend_init (ECalMetaBackend *meta_backend)
 
 	meta_backend->priv->view_cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	meta_backend->priv->current_online_state = FALSE;
+	meta_backend->priv->refresh_after_authenticate = FALSE;
 }
 
 /**
@@ -3012,6 +3163,8 @@ e_cal_meta_backend_set_cache (ECalMetaBackend *meta_backend,
 		g_mutex_unlock (&meta_backend->priv->property_lock);
 		return;
 	}
+
+	g_clear_error (&meta_backend->priv->create_cache_error);
 
 	g_clear_object (&meta_backend->priv->cache);
 	meta_backend->priv->cache = g_object_ref (cache);
@@ -3868,4 +4021,35 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 	}
 
 	return klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, cancellable, error);
+}
+
+/**
+ * e_cal_meta_backend_requires_reconnect:
+ * @meta_backend: an #ECalMetaBackend
+ *
+ * Determines, whether current source content requires reconnect of the backend.
+ *
+ * It is optional to implement this virtual method by the descendant. The default
+ * implementation compares %E_SOURCE_EXTENSION_AUTHENTICATION and
+ * %E_SOURCE_EXTENSION_WEBDAV_BACKEND, if existing in the source,
+ * with the values after the last successful connect and returns
+ * %TRUE when they changed. It always return %TRUE when there was
+ * no successful connect done yet.
+ *
+ * Returns: %TRUE, when reconnect is required, %FALSE otherwise.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_requires_reconnect (ECalMetaBackend *meta_backend)
+{
+	ECalMetaBackendClass *klass;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+
+	klass = E_CAL_META_BACKEND_GET_CLASS (meta_backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->requires_reconnect != NULL, FALSE);
+
+	return klass->requires_reconnect (meta_backend);
 }
