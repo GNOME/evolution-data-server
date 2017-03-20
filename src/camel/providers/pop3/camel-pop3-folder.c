@@ -410,7 +410,7 @@ pop3_folder_get_message_internal_sync (CamelFolder *folder,
 	CamelPOP3Command *pcr;
 	CamelPOP3FolderInfo *fi;
 	gchar buffer[1];
-	gint i, last;
+	gint i = -1, last;
 	CamelStream *stream = NULL;
 	CamelService *service;
 	CamelSettings *settings;
