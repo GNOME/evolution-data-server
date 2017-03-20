@@ -43,7 +43,7 @@ static CamelProviderConfEntry pop3_conf_entries[] = {
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "delete-expunged", "keep-on-server",
 	  N_("Delete _expunged from local Inbox"), "0" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "disable-extensions", NULL,
-	  N_("Disable _support for all POP3 extensions"), "1" },
+	  N_("Disable _support for all POP3 extensions"), "0" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };
