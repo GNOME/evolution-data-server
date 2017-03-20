@@ -3818,7 +3818,11 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 	}
 
 	e_sexp_input_text (sexp, query, strlen (query));
-	e_sexp_parse (sexp);
+	if (e_sexp_parse (sexp) == -1) {
+		g_warning ("%s: Error in parsing '%s': %s", G_STRFUNC, query, e_sexp_get_error (sexp));
+		g_object_unref (sexp);
+		return NULL;
+	}
 
 	r = e_sexp_eval (sexp);
 

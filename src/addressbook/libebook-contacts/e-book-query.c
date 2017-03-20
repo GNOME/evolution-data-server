@@ -777,6 +777,7 @@ e_book_query_from_string (const gchar *query_string)
 
 	if (e_sexp_parse (sexp) == -1) {
 		g_warning ("%s: Error in parsing: %s", G_STRFUNC, e_sexp_get_error (sexp));
+		g_object_unref (sexp);
 		return NULL;
 	}
 

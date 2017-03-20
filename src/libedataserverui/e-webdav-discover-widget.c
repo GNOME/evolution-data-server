@@ -644,7 +644,7 @@ e_webdav_discover_content_trust_prompt_done_cb (GObject *source_object,
 			e_webdav_discover_content_refresh_done_cb, rd);
 	} else {
 		g_cancellable_cancel (rd->cancellable);
-		g_cancellable_set_error_if_cancelled (rd->cancellable, &local_error);
+		g_warn_if_fail (g_cancellable_set_error_if_cancelled (rd->cancellable, &local_error));
 		g_simple_async_result_take_error (rd->simple, local_error);
 		local_error = NULL;
 		g_simple_async_result_complete (rd->simple);

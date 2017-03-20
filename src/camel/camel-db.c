@@ -2342,7 +2342,7 @@ cdb_delete_ids (CamelDB *cdb,
                 GError **error)
 {
 	gchar *tmp;
-	gint ret = 0;
+	gint ret;
 	gboolean first = TRUE;
 	GString *str = g_string_new ("DELETE FROM ");
 	const GList *iterator;
@@ -2373,7 +2373,7 @@ cdb_delete_ids (CamelDB *cdb,
 
 	g_string_append (str, ")");
 
-	ret = ret == -1 ? ret : camel_db_add_to_transaction (cdb, str->str, error);
+	ret = camel_db_add_to_transaction (cdb, str->str, error);
 
 	if (ret == -1)
 		camel_db_abort_transaction (cdb, NULL);

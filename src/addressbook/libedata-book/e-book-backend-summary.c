@@ -1271,6 +1271,7 @@ e_book_backend_summary_search (EBookBackendSummary *summary,
 	esexp_error = e_sexp_parse (sexp);
 
 	if (esexp_error == -1) {
+		g_object_unref (sexp);
 		return NULL;
 	}
 
