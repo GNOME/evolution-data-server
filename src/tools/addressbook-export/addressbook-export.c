@@ -78,7 +78,7 @@ action_list_folders_init (ActionContext *p_actctx)
 		EBookClient *book_client;
 		EBookQuery *query;
 		ESource *source;
-		GSList *contacts;
+		GSList *contacts = NULL;
 		const gchar *display_name;
 		const gchar *uid;
 		gchar *query_str;
@@ -108,8 +108,8 @@ action_list_folders_init (ActionContext *p_actctx)
 		query_str = e_book_query_to_string (query);
 		e_book_query_unref (query);
 
-		e_book_client_get_contacts_sync (
-			book_client, query_str, &contacts, NULL, NULL);
+		if (!e_book_client_get_contacts_sync (book_client, query_str, &contacts, NULL, NULL))
+			contacts = NULL;
 
 		display_name = e_source_get_display_name (source);
 		uid = e_source_get_uid (source);
@@ -123,9 +123,7 @@ action_list_folders_init (ActionContext *p_actctx)
 				"\"%s\",\"%s\",%d\n",
 				uid, display_name, g_slist_length (contacts));
 
-		g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
-		g_slist_free (contacts);
-
+		g_slist_free_full (contacts, g_object_unref);
 		g_object_unref (book_client);
 	}
 
@@ -804,7 +802,7 @@ action_list_cards_init (ActionContext *p_actctx)
 	EBookClient *book_client;
 	EBookQuery *query;
 	ESource *source;
-	GSList *contacts;
+	GSList *contacts = NULL;
 	const gchar *uid;
 	gchar *query_str;
 	GError *error = NULL;
@@ -851,13 +849,11 @@ action_list_cards_init (ActionContext *p_actctx)
 	query_str = e_book_query_to_string (query);
 	e_book_query_unref (query);
 
-	e_book_client_get_contacts_sync (
-		book_client, query_str, &contacts, NULL, &error);
+	if (e_book_client_get_contacts_sync (book_client, query_str, &contacts, NULL, &error)) {
+		action_list_cards (contacts, p_actctx);
+		g_slist_free_full (contacts, g_object_unref);
+	}
 
-	action_list_cards (contacts, p_actctx);
-
-	g_slist_foreach (contacts, (GFunc) g_object_unref, NULL);
-	g_slist_free (contacts);
 	g_object_unref (book_client);
 
 	if (error != NULL) {

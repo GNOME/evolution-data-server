@@ -3318,6 +3318,7 @@ e_book_backend_sqlitedb_check_summary_query_locked (EBookBackendSqliteDB *ebsdb,
 	if (esexp_error == -1) {
 		if (invalid_query)
 			*invalid_query = TRUE;
+		g_object_unref (sexp);
 
 		return FALSE;
 	}
