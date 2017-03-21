@@ -108,7 +108,8 @@ static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 						  const GSList *in_instances,
 						  const gchar *extra,
 						  const gchar *orig_uid,
-						  gboolean *requires_put,
+						  gboolean *out_requires_put,
+						  gchar **out_new_uid,
 						  GCancellable *cancellable,
 						  GError **error);
 
@@ -538,6 +539,7 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 	ECalCache *cal_cache;
 	GSList *components = NULL;
 	const gchar *expr = NULL;
+	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
@@ -553,13 +555,16 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cal_backend));
 	g_return_if_fail (cal_cache != NULL);
 
-	if (e_cal_cache_search_components (cal_cache, expr, &components, cancellable, error) && components) {
+	if (e_cal_cache_search_components (cal_cache, expr, &components, cancellable, &local_error) && components) {
 		if (!g_cancellable_is_cancelled (cancellable))
 			e_data_cal_view_notify_components_added (view, components);
 
 		g_slist_free_full (components, g_object_unref);
 	}
 
+	e_data_cal_view_notify_complete (view, local_error);
+
+	g_clear_error (&local_error);
 	g_object_unref (cal_cache);
 }
 
@@ -606,7 +611,7 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 			if (success) {
 				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache,
 					change->state == E_OFFLINE_STATE_LOCALLY_MODIFIED,
-					conflict_resolution, instances, extra, change->uid, NULL, cancellable, error);
+					conflict_resolution, instances, extra, change->uid, NULL, NULL, cancellable, error);
 			}
 
 			g_slist_free_full (instances, g_object_unref);
@@ -1154,12 +1159,19 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 				  const gchar *extra,
 				  const gchar *orig_uid,
 				  gboolean *out_requires_put,
+				  gchar **out_new_uid,
 				  GCancellable *cancellable,
 				  GError **error)
 {
 	GSList *link, *instances = NULL;
 	gchar *new_uid = NULL;
 	gboolean has_attachments = FALSE, success = TRUE;
+
+	if (out_requires_put)
+		*out_requires_put = TRUE;
+
+	if (out_new_uid)
+		*out_new_uid = NULL;
 
 	for (link = (GSList *) in_instances; link && !has_attachments; link = g_slist_next (link)) {
 		has_attachments = e_cal_component_has_attachments (link->data);
@@ -1191,9 +1203,12 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, NULL, cancellable, error);
 
 		if (success && g_strcmp0 (new_uid, orig_uid) != 0)
-		    success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, orig_uid, cancellable, error);
+			success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, orig_uid, cancellable, error);
 
-		g_free (new_uid);
+		if (success && out_new_uid)
+			*out_new_uid = new_uid;
+		else
+			g_free (new_uid);
 
 		if (out_requires_put)
 			*out_requires_put = FALSE;
@@ -1516,6 +1531,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 	icalcomponent *icalcomp;
 	struct icaltimetype itt;
 	const gchar *uid;
+	gchar *new_uid = NULL;
 	gboolean success, requires_put = TRUE;
 
 	g_return_val_if_fail (comp != NULL, FALSE);
@@ -1566,7 +1582,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 		instances = g_slist_prepend (NULL, comp);
 
-		if (!ecmb_save_component_wrapper_sync (meta_backend, cal_cache, FALSE, conflict_resolution, instances, NULL, uid, &requires_put, cancellable, error)) {
+		if (!ecmb_save_component_wrapper_sync (meta_backend, cal_cache, FALSE, conflict_resolution, instances, NULL, uid, &requires_put, &new_uid, cancellable, error)) {
 			g_slist_free (instances);
 			return FALSE;
 		}
@@ -1585,10 +1601,18 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 	if (success) {
 		if (out_new_uid)
-			*out_new_uid = g_strdup (icalcomponent_get_uid (e_cal_component_get_icalcomponent (comp)));
-		if (out_new_comp)
-			*out_new_comp = g_object_ref (comp);
+			*out_new_uid = g_strdup (new_uid ? new_uid : icalcomponent_get_uid (e_cal_component_get_icalcomponent (comp)));
+		if (out_new_comp) {
+			if (new_uid) {
+				if (!e_cal_cache_get_component (cal_cache, new_uid, NULL, out_new_comp, cancellable, NULL))
+					*out_new_comp = NULL;
+			} else {
+				*out_new_comp = g_object_ref (comp);
+			}
+		}
 	}
+
+	g_free (new_uid);
 
 	return success;
 }
@@ -1676,7 +1700,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 	ECalComponentId *id;
 	ECalComponent *old_comp = NULL, *new_comp = NULL, *master_comp, *existing_comp = NULL;
 	GSList *instances = NULL;
-	gchar *extra = NULL;
+	gchar *extra = NULL, *new_uid = NULL;
 	gboolean success = TRUE, requires_put = TRUE;
 	GError *local_error = NULL;
 
@@ -1852,7 +1876,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 	if (success && *offline_flag == E_CACHE_IS_ONLINE) {
 		success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
-			instances, extra, id->uid, &requires_put, cancellable, error);
+			instances, extra, id->uid, &requires_put, &new_uid, cancellable, error);
 	}
 
 	if (success && requires_put)
@@ -1865,11 +1889,19 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 	if (out_old_comp)
 		*out_old_comp = old_comp;
-	if (out_new_comp)
-		*out_new_comp = new_comp;
+	if (out_new_comp) {
+		if (new_uid) {
+			if (!e_cal_cache_get_component (cal_cache, new_uid, NULL, out_new_comp, cancellable, NULL))
+				*out_new_comp = NULL;
+		} else {
+			*out_new_comp = new_comp ? g_object_ref (new_comp) : NULL;
+		}
+	}
 
 	g_slist_free_full (instances, g_object_unref);
 	e_cal_component_free_id (id);
+	g_clear_object (&new_comp);
+	g_free (new_uid);
 	g_free (extra);
 
 	return success;
@@ -2125,6 +2157,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			success = success && ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, cancellable, error);
 		} else {
 			gboolean requires_put = TRUE;
+			gchar *new_uid = NULL;
 
 			if (master_comp) {
 				icalcomponent *icalcomp = e_cal_component_get_icalcomponent (master_comp);
@@ -2140,11 +2173,20 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 			if (*offline_flag == E_CACHE_IS_ONLINE) {
 				success = ecmb_save_component_wrapper_sync (meta_backend, cal_cache, TRUE, conflict_resolution,
-					instances, extra, uid, &requires_put, cancellable, error);
+					instances, extra, uid, &requires_put, &new_uid, cancellable, error);
 			}
 
 			if (success && requires_put)
 				success = ecmb_put_instances (meta_backend, cal_cache, uid, *offline_flag, instances, extra, cancellable, error);
+
+			if (success && new_uid && !requires_put) {
+				g_clear_object (&new_comp);
+
+				if (!e_cal_cache_get_component (cal_cache, new_uid, NULL, &new_comp, cancellable, NULL))
+					new_comp = NULL;
+			}
+
+			g_free (new_uid);
 		}
 
 		g_free (extra);

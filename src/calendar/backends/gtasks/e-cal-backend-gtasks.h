@@ -47,12 +47,12 @@ typedef struct _ECalBackendGTasksClass ECalBackendGTasksClass;
 typedef struct _ECalBackendGTasksPrivate ECalBackendGTasksPrivate;
 
 struct _ECalBackendGTasks {
-	ECalBackend parent;
+	ECalMetaBackend parent;
 	ECalBackendGTasksPrivate *priv;
 };
 
 struct _ECalBackendGTasksClass {
-	ECalBackendClass parent_class;
+	ECalMetaBackendClass parent_class;
 };
 
 GType		e_cal_backend_gtasks_get_type	(void);

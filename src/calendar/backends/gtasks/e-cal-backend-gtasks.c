@@ -26,234 +26,50 @@
 
 #define d(x)
 
-#define E_CAL_BACKEND_GTASKS_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_GTASKS, ECalBackendGTasksPrivate))
-
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
-#define GTASKS_KEY_LAST_UPDATED "last-updated"
-#define GTASKS_KEY_VERSION	"version"
+#define GTASKS_DEFAULT_TASKLIST_NAME "@default"
 #define X_EVO_GTASKS_SELF_LINK	"X-EVOLUTION-GTASKS-SELF-LINK"
 
 /* Current data version; when doesn't match with the stored,
    then fetches everything again. */
-#define GTASKS_DATA_VERSION	"1"
-
-#define PROPERTY_LOCK(_gtasks) g_mutex_lock (&(_gtasks)->priv->property_mutex)
-#define PROPERTY_UNLOCK(_gtasks) g_mutex_unlock (&(_gtasks)->priv->property_mutex)
+#define GTASKS_DATA_VERSION	1
+#define GTASKS_DATA_VERSION_KEY	"gtasks-data-version"
 
 struct _ECalBackendGTasksPrivate {
 	GDataAuthorizer *authorizer;
 	GDataTasksService *service;
 	GDataTasksTasklist *tasklist;
-
-	ECalBackendStore *store;
-	GCancellable *cancellable;
-	GMutex property_mutex;
-
-	guint refresh_id;
+	GHashTable *preloaded; /* gchar *uid ~> ECalComponent * */
 };
 
-G_DEFINE_TYPE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_BACKEND)
+G_DEFINE_TYPE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_META_BACKEND)
 
 static gboolean
-ecb_gtasks_check_data_version_locked (ECalBackendGTasks *gtasks)
+ecb_gtasks_check_data_version (ECalCache *cal_cache)
 {
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
-	const gchar *key;
-	gboolean data_version_correct;
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks), FALSE);
-
-	key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_VERSION);
-	data_version_correct = g_strcmp0 (key, GTASKS_DATA_VERSION) == 0;
-
-	return data_version_correct;
+	return GTASKS_DATA_VERSION == e_cache_get_key_int (E_CACHE (cal_cache), GTASKS_DATA_VERSION_KEY, NULL);
 #else
 	return TRUE;
 #endif
 }
 
 static void
-ecb_gtasks_store_data_version_locked (ECalBackendGTasks *gtasks)
+ecb_gtasks_store_data_version (ECalCache *cal_cache)
 {
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
-	e_cal_backend_store_put_key_value (gtasks->priv->store, GTASKS_KEY_VERSION, GTASKS_DATA_VERSION);
+	GError *local_error = NULL;
+
+	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
+
+	if (!e_cache_set_key_int (E_CACHE (cal_cache), GTASKS_DATA_VERSION_KEY, GTASKS_DATA_VERSION, &local_error)) {
+		g_warning ("%s: Failed to store data version: %s\n", G_STRFUNC, local_error ? local_error->message : "Unknown error");
+	}
 #endif
-}
-
-static GCancellable *
-ecb_gtasks_ref_cancellable (ECalBackendGTasks *gtasks)
-{
-	GCancellable *cancellable = NULL;
-
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks), NULL);
-
-	PROPERTY_LOCK (gtasks);
-
-	if (gtasks->priv->cancellable)
-		cancellable = g_object_ref (gtasks->priv->cancellable);
-
-	PROPERTY_UNLOCK (gtasks);
-
-	return cancellable;
-}
-
-static void
-ecb_gtasks_take_cancellable (ECalBackendGTasks *gtasks,
-			     GCancellable *cancellable)
-{
-	GCancellable *old_cancellable;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
-
-	PROPERTY_LOCK (gtasks);
-
-	old_cancellable = gtasks->priv->cancellable;
-	gtasks->priv->cancellable = cancellable;
-
-	PROPERTY_UNLOCK (gtasks);
-
-	if (old_cancellable) {
-		g_cancellable_cancel (old_cancellable);
-		g_clear_object (&old_cancellable);
-	}
-}
-
-static void
-ecb_gtasks_icomp_x_prop_set (icalcomponent *comp,
-			     const gchar *key,
-			     const gchar *value)
-{
-	icalproperty *xprop;
-
-	/* Find the old one first */
-	xprop = icalcomponent_get_first_property (comp, ICAL_X_PROPERTY);
-
-	while (xprop) {
-		const gchar *str = icalproperty_get_x_name (xprop);
-
-		if (!strcmp (str, key)) {
-			if (value) {
-				icalproperty_set_value_from_string (xprop, value, "NO");
-			} else {
-				icalcomponent_remove_property (comp, xprop);
-				icalproperty_free (xprop);
-			}
-			break;
-		}
-
-		xprop = icalcomponent_get_next_property (comp, ICAL_X_PROPERTY);
-	}
-
-	if (!xprop && value) {
-		xprop = icalproperty_new_x (value);
-		icalproperty_set_x_name (xprop, key);
-		icalcomponent_add_property (comp, xprop);
-	}
-}
-
-static gchar *
-ecb_gtasks_icomp_x_prop_get (icalcomponent *comp,
-			     const gchar *key)
-{
-	icalproperty *xprop;
-
-	/* Find the old one first */
-	xprop = icalcomponent_get_first_property (comp, ICAL_X_PROPERTY);
-
-	while (xprop) {
-		const gchar *str = icalproperty_get_x_name (xprop);
-
-		if (!strcmp (str, key)) {
-			break;
-		}
-
-		xprop = icalcomponent_get_next_property (comp, ICAL_X_PROPERTY);
-	}
-
-	if (xprop) {
-		return icalproperty_get_value_as_string_r (xprop);
-	}
-
-	return NULL;
-}
-
-/* May hold PROPERTY_LOCK() when calling this */
-static ECalComponent *
-ecb_gtasks_get_cached_comp (ECalBackendGTasks *gtasks,
-			    const gchar *uid)
-{
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks), NULL);
-	g_return_val_if_fail (uid != NULL, NULL);
-
-	return e_cal_backend_store_get_component (gtasks->priv->store, uid, NULL);
-}
-
-static gboolean
-ecb_gtasks_is_authorized (ECalBackend *backend)
-{
-	ECalBackendGTasks *gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	if (!gtasks->priv->service ||
-	    !gtasks->priv->tasklist)
-		return FALSE;
-
-	return gdata_service_is_authorized (GDATA_SERVICE (gtasks->priv->service));
-}
-
-static void
-ecb_gtasks_prepare_tasklist (ECalBackendGTasks *gtasks,
-			     GCancellable *cancellable,
-			     GError **error)
-{
-	ESourceResource *resource;
-	ESource *source;
-	GDataFeed *feed;
-	GDataQuery *query;
-	gchar *id;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
-	g_return_if_fail (gtasks->priv->service != NULL);
-	g_return_if_fail (gdata_service_is_authorized (GDATA_SERVICE (gtasks->priv->service)));
-
-	source = e_backend_get_source (E_BACKEND (gtasks));
-	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
-	id = e_source_resource_dup_identity (resource);
-
-	query = gdata_query_new_with_limits (NULL, 0, 1);
-	/* This also verifies that the service can connect to the server with given credentials */
-	feed = gdata_tasks_service_query_all_tasklists (gtasks->priv->service, query, cancellable, NULL, NULL, error);
-	if (feed) {
-		/* If the tasklist ID is not set, then pick the first from the list, most likely the "Default List" */
-		if (!id || !*id) {
-			GList *entries;
-
-			entries = gdata_feed_get_entries (feed);
-			if (entries) {
-				GDataEntry *entry = entries->data;
-				if (entry) {
-					g_free (id);
-					id = g_strdup (gdata_entry_get_id (entry));
-				}
-			}
-		}
-	}
-	g_clear_object (&feed);
-	g_object_unref (query);
-
-	if (!id || !*id) {
-		/* But the tests for change will not work */
-		g_free (id);
-		id = g_strdup ("@default");
-	}
-
-	g_clear_object (&gtasks->priv->tasklist);
-	gtasks->priv->tasklist = gdata_tasks_tasklist_new (id);
-
-	g_free (id);
 }
 
 static void
@@ -344,7 +160,7 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 
 	data_link = gdata_entry_look_up_link (entry, GDATA_LINK_SELF);
 	if (data_link)
-		ecb_gtasks_icomp_x_prop_set (icomp, X_EVO_GTASKS_SELF_LINK, gdata_link_get_uri (data_link));
+		e_cal_util_set_x_property (icomp, X_EVO_GTASKS_SELF_LINK, gdata_link_get_uri (data_link));
 
 	comp = e_cal_component_new_from_icalcomponent (icomp);
 	g_warn_if_fail (comp != NULL);
@@ -354,7 +170,8 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 
 static GDataTasksTask *
 ecb_gtasks_comp_to_gdata (ECalComponent *comp,
-			  ECalComponent *cached_comp)
+			  ECalComponent *cached_comp,
+			  gboolean ignore_uid)
 {
 	GDataEntry *entry;
 	GDataTasksTask *task;
@@ -370,7 +187,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 	g_return_val_if_fail (icomp != NULL, NULL);
 
 	text = icalcomponent_get_uid (icomp);
-	task = gdata_tasks_task_new (text && *text ? text : NULL);
+	task = gdata_tasks_task_new ((!ignore_uid && text && *text) ? text : NULL);
 	entry = GDATA_ENTRY (task);
 
 	tt = icalcomponent_get_due (icomp);
@@ -408,7 +225,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 	else if (icalcomponent_get_status (icomp) == ICAL_STATUS_NEEDSACTION)
 		gdata_tasks_task_set_status (task, "needsAction");
 
-	tmp = ecb_gtasks_icomp_x_prop_get (icomp, X_EVO_GTASKS_SELF_LINK);
+	tmp = e_cal_util_dup_x_property (icomp, X_EVO_GTASKS_SELF_LINK);
 	if (!tmp || !*tmp) {
 		g_free (tmp);
 		tmp = NULL;
@@ -416,7 +233,7 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 		/* If the passed-in component doesn't contain the libgdata self link,
 		   then get it from the cached comp */
 		if (cached_comp) {
-			tmp = ecb_gtasks_icomp_x_prop_get (
+			tmp = e_cal_util_dup_x_property (
 				e_cal_component_get_icalcomponent (cached_comp),
 				X_EVO_GTASKS_SELF_LINK);
 		}
@@ -435,49 +252,337 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 	return task;
 }
 
-struct EGTasksUpdateData
+static gboolean
+ecb_gtasks_is_authorized (ECalBackendGTasks *cbgtasks)
 {
-	ECalBackendGTasks *gtasks;
-	gint64 taskslist_time;
-};
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (cbgtasks), FALSE);
 
-static gpointer
-ecb_gtasks_update_thread (gpointer user_data)
+	if (!cbgtasks->priv->service ||
+	    !cbgtasks->priv->tasklist)
+		return FALSE;
+
+	return gdata_service_is_authorized (GDATA_SERVICE (cbgtasks->priv->service));
+}
+
+static gboolean
+ecb_gtasks_request_authorization (ECalBackendGTasks *cbgtasks,
+				  const ENamedParameters *credentials,
+				  GCancellable *cancellable,
+				  GError **error)
 {
-	struct EGTasksUpdateData *update_data = user_data;
-	ECalBackendGTasks *gtasks;
+	/* Make sure we have the GDataService configured
+	 * before requesting authorization. */
+
+	if (!cbgtasks->priv->authorizer) {
+		ESource *source;
+		EGDataOAuth2Authorizer *authorizer;
+
+		source = e_backend_get_source (E_BACKEND (cbgtasks));
+
+		/* Only OAuth2 is supported with Google Tasks */
+		authorizer = e_gdata_oauth2_authorizer_new (source);
+		cbgtasks->priv->authorizer = GDATA_AUTHORIZER (authorizer);
+	}
+
+	if (E_IS_GDATA_OAUTH2_AUTHORIZER (cbgtasks->priv->authorizer)) {
+		e_gdata_oauth2_authorizer_set_credentials (E_GDATA_OAUTH2_AUTHORIZER (cbgtasks->priv->authorizer), credentials);
+	}
+
+	if (!cbgtasks->priv->service) {
+		GDataTasksService *tasks_service;
+
+		tasks_service = gdata_tasks_service_new (cbgtasks->priv->authorizer);
+		cbgtasks->priv->service = tasks_service;
+
+		e_binding_bind_property (
+			cbgtasks, "proxy-resolver",
+			cbgtasks->priv->service, "proxy-resolver",
+			G_BINDING_SYNC_CREATE);
+	}
+
+	/* If we're using OAuth tokens, then as far as the backend
+	 * is concerned it's always authorized.  The GDataAuthorizer
+	 * will take care of everything in the background. */
+	if (!GDATA_IS_CLIENT_LOGIN_AUTHORIZER (cbgtasks->priv->authorizer))
+		return TRUE;
+
+	/* Otherwise it's up to us to obtain a login secret, but
+	   there is currently no way to do it, thus simply fail. */
+	return FALSE;
+}
+
+static gboolean
+ecb_gtasks_prepare_tasklist (ECalBackendGTasks *cbgtasks,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	ESourceResource *resource;
+	ESource *source;
+	GDataFeed *feed;
+	GDataQuery *query;
+	gchar *id;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (cbgtasks), FALSE);
+	g_return_val_if_fail (cbgtasks->priv->service != NULL, FALSE);
+	g_return_val_if_fail (gdata_service_is_authorized (GDATA_SERVICE (cbgtasks->priv->service)), FALSE);
+
+	source = e_backend_get_source (E_BACKEND (cbgtasks));
+	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+	id = e_source_resource_dup_identity (resource);
+
+	query = gdata_query_new_with_limits (NULL, 0, 1);
+
+	/* This also verifies that the service can connect to the server with given credentials */
+	feed = gdata_tasks_service_query_all_tasklists (cbgtasks->priv->service, query, cancellable, NULL, NULL, &local_error);
+	if (feed) {
+		/* If the tasklist ID is not set, then pick the first from the list, most likely the "Default List" */
+		if (!id || !*id) {
+			GList *entries;
+
+			entries = gdata_feed_get_entries (feed);
+			if (entries) {
+				GDataEntry *entry = entries->data;
+				if (entry) {
+					g_free (id);
+					id = g_strdup (gdata_entry_get_id (entry));
+				}
+			}
+		}
+	}
+	g_clear_object (&feed);
+	g_object_unref (query);
+
+	if (!id || !*id) {
+		/* But the tests for change will not work */
+		g_free (id);
+		id = g_strdup (GTASKS_DEFAULT_TASKLIST_NAME);
+	}
+
+	g_clear_object (&cbgtasks->priv->tasklist);
+	cbgtasks->priv->tasklist = gdata_tasks_tasklist_new (id);
+
+	g_free (id);
+
+	if (local_error) {
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static gchar *
+ecb_gtasks_get_backend_property (ECalBackend *cal_backend,
+				 const gchar *prop_name)
+{
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (cal_backend), NULL);
+	g_return_val_if_fail (prop_name != NULL, NULL);
+
+	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
+		return g_strjoin (",",
+			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE,
+			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR,
+			e_cal_meta_backend_get_capabilities (E_CAL_META_BACKEND (cal_backend)),
+			NULL);
+	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
+		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
+		ESourceAuthentication *authentication;
+		ESource *source;
+		const gchar *user;
+
+		source = e_backend_get_source (E_BACKEND (cal_backend));
+		authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		user = e_source_authentication_get_user (authentication);
+
+		if (!user || !*user || !strchr (user, '@'))
+			return NULL;
+
+		return g_strdup (user);
+	}
+
+	/* Chain up to parent's method. */
+	return E_CAL_BACKEND_CLASS (e_cal_backend_gtasks_parent_class)->get_backend_property (cal_backend, prop_name);
+}
+
+static gboolean
+ecb_gtasks_connect_sync (ECalMetaBackend *meta_backend,
+			 const ENamedParameters *credentials,
+			 ESourceAuthenticationResult *out_auth_result,
+			 gchar **out_certificate_pem,
+			 GTlsCertificateFlags *out_certificate_errors,
+			 GCancellable *cancellable,
+			 GError **error)
+{
+	ECalBackendGTasks *cbgtasks;
+	gboolean success;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+	g_return_val_if_fail (out_auth_result != NULL, FALSE);
+
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
+
+	*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+	if (ecb_gtasks_is_authorized (cbgtasks))
+		return TRUE;
+
+	success = ecb_gtasks_request_authorization (cbgtasks, credentials, cancellable, &local_error);
+	if (success)
+		success = gdata_authorizer_refresh_authorization (cbgtasks->priv->authorizer, cancellable, &local_error);
+	if (success)
+		success = ecb_gtasks_prepare_tasklist (cbgtasks, cancellable, &local_error);
+
+	if (success) {
+		e_cal_backend_set_writable (E_CAL_BACKEND (cbgtasks), TRUE);
+	} else {
+		e_cal_backend_set_writable (E_CAL_BACKEND (cbgtasks), FALSE);
+
+		if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
+			if (!e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
+				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
+			else
+				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			g_clear_error (&local_error);
+		} else {
+			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
+			g_propagate_error (error, local_error);
+		}
+	}
+
+	return success;
+}
+
+static gboolean
+ecb_gtasks_disconnect_sync (ECalMetaBackend *meta_backend,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	ECalBackendGTasks *cbgtasks;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
+
+	g_clear_object (&cbgtasks->priv->service);
+	g_clear_object (&cbgtasks->priv->authorizer);
+	g_clear_object (&cbgtasks->priv->tasklist);
+
+	return TRUE;
+}
+
+static gboolean
+ecb_gtasks_check_tasklist_changed_sync (ECalBackendGTasks *cbgtasks,
+					const gchar *last_sync_tag,
+					gboolean *out_changed,
+					gint64 *out_taskslist_time,
+					GCancellable *cancellable,
+					GError **error)
+{
+	GDataFeed *feed;
+	gchar *id = NULL;
+	gint64 taskslist_time = 0;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (cbgtasks), FALSE);
+	g_return_val_if_fail (out_changed != NULL, FALSE);
+	g_return_val_if_fail (out_taskslist_time != NULL, FALSE);
+
+	*out_changed = TRUE;
+	*out_taskslist_time = 0;
+
+	g_object_get (cbgtasks->priv->tasklist, "id", &id, NULL);
+	g_return_val_if_fail (id != NULL, FALSE);
+
+	/* Check whether the tasklist changed */
+	feed = gdata_tasks_service_query_all_tasklists (cbgtasks->priv->service, NULL, cancellable, NULL, NULL, &local_error);
+
+	if (local_error) {
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	if (feed) {
+		GList *link;
+
+		for (link = gdata_feed_get_entries (feed); link; link = g_list_next (link)) {
+			GDataEntry *entry = link->data;
+
+			if (entry && g_strcmp0 (id, gdata_entry_get_id (entry)) == 0) {
+				ECalCache *cal_cache;
+
+				cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cbgtasks));
+				taskslist_time = gdata_entry_get_updated (entry);
+
+				if (taskslist_time > 0 && last_sync_tag && ecb_gtasks_check_data_version (cal_cache)) {
+					GTimeVal stored;
+
+					if (g_time_val_from_iso8601 (last_sync_tag, &stored))
+						*out_changed = taskslist_time != stored.tv_sec;
+				}
+
+				g_clear_object (&cal_cache);
+
+				break;
+			}
+		}
+
+		g_clear_object (&feed);
+	}
+
+	g_free (id);
+
+	*out_taskslist_time = taskslist_time;
+
+	return TRUE;
+}
+
+static gboolean
+ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
+			     const gchar *last_sync_tag,
+			     gchar **out_new_sync_tag,
+			     gboolean *out_repeat,
+			     GSList **out_created_objects, /* ECalMetaBackendInfo * */
+			     GSList **out_modified_objects, /* ECalMetaBackendInfo * */
+			     GSList **out_removed_objects, /* ECalMetaBackendInfo * */
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	ECalBackendGTasks *cbgtasks;
+	ECalCache *cal_cache;
+	gint64 taskslist_time = 0;
 	GTimeVal last_updated;
 	GDataFeed *feed;
 	GDataTasksQuery *tasks_query;
-	const gchar *key;
-	GCancellable *cancellable;
+	gboolean changed = TRUE;
 	GError *local_error = NULL;
 
-	g_return_val_if_fail (update_data != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+	g_return_val_if_fail (out_new_sync_tag != NULL, FALSE);
+	g_return_val_if_fail (out_created_objects != NULL, FALSE);
+	g_return_val_if_fail (out_modified_objects != NULL, FALSE);
+	g_return_val_if_fail (out_removed_objects != NULL, FALSE);
 
-	gtasks = update_data->gtasks;
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks), NULL);
+	*out_created_objects = NULL;
+	*out_modified_objects = NULL;
+	*out_removed_objects = NULL;
 
-	if (!ecb_gtasks_is_authorized (E_CAL_BACKEND (gtasks))) {
-		g_clear_object (&gtasks);
-		g_free (update_data);
-		return NULL;
-	}
+	if (!ecb_gtasks_check_tasklist_changed_sync (cbgtasks, last_sync_tag, &changed, &taskslist_time, cancellable, error))
+		return FALSE;
 
-	PROPERTY_LOCK (gtasks);
+	if (!changed)
+		return TRUE;
 
-	if (ecb_gtasks_check_data_version_locked (gtasks)) {
-		key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED);
-		if (!key || !g_time_val_from_iso8601 (key, &last_updated))
-			last_updated.tv_sec = 0;
-	} else {
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+
+	if (!ecb_gtasks_check_data_version (cal_cache) ||
+	    !last_sync_tag ||
+	    !g_time_val_from_iso8601 (last_sync_tag, &last_updated)) {
 		last_updated.tv_sec = 0;
 	}
-
-	PROPERTY_UNLOCK (gtasks);
-
-	cancellable = ecb_gtasks_ref_cancellable (gtasks);
 
 	tasks_query = gdata_tasks_query_new (NULL);
 	gdata_query_set_max_results (GDATA_QUERY (tasks_query), 100);
@@ -489,11 +594,8 @@ ecb_gtasks_update_thread (gpointer user_data)
 		gdata_tasks_query_set_show_deleted (tasks_query, TRUE);
 	}
 
-	feed = gdata_tasks_service_query_tasks (gtasks->priv->service, gtasks->priv->tasklist,
+	feed = gdata_tasks_service_query_tasks (cbgtasks->priv->service, cbgtasks->priv->tasklist,
 		GDATA_QUERY (tasks_query), cancellable, NULL, NULL, &local_error);
-
-	if (!local_error)
-		e_backend_ensure_source_status_connected (E_BACKEND (gtasks));
 
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
 	while (feed && !g_cancellable_is_cancelled (cancellable) && !local_error) {
@@ -501,39 +603,37 @@ ecb_gtasks_update_thread (gpointer user_data)
 	if (feed) {
 #endif
 		GList *link;
-		const gchar *uid;
 
-		PROPERTY_LOCK (gtasks);
-
-		e_cal_backend_store_freeze_changes (gtasks->priv->store);
-
-		for (link = gdata_feed_get_entries (feed); link; link = g_list_next (link)) {
+		for (link = gdata_feed_get_entries (feed); link && !g_cancellable_is_cancelled (cancellable); link = g_list_next (link)) {
 			GDataTasksTask *task = link->data;
-			ECalComponent *cached_comp;
+			ECalComponent *cached_comp = NULL;
+			gchar *uid;
 
 			if (!GDATA_IS_TASKS_TASK (task))
 				continue;
 
-			uid = gdata_entry_get_id (GDATA_ENTRY (task));
-			if (!uid || !*uid)
+			uid = g_strdup (gdata_entry_get_id (GDATA_ENTRY (task)));
+			if (!uid || !*uid) {
+				g_free (uid);
 				continue;
+			}
 
-			cached_comp = ecb_gtasks_get_cached_comp (gtasks, uid);
+			if (!e_cal_cache_get_component (cal_cache, uid, NULL, &cached_comp, cancellable, NULL))
+				cached_comp = NULL;
 
 			if (gdata_tasks_task_is_deleted (task)) {
-				ECalComponentId id;
-
-				id.uid = (gchar *) uid;
-				id.rid = NULL;
-
-				e_cal_backend_notify_component_removed ((ECalBackend *) gtasks, &id, cached_comp, NULL);
-				if (cached_comp)
-					e_cal_backend_store_remove_component (gtasks->priv->store, uid, NULL);
+				*out_removed_objects = g_slist_prepend (*out_removed_objects,
+					e_cal_meta_backend_info_new (uid, NULL, NULL, NULL));
 			} else {
 				ECalComponent *new_comp;
 
 				new_comp = ecb_gtasks_gdata_to_comp (task);
 				if (new_comp) {
+					gchar *revision, *object;
+
+					revision = e_cal_cache_dup_component_revision (cal_cache, e_cal_component_get_icalcomponent (new_comp));
+					object = e_cal_component_get_as_string (new_comp);
+
 					if (cached_comp) {
 						struct icaltimetype *cached_tt = NULL, *new_tt = NULL;
 
@@ -547,8 +647,8 @@ ecb_gtasks_update_thread (gpointer user_data)
 							if (cached_tt)
 								e_cal_component_set_created (new_comp, cached_tt);
 
-							e_cal_backend_store_put_component (gtasks->priv->store, new_comp);
-							e_cal_backend_notify_component_modified ((ECalBackend *) gtasks, cached_comp, new_comp);
+							*out_modified_objects = g_slist_prepend (*out_modified_objects,
+								e_cal_meta_backend_info_new (uid, NULL, revision, object));
 						}
 
 						if (cached_tt)
@@ -556,20 +656,20 @@ ecb_gtasks_update_thread (gpointer user_data)
 						if (new_tt)
 							e_cal_component_free_icaltimetype (new_tt);
 					} else {
-						e_cal_backend_store_put_component (gtasks->priv->store, new_comp);
-						e_cal_backend_notify_component_created ((ECalBackend *) gtasks, new_comp);
+						*out_created_objects = g_slist_prepend (*out_created_objects,
+							e_cal_meta_backend_info_new (uid, NULL, revision, object));
 					}
+
+					g_free (revision);
+					g_free (object);
 				}
 
 				g_clear_object (&new_comp);
 			}
 
 			g_clear_object (&cached_comp);
+			g_free (uid);
 		}
-
-		e_cal_backend_store_thaw_changes (gtasks->priv->store);
-
-		PROPERTY_UNLOCK (gtasks);
 
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
 		if (!gdata_feed_get_entries (feed))
@@ -579,7 +679,7 @@ ecb_gtasks_update_thread (gpointer user_data)
 
 		g_clear_object (&feed);
 
-		feed = gdata_tasks_service_query_tasks (gtasks->priv->service, gtasks->priv->tasklist,
+		feed = gdata_tasks_service_query_tasks (cbgtasks->priv->service, cbgtasks->priv->tasklist,
 			GDATA_QUERY (tasks_query), cancellable, NULL, NULL, &local_error);
 #endif
 	}
@@ -588,1020 +688,337 @@ ecb_gtasks_update_thread (gpointer user_data)
 	g_clear_object (&feed);
 
 	if (!g_cancellable_is_cancelled (cancellable) && !local_error) {
-		gchar *strtm;
-
-		PROPERTY_LOCK (gtasks);
-
-		last_updated.tv_sec = update_data->taskslist_time;
+		last_updated.tv_sec = taskslist_time;
 		last_updated.tv_usec = 0;
 
-		strtm = g_time_val_to_iso8601 (&last_updated);
-		e_cal_backend_store_put_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED, strtm);
-		g_free (strtm);
+		*out_new_sync_tag = g_time_val_to_iso8601 (&last_updated);
 
-		ecb_gtasks_store_data_version_locked (gtasks);
-
-		PROPERTY_UNLOCK (gtasks);
+		ecb_gtasks_store_data_version (cal_cache);
 	}
 
-	g_clear_object (&cancellable);
-	g_clear_object (&gtasks);
-	g_clear_error (&local_error);
-	g_free (update_data);
-
-	return NULL;
-}
-
-static void
-ecb_gtasks_start_update (ECalBackendGTasks *gtasks)
-{
-	GDataFeed *feed;
-	GCancellable *cancellable;
-	GError *local_error = NULL;
-	gchar *id = NULL;
-	gint64 taskslist_time = 0;
-	gboolean changed = TRUE;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
-
-	if (!ecb_gtasks_is_authorized ((ECalBackend *) gtasks))
-		return;
-
-	cancellable = ecb_gtasks_ref_cancellable (gtasks);
-	g_return_if_fail (cancellable != NULL);
-
-	g_object_get (gtasks->priv->tasklist, "id", &id, NULL);
-	g_return_if_fail (id != NULL);
-
-	/* Check whether the tasklist changed */
-	feed = gdata_tasks_service_query_all_tasklists (gtasks->priv->service, NULL, cancellable, NULL, NULL, &local_error);
-
-	if (!local_error)
-		e_backend_ensure_source_status_connected (E_BACKEND (gtasks));
-
-	if (feed) {
-		GList *link;
-
-		for (link = gdata_feed_get_entries (feed); link; link = g_list_next (link)) {
-			GDataEntry *entry = link->data;
-
-			if (entry && g_strcmp0 (id, gdata_entry_get_id (entry)) == 0) {
-				taskslist_time = gdata_entry_get_updated (entry);
-
-				if (taskslist_time > 0) {
-					PROPERTY_LOCK (gtasks);
-
-					if (ecb_gtasks_check_data_version_locked (gtasks)) {
-						GTimeVal stored;
-						const gchar *key;
-
-						key = e_cal_backend_store_get_key_value (gtasks->priv->store, GTASKS_KEY_LAST_UPDATED);
-						if (key && g_time_val_from_iso8601 (key, &stored))
-							changed = taskslist_time != stored.tv_sec;
-					}
-
-					PROPERTY_UNLOCK (gtasks);
-				}
-
-				break;
-			}
-		}
-
-		g_clear_object (&feed);
-	}
-
-	if (changed && !g_cancellable_is_cancelled (cancellable)) {
-		GThread *thread;
-		struct EGTasksUpdateData *data;
-
-		data = g_new0 (struct EGTasksUpdateData, 1);
-		data->gtasks = g_object_ref (gtasks);
-		data->taskslist_time = taskslist_time;
-
-		thread = g_thread_new (NULL, ecb_gtasks_update_thread, data);
-		g_thread_unref (thread);
-	}
+	g_clear_object (&cal_cache);
 
 	if (local_error) {
-		g_debug ("%s: Failed to get all tasklists: %s", G_STRFUNC, local_error->message);
-		g_clear_error (&local_error);
+		g_propagate_error (error, local_error);
+		return FALSE;
 	}
 
-	g_clear_object (&cancellable);
-	g_free (id);
-}
-
-static void
-ecb_gtasks_time_to_refresh_data_cb (ESource *source,
-				    gpointer user_data)
-{
-	ECalBackendGTasks *gtasks = user_data;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
-
-	if (!ecb_gtasks_is_authorized (E_CAL_BACKEND (gtasks)) ||
-	    !e_backend_get_online (E_BACKEND (gtasks))) {
-		return;
-	}
-
-	ecb_gtasks_start_update (gtasks);
+	return TRUE;
 }
 
 static gboolean
-ecb_gtasks_request_authorization (ECalBackend *backend,
-				  const ENamedParameters *credentials,
-				  GCancellable *cancellable,
-				  GError **error)
+ecb_gtasks_load_component_sync (ECalMetaBackend *meta_backend,
+				const gchar *uid,
+				icalcomponent **out_instances,
+				gchar **out_extra,
+				GCancellable *cancellable,
+				GError **error)
 {
-	ECalBackendGTasks *gtasks = E_CAL_BACKEND_GTASKS (backend);
+	ECalBackendGTasks *cbgtasks;
 
-	/* Make sure we have the GDataService configured
-	 * before requesting authorization. */
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (out_instances != NULL, FALSE);
 
-	if (!gtasks->priv->authorizer) {
-		ESource *source;
-		EGDataOAuth2Authorizer *authorizer;
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
-		source = e_backend_get_source (E_BACKEND (backend));
+	/* Only "load" preloaded during save, otherwise fail with an error,
+	   because the backend provides objects within get_changes_sync() */
 
-		/* Only OAuth2 is supported with Google Tasks */
-		authorizer = e_gdata_oauth2_authorizer_new (source);
-		gtasks->priv->authorizer = GDATA_AUTHORIZER (authorizer);
+	if (cbgtasks->priv->preloaded) {
+		ECalComponent *comp;
+
+		comp = g_hash_table_lookup (cbgtasks->priv->preloaded, uid);
+		if (comp) {
+			icalcomponent *icalcomp;
+
+			icalcomp = e_cal_component_get_icalcomponent (comp);
+			if (icalcomp)
+				*out_instances = icalcomponent_new_clone (icalcomp);
+
+			g_hash_table_remove (cbgtasks->priv->preloaded, uid);
+
+			if (icalcomp)
+				return TRUE;
+		}
 	}
 
-	if (E_IS_GDATA_OAUTH2_AUTHORIZER (gtasks->priv->authorizer)) {
-		e_gdata_oauth2_authorizer_set_credentials (E_GDATA_OAUTH2_AUTHORIZER (gtasks->priv->authorizer), credentials);
-	}
+	g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 
-	if (!gtasks->priv->service) {
-		GDataTasksService *tasks_service;
-
-		tasks_service = gdata_tasks_service_new (gtasks->priv->authorizer);
-		gtasks->priv->service = tasks_service;
-
-		e_binding_bind_property (
-			backend, "proxy-resolver",
-			gtasks->priv->service, "proxy-resolver",
-			G_BINDING_SYNC_CREATE);
-	}
-
-	/* If we're using OAuth tokens, then as far as the backend
-	 * is concerned it's always authorized.  The GDataAuthorizer
-	 * will take care of everything in the background. */
-	if (!GDATA_IS_CLIENT_LOGIN_AUTHORIZER (gtasks->priv->authorizer))
-		return TRUE;
-
-	/* Otherwise it's up to us to obtain a login secret, but
-	   there is currently no way to do it, thus simply fail. */
 	return FALSE;
 }
 
-static gchar *
-ecb_gtasks_get_backend_property (ECalBackend *backend,
-				 const gchar *prop_name)
+static gboolean
+ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
+				gboolean overwrite_existing,
+				EConflictResolution conflict_resolution,
+				const GSList *instances, /* ECalComponent * */
+				const gchar *extra,
+				gchar **out_new_uid,
+				GCancellable *cancellable,
+				GError **error)
 {
-	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (backend), NULL);
-	g_return_val_if_fail (prop_name != NULL, NULL);
+	ECalBackendGTasks *cbgtasks;
+	ECalCache *cal_cache;
+	GDataTasksTask *new_task, *comp_task;
+	ECalComponent *comp, *cached_comp = NULL;
+	icalcomponent *icalcomp;
+	const gchar *uid;
 
-	if (g_str_equal (prop_name, CLIENT_BACKEND_PROPERTY_CAPABILITIES)) {
-		GString *caps;
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+	g_return_val_if_fail (out_new_uid != NULL, FALSE);
 
-		caps = g_string_new (
-			CAL_STATIC_CAPABILITY_NO_THISANDFUTURE ","
-			CAL_STATIC_CAPABILITY_NO_THISANDPRIOR ","
-			CAL_STATIC_CAPABILITY_REFRESH_SUPPORTED);
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
 
-		return g_string_free (caps, FALSE);
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_CAL_EMAIL_ADDRESS) ||
-		   g_str_equal (prop_name, CAL_BACKEND_PROPERTY_ALARM_EMAIL_ADDRESS)) {
-		ESourceAuthentication *authentication;
-		ESource *source;
-		const gchar *user;
-
-		source = e_backend_get_source (E_BACKEND (backend));
-		authentication = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		user = e_source_authentication_get_user (authentication);
-
-		if (!user || !*user || !strchr (user, '@'))
-			return NULL;
-
-		return g_strdup (user);
-
-	} else if (g_str_equal (prop_name, CAL_BACKEND_PROPERTY_DEFAULT_OBJECT)) {
-		ECalComponent *comp;
-		gchar *prop_value;
-
-		comp = e_cal_component_new ();
-		e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_TODO);
-
-		prop_value = e_cal_component_get_as_string (comp);
-
-		g_object_unref (comp);
-
-		return prop_value;
+	if (g_slist_length ((GSList *) instances) != 1) {
+		g_propagate_error (error, EDC_ERROR (InvalidArg));
+		g_clear_object (&cal_cache);
+		return FALSE;
 	}
 
-	/* Chain up to parent's method. */
-	return E_CAL_BACKEND_CLASS (e_cal_backend_gtasks_parent_class)->get_backend_property (backend, prop_name);
-}
+	comp = instances->data;
 
-static void
-ecb_gtasks_update_connection_sync (ECalBackendGTasks *gtasks,
-				   const ENamedParameters *credentials,
-				   GCancellable *cancellable,
-				   GError **error)
-{
-	ECalBackend *backend;
-	gboolean success;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (gtasks));
-
-	backend = E_CAL_BACKEND (gtasks);
-
-	success = ecb_gtasks_request_authorization (backend, credentials, cancellable, &local_error);
-	if (success)
-		success = gdata_authorizer_refresh_authorization (gtasks->priv->authorizer, cancellable, &local_error);
-
-	if (success) {
-		e_cal_backend_set_writable (backend, TRUE);
-
-		ecb_gtasks_prepare_tasklist (gtasks, cancellable, &local_error);
-		if (!local_error)
-			ecb_gtasks_start_update (gtasks);
-	} else {
-		e_cal_backend_set_writable (backend, FALSE);
+	if (!comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		g_clear_object (&cal_cache);
+		return FALSE;
 	}
 
-	if (local_error)
-		g_propagate_error (error, local_error);
-}
-
-static ESourceAuthenticationResult
-ecb_gtasks_authenticate_sync (EBackend *backend,
-			      const ENamedParameters *credentials,
-			      gchar **out_certificate_pem,
-			      GTlsCertificateFlags *out_certificate_errors,
-			      GCancellable *cancellable,
-			      GError **error)
-{
-	ECalBackendGTasks *gtasks;
-	ESourceAuthenticationResult result;
-	GError *local_error = NULL;
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	ecb_gtasks_update_connection_sync (gtasks, credentials, cancellable, &local_error);
-
-	if (local_error == NULL) {
-		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
-
-	} else if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
-		if (!e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
-			result = E_SOURCE_AUTHENTICATION_REQUIRED;
-		else
-			result = E_SOURCE_AUTHENTICATION_REJECTED;
-		g_clear_error (&local_error);
-	} else {
-		result = E_SOURCE_AUTHENTICATION_ERROR;
-		g_propagate_error (error, local_error);
+	if (!overwrite_existing || !e_cal_cache_get_component (cal_cache,
+		icalcomponent_get_uid (e_cal_component_get_icalcomponent (comp)),
+		NULL, &cached_comp, cancellable, NULL)) {
+		cached_comp = NULL;
 	}
 
-	return result;
-}
-
-static void
-ecb_gtasks_open (ECalBackend *backend,
-		 EDataCal *cal,
-		 guint32 opid,
-		 GCancellable *cancellable,
-		 gboolean only_if_exists)
-{
-	ECalBackendGTasks *gtasks;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	if (ecb_gtasks_is_authorized (backend)) {
-		e_data_cal_respond_open (cal, opid, NULL);
-		return;
-	}
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	e_cal_backend_set_writable (backend, FALSE);
-
-	ecb_gtasks_take_cancellable (gtasks, g_cancellable_new ());
-
-	if (e_backend_get_online (E_BACKEND (backend))) {
-		ESource *source;
-		gchar *auth_method = NULL;
-
-		source = e_backend_get_source (E_BACKEND (backend));
-
-		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
-			ESourceAuthentication *auth_extension;
-
-			auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-			auth_method = e_source_authentication_dup_method (auth_extension);
-		}
-
-		if (g_strcmp0 (auth_method, "Google") == 0) {
-			e_backend_credentials_required_sync (
-				E_BACKEND (backend), E_SOURCE_CREDENTIALS_REASON_REQUIRED,
-				NULL, 0, NULL, cancellable, &local_error);
-		} else {
-			ecb_gtasks_update_connection_sync (gtasks, NULL, cancellable, &local_error);
-		}
-
-		g_free (auth_method);
-	}
-
-	e_data_cal_respond_open (cal, opid, local_error);
-}
-
-static void
-ecb_gtasks_refresh (ECalBackend *backend,
-		    EDataCal *cal,
-		    guint32 opid,
-		    GCancellable *cancellable)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	if (!ecb_gtasks_is_authorized (backend) ||
-	    !e_backend_get_online (E_BACKEND (backend))) {
-		e_data_cal_respond_refresh (cal, opid, EDC_ERROR (RepositoryOffline));
-		return;
-	}
-
-	ecb_gtasks_start_update (E_CAL_BACKEND_GTASKS (backend));
-
-	e_data_cal_respond_refresh (cal, opid, NULL);
-}
-
-static void
-ecb_gtasks_get_object (ECalBackend *backend,
-		       EDataCal *cal,
-		       guint32 opid,
-		       GCancellable *cancellable,
-		       const gchar *uid,
-		       const gchar *rid)
-{
-	ECalBackendGTasks *gtasks;
-	ECalComponent *cached_comp;
-	gchar *comp_str = NULL;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	PROPERTY_LOCK (gtasks);
-
-	cached_comp = ecb_gtasks_get_cached_comp (gtasks, uid);
-	if (cached_comp)
-		comp_str = e_cal_component_get_as_string (cached_comp);
-	else
-		local_error = EDC_ERROR (ObjectNotFound);
-
-	PROPERTY_UNLOCK (gtasks);
-
-	e_data_cal_respond_get_object (cal, opid, local_error, comp_str);
+	comp_task = ecb_gtasks_comp_to_gdata (comp, cached_comp, !overwrite_existing);
 
 	g_clear_object (&cached_comp);
-	g_free (comp_str);
-}
+	g_clear_object (&cal_cache);
 
-static void
-ecb_gtasks_get_object_list (ECalBackend *backend,
-			    EDataCal *cal,
-			    guint32 opid,
-			    GCancellable *cancellable,
-			    const gchar *sexp_str)
-{
-	ECalBackendGTasks *gtasks;
-	ECalBackendSExp *sexp;
-	ETimezoneCache *cache;
-	gboolean do_search;
-	GSList *list, *iter, *calobjs = NULL;
-	time_t occur_start = -1, occur_end = -1;
-	gboolean prunning_by_time;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	sexp = e_cal_backend_sexp_new (sexp_str);
-	if (sexp == NULL) {
-		e_data_cal_respond_get_object_list (cal, opid, EDC_ERROR (InvalidQuery), NULL);
-		return;
+	if (!comp_task) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return FALSE;
 	}
 
-	do_search = !g_str_equal (sexp_str, "#t");
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
+	if (overwrite_existing)
+		new_task = gdata_tasks_service_update_task (cbgtasks->priv->service, comp_task, cancellable, error);
+	else
+		new_task = gdata_tasks_service_insert_task (cbgtasks->priv->service, comp_task, cbgtasks->priv->tasklist, cancellable, error);
 
-	cache = E_TIMEZONE_CACHE (backend);
+	g_object_unref (comp_task);
 
-	PROPERTY_LOCK (gtasks);
+	if (!new_task)
+		return FALSE;
 
-	list = prunning_by_time ?
-		e_cal_backend_store_get_components_occuring_in_range (gtasks->priv->store, occur_start, occur_end)
-		: e_cal_backend_store_get_components (gtasks->priv->store);
+	comp = ecb_gtasks_gdata_to_comp (new_task);
+	g_object_unref (new_task);
 
-	PROPERTY_UNLOCK (gtasks);
+	if (!comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return FALSE;
+	}
 
-	for (iter = list; iter; iter = g_slist_next (iter)) {
-		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
+	icalcomp = e_cal_component_get_icalcomponent (comp);
+	uid = icalcomp ? icalcomponent_get_uid (icalcomp) : NULL;
 
-		if (!do_search || e_cal_backend_sexp_match_comp (sexp, comp, cache)) {
-			calobjs = g_slist_prepend (calobjs, e_cal_component_get_as_string (comp));
-		}
+	if (!icalcomp || !uid) {
+		g_object_unref (comp);
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
+		return FALSE;
+	}
 
+	if (cbgtasks->priv->preloaded) {
+		*out_new_uid = g_strdup (uid);
+		g_hash_table_insert (cbgtasks->priv->preloaded, g_strdup (uid), comp);
+	} else {
 		g_object_unref (comp);
 	}
 
-	g_object_unref (sexp);
-	g_slist_free (list);
-
-	e_data_cal_respond_get_object_list (cal, opid, NULL, calobjs);
-
-	g_slist_foreach (calobjs, (GFunc) g_free, NULL);
-	g_slist_free (calobjs);
+	return TRUE;
 }
 
-static void
-ecb_gtasks_get_free_busy (ECalBackend *backend,
-			  EDataCal *cal,
-			  guint32 opid,
-			  GCancellable *cancellable,
-			  const GSList *users,
-			  time_t start,
-			  time_t end)
+static gboolean
+ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
+				  EConflictResolution conflict_resolution,
+				  const gchar *uid,
+				  const gchar *extra,
+				  GCancellable *cancellable,
+				  GError **error)
 {
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	e_data_cal_respond_get_free_busy (cal, opid, EDC_ERROR (NotSupported), NULL);
-}
-
-static void
-ecb_gtasks_create_objects (ECalBackend *backend,
-			   EDataCal *cal,
-			   guint32 opid,
-			   GCancellable *cancellable,
-			   const GSList *calobjs)
-{
-	ECalBackendGTasks *gtasks;
-	GSList *new_uids = NULL, *new_calcomps = NULL;
-	const GSList *link;
+	ECalBackendGTasks *cbgtasks;
+	ECalCache *cal_cache;
+	GDataTasksTask *task;
+	ECalComponent *cached_comp = NULL;
 	GError *local_error = NULL;
 
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
 
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
 
-	if (!ecb_gtasks_is_authorized (backend) ||
-	    !e_backend_get_online (E_BACKEND (backend))) {
-		e_data_cal_respond_create_objects (cal, opid, EDC_ERROR (RepositoryOffline), NULL, NULL);
-		return;
+	if (!e_cal_cache_get_component (cal_cache, uid, NULL, &cached_comp, cancellable, &local_error)) {
+		if (g_error_matches (local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND)) {
+			g_clear_error (&local_error);
+			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+
+		g_object_unref (cal_cache);
+
+		return FALSE;
 	}
 
-	for (link = calobjs; link && !local_error; link = link->next) {
-		const gchar *icalstr = link->data;
-		ECalComponent *comp;
-		icalcomponent *icomp;
-		const gchar *uid;
-		GDataTasksTask *new_task, *comp_task;
+	g_object_unref (cal_cache);
 
-		if (!icalstr) {
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
-		comp = e_cal_component_new_from_string (icalstr);
-		if (comp == NULL) {
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
+	if (!cached_comp) {
+		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
 
-		icomp = e_cal_component_get_icalcomponent (comp);
-		if (!icomp) {
-			g_object_unref (comp);
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		uid = icalcomponent_get_uid (icomp);
-		if (uid) {
-			PROPERTY_LOCK (gtasks);
-
-			if (e_cal_backend_store_has_component (gtasks->priv->store, uid, NULL)) {
-				PROPERTY_UNLOCK (gtasks);
-				g_object_unref (comp);
-				local_error = EDC_ERROR (ObjectIdAlreadyExists);
-				break;
-			}
-
-			PROPERTY_UNLOCK (gtasks);
-
-			icalcomponent_set_uid (icomp, "");
-		}
-
-		comp_task = ecb_gtasks_comp_to_gdata (comp, NULL);
-		if (!comp_task) {
-			g_object_unref (comp);
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		new_task = gdata_tasks_service_insert_task (gtasks->priv->service, comp_task, gtasks->priv->tasklist, cancellable, &local_error);
-
-		g_object_unref (comp_task);
-		g_object_unref (comp);
-
-		if (!new_task)
-			break;
-
-		comp = ecb_gtasks_gdata_to_comp (new_task);
-		g_object_unref (new_task);
-
-		if (!comp) {
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		icomp = e_cal_component_get_icalcomponent (comp);
-		uid = icalcomponent_get_uid (icomp);
-
-		if (!uid) {
-			g_object_unref (comp);
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		PROPERTY_LOCK (gtasks);
-		e_cal_backend_store_put_component (gtasks->priv->store, comp);
-		PROPERTY_UNLOCK (gtasks);
-
-		e_cal_backend_notify_component_created (backend, comp);
-
-		new_uids = g_slist_prepend (new_uids, g_strdup (uid));
-		new_calcomps = g_slist_prepend (new_calcomps, comp);
+		return FALSE;
 	}
 
-	new_uids = g_slist_reverse (new_uids);
-	new_calcomps = g_slist_reverse (new_calcomps);
+	task = ecb_gtasks_comp_to_gdata (cached_comp, NULL, FALSE);
+	if (!task) {
+		g_object_unref (cached_comp);
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
 
-	e_data_cal_respond_create_objects (cal, opid, local_error, new_uids, new_calcomps);
-
-	g_slist_free_full (new_uids, g_free);
-	e_util_free_nullable_object_slist (new_calcomps);
-}
-
-static void
-ecb_gtasks_modify_objects (ECalBackend *backend,
-			   EDataCal *cal,
-			   guint32 opid,
-			   GCancellable *cancellable,
-			   const GSList *calobjs,
-			   ECalObjModType mod)
-{
-	ECalBackendGTasks *gtasks;
-	GSList *old_calcomps = NULL, *new_calcomps = NULL;
-	const GSList *link;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	if (!ecb_gtasks_is_authorized (backend) ||
-	    !e_backend_get_online (E_BACKEND (backend))) {
-		e_data_cal_respond_modify_objects (cal, opid, EDC_ERROR (RepositoryOffline), NULL, NULL);
-		return;
+		return FALSE;
 	}
 
-	for (link = calobjs; link && !local_error; link = link->next) {
-		const gchar *icalstr = link->data;
-		ECalComponent *comp, *cached_comp;
-		icalcomponent *icomp;
-		const gchar *uid;
-		GDataTasksTask *new_task, *comp_task;
-
-		if (!icalstr) {
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		comp = e_cal_component_new_from_string (icalstr);
-		if (comp == NULL) {
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		icomp = e_cal_component_get_icalcomponent (comp);
-		if (!icomp) {
-			g_object_unref (comp);
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		uid = icalcomponent_get_uid (icomp);
-		if (!uid) {
-			g_object_unref (comp);
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		PROPERTY_LOCK (gtasks);
-
-		cached_comp = ecb_gtasks_get_cached_comp (gtasks, uid);
-
-		PROPERTY_UNLOCK (gtasks);
-
-		if (!cached_comp) {
-			g_object_unref (comp);
-			local_error = EDC_ERROR (ObjectNotFound);
-			break;
-		}
-
-		comp_task = ecb_gtasks_comp_to_gdata (comp, cached_comp);
-		g_object_unref (comp);
-
-		if (!comp_task) {
-			g_object_unref (cached_comp);
-			local_error = EDC_ERROR (ObjectNotFound);
-			break;
-		}
-
-		new_task = gdata_tasks_service_update_task (gtasks->priv->service, comp_task, cancellable, &local_error);
-		g_object_unref (comp_task);
-
-		if (!local_error)
-			e_backend_ensure_source_status_connected (E_BACKEND (backend));
-
-		if (!new_task) {
-			g_object_unref (cached_comp);
-			break;
-		}
-
-		comp = ecb_gtasks_gdata_to_comp (new_task);
-		g_object_unref (new_task);
-
-		PROPERTY_LOCK (gtasks);
-		e_cal_backend_store_put_component (gtasks->priv->store, comp);
-		PROPERTY_UNLOCK (gtasks);
-
-		e_cal_backend_notify_component_modified (backend, cached_comp, comp);
-
-		old_calcomps = g_slist_prepend (old_calcomps, cached_comp);
-		new_calcomps = g_slist_prepend (new_calcomps, comp);
-	}
-
-	old_calcomps = g_slist_reverse (old_calcomps);
-	new_calcomps = g_slist_reverse (new_calcomps);
-
-	e_data_cal_respond_modify_objects (cal, opid, local_error, old_calcomps, new_calcomps);
-
-	e_util_free_nullable_object_slist (old_calcomps);
-	e_util_free_nullable_object_slist (new_calcomps);
-}
-
-static void
-ecb_gtasks_remove_objects (ECalBackend *backend,
-			   EDataCal *cal,
-			   guint32 opid,
-			   GCancellable *cancellable,
-			   const GSList *ids,
-			   ECalObjModType mod)
-{
-	ECalBackendGTasks *gtasks;
-	GSList *old_calcomps = NULL, *removed_ids = NULL;
-	const GSList *link;
-	GError *local_error = NULL;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	if (!ecb_gtasks_is_authorized (backend) ||
-	    !e_backend_get_online (E_BACKEND (backend))) {
-		e_data_cal_respond_remove_objects (cal, opid, EDC_ERROR (RepositoryOffline), NULL, NULL, NULL);
-		return;
-	}
-
-	for (link = ids; link; link = link->next) {
-		const ECalComponentId *id = link->data;
-		ECalComponentId *tmp_id;
-		ECalComponent *cached_comp;
-		GDataTasksTask *task;
-
-		if (!id || !id->uid) {
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		PROPERTY_LOCK (gtasks);
-		cached_comp = ecb_gtasks_get_cached_comp (gtasks, id->uid);
-		PROPERTY_UNLOCK (gtasks);
-
-		if (!cached_comp) {
-			local_error = EDC_ERROR (ObjectNotFound);
-			break;
-		}
-
-		task = ecb_gtasks_comp_to_gdata (cached_comp, NULL);
-		if (!task) {
-			g_object_unref (cached_comp);
-			local_error = EDC_ERROR (InvalidObject);
-			break;
-		}
-
-		/* Ignore protocol errors here, libgdata 0.15.1 results with "Error code 204 when deleting an entry: No Content",
-		   while the delete succeeded */
-		if (!gdata_tasks_service_delete_task (gtasks->priv->service, task, cancellable, &local_error) &&
-		    !g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR)) {
-			g_object_unref (cached_comp);
-			g_object_unref (task);
-			break;
-		}
-
-		if (!local_error)
-			e_backend_ensure_source_status_connected (E_BACKEND (backend));
-
-		g_clear_error (&local_error);
-
+	/* Ignore protocol errors here, libgdata 0.15.1 results with "Error code 204 when deleting an entry: No Content",
+	   while the delete succeeded */
+	if (!gdata_tasks_service_delete_task (cbgtasks->priv->service, task, cancellable, &local_error) &&
+	    !g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR)) {
+		g_object_unref (cached_comp);
 		g_object_unref (task);
+		g_propagate_error (error, local_error);
 
-		PROPERTY_LOCK (gtasks);
-		e_cal_backend_store_remove_component (gtasks->priv->store, id->uid, NULL);
-		PROPERTY_UNLOCK (gtasks);
-
-		tmp_id = e_cal_component_id_new (id->uid, NULL);
-		e_cal_backend_notify_component_removed (backend, tmp_id, cached_comp, NULL);
-
-		old_calcomps = g_slist_prepend (old_calcomps, cached_comp);
-		removed_ids = g_slist_prepend (removed_ids, tmp_id);
+		return FALSE;
+	} else {
+		g_clear_error (&local_error);
 	}
 
-	old_calcomps = g_slist_reverse (old_calcomps);
-	removed_ids = g_slist_reverse (removed_ids);
+	g_object_unref (cached_comp);
+	g_object_unref (task);
 
-	e_data_cal_respond_remove_objects (cal, opid, local_error, removed_ids, old_calcomps, NULL);
-
-	g_slist_free_full (removed_ids, (GDestroyNotify) e_cal_component_free_id);
-	e_util_free_nullable_object_slist (old_calcomps);
+	return TRUE;
 }
 
-static void
-ecb_gtasks_receive_objects (ECalBackend *backend,
-			    EDataCal *cal,
-			    guint32 opid,
-			    GCancellable *cancellable,
-			    const gchar *calobj)
+static gboolean
+ecb_gtasks_requires_reconnect (ECalMetaBackend *meta_backend)
 {
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
+	ESource *source;
+	ESourceResource *resource;
+	gchar *id;
+	ECalBackendGTasks *cbgtasks;
+	gboolean changed;
 
-	e_data_cal_respond_receive_objects (cal, opid, EDC_ERROR (NotSupported));
+	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+
+	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
+	if (!cbgtasks->priv->tasklist)
+		return TRUE;
+
+	source = e_backend_get_source (E_BACKEND (cbgtasks));
+	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+	id = e_source_resource_dup_identity (resource);
+
+	changed = id && *id && g_strcmp0 (id, gdata_entry_get_id (GDATA_ENTRY (cbgtasks->priv->tasklist))) != 0 &&
+		g_strcmp0 (GTASKS_DEFAULT_TASKLIST_NAME, gdata_entry_get_id (GDATA_ENTRY (cbgtasks->priv->tasklist))) != 0;
+
+	g_free (id);
+
+	return changed;
 }
 
-static void
-ecb_gtasks_send_objects (ECalBackend *backend,
-			 EDataCal *cal,
-			 guint32 opid,
-			 GCancellable *cancellable,
-			 const gchar *calobj)
+static gchar *
+ecb_gtasks_dup_component_revision (ECalCache *cal_cache,
+				   icalcomponent *icalcomp,
+				   gpointer user_data)
 {
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
+	icalproperty *prop;
+	gchar *revision = NULL;
 
-	e_data_cal_respond_send_objects (cal, opid, EDC_ERROR (NotSupported), NULL, NULL);
-}
+	g_return_val_if_fail (icalcomp != NULL, NULL);
 
-static void
-ecb_gtasks_get_attachment_uris (ECalBackend *backend,
-				EDataCal *cal,
-				guint32 opid,
-				GCancellable *cancellable,
-				const gchar *uid,
-				const gchar *rid)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
+	prop = icalcomponent_get_first_property (icalcomp, ICAL_LASTMODIFIED_PROPERTY);
+	if (prop) {
+		struct icaltimetype itt;
 
-	e_data_cal_respond_get_attachment_uris (cal, opid, EDC_ERROR (NotSupported), NULL);
-}
-
-static void
-ecb_gtasks_discard_alarm (ECalBackend *backend,
-			  EDataCal *cal,
-			  guint32 opid,
-			  GCancellable *cancellable,
-			  const gchar *uid,
-			  const gchar *rid,
-			  const gchar *auid)
-{
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL (cal));
-
-	e_data_cal_respond_discard_alarm (cal, opid, EDC_ERROR (NotSupported));
-}
-
-static void
-ecb_gtasks_start_view (ECalBackend *backend,
-		       EDataCalView *view)
-{
-	ECalBackendGTasks *gtasks;
-	ECalBackendSExp *sexp;
-	ETimezoneCache *cache;
-	const gchar *sexp_str;
-	gboolean do_search;
-	GSList *list, *iter;
-	time_t occur_start = -1, occur_end = -1;
-	gboolean prunning_by_time;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
-
-	g_object_ref (view);
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-	sexp = e_data_cal_view_get_sexp (view);
-	sexp_str = e_cal_backend_sexp_text (sexp);
-	do_search = !g_str_equal (sexp_str, "#t");
-	prunning_by_time = e_cal_backend_sexp_evaluate_occur_times (sexp, &occur_start, &occur_end);
-
-	cache = E_TIMEZONE_CACHE (backend);
-
-	list = prunning_by_time ?
-		e_cal_backend_store_get_components_occuring_in_range (gtasks->priv->store, occur_start, occur_end)
-		: e_cal_backend_store_get_components (gtasks->priv->store);
-
-	for (iter = list; iter; iter = g_slist_next (iter)) {
-		ECalComponent *comp = E_CAL_COMPONENT (iter->data);
-
-		if (!do_search || e_cal_backend_sexp_match_comp (sexp, comp, cache)) {
-			e_data_cal_view_notify_components_added_1 (view, comp);
-		}
-
-		g_object_unref (comp);
+		itt = icalproperty_get_lastmodified (prop);
+		revision = icaltime_as_ical_string_r (itt);
 	}
 
-	g_slist_free (list);
-
-	e_data_cal_view_notify_complete (view, NULL /* Success */);
-
-	g_object_unref (view);
+	return revision;
 }
 
 static void
-ecb_gtasks_stop_view (ECalBackend *backend,
-		      EDataCalView *view)
+e_cal_backend_gtasks_init (ECalBackendGTasks *cbgtasks)
 {
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-	g_return_if_fail (E_IS_DATA_CAL_VIEW (view));
-}
-
-static void
-ecb_gtasks_add_timezone (ECalBackend *backend,
-			 EDataCal *cal,
-			 guint32 opid,
-			 GCancellable *cancellable,
-			 const gchar *tzobject)
-{
-	/* Nothing to do, times are in UTC */
-	e_data_cal_respond_add_timezone (cal, opid, NULL);
-}
-
-static void
-ecb_gtasks_shutdown (ECalBackend *backend)
-{
-	ECalBackendGTasks *gtasks;
-
-	g_return_if_fail (E_IS_CAL_BACKEND_GTASKS (backend));
-
-	gtasks = E_CAL_BACKEND_GTASKS (backend);
-
-	ecb_gtasks_take_cancellable (gtasks, NULL);
-
-	if (gtasks->priv->refresh_id) {
-		ESource *source = e_backend_get_source (E_BACKEND (backend));
-		if (source)
-			e_source_refresh_remove_timeout (source, gtasks->priv->refresh_id);
-
-		gtasks->priv->refresh_id = 0;
-	}
-
-	/* Chain up to parent's method. */
-	E_CAL_BACKEND_CLASS (e_cal_backend_gtasks_parent_class)->shutdown (backend);
-}
-
-static void
-e_cal_backend_gtasks_init (ECalBackendGTasks *gtasks)
-{
-	gtasks->priv = E_CAL_BACKEND_GTASKS_GET_PRIVATE (gtasks);
-	gtasks->priv->cancellable = NULL;
-
-	g_mutex_init (&gtasks->priv->property_mutex);
+	cbgtasks->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbgtasks, E_TYPE_CAL_BACKEND_GTASKS, ECalBackendGTasksPrivate);
+	cbgtasks->priv->preloaded = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 }
 
 static void
 ecb_gtasks_constructed (GObject *object)
 {
-	ECalBackendGTasks *gtasks = E_CAL_BACKEND_GTASKS (object);
-	ESource *source;
+	ECalBackendGTasks *cbgtasks = E_CAL_BACKEND_GTASKS (object);
+	ECalCache *cal_cache;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_gtasks_parent_class)->constructed (object);
 
-	gtasks->priv->store = e_cal_backend_store_new (
-		e_cal_backend_get_cache_dir (E_CAL_BACKEND (gtasks)),
-		E_TIMEZONE_CACHE (gtasks));
-	e_cal_backend_store_load (gtasks->priv->store);
+	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cbgtasks));
+	g_return_if_fail (cal_cache != NULL);
 
-	source = e_backend_get_source (E_BACKEND (gtasks));
-	gtasks->priv->refresh_id = e_source_refresh_add_timeout (
-		source, NULL, ecb_gtasks_time_to_refresh_data_cb, gtasks, NULL);
+	g_signal_connect (cal_cache, "dup-component-revision", G_CALLBACK (ecb_gtasks_dup_component_revision), NULL);
+
+	g_clear_object (&cal_cache);
 }
 
 static void
 ecb_gtasks_dispose (GObject *object)
 {
-	ECalBackendGTasks *gtasks = E_CAL_BACKEND_GTASKS (object);
+	ECalBackendGTasks *cbgtasks = E_CAL_BACKEND_GTASKS (object);
 
-	ecb_gtasks_take_cancellable (gtasks, NULL);
+	g_clear_object (&cbgtasks->priv->service);
+	g_clear_object (&cbgtasks->priv->authorizer);
+	g_clear_object (&cbgtasks->priv->tasklist);
 
-	g_clear_object (&gtasks->priv->cancellable);
-	g_clear_object (&gtasks->priv->service);
-	g_clear_object (&gtasks->priv->authorizer);
-	g_clear_object (&gtasks->priv->tasklist);
-	g_clear_object (&gtasks->priv->store);
-
-	if (gtasks->priv->refresh_id) {
-		ESource *source = e_backend_get_source (E_BACKEND (object));
-		if (source)
-			e_source_refresh_remove_timeout (source, gtasks->priv->refresh_id);
-
-		gtasks->priv->refresh_id = 0;
-	}
+	g_hash_table_destroy (cbgtasks->priv->preloaded);
+	cbgtasks->priv->preloaded = NULL;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_gtasks_parent_class)->dispose (object);
 }
 
 static void
-ecb_gtasks_finalize (GObject *object)
-{
-	ECalBackendGTasks *gtasks = E_CAL_BACKEND_GTASKS (object);
-
-	g_mutex_clear (&gtasks->priv->property_mutex);
-
-	/* Chain up to parent's method. */
-	G_OBJECT_CLASS (e_cal_backend_gtasks_parent_class)->finalize (object);
-}
-
-static void
-e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *class)
+e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *klass)
 {
 	GObjectClass *object_class;
-	EBackendClass *backend_class;
 	ECalBackendClass *cal_backend_class;
+	ECalMetaBackendClass *cal_meta_backend_class;
 
-	g_type_class_add_private (class, sizeof (ECalBackendGTasksPrivate));
+	g_type_class_add_private (klass, sizeof (ECalBackendGTasksPrivate));
 
-	object_class = (GObjectClass *) class;
+	cal_meta_backend_class = E_CAL_META_BACKEND_CLASS (klass);
+	cal_meta_backend_class->connect_sync = ecb_gtasks_connect_sync;
+	cal_meta_backend_class->disconnect_sync = ecb_gtasks_disconnect_sync;
+	cal_meta_backend_class->get_changes_sync = ecb_gtasks_get_changes_sync;
+	cal_meta_backend_class->load_component_sync = ecb_gtasks_load_component_sync;
+	cal_meta_backend_class->save_component_sync = ecb_gtasks_save_component_sync;
+	cal_meta_backend_class->remove_component_sync = ecb_gtasks_remove_component_sync;
+	cal_meta_backend_class->requires_reconnect = ecb_gtasks_requires_reconnect;
+
+	cal_backend_class = E_CAL_BACKEND_CLASS (klass);
+	cal_backend_class->get_backend_property = ecb_gtasks_get_backend_property;
+
+	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = ecb_gtasks_constructed;
 	object_class->dispose = ecb_gtasks_dispose;
-	object_class->finalize = ecb_gtasks_finalize;
-
-	backend_class = (EBackendClass *) class;
-	backend_class->authenticate_sync = ecb_gtasks_authenticate_sync;
-
-	cal_backend_class = (ECalBackendClass *) class;
-	cal_backend_class->get_backend_property = ecb_gtasks_get_backend_property;
-	cal_backend_class->open = ecb_gtasks_open;
-	cal_backend_class->refresh = ecb_gtasks_refresh;
-	cal_backend_class->get_object = ecb_gtasks_get_object;
-	cal_backend_class->get_object_list = ecb_gtasks_get_object_list;
-	cal_backend_class->get_free_busy = ecb_gtasks_get_free_busy;
-	cal_backend_class->create_objects = ecb_gtasks_create_objects;
-	cal_backend_class->modify_objects = ecb_gtasks_modify_objects;
-	cal_backend_class->remove_objects = ecb_gtasks_remove_objects;
-	cal_backend_class->receive_objects = ecb_gtasks_receive_objects;
-	cal_backend_class->send_objects = ecb_gtasks_send_objects;
-	cal_backend_class->get_attachment_uris = ecb_gtasks_get_attachment_uris;
-	cal_backend_class->discard_alarm = ecb_gtasks_discard_alarm;
-	cal_backend_class->start_view = ecb_gtasks_start_view;
-	cal_backend_class->stop_view = ecb_gtasks_stop_view;
-	cal_backend_class->add_timezone = ecb_gtasks_add_timezone;
-	cal_backend_class->shutdown = ecb_gtasks_shutdown;
 }
