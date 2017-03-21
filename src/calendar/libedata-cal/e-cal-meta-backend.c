@@ -98,6 +98,7 @@ static void ecmb_schedule_go_offline (ECalMetaBackend *meta_backend);
 static gboolean ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 						  ECalCache *cal_cache,
 						  const gchar *uid,
+						  const gchar *preloaded_object,
 						  GCancellable *cancellable,
 						  GError **error);
 static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
@@ -116,18 +117,20 @@ static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
  * @uid: a component UID; cannot be %NULL
  * @rid: (nullable): a component Recurrence-ID; can be %NULL
  * @revision: (nullable): the component revision; can be %NULL
+ * @object: (nullable): the component object as an iCalendar string; can be %NULL
  *
  * Creates a new #ECalMetaBackendInfo prefilled with the given values.
  *
  * Returns: (transfer full): A new #ECalMetaBackendInfo. Free it with
- *    e_cal_meta_backend_info_new() when no longer needed.
+ *    e_cal_meta_backend_info_free() when no longer needed.
  *
  * Since: 3.26
  **/
 ECalMetaBackendInfo *
 e_cal_meta_backend_info_new (const gchar *uid,
 			     const gchar *rid,
-			     const gchar *revision)
+			     const gchar *revision,
+			     const gchar *object)
 {
 	ECalMetaBackendInfo *info;
 
@@ -137,6 +140,7 @@ e_cal_meta_backend_info_new (const gchar *uid,
 	info->uid = g_strdup (uid);
 	info->rid = g_strdup (rid && *rid ? rid : NULL);
 	info->revision = g_strdup (revision);
+	info->object = g_strdup (object);
 
 	return info;
 }
@@ -157,7 +161,7 @@ e_cal_meta_backend_info_copy (const ECalMetaBackendInfo *src)
 	if (src)
 		return NULL;
 
-	return e_cal_meta_backend_info_new (src->uid, src->rid, src->revision);
+	return e_cal_meta_backend_info_new (src->uid, src->rid, src->revision, src->object);
 }
 
 /**
@@ -178,6 +182,7 @@ e_cal_meta_backend_info_free (gpointer ptr)
 		g_free (info->uid);
 		g_free (info->rid);
 		g_free (info->revision);
+		g_free (info->object);
 		g_free (info);
 	}
 }
@@ -457,7 +462,7 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 				continue;
 		}
 
-		nfo = e_cal_meta_backend_info_new (id->uid, id->rid, revision);
+		nfo = e_cal_meta_backend_info_new (id->uid, id->rid, revision, NULL);
 		*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
 	}
 
@@ -727,7 +732,7 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 
 				g_hash_table_insert (covered_uids, nfo->uid, NULL);
 
-				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, cancellable, error);
+				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, cancellable, error);
 			}
 
 			g_hash_table_remove_all (covered_uids);
@@ -741,7 +746,7 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 					continue;
 				}
 
-				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, cancellable, error);
+				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, cancellable, error);
 			}
 
 			g_hash_table_destroy (covered_uids);
@@ -1075,6 +1080,7 @@ static gboolean
 ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 				  ECalCache *cal_cache,
 				  const gchar *uid,
+				  const gchar *preloaded_object,
 				  GCancellable *cancellable,
 				  GError **error)
 {
@@ -1084,8 +1090,14 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	gchar *extra = NULL;
 	gboolean success = TRUE;
 
-	if (!e_cal_meta_backend_load_component_sync (meta_backend, uid, &icalcomp, &extra, cancellable, error) ||
-	    !icalcomp) {
+	if (preloaded_object && *preloaded_object) {
+		icalcomp = icalcomponent_new_from_string (preloaded_object);
+		if (!icalcomp) {
+			g_propagate_error (error, e_data_cal_create_error (InvalidObject, _("Preloaded object is invalid")));
+			return FALSE;
+		}
+	} else if (!e_cal_meta_backend_load_component_sync (meta_backend, uid, &icalcomp, &extra, cancellable, error) ||
+		   !icalcomp) {
 		g_free (extra);
 		return FALSE;
 	}
@@ -1176,7 +1188,7 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		instances ? instances : in_instances, extra, &new_uid, cancellable, error);
 
 	if (success && new_uid) {
-		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, cancellable, error);
+		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, new_uid, NULL, cancellable, error);
 
 		if (success && g_strcmp0 (new_uid, orig_uid) != 0)
 		    success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, orig_uid, cancellable, error);
@@ -1282,7 +1294,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 		/* Ignore errors here, just try whether it's on the remote side, but not in the local cache */
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
 		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL) &&
-		    ecmb_load_component_wrapper_sync (meta_backend, cal_cache, uid, cancellable, NULL)) {
+		    ecmb_load_component_wrapper_sync (meta_backend, cal_cache, uid, NULL, cancellable, NULL)) {
 			found = e_cal_cache_get_component_as_string (cal_cache, uid, rid, calobj, cancellable, NULL);
 		}
 
@@ -3777,6 +3789,10 @@ e_cal_meta_backend_disconnect_sync (ECalMetaBackend *meta_backend,
  * function again with the @out_new_sync_tag as the @last_sync_tag, but also
  * notifies about the found changes immediately.
  *
+ * The descendant can populate also ECalMetaBackendInfo::object of
+ * the @out_created_objects and @out_modified_objects, if known, in which
+ * case this will be used instead of loading it with e_cal_meta_backend_load_component_sync().
+ *
  * It is optional to implement this virtual method by the descendant.
  * The default implementation calls e_cal_meta_backend_list_existing_sync()
  * and then compares the list with the current content of the local cache
@@ -3836,9 +3852,13 @@ e_cal_meta_backend_get_changes_sync (ECalMetaBackend *meta_backend,
  * @error: return location for a #GError, or %NULL
  *
  * Used to get list of all existing objects on the remote side. The descendant
- * can optionally provide @out_new_sync_tag, which will be stored if not %NULL.
+ * can optionally provide @out_new_sync_tag, which will be stored on success, if
+ * not %NULL. The descendant can populate also ECalMetaBackendInfo::object of
+ * the @out_existing_objects, if known, in which case this will be used instead
+ * of loading it with e_cal_meta_backend_load_component_sync().
  *
- * It is mandatory to implement this virtual method by the descendant.
+ * It is mandatory to implement this virtual method by the descendant, unless
+ * it implements its own get_changes_sync().
  *
  * The @out_existing_objects #GSList should be freed with
  * g_slist_free_full (objects, e_cal_meta_backend_info_free);

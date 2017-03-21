@@ -52,6 +52,7 @@ typedef struct _ECalMetaBackendInfo {
 	gchar *uid;
 	gchar *rid;
 	gchar *revision;
+	gchar *object;
 } ECalMetaBackendInfo;
 
 #define E_TYPE_CAL_META_BACKEND_INFO (e_cal_meta_backend_info_get_type ())
@@ -61,7 +62,8 @@ GType		e_cal_meta_backend_info_get_type
 ECalMetaBackendInfo *
 		e_cal_meta_backend_info_new	(const gchar *uid,
 						 const gchar *rid,
-						 const gchar *revision);
+						 const gchar *revision,
+						 const gchar *object);
 ECalMetaBackendInfo *
 		e_cal_meta_backend_info_copy	(const ECalMetaBackendInfo *src);
 void		e_cal_meta_backend_info_free	(gpointer ptr /* ECalMetaBackendInfo * */);

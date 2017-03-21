@@ -395,7 +395,7 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 		uid = icalcomponent_get_uid (icalcomp);
 		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
 
-		nfo = e_cal_meta_backend_info_new (uid, NULL, revision);
+		nfo = e_cal_meta_backend_info_new (uid, NULL, revision, NULL);
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
 
 		g_free (revision);

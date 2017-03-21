@@ -1672,3 +1672,167 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 	}
 }
 
+/**
+ * e_cal_util_find_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Searches for an X property named @x_name within X properties
+ * of @icalcomp and returns it.
+ *
+ * Returns: (nullable) (transfer none): the first X icalproperty named
+ *    @x_name, or %NULL, when none found. The returned structure is owned
+ *    by @icalcomp.
+ *
+ * Since: 3.26
+ **/
+icalproperty *
+e_cal_util_find_x_property (icalcomponent *icalcomp,
+			    const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+
+	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	     prop;
+	     prop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY)) {
+		const gchar *prop_name = icalproperty_get_x_name (prop);
+
+		if (g_strcmp0 (prop_name, x_name) == 0)
+			break;
+	}
+
+	return prop;
+}
+
+/**
+ * e_cal_util_dup_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Searches for an X property named @x_name within X properties
+ * of @icalcomp and returns its value as a newly allocated string.
+ * Free it with g_free(), when no longer needed.
+ *
+ * Returns: (nullable) (transfer full): Newly allocated value of the first @x_name
+ *    X property in @icalcomp, or %NULL, if not found.
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_cal_util_dup_x_property (icalcomponent *icalcomp,
+			   const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+
+	if (!prop)
+		return NULL;
+
+	return icalproperty_get_value_as_string_r (prop);
+}
+
+/**
+ * e_cal_util_get_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Searches for an X property named @x_name within X properties
+ * of @icalcomp and returns its value. The returned string is
+ * owned by libical. See e_cal_util_dup_x_property().
+ *
+ * Returns: (nullable) (transfer none): Value of the first @x_name
+ *    X property in @icalcomp, or %NULL, if not found.
+ *
+ * Since: 3.26
+ **/
+const gchar *
+e_cal_util_get_x_property (icalcomponent *icalcomp,
+			   const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+
+	if (!prop)
+		return NULL;
+
+	return icalproperty_get_value_as_string (prop);
+}
+
+/**
+ * e_cal_util_set_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ * @value: (nullable): a value to set, or %NULL
+ *
+ * Sets a value of the first X property named @x_name in @icalcomp,
+ * if any such already exists, or adds a new property with this name
+ * and value. As a special case, if @value is %NULL, then removes
+ * the first X property names @x_name from @icalcomp instead.
+ *
+ * Since: 3.26
+ **/
+void
+e_cal_util_set_x_property (icalcomponent *icalcomp,
+			   const gchar *x_name,
+			   const gchar *value)
+{
+	icalproperty *prop;
+
+	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (x_name != NULL);
+
+	if (!value) {
+		e_cal_util_remove_x_property (icalcomp, x_name);
+		return;
+	}
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	if (prop) {
+		icalproperty_set_value_from_string (prop, value, "NO");
+	} else {
+		prop = icalproperty_new_x (value);
+		icalproperty_set_x_name (prop, x_name);
+		icalcomponent_add_property (icalcomp, prop);
+	}
+}
+
+/**
+ * e_cal_util_remove_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Removes the first X property named @x_name in @icalcomp.
+ *
+ * Returns: %TRUE, when any such had been found and removed, %FALSE otherwise.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_util_remove_x_property (icalcomponent *icalcomp,
+			      const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+	g_return_val_if_fail (x_name != NULL, FALSE);
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	if (!prop)
+		return FALSE;
+
+	icalcomponent_remove_property (icalcomp, prop);
+	icalproperty_free (prop);
+
+	return TRUE;
+}

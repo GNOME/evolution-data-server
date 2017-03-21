@@ -570,7 +570,7 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 		icalcomponent *icalcomp = value;
 		ECalMetaBackendInfo *nfo;
 		const gchar *uid;
-		gchar *revision;
+		gchar *revision, *object;
 
 		if (icalcomp && icalcomponent_isa (icalcomp) == ICAL_VCALENDAR_COMPONENT)
 			icalcomp = icalcomponent_get_first_component (icalcomp, kind);
@@ -580,14 +580,22 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 
 		uid = icalcomponent_get_uid (icalcomp);
 		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
+		object = icalcomponent_as_ical_string_r (value);
 
-		nfo = e_cal_meta_backend_info_new (uid, NULL, revision);
+		nfo = e_cal_meta_backend_info_new (uid, NULL, revision, object);
+
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
 
 		g_free (revision);
+		g_free (object);
 	}
 
 	g_object_unref (cal_cache);
+
+	g_hash_table_destroy (cbhttp->priv->components);
+	cbhttp->priv->components = NULL;
+
+	ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 
 	return TRUE;
 }
