@@ -619,7 +619,7 @@ ecmb_upload_local_changes_sync (ECalMetaBackend *meta_backend,
 			GError *local_error = NULL;
 
 			success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution,
-				change->uid, extra, cancellable, &local_error);
+				change->uid, extra, change->object, cancellable, &local_error);
 
 			if (!success) {
 				if (g_error_matches (local_error, E_DATA_CAL_ERROR, ObjectNotFound)) {
@@ -1891,7 +1891,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 		*out_old_comp = old_comp;
 	if (out_new_comp) {
 		if (new_uid) {
-			if (!e_cal_cache_get_component (cal_cache, new_uid, NULL, out_new_comp, cancellable, NULL))
+			if (!e_cal_cache_get_component (cal_cache, new_uid, id->rid, out_new_comp, cancellable, NULL))
 				*out_new_comp = NULL;
 		} else {
 			*out_new_comp = new_comp ? g_object_ref (new_comp) : NULL;
@@ -2151,7 +2151,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 		if (mod == E_CAL_OBJ_MOD_ALL) {
 			if (*offline_flag == E_CACHE_IS_ONLINE) {
-				success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, cancellable, error);
+				success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, NULL, cancellable, error);
 			}
 
 			success = success && ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, cancellable, error);
@@ -4050,10 +4050,14 @@ e_cal_meta_backend_save_component_sync (ECalMetaBackend *meta_backend,
  * @conflict_resolution: an #EConflictResolution to use
  * @uid: a component UID
  * @extra: (nullable): extra data being saved with the component in the local cache, or %NULL
+ * @object: (nullable): corresponding iCalendar object, as stored in the local cache, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Removes a component from the remote side, with all its detached instances.
+ * The @object is not %NULL when it's removing locally deleted object
+ * in offline mode. Being it %NULL, the descendant can obtain the object
+ * from the #ECalCache.
  *
  * It is mandatory to implement this virtual method by the writable descendant.
  *
@@ -4066,6 +4070,7 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 					  EConflictResolution conflict_resolution,
 					  const gchar *uid,
 					  const gchar *extra,
+					  const gchar *object,
 					  GCancellable *cancellable,
 					  GError **error)
 {
@@ -4082,7 +4087,7 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	return klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, cancellable, error);
+	return klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, object, cancellable, error);
 }
 
 /**

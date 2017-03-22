@@ -434,11 +434,7 @@ ecb_gtasks_connect_sync (ECalMetaBackend *meta_backend,
 	if (success)
 		success = ecb_gtasks_prepare_tasklist (cbgtasks, cancellable, &local_error);
 
-	if (success) {
-		e_cal_backend_set_writable (E_CAL_BACKEND (cbgtasks), TRUE);
-	} else {
-		e_cal_backend_set_writable (E_CAL_BACKEND (cbgtasks), FALSE);
-
+	if (!success) {
 		if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
 			if (!e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
@@ -845,6 +841,7 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 				  EConflictResolution conflict_resolution,
 				  const gchar *uid,
 				  const gchar *extra,
+				  const gchar *object,
 				  GCancellable *cancellable,
 				  GError **error)
 {
@@ -859,7 +856,15 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 	g_return_val_if_fail (cal_cache != NULL, FALSE);
 
-	if (!e_cal_cache_get_component (cal_cache, uid, NULL, &cached_comp, cancellable, &local_error)) {
+	if (object) {
+		cached_comp = e_cal_component_new_from_string (object);
+		if (!cached_comp) {
+			g_propagate_error (error, EDC_ERROR (InvalidObject));
+			g_object_unref (cal_cache);
+
+			return FALSE;
+		}
+	} else if (!e_cal_cache_get_component (cal_cache, uid, NULL, &cached_comp, cancellable, &local_error)) {
 		if (g_error_matches (local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND)) {
 			g_clear_error (&local_error);
 			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
@@ -979,6 +984,9 @@ ecb_gtasks_constructed (GObject *object)
 	g_signal_connect (cal_cache, "dup-component-revision", G_CALLBACK (ecb_gtasks_dup_component_revision), NULL);
 
 	g_clear_object (&cal_cache);
+
+	/* Set it as always writable, regardless online/offline state */
+	e_cal_backend_set_writable (E_CAL_BACKEND (cbgtasks), TRUE);
 }
 
 static void

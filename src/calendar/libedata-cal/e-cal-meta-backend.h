@@ -142,6 +142,7 @@ struct _ECalMetaBackendClass {
 						 EConflictResolution conflict_resolution,
 						 const gchar *uid,
 						 const gchar *extra,
+						 const gchar *object,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* requires_reconnect)	(ECalMetaBackend *meta_backend);
@@ -232,6 +233,7 @@ gboolean	e_cal_meta_backend_remove_component_sync
 						 EConflictResolution conflict_resolution,
 						 const gchar *uid,
 						 const gchar *extra,
+						 const gchar *object,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_requires_reconnect

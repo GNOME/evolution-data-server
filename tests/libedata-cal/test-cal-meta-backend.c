@@ -527,6 +527,7 @@ e_cal_meta_backend_test_remove_component_sync (ECalMetaBackend *meta_backend,
 					       EConflictResolution conflict_resolution,
 					       const gchar *uid,
 					       const gchar *extra,
+					       const gchar *object,
 					       GCancellable *cancellable,
 					       GError **error)
 {
@@ -1870,13 +1871,13 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 
 	icalcomp = e_cal_component_get_icalcomponent (old_components->data);
 	old_sequence = icalcomponent_get_sequence (icalcomp);
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), !=, MODIFIED_SUMMARY_STR);
 	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-6");
+	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), !=, MODIFIED_SUMMARY_STR);
 
 	icalcomp = e_cal_component_get_icalcomponent (new_components->data);
-	g_assert_cmpint (old_sequence + 1, ==, icalcomponent_get_sequence (icalcomp));
-	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, MODIFIED_SUMMARY_STR);
 	g_assert_cmpstr (icalcomponent_get_uid (icalcomp), ==, "event-6");
+	g_assert_cmpstr (icalcomponent_get_summary (icalcomp), ==, MODIFIED_SUMMARY_STR);
+	g_assert_cmpint (old_sequence + 1, ==, icalcomponent_get_sequence (icalcomp));
 
 	g_slist_free_full (old_components, g_object_unref);
 	g_slist_free_full (new_components, g_object_unref);
