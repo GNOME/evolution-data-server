@@ -43,6 +43,7 @@
 #include <libedataserver/e-secret-store.h>
 #include <libedataserver/e-sexp.h>
 #include <libedataserver/e-soup-auth-bearer.h>
+#include <libedataserver/e-soup-session.h>
 #include <libedataserver/e-soup-ssl-trust.h>
 #include <libedataserver/e-source-address-book.h>
 #include <libedataserver/e-source-alarms.h>
@@ -91,6 +92,7 @@
 #include <libedataserver/e-uid.h>
 #include <libedataserver/e-url.h>
 #include <libedataserver/e-webdav-discover.h>
+#include <libedataserver/e-webdav-session.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libedataserver/e-xml-utils.h>
 #include <libedataserver/eds-version.h>

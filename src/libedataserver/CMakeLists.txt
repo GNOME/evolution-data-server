@@ -69,6 +69,7 @@ set(SOURCES
 	e-secret-store.c
 	e-sexp.c
 	e-soup-auth-bearer.c
+	e-soup-session.c
 	e-soup-ssl-trust.c
 	e-source.c
 	e-source-extension.c
@@ -117,6 +118,7 @@ set(SOURCES
 	e-uid.c
 	e-url.c
 	e-webdav-discover.c
+	e-webdav-session.c
 	e-data-server-util.c
 	e-xml-utils.c
 	e-xml-hash-utils.c
@@ -148,6 +150,7 @@ set(HEADERS
 	e-secret-store.h
 	e-sexp.h
 	e-soup-auth-bearer.h
+	e-soup-session.h
 	e-soup-ssl-trust.h
 	e-source.h
 	e-source-address-book.h
@@ -196,6 +199,7 @@ set(HEADERS
 	e-uid.h
 	e-url.h
 	e-webdav-discover.h
+	e-webdav-session.h
 	e-data-server-util.h
 	e-xml-utils.h
 	e-xml-hash-utils.h

@@ -34,16 +34,12 @@
 G_DEFINE_TYPE (ECalBackendHttp, e_cal_backend_http, E_TYPE_CAL_META_BACKEND)
 
 struct _ECalBackendHttpPrivate {
-	SoupSession *soup_session;
+	ESoupSession *session;
 
 	SoupRequestHTTP *request;
 	GInputStream *input_stream;
 	GHashTable *components; /* gchar *uid ~> icalcomponent * */
-
-	ENamedParameters *credentials;
 };
-
-#define d(x)
 
 static gchar *
 ecb_http_webcal_to_http_method (const gchar *webcal_str,
@@ -95,66 +91,6 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 	return uri;
 }
 
-static void
-ecb_http_extract_ssl_failed_data (SoupMessage *msg,
-				  gchar **out_certificate_pem,
-				  GTlsCertificateFlags *out_certificate_errors)
-{
-	GTlsCertificate *certificate = NULL;
-
-	g_return_if_fail (SOUP_IS_MESSAGE (msg));
-
-	if (!out_certificate_pem || !out_certificate_errors)
-		return;
-
-	g_object_get (G_OBJECT (msg),
-		"tls-certificate", &certificate,
-		"tls-errors", out_certificate_errors,
-		NULL);
-
-	if (certificate) {
-		g_object_get (certificate, "certificate-pem", out_certificate_pem, NULL);
-		g_object_unref (certificate);
-	}
-}
-
-static void
-ecb_http_soup_authenticate (SoupSession *session,
-			    SoupMessage *msg,
-			    SoupAuth *auth,
-			    gboolean retrying,
-			    gpointer user_data)
-{
-	ECalBackendHttp *cbhttp;
-	const gchar *username;
-	gchar *auth_user = NULL;
-
-	if (retrying)
-		return;
-
-	cbhttp = E_CAL_BACKEND_HTTP (user_data);
-
-	username = cbhttp->priv->credentials ? e_named_parameters_get (cbhttp->priv->credentials, E_SOURCE_CREDENTIAL_USERNAME) : NULL;
-	if (!username || !*username) {
-		ESourceAuthentication *auth_extension;
-		ESource *source;
-
-		source = e_backend_get_source (E_BACKEND (cbhttp));
-		auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		auth_user = e_source_authentication_dup_user (auth_extension);
-
-		username = auth_user;
-	}
-
-	if (!username || !*username || !cbhttp->priv->credentials ||
-	    !e_named_parameters_exists (cbhttp->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD))
-		soup_message_set_status (msg, SOUP_STATUS_FORBIDDEN);
-	else
-		soup_auth_authenticate (auth, username, e_named_parameters_get (cbhttp->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD));
-
-	g_free (auth_user);
-}
-
 static gboolean
 ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		       const ENamedParameters *credentials,
@@ -196,10 +132,9 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
-	e_named_parameters_free (cbhttp->priv->credentials);
-	cbhttp->priv->credentials = credentials ? e_named_parameters_new_clone (credentials) : NULL;
+	e_soup_session_set_credentials (cbhttp->priv->session, credentials);
 
-	request = soup_session_request_http (cbhttp->priv->soup_session, SOUP_METHOD_GET, uri, &local_error);
+	request = soup_session_request_http (SOUP_SESSION (cbhttp->priv->session), SOUP_METHOD_GET, uri, &local_error);
 	success = request != NULL;
 
 	if (success) {
@@ -211,7 +146,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 			soup_message_headers_append (message->request_headers, "Connection", "close");
 		}
 
-		input_stream = soup_request_send (SOUP_REQUEST (request), cancellable, &local_error);
+		input_stream = e_soup_session_send_request_sync (cbhttp->priv->session, SOUP_REQUEST (request), cancellable, &local_error);
 
 		success = input_stream != NULL;
 
@@ -251,8 +186,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 				*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
-				if (message)
-					ecb_http_extract_ssl_failed_data (message, out_certificate_pem, out_certificate_errors);
+				e_soup_session_get_ssl_error_details (cbhttp->priv->session, out_certificate_pem, out_certificate_errors);
 			} else {
 				e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 			}
@@ -294,8 +228,8 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 
 	cbhttp = E_CAL_BACKEND_HTTP (meta_backend);
 
-	if (cbhttp->priv->soup_session)
-		soup_session_abort (cbhttp->priv->soup_session);
+	if (cbhttp->priv->session)
+		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
 
 	g_clear_object (&cbhttp->priv->input_stream);
 	g_clear_object (&cbhttp->priv->request);
@@ -642,6 +576,24 @@ ecb_http_load_component_sync (ECalMetaBackend *meta_backend,
 }
 
 static void
+e_cal_backend_http_constructed (GObject *object)
+{
+	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (object);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->constructed (object);
+
+	cbhttp->priv->session = e_soup_session_new (e_backend_get_source (E_BACKEND (cbhttp)));
+
+	e_soup_session_setup_logging (cbhttp->priv->session, g_getenv ("WEBCAL_DEBUG"));
+
+	e_binding_bind_property (
+		cbhttp, "proxy-resolver",
+		cbhttp->priv->session, "proxy-resolver",
+		G_BINDING_SYNC_CREATE);
+}
+
+static void
 e_cal_backend_http_dispose (GObject *object)
 {
 	ECalBackendHttp *cbhttp;
@@ -651,9 +603,9 @@ e_cal_backend_http_dispose (GObject *object)
 	g_clear_object (&cbhttp->priv->request);
 	g_clear_object (&cbhttp->priv->input_stream);
 
-	if (cbhttp->priv->soup_session) {
-		soup_session_abort (cbhttp->priv->soup_session);
-		g_clear_object (&cbhttp->priv->soup_session);
+	if (cbhttp->priv->session) {
+		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
+		g_clear_object (&cbhttp->priv->session);
 	}
 
 	if (cbhttp->priv->components) {
@@ -670,8 +622,7 @@ e_cal_backend_http_finalize (GObject *object)
 {
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (object);
 
-	e_named_parameters_free (cbhttp->priv->credentials);
-	cbhttp->priv->credentials = NULL;
+	g_clear_object (&cbhttp->priv->session);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->finalize (object);
@@ -680,41 +631,9 @@ e_cal_backend_http_finalize (GObject *object)
 static void
 e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 {
-	SoupSession *soup_session;
-
 	cbhttp->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbhttp, E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttpPrivate);
 
 	e_cal_backend_set_writable (E_CAL_BACKEND (cbhttp), FALSE);
-
-	soup_session = soup_session_new ();
-	g_object_set (
-		soup_session,
-		SOUP_SESSION_TIMEOUT, 90,
-		SOUP_SESSION_SSL_STRICT, TRUE,
-		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
-		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
-		NULL);
-
-	if (g_getenv ("WEBCAL_DEBUG") != NULL) {
-		SoupLogger *logger;
-
-		logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, 1024 * 1024);
-		soup_session_add_feature (soup_session, SOUP_SESSION_FEATURE (logger));
-		g_object_unref (logger);
-	}
-
-	cbhttp->priv->soup_session = soup_session;
-	cbhttp->priv->request = NULL;
-	cbhttp->priv->input_stream = NULL;
-
-	e_binding_bind_property (
-		cbhttp, "proxy-resolver",
-		cbhttp->priv->soup_session, "proxy-resolver",
-		G_BINDING_SYNC_CREATE);
-
-	g_signal_connect (
-		cbhttp->priv->soup_session, "authenticate",
-		G_CALLBACK (ecb_http_soup_authenticate), cbhttp);
 }
 
 static void
@@ -741,6 +660,7 @@ e_cal_backend_http_class_init (ECalBackendHttpClass *klass)
 	cal_backend_sync_class->remove_objects_sync = NULL;
 
 	object_class = G_OBJECT_CLASS (klass);
+	object_class->constructed = e_cal_backend_http_constructed;
 	object_class->dispose = e_cal_backend_http_dispose;
 	object_class->finalize = e_cal_backend_http_finalize;
 }
