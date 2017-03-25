@@ -34,7 +34,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-03-01 14:36+0000\n"
-"PO-Revision-Date: 2017-03-07 21:43+0100\n"
+"PO-Revision-Date: 2017-03-25 17:40+0100\n"
 "Last-Translator: Ask Hjorth Larsen <asklarsen@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "Language: da\n"
@@ -834,7 +834,7 @@ msgstr "Fødselsdato"
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:946
 msgid "Anniversary"
-msgstr "Bryllupsdag"
+msgstr "Jubilæum"
 
 #. Security fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:294
