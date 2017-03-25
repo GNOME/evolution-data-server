@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-18 21:49+0100\n"
-"PO-Revision-Date: 2017-03-18 21:50+0100\n"
+"POT-Creation-Date: 2017-03-25 20:23+0100\n"
+"PO-Revision-Date: 2017-03-25 20:24+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -52,7 +52,7 @@ msgid "Loading..."
 msgstr "Wczytywanie…"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:992
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4353
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4357
 msgid "Searching..."
 msgstr "Wyszukiwanie…"
 
@@ -96,7 +96,7 @@ msgstr ""
 
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1162
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4243
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4247
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:384
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:867
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
@@ -157,13 +157,13 @@ msgid "Querying for updated groups…"
 msgstr "Sprawdzanie dostępności aktualizacji grup…"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1749
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4995
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4999
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1504
 msgid "The backend does not support bulk additions"
 msgstr "Mechanizm nie obsługuje dodawania całości"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:1906
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5131
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5135
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1626
 msgid "The backend does not support bulk modifications"
 msgstr "Mechanizm nie obsługuje modyfikacji całości"
@@ -220,7 +220,7 @@ msgid "Invalid DN syntax"
 msgstr "Nieprawidłowa składnia DN"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1159
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4242
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4246
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "Błąd LDAP 0x%x (%s)"
@@ -243,32 +243,32 @@ msgstr "%s: zwrócono nieobsługiwany typ wyniku %d"
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: zwrócono nieobsługiwany typ wyniku wyszukiwania %d"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4191
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4195
 msgid "Receiving LDAP search results..."
 msgstr "Pobieranie wyników wyszukiwania na LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4375
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4379
 msgid "Error performing search"
 msgstr "Błąd podczas wyszukiwania"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4508
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4512
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Pobieranie kontaktów (%d)…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5078
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5082
 msgid "Adding contact to LDAP server..."
 msgstr "Dodawanie kontaktu na serwerze LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5153
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5157
 msgid "Modifying contact from LDAP server..."
 msgstr "Modyfikowanie kontaktu na serwerze LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5219
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5223
 msgid "Removing contact from LDAP server..."
 msgstr "Usuwanie kontaktu na serwerze LDAP…"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5614
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5618
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "Uzyskanie DN dla użytkownika „%s” się nie powiodło"
@@ -1020,7 +1020,7 @@ msgstr ""
 "pola wartości typu zmienna logiczna, ciąg i lista ciągów"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3073
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4176
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
@@ -1028,19 +1028,19 @@ msgstr ""
 "Pełne search_contacts nie są przechowywane w buforze. Nie można zwrócić "
 "vCard."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4307
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4400
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5817
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr "Zapytanie zawierało nieobsługiwane elementy"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4311
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4312
 #, c-format
 msgid "Invalid Query"
 msgstr "Nieprawidłowe zapytanie"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4335
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4336
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
@@ -1049,7 +1049,7 @@ msgstr ""
 "Pełne search_contacts nie są przechowywane w buforze. Dlatego obsługiwane "
 "jest tylko zapytanie podsumowań."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4404
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4405
 #: ../src/addressbook/libedata-book/e-data-book.c:394
 #: ../src/addressbook/libedata-book/e-data-book.c:1144
 #: ../src/calendar/libedata-cal/e-data-cal.c:429
@@ -1059,7 +1059,7 @@ msgstr ""
 msgid "Invalid query"
 msgstr "Nieprawidłowe zapytanie"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4447
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4448
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
@@ -1067,34 +1067,34 @@ msgstr ""
 "Pełne vCard nie są przechowywane w buforze. Dlatego obsługiwane jest tylko "
 "zapytanie podsumowań."
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5270
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5271
 #, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Nie można usunąć pliku bazy danych: errno %d"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6057
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6457
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6058
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6458
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr "Tylko zapytania o podsumowania są obsługiwane przez EbSdbCursor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6064
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6065
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr ""
 "Należy podać co najmniej jedno pole porządkowania, aby użyć EbSdbCursor"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6078
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6079
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr "Nie można porządkować według pola, które nie jest w posumowaniu"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6085
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6086
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr "Nie można porządkować według pola, które może mieć wiele wartości"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
@@ -1104,7 +1104,7 @@ msgstr ""
 "Próbowano odwrotnie przekroczyć kursor, ale jest on już na początku listy "
 "kontaktów"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6226
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
@@ -1470,7 +1470,7 @@ msgstr "Pogoda: pochmurna noc"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:381
 msgid "Weather: Cloudy"
-msgstr "Pogoda: pochmurno"
+msgstr "Pogoda: pochmurnie"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:382
 msgid "Weather: Overcast"
@@ -5530,7 +5530,7 @@ msgstr "Źródło „%s” nie obsługuje wyszukiwań pośredników"
 #: ../src/libedataserver/e-time-utils.c:1691
 #: ../src/libedataserver/e-time-utils.c:1990
 msgid "%a %m/%d/%Y %I:%M:%S %p"
-msgstr "%a, %d.%m.%Y %I∶%M∶%S %p"
+msgstr "%a, %d.%m.%Y %I∶%M∶%S %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format.
@@ -5548,7 +5548,7 @@ msgstr "%a, %d.%m.%Y %H∶%M∶%S"
 #: ../src/libedataserver/e-time-utils.c:1701
 #: ../src/libedataserver/e-time-utils.c:1986
 msgid "%a %m/%d/%Y %I:%M %p"
-msgstr "%a, %d.%m.%Y %I∶%M %p"
+msgstr "%a, %d.%m.%Y %I∶%M %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without seconds.
@@ -5563,7 +5563,7 @@ msgstr "%a, %d.%m.%Y %H∶%M"
 #. * in 12-hour format, without minutes or seconds.
 #: ../src/libedataserver/e-time-utils.c:1711
 msgid "%a %m/%d/%Y %I %p"
-msgstr "%a, %d.%m.%Y %I %p"
+msgstr "%a, %d.%m.%Y %I %p"
 
 #. strptime format of a weekday, a date and a time,
 #. * in 24-hour format, without minutes or seconds.
@@ -5582,7 +5582,7 @@ msgstr "%a, %d.%m.%Y"
 #. strptime format of a date and a time, in 12-hour format.
 #: ../src/libedataserver/e-time-utils.c:1726
 msgid "%m/%d/%Y %I:%M:%S %p"
-msgstr "%d.%m.%Y %I∶%M∶%S %p"
+msgstr "%d.%m.%Y %I∶%M∶%S %p"
 
 #. strptime format of a date and a time, in 24-hour format.
 #: ../src/libedataserver/e-time-utils.c:1730
@@ -5593,7 +5593,7 @@ msgstr "%d.%m.%Y %H∶%M∶%S"
 #. * without seconds.
 #: ../src/libedataserver/e-time-utils.c:1735
 msgid "%m/%d/%Y %I:%M %p"
-msgstr "%d.%m.%Y %I∶%M %p"
+msgstr "%d.%m.%Y %I∶%M %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without seconds.
@@ -5605,7 +5605,7 @@ msgstr "%d.%m.%Y %H∶%M"
 #. * without minutes or seconds.
 #: ../src/libedataserver/e-time-utils.c:1745
 msgid "%m/%d/%Y %I %p"
-msgstr "%d.%m.%Y %I %p"
+msgstr "%d.%m.%Y %I %p"
 
 #. strptime format of a date and a time, in 24-hour format,
 #. * without minutes or seconds.
@@ -5625,7 +5625,7 @@ msgstr "%d.%m.%Y"
 #: ../src/libedataserver/e-time-utils.c:1913
 #: ../src/libedataserver/e-time-utils.c:2034
 msgid "%I:%M:%S %p"
-msgstr "%I∶%M∶%S %p"
+msgstr "%I∶%M∶%S %p"
 
 #. strptime format for a time of day, in 24-hour format.
 #. strftime format of a time in 24-hour format.
@@ -5641,7 +5641,7 @@ msgstr "%H∶%M∶%S"
 #: ../src/libedataserver/e-time-utils.c:1922
 #: ../src/libedataserver/e-time-utils.c:2031
 msgid "%I:%M %p"
-msgstr "%I∶%M %p"
+msgstr "%I∶%M %p"
 
 #. strptime format for time of day, without seconds 24-hour format.
 #. strftime format of a time in 24-hour format,
@@ -5660,7 +5660,7 @@ msgstr "%H%M"
 #. strptime format for hour and AM/PM, 12-hour format.
 #: ../src/libedataserver/e-time-utils.c:1934
 msgid "%I %p"
-msgstr "%I %p"
+msgstr "%I %p"
 
 #: ../src/libedataserver/e-webdav-discover.c:447
 #: ../src/libedataserver/e-webdav-discover.c:486
@@ -6211,7 +6211,7 @@ msgid "_Dismiss"
 msgstr "_Odrzuć"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:68
-#: ../src/tools/addressbook-export/addressbook-export.c:782
+#: ../src/tools/addressbook-export/addressbook-export.c:780
 msgid "Can not open file"
 msgstr "Nie można otworzyć pliku"
 
@@ -6220,35 +6220,35 @@ msgstr "Nie można otworzyć pliku"
 msgid "Failed to open client “%s”: %s"
 msgstr "Otwarcie klienta „%s” się nie powiodło: %s"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:892
+#: ../src/tools/addressbook-export/addressbook-export.c:888
 msgid "Unhandled error"
 msgstr "Nieobsługiwany błąd"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:925
+#: ../src/tools/addressbook-export/addressbook-export.c:921
 msgid "Specify the output file instead of standard output"
 msgstr "Podaje plik wyjściowy zamiast standardowego wyjścia"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:926
+#: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "OUTPUTFILE"
 msgstr "PLIK-WYJŚCIOWY"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:929
+#: ../src/tools/addressbook-export/addressbook-export.c:925
 msgid "List local address book folders"
 msgstr "Wyświetla listę lokalnych katalogów książki adresowej"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:932
+#: ../src/tools/addressbook-export/addressbook-export.c:928
 msgid "Show cards as vcard or csv file"
 msgstr "Wyświetla wizytówki jako plik vCard lub CSV"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:933
+#: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "[vcard|csv]"
 msgstr "[vcard|csv]"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:981
+#: ../src/tools/addressbook-export/addressbook-export.c:977
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr "Błąd parametrów wiersza poleceń, użycie opcji --help wyświetli użycie."
 
-#: ../src/tools/addressbook-export/addressbook-export.c:995
+#: ../src/tools/addressbook-export/addressbook-export.c:991
 msgid "Only support csv or vcard format."
 msgstr "Obsługuje tylko format CSV lub vCard."
