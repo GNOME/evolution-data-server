@@ -2106,6 +2106,10 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 
 		tok = camel_imapx_input_stream_token (
 			stream, &token, &len, cancellable, error);
+		if (tok == '\n') {
+			tok = camel_imapx_input_stream_token (
+				stream, &token, &len, cancellable, error);
+		}
 	}
 
 	if (tok == IMAPX_TOK_ERROR)
@@ -2114,7 +2118,7 @@ imapx_parse_fetch (CamelIMAPXInputStream *stream,
 	if (tok != ')') {
 		g_set_error (
 			error, CAMEL_IMAPX_ERROR, CAMEL_IMAPX_ERROR_SERVER_RESPONSE_MALFORMED,
-			"missing closing ')' on fetch response");
+			"missing closing ')' on fetch response (got 0x%x)", tok);
 		goto fail;
 	}
 
