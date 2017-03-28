@@ -134,19 +134,15 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 
 	e_soup_session_set_credentials (cbhttp->priv->session, credentials);
 
-	request = soup_session_request_http (SOUP_SESSION (cbhttp->priv->session), SOUP_METHOD_GET, uri, &local_error);
+	request = e_soup_session_new_request (cbhttp->priv->session, SOUP_METHOD_GET, uri, &local_error);
 	success = request != NULL;
 
 	if (success) {
 		SoupMessage *message;
 
 		message = soup_request_http_get_message (request);
-		if (message) {
-			soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
-			soup_message_headers_append (message->request_headers, "Connection", "close");
-		}
 
-		input_stream = e_soup_session_send_request_sync (cbhttp->priv->session, SOUP_REQUEST (request), cancellable, &local_error);
+		input_stream = e_soup_session_send_request_sync (cbhttp->priv->session, request, cancellable, &local_error);
 
 		success = input_stream != NULL;
 

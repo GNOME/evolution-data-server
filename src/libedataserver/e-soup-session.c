@@ -26,6 +26,8 @@
 
 #include "evolution-data-server-config.h"
 
+#include <stdio.h>
+
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
 #include "e-source-webdav.h"
@@ -40,6 +42,8 @@ struct _ESoupSessionPrivate {
 	gboolean ssl_info_set;
 	gchar *ssl_certificate_pem;
 	GTlsCertificateFlags ssl_certificate_errors;
+
+	SoupLoggerLogLevel log_level;
 };
 
 enum {
@@ -221,6 +225,7 @@ e_soup_session_init (ESoupSession *session)
 {
 	session->priv = G_TYPE_INSTANCE_GET_PRIVATE (session, E_TYPE_SOUP_SESSION, ESoupSessionPrivate);
 	session->priv->ssl_info_set = FALSE;
+	session->priv->log_level = SOUP_LOGGER_LOG_NONE;
 
 	g_mutex_init (&session->priv->property_lock);
 
@@ -273,6 +278,8 @@ e_soup_session_new (ESource *source)
  * "1" - the same as "all".
  * Any other value, including %NULL, disables logging.
  *
+ * Use e_soup_session_get_log_level() to get current log level.
+ *
  * Since: 3.26
  **/
 void
@@ -280,11 +287,11 @@ e_soup_session_setup_logging (ESoupSession *session,
 			      const gchar *logging_level)
 {
 	SoupLogger *logger;
-	SoupLoggerLogLevel level;
 
 	g_return_if_fail (E_IS_SOUP_SESSION (session));
 
 	soup_session_remove_feature_by_type (SOUP_SESSION (session), SOUP_TYPE_LOGGER);
+	session->priv->log_level = SOUP_LOGGER_LOG_NONE;
 
 	if (!logging_level)
 		return;
@@ -292,17 +299,33 @@ e_soup_session_setup_logging (ESoupSession *session,
 	if (g_ascii_strcasecmp (logging_level, "all") == 0 ||
 	    g_ascii_strcasecmp (logging_level, "body") == 0 ||
 	    g_ascii_strcasecmp (logging_level, "1") == 0)
-		level = SOUP_LOGGER_LOG_BODY;
+		session->priv->log_level = SOUP_LOGGER_LOG_BODY;
 	else if (g_ascii_strcasecmp (logging_level, "headers") == 0)
-		level = SOUP_LOGGER_LOG_HEADERS;
+		session->priv->log_level = SOUP_LOGGER_LOG_HEADERS;
 	else if (g_ascii_strcasecmp (logging_level, "min") == 0)
-		level = SOUP_LOGGER_LOG_MINIMAL;
+		session->priv->log_level = SOUP_LOGGER_LOG_MINIMAL;
 	else
 		return;
 
-	logger = soup_logger_new (level, 10 * 1024 * 1024);
+	logger = soup_logger_new (session->priv->log_level, -1);
 	soup_session_add_feature (SOUP_SESSION (session), SOUP_SESSION_FEATURE (logger));
 	g_object_unref (logger);
+}
+
+/**
+ * e_soup_session_get_log_level:
+ * @session: an #ESoupSession
+ *
+ * Returns: Current log level, as #SoupLoggerLogLevel
+ *
+ * Since: 3.26
+ **/
+SoupLoggerLogLevel
+e_soup_session_get_log_level (ESoupSession *session)
+{
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), SOUP_LOGGER_LOG_NONE);
+
+	return session->priv->log_level;
 }
 
 /**
@@ -423,10 +446,103 @@ e_soup_session_get_ssl_error_details (ESoupSession *session,
 	return TRUE;
 }
 
+static void
+e_soup_session_preset_request (SoupRequestHTTP *request)
+{
+	SoupMessage *message;
+
+	if (!request)
+		return;
+
+	message = soup_request_http_get_message (request);
+	if (message) {
+		soup_message_headers_append (message->request_headers, "User-Agent", "Evolution/" VERSION);
+		soup_message_headers_append (message->request_headers, "Connection", "close");
+
+		/* Disable caching for proxies (RFC 4918, section 10.4.5) */
+		soup_message_headers_append (message->request_headers, "Cache-Control", "no-cache");
+		soup_message_headers_append (message->request_headers, "Pragma", "no-cache");
+
+		g_clear_object (&message);
+	}
+}
+
+/**
+ * e_soup_session_new_request:
+ * @session: an #ESoupSession
+ * @method: an HTTP method
+ * @uri_string: a URI string to use for the request
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #SoupRequestHTTP, similar to soup_session_request_http(),
+ * but also presets request headers with "User-Agent" to be "Evolution/version"
+ * and with "Connection" to be "close".
+ *
+ * See also e_soup_session_new_request_uri().
+ *
+ * Returns: (transfer full): a new #SoupRequestHTTP, or %NULL on error
+ *
+ * Since: 3.26
+ **/
+SoupRequestHTTP *
+e_soup_session_new_request (ESoupSession *session,
+			    const gchar *method,
+			    const gchar *uri_string,
+			    GError **error)
+{
+	SoupRequestHTTP *request;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
+
+	request = soup_session_request_http (SOUP_SESSION (session), method, uri_string, error);
+	if (!request)
+		return NULL;
+
+	e_soup_session_preset_request (request);
+
+	return request;
+}
+
+/**
+ * e_soup_session_new_request:
+ * @session: an #ESoupSession
+ * @method: an HTTP method
+ * @uri: a #SoupURI to use for the request
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new #SoupRequestHTTP, similar to soup_session_request_http_uri(),
+ * but also presets request headers with "User-Agent" to be "Evolution/version"
+ * and with "Connection" to be "close".
+ *
+ * See also e_soup_session_new_request().
+ *
+ * Returns: (transfer full): a new #SoupRequestHTTP, or %NULL on error
+ *
+ * Since: 3.26
+ **/
+SoupRequestHTTP *
+e_soup_session_new_request_uri (ESoupSession *session,
+				const gchar *method,
+				SoupURI *uri,
+				GError **error)
+{
+	SoupRequestHTTP *request;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
+
+	request = soup_session_request_http_uri (SOUP_SESSION (session), method, uri, error);
+	if (!request)
+		return NULL;
+
+	e_soup_session_preset_request (request);
+
+	return request;
+}
+
 /**
  * e_soup_session_send_request_sync:
  * @session: an #ESoupSession
- * @request: a #SoupRequest to send
+ * @request: a #SoupRequestHTTP to send
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -442,6 +558,9 @@ e_soup_session_get_ssl_error_details (ESoupSession *session,
  * Use e_soup_session_send_request_simple_sync() to read whole
  * content into a #GByteArray.
  *
+ * Note that SoupSession doesn't log content read from GInputStream,
+ * thus the caller may print the read content on its own when needed.
+ *
  * Returns: (transfer full): A newly allocated #GInputStream,
  *    that can be used to read from the URI pointed to by @request.
  *    Free it with g_object_unref(), when no longer needed.
@@ -450,7 +569,7 @@ e_soup_session_get_ssl_error_details (ESoupSession *session,
  **/
 GInputStream *
 e_soup_session_send_request_sync (ESoupSession *session,
-				  SoupRequest *request,
+				  SoupRequestHTTP *request,
 				  GCancellable *cancellable,
 				  GError **error)
 {
@@ -458,7 +577,7 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
-	g_return_val_if_fail (SOUP_IS_REQUEST (request), NULL);
+	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), NULL);
 
 	g_mutex_lock (&session->priv->property_lock);
 	g_clear_pointer (&session->priv->ssl_certificate_pem, g_free);
@@ -467,18 +586,17 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	g_mutex_unlock (&session->priv->property_lock);
 
 	if (session->priv->source &&
-	    e_source_has_extension (session->priv->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND) &&
-	    SOUP_IS_REQUEST_HTTP (request)) {
+	    e_source_has_extension (session->priv->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
 		SoupMessage *message;
 
-		message = soup_request_http_get_message (SOUP_REQUEST_HTTP (request));
+		message = soup_request_http_get_message (request);
 
 		e_soup_ssl_trust_connect (message, session->priv->source);
 
 		g_clear_object (&message);
 	}
 
-	input_stream = soup_request_send (request, cancellable, &local_error);
+	input_stream = soup_request_send (SOUP_REQUEST (request), cancellable, &local_error);
 	if (input_stream)
 		return input_stream;
 
@@ -486,7 +604,7 @@ e_soup_session_send_request_sync (ESoupSession *session,
 		GTlsCertificate *certificate = NULL;
 		SoupMessage *message;
 
-		message = soup_request_http_get_message (SOUP_REQUEST_HTTP (request));
+		message = soup_request_http_get_message (request);
 
 		g_mutex_lock (&session->priv->property_lock);
 
@@ -515,7 +633,7 @@ e_soup_session_send_request_sync (ESoupSession *session,
 /**
  * e_soup_session_send_request_simple_sync:
  * @session: an #ESoupSession
- * @request: a #SoupRequest to send
+ * @request: a #SoupRequestHTTP to send
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -524,6 +642,9 @@ e_soup_session_send_request_sync (ESoupSession *session,
  * Use e_soup_session_send_request_sync() when you want to have
  * more control on the content read.
  *
+ * The function prints read content to stdout when
+ * e_soup_session_get_log_level() returns #SOUP_LOGGER_LOG_BODY.
+ *
  * Returns: (transfer full): A newly allocated #GByteArray,
  *    which contains whole content from the URI pointed to by @request.
  *
@@ -531,7 +652,7 @@ e_soup_session_send_request_sync (ESoupSession *session,
  **/
 GByteArray *
 e_soup_session_send_request_simple_sync (ESoupSession *session,
-					 SoupRequest *request,
+					 SoupRequestHTTP *request,
 					 GCancellable *cancellable,
 					 GError **error)
 {
@@ -543,13 +664,13 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
-	g_return_val_if_fail (SOUP_IS_REQUEST (request), NULL);
+	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), NULL);
 
 	input_stream = e_soup_session_send_request_sync (session, request, cancellable, error);
 	if (!input_stream)
 		return NULL;
 
-	expected_length = soup_request_get_content_length (request);
+	expected_length = soup_request_get_content_length (SOUP_REQUEST (request));
 	if (expected_length > 0)
 		bytes = g_byte_array_sized_new (expected_length);
 	else
@@ -568,6 +689,9 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 	if (!success) {
 		g_byte_array_free (bytes, TRUE);
 		bytes = NULL;
+	} else if (e_soup_session_get_log_level (session) == SOUP_LOGGER_LOG_BODY) {
+		fwrite (bytes->data, 1, bytes->len, stdout);
+		fflush (stdout);
 	}
 
 	return bytes;

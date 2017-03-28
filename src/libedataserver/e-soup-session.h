@@ -79,6 +79,8 @@ GType		e_soup_session_get_type			(void) G_GNUC_CONST;
 ESoupSession *	e_soup_session_new			(ESource *source);
 void		e_soup_session_setup_logging		(ESoupSession *session,
 							 const gchar *logging_level);
+SoupLoggerLogLevel
+		e_soup_session_get_log_level		(ESoupSession *session);
 ESource *	e_soup_session_get_source		(ESoupSession *session);
 void		e_soup_session_set_credentials		(ESoupSession *session,
 							 const ENamedParameters *credentials);
@@ -87,12 +89,22 @@ ENamedParameters *
 gboolean	e_soup_session_get_ssl_error_details	(ESoupSession *session,
 							 gchar **out_certificate_pem,
 							 GTlsCertificateFlags *out_certificate_errors);
+SoupRequestHTTP *
+		e_soup_session_new_request		(ESoupSession *session,
+							 const gchar *method,
+							 const gchar *uri_string,
+							 GError **error);
+SoupRequestHTTP *
+		e_soup_session_new_request_uri		(ESoupSession *session,
+							 const gchar *method,
+							 SoupURI *uri,
+							 GError **error);
 GInputStream *	e_soup_session_send_request_sync	(ESoupSession *session,
-							 SoupRequest *request,
+							 SoupRequestHTTP *request,
 							 GCancellable *cancellable,
 							 GError **error);
 GByteArray *	e_soup_session_send_request_simple_sync	(ESoupSession *session,
-							 SoupRequest *request,
+							 SoupRequestHTTP *request,
 							 GCancellable *cancellable,
 							 GError **error);
 

@@ -120,8 +120,9 @@ set(SOURCES
 	e-webdav-discover.c
 	e-webdav-session.c
 	e-data-server-util.c
-	e-xml-utils.c
+	e-xml-document.c
 	e-xml-hash-utils.c
+	e-xml-utils.c
 	libedataserver-private.h
 	eds-version.c
 	${CMAKE_CURRENT_BINARY_DIR}/e-source-enumtypes.c
@@ -201,8 +202,9 @@ set(HEADERS
 	e-webdav-discover.h
 	e-webdav-session.h
 	e-data-server-util.h
-	e-xml-utils.h
+	e-xml-document.h
 	e-xml-hash-utils.h
+	e-xml-utils.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-source-enumtypes.h
 	${CMAKE_CURRENT_BINARY_DIR}/eds-version.h
 )

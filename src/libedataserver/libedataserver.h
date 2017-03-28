@@ -93,6 +93,7 @@
 #include <libedataserver/e-url.h>
 #include <libedataserver/e-webdav-discover.h>
 #include <libedataserver/e-webdav-session.h>
+#include <libedataserver/e-xml-document.h>
 #include <libedataserver/e-xml-hash-utils.h>
 #include <libedataserver/e-xml-utils.h>
 #include <libedataserver/eds-version.h>

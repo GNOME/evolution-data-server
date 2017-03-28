@@ -25,6 +25,7 @@
 
 #include <glib.h>
 #include <libxml/parser.h>
+#include <libxml/xpath.h>
 
 G_BEGIN_DECLS
 
@@ -34,7 +35,28 @@ gint		e_xml_save_file			(const gchar *filename,
 xmlNode *	e_xml_get_child_by_name		(const xmlNode *parent,
 						 const xmlChar *child_name);
 
+xmlDocPtr	e_xml_parse_data		(const gchar *data,
+						 gsize length);
+xmlXPathContextPtr
+		e_xml_new_xpath_context_with_namespaces
+						(xmlDocPtr doc,
+						 ...) G_GNUC_NULL_TERMINATED;
+void		e_xml_xpath_context_register_namespaces
+						(xmlXPathContextPtr xpath_ctx,
+						 const gchar *prefix,
+						 const gchar *href,
+						 ...) G_GNUC_NULL_TERMINATED;
+xmlXPathObjectPtr
+		e_xml_xpath_eval		(xmlXPathContextPtr xpath_ctx,
+						 const gchar *format,
+						 ...) G_GNUC_PRINTF (2, 3);
+gchar *		e_xml_xpath_eval_as_string	(xmlXPathContextPtr xpath_ctx,
+						 const gchar *format,
+						 ...) G_GNUC_PRINTF (2, 3);
+gboolean	e_xml_xpath_eval_exists		(xmlXPathContextPtr xpath_ctx,
+						 const gchar *format,
+						 ...) G_GNUC_PRINTF (2, 3);
+
 G_END_DECLS
 
 #endif /* E_XML_UTILS_H */
-

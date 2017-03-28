@@ -198,6 +198,7 @@ src/libedataserver/e-source-registry.c
 src/libedataserver/e-source-webdav.c
 src/libedataserver/e-time-utils.c
 src/libedataserver/e-webdav-discover.c
+src/libedataserver/e-webdav-session.c
 src/libedataserverui/e-credentials-prompter.c
 src/libedataserverui/e-credentials-prompter-impl-google.c
 src/libedataserverui/e-credentials-prompter-impl-password.c
