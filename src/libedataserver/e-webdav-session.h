@@ -239,6 +239,18 @@ struct _EWebDAVSessionClass {
 GType		e_webdav_session_get_type		(void) G_GNUC_CONST;
 
 EWebDAVSession *e_webdav_session_new			(ESource *source);
+SoupRequestHTTP *
+		e_webdav_session_new_request		(EWebDAVSession *webdav,
+							 const gchar *method,
+							 const gchar *uri,
+							 GError **error);
+gboolean	e_webdav_session_replace_with_detailed_error
+							(EWebDAVSession *webdav,
+							 SoupRequestHTTP *request,
+							 const GByteArray *response_data,
+							 gboolean ignore_multistatus,
+							 const gchar *prefix,
+							 GError **inout_error);
 gboolean	e_webdav_session_options_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 GHashTable **out_capabilities,

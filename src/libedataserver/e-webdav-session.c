@@ -306,7 +306,20 @@ e_webdav_session_new (ESource *source)
 		NULL);
 }
 
-static SoupRequestHTTP *
+/**
+ * e_webdav_session_options_sync:
+ * @webdav: an #EWebDAVSession
+ * @method: an HTTP method
+ * @uri: (nullable): URI to create the request for, or %NULL to read from #ESource
+ * @error: return location for a #GError, or %NULL
+ *
+ * Returns: (transfer full): A new #SoupRequestHTTP for the given @uri, or, when %NULL,
+ *    for the URI stored in the associated #ESource. Free the returned structure
+ *    with g_object_unref(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+SoupRequestHTTP *
 e_webdav_session_new_request (EWebDAVSession *webdav,
 			      const gchar *method,
 			      const gchar *uri,
@@ -337,6 +350,212 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 	soup_uri_free (soup_uri);
 
 	return request;
+}
+
+static gboolean
+e_webdav_session_extract_multistatus_error_cb (EWebDAVSession *webdav,
+					       xmlXPathContextPtr xpath_ctx,
+					       const gchar *xpath_prop_prefix,
+					       const SoupURI *request_uri,
+					       guint status_code,
+					       gpointer user_data)
+{
+	GError **error = user_data;
+
+	g_return_val_if_fail (error != NULL, FALSE);
+
+	if (!xpath_prop_prefix)
+		return TRUE;
+
+	if (status_code != SOUP_STATUS_OK && (
+	    status_code != SOUP_STATUS_FAILED_DEPENDENCY ||
+	    !*error)) {
+		gchar *description;
+
+		description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:responsedescription", xpath_prop_prefix);
+		if (!description || !*description) {
+			g_free (description);
+
+			description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../../D:responsedescription", xpath_prop_prefix);
+		}
+
+		g_clear_error (error);
+		g_set_error_literal (error, SOUP_HTTP_ERROR, status_code,
+			e_soup_session_util_status_to_string (status_code, description));
+
+		g_free (description);
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_replace_with_detailed_error:
+ * @webdav: an #EWebDAVSession
+ * @request: a #SoupRequestHTTP
+ * @response_data: (nullable): received response data, or %NULL
+ * @ignore_multistatus: whether to ignore multistatus responses
+ * @prefix: (nullable): error message prefix, used when replacing, or %NULL
+ * @inout_error: (inout) (nullable) (transfer full): a #GError variable to replace content to, or %NULL
+ *
+ * Tries to read detailed error information from @response_data,
+ * if not provided, then from @request's response_body. If the detailed
+ * error cannot be found, then does nothing, otherwise frees the content
+ * of @inout_error, if any, and then populates it with an error message
+ * prefixed with @prefix.
+ *
+ * The @prefix might be of form "Failed to something", because the resulting
+ * error message will be:
+ * "Failed to something: HTTP error code XXX (reason_phrase): detailed_error".
+ * When @prefix is %NULL, the error message will be:
+ * "Failed with HTTP error code XXX (reason phrase): detailed_error".
+ *
+ * As the caller might not be interested in errors, also the @inout_error
+ * can be %NULL, in which case the function does nothing.
+ *
+ * Returns: Whether any detailed error had been recognized.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
+					      SoupRequestHTTP *request,
+					      const GByteArray *response_data,
+					      gboolean ignore_multistatus,
+					      const gchar *prefix,
+					      GError **inout_error)
+{
+	SoupMessage *message;
+	GByteArray byte_array = { 0 };
+	const gchar *content_type;
+	gchar *detail_text = NULL;
+	gboolean error_set = FALSE;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), FALSE);
+
+	message = soup_request_http_get_message (request);
+	if (!message)
+		return FALSE;
+
+	byte_array.data = NULL;
+	byte_array.len = 0;
+
+	if (response_data && response_data->len) {
+		byte_array.data = (gpointer) response_data->data;
+		byte_array.len = response_data->len;
+	} else if (message->response_body && message->response_body->length) {
+		byte_array.data = (gpointer) message->response_body->data;
+		byte_array.len = message->response_body->length;
+	}
+
+	if (!byte_array.data || !byte_array.len)
+		goto out;
+
+	if (message->status_code == SOUP_STATUS_MULTI_STATUS &&
+	    !ignore_multistatus &&
+	    !e_webdav_session_traverse_multistatus_response (webdav, message, &byte_array,
+		e_webdav_session_extract_multistatus_error_cb, &local_error, NULL)) {
+		g_clear_error (&local_error);
+	}
+
+	if (local_error) {
+		if (prefix)
+			g_prefix_error (&local_error, "%s: ", prefix);
+		g_propagate_error (inout_error, local_error);
+
+		g_object_unref (message);
+
+		return TRUE;
+	}
+
+	content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
+	if (content_type && (
+	    (g_ascii_strcasecmp (content_type, "application/xml") == 0 ||
+	     g_ascii_strcasecmp (content_type, "text/xml") == 0))) {
+		xmlDocPtr doc;
+
+		if (message->status_code == SOUP_STATUS_MULTI_STATUS && ignore_multistatus)
+			doc = NULL;
+		else
+			doc = e_xml_parse_data (byte_array.data, byte_array.len);
+
+		if (doc) {
+			xmlXPathContextPtr xpath_ctx;
+
+			xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
+				"D", E_WEBDAV_NS_DAV,
+				NULL);
+
+			if (xpath_ctx &&
+			    e_xml_xpath_eval_exists (xpath_ctx, "/D:error")) {
+				detail_text = e_xml_xpath_eval_as_string (xpath_ctx, "/D:error");
+			}
+
+			if (xpath_ctx)
+				xmlXPathFreeContext (xpath_ctx);
+			xmlFreeDoc (doc);
+		}
+	} else if (content_type &&
+	     g_ascii_strcasecmp (content_type, "text/plain") == 0) {
+		detail_text = g_strndup ((const gchar *) byte_array.data, byte_array.len);
+	}
+
+ out:
+	if (detail_text)
+		g_strstrip (detail_text);
+
+	if (detail_text && *detail_text) {
+		error_set = TRUE;
+
+		g_clear_error (inout_error);
+
+		if (prefix) {
+			g_set_error (inout_error, SOUP_HTTP_ERROR, message->status_code,
+				/* Translators: The first '%s' is replaced with error prefix, as provided
+				   by the caller, which can be in a form: "Failed with something".
+				   The '%d' is replaced with actual HTTP status code.
+				   The second '%s' is replaced with a reason phrase of the error (user readable text).
+				   The last '%s' is replaced with detailed error text, as returned by the server. */
+				_("%s: HTTP error code %d (%s): %s"), prefix, message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase),
+				detail_text);
+		} else {
+			g_set_error (inout_error, SOUP_HTTP_ERROR, message->status_code,
+				/* Translators: The '%d' is replaced with actual HTTP status code.
+				   The '%s' is replaced with a reason phrase of the error (user readable text).
+				   The last '%s' is replaced with detailed error text, as returned by the server. */
+				_("Failed with HTTP error code %d (%s): %s"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase),
+				detail_text);
+		}
+	} else if (!SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+		error_set = TRUE;
+
+		g_clear_error (inout_error);
+
+		if (prefix) {
+			g_set_error (inout_error, SOUP_HTTP_ERROR, message->status_code,
+				/* Translators: The first '%s' is replaced with error prefix, as provided
+				   by the caller, which can be in a form: "Failed with something".
+				   The '%d' is replaced with actual HTTP status code.
+				   The second '%s' is replaced with a reason phrase of the error (user readable text). */
+				_("%s: HTTP error code %d (%s)"), prefix, message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		} else {
+			g_set_error (inout_error, SOUP_HTTP_ERROR, message->status_code,
+				/* Translators: The '%d' is replaced with actual HTTP status code.
+				   The '%s' is replaced with a reason phrase of the error (user readable text). */
+				_("Failed with HTTP error code %d (%s)"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		}
+	}
+
+	g_object_unref (message);
+	g_free (detail_text);
+
+	return error_set;
 }
 
 static GHashTable *
@@ -531,9 +750,8 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	g_object_unref (request);
-
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to get properties"), error) &&
+		bytes != NULL;
 
 	if (success)
 		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes, func, func_user_data, error);
@@ -541,45 +759,9 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
+	g_object_unref (request);
 
 	return success;
-}
-
-static gboolean
-e_webdav_session_extract_multistatus_error_cb (EWebDAVSession *webdav,
-					       xmlXPathContextPtr xpath_ctx,
-					       const gchar *xpath_prop_prefix,
-					       const SoupURI *request_uri,
-					       guint status_code,
-					       gpointer user_data)
-{
-	GError **error = user_data;
-
-	g_return_val_if_fail (error != NULL, FALSE);
-
-	if (!xpath_prop_prefix)
-		return TRUE;
-
-	if (status_code != SOUP_STATUS_OK && (
-	    status_code != SOUP_STATUS_FAILED_DEPENDENCY ||
-	    !*error)) {
-		gchar *description;
-
-		description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:responsedescription", xpath_prop_prefix);
-		if (!description || !*description) {
-			g_free (description);
-
-			description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../../D:responsedescription", xpath_prop_prefix);
-		}
-
-		g_clear_error (error);
-		g_set_error (error, SOUP_HTTP_ERROR, status_code, _("Failed to update properties: %s"),
-			e_soup_session_util_status_to_string (status_code, description));
-
-		g_free (description);
-	}
-
-	return TRUE;
 }
 
 /**
@@ -642,27 +824,13 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	g_object_unref (request);
-
-	success = bytes != NULL;
-
-	if (success) {
-		GError *local_error = NULL;
-
-		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes,
-			e_webdav_session_extract_multistatus_error_cb, &local_error, error);
-
-		if (success && local_error) {
-			g_propagate_error (error, local_error);
-			success = FALSE;
-		} else if (local_error) {
-			g_clear_error (&local_error);
-		}
-	}
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to update properties"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
+	g_object_unref (request);
 
 	return success;
 }
@@ -699,7 +867,8 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to create collection"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
@@ -1132,7 +1301,8 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 	g_signal_handler_disconnect (message, wrote_headers_id);
 	g_signal_handler_disconnect (message, wrote_chunk_id);
 
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to put data"), error) &&
+		bytes != NULL;
 
 	if (cwd.error) {
 		g_clear_error (error);
@@ -1317,7 +1487,8 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to delete resource"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
@@ -1383,7 +1554,8 @@ e_webdav_session_copy_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to copy resource"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
@@ -1444,7 +1616,8 @@ e_webdav_session_move_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to move resource"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
@@ -1548,9 +1721,8 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	g_object_unref (request);
-
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to lock resource"), error) &&
+		bytes != NULL;
 
 	if (success && out_xml_response) {
 		const gchar *content_type;
@@ -1575,7 +1747,7 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 		if (success) {
 			xmlDocPtr doc;
 
-			doc = e_xml_parse_data ((const gchar *) bytes->data, bytes->len);
+			doc = e_xml_parse_data (bytes->data, bytes->len);
 			if (!doc) {
 				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
 					_("Failed to parse XML data"));
@@ -1593,6 +1765,7 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
+	g_object_unref (request);
 
 	return success;
 }
@@ -1656,13 +1829,13 @@ e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	g_object_unref (request);
-
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to refresh lock"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
+	g_object_unref (request);
 
 	return success;
 }
@@ -1715,13 +1888,13 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	g_object_unref (request);
-
-	success = bytes != NULL;
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to unlock"), error) &&
+		bytes != NULL;
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
+	g_object_unref (request);
 
 	return success;
 }
@@ -1796,7 +1969,7 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 		request_uri = soup_message_get_uri ((SoupMessage *) message);
 	}
 
-	doc = e_xml_parse_data ((const gchar *) xml_data->data, xml_data->len);
+	doc = e_xml_parse_data (xml_data->data, xml_data->len);
 
 	if (!doc) {
 		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,

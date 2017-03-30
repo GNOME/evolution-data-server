@@ -192,7 +192,7 @@ e_xml_get_child_by_name (const xmlNode *parent,
  * Since: 3.26
  **/
 xmlDocPtr
-e_xml_parse_data (const gchar *data,
+e_xml_parse_data (gconstpointer data,
 		  gsize length)
 {
 	g_return_val_if_fail (data != NULL, NULL);

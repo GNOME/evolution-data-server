@@ -619,8 +619,14 @@ e_soup_session_check_result (ESoupSession *session,
 			e_webdav_session_extract_ssl_data (session, message);
 
 		if (read_bytes && bytes_length > 0) {
-			soup_message_body_truncate (message->response_body);
+			SoupBuffer *buffer;
+
 			soup_message_body_append (message->response_body, SOUP_MEMORY_COPY, read_bytes, bytes_length);
+
+			/* This writes data to message->response_body->data */
+			buffer = soup_message_body_flatten (message->response_body);
+			if (buffer)
+				soup_buffer_free (buffer);
 		}
 	}
 
@@ -792,7 +798,7 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
  * corresponding to @status_code. In case neither that can be found a localized
  * "Unknown error" message is returned.
  *
- * Returns: (transfer none): Error text base don given arguments. The returned
+ * Returns: (transfer none): Error text based on given arguments. The returned
  *    value is valid as long as @reason_phrase is not freed.
  *
  * Since: 3.26

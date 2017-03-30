@@ -35,7 +35,7 @@ gint		e_xml_save_file			(const gchar *filename,
 xmlNode *	e_xml_get_child_by_name		(const xmlNode *parent,
 						 const xmlChar *child_name);
 
-xmlDocPtr	e_xml_parse_data		(const gchar *data,
+xmlDocPtr	e_xml_parse_data		(gconstpointer data,
 						 gsize length);
 xmlXPathContextPtr
 		e_xml_new_xpath_context_with_namespaces
