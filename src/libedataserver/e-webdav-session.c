@@ -27,6 +27,7 @@
 
 #include "evolution-data-server-config.h"
 
+#include <stdio.h>
 #include <glib/gi18n-lib.h>
 
 #include "camel/camel.h"
@@ -36,6 +37,8 @@
 
 #include "e-webdav-session.h"
 
+#define BUFFER_SIZE 16384
+
 struct _EWebDAVSessionPrivate {
 	gboolean dummy;
 };
@@ -43,6 +46,7 @@ struct _EWebDAVSessionPrivate {
 G_DEFINE_TYPE (EWebDAVSession, e_webdav_session, E_TYPE_SOUP_SESSION)
 
 G_DEFINE_BOXED_TYPE (EWebDAVResource, e_webdav_resource, e_webdav_resource_copy, e_webdav_resource_free)
+G_DEFINE_BOXED_TYPE (EWebDAVPropertyChange, e_webdav_property_change, e_webdav_property_change_copy, e_webdav_property_change_free)
 
 /**
  * e_webdav_resource_new:
@@ -98,31 +102,31 @@ e_webdav_resource_new (EWebDAVResourceKind kind,
 
 /**
  * e_webdav_resource_copy:
- * @resource: (nullable): an #EWebDAVResource to make a copy of
+ * @src: (nullable): an #EWebDAVResource to make a copy of
  *
  * Returns: (transfer full): A new #EWebDAVResource prefilled with
- *    the same values as @resource, or %NULL, when @resource is %NULL.
+ *    the same values as @src, or %NULL, when @src is %NULL.
  *    Free it with e_webdav_resource_free(), when no longer needed.
  *
  * Since: 3.26
  **/
 EWebDAVResource *
-e_webdav_resource_copy (const EWebDAVResource *resource)
+e_webdav_resource_copy (const EWebDAVResource *src)
 {
-	if (!resource)
+	if (!src)
 		return NULL;
 
-	return e_webdav_resource_new (resource->kind,
-		resource->supports,
-		resource->href,
-		resource->etag,
-		resource->display_name,
-		resource->content_type,
-		resource->content_length,
-		resource->creation_date,
-		resource->last_modified,
-		resource->description,
-		resource->color);
+	return e_webdav_resource_new (src->kind,
+		src->supports,
+		src->href,
+		src->etag,
+		src->display_name,
+		src->content_type,
+		src->content_length,
+		src->creation_date,
+		src->last_modified,
+		src->description,
+		src->color);
 }
 
 /**
@@ -130,7 +134,7 @@ e_webdav_resource_copy (const EWebDAVResource *resource)
  * @ptr: (nullable): an #EWebDAVResource
  *
  * Frees an #EWebDAVResource previously created with e_webdav_resource_new()
- * or e_webdav_resource_copy(). The function does nothign if @ptr is %NULL.
+ * or e_webdav_resource_copy(). The function does nothing if @ptr is %NULL.
  *
  * Since: 3.26
  **/
@@ -147,6 +151,121 @@ e_webdav_resource_free (gpointer ptr)
 		g_free (resource->description);
 		g_free (resource->color);
 		g_free (resource);
+	}
+}
+
+static EWebDAVPropertyChange *
+e_webdav_property_change_new (EWebDAVPropertyChangeKind kind,
+			      const gchar *ns_uri,
+			      const gchar *name,
+			      const gchar *value)
+{
+	EWebDAVPropertyChange *change;
+
+	change = g_new0 (EWebDAVPropertyChange, 1);
+	change->kind = kind;
+	change->ns_uri = g_strdup (ns_uri);
+	change->name = g_strdup (name);
+	change->value = g_strdup (value);
+
+	return change;
+}
+
+/**
+ * e_webdav_property_change_new_set:
+ * @ns_uri: namespace URI of the property
+ * @name: name of the property
+ * @value: (nullable): value of the property, or %NULL for empty value
+ *
+ * Creates a new #EWebDAVPropertyChange of kind %E_WEBDAV_PROPERTY_SET,
+ * which is used to modify or set the property value. The @value is a string
+ * representation of the value to store. It can be %NULL, but it means
+ * an empty value, not to remove it. To remove property use
+ * e_webdav_property_change_new_remove() instead.
+ *
+ * Returns: (transfer full): A new #EWebDAVPropertyChange. Free it with
+ *    e_webdav_property_change_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVPropertyChange *
+e_webdav_property_change_new_set (const gchar *ns_uri,
+				  const gchar *name,
+				  const gchar *value)
+{
+	g_return_val_if_fail (ns_uri != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	return e_webdav_property_change_new (E_WEBDAV_PROPERTY_SET, ns_uri, name, value);
+}
+
+/**
+ * e_webdav_property_change_new_remove:
+ * @ns_uri: namespace URI of the property
+ * @name: name of the property
+ *
+ * Creates a new #EWebDAVPropertyChange of kind %E_WEBDAV_PROPERTY_REMOVE,
+ * which is used to remove the given property. To change property value
+ * use e_webdav_property_change_new_set() instead.
+ *
+ * Returns: (transfer full): A new #EWebDAVPropertyChange. Free it with
+ *    e_webdav_property_change_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVPropertyChange *
+e_webdav_property_change_new_remove (const gchar *ns_uri,
+				     const gchar *name)
+{
+	g_return_val_if_fail (ns_uri != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	return e_webdav_property_change_new (E_WEBDAV_PROPERTY_REMOVE, ns_uri, name, NULL);
+}
+
+/**
+ * e_webdav_property_change_copy:
+ * @src: (nullable): an #EWebDAVPropertyChange to make a copy of
+ *
+ * Returns: (transfer full): A new #EWebDAVPropertyChange prefilled with
+ *    the same values as @src, or %NULL, when @src is %NULL.
+ *    Free it with e_webdav_property_change_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVPropertyChange *
+e_webdav_property_change_copy (const EWebDAVPropertyChange *src)
+{
+	if (!src)
+		return NULL;
+
+	return e_webdav_property_change_new (
+		src->kind,
+		src->ns_uri,
+		src->name,
+		src->value);
+}
+
+/**
+ * e_webdav_property_change_free:
+ * @ptr: (nullable): an #EWebDAVPropertyChange
+ *
+ * Frees an #EWebDAVPropertyChange previously created with e_webdav_property_change_new_set(),
+ * e_webdav_property_change_new_remove() or or e_webdav_property_change_copy().
+ * The function does nothing if @ptr is %NULL.
+ *
+ * Since: 3.26
+ **/
+void
+e_webdav_property_change_free (gpointer ptr)
+{
+	EWebDAVPropertyChange *change = ptr;
+
+	if (change) {
+		g_free (change->ns_uri);
+		g_free (change->name);
+		g_free (change->value);
+		g_free (change);
 	}
 }
 
@@ -333,9 +452,9 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
  * e_webdav_session_propfind_sync:
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
- * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_0, %E_WEBDAV_DEPTH_1 or %E_WEBDAV_DEPTH_INFINITY
+ * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
  * @xml: (nullable): the request itself, as an #EXmlDocument, the root element should be DAV:propfind, or %NULL
- * @func: an #EWebDAVPropfindFunc function to call for each DAV:propstat in the multistatus response
+ * @func: an #EWebDAVMultistatusTraverseFunc function to call for each DAV:propstat in the multistatus response
  * @func_user_data: user data passed to @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -361,7 +480,7 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 				const gchar *uri,
 				const gchar *depth,
 				const EXmlDocument *xml,
-				EWebDAVPropfindFunc func,
+				EWebDAVMultistatusTraverseFunc func,
 				gpointer func_user_data,
 				GCancellable *cancellable,
 				GError **error)
@@ -389,7 +508,7 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 		return FALSE;
 	}
 
-	soup_message_headers_append (message->request_headers, "Depth", depth);
+	soup_message_headers_replace (message->request_headers, "Depth", depth);
 
 	if (xml) {
 		gchar *content;
@@ -415,113 +534,175 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 
 	success = bytes != NULL;
 
-	if (success && message->status_code != SOUP_STATUS_MULTI_STATUS) {
-		success = FALSE;
+	if (success)
+		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes, func, func_user_data, error);
 
-		g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
-			_("Expected multistatus response, but %d returned (%s)"), message->status_code,
-			message->reason_phrase && *message->reason_phrase ? message->reason_phrase :
-			(soup_status_get_phrase (message->status_code) ? soup_status_get_phrase (message->status_code) : _("Unknown error")));
-	}
-
-	if (success) {
-		const gchar *content_type;
-
-		content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
-		success = content_type &&
-			(g_ascii_strcasecmp (content_type, "application/xml") == 0 ||
-			 g_ascii_strcasecmp (content_type, "text/xml") == 0);
-
-		if (!success) {
-			if (!content_type) {
-				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
-					_("Expected application/xml response, but none returned"));
-			} else {
-				g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
-					_("Expected application/xml response, but %s returned"), content_type);
-			}
-		}
-	}
-
-	if (success) {
-		xmlDocPtr doc = e_xml_parse_data ((const gchar *) bytes->data, bytes->len);
-
+	if (bytes)
 		g_byte_array_free (bytes, TRUE);
-		bytes = NULL;
+	g_object_unref (message);
 
-		if (doc) {
-			xmlXPathContextPtr xpath_ctx;
-			SoupURI *request_uri;
+	return success;
+}
 
-			request_uri = soup_message_get_uri (message);
+static gboolean
+e_webdav_session_extract_multistatus_error_cb (EWebDAVSession *webdav,
+					       xmlXPathContextPtr xpath_ctx,
+					       const gchar *xpath_prop_prefix,
+					       const SoupURI *request_uri,
+					       guint status_code,
+					       gpointer user_data)
+{
+	GError **error = user_data;
 
-			xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
-				"D", E_WEBDAV_NS_DAV,
-				NULL);
+	g_return_val_if_fail (error != NULL, FALSE);
 
-			if (xpath_ctx &&
-			    func (webdav, xpath_ctx, NULL, request_uri, SOUP_STATUS_NONE, func_user_data)) {
-				xmlXPathObjectPtr xpath_obj_response;
+	if (!xpath_prop_prefix)
+		return TRUE;
 
-				xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "/D:multistatus/D:response");
+	if (status_code != SOUP_STATUS_OK && (
+	    status_code != SOUP_STATUS_FAILED_DEPENDENCY ||
+	    !*error)) {
+		gchar *description;
 
-				if (xpath_obj_response != NULL) {
-					gboolean do_stop = FALSE;
-					gint response_index, response_length;
+		description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:responsedescription", xpath_prop_prefix);
+		if (!description || !*description) {
+			g_free (description);
 
-					response_length = xmlXPathNodeSetGetLength (xpath_obj_response->nodesetval);
+			description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../../D:responsedescription", xpath_prop_prefix);
+		}
 
-					for (response_index = 0; response_index < response_length && !do_stop; response_index++) {
-						xmlXPathObjectPtr xpath_obj_propstat;
+		g_clear_error (error);
+		g_set_error (error, SOUP_HTTP_ERROR, status_code, _("Failed to update properties: %s"),
+			e_soup_session_util_status_to_string (status_code, description));
 
-						xpath_obj_propstat = e_xml_xpath_eval (xpath_ctx,
-							"/D:multistatus/D:response[%d]/D:propstat",
-							response_index + 1);
+		g_free (description);
+	}
 
-						if (xpath_obj_propstat != NULL) {
-							gint propstat_index, propstat_length;
+	return TRUE;
+}
 
-							propstat_length = xmlXPathNodeSetGetLength (xpath_obj_propstat->nodesetval);
+/**
+ * e_webdav_session_proppatch_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @xml: an #EXmlDocument with request changes, its root element should be DAV:propertyupdate
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues PROPPATCH request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource, with the @changes. The order of requested changes
+ * inside @xml is significant, unlike on other places.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
+				 const gchar *uri,
+				 const EXmlDocument *xml,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gchar *content;
+	gsize content_length;
+	gboolean success;
 
-							for (propstat_index = 0; propstat_index < propstat_length && !do_stop; propstat_index++) {
-								gchar *status, *propstat_prefix;
-								guint status_code;
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
 
-								propstat_prefix = g_strdup_printf ("/D:multistatus/D:response[%d]/D:propstat[%d]/D:prop",
-									response_index + 1, propstat_index + 1);
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PROPPATCH, uri, error);
+	if (!request)
+		return FALSE;
 
-								status = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:status", propstat_prefix);
-								if (!status || !soup_headers_parse_status_line (status, NULL, &status_code, NULL))
-									status_code = 0;
-								g_free (status);
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
 
-								do_stop = !func (webdav, xpath_ctx, propstat_prefix, request_uri, status_code, func_user_data);
+		return FALSE;
+	}
 
-								g_free (propstat_prefix);
-							}
+	content = e_xml_document_get_content (xml, &content_length);
+	if (!content) {
+		g_object_unref (message);
+		g_object_unref (request);
 
-							xmlXPathFreeObject (xpath_obj_propstat);
-						}
-					}
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
 
-					xmlXPathFreeObject (xpath_obj_response);
-				}
-			}
+		return FALSE;
+	}
 
-			if (xpath_ctx)
-				xmlXPathFreeContext (xpath_ctx);
-			xmlFreeDoc (doc);
-		} else {
-			g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
-				_("Failed to parse response as XML"));
+	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+		SOUP_MEMORY_TAKE, content, content_length);
 
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	g_object_unref (request);
+
+	success = bytes != NULL;
+
+	if (success) {
+		GError *local_error = NULL;
+
+		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes,
+			e_webdav_session_extract_multistatus_error_cb, &local_error, error);
+
+		if (success && local_error) {
+			g_propagate_error (error, local_error);
 			success = FALSE;
+		} else if (local_error) {
+			g_clear_error (&local_error);
 		}
 	}
 
 	if (bytes)
 		g_byte_array_free (bytes, TRUE);
 	g_object_unref (message);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_mkcol_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the collection to create
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new collection resource identified by @uri on the server.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
+			     const gchar *uri,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	SoupRequestHTTP *request;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MKCOL, uri, error);
+	if (!request)
+		return FALSE;
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (request);
 
 	return success;
 }
@@ -545,6 +726,743 @@ e_webdav_session_maybe_dequote (gchar *text)
 	g_free (text);
 
 	return dequoted;
+}
+
+static void
+e_webdav_session_extract_href_and_etag (SoupMessage *message,
+					gchar **out_href,
+					gchar **out_etag)
+{
+	g_return_if_fail (SOUP_IS_MESSAGE (message));
+
+	if (out_href) {
+		const gchar *header;
+
+		*out_href = NULL;
+
+		header = soup_message_headers_get_list (message->response_headers, "Location");
+		if (header) {
+			gchar *file = strrchr (header, '/');
+
+			if (file) {
+				gchar *decoded;
+
+				decoded = soup_uri_decode (file + 1);
+				*out_href = soup_uri_encode (decoded ? decoded : (file + 1), NULL);
+
+				g_free (decoded);
+			}
+		}
+
+		if (!*out_href)
+			*out_href = soup_uri_to_string (soup_message_get_uri (message), FALSE);
+	}
+
+	if (out_etag) {
+		const gchar *header;
+
+		*out_etag = NULL;
+
+		header = soup_message_headers_get_list (message->response_headers, "ETag");
+		if (header)
+			*out_etag = e_webdav_session_maybe_dequote (g_strdup (header));
+	}
+}
+
+/**
+ * e_webdav_session_get_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the resource to read
+ * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
+ * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @out_stream: (out) (caller-allocates): a #GOutputStream to write data to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Reads a resource identified by @uri from the server and writes it
+ * to the @stream. The URI cannot reference a collection.
+ *
+ * Free returned pointer of @out_href and @out_etag, if not %NULL, with g_free(),
+ * when no longer needed.
+ *
+ * The e_webdav_session_get_data_sync() can be used to read the resource data
+ * directly to memory.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_sync (EWebDAVSession *webdav,
+			   const gchar *uri,
+			   gchar **out_href,
+			   gchar **out_etag,
+			   GOutputStream *out_stream,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GInputStream *input_stream;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_val_if_fail (G_IS_OUTPUT_STREAM (out_stream), FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_GET, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	input_stream = e_soup_session_send_request_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = input_stream != NULL;
+
+	if (success) {
+		SoupLoggerLogLevel log_level = e_soup_session_get_log_level (E_SOUP_SESSION (webdav));
+		gpointer buffer;
+		gsize nread = 0, nwritten;
+
+		buffer = g_malloc (BUFFER_SIZE);
+
+		while (success = g_input_stream_read_all (input_stream, buffer, BUFFER_SIZE, &nread, cancellable, error),
+		       success && nread > 0) {
+			if (log_level == SOUP_LOGGER_LOG_BODY) {
+				fwrite (buffer, 1, nread, stdout);
+				fflush (stdout);
+			}
+
+			success = g_output_stream_write_all (out_stream, buffer, nread, &nwritten, cancellable, error);
+			if (!success)
+				break;
+		}
+
+		g_free (buffer);
+	}
+
+	if (success)
+		e_webdav_session_extract_href_and_etag (message, out_href, out_etag);
+
+	g_clear_object (&input_stream);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_get_data_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the resource to read
+ * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
+ * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @out_bytes: (out) (transfer full): return location for bytes being read
+ * @out_length: (out) (nullable): option return location for length of bytes being read, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Reads a resource identified by @uri from the server. The URI cannot
+ * reference a collection.
+ *
+ * The @out_bytes is filled by actual data being read. If not %NULL, @out_length
+ * is populated with how many bytes had been read. Free the @out_bytes with g_free(),
+ * when no longer needed.
+ *
+ * Free returned pointer of @out_href and @out_etag, if not %NULL, with g_free(),
+ * when no longer needed.
+ *
+ * To read large data use e_webdav_session_get_sync() instead.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_data_sync (EWebDAVSession *webdav,
+				const gchar *uri,
+				gchar **out_href,
+				gchar **out_etag,
+				gchar **out_bytes,
+				gsize *out_length,
+				GCancellable *cancellable,
+				GError **error)
+{
+	GOutputStream *output_stream;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_val_if_fail (out_bytes != NULL, FALSE);
+
+	*out_bytes = NULL;
+	if (out_length)
+		*out_length = 0;
+
+	output_stream = g_memory_output_stream_new_resizable ();
+
+	success = e_webdav_session_get_sync (webdav, uri, out_href, out_etag, output_stream, cancellable, error) &&
+		g_output_stream_close (output_stream, cancellable, error);
+
+	if (success) {
+		if (out_length)
+			*out_length = g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (output_stream));
+		*out_bytes = g_memory_output_stream_steal_data (G_MEMORY_OUTPUT_STREAM (output_stream));
+	}
+
+	g_object_unref (output_stream);
+
+	return success;
+}
+
+typedef struct _ChunkWriteData {
+	SoupSession *session;
+	SoupLoggerLogLevel log_level;
+	GInputStream *stream;
+	goffset read_from;
+	gboolean wrote_any;
+	gsize buffer_size;
+	gpointer buffer;
+	GCancellable *cancellable;
+	GError *error;
+} ChunkWriteData;
+
+static void
+e_webdav_session_write_next_chunk (SoupMessage *message,
+				   gpointer user_data)
+{
+	ChunkWriteData *cwd = user_data;
+	gsize nread;
+
+	g_return_if_fail (SOUP_IS_MESSAGE (message));
+	g_return_if_fail (cwd != NULL);
+
+	if (!g_input_stream_read_all (cwd->stream, cwd->buffer, cwd->buffer_size, &nread, cwd->cancellable, &cwd->error)) {
+		soup_session_cancel_message (cwd->session, message, SOUP_STATUS_CANCELLED);
+		return;
+	}
+
+	if (nread == 0) {
+		soup_message_body_complete (message->request_body);
+	} else {
+		cwd->wrote_any = TRUE;
+		soup_message_body_append (message->request_body, SOUP_MEMORY_TEMPORARY, cwd->buffer, nread);
+
+		if (cwd->log_level == SOUP_LOGGER_LOG_BODY) {
+			fwrite (cwd->buffer, 1, nread, stdout);
+			fflush (stdout);
+		}
+	}
+}
+
+static void
+e_webdav_session_write_restarted (SoupMessage *message,
+				  gpointer user_data)
+{
+	ChunkWriteData *cwd = user_data;
+
+	g_return_if_fail (SOUP_IS_MESSAGE (message));
+	g_return_if_fail (cwd != NULL);
+
+	/* The 302 redirect will turn it into a GET request and
+	 * reset the body encoding back to "NONE". Fix that.
+	 */
+	soup_message_headers_set_encoding (message->request_headers, SOUP_ENCODING_CHUNKED);
+	message->method = SOUP_METHOD_PUT;
+
+	if (cwd->wrote_any) {
+		cwd->wrote_any = FALSE;
+
+		if (!G_IS_SEEKABLE (cwd->stream) || !g_seekable_can_seek (G_SEEKABLE (cwd->stream)) ||
+		    !g_seekable_seek (G_SEEKABLE (cwd->stream), cwd->read_from, G_SEEK_SET, cwd->cancellable, &cwd->error)) {
+			if (!cwd->error)
+				g_set_error_literal (&cwd->error, G_IO_ERROR, G_IO_ERROR_PARTIAL_INPUT,
+					_("Cannot rewind input stream: Not supported"));
+
+			soup_session_cancel_message (cwd->session, message, SOUP_STATUS_CANCELLED);
+		}
+	}
+}
+
+/**
+ * e_webdav_session_put_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the resource to write
+ * @etag: (nullable): an ETag of the resource, if it's an existing resource, or %NULL
+ * @content_type: Content-Type of the @bytes to be written
+ * @stream: a #GInputStream with data to be written
+ * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
+ * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes data from @stream to a resource identified by @uri to the server.
+ * The URI cannot reference a collection.
+ *
+ * The @etag argument is used to avoid clashes when overwriting existing
+ * resources. It can contain three values:
+ *  - %NULL - to write completely new resource
+ *  - empty string - write new resource or overwrite any existing, regardless changes on the server
+ *  - valid ETag - overwrite existing resource only if it wasn't changed on the server.
+ *
+ * Note that the actual behaviour is also influenced by #ESourceWebdav:avoid-ifmatch
+ * property of the associated #ESource.
+ *
+ * The @out_href, if provided, is filled with the resulting URI
+ * of the written resource. It can be different from the @uri when the server
+ * redirected to a different location.
+ *
+ * The @out_etag contains ETag of the resource after it had been saved.
+ *
+ * The @stream should support also #GSeekable interface, because the data
+ * send can require restart of the send due to redirect or other reasons.
+ *
+ * The e_webdav_session_put_data_sync() can be used to write data stored in memory.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_put_sync (EWebDAVSession *webdav,
+			   const gchar *uri,
+			   const gchar *etag,
+			   const gchar *content_type,
+			   GInputStream *stream,
+			   gchar **out_href,
+			   gchar **out_etag,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	ChunkWriteData cwd;
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gulong restarted_id, wrote_headers_id, wrote_chunk_id;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_val_if_fail (content_type != NULL, FALSE);
+	g_return_val_if_fail (G_IS_INPUT_STREAM (stream), FALSE);
+
+	if (out_href)
+		*out_href = NULL;
+	if (out_etag)
+		*out_etag = NULL;
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PUT, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	if (!etag || *etag) {
+		ESource *source;
+		gboolean avoid_ifmatch = FALSE;
+
+		source = e_soup_session_get_source (E_SOUP_SESSION (webdav));
+		if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+			ESourceWebdav *webdav_extension;
+
+			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			avoid_ifmatch = e_source_webdav_get_avoid_ifmatch (webdav_extension);
+		}
+
+		if (!avoid_ifmatch) {
+			if (etag) {
+				gint len = strlen (etag);
+
+				if (*etag == '\"' && len > 2 && etag[len - 1] == '\"') {
+					soup_message_headers_replace (message->request_headers, "If-Match", etag);
+				} else {
+					gchar *quoted;
+
+					quoted = g_strconcat ("\"", etag, "\"", NULL);
+					soup_message_headers_replace (message->request_headers, "If-Match", quoted);
+					g_free (quoted);
+				}
+			} else {
+				soup_message_headers_replace (message->request_headers, "If-None-Match", "*");
+			}
+		}
+	}
+
+	cwd.session = SOUP_SESSION (webdav);
+	cwd.log_level = e_soup_session_get_log_level (E_SOUP_SESSION (webdav));
+	cwd.stream = stream;
+	cwd.read_from = 0;
+	cwd.wrote_any = FALSE;
+	cwd.buffer_size = BUFFER_SIZE;
+	cwd.buffer = g_malloc (cwd.buffer_size);
+	cwd.cancellable = cancellable;
+	cwd.error = NULL;
+
+	if (G_IS_SEEKABLE (stream) && g_seekable_can_seek (G_SEEKABLE (stream)))
+		cwd.read_from = g_seekable_tell (G_SEEKABLE (stream));
+
+	if (content_type && *content_type)
+		soup_message_headers_replace (message->request_headers, "Content-Type", content_type);
+
+	soup_message_headers_set_encoding (message->request_headers, SOUP_ENCODING_CHUNKED);
+	soup_message_body_set_accumulate (message->request_body, FALSE);
+	soup_message_set_flags (message, SOUP_MESSAGE_CAN_REBUILD);
+
+	restarted_id = g_signal_connect (message, "restarted", G_CALLBACK (e_webdav_session_write_restarted), &cwd);
+	wrote_headers_id = g_signal_connect (message, "wrote-headers", G_CALLBACK (e_webdav_session_write_next_chunk), &cwd);
+	wrote_chunk_id = g_signal_connect (message, "wrote-chunk", G_CALLBACK (e_webdav_session_write_next_chunk), &cwd);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	g_signal_handler_disconnect (message, restarted_id);
+	g_signal_handler_disconnect (message, wrote_headers_id);
+	g_signal_handler_disconnect (message, wrote_chunk_id);
+
+	success = bytes != NULL;
+
+	if (cwd.error) {
+		g_clear_error (error);
+		g_propagate_error (error, cwd.error);
+		success = FALSE;
+	}
+
+	if (success) {
+		if (success && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+			success = FALSE;
+
+			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
+				_("Failed to put data to server, error code %d (%s)"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		}
+	}
+
+	if (success)
+		e_webdav_session_extract_href_and_etag (message, out_href, out_etag);
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+	g_free (cwd.buffer);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_put_data_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the resource to write
+ * @etag: (nullable): an ETag of the resource, if it's an existing resource, or %NULL
+ * @content_type: Content-Type of the @bytes to be written
+ * @bytes: actual bytes to be written
+ * @length: how many bytes to write, or -1, when the @bytes is NUL-terminated
+ * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
+ * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Writes data to a resource identified by @uri to the server. The URI cannot
+ * reference a collection.
+ *
+ * The @etag argument is used to avoid clashes when overwriting existing
+ * resources. It can contain three values:
+ *  - %NULL - to write completely new resource
+ *  - empty string - write new resource or overwrite any existing, regardless changes on the server
+ *  - valid ETag - overwrite existing resource only if it wasn't changed on the server.
+ *
+ * Note that the actual usage of @etag is also influenced by #ESourceWebdav:avoid-ifmatch
+ * property of the associated #ESource.
+ *
+ * The @out_href, if provided, is filled with the resulting URI
+ * of the written resource. It can be different from the @uri when the server
+ * redirected to a different location.
+ *
+ * The @out_etag contains ETag of the resource after it had been saved.
+ *
+ * To read large data use e_webdav_session_put_sync() instead.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_put_data_sync (EWebDAVSession *webdav,
+				const gchar *uri,
+				const gchar *etag,
+				const gchar *content_type,
+				const gchar *bytes,
+				gsize length,
+				gchar **out_href,
+				gchar **out_etag,
+				GCancellable *cancellable,
+				GError **error)
+{
+	GInputStream *input_stream;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_val_if_fail (content_type != NULL, FALSE);
+	g_return_val_if_fail (bytes != NULL, FALSE);
+
+	if (length == (gsize) -1)
+		length = strlen (bytes);
+
+	input_stream = g_memory_input_stream_new_from_data (bytes, length, NULL);
+
+	success = e_webdav_session_put_sync (webdav, uri, etag, content_type,
+		input_stream, out_href, out_etag, cancellable, error);
+
+	g_object_unref (input_stream);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_delete_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the resource to delete
+ * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS or %E_WEBDAV_DEPTH_INFINITY
+ * @etag: (nullable): an optional ETag of the resource, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes a resource identified by @uri on the server. The URI can
+ * reference a collection, in which case @depth should be %E_WEBDAV_DEPTH_INFINITY.
+ * Use @depth %E_WEBDAV_DEPTH_THIS when deleting a regular resource.
+ *
+ * The @etag argument is used to avoid clashes when overwriting existing resources.
+ * Use %NULL @etag when deleting collection resources or to force the deletion,
+ * otherwise provide a valid ETag of a non-collection resource to verify that
+ * the version requested to delete is the same as on the server.
+ *
+ * Note that the actual usage of @etag is also influenced by #ESourceWebdav:avoid-ifmatch
+ * property of the associated #ESource.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_delete_sync (EWebDAVSession *webdav,
+			      const gchar *uri,
+			      const gchar *depth,
+			      const gchar *etag,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+	g_return_val_if_fail (depth != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_DELETE, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	if (etag) {
+		ESource *source;
+		gboolean avoid_ifmatch = FALSE;
+
+		source = e_soup_session_get_source (E_SOUP_SESSION (webdav));
+		if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+			ESourceWebdav *webdav_extension;
+
+			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			avoid_ifmatch = e_source_webdav_get_avoid_ifmatch (webdav_extension);
+		}
+
+		if (!avoid_ifmatch) {
+			gint len = strlen (etag);
+
+			if (*etag == '\"' && len > 2 && etag[len - 1] == '\"') {
+				soup_message_headers_replace (message->request_headers, "If-Match", etag);
+			} else {
+				gchar *quoted;
+
+				quoted = g_strconcat ("\"", etag, "\"", NULL);
+				soup_message_headers_replace (message->request_headers, "If-Match", quoted);
+				g_free (quoted);
+			}
+		}
+	}
+
+	soup_message_headers_replace (message->request_headers, "Depth", depth);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_traverse_multistatus_response:
+ * @webdav: an #EWebDAVSession
+ * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
+ * @xml_data: a #GByteArray containing DAV:multistatus response
+ * @func: an #EWebDAVMultistatusTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: user data passed to @func
+ * @error: return location for a #GError, or %NULL
+ *
+ * Traverses a DAV:multistatus response and calls @func for each returned DAV:propstat.
+ * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D".
+ * It doesn't have any other namespace registered.
+ *
+ * The @message, if provided, is used to verify that the response is a multi-status
+ * and that the Content-Type is properly set. It's used to get a request URI as well.
+ *
+ * The @func is called always at least once, with %NULL xpath_prop_prefix, which
+ * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
+ * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
+ * will have xpath_prop_prefix non-%NULL.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
+						const SoupMessage *message,
+						const GByteArray *xml_data,
+						EWebDAVMultistatusTraverseFunc func,
+						gpointer func_user_data,
+						GError **error)
+{
+	SoupURI *request_uri = NULL;
+	xmlDocPtr doc;
+	xmlXPathContextPtr xpath_ctx;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (xml_data != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	if (message) {
+		const gchar *content_type;
+
+		if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
+			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
+				_("Expected multistatus response, but %d returned (%s)"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+
+			return FALSE;
+		}
+
+		content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
+		if (!content_type ||
+		    (g_ascii_strcasecmp (content_type, "application/xml") != 0 &&
+		     g_ascii_strcasecmp (content_type, "text/xml") != 0)) {
+			if (!content_type) {
+				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+					_("Expected application/xml response, but none returned"));
+			} else {
+				g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+					_("Expected application/xml response, but %s returned"), content_type);
+			}
+
+			return FALSE;
+		}
+
+		request_uri = soup_message_get_uri ((SoupMessage *) message);
+	}
+
+	doc = e_xml_parse_data ((const gchar *) xml_data->data, xml_data->len);
+
+	if (!doc) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+			_("Failed to parse XML data"));
+
+		return FALSE;
+	}
+
+	xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
+		"D", E_WEBDAV_NS_DAV,
+		NULL);
+
+	if (xpath_ctx &&
+	    func (webdav, xpath_ctx, NULL, request_uri, SOUP_STATUS_NONE, func_user_data)) {
+		xmlXPathObjectPtr xpath_obj_response;
+
+		xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "/D:multistatus/D:response");
+
+		if (xpath_obj_response != NULL) {
+			gboolean do_stop = FALSE;
+			gint response_index, response_length;
+
+			response_length = xmlXPathNodeSetGetLength (xpath_obj_response->nodesetval);
+
+			for (response_index = 0; response_index < response_length && !do_stop; response_index++) {
+				xmlXPathObjectPtr xpath_obj_propstat;
+
+				xpath_obj_propstat = e_xml_xpath_eval (xpath_ctx,
+					"/D:multistatus/D:response[%d]/D:propstat",
+					response_index + 1);
+
+				if (xpath_obj_propstat != NULL) {
+					gint propstat_index, propstat_length;
+
+					propstat_length = xmlXPathNodeSetGetLength (xpath_obj_propstat->nodesetval);
+
+					for (propstat_index = 0; propstat_index < propstat_length && !do_stop; propstat_index++) {
+						gchar *status, *propstat_prefix;
+						guint status_code;
+
+						propstat_prefix = g_strdup_printf ("/D:multistatus/D:response[%d]/D:propstat[%d]/D:prop",
+							response_index + 1, propstat_index + 1);
+
+						status = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:status", propstat_prefix);
+						if (!status || !soup_headers_parse_status_line (status, NULL, &status_code, NULL))
+							status_code = 0;
+						g_free (status);
+
+						do_stop = !func (webdav, xpath_ctx, propstat_prefix, request_uri, status_code, func_user_data);
+
+						g_free (propstat_prefix);
+					}
+
+					xmlXPathFreeObject (xpath_obj_propstat);
+				}
+			}
+
+			xmlXPathFreeObject (xpath_obj_response);
+		}
+	}
+
+	if (xpath_ctx)
+		xmlXPathFreeContext (xpath_ctx);
+	xmlFreeDoc (doc);
+
+	return TRUE;
 }
 
 static gboolean
@@ -625,7 +1543,7 @@ e_webdav_session_getctag_sync (EWebDAVSession *webdav,
 	e_xml_document_end_element (xml); /* getctag */
 	e_xml_document_end_element (xml); /* prop */
 
-	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_0, xml,
+	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
 		e_webdav_session_getctag_cb, out_ctag, cancellable, error);
 
 	g_object_unref (xml);
@@ -691,6 +1609,8 @@ e_webdav_session_extract_supports (xmlXPathContextPtr xpath_ctx,
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_MEMOS;
 				else if (g_ascii_strcasecmp (name, "VTODO") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TASKS;
+				else if (g_ascii_strcasecmp (name, "VFREEBUSY") == 0)
+					supports |= E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
 
 				g_free (name);
 			}
@@ -702,7 +1622,8 @@ e_webdav_session_extract_supports (xmlXPathContextPtr xpath_ctx,
 			supports = supports |
 				E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
 				E_WEBDAV_RESOURCE_SUPPORTS_MEMOS |
-				E_WEBDAV_RESOURCE_SUPPORTS_TASKS;
+				E_WEBDAV_RESOURCE_SUPPORTS_TASKS |
+				E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
 		}
 	}
 
@@ -742,12 +1663,12 @@ e_webdav_session_extract_content_length (xmlXPathContextPtr xpath_ctx,
 	gchar *value;
 	gsize length;
 
-	g_return_val_if_fail (xpath_ctx != NULL, -1);
-	g_return_val_if_fail (xpath_prop_prefix != NULL, -1);
+	g_return_val_if_fail (xpath_ctx != NULL, 0);
+	g_return_val_if_fail (xpath_prop_prefix != NULL, 0);
 
 	value = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:getcontentlength", NULL);
 	if (!value)
-		return -1;
+		return 0;
 
 	length = g_ascii_strtoll (value, NULL, 10);
 
@@ -883,6 +1804,7 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
  * e_webdav_session_list_sync:
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
  * @flags: a bit-or of #EWebDAVListFlags, claiming what properties to read
  * @out_resources: (out) (transfer full) (element-type EWebDAVResource): return location for the resources
  * @cancellable: optional #GCancellable object, or %NULL
@@ -905,6 +1827,7 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 gboolean
 e_webdav_session_list_sync (EWebDAVSession *webdav,
 			    const gchar *uri,
+			    const gchar *depth,
 			    guint32 flags,
 			    GSList **out_resources,
 			    GCancellable *cancellable,
@@ -991,7 +1914,7 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 
 	e_xml_document_end_element (xml); /* prop */
 
-	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_1, xml,
+	success = e_webdav_session_propfind_sync (webdav, uri, depth, xml,
 		e_webdav_session_list_cb, out_resources, cancellable, error);
 
 	g_object_unref (xml);
@@ -1029,6 +1952,79 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 		/* Honour order returned by the server, even it's not significant. */
 		*out_resources = g_slist_reverse (*out_resources);
 	}
+
+	return success;
+}
+
+/**
+ * e_webdav_session_update_properties_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @changes: (element-type EWebDAVResource): a #GSList with request changes
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Updates proeprties (set/remove) on the provided @uri, or, in case it's %NULL,
+ * on the URI defined in associated #ESource, with the @changes. The order
+ * of @changes is significant, unlike on other places.
+ *
+ * This function supports only flat properties, those not under other element.
+ * To support more complex property tries use e_webdav_session_proppatch_sync()
+ * directly.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_update_properties_sync (EWebDAVSession *webdav,
+					 const gchar *uri,
+					 const GSList *changes,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	EXmlDocument *xml;
+	GSList *link;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (changes != NULL, FALSE);
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propertyupdate");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	for (link = (GSList *) changes; link; link = g_slist_next (link)) {
+		EWebDAVPropertyChange *change = link->data;
+
+		if (!change)
+			continue;
+
+		switch (change->kind) {
+		case E_WEBDAV_PROPERTY_SET:
+			e_xml_document_start_element (xml, NULL, "set");
+			e_xml_document_start_element (xml, NULL, "prop");
+			e_xml_document_start_text_element (xml, change->ns_uri, change->name);
+			if (change->value) {
+				e_xml_document_write_string (xml, change->value);
+			}
+			e_xml_document_end_element (xml); /* change->name */
+			e_xml_document_end_element (xml); /* prop */
+			e_xml_document_end_element (xml); /* set */
+			break;
+		case E_WEBDAV_PROPERTY_REMOVE:
+			e_xml_document_start_element (xml, NULL, "remove");
+			e_xml_document_start_element (xml, NULL, "prop");
+			e_xml_document_start_element (xml, change->ns_uri, change->name);
+			e_xml_document_end_element (xml); /* change->name */
+			e_xml_document_end_element (xml); /* prop */
+			e_xml_document_end_element (xml); /* set */
+			break;
+		}
+	}
+
+	success = e_webdav_session_proppatch_sync (webdav, uri, xml, cancellable, error);
+
+	g_object_unref (xml);
 
 	return success;
 }

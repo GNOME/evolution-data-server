@@ -188,6 +188,7 @@ src/libebackend/e-subprocess-factory.c
 src/libebackend/e-user-prompter-server.c
 src/libedataserver/e-categories.c
 src/libedataserver/e-client.c
+src/libedataserver/e-soup-session.c
 src/libedataserver/e-source.c
 src/libedataserver/e-source-credentials-provider-impl.c
 src/libedataserver/e-source-credentials-provider-impl-google.c

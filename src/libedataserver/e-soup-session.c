@@ -27,12 +27,15 @@
 #include "evolution-data-server-config.h"
 
 #include <stdio.h>
+#include <glib/gi18n-lib.h>
 
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
 #include "e-source-webdav.h"
 
 #include "e-soup-session.h"
+
+#define BUFFER_SIZE 16384
 
 struct _ESoupSessionPrivate {
 	GMutex property_lock;
@@ -539,6 +542,93 @@ e_soup_session_new_request_uri (ESoupSession *session,
 	return request;
 }
 
+static void
+e_webdav_session_extract_ssl_data (ESoupSession *session,
+				   SoupMessage *message)
+{
+	GTlsCertificate *certificate = NULL;
+
+	g_return_if_fail (E_IS_SOUP_SESSION (session));
+	g_return_if_fail (SOUP_IS_MESSAGE (message));
+
+	g_mutex_lock (&session->priv->property_lock);
+
+	g_clear_pointer (&session->priv->ssl_certificate_pem, g_free);
+	session->priv->ssl_info_set = FALSE;
+
+	g_object_get (G_OBJECT (message),
+		"tls-certificate", &certificate,
+		"tls-errors", &session->priv->ssl_certificate_errors,
+		NULL);
+
+	if (certificate) {
+		g_object_get (certificate, "certificate-pem", &session->priv->ssl_certificate_pem, NULL);
+		session->priv->ssl_info_set = TRUE;
+
+		g_object_unref (certificate);
+	}
+
+	g_mutex_unlock (&session->priv->property_lock);
+}
+
+/**
+ * e_soup_session_check_result:
+ * @session: an #ESoupSession
+ * @request: a #SoupRequestHTTP
+ * @read_bytes: (nullable): optional bytes which had been read from the stream, or %NULL
+ * @bytes_length: how many bytes had been read; ignored when @read_bytes is %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Checks result of the @request and sets the @error if it failed.
+ * When it failed and the @read_bytes is provided, then these are
+ * set to @request's message response_body, thus it can be used
+ * later.
+ *
+ * Returns: Whether succeeded, aka %TRUE, when no error recognized
+ *    and %FALSE otherwise.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_soup_session_check_result (ESoupSession *session,
+			     SoupRequestHTTP *request,
+			     gconstpointer read_bytes,
+			     gsize bytes_length,
+			     GError **error)
+{
+	SoupMessage *message;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), FALSE);
+
+	message = soup_request_http_get_message (request);
+	g_return_val_if_fail (SOUP_IS_MESSAGE (message), FALSE);
+
+	success = SOUP_STATUS_IS_SUCCESSFUL (message->status_code);
+	if (!success) {
+		if (message->status_code == SOUP_STATUS_CANCELLED) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Operation was cancelled"));
+		} else {
+			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
+				_("Failed with HTTP error %d: %s"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		}
+
+		if (message->status_code == SOUP_STATUS_SSL_FAILED)
+			e_webdav_session_extract_ssl_data (session, message);
+
+		if (read_bytes && bytes_length > 0) {
+			soup_message_body_truncate (message->response_body);
+			soup_message_body_append (message->response_body, SOUP_MEMORY_COPY, read_bytes, bytes_length);
+		}
+	}
+
+	g_object_unref (message);
+
+	return success;
+}
+
 /**
  * e_soup_session_send_request_sync:
  * @session: an #ESoupSession
@@ -560,6 +650,11 @@ e_soup_session_new_request_uri (ESoupSession *session,
  *
  * Note that SoupSession doesn't log content read from GInputStream,
  * thus the caller may print the read content on its own when needed.
+ *
+ * Note the @request is fully filled only after there is anything
+ * read from the resulting #GInputStream, thus use
+ * e_soup_session_check_result() to verify that the receive had
+ * been finished properly.
  *
  * Returns: (transfer full): A newly allocated #GInputStream,
  *    that can be used to read from the URI pointed to by @request.
@@ -601,26 +696,12 @@ e_soup_session_send_request_sync (ESoupSession *session,
 		return input_stream;
 
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
-		GTlsCertificate *certificate = NULL;
 		SoupMessage *message;
 
 		message = soup_request_http_get_message (request);
 
-		g_mutex_lock (&session->priv->property_lock);
+		e_webdav_session_extract_ssl_data (session, message);
 
-		g_object_get (G_OBJECT (message),
-			"tls-certificate", &certificate,
-			"tls-errors", &session->priv->ssl_certificate_errors,
-			NULL);
-
-		if (certificate) {
-			g_object_get (certificate, "certificate-pem", &session->priv->ssl_certificate_pem, NULL);
-			session->priv->ssl_info_set = TRUE;
-
-			g_object_unref (certificate);
-		}
-
-		g_mutex_unlock (&session->priv->property_lock);
 		g_clear_object (&message);
 	}
 
@@ -659,7 +740,7 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 	GInputStream *input_stream;
 	GByteArray *bytes;
 	gint expected_length;
-	void *buffer;
+	gpointer buffer;
 	gsize nread = 0;
 	gboolean success = FALSE;
 
@@ -676,9 +757,9 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 	else
 		bytes = g_byte_array_new ();
 
-	buffer = g_malloc (16384);
+	buffer = g_malloc (BUFFER_SIZE);
 
-	while (success = g_input_stream_read_all (input_stream, buffer, 16384, &nread, cancellable, error),
+	while (success = g_input_stream_read_all (input_stream, buffer, BUFFER_SIZE, &nread, cancellable, error),
 	       success && nread > 0) {
 		g_byte_array_append (bytes, buffer, nread);
 	}
@@ -686,13 +767,45 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 	g_free (buffer);
 	g_object_unref (input_stream);
 
-	if (!success) {
-		g_byte_array_free (bytes, TRUE);
-		bytes = NULL;
-	} else if (e_soup_session_get_log_level (session) == SOUP_LOGGER_LOG_BODY) {
+	if (bytes->len > 0 && e_soup_session_get_log_level (session) == SOUP_LOGGER_LOG_BODY) {
 		fwrite (bytes->data, 1, bytes->len, stdout);
 		fflush (stdout);
 	}
 
+	if (success)
+		success = e_soup_session_check_result (session, request, bytes->data, bytes->len, error);
+
+	if (!success) {
+		g_byte_array_free (bytes, TRUE);
+		bytes = NULL;
+	}
+
 	return bytes;
+}
+
+/**
+ * e_soup_session_util_status_to_string:
+ * @status_code: an HTTP status code
+ * @reason_phrase: (nullable): preferred string to use for the message, or %NULL
+ *
+ * Returns the @reason_phrase, if it's non-%NULL and non-empty, a static string
+ * corresponding to @status_code. In case neither that can be found a localized
+ * "Unknown error" message is returned.
+ *
+ * Returns: (transfer none): Error text base don given arguments. The returned
+ *    value is valid as long as @reason_phrase is not freed.
+ *
+ * Since: 3.26
+ **/
+const gchar *
+e_soup_session_util_status_to_string (guint status_code,
+				      const gchar *reason_phrase)
+{
+	if (!reason_phrase || !*reason_phrase)
+		reason_phrase = soup_status_get_phrase (status_code);
+
+	if (reason_phrase && *reason_phrase)
+		return reason_phrase;
+
+	return _("Unknown error");
 }

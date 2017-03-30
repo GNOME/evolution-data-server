@@ -99,6 +99,11 @@ SoupRequestHTTP *
 							 const gchar *method,
 							 SoupURI *uri,
 							 GError **error);
+gboolean	e_soup_session_check_result		(ESoupSession *session,
+							 SoupRequestHTTP *request,
+							 gconstpointer read_bytes,
+							 gsize bytes_length,
+							 GError **error);
 GInputStream *	e_soup_session_send_request_sync	(ESoupSession *session,
 							 SoupRequestHTTP *request,
 							 GCancellable *cancellable,
@@ -107,6 +112,8 @@ GByteArray *	e_soup_session_send_request_simple_sync	(ESoupSession *session,
 							 SoupRequestHTTP *request,
 							 GCancellable *cancellable,
 							 GError **error);
+const gchar *	e_soup_session_util_status_to_string	(guint status_code,
+							 const gchar *reason_phrase);
 
 G_END_DECLS
 

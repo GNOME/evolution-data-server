@@ -63,33 +63,37 @@ G_BEGIN_DECLS
 #define E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE	"calendar-auto-schedule"
 #define E_WEBDAV_CAPABILITY_CALENDAR_PROXY		"calendar-proxy"
 
-#define E_WEBDAV_ALLOW_OPTIONS		"OPTIONS"
-#define E_WEBDAV_ALLOW_PROPFIND		"PROPFIND"
-#define E_WEBDAV_ALLOW_REPORT		"REPORT"
-#define E_WEBDAV_ALLOW_DELETE		"DELETE"
-#define E_WEBDAV_ALLOW_GET		"GET"
-#define E_WEBDAV_ALLOW_PUT		"PUT"
-#define E_WEBDAV_ALLOW_HEAD		"HEAD"
-#define E_WEBDAV_ALLOW_ACL		"ACL"
-#define E_WEBDAV_ALLOW_LOCK		"LOCK"
-#define E_WEBDAV_ALLOW_UNLOCK		"UNLOCK"
-#define E_WEBDAV_ALLOW_MOVE		"MOVE"
-#define E_WEBDAV_ALLOW_MKTICKET		"MKTICKET"
-#define E_WEBDAV_ALLOW_DELTICKET	"DELTICKET"
+#define E_WEBDAV_ALLOW_OPTIONS			"OPTIONS"
+#define E_WEBDAV_ALLOW_PROPFIND			"PROPFIND"
+#define E_WEBDAV_ALLOW_REPORT			"REPORT"
+#define E_WEBDAV_ALLOW_DELETE			"DELETE"
+#define E_WEBDAV_ALLOW_GET			"GET"
+#define E_WEBDAV_ALLOW_PUT			"PUT"
+#define E_WEBDAV_ALLOW_HEAD			"HEAD"
+#define E_WEBDAV_ALLOW_ACL			"ACL"
+#define E_WEBDAV_ALLOW_LOCK			"LOCK"
+#define E_WEBDAV_ALLOW_UNLOCK			"UNLOCK"
+#define E_WEBDAV_ALLOW_MOVE			"MOVE"
+#define E_WEBDAV_ALLOW_MKTICKET			"MKTICKET"
+#define E_WEBDAV_ALLOW_DELTICKET		"DELTICKET"
 
-#define E_WEBDAV_DEPTH_0		"0"
-#define E_WEBDAV_DEPTH_1		"1"
-#define E_WEBDAV_DEPTH_INFINITY		"infinity"
+#define E_WEBDAV_DEPTH_THIS			"0"
+#define E_WEBDAV_DEPTH_THIS_AND_CHILDREN	"1"
+#define E_WEBDAV_DEPTH_INFINITY			"infinity"
 
-#define E_WEBDAV_CONTENT_TYPE_XML	"application/xml; charset=\"utf-8\""
-#define E_WEBDAV_CONTENT_TYPE_CALENDAR	"text/calendar; charset=\"utf-8\""
-#define E_WEBDAV_CONTENT_TYPE_VCARD	"text/vcard; charset=\"utf-8\""
+#define E_WEBDAV_CONTENT_TYPE_XML		"application/xml; charset=\"utf-8\""
+#define E_WEBDAV_CONTENT_TYPE_CALENDAR		"text/calendar; charset=\"utf-8\""
+#define E_WEBDAV_CONTENT_TYPE_VCARD		"text/vcard; charset=\"utf-8\""
 
-#define E_WEBDAV_NS_DAV			"DAV:"
-#define E_WEBDAV_NS_CALDAV		"urn:ietf:params:xml:ns:caldav"
-#define E_WEBDAV_NS_CARDDAV		"urn:ietf:params:xml:ns:carddav"
-#define E_WEBDAV_NS_CALENDARSERVER	"http://calendarserver.org/ns/"
-#define E_WEBDAV_NS_ICAL		"http://apple.com/ns/ical/"
+#define E_WEBDAV_NS_DAV				"DAV:"
+#define E_WEBDAV_NS_CALDAV			"urn:ietf:params:xml:ns:caldav"
+#define E_WEBDAV_NS_CARDDAV			"urn:ietf:params:xml:ns:carddav"
+#define E_WEBDAV_NS_CALENDARSERVER		"http://calendarserver.org/ns/"
+#define E_WEBDAV_NS_ICAL			"http://apple.com/ns/ical/"
+
+typedef struct _EWebDAVSession EWebDAVSession;
+typedef struct _EWebDAVSessionClass EWebDAVSessionClass;
+typedef struct _EWebDAVSessionPrivate EWebDAVSessionPrivate;
 
 typedef enum {
 	E_WEBDAV_RESOURCE_KIND_UNKNOWN,
@@ -105,7 +109,8 @@ typedef enum {
 	E_WEBDAV_RESOURCE_SUPPORTS_CONTACTS	= 1 << 0,
 	E_WEBDAV_RESOURCE_SUPPORTS_EVENTS	= 1 << 1,
 	E_WEBDAV_RESOURCE_SUPPORTS_MEMOS	= 1 << 2,
-	E_WEBDAV_RESOURCE_SUPPORTS_TASKS	= 1 << 3
+	E_WEBDAV_RESOURCE_SUPPORTS_TASKS	= 1 << 3,
+	E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY	= 1 << 4
 } EWebDAVResourceSupports;
 
 typedef struct _EWebDAVResource {
@@ -136,7 +141,7 @@ EWebDAVResource *
 							 const gchar *description,
 							 const gchar *color);
 EWebDAVResource *
-		e_webdav_resource_copy			(const EWebDAVResource *resource);
+		e_webdav_resource_copy			(const EWebDAVResource *src);
 void		e_webdav_resource_free			(gpointer ptr /* EWebDAVResource * */);
 
 typedef enum {
@@ -153,12 +158,8 @@ typedef enum {
 	E_WEBDAV_LIST_COLOR		= 1 << 8
 } EWebDAVListFlags;
 
-typedef struct _EWebDAVSession EWebDAVSession;
-typedef struct _EWebDAVSessionClass EWebDAVSessionClass;
-typedef struct _EWebDAVSessionPrivate EWebDAVSessionPrivate;
-
 /**
- * EWebDAVPropfindFunc:
+ * EWebDAVMultistatusTraverseFunc:
  * @webdav: an #EWebDAVSession
  * @xpath_ctx: an #xmlXPathContextPtr
  * @xpath_prop_prefix: (nullable): an XPath prefix for the current prop element, without trailing forward slash
@@ -178,12 +179,36 @@ typedef struct _EWebDAVSessionPrivate EWebDAVSessionPrivate;
  *
  * Since: 3.26
  **/
-typedef gboolean (* EWebDAVPropfindFunc)(EWebDAVSession *webdav,
-					 xmlXPathContextPtr xpath_ctx,
-					 const gchar *xpath_prop_prefix,
-					 const SoupURI *request_uri,
-					 guint status_code,
-					 gpointer user_data);
+typedef gboolean (* EWebDAVMultistatusTraverseFunc)	(EWebDAVSession *webdav,
+							 xmlXPathContextPtr xpath_ctx,
+							 const gchar *xpath_prop_prefix,
+							 const SoupURI *request_uri,
+							 guint status_code,
+							 gpointer user_data);
+
+typedef enum {
+	E_WEBDAV_PROPERTY_SET,
+	E_WEBDAV_PROPERTY_REMOVE
+} EWebDAVPropertyChangeKind;
+
+typedef struct _EWebDAVPropertyChange {
+	EWebDAVPropertyChangeKind kind;
+	gchar *ns_uri;
+	gchar *name;
+	gchar *value;
+} EWebDAVPropertyChange;
+
+GType		e_webdav_property_change_get_type	(void) G_GNUC_CONST;
+EWebDAVPropertyChange *
+		e_webdav_property_change_new_set	(const gchar *ns_uri,
+							 const gchar *name,
+							 const gchar *value);
+EWebDAVPropertyChange *
+		e_webdav_property_change_new_remove	(const gchar *ns_uri,
+							 const gchar *name);
+EWebDAVPropertyChange *
+		e_webdav_property_change_copy		(const EWebDAVPropertyChange *src);
+void		e_webdav_property_change_free		(gpointer ptr); /* EWebDAVPropertyChange * */
 
 /**
  * EWebDAVSession:
@@ -219,11 +244,11 @@ gboolean	e_webdav_session_propfind_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *depth,
 							 const EXmlDocument *xml,
-							 EWebDAVPropfindFunc func,
+							 EWebDAVMultistatusTraverseFunc func,
 							 gpointer func_user_data,
 							 GCancellable *cancellable,
 							 GError **error);
-/*gboolean	e_webdav_session_proppatch_sync		(EWebDAVSession *webdav,
+gboolean	e_webdav_session_proppatch_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const EXmlDocument *xml,
 							 GCancellable *cancellable,
@@ -234,21 +259,45 @@ gboolean	e_webdav_session_mkcol_sync		(EWebDAVSession *webdav,
 							 GError **error);
 gboolean	e_webdav_session_get_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
+							 gchar **out_href,
+							 gchar **out_etag,
+							 GOutputStream *out_stream,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_get_data_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 gchar **out_href,
+							 gchar **out_etag,
+							 gchar **out_bytes,
+							 gsize *out_length,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_put_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
+							 const gchar *etag,
+							 const gchar *content_type,
+							 GInputStream *stream,
+							 gchar **out_href,
+							 gchar **out_etag,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_put_data_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *etag,
 							 const gchar *content_type,
 							 const gchar *bytes,
 							 gsize length,
-							 gchar **out_redirected_uri,
+							 gchar **out_href,
+							 gchar **out_etag,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_delete_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
+							 const gchar *depth,
+							 const gchar *etag,
 							 GCancellable *cancellable,
 							 GError **error);
-gboolean	e_webdav_session_copy_sync		(EWebDAVSession *webdav,
+/*gboolean	e_webdav_session_copy_sync		(EWebDAVSession *webdav,
 							 const gchar *source_uri,
 							 const gchar *destination_uri,
 							 const gchar *depth,
@@ -277,6 +326,13 @@ gboolean	e_webdav_session_unlock_sync		(EWebDAVSession *webdav,
 							 GCancellable *cancellable,
 							 GError **error);*/
 
+gboolean	e_webdav_session_traverse_multistatus_response
+							(EWebDAVSession *webdav,
+							 const SoupMessage *message,
+							 const GByteArray *xml_data,
+							 EWebDAVMultistatusTraverseFunc func,
+							 gpointer func_user_data,
+							 GError **error);
 gboolean	e_webdav_session_getctag_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 gchar **out_ctag,
@@ -284,8 +340,14 @@ gboolean	e_webdav_session_getctag_sync		(EWebDAVSession *webdav,
 							 GError **error);
 gboolean	e_webdav_session_list_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
+							 const gchar *depth,
 							 guint32 flags, /* bit-or of EWebDAVListFlags */
 							 GSList **out_resources, /* EWebDAVResource * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_update_properties_sync	(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const GSList *changes, /* EWebDAVPropertyChange * */
 							 GCancellable *cancellable,
 							 GError **error);
 
