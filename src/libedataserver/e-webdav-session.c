@@ -32,6 +32,7 @@
 
 #include "camel/camel.h"
 
+#include "e-source-authentication.h"
 #include "e-source-webdav.h"
 #include "e-xml-utils.h"
 
@@ -1327,6 +1328,405 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 }
 
 /**
+ * e_webdav_session_copy_sync:
+ * @webdav: an #EWebDAVSession
+ * @source_uri: URI of the resource or collection to copy
+ * @destination_uri: URI of the destination
+ * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS or %E_WEBDAV_DEPTH_INFINITY
+ * @can_overwrite: whether can overwrite @destination_uri, when it exists
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Copies a resource identified by @source_uri to @destination_uri on the server.
+ * The @source_uri can reference also collections, in which case the @depth influences
+ * whether only the collection itself is copied (%E_WEBDAV_DEPTH_THIS) or whether
+ * the collection with all its children is copied (%E_WEBDAV_DEPTH_INFINITY).
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_copy_sync (EWebDAVSession *webdav,
+			    const gchar *source_uri,
+			    const gchar *destination_uri,
+			    const gchar *depth,
+			    gboolean can_overwrite,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (source_uri != NULL, FALSE);
+	g_return_val_if_fail (destination_uri != NULL, FALSE);
+	g_return_val_if_fail (depth != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_COPY, source_uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	soup_message_headers_replace (message->request_headers, "Depth", depth);
+	soup_message_headers_replace (message->request_headers, "Destination", destination_uri);
+	soup_message_headers_replace (message->request_headers, "Overwrite", can_overwrite ? "T" : "F");
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_move_sync:
+ * @webdav: an #EWebDAVSession
+ * @source_uri: URI of the resource or collection to copy
+ * @destination_uri: URI of the destination
+ * @can_overwrite: whether can overwrite @destination_uri, when it exists
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Moves a resource identified by @source_uri to @destination_uri on the server.
+ * The @source_uri can reference also collections.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_move_sync (EWebDAVSession *webdav,
+			    const gchar *source_uri,
+			    const gchar *destination_uri,
+			    gboolean can_overwrite,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (source_uri != NULL, FALSE);
+	g_return_val_if_fail (destination_uri != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MOVE, source_uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	soup_message_headers_replace (message->request_headers, "Depth", E_WEBDAV_DEPTH_INFINITY);
+	soup_message_headers_replace (message->request_headers, "Destination", destination_uri);
+	soup_message_headers_replace (message->request_headers, "Overwrite", can_overwrite ? "T" : "F");
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_lock_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to lock, or %NULL to read from #ESource
+ * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS or %E_WEBDAV_DEPTH_INFINITY
+ * @lock_timeout: timeout for the lock, in seconds, on 0 to infinity
+ * @xml: an XML describing the lock request, with DAV:lockinfo root element
+ * @out_lock_token: (out) (transfer full): return location of the obtained or refreshed lock token
+ * @out_xml_response: (out) (nullable) (transfer full): optional return location for the server response as #xmlDocPtr
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Locks a resource identified by @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource.
+ *
+ * The @out_lock_token can be refreshed with e_webdav_session_refresh_lock_sync().
+ * Release the lock with e_webdav_session_unlock_sync().
+ * Free the returned @out_lock_token with g_free(), when no longer needed.
+ *
+ * If provided, free the returned @out_xml_response with xmlFreeDoc(),
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_lock_sync (EWebDAVSession *webdav,
+			    const gchar *uri,
+			    const gchar *depth,
+			    gint32 lock_timeout,
+			    const EXmlDocument *xml,
+			    gchar **out_lock_token,
+			    xmlDocPtr *out_xml_response,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (depth != NULL, FALSE);
+	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
+	g_return_val_if_fail (out_lock_token != NULL, FALSE);
+
+	*out_lock_token = NULL;
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_LOCK, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	if (depth)
+		soup_message_headers_replace (message->request_headers, "Depth", depth);
+
+	if (lock_timeout) {
+		gchar *value;
+
+		value = g_strdup_printf ("Second-%d", lock_timeout);
+		soup_message_headers_replace (message->request_headers, "Timeout", value);
+		g_free (value);
+	} else {
+		soup_message_headers_replace (message->request_headers, "Timeout", "Infinite");
+	}
+
+	if (xml) {
+		gchar *content;
+		gsize content_length;
+
+		content = e_xml_document_get_content (xml, &content_length);
+		if (!content) {
+			g_object_unref (message);
+			g_object_unref (request);
+
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
+
+			return FALSE;
+		}
+
+		soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+			SOUP_MEMORY_TAKE, content, content_length);
+	}
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	g_object_unref (request);
+
+	success = bytes != NULL;
+
+	if (success && out_xml_response) {
+		const gchar *content_type;
+
+		*out_xml_response = NULL;
+
+		content_type = soup_message_headers_get_content_type (message->response_headers, NULL);
+		if (!content_type ||
+		    (g_ascii_strcasecmp (content_type, "application/xml") != 0 &&
+		     g_ascii_strcasecmp (content_type, "text/xml") != 0)) {
+			if (!content_type) {
+				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+					_("Expected application/xml response, but none returned"));
+			} else {
+				g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+					_("Expected application/xml response, but %s returned"), content_type);
+			}
+
+			success = FALSE;
+		}
+
+		if (success) {
+			xmlDocPtr doc;
+
+			doc = e_xml_parse_data ((const gchar *) bytes->data, bytes->len);
+			if (!doc) {
+				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
+					_("Failed to parse XML data"));
+
+				success = FALSE;
+			} else {
+				*out_xml_response = doc;
+			}
+		}
+	}
+
+	if (success)
+		*out_lock_token = g_strdup (soup_message_headers_get_list (message->response_headers, "Lock-Token"));
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_refresh_lock_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to lock, or %NULL to read from #ESource
+ * @lock_token: token of an existing lock
+ * @lock_timeout: timeout for the lock, in seconds, on 0 to infinity
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Refreshes existing lock @lock_token for a resource identified by @uri,
+ * or, in case it's %NULL, on the URI defined in associated #ESource.
+ * The @lock_token is returned from e_webdav_session_lock_sync() and
+ * the @uri should be the same as that used with e_webdav_session_lock_sync().
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_refresh_lock_sync (EWebDAVSession *webdav,
+				    const gchar *uri,
+				    const gchar *lock_token,
+				    gint32 lock_timeout,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gchar *value;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (lock_token != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_LOCK, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	if (lock_timeout) {
+		value = g_strdup_printf ("Second-%d", lock_timeout);
+		soup_message_headers_replace (message->request_headers, "Timeout", value);
+		g_free (value);
+	} else {
+		soup_message_headers_replace (message->request_headers, "Timeout", "Infinite");
+	}
+
+	soup_message_headers_replace (message->request_headers, "Lock-Token", lock_token);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	g_object_unref (request);
+
+	success = bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_unlock_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to lock, or %NULL to read from #ESource
+ * @lock_token: token of an existing lock
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Releases (unlocks) existing lock @lock_token for a resource identified by @uri,
+ * or, in case it's %NULL, on the URI defined in associated #ESource.
+ * The @lock_token is returned from e_webdav_session_lock_sync() and
+ * the @uri should be the same as that used with e_webdav_session_lock_sync().
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_unlock_sync (EWebDAVSession *webdav,
+			      const gchar *uri,
+			      const gchar *lock_token,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (lock_token != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_UNLOCK, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	soup_message_headers_replace (message->request_headers, "Lock-Token", lock_token);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	g_object_unref (request);
+
+	success = bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+
+	return success;
+}
+
+/**
  * e_webdav_session_traverse_multistatus_response:
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
@@ -2023,6 +2423,120 @@ e_webdav_session_update_properties_sync (EWebDAVSession *webdav,
 	}
 
 	success = e_webdav_session_proppatch_sync (webdav, uri, xml, cancellable, error);
+
+	g_object_unref (xml);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_lock_resource_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to lock, or %NULL to read from #ESource
+ * @lock_scope: an #EWebDAVLockScope to define the scope of the lock
+ * @lock_timeout: timeout for the lock, in seconds, on 0 to infinity
+ * @owner: (nullable): optional identificator of the owner of the lock, or %NULL
+ * @out_lock_token: (out) (transfer full): return location of the obtained or refreshed lock token
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Locks a resource identified by @uri, or, in case it's %NULL, on the URI defined
+ * in associated #ESource. It obtains a write lock with the given @lock_scope.
+ *
+ * The @owner is used to identify the lock owner. When it's an http:// or https://,
+ * then it's referenced as DAV:href, otherwise the value is treated as plain text.
+ * If it's %NULL, then the user name from the associated #ESource is used.
+ *
+ * The @out_lock_token can be refreshed with e_webdav_session_refresh_lock_sync().
+ * Release the lock with e_webdav_session_unlock_sync().
+ * Free the returned @out_lock_token with g_free(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_lock_resource_sync (EWebDAVSession *webdav,
+				     const gchar *uri,
+				     EWebDAVLockScope lock_scope,
+				     gint32 lock_timeout,
+				     const gchar *owner,
+				     gchar **out_lock_token,
+				     GCancellable *cancellable,
+				     GError **error)
+{
+	EXmlDocument *xml;
+	gchar *owner_ref;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_lock_token != NULL, FALSE);
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "lockinfo");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_start_element (xml, NULL, "lockscope");
+	switch (lock_scope) {
+	case E_WEBDAV_LOCK_EXCLUSIVE:
+		e_xml_document_start_element (xml, NULL, "exclusive");
+		e_xml_document_end_element (xml);
+		break;
+	case E_WEBDAV_LOCK_SHARED:
+		e_xml_document_start_element (xml, NULL, "shared");
+		e_xml_document_end_element (xml);
+		break;
+	}
+	e_xml_document_end_element (xml); /* lockscope */
+
+	e_xml_document_start_element (xml, NULL, "locktype");
+	e_xml_document_start_element (xml, NULL, "write");
+	e_xml_document_end_element (xml); /* write */
+	e_xml_document_end_element (xml); /* locktype */
+
+	e_xml_document_start_text_element (xml, NULL, "owner");
+	if (owner) {
+		owner_ref = g_strdup (owner);
+	} else {
+		ESource *source = e_soup_session_get_source (E_SOUP_SESSION (webdav));
+
+		owner_ref = NULL;
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+			owner_ref = e_source_authentication_dup_user (
+				e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION));
+
+			if (owner_ref && !*owner_ref)
+				g_clear_pointer (&owner_ref, g_free);
+		}
+
+		if (!owner_ref && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+			owner_ref = e_source_webdav_dup_email_address (
+				e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND));
+
+			if (owner_ref && !*owner_ref)
+				g_clear_pointer (&owner_ref, g_free);
+		}
+	}
+
+	if (!owner_ref)
+		owner_ref = g_strconcat (g_get_host_name (), " / ", g_get_user_name (), NULL);
+
+	if (owner_ref) {
+		if (g_str_has_prefix (owner_ref, "http://") ||
+		    g_str_has_prefix (owner_ref, "https://")) {
+			e_xml_document_start_element (xml, NULL, "href");
+			e_xml_document_write_string (xml, owner_ref);
+			e_xml_document_end_element (xml); /* href */
+		} else {
+			e_xml_document_write_string (xml, owner_ref);
+		}
+	}
+
+	g_free (owner_ref);
+	e_xml_document_end_element (xml); /* owner */
+
+	success = e_webdav_session_lock_sync (webdav, uri, E_WEBDAV_DEPTH_INFINITY, lock_timeout, xml,
+		out_lock_token, NULL, cancellable, error);
 
 	g_object_unref (xml);
 

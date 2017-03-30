@@ -210,6 +210,11 @@ EWebDAVPropertyChange *
 		e_webdav_property_change_copy		(const EWebDAVPropertyChange *src);
 void		e_webdav_property_change_free		(gpointer ptr); /* EWebDAVPropertyChange * */
 
+typedef enum {
+	E_WEBDAV_LOCK_EXCLUSIVE,
+	E_WEBDAV_LOCK_SHARED
+} EWebDAVLockScope;
+
 /**
  * EWebDAVSession:
  *
@@ -297,7 +302,7 @@ gboolean	e_webdav_session_delete_sync		(EWebDAVSession *webdav,
 							 const gchar *etag,
 							 GCancellable *cancellable,
 							 GError **error);
-/*gboolean	e_webdav_session_copy_sync		(EWebDAVSession *webdav,
+gboolean	e_webdav_session_copy_sync		(EWebDAVSession *webdav,
 							 const gchar *source_uri,
 							 const gchar *destination_uri,
 							 const gchar *depth,
@@ -313,19 +318,23 @@ gboolean	e_webdav_session_move_sync		(EWebDAVSession *webdav,
 gboolean	e_webdav_session_lock_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *depth,
-							 const gchar *lock_token,
-							 guint32 lock_timeout,
+							 gint32 lock_timeout,
 							 const EXmlDocument *xml,
 							 gchar **out_lock_token,
-							 EXmlDocument **out_xml_response,
+							 xmlDocPtr *out_xml_response,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_refresh_lock_sync	(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *lock_token,
+							 gint32 lock_timeout,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_unlock_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *lock_token,
 							 GCancellable *cancellable,
-							 GError **error);*/
-
+							 GError **error);
 gboolean	e_webdav_session_traverse_multistatus_response
 							(EWebDAVSession *webdav,
 							 const SoupMessage *message,
@@ -348,6 +357,14 @@ gboolean	e_webdav_session_list_sync		(EWebDAVSession *webdav,
 gboolean	e_webdav_session_update_properties_sync	(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const GSList *changes, /* EWebDAVPropertyChange * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_lock_resource_sync	(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 EWebDAVLockScope lock_scope,
+							 gint32 lock_timeout,
+							 const gchar *owner,
+							 gchar **out_lock_token,
 							 GCancellable *cancellable,
 							 GError **error);
 
