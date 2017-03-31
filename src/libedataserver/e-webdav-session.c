@@ -357,6 +357,7 @@ e_webdav_session_extract_multistatus_error_cb (EWebDAVSession *webdav,
 					       xmlXPathContextPtr xpath_ctx,
 					       const gchar *xpath_prop_prefix,
 					       const SoupURI *request_uri,
+					       const gchar *href,
 					       guint status_code,
 					       gpointer user_data)
 {
@@ -632,6 +633,48 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 	g_free (detail_text);
 
 	return error_set;
+}
+
+/**
+ * e_webdav_session_ensure_full_uri:
+ * @webdav: an #EWebDAVSession
+ * @request_uri: a #SoupURI to which the @href belongs
+ * @href: a possibly path-only href
+ *
+ * Converts possbily path-only @href into a full URI under
+ * the @request_uri. Free the returned pointer with g_free(),
+ * when no longer needed.
+ *
+ * Returns: (transfer full): The @href as a full URI
+ *
+ * Since: 3.24
+ **/
+gchar *
+e_webdav_session_ensure_full_uri (EWebDAVSession *webdav,
+				  const SoupURI *request_uri,
+				  const gchar *href)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), NULL);
+	g_return_val_if_fail (request_uri != NULL, NULL);
+	g_return_val_if_fail (href != NULL, NULL);
+
+	if (*href == '/' || !strstr (href, "://")) {
+		SoupURI *soup_uri;
+		gchar *full_uri;
+
+		soup_uri = soup_uri_copy ((SoupURI *) request_uri);
+		soup_uri_set_path (soup_uri, href);
+		soup_uri_set_user (soup_uri, NULL);
+		soup_uri_set_password (soup_uri, NULL);
+
+		full_uri = soup_uri_to_string (soup_uri, FALSE);
+
+		soup_uri_free (soup_uri);
+
+		return full_uri;
+	}
+
+	return g_strdup (href);
 }
 
 static GHashTable *
@@ -912,13 +955,134 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
 }
 
 /**
+ * e_webdav_session_report_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @depth: (nullable): requested depth, can be %NULL, then %E_WEBDAV_DEPTH_THIS is used
+ * @xml: the request itself, as an #EXmlDocument
+ * @func: (nullable): an #EWebDAVMultistatusTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
+ * @func_user_data: user data passed to @func
+ * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
+ * @out_content: (nullable) (transfer full): return location for response content, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues REPORT request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource. On success, calls @func for each returned
+ * DAV:propstat. The provided XPath context has registered %E_WEBDAV_NS_DAV namespace
+ * with prefix "D". It doesn't have any other namespace registered.
+ *
+ * The report can result in a multistatus response, but also to raw data. In case
+ * the @func is provided and the result is a multistatus response, then it is traversed
+ * using this @func. The @func is called always at least once, with %NULL xpath_prop_prefix,
+ * which is meant to let the caller setup the xpath_ctx, like to register its own namespaces
+ * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
+ * will have xpath_prop_prefix non-%NULL.
+ *
+ * The optional @out_content_type can be used to get content type of the response.
+ * Free it with g_free(), when no longer needed.
+ *
+ * The optional @out_content can be used to get actual result content. Free it
+ * with g_byte_array_free(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_report_sync (EWebDAVSession *webdav,
+			      const gchar *uri,
+			      const gchar *depth,
+			      const EXmlDocument *xml,
+			      EWebDAVMultistatusTraverseFunc func,
+			      gpointer func_user_data,
+			      gchar **out_content_type,
+			      GByteArray **out_content,
+			      GCancellable *cancellable,
+			      GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gchar *content;
+	gsize content_length;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
+
+	if (out_content_type)
+		*out_content_type = NULL;
+
+	if (out_content)
+		*out_content = NULL;
+
+	request = e_webdav_session_new_request (webdav, "REPORT", uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	if (!depth)
+		depth = E_WEBDAV_DEPTH_THIS;
+
+	soup_message_headers_replace (message->request_headers, "Depth", depth);
+
+	content = e_xml_document_get_content (xml, &content_length);
+	if (!content) {
+		g_object_unref (message);
+		g_object_unref (request);
+
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
+
+		return FALSE;
+	}
+
+	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+		SOUP_MEMORY_TAKE, content, content_length);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to issue REPORT"), error) &&
+		bytes != NULL;
+
+	if (success && func && message->status_code == SOUP_STATUS_MULTI_STATUS)
+		success = e_webdav_session_traverse_multistatus_response (webdav, message, bytes, func, func_user_data, error);
+
+	if (success) {
+		if (out_content_type) {
+			*out_content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
+		}
+
+		if (out_content) {
+			*out_content = bytes;
+			bytes = NULL;
+		}
+	}
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
  * e_webdav_session_mkcol_sync:
  * @webdav: an #EWebDAVSession
  * @uri: URI of the collection to create
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Creates a new collection resource identified by @uri on the server.
+ * Creates a new generic collection identified by @uri on the server.
+ * To create specific collections use e_webdav_session_mkcalendar_sync().
  *
  * Returns: Whether succeeded.
  *
@@ -953,25 +1117,159 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 	return success;
 }
 
-/* This assumes ownership of 'text' */
-static gchar *
-e_webdav_session_maybe_dequote (gchar *text)
+/**
+ * e_webdav_session_mkcalendar_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the collection to create
+ * @display_name: (nullable): a human-readable display name to set, or %NULL
+ * @description: (nullable): a human-readable description of the calednar, or %NULL
+ * @color: (nullable): a color to set, in format "#RRGGBB", or %NULL
+ * @supports: a bit-or of EWebDAVResourceSupports values
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new calendar collection identified by @uri on the server.
+ * The @supports defines what component types can be stored into
+ * the created calendar collection. Only %E_WEBDAV_RESOURCE_SUPPORTS_NONE
+ * and values related to iCalendar content can be used here.
+ * Using %E_WEBDAV_RESOURCE_SUPPORTS_NONE means that everything is supported.
+ *
+ * Note that CalDAV RFC 4791 Section 4.2 forbids to create calendar
+ * resources under other calendar resources (no nested calendars
+ * are allowed).
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_mkcalendar_sync (EWebDAVSession *webdav,
+				  const gchar *uri,
+				  const gchar *display_name,
+				  const gchar *description,
+				  const gchar *color,
+				  guint32 supports,
+				  GCancellable *cancellable,
+				  GError **error)
 {
-	gchar *dequoted;
-	gint len;
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
 
-	if (!text || *text != '\"')
-		return text;
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
 
-	len = strlen (text);
+	request = e_webdav_session_new_request (webdav, "MKCALENDAR", uri, error);
+	if (!request)
+		return FALSE;
 
-	if (len < 2 || text[len - 1] != '\"')
-		return text;
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
 
-	dequoted = g_strndup (text + 1, len - 2);
-	g_free (text);
+		return FALSE;
+	}
 
-	return dequoted;
+	supports = supports & (
+		E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
+		E_WEBDAV_RESOURCE_SUPPORTS_MEMOS |
+		E_WEBDAV_RESOURCE_SUPPORTS_TASKS |
+		E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY |
+		E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE);
+
+	if ((display_name && *display_name) ||
+	    (description && *description) ||
+	    (color && *color) ||
+	    (supports != 0)) {
+		EXmlDocument *xml;
+		gchar *content;
+		gsize content_length;
+
+		xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "mkcalendar");
+		e_xml_document_add_namespaces (xml, "D", E_WEBDAV_NS_DAV, NULL);
+
+		e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "set");
+		e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "prop");
+
+		if (display_name && *display_name) {
+			e_xml_document_start_text_element (xml, E_WEBDAV_NS_DAV, "displayname");
+			e_xml_document_write_string (xml, display_name);
+			e_xml_document_end_element (xml);
+		}
+
+		if (description && *description) {
+			e_xml_document_start_text_element (xml, E_WEBDAV_NS_CALDAV, "calendar-description");
+			e_xml_document_write_string (xml, description);
+			e_xml_document_end_element (xml);
+		}
+
+		if (color && *color) {
+			e_xml_document_add_namespaces (xml, "IC", E_WEBDAV_NS_ICAL, NULL);
+
+			e_xml_document_start_text_element (xml, E_WEBDAV_NS_ICAL, "calendar-color");
+			e_xml_document_write_string (xml, color);
+			e_xml_document_end_element (xml);
+		}
+
+		if (supports != 0) {
+			struct SupportValues {
+				guint32 mask;
+				const gchar *value;
+			} values[] = {
+				{ E_WEBDAV_RESOURCE_SUPPORTS_EVENTS, "VEVENT" },
+				{ E_WEBDAV_RESOURCE_SUPPORTS_MEMOS, "VJOURNAL" },
+				{ E_WEBDAV_RESOURCE_SUPPORTS_TASKS, "VTODO" },
+				{ E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY, "VFREEBUSY" },
+				{ E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE, "TIMEZONE" }
+			};
+			gint ii;
+
+			e_xml_document_start_text_element (xml, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
+
+			for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
+				if ((supports & values[ii].mask) != 0) {
+					e_xml_document_start_text_element (xml, E_WEBDAV_NS_CALDAV, "comp");
+					e_xml_document_add_attribute (xml, NULL, "name", values[ii].value);
+					e_xml_document_end_element (xml); /* comp */
+				}
+			}
+
+			e_xml_document_end_element (xml); /* supported-calendar-component-set */
+		}
+
+		e_xml_document_end_element (xml); /* prop */
+		e_xml_document_end_element (xml); /* set */
+
+		content = e_xml_document_get_content (xml, &content_length);
+		if (!content) {
+			g_object_unref (message);
+			g_object_unref (request);
+			g_object_unref (xml);
+
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get XML request content"));
+
+			return FALSE;
+		}
+
+		soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+			SOUP_MEMORY_TAKE, content, content_length);
+
+		g_object_unref (xml);
+	}
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to create calendar"), error) &&
+		bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
 }
 
 static void
@@ -1011,7 +1309,7 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
 
 		header = soup_message_headers_get_list (message->response_headers, "ETag");
 		if (header)
-			*out_etag = e_webdav_session_maybe_dequote (g_strdup (header));
+			*out_etag = e_webdav_session_util_maybe_dequote (g_strdup (header));
 	}
 }
 
@@ -2059,7 +2357,7 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 		NULL);
 
 	if (xpath_ctx &&
-	    func (webdav, xpath_ctx, NULL, request_uri, SOUP_STATUS_NONE, func_user_data)) {
+	    func (webdav, xpath_ctx, NULL, request_uri, NULL, SOUP_STATUS_NONE, func_user_data)) {
 		xmlXPathObjectPtr xpath_obj_response;
 
 		xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "/D:multistatus/D:response");
@@ -2078,7 +2376,19 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 					response_index + 1);
 
 				if (xpath_obj_propstat != NULL) {
+					gchar *href;
 					gint propstat_index, propstat_length;
+
+					href = e_xml_xpath_eval_as_string (xpath_ctx, "/D:multistatus/D:response[%d]/D:href", response_index + 1);
+					if (href) {
+						gchar *full_uri;
+
+						full_uri = e_webdav_session_ensure_full_uri (webdav, request_uri, href);
+						if (full_uri) {
+							g_free (href);
+							href = full_uri;
+						}
+					}
 
 					propstat_length = xmlXPathNodeSetGetLength (xpath_obj_propstat->nodesetval);
 
@@ -2094,12 +2404,13 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 							status_code = 0;
 						g_free (status);
 
-						do_stop = !func (webdav, xpath_ctx, propstat_prefix, request_uri, status_code, func_user_data);
+						do_stop = !func (webdav, xpath_ctx, propstat_prefix, request_uri, href, status_code, func_user_data);
 
 						g_free (propstat_prefix);
 					}
 
 					xmlXPathFreeObject (xpath_obj_propstat);
+					g_free (href);
 				}
 			}
 
@@ -2119,6 +2430,7 @@ e_webdav_session_getctag_cb (EWebDAVSession *webdav,
 			     xmlXPathContextPtr xpath_ctx,
 			     const gchar *xpath_prop_prefix,
 			     const SoupURI *request_uri,
+			     const gchar *href,
 			     guint status_code,
 			     gpointer user_data)
 {
@@ -2139,7 +2451,7 @@ e_webdav_session_getctag_cb (EWebDAVSession *webdav,
 		ctag = e_xml_xpath_eval_as_string (xpath_ctx, "%s/CS:getctag", xpath_prop_prefix);
 
 		if (ctag && *ctag) {
-			*out_ctag = e_webdav_session_maybe_dequote (ctag);
+			*out_ctag = e_webdav_session_util_maybe_dequote (ctag);
 		} else {
 			g_free (ctag);
 		}
@@ -2260,6 +2572,8 @@ e_webdav_session_extract_supports (xmlXPathContextPtr xpath_ctx,
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TASKS;
 				else if (g_ascii_strcasecmp (name, "VFREEBUSY") == 0)
 					supports |= E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
+				else if (g_ascii_strcasecmp (name, "VTIMEZONE") == 0)
+					supports |= E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
 
 				g_free (name);
 			}
@@ -2272,7 +2586,8 @@ e_webdav_session_extract_supports (xmlXPathContextPtr xpath_ctx,
 				E_WEBDAV_RESOURCE_SUPPORTS_EVENTS |
 				E_WEBDAV_RESOURCE_SUPPORTS_MEMOS |
 				E_WEBDAV_RESOURCE_SUPPORTS_TASKS |
-				E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY;
+				E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY |
+				E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE;
 		}
 	}
 
@@ -2302,7 +2617,7 @@ e_webdav_session_extract_nonempty (xmlXPathContextPtr xpath_ctx,
 		return NULL;
 	}
 
-	return e_webdav_session_maybe_dequote (value);
+	return e_webdav_session_util_maybe_dequote (value);
 }
 
 static gsize
@@ -2358,6 +2673,7 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 			  xmlXPathContextPtr xpath_ctx,
 			  const gchar *xpath_prop_prefix,
 			  const SoupURI *request_uri,
+			  const gchar *href,
 			  guint status_code,
 			  gpointer user_data)
 {
@@ -2381,7 +2697,6 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 		EWebDAVResource *resource;
 		EWebDAVResourceKind kind;
 		guint32 supports;
-		gchar *href;
 		gchar *etag;
 		gchar *display_name;
 		gchar *content_type;
@@ -2395,27 +2710,6 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 		if (kind == E_WEBDAV_RESOURCE_KIND_UNKNOWN)
 			return TRUE;
 
-		href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../../D:href", xpath_prop_prefix);
-		if (!href)
-			return TRUE;
-
-		if (!strstr (href, "://")) {
-			SoupURI *soup_uri;
-			gchar *full_uri;
-
-			soup_uri = soup_uri_copy ((SoupURI *) request_uri);
-			soup_uri_set_path (soup_uri, href);
-			soup_uri_set_user (soup_uri, NULL);
-			soup_uri_set_password (soup_uri, NULL);
-
-			full_uri = soup_uri_to_string (soup_uri, FALSE);
-
-			soup_uri_free (soup_uri);
-			g_free (href);
-
-			href = full_uri;
-		}
-
 		supports = e_webdav_session_extract_supports (xpath_ctx, xpath_prop_prefix);
 		etag = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:getetag", "CS:getctag");
 		display_name = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:displayname", NULL);
@@ -2427,7 +2721,7 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 		color = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "IC:calendar-color", NULL);
 
 		resource = e_webdav_resource_new (kind, supports,
-			NULL, /* href */
+			href,
 			NULL, /* etag */
 			NULL, /* display_name */
 			NULL, /* content_type */
@@ -2436,7 +2730,6 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
 			last_modified,
 			NULL, /* description */
 			NULL); /* color */
-		resource->href = href;
 		resource->etag = etag;
 		resource->display_name = display_name;
 		resource->content_type = content_type;
@@ -2790,4 +3083,35 @@ e_webdav_session_lock_resource_sync (EWebDAVSession *webdav,
 	g_object_unref (xml);
 
 	return success;
+}
+
+/**
+ * e_webdav_session_util_maybe_dequote:
+ * @text: (inout): text to dequote
+ *
+ * Dequotes @text, if it's enclosed in double-quotes. The function
+ * changes @text, it doesn't allocate new string. The function does
+ * nothing when the @text is not enclosed in double-quotes.
+ *
+ * Returns: possibly dequoted @text
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_webdav_session_util_maybe_dequote (gchar *text)
+{
+	gint len;
+
+	if (!text || *text != '\"')
+		return text;
+
+	len = strlen (text);
+
+	if (len < 2 || text[len - 1] != '\"')
+		return text;
+
+	memmove (text, text + 1, len - 2);
+	text[len - 2] = '\0';
+
+	return text;
 }

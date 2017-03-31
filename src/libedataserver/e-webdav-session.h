@@ -110,7 +110,8 @@ typedef enum {
 	E_WEBDAV_RESOURCE_SUPPORTS_EVENTS	= 1 << 1,
 	E_WEBDAV_RESOURCE_SUPPORTS_MEMOS	= 1 << 2,
 	E_WEBDAV_RESOURCE_SUPPORTS_TASKS	= 1 << 3,
-	E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY	= 1 << 4
+	E_WEBDAV_RESOURCE_SUPPORTS_FREEBUSY	= 1 << 4,
+	E_WEBDAV_RESOURCE_SUPPORTS_TIMEZONE	= 1 << 5
 } EWebDAVResourceSupports;
 
 typedef struct _EWebDAVResource {
@@ -164,6 +165,7 @@ typedef enum {
  * @xpath_ctx: an #xmlXPathContextPtr
  * @xpath_prop_prefix: (nullable): an XPath prefix for the current prop element, without trailing forward slash
  * @request_uri: a #SoupURI, containing the request URI, maybe redirected by the server
+ * @href: (nullable): a full URI to which the property belongs, or %NULL, when not found
  * @status_code: an HTTP status code for this property
  * @user_data: user data, as passed to e_webdav_session_propfind_sync()
  *
@@ -183,6 +185,7 @@ typedef gboolean (* EWebDAVMultistatusTraverseFunc)	(EWebDAVSession *webdav,
 							 xmlXPathContextPtr xpath_ctx,
 							 const gchar *xpath_prop_prefix,
 							 const SoupURI *request_uri,
+							 const gchar *href,
 							 guint status_code,
 							 gpointer user_data);
 
@@ -251,6 +254,9 @@ gboolean	e_webdav_session_replace_with_detailed_error
 							 gboolean ignore_multistatus,
 							 const gchar *prefix,
 							 GError **inout_error);
+gchar *		e_webdav_session_ensure_full_uri	(EWebDAVSession *webdav,
+							 const SoupURI *request_uri,
+							 const gchar *href);
 gboolean	e_webdav_session_options_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 GHashTable **out_capabilities,
@@ -270,8 +276,26 @@ gboolean	e_webdav_session_proppatch_sync		(EWebDAVSession *webdav,
 							 const EXmlDocument *xml,
 							 GCancellable *cancellable,
 							 GError **error);
+gboolean	e_webdav_session_report_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *depth,
+							 const EXmlDocument *xml,
+							 EWebDAVMultistatusTraverseFunc func,
+							 gpointer func_user_data,
+							 gchar **out_content_type,
+							 GByteArray **out_content,
+							 GCancellable *cancellable,
+							 GError **error);
 gboolean	e_webdav_session_mkcol_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_mkcalendar_sync	(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *display_name,
+							 const gchar *description,
+							 const gchar *color,
+							 guint32 supports, /* bit-or of EWebDAVResourceSupports */
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_get_sync		(EWebDAVSession *webdav,
@@ -379,6 +403,7 @@ gboolean	e_webdav_session_lock_resource_sync	(EWebDAVSession *webdav,
 							 gchar **out_lock_token,
 							 GCancellable *cancellable,
 							 GError **error);
+gchar *		e_webdav_session_util_maybe_dequote	(gchar *text);
 
 G_END_DECLS
 
