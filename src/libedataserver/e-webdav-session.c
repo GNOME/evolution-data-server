@@ -353,13 +353,13 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 }
 
 static gboolean
-e_webdav_session_extract_multistatus_error_cb (EWebDAVSession *webdav,
-					       xmlXPathContextPtr xpath_ctx,
-					       const gchar *xpath_prop_prefix,
-					       const SoupURI *request_uri,
-					       const gchar *href,
-					       guint status_code,
-					       gpointer user_data)
+e_webdav_session_extract_propstat_error_cb (EWebDAVSession *webdav,
+					    xmlXPathContextPtr xpath_ctx,
+					    const gchar *xpath_prop_prefix,
+					    const SoupURI *request_uri,
+					    const gchar *href,
+					    guint status_code,
+					    gpointer user_data)
 {
 	GError **error = user_data;
 
@@ -388,6 +388,64 @@ e_webdav_session_extract_multistatus_error_cb (EWebDAVSession *webdav,
 	}
 
 	return TRUE;
+}
+
+static gboolean
+e_webdav_session_extract_dav_error (EWebDAVSession *webdav,
+				    xmlXPathContextPtr xpath_ctx,
+				    const gchar *xpath_prefix,
+				    gchar **out_detail_text)
+{
+	xmlXPathObjectPtr xpath_obj;
+	gchar *detail_text;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (xpath_prefix != NULL, FALSE);
+	g_return_val_if_fail (out_detail_text != NULL, FALSE);
+
+	if (!e_xml_xpath_eval_exists (xpath_ctx, "%s/D:error", xpath_prefix))
+		return FALSE;
+
+	detail_text = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:error", xpath_prefix);
+
+	xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:error", xpath_prefix);
+	if (xpath_obj) {
+		if (xpath_obj->type == XPATH_NODESET &&
+		    xpath_obj->nodesetval &&
+		    xpath_obj->nodesetval->nodeNr == 1 &&
+		    xpath_obj->nodesetval->nodeTab &&
+		    xpath_obj->nodesetval->nodeTab[0] &&
+		    xpath_obj->nodesetval->nodeTab[0]->children) {
+			GString *text = g_string_new ("");
+			xmlNodePtr node;
+
+			for (node = xpath_obj->nodesetval->nodeTab[0]->children; node; node = node->next) {
+				if (node->type == XML_ELEMENT_NODE &&
+				    node->name && *(node->name))
+					g_string_append_printf (text, "[%s]", (const gchar *) node->name);
+			}
+
+			if (text->len > 0) {
+				if (detail_text) {
+					g_strstrip (detail_text);
+					if (*detail_text)
+						g_string_prepend (text, detail_text);
+					g_free (detail_text);
+				}
+
+				detail_text = g_string_free (text, FALSE);
+			} else {
+				g_string_free (text, TRUE);
+			}
+		}
+
+		xmlXPathFreeObject (xpath_obj);
+	}
+
+	*out_detail_text = detail_text;
+
+	return detail_text != NULL;
 }
 
 /**
@@ -461,7 +519,7 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 	if (status_code == SOUP_STATUS_MULTI_STATUS &&
 	    !ignore_multistatus &&
 	    !e_webdav_session_traverse_multistatus_response (webdav, message, &byte_array,
-		e_webdav_session_extract_multistatus_error_cb, &local_error, NULL)) {
+		e_webdav_session_extract_propstat_error_cb, &local_error, NULL)) {
 		g_clear_error (&local_error);
 	}
 
@@ -491,61 +549,42 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 
 			xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
 				"D", E_WEBDAV_NS_DAV,
+				"C", E_WEBDAV_NS_CALDAV,
+				"A", E_WEBDAV_NS_CARDDAV,
 				NULL);
 
 			if (xpath_ctx &&
-			    e_xml_xpath_eval_exists (xpath_ctx, "/D:error")) {
-				xmlXPathObjectPtr xpath_obj;
+			    e_webdav_session_extract_dav_error (webdav, xpath_ctx, "", &detail_text)) {
+				/* do nothing, detail_text is set */
+			} else if (xpath_ctx) {
+				const gchar *path_prefix = NULL;
 
-				detail_text = e_xml_xpath_eval_as_string (xpath_ctx, "/D:error");
+				if (e_xml_xpath_eval_exists (xpath_ctx, "/D:multistatus/D:response/D:status"))
+					path_prefix = "/D:multistatus/D:response";
+				else if (e_xml_xpath_eval_exists (xpath_ctx, "/C:mkcalendar-response/D:status"))
+					path_prefix = "/C:mkcalendar-response";
+				else if (e_xml_xpath_eval_exists (xpath_ctx, "/D:mkcol-response/D:status"))
+					path_prefix = "/D:mkcol-response";
 
-				xpath_obj = e_xml_xpath_eval (xpath_ctx, "/D:error");
-				if (xpath_obj) {
-					if (xpath_obj->type == XPATH_NODESET &&
-					    xpath_obj->nodesetval &&
-					    xpath_obj->nodesetval->nodeNr == 1 &&
-					    xpath_obj->nodesetval->nodeTab &&
-					    xpath_obj->nodesetval->nodeTab[0] &&
-					    xpath_obj->nodesetval->nodeTab[0]->children) {
-						GString *text = g_string_new ("");
-						xmlNodePtr node;
+				if (path_prefix) {
+					guint parsed_status = 0;
+					gchar *status;
 
-						for (node = xpath_obj->nodesetval->nodeTab[0]->children; node; node = node->next) {
-							if (node->type == XML_ELEMENT_NODE &&
-							    node->name && *(node->name))
-								g_string_append_printf (text, "[%s]", (const gchar *) node->name);
-						}
+					status = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:status", path_prefix);
+					if (status && soup_headers_parse_status_line (status, NULL, &parsed_status, &reason_phrase_copy) &&
+					    !SOUP_STATUS_IS_SUCCESSFUL (parsed_status)) {
+						status_code = parsed_status;
+						reason_phrase = reason_phrase_copy;
+						detail_text = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:responsedescription", path_prefix);
 
-						if (text->len > 0) {
-							if (detail_text) {
-								g_strstrip (detail_text);
-								if (*detail_text)
-									g_string_prepend (text, detail_text);
-								g_free (detail_text);
-							}
-
-							detail_text = g_string_free (text, FALSE);
-						} else {
-							g_string_free (text, TRUE);
-						}
+						if (!detail_text)
+							e_webdav_session_extract_dav_error (webdav, xpath_ctx, path_prefix, &detail_text);
+					} else {
+						e_webdav_session_extract_dav_error (webdav, xpath_ctx, path_prefix, &detail_text);
 					}
 
-					xmlXPathFreeObject (xpath_obj);
+					g_free (status);
 				}
-			} else if (xpath_ctx &&
-				   e_xml_xpath_eval_exists (xpath_ctx, "/D:multistatus/D:response/D:status")) {
-				guint parsed_status = 0;
-				gchar *status;
-
-				status = e_xml_xpath_eval_as_string (xpath_ctx, "/D:multistatus/D:response/D:status");
-				if (status && soup_headers_parse_status_line (status, NULL, &parsed_status, &reason_phrase_copy) &&
-				    !SOUP_STATUS_IS_SUCCESSFUL (parsed_status)) {
-					status_code = parsed_status;
-					reason_phrase = reason_phrase_copy;
-					detail_text = e_xml_xpath_eval_as_string (xpath_ctx, "/D:multistatus/D:response/D:responsedescription");
-				}
-
-				g_free (status);
 			}
 
 			if (xpath_ctx)
@@ -793,7 +832,7 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
  * @xml: (nullable): the request itself, as an #EXmlDocument, the root element should be DAV:propfind, or %NULL
- * @func: an #EWebDAVMultistatusTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
  * @func_user_data: user data passed to @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -819,7 +858,7 @@ e_webdav_session_propfind_sync (EWebDAVSession *webdav,
 				const gchar *uri,
 				const gchar *depth,
 				const EXmlDocument *xml,
-				EWebDAVMultistatusTraverseFunc func,
+				EWebDAVPropstatTraverseFunc func,
 				gpointer func_user_data,
 				GCancellable *cancellable,
 				GError **error)
@@ -960,7 +999,7 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @depth: (nullable): requested depth, can be %NULL, then %E_WEBDAV_DEPTH_THIS is used
  * @xml: the request itself, as an #EXmlDocument
- * @func: (nullable): an #EWebDAVMultistatusTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
+ * @func: (nullable): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
  * @func_user_data: user data passed to @func
  * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
  * @out_content: (nullable) (transfer full): return location for response content, or %NULL
@@ -994,7 +1033,7 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 			      const gchar *uri,
 			      const gchar *depth,
 			      const EXmlDocument *xml,
-			      EWebDAVMultistatusTraverseFunc func,
+			      EWebDAVPropstatTraverseFunc func,
 			      gpointer func_user_data,
 			      gchar **out_content_type,
 			      GByteArray **out_content,
@@ -1082,7 +1121,8 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
  * @error: return location for a #GError, or %NULL
  *
  * Creates a new generic collection identified by @uri on the server.
- * To create specific collections use e_webdav_session_mkcalendar_sync().
+ * To create specific collections use e_webdav_session_mkcalendar_sync()
+ * or e_webdav_session_mkcol_addressbook_sync().
  *
  * Returns: Whether succeeded.
  *
@@ -1118,11 +1158,117 @@ e_webdav_session_mkcol_sync (EWebDAVSession *webdav,
 }
 
 /**
+ * e_webdav_session_mkcol_addressbook_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: URI of the collection to create
+ * @display_name: (nullable): a human-readable display name to set, or %NULL
+ * @description: (nullable): a human-readable description of the address book, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Creates a new address book collection identified by @uri on the server.
+ *
+ * Note that CardDAV RFC 6352 Section 5.2 forbids to create address book
+ * resources under other address book resources (no nested address books
+ * are allowed).
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
+					 const gchar *uri,
+					 const gchar *display_name,
+					 const gchar *description,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	EXmlDocument *xml;
+	gchar *content;
+	gsize content_length;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (uri != NULL, FALSE);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_MKCOL, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "mkcol");
+	e_xml_document_add_namespaces (xml, "A", E_WEBDAV_NS_CARDDAV, NULL);
+
+	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "set");
+	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "prop");
+	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "resourcetype");
+	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "collection");
+	e_xml_document_end_element (xml);
+	e_xml_document_start_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* resourcetype */
+
+	if (display_name && *display_name) {
+		e_xml_document_start_text_element (xml, E_WEBDAV_NS_DAV, "displayname");
+		e_xml_document_write_string (xml, display_name);
+		e_xml_document_end_element (xml);
+	}
+
+	if (description && *description) {
+		e_xml_document_start_text_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook-description");
+		e_xml_document_write_string (xml, description);
+		e_xml_document_end_element (xml);
+	}
+
+	e_xml_document_end_element (xml); /* prop */
+	e_xml_document_end_element (xml); /* set */
+
+	content = e_xml_document_get_content (xml, &content_length);
+	if (!content) {
+		g_object_unref (message);
+		g_object_unref (request);
+		g_object_unref (xml);
+
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get XML request content"));
+
+		return FALSE;
+	}
+
+	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+		SOUP_MEMORY_TAKE, content, content_length);
+
+	g_object_unref (xml);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to create address book"), error) &&
+		bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
  * e_webdav_session_mkcalendar_sync:
  * @webdav: an #EWebDAVSession
  * @uri: URI of the collection to create
  * @display_name: (nullable): a human-readable display name to set, or %NULL
- * @description: (nullable): a human-readable description of the calednar, or %NULL
+ * @description: (nullable): a human-readable description of the calendar, or %NULL
  * @color: (nullable): a color to set, in format "#RRGGBB", or %NULL
  * @supports: a bit-or of EWebDAVResourceSupports values
  * @cancellable: optional #GCancellable object, or %NULL
@@ -2273,38 +2419,17 @@ e_webdav_session_unlock_sync (EWebDAVSession *webdav,
 	return success;
 }
 
-/**
- * e_webdav_session_traverse_multistatus_response:
- * @webdav: an #EWebDAVSession
- * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
- * @xml_data: a #GByteArray containing DAV:multistatus response
- * @func: an #EWebDAVMultistatusTraverseFunc function to call for each DAV:propstat in the multistatus response
- * @func_user_data: user data passed to @func
- * @error: return location for a #GError, or %NULL
- *
- * Traverses a DAV:multistatus response and calls @func for each returned DAV:propstat.
- * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D".
- * It doesn't have any other namespace registered.
- *
- * The @message, if provided, is used to verify that the response is a multi-status
- * and that the Content-Type is properly set. It's used to get a request URI as well.
- *
- * The @func is called always at least once, with %NULL xpath_prop_prefix, which
- * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
- * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
- * will have xpath_prop_prefix non-%NULL.
- *
- * Returns: Whether succeeded.
- *
- * Since: 3.26
- **/
-gboolean
-e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
-						const SoupMessage *message,
-						const GByteArray *xml_data,
-						EWebDAVMultistatusTraverseFunc func,
-						gpointer func_user_data,
-						GError **error)
+static gboolean
+e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
+					     const SoupMessage *message,
+					     const GByteArray *xml_data,
+					     gboolean require_multistatus,
+					     const gchar *additional_ns_prefix,
+					     const gchar *additional_ns,
+					     const gchar *propstat_path_prefix,
+					     EWebDAVPropstatTraverseFunc func,
+					     gpointer func_user_data,
+					     GError **error)
 {
 	SoupURI *request_uri = NULL;
 	xmlDocPtr doc;
@@ -2312,12 +2437,13 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (xml_data != NULL, FALSE);
+	g_return_val_if_fail (propstat_path_prefix != NULL, FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 
 	if (message) {
 		const gchar *content_type;
 
-		if (message->status_code != SOUP_STATUS_MULTI_STATUS) {
+		if (require_multistatus && message->status_code != SOUP_STATUS_MULTI_STATUS) {
 			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
 				_("Expected multistatus response, but %d returned (%s)"), message->status_code,
 				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
@@ -2354,13 +2480,14 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 
 	xpath_ctx = e_xml_new_xpath_context_with_namespaces (doc,
 		"D", E_WEBDAV_NS_DAV,
+		additional_ns_prefix, additional_ns,
 		NULL);
 
 	if (xpath_ctx &&
 	    func (webdav, xpath_ctx, NULL, request_uri, NULL, SOUP_STATUS_NONE, func_user_data)) {
 		xmlXPathObjectPtr xpath_obj_response;
 
-		xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "/D:multistatus/D:response");
+		xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "%s", propstat_path_prefix);
 
 		if (xpath_obj_response != NULL) {
 			gboolean do_stop = FALSE;
@@ -2372,14 +2499,14 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 				xmlXPathObjectPtr xpath_obj_propstat;
 
 				xpath_obj_propstat = e_xml_xpath_eval (xpath_ctx,
-					"/D:multistatus/D:response[%d]/D:propstat",
-					response_index + 1);
+					"%s[%d]/D:propstat",
+					propstat_path_prefix, response_index + 1);
 
 				if (xpath_obj_propstat != NULL) {
 					gchar *href;
 					gint propstat_index, propstat_length;
 
-					href = e_xml_xpath_eval_as_string (xpath_ctx, "/D:multistatus/D:response[%d]/D:href", response_index + 1);
+					href = e_xml_xpath_eval_as_string (xpath_ctx, "%s[%d]/D:href", propstat_path_prefix, response_index + 1);
 					if (href) {
 						gchar *full_uri;
 
@@ -2396,8 +2523,8 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 						gchar *status, *propstat_prefix;
 						guint status_code;
 
-						propstat_prefix = g_strdup_printf ("/D:multistatus/D:response[%d]/D:propstat[%d]/D:prop",
-							response_index + 1, propstat_index + 1);
+						propstat_prefix = g_strdup_printf ("%s[%d]/D:propstat[%d]/D:prop",
+							propstat_path_prefix, response_index + 1, propstat_index + 1);
 
 						status = e_xml_xpath_eval_as_string (xpath_ctx, "%s/../D:status", propstat_prefix);
 						if (!status || !soup_headers_parse_status_line (status, NULL, &status_code, NULL))
@@ -2423,6 +2550,132 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
 	xmlFreeDoc (doc);
 
 	return TRUE;
+}
+
+/**
+ * e_webdav_session_traverse_multistatus_response:
+ * @webdav: an #EWebDAVSession
+ * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
+ * @xml_data: a #GByteArray containing DAV:multistatus response
+ * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: user data passed to @func
+ * @error: return location for a #GError, or %NULL
+ *
+ * Traverses a DAV:multistatus response and calls @func for each returned DAV:propstat.
+ * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D".
+ * It doesn't have any other namespace registered.
+ *
+ * The @message, if provided, is used to verify that the response is a multi-status
+ * and that the Content-Type is properly set. It's used to get a request URI as well.
+ *
+ * The @func is called always at least once, with %NULL xpath_prop_prefix, which
+ * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
+ * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
+ * will have xpath_prop_prefix non-%NULL.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
+						const SoupMessage *message,
+						const GByteArray *xml_data,
+						EWebDAVPropstatTraverseFunc func,
+						gpointer func_user_data,
+						GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (xml_data != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, TRUE,
+		NULL, NULL, "/D:multistatus/D:response",
+		func, func_user_data, error);
+}
+
+/**
+ * e_webdav_session_traverse_mkcol_response:
+ * @webdav: an #EWebDAVSession
+ * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
+ * @xml_data: a #GByteArray containing DAV:mkcol-response response
+ * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
+ * @func_user_data: user data passed to @func
+ * @error: return location for a #GError, or %NULL
+ *
+ * Traverses a DAV:mkcol-response response and calls @func for each returned DAV:propstat.
+ * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D".
+ * It doesn't have any other namespace registered.
+ *
+ * The @message, if provided, is used to verify that the response is an XML Content-Type.
+ * It's used to get the request URI as well.
+ *
+ * The @func is called always at least once, with %NULL xpath_prop_prefix, which
+ * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
+ * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
+ * will have xpath_prop_prefix non-%NULL.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
+					  const SoupMessage *message,
+					  const GByteArray *xml_data,
+					  EWebDAVPropstatTraverseFunc func,
+					  gpointer func_user_data,
+					  GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (xml_data != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, FALSE,
+		NULL, NULL, "/D:mkcol-response",
+		func, func_user_data, error);
+}
+
+/**
+ * e_webdav_session_traverse_mkcalendar_response:
+ * @webdav: an #EWebDAVSession
+ * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
+ * @xml_data: a #GByteArray containing CALDAV:mkcalendar-response response
+ * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
+ * @func_user_data: user data passed to @func
+ * @error: return location for a #GError, or %NULL
+ *
+ * Traverses a CALDAV:mkcalendar-response response and calls @func for each returned DAV:propstat.
+ * The provided XPath context has registered %E_WEBDAV_NS_DAV namespace with prefix "D" and
+ * %E_WEBDAV_NS_CALDAV namespace with prefix "C". It doesn't have any other namespace registered.
+ *
+ * The @message, if provided, is used to verify that the response is an XML Content-Type.
+ * It's used to get the request URI as well.
+ *
+ * The @func is called always at least once, with %NULL xpath_prop_prefix, which
+ * is meant to let the caller setup the xpath_ctx, like to register its own namespaces
+ * to it with e_xml_xpath_context_register_namespaces(). All other invocations of @func
+ * will have xpath_prop_prefix non-%NULL.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_traverse_mkcalendar_response (EWebDAVSession *webdav,
+					       const SoupMessage *message,
+					       const GByteArray *xml_data,
+					       EWebDAVPropstatTraverseFunc func,
+					       gpointer func_user_data,
+					       GError **error)
+{
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (xml_data != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	return e_webdav_session_traverse_propstat_response (webdav, message, xml_data, FALSE,
+		"C", E_WEBDAV_NS_CALDAV, "/C:mkcalendar-response",
+		func, func_user_data, error);
 }
 
 static gboolean

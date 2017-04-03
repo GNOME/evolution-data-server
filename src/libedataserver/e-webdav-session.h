@@ -160,7 +160,7 @@ typedef enum {
 } EWebDAVListFlags;
 
 /**
- * EWebDAVMultistatusTraverseFunc:
+ * EWebDAVPropstatTraverseFunc:
  * @webdav: an #EWebDAVSession
  * @xpath_ctx: an #xmlXPathContextPtr
  * @xpath_prop_prefix: (nullable): an XPath prefix for the current prop element, without trailing forward slash
@@ -169,19 +169,20 @@ typedef enum {
  * @status_code: an HTTP status code for this property
  * @user_data: user data, as passed to e_webdav_session_propfind_sync()
  *
- * A callback function for e_webdav_session_propfind_sync().
+ * A callback function for e_webdav_session_propfind_sync(),
+ * e_webdav_session_report_sync() and other XML response with DAV:propstat
+ * elements traversal functions.
  *
  * The @xpath_prop_prefix can be %NULL only once, for the first time,
  * which is meant to let the caller setup the @xpath_ctx, like to register
  * its own namespaces to it with e_xml_xpath_context_register_namespaces().
  * All other invocations of the function will have @xpath_prop_prefix non-%NULL.
  *
- * Returns: %TRUE to continue traversal of the returned multistatus response,
- *    %FALSE otherwise.
+ * Returns: %TRUE to continue traversal of the returned response, %FALSE otherwise.
  *
  * Since: 3.26
  **/
-typedef gboolean (* EWebDAVMultistatusTraverseFunc)	(EWebDAVSession *webdav,
+typedef gboolean (* EWebDAVPropstatTraverseFunc)	(EWebDAVSession *webdav,
 							 xmlXPathContextPtr xpath_ctx,
 							 const gchar *xpath_prop_prefix,
 							 const SoupURI *request_uri,
@@ -267,7 +268,7 @@ gboolean	e_webdav_session_propfind_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *depth,
 							 const EXmlDocument *xml,
-							 EWebDAVMultistatusTraverseFunc func,
+							 EWebDAVPropstatTraverseFunc func,
 							 gpointer func_user_data,
 							 GCancellable *cancellable,
 							 GError **error);
@@ -280,7 +281,7 @@ gboolean	e_webdav_session_report_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *depth,
 							 const EXmlDocument *xml,
-							 EWebDAVMultistatusTraverseFunc func,
+							 EWebDAVPropstatTraverseFunc func,
 							 gpointer func_user_data,
 							 gchar **out_content_type,
 							 GByteArray **out_content,
@@ -288,6 +289,12 @@ gboolean	e_webdav_session_report_sync		(EWebDAVSession *webdav,
 							 GError **error);
 gboolean	e_webdav_session_mkcol_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_mkcol_addressbook_sync	(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *display_name,
+							 const gchar *description,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_mkcalendar_sync	(EWebDAVSession *webdav,
@@ -375,7 +382,21 @@ gboolean	e_webdav_session_traverse_multistatus_response
 							(EWebDAVSession *webdav,
 							 const SoupMessage *message,
 							 const GByteArray *xml_data,
-							 EWebDAVMultistatusTraverseFunc func,
+							 EWebDAVPropstatTraverseFunc func,
+							 gpointer func_user_data,
+							 GError **error);
+gboolean	e_webdav_session_traverse_mkcol_response
+							(EWebDAVSession *webdav,
+							 const SoupMessage *message,
+							 const GByteArray *xml_data,
+							 EWebDAVPropstatTraverseFunc func,
+							 gpointer func_user_data,
+							 GError **error);
+gboolean	e_webdav_session_traverse_mkcalendar_response
+							(EWebDAVSession *webdav,
+							 const SoupMessage *message,
+							 const GByteArray *xml_data,
+							 EWebDAVPropstatTraverseFunc func,
 							 gpointer func_user_data,
 							 GError **error);
 gboolean	e_webdav_session_getctag_sync		(EWebDAVSession *webdav,
