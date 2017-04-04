@@ -22,7 +22,8 @@
  *
  * The #EWebDAVSession is a class to work with WebDAV (RFC 4918),
  * CalDAV (RFC 4791) or CardDAV (RFC 6352) servers, providing API
- * for common requests/responses, on top of an #ESoupSession.
+ * for common requests/responses, on top of an #ESoupSession. It
+ * supports also Access Control Protocol (RFC 3744).
  **/
 
 #include "evolution-data-server-config.h"
@@ -48,6 +49,8 @@ G_DEFINE_TYPE (EWebDAVSession, e_webdav_session, E_TYPE_SOUP_SESSION)
 
 G_DEFINE_BOXED_TYPE (EWebDAVResource, e_webdav_resource, e_webdav_resource_copy, e_webdav_resource_free)
 G_DEFINE_BOXED_TYPE (EWebDAVPropertyChange, e_webdav_property_change, e_webdav_property_change_copy, e_webdav_property_change_free)
+G_DEFINE_BOXED_TYPE (EWebDAVPrivilege, e_webdav_privilege, e_webdav_privilege_copy, e_webdav_privilege_free)
+G_DEFINE_BOXED_TYPE (EWebDAVAccessControlEntry, e_webdav_access_control_entry, e_webdav_access_control_entry_copy, e_webdav_access_control_entry_free)
 
 /**
  * e_webdav_resource_new:
@@ -135,7 +138,7 @@ e_webdav_resource_copy (const EWebDAVResource *src)
  * @ptr: (nullable): an #EWebDAVResource
  *
  * Frees an #EWebDAVResource previously created with e_webdav_resource_new()
- * or e_webdav_resource_copy(). The function does nothing if @ptr is %NULL.
+ * or e_webdav_resource_copy(). The function does nothing, if @ptr is %NULL.
  *
  * Since: 3.26
  **/
@@ -253,7 +256,7 @@ e_webdav_property_change_copy (const EWebDAVPropertyChange *src)
  *
  * Frees an #EWebDAVPropertyChange previously created with e_webdav_property_change_new_set(),
  * e_webdav_property_change_new_remove() or or e_webdav_property_change_copy().
- * The function does nothing if @ptr is %NULL.
+ * The function does nothing, if @ptr is %NULL.
  *
  * Since: 3.26
  **/
@@ -268,6 +271,324 @@ e_webdav_property_change_free (gpointer ptr)
 		g_free (change->value);
 		g_free (change);
 	}
+}
+
+/**
+ * e_webdav_privilege_new:
+ * @ns_uri: (nullable): a namespace URI
+ * @name: (nullable): element name
+ * @description: (nullable): human read-able description, or %NULL
+ * @kind: an #EWebDAVPrivilegeKind
+ * @hint: an #EWebDAVPrivilegeHint
+ *
+ * Describes one privilege entry. The @hint can be %E_WEBDAV_PRIVILEGE_HINT_UNKNOWN
+ * for privileges which are not known to the #EWebDAVSession. It's possible, because
+ * the servers can define their own privileges. The hint is also tried to pair with
+ * known hnts when it's %E_WEBDAV_PRIVILEGE_HINT_UNKNOWN.
+ *
+ * The @ns_uri and @name can be %NULL only if the @hint is one of the known
+ * privileges. Otherwise it's an error to pass either of the two as %NULL.
+ *
+ * Returns: (transfer full): A newly created #EWebDAVPrivilege, prefilled with
+ *    given values. Free it with e_webdav_privilege_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVPrivilege *
+e_webdav_privilege_new (const gchar *ns_uri,
+			const gchar *name,
+			const gchar *description,
+			EWebDAVPrivilegeKind kind,
+			EWebDAVPrivilegeHint hint)
+{
+	EWebDAVPrivilege *privilege;
+
+	if ((!ns_uri || !name) && hint != E_WEBDAV_PRIVILEGE_HINT_UNKNOWN) {
+		const gchar *use_ns_uri = NULL, *use_name = NULL;
+
+		switch (hint) {
+		case E_WEBDAV_PRIVILEGE_HINT_UNKNOWN:
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_READ:
+			use_name = "read";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_WRITE:
+			use_name = "write";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_WRITE_PROPERTIES:
+			use_name = "write-properties";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_WRITE_CONTENT:
+			use_name = "write-content";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_UNLOCK:
+			use_name = "unlock";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_READ_ACL:
+			use_name = "read-acl";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_WRITE_ACL:
+			use_name = "write-acl";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_READ_CURRENT_USER_PRIVILEGE_SET:
+			use_name = "read-current-user-privilege-set";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_BIND:
+			use_name = "bind";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_UNBIND:
+			use_name = "unbind";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_ALL:
+			use_name = "all";
+			break;
+		case E_WEBDAV_PRIVILEGE_HINT_CALDAV_READ_FREE_BUSY:
+			use_ns_uri = E_WEBDAV_NS_CALDAV;
+			use_name = "read-free-busy";
+			break;
+		}
+
+		if (use_name) {
+			ns_uri = use_ns_uri ? use_ns_uri : E_WEBDAV_NS_DAV;
+			name = use_name;
+		}
+	}
+
+	g_return_val_if_fail (ns_uri != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	if (hint == E_WEBDAV_PRIVILEGE_HINT_UNKNOWN) {
+		if (g_str_equal (ns_uri, E_WEBDAV_NS_DAV)) {
+			if (g_str_equal (name, "read"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_READ;
+			else if (g_str_equal (name, "write"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_WRITE;
+			else if (g_str_equal (name, "write-properties"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_WRITE_PROPERTIES;
+			else if (g_str_equal (name, "write-content"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_WRITE_CONTENT;
+			else if (g_str_equal (name, "unlock"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_UNLOCK;
+			else if (g_str_equal (name, "read-acl"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_READ_ACL;
+			else if (g_str_equal (name, "write-acl"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_WRITE_ACL;
+			else if (g_str_equal (name, "read-current-user-privilege-set"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_READ_CURRENT_USER_PRIVILEGE_SET;
+			else if (g_str_equal (name, "bind"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_BIND;
+			else if (g_str_equal (name, "unbind"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_UNBIND;
+			else if (g_str_equal (name, "all"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_ALL;
+		} else if (g_str_equal (ns_uri, E_WEBDAV_NS_CALDAV)) {
+			if (g_str_equal (name, "read-free-busy"))
+				hint = E_WEBDAV_PRIVILEGE_HINT_CALDAV_READ_FREE_BUSY;
+		}
+	}
+
+	privilege = g_new (EWebDAVPrivilege, 1);
+	privilege->ns_uri = g_strdup (ns_uri);
+	privilege->name = g_strdup (name);
+	privilege->description = g_strdup (description);
+	privilege->kind = kind;
+	privilege->hint = hint;
+
+	return privilege;
+}
+
+/**
+ * e_webdav_privilege_copy:
+ * @src: (nullable): an #EWebDAVPrivilege to make a copy of
+ *
+ * Returns: (transfer full): A new #EWebDAVPrivilege prefilled with
+ *    the same values as @src, or %NULL, when @src is %NULL.
+ *    Free it with e_webdav_privilege_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVPrivilege *
+e_webdav_privilege_copy (const EWebDAVPrivilege *src)
+{
+	if (!src)
+		return NULL;
+
+	return e_webdav_privilege_new (
+		src->ns_uri,
+		src->name,
+		src->description,
+		src->kind,
+		src->hint);
+}
+
+/**
+ * e_webdav_privilege_free:
+ * @ptr: (nullable): an #EWebDAVPrivilege
+ *
+ * Frees an #EWebDAVPrivilege previously created with e_webdav_privilege_new()
+ * or e_webdav_privilege_copy(). The function does nothing, if @ptr is %NULL.
+ *
+ * Since: 3.26
+ **/
+void
+e_webdav_privilege_free (gpointer ptr)
+{
+	EWebDAVPrivilege *privilege = ptr;
+
+	if (privilege) {
+		g_free (privilege->ns_uri);
+		g_free (privilege->name);
+		g_free (privilege->description);
+		g_free (privilege);
+	}
+}
+
+/**
+ * e_webdav_access_control_entry_new:
+ * @principal_kind: an #EWebDAVACEPrincipalKind
+ * @principal_href: (nullable): principal href; should be set only if @principal_kind is @E_WEBDAV_ACE_PRINCIPAL_HREF
+ * @flags: bit-or of #EWebDAVACEFlag values
+ * @inherited_href: (nullable): href of the resource from which inherits; should be set only if @flags contain E_WEBDAV_ACE_FLAG_INHERITED
+ *
+ * Describes one Access Control Entry (ACE).
+ *
+ * The @flags should always contain either %E_WEBDAV_ACE_FLAG_GRANT or
+ * %E_WEBDAV_ACE_FLAG_DENY value.
+ *
+ * Use e_webdav_access_control_entry_append_privilege() to add respective
+ * privileges to the entry.
+ *
+ * Returns: (transfer full): A newly created #EWebDAVAccessControlEntry, prefilled with
+ *    given values. Free it with e_webdav_access_control_entry_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVAccessControlEntry *
+e_webdav_access_control_entry_new (EWebDAVACEPrincipalKind principal_kind,
+				   const gchar *principal_href,
+				   guint32 flags,
+				   const gchar *inherited_href)
+{
+	EWebDAVAccessControlEntry *ace;
+
+	if (principal_kind == E_WEBDAV_ACE_PRINCIPAL_HREF)
+		g_return_val_if_fail (principal_href != NULL, NULL);
+	else
+		g_return_val_if_fail (principal_href == NULL, NULL);
+
+	if ((flags & E_WEBDAV_ACE_FLAG_INHERITED) != 0)
+		g_return_val_if_fail (inherited_href != NULL, NULL);
+	else
+		g_return_val_if_fail (inherited_href == NULL, NULL);
+
+	ace = g_new0 (EWebDAVAccessControlEntry, 1);
+	ace->principal_kind = principal_kind;
+	ace->principal_href = g_strdup (principal_href);
+	ace->flags = flags;
+	ace->inherited_href = g_strdup (inherited_href);
+	ace->privileges = NULL;
+
+	return ace;
+}
+
+/**
+ * e_webdav_access_control_entry_copy:
+ * @src: (nullable): an #EWebDAVAccessControlEntry to make a copy of
+ *
+ * Returns: (transfer full): A new #EWebDAVAccessControlEntry prefilled with
+ *    the same values as @src, or %NULL, when @src is %NULL.
+ *    Free it with e_webdav_access_control_entry_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+EWebDAVAccessControlEntry *
+e_webdav_access_control_entry_copy (const EWebDAVAccessControlEntry *src)
+{
+	EWebDAVAccessControlEntry *ace;
+	GSList *link;
+
+	if (!src)
+		return NULL;
+
+	ace = e_webdav_access_control_entry_new (
+		src->principal_kind,
+		src->principal_href,
+		src->flags,
+		src->inherited_href);
+	if (!ace)
+		return NULL;
+
+	for (link = src->privileges; link; link = g_slist_next (link)) {
+		EWebDAVPrivilege *privilege = link->data;
+
+		if (privilege)
+			ace->privileges = g_slist_prepend (ace->privileges, e_webdav_privilege_copy (privilege));
+	}
+
+	ace->privileges = g_slist_reverse (ace->privileges);
+
+	return ace;
+}
+
+/**
+ * e_webdav_access_control_entry_free:
+ * @ptr: (nullable): an #EWebDAVAccessControlEntry
+ *
+ * Frees an #EWebDAVAccessControlEntry previously created with e_webdav_access_control_entry_new()
+ * or e_webdav_access_control_entry_copy(). The function does nothing, if @ptr is %NULL.
+ *
+ * Since: 3.26
+ **/
+void
+e_webdav_access_control_entry_free (gpointer ptr)
+{
+	EWebDAVAccessControlEntry *ace = ptr;
+
+	if (ace) {
+		g_free (ace->principal_href);
+		g_free (ace->inherited_href);
+		g_slist_free_full (ace->privileges, e_webdav_privilege_free);
+		g_free (ace);
+	}
+}
+
+/**
+ * e_webdav_access_control_entry_append_privilege:
+ * @ace: an #EWebDAVAccessControlEntry
+ * @privilege: (transfer full): an #EWebDAVPrivilege
+ *
+ * Appends a new @privilege to the list of privileges for the @ace.
+ * The function assumes ownership of the @privilege, which is freed
+ * together with the @ace.
+ *
+ * Since: 3.26
+ **/
+void
+e_webdav_access_control_entry_append_privilege (EWebDAVAccessControlEntry *ace,
+						EWebDAVPrivilege *privilege)
+{
+	g_return_if_fail (ace != NULL);
+	g_return_if_fail (privilege != NULL);
+
+	ace->privileges = g_slist_append (ace->privileges, privilege);
+}
+
+/**
+ * e_webdav_access_control_entry_get_privileges:
+ * @ace: an #EWebDAVAccessControlEntry
+ *
+ * Returns: (element-type EWebDAVPrivilege) (transfer none): A #GSList of #EWebDAVPrivilege
+ *    with the list of privileges for the @ace. The reurned #GSList, together with its data
+ *    is owned by the @ace.
+ *
+ * Since: 3.26
+ **/
+GSList *
+e_webdav_access_control_entry_get_privileges (EWebDAVAccessControlEntry *ace)
+{
+	g_return_val_if_fail (ace != NULL, NULL);
+
+	return ace->privileges;
 }
 
 static void
@@ -2489,7 +2810,7 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 
 		xpath_obj_response = e_xml_xpath_eval (xpath_ctx, "%s", propstat_path_prefix);
 
-		if (xpath_obj_response != NULL) {
+		if (xpath_obj_response) {
 			gboolean do_stop = FALSE;
 			gint response_index, response_length;
 
@@ -2502,7 +2823,7 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
 					"%s[%d]/D:propstat",
 					propstat_path_prefix, response_index + 1);
 
-				if (xpath_obj_propstat != NULL) {
+				if (xpath_obj_propstat) {
 					gchar *href;
 					gint propstat_index, propstat_length;
 
@@ -2721,10 +3042,11 @@ e_webdav_session_getctag_cb (EWebDAVSession *webdav,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Issues a getctag property request for a collection identified by @uri, or
- * by the #ESource resource reference. The ctag is a collection tag, which
- * changes whenever the collection changes (similar to etag). The getctag is
- * an extension, thus the function can fail when the server doesn't support it.
+ * Issues a getctag property request for a collection identified by @uri, or,
+ * in case it's %NULL, on the URI defined in associated #ESource. The ctag is
+ * a collection tag, which changes whenever the collection changes (similar
+ * to etag). The getctag is an extension, thus the function can fail when
+ * the server doesn't support it.
  *
  * Free the returned @out_ctag with g_free(), when no longer needed.
  *
@@ -3005,9 +3327,9 @@ e_webdav_session_list_cb (EWebDAVSession *webdav,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Lists content of the @uri, or the one stored with the associated #ESource,
- * which should point to a collection. The @flags influences which properties
- * are read for the resources.
+ * Lists content of the @uri, or, in case it's %NULL, of the URI defined
+ * in associated #ESource, which should point to a collection. The @flags
+ * influences which properties are read for the resources.
  *
  * The @out_resources is in no particular order.
  *
@@ -3159,7 +3481,7 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Updates proeprties (set/remove) on the provided @uri, or, in case it's %NULL,
+ * Updates properties (set/remove) on the provided @uri, or, in case it's %NULL,
  * on the URI defined in associated #ESource, with the @changes. The order
  * of @changes is significant, unlike on other places.
  *
@@ -3235,7 +3557,7 @@ e_webdav_session_update_properties_sync (EWebDAVSession *webdav,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * Locks a resource identified by @uri, or, in case it's %NULL, on the URI defined
+ * Locks a resource identified by @uri, or, in case it's %NULL, by the URI defined
  * in associated #ESource. It obtains a write lock with the given @lock_scope.
  *
  * The @owner is used to identify the lock owner. When it's an http:// or https://,
@@ -3338,6 +3660,1159 @@ e_webdav_session_lock_resource_sync (EWebDAVSession *webdav,
 	return success;
 }
 
+static void
+e_webdav_session_traverse_privilege_level (xmlXPathContextPtr xpath_ctx,
+					   const gchar *xpath_prefix,
+					   GNode *parent)
+{
+	xmlXPathObjectPtr xpath_obj;
+
+	g_return_if_fail (xpath_ctx != NULL);
+	g_return_if_fail (xpath_prefix != NULL);
+	g_return_if_fail (parent != NULL);
+
+	xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:supported-privilege", xpath_prefix);
+
+	if (xpath_obj) {
+		gint ii, length;
+
+		length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+
+		for (ii = 0; ii < length; ii++) {
+			xmlXPathObjectPtr xpath_obj_privilege;
+			gchar *prefix;
+
+			prefix = g_strdup_printf ("%s/D:supported-privilege[%d]", xpath_prefix, ii + 1);
+			xpath_obj_privilege = e_xml_xpath_eval (xpath_ctx, "%s/D:privilege", prefix);
+
+			if (xpath_obj_privilege &&
+			    xpath_obj_privilege->type == XPATH_NODESET &&
+			    xpath_obj_privilege->nodesetval &&
+			    xpath_obj_privilege->nodesetval->nodeNr == 1 &&
+			    xpath_obj_privilege->nodesetval->nodeTab &&
+			    xpath_obj_privilege->nodesetval->nodeTab[0] &&
+			    xpath_obj_privilege->nodesetval->nodeTab[0]->children) {
+				xmlNodePtr node;
+
+				for (node = xpath_obj_privilege->nodesetval->nodeTab[0]->children; node; node = node->next) {
+					if (node->type == XML_ELEMENT_NODE &&
+					    node->name && *(node->name) &&
+					    node->ns && node->ns->href && *(node->ns->href)) {
+						break;
+					}
+				}
+
+				if (node) {
+					GNode *child;
+					gchar *description;
+					EWebDAVPrivilegeKind kind = E_WEBDAV_PRIVILEGE_KIND_COMMON;
+					EWebDAVPrivilegeHint hint = E_WEBDAV_PRIVILEGE_HINT_UNKNOWN;
+					EWebDAVPrivilege *privilege;
+
+					if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:abstract", prefix))
+						kind = E_WEBDAV_PRIVILEGE_KIND_ABSTRACT;
+					else if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:aggregate", prefix))
+						kind = E_WEBDAV_PRIVILEGE_KIND_AGGREGATE;
+
+					description = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:description", prefix);
+					privilege = e_webdav_privilege_new ((const gchar *) node->ns->href, (const gchar *) node->name, description, kind, hint);
+					child = g_node_new (privilege);
+					g_node_append (parent, child);
+
+					g_free (description);
+
+					if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:supported-privilege", prefix))
+						e_webdav_session_traverse_privilege_level (xpath_ctx, prefix, child);
+				}
+			}
+
+			if (xpath_obj_privilege)
+				xmlXPathFreeObject (xpath_obj_privilege);
+
+			g_free (prefix);
+		}
+
+		xmlXPathFreeObject (xpath_obj);
+	}
+}
+
+static gboolean
+e_webdav_session_supported_privilege_set_cb (EWebDAVSession *webdav,
+					     xmlXPathContextPtr xpath_ctx,
+					     const gchar *xpath_prop_prefix,
+					     const SoupURI *request_uri,
+					     const gchar *href,
+					     guint status_code,
+					     gpointer user_data)
+{
+	GNode **out_privileges = user_data;
+
+	g_return_val_if_fail (out_privileges != NULL, FALSE);
+
+	if (!xpath_prop_prefix) {
+		e_xml_xpath_context_register_namespaces (xpath_ctx,
+			"C", E_WEBDAV_NS_CALDAV,
+			NULL);
+	} else if (status_code == SOUP_STATUS_OK &&
+		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:supported-privilege-set/D:supported-privilege", xpath_prop_prefix)) {
+		GNode *root;
+		gchar *prefix;
+
+		prefix = g_strconcat (xpath_prop_prefix, "/D:supported-privilege-set", NULL);
+		root = g_node_new (NULL);
+
+		e_webdav_session_traverse_privilege_level (xpath_ctx, prefix, root);
+
+		*out_privileges = root;
+
+		g_free (prefix);
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_acl_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @xml:the request itself, as an #EXmlDocument, the root element should be DAV:acl
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues ACL request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_acl_sync (EWebDAVSession *webdav,
+			   const gchar *uri,
+			   const EXmlDocument *xml,
+			   GCancellable *cancellable,
+			   GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gchar *content;
+	gsize content_length;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), FALSE);
+
+	request = e_webdav_session_new_request (webdav, "ACL", uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	content = e_xml_document_get_content (xml, &content_length);
+	if (!content) {
+		g_object_unref (message);
+		g_object_unref (request);
+
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT, _("Failed to get input XML content"));
+
+		return FALSE;
+	}
+
+	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+		SOUP_MEMORY_TAKE, content, content_length);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to get properties"), error) &&
+		bytes != NULL;
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_get_supported_privilege_set_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @out_privileges: (out) (transfer full) (element-type EWebDAVPrivilege): return location for the tree of supported privileges
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets supported privileges for the @uri, or, in case it's %NULL, for the URI
+ * defined in associated #ESource.
+ *
+ * The root node of @out_privileges has always %NULL data.
+ *
+ * Free the returned @out_privileges with e_webdav_session_util_free_privileges()
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_supported_privilege_set_sync (EWebDAVSession *webdav,
+						   const gchar *uri,
+						   GNode **out_privileges,
+						   GCancellable *cancellable,
+						   GError **error)
+{
+	EXmlDocument *xml;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_privileges != NULL, FALSE);
+
+	*out_privileges = NULL;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "supported-privilege-set");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+
+	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_supported_privilege_set_cb, out_privileges, cancellable, error);
+
+	g_object_unref (xml);
+
+	return success;
+}
+
+static EWebDAVPrivilege *
+e_webdav_session_extract_privilege_simple (xmlXPathObjectPtr xpath_obj_privilege)
+{
+	EWebDAVPrivilege *privilege = NULL;
+
+	if (xpath_obj_privilege &&
+	    xpath_obj_privilege->type == XPATH_NODESET &&
+	    xpath_obj_privilege->nodesetval &&
+	    xpath_obj_privilege->nodesetval->nodeNr == 1 &&
+	    xpath_obj_privilege->nodesetval->nodeTab &&
+	    xpath_obj_privilege->nodesetval->nodeTab[0] &&
+	    xpath_obj_privilege->nodesetval->nodeTab[0]->children) {
+		xmlNodePtr node;
+
+		for (node = xpath_obj_privilege->nodesetval->nodeTab[0]->children; node; node = node->next) {
+			if (node->type == XML_ELEMENT_NODE &&
+			    node->name && *(node->name) &&
+			    node->ns && node->ns->href && *(node->ns->href)) {
+				break;
+			}
+		}
+
+		if (node) {
+			privilege = e_webdav_privilege_new ((const gchar *) node->ns->href, (const gchar *) node->name,
+				NULL, E_WEBDAV_PRIVILEGE_KIND_COMMON, E_WEBDAV_PRIVILEGE_HINT_UNKNOWN);
+		}
+	}
+
+	return privilege;
+}
+
+static gboolean
+e_webdav_session_current_user_privilege_set_cb (EWebDAVSession *webdav,
+						xmlXPathContextPtr xpath_ctx,
+						const gchar *xpath_prop_prefix,
+						const SoupURI *request_uri,
+						const gchar *href,
+						guint status_code,
+						gpointer user_data)
+{
+	GSList **out_privileges = user_data;
+
+	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (out_privileges != NULL, FALSE);
+
+	if (!xpath_prop_prefix) {
+		e_xml_xpath_context_register_namespaces (xpath_ctx,
+			"C", E_WEBDAV_NS_CALDAV,
+			NULL);
+	} else if (status_code == SOUP_STATUS_OK &&
+		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege", xpath_prop_prefix)) {
+		xmlXPathObjectPtr xpath_obj;
+
+		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege", xpath_prop_prefix);
+
+		if (xpath_obj) {
+			gint ii, length;
+
+			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+
+			for (ii = 0; ii < length; ii++) {
+				xmlXPathObjectPtr xpath_obj_privilege;
+
+				xpath_obj_privilege = e_xml_xpath_eval (xpath_ctx, "%s/D:current-user-privilege-set/D:privilege[%d]", xpath_prop_prefix, ii + 1);
+
+				if (xpath_obj_privilege) {
+					EWebDAVPrivilege *privilege;
+
+					privilege = e_webdav_session_extract_privilege_simple (xpath_obj_privilege);
+					if (privilege)
+						*out_privileges = g_slist_prepend (*out_privileges, privilege);
+
+					xmlXPathFreeObject (xpath_obj_privilege);
+				}
+			}
+
+			xmlXPathFreeObject (xpath_obj);
+		}
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_get_current_user_privilege_set_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @out_privileges: (out) (transfer full) (element-type EWebDAVPrivilege): return location for a %GSList of #EWebDAVPrivilege
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets current user privileges for the @uri, or, in case it's %NULL, for the URI
+ * defined in associated #ESource.
+ *
+ * Free the returned @out_privileges with
+ * g_slist_free_full (privileges, e_webdav_privilege_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
+						      const gchar *uri,
+						      GSList **out_privileges,
+						      GCancellable *cancellable,
+						      GError **error)
+{
+	EXmlDocument *xml;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_privileges != NULL, FALSE);
+
+	*out_privileges = NULL;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "current-user-privilege-set");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+
+	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_current_user_privilege_set_cb, out_privileges, cancellable, error);
+
+	g_object_unref (xml);
+
+	if (success)
+		*out_privileges = g_slist_reverse (*out_privileges);
+
+	return success;
+}
+
+static EWebDAVACEPrincipalKind
+e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
+					const gchar *principal_prefix,
+					gchar **out_principal_href,
+					GSList **out_principal_hrefs)
+{
+	g_return_val_if_fail (xpath_ctx != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
+	g_return_val_if_fail (principal_prefix != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
+	g_return_val_if_fail (out_principal_href != NULL || out_principal_hrefs != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
+
+	*out_principal_href = NULL;
+
+	if (!e_xml_xpath_eval_exists (xpath_ctx, "%s", principal_prefix))
+		return E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+
+	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:href", principal_prefix)) {
+		if (out_principal_href) {
+			*out_principal_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:href", principal_prefix);
+		} else {
+			xmlXPathObjectPtr xpath_obj;
+
+			*out_principal_hrefs = NULL;
+
+			xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:href", principal_prefix);
+
+			if (xpath_obj) {
+				gint ii, length;
+
+				length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+
+				for (ii = 0; ii < length; ii++) {
+					gchar *href;
+
+					href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:href[%d]", principal_prefix, ii + 1);
+					if (href)
+						*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, href);
+				}
+			}
+
+			*out_principal_hrefs = g_slist_reverse (*out_principal_hrefs);
+		}
+
+		return E_WEBDAV_ACE_PRINCIPAL_HREF;
+	}
+
+	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:all", principal_prefix))
+		return E_WEBDAV_ACE_PRINCIPAL_ALL;
+
+	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:authenticated", principal_prefix))
+		return E_WEBDAV_ACE_PRINCIPAL_AUTHENTICATED;
+
+	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:unauthenticated", principal_prefix))
+		return E_WEBDAV_ACE_PRINCIPAL_UNAUTHENTICATED;
+
+	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:self", principal_prefix))
+		return E_WEBDAV_ACE_PRINCIPAL_SELF;
+
+	if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:property", principal_prefix)) {
+		/* No details read about what properties */
+		EWebDAVACEPrincipalKind kind = E_WEBDAV_ACE_PRINCIPAL_PROPERTY;
+
+		/* Special-case owner */
+		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:property/D:owner", principal_prefix)) {
+			xmlXPathObjectPtr xpath_obj_property;
+
+			xpath_obj_property = e_xml_xpath_eval (xpath_ctx, "%s/D:property", principal_prefix);
+
+			/* DAV:owner is the only child and there is only one DAV:property child of the DAV:principal */
+			if (xpath_obj_property &&
+			    xpath_obj_property->type == XPATH_NODESET &&
+			    xmlXPathNodeSetGetLength (xpath_obj_property->nodesetval) == 1 &&
+			    xpath_obj_property->nodesetval &&
+			    xpath_obj_property->nodesetval->nodeNr == 1 &&
+			    xpath_obj_property->nodesetval->nodeTab &&
+			    xpath_obj_property->nodesetval->nodeTab[0] &&
+			    xpath_obj_property->nodesetval->nodeTab[0]->children) {
+				xmlNodePtr node;
+				gint subelements = 0;
+
+				for (node = xpath_obj_property->nodesetval->nodeTab[0]->children; node && subelements <= 1; node = node->next) {
+					if (node->type == XML_ELEMENT_NODE)
+						subelements++;
+				}
+
+				if (subelements == 1)
+					kind = E_WEBDAV_ACE_PRINCIPAL_OWNER;
+			}
+
+			if (xpath_obj_property)
+				xmlXPathFreeObject (xpath_obj_property);
+		}
+
+		return kind;
+	}
+
+	return E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+}
+
+static gboolean
+e_webdav_session_acl_cb (EWebDAVSession *webdav,
+			 xmlXPathContextPtr xpath_ctx,
+			 const gchar *xpath_prop_prefix,
+			 const SoupURI *request_uri,
+			 const gchar *href,
+			 guint status_code,
+			 gpointer user_data)
+{
+	GSList **out_entries = user_data;
+
+	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (out_entries != NULL, FALSE);
+
+	if (!xpath_prop_prefix) {
+	} else if (status_code == SOUP_STATUS_OK &&
+		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl/D:ace", xpath_prop_prefix)) {
+		xmlXPathObjectPtr xpath_obj_ace;
+
+		xpath_obj_ace = e_xml_xpath_eval (xpath_ctx, "%s/D:acl/D:ace", xpath_prop_prefix);
+
+		if (xpath_obj_ace) {
+			gint ii, length;
+
+			length = xmlXPathNodeSetGetLength (xpath_obj_ace->nodesetval);
+
+			for (ii = 0; ii < length; ii++) {
+				EWebDAVACEPrincipalKind principal_kind = E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+				xmlXPathObjectPtr xpath_obj = NULL;
+				gchar *principal_href = NULL;
+				guint32 flags = E_WEBDAV_ACE_FLAG_UNKNOWN;
+				gchar *inherited_href = NULL;
+				gchar *privilege_prefix = NULL;
+				gchar *ace_prefix;
+
+				ace_prefix = g_strdup_printf ("%s/D:acl/D:ace[%d]", xpath_prop_prefix, ii + 1);
+
+				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:invert", ace_prefix)) {
+					gchar *prefix;
+
+					flags |= E_WEBDAV_ACE_FLAG_INVERT;
+
+					prefix = g_strdup_printf ("%s/D:invert/D:principal", ace_prefix);
+					principal_kind = e_webdav_session_extract_acl_principal (xpath_ctx, prefix, &principal_href, NULL);
+					g_free (prefix);
+				} else {
+					gchar *prefix;
+
+					prefix = g_strdup_printf ("%s/D:principal", ace_prefix);
+					principal_kind = e_webdav_session_extract_acl_principal (xpath_ctx, prefix, &principal_href, NULL);
+					g_free (prefix);
+				}
+
+				if (principal_kind == E_WEBDAV_ACE_PRINCIPAL_UNKNOWN) {
+					g_free (ace_prefix);
+					continue;
+				}
+
+				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:protected", ace_prefix))
+					flags |= E_WEBDAV_ACE_FLAG_PROTECTED;
+
+				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:inherited/D:href", ace_prefix)) {
+					flags |= E_WEBDAV_ACE_FLAG_INHERITED;
+					inherited_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:inherited/D:href", ace_prefix);
+				}
+
+				if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:grant", ace_prefix)) {
+					privilege_prefix = g_strdup_printf ("%s/D:grant/D:privilege", ace_prefix);
+					flags |= E_WEBDAV_ACE_FLAG_GRANT;
+				} else if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:deny", ace_prefix)) {
+					privilege_prefix = g_strdup_printf ("%s/D:deny/D:privilege", ace_prefix);
+					flags |= E_WEBDAV_ACE_FLAG_DENY;
+				}
+
+				if (privilege_prefix)
+					xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s", privilege_prefix);
+
+				if (xpath_obj) {
+					EWebDAVAccessControlEntry *ace;
+					gint ii, length;
+
+					ace = e_webdav_access_control_entry_new	(principal_kind, principal_href, flags, inherited_href);
+					if (ace) {
+						length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+
+						for (ii = 0; ii < length; ii++) {
+							xmlXPathObjectPtr xpath_obj_privilege;
+
+							xpath_obj_privilege = e_xml_xpath_eval (xpath_ctx, "%s[%d]", privilege_prefix, ii + 1);
+
+							if (xpath_obj_privilege) {
+								EWebDAVPrivilege *privilege;
+
+								privilege = e_webdav_session_extract_privilege_simple (xpath_obj_privilege);
+								if (privilege)
+									ace->privileges = g_slist_prepend (ace->privileges, privilege);
+
+								xmlXPathFreeObject (xpath_obj_privilege);
+							}
+						}
+
+						ace->privileges = g_slist_reverse (ace->privileges);
+
+						*out_entries = g_slist_prepend (*out_entries, ace);
+					}
+
+					xmlXPathFreeObject (xpath_obj);
+				}
+
+				g_free (principal_href);
+				g_free (inherited_href);
+				g_free (privilege_prefix);
+				g_free (ace_prefix);
+			}
+
+			xmlXPathFreeObject (xpath_obj_ace);
+		}
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_get_acl_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @out_entries: (out) (transfer full) (element-type EWebDAVAccessControlEntry): return location for a #GSList of #EWebDAVAccessControlEntry
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets Access Control List (ACL) for the @uri, or, in case it's %NULL, for the URI
+ * defined in associated #ESource.
+ *
+ * This function doesn't read general #E_WEBDAV_ACE_PRINCIPAL_PROPERTY.
+ *
+ * Free the returned @out_entries with
+ * g_slist_free_full (entries, e_webdav_access_control_entry_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_acl_sync (EWebDAVSession *webdav,
+			       const gchar *uri,
+			       GSList **out_entries,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	EXmlDocument *xml;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_entries != NULL, FALSE);
+
+	*out_entries = NULL;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "acl");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+
+	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_acl_cb, out_entries, cancellable, error);
+
+	g_object_unref (xml);
+
+	if (success)
+		*out_entries = g_slist_reverse (*out_entries);
+
+	return success;
+}
+
+typedef struct _ACLRestrictionsData {
+	guint32 *out_restrictions;
+	EWebDAVACEPrincipalKind *out_principal_kind;
+	GSList **out_principal_hrefs;
+} ACLRestrictionsData;
+
+static gboolean
+e_webdav_session_acl_restrictions_cb (EWebDAVSession *webdav,
+				      xmlXPathContextPtr xpath_ctx,
+				      const gchar *xpath_prop_prefix,
+				      const SoupURI *request_uri,
+				      const gchar *href,
+				      guint status_code,
+				      gpointer user_data)
+{
+	ACLRestrictionsData *ard = user_data;
+
+	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (ard != NULL, FALSE);
+
+	if (!xpath_prop_prefix) {
+	} else if (status_code == SOUP_STATUS_OK &&
+		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions", xpath_prop_prefix)) {
+		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:grant-only", xpath_prop_prefix))
+			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_GRANT_ONLY;
+
+		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:no-invert", xpath_prop_prefix))
+			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_NO_INVERT;
+
+		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:deny-before-grant", xpath_prop_prefix))
+			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_DENY_BEFORE_GRANT;
+
+		if (e_xml_xpath_eval_exists (xpath_ctx, "%s/D:acl-restrictions/D:required-principal", xpath_prop_prefix)) {
+			gchar *prefix;
+
+			*ard->out_restrictions |= E_WEBDAV_ACL_RESTRICTION_REQUIRED_PRINCIPAL;
+
+			prefix = g_strdup_printf ("%s/D:acl-restrictions/D:required-principal", xpath_prop_prefix);
+			*ard->out_principal_kind = e_webdav_session_extract_acl_principal (xpath_ctx, prefix, NULL, ard->out_principal_hrefs);
+			g_free (prefix);
+		}
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_get_acl_restrictions_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @out_restrictions: (out): return location for bit-or of #EWebDAVACLRestrictions
+ * @out_principal_kind: (out): return location for principal kind
+ * @out_principal_hrefs: (out) (transfer full) (element-type utf8): return location for a #GSList of principal href-s
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets Access Control List (ACL) restrictions for the @uri, or, in case it's %NULL,
+ * for the URI defined in associated #ESource. The @out_principal_kind is valid only
+ * if the @out_restrictions contains #E_WEBDAV_ACL_RESTRICTION_REQUIRED_PRINCIPAL.
+ * The @out_principal_hrefs is valid only if the @out_principal_kind is valid and when
+ * it is #E_WEBDAV_ACE_PRINCIPAL_HREF.
+ *
+ * Free the returned @out_principal_hrefs with
+ * g_slist_free_full (entries, g_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_acl_restrictions_sync (EWebDAVSession *webdav,
+					    const gchar *uri,
+					    guint32 *out_restrictions,
+					    EWebDAVACEPrincipalKind *out_principal_kind,
+					    GSList **out_principal_hrefs,
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	ACLRestrictionsData ard;
+	EXmlDocument *xml;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_restrictions != NULL, FALSE);
+	g_return_val_if_fail (out_principal_kind != NULL, FALSE);
+	g_return_val_if_fail (out_principal_hrefs != NULL, FALSE);
+
+	*out_restrictions = E_WEBDAV_ACL_RESTRICTION_NONE;
+	*out_principal_kind = E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;
+	*out_principal_hrefs = NULL;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "acl-restrictions");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+
+	ard.out_restrictions = out_restrictions;
+	ard.out_principal_kind = out_principal_kind;
+	ard.out_principal_hrefs = out_principal_hrefs;
+
+	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_acl_restrictions_cb, &ard, cancellable, error);
+
+	g_object_unref (xml);
+
+	return success;
+}
+
+static gboolean
+e_webdav_session_principal_collection_set_cb (EWebDAVSession *webdav,
+					      xmlXPathContextPtr xpath_ctx,
+					      const gchar *xpath_prop_prefix,
+					      const SoupURI *request_uri,
+					      const gchar *href,
+					      guint status_code,
+					      gpointer user_data)
+{
+	GSList **out_principal_hrefs = user_data;
+
+	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (out_principal_hrefs != NULL, FALSE);
+
+	if (!xpath_prop_prefix) {
+	} else if (status_code == SOUP_STATUS_OK &&
+		   e_xml_xpath_eval_exists (xpath_ctx, "%s/D:principal-collection-set", xpath_prop_prefix)) {
+		xmlXPathObjectPtr xpath_obj;
+
+		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/D:principal-collection-set/D:href", xpath_prop_prefix);
+
+		if (xpath_obj) {
+			gint ii, length;
+
+			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+
+			for (ii = 0; ii < length; ii++) {
+				gchar *href;
+
+				href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:principal-collection-set/D:href[%d]", xpath_prop_prefix, ii + 1);
+				if (href)
+					*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, href);
+			}
+
+			xmlXPathFreeObject (xpath_obj);
+		}
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_get_principal_collection_set_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @out_principal_hrefs: (out) (transfer full) (element-type utf8): return location for a #GSList of principal href-s
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets list of principal collection href for the @uri, or, in case it's %NULL,
+ * for the URI defined in associated #ESource. The @out_principal_hrefs are root
+ * collections that contain the principals that are available on the server that
+ * implements this resource.
+ *
+ * Free the returned @out_principal_hrefs with
+ * g_slist_free_full (entries, g_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_get_principal_collection_set_sync (EWebDAVSession *webdav,
+						    const gchar *uri,
+						    GSList **out_principal_hrefs, /* gchar * */
+						    GCancellable *cancellable,
+						    GError **error)
+{
+	EXmlDocument *xml;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (out_principal_hrefs != NULL, FALSE);
+
+	*out_principal_hrefs = NULL;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "principal-collection-set");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+
+	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_principal_collection_set_cb, out_principal_hrefs, cancellable, error);
+
+	g_object_unref (xml);
+
+	if (success)
+		*out_principal_hrefs = g_slist_reverse (*out_principal_hrefs);
+
+	return success;
+}
+
+/**
+ * e_webdav_session_set_acl_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @entries: (element-type EWebDAVAccessControlEntry): entries to write
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Changes Access Control List (ACL) for the @uri, or, in case it's %NULL,
+ * for the URI defined in associated #ESource.
+ *
+ * Make sure that the @entries satisfy ACL restrictions, as returned
+ * by e_webdav_session_get_acl_restrictions_sync(). The order in the @entries
+ * is preserved. It cannot contain any %E_WEBDAV_ACE_FLAG_PROTECTED,
+ * nor @E_WEBDAV_ACE_FLAG_INHERITED, items.
+ *
+ * Use e_webdav_session_get_acl_sync() to read currently known ACL entries,
+ * remove from the list those protected and inherited, and then modify
+ * the rest with the required changed.
+ *
+ * Note this function doesn't support general %E_WEBDAV_ACE_PRINCIPAL_PROPERTY and
+ * returns %G_IO_ERROR_NOT_SUPPORTED error when any such is tried to be written.
+ *
+ * In case the returned entries contain any %E_WEBDAV_ACE_PRINCIPAL_PROPERTY,
+ * or there's a need to write such Access Control Entry, then do not use
+ * e_webdav_session_get_acl_sync(), neither e_webdav_session_set_acl_sync(),
+ * and write more generic implementation.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_set_acl_sync (EWebDAVSession *webdav,
+			       const gchar *uri,
+			       const GSList *entries,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	EXmlDocument *xml;
+	GSList *link, *plink;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (entries != NULL, FALSE);
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "acl");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	for (link = (GSList *) entries; link; link = g_slist_next (link)) {
+		EWebDAVAccessControlEntry *ace = link->data;
+
+		if (!ace) {
+			g_warn_if_fail (ace != NULL);
+			g_object_unref (xml);
+			return FALSE;
+		}
+
+		if ((ace->flags & E_WEBDAV_ACE_FLAG_PROTECTED) != 0 ||
+		    (ace->flags & E_WEBDAV_ACE_FLAG_INHERITED) != 0) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+				_("Cannot store protected nor inherited Access Control Entry."));
+			g_object_unref (xml);
+			return FALSE;
+		}
+
+		if (ace->principal_kind == E_WEBDAV_ACE_PRINCIPAL_UNKNOWN) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+				_("Provided invalid principal kind for Access Control Entry."));
+			g_object_unref (xml);
+			return FALSE;
+		}
+
+		if (ace->principal_kind == E_WEBDAV_ACE_PRINCIPAL_PROPERTY) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+				_("Cannot store property-based Access Control Entry."));
+			g_object_unref (xml);
+			return FALSE;
+		}
+
+		if ((ace->flags & (E_WEBDAV_ACE_FLAG_GRANT | E_WEBDAV_ACE_FLAG_DENY)) == 0) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+				_("Access Control Entry can be only to Grant or Deny, but not None."));
+			g_object_unref (xml);
+			return FALSE;
+		}
+
+		if ((ace->flags & E_WEBDAV_ACE_FLAG_GRANT) != 0 &&
+		    (ace->flags & E_WEBDAV_ACE_FLAG_DENY) != 0) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+				_("Access Control Entry can be only to Grant or Deny, but not both."));
+			g_object_unref (xml);
+			return FALSE;
+		}
+
+		e_xml_document_start_element (xml, NULL, "ace");
+
+		if ((ace->flags & E_WEBDAV_ACE_FLAG_INVERT) != 0)
+			e_xml_document_start_element (xml, NULL, "invert");
+
+		e_xml_document_start_element (xml, NULL, "principal");
+		switch (ace->principal_kind) {
+		case E_WEBDAV_ACE_PRINCIPAL_UNKNOWN:
+			g_warn_if_reached ();
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_HREF:
+			e_xml_document_start_text_element (xml, NULL, "href");
+			e_xml_document_write_string (xml, ace->principal_href);
+			e_xml_document_end_element (xml);
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_ALL:
+			e_xml_document_start_element (xml, NULL, "all");
+			e_xml_document_end_element (xml);
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_AUTHENTICATED:
+			e_xml_document_start_element (xml, NULL, "authenticated");
+			e_xml_document_end_element (xml);
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_UNAUTHENTICATED:
+			e_xml_document_start_element (xml, NULL, "unauthenticated");
+			e_xml_document_end_element (xml);
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_PROPERTY:
+			g_warn_if_reached ();
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_SELF:
+			e_xml_document_start_element (xml, NULL, "self");
+			e_xml_document_end_element (xml);
+			break;
+		case E_WEBDAV_ACE_PRINCIPAL_OWNER:
+			e_xml_document_start_element (xml, NULL, "property");
+			e_xml_document_start_element (xml, NULL, "owner");
+			e_xml_document_end_element (xml);
+			e_xml_document_end_element (xml);
+			break;
+
+		}
+		e_xml_document_end_element (xml); /* principal */
+
+		if ((ace->flags & E_WEBDAV_ACE_FLAG_INVERT) != 0)
+			e_xml_document_end_element (xml); /* invert */
+
+		if ((ace->flags & E_WEBDAV_ACE_FLAG_GRANT) != 0)
+			e_xml_document_start_element (xml, NULL, "grant");
+		else if ((ace->flags & E_WEBDAV_ACE_FLAG_DENY) != 0)
+			e_xml_document_start_element (xml, NULL, "deny");
+		else
+			g_warn_if_reached ();
+
+		for (plink = ace->privileges; plink; plink = g_slist_next (plink)) {
+			EWebDAVPrivilege *privilege = plink->data;
+
+			if (!privilege) {
+				g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+					_("Access Control Entry privilege cannot be NULL."));
+				g_object_unref (xml);
+				return FALSE;
+			}
+
+			e_xml_document_start_element (xml, NULL, "privilege");
+			e_xml_document_start_element (xml, privilege->ns_uri, privilege->name);
+			e_xml_document_end_element (xml);
+			e_xml_document_end_element (xml); /* privilege */
+		}
+
+		e_xml_document_end_element (xml); /* grant or deny */
+
+		e_xml_document_end_element (xml); /* ace */
+	}
+
+	success = e_webdav_session_acl_sync (webdav, uri, xml, cancellable, error);
+
+	g_object_unref (xml);
+
+	return success;
+}
+
+static gboolean
+e_webdav_session_principal_property_search_cb (EWebDAVSession *webdav,
+					       xmlXPathContextPtr xpath_ctx,
+					       const gchar *xpath_prop_prefix,
+					       const SoupURI *request_uri,
+					       const gchar *href,
+					       guint status_code,
+					       gpointer user_data)
+{
+	GSList **out_principals = user_data;
+
+	g_return_val_if_fail (out_principals != NULL, FALSE);
+
+	if (!xpath_prop_prefix) {
+	} else if (status_code == SOUP_STATUS_OK) {
+		EWebDAVResource *resource;
+		gchar *display_name;
+
+		display_name = e_webdav_session_extract_nonempty (xpath_ctx, xpath_prop_prefix, "D:displayname", NULL);
+
+		resource = e_webdav_resource_new (
+			E_WEBDAV_RESOURCE_KIND_PRINCIPAL,
+			0, /* supports */
+			href,
+			NULL, /* etag */
+			NULL, /* display_name */
+			NULL, /* content_type */
+			0, /* content_length */
+			0, /* creation_date */
+			0, /* last_modified */
+			NULL, /* description */
+			NULL); /* color */
+		resource->display_name = display_name;
+
+		*out_principals = g_slist_prepend (*out_principals, resource);
+	}
+
+	return TRUE;
+}
+
+/**
+ * e_webdav_session_principal_property_search_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @apply_to_principal_collection_set: whether to apply to principal-collection-set
+ * @match_displayname: a string to match DAV:displayname with
+ * @out_principals: (out) (transfer full) (element-type EWebDAVResource): return location for matching principals
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues a DAV:principal-property-search for the @uri, or, in case it's %NULL,
+ * for the URI defined in associated #ESource. The DAV:principal-property-search
+ * performs a search for all principals whose properties contain character data
+ * that matches the search criteria @match_displayname.
+ *
+ * By default, the function searches all members (at any depth) of the collection
+ * identified by the @uri. If @apply_to_principal_collection_set is set to %TRUE,
+ * the search is applied instead to each collection returned by
+ * e_webdav_session_get_principal_collection_set_sync() for the @uri.
+ *
+ * The @out_principals is a #GSList of #EWebDAVResource, where the kind
+ * is set to %E_WEBDAV_RESOURCE_KIND_PRINCIPAL and only href with displayname
+ * are filled. All other members of #EWebDAVResource are not set.
+ *
+ * Free the returned @out_principals with
+ * g_slist_free_full (principals, e_webdav_resource_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded. Note it can report success also when no matching
+ *    principal had been found.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_principal_property_search_sync (EWebDAVSession *webdav,
+						 const gchar *uri,
+						 gboolean apply_to_principal_collection_set,
+						 const gchar *match_displayname,
+						 GSList **out_principals,
+						 GCancellable *cancellable,
+						 GError **error)
+{
+	EXmlDocument *xml;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (match_displayname != NULL, FALSE);
+	g_return_val_if_fail (out_principals != NULL, FALSE);
+
+	*out_principals = NULL;
+
+	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "principal-property-search");
+	g_return_val_if_fail (xml != NULL, FALSE);
+
+	if (apply_to_principal_collection_set) {
+		e_xml_document_start_element (xml, NULL, "apply-to-principal-collection-set");
+		e_xml_document_end_element (xml);
+	}
+
+	e_xml_document_start_element (xml, NULL, "property-search");
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "displayname");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+	e_xml_document_start_text_element (xml, NULL, "match");
+	e_xml_document_write_string (xml, match_displayname);
+	e_xml_document_end_element (xml); /* match */
+	e_xml_document_end_element (xml); /* property-search */
+
+	e_xml_document_start_element (xml, NULL, "prop");
+	e_xml_document_start_element (xml, NULL, "displayname");
+	e_xml_document_end_element (xml);
+	e_xml_document_end_element (xml); /* prop */
+
+	success = e_webdav_session_report_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
+		e_webdav_session_principal_property_search_cb, out_principals, NULL, NULL, cancellable, error);
+
+	g_object_unref (xml);
+
+	if (success)
+		*out_principals = g_slist_reverse (*out_principals);
+
+	return success;
+}
+
 /**
  * e_webdav_session_util_maybe_dequote:
  * @text: (inout): text to dequote
@@ -3367,4 +4842,35 @@ e_webdav_session_util_maybe_dequote (gchar *text)
 	text[len - 2] = '\0';
 
 	return text;
+}
+
+static gboolean
+e_webdav_session_free_in_traverse_cb (GNode *node,
+				      gpointer user_data)
+{
+	if (node) {
+		e_webdav_privilege_free (node->data);
+		node->data = NULL;
+	}
+
+	return FALSE;
+}
+
+/**
+ * e_webdav_session_util_free_privileges:
+ * @privileges: (nullable): a tree of #EWebDAVPrivilege structures
+ *
+ * Frees @privileges returned by e_webdav_session_get_supported_privilege_set_sync().
+ * The function does nothing, if @privileges is %NULL.
+ *
+ * Since: 3.26
+ **/
+void
+e_webdav_session_util_free_privileges (GNode *privileges)
+{
+	if (!privileges)
+		return;
+
+	g_node_traverse (privileges, G_PRE_ORDER, G_TRAVERSE_ALL, -1, e_webdav_session_free_in_traverse_cb, NULL);
+	g_node_destroy (privileges);
 }

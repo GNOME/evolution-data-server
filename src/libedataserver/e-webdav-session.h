@@ -231,6 +231,99 @@ typedef enum {
 #define E_WEBDAV_COLLATION_UNICODE_CASEMAP_SUFFIX "unicode-casemap"
 #define E_WEBDAV_COLLATION_UNICODE_CASEMAP "i;" E_WEBDAV_COLLATION_UNICODE_CASEMAP_SUFFIX
 
+typedef enum {
+	E_WEBDAV_PRIVILEGE_KIND_UNKNOWN = 0,
+	E_WEBDAV_PRIVILEGE_KIND_ABSTRACT,
+	E_WEBDAV_PRIVILEGE_KIND_AGGREGATE,
+	E_WEBDAV_PRIVILEGE_KIND_COMMON
+} EWebDAVPrivilegeKind;
+
+typedef enum {
+	E_WEBDAV_PRIVILEGE_HINT_UNKNOWN = 0,
+	E_WEBDAV_PRIVILEGE_HINT_READ,
+	E_WEBDAV_PRIVILEGE_HINT_WRITE,
+	E_WEBDAV_PRIVILEGE_HINT_WRITE_PROPERTIES,
+	E_WEBDAV_PRIVILEGE_HINT_WRITE_CONTENT,
+	E_WEBDAV_PRIVILEGE_HINT_UNLOCK,
+	E_WEBDAV_PRIVILEGE_HINT_READ_ACL,
+	E_WEBDAV_PRIVILEGE_HINT_WRITE_ACL,
+	E_WEBDAV_PRIVILEGE_HINT_READ_CURRENT_USER_PRIVILEGE_SET,
+	E_WEBDAV_PRIVILEGE_HINT_BIND,
+	E_WEBDAV_PRIVILEGE_HINT_UNBIND,
+	E_WEBDAV_PRIVILEGE_HINT_ALL,
+	E_WEBDAV_PRIVILEGE_HINT_CALDAV_READ_FREE_BUSY
+} EWebDAVPrivilegeHint;
+
+typedef struct _EWebDAVPrivilege {
+	gchar *ns_uri;
+	gchar *name;
+	gchar *description;
+	EWebDAVPrivilegeKind kind;
+	EWebDAVPrivilegeHint hint;
+} EWebDAVPrivilege;
+
+GType		e_webdav_privilege_get_type		(void) G_GNUC_CONST;
+EWebDAVPrivilege *
+		e_webdav_privilege_new			(const gchar *ns_uri,
+							 const gchar *name,
+							 const gchar *description,
+							 EWebDAVPrivilegeKind kind,
+							 EWebDAVPrivilegeHint hint);
+EWebDAVPrivilege *
+		e_webdav_privilege_copy			(const EWebDAVPrivilege *src);
+void		e_webdav_privilege_free			(gpointer ptr); /* EWebDAVPrivilege * */
+
+typedef enum {
+	E_WEBDAV_ACE_PRINCIPAL_UNKNOWN = 0,
+	E_WEBDAV_ACE_PRINCIPAL_HREF,
+	E_WEBDAV_ACE_PRINCIPAL_ALL,
+	E_WEBDAV_ACE_PRINCIPAL_AUTHENTICATED,
+	E_WEBDAV_ACE_PRINCIPAL_UNAUTHENTICATED,
+	E_WEBDAV_ACE_PRINCIPAL_PROPERTY,
+	E_WEBDAV_ACE_PRINCIPAL_SELF,
+	E_WEBDAV_ACE_PRINCIPAL_OWNER /* special-case, 'property' with only 'DAV:owner' child */
+} EWebDAVACEPrincipalKind;
+
+typedef enum {
+	E_WEBDAV_ACE_FLAG_UNKNOWN	= 0,
+	E_WEBDAV_ACE_FLAG_GRANT		= 1 << 0,
+	E_WEBDAV_ACE_FLAG_DENY		= 1 << 1,
+	E_WEBDAV_ACE_FLAG_INVERT	= 1 << 2,
+	E_WEBDAV_ACE_FLAG_PROTECTED	= 1 << 3,
+	E_WEBDAV_ACE_FLAG_INHERITED	= 1 << 4
+} EWebDAVACEFlag;
+
+typedef struct _EWebDAVAccessControlEntry {
+	EWebDAVACEPrincipalKind principal_kind;
+	gchar *principal_href; /* valid onyl if principal_kind is E_WEBDAV_ACE_PRINCIPAL_HREF */
+	guint32 flags; /* bit-or of EWebDAVACEFlag */
+	gchar *inherited_href; /* valid only if flags contain E_WEBDAV_ACE_INHERITED */
+	GSList *privileges; /* EWebDAVPrivilege * */
+} EWebDAVAccessControlEntry;
+
+GType		e_webdav_access_control_entry_get_type	(void) G_GNUC_CONST;
+EWebDAVAccessControlEntry *
+		e_webdav_access_control_entry_new	(EWebDAVACEPrincipalKind principal_kind,
+							 const gchar *principal_href,
+							 guint32 flags, /* bit-or of EWebDAVACEFlag */
+							 const gchar *inherited_href);
+EWebDAVAccessControlEntry *
+		e_webdav_access_control_entry_copy	(const EWebDAVAccessControlEntry *src);
+void		e_webdav_access_control_entry_free	(gpointer ptr); /* EWebDAVAccessControlEntry * */
+void		e_webdav_access_control_entry_append_privilege
+							(EWebDAVAccessControlEntry *ace,
+							 EWebDAVPrivilege *privilege);
+GSList *	e_webdav_access_control_entry_get_privileges
+							(EWebDAVAccessControlEntry *ace); /* EWebDAVPrivilege * */
+
+typedef enum {
+	E_WEBDAV_ACL_RESTRICTION_NONE			= 0,
+	E_WEBDAV_ACL_RESTRICTION_GRANT_ONLY		= 1 << 0,
+	E_WEBDAV_ACL_RESTRICTION_NO_INVERT		= 1 << 1,
+	E_WEBDAV_ACL_RESTRICTION_DENY_BEFORE_GRANT	= 1 << 2,
+	E_WEBDAV_ACL_RESTRICTION_REQUIRED_PRINCIPAL	= 1 << 3
+} EWebDAVACLRestrictions;
+
 /**
  * EWebDAVSession:
  *
@@ -436,7 +529,57 @@ gboolean	e_webdav_session_lock_resource_sync	(EWebDAVSession *webdav,
 							 gchar **out_lock_token,
 							 GCancellable *cancellable,
 							 GError **error);
+gboolean	e_webdav_session_acl_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const EXmlDocument *xml,
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_get_supported_privilege_set_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 GNode **out_privileges, /* EWebDAVPrivilege * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_get_current_user_privilege_set_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 GSList **out_privileges, /* EWebDAVPrivilege * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_get_acl_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 GSList **out_entries, /* EWebDAVAccessControlEntry * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_get_acl_restrictions_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 guint32 *out_restrictions, /* bit-or of EWebDAVACLRestrictions */
+							 EWebDAVACEPrincipalKind *out_principal_kind,
+							 GSList **out_principal_hrefs, /* gchar * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_get_principal_collection_set_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 GSList **out_principal_hrefs, /* gchar * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_set_acl_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const GSList *entries, /* EWebDAVAccessControlEntry * */
+							 GCancellable *cancellable,
+							 GError **error);
+gboolean	e_webdav_session_principal_property_search_sync
+							(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 gboolean apply_to_principal_collection_set,
+							 const gchar *match_displayname,
+							 GSList **out_principals, /* EWebDAVResource * */
+							 GCancellable *cancellable,
+							 GError **error);
 gchar *		e_webdav_session_util_maybe_dequote	(gchar *text);
+void		e_webdav_session_util_free_privileges	(GNode *privileges); /* EWebDAVPrivilege * */
 
 G_END_DECLS
 
