@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "e-soup-auth-bearer.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
 #include "e-source-webdav.h"
@@ -47,6 +48,9 @@ struct _ESoupSessionPrivate {
 	GTlsCertificateFlags ssl_certificate_errors;
 
 	SoupLoggerLogLevel log_level;
+
+	GError *bearer_auth_error;
+	ESoupAuthBearer *using_bearer_auth;
 };
 
 enum {
@@ -56,6 +60,142 @@ enum {
 };
 
 G_DEFINE_TYPE (ESoupSession, e_soup_session, SOUP_TYPE_SESSION)
+
+static void
+e_soup_session_ensure_bearer_auth_usage (ESoupSession *session,
+					 ESoupAuthBearer *bearer)
+{
+	SoupSessionFeature *feature;
+	SoupURI *soup_uri;
+	ESourceWebdav *extension;
+	ESource *source;
+
+	g_return_if_fail (E_IS_SOUP_SESSION (session));
+
+	source = e_soup_session_get_source (session);
+
+	/* Preload the SoupAuthManager with a valid "Bearer" token
+	 * when using OAuth 2.0. This avoids an extra unauthorized
+	 * HTTP round-trip, which apparently Google doesn't like. */
+
+	feature = soup_session_get_feature (SOUP_SESSION (session), SOUP_TYPE_AUTH_MANAGER);
+
+	if (!soup_session_feature_has_feature (feature, E_TYPE_SOUP_AUTH_BEARER)) {
+		/* Add the "Bearer" auth type to support OAuth 2.0. */
+		soup_session_feature_add_feature (feature, E_TYPE_SOUP_AUTH_BEARER);
+	}
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+	soup_uri = e_source_webdav_dup_soup_uri (extension);
+
+	soup_auth_manager_use_auth (
+		SOUP_AUTH_MANAGER (feature),
+		soup_uri, SOUP_AUTH (bearer));
+
+	soup_uri_free (soup_uri);
+}
+
+static gboolean
+e_soup_session_setup_bearer_auth (ESoupSession *session,
+				  gboolean is_in_authenticate_handler,
+				  ESoupAuthBearer *bearer,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	ENamedParameters *credentials;
+	ESource *source;
+	gchar *access_token = NULL;
+	gint expires_in_seconds = -1;
+	gboolean success = FALSE;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), FALSE);
+
+	source = e_soup_session_get_source (session);
+	credentials = e_soup_session_dup_credentials (session);
+
+	success = e_util_get_source_oauth2_access_token_sync (source, credentials,
+		&access_token, &expires_in_seconds, cancellable, error);
+
+	if (success) {
+		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
+
+		if (!is_in_authenticate_handler)
+			e_soup_session_ensure_bearer_auth_usage (session, bearer);
+	}
+
+	e_named_parameters_free (credentials);
+	g_free (access_token);
+
+	return success;
+}
+
+static gboolean
+e_soup_session_maybe_prepare_bearer_auth (ESoupSession *session,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	ESource *source;
+	gchar *auth_method = NULL;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+
+	source = e_soup_session_get_source (session);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+		ESourceAuthentication *extension;
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+		auth_method = e_source_authentication_dup_method (extension);
+	} else {
+		return TRUE;
+	}
+
+	if (g_strcmp0 (auth_method, "OAuth2") != 0 && g_strcmp0 (auth_method, "Google") != 0) {
+		g_free (auth_method);
+		return TRUE;
+	}
+
+	g_free (auth_method);
+
+	g_mutex_lock (&session->priv->property_lock);
+	if (session->priv->using_bearer_auth) {
+		ESoupAuthBearer *using_bearer_auth = g_object_ref (session->priv->using_bearer_auth);
+
+		g_mutex_unlock (&session->priv->property_lock);
+
+		success = e_soup_session_setup_bearer_auth (session, FALSE, using_bearer_auth, cancellable, error);
+
+		g_clear_object (&using_bearer_auth);
+	} else {
+		ESourceWebdav *extension;
+		SoupAuth *soup_auth;
+		SoupURI *soup_uri;
+
+		g_mutex_unlock (&session->priv->property_lock);
+
+		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+		soup_uri = e_source_webdav_dup_soup_uri (extension);
+
+		soup_auth = g_object_new (
+			E_TYPE_SOUP_AUTH_BEARER,
+			SOUP_AUTH_HOST, soup_uri->host, NULL);
+
+		success = e_soup_session_setup_bearer_auth (session, FALSE, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
+		if (success) {
+			g_mutex_lock (&session->priv->property_lock);
+			g_clear_object (&session->priv->using_bearer_auth);
+			session->priv->using_bearer_auth = g_object_ref (soup_auth);
+			g_mutex_unlock (&session->priv->property_lock);
+		}
+
+		g_object_unref (soup_auth);
+		soup_uri_free (soup_uri);
+	}
+
+	return success;
+}
 
 static void
 e_soup_session_authenticate_cb (SoupSession *soup_session,
@@ -71,10 +211,39 @@ e_soup_session_authenticate_cb (SoupSession *soup_session,
 
 	g_return_if_fail (E_IS_SOUP_SESSION (soup_session));
 
+	session = E_SOUP_SESSION (soup_session);
+
+	if (E_IS_SOUP_AUTH_BEARER (auth)) {
+		g_object_ref (auth);
+		g_warn_if_fail ((gpointer) session->priv->using_bearer_auth == (gpointer) auth);
+		g_clear_object (&session->priv->using_bearer_auth);
+		session->priv->using_bearer_auth = E_SOUP_AUTH_BEARER (auth);
+	}
+
 	if (retrying)
 		return;
 
-	session = E_SOUP_SESSION (soup_session);
+	if (session->priv->using_bearer_auth) {
+		GError *local_error = NULL;
+
+		e_soup_session_setup_bearer_auth (session, TRUE, E_SOUP_AUTH_BEARER (auth), NULL, &local_error);
+
+		if (local_error) {
+			g_mutex_lock (&session->priv->property_lock);
+
+			/* Warn about an unclaimed error before we clear it.
+			 * This is just to verify the errors we set here are
+			 * actually making it back to the user. */
+			g_warn_if_fail (session->priv->bearer_auth_error == NULL);
+			g_clear_error (&session->priv->bearer_auth_error);
+
+			g_propagate_error (&session->priv->bearer_auth_error, local_error);
+
+			g_mutex_unlock (&session->priv->property_lock);
+		}
+
+		return;
+	}
 
 	credentials = e_soup_session_dup_credentials (session);
 
@@ -91,7 +260,7 @@ e_soup_session_authenticate_cb (SoupSession *soup_session,
 
 	if (!username || !*username || !credentials ||
 	    !e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
-		soup_message_set_status (message, SOUP_STATUS_FORBIDDEN);
+		soup_message_set_status (message, SOUP_STATUS_UNAUTHORIZED);
 	else
 		soup_auth_authenticate (auth, username, e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_PASSWORD));
 
@@ -163,7 +332,9 @@ e_soup_session_finalize (GObject *object)
 {
 	ESoupSession *session = E_SOUP_SESSION (object);
 
+	g_clear_error (&session->priv->bearer_auth_error);
 	g_clear_object (&session->priv->source);
+	g_clear_object (&session->priv->using_bearer_auth);
 	g_clear_pointer (&session->priv->credentials, e_named_parameters_free);
 	g_clear_pointer (&session->priv->ssl_certificate_pem, g_free);
 
@@ -543,8 +714,8 @@ e_soup_session_new_request_uri (ESoupSession *session,
 }
 
 static void
-e_webdav_session_extract_ssl_data (ESoupSession *session,
-				   SoupMessage *message)
+e_soup_session_extract_ssl_data (ESoupSession *session,
+				 SoupMessage *message)
 {
 	GTlsCertificate *certificate = NULL;
 
@@ -616,7 +787,7 @@ e_soup_session_check_result (ESoupSession *session,
 		}
 
 		if (message->status_code == SOUP_STATUS_SSL_FAILED)
-			e_webdav_session_extract_ssl_data (session, message);
+			e_soup_session_extract_ssl_data (session, message);
 
 		if (read_bytes && bytes_length > 0) {
 			SoupBuffer *buffer;
@@ -674,22 +845,27 @@ e_soup_session_send_request_sync (ESoupSession *session,
 				  GCancellable *cancellable,
 				  GError **error)
 {
+	ESoupAuthBearer *using_bearer_auth = NULL;
 	GInputStream *input_stream;
+	SoupMessage *message;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
 	g_return_val_if_fail (SOUP_IS_REQUEST_HTTP (request), NULL);
 
+	if (!e_soup_session_maybe_prepare_bearer_auth (session, cancellable, error))
+		return NULL;
+
 	g_mutex_lock (&session->priv->property_lock);
 	g_clear_pointer (&session->priv->ssl_certificate_pem, g_free);
 	session->priv->ssl_certificate_errors = 0;
 	session->priv->ssl_info_set = FALSE;
+	if (session->priv->using_bearer_auth)
+		using_bearer_auth = g_object_ref (session->priv->using_bearer_auth);
 	g_mutex_unlock (&session->priv->property_lock);
 
 	if (session->priv->source &&
 	    e_source_has_extension (session->priv->source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
-		SoupMessage *message;
-
 		message = soup_request_http_get_message (request);
 
 		e_soup_ssl_trust_connect (message, session->priv->source);
@@ -697,16 +873,35 @@ e_soup_session_send_request_sync (ESoupSession *session,
 		g_clear_object (&message);
 	}
 
+	if (using_bearer_auth &&
+	    e_soup_auth_bearer_is_expired (using_bearer_auth)) {
+		if (!e_soup_session_setup_bearer_auth (session, FALSE, using_bearer_auth, cancellable, &local_error)) {
+			message = soup_request_http_get_message (request);
+
+			if (local_error) {
+				soup_message_set_status_full (message, SOUP_STATUS_BAD_REQUEST, local_error->message);
+				g_propagate_error (error, local_error);
+			} else {
+				soup_message_set_status (message, SOUP_STATUS_BAD_REQUEST);
+			}
+
+			g_object_unref (using_bearer_auth);
+			g_clear_object (&message);
+
+			return NULL;
+		}
+	}
+
+	g_clear_object (&using_bearer_auth);
+
 	input_stream = soup_request_send (SOUP_REQUEST (request), cancellable, &local_error);
 	if (input_stream)
 		return input_stream;
 
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
-		SoupMessage *message;
-
 		message = soup_request_http_get_message (request);
 
-		e_webdav_session_extract_ssl_data (session, message);
+		e_soup_session_extract_ssl_data (session, message);
 
 		g_clear_object (&message);
 	}
