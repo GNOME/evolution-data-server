@@ -3946,8 +3946,11 @@ e_cal_meta_backend_list_existing_sync (ECalMetaBackend *meta_backend,
  *
  * It is mandatory to implement this virtual method by the descendant.
  *
- * The returned @out_component should be freed with icalcomponent_free()
+ * The returned @out_component should be freed with icalcomponent_free(),
  * when no longer needed.
+ *
+ * The returned @out_extra should be freed with g_free(), when no longer
+ * needed.
  *
  * Returns: Whether succeeded.
  *

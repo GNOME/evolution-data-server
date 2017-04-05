@@ -125,7 +125,7 @@ struct _ECalMetaBackendClass {
 						 GError **error);
 	gboolean	(* load_component_sync)	(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
-						 icalcomponent **out_instances,
+						 icalcomponent **out_component,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
