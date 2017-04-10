@@ -553,6 +553,55 @@ nntp_folder_expunge_sync (CamelFolder *folder,
 }
 
 static CamelMimeMessage *
+nntp_folder_get_message_cached (CamelFolder *folder,
+				const gchar *uid,
+				GCancellable *cancellable)
+{
+	CamelMimeMessage *message = NULL;
+	CamelDataCache *nntp_cache;
+	CamelNNTPStore *nntp_store;
+	GIOStream *base_stream;
+	gchar *article, *msgid;
+	gsize article_len;
+
+	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (folder), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	article_len = strlen (uid) + 1;
+	article = alloca (article_len);
+	g_strlcpy (article, uid, article_len);
+	msgid = strchr (article, ',');
+	if (!msgid)
+		return NULL;
+
+	*msgid++ = 0;
+
+	nntp_store = CAMEL_NNTP_STORE (camel_folder_get_parent_store (folder));
+
+	/* Lookup in cache, NEWS is global messageid's so use a global cache path */
+	nntp_cache = camel_nntp_store_ref_cache (nntp_store);
+	base_stream = camel_data_cache_get (nntp_cache, "cache", msgid, NULL);
+	g_clear_object (&nntp_cache);
+
+	if (base_stream) {
+		CamelStream *stream;
+
+		stream = camel_stream_new (base_stream);
+		g_object_unref (base_stream);
+
+		message = camel_mime_message_new ();
+		if (!camel_data_wrapper_construct_from_stream_sync (CAMEL_DATA_WRAPPER (message), stream, cancellable, NULL)) {
+			g_object_unref (message);
+			message = NULL;
+		}
+
+		g_object_unref (stream);
+	}
+
+	return message;
+}
+
+static CamelMimeMessage *
 nntp_folder_get_message_sync (CamelFolder *folder,
                               const gchar *uid,
                               GCancellable *cancellable,
@@ -568,6 +617,9 @@ nntp_folder_get_message_sync (CamelFolder *folder,
 	GIOStream *base_stream;
 	gchar *article, *msgid;
 	gsize article_len;
+
+	g_return_val_if_fail (CAMEL_IS_NNTP_FOLDER (folder), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
 
 	parent_store = camel_folder_get_parent_store (folder);
 
@@ -740,6 +792,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	folder_class->get_filename = nntp_get_filename;
 	folder_class->append_message_sync = nntp_folder_append_message_sync;
 	folder_class->expunge_sync = nntp_folder_expunge_sync;
+	folder_class->get_message_cached = nntp_folder_get_message_cached;
 	folder_class->get_message_sync = nntp_folder_get_message_sync;
 	folder_class->refresh_info_sync = nntp_folder_refresh_info_sync;
 	folder_class->synchronize_sync = nntp_folder_synchronize_sync;
@@ -842,8 +895,9 @@ camel_nntp_folder_new (CamelStore *parent,
 
 	g_clear_object (&nntp_store_summary);
 
-	if (subscribed && !camel_folder_refresh_info_sync (
-			folder, cancellable, error)) {
+	if (subscribed &&
+	    camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTED &&
+	    !camel_folder_refresh_info_sync (folder, cancellable, error)) {
 		g_object_unref (folder);
 		folder = NULL;
 	}
