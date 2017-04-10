@@ -299,8 +299,20 @@ store_maybe_connect_sync (CamelStore *store,
 	}
 
 	if (connect) {
-		success = camel_service_connect_sync (
-			service, cancellable, error);
+		GError *local_error = NULL;
+
+		success = camel_service_connect_sync (service, cancellable, &local_error);
+
+		if (local_error) {
+			if (local_error->domain == G_IO_ERROR ||
+			    g_error_matches (local_error, CAMEL_SERVICE_ERROR, CAMEL_SERVICE_ERROR_UNAVAILABLE)) {
+				/* Ignore I/O errors, treat it as being offline */
+				success = TRUE;
+				g_clear_error (&local_error);
+			} else {
+				g_propagate_error (error, local_error);
+			}
+		}
 	}
 
 	return success;
