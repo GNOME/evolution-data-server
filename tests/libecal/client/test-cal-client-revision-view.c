@@ -250,7 +250,7 @@ test_get_revision_view_sync (ETestServerFixture *fixture,
 	g_signal_connect (view, "objects_added", G_CALLBACK (objects_added_cb), fixture->loop);
 	g_signal_connect (view, "objects_modified", G_CALLBACK (objects_modified_cb), fixture->loop);
 	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), fixture->loop);
-	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), NULL);
+	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), fixture->loop);
 
 	field_list = g_slist_prepend (NULL, (gpointer) "UID");
 	field_list = g_slist_prepend (field_list, (gpointer) "RECURRENCE-ID");
