@@ -206,7 +206,7 @@ test_get_view_sync (ETestServerFixture *fixture,
 	g_signal_connect (view, "objects_added", G_CALLBACK (objects_added_cb), fixture->loop);
 	g_signal_connect (view, "objects_modified", G_CALLBACK (objects_modified_cb), fixture->loop);
 	g_signal_connect (view, "objects_removed", G_CALLBACK (objects_removed_cb), fixture->loop);
-	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), NULL);
+	g_signal_connect (view, "complete", G_CALLBACK (complete_cb), fixture->loop);
 
 	e_cal_client_view_set_fields_of_interest (view, NULL, &error);
 	if (error)
