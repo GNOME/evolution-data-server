@@ -1,3 +1,19 @@
+Evolution-Data-Server 3.24.1 2017-04-10
+---------------------------------------
+
+Bug Fixes:
+	Bug 780617 - [IMAPx] Allow FETCH response split into multiple lines (Milan Crha)
+	Bug 777161 - [CalDAV] Deadlock after refresh of OAuth2 token (Milan Crha)
+
+Miscellaneous:
+	Revert "Disable support for all POP3 extensions by default" (Milan Crha)
+	Fix maybe-used-uninitialized compiler warning from camel-pop3-folder.c (Milan Crha)
+	Fix few Coverity scan issues (Milan Crha)
+
+Translations:
+	Piotr Drąg (pl)
+	Rūdolfs Mazurs (lv)
+
 Evolution-Data-Server 3.24.0 2017-03-20
 ---------------------------------------
 
