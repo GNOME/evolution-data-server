@@ -363,6 +363,7 @@ caldav_ensure_bearer_auth_usage (ECalBackendCalDAV *cbdav,
 
 static gboolean
 caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
+			  gboolean is_in_authenticate,
 			  ESoupAuthBearer *bearer,
 			  GCancellable *cancellable,
 			  GError **error)
@@ -382,7 +383,8 @@ caldav_setup_bearer_auth (ECalBackendCalDAV *cbdav,
 
 	if (success) {
 		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
-		caldav_ensure_bearer_auth_usage (cbdav, bearer);
+		if (!is_in_authenticate)
+			caldav_ensure_bearer_auth_usage (cbdav, bearer);
 	}
 
 	g_free (access_token);
@@ -420,7 +422,7 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 	g_free (auth_method);
 
 	if (cbdav->priv->using_bearer_auth) {
-		success = caldav_setup_bearer_auth (cbdav, cbdav->priv->using_bearer_auth, cancellable, error);
+		success = caldav_setup_bearer_auth (cbdav, FALSE, cbdav->priv->using_bearer_auth, cancellable, error);
 	} else {
 		ESourceWebdav *extension;
 		SoupAuth *soup_auth;
@@ -433,7 +435,7 @@ caldav_maybe_prepare_bearer_auth (ECalBackendCalDAV *cbdav,
 			E_TYPE_SOUP_AUTH_BEARER,
 			SOUP_AUTH_HOST, soup_uri->host, NULL);
 
-		success = caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
+		success = caldav_setup_bearer_auth (cbdav, FALSE, E_SOUP_AUTH_BEARER (soup_auth), cancellable, error);
 		if (success)
 			cbdav->priv->using_bearer_auth = g_object_ref (soup_auth);
 
@@ -1135,7 +1137,7 @@ soup_authenticate_bearer (SoupSession *session,
 {
 	GError *local_error = NULL;
 
-	caldav_setup_bearer_auth (cbdav, E_SOUP_AUTH_BEARER (auth), NULL, &local_error);
+	caldav_setup_bearer_auth (cbdav, TRUE, E_SOUP_AUTH_BEARER (auth), NULL, &local_error);
 
 	/* Stash the error to be picked up by caldav_credentials_required_sync().
 	 * There's no way to explicitly propagate a GError directly
@@ -1267,7 +1269,7 @@ send_and_handle_redirection (ECalBackendCalDAV *cbdav,
 	    e_soup_auth_bearer_is_expired (cbdav->priv->using_bearer_auth)) {
 		GError *local_error = NULL;
 
-		if (!caldav_setup_bearer_auth (cbdav, cbdav->priv->using_bearer_auth, cancellable, &local_error)) {
+		if (!caldav_setup_bearer_auth (cbdav, FALSE, cbdav->priv->using_bearer_auth, cancellable, &local_error)) {
 			if (local_error) {
 				soup_message_set_status_full (msg, SOUP_STATUS_BAD_REQUEST, local_error->message);
 				g_propagate_error (error, local_error);
