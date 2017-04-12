@@ -4469,7 +4469,7 @@ e_cal_component_get_summary (ECalComponent *comp,
 }
 
 typedef struct {
-	const gchar *old_summary;
+	gchar *old_summary;
 	const gchar *new_summary;
 } SetAlarmDescriptionData;
 
@@ -4560,7 +4560,8 @@ e_cal_component_set_summary (ECalComponent *comp,
 	g_return_if_fail (summary->value != NULL);
 
 	if (priv->summary.prop) {
-		sadd.old_summary = icalproperty_get_summary (priv->summary.prop);
+		/* Make a copy, to avoid use-after-free */
+		sadd.old_summary = g_strdup (icalproperty_get_summary (priv->summary.prop));
 		icalproperty_set_summary (priv->summary.prop, (gchar *) summary->value);
 	} else {
 		sadd.old_summary = NULL;
@@ -4590,6 +4591,8 @@ e_cal_component_set_summary (ECalComponent *comp,
 	/* look for alarms that need a description */
 	sadd.new_summary = summary->value;
 	g_hash_table_foreach (priv->alarm_uid_hash, set_alarm_description_cb, &sadd);
+
+	g_free (sadd.old_summary);
 }
 
 /**
