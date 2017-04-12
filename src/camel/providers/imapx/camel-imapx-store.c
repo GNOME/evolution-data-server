@@ -1489,14 +1489,21 @@ imapx_store_remove_unknown_mailboxes_cb (gpointer key,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), FALSE);
 
 	if (camel_imapx_mailbox_get_state (mailbox) == CAMEL_IMAPX_MAILBOX_STATE_CREATED) {
+		CamelSettings *settings;
 		CamelFolderInfo *fi;
 		gchar *folder_path;
+		gboolean use_subscriptions;
+
+		settings = camel_service_ref_settings (CAMEL_SERVICE (imapx_store));
+		use_subscriptions = camel_imapx_settings_get_use_subscriptions (CAMEL_IMAPX_SETTINGS (settings));
+		g_object_unref (settings);
 
 		folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
 		fi = imapx_store_build_folder_info (imapx_store, folder_path,
 			(CamelFolderInfoFlags) imapx_store_mailbox_attributes_to_flags (mailbox));
 		camel_store_folder_created (CAMEL_STORE (imapx_store), fi);
-		camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
+		if ((fi->flags & CAMEL_STORE_INFO_FOLDER_SUBSCRIBED) != 0 || !use_subscriptions)
+			camel_subscribable_folder_subscribed (CAMEL_SUBSCRIBABLE (imapx_store), fi);
 		camel_folder_info_free (fi);
 		g_free (folder_path);
 	}
