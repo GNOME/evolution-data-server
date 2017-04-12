@@ -628,7 +628,7 @@ e_webdav_session_new (ESource *source)
 }
 
 /**
- * e_webdav_session_options_sync:
+ * e_webdav_session_new_request:
  * @webdav: an #EWebDAVSession
  * @method: an HTTP method
  * @uri: (nullable): URI to create the request for, or %NULL to read from #ESource
@@ -998,12 +998,14 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 /**
  * e_webdav_session_ensure_full_uri:
  * @webdav: an #EWebDAVSession
- * @request_uri: a #SoupURI to which the @href belongs
+ * @request_uri: (nullable): a #SoupURI to which the @href belongs, or %NULL
  * @href: a possibly path-only href
  *
- * Converts possbily path-only @href into a full URI under
- * the @request_uri. Free the returned pointer with g_free(),
- * when no longer needed.
+ * Converts possibly path-only @href into a full URI under the @request_uri.
+ * When the @request_uri is %NULL, the URI defined in associated #ESource is
+ * used instead.
+ *
+ * Free the returned pointer with g_free(), when no longer needed.
  *
  * Returns: (transfer full): The @href as a full URI
  *
@@ -1015,14 +1017,27 @@ e_webdav_session_ensure_full_uri (EWebDAVSession *webdav,
 				  const gchar *href)
 {
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), NULL);
-	g_return_val_if_fail (request_uri != NULL, NULL);
 	g_return_val_if_fail (href != NULL, NULL);
 
 	if (*href == '/' || !strstr (href, "://")) {
 		SoupURI *soup_uri;
 		gchar *full_uri;
 
-		soup_uri = soup_uri_copy ((SoupURI *) request_uri);
+		if (request_uri) {
+			soup_uri = soup_uri_copy ((SoupURI *) request_uri);
+		} else {
+			ESource *source;
+			ESourceWebdav *webdav_extension;
+
+			source = e_soup_session_get_source (E_SOUP_SESSION (webdav));
+			g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
+		}
+
+		g_return_val_if_fail (soup_uri != NULL, NULL);
+
 		soup_uri_set_path (soup_uri, href);
 		soup_uri_set_user (soup_uri, NULL);
 		soup_uri_set_password (soup_uri, NULL);
@@ -1093,7 +1108,7 @@ e_webdav_session_comma_header_to_hashtable (SoupMessageHeaders *headers,
  * value can be %NULL on success, it's when the server doesn't provide the information.
  *
  * The @out_allows contains a set of allowed methods returned by the server. Some known
- * are defined as E_WEBDAV_ALLOW_OPTIONS, and so on. The 'value' of the #GHashTable
+ * are defined as %SOUP_METHOD_OPTIONS, and so on. The 'value' of the #GHashTable
  * doesn't have any particular meaning and the strings are compared case insensitively.
  * Free the hash table with g_hash_table_destroy(), when no longer needed. The returned
  * value can be %NULL on success, it's when the server doesn't provide the information.
@@ -1145,6 +1160,96 @@ e_webdav_session_options_sync (EWebDAVSession *webdav,
 	g_object_unref (message);
 
 	return TRUE;
+}
+
+/**
+ * e_webdav_session_post_sync:
+ * @webdav: an #EWebDAVSession
+ * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
+ * @data: data to post to the server
+ * @data_length: length of @data, or -1, when @data is NUL-terminated
+ * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
+ * @out_content: (nullable) (transfer full): return location for response content, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Issues POST request on the provided @uri, or, in case it's %NULL, on the URI
+ * defined in associated #ESource.
+ *
+ * The optional @out_content_type can be used to get content type of the response.
+ * Free it with g_free(), when no longer needed.
+ *
+ * The optional @out_content can be used to get actual result content. Free it
+ * with g_byte_array_free(), when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_webdav_session_post_sync (EWebDAVSession *webdav,
+			    const gchar *uri,
+			    const gchar *data,
+			    gsize data_length,
+			    gchar **out_content_type,
+			    GByteArray **out_content,
+			    GCancellable *cancellable,
+			    GError **error)
+{
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *bytes;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (data != NULL, FALSE);
+
+	if (out_content_type)
+		*out_content_type = NULL;
+
+	if (out_content)
+		*out_content = NULL;
+
+	if (data_length == (gsize) -1)
+		data_length = strlen (data);
+
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_POST, uri, error);
+	if (!request)
+		return FALSE;
+
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
+
+		return FALSE;
+	}
+
+	soup_message_set_request (message, E_WEBDAV_CONTENT_TYPE_XML,
+		SOUP_MEMORY_COPY, data, data_length);
+
+	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to post data"), error) &&
+		bytes != NULL;
+
+	if (success) {
+		if (out_content_type) {
+			*out_content_type = g_strdup (soup_message_headers_get_content_type (message->response_headers, NULL));
+		}
+
+		if (out_content) {
+			*out_content = bytes;
+			bytes = NULL;
+		}
+	}
+
+	if (bytes)
+		g_byte_array_free (bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
+
+	return success;
 }
 
 /**
@@ -1318,7 +1423,7 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
  * e_webdav_session_report_sync:
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
- * @depth: (nullable): requested depth, can be %NULL, then %E_WEBDAV_DEPTH_THIS is used
+ * @depth: (nullable): requested depth, can be %NULL, then no Depth header is sent
  * @xml: the request itself, as an #EXmlDocument
  * @func: (nullable): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
  * @func_user_data: user data passed to @func
@@ -1389,10 +1494,8 @@ e_webdav_session_report_sync (EWebDAVSession *webdav,
 		return FALSE;
 	}
 
-	if (!depth)
-		depth = E_WEBDAV_DEPTH_THIS;
-
-	soup_message_headers_replace (message->request_headers, "Depth", depth);
+	if (depth)
+		soup_message_headers_replace (message->request_headers, "Depth", depth);
 
 	content = e_xml_document_get_content (xml, &content_length);
 	if (!content) {
@@ -1534,10 +1637,8 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
 	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "set");
 	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "prop");
 	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "resourcetype");
-	e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "collection");
-	e_xml_document_end_element (xml);
-	e_xml_document_start_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_DAV, "collection");
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook");
 	e_xml_document_end_element (xml); /* resourcetype */
 
 	if (display_name && *display_name) {
@@ -1841,6 +1942,7 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 		SoupLoggerLogLevel log_level = e_soup_session_get_log_level (E_SOUP_SESSION (webdav));
 		gpointer buffer;
 		gsize nread = 0, nwritten;
+		gboolean first_chunk = TRUE;
 
 		buffer = g_malloc (BUFFER_SIZE);
 
@@ -1851,10 +1953,26 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 				fflush (stdout);
 			}
 
+			if (first_chunk) {
+				GByteArray tmp_bytes;
+
+				first_chunk = FALSE;
+
+				tmp_bytes.data = buffer;
+				tmp_bytes.len = nread;
+
+				success = !e_webdav_session_replace_with_detailed_error (webdav, request, &tmp_bytes, FALSE, _("Failed to read resource"), error);
+				if (!success)
+					break;
+			}
+
 			success = g_output_stream_write_all (out_stream, buffer, nread, &nwritten, cancellable, error);
 			if (!success)
 				break;
 		}
+
+		if (success && first_chunk)
+			success = !e_webdav_session_replace_with_detailed_error (webdav, request, NULL, FALSE, _("Failed to read resource"), error);
 
 		g_free (buffer);
 	}
@@ -1884,8 +2002,9 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
  * reference a collection.
  *
  * The @out_bytes is filled by actual data being read. If not %NULL, @out_length
- * is populated with how many bytes had been read. Free the @out_bytes with g_free(),
- * when no longer needed.
+ * is populated with how many bytes had been read. The @out_bytes is always
+ * NUL-terminated, while this termination byte is not part of @out_length.
+ * Free the @out_bytes with g_free(), when no longer needed.
  *
  * Free returned pointer of @out_href and @out_etag, if not %NULL, with g_free(),
  * when no longer needed.
@@ -1907,6 +2026,7 @@ e_webdav_session_get_data_sync (EWebDAVSession *webdav,
 				GError **error)
 {
 	GOutputStream *output_stream;
+	gsize bytes_written = 0;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
@@ -1920,11 +2040,13 @@ e_webdav_session_get_data_sync (EWebDAVSession *webdav,
 	output_stream = g_memory_output_stream_new_resizable ();
 
 	success = e_webdav_session_get_sync (webdav, uri, out_href, out_etag, output_stream, cancellable, error) &&
+		g_output_stream_write_all (output_stream, "", 1, &bytes_written, cancellable, error) &&
 		g_output_stream_close (output_stream, cancellable, error);
 
 	if (success) {
 		if (out_length)
-			*out_length = g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (output_stream));
+			*out_length = g_memory_output_stream_get_data_size (G_MEMORY_OUTPUT_STREAM (output_stream)) - 1;
+
 		*out_bytes = g_memory_output_stream_steal_data (G_MEMORY_OUTPUT_STREAM (output_stream));
 	}
 
@@ -3075,8 +3197,7 @@ e_webdav_session_getctag_sync (EWebDAVSession *webdav,
 	e_xml_document_add_namespaces (xml, "CS", E_WEBDAV_NS_CALENDARSERVER, NULL);
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
-	e_xml_document_end_element (xml); /* getctag */
+	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
@@ -3363,8 +3484,7 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 
 	e_xml_document_start_element (xml, NULL, "prop");
 
-	e_xml_document_start_element (xml, NULL, "resourcetype");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "resourcetype");
 
 	if ((flags & E_WEBDAV_LIST_SUPPORTS) != 0 ||
 	    (flags & E_WEBDAV_LIST_DESCRIPTION) != 0 ||
@@ -3373,60 +3493,49 @@ e_webdav_session_list_sync (EWebDAVSession *webdav,
 	}
 
 	if ((flags & E_WEBDAV_LIST_SUPPORTS) != 0) {
-		e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "supported-calendar-component-set");
 	}
 
 	if ((flags & E_WEBDAV_LIST_DISPLAY_NAME) != 0) {
-		e_xml_document_start_element (xml, NULL, "displayname");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "displayname");
 	}
 
 	if ((flags & E_WEBDAV_LIST_ETAG) != 0) {
-		e_xml_document_start_element (xml, NULL, "getetag");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "getetag");
 
 		e_xml_document_add_namespaces (xml, "CS", E_WEBDAV_NS_CALENDARSERVER, NULL);
 
-		e_xml_document_start_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALENDARSERVER, "getctag");
 	}
 
 	if ((flags & E_WEBDAV_LIST_CONTENT_TYPE) != 0) {
-		e_xml_document_start_element (xml, NULL, "getcontenttype");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "getcontenttype");
 	}
 
 	if ((flags & E_WEBDAV_LIST_CONTENT_LENGTH) != 0) {
-		e_xml_document_start_element (xml, NULL, "getcontentlength");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "getcontentlength");
 	}
 
 	if ((flags & E_WEBDAV_LIST_CREATION_DATE) != 0) {
-		e_xml_document_start_element (xml, NULL, "creationdate");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "creationdate");
 	}
 
 	if ((flags & E_WEBDAV_LIST_LAST_MODIFIED) != 0) {
-		e_xml_document_start_element (xml, NULL, "getlastmodified");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "getlastmodified");
 	}
 
 	if ((flags & E_WEBDAV_LIST_DESCRIPTION) != 0) {
-		e_xml_document_start_element (xml, E_WEBDAV_NS_CALDAV, "calendar-description");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "calendar-description");
 
 		e_xml_document_add_namespaces (xml, "A", E_WEBDAV_NS_CARDDAV, NULL);
 
-		e_xml_document_start_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook-description");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CARDDAV, "addressbook-description");
 	}
 
 	if ((flags & E_WEBDAV_LIST_COLOR) != 0) {
 		e_xml_document_add_namespaces (xml, "IC", E_WEBDAV_NS_ICAL, NULL);
 
-		e_xml_document_start_element (xml, E_WEBDAV_NS_ICAL, "calendar-color");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, E_WEBDAV_NS_ICAL, "calendar-color");
 	}
 
 	e_xml_document_end_element (xml); /* prop */
@@ -3531,10 +3640,9 @@ e_webdav_session_update_properties_sync (EWebDAVSession *webdav,
 		case E_WEBDAV_PROPERTY_REMOVE:
 			e_xml_document_start_element (xml, NULL, "remove");
 			e_xml_document_start_element (xml, NULL, "prop");
-			e_xml_document_start_element (xml, change->ns_uri, change->name);
-			e_xml_document_end_element (xml); /* change->name */
+			e_xml_document_add_empty_element (xml, change->ns_uri, change->name);
 			e_xml_document_end_element (xml); /* prop */
-			e_xml_document_end_element (xml); /* set */
+			e_xml_document_end_element (xml); /* remove */
 			break;
 		}
 	}
@@ -3595,19 +3703,16 @@ e_webdav_session_lock_resource_sync (EWebDAVSession *webdav,
 	e_xml_document_start_element (xml, NULL, "lockscope");
 	switch (lock_scope) {
 	case E_WEBDAV_LOCK_EXCLUSIVE:
-		e_xml_document_start_element (xml, NULL, "exclusive");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "exclusive");
 		break;
 	case E_WEBDAV_LOCK_SHARED:
-		e_xml_document_start_element (xml, NULL, "shared");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "shared");
 		break;
 	}
 	e_xml_document_end_element (xml); /* lockscope */
 
 	e_xml_document_start_element (xml, NULL, "locktype");
-	e_xml_document_start_element (xml, NULL, "write");
-	e_xml_document_end_element (xml); /* write */
+	e_xml_document_add_empty_element (xml, NULL, "write");
 	e_xml_document_end_element (xml); /* locktype */
 
 	e_xml_document_start_text_element (xml, NULL, "owner");
@@ -3830,7 +3935,7 @@ e_webdav_session_acl_sync (EWebDAVSession *webdav,
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 
-	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to get properties"), error) &&
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, TRUE, _("Failed to get access control list"), error) &&
 		bytes != NULL;
 
 	if (bytes)
@@ -3880,8 +3985,7 @@ e_webdav_session_get_supported_privilege_set_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml != NULL, FALSE);
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "supported-privilege-set");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "supported-privilege-set");
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
@@ -4013,8 +4117,7 @@ e_webdav_session_get_current_user_privilege_set_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml != NULL, FALSE);
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "current-user-privilege-set");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "current-user-privilege-set");
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
@@ -4288,8 +4391,7 @@ e_webdav_session_get_acl_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml != NULL, FALSE);
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "acl");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "acl");
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
@@ -4399,8 +4501,7 @@ e_webdav_session_get_acl_restrictions_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml != NULL, FALSE);
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "acl-restrictions");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "acl-restrictions");
 	e_xml_document_end_element (xml); /* prop */
 
 	ard.out_restrictions = out_restrictions;
@@ -4496,8 +4597,7 @@ e_webdav_session_get_principal_collection_set_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml != NULL, FALSE);
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "principal-collection-set");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "principal-collection-set");
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_propfind_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
@@ -4622,28 +4722,23 @@ e_webdav_session_set_acl_sync (EWebDAVSession *webdav,
 			e_xml_document_end_element (xml);
 			break;
 		case E_WEBDAV_ACE_PRINCIPAL_ALL:
-			e_xml_document_start_element (xml, NULL, "all");
-			e_xml_document_end_element (xml);
+			e_xml_document_add_empty_element (xml, NULL, "all");
 			break;
 		case E_WEBDAV_ACE_PRINCIPAL_AUTHENTICATED:
-			e_xml_document_start_element (xml, NULL, "authenticated");
-			e_xml_document_end_element (xml);
+			e_xml_document_add_empty_element (xml, NULL, "authenticated");
 			break;
 		case E_WEBDAV_ACE_PRINCIPAL_UNAUTHENTICATED:
-			e_xml_document_start_element (xml, NULL, "unauthenticated");
-			e_xml_document_end_element (xml);
+			e_xml_document_add_empty_element (xml, NULL, "unauthenticated");
 			break;
 		case E_WEBDAV_ACE_PRINCIPAL_PROPERTY:
 			g_warn_if_reached ();
 			break;
 		case E_WEBDAV_ACE_PRINCIPAL_SELF:
-			e_xml_document_start_element (xml, NULL, "self");
-			e_xml_document_end_element (xml);
+			e_xml_document_add_empty_element (xml, NULL, "self");
 			break;
 		case E_WEBDAV_ACE_PRINCIPAL_OWNER:
 			e_xml_document_start_element (xml, NULL, "property");
-			e_xml_document_start_element (xml, NULL, "owner");
-			e_xml_document_end_element (xml);
+			e_xml_document_add_empty_element (xml, NULL, "owner");
 			e_xml_document_end_element (xml);
 			break;
 
@@ -4671,8 +4766,7 @@ e_webdav_session_set_acl_sync (EWebDAVSession *webdav,
 			}
 
 			e_xml_document_start_element (xml, NULL, "privilege");
-			e_xml_document_start_element (xml, privilege->ns_uri, privilege->name);
-			e_xml_document_end_element (xml);
+			e_xml_document_add_empty_element (xml, privilege->ns_uri, privilege->name);
 			e_xml_document_end_element (xml); /* privilege */
 		}
 
@@ -4733,7 +4827,9 @@ e_webdav_session_principal_property_search_cb (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @apply_to_principal_collection_set: whether to apply to principal-collection-set
- * @match_displayname: a string to match DAV:displayname with
+ * @match_ns_uri: (nullable): namespace URI of the property to search in, or %NULL for %E_WEBDAV_NS_DAV
+ * @match_property: name of the property to search in
+ * @match_value: a string value to search for
  * @out_principals: (out) (transfer full) (element-type EWebDAVResource): return location for matching principals
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -4741,7 +4837,8 @@ e_webdav_session_principal_property_search_cb (EWebDAVSession *webdav,
  * Issues a DAV:principal-property-search for the @uri, or, in case it's %NULL,
  * for the URI defined in associated #ESource. The DAV:principal-property-search
  * performs a search for all principals whose properties contain character data
- * that matches the search criteria @match_displayname.
+ * that matches the search criteria @match_value in @match_property property
+ * of namespace @match_ns_uri.
  *
  * By default, the function searches all members (at any depth) of the collection
  * identified by the @uri. If @apply_to_principal_collection_set is set to %TRUE,
@@ -4765,7 +4862,9 @@ gboolean
 e_webdav_session_principal_property_search_sync (EWebDAVSession *webdav,
 						 const gchar *uri,
 						 gboolean apply_to_principal_collection_set,
-						 const gchar *match_displayname,
+						 const gchar *match_ns_uri,
+						 const gchar *match_property,
+						 const gchar *match_value,
 						 GSList **out_principals,
 						 GCancellable *cancellable,
 						 GError **error)
@@ -4774,7 +4873,8 @@ e_webdav_session_principal_property_search_sync (EWebDAVSession *webdav,
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
-	g_return_val_if_fail (match_displayname != NULL, FALSE);
+	g_return_val_if_fail (match_property != NULL, FALSE);
+	g_return_val_if_fail (match_value != NULL, FALSE);
 	g_return_val_if_fail (out_principals != NULL, FALSE);
 
 	*out_principals = NULL;
@@ -4783,23 +4883,20 @@ e_webdav_session_principal_property_search_sync (EWebDAVSession *webdav,
 	g_return_val_if_fail (xml != NULL, FALSE);
 
 	if (apply_to_principal_collection_set) {
-		e_xml_document_start_element (xml, NULL, "apply-to-principal-collection-set");
-		e_xml_document_end_element (xml);
+		e_xml_document_add_empty_element (xml, NULL, "apply-to-principal-collection-set");
 	}
 
 	e_xml_document_start_element (xml, NULL, "property-search");
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "displayname");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, match_ns_uri, match_property);
 	e_xml_document_end_element (xml); /* prop */
 	e_xml_document_start_text_element (xml, NULL, "match");
-	e_xml_document_write_string (xml, match_displayname);
+	e_xml_document_write_string (xml, match_value);
 	e_xml_document_end_element (xml); /* match */
 	e_xml_document_end_element (xml); /* property-search */
 
 	e_xml_document_start_element (xml, NULL, "prop");
-	e_xml_document_start_element (xml, NULL, "displayname");
-	e_xml_document_end_element (xml);
+	e_xml_document_add_empty_element (xml, NULL, "displayname");
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_report_sync (webdav, uri, E_WEBDAV_DEPTH_THIS, xml,
@@ -4815,7 +4912,7 @@ e_webdav_session_principal_property_search_sync (EWebDAVSession *webdav,
 
 /**
  * e_webdav_session_util_maybe_dequote:
- * @text: (inout): text to dequote
+ * @text: (inout) (nullable): text to dequote
  *
  * Dequotes @text, if it's enclosed in double-quotes. The function
  * changes @text, it doesn't allocate new string. The function does

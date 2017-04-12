@@ -318,6 +318,7 @@ e_cal_meta_backend_test_disconnect_sync (ECalMetaBackend *meta_backend,
 static gboolean
 e_cal_meta_backend_test_get_changes_sync (ECalMetaBackend *meta_backend,
 					  const gchar *last_sync_tag,
+					  gboolean is_repeat,
 					  gchar **out_new_sync_tag,
 					  gboolean *out_repeat,
 					  GSList **out_created_objects,
@@ -352,7 +353,7 @@ e_cal_meta_backend_test_get_changes_sync (ECalMetaBackend *meta_backend,
 	/* Nothing to do here at the moment, left the work to the parent class,
 	   which calls list_existing_sync() internally. */
 	return E_CAL_META_BACKEND_CLASS (e_cal_meta_backend_test_parent_class)->get_changes_sync (meta_backend,
-		last_sync_tag, out_new_sync_tag, out_repeat, out_created_objects,
+		last_sync_tag, is_repeat, out_new_sync_tag, out_repeat, out_created_objects,
 		out_modified_objects, out_removed_objects, cancellable, error);
 }
 
@@ -395,7 +396,7 @@ e_cal_meta_backend_test_list_existing_sync (ECalMetaBackend *meta_backend,
 		uid = icalcomponent_get_uid (icalcomp);
 		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
 
-		nfo = e_cal_meta_backend_info_new (uid, NULL, revision, NULL);
+		nfo = e_cal_meta_backend_info_new (uid, revision, NULL, NULL);
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
 
 		g_free (revision);
@@ -413,6 +414,7 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 					     const GSList *instances,
 					     const gchar *extra,
 					     gchar **out_new_uid,
+					     gchar **out_new_extra,
 					     GCancellable *cancellable,
 					     GError **error)
 {
@@ -476,6 +478,7 @@ e_cal_meta_backend_test_save_component_sync (ECalMetaBackend *meta_backend,
 static gboolean
 e_cal_meta_backend_test_load_component_sync (ECalMetaBackend *meta_backend,
 					     const gchar *uid,
+					     const gchar *extra,
 					     icalcomponent **out_instances,
 					     gchar **out_extra,
 					     GCancellable *cancellable,

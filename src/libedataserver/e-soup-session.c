@@ -114,6 +114,12 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 	source = e_soup_session_get_source (session);
 	credentials = e_soup_session_dup_credentials (session);
 
+	if (!credentials || !e_named_parameters_count (credentials)) {
+		e_named_parameters_free (credentials);
+		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED, _("Credentials required"));
+		return FALSE;
+	}
+
 	success = e_util_get_source_oauth2_access_token_sync (source, credentials,
 		&access_token, &expires_in_seconds, cancellable, error);
 

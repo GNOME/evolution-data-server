@@ -522,6 +522,7 @@ e_source_credentials_google_get_access_token_sync (ESource *source,
 						   GError **error)
 {
 	ENamedParameters *tmp_credentials = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (credentials != NULL, FALSE);
 
@@ -546,10 +547,13 @@ e_source_credentials_google_get_access_token_sync (ESource *source,
 		return TRUE;
 	}
 
+	/* Try to refresh the token */
+	success = e_source_credentials_google_refresh_token_sync (source, tmp_credentials ? tmp_credentials : credentials,
+		out_access_token, out_expires_in_seconds, cancellable, error);
+
 	e_named_parameters_free (tmp_credentials);
 
-	/* Try to refresh the token */
-	return e_source_credentials_google_refresh_token_sync (source, credentials, out_access_token, out_expires_in_seconds, cancellable, error);
+	return success;
 }
 
 gboolean

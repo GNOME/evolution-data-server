@@ -537,6 +537,7 @@ ecb_gtasks_check_tasklist_changed_sync (ECalBackendGTasks *cbgtasks,
 static gboolean
 ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 			     const gchar *last_sync_tag,
+			     gboolean is_repeat,
 			     gchar **out_new_sync_tag,
 			     gboolean *out_repeat,
 			     GSList **out_created_objects, /* ECalMetaBackendInfo * */
@@ -644,7 +645,7 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 								e_cal_component_set_created (new_comp, cached_tt);
 
 							*out_modified_objects = g_slist_prepend (*out_modified_objects,
-								e_cal_meta_backend_info_new (uid, NULL, revision, object));
+								e_cal_meta_backend_info_new (uid, revision, object, NULL));
 						}
 
 						if (cached_tt)
@@ -653,7 +654,7 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 							e_cal_component_free_icaltimetype (new_tt);
 					} else {
 						*out_created_objects = g_slist_prepend (*out_created_objects,
-							e_cal_meta_backend_info_new (uid, NULL, revision, object));
+							e_cal_meta_backend_info_new (uid, revision, object, NULL));
 					}
 
 					g_free (revision);
@@ -705,6 +706,7 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 static gboolean
 ecb_gtasks_load_component_sync (ECalMetaBackend *meta_backend,
 				const gchar *uid,
+				const gchar *extra,
 				icalcomponent **out_instances,
 				gchar **out_extra,
 				GCancellable *cancellable,
@@ -751,6 +753,7 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 				const GSList *instances, /* ECalComponent * */
 				const gchar *extra,
 				gchar **out_new_uid,
+				gchar **out_new_extra,
 				GCancellable *cancellable,
 				GError **error)
 {
@@ -846,38 +849,19 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 				  GError **error)
 {
 	ECalBackendGTasks *cbgtasks;
-	ECalCache *cal_cache;
 	GDataTasksTask *task;
 	ECalComponent *cached_comp = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
+	g_return_val_if_fail (uid != NULL, FALSE);
+	g_return_val_if_fail (object != NULL, FALSE);
 
-	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	g_return_val_if_fail (cal_cache != NULL, FALSE);
-
-	if (object) {
-		cached_comp = e_cal_component_new_from_string (object);
-		if (!cached_comp) {
-			g_propagate_error (error, EDC_ERROR (InvalidObject));
-			g_object_unref (cal_cache);
-
-			return FALSE;
-		}
-	} else if (!e_cal_cache_get_component (cal_cache, uid, NULL, &cached_comp, cancellable, &local_error)) {
-		if (g_error_matches (local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND)) {
-			g_clear_error (&local_error);
-			g_propagate_error (error, EDC_ERROR (ObjectNotFound));
-		} else if (local_error) {
-			g_propagate_error (error, local_error);
-		}
-
-		g_object_unref (cal_cache);
-
+	cached_comp = e_cal_component_new_from_string (object);
+	if (!cached_comp) {
+		g_propagate_error (error, EDC_ERROR (InvalidObject));
 		return FALSE;
 	}
-
-	g_object_unref (cal_cache);
 
 	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 

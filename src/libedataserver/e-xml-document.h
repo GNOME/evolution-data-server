@@ -91,10 +91,29 @@ void		e_xml_document_start_text_element
 						 const gchar *ns_href,
 						 const gchar *name);
 void		e_xml_document_end_element	(EXmlDocument *xml);
+void		e_xml_document_add_empty_element
+						(EXmlDocument *xml,
+						 const gchar *ns_href,
+						 const gchar *name);
 void		e_xml_document_add_attribute	(EXmlDocument *xml,
 						 const gchar *ns_href,
 						 const gchar *name,
 						 const gchar *value);
+void		e_xml_document_add_attribute_int
+						(EXmlDocument *xml,
+						 const gchar *ns_href,
+						 const gchar *name,
+						 gint64 value);
+void		e_xml_document_add_attribute_double
+						(EXmlDocument *xml,
+						 const gchar *ns_href,
+						 const gchar *name,
+						 gdouble value);
+void		e_xml_document_add_attribute_time
+						(EXmlDocument *xml,
+						 const gchar *ns_href,
+						 const gchar *name,
+						 time_t value);
 void		e_xml_document_write_int	(EXmlDocument *xml,
 						 gint64 value);
 void		e_xml_document_write_double	(EXmlDocument *xml,

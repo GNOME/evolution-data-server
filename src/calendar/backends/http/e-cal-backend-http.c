@@ -26,6 +26,7 @@
 
 #include <libsoup/soup.h>
 #include <libedata-cal/libedata-cal.h>
+
 #include "e-cal-backend-http.h"
 
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
@@ -167,15 +168,17 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 					"%s", message->reason_phrase);
 			} else if (status_code == SOUP_STATUS_FORBIDDEN && credentials_empty) {
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-			} else if (status_code == SOUP_STATUS_UNAUTHORIZED ||
-				   status_code == SOUP_STATUS_FORBIDDEN) {
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			} else if (status_code == SOUP_STATUS_UNAUTHORIZED) {
+				if (credentials_empty)
+					*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
+				else
+					*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 			} else if (local_error) {
 				g_propagate_error (error, local_error);
 				local_error = NULL;
 			} else {
-				g_set_error (error, SOUP_HTTP_ERROR, status_code,
-					"%s", message ? message->reason_phrase : soup_status_get_phrase (status_code));
+				g_set_error_literal (error, SOUP_HTTP_ERROR, status_code,
+					message ? message->reason_phrase : soup_status_get_phrase (status_code));
 			}
 
 			if (status_code == SOUP_STATUS_SSL_FAILED) {
@@ -268,34 +271,10 @@ ecb_http_read_stream_sync (GInputStream *input_stream,
 	return g_string_free (icalstr, !success);
 }
 
-static void
-ecb_http_gather_uids_cb (gpointer uid,
-			 gpointer icalcomp,
-			 gpointer user_data)
-{
-	GHashTable *hash_table = user_data;
-
-	g_return_if_fail (hash_table != NULL);
-
-	if (uid)
-		g_hash_table_insert (hash_table, g_strdup (uid), NULL);
-}
-
-static gboolean
-ecb_http_remove_unchanged_cb (gpointer uid,
-			      gpointer icalcomp,
-			      gpointer user_data)
-{
-	GHashTable *unchanged = user_data;
-
-	g_return_val_if_fail (unchanged != NULL, FALSE);
-
-	return !uid || g_hash_table_contains (unchanged, uid);
-}
-
 static gboolean
 ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 			   const gchar *last_sync_tag,
+			   gboolean is_repeat,
 			   gchar **out_new_sync_tag,
 			   gboolean *out_repeat,
 			   GSList **out_created_objects,
@@ -424,40 +403,14 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 			}
 		}
 
+		g_warn_if_fail (cbhttp->priv->components == NULL);
 		cbhttp->priv->components = components;
 
 		icalcomponent_free (vcalendar);
 
 		success = E_CAL_META_BACKEND_CLASS (e_cal_backend_http_parent_class)->get_changes_sync (meta_backend,
-			last_sync_tag, out_new_sync_tag, out_repeat, out_created_objects,
+			last_sync_tag, is_repeat, out_new_sync_tag, out_repeat, out_created_objects,
 			out_modified_objects, out_removed_objects, cancellable, error);
-
-		if (success) {
-			GHashTable *unchanged;
-			GSList *link;
-
-			unchanged = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-			g_hash_table_foreach (cbhttp->priv->components, ecb_http_gather_uids_cb, unchanged);
-
-			for (link = *out_created_objects; link; link = g_slist_next (link)) {
-				ECalMetaBackendInfo *nfo = link->data;
-
-				if (nfo && nfo->uid)
-					g_hash_table_remove (unchanged, nfo->uid);
-			}
-
-			for (link = *out_modified_objects; link; link = g_slist_next (link)) {
-				ECalMetaBackendInfo *nfo = link->data;
-
-				if (nfo && nfo->uid)
-					g_hash_table_remove (unchanged, nfo->uid);
-			}
-
-			if (g_hash_table_size (unchanged))
-				g_hash_table_foreach_remove (cbhttp->priv->components, ecb_http_remove_unchanged_cb, unchanged);
-
-			g_hash_table_destroy (unchanged);
-		}
 	} else {
 		icalcomponent_free (vcalendar);
 	}
@@ -512,7 +465,7 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 		revision = e_cal_cache_dup_component_revision (cal_cache, icalcomp);
 		object = icalcomponent_as_ical_string_r (value);
 
-		nfo = e_cal_meta_backend_info_new (uid, NULL, revision, object);
+		nfo = e_cal_meta_backend_info_new (uid, revision, object, NULL);
 
 		*out_existing_objects = g_slist_prepend (*out_existing_objects, nfo);
 
@@ -522,9 +475,6 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 
 	g_object_unref (cal_cache);
 
-	g_hash_table_destroy (cbhttp->priv->components);
-	cbhttp->priv->components = NULL;
-
 	ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 
 	return TRUE;
@@ -533,6 +483,7 @@ ecb_http_list_existing_sync (ECalMetaBackend *meta_backend,
 static gboolean
 ecb_http_load_component_sync (ECalMetaBackend *meta_backend,
 			      const gchar *uid,
+			      const gchar *extra,
 			      icalcomponent **out_component,
 			      gchar **out_extra,
 			      GCancellable *cancellable,

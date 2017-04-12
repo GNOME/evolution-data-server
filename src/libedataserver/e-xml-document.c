@@ -424,6 +424,33 @@ e_xml_document_end_element (EXmlDocument *xml)
 }
 
 /**
+ * e_xml_document_add_empty_element:
+ * @xml: an #EXmlDocument
+ * @ns_href: (nullable): optional namespace href for the new element, or %NULL
+ * @name: name of the new element
+ *
+ * Adds an empty element, which is an element with no attribute and no value.
+ *
+ * It's the same as calling e_xml_document_start_element() immediately
+ * followed by e_xml_document_end_element().
+ *
+ * Since: 3.26
+ **/
+void
+e_xml_document_add_empty_element (EXmlDocument *xml,
+				  const gchar *ns_href,
+				  const gchar *name)
+{
+	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
+	g_return_if_fail (name != NULL);
+	g_return_if_fail (*name);
+	g_return_if_fail (xml->priv->current_element != NULL);
+
+	e_xml_document_start_element (xml, ns_href, name);
+	e_xml_document_end_element (xml);
+}
+
+/**
  * e_xml_document_add_attribute:
  * @xml: an #EXmlDocument
  * @ns_href: (nullable): optional namespace href for the new attribute, or %NULL
@@ -453,6 +480,104 @@ e_xml_document_add_attribute (EXmlDocument *xml,
 		e_xml_document_ensure_namespace (xml, ns_href),
 		(const xmlChar *) name,
 		(const xmlChar *) value);
+}
+
+/**
+ * e_xml_document_add_attribute_int:
+ * @xml: an #EXmlDocument
+ * @ns_href: (nullable): optional namespace href for the new attribute, or %NULL
+ * @name: name of the attribute
+ * @value: integer value of the attribute
+ *
+ * Adds a new attribute with an integer value to the current element.
+ * Use %NULL @ns_href, to use the default namespace, otherwise either previously
+ * added namespace with the same href from e_xml_document_add_namespaces() is picked,
+ * or a new namespace with generated prefix is added.
+ *
+ * Since: 3.26
+ **/
+void
+e_xml_document_add_attribute_int (EXmlDocument *xml,
+				  const gchar *ns_href,
+				  const gchar *name,
+				  gint64 value)
+{
+	gchar *strvalue;
+
+	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
+	g_return_if_fail (xml->priv->current_element != NULL);
+	g_return_if_fail (name != NULL);
+
+	strvalue = g_strdup_printf ("%" G_GINT64_FORMAT, value);
+	e_xml_document_add_attribute (xml, ns_href, name, strvalue);
+	g_free (strvalue);
+}
+
+/**
+ * e_xml_document_add_attribute_double:
+ * @xml: an #EXmlDocument
+ * @ns_href: (nullable): optional namespace href for the new attribute, or %NULL
+ * @name: name of the attribute
+ * @value: double value of the attribute
+ *
+ * Adds a new attribute with a double value to the current element.
+ * Use %NULL @ns_href, to use the default namespace, otherwise either previously
+ * added namespace with the same href from e_xml_document_add_namespaces() is picked,
+ * or a new namespace with generated prefix is added.
+ *
+ * Since: 3.26
+ **/
+void
+e_xml_document_add_attribute_double (EXmlDocument *xml,
+				     const gchar *ns_href,
+				     const gchar *name,
+				     gdouble value)
+{
+	gchar *strvalue;
+
+	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
+	g_return_if_fail (xml->priv->current_element != NULL);
+	g_return_if_fail (name != NULL);
+
+	strvalue = g_strdup_printf ("%f", value);
+	e_xml_document_add_attribute (xml, ns_href, name, strvalue);
+	g_free (strvalue);
+}
+
+/**
+ * e_xml_document_add_attribute_time:
+ * @xml: an #EXmlDocument
+ * @ns_href: (nullable): optional namespace href for the new attribute, or %NULL
+ * @name: name of the attribute
+ * @value: time_t value of the attribute
+ *
+ * Adds a new attribute with a time_t value in ISO 8601 format to the current element.
+ * The format is "YYYY-MM-DDTHH:MM:SSZ".
+ * Use %NULL @ns_href, to use the default namespace, otherwise either previously
+ * added namespace with the same href from e_xml_document_add_namespaces() is picked,
+ * or a new namespace with generated prefix is added.
+ *
+ * Since: 3.26
+ **/
+void
+e_xml_document_add_attribute_time (EXmlDocument *xml,
+				   const gchar *ns_href,
+				   const gchar *name,
+				   time_t value)
+{
+	GTimeVal tv;
+	gchar *strvalue;
+
+	g_return_if_fail (E_IS_XML_DOCUMENT (xml));
+	g_return_if_fail (xml->priv->current_element != NULL);
+	g_return_if_fail (name != NULL);
+
+	tv.tv_usec = 0;
+	tv.tv_sec = value;
+
+	strvalue = g_time_val_to_iso8601 (&tv);
+	e_xml_document_add_attribute (xml, ns_href, name, strvalue);
+	g_free (strvalue);
 }
 
 /**
@@ -533,6 +658,7 @@ e_xml_document_write_base64 (EXmlDocument *xml,
  * @value: value to write as the content
  *
  * Writes @value in ISO 8601 format as content of the current element.
+ * The format is "YYYY-MM-DDTHH:MM:SSZ".
  *
  * Since: 3.26
  **/

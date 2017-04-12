@@ -63,20 +63,6 @@ G_BEGIN_DECLS
 #define E_WEBDAV_CAPABILITY_CALENDAR_AUTO_SCHEDULE	"calendar-auto-schedule"
 #define E_WEBDAV_CAPABILITY_CALENDAR_PROXY		"calendar-proxy"
 
-#define E_WEBDAV_ALLOW_OPTIONS			"OPTIONS"
-#define E_WEBDAV_ALLOW_PROPFIND			"PROPFIND"
-#define E_WEBDAV_ALLOW_REPORT			"REPORT"
-#define E_WEBDAV_ALLOW_DELETE			"DELETE"
-#define E_WEBDAV_ALLOW_GET			"GET"
-#define E_WEBDAV_ALLOW_PUT			"PUT"
-#define E_WEBDAV_ALLOW_HEAD			"HEAD"
-#define E_WEBDAV_ALLOW_ACL			"ACL"
-#define E_WEBDAV_ALLOW_LOCK			"LOCK"
-#define E_WEBDAV_ALLOW_UNLOCK			"UNLOCK"
-#define E_WEBDAV_ALLOW_MOVE			"MOVE"
-#define E_WEBDAV_ALLOW_MKTICKET			"MKTICKET"
-#define E_WEBDAV_ALLOW_DELTICKET		"DELTICKET"
-
 #define E_WEBDAV_DEPTH_THIS			"0"
 #define E_WEBDAV_DEPTH_THIS_AND_CHILDREN	"1"
 #define E_WEBDAV_DEPTH_INFINITY			"infinity"
@@ -369,6 +355,14 @@ gboolean	e_webdav_session_options_sync		(EWebDAVSession *webdav,
 							 GHashTable **out_allows,
 							 GCancellable *cancellable,
 							 GError **error);
+gboolean	e_webdav_session_post_sync		(EWebDAVSession *webdav,
+							 const gchar *uri,
+							 const gchar *data,
+							 gsize data_length,
+							 gchar **out_content_type,
+							 GByteArray **out_content,
+							 GCancellable *cancellable,
+							 GError **error);
 gboolean	e_webdav_session_propfind_sync		(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 const gchar *depth,
@@ -574,7 +568,9 @@ gboolean	e_webdav_session_principal_property_search_sync
 							(EWebDAVSession *webdav,
 							 const gchar *uri,
 							 gboolean apply_to_principal_collection_set,
-							 const gchar *match_displayname,
+							 const gchar *match_ns_uri,
+							 const gchar *match_property,
+							 const gchar *match_value,
 							 GSList **out_principals, /* EWebDAVResource * */
 							 GCancellable *cancellable,
 							 GError **error);

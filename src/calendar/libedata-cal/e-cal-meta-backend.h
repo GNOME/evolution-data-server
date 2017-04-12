@@ -50,9 +50,9 @@ G_BEGIN_DECLS
 
 typedef struct _ECalMetaBackendInfo {
 	gchar *uid;
-	gchar *rid;
 	gchar *revision;
 	gchar *object;
+	gchar *extra;
 } ECalMetaBackendInfo;
 
 #define E_TYPE_CAL_META_BACKEND_INFO (e_cal_meta_backend_info_get_type ())
@@ -61,9 +61,9 @@ GType		e_cal_meta_backend_info_get_type
 						(void) G_GNUC_CONST;
 ECalMetaBackendInfo *
 		e_cal_meta_backend_info_new	(const gchar *uid,
-						 const gchar *rid,
 						 const gchar *revision,
-						 const gchar *object);
+						 const gchar *object,
+						 const gchar *extra);
 ECalMetaBackendInfo *
 		e_cal_meta_backend_info_copy	(const ECalMetaBackendInfo *src);
 void		e_cal_meta_backend_info_free	(gpointer ptr /* ECalMetaBackendInfo * */);
@@ -111,6 +111,7 @@ struct _ECalMetaBackendClass {
 
 	gboolean	(* get_changes_sync)	(ECalMetaBackend *meta_backend,
 						 const gchar *last_sync_tag,
+						 gboolean is_repeat,
 						 gchar **out_new_sync_tag,
 						 gboolean *out_repeat,
 						 GSList **out_created_objects, /* ECalMetaBackendInfo * */
@@ -125,6 +126,7 @@ struct _ECalMetaBackendClass {
 						 GError **error);
 	gboolean	(* load_component_sync)	(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
+						 const gchar *extra,
 						 icalcomponent **out_component,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
@@ -135,6 +137,7 @@ struct _ECalMetaBackendClass {
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
 						 gchar **out_new_uid,
+						 gchar **out_new_extra,
 						 GCancellable *cancellable,
 						 GError **error);
 	gboolean	(* remove_component_sync)
@@ -157,6 +160,16 @@ struct _ECalMetaBackendClass {
 GType		e_cal_meta_backend_get_type	(void) G_GNUC_CONST;
 
 const gchar *	e_cal_meta_backend_get_capabilities
+						(ECalMetaBackend *meta_backend);
+void		e_cal_meta_backend_set_ever_connected
+						(ECalMetaBackend *meta_backend,
+						 gboolean value);
+gboolean	e_cal_meta_backend_get_ever_connected
+						(ECalMetaBackend *meta_backend);
+void		e_cal_meta_backend_set_connected_writable
+						(ECalMetaBackend *meta_backend,
+						 gboolean value);
+gboolean	e_cal_meta_backend_get_connected_writable
 						(ECalMetaBackend *meta_backend);
 void		e_cal_meta_backend_set_cache	(ECalMetaBackend *meta_backend,
 						 ECalCache *cache);
@@ -199,6 +212,7 @@ gboolean	e_cal_meta_backend_disconnect_sync
 gboolean	e_cal_meta_backend_get_changes_sync
 						(ECalMetaBackend *meta_backend,
 						 const gchar *last_sync_tag,
+						 gboolean is_repeat,
 						 gchar **out_new_sync_tag,
 						 gboolean *out_repeat,
 						 GSList **out_created_objects, /* ECalMetaBackendInfo * */
@@ -215,6 +229,7 @@ gboolean	e_cal_meta_backend_list_existing_sync
 gboolean	e_cal_meta_backend_load_component_sync
 						(ECalMetaBackend *meta_backend,
 						 const gchar *uid,
+						 const gchar *extra,
 						 icalcomponent **out_component,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
@@ -226,6 +241,7 @@ gboolean	e_cal_meta_backend_save_component_sync
 						 const GSList *instances, /* ECalComponent * */
 						 const gchar *extra,
 						 gchar **out_new_uid,
+						 gchar **out_new_extra,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_remove_component_sync
