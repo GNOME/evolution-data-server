@@ -6325,6 +6325,7 @@ imapx_server_run_idle_thread_cb (gpointer user_data)
 	}
 
 	g_mutex_unlock (&is->priv->idle_lock);
+	g_object_unref (is);
 
 	return FALSE;
 }
