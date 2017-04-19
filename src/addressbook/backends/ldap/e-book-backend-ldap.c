@@ -95,7 +95,9 @@
 static gboolean enable_debug = FALSE;
 
 static const gchar *
-		query_prop_to_ldap		(const gchar *query_prop);
+		query_prop_to_ldap		(const gchar *query_prop,
+						 gboolean evolution_person_supported,
+						 gboolean calentry_supported);
 static gchar *	e_book_backend_ldap_build_query	(EBookBackendLDAP *bl,
 						 const gchar *query);
 
@@ -254,7 +256,7 @@ static struct prop_info {
 #define PROP_TYPE_STRING    0x01
 #define PROP_TYPE_COMPLEX   0x02
 #define PROP_TYPE_BINARY    0x04
-/*#define PROP_unused             0x08*/
+#define PROP_CALENTRY       0x08
 #define PROP_EVOLVE         0x10
 #define PROP_WRITE_ONLY     0x20
 #define PROP_TYPE_GROUP     0x40
@@ -283,6 +285,7 @@ static struct prop_info {
 #define GROUP_PROP(fid,a,ctor,ber,cmp) {fid, a, PROP_TYPE_GROUP, ctor, ber, cmp}
 #define ADDRESS_STRING_PROP(fid,a, ctor) {fid, a, PROP_TYPE_COMPLEX, ctor}
 #define CONTACT_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT}
+#define CALENTRY_CONTACT_STRING_PROP(fid,a) {fid, a, PROP_TYPE_STRING | PROP_TYPE_CONTACT | PROP_CALENTRY}
 
 	/* name fields */
 	STRING_PROP (E_CONTACT_FULL_NAME,   "cn" ),
@@ -364,8 +367,8 @@ static struct prop_info {
 
 	E_COMPLEX_PROP (E_CONTACT_CATEGORY_LIST,  "category", category_populate, category_ber, category_compare),
 
-	CONTACT_STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
-	CONTACT_STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
+	CALENTRY_CONTACT_STRING_PROP (E_CONTACT_CALENDAR_URI,   "calCalURI"),
+	CALENTRY_CONTACT_STRING_PROP (E_CONTACT_FREEBUSY_URL,   "calFBURL"),
 	CONTACT_STRING_PROP (E_CONTACT_ICS_CALENDAR,   "icsCalendar"),
 
 #undef E_STRING_PROP
@@ -1306,6 +1309,10 @@ build_mods_from_contacts (EBookBackendLDAP *bl,
 			if (!bl->priv->evolutionPersonSupported)
 				continue;
 			if (is_list)
+				continue;
+		}
+		if ((prop_info[i].prop_type & PROP_CALENTRY) != 0) {
+			if (!bl->priv->calEntrySupported)
 				continue;
 		}
 		if (((prop_info[i].prop_type & PROP_TYPE_COMPLEX) ||
@@ -3544,9 +3551,16 @@ func_contains (struct _ESExp *f,
 			big_query = g_malloc0 (query_length + 1);
 			strcat (big_query, "(|");
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				strcat (big_query, "(");
-				strcat (big_query, prop_info[i].ldap_attr);
-				strcat (big_query, match_str);
+				if ((prop_info[i].prop_type & PROP_TYPE_STRING) != 0 &&
+				    !(prop_info[i].prop_type & PROP_WRITE_ONLY) &&
+				    (ldap_data->bl->priv->evolutionPersonSupported ||
+				     !(prop_info[i].prop_type & PROP_EVOLVE)) &&
+				    (ldap_data->bl->priv->calEntrySupported ||
+				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
+					strcat (big_query, "(");
+					strcat (big_query, prop_info[i].ldap_attr);
+					strcat (big_query, match_str);
+				}
 			}
 			strcat (big_query, ")");
 
@@ -3555,7 +3569,7 @@ func_contains (struct _ESExp *f,
 			g_free (match_str);
 		}
 		else {
-			const gchar *ldap_attr = query_prop_to_ldap (propname);
+			const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 			if (ldap_attr)
 				ldap_data->list = g_list_prepend (
@@ -3590,7 +3604,7 @@ func_is (struct _ESExp *f,
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = rfc2254_escape (argv[1]->value.string);
-		const gchar *ldap_attr = query_prop_to_ldap (propname);
+		const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 		if (ldap_attr)
 			ldap_data->list = g_list_prepend (
@@ -3629,9 +3643,9 @@ func_beginswith (struct _ESExp *f,
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = rfc2254_escape (argv[1]->value.string);
-		const gchar *ldap_attr = query_prop_to_ldap (propname);
+		const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
-		if (strlen (str) == 0) {
+		if (!*str) {
 			g_free (str);
 
 			ldap_data->list = g_list_prepend (ldap_data->list, g_strdup (""));
@@ -3699,7 +3713,7 @@ func_endswith (struct _ESExp *f,
 	    && argv[1]->type == ESEXP_RES_STRING) {
 		gchar *propname = argv[0]->value.string;
 		gchar *str = rfc2254_escape (argv[1]->value.string);
-		const gchar *ldap_attr = query_prop_to_ldap (propname);
+		const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 		if (ldap_attr)
 			ldap_data->list = g_list_prepend (
@@ -3746,9 +3760,15 @@ func_exists (struct _ESExp *f,
 			big_query = g_malloc0 (query_length + 1);
 			strcat (big_query, "(|");
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				strcat (big_query, "(");
-				strcat (big_query, prop_info[i].ldap_attr);
-				strcat (big_query, match_str);
+				if (!(prop_info[i].prop_type & PROP_WRITE_ONLY) &&
+				    (ldap_data->bl->priv->evolutionPersonSupported ||
+				     !(prop_info[i].prop_type & PROP_EVOLVE)) &&
+				    (ldap_data->bl->priv->calEntrySupported ||
+				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
+					strcat (big_query, "(");
+					strcat (big_query, prop_info[i].ldap_attr);
+					strcat (big_query, match_str);
+				}
 			}
 			strcat (big_query, ")");
 
@@ -3757,7 +3777,7 @@ func_exists (struct _ESExp *f,
 			g_free (match_str);
 		}
 		else {
-			const gchar *ldap_attr = query_prop_to_ldap (propname);
+			const gchar *ldap_attr = query_prop_to_ldap (propname, ldap_data->bl->priv->evolutionPersonSupported, ldap_data->bl->priv->calEntrySupported);
 
 			if (ldap_attr)
 				ldap_data->list = g_list_prepend (
@@ -3863,16 +3883,27 @@ e_book_backend_ldap_build_query (EBookBackendLDAP *bl,
 }
 
 static const gchar *
-query_prop_to_ldap (const gchar *query_prop)
+query_prop_to_ldap (const gchar *query_prop,
+		    gboolean evolution_person_supported,
+		    gboolean calentry_supported)
 {
 	gint i;
 
 	if (g_strcmp0 (query_prop, "categories") == 0)
 		query_prop = "category_list";
 
-	for (i = 0; i < G_N_ELEMENTS (prop_info); i++)
-		if (!strcmp (query_prop, e_contact_field_name (prop_info[i].field_id)))
-			return prop_info[i].ldap_attr;
+	for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
+		if (!strcmp (query_prop, e_contact_field_name (prop_info[i].field_id))) {
+			if ((evolution_person_supported ||
+			    !(prop_info[i].prop_type & PROP_EVOLVE)) &&
+			    (calentry_supported ||
+			    !(prop_info[i].prop_type & PROP_CALENTRY))) {
+				return prop_info[i].ldap_attr;
+			}
+
+			break;
+		}
+	}
 
 	return NULL;
 }
