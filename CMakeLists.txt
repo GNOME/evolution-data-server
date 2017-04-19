@@ -305,7 +305,7 @@ endif(NOT PYTHON)
 # db_load checking, it's optional
 # ******************************
 
-find_program(DB_LOAD NAMES db_load db5_load db_load-5)
+find_program(DB_LOAD NAMES db_load db4_load db_load-4 db5_load db_load-5)
 if(DB_LOAD)
 	set(HAVE_DB_LOAD ON)
 else(DB_LOAD)
