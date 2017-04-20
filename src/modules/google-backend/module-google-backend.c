@@ -31,6 +31,10 @@
 #define GDATA_CHECK_VERSION(major,minor,micro) 0
 #endif
 
+#if GDATA_CHECK_VERSION(0,15,1)
+#include "e-gdata-oauth2-authorizer.h"
+#endif
+
 /* Standard GObject macros */
 #define E_TYPE_GOOGLE_BACKEND \
 	(e_google_backend_get_type ())
@@ -60,7 +64,6 @@
 
 /* Tasks Configuration Details */
 #define GOOGLE_TASKS_BACKEND_NAME	"gtasks"
-#define GOOGLE_TASKS_RESOURCE_ID	"Tasks List"
 
 typedef struct _EGoogleBackend EGoogleBackend;
 typedef struct _EGoogleBackendClass EGoogleBackendClass;
@@ -314,11 +317,11 @@ google_remove_unknown_sources_cb (gpointer resource_id,
 
 static void
 google_add_found_source (ECollectionBackend *collection,
-			   EWebDAVDiscoverSupports source_type,
-			   SoupURI *uri,
-			   const gchar *display_name,
-			   const gchar *color,
-			   GHashTable *known_sources)
+			 EWebDAVDiscoverSupports source_type,
+			 SoupURI *uri,
+			 const gchar *display_name,
+			 const gchar *color,
+			 GHashTable *known_sources)
 {
 	ESourceRegistryServer *server;
 	ESourceBackend *backend;
@@ -444,6 +447,87 @@ google_add_found_source (ECollectionBackend *collection,
 	g_object_unref (server);
 }
 
+#if GDATA_CHECK_VERSION(0,15,1)
+static void
+google_add_task_list (ECollectionBackend *collection,
+		      const gchar *resource_id,
+		      const gchar *display_name,
+		      GHashTable *known_sources)
+{
+	ESourceRegistryServer *server;
+	ESource *source;
+	ESource *collection_source;
+	ESourceExtension *extension;
+	ESourceCollection *collection_extension;
+	ESourceResource *resource;
+	const gchar *source_uid;
+	gchar *identity;
+	gboolean is_new;
+
+	collection_source = e_backend_get_source (E_BACKEND (collection));
+
+	server = e_collection_backend_ref_server (collection);
+	if (!server)
+		return;
+
+	identity = g_strconcat (GOOGLE_TASKS_BACKEND_NAME, "::", resource_id, NULL);
+	source_uid = g_hash_table_lookup (known_sources, identity);
+	is_new = !source_uid;
+	if (is_new) {
+		source = e_collection_backend_new_child (collection, identity);
+		g_warn_if_fail (source != NULL);
+	} else {
+		source = e_source_registry_server_ref_source (server, source_uid);
+		g_warn_if_fail (source != NULL);
+
+		g_hash_table_remove (known_sources, identity);
+	}
+
+	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
+	e_source_resource_set_identity (resource, identity);
+
+	e_source_set_display_name (source, display_name);
+	e_source_set_enabled (source, TRUE);
+
+	collection_extension = e_source_get_extension (
+		collection_source, E_SOURCE_EXTENSION_COLLECTION);
+
+	/* Configure the calendar source. */
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_TASK_LIST);
+
+	e_source_backend_set_backend_name (E_SOURCE_BACKEND (extension), GOOGLE_TASKS_BACKEND_NAME);
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	e_source_authentication_set_host (E_SOURCE_AUTHENTICATION (extension), "www.google.com");
+	if (google_backend_can_use_google_auth (collection_source))
+		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "Google");
+	else
+		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
+
+	e_binding_bind_property (
+		collection_extension, "identity",
+		extension, "user",
+		G_BINDING_SYNC_CREATE);
+
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_ALARMS);
+	e_source_alarms_set_include_me (E_SOURCE_ALARMS (extension), FALSE);
+
+	if (is_new) {
+		ESourceRegistryServer *server;
+
+		server = e_collection_backend_ref_server (collection);
+		e_source_registry_server_add_source (server, source);
+		g_object_unref (server);
+	}
+
+	g_object_unref (source);
+	g_object_unref (server);
+	g_free (identity);
+}
+#endif /* GDATA_CHECK_VERSION(0,15,1) */
+
 static ESourceAuthenticationResult
 google_backend_authenticate_sync (EBackend *backend,
 				  const ENamedParameters *credentials,
@@ -491,6 +575,9 @@ google_backend_authenticate_sync (EBackend *backend,
 	g_list_foreach (sources, google_add_uid_to_hashtable, known_sources);
 	g_list_free_full (sources, g_object_unref);
 
+	/* When the WebDAV extension is created, the auth method can be reset, thus ensure
+	   it's there before setting correct authentication method on the master source. */
+	(void) e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 	google_backend_calendar_update_auth_method (source, NULL);
 
 	if (goa_extension) {
@@ -504,6 +591,8 @@ google_backend_authenticate_sync (EBackend *backend,
 			method = e_source_authentication_dup_method (auth_extension);
 			if (g_strcmp0 (method, "Google") == 0)
 				calendar_url = "https://apidata.googleusercontent.com/caldav/v2/";
+
+			g_free (method);
 		}
 	}
 
@@ -542,18 +631,8 @@ google_backend_authenticate_sync (EBackend *backend,
 		any_success = TRUE;
 	}
 
-	if (any_success) {
-		ESourceRegistryServer *server;
-
-		server = e_collection_backend_ref_server (collection);
-
-		if (server) {
-			g_hash_table_foreach (known_sources, google_remove_unknown_sources_cb, server);
-			g_object_unref (server);
-		}
-
+	if (any_success)
 		g_clear_error (&local_error);
-	}
 
 	if (local_error == NULL) {
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
@@ -570,78 +649,73 @@ google_backend_authenticate_sync (EBackend *backend,
 		g_propagate_error (error, local_error);
 	}
 
+#if GDATA_CHECK_VERSION(0,15,1)
+	if (result == E_SOURCE_AUTHENTICATION_ACCEPTED &&
+	    e_source_collection_get_calendar_enabled (collection_extension) &&
+	    (goa_extension || e_source_credentials_google_is_supported ())) {
+		EGDataOAuth2Authorizer *authorizer;
+		GDataTasksService *tasks_service;
+
+		authorizer = e_gdata_oauth2_authorizer_new (e_backend_get_source (backend));
+		e_gdata_oauth2_authorizer_set_credentials (authorizer, credentials);
+
+		tasks_service = gdata_tasks_service_new (GDATA_AUTHORIZER (authorizer));
+
+		e_binding_bind_property (
+			backend, "proxy-resolver",
+			tasks_service, "proxy-resolver",
+			G_BINDING_SYNC_CREATE);
+
+		if (gdata_authorizer_refresh_authorization (GDATA_AUTHORIZER (authorizer), cancellable, &local_error)) {
+			GDataQuery *query;
+			GDataFeed *feed;
+
+			query = gdata_query_new (NULL);
+			feed = gdata_tasks_service_query_all_tasklists (tasks_service, query, cancellable, NULL, NULL, &local_error);
+			if (feed) {
+				GList *link;
+
+				for (link = gdata_feed_get_entries (feed); link; link = g_list_next (link)) {
+					GDataEntry *entry = link->data;
+
+					if (entry) {
+						google_add_task_list (collection,
+							gdata_entry_get_id (entry),
+							gdata_entry_get_title (entry),
+							known_sources);
+					}
+				}
+			}
+
+			g_clear_object (&feed);
+			g_object_unref (query);
+		}
+
+		if (local_error)
+			g_debug ("%s: Failed to get tasks list: %s", G_STRFUNC, local_error->message);
+
+		g_clear_object (&tasks_service);
+		g_clear_object (&authorizer);
+		g_clear_error (&local_error);
+	}
+#endif /* GDATA_CHECK_VERSION(0,15,1) */
+
+	if (any_success) {
+		ESourceRegistryServer *server;
+
+		server = e_collection_backend_ref_server (collection);
+
+		if (server) {
+			g_hash_table_foreach (known_sources, google_remove_unknown_sources_cb, server);
+			g_object_unref (server);
+		}
+	}
+
 	g_hash_table_destroy (known_sources);
 	e_named_parameters_free (credentials_copy);
 
 	return result;
 }
-
-#if GDATA_CHECK_VERSION(0,15,1)
-static void
-google_backend_add_tasks (ECollectionBackend *backend)
-{
-	ESource *source;
-	ESource *collection_source;
-	ESourceRegistryServer *server;
-	ESourceExtension *extension;
-	ESourceCollection *collection_extension;
-	const gchar *backend_name;
-	const gchar *extension_name;
-	const gchar *resource_id;
-
-	/* FIXME As a future enhancement, we should query Google
-	 *       for a list of user calendars and add them to the
-	 *       collection with matching display names and colors. */
-
-	collection_source = e_backend_get_source (E_BACKEND (backend));
-
-	/* Tasks require OAuth2 */
-	if (!e_source_has_extension (collection_source, E_SOURCE_EXTENSION_GOA) &&
-	    !e_source_credentials_google_is_supported ())
-		return;
-
-	resource_id = GOOGLE_TASKS_RESOURCE_ID;
-	source = e_collection_backend_new_child (backend, resource_id);
-	e_source_set_display_name (source, _("Tasks"));
-
-	collection_extension = e_source_get_extension (
-		collection_source, E_SOURCE_EXTENSION_COLLECTION);
-
-	/* Configure the calendar source. */
-
-	backend_name = GOOGLE_TASKS_BACKEND_NAME;
-
-	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_backend_set_backend_name (
-		E_SOURCE_BACKEND (extension), backend_name);
-
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_authentication_set_host (E_SOURCE_AUTHENTICATION (extension), "www.google.com");
-	if (google_backend_can_use_google_auth (collection_source))
-		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "Google");
-	else
-		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
-
-	e_binding_bind_property (
-		collection_extension, "identity",
-		extension, "user",
-		G_BINDING_SYNC_CREATE);
-
-	extension_name = E_SOURCE_EXTENSION_ALARMS;
-	extension = e_source_get_extension (source, extension_name);
-	e_source_alarms_set_include_me (E_SOURCE_ALARMS (extension), FALSE);
-
-	server = e_collection_backend_ref_server (backend);
-	e_source_registry_server_add_source (server, source);
-	g_object_unref (server);
-
-	g_object_unref (source);
-}
-#endif /* GDATA_CHECK_VERSION(0,15,1) */
 
 static void
 google_backend_add_contacts (ECollectionBackend *backend)
@@ -698,7 +772,6 @@ static void
 google_backend_populate (ECollectionBackend *backend)
 {
 	GList *list, *link;
-	gboolean have_tasks = FALSE;
 	ESourceRegistryServer *server;
 	ESourceCollection *collection_extension;
 	ESource *source;
@@ -714,10 +787,6 @@ google_backend_populate (ECollectionBackend *backend)
 
 			resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
 			child = e_collection_backend_new_child (backend, e_source_resource_get_identity (resource));
-#if GDATA_CHECK_VERSION(0,15,1)
-		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST)) {
-			child = e_collection_backend_new_child (backend, GOOGLE_TASKS_RESOURCE_ID);
-#endif
 		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
 			child = e_collection_backend_new_child (backend, GOOGLE_CONTACTS_RESOURCE_ID);
 		}
@@ -730,19 +799,6 @@ google_backend_populate (ECollectionBackend *backend)
 
 	g_list_free_full (list, g_object_unref);
 	g_object_unref (server);
-
-	list = e_collection_backend_list_calendar_sources (backend);
-	for (link = list; link && !have_tasks; link = g_list_next (link)) {
-		ESource *source = link->data;
-
-		have_tasks = have_tasks || e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST);
-	}
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-
-#if GDATA_CHECK_VERSION(0,15,1)
-	if (!have_tasks)
-		google_backend_add_tasks (backend);
-#endif
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
@@ -778,7 +834,7 @@ google_backend_dup_resource_id (ECollectionBackend *backend,
 
 	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
 	if (e_source_has_extension (child_source, extension_name))
-		return g_strdup (GOOGLE_TASKS_RESOURCE_ID);
+		return E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->dup_resource_id (backend, child_source);
 
 	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
 	if (e_source_has_extension (child_source, extension_name))

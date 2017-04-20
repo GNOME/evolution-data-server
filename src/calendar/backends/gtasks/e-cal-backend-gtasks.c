@@ -251,7 +251,11 @@ ecb_gtasks_prepare_tasklist (ECalBackendGTasks *gtasks,
 	}
 
 	g_clear_object (&gtasks->priv->tasklist);
-	gtasks->priv->tasklist = gdata_tasks_tasklist_new (id);
+
+	if (g_str_has_prefix (id, "gtasks::"))
+		gtasks->priv->tasklist = gdata_tasks_tasklist_new (id + 8);
+	else
+		gtasks->priv->tasklist = gdata_tasks_tasklist_new (id);
 
 	g_free (id);
 }
