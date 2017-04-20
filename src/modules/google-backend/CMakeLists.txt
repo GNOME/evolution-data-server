@@ -1,7 +1,15 @@
 set(extra_deps)
-set(sources
-	module-google-backend.c
-)
+if(HAVE_LIBGDATA)
+	set(sources
+		e-gdata-oauth2-authorizer.c
+		e-gdata-oauth2-authorizer.h
+		module-google-backend.c
+	)
+else(HAVE_LIBGDATA)
+	set(sources
+		module-google-backend.c
+	)
+endif(HAVE_LIBGDATA)
 set(extra_defines)
 set(extra_cflags ${LIBGDATA_CFLAGS})
 set(extra_incdirs ${LIBGDATA_INCLUDE_DIRS})
