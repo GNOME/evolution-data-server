@@ -495,9 +495,9 @@ imapx_uidset_done (struct _uidset_state *ss,
 		if (ss->entries > 0)
 			camel_imapx_command_add (ic, ",");
 		if (ss->last == ss->start)
-			camel_imapx_command_add (ic, "%d", ss->last);
+			camel_imapx_command_add (ic, "%u", ss->last);
 		else
-			camel_imapx_command_add (ic, "%d:%d", ss->start, ss->last);
+			camel_imapx_command_add (ic, "%u:%u", ss->start, ss->last);
 	}
 
 	ret = ss->last != 0;
@@ -538,13 +538,13 @@ imapx_uidset_add (struct _uidset_state *ss,
 					e (ic->is->priv->tagprefix, " ,next\n");
 					if (ss->entries > 0)
 						camel_imapx_command_add (ic, ",");
-					camel_imapx_command_add (ic, "%d", ss->start);
+					camel_imapx_command_add (ic, "%u", ss->start);
 					ss->entries++;
 				} else {
 					e (ic->is->priv->tagprefix, " :range\n");
 					if (ss->entries > 0)
 						camel_imapx_command_add (ic, ",");
-					camel_imapx_command_add (ic, "%d:%d", ss->start, ss->last);
+					camel_imapx_command_add (ic, "%u:%u", ss->start, ss->last);
 					ss->entries += 2;
 				}
 				ss->start = uidn;
@@ -4392,14 +4392,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 						gchar *uid;
 						gboolean is_new = FALSE;
 
-						uid = g_strdup_printf ("%d", g_array_index (copyuid_status->u.copyuid.uids, guint32, ii));
+						uid = g_strdup_printf ("%u", g_array_index (copyuid_status->u.copyuid.uids, guint32, ii));
 						source_info = g_hash_table_lookup (source_infos, uid);
 						g_free (uid);
 
 						if (!source_info)
 							continue;
 
-						uid = g_strdup_printf ("%d", g_array_index (copyuid_status->u.copyuid.copied_uids, guint32, ii));
+						uid = g_strdup_printf ("%u", g_array_index (copyuid_status->u.copyuid.copied_uids, guint32, ii));
 						destination_info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
 
 						if (!destination_info) {
@@ -4684,11 +4684,11 @@ camel_imapx_server_append_message_sync (CamelIMAPXServer *is,
 		old_uid = g_strdup (camel_message_info_get_uid (info));
 
 		if (ic->status && ic->status->condition == IMAPX_APPENDUID) {
-			c (is->priv->tagprefix, "Got appenduid %d %d\n", (gint) ic->status->u.appenduid.uidvalidity, (gint) ic->status->u.appenduid.uid);
+			c (is->priv->tagprefix, "Got appenduid %u %u\n", (guint32) ic->status->u.appenduid.uidvalidity, ic->status->u.appenduid.uid);
 			if (ic->status->u.appenduid.uidvalidity == uidvalidity) {
 				gchar *uid;
 
-				uid = g_strdup_printf ("%u", (guint) ic->status->u.appenduid.uid);
+				uid = g_strdup_printf ("%u", ic->status->u.appenduid.uid);
 				camel_message_info_set_uid (mi, uid);
 
 				cur = camel_data_cache_get_filename  (imapx_folder->cache, "cur", uid);

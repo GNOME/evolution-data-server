@@ -864,7 +864,7 @@ folder_cmp_uids (CamelFolder *folder,
 	g_return_val_if_fail (uid1 != NULL, 0);
 	g_return_val_if_fail (uid2 != NULL, 0);
 
-	return strtoul (uid1, NULL, 10) - strtoul (uid2, NULL, 10);
+	return g_ascii_strtoull (uid1, NULL, 10) - g_ascii_strtoull (uid2, NULL, 10);
 }
 
 static void
