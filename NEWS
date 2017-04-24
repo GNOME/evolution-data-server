@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.25.1 2017-04-24
+---------------------------------------
+
+Bug Fixes:
+	Bug 780617 - [IMAPx] Allow FETCH response split into multiple lines (Milan Crha)
+	Bug 777161 - [CalDAV] Deadlock after refresh of OAuth2 token (Milan Crha)
+	Bug 777042 - [NNTP] Offline access not working when server service unreachable (Milan Crha)
+	Bug 656635 - Use-after-free when setting summary for component with alarms (Milan Crha)
+	Bug 781376 - [LDAP] Search in supported fields only (Milan Crha)
+	Bug 781465 - Add db4_load and db_load-4 to DB_LOAD NAMES (Antoine Jacoutot)
+	Bug 781543 - Provide all Google Task lists (Milan Crha)
+	Bug 781549 - [IMAPx] Treat UID as unsigned integer (Milan Crha)
+
+Miscellaneous:
+	Revert "Disable support for all POP3 extensions by default" (Milan Crha)
+	Fix maybe-used-uninitialized compiler warning from camel-pop3-folder.c (Milan Crha)
+	Fix few Coverity scan issues (Milan Crha)
+	Correct two libecal/client tests (Milan Crha)
+	[IMAPx] Unsubscribed folders shown after refresh (Milan Crha)
+	[IMAPx] Fix a memory leak of CamelIMAPXServer (Milan Crha)
+
+Translations:
+	Ask Hjorth Larsen (da)
+	Piotr Drąg (pl)
+	Rūdolfs Mazurs (lv)
+	Cédric Valmary (oc)
+
 Evolution-Data-Server 3.24.0 2017-03-20
 ---------------------------------------
 
