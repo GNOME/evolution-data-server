@@ -920,14 +920,14 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	if (!success) {
 		GError *local_error = NULL;
 
-		uri = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
+		uri = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
 		g_return_val_if_fail (uri != NULL, FALSE);
 
 		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 		if (!success && !g_cancellable_is_cancelled (cancellable) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			g_free (uri);
-			uri = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
+			uri = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
 
 			if (uri) {
 				g_clear_error (&local_error);
