@@ -529,3 +529,19 @@ camel_nntp_stream_getd (CamelNNTPStream *is,
 
 	return 1;
 }
+
+void
+camel_nntp_stream_lock (CamelNNTPStream *nntp_stream)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_STREAM (nntp_stream));
+
+	g_rec_mutex_lock (&nntp_stream->lock);
+}
+
+void
+camel_nntp_stream_unlock (CamelNNTPStream *nntp_stream)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_STREAM (nntp_stream));
+
+	g_rec_mutex_unlock (&nntp_stream->lock);
+}

@@ -131,6 +131,7 @@ gint		camel_nntp_command		(CamelNNTPStore *nntp_store,
 						 GCancellable *cancellable,
 						 GError **error,
 						 struct _CamelNNTPFolder *folder,
+						 CamelNNTPStream **out_nntp_stream,
 						 gchar **line,
 						 const gchar *fmt,
 						 ...);
