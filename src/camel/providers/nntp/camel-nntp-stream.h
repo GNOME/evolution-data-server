@@ -92,6 +92,8 @@ gint		camel_nntp_stream_getd		(CamelNNTPStream *is,
 						 guint *len,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_nntp_stream_lock		(CamelNNTPStream *nntp_stream);
+void		camel_nntp_stream_unlock	(CamelNNTPStream *nntp_stream);
 
 G_END_DECLS
 

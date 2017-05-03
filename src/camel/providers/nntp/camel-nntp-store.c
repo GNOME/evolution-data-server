@@ -858,7 +858,7 @@ nntp_store_get_subscribed_folder_info (CamelNNTPStore *nntp_store,
 			if (folder) {
 				CamelFolderChangeInfo *changes = NULL;
 
-				if (camel_nntp_command (nntp_store, cancellable, NULL, folder, &line, NULL) != -1) {
+				if (camel_nntp_command (nntp_store, cancellable, NULL, folder, NULL, &line, NULL) != -1) {
 					if (camel_folder_change_info_changed (folder->changes)) {
 						changes = folder->changes;
 						folder->changes = camel_folder_change_info_new ();
@@ -1158,7 +1158,7 @@ nntp_get_date (CamelNNTPStore *nntp_store,
 	gboolean success = FALSE;
 
 	ret = camel_nntp_command (
-		nntp_store, cancellable, error, NULL,
+		nntp_store, cancellable, error, NULL, NULL,
 		(gchar **) &line, "date");
 
 	nntp_store_summary = camel_nntp_store_ref_summary (nntp_store);
@@ -1215,7 +1215,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			if (!nntp_get_date (nntp_store, cancellable, NULL))
 				goto do_complete_list_nodate;
 
-			ret = camel_nntp_command (nntp_store, cancellable, error, NULL, (gchar **) &line, "newgroups %s", date);
+			ret = camel_nntp_command (nntp_store, cancellable, error, NULL, &nntp_stream, (gchar **) &line, "newgroups %s", date);
 			if (ret == -1)
 				goto error;
 			else if (ret != 231) {
@@ -1223,8 +1223,6 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 				nntp_store_summary->last_newslist[0] = 0;
 				goto do_complete_list;
 			}
-
-			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0)
 				nntp_store_info_update (nntp_store, (gchar *) line, is_folder_list);
@@ -1240,7 +1238,7 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 			/* at first, we do a DATE to find out the last load occasion */
 			nntp_get_date (nntp_store, cancellable, NULL);
 		do_complete_list_nodate:
-			ret = camel_nntp_command (nntp_store, cancellable, error, NULL, (gchar **) &line, "list");
+			ret = camel_nntp_command (nntp_store, cancellable, error, NULL, &nntp_stream, (gchar **) &line, "list");
 			if (ret == -1)
 				goto error;
 			else if (ret != 215) {
@@ -1264,8 +1262,6 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 
 			camel_store_summary_array_free (store_summary, array);
 
-			nntp_stream = camel_nntp_store_ref_stream (nntp_store);
-
 			while ((ret = camel_nntp_stream_line (nntp_stream, &line, &len, cancellable, error)) > 0) {
 				si = nntp_store_info_update (nntp_store, (gchar *) line, is_folder_list);
 				g_hash_table_remove (all, si->path);
@@ -1288,7 +1284,9 @@ nntp_store_get_folder_info_all (CamelNNTPStore *nntp_store,
 
 	fi = nntp_store_get_cached_folder_info (nntp_store, top, flags, error);
 
-error:
+ error:
+	if (nntp_stream)
+		camel_nntp_stream_unlock (nntp_stream);
 	g_clear_object (&nntp_stream);
 	g_clear_object (&nntp_store_summary);
 
@@ -2190,6 +2188,7 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
                     GCancellable *cancellable,
                     GError **error,
                     CamelNNTPFolder *folder,
+		    CamelNNTPStream **out_nntp_stream,
                     gchar **line,
                     const gchar *fmt,
                     ...)
@@ -2247,6 +2246,8 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 			g_return_val_if_fail (nntp_stream != NULL, -1);
 		}
 
+		camel_nntp_stream_lock (nntp_stream);
+
 		/* Check for unprocessed data, !*/
 		if (nntp_stream->mode == CAMEL_NNTP_STREAM_DATA) {
 			g_warning ("Unprocessed data left in stream, flushing");
@@ -2267,13 +2268,14 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 				nntp_store, cancellable, &local_error,
 				line, "group %s", full_name);
 			if (ret == 211) {
-				camel_nntp_store_set_current_group (
-					nntp_store, full_name);
 				if (camel_nntp_folder_selected (folder, *line, cancellable, &local_error) < 0) {
+					camel_nntp_store_set_current_group (nntp_store, NULL);
 					ret = -1;
 					goto error;
 				}
+				camel_nntp_store_set_current_group (nntp_store, full_name);
 			} else {
+				camel_nntp_store_set_current_group (nntp_store, NULL);
 				goto error;
 			}
 		}
@@ -2349,11 +2351,23 @@ camel_nntp_command (CamelNNTPStore *nntp_store,
 			break;
 		}
 
-		g_clear_object (&nntp_stream);
+		if (ret == -1) {
+			if (nntp_stream)
+				camel_nntp_stream_unlock (nntp_stream);
+
+			g_clear_object (&nntp_stream);
+		}
 
 	} while (ret == -1 && retry < 3);
 
-exit:
+ exit:
+	if (nntp_stream) {
+		if (ret != -1 && out_nntp_stream)
+			*out_nntp_stream = g_object_ref (nntp_stream);
+		else
+			camel_nntp_stream_unlock (nntp_stream);
+	}
+
 	g_clear_object (&nntp_stream);
 
 	return ret;

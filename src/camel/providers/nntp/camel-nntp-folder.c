@@ -252,12 +252,10 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 
 	ret = camel_nntp_command (
 		nntp_store, cancellable, error,
-		nntp_folder, &line, "article %s", id);
+		nntp_folder, &nntp_stream, &line, "article %s", id);
 
 	if (ret == 220) {
 		GIOStream *base_stream;
-
-		nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 		base_stream = camel_data_cache_add (
 			nntp_cache, "cache", msgid, NULL);
@@ -296,13 +294,16 @@ nntp_folder_download_message (CamelNNTPFolder *nntp_folder,
 
 	goto exit;
 
-fail:
+ fail:
 	camel_data_cache_remove (nntp_cache, "cache", msgid, NULL);
 	g_prefix_error (error, _("Cannot get message %s: "), msgid);
 
 	g_clear_object (&stream);
 
-exit:
+ exit:
+	if (nntp_stream)
+		camel_nntp_stream_unlock (nntp_stream);
+
 	g_clear_object (&nntp_cache);
 	g_clear_object (&nntp_stream);
 
@@ -418,8 +419,7 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 	nntp_store = CAMEL_NNTP_STORE (parent_store);
 
 	/* send 'POST' command */
-	ret = camel_nntp_command (
-		nntp_store, cancellable, error, NULL, &line, "post");
+	ret = camel_nntp_command (nntp_store, cancellable, error, NULL, &nntp_stream, &line, "post");
 	if (ret != 340) {
 		if (ret == 440) {
 			g_set_error (
@@ -445,8 +445,6 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "To");
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "Cc");
 	camel_medium_remove_header (CAMEL_MEDIUM (message), "Bcc");
-
-	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
 	/* setup stream filtering */
 	filtered_stream = camel_stream_filter_new (CAMEL_STREAM (nntp_stream));
@@ -502,7 +500,9 @@ nntp_folder_append_message_sync (CamelFolder *folder,
 
 	camel_name_value_array_free (previous_headers);
 
-exit:
+ exit:
+	if (nntp_stream)
+		camel_nntp_stream_unlock (nntp_stream);
 	g_clear_object (&nntp_stream);
 
 	return success;
@@ -709,7 +709,7 @@ nntp_folder_refresh_info_sync (CamelFolder *folder,
 	/* When invoked with no fmt, camel_nntp_command() just selects the folder
 	 * and should return zero. */
 	success = !camel_nntp_command (
-		nntp_store, cancellable, error, nntp_folder, &line, NULL);
+		nntp_store, cancellable, error, nntp_folder, NULL, &line, NULL);
 
 	if (camel_folder_change_info_changed (nntp_folder->changes)) {
 		changes = nntp_folder->changes;
