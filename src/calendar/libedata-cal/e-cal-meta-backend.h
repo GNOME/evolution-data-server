@@ -148,6 +148,17 @@ struct _ECalMetaBackendClass {
 						 const gchar *object,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(* search_sync)		(ECalMetaBackend *meta_backend,
+						 const gchar *expr,
+						 GSList **out_icalstrings, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
+	gboolean	(* search_components_sync)
+						(ECalMetaBackend *meta_backend,
+						 const gchar *expr,
+						 GSList **out_components, /* ECalComponent * */
+						 GCancellable *cancellable,
+						 GError **error);
 	gboolean	(* requires_reconnect)	(ECalMetaBackend *meta_backend);
 
 	/* Signals */
@@ -250,6 +261,17 @@ gboolean	e_cal_meta_backend_remove_component_sync
 						 const gchar *uid,
 						 const gchar *extra,
 						 const gchar *object,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_meta_backend_search_sync	(ECalMetaBackend *meta_backend,
+						 const gchar *expr,
+						 GSList **out_icalstrings, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_meta_backend_search_components_sync
+						(ECalMetaBackend *meta_backend,
+						 const gchar *expr,
+						 GSList **out_components, /* ECalComponent * */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_meta_backend_requires_reconnect

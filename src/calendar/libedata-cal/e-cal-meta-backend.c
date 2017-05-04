@@ -488,6 +488,72 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 }
 
 static gboolean
+ecmb_search_sync (ECalMetaBackend *meta_backend,
+		  const gchar *expr,
+		  GSList **out_icalstrings,
+		  GCancellable *cancellable,
+		  GError **error)
+{
+	ECalCache *cal_cache;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_icalstrings != NULL, FALSE);
+
+	*out_icalstrings = NULL;
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
+
+	success = e_cal_cache_search (cal_cache, expr, out_icalstrings, cancellable, error);
+
+	if (success) {
+		GSList *link;
+
+		for (link = *out_icalstrings; link; link = g_slist_next (link)) {
+			ECalCacheSearchData *search_data = link->data;
+			gchar *icalstring = NULL;
+
+			if (search_data) {
+				icalstring = g_strdup (search_data->object);
+				e_cal_cache_search_data_free (search_data);
+			}
+
+			link->data = icalstring;
+		}
+	}
+
+	g_object_unref (cal_cache);
+
+	return success;
+}
+
+static gboolean
+ecmb_search_components_sync (ECalMetaBackend *meta_backend,
+			     const gchar *expr,
+			     GSList **out_components,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	ECalCache *cal_cache;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_components != NULL, FALSE);
+
+	*out_components = NULL;
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
+
+	success = e_cal_cache_search_components (cal_cache, expr, out_components, cancellable, error);
+
+	g_object_unref (cal_cache);
+
+	return success;
+}
+
+static gboolean
 ecmb_requires_reconnect (ECalMetaBackend *meta_backend)
 {
 	ESource *source;
@@ -545,7 +611,6 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 {
 	EDataCalView *view = user_data;
 	ECalBackendSExp *sexp;
-	ECalCache *cal_cache;
 	GSList *components = NULL;
 	const gchar *expr = NULL;
 	GError *local_error = NULL;
@@ -561,10 +626,7 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 	if (sexp)
 		expr = e_cal_backend_sexp_text (sexp);
 
-	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cal_backend));
-	g_return_if_fail (cal_cache != NULL);
-
-	if (e_cal_cache_search_components (cal_cache, expr, &components, cancellable, &local_error) && components) {
+	if (e_cal_meta_backend_search_components_sync (E_CAL_META_BACKEND (cal_backend), expr, &components, cancellable, &local_error) && components) {
 		if (!g_cancellable_is_cancelled (cancellable))
 			e_data_cal_view_notify_components_added (view, components);
 
@@ -574,7 +636,6 @@ ecmb_start_view_thread_func (ECalBackend *cal_backend,
 	e_data_cal_view_notify_complete (view, local_error);
 
 	g_clear_error (&local_error);
-	g_object_unref (cal_cache);
 }
 
 static gboolean
@@ -1391,33 +1452,12 @@ ecmb_get_object_list_sync (ECalBackendSync *sync_backend,
 			   GSList **calobjs,
 			   GError **error)
 {
-	ECalCache *cal_cache;
-
 	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
 	g_return_if_fail (calobjs != NULL);
 
 	*calobjs = NULL;
-	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (sync_backend));
 
-	g_return_if_fail (cal_cache != NULL);
-
-	if (e_cal_cache_search (cal_cache, sexp, calobjs, cancellable, error)) {
-		GSList *link;
-
-		for (link = *calobjs; link; link = g_slist_next (link)) {
-			ECalCacheSearchData *search_data = link->data;
-			gchar *icalstring = NULL;
-
-			if (search_data) {
-				icalstring = g_strdup (search_data->object);
-				e_cal_cache_search_data_free (search_data);
-			}
-
-			link->data = icalstring;
-		}
-	}
-
-	g_object_unref (cal_cache);
+	e_cal_meta_backend_search_sync (E_CAL_META_BACKEND (sync_backend), sexp, calobjs, cancellable, error);
 }
 
 static gboolean
@@ -3149,6 +3189,8 @@ e_cal_meta_backend_class_init (ECalMetaBackendClass *klass)
 	g_type_class_add_private (klass, sizeof (ECalMetaBackendPrivate));
 
 	klass->get_changes_sync = ecmb_get_changes_sync;
+	klass->search_sync = ecmb_search_sync;
+	klass->search_components_sync = ecmb_search_components_sync;
 	klass->requires_reconnect = ecmb_requires_reconnect;
 
 	cal_backend_sync_class = E_CAL_BACKEND_SYNC_CLASS (klass);
@@ -4312,6 +4354,92 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
 	}
 
 	return klass->remove_component_sync (meta_backend, conflict_resolution, uid, extra, object, cancellable, error);
+}
+
+/**
+ * e_cal_meta_backend_search_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @expr: (nullable): a search expression, or %NULL
+ * @out_icalstrings: (out) (transfer full) (element-type utf8): return location for the found components as iCal strings
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Searches @meta_backend with given expression @expr and returns
+ * found components as a %GSList of iCal strings @out_icalstrings.
+ * Free the returned @out_icalstrings with g_slist_free_full (icalstrings, g_free);
+ * when no longer needed.
+ * When the #expr is %NULL, all objects are returned. To get
+ * #ECalComponent-s instead, call e_cal_meta_backend_search_components_sync().
+ *
+ * It is optional to implement this virtual method by the descendant.
+ * The default implementation searches @meta_backend's cache. It's also
+ * not required to be online for searching, thus @meta_backend doesn't
+ * ensure it.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_search_sync (ECalMetaBackend *meta_backend,
+				const gchar *expr,
+				GSList **out_icalstrings,
+				GCancellable *cancellable,
+				GError **error)
+{
+	ECalMetaBackendClass *klass;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_icalstrings != NULL, FALSE);
+
+	klass = E_CAL_META_BACKEND_GET_CLASS (meta_backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->search_sync != NULL, FALSE);
+
+	return klass->search_sync (meta_backend, expr, out_icalstrings, cancellable, error);
+}
+
+/**
+ * e_cal_meta_backend_search_components_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @expr: (nullable): a search expression, or %NULL
+ * @out_components: (out) (transfer full) (element-type ECalComponent): return location for the found #ECalComponent-s
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Searches @meta_backend with given expression @expr and returns
+ * found components as a %GSList of #ECalComponont-s @out_components.
+ * Free the returned @out_components with g_slist_free_full (components, g_object_unref);
+ * when no longer needed.
+ * When the #expr is %NULL, all objects are returned. To get iCal
+ * strings instead, call e_cal_meta_backend_search_sync().
+ *
+ * It is optional to implement this virtual method by the descendant.
+ * The default implementation searches @meta_backend's cache. It's also
+ * not required to be online for searching, thus @meta_backend doesn't
+ * ensure it.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_search_components_sync (ECalMetaBackend *meta_backend,
+					   const gchar *expr,
+					   GSList **out_components,
+					   GCancellable *cancellable,
+					   GError **error)
+{
+	ECalMetaBackendClass *klass;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_components != NULL, FALSE);
+
+	klass = E_CAL_META_BACKEND_GET_CLASS (meta_backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->search_components_sync != NULL, FALSE);
+
+	return klass->search_components_sync (meta_backend, expr, out_components, cancellable, error);
 }
 
 /**
