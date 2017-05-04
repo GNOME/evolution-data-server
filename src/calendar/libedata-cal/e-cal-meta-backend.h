@@ -23,7 +23,7 @@
 #define E_CAL_META_BACKEND_H
 
 #include <libebackend/libebackend.h>
-#include <libedata-cal/e-cal-backend.h>
+#include <libedata-cal/e-cal-backend-sync.h>
 #include <libedata-cal/e-cal-cache.h>
 #include <libecal/libecal.h>
 
