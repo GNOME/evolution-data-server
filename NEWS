@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.24.2 2017-05-08
+---------------------------------------
+
+Bug Fixes:
+	Bug 777042 - [NNTP] Offline access not working when server service unreachable (Milan Crha)
+	Bug 656635 - Use-after-free when setting summary for component with alarms (Milan Crha)
+	Bug 781376 - [LDAP] Search in supported fields only (Milan Crha)
+	Bug 781465 - Add db4_load and db_load-4 to DB_LOAD NAMES (Antoine Jacoutot)
+	Bug 781543 - Provide all Google Task lists (Milan Crha)
+	Bug 781549 - [IMAPx] Treat UID as unsigned integer (Milan Crha)
+	Bug 781833 - Do not set '-Wl,--no-undefined' on BSD (Antoine Jacoutot)
+	Bug 779749 - [NNTP] Add exclusive usage locking for underlying stream (Milan Crha)
+
+Miscellaneous:
+	Correct two libecal/client tests (Milan Crha)
+	[IMAPx] Unsubscribed folders shown after refresh (Milan Crha)
+	[IMAPx] Fix a memory leak of CamelIMAPXServer (Milan Crha)
+
 Evolution-Data-Server 3.24.1 2017-04-10
 ---------------------------------------
 
