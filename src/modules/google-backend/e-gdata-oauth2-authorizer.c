@@ -245,7 +245,6 @@ gdata_oauth2_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 
 	success = e_util_get_source_oauth2_access_token_sync (source, oauth2_authorizer->priv->credentials,
 		ptr_access_token, NULL, cancellable, error);
-	printf ("%s: succ:%d\n", __FUNCTION__, success);
 
 	g_mutex_unlock (&mutex);
 
