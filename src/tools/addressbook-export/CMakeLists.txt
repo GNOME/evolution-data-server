@@ -52,7 +52,7 @@ if(PERL)
 		@ONLY
 	)
 
-	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/csv2vcard
+	install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/csv2vcard
 		DESTINATION ${privlibexecdir}
 	)
 else(PERL)
