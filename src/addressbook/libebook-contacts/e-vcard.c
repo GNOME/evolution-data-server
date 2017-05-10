@@ -2034,6 +2034,11 @@ e_vcard_attribute_remove_param (EVCardAttribute *attr,
 		param = l->data;
 		if (g_ascii_strcasecmp (e_vcard_attribute_param_get_name (param),
 					param_name) == 0) {
+			if (g_ascii_strcasecmp (param_name, EVC_ENCODING) == 0) {
+				attr->encoding_set = FALSE;
+				attr->encoding = EVC_ENCODING_RAW;
+			}
+
 			attr->params = g_list_delete_link (attr->params, l);
 			e_vcard_attribute_param_free (param);
 			break;

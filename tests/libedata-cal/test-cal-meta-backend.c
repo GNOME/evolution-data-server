@@ -20,7 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <locale.h>
-#include <libecal/libecal.h>
+
+#include "libecal/libecal.h"
 
 #include "test-cal-cache-utils.h"
 

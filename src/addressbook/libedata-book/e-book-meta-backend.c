@@ -114,7 +114,7 @@ static gboolean ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 						EBookCache *book_cache,
 						gboolean overwrite_existing,
 						EConflictResolution conflict_resolution,
-						const EContact *in_contact,
+						/* const */ EContact *in_contact,
 						const gchar *extra,
 						const gchar *orig_uid,
 						gboolean *out_requires_put,
@@ -1219,7 +1219,7 @@ ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 				EBookCache *book_cache,
 				gboolean overwrite_existing,
 				EConflictResolution conflict_resolution,
-				const EContact *in_contact,
+				/* const */ EContact *in_contact,
 				const gchar *extra,
 				const gchar *orig_uid,
 				gboolean *out_requires_put,
@@ -1238,7 +1238,7 @@ ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	if (out_new_uid)
 		*out_new_uid = NULL;
 
-	contact = e_contact_duplicate ((EContact *) in_contact);
+	contact = e_contact_duplicate (in_contact);
 
 	success = e_book_meta_backend_inline_local_photos_sync (meta_backend, contact, cancellable, error);
 
@@ -2897,7 +2897,7 @@ e_book_meta_backend_inline_local_photos_sync (EBookMetaBackend *meta_backend,
 
 		values = e_vcard_attribute_get_param (attr, EVC_VALUE);
 		if (values && g_ascii_strcasecmp (values->data, "uri") == 0) {
-			const gchar *url;
+			gchar *url;
 
 			url = e_vcard_attribute_get_value (attr);
 			if (url && g_str_has_prefix (url, LOCAL_PREFIX)) {
@@ -2937,6 +2937,8 @@ e_book_meta_backend_inline_local_photos_sync (EBookMetaBackend *meta_backend,
 				g_object_unref (file);
 				g_free (basename);
 			}
+
+			g_free (url);
 		}
 	}
 
@@ -2951,7 +2953,7 @@ ebmb_create_photo_local_filename (EBookMetaBackend *meta_backend,
 				  const gchar *type)
 {
 	EBookCache *book_cache;
-	gchar *local_filename, *cache_path, *checksum, *prefix, *extension;
+	gchar *local_filename, *cache_path, *checksum, *prefix, *extension, *filename;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -2969,13 +2971,16 @@ ebmb_create_photo_local_filename (EBookMetaBackend *meta_backend,
 	else
 		extension = NULL;
 
-	local_filename = g_build_filename (cache_path, prefix, extension ? "." : NULL, extension, NULL);
+	filename = g_strconcat (prefix, extension ? "." : NULL, extension, NULL);
+
+	local_filename = g_build_filename (cache_path, filename, NULL);
 
 	g_object_unref (book_cache);
 	g_free (cache_path);
 	g_free (checksum);
 	g_free (prefix);
 	g_free (extension);
+	g_free (filename);
 
 	return local_filename;
 }
@@ -3475,7 +3480,7 @@ gboolean
 e_book_meta_backend_save_contact_sync (EBookMetaBackend *meta_backend,
 				       gboolean overwrite_existing,
 				       EConflictResolution conflict_resolution,
-				       const EContact *contact,
+				       /* const */ EContact *contact,
 				       const gchar *extra,
 				       gchar **out_new_uid,
 				       gchar **out_new_extra,

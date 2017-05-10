@@ -107,6 +107,7 @@ set(TESTS
 	test-book-cache-cursor-set-sexp
 	test-book-cache-cursor-change-locale
 	test-book-cache-offline
+	test-book-meta-backend
 	test-sqlite-get-contact
 	test-sqlite-create-cursor
 	test-sqlite-cursor-move-by-posix
