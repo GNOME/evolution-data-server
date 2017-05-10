@@ -3320,7 +3320,7 @@ ebc_search_select_cb (ECache *cache,
 	}
 
 	if (sd->user_func) {
-		return sd->user_func (cache, column_values[sd->uid_index], column_values[sd->revision_index],
+		return sd->user_func (E_BOOK_CACHE (cache), column_values[sd->uid_index], column_values[sd->revision_index],
 			object, extra, offline_state, sd->user_func_user_data);
 	}
 

@@ -4617,7 +4617,7 @@ e_cal_backend_prepare_for_completion (ECalBackend *backend,
 
 /**
  * e_cal_backend_schedule_custom_operation:
- * @backend: an #ECalBackend
+ * @cal_backend: an #ECalBackend
  * @use_cancellable: (nullable): an optional #GCancellable to use for @func
  * @func: a function to call in a dedicated thread
  * @user_data: user data being passed to @func
@@ -4635,7 +4635,7 @@ e_cal_backend_prepare_for_completion (ECalBackend *backend,
  * Since: 3.26
  **/
 void
-e_cal_backend_schedule_custom_operation (ECalBackend *backend,
+e_cal_backend_schedule_custom_operation (ECalBackend *cal_backend,
 					 GCancellable *use_cancellable,
 					 ECalBackendCustomOpFunc func,
 					 gpointer user_data,
@@ -4643,14 +4643,14 @@ e_cal_backend_schedule_custom_operation (ECalBackend *backend,
 {
 	DispatchNode *node;
 
-	g_return_if_fail (E_IS_CAL_BACKEND (backend));
+	g_return_if_fail (E_IS_CAL_BACKEND (cal_backend));
 	g_return_if_fail (func != NULL);
 
-	g_mutex_lock (&backend->priv->operation_lock);
+	g_mutex_lock (&cal_backend->priv->operation_lock);
 
 	node = g_slice_new0 (DispatchNode);
 	node->blocking_operation = TRUE;
-	node->cal_backend_weak_ref = e_weak_ref_new (backend);
+	node->cal_backend_weak_ref = e_weak_ref_new (cal_backend);
 	node->custom_func = func;
 	node->custom_func_user_data = user_data;
 	node->custom_func_user_data_free = user_data_free;
@@ -4658,9 +4658,9 @@ e_cal_backend_schedule_custom_operation (ECalBackend *backend,
 	if (G_IS_CANCELLABLE (use_cancellable))
 		node->cancellable = g_object_ref (use_cancellable);
 
-	g_queue_push_tail (&backend->priv->pending_operations, node);
+	g_queue_push_tail (&cal_backend->priv->pending_operations, node);
 
-	g_mutex_unlock (&backend->priv->operation_lock);
+	g_mutex_unlock (&cal_backend->priv->operation_lock);
 
-	cal_backend_dispatch_next_operation (backend);
+	cal_backend_dispatch_next_operation (cal_backend);
 }

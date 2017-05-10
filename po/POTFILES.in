@@ -19,9 +19,11 @@ src/addressbook/libedata-book/e-book-backend.c
 src/addressbook/libedata-book/e-book-backend-sexp.c
 src/addressbook/libedata-book/e-book-backend-sqlitedb.c
 src/addressbook/libedata-book/e-book-cache.c
+src/addressbook/libedata-book/e-book-meta-backend.c
 src/addressbook/libedata-book/e-book-sqlite.c
 src/addressbook/libedata-book/e-data-book.c
 src/addressbook/libedata-book/e-data-book-cursor.c
+src/addressbook/libedata-book/e-data-book-cursor-cache.c
 src/addressbook/libedata-book/e-data-book-cursor-sqlite.c
 src/addressbook/libedata-book/e-data-book-factory.c
 src/calendar/backends/caldav/e-cal-backend-caldav.c

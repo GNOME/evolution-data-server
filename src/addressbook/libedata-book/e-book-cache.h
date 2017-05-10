@@ -90,7 +90,7 @@ void		e_book_cache_search_data_free	(/* EBookCacheSearchData * */ gpointer data)
 
 /**
  * EBookCacheSearchFunc:
- * @cache: an #ECache
+ * @book_cache: an #EBookCache
  * @uid: a unique object identifier
  * @revision: the object revision
  * @object: the object itself
@@ -105,7 +105,7 @@ void		e_book_cache_search_data_free	(/* EBookCacheSearchData * */ gpointer data)
  *
  * Since: 3.26
  **/
-typedef gboolean (* EBookCacheSearchFunc)	(ECache *cache,
+typedef gboolean (* EBookCacheSearchFunc)	(EBookCache *book_cache,
 						 const gchar *uid,
 						 const gchar *revision,
 						 const gchar *object,
@@ -258,12 +258,12 @@ gboolean	e_book_cache_get_contact_extra	(EBookCache *book_cache,
 gboolean	e_book_cache_search		(EBookCache *book_cache,
 						 const gchar *sexp,
 						 gboolean meta_contacts,
-						 GSList **out_list,
+						 GSList **out_list, /* EBookCacheSearchData * */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_search_uids	(EBookCache *book_cache,
 						 const gchar *sexp,
-						 GSList **out_list,
+						 GSList **out_list, /* gchar * */
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_book_cache_search_with_callback

@@ -119,7 +119,7 @@ static gboolean ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 						  GError **error);
 
 /**
- * e_cal_cache_search_data_new:
+ * e_cal_meta_backend_info_new:
  * @uid: a component UID; cannot be %NULL
  * @revision: (nullable): the component revision; can be %NULL
  * @object: (nullable): the component object as an iCalendar string; can be %NULL
@@ -1384,7 +1384,6 @@ ecmb_refresh_sync (ECalBackendSync *sync_backend,
 		   EDataCal *cal,
 		   GCancellable *cancellable,
 		   GError **error)
-
 {
 	ECalMetaBackend *meta_backend;
 
@@ -3959,11 +3958,11 @@ e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
- * This is called always before any operations which requires a connection
+ * This is called always before any operation which requires a connection
  * to the remote side. It can fail with an #E_CLIENT_ERROR_REPOSITORY_OFFLINE
  * error to indicate that the remote side cannot be currently reached. Other
  * errors are propagated to the caller/client side. This method is not called
- * when the backend is not online.
+ * when the backend is offline.
  *
  * The descendant should also call e_cal_backend_set_writable() after successful
  * connect to the remote side. This value is stored for later use, when being
@@ -3974,7 +3973,7 @@ e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
  * just set the @out_auth_result to %E_SOURCE_AUTHENTICATION_REQUIRED for
  * the first time and the function will be called again once the credentials
  * are available. See the documentation of #ESourceAuthenticationResult for
- * other available reasons.
+ * other available results.
  *
  * The out parameters are passed to e_backend_schedule_credentials_required()
  * and are ignored when the descendant returns %TRUE, aka they are used
@@ -3991,7 +3990,7 @@ e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
  * Since: 3.26
  **/
 gboolean
-e_cal_meta_backend_connect_sync	(ECalMetaBackend *meta_backend,
+e_cal_meta_backend_connect_sync (ECalMetaBackend *meta_backend,
 				 const ENamedParameters *credentials,
 				 ESourceAuthenticationResult *out_auth_result,
 				 gchar **out_certificate_pem,
@@ -4365,10 +4364,10 @@ e_cal_meta_backend_remove_component_sync (ECalMetaBackend *meta_backend,
  * @error: return location for a #GError, or %NULL
  *
  * Searches @meta_backend with given expression @expr and returns
- * found components as a %GSList of iCal strings @out_icalstrings.
+ * found components as a #GSList of iCal strings @out_icalstrings.
  * Free the returned @out_icalstrings with g_slist_free_full (icalstrings, g_free);
  * when no longer needed.
- * When the #expr is %NULL, all objects are returned. To get
+ * When the @expr is %NULL, all objects are returned. To get
  * #ECalComponent-s instead, call e_cal_meta_backend_search_components_sync().
  *
  * It is optional to implement this virtual method by the descendant.
@@ -4408,10 +4407,10 @@ e_cal_meta_backend_search_sync (ECalMetaBackend *meta_backend,
  * @error: return location for a #GError, or %NULL
  *
  * Searches @meta_backend with given expression @expr and returns
- * found components as a %GSList of #ECalComponont-s @out_components.
+ * found components as a #GSList of #ECalComponont-s @out_components.
  * Free the returned @out_components with g_slist_free_full (components, g_object_unref);
  * when no longer needed.
- * When the #expr is %NULL, all objects are returned. To get iCal
+ * When the @expr is %NULL, all objects are returned. To get iCal
  * strings instead, call e_cal_meta_backend_search_sync().
  *
  * It is optional to implement this virtual method by the descendant.

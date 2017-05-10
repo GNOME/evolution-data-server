@@ -547,7 +547,7 @@ typedef void	(* ECalBackendCustomOpFunc)	(ECalBackend *cal_backend,
 						 GError **error);
 
 void		e_cal_backend_schedule_custom_operation
-						(ECalBackend *backend,
+						(ECalBackend *cal_backend,
 						 GCancellable *use_cancellable,
 						 ECalBackendCustomOpFunc func,
 						 gpointer user_data,
