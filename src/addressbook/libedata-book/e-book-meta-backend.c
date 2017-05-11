@@ -2121,6 +2121,8 @@ ebmb_create_cursor (EBookBackend *book_backend,
 		g_mutex_unlock (&meta_backend->priv->property_lock);
 	}
 
+	g_object_unref (book_cache);
+
 	return cursor;
 }
 
