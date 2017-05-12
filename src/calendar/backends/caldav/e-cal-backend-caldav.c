@@ -26,10 +26,6 @@
 
 #include "e-cal-backend-caldav.h"
 
-#define E_CAL_BACKEND_CALDAV_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE \
-	((obj), E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate))
-
 #define E_CALDAV_MAX_MULTIGET_AMOUNT 100 /* what's the maximum count of items to fetch within a multiget request */
 
 #define E_CALDAV_X_ETAG "X-EVOLUTION-CALDAV-ETAG"
@@ -37,9 +33,8 @@
 #define EDC_ERROR(_code) e_data_cal_create_error (_code, NULL)
 #define EDC_ERROR_EX(_code, _msg) e_data_cal_create_error (_code, _msg)
 
-/* Private part of the ECalBackendHttp structure */
 struct _ECalBackendCalDAVPrivate {
-	/* The main soup session  */
+	/* The main WebDAV session  */
 	EWebDAVSession *webdav;
 
 	/* support for 'getctag' extension */
@@ -155,6 +150,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		g_clear_object (&cal_cache);
 		soup_uri_free (soup_uri);
 	}
+
 	if (success) {
 		gchar *ctag = NULL;
 
@@ -447,9 +443,20 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 			if (!success)
 				break;
 		} else {
+			SoupURI *suri;
+			gchar *path = NULL;
+
+			suri = soup_uri_new (nfo->extra);
+			if (suri) {
+				path = soup_uri_to_string (suri, TRUE);
+				soup_uri_free (suri);
+			}
+
 			e_xml_document_start_element (xml, E_WEBDAV_NS_DAV, "href");
-			e_xml_document_write_string (xml, nfo->extra);
+			e_xml_document_write_string (xml, path ? path : nfo->extra);
 			e_xml_document_end_element (xml); /* href */
+
+			g_free (path);
 		}
 	}
 
@@ -491,11 +498,13 @@ ecb_caldav_get_calendar_items_cb (EWebDAVSession *webdav,
 		g_return_val_if_fail (href != NULL, FALSE);
 
 		/* Skip collection resource, if returned by the server (like iCloud.com does) */
-		if (request_uri && request_uri->path && g_str_has_suffix (href, request_uri->path))
+		if (g_str_has_suffix (href, "/") ||
+		    (request_uri && request_uri->path && g_str_has_suffix (href, request_uri->path)))
 			return TRUE;
 
 		etag = e_webdav_session_util_maybe_dequote (e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:getetag", xpath_prop_prefix));
-		g_return_val_if_fail (etag != NULL, FALSE);
+		/* Return 'TRUE' to not stop on faulty data from the server */
+		g_return_val_if_fail (etag != NULL, TRUE);
 
 		/* UID is unknown at this moment */
 		nfo = e_cal_meta_backend_info_new ("", etag, NULL, href);
@@ -598,7 +607,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 		success = e_webdav_session_getctag_sync (cbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL);
 		if (!success) {
 			cbdav->priv->ctag_supported = g_cancellable_set_error_if_cancelled (cancellable, error);
-			if (cbdav->priv->ctag_supported)
+			if (cbdav->priv->ctag_supported || !cbdav->priv->webdav)
 				return FALSE;
 		} else if (!is_repeat && new_sync_tag && last_sync_tag && g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
 			*out_new_sync_tag = new_sync_tag;
@@ -874,6 +883,9 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 			*slash = '\0';
 	}
 
+	soup_uri_set_user (soup_uri, NULL);
+	soup_uri_set_password (soup_uri, NULL);
+
 	tmp = g_strconcat (soup_uri->path && *soup_uri->path ? soup_uri->path : "", "/", filename, NULL);
 	soup_uri_set_path (soup_uri, tmp);
 	g_free (tmp);
@@ -899,6 +911,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	gchar *uri = NULL, *href = NULL, *etag = NULL, *bytes = NULL;
 	gsize length = -1;
 	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -909,7 +922,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	if (extra && *extra) {
 		uri = g_strdup (extra);
 
-		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, error);
+		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 
 		if (!success) {
 			g_free (uri);
@@ -918,10 +931,10 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	}
 
 	if (!success) {
-		GError *local_error = NULL;
-
 		uri = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
 		g_return_val_if_fail (uri != NULL, FALSE);
+
+		g_clear_error (&local_error);
 
 		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 		if (!success && !g_cancellable_is_cancelled (cancellable) &&
@@ -932,10 +945,8 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 			if (uri) {
 				g_clear_error (&local_error);
 
-				success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, error);
+				success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 			}
-		} else if (local_error) {
-			g_propagate_error (error, local_error);
 		}
 	}
 
@@ -967,7 +978,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 
 		if (!*out_component) {
 			success = FALSE;
-			g_propagate_error (error, EDC_ERROR (InvalidObject));
+			g_propagate_error (&local_error, EDC_ERROR (InvalidObject));
 		}
 	}
 
@@ -975,6 +986,9 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	g_free (href);
 	g_free (etag);
 	g_free (bytes);
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return success;
 }
@@ -1029,7 +1043,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	if (uid && ical_string && (!overwrite_existing || (extra && *extra))) {
 		gboolean force_write = FALSE;
 
-		if (!extra)
+		if (!extra || !*extra)
 			href = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
 
 		if (overwrite_existing) {
@@ -1078,6 +1092,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	icalcomponent *icalcomp;
 	gchar *etag = NULL;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -1096,14 +1111,41 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	if (conflict_resolution != E_CONFLICT_RESOLUTION_FAIL)
+	if (conflict_resolution == E_CONFLICT_RESOLUTION_FAIL)
 		etag = e_cal_util_dup_x_property (icalcomp, E_CALDAV_X_ETAG);
 
 	success = e_webdav_session_delete_sync (cbdav->priv->webdav, extra,
-		E_WEBDAV_DEPTH_THIS, etag, cancellable, error);
+		E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+
+	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+		gchar *href;
+
+		href = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
+		if (href) {
+			g_clear_error (&local_error);
+			success = e_webdav_session_delete_sync (cbdav->priv->webdav, href,
+				E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+
+			g_free (href);
+		}
+
+		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
+			href = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
+			if (href) {
+				g_clear_error (&local_error);
+				success = e_webdav_session_delete_sync (cbdav->priv->webdav, href,
+					E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+
+				g_free (href);
+			}
+		}
+	}
 
 	icalcomponent_free (icalcomp);
 	g_free (etag);
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return success;
 }

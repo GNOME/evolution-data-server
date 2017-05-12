@@ -131,6 +131,7 @@ enum {
 
 enum {
 	E164_CHANGED,
+	DUP_CONTACT_REVISION,
 	LAST_SIGNAL
 };
 
@@ -4592,6 +4593,34 @@ e_book_cache_ref_source (EBookCache *book_cache)
 }
 
 /**
+ * e_book_cache_dup_contact_revision:
+ * @book_cache: an #EBookCache
+ * @contact: an #EContact
+ *
+ * Returns the @contact revision, used to detect changes.
+ * The returned string should be freed with g_free(), when
+ * no longer needed.
+ *
+ * Returns: (transfer full): A newly allocated string containing
+ *    revision of the @contact.
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_book_cache_dup_contact_revision (EBookCache *book_cache,
+				   EContact *contact)
+{
+	gchar *revision = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), NULL);
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	g_signal_emit (book_cache, signals[DUP_CONTACT_REVISION], 0, contact, &revision);
+
+	return revision;
+}
+
+/**
  * e_book_cache_set_locale:
  * @book_cache: An #EBookCache
  * @lc_collate: The new locale for the cache
@@ -4790,7 +4819,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 			e_cache_column_values_take_value (other_columns, EBC_COLUMN_EXTRA, g_strdup (extra));
 
 		uid = e_contact_get (contact, E_CONTACT_UID);
-		rev = e_contact_get (contact, E_CONTACT_REV);
+		rev = e_book_cache_dup_contact_revision (book_cache, contact);
 
 		ebc_fill_other_columns (book_cache, contact, other_columns);
 
@@ -5859,6 +5888,15 @@ e_book_cache_cursor_compare_contact (EBookCache *book_cache,
 	return comparison;
 }
 
+static gchar *
+ebc_dup_contact_revision (EBookCache *book_cache,
+			  EContact *contact)
+{
+	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
+
+	return e_contact_get (contact, E_CONTACT_REV);
+}
+
 static gboolean
 e_book_cache_put_locked (ECache *cache,
 			 const gchar *uid,
@@ -6022,6 +6060,8 @@ e_book_cache_class_init (EBookCacheClass *klass)
 	cache_class->remove_all_locked = e_book_cache_remove_all_locked;
 	cache_class->clear_offline_changes_locked = e_book_cache_clear_offline_changes_locked;
 
+	klass->dup_contact_revision = ebc_dup_contact_revision;
+
 	g_object_class_install_property (
 		object_class,
 		PROP_LOCALE,
@@ -6044,6 +6084,22 @@ e_book_cache_class_init (EBookCacheClass *klass)
 		G_TYPE_NONE, 2,
 		E_TYPE_CONTACT,
 		G_TYPE_BOOLEAN);
+
+	/**
+	 * @EBookCache:dup-contact-revision:
+	 * A signal being called to get revision of an EContact.
+	 * The default implementation returns E_CONTACT_REV field value.
+	 **/
+	signals[DUP_CONTACT_REVISION] = g_signal_new (
+		"dup-contact-revision",
+		G_OBJECT_CLASS_TYPE (klass),
+		G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+		G_STRUCT_OFFSET (EBookCacheClass, dup_contact_revision),
+		g_signal_accumulator_first_wins,
+		NULL,
+		g_cclosure_marshal_generic,
+		G_TYPE_STRING, 1,
+		E_TYPE_CONTACT);
 }
 
 static void

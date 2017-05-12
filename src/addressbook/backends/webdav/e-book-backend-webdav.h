@@ -27,10 +27,10 @@
 	(e_book_backend_webdav_get_type ())
 #define E_BOOK_BACKEND_WEBDAV(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdav))
+	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebDAV))
 #define E_BOOK_BACKEND_WEBDAV_CLASS(cls) \
 	(G_TYPE_CHECK_CLASS_CAST \
-	((cls), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavClass))
+	((cls), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebDAVClass))
 #define E_IS_BOOK_BACKEND_WEBDAV(obj) \
 	(G_TYPE_CHECK_INSTANCE_TYPE \
 	((obj), E_TYPE_BOOK_BACKEND_WEBDAV))
@@ -39,21 +39,21 @@
 	((cls), E_TYPE_BOOK_BACKEND_WEBDAV))
 #define E_BOOK_BACKEND_WEBDAV_GET_CLASS(cls) \
 	(G_TYPE_INSTANCE_GET_CLASS \
-	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebdavClass))
+	((obj), E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebDAVClass))
 
 G_BEGIN_DECLS
 
-typedef struct _EBookBackendWebdav EBookBackendWebdav;
-typedef struct _EBookBackendWebdavClass EBookBackendWebdavClass;
-typedef struct _EBookBackendWebdavPrivate EBookBackendWebdavPrivate;
+typedef struct _EBookBackendWebDAV EBookBackendWebDAV;
+typedef struct _EBookBackendWebDAVClass EBookBackendWebDAVClass;
+typedef struct _EBookBackendWebDAVPrivate EBookBackendWebDAVPrivate;
 
-struct _EBookBackendWebdav {
-	EBookBackend parent;
-	EBookBackendWebdavPrivate *priv;
+struct _EBookBackendWebDAV {
+	EBookMetaBackend parent;
+	EBookBackendWebDAVPrivate *priv;
 };
 
-struct _EBookBackendWebdavClass {
-	EBookBackendClass parent_class;
+struct _EBookBackendWebDAVClass {
+	EBookMetaBackendClass parent_class;
 };
 
 GType		e_book_backend_webdav_get_type	(void);
@@ -61,4 +61,3 @@ GType		e_book_backend_webdav_get_type	(void);
 G_END_DECLS
 
 #endif /* E_BOOK_BACKEND_WEBDAV_H */
-

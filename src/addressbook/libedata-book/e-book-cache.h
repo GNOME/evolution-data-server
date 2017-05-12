@@ -139,9 +139,13 @@ struct _EBookCacheClass {
 	ECacheClass parent_class;
 
 	/* Signals */
-	void	(* e164_changed)	(EBookCache *book_cache,
-					 EContact *contact,
-					 gboolean is_replace);
+	void		(* e164_changed)	(EBookCache *book_cache,
+						 EContact *contact,
+						 gboolean is_replace);
+
+	gchar *		(* dup_contact_revision)
+						(EBookCache *book_cache,
+						 EContact *contact);
 
 	/* Padding for future expansion */
 	gpointer reserved[10];
@@ -202,6 +206,9 @@ EBookCache *	e_book_cache_new_full		(const gchar *filename,
 						 GCancellable *cancellable,
 						 GError **error);
 ESource *	e_book_cache_ref_source		(EBookCache *book_cache);
+gchar *		e_book_cache_dup_contact_revision
+						(EBookCache *book_cache,
+						 EContact *contact);
 gboolean	e_book_cache_set_locale		(EBookCache *book_cache,
 						 const gchar *lc_collate,
 						 GCancellable *cancellable,
