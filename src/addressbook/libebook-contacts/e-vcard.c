@@ -2875,3 +2875,72 @@ e_vcard_attribute_param_get_values (EVCardAttributeParam *param)
 
 	return param->values;
 }
+
+/**
+ * e_vcard_util_set_x_attribute:
+ * @vcard: an #EVCard
+ * @x_name: the attribute name, which starts with "X-"
+ * @value: (nullable): the value to set, or %NULL to unset
+ *
+ * Sets an "X-" attribute @x_name to value @value in @vcard, or
+ * removes it from @vcard, when @value is %NULL.
+ *
+ * Since: 3.26
+ **/
+void
+e_vcard_util_set_x_attribute (EVCard *vcard,
+			      const gchar *x_name,
+			      const gchar *value)
+{
+	EVCardAttribute *attr;
+
+	g_return_if_fail (E_IS_VCARD (vcard));
+	g_return_if_fail (x_name != NULL);
+	g_return_if_fail (g_str_has_prefix (x_name, "X-"));
+
+	attr = e_vcard_get_attribute (vcard, x_name);
+
+	if (attr) {
+		e_vcard_attribute_remove_values (attr);
+		if (value) {
+			e_vcard_attribute_add_value (attr, value);
+		} else {
+			e_vcard_remove_attribute (vcard, attr);
+		}
+	} else if (value) {
+		e_vcard_append_attribute_with_value (
+			vcard,
+			e_vcard_attribute_new (NULL, x_name),
+			value);
+	}
+}
+
+/**
+ * e_vcard_util_dup_x_attribute:
+ * @vcard: an #EVCard
+ * @x_name: the attribute name, which starts with "X-"
+ *
+ * Returns: (nullable) (transfer-full): Value of attribute @x_name, or %NULL,
+ *    when there is no such attribute. Free the returned pointer with g_free(),
+ *    when no longer needed.
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_vcard_util_dup_x_attribute (EVCard *vcard,
+			      const gchar *x_name)
+{
+	EVCardAttribute *attr;
+	GList *v = NULL;
+
+	g_return_val_if_fail (E_IS_VCARD (vcard), NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+	g_return_val_if_fail (g_str_has_prefix (x_name, "X-"), NULL);
+
+	attr = e_vcard_get_attribute (vcard, x_name);
+
+	if (attr)
+		v = e_vcard_attribute_get_values (attr);
+
+	return ((v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
+}

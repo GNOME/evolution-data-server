@@ -865,12 +865,6 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 
 	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
-	if (!cached_comp) {
-		g_propagate_error (error, EDC_ERROR (ObjectNotFound));
-
-		return FALSE;
-	}
-
 	task = ecb_gtasks_comp_to_gdata (cached_comp, NULL, FALSE);
 	if (!task) {
 		g_object_unref (cached_comp);

@@ -45,47 +45,6 @@ struct _EBookBackendWebDAVPrivate {
 
 G_DEFINE_TYPE (EBookBackendWebDAV, e_book_backend_webdav, E_TYPE_BOOK_META_BACKEND)
 
-static void
-ebb_webdav_set_contact_etag (EContact *contact,
-			     const gchar *etag)
-{
-	EVCardAttribute *attr;
-
-	g_return_if_fail (E_IS_CONTACT (contact));
-
-	attr = e_vcard_get_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
-
-	if (attr) {
-		e_vcard_attribute_remove_values (attr);
-		if (etag) {
-			e_vcard_attribute_add_value (attr, etag);
-		} else {
-			e_vcard_remove_attribute (E_VCARD (contact), attr);
-		}
-	} else if (etag) {
-		e_vcard_append_attribute_with_value (
-			E_VCARD (contact),
-			e_vcard_attribute_new (NULL, E_WEBDAV_X_ETAG),
-			etag);
-	}
-}
-
-static gchar *
-ebb_webdav_dup_contact_etag (EContact *contact)
-{
-	EVCardAttribute *attr;
-	GList *v = NULL;
-
-	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
-
-	attr = e_vcard_get_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
-
-	if (attr)
-		v = e_vcard_attribute_get_values (attr);
-
-	return ((v && v->data) ? g_strstrip (g_strdup (v->data)) : NULL);
-}
-
 static gboolean
 ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 			 const ENamedParameters *credentials,
@@ -330,7 +289,7 @@ ebb_webdav_update_nfo_with_contact (EBookMetaBackendInfo *nfo,
 	if (!etag || !*etag)
 		etag = nfo->revision;
 
-	ebb_webdav_set_contact_etag (contact, etag);
+	e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, etag);
 
 	g_warn_if_fail (nfo->object == NULL);
 	nfo->object = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
@@ -883,7 +842,7 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 
 			contact = e_contact_new_from_vcard (bytes);
 			if (contact) {
-				ebb_webdav_set_contact_etag (contact, etag);
+				e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, etag);
 				*out_contact = contact;
 			}
 		}
@@ -929,9 +888,9 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
 
 	uid = e_contact_get (contact, E_CONTACT_UID);
-	etag = ebb_webdav_dup_contact_etag (contact);
+	etag = e_vcard_util_dup_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
 
-	ebb_webdav_set_contact_etag (contact, NULL);
+	e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, NULL);
 
 	vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
@@ -1007,7 +966,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	}
 
 	if (conflict_resolution == E_CONFLICT_RESOLUTION_FAIL)
-		etag = ebb_webdav_dup_contact_etag (contact);
+		etag = e_vcard_util_dup_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
 
 	success = e_webdav_session_delete_sync (bbdav->priv->webdav, extra,
 		E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
@@ -1071,7 +1030,7 @@ ebb_webdav_dup_contact_revision_cb (EBookCache *book_cache,
 {
 	g_return_val_if_fail (E_IS_CONTACT (contact), NULL);
 
-	return ebb_webdav_dup_contact_etag (contact);
+	return e_vcard_util_dup_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
 }
 
 static void

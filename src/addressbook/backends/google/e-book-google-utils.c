@@ -68,10 +68,11 @@ static gboolean is_known_google_im_protocol (const gchar *protocol);
 
 GDataEntry *
 gdata_entry_new_from_e_contact (EContact *contact,
-                                GHashTable *groups_by_name,
-                                GHashTable *system_groups_by_id,
-                                EContactGoogleCreateGroupFunc create_group,
-                                gpointer create_group_user_data)
+				GHashTable *groups_by_name,
+				GHashTable *system_groups_by_id,
+				EContactGoogleCreateGroupFunc create_group,
+				EBookBackendGoogle *bbgoogle,
+				GCancellable *cancellable)
 {
 	GDataEntry *entry;
 
@@ -83,7 +84,7 @@ gdata_entry_new_from_e_contact (EContact *contact,
 
 	entry = GDATA_ENTRY (gdata_contacts_contact_new (NULL));
 
-	if (gdata_entry_update_from_e_contact (entry, contact, TRUE, groups_by_name, system_groups_by_id, create_group, create_group_user_data))
+	if (gdata_entry_update_from_e_contact (entry, contact, TRUE, groups_by_name, system_groups_by_id, create_group, bbgoogle, cancellable))
 		return entry;
 
 	g_object_unref (entry);
@@ -117,12 +118,13 @@ remove_anniversary (GDataContactsContact *contact)
 
 gboolean
 gdata_entry_update_from_e_contact (GDataEntry *entry,
-                                   EContact *contact,
-                                   gboolean ensure_personal_group,
-                                   GHashTable *groups_by_name,
-                                   GHashTable *system_groups_by_id,
-                                   EContactGoogleCreateGroupFunc create_group,
-                                   gpointer create_group_user_data)
+				   EContact *contact,
+				   gboolean ensure_personal_group,
+				   GHashTable *groups_by_name,
+				   GHashTable *system_groups_by_id,
+				   EContactGoogleCreateGroupFunc create_group,
+				   EBookBackendGoogle *bbgoogle,
+				   GCancellable *cancellable)
 {
 	GList *attributes, *iter, *category_names, *extended_property_names;
 	EContactName *name_struct = NULL;
@@ -228,6 +230,7 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		name = e_vcard_attribute_get_name (attr);
 
 		if (0 == g_ascii_strcasecmp (name, EVC_UID) ||
+		    0 == g_ascii_strcasecmp (name, EVC_REV) ||
 		    0 == g_ascii_strcasecmp (name, EVC_N) ||
 		    0 == g_ascii_strcasecmp (name, EVC_FN) ||
 		    0 == g_ascii_strcasecmp (name, EVC_LABEL) ||
@@ -239,7 +242,8 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		    0 == g_ascii_strcasecmp (name, EVC_CATEGORIES) ||
 		    0 == g_ascii_strcasecmp (name, EVC_PHOTO) ||
 		    0 == g_ascii_strcasecmp (name, GOOGLE_SYSTEM_GROUP_ATTR) ||
-		    0 == g_ascii_strcasecmp (name, e_contact_field_name (E_CONTACT_NICKNAME))) {
+		    0 == g_ascii_strcasecmp (name, e_contact_field_name (E_CONTACT_NICKNAME)) ||
+		    0 == g_ascii_strcasecmp (name, E_GOOGLE_X_PHOTO_ETAG)) {
 			/* Ignore attributes which are treated separately */
 		} else if (0 == g_ascii_strcasecmp (name, EVC_EMAIL)) {
 			/* EMAIL */
@@ -450,12 +454,12 @@ gdata_entry_update_from_e_contact (GDataEntry *entry,
 		if (category_id == NULL)
 			category_id = g_strdup (g_hash_table_lookup (groups_by_name, category_name));
 		if (category_id == NULL) {
-			GError *error = NULL;
+			GError *local_error = NULL;
 
-			category_id = create_group (category_name, create_group_user_data, &error);
+			category_id = create_group (bbgoogle, category_name, cancellable, &local_error);
 			if (category_id == NULL) {
-				g_warning ("Error creating group '%s': %s", category_name, error->message);
-				g_error_free (error);
+				g_warning ("Error creating group '%s': %s", category_name, local_error ? local_error->message : "Unknown error");
+				g_clear_error (&local_error);
 				continue;
 			}
 		}
@@ -565,8 +569,6 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 {
 	EVCard *vcard;
 	EVCardAttribute *attr, *system_group_ids_attr;
-	EContactPhoto *photo;
-	const gchar *photo_etag;
 	GList *email_addresses, *im_addresses, *phone_numbers, *postal_addresses, *orgs, *category_names, *category_ids;
 	const gchar *uid, *note, *nickname;
 	GList *itr;
@@ -856,20 +858,6 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 		}
 
 		break;
-	}
-
-	/* PHOTO */
-	photo = g_object_get_data (G_OBJECT (entry), "photo");
-	photo_etag = gdata_contacts_contact_get_photo_etag (GDATA_CONTACTS_CONTACT (entry));
-
-	if (photo != NULL) {
-		/* Photo */
-		e_contact_set (E_CONTACT (vcard), E_CONTACT_PHOTO, photo);
-
-		/* ETag */
-		attr = e_vcard_attribute_new ("", GDATA_PHOTO_ETAG_ATTR);
-		e_vcard_attribute_add_value (attr, photo_etag);
-		e_vcard_add_attribute (vcard, attr);
 	}
 
 	return E_CONTACT (vcard);
