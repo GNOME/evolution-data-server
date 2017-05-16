@@ -966,7 +966,7 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 				e_soup_session_util_status_to_string (status_code, reason_phrase),
 				detail_text);
 		}
-	} else if (!SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
+	} else if (status_code && !SOUP_STATUS_IS_SUCCESSFUL (status_code)) {
 		error_set = TRUE;
 
 		g_clear_error (inout_error);
