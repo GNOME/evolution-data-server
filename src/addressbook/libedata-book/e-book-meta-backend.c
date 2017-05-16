@@ -53,6 +53,7 @@
 #define LOCAL_PREFIX "file://"
 
 struct _EBookMetaBackendPrivate {
+	GMutex connect_lock;
 	GMutex property_lock;
 	GError *create_cache_error;
 	EBookCache *cache;
@@ -312,13 +313,17 @@ ebmb_connect_wrapper_sync (EBookMetaBackend *meta_backend,
 	credentials = e_named_parameters_new_clone (meta_backend->priv->last_credentials);
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
+	g_mutex_lock (&meta_backend->priv->connect_lock);
 	if (e_book_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
 		cancellable, &local_error)) {
 		ebmb_update_connection_values (meta_backend);
+		g_mutex_unlock (&meta_backend->priv->connect_lock);
 		e_named_parameters_free (credentials);
 
 		return TRUE;
 	}
+
+	g_mutex_unlock (&meta_backend->priv->connect_lock);
 
 	e_named_parameters_free (credentials);
 
@@ -1082,9 +1087,15 @@ ebmb_source_changed_thread_func (EBookBackend *book_backend,
 	g_signal_emit (meta_backend, signals[SOURCE_CHANGED], 0, NULL);
 
 	if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-	    e_book_meta_backend_requires_reconnect (meta_backend) &&
-	    e_book_meta_backend_disconnect_sync (meta_backend, cancellable, error)) {
-		ebmb_schedule_refresh (meta_backend);
+	    e_book_meta_backend_requires_reconnect (meta_backend)) {
+		gboolean can_refresh;
+
+		g_mutex_lock (&meta_backend->priv->connect_lock);
+		can_refresh = e_book_meta_backend_disconnect_sync (meta_backend, cancellable, error);
+		g_mutex_unlock (&meta_backend->priv->connect_lock);
+
+		if (can_refresh)
+			ebmb_schedule_refresh (meta_backend);
 	}
 
 	g_mutex_lock (&meta_backend->priv->property_lock);
@@ -1110,7 +1121,9 @@ ebmb_go_offline_thread_func (EBookBackend *book_backend,
 
 	meta_backend = E_BOOK_META_BACKEND (book_backend);
 
+	g_mutex_lock (&meta_backend->priv->connect_lock);
 	e_book_meta_backend_disconnect_sync (meta_backend, cancellable, error);
+	g_mutex_unlock (&meta_backend->priv->connect_lock);
 
 	g_mutex_lock (&meta_backend->priv->property_lock);
 
@@ -2218,6 +2231,7 @@ ebmb_authenticate_sync (EBackend *backend,
 		return E_SOURCE_AUTHENTICATION_ERROR;
 	}
 
+	g_mutex_lock (&meta_backend->priv->connect_lock);
 	success = e_book_meta_backend_connect_sync (meta_backend, credentials, &auth_result,
 		out_certificate_pem, out_certificate_errors, cancellable, error);
 
@@ -2228,6 +2242,7 @@ ebmb_authenticate_sync (EBackend *backend,
 		if (auth_result == E_SOURCE_AUTHENTICATION_UNKNOWN)
 			auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 	}
+	g_mutex_unlock (&meta_backend->priv->connect_lock);
 
 	g_mutex_lock (&meta_backend->priv->property_lock);
 
@@ -2512,6 +2527,7 @@ e_book_meta_backend_finalize (GObject *object)
 	g_clear_pointer (&meta_backend->priv->authentication_credential_name, g_free);
 	g_clear_pointer (&meta_backend->priv->webdav_soup_uri, (GDestroyNotify) soup_uri_free);
 
+	g_mutex_clear (&meta_backend->priv->connect_lock);
 	g_mutex_clear (&meta_backend->priv->property_lock);
 	g_hash_table_destroy (meta_backend->priv->view_cancellables);
 
@@ -2613,6 +2629,7 @@ e_book_meta_backend_init (EBookMetaBackend *meta_backend)
 {
 	meta_backend->priv = G_TYPE_INSTANCE_GET_PRIVATE (meta_backend, E_TYPE_BOOK_META_BACKEND, EBookMetaBackendPrivate);
 
+	g_mutex_init (&meta_backend->priv->connect_lock);
 	g_mutex_init (&meta_backend->priv->property_lock);
 
 	meta_backend->priv->view_cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
