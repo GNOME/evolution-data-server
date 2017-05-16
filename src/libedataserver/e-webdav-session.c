@@ -1971,8 +1971,12 @@ e_webdav_session_get_sync (EWebDAVSession *webdav,
 				break;
 		}
 
-		if (success && first_chunk)
+		if (success && first_chunk) {
 			success = !e_webdav_session_replace_with_detailed_error (webdav, request, NULL, FALSE, _("Failed to read resource"), error);
+		} else if (success && !first_chunk && log_level == SOUP_LOGGER_LOG_BODY) {
+			fprintf (stdout, "\n");
+			fflush (stdout);
+		}
 
 		g_free (buffer);
 	}
@@ -2266,6 +2270,11 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 
 	success = !e_webdav_session_replace_with_detailed_error (webdav, request, bytes, FALSE, _("Failed to put data"), error) &&
 		bytes != NULL;
+
+	if (cwd.wrote_any && cwd.log_level == SOUP_LOGGER_LOG_BODY) {
+		fprintf (stdout, "\n");
+		fflush (stdout);
+	}
 
 	if (cwd.error) {
 		g_clear_error (error);

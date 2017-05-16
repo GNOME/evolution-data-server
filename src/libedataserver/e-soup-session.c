@@ -976,6 +976,7 @@ e_soup_session_send_request_simple_sync (ESoupSession *session,
 
 	if (bytes->len > 0 && e_soup_session_get_log_level (session) == SOUP_LOGGER_LOG_BODY) {
 		fwrite (bytes->data, 1, bytes->len, stdout);
+		fprintf (stdout, "\n");
 		fflush (stdout);
 	}
 
