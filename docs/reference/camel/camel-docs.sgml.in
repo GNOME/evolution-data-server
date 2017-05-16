@@ -43,6 +43,7 @@
       <xi:include href="xml/camel-object-bag.xml"/>
       <xi:include href="xml/camel-operation.xml"/>
       <xi:include href="xml/camel-url.xml"/>
+      <xi:include href="xml/camel-weak-ref-group.xml"/>
     </chapter>
 
     <chapter id="Streams">
