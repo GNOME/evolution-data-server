@@ -969,7 +969,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 		etag = e_vcard_util_dup_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
 
 	success = e_webdav_session_delete_sync (bbdav->priv->webdav, extra,
-		E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+		NULL, etag, cancellable, &local_error);
 
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		gchar *href;
@@ -978,7 +978,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 		if (href) {
 			g_clear_error (&local_error);
 			success = e_webdav_session_delete_sync (bbdav->priv->webdav, href,
-				E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+				NULL, etag, cancellable, &local_error);
 
 			g_free (href);
 		}
@@ -988,7 +988,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 			if (href) {
 				g_clear_error (&local_error);
 				success = e_webdav_session_delete_sync (bbdav->priv->webdav, href,
-					E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+					NULL, etag, cancellable, &local_error);
 
 				g_free (href);
 			}

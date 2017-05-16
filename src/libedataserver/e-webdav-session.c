@@ -2369,14 +2369,15 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
  * e_webdav_session_delete_sync:
  * @webdav: an #EWebDAVSession
  * @uri: URI of the resource to delete
- * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS or %E_WEBDAV_DEPTH_INFINITY
+ * @depth: (nullable): optional requested depth, can be one of %E_WEBDAV_DEPTH_THIS or %E_WEBDAV_DEPTH_INFINITY, or %NULL
  * @etag: (nullable): an optional ETag of the resource, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Deletes a resource identified by @uri on the server. The URI can
  * reference a collection, in which case @depth should be %E_WEBDAV_DEPTH_INFINITY.
- * Use @depth %E_WEBDAV_DEPTH_THIS when deleting a regular resource.
+ * Use @depth %E_WEBDAV_DEPTH_THIS when deleting a regular resource, or %NULL,
+ * to let the server use default Depth.
  *
  * The @etag argument is used to avoid clashes when overwriting existing resources.
  * Use %NULL @etag when deleting collection resources or to force the deletion,
@@ -2405,7 +2406,6 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
 	g_return_val_if_fail (uri != NULL, FALSE);
-	g_return_val_if_fail (depth != NULL, FALSE);
 
 	request = e_webdav_session_new_request (webdav, SOUP_METHOD_DELETE, uri, error);
 	if (!request)
@@ -2446,7 +2446,8 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 		}
 	}
 
-	soup_message_headers_replace (message->request_headers, "Depth", depth);
+	if (depth)
+		soup_message_headers_replace (message->request_headers, "Depth", depth);
 
 	bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
 

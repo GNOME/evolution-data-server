@@ -1115,7 +1115,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 		etag = e_cal_util_dup_x_property (icalcomp, E_CALDAV_X_ETAG);
 
 	success = e_webdav_session_delete_sync (cbdav->priv->webdav, extra,
-		E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+		NULL, etag, cancellable, &local_error);
 
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
 		gchar *href;
@@ -1124,7 +1124,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 		if (href) {
 			g_clear_error (&local_error);
 			success = e_webdav_session_delete_sync (cbdav->priv->webdav, href,
-				E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+				NULL, etag, cancellable, &local_error);
 
 			g_free (href);
 		}
@@ -1134,7 +1134,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 			if (href) {
 				g_clear_error (&local_error);
 				success = e_webdav_session_delete_sync (cbdav->priv->webdav, href,
-					E_WEBDAV_DEPTH_THIS, etag, cancellable, &local_error);
+					NULL, etag, cancellable, &local_error);
 
 				g_free (href);
 			}
