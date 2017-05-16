@@ -32,6 +32,7 @@
 #include "evolution-data-server-config.h"
 
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 #include <sqlite3.h>
 
 #include <libebackend/libebackend.h>
@@ -2803,6 +2804,78 @@ e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 }
 
 /**
+ * e_cal_cache_delete_attachments:
+ * @cal_cache: an #ECalCache
+ * @component: an icalcomponent
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Deletes all locally stored attachments beside the cache file from the disk.
+ * This doesn't modify the @component. It's usually called before the @component
+ * is being removed from the @cal_cache.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_cache_delete_attachments (ECalCache *cal_cache,
+				icalcomponent *component,
+				GCancellable *cancellable,
+				GError **error)
+{
+	icalproperty *prop;
+	gchar *cache_dirname = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (component != NULL, FALSE);
+
+	for (prop = icalcomponent_get_first_property (component, ICAL_ATTACH_PROPERTY);
+	     prop;
+	     prop = icalcomponent_get_next_property (component, ICAL_ATTACH_PROPERTY)) {
+		icalattach *attach = icalproperty_get_attach (prop);
+
+		if (attach && icalattach_get_is_url (attach)) {
+			const gchar *url;
+
+			url = icalattach_get_url (attach);
+			if (url) {
+				gsize buf_size;
+				gchar *buf;
+
+				buf_size = strlen (url);
+				buf = g_malloc0 (buf_size + 1);
+
+				icalvalue_decode_ical_string (url, buf, buf_size);
+
+				if (g_str_has_prefix (buf, "file://")) {
+					gchar *filename;
+
+					filename = g_filename_from_uri (buf, NULL, NULL);
+					if (filename) {
+						if (!cache_dirname)
+							cache_dirname = g_path_get_dirname (e_cache_get_filename (E_CACHE (cal_cache)));
+
+						if (g_str_has_prefix (filename, cache_dirname) &&
+						    g_unlink (filename) == -1) {
+							/* Ignore these errors */
+						}
+
+						g_free (filename);
+					}
+				}
+
+				g_free (buf);
+			}
+		}
+	}
+
+	g_free (cache_dirname);
+
+	return TRUE;
+}
+
+/**
  * e_cal_cache_put_timezone:
  * @cal_cache: an #ECalCache
  * @zone: an icaltimezone to put
@@ -3213,6 +3286,41 @@ e_cal_cache_resolve_timezone_simple_cb (const gchar *tzid,
 }
 
 static gboolean
+ecc_search_delete_attachment_cb (ECalCache *cal_cache,
+				 const gchar *uid,
+				 const gchar *rid,
+				 const gchar *revision,
+				 const gchar *object,
+				 const gchar *extra,
+				 EOfflineState offline_state,
+				 gpointer user_data)
+{
+	icalcomponent *icalcomp;
+	GCancellable *cancellable = user_data;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (object != NULL, FALSE);
+
+	icalcomp = icalcomponent_new_from_string (object);
+	if (!icalcomp)
+		return TRUE;
+
+	if (!e_cal_cache_delete_attachments (cal_cache, icalcomp, cancellable, &local_error)) {
+		if (rid && !*rid)
+			rid = NULL;
+
+		g_debug ("%s: Failed to remove attachments for '%s%s%s': %s", G_STRFUNC,
+			uid, rid ? "|" : "", rid ? rid : "", local_error ? local_error->message : "Unknown error");
+		g_clear_error (&local_error);
+	}
+
+	icalcomponent_free (icalcomp);
+
+	return !g_cancellable_is_cancelled (cancellable);
+}
+
+static gboolean
 ecc_empty_aux_tables (ECache *cache,
 		      GCancellable *cancellable,
 		      GError **error)
@@ -3323,8 +3431,11 @@ e_cal_cache_remove_all_locked (ECache *cache,
 	g_return_val_if_fail (E_IS_CAL_CACHE (cache), FALSE);
 	g_return_val_if_fail (E_CACHE_CLASS (e_cal_cache_parent_class)->remove_all_locked != NULL, FALSE);
 
-	/* Cannot free content of priv->loaded_timezones and priv->modified_timezones, because those can be used anywhere */
-	success = ecc_empty_aux_tables (cache, cancellable, error);
+	/* Cannot free content of priv->loaded_timezones and priv->modified_timezones,
+	   because those can be used anywhere */
+	success = ecc_empty_aux_tables (cache, cancellable, error) &&
+		e_cal_cache_search_with_callback (E_CAL_CACHE (cache), NULL,
+		ecc_search_delete_attachment_cb, cancellable, cancellable, error);
 
 	success = success && E_CACHE_CLASS (e_cal_cache_parent_class)->remove_all_locked (cache, uids, cancellable, error);
 

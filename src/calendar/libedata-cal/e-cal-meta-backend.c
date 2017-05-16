@@ -759,7 +759,8 @@ ecmb_maybe_remove_from_cache (ECalMetaBackend *meta_backend,
 
 		id = e_cal_component_get_id (comp);
 		if (id) {
-			if (!e_cal_cache_remove_component (cal_cache, id->uid, id->rid, offline_flag, cancellable, error)) {
+			if (!e_cal_cache_delete_attachments (cal_cache, e_cal_component_get_icalcomponent (comp), cancellable, error) ||
+			    !e_cal_cache_remove_component (cal_cache, id->uid, id->rid, offline_flag, cancellable, error)) {
 				e_cal_component_free_id (id);
 				g_slist_free_full (comps, g_object_unref);
 
@@ -1157,6 +1158,10 @@ ecmb_put_instances (ECalMetaBackend *meta_backend,
 			id = e_cal_component_get_id (comp);
 			if (!id)
 				continue;
+
+			success = e_cal_cache_delete_attachments (cal_cache, e_cal_component_get_icalcomponent (comp), cancellable, error);
+			if (!success)
+				break;
 
 			success = e_cal_cache_remove_component (cal_cache, id->uid, id->rid, offline_flag, cancellable, error);
 
@@ -3739,10 +3744,13 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 						  GError **error)
 {
 	icalproperty *prop;
+	const gchar *uid;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (component != NULL, FALSE);
+
+	uid = icalcomponent_get_uid (component);
 
 	for (prop = icalcomponent_get_first_property (component, ICAL_ATTACH_PROPERTY);
 	     prop && success;
@@ -3785,7 +3793,15 @@ e_cal_meta_backend_inline_local_attachments_sync (ECalMetaBackend *meta_backend,
 
 					/* Preserve existing FILENAME parameter */
 					if (!icalproperty_get_first_parameter (prop, ICAL_FILENAME_PARAMETER)) {
-						param = icalparameter_new_filename (basename);
+						const gchar *use_filename = basename;
+
+						/* generated filename by Evolution */
+						if (uid && g_str_has_prefix (use_filename, uid) &&
+						    use_filename[strlen (uid)] == '-') {
+							use_filename += strlen (uid) + 1;
+						}
+
+						param = icalparameter_new_filename (use_filename);
 						icalproperty_add_parameter (prop, param);
 					}
 				} else {

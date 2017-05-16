@@ -295,6 +295,10 @@ gboolean	e_cal_cache_search_with_callback
 GSList *	e_cal_cache_get_offline_changes	(ECalCache *cal_cache,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cal_cache_delete_attachments	(ECalCache *cal_cache,
+						 icalcomponent *component,
+						 GCancellable *cancellable,
+						 GError **error);
 
 gboolean	e_cal_cache_put_timezone	(ECalCache *cal_cache,
 						 const icaltimezone *zone,
