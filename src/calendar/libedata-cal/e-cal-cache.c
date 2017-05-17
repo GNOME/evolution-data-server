@@ -1945,6 +1945,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 	other_columns = e_cache_column_values_new ();
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
+	e_cache_freeze_revision_change (cache);
 
 	for (clink = components, elink = extras; clink; clink = g_slist_next (clink), elink = g_slist_next (elink)) {
 		ECalComponent *component = clink->data;
@@ -1983,6 +1984,7 @@ e_cal_cache_put_components (ECalCache *cal_cache,
 			break;
 	}
 
+	e_cache_thaw_revision_change (cache);
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	e_cache_column_values_free (other_columns);
@@ -2065,6 +2067,7 @@ e_cal_cache_remove_components (ECalCache *cal_cache,
 	cache = E_CACHE (cal_cache);
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
+	e_cache_freeze_revision_change (cache);
 
 	for (link = ids; success && link; link = g_slist_next (link)) {
 		const ECalComponentId *id = link->data;
@@ -2082,6 +2085,7 @@ e_cal_cache_remove_components (ECalCache *cal_cache,
 		g_free (uid);
 	}
 
+	e_cache_thaw_revision_change (cache);
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;

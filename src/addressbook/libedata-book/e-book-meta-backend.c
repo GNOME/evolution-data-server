@@ -66,6 +66,7 @@ struct _EBookMetaBackendPrivate {
 						   used to detect false notifications on EBackend::online */
 	gulong source_changed_id;
 	gulong notify_online_id;
+	gulong revision_changed_id;
 	guint refresh_timeout_id;
 
 	gboolean refresh_after_authenticate;
@@ -2484,6 +2485,12 @@ e_book_meta_backend_dispose (GObject *object)
 		meta_backend->priv->notify_online_id = 0;
 	}
 
+	if (meta_backend->priv->revision_changed_id) {
+		if (meta_backend->priv->cache)
+			g_signal_handler_disconnect (meta_backend->priv->cache, meta_backend->priv->revision_changed_id);
+		meta_backend->priv->revision_changed_id = 0;
+	}
+
 	g_hash_table_foreach (meta_backend->priv->view_cancellables, ebmb_cancel_view_cb, NULL);
 
 	if (meta_backend->priv->refresh_cancellable) {
@@ -2787,6 +2794,24 @@ e_book_meta_backend_get_connected_writable (EBookMetaBackend *meta_backend)
 	return result;
 }
 
+static void
+ebmb_cache_revision_changed_cb (ECache *cache,
+				gpointer user_data)
+{
+	EBookMetaBackend *meta_backend = user_data;
+	gchar *revision;
+
+	g_return_if_fail (E_IS_CACHE (cache));
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (meta_backend));
+
+	revision = e_cache_dup_revision (cache);
+	if (revision) {
+		e_book_backend_notify_property_changed (E_BOOK_BACKEND (meta_backend),
+			BOOK_BACKEND_PROPERTY_REVISION, revision);
+		g_free (revision);
+	}
+}
+
 /**
  * e_book_meta_backend_set_cache:
  * @meta_backend: an #EBookMetaBackend
@@ -2817,8 +2842,16 @@ e_book_meta_backend_set_cache (EBookMetaBackend *meta_backend,
 
 	g_clear_error (&meta_backend->priv->create_cache_error);
 
+	if (meta_backend->priv->cache) {
+		g_signal_handler_disconnect (meta_backend->priv->cache,
+			meta_backend->priv->revision_changed_id);
+	}
+
 	g_clear_object (&meta_backend->priv->cache);
 	meta_backend->priv->cache = g_object_ref (cache);
+
+	meta_backend->priv->revision_changed_id = g_signal_connect_object (meta_backend->priv->cache,
+		"revision-changed", G_CALLBACK (ebmb_cache_revision_changed_cb), meta_backend, 0);
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 

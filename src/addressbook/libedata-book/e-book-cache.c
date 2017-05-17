@@ -4802,6 +4802,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 	other_columns = e_cache_column_values_new ();
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
+	e_cache_freeze_revision_change (cache);
 
 	for (clink = contacts, elink = extras; clink; clink = g_slist_next (clink), elink = g_slist_next (elink)) {
 		EContact *contact = clink->data;
@@ -4833,6 +4834,7 @@ e_book_cache_put_contacts (EBookCache *book_cache,
 			break;
 	}
 
+	e_cache_thaw_revision_change (cache);
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	e_cache_column_values_free (other_columns);
@@ -4907,6 +4909,7 @@ e_book_cache_remove_contacts (EBookCache *book_cache,
 	cache = E_CACHE (book_cache);
 
 	e_cache_lock (cache, E_CACHE_LOCK_WRITE);
+	e_cache_freeze_revision_change (cache);
 
 	for (link = uids; success && link; link = g_slist_next (link)) {
 		const gchar *uid = link->data;
@@ -4914,6 +4917,7 @@ e_book_cache_remove_contacts (EBookCache *book_cache,
 		success = e_cache_remove (cache, uid, offline_flag, cancellable, error);
 	}
 
+	e_cache_thaw_revision_change (cache);
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;

@@ -374,6 +374,7 @@ struct _ECacheClass {
 						 const gchar *uid,
 						 GCancellable *cancellable,
 						 GError **error);
+	void		(* revision_changed)	(ECache *cache);
 
 	/* Padding for future expansion */
 	gpointer reserved[10];
@@ -393,6 +394,11 @@ void		e_cache_set_version		(ECache *cache,
 gchar *		e_cache_dup_revision		(ECache *cache);
 void		e_cache_set_revision		(ECache *cache,
 						 const gchar *revision);
+void		e_cache_change_revision		(ECache *cache);
+void		e_cache_freeze_revision_change	(ECache *cache);
+void		e_cache_thaw_revision_change	(ECache *cache);
+gboolean	e_cache_is_revision_change_frozen
+						(ECache *cache);
 void		e_cache_erase			(ECache *cache);
 gboolean	e_cache_contains		(ECache *cache,
 						 const gchar *uid,

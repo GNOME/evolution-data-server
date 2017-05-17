@@ -64,11 +64,17 @@ struct _ECachePrivate {
 	guint32 in_transaction;		/* Nested transaction counter */
 	ECacheLockType lock_type;	/* The lock type acquired for the current transaction */
 	GCancellable *cancellable;	/* User passed GCancellable, we abort an operation if cancelled */
+
+	guint32 revision_change_frozen;
+	gint revision_counter;
+	gint64 last_revision_time;
+	gboolean needs_revision_change;
 };
 
 enum {
 	BEFORE_PUT,
 	BEFORE_REMOVE,
+	REVISION_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -1042,8 +1048,9 @@ e_cache_dup_revision (ECache *cache)
  * @cache: an #ECache
  * @revision: (nullable): a revision to set; use %NULL to unset it
  *
- * Sets the @revision of the whole @cache. This is meant to be
- * used by the descendants.
+ * Sets the @revision of the whole @cache. This is not meant to be
+ * used by the descendants, because the revision is updated automatically
+ * when needed. The descendants can listen to "revision-changed" signal.
  *
  * Since: 3.26
  **/
@@ -1054,6 +1061,133 @@ e_cache_set_revision (ECache *cache,
 	g_return_if_fail (E_IS_CACHE (cache));
 
 	e_cache_set_key_internal (cache, FALSE, E_CACHE_KEY_REVISION, revision, NULL);
+
+	g_signal_emit (cache, signals[REVISION_CHANGED], 0, NULL);
+}
+
+/**
+ * e_cache_change_revision:
+ * @cache: an #ECache
+ *
+ * Instructs the @cache to change its revision. In case the revision
+ * change is frozen with e_cache_freeze_revision_change() it notes to
+ * change the revision once the revision change is fully thaw.
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_change_revision (ECache *cache)
+{
+	g_return_if_fail (E_IS_CACHE (cache));
+
+	g_rec_mutex_lock (&cache->priv->lock);
+
+	if (e_cache_is_revision_change_frozen (cache)) {
+		cache->priv->needs_revision_change = TRUE;
+	} else {
+		gchar time_string[100] = { 0 };
+		const struct tm *tm = NULL;
+		time_t t;
+		gint64 revision_time;
+		gchar *revision;
+
+		revision_time = g_get_real_time () / (1000 * 1000);
+		t = (time_t) revision_time;
+
+		if (revision_time != cache->priv->last_revision_time) {
+			cache->priv->revision_counter = 0;
+			cache->priv->last_revision_time = revision_time;
+		}
+
+		tm = gmtime (&t);
+		if (tm)
+			strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
+
+		revision = g_strdup_printf ("%s(%d)", time_string, cache->priv->revision_counter++);
+
+		e_cache_set_revision (cache, revision);
+
+		g_free (revision);
+	}
+
+	g_rec_mutex_unlock (&cache->priv->lock);
+}
+
+/**
+ * e_cache_freeze_revision_change:
+ * @cache: an #ECache
+ *
+ * Freezes automatic revision change for the @cache. The function
+ * can be called multiple times, but each such call requires its
+ * pair function e_cache_thaw_revision_change() call. See also
+ * e_cache_change_revision().
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_freeze_revision_change (ECache *cache)
+{
+	g_return_if_fail (E_IS_CACHE (cache));
+
+	g_rec_mutex_lock (&cache->priv->lock);
+
+	cache->priv->revision_change_frozen++;
+	g_warn_if_fail (cache->priv->revision_change_frozen != 0);
+
+	g_rec_mutex_unlock (&cache->priv->lock);
+}
+
+/**
+ * e_cache_thaw_revision_change:
+ * @cache: an #ECache
+ *
+ * Thaws automatic revision change for the @cache. It's the pair
+ * function of e_cache_freeze_revision_change().
+ *
+ * Since: 3.26
+ **/
+void
+e_cache_thaw_revision_change (ECache *cache)
+{
+	g_return_if_fail (E_IS_CACHE (cache));
+
+	g_rec_mutex_lock (&cache->priv->lock);
+
+	if (!cache->priv->revision_change_frozen) {
+		g_warn_if_fail (cache->priv->revision_change_frozen > 0);
+	} else {
+		cache->priv->revision_change_frozen--;
+		if (!cache->priv->revision_change_frozen &&
+		    cache->priv->needs_revision_change) {
+			cache->priv->needs_revision_change = FALSE;
+			e_cache_change_revision (cache);
+		}
+	}
+
+	g_rec_mutex_unlock (&cache->priv->lock);
+}
+
+/**
+ * e_cache_is_revision_change_frozen:
+ * @cache: an #ECache
+ *
+ * Returns: Whether automatic revision change for the @cache
+ *    is currently frozen.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cache_is_revision_change_frozen (ECache *cache)
+{
+	gboolean frozen;
+
+	g_return_val_if_fail (E_IS_CACHE (cache), FALSE);
+
+	g_rec_mutex_lock (&cache->priv->lock);
+	frozen = cache->priv->revision_change_frozen > 0;
+	g_rec_mutex_unlock (&cache->priv->lock);
+
+	return frozen;
 }
 
 /**
@@ -1292,6 +1426,9 @@ e_cache_put_locked (ECache *cache,
 		g_return_val_if_fail (klass->put_locked != NULL, FALSE);
 
 		success = klass->put_locked (cache, uid, revision, object, other_columns, offline_state, is_replace, cancellable, error);
+
+		if (success)
+			e_cache_change_revision (cache);
 	}
 
 	e_cache_column_values_free (my_other_columns);
@@ -1429,6 +1566,9 @@ e_cache_remove (ECache *cache,
 		}
 	}
 
+	if (success)
+		e_cache_change_revision (cache);
+
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
 	return success;
@@ -1468,8 +1608,10 @@ e_cache_remove_all (ECache *cache,
 	if (success && uids)
 		success = klass->remove_all_locked (cache, uids, cancellable, error);
 
-	if (success)
+	if (success) {
 		e_cache_sqlite_maybe_vacuum (cache, cancellable, NULL);
+		e_cache_change_revision (cache);
+	}
 
 	e_cache_unlock (cache, success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
@@ -2894,6 +3036,17 @@ e_cache_class_init (ECacheClass *klass)
 		G_TYPE_CANCELLABLE,
 		G_TYPE_POINTER);
 
+	signals[REVISION_CHANGED] = g_signal_new (
+		"revision-changed",
+		G_OBJECT_CLASS_TYPE (klass),
+		G_SIGNAL_RUN_LAST,
+		G_STRUCT_OFFSET (ECacheClass, revision_changed),
+		NULL,
+		NULL,
+		g_cclosure_marshal_generic,
+		G_TYPE_NONE, 0,
+		G_TYPE_NONE);
+
 	e_sqlite3_vfs_init ();
 }
 
@@ -2906,6 +3059,10 @@ e_cache_init (ECache *cache)
 	cache->priv->db = NULL;
 	cache->priv->cancellable = NULL;
 	cache->priv->in_transaction = 0;
+	cache->priv->revision_change_frozen = 0;
+	cache->priv->revision_counter = 0;
+	cache->priv->last_revision_time = 0;
+	cache->priv->needs_revision_change = FALSE;
 
 	g_rec_mutex_init (&cache->priv->lock);
 }
