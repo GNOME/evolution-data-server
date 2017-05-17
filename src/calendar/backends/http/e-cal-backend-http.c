@@ -195,7 +195,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	} else {
 		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
-		g_set_error (error, E_DATA_CAL_ERROR, OtherError, _("Malformed URI “%s“: %s"),
+		g_set_error (error, E_DATA_CAL_ERROR, OtherError, _("Malformed URI “%s”: %s"),
 			uri, local_error ? local_error->message : _("Unknown error"));
 	}
 

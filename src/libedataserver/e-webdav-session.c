@@ -931,9 +931,9 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
 		}
 
 		if (uri && *uri)
-			detail_text = g_strdup_printf (_("The server responded with an HTML page, which can mean there's an error on the server or with the client request. The used URI was: %s"), uri);
+			detail_text = g_strdup_printf (_("The server responded with an HTML page, which can mean there’s an error on the server or with the client request. The used URI was: %s"), uri);
 		else
-			detail_text = g_strdup_printf (_("The server responded with an HTML page, which can mean there's an error on the server or with the client request."));
+			detail_text = g_strdup_printf (_("The server responded with an HTML page, which can mean there’s an error on the server or with the client request."));
 
 		g_free (uri);
 	}

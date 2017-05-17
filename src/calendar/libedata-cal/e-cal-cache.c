@@ -1711,7 +1711,7 @@ ecc_init_sqlite_functions (ECalCache *cal_cache,
 		const gchar *errmsg = sqlite3_errmsg (sqlitedb);
 
 		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE,
-			_("Failed to create SQLite function, error code '%d': %s"),
+			_("Failed to create SQLite function, error code “%d”: %s"),
 			ret, errmsg ? errmsg : _("Unknown error"));
 
 		return FALSE;

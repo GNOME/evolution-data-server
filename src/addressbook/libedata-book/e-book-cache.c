@@ -4457,7 +4457,7 @@ e_book_cache_initialize (EBookCache *book_cache,
 		} else {
 			const gchar *errmsg = sqlite3_errmsg (db);
 
-			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE, _("Can't open database %s: %s"), filename, errmsg);
+			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE, _("Can’t open database %s: %s"), filename, errmsg);
 		}
 
 		success = FALSE;

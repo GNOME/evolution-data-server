@@ -170,7 +170,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 
 			success = FALSE;
 			g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
-				_("Given URL “%s” doesn't reference WebDAV address book"), uri);
+				_("Given URL “%s” doesn’t reference WebDAV address book"), uri);
 
 			g_free (uri);
 

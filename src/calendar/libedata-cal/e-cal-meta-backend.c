@@ -1282,7 +1282,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		if (success && out_new_uid)
 			*out_new_uid = g_strdup (loaded_uid ? loaded_uid : uid);
 	} else {
-		g_propagate_error (error, e_data_cal_create_error_fmt (InvalidObject, _("Received object for UID “%s” doesn't contain any expected component"), uid));
+		g_propagate_error (error, e_data_cal_create_error_fmt (InvalidObject, _("Received object for UID “%s” doesn’t contain any expected component"), uid));
 		success = FALSE;
 	}
 
@@ -3143,7 +3143,7 @@ e_cal_meta_backend_constructed (GObject *object)
 
 		filename = g_build_filename (e_cal_backend_get_cache_dir (E_CAL_BACKEND (meta_backend)), "cache.db", NULL);
 		cache = e_cal_cache_new (filename, NULL, &meta_backend->priv->create_cache_error);
-		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache ”%s”:"), filename);
+		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache “%s”:"), filename);
 
 		g_free (filename);
 

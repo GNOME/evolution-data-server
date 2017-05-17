@@ -140,7 +140,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 			success = FALSE;
 			g_set_error (error, G_IO_ERROR, G_IO_ERROR_INVALID_DATA,
-				_("Given URL “%s” doesn't reference CalDAV calendar"), uri);
+				_("Given URL “%s” doesn’t reference CalDAV calendar"), uri);
 
 			g_free (uri);
 

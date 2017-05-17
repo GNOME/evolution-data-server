@@ -753,7 +753,7 @@ e_cache_init_sqlite (ECache *cache,
 			const gchar *errmsg = sqlite3_errmsg (cache->priv->db);
 
 			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE,
-				_("Can't open database %s: %s"), filename, errmsg);
+				_("Can’t open database %s: %s"), filename, errmsg);
 
 			sqlite3_close (cache->priv->db);
 			cache->priv->db = NULL;

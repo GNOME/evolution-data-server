@@ -2071,7 +2071,7 @@ ebmb_configure_direct (EBookBackend *book_backend,
 		g_clear_error (&meta_backend->priv->create_cache_error);
 
 		new_cache = e_book_cache_new (new_cache_filename, source, NULL, &meta_backend->priv->create_cache_error);
-		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache ”%s”:"), new_cache_filename);
+		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache “%s”:"), new_cache_filename);
 
 		if (new_cache) {
 			e_book_meta_backend_set_cache (meta_backend, new_cache);
@@ -2444,7 +2444,7 @@ e_book_meta_backend_constructed (GObject *object)
 		source = e_backend_get_source (E_BACKEND (meta_backend));
 		filename = g_build_filename (e_book_backend_get_cache_dir (E_BOOK_BACKEND (meta_backend)), "cache.db", NULL);
 		cache = e_book_cache_new (filename, source, NULL, &meta_backend->priv->create_cache_error);
-		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache ”%s”:"), filename);
+		g_prefix_error (&meta_backend->priv->create_cache_error, _("Failed to create cache “%s”:"), filename);
 
 		g_free (filename);
 
