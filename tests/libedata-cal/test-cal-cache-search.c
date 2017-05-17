@@ -260,15 +260,15 @@ test_search_occur_in_time_range (TCUFixture *fixture,
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T000000Z\") (make-time \"20170210T000000Z\"))", "event-1");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170209T020000Z\") (make-time \"20170209T023000Z\"))", "event-1");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20111231T000000Z\") (make-time \"20111231T595959Z\"))", "event-5");
-	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T160100Z\") (make-time \"20170225T160200Z\") \"America/New_York\")", "event-8");
-	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T160100Z\") (make-time \"20170225T160200Z\") \"Europe/Berlin\")", "event-8");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T210100Z\") (make-time \"20170225T210200Z\") \"America/New_York\")", "event-8");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T150100Z\") (make-time \"20170225T150200Z\") \"Europe/Berlin\")", "event-8");
 	test_search (fixture, "(occur-in-time-range? (make-time \"20170225T160100Z\") (make-time \"20170225T160200Z\") \"UTC\")", "event-8");
 
-	/* the second instance of event-6 */
-	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T130000Z\") (make-time \"20170221T140000Z\"))", "event-6");
-	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T130000Z\") (make-time \"20170221T140000Z\") \"America/New_York\")", "event-6");
-	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T190000Z\") (make-time \"20170221T200000Z\") \"Europe/Berlin\")", "!event-6");
-	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T130000Z\") (make-time \"20170221T140000Z\") \"Europe/Berlin\")", "event-6");
+	/* event-6 */
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T180000Z\") (make-time \"20170221T190000Z\"))", "event-6");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T180000Z\") (make-time \"20170221T190000Z\") \"America/New_York\")", "event-6");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T200000Z\") (make-time \"20170221T210000Z\") \"Europe/Berlin\")", "!event-6");
+	test_search (fixture, "(occur-in-time-range? (make-time \"20170221T180000Z\") (make-time \"20170221T190000Z\") \"Europe/Berlin\")", "event-6");
 }
 
 static void

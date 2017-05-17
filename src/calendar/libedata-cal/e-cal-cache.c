@@ -476,6 +476,32 @@ ecc_decode_id_sql (const gchar *id,
 	return TRUE;
 }
 
+static icaltimezone *
+ecc_resolve_tzid_cb (const gchar *tzid,
+		     gpointer user_data)
+{
+	ECalCache *cal_cache = user_data;
+	icaltimezone *zone = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+
+	if (e_cal_cache_get_timezone (cal_cache, tzid, &zone, NULL, NULL) && zone)
+		return zone;
+
+	zone = icaltimezone_get_builtin_timezone (tzid);
+	if (!zone)
+		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+	if (!zone) {
+		tzid = e_cal_match_tzid (tzid);
+		zone = icaltimezone_get_builtin_timezone (tzid);
+	}
+
+	if (!zone)
+		zone = icaltimezone_get_builtin_timezone_from_tzid (tzid);
+
+	return zone;
+}
+
 static gchar *
 ecc_encode_itt_to_sql (struct icaltimetype itt)
 {
@@ -491,13 +517,11 @@ ecc_encode_time_to_sql (ECalCache *cal_cache,
 	struct icaltimetype itt;
 	icaltimezone *zone = NULL;
 
-	if (!dt || !dt->value)
+	if (!dt || !dt->value || (!dt->value->is_utc && (!dt->tzid || !*dt->tzid)))
 		return NULL;
 
 	itt = *dt->value;
-
-	if (!e_cal_cache_get_timezone (cal_cache, dt->tzid, &zone, NULL, NULL))
-		zone = NULL;
+	zone = ecc_resolve_tzid_cb (dt->tzid, cal_cache);
 
 	icaltimezone_convert_time (&itt, zone, icaltimezone_get_utc_timezone ());
 
@@ -513,24 +537,9 @@ ecc_encode_timet_to_sql (ECalCache *cal_cache,
 	if (tt <= 0)
 		return NULL;
 
-	itt = icaltime_from_timet_with_zone (tt, FALSE, NULL);
+	itt = icaltime_from_timet_with_zone (tt, FALSE, icaltimezone_get_utc_timezone ());
 
 	return ecc_encode_itt_to_sql (itt);
-}
-
-static icaltimezone *
-ecc_resolve_tzid_cb (const gchar *tzid,
-		     gpointer user_data)
-{
-	ECalCache *cal_cache = user_data;
-	icaltimezone *zone = NULL;
-
-	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
-
-	if (!e_cal_cache_get_timezone (cal_cache, tzid, &zone, NULL, NULL))
-		return NULL;
-
-	return zone;
 }
 
 static gchar *
@@ -810,8 +819,16 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 		ecc_resolve_tzid_cb, cal_cache, icaltimezone_get_utc_timezone (),
 		icalcomponent_isa (icalcomp));
 
-	add_value (ECC_COLUMN_OCCUR_START, ecc_encode_timet_to_sql (cal_cache, occur_start));
-	add_value (ECC_COLUMN_OCCUR_END, ecc_encode_timet_to_sql (cal_cache, occur_end));
+	e_cal_component_get_dtstart (comp, &dt);
+	add_value (ECC_COLUMN_OCCUR_START, dt.value && ((dt.tzid && *dt.tzid) || dt.value->is_utc) ? ecc_encode_timet_to_sql (cal_cache, occur_start) : NULL);
+
+	has = dt.value != NULL;
+	add_value (ECC_COLUMN_HAS_START, g_strdup (has ? "1" : "0"));
+	e_cal_component_free_datetime (&dt);
+
+	e_cal_component_get_dtend (comp, &dt);
+	add_value (ECC_COLUMN_OCCUR_END, dt.value && ((dt.tzid && *dt.tzid) || dt.value->is_utc) ? ecc_encode_timet_to_sql (cal_cache, occur_end) : NULL);
+	e_cal_component_free_datetime (&dt);
 
 	e_cal_component_get_due (comp, &dt);
 	add_value (ECC_COLUMN_DUE, ecc_encode_time_to_sql (cal_cache, &dt));
@@ -851,11 +868,6 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 
 	has = e_cal_component_has_attachments (comp);
 	add_value (ECC_COLUMN_HAS_ATTACHMENT, g_strdup (has ? "1" : "0"));
-
-	e_cal_component_get_dtstart (comp, &dt);
-	has = dt.value != NULL;
-	add_value (ECC_COLUMN_HAS_START, g_strdup (has ? "1" : "0"));
-	e_cal_component_free_datetime (&dt);
 
 	has = e_cal_component_has_recurrences (comp) ||
 	      e_cal_component_is_instance (comp);
@@ -3067,7 +3079,8 @@ e_cal_cache_dup_timezone_as_string (ECalCache *cal_cache,
 		"SELECT zone FROM " ECC_TABLE_TIMEZONES " WHERE tzid=%Q",
 		tzid);
 
-	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_string, out_zone_string, cancellable, error);
+	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_string, out_zone_string, cancellable, error) &&
+		*out_zone_string != NULL;
 
 	e_cache_sqlite_stmt_free (stmt);
 

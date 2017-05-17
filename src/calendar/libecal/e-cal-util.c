@@ -1496,7 +1496,6 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 		if (dt_time->tzid)
 			zone = tz_cb (dt_time->tzid, tz_cb_data);
 
-		// zone = icaltimezone_get_utc_timezone ();
 		timet = icaltime_as_timet_with_zone (
 			*dt_time->value, zone ? zone : default_zone);
 	}
@@ -1530,6 +1529,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 {
 	struct icalrecurrencetype ir;
 	ECalComponentDateTime dt_start, dt_end;
+	time_t duration;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (start != NULL);
@@ -1544,6 +1544,14 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		*start = _TIME_MIN;
 
 	e_cal_component_free_datetime (&dt_start);
+
+	e_cal_component_get_dtend (comp, &dt_end);
+	duration = componenttime_to_utc_timet (&dt_end, tz_cb, tz_cb_data, default_timezone);
+	if (duration <= 0 || *start == _TIME_MIN || *start > duration)
+		duration = 0;
+	else
+		duration = duration - *start;
+	e_cal_component_free_datetime (&dt_end);
 
 	/* find out end date of component */
 	*end = _TIME_MAX;
@@ -1603,8 +1611,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 
 				if (rule_end == -1) /* repeats forever */
 					may_end = _TIME_MAX;
-				else if (rule_end > may_end) /* new maximum */
-					may_end = rule_end;
+				else if (rule_end + duration > may_end) /* new maximum */
+					may_end = rule_end + duration;
 			}
 
 			/* Do the EXRULEs. */
@@ -1620,8 +1628,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 
 				if (rule_end == -1) /* repeats forever */
 					may_end = _TIME_MAX;
-				else if (rule_end > may_end)
-					may_end = rule_end;
+				else if (rule_end + duration > may_end)
+					may_end = rule_end + duration;
 			}
 
 			/* Do the RDATEs */
