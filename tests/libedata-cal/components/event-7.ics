@@ -1,0 +1,14 @@
+BEGIN:VEVENT
+UID:event-7
+DTSTAMP:20170221T121736Z
+DTSTART;TZID=/freeassociation.sourceforge.net/America/New_York:20170221T135000
+DTEND;TZID=/freeassociation.sourceforge.net/America/New_York:20170221T145000
+SEQUENCE:1
+SUMMARY:With attachment
+TRANSP:OPAQUE
+ATTACH:file:///usr/share/icons/hicolor/48x48/apps/evolution.png
+CLASS:PUBLIC
+CREATED:20170221T125054Z
+LAST-MODIFIED:20170221T125054Z
+CATEGORIES:Holiday,Work
+END:VEVENT

@@ -1496,7 +1496,6 @@ componenttime_to_utc_timet (const ECalComponentDateTime *dt_time,
 		if (dt_time->tzid)
 			zone = tz_cb (dt_time->tzid, tz_cb_data);
 
-		// zone = icaltimezone_get_utc_timezone ();
 		timet = icaltime_as_timet_with_zone (
 			*dt_time->value, zone ? zone : default_zone);
 	}
@@ -1530,6 +1529,7 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 {
 	struct icalrecurrencetype ir;
 	ECalComponentDateTime dt_start, dt_end;
+	time_t duration;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (start != NULL);
@@ -1544,6 +1544,14 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 		*start = _TIME_MIN;
 
 	e_cal_component_free_datetime (&dt_start);
+
+	e_cal_component_get_dtend (comp, &dt_end);
+	duration = componenttime_to_utc_timet (&dt_end, tz_cb, tz_cb_data, default_timezone);
+	if (duration <= 0 || *start == _TIME_MIN || *start > duration)
+		duration = 0;
+	else
+		duration = duration - *start;
+	e_cal_component_free_datetime (&dt_end);
 
 	/* find out end date of component */
 	*end = _TIME_MAX;
@@ -1578,6 +1586,8 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 	} else {
 		/* ALARMS, EVENTS: DTEND and reccurences */
 
+		time_t may_end = _TIME_MIN;
+
 		if (e_cal_component_has_recurrences (comp)) {
 			GSList *rrules = NULL;
 			GSList *exrules = NULL;
@@ -1600,9 +1610,9 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					&ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
-					*end = _TIME_MAX;
-				else if (rule_end > *end) /* new maximum */
-					*end = rule_end;
+					may_end = _TIME_MAX;
+				else if (rule_end + duration > may_end) /* new maximum */
+					may_end = rule_end + duration;
 			}
 
 			/* Do the EXRULEs. */
@@ -1617,9 +1627,9 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					&ir, prop, utc_zone, TRUE);
 
 				if (rule_end == -1) /* repeats forever */
-					*end = _TIME_MAX;
-				else if (rule_end > *end)
-					*end = rule_end;
+					may_end = _TIME_MAX;
+				else if (rule_end + duration > may_end)
+					may_end = rule_end + duration;
 			}
 
 			/* Do the RDATEs */
@@ -1639,12 +1649,14 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 					rdate_end = icaltime_as_timet (p->u.end);
 
 				if (rdate_end == -1) /* repeats forever */
-					*end = _TIME_MAX;
-				else if (rdate_end > *end)
-					*end = rdate_end;
+					may_end = _TIME_MAX;
+				else if (rdate_end > may_end)
+					may_end = rdate_end;
 			}
 
 			e_cal_component_free_period_list (rdates);
+		} else if (*start != _TIME_MIN) {
+			may_end = *start;
 		}
 
 		/* Get dtend of the component and convert it to UTC */
@@ -1656,11 +1668,179 @@ e_cal_util_get_component_occur_times (ECalComponent *comp,
 			dtend_time = componenttime_to_utc_timet (
 				&dt_end, tz_cb, tz_cb_data, default_timezone);
 
-			if (dtend_time == -1 || (dtend_time > *end))
-				*end = dtend_time;
+			if (dtend_time == -1 || (dtend_time > may_end))
+				may_end = dtend_time;
+		} else {
+			may_end = _TIME_MAX;
 		}
 
 		e_cal_component_free_datetime (&dt_end);
+
+		*end = may_end == _TIME_MIN ? _TIME_MAX : may_end;
 	}
 }
 
+/**
+ * e_cal_util_find_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Searches for an X property named @x_name within X properties
+ * of @icalcomp and returns it.
+ *
+ * Returns: (nullable) (transfer none): the first X icalproperty named
+ *    @x_name, or %NULL, when none found. The returned structure is owned
+ *    by @icalcomp.
+ *
+ * Since: 3.26
+ **/
+icalproperty *
+e_cal_util_find_x_property (icalcomponent *icalcomp,
+			    const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+
+	for (prop = icalcomponent_get_first_property (icalcomp, ICAL_X_PROPERTY);
+	     prop;
+	     prop = icalcomponent_get_next_property (icalcomp, ICAL_X_PROPERTY)) {
+		const gchar *prop_name = icalproperty_get_x_name (prop);
+
+		if (g_strcmp0 (prop_name, x_name) == 0)
+			break;
+	}
+
+	return prop;
+}
+
+/**
+ * e_cal_util_dup_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Searches for an X property named @x_name within X properties
+ * of @icalcomp and returns its value as a newly allocated string.
+ * Free it with g_free(), when no longer needed.
+ *
+ * Returns: (nullable) (transfer full): Newly allocated value of the first @x_name
+ *    X property in @icalcomp, or %NULL, if not found.
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_cal_util_dup_x_property (icalcomponent *icalcomp,
+			   const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+
+	if (!prop)
+		return NULL;
+
+	return icalproperty_get_value_as_string_r (prop);
+}
+
+/**
+ * e_cal_util_get_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Searches for an X property named @x_name within X properties
+ * of @icalcomp and returns its value. The returned string is
+ * owned by libical. See e_cal_util_dup_x_property().
+ *
+ * Returns: (nullable) (transfer none): Value of the first @x_name
+ *    X property in @icalcomp, or %NULL, if not found.
+ *
+ * Since: 3.26
+ **/
+const gchar *
+e_cal_util_get_x_property (icalcomponent *icalcomp,
+			   const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+	g_return_val_if_fail (x_name != NULL, NULL);
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+
+	if (!prop)
+		return NULL;
+
+	return icalproperty_get_value_as_string (prop);
+}
+
+/**
+ * e_cal_util_set_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ * @value: (nullable): a value to set, or %NULL
+ *
+ * Sets a value of the first X property named @x_name in @icalcomp,
+ * if any such already exists, or adds a new property with this name
+ * and value. As a special case, if @value is %NULL, then removes
+ * the first X property names @x_name from @icalcomp instead.
+ *
+ * Since: 3.26
+ **/
+void
+e_cal_util_set_x_property (icalcomponent *icalcomp,
+			   const gchar *x_name,
+			   const gchar *value)
+{
+	icalproperty *prop;
+
+	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (x_name != NULL);
+
+	if (!value) {
+		e_cal_util_remove_x_property (icalcomp, x_name);
+		return;
+	}
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	if (prop) {
+		icalproperty_set_value_from_string (prop, value, "NO");
+	} else {
+		prop = icalproperty_new_x (value);
+		icalproperty_set_x_name (prop, x_name);
+		icalcomponent_add_property (icalcomp, prop);
+	}
+}
+
+/**
+ * e_cal_util_remove_x_property:
+ * @icalcomp: an icalcomponent
+ * @x_name: name of the X property
+ *
+ * Removes the first X property named @x_name in @icalcomp.
+ *
+ * Returns: %TRUE, when any such had been found and removed, %FALSE otherwise.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_util_remove_x_property (icalcomponent *icalcomp,
+			      const gchar *x_name)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (icalcomp != NULL, FALSE);
+	g_return_val_if_fail (x_name != NULL, FALSE);
+
+	prop = e_cal_util_find_x_property (icalcomp, x_name);
+	if (!prop)
+		return FALSE;
+
+	icalcomponent_remove_property (icalcomp, prop);
+	icalproperty_free (prop);
+
+	return TRUE;
+}

@@ -28,6 +28,7 @@
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <libxml/xpathInternals.h>
 
 #include <glib/gstdio.h>
 
@@ -177,3 +178,267 @@ e_xml_get_child_by_name (const xmlNode *parent,
 	return NULL;
 }
 
+/**
+ * e_xml_parse_data:
+ * @data: an XML data
+ * @length: (length-of data): length of data, should be greated than zero
+ *
+ * Parses XML data into an #xmlDocPtr. Free returned pointer
+ * with xmlFreeDoc(), when no longer needed.
+ *
+ * Returns: (nullable) (transfer full): a new #xmlDocPtr with parsed @data,
+ *    or %NULL on error.
+ *
+ * Since: 3.26
+ **/
+xmlDocPtr
+e_xml_parse_data (gconstpointer data,
+		  gsize length)
+{
+	g_return_val_if_fail (data != NULL, NULL);
+	g_return_val_if_fail (length > 0, NULL);
+
+	return xmlReadMemory (data, length, "data.xml", NULL, 0);
+}
+
+/**
+ * e_xml_new_xpath_context_with_namespaces:
+ * @doc: an #xmlDocPtr
+ * @...: %NULL-terminated list of pairs (prefix, href) with namespaces
+ *
+ * Creates a new #xmlXPathContextPtr on @doc with preregistered
+ * namespaces. The namepsaces are pair of (prefix, href), terminated
+ * by %NULL.
+ *
+ * Returns: (transfer full): a new #xmlXPathContextPtr. Free the returned
+ *    pointer with xmlXPathFreeContext() when no longer needed.
+ *
+ * Since: 3.26
+ **/
+xmlXPathContextPtr
+e_xml_new_xpath_context_with_namespaces (xmlDocPtr doc,
+					 ...)
+{
+	xmlXPathContextPtr xpath_ctx;
+	va_list va;
+	const gchar *prefix;
+
+	g_return_val_if_fail (doc != NULL, NULL);
+
+	xpath_ctx = xmlXPathNewContext (doc);
+	g_return_val_if_fail (xpath_ctx != NULL, NULL);
+
+	va_start (va, doc);
+
+	while (prefix = va_arg (va, const gchar *), prefix) {
+		const gchar *href = va_arg (va, const gchar *);
+
+		if (!href) {
+			g_warn_if_fail (href != NULL);
+			break;
+		}
+
+		xmlXPathRegisterNs (xpath_ctx, (const xmlChar *) prefix, (const xmlChar *) href);
+	}
+
+	va_end (va);
+
+	return xpath_ctx;
+}
+
+/**
+ * e_xml_xpath_context_register_namespaces:
+ * @xpath_ctx: an #xmlXPathContextPtr
+ * @prefix: namespace prefix
+ * @href: namespace href
+ * @...: %NULL-terminated list of pairs (prefix, href) with additional namespaces
+ *
+ * Registers one or more additional namespaces. It's a caller's error
+ * to try to register a namespace with the same prefix again, unless
+ * the prefix uses the same namespace href.
+ *
+ * Since: 3.26
+ **/
+void
+e_xml_xpath_context_register_namespaces (xmlXPathContextPtr xpath_ctx,
+					 const gchar *prefix,
+					 const gchar *href,
+					 ...)
+{
+	va_list va;
+	const gchar *used_href;
+
+	g_return_if_fail (xpath_ctx != NULL);
+	g_return_if_fail (prefix != NULL);
+	g_return_if_fail (href != NULL);
+
+	used_href = (const gchar *) xmlXPathNsLookup (xpath_ctx, (const xmlChar *) prefix);
+	if (used_href && g_strcmp0 (used_href, href) != 0) {
+		g_warning ("%s: Trying to register prefix '%s' with href '%s', but it already points to '%s'",
+			G_STRFUNC, prefix, href, used_href);
+	} else if (!used_href) {
+		xmlXPathRegisterNs (xpath_ctx, (const xmlChar *) prefix, (const xmlChar *) href);
+	}
+
+	va_start (va, href);
+
+	while (prefix = va_arg (va, const gchar *), prefix) {
+		href = va_arg (va, const gchar *);
+
+		if (!href) {
+			g_warn_if_fail (href != NULL);
+			break;
+		}
+
+		used_href = (const gchar *) xmlXPathNsLookup (xpath_ctx, (const xmlChar *) prefix);
+		if (used_href && g_strcmp0 (used_href, href) != 0) {
+			g_warning ("%s: Trying to register prefix '%s' with href '%s', but it already points to '%s'",
+				G_STRFUNC, prefix, href, used_href);
+		} else if (!used_href) {
+			xmlXPathRegisterNs (xpath_ctx, (const xmlChar *) prefix, (const xmlChar *) href);
+		}
+	}
+
+	va_end (va);
+}
+
+/**
+ * e_xml_xpath_eval:
+ * @xpath_ctx: an #xmlXPathContextPtr
+ * @format: printf-like format specifier of path to evaluate
+ * @...: arguments for the @format
+ *
+ * Evaluates path specified by @format and returns its #xmlXPathObjectPtr,
+ * in case the path evaluates to a non-empty node set. See also
+ * e_xml_xpath_eval_as_string() which evaluates the path to string.
+ *
+ * Returns: (nullable) (transfer full): a new #xmlXPathObjectPtr which
+ *    references given path, or %NULL if path cannot be found or when
+ *    it evaluates to an empty nodeset. Free returned pointer with
+ *    xmlXPathFreeObject(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+xmlXPathObjectPtr
+e_xml_xpath_eval (xmlXPathContextPtr xpath_ctx,
+		  const gchar *format,
+		  ...)
+{
+	xmlXPathObjectPtr object;
+	va_list va;
+	gchar *expr;
+
+	g_return_val_if_fail (xpath_ctx != NULL, NULL);
+	g_return_val_if_fail (format != NULL, NULL);
+
+	va_start (va, format);
+	expr = g_strdup_vprintf (format, va);
+	va_end (va);
+
+	object = xmlXPathEvalExpression ((const xmlChar *) expr, xpath_ctx);
+	g_free (expr);
+
+	if (!object)
+		return NULL;
+
+	if (object->type == XPATH_NODESET &&
+	    xmlXPathNodeSetIsEmpty (object->nodesetval)) {
+		xmlXPathFreeObject (object);
+		return NULL;
+	}
+
+	return object;
+}
+
+/**
+ * e_xml_xpath_eval_as_string:
+ * @xpath_ctx: an #xmlXPathContextPtr
+ * @format: printf-like format specifier of path to evaluate
+ * @...: arguments for the @format
+ *
+ * Evaluates path specified by @format and returns its result as string,
+ * in case the path evaluates to a non-empty node set. See also
+ * e_xml_xpath_eval() which evaluates the path to an #xmlXPathObjectPtr.
+ *
+ * Returns: (nullable) (transfer full): a new string which contains value
+ *    of the given path, or %NULL if path cannot be found or when
+ *    it evaluates to an empty nodeset. Free returned pointer with
+ *    g_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_xml_xpath_eval_as_string (xmlXPathContextPtr xpath_ctx,
+			    const gchar *format,
+			    ...)
+{
+	xmlXPathObjectPtr object;
+	va_list va;
+	gchar *expr, *value;
+
+	g_return_val_if_fail (xpath_ctx != NULL, NULL);
+	g_return_val_if_fail (format != NULL, NULL);
+
+	va_start (va, format);
+	expr = g_strdup_vprintf (format, va);
+	va_end (va);
+
+	if (!g_str_has_prefix (format, "string(")) {
+		gchar *tmp = expr;
+
+		expr = g_strconcat ("string(", expr, ")", NULL);
+
+		g_free (tmp);
+	}
+
+	object = e_xml_xpath_eval (xpath_ctx, "%s", expr);
+	if (!object)
+		return NULL;
+
+	if (object->type == XPATH_STRING &&
+	    *object->stringval)
+		value = g_strdup ((const gchar *) object->stringval);
+	else
+		value = NULL;
+
+	xmlXPathFreeObject (object);
+
+	return value;
+}
+
+/**
+ * e_xml_xpath_eval_exists:
+ * @xpath_ctx: an #xmlXPathContextPtr
+ * @format: printf-like format specifier of path to evaluate
+ * @...: arguments for the @format
+ *
+ * Evaluates path specified by @format and returns whether it exists.
+ *
+ * Returns: %TRUE, when the given XPath exists, %FALSE otherwise.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_xml_xpath_eval_exists (xmlXPathContextPtr xpath_ctx,
+			 const gchar *format,
+			 ...)
+{
+	xmlXPathObjectPtr object;
+	va_list va;
+	gchar *expr;
+
+	g_return_val_if_fail (xpath_ctx != NULL, FALSE);
+	g_return_val_if_fail (format != NULL, FALSE);
+
+	va_start (va, format);
+	expr = g_strdup_vprintf (format, va);
+	va_end (va);
+
+	object = e_xml_xpath_eval (xpath_ctx, "%s", expr);
+	if (!object)
+		return FALSE;
+
+	xmlXPathFreeObject (object);
+
+	return TRUE;
+}

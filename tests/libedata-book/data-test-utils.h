@@ -22,6 +22,8 @@
 
 #include <libedata-book/libedata-book.h>
 
+G_BEGIN_DECLS
+
 /* This legend shows the add order, and various sort order of the sorted
  * vcards. The UIDs of these contacts are formed as 'sorted-1', 'sorted-2' etc
  * and the numbering of the contacts is according to the 'N' column in the
@@ -173,5 +175,7 @@ StepData *step_test_new_full               (const gchar         *test_prefix,
 
 void      step_test_add                    (StepData    *data,
 					    gboolean     filtered);
+
+G_END_DECLS
 
 #endif /* DATA_TEST_UTILS_H */

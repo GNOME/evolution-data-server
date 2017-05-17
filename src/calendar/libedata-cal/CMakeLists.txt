@@ -17,6 +17,8 @@ set(SOURCES
 	e-cal-backend-sync.c
 	e-cal-backend-util.c
 	e-cal-backend-store.c
+	e-cal-cache.c
+	e-cal-meta-backend.c
 	e-data-cal.c
 	e-data-cal-factory.c
 	e-data-cal-view.c
@@ -32,9 +34,11 @@ set(HEADERS
 	e-cal-backend-sync.h
 	e-cal-backend-util.h
 	e-cal-backend-sexp.h
+	e-cal-backend-store.h
+	e-cal-cache.h
+	e-cal-meta-backend.h
 	e-data-cal.h
 	e-data-cal-factory.h
-	e-cal-backend-store.h
 	e-data-cal-view.h
 	e-subprocess-cal-factory.h
 )

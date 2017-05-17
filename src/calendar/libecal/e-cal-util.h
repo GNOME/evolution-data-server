@@ -248,6 +248,18 @@ void		e_cal_util_get_component_occur_times
 						 const icaltimezone *default_timezone,
 						 icalcomponent_kind kind);
 
+icalproperty *	e_cal_util_find_x_property	(icalcomponent *icalcomp,
+						 const gchar *x_name);
+gchar *		e_cal_util_dup_x_property	(icalcomponent *icalcomp,
+						 const gchar *x_name);
+const gchar *	e_cal_util_get_x_property	(icalcomponent *icalcomp,
+						 const gchar *x_name);
+void		e_cal_util_set_x_property	(icalcomponent *icalcomp,
+						 const gchar *x_name,
+						 const gchar *value);
+gboolean	e_cal_util_remove_x_property	(icalcomponent *icalcomp,
+						 const gchar *x_name);
+
 #ifndef EDS_DISABLE_DEPRECATED
 /* Used for mode stuff */
 typedef enum {

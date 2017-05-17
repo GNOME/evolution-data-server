@@ -77,8 +77,8 @@ test_create_cursor_invalid_sort (EbSqlFixture *fixture,
 		sort_fields, sort_types, 1, &error);
 
 	g_assert (cursor == NULL);
-	g_assert (error);
-	g_assert (g_error_matches (error, E_BOOK_SQLITE_ERROR, E_BOOK_SQLITE_ERROR_INVALID_QUERY));
+	g_assert_error (error, E_BOOK_SQLITE_ERROR, E_BOOK_SQLITE_ERROR_INVALID_QUERY);
+	g_clear_error (&error);
 }
 
 static void
@@ -91,8 +91,8 @@ test_create_cursor_missing_sort (EbSqlFixture *fixture,
 	cursor = e_book_sqlite_cursor_new (fixture->ebsql, NULL, NULL, NULL, 0, &error);
 
 	g_assert (cursor == NULL);
-	g_assert (error);
-	g_assert (g_error_matches (error, E_BOOK_SQLITE_ERROR, E_BOOK_SQLITE_ERROR_INVALID_QUERY));
+	g_assert_error (error, E_BOOK_SQLITE_ERROR, E_BOOK_SQLITE_ERROR_INVALID_QUERY);
+	g_clear_error (&error);
 }
 
 gint

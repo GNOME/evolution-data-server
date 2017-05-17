@@ -16,9 +16,12 @@ set(SOURCES
 	e-book-backend-cache.c
 	e-book-backend-sqlitedb.c
 	e-book-backend.c
+	e-book-cache.c
+	e-book-meta-backend.c
 	e-book-sqlite.c
 	e-data-book.c
 	e-data-book-cursor.c
+	e-data-book-cursor-cache.c
 	e-data-book-cursor-sqlite.c
 	e-data-book-direct.c
 	e-data-book-factory.c
@@ -33,15 +36,18 @@ set(HEADERS
 	e-book-backend-sexp.h
 	e-book-backend-summary.h
 	e-book-backend.h
+	e-book-cache.h
+	e-book-meta-backend.h
+	e-book-sqlite.h
 	e-data-book-factory.h
 	e-data-book-view.h
 	e-data-book.h
 	e-data-book-cursor.h
+	e-data-book-cursor-cache.h
 	e-data-book-cursor-sqlite.h
 	e-data-book-direct.h
 	e-book-backend-cache.h
 	e-book-backend-sqlitedb.h
-	e-book-sqlite.h
 	e-subprocess-book-factory.h
 )
 

@@ -31,6 +31,7 @@ static ETestServerClosure book_closure_direct_async = { E_TEST_SERVER_DIRECT_ADD
 #define N_CONTACTS 5
 
 typedef struct {
+	ESourceRegistry *registry;
 	ETestServerClosure *closure;
 	GThread         *thread;
 	const gchar     *book_uid;
@@ -179,7 +180,6 @@ static gpointer
 test_view_thread_async (ThreadData *data)
 {
 	GMainContext    *context;
-	ESourceRegistry *registry;
 	ESource         *source;
 	GError          *error = NULL;
 
@@ -188,18 +188,14 @@ test_view_thread_async (ThreadData *data)
 	g_main_context_push_thread_default (context);
 
 	/* Open the test book client in this thread */
-	registry = e_source_registry_new_sync (NULL, &error);
-	if (!registry)
-		g_error ("Unable to create the registry: %s", error->message);
-
-	source = e_source_registry_ref_source (registry, data->book_uid);
+	source = e_source_registry_ref_source (data->registry, data->book_uid);
 	if (!source)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
 	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK) {
 		/* There is no Async API to open a direct book for now, let's stick with the sync API
 		 */
-		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, (guint32) -1, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_direct_sync (data->registry, source, (guint32) -1, NULL, &error);
 
 		if (!data->client)
 			g_error ("Unable to create EBookClient for uid '%s': %s", data->book_uid, error->message);
@@ -215,7 +211,6 @@ test_view_thread_async (ThreadData *data)
 	g_main_loop_run (data->loop);
 
 	g_object_unref (source);
-	g_object_unref (registry);
 
 	g_object_unref (data->client);
 	g_main_context_pop_thread_default (context);
@@ -263,7 +258,6 @@ static gpointer
 test_view_thread_sync (ThreadData *data)
 {
 	GMainContext    *context;
-	ESourceRegistry *registry;
 	ESource         *source;
 	GError          *error = NULL;
 
@@ -272,16 +266,12 @@ test_view_thread_sync (ThreadData *data)
 	g_main_context_push_thread_default (context);
 
 	/* Open the test book client in this thread */
-	registry = e_source_registry_new_sync (NULL, &error);
-	if (!registry)
-		g_error ("Unable to create the registry: %s", error->message);
-
-	source = e_source_registry_ref_source (registry, data->book_uid);
+	source = e_source_registry_ref_source (data->registry, data->book_uid);
 	if (!source)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
 	if (data->closure->type == E_TEST_SERVER_DIRECT_ADDRESS_BOOK)
-		data->client = (EBookClient *) e_book_client_connect_direct_sync (registry, source, (guint32) -1, NULL, &error);
+		data->client = (EBookClient *) e_book_client_connect_direct_sync (data->registry, source, (guint32) -1, NULL, &error);
 	else
 		data->client = (EBookClient *) e_book_client_connect_sync (source, (guint32) -1, NULL, &error);
 
@@ -293,7 +283,6 @@ test_view_thread_sync (ThreadData *data)
 	g_main_loop_run (data->loop);
 
 	g_object_unref (source);
-	g_object_unref (registry);
 
 	g_object_unref (data->client);
 	g_main_context_pop_thread_default (context);
@@ -305,12 +294,16 @@ test_view_thread_sync (ThreadData *data)
 
 static ThreadData *
 create_test_thread (const gchar *book_uid,
+		    ESourceRegistry *registry,
                     gconstpointer user_data,
                     gboolean sync)
 {
 	ThreadData  *data = g_slice_new0 (ThreadData);
 
+	g_assert_nonnull (registry);
+
 	data->book_uid = book_uid;
+	data->registry = registry;
 	data->closure = (ETestServerClosure *) user_data;
 
 	g_mutex_init (&data->complete_mutex);
@@ -352,7 +345,7 @@ test_concurrent_views (ETestServerFixture *fixture,
 	/* Create all concurrent threads accessing the same addressbook */
 	tests = g_new0 (ThreadData *, N_THREADS);
 	for (i = 0; i < N_THREADS; i++)
-		tests[i] = create_test_thread (book_uid, user_data, sync);
+		tests[i] = create_test_thread (book_uid, fixture->registry, user_data, sync);
 
 	/* Wait for all threads to receive the complete signal */
 	for (i = 0; i < N_THREADS; i++) {

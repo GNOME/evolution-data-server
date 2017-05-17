@@ -47,12 +47,12 @@ typedef struct _ECalBackendCalDAVClass ECalBackendCalDAVClass;
 typedef struct _ECalBackendCalDAVPrivate ECalBackendCalDAVPrivate;
 
 struct _ECalBackendCalDAV {
-	ECalBackendSync parent;
+	ECalMetaBackend parent;
 	ECalBackendCalDAVPrivate *priv;
 };
 
 struct _ECalBackendCalDAVClass {
-	ECalBackendSyncClass parent_class;
+	ECalMetaBackendClass parent_class;
 };
 
 GType		e_cal_backend_caldav_get_type	(void);

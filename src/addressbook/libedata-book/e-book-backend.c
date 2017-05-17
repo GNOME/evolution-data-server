@@ -67,6 +67,7 @@ struct _EBookBackendPrivate {
 	GQueue pending_operations;
 	guint32 next_operation_id;
 	GSimpleAsyncResult *blocked;
+	gboolean blocked_by_custom_op;
 };
 
 struct _AsyncContext {
@@ -98,6 +99,11 @@ struct _DispatchNode {
 
 	GSimpleAsyncResult *simple;
 	GCancellable *cancellable;
+
+	GWeakRef *book_backend_weak_ref;
+	EBookBackendCustomOpFunc custom_func;
+	gpointer custom_func_user_data;
+	GDestroyNotify custom_func_user_data_free;
 };
 
 enum {
@@ -146,6 +152,12 @@ dispatch_node_free (DispatchNode *dispatch_node)
 	g_clear_object (&dispatch_node->simple);
 	g_clear_object (&dispatch_node->cancellable);
 
+	if (dispatch_node->custom_func_user_data_free)
+		dispatch_node->custom_func_user_data_free (dispatch_node->custom_func_user_data);
+
+	if (dispatch_node->book_backend_weak_ref)
+		e_weak_ref_free (dispatch_node->book_backend_weak_ref);
+
 	g_slice_free (DispatchNode, dispatch_node);
 }
 
@@ -176,13 +188,35 @@ book_backend_push_operation (EBookBackend *backend,
 	g_mutex_unlock (&backend->priv->operation_lock);
 }
 
+static void book_backend_unblock_operations (EBookBackend *backend, GSimpleAsyncResult *simple);
+
 static void
 book_backend_dispatch_thread (DispatchNode *node)
 {
 	GCancellable *cancellable = node->cancellable;
 	GError *local_error = NULL;
 
-	if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
+	if (node->custom_func) {
+		EBookBackend *book_backend;
+
+		book_backend = g_weak_ref_get (node->book_backend_weak_ref);
+		if (book_backend &&
+		    !g_cancellable_is_cancelled (cancellable)) {
+			node->custom_func (book_backend, node->custom_func_user_data, cancellable, &local_error);
+
+			if (local_error) {
+				if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+					e_book_backend_notify_error (book_backend, local_error->message);
+
+				g_clear_error (&local_error);
+			}
+		}
+
+		if (book_backend) {
+			book_backend_unblock_operations (book_backend, NULL);
+			e_util_unref_in_thread (book_backend);
+		}
+	} else if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
 		g_simple_async_result_take_error (node->simple, local_error);
 		g_simple_async_result_complete_in_idle (node->simple);
 	} else {
@@ -207,7 +241,8 @@ book_backend_dispatch_next_operation (EBookBackend *backend)
 
 	/* We can't dispatch additional operations
 	 * while a blocking operation is in progress. */
-	if (backend->priv->blocked != NULL) {
+	if (backend->priv->blocked != NULL ||
+	    backend->priv->blocked_by_custom_op) {
 		g_mutex_unlock (&backend->priv->operation_lock);
 		return FALSE;
 	}
@@ -221,8 +256,12 @@ book_backend_dispatch_next_operation (EBookBackend *backend)
 
 	/* If this a blocking operation, block any
 	 * further dispatching until this finishes. */
-	if (node->blocking_operation)
-		backend->priv->blocked = g_object_ref (node->simple);
+	if (node->blocking_operation) {
+		if (node->simple)
+			backend->priv->blocked = g_object_ref (node->simple);
+		else
+			backend->priv->blocked_by_custom_op = TRUE;
+	}
 
 	g_mutex_unlock (&backend->priv->operation_lock);
 
@@ -244,6 +283,7 @@ book_backend_unblock_operations (EBookBackend *backend,
 	g_mutex_lock (&backend->priv->operation_lock);
 	if (backend->priv->blocked == simple)
 		g_clear_object (&backend->priv->blocked);
+	backend->priv->blocked_by_custom_op = FALSE;
 	g_mutex_unlock (&backend->priv->operation_lock);
 
 	while (book_backend_dispatch_next_operation (backend))
@@ -705,6 +745,7 @@ e_book_backend_class_init (EBookBackendClass *class)
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->prepare_shutdown = book_backend_prepare_shutdown;
 
+	class->use_serial_dispatch_queue = TRUE;
 	class->get_backend_property = book_backend_get_backend_property;
 	class->get_contact_list_uids_sync = book_backend_get_contact_list_uids_sync;
 	class->notify_update = book_backend_notify_update;
@@ -3639,4 +3680,54 @@ e_book_backend_delete_cursor (EBookBackend *backend,
 	g_object_unref (backend);
 
 	return success;
+}
+
+/**
+ * e_book_backend_schedule_custom_operation:
+ * @book_backend: an #EBookBackend
+ * @use_cancellable: (nullable): an optional #GCancellable to use for @func
+ * @func: a function to call in a dedicated thread
+ * @user_data: user data being passed to @func
+ * @user_data_free: (nullable): optional destroy call back for @user_data
+ *
+ * Schedules user function @func to be run in a dedicated thread as
+ * a blocking operation.
+ *
+ * The function adds its own reference to @use_cancellable, if not %NULL.
+ *
+ * The error returned from @func is propagated to client using
+ * e_book_backend_notify_error() function. If it's not desired,
+ * then left the error unchanged and notify about errors manually.
+ *
+ * Since: 3.26
+ **/
+void
+e_book_backend_schedule_custom_operation (EBookBackend *book_backend,
+					  GCancellable *use_cancellable,
+					  EBookBackendCustomOpFunc func,
+					  gpointer user_data,
+					  GDestroyNotify user_data_free)
+{
+	DispatchNode *node;
+
+	g_return_if_fail (E_IS_BOOK_BACKEND (book_backend));
+	g_return_if_fail (func != NULL);
+
+	g_mutex_lock (&book_backend->priv->operation_lock);
+
+	node = g_slice_new0 (DispatchNode);
+	node->blocking_operation = TRUE;
+	node->book_backend_weak_ref = e_weak_ref_new (book_backend);
+	node->custom_func = func;
+	node->custom_func_user_data = user_data;
+	node->custom_func_user_data_free = user_data_free;
+
+	if (G_IS_CANCELLABLE (use_cancellable))
+		node->cancellable = g_object_ref (use_cancellable);
+
+	g_queue_push_tail (&book_backend->priv->pending_operations, node);
+
+	g_mutex_unlock (&book_backend->priv->operation_lock);
+
+	book_backend_dispatch_next_operation (book_backend);
 }

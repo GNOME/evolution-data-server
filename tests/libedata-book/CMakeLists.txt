@@ -37,29 +37,31 @@ set(extra_ldflags
 set(SOURCES
 	data-test-utils.c
 	data-test-utils.h
+	test-book-cache-utils.c
+	test-book-cache-utils.h
 )
 
-add_library(data-test-utils STATIC
+add_library(data-book-test-utils STATIC
 	${SOURCES}
 )
 
-add_dependencies(data-test-utils
+add_dependencies(data-book-test-utils
 	edataserver
 	${extra_deps}
 )
 
-target_compile_definitions(data-test-utils PRIVATE
-	-DG_LOG_DOMAIN=\"data-test-utils\"
+target_compile_definitions(data-book-test-utils PRIVATE
+	-DG_LOG_DOMAIN=\"data-book-test-utils\"
 	${extra_defines}
 )
 
-target_compile_options(data-test-utils PUBLIC
+target_compile_options(data-book-test-utils PUBLIC
 	${BACKEND_CFLAGS}
 	${DATA_SERVER_CFLAGS}
 	${extra_cflags}
 )
 
-target_include_directories(data-test-utils PUBLIC
+target_include_directories(data-book-test-utils PUBLIC
 	${CMAKE_BINARY_DIR}
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_SOURCE_DIR}/src
@@ -68,7 +70,7 @@ target_include_directories(data-test-utils PUBLIC
 	${extra_incdirs}
 )
 
-target_link_libraries(data-test-utils
+target_link_libraries(data-book-test-utils
 	edataserver
 	${extra_deps}
 	${BACKEND_LDFLAGS}
@@ -79,7 +81,7 @@ target_link_libraries(data-test-utils
 set(extra_deps
 	ebook
 	ebook-contacts
-	data-test-utils
+	data-book-test-utils
 )
 
 set(extra_defines)
@@ -94,6 +96,18 @@ set(extra_defines)
 # This is because each migrated test changes the
 # locale and reloads the same addressbook of the previous test.
 set(TESTS
+	test-book-cache-get-contact
+	test-book-cache-create-cursor
+	test-book-cache-cursor-move-by-posix
+	test-book-cache-cursor-move-by-en-US
+	test-book-cache-cursor-move-by-fr-CA
+	test-book-cache-cursor-move-by-de-DE
+	test-book-cache-cursor-set-target
+	test-book-cache-cursor-calculate
+	test-book-cache-cursor-set-sexp
+	test-book-cache-cursor-change-locale
+	test-book-cache-offline
+	test-book-meta-backend
 	test-sqlite-get-contact
 	test-sqlite-create-cursor
 	test-sqlite-cursor-move-by-posix

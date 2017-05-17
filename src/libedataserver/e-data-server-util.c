@@ -505,6 +505,52 @@ e_util_utf8_remove_accents (const gchar *str)
 }
 
 /**
+ * e_util_utf8_decompose:
+ * @text: a UTF-8 string
+ *
+ * Converts the @text into a decomposed variant and strips it, which
+ * allows also cheap case insensitive comparision afterwards. This
+ * produces an output as being used in e_util_utf8_strstrcasedecomp().
+ *
+ * Returns: (transfer full): A newly allocated string, a decomposed
+ *    variant of the @text. Free with g_free(), when no longer needed.
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_util_utf8_decompose (const gchar *text)
+{
+	gunichar unival;
+	const gchar *p;
+	gchar utf8[12];
+	GString *decomp;
+
+	if (!text)
+		return NULL;
+
+	decomp = g_string_sized_new (strlen (text) + 1);
+
+	for (p = e_util_unicode_get_utf8 (text, &unival);
+	     p && unival;
+	     p = e_util_unicode_get_utf8 (p, &unival)) {
+		gunichar sc;
+		sc = stripped_char (unival);
+		if (sc) {
+			gint ulen = g_unichar_to_utf8 (sc, utf8);
+			g_string_append_len (decomp, utf8, ulen);
+		}
+	}
+
+	/* NULL means there was illegal utf-8 sequence */
+	if (!p || !decomp->len) {
+		g_string_free (decomp, TRUE);
+		return NULL;
+	}
+
+	return g_string_free (decomp, FALSE);
+}
+
+/**
  * e_util_utf8_make_valid:
  * @str: a UTF-8 string
  *
@@ -2921,4 +2967,48 @@ e_util_get_source_oauth2_access_token_sync (ESource *source,
 	g_free (auth_method);
 
 	return success;
+}
+
+static gpointer
+unref_object_in_thread (gpointer ptr)
+{
+	GObject *object = ptr;
+
+	g_return_val_if_fail (object != NULL, NULL);
+
+	g_object_unref (object);
+
+	return NULL;
+}
+
+/**
+ * e_util_unref_in_thread:
+ * @object: a #GObject
+ *
+ * Unrefs the given @object in a dedicated thread. This is useful when unreffing
+ * object deep in call stack when the caller might still use the object and
+ * this being the last reference to it.
+ *
+ * Since: 3.26
+ **/
+void
+e_util_unref_in_thread (gpointer object)
+{
+	GThread *thread;
+	GError *error = NULL;
+
+	if (!object)
+		return;
+
+	g_return_if_fail (G_IS_OBJECT (object));
+
+	thread = g_thread_try_new (NULL, unref_object_in_thread, object, &error);
+	if (thread) {
+		g_thread_unref (thread);
+	} else {
+		g_warning ("%s: Failed to run thread: %s", G_STRFUNC, error ? error->message : "Unknown error");
+		g_object_unref (object);
+	}
+
+	g_clear_error (&error);
 }

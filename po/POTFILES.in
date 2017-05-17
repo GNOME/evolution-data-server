@@ -18,9 +18,12 @@ src/addressbook/libebook/e-destination.c
 src/addressbook/libedata-book/e-book-backend.c
 src/addressbook/libedata-book/e-book-backend-sexp.c
 src/addressbook/libedata-book/e-book-backend-sqlitedb.c
+src/addressbook/libedata-book/e-book-cache.c
+src/addressbook/libedata-book/e-book-meta-backend.c
 src/addressbook/libedata-book/e-book-sqlite.c
 src/addressbook/libedata-book/e-data-book.c
 src/addressbook/libedata-book/e-data-book-cursor.c
+src/addressbook/libedata-book/e-data-book-cursor-cache.c
 src/addressbook/libedata-book/e-data-book-cursor-sqlite.c
 src/addressbook/libedata-book/e-data-book-factory.c
 src/calendar/backends/caldav/e-cal-backend-caldav.c
@@ -38,6 +41,8 @@ src/calendar/libedata-cal/e-cal-backend.c
 src/calendar/libedata-cal/e-cal-backend-sexp.c
 src/calendar/libedata-cal/e-cal-backend-sync.c
 src/calendar/libedata-cal/e-cal-backend-util.c
+src/calendar/libedata-cal/e-cal-cache.c
+src/calendar/libedata-cal/e-cal-meta-backend.c
 src/calendar/libedata-cal/e-data-cal.c
 src/calendar/libedata-cal/e-data-cal-factory.c
 src/camel/camel-address.c
@@ -176,6 +181,7 @@ data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 data/org.gnome.evolution-data-server.gschema.xml.in
 data/org.gnome.evolution.shell.network-config.gschema.xml.in
 src/libebackend/e-backend.c
+src/libebackend/e-cache.c
 src/libebackend/e-collection-backend.c
 src/libebackend/e-data-factory.c
 src/libebackend/e-server-side-source.c
@@ -184,6 +190,7 @@ src/libebackend/e-subprocess-factory.c
 src/libebackend/e-user-prompter-server.c
 src/libedataserver/e-categories.c
 src/libedataserver/e-client.c
+src/libedataserver/e-soup-session.c
 src/libedataserver/e-source.c
 src/libedataserver/e-source-credentials-provider-impl.c
 src/libedataserver/e-source-credentials-provider-impl-google.c
@@ -194,6 +201,7 @@ src/libedataserver/e-source-registry.c
 src/libedataserver/e-source-webdav.c
 src/libedataserver/e-time-utils.c
 src/libedataserver/e-webdav-discover.c
+src/libedataserver/e-webdav-session.c
 src/libedataserverui/e-credentials-prompter.c
 src/libedataserverui/e-credentials-prompter-impl-google.c
 src/libedataserverui/e-credentials-prompter-impl-password.c

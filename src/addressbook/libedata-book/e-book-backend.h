@@ -113,7 +113,7 @@ struct _EBookBackend {
 /**
  * EBookBackendClass:
  * @use_serial_dispatch_queue: Whether a serial dispatch queue should
- *                             be used for this backend or not.
+ *                             be used for this backend or not. The default is %TRUE.
  * @get_backend_property: Fetch a property value by name from the backend
  * @open_sync: Open the backend
  * @refresh_sync: Refresh the backend
@@ -475,6 +475,30 @@ GSimpleAsyncResult *
 						(EBookBackend *backend,
 						 guint32 opid,
 						 GQueue **result_queue);
+/**
+ * EBookBackendCustomOpFunc:
+ * @book_backend: an #EBookBackend
+ * @user_data: a function user data, as provided to e_book_backend_schedule_custom_operation()
+ * @cancellable: an optional #GCancellable, as provided to e_book_backend_schedule_custom_operation()
+ * @error: return location for a #GError, or %NULL
+ *
+ * A callback prototype being called in a dedicated thread, scheduled
+ * by e_book_backend_schedule_custom_operation().
+ *
+ * Since: 3.26
+ **/
+typedef void	(* EBookBackendCustomOpFunc)	(EBookBackend *book_backend,
+						 gpointer user_data,
+						 GCancellable *cancellable,
+						 GError **error);
+
+void		e_book_backend_schedule_custom_operation
+						(EBookBackend *book_backend,
+						 GCancellable *use_cancellable,
+						 EBookBackendCustomOpFunc func,
+						 gpointer user_data,
+						 GDestroyNotify user_data_free);
+
 
 G_END_DECLS
 

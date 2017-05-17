@@ -48,12 +48,12 @@ typedef struct _EBookBackendGoogleClass EBookBackendGoogleClass;
 typedef struct _EBookBackendGooglePrivate EBookBackendGooglePrivate;
 
 struct _EBookBackendGoogle {
-	EBookBackend parent_object;
+	EBookMetaBackend parent_object;
 	EBookBackendGooglePrivate *priv;
 };
 
 struct _EBookBackendGoogleClass {
-	EBookBackendClass parent_class;
+	EBookMetaBackendClass parent_class;
 };
 
 GType		e_book_backend_google_get_type	(void);

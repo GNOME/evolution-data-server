@@ -133,7 +133,10 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 	if (current_source && g_source_is_destroyed (current_source))
 		return FALSE;
 
-	backend = E_BACKEND (user_data);
+	backend = g_weak_ref_get (user_data);
+	if (!backend)
+		return FALSE;
+
 	connectable = e_backend_ref_connectable (backend);
 
 	g_mutex_lock (&backend->priv->update_online_state_lock);
@@ -180,8 +183,8 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 		g_mutex_unlock (&backend->priv->network_monitor_cancellable_lock);
 	}
 
-	if (connectable != NULL)
-		g_object_unref (connectable);
+	g_clear_object (&connectable);
+	g_clear_object (&backend);
 
 	return FALSE;
 }
@@ -211,7 +214,7 @@ backend_update_online_state (EBackend *backend)
 	g_source_set_callback (
 		timeout_source,
 		backend_update_online_state_timeout_cb,
-		backend, (GDestroyNotify) g_object_unref);
+		e_weak_ref_new (backend), (GDestroyNotify) e_weak_ref_free);
 	g_source_attach (timeout_source, main_context);
 	backend->priv->update_online_state =
 		g_source_ref (timeout_source);
@@ -220,6 +223,8 @@ backend_update_online_state (EBackend *backend)
 	g_main_context_unref (main_context);
 
 	g_mutex_unlock (&backend->priv->update_online_state_lock);
+
+	g_object_unref (backend);
 }
 
 static void
@@ -314,6 +319,7 @@ backend_source_authenticate_thread (gpointer user_data)
 		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
 
 		switch (auth_result) {
+		case E_SOURCE_AUTHENTICATION_UNKNOWN:
 		case E_SOURCE_AUTHENTICATION_ERROR:
 			reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
 			break;

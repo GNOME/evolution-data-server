@@ -316,6 +316,12 @@ gboolean         e_vcard_attribute_has_type         (EVCardAttribute *attr, cons
 gchar *            e_vcard_escape_string (const gchar *s);
 gchar *            e_vcard_unescape_string (const gchar *s);
 
+void		e_vcard_util_set_x_attribute	(EVCard *vcard,
+						 const gchar *x_name,
+						 const gchar *value);
+gchar *		e_vcard_util_dup_x_attribute	(EVCard *vcard,
+						 const gchar *x_name);
+
 G_END_DECLS
 
 #endif /* _EVCARD_H */

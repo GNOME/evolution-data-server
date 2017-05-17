@@ -157,6 +157,7 @@
       <xi:include href="xml/e-backend.xml"/>
       <xi:include href="xml/e-backend-enums.xml"/>
       <xi:include href="xml/e-backend-factory.xml"/>
+      <xi:include href="xml/e-cache.xml"/>
       <xi:include href="xml/e-data-factory.xml"/>
       <xi:include href="xml/e-dbus-server.xml"/>
       <xi:include href="xml/e-extensible.xml"/>
@@ -180,10 +181,13 @@
       <xi:include href="xml/e-book-backend.xml"/>
       <xi:include href="xml/e-book-backend-factory.xml"/>
       <xi:include href="xml/e-book-backend-sexp.xml"/>
+      <xi:include href="xml/e-book-cache.xml"/>
+      <xi:include href="xml/e-book-meta-backend.xml"/>
       <xi:include href="xml/e-book-sqlite.xml"/>
       <xi:include href="xml/e-data-book.xml"/>
       <xi:include href="xml/e-data-book-direct.xml"/>
       <xi:include href="xml/e-data-book-cursor.xml"/>
+      <xi:include href="xml/e-data-book-cursor-cache.xml"/>
       <xi:include href="xml/e-data-book-cursor-sqlite.xml"/>
       <xi:include href="xml/e-data-book-factory.xml"/>
       <xi:include href="xml/e-data-book-view.xml"/>
@@ -199,6 +203,8 @@
       <xi:include href="xml/e-cal-backend-store.xml"/>
       <xi:include href="xml/e-cal-backend-sync.xml"/>
       <xi:include href="xml/e-cal-backend-intervaltree.xml"/>
+      <xi:include href="xml/e-cal-cache.xml"/>
+      <xi:include href="xml/e-cal-meta-backend.xml"/>
       <xi:include href="xml/e-data-cal.xml"/>
       <xi:include href="xml/e-data-cal-factory.xml"/>
       <xi:include href="xml/e-data-cal-view.xml"/>
@@ -226,10 +232,13 @@
       <xi:include href="xml/e-operation-pool.xml"/>
       <xi:include href="xml/e-secret-store.xml"/>
       <xi:include href="xml/e-sexp.xml"/>
+      <xi:include href="xml/e-soup-session.xml"/>
       <xi:include href="xml/e-soup-ssl-trust.xml"/>
       <xi:include href="xml/e-time-utils.xml"/>
       <xi:include href="xml/e-uid.xml"/>
       <xi:include href="xml/e-webdav-discover.xml"/>
+      <xi:include href="xml/e-webdav-session.xml"/>
+      <xi:include href="xml/e-xml-document.xml"/>
       <xi:include href="xml/e-xml-hash-utils.xml"/>
       <xi:include href="xml/e-xml-utils.xml"/>
       <xi:include href="xml/eds-version.xml"/>
@@ -323,6 +332,10 @@
   <index id="api-index-deprecated" role="deprecated">
     <title>Index of deprecated symbols</title>
     <xi:include href="xml/api-index-deprecated.xml"><xi:fallback /></xi:include>
+  </index>
+  <index id="api-index-3.26" role="3.26">
+    <title>Index of new symbols in 3.26</title>
+    <xi:include href="xml/api-index-3.26.xml"><xi:fallback /></xi:include>
   </index>
   <index id="api-index-3.24" role="3.24">
     <title>Index of new symbols in 3.24</title>

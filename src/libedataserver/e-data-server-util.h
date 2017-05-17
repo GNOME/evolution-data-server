@@ -55,6 +55,7 @@ const gchar *	e_util_utf8_strstrcasedecomp	(const gchar *haystack,
 gint		e_util_utf8_strcasecmp		(const gchar *s1,
 						 const gchar *s2);
 gchar *		e_util_utf8_remove_accents	(const gchar *str);
+gchar *		e_util_utf8_decompose		(const gchar *text);
 gchar *		e_util_utf8_make_valid		(const gchar *str);
 gchar *		e_util_utf8_data_make_valid	(const gchar *data,
 						 gsize data_bytes);
@@ -280,6 +281,9 @@ gboolean	e_util_get_source_oauth2_access_token_sync
 						 gint *out_expires_in_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
+
+void		e_util_unref_in_thread		(gpointer object);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */

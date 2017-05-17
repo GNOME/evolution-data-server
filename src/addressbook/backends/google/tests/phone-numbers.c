@@ -37,9 +37,10 @@ build_system_groups_by_id (void)
 }
 
 static gchar *
-create_group_null (const gchar *category_name,
-                   gpointer user_data,
-                   GError **error)
+create_group_null (EBookBackendGoogle *bbgoogle,
+		   const gchar *category_name,
+		   GCancellable *cancellable,
+		   GError **error)
 {
 	/* Must never be reached. */
 	g_assert_not_reached ();
@@ -61,7 +62,7 @@ create_group_null (const gchar *category_name,
 		"END:VCARD" \
 	); \
 \
-	entry = gdata_entry_new_from_e_contact (contact, groups_by_name, system_groups_by_id, create_group_null, NULL); \
+	entry = gdata_entry_new_from_e_contact (contact, groups_by_name, system_groups_by_id, create_group_null, NULL, NULL); \
 	g_assert (entry != NULL); \
 \
 	g_hash_table_unref (system_groups_by_id); \
