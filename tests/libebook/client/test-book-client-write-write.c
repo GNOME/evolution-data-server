@@ -45,6 +45,7 @@ typedef struct {
 } TestData;
 
 typedef struct {
+	ESourceRegistry *registry;
 	GThread       *thread;
 	const gchar   *book_uid;
 	const gchar   *contact_uid;
@@ -182,7 +183,6 @@ static gpointer
 test_write_thread (ThreadData *data)
 {
 	GMainContext    *context;
-	ESourceRegistry *registry;
 	GSource         *gsource;
 	ESource         *source;
 	GError          *error = NULL;
@@ -192,11 +192,7 @@ test_write_thread (ThreadData *data)
 	g_main_context_push_thread_default (context);
 
 	/* Open the test book client in this thread */
-	registry = e_source_registry_new_sync (NULL, &error);
-	if (!registry)
-		g_error ("Unable to create the registry: %s", error->message);
-
-	source = e_source_registry_ref_source (registry, data->book_uid);
+	source = e_source_registry_ref_source (data->registry, data->book_uid);
 	if (!source)
 		g_error ("Unable to fetch source uid '%s' from the registry", data->book_uid);
 
@@ -212,7 +208,6 @@ test_write_thread (ThreadData *data)
 	g_main_loop_run (data->loop);
 
 	g_object_unref (source);
-	g_object_unref (registry);
 
 	g_object_unref (data->client);
 	g_main_context_pop_thread_default (context);
@@ -223,7 +218,8 @@ test_write_thread (ThreadData *data)
 }
 
 static ThreadData *
-create_test_thread (const gchar *book_uid,
+create_test_thread (ESourceRegistry *registry,
+		    const gchar *book_uid,
                     const gchar *contact_uid,
                     EContactField field,
                     const gchar *value)
@@ -231,6 +227,9 @@ create_test_thread (const gchar *book_uid,
 	ThreadData  *data = g_slice_new0 (ThreadData);
 	const gchar *name = e_contact_field_name (field);
 
+	g_assert_nonnull (registry);
+
+	data->registry = registry;
 	data->book_uid = book_uid;
 	data->contact_uid = contact_uid;
 	data->field = field;
@@ -276,6 +275,7 @@ test_concurrent_writes (ETestServerFixture *fixture,
 	tests = g_new0 (ThreadData *, G_N_ELEMENTS (field_tests));
 	for (i = 0; i < G_N_ELEMENTS (field_tests); i++)
 		tests[i] = create_test_thread (
+			fixture->registry,
 			book_uid, contact_uid,
 			field_tests[i].field,
 			field_tests[i].value);

@@ -23,6 +23,7 @@
 
 #include "libebook-contacts/libebook-contacts.h"
 
+#include "e-test-server-utils.h"
 #include "test-book-cache-utils.h"
 
 #define REMOTE_URL	"https://www.gnome.org/wp-content/themes/gnome-grass/images/gnome-logo.svg"
@@ -1663,9 +1664,16 @@ gint
 main (gint argc,
       gchar **argv)
 {
+	ETestServerClosure tsclosure = {
+		E_TEST_SERVER_NONE,
+		NULL, /* Source customization function */
+		0,    /* Calendar Type */
+		TRUE, /* Keep the working sandbox after the test, don't remove it */
+		NULL, /* Destroy Notify function */
+	};
+	ETestServerFixture tsfixture = { 0 };
 	TCUClosure closure = { 0 };
 	gint res;
-	GError *error = NULL;
 
 #if !GLIB_CHECK_VERSION (2, 35, 1)
 	g_type_init ();
@@ -1676,8 +1684,9 @@ main (gint argc,
 	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
-	glob_registry = e_source_registry_new_sync (NULL, &error);
-	g_assert_no_error (error);
+	e_test_server_utils_setup (&tsfixture, &tsclosure);
+
+	glob_registry = tsfixture.registry;
 	g_assert_nonnull (glob_registry);
 
 	g_test_add ("/EBookMetaBackend/Photos", TCUFixture, &closure,
@@ -1703,7 +1712,7 @@ main (gint argc,
 
 	res = g_test_run ();
 
-	g_clear_object (&glob_registry);
+	e_test_server_utils_teardown (&tsfixture, &tsclosure);
 
 	return res;
 }
