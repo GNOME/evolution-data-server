@@ -542,8 +542,8 @@ e_book_meta_backend_test_init (EBookMetaBackendTest *test_backend)
 	ebmb_test_add_test_case (test_backend, "custom-1");
 	ebmb_test_add_test_case (test_backend, "custom-2");
 	ebmb_test_add_test_case (test_backend, "custom-3");
-	ebmb_test_add_test_case (test_backend, "custom-4");
 	ebmb_test_add_test_case (test_backend, "custom-5");
+	ebmb_test_add_test_case (test_backend, "custom-6");
 
 	e_book_meta_backend_test_reset_counters (test_backend);
 
@@ -1217,9 +1217,9 @@ test_get_contact (EBookMetaBackend *meta_backend)
 	book_cache = e_book_meta_backend_ref_cache (meta_backend);
 	g_assert_nonnull (book_cache);
 
-	e_book_cache_remove_contact (book_cache, "custom-4", E_CACHE_IS_ONLINE, NULL, &error);
-	g_assert_no_error (error);
 	e_book_cache_remove_contact (book_cache, "custom-5", E_CACHE_IS_ONLINE, NULL, &error);
+	g_assert_no_error (error);
+	e_book_cache_remove_contact (book_cache, "custom-6", E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
 
 	/* Non-existing */
@@ -1361,8 +1361,8 @@ test_refresh (EBookMetaBackend *meta_backend)
 
 	e_book_meta_backend_test_reset_counters (test_backend);
 
-	ebmb_test_remove_component (test_backend, "custom-4");
 	ebmb_test_remove_component (test_backend, "custom-5");
+	ebmb_test_remove_component (test_backend, "custom-6");
 
 	/* Sync with server content */
 	e_book_meta_backend_test_call_refresh (meta_backend);
