@@ -121,7 +121,7 @@ ECalCacheSearchData *
 						 const gchar *extra);
 ECalCacheSearchData *
 		e_cal_cache_search_data_copy	(const ECalCacheSearchData *data);
-void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer data);
+void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer ptr);
 
 /**
  * ECalCacheSearchFunc:

@@ -684,7 +684,7 @@ e_soup_session_new_request (ESoupSession *session,
 }
 
 /**
- * e_soup_session_new_request:
+ * e_soup_session_new_request_uri:
  * @session: an #ESoupSession
  * @method: an HTTP method
  * @uri: a #SoupURI to use for the request

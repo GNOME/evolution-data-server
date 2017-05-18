@@ -59,6 +59,10 @@ G_DEFINE_BOXED_TYPE (EWebDAVAccessControlEntry, e_webdav_access_control_entry, e
  * @href: href of the resource
  * @etag: (nullable): optional ETag of the resource, or %NULL
  * @display_name: (nullable): optional display name of the resource, or %NULL
+ * @content_type: (nullable): optional Content-Type of the resource, or %NULL
+ * @content_length: optional Content-Length of the resource, or 0
+ * @creation_date: optional date of creation of the resource, or 0
+ * @last_modified: optional last modified time of the resource, or 0
  * @description: (nullable): optional description of the resource, or %NULL
  * @color: (nullable): optional color of the resource, or %NULL
  *
@@ -1258,8 +1262,8 @@ e_webdav_session_post_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @depth: requested depth, can be one of %E_WEBDAV_DEPTH_THIS, %E_WEBDAV_DEPTH_THIS_AND_CHILDREN or %E_WEBDAV_DEPTH_INFINITY
  * @xml: (nullable): the request itself, as an #EXmlDocument, the root element should be DAV:propfind, or %NULL
- * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
- * @func_user_data: user data passed to @func
+ * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: (closure func): user data passed to @func
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1425,8 +1429,8 @@ e_webdav_session_proppatch_sync (EWebDAVSession *webdav,
  * @uri: (nullable): URI to issue the request for, or %NULL to read from #ESource
  * @depth: (nullable): requested depth, can be %NULL, then no Depth header is sent
  * @xml: the request itself, as an #EXmlDocument
- * @func: (nullable): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
- * @func_user_data: user data passed to @func
+ * @func: (nullable) (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response, or %NULL
+ * @func_user_data: (closure func): user data passed to @func
  * @out_content_type: (nullable) (transfer full): return location for response Content-Type, or %NULL
  * @out_content: (nullable) (transfer full): return location for response content, or %NULL
  * @cancellable: optional #GCancellable object, or %NULL
@@ -1887,7 +1891,7 @@ e_webdav_session_extract_href_and_etag (SoupMessage *message,
  * @uri: URI of the resource to read
  * @out_href: (out) (nullable) (transfer full): optional return location for href of the resource, or %NULL
  * @out_etag: (out) (nullable) (transfer full): optional return location for etag of the resource, or %NULL
- * @out_stream: (out) (caller-allocates): a #GOutputStream to write data to
+ * @out_stream: (out caller-allocates): a #GOutputStream to write data to
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -3010,8 +3014,8 @@ e_webdav_session_traverse_propstat_response (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
  * @xml_data: a #GByteArray containing DAV:multistatus response
- * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
- * @func_user_data: user data passed to @func
+ * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the multistatus response
+ * @func_user_data: (closure func): user data passed to @func
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a DAV:multistatus response and calls @func for each returned DAV:propstat.
@@ -3052,8 +3056,8 @@ e_webdav_session_traverse_multistatus_response (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
  * @xml_data: a #GByteArray containing DAV:mkcol-response response
- * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
- * @func_user_data: user data passed to @func
+ * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
+ * @func_user_data: (closure func): user data passed to @func
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a DAV:mkcol-response response and calls @func for each returned DAV:propstat.
@@ -3094,8 +3098,8 @@ e_webdav_session_traverse_mkcol_response (EWebDAVSession *webdav,
  * @webdav: an #EWebDAVSession
  * @message: (nullable): an optional #SoupMessage corresponding to the response, or %NULL
  * @xml_data: a #GByteArray containing CALDAV:mkcalendar-response response
- * @func: an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
- * @func_user_data: user data passed to @func
+ * @func: (scope call): an #EWebDAVPropstatTraverseFunc function to call for each DAV:propstat in the response
+ * @func_user_data: (closure func): user data passed to @func
  * @error: return location for a #GError, or %NULL
  *
  * Traverses a CALDAV:mkcalendar-response response and calls @func for each returned DAV:propstat.

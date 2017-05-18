@@ -1,5 +1,4 @@
 // libxml2: replace xml.NodePtr by xml.Node* used by Vala bindings
-xml_save_file.doc type="Xml.Doc*"
 xml_from_hash skip=false type="Xml.Doc*"
 xmlhash_new skip=false type="E.XmlHash"
 xml_parse_file skip=false type="Xml.Doc*"

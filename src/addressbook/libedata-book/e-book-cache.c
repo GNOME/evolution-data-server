@@ -6090,8 +6090,8 @@ e_book_cache_class_init (EBookCacheClass *klass)
 		G_TYPE_BOOLEAN);
 
 	/**
-	 * @EBookCache:dup-contact-revision:
-	 * A signal being called to get revision of an EContact.
+	 * EBookCache:dup-contact-revision:
+	 * A signal being called to get revision of an #EContact.
 	 * The default implementation returns E_CONTACT_REV field value.
 	 **/
 	signals[DUP_CONTACT_REVISION] = g_signal_new (

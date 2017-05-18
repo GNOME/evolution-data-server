@@ -3612,7 +3612,7 @@ e_cal_cache_class_init (ECalCacheClass *klass)
 	klass->dup_component_revision = ecc_dup_component_revision;
 
 	/**
-	 * @ECalCache:dup-component-revision:
+	 * ECalCache:dup-component-revision:
 	 * A signal being called to get revision of an icalcomponent.
 	 * The default implementation uses a concatenation of
 	 * DTSTAMP '-' LASTMODIFIED '-' SEQUENCE.

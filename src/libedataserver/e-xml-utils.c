@@ -39,7 +39,7 @@
 #endif
 
 /**
- * e_xml_parse_file:
+ * e_xml_parse_file: (skip)
  * @filename: path to an XML file
  *
  * Reads a local XML file and parses the contents into an XML document
@@ -152,7 +152,7 @@ e_xml_save_file (const gchar *filename,
 }
 
 /**
- * e_xml_get_child_by_name:
+ * e_xml_get_child_by_name: (skip)
  * @parent: an XML node structure
  * @child_name: element name of a child node
  *
@@ -179,9 +179,9 @@ e_xml_get_child_by_name (const xmlNode *parent,
 }
 
 /**
- * e_xml_parse_data:
- * @data: an XML data
- * @length: (length-of data): length of data, should be greated than zero
+ * e_xml_parse_data: (skip)
+ * @data: (array length=length) (element-type guint8): an XML data
+ * @length: length of data, should be greated than zero
  *
  * Parses XML data into an #xmlDocPtr. Free returned pointer
  * with xmlFreeDoc(), when no longer needed.
@@ -202,7 +202,7 @@ e_xml_parse_data (gconstpointer data,
 }
 
 /**
- * e_xml_new_xpath_context_with_namespaces:
+ * e_xml_new_xpath_context_with_namespaces: (skip)
  * @doc: an #xmlDocPtr
  * @...: %NULL-terminated list of pairs (prefix, href) with namespaces
  *
@@ -247,7 +247,7 @@ e_xml_new_xpath_context_with_namespaces (xmlDoc *doc,
 }
 
 /**
- * e_xml_xpath_context_register_namespaces:
+ * e_xml_xpath_context_register_namespaces: (skip)
  * @xpath_ctx: an #xmlXPathContextPtr
  * @prefix: namespace prefix
  * @href: namespace href
@@ -303,7 +303,7 @@ e_xml_xpath_context_register_namespaces (xmlXPathContext *xpath_ctx,
 }
 
 /**
- * e_xml_xpath_eval:
+ * e_xml_xpath_eval: (skip)
  * @xpath_ctx: an #xmlXPathContextPtr
  * @format: printf-like format specifier of path to evaluate
  * @...: arguments for the @format
@@ -320,7 +320,7 @@ e_xml_xpath_context_register_namespaces (xmlXPathContext *xpath_ctx,
  * Since: 3.26
  **/
 xmlXPathObject *
-e_xml_xpath_eval (xmlXPathContextPtr xpath_ctx,
+e_xml_xpath_eval (xmlXPathContext *xpath_ctx,
 		  const gchar *format,
 		  ...)
 {
@@ -351,7 +351,7 @@ e_xml_xpath_eval (xmlXPathContextPtr xpath_ctx,
 }
 
 /**
- * e_xml_xpath_eval_as_string:
+ * e_xml_xpath_eval_as_string: (skip)
  * @xpath_ctx: an #xmlXPathContextPtr
  * @format: printf-like format specifier of path to evaluate
  * @...: arguments for the @format
@@ -407,7 +407,7 @@ e_xml_xpath_eval_as_string (xmlXPathContext *xpath_ctx,
 }
 
 /**
- * e_xml_xpath_eval_exists:
+ * e_xml_xpath_eval_exists: (skip)
  * @xpath_ctx: an #xmlXPathContextPtr
  * @format: printf-like format specifier of path to evaluate
  * @...: arguments for the @format

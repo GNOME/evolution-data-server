@@ -2920,7 +2920,7 @@ e_vcard_util_set_x_attribute (EVCard *vcard,
  * @vcard: an #EVCard
  * @x_name: the attribute name, which starts with "X-"
  *
- * Returns: (nullable) (transfer-full): Value of attribute @x_name, or %NULL,
+ * Returns: (nullable) (transfer full): Value of attribute @x_name, or %NULL,
  *    when there is no such attribute. Free the returned pointer with g_free(),
  *    when no longer needed.
  *
