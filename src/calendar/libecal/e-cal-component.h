@@ -331,7 +331,9 @@ struct _ECalComponentClass {
 
 GType		e_cal_component_get_type	(void);
 
+/* #ifndef EDS_DISABLE_DEPRECATED*/
 gchar *		e_cal_component_gen_uid		(void);
+/*#endif / * EDS_DISABLE_DEPRECATED */
 
 ECalComponent *	e_cal_component_new		(void);
 ECalComponent *	e_cal_component_new_from_string	(const gchar *calobj);

@@ -368,7 +368,7 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 			icalcomponent_remove_component (vcalendar, subcomp);
 
 			if (!icalcomponent_get_first_property (subcomp, ICAL_UID_PROPERTY)) {
-				gchar *new_uid = e_cal_component_gen_uid ();
+				gchar *new_uid = e_util_generate_uid ();
 				icalcomponent_set_uid (subcomp, new_uid);
 				g_free (new_uid);
 			}

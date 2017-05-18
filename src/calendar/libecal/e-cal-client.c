@@ -3656,7 +3656,7 @@ e_cal_client_get_default_object_sync (ECalClient *client,
 		gchar *new_uid;
 
 		/* Make sure the UID is always unique. */
-		new_uid = e_cal_component_gen_uid ();
+		new_uid = e_util_generate_uid ();
 		icalcomponent_set_uid (icalcomp, new_uid);
 		g_free (new_uid);
 	}

@@ -1401,7 +1401,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	comp = e_cal_component_new ();
 	e_cal_component_set_new_vtype (comp, E_CAL_COMPONENT_FREEBUSY);
 
-	str = e_cal_component_gen_uid ();
+	str = e_util_generate_uid ();
 	e_cal_component_set_uid (comp, str);
 	g_free (str);
 

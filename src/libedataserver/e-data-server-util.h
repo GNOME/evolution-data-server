@@ -284,6 +284,8 @@ gboolean	e_util_get_source_oauth2_access_token_sync
 
 void		e_util_unref_in_thread		(gpointer object);
 
+gchar *		e_util_generate_uid		(void);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */

@@ -1695,7 +1695,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 	if (!uid) {
 		gchar *new_uid;
 
-		new_uid = e_cal_component_gen_uid ();
+		new_uid = e_util_generate_uid ();
 		if (!new_uid) {
 			g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
 			return FALSE;
@@ -1994,7 +1994,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 			if (split_icalcomp) {
 				gchar *new_uid;
 
-				new_uid = e_cal_component_gen_uid ();
+				new_uid = e_util_generate_uid ();
 				icalcomponent_set_uid (split_icalcomp, new_uid);
 				g_free (new_uid);
 
@@ -2448,7 +2448,7 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 	if (!id && method == ICAL_METHOD_PUBLISH) {
 		gchar *new_uid;
 
-		new_uid = e_cal_component_gen_uid ();
+		new_uid = e_util_generate_uid ();
 		e_cal_component_set_uid (comp, new_uid);
 		g_free (new_uid);
 

@@ -499,7 +499,7 @@ create_weather (ECalBackendWeather *cbw,
 	e_cal_component_set_icalcomponent (cal_comp, ical_comp);
 
 	/* set uid */
-	uid = e_cal_component_gen_uid ();
+	uid = e_util_generate_uid ();
 	e_cal_component_set_uid (cal_comp, uid);
 	g_free (uid);
 

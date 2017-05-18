@@ -634,11 +634,12 @@ maybe_transform_vcard_for_photo (EBookBackendFile *bf,
 static gchar *
 e_book_backend_file_create_unique_id (void)
 {
-	/* use a 32 counter and the 32 bit timestamp to make an id.
-	 * it's doubtful 2^32 id's will be created in a second, so we
-	 * should be okay. */
-	static guint c = 0;
-	return g_strdup_printf (PAS_ID_PREFIX "%08lX%08X", (glong) time (NULL), c++);
+	gchar *uid = e_util_generate_uid (), *prefixed;
+
+	prefixed = g_strconcat (PAS_ID_PREFIX, uid, NULL);
+	g_free (uid);
+
+	return prefixed;
 }
 
 static gchar *

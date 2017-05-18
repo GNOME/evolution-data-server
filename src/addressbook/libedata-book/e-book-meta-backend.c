@@ -1416,61 +1416,6 @@ ebmb_refresh_sync (EBookBackend *book_backend,
 	return success;
 }
 
-/* Copied from e_cal_component_gen_uid() */
-static gchar *
-e_book_meta_backend_gen_uid (void)
-{
-	gchar *iso, *ret;
-	static const gchar *hostname;
-	time_t t = time (NULL);
-	struct tm stm;
-	static gint serial;
-
-	if (!hostname) {
-#ifndef G_OS_WIN32
-		static gchar buffer[512];
-
-		if ((gethostname (buffer, sizeof (buffer) - 1) == 0) &&
-		    (buffer[0] != 0))
-			hostname = buffer;
-		else
-			hostname = "localhost";
-#else
-		hostname = g_get_host_name ();
-#endif
-	}
-
-#ifdef G_OS_WIN32
-#ifdef gmtime_r
-#undef gmtime_r
-#endif
-
-/* The gmtime() in Microsoft's C library is MT-safe */
-#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
-#endif
-
-	gmtime_r (&t, &stm);
-	iso = g_strdup_printf ("%04d%02d%02dT%02d%02d%02dZ",
-		(stm.tm_year + 1900),
-		(stm.tm_mon + 1),
-		stm.tm_mday,
-		stm.tm_hour,
-		stm.tm_min,
-		stm.tm_sec);
-
-	ret = g_strdup_printf (
-		"%s-%d-%d-%d-%d@%s",
-		iso,
-		getpid (),
-		getgid (),
-		getppid (),
-		serial++,
-		hostname);
-	g_free (iso);
-
-	return ret;
-}
-
 static gboolean
 ebmb_create_contact_sync (EBookMetaBackend *meta_backend,
 			  EBookCache *book_cache,
@@ -1492,7 +1437,7 @@ ebmb_create_contact_sync (EBookMetaBackend *meta_backend,
 	if (!uid) {
 		gchar *new_uid;
 
-		new_uid = e_book_meta_backend_gen_uid ();
+		new_uid = e_util_generate_uid ();
 		if (!new_uid) {
 			g_propagate_error (error, e_data_book_create_error (E_DATA_BOOK_STATUS_INVALID_ARG, NULL));
 			return FALSE;

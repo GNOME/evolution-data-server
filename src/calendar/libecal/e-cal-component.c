@@ -400,41 +400,13 @@ e_cal_component_init (ECalComponent *comp)
  *
  * Returns: A unique identifier string.  Every time this function is called
  * a different string is returned.
+ *
+ * Deprecated: Since 3.26, use e_util_generate_uid() instead
  **/
 gchar *
 e_cal_component_gen_uid (void)
 {
-	gchar *iso, *ret;
-	static const gchar *hostname;
-	time_t t = time (NULL);
-	static gint serial;
-
-	if (!hostname) {
-#ifndef G_OS_WIN32
-		static gchar buffer[512];
-
-		if ((gethostname (buffer, sizeof (buffer) - 1) == 0) &&
-		    (buffer[0] != 0))
-			hostname = buffer;
-		else
-			hostname = "localhost";
-#else
-		hostname = g_get_host_name ();
-#endif
-	}
-
-	iso = isodate_from_time_t (t);
-	ret = g_strdup_printf (
-		"%s-%d-%d-%d-%d@%s",
-		iso,
-		getpid (),
-		getgid (),
-		getppid (),
-		serial++,
-		hostname);
-	g_free (iso);
-
-	return ret;
+	return e_util_generate_uid ();
 }
 
 /**
@@ -929,7 +901,7 @@ add_alarm (ECalComponent *comp,
 
 		remove_alarm_uid (alarm);
 
-		new_auid = e_cal_component_gen_uid ();
+		new_auid = e_util_generate_uid ();
 		auid = set_alarm_uid (alarm, new_auid);
 		g_free (new_auid);
 	}
@@ -965,7 +937,7 @@ scan_alarm (ECalComponent *comp,
 
 	/* The component has no alarm UID property, so we create one. */
 
-	new_auid = e_cal_component_gen_uid ();
+	new_auid = e_util_generate_uid ();
 	auid = set_alarm_uid (alarm, new_auid);
 	g_free (new_auid);
 
@@ -1020,7 +992,7 @@ ensure_mandatory_properties (ECalComponent *comp)
 	if (!priv->uid) {
 		gchar *uid;
 
-		uid = e_cal_component_gen_uid ();
+		uid = e_util_generate_uid ();
 		priv->uid = icalproperty_new_uid (uid);
 		g_free (uid);
 
@@ -5712,7 +5684,7 @@ e_cal_component_alarm_new (void)
 
 	alarm->icalcomp = icalcomponent_new (ICAL_VALARM_COMPONENT);
 
-	new_auid = e_cal_component_gen_uid ();
+	new_auid = e_util_generate_uid ();
 	alarm->uid = icalproperty_new_x (new_auid);
 	icalproperty_set_x_name (alarm->uid, EVOLUTION_ALARM_UID_PROPERTY);
 	icalcomponent_add_property (alarm->icalcomp, alarm->uid);
