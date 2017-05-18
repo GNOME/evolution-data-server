@@ -885,10 +885,10 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 
 	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
 
+	meta_backend = E_BOOK_META_BACKEND (book_backend);
+
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
-
-	meta_backend = E_BOOK_META_BACKEND (book_backend);
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
 	    !ebmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {

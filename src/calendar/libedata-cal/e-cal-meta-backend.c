@@ -791,10 +791,10 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 
+	meta_backend = E_CAL_META_BACKEND (cal_backend);
+
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
-
-	meta_backend = E_CAL_META_BACKEND (cal_backend);
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
 	    !ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
