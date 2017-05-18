@@ -76,7 +76,7 @@ GType		e_xml_document_get_type		(void) G_GNUC_CONST;
 
 EXmlDocument *	e_xml_document_new		(const gchar *ns_href,
 						 const gchar *root_element);
-xmlDocPtr	e_xml_document_get_xmldoc	(EXmlDocument *xml);
+xmlDoc *	e_xml_document_get_xmldoc	(EXmlDocument *xml);
 gchar *		e_xml_document_get_content	(const EXmlDocument *xml,
 						 gsize *out_length);
 void		e_xml_document_add_namespaces	(EXmlDocument *xml,

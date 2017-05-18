@@ -169,7 +169,7 @@ typedef enum {
  * Since: 3.26
  **/
 typedef gboolean (* EWebDAVPropstatTraverseFunc)	(EWebDAVSession *webdav,
-							 xmlXPathContextPtr xpath_ctx,
+							 xmlXPathContext *xpath_ctx,
 							 const gchar *xpath_prop_prefix,
 							 const SoupURI *request_uri,
 							 const gchar *href,
@@ -463,7 +463,7 @@ gboolean	e_webdav_session_lock_sync		(EWebDAVSession *webdav,
 							 gint32 lock_timeout,
 							 const EXmlDocument *xml,
 							 gchar **out_lock_token,
-							 xmlDocPtr *out_xml_response,
+							 xmlDoc **out_xml_response,
 							 GCancellable *cancellable,
 							 GError **error);
 gboolean	e_webdav_session_refresh_lock_sync	(EWebDAVSession *webdav,

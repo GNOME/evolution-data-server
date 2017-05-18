@@ -137,7 +137,7 @@ e_xml_document_new (const gchar *ns_href,
  *
  * Since: 3.26
  **/
-xmlDocPtr
+xmlDoc *
 e_xml_document_get_xmldoc (EXmlDocument *xml)
 {
 	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), NULL);

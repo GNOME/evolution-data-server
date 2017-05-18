@@ -2633,7 +2633,7 @@ e_webdav_session_lock_sync (EWebDAVSession *webdav,
 			    gint32 lock_timeout,
 			    const EXmlDocument *xml,
 			    gchar **out_lock_token,
-			    xmlDocPtr *out_xml_response,
+			    xmlDoc **out_xml_response,
 			    GCancellable *cancellable,
 			    GError **error)
 {

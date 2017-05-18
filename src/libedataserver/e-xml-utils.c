@@ -39,7 +39,7 @@
 #endif
 
 /**
- * e_xml_parse_file: (skip)
+ * e_xml_parse_file:
  * @filename: path to an XML file
  *
  * Reads a local XML file and parses the contents into an XML document
@@ -48,7 +48,7 @@
  *
  * Returns: (transfer full): an XML document structure, or %NULL
  **/
-xmlDocPtr
+xmlDoc *
 e_xml_parse_file (const gchar *filename)
 {
 	xmlDocPtr result = NULL;
@@ -78,7 +78,7 @@ e_xml_parse_file (const gchar *filename)
  **/
 gint
 e_xml_save_file (const gchar *filename,
-                 xmlDocPtr doc)
+                 xmlDoc *doc)
 {
 	gchar *filesave;
 	xmlChar *xmlbuf;
@@ -152,7 +152,7 @@ e_xml_save_file (const gchar *filename,
 }
 
 /**
- * e_xml_get_child_by_name: (skip)
+ * e_xml_get_child_by_name:
  * @parent: an XML node structure
  * @child_name: element name of a child node
  *
@@ -191,7 +191,7 @@ e_xml_get_child_by_name (const xmlNode *parent,
  *
  * Since: 3.26
  **/
-xmlDocPtr
+xmlDoc *
 e_xml_parse_data (gconstpointer data,
 		  gsize length)
 {
@@ -215,8 +215,8 @@ e_xml_parse_data (gconstpointer data,
  *
  * Since: 3.26
  **/
-xmlXPathContextPtr
-e_xml_new_xpath_context_with_namespaces (xmlDocPtr doc,
+xmlXPathContext *
+e_xml_new_xpath_context_with_namespaces (xmlDoc *doc,
 					 ...)
 {
 	xmlXPathContextPtr xpath_ctx;
@@ -260,7 +260,7 @@ e_xml_new_xpath_context_with_namespaces (xmlDocPtr doc,
  * Since: 3.26
  **/
 void
-e_xml_xpath_context_register_namespaces (xmlXPathContextPtr xpath_ctx,
+e_xml_xpath_context_register_namespaces (xmlXPathContext *xpath_ctx,
 					 const gchar *prefix,
 					 const gchar *href,
 					 ...)
@@ -319,7 +319,7 @@ e_xml_xpath_context_register_namespaces (xmlXPathContextPtr xpath_ctx,
  *
  * Since: 3.26
  **/
-xmlXPathObjectPtr
+xmlXPathObject *
 e_xml_xpath_eval (xmlXPathContextPtr xpath_ctx,
 		  const gchar *format,
 		  ...)
@@ -368,7 +368,7 @@ e_xml_xpath_eval (xmlXPathContextPtr xpath_ctx,
  * Since: 3.26
  **/
 gchar *
-e_xml_xpath_eval_as_string (xmlXPathContextPtr xpath_ctx,
+e_xml_xpath_eval_as_string (xmlXPathContext *xpath_ctx,
 			    const gchar *format,
 			    ...)
 {
@@ -419,7 +419,7 @@ e_xml_xpath_eval_as_string (xmlXPathContextPtr xpath_ctx,
  * Since: 3.26
  **/
 gboolean
-e_xml_xpath_eval_exists (xmlXPathContextPtr xpath_ctx,
+e_xml_xpath_eval_exists (xmlXPathContext *xpath_ctx,
 			 const gchar *format,
 			 ...)
 {
