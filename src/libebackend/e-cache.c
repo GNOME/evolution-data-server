@@ -507,7 +507,7 @@ e_cache_column_info_free (gpointer info)
 	G_STMT_START { \
 		if (code == SQLITE_CONSTRAINT) { \
 			g_set_error_literal (error, E_CACHE_ERROR, E_CACHE_ERROR_CONSTRAINT, message); \
-		} else if (code == SQLITE_ABORT) { \
+		} else if (code == SQLITE_ABORT || code == SQLITE_INTERRUPT) { \
 			g_set_error (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, "Operation cancelled: %s", message); \
 		} else { \
 			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_ENGINE, \

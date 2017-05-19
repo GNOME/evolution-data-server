@@ -227,11 +227,11 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 
 	cbhttp = E_CAL_BACKEND_HTTP (meta_backend);
 
-	if (cbhttp->priv->session)
-		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
-
 	g_clear_object (&cbhttp->priv->input_stream);
 	g_clear_object (&cbhttp->priv->request);
+
+	if (cbhttp->priv->session)
+		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
 
 	if (cbhttp->priv->components) {
 		g_hash_table_destroy (cbhttp->priv->components);
