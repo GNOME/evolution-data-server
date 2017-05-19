@@ -155,15 +155,20 @@ static CamelMimeMessage *
 camel_filter_search_get_message (FilterMessageSearch *fms,
                                  struct _CamelSExp *sexp)
 {
+	GError *local_error = NULL;
+
 	if (fms->message)
 		return fms->message;
 
-	fms->message = fms->get_message (fms->get_message_data, fms->cancellable, fms->error);
+	fms->message = fms->get_message (fms->get_message_data, fms->cancellable, &local_error);
 
 	if (fms->message == NULL) {
-		camel_filter_search_log (fms, "Failed to retrieve message");
+		camel_filter_search_log (fms, "Failed to retrieve message: %s", local_error ? local_error->message : "Unknown error");
 		camel_sexp_fatal_error (sexp, _("Failed to retrieve message"));
 	}
+
+	if (local_error)
+		g_propagate_error (fms->error, local_error);
 
 	return fms->message;
 }
@@ -284,11 +289,11 @@ check_header (struct _CamelSExp *f,
 		if (g_ascii_strcasecmp (name, "x-camel-mlist") == 0) {
 			const gchar *list = camel_message_info_get_mlist (fms->info);
 
-			if (list) {
+			if (list && *list) {
 				for (i = 1; i < argc && !matched; i++) {
 					if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
 						matched = camel_search_header_match (list, argv[i]->value.string, how, CAMEL_SEARCH_TYPE_MLIST, NULL);
-						camel_filter_search_log (fms, "Mailing list header does %smatch '%s'", matched ? "" : "not ", argv[i]->value.string);
+						camel_filter_search_log (fms, "Mailing list header value '%s' does %smatch '%s'", list, matched ? "" : "not ", argv[i]->value.string);
 					}
 				}
 			}
