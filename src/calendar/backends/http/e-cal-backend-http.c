@@ -309,7 +309,7 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		new_etag = soup_message_headers_get_one (message->response_headers, "ETag");
 		if (new_etag && !*new_etag) {
 			new_etag = NULL;
-		} else if (g_strcmp0 (last_sync_tag, new_etag) == 0) {
+		} else if (new_etag && g_strcmp0 (last_sync_tag, new_etag) == 0) {
 			/* Nothing changed */
 			g_object_unref (message);
 
