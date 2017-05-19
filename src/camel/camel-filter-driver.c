@@ -1304,13 +1304,13 @@ camel_filter_driver_log (CamelFilterDriver *driver,
 			subject = camel_message_info_get_subject (driver->priv->info);
 
 			time (&t);
-			strftime (date, 49, "%a, %d %b %Y %H:%M:%S", localtime (&t));
+			strftime (date, 49, "%Y-%m-%d %H:%M:%S", localtime (&t));
 			fprintf (
 				driver->priv->logfile,
-				"Applied filter \"%s\" to "
-				"message from %s - \"%s\" at %s\n",
-				str, from ? from : "unknown",
-				subject ? subject : "", date);
+				"%s - Applied filter \"%s\" to "
+				"message from %s - \"%s\"\n",
+				date, str, from ? from : "unknown",
+				subject ? subject : "");
 
 			break;
 		}

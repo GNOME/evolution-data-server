@@ -469,7 +469,7 @@ camel_search_header_match (const gchar *value,
 		 * which should be common. */
 		vdom = strchr (value, '@');
 		mdom = strchr (match, '@');
-		if (mdom != NULL && vdom == NULL) {
+		if (mdom != NULL && mdom != match && vdom == NULL) {
 			v = g_alloca (mdom - match + 1);
 			memcpy (v, match, mdom - match);
 			v[mdom - match] = 0;
