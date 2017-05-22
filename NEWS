@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.25.2 2017-05-22
+---------------------------------------
+
+Bug Fixes:
+	Bug 781833 - Do not set '-Wl,--no-undefined' on BSD (Antoine Jacoutot)
+	Bug 779749 - [NNTP] Add exclusive usage locking for underlying stream (Milan Crha)
+	Bug 782360 - Remove src/addressbook/docs/ from git and releases (Milan Crha)
+	Bug 782362 - csv2vcard not marked as executable (Milan Crha)
+	Bug 782377 - ESourceWebdav overrides ESourceAuthentication::method (Milan Crha)
+	Bug 782745 - Build failure of vapi bindings (xmlDocPtr ~> xmlDoc *) (Milan Crha)
+	Bug 782799 - On The Web calendar update incorrectly cancelled (Milan Crha)
+	Bug 782847 - Some fixes to the developer documentation (Corentin Noël)
+
+Miscellaneous:
+	Remove forgotten debug print (Milan Crha)
+	Add CamelWeakRefGroup to camel-docs.sgml (Milan Crha)
+	Merge offline-cache changes into master (Milan Crha)
+	Unicode typography fixes (Piotr Drąg)
+	Bump libical dependency to 2.0 for ICAL_FILENAME_PARAMETER (Milan Crha)
+	Fix possible use of uninitialized variables in the new code (Milan Crha)
+	Correct some developer code comments and annotations (Milan Crha)
+	Introduce e_util_generate_uid() (Milan Crha)
+	Re-apply missed change for bug 781543 after the offline-cache code merge (Milan Crha)
+	Mis-filters emails with Mailing List rule in certain situations (Milan Crha)
+	On The Web calendars don't work when the server doesn't return ETag header (Milan Crha)
+
+Translations:
+	Kukuh Syafaat (id)
+	Daniel Mustieles (es)
+
 Evolution-Data-Server 3.25.1 2017-04-24
 ---------------------------------------
 
