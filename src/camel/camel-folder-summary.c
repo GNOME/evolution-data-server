@@ -145,6 +145,9 @@ enum {
 
 G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
+/* Private function */
+void _camel_message_info_unset_summary (CamelMessageInfo *mi);
+
 static gboolean
 remove_each_item (gpointer uid,
                   gpointer mi,
@@ -160,13 +163,21 @@ remove_each_item (gpointer uid,
 static void
 remove_all_loaded (CamelFolderSummary *summary)
 {
-	GSList *to_remove_infos = NULL;
+	GSList *to_remove_infos = NULL, *link;
 
 	g_return_if_fail (CAMEL_IS_FOLDER_SUMMARY (summary));
 
 	camel_folder_summary_lock (summary);
 
 	g_hash_table_foreach_remove (summary->priv->loaded_infos, remove_each_item, &to_remove_infos);
+
+	for (link = to_remove_infos; link; link = g_slist_next (link)) {
+		CamelMessageInfo *mi = link->data;
+
+		/* Dirty hack, to have CamelWeakRefGroup properly cleared,
+		   when the message info leaks due to ref/unref imbalance. */
+		_camel_message_info_unset_summary (mi);
+	}
 
 	g_slist_free_full (to_remove_infos, g_object_unref);
 
