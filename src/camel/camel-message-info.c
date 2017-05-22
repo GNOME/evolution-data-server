@@ -947,6 +947,17 @@ camel_message_info_init (CamelMessageInfo *mi)
 	g_rec_mutex_init (&mi->priv->property_lock);
 }
 
+/* Private function */
+void _camel_message_info_unset_summary (CamelMessageInfo *mi);
+
+void
+_camel_message_info_unset_summary (CamelMessageInfo *mi)
+{
+	g_return_if_fail (CAMEL_IS_MESSAGE_INFO (mi));
+
+	camel_weak_ref_group_set (mi->priv->summary_wrg, NULL);
+}
+
 /**
  * camel_message_info_new:
  * @summary: (nullable) (type CamelFolderSummary): parent #CamelFolderSummary object, or %NULL
@@ -1167,6 +1178,7 @@ camel_message_info_update_summary_and_folder (CamelMessageInfo *mi,
 	summary = camel_message_info_ref_summary (mi);
 	if (summary) {
 		CamelFolder *folder;
+		CamelMessageInfo *in_summary_mi = NULL;
 		const gchar *uid;
 
 		uid = camel_message_info_pooldup_uid (mi);
@@ -1174,7 +1186,7 @@ camel_message_info_update_summary_and_folder (CamelMessageInfo *mi,
 		/* This is for cases when a new message info had been created,
 		   but not added into the summary yet. */
 		if (uid && camel_folder_summary_check_uid (summary, uid) &&
-		    camel_folder_summary_peek_loaded (summary, uid) == mi) {
+		    (in_summary_mi = camel_folder_summary_peek_loaded (summary, uid)) == mi) {
 			if (update_counts) {
 				camel_folder_summary_lock (summary);
 				g_object_freeze_notify (G_OBJECT (summary));
@@ -1195,6 +1207,7 @@ camel_message_info_update_summary_and_folder (CamelMessageInfo *mi,
 			}
 		}
 
+		g_clear_object (&in_summary_mi);
 		g_clear_object (&summary);
 		camel_pstring_free (uid);
 	}
