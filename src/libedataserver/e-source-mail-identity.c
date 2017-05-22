@@ -818,9 +818,9 @@ e_source_mail_identity_set_aliases (ESourceMailIdentity *extension,
  * e_source_mail_identity_get_aliases() if you need more fine-grained
  * control on the list of aliases.
  *
- * Returns: (transfer full): A newly created #GHashTable will
- *   all the aliases. Returns %NULL if there are none set. Use
- *   g_hash_table_destroy() to free the returned hash table.
+ * Returns: (transfer full) (element-type utf8 utf8) (nullable): A newly created
+ *   #GHashTable will all the aliases. Returns %NULL if there are none set.
+ *   Use g_hash_table_destroy() to free the returned hash table.
  *
  * Since: 3.24
  **/

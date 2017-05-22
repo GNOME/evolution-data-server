@@ -44,6 +44,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE_WEATHER, ESourceWeatherClass))
 
+/**
+ * E_SOURCE_EXTENSION_WEATHER_BACKEND:
+ *
+ * Pass this extension name to e_source_get_extension() to access
+ * #ESourceWeather.  This is also used as a group name in key files.
+ *
+ * Since: 3.18
+ **/
 #define E_SOURCE_EXTENSION_WEATHER_BACKEND "Weather Backend"
 
 G_BEGIN_DECLS

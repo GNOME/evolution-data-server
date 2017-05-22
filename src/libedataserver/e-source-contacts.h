@@ -43,6 +43,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE_CONTACTS, ESourceContactsClass))
 
+/**
+ * E_SOURCE_EXTENSION_CONTACTS_BACKEND:
+ *
+ * Pass this extension name to e_source_get_extension() to access
+ * #ESourceContacts.  This is also used as a group name in key files.
+ *
+ * Since: 3.18
+ **/
 #define E_SOURCE_EXTENSION_CONTACTS_BACKEND "Contacts Backend"
 
 G_BEGIN_DECLS

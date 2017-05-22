@@ -347,7 +347,8 @@ e_source_mail_composition_dup_bcc (ESourceMailComposition *extension)
 /**
  * e_source_mail_composition_set_bcc:
  * @extension: an #ESource
- * @bcc: (allow-none): a %NULL-terminated string array of Bcc recipients
+ * @bcc: (array zero-terminated=1): a %NULL-terminated string array of Bcc
+ *    recipients
  *
  * Sets the recipients which should automatically be added to the blind
  * carbon-copy (Bcc) list when composing a new mail message.  The recipient
@@ -434,7 +435,8 @@ e_source_mail_composition_dup_cc (ESourceMailComposition *extension)
 /**
  * e_source_mail_composition_set_cc:
  * @extension: an #ESourceMailComposition
- * @cc: (allow-none): a %NULL-terminated string array of Cc recipients
+ * @cc: (array zero-terminated=1): a %NULL-terminated string array of Cc
+ *    recipients
  *
  * Sets the recipients which should automatically be added to the carbon
  * copy (Cc) list when composing a new mail message.  The recipient strings

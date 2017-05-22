@@ -267,7 +267,7 @@ e_source_mail_signature_get_file (ESourceMailSignature *extension)
  * e_source_mail_signature_load() sets this automatically if the MIME type
  * has not yet been determined.
  *
- * Returns: the MIME type of the signature content, or %NULL
+ * Returns: (nullable): the MIME type of the signature content, or %NULL
  *
  * Since: 3.6
  **/
@@ -288,7 +288,8 @@ e_source_mail_signature_get_mime_type (ESourceMailSignature *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceMailSignature:mime-type
+ * Returns: (nullable): a newly-allocated copy of #ESourceMailSignature:mime-type,
+ *    or %NULL
  *
  * Since: 3.6
  **/

@@ -43,6 +43,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE_LOCAL, ESourceLocalClass))
 
+/**
+ * E_SOURCE_EXTENSION_LOCAL_BACKEND:
+ *
+ * Pass this extension name to e_source_get_extension() to access
+ * #ESourceLocal.  This is also used as a group name in key files.
+ *
+ * Since: 3.18
+ **/
 #define E_SOURCE_EXTENSION_LOCAL_BACKEND "Local Backend"
 
 G_BEGIN_DECLS

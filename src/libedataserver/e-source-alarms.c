@@ -223,7 +223,7 @@ e_source_alarms_set_include_me (ESourceAlarms *extension,
  * the #ESource to which @extension belongs.  If no valid timestamp
  * has been set, the function will return %NULL.
  *
- * Returns: an ISO 8601 timestamp, or %NULL
+ * Returns: (nullable): an ISO 8601 timestamp, or %NULL
  *
  * Since: 3.6
  **/
@@ -244,7 +244,7 @@ e_source_alarms_get_last_notified (ESourceAlarms *extension)
  *
  * The returned string should be freed with g_free() when no longer needed.
  *
- * Returns: a newly-allocated copy of #ESourceAlarms:last-notified
+ * Returns: (nullable): a newly-allocated copy of #ESourceAlarms:last-notified
  *
  * Since: 3.6
  **/

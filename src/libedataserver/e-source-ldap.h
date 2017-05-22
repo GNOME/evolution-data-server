@@ -44,6 +44,14 @@
 	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), E_TYPE_SOURCE_LDAP, ESourceLDAPClass))
 
+/**
+ * E_SOURCE_EXTENSION_LDAP_BACKEND:
+ *
+ * Pass this extension name to e_source_get_extension() to access
+ * #ESourceLDAP.  This is also used as a group name in key files.
+ *
+ * Since: 3.18
+ **/
 #define E_SOURCE_EXTENSION_LDAP_BACKEND "LDAP Backend"
 
 G_BEGIN_DECLS
