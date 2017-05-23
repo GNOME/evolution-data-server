@@ -115,9 +115,24 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 	credentials = e_soup_session_dup_credentials (session);
 
 	if (!credentials || !e_named_parameters_count (credentials)) {
-		e_named_parameters_free (credentials);
-		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED, _("Credentials required"));
-		return FALSE;
+		/* Google authentication requires prefilled data in 'credentials' */
+		gboolean is_google = FALSE;
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+			ESourceAuthentication *extension;
+			gchar *auth_method;
+
+			extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+			auth_method = e_source_authentication_dup_method (extension);
+			is_google = g_strcmp0 (auth_method, "Google") == 0;
+			g_free (auth_method);
+		}
+
+		if (is_google) {
+			e_named_parameters_free (credentials);
+			g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED, _("Credentials required"));
+			return FALSE;
+		}
 	}
 
 	success = e_util_get_source_oauth2_access_token_sync (source, credentials,
