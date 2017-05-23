@@ -58,6 +58,7 @@ struct _EBackendPrivate {
 	GMainContext *main_context;
 	GSocketConnectable *connectable;
 	gboolean online;
+	gboolean tried_with_empty_credentials;
 
 	GNetworkMonitor *network_monitor;
 	gulong network_changed_handler_id;
@@ -288,6 +289,7 @@ backend_source_authenticate_thread (gpointer user_data)
 	AuthenticateThreadData *thread_data = user_data;
 	gchar *certificate_pem = NULL;
 	GTlsCertificateFlags certificate_errors = 0;
+	gboolean empty_crendetials;
 	GError *local_error = NULL;
 	ESource *source;
 
@@ -309,6 +311,17 @@ backend_source_authenticate_thread (gpointer user_data)
 
 	auth_result = e_backend_authenticate_sync (thread_data->backend, thread_data->credentials,
 		&certificate_pem, &certificate_errors, thread_data->cancellable, &local_error);
+
+	empty_crendetials = auth_result == E_SOURCE_AUTHENTICATION_REQUIRED &&
+		(!thread_data->credentials || !e_named_parameters_count (thread_data->credentials));
+
+	if (empty_crendetials && thread_data->backend->priv->tried_with_empty_credentials) {
+		/* When tried repeatedly with empty credentials and both resulted in 'REQUIRED',
+		   then change it to 'REJECTED' to avoid loop. */
+		auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+	}
+
+	thread_data->backend->priv->tried_with_empty_credentials = empty_crendetials;
 
 	if (!g_cancellable_is_cancelled (thread_data->cancellable)) {
 		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
@@ -725,6 +738,7 @@ e_backend_init (EBackend *backend)
 	backend->priv = E_BACKEND_GET_PRIVATE (backend);
 	backend->priv->prompter = e_user_prompter_new ();
 	backend->priv->main_context = g_main_context_ref_thread_default ();
+	backend->priv->tried_with_empty_credentials = FALSE;
 
 	g_mutex_init (&backend->priv->property_lock);
 	g_mutex_init (&backend->priv->update_online_state_lock);
