@@ -1554,7 +1554,7 @@ server_side_source_initable_init (GInitable *initable,
 
 	uid = e_source_dup_uid (E_SOURCE (source));
 	if (uid == NULL)
-		uid = e_uid_new ();
+		uid = e_util_generate_uid ();
 	e_dbus_source_set_uid (dbus_source, uid);
 	g_free (uid);
 
@@ -1782,7 +1782,7 @@ e_server_side_source_get_user_dir (void)
  *
  * Generates a unique file name for a new user-specific data source.
  * If @uid is non-%NULL it will be used in the basename of the file,
- * otherwise a unique basename will be generated using e_uid_new().
+ * otherwise a unique basename will be generated using e_util_generate_uid().
  *
  * The returned #GFile can then be passed to e_server_side_source_new().
  * Unreference the #GFile with g_object_unref() when finished with it.
@@ -1803,7 +1803,7 @@ e_server_side_source_new_user_file (const gchar *uid)
 	const gchar *user_dir;
 
 	if (uid == NULL)
-		safe_uid = e_uid_new ();
+		safe_uid = e_util_generate_uid ();
 	else
 		safe_uid = g_strdup (uid);
 	e_filename_make_safe (safe_uid);

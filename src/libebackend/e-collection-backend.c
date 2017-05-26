@@ -153,7 +153,7 @@ collection_backend_new_user_file (ECollectionBackend *backend)
 	/* This is like e_server_side_source_new_user_file()
 	 * except that it uses the backend's cache directory. */
 
-	safe_uid = e_uid_new ();
+	safe_uid = e_util_generate_uid ();
 	e_filename_make_safe (safe_uid);
 
 	cache_dir = e_collection_backend_get_cache_dir (backend);

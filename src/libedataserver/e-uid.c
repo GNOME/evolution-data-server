@@ -20,9 +20,7 @@
 
 #include "e-uid.h"
 
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
+#include "e-data-server-util.h"
 
 /**
  * e_uid_new:
@@ -31,19 +29,11 @@
  *
  * Returns: The newly generated UID.  The caller should free the string
  * when it's done with it.
+ *
+ * Deprecated: 3.26: Use e_util_generate_uid() instead.
  **/
 gchar *
 e_uid_new (void)
 {
-	static gint serial = 0;
-	static gchar *hostname = NULL;
-
-	if (hostname == NULL)
-		hostname = (gchar *) g_get_host_name ();
-
-	return g_strdup_printf (
-		"%lu.%lu.%d@%s",
-		(gulong) time (NULL),
-		(gulong) getpid (),
-		serial++, hostname);
+	return e_util_generate_uid ();
 }

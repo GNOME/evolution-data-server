@@ -2031,7 +2031,7 @@ source_initable_init (GInitable *initable,
 	 * so generate a new unique identifier (UID) unless one was
 	 * explicitly provided through e_source_new_with_uid(). */
 	} else if (source->priv->uid == NULL) {
-		source->priv->uid = e_uid_new ();
+		source->priv->uid = e_util_generate_uid ();
 	}
 
 	/* Try to avoid a spurious "changed" emission. */
