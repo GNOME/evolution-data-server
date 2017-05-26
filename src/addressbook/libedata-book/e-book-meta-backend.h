@@ -202,6 +202,27 @@ gboolean	e_book_meta_backend_empty_cache_sync
 						(EBookMetaBackend *meta_backend,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_book_meta_backend_schedule_refresh
+						(EBookMetaBackend *meta_backend);
+gboolean	e_book_meta_backend_ensure_connected_sync
+						(EBookMetaBackend *meta_backend,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_meta_backend_split_changes_sync
+						(EBookMetaBackend *meta_backend,
+						 GSList *objects, /* EBookMetaBackendInfo * */
+						 GSList **out_created_objects, /* EBookMetaBackendInfo * */
+						 GSList **out_modified_objects, /* EBookMetaBackendInfo * */
+						 GSList **out_removed_objects, /* EBookMetaBackendInfo * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_book_meta_backend_process_changes_sync
+						(EBookMetaBackend *meta_backend,
+						 const GSList *created_objects, /* EBookMetaBackendInfo * */
+						 const GSList *modified_objects, /* EBookMetaBackendInfo * */
+						 const GSList *removed_objects, /* EBookMetaBackendInfo * */
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_book_meta_backend_connect_sync(EBookMetaBackend *meta_backend,
 						 const ENamedParameters *credentials,
 						 ESourceAuthenticationResult *out_auth_result,

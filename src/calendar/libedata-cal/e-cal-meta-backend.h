@@ -209,6 +209,27 @@ gboolean	e_cal_meta_backend_empty_cache_sync
 						(ECalMetaBackend *meta_backend,
 						 GCancellable *cancellable,
 						 GError **error);
+void		e_cal_meta_backend_schedule_refresh
+						(ECalMetaBackend *meta_backend);
+gboolean	e_cal_meta_backend_ensure_connected_sync
+						(ECalMetaBackend *meta_backend,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_meta_backend_split_changes_sync
+						(ECalMetaBackend *meta_backend,
+						 GSList *objects, /* ECalMetaBackendInfo * */
+						 GSList **out_created_objects, /* ECalMetaBackendInfo * */
+						 GSList **out_modified_objects, /* ECalMetaBackendInfo * */
+						 GSList **out_removed_objects, /* ECalMetaBackendInfo * */
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_meta_backend_process_changes_sync
+						(ECalMetaBackend *meta_backend,
+						 const GSList *created_objects, /* ECalMetaBackendInfo * */
+						 const GSList *modified_objects, /* ECalMetaBackendInfo * */
+						 const GSList *removed_objects, /* ECalMetaBackendInfo * */
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_cal_meta_backend_connect_sync	(ECalMetaBackend *meta_backend,
 						 const ENamedParameters *credentials,
 						 ESourceAuthenticationResult *out_auth_result,

@@ -97,7 +97,6 @@ G_DEFINE_ABSTRACT_TYPE (ECalMetaBackend, e_cal_meta_backend, E_TYPE_CAL_BACKEND_
 
 G_DEFINE_BOXED_TYPE (ECalMetaBackendInfo, e_cal_meta_backend_info, e_cal_meta_backend_info_copy, e_cal_meta_backend_info_free)
 
-static void ecmb_schedule_refresh (ECalMetaBackend *meta_backend);
 static void ecmb_schedule_source_changed (ECalMetaBackend *meta_backend);
 static void ecmb_schedule_go_offline (ECalMetaBackend *meta_backend);
 static gboolean ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
@@ -285,80 +284,6 @@ ecmb_update_connection_values (ECalMetaBackend *meta_backend)
 }
 
 static gboolean
-ecmb_connect_wrapper_sync (ECalMetaBackend *meta_backend,
-			   GCancellable *cancellable,
-			   GError **error)
-{
-	ENamedParameters *credentials;
-	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
-	ESourceCredentialsReason creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
-	gchar *certificate_pem = NULL;
-	GTlsCertificateFlags certificate_errors = 0;
-	GError *local_error = NULL;
-
-	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
-
-	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
-			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
-
-		return FALSE;
-	}
-
-	g_mutex_lock (&meta_backend->priv->property_lock);
-	credentials = e_named_parameters_new_clone (meta_backend->priv->last_credentials);
-	g_mutex_unlock (&meta_backend->priv->property_lock);
-
-	g_mutex_lock (&meta_backend->priv->connect_lock);
-
-	if (e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
-		cancellable, &local_error)) {
-		ecmb_update_connection_values (meta_backend);
-		g_mutex_unlock (&meta_backend->priv->connect_lock);
-		e_named_parameters_free (credentials);
-
-		return TRUE;
-	}
-
-	g_mutex_unlock (&meta_backend->priv->connect_lock);
-
-	e_named_parameters_free (credentials);
-
-	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
-
-	switch (auth_result) {
-	case E_SOURCE_AUTHENTICATION_UNKNOWN:
-		if (local_error)
-			g_propagate_error (error, local_error);
-		g_free (certificate_pem);
-		return FALSE;
-	case E_SOURCE_AUTHENTICATION_ERROR:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
-		break;
-	case E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
-		break;
-	case E_SOURCE_AUTHENTICATION_ACCEPTED:
-		g_warn_if_reached ();
-		break;
-	case E_SOURCE_AUTHENTICATION_REJECTED:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
-		break;
-	case E_SOURCE_AUTHENTICATION_REQUIRED:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
-		break;
-	}
-
-	e_backend_schedule_credentials_required (E_BACKEND (meta_backend), creds_reason, certificate_pem, certificate_errors,
-		local_error, cancellable, G_STRFUNC);
-
-	g_clear_error (&local_error);
-	g_free (certificate_pem);
-
-	return FALSE;
-}
-
-static gboolean
 ecmb_gather_locally_cached_objects_cb (ECalCache *cal_cache,
 				       const gchar *uid,
 				       const gchar *rid,
@@ -394,11 +319,8 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 		       GCancellable *cancellable,
 		       GError **error)
 {
-	GHashTable *locally_cached; /* ECalComponentId * ~> gchar *revision */
-	GHashTableIter iter;
-	GSList *existing_objects = NULL, *link;
-	ECalCache *cal_cache;
-	gpointer key, value;
+	GSList *existing_objects = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (out_created_objects, FALSE);
@@ -412,87 +334,17 @@ ecmb_get_changes_sync (ECalMetaBackend *meta_backend,
 	if (!e_backend_get_online (E_BACKEND (meta_backend)))
 		return TRUE;
 
-	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	g_return_val_if_fail (cal_cache != NULL, FALSE);
-
-	if (!ecmb_connect_wrapper_sync (meta_backend, cancellable, error) ||
+	if (!e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error) ||
 	    !e_cal_meta_backend_list_existing_sync (meta_backend, out_new_sync_tag, &existing_objects, cancellable, error)) {
-		g_object_unref (cal_cache);
 		return FALSE;
 	}
 
-	locally_cached = g_hash_table_new_full (
-		(GHashFunc) e_cal_component_id_hash,
-		(GEqualFunc) e_cal_component_id_equal,
-		(GDestroyNotify) e_cal_component_free_id,
-		g_free);
-
-	g_warn_if_fail (e_cal_cache_search_with_callback (cal_cache, NULL,
-		ecmb_gather_locally_cached_objects_cb, locally_cached, cancellable, error));
-
-	for (link = existing_objects; link; link = g_slist_next (link)) {
-		ECalMetaBackendInfo *nfo = link->data;
-		ECalComponentId id;
-
-		if (!nfo)
-			continue;
-
-		id.uid = nfo->uid;
-		id.rid = NULL;
-
-		if (!g_hash_table_contains (locally_cached, &id)) {
-			link->data = NULL;
-
-			*out_created_objects = g_slist_prepend (*out_created_objects, nfo);
-		} else {
-			const gchar *local_revision = g_hash_table_lookup (locally_cached, &id);
-
-			if (g_strcmp0 (local_revision, nfo->revision) != 0) {
-				link->data = NULL;
-
-				*out_modified_objects = g_slist_prepend (*out_modified_objects, nfo);
-			}
-
-			g_hash_table_remove (locally_cached, &id);
-		}
-	}
-
-	/* What left in the hash table is removed from the remote side */
-	g_hash_table_iter_init (&iter, locally_cached);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		const ECalComponentId *id = key;
-		const gchar *revision = value;
-		ECalMetaBackendInfo *nfo;
-
-		if (!id) {
-			g_warn_if_reached ();
-			continue;
-		}
-
-		/* Skit detached instances, if the master object is still in the cache */
-		if (id->rid && *id->rid) {
-			ECalComponentId master_id;
-
-			master_id.uid = id->uid;
-			master_id.rid = NULL;
-
-			if (!g_hash_table_contains (locally_cached, &master_id))
-				continue;
-		}
-
-		nfo = e_cal_meta_backend_info_new (id->uid, revision, NULL, NULL);
-		*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
-	}
+	success = e_cal_meta_backend_split_changes_sync (meta_backend, existing_objects, out_created_objects,
+		out_modified_objects, out_removed_objects, cancellable, error);
 
 	g_slist_free_full (existing_objects, e_cal_meta_backend_info_free);
-	g_hash_table_destroy (locally_cached);
-	g_object_unref (cal_cache);
 
-	*out_created_objects = g_slist_reverse (*out_created_objects);
-	*out_modified_objects = g_slist_reverse (*out_modified_objects);
-	*out_removed_objects = g_slist_reverse (*out_removed_objects);
-
-	return TRUE;
+	return success;
 }
 
 static gboolean
@@ -787,7 +639,6 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 	ECalMetaBackend *meta_backend;
 	ECalCache *cal_cache;
 	gboolean success, repeat = TRUE, is_repeat = FALSE;
-	GString *invalid_objects = NULL;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (cal_backend));
 
@@ -797,7 +648,7 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 		goto done;
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+	    !e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 		/* Ignore connection errors here */
 		g_mutex_lock (&meta_backend->priv->property_lock);
 		meta_backend->priv->refresh_after_authenticate = TRUE;
@@ -819,7 +670,7 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 
 	while (repeat && success &&
 	       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL, *link;
+		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL;
 		gchar *last_sync_tag, *new_sync_tag = NULL;
 
 		repeat = FALSE;
@@ -834,88 +685,8 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 			&created_objects, &modified_objects, &removed_objects, cancellable, error);
 
 		if (success) {
-			GHashTable *covered_uids;
-
-			covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
-
-			/* Removed objects first */
-			for (link = removed_objects; link && success; link = g_slist_next (link)) {
-				ECalMetaBackendInfo *nfo = link->data;
-
-				if (!nfo) {
-					g_warn_if_reached ();
-					continue;
-				}
-
-				success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, nfo->uid, cancellable, error);
-			}
-
-			/* Then modified objects */
-			for (link = modified_objects; link && success; link = g_slist_next (link)) {
-				ECalMetaBackendInfo *nfo = link->data;
-				GError *local_error = NULL;
-
-				if (!nfo || !nfo->uid) {
-					g_warn_if_reached ();
-					continue;
-				}
-
-				if (!*nfo->uid ||
-				    g_hash_table_contains (covered_uids, nfo->uid))
-					continue;
-
-				g_hash_table_insert (covered_uids, nfo->uid, NULL);
-
-				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
-
-				/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
-				if (!success && g_error_matches (local_error, E_DATA_CAL_ERROR, InvalidObject)) {
-					if (!invalid_objects) {
-						invalid_objects = g_string_new (local_error->message);
-					} else {
-						g_string_append_c (invalid_objects, '\n');
-						g_string_append (invalid_objects, local_error->message);
-					}
-					g_clear_error (&local_error);
-					success = TRUE;
-				} else if (local_error) {
-					g_propagate_error (error, local_error);
-				}
-			}
-
-			g_hash_table_remove_all (covered_uids);
-
-			/* Finally created objects */
-			for (link = created_objects; link && success; link = g_slist_next (link)) {
-				ECalMetaBackendInfo *nfo = link->data;
-				GError *local_error = NULL;
-
-				if (!nfo || !nfo->uid) {
-					g_warn_if_reached ();
-					continue;
-				}
-
-				if (!*nfo->uid)
-					continue;
-
-				success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
-
-				/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
-				if (!success && g_error_matches (local_error, E_DATA_CAL_ERROR, InvalidObject)) {
-					if (!invalid_objects) {
-						invalid_objects = g_string_new (local_error->message);
-					} else {
-						g_string_append_c (invalid_objects, '\n');
-						g_string_append (invalid_objects, local_error->message);
-					}
-					g_clear_error (&local_error);
-					success = TRUE;
-				} else if (local_error) {
-					g_propagate_error (error, local_error);
-				}
-			}
-
-			g_hash_table_destroy (covered_uids);
+			success = e_cal_meta_backend_process_changes_sync (meta_backend, created_objects, modified_objects,
+				removed_objects, cancellable, error);
 		}
 
 		if (success && new_sync_tag)
@@ -940,12 +711,6 @@ ecmb_refresh_thread_func (ECalBackend *cal_backend,
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
-	if (invalid_objects) {
-		e_cal_backend_notify_error (E_CAL_BACKEND (meta_backend), invalid_objects->str);
-
-		g_string_free (invalid_objects, TRUE);
-	}
-
 	g_signal_emit (meta_backend, signals[REFRESH_COMPLETED], 0, NULL);
 }
 
@@ -960,7 +725,7 @@ ecmb_source_refresh_timeout_cb (ESource *source,
 
 	meta_backend = g_weak_ref_get (weak_ref);
 	if (meta_backend) {
-		ecmb_schedule_refresh (meta_backend);
+		e_cal_meta_backend_schedule_refresh (meta_backend);
 		g_object_unref (meta_backend);
 	}
 }
@@ -1002,7 +767,7 @@ ecmb_source_changed_thread_func (ECalBackend *cal_backend,
 		g_mutex_unlock (&meta_backend->priv->connect_lock);
 
 		if (can_refresh)
-			ecmb_schedule_refresh (meta_backend);
+			e_cal_meta_backend_schedule_refresh (meta_backend);
 	}
 
 	g_mutex_lock (&meta_backend->priv->property_lock);
@@ -1231,7 +996,8 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 			g_propagate_error (error, e_data_cal_create_error_fmt (InvalidObject, _("Preloaded object for UID “%s” is invalid"), uid));
 			return FALSE;
 		}
-	} else if (!e_cal_meta_backend_load_component_sync (meta_backend, uid, preloaded_extra, &icalcomp, &extra, cancellable, error)) {
+	} else if (!e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error) ||
+		   !e_cal_meta_backend_load_component_sync (meta_backend, uid, preloaded_extra, &icalcomp, &extra, cancellable, error)) {
 		g_free (extra);
 		return FALSE;
 	} else if (!icalcomp) {
@@ -1414,7 +1180,7 @@ ecmb_open_sync (ECalBackendSync *sync_backend,
 		e_cal_backend_set_writable (E_CAL_BACKEND (meta_backend),
 			e_cal_meta_backend_get_connected_writable (meta_backend));
 	} else {
-		if (!ecmb_connect_wrapper_sync (meta_backend, cancellable, error)) {
+		if (!e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error)) {
 			g_mutex_lock (&meta_backend->priv->property_lock);
 			meta_backend->priv->refresh_after_authenticate = TRUE;
 			g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -1423,7 +1189,7 @@ ecmb_open_sync (ECalBackendSync *sync_backend,
 		}
 	}
 
-	ecmb_schedule_refresh (E_CAL_META_BACKEND (sync_backend));
+	e_cal_meta_backend_schedule_refresh (E_CAL_META_BACKEND (sync_backend));
 }
 
 static void
@@ -1441,8 +1207,8 @@ ecmb_refresh_sync (ECalBackendSync *sync_backend,
 	if (!e_backend_get_online (E_BACKEND (sync_backend)))
 		return;
 
-	if (ecmb_connect_wrapper_sync (meta_backend, cancellable, error))
-		ecmb_schedule_refresh (meta_backend);
+	if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error))
+		e_cal_meta_backend_schedule_refresh (meta_backend);
 }
 
 static void
@@ -1476,7 +1242,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 
 		/* Ignore errors here, just try whether it's on the remote side, but not in the local cache */
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL) &&
+		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL) &&
 		    ecmb_load_component_wrapper_sync (meta_backend, cal_cache, uid, NULL, NULL, &loaded_uid, cancellable, NULL)) {
 			found = e_cal_cache_get_component_as_string (cal_cache, loaded_uid, rid, calobj, cancellable, NULL);
 		}
@@ -1719,7 +1485,7 @@ ecmb_create_object_sync (ECalMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -2018,7 +1784,7 @@ ecmb_modify_object_sync (ECalMetaBackend *meta_backend,
 
 	if (success && *offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -2181,7 +1947,7 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ecmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+		    e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -2961,35 +2727,9 @@ ecmb_authenticate_sync (EBackend *backend,
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	if (refresh_after_authenticate)
-		ecmb_schedule_refresh (meta_backend);
+		e_cal_meta_backend_schedule_refresh (meta_backend);
 
 	return auth_result;
-}
-
-static void
-ecmb_schedule_refresh (ECalMetaBackend *meta_backend)
-{
-	GCancellable *cancellable;
-
-	g_return_if_fail (E_IS_CAL_META_BACKEND (meta_backend));
-
-	g_mutex_lock (&meta_backend->priv->property_lock);
-
-	if (meta_backend->priv->refresh_cancellable) {
-		/* Already refreshing the content */
-		g_mutex_unlock (&meta_backend->priv->property_lock);
-		return;
-	}
-
-	cancellable = g_cancellable_new ();
-	meta_backend->priv->refresh_cancellable = g_object_ref (cancellable);
-
-	g_mutex_unlock (&meta_backend->priv->property_lock);
-
-	e_cal_backend_schedule_custom_operation (E_CAL_BACKEND (meta_backend), cancellable,
-		ecmb_refresh_thread_func, NULL, NULL);
-
-	g_object_unref (cancellable);
 }
 
 static void
@@ -3072,7 +2812,7 @@ ecmb_notify_online_cb (GObject *object,
 	meta_backend->priv->current_online_state = new_value;
 
 	if (new_value)
-		ecmb_schedule_refresh (meta_backend);
+		e_cal_meta_backend_schedule_refresh (meta_backend);
 	else
 		ecmb_schedule_go_offline (meta_backend);
 }
@@ -4041,6 +3781,396 @@ e_cal_meta_backend_empty_cache_sync (ECalMetaBackend *meta_backend,
 	}
 
 	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+
+	return success;
+}
+
+/**
+ * e_cal_meta_backend_schedule_refresh:
+ * @meta_backend: an #ECalMetaBackend
+ *
+ * Schedules refresh of the content of the @meta_backend. If there's any
+ * already scheduled, then the function does nothing.
+ *
+ * Since: 3.26
+ **/
+void
+e_cal_meta_backend_schedule_refresh (ECalMetaBackend *meta_backend)
+{
+	GCancellable *cancellable;
+
+	g_return_if_fail (E_IS_CAL_META_BACKEND (meta_backend));
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	if (meta_backend->priv->refresh_cancellable) {
+		/* Already refreshing the content */
+		g_mutex_unlock (&meta_backend->priv->property_lock);
+		return;
+	}
+
+	cancellable = g_cancellable_new ();
+	meta_backend->priv->refresh_cancellable = g_object_ref (cancellable);
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	e_cal_backend_schedule_custom_operation (E_CAL_BACKEND (meta_backend), cancellable,
+		ecmb_refresh_thread_func, NULL, NULL);
+
+	g_object_unref (cancellable);
+}
+
+/**
+ * e_cal_meta_backend_ensure_connected_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Ensures that the @meta_backend is connected to its destination.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	ENamedParameters *credentials;
+	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
+	ESourceCredentialsReason creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+	gchar *certificate_pem = NULL;
+	GTlsCertificateFlags certificate_errors = 0;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+
+	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
+			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
+
+		return FALSE;
+	}
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+	credentials = e_named_parameters_new_clone (meta_backend->priv->last_credentials);
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	g_mutex_lock (&meta_backend->priv->connect_lock);
+
+	if (e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
+		cancellable, &local_error)) {
+		ecmb_update_connection_values (meta_backend);
+		g_mutex_unlock (&meta_backend->priv->connect_lock);
+		e_named_parameters_free (credentials);
+
+		return TRUE;
+	}
+
+	g_mutex_unlock (&meta_backend->priv->connect_lock);
+
+	e_named_parameters_free (credentials);
+
+	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
+
+	switch (auth_result) {
+	case E_SOURCE_AUTHENTICATION_UNKNOWN:
+		if (local_error)
+			g_propagate_error (error, local_error);
+		g_free (certificate_pem);
+		return FALSE;
+	case E_SOURCE_AUTHENTICATION_ERROR:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+		break;
+	case E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+		break;
+	case E_SOURCE_AUTHENTICATION_ACCEPTED:
+		g_warn_if_reached ();
+		break;
+	case E_SOURCE_AUTHENTICATION_REJECTED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
+		break;
+	case E_SOURCE_AUTHENTICATION_REQUIRED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+		break;
+	}
+
+	e_backend_schedule_credentials_required (E_BACKEND (meta_backend), creds_reason, certificate_pem, certificate_errors,
+		local_error, cancellable, G_STRFUNC);
+
+	g_clear_error (&local_error);
+	g_free (certificate_pem);
+
+	return FALSE;
+}
+
+/**
+ * e_cal_meta_backend_split_changes_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @objects: (inout caller-allocates) (element-type ECalMetaBackendInfo):
+ *    a #GSList of #ECalMetaBackendInfo object infos to split
+ * @out_created_objects: (out) (element-type ECalMetaBackendInfo) (transfer full):
+ *    a #GSList of #ECalMetaBackendInfo object infos which had been created
+ * @out_modified_objects: (out) (element-type ECalMetaBackendInfo) (transfer full):
+ *    a #GSList of #ECalMetaBackendInfo object infos which had been modified
+ * @out_removed_objects: (out) (element-type ECalMetaBackendInfo) (transfer full) (nullable):
+ *    a #GSList of #ECalMetaBackendInfo object infos which had been removed;
+ *    it can be %NULL, to not gather list of removed object infos
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Splits @objects into created/modified/removed lists according to current local
+ * cache content. Only the @out_removed_objects can be %NULL, others cannot.
+ * The function modifies @objects by moving its 'data' to corresponding out
+ * lists and sets the @objects 'data' to %NULL.
+ *
+ * Each output #GSList should be freed with
+ * g_slist_free_full (objects, e_cal_meta_backend_info_free);
+ * when no longer needed.
+ *
+ * The caller is still responsible to free @objects as well.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_split_changes_sync (ECalMetaBackend *meta_backend,
+				       GSList *objects,
+				       GSList **out_created_objects,
+				       GSList **out_modified_objects,
+				       GSList **out_removed_objects,
+				       GCancellable *cancellable,
+				       GError **error)
+{
+	GHashTable *locally_cached; /* ECalComponentId * ~> gchar *revision */
+	GHashTableIter iter;
+	GSList *link;
+	ECalCache *cal_cache;
+	gpointer key, value;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_created_objects, FALSE);
+	g_return_val_if_fail (out_modified_objects, FALSE);
+
+	*out_created_objects = NULL;
+	*out_modified_objects = NULL;
+
+	if (out_removed_objects)
+		*out_removed_objects = NULL;
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
+
+	locally_cached = g_hash_table_new_full (
+		(GHashFunc) e_cal_component_id_hash,
+		(GEqualFunc) e_cal_component_id_equal,
+		(GDestroyNotify) e_cal_component_free_id,
+		g_free);
+
+	if (!e_cal_cache_search_with_callback (cal_cache, NULL,
+		ecmb_gather_locally_cached_objects_cb, locally_cached, cancellable, error)) {
+		g_hash_table_destroy (locally_cached);
+		g_object_unref (cal_cache);
+		return FALSE;
+	}
+
+	for (link = objects; link; link = g_slist_next (link)) {
+		ECalMetaBackendInfo *nfo = link->data;
+		ECalComponentId id;
+
+		if (!nfo)
+			continue;
+
+		id.uid = nfo->uid;
+		id.rid = NULL;
+
+		if (!g_hash_table_contains (locally_cached, &id)) {
+			link->data = NULL;
+
+			*out_created_objects = g_slist_prepend (*out_created_objects, nfo);
+		} else {
+			const gchar *local_revision = g_hash_table_lookup (locally_cached, &id);
+
+			if (g_strcmp0 (local_revision, nfo->revision) != 0) {
+				link->data = NULL;
+
+				*out_modified_objects = g_slist_prepend (*out_modified_objects, nfo);
+			}
+
+			g_hash_table_remove (locally_cached, &id);
+		}
+	}
+
+	if (out_removed_objects) {
+		/* What left in the hash table is removed from the remote side */
+		g_hash_table_iter_init (&iter, locally_cached);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			const ECalComponentId *id = key;
+			const gchar *revision = value;
+			ECalMetaBackendInfo *nfo;
+
+			if (!id) {
+				g_warn_if_reached ();
+				continue;
+			}
+
+			/* Skit detached instances, if the master object is still in the cache */
+			if (id->rid && *id->rid) {
+				ECalComponentId master_id;
+
+				master_id.uid = id->uid;
+				master_id.rid = NULL;
+
+				if (!g_hash_table_contains (locally_cached, &master_id))
+					continue;
+			}
+
+			nfo = e_cal_meta_backend_info_new (id->uid, revision, NULL, NULL);
+			*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
+		}
+
+		*out_removed_objects = g_slist_reverse (*out_removed_objects);
+	}
+
+	g_hash_table_destroy (locally_cached);
+	g_object_unref (cal_cache);
+
+	*out_created_objects = g_slist_reverse (*out_created_objects);
+	*out_modified_objects = g_slist_reverse (*out_modified_objects);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_meta_backend_process_changes_sync:
+ * @meta_backend: an #ECalMetaBackend
+ * @created_objects: (element-type ECalMetaBackendInfo) (nullable):
+ *    a #GSList of #ECalMetaBackendInfo object infos which had been created
+ * @modified_objects: (element-type ECalMetaBackendInfo) (nullable):
+ *    a #GSList of #ECalMetaBackendInfo object infos which had been modified
+ * @removed_objects: (element-type ECalMetaBackendInfo) (nullable):
+ *    a #GSList of #ECalMetaBackendInfo object infos which had been removed
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Processes given changes by updating local cache content accordingly.
+ * The @meta_backend processes the changes like being online and particularly
+ * requires to be online to load created and modified objects when needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_meta_backend_process_changes_sync (ECalMetaBackend *meta_backend,
+					 const GSList *created_objects,
+					 const GSList *modified_objects,
+					 const GSList *removed_objects,
+					 GCancellable *cancellable,
+					 GError **error)
+{
+	ECalCache *cal_cache;
+	GHashTable *covered_uids;
+	GString *invalid_objects = NULL;
+	GSList *link;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), FALSE);
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (cal_cache != NULL, FALSE);
+
+	covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
+
+	/* Removed objects first */
+	for (link = (GSList *) removed_objects; link && success; link = g_slist_next (link)) {
+		ECalMetaBackendInfo *nfo = link->data;
+
+		if (!nfo) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		success = ecmb_maybe_remove_from_cache (meta_backend, cal_cache, E_CACHE_IS_ONLINE, nfo->uid, cancellable, error);
+	}
+
+	/* Then modified objects */
+	for (link = (GSList *) modified_objects; link && success; link = g_slist_next (link)) {
+		ECalMetaBackendInfo *nfo = link->data;
+		GError *local_error = NULL;
+
+		if (!nfo || !nfo->uid) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		if (!*nfo->uid ||
+		    g_hash_table_contains (covered_uids, nfo->uid))
+			continue;
+
+		g_hash_table_insert (covered_uids, nfo->uid, NULL);
+
+		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
+
+		/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
+		if (!success && g_error_matches (local_error, E_DATA_CAL_ERROR, InvalidObject)) {
+			if (!invalid_objects) {
+				invalid_objects = g_string_new (local_error->message);
+			} else {
+				g_string_append_c (invalid_objects, '\n');
+				g_string_append (invalid_objects, local_error->message);
+			}
+			g_clear_error (&local_error);
+			success = TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+	}
+
+	g_hash_table_remove_all (covered_uids);
+
+	/* Finally created objects */
+	for (link = (GSList *) created_objects; link && success; link = g_slist_next (link)) {
+		ECalMetaBackendInfo *nfo = link->data;
+		GError *local_error = NULL;
+
+		if (!nfo || !nfo->uid) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		if (!*nfo->uid)
+			continue;
+
+		success = ecmb_load_component_wrapper_sync (meta_backend, cal_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
+
+		/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
+		if (!success && g_error_matches (local_error, E_DATA_CAL_ERROR, InvalidObject)) {
+			if (!invalid_objects) {
+				invalid_objects = g_string_new (local_error->message);
+			} else {
+				g_string_append_c (invalid_objects, '\n');
+				g_string_append (invalid_objects, local_error->message);
+			}
+			g_clear_error (&local_error);
+			success = TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+	}
+
+	g_hash_table_destroy (covered_uids);
+
+	if (invalid_objects) {
+		e_cal_backend_notify_error (E_CAL_BACKEND (meta_backend), invalid_objects->str);
+
+		g_string_free (invalid_objects, TRUE);
+	}
+
+	g_clear_object (&cal_cache);
 
 	return success;
 }

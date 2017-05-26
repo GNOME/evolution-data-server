@@ -102,17 +102,8 @@ G_DEFINE_ABSTRACT_TYPE (EBookMetaBackend, e_book_meta_backend, E_TYPE_BOOK_BACKE
 
 G_DEFINE_BOXED_TYPE (EBookMetaBackendInfo, e_book_meta_backend_info, e_book_meta_backend_info_copy, e_book_meta_backend_info_free)
 
-static void ebmb_schedule_refresh (EBookMetaBackend *meta_backend);
 static void ebmb_schedule_source_changed (EBookMetaBackend *meta_backend);
 static void ebmb_schedule_go_offline (EBookMetaBackend *meta_backend);
-static gboolean ebmb_load_contact_wrapper_sync (EBookMetaBackend *meta_backend,
-						EBookCache *book_cache,
-						const gchar *uid,
-						const gchar *preloaded_object,
-						const gchar *preloaded_extra,
-						gchar **out_new_uid,
-						GCancellable *cancellable,
-						GError **error);
 static gboolean ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 						EBookCache *book_cache,
 						gboolean overwrite_existing,
@@ -290,79 +281,6 @@ ebmb_update_connection_values (EBookMetaBackend *meta_backend)
 }
 
 static gboolean
-ebmb_connect_wrapper_sync (EBookMetaBackend *meta_backend,
-			   GCancellable *cancellable,
-			   GError **error)
-{
-	ENamedParameters *credentials;
-	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
-	ESourceCredentialsReason creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
-	gchar *certificate_pem = NULL;
-	GTlsCertificateFlags certificate_errors = 0;
-	GError *local_error = NULL;
-
-	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
-
-	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
-		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
-			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
-
-		return FALSE;
-	}
-
-	g_mutex_lock (&meta_backend->priv->property_lock);
-	credentials = e_named_parameters_new_clone (meta_backend->priv->last_credentials);
-	g_mutex_unlock (&meta_backend->priv->property_lock);
-
-	g_mutex_lock (&meta_backend->priv->connect_lock);
-	if (e_book_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
-		cancellable, &local_error)) {
-		ebmb_update_connection_values (meta_backend);
-		g_mutex_unlock (&meta_backend->priv->connect_lock);
-		e_named_parameters_free (credentials);
-
-		return TRUE;
-	}
-
-	g_mutex_unlock (&meta_backend->priv->connect_lock);
-
-	e_named_parameters_free (credentials);
-
-	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
-
-	switch (auth_result) {
-	case E_SOURCE_AUTHENTICATION_UNKNOWN:
-		if (local_error)
-			g_propagate_error (error, local_error);
-		g_free (certificate_pem);
-		return FALSE;
-	case E_SOURCE_AUTHENTICATION_ERROR:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
-		break;
-	case E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
-		break;
-	case E_SOURCE_AUTHENTICATION_ACCEPTED:
-		g_warn_if_reached ();
-		break;
-	case E_SOURCE_AUTHENTICATION_REJECTED:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
-		break;
-	case E_SOURCE_AUTHENTICATION_REQUIRED:
-		creds_reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
-		break;
-	}
-
-	e_backend_schedule_credentials_required (E_BACKEND (meta_backend), creds_reason, certificate_pem, certificate_errors,
-		local_error, cancellable, G_STRFUNC);
-
-	g_clear_error (&local_error);
-	g_free (certificate_pem);
-
-	return FALSE;
-}
-
-static gboolean
 ebmb_gather_locally_cached_objects_cb (EBookCache *book_cache,
 				       const gchar *uid,
 				       const gchar *revision,
@@ -397,11 +315,8 @@ ebmb_get_changes_sync (EBookMetaBackend *meta_backend,
 		       GCancellable *cancellable,
 		       GError **error)
 {
-	GHashTable *locally_cached; /* EContactId * ~> gchar *revision */
-	GHashTableIter iter;
-	GSList *existing_objects = NULL, *link;
-	EBookCache *book_cache;
-	gpointer key, value;
+	GSList *existing_objects = NULL;
+	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (out_created_objects, FALSE);
@@ -415,68 +330,17 @@ ebmb_get_changes_sync (EBookMetaBackend *meta_backend,
 	if (!e_backend_get_online (E_BACKEND (meta_backend)))
 		return TRUE;
 
-	book_cache = e_book_meta_backend_ref_cache (meta_backend);
-	g_return_val_if_fail (book_cache != NULL, FALSE);
-
-	if (!ebmb_connect_wrapper_sync (meta_backend, cancellable, error) ||
+	if (!e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, error) ||
 	    !e_book_meta_backend_list_existing_sync (meta_backend, out_new_sync_tag, &existing_objects, cancellable, error)) {
-		g_object_unref (book_cache);
 		return FALSE;
 	}
 
-	locally_cached = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
-
-	g_warn_if_fail (e_book_cache_search_with_callback (book_cache, NULL,
-		ebmb_gather_locally_cached_objects_cb, locally_cached, cancellable, error));
-
-	for (link = existing_objects; link; link = g_slist_next (link)) {
-		EBookMetaBackendInfo *nfo = link->data;
-
-		if (!nfo)
-			continue;
-
-		if (!g_hash_table_contains (locally_cached, nfo->uid)) {
-			link->data = NULL;
-
-			*out_created_objects = g_slist_prepend (*out_created_objects, nfo);
-		} else {
-			const gchar *local_revision = g_hash_table_lookup (locally_cached, nfo->uid);
-
-			if (g_strcmp0 (local_revision, nfo->revision) != 0) {
-				link->data = NULL;
-
-				*out_modified_objects = g_slist_prepend (*out_modified_objects, nfo);
-			}
-
-			g_hash_table_remove (locally_cached, nfo->uid);
-		}
-	}
-
-	/* What left in the hash table is removed from the remote side */
-	g_hash_table_iter_init (&iter, locally_cached);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		const gchar *uid = key;
-		const gchar *revision = value;
-		EBookMetaBackendInfo *nfo;
-
-		if (!uid) {
-			g_warn_if_reached ();
-			continue;
-		}
-
-		nfo = e_book_meta_backend_info_new (uid, revision, NULL, NULL);
-		*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
-	}
+	success = e_book_meta_backend_split_changes_sync (meta_backend, existing_objects, out_created_objects,
+		out_modified_objects, out_removed_objects, cancellable, error);
 
 	g_slist_free_full (existing_objects, e_book_meta_backend_info_free);
-	g_hash_table_destroy (locally_cached);
-	g_object_unref (book_cache);
 
-	*out_created_objects = g_slist_reverse (*out_created_objects);
-	*out_modified_objects = g_slist_reverse (*out_modified_objects);
-	*out_removed_objects = g_slist_reverse (*out_removed_objects);
-
-	return TRUE;
+	return success;
 }
 
 static gboolean
@@ -881,7 +745,6 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 	EBookMetaBackend *meta_backend;
 	EBookCache *book_cache;
 	gboolean success, repeat = TRUE, is_repeat = FALSE;
-	GString *invalid_objects = NULL;
 
 	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
 
@@ -891,7 +754,7 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 		goto done;
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !ebmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+	    !e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 		/* Ignore connection errors here */
 		g_mutex_lock (&meta_backend->priv->property_lock);
 		meta_backend->priv->refresh_after_authenticate = TRUE;
@@ -913,7 +776,7 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 
 	while (repeat && success &&
 	       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
-		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL, *link;
+		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL;
 		gchar *last_sync_tag, *new_sync_tag = NULL;
 
 		repeat = FALSE;
@@ -928,88 +791,8 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 			&created_objects, &modified_objects, &removed_objects, cancellable, error);
 
 		if (success) {
-			GHashTable *covered_uids;
-
-			covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
-
-			/* Removed objects first */
-			for (link = removed_objects; link && success; link = g_slist_next (link)) {
-				EBookMetaBackendInfo *nfo = link->data;
-
-				if (!nfo) {
-					g_warn_if_reached ();
-					continue;
-				}
-
-				success = ebmb_maybe_remove_from_cache (meta_backend, book_cache, E_CACHE_IS_ONLINE, nfo->uid, cancellable, error);
-			}
-
-			/* Then modified objects */
-			for (link = modified_objects; link && success; link = g_slist_next (link)) {
-				EBookMetaBackendInfo *nfo = link->data;
-				GError *local_error = NULL;
-
-				if (!nfo || !nfo->uid) {
-					g_warn_if_reached ();
-					continue;
-				}
-
-				if (!*nfo->uid ||
-				    g_hash_table_contains (covered_uids, nfo->uid))
-					continue;
-
-				g_hash_table_insert (covered_uids, nfo->uid, NULL);
-
-				success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
-
-				/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
-				if (!success && g_error_matches (local_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_ARG)) {
-					if (!invalid_objects) {
-						invalid_objects = g_string_new (local_error->message);
-					} else {
-						g_string_append_c (invalid_objects, '\n');
-						g_string_append (invalid_objects, local_error->message);
-					}
-					g_clear_error (&local_error);
-					success = TRUE;
-				} else if (local_error) {
-					g_propagate_error (error, local_error);
-				}
-			}
-
-			g_hash_table_remove_all (covered_uids);
-
-			/* Finally created objects */
-			for (link = created_objects; link && success; link = g_slist_next (link)) {
-				EBookMetaBackendInfo *nfo = link->data;
-				GError *local_error = NULL;
-
-				if (!nfo || !nfo->uid) {
-					g_warn_if_reached ();
-					continue;
-				}
-
-				if (!*nfo->uid)
-					continue;
-
-				success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
-
-				/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
-				if (!success && g_error_matches (local_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_ARG)) {
-					if (!invalid_objects) {
-						invalid_objects = g_string_new (local_error->message);
-					} else {
-						g_string_append_c (invalid_objects, '\n');
-						g_string_append (invalid_objects, local_error->message);
-					}
-					g_clear_error (&local_error);
-					success = TRUE;
-				} else if (local_error) {
-					g_propagate_error (error, local_error);
-				}
-			}
-
-			g_hash_table_destroy (covered_uids);
+			success = e_book_meta_backend_process_changes_sync (meta_backend, created_objects, modified_objects,
+				removed_objects, cancellable, error);
 		}
 
 		if (success && new_sync_tag)
@@ -1034,12 +817,6 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
-	if (invalid_objects) {
-		e_book_backend_notify_error (E_BOOK_BACKEND (meta_backend), invalid_objects->str);
-
-		g_string_free (invalid_objects, TRUE);
-	}
-
 	g_signal_emit (meta_backend, signals[REFRESH_COMPLETED], 0, NULL);
 }
 
@@ -1054,7 +831,7 @@ ebmb_source_refresh_timeout_cb (ESource *source,
 
 	meta_backend = g_weak_ref_get (weak_ref);
 	if (meta_backend) {
-		ebmb_schedule_refresh (meta_backend);
+		e_book_meta_backend_schedule_refresh (meta_backend);
 		g_object_unref (meta_backend);
 	}
 }
@@ -1096,7 +873,7 @@ ebmb_source_changed_thread_func (EBookBackend *book_backend,
 		g_mutex_unlock (&meta_backend->priv->connect_lock);
 
 		if (can_refresh)
-			ebmb_schedule_refresh (meta_backend);
+			e_book_meta_backend_schedule_refresh (meta_backend);
 	}
 
 	g_mutex_lock (&meta_backend->priv->property_lock);
@@ -1216,7 +993,8 @@ ebmb_load_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 			g_propagate_error (error, e_data_book_create_error_fmt (E_DATA_BOOK_STATUS_INVALID_ARG, _("Preloaded object for UID “%s” is invalid"), uid));
 			return FALSE;
 		}
-	} else if (!e_book_meta_backend_load_contact_sync (meta_backend, uid, preloaded_extra, &contact, &extra, cancellable, error)) {
+	} else if (!e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, error) ||
+		!e_book_meta_backend_load_contact_sync (meta_backend, uid, preloaded_extra, &contact, &extra, cancellable, error)) {
 		g_free (extra);
 		return FALSE;
 	} else if (!contact) {
@@ -1379,7 +1157,7 @@ ebmb_open_sync (EBookBackend *book_backend,
 		e_book_backend_set_writable (E_BOOK_BACKEND (meta_backend),
 			e_book_meta_backend_get_connected_writable (meta_backend));
 	} else {
-		if (!ebmb_connect_wrapper_sync (meta_backend, cancellable, error)) {
+		if (!e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, error)) {
 			g_mutex_lock (&meta_backend->priv->property_lock);
 			meta_backend->priv->refresh_after_authenticate = TRUE;
 			g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -1388,7 +1166,7 @@ ebmb_open_sync (EBookBackend *book_backend,
 		}
 	}
 
-	ebmb_schedule_refresh (E_BOOK_META_BACKEND (book_backend));
+	e_book_meta_backend_schedule_refresh (E_BOOK_META_BACKEND (book_backend));
 
 	return TRUE;
 }
@@ -1408,10 +1186,10 @@ ebmb_refresh_sync (EBookBackend *book_backend,
 	if (!e_backend_get_online (E_BACKEND (book_backend)))
 		return TRUE;
 
-	success = ebmb_connect_wrapper_sync (meta_backend, cancellable, error);
+	success = e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, error);
 
 	if (success)
-		ebmb_schedule_refresh (meta_backend);
+		e_book_meta_backend_schedule_refresh (meta_backend);
 
 	return success;
 }
@@ -1456,7 +1234,7 @@ ebmb_create_contact_sync (EBookMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ebmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+		    e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -1601,7 +1379,7 @@ ebmb_modify_contact_sync (EBookMetaBackend *meta_backend,
 
 	if (success && *offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ebmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+		    e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -1728,7 +1506,7 @@ ebmb_remove_contact_sync (EBookMetaBackend *meta_backend,
 
 	if (*offline_flag == E_CACHE_OFFLINE_UNKNOWN) {
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ebmb_connect_wrapper_sync (meta_backend, cancellable, NULL)) {
+		    e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
 			*offline_flag = E_CACHE_IS_ONLINE;
 		} else {
 			*offline_flag = E_CACHE_IS_OFFLINE;
@@ -1831,7 +1609,7 @@ ebmb_get_contact_sync (EBookBackend *book_backend,
 
 		/* Ignore errors here, just try whether it's on the remote side, but not in the local cache */
 		if (e_backend_get_online (E_BACKEND (meta_backend)) &&
-		    ebmb_connect_wrapper_sync (meta_backend, cancellable, NULL) &&
+		    e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL) &&
 		    ebmb_load_contact_wrapper_sync (meta_backend, book_cache, uid, NULL, NULL, &loaded_uid, cancellable, NULL)) {
 			found = e_book_cache_get_contact (book_cache, loaded_uid, FALSE, &contact, cancellable, NULL);
 		}
@@ -2205,35 +1983,9 @@ ebmb_authenticate_sync (EBackend *backend,
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	if (refresh_after_authenticate)
-		ebmb_schedule_refresh (meta_backend);
+		e_book_meta_backend_schedule_refresh (meta_backend);
 
 	return auth_result;
-}
-
-static void
-ebmb_schedule_refresh (EBookMetaBackend *meta_backend)
-{
-	GCancellable *cancellable;
-
-	g_return_if_fail (E_IS_BOOK_META_BACKEND (meta_backend));
-
-	g_mutex_lock (&meta_backend->priv->property_lock);
-
-	if (meta_backend->priv->refresh_cancellable) {
-		/* Already refreshing the content */
-		g_mutex_unlock (&meta_backend->priv->property_lock);
-		return;
-	}
-
-	cancellable = g_cancellable_new ();
-	meta_backend->priv->refresh_cancellable = g_object_ref (cancellable);
-
-	g_mutex_unlock (&meta_backend->priv->property_lock);
-
-	e_book_backend_schedule_custom_operation (E_BOOK_BACKEND (meta_backend), cancellable,
-		ebmb_refresh_thread_func, NULL, NULL);
-
-	g_object_unref (cancellable);
 }
 
 static void
@@ -2316,7 +2068,7 @@ ebmb_notify_online_cb (GObject *object,
 	meta_backend->priv->current_online_state = new_value;
 
 	if (new_value)
-		ebmb_schedule_refresh (meta_backend);
+		e_book_meta_backend_schedule_refresh (meta_backend);
 	else
 		ebmb_schedule_go_offline (meta_backend);
 }
@@ -3192,6 +2944,376 @@ e_book_meta_backend_empty_cache_sync (EBookMetaBackend *meta_backend,
 	g_slist_free_full (uids, g_free);
 	g_free (cache_filename);
 	g_free (cache_path);
+
+	return success;
+}
+
+/**
+ * e_book_meta_backend_schedule_refresh:
+ * @meta_backend: an #EBookMetaBackend
+ *
+ * Schedules refresh of the content of the @meta_backend. If there's any
+ * already scheduled, then the function does nothing.
+ *
+ * Since: 3.26
+ **/
+void
+e_book_meta_backend_schedule_refresh (EBookMetaBackend *meta_backend)
+{
+	GCancellable *cancellable;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (meta_backend));
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+
+	if (meta_backend->priv->refresh_cancellable) {
+		/* Already refreshing the content */
+		g_mutex_unlock (&meta_backend->priv->property_lock);
+		return;
+	}
+
+	cancellable = g_cancellable_new ();
+	meta_backend->priv->refresh_cancellable = g_object_ref (cancellable);
+
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	e_book_backend_schedule_custom_operation (E_BOOK_BACKEND (meta_backend), cancellable,
+		ebmb_refresh_thread_func, NULL, NULL);
+
+	g_object_unref (cancellable);
+}
+
+/**
+ * e_book_meta_backend_ensure_connected_sync:
+ * @meta_backend: an #EBookMetaBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Ensures that the @meta_backend is connected to its destination.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_book_meta_backend_ensure_connected_sync (EBookMetaBackend *meta_backend,
+					   GCancellable *cancellable,
+					   GError **error)
+{
+	ENamedParameters *credentials;
+	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
+	ESourceCredentialsReason creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+	gchar *certificate_pem = NULL;
+	GTlsCertificateFlags certificate_errors = 0;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
+
+	if (!e_backend_get_online (E_BACKEND (meta_backend))) {
+		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
+			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
+
+		return FALSE;
+	}
+
+	g_mutex_lock (&meta_backend->priv->property_lock);
+	credentials = e_named_parameters_new_clone (meta_backend->priv->last_credentials);
+	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	g_mutex_lock (&meta_backend->priv->connect_lock);
+	if (e_book_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
+		cancellable, &local_error)) {
+		ebmb_update_connection_values (meta_backend);
+		g_mutex_unlock (&meta_backend->priv->connect_lock);
+		e_named_parameters_free (credentials);
+
+		return TRUE;
+	}
+
+	g_mutex_unlock (&meta_backend->priv->connect_lock);
+
+	e_named_parameters_free (credentials);
+
+	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
+
+	switch (auth_result) {
+	case E_SOURCE_AUTHENTICATION_UNKNOWN:
+		if (local_error)
+			g_propagate_error (error, local_error);
+		g_free (certificate_pem);
+		return FALSE;
+	case E_SOURCE_AUTHENTICATION_ERROR:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
+		break;
+	case E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+		break;
+	case E_SOURCE_AUTHENTICATION_ACCEPTED:
+		g_warn_if_reached ();
+		break;
+	case E_SOURCE_AUTHENTICATION_REJECTED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
+		break;
+	case E_SOURCE_AUTHENTICATION_REQUIRED:
+		creds_reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+		break;
+	}
+
+	e_backend_schedule_credentials_required (E_BACKEND (meta_backend), creds_reason, certificate_pem, certificate_errors,
+		local_error, cancellable, G_STRFUNC);
+
+	g_clear_error (&local_error);
+	g_free (certificate_pem);
+
+	return FALSE;
+}
+
+/**
+ * e_book_meta_backend_split_changes_sync:
+ * @meta_backend: an #EBookMetaBackend
+ * @objects: (inout caller-allocates) (element-type EBookMetaBackendInfo):
+ *    a #GSList of #EBookMetaBackendInfo object infos to split
+ * @out_created_objects: (out) (element-type EBookMetaBackendInfo) (transfer full):
+ *    a #GSList of #EBookMetaBackendInfo object infos which had been created
+ * @out_modified_objects: (out) (element-type EBookMetaBackendInfo) (transfer full):
+ *    a #GSList of #EBookMetaBackendInfo object infos which had been modified
+ * @out_removed_objects: (out) (element-type EBookMetaBackendInfo) (transfer full) (nullable):
+ *    a #GSList of #EBookMetaBackendInfo object infos which had been removed;
+ *    it can be %NULL, to not gather list of removed object infos
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Splits @objects into created/modified/removed lists according to current local
+ * cache content. Only the @out_removed_objects can be %NULL, others cannot.
+ * The function modifies @objects by moving its 'data' to corresponding out
+ * lists and sets the @objects 'data' to %NULL.
+ *
+ * Each output #GSList should be freed with
+ * g_slist_free_full (objects, e_book_meta_backend_info_free);
+ * when no longer needed.
+ *
+ * The caller is still responsible to free @objects as well.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_book_meta_backend_split_changes_sync (EBookMetaBackend *meta_backend,
+					GSList *objects,
+					GSList **out_created_objects,
+					GSList **out_modified_objects,
+					GSList **out_removed_objects,
+					GCancellable *cancellable,
+					GError **error)
+{
+	GHashTable *locally_cached; /* EContactId * ~> gchar *revision */
+	GHashTableIter iter;
+	GSList *link;
+	EBookCache *book_cache;
+	gpointer key, value;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
+	g_return_val_if_fail (out_created_objects, FALSE);
+	g_return_val_if_fail (out_modified_objects, FALSE);
+
+	*out_created_objects = NULL;
+	*out_modified_objects = NULL;
+
+	if (out_removed_objects)
+		*out_removed_objects = NULL;
+
+	book_cache = e_book_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (book_cache != NULL, FALSE);
+
+	locally_cached = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+	if (!e_book_cache_search_with_callback (book_cache, NULL,
+		ebmb_gather_locally_cached_objects_cb, locally_cached, cancellable, error)) {
+		g_hash_table_destroy (locally_cached);
+		g_object_unref (book_cache);
+		return FALSE;
+	}
+
+	for (link = objects; link; link = g_slist_next (link)) {
+		EBookMetaBackendInfo *nfo = link->data;
+
+		if (!nfo)
+			continue;
+
+		if (!g_hash_table_contains (locally_cached, nfo->uid)) {
+			link->data = NULL;
+
+			*out_created_objects = g_slist_prepend (*out_created_objects, nfo);
+		} else {
+			const gchar *local_revision = g_hash_table_lookup (locally_cached, nfo->uid);
+
+			if (g_strcmp0 (local_revision, nfo->revision) != 0) {
+				link->data = NULL;
+
+				*out_modified_objects = g_slist_prepend (*out_modified_objects, nfo);
+			}
+
+			g_hash_table_remove (locally_cached, nfo->uid);
+		}
+	}
+
+	if (out_removed_objects) {
+		/* What left in the hash table is removed from the remote side */
+		g_hash_table_iter_init (&iter, locally_cached);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			const gchar *uid = key;
+			const gchar *revision = value;
+			EBookMetaBackendInfo *nfo;
+
+			if (!uid) {
+				g_warn_if_reached ();
+				continue;
+			}
+
+			nfo = e_book_meta_backend_info_new (uid, revision, NULL, NULL);
+			*out_removed_objects = g_slist_prepend (*out_removed_objects, nfo);
+		}
+
+		*out_removed_objects = g_slist_reverse (*out_removed_objects);
+	}
+
+	g_hash_table_destroy (locally_cached);
+	g_object_unref (book_cache);
+
+	*out_created_objects = g_slist_reverse (*out_created_objects);
+	*out_modified_objects = g_slist_reverse (*out_modified_objects);
+
+	return TRUE;
+}
+
+/**
+ * e_book_meta_backend_process_changes_sync:
+ * @meta_backend: an #EBookMetaBackend
+ * @created_objects: (element-type EBookMetaBackendInfo) (nullable):
+ *    a #GSList of #EBookMetaBackendInfo object infos which had been created
+ * @modified_objects: (element-type EBookMetaBackendInfo) (nullable):
+ *    a #GSList of #EBookMetaBackendInfo object infos which had been modified
+ * @removed_objects: (element-type EBookMetaBackendInfo) (nullable):
+ *    a #GSList of #EBookMetaBackendInfo object infos which had been removed
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Processes given changes by updating local cache content accordingly.
+ * The @meta_backend processes the changes like being online and particularly
+ * requires to be online to load created and modified objects when needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_book_meta_backend_process_changes_sync (EBookMetaBackend *meta_backend,
+					  const GSList *created_objects,
+					  const GSList *modified_objects,
+					  const GSList *removed_objects,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	EBookCache *book_cache;
+	GHashTable *covered_uids;
+	GString *invalid_objects = NULL;
+	GSList *link;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
+
+	book_cache = e_book_meta_backend_ref_cache (meta_backend);
+	g_return_val_if_fail (book_cache != NULL, FALSE);
+
+	covered_uids = g_hash_table_new (g_str_hash, g_str_equal);
+
+	/* Removed objects first */
+	for (link = (GSList *) removed_objects; link && success; link = g_slist_next (link)) {
+		EBookMetaBackendInfo *nfo = link->data;
+
+		if (!nfo) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		success = ebmb_maybe_remove_from_cache (meta_backend, book_cache, E_CACHE_IS_ONLINE, nfo->uid, cancellable, error);
+	}
+
+	/* Then modified objects */
+	for (link = (GSList *) modified_objects; link && success; link = g_slist_next (link)) {
+		EBookMetaBackendInfo *nfo = link->data;
+		GError *local_error = NULL;
+
+		if (!nfo || !nfo->uid) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		if (!*nfo->uid ||
+		    g_hash_table_contains (covered_uids, nfo->uid))
+			continue;
+
+		g_hash_table_insert (covered_uids, nfo->uid, NULL);
+
+		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
+
+		/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
+		if (!success && g_error_matches (local_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_ARG)) {
+			if (!invalid_objects) {
+				invalid_objects = g_string_new (local_error->message);
+			} else {
+				g_string_append_c (invalid_objects, '\n');
+				g_string_append (invalid_objects, local_error->message);
+			}
+			g_clear_error (&local_error);
+			success = TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+	}
+
+	g_hash_table_remove_all (covered_uids);
+
+	/* Finally created objects */
+	for (link = (GSList *) created_objects; link && success; link = g_slist_next (link)) {
+		EBookMetaBackendInfo *nfo = link->data;
+		GError *local_error = NULL;
+
+		if (!nfo || !nfo->uid) {
+			g_warn_if_reached ();
+			continue;
+		}
+
+		if (!*nfo->uid)
+			continue;
+
+		success = ebmb_load_contact_wrapper_sync (meta_backend, book_cache, nfo->uid, nfo->object, nfo->extra, NULL, cancellable, &local_error);
+
+		/* Do not stop on invalid objects, just notify about them later, and load as many as possible */
+		if (!success && g_error_matches (local_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_INVALID_ARG)) {
+			if (!invalid_objects) {
+				invalid_objects = g_string_new (local_error->message);
+			} else {
+				g_string_append_c (invalid_objects, '\n');
+				g_string_append (invalid_objects, local_error->message);
+			}
+			g_clear_error (&local_error);
+			success = TRUE;
+		} else if (local_error) {
+			g_propagate_error (error, local_error);
+		}
+	}
+
+	g_hash_table_destroy (covered_uids);
+
+	if (invalid_objects) {
+		e_book_backend_notify_error (E_BOOK_BACKEND (meta_backend), invalid_objects->str);
+
+		g_string_free (invalid_objects, TRUE);
+	}
+
+	g_clear_object (&book_cache);
 
 	return success;
 }
