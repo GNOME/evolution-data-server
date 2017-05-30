@@ -2064,7 +2064,7 @@ query_preflight_initialize (PreflightContext *context,
 	ESExpResult *result;
 	gint esexp_error, ii;
 
-	if (!sexp || !*sexp) {
+	if (!sexp || !*sexp || g_strcmp0 (sexp, "#t") == 0) {
 		context->status = PREFLIGHT_LIST_ALL;
 		return;
 	}

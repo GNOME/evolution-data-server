@@ -1526,7 +1526,7 @@ ecc_convert_sexp_to_sql (ECalCache *cal_cache,
 	*out_where_clause = NULL;
 
 	/* Include everything */
-	if (!sexp_str || !*sexp_str)
+	if (!sexp_str || !*sexp_str || g_strcmp0 (sexp_str, "#t") == 0)
 		return TRUE;
 
 	ctx.cal_cache = cal_cache;
@@ -2749,7 +2749,7 @@ e_cal_cache_search_with_callback (ECalCache *cal_cache,
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
 	g_return_val_if_fail (func != NULL, FALSE);
 
-	if (sexp && *sexp) {
+	if (sexp && *sexp && g_strcmp0 (sexp, "#t") != 0) {
 		bsexp = e_cal_backend_sexp_new (sexp);
 		if (!bsexp) {
 			g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_INVALID_QUERY,
@@ -2758,6 +2758,8 @@ e_cal_cache_search_with_callback (ECalCache *cal_cache,
 		}
 
 		sexp_id = ecc_take_sexp_object (cal_cache, bsexp);
+	} else {
+		sexp = NULL;
 	}
 
 	success = ecc_search_internal (cal_cache, sexp, sexp_id, func, user_data, cancellable, error);
