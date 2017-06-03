@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-05-17 21:01+0000\n"
-"PO-Revision-Date: 2017-05-19 14:36+0700\n"
+"POT-Creation-Date: 2017-05-23 07:17+0000\n"
+"PO-Revision-Date: 2017-05-29 20:42+0700\n"
 "Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -39,31 +39,31 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Gagal membuat hardlink bagi sumberdaya \"%s\": %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1256
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1257
 msgid "No UID in the contact"
 msgstr "Tak ada UID dalam kontak"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:851
+#: ../src/addressbook/backends/file/e-book-backend-file.c:852
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "UID yang konflik ditemukan dalam kontak yang ditambahkan"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:990
+#: ../src/addressbook/backends/file/e-book-backend-file.c:991
 msgid "Loading..."
 msgstr "Memuat..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:992
+#: ../src/addressbook/backends/file/e-book-backend-file.c:993
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4388
 msgid "Searching..."
 msgstr "Mencari..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1284
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1285
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Mencoba mengubah kontak \"%s\" dengan revisi yang tak selaras"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1475
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1560
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1476
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1561
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7342
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7411
@@ -71,24 +71,24 @@ msgstr "Mencoba mengubah kontak \"%s\" dengan revisi yang tak selaras"
 msgid "Contact “%s” not found"
 msgstr "Kontak \"%s\" tidak ditemukan"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1620
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1701
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1621
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1702
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Kueri \"%s\" tidak didukung"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1629
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1710
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1630
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1711
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Query \"%s\" Tidak Valid"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2204
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1976
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2149
 msgid "Requested to delete an unrelated cursor"
 msgstr "Diminta untuk menghapus kursor yang tak berhubungan"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2047
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
@@ -141,7 +141,7 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1018
+#: ../src/libedataserver/e-soup-session.c:1033
 msgid "Unknown error"
 msgstr "Kesalahan tidak dikenal"
 
@@ -1128,8 +1128,8 @@ msgstr "Objek pramuat untuk UID \"%s\" tidak valid"
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objek yang diterima untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2074
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2447
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2019
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2392
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3146
 #, c-format
 msgid "Failed to create cache “%s”:"
@@ -1567,7 +1567,7 @@ msgstr "Properti kalender tidak dikenal \"%s\""
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Tidak dapat mengubah properti kalender \"%s\""
 
-#: ../src/calendar/libecal/e-cal-component.c:1358
+#: ../src/calendar/libecal/e-cal-component.c:1330
 msgid "Untitled appointment"
 msgstr "Pertemuan tak berjudul"
 
@@ -1996,7 +1996,7 @@ msgid "Could not rename “%s” to %s: %s"
 msgstr "Tidak bisa mengubah nama \"%s\" menjadi %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:991
-#: ../src/camel/camel-filter-search.c:866
+#: ../src/camel/camel-filter-search.c:871
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Gagal membuat proses anak \"%s\": %s"
@@ -2078,24 +2078,24 @@ msgstr "Galat saat mengurai penyaring \"%s\": %s: %s"
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Galat saat mengeksekusi penyaring \"%s\": %s: %s"
 
-#: ../src/camel/camel-filter-search.c:165
+#: ../src/camel/camel-filter-search.c:167
 msgid "Failed to retrieve message"
 msgstr "Gagal mengambil pesan"
 
-#: ../src/camel/camel-filter-search.c:583
+#: ../src/camel/camel-filter-search.c:588
 msgid "Invalid arguments to (system-flag)"
 msgstr "Argumen invalid untuk (system-flag)"
 
-#: ../src/camel/camel-filter-search.c:602
+#: ../src/camel/camel-filter-search.c:607
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argumen invalid untuk (user-tag)"
 
-#: ../src/camel/camel-filter-search.c:1165
+#: ../src/camel/camel-filter-search.c:1170
 msgid "Invalid arguments to (message-location)"
 msgstr "Argumen invalid untuk (message-location)"
 
-#: ../src/camel/camel-filter-search.c:1256
-#: ../src/camel/camel-filter-search.c:1267
+#: ../src/camel/camel-filter-search.c:1261
+#: ../src/camel/camel-filter-search.c:1272
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Kesalahan saat mengeksekusi saringan pencarian: %s: %s"
@@ -2239,7 +2239,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1612
+#: ../src/camel/camel-folder-summary.c:1623
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Melepas memori tak terpakai bagi folder \"%s : %s\""
@@ -5393,15 +5393,15 @@ msgstr "Galat D-Bus"
 msgid "Timeout was reached"
 msgstr "Habis waktu"
 
-#: ../src/libedataserver/e-soup-session.c:119
+#: ../src/libedataserver/e-soup-session.c:133
 msgid "Credentials required"
 msgstr "Kredensial diperlukan"
 
-#: ../src/libedataserver/e-soup-session.c:788
+#: ../src/libedataserver/e-soup-session.c:803
 msgid "Operation was cancelled"
 msgstr "Operasi dibatalkan"
 
-#: ../src/libedataserver/e-soup-session.c:791
+#: ../src/libedataserver/e-soup-session.c:806
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Gagal dengan kesalahan HTTP %d: %s"
@@ -5484,7 +5484,7 @@ msgstr "Gagal menyegarkan token"
 msgid "Password not found"
 msgstr "Sandi tidak ditemukan"
 
-#: ../src/libedataserver/e-source-mail-signature.c:482
+#: ../src/libedataserver/e-source-mail-signature.c:483
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Skrip tanda tangan mesti berupa berkas lokal"
@@ -5633,7 +5633,7 @@ msgstr "%H:%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-session.c:934
+#: ../src/libedataserver/e-webdav-session.c:938
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -5642,7 +5642,7 @@ msgstr ""
 "Server merespons dengan halaman HTML, yang bisa berarti ada kesalahan pada "
 "server atau dengan permintaan klien. URI yang digunakan adalah: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:936
+#: ../src/libedataserver/e-webdav-session.c:940
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -5656,7 +5656,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:957
+#: ../src/libedataserver/e-webdav-session.c:961
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: kode kesalahan HTTP %d (%s): %s            "
@@ -5664,7 +5664,7 @@ msgstr "%s: kode kesalahan HTTP %d (%s): %s            "
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:965
+#: ../src/libedataserver/e-webdav-session.c:969
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Gagal dengan kode kesalahan HTTP %d (%s): %s"
@@ -5673,153 +5673,153 @@ msgstr "Gagal dengan kode kesalahan HTTP %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:980
+#: ../src/libedataserver/e-webdav-session.c:984
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: kode kesalahan HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:986
+#: ../src/libedataserver/e-webdav-session.c:990
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Gagal dengan kode kesalahan HTTP %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1233
+#: ../src/libedataserver/e-webdav-session.c:1237
 msgid "Failed to post data"
 msgstr "Gagal mengirim data"
 
-#: ../src/libedataserver/e-webdav-session.c:1326
-#: ../src/libedataserver/e-webdav-session.c:1401
-#: ../src/libedataserver/e-webdav-session.c:1505
-#: ../src/libedataserver/e-webdav-session.c:2686
-#: ../src/libedataserver/e-webdav-session.c:3938
+#: ../src/libedataserver/e-webdav-session.c:1330
+#: ../src/libedataserver/e-webdav-session.c:1405
+#: ../src/libedataserver/e-webdav-session.c:1509
+#: ../src/libedataserver/e-webdav-session.c:2690
+#: ../src/libedataserver/e-webdav-session.c:3942
 msgid "Failed to get input XML content"
 msgstr "Gagal mendapatkan masukan konten XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1337
+#: ../src/libedataserver/e-webdav-session.c:1341
 msgid "Failed to get properties"
 msgstr "Gagal mendapatkan properti"
 
-#: ../src/libedataserver/e-webdav-session.c:1411
+#: ../src/libedataserver/e-webdav-session.c:1415
 msgid "Failed to update properties"
 msgstr "Gagal memperbarui properti"
 
-#: ../src/libedataserver/e-webdav-session.c:1515
+#: ../src/libedataserver/e-webdav-session.c:1519
 msgid "Failed to issue REPORT"
 msgstr "Gagal menerbitkan REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1574
+#: ../src/libedataserver/e-webdav-session.c:1578
 msgid "Failed to create collection"
 msgstr "Gagal membuat koleksi"
 
-#: ../src/libedataserver/e-webdav-session.c:1665
-#: ../src/libedataserver/e-webdav-session.c:1819
+#: ../src/libedataserver/e-webdav-session.c:1669
+#: ../src/libedataserver/e-webdav-session.c:1823
 msgid "Failed to get XML request content"
 msgstr "Gagal mendapatkan konten permintaan XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1677
+#: ../src/libedataserver/e-webdav-session.c:1681
 msgid "Failed to create address book"
 msgstr "Gagal membuat buku alamat"
 
-#: ../src/libedataserver/e-webdav-session.c:1832
+#: ../src/libedataserver/e-webdav-session.c:1836
 msgid "Failed to create calendar"
 msgstr "Gagal membuat kalender"
 
-#: ../src/libedataserver/e-webdav-session.c:1964
-#: ../src/libedataserver/e-webdav-session.c:1975
+#: ../src/libedataserver/e-webdav-session.c:1968
+#: ../src/libedataserver/e-webdav-session.c:1979
 msgid "Failed to read resource"
 msgstr "Gagal membaca sumber"
 
-#: ../src/libedataserver/e-webdav-session.c:2124
+#: ../src/libedataserver/e-webdav-session.c:2128
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Tidak dapat memutar ulang arus masukan: Tidak didukung"
 
-#: ../src/libedataserver/e-webdav-session.c:2271
+#: ../src/libedataserver/e-webdav-session.c:2275
 msgid "Failed to put data"
 msgstr "Gagal memasukkan data"
 
-#: ../src/libedataserver/e-webdav-session.c:2290
+#: ../src/libedataserver/e-webdav-session.c:2294
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Gagal memasukkan data ke server, kode kesalahan %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2463
+#: ../src/libedataserver/e-webdav-session.c:2467
 msgid "Failed to delete resource"
 msgstr "Gagal menghapus sumber"
 
-#: ../src/libedataserver/e-webdav-session.c:2530
+#: ../src/libedataserver/e-webdav-session.c:2534
 msgid "Failed to copy resource"
 msgstr "Gagal menyalin sumber daya"
 
-#: ../src/libedataserver/e-webdav-session.c:2592
+#: ../src/libedataserver/e-webdav-session.c:2596
 msgid "Failed to move resource"
 msgstr "Gagal memindahkan sumber daya"
 
-#: ../src/libedataserver/e-webdav-session.c:2697
+#: ../src/libedataserver/e-webdav-session.c:2701
 msgid "Failed to lock resource"
 msgstr "Gagal mengunci sumber daya"
 
-#: ../src/libedataserver/e-webdav-session.c:2711
-#: ../src/libedataserver/e-webdav-session.c:2913
+#: ../src/libedataserver/e-webdav-session.c:2715
+#: ../src/libedataserver/e-webdav-session.c:2917
 msgid "Expected application/xml response, but none returned"
 msgstr "Respon aplikasi/xml yang diharapkan, namun tidak ada yang kembali"
 
-#: ../src/libedataserver/e-webdav-session.c:2714
-#: ../src/libedataserver/e-webdav-session.c:2916
+#: ../src/libedataserver/e-webdav-session.c:2718
+#: ../src/libedataserver/e-webdav-session.c:2920
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Respon aplikasi/xml yang diharapkan, namun %s dikembalikan"
 
-#: ../src/libedataserver/e-webdav-session.c:2726
-#: ../src/libedataserver/e-webdav-session.c:2929
+#: ../src/libedataserver/e-webdav-session.c:2730
+#: ../src/libedataserver/e-webdav-session.c:2933
 msgid "Failed to parse XML data"
 msgstr "Gagal mengurai data XML"
 
-#: ../src/libedataserver/e-webdav-session.c:2805
+#: ../src/libedataserver/e-webdav-session.c:2809
 msgid "Failed to refresh lock"
 msgstr "Gagal menyegarkan kunci"
 
-#: ../src/libedataserver/e-webdav-session.c:2864
+#: ../src/libedataserver/e-webdav-session.c:2868
 msgid "Failed to unlock"
 msgstr "Gagal membuka kunci"
 
-#: ../src/libedataserver/e-webdav-session.c:2901
+#: ../src/libedataserver/e-webdav-session.c:2905
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Respons multistatus yang diharapkan, namun %d kembali (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3948
+#: ../src/libedataserver/e-webdav-session.c:3952
 msgid "Failed to get access control list"
 msgstr "Gagal mendapatkan daftar kontrol akses"
 
-#: ../src/libedataserver/e-webdav-session.c:4685
+#: ../src/libedataserver/e-webdav-session.c:4689
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "Tidak dapat menyimpan Entri Kontrol Akses yang dilindungi atau tidak "
 "diwarisi."
 
-#: ../src/libedataserver/e-webdav-session.c:4692
+#: ../src/libedataserver/e-webdav-session.c:4696
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Menyediakan jenis prinsipal tidak valid untuk Entri Kontrol Akses."
 
-#: ../src/libedataserver/e-webdav-session.c:4699
+#: ../src/libedataserver/e-webdav-session.c:4703
 msgid "Cannot store property-based Access Control Entry."
 msgstr "Tidak dapat menyimpan Entri Kontrol Akses berbasis properti."
 
-#: ../src/libedataserver/e-webdav-session.c:4706
+#: ../src/libedataserver/e-webdav-session.c:4710
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "bukan tak satupun (None)."
 
-#: ../src/libedataserver/e-webdav-session.c:4714
+#: ../src/libedataserver/e-webdav-session.c:4718
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "Entri Kontrol Akses hanya bisa untuk Izin (Grant) atau Tolak (Deny), tapi "
 "tidak keduanya."
 
-#: ../src/libedataserver/e-webdav-session.c:4773
+#: ../src/libedataserver/e-webdav-session.c:4777
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "Hak khusus Entri Kontrol Akses tidak bisa NULL."
 
@@ -6336,8 +6336,8 @@ msgid "On The Web"
 msgstr "Di Web"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
-msgid "WebDAV"
-msgstr "WebDAV"
+msgid "CardDAV"
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:40
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -6391,6 +6391,9 @@ msgstr ""
 #: ../src/tools/addressbook-export/addressbook-export.c:991
 msgid "Only support csv or vcard format."
 msgstr "Hanya mendukung format csv atau vcard."
+
+#~ msgid "WebDAV"
+#~ msgstr "WebDAV"
 
 #~ msgid "Querying for updated contacts…"
 #~ msgstr "Meng-query kontak yang dimutakhirkan…"
