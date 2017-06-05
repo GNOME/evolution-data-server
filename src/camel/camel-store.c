@@ -252,13 +252,16 @@ store_get_special (CamelStore *store,
 	gint i;
 
 	folder = camel_vtrash_folder_new (store, type);
-	folders = camel_object_bag_list (store->priv->folders);
-	for (i = 0; i < folders->len; i++) {
-		if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
-			camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i], NULL);
-		g_object_unref (folders->pdata[i]);
+
+	if (store->priv->folders) {
+		folders = camel_object_bag_list (store->priv->folders);
+		for (i = 0; i < folders->len; i++) {
+			if (!CAMEL_IS_VTRASH_FOLDER (folders->pdata[i]))
+				camel_vee_folder_add_folder ((CamelVeeFolder *) folder, (CamelFolder *) folders->pdata[i], NULL);
+			g_object_unref (folders->pdata[i]);
+		}
+		g_ptr_array_free (folders, TRUE);
 	}
-	g_ptr_array_free (folders, TRUE);
 
 	return folder;
 }
@@ -323,13 +326,27 @@ store_finalize (GObject *object)
 {
 	CamelStore *store = CAMEL_STORE (object);
 
-	if (store->priv->folders != NULL)
+	if (store->priv->folders)
 		camel_object_bag_destroy (store->priv->folders);
 
 	g_clear_object (&store->priv->cdb);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_store_parent_class)->finalize (object);
+}
+
+static void
+store_dispose (GObject *object)
+{
+	CamelStore *store = CAMEL_STORE (object);
+
+	if (store->priv->folders) {
+		camel_object_bag_destroy (store->priv->folders);
+		store->priv->folders = NULL;
+	}
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (camel_store_parent_class)->dispose (object);
 }
 
 static void
@@ -452,9 +469,11 @@ store_synchronize_sync (CamelStore *store,
 		}
 
 		camel_folder_info_free (root);
-	} else {
+	} else if (store->priv->folders) {
 		/* sync only folders opened until now */
 		folders = camel_object_bag_list (store->priv->folders);
+	} else {
+		folders = g_ptr_array_new ();
 	}
 
 	/* We don't sync any vFolders, that is used to update certain
@@ -555,6 +574,7 @@ camel_store_class_init (CamelStoreClass *class)
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = store_finalize;
+	object_class->dispose = store_dispose;
 	object_class->constructed = store_constructed;
 
 	service_class = CAMEL_SERVICE_CLASS (class);
@@ -1343,7 +1363,7 @@ camel_store_get_folder_sync (CamelStore *store,
 
 try_again:
 	/* Try cache first. */
-	folder = camel_object_bag_reserve (store->priv->folders, folder_name);
+	folder = store->priv->folders ? camel_object_bag_reserve (store->priv->folders, folder_name) : NULL;
 	if (folder != NULL) {
 		if ((flags & CAMEL_STORE_FOLDER_INFO_REFRESH) != 0)
 			camel_folder_prepare_content_refresh (folder);
@@ -1422,11 +1442,11 @@ try_again:
 		if (local_error != NULL)
 			g_propagate_error (error, local_error);
 
-		if (folder != NULL && store_uses_vjunk)
+		if (folder != NULL && store_uses_vjunk && store->priv->folders)
 			vjunk = camel_object_bag_get (
 				store->priv->folders, CAMEL_VJUNK_NAME);
 
-		if (folder != NULL && store_uses_vtrash)
+		if (folder != NULL && store_uses_vtrash && store->priv->folders)
 			vtrash = camel_object_bag_get (
 				store->priv->folders, CAMEL_VTRASH_NAME);
 	}
@@ -1434,12 +1454,12 @@ try_again:
 	/* Release the folder name reservation before adding the
 	 * folder to the virtual Junk and Trash folders, just to
 	 * reduce the chance of deadlock. */
-	if (folder != NULL)
-		camel_object_bag_add (
-			store->priv->folders, folder_name, folder);
-	else
-		camel_object_bag_abort (
-			store->priv->folders, folder_name);
+	if (store->priv->folders) {
+		if (folder != NULL)
+			camel_object_bag_add (store->priv->folders, folder_name, folder);
+		else
+			camel_object_bag_abort (store->priv->folders, folder_name);
+	}
 
 	/* If this is a normal folder and the store uses a
 	 * virtual Junk folder, let the virtual Junk folder
@@ -2749,7 +2769,7 @@ store_rename_folder_thread (GTask *task,
 	/* If the folder is open (or any subfolders of the open folder)
 	 * We need to rename them atomically with renaming the actual
 	 * folder path. */
-	folders = camel_object_bag_list (store->priv->folders);
+	folders = store->priv->folders ? camel_object_bag_list (store->priv->folders) : g_ptr_array_new ();
 	for (ii = 0; ii < folders->len; ii++) {
 		const gchar *full_name;
 		gsize full_name_len;
@@ -2792,7 +2812,8 @@ store_rename_folder_thread (GTask *task,
 			full_name = camel_folder_get_full_name (folder);
 
 			new = g_strdup_printf ("%s%s", new_name, full_name + strlen (old_name));
-			camel_object_bag_rekey (store->priv->folders, folder, new);
+			if (store->priv->folders)
+				camel_object_bag_rekey (store->priv->folders, folder, new);
 			camel_folder_rename (folder, new);
 			g_free (new);
 
