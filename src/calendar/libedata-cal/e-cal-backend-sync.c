@@ -557,14 +557,16 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 			E_TIMEZONE_CACHE (backend), tzid);
 
 		if (!zone) {
-			g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
+			if (error && !*error)
+				g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 		} else {
 			icalcomponent *icalcomp;
 
 			icalcomp = icaltimezone_get_component (zone);
 
 			if (!icalcomp) {
-				g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
+				if (error && !*error)
+					g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
 			} else {
 				*tzobject = icalcomponent_as_ical_string_r (icalcomp);
 			}
