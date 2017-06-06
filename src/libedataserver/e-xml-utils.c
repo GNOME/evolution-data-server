@@ -392,6 +392,8 @@ e_xml_xpath_eval_as_string (xmlXPathContext *xpath_ctx,
 	}
 
 	object = e_xml_xpath_eval (xpath_ctx, "%s", expr);
+	g_free (expr);
+
 	if (!object)
 		return NULL;
 
@@ -435,6 +437,8 @@ e_xml_xpath_eval_exists (xmlXPathContext *xpath_ctx,
 	va_end (va);
 
 	object = e_xml_xpath_eval (xpath_ctx, "%s", expr);
+	g_free (expr);
+
 	if (!object)
 		return FALSE;
 

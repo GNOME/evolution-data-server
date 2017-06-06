@@ -215,13 +215,16 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_CANCELLED)) {
 			local_error->domain = G_IO_ERROR;
 			local_error->code = G_IO_ERROR_CANCELLED;
+			g_propagate_error (error, local_error);
 		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN) && credentials_empty) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
+			g_clear_error (&local_error);
 		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			if (credentials_empty)
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			else
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			g_clear_error (&local_error);
 		} else if (local_error) {
 			g_propagate_error (error, local_error);
 			local_error = NULL;
