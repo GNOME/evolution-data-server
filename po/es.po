@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-05-17 21:01+0000\n"
-"PO-Revision-Date: 2017-05-19 14:19+0200\n"
+"POT-Creation-Date: 2017-06-06 09:16+0000\n"
+"PO-Revision-Date: 2017-06-06 12:40+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -44,32 +44,32 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Falló al crear el enlace duro para el recurso «%s»: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1256
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1257
 msgid "No UID in the contact"
 msgstr "El contacto no tiene ningún UID"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:851
+#: ../src/addressbook/backends/file/e-book-backend-file.c:852
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Encontrados UID en conflicto en los contactos añadidos"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:990
+#: ../src/addressbook/backends/file/e-book-backend-file.c:991
 msgid "Loading..."
 msgstr "Cargando…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:992
+#: ../src/addressbook/backends/file/e-book-backend-file.c:993
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4388
 msgid "Searching..."
 msgstr "Buscando…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1284
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1285
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr ""
 "Se intentó modificar el contacto «%s» sin la revisión de la sincronización"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1475
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1560
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1476
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1561
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7342
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7411
@@ -77,24 +77,24 @@ msgstr ""
 msgid "Contact “%s” not found"
 msgstr "Contacto «%s» no encontrado"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1620
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1701
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1621
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1702
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Consulta «%s» no soportada"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1629
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1710
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1630
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1711
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Consulta «%s» no válida"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2204
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1976
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1927
 msgid "Requested to delete an unrelated cursor"
 msgstr "Se ha pedido eliminar un cursor no relacionado"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2047
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
@@ -147,24 +147,23 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1018
+#: ../src/libedataserver/e-soup-session.c:1062
 msgid "Unknown error"
 msgstr "Error desconocido"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:897
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:925
 msgid "Object to save is not a valid vCard"
-msgstr ""
+msgstr "El objeto que guardar no es un vCard válido"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:949
-#, fuzzy
 #| msgid "Failed to authenticate on POP server %s: "
 msgid "Failed to create contact from returned server data"
-msgstr "No se pudo autenticar en el servidor POP %s: "
+msgstr "Falló al crear el contacto con los datos devueltos por el servidor"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:965
 msgid "Server returned contact without UID"
-msgstr ""
+msgstr "El servidor ha devuelto un contacto sin UID"
 
 #. System Group: My Contacts
 #: ../src/addressbook/backends/google/e-book-google-utils.c:1658
@@ -274,10 +273,11 @@ msgstr "Falló al obtener el DN para el usuario «%s»"
 #, c-format
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr ""
+"El URL «%s» dado no hace referencia a una libreta de direcciones WebDAV"
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:852
 msgid "Received object is not a valid vCard"
-msgstr ""
+msgstr "El objeto recibido no es un vCard válido"
 
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
 msgid "No such book"
@@ -1095,15 +1095,13 @@ msgid "Invalid query: %s"
 msgstr "Consulta no válida: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3598
-#, fuzzy
 #| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
-msgstr "Consulta no válida para EbSqlCursor"
+msgstr "Consulta no válida para un cursor de libro"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4460
 #: ../src/libebackend/e-cache.c:756
 #, c-format
-#| msgid "Cannot open mailbox: %s: "
 msgid "Can’t open database %s: %s"
 msgstr "No se puede abrir la base de datos %s: %s"
 
@@ -1115,39 +1113,36 @@ msgstr "No se puede abrir la base de datos %s: %s"
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object “%s” not found"
 msgstr "Objeto «%s» no encontrado"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5276
-#, fuzzy
 #| msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
-"Se debe especificar al menos un campo de ordenación para usar un EbSdbCursor"
+"Se debe especificar al menos un campo de ordenación para usar un cursor"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5285
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
 msgid "Cannot sort by a field that is not a string type"
 msgstr "No se puede ordenar por un campo que no es de tipo cadena"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1216
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1231
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:993
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:996
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
-msgstr ""
+msgstr "El objeto precargado para el UID «%s» no es válido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1223
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1238
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1001
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1004
 #, c-format
 msgid "Received object for UID “%s” is invalid"
-msgstr ""
+msgstr "El objeto recibido para el UID «%s» no es válido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2074
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2447
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3146
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1797
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2144
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2886
 #, c-format
-#| msgid "Failed to create child process “%s”: %s"
 msgid "Failed to create cache “%s”:"
 msgstr "Falló al crear la caché «%s»:"
 
@@ -1376,13 +1371,12 @@ msgstr ""
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
-msgstr ""
+msgstr "El URL «%s» dado no hace referencia a un calendario CalDAV"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1482
-#, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to parse response data"
-msgstr "Falló al codificar datos"
+msgstr "Falló al analizar los datos de la respuesta"
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:948
 msgid "Birthday"
@@ -1408,13 +1402,11 @@ msgid "Cannot save calendar data"
 msgstr "No se pueden guardar los datos del calendario"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:130
-#| msgid "URI not loaded"
 msgid "URI not set"
 msgstr "URI no establecido"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:198
 #, c-format
-#| msgid "Malformed URI: %s"
 msgid "Malformed URI “%s”: %s"
 msgstr "URI «%s» mal formado: %s"
 
@@ -1589,7 +1581,7 @@ msgstr "Propiedad «%s» del calendario desconocida"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "No se puede cambiar el valor de la propiedad «%s» del calendario"
 
-#: ../src/calendar/libecal/e-cal-component.c:1358
+#: ../src/calendar/libecal/e-cal-component.c:1330
 msgid "Untitled appointment"
 msgstr "Cita sin título"
 
@@ -1854,44 +1846,41 @@ msgid "“%s” expects the second argument to be an integer"
 msgstr "«%s» espera que el segundo argumento sea un entero"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1714
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to create hardlink for resource “%s”: %s"
 msgid "Failed to create SQLite function, error code “%d”: %s"
-msgstr "Falló al crear el enlace duro para el recurso «%s»: %s"
+msgstr "Falló al crear la función SQLite, código de error «%d»: %s"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2223
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2286
 #, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object “%s”, “%s” not found"
 msgstr "Objeto «%s», «%s» no encontrado"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2926
-#, fuzzy
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2928
 #| msgid "Cannot add contact: "
 msgid "Cannot add timezone without tzid"
-msgstr "No se puede añadir el contacto: "
+msgstr "No se puede añadir la zona horaria sin tzid"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2932
-#, fuzzy
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2934
 #| msgid "Cannot authenticate without a username"
 msgid "Cannot add timezone without component"
-msgstr "No se pudo autenticar sin un nombre de usuario"
+msgstr "No se puede añadir la zona horaria el componente"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2938
-#, fuzzy
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2940
 #| msgid "Cannot send message: one or more invalid recipients"
 msgid "Cannot add timezone with invalid component"
-msgstr "No se puede enviar el correo: uno o más destinatarios no válidos"
+msgstr "No se puede añadir la zona horaria con un componente no válido"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1285
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1051
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
+"El objeto recibido para el UID «%s» no contiene ningún componente esperado"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3900
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3640
 msgid "attachment.dat"
-msgstr ""
+msgstr "attachment.dat"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
@@ -2024,7 +2013,7 @@ msgid "Could not rename “%s” to %s: %s"
 msgstr "No se pudo renombrar «%s» a %s: %s"
 
 #: ../src/camel/camel-filter-driver.c:991
-#: ../src/camel/camel-filter-search.c:866
+#: ../src/camel/camel-filter-search.c:871
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "Error al crear proceso hijo «%s»: %s"
@@ -2106,24 +2095,24 @@ msgstr "Error al analizar el filtro «%s»: %s: %s"
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Error al ejecutar el filtro «%s»: %s: %s"
 
-#: ../src/camel/camel-filter-search.c:165
+#: ../src/camel/camel-filter-search.c:167
 msgid "Failed to retrieve message"
 msgstr "Falló al obtener el mensaje"
 
-#: ../src/camel/camel-filter-search.c:583
+#: ../src/camel/camel-filter-search.c:588
 msgid "Invalid arguments to (system-flag)"
 msgstr "Argumentos no válidos a (system-flag)"
 
-#: ../src/camel/camel-filter-search.c:602
+#: ../src/camel/camel-filter-search.c:607
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argumentos no válidos a (user-tag)"
 
-#: ../src/camel/camel-filter-search.c:1165
+#: ../src/camel/camel-filter-search.c:1170
 msgid "Invalid arguments to (message-location)"
 msgstr "Argumentos no válidos a (message-location)"
 
-#: ../src/camel/camel-filter-search.c:1256
-#: ../src/camel/camel-filter-search.c:1267
+#: ../src/camel/camel-filter-search.c:1261
+#: ../src/camel/camel-filter-search.c:1272
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Error ejecutando la búsqueda del filtro: %s: %s"
@@ -2270,7 +2259,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1612
+#: ../src/camel/camel-folder-summary.c:1623
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Liberar la memoria sin usar para la carpeta «%s : %s»"
@@ -3102,43 +3091,43 @@ msgstr "Falló al añadir datos al codificador"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "Descifrado S/MIME: No se ha encontrado contenido cifrado"
 
-#: ../src/camel/camel-store.c:1382
+#: ../src/camel/camel-store.c:1402
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Abriendo carpeta «%s»"
 
-#: ../src/camel/camel-store.c:1677
+#: ../src/camel/camel-store.c:1697
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Analizando carpetas en «%s»"
 
-#: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1750
+#: ../src/camel/camel-store.c:1725 ../src/camel/camel-store.c:1770
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Papelera"
 
-#: ../src/camel/camel-store.c:1719 ../src/camel/camel-store.c:1767
+#: ../src/camel/camel-store.c:1739 ../src/camel/camel-store.c:1787
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "SPAM"
 
-#: ../src/camel/camel-store.c:2368
+#: ../src/camel/camel-store.c:2388
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "No se pudo crear la carpeta: %s: la carpeta existe"
 
-#: ../src/camel/camel-store.c:2375
+#: ../src/camel/camel-store.c:2395
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Creando carpeta «%s»"
 
-#: ../src/camel/camel-store.c:2552 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2572 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "No se pudo eliminar la carpeta: %s: Operación no válida"
 
-#: ../src/camel/camel-store.c:2742 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2762 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -5218,7 +5207,6 @@ msgstr "Memoria agotada"
 
 #: ../src/libebackend/e-cache.c:943
 #, c-format
-#| msgid "Could not create directory %s: %s"
 msgid "Can not make parent directory: %s"
 msgstr "No se pudo crear la carpeta padre: %s"
 
@@ -5448,19 +5436,16 @@ msgstr "Error de D-Bus"
 msgid "Timeout was reached"
 msgstr "Se alcanzó el tiempo de expiración"
 
-#: ../src/libedataserver/e-soup-session.c:119
-#| msgid "Credentials store is not supported"
+#: ../src/libedataserver/e-soup-session.c:144
 msgid "Credentials required"
 msgstr "Se necesitan credenciales"
 
-#: ../src/libedataserver/e-soup-session.c:788
-#| msgid "Operation has been cancelled"
+#: ../src/libedataserver/e-soup-session.c:830
 msgid "Operation was cancelled"
 msgstr "Operación cancelada"
 
-#: ../src/libedataserver/e-soup-session.c:791
+#: ../src/libedataserver/e-soup-session.c:833
 #, c-format
-#| msgid "Failed to make directory %s: %s"
 msgid "Failed with HTTP error %d: %s"
 msgstr "Falló con código de error HTTP %d: %s"
 
@@ -5544,7 +5529,7 @@ msgstr "Falló al actualizar el testigo"
 msgid "Password not found"
 msgstr "No se encontró la contraseña"
 
-#: ../src/libedataserver/e-source-mail-signature.c:482
+#: ../src/libedataserver/e-source-mail-signature.c:483
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "La firma debe ser un archivo local"
@@ -5693,35 +5678,38 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-session.c:934
+#: ../src/libedataserver/e-webdav-session.c:938
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"El servidor ha respondido con una página HTML, lo que significa que hay un "
+"error en el servidor o en la respuesta del cliente. El URI utilizado fue: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:936
+#: ../src/libedataserver/e-webdav-session.c:940
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"El servidor ha respondido con una página HTML, lo que significa que hay un "
+"error en el servidor o en la respuesta del cliente."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:957
+#: ../src/libedataserver/e-webdav-session.c:961
 #, c-format
-#| msgid "NSPR error code %d"
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: código de error HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:965
+#: ../src/libedataserver/e-webdav-session.c:969
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Falló con código de error HTTP %d (%s): %s"
@@ -5730,178 +5718,160 @@ msgstr "Falló con código de error HTTP %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:980
+#: ../src/libedataserver/e-webdav-session.c:984
 #, c-format
-#| msgid "NSPR error code %d"
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: código de error HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:986
+#: ../src/libedataserver/e-webdav-session.c:990
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Falló con código de error HTTP %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1233
-#, fuzzy
+#: ../src/libedataserver/e-webdav-session.c:1237
 #| msgid "Failed to encode data"
 msgid "Failed to post data"
-msgstr "Falló al codificar datos"
+msgstr "Falló al publicar los datos"
 
-#: ../src/libedataserver/e-webdav-session.c:1326
-#: ../src/libedataserver/e-webdav-session.c:1401
-#: ../src/libedataserver/e-webdav-session.c:1505
-#: ../src/libedataserver/e-webdav-session.c:2686
-#: ../src/libedataserver/e-webdav-session.c:3938
-#, fuzzy
+#: ../src/libedataserver/e-webdav-session.c:1330
+#: ../src/libedataserver/e-webdav-session.c:1405
+#: ../src/libedataserver/e-webdav-session.c:1509
+#: ../src/libedataserver/e-webdav-session.c:2690
+#: ../src/libedataserver/e-webdav-session.c:3942
 #| msgid "Failed to find Account element"
 msgid "Failed to get input XML content"
-msgstr "Falló al buscar el elemento «Account»"
+msgstr "Falló al obtener el contenido de la entrada XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1337
-#| msgid "Failed to get capabilities"
+#: ../src/libedataserver/e-webdav-session.c:1341
 msgid "Failed to get properties"
 msgstr "Falló al obtener las propiedades"
 
-#: ../src/libedataserver/e-webdav-session.c:1411
-#| msgid "Failed to authenticate"
+#: ../src/libedataserver/e-webdav-session.c:1415
 msgid "Failed to update properties"
 msgstr "Falló al actualizar las propiedades"
 
-#: ../src/libedataserver/e-webdav-session.c:1515
-#| msgid "Failed to issue NOTIFY"
+#: ../src/libedataserver/e-webdav-session.c:1519
 msgid "Failed to issue REPORT"
 msgstr "Falló al emitir REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1574
-#| msgid "Failed to refresh token"
+#: ../src/libedataserver/e-webdav-session.c:1578
 msgid "Failed to create collection"
 msgstr "Falló al crear la colección"
 
-#: ../src/libedataserver/e-webdav-session.c:1665
-#: ../src/libedataserver/e-webdav-session.c:1819
-#, fuzzy
+#: ../src/libedataserver/e-webdav-session.c:1669
+#: ../src/libedataserver/e-webdav-session.c:1823
 #| msgid "Failed to refresh token"
 msgid "Failed to get XML request content"
-msgstr "Falló al actualizar el testigo"
+msgstr "Falló al obtener el contenido de la respuesta XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1677
-#| msgid "Failed to read From address"
+#: ../src/libedataserver/e-webdav-session.c:1681
 msgid "Failed to create address book"
 msgstr "Falló al crear la libreta de direcciones"
 
-#: ../src/libedataserver/e-webdav-session.c:1832
-#| msgid "Failed to run calendar factory"
+#: ../src/libedataserver/e-webdav-session.c:1836
 msgid "Failed to create calendar"
 msgstr "Falló al crear el calendario"
 
-#: ../src/libedataserver/e-webdav-session.c:1964
-#: ../src/libedataserver/e-webdav-session.c:1975
-#| msgid "Failed to read From address"
+#: ../src/libedataserver/e-webdav-session.c:1968
+#: ../src/libedataserver/e-webdav-session.c:1979
 msgid "Failed to read resource"
 msgstr "Falló al leer el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2124
-#, fuzzy
+#: ../src/libedataserver/e-webdav-session.c:2128
 #| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
-msgstr "No se soporta el almacenamiento de credenciales"
+msgstr "No se puede volver al principio del flujo de datos: no está soportado"
 
-#: ../src/libedataserver/e-webdav-session.c:2271
-#, fuzzy
+#: ../src/libedataserver/e-webdav-session.c:2275
 #| msgid "Failed to encode data"
 msgid "Failed to put data"
-msgstr "Falló al codificar datos"
+msgstr "Falló al enviar los datos"
 
-#: ../src/libedataserver/e-webdav-session.c:2290
-#, fuzzy, c-format
+#: ../src/libedataserver/e-webdav-session.c:2294
+#, c-format
 #| msgid "Failed to add data to encoder"
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr "Falló al añadir datos al codificador"
+msgstr "Falló al enviar datos al servidor, código de error %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2463
-#| msgid "Failed to enable QResync"
+#: ../src/libedataserver/e-webdav-session.c:2467
 msgid "Failed to delete resource"
 msgstr "Falló al eliminar el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2530
-#| msgid "Failed to copy the tmp file"
+#: ../src/libedataserver/e-webdav-session.c:2534
 msgid "Failed to copy resource"
 msgstr "Falló al copiar el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2592
-#| msgid "Failed to refresh token"
+#: ../src/libedataserver/e-webdav-session.c:2596
 msgid "Failed to move resource"
 msgstr "Falló al mover el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2697
-#| msgid "Failed to refresh token"
+#: ../src/libedataserver/e-webdav-session.c:2701
 msgid "Failed to lock resource"
 msgstr "Falló al bloquear el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2711
-#: ../src/libedataserver/e-webdav-session.c:2913
+#: ../src/libedataserver/e-webdav-session.c:2715
+#: ../src/libedataserver/e-webdav-session.c:2917
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "Se esperaba una respuesta application/xml, pero no se ha devuelto nada"
 
-#: ../src/libedataserver/e-webdav-session.c:2714
-#: ../src/libedataserver/e-webdav-session.c:2916
+#: ../src/libedataserver/e-webdav-session.c:2718
+#: ../src/libedataserver/e-webdav-session.c:2920
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "Se esperaba una respuesta application/xml, pero se ha devuelto %s"
 
-#: ../src/libedataserver/e-webdav-session.c:2726
-#: ../src/libedataserver/e-webdav-session.c:2929
-#| msgid "Failed to encode data"
+#: ../src/libedataserver/e-webdav-session.c:2730
+#: ../src/libedataserver/e-webdav-session.c:2933
 msgid "Failed to parse XML data"
 msgstr "Falló al analizar los datos XML"
 
-#: ../src/libedataserver/e-webdav-session.c:2805
-#| msgid "Failed to refresh token"
+#: ../src/libedataserver/e-webdav-session.c:2809
 msgid "Failed to refresh lock"
 msgstr "Falló al actualizar el bloqueo"
 
-#: ../src/libedataserver/e-webdav-session.c:2864
-#| msgid "Failed to authenticate"
+#: ../src/libedataserver/e-webdav-session.c:2868
 msgid "Failed to unlock"
 msgstr "Falló al desbloquear"
 
-#: ../src/libedataserver/e-webdav-session.c:2901
-#, fuzzy, c-format
+#: ../src/libedataserver/e-webdav-session.c:2905
+#, c-format
 #| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr ""
-"Se devolvió un código de estado HTTP %d inesperado (%s) para el URI: %s"
+msgstr "Se esperaba una respuesta multiestado, pero se ha devuelto %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3948
-#| msgid "Failed to get lock using fcntl(2): %s"
+#: ../src/libedataserver/e-webdav-session.c:3952
 msgid "Failed to get access control list"
 msgstr "Falló al obtener la lista de control de acceso"
 
-#: ../src/libedataserver/e-webdav-session.c:4685
+#: ../src/libedataserver/e-webdav-session.c:4689
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
+"No se puede guardar una entrada de control de acceso protegida no heredada."
 
-#: ../src/libedataserver/e-webdav-session.c:4692
+#: ../src/libedataserver/e-webdav-session.c:4696
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr ""
 
-#: ../src/libedataserver/e-webdav-session.c:4699
+#: ../src/libedataserver/e-webdav-session.c:4703
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
+"No se puede guardar una entrada del control de acceso basada en la propiedad."
 
-#: ../src/libedataserver/e-webdav-session.c:4706
+#: ../src/libedataserver/e-webdav-session.c:4710
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
+"La entrada del control de acceso sólo puede ser Grant o Deny, pero no None."
 
-#: ../src/libedataserver/e-webdav-session.c:4714
+#: ../src/libedataserver/e-webdav-session.c:4718
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"La entrada del control de acceso sólo puede ser Grant o Deny, pero no ambas."
 
-#: ../src/libedataserver/e-webdav-session.c:4773
+#: ../src/libedataserver/e-webdav-session.c:4777
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "El privilegio de la entrada de control de acceso no puede ser NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
 #: ../src/libedataserverui/e-credentials-prompter.c:1576
@@ -6418,8 +6388,8 @@ msgid "On The Web"
 msgstr "En la web"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
-msgid "WebDAV"
-msgstr "WebDAV"
+msgid "CardDAV"
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:40
 msgid "Don’t migrate user data from previous versions of Evolution"
@@ -6474,6 +6444,9 @@ msgstr ""
 #: ../src/tools/addressbook-export/addressbook-export.c:991
 msgid "Only support csv or vcard format."
 msgstr "Sólo se soportan los formatos csv o vcard."
+
+#~ msgid "WebDAV"
+#~ msgstr "WebDAV"
 
 #~ msgid "Querying for updated contacts…"
 #~ msgstr "Solicitando actualizaciones de contactos…"
