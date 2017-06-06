@@ -211,6 +211,9 @@ gboolean	e_cal_meta_backend_empty_cache_sync
 						 GError **error);
 void		e_cal_meta_backend_schedule_refresh
 						(ECalMetaBackend *meta_backend);
+gboolean	e_cal_meta_backend_refresh_sync	(ECalMetaBackend *meta_backend,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_cal_meta_backend_ensure_connected_sync
 						(ECalMetaBackend *meta_backend,
 						 GCancellable *cancellable,

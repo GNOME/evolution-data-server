@@ -736,26 +736,22 @@ ebmb_maybe_remove_from_cache (EBookMetaBackend *meta_backend,
 	return TRUE;
 }
 
-static void
-ebmb_refresh_thread_func (EBookBackend *book_backend,
-			  gpointer user_data,
-			  GCancellable *cancellable,
-			  GError **error)
+static gboolean
+ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
+			    gboolean with_connection_error,
+			    GCancellable *cancellable,
+			    GError **error)
 {
-	EBookMetaBackend *meta_backend;
 	EBookCache *book_cache;
-	gboolean success, repeat = TRUE, is_repeat = FALSE;
+	gboolean success = FALSE, repeat = TRUE, is_repeat = FALSE;
 
-	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
-
-	meta_backend = E_BOOK_META_BACKEND (book_backend);
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		goto done;
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, NULL)) {
-		/* Ignore connection errors here */
+	    !e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL)) {
 		g_mutex_lock (&meta_backend->priv->property_lock);
 		meta_backend->priv->refresh_after_authenticate = TRUE;
 		g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -818,6 +814,23 @@ ebmb_refresh_thread_func (EBookBackend *book_backend,
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	g_signal_emit (meta_backend, signals[REFRESH_COMPLETED], 0, NULL);
+
+	return success;
+}
+
+static void
+ebmb_refresh_thread_func (EBookBackend *book_backend,
+			  gpointer user_data,
+			  GCancellable *cancellable,
+			  GError **error)
+{
+	EBookMetaBackend *meta_backend;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (book_backend));
+
+	meta_backend = E_BOOK_META_BACKEND (book_backend);
+
+	ebmb_refresh_internal_sync (meta_backend, FALSE, cancellable, error);
 }
 
 static void
@@ -2955,6 +2968,9 @@ e_book_meta_backend_empty_cache_sync (EBookMetaBackend *meta_backend,
  * Schedules refresh of the content of the @meta_backend. If there's any
  * already scheduled, then the function does nothing.
  *
+ * Use e_book_meta_backend_refresh_sync() to refresh the @meta_backend
+ * immediately.
+ *
  * Since: 3.26
  **/
 void
@@ -2981,6 +2997,29 @@ e_book_meta_backend_schedule_refresh (EBookMetaBackend *meta_backend)
 		ebmb_refresh_thread_func, NULL, NULL);
 
 	g_object_unref (cancellable);
+}
+
+/**
+ * e_book_meta_backend_refresh_sync:
+ * @meta_backend: an #EBookMetaBackend
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Refreshes the @meta_backend immediately. To just schedule refresh
+ * operation call e_book_meta_backend_schedule_refresh().
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_book_meta_backend_refresh_sync (EBookMetaBackend *meta_backend,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
+
+	return ebmb_refresh_internal_sync (meta_backend, TRUE, cancellable, error);
 }
 
 /**

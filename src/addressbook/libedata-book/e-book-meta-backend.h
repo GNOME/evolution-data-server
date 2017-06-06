@@ -204,6 +204,10 @@ gboolean	e_book_meta_backend_empty_cache_sync
 						 GError **error);
 void		e_book_meta_backend_schedule_refresh
 						(EBookMetaBackend *meta_backend);
+gboolean	e_book_meta_backend_refresh_sync
+						(EBookMetaBackend *meta_backend,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_book_meta_backend_ensure_connected_sync
 						(EBookMetaBackend *meta_backend,
 						 GCancellable *cancellable,
