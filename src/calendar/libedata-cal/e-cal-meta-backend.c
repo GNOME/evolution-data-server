@@ -1235,6 +1235,7 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 {
 	ECalMetaBackend *meta_backend;
 	ECalCache *cal_cache;
+	gboolean success;
 	GError *local_error = NULL;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
@@ -1246,7 +1247,30 @@ ecmb_get_object_sync (ECalBackendSync *sync_backend,
 
 	g_return_if_fail (cal_cache != NULL);
 
-	if (!e_cal_cache_get_component_as_string (cal_cache, uid, rid, calobj, cancellable, &local_error) &&
+	if (rid && *rid) {
+		success = e_cal_cache_get_component_as_string (cal_cache, uid, rid, calobj, cancellable, &local_error);
+	} else {
+		GSList *components = NULL;
+
+		success = e_cal_cache_get_components_by_uid (cal_cache, uid, &components, cancellable, &local_error);
+		if (success) {
+			icalcomponent *icalcomp;
+
+			icalcomp = e_cal_meta_backend_merge_instances (meta_backend, components, FALSE);
+			if (icalcomp) {
+				*calobj = icalcomponent_as_ical_string_r (icalcomp);
+
+				icalcomponent_free (icalcomp);
+			} else {
+				g_set_error (&local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+				success = FALSE;
+			}
+		}
+
+		g_slist_free_full (components, g_object_unref);
+	}
+
+	if (!success &&
 	    g_error_matches (local_error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND)) {
 		gchar *loaded_uid = NULL;
 		gboolean found = FALSE;

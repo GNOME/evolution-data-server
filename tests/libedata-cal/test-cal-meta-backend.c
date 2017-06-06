@@ -2261,6 +2261,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
 	ECalCache *cal_cache;
+	icalcomponent *icalcomp;
 	gchar *calobj = NULL;
 	GError *error = NULL;
 
@@ -2277,18 +2278,25 @@ test_get_object (ECalMetaBackend *meta_backend)
 	e_cal_cache_remove_component (cal_cache, "event-9", NULL, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
 
-	/* Master object */
+	/* Master object with its detached instances */
 	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-6", NULL, &calobj, &error);
 
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
 	g_assert (strstr (calobj, "UID:event-6"));
-	g_assert (!strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
+	g_assert (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
+
+	icalcomp = icalcomponent_new_from_string (calobj);
+	g_assert_nonnull (icalcomp);
+	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VCALENDAR_COMPONENT);
+	g_assert_cmpint (icalcomponent_count_components (icalcomp, ICAL_VEVENT_COMPONENT), ==, 2);
+	icalcomponent_free (icalcomp);
+
 	g_free (calobj);
 	calobj = NULL;
 
-	/* Detached instance */
+	/* Only the detached instance */
 	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-6", "20170225T134900", &calobj, &error);
 
@@ -2296,6 +2304,12 @@ test_get_object (ECalMetaBackend *meta_backend)
 	g_assert_nonnull (calobj);
 	g_assert (strstr (calobj, "UID:event-6"));
 	g_assert (strstr (calobj, "RECURRENCE-ID;TZID=America/New_York:20170225T134900"));
+
+	icalcomp = icalcomponent_new_from_string (calobj);
+	g_assert_nonnull (icalcomp);
+	g_assert_cmpint (icalcomponent_isa (icalcomp), ==, ICAL_VEVENT_COMPONENT);
+	icalcomponent_free (icalcomp);
+
 	g_free (calobj);
 	calobj = NULL;
 
