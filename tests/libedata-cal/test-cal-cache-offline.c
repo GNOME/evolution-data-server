@@ -339,6 +339,7 @@ test_offline_basics (TCUFixture *fixture,
 	gint ii;
 	const gchar *uid;
 	gchar *saved_extra = NULL, *tmp;
+	GSList *ids = NULL;
 	GError *error = NULL;
 
 	/* Basic ECache stuff */
@@ -385,6 +386,15 @@ test_offline_basics (TCUFixture *fixture,
 
 	g_free (saved_extra);
 	saved_extra = NULL;
+
+	g_assert (e_cal_cache_get_ids_with_extra (fixture->cal_cache, "extra-0", &ids, NULL, &error));
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (ids), ==, 1);
+	g_assert_nonnull (ids->data);
+	g_assert_cmpstr (((ECalComponentId *) ids->data)->uid, ==, uid);
+
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	ids = NULL;
 
 	icalcomponent_set_summary (e_cal_component_get_icalcomponent (component), "summ-0");
 
@@ -455,6 +465,15 @@ test_offline_basics (TCUFixture *fixture,
 	test_verify_storage (fixture, uid, "summ-2", "extra-2", E_OFFLINE_STATE_SYNCED);
 	test_check_offline_changes (fixture, NULL);
 
+	g_assert (e_cal_cache_get_ids_with_extra (fixture->cal_cache, "extra-2", &ids, NULL, &error));
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (ids), ==, 1);
+	g_assert_nonnull (ids->data);
+	g_assert_cmpstr (((ECalComponentId *) ids->data)->uid, ==, uid);
+
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	ids = NULL;
+
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->cal_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
@@ -483,6 +502,11 @@ test_offline_basics (TCUFixture *fixture,
 	g_assert (!e_cal_cache_get_component_extra (fixture->cal_cache, uid, NULL, &saved_extra, NULL, &error));
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
 	g_assert_null (saved_extra);
+	g_clear_error (&error);
+
+	g_assert (!e_cal_cache_get_ids_with_extra (fixture->cal_cache, "extra-3", &ids, NULL, &error));
+	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
+	g_assert_null (ids);
 	g_clear_error (&error);
 
 	g_clear_object (&component);

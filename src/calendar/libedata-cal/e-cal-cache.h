@@ -244,6 +244,11 @@ gboolean	e_cal_cache_get_component_extra	(ECalCache *cal_cache,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_cal_cache_get_ids_with_extra	(ECalCache *cal_cache,
+						 const gchar *extra,
+						 GSList **out_ids, /* ECalComponentId * */
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_cal_cache_get_components_by_uid
 						(ECalCache *cal_cache,
 						 const gchar *uid,

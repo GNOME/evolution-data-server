@@ -476,6 +476,31 @@ ecc_decode_id_sql (const gchar *id,
 	return TRUE;
 }
 
+static gboolean
+e_cal_cache_get_ids (ECache *cache,
+		     gint ncols,
+		     const gchar **column_names,
+		     const gchar **column_values,
+		     gpointer user_data)
+{
+	GSList **out_ids = user_data;
+	gchar *uid = NULL, *rid = NULL;
+
+	g_return_val_if_fail (ncols == 1, FALSE);
+	g_return_val_if_fail (column_names != NULL, FALSE);
+	g_return_val_if_fail (column_values != NULL, FALSE);
+	g_return_val_if_fail (out_ids != NULL, FALSE);
+
+	if (ecc_decode_id_sql (column_values[0], &uid, &rid)) {
+		*out_ids = g_slist_prepend (*out_ids, e_cal_component_id_new (uid, rid));
+
+		g_free (uid);
+		g_free (rid);
+	}
+
+	return TRUE;
+}
+
 static icaltimezone *
 ecc_resolve_tzid_cb (const gchar *tzid,
 		     gpointer user_data)
@@ -2303,6 +2328,59 @@ e_cal_cache_get_component_extra (ECalCache *cal_cache,
 	return success;
 }
 
+/**
+ * e_cal_cache_get_ids_with_extra:
+ * @cal_cache: an #ECalCache
+ * @extra: an extra column value to search for
+ * @out_ids: (out) (transfer full) (element-type ECalComponentId): return location to store the ids to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets all the ID-s the @extra data is set for.
+ *
+ * The @out_ids should be freed with
+ * g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_cal_cache_get_ids_with_extra (ECalCache *cal_cache,
+				const gchar *extra,
+				GSList **out_ids,
+				GCancellable *cancellable,
+				GError **error)
+{
+	gchar *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), FALSE);
+	g_return_val_if_fail (extra != NULL, FALSE);
+	g_return_val_if_fail (out_ids != NULL, FALSE);
+
+	*out_ids = NULL;
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"SELECT " E_CACHE_COLUMN_UID " FROM " E_CACHE_TABLE_OBJECTS
+		" WHERE " ECC_COLUMN_EXTRA "=%Q",
+		extra);
+
+	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, e_cal_cache_get_ids, out_ids, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+
+	if (success && !*out_ids) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object with extra “%s” not found"), extra);
+		success = FALSE;
+	} else {
+		*out_ids = g_slist_reverse (*out_ids);
+	}
+
+	return success;
+}
+
 static GSList *
 ecc_icalstrings_to_components (GSList *icalstrings)
 {
@@ -2684,7 +2762,7 @@ e_cal_cache_search_components (ECalCache *cal_cache,
  * Searches the @cal_cache with the given @sexp and returns ECalComponentId
  * for those components which satisfy the search expression.
  * The @out_ids should be freed with
- * g_slist_free_full (components, (GDestroyNotify) e_cal_component_free_id);
+ * g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
  * when no longer needed.
  *
  * Returns: Whether succeeded.

@@ -262,6 +262,12 @@ gboolean	e_book_cache_get_contact_extra	(EBookCache *book_cache,
 						 gchar **out_extra,
 						 GCancellable *cancellable,
 						 GError **error);
+gboolean	e_book_cache_get_uids_with_extra
+						(EBookCache *book_cache,
+						 const gchar *extra,
+						 GSList **out_uids, /* gchar * */
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_book_cache_search		(EBookCache *book_cache,
 						 const gchar *sexp,
 						 gboolean meta_contacts,

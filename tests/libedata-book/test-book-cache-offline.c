@@ -434,6 +434,7 @@ test_offline_basics (TCUFixture *fixture,
 	gint ii;
 	const gchar *uid;
 	gchar *saved_extra = NULL, *tmp;
+	GSList *uids = NULL;
 	GError *error = NULL;
 
 	/* Basic ECache stuff */
@@ -480,6 +481,14 @@ test_offline_basics (TCUFixture *fixture,
 
 	g_free (saved_extra);
 	saved_extra = NULL;
+
+	g_assert (e_book_cache_get_uids_with_extra (fixture->book_cache, "extra-0", &uids, NULL, &error));
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (uids), ==, 1);
+	g_assert_cmpstr (uids->data, ==, uid);
+
+	g_slist_free_full (uids, g_free);
+	uids = NULL;
 
 	e_contact_set (contact, E_CONTACT_REV, "rev-0");
 
@@ -550,6 +559,14 @@ test_offline_basics (TCUFixture *fixture,
 	test_verify_storage (fixture, uid, "rev-2", "extra-2", E_OFFLINE_STATE_SYNCED);
 	test_check_offline_changes (fixture, NULL);
 
+	g_assert (e_book_cache_get_uids_with_extra (fixture->book_cache, "extra-2", &uids, NULL, &error));
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (uids), ==, 1);
+	g_assert_cmpstr (uids->data, ==, uid);
+
+	g_slist_free_full (uids, g_free);
+	uids = NULL;
+
 	g_assert_cmpint (e_cache_get_count (E_CACHE (fixture->book_cache), E_CACHE_EXCLUDE_DELETED, NULL, &error), ==, 3);
 	g_assert_no_error (error);
 
@@ -578,6 +595,11 @@ test_offline_basics (TCUFixture *fixture,
 	g_assert (!e_book_cache_get_contact_extra (fixture->book_cache, uid, &saved_extra, NULL, &error));
 	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
 	g_assert_null (saved_extra);
+	g_clear_error (&error);
+
+	g_assert (!e_book_cache_get_uids_with_extra (fixture->book_cache, "extra-3", &uids, NULL, &error));
+	g_assert_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND);
+	g_assert_null (uids);
 	g_clear_error (&error);
 
 	g_clear_object (&contact);

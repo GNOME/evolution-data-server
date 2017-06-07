@@ -4166,6 +4166,25 @@ e_book_cache_get_string (ECache *cache,
 }
 
 static gboolean
+e_book_cache_get_strings (ECache *cache,
+			  gint ncols,
+			  const gchar **column_names,
+			  const gchar **column_values,
+			  gpointer user_data)
+{
+	GSList **pvalues = user_data;
+
+	g_return_val_if_fail (ncols == 1, FALSE);
+	g_return_val_if_fail (column_names != NULL, FALSE);
+	g_return_val_if_fail (column_values != NULL, FALSE);
+	g_return_val_if_fail (pvalues != NULL, FALSE);
+
+	*pvalues = g_slist_prepend (*pvalues, g_strdup (column_values[0]));
+
+	return TRUE;
+}
+
+static gboolean
 e_book_cache_get_old_contacts_cb (ECache *cache,
 				  gint ncols,
 				  const gchar *column_names[],
@@ -5124,6 +5143,59 @@ e_book_cache_get_contact_extra (EBookCache *book_cache,
 	success = e_cache_sqlite_select (E_CACHE (book_cache), stmt, e_book_cache_get_string, out_extra, cancellable, error);
 
 	e_cache_sqlite_stmt_free (stmt);
+
+	return success;
+}
+
+/**
+ * e_book_cache_get_uids_with_extra:
+ * @book_cache: an #EBookCache
+ * @extra: an extra column value to search for
+ * @out_uids: (out) (transfer full) (element-type utf8): return location to store the UIDs to
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Gets all the UID-s the @extra data is set for.
+ *
+ * The @out_uids should be freed with
+ * g_slist_free_full (uids, g_free);
+ * when no longer needed.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_book_cache_get_uids_with_extra (EBookCache *book_cache,
+				  const gchar *extra,
+				  GSList **out_uids,
+				  GCancellable *cancellable,
+				  GError **error)
+{
+	gchar *stmt;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_BOOK_CACHE (book_cache), FALSE);
+	g_return_val_if_fail (extra != NULL, FALSE);
+	g_return_val_if_fail (out_uids != NULL, FALSE);
+
+	*out_uids = NULL;
+
+	stmt = e_cache_sqlite_stmt_printf (
+		"SELECT " E_CACHE_COLUMN_UID " FROM " E_CACHE_TABLE_OBJECTS
+		" WHERE " EBC_COLUMN_EXTRA "=%Q",
+		extra);
+
+	success = e_cache_sqlite_select (E_CACHE (book_cache), stmt, e_book_cache_get_strings, out_uids, cancellable, error);
+
+	e_cache_sqlite_stmt_free (stmt);
+
+	if (success && !*out_uids) {
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object with extra “%s” not found"), extra);
+		success = FALSE;
+	} else {
+		*out_uids = g_slist_reverse (*out_uids);
+	}
 
 	return success;
 }
