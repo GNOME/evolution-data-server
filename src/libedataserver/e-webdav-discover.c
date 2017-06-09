@@ -174,7 +174,10 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 		if (xpath_obj) {
 			gint ii, length;
 
-			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+			if (wdd->out_calendar_user_addresses)
+				length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
+			else
+				length = 0;
 
 			for (ii = 0; ii < length; ii++) {
 				gchar *address_href;
