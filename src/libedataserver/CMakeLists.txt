@@ -103,6 +103,7 @@ set(SOURCES
 	e-source-proxy.c
 	e-source-refresh.c
 	e-source-registry.c
+	e-source-registry-watcher.c
 	e-source-resource.c
 	e-source-revision-guards.c
 	e-source-security.c
@@ -186,6 +187,7 @@ set(HEADERS
 	e-source-proxy.h
 	e-source-refresh.h
 	e-source-registry.h
+	e-source-registry-watcher.h
 	e-source-resource.h
 	e-source-revision-guards.h
 	e-source-security.h

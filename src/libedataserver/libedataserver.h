@@ -78,6 +78,7 @@
 #include <libedataserver/e-source-proxy.h>
 #include <libedataserver/e-source-refresh.h>
 #include <libedataserver/e-source-registry.h>
+#include <libedataserver/e-source-registry-watcher.h>
 #include <libedataserver/e-source-resource.h>
 #include <libedataserver/e-source-revision-guards.h>
 #include <libedataserver/e-source-security.h>

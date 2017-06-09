@@ -68,6 +68,8 @@ struct _ECalBackendContactsPrivate {
 	gboolean alarm_enabled;
 	gint alarm_interval;
 	CalUnits alarm_units;
+
+	ESourceRegistryWatcher *registry_watcher;
 };
 
 typedef struct _BookRecord {
@@ -526,65 +528,54 @@ contact_record_cb (gpointer key,
 	}
 }
 
-static void
-source_added_cb (ESourceRegistry *registry,
-                 ESource *source,
-                 ECalBackendContacts *cbc)
+static gboolean
+ecb_contacts_watcher_filter_cb (ESourceRegistryWatcher *watcher,
+				ESource *source,
+				gpointer user_data)
 {
 	ESourceContacts *extension;
-	const gchar *extension_name;
 
-	/* We're only interested in address books. */
-	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-	if (!e_source_has_extension (source, extension_name))
-		return;
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
-	extension_name = E_SOURCE_EXTENSION_CONTACTS_BACKEND;
-	extension = e_source_get_extension (source, extension_name);
+	extension = e_source_get_extension (source, E_SOURCE_EXTENSION_CONTACTS_BACKEND);
 
-	if (extension == NULL)
-		return;
-
-	if (e_source_contacts_get_include_me (extension))
-		create_book_record (cbc, source);
+	return extension && e_source_contacts_get_include_me (extension);
 }
 
 static void
-source_removed_cb (ESourceRegistry *registry,
-                   ESource *source,
-                   ECalBackendContacts *cbc)
+ecb_contacts_watcher_appeared_cb (ESourceRegistryWatcher *watcher,
+				  ESource *source,
+				  gpointer user_data)
 {
-	cal_backend_contacts_remove_book_record (cbc, source);
+	ECalBackendContacts *cbcontacts = user_data;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts));
+
+	create_book_record (cbcontacts, source);
+}
+
+static void
+ecb_contacts_watcher_disappeared_cb (ESourceRegistryWatcher *watcher,
+				     ESource *source,
+				     gpointer user_data)
+{
+	ECalBackendContacts *cbcontacts = user_data;
+
+	g_return_if_fail (E_IS_SOURCE (source));
+	g_return_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts));
+
+	cal_backend_contacts_remove_book_record (cbcontacts, source);
 }
 
 static gboolean
 cal_backend_contacts_load_sources (gpointer user_data)
 {
-	ESourceRegistry *registry;
-	ECalBackend *backend;
-	GList *list, *link;
-	const gchar *extension_name;
+	ECalBackendContacts *cbcontacts = user_data;
 
-	backend = E_CAL_BACKEND (user_data);
-	registry = e_cal_backend_get_registry (backend);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CONTACTS (cbcontacts), FALSE);
 
-	/* Query all address book sources from the registry. */
-
-	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-	list = e_source_registry_list_sources (registry, extension_name);
-	for (link = list; link != NULL; link = g_list_next (link))
-		source_added_cb (
-			registry, E_SOURCE (link->data),
-			E_CAL_BACKEND_CONTACTS (backend));
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-
-	g_signal_connect (
-		registry, "source-added",
-		G_CALLBACK (source_added_cb), backend);
-
-	g_signal_connect (
-		registry, "source-removed",
-		G_CALLBACK (source_removed_cb), backend);
+	e_source_registry_watcher_reclaim (cbcontacts->priv->registry_watcher);
 
 	return FALSE;
 }
@@ -1326,10 +1317,9 @@ e_cal_backend_contacts_finalize (GObject *object)
 static void
 e_cal_backend_contacts_dispose (GObject *object)
 {
-	ESourceRegistry *registry;
+	ECalBackendContacts *cbcontacts = E_CAL_BACKEND_CONTACTS (object);
 
-	registry = e_cal_backend_get_registry (E_CAL_BACKEND (object));
-	g_signal_handlers_disconnect_by_data (registry, object);
+	g_clear_object (&cbcontacts->priv->registry_watcher);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->dispose (object);
@@ -1338,16 +1328,29 @@ e_cal_backend_contacts_dispose (GObject *object)
 static void
 e_cal_backend_contacts_constructed (GObject *object)
 {
-	/* Load address book sources from an idle callback
-	 * to avoid deadlocking e_data_factory_ref_backend(). */
-	g_idle_add_full (
-		G_PRIORITY_DEFAULT_IDLE,
-		cal_backend_contacts_load_sources,
-		g_object_ref (object),
-		(GDestroyNotify) g_object_unref);
+	ECalBackendContacts *cbcontacts = E_CAL_BACKEND_CONTACTS (object);
+	ESourceRegistry *registry;
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_cal_backend_contacts_parent_class)->constructed (object);
+
+	registry = e_cal_backend_get_registry (E_CAL_BACKEND (cbcontacts));
+
+	cbcontacts->priv->registry_watcher = e_source_registry_watcher_new (registry, E_SOURCE_EXTENSION_ADDRESS_BOOK);
+
+	g_signal_connect (cbcontacts->priv->registry_watcher, "filter",
+		G_CALLBACK (ecb_contacts_watcher_filter_cb), cbcontacts);
+
+	g_signal_connect (cbcontacts->priv->registry_watcher, "appeared",
+		G_CALLBACK (ecb_contacts_watcher_appeared_cb), cbcontacts);
+
+	g_signal_connect (cbcontacts->priv->registry_watcher, "disappeared",
+		G_CALLBACK (ecb_contacts_watcher_disappeared_cb), cbcontacts);
+
+	/* Load address book sources from an idle callback
+	 * to avoid deadlocking e_data_factory_ref_backend(). */
+	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, cal_backend_contacts_load_sources,
+		g_object_ref (object), g_object_unref);
 }
 
 /* Object initialization function for the contacts backend */
