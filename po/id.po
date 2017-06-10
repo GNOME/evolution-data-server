@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-05-23 07:17+0000\n"
-"PO-Revision-Date: 2017-05-29 20:42+0700\n"
+"POT-Creation-Date: 2017-06-07 12:19+0000\n"
+"PO-Revision-Date: 2017-06-10 11:27+0700\n"
 "Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
@@ -84,7 +84,7 @@ msgid "Invalid Query “%s”"
 msgstr "Query \"%s\" Tidak Valid"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1976
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2149
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1940
 msgid "Requested to delete an unrelated cursor"
 msgstr "Diminta untuk menghapus kursor yang tak berhubungan"
 
@@ -96,7 +96,7 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1165
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4278
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:230
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:233
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1079
@@ -111,7 +111,7 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:198
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:201
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
 #: ../src/calendar/backends/http/e-cal-backend-http.c:199
 #: ../src/calendar/libecal/e-cal.c:2334
@@ -134,19 +134,19 @@ msgstr "Gagal mengubah nama basis data lama dari \"%s\" menjadi \"%s\": %s"
 #: ../src/calendar/libecal/e-cal-client.c:6450
 #: ../src/calendar/libecal/e-cal-client.c:6813
 #: ../src/calendar/libecal/e-cal-client.c:7035
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1715
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1740
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3048
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3058
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3070
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1033
+#: ../src/libedataserver/e-soup-session.c:1062
 msgid "Unknown error"
 msgstr "Kesalahan tidak dikenal"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:897
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:925
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
 msgid "Object to save is not a valid vCard"
 msgstr "Objek yang akan disimpan bukan vCard yang valid"
 
@@ -267,7 +267,7 @@ msgstr "Gagal mendapat DN bagi pengguna \"%s\""
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "URL yang diberikan \"%s\" tidak mengacu pada buku alamat WebDAV"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:852
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:855
 msgid "Received object is not a valid vCard"
 msgstr "Objek yang diterima bukan vCard yang valid"
 
@@ -949,7 +949,7 @@ msgid "Error parsing regular expression"
 msgstr "Galat saat mengurai ekspresi reguler"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../src/addressbook/libedata-book/e-book-cache.c:4456
+#: ../src/addressbook/libedata-book/e-book-cache.c:4475
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
 #: ../src/camel/camel-db.c:802
 #, c-format
@@ -1050,7 +1050,7 @@ msgstr ""
 "Tak bisa mengurut berdasarkan ruas yang mungkin bisa memiliki nilai berganda"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
-#: ../src/addressbook/libedata-book/e-book-cache.c:5489
+#: ../src/addressbook/libedata-book/e-book-cache.c:5561
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
@@ -1061,7 +1061,7 @@ msgstr ""
 "kontak"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
-#: ../src/addressbook/libedata-book/e-book-cache.c:5496
+#: ../src/addressbook/libedata-book/e-book-cache.c:5568
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
@@ -1079,8 +1079,8 @@ msgstr "Ruas kontak \"%d\" yang tak didukung dinyatakan dalam ringkasan"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3428
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1580
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2756
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1605
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2834
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Query tidak valid: %s"
@@ -1089,48 +1089,55 @@ msgstr "Query tidak valid: %s"
 msgid "Invalid query for a book cursor"
 msgstr "Kueri tidak valid bagi kursor buku"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:4460
+#: ../src/addressbook/libedata-book/e-book-cache.c:4479
 #: ../src/libebackend/e-cache.c:756
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "Tidak dapat membuka basis data %s: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5063
-#: ../src/addressbook/libedata-book/e-book-cache.c:5115
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2225
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2288
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2406
+#: ../src/addressbook/libedata-book/e-book-cache.c:5082
+#: ../src/addressbook/libedata-book/e-book-cache.c:5134
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2250
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2313
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2484
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1265
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Objek \"%s\" tidak ditemukan"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5276
+#: ../src/addressbook/libedata-book/e-book-cache.c:5194
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2375
+#, c-format
+msgid "Object with extra “%s” not found"
+msgstr "Objek dengan ekstra \"%s\" tidak ditemukan"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5348
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Paling tidak satu ruas pengurutan mesti dinyatakan untuk memakai kursor"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5285
+#: ../src/addressbook/libedata-book/e-book-cache.c:5357
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
 msgid "Cannot sort by a field that is not a string type"
 msgstr "Tak bisa mengurut berdasarkan ruas yang bukan bertipe string"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1216
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1231
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1006
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1009
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Objek pramuat untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1223
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1238
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1014
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1017
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Objek yang diterima untuk UID \"%s\" tidak valid"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2019
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2392
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3146
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1810
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2157
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2923
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Gagal membuat tembolok \"%s\""
@@ -1360,7 +1367,7 @@ msgstr "Indeks alfabetik ditata bagi locale yang salah"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "URL yang diberikan \"%s\" tidak mengacu pada kalender CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1482
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
 msgid "Failed to parse response data"
 msgstr "Gagal mengurai data tanggapan"
 
@@ -1831,37 +1838,37 @@ msgstr ""
 msgid "“%s” expects the second argument to be an integer"
 msgstr "\"%s\" mengharapkan argumen kedua berupa integer"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1714
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1739
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "Gagal membuat fungsi SQLite, kode kesalahan “%d”: %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2223
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2286
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2248
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2311
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "Objek \"%s\", \"%s\" tidak ditemukan"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2926
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3006
 msgid "Cannot add timezone without tzid"
 msgstr "Tidak dapat menambah zona waktu tanpa tzid"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2932
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3012
 msgid "Cannot add timezone without component"
 msgstr "Tidak dapat menambah zona waktu tanpa komponen"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2938
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3018
 msgid "Cannot add timezone with invalid component"
 msgstr "Tidak dapat menambah zona waktu dengan komponen yang tidak valid"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1285
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "Objek yang diterima untuk UID \"%s\" tidak mengandung komponen yang "
 "diharapkan"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3900
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3677
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -3058,43 +3065,43 @@ msgstr "Gagal menambahkan data ke encoder"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME Decrypt: Tidak ditemukan konten terenkripsi"
 
-#: ../src/camel/camel-store.c:1382
+#: ../src/camel/camel-store.c:1402
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Membuka folder  \"%s\""
 
-#: ../src/camel/camel-store.c:1677
+#: ../src/camel/camel-store.c:1697
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Memindai folder di \"%s\""
 
-#: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1750
+#: ../src/camel/camel-store.c:1725 ../src/camel/camel-store.c:1770
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Tempat Sampah"
 
-#: ../src/camel/camel-store.c:1719 ../src/camel/camel-store.c:1767
+#: ../src/camel/camel-store.c:1739 ../src/camel/camel-store.c:1787
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Sampah"
 
-#: ../src/camel/camel-store.c:2368
+#: ../src/camel/camel-store.c:2388
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Tidak bisa membuat folder: %s: folder sudah ada"
 
-#: ../src/camel/camel-store.c:2375
+#: ../src/camel/camel-store.c:2395
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Membuat folder \"%s\""
 
-#: ../src/camel/camel-store.c:2552 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2572 ../src/camel/camel-vee-store.c:420
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Tidak bisa menghapus folder: %s: Operasi invalid"
 
-#: ../src/camel/camel-store.c:2742 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2762 ../src/camel/camel-vee-store.c:471
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -5393,15 +5400,15 @@ msgstr "Galat D-Bus"
 msgid "Timeout was reached"
 msgstr "Habis waktu"
 
-#: ../src/libedataserver/e-soup-session.c:133
+#: ../src/libedataserver/e-soup-session.c:144
 msgid "Credentials required"
 msgstr "Kredensial diperlukan"
 
-#: ../src/libedataserver/e-soup-session.c:803
+#: ../src/libedataserver/e-soup-session.c:830
 msgid "Operation was cancelled"
 msgstr "Operasi dibatalkan"
 
-#: ../src/libedataserver/e-soup-session.c:806
+#: ../src/libedataserver/e-soup-session.c:833
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "Gagal dengan kesalahan HTTP %d: %s"
