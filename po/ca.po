@@ -274,7 +274,7 @@ msgstr "No s'ha pogut obtenir el nom distingit (DN) per l'usuari «%s»"
 #, c-format
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr ""
-"La URL dada «%s» no fa referència a la llibreta de direccions de WebDAV"
+"L'URL dada «%s» no fa referència a la llibreta de direccions de WebDAV"
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:852
 msgid "Received object is not a valid vCard"
@@ -888,7 +888,7 @@ msgstr "Llista de noms del Twitter"
 #: ../src/addressbook/libebook-contacts/e-contact.c:1658
 #: ../src/addressbook/libebook/e-destination.c:919
 msgid "Unnamed List"
-msgstr "Llista sense noms"
+msgstr "Llista sense nom"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:39
 msgid "The library was built without phone number support."
@@ -1606,111 +1606,111 @@ msgstr "4t"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4743
 msgid "5th"
-msgstr "5é"
+msgstr "5è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4744
 msgid "6th"
-msgstr "6é"
+msgstr "6è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4745
 msgid "7th"
-msgstr "7é"
+msgstr "7è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4746
 msgid "8th"
-msgstr "8é"
+msgstr "8è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4747
 msgid "9th"
-msgstr "9é"
+msgstr "9è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4748
 msgid "10th"
-msgstr "10é"
+msgstr "10è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4749
 msgid "11th"
-msgstr "11é"
+msgstr "11è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4750
 msgid "12th"
-msgstr "12é"
+msgstr "12è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "13th"
-msgstr "13é"
+msgstr "13è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "14th"
-msgstr "14é"
+msgstr "14è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "15th"
-msgstr "15é"
+msgstr "15è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "16th"
-msgstr "16é"
+msgstr "16è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "17th"
-msgstr "17é"
+msgstr "17è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "18th"
-msgstr "18é"
+msgstr "18è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "19th"
-msgstr "19é"
+msgstr "19è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "20th"
-msgstr "20é"
+msgstr "20è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "21st"
-msgstr "21é"
+msgstr "21è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "22nd"
-msgstr "22é"
+msgstr "22è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "23rd"
-msgstr "23é"
+msgstr "23è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "24th"
-msgstr "24é"
+msgstr "24è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "25th"
-msgstr "25é"
+msgstr "25è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "26th"
-msgstr "26é"
+msgstr "26è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "27th"
-msgstr "27é"
+msgstr "27è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "28th"
-msgstr "28é"
+msgstr "28è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "29th"
-msgstr "29é"
+msgstr "29è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "30th"
-msgstr "30é"
+msgstr "30è"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "31st"
-msgstr "31é"
+msgstr "31è"
 
 #: ../src/calendar/libecal/e-cal-util.c:707
 #: ../src/calendar/libecal/e-cal-util.c:734
@@ -3114,7 +3114,7 @@ msgstr "S'està obrint la carpeta «%s»"
 #: ../src/camel/camel-store.c:1677
 #, c-format
 msgid "Scanning folders in “%s”"
-msgstr "S'està escanejant les carpetes a «%s»"
+msgstr "S'estan escanejant les carpetes a «%s»"
 
 #: ../src/camel/camel-store.c:1705 ../src/camel/camel-store.c:1750
 #: ../src/camel/camel-vtrash-folder.c:48
@@ -4599,7 +4599,7 @@ msgstr "_Suprimeix després de %s dia(es)"
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Hint: Use 0 days to keep messages on the server indefinitely."
 msgstr ""
-"Pista: Utilitzeu 0 dies per mantindre el missatges al servidor de forma "
+"Pista: Utilitzeu 0 dies per mantindre els missatges al servidor de forma "
 "indefinida."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:44
@@ -5144,7 +5144,7 @@ msgid ""
 "A full path to a directory where .source files with preconfigured options "
 "can be stored"
 msgstr ""
-"Es pot emmagatzemar el camí complet al directori on es trobin el fitxers ."
+"Es pot emmagatzemar el camí complet al directori on es trobin els fitxers ."
 "source amb les opcions preconfigurades"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:9
@@ -5153,7 +5153,7 @@ msgid ""
 "XDG configure directories."
 msgstr ""
 "Aquest directori, si s'omple amb un camí, es comprova addicionalment per a "
-"configurar directoris XDG"
+"configurar directoris XDG."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:10
 msgid "A list of variables which can be part of the autoconfig .source files"
@@ -5537,7 +5537,7 @@ msgstr "No s'admet l'autenticació de Google"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:400
 msgid "Failed to get Google secret from credentials"
-msgstr "Ha fallat la obtenció del secret de Google de les credencials"
+msgstr "Ha fallat l'obtenció del secret de Google de les credencials"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:413
 msgid "Refresh token not found in Google secret"
@@ -5864,7 +5864,7 @@ msgstr "No s'ha pogut recarregar el bloqueig "
 
 #: ../src/libedataserver/e-webdav-session.c:2868
 msgid "Failed to unlock"
-msgstr "No s'ha pogut desbloqueigar"
+msgstr "No s'ha pogut desbloquejar"
 
 #: ../src/libedataserver/e-webdav-session.c:2905
 #, c-format
@@ -6471,7 +6471,7 @@ msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Error d'arguments de la línia d'ordres, utilitzeu l'opció --help per veure "
-"la utilització"
+"la utilització."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:991
 msgid "Only support csv or vcard format."
