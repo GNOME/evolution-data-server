@@ -396,13 +396,11 @@ gnome_online_accounts_config_imap (EGnomeOnlineAccounts *extension,
 		CAMEL_NETWORK_SETTINGS (settings),
 		goa_mail_get_imap_user_name (goa_mail));
 
-	/* Prefer "use_tls" over "use_ssl" if both are set. */
+	/* Prefer "use_ssl" over "use_tls" if both are set. */
 	camel_network_settings_set_security_method (
 		CAMEL_NETWORK_SETTINGS (settings),
-		use_tls ?
-		CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT :
-		use_ssl ?
-		CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT :
+		use_ssl ? CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT :
+		use_tls ? CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT :
 		CAMEL_NETWORK_SECURITY_METHOD_NONE);
 
 	g_object_unref (network_address);
@@ -481,13 +479,11 @@ gnome_online_accounts_config_smtp (EGnomeOnlineAccounts *extension,
 		CAMEL_NETWORK_SETTINGS (settings),
 		gnome_online_accounts_get_smtp_auth (goa_mail));
 
-	/* Prefer "use_tls" over "use_ssl" if both are set. */
+	/* Prefer "use_ssl" over "use_tls" if both are set. */
 	camel_network_settings_set_security_method (
 		CAMEL_NETWORK_SETTINGS (settings),
-		use_tls ?
-		CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT :
-		use_ssl ?
-		CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT :
+		use_ssl ? CAMEL_NETWORK_SECURITY_METHOD_SSL_ON_ALTERNATE_PORT :
+		use_tls ? CAMEL_NETWORK_SECURITY_METHOD_STARTTLS_ON_STANDARD_PORT :
 		CAMEL_NETWORK_SECURITY_METHOD_NONE);
 
 	g_object_unref (network_address);
