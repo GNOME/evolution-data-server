@@ -54,8 +54,8 @@
 /* SMTP Configuration Details */
 #define GOOGLE_SMTP_BACKEND_NAME	"smtp"
 #define GOOGLE_SMTP_HOST		"smtp.googlemail.com"
-#define GOOGLE_SMTP_PORT		587
-#define GOOGLE_SMTP_SECURITY_METHOD	METHOD (STARTTLS_ON_STANDARD_PORT)
+#define GOOGLE_SMTP_PORT		465
+#define GOOGLE_SMTP_SECURITY_METHOD	METHOD (SSL_ON_ALTERNATE_PORT)
 
 /* Contacts Configuration Details */
 #define GOOGLE_CONTACTS_BACKEND_NAME	"google"
