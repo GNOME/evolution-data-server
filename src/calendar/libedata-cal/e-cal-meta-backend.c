@@ -2737,15 +2737,22 @@ ecmb_authenticate_sync (EBackend *backend,
 	}
 
 	g_mutex_lock (&meta_backend->priv->connect_lock);
+
+	e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
 	success = e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result,
 		out_certificate_pem, out_certificate_errors, cancellable, error);
 
 	if (success) {
 		ecmb_update_connection_values (meta_backend);
 		auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
+
+		e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_CONNECTED);
 	} else {
 		if (auth_result == E_SOURCE_AUTHENTICATION_UNKNOWN)
 			auth_result = E_SOURCE_AUTHENTICATION_ERROR;
+
+		e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 	}
 	g_mutex_unlock (&meta_backend->priv->connect_lock);
 
@@ -3901,6 +3908,7 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 					  GError **error)
 {
 	ENamedParameters *credentials;
+	ESource *source;
 	ESourceAuthenticationResult auth_result = E_SOURCE_AUTHENTICATION_UNKNOWN;
 	ESourceCredentialsReason creds_reason = E_SOURCE_CREDENTIALS_REASON_ERROR;
 	gchar *certificate_pem = NULL;
@@ -3922,14 +3930,22 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 
 	g_mutex_lock (&meta_backend->priv->connect_lock);
 
+	source = e_backend_get_source (E_BACKEND (meta_backend));
+
+	if (e_source_get_connection_status (source) != E_SOURCE_CONNECTION_STATUS_CONNECTED)
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
 	if (e_cal_meta_backend_connect_sync (meta_backend, credentials, &auth_result, &certificate_pem, &certificate_errors,
 		cancellable, &local_error)) {
 		ecmb_update_connection_values (meta_backend);
+		e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 		g_mutex_unlock (&meta_backend->priv->connect_lock);
 		e_named_parameters_free (credentials);
 
 		return TRUE;
 	}
+
+	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 
 	g_mutex_unlock (&meta_backend->priv->connect_lock);
 
