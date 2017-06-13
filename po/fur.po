@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-06-07 12:19+0000\n"
-"PO-Revision-Date: 2017-06-12 18:16+0200\n"
+"PO-Revision-Date: 2017-06-13 22:18+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -1873,20 +1873,20 @@ msgstr "Impussibil zontâ il contat: "
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3012
 msgid "Cannot add timezone without component"
-msgstr ""
+msgstr "Impussibil zontâ un fûs orari cence component"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3018
 msgid "Cannot add timezone with invalid component"
-msgstr ""
+msgstr "Impussibil zontâ un fûs orari cuntun component no valit"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
-msgstr ""
+msgstr "Ogjet ricevût pal UID “%s” nol conten nissun component spietât"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3677
 msgid "attachment.dat"
-msgstr ""
+msgstr "zonte.dat"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
@@ -2274,7 +2274,7 @@ msgstr "Liberâ memorie no doprade pe cartele “%s : %s”"
 #: ../src/camel/camel-gpg-context.c:417
 #, c-format
 msgid "Output from %s:"
-msgstr ""
+msgstr "Jessude di %s:"
 
 #: ../src/camel/camel-gpg-context.c:834 ../src/camel/camel-gpg-context.c:839
 #: ../src/camel/camel-gpg-context.c:1543
@@ -2301,7 +2301,7 @@ msgstr ""
 #: ../src/camel/camel-gpg-context.c:987
 #, c-format
 msgid "Failed to parse gpg userid hint."
-msgstr ""
+msgstr "No si è rivâts a analizâ il sugjeriment dal id utent di gpg."
 
 #: ../src/camel/camel-gpg-context.c:1012 ../src/camel/camel-gpg-context.c:1027
 #, c-format
@@ -2504,7 +2504,7 @@ msgstr "Impussibil sdopleâ: %s"
 #: ../src/camel/camel-movemail.c:250
 #, c-format
 msgid "Movemail program failed: %s"
-msgstr ""
+msgstr "Il program movemail al à falît: %s"
 
 #: ../src/camel/camel-movemail.c:251
 msgid "(Unknown error)"
@@ -2697,17 +2697,19 @@ msgstr ""
 #: ../src/camel/camel-sasl-digest-md5.c:852
 #, c-format
 msgid "Server challenge too long (>2048 octets)"
-msgstr ""
+msgstr "Sfide dal servidôr (server challenge) masse lungje (>2048 votets)"
 
 #: ../src/camel/camel-sasl-digest-md5.c:863
 #, c-format
 msgid "Server challenge invalid\n"
-msgstr ""
+msgstr "Sfide (challenge) servidôr no valide\n"
 
 #: ../src/camel/camel-sasl-digest-md5.c:871
 #, c-format
 msgid "Server challenge contained invalid “Quality of Protection” token"
 msgstr ""
+"La sfide (challenge) dal servidôr e contignive un token “Quality of "
+"Protection” no valit"
 
 #: ../src/camel/camel-sasl-digest-md5.c:904
 #, c-format
@@ -2783,26 +2785,26 @@ msgstr ""
 
 #: ../src/camel/camel-sasl-gssapi.c:205
 msgid "The supplied context handle did not refer to a valid context."
-msgstr ""
+msgstr "Il gjestôr dal contest furnît nol fâs riferiment a un contest valit."
 
 #: ../src/camel/camel-sasl-gssapi.c:208
 msgid "The consistency checks performed on the input_token failed."
-msgstr ""
+msgstr "I controi di consistence fats sul input_token a àn falît."
 
 #: ../src/camel/camel-sasl-gssapi.c:211
 msgid "The consistency checks performed on the credential failed."
-msgstr ""
+msgstr "I controi di consistence fats su la credenziâl a àn falît."
 
 #: ../src/camel/camel-sasl-gssapi.c:214
 msgid "The referenced credentials have expired."
-msgstr ""
+msgstr "Lis credenziâls di riferiment a son scjadudis."
 
 #: ../src/camel/camel-sasl-gssapi.c:220 ../src/camel/camel-sasl-gssapi.c:402
 #: ../src/camel/camel-sasl-gssapi.c:451 ../src/camel/camel-sasl-gssapi.c:468
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:797
 #, c-format
 msgid "Bad authentication response from server."
-msgstr ""
+msgstr "Rispueste di autenticazion dal servidôr sbaliade."
 
 #: ../src/camel/camel-sasl-gssapi.c:480
 #, c-format
@@ -2864,12 +2866,12 @@ msgstr "Provade autenticazion POP prime di SMTP cuntun servizi %s"
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
-msgstr ""
+msgstr "Compilazion de espression regolâr falide: %s: %s"
 
 #: ../src/camel/camel-session.c:443
 #, c-format
 msgid "Invalid GType registered for protocol “%s”"
-msgstr ""
+msgstr "Regjistrât GType no valit pal protocol “%s”"
 
 #: ../src/camel/camel-session.c:512
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2997
@@ -3012,12 +3014,12 @@ msgstr "Importazion certificât falide"
 #: ../src/camel/camel-smime-context.c:633
 #, c-format
 msgid "Certificate is the only message, cannot verify certificates"
-msgstr ""
+msgstr "Il certificât al è il sôl messaç, impussibil verificâ i certificâts"
 
 #: ../src/camel/camel-smime-context.c:636
 #, c-format
 msgid "Certificate is the only message, certificates imported and verified"
-msgstr ""
+msgstr "Il certificât al è il sôl messaç, certificâts impuartâts e verificâts"
 
 #: ../src/camel/camel-smime-context.c:640
 msgid "Cannot find signature digests"
@@ -3031,21 +3033,21 @@ msgstr "Firmatari: %s <%s>: %s\n"
 #: ../src/camel/camel-smime-context.c:853
 #: ../src/camel/camel-smime-context.c:1147
 msgid "Cannot create encoder context"
-msgstr ""
+msgstr "Impussibil creâ il contest dal codificadôr"
 
 #: ../src/camel/camel-smime-context.c:859
 msgid "Failed to add data to CMS encoder"
-msgstr ""
+msgstr "No si è rivâts a zontâ dâts al codificadôr CMS"
 
 #: ../src/camel/camel-smime-context.c:864
 #: ../src/camel/camel-smime-context.c:1164
 msgid "Failed to encode data"
-msgstr ""
+msgstr "No si è rivâts a codificâ dâts"
 
 #: ../src/camel/camel-smime-context.c:1012
 #: ../src/camel/camel-smime-context.c:1261
 msgid "Decoder failed"
-msgstr ""
+msgstr "Decodificadôr falît"
 
 #: ../src/camel/camel-smime-context.c:1081
 msgid "Cannot find common bulk encryption algorithm"
@@ -3069,7 +3071,7 @@ msgstr ""
 
 #: ../src/camel/camel-smime-context.c:1118
 msgid "Cannot attach CMS data object"
-msgstr ""
+msgstr "Impussibil alegâ l'ogjet dâts CMS"
 
 #: ../src/camel/camel-smime-context.c:1127
 msgid "Cannot create CMS Recipient information"
@@ -3081,7 +3083,7 @@ msgstr ""
 
 #: ../src/camel/camel-smime-context.c:1158
 msgid "Failed to add data to encoder"
-msgstr ""
+msgstr "No si è rivâts a zontâ dâts al codificadôr"
 
 #: ../src/camel/camel-smime-context.c:1268
 msgid "S/MIME Decrypt: No encrypted content found"
@@ -3591,15 +3593,15 @@ msgstr ""
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6022
 msgid "Error unsubscribing from folder"
-msgstr ""
+msgstr "Erôr tal gjavâ la sotscrizion de cartele"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6062
 msgid "IMAP server does not support quotas"
-msgstr ""
+msgstr "Il servidôr IMAP nol supuarte lis cuotis"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6074
 msgid "Error retrieving quota information"
-msgstr ""
+msgstr "Erôr tal recuperâ lis informazions su la cuote"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6121
 msgid "Search failed"
@@ -3624,16 +3626,16 @@ msgstr "In jentrade"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:802
 #, c-format
 msgid "IMAP server %s"
-msgstr ""
+msgstr "Servidôr IMAP %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:805
 #, c-format
 msgid "IMAP service for %s on %s"
-msgstr ""
+msgstr "Servizi IMAP par %s su %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:888
 msgid "No IMAPx connection object provided"
-msgstr ""
+msgstr "Nissun ogjet di conession IMAPx furnît"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:905
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:92
@@ -3644,11 +3646,13 @@ msgstr "Password"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:907
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
+"Cheste opzion us conetarà al servidôr IMAP doprant la password in test "
+"sempliç."
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:990
 #, c-format
 msgid "No such folder %s"
-msgstr ""
+msgstr "Cartele %s inesistente"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1440
 #, c-format
@@ -3659,12 +3663,12 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1942
 #, c-format
 msgid "Retrieving folder list for “%s”"
-msgstr ""
+msgstr "Daûr a recuperâ la liste di cartelis par “%s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2159
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
-msgstr ""
+msgstr "Il non de cartele “%s” nol è valit parcè che al conten il caratar “%c”"
 
 #. Translators: The strings in "IMAPDefaults" context are folder names as can be presented
 #. by the server; There's checked for the localized version of it and for the non-localized
@@ -3674,72 +3678,72 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2536
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
-msgstr ""
+msgstr "[Gmail]/Stampons"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2537
 msgctxt "IMAPDefaults"
 msgid "Drafts"
-msgstr ""
+msgstr "Stampons"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2538
 msgctxt "IMAPDefaults"
 msgid "Draft"
-msgstr ""
+msgstr "Stampon"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2541
 msgctxt "IMAPDefaults"
 msgid "Templates"
-msgstr ""
+msgstr "Modei"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2544
 msgctxt "IMAPDefaults"
 msgid "Archive"
-msgstr ""
+msgstr "Archivi"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2547
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
-msgstr ""
+msgstr "[Gmail]/Inviade"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2548
 msgctxt "IMAPDefaults"
 msgid "Sent"
-msgstr ""
+msgstr "Inviade"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2549
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
-msgstr ""
+msgstr "Elements inviâts"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2550
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
-msgstr ""
+msgstr "Messaçs inviâts"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2553
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
-msgstr ""
+msgstr "[Gmail]/Spam"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2554
 msgctxt "IMAPDefaults"
 msgid "Junk"
-msgstr ""
+msgstr "Malvolût"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2555
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
-msgstr ""
+msgstr "E-mail malvolude"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2556
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
-msgstr ""
+msgstr "Email malvolude"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2557
 msgctxt "IMAPDefaults"
 msgid "Spam"
-msgstr ""
+msgstr "Spam"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2558
 msgctxt "IMAPDefaults"
@@ -3749,22 +3753,22 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2561
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
-msgstr ""
+msgstr "[Gmail]/Scovacere"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2562
 msgctxt "IMAPDefaults"
 msgid "Trash"
-msgstr ""
+msgstr "Scovacere"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2563
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
-msgstr ""
+msgstr "Elements eliminâts"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2564
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
-msgstr ""
+msgstr "Messaçs eliminâts"
 
 #. Translators: This is used for a folder description,
 #. * for folders being under $HOME.  The first %s is replaced
@@ -3773,7 +3777,7 @@ msgstr ""
 #: ../src/camel/providers/local/camel-local-folder.c:187
 #, c-format
 msgid "~%s (%s)"
-msgstr ""
+msgstr "~%s (%s)"
 
 #. Translators: This is used for a folder description, for
 #. * folders being under /var/spool/mail.  The first %s is
@@ -3788,7 +3792,7 @@ msgstr ""
 #: ../src/camel/providers/local/camel-local-folder.c:206
 #, c-format
 msgid "mailbox: %s (%s)"
-msgstr ""
+msgstr "casele di pueste: %s (%s)"
 
 #. Translators: This is used for a folder description.
 #. * The first %s is replaced with a folder's full path,
@@ -3797,11 +3801,11 @@ msgstr ""
 #: ../src/camel/providers/local/camel-local-folder.c:215
 #, c-format
 msgid "%s (%s)"
-msgstr ""
+msgstr "%s (%s)"
 
 #: ../src/camel/providers/local/camel-local-folder.c:505
 msgid "_Index message body data"
-msgstr ""
+msgstr "Met in _indiç i dâts dal cuarp dal messaç"
 
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
@@ -3812,26 +3816,28 @@ msgid ""
 "Cannot get message %s from folder %s\n"
 "%s"
 msgstr ""
+"Impussibil vê il messaç %s de cartele %s\n"
+"%s"
 
 #: ../src/camel/providers/local/camel-local-provider.c:43
 msgid "_Use the “.folders” folder summary file (exmh)"
-msgstr ""
+msgstr "_Doprâ il file di sintesi de cartele “.folders” (exmh)"
 
 #: ../src/camel/providers/local/camel-local-provider.c:50
 msgid "MH-format mail directories"
-msgstr ""
+msgstr "Cartelis di pueste in formât MH"
 
 #: ../src/camel/providers/local/camel-local-provider.c:51
 msgid "For storing local mail in MH-like mail directories."
-msgstr ""
+msgstr "Par archiviâ la pueste locâl in cartelis di gjenar MH."
 
 #: ../src/camel/providers/local/camel-local-provider.c:65
 msgid "Apply _filters to new messages"
-msgstr ""
+msgstr "Apliche _filtris ai gnûfs messaçs"
 
 #: ../src/camel/providers/local/camel-local-provider.c:73
 msgid "Local delivery"
-msgstr ""
+msgstr "Consegnis locâls"
 
 #: ../src/camel/providers/local/camel-local-provider.c:74
 msgid ""
