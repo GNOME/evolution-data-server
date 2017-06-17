@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-06-07 12:19+0000\n"
-"PO-Revision-Date: 2017-06-13 22:18+0200\n"
+"PO-Revision-Date: 2017-06-17 21:15+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -147,10 +147,8 @@ msgid "Object to save is not a valid vCard"
 msgstr "L'ogjet di salvâ nol è un valit vCard"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:949
-#, fuzzy
-#| msgid "Failed to login to the server: %s"
 msgid "Failed to create contact from returned server data"
-msgstr "No si è rivâts a acedi al servidôr: %s"
+msgstr "No si è rivâts a creâ il contat dai dâts tornâts al servidôr"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:965
 msgid "Server returned contact without UID"
@@ -1024,7 +1022,7 @@ msgstr ""
 
 # controle se al va ben erôr num.
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5271
-#, fuzzy, c-format
+#, c-format
 msgid "Unable to remove the db file: errno %d"
 msgstr "Impussibil gjavâ il file db: erôr num. %d"
 
@@ -1095,10 +1093,9 @@ msgstr "Interogazion no valide par EbSqlCursor"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4479
 #: ../src/libebackend/e-cache.c:756
-#, fuzzy, c-format
-#| msgid "Could not open mail file %s: %s"
+#, c-format
 msgid "Can’t open database %s: %s"
-msgstr "Impussibil vierzi il file di pueste %s: %s"
+msgstr "Impussibil vierzi la base di dâts %s: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5082
 #: ../src/addressbook/libedata-book/e-book-cache.c:5134
@@ -1108,17 +1105,15 @@ msgstr "Impussibil vierzi il file di pueste %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1265
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object “%s” not found"
-msgstr "Contat “%s” no cjatât"
+msgstr "Ogjet “%s” no cjatât"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5194
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2375
 #, fuzzy, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object with extra “%s” not found"
-msgstr "Contat “%s” no cjatât"
+msgstr "Ogjet cun extra “%s” no cjatât"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5348
 msgid "At least one sort field must be specified to use a cursor"
@@ -1146,10 +1141,9 @@ msgstr "Ogjet ricevût pal UID “%s” nol è valit"
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1810
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2157
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2923
-#, fuzzy, c-format
-#| msgid "Failed to create child process “%s”: %s"
+#, c-format
 msgid "Failed to create cache “%s”:"
-msgstr "No si è rivâts a creâ il procès fi “%s”: %s"
+msgstr "No si è rivâts a creâ la cache “%s”:"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
@@ -1378,10 +1372,8 @@ msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "L'URL “%s” furnît nol fâs riferiment a un calendari CalDAV"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
-#, fuzzy
-#| msgid "Failed to parse gpg passphrase request."
 msgid "Failed to parse response data"
-msgstr "No si è rivâts a analizâ la domande di passphrase di gpg."
+msgstr "No si è rivâts a analizâ i dâts de rispueste"
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:948
 msgid "Birthday"
@@ -1407,16 +1399,13 @@ msgid "Cannot save calendar data"
 msgstr "Impussibil salvâ i dâts calendari"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:130
-#, fuzzy
-#| msgid "URI not loaded"
 msgid "URI not set"
-msgstr "URI no cjariât"
+msgstr "URI no stabilît"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:198
-#, fuzzy, c-format
-#| msgid "Malformed URI: %s"
+#, c-format
 msgid "Malformed URI “%s”: %s"
-msgstr "URI malformât: %s"
+msgstr "URI “%s” malformât: %s"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:341
 #, c-format
@@ -1853,23 +1842,19 @@ msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” si spiete che il secont argoment al sedi un intîr"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1739
-#, fuzzy, c-format
-#| msgid "Failed to create hardlink for resource “%s”: %s"
+#, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
-msgstr "No si è rivâts a creâ il colegament fisic pe risorse  “%s”: %s"
+msgstr "No si è rivâts a creâ la funzion SQLite, codiç di erôr “%d”: %s"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2248
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2311
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object “%s”, “%s” not found"
-msgstr "Contat “%s” no cjatât"
+msgstr "Ogjet “%s”, “%s” no cjatât"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3006
-#, fuzzy
-#| msgid "Cannot add contact: "
 msgid "Cannot add timezone without tzid"
-msgstr "Impussibil zontâ il contat: "
+msgstr "Impussibil zontâ il fûs orari cence tzid"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3012
 msgid "Cannot add timezone without component"
@@ -3844,27 +3829,29 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
+"Par ricevi (spostâ) la pueste locâl, che e ven des bobinis tal formât "
+"standard mbox, intes cartelis gjestidis di Evolution."
 
 #: ../src/camel/providers/local/camel-local-provider.c:86
 #: ../src/camel/providers/local/camel-local-provider.c:110
 msgid "_Apply filters to new messages in Inbox"
-msgstr ""
+msgstr "_Apliche filtris ai gnûfs messaç te “In jentrade”"
 
 #: ../src/camel/providers/local/camel-local-provider.c:95
 msgid "Maildir-format mail directories"
-msgstr ""
+msgstr "Cartelis di pueste intal formât Maildir"
 
 #: ../src/camel/providers/local/camel-local-provider.c:96
 msgid "For storing local mail in maildir directories."
-msgstr ""
+msgstr "Par archiviâ la pueste locâl intes cartelis maildir."
 
 #: ../src/camel/providers/local/camel-local-provider.c:113
 msgid "_Store status headers in Elm/Pine/Mutt format"
-msgstr ""
+msgstr "Arc_hiviâ lis intestazions di stât tal formât Elm/Pine/Mutt"
 
 #: ../src/camel/providers/local/camel-local-provider.c:120
 msgid "Standard Unix mbox spool file"
-msgstr ""
+msgstr "File bobine di mbox di unix standard"
 
 #: ../src/camel/providers/local/camel-local-provider.c:121
 #: ../src/camel/providers/local/camel-local-provider.c:135
@@ -3872,10 +3859,13 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
+"Pe leture e memorizazion de pueste locâl in file esternis di bobine mbox "
+"standard.\n"
+"Si pues ancje doprâ par lei un arbul di cartelis in stîl Elm, Pine o Mutt."
 
 #: ../src/camel/providers/local/camel-local-provider.c:134
 msgid "Standard Unix mbox spool directory"
-msgstr ""
+msgstr "Cartele bobine mbox unix standard"
 
 #: ../src/camel/providers/local/camel-local-store.c:86
 #, c-format
@@ -5127,10 +5117,9 @@ msgid "Out of memory"
 msgstr ""
 
 #: ../src/libebackend/e-cache.c:943
-#, fuzzy, c-format
-#| msgid "Failed to make directory %s: %s"
+#, c-format
 msgid "Can not make parent directory: %s"
-msgstr "No si è rivâts a creâ la cartele %s: %s"
+msgstr ""
 
 #: ../src/libebackend/e-collection-backend.c:977
 #, c-format
@@ -5353,22 +5342,17 @@ msgid "Timeout was reached"
 msgstr ""
 
 #: ../src/libedataserver/e-soup-session.c:144
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Credentials required"
-msgstr "Autenticazion necessarie"
+msgstr "Credenziâls necessariis"
 
 #: ../src/libedataserver/e-soup-session.c:830
-#, fuzzy
-#| msgid "Operation has been cancelled"
 msgid "Operation was cancelled"
-msgstr "La operazion e je stade anulade"
+msgstr "La operazion e jere anulade"
 
 #: ../src/libedataserver/e-soup-session.c:833
-#, fuzzy, c-format
-#| msgid "Failed to make directory %s: %s"
+#, c-format
 msgid "Failed with HTTP error %d: %s"
-msgstr "No si è rivâts a creâ la cartele %s: %s"
+msgstr "Falît cun erôr HTTP %d: %s"
 
 #: ../src/libedataserver/e-source.c:775
 #, c-format
@@ -5660,16 +5644,12 @@ msgid "Failed to get input XML content"
 msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:1341
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to get properties"
-msgstr "No si è rivâts a recuperâ il messaç"
+msgstr "No si è rivâts a otignî lis proprietâts"
 
 #: ../src/libedataserver/e-webdav-session.c:1415
-#, fuzzy
-#| msgid "Failed to execute gpg: %s"
 msgid "Failed to update properties"
-msgstr "No si è rivâts a eseguî gpg: %s"
+msgstr "No si è rivâts a inzornâ lis proprietâts"
 
 #: ../src/libedataserver/e-webdav-session.c:1519
 #, fuzzy
@@ -5678,46 +5658,34 @@ msgid "Failed to issue REPORT"
 msgstr "Falît al messaç %d"
 
 #: ../src/libedataserver/e-webdav-session.c:1578
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Failed to create collection"
-msgstr "Impussibil creâ il percors pe cache"
+msgstr "No si è rivâts a creâ la colezion"
 
 #: ../src/libedataserver/e-webdav-session.c:1669
 #: ../src/libedataserver/e-webdav-session.c:1823
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get XML request content"
-msgstr "No si è rivâts a ve il bloc doprant fcntl(2): %s"
+msgstr "No si è rivâts a vê il contignût de richieste XML"
 
 #: ../src/libedataserver/e-webdav-session.c:1681
-#, fuzzy
-#| msgid "Cannot refresh address book: "
 msgid "Failed to create address book"
-msgstr "Impussibil inzornâ la rubriche: "
+msgstr "No si è rivâts a creâ la rubriche"
 
 #: ../src/libedataserver/e-webdav-session.c:1836
-#, fuzzy
-#| msgid "Unable to create cache path"
 msgid "Failed to create calendar"
-msgstr "Impussibil creâ il percors pe cache"
+msgstr "No si è rivâts a creâ il calendari"
 
 #: ../src/libedataserver/e-webdav-session.c:1968
 #: ../src/libedataserver/e-webdav-session.c:1979
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to read resource"
-msgstr "No si è rivâts a recuperâ il messaç"
+msgstr "No si è rivâts a lei la risorse"
 
 #: ../src/libedataserver/e-webdav-session.c:2128
 msgid "Cannot rewind input stream: Not supported"
 msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:2275
-#, fuzzy
-#| msgid "Failed to execute gpg."
 msgid "Failed to put data"
-msgstr "No si è rivâts a eseguî gpg."
+msgstr "No si è rivâts a meti dâts"
 
 #: ../src/libedataserver/e-webdav-session.c:2294
 #, c-format
@@ -5725,26 +5693,20 @@ msgid "Failed to put data to server, error code %d (%s)"
 msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:2467
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to delete resource"
-msgstr "No si è rivâts a recuperâ il messaç"
+msgstr "No si è rivâts a eliminâ la risorse"
 
 #: ../src/libedataserver/e-webdav-session.c:2534
 msgid "Failed to copy resource"
 msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:2596
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to move resource"
-msgstr "No si è rivâts a recuperâ il messaç"
+msgstr "No si è rivâts a spostâ la risorse"
 
 #: ../src/libedataserver/e-webdav-session.c:2701
-#, fuzzy
-#| msgid "Failed to login to the server: %s"
 msgid "Failed to lock resource"
-msgstr "No si è rivâts a acedi al servidôr: %s"
+msgstr "No si è rivâts a blocâ la risorse"
 
 #: ../src/libedataserver/e-webdav-session.c:2715
 #: ../src/libedataserver/e-webdav-session.c:2917
@@ -5759,22 +5721,16 @@ msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:2730
 #: ../src/libedataserver/e-webdav-session.c:2933
-#, fuzzy
-#| msgid "Failed to parse gpg passphrase request."
 msgid "Failed to parse XML data"
-msgstr "No si è rivâts a analizâ la domande di passphrase di gpg."
+msgstr "No si è rivâts a analizâ i dâts XML"
 
 #: ../src/libedataserver/e-webdav-session.c:2809
-#, fuzzy
-#| msgid "Failed to retrieve message"
 msgid "Failed to refresh lock"
-msgstr "No si è rivâts a recuperâ il messaç"
+msgstr "No si è rivâts a inzornâ il bloc"
 
 #: ../src/libedataserver/e-webdav-session.c:2868
-#, fuzzy
-#| msgid "Failed to get lock using flock(2): %s"
 msgid "Failed to unlock"
-msgstr "No si è rivâts a ve il bloc doprant flock(2): %s"
+msgstr "No si è rivâts a sblocâ"
 
 #: ../src/libedataserver/e-webdav-session.c:2905
 #, fuzzy, c-format
@@ -6188,23 +6144,23 @@ msgstr ""
 
 #: ../src/modules/ubuntu-online-accounts/google-calendar.service.in.in.h:1
 msgid "Google Calendar"
-msgstr ""
+msgstr "Calendari Google"
 
 #: ../src/modules/ubuntu-online-accounts/google-contacts.service.in.in.h:1
 msgid "Google Contacts"
-msgstr ""
+msgstr "Contats Google"
 
 #: ../src/modules/ubuntu-online-accounts/google-gmail.service.in.in.h:1
 msgid "GMail"
-msgstr ""
+msgstr "GMail"
 
 #: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
 msgid "Mail"
-msgstr ""
+msgstr "Pueste"
 
 #: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
 msgid "Integrate your mailboxes"
-msgstr ""
+msgstr "Integre lis tôs caselis di pueste"
 
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1061
 #, c-format
@@ -6239,19 +6195,19 @@ msgstr ""
 
 #: ../src/modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
 msgid "Windows Live Mail"
-msgstr ""
+msgstr "Pueste di Windows Live"
 
 #: ../src/modules/ubuntu-online-accounts/yahoo-calendar.service.in.in.h:1
 msgid "Yahoo! Calendar"
-msgstr ""
+msgstr "Calendari Yahoo!"
 
 #: ../src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
 msgid "Yahoo! Mail"
-msgstr ""
+msgstr "Pueste Yahoo!"
 
 #: ../src/modules/yahoo-backend/module-yahoo-backend.c:227
 msgid "Tasks"
-msgstr ""
+msgstr "Ativitâts"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:37
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:39
@@ -6266,24 +6222,24 @@ msgstr ""
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
-msgstr ""
+msgstr "Compleans e aniversaris"
 
 #: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
 msgid "CalDAV"
-msgstr ""
+msgstr "CalDAV"
 
 #: ../src/services/evolution-source-registry/builtin/google-stub.source.in.h:1
 msgid "Google"
-msgstr ""
+msgstr "Google"
 
 #: ../src/services/evolution-source-registry/builtin/ldap-stub.source.in.h:1
 msgid "On LDAP Servers"
-msgstr ""
+msgstr "Su servidôrs LDAP"
 
 #: ../src/services/evolution-source-registry/builtin/local.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
 msgid "On This Computer"
-msgstr ""
+msgstr "Su chest computer"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
@@ -6291,37 +6247,37 @@ msgstr ""
 
 #: ../src/services/evolution-source-registry/builtin/weather-stub.source.in.h:1
 msgid "Weather"
-msgstr ""
+msgstr "Condizions meteo"
 
 #: ../src/services/evolution-source-registry/builtin/webcal-stub.source.in.h:1
 msgid "On The Web"
-msgstr ""
+msgstr "Sul web"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
 msgid "CardDAV"
-msgstr ""
+msgstr "CardDAV"
 
 #: ../src/services/evolution-source-registry/evolution-source-registry.c:40
 msgid "Don’t migrate user data from previous versions of Evolution"
-msgstr ""
+msgstr "No sta migrâ i dâts utent des versions precedentis di Evolution"
 
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
 msgid "_Dismiss"
-msgstr ""
+msgstr "_Scarte"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:68
 #: ../src/tools/addressbook-export/addressbook-export.c:780
 msgid "Can not open file"
-msgstr ""
+msgstr "Impussibil vierzi il file"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:98
 #, c-format
 msgid "Failed to open client “%s”: %s"
-msgstr ""
+msgstr "No si è rivâts a vierzi il client “%s”: %s"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:888
 msgid "Unhandled error"
-msgstr ""
+msgstr "Erôr no gjestît"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:921
 msgid "Specify the output file instead of standard output"
@@ -6341,7 +6297,7 @@ msgstr ""
 
 #: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "[vcard|csv]"
-msgstr ""
+msgstr "[vcard|csv]"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:977
 msgid ""
