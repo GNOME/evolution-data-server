@@ -645,7 +645,8 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 		goto done;
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL)) {
+	    !e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL) ||
+	    !e_backend_get_online (E_BACKEND (meta_backend))) { /* Failed connecting moves backend to offline */
 		g_mutex_lock (&meta_backend->priv->property_lock);
 		meta_backend->priv->refresh_after_authenticate = TRUE;
 		g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -662,12 +663,27 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 		goto done;
 	}
 
-	success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_FAIL, cancellable, error);
+	if (with_connection_error) {
+		/* Skip upload when not initiated by the user (as part of the Refresh operation) */
+		success = TRUE;
+	} else {
+		GError *local_error = NULL;
+
+		success = ecmb_upload_local_changes_sync (meta_backend, cal_cache, E_CONFLICT_RESOLUTION_FAIL, cancellable, &local_error);
+		if (local_error) {
+			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+				e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+			g_propagate_error (error, local_error);
+			success = FALSE;
+		}
+	}
 
 	while (repeat && success &&
 	       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL;
 		gchar *last_sync_tag, *new_sync_tag = NULL;
+		GError *local_error = NULL;
 
 		repeat = FALSE;
 
@@ -678,7 +694,16 @@ ecmb_refresh_internal_sync (ECalMetaBackend *meta_backend,
 		}
 
 		success = e_cal_meta_backend_get_changes_sync (meta_backend, last_sync_tag, is_repeat, &new_sync_tag, &repeat,
-			&created_objects, &modified_objects, &removed_objects, cancellable, error);
+			&created_objects, &modified_objects, &removed_objects, cancellable, &local_error);
+
+		if (local_error) {
+			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+				e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+			g_propagate_error (error, local_error);
+			local_error = NULL;
+			success = FALSE;
+		}
 
 		if (success) {
 			success = e_cal_meta_backend_process_changes_sync (meta_backend, created_objects, modified_objects,
@@ -1002,6 +1027,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	gchar *extra = NULL;
 	const gchar *loaded_uid = NULL;
 	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	if (preloaded_object && *preloaded_object) {
 		icalcomp = icalcomponent_new_from_string (preloaded_object);
@@ -1056,7 +1082,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		new_instances = g_slist_reverse (new_instances);
 
 		success = ecmb_put_instances (meta_backend, cal_cache, loaded_uid ? loaded_uid : uid, offline_flag,
-			new_instances, extra ? extra : preloaded_extra, cancellable, error);
+			new_instances, extra ? extra : preloaded_extra, cancellable, &local_error);
 
 		if (success && out_new_uid)
 			*out_new_uid = g_strdup (loaded_uid ? loaded_uid : uid);
@@ -1069,6 +1095,14 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	if (icalcomp)
 		icalcomponent_free (icalcomp);
 	g_free (extra);
+
+	if (local_error) {
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+			e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
 
 	return success;
 }
@@ -1090,6 +1124,7 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	GSList *link, *instances = NULL;
 	gchar *new_uid = NULL, *new_extra = NULL;
 	gboolean has_attachments = FALSE, success = TRUE;
+	GError *local_error = NULL;
 
 	if (out_requires_put)
 		*out_requires_put = TRUE;
@@ -1121,7 +1156,7 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 	}
 
 	success = success && e_cal_meta_backend_save_component_sync (meta_backend, overwrite_existing, conflict_resolution,
-		instances ? instances : in_instances, extra, &new_uid, &new_extra, cancellable, error);
+		instances ? instances : in_instances, extra, &new_uid, &new_extra, cancellable, &local_error);
 
 	if (success && new_uid && *new_uid) {
 		gchar *loaded_uid = NULL;
@@ -1149,6 +1184,14 @@ ecmb_save_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		g_free (new_extra);
 
 	g_slist_free_full (instances, g_object_unref);
+
+	if (local_error) {
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+			e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
 
 	return success;
 }
@@ -1212,12 +1255,18 @@ ecmb_refresh_sync (ECalBackendSync *sync_backend,
 		   GError **error)
 {
 	ECalMetaBackend *meta_backend;
+	EBackend *backend;
 
 	g_return_if_fail (E_IS_CAL_META_BACKEND (sync_backend));
 
 	meta_backend = E_CAL_META_BACKEND (sync_backend);
+	backend = E_BACKEND (meta_backend);
 
-	if (!e_backend_get_online (E_BACKEND (sync_backend)))
+	if (!e_backend_get_online (backend) &&
+	    e_backend_is_destination_reachable (backend, cancellable, NULL))
+		e_backend_set_online (backend, TRUE);
+
+	if (!e_backend_get_online (backend))
 		return;
 
 	if (e_cal_meta_backend_ensure_connected_sync (meta_backend, cancellable, error))
@@ -2110,9 +2159,17 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 
 				g_warn_if_fail (e_cal_cache_get_component_as_string (cal_cache, uid, NULL, &ical_string, cancellable, NULL));
 
-				success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, ical_string, cancellable, error);
+				success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, ical_string, cancellable, &local_error);
 
 				g_free (ical_string);
+
+				if (local_error) {
+					if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+						e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+					g_propagate_error (error, local_error);
+					success = FALSE;
+				}
 			}
 
 			success = success && ecmb_maybe_remove_from_cache (meta_backend, cal_cache, *offline_flag, uid, cancellable, error);
@@ -3952,6 +4009,14 @@ e_cal_meta_backend_ensure_connected_sync (ECalMetaBackend *meta_backend,
 	e_named_parameters_free (credentials);
 
 	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
+
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND)) {
+		e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+		g_propagate_error (error, local_error);
+		g_free (certificate_pem);
+
+		return FALSE;
+	}
 
 	switch (auth_result) {
 	case E_SOURCE_AUTHENTICATION_UNKNOWN:

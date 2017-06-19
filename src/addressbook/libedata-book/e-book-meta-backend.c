@@ -751,7 +751,8 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 		goto done;
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)) ||
-	    !e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL)) {
+	    !e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, with_connection_error ? error : NULL) ||
+	    !e_backend_get_online (E_BACKEND (meta_backend))) { /* Failed connecting moves backend to offline */
 		g_mutex_lock (&meta_backend->priv->property_lock);
 		meta_backend->priv->refresh_after_authenticate = TRUE;
 		g_mutex_unlock (&meta_backend->priv->property_lock);
@@ -768,12 +769,28 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 		goto done;
 	}
 
-	success = ebmb_upload_local_changes_sync (meta_backend, book_cache, E_CONFLICT_RESOLUTION_FAIL, cancellable, error);
+	if (with_connection_error) {
+		/* Skip upload when not initiated by the user (as part of the Refresh operation) */
+		success = TRUE;
+	} else {
+		GError *local_error = NULL;
+
+		success = ebmb_upload_local_changes_sync (meta_backend, book_cache, E_CONFLICT_RESOLUTION_FAIL, cancellable, &local_error);
+
+		if (local_error) {
+			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+				e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+			g_propagate_error (error, local_error);
+			success = FALSE;
+		}
+	}
 
 	while (repeat && success &&
 	       !g_cancellable_set_error_if_cancelled (cancellable, error)) {
 		GSList *created_objects = NULL, *modified_objects = NULL, *removed_objects = NULL;
 		gchar *last_sync_tag, *new_sync_tag = NULL;
+		GError *local_error = NULL;
 
 		repeat = FALSE;
 
@@ -784,7 +801,16 @@ ebmb_refresh_internal_sync (EBookMetaBackend *meta_backend,
 		}
 
 		success = e_book_meta_backend_get_changes_sync (meta_backend, last_sync_tag, is_repeat, &new_sync_tag, &repeat,
-			&created_objects, &modified_objects, &removed_objects, cancellable, error);
+			&created_objects, &modified_objects, &removed_objects, cancellable, &local_error);
+
+		if (local_error) {
+			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+				e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+			g_propagate_error (error, local_error);
+			local_error = NULL;
+			success = FALSE;
+		}
 
 		if (success) {
 			success = e_book_meta_backend_process_changes_sync (meta_backend, created_objects, modified_objects,
@@ -999,6 +1025,7 @@ ebmb_load_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	EContact *contact = NULL;
 	gchar *extra = NULL;
 	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	if (preloaded_object && *preloaded_object) {
 		contact = e_contact_new_from_vcard_with_uid (preloaded_object, uid);
@@ -1017,13 +1044,21 @@ ebmb_load_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	}
 
 	success = ebmb_put_contact (meta_backend, book_cache, offline_flag,
-		contact, extra ? extra : preloaded_extra, cancellable, error);
+		contact, extra ? extra : preloaded_extra, cancellable, &local_error);
 
 	if (success && out_new_uid)
 		*out_new_uid = e_contact_get (contact, E_CONTACT_UID);
 
 	g_object_unref (contact);
 	g_free (extra);
+
+	if (local_error) {
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+			e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
 
 	return success;
 }
@@ -1045,6 +1080,7 @@ ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	EContact *contact;
 	gchar *new_uid = NULL, *new_extra = NULL;
 	gboolean success = TRUE;
+	GError *local_error = NULL;
 
 	if (out_requires_put)
 		*out_requires_put = TRUE;
@@ -1057,7 +1093,7 @@ ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	success = e_book_meta_backend_inline_local_photos_sync (meta_backend, contact, cancellable, error);
 
 	success = success && e_book_meta_backend_save_contact_sync (meta_backend, overwrite_existing, conflict_resolution,
-		contact, extra, &new_uid, &new_extra, cancellable, error);
+		contact, extra, &new_uid, &new_extra, cancellable, &local_error);
 
 	if (success && new_uid && *new_uid) {
 		gchar *loaded_uid = NULL;
@@ -1084,6 +1120,14 @@ ebmb_save_contact_wrapper_sync (EBookMetaBackend *meta_backend,
 	else
 		g_free (new_extra);
 	g_object_unref (contact);
+
+	if (local_error) {
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+			e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+		g_propagate_error (error, local_error);
+		success = FALSE;
+	}
 
 	return success;
 }
@@ -1190,13 +1234,19 @@ ebmb_refresh_sync (EBookBackend *book_backend,
 		   GError **error)
 {
 	EBookMetaBackend *meta_backend;
+	EBackend *backend;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (book_backend), FALSE);
 
 	meta_backend = E_BOOK_META_BACKEND (book_backend);
+	backend = E_BACKEND (meta_backend);
 
-	if (!e_backend_get_online (E_BACKEND (book_backend)))
+	if (!e_backend_get_online (backend) &&
+	    e_backend_is_destination_reachable (backend, cancellable, NULL))
+		e_backend_set_online (backend, TRUE);
+
+	if (!e_backend_get_online (backend))
 		return TRUE;
 
 	success = e_book_meta_backend_ensure_connected_sync (meta_backend, cancellable, error);
@@ -1534,9 +1584,17 @@ ebmb_remove_contact_sync (EBookMetaBackend *meta_backend,
 
 		g_warn_if_fail (e_book_cache_get_vcard (book_cache, uid, FALSE, &vcard_string, cancellable, NULL));
 
-		success = e_book_meta_backend_remove_contact_sync (meta_backend, conflict_resolution, uid, extra, vcard_string, cancellable, error);
+		success = e_book_meta_backend_remove_contact_sync (meta_backend, conflict_resolution, uid, extra, vcard_string, cancellable, &local_error);
 
 		g_free (vcard_string);
+
+		if (local_error) {
+			if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
+				e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+
+			g_propagate_error (error, local_error);
+			success = FALSE;
+		}
 	}
 
 	success = success && ebmb_maybe_remove_from_cache (meta_backend, book_cache, *offline_flag, uid, cancellable, error);
@@ -3091,6 +3149,14 @@ e_book_meta_backend_ensure_connected_sync (EBookMetaBackend *meta_backend,
 	e_named_parameters_free (credentials);
 
 	g_warn_if_fail (auth_result != E_SOURCE_AUTHENTICATION_ACCEPTED);
+
+	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND)) {
+		e_backend_set_online (E_BACKEND (meta_backend), FALSE);
+		g_propagate_error (error, local_error);
+		g_free (certificate_pem);
+
+		return FALSE;
+	}
 
 	switch (auth_result) {
 	case E_SOURCE_AUTHENTICATION_UNKNOWN:
