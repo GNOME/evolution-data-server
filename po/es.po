@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-06 09:16+0000\n"
-"PO-Revision-Date: 2017-06-06 12:40+0200\n"
+"POT-Creation-Date: 2017-06-17 08:38+0000\n"
+"PO-Revision-Date: 2017-06-19 11:52+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -90,7 +90,7 @@ msgid "Invalid Query “%s”"
 msgstr "Consulta «%s» no válida"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1976
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1927
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1940
 msgid "Requested to delete an unrelated cursor"
 msgstr "Se ha pedido eliminar un cursor no relacionado"
 
@@ -102,7 +102,7 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1165
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4278
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:230
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:233
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1079
@@ -117,8 +117,8 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:198
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:201
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../src/calendar/backends/http/e-cal-backend-http.c:199
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
@@ -140,7 +140,7 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../src/calendar/libecal/e-cal-client.c:6450
 #: ../src/calendar/libecal/e-cal-client.c:6813
 #: ../src/calendar/libecal/e-cal-client.c:7035
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1715
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1740
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3048
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3058
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3070
@@ -152,12 +152,11 @@ msgid "Unknown error"
 msgstr "Error desconocido"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:897
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:925
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
 msgid "Object to save is not a valid vCard"
 msgstr "El objeto que guardar no es un vCard válido"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:949
-#| msgid "Failed to authenticate on POP server %s: "
 msgid "Failed to create contact from returned server data"
 msgstr "Falló al crear el contacto con los datos devueltos por el servidor"
 
@@ -275,7 +274,7 @@ msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr ""
 "El URL «%s» dado no hace referencia a una libreta de direcciones WebDAV"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:852
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:855
 msgid "Received object is not a valid vCard"
 msgstr "El objeto recibido no es un vCard válido"
 
@@ -769,7 +768,7 @@ msgid "Birth Date"
 msgstr "Fecha de nacimiento"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:946
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:937
 msgid "Anniversary"
 msgstr "Aniversario"
 
@@ -959,7 +958,7 @@ msgid "Error parsing regular expression"
 msgstr "Error al analizar la expresión regular"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
-#: ../src/addressbook/libedata-book/e-book-cache.c:4456
+#: ../src/addressbook/libedata-book/e-book-cache.c:4475
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
 #: ../src/camel/camel-db.c:802
 #, c-format
@@ -1059,7 +1058,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "No se puede ordenar por un campo que tiene varios valores"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
-#: ../src/addressbook/libedata-book/e-book-cache.c:5489
+#: ../src/addressbook/libedata-book/e-book-cache.c:5561
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
@@ -1070,7 +1069,7 @@ msgstr ""
 "lista de contactos"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
-#: ../src/addressbook/libedata-book/e-book-cache.c:5496
+#: ../src/addressbook/libedata-book/e-book-cache.c:5568
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
@@ -1088,60 +1087,66 @@ msgstr "Campo de contacto «%d» especificado en el resumen no soportado"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3428
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1580
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2756
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1605
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2834
 #, c-format
 msgid "Invalid query: %s"
 msgstr "Consulta no válida: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3598
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
 msgstr "Consulta no válida para un cursor de libro"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:4460
+#: ../src/addressbook/libedata-book/e-book-cache.c:4479
 #: ../src/libebackend/e-cache.c:756
 #, c-format
 msgid "Can’t open database %s: %s"
 msgstr "No se puede abrir la base de datos %s: %s"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5063
-#: ../src/addressbook/libedata-book/e-book-cache.c:5115
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2225
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2288
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2406
+#: ../src/addressbook/libedata-book/e-book-cache.c:5082
+#: ../src/addressbook/libedata-book/e-book-cache.c:5134
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2250
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2313
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2484
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1265
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
 msgid "Object “%s” not found"
 msgstr "Objeto «%s» no encontrado"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5276
-#| msgid "At least one sort field must be specified to use an EbSdbCursor"
+#: ../src/addressbook/libedata-book/e-book-cache.c:5194
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2375
+#, c-format
+#| msgid "Object “%s” not found"
+msgid "Object with extra “%s” not found"
+msgstr "Objeto con «%s» adicional no encontrado"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5348
 msgid "At least one sort field must be specified to use a cursor"
 msgstr ""
 "Se debe especificar al menos un campo de ordenación para usar un cursor"
 
-#: ../src/addressbook/libedata-book/e-book-cache.c:5285
+#: ../src/addressbook/libedata-book/e-book-cache.c:5357
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
 msgid "Cannot sort by a field that is not a string type"
 msgstr "No se puede ordenar por un campo que no es de tipo cadena"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:993
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:996
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1006
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1009
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "El objeto precargado para el UID «%s» no es válido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1001
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1004
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1014
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1017
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "El objeto recibido para el UID «%s» no es válido"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1797
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2144
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2886
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1810
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2164
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2930
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Falló al crear la caché «%s»:"
@@ -1373,21 +1378,20 @@ msgstr ""
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "El URL «%s» dado no hace referencia a un calendario CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1482
-#| msgid "Failed to encode data"
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
 msgid "Failed to parse response data"
 msgstr "Falló al analizar los datos de la respuesta"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:948
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:939
 msgid "Birthday"
 msgstr "Cumpleaños"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:984
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:975
 #, c-format
 msgid "Birthday: %s"
 msgstr "Cumpleaños: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1015
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1006
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Aniversario: %s"
@@ -1845,40 +1849,36 @@ msgstr ""
 msgid "“%s” expects the second argument to be an integer"
 msgstr "«%s» espera que el segundo argumento sea un entero"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1714
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1739
 #, c-format
-#| msgid "Failed to create hardlink for resource “%s”: %s"
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "Falló al crear la función SQLite, código de error «%d»: %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2223
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2286
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2248
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2311
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "Objeto «%s», «%s» no encontrado"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2928
-#| msgid "Cannot add contact: "
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3006
 msgid "Cannot add timezone without tzid"
 msgstr "No se puede añadir la zona horaria sin tzid"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2934
-#| msgid "Cannot authenticate without a username"
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3012
 msgid "Cannot add timezone without component"
 msgstr "No se puede añadir la zona horaria el componente"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2940
-#| msgid "Cannot send message: one or more invalid recipients"
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3018
 msgid "Cannot add timezone with invalid component"
 msgstr "No se puede añadir la zona horaria con un componente no válido"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1051
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr ""
 "El objeto recibido para el UID «%s» no contiene ningún componente esperado"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3640
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3684
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -5731,7 +5731,6 @@ msgid "Failed with HTTP error code %d (%s)"
 msgstr "Falló con código de error HTTP %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1237
-#| msgid "Failed to encode data"
 msgid "Failed to post data"
 msgstr "Falló al publicar los datos"
 
@@ -5740,7 +5739,6 @@ msgstr "Falló al publicar los datos"
 #: ../src/libedataserver/e-webdav-session.c:1509
 #: ../src/libedataserver/e-webdav-session.c:2690
 #: ../src/libedataserver/e-webdav-session.c:3942
-#| msgid "Failed to find Account element"
 msgid "Failed to get input XML content"
 msgstr "Falló al obtener el contenido de la entrada XML"
 
@@ -5762,7 +5760,6 @@ msgstr "Falló al crear la colección"
 
 #: ../src/libedataserver/e-webdav-session.c:1669
 #: ../src/libedataserver/e-webdav-session.c:1823
-#| msgid "Failed to refresh token"
 msgid "Failed to get XML request content"
 msgstr "Falló al obtener el contenido de la respuesta XML"
 
@@ -5780,18 +5777,15 @@ msgid "Failed to read resource"
 msgstr "Falló al leer el recurso"
 
 #: ../src/libedataserver/e-webdav-session.c:2128
-#| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
 msgstr "No se puede volver al principio del flujo de datos: no está soportado"
 
 #: ../src/libedataserver/e-webdav-session.c:2275
-#| msgid "Failed to encode data"
 msgid "Failed to put data"
 msgstr "Falló al enviar los datos"
 
 #: ../src/libedataserver/e-webdav-session.c:2294
 #, c-format
-#| msgid "Failed to add data to encoder"
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Falló al enviar datos al servidor, código de error %d (%s)"
 
@@ -5837,7 +5831,6 @@ msgstr "Falló al desbloquear"
 
 #: ../src/libedataserver/e-webdav-session.c:2905
 #, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Se esperaba una respuesta multiestado, pero se ha devuelto %d (%s)"
 
@@ -5852,7 +5845,7 @@ msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:4696
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "Tipo de entrada de control de acceso proporcionado no válido."
 
 #: ../src/libedataserver/e-webdav-session.c:4703
 msgid "Cannot store property-based Access Control Entry."
@@ -6227,7 +6220,7 @@ msgstr "Falló al buscar el elemento «Account»"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr "Falló al buscar ASUrl y OABUrl en la respuesta de la autodetección"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1340
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1336
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -6236,7 +6229,7 @@ msgstr ""
 "No se puede encontrar una cuenta correspondiente en el servicio org.gnome."
 "OnlineAccounts de la que obtener un token de acceso para «%s»"
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1370
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1366
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Falló al obtener el token de acceso para «%s»: "
