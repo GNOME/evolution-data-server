@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-06-07 12:19+0000\n"
-"PO-Revision-Date: 2017-06-19 11:24+0200\n"
+"PO-Revision-Date: 2017-06-19 11:32+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -2032,12 +2032,12 @@ msgstr "Erôr tal eseguî il filtri: %s: %s"
 #: ../src/camel/camel-filter-driver.c:1466
 #, c-format
 msgid "Unable to open spool folder"
-msgstr "Impussibil vierzi la cartele bobine"
+msgstr "Impussibil vierzi la cartele code di pueste"
 
 #: ../src/camel/camel-filter-driver.c:1478
 #, c-format
 msgid "Unable to process spool folder"
-msgstr "Impussibil elaborâ la cartele bobine"
+msgstr "Impussibil elaborâ la cartele code di pueste"
 
 #: ../src/camel/camel-filter-driver.c:1502
 #, c-format
@@ -3512,7 +3512,7 @@ msgstr "Erôr tal copiâ i messaçs"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4554
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4575
 msgid "Cannot create spool file: "
-msgstr "Impussibil creâ il file bobine: "
+msgstr "Impussibil creâ il file code di pueste: "
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4661
 msgid "Error appending message"
@@ -3833,8 +3833,8 @@ msgid ""
 "For retrieving (moving) local mail from standard mbox-formatted spools into "
 "folders managed by Evolution."
 msgstr ""
-"Par ricevi (spostâ) la pueste locâl, che e ven des bobinis tal formât "
-"standard mbox, intes cartelis gjestidis di Evolution."
+"Par ricevi (spostâ) la pueste locâl, che e ven des codis di pueste tal "
+"formât standard mbox, intes cartelis gjestidis di Evolution."
 
 #: ../src/camel/providers/local/camel-local-provider.c:86
 #: ../src/camel/providers/local/camel-local-provider.c:110
@@ -3855,7 +3855,7 @@ msgstr "Arc_hiviâ lis intestazions di stât tal formât Elm/Pine/Mutt"
 
 #: ../src/camel/providers/local/camel-local-provider.c:120
 msgid "Standard Unix mbox spool file"
-msgstr "File bobine di mbox di unix standard"
+msgstr "File code di pueste mbox di unix standard"
 
 #: ../src/camel/providers/local/camel-local-provider.c:121
 #: ../src/camel/providers/local/camel-local-provider.c:135
@@ -3863,13 +3863,13 @@ msgid ""
 "For reading and storing local mail in external standard mbox spool files.\n"
 "May also be used to read a tree of Elm, Pine, or Mutt style folders."
 msgstr ""
-"Pe leture e memorizazion de pueste locâl in file esternis di bobine mbox "
-"standard.\n"
+"Pe leture e memorizazion de pueste locâl in file esternis di code di pueste "
+"mbox standard.\n"
 "Si pues ancje doprâ par lei un arbul di cartelis in stîl Elm, Pine o Mutt."
 
 #: ../src/camel/providers/local/camel-local-provider.c:134
 msgid "Standard Unix mbox spool directory"
-msgstr "Cartele bobine mbox unix standard"
+msgstr "Cartele code di pueste mbox unix standard"
 
 #: ../src/camel/providers/local/camel-local-store.c:86
 #, c-format
@@ -4214,26 +4214,26 @@ msgstr ""
 #: ../src/camel/providers/local/camel-spool-store.c:93
 #, c-format
 msgid "Spool “%s” cannot be opened: %s"
-msgstr "La bobine “%s” no pues jessi vierte: %s"
+msgstr "La code di pueste “%s” no pues jessi vierte: %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:107
 #, c-format
 msgid "Spool “%s” is not a regular file or directory"
-msgstr "La bobine “%s” nol è un file regolâr o une cartele"
+msgstr "La code di pueste “%s” no je un file regolâr o une cartele"
 
 #: ../src/camel/providers/local/camel-spool-store.c:422
 #, c-format
 msgid "Spool mail file %s"
-msgstr "File di pueste di bobine %s"
+msgstr "File di pueste de code di pueste %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:426
 #, c-format
 msgid "Spool folder tree %s"
-msgstr "Arbul di cartele di bobine %s"
+msgstr "Arbul di cartele de code di pueste %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:429
 msgid "Invalid spool"
-msgstr "Bobine no valide"
+msgstr "Code di pueste no valide"
 
 #: ../src/camel/providers/local/camel-spool-store.c:478
 #, c-format
