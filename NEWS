@@ -1,3 +1,22 @@
+Evolution-Data-Server 3.24.3 2017-06-19
+---------------------------------------
+
+Bug Fixes:
+	Bug 782360 - Remove src/addressbook/docs/ from git and releases (Milan Crha)
+	Bug 782362 - csv2vcard not marked as executable (Milan Crha)
+	Bug 782377 - ESourceWebdav overrides ESourceAuthentication::method (Milan Crha)
+	Bug 782096 - Folder unread count sometimes doesn't update properly (Milan Crha)
+	Bug 770476 - Crash on exit in object_bag_notify() (Milan Crha)
+	Bug 783385 - Prefer SSL over STARTTLS for mail when both are set in GOA (Milan Crha)
+
+Miscellaneous:
+	Remove forgotten debug print (Milan Crha)
+	Add CamelWeakRefGroup to camel-docs.sgml (Milan Crha)
+	Mis-filters emails with Mailing List rule in certain situations (Milan Crha)
+	Prevent busy-loop opening Google calendar configured in GOA (Milan Crha)
+	Prevent GError override in e_cal_backend_sync_get_timezone() (Milan Crha)
+	Allow overwrite of CMAKE_SKIP_RPATH variable (Milan Crha)
+
 Evolution-Data-Server 3.24.2 2017-05-08
 ---------------------------------------
 
