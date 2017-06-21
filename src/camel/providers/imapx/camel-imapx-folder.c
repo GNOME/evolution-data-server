@@ -893,6 +893,9 @@ imapx_folder_changed (CamelFolder *folder,
 
 			g_hash_table_remove (imapx_folder->priv->move_to_real_trash_uids, message_uid);
 			g_hash_table_remove (imapx_folder->priv->move_to_real_junk_uids, message_uid);
+
+			camel_data_cache_remove (imapx_folder->cache, "tmp", message_uid, NULL);
+			camel_data_cache_remove (imapx_folder->cache, "cur", message_uid, NULL);
 		}
 
 		g_mutex_unlock (&imapx_folder->priv->move_to_hash_table_lock);
