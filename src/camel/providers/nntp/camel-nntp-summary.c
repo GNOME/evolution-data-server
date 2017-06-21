@@ -46,6 +46,7 @@
 
 struct _CamelNNTPSummaryPrivate {
 	gchar *uid;
+	guint last_full_resync;
 
 	struct _xover_header *xover; /* xoverview format */
 	gint xover_setup;
@@ -127,6 +128,7 @@ summary_header_load (CamelFolderSummary *s,
 	cns->version = camel_util_bdata_get_number (&part, 0);
 	cns->high = camel_util_bdata_get_number (&part, 0);
 	cns->low = camel_util_bdata_get_number (&part, 0);
+	cns->priv->last_full_resync = camel_util_bdata_get_number (&part, 0);
 
 	return TRUE;
 }
@@ -141,7 +143,7 @@ summary_header_save (CamelFolderSummary *s,
 	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_save (s, error);
 	if (!fir)
 		return NULL;
-	fir->bdata = g_strdup_printf ("%d %d %d", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low);
+	fir->bdata = g_strdup_printf ("%d %u %u %u", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low, cns->priv->last_full_resync);
 
 	return fir;
 }
@@ -272,6 +274,8 @@ add_range_xover (CamelNNTPSummary *cns,
 				if (folder_filter_recent)
 					camel_folder_change_info_recent_uid (changes, camel_message_info_get_uid (mi));
 				g_clear_object (&mi);
+			} else if (cns->high < n) {
+				cns->high = n;
 			}
 		}
 
@@ -418,6 +422,96 @@ ioerror:
 	return ret;
 }
 
+/* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
+static GHashTable *
+nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
+				   CamelNNTPStore *nntp_store,
+				   const gchar *full_name,
+				   guint total,
+				   GCancellable *cancellable,
+				   GError **error)
+{
+	CamelNNTPStream *nntp_stream;
+	CamelNetworkSettings *network_settings;
+	CamelSettings *settings;
+	CamelService *service;
+	GHashTable *existing_articles = NULL;
+	gint ret = -1;
+	gchar *line = NULL;
+	gchar *host;
+	guint len, count;
+
+	service = CAMEL_SERVICE (nntp_store);
+
+	settings = camel_service_ref_settings (service);
+
+	network_settings = CAMEL_NETWORK_SETTINGS (settings);
+	host = camel_network_settings_dup_host (network_settings);
+
+	g_object_unref (settings);
+
+	camel_operation_push_message (cancellable, _("%s: Scanning existing messages"), host);
+
+	g_free (host);
+
+	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
+
+	ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s", full_name);
+	if (ret != 211) {
+		g_set_error (
+			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
+			_("Unexpected server response from listgroup: %s"),
+			line);
+		goto ioerror;
+	}
+
+	count = 0;
+
+	while ((ret = camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error)) > 0) {
+		guint nn;
+
+		camel_operation_progress (cancellable, (count * 100) / total);
+		count++;
+
+		if (len == 1 && g_ascii_strncasecmp (line, ".", len) == 0)
+			break;
+
+		nn = strtoul (line, NULL, 10);
+		if (nn) {
+			if (!existing_articles)
+				existing_articles = g_hash_table_new (g_direct_hash, g_direct_equal);
+
+			g_hash_table_insert (existing_articles, GUINT_TO_POINTER (nn), NULL);
+		}
+	}
+
+	ret = 0;
+
+ ioerror:
+
+	g_clear_object (&nntp_stream);
+
+	camel_operation_pop_message (cancellable);
+
+	if (ret != 0 && existing_articles) {
+		g_hash_table_destroy (existing_articles);
+		existing_articles = NULL;
+	}
+
+	return existing_articles;
+}
+
+static guint
+nntp_summary_get_current_date_mark (void)
+{
+	GDate date;
+
+	g_date_clear (&date, 1);
+	g_date_set_time_t (&date, time (NULL));
+
+	return g_date_get_year (&date) * 10000 + g_date_get_month (&date) * 100 + g_date_get_day (&date);
+}
+
 /* Assumes we have the stream */
 /* Note: This will be called from camel_nntp_command, so only use camel_nntp_raw_command */
 gint
@@ -437,7 +531,7 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	gchar *folder = NULL;
 	CamelNNTPStoreInfo *si = NULL;
 	CamelStore *parent_store;
-	GList *del = NULL;
+	GPtrArray *known_uids;
 	const gchar *full_name;
 
 	s = (CamelFolderSummary *) cns;
@@ -472,53 +566,57 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	/* Need to work out what to do with our messages */
 
 	/* Check for messages no longer on the server */
-	if (cns->low != f) {
-		CamelDataCache *nntp_cache;
-		GPtrArray *known_uids;
+	known_uids = camel_folder_summary_get_array (s);
+	if (known_uids) {
+		GList *removed = NULL;
 
-		nntp_cache = camel_nntp_store_ref_cache (store);
+		n = nntp_summary_get_current_date_mark ();
 
-		known_uids = camel_folder_summary_get_array (s);
-		if (known_uids) {
+		if (n != cns->priv->last_full_resync) {
+			GHashTable *existing_articles;
+
+			/* Do full resync only once per day, not on every folder change */
+			cns->priv->last_full_resync = n;
+
+			/* Ignore errors, the worse is that some already deleted aricles will be still
+			   in the local summary, which is not a big deal as no articles shown at all. */
+			existing_articles = nntp_get_existing_article_numbers (cns, store, full_name, l - f + 1, cancellable, NULL);
+			if (existing_articles) {
+				for (i = 0; i < known_uids->len; i++) {
+					const gchar *uid;
+
+					uid = g_ptr_array_index (known_uids, i);
+					n = strtoul (uid, NULL, 10);
+
+					if (!g_hash_table_contains (existing_articles, GUINT_TO_POINTER (n))) {
+						camel_folder_change_info_remove_uid (changes, uid);
+						removed = g_list_prepend (removed, (gpointer) camel_pstring_strdup (uid));
+					}
+				}
+
+				g_hash_table_destroy (existing_articles);
+			}
+		} else if (cns->low != f) {
 			for (i = 0; i < known_uids->len; i++) {
 				const gchar *uid;
-				const gchar *msgid;
 
 				uid = g_ptr_array_index (known_uids, i);
 				n = strtoul (uid, NULL, 10);
 
-				if (n < f || n > l) {
-					CamelMessageInfo *mi;
-
-					dd (printf ("nntp_summary: %u is lower/higher than lowest/highest article, removed\n", n));
-					/* Since we use a global cache this could prematurely remove
-					 * a cached message that might be in another folder - not that important as
-					 * it is a true cache */
-					msgid = strchr (uid, ',');
-					if (msgid)
-						camel_data_cache_remove (nntp_cache, "cache", msgid + 1, NULL);
-					camel_folder_change_info_remove_uid (changes, uid);
-					del = g_list_prepend (del, (gpointer) camel_pstring_strdup (uid));
-
-					mi = camel_folder_summary_peek_loaded (s, uid);
-					if (mi) {
-						camel_folder_summary_remove (s, mi);
-						g_clear_object (&mi);
-					} else {
-						camel_folder_summary_remove_uid (s, uid);
-					}
-				}
+				if (n < f || n > l)
+					removed = g_list_prepend (removed, (gpointer) camel_pstring_strdup (uid));
 			}
-			camel_folder_summary_free_array (known_uids);
 		}
-		cns->low = f;
 
-		g_clear_object (&nntp_cache);
+		if (removed)
+			camel_folder_summary_remove_uids (s, removed);
+
+		g_list_free_full (removed, (GDestroyNotify) camel_pstring_free);
+
+		camel_folder_summary_free_array (known_uids);
 	}
 
-	camel_db_delete_uids (camel_store_get_db (parent_store), full_name, del, NULL);
-	g_list_foreach (del, (GFunc) camel_pstring_free, NULL);
-	g_list_free (del);
+	cns->low = f;
 
 	if (cns->high < l) {
 		if (cns->high < f)

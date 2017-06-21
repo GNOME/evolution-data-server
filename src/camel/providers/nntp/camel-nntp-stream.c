@@ -194,6 +194,12 @@ nntp_stream_write (CamelStream *stream,
 	gssize written;
 
 	g_rec_mutex_lock (&is->lock);
+	if (dd (1)) {
+		if (n > 8 && g_ascii_strncasecmp (buffer, "AUTHINFO", 8) == 0)
+			printf ("%s: AUTHINFO...\n", G_STRFUNC);
+		else
+			printf ("%s: %.*s", G_STRFUNC, (gint) n, buffer);
+	}
 	written = camel_stream_write (is->source, buffer, n, cancellable, error);
 	g_rec_mutex_unlock (&is->lock);
 
