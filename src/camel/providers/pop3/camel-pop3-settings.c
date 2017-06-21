@@ -27,6 +27,7 @@ struct _CamelPOP3SettingsPrivate {
 	gboolean disable_extensions;
 	gboolean keep_on_server;
 	gboolean auto_fetch;
+	guint32 last_cache_expunge;
 };
 
 enum {
@@ -40,7 +41,8 @@ enum {
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
 	PROP_USER,
-	PROP_AUTO_FETCH
+	PROP_AUTO_FETCH,
+	PROP_LAST_CACHE_EXPUNGE
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -91,6 +93,12 @@ pop3_settings_set_property (GObject *object,
 			camel_pop3_settings_set_keep_on_server (
 				CAMEL_POP3_SETTINGS (object),
 				g_value_get_boolean (value));
+			return;
+
+		case PROP_LAST_CACHE_EXPUNGE:
+			camel_pop3_settings_set_last_cache_expunge (
+				CAMEL_POP3_SETTINGS (object),
+				g_value_get_uint (value));
 			return;
 
 		case PROP_PORT:
@@ -167,6 +175,13 @@ pop3_settings_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				camel_pop3_settings_get_keep_on_server (
+				CAMEL_POP3_SETTINGS (object)));
+			return;
+
+		case PROP_LAST_CACHE_EXPUNGE:
+			g_value_set_uint (
+				value,
+				camel_pop3_settings_get_last_cache_expunge (
 				CAMEL_POP3_SETTINGS (object)));
 			return;
 
@@ -273,6 +288,20 @@ camel_pop3_settings_class_init (CamelPOP3SettingsClass *class)
 			"Keep On Server",
 			"Leave messages on POP3 server",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LAST_CACHE_EXPUNGE,
+		g_param_spec_uint (
+			"last-cache-expunge",
+			"Last Cache Expunge",
+			"Date as Julian value, when the cache had been checked for orphaned files the last time",
+			0,
+			G_MAXUINT32,
+			0,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS));
@@ -541,3 +570,24 @@ camel_pop3_settings_set_auto_fetch (CamelPOP3Settings *settings,
 	g_object_notify (G_OBJECT (settings), "auto-fetch");
 }
 
+guint32
+camel_pop3_settings_get_last_cache_expunge (CamelPOP3Settings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_POP3_SETTINGS (settings), 0);
+
+	return settings->priv->last_cache_expunge;
+}
+
+void
+camel_pop3_settings_set_last_cache_expunge (CamelPOP3Settings *settings,
+					    guint32 last_cache_expunge)
+{
+	g_return_if_fail (CAMEL_IS_POP3_SETTINGS (settings));
+
+	if (settings->priv->last_cache_expunge == last_cache_expunge)
+		return;
+
+	settings->priv->last_cache_expunge = last_cache_expunge;
+
+	g_object_notify (G_OBJECT (settings), "last-cache-expunge");
+}

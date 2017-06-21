@@ -52,6 +52,24 @@ typedef struct _CamelDataCache CamelDataCache;
 typedef struct _CamelDataCacheClass CamelDataCacheClass;
 typedef struct _CamelDataCachePrivate CamelDataCachePrivate;
 
+/**
+ * CamelDataCacheRemoveFunc:
+ * @cdc: a #CamelDataCache
+ * @filename: a file name found in the cache
+ * @user_data: user data passed to camel_data_cache_foreach_remove()
+ *
+ * A callback called for each found file in the cache, used
+ * by camel_data_cache_foreach_remove(). The @filename corresponds
+ * to the result of camel_data_cache_get_filename().
+ *
+ * Returns: %TRUE, to delete the file, %FALSE to keep in in the cache
+ *
+ * Since: 3.26
+ **/
+typedef gboolean (* CamelDataCacheRemoveFunc)	(CamelDataCache *cdc,
+						 const gchar *filename,
+						 gpointer user_data);
+
 struct _CamelDataCache {
 	GObject parent;
 	CamelDataCachePrivate *priv;
@@ -97,6 +115,10 @@ gchar *		camel_data_cache_get_filename	(CamelDataCache *cdc,
 						 const gchar *key);
 void		camel_data_cache_clear		(CamelDataCache *cdc,
 						 const gchar *path);
+void		camel_data_cache_foreach_remove	(CamelDataCache *cdc,
+						 const gchar *path,
+						 CamelDataCacheRemoveFunc func,
+						 gpointer user_data);
 
 G_END_DECLS
 

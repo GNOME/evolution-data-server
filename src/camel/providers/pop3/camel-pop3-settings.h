@@ -83,6 +83,11 @@ gboolean	camel_pop3_settings_get_auto_fetch
 void		camel_pop3_settings_set_auto_fetch
 						(CamelPOP3Settings *settings,
 						 gboolean auto_fetch);
+guint32		camel_pop3_settings_get_last_cache_expunge
+						(CamelPOP3Settings *settings);
+void		camel_pop3_settings_set_last_cache_expunge
+						(CamelPOP3Settings *settings,
+						 guint32 last_cache_expunge);
 
 G_END_DECLS
 

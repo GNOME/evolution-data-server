@@ -665,3 +665,94 @@ camel_data_cache_clear (CamelDataCache *cdc,
 	g_dir_close (dir);
 	g_free (base_dir);
 }
+
+static void
+data_cache_foreach_remove (CamelDataCache *cdc,
+			   const gchar *path,
+			   CamelDataCacheRemoveFunc func,
+			   gpointer user_data)
+{
+	GDir *dir;
+	const gchar *dname;
+	struct stat st;
+	GIOStream *stream;
+
+	dir = g_dir_open (path, 0, NULL);
+	if (!dir)
+		return;
+
+	while ((dname = g_dir_read_name (dir))) {
+		gchar *filename;
+
+		filename = g_build_filename (path, dname, NULL);
+
+		if (g_stat (filename, &st) == 0
+		    && S_ISREG (st.st_mode)
+		    && func (cdc, filename, user_data)) {
+			g_unlink (filename);
+			stream = camel_object_bag_get (cdc->priv->busy_bag, filename);
+			if (stream) {
+				camel_object_bag_remove (cdc->priv->busy_bag, stream);
+				g_object_unref (stream);
+			}
+		}
+
+		g_free (filename);
+	}
+
+	g_dir_close (dir);
+}
+
+/**
+ * camel_data_cache_foreach_remove:
+ * @cdc: a #CamelDataCache
+ * @path: Path to the (sub) cache the items exist in
+ * @func: (scope call) (closure user_data): a callback to call for each found file in the cache
+ * @user_data: user data passed to @func
+ *
+ * Traverses the @cdc sub-cache identified by @path and calls @func for each found file.
+ * If the @func returns %TRUE, then the file is removed, if %FALSE, it's kept in the cache.
+ *
+ * Since: 3.26
+ **/
+void
+camel_data_cache_foreach_remove (CamelDataCache *cdc,
+				 const gchar *path,
+				 CamelDataCacheRemoveFunc func,
+				 gpointer user_data)
+{
+	gchar *base_dir;
+	GDir *dir;
+	const gchar *dname;
+	struct stat st;
+
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (cdc));
+	g_return_if_fail (path != NULL);
+	g_return_if_fail (func != NULL);
+
+	base_dir = g_build_filename (cdc->priv->path, path, NULL);
+
+	dir = g_dir_open (base_dir, 0, NULL);
+	if (dir == NULL) {
+		g_free (base_dir);
+		return;
+	}
+
+	while ((dname = g_dir_read_name (dir))) {
+		gchar *dpath;
+
+		dpath = g_build_filename (base_dir, dname, NULL);
+
+		if (g_stat (dpath, &st) == 0
+		    && S_ISDIR (st.st_mode)
+		    && !g_str_equal (dname, ".")
+		    && !g_str_equal (dname, "..")) {
+			data_cache_foreach_remove (cdc, dpath, func, user_data);
+		}
+
+		g_free (dpath);
+	}
+
+	g_dir_close (dir);
+	g_free (base_dir);
+}

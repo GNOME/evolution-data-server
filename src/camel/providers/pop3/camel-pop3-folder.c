@@ -768,6 +768,89 @@ pop3_folder_refresh_info_sync (CamelFolder *folder,
 	return success;
 }
 
+static guint32
+pop3_folder_get_current_time_mark (void)
+{
+	GDate date;
+
+	g_date_clear (&date, 1);
+	g_date_set_time_t (&date, time (NULL));
+
+	return g_date_get_julian (&date);
+}
+
+static gboolean
+pop3_folder_cache_foreach_remove_cb (CamelDataCache *cache,
+				     const gchar *filename,
+				     gpointer user_data)
+{
+	GHashTable *filenames = user_data;
+
+	g_return_val_if_fail (filenames != NULL, FALSE);
+
+	return !g_hash_table_contains (filenames, filename);
+}
+
+static void
+pop3_folder_maybe_expunge_cache (CamelPOP3Folder *pop3_folder)
+{
+	CamelService *service;
+	CamelSettings *settings;
+	CamelDataCache *pop3_cache;
+	GHashTable *filenames;
+	guint32 last_cache_expunge, current_time;
+	gint ii;
+
+	g_return_if_fail (CAMEL_IS_POP3_FOLDER (pop3_folder));
+
+	service = CAMEL_SERVICE (camel_folder_get_parent_store (CAMEL_FOLDER (pop3_folder)));
+	g_return_if_fail (CAMEL_IS_SERVICE (service));
+
+	/* Expunge local cache only if online, which should guarantee that
+	   the 'pop3_folder->uids' is properly populated. */
+	if (camel_service_get_connection_status (service) != CAMEL_SERVICE_CONNECTED)
+		return;
+
+	pop3_cache = camel_pop3_store_ref_cache (CAMEL_POP3_STORE (service));
+	g_return_if_fail (CAMEL_IS_DATA_CACHE (pop3_cache));
+
+	settings = camel_service_ref_settings (service);
+
+	last_cache_expunge = camel_pop3_settings_get_last_cache_expunge (CAMEL_POP3_SETTINGS (settings));
+	current_time = pop3_folder_get_current_time_mark ();
+
+	if (last_cache_expunge + 7 > current_time && current_time >= last_cache_expunge) {
+		d (printf ("%s: No need to expunge cache yet; last did %d, now is %d\n", G_STRFUNC, last_cache_expunge, current_time));
+		g_clear_object (&pop3_cache);
+		g_clear_object (&settings);
+		return;
+	}
+
+	d (printf ("%s: Going to expunge cache; last did %d, now is %d\n", G_STRFUNC, last_cache_expunge, current_time));
+	camel_pop3_settings_set_last_cache_expunge (CAMEL_POP3_SETTINGS (settings), current_time);
+	g_clear_object (&settings);
+
+	filenames = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+	for (ii = 0; ii < pop3_folder->uids->len; ii++) {
+		CamelPOP3FolderInfo *fi = pop3_folder->uids->pdata[ii];
+		gchar *filename;
+
+		if (!fi || !fi->uid)
+			continue;
+
+		filename = camel_data_cache_get_filename (pop3_cache, "cache", fi->uid);
+		if (filename)
+			g_hash_table_insert (filenames, filename, NULL);
+	}
+
+	d (printf ("%s: Recognized %d downloaded messages\n", G_STRFUNC, g_hash_table_size (filenames)));
+	camel_data_cache_foreach_remove	(pop3_cache, "cache", pop3_folder_cache_foreach_remove_cb, filenames);
+
+	g_hash_table_destroy (filenames);
+	g_clear_object (&pop3_cache);
+}
+
 static gboolean
 pop3_folder_synchronize_sync (CamelFolder *folder,
                               gboolean expunge,
@@ -825,8 +908,10 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 		return FALSE;
 	}
 
-	if (!expunge || (keep_on_server && !delete_expunged))
+	if (!expunge || (keep_on_server && !delete_expunged)) {
+		pop3_folder_maybe_expunge_cache (pop3_folder);
 		return TRUE;
+	}
 
 	if (!is_online) {
 		g_set_error (
@@ -910,6 +995,8 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 	camel_pop3_engine_busy_unlock (pop3_engine);
 	g_clear_object (&pop3_cache);
 	g_clear_object (&pop3_engine);
+
+	pop3_folder_maybe_expunge_cache (pop3_folder);
 
 	camel_operation_pop_message (cancellable);
 
