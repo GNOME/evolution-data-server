@@ -771,6 +771,39 @@ nntp_folder_transfer_messages_to_sync (CamelFolder *source,
 }
 
 static void
+nntp_folder_changed (CamelFolder *folder,
+		     CamelFolderChangeInfo *info)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_FOLDER (folder));
+
+	if (info && info->uid_removed && info->uid_removed->len) {
+		CamelDataCache *nntp_cache;
+
+		nntp_cache = camel_nntp_store_ref_cache (CAMEL_NNTP_STORE (camel_folder_get_parent_store (folder)));
+
+		if (nntp_cache) {
+			guint ii;
+
+			for (ii = 0; ii < info->uid_removed->len; ii++) {
+				const gchar *message_uid = info->uid_removed->pdata[ii], *real_uid;
+
+				if (!message_uid)
+					continue;
+
+				real_uid = strchr (message_uid, ',');
+				if (real_uid)
+					camel_data_cache_remove (nntp_cache, "cache", real_uid + 1, NULL);
+			}
+
+			g_object_unref (nntp_cache);
+		}
+	}
+
+	/* Chain up to parent's method. */
+	CAMEL_FOLDER_CLASS (camel_nntp_folder_parent_class)->changed (folder, info);
+}
+
+static void
 camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 {
 	GObjectClass *object_class;
@@ -797,6 +830,7 @@ camel_nntp_folder_class_init (CamelNNTPFolderClass *class)
 	folder_class->refresh_info_sync = nntp_folder_refresh_info_sync;
 	folder_class->synchronize_sync = nntp_folder_synchronize_sync;
 	folder_class->transfer_messages_to_sync = nntp_folder_transfer_messages_to_sync;
+	folder_class->changed = nntp_folder_changed;
 
 	g_object_class_install_property (
 		object_class,
