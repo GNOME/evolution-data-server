@@ -26,6 +26,8 @@ struct _CamelNNTPSettingsPrivate {
 	gboolean filter_junk;
 	gboolean folder_hierarchy_relative;
 	gboolean short_folder_names;
+	gboolean use_limit_latest;
+	guint limit_latest;
 };
 
 enum {
@@ -38,7 +40,9 @@ enum {
 	PROP_PORT,
 	PROP_SECURITY_METHOD,
 	PROP_SHORT_FOLDER_NAMES,
-	PROP_USER
+	PROP_USER,
+	PROP_USE_LIMIT_LATEST,
+	PROP_LIMIT_LATEST
 };
 
 G_DEFINE_TYPE_WITH_CODE (
@@ -83,6 +87,18 @@ nntp_settings_set_property (GObject *object,
 			camel_network_settings_set_host (
 				CAMEL_NETWORK_SETTINGS (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_USE_LIMIT_LATEST:
+			camel_nntp_settings_set_use_limit_latest (
+				CAMEL_NNTP_SETTINGS (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_LIMIT_LATEST:
+			camel_nntp_settings_set_limit_latest (
+				CAMEL_NNTP_SETTINGS (object),
+				g_value_get_uint (value));
 			return;
 
 		case PROP_PORT:
@@ -153,6 +169,20 @@ nntp_settings_get_property (GObject *object,
 				value,
 				camel_network_settings_dup_host (
 				CAMEL_NETWORK_SETTINGS (object)));
+			return;
+
+		case PROP_USE_LIMIT_LATEST:
+			g_value_set_boolean (
+				value,
+				camel_nntp_settings_get_use_limit_latest (
+				CAMEL_NNTP_SETTINGS (object)));
+			return;
+
+		case PROP_LIMIT_LATEST:
+			g_value_set_uint (
+				value,
+				camel_nntp_settings_get_limit_latest (
+				CAMEL_NNTP_SETTINGS (object)));
 			return;
 
 		case PROP_PORT:
@@ -233,6 +263,30 @@ camel_nntp_settings_class_init (CamelNNTPSettingsClass *class)
 		object_class,
 		PROP_SECURITY_METHOD,
 		"security-method");
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_LIMIT_LATEST,
+		g_param_spec_boolean (
+			"use-limit-latest",
+			"Use Limit Latest",
+			"Whether to limit download of the latest messages",
+			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_LIMIT_LATEST,
+		g_param_spec_uint (
+			"limit-latest",
+			"Limit Latest",
+			"The actual limit to download of the latest messages",
+			100, G_MAXUINT, 1000,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS));
 
 	g_object_class_install_property (
 		object_class,
@@ -457,3 +511,80 @@ camel_nntp_settings_set_short_folder_names (CamelNNTPSettings *settings,
 	g_object_notify (G_OBJECT (settings), "short-folder-names");
 }
 
+/**
+ * camel_nntp_settings_get_use_limit_latest:
+ * @settings: a #CamelNNTPSettings
+ *
+ * Returns: Whether should limit download of the messages
+ *
+ * Since: 3.26
+ **/
+gboolean
+camel_nntp_settings_get_use_limit_latest (CamelNNTPSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NNTP_SETTINGS (settings), FALSE);
+
+	return settings->priv->use_limit_latest;
+}
+
+/**
+ * camel_nntp_settings_set_use_limit_latest:
+ * @settings: a #CamelNNTPSettings
+ * @use_limit_latest: value to set
+ *
+ * Sets whether should limit download of the messages.
+ *
+ * Since: 3.26
+ **/
+void
+camel_nntp_settings_set_use_limit_latest (CamelNNTPSettings *settings,
+					  gboolean use_limit_latest)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
+
+	if ((settings->priv->use_limit_latest ? 1 : 0) == (use_limit_latest ? 1 : 0))
+		return;
+
+	settings->priv->use_limit_latest = use_limit_latest;
+
+	g_object_notify (G_OBJECT (settings), "use-limit-latest");
+}
+
+/**
+ * camel_nntp_settings_get_limit_latest:
+ * @settings: a #CamelNNTPSettings
+ *
+ * Returns: How many latest messages can be downloaded
+ *
+ * Since: 3.26
+ **/
+guint
+camel_nntp_settings_get_limit_latest (CamelNNTPSettings *settings)
+{
+	g_return_val_if_fail (CAMEL_IS_NNTP_SETTINGS (settings), 0);
+
+	return settings->priv->limit_latest;
+}
+
+/**
+ * camel_nntp_settings_set_limit_latest:
+ * @settings: a #CamelNNTPSettings
+ * @limit_latest: the value to set
+ *
+ * Sets how many latest messages can be downloaded.
+ *
+ * Since: 3.26
+ **/
+void
+camel_nntp_settings_set_limit_latest (CamelNNTPSettings *settings,
+				      guint limit_latest)
+{
+	g_return_if_fail (CAMEL_IS_NNTP_SETTINGS (settings));
+
+	if (settings->priv->limit_latest == limit_latest)
+		return;
+
+	settings->priv->limit_latest = limit_latest;
+
+	g_object_notify (G_OBJECT (settings), "limit-latest");
+}

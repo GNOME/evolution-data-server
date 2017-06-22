@@ -46,6 +46,9 @@ static CamelProviderConfEntry nntp_conf_entries[] = {
 	  "than comp.os.linux)"), "1" },
 	{ CAMEL_PROVIDER_CONF_CHECKBOX, "folder-hierarchy-relative", NULL,
 	  N_("In the subscription _dialog, show relative folder names"), "1" },
+	{ CAMEL_PROVIDER_CONF_CHECKSPIN, "limit-latest", NULL,
+	  /* Translators: The '%s' is replaced with a spin button with the actual value to use */
+	  N_("Download only up to %s latest messages"), "y:100:1000:99999999" },
 	{ CAMEL_PROVIDER_CONF_SECTION_END },
 	{ CAMEL_PROVIDER_CONF_END }
 };

@@ -79,6 +79,16 @@ gboolean	camel_nntp_settings_get_short_folder_names
 void		camel_nntp_settings_set_short_folder_names
 					(CamelNNTPSettings *settings,
 					 gboolean short_folder_names);
+gboolean	camel_nntp_settings_get_use_limit_latest
+					(CamelNNTPSettings *settings);
+void		camel_nntp_settings_set_use_limit_latest
+					(CamelNNTPSettings *settings,
+					 gboolean use_limit_latest);
+guint		camel_nntp_settings_get_limit_latest
+					(CamelNNTPSettings *settings);
+void		camel_nntp_settings_set_limit_latest
+					(CamelNNTPSettings *settings,
+					 guint limit_latest);
 
 G_END_DECLS
 

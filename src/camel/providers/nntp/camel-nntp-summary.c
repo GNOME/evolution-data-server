@@ -29,6 +29,7 @@
 #include <glib/gi18n-lib.h>
 
 #include "camel-nntp-folder.h"
+#include "camel-nntp-settings.h"
 #include "camel-nntp-store.h"
 #include "camel-nntp-stream.h"
 #include "camel-nntp-summary.h"
@@ -47,6 +48,7 @@
 struct _CamelNNTPSummaryPrivate {
 	gchar *uid;
 	guint last_full_resync;
+	guint last_limit_latest;
 
 	struct _xover_header *xover; /* xoverview format */
 	gint xover_setup;
@@ -129,6 +131,7 @@ summary_header_load (CamelFolderSummary *s,
 	cns->high = camel_util_bdata_get_number (&part, 0);
 	cns->low = camel_util_bdata_get_number (&part, 0);
 	cns->priv->last_full_resync = camel_util_bdata_get_number (&part, 0);
+	cns->priv->last_limit_latest = camel_util_bdata_get_number (&part, 0);
 
 	return TRUE;
 }
@@ -143,7 +146,7 @@ summary_header_save (CamelFolderSummary *s,
 	fir = CAMEL_FOLDER_SUMMARY_CLASS (camel_nntp_summary_parent_class)->summary_header_save (s, error);
 	if (!fir)
 		return NULL;
-	fir->bdata = g_strdup_printf ("%d %u %u %u", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low, cns->priv->last_full_resync);
+	fir->bdata = g_strdup_printf ("%d %u %u %u %u", CAMEL_NNTP_SUMMARY_VERSION, cns->high, cns->low, cns->priv->last_full_resync, cns->priv->last_limit_latest);
 
 	return fir;
 }
@@ -427,6 +430,7 @@ static GHashTable *
 nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 				   CamelNNTPStore *nntp_store,
 				   const gchar *full_name,
+				   guint limit_from,
 				   guint total,
 				   GCancellable *cancellable,
 				   GError **error)
@@ -456,7 +460,10 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 
 	nntp_stream = camel_nntp_store_ref_stream (nntp_store);
 
-	ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s", full_name);
+	if (limit_from)
+		ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s %u-", full_name, limit_from);
+	else
+		ret = camel_nntp_raw_command_auth (nntp_store, cancellable, error, &line, "listgroup %s", full_name);
 	if (ret != 211) {
 		g_set_error (
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
@@ -526,11 +533,12 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 	CamelStoreSummary *store_summary;
 	CamelFolderSummary *s;
 	gint ret = 0, i;
-	guint n, f, l;
+	guint n, f, l, limit_latest = 0;
 	gint count;
 	gchar *folder = NULL;
 	CamelNNTPStoreInfo *si = NULL;
 	CamelStore *parent_store;
+	CamelSettings *settings;
 	GPtrArray *known_uids;
 	const gchar *full_name;
 
@@ -538,6 +546,14 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 	full_name = camel_folder_get_full_name (camel_folder_summary_get_folder (s));
 	parent_store = camel_folder_get_parent_store (camel_folder_summary_get_folder (s));
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+	if (settings) {
+		if (camel_nntp_settings_get_use_limit_latest (CAMEL_NNTP_SETTINGS (settings)))
+			limit_latest = camel_nntp_settings_get_limit_latest (CAMEL_NNTP_SETTINGS (settings));
+
+		g_object_unref (settings);
+	}
 
 	line +=3;
 	n = strtoul (line, &line, 10);
@@ -558,7 +574,14 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 		folder = tmp;
 	}
 
-	if (cns->low == f && cns->high == l) {
+	if (cns->low == f && cns->high == l && cns->priv->last_limit_latest >= limit_latest) {
+		if (cns->priv->last_limit_latest != limit_latest) {
+			cns->priv->last_limit_latest = limit_latest;
+
+			camel_folder_summary_touch (s);
+			camel_folder_summary_save (s, NULL);
+		}
+
 		dd (printf ("nntp_summary: no work to do!\n"));
 		goto update;
 	}
@@ -574,13 +597,17 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 		if (n != cns->priv->last_full_resync) {
 			GHashTable *existing_articles;
+			guint first = f;
 
 			/* Do full resync only once per day, not on every folder change */
 			cns->priv->last_full_resync = n;
 
+			if (limit_latest > 0 && l - first > limit_latest)
+				first = l - limit_latest;
+
 			/* Ignore errors, the worse is that some already deleted aricles will be still
 			   in the local summary, which is not a big deal as no articles shown at all. */
-			existing_articles = nntp_get_existing_article_numbers (cns, store, full_name, l - f + 1, cancellable, NULL);
+			existing_articles = nntp_get_existing_article_numbers (cns, store, full_name, first == f ? 0 : first, l - first + 1, cancellable, NULL);
 			if (existing_articles) {
 				for (i = 0; i < known_uids->len; i++) {
 					const gchar *uid;
@@ -618,8 +645,11 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 
 	cns->low = f;
 
-	if (cns->high < l) {
-		if (cns->high < f)
+	if (cns->high < l || limit_latest != cns->priv->last_limit_latest) {
+		if (limit_latest > 0 && l - f > limit_latest)
+			f = l - limit_latest + 1;
+
+		if (cns->high < f || limit_latest != cns->priv->last_limit_latest)
 			cns->high = f - 1;
 
 		if (store->xover)
@@ -631,6 +661,8 @@ camel_nntp_summary_check (CamelNNTPSummary *cns,
 				cns, store, l, cns->high + 1,
 				changes, cancellable, error);
 	}
+
+	cns->priv->last_limit_latest = limit_latest;
 
 	/* TODO: not from here */
 	camel_folder_summary_touch (s);
