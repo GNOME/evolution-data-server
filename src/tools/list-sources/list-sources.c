@@ -81,10 +81,10 @@ static GOptionEntry entries[] = {
 	  N_("Show only enabled sources") },
 	{ "show-uid", 'u', 0,
 	  G_OPTION_ARG_NONE, &opt_show_uid,
-	  N_("Show source's UID") },
+	  N_("Show source’s UID") },
 	{ "show-authentication", 'a', 0,
 	  G_OPTION_ARG_NONE, &opt_show_authentication,
-	  N_("Show source's authentication information") },
+	  N_("Show source’s authentication information") },
 	{ "machine-readable", 'm', 0,
 	  G_OPTION_ARG_NONE, &opt_machine_readable,
 	  N_("Write in machine readable format (one source per line, without localized property names and tab as separator)") },
@@ -242,7 +242,7 @@ dump_one_source (ESource *source,
 			const gchar *mime_type = e_source_mail_signature_get_mime_type (e_source_get_extension (source, E_SOURCE_EXTENSION_MAIL_SIGNATURE));
 
 			if (mime_type && *mime_type)
-				print_with_indent (indent_level + 1, _("Mime Type: %s"), mime_type);
+				print_with_indent (indent_level + 1, _("MIME Type: %s"), mime_type);
 		}
 	}
 
