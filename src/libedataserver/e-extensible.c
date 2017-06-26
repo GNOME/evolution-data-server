@@ -27,23 +27,20 @@
  * 1. Add the #EExtensible interface when registering the #GType.
  *    There are no methods to implement.
  *
- * <informalexample>
- * <programlisting>
+ * |[
  * #include <libedataserver/libedataserver.h>
  *
  * G_DEFINE_TYPE_WITH_CODE (
  *         ECustomWidget, e_custom_widget, GTK_TYPE_WIDGET,
  *         G_IMPLEMENT_INTERFACE (E_TYPE_EXTENSIBLE, NULL))
- * </programlisting>
- * </informalexample>
+ * ]|
  *
  * 2. Load extensions for the class at some point during #GObject
  *    initialization.  Generally this should be done toward the end of
  *    the initialization code, so extensions get a fully initialized
  *    object to work with.
  *
- * <informalexample>
- * <programlisting>
+ * |[
  * static void
  * e_custom_widget_constructed (ECustomWidget *widget)
  * {
@@ -51,8 +48,7 @@
  *
  *         e_extensible_load_extensions (E_EXTENSIBLE (widget));
  * }
- * </programlisting>
- * </informalexample>
+ * ]|
  **/
 
 #include "evolution-data-server-config.h"

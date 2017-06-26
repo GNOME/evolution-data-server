@@ -56,9 +56,8 @@
  * In the following example we create a typical cursor sorted with
  * %E_CONTACT_FAMILY_NAME as the primary sort key and %E_CONTACT_GIVEN_NAME
  * as a tie breaker.
- * <informalexample>
- *   <programlisting>
- *     <![CDATA[EBookClientCursor *cursor = NULL;
+ * |[
+ *     EBookClientCursor *cursor = NULL;
  *     EContactField sort_fields[] = { E_CONTACT_FAMILY_NAME, E_CONTACT_GIVEN_NAME };
  *     EBookCursorSortType sort_types[] = { E_BOOK_CURSOR_SORT_ASCENDING, E_BOOK_CURSOR_SORT_ASCENDING };
  *     GError *error = NULL;
@@ -72,8 +71,8 @@
  *                                        NULL,        // GCancellable
  *                                        &error)) {
  *             // Now we have a cursor ...
- *     }]]></programlisting>
- * </informalexample>
+ *     }
+ * ]|
  * </para>
  * <para>
  * Sort order is immutable, if you need to browse content in a different
@@ -191,9 +190,8 @@
  * such as determining "Forward" / "Back" button sensitivity
  * in a browser interface, or displaying some indication
  * of the view window's position in the full contact list.
- * <informalexample>
- *   <programlisting>
- *     <![CDATA[gint position, total;
+ * |[
+ *     gint position, total;
  *     gdouble percent;
  *
  *     // Fetch the position & total
@@ -210,8 +208,8 @@
  *     // Let the user know the percentage of contacts in the list
  *     // which are positioned before the view position (the
  *     // percentage of the addressbook which the user has seen so far).
- *     update_percentage_of_list_browsed (user_interface, percent);]]></programlisting>
- * </informalexample>
+ *     update_percentage_of_list_browsed (user_interface, percent);
+ * ]|
  * </para>
  * <para>
  * These total and position values are guaranteed to always be coherent, they are
@@ -260,9 +258,8 @@
  * Iterating through the contact list is done with e_book_client_cursor_step(), this
  * function allows one to move the cursor and fetch the results following the current
  * cursor position.
- * <informalexample>
- *   <programlisting>
- *     <![CDATA[GError *error = NULL;
+ * |[
+ *     GError *error = NULL;
  *     GSList *results = NULL;
  *     gint n_results;
  *
@@ -312,8 +309,8 @@
  *         // the end of the list was reached. The next attempt to
  *         // move the cursor in the same direction will result in
  *         // an E_CLIENT_ERROR_QUERY_REFUSED error.
- *       }]]></programlisting>
- * </informalexample>
+ *       }
+ * ]|
  * In the above example we chose %E_BOOK_CURSOR_ORIGIN_CURRENT as our #EBookCursorOrigin so the above
  * call will traverse 10 contacts following the cursor's current position. One can also choose the
  * %E_BOOK_CURSOR_ORIGIN_BEGIN or %E_BOOK_CURSOR_ORIGIN_END origin to start at the beginning or end
@@ -377,9 +374,8 @@
  * to navigate to a specific letter in the results. To set the cursor's position
  * directly before any results starting with a specific letter, one can use
  * e_book_client_cursor_set_alphabetic_index().
- * <informalexample>
- *   <programlisting>
- *     <![CDATA[GError *error = NULL;
+ * |[
+ *     GError *error = NULL;
  *     gint index = currently_selected_index (user_interface);
  *
  *     // At this point 'index' must be a numeric value corresponding
@@ -405,8 +401,8 @@
  *           }
  *
  *         g_clear_error (&error);
- *       }]]></programlisting>
- * </informalexample>
+ *       }
+ * ]|
  * After setting the alphabetic index successfully, you can go ahead
  * and use e_book_client_cursor_step() to load some contacts at the
  * beginning of the given letter.
@@ -430,9 +426,8 @@
  * One can determine the appropriate index for a given #EContact by calling
  * e_book_client_cursor_get_contact_alphabetic_index() after refreshing
  * the currently displayed contacts in a view.
- * <informalexample>
- *   <programlisting>
- *     <![CDATA[EContact *contact;
+ * |[
+ *     EContact *contact;
  *     const gchar * const *alphabet;
  *     gint index;
  *
@@ -447,8 +442,8 @@
  *                                                   NULL, NULL, NULL);
  *
  *     // Update label in user interface
- *     set_alphabetic_position_feedback_text (user_interface, alphabet[index]);]]></programlisting>
- * </informalexample>
+ *     set_alphabetic_position_feedback_text (user_interface, alphabet[index]);
+ * ]|
  * </para>
  * </refsect2>
  *

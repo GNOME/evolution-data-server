@@ -528,12 +528,10 @@ camel_object_bag_rekey (CamelObjectBag *bag,
  * Returns a #GPtrArray of all the objects in the bag.  The caller owns
  * both the array and the object references, so to free the array use:
  *
- * <informalexample>
- *   <programlisting>
+ * |[
  *     g_ptr_array_foreach (array, (GFunc) g_object_unref, NULL);
  *     g_ptr_array_free (array, TRUE);
- *   </programlisting>
- * </informalexample>
+ * ]|
  *
  * Returns: (element-type GObject) (transfer full): an array of objects in @bag
  **/

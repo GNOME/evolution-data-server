@@ -723,12 +723,10 @@ camel_store_get_folders_bag (CamelStore *store)
  * Returns a #GPtrArray of all the opened folders for the @store. The caller owns
  * both the array and the folder references, so to free the array use:
  *
- * <informalexample>
- *   <programlisting>
+ * |[
  *     g_ptr_array_foreach (array, (GFunc) g_object_unref, NULL);
  *     g_ptr_array_free (array, TRUE);
- *   </programlisting>
- * </informalexample>
+ * ]|
  *
  * Returns: (element-type CamelFolder) (transfer full): an array with all currently
  *   opened folders for the @store.

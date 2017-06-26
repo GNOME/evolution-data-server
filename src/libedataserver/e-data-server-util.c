@@ -679,8 +679,7 @@ e_util_utf8_normalize (const gchar *str)
  * Admittedly, the function semantics are a little awkward.  The example
  * below illustrates the easiest way to cope with the @gdbus_str argument:
  *
- * <informalexample>
- *   <programlisting>
+ * |[
  *     const gchar *trusted_utf8;
  *     gchar *allocated = NULL;
  *
@@ -692,8 +691,7 @@ e_util_utf8_normalize (const gchar *str)
  *
  *     g_free (allocated);
  *     allocated = NULL;
- *   </programlisting>
- * </informalexample>
+ * ]|
  *
  * Returns: a valid UTF-8 string
  *
