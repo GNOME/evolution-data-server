@@ -2064,6 +2064,8 @@ header_decode_quoted_string (const gchar **in)
 			if (c == '\\' && *intmp) {
 				intmp++;
 				skip++;
+			} else if (c == '\n') {
+				skip++;
 			}
 		}
 		outlen = intmp - inptr - skip;
@@ -2072,6 +2074,8 @@ header_decode_quoted_string (const gchar **in)
 			inptr++;
 			if (c == '\\' && *inptr) {
 				c = *inptr++;
+			} else if (c == '\n') {
+				continue;
 			}
 			*outptr++ = c;
 		}
