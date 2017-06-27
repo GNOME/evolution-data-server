@@ -828,6 +828,14 @@ imapx_connect_sync (CamelService *service,
 		return FALSE;
 
 	mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
+	if (!mailbox) {
+		/* No INBOX can mean no LIST being done yet, but INBOX is important,
+		   thus look for it. */
+		camel_imapx_conn_manager_list_sync (imapx_store->priv->conn_man, "INBOX", 0, cancellable, NULL);
+
+		mailbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
+	}
+
 	if (mailbox) {
 		/* To eventually start IDLE/NOTIFY listener */
 		if (!camel_imapx_conn_manager_noop_sync (imapx_store->priv->conn_man, mailbox, cancellable, error)) {
@@ -1298,17 +1306,30 @@ fetch_folder_info_for_pattern (CamelIMAPXConnManager *conn_man,
 	success = camel_imapx_conn_manager_list_sync (conn_man, pattern, flags, cancellable, &local_error);
 
 	if (!success) {
-		g_clear_object (&imapx_store);
-
 		if (!g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED) &&
 		    camel_imapx_namespace_get_category (namespace) != CAMEL_IMAPX_NAMESPACE_PERSONAL) {
+			CamelIMAPXMailbox *inbox;
+
 			/* Ignore errors for non-personal namespaces; one such error can be:
 			   "NO LIST failed: wildcards not permitted in username" */
 			g_clear_error (&local_error);
+
+			/* Eventually run NOOP, to enable IDLE listening, which did not start
+			   due to the error. */
+			inbox = camel_imapx_store_ref_mailbox (imapx_store, "INBOX");
+			if (inbox) {
+				camel_imapx_conn_manager_noop_sync (conn_man, inbox, cancellable, NULL);
+				g_clear_object (&inbox);
+			}
+
+			g_clear_object (&imapx_store);
+
 			return TRUE;
 		} else if (local_error) {
 			g_propagate_error (error, local_error);
 		}
+
+		g_clear_object (&imapx_store);
 
 		return FALSE;
 	}
@@ -1919,7 +1940,7 @@ imapx_store_get_folder_info_sync (CamelStore *store,
 		goto exit;
 	}
 
-	if (imapx_store->priv->last_refresh_time == 0) {
+	if (imapx_store->priv->last_refresh_time == 0 && !*top) {
 		imapx_store->priv->last_refresh_time = time (NULL);
 		initial_setup = TRUE;
 	}
