@@ -21,6 +21,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#ifndef G_OS_WIN32
+#include <sys/wait.h>
+#endif
+
 #include "test-cal-cache-utils.h"
 
 static void
