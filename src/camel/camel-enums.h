@@ -50,6 +50,10 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_FILTER_JUNK = 1 << 6
 } CamelFolderFlags;
 
+/**
+ * CAMEL_FOLDER_TYPE_BIT: (value 10)
+ * The folder type bitshift value.
+ **/
 #define CAMEL_FOLDER_TYPE_BIT (10)
 
 /**
@@ -152,6 +156,10 @@ typedef enum { /*< flags >*/
 	CAMEL_FOLDER_FLAGS_LAST          = 1 << 24
 } CamelFolderInfoFlags;
 
+/**
+ * CAMEL_FOLDER_TYPE_MASK: (value 64512)
+ * The folder type mask value.
+ **/
 #define CAMEL_FOLDER_TYPE_MASK (0x3F << CAMEL_FOLDER_TYPE_BIT)
 
 /* Note: The HTML elements are escaped in the doc comment intentionally,
@@ -199,6 +207,10 @@ typedef enum { /*< flags >*/
 	CAMEL_MIME_FILTER_TOHTML_QUOTE_CITATION = 1 << 10
 } CamelMimeFilterToHTMLFlags;
 
+/**
+ * CAMEL_STORE_INFO_FOLDER_TYPE_BIT: (value 10)
+ * The folder store info type bitshift value.
+ **/
 #define CAMEL_STORE_INFO_FOLDER_TYPE_BIT (10)
 
 /* WARNING: This enum and CamelFolderInfoFlags must stay in sync.
@@ -236,6 +248,10 @@ typedef enum { /*< flags >*/
 	CAMEL_STORE_INFO_FOLDER_LAST          = 1 << 24  /*< skip >*/
 } CamelStoreInfoFlags;
 
+/**
+ * CAMEL_STORE_INFO_FOLDER_TYPE_MASK: (value 64512)
+ * The folder store info type mask value.
+ **/
 #define CAMEL_STORE_INFO_FOLDER_TYPE_MASK  (0x3F << CAMEL_STORE_INFO_FOLDER_TYPE_BIT)
 
 /**
