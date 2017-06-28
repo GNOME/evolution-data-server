@@ -286,6 +286,9 @@ void		e_util_unref_in_thread		(gpointer object);
 
 gchar *		e_util_generate_uid		(void);
 
+gboolean	e_util_identity_can_send	(struct _ESourceRegistry *registry,
+						 struct _ESource *identity_source);
+
 G_END_DECLS
 
 #endif /* E_DATA_SERVER_UTIL_H */
