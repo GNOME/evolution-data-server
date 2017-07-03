@@ -46,13 +46,15 @@ struct _ESourceMailSubmissionPrivate {
 	gchar *sent_folder;
 	gchar *transport_uid;
 	gboolean replies_to_origin_folder;
+	gboolean use_sent_folder;
 };
 
 enum {
 	PROP_0,
 	PROP_SENT_FOLDER,
 	PROP_TRANSPORT_UID,
-	PROP_REPLIES_TO_ORIGIN_FOLDER
+	PROP_REPLIES_TO_ORIGIN_FOLDER,
+	PROP_USE_SENT_FOLDER
 };
 
 G_DEFINE_TYPE (
@@ -81,6 +83,12 @@ source_mail_submission_set_property (GObject *object,
 
 		case PROP_REPLIES_TO_ORIGIN_FOLDER:
 			e_source_mail_submission_set_replies_to_origin_folder (
+				E_SOURCE_MAIL_SUBMISSION (object),
+				g_value_get_boolean (value));
+			return;
+
+		case PROP_USE_SENT_FOLDER:
+			e_source_mail_submission_set_use_sent_folder (
 				E_SOURCE_MAIL_SUBMISSION (object),
 				g_value_get_boolean (value));
 			return;
@@ -114,6 +122,13 @@ source_mail_submission_get_property (GObject *object,
 			g_value_set_boolean (
 				value,
 				e_source_mail_submission_get_replies_to_origin_folder (
+				E_SOURCE_MAIL_SUBMISSION (object)));
+			return;
+
+		case PROP_USE_SENT_FOLDER:
+			g_value_set_boolean (
+				value,
+				e_source_mail_submission_get_use_sent_folder (
 				E_SOURCE_MAIL_SUBMISSION (object)));
 			return;
 	}
@@ -161,6 +176,19 @@ e_source_mail_submission_class_init (ESourceMailSubmissionClass *class)
 			"Sent Folder",
 			"Preferred folder for sent messages",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_USE_SENT_FOLDER,
+		g_param_spec_boolean (
+			"use-sent-folder",
+			"Use Sent Folder",
+			"Whether to save sent messages to sent-folder",
+			TRUE,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -284,6 +312,45 @@ e_source_mail_submission_set_sent_folder (ESourceMailSubmission *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "sent-folder");
+}
+
+/**
+ * e_source_mail_submission_get_use_sent_folder:
+ * @extension: an #ESourceMailSubmission
+ *
+ * Returns: whether save messages to the sent folder at all
+ *
+ * Since: 3.26
+ **/
+gboolean
+e_source_mail_submission_get_use_sent_folder (ESourceMailSubmission *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension), FALSE);
+
+	return extension->priv->use_sent_folder;
+}
+
+/**
+ * e_source_mail_submission_set_use_sent_folder:
+ * @extension: an #ESourceMailSubmission
+ * @use_sent_folder: the value to set
+ *
+ * Sets whether save messages to the sent folder at all.
+ *
+ * Since: 3.26
+ **/
+void
+e_source_mail_submission_set_use_sent_folder (ESourceMailSubmission *extension,
+					      gboolean use_sent_folder)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_SUBMISSION (extension));
+
+	if ((extension->priv->use_sent_folder ? 1 : 0) == (use_sent_folder ? 1 : 0))
+		return;
+
+	extension->priv->use_sent_folder = use_sent_folder;
+
+	g_object_notify (G_OBJECT (extension), "use-sent-folder");
 }
 
 /**

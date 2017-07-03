@@ -86,6 +86,11 @@ gchar *		e_source_mail_submission_dup_sent_folder
 void		e_source_mail_submission_set_sent_folder
 					(ESourceMailSubmission *extension,
 					 const gchar *sent_folder);
+gboolean	e_source_mail_submission_get_use_sent_folder
+					(ESourceMailSubmission *extension);
+void		e_source_mail_submission_set_use_sent_folder
+					(ESourceMailSubmission *extension,
+					 gboolean use_sent_folder);
 const gchar *	e_source_mail_submission_get_transport_uid
 					(ESourceMailSubmission *extension);
 gchar *		e_source_mail_submission_dup_transport_uid
