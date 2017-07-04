@@ -121,6 +121,16 @@ ESourceMailCompositionReplyStyle
 void		e_source_mail_composition_set_reply_style
 					(ESourceMailComposition *extension,
 					 ESourceMailCompositionReplyStyle reply_style);
+EThreeState	e_source_mail_composition_get_start_bottom
+					(ESourceMailComposition *extension);
+void		e_source_mail_composition_set_start_bottom
+					(ESourceMailComposition *extension,
+					 EThreeState start_bottom);
+EThreeState	e_source_mail_composition_get_top_signature
+					(ESourceMailComposition *extension);
+void		e_source_mail_composition_set_top_signature
+					(ESourceMailComposition *extension,
+					 EThreeState top_signature);
 
 G_END_DECLS
 

@@ -273,4 +273,20 @@ typedef enum {
 	E_SOURCE_MAIL_COMPOSITION_REPLY_STYLE_OUTLOOK
 } ESourceMailCompositionReplyStyle;
 
+/**
+ * EThreeState:
+ * @E_THREE_STATE_OFF: the three-state value is Off
+ * @E_THREE_STATE_ON: the three-state value is On
+ * @E_THREE_STATE_INCONSISTENT: the three-state value is neither On, nor Off
+ *
+ * Describes a three-state value, which can be either Off, On or Inconsistent.
+ *
+ * Since: 3.26
+ **/
+typedef enum {
+	E_THREE_STATE_OFF = 0,
+	E_THREE_STATE_ON,
+	E_THREE_STATE_INCONSISTENT
+} EThreeState;
+
 #endif /* E_SOURCE_ENUMS_H */

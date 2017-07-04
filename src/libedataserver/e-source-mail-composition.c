@@ -52,6 +52,8 @@ struct _ESourceMailCompositionPrivate {
 	gchar *templates_folder;
 	gboolean sign_imip;
 	ESourceMailCompositionReplyStyle reply_style;
+	EThreeState start_bottom;
+	EThreeState top_signature;
 };
 
 enum {
@@ -61,7 +63,9 @@ enum {
 	PROP_DRAFTS_FOLDER,
 	PROP_REPLY_STYLE,
 	PROP_SIGN_IMIP,
-	PROP_TEMPLATES_FOLDER
+	PROP_TEMPLATES_FOLDER,
+	PROP_START_BOTTOM,
+	PROP_TOP_SIGNATURE
 };
 
 G_DEFINE_TYPE (
@@ -106,10 +110,22 @@ source_mail_composition_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_START_BOTTOM:
+			e_source_mail_composition_set_start_bottom (
+				E_SOURCE_MAIL_COMPOSITION (object),
+				g_value_get_enum (value));
+			return;
+
 		case PROP_TEMPLATES_FOLDER:
 			e_source_mail_composition_set_templates_folder (
 				E_SOURCE_MAIL_COMPOSITION (object),
 				g_value_get_string (value));
+			return;
+
+		case PROP_TOP_SIGNATURE:
+			e_source_mail_composition_set_top_signature (
+				E_SOURCE_MAIL_COMPOSITION (object),
+				g_value_get_enum (value));
 			return;
 	}
 
@@ -158,10 +174,24 @@ source_mail_composition_get_property (GObject *object,
 				E_SOURCE_MAIL_COMPOSITION (object)));
 			return;
 
+		case PROP_START_BOTTOM:
+			g_value_set_enum (
+				value,
+				e_source_mail_composition_get_start_bottom (
+				E_SOURCE_MAIL_COMPOSITION (object)));
+			return;
+
 		case PROP_TEMPLATES_FOLDER:
 			g_value_take_string (
 				value,
 				e_source_mail_composition_dup_templates_folder (
+				E_SOURCE_MAIL_COMPOSITION (object)));
+			return;
+
+		case PROP_TOP_SIGNATURE:
+			g_value_set_enum (
+				value,
+				e_source_mail_composition_get_top_signature (
 				E_SOURCE_MAIL_COMPOSITION (object)));
 			return;
 	}
@@ -271,12 +301,40 @@ e_source_mail_composition_class_init (ESourceMailCompositionClass *class)
 
 	g_object_class_install_property (
 		object_class,
+		PROP_START_BOTTOM,
+		g_param_spec_enum (
+			"start-bottom",
+			"Start Bottom",
+			"Whether start at bottom on reply or forward",
+			E_TYPE_THREE_STATE,
+			E_THREE_STATE_INCONSISTENT,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
 		PROP_TEMPLATES_FOLDER,
 		g_param_spec_string (
 			"templates-folder",
 			"Templates Folder",
 			"Preferred folder for message templates",
 			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_TOP_SIGNATURE,
+		g_param_spec_enum (
+			"top-signature",
+			"Top Signature",
+			"Whether place signature at the top on reply or forward",
+			E_TYPE_THREE_STATE,
+			E_THREE_STATE_INCONSISTENT,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -726,4 +784,92 @@ e_source_mail_composition_set_reply_style (ESourceMailComposition *extension,
 	extension->priv->reply_style = reply_style;
 
 	g_object_notify (G_OBJECT (extension), "reply-style");
+}
+
+/**
+ * e_source_mail_composition_get_start_bottom:
+ * @extension: an #ESourceMailComposition
+ *
+ * Returns whether start at bottom when replying or forwarding
+ * using the associated account. If no preference is set,
+ * the %E_THREE_STATE_INCONSISTENT is returned.
+ *
+ * Returns: start bottom on reply or forward preference
+ *
+ * Since: 3.26
+ **/
+EThreeState
+e_source_mail_composition_get_start_bottom (ESourceMailComposition *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), E_THREE_STATE_INCONSISTENT);
+
+	return extension->priv->start_bottom;
+}
+
+/**
+ * e_source_mail_composition_set_start_bottom:
+ * @extension: an #ESourceMailComposition
+ * @start_bottom: an #EThreeState
+ *
+ * Sets whether start bottom when replying or forwarding using the associated account.
+ * To unset the preference, use the %E_THREE_STATE_INCONSISTENT.
+ *
+ * Since: 3.26
+ **/
+void
+e_source_mail_composition_set_start_bottom (ESourceMailComposition *extension,
+					    EThreeState start_bottom)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
+
+	if (extension->priv->start_bottom == start_bottom)
+		return;
+
+	extension->priv->start_bottom = start_bottom;
+
+	g_object_notify (G_OBJECT (extension), "start-bottom");
+}
+
+/**
+ * e_source_mail_composition_get_top_signature:
+ * @extension: an #ESourceMailComposition
+ *
+ * Returns whether place signature at top when replying or forwarding
+ * using the associated account. If no preference is set,
+ * the %E_THREE_STATE_INCONSISTENT is returned.
+ *
+ * Returns: top signature on reply or forward preference
+ *
+ * Since: 3.26
+ **/
+EThreeState
+e_source_mail_composition_get_top_signature (ESourceMailComposition *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension), E_THREE_STATE_INCONSISTENT);
+
+	return extension->priv->top_signature;
+}
+
+/**
+ * e_source_mail_composition_set_top_signature:
+ * @extension: an #ESourceMailComposition
+ * @top_signature: an #EThreeState
+ *
+ * Sets whether place signature at top when replying or forwarding using the associated account.
+ * To unset the preference, use the %E_THREE_STATE_INCONSISTENT.
+ *
+ * Since: 3.26
+ **/
+void
+e_source_mail_composition_set_top_signature (ESourceMailComposition *extension,
+					     EThreeState top_signature)
+{
+	g_return_if_fail (E_IS_SOURCE_MAIL_COMPOSITION (extension));
+
+	if (extension->priv->top_signature == top_signature)
+		return;
+
+	extension->priv->top_signature = top_signature;
+
+	g_object_notify (G_OBJECT (extension), "top-signature");
 }
