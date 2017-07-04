@@ -1949,7 +1949,7 @@ camel_read_mir_callback (gpointer ref,
 		/* Just now we are reading from the DB, it can't be dirty. */
 		camel_message_info_set_dirty (info, FALSE);
 		if (data->add) {
-			camel_folder_summary_add (summary, info, FALSE);
+			camel_folder_summary_add (summary, info, TRUE);
 			g_clear_object (&info);
 		} else {
 			camel_folder_summary_lock (summary);

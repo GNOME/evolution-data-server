@@ -340,7 +340,7 @@ folder_filter (CamelSession *session,
 		camel_operation_pop_message (cancellable);
 	}
 
-	if (*error != NULL)
+	if (error && *error)
 		goto exit;
 
 	if (data->notjunk) {
@@ -383,14 +383,14 @@ folder_filter (CamelSession *session,
 		camel_operation_pop_message (cancellable);
 	}
 
-	if (*error != NULL)
+	if (error && *error)
 		goto exit;
 
 	if (synchronize)
 		camel_junk_filter_synchronize (
 			junk_filter, cancellable, error);
 
-	if (*error != NULL)
+	if (error && *error)
 		goto exit;
 
 	if (data->driver && data->recents) {
@@ -423,7 +423,7 @@ folder_filter (CamelSession *session,
 			info = camel_folder_get_message_info (
 				data->folder, uid);
 			if (info == NULL) {
-				g_warning (
+				g_debug (
 					"uid '%s' vanished from folder '%s : %s'",
 					uid, camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
 				continue;
@@ -439,6 +439,11 @@ folder_filter (CamelSession *session,
 		camel_operation_pop_message (cancellable);
 
 		camel_filter_driver_flush (data->driver, error);
+
+		/* Save flag/info changes made by the filter */
+		if (error && !*error)
+			camel_folder_synchronize_sync (data->folder, FALSE, cancellable, error);
+
 	} else if (data->driver) {
 		camel_filter_driver_log_info (data->driver, "No recent messages reported in '%s : %s'",
 			camel_service_get_display_name (CAMEL_SERVICE (parent_store)), full_name);
