@@ -480,6 +480,20 @@ e_source_credentials_provider_ref_credentials_source (ESourceCredentialsProvider
 				   both are filled and they do not match, thus do not use collection. */
 				can_use_collection = (host_collection && *host_collection && (!host_source || !*host_source)) ||
 						     (host_source && *host_source && (!host_collection || !*host_collection));
+
+				if (can_use_collection) {
+					gchar *method_source, *method_collection;
+
+					/* Also check the method; if different, then rather not use the collection */
+					method_source = e_source_authentication_dup_method (auth_source);
+					method_collection = e_source_authentication_dup_method (auth_collection);
+
+					can_use_collection = !method_source || !method_collection ||
+						g_ascii_strcasecmp (method_source, method_collection) == 0;
+
+					g_free (method_source);
+					g_free (method_collection);
+				}
 			}
 
 			g_free (host_source);
