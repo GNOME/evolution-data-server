@@ -605,8 +605,15 @@ CHECK_C_SOURCE_RUNS("
 # system mail stuff
 # ******************************
 
-find_program(SENDMAIL_PATH sendmail /usr/sbin /usr/lib)
-find_path(SYSTEM_MAIL_DIR /var/mail /var/spool/mail)
+if("$ENV{SENDMAIL_PATH}" STREQUAL "")
+	find_program(SENDMAIL_PATH sendmail /usr/sbin /usr/lib)
+	if(NOT SENDMAIL_PATH)
+		set(SENDMAIL_PATH "/usr/sbin/sendmail")
+		message(WARNING "sendmail not found, defaulting to ${SENDMAIL_PATH}")
+	endif(NOT SENDMAIL_PATH)
+else("$ENV{SENDMAIL_PATH}" STREQUAL "")
+	set(SENDMAIL_PATH $ENV{SENDMAIL_PATH})
+endif("$ENV{SENDMAIL_PATH}" STREQUAL "")
 
 # ******************************
 # Timezone checks
