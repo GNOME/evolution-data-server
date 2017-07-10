@@ -39,9 +39,6 @@
 /* Path to a sendmail binary, or equivalent */
 #define SENDMAIL_PATH "@SENDMAIL_PATH@"
 
-/* Directory local mail is delivered to */
-#define SYSTEM_MAIL_DIR "@SYSTEM_MAIL_DIR@"
-
 /* Configured with enabled maintainer mode */
 #cmakedefine ENABLE_MAINTAINER_MODE 1
 
