@@ -18,7 +18,7 @@ set(BASE_VERSION 3.26)
 set(API_VERSION 1.2)
 
 # Required for FindIntltool module
-set(GETTEXT_PACKAGE ${PROJECT_NAME}-${BASE_VERSION})
+set(GETTEXT_PACKAGE ${PROJECT_NAME})
 set(GETTEXT_PO_DIR ${CMAKE_SOURCE_DIR}/po)
 
 # Required for 'disttest' and 'ditcheck' of DistTarget module
