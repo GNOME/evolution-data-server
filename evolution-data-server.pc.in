@@ -6,6 +6,11 @@ datarootdir=@SHARE_INSTALL_PREFIX@
 datadir=@SHARE_INSTALL_PREFIX@
 privdatadir=@privdatadir@
 
+addressbookdbusservicename=@ADDRESS_BOOK_DBUS_SERVICE_NAME@
+calendardbusservicename=@CALENDAR_DBUS_SERVICE_NAME@
+sourcesdbusservicename=@SOURCES_DBUS_SERVICE_NAME@
+userprompterdbusservicename=@USER_PROMPTER_DBUS_SERVICE_NAME@
+
 execversion=@BASE_VERSION@
 
 Name: evolution-data-server
