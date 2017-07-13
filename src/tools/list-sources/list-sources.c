@@ -17,6 +17,8 @@
 
 #include "evolution-data-server-config.h"
 
+#include <locale.h>
+
 #include <glib.h>
 #include <glib/gi18n.h>
 
@@ -160,7 +162,7 @@ examine_source (ESource *source,
 				if (opt_machine_readable)
 					*out_type = check_extensions[ii].machine_description;
 				else
-					*out_type = check_extensions[ii].localized_description;
+					*out_type = _(check_extensions[ii].localized_description);
 
 				extension = e_source_get_extension (source, check_extensions[ii].extension_name);
 				break;
@@ -406,6 +408,7 @@ main (gint argc,
 	e_util_win32_initialize ();
 #endif
 
+	setlocale (LC_ALL, "");
 	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
