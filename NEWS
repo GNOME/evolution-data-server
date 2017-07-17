@@ -1,3 +1,26 @@
+Evolution-Data-Server 3.24.4 2017-07-17
+---------------------------------------
+
+Bug Fixes:
+	Bug 493801 - [IMAPx] Locally cached files not deleted after message remove (Milan Crha)
+	Bug 779753 - [NNTP] Removed messages from server kept in local cache (Milan Crha)
+	Bug 784116 - Preserve header's folding misbehaves for folded boundary parameter (James Bottomley)
+	Bug 779156 - [IMAPx] Not listening for changes after resume from suspend ][ (Milan Crha)
+	Bug 782844 - Folder changes not always saved (Milan Crha)
+	Bug 784548 - Collection credentials used for different SMTP server (Milan Crha)
+
+Miscellaneous:
+	Warn and set default when sendmail not found during the build (Milan Crha)
+	Correct localization of external tool (Milan Crha)
+
+Translations:
+	Baurzhan Muftakhidinov (kk)
+	Piotr Drąg (pl)
+	Rafael Fontenelle (pt_BR)
+	Mario Blättermann (de)
+	Anders Jonsson (sv)
+	Kukuh Syafaat (id)
+
 Evolution-Data-Server 3.24.3 2017-06-19
 ---------------------------------------
 
