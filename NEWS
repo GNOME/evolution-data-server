@@ -1,3 +1,41 @@
+Evolution-Data-Server 3.25.4 2017-07-17
+---------------------------------------
+
+Bug Fixes:
+	Bug 493801 - [IMAPx] Locally cached files not deleted after message remove (Milan Crha)
+	Bug 343904 - [POP3] Local cache keeps stored orphaned files (Milan Crha)
+	Bug 779753 - [NNTP] Removed messages from server kept in local cache (Milan Crha)
+	Bug 338649 - [NNTP] Add option to limit message download count (Milan Crha)
+	Bug 784116 - Preserve header's folding misbehaves for folded boundary parameter (James Bottomley)
+	Bug 784182 - Change how code snippets are marked in developer comments (Ting-Wei Lan)
+	Bug 779156 - [IMAPx] Not listening for changes after resume from suspend ][ (Milan Crha)
+	Bug 784183 - tests/libedata-cal/test-cal-cache-utils.c needs sys/wait.h (Ting-Wei Lan)
+	Bug 784218 - [Camel] Document some variables to make them available in the introspection (Corentin Noël)
+	Bug 772572 - Allow creating Receive-only mail accounts (Milan Crha)
+	Bug 781744 - Support not storing sent messages (Milan Crha)
+	Bug 782844 - Folder changes not always saved (Milan Crha)
+	Bug 781790 - Configure signature and start cursor position per account (Milan Crha)
+	Bug 784548 - Collection credentials used for different SMTP server (Milan Crha)
+	Bug 784746 - Remove version number from gettext package name (Jeremy Bicha)
+
+Miscellaneous:
+	Better react on connection lost in EBookMetaBackend/ECalMetaBackend (Milan Crha)
+	Introduce 'list-sources' tool (Milan Crha)
+	Use the fancy Unicode apostrophes in the “list-sources” tool (Piotr Drąg)
+	Change --module-dir for gtkdoc-fixxref call (Milan Crha)
+	Warn and set default when sendmail not found during the build (Milan Crha)
+	Expose D-Bus service names in evolution-data-server pkg-config file (Milan Crha)
+	Correct localization of external tools (Milan Crha)
+
+Translations:
+	Daniel Mustieles (es)
+	Piotr Drąg (pl)
+	Rafael Fontenelle (pt_BR)
+	Anders Jonsson (sv)
+	Kukuh Syafaat (id)
+	Gábor Kelemen (hu)
+	Mario Blättermann (de)
+
 Evolution-Data-Server 3.25.3 2017-06-19
 ---------------------------------------
 
