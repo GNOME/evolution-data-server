@@ -660,14 +660,17 @@ folder_dispose (GObject *object)
 
 	folder = CAMEL_FOLDER (object);
 
+	if (folder->priv->summary) {
+		camel_folder_summary_save (folder->priv->summary, NULL);
+		g_clear_object (&folder->priv->summary);
+	}
+
 	if (folder->priv->parent_store != NULL) {
 		g_object_remove_weak_pointer (
 			G_OBJECT (folder->priv->parent_store),
 			&folder->priv->parent_store);
 		folder->priv->parent_store = NULL;
 	}
-
-	g_clear_object (&folder->priv->summary);
 
 	/* Chain up to parent's dispose () method. */
 	G_OBJECT_CLASS (camel_folder_parent_class)->dispose (object);
