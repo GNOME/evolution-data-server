@@ -611,9 +611,9 @@ e_webdav_session_init (EWebDAVSession *webdav)
  * e_webdav_session_new:
  * @source: an #ESource
  *
- * Creates a new #EWebDAVSession associated with given @source. It's
- * a user's error to try to create the #EWebDAVSession for a source
- * which doesn't have #ESourceWebdav extension properly defined.
+ * Creates a new #EWebDAVSession associated with given @source.
+ * The #EWebDAVSession uses an #ESourceWebdav extension on certain
+ * places when it's defined for the @source.
  *
  * Returns: (transfer full): a new #EWebDAVSession; free it with g_object_unref(),
  *    when no longer needed.
@@ -624,7 +624,6 @@ EWebDAVSession *
 e_webdav_session_new (ESource *source)
 {
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
-	g_return_val_if_fail (e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND), NULL);
 
 	return g_object_new (E_TYPE_WEBDAV_SESSION,
 		"source", source,
@@ -664,6 +663,12 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 
 	source = e_soup_session_get_source (session);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+		g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+			_("Cannot determine destination URL without WebDAV extension"));
+		return NULL;
+	}
 
 	webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
@@ -1007,7 +1012,7 @@ e_webdav_session_replace_with_detailed_error (EWebDAVSession *webdav,
  *
  * Converts possibly path-only @href into a full URI under the @request_uri.
  * When the @request_uri is %NULL, the URI defined in associated #ESource is
- * used instead.
+ * used instead, taken from the #ESourceWebdav extension, if defined.
  *
  * Free the returned pointer with g_free(), when no longer needed.
  *
@@ -1035,6 +1040,9 @@ e_webdav_session_ensure_full_uri (EWebDAVSession *webdav,
 
 			source = e_soup_session_get_source (E_SOUP_SESSION (webdav));
 			g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+			if (!e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND))
+				return g_strdup (href);
 
 			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 			soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
