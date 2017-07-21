@@ -72,11 +72,11 @@ typedef struct _EGoogleBackendFactory EGoogleBackendFactory;
 typedef struct _EGoogleBackendFactoryClass EGoogleBackendFactoryClass;
 
 struct _EGoogleBackend {
-	ECollectionBackend parent;
+	EWebDAVCollectionBackend parent;
 };
 
 struct _EGoogleBackendClass {
-	ECollectionBackendClass parent_class;
+	EWebDAVCollectionBackendClass parent_class;
 };
 
 struct _EGoogleBackendFactory {
@@ -98,7 +98,7 @@ GType e_google_backend_factory_get_type (void);
 G_DEFINE_DYNAMIC_TYPE (
 	EGoogleBackend,
 	e_google_backend,
-	E_TYPE_COLLECTION_BACKEND)
+	E_TYPE_WEBDAV_COLLECTION_BACKEND)
 
 G_DEFINE_DYNAMIC_TYPE (
 	EGoogleBackendFactory,
@@ -272,13 +272,14 @@ google_backend_contacts_update_auth_method_cb (ESource *child_source,
 }
 
 static void
-google_add_uid_to_hashtable (gpointer source,
-			     gpointer known_sources)
+google_add_task_list_uid_to_hashtable (gpointer source,
+				       gpointer known_sources)
 {
 	ESourceResource *resource;
 	gchar *uid, *rid;
 
-	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE))
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE) ||
+	    !e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
 		return;
 
 	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
@@ -313,138 +314,6 @@ google_remove_unknown_sources_cb (gpointer resource_id,
 		e_source_remove_sync (source, NULL, NULL);
 		g_object_unref (source);
 	}
-}
-
-static void
-google_add_found_source (ECollectionBackend *collection,
-			 EWebDAVDiscoverSupports source_type,
-			 SoupURI *uri,
-			 const gchar *display_name,
-			 const gchar *color,
-			 GHashTable *known_sources)
-{
-	ESourceRegistryServer *server;
-	ESourceBackend *backend;
-	ESource *source = NULL;
-	const gchar *backend_name = NULL;
-	const gchar *provider = NULL;
-	const gchar *identity_prefix = NULL;
-	const gchar *source_uid;
-	gboolean is_new;
-	gchar *url;
-	gchar *identity;
-
-	g_return_if_fail (collection != NULL);
-	g_return_if_fail (uri != NULL);
-	g_return_if_fail (display_name != NULL);
-	g_return_if_fail (known_sources != NULL);
-
-	switch (source_type) {
-	case E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS:
-		backend_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-		provider = "webdav";
-		identity_prefix = "contacts";
-		break;
-	case E_WEBDAV_DISCOVER_SUPPORTS_EVENTS:
-		backend_name = E_SOURCE_EXTENSION_CALENDAR;
-		provider = "caldav";
-		identity_prefix = "events";
-		break;
-	case E_WEBDAV_DISCOVER_SUPPORTS_MEMOS:
-		backend_name = E_SOURCE_EXTENSION_MEMO_LIST;
-		provider = "caldav";
-		identity_prefix = "memos";
-		break;
-	case E_WEBDAV_DISCOVER_SUPPORTS_TASKS:
-		backend_name = E_SOURCE_EXTENSION_TASK_LIST;
-		provider = "caldav";
-		identity_prefix = "tasks";
-		break;
-	default:
-		g_warn_if_reached ();
-		return;
-	}
-
-	g_return_if_fail (backend_name != NULL);
-
-	server = e_collection_backend_ref_server (collection);
-	if (!server)
-		return;
-
-	url = soup_uri_to_string (uri, FALSE);
-	identity = g_strconcat (identity_prefix, "::", url, NULL);
-	source_uid = g_hash_table_lookup (known_sources, identity);
-	is_new = !source_uid;
-	if (is_new) {
-		source = e_collection_backend_new_child (collection, identity);
-		g_warn_if_fail (source != NULL);
-	} else {
-		source = e_source_registry_server_ref_source (server, source_uid);
-		g_warn_if_fail (source != NULL);
-
-		g_hash_table_remove (known_sources, identity);
-	}
-
-	if (source) {
-		ESource *master_source;
-		ESourceCollection *collection_extension;
-		ESourceAuthentication *child_auth;
-		ESourceResource *resource;
-		ESourceWebdav *master_webdav, *child_webdav;
-
-		master_source = e_backend_get_source (E_BACKEND (collection));
-		master_webdav = e_source_get_extension (master_source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		collection_extension = e_source_get_extension (master_source, E_SOURCE_EXTENSION_COLLECTION);
-		child_auth = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		child_webdav = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
-		resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
-
-		google_backend_calendar_update_auth_method (source, master_source);
-
-		e_source_authentication_set_user (child_auth, e_source_collection_get_identity (collection_extension));
-		e_source_webdav_set_soup_uri (child_webdav, uri);
-		e_source_resource_set_identity (resource, identity);
-
-		if (is_new) {
-			/* inherit ssl trust options */
-			e_source_webdav_set_ssl_trust (child_webdav, e_source_webdav_get_ssl_trust (master_webdav));
-		}
-	}
-
-	g_free (identity);
-	g_free (url);
-
-	/* these properties are synchronized always */
-	if (source) {
-		gint rr, gg, bb;
-
-		backend = e_source_get_extension (source, backend_name);
-		e_source_backend_set_backend_name (backend, provider);
-
-		e_source_set_display_name (source, display_name);
-		e_source_set_enabled (source, TRUE);
-
-		/* Also check whether the color format is as expected; it cannot
-		   be used gdk_rgba_parse here, because it required gdk/gtk. */
-		if (is_new && source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS && color &&
-		    sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3) {
-			gchar *safe_color;
-
-			/* In case an #RRGGBBAA is returned */
-			safe_color = g_strdup_printf ("#%02x%02x%02x", rr, gg, bb);
-
-			e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), safe_color);
-
-			g_free (safe_color);
-		}
-
-		if (is_new)
-			e_source_registry_server_add_source (server, source);
-
-		g_object_unref (source);
-	}
-
-	g_object_unref (server);
 }
 
 #if GDATA_CHECK_VERSION(0,15,1)
@@ -541,13 +410,11 @@ google_backend_authenticate_sync (EBackend *backend,
 	ESourceCollection *collection_extension;
 	ESourceGoa *goa_extension = NULL;
 	ESource *source;
-	ESourceAuthenticationResult result;
+	ESourceAuthenticationResult result = E_SOURCE_AUTHENTICATION_ERROR;
 	GHashTable *known_sources;
 	GList *sources;
-	GSList *discovered_sources = NULL;
 	ENamedParameters *credentials_copy = NULL;
 	const gchar *calendar_url;
-	gboolean any_success = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (collection != NULL, E_SOURCE_AUTHENTICATION_ERROR);
@@ -572,7 +439,7 @@ google_backend_authenticate_sync (EBackend *backend,
 	known_sources = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
 	sources = e_collection_backend_list_calendar_sources (collection);
-	g_list_foreach (sources, google_add_uid_to_hashtable, known_sources);
+	g_list_foreach (sources, google_add_task_list_uid_to_hashtable, known_sources);
 	g_list_free_full (sources, g_object_unref);
 
 	/* When the WebDAV extension is created, the auth method can be reset, thus ensure
@@ -596,57 +463,9 @@ google_backend_authenticate_sync (EBackend *backend,
 		}
 	}
 
-	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url &&
-	    e_webdav_discover_sources_sync (source, calendar_url, E_WEBDAV_DISCOVER_SUPPORTS_NONE,
-		credentials, out_certificate_pem, out_certificate_errors,
-		&discovered_sources, NULL, cancellable, &local_error)) {
-		EWebDAVDiscoverSupports source_types[] = {
-			E_WEBDAV_DISCOVER_SUPPORTS_EVENTS,
-			E_WEBDAV_DISCOVER_SUPPORTS_MEMOS,
-			E_WEBDAV_DISCOVER_SUPPORTS_TASKS
-		};
-		GSList *link;
-		gint ii;
-
-		for (link = discovered_sources; link; link = g_slist_next (link)) {
-			EWebDAVDiscoveredSource *discovered_source = link->data;
-			SoupURI *soup_uri;
-
-			if (!discovered_source || !discovered_source->href || !discovered_source->display_name)
-				continue;
-
-			soup_uri = soup_uri_new (discovered_source->href);
-			if (!soup_uri)
-				continue;
-
-			for (ii = 0; ii < G_N_ELEMENTS (source_types); ii++) {
-				if ((discovered_source->supports & source_types[ii]) == source_types[ii])
-					google_add_found_source (collection, source_types[ii], soup_uri,
-						discovered_source->display_name, discovered_source->color, known_sources);
-			}
-
-			soup_uri_free (soup_uri);
-		}
-
-		any_success = TRUE;
-	}
-
-	if (any_success)
-		g_clear_error (&local_error);
-
-	if (local_error == NULL) {
-		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
-		e_collection_backend_authenticate_children (collection, credentials);
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-		   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-		result = E_SOURCE_AUTHENTICATION_REJECTED;
-		g_clear_error (&local_error);
-	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
-		result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
-		g_propagate_error (error, local_error);
-	} else {
-		result = E_SOURCE_AUTHENTICATION_ERROR;
-		g_propagate_error (error, local_error);
+	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url) {
+		result = e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend), calendar_url, NULL,
+			credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
 	}
 
 #if GDATA_CHECK_VERSION(0,15,1)
@@ -700,7 +519,7 @@ google_backend_authenticate_sync (EBackend *backend,
 	}
 #endif /* GDATA_CHECK_VERSION(0,15,1) */
 
-	if (any_success) {
+	if (result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
 		ESourceRegistryServer *server;
 
 		server = e_collection_backend_ref_server (collection);
@@ -768,76 +587,66 @@ google_backend_add_contacts (ECollectionBackend *backend)
 	g_object_unref (source);
 }
 
+static gchar *
+google_backend_get_resource_id (EWebDAVCollectionBackend *webdav_backend,
+				ESource *source)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
+		return g_strdup (GOOGLE_CONTACTS_RESOURCE_ID);
+
+	/* Chain up to parent's method. */
+	return E_WEBDAV_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->get_resource_id (webdav_backend, source);
+}
+
+static gboolean
+google_backend_is_custom_source (EWebDAVCollectionBackend *webdav_backend,
+				 ESource *source)
+{
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
+
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK) ||
+	    e_source_has_extension (source, E_SOURCE_EXTENSION_TASK_LIST))
+		return TRUE;
+
+	/* Chain up to parent's method. */
+	return E_WEBDAV_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->is_custom_source (webdav_backend, source);
+}
+
 static void
 google_backend_populate (ECollectionBackend *backend)
 {
-	GList *list, *link;
-	ESourceRegistryServer *server;
 	ESourceCollection *collection_extension;
 	ESource *source;
 
-	server = e_collection_backend_ref_server (backend);
-	list = e_collection_backend_claim_all_resources (backend);
-	for (link = list; link; link = g_list_next (link)) {
-		ESource *source = link->data;
-		ESource *child = NULL;
-
-		if (e_source_has_extension (source, E_SOURCE_EXTENSION_RESOURCE)) {
-			ESourceResource *resource;
-
-			resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
-			child = e_collection_backend_new_child (backend, e_source_resource_get_identity (resource));
-		} else if (e_source_has_extension (source, E_SOURCE_EXTENSION_ADDRESS_BOOK)) {
-			child = e_collection_backend_new_child (backend, GOOGLE_CONTACTS_RESOURCE_ID);
-		}
-
-		if (child) {
-			e_source_registry_server_add_source (server, source);
-			g_object_unref (child);
-		}
-	}
-
-	g_list_free_full (list, g_object_unref);
-	g_object_unref (server);
+	/* Chain up to parent's method. */
+	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 
 	if (e_source_collection_get_contacts_enabled (collection_extension)) {
+		GList *list;
+
 		list = e_collection_backend_list_contacts_sources (backend);
 		if (list == NULL)
 			google_backend_add_contacts (backend);
 		g_list_free_full (list, (GDestroyNotify) g_object_unref);
 	}
 
-	/* Chain up to parent's populate() method. */
-	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
-
-	if (e_source_get_enabled (source) && e_source_collection_get_calendar_enabled (collection_extension)) {
-		e_backend_schedule_credentials_required (E_BACKEND (backend),
-			E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL, NULL, G_STRFUNC);
-	}
 }
 
 static gchar *
 google_backend_dup_resource_id (ECollectionBackend *backend,
                                 ESource *child_source)
 {
-	const gchar *extension_name;
-
-	/* XXX This is trivial for now since we only
-	 *     add one calendar and one address book. */
-
-	extension_name = E_SOURCE_EXTENSION_CALENDAR;
-	if (e_source_has_extension (child_source, extension_name))
+	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_CALENDAR) ||
+	    e_source_has_extension (child_source, E_SOURCE_EXTENSION_MEMO_LIST) ||
+	    e_source_has_extension (child_source, E_SOURCE_EXTENSION_TASK_LIST))
 		return E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->dup_resource_id (backend, child_source);
 
-	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
-	if (e_source_has_extension (child_source, extension_name))
-		return E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->dup_resource_id (backend, child_source);
-
-	extension_name = E_SOURCE_EXTENSION_ADDRESS_BOOK;
-	if (e_source_has_extension (child_source, extension_name))
+	if (e_source_has_extension (child_source, E_SOURCE_EXTENSION_ADDRESS_BOOK))
 		return g_strdup (GOOGLE_CONTACTS_RESOURCE_ID);
 
 	return NULL;
@@ -996,6 +805,7 @@ e_google_backend_class_init (EGoogleBackendClass *class)
 {
 	EBackendClass *backend_class;
 	ECollectionBackendClass *collection_backend_class;
+	EWebDAVCollectionBackendClass *webdav_collection_backend_class;
 
 	backend_class = E_BACKEND_CLASS (class);
 	backend_class->authenticate_sync = google_backend_authenticate_sync;
@@ -1006,6 +816,10 @@ e_google_backend_class_init (EGoogleBackendClass *class)
 	collection_backend_class->dup_resource_id = google_backend_dup_resource_id;
 	collection_backend_class->child_added = google_backend_child_added;
 	collection_backend_class->child_removed = google_backend_child_removed;
+
+	webdav_collection_backend_class = E_WEBDAV_COLLECTION_BACKEND_CLASS (class);
+	webdav_collection_backend_class->get_resource_id = google_backend_get_resource_id;
+	webdav_collection_backend_class->is_custom_source = google_backend_is_custom_source;
 }
 
 static void

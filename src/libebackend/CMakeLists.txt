@@ -29,6 +29,7 @@ set(SOURCES
 	e-user-prompter.c
 	e-user-prompter-server.c
 	e-user-prompter-server-extension.c
+	e-webdav-collection-backend.c
 	${CMAKE_CURRENT_BINARY_DIR}/e-backend-enumtypes.c
 )
 
@@ -54,6 +55,7 @@ set(HEADERS
 	e-user-prompter.h
 	e-user-prompter-server.h
 	e-user-prompter-server-extension.h
+	e-webdav-collection-backend.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-backend-enumtypes.h
 )
 

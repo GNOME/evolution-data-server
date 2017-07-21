@@ -42,6 +42,7 @@
 #include <libebackend/e-user-prompter.h>
 #include <libebackend/e-user-prompter-server.h>
 #include <libebackend/e-user-prompter-server-extension.h>
+#include <libebackend/e-webdav-collection-backend.h>
 
 #undef __LIBEBACKEND_H_INSIDE__
 

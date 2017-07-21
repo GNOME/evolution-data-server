@@ -43,15 +43,9 @@
 #define YAHOO_SMTP_PORT			465
 #define YAHOO_SMTP_SECURITY_METHOD	METHOD (SSL_ON_ALTERNATE_PORT)
 
-/* Calendar Configuration Details */
-#define YAHOO_CALENDAR_BACKEND_NAME	"caldav"
-#define YAHOO_CALENDAR_HOST		"caldav.calendar.yahoo.com"
-#define YAHOO_CALENDAR_CALDAV_PATH	"/dav/%s/Calendar/%s"
-#define YAHOO_CALENDAR_RESOURCE_ID	"Calendar"
+/* WebDAV Configuration Details */
+#define YAHOO_WEBDAV_URL		"https://caldav.calendar.yahoo.com/dav/"
 
-/* Tasks Configuration Details
- * (mostly the same as calendar) */
-#define YAHOO_TASKS_RESOURCE_ID		"Tasks"
 
 typedef struct _EYahooBackend EYahooBackend;
 typedef struct _EYahooBackendClass EYahooBackendClass;
@@ -60,12 +54,12 @@ typedef struct _EYahooBackendFactory EYahooBackendFactory;
 typedef struct _EYahooBackendFactoryClass EYahooBackendFactoryClass;
 
 struct _EYahooBackend {
-	ECollectionBackend parent;
+	EWebDAVCollectionBackend parent;
 	GWeakRef mail_identity_source;
 };
 
 struct _EYahooBackendClass {
-	ECollectionBackendClass parent_class;
+	EWebDAVCollectionBackendClass parent_class;
 };
 
 struct _EYahooBackendFactory {
@@ -87,191 +81,26 @@ GType e_yahoo_backend_factory_get_type (void);
 G_DEFINE_DYNAMIC_TYPE (
 	EYahooBackend,
 	e_yahoo_backend,
-	E_TYPE_COLLECTION_BACKEND)
+	E_TYPE_WEBDAV_COLLECTION_BACKEND)
 
 G_DEFINE_DYNAMIC_TYPE (
 	EYahooBackendFactory,
 	e_yahoo_backend_factory,
 	E_TYPE_COLLECTION_BACKEND_FACTORY)
 
-static void
-yahoo_backend_config_calendar_child (ECollectionBackend *backend,
-                                     ESource *source)
+static ESourceAuthenticationResult
+yahoo_backend_authenticate_sync (EBackend *backend,
+				 const ENamedParameters *credentials,
+				 gchar **out_certificate_pem,
+				 GTlsCertificateFlags *out_certificate_errors,
+				 GCancellable *cancellable,
+				 GError **error)
 {
-	EYahooBackend *yahoo_backend;
-	ESource *collection_source;
-	ESource *mail_identity_source;
-	ESourceExtension *extension;
-	ESourceCollection *collection_extension;
-	const gchar *extension_name;
-	const gchar *identity;
-	gchar *display_name = NULL;
+	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
 
-	/* FIXME As a future enhancement, we should query Yahoo!
-	 *       for a list of user calendars and add them to the
-	 *       collection with matching display names and colors. */
-
-	yahoo_backend = E_YAHOO_BACKEND (backend);
-
-	collection_source = e_backend_get_source (E_BACKEND (backend));
-
-	collection_extension = e_source_get_extension (
-		collection_source, E_SOURCE_EXTENSION_COLLECTION);
-
-	identity = e_source_collection_get_identity (collection_extension);
-
-	/* XXX Assume the calendar's display name can be derived from
-	 *     the user's mail identity.  As mentioned above, we should
-	 *     really just query Yahoo! for a list of user calendars. */
-	mail_identity_source =
-		g_weak_ref_get (&yahoo_backend->mail_identity_source);
-	if (mail_identity_source != NULL) {
-		extension = e_source_get_extension (
-			mail_identity_source,
-			E_SOURCE_EXTENSION_MAIL_IDENTITY);
-		display_name = e_source_mail_identity_dup_name (
-			E_SOURCE_MAIL_IDENTITY (extension));
-		if (display_name != NULL)
-			g_strdelimit (display_name, " ", '_');
-		g_object_unref (mail_identity_source);
-	}
-
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_authentication_set_host (
-		E_SOURCE_AUTHENTICATION (extension),
-		YAHOO_CALENDAR_HOST);
-
-	e_binding_bind_property (
-		collection_extension, "identity",
-		extension, "user",
-		G_BINDING_SYNC_CREATE);
-
-	extension_name = E_SOURCE_EXTENSION_SECURITY;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_security_set_secure (
-		E_SOURCE_SECURITY (extension), TRUE);
-
-	extension_name = E_SOURCE_EXTENSION_WEBDAV_BACKEND;
-	extension = e_source_get_extension (source, extension_name);
-
-	e_source_webdav_set_display_name (
-		E_SOURCE_WEBDAV (extension), display_name);
-
-	if (identity != NULL && display_name != NULL) {
-		gchar *resource_path;
-
-		resource_path = g_strdup_printf (
-			YAHOO_CALENDAR_CALDAV_PATH, identity, display_name);
-		e_source_webdav_set_resource_path (
-			E_SOURCE_WEBDAV (extension), resource_path);
-		g_free (resource_path);
-	}
-
-	g_free (display_name);
-}
-
-static void
-yahoo_backend_add_calendar (ECollectionBackend *backend)
-{
-	ESource *source;
-	ESourceBackend *extension;
-	ESourceRegistryServer *server;
-	const gchar *backend_name;
-	const gchar *extension_name;
-	const gchar *resource_id;
-
-	/* XXX We could just stick a [Calendar] and [Task List] extension
-	 *     into the same ESource since all other settings are exactly
-	 *     the same.  But it might be confusing if tweaking a setting
-	 *     in your Yahoo! Calendar also gets applied to your Yahoo!
-	 *     Task List in Evolution. */
-
-	backend_name = YAHOO_CALENDAR_BACKEND_NAME;
-
-	server = e_collection_backend_ref_server (backend);
-
-	/* Add Yahoo! Calendar */
-
-	resource_id = YAHOO_CALENDAR_RESOURCE_ID;
-	source = e_collection_backend_new_child (backend, resource_id);
-	e_source_set_display_name (source, _("Calendar"));
-
-	extension_name = E_SOURCE_EXTENSION_CALENDAR;
-	extension = e_source_get_extension (source, extension_name);
-	e_source_backend_set_backend_name (extension, backend_name);
-
-	extension_name = E_SOURCE_EXTENSION_ALARMS;
-	extension = e_source_get_extension (source, extension_name);
-	if (!e_source_alarms_get_last_notified (E_SOURCE_ALARMS (extension))) {
-		GTimeVal today_tv;
-		gchar *today;
-
-		g_get_current_time (&today_tv);
-		today = g_time_val_to_iso8601 (&today_tv);
-		e_source_alarms_set_last_notified (E_SOURCE_ALARMS (extension), today);
-		g_free (today);
-	}
-
-	yahoo_backend_config_calendar_child (backend, source);
-	e_source_registry_server_add_source (server, source);
-
-	g_object_unref (source);
-
-	/* Add Yahoo! Tasks */
-
-	resource_id = YAHOO_TASKS_RESOURCE_ID;
-	source = e_collection_backend_new_child (backend, resource_id);
-	e_source_set_display_name (source, _("Tasks"));
-
-	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
-	extension = e_source_get_extension (source, extension_name);
-	e_source_backend_set_backend_name (extension, backend_name);
-
-	yahoo_backend_config_calendar_child (backend, source);
-	e_source_registry_server_add_source (server, source);
-
-	g_object_unref (source);
-
-	g_object_unref (server);
-}
-
-static void
-yahoo_backend_populate (ECollectionBackend *backend)
-{
-	GList *list;
-
-	/* Chain up to parent's populate() method. */
-	E_COLLECTION_BACKEND_CLASS (e_yahoo_backend_parent_class)->
-		populate (backend);
-
-	/* Chain up first so we pick up the mail identity source. */
-	list = e_collection_backend_list_calendar_sources (backend);
-	if (list == NULL)
-		yahoo_backend_add_calendar (backend);
-	g_list_free_full (list, (GDestroyNotify) g_object_unref);
-}
-
-static gchar *
-yahoo_backend_dup_resource_id (ECollectionBackend *backend,
-                               ESource *child_source)
-{
-	const gchar *extension_name;
-
-	/* XXX This is trival for now since we only
-	 *     add one calendar and one task list. */
-
-	extension_name = E_SOURCE_EXTENSION_CALENDAR;
-	if (e_source_has_extension (child_source, extension_name))
-		return g_strdup (YAHOO_CALENDAR_RESOURCE_ID);
-
-	extension_name = E_SOURCE_EXTENSION_TASK_LIST;
-	if (e_source_has_extension (child_source, extension_name))
-		return g_strdup (YAHOO_TASKS_RESOURCE_ID);
-
-	return NULL;
+	return e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend),
+		YAHOO_WEBDAV_URL, YAHOO_WEBDAV_URL, credentials,
+		out_certificate_pem, out_certificate_errors, cancellable, error);
 }
 
 static void
@@ -351,15 +180,17 @@ static void
 e_yahoo_backend_class_init (EYahooBackendClass *class)
 {
 	GObjectClass *object_class;
-	ECollectionBackendClass *backend_class;
+	EBackendClass *backend_class;
+	ECollectionBackendClass *collection_backend_class;
 
 	object_class = G_OBJECT_CLASS (class);
 	object_class->finalize = yahoo_backend_finalize;
 
-	backend_class = E_COLLECTION_BACKEND_CLASS (class);
-	backend_class->populate = yahoo_backend_populate;
-	backend_class->dup_resource_id = yahoo_backend_dup_resource_id;
-	backend_class->child_added = yahoo_backend_child_added;
+	backend_class = E_BACKEND_CLASS (class);
+	backend_class->authenticate_sync = yahoo_backend_authenticate_sync;
+
+	collection_backend_class = E_COLLECTION_BACKEND_CLASS (class);
+	collection_backend_class->child_added = yahoo_backend_child_added;
 }
 
 static void
