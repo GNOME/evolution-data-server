@@ -120,8 +120,11 @@ struct _CamelFolderSummaryClass {
 	gchar *		(*next_uid_string)
 					(CamelFolderSummary *summary);
 
+	void		(* prepare_fetch_all)
+					(CamelFolderSummary *summary);
+
 	/* Padding for future expansion */
-	gpointer reserved[20];
+	gpointer reserved[19];
 };
 
 GType		camel_folder_summary_get_type	(void);

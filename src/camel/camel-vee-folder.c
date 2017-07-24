@@ -39,6 +39,8 @@
 #define d(x)
 #define dd(x) (camel_debug ("vfolder")?(x):0)
 
+extern gint camel_application_is_exiting;
+
 typedef struct _FolderChangedData FolderChangedData;
 
 #define CAMEL_VEE_FOLDER_GET_PRIVATE(obj) \
@@ -1091,6 +1093,9 @@ vee_folder_remove_folder (CamelVeeFolder *vfolder,
 	CamelFolderChangeInfo *changes;
 	CamelFolder *v_folder;
 	GHashTable *uids;
+
+	if (camel_application_is_exiting)
+		return;
 
 	v_folder = CAMEL_FOLDER (vfolder);
 	changes = camel_folder_change_info_new ();

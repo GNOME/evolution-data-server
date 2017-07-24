@@ -47,6 +47,8 @@
 #define CHANGE_DELETE (1)
 #define CHANGE_NOSELECT (2)
 
+extern gint camel_application_is_exiting;
+
 /* The custom property ID is a CamelArg artifact.
  * It still identifies the property in state files. */
 enum {
@@ -711,7 +713,8 @@ camel_vee_store_note_subfolder_used (CamelVeeStore *vstore,
 
 	/* only real folders can be part of the unmatched folder */
 	if (CAMEL_IS_VEE_FOLDER (subfolder) ||
-	    used_by == vstore->priv->unmatched_folder)
+	    used_by == vstore->priv->unmatched_folder ||
+	    camel_application_is_exiting)
 		return;
 
 	g_mutex_lock (&vstore->priv->sf_counts_mutex);
@@ -795,7 +798,8 @@ camel_vee_store_note_subfolder_unused (CamelVeeStore *vstore,
 
 	/* only real folders can be part of the unmatched folder */
 	if (CAMEL_IS_VEE_FOLDER (subfolder) ||
-	    unused_by == vstore->priv->unmatched_folder)
+	    unused_by == vstore->priv->unmatched_folder ||
+	    camel_application_is_exiting)
 		return;
 
 	g_mutex_lock (&vstore->priv->sf_counts_mutex);
@@ -850,7 +854,8 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 	g_return_if_fail (mi_data != NULL);
 
 	/* these notifications are ignored from Unmatched folder */
-	if (used_by == vstore->priv->unmatched_folder)
+	if (used_by == vstore->priv->unmatched_folder ||
+	    camel_application_is_exiting)
 		return;
 
 	/* unmatched folder holds only real folders */
@@ -912,7 +917,8 @@ camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
 	g_return_if_fail (mi_data != NULL);
 
 	/* these notifications are ignored from Unmatched folder */
-	if (unused_by == vstore->priv->unmatched_folder)
+	if (unused_by == vstore->priv->unmatched_folder ||
+	    camel_application_is_exiting)
 		return;
 
 	/* unmatched folder holds only real folders */

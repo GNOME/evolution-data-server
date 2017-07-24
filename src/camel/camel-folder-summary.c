@@ -143,6 +143,13 @@ enum {
 	PROP_VISIBLE_COUNT
 };
 
+enum {
+	PREPARE_FETCH_ALL,
+	LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_TYPE (CamelFolderSummary, camel_folder_summary, G_TYPE_OBJECT)
 
 /* Private function */
@@ -737,6 +744,23 @@ camel_folder_summary_class_init (CamelFolderSummaryClass *class)
 			"How many visible (not deleted and not junk) infos is saved in a summary",
 			0,  G_MAXUINT32,
 			0, G_PARAM_READABLE));
+
+	/**
+	 * CamelFolderSummary::prepare-fetch-all
+	 * @summary: the #CamelFolderSummary which emitted the signal
+	 *
+	 * Emitted on call to camel_folder_summary_prepare_fetch_all().
+	 *
+	 * Since: 3.26
+	 **/
+	signals[PREPARE_FETCH_ALL] = g_signal_new (
+		"changed",
+		G_OBJECT_CLASS_TYPE (class),
+		G_SIGNAL_RUN_FIRST,
+		G_STRUCT_OFFSET (CamelFolderSummaryClass, prepare_fetch_all),
+		NULL, NULL, NULL,
+		G_TYPE_NONE, 0,
+		G_TYPE_NONE);
 }
 
 static void
@@ -1742,6 +1766,8 @@ camel_folder_summary_prepare_fetch_all (CamelFolderSummary *summary,
 
 	loaded = cfs_cache_size (summary);
 	known = camel_folder_summary_count (summary);
+
+	g_signal_emit (summary, signals[PREPARE_FETCH_ALL], 0);
 
 	if (known - loaded > 50) {
 		camel_folder_summary_lock (summary);
