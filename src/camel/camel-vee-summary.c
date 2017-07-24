@@ -88,6 +88,36 @@ message_info_from_uid (CamelFolderSummary *s,
 }
 
 static void
+vee_summary_prepare_fetch_all (CamelFolderSummary *summary)
+{
+	GHashTableIter iter;
+	gpointer key, value;
+	CamelVeeSummary *vee_summary;
+
+	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
+
+	camel_folder_summary_lock (summary);
+
+	vee_summary = CAMEL_VEE_SUMMARY (summary);
+
+	g_hash_table_iter_init (&iter, vee_summary->priv->vuids_by_subfolder);
+	while (g_hash_table_iter_next (&iter, &key, &value)) {
+		CamelFolder *subfolder = key;
+		GHashTable *vuids = value;
+
+		if (subfolder && vuids && g_hash_table_size (vuids) > 50) {
+			CamelFolderSummary *subsummary;
+
+			subsummary = camel_folder_get_folder_summary (subfolder);
+			if (subsummary)
+				camel_folder_summary_prepare_fetch_all (subsummary, NULL);
+		}
+	}
+
+	camel_folder_summary_unlock (summary);
+}
+
+static void
 vee_summary_finalize (GObject *object)
 {
 	CamelVeeSummaryPrivate *priv;
@@ -114,6 +144,7 @@ camel_vee_summary_class_init (CamelVeeSummaryClass *class)
 	folder_summary_class = CAMEL_FOLDER_SUMMARY_CLASS (class);
 	folder_summary_class->message_info_type = CAMEL_TYPE_VEE_MESSAGE_INFO;
 	folder_summary_class->message_info_from_uid = message_info_from_uid;
+	folder_summary_class->prepare_fetch_all = vee_summary_prepare_fetch_all;
 }
 
 static void

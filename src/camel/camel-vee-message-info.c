@@ -136,10 +136,49 @@ vee_message_info_notify_mi_changed (CamelFolder *folder,
 		return result;									\
 	} G_STMT_END
 
+static gboolean
+vee_message_info_read_flags_from_orig_summary (const CamelMessageInfo *mi,
+					       guint32 *out_flags)
+{
+	CamelVeeMessageInfo *vmi;
+	const gchar *uid;
+
+	g_return_val_if_fail (CAMEL_IS_VEE_MESSAGE_INFO (mi), FALSE);
+	g_return_val_if_fail (out_flags != NULL, FALSE);
+
+	vmi = CAMEL_VEE_MESSAGE_INFO (mi);
+	g_return_val_if_fail (vmi->priv->orig_summary != NULL, FALSE);
+
+	uid = camel_message_info_pooldup_uid (mi);
+	g_return_val_if_fail (uid != NULL, FALSE);
+
+	if (!uid[0] || !uid[1] || !uid[2] || !uid[3] || !uid[4] ||
+	    !uid[5] || !uid[6] || !uid[7] || !uid[8]) {
+		camel_pstring_free (uid);
+		g_warn_if_reached ();
+		return FALSE;
+	}
+
+	/* Flags can be read from summary, without a need to load the message info and
+	   it is also required when adding to the summary, thus this should help when
+	   populating summary of any vFolder. */
+	*out_flags = camel_folder_summary_get_info_flags (vmi->priv->orig_summary, uid + 8);
+
+	camel_pstring_free (uid);
+
+	return *out_flags != (~0);
+}
+
 static guint32
 vee_message_info_get_flags (const CamelMessageInfo *mi)
 {
-	vee_call_from_parent_mi (0, guint32, camel_message_info_get_flags, (orig_mi), FALSE);
+	guint32 flags = 0;
+
+	if (vee_message_info_read_flags_from_orig_summary (mi, &flags)) {
+		return flags;
+	} else {
+		vee_call_from_parent_mi (0, guint32, camel_message_info_get_flags, (orig_mi), FALSE);
+	}
 }
 
 static gboolean
