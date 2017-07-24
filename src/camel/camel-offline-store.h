@@ -70,6 +70,16 @@ gboolean	camel_offline_store_set_online_sync
 						 gboolean online,
 						 GCancellable *cancellable,
 						 GError **error);
+void		camel_offline_store_set_online	(CamelOfflineStore *store,
+						 gboolean online,
+						 gint io_priority,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	camel_offline_store_set_online_finish
+						(CamelOfflineStore *store,
+						 GAsyncResult *result,
+						 GError **error);
 gboolean	camel_offline_store_prepare_for_offline_sync
 						(CamelOfflineStore *store,
 						 GCancellable *cancellable,

@@ -161,6 +161,10 @@ camel_offline_store_get_online (CamelOfflineStore *store)
  * @error: return location for a #GError, or %NULL
  *
  * Sets the online/offline state of @store according to @online.
+ *
+ * Returns: Whether succeeded.
+ *
+ * See: camel_offline_store_set_online
  **/
 gboolean
 camel_offline_store_set_online_sync (CamelOfflineStore *store,
@@ -255,6 +259,87 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 	g_object_notify (G_OBJECT (store), "online");
 
 	return success;
+}
+
+static void
+offline_store_set_online_thread (GTask *task,
+				 gpointer source_object,
+				 gpointer task_data,
+				 GCancellable *cancellable)
+{
+	gboolean success, online;
+	GError *local_error = NULL;
+
+	online = GPOINTER_TO_INT (task_data) != 0;
+
+	success = camel_offline_store_set_online_sync (CAMEL_OFFLINE_STORE (source_object), online, cancellable, &local_error);
+
+	if (local_error) {
+		g_task_return_error (task, local_error);
+	} else {
+		g_task_return_boolean (task, success);
+	}
+}
+
+/**
+ * camel_offline_store_set_online:
+ * @store: a #CamelOfflineStore
+ * @online: %TRUE for online, %FALSE for offline
+ * @io_priority: the I/O priority for the request
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: a #GAsyncReadyCallback to call when the request is satisfied
+ * @user_data: data to pass to the callback function
+ *
+ * An asynchronous variant of camel_offline_store_set_online_sync().
+ * Call camel_offline_store_set_online_finish() from within the @callback.
+ *
+ * Since: 3.26
+ **/
+void
+camel_offline_store_set_online (CamelOfflineStore *store,
+				gboolean online,
+				gint io_priority,
+				GCancellable *cancellable,
+				GAsyncReadyCallback callback,
+				gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (CAMEL_IS_OFFLINE_STORE (store));
+
+	task = g_task_new (store, cancellable, callback, user_data);
+	g_task_set_source_tag (task, camel_offline_store_set_online);
+	g_task_set_priority (task, io_priority);
+
+	g_task_set_task_data (task, GINT_TO_POINTER (online ? 1 : 0), NULL);
+
+	g_task_run_in_thread (task, offline_store_set_online_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * camel_offline_store_set_online_finish:
+ * @store: a #CamelOfflineStore
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with camel_offline_store_set_online().
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.26
+ **/
+gboolean
+camel_offline_store_set_online_finish (CamelOfflineStore *store,
+				       GAsyncResult *result,
+				       GError **error)
+{
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, store), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, camel_offline_store_set_online), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
 /**
