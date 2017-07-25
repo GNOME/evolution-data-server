@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-07-04 16:22+0000\n"
-"PO-Revision-Date: 2017-07-10 14:35+0200\n"
+"POT-Creation-Date: 2017-07-21 10:58+0000\n"
+"PO-Revision-Date: 2017-07-24 14:57+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -148,7 +148,7 @@ msgstr "Falló al renombrar la antigua base de datos «%s» a «%s»: %s"
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
 #: ../src/libedataserver/e-soup-session.c:1062
-#: ../src/tools/list-sources/list-sources.c:426
+#: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Error desconocido"
 
@@ -2147,19 +2147,19 @@ msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Filtrando el mensaje nuevo en «%s : %s»"
 msgstr[1] "Filtrando los mensajes nuevos en «%s : %s»"
 
-#: ../src/camel/camel-folder.c:1027
+#: ../src/camel/camel-folder.c:1030
 #: ../src/camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Moviendo mensajes"
 
-#: ../src/camel/camel-folder.c:1030
+#: ../src/camel/camel-folder.c:1033
 msgid "Copying messages"
 msgstr "Copiando mensajes"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1075
+#: ../src/camel/camel-folder.c:1078
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Información de cuota no soportada para la carpeta «%s : %s»"
@@ -2167,7 +2167,7 @@ msgstr "Información de cuota no soportada para la carpeta «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1177
+#: ../src/camel/camel-folder.c:1180
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Filtrando carpeta «%s : %s»"
@@ -2175,7 +2175,7 @@ msgstr "Filtrando carpeta «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2982
+#: ../src/camel/camel-folder.c:2985
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Compactando la carpeta «%s : %s»"
@@ -2183,7 +2183,7 @@ msgstr "Compactando la carpeta «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3116
+#: ../src/camel/camel-folder.c:3119
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Obteniendo mensaje «%s» en «%s : %s»"
@@ -2191,7 +2191,7 @@ msgstr "Obteniendo mensaje «%s» en «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3338
+#: ../src/camel/camel-folder.c:3341
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Obteniendo la información de la cuota «%s : %s»"
@@ -2199,7 +2199,7 @@ msgstr "Obteniendo la información de la cuota «%s : %s»"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3636
+#: ../src/camel/camel-folder.c:3639
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Actualizando la carpeta «%s : %s»"
@@ -4535,13 +4535,11 @@ msgstr "Falló la operación: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:457
 #, c-format
-#| msgid "%s: Scanning new messages"
 msgid "%s: Scanning existing messages"
 msgstr "%s: analizando correos existentes"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:470
 #, c-format
-#| msgid "Unexpected server response from xover: %s"
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Respuesta inesperada del servidor desde una lista de grupo: %s"
 
@@ -5696,7 +5694,11 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-session.c:938
+#: ../src/libedataserver/e-webdav-session.c:669
+msgid "Cannot determine destination URL without WebDAV extension"
+msgstr "No se puede determinar el URL de destino sin la extensión de WebDAV"
+
+#: ../src/libedataserver/e-webdav-session.c:943
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -5705,7 +5707,7 @@ msgstr ""
 "El servidor ha respondido con una página HTML, lo que significa que hay un "
 "error en el servidor o en la respuesta del cliente. El URI utilizado fue: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:940
+#: ../src/libedataserver/e-webdav-session.c:945
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
@@ -5719,7 +5721,7 @@ msgstr ""
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:961
+#: ../src/libedataserver/e-webdav-session.c:966
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: código de error HTTP %d (%s): %s"
@@ -5727,7 +5729,7 @@ msgstr "%s: código de error HTTP %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:969
+#: ../src/libedataserver/e-webdav-session.c:974
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "Falló con código de error HTTP %d (%s): %s"
@@ -5736,151 +5738,151 @@ msgstr "Falló con código de error HTTP %d (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:984
+#: ../src/libedataserver/e-webdav-session.c:989
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: código de error HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:990
+#: ../src/libedataserver/e-webdav-session.c:995
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "Falló con código de error HTTP %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:1237
+#: ../src/libedataserver/e-webdav-session.c:1245
 msgid "Failed to post data"
 msgstr "Falló al publicar los datos"
 
-#: ../src/libedataserver/e-webdav-session.c:1330
-#: ../src/libedataserver/e-webdav-session.c:1405
-#: ../src/libedataserver/e-webdav-session.c:1509
-#: ../src/libedataserver/e-webdav-session.c:2690
-#: ../src/libedataserver/e-webdav-session.c:3942
+#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1413
+#: ../src/libedataserver/e-webdav-session.c:1517
+#: ../src/libedataserver/e-webdav-session.c:2698
+#: ../src/libedataserver/e-webdav-session.c:3950
 msgid "Failed to get input XML content"
 msgstr "Falló al obtener el contenido de la entrada XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1341
+#: ../src/libedataserver/e-webdav-session.c:1349
 msgid "Failed to get properties"
 msgstr "Falló al obtener las propiedades"
 
-#: ../src/libedataserver/e-webdav-session.c:1415
+#: ../src/libedataserver/e-webdav-session.c:1423
 msgid "Failed to update properties"
 msgstr "Falló al actualizar las propiedades"
 
-#: ../src/libedataserver/e-webdav-session.c:1519
+#: ../src/libedataserver/e-webdav-session.c:1527
 msgid "Failed to issue REPORT"
 msgstr "Falló al emitir REPORT"
 
-#: ../src/libedataserver/e-webdav-session.c:1578
+#: ../src/libedataserver/e-webdav-session.c:1586
 msgid "Failed to create collection"
 msgstr "Falló al crear la colección"
 
-#: ../src/libedataserver/e-webdav-session.c:1669
-#: ../src/libedataserver/e-webdav-session.c:1823
+#: ../src/libedataserver/e-webdav-session.c:1677
+#: ../src/libedataserver/e-webdav-session.c:1831
 msgid "Failed to get XML request content"
 msgstr "Falló al obtener el contenido de la respuesta XML"
 
-#: ../src/libedataserver/e-webdav-session.c:1681
+#: ../src/libedataserver/e-webdav-session.c:1689
 msgid "Failed to create address book"
 msgstr "Falló al crear la libreta de direcciones"
 
-#: ../src/libedataserver/e-webdav-session.c:1836
+#: ../src/libedataserver/e-webdav-session.c:1844
 msgid "Failed to create calendar"
 msgstr "Falló al crear el calendario"
 
-#: ../src/libedataserver/e-webdav-session.c:1968
-#: ../src/libedataserver/e-webdav-session.c:1979
+#: ../src/libedataserver/e-webdav-session.c:1976
+#: ../src/libedataserver/e-webdav-session.c:1987
 msgid "Failed to read resource"
 msgstr "Falló al leer el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2128
+#: ../src/libedataserver/e-webdav-session.c:2136
 msgid "Cannot rewind input stream: Not supported"
 msgstr "No se puede volver al principio del flujo de datos: no está soportado"
 
-#: ../src/libedataserver/e-webdav-session.c:2275
+#: ../src/libedataserver/e-webdav-session.c:2283
 msgid "Failed to put data"
 msgstr "Falló al enviar los datos"
 
-#: ../src/libedataserver/e-webdav-session.c:2294
+#: ../src/libedataserver/e-webdav-session.c:2302
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "Falló al enviar datos al servidor, código de error %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:2467
+#: ../src/libedataserver/e-webdav-session.c:2475
 msgid "Failed to delete resource"
 msgstr "Falló al eliminar el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2534
+#: ../src/libedataserver/e-webdav-session.c:2542
 msgid "Failed to copy resource"
 msgstr "Falló al copiar el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2596
+#: ../src/libedataserver/e-webdav-session.c:2604
 msgid "Failed to move resource"
 msgstr "Falló al mover el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2701
+#: ../src/libedataserver/e-webdav-session.c:2709
 msgid "Failed to lock resource"
 msgstr "Falló al bloquear el recurso"
 
-#: ../src/libedataserver/e-webdav-session.c:2715
-#: ../src/libedataserver/e-webdav-session.c:2917
+#: ../src/libedataserver/e-webdav-session.c:2723
+#: ../src/libedataserver/e-webdav-session.c:2925
 msgid "Expected application/xml response, but none returned"
 msgstr "Se esperaba una respuesta application/xml, pero no se ha devuelto nada"
 
-#: ../src/libedataserver/e-webdav-session.c:2718
-#: ../src/libedataserver/e-webdav-session.c:2920
+#: ../src/libedataserver/e-webdav-session.c:2726
+#: ../src/libedataserver/e-webdav-session.c:2928
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "Se esperaba una respuesta application/xml, pero se ha devuelto %s"
 
-#: ../src/libedataserver/e-webdav-session.c:2730
-#: ../src/libedataserver/e-webdav-session.c:2933
+#: ../src/libedataserver/e-webdav-session.c:2738
+#: ../src/libedataserver/e-webdav-session.c:2941
 msgid "Failed to parse XML data"
 msgstr "Falló al analizar los datos XML"
 
-#: ../src/libedataserver/e-webdav-session.c:2809
+#: ../src/libedataserver/e-webdav-session.c:2817
 msgid "Failed to refresh lock"
 msgstr "Falló al actualizar el bloqueo"
 
-#: ../src/libedataserver/e-webdav-session.c:2868
+#: ../src/libedataserver/e-webdav-session.c:2876
 msgid "Failed to unlock"
 msgstr "Falló al desbloquear"
 
-#: ../src/libedataserver/e-webdav-session.c:2905
+#: ../src/libedataserver/e-webdav-session.c:2913
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Se esperaba una respuesta multiestado, pero se ha devuelto %d (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3952
+#: ../src/libedataserver/e-webdav-session.c:3960
 msgid "Failed to get access control list"
 msgstr "Falló al obtener la lista de control de acceso"
 
-#: ../src/libedataserver/e-webdav-session.c:4689
+#: ../src/libedataserver/e-webdav-session.c:4697
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
 "No se puede guardar una entrada de control de acceso protegida no heredada."
 
-#: ../src/libedataserver/e-webdav-session.c:4696
+#: ../src/libedataserver/e-webdav-session.c:4704
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "Tipo de entrada de control de acceso proporcionado no válido."
 
-#: ../src/libedataserver/e-webdav-session.c:4703
+#: ../src/libedataserver/e-webdav-session.c:4711
 msgid "Cannot store property-based Access Control Entry."
 msgstr ""
 "No se puede guardar una entrada del control de acceso basada en la propiedad."
 
-#: ../src/libedataserver/e-webdav-session.c:4710
+#: ../src/libedataserver/e-webdav-session.c:4718
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
 "La entrada del control de acceso sólo puede ser Grant o Deny, pero no None."
 
-#: ../src/libedataserver/e-webdav-session.c:4718
+#: ../src/libedataserver/e-webdav-session.c:4726
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
 "La entrada del control de acceso sólo puede ser Grant o Deny, pero no ambas."
 
-#: ../src/libedataserver/e-webdav-session.c:4777
+#: ../src/libedataserver/e-webdav-session.c:4785
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "El privilegio de la entrada de control de acceso no puede ser NULL."
 
@@ -6252,15 +6254,14 @@ msgstr ""
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Falló al obtener el token de acceso para «%s»: "
 
-#: ../src/modules/google-backend/module-google-backend.c:736
+#: ../src/modules/google-backend/module-google-backend.c:555
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "Contactos"
 
 #: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
-#: ../src/modules/yahoo-backend/module-yahoo-backend.c:200
-#: ../src/tools/list-sources/list-sources.c:146
+#: ../src/tools/list-sources/list-sources.c:148
 msgid "Calendar"
 msgstr "Calendario"
 
@@ -6351,10 +6352,6 @@ msgstr "Yahoo! Calendar"
 msgid "Yahoo! Mail"
 msgstr "Yahoo! Mail"
 
-#: ../src/modules/yahoo-backend/module-yahoo-backend.c:227
-msgid "Tasks"
-msgstr "Tareas"
-
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:37
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:39
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
@@ -6412,67 +6409,64 @@ msgstr ""
 msgid "_Dismiss"
 msgstr "_Descartar"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:68
-#: ../src/tools/addressbook-export/addressbook-export.c:780
+#: ../src/tools/addressbook-export/addressbook-export.c:69
+#: ../src/tools/addressbook-export/addressbook-export.c:781
 msgid "Can not open file"
 msgstr "No se puede abrir el archivo"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:98
+#: ../src/tools/addressbook-export/addressbook-export.c:99
 #, c-format
 msgid "Failed to open client “%s”: %s"
 msgstr "Falló al abrir el cliente «%s»: %s"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:888
+#: ../src/tools/addressbook-export/addressbook-export.c:889
 msgid "Unhandled error"
 msgstr "Error no manejado"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:921
+#: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "Specify the output file instead of standard output"
 msgstr "Especifique el archivo de salida en lugar de la salida estándar"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:922
+#: ../src/tools/addressbook-export/addressbook-export.c:923
 msgid "OUTPUTFILE"
 msgstr "ARCHIVOSALIDA"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:925
+#: ../src/tools/addressbook-export/addressbook-export.c:926
 msgid "List local address book folders"
 msgstr "Listar carpetas de libretas de direcciones"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:928
+#: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
 msgstr "Mostrar tarjetas como archivos vcard o csv"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:929
+#: ../src/tools/addressbook-export/addressbook-export.c:930
 msgid "[vcard|csv]"
 msgstr "[vcard|csv]"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:977
+#: ../src/tools/addressbook-export/addressbook-export.c:978
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Error en los argumentos de la línea de comandos. Use la opción --help para "
 "ve el modo de uso."
 
-#: ../src/tools/addressbook-export/addressbook-export.c:991
+#: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
 msgstr "Sólo se soportan los formatos csv o vcard."
 
-#: ../src/tools/list-sources/list-sources.c:81
-#| msgid "_Show only subscribed folders"
+#: ../src/tools/list-sources/list-sources.c:83
 msgid "Show only enabled sources"
 msgstr "Mostrar sólo las fuentes activadas"
 
-#: ../src/tools/list-sources/list-sources.c:84
-#| msgid "POP Source UID"
+#: ../src/tools/list-sources/list-sources.c:86
 msgid "Show source’s UID"
 msgstr "Mostrar el UID de la fuente"
 
-#: ../src/tools/list-sources/list-sources.c:87
-#| msgid "Unsupported authentication method"
+#: ../src/tools/list-sources/list-sources.c:89
 msgid "Show source’s authentication information"
 msgstr "Mostrar la información de fuentes de autenticación"
 
-#: ../src/tools/list-sources/list-sources.c:90
+#: ../src/tools/list-sources/list-sources.c:92
 msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
@@ -6480,160 +6474,147 @@ msgstr ""
 "Escribir en formato legible por la máquina (una fuente por línea, sin "
 "nombres de propiedades traducidos y usando tabuladores para separar)"
 
-#: ../src/tools/list-sources/list-sources.c:93
+#: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
 msgstr "Limitar sólo a fuentes con el nombre de extensión dado"
 
-#: ../src/tools/list-sources/list-sources.c:104
+#: ../src/tools/list-sources/list-sources.c:106
 msgid "yes"
 msgstr "sí"
 
-#: ../src/tools/list-sources/list-sources.c:104
-#| msgid "Snow"
+#: ../src/tools/list-sources/list-sources.c:106
 msgid "no"
 msgstr "no"
 
-#: ../src/tools/list-sources/list-sources.c:124
-#| msgctxt "CategoryName"
-#| msgid "Competition"
+#: ../src/tools/list-sources/list-sources.c:126
 msgid "Collection"
 msgstr "Colección"
 
-#: ../src/tools/list-sources/list-sources.c:130
+#: ../src/tools/list-sources/list-sources.c:132
 msgid "Collection/GNOME Online Accounts"
 msgstr "Colección/cuentas en línea de GNOME"
 
-#: ../src/tools/list-sources/list-sources.c:135
+#: ../src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
 msgstr "Colección/cuentas en línea de Ubuntu"
 
-#: ../src/tools/list-sources/list-sources.c:145
+#: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
 msgstr "Libreta de direcciones"
 
-#: ../src/tools/list-sources/list-sources.c:147
-#| msgctxt "WebDAVDiscover"
-#| msgid "Memos"
+#: ../src/tools/list-sources/list-sources.c:149
 msgid "Memo List"
 msgstr "Lista de notas"
 
-#: ../src/tools/list-sources/list-sources.c:148
-#| msgid "Tasks"
+#: ../src/tools/list-sources/list-sources.c:150
 msgid "Task List"
 msgstr "Lista de tareas"
 
-#: ../src/tools/list-sources/list-sources.c:149
+#: ../src/tools/list-sources/list-sources.c:151
 msgid "Mail Account"
 msgstr "Cuenta de correo"
 
-#: ../src/tools/list-sources/list-sources.c:150
+#: ../src/tools/list-sources/list-sources.c:152
 msgid "Mail Transport"
 msgstr "Transporte de correo"
 
-#: ../src/tools/list-sources/list-sources.c:151
-#| msgid "Identity"
+#: ../src/tools/list-sources/list-sources.c:153
 msgid "Mail Identity"
 msgstr "Identidad del correo"
 
-#: ../src/tools/list-sources/list-sources.c:152
-#| msgid "Message submission port"
+#: ../src/tools/list-sources/list-sources.c:154
 msgid "Mail Submission"
 msgstr "Envío de correo"
 
-#: ../src/tools/list-sources/list-sources.c:153
-#| msgid "Bad signature"
+#: ../src/tools/list-sources/list-sources.c:155
 msgid "Mail Signature"
 msgstr "Firma del correo"
 
-#: ../src/tools/list-sources/list-sources.c:154
+#: ../src/tools/list-sources/list-sources.c:156
 msgid "Proxy"
 msgstr "Proxy"
 
-#: ../src/tools/list-sources/list-sources.c:222
+#: ../src/tools/list-sources/list-sources.c:224
 #, c-format
 msgid "UID: %s"
 msgstr "UID: %s"
 
-#: ../src/tools/list-sources/list-sources.c:226
+#: ../src/tools/list-sources/list-sources.c:228
 #, c-format
 msgid "Parent UID: %s"
 msgstr "UID padre: %s"
 
-#: ../src/tools/list-sources/list-sources.c:229
+#: ../src/tools/list-sources/list-sources.c:231
 #, c-format
-#| msgid "Posting failed: %s"
 msgid "Enabled: %s"
 msgstr "Activado: %s"
 
-#: ../src/tools/list-sources/list-sources.c:231
+#: ../src/tools/list-sources/list-sources.c:233
 #, c-format
-#| msgid "Backend is busy"
 msgid "Backend: %s"
 msgstr "«Backend»: %s"
 
-#: ../src/tools/list-sources/list-sources.c:236
+#: ../src/tools/list-sources/list-sources.c:238
 #, c-format
-#| msgid "Calendar does not exist"
 msgid "Calendar enabled: %s"
 msgstr "Calendario activado: %s"
 
-#: ../src/tools/list-sources/list-sources.c:237
+#: ../src/tools/list-sources/list-sources.c:239
 #, c-format
-#| msgid "Contact ID already exists"
 msgid "Contacts enabled: %s"
 msgstr "Contactos activados: %s"
 
-#: ../src/tools/list-sources/list-sources.c:238
+#: ../src/tools/list-sources/list-sources.c:240
 #, c-format
-#| msgid "Operation failed: %s"
 msgid "Mail enabled: %s"
 msgstr "Correo activado: %s"
 
-#: ../src/tools/list-sources/list-sources.c:245
+#: ../src/tools/list-sources/list-sources.c:247
 #, c-format
 msgid "MIME Type: %s"
 msgstr "Tipo MIME: %s"
 
-#: ../src/tools/list-sources/list-sources.c:267
+#: ../src/tools/list-sources/list-sources.c:269
 #, c-format
 msgid "Auth Host: %s:%d"
 msgstr "Autenticar equipo: %s:%d"
 
-#: ../src/tools/list-sources/list-sources.c:273
+#: ../src/tools/list-sources/list-sources.c:275
 #, c-format
 msgid "Auth Host: %s"
 msgstr "Autenticar equipo: %s"
 
-#: ../src/tools/list-sources/list-sources.c:281
+#: ../src/tools/list-sources/list-sources.c:283
 #, c-format
 msgid "Auth User: %s"
 msgstr "Autenticar usuario: %s"
 
-#: ../src/tools/list-sources/list-sources.c:289
+#: ../src/tools/list-sources/list-sources.c:291
 #, c-format
 msgid "Auth Method: %s"
 msgstr "Método de autenticación: %s"
 
-#: ../src/tools/list-sources/list-sources.c:297
+#: ../src/tools/list-sources/list-sources.c:299
 #, c-format
 msgid "Auth Proxy UID: %s"
 msgstr "Autenticar UID de proxy: %s"
 
-#: ../src/tools/list-sources/list-sources.c:417
-#| msgid "Failed to parse response data"
+#: ../src/tools/list-sources/list-sources.c:420
 msgid "Failed to parse arguments: Unknown error"
 msgstr "Falló al analizar los argumentos: error desconocido"
 
-#: ../src/tools/list-sources/list-sources.c:426
+#: ../src/tools/list-sources/list-sources.c:429
 #, c-format
-#| msgid "Failed to connect to a server using SSL/TLS: %s"
 msgid "Failed to connect to source registry: %s\n"
 msgstr "Falló al conectar al registro de la fuente: %s\n"
 
-#: ../src/tools/list-sources/list-sources.c:442
+#: ../src/tools/list-sources/list-sources.c:445
 #, c-format
 msgid "No sources had been found\n"
 msgstr "No se han encontrado fuentes\n"
+
+#~ msgid "Tasks"
+#~ msgstr "Tareas"
 
 #~ msgid "WebDAV"
 #~ msgstr "WebDAV"
