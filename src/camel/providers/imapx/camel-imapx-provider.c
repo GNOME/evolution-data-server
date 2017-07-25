@@ -84,7 +84,7 @@ CamelProviderPortEntry imapx_port_entries[] = {
 static CamelProvider imapx_provider = {
 	"imapx",
 
-	N_("IMAP+"),
+	N_("IMAP"),
 
 	N_("For reading and storing mail on IMAP servers."),
 
