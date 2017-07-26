@@ -126,17 +126,18 @@ timeout_node_attach (TimeoutNode *node)
 	if (node->source != NULL)
 		return;
 
-	interval_minutes =
-		e_source_refresh_get_interval_minutes (node->extension);
-	node->source = g_timeout_source_new_seconds (interval_minutes * 60);
+	interval_minutes = e_source_refresh_get_interval_minutes (node->extension);
+	if (interval_minutes > 0) {
+		node->source = g_timeout_source_new_seconds (interval_minutes * 60);
 
-	g_source_set_callback (
-		node->source,
-		timeout_node_invoke,
-		node,
-		(GDestroyNotify) NULL);
+		g_source_set_callback (
+			node->source,
+			timeout_node_invoke,
+			node,
+			(GDestroyNotify) NULL);
 
-	g_source_attach (node->source, node->context);
+		g_source_attach (node->source, node->context);
+	}
 }
 
 static void
