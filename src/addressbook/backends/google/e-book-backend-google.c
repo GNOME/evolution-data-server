@@ -319,6 +319,7 @@ ebb_google_get_groups_sync (EBookBackendGoogle *bbgoogle,
 	GDataQuery *query;
 	GDataFeed *feed;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_GOOGLE (bbgoogle), FALSE);
 	g_return_val_if_fail (ebb_google_is_authorized (bbgoogle), FALSE);
@@ -337,7 +338,21 @@ ebb_google_get_groups_sync (EBookBackendGoogle *bbgoogle,
 	/* Run the query synchronously */
 	feed = gdata_contacts_service_query_groups (
 		GDATA_CONTACTS_SERVICE (bbgoogle->priv->service),
-		query, cancellable, ebb_google_process_group, bbgoogle, error);
+		query, cancellable, ebb_google_process_group, bbgoogle, &local_error);
+
+	if (with_time_constraint && bbgoogle->priv->groups_last_update.tv_sec != 0 && (
+	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
+	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR))) {
+		g_clear_error (&local_error);
+
+		gdata_query_set_updated_min (query, -1);
+
+		feed = gdata_contacts_service_query_groups (
+			GDATA_CONTACTS_SERVICE (bbgoogle->priv->service),
+			query, cancellable, ebb_google_process_group, bbgoogle, error);
+	} else if (local_error) {
+		g_propagate_error (error, local_error);
+	}
 
 	success = feed != NULL;
 
@@ -465,6 +480,16 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 	}
 
 	feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (bbgoogle->priv->service), GDATA_QUERY (contacts_query), cancellable, NULL, NULL, &local_error);
+
+	if (last_updated.tv_sec > 0 && !bbgoogle->priv->groups_changed && (
+	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
+	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR))) {
+		g_clear_error (&local_error);
+
+		gdata_query_set_updated_min (GDATA_QUERY (contacts_query), -1);
+
+		feed = gdata_contacts_service_query_contacts (GDATA_CONTACTS_SERVICE (bbgoogle->priv->service), GDATA_QUERY (contacts_query), cancellable, NULL, NULL, &local_error);
+	}
 
 	if (feed && !g_cancellable_is_cancelled (cancellable) && !local_error) {
 		GList *link;
