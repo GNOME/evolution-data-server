@@ -520,6 +520,7 @@ typedef struct {
 	EBookBackend *backend;
 	GCancellable *cancellable;
 	GError *gdata_error;
+	gboolean is_limited_query;
 
 	/* These two don't need locking; they're only accessed from the main thread. */
 	gboolean update_complete;
@@ -721,6 +722,31 @@ get_new_contacts_cb (GDataService *service,
 
 	g_debug (G_STRFUNC);
 	feed = gdata_service_query_finish (service, result, &gdata_error);
+
+	if (data->is_limited_query && (
+	    g_error_matches (gdata_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
+	    g_error_matches (gdata_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR))) {
+		GDataQuery *query;
+
+		g_clear_error (&gdata_error);
+
+		query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 0, G_MAXINT));
+		data->is_limited_query = FALSE;
+
+		gdata_contacts_service_query_contacts_async (
+			GDATA_CONTACTS_SERVICE (E_BOOK_BACKEND_GOOGLE (backend)->priv->service),
+			query,
+			data->cancellable,
+			(GDataQueryProgressCallback) process_contact_cb,
+			data,
+			(GDestroyNotify) NULL,
+			(GAsyncReadyCallback) get_new_contacts_cb,
+			data);
+		g_object_unref (query);
+
+		return;
+	}
+
 	if (feed != NULL) {
 		GList *entries = gdata_feed_get_entries (feed);
 		g_debug ("Feed has %d entries", g_list_length (entries));
@@ -787,6 +813,7 @@ get_new_contacts (EBookBackend *backend)
 	data->gdata_error = NULL;
 	data->num_contacts_pending_photos = 0;
 	data->update_complete = FALSE;
+	data->is_limited_query = last_updated != NULL;
 
 	gdata_contacts_service_query_contacts_async (
 		GDATA_CONTACTS_SERVICE (priv->service),
@@ -870,11 +897,19 @@ process_group (GDataEntry *entry,
 	g_free (name);
 }
 
+typedef struct _GetGroupsData {
+	EBookBackend *backend;
+	GCancellable *cancellable;
+	gboolean is_limited_query;
+	gboolean update_cache;
+} GetGroupsData;
+
 static void
 get_groups_cb (GDataService *service,
                GAsyncResult *result,
-               EBookBackend *backend)
+               GetGroupsData *ggd)
 {
+	EBookBackend *backend = ggd->backend;
 	EBookBackendGooglePrivate *priv;
 	GDataFeed *feed;
 	GError *gdata_error = NULL;
@@ -883,6 +918,31 @@ get_groups_cb (GDataService *service,
 
 	g_debug (G_STRFUNC);
 	feed = gdata_service_query_finish (service, result, &gdata_error);
+	if (ggd->is_limited_query && (
+	    g_error_matches (gdata_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
+	    g_error_matches (gdata_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR))) {
+		GDataQuery *query;
+
+		g_clear_error (&gdata_error);
+
+		query = GDATA_QUERY (gdata_contacts_query_new_with_limits (NULL, 0, G_MAXINT));
+		ggd->is_limited_query = FALSE;
+
+		gdata_contacts_service_query_groups_async (
+			GDATA_CONTACTS_SERVICE (priv->service),
+			query,
+			ggd->cancellable,
+			(GDataQueryProgressCallback) process_group,
+			backend,
+			(GDestroyNotify) NULL,
+			(GAsyncReadyCallback) get_groups_cb,
+			ggd);
+
+		g_object_unref (query);
+
+		return;
+	}
+
 	if (feed != NULL) {
 		GList *entries = gdata_feed_get_entries (feed);
 		g_debug ("Group feed has %d entries", g_list_length (entries));
@@ -916,22 +976,14 @@ get_groups_cb (GDataService *service,
 		g_rec_mutex_unlock (&priv->groups_lock);
 	}
 
-	g_object_unref (backend);
-
 	g_clear_error (&gdata_error);
-}
 
-static void
-get_groups_and_update_cache_cb (GDataService *service,
-				GAsyncResult *result,
-				EBookBackend *backend)
-{
-	g_object_ref (backend);
+	if (ggd->update_cache)
+		get_new_contacts (backend);
 
-	get_groups_cb (service, result, backend);
-	get_new_contacts (backend);
-
-	g_object_unref (backend);
+	g_object_unref (ggd->backend);
+	g_object_unref (ggd->cancellable);
+	g_free (ggd);
 }
 
 static void
@@ -941,6 +993,7 @@ get_groups (EBookBackend *backend,
 	EBookBackendGooglePrivate *priv;
 	GDataQuery *query;
 	GCancellable *cancellable;
+	GetGroupsData *ggd;
 
 	priv = E_BOOK_BACKEND_GOOGLE_GET_PRIVATE (backend);
 
@@ -960,10 +1013,15 @@ get_groups (EBookBackend *backend,
 
 	g_rec_mutex_unlock (&priv->groups_lock);
 
-	g_object_ref (backend);
+	cancellable = start_operation (backend, -2, NULL, _("Querying for updated groups…"));
+
+	ggd = g_new0 (GetGroupsData, 1);
+	ggd->backend = g_object_ref (backend);
+	ggd->cancellable = g_object_ref (cancellable);
+	ggd->is_limited_query = priv->groups_last_update.tv_sec != 0 || priv->groups_last_update.tv_usec != 0;
+	ggd->update_cache = and_update_cache;
 
 	/* Run the query asynchronously */
-	cancellable = start_operation (backend, -2, NULL, _("Querying for updated groups…"));
 	gdata_contacts_service_query_groups_async (
 		GDATA_CONTACTS_SERVICE (priv->service),
 		query,
@@ -971,8 +1029,8 @@ get_groups (EBookBackend *backend,
 		(GDataQueryProgressCallback) process_group,
 		backend,
 		(GDestroyNotify) NULL,
-		(GAsyncReadyCallback) (and_update_cache ? get_groups_and_update_cache_cb : get_groups_cb),
-		backend);
+		(GAsyncReadyCallback) get_groups_cb,
+		ggd);
 
 	g_object_unref (cancellable);
 	g_object_unref (query);
