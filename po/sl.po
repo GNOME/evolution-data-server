@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the evolution-data-server package.
 #
 # Andraž Tori <andraz.tori1@guest.arnes.si> 2002
-# Matej Urbančič <mateju@svn.gnome.org>, 2007-2016.
+# Matej Urbančič <mateju@svn.gnome.org>, 2007–2017.
 #
 msgid ""
 msgstr ""
@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-07-25 11:44+0200\n"
-"PO-Revision-Date: 2017-07-25 12:02+0200\n"
+"PO-Revision-Date: 2017-07-27 16:27+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -999,7 +999,7 @@ msgstr "Nezadostna količina pomnilnika"
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1697
 #, c-format
 msgid "Invalid contact field '%d' specified in summary"
-msgstr "V povzetku je določeno neveljavno polje stika '%d'"
+msgstr "V povzetku je določeno neveljavno polje stika »%d«"
 
 #: ../addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
 #: ../addressbook/libedata-book/e-book-sqlite.c:579
@@ -1107,7 +1107,7 @@ msgstr ""
 #: ../addressbook/libedata-book/e-book-sqlite.c:545
 #, c-format
 msgid "Unsupported contact field '%d' specified in summary"
-msgstr "V povzetku je določeno nepodprto polje stika '%d'"
+msgstr "V povzetku je določeno nepodprto polje stika »%d«"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:1925
 msgid ""
@@ -1115,7 +1115,7 @@ msgid ""
 "addressbook. Delete one of the entries in the 'folders' table first."
 msgstr ""
 "Ni mogoče posodobiti podatkovne zbirke stikov in zastarele podatkovne zbirke "
-"z več kot enim imenikom. Izbrišite en vnos v razpredelnici 'mape'"
+"z več kot enim imenikom. Izbrišite en vnos v razpredelnici »mape«"
 
 #: ../addressbook/libedata-book/e-book-sqlite.c:5800
 #, c-format
@@ -1740,7 +1740,7 @@ msgstr "Nedoločeno"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1555
 #, c-format
 msgid "\"%s\" expects one argument"
-msgstr "\"%s\" pričakuje 1 argument"
+msgstr "Ukaz »%s« pričakuje en argument"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:92
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:674
@@ -1748,12 +1748,12 @@ msgstr "\"%s\" pričakuje 1 argument"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1394
 #, c-format
 msgid "\"%s\" expects the first argument to be a string"
-msgstr "\"%s\" pričakuje, da je prvi argument niz"
+msgstr "Ukaz »%s« pričakuje, da je prvi argument niz"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:167
 #, c-format
 msgid "\"%s\" expects two or three arguments"
-msgstr "Funkcija \"%s\" zahteva dva ali tri argumente."
+msgstr "Ukaz »%s« zahteva dva ali tri argumente."
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:174
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:263
@@ -1765,7 +1765,7 @@ msgstr "Funkcija \"%s\" zahteva dva ali tri argumente."
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1562
 #, c-format
 msgid "\"%s\" expects the first argument to be a time_t"
-msgstr "\"%s\" pričakuje, da je prvi argument time_t"
+msgstr "Ukaz »%s« pričakuje, da je prvi argument time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:183
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:271
@@ -1773,17 +1773,17 @@ msgstr "\"%s\" pričakuje, da je prvi argument time_t"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:833
 #, c-format
 msgid "\"%s\" expects the second argument to be a time_t"
-msgstr "\"%s\" pričakuje, da je drugi argument time_t"
+msgstr "Ukaz »%s« pričakuje, da je drugi argument time_t"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:193
 #, c-format
 msgid "\"%s\" expects the third argument to be a string"
-msgstr "Funkcija \"%s\" pričakuje tretji argument kot niz."
+msgstr "Ukaz »%s« pričakuje tretji argument kot niz."
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:255
 #, c-format
 msgid "\"%s\" expects none or two arguments"
-msgstr "Funkcija \"%s\" zahteva en ali dva argumenta."
+msgstr "Ukaz »%s« zahteva en ali dva argumenta"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:318
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:667
@@ -1791,7 +1791,7 @@ msgstr "Funkcija \"%s\" zahteva en ali dva argumenta."
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1448
 #, c-format
 msgid "\"%s\" expects two arguments"
-msgstr "\"%s\" pričakuje 2 argumenta"
+msgstr "Ukaz »%s« pričakuje 2 argumenta"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:603
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:626
@@ -1802,12 +1802,12 @@ msgstr "\"%s\" pričakuje 2 argumenta"
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1340
 #, c-format
 msgid "\"%s\" expects no arguments"
-msgstr "\"%s\" ne pričakuje argumentov"
+msgstr "Ukaz »%s« ne pričakuje argumentov"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:683
 #, c-format
 msgid "\"%s\" expects the second argument to be a string"
-msgstr "\"%s\" pričakuje, da je drugi argument niz"
+msgstr "Ukaz »%s« pričakuje, da je drugi argument niz"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:714
 #, c-format
@@ -1816,13 +1816,13 @@ msgid ""
 "\"description\", or \"location\", or \"attendee\", or \"organizer\", or "
 "\"classification\""
 msgstr ""
-"\"%s\" pričakuje, da je prvi argument \"karkoli\", \"povzetek\", \"opis\", "
-"\"mesto\", \"navzoči\", \"organizator\" ali \"klasifikacija\""
+"Ukaz »%s« pričakuje, da je prvi argument Ukaz »karkoli«, »povzetek«, »opis«, "
+"»mesto«, »navzoči«, »organizator« ali »klasifikacija«"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:885
 #, c-format
 msgid "\"%s\" expects at least one argument"
-msgstr "\"%s\" pričakuje vsaj en argument"
+msgstr "Ukaz »%s« pričakuje vsaj en argument"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:900
 #, c-format
@@ -1830,18 +1830,18 @@ msgid ""
 "\"%s\" expects all arguments to be strings or one and only one argument to "
 "be a boolean false (#f)"
 msgstr ""
-"\"%s\" pričakuje, da so vsi argumenti nizi ali da je natanko en argument "
+"Ukaz »%s« pričakuje, da so vsi argumenti nizi ali da je natanko en argument "
 "neresnična Boolova vrednost (#f)"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1403
 #, c-format
 msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
-msgstr "\"%s\" pričakuje, da je prvi argument časovni niz ISO 8601"
+msgstr "Ukaz »%s« pričakuje, da je prvi argument časovni niz ISO 8601"
 
 #: ../calendar/libedata-cal/e-cal-backend-sexp.c:1464
 #, c-format
 msgid "\"%s\" expects the second argument to be an integer"
-msgstr "\"%s\" pričakuje, da je drugi argument celo število"
+msgstr "Ukaz »%s« pričakuje, da je drugi argument celo število"
 
 #: ../calendar/libedata-cal/e-data-cal.c:420
 msgid "Unsupported method"
@@ -2233,7 +2233,7 @@ msgid ""
 "SmartCard: \"%s\""
 msgstr ""
 "Zahtevana je koda PIN za odklepanje ključa\n"
-"pametne kartice: \"%s\""
+"pametne kartice: Ukaz »%s«"
 
 #: ../camel/camel-gpg-context.c:941
 #, c-format
@@ -2242,7 +2242,7 @@ msgid ""
 "user: \"%s\""
 msgstr ""
 "Za odklepanje ključa uporabnika potrebujete\n"
-"šifrirno geslo: \"%s\""
+"šifrirno geslo: »%s«"
 
 #: ../camel/camel-gpg-context.c:947
 #, c-format
@@ -2597,8 +2597,7 @@ msgstr "Strežnikov izziv ni veljaven\n"
 #: ../camel/camel-sasl-digest-md5.c:873
 #, c-format
 msgid "Server challenge contained invalid \"Quality of Protection\" token"
-msgstr ""
-"Strežnikov izziv je vseboval neveljaven žeton \"Quality of Protection\""
+msgstr "Strežnikov izziv je vseboval neveljaven žeton »Quality of Protection«"
 
 #: ../camel/camel-sasl-digest-md5.c:906
 #, c-format
@@ -3041,7 +3040,7 @@ msgstr "Povezava prekinjena"
 #: ../camel/camel-stream-process.c:283
 #, c-format
 msgid "Could not connect with command \"%s\": %s"
-msgstr "Ni se mogoče povezati z ukazom \"%s\": %s"
+msgstr "Ni se mogoče povezati z ukazom »%s«: %s"
 
 #: ../camel/camel-subscribable.c:273
 #, c-format
@@ -3526,7 +3525,7 @@ msgstr "Pridobivanje seznama map za »%s«"
 #, c-format
 msgid ""
 "The folder name \"%s\" is invalid because it contains the character \"%c\""
-msgstr "Ime mape \"%s\" je neveljavno, ker vsebuje znak \"%c\""
+msgstr "Ime mape »%s« je neveljavno, ker vsebuje znak »%c«"
 
 #: ../camel/providers/imapx/camel-imapx-store.c:2470
 msgctxt "IMAPDefaults"
@@ -3644,7 +3643,7 @@ msgstr ""
 
 #: ../camel/providers/local/camel-local-provider.c:41
 msgid "_Use the '.folders' folder summary file (exmh)"
-msgstr "_Uporabite datoteko z izvlečki map '.folders' (exmh)"
+msgstr "_Uporabite datoteko z izvlečki map ».folders« (exmh)"
 
 #: ../camel/providers/local/camel-local-provider.c:48
 msgid "MH-format mail directories"
@@ -4070,7 +4069,7 @@ msgstr "Neveljaven vrstilni red"
 #: ../camel/providers/local/camel-spool-store.c:481
 #, c-format
 msgid "Folder '%s/%s' does not exist."
-msgstr "Mapa '%s/%s' ne obstaja."
+msgstr "Mapa Ukaz »%s/%s« ne obstaja."
 
 #: ../camel/providers/local/camel-spool-store.c:494
 #, c-format
@@ -4519,8 +4518,7 @@ msgstr "Sendmail"
 msgid ""
 "For delivering mail by passing it to the \"sendmail\" program on the local "
 "system."
-msgstr ""
-"Za dostavljanje pošte preko programa \"sendmail\" na krajevnem sistemu."
+msgstr "Za dostavljanje pošte preko programa »sendmail« na krajevnem sistemu."
 
 #: ../camel/providers/sendmail/camel-sendmail-transport.c:46
 msgid "sendmail"
@@ -4854,8 +4852,7 @@ msgid ""
 "Units for a birthday or anniversary reminder, \"minutes\", \"hours\" or "
 "\"days\""
 msgstr ""
-"Enote opomnika za rojstni dan ali obletnico so \"minute\", \"ure\" ali "
-"\"dnevi\"."
+"Enote opomnika za rojstni dan ali obletnico so »minute«, »ure« ali »dnevi«."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
@@ -4870,6 +4867,8 @@ msgid ""
 "An example is '/usr/bin/gpg'; if it is not filled, or doesn't exist, then it "
 "is searched for it. Change requires restart of the application."
 msgstr ""
+"Primer je pot »/usr/bin/gpg«; če ta ni vpisana, ali pa pot ne obstaja, jo "
+"program poskuša poiskati. Sprememba zahteva ponoven  zagon programa."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -4995,7 +4994,7 @@ msgstr "Podatkovni vir »%s« ne podpira overitve OAuth 2.0."
 #: ../libebackend/e-server-side-source.c:1856
 #, c-format
 msgid "File must have a '.source' extension"
-msgstr "Pripona datoteke mora biti '.source'"
+msgstr "Pripona datoteke mora biti ».source«"
 
 #: ../libebackend/e-source-registry-server.c:319
 #, c-format
@@ -5203,7 +5202,7 @@ msgstr "Pridobivanje skrivne kode Google iz poveril je spodletelo"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:408
 msgid "Refresh token not found in Google secret"
-msgstr ""
+msgstr "Žetona za osvežitev kode Google ni mogoče najti"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:416
 msgid "Failed to construct refresh_token request"
@@ -5215,7 +5214,7 @@ msgstr "Kodiranje novega žetona skrivne kode Google je spodletelo"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:459
 msgid "Failed to get access token from refresh_token server response"
-msgstr ""
+msgstr "Pridobivanje žetona iz odziva strežnika je spodletelo"
 
 #: ../libedataserver/e-source-credentials-provider-impl-google.c:465
 msgid "Failed to refresh token"
@@ -5435,6 +5434,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book \"%s\"."
 msgstr ""
+"Za dostop do imenika »%s « se morate prijaviti v račun Goggle in sprejeti "
+"zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:627
 #, c-format
@@ -5442,6 +5443,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar \"%s\"."
 msgstr ""
+"Za dostop do koledarja »%s « se morate prijaviti v račun Goggle in sprejeti "
+"zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:631
 #, c-format
@@ -5449,6 +5452,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account \"%s\"."
 msgstr ""
+"Za dostop do poštnega računa »%s « se morate prijaviti v račun Goggle in "
+"sprejeti zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:635
 #, c-format
@@ -5456,6 +5461,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport \"%s\"."
 msgstr ""
+"Za dostop do elektronske pošte »%s « se morate prijaviti v račun Goggle in "
+"sprejeti zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:639
 #, c-format
@@ -5463,6 +5470,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list \"%s\"."
 msgstr ""
+"Za dostop do seznama opomnikov »%s « se morate prijaviti v račun Goggle in "
+"sprejeti zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:643
 #, c-format
@@ -5470,6 +5479,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list \"%s\"."
 msgstr ""
+"Za dostop do seznama nalog »%s « se morate prijaviti v račun Goggle in "
+"sprejeti zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:647
 #, c-format
@@ -5477,6 +5488,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account \"%s\"."
 msgstr ""
+"Za dostop do računa »%s « se morate prijaviti v račun Goggle in sprejeti "
+"zahtevane pogoje uporabe."
 
 #: ../libedataserverui/e-credentials-prompter-impl-google.c:691
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:232
@@ -5505,37 +5518,37 @@ msgstr "Zahteva za overitev"
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:157
 #, c-format
 msgid "Please enter the password for address book \"%s\"."
-msgstr "Vnesite geslo za imenik \"%s\"."
+msgstr "Vnesite geslo za imenik »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:161
 #, c-format
 msgid "Please enter the password for calendar \"%s\"."
-msgstr "Vnesite geslo za koledar \"%s\"."
+msgstr "Vnesite geslo za koledar »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:165
 #, c-format
 msgid "Please enter the password for mail account \"%s\"."
-msgstr "Vnesite geslo za elektronski poštni račun \"%s\"."
+msgstr "Vnesite geslo za elektronski poštni račun »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:169
 #, c-format
 msgid "Please enter the password for mail transport \"%s\"."
-msgstr "Vnesite geslo za prenos elektronske pošte \"%s\"."
+msgstr "Vnesite geslo za prenos elektronske pošte »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:173
 #, c-format
 msgid "Please enter the password for memo list \"%s\"."
-msgstr "Vnesite geslo za opomnike \"%s\"."
+msgstr "Vnesite geslo za opomnike »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:177
 #, c-format
 msgid "Please enter the password for task list \"%s\"."
-msgstr "Vnesite geslo za seznam nalog \"%s\"."
+msgstr "Vnesite geslo za seznam nalog »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:181
 #, c-format
 msgid "Please enter the password for account \"%s\"."
-msgstr "Vnesite geslo za račun \"%s\"."
+msgstr "Vnesite geslo za račun »%s«."
 
 #: ../libedataserverui/e-credentials-prompter-impl-password.c:233
 #: ../libedataserverui/e-webdav-discover-widget.c:1064
@@ -5816,15 +5829,15 @@ msgstr "Napaka razčlenjevanja odziva kot JSON: "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:119
 msgid "Didn't find 'email' in JSON data"
-msgstr "Ni mogoče najti podatka 'email' v zapisu JSON "
+msgstr "Ni mogoče najti podatka »email« v zapisu JSON "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:316
 msgid "Didn't find 'id' in JSON data"
-msgstr "Ni mogoče najti podatka 'id' v zapisu JSON "
+msgstr "Ni mogoče najti podatka »ID« v zapisu JSON "
 
 #: ../modules/ubuntu-online-accounts/uoa-utils.c:321
 msgid "Didn't find 'emails.account' in JSON data"
-msgstr "Ni mogoče najti podatka 'emails.acount' v zapisu JSON "
+msgstr "Ni mogoče najti podatka »emails.acount« v zapisu JSON "
 
 #: ../modules/ubuntu-online-accounts/windows-live-mail.service.in.in.h:1
 msgid "Windows Live Mail"
