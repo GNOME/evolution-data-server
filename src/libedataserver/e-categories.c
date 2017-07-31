@@ -222,8 +222,9 @@ hash_to_xml_string (gpointer key,
 	g_string_append_len (string, "/>\n", 3);
 }
 
-static gboolean
-idle_saver_cb (gpointer user_data)
+/* Called with the @categories lock locked */
+static void
+idle_saver_save (void)
 {
 	GString *buffer;
 	gchar *contents;
@@ -231,8 +232,6 @@ idle_saver_cb (gpointer user_data)
 	gchar *pathname;
 	EChangedListener *emit_listeners = NULL;  /* owned */
 	GError *error = NULL;
-
-	G_LOCK (categories);
 
 	if (!save_is_pending)
 		goto exit;
@@ -267,14 +266,26 @@ idle_saver_cb (gpointer user_data)
 exit:
 	idle_id = 0;
 
-	G_UNLOCK (categories);
-
 	/* Emit the signal with the lock released to avoid re-entrancy
 	 * deadlocks. Hold a reference to @listeners until this is complete. */
 	if (emit_listeners) {
+		G_UNLOCK (categories);
+
 		g_signal_emit_by_name (emit_listeners, "changed");
 		g_object_unref (emit_listeners);
+
+		G_LOCK (categories);
 	}
+}
+
+static gboolean
+idle_saver_cb (gpointer user_data)
+{
+	G_LOCK (categories);
+
+	idle_saver_save ();
+
+	G_UNLOCK (categories);
 
 	return FALSE;
 }
@@ -460,7 +471,7 @@ finalize_categories (void)
 	G_LOCK (categories);
 
 	if (save_is_pending)
-		idle_saver_cb (NULL);
+		idle_saver_save ();
 
 	if (idle_id > 0) {
 		g_source_remove (idle_id);
