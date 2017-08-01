@@ -102,7 +102,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 		xmlXPathObjectPtr xpath_obj;
 		gchar *principal_href, *full_href;
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/A:addressbook-home-set", xpath_prop_prefix);
+		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/A:addressbook-home-set/D:href", xpath_prop_prefix);
 		if (xpath_obj) {
 			gint ii, length;
 
@@ -137,7 +137,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 			xmlXPathFreeObject (xpath_obj);
 		}
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:calendar-home-set", xpath_prop_prefix);
+		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:calendar-home-set/D:href", xpath_prop_prefix);
 		if (xpath_obj) {
 			gint ii, length;
 
@@ -170,7 +170,7 @@ e_webdav_discover_traverse_propfind_response_cb (EWebDAVSession *webdav,
 			xmlXPathFreeObject (xpath_obj);
 		}
 
-		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:calendar-user-address-set", xpath_prop_prefix);
+		xpath_obj = e_xml_xpath_eval (xpath_ctx, "%s/C:calendar-user-address-set/D:href", xpath_prop_prefix);
 		if (xpath_obj) {
 			gint ii, length;
 

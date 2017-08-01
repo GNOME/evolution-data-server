@@ -281,7 +281,7 @@ typedef enum {
 
 typedef struct _EWebDAVAccessControlEntry {
 	EWebDAVACEPrincipalKind principal_kind;
-	gchar *principal_href; /* valid onyl if principal_kind is E_WEBDAV_ACE_PRINCIPAL_HREF */
+	gchar *principal_href; /* valid only if principal_kind is E_WEBDAV_ACE_PRINCIPAL_HREF */
 	guint32 flags; /* bit-or of EWebDAVACEFlag */
 	gchar *inherited_href; /* valid only if flags contain E_WEBDAV_ACE_INHERITED */
 	GSList *privileges; /* EWebDAVPrivilege * */
