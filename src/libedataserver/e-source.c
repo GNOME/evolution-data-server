@@ -4465,7 +4465,7 @@ e_source_delete_password_finish (ESource *source,
  * @error: (allow-none): return location for a #GError, or %NULL
  *
  * Let's the client-side know that credentials are required. The @reason defines which
- * parameters are used. The client passed the credentials with an e_source_authenitcate()
+ * parameters are used. The client passed the credentials with an e_source_authenticate()
  * call.
  *
  * The %E_SOURCE_CREDENTIALS_REASON_REQUIRED is used for the first credentials prompt,

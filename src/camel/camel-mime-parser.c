@@ -249,11 +249,12 @@ camel_mime_parser_new (void)
  * on the content, and are applied in the order they were added.
  *
  * Note that filters are only applied to the body content of messages, and once
- * a filter has been set, all content returned by a filter_step() with a state
- * of CAMEL_MIME_PARSER_STATE_BODY will have passed through the filter.
+ * a filter has been set, all content returned by a camel_mime_parser_step()
+ * with a state of CAMEL_MIME_PARSER_STATE_BODY will have passed through the
+ * filter.
  *
- * Returns: An id that may be passed to filter_remove() to remove
- * the filter, or -1 if the operation failed.
+ * Returns: An id that may be passed to camel_mime_parser_filter_remove() to
+ * remove the filter, or -1 if the operation failed.
  *
  * Since: 2.22
  **/
@@ -342,7 +343,7 @@ camel_mime_parser_header (CamelMimeParser *m,
  *
  * Get the list of the raw headers which are defined for the
  * current state of the parser.  These headers are valid
- * until the next call to parser_step(), or parser_drop_step().
+ * until the next call to camel_mime_parser_step(), or camel_mime_parser_drop_step().
  *
  * Returns: (transfer full): The headers, or %NULL, if there are no headers
  * defined for the current part or state. Free it with camel_name_value_array_free().
@@ -553,7 +554,7 @@ camel_mime_parser_init_with_bytes (CamelMimeParser *parser,
  * This may also be preceeded by an optional
  * CAMEL_MIME_PARSER_STATE_PRE_FROM state which contains the scanned data
  * found before the From line is encountered.  See also
- * scan_pre_from().
+ * camel_mime_parser_scan_pre_from().
  **/
 void
 camel_mime_parser_scan_from (CamelMimeParser *parser,
@@ -653,7 +654,7 @@ camel_mime_parser_drop_step (CamelMimeParser *parser)
  * @datalength: (inout) (nullable): Pointer to accept a pointer to the data
  * length associated with this step (if any).
  *
- * Parse the next part of the MIME message.  If _unstep()
+ * Parse the next part of the MIME message.  If camel_mime_parser_unstep()
  * has been called, then continue to return the same state
  * for that many calls.
  *
@@ -931,7 +932,7 @@ camel_mime_parser_push_state (CamelMimeParser *mp,
  * be read from directly (without saving and restoring
  * the seek position in between).
  *
- * Returns: (transfer none) (nullable): The stream from _init_with_stream(),
+ * Returns: (transfer none) (nullable): The stream from camel_mime_parser_init_with_stream(),
  * or NULL if the parser is reading from a file descriptor or is
  * uninitialised.
  **/

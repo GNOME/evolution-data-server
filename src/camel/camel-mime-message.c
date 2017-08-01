@@ -1120,7 +1120,7 @@ best_encoding (CamelMimeMessage *msg,
  * Re-encode all message parts to conform with the required encoding rules.
  *
  * If @enctype is #CAMEL_BESTENC_7BIT, then all parts will be re-encoded into
- * one of the 7bit transfer encodings. If @enctype is #CAMEL_BESTENC_8bit, all
+ * one of the 7bit transfer encodings. If @enctype is #CAMEL_BESTENC_8BIT, all
  * parts will be re-encoded to either a 7bit encoding or, if the part is 8bit
  * text, allowed to stay 8bit. If @enctype is #CAMEL_BESTENC_BINARY, then binary
  * parts will be encoded as binary and 8bit textual parts will be encoded as 8bit.

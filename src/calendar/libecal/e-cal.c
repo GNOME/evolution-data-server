@@ -788,7 +788,7 @@ e_cal_open_async (ECal *ecal,
  *
  * Since: 2.30
  *
- * Deprecated: 3.2: Use e_cal_client_refresh_sync() instead.
+ * Deprecated: 3.2: Use e_client_refresh_sync() instead.
  **/
 gboolean
 e_cal_refresh (ECal *ecal,
@@ -957,7 +957,7 @@ e_cal_get_local_attachment_store (ECal *ecal)
  *
  * Returns: TRUE if the call was successful, FALSE if there was an error.
  *
- * Deprecated: 3.2: Use e_cal_client_is_readonly() on an #ECalClient object instead.
+ * Deprecated: 3.2: Use e_client_is_readonly() on an #ECalClient object instead.
  */
 gboolean
 e_cal_is_read_only (ECal *ecal,

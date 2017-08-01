@@ -22,7 +22,7 @@
  * @include: libedata-book/libedata-book.h
  * @short_description: An #ECache descendant for addressbooks
  *
- * The #EBookCache is an API for storing and looking up #EContacts
+ * The #EBookCache is an API for storing and looking up #EContact(s)
  * in an #ECache. It also supports cursors.
  *
  * The API is thread safe, in the similar way as the #ECache is.
@@ -5309,7 +5309,7 @@ e_book_cache_search_with_callback (EBookCache *book_cache,
  * e_book_cache_cursor_new:
  * @book_cache: An #EBookCache
  * @sexp: search expression; use %NULL or an empty string to get all stored contacts
- * @sort_fields: (array length=n_sort_fields): An array of #EContactField-s as sort keys in order of priority
+ * @sort_fields: (array length=n_sort_fields): An array of #EContactField(s) as sort keys in order of priority
  * @sort_types: (array length=n_sort_fields): An array of #EBookCursorSortTypes, one for each field in @sort_fields
  * @n_sort_fields: The number of fields to sort results by
  * @error: return location for a #GError, or %NULL
@@ -5727,7 +5727,7 @@ e_book_cache_cursor_step (EBookCache *book_cache,
  * on the currently active alphabet index must be obtained using #ECollator
  * APIs.
  *
- * Use e_book_cahce_ref_collator() to obtain the active collator for @book_cache.
+ * Use e_book_cache_ref_collator() to obtain the active collator for @book_cache.
  *
  * Since: 3.26
  **/

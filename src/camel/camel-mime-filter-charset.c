@@ -266,7 +266,7 @@ camel_mime_filter_charset_init (CamelMimeFilterCharset *filter)
  * @from_charset: charset to convert from
  * @to_charset: charset to convert to
  *
- * Create a new #CamelMimeFiletrCharset object to convert text from
+ * Create a new #CamelMimeFilterCharset object to convert text from
  * @from_charset to @to_charset.
  *
  * Returns: a new #CamelMimeFilterCharset object

@@ -2426,7 +2426,7 @@ e_book_backend_sqlitedb_new_contact (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_new_contacts
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id
- * @contacts: list of EContacts
+ * @contacts: list of #EContact
  * @replace_existing: Whether this contact should replace another contact with the same UID.
  * @error: (allow-none): A location to store any error that may have occurred.
  *
@@ -2522,7 +2522,7 @@ e_book_backend_sqlitedb_add_contact (EBookBackendSqliteDB *ebsdb,
  * e_book_backend_sqlitedb_add_contacts:
  * @ebsdb: An #EBookBackendSqliteDB
  * @folderid: folder id
- * @contacts: list of EContacts
+ * @contacts: list of #EContact
  * @partial_content: contact does not contain full information. Used when
  * the backend cache's partial information for auto-completion.
  * @error: (allow-none): A location to store any error that may have occurred.
@@ -2778,7 +2778,7 @@ get_vcard_cb (gpointer ref,
  * Fetch the #EContact specified by @uid in @folderid of @ebsdb.
  *
  * <note><para>The @fields_of_interest parameter is a legacy parameter which can
- * be used to specify that #EContacts with only the %E_CONTACT_UID
+ * be used to specify that #EContact(s) with only the %E_CONTACT_UID
  * and %E_CONTACT_REV fields. The hash table must use g_str_hash()
  * and g_str_equal() and the keys 'uid' and 'rev' must be present.</para></note>
  *
@@ -4258,7 +4258,7 @@ book_backend_sqlitedb_search_full (EBookBackendSqliteDB *ebsdb,
  * the #ESourceBackendSummarySetup source extension.
  *
  * <note><para>The @fields_of_interest parameter is a legacy parameter which can
- * be used to specify that #EContacts with only the %E_CONTACT_UID
+ * be used to specify that #EContact(s) with only the %E_CONTACT_UID
  * and %E_CONTACT_REV fields. The hash table must use g_str_hash()
  * and g_str_equal() and the keys 'uid' and 'rev' must be present.</para></note>
  *

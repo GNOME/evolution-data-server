@@ -1000,7 +1000,7 @@ e_backend_ref_main_context (EBackend *backend)
  * properly opened. It's a proxy function for e_source_invoke_credentials_required_sync(),
  * where can be found more information about actual parameters meaning.
  *
- * The provided credentials are received through EBackend::authenticate_sync()
+ * The provided credentials are received through #EBackendClass.authenticate_sync()
  * method asynchronously.
  *
  * If an error occurs, the function sets @error and returns %FALSE.
@@ -1246,7 +1246,7 @@ e_backend_schedule_authenticate	(EBackend *backend,
  *
  * Makes sure that the associated ESource::connection-status is connected. This is
  * useful in cases when the backend can connect to the destination without invoking
- * EBackend::authenticate_sync, possibly through e_backend_schedule_authenticate().
+ * #EBackendClass.authenticate_sync(), possibly through e_backend_schedule_authenticate().
  *
  * Since: 3.18
  **/
@@ -1430,7 +1430,7 @@ e_backend_trust_prompt_finish (EBackend *backend,
  *
  * Provides destination server host name and port to which
  * the backend connects. This is used to determine required
- * connection point for e_backend_destination_is_reachable().
+ * connection point for e_backend_is_destination_reachable().
  * The @host is a newly allocated string, which will be freed
  * with g_free(). When @backend sets both @host and @port, then
  * it should return %TRUE, indicating it's a remote backend.

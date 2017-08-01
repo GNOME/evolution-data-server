@@ -1595,7 +1595,7 @@ camel_vee_folder_set_folders (CamelVeeFolder *vfolder,
  *
  * Adds the @mi_data to the @vfolder. The @changes can be
  * updated with the made change and later used to notify others
- * with came_folder_changed() on the @vfolder. This can be used
+ * with camel_folder_changed() on the @vfolder. This can be used
  * only for the Unmatched folder.
  *
  * Since: 3.6
@@ -1652,7 +1652,7 @@ camel_vee_folder_add_vuid (CamelVeeFolder *vfolder,
  *
  * Removes given @mi_data from the @vfolder. The @changes can be
  * updated with the made change and later used to notify others
- * with came_folder_changed() on the @vfolder. This can be used
+ * with camel_folder_changed() on the @vfolder. This can be used
  * only for the Unmatched folder.
  *
  * Since: 3.6

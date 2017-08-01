@@ -1653,7 +1653,7 @@ camel_store_get_folder_finish (CamelStore *store,
  * all levels of hierarchy below @top. If not, it will only include
  * the immediate subfolders of @top. If @flags includes
  * %CAMEL_STORE_FOLDER_INFO_FAST, the unread_message_count fields of
- * some or all of the structures may be set to %-1, if the store cannot
+ * some or all of the structures may be set to -1, if the store cannot
  * determine that information quickly.  If @flags includes
  * %CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, don't include special virtual
  * folders (such as vTrash or vJunk).
@@ -1664,7 +1664,7 @@ camel_store_get_folder_finish (CamelStore *store,
  * The CAMEL_STORE_FOLDER_INFO_FAST flag should be considered
  * deprecated; most backends will behave the same whether it is
  * supplied or not.  The only guaranteed way to get updated folder
- * counts is to both open the folder and invoke refresh_info() it.
+ * counts is to both open the folder and invoke camel_folder_refresh_info() it.
  *
  * Returns: (nullable): a #CamelFolderInfo tree, or %NULL on error
  *

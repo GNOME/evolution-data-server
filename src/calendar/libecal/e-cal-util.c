@@ -579,7 +579,7 @@ compare_alarm_instance (gconstpointer a,
  *
  * Returns: (allow-none) (transfer full): a list of all the alarms found for the
  * given component in the given time range. The list of alarms should be freed
- * by using e_cal_component_free_alarm_list().
+ * by using e_cal_component_alarms_free().
  */
 ECalComponentAlarms *
 e_cal_util_generate_alarms_for_comp (ECalComponent *comp,

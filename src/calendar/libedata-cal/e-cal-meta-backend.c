@@ -4778,7 +4778,7 @@ e_cal_meta_backend_search_sync (ECalMetaBackend *meta_backend,
  * @error: return location for a #GError, or %NULL
  *
  * Searches @meta_backend with given expression @expr and returns
- * found components as a #GSList of #ECalComponont-s @out_components.
+ * found components as a #GSList of #ECalComponent @out_components.
  * Free the returned @out_components with g_slist_free_full (components, g_object_unref);
  * when no longer needed.
  * When the @expr is %NULL, all objects are returned. To get iCal

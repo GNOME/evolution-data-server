@@ -722,7 +722,7 @@ camel_imapx_settings_class_init (CamelIMAPXSettingsClass *class)
 		g_param_spec_boolean (
 			"use-shell-command",
 			"Use Shell Command",
-			"Whether to use a custom shell "
+			"Whether to use a custom shell"
 			"command to connect to the server",
 			FALSE,
 			G_PARAM_READWRITE |

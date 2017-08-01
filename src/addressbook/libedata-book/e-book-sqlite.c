@@ -23,7 +23,7 @@
  * @include: libedata-book/libedata-book.h
  * @short_description: An SQLite storage facility for addressbooks
  *
- * The #EBookSqlite is an API for storing and looking up #EContacts
+ * The #EBookSqlite is an API for storing and looking up #EContact(s)
  * in an SQLite database. It also supports a lean index mode via
  * the #EbSqlVCardCallback, if you are in a situation where it is
  * not convenient to store the vCards directly in the SQLite. It is

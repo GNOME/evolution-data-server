@@ -411,8 +411,8 @@ camel_stream_buffer_new (CamelStream *stream,
  * If the newline character is encountered, then it will be
  * included in the buffer @buf.  The buffer will be %NULL terminated.
  *
- * Returns: the number of characters read, or %0 for end of file,
- * and %-1 on error.
+ * Returns: the number of characters read, or 0 for end of file,
+ * and -1 on error.
  **/
 gint
 camel_stream_buffer_gets (CamelStreamBuffer *sbf,

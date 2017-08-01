@@ -213,7 +213,7 @@ e_source_credentials_provider_impl_can_prompt (ESourceCredentialsProviderImpl *p
  *
  * Asks @provider_impl to lookup for stored credentials for @source.
  * The @out_credentials is populated with them. If the result is not
- * %NULL, then it should be freed with e_anmed_parameters_free() when
+ * %NULL, then it should be freed with e_named_parameters_free() when
  * no longer needed.
  *
  * Default implementation returns %FALSE and sets #G_IO_ERROR_NOT_SUPPORTED error.

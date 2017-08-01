@@ -96,7 +96,7 @@ camel_address_length (CamelAddress *addr)
  *
  * Construct a new address from a raw address field.
  *
- * Returns: the number of addresses parsed or %-1 on fail
+ * Returns: the number of addresses parsed or -1 on fail
  **/
 gint
 camel_address_decode (CamelAddress *addr,
@@ -141,7 +141,7 @@ camel_address_encode (CamelAddress *addr)
  * Attempt to convert a previously formatted and/or edited
  * address back into internal form.
  *
- * Returns: the number of addresses parsed or %-1 on fail
+ * Returns: the number of addresses parsed or -1 on fail
  **/
 gint
 camel_address_unformat (CamelAddress *addr,
@@ -226,7 +226,7 @@ camel_address_copy (CamelAddress *dest,
 /**
  * camel_address_remove:
  * @addr: a #CamelAddress object
- * @index: The address to remove, use %-1 to remove all address.
+ * @index: The address to remove, use -1 to remove all address.
  *
  * Remove an address by index, or all addresses.
  **/

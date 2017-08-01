@@ -132,7 +132,7 @@ void		e_cal_cache_search_data_free	(/* ECalCacheSearchData * */ gpointer ptr);
  * @object: the object itself
  * @extra: extra data stored with the object
  * @offline_state: objects offline state, one of #EOfflineState
- * @user_data: user data, as used in e_cache_cache_search_with_callback()
+ * @user_data: user data, as used in e_cal_cache_search_with_callback()
  *
  * A callback called for each object row when using
  * e_cal_cache_search_with_callback() function.

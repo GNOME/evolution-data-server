@@ -457,7 +457,7 @@ e_cal_component_new_from_string (const gchar *calobj)
  * to e_cal_component_set_icalcomponent() fails, then @icalcomp
  * is freed.
  *
- * Returns: An #ECalComponet with @icalcomp assigned on success,
+ * Returns: An #ECalComponent with @icalcomp assigned on success,
  * NULL if the @icalcomp cannot be assigned to #ECalComponent.
  *
  * Since: 3.4

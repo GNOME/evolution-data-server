@@ -3316,7 +3316,7 @@ e_book_backend_configure_direct (EBookBackend *backend,
 
 /**
  * e_book_backend_sync:
- * @backend: an #EBookbackend
+ * @backend: an #EBookBackend
  *
  * Write all pending data to disk.  This is only required under special
  * circumstances (for example before a live backup) and should not be used in
@@ -3339,7 +3339,7 @@ e_book_backend_sync (EBookBackend *backend)
 
 /**
  * e_book_backend_set_locale:
- * @backend: an #EBookbackend
+ * @backend: an #EBookBackend
  * @locale: the new locale for the addressbook
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
@@ -3379,7 +3379,7 @@ e_book_backend_set_locale (EBookBackend *backend,
 
 /**
  * e_book_backend_dup_locale:
- * @backend: an #EBookbackend
+ * @backend: an #EBookBackend
  *
  * Fetches a copy of the currently configured locale for the addressbook
  *
@@ -3465,7 +3465,7 @@ e_book_backend_notify_remove (EBookBackend *backend,
 
 /**
  * e_book_backend_notify_complete:
- * @backend: an #EBookbackend
+ * @backend: an #EBookBackend
  *
  * Notifies all of @backend's book views that the current set of
  * notifications is complete; use this after a series of

@@ -1492,7 +1492,7 @@ e_cal_backend_remove_view (ECalBackend *backend,
  * e_cal_backend_list_views:
  * @backend: an #ECalBackend
  *
- * Returns a list of #ECalBookView instances added with
+ * Returns a list of #EDataCalView instances added with
  * e_cal_backend_add_view().
  *
  * The views returned in the list are referenced for thread-safety.
@@ -1505,7 +1505,7 @@ e_cal_backend_remove_view (ECalBackend *backend,
  *   g_list_free_full (list, g_object_unref);
  * ]|
  *
- * Returns: a list of cal views
+ * Returns: (element-type EDataCalView): a list of cal views
  *
  * Since: 3.8
  **/
@@ -1786,7 +1786,7 @@ cal_backend_refresh_thread (GSimpleAsyncResult *simple,
  * operation.
  *
  * Once the refresh is initiated, @callback will be called.  You can then
- * call e_cal-backend_refresh_finish() to get the result of the initiation.
+ * call e_cal_backend_refresh_finish() to get the result of the initiation.
  *
  * Since: 3.10
  **/

@@ -1624,7 +1624,7 @@ e_data_book_respond_get_contact_list_uids (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @contacts: (allow-none) (element-type EContact): A list of created #EContact-s, or %NULL on error
+ * @contacts: (allow-none) (element-type EContact): A list of created #EContact(s), or %NULL on error
  *
  * Finishes a call to create a list contacts.
  *
@@ -1677,7 +1677,7 @@ e_data_book_respond_create_contacts (EDataBook *book,
  * @book: An #EDataBook
  * @opid: An operation ID
  * @error: Operation error, if any, automatically freed if passed it
- * @contacts: (allow-none) (element-type EContact): A list of modified #EContact-s, or %NULL on error
+ * @contacts: (allow-none) (element-type EContact): A list of modified #EContact(s), or %NULL on error
  *
  * Finishes a call to modify a list of contacts.
  *

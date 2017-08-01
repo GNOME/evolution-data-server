@@ -699,7 +699,7 @@ camel_data_wrapper_set_offline (CamelDataWrapper *data_wrapper,
  *   </para>
  * </note>
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.0
  **/
@@ -810,7 +810,7 @@ camel_data_wrapper_write_to_stream (CamelDataWrapper *data_wrapper,
  *
  * Finishes the operation started with camel_data_wrapper_write_to_stream().
  *
- * Returns: the number of bytes written, or %-1 or error
+ * Returns: the number of bytes written, or -1 or error
  *
  * Since: 3.0
  **/
@@ -846,7 +846,7 @@ camel_data_wrapper_write_to_stream_finish (CamelDataWrapper *data_wrapper,
  *   </para>
  * </note>
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.0
  **/
@@ -954,7 +954,7 @@ camel_data_wrapper_decode_to_stream (CamelDataWrapper *data_wrapper,
  *
  * Finishes the operation started with camel_data_wrapper_decode_to_stream().
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.0
  **/
@@ -1128,7 +1128,7 @@ camel_data_wrapper_construct_from_stream_finish (CamelDataWrapper *data_wrapper,
  *   </para>
  * </note>
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.12
  **/
@@ -1244,7 +1244,7 @@ camel_data_wrapper_write_to_output_stream (CamelDataWrapper *data_wrapper,
  * Finishes the operation started with
  * camel_data_wrapper_write_to_output_stream().
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.12
  **/
@@ -1280,7 +1280,7 @@ camel_data_wrapper_write_to_output_stream_finish (CamelDataWrapper *data_wrapper
  *   </para>
  * </note>
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.12
  **/
@@ -1390,7 +1390,7 @@ camel_data_wrapper_decode_to_output_stream (CamelDataWrapper *data_wrapper,
  * Finishes the operation started with
  * camel_data_wrapper_decode_to_output_stream().
  *
- * Returns: the number of bytes written, or %-1 on error
+ * Returns: the number of bytes written, or -1 on error
  *
  * Since: 3.12
  **/

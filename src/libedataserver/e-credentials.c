@@ -426,7 +426,7 @@ check_equal_cb (gpointer key,
  * @credentials1: an #ECredentials
  * @credentials2: another #ECredentials
  *
- * Returns whether two #ECredential structures contain the same keys with
+ * Returns whether two #ECredentials structures contain the same keys with
  * same values.
  *
  * Returns: %TRUE if they are equal, %FALSE otherwise

@@ -3638,7 +3638,7 @@ e_book_meta_backend_get_changes_sync (EBookMetaBackend *meta_backend,
  * of loading it with e_book_meta_backend_load_contact_sync().
  *
  * It is mandatory to implement this virtual method by the descendant, unless
- * it implements its own get_changes_sync().
+ * it implements its own #EBookMetaBackendClass.get_changes_sync().
  *
  * The @out_existing_objects #GSList should be freed with
  * g_slist_free_full (objects, e_book_meta_backend_info_free);
@@ -3893,7 +3893,7 @@ e_book_meta_backend_search_sync (EBookMetaBackend *meta_backend,
  * found contact UID-s as a #GSList @out_contacts.
  * Free the returned @out_uids with g_slist_free_full (uids, g_free);
  * when no longer needed.
- * When the @expr is %NULL, all UID-s are returned. To get #EContact-s
+ * When the @expr is %NULL, all UID-s are returned. To get #EContact(s)
  * instead, call e_book_meta_backend_search_sync().
  *
  * It is optional to implement this virtual method by the descendant.

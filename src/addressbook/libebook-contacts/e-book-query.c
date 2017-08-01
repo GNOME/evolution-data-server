@@ -355,7 +355,7 @@ e_book_query_field_exists (EContactField field)
  * @field: a field name
  *
  * Creates a new #EBookQuery which tests if the field @field exists. @field
- * should be a vCard field name, such as #FN or #X-MSN.
+ * should be a vCard field name, such as #EVC_FN or #EVC_X_MSN.
  * Returns: the new #EBookQuery
  **/
 EBookQuery *

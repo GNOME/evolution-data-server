@@ -159,10 +159,10 @@ typedef gboolean (*EDataBookCursorSetAlphabetIndexFunc) (EDataBookCursor     *cu
  *
  * A cursor position is defined as an integer which is inclusive of the
  * current contact to which it points (if the cursor points to an exact
- * contact). A position of %0 indicates that the cursor is situated in
+ * contact). A position of 0 indicates that the cursor is situated in
  * a position that is before and after the entire result set. The cursor
- * position should be %0 at creation time, and should start again from
- * the symbolic %0 position whenever %E_BOOK_CURSOR_ORIGIN_BEGIN is
+ * position should be 0 at creation time, and should start again from
+ * the symbolic 0 position whenever %E_BOOK_CURSOR_ORIGIN_BEGIN is
  * specified in the #EDataBookCursorClass.step() method (or whenever
  * moving the cursor beyond the end of the result set).
  *

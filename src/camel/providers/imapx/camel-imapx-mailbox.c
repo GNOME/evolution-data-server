@@ -854,7 +854,7 @@ camel_imapx_mailbox_set_quota_roots (CamelIMAPXMailbox *mailbox,
  * Creates a copy of @mailbox's message map: a #GSequence of 32-bit integers
  * which map message sequence numbers (MSNs) to unique identifiers (UIDs).
  *
- * Free the returned #GSequence with g_sequeuce_free() when finished with it.
+ * Free the returned #GSequence with g_sequence_free() when finished with it.
  *
  * Returns: a #GSequence mapping MSNs to UIDs
  *

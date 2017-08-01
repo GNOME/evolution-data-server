@@ -447,7 +447,7 @@ e_data_cal_status_to_string (EDataCalCallStatus status)
 
 /**
  * e_data_cal_create_error:
- * @status: #EDataCalStatus code
+ * @status: #EDataCalCallStatus code
  * @custom_msg: Custom message to use for the error. When NULL,
  *              then uses a default message based on the @status code.
  *
@@ -1935,8 +1935,8 @@ e_data_cal_respond_create_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @old_components: The old #ECalComponents.
- * @new_components: The new #ECalComponents.
+ * @old_components: The old #ECalComponent(s).
+ * @new_components: The new #ECalComponent(s).
  *
  * Notifies listeners of the completion of the modify_objects method call.
  *
@@ -2011,10 +2011,10 @@ e_data_cal_respond_modify_objects (EDataCal *cal,
  * @cal: A calendar client interface.
  * @opid: associated operation id
  * @error: Operation error, if any, automatically freed if passed it.
- * @ids: IDs of the removed objects.
- * @old_components: The old #ECalComponents.
- * @new_components: The new #ECalComponents. They will not be NULL only
- * when removing instances of recurring appointments.
+ * @ids: (element-type: utf8) IDs of the removed objects.
+ * @old_components: (element-type ECalComponent): The old #ECalComponent(s).
+ * @new_components: (element-type ECalComponent): The new #ECalComponent(s).
+ *    They will not be NULL only when removing instances of recurring appointments.
  *
  * Notifies listeners of the completion of the remove_objects method call.
  *

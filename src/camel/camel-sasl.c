@@ -814,7 +814,7 @@ sasl_challenge_base64_thread (GTask *task,
  * response are both base64-encoded.
  *
  * When the operation is finished, @callback will be called.  You can
- * then call camel_store_challenge_base64_finish() to get the result of
+ * then call camel_sasl_challenge_base64_finish() to get the result of
  * the operation.
  *
  * Since: 3.0

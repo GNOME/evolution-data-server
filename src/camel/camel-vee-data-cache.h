@@ -98,7 +98,7 @@ typedef struct _CamelVeeDataCachePrivate CamelVeeDataCachePrivate;
 /**
  * CamelForeachInfoData:
  * @mi_data: a #CamelVeeMessageInfoData
- * @subfolder: a #CameFolder which @mi_data references
+ * @subfolder: a #CamelFolder which @mi_data references
  * @user_data: custom user data
  *
  * A callback prototype for camel_vee_data_cache_foreach_message_info_data()

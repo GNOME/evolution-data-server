@@ -1265,7 +1265,7 @@ e_cal_backend_store_has_component (ECalBackendStore *store,
 /**
  * e_cal_backend_store_put_component_with_time_range:
  * @store: an #ECalBackendStore
- * @comp: the #ECalComonent to add
+ * @comp: the #ECalComponent to add
  * @occurence_start: start time of this component
  * @occurence_end: end time of this component
  *
@@ -1301,7 +1301,7 @@ e_cal_backend_store_put_component_with_time_range (ECalBackendStore *store,
 /**
  * e_cal_backend_store_put_component:
  * @store: an #ECalBackendStore
- * @comp: the #ECalComonent to add
+ * @comp: the #ECalComponent to add
  *
  * Returns: whether @comp was successfully added
  *

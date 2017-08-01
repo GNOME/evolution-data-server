@@ -3480,12 +3480,12 @@ e_book_client_get_contacts (EBookClient *client,
  * @client: an #EBookClient
  * @result: a #GAsyncResult
  * @out_contacts: (element-type EContact) (out) (transfer full): a #GSList
- *                of matched #EContact-s
+ *                of matched #EContact(s)
  * @error: (out): a #GError to set an error, if any
  *
  * Finishes previous call of e_book_client_get_contacts().
  * If successful, then the @out_contacts is set to newly allocated list of
- * #EContact-s, which should be freed with e_client_util_free_object_slist().
+ * #EContact(s), which should be freed with e_client_util_free_object_slist().
  *
  * Returns: %TRUE if successful, %FALSE otherwise.
  *
@@ -3524,13 +3524,13 @@ e_book_client_get_contacts_finish (EBookClient *client,
  * @client: an #EBookClient
  * @sexp: an S-expression representing the query
  * @out_contacts: (element-type EContact) (out): a #GSList of matched
- *                #EContact-s
+ *                #EContact(s)
  * @cancellable: a #GCancellable; can be %NULL
  * @error: (out): a #GError to set an error, if any
  *
  * Query @client with @sexp, receiving a list of contacts which matched.
  * If successful, then the @out_contacts is set to newly allocated #GSList of
- * #EContact-s, which should be freed with e_client_util_free_object_slist().
+ * #EContact(s), which should be freed with e_client_util_free_object_slist().
  *
  * Note: @sexp can be obtained through #EBookQuery, by converting it
  * to a string with e_book_query_to_string().

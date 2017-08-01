@@ -311,9 +311,9 @@ camel_mime_filter_yenc_set_crc (CamelMimeFilterYenc *yenc,
  * camel_mime_filter_yenc_get_pcrc:
  * @yenc: a #CamelMimeFilterYenc object
  *
- * Get the computed part crc or (#guint32) %-1 on fail.
+ * Get the computed part crc or (#guint32) -1 on fail.
  *
- * Returns: the computed part crc or (#guint32) %-1 on fail.
+ * Returns: the computed part crc or (#guint32) -1 on fail.
  **/
 guint32
 camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
@@ -325,7 +325,7 @@ camel_mime_filter_yenc_get_pcrc (CamelMimeFilterYenc *yenc)
 
 /**
  * camel_mime_filter_yenc_get_crc:
- * @yenc: a #CamelMimeFiletrYenc object
+ * @yenc: a #CamelMimeFilterYenc object
  *
  * Get the computed crc or (#guint32) -1 on fail.
  *

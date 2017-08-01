@@ -369,7 +369,7 @@ camel_internet_address_get (CamelInternetAddress *addr,
  *
  * Find address by real name.
  *
- * Returns: the index of the address matching the name, or %-1 if no
+ * Returns: the index of the address matching the name, or -1 if no
  * match was found
  **/
 gint
@@ -467,7 +467,7 @@ camel_internet_address_ensure_ascii_domains (CamelInternetAddress *addr)
  *
  * Find an address by address.
  *
- * Returns: the index of the address, or %-1 if not found
+ * Returns: the index of the address, or -1 if not found
  **/
 gint
 camel_internet_address_find_address (CamelInternetAddress *addr,

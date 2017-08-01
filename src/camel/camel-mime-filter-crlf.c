@@ -180,7 +180,7 @@ camel_mime_filter_crlf_init (CamelMimeFilterCRLF *filter)
  * @direction: encode vs decode
  * @mode: whether or not to perform SMTP dot-escaping
  *
- * Create a new #CamelMimeFiletrCRLF object.
+ * Create a new #CamelMimeFilterCRLF object.
  *
  * Returns: a new #CamelMimeFilterCRLF object
  **/

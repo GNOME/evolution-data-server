@@ -1703,7 +1703,7 @@ e_webdav_session_mkcol_addressbook_sync (EWebDAVSession *webdav,
  * @uri: URI of the collection to create
  * @display_name: (nullable): a human-readable display name to set, or %NULL
  * @description: (nullable): a human-readable description of the calendar, or %NULL
- * @color: (nullable): a color to set, in format "#RRGGBB", or %NULL
+ * @color: (nullable): a color to set, in format "&num;RRGGBB", or %NULL
  * @supports: a bit-or of EWebDAVResourceSupports values
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL

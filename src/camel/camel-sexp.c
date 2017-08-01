@@ -1891,7 +1891,7 @@ camel_sexp_encode_bool (GString *string,
 
 /**
  * camel_sexp_encode_string:
- * @string: Destination #Gstring
+ * @string: Destination #GString
  * @v_string: String expression.
  *
  * Add a c string @v_string to the s-expression stored in

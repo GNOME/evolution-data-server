@@ -1238,7 +1238,7 @@ e_data_cal_view_notify_components_added_1 (EDataCalView *view,
  * Notifies all view listeners of the modification of a list of components.
  *
  * Like e_data_cal_view_notify_objects_modified() except takes a list of
- * #ECalComponents instead of a ical string representations and uses the
+ * #ECalComponent instead of a ical string representations and uses the
  * #EDataCalView's fields-of-interest to filter out unwanted information
  * from ical strings sent over the bus.
  *

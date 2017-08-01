@@ -38,7 +38,7 @@
  * <para>
  * In order for an addressbook backend to implement cursors, it must
  * first be locale aware, persist a current locale setting and implement
- * the #EBookBackendClass.set_locale() and #EBookBackendClass.get_locale()
+ * the #EBookBackendClass.set_locale() and #EBookBackendClass.dup_locale()
  * methods.
  * </para>
  * <para>

@@ -55,7 +55,7 @@ typedef struct _EBookQuery EBookQuery;
  * @E_BOOK_QUERY_REGEX_NORMAL: A regular expression query against contact data normalized with e_util_utf8_normalize(),
  * the normalized data is lower case with any accents removed.
  * @E_BOOK_QUERY_REGEX_RAW: A regular expression query against raw contact data, this is usually slower than
- * a %E_BOOK_QUERY_REGEX_NORMAL as it implies that #EVCards must be parsed in order to get the raw data
+ * a %E_BOOK_QUERY_REGEX_NORMAL as it implies that #EVCard(s) must be parsed in order to get the raw data
  * for comparison.
  * @E_BOOK_QUERY_LAST: End marker for the #EBookQueryTest enumeration, not a valid query test.
  *

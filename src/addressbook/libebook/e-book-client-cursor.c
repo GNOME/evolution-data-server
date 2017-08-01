@@ -2473,7 +2473,7 @@ e_book_client_cursor_step (EBookClientCursor *cursor,
  * e_book_client_cursor_step_finish:
  * @cursor: an #EBookClientCursor
  * @result: a #GAsyncResult
- * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContacts
+ * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContact
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *
  * Completes an asynchronous call initiated by e_book_client_cursor_step(), fetching
@@ -2528,7 +2528,7 @@ e_book_client_cursor_step_finish (EBookClientCursor *cursor,
  * @flags: The #EBookCursorStepFlags for this step
  * @origin: The #EBookCursorOrigin from whence to step
  * @count: a positive or negative amount of contacts to try and fetch
- * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContacts
+ * @out_contacts: (element-type EContact) (out) (transfer full) (allow-none): return location for a #GSList of #EContact
  * @cancellable: (allow-none): a #GCancellable to optionally cancel this operation while in progress
  * @error: (out) (allow-none): return location for a #GError, or %NULL
  *

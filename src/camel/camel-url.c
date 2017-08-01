@@ -654,7 +654,7 @@ append_url_encoded (GString *str,
  * @escape_extra: additional characters beyond " \"%#<>{}|\^[]`"
  * to escape (or %NULL)
  *
- * This %-encodes the given URL part and returns the escaped version
+ * This &percnt;-encodes the given URL part and returns the escaped version
  * in allocated memory, which the caller must free when it is done.
  *
  * Returns: the encoded string
@@ -680,7 +680,7 @@ camel_url_encode (const gchar *part,
  * camel_url_decode:
  * @part: a URL part
  *
- * %-decodes the passed-in URL *in place*. The decoded version is
+ * &percnt;-decodes the passed-in URL *in place*. The decoded version is
  * never longer than the encoded version, so there does not need to
  * be any additional space at the end of the string.
  */

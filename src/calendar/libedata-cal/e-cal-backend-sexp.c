@@ -18,9 +18,9 @@
 /**
  * SECTION: e-cal-backend-sexp
  * @include: libedata-cal/libedata-cal.h
- * @short_description: A utility for comparing #ECalComponents with search expressions.
+ * @short_description: A utility for comparing #ECalComponent(s) with search expressions.
  *
- * This API is an all purpose utility for comparing #ECalComponents with search expressions
+ * This API is an all purpose utility for comparing #ECalComponent(s) with search expressions
  * and is used by various backends to implement component filtering and searching.
  */
 

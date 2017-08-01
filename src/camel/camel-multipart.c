@@ -624,7 +624,7 @@ camel_multipart_set_postface (CamelMultipart *multipart,
  *
  * Construct a multipart from a parser.
  *
- * Returns: %0 on success or %-1 on fail
+ * Returns: 0 on success or -1 on fail
  **/
 gint
 camel_multipart_construct_from_parser (CamelMultipart *multipart,

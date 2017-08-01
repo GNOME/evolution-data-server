@@ -2079,8 +2079,7 @@ e_book_free_change_list (GList *change_list)
  *
  * Returns: %TRUE on success, %FALSE otherwise
  *
- * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an
- *                  #EBookClient object instead.
+ * Deprecated: 3.2: Use e_client_cancel_all() on an #EBookClient object instead.
  **/
 gboolean
 e_book_cancel (EBook *book,
@@ -2105,8 +2104,7 @@ e_book_cancel (EBook *book,
  *
  * Since: 2.24
  *
- * Deprecated: 3.2: Use e_client_cancel_all() or e_client_cancel_op() on an
- *                  #EBookClient object instead.
+ * Deprecated: 3.2: Use e_client_cancel_all() on an #EBookClient object instead.
  **/
 gboolean
 e_book_cancel_async_op (EBook *book,

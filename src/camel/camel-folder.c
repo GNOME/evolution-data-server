@@ -1703,7 +1703,7 @@ camel_folder_take_folder_summary (CamelFolder *folder,
  * camel_folder_get_message_count:
  * @folder: a #CamelFolder
  *
- * Returns: the number of messages in the folder, or %-1 if unknown
+ * Returns: the number of messages in the folder, or -1 if unknown
  **/
 gint
 camel_folder_get_message_count (CamelFolder *folder)
@@ -1722,9 +1722,9 @@ camel_folder_get_message_count (CamelFolder *folder)
  * camel_folder_get_unread_message_count:
  * @folder: a #CamelFolder
  *
- * DEPRECATED: use camel_object_get() instead.
+ * Deprecated: use camel_folder_summary_get_unread_count() instead.
  *
- * Returns: the number of unread messages in the folder, or %-1 if
+ * Returns: the number of unread messages in the folder, or -1 if
  * unknown
  **/
 gint
@@ -1740,7 +1740,7 @@ camel_folder_get_unread_message_count (CamelFolder *folder)
  * camel_folder_get_deleted_message_count:
  * @folder: a #CamelFolder
  *
- * Returns: the number of deleted messages in the folder, or %-1 if
+ * Returns: the number of deleted messages in the folder, or -1 if
  * unknown
  **/
 gint
@@ -1792,7 +1792,7 @@ camel_folder_set_flags (CamelFolder *folder,
  *
  * Returns: the set of #CamelMessageFlags that can be permanently
  * stored on a message between sessions. If it includes
- * #CAMEL_FLAG_USER, then user-defined flags will be remembered.
+ * #CAMEL_MESSAGE_USER, then user-defined flags will be remembered.
  **/
 guint32
 camel_folder_get_permanent_flags (CamelFolder *folder)
@@ -1836,8 +1836,8 @@ camel_folder_get_message_flags (CamelFolder *folder,
  * camel_folder_set_message_flags:
  * @folder: a #CamelFolder
  * @uid: the UID of a message in @folder
- * @mask: a mask of #CamelMessageFlag bit-or values to use
- * @set: the flags to ser, also bit-or of #CamelMessageFlag
+ * @mask: a mask of #CamelMessageFlags bit-or values to use
+ * @set: the flags to ser, also bit-or of #CamelMessageFlags
  *
  * Sets those flags specified by @mask to the values specified by @set
  * on the indicated message. (This may or may not persist after the
@@ -2324,8 +2324,8 @@ camel_folder_search_by_uids (CamelFolder *folder,
  * @folder: a #CamelFolder
  * @result: (element-type utf8): search results to free
  *
- * Free the result of a search as gotten by camel_folder_search() or
- * camel_folder_search_by_uids().
+ * Free the result of a search as gotten by camel_folder_search_by_expression()
+ * or camel_folder_search_by_uids().
  **/
 void
 camel_folder_search_free (CamelFolder *folder,

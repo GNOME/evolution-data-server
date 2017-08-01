@@ -1485,7 +1485,7 @@ e_contact_field_is_string (EContactField field_id)
  *
  * Gets the #EContactField corresponding to the @field_name.
  *
- * Returns: An #EContactField corresponding to @field_name, or %0 if it doesn't exist.
+ * Returns: An #EContactField corresponding to @field_name, or 0 if it doesn't exist.
  **/
 EContactField
 e_contact_field_id (const gchar *field_name)
@@ -1506,7 +1506,7 @@ e_contact_field_id (const gchar *field_name)
  *
  * Gets the #EContactField corresponding to the @vcard_field.
  *
- * Returns: An #EContactField corresponding to @vcard_field, or %0 if it doesn't exist.
+ * Returns: An #EContactField corresponding to @vcard_field, or 0 if it doesn't exist.
  *
  * Since: 2.26
  **/

@@ -487,7 +487,7 @@ camel_stream_set_base_stream (CamelStream *stream,
  *
  * Attempts to read up to @n bytes from @stream into @buffer.
  *
- * Returns: the number of bytes actually read, or %-1 on error and set
+ * Returns: the number of bytes actually read, or -1 on error and set
  * errno.
  **/
 gssize
@@ -522,7 +522,7 @@ camel_stream_read (CamelStream *stream,
  *
  * Attempts to write up to @n bytes of @buffer into @stream.
  *
- * Returns: the number of bytes written to the stream, or %-1 on error
+ * Returns: the number of bytes written to the stream, or -1 on error
  * along with setting errno.
  **/
 gssize
@@ -556,7 +556,7 @@ camel_stream_write (CamelStream *stream,
  * Flushes any buffered data to the stream's backing store.  Only
  * meaningful for writable streams.
  *
- * Returns: %0 on success or %-1 on fail along with setting @error
+ * Returns: 0 on success or -1 on fail along with setting @error
  **/
 gint
 camel_stream_flush (CamelStream *stream,
@@ -585,7 +585,7 @@ camel_stream_flush (CamelStream *stream,
  *
  * Closes the stream.
  *
- * Returns: %0 on success or %-1 on error.
+ * Returns: 0 on success or -1 on error.
  **/
 gint
 camel_stream_close (CamelStream *stream,
@@ -638,7 +638,7 @@ camel_stream_eos (CamelStream *stream)
  *
  * Writes the string to the stream.
  *
- * Returns: the number of characters written or %-1 on error.
+ * Returns: the number of characters written or -1 on error.
  **/
 gssize
 camel_stream_write_string (CamelStream *stream,
@@ -663,7 +663,7 @@ camel_stream_write_string (CamelStream *stream,
  * Write all of a stream (until eos) into another stream, in a
  * blocking fashion.
  *
- * Returns: %-1 on error, or the number of bytes succesfully
+ * Returns: -1 on error, or the number of bytes succesfully
  * copied across streams.
  **/
 gssize

@@ -4403,7 +4403,7 @@ parse_broken_date (struct _date_token *tokens,
  * @tz_offset if non-NULL.
  *
  * Returns: the time_t representation of the date string specified by
- * @str or (time_t) %0 on error. If @tz_offset is non-NULL, the value
+ * @str or (time_t) 0 on error. If @tz_offset is non-NULL, the value
  * of the timezone offset will be stored.
  **/
 time_t

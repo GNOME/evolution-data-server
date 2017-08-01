@@ -3514,13 +3514,13 @@ imapx_store_rename_mailbox_unlocked (CamelIMAPXStore *imapx_store,
  * @imapx_store: a #CamelIMAPXStore
  * @mailbox_name: a mailbox name
  *
- * Looks up a #CamelMailbox by its name. If no match is found, the function
+ * Looks up a #CamelIMAPXMailbox by its name. If no match is found, the function
  * returns %NULL.
  *
  * The returned #CamelIMAPXMailbox is referenced for thread-safety and
  * should be unreferenced with g_object_unref() when finished with it.
  *
- * Returns: a #CamelIMAPXMailbox, or %NULL
+ * Returns: (nullable): a #CamelIMAPXMailbox, or %NULL
  *
  * Since: 3.16
  **/

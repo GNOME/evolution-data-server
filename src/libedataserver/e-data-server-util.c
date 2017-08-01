@@ -2182,7 +2182,7 @@ e_named_parameters_new_strv (const gchar * const *strv)
  * e_named_parameters_new_string:
  * @str: a string to be used as a content of a newly created #ENamedParameters
  *
- * Creates a new instance of an #ENamedParamters, with initial content being
+ * Creates a new instance of an #ENamedParameters, with initial content being
  * taken from @str. This should be freed with e_named_parameters_free(),
  * when no longer needed. Names are compared case insensitively.
  *

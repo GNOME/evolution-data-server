@@ -774,7 +774,7 @@ camel_multipart_signed_new (void)
 
 /**
  * camel_multipart_signed_get_content_stream:
- * @mps: a #CamlMultipartSigned object
+ * @mps: a #CamelMultipartSigned object
  * @error: return location for a #GError, or %NULL
  *
  * Get the raw signed content stream of the multipart/signed MIME part

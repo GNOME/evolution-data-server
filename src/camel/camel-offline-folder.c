@@ -669,7 +669,7 @@ offline_folder_downsync_thread (GTask *task,
  * @expression: search expression describing which set of messages
  *              to downsync (%NULL for all)
  * @io_priority: the I/O priority of the request
- * @cancellable: optional #GCancellable object, or %NULl
+ * @cancellable: optional #GCancellable object, or %NULL
  * @callback: a #GAsyncReadyCallback to call when the request is satisfied
  * @user_data: data to pass to the callback function
  *

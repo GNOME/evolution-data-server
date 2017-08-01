@@ -1349,7 +1349,7 @@ data_factory_spawn_subprocess_backend_in_thread (gpointer user_data)
 /**
  * e_data_factory_spawn_subprocess_backend:
  * @data_factory: an #EDataFactory
- * @invocation: a #GDBusMethodInvcation
+ * @invocation: a #GDBusMethodInvocation
  * @uid: an #ESource UID
  * @extension_name: an extension name
  * @subprocess_path: a path of an executable responsible for running the subprocess
