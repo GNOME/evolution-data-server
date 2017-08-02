@@ -65,7 +65,7 @@ endmacro(add_credentials_module)
 add_subdirectory(cache-reaper)
 add_subdirectory(google-backend)
 add_subdirectory(outlook-backend)
-add_subdirectory(owncloud-backend)
+add_subdirectory(webdav-backend)
 add_subdirectory(yahoo-backend)
 
 if(HAVE_GTK)

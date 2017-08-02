@@ -1,6 +1,4 @@
 /*
- * evolution-source-registry-migrate-imap-to-imapx.c
- *
  * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation.
@@ -15,18 +13,16 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 #include <errno.h>
 #include <glib/gstdio.h>
 
 #include <libebackend/libebackend.h>
 
-/* Forward Declarations */
-gboolean	evolution_source_registry_migrate_imap_to_imapx
-						(ESourceRegistryServer *server,
-						 GKeyFile *key_file,
-						 const gchar *uid);
+#include "evolution-source-registry-methods.h"
 
-gboolean
+static gboolean
 evolution_source_registry_migrate_imap_to_imapx (ESourceRegistryServer *server,
                                                  GKeyFile *key_file,
                                                  const gchar *uid)
@@ -147,3 +143,41 @@ evolution_source_registry_migrate_imap_to_imapx (ESourceRegistryServer *server,
 	return TRUE;
 }
 
+static gboolean
+evolution_source_registry_migrate_owncloud_to_webdav (ESourceRegistryServer *server,
+						      GKeyFile *key_file,
+						      const gchar *uid)
+{
+	gboolean modified = FALSE;
+
+	g_return_val_if_fail (key_file != NULL, FALSE);
+
+	if (g_key_file_has_group (key_file, E_SOURCE_EXTENSION_COLLECTION) &&
+	    g_key_file_has_key (key_file, E_SOURCE_EXTENSION_COLLECTION, "BackendName", NULL)) {
+		gchar *backend_name;
+
+		backend_name = g_key_file_get_string (key_file, E_SOURCE_EXTENSION_COLLECTION, "BackendName", NULL);
+		if (g_strcmp0 (backend_name, "owncloud") == 0) {
+			g_key_file_set_string (key_file, E_SOURCE_EXTENSION_COLLECTION, "BackendName", "webdav");
+			modified = TRUE;
+		}
+
+		g_free (backend_name);
+	}
+
+	return modified;
+}
+
+gboolean
+evolution_source_registry_migrate_tweak_key_file (ESourceRegistryServer *server,
+						  GKeyFile *key_file,
+						  const gchar *uid)
+{
+	gboolean modified;
+
+	modified = evolution_source_registry_migrate_imap_to_imapx (server, key_file, uid);
+
+	modified = evolution_source_registry_migrate_owncloud_to_webdav (server, key_file, uid) || modified;
+
+	return modified;
+}

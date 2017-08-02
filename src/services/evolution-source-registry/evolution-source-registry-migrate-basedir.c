@@ -15,12 +15,13 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 #include <errno.h>
 #include <glib/gstdio.h>
 #include <libedataserver/libedataserver.h>
 
-/* Forward Declarations */
-void evolution_source_registry_migrate_basedir (void);
+#include "evolution-source-registry-methods.h"
 
 static gboolean
 migrate_rename (const gchar *old_filename,

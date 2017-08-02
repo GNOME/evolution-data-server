@@ -1,5 +1,5 @@
 /*
- * module-owncloud-backend.c
+ * module-webdav-backend.c
  *
  * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -21,34 +21,34 @@
 #include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
-#define E_TYPE_OWNCLOUD_BACKEND \
-	(e_owncloud_backend_get_type ())
-#define E_OWNCLOUD_BACKEND(obj) \
+#define E_TYPE_WEBDAV_BACKEND \
+	(e_webdav_backend_get_type ())
+#define E_WEBDAV_BACKEND(obj) \
 	(G_TYPE_CHECK_INSTANCE_CAST \
-	((obj), E_TYPE_OWNCLOUD_BACKEND, EOwncloudBackend))
-#define E_IS_OWNCLOUD_BACKEND(obj) \
+	((obj), E_TYPE_WEBDAV_BACKEND, EWebDAVBackend))
+#define E_IS_WEBDAV_BACKEND(obj) \
 	(G_TYPE_CHECK_INSTANCE_TYPE \
-	((obj), E_TYPE_OWNCLOUD_BACKEND))
+	((obj), E_TYPE_WEBDAV_BACKEND))
 
-typedef struct _EOwncloudBackend EOwncloudBackend;
-typedef struct _EOwncloudBackendClass EOwncloudBackendClass;
+typedef struct _EWebDAVBackend EWebDAVBackend;
+typedef struct _EWebDAVBackendClass EWebDAVBackendClass;
 
-typedef struct _EOwncloudBackendFactory EOwncloudBackendFactory;
-typedef struct _EOwncloudBackendFactoryClass EOwncloudBackendFactoryClass;
+typedef struct _EWebDAVBackendFactory EWebDAVBackendFactory;
+typedef struct _EWebDAVBackendFactoryClass EWebDAVBackendFactoryClass;
 
-struct _EOwncloudBackend {
+struct _EWebDAVBackend {
 	EWebDAVCollectionBackend parent;
 };
 
-struct _EOwncloudBackendClass {
+struct _EWebDAVBackendClass {
 	EWebDAVCollectionBackendClass parent_class;
 };
 
-struct _EOwncloudBackendFactory {
+struct _EWebDAVBackendFactory {
 	ECollectionBackendFactory parent;
 };
 
-struct _EOwncloudBackendFactoryClass {
+struct _EWebDAVBackendFactoryClass {
 	ECollectionBackendFactoryClass parent_class;
 };
 
@@ -57,21 +57,21 @@ void e_module_load (GTypeModule *type_module);
 void e_module_unload (GTypeModule *type_module);
 
 /* Forward Declarations */
-GType e_owncloud_backend_get_type (void);
-GType e_owncloud_backend_factory_get_type (void);
+GType e_webdav_backend_get_type (void);
+GType e_webdav_backend_factory_get_type (void);
 
 G_DEFINE_DYNAMIC_TYPE (
-	EOwncloudBackend,
-	e_owncloud_backend,
+	EWebDAVBackend,
+	e_webdav_backend,
 	E_TYPE_WEBDAV_COLLECTION_BACKEND)
 
 G_DEFINE_DYNAMIC_TYPE (
-	EOwncloudBackendFactory,
-	e_owncloud_backend_factory,
+	EWebDAVBackendFactory,
+	e_webdav_backend_factory,
 	E_TYPE_COLLECTION_BACKEND_FACTORY)
 
 static ESourceAuthenticationResult
-owncloud_backend_authenticate_sync (EBackend *backend,
+webdav_backend_authenticate_sync (EBackend *backend,
 				    const ENamedParameters *credentials,
 				    gchar **out_certificate_pem,
 				    GTlsCertificateFlags *out_certificate_errors,
@@ -85,7 +85,7 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 
 	source = e_backend_get_source (backend);
 
-	/* Ignore the request for non-GOA ownCloud sources by pretending success */
+	/* Ignore the request for non-GOA WebDAV sources by pretending success */
 	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_GOA))
 		return E_SOURCE_AUTHENTICATION_ACCEPTED;
 
@@ -98,49 +98,49 @@ owncloud_backend_authenticate_sync (EBackend *backend,
 }
 
 static void
-e_owncloud_backend_class_init (EOwncloudBackendClass *class)
+e_webdav_backend_class_init (EWebDAVBackendClass *class)
 {
 	EBackendClass *backend_class;
 
 	backend_class = E_BACKEND_CLASS (class);
-	backend_class->authenticate_sync = owncloud_backend_authenticate_sync;
+	backend_class->authenticate_sync = webdav_backend_authenticate_sync;
 }
 
 static void
-e_owncloud_backend_class_finalize (EOwncloudBackendClass *class)
+e_webdav_backend_class_finalize (EWebDAVBackendClass *class)
 {
 }
 
 static void
-e_owncloud_backend_init (EOwncloudBackend *backend)
+e_webdav_backend_init (EWebDAVBackend *backend)
 {
 }
 
 static void
-e_owncloud_backend_factory_class_init (EOwncloudBackendFactoryClass *class)
+e_webdav_backend_factory_class_init (EWebDAVBackendFactoryClass *class)
 {
 	ECollectionBackendFactoryClass *factory_class;
 
 	factory_class = E_COLLECTION_BACKEND_FACTORY_CLASS (class);
-	factory_class->factory_name = "owncloud";
-	factory_class->backend_type = E_TYPE_OWNCLOUD_BACKEND;
+	factory_class->factory_name = "webdav";
+	factory_class->backend_type = E_TYPE_WEBDAV_BACKEND;
 }
 
 static void
-e_owncloud_backend_factory_class_finalize (EOwncloudBackendFactoryClass *class)
+e_webdav_backend_factory_class_finalize (EWebDAVBackendFactoryClass *class)
 {
 }
 
 static void
-e_owncloud_backend_factory_init (EOwncloudBackendFactory *factory)
+e_webdav_backend_factory_init (EWebDAVBackendFactory *factory)
 {
 }
 
 G_MODULE_EXPORT void
 e_module_load (GTypeModule *type_module)
 {
-	e_owncloud_backend_register_type (type_module);
-	e_owncloud_backend_factory_register_type (type_module);
+	e_webdav_backend_register_type (type_module);
+	e_webdav_backend_factory_register_type (type_module);
 }
 
 G_MODULE_EXPORT void

@@ -24,6 +24,8 @@
 #include <libebackend/libebackend.h>
 #include <camel/camel.h>
 
+#include "evolution-source-registry-methods.h"
+
 typedef struct _MergeSourceData {
 	gchar *source_filename;
 	gchar *path;
@@ -34,11 +36,6 @@ typedef void (*MergeSourcePopulateHashtableFunc)(GHashTable *source,
 						 GKeyFile *key_file,
 						 const gchar *basename,
 						 const gchar *filename);
-
-/* Forward Declarations */
-gboolean	evolution_source_registry_merge_autoconfig_sources
-						(ESourceRegistryServer *server,
-						 GError **error);
 
 static void
 e_autoconfig_free_merge_source_data (gpointer mem)

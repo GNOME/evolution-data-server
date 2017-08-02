@@ -23,8 +23,7 @@
 
 #define NETWORK_CONFIG_SCHEMA_ID "org.gnome.evolution.shell.network-config"
 
-/* Forward Declarations */
-void evolution_source_registry_migrate_proxies (ESourceRegistryServer *server);
+#include "evolution-source-registry-methods.h"
 
 void
 evolution_source_registry_migrate_proxies (ESourceRegistryServer *server)

@@ -29,6 +29,7 @@
 #include <libebackend/libebackend.h>
 
 #include "evolution-source-registry-resource.h"
+#include "evolution-source-registry-methods.h"
 
 #define RESOURCE_PATH_RO_SOURCES "/org/gnome/evolution-data-server/ro-sources"
 #define RESOURCE_PATH_RW_SOURCES "/org/gnome/evolution-data-server/rw-sources"
@@ -40,20 +41,6 @@ static GOptionEntry entries[] = {
 	  N_("Don’t migrate user data from previous versions of Evolution"), NULL },
 	{ NULL }
 };
-
-/* Forward Declarations */
-void evolution_source_registry_migrate_basedir (void);
-void evolution_source_registry_migrate_sources (void);
-
-gboolean	evolution_source_registry_migrate_imap_to_imapx
-						(ESourceRegistryServer *server,
-						 GKeyFile *key_file,
-						 const gchar *uid);
-void		evolution_source_registry_migrate_proxies
-						(ESourceRegistryServer *server);
-gboolean	evolution_source_registry_merge_autoconfig_sources
-						(ESourceRegistryServer *server,
-						 GError **error);
 
 static void
 evolution_source_registry_load_error (ESourceRegistryServer *server,
@@ -225,11 +212,12 @@ reload:
 		G_CALLBACK (evolution_source_registry_load_sources), NULL);
 
 	/* Convert "imap" mail accounts to "imapx". */
-	if (!opt_disable_migration)
+	if (!opt_disable_migration) {
 		g_signal_connect (
 			server, "tweak-key-file", G_CALLBACK (
-			evolution_source_registry_migrate_imap_to_imapx),
+			evolution_source_registry_migrate_tweak_key_file),
 			NULL);
+	}
 
 	g_debug ("Server is up and running...");
 

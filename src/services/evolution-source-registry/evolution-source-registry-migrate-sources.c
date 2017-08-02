@@ -15,6 +15,8 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 #include <errno.h>
 #include <string.h>
 #include <glib/gstdio.h>
@@ -27,6 +29,8 @@
 #include <libsecret/secret.h>
 
 #include <libebackend/libebackend.h>
+
+#include "evolution-source-registry-methods.h"
 
 /* These constants are collected from various e-source-*.h files
  * throughout evolution-data-server and known extension packages. */
@@ -162,12 +166,6 @@ static const SecretSchema e_passwords_schema = {
 		{ "protocol", SECRET_SCHEMA_ATTRIBUTE_STRING, },
 	}
 };
-
-/* Forward Declarations */
-void		evolution_source_registry_migrate_sources (void);
-gboolean	evolution_source_registry_migrate_gconf_tree_xml
-						(const gchar *filename,
-						 GError **error);
 
 static ParseData *
 parse_data_new (ParseType parse_type)
