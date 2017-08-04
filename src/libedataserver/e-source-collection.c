@@ -54,6 +54,8 @@ struct _ESourceCollectionPrivate {
 	gboolean calendar_enabled;
 	gboolean contacts_enabled;
 	gboolean mail_enabled;
+	gchar *calendar_url;
+	gchar *contacts_url;
 };
 
 enum {
@@ -61,7 +63,9 @@ enum {
 	PROP_CALENDAR_ENABLED,
 	PROP_CONTACTS_ENABLED,
 	PROP_IDENTITY,
-	PROP_MAIL_ENABLED
+	PROP_MAIL_ENABLED,
+	PROP_CALENDAR_URL,
+	PROP_CONTACTS_URL
 };
 
 G_DEFINE_TYPE (
@@ -98,6 +102,18 @@ source_collection_set_property (GObject *object,
 			e_source_collection_set_mail_enabled (
 				E_SOURCE_COLLECTION (object),
 				g_value_get_boolean (value));
+			return;
+
+		case PROP_CALENDAR_URL:
+			e_source_collection_set_calendar_url (
+				E_SOURCE_COLLECTION (object),
+				g_value_get_string (value));
+			return;
+
+		case PROP_CONTACTS_URL:
+			e_source_collection_set_contacts_url (
+				E_SOURCE_COLLECTION (object),
+				g_value_get_string (value));
 			return;
 	}
 
@@ -138,6 +154,20 @@ source_collection_get_property (GObject *object,
 				e_source_collection_get_mail_enabled (
 				E_SOURCE_COLLECTION (object)));
 			return;
+
+		case PROP_CALENDAR_URL:
+			g_value_take_string (
+				value,
+				e_source_collection_dup_calendar_url (
+				E_SOURCE_COLLECTION (object)));
+			return;
+
+		case PROP_CONTACTS_URL:
+			g_value_take_string (
+				value,
+				e_source_collection_dup_contacts_url (
+				E_SOURCE_COLLECTION (object)));
+			return;
 	}
 
 	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -151,6 +181,8 @@ source_collection_finalize (GObject *object)
 	priv = E_SOURCE_COLLECTION_GET_PRIVATE (object);
 
 	g_free (priv->identity);
+	g_free (priv->calendar_url);
+	g_free (priv->contacts_url);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_collection_parent_class)->finalize (object);
@@ -220,6 +252,32 @@ e_source_collection_class_init (ESourceCollectionClass *class)
 			"Mail Enabled",
 			"Whether mail resources are enabled",
 			TRUE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CALENDAR_URL,
+		g_param_spec_string (
+			"calendar-url",
+			"Calendar URL",
+			"Calendar top URL",
+			NULL,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			G_PARAM_STATIC_STRINGS |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_CONTACTS_URL,
+		g_param_spec_string (
+			"contacts-url",
+			"Contacts URL",
+			"Contacts top URL",
+			NULL,
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			G_PARAM_STATIC_STRINGS |
@@ -478,3 +536,168 @@ e_source_collection_set_mail_enabled (ESourceCollection *extension,
 	g_object_notify (G_OBJECT (extension), "mail-enabled");
 }
 
+/**
+ * e_source_collection_get_calendar_url:
+ * @extension: an #ESourceCollection
+ *
+ * Returns the calendar top URL string, that is, where to search for calendar sources.
+ *
+ * Returns: (nullable): the calendar top URL, or %NULL
+ *
+ * Since: 3.26
+ **/
+const gchar *
+e_source_collection_get_calendar_url (ESourceCollection *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_COLLECTION (extension), NULL);
+
+	return extension->priv->calendar_url;
+}
+
+/**
+ * e_source_collection_dup_calendar_url:
+ * @extension: an #ESourceCollection
+ *
+ * Thread-safe variation of e_source_collection_get_calendar_url().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceCollection:calendar-url
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_source_collection_dup_calendar_url (ESourceCollection *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_COLLECTION (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_collection_get_calendar_url (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_collection_set_calendar_url:
+ * @extension: an #ESourceCollection
+ * @calendar_url: (nullable): calendar top URL, or %NULL
+ *
+ * Sets the calendar top URL, that is, where to search for calendar sources.
+ *
+ * The internal copy of @calendar_url is automatically stripped of leading
+ * and trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.26
+ **/
+void
+e_source_collection_set_calendar_url (ESourceCollection *extension,
+				      const gchar *calendar_url)
+{
+	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->calendar_url, calendar_url) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->calendar_url);
+	extension->priv->calendar_url = e_util_strdup_strip (calendar_url);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "calendar-url");
+}
+
+/**
+ * e_source_collection_get_contacts_url:
+ * @extension: an #ESourceCollection
+ *
+ * Returns the contacts top URL string, that is, where to search for contact sources.
+ *
+ * Returns: (nullable): the contacts top URL, or %NULL
+ *
+ * Since: 3.26
+ **/
+const gchar *
+e_source_collection_get_contacts_url (ESourceCollection *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_COLLECTION (extension), NULL);
+
+	return extension->priv->contacts_url;
+}
+
+/**
+ * e_source_collection_dup_contacts_url:
+ * @extension: an #ESourceCollection
+ *
+ * Thread-safe variation of e_source_collection_get_contacts_url().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceCollection:contacts-url
+ *
+ * Since: 3.26
+ **/
+gchar *
+e_source_collection_dup_contacts_url (ESourceCollection *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_COLLECTION (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_collection_get_contacts_url (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_collection_set_contacts_url:
+ * @extension: an #ESourceCollection
+ * @contacts_url: (nullable): contacts top URL, or %NULL
+ *
+ * Sets the contacts top URL, that is, where to search for contact sources.
+ *
+ * The internal copy of @contacts_url is automatically stripped of leading
+ * and trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.26
+ **/
+void
+e_source_collection_set_contacts_url (ESourceCollection *extension,
+				      const gchar *contacts_url)
+{
+	g_return_if_fail (E_IS_SOURCE_COLLECTION (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->contacts_url, contacts_url) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->contacts_url);
+	extension->priv->contacts_url = e_util_strdup_strip (contacts_url);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "contacts-url");
+}

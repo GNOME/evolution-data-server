@@ -451,8 +451,8 @@ e_webdav_collection_backend_discover_sync (EWebDAVCollectionBackend *webdav_back
 	source = e_backend_get_source (E_BACKEND (webdav_backend));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 
-	if (!e_source_collection_get_calendar_enabled (collection_extension) &&
-	    !e_source_collection_get_contacts_enabled (collection_extension))
+	if ((!e_source_collection_get_calendar_enabled (collection_extension) || !calendar_url) &&
+	    (!e_source_collection_get_contacts_enabled (collection_extension) || !contacts_url))
 		return E_SOURCE_AUTHENTICATION_ACCEPTED;
 
 	if (credentials && !e_named_parameters_get (credentials, E_SOURCE_CREDENTIAL_USERNAME)) {

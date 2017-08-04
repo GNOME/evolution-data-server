@@ -100,6 +100,20 @@ gboolean	e_source_collection_get_mail_enabled
 void		e_source_collection_set_mail_enabled
 						(ESourceCollection *extension,
 						 gboolean mail_enabled);
+const gchar *	e_source_collection_get_calendar_url
+						(ESourceCollection *extension);
+gchar *		e_source_collection_dup_calendar_url
+						(ESourceCollection *extension);
+void		e_source_collection_set_calendar_url
+						(ESourceCollection *extension,
+						 const gchar *calendar_url);
+const gchar *	e_source_collection_get_contacts_url
+						(ESourceCollection *extension);
+gchar *		e_source_collection_dup_contacts_url
+						(ESourceCollection *extension);
+void		e_source_collection_set_contacts_url
+						(ESourceCollection *extension,
+						 const gchar *contacts_url);
 
 G_END_DECLS
 

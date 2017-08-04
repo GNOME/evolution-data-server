@@ -78,22 +78,29 @@ webdav_backend_authenticate_sync (EBackend *backend,
 				    GCancellable *cancellable,
 				    GError **error)
 {
-	ESourceGoa *goa_extension;
+	ESourceCollection *collection_extension;
 	ESource *source;
 
 	g_return_val_if_fail (E_IS_COLLECTION_BACKEND (backend), E_SOURCE_AUTHENTICATION_ERROR);
 
 	source = e_backend_get_source (backend);
 
-	/* Ignore the request for non-GOA WebDAV sources by pretending success */
-	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_GOA))
-		return E_SOURCE_AUTHENTICATION_ACCEPTED;
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA)) {
+		ESourceGoa *goa_extension;
 
-	goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+		goa_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_GOA);
+
+		return e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend),
+			e_source_goa_get_calendar_url (goa_extension),
+			e_source_goa_get_contacts_url (goa_extension),
+			credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
+	}
+
+	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
 
 	return e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend),
-		e_source_goa_get_calendar_url (goa_extension),
-		e_source_goa_get_contacts_url (goa_extension),
+		e_source_collection_get_calendar_url (collection_extension),
+		e_source_collection_get_contacts_url (collection_extension),
 		credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
 }
 
