@@ -204,17 +204,16 @@ static struct {
 
 /* convert the uid + flags into a unique:info maildir format */
 gchar *
-camel_maildir_summary_info_to_name (const CamelMessageInfo *info)
+camel_maildir_summary_uid_and_flags_to_name (const gchar *uid,
+					     guint32 flags)
 {
-	const gchar *uid;
-	guint32 flags;
 	gchar *p, *buf;
 	gint i;
 
-	uid = camel_message_info_get_uid (info);
+	g_return_val_if_fail (uid != NULL, NULL);
+
 	buf = g_alloca (strlen (uid) + strlen (CAMEL_MAILDIR_FLAG_SEP_S "2,") + G_N_ELEMENTS (flagbits) + 1);
 	p = buf + sprintf (buf, "%s" CAMEL_MAILDIR_FLAG_SEP_S "2,", uid);
-	flags = camel_message_info_get_flags (info);
 	for (i = 0; i < G_N_ELEMENTS (flagbits); i++) {
 		if ((flags & flagbits[i].flagbit) != 0)
 			*p++ = flagbits[i].flag;
@@ -223,6 +222,16 @@ camel_maildir_summary_info_to_name (const CamelMessageInfo *info)
 	*p = 0;
 
 	return g_strdup (buf);
+}
+
+gchar *
+camel_maildir_summary_info_to_name (const CamelMessageInfo *info)
+{
+	g_return_val_if_fail (CAMEL_IS_MESSAGE_INFO (info), NULL);
+
+	return camel_maildir_summary_uid_and_flags_to_name (
+		camel_message_info_get_uid (info),
+		camel_message_info_get_flags (info));
 }
 
 /* returns whether the @info changed */
@@ -533,20 +542,20 @@ camel_maildir_summary_add (CamelLocalSummary *cls,
 struct _remove_data {
 	CamelLocalSummary *cls;
 	CamelFolderChangeInfo *changes;
+	GList *removed_uids;
 };
 
 static void
-remove_summary (gchar *key,
-                CamelMessageInfo *info,
+remove_summary (const gchar *uid,
+                gpointer value,
                 struct _remove_data *rd)
 {
-	d (printf ("removing message %s from summary\n", key));
+	d (printf ("removing message %s from summary\n", uid));
 	if (rd->cls->index)
-		camel_index_delete_name (rd->cls->index, camel_message_info_get_uid (info));
+		camel_index_delete_name (rd->cls->index, uid);
 	if (rd->changes)
-		camel_folder_change_info_remove_uid (rd->changes, key);
-	camel_folder_summary_remove ((CamelFolderSummary *) rd->cls, info);
-	g_clear_object (&info);
+		camel_folder_change_info_remove_uid (rd->changes, uid);
+	rd->removed_uids = g_list_prepend (rd->removed_uids, (gpointer) uid);
 }
 
 static gint
@@ -558,15 +567,13 @@ maildir_summary_check (CamelLocalSummary *cls,
 	DIR *dir;
 	struct dirent *d;
 	gchar *p;
-	CamelMessageInfo *info;
-	CamelMaildirMessageInfo *mdi;
 	CamelFolderSummary *s = (CamelFolderSummary *) cls;
 	GHashTable *left;
 	gint i, count, total;
 	gint forceindex;
 	gchar *new, *cur;
 	gchar *uid;
-	struct _remove_data rd = { cls, changes };
+	struct _remove_data rd = { cls, changes, NULL };
 	GPtrArray *known_uids;
 
 	g_mutex_lock (&((CamelMaildirSummary *) cls)->priv->summary_lock);
@@ -596,14 +603,16 @@ maildir_summary_check (CamelLocalSummary *cls,
 	}
 
 	/* keeps track of all uid's that have not been processed */
-	left = g_hash_table_new (g_str_hash, g_str_equal);
-	camel_folder_summary_prepare_fetch_all (s, error);
+	left = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 	known_uids = camel_folder_summary_get_array (s);
 	forceindex = !known_uids || known_uids->len == 0;
 	for (i = 0; known_uids && i < known_uids->len; i++) {
-		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
-		if (info) {
-			g_hash_table_insert (left, (gchar *) camel_message_info_get_uid (info), info);
+		const gchar *uid = g_ptr_array_index (known_uids, i);
+		guint32 flags;
+
+		flags = camel_folder_summary_get_info_flags ((CamelFolderSummary *) cls, uid);
+		if (flags != (~0)) {
+			g_hash_table_insert (left, (gchar *) camel_pstring_strdup (uid), GUINT_TO_POINTER (flags));
 		}
 	}
 
@@ -615,6 +624,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 	rewinddir (dir);
 
 	while ((d = readdir (dir))) {
+		guint32 stored_flags = 0;
 		gint pc;
 
 		/* Avoid a potential division by zero if the first loop
@@ -639,38 +649,58 @@ maildir_summary_check (CamelLocalSummary *cls,
 		else
 			uid = g_strdup (d->d_name);
 
-		info = g_hash_table_lookup (left, uid);
-		if (info) {
+		if (g_hash_table_contains (left, uid)) {
+			stored_flags = GPOINTER_TO_UINT (g_hash_table_lookup (left, uid));
 			g_hash_table_remove (left, uid);
-			g_clear_object (&info);
 		}
 
-		info = camel_folder_summary_get ((CamelFolderSummary *) cls, uid);
-		if (info == NULL) {
+		if (!camel_folder_summary_check_uid ((CamelFolderSummary *) cls, uid)) {
 			/* must be a message incorporated by another client, this is not a 'recent' uid */
 			if (camel_maildir_summary_add (cls, d->d_name, forceindex, cancellable) == 0)
 				if (changes)
 					camel_folder_change_info_add_uid (changes, uid);
 		} else {
-			const gchar *filename;
+			CamelMaildirMessageInfo *mdi;
+			CamelMessageInfo *info;
+			gchar *expected_filename;
 
 			if (cls->index && (!camel_index_has_name (cls->index, uid))) {
 				/* message_info_new will handle duplicates */
 				camel_maildir_summary_add (cls, d->d_name, forceindex, cancellable);
 			}
 
-			mdi = (CamelMaildirMessageInfo *) info;
-			filename = camel_maildir_message_info_get_filename (mdi);
-			/* TODO: only store the extension in the mdi->filename struct, not the whole lot */
-			if (filename == NULL || strcmp (filename, d->d_name) != 0) {
-				camel_maildir_message_info_set_filename (mdi, d->d_name);
+			info = camel_folder_summary_peek_loaded ((CamelFolderSummary *) cls, uid);
+			mdi = info ? CAMEL_MAILDIR_MESSAGE_INFO (info) : NULL;
+
+			expected_filename = camel_maildir_summary_uid_and_flags_to_name (uid, stored_flags);
+			if ((mdi && !camel_maildir_message_info_get_filename (mdi)) ||
+			    !expected_filename ||
+			    strcmp (expected_filename, d->d_name) != 0) {
+				if (!mdi) {
+					g_clear_object (&info);
+					info = camel_folder_summary_get ((CamelFolderSummary *) cls, uid);
+					mdi = info ? CAMEL_MAILDIR_MESSAGE_INFO (info) : NULL;
+				}
+
+				g_warn_if_fail (mdi != NULL);
+
+				if (mdi)
+					camel_maildir_message_info_set_filename (mdi, d->d_name);
 			}
+
+			g_free (expected_filename);
 			g_clear_object (&info);
 		}
 		g_free (uid);
 	}
 	closedir (dir);
 	g_hash_table_foreach (left, (GHFunc) remove_summary, &rd);
+
+	if (rd.removed_uids)
+		camel_folder_summary_remove_uids ((CamelFolderSummary *) cls, rd.removed_uids);
+	g_list_free (rd.removed_uids);
+
+	/* Destroy the hash table only after the removed_uids GList is freed, because it has borrowed the UIDs */
 	g_hash_table_destroy (left);
 
 	camel_operation_pop_message (cancellable);
@@ -707,8 +737,7 @@ maildir_summary_check (CamelLocalSummary *cls,
 				continue;
 
 			/* already in summary?  shouldn't happen, but just incase ... */
-			if ((info = camel_folder_summary_get ((CamelFolderSummary *) cls, name))) {
-				g_clear_object (&info);
+			if (camel_folder_summary_check_uid ((CamelFolderSummary *) cls, name)) {
 				newname = destname = camel_folder_summary_next_uid_string (s);
 			} else {
 				gchar *nm;
@@ -776,29 +805,55 @@ maildir_summary_sync (CamelLocalSummary *cls,
 
 	d (printf ("summary_sync(expunge=%s)\n", expunge?"true":"false"));
 
-	if (camel_local_summary_check (cls, changes, cancellable, error) == -1)
+	/* Check consistency on save only if not exiting the application */
+	if (!camel_application_is_exiting &&
+	    camel_local_summary_check (cls, changes, cancellable, error) == -1)
 		return -1;
 
 	camel_operation_push_message (cancellable, _("Storing folder"));
 
-	camel_folder_summary_prepare_fetch_all ((CamelFolderSummary *) cls, error);
 	known_uids = camel_folder_summary_get_array ((CamelFolderSummary *) cls);
 	for (i = (known_uids ? known_uids->len : 0) - 1; i >= 0; i--) {
+		const gchar *uid = g_ptr_array_index (known_uids, i);
+		guint32 flags = 0;
+
 		camel_operation_progress (cancellable, (known_uids->len - i) * 100 / known_uids->len);
 
-		info = camel_folder_summary_get ((CamelFolderSummary *) cls, g_ptr_array_index (known_uids, i));
-		mdi = CAMEL_MAILDIR_MESSAGE_INFO (info);
-		if (mdi && (camel_message_info_get_flags (info) & CAMEL_MESSAGE_DELETED) != 0 && expunge) {
-			name = g_strdup_printf ("%s/cur/%s", cls->folder_path, camel_maildir_message_info_get_filename (mdi));
+		/* Message infos with folder-flagged flags are not removed from memory */
+		info = camel_folder_summary_peek_loaded ((CamelFolderSummary *) cls, uid);
+		mdi = info ? CAMEL_MAILDIR_MESSAGE_INFO (info) : NULL;
+		if (!mdi) {
+			flags = camel_folder_summary_get_info_flags ((CamelFolderSummary *) cls, uid);
+			if (flags == (~0))
+				flags = 0;
+		}
+
+		if (expunge && (
+		    (mdi && (camel_message_info_get_flags (info) & CAMEL_MESSAGE_DELETED) != 0) ||
+		    (!mdi && (flags & CAMEL_MESSAGE_DELETED) != 0))) {
+			const gchar *mdi_filename;
+			gchar *tmp = NULL;
+
+			if (mdi) {
+				mdi_filename = camel_maildir_message_info_get_filename (mdi);
+			} else {
+				tmp = camel_maildir_summary_uid_and_flags_to_name (uid, flags);
+				mdi_filename = tmp;
+			}
+
+			name = g_strdup_printf ("%s/cur/%s", cls->folder_path, mdi_filename);
+
+			g_free (tmp);
+
 			d (printf ("deleting %s\n", name));
 			if (unlink (name) == 0 || errno == ENOENT) {
 
 				/* FIXME: put this in folder_summary::remove()? */
 				if (cls->index)
-					camel_index_delete_name (cls->index, camel_message_info_get_uid (info));
+					camel_index_delete_name (cls->index, uid);
 
-				camel_folder_change_info_remove_uid (changes, camel_message_info_get_uid (info));
-				removed_uids = g_list_prepend (removed_uids, (gpointer) camel_pstring_strdup (camel_message_info_get_uid (info)));
+				camel_folder_change_info_remove_uid (changes, uid);
+				removed_uids = g_list_prepend (removed_uids, (gpointer) camel_pstring_strdup (uid));
 			}
 			g_free (name);
 		} else if (mdi && camel_message_info_get_folder_flagged (info)) {

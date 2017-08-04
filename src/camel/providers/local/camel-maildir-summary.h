@@ -72,6 +72,7 @@ CamelMaildirSummary	*camel_maildir_summary_new	(struct _CamelFolder *folder, con
 
 /* convert some info->flags to/from the messageinfo */
 gchar *camel_maildir_summary_info_to_name (const CamelMessageInfo *info);
+gchar *camel_maildir_summary_uid_and_flags_to_name (const gchar *uid, guint32 flags);
 gboolean camel_maildir_summary_name_to_info (CamelMessageInfo *info, const gchar *name);
 
 G_END_DECLS
