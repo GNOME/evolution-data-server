@@ -1,3 +1,21 @@
+Evolution-Data-Server 3.24.5 2017-08-07
+---------------------------------------
+
+Bug Fixes:
+	Bug 785136 - Summary changes can be lost on folder leave (Milan Crha)
+	Bug 785188 - Do not add LIB_INSTALL_DIR into RPATH (Milan Crha)
+	Bug 785212 - Quit with a large vFolder causes load of each message info (Milan Crha)
+	Bug 785393 - [ESourceRefresh] Let zero Refresh interval mean 'No periodic update' (Milan Crha)
+
+Miscellaneous:
+	Workaround issue with badRequest/invalid format for Google address book (Milan Crha)
+	Deadlock on exit under e-categories.c:finalize_categories() (Milan Crha)
+	[Vala] Fix a warning with a virtual method being the same name as another method (Corentin Noël)
+
+Translations:
+	Marek Cernocky (cs)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.24.4 2017-07-17
 ---------------------------------------
 
