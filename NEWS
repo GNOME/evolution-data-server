@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.25.90 2017-08-07
+----------------------------------------
+
+Bug Fixes:
+	Bug 785136 - Summary changes can be lost on folder leave (Milan Crha)
+	Bug 785188 - Do not add LIB_INSTALL_DIR into RPATH (Milan Crha)
+	Bug 785212 - Quit with a large vFolder causes load of each message info (Milan Crha)
+	Bug 785284 - Add asynchronous variant for camel_offline_store_set_online_sync() (Milan Crha)
+	Bug 785340 - Change "IMAP+" server type to "IMAP" in GUI (Milan Crha)
+	Bug 785393 - [ESourceRefresh] Let zero Refresh interval mean 'No periodic update' (Milan Crha)
+	Bug 785629 - Document the CamelStoreGetFolderFlags (Corentin Noël)
+	Bug 785647 - Fix some warnings within the documentation (Corentin Noël)
+	Bug 785718 - Optimize Maildir sync/check to not load whole summary (Milan Crha)
+
+Miscellaneous:
+	Make EWebDAVSession soft-depend on ESourceWebdav extension (Milan Crha)
+	Introduce EWebDAVCollectionBackend to be used for WebDAV-discovered collections (Milan Crha)
+	Workaround issue with badRequest/invalid format for Google address book (Milan Crha)
+	Deadlock on exit under e-categories.c:finalize_categories() (Milan Crha)
+	[EWebDAVDiscover] Correct href sets reading (Milan Crha)
+	[Vala] Fix a warning with a virtual method being the same name as another method (Corentin Noël)
+	Rename owncloud-backend module to webdav-backend (Milan Crha)
+	Add calendar and contacts URLs into ESourceCollection extension (Milan Crha)
+
+Translations:
+	Andika Triwidada (id)
+	Daniel Mustieles (es)
+	Marek Cernocky (cs)
+	Baurzhan Muftakhidinov (kk)
+	Pawan Chitrakar (ne)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.25.4 2017-07-17
 ---------------------------------------
 
