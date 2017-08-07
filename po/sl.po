@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-07-27 16:28+0200\n"
-"PO-Revision-Date: 2017-07-27 16:31+0200\n"
+"POT-Creation-Date: 2017-08-05 23:20+0200\n"
+"PO-Revision-Date: 2017-08-05 23:20+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -2072,37 +2072,31 @@ msgid "Error executing filter search: %s: %s"
 msgstr "Napaka med izvajanjem iskanja s filtrom: %s: %s"
 
 #: ../camel/camel-folder.c:310
-#, fuzzy, c-format
-#| msgid "Learning new spam message in '%s'"
-#| msgid_plural "Learning new spam messages in '%s'"
+#, c-format
 msgid "Learning new spam message in '%s : %s'"
 msgid_plural "Learning new spam messages in '%s : %s'"
-msgstr[0] "Preiskovanje novih vsiljenih sporočil v %s"
-msgstr[1] "Preiskovanje novih vsiljenih sporočil v %s"
-msgstr[2] "Preiskovanje novih vsiljenih sporočil v %s"
-msgstr[3] "Preiskovanje novih vsiljenih sporočil v %s"
+msgstr[0] "Preiskovanje nove neželene pošte v »%s : %s«"
+msgstr[1] "Preiskovanje nove neželene pošte v »%s : %s«"
+msgstr[2] "Preiskovanje nove neželene pošte v »%s : %s«"
+msgstr[3] "Preiskovanje nove neželene pošte v »%s : %s«"
 
 #: ../camel/camel-folder.c:353
-#, fuzzy, c-format
-#| msgid "Learning new ham message in '%s'"
-#| msgid_plural "Learning new ham messages in '%s'"
+#, c-format
 msgid "Learning new ham message in '%s : %s'"
 msgid_plural "Learning new ham messages in '%s : %s'"
-msgstr[0] "Preiskovanje novih želenih sporočil v %s"
-msgstr[1] "Preiskovanje novih želenih sporočil v %s"
-msgstr[2] "Preiskovanje novih želenih sporočil v %s"
-msgstr[3] "Preiskovanje novih želenih sporočil v %s"
+msgstr[0] "Preiskovanje novih želenih sporočil v »%s : %s«"
+msgstr[1] "Preiskovanje novih želenih sporočil v »%s : %s«"
+msgstr[2] "Preiskovanje novih želenih sporočil v »%s : %s«"
+msgstr[3] "Preiskovanje novih želenih sporočil v »%s : %s«"
 
 #: ../camel/camel-folder.c:404
-#, fuzzy, c-format
-#| msgid "Filtering new message in '%s'"
-#| msgid_plural "Filtering new messages in '%s'"
+#, c-format
 msgid "Filtering new message in '%s : %s'"
 msgid_plural "Filtering new messages in '%s : %s'"
-msgstr[0] "Filtriranje novih sporočil v »%s«"
-msgstr[1] "Filtriranje novih sporočil v »%s«"
-msgstr[2] "Filtriranje novih sporočil v »%s«"
-msgstr[3] "Filtriranje novih sporočil v »%s«"
+msgstr[0] "Filtriranje novih sporočil v »%s : %s«"
+msgstr[1] "Filtriranje novih sporočil v »%s : %s«"
+msgstr[2] "Filtriranje novih sporočil v »%s : %s«"
+msgstr[3] "Filtriranje novih sporočil v »%s : %s«"
 
 #: ../camel/camel-folder.c:1012
 #: ../camel/providers/local/camel-maildir-folder.c:330
@@ -2117,55 +2111,49 @@ msgstr "Kopiranje sporočil"
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:1060
-#, fuzzy, c-format
-#| msgid "Quota information not supported for folder '%s'"
+#, c-format
 msgid "Quota information not supported for folder '%s : %s'"
-msgstr "Podatki količinske omejitve za mapo »%s« niso podprti."
+msgstr "Podatki količinske omejitve za mapo »%s : %s« niso podprti."
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:1162
-#, fuzzy, c-format
-#| msgid "Filtering folder '%s'"
+#, c-format
 msgid "Filtering folder '%s : %s'"
-msgstr "Filtriranje mape »%s«"
+msgstr "Filtriranje mape »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:2903
-#, fuzzy, c-format
-#| msgid "Expunging folder '%s'"
+#, c-format
 msgid "Expunging folder '%s : %s'"
-msgstr "Uničevanje mape »%s«"
+msgstr "Uničevanje mape »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3037
-#, fuzzy, c-format
-#| msgid "Retrieving message '%s' in %s"
+#, c-format
 msgid "Retrieving message '%s' in '%s : %s'"
-msgstr "Pridobivanje sporočila »%s« v %s"
+msgstr "Pridobivanje sporočila »%s« v »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3259
-#, fuzzy, c-format
-#| msgid "Retrieving quota information for '%s'"
+#, c-format
 msgid "Retrieving quota information for '%s : %s'"
-msgstr "Pridobivanje podatkov količinske omejitve porabe za »%s«"
+msgstr "Pridobivanje podatkov količinske omejitve porabe za »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder.c:3557
-#, fuzzy, c-format
-#| msgid "Refreshing folder '%s'"
+#, c-format
 msgid "Refreshing folder '%s : %s'"
-msgstr "Osveževanje mape »%s«"
+msgstr "Osveževanje mape »%s : %s«"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../camel/camel-folder-search.c:883 ../camel/camel-folder-search.c:925
@@ -2219,19 +2207,17 @@ msgstr ""
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder-summary.c:2196
-#, fuzzy, c-format
-#| msgid "Release unused memory for folder '%s'"
+#, c-format
 msgid "Release unused memory for folder '%s : %s'"
-msgstr "Sprosti neuporabljen pomnilnik za mapo »%s«"
+msgstr "Sprosti neuporabljen pomnilnik za mapo »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-folder-summary.c:2420
-#, fuzzy, c-format
-#| msgid "Update preview data for folder '%s'"
+#, c-format
 msgid "Update preview data for folder '%s : %s'"
-msgstr "Posodobi predogledne podatke za mapo »%s«"
+msgstr "Posodobi podatke predogleda za mapo »%s : %s«"
 
 #: ../camel/camel-gpg-context.c:819 ../camel/camel-gpg-context.c:824
 #: ../camel/camel-gpg-context.c:1514
@@ -2509,28 +2495,25 @@ msgstr "Iskanje gostitelja »%s« je spodletelo: %s"
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:96
-#, fuzzy, c-format
-#| msgid "Downloading new messages for offline mode in '%s'"
+#, c-format
 msgid "Downloading new messages for offline mode in '%s : %s'"
-msgstr "Prejemanje novih sporočil za delo brez povezave v »%s«"
+msgstr "Prejemanje novih sporočil za delo brez povezave v »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:167
-#, fuzzy, c-format
-#| msgid "Storing changes in folder '%s'"
+#, c-format
 msgid "Storing changes in folder '%s : %s'"
-msgstr "Shranjevanje sprememb v mapo »%s«"
+msgstr "Shranjevanje sprememb v mapo »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/camel-offline-folder.c:257
-#, fuzzy, c-format
-#| msgid "Checking download of new messages for offline in '%s'"
+#, c-format
 msgid "Checking download of new messages for offline in '%s : %s'"
-msgstr "Prejemanje novih sporočil za delo brez povezave v »%s«"
+msgstr "Prejemanje novih sporočil za delo brez povezave v »%s : %s«"
 
 #. Translators: The first '%s' is replaced with an account name and the second '%s'
 #. is replaced with a full path name. The spaces around ':' are intentional, as
@@ -3126,10 +3109,9 @@ msgstr "Ni mogoče kopirati ali premikati sporočil v Navidezno mapo"
 #. path name. The spaces around ':' are intentional, as the whole '%s : %s' is
 #. meant as an absolute identification of the folder.
 #: ../camel/camel-vee-folder.c:926
-#, fuzzy, c-format
-#| msgid "No such message %s in %s"
+#, c-format
 msgid "No such message %s in '%s : %s'"
-msgstr "Ni takšnega sporočila %s v %s"
+msgstr "Ni takšnega sporočila %s v »%s : %s«"
 
 #: ../camel/camel-vee-folder.c:980
 #, c-format
@@ -3215,10 +3197,9 @@ msgstr "Ni mogoče premakniti izbrisanih sporočil"
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-folder.c:705
-#, fuzzy, c-format
-#| msgid "No quota information available for folder '%s'"
+#, c-format
 msgid "No quota information available for folder '%s : %s'"
-msgstr "Podatki količinske omejitve za mapo »%s« niso na voljo."
+msgstr "Podatki količinske omejitve za mapo »%s : %s« niso na voljo."
 
 #: ../camel/providers/imapx/camel-imapx-folder.c:968
 #: ../camel/providers/nntp/camel-nntp-folder.c:765
@@ -3243,10 +3224,9 @@ msgstr "Ni mogoče ustvariti predpomnilnika za %s:"
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-folder.c:1300
-#, fuzzy, c-format
-#| msgid "No IMAP mailbox available for folder '%s'"
+#, c-format
 msgid "No IMAP mailbox available for folder '%s : %s'"
-msgstr "Za mapo »%s« ni ustreznega poštnega nabiralnika IMAP"
+msgstr "Za mapo »%s : %s« ni ustreznega poštnega nabiralnika IMAP"
 
 #: ../camel/providers/imapx/camel-imapx-input-stream.c:101
 #, c-format
@@ -3464,10 +3444,9 @@ msgstr "Napaka med pripenjanjem sporočila"
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4923
-#, fuzzy, c-format
-#| msgid "Scanning for changed messages in '%s'"
+#, c-format
 msgid "Scanning for changed messages in '%s : %s'"
-msgstr "Preiskovanje spremenjenih sporočil v »%s«"
+msgstr "Preiskovanje za spremenjena sporočila v »%s : %s«"
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4927
 msgid "Error scanning changes"
@@ -3477,10 +3456,9 @@ msgstr "Napaka preiskovanja sprememb"
 #. is replaced with a full path name. The spaces around ':' are intentional, as
 #. the whole '%s : %s' is meant as an absolute identification of the folder.
 #: ../camel/providers/imapx/camel-imapx-server.c:4948
-#, fuzzy, c-format
-#| msgid "Fetching summary information for new messages in '%s'"
+#, c-format
 msgid "Fetching summary information for new messages in '%s : %s'"
-msgstr "Pridobivanje podatkov povzetka za nova sporočila v »%s«."
+msgstr "Pridobivanje podatkov povzetka za nova sporočila v »%s : %s«."
 
 #: ../camel/providers/imapx/camel-imapx-server.c:4966
 msgid "Error fetching message info"
@@ -4319,10 +4297,9 @@ msgid "NNTP server %s returned error code %d: %s"
 msgstr "Strežnik NNTP %s je vrnil napako %d: %s"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:412
-#, fuzzy, c-format
-#| msgid "Failed to issue STARTTLS"
+#, c-format
 msgid "Failed to issue STARTTLS for NNTP server %s: "
-msgstr "Izvajanje ukaza STARTTLS je spodletelo"
+msgstr "Izvajanje ukaza STARTTLS za strežnik NNTP %s je spodletelo:"
 
 #: ../camel/providers/nntp/camel-nntp-store.c:423
 #, c-format
@@ -4974,17 +4951,19 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
 msgid "Whether to load photos of signers/encrypters"
-msgstr ""
+msgstr "Ali naj bodo naložene slike podpisovalnikov in šifrirnikov"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:5
 msgid ""
 "When set to 'true', tries to load also photo of the signers/encrypters, if "
 "available in the key/certificate."
 msgstr ""
+"Izbrana možnost omogoča nalaganje fotografij podpisnikov in šifrirnikov, če "
+"so na voljo v datoteki ključa oziroma potrdila."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:6
 msgid "GIO name of the GNetworkMonitor to use for an ENetworkMonitor instance"
-msgstr ""
+msgstr "Ime GIO programa GNetworkMonitor za uporabo z ENetworkMonitor"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:7
 msgid ""
@@ -4992,6 +4971,9 @@ msgid ""
 "the background. A special value 'always-online' is used for no network "
 "monitoring."
 msgstr ""
+"Če je določena neznana vrednost, je program GNetworkMonitor privzeto zagnan "
+"v ozadju. Posebno določilo »vedno povezano« se uporablja za izklop omrežnega "
+"nadzora."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5127,7 +5109,7 @@ msgstr "UID »%s« je že v uporabi"
 #: ../libebackend/e-subprocess-factory.c:279
 #, c-format
 msgid "Module '%s' for source UID '%s' cannot be loaded"
-msgstr ""
+msgstr "Modula »%s« za UID vira »%s« ni mogoče naložiti"
 
 #: ../libebackend/e-subprocess-factory.c:291
 #, c-format
@@ -5135,10 +5117,9 @@ msgid "No such source for UID '%s'"
 msgstr "Za UID »%s« ni mogoče najti podatkovnega vira"
 
 #: ../libebackend/e-subprocess-factory.c:302
-#, fuzzy, c-format
-#| msgid "Failed to create hardlink for resource '%s': %s"
+#, c-format
 msgid "Failed to create backend of type '%s' for source UID '%s'"
-msgstr "Ustvarjanje trde povezave za vir »%s« je spodletelo: %s"
+msgstr "Ustvarjanje ozadnjega opravila vrste »%s« za UID vira: %s"
 
 #: ../libebackend/e-user-prompter-server.c:305
 #, c-format
@@ -6059,7 +6040,7 @@ msgstr "Neobravnavana napaka"
 
 #: ../tools/addressbook-export/addressbook-export.c:927
 msgid "Specify the output file instead of standard output"
-msgstr ""
+msgstr "Navedite izhodno datoteko namesto standardnega izhoda"
 
 #: ../tools/addressbook-export/addressbook-export.c:928
 msgid "OUTPUTFILE"
@@ -6067,7 +6048,7 @@ msgstr "IZHODNADATOTEKA"
 
 #: ../tools/addressbook-export/addressbook-export.c:931
 msgid "List local address book folders"
-msgstr ""
+msgstr "Naštej krajevne mape imenikov"
 
 #: ../tools/addressbook-export/addressbook-export.c:934
 msgid "Show cards as vcard or csv file"
@@ -6081,10 +6062,11 @@ msgstr "[vcard|csv]"
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
+"Napaka argumentov ukazne vrstice. Uporabite možnost --help za ogled uporabe."
 
 #: ../tools/addressbook-export/addressbook-export.c:997
 msgid "Only support csv or vcard format."
-msgstr ""
+msgstr "Podpira le zapisa csv ali vcard."
 
 #~ msgid "Not authenticated"
 #~ msgstr "Ni overjeno"
