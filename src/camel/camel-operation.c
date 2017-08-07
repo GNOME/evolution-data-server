@@ -157,7 +157,9 @@ operation_finalize (GObject *object)
 	LOCK ();
 
 	if (priv->proxying && priv->proxying_handler_id) {
-		g_cancellable_disconnect (priv->proxying, priv->proxying_handler_id);
+		/* Intentionally avoid g_cancellable_disconnect(), because it can lock
+		   when the priv->proxying holds the last reference. */
+		g_signal_handler_disconnect (priv->proxying, priv->proxying_handler_id);
 		priv->proxying_handler_id = 0;
 	}
 
@@ -292,8 +294,14 @@ camel_operation_new_proxy (GCancellable *cancellable)
 	g_return_val_if_fail (priv != NULL, operation);
 
 	priv->proxying = g_object_ref (cancellable);
-	priv->proxying_handler_id = g_cancellable_connect (cancellable,
-		G_CALLBACK (proxying_cancellable_cancelled_cb), operation, NULL);
+	/* Intentionally avoid g_cancellable_connect(), because it can lock on call
+	   of g_cancellable_disconnect() when the priv->proxying holds the last
+	   reference. */
+	priv->proxying_handler_id = g_signal_connect_data (cancellable, "cancelled",
+		G_CALLBACK (proxying_cancellable_cancelled_cb), operation, NULL, 0);
+
+	if (g_cancellable_is_cancelled (cancellable))
+		proxying_cancellable_cancelled_cb (cancellable, operation);
 
 	return operation;
 }
