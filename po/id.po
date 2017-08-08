@@ -12,15 +12,15 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-07-21 10:58+0000\n"
-"PO-Revision-Date: 2017-07-23 09:44+0700\n"
-"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
+"POT-Creation-Date: 2017-07-25 18:11+0000\n"
+"PO-Revision-Date: 2017-07-26 09:59+0700\n"
+"Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian <gnome@i15n.org>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 2.0.2\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
@@ -2247,7 +2247,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1623
+#: ../src/camel/camel-folder-summary.c:1647
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Melepas memori tak terpakai bagi folder \"%s : %s\""
@@ -3096,13 +3096,13 @@ msgstr "Tidak bisa membuat folder: %s: folder sudah ada"
 msgid "Creating folder “%s”"
 msgstr "Membuat folder \"%s\""
 
-#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:422
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Tidak bisa menghapus folder: %s: Operasi invalid"
 
-#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:473
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3151,12 +3151,12 @@ msgstr "Berhenti berlangganan dari folder \"%s\""
 msgid "Could not parse URL “%s”"
 msgstr "Tidak dapat mengurai URL \"%s\""
 
-#: ../src/camel/camel-vee-folder.c:498
+#: ../src/camel/camel-vee-folder.c:500
 #, c-format
 msgid "Updating folder “%s”"
 msgstr "Memutakhirkan folder \"%s\""
 
-#: ../src/camel/camel-vee-folder.c:898 ../src/camel/camel-vee-folder.c:1013
+#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Tidak bisa menyalin atau memindah pesan ke Folder Virtual"
@@ -3165,17 +3165,17 @@ msgstr "Tidak bisa menyalin atau memindah pesan ke Folder Virtual"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:935
+#: ../src/camel/camel-vee-folder.c:937
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Tidak ada pesan %s dalam \"%s : %s\""
 
-#: ../src/camel/camel-vee-folder.c:989
+#: ../src/camel/camel-vee-folder.c:991
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Galat ketika menyimpan \"%s\": "
 
-#: ../src/camel/camel-vee-folder.c:1236
+#: ../src/camel/camel-vee-folder.c:1241
 msgid "Automatically _update on change in source folders"
 msgstr "Secara otomatis m_utakhirkan pada perubahan di folder sumber"
 
@@ -3185,21 +3185,21 @@ msgstr "Secara otomatis m_utakhirkan pada perubahan di folder sumber"
 msgid "Unmatched"
 msgstr "Tidak cocok"
 
-#: ../src/camel/camel-vee-store.c:446
+#: ../src/camel/camel-vee-store.c:448
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Tidak bisa menghapus folder: %s: Tidak ada folder semacam itu"
 
-#: ../src/camel/camel-vee-store.c:481
+#: ../src/camel/camel-vee-store.c:483
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Tidak bisa menamai-ulang folder: %s: Tidak ada folder semacam itu"
 
-#: ../src/camel/camel-vee-store.c:544
+#: ../src/camel/camel-vee-store.c:546
 msgid "Enable _Unmatched folder"
 msgstr "Aktifkan folder yang tak dicocokkan"
 
-#: ../src/camel/camel-vee-store.c:1067
+#: ../src/camel/camel-vee-store.c:1073
 msgid "Updating Unmatched search folder"
 msgstr "Memutakhirkan folder pencarian yang tak dicocokkan"
 
@@ -3381,8 +3381,8 @@ msgid "IMAP over TLS"
 msgstr "IMAP di atas TLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:87
-msgid "IMAP+"
-msgstr "IMAP+"
+msgid "IMAP"
+msgstr "IMAP"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "For reading and storing mail on IMAP servers."
