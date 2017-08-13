@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-08-11 11:59+0000\n"
-"PO-Revision-Date: 2017-08-13 17:13+0200\n"
+"PO-Revision-Date: 2017-08-13 18:08+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -4398,36 +4398,38 @@ msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
 msgstr ""
+"Opzion pe autenticazion cul servidôr NNTP doprant une password in test "
+"sempliç."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:379
 #, c-format
 msgid "Could not read greeting from %s: "
-msgstr ""
+msgstr "Impussibil lei il salût di %s: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:391
 #, c-format
 msgid "NNTP server %s returned error code %d: %s"
-msgstr ""
+msgstr "Il servidôr NNTP %s al à tornât il codiç di erôr %d: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:410
 #, c-format
 msgid "Failed to issue STARTTLS for NNTP server %s: "
-msgstr ""
+msgstr "No si è rivâts a emeti STARTTLS pal servidôr NNTP %s: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:421
 #, c-format
 msgid "NNTP server %s doesn’t support STARTTLS: %s"
-msgstr ""
+msgstr "Il servidôr NNTP %s nol supuarte STARTTLS: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:441
 #, c-format
 msgid "Failed to connect to NNTP server %s in secure mode: "
-msgstr ""
+msgstr "No si è rivâts a conetisi in modalitât sigure al servidôr NNTP %s: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:512
 #, c-format
 msgid "USENET News via %s"
-msgstr ""
+msgstr "Notiziis USENET vie %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1248
 #, c-format
@@ -4441,16 +4443,20 @@ msgstr ""
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
+"Impussibil creâ une cartele intun archivi di notiziis: pitost fâ une "
+"sotscrizion."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1379
 #, c-format
 msgid "You cannot rename a folder in a News store."
-msgstr ""
+msgstr "Impussibil cambiâ non a une cartele intun archivi di notiziis."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1402
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
+"Impussibil gjavâ une cartele intun archivi di notiziis: pitost anulâ la "
+"sotscrizion."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1616
 #, c-format
@@ -4470,38 +4476,38 @@ msgstr ""
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2109
 msgid "NNTP Command failed: "
-msgstr ""
+msgstr "Comant NNTP falît: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2215
 #, c-format
 msgid "Not connected."
-msgstr ""
+msgstr "No conetût."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2320
 #, c-format
 msgid "No such folder: %s"
-msgstr ""
+msgstr "Cartele inesistente: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:195
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:340
 #, c-format
 msgid "%s: Scanning new messages"
-msgstr ""
+msgstr "%s: daûr a cirî gnûfs messaçs"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:217
 #, c-format
 msgid "Unexpected server response from xover: %s"
-msgstr ""
+msgstr "Rispueste servidôr inspietade dal xover: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:361
 #, c-format
 msgid "Unexpected server response from head: %s"
-msgstr ""
+msgstr "Rispueste servidôr inspietade dal head: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:410
 #, c-format
 msgid "Operation failed: %s"
-msgstr ""
+msgstr "Operazion falide: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:457
 #, fuzzy, c-format
@@ -4519,12 +4525,12 @@ msgstr "Rispueste inspietade di GnuPG: %s"
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:442
 #, c-format
 msgid "No message with UID %s"
-msgstr ""
+msgstr "Nissun messaç cun UID %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:458
 #, c-format
 msgid "Retrieving POP message %d"
-msgstr ""
+msgstr "Daûr a ricevi il messaç POP %d"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:576
 msgid "Unknown reason"
@@ -4532,7 +4538,7 @@ msgstr "Motîf no cognossût"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:645
 msgid "Retrieving POP summary"
-msgstr ""
+msgstr "Daûr a ricevi la sintesi POP"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:704
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:707
@@ -4540,42 +4546,44 @@ msgstr ""
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:733
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:747
 msgid "Cannot get POP summary: "
-msgstr ""
+msgstr "Impussiibl otignî la sintesi POP: "
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:895
 msgid "Expunging old messages"
-msgstr ""
+msgstr "Daûr a netâ i messaçs vecjos"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:925
 msgid "Expunging deleted messages"
-msgstr ""
+msgstr "Daûr a netâ i messaçs eliminâts"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:34
 msgid "Message Storage"
-msgstr ""
+msgstr "Archivi messaçs"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:36
 msgid "_Leave messages on server"
-msgstr ""
+msgstr "_Lasse i messaçs sul servidôr"
 
 #. Translators: '%s' is replaced with a widget, where user can
 #. * select how many days can be message left on the server.
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:40
 #, c-format
 msgid "_Delete after %s day(s)"
-msgstr ""
+msgstr "_Elimine dopo %s dì/dîs"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Hint: Use 0 days to keep messages on the server indefinitely."
 msgstr ""
+"Sugjeriment: dopre 0 dîs par tignî i messaçs sul servidôr in maniere "
+"indefinide."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:44
 msgid "Delete _expunged from local Inbox"
-msgstr ""
+msgstr "Elimine i messaçs n_etâts de cartele locâl “In jentrade”"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:46
 msgid "Disable _support for all POP3 extensions"
-msgstr ""
+msgstr "Disabilite il _supuart par dutis lis estensions POP3"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:52
 msgid "Default POP3 port"
@@ -4591,13 +4599,15 @@ msgstr "POP"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:62
 msgid "For connecting to and downloading mail from POP servers."
-msgstr ""
+msgstr "Par conetisi e discjarâ la pueste dai servidôrs POP."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:82
 msgid ""
 "This option will connect to the POP server using a plaintext password. This "
 "is the only option supported by many POP servers."
 msgstr ""
+"Opzion par conetisi al servidôr POP doprant une password a test semplic. "
+"Cheste e je la uniche opzion supuartade di tancj servidôrs POP."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:92
 msgid ""
@@ -4605,6 +4615,9 @@ msgid ""
 "the APOP protocol. This may not work for all users even on servers that "
 "claim to support it."
 msgstr ""
+"Opzion par conetisi al servidôr POP doprant une password cifrade cul "
+"protocol APOP. Cheste e podarès no funzionâ par ducj i utents, ancje su "
+"servidôrs che a contindin di supuartâlu."
 
 #. Translators: This is the separator between an error and an explanation
 #: ../src/camel/providers/pop3/camel-pop3-store.c:93
@@ -4614,48 +4627,48 @@ msgstr ": "
 #: ../src/camel/providers/pop3/camel-pop3-store.c:160
 #, c-format
 msgid "Failed to read a valid greeting from POP server %s"
-msgstr ""
+msgstr "No si è rivâts a lei un salût valit dal servidôr POP %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:175
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: %s"
-msgstr ""
+msgstr "No si è rivâts a conetisi in modalitât sigure al servidôr POP %s: %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:176
 msgid "STLS not supported by server"
-msgstr ""
+msgstr "STLS nol è supuartât dal servidôr"
 
 #. Translators: Last %s is an optional
 #. * explanation beginning with ": " separator.
 #: ../src/camel/providers/pop3/camel-pop3-store.c:197
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode%s"
-msgstr ""
+msgstr "No si è rivâts a conetisi in modalitât sigure al servidôr POP %s%s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:215
 #, c-format
 msgid "Failed to connect to POP server %s in secure mode: "
-msgstr ""
+msgstr "No si è rivâts a conetisi in modalitât sigure al servidôr POP %s: "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:355
 #, c-format
 msgid "Cannot login to POP server %s: SASL Protocol error"
-msgstr ""
+msgstr "Impussibil eseguî l'acès al servidôr POP %s: erôr di protocol SASL"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:377
 #, c-format
 msgid "Failed to authenticate on POP server %s: "
-msgstr ""
+msgstr "No si è rivâts a autenticâsi sul servidôr POP %s: "
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:485
 #, c-format
 msgid "POP3 server %s"
-msgstr ""
+msgstr "Servidôr POP3 %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:488
 #, c-format
 msgid "POP3 server for %s on %s"
-msgstr ""
+msgstr "Servidôr POP3 par %s su %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:700
 #: ../src/camel/providers/pop3/camel-pop3-store.c:713
@@ -4665,6 +4678,8 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending password: "
 msgstr ""
+"Impussibil conetisi al servidôr POP %s.\n"
+"Erôr tal inviâ la password: "
 
 #. Translators: Do not translate APOP.
 #: ../src/camel/providers/pop3/camel-pop3-store.c:740
@@ -4673,6 +4688,8 @@ msgid ""
 "Unable to connect to POP server %s:\tInvalid APOP ID received. Impersonation "
 "attack suspected. Please contact your admin."
 msgstr ""
+"Impussibil conetisi al servidôr POP %s:\tricevût ID APOP no valit. Pussibil "
+"atac di sostituzion di persone. Contatâ l'aministradôr."
 
 #. Translators: Last %s is an optional explanation
 #. * beginning with ": " separator.
@@ -4682,55 +4699,58 @@ msgid ""
 "Unable to connect to POP server %s.\n"
 "Error sending username%s"
 msgstr ""
+"Impussibil conetisi al servidôr POP %s.\n"
+"Erôr tal inviâ il non utent%s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:898
 #, c-format
 msgid "No such folder “%s”."
-msgstr ""
+msgstr "Cartele “%s” inesistente."
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:915
 #, c-format
 msgid "POP3 stores have no folder hierarchy"
-msgstr ""
+msgstr "I archivis POP3 no àn une gjerarchie di cartelis"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:31
 #: ../src/services/evolution-source-registry/builtin/sendmail.source.in.h:1
 msgid "Sendmail"
-msgstr ""
+msgstr "Sendmail"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-provider.c:33
 msgid ""
 "For delivering mail by passing it to the “sendmail” program on the local "
 "system."
 msgstr ""
+"Par consegnâ la pueste passantle al program “sendmail” sul sisteme locâl."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:44
 msgid "sendmail"
-msgstr ""
+msgstr "sendmail"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:46
 msgid "Mail delivery via the sendmail program"
-msgstr ""
+msgstr "Consegne de pueste midiant dal program sendmail"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:137
 #, c-format
 msgid "Failed to read From address"
-msgstr ""
+msgstr "No si è rivâts a lei la direzion “Di”"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:154
 #, c-format
 msgid "Message send in offline mode is disabled"
-msgstr ""
+msgstr "L'inviâ i messaçs in modalitât fûr rêt al è disabilitât"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:182
 #, c-format
 msgid "Could not parse recipient list"
-msgstr ""
+msgstr "Impussibil analizâ la liste dai destinataris"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:199
 #, c-format
 msgid "Could not parse arguments"
-msgstr ""
+msgstr "Impussibil analizâ i argoments"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:215
 #, c-format
@@ -4744,22 +4764,22 @@ msgstr ""
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:301
 msgid "Could not send message: "
-msgstr ""
+msgstr "Impussibil inviâ il messaç: "
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:343
 #, c-format
 msgid "“%s” exited with signal %s: mail not sent."
-msgstr ""
+msgstr "“%s” al è jessût cul segnâl %s: pueste no inviade."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:353
 #, c-format
 msgid "Could not execute “%s”: mail not sent."
-msgstr ""
+msgstr "Impussibil eseguî “%s”: pueste no inviade."
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:358
 #, c-format
 msgid "“%s” exited with status %d: mail not sent."
-msgstr ""
+msgstr "“%s” jessude cul stât %d: pueste no inviade."
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:37
 msgid "Default SMTP port"
@@ -4771,7 +4791,7 @@ msgstr "SMTP sore TLS"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:39
 msgid "Message submission port"
-msgstr ""
+msgstr "Puarte par inviâ i messaçs"
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:45
 msgid "SMTP"
@@ -4780,101 +4800,103 @@ msgstr "SMTP"
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:47
 msgid "For delivering mail by connecting to a remote mailhub using SMTP."
 msgstr ""
+"Par consegnâ la pueste tacantsi a un grop di distribuzion di pueste rimot "
+"(mailhub) doprant SMTP."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:235
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:242
 msgid "Welcome response error: "
-msgstr ""
+msgstr "Erôr te rispueste di benvignût: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:278
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: %s"
-msgstr ""
+msgstr "No si è rivâts a conetisi in modalitât sigure al servidôr SMTP %s: %s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:287
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:300
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:307
 msgid "STARTTLS command failed: "
-msgstr ""
+msgstr "Comant STARTTLS falît: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:326
 #, c-format
 msgid "Failed to connect to SMTP server %s in secure mode: "
-msgstr ""
+msgstr "No si è rivâts a conetisi in modalitât sigure al servidôr SMTP %s: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:437
 #, c-format
 msgid "SMTP server %s"
-msgstr ""
+msgstr "Servidôr SMTP %s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:440
 #, c-format
 msgid "SMTP mail delivery via %s"
-msgstr ""
+msgstr "Consegne de pueste SMTP midiant di %s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:580
 #, c-format
 msgid "SMTP server %s does not support %s authentication"
-msgstr ""
+msgstr "Il servidôr SMTP %s nol supuarte la autenticazion %s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:661
 #, c-format
 msgid "No SASL mechanism was specified"
-msgstr ""
+msgstr "Nissun mecanisim SASL al jere specificât"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:697
 msgid "AUTH command failed: Not connected."
-msgstr ""
+msgstr "Comant AUTH falît: no conetût."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:704
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:718
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:730
 msgid "AUTH command failed: "
-msgstr ""
+msgstr "Comant AUTH falît: "
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:887
 #, c-format
 msgid "Cannot send message: service not connected."
-msgstr ""
+msgstr "Impussibil inviâ il messaç: servizi no conetût."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:896
 #, c-format
 msgid "Cannot send message: sender address not valid."
-msgstr ""
+msgstr "Impussibil inviâ il messaç: la direzion dal mitent no je valide."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:900
 msgid "Sending message"
-msgstr ""
+msgstr "Daûr a inviâ il messaç"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:929
 #, c-format
 msgid "Cannot send message: no recipients defined."
-msgstr ""
+msgstr "Impussibil inviâ il messaç: nol è stât definît nissun destinatari."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:944
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
-msgstr ""
+msgstr "Impussibil inviâ il messaç: un o plui destinataris no son valits"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1076
 msgid "Syntax error, command unrecognized"
-msgstr ""
+msgstr "Erôr di sintassi, comant no ricognossût"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1078
 msgid "Syntax error in parameters or arguments"
-msgstr ""
+msgstr "Erôr di sintassi tai parametris o tai argoments"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1080
 msgid "Command not implemented"
-msgstr ""
+msgstr "Comant no implementât"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1082
 msgid "Command parameter not implemented"
-msgstr ""
+msgstr "Parametri comant no implementât"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1084
 msgid "System status, or system help reply"
-msgstr ""
+msgstr "Stât di sisteme o rispueste di aiût dal sisteme"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1086
 msgid "Help message"
@@ -4886,11 +4908,11 @@ msgstr "Servizi pront"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1090
 msgid "Service closing transmission channel"
-msgstr ""
+msgstr "Il servizi al sta sierant il canâl di trasmission"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1092
 msgid "Service not available, closing transmission channel"
-msgstr ""
+msgstr "Servizi no disponibil, daûr a sierâ il canâl di trasmission"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1094
 msgid "Requested mail action okay, completed"
