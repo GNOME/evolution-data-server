@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-08-07 16:12+0000\n"
-"PO-Revision-Date: 2017-08-09 14:27+0200\n"
+"POT-Creation-Date: 2017-08-11 11:59+0000\n"
+"PO-Revision-Date: 2017-08-13 17:13+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -236,7 +236,7 @@ msgstr "Daûr a discjariâ i contats (%d)..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5030
 msgid "The backend does not support bulk additions"
-msgstr "Il backend nol supuarte zontis in tasse"
+msgstr "Il backend nol supuarte zontis in bloc"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5113
 msgid "Adding contact to LDAP server..."
@@ -244,7 +244,7 @@ msgstr "Zonte dal contat al servidôr LDAP..."
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5166
 msgid "The backend does not support bulk modifications"
-msgstr "Il backend nol supuarte modifichis in tasse"
+msgstr "Il backend nol supuarte modifichis in bloc"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5188
 msgid "Modifying contact from LDAP server..."
@@ -2978,17 +2978,17 @@ msgstr "Nissun dât firmât te firme"
 
 #: ../src/camel/camel-smime-context.c:573
 msgid "Digests missing from enveloped data"
-msgstr ""
+msgstr "A mancjin i “digest” dai dâts invuluçâts"
 
 #: ../src/camel/camel-smime-context.c:586
 #: ../src/camel/camel-smime-context.c:597
 msgid "Cannot calculate digests"
-msgstr ""
+msgstr "Impussibil calcolâ i “disgest”"
 
 #: ../src/camel/camel-smime-context.c:604
 #: ../src/camel/camel-smime-context.c:608
 msgid "Cannot set message digests"
-msgstr ""
+msgstr "Impussibil stabilî i “digest” dal messaç"
 
 #: ../src/camel/camel-smime-context.c:618
 #: ../src/camel/camel-smime-context.c:623
@@ -3007,7 +3007,7 @@ msgstr "Il certificât al è il sôl messaç, certificâts impuartâts e verific
 
 #: ../src/camel/camel-smime-context.c:640
 msgid "Cannot find signature digests"
-msgstr ""
+msgstr "Impussibil cjatâ i “digest” de firme"
 
 #: ../src/camel/camel-smime-context.c:657
 #, c-format
@@ -3035,11 +3035,11 @@ msgstr "Decodificadôr falît"
 
 #: ../src/camel/camel-smime-context.c:1081
 msgid "Cannot find common bulk encryption algorithm"
-msgstr ""
+msgstr "Impussibil cjatâ un algoritmi comun de cifradure in bloc"
 
 #: ../src/camel/camel-smime-context.c:1089
 msgid "Cannot allocate slot for encryption bulk key"
-msgstr ""
+msgstr "Impussibil assegnâ il spazi pe clâf di cifradure in bloc"
 
 #: ../src/camel/camel-smime-context.c:1100
 msgid "Cannot create CMS Message"
@@ -3047,11 +3047,11 @@ msgstr "Impussibil creâ Messaç CMS"
 
 #: ../src/camel/camel-smime-context.c:1106
 msgid "Cannot create CMS Enveloped data"
-msgstr ""
+msgstr "Impussibil creâ i dâts invuluçâts CMS"
 
 #: ../src/camel/camel-smime-context.c:1112
 msgid "Cannot attach CMS Enveloped data"
-msgstr ""
+msgstr "Impussibil alegâ i dâts invuluçâts CMS"
 
 #: ../src/camel/camel-smime-context.c:1118
 msgid "Cannot attach CMS data object"
@@ -3059,11 +3059,11 @@ msgstr "Impussibil alegâ l'ogjet dâts CMS"
 
 #: ../src/camel/camel-smime-context.c:1127
 msgid "Cannot create CMS Recipient information"
-msgstr ""
+msgstr "Impussibil creâ la informazion dal destinatari CMS"
 
 #: ../src/camel/camel-smime-context.c:1132
 msgid "Cannot add CMS Recipient information"
-msgstr ""
+msgstr "Impussibil zontâ la informazion dal destinatari CMS"
 
 #: ../src/camel/camel-smime-context.c:1158
 msgid "Failed to add data to encoder"
@@ -3071,7 +3071,7 @@ msgstr "No si è rivâts a zontâ dâts al codificadôr"
 
 #: ../src/camel/camel-smime-context.c:1268
 msgid "S/MIME Decrypt: No encrypted content found"
-msgstr ""
+msgstr "Decifradure S/MIME: nissun contignût cifrât cjatât"
 
 #: ../src/camel/camel-store.c:1400
 #, c-format
@@ -3091,7 +3091,7 @@ msgstr "Scovacere"
 #: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1785
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
-msgstr "Malvolût"
+msgstr "Malvolude"
 
 #: ../src/camel/camel-store.c:2386
 #, c-format
@@ -3126,11 +3126,11 @@ msgstr "Tal gjenar di flus “%s” no si pues cirî"
 
 #: ../src/camel/camel-stream-filter.c:342
 msgid "Only reset to beginning is supported with CamelStreamFilter"
-msgstr ""
+msgstr "Cun CamelStreamFilter al è supuartât dome il ristabilî dal inizi"
 
 #: ../src/camel/camel-stream-null.c:76
 msgid "Only reset to beginning is supported with CamelHttpStream"
-msgstr ""
+msgstr "Cun CamelHttpStream al è supuartât dome il ristabilî dal inizi"
 
 #: ../src/camel/camel-stream-process.c:284
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:717
@@ -3217,9 +3217,8 @@ msgstr "Impussibil copiâ messaçs su la cartele “Scovacere”"
 # malvolûts malvolude malvolût malvolude
 # ?? definî un non precîs pe cartele in cuistion
 #: ../src/camel/camel-vtrash-folder.c:51
-#, fuzzy
 msgid "Cannot copy messages to the Junk folder"
-msgstr "Impussibil copiâ messaçs su la cartele “Malvolûts”"
+msgstr "Impussibil copiâ messaçs su la cartele “Malvolude”"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:967
 #, c-format
@@ -3314,7 +3313,7 @@ msgstr "Controle la pr_esince di gnûfs messaçs intes cartelis sotscritis"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:42
 msgid "Use _Quick Resync if the server supports it"
-msgstr ""
+msgstr "Dopre la sincronizazion _rapide se il servidôr le supuarte"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:44
 msgid "_Listen for server change notifications"
@@ -3326,7 +3325,7 @@ msgstr "Conession al servidôr"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:49
 msgid "Numbe_r of concurrent connections to use"
-msgstr ""
+msgstr "Numa_r di conessions contemporaniis di doprâ"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:52
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:43
@@ -3339,11 +3338,11 @@ msgstr "_Mostre dome cartelis sotscrivudis"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:57
 msgid "O_verride server-supplied folder namespace"
-msgstr ""
+msgstr "Passe s_ore al spazi dai nons des cartelis furnît dal servidôr"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:59
 msgid "Namespace:"
-msgstr ""
+msgstr "Spazi dai nons:"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:62
 #: ../src/camel/providers/local/camel-local-provider.c:37
@@ -3376,13 +3375,12 @@ msgstr "Controle se il contignût dai gnûfs messaçs al è _malvolût"
 
 # decidi malvolûts malvolude malvolût...
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:70
-#, fuzzy
 msgid "Only check for Junk messages in the In_box folder"
-msgstr "Controle dome pai messaçs di Malvolûts te cartele “In jentrade”"
+msgstr "Controle dome pai messaçs malvolûts te cartele “In jentrade”"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:72
 msgid "Synchroni_ze remote mail locally in all folders"
-msgstr ""
+msgstr "Sincroni_zâ localmentri la pueste rimote in dutis lis cartelis"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:79
 msgid "Default IMAP port"
@@ -3422,7 +3420,7 @@ msgstr "STARTTLS no supuartâts"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2844
 msgid "Failed to issue STARTTLS"
-msgstr ""
+msgstr "Emission STARTTLS falide"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2892
 #, c-format
@@ -3453,7 +3451,7 @@ msgstr "No si è rivâts a autenticâ"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3187
 msgid "Failed to issue NAMESPACE"
-msgstr ""
+msgstr "Emission NAMESPACE falide"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3205
 msgid "Failed to enable QResync"
@@ -3461,7 +3459,7 @@ msgstr "No si è rivâts a abilitâ QResync"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3237
 msgid "Failed to issue NOTIFY"
-msgstr ""
+msgstr "Emission NOTIFY falide"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3715
 msgid "Failed to select mailbox"
@@ -3469,7 +3467,7 @@ msgstr "No si è rivâts a selezionâ la casele di pueste"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3818
 msgid "Cannot issue command, no stream available"
-msgstr ""
+msgstr "Impussibil emeti il comant, nissun flus disponibil"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4082
 #, c-format
@@ -3478,13 +3476,13 @@ msgstr "Impussibil vê il messaç cul ID messaç %s: %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4083
 msgid "No such message available."
-msgstr ""
+msgstr "Nissun messaç dal gjenar disponibil."
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4120
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4145
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4184
 msgid "Error fetching message"
-msgstr ""
+msgstr "Erôr tal recuperâ il messaç"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4162
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4763
@@ -3514,7 +3512,7 @@ msgstr "Impussibil creâ il file code di pueste: "
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4663
 msgid "Error appending message"
-msgstr ""
+msgstr "Erôr tal zontâ il messaç"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3522,7 +3520,7 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4916
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
-msgstr ""
+msgstr "Daûr a cirî messaçs modificâts in “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4920
 msgid "Error scanning changes"
@@ -3535,14 +3533,15 @@ msgstr "Erôr tal analizâ lis modifichis"
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
+"Daûr a recuperâ lis informazions di sintesi pai gnûfs messaçs in “%s : %s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4959
 msgid "Error fetching message info"
-msgstr ""
+msgstr "Erôr tal recuperâ lis informazion dal messaç"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5041
 msgid "Error running STATUS"
-msgstr ""
+msgstr "Erôr tal eseguî STATUS"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5548
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5578
@@ -3552,15 +3551,15 @@ msgstr "Erôr tal sincronizâ lis modifichis"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5751
 msgid "Error expunging message"
-msgstr ""
+msgstr "Erôr tal netâ il messaç"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5823
 msgid "Error fetching folders"
-msgstr ""
+msgstr "Erôr tal recuperâ lis cartelis"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5834
 msgid "Error fetching subscribed folders"
-msgstr ""
+msgstr "Erôr tal recuperâ lis cartelis sotscrivudis"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error creating folder"
@@ -3597,7 +3596,7 @@ msgstr "Ricercje falide"
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6243
 msgid "Error running IDLE"
-msgstr ""
+msgstr "Erôr tal eseguî IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:232
@@ -3644,7 +3643,7 @@ msgstr "Cartele %s inesistente"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1461
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
-msgstr ""
+msgstr "Nissun spazi non IMAP pal percors di cartele “%s”"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1729
 #: ../src/camel/providers/imapx/camel-imapx-store.c:1963
@@ -3715,7 +3714,7 @@ msgstr "[Gmail]/Spam"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2575
 msgctxt "IMAPDefaults"
 msgid "Junk"
-msgstr "Malvolût"
+msgstr "Malvolude"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2576
 msgctxt "IMAPDefaults"
@@ -3735,7 +3734,7 @@ msgstr "Spam"
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2579
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
-msgstr ""
+msgstr "Pueste in sdrume"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2582
 msgctxt "IMAPDefaults"
@@ -3877,7 +3876,7 @@ msgstr "Impussibil cambiâ il non de cartele %s a %s: %s"
 #: ../src/camel/providers/local/camel-local-store.c:168
 #, c-format
 msgid "Local mail file %s"
-msgstr ""
+msgstr "File di pueste locâl %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:211
 #: ../src/camel/providers/local/camel-local-store.c:371
@@ -3886,12 +3885,12 @@ msgstr ""
 #: ../src/camel/providers/local/camel-spool-store.c:85
 #, c-format
 msgid "Store root %s is not an absolute path"
-msgstr ""
+msgstr "La lidrîs di archiviazion %s no je un percors assolût"
 
 #: ../src/camel/providers/local/camel-local-store.c:220
 #, c-format
 msgid "Store root %s is not a regular directory"
-msgstr ""
+msgstr "La lidrîs di archiviazion %s no je une cartele regolâr"
 
 #: ../src/camel/providers/local/camel-local-store.c:232
 #: ../src/camel/providers/local/camel-local-store.c:242
@@ -3899,29 +3898,29 @@ msgstr ""
 #: ../src/camel/providers/local/camel-maildir-store.c:163
 #, c-format
 msgid "Cannot get folder: %s: %s"
-msgstr ""
+msgstr "Impussibil otignî la cartele: %s: %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:279
 #, c-format
 msgid "Local stores do not have an inbox"
-msgstr ""
+msgstr "Lis archiviazions locâls no àn une cassete de pueste in jentrade"
 
 #: ../src/camel/providers/local/camel-local-store.c:444
 #: ../src/camel/providers/local/camel-mbox-store.c:737
 #, c-format
 msgid "Could not delete folder index file “%s”: %s"
-msgstr ""
+msgstr "Impussibil eliminâ il file indiç de cartele “%s”: %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:472
 #: ../src/camel/providers/local/camel-mbox-store.c:767
 #, c-format
 msgid "Could not delete folder meta file “%s”: %s"
-msgstr ""
+msgstr "Impussibil eliminâ il meta-file de cartele “%s”: %s"
 
 #: ../src/camel/providers/local/camel-local-store.c:585
 #, c-format
 msgid "Could not rename “%s”: %s"
-msgstr ""
+msgstr "Impussibil cambiâ non a “%s”: %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
 #: ../src/camel/providers/local/camel-maildir-folder.c:344
@@ -3929,12 +3928,12 @@ msgstr ""
 #: ../src/camel/providers/local/camel-mbox-folder.c:336
 #: ../src/camel/providers/local/camel-mh-folder.c:157
 msgid "No such message"
-msgstr ""
+msgstr "Messaç inesistent"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:232
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
-msgstr ""
+msgstr "Impussibil meti in code il messaç te cartele maildir: %s: "
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:282
 #: ../src/camel/providers/local/camel-maildir-folder.c:292
@@ -3943,18 +3942,18 @@ msgstr ""
 #: ../src/camel/providers/local/camel-mh-folder.c:179
 #, c-format
 msgid "Cannot get message %s from folder %s: "
-msgstr ""
+msgstr "Impussibil otignî il messaç %s de cartele %s: "
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:362
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
-msgstr ""
+msgstr "Impussibil trasferî il messaç te cartele di destinazion: %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:129
 #: ../src/camel/providers/local/camel-maildir-store.c:929
 #, c-format
 msgid "Cannot create folder containing “%s”"
-msgstr ""
+msgstr "Impussibil creâ une cartele che e contegni “%s”"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:137
 #: ../src/camel/providers/local/camel-maildir-store.c:156
@@ -4017,11 +4016,11 @@ msgstr "Impussibil vierzi il percors de cartele maildir: %s: %s"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:587
 msgid "Checking folder consistency"
-msgstr ""
+msgstr "Daûr a verificâ la coerence de cartele"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:709
 msgid "Checking for new messages"
-msgstr ""
+msgstr "Daûr a controlâ se si à gnûfs messaçs"
 
 #: ../src/camel/providers/local/camel-maildir-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
@@ -4039,7 +4038,7 @@ msgstr "Impussibil vierzi la casele di pueste: %s: "
 #: ../src/camel/providers/local/camel-mbox-folder.c:257
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
-msgstr ""
+msgstr "Impussibil meti in code il messaç tal file mbox: %s: "
 
 #: ../src/camel/providers/local/camel-mbox-folder.c:387
 msgid "The folder appears to be irrecoverably corrupted."
@@ -4072,11 +4071,11 @@ msgstr "Impussibil creâ la cartele “%s”: %s."
 #: ../src/camel/providers/local/camel-mbox-store.c:606
 #, c-format
 msgid "Cannot create folder: %s: %s"
-msgstr ""
+msgstr "Impussibil creâ la cartele: %s: %s"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:608
 msgid "Folder already exists"
-msgstr ""
+msgstr "La cartele e esist za"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:648
 #: ../src/camel/providers/local/camel-mbox-store.c:661
@@ -4086,77 +4085,79 @@ msgid ""
 "Could not delete folder “%s”:\n"
 "%s"
 msgstr ""
+"Impussibil eliminâ la cartele “%s”:\n"
+"%s"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:671
 #, c-format
 msgid "“%s” is not a regular file."
-msgstr ""
+msgstr "“%s” nol è un file regolâr."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:680
 #, c-format
 msgid "Folder “%s” is not empty. Not deleted."
-msgstr ""
+msgstr "La cartele “%s” no je vueide. No je stade eliminade."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:707
 #: ../src/camel/providers/local/camel-mbox-store.c:722
 #, c-format
 msgid "Could not delete folder summary file “%s”: %s"
-msgstr ""
+msgstr "Impussibil eliminâ il file sintesi de cartele “%s”: %s"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:804
 #, c-format
 msgid "The new folder name is illegal."
-msgstr ""
+msgstr "Il gnûf non de cartele al è ilegâl."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:820
 #, c-format
 msgid "Could not rename “%s”: “%s”: %s"
-msgstr ""
+msgstr "Impussibil cambiâ non a “%s”: “%s”: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:377
 #, c-format
 msgid "Could not open folder: %s: %s"
-msgstr ""
+msgstr "Impussibil vierzi la cartele: %s: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:509
 #, c-format
 msgid "Cannot check folder: %s: %s"
-msgstr ""
+msgstr "Impussibil verificâ la cartele: %s: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:594
 #: ../src/camel/providers/local/camel-mbox-summary.c:748
 #: ../src/camel/providers/local/camel-spool-summary.c:148
 #, c-format
 msgid "Could not open file: %s: %s"
-msgstr ""
+msgstr "Impussibil vierzi il file: %s: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:613
 #: ../src/camel/providers/local/camel-spool-summary.c:163
 #, c-format
 msgid "Cannot open temporary mailbox: %s"
-msgstr ""
+msgstr "Impussibil vierzi la casele di pueste (mailbox) temporanie: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:630
 #: ../src/camel/providers/local/camel-mbox-summary.c:870
 #, c-format
 msgid "Could not close source folder %s: %s"
-msgstr ""
+msgstr "Impussibil sierâ la cartele sorzint %s: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:643
 #, c-format
 msgid "Could not close temporary folder: %s"
-msgstr ""
+msgstr "Impussibil sierâ la cartele temporanie: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:662
 #, c-format
 msgid "Could not rename folder: %s"
-msgstr ""
+msgstr "Impussibil cambiâ non ae cartele: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:762
 #: ../src/camel/providers/local/camel-mbox-summary.c:1033
 #, c-format
 msgid "Could not store folder: %s"
-msgstr ""
+msgstr "Impussibil archiviâ la cartele: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:803
 #: ../src/camel/providers/local/camel-mbox-summary.c:1076
@@ -4165,12 +4166,14 @@ msgid ""
 "MBOX file is corrupted, please fix it. (Expected a From line, but didn’t get "
 "it.)"
 msgstr ""
+"Il file MBOX al è ruvinât, justilu. (Si spietave une rie “Di” ma no je stade "
+"vude.)"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:1088
 #, c-format
 msgid "Summary and folder mismatch, even after a sync"
-msgstr ""
+msgstr "Sintesi e cartele no corispuindin, ancje daspò une sincronizazion"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:980
 #: ../src/camel/providers/local/camel-spool-summary.c:358
@@ -4182,17 +4185,17 @@ msgstr "Erôr no cognossût: %s"
 #: ../src/camel/providers/local/camel-mbox-summary.c:1179
 #, c-format
 msgid "Writing to temporary mailbox failed: %s"
-msgstr ""
+msgstr "Scriture su la casele di pueste (mailbox) temporanie falide: %s"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:1168
 #, c-format
 msgid "Writing to temporary mailbox failed: %s: %s"
-msgstr ""
+msgstr "Scriture su la casele di pueste (mailbox) temporanie falide: %s: %s"
 
 #: ../src/camel/providers/local/camel-mh-folder.c:114
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
-msgstr ""
+msgstr "Impussibil meti in code il messaç te cartele mh: %s: "
 
 #: ../src/camel/providers/local/camel-mh-store.c:538
 #, c-format
@@ -4207,7 +4210,7 @@ msgstr "Impussibil otignî la cartele “%s”: no je une cartele."
 #: ../src/camel/providers/local/camel-mh-summary.c:238
 #, c-format
 msgid "Cannot open MH directory path: %s: %s"
-msgstr ""
+msgstr "Impussibil vierzi il percors de cartele MH: %s: %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:93
 #, c-format
@@ -4269,29 +4272,29 @@ msgstr "“%s” nol è un file di casele di pueste."
 #: ../src/camel/providers/local/camel-spool-store.c:582
 #, c-format
 msgid "Store does not support an INBOX"
-msgstr ""
+msgstr "L'archivi nol supuarte une cassete de pueste in jentrade"
 
 #: ../src/camel/providers/local/camel-spool-store.c:601
 #, c-format
 msgid "Spool folders cannot be deleted"
-msgstr ""
+msgstr "No si puedin eliminâ lis cartelis de code di pueste (spool)"
 
 #: ../src/camel/providers/local/camel-spool-store.c:616
 #, c-format
 msgid "Spool folders cannot be renamed"
-msgstr ""
+msgstr "No si pues cambiâ non aes cartelis de code di pueste (spool)"
 
 #: ../src/camel/providers/local/camel-spool-summary.c:179
 #: ../src/camel/providers/local/camel-spool-summary.c:191
 #: ../src/camel/providers/local/camel-spool-summary.c:203
 #, c-format
 msgid "Could not synchronize temporary folder %s: %s"
-msgstr ""
+msgstr "Impussibil sincronizâ la cartele temporanie %s: %s"
 
 #: ../src/camel/providers/local/camel-spool-summary.c:221
 #, c-format
 msgid "Could not synchronize spool folder %s: %s"
-msgstr ""
+msgstr "Impussibil sincronizâ la cartele de code di pueste %s: %s"
 
 #: ../src/camel/providers/local/camel-spool-summary.c:255
 #: ../src/camel/providers/local/camel-spool-summary.c:274
@@ -4301,12 +4304,14 @@ msgid ""
 "Could not synchronize spool folder %s: %s\n"
 "Folder may be corrupt, copy saved in “%s”"
 msgstr ""
+"Impussibil sincronizâ la cartele de code di pueste %s: %s\n"
+"La cartele e podarès jessi ruvinade, copie salvade in “%s”"
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:219
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:636
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
-msgstr ""
+msgstr "Erôr interni: UID intun formât no valit: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:287
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:292
@@ -4314,7 +4319,7 @@ msgstr ""
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:1090
 #, c-format
 msgid "Cannot get message %s: %s"
-msgstr ""
+msgstr "Impussibil otignî il messaç %s: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:299
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:670
@@ -4325,7 +4330,7 @@ msgstr ""
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:584
 #, c-format
 msgid "Cannot get message %s: "
-msgstr ""
+msgstr "Impussibil otignî il messaç %s: "
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:428
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:434
@@ -4340,43 +4345,47 @@ msgstr ""
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:659
 #, c-format
 msgid "This message is not currently available"
-msgstr ""
+msgstr "Chest messaç nol è pal moment disponibil"
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:768
 #, c-format
 msgid "You cannot copy messages from a NNTP folder"
-msgstr ""
+msgstr "No si pues copiâ i messaçs di une cartele NNTP"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:45
 msgid ""
 "_Show folders in short notation (e.g. c.o.linux rather than comp.os.linux)"
 msgstr ""
+"_Mostre cartelis inte notazion curte (p.e. c.o.linux alpuest di comp.os."
+"linux)"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:48
 msgid "In the subscription _dialog, show relative folder names"
-msgstr ""
+msgstr "Tal _dialic di sotscrizion, mostre nons relatîfs des cartelis"
 
 #. Translators: The '%s' is replaced with a spin button with the actual value to use
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:51
 #, c-format
 msgid "Download only up to %s latest messages"
-msgstr ""
+msgstr "Discjarie dome fin a %s ultins messaçs"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:57
 msgid "Default NNTP port"
-msgstr ""
+msgstr "Puarte NNTP predefinide"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:58
 msgid "NNTP over TLS"
-msgstr ""
+msgstr "NNTP sore TLS"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:64
 msgid "USENET news"
-msgstr ""
+msgstr "Notiziis USENET"
 
+# trovare newsgroups e provider
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:66
+#, fuzzy
 msgid "This is a provider for reading from and posting to USENET newsgroups."
-msgstr ""
+msgstr "Chest al è un provider pe leture e publicazion sui newgroups USENET."
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:87
 msgid ""
