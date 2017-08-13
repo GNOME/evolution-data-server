@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-08-11 11:59+0000\n"
-"PO-Revision-Date: 2017-08-13 18:08+0200\n"
+"PO-Revision-Date: 2017-08-13 19:15+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -5640,7 +5640,7 @@ msgstr "%I %p"
 
 #: ../src/libedataserver/e-webdav-session.c:669
 msgid "Cannot determine destination URL without WebDAV extension"
-msgstr ""
+msgstr "Impussibil determinâ il URL di destinazion cence la estension WebDAV"
 
 #: ../src/libedataserver/e-webdav-session.c:943
 #, c-format
@@ -5648,6 +5648,9 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"Il servidôr al à rispuindût cuntune pagjine HTML, che al pues significâ che "
+"al è un erôr sul servidôr o cun la richeiste dal client. Il URI doprât al "
+"jere: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:945
 #, c-format
@@ -5655,6 +5658,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"Il servidôr al à rispuindût cuntune pagjine HTML, che al pues significâ che "
+"al è un erôr sul servidôr o cun la richieste dal client."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -5664,7 +5669,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:966
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "%s: codiç di erôr HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
@@ -5672,7 +5677,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:974
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr ""
+msgstr "Falît cun codiç di erôr HTTP %d (%s): %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -5681,14 +5686,14 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:989
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
-msgstr ""
+msgstr "%s: codiç di erôr HTTP %d ( %s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:995
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr ""
+msgstr "Falît cun codiç di erôr HTTP %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1245
 #, fuzzy
@@ -5702,7 +5707,7 @@ msgstr "Falît al messaç %d"
 #: ../src/libedataserver/e-webdav-session.c:2698
 #: ../src/libedataserver/e-webdav-session.c:3950
 msgid "Failed to get input XML content"
-msgstr ""
+msgstr "No si è rivâts a otignî il contignût XML di input"
 
 #: ../src/libedataserver/e-webdav-session.c:1349
 msgid "Failed to get properties"
@@ -5751,7 +5756,7 @@ msgstr "No si è rivâts a meti dâts"
 #: ../src/libedataserver/e-webdav-session.c:2302
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr ""
+msgstr "No si è rivâts a meti i dâts sul servidôr, codiç di erôr %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2475
 msgid "Failed to delete resource"
@@ -5759,7 +5764,7 @@ msgstr "No si è rivâts a eliminâ la risorse"
 
 #: ../src/libedataserver/e-webdav-session.c:2542
 msgid "Failed to copy resource"
-msgstr ""
+msgstr "No si è rivâts a copiâ la risorse"
 
 #: ../src/libedataserver/e-webdav-session.c:2604
 msgid "Failed to move resource"
@@ -5772,13 +5777,13 @@ msgstr "No si è rivâts a blocâ la risorse"
 #: ../src/libedataserver/e-webdav-session.c:2723
 #: ../src/libedataserver/e-webdav-session.c:2925
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "Si spietave rispueste application/xml, ma nol è stât tornât nuie"
 
 #: ../src/libedataserver/e-webdav-session.c:2726
 #: ../src/libedataserver/e-webdav-session.c:2928
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "Si spietave rispueste application/xml, ma al è stât tornât %s"
 
 #: ../src/libedataserver/e-webdav-session.c:2738
 #: ../src/libedataserver/e-webdav-session.c:2941
@@ -5833,46 +5838,48 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter.c:1576
 #: ../src/libedataserverui/e-credentials-prompter.c:1620
 msgid "Credentials prompt was cancelled"
-msgstr ""
+msgstr "La richieste des credenziâls e je stade anulade"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:662
 #, c-format
 msgid "Source “%s” doesn’t support prompt for credentials"
-msgstr ""
+msgstr "La sorzint “%s” no supuarte il “prompt” pes credenziâls"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:445
 #, c-format
 msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
 msgstr ""
+"No si è rivâts a otignî il token di acès de direzion “%s”. Codiç di erôr %d "
+"(%s)"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:493
 msgid "Requesting access token, please wait..."
-msgstr ""
+msgstr "Daûr a domandâ il token di acès, spiete..."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:595
 msgid "Google Address book authentication request"
-msgstr ""
+msgstr "Richieste autenticazion rubriche Google"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:598
 msgid "Google Calendar authentication request"
-msgstr ""
+msgstr "Richieste autenticazion calendari Google"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:601
 msgid "Google Memo List authentication request"
-msgstr ""
+msgstr "Richieste autenticazion liste promemorie Google"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:604
 msgid "Google Task List authentication request"
-msgstr ""
+msgstr "Richieste autenticazion liste ativitâts Google"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:608
 msgid "Google Mail authentication request"
-msgstr ""
+msgstr "Richieste autenticazion pueste Google"
 
 #. generic account prompt
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:611
 msgid "Google account authentication request"
-msgstr ""
+msgstr "Richieste autenticazion account Google"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:622
 #, c-format
@@ -5880,6 +5887,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi ae tô "
+"rubriche “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:626
 #, c-format
@@ -5887,6 +5896,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi al to "
+"calendari “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:630
 #, c-format
@@ -5894,6 +5905,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi al to "
+"account di pueste “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:634
 #, c-format
@@ -5901,6 +5914,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi al to "
+"traspuart de pueste “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:638
 #, c-format
@@ -5908,6 +5923,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi ae tô "
+"liste dai promemorie “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:642
 #, c-format
@@ -5915,6 +5932,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi ae tô "
+"liste des ativitâts “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:646
 #, c-format
@@ -5922,6 +5941,8 @@ msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account “%s”."
 msgstr ""
+"Jentre tal to account Google e acete lis condizions par podê acedi al to "
+"account “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:690
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
@@ -5932,55 +5953,55 @@ msgstr "_Anule"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:132
 msgid "Address book authentication request"
-msgstr ""
+msgstr "Richieste di autenticazion de rubriche"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:137
 msgid "Calendar authentication request"
-msgstr ""
+msgstr "Richieste di autenticazion dal calendari"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:141
 msgid "Mail authentication request"
-msgstr ""
+msgstr "Richieste di autenticazion de pueste "
 
 #. generic account prompt
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:144
 msgid "Authentication request"
-msgstr ""
+msgstr "Richieste di autenticazion"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
 #, c-format
 msgid "Please enter the password for address book “%s”."
-msgstr ""
+msgstr "Inserìs la password pe rubriche “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
 #, c-format
 msgid "Please enter the password for calendar “%s”."
-msgstr ""
+msgstr "Inserìs la password pal calendari “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
 #, c-format
 msgid "Please enter the password for mail account “%s”."
-msgstr ""
+msgstr "Inserìs la password pal account de pueste “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:167
 #, c-format
 msgid "Please enter the password for mail transport “%s”."
-msgstr ""
+msgstr "Inserìs la password pal traspuart de pueste “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:171
 #, c-format
 msgid "Please enter the password for memo list “%s”."
-msgstr ""
+msgstr "Inserìs la password pe liste dai promemorie “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:175
 #, c-format
 msgid "Please enter the password for task list “%s”."
-msgstr ""
+msgstr "Inserìs la password pe liste des ativitâts “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
 #, c-format
 msgid "Please enter the password for account “%s”."
-msgstr ""
+msgstr "Inderìs la password pal account “%s”."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1065
@@ -5998,12 +6019,12 @@ msgstr "_Password:"
 #. Remember password check
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:369
 msgid "_Add this password to your keyring"
-msgstr ""
+msgstr "_Zonte cheste password al to puarteclâfs"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
 msgid "Certificate trust..."
-msgstr ""
+msgstr "Fiducie dal certificât..."
 
 #: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
@@ -6013,18 +6034,18 @@ msgstr "_Refude"
 #: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
 msgid "Accept _Temporarily"
-msgstr ""
+msgstr "Acete in mût _temporani"
 
 #: ../src/libedataserverui/e-trust-prompt.c:115
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:120
 msgid "_Accept Permanently"
-msgstr ""
+msgstr "_Acete par simpri"
 
 #: ../src/libedataserverui/e-trust-prompt.c:186
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
 #, c-format
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
-msgstr ""
+msgstr "Il certificât SSL/TLS par “%s” nol è fidât. Acetâlu?"
 
 #: ../src/libedataserverui/e-trust-prompt.c:208
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:172
@@ -6033,7 +6054,7 @@ msgstr "Reson:"
 
 #: ../src/libedataserverui/e-trust-prompt.c:211
 msgid "Detailed error:"
-msgstr ""
+msgstr "Erôr in detai:"
 
 #: ../src/libedataserverui/e-trust-prompt.c:273
 #: ../src/modules/trust-prompt/module-trust-prompt.c:80
@@ -6065,11 +6086,13 @@ msgid ""
 "The certificate has been revoked according to the connection’s certificate "
 "revocation list."
 msgstr ""
+"Il certificât al è stât revocât in acuardi ae liste di revoche dal "
+"certificât de conession."
 
 #: ../src/libedataserverui/e-trust-prompt.c:283
 #: ../src/modules/trust-prompt/module-trust-prompt.c:90
 msgid "The certificate’s algorithm is considered insecure."
-msgstr ""
+msgstr "L'algoritmi dal certificât nol è considerât sigûr."
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:164
 msgid "Supports"
@@ -6077,7 +6100,7 @@ msgstr "Al supuarte"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:175
 msgid "_User mail:"
-msgstr ""
+msgstr "E-mail dal _utent:"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:521
 msgctxt "WebDAVDiscover"
@@ -6105,7 +6128,7 @@ msgstr "URL no valit"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:840
 msgid "User name not filled"
-msgstr ""
+msgstr "Non utent no inserît"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:881
 msgid "Cancel"
@@ -6113,7 +6136,7 @@ msgstr "Anule"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:884
 msgid "Searching server sources..."
-msgstr ""
+msgstr "Daûr a cirî lis sorzints dal servidôr..."
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:208
 #, c-format
@@ -6121,10 +6144,12 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain a password for “%s”"
 msgstr ""
+"Impussibil cjatâ un account corispuindint intal servizi org.gnome."
+"OnlineAccounts di dulà otignî une password par “%s”"
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:271
 msgid "Failed to get password from GOA: "
-msgstr ""
+msgstr "No si è rivâts a vê la password di GOA: "
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:220
@@ -6168,11 +6193,13 @@ msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
+"Impussibil cjatâ un account corispuindint intal servizi org.gnome."
+"OnlineAccounts di dulà otignî un token di acès par “%s”"
 
 #: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1366
 #, c-format
 msgid "Failed to obtain an access token for “%s”: "
-msgstr ""
+msgstr "No si è rivâts a otignî un token di acès par “%s”: "
 
 #: ../src/modules/google-backend/module-google-backend.c:555
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
@@ -6231,6 +6258,8 @@ msgid ""
 "Cannot find a corresponding account service in the accounts database from "
 "which to obtain an access token for “%s”"
 msgstr ""
+"Impussibil cjatâ un servizi di account corispuindint te base di dâts dai "
+"account di dulà otignî un token di acès par “%s”"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:85
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:282
@@ -6238,11 +6267,13 @@ msgstr ""
 msgid ""
 "Expected status 200 when requesting your identity, instead got status %d (%s)"
 msgstr ""
+"Si spietave il stât 200 cuant che si domandave la tô identitât, invezit si à "
+"vût il stât %d (%s)"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:102
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:299
 msgid "Error parsing response as JSON: "
-msgstr ""
+msgstr "Erôr tal analizâ la rispueste come JSON: "
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:120
 msgid "Didn’t find “email” in JSON data"
@@ -6272,12 +6303,12 @@ msgstr "Pueste Yahoo!"
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:39
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
 msgid "Keep running after the last client is closed"
-msgstr ""
+msgstr "Continue la esecuzion dopo che l'ultin client al è sierât"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:39
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:41
 msgid "Wait running until at least one client is connected"
-msgstr ""
+msgstr "Spiete di eseguî fin a che almancul un client al è conetût"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -6352,7 +6383,7 @@ msgstr "Liste lis cartelis des rubrichis locâls"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
-msgstr ""
+msgstr "Mostre lis tessaris come vcard o file csv"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:930
 msgid "[vcard|csv]"
@@ -6362,6 +6393,8 @@ msgstr "[vcard|csv]"
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
+"Erôr dai argoments te rie di comant, dopre la opzion --help par viodi ce mût "
+"doprâlu."
 
 #: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
