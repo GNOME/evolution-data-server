@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Gnome Nepali Translation Project\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=evolution-data-"
 "server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-07-21 10:58+0000\n"
-"PO-Revision-Date: 2017-07-30 17:49+0545\n"
+"POT-Creation-Date: 2017-08-11 11:59+0000\n"
+"PO-Revision-Date: 2017-08-17 15:49+0545\n"
 "Last-Translator: Pawan Chitrakar <chautari@gmail.com>\n"
 "Language-Team: Nepali Translation Team <chautari@gmail.com>\n"
 "Language: ne\n"
@@ -24,25 +24,25 @@ msgstr ""
 #, fuzzy, c-format
 #| msgid "Failed to store mail in temp file %s: %s"
 msgid "Failed to remove file “%s”: %s"
-msgstr "`%s' ताल्चा लगाइएको फाइल हटाउन असफल भयो: %s"
+msgstr "हटाउन असफल:%s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:148
 #, fuzzy, c-format
 #| msgid "Could not create directory %s: %s"
 msgid "Failed to make directory %s: %s"
-msgstr "`%s' डाइरेक्टरी बनाउन सकेन: %s"
+msgstr "%s डाइरेक्टरी सिर्जना गर्न असफल भयो।"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:419
 #, fuzzy, c-format
 #| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create hardlink for resource “%s”: %s"
-msgstr "%s;%s लगडाइरेक्टरी सिर्जना गर्न असफल भयो"
+msgstr "डाइरेक्टरी %s सिर्जना गर्न असफल"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1257
 #, fuzzy
 msgid "No UID in the contact"
-msgstr "UID"
+msgstr "पूस्तिका UID"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:852
 #, c-format
@@ -74,16 +74,15 @@ msgstr "%s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1621
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1702
-#, fuzzy, c-format
-#| msgid "Operation not supported"
+#, c-format
 msgid "Query “%s” not supported"
-msgstr "%s: रेपोजिटरी %s समर्थित छैन\n"
+msgstr "क्वेरि \"%s\" समर्थित छैन"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1630
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1711
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid Query “%s”"
-msgstr "%s: अवैध मिति '%s'\n"
+msgstr "अवैध क्वेरी “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1976
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1998
@@ -135,19 +134,19 @@ msgstr "%s मा %s फोल्डर पुन: नामाकरण गर�
 msgid "Unknown error"
 msgstr "अज्ञात त्रुटि"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:897
+#: ../src/addressbook/backends/google/e-book-backend-google.c:922
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
 #, fuzzy
 msgid "Object to save is not a valid vCard"
 msgstr "फाइल '%s' वैध बचत फाइल होइन।"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:949
+#: ../src/addressbook/backends/google/e-book-backend-google.c:974
 #, fuzzy
 #| msgid "Failed to authenticate on POP server %s: %s"
 msgid "Failed to create contact from returned server data"
 msgstr "%s पप सर्भरमा प्रमाणीकरण गर्न असफल भयो: %s"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:965
+#: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Server returned contact without UID"
 msgstr ""
 
@@ -173,7 +172,7 @@ msgstr "परिवार"
 #. System Group: Coworkers
 #: ../src/addressbook/backends/google/e-book-google-utils.c:1664
 msgid "Coworkers"
-msgstr ""
+msgstr "सहकर्मी"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
@@ -258,7 +257,7 @@ msgstr "एलडीएपी सर्भरबाट सम्पर्क ह
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5649
 #, fuzzy, c-format
 msgid "Failed to get the DN for user “%s”"
-msgstr "क्लाइन्टका लागि IOR प्राप्त गर्न असफल भयो: %s"
+msgstr "होस्टनाम प्राप्त गर्न असफल: %s\n"
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:173
 #, c-format
@@ -633,40 +632,28 @@ msgid "MSN Work Screen Name 3"
 msgstr "एमएसएन कार्य पर्दा नाम ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:238
-#, fuzzy
-#| msgid "ICQ Home Id 1"
 msgid "ICQ Home ID 1"
-msgstr "AIM गृह पर्दा नाम १"
+msgstr "आसीक्यू गृह आइडी १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:239
-#, fuzzy
-#| msgid "ICQ Home Id 2"
 msgid "ICQ Home ID 2"
-msgstr "गृह फोन २"
+msgstr "आसीक्यू गृह आइडी २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:240
-#, fuzzy
-#| msgid "ICQ Home Id 3"
 msgid "ICQ Home ID 3"
-msgstr "AIM गृह पर्दा नाम ३"
+msgstr "आसीक्यू गृह आइडी ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:241
-#, fuzzy
-#| msgid "ICQ Work Id 1"
 msgid "ICQ Work ID 1"
-msgstr "AIM कार्य पर्दा नाम १"
+msgstr "आसीक्यू कार्य आइडी १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:242
-#, fuzzy
-#| msgid "ICQ Work Id 2"
 msgid "ICQ Work ID 2"
-msgstr "AIM कार्य पर्दा नाम २"
+msgstr "आसीक्यू कार्य आइडी २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:243
-#, fuzzy
-#| msgid "ICQ Work Id 3"
 msgid "ICQ Work ID 3"
-msgstr "AIM कार्य पर्दा नाम ३"
+msgstr "आसीक्यू कार्य आइडी ३"
 
 #. Last modified time
 #: ../src/addressbook/libebook-contacts/e-contact.c:246
@@ -728,10 +715,8 @@ msgid "AIM Screen Name List"
 msgstr "AIM पर्दा नाम सूची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:272
-#, fuzzy
-#| msgid "GroupWise Id List"
 msgid "GroupWise ID List"
-msgstr "समूहगत"
+msgstr "समूहगत आइडी सूची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:273
 msgid "Jabber ID List"
@@ -746,10 +731,8 @@ msgid "MSN Screen Name List"
 msgstr "एमएसएन पर्दा नाम सूची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:276
-#, fuzzy
-#| msgid "ICQ Id List"
 msgid "ICQ ID List"
-msgstr "ICQ"
+msgstr "आसीक्यू आइडी सूची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:278
 msgid "Wants HTML Mail"
@@ -767,10 +750,8 @@ msgstr "सूची"
 #. * shown or not to other recipients - basically whether to use BCC field or CC
 #. * message header when sending messages to this Contact list.
 #: ../src/addressbook/libebook-contacts/e-contact.c:288
-#, fuzzy
-#| msgid "List Show Addresses"
 msgid "List Shows Addresses"
-msgstr "ठेगानाहरू"
+msgstr "ठेगानाहरू देखाउने सूची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:290
 msgid "Birth Date"
@@ -787,52 +768,36 @@ msgid "X.509 Certificate"
 msgstr "X.५०९ प्रमाणपत्र"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:295
-#, fuzzy
-#| msgid "X.509 Certificate"
 msgid "PGP Certificate"
-msgstr "प्रमाणपत्र"
+msgstr "पि जि पि प्रमाणपत्र"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:297
-#, fuzzy
-#| msgid "Gadu-Gadu Home Id 1"
 msgid "Gadu-Gadu Home ID 1"
-msgstr "Gadu-Gadu गृह आइडी १"
+msgstr "गडु-गडु गृह आइडी १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:298
-#, fuzzy
-#| msgid "Gadu-Gadu Home Id 2"
 msgid "Gadu-Gadu Home ID 2"
-msgstr "Gadu-Gadu गृह आइडी २"
+msgstr "गडु-गडु गृह आइडी २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:299
-#, fuzzy
-#| msgid "Gadu-Gadu Home Id 3"
 msgid "Gadu-Gadu Home ID 3"
-msgstr "Gadu-Gadu गृह आइडी ३"
+msgstr "गडु-गडु गृह आइडी ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:300
-#, fuzzy
-#| msgid "Gadu-Gadu Work Id 1"
 msgid "Gadu-Gadu Work ID 1"
-msgstr "Gadu-Gadu कार्य आइडी १"
+msgstr "गडु-गडु कार्य आइडी १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:301
-#, fuzzy
-#| msgid "Gadu-Gadu Work Id 2"
 msgid "Gadu-Gadu Work ID 2"
-msgstr "Gadu-Gadu कार्य आइडी २"
+msgstr "गडु-गडु कार्य आइडी २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:302
-#, fuzzy
-#| msgid "Gadu-Gadu Work Id 3"
 msgid "Gadu-Gadu Work ID 3"
-msgstr "Gadu-Gadu कार्य आइडी ३"
+msgstr "गडु-गडु कार्य आइडी ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:303
-#, fuzzy
-#| msgid "Gadu-Gadu Id List"
 msgid "Gadu-Gadu ID List"
-msgstr "गाडु-गाडु"
+msgstr "गडु-गडु आइडी सुची"
 
 #. Geo information
 #: ../src/addressbook/libebook-contacts/e-contact.c:306
@@ -844,92 +809,68 @@ msgid "Telephone"
 msgstr "टेलिफोन"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:310
-#, fuzzy
-#| msgid "MSN Home Screen Name 1"
 msgid "Skype Home Name 1"
-msgstr "AIM गृह पर्दा नाम १"
+msgstr "स्काइप गृह नाम १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:311
-#, fuzzy
-#| msgid "MSN Home Screen Name 2"
 msgid "Skype Home Name 2"
-msgstr "AIM गृह पर्दा नाम २"
+msgstr "स्काइप गृह नाम २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:312
-#, fuzzy
-#| msgid "MSN Home Screen Name 3"
 msgid "Skype Home Name 3"
-msgstr "AIM गृह पर्दा नाम ३"
+msgstr "स्काइप गृह नाम ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:313
-#, fuzzy
-#| msgid "MSN Work Screen Name 1"
 msgid "Skype Work Name 1"
-msgstr "AIM कार्य पर्दा नाम १"
+msgstr "स्काइप कार्य नाम १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:314
-#, fuzzy
-#| msgid "MSN Work Screen Name 2"
 msgid "Skype Work Name 2"
-msgstr "AIM कार्य पर्दा नाम २"
+msgstr "स्काइप कार्य नाम २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:315
-#, fuzzy
-#| msgid "MSN Work Screen Name 3"
 msgid "Skype Work Name 3"
-msgstr "AIM कार्य पर्दा नाम ३"
+msgstr "स्काइप कार्य नाम ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:316
-#, fuzzy
-#| msgid "AIM Screen Name List"
 msgid "Skype Name List"
-msgstr "स्काईप"
+msgstr "स्काईप नाम सुची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:318
-#, fuzzy
-#| msgid "Home Address"
 msgid "SIP address"
 msgstr "SIP ठेगाना"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:320
-#, fuzzy
 msgid "Google Talk Home Name 1"
-msgstr "AIM गृह पर्दा नाम १"
+msgstr "गुगल टल्क गृह नाम १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:321
-#, fuzzy
 msgid "Google Talk Home Name 2"
-msgstr "याहु! गृह पर्दा नाम २"
+msgstr "गुगल टल्क गृह नाम  २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:322
-#, fuzzy
 msgid "Google Talk Home Name 3"
-msgstr "AIM गृह पर्दा नाम ३"
+msgstr "गुगल टल्क गृह नाम  ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:323
-#, fuzzy
 msgid "Google Talk Work Name 1"
-msgstr "AIM कार्य पर्दा नाम १"
+msgstr "गुगल टल्क कार्य नाम  १"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:324
-#, fuzzy
 msgid "Google Talk Work Name 2"
-msgstr "AIM कार्य पर्दा नाम २"
+msgstr "गुगल टल्क कार्य नाम  २"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:325
-#, fuzzy
 msgid "Google Talk Work Name 3"
-msgstr "AIM कार्य पर्दा नाम ३"
+msgstr "गुगल टल्क कार्य नाम  ३"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:326
-#, fuzzy
 msgid "Google Talk Name List"
-msgstr "गुगलटल्क"
+msgstr "गुगलटल्क नाम सुची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:328
-#, fuzzy
 msgid "Twitter Name List"
-msgstr "सूची नाम"
+msgstr "ट्विट्टर नाम सुची"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:1658
 #: ../src/addressbook/libebook/e-destination.c:919
@@ -947,7 +888,7 @@ msgstr ""
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:43
 #, fuzzy
 msgid "Not a phone number"
-msgstr "सम्पर्क कुनै फोन नम्बरसंग सम्बन्धित छैन।"
+msgstr "फोन नम्बर"
 
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:45
 #, fuzzy
@@ -984,13 +925,13 @@ msgstr ""
 #, fuzzy, c-format
 #| msgid "Could not connect to %s: %s"
 msgid "Unable to connect to “%s”: "
-msgstr "“%s” जडान गर्न पासवर्ड चाहिने छ"
+msgstr "यसमा जडान गर्नुहोस्: %s"
 
 #: ../src/addressbook/libebook/e-book-client-view.c:868
 #: ../src/calendar/libecal/e-cal-client-view.c:679
-#, fuzzy, c-format
+#, c-format
 msgid "Client disappeared"
-msgstr "ग्राहक"
+msgstr "ग्राहक गायब भयो"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:905
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:2254
@@ -1006,14 +947,14 @@ msgstr ""
 #| "Error executing search expression: %s:\n"
 #| "%s"
 msgid "Error parsing regular expression"
-msgstr "नियमित अभिव्यक्ति कम्पाइल गर्दा त्रुटि \"%s\" ।"
+msgstr "नियमित अभिव्यक्त्ति वाक्य संरचनामा त्रुटि"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
 #: ../src/addressbook/libedata-book/e-book-cache.c:4475
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877 ../src/camel/camel-db.c:802
-#, fuzzy, c-format
+#, c-format
 msgid "Insufficient memory"
-msgstr "PNM प्रसँग स्ट्रक्ट लोड गर्न अपर्याप्त स्मृति"
+msgstr "अपर्याप्त स्मृति"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1697
 #, c-format
@@ -1044,10 +985,9 @@ msgid "Query contained unsupported elements"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4312
-#, fuzzy, c-format
-#| msgid "Invalid purpose"
+#, c-format
 msgid "Invalid Query"
-msgstr "क्वेरी"
+msgstr "अवैध क्वेरी"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4336
 #, c-format
@@ -1059,10 +999,9 @@ msgstr ""
 #: ../src/addressbook/libedata-book/e-data-book.c:1144
 #: ../src/calendar/libedata-cal/e-data-cal.c:429 ../src/calendar/libedata-cal/e-data-cal.c:1436
 #: ../src/libedataserver/e-client.c:175
-#, fuzzy, c-format
-#| msgid "Invalid purpose"
+#, c-format
 msgid "Invalid query"
-msgstr "क्वेरी"
+msgstr "अवैध क्वेरी"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4448
 #, c-format
@@ -1086,9 +1025,9 @@ msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6079
-#, c-format
+#, fuzzy, c-format
 msgid "Cannot sort by a field that is not in the summary"
-msgstr ""
+msgstr "फाँट संक्षेप"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6086
 #, c-format
@@ -1123,17 +1062,18 @@ msgstr ""
 #, fuzzy, c-format
 #| msgid "Invalid purpose"
 msgid "Invalid query: %s"
-msgstr "%s: अवैध मिति '%s'\n"
+msgstr "अवैध क्वेरी “%s”"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3598
+#, fuzzy
 msgid "Invalid query for a book cursor"
-msgstr ""
+msgstr "अवैध क्वेरी “%s”"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4479 ../src/libebackend/e-cache.c:756
 #, fuzzy, c-format
 #| msgid "Cannot open mailbox: %s: %s\n"
 msgid "Can’t open database %s: %s"
-msgstr "खोल्न असफल संलग्नता “%s”"
+msgstr "डाटाबेस खोल्न सक्दैन: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5082
 #: ../src/addressbook/libedata-book/e-book-cache.c:5134
@@ -1142,17 +1082,16 @@ msgstr "खोल्न असफल संलग्नता “%s”"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2484
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1314 ../src/libebackend/e-cache.c:1385
 #: ../src/libebackend/e-cache.c:2238 ../src/libebackend/e-cache.c:2278
-#, fuzzy, c-format
-#| msgid "Object not found"
+#, c-format
 msgid "Object “%s” not found"
-msgstr "वस्तु फेला परेन"
+msgstr "वस्तु “%s” फेला परेन"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5194
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2375
 #, fuzzy, c-format
 #| msgid "Object not found"
 msgid "Object with extra “%s” not found"
-msgstr "वस्तु फेला परेन"
+msgstr "सुलसुलेको तल वस्तु पाइ एन ।"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5348
 msgid "At least one sort field must be specified to use a cursor"
@@ -1173,7 +1112,7 @@ msgstr "आन्तरिक त्रुटि: अवैध ढाँचा�
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1043
 #, fuzzy, c-format
 msgid "Received object for UID “%s” is invalid"
-msgstr "आन्तरिक त्रुटि: अवैध ढाँचामा युआइडी: %s"
+msgstr "%s बाट अवैध सन्देश प्रवाह प्राप्त भयो: %s"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1868
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2222
@@ -1181,7 +1120,7 @@ msgstr "आन्तरिक त्रुटि: अवैध ढाँचा�
 #, fuzzy, c-format
 #| msgid "Failed to cache %s: %s"
 msgid "Failed to create cache “%s”:"
-msgstr "क्यास फाइल लेख्न असफल भयो: %s\n"
+msgstr "क्यास फाइल पढ्न असफल %s: %s"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
@@ -1192,7 +1131,7 @@ msgstr ""
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5985
 #, fuzzy
 msgid "Invalid query for EbSqlCursor"
-msgstr "क्वेरी"
+msgstr "अवैध क्वेरी “%s”"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7938
 msgid "At least one sort field must be specified to use an EbSqlCursor"
@@ -1210,8 +1149,6 @@ msgstr "ब्याकइन्ड ब्यस्त छ"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:380
 #: ../src/calendar/libedata-cal/e-data-cal.c:412 ../src/libedataserver/e-client.c:152
-#, fuzzy
-#| msgid "Repository is offline"
 msgid "Repository offline"
 msgstr "भण्डार अफलाइनमा छ"
 
@@ -1222,15 +1159,11 @@ msgstr "अनुमति अस्वीकार गरियो"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:384
 #: ../src/calendar/libedata-cal/e-data-cal.c:418
-#, fuzzy
-#| msgid "Authentication failed"
 msgid "Authentication Failed"
 msgstr "प्रमाणीकरण असफल भयो"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:385
 #: ../src/calendar/libedata-cal/e-data-cal.c:419
-#, fuzzy
-#| msgid "Authentication required"
 msgid "Authentication Required"
 msgstr "प्रमाणीकरण आवश्यक"
 
@@ -1239,14 +1172,12 @@ msgstr "प्रमाणीकरण आवश्यक"
 #, fuzzy
 #| msgid "Unsupported security layer."
 msgid "Unsupported field"
-msgstr "समर्थन नभएको फाइल"
+msgstr "असमर्थित प्रमाणिकरण"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:387
 #: ../src/calendar/libedata-cal/e-data-cal.c:422 ../src/libedataserver/e-client.c:167
-#, fuzzy
-#| msgid "No support for authentication type %s"
 msgid "Unsupported authentication method"
-msgstr "असमर्थित प्रमाणिकरण"
+msgstr "असमर्थित प्रमाणिकरण बिधी"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:388
 #: ../src/calendar/libedata-cal/e-data-cal.c:423 ../src/libedataserver/e-client.c:169
@@ -1254,10 +1185,8 @@ msgid "TLS not available"
 msgstr "TLS उपलब्ध छैन"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:389
-#, fuzzy
-#| msgid "Folder `%s/%s' does not exist."
 msgid "Address book does not exist"
-msgstr "ठेगाना पूस्तिका"
+msgstr "ठेगाना पुस्तिका अवस्थित छैन"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:390
 #, fuzzy
@@ -1273,30 +1202,24 @@ msgstr "अफलाइन मोडमा सुरु गर्नुहोस
 
 #: ../src/addressbook/libedata-book/e-data-book.c:392
 #: ../src/calendar/libedata-cal/e-data-cal.c:427 ../src/libedataserver/e-client.c:171
-#, fuzzy
-#| msgid "Path length exceeded"
 msgid "Search size limit exceeded"
-msgstr "फाइल साइज सीमा नाघ्यो"
+msgstr "खोज साइज सीमा नाघ्यो"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:393
 #: ../src/calendar/libedata-cal/e-data-cal.c:428 ../src/libedataserver/e-client.c:173
-#, fuzzy
-#| msgid "Path length exceeded"
 msgid "Search time limit exceeded"
-msgstr "फाइल साइज सीमा नाघ्यो"
+msgstr "खोज समय सीमा नाघ्यो"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:395
 #: ../src/calendar/libedata-cal/e-data-cal.c:430 ../src/libedataserver/e-client.c:177
 #, fuzzy
 msgid "Query refused"
-msgstr "क्वेरी"
+msgstr "यो सर्भरमा जडान अस्वीकृत गरिएको छ ।"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:396
 #: ../src/calendar/libedata-cal/e-data-cal.c:431 ../src/libedataserver/e-client.c:163
-#, fuzzy
-#| msgid "%s: could not cancel"
 msgid "Could not cancel"
-msgstr "सञ्चालन रद्द गर्न सकेन"
+msgstr "रद्द गर्न सकेन"
 
 #. { E_DATA_BOOK_STATUS_OTHER_ERROR,			N_("Other error") },
 #. { OtherError,			N_("Other error") },
@@ -1326,40 +1249,36 @@ msgstr "समर्थित छैन "
 #, fuzzy
 #| msgid "Backend is busy"
 msgid "Backend is not opened yet"
-msgstr "जब खोलियो:"
+msgstr "क्लट्टर ब्याकइन्ड "
 
 #: ../src/addressbook/libedata-book/e-data-book.c:404 ../src/libedataserver/e-client.c:185
 #, fuzzy
 #| msgid "Object not found"
 msgid "Object is out of sync"
-msgstr "प्याकेज फाइल %s sync भन्दा बाहिर छ ।"
+msgstr "समक्रमण कुञ्जीहरू"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:412
 #: ../src/calendar/libedata-cal/e-data-cal.c:445 ../src/libedataserver/e-client.c:181
-#, fuzzy
-#| msgid "I/O error"
 msgid "Other error"
-msgstr "अन्य..."
+msgstr "अन्य त्रुटि"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:1169
 #: ../src/calendar/libedata-cal/e-data-cal.c:1461
-#, fuzzy
-#| msgid "Invalid server URI"
 msgid "Invalid query: "
-msgstr "क्वेरी"
+msgstr "अवैध क्वेरी:"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1418
 #, fuzzy
 #| msgid "Cannot open mailbox: %s: %s\n"
 msgid "Cannot open book: "
-msgstr "`%.255s'लाई (`%.255s'मा) खोल्न सकिदैन"
+msgstr "ठेगाना पुस्तिकाबाट पढ्न सकिँदैन"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1456
 #, fuzzy
 msgid "Cannot refresh address book: "
-msgstr "प्राथमिक ठेगाना पुस्तिका"
+msgstr "ठेगाना पुस्तिकामा फेला पार्न सकिँदैन"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1497
@@ -1373,34 +1292,34 @@ msgstr "सम्पर्क सार्न सकिँदैन ।"
 #, fuzzy
 #| msgid "Cannot get folder container %s"
 msgid "Cannot get contact list: "
-msgstr "सम्पर्क सार्न सकिँदैन ।"
+msgstr "फाईल सूची प्राप्त गर्न सक्दैन"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1602
 #, fuzzy
 #| msgid "Cannot get folder container %s"
 msgid "Cannot get contact list uids: "
-msgstr "%s फोल्डर बाकस प्राप्त गर्न सकिँदैन"
+msgstr "फाईल सूची प्राप्त गर्न सक्दैन"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1653
 #, fuzzy
 #| msgid "Cannot add encryption certificate"
 msgid "Cannot add contact: "
-msgstr "सम्पर्क सार्न सकिँदैन ।"
+msgstr "शिर्घ्र-थप सम्पर्क गर्नुहोस्"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1706
 #, fuzzy
 msgid "Cannot modify contacts: "
-msgstr "सम्पर्कहरू छैनन्"
+msgstr "परिमार्जन गर्नुहोस्"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/addressbook/libedata-book/e-data-book.c:1759
 #, fuzzy
 #| msgid "Cannot create encoder context"
 msgid "Cannot remove contacts: "
-msgstr "`%.250s' हटाउन सक्दैन"
+msgstr "फाइल '%s' हटाउन सकिँदैन"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor.c:774
 msgid "Cursor does not support setting the search expression"
@@ -1422,7 +1341,7 @@ msgstr "कुञ्‍‌जी प्रयोगले प्रमाणप�
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:266
 #, fuzzy
 msgid "Unrecognized cursor origin"
-msgstr "उत्पत्ति X:"
+msgstr "आयामिक उत्पत्ति"
 
 #: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:151
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:334
@@ -1443,7 +1362,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to parse response data"
-msgstr "HTTP प्रतिक्रिया पदवर्णनगर्न सकेन"
+msgstr "प्रत्त्योतर पदवर्णन गर्न सकेन"
 
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:939
 msgid "Birthday"
@@ -1479,7 +1398,7 @@ msgstr "[URI] [URI] …"
 #: ../src/calendar/backends/http/e-cal-backend-http.c:198
 #, fuzzy, c-format
 msgid "Malformed URI “%s”: %s"
-msgstr "अवैध '%s' URI: %s"
+msgstr "कुञ्जी `%s' विकृत गरिएको छ"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:341
 #, c-format
@@ -1500,36 +1419,28 @@ msgid "Weather: Fog"
 msgstr "हावापानी: कुहिरो"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:380
-#, fuzzy
-#| msgid "Weather: Cloudy"
 msgid "Weather: Cloudy Night"
-msgstr "हावापानी: बादल लागेको"
+msgstr "मौसम: बादल लागेको रात"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:381
 msgid "Weather: Cloudy"
 msgstr "हावापानी: बादल लागेको"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:382
-#, fuzzy
-#| msgid "Weather: Thunderstorms"
 msgid "Weather: Overcast"
-msgstr "छाएको"
+msgstr "मौसम:छाएको"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:383
-#, fuzzy
-#| msgid "Weather: Snow"
 msgid "Weather: Showers"
-msgstr "मुसलधारे वर्षा"
+msgstr "मौसम:मुसलधारे वर्षा"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:384
 msgid "Weather: Snow"
 msgstr "हावापानी: हिउँ"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:385
-#, fuzzy
-#| msgid "Weather: Rain"
 msgid "Weather: Clear Night"
-msgstr "खाली गर्नुहोस्"
+msgstr "मौसम:सफा रात"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:386
 msgid "Weather: Sunny"
@@ -1558,9 +1469,9 @@ msgid "%.1f K"
 msgstr "%.1f K"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:425
-#, fuzzy, c-format
+#, c-format
 msgid "%.1f"
-msgstr "%.1f F"
+msgstr "%.1f"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:590
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:618
@@ -1633,15 +1544,13 @@ msgstr "प्रमाणीकरण आवश्यक"
 #, fuzzy
 #| msgid "A CORBA exception has occurred"
 msgid "A D-Bus exception has occurred"
-msgstr "एउटा CORBA अपवाद देखापरेको छ"
+msgstr "एउटा अनपेक्षित त्रुटि भएको छ: %d।"
 
 #: ../src/calendar/libecal/e-cal.c:2336
 msgid "No error"
 msgstr "कुनै त्रुटि छैन"
 
 #: ../src/calendar/libecal/e-cal-client.c:270 ../src/calendar/libedata-cal/e-data-cal.c:425
-#, fuzzy
-#| msgid "Unknown User"
 msgid "Unknown user"
 msgstr "अज्ञात प्रयोगकर्ता"
 
@@ -1789,8 +1698,6 @@ msgid "31st"
 msgstr "३१औँ"
 
 #: ../src/calendar/libecal/e-cal-util.c:707 ../src/calendar/libecal/e-cal-util.c:734
-#, fuzzy
-#| msgid "High"
 msgctxt "Priority"
 msgid "High"
 msgstr "उच्च"
@@ -1829,13 +1736,12 @@ msgstr "\"%s\" ले एउटा तर्कको अपेक्षा ग�
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be a string"
 msgid "“%s” expects the first argument to be a string"
-msgstr "\"%s\" ले पहिलो तर्क एउटा स्ट्रिङ भएको अपेक्षा गर्दछ"
+msgstr "\"%s\" ले एउटा तर्कको अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:165
-#, fuzzy, c-format
-#| msgid "\"%s\" expects two arguments"
+#, c-format
 msgid "“%s” expects two or three arguments"
-msgstr "\"%s\" ले दुईवटा तर्कहरू अपेक्षा गर्दछ"
+msgstr "“%s” दुई या तिन तर्कहरू अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
@@ -1845,40 +1751,36 @@ msgstr "\"%s\" ले दुईवटा तर्कहरू अपेक्�
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1466
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1524
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1573
-#, fuzzy, c-format
-#| msgid "\"%s\" expects the first argument to be a time_t"
+#, c-format
 msgid "“%s” expects the first argument to be a time_t"
-msgstr "\"%s\"ले पहिलो तर्क एउटा समय t भएको अपेक्षा गर्दछ"
+msgstr "\"%s\"ले पहिलो तर्क समय t भएको अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:845
-#, fuzzy, c-format
-#| msgid "\"%s\" expects the second argument to be a time_t"
+#, c-format
 msgid "“%s” expects the second argument to be a time_t"
-msgstr "\"%s\" ले एउटा समय_t भएको दोस्रो तर्क अपेक्षा गर्दछ"
+msgstr "\"%s\" ले दोस्रो तर्क समय_t भएको दोस्रो तर्क अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:191
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be a string"
 msgid "“%s” expects the third argument to be a string"
-msgstr "\"%s\" ले पहिलो तर्क एउटा स्ट्रिङ भएको अपेक्षा गर्दछ"
+msgstr "\"%s\" ले एउटा तर्कको अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:253
-#, fuzzy, c-format
-#| msgid "\"%s\" expects two arguments"
+#, c-format
 msgid "“%s” expects none or two arguments"
-msgstr "\"%s\" ले दुईवटा तर्कहरू अपेक्षा गर्दछ"
+msgstr "“%s” कुनै वा दुई तर्कहरू अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1459
-#, fuzzy, c-format
-#| msgid "\"%s\" expects two arguments"
+#, c-format
 msgid "“%s” expects two arguments"
-msgstr "\"%s\" ले दुईवटा तर्कहरू अपेक्षा गर्दछ"
+msgstr "“%s” दुई तर्कहरू अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:612
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:635
@@ -1887,16 +1789,15 @@ msgstr "\"%s\" ले दुईवटा तर्कहरू अपेक्�
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1351
-#, fuzzy, c-format
-#| msgid "\"%s\" expects no arguments"
+#, c-format
 msgid "“%s” expects no arguments"
-msgstr "\"%s\" ले तर्क नभएको अपेक्षा गर्दछ"
+msgstr "“%s” कुनै तर्कहरू अपेक्षा गर्दैन"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:695
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be a string"
 msgid "“%s” expects the second argument to be a string"
-msgstr "\"%s\" ले एउटा स्ट्रिङ भएको दोस्रो तर्क अपेक्षा गर्दछ"
+msgstr "\"%s\" ले एउटा तर्कको अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, fuzzy, c-format
@@ -1911,10 +1812,9 @@ msgstr ""
 "\", वा \"वर्गीकरण\" भएको अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:897
-#, fuzzy, c-format
-#| msgid "\"%s\" expects at least one argument"
+#, c-format
 msgid "“%s” expects at least one argument"
-msgstr "\"%s\" ले कम्तिमा एउटा तर्कको अपेक्षा गर्दछ"
+msgstr "\"%s\" ले एउटा तर्कको अपेक्षा गर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:912
 #, fuzzy, c-format
@@ -1936,7 +1836,7 @@ msgstr "\"%s\" ले पहिलो तर्क एउटा ISO 8601 मि�
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be an integer"
 msgid "“%s” expects the second argument to be an integer"
-msgstr "\"%s\" ले दोस्रो तर्क एउटा इन्टिजर भएको अपेक्षा गर्दछ"
+msgstr "%s: तर्क इन्टिजर मात्र हुनुपर्दछ"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1739
 #, fuzzy, c-format
@@ -1949,7 +1849,7 @@ msgstr "शाखा प्रक्रिया सिर्जना गर्
 #, fuzzy, c-format
 #| msgid "Object not found"
 msgid "Object “%s”, “%s” not found"
-msgstr "'%s' को लागि '%s' निष्काशन फेला पार्न सकिएन"
+msgstr "%s फेला परेन"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3006
 msgid "Cannot add timezone without tzid"
@@ -1975,23 +1875,19 @@ msgid "attachment.dat"
 msgstr ""
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
-#, fuzzy
-#| msgid "Unsupported security layer."
 msgid "Unsupported method"
-msgstr "विधि"
+msgstr "असमर्थित बिधि"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:424
-#, fuzzy
-#| msgid "Folder `%s' does not exist."
 msgid "Calendar does not exist"
-msgstr "फाइल अवस्थित छैन"
+msgstr "पात्रो अवस्थित छैन"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1655
 #, fuzzy
 #| msgid "Cannot open message"
 msgid "Cannot open calendar: "
-msgstr "`%.255s'लाई (`%.255s'मा) खोल्न सकिदैन"
+msgstr "पुरानो घटनाको पात्रो खोल्नुहोस्"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1693
@@ -2024,7 +1920,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Cannot create encoder context"
 msgid "Cannot create calendar object: "
-msgstr "गतिशिल अफसेट वस्तु सिर्जना गर्नुहोस्"
+msgstr "एउटा लाइन वस्तु सिर्जना गर्नुहोस्"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:1966
@@ -2037,7 +1933,7 @@ msgstr "सीएमएस डेटा वस्तु संलग्न ग�
 #, fuzzy
 #| msgid "Cannot create encoder context"
 msgid "Cannot remove calendar object: "
-msgstr "वस्तु बाट रुपान्तरणहरू हटाउनुहोस्"
+msgstr "पात्रो हटाउनुहोस्"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2132
@@ -2051,21 +1947,21 @@ msgstr "पात्रो डेटा बचत गर्न सक्दै�
 #, fuzzy
 #| msgid "Cannot save calendar data: Malformed URI."
 msgid "Cannot send calendar objects: "
-msgstr "'%s'.  %s पात्रोमा वस्तु पठाउन अक्षम"
+msgstr "सन्देश पठाउन सकिदैन: पठाउनेको ठेगाना अवैध छ ।"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2229
 #, fuzzy
 #| msgid "Could not retrieve weather data"
 msgid "Could not retrieve attachment uris: "
-msgstr "मौसमी तथ्याङ्क पुन प्राप्त गर्न सकिएन"
+msgstr "संलग्नतालाई बचत गर्न सकिएन ।"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2275
 #, fuzzy
 #| msgid "Could not store folder: %s"
 msgid "Could not discard reminder: "
-msgstr "छोड्नुहोस्"
+msgstr "छाडनुहोस्"
 
 #. Translators: This is prefix to a detailed error message
 #: ../src/calendar/libedata-cal/e-data-cal.c:2317
@@ -2121,7 +2017,7 @@ msgstr "क्यास मार्ग सिर्जना गर्न अ�
 #: ../src/camel/camel-data-cache.c:532
 #, fuzzy
 msgid "Empty cache file"
-msgstr "खाली प्याकेज क्यास"
+msgstr "खाली फाइल"
 
 #: ../src/camel/camel-data-cache.c:609
 #, c-format
@@ -2132,13 +2028,13 @@ msgstr "क्यास प्रविष्टि हटाउन सकन: %
 #, fuzzy, c-format
 #| msgid "Could not rename '%s' to %s: %s"
 msgid "Could not rename “%s” to %s: %s"
-msgstr "'%s' लाई %s पुन नामाकरण गर्न सकेन: %s"
+msgstr "%s मा %s फोल्डर पुन: नामाकरण गर्न सकेन: %s"
 
 #: ../src/camel/camel-filter-driver.c:991 ../src/camel/camel-filter-search.c:871
 #, fuzzy, c-format
 #| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create child process “%s”: %s"
-msgstr "'%s' शाखा प्रक्रिया सिर्जना गर्न असफल भयो: %s"
+msgstr "शाखा प्रक्रिया (%s) फोर्क गर्न असफल"
 
 #: ../src/camel/camel-filter-driver.c:1039
 #, c-format
@@ -2200,7 +2096,7 @@ msgstr "%d को %d सन्देशमा असफल भयो"
 #: ../src/camel/camel-filter-driver.c:1844 ../src/camel/camel-filter-driver.c:1868
 #, fuzzy, c-format
 msgid "Execution of filter “%s” failed: "
-msgstr "\"%s\" कार्यान्वयन असफल।"
+msgstr "\"%s\" मोड्युलको कार्यान्वयन असफल।"
 
 #: ../src/camel/camel-filter-driver.c:1858
 #, fuzzy, c-format
@@ -2230,7 +2126,7 @@ msgstr "(प्रयोगकर्ता-ट्याग)मा अवैध �
 #, fuzzy
 #| msgid "Invalid arguments to (system-flag)"
 msgid "Invalid arguments to (message-location)"
-msgstr "अवैध स्थान"
+msgstr "(प्रणाली-झण्डा) मा अवैध तर्कहरू"
 
 #: ../src/camel/camel-filter-search.c:1261 ../src/camel/camel-filter-search.c:1272
 #, c-format
@@ -2292,7 +2188,7 @@ msgstr ""
 #, fuzzy, c-format
 #| msgid "Could not open folder: %s: %s"
 msgid "Filtering folder “%s : %s”"
-msgstr "फोल्डर मेट्न सकिँदैन: %s: त्यस प्रकारको फोलडर छैन"
+msgstr "%s फिल्टर गर्दैछ"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2301,7 +2197,7 @@ msgstr "फोल्डर मेट्न सकिँदैन: %s: त्य�
 #, fuzzy, c-format
 #| msgid "Cannot get folder: %s: %s"
 msgid "Expunging folder “%s : %s”"
-msgstr "'%s' खाता मेट्दै र भण्डार गर्दै"
+msgstr "त्यस प्रकारको %s फोल्डर छैन"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2385,7 +2281,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1623
+#: ../src/camel/camel-folder-summary.c:1647
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr ""
@@ -2552,7 +2448,7 @@ msgstr "गुप्तीकरण गरिएको सामाग्री"
 #: ../src/camel/camel-junk-filter.c:167
 #, fuzzy
 msgid "Synchronizing junk database"
-msgstr "डाटावेस"
+msgstr "समक्रमण कुञ्जि"
 
 #: ../src/camel/camel-lock.c:111
 #, c-format
@@ -2702,7 +2598,7 @@ msgstr "अफलाइन मोडका लागि नयाँ सन्�
 #, fuzzy, c-format
 #| msgid "Syncing messages in folder '%s' to disk"
 msgid "Storing changes in folder “%s : %s”"
-msgstr "'%s' फोल्डर भण्डार गर्दै"
+msgstr "बचत नगरिएको स्टोरिवोर्ड '%s' परिवर्तन गर्दछ"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2994,13 +2890,13 @@ msgstr ""
 #, fuzzy, c-format
 #| msgid "No support for authentication type %s"
 msgid "No support for %s authentication"
-msgstr "%s प्रमाणीकरण आवश्यक छ"
+msgstr "%s प्रमाणिकरण आवश्यक छ ।"
 
 #: ../src/camel/camel-session.c:527
 #, fuzzy, c-format
 #| msgid "Authentication failed"
 msgid "%s authentication failed"
-msgstr "प्रमाणीकरण असफल ।"
+msgstr "प्रमाणीकरण असफल भयो ।"
 
 #: ../src/camel/camel-session.c:596
 #, fuzzy
@@ -3012,7 +2908,7 @@ msgstr "समर्थित छैन "
 #, fuzzy, c-format
 #| msgid "Cannot find certificate for '%s'"
 msgid "Cannot find certificate for “%s”"
-msgstr "'%s' का लागि प्रमाणपत्र फेला पार्न सक्दैन"
+msgstr "प्रमाणपत्र साङ्लो फेला पार्न सक्दैन"
 
 #: ../src/camel/camel-smime-context.c:374
 msgid "Cannot create CMS message"
@@ -3046,7 +2942,7 @@ msgstr "CMS साइनिङ समय थप्न सक्दैन"
 #, fuzzy, c-format
 #| msgid "Encryption certificate for '%s' does not exist"
 msgid "Encryption certificate for “%s” does not exist"
-msgstr "'%s' का लागि गुप्तीकरण प्रमाणपत्र अवस्थित छैन"
+msgstr "फाइल ‘%s’ अवस्थित छैन ।"
 
 #: ../src/camel/camel-smime-context.c:456
 msgid "Cannot add SMIMEEncKeyPrefs attribute"
@@ -3210,7 +3106,7 @@ msgstr "%s खोल्दा त्रुटि: %s"
 #, fuzzy, c-format
 #| msgid "Scanning for changed messages in %s"
 msgid "Scanning folders in “%s”"
-msgstr "पोरट् खुलाउनका लागि %s स्क्यानिङ गर्दैछ"
+msgstr "[%s] स्क्यान गर्दै %s"
 
 #: ../src/camel/camel-store.c:1723 ../src/camel/camel-store.c:1768
 #: ../src/camel/camel-vtrash-folder.c:48
@@ -3232,26 +3128,27 @@ msgstr "फोल्डर सिर्जना गर्न सकिँदै
 msgid "Creating folder “%s”"
 msgstr "फोल्डर '%s' सिर्जना हुँदैछ..."
 
-#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:422
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "फोल्डर मेट्न सकिँदैन: %s: अवैध सञ्‍‌चालन"
 
-#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:473
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
 msgstr "फोल्डर पुन:नामाकरण गर्न सकिँदैन: %s: अवैध सञ्‍‌चालन"
 
 #: ../src/camel/camel-stream.c:170
+#, fuzzy
 msgid "Cannot write with no base stream"
-msgstr ""
+msgstr "ठेगाना पुस्तिकामा लेख्न सकिँदैन"
 
 #: ../src/camel/camel-stream.c:290 ../src/camel/camel-stream.c:341
 #, fuzzy, c-format
 msgid "Stream type “%s” is not seekable"
-msgstr "प्रकार  (%s)"
+msgstr "%s प्रकार"
 
 #: ../src/camel/camel-stream-filter.c:342
 msgid "Only reset to beginning is supported with CamelStreamFilter"
@@ -3270,7 +3167,7 @@ msgstr "जडान रद्द गरियो"
 #, fuzzy, c-format
 #| msgid "Could not connect with command \"%s\": %s"
 msgid "Could not connect with command “%s”: %s"
-msgstr "\"%s\" आदेशसँग जडान गर्न सकेन: %s"
+msgstr "आदेश '%s' चलाउन सकेन"
 
 #: ../src/camel/camel-subscribable.c:234
 #, fuzzy, c-format
@@ -3280,20 +3177,20 @@ msgstr "फोल्डर मेट्न सकिँदैन: %s: त्य�
 #: ../src/camel/camel-subscribable.c:403
 #, fuzzy, c-format
 msgid "Unsubscribing from folder “%s”"
-msgstr "%s फोल्डरबाट पूर्वावस्थामा ल्याउँदै"
+msgstr "फोल्डर मेट्न सकिँदैन: %s: त्यस प्रकारको फोलडर छैन"
 
 #: ../src/camel/camel-url.c:325
 #, fuzzy, c-format
 #| msgid "Could not parse URL `%s'"
 msgid "Could not parse URL “%s”"
-msgstr "URI '%s' पदवर्णनगर्न सकिएन"
+msgstr "आदेश-रेखा विकल्प पद वर्णन गर्न सकेन: %s\n"
 
-#: ../src/camel/camel-vee-folder.c:498
+#: ../src/camel/camel-vee-folder.c:500
 #, fuzzy, c-format
 msgid "Updating folder “%s”"
-msgstr "त्यस प्रकारको %s फोल्डर छैन"
+msgstr "अद्यावधिक गर्दै..."
 
-#: ../src/camel/camel-vee-folder.c:898 ../src/camel/camel-vee-folder.c:1013
+#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "अवास्तविक फोल्डरमा सन्देश प्रतिलिपि बनाउन वा सार्न सकिँदैन"
@@ -3302,19 +3199,19 @@ msgstr "अवास्तविक फोल्डरमा सन्देश 
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:935
+#: ../src/camel/camel-vee-folder.c:937
 #, fuzzy, c-format
 #| msgid "No such message %s in %s"
 msgid "No such message %s in “%s : %s”"
-msgstr "सन्देश पठाउदा त्रुटि “%s”: %s"
+msgstr "यस बाट सन्देश %s: %s"
 
-#: ../src/camel/camel-vee-folder.c:989
+#: ../src/camel/camel-vee-folder.c:991
 #, fuzzy, c-format
 #| msgid "Error storing `%s': %s"
 msgid "Error storing “%s”: "
-msgstr "'%s' खाता भण्डार गर्दै"
+msgstr "फोल्डरहरू भण्डार गर्दै"
 
-#: ../src/camel/camel-vee-folder.c:1236
+#: ../src/camel/camel-vee-folder.c:1241
 msgid "Automatically _update on change in source folders"
 msgstr ""
 
@@ -3324,22 +3221,22 @@ msgstr ""
 msgid "Unmatched"
 msgstr "अमिल्दो"
 
-#: ../src/camel/camel-vee-store.c:446
+#: ../src/camel/camel-vee-store.c:448
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "फोल्डर मेट्न सकिँदैन: %s: त्यस प्रकारको फोलडर छैन"
 
-#: ../src/camel/camel-vee-store.c:481
+#: ../src/camel/camel-vee-store.c:483
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "फोल्डर पुन:नामाकरण गर्न सकिँदैन: %s: त्यस प्रकारको फोल्डर छैन"
 
-#: ../src/camel/camel-vee-store.c:544
+#: ../src/camel/camel-vee-store.c:546
 #, fuzzy
 msgid "Enable _Unmatched folder"
-msgstr "मेल नखाएको ( अथवा \\("
+msgstr "अमिल्दो"
 
-#: ../src/camel/camel-vee-store.c:1067
+#: ../src/camel/camel-vee-store.c:1073
 #, fuzzy
 msgid "Updating Unmatched search folder"
 msgstr "खोजीबाट खोजी फोल्डर सिर्जना गर्नुहोस्..."
@@ -3409,13 +3306,13 @@ msgstr ""
 #, fuzzy
 #| msgid "Cannot copy messages to the Trash folder"
 msgid "Apply message _filters to this folder"
-msgstr "बहिर्गमन फिल्टर फोल्डर लागू गर्न असफल भयो: %s"
+msgstr "फिल्टरहरू सम्पादन गर्नुहोस्/लागू गर्नुहोस्"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:994
 #, fuzzy
 #| msgid "Only check for Junk messages in the IN_BOX folder"
 msgid "Always check for _new mail in this folder"
-msgstr "मेल भण्डारणकाा लागि एउटा फोल्डर सिर्जना गर्नुहोस्"
+msgstr "एउटा नयाँ मेल फोल्डर सिर्जना गर्नुहोस्"
 
 #: ../src/camel/providers/imapx/camel-imapx-folder.c:1105
 #, fuzzy, c-format
@@ -3427,7 +3324,7 @@ msgstr "कार्य फोल्डर '%s' सिर्जना गर्�
 #, fuzzy, c-format
 #| msgid "Could not create cache file"
 msgid "Could not create cache for %s: "
-msgstr "क्यास बनाउन सकिएन"
+msgstr "क्यास फाइल बनाउन सकिएन"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3440,7 +3337,7 @@ msgstr ""
 #: ../src/camel/providers/imapx/camel-imapx-input-stream.c:102
 #, fuzzy, c-format
 msgid "Source stream returned no data"
-msgstr "कन्फिगरेसन स्रोत डाटाबेसमा दुषित डेटा"
+msgstr "अधिक डेटा फर्काइएको"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:36
 msgid "Checking for New Mail"
@@ -3537,13 +3434,12 @@ msgid "Default IMAP port"
 msgstr "पोर्ट"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:80
-#| msgid "IMAP server %s"
 msgid "IMAP over TLS"
 msgstr "TLS माथि IMAP"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:87
-msgid "IMAP+"
-msgstr "IMAP+"
+msgid "IMAP"
+msgstr "IMAP"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "For reading and storing mail on IMAP servers."
@@ -3553,7 +3449,7 @@ msgstr "IMAP सर्भरहरूमा पत्र पढ्न र भण
 #, fuzzy
 #| msgid "Error writing mail temp file: %s"
 msgid "Error writing to cache stream"
-msgstr "स्ट्रिममा IO त्रुटि"
+msgstr "लेख्नका लागि प्रवाह 'पुस्तिक' खोल्न सकेन\n"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2815
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2903
@@ -3561,7 +3457,7 @@ msgstr "स्ट्रिममा IO त्रुटि"
 #, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to get capabilities"
-msgstr "कन्फिग सर्भरका लागि वस्तु सन्दर्भ प्राप्त गर्न असफल भयो"
+msgstr "होस्टनाम प्राप्त गर्न असफल: %s\n"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2834
 #, c-format
@@ -3605,7 +3501,7 @@ msgstr "प्रयोगकर्ता नाम '-' बाट सुरु �
 #, fuzzy
 #| msgid "Authentication failed"
 msgid "Authentication password not available"
-msgstr "पासवर्ड प्रमाणीकरण बाइपास गरियो ।\n"
+msgstr "\"vnc\" प्रमाणीकरणका लागि पासवर्ड आवश्यक पर्दछ"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3034
 msgid "Failed to authenticate"
@@ -3632,7 +3528,7 @@ msgstr "असफल"
 #, fuzzy
 #| msgid "Failed to execute gpg."
 msgid "Failed to select mailbox"
-msgstr "मेल बक्सलाई पुन:नामकरण गर्न असफल भयो"
+msgstr "पत्रमञ्जूषा फेला पार्न असफल"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3818
 msgid "Cannot issue command, no stream available"
@@ -3656,7 +3552,7 @@ msgstr "यो सन्देश हाल उपलब्ध छैन"
 #, fuzzy
 #| msgid "Encrypting message"
 msgid "Error fetching message"
-msgstr "लिएर आउँदै"
+msgstr "IMAP सर्भबाट सन्देश तान्दा त्रुटि: %s"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4162
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4763
@@ -3690,13 +3586,13 @@ msgstr "सन्देशहरू प्रतिलिपि गर्दा 
 #, fuzzy
 #| msgid "Cannot create message: %s"
 msgid "Cannot create spool file: "
-msgstr "स्पुल पत्र फाइल %s"
+msgstr "अस्थाई फाइल सिर्जना गर्न सकिँदैन"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4663
 #, fuzzy
 #| msgid "Sending message"
 msgid "Error appending message"
-msgstr "चयन गरिएको बाटोमा थप गर्दै"
+msgstr "सन्देश %d थप गर्दा त्रुटि %s बाट %s: %s"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3710,7 +3606,7 @@ msgstr "%s: नयाँ सन्देशहरू स्क्यान ग�
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4920
 #, fuzzy
 msgid "Error scanning changes"
-msgstr "सीडी स्क्यानमा त्रुटि देखियो"
+msgstr "स्क्यान गर्दै"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -3737,13 +3633,13 @@ msgstr "'%s' चलाउदा त्रुटि"
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5613
 #, fuzzy
 msgid "Error syncing changes"
-msgstr "समक्रमण गर्दा त्रुटि: %s\n"
+msgstr "परिवर्तनहरु"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5751
 #, fuzzy
 #| msgid "Expunging old messages"
 msgid "Error expunging message"
-msgstr "सन्देश पठाउदा त्रुटि: %s"
+msgstr "त्रुटि सन्देश सङ्केतन शैली:"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5823
 #, fuzzy
@@ -3761,7 +3657,7 @@ msgstr "सदस्यता फोल्डरहरू मात्र दे
 #, fuzzy
 #| msgid "Storing folder"
 msgid "Error creating folder"
-msgstr "'%s' फोल्डर सिर्जना गर्दा त्रुटि: %s"
+msgstr "एसएसएच सुरूङ्ग सिर्जना गर्दा त्रुटि"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5912
 #, fuzzy
@@ -3773,19 +3669,19 @@ msgstr "मेट्दा त्रुटि भयो ।"
 #, fuzzy
 #| msgid "Storing folder"
 msgid "Error renaming folder"
-msgstr "फाइल \"%s\" पुन: नामाकरण गर्दा त्रुटि: %s"
+msgstr "फाइलहरू पुन नामाकरणमा एउटा त्रुटि देखा पर्यो ।"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:5990
 #, fuzzy
 #| msgid "_Show only subscribed folders"
 msgid "Error subscribing to folder"
-msgstr "'%s' फोल्डर सिर्जना गर्दा त्रुटि: %s"
+msgstr "त्रुटि:"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6026
 #, fuzzy
 #| msgid "Cannot unsubscribe from folder `%s': Bad command"
 msgid "Error unsubscribing from folder"
-msgstr "%s फोल्डरबाट पूर्वावस्थामा ल्याउँदै"
+msgstr "खोजीबाट खोजी फोल्डर सिर्जना गर्नुहोस्..."
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6066
 #, fuzzy
@@ -3809,7 +3705,9 @@ msgstr ""
 #, fuzzy
 #| msgid "Decoder failed"
 msgid "Search failed"
-msgstr "कुञ्जि खोजी असफल भयो"
+msgstr ""
+"IMAP SEARCH आदेश पत्रमञ्जूषाका लागि असफल भयो %s\n"
+"पूर्वनिर्धारित खोजी विधिमा फर्किँदैछ"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
 #: ../src/camel/providers/imapx/camel-imapx-server.c:6243
@@ -3901,7 +3799,6 @@ msgid "Draft"
 msgstr "ड्राफ्ट"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2562
-#, fuzzy
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "टेम्प्लेटहरू"
@@ -3937,9 +3834,10 @@ msgid "Sent Messages"
 msgstr "पठाइएको सन्देशहरूको फोल्डर:"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2574
+#, fuzzy
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
-msgstr ""
+msgstr "[Gmail]/रद्दीटोकरी"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2575
 msgctxt "IMAPDefaults"
@@ -3966,7 +3864,7 @@ msgstr "स्थानीय स्पाम परीक्षणहरू म
 #, fuzzy
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
-msgstr "मेल छैन।"
+msgstr "पत्र"
 
 #: ../src/camel/providers/imapx/camel-imapx-store.c:2582
 msgctxt "IMAPDefaults"
@@ -4167,7 +4065,7 @@ msgstr "`%s' फोल्डर मेटा फाइल मेट्न सक
 #, fuzzy, c-format
 #| msgid "Could not rename '%s': %s"
 msgid "Could not rename “%s”: %s"
-msgstr "'%s' पुन नामाकरण गर्न सकेन: %s"
+msgstr "फाइल '%s' '%s'मा पुन: नामकरण गर्न सकेन"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
 #: ../src/camel/providers/local/camel-maildir-folder.c:344
@@ -4193,7 +4091,7 @@ msgstr "पत्र डाइरेक्टरी फोल्डरमा स
 #| "Cannot get message: %s from folder %s\n"
 #| "  %s"
 msgid "Cannot get message %s from folder %s: "
-msgstr "सन्देश प्राप्त गर्न सकिँदैन %s: %s"
+msgstr "फोल्डर प्राप्त गर्न सकिँदैन: %s: %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:362
 #, fuzzy, c-format
@@ -4206,35 +4104,29 @@ msgstr "पत्र डाइरेक्टरी फोल्डरमा स
 #, fuzzy, c-format
 #| msgid "Cannot get folder container %s"
 msgid "Cannot create folder containing “%s”"
-msgstr "फोल्डर सिर्जना गर्न सकिँदैन: %s: फोल्डर अवस्थित छ"
+msgstr "फोल्डर '%s' सिर्जना गर्न सकिँदैन: %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:137
 #: ../src/camel/providers/local/camel-maildir-store.c:156
 #: ../src/camel/providers/local/camel-maildir-store.c:921
-#, fuzzy, c-format
-#| msgid "Folder already exists"
+#, c-format
 msgid "Folder %s already exists"
-msgstr ""
-"\"%s\" नाम गरेको एउटा फोलडर पहिल्यै अवस्थित छ ।\n"
-"\n"
-"%s"
+msgstr "फोल्डर %s पहिले नै अवस्थित छ"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:264
 #: ../src/camel/providers/local/camel-maildir-store.c:295
 #: ../src/camel/providers/local/camel-mbox-store.c:399
 #: ../src/camel/providers/local/camel-mbox-store.c:420
-#, fuzzy, c-format
-#| msgid "Cannot create folder: %s: %s"
+#, c-format
 msgid "Cannot create folder “%s”: %s"
 msgstr "फोल्डर '%s' सिर्जना गर्न सकिँदैन: %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:279
 #: ../src/camel/providers/local/camel-mbox-store.c:365
 #: ../src/camel/providers/local/camel-mh-store.c:519
-#, fuzzy, c-format
-#| msgid "Cannot get folder: %s: %s"
+#, c-format
 msgid "Cannot get folder “%s”: %s"
-msgstr "फोल्डर प्राप्त गर्न सकिँदैन: %s: %s"
+msgstr "फोल्डर “%s” प्राप्त गर्न सकिँदैन: %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:285
 #: ../src/camel/providers/local/camel-mbox-store.c:375
@@ -4242,10 +4134,7 @@ msgstr "फोल्डर प्राप्त गर्न सकिँदै
 #, fuzzy, c-format
 #| msgid "Cannot get folder `%s': folder does not exist."
 msgid "Cannot get folder “%s”: folder does not exist."
-msgstr ""
-"\"%s\" गन्तब्य फोल्डर अवस्थित छैन ।\n"
-"\n"
-"तपाईँ यसलाई सिर्जना गर्न चाहनुहुन्छ?"
+msgstr "फोल्डर प्राप्त गर्न सकिँदैन: %s: %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:312
 #, fuzzy, c-format
@@ -4256,10 +4145,9 @@ msgstr "पत्र डाइरेक्टरी मार्ग खोल्
 #: ../src/camel/providers/local/camel-maildir-store.c:376
 #: ../src/camel/providers/local/camel-maildir-store.c:416
 #: ../src/camel/providers/local/camel-mh-store.c:672
-#, fuzzy, c-format
-#| msgid "Could not delete folder `%s': %s"
+#, c-format
 msgid "Could not delete folder “%s”: %s"
-msgstr "फोल्डर मेट्न सकिँदैन: %s: त्यस प्रकारको फोलडर छैन"
+msgstr "फोल्डर  “%s” मेट्न सकिँदैन: %s"
 
 #: ../src/camel/providers/local/camel-maildir-store.c:378
 msgid "not a maildir directory"
@@ -4269,26 +4157,25 @@ msgstr "पत्र डाइरेक्टरी होइन"
 #: ../src/camel/providers/local/camel-maildir-store.c:1144
 #: ../src/camel/providers/local/camel-spool-store.c:210
 #: ../src/camel/providers/local/camel-spool-store.c:229
-#, fuzzy, c-format
-#| msgid "Could not scan folder `%s': %s"
+#, c-format
 msgid "Could not scan folder “%s”: %s"
-msgstr "फोल्डर खोल्न सकेन: %s: %s"
+msgstr "फोल्डर “%s” स्क्यान गर्न सकेन: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:448
-#: ../src/camel/providers/local/camel-maildir-summary.c:589
+#: ../src/camel/providers/local/camel-maildir-summary.c:457
+#: ../src/camel/providers/local/camel-maildir-summary.c:596
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "पत्र डाइरेक्टरी मार्ग खोल्न सकिँदैन: %s: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:580
+#: ../src/camel/providers/local/camel-maildir-summary.c:587
 msgid "Checking folder consistency"
 msgstr "फोल्डर अनुकुलता जाँच गर्दै"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:679
+#: ../src/camel/providers/local/camel-maildir-summary.c:709
 msgid "Checking for new messages"
 msgstr "नयाँ सन्देशहरुका लागि जाँच गर्दै"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:782
+#: ../src/camel/providers/local/camel-maildir-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
 #: ../src/camel/providers/local/camel-mbox-summary.c:585
 #: ../src/camel/providers/local/camel-mbox-summary.c:739
@@ -4334,7 +4221,7 @@ msgstr "फोल्डर प्राप्त गर्न सकिँदै
 #, fuzzy, c-format
 #| msgid "Cannot create directory `%s': %s."
 msgid "Cannot create directory “%s”: %s."
-msgstr "%s: डाइरेकट्री सिर्जना गर्न सकिएन %s\n"
+msgstr "डाइरेक्टरी '%s' सिर्जना सकिंदैन"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:606
 #, c-format
@@ -4348,14 +4235,16 @@ msgstr "फोल्डर पहिले नै अवस्थित छ"
 #: ../src/camel/providers/local/camel-mbox-store.c:648
 #: ../src/camel/providers/local/camel-mbox-store.c:661
 #: ../src/camel/providers/local/camel-mbox-store.c:690
-#, fuzzy, c-format
+#, c-format
 #| msgid ""
 #| "Could not delete folder `%s':\n"
 #| "%s"
 msgid ""
 "Could not delete folder “%s”:\n"
 "%s"
-msgstr "फोल्डर मेट्न सकिँदैन: %s: त्यस प्रकारको फोलडर छैन"
+msgstr ""
+"फोल्डर  “%s” मेट्न सकिँदैन: \n"
+"%s"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:671
 #, fuzzy, c-format
@@ -4367,7 +4256,7 @@ msgstr "'%s' नियमित फाइल होइन"
 #, fuzzy, c-format
 #| msgid "Folder `%s' is not empty. Not deleted."
 msgid "Folder “%s” is not empty. Not deleted."
-msgstr "%s: रित्तो"
+msgstr "\"%s\" मेटियो"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:707
 #: ../src/camel/providers/local/camel-mbox-store.c:722
@@ -4385,7 +4274,7 @@ msgstr "नयाँ फोल्डरको नाम अवैधानिक
 #, fuzzy, c-format
 #| msgid "Could not rename `%s': `%s': %s"
 msgid "Could not rename “%s”: “%s”: %s"
-msgstr "'%s' लाई %s पुन नामाकरण गर्न सकेन: %s"
+msgstr "फाइल '%s' '%s'मा पुन: नामकरण गर्न सकेन"
 
 #: ../src/camel/providers/local/camel-mbox-summary.c:377
 #, c-format
@@ -4488,13 +4377,13 @@ msgstr "एमएच डाइरेक्टरी मार्ग खोल्
 #, fuzzy, c-format
 #| msgid "Spool `%s' cannot be opened: %s"
 msgid "Spool “%s” cannot be opened: %s"
-msgstr "स्पुल फोल्डर ट्रि %s"
+msgstr "कार्य फाइल %s खोलियो\n"
 
 #: ../src/camel/providers/local/camel-spool-store.c:107
 #, fuzzy, c-format
 #| msgid "Spool `%s' is not a regular file or directory"
 msgid "Spool “%s” is not a regular file or directory"
-msgstr "%s भण्डार मूल एउटा नीयमित डाइरेक्टरी होइन"
+msgstr "स्पुल पत्र फाइल %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:422
 #, c-format
@@ -4507,35 +4396,29 @@ msgid "Spool folder tree %s"
 msgstr "स्पुल फोल्डर ट्रि %s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:429
-#, fuzzy
-#| msgid "Invalid purpose"
 msgid "Invalid spool"
-msgstr "स्पुल पत्र फाइल %s"
+msgstr "अवैध स्पुल"
 
 #: ../src/camel/providers/local/camel-spool-store.c:478
 #, fuzzy, c-format
 #| msgid "Folder `%s/%s' does not exist."
 msgid "Folder “%s/%s” does not exist."
-msgstr "सर्टकट %s अवस्थित छैन"
+msgstr "फाइल ‘%s’ अवस्थित छैन ।"
 
 #: ../src/camel/providers/local/camel-spool-store.c:491
-#, fuzzy, c-format
-#| msgid ""
-#| "Could not open folder `%s':\n"
-#| "%s"
+#, c-format
 msgid ""
 "Could not open folder “%s”:\n"
 "%s"
-msgstr "फोल्डर खोल्न सकेन: %s: %s"
+msgstr ""
+"फोल्डर खोल्न सकेन “%s”:\n"
+"%s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:497
 #, fuzzy, c-format
 #| msgid "Folder `%s' does not exist."
 msgid "Folder “%s” does not exist."
-msgstr ""
-"\"%s\" गन्तब्य फोल्डर अवस्थित छैन ।\n"
-"\n"
-"तपाईँ यसलाई सिर्जना गर्न चाहनुहुन्छ?"
+msgstr "फोल्डर अवस्थित छैन ।"
 
 #: ../src/camel/providers/local/camel-spool-store.c:505
 #, fuzzy, c-format
@@ -4551,7 +4434,7 @@ msgstr "कार्य फोल्डर '%s' सिर्जना गर्�
 #, fuzzy, c-format
 #| msgid "`%s' is not a mailbox file."
 msgid "“%s” is not a mailbox file."
-msgstr "मेल बाकस फाइल अनुमतिहरू मिलाउदै"
+msgstr "पत्रमञ्जूषा %s का लागि क्यास फाइल सिर्जना गरिनेछ"
 
 #: ../src/camel/providers/local/camel-spool-store.c:582
 #, c-format
@@ -4666,7 +4549,7 @@ msgstr ""
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:57
 #, fuzzy
 msgid "Default NNTP port"
-msgstr "पोर्ट:"
+msgstr "TLS माथि NNTP"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:58
 msgid "NNTP over TLS"
@@ -4892,7 +4775,7 @@ msgstr "सबै सेल विस्तारहरू असक्षम �
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:52
 #, fuzzy
 msgid "Default POP3 port"
-msgstr "पोर्ट:"
+msgstr "TLS माथि POP3"
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:53
 msgid "POP3 over TLS"
@@ -4975,7 +4858,7 @@ msgstr "POP3 सर्भर %s"
 #, fuzzy, c-format
 #| msgid "IMAP service for %s on %s"
 msgid "POP3 server for %s on %s"
-msgstr "सर्भरसँग सञ्चार गर्न सकेन '%s': %s"
+msgstr "POP3 सर्भर %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:700
 #: ../src/camel/providers/pop3/camel-pop3-store.c:713
@@ -5049,7 +4932,7 @@ msgstr "पत्र पठाउनुहोस् कार्यक्रम 
 #, fuzzy, c-format
 #| msgid "Failed to retrieve message"
 msgid "Failed to read From address"
-msgstr "अस्थायी फाइलबाट पढ्न असफल"
+msgstr "ठेगाना पुस्तिकाबाट पढ्न सकिँदैन"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:154
 #, fuzzy, c-format
@@ -5063,10 +4946,9 @@ msgid "Could not parse recipient list"
 msgstr "प्रापक सूची पद वर्णन गर्न सकेन"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:199
-#, fuzzy, c-format
-#| msgid "Could not parse recipient list"
+#, c-format
 msgid "Could not parse arguments"
-msgstr "%sतर्कहरू पार्स गर्न असफल\n"
+msgstr "तर्क पदवर्णन गर्न सकेन"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:215
 #, fuzzy, c-format
@@ -5096,7 +4978,7 @@ msgstr "पठाउने पत्र %s संकेतसँग बाहि
 #, fuzzy, c-format
 #| msgid "Could not execute %s: mail not sent."
 msgid "Could not execute “%s”: mail not sent."
-msgstr "अस्थायी %s पत्र फाइल खोल्न सकेन: %s"
+msgstr "%s लाई कार्यान्वयन गर्न सकेन (एक्सएनिम स्थापना गरिएको छ कि छैन जाँच गर्नुहोस्)"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:358
 #, fuzzy, c-format
@@ -5144,7 +5026,7 @@ msgstr "सुरक्षित मोडमा %s एसएमटीपी स
 #, fuzzy
 #| msgid "STARTTLS command failed: %s"
 msgid "STARTTLS command failed: "
-msgstr "निर्माण आदेश '%s' असफल भयो ।\n"
+msgstr "BEGIN आदेश असफल %s।"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:326
 #, fuzzy, c-format
@@ -5169,15 +5051,15 @@ msgid "SMTP server %s does not support %s authentication"
 msgstr "%s एसएमटीपी सर्भरले अनुरोध गरिएको प्रमाणीकरण प्रकार %s गर्दैन ।"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:661
-#, c-format
+#, fuzzy, c-format
 msgid "No SASL mechanism was specified"
-msgstr ""
+msgstr "तन्त्र"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:697
 #, fuzzy
 #| msgid "AUTH command failed: %s"
 msgid "AUTH command failed: Not connected."
-msgstr "अनप्याक आदेश '%s' असफल भयो ।\n"
+msgstr "माउन्ट आदेश कार्यान्वयन गर्न असफल"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:704
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:718
@@ -5325,20 +5207,22 @@ msgstr "एसएसएच आदेश असफल भयो ।"
 #, fuzzy
 #| msgid "MAIL FROM command failed"
 msgid "MAIL FROM command failed: "
-msgstr "इ एल एम बाट मेल आयात गर्दैछ ।"
+msgstr "पत्र मेटाइ असफल भयो"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1570
 #, fuzzy
 #| msgid "RSET command failed: %s"
 msgid "RCPT TO command failed: "
-msgstr "एसएसएच आदेश असफल भयो ।"
+msgstr "BEGIN आदेश असफल %s।"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1586
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1595
 #, fuzzy, c-format
 #| msgid "RCPT TO <%s> failed"
 msgid "RCPT TO <%s> failed: "
-msgstr "%s: %s तान्न असफल भयो"
+msgstr ""
+"%s को %s मा पुन: नामकरण असफल:\n"
+"%s"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1669
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1680
@@ -5371,12 +5255,12 @@ msgstr "एसएसएच आदेश असफल भयो ।"
 #: ../data/org.gnome.evolution-data-server.addressbook.gschema.xml.in.h:1
 #, fuzzy
 msgid "Contact UID of a user"
-msgstr "UID"
+msgstr "पूस्तिका UID"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 #, fuzzy
 msgid "Birthday and anniversary reminder"
-msgstr "जन्म दिवस:"
+msgstr "जन्मदिन"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
@@ -5457,7 +5341,7 @@ msgstr ""
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 #, fuzzy
 msgid "(Deprecated) Proxy type to use"
-msgstr "छायाँ प्रकारका सट्टामा प्रयोग गरिने असहमत विशेषता"
+msgstr "प्रयोगका लागि अडियो निर्गतको प्रकार"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:2
 msgid ""
@@ -5494,7 +5378,7 @@ msgstr "अस्थायी प्रमाणीकरण असफल"
 #, fuzzy
 #| msgid "Temporary authentication failure"
 msgid "(Deprecated) Proxy authentication password"
-msgstr "प्रोक्सी प्रमाणिकरण आवश्यक"
+msgstr "\"vnc\" प्रमाणीकरणका लागि पासवर्ड आवश्यक पर्दछ"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:9
 msgid "(Deprecated) List of hosts to connect to without proxy"
@@ -5550,7 +5434,7 @@ msgstr ""
 #: ../src/libebackend/e-server-side-source.c:142
 #, fuzzy, c-format
 msgid "Data source is missing a [%s] group"
-msgstr "केही फाइलहरू प्याकेज फाइल समूह `%s' मा हराइरहेको छ"
+msgstr "डेटा स्रोत %s कन्फिगरेसनमा पाइएन"
 
 #: ../src/libebackend/e-server-side-source.c:467
 #, fuzzy
@@ -5586,9 +5470,9 @@ msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "%s आईएमएपी सर्भरले अनुरोध गरिएको प्रमाणिकरण %s प्रकारलाई समर्थन गर्दैन"
 
 #: ../src/libebackend/e-server-side-source.c:1857
-#, c-format
+#, fuzzy, c-format
 msgid "File must have a “.source” extension"
-msgstr ""
+msgstr "फाइलको नाम हुनुपर्दछ"
 
 #: ../src/libebackend/e-source-registry-server.c:320
 #, fuzzy, c-format
@@ -5603,7 +5487,7 @@ msgstr ""
 #: ../src/libebackend/e-subprocess-factory.c:289
 #, fuzzy, c-format
 msgid "No such source for UID “%s”"
-msgstr "UID"
+msgstr "%s युआइडीसँग कुनै सन्देश छैन"
 
 #: ../src/libebackend/e-subprocess-factory.c:300
 #, c-format
@@ -5613,7 +5497,7 @@ msgstr ""
 #: ../src/libebackend/e-user-prompter-server.c:303
 #, fuzzy, c-format
 msgid "Extension dialog “%s” not found."
-msgstr "%s फेला परेन"
+msgstr "'%s' बाट विस्तार पढ्न सकिँदैन"
 
 #: ../src/libedataserver/e-categories.c:47
 msgctxt "CategoryName"
@@ -5683,7 +5567,7 @@ msgstr "अन्तर्राष्ट्रिय"
 #| msgid "Key Customer"
 msgctxt "CategoryName"
 msgid "Key Customer"
-msgstr "no_key"
+msgstr "कुञ्जी प्रतिध्वनि कुञ्जी कायम गरियो"
 
 #: ../src/libedataserver/e-categories.c:61
 msgctxt "CategoryName"
@@ -5753,15 +5637,12 @@ msgid "Offline unavailable"
 msgstr "अफलाइन"
 
 #: ../src/libedataserver/e-client.c:179
-#, fuzzy
-#| msgid "parse error"
 msgid "D-Bus error"
-msgstr "बस त्रुटि"
+msgstr "डि-बस त्रुटि"
 
 #: ../src/libedataserver/e-client.c:2021
-#, fuzzy
 msgid "Timeout was reached"
-msgstr "समय समाप्तिसम्म पुग्यो"
+msgstr "समय समाप्ति"
 
 #: ../src/libedataserver/e-soup-session.c:144
 #, fuzzy
@@ -5777,22 +5658,22 @@ msgstr "सञ्चालन रद्द भएको छ"
 #, fuzzy, c-format
 #| msgid "Failed to cache %s: %s"
 msgid "Failed with HTTP error %d: %s"
-msgstr "पासवर्ड: pam_start() असफल भयो, त्रुटि %d\n"
+msgstr "%s खोल्न असफल। इर्रनो = %d, "
 
 #: ../src/libedataserver/e-source.c:775
 #, fuzzy, c-format
 msgid "Source file is missing a [%s] group"
-msgstr "केही फाइलहरू प्याकेज फाइल समूह `%s' मा हराइरहेको छ"
+msgstr "हराइरहेको खालि स्थान. फाइल '%s'"
 
 #: ../src/libedataserver/e-source.c:1379
 #, fuzzy, c-format
 msgid "Data source “%s” is not removable"
-msgstr "%s हटाउन मिल्ने भोल्युम"
+msgstr "हटाउन सकिने उपकरणहरूको डेटा स्थायीता सीमा"
 
 #: ../src/libedataserver/e-source.c:1502
 #, fuzzy, c-format
 msgid "Data source “%s” is not writable"
-msgstr "डेटा स्रोत प्रकार"
+msgstr "डेटा स्रोत %s कन्फिगरेसनमा पाइएन"
 
 #: ../src/libedataserver/e-source.c:2198
 msgid "Unnamed"
@@ -5802,7 +5683,7 @@ msgstr "बेनामी"
 #, fuzzy
 #| msgid "Protocol not supported"
 msgid "Credentials lookup is not supported"
-msgstr "रेखदेख"
+msgstr "प्रकार्य खोजी गर्नुहोस्"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl.c:52
 #, fuzzy
@@ -5822,7 +5703,7 @@ msgstr "समर्थित छैन "
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:240
 #, fuzzy, c-format
 msgid "Source “%s” (%s) is not a valid Google source"
-msgstr "\"%s\" स्रोत लोड गर्न असफल भयो: %s"
+msgstr "नयाँ क्लोन स्रोत सेट गर्न %s"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:157
 #, fuzzy
@@ -5837,7 +5718,7 @@ msgstr "गुगल"
 #, fuzzy
 #| msgid "Operation not supported"
 msgid "Google authentication is not supported"
-msgstr "समर्थित छैन "
+msgstr "गुगल"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:400
 msgid "Failed to get Google secret from credentials"
@@ -5867,10 +5748,8 @@ msgid "Failed to refresh token"
 msgstr "पहुँच टोकन ताजा गर्न असफल (%s, %d): "
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-password.c:79
-#, fuzzy
-#| msgid "Password"
 msgid "Password not found"
-msgstr "पासवर्ड"
+msgstr "पासवर्ड भेटिएन"
 
 #: ../src/libedataserver/e-source-mail-signature.c:483
 #, c-format
@@ -6037,7 +5916,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:966
 #, fuzzy, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr "%s एनएनटीपी सर्भरले %d त्रुटि संकेत फर्कायो: %s"
+msgstr "कार्यक्रम त्रुटि सङ्केत %s सहित निस्कियो\n"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
@@ -6046,7 +5925,7 @@ msgstr "%s एनएनटीपी सर्भरले %d त्रुटि 
 #, fuzzy, c-format
 #| msgid "Failed to cache %s: %s"
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr "उपप्रक्रियाहरू %s पर्खने स्थिति कोड %d सँग असफल भयो"
+msgstr "%s एनएनटीपी सर्भरले %d त्रुटि संकेत फर्कायो: %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -6062,13 +5941,13 @@ msgstr "कार्यक्रम त्रुटि सङ्केत %s स
 #: ../src/libedataserver/e-webdav-session.c:995
 #, fuzzy, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr "उपप्रक्रियाहरू %s पर्खने स्थिति कोड %d सँग असफल भयो"
+msgstr "%s एनएनटीपी सर्भरले %d त्रुटि संकेत फर्कायो: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:1245
 #, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to post data"
-msgstr "छवि डेटा लोड गर्न असफल"
+msgstr "डेटा सङ्केतन गर्न असफल भयो"
 
 #: ../src/libedataserver/e-webdav-session.c:1338 ../src/libedataserver/e-webdav-session.c:1413
 #: ../src/libedataserver/e-webdav-session.c:1517 ../src/libedataserver/e-webdav-session.c:2698
@@ -6082,13 +5961,13 @@ msgstr "डेटा सङ्केतन गर्न असफल भयो"
 #, fuzzy
 #| msgid "Failed to retrieve message"
 msgid "Failed to get properties"
-msgstr "ताल्चा प्राप्त गर्न असफल भयो"
+msgstr "होस्टनाम प्राप्त गर्न असफल: %s\n"
 
 #: ../src/libedataserver/e-webdav-session.c:1423
 #, fuzzy
 #| msgid "Failed to authenticate.\n"
 msgid "Failed to update properties"
-msgstr "अद्यावधिक सहि तरिकाले स्थापना गर्न असफल भयो।"
+msgstr "अद्यावधिक गर्न असफल भयो"
 
 #: ../src/libedataserver/e-webdav-session.c:1527
 #, fuzzy
@@ -6118,13 +5997,13 @@ msgstr "एउटा नयाँ ठेगाना पुस्तिका �
 #, fuzzy
 #| msgid "Unable to create cache path"
 msgid "Failed to create calendar"
-msgstr "एउटा नयाँ पात्रो सिर्जना गर्नुहोस्"
+msgstr "खाली पात्रो सिर्जना गर्नुहोस्"
 
 #: ../src/libedataserver/e-webdav-session.c:1976 ../src/libedataserver/e-webdav-session.c:1987
 #, fuzzy
 #| msgid "Failed to retrieve message"
 msgid "Failed to read resource"
-msgstr "सम्पूर्ण स्रोत क्यास गर्न असफल भयो"
+msgstr "डी बी एफ शीर्षक पढ्न असफल"
 
 #: ../src/libedataserver/e-webdav-session.c:2136
 msgid "Cannot rewind input stream: Not supported"
@@ -6146,24 +6025,24 @@ msgstr "सङ्केतकमा डेटा थप्न असफल भ�
 #, fuzzy
 #| msgid "Failed to retrieve message"
 msgid "Failed to delete resource"
-msgstr "सम्पूर्ण स्रोत क्यास गर्न असफल भयो"
+msgstr "सम्पर्क मेट्न असफल भयो"
 
 #: ../src/libedataserver/e-webdav-session.c:2542
 #, fuzzy
 msgid "Failed to copy resource"
-msgstr "प्रतिलिपी गर्दा असफल भयो ।"
+msgstr " फाइल प्रतिलिपी गर्दा असफल भयो ।"
 
 #: ../src/libedataserver/e-webdav-session.c:2604
 #, fuzzy
 #| msgid "Failed to retrieve message"
 msgid "Failed to move resource"
-msgstr "सम्पूर्ण स्रोत क्यास गर्न असफल भयो"
+msgstr "रद्दीटोकरीमा सार्न असफल: %s"
 
 #: ../src/libedataserver/e-webdav-session.c:2709
 #, fuzzy
 #| msgid "Failed to get lock using flock(2): %s"
 msgid "Failed to lock resource"
-msgstr "सम्पूर्ण स्रोत क्यास गर्न असफल भयो"
+msgstr "संसाधन"
 
 #: ../src/libedataserver/e-webdav-session.c:2723 ../src/libedataserver/e-webdav-session.c:2925
 msgid "Expected application/xml response, but none returned"
@@ -6178,13 +6057,13 @@ msgstr ""
 #, fuzzy
 #| msgid "Failed to encode data"
 msgid "Failed to parse XML data"
-msgstr "XML फाइल \"%s\" पार्स गर्न असफल"
+msgstr "चयनको पाठलाई डेटामा पद वर्णन गर्नुहोस्"
 
 #: ../src/libedataserver/e-webdav-session.c:2817
 #, fuzzy
 #| msgid "Failed to retrieve message"
 msgid "Failed to refresh lock"
-msgstr "ताल्चा प्राप्त गर्न असफल भयो"
+msgstr "ताजा पार्नुहोस्"
 
 #: ../src/libedataserver/e-webdav-session.c:2876
 #, fuzzy
@@ -6201,7 +6080,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get access control list"
-msgstr "fcntl(2) प्रयोग गरेर बन्द गर्न असफल भयो: %s"
+msgstr "स्रोत सूची प्राप्त गर्न असफल भयो"
 
 #: ../src/libedataserver/e-webdav-session.c:4697
 msgid "Cannot store protected nor inherited Access Control Entry."
@@ -6232,7 +6111,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter.c:1620
 #, fuzzy
 msgid "Credentials prompt was cancelled"
-msgstr "रद्द भयो"
+msgstr "सञ्जाल प्रमाणपत्र"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:662
 #, c-format
@@ -6336,19 +6215,19 @@ msgstr "_रद्द गर्नुहोस्"
 #, fuzzy
 #| msgid "Authentication required"
 msgid "Address book authentication request"
-msgstr "प्राथमिक ठेगाना पुस्तिका"
+msgstr "ठेगाना पुस्तिकामा फेला पार्न सकिँदैन"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:137
 #, fuzzy
 #| msgid "Authentication required"
 msgid "Calendar authentication request"
-msgstr "पात्रो:"
+msgstr "एउटा पात्रो होइन "
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:141
 #, fuzzy
 #| msgid "Authentication required"
 msgid "Mail authentication request"
-msgstr "पत्राचार"
+msgstr "प्रमाणीकरण"
 
 #. generic account prompt
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:144
@@ -6367,7 +6246,7 @@ msgstr "%s कृपया %s होस्टमा %s लागि पप प�
 #, fuzzy, c-format
 #| msgid "Please enter the NNTP password for %s@%s"
 msgid "Please enter the password for calendar “%s”."
-msgstr "पासवर्ड प्रवेश गर्नुहोस्"
+msgstr "कृपया यो प्रयोगकर्ताका लागि पासवर्ड प्रविष्ट गर्नुहोस् ।"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
 #, fuzzy, c-format
@@ -6397,7 +6276,7 @@ msgstr "%s कृपया %s होस्टमा %s लागि पप प�
 #, fuzzy, c-format
 #| msgid "%sPlease enter the POP password for %s on host %s"
 msgid "Please enter the password for account “%s”."
-msgstr "%s PIN वा पासवर्ड प्रविष्टि गर्नुहोस्"
+msgstr "कृपया यो प्रयोगकर्ताका लागि पासवर्ड प्रविष्ट गर्नुहोस् ।"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1065
@@ -6416,7 +6295,7 @@ msgstr "पासवर्ड:"
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:369
 #, fuzzy
 msgid "_Add this password to your keyring"
-msgstr "किरिङ पासवर्ड परिवर्तन गर्नुहोस्"
+msgstr " पासवर्ड किरिङ्गमा थपनुहोस्"
 
 #: ../src/libedataserverui/e-trust-prompt.c:111
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:117
@@ -6428,13 +6307,13 @@ msgstr "इमेल प्रमाणपत्र विश्वास से
 #: ../src/libedataserverui/e-trust-prompt.c:113
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:118
 msgid "_Reject"
-msgstr ""
+msgstr "अस्विकार गर्नुहोस्"
 
 #: ../src/libedataserverui/e-trust-prompt.c:114
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:119
 #, fuzzy
 msgid "Accept _Temporarily"
-msgstr "स्वीकार गर्नुहोस्"
+msgstr "अस्थायी रूपमा अनुपलब्ध"
 
 #: ../src/libedataserverui/e-trust-prompt.c:115
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:120
@@ -6469,7 +6348,7 @@ msgstr "कारण:"
 #, fuzzy
 #| msgid "Decoder failed, error %d"
 msgid "Detailed error:"
-msgstr "बिस्तृत सूचना"
+msgstr "ट्रे स्तम्भ, विवरण"
 
 #: ../src/libedataserverui/e-trust-prompt.c:273
 #: ../src/modules/trust-prompt/module-trust-prompt.c:80
@@ -6515,7 +6394,7 @@ msgstr ""
 #, fuzzy
 #| msgid "sendmail"
 msgid "_User mail:"
-msgstr "पत्राचार"
+msgstr "पत्र"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:521
 msgctxt "WebDAVDiscover"
@@ -6547,7 +6426,7 @@ msgstr "अवैध यूआरएल"
 #, fuzzy
 #| msgid "User canceled"
 msgid "User name not filled"
-msgstr "अवैध प्रयोगकर्ता नाम '%s'\n"
+msgstr "प्रयोगकर्ता नाम (बाइन्ड DN)"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:881
 msgid "Cancel"
@@ -6557,7 +6436,7 @@ msgstr "रद्द गर्ने"
 #, fuzzy
 #| msgid "Searching..."
 msgid "Searching server sources..."
-msgstr "खोज्दै छु ।"
+msgstr "खोजी हुदैछ..."
 
 #: ../src/modules/gnome-online-accounts/e-goa-password-based.c:208
 #, c-format
@@ -6582,25 +6461,25 @@ msgstr "कोडः %u - सर्भरबाट अनपेक्षित �
 #, fuzzy, c-format
 #| msgid "Failed to retrieve message"
 msgid "Failed to parse autodiscover response XML"
-msgstr "XML फाइल \"%s\" पार्स गर्न असफल"
+msgstr "प्रत्त्योतर पदवर्णन गर्न सकेन"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:250
 #, fuzzy, c-format
 msgid "Failed to find Autodiscover element"
-msgstr "ह्यास तत्व तोक्न असफल भयो"
+msgstr "%s का लागि प्रोभाईडर असफल भयो"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:262
 #, fuzzy, c-format
 msgid "Failed to find Response element"
-msgstr "ह्यास तत्व तोक्न असफल भयो"
+msgstr "प्रत्त्योतर पदवर्णन गर्न सकेन"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:274
 #, fuzzy, c-format
 msgid "Failed to find Account element"
-msgstr "ह्यास तत्व तोक्न असफल भयो"
+msgstr "खाता दर्ता गर्न असफल"
 
 #. TODO: more specific
 #: ../src/modules/gnome-online-accounts/goaewsclient.c:288
@@ -6634,11 +6513,12 @@ msgstr "पात्रो"
 #: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:2
 #, fuzzy
 msgid "Integrate your calendars"
-msgstr "पात्रो ब्यवस्था गर्नुहोस"
+msgstr "पात्रो पहुच र ब्यवस्थापन गर्नुहोस"
 
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:2
+#, fuzzy
 msgid "Integrate your contacts"
-msgstr ""
+msgstr "एकिकृत गर्नुहोस्"
 
 #: ../src/modules/ubuntu-online-accounts/e-signon-session-password.c:273
 msgid "Signon service did not return a secret"
@@ -6648,7 +6528,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Evolution Data Server logging service"
 msgid "Evolution Data Server"
-msgstr "इभोल्युसन"
+msgstr "बिकास डेटा सर्भर UID"
 
 #: ../src/modules/ubuntu-online-accounts/evolution-data-server-uoa.desktop.in.in.h:2
 msgid "Required to have EDS appear in UOA"
@@ -6668,15 +6548,16 @@ msgstr "सम्पर्क"
 #, fuzzy
 #| msgid "Mailer"
 msgid "GMail"
-msgstr "जिमेल, गुगल डक्स, गुगल‌‌+, युटुब र पिकासा सम्मिलित"
+msgstr "[Gmail]/रद्दीटोकरी"
 
 #: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:1
 msgid "Mail"
 msgstr "पत्र"
 
 #: ../src/modules/ubuntu-online-accounts/mail.service-type.in.in.h:2
+#, fuzzy
 msgid "Integrate your mailboxes"
-msgstr ""
+msgstr "एकिकृत गर्नुहोस्"
 
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1061
 #, c-format
@@ -6696,7 +6577,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing response as JSON: "
-msgstr "फिल्टर पदवर्णन गर्दा त्रुटि: %s: %s"
+msgstr "मौलिक स्ट्रिङ पद वर्णन गर्दा त्रुटि"
 
 #: ../src/modules/ubuntu-online-accounts/uoa-utils.c:120
 msgid "Didn’t find “email” in JSON data"
@@ -6720,7 +6601,7 @@ msgstr "सञ्झ्याल लाईभ "
 #, fuzzy
 #| msgid "Calendar"
 msgid "Yahoo! Calendar"
-msgstr "याहू"
+msgstr "एउटा पात्रो होइन "
 
 #: ../src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in.h:1
 #, fuzzy
@@ -6739,8 +6620,9 @@ msgid "Wait running until at least one client is connected"
 msgstr ""
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
+#, fuzzy
 msgid "Birthdays & Anniversaries"
-msgstr ""
+msgstr "जन्मदिनको सूची विस्तार गर्नुहोस्"
 
 #: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
 msgid "CalDAV"
@@ -6780,12 +6662,11 @@ msgstr "वेब"
 msgid "CardDAV"
 msgstr "CardDAV"
 
-#: ../src/services/evolution-source-registry/evolution-source-registry.c:40
+#: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr ""
 
 #: ../src/services/evolution-user-prompter/prompt-user-gtk.c:119
-#, fuzzy
 msgid "_Dismiss"
 msgstr "खारेज"
 
@@ -6794,19 +6675,19 @@ msgstr "खारेज"
 #, fuzzy
 #| msgid "Cannot open message"
 msgid "Can not open file"
-msgstr "फाइल खुल्दैन"
+msgstr "फाइल खोल्न सकेन !"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:99
 #, fuzzy, c-format
 #| msgid "Failed to cache %s: %s"
 msgid "Failed to open client “%s”: %s"
-msgstr "\"%s\" खोल्न असफल भयो: %s\n"
+msgstr "फाइल '%s' खोल्न असफल: %s"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:889
 #, fuzzy
 #| msgid "Unknown error"
 msgid "Unhandled error"
-msgstr "ह्याण्डल नगरिएको ट्याग: '%s'"
+msgstr "त्रुटि"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "Specify the output file instead of standard output"
@@ -6829,7 +6710,7 @@ msgstr ""
 #: ../src/tools/addressbook-export/addressbook-export.c:930
 #, fuzzy
 msgid "[vcard|csv]"
-msgstr "भी कार्ड (.vcf, .gcrd)"
+msgstr "CSV"
 
 #: ../src/tools/addressbook-export/addressbook-export.c:978
 msgid "Command line arguments error, please use --help option to see the usage."
@@ -6843,7 +6724,7 @@ msgstr ""
 #, fuzzy
 #| msgid "_Show only subscribed folders"
 msgid "Show only enabled sources"
-msgstr "सबै स्रोतहरूका लागि '%s' वितरण कम्पोनेन्ट सक्षम भयो।"
+msgstr "कार्य गर्ने घन्टाहरू मात्र देखाउनुहोस्"
 
 #: ../src/tools/list-sources/list-sources.c:86
 #, fuzzy
@@ -6881,12 +6762,12 @@ msgstr "सङ्कलन"
 #: ../src/tools/list-sources/list-sources.c:132
 #, fuzzy
 msgid "Collection/GNOME Online Accounts"
-msgstr "अनलाईन खातासम्बन्धि अभिरुचिहरु"
+msgstr "अनलाईन खाताहरू"
 
 #: ../src/tools/list-sources/list-sources.c:137
 #, fuzzy
 msgid "Collection/Ubuntu Online Accounts"
-msgstr "अनलाईन खातासम्बन्धि अभिरुचिहरु"
+msgstr "अनलाईन खाताहरू"
 
 #: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
@@ -6905,17 +6786,17 @@ msgstr "कार्य सूची"
 #: ../src/tools/list-sources/list-sources.c:151
 #, fuzzy
 msgid "Mail Account"
-msgstr "पत्राचार"
+msgstr "खाता"
 
 #: ../src/tools/list-sources/list-sources.c:152
 #, fuzzy
 msgid "Mail Transport"
-msgstr "पत्राचार"
+msgstr "यातायात"
 
 #: ../src/tools/list-sources/list-sources.c:153
 #, fuzzy
 msgid "Mail Identity"
-msgstr "परिचय "
+msgstr "परिचय:"
 
 #: ../src/tools/list-sources/list-sources.c:154
 #, fuzzy
@@ -6926,7 +6807,7 @@ msgstr "अन्तिम पेश गर्ने समय:"
 #, fuzzy
 #| msgid "Bad signature"
 msgid "Mail Signature"
-msgstr "हस्ताक्षर आईडी"
+msgstr "पत्र"
 
 #: ../src/tools/list-sources/list-sources.c:156
 msgid "Proxy"
@@ -6952,7 +6833,7 @@ msgstr "सक्षम"
 #, fuzzy, c-format
 #| msgid "Backend is busy"
 msgid "Backend: %s"
-msgstr "`%s' ब्याकइण्डबाट सूचना परिवर्तन पछि `%s' का लागि नयाँ मान प्राप्त गर्दा त्रुटि: %s"
+msgstr "प्लेयर ब्याकइन्ड"
 
 #: ../src/tools/list-sources/list-sources.c:238
 #, fuzzy, c-format
@@ -6969,7 +6850,7 @@ msgstr "सम्पर्क"
 #, fuzzy, c-format
 #| msgid "Operation failed: %s"
 msgid "Mail enabled: %s"
-msgstr "%s पत्रमा क्लिक गर्नुहोस्"
+msgstr "%s मा मेल पठाउनुहोस्"
 
 #: ../src/tools/list-sources/list-sources.c:247
 #, fuzzy, c-format
@@ -6979,22 +6860,24 @@ msgstr "हास्य पुस्तक नभएको MIME प्रका�
 #: ../src/tools/list-sources/list-sources.c:269
 #, fuzzy, c-format
 msgid "Auth Host: %s:%d"
-msgstr "होस्ट %s भेटिएन।"
+msgstr "%d: %s\n"
 
 #: ../src/tools/list-sources/list-sources.c:275
 #, fuzzy, c-format
 msgid "Auth Host: %s"
-msgstr "होस्ट %s भेटिएन।"
+msgstr "होस्ट:"
 
 #: ../src/tools/list-sources/list-sources.c:283
 #, fuzzy, c-format
 msgid "Auth User: %s"
-msgstr "%s: अज्ञात प्रयोगकर्ता %s\n"
+msgstr ""
+"%s\n"
+"प्रयोगकर्ता पाना"
 
 #: ../src/tools/list-sources/list-sources.c:291
 #, fuzzy, c-format
 msgid "Auth Method: %s"
-msgstr "विधि ड्राइभर %s फेला पार्न सकिएन ।"
+msgstr "विधि"
 
 #: ../src/tools/list-sources/list-sources.c:299
 #, fuzzy, c-format
@@ -7010,12 +6893,15 @@ msgstr "%sतर्कहरू पार्स गर्न असफल\n"
 #, fuzzy, c-format
 #| msgid "Failed to connect to POP server %s in secure mode: %s"
 msgid "Failed to connect to source registry: %s\n"
-msgstr "कन्फिगरेसन स्रोत(हरू) पहुँच गर्न असफल भयो: %s\n"
+msgstr "जडान असफल : %s"
 
 #: ../src/tools/list-sources/list-sources.c:445
 #, fuzzy, c-format
 msgid "No sources had been found\n"
 msgstr "कुनै पनि निर्गत श्रोत फेला परेन ।"
+
+#~ msgid "IMAP+"
+#~ msgstr "IMAP+"
 
 #~ msgid "Updating contacts cache (%d)... "
 #~ msgstr "(%d) सम्पर्क क्यास अद्यावधिक गर्दै... "
@@ -7581,9 +7467,6 @@ msgstr "कुनै पनि निर्गत श्रोत फेला �
 
 #~ msgid "Check new messages for Jun_k contents"
 #~ msgstr "जङ्क सामाग्रीहरूका लागि नयाँ सन्देशहरू जाँच गर्नुहोस्"
-
-#~ msgid "IMAP"
-#~ msgstr "IMAP"
 
 #~ msgid "SSL negotiations failed"
 #~ msgstr "एसएसएल समझदारी असफल भयो"
