@@ -15,10 +15,10 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-07-25 08:16+0000\n"
-"PO-Revision-Date: 2017-07-26 11:08+0200\n"
+"POT-Creation-Date: 2017-08-15 14:33+0000\n"
+"PO-Revision-Date: 2017-08-18 19:26+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
-"Language-Team: čeština <gnome-cs-list@gnome.org>>\n"
+"Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -149,16 +149,16 @@ msgstr "Nelze přejmenovat starou databázi z „%s“ na „%s“: %s"
 msgid "Unknown error"
 msgstr "Neznámá chyba"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:897
+#: ../src/addressbook/backends/google/e-book-backend-google.c:922
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
 msgid "Object to save is not a valid vCard"
 msgstr "Objekt, který se má uložit, není platná vCard"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:949
+#: ../src/addressbook/backends/google/e-book-backend-google.c:974
 msgid "Failed to create contact from returned server data"
 msgstr "Selhalo vytvoření kontaktu z dat vrácených serverem"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:965
+#: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Server returned contact without UID"
 msgstr "Server vrátil kontakt bez UID"
 
@@ -1088,7 +1088,6 @@ msgid "Invalid query: %s"
 msgstr "Neplatný dotaz: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3598
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
 msgstr "Neplatný dotaz na kurzor adresáře"
 
@@ -1113,7 +1112,6 @@ msgstr "Objekt „%s“ nebyl nalezen"
 #: ../src/addressbook/libedata-book/e-book-cache.c:5194
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2375
 #, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object with extra “%s” not found"
 msgstr "Objekt s dodatečným údajem „%s“ nebyl nalezen"
 
@@ -3995,21 +3993,21 @@ msgstr "není složka maildir"
 msgid "Could not scan folder “%s”: %s"
 msgstr "Nelze prohledat složku „%s“: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:448
-#: ../src/camel/providers/local/camel-maildir-summary.c:589
+#: ../src/camel/providers/local/camel-maildir-summary.c:457
+#: ../src/camel/providers/local/camel-maildir-summary.c:596
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Nelze otevřít cestu poštovní schránky: %s: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:580
+#: ../src/camel/providers/local/camel-maildir-summary.c:587
 msgid "Checking folder consistency"
 msgstr "Probíhá kontrola konzistence složky"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:679
+#: ../src/camel/providers/local/camel-maildir-summary.c:709
 msgid "Checking for new messages"
 msgstr "Hledání nových zpráv"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:782
+#: ../src/camel/providers/local/camel-maildir-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
 #: ../src/camel/providers/local/camel-mbox-summary.c:585
 #: ../src/camel/providers/local/camel-mbox-summary.c:739
@@ -5728,12 +5726,10 @@ msgid "Failed to update properties"
 msgstr "Selhala aktualizace vlastností"
 
 #: ../src/libedataserver/e-webdav-session.c:1527
-#| msgid "Failed to issue NOTIFY"
 msgid "Failed to issue REPORT"
 msgstr "Nezdařilo se vydat REPORT"
 
 #: ../src/libedataserver/e-webdav-session.c:1586
-#| msgid "Failed to refresh token"
 msgid "Failed to create collection"
 msgstr "Selhala vytvoření seskupení"
 
@@ -5756,7 +5752,6 @@ msgid "Failed to read resource"
 msgstr "Selhalo čtení prostředku"
 
 #: ../src/libedataserver/e-webdav-session.c:2136
-#| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Nelze se posouvat ve vstupním datovém proudu: nepodporováno"
 
@@ -5810,10 +5805,9 @@ msgid "Failed to unlock"
 msgstr "Selhalo odemčení"
 
 #: ../src/libedataserver/e-webdav-session.c:2913
-#, fuzzy, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
+#, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr "Obdržen neočekávaný stavový kód HTTP %d (%s) pro URI: %s"
+msgstr "Očekávána vícestavová odpověď, ale bylo vráceno %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:3960
 msgid "Failed to get access control list"
@@ -6357,7 +6351,7 @@ msgstr "Na webu"
 msgid "CardDAV"
 msgstr "CardDAV"
 
-#: ../src/services/evolution-source-registry/evolution-source-registry.c:40
+#: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Nepřevádět uživatelská data z předchozích verzí Evolution"
 
@@ -6443,8 +6437,6 @@ msgid "no"
 msgstr "ne"
 
 #: ../src/tools/list-sources/list-sources.c:126
-#| msgctxt "CategoryName"
-#| msgid "Competition"
 msgid "Collection"
 msgstr "Seskupení"
 
@@ -6481,12 +6473,10 @@ msgid "Mail Identity"
 msgstr "Poštovní identita"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#| msgid "Message submission port"
 msgid "Mail Submission"
 msgstr "Odesílání pošty"
 
 #: ../src/tools/list-sources/list-sources.c:155
-#| msgid "Bad signature"
 msgid "Mail Signature"
 msgstr "Podpis pro poštu"
 
