@@ -31,7 +31,9 @@ set(IGNORE_HEADERS
 	e-backend-enumtypes.h
 	e-book-enumtypes.h
 	e-book-contacts-enumtypes.h
+	e-book-view-private.h
 	e-cal-enumtypes.h
+	e-cal-view-private.h
 	e-client-private.h
 	e-data-cal-types.h
 	e-phone-number-private.h

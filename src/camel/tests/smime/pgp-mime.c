@@ -28,7 +28,7 @@
 #include "session.h"
 
 static gchar test_msg[] = "Since we need to make sure that\nFrom lines work okay, we should test that"
-"as well as test 8bit chars and other fun stuff? 8bit chars: Dra¾en Kaèar\n\nOkay, I guess that covers"
+"as well as test 8bit chars and other fun stuff? 8bit chars: DraÅ¾en KaÄar\n\nOkay, I guess that covers"
 "the basics at least...\n";
 
 #define CAMEL_PGP_SESSION_TYPE     (camel_pgp_session_get_type ())

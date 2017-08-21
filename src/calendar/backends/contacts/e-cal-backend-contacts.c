@@ -2,7 +2,7 @@
 /* Evolution calendar - iCalendar file backend
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- * Copyright (C) 2003 Gergı …rdi
+ * Copyright (C) 2003 Gerg≈ë √ârdi
  *
  * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,7 @@
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>
  *          Rodrigo Moya <rodrigo@ximian.com>
- *          Gergı …rdi <cactus@cactus.rulez.org>
+ *          Gerg≈ë √ârdi <cactus@cactus.rulez.org>
  */
 
 #include "evolution-data-server-config.h"

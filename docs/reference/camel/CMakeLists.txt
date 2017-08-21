@@ -20,6 +20,7 @@ set(DEPENDENCIES
 
 set(IGNORE_HEADERS
 	addresses.h
+	address-data.h
 	camel-charset-map-private.h
 	camel-enumtypes.h
 	camel-i18n.h

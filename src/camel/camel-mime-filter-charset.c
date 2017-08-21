@@ -113,7 +113,7 @@ mime_filter_charset_complete (CamelMimeFilter *mime_filter,
 					inleft--;
 				} else if (errno == EINVAL) {
 					/*
-					 * EINVAL  An  incomplete  multibyte sequence has been encoun­
+					 * EINVAL  An  incomplete  multibyte sequence has been encoun-
 					 *         tered in the input.
 					 *
 					 * We assume that this can only happen if we've run out of

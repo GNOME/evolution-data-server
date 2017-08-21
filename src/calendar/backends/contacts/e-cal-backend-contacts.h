@@ -1,7 +1,7 @@
 /* Evolution calendar - iCalendar file backend
  *
  * Copyright (C) 1999-2008 Novell, Inc. (www.novell.com)
- * Copyright (C) 2003 Gergı …rdi
+ * Copyright (C) 2003 Gerg≈ë √ârdi
  *
  * This library is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
  * along with this library. If not, see <http://www.gnu.org/licenses/>.
  *
  * Authors: Federico Mena-Quintero <federico@ximian.com>,
- *          Gergı …rdi <cactus@cactus.rulez.org>
+ *          Gerg≈ë √ârdi <cactus@cactus.rulez.org>
  */
 
 #ifndef E_CAL_BACKEND_CONTACTS_H
