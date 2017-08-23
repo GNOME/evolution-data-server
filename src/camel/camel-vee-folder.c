@@ -374,9 +374,10 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
                               GError **error)
 {
 	CamelVeeDataCache *data_cache;
-	CamelFolderChangeInfo *changes;
+	CamelFolderChangeInfo *changes, *skipped_changes;
 	CamelFolder *v_folder;
 	CamelVeeSummary *vsummary;
+	GHashTable *keep_uids = NULL;
 	gint ii;
 
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
@@ -398,6 +399,28 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 	changes = camel_folder_change_info_new ();
 	v_folder = CAMEL_FOLDER (vfolder);
 	vsummary = CAMEL_VEE_SUMMARY (camel_folder_get_folder_summary (v_folder));
+
+	g_rec_mutex_lock (&vfolder->priv->changed_lock);
+
+	skipped_changes = g_hash_table_lookup (vfolder->priv->skipped_changes, subfolder);
+	if (skipped_changes) {
+		keep_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
+
+		for (ii = 0; ii < skipped_changes->uid_added->len; ii++) {
+			g_hash_table_insert (keep_uids, (gpointer) camel_pstring_strdup (skipped_changes->uid_added->pdata[ii]), NULL);
+		}
+
+		for (ii = 0; ii < skipped_changes->uid_changed->len; ii++) {
+			g_hash_table_insert (keep_uids, (gpointer) camel_pstring_strdup (skipped_changes->uid_changed->pdata[ii]), NULL);
+		}
+
+		if (!g_hash_table_size (keep_uids)) {
+			g_hash_table_destroy (keep_uids);
+			keep_uids = NULL;
+		}
+	}
+
+	g_rec_mutex_unlock (&vfolder->priv->changed_lock);
 
 	camel_folder_freeze (v_folder);
 
@@ -453,6 +476,38 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 
 		if (match) {
 			GHashTable *with_uids;
+			CamelFolderSummary *subsummary = camel_folder_get_folder_summary (subfolder);
+
+			if (keep_uids && subsummary && !my_match) {
+				GHashTableIter iter;
+				GPtrArray *my_matched;
+				gpointer ptr_uid;
+
+				my_matched = g_ptr_array_new ();
+
+				for (ii = 0; ii < match->len; ii++) {
+					const gchar *uid = match->pdata[ii];
+
+					g_hash_table_remove (keep_uids, uid);
+					g_ptr_array_add (my_matched, (gpointer) camel_pstring_strdup (uid));
+				}
+
+				/* Keep all UIDs which do not match anymore, but still exist in the subfolder,
+				   thus they do not disappear from the UI. The keep_uids is populated from
+				   skipped_changes, which means UIDs being changed within the vfolder. */
+				g_hash_table_iter_init (&iter, keep_uids);
+				while (g_hash_table_iter_next (&iter, &ptr_uid, NULL)) {
+					if (!ptr_uid)
+						continue;
+
+					if (camel_folder_summary_check_uid (subsummary, ptr_uid))
+						g_ptr_array_add (my_matched, (gpointer) camel_pstring_strdup (ptr_uid));
+				}
+
+				camel_folder_search_free (subfolder, match);
+				match = my_matched;
+				my_match = TRUE;
+			}
 
 			/* uids are taken from the string pool, thus use direct hashes */
 			with_uids = g_hash_table_new_full (g_direct_hash, g_direct_equal, (GDestroyNotify) camel_pstring_free, NULL);
@@ -479,6 +534,9 @@ vee_folder_subfolder_changed (CamelVeeFolder *vfolder,
 	if (camel_folder_change_info_changed (changes))
 		camel_folder_changed (v_folder, changes);
 	camel_folder_change_info_free (changes);
+
+	if (keep_uids)
+		g_hash_table_destroy (keep_uids);
 }
 
 static void
@@ -969,10 +1027,9 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 
 	vee_folder_propagate_skipped_changes (vfolder);
 
-	/* basically no-op here, especially do not call synchronize on subfolders
-	 * if not expunging, they are responsible for themselfs */
-	if (!expunge ||
-	    vee_folder_is_unmatched (vfolder))
+	/* propagate skipped changes of vFolder subfolders, or do expunge,
+	 * otherwise it's a no-op */
+	if (vee_folder_is_unmatched (vfolder))
 		return TRUE;
 
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
@@ -980,6 +1037,9 @@ vee_folder_synchronize_sync (CamelFolder *folder,
 	for (iter = vfolder->priv->subfolders; iter && !g_cancellable_is_cancelled (cancellable); iter = iter->next) {
 		GError *local_error = NULL;
 		CamelFolder *subfolder = iter->data;
+
+		if (!expunge && !CAMEL_IS_VEE_FOLDER (subfolder))
+			continue;
 
 		if (!camel_folder_synchronize_sync (subfolder, expunge, cancellable, &local_error)) {
 			if (local_error && strncmp (local_error->message, "no such table", 13) != 0 && error && !*error) {
