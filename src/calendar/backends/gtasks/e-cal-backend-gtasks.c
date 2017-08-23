@@ -597,6 +597,17 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 	feed = gdata_tasks_service_query_tasks (cbgtasks->priv->service, cbgtasks->priv->tasklist,
 		GDATA_QUERY (tasks_query), cancellable, NULL, NULL, &local_error);
 
+	if (last_updated.tv_sec > 0 && (
+	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
+	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR))) {
+		g_clear_error (&local_error);
+
+		gdata_query_set_updated_min (GDATA_QUERY (tasks_query), -1);
+
+		feed = gdata_tasks_service_query_tasks (cbgtasks->priv->service, cbgtasks->priv->tasklist,
+			GDATA_QUERY (tasks_query), cancellable, NULL, NULL, &local_error);
+	}
+
 #ifdef HAVE_LIBGDATA_TASKS_PAGINATION_FUNCTIONS
 	while (feed && !g_cancellable_is_cancelled (cancellable) && !local_error) {
 #else
