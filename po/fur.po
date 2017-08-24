@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-08-11 11:59+0000\n"
-"PO-Revision-Date: 2017-08-13 19:15+0200\n"
+"POT-Creation-Date: 2017-08-15 14:33+0000\n"
+"PO-Revision-Date: 2017-08-24 04:44+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -4510,16 +4510,14 @@ msgid "Operation failed: %s"
 msgstr "Operazion falide: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:457
-#, fuzzy, c-format
-#| msgid "Signing message"
+#, c-format
 msgid "%s: Scanning existing messages"
-msgstr "Messaç di firme"
+msgstr "%s: analisi messaçs esistents"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:470
-#, fuzzy, c-format
-#| msgid "Unexpected response from GnuPG: %s"
+#, c-format
 msgid "Unexpected server response from listgroup: %s"
-msgstr "Rispueste inspietade di GnuPG: %s"
+msgstr "Rispueste servidôr inspietade de liste di grup: %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:358
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:442
@@ -5171,7 +5169,7 @@ msgstr ""
 
 #: ../src/libebackend/e-cache.c:751
 msgid "Out of memory"
-msgstr ""
+msgstr "Memorie finide"
 
 #: ../src/libebackend/e-cache.c:943
 #, c-format
@@ -5196,7 +5194,7 @@ msgstr ""
 #: ../src/libebackend/e-server-side-source.c:142
 #, c-format
 msgid "Data source is missing a [%s] group"
-msgstr ""
+msgstr "La sorzint dâts e mancje di un grup [%s]"
 
 #: ../src/libebackend/e-server-side-source.c:467
 msgid "Failed to lookup credentials: "
@@ -5231,164 +5229,164 @@ msgstr ""
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
-msgstr ""
+msgstr "La sorzint dâts “%s” no supuarte la autenticazion OAuth 2.0"
 
 #: ../src/libebackend/e-server-side-source.c:1857
 #, c-format
 msgid "File must have a “.source” extension"
-msgstr ""
+msgstr "Il file al scugne vê une estension “.source”"
 
 #: ../src/libebackend/e-source-registry-server.c:320
 #, c-format
 msgid "UID “%s” is already in use"
-msgstr ""
+msgstr "Il UID “%s” al è za in ûs"
 
 #: ../src/libebackend/e-subprocess-factory.c:277
 #, c-format
 msgid "Module “%s” for source UID “%s” cannot be loaded"
-msgstr ""
+msgstr "Il modul “%s” pe sorzint UID “%s” nol pues jessi cjariât"
 
 #: ../src/libebackend/e-subprocess-factory.c:289
 #, c-format
 msgid "No such source for UID “%s”"
-msgstr ""
+msgstr "Sorzint inesistente pal UID “%s”"
 
 #: ../src/libebackend/e-subprocess-factory.c:300
 #, c-format
 msgid "Failed to create backend of type “%s” for source UID “%s”"
-msgstr ""
+msgstr "No si è rivâts a creâ il backend di gjenar “%s” pe sorzint UID “%s”"
 
 #: ../src/libebackend/e-user-prompter-server.c:303
 #, c-format
 msgid "Extension dialog “%s” not found."
-msgstr ""
+msgstr "Dialic di estension “%s” no cjatât."
 
 #: ../src/libedataserver/e-categories.c:47
 msgctxt "CategoryName"
 msgid "Anniversary"
-msgstr ""
+msgstr "Aniversari"
 
 #: ../src/libedataserver/e-categories.c:48
 msgctxt "CategoryName"
 msgid "Birthday"
-msgstr ""
+msgstr "Complean"
 
 #: ../src/libedataserver/e-categories.c:49
 msgctxt "CategoryName"
 msgid "Business"
-msgstr ""
+msgstr "Afârs"
 
 #: ../src/libedataserver/e-categories.c:50
 msgctxt "CategoryName"
 msgid "Competition"
-msgstr ""
+msgstr "Competizion"
 
 #: ../src/libedataserver/e-categories.c:51
 msgctxt "CategoryName"
 msgid "Favorites"
-msgstr ""
+msgstr "Preferîts"
 
 #: ../src/libedataserver/e-categories.c:52
 msgctxt "CategoryName"
 msgid "Gifts"
-msgstr ""
+msgstr "Regâi"
 
 #: ../src/libedataserver/e-categories.c:53
 msgctxt "CategoryName"
 msgid "Goals/Objectives"
-msgstr ""
+msgstr "Obietîfs"
 
 #: ../src/libedataserver/e-categories.c:54
 msgctxt "CategoryName"
 msgid "Holiday"
-msgstr ""
+msgstr "Vacance"
 
 #: ../src/libedataserver/e-categories.c:55
 msgctxt "CategoryName"
 msgid "Holiday Cards"
-msgstr ""
+msgstr "Cartulinis"
 
 #. important people (e.g. new business partners)
 #: ../src/libedataserver/e-categories.c:57
 msgctxt "CategoryName"
 msgid "Hot Contacts"
-msgstr ""
+msgstr "Contats impuartants"
 
 #: ../src/libedataserver/e-categories.c:58
 msgctxt "CategoryName"
 msgid "Ideas"
-msgstr ""
+msgstr "Ideis"
 
 #: ../src/libedataserver/e-categories.c:59
 msgctxt "CategoryName"
 msgid "International"
-msgstr ""
+msgstr "Internazionâl"
 
 #: ../src/libedataserver/e-categories.c:60
 msgctxt "CategoryName"
 msgid "Key Customer"
-msgstr ""
+msgstr "Client impuartant"
 
 #: ../src/libedataserver/e-categories.c:61
 msgctxt "CategoryName"
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Variis"
 
 #: ../src/libedataserver/e-categories.c:62
 msgctxt "CategoryName"
 msgid "Personal"
-msgstr ""
+msgstr "Personâl"
 
 #: ../src/libedataserver/e-categories.c:63
 msgctxt "CategoryName"
 msgid "Phone Calls"
-msgstr ""
+msgstr "Clamadis di telefon"
 
 #. Translators: "Status" is a category name; it can mean anything user wants to
 #: ../src/libedataserver/e-categories.c:65
 msgctxt "CategoryName"
 msgid "Status"
-msgstr ""
+msgstr "Stât"
 
 #: ../src/libedataserver/e-categories.c:66
 msgctxt "CategoryName"
 msgid "Strategies"
-msgstr ""
+msgstr "Strategjiis"
 
 #: ../src/libedataserver/e-categories.c:67
 msgctxt "CategoryName"
 msgid "Suppliers"
-msgstr ""
+msgstr "Furnidôrs"
 
 #: ../src/libedataserver/e-categories.c:68
 msgctxt "CategoryName"
 msgid "Time & Expenses"
-msgstr ""
+msgstr "Timp e spesis"
 
 #: ../src/libedataserver/e-categories.c:69
 msgctxt "CategoryName"
 msgid "VIP"
-msgstr ""
+msgstr "VIP"
 
 #: ../src/libedataserver/e-categories.c:70
 msgctxt "CategoryName"
 msgid "Waiting"
-msgstr ""
+msgstr "In spiete"
 
 #: ../src/libedataserver/e-client.c:144
 msgid "Source not loaded"
-msgstr ""
+msgstr "Sorzint no cjariade"
 
 #: ../src/libedataserver/e-client.c:146
 msgid "Source already loaded"
-msgstr ""
+msgstr "Sorzint za cjariade"
 
 #. Translators: This means that the EClient does not
 #. * support offline mode, or it's not set to by a user,
 #. * thus it is unavailable while user is not connected.
 #: ../src/libedataserver/e-client.c:157
 msgid "Offline unavailable"
-msgstr ""
+msgstr "Fûr rêt no disponibil"
 
 #: ../src/libedataserver/e-client.c:179
 msgid "D-Bus error"
@@ -5414,21 +5412,21 @@ msgstr "Falît cun erôr HTTP %d: %s"
 #: ../src/libedataserver/e-source.c:775
 #, c-format
 msgid "Source file is missing a [%s] group"
-msgstr ""
+msgstr "Il file sorzint al mancje di un grup [%s]"
 
 #: ../src/libedataserver/e-source.c:1379
 #, c-format
 msgid "Data source “%s” is not removable"
-msgstr ""
+msgstr "La sorzint dâts “%s” no si pues gjavâ"
 
 #: ../src/libedataserver/e-source.c:1502
 #, c-format
 msgid "Data source “%s” is not writable"
-msgstr ""
+msgstr "La sorzint dâts “%s” no si pues scrivi"
 
 #: ../src/libedataserver/e-source.c:2198
 msgid "Unnamed"
-msgstr ""
+msgstr "Cence non"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl.c:39
 msgid "Credentials lookup is not supported"
@@ -5718,10 +5716,8 @@ msgid "Failed to update properties"
 msgstr "No si è rivâts a inzornâ lis proprietâts"
 
 #: ../src/libedataserver/e-webdav-session.c:1527
-#, fuzzy
-#| msgid "Failed on message %d"
 msgid "Failed to issue REPORT"
-msgstr "Falît al messaç %d"
+msgstr "Emission REPORT falide"
 
 #: ../src/libedataserver/e-webdav-session.c:1586
 msgid "Failed to create collection"
@@ -5799,16 +5795,13 @@ msgid "Failed to unlock"
 msgstr "No si è rivâts a sblocâ"
 
 #: ../src/libedataserver/e-webdav-session.c:2913
-#, fuzzy, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
+#, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr "Tornât codiç di stât HTTP %d inspietât (%s) pal URI: %s"
+msgstr "Si spietave une rispueste multistât, ma si à vût %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:3960
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get access control list"
-msgstr "No si è rivâts a ve il bloc doprant fcntl(2): %s"
+msgstr "No si è rivâts a otignî la liste di control acès"
 
 #: ../src/libedataserver/e-webdav-session.c:4697
 msgid "Cannot store protected nor inherited Access Control Entry."
