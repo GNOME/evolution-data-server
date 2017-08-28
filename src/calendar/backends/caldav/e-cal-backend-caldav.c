@@ -589,6 +589,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	GHashTableIter iter;
 	gpointer key = NULL, value = NULL;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
 	g_return_val_if_fail (out_repeat, FALSE);
@@ -683,7 +684,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_cal_meta_backend_info_free);
 
 	success = e_webdav_session_report_sync (cbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
-		ecb_caldav_get_calendar_items_cb, known_items, NULL, NULL, cancellable, error);
+		ecb_caldav_get_calendar_items_cb, known_items, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
 
@@ -698,24 +699,21 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 
 		cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
-		success = e_cal_cache_search_with_callback (cal_cache, NULL, ecb_caldav_search_changes_cb, &ccd, cancellable, error);
+		success = e_cal_cache_search_with_callback (cal_cache, NULL, ecb_caldav_search_changes_cb, &ccd, cancellable, &local_error);
 
 		g_clear_object (&cal_cache);
 	}
 
-	if (!success) {
-		g_hash_table_destroy (known_items);
-		return FALSE;
-	}
-
-	g_hash_table_iter_init (&iter, known_items);
-	while (g_hash_table_iter_next (&iter, &key, &value)) {
-		*out_created_objects = g_slist_prepend (*out_created_objects, e_cal_meta_backend_info_copy (value));
+	if (success) {
+		g_hash_table_iter_init (&iter, known_items);
+		while (g_hash_table_iter_next (&iter, &key, &value)) {
+			*out_created_objects = g_slist_prepend (*out_created_objects, e_cal_meta_backend_info_copy (value));
+		}
 	}
 
 	g_hash_table_destroy (known_items);
 
-	if (*out_created_objects || *out_modified_objects) {
+	if (success && (*out_created_objects || *out_modified_objects)) {
 		GSList *link, *set2 = *out_modified_objects;
 
 		if (*out_created_objects) {
@@ -726,9 +724,46 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 		}
 
 		do {
-			success = ecb_caldav_multiget_from_sets_sync (cbdav, &link, &set2, cancellable, error);
+			success = ecb_caldav_multiget_from_sets_sync (cbdav, &link, &set2, cancellable, &local_error);
 		} while (success && link);
 	}
+
+	if (local_error && !g_cancellable_is_cancelled (cancellable)) {
+		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
+
+		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
+			reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+			   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+			reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+		}
+
+		if (reason != E_SOURCE_CREDENTIALS_REASON_UNKNOWN) {
+			GTlsCertificateFlags certificate_errors = 0;
+			gchar *certificate_pem = NULL;
+			GError *local_error2 = NULL;
+
+			if (!e_soup_session_get_ssl_error_details (E_SOUP_SESSION (cbdav->priv->webdav), &certificate_pem, &certificate_errors)) {
+				certificate_pem = NULL;
+				certificate_errors = 0;
+			}
+
+			if (!e_backend_credentials_required_sync (E_BACKEND (cbdav), reason, certificate_pem, certificate_errors,
+				local_error, cancellable, &local_error2)) {
+				g_warning ("%s: Failed to call credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
+			} else {
+				/* Ignore the error when the caller had been notified through the credentials-required */
+				g_clear_error (&local_error);
+				success = TRUE;
+			}
+
+			g_clear_error (&local_error2);
+			g_free (certificate_pem);
+		}
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	return success;
 }
