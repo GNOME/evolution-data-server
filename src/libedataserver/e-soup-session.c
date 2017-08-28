@@ -948,6 +948,11 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	if (input_stream)
 		return input_stream;
 
+	if (g_error_matches (local_error, G_TLS_ERROR, G_TLS_ERROR_BAD_CERTIFICATE)) {
+		local_error->domain = SOUP_HTTP_ERROR;
+		local_error->code = SOUP_STATUS_SSL_FAILED;
+	}
+
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
 		message = soup_request_http_get_message (request);
 
