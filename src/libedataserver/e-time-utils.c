@@ -2119,7 +2119,10 @@ static gint _e_string_replace (gchar **str, const gchar *old, const gchar *new)
  * e_time_get_d_fmt_with_4digit_year:
  *
  * Retrieves a date format string with a 4-digit year (D_FMT on systems with
- * nl_langinfo() available).  Free the returned string with g_free().
+ * nl_langinfo() available). In case the current locale doesn't support 4-digit
+ * year, the function returns format as specified by the locale.
+ *
+ * Free the returned string with g_free().
  *
  * Returns: a newly-allocated date format string
  *
@@ -2172,8 +2175,10 @@ e_time_get_d_fmt_with_4digit_year (void)
 	res = g_strdup ("%x");
 #endif
 
-	while (p = strchr (res, 'y'), p)
-		*p = 'Y';
+	for (p = res; p && *p; p++) {
+		if (*p == 'y' && p != res && p[-1] == '%')
+			*p = 'Y';
+	}
 
 	return res;
 }
