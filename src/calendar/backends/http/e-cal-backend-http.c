@@ -286,7 +286,10 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 	ECalBackendHttp *cbhttp;
 	SoupMessage *message;
 	gchar *icalstring;
-	icalcomponent *vcalendar;
+	icalcompiter iter;
+	icalcomponent *maincomp, *subcomp;
+	icalcomponent_kind backend_kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
+	GHashTable *components = NULL;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_HTTP (meta_backend), FALSE);
@@ -333,86 +336,107 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	vcalendar = icalparser_parse_string (icalstring);
+	maincomp = icalparser_parse_string (icalstring);
 
 	g_free (icalstring);
 
-	if (!vcalendar) {
+	if (!maincomp) {
 		g_set_error (error, SOUP_HTTP_ERROR, SOUP_STATUS_MALFORMED, _("Bad file format."));
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
 	}
 
-	if (icalcomponent_isa (vcalendar) != ICAL_VCALENDAR_COMPONENT) {
-		icalcomponent_free (vcalendar);
+	if (icalcomponent_isa (maincomp) != ICAL_VCALENDAR_COMPONENT &&
+	    icalcomponent_isa (maincomp) != ICAL_XROOT_COMPONENT) {
+		icalcomponent_free (maincomp);
 		g_set_error (error, SOUP_HTTP_ERROR, SOUP_STATUS_MALFORMED, _("Not a calendar."));
 		e_cal_meta_backend_empty_cache_sync (meta_backend, cancellable, NULL);
 		ecb_http_disconnect_sync (meta_backend, cancellable, NULL);
 		return FALSE;
 	}
 
-	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, TRUE, cancellable, error);
-	if (success) {
-		icalcomponent_kind kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
-		icalcomponent *subcomp;
-		GHashTable *components;
+	if (icalcomponent_isa (maincomp) == ICAL_VCALENDAR_COMPONENT) {
+		subcomp = maincomp;
+	} else {
+		iter = icalcomponent_begin_component (maincomp, ICAL_VCALENDAR_COMPONENT);
+		subcomp = icalcompiter_deref (&iter);
+	}
 
-		components = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) icalcomponent_free);
+	while (subcomp && success) {
+		if (subcomp != maincomp)
+			icalcompiter_next (&iter);
 
-		while (subcomp = icalcomponent_get_first_component (vcalendar, kind), subcomp) {
-			icalcomponent *existing_icalcomp;
-			gpointer orig_key, orig_value;
-			const gchar *uid;
+		if (icalcomponent_isa (subcomp) == ICAL_VCALENDAR_COMPONENT) {
+			success = e_cal_meta_backend_gather_timezones_sync (meta_backend, subcomp, TRUE, cancellable, error);
+			if (success) {
+				icalcomponent *icalcomp;
 
-			icalcomponent_remove_component (vcalendar, subcomp);
+				while (icalcomp = icalcomponent_get_first_component (subcomp, backend_kind), icalcomp) {
+					icalcomponent *existing_icalcomp;
+					gpointer orig_key, orig_value;
+					const gchar *uid;
 
-			if (!icalcomponent_get_first_property (subcomp, ICAL_UID_PROPERTY)) {
-				gchar *new_uid = e_util_generate_uid ();
-				icalcomponent_set_uid (subcomp, new_uid);
-				g_free (new_uid);
-			}
+					icalcomponent_remove_component (subcomp, icalcomp);
 
-			uid = icalcomponent_get_uid (subcomp);
+					if (!components)
+						components = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, (GDestroyNotify) icalcomponent_free);
 
-			if (!g_hash_table_lookup_extended (components, uid, &orig_key, &orig_value)) {
-				orig_key = NULL;
-				orig_value = NULL;
-			}
+					if (!icalcomponent_get_first_property (icalcomp, ICAL_UID_PROPERTY)) {
+						gchar *new_uid = e_util_generate_uid ();
+						icalcomponent_set_uid (icalcomp, new_uid);
+						g_free (new_uid);
+					}
 
-			existing_icalcomp = orig_value;
-			if (existing_icalcomp) {
-				if (icalcomponent_isa (existing_icalcomp) != ICAL_VCALENDAR_COMPONENT) {
-					icalcomponent *vcal;
+					uid = icalcomponent_get_uid (icalcomp);
 
-					vcal = e_cal_util_new_top_level ();
+					if (!g_hash_table_lookup_extended (components, uid, &orig_key, &orig_value)) {
+						orig_key = NULL;
+						orig_value = NULL;
+					}
 
-					g_warn_if_fail (g_hash_table_steal (components, uid));
+					existing_icalcomp = orig_value;
+					if (existing_icalcomp) {
+						if (icalcomponent_isa (existing_icalcomp) != ICAL_VCALENDAR_COMPONENT) {
+							icalcomponent *vcal;
 
-					icalcomponent_add_component (vcal, existing_icalcomp);
-					g_hash_table_insert (components, g_strdup (uid), vcal);
+							vcal = e_cal_util_new_top_level ();
 
-					g_free (orig_key);
+							g_warn_if_fail (g_hash_table_steal (components, uid));
 
-					existing_icalcomp = vcal;
+							icalcomponent_add_component (vcal, existing_icalcomp);
+							g_hash_table_insert (components, g_strdup (uid), vcal);
+
+							g_free (orig_key);
+
+							existing_icalcomp = vcal;
+						}
+
+						icalcomponent_add_component (existing_icalcomp, icalcomp);
+					} else {
+						g_hash_table_insert (components, g_strdup (uid), icalcomp);
+					}
 				}
-
-				icalcomponent_add_component (existing_icalcomp, subcomp);
-			} else {
-				g_hash_table_insert (components, g_strdup (uid), subcomp);
 			}
 		}
 
+		if (subcomp == maincomp)
+			subcomp = NULL;
+		else
+			subcomp = icalcompiter_deref (&iter);
+	}
+
+	if (components) {
 		g_warn_if_fail (cbhttp->priv->components == NULL);
 		cbhttp->priv->components = components;
 
-		icalcomponent_free (vcalendar);
+		icalcomponent_free (maincomp);
 
 		success = E_CAL_META_BACKEND_CLASS (e_cal_backend_http_parent_class)->get_changes_sync (meta_backend,
 			last_sync_tag, is_repeat, out_new_sync_tag, out_repeat, out_created_objects,
 			out_modified_objects, out_removed_objects, cancellable, error);
 	} else {
-		icalcomponent_free (vcalendar);
+		icalcomponent_free (maincomp);
 	}
 
 	if (!success)
