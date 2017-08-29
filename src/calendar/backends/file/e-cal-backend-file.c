@@ -728,7 +728,6 @@ add_component (ECalBackendFile *cbfile,
 			g_hash_table_insert (priv->comp_uid_hash, g_strdup (uid), obj_data);
 		}
 
-		add_component_to_intervaltree (cbfile, comp);
 		g_hash_table_insert (obj_data->recurrences, rid, comp);
 		obj_data->recurrences_list = g_list_append (obj_data->recurrences_list, comp);
 	} else {
@@ -745,9 +744,10 @@ add_component (ECalBackendFile *cbfile,
 			obj_data->recurrences = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 
 			g_hash_table_insert (priv->comp_uid_hash, g_strdup (uid), obj_data);
-			add_component_to_intervaltree (cbfile, comp);
 		}
 	}
+
+	add_component_to_intervaltree (cbfile, comp);
 
 	priv->comp = g_list_prepend (priv->comp, comp);
 
@@ -3191,6 +3191,27 @@ fetch_attachments (ECalBackendSync *backend,
 	e_cal_component_set_attachment_list (comp, new_attach_list);
 }
 
+static gint
+masters_first_cmp (gconstpointer ptr1,
+		   gconstpointer ptr2)
+{
+	icalcomponent *icomp1 = (icalcomponent *) ptr1;
+	icalcomponent *icomp2 = (icalcomponent *) ptr2;
+	gboolean has_rid1, has_rid2;
+
+	has_rid1 = (icomp1 && icalcomponent_get_first_property (icomp1, ICAL_RECURRENCEID_PROPERTY)) ? 1 : 0;
+	has_rid2 = (icomp2 && icalcomponent_get_first_property (icomp2, ICAL_RECURRENCEID_PROPERTY)) ? 1 : 0;
+
+	if (has_rid1 == has_rid2)
+		return g_strcmp0 (icomp1 ? icalcomponent_get_uid (icomp1) : NULL,
+				  icomp2 ? icalcomponent_get_uid (icomp2) : NULL);
+
+	if (has_rid1)
+		return 1;
+
+	return -1;
+}
+
 /* Update_objects handler for the file backend. */
 static void
 e_cal_backend_file_receive_objects (ECalBackendSync *backend,
@@ -3310,7 +3331,40 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 		subcomp = icalcomponent_get_next_component (toplevel_comp, ICAL_ANY_COMPONENT);
 	}
 
+	/* Now we remove the components we don't care about */
+	for (l = del_comps; l; l = l->next) {
+		subcomp = l->data;
+
+		icalcomponent_remove_component (toplevel_comp, subcomp);
+		icalcomponent_free (subcomp);
+	}
+
+	g_list_free (del_comps);
+
+        /* check and patch timezones */
+	if (!e_cal_client_check_timezones (toplevel_comp,
+			       NULL,
+			       e_cal_client_tzlookup_icomp,
+			       priv->icalcomp,
+			       NULL,
+			       &err)) {
+		/*
+		 * This makes assumptions about what kind of
+		 * errors can occur inside e_cal_check_timezones().
+		 * We control it, so that should be safe, but
+		 * is the code really identical with the calendar
+		 * status?
+		 */
+		goto error;
+	}
+
+	/* Merge the iCalendar components with our existing VCALENDAR,
+	 * resolving any conflicting TZIDs. */
+	icalcomponent_merge_component (priv->icalcomp, toplevel_comp);
+
 	/* Now we manipulate the components we care about */
+	comps = g_list_sort (comps, masters_first_cmp);
+
 	for (l = comps; l; l = l->next) {
 		ECalComponent *old_component = NULL;
 		ECalComponent *new_component = NULL;
@@ -3380,6 +3434,7 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 										rid ? comp : NULL);
 
 					e_cal_component_free_id (id);
+					g_object_unref (comp);
 				}
 
 				if (old_component)
@@ -3389,22 +3444,27 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 				add_component (cbfile, comp, FALSE);
 
 				e_cal_backend_notify_component_created (E_CAL_BACKEND (backend), comp);
+			} else {
+				g_object_unref (comp);
 			}
 			g_free (rid);
 			break;
 		case ICAL_METHOD_ADD:
 			/* FIXME This should be doable once all the recurid stuff is done */
 			err = EDC_ERROR (UnsupportedMethod);
+			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_COUNTER:
 			err = EDC_ERROR (UnsupportedMethod);
+			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 			break;
 		case ICAL_METHOD_DECLINECOUNTER:
 			err = EDC_ERROR (UnsupportedMethod);
+			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 			break;
@@ -3427,49 +3487,18 @@ e_cal_backend_file_receive_objects (ECalBackendSync *backend,
 				if (old_component)
 					g_object_unref (old_component);
 			}
+			g_object_unref (comp);
 			g_free (rid);
 			break;
 		default:
 			err = EDC_ERROR (UnsupportedMethod);
+			g_object_unref (comp);
 			g_free (rid);
 			goto error;
 		}
 	}
 
 	g_list_free (comps);
-
-	/* Now we remove the components we don't care about */
-	for (l = del_comps; l; l = l->next) {
-		subcomp = l->data;
-
-		icalcomponent_remove_component (toplevel_comp, subcomp);
-		icalcomponent_free (subcomp);
-	}
-
-	g_list_free (del_comps);
-
-        /* check and patch timezones */
-	if (!err) {
-		if (!e_cal_client_check_timezones (toplevel_comp,
-				       NULL,
-				       e_cal_client_tzlookup_icomp,
-				       priv->icalcomp,
-				       NULL,
-				       &err)) {
-                /*
-                 * This makes assumptions about what kind of
-                 * errors can occur inside e_cal_check_timezones().
-                 * We control it, so that should be safe, but
-                 * is the code really identical with the calendar
-                 * status?
-                 */
-		goto error;
-	    }
-	}
-
-	/* Merge the iCalendar components with our existing VCALENDAR,
-	 * resolving any conflicting TZIDs. */
-	icalcomponent_merge_component (priv->icalcomp, toplevel_comp);
 
 	save (cbfile, TRUE);
 
