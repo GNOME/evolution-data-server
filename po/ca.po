@@ -6146,7 +6146,7 @@ msgstr ""
 #: ../src/libedataserverui/e-trust-prompt.c:277
 #: ../src/modules/trust-prompt/module-trust-prompt.c:84
 msgid "The certificate’s activation time is still in the future."
-msgstr "La data d'activació del certificat ésta encara en el futur."
+msgstr "La data d'activació del certificat està encara en el futur."
 
 #: ../src/libedataserverui/e-trust-prompt.c:279
 #: ../src/modules/trust-prompt/module-trust-prompt.c:86
