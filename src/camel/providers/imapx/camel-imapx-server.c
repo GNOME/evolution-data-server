@@ -5509,7 +5509,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 				/* the 'stamps' hash table contains only those uid-s,
 				   which were also flagged, not only 'dirty' */
-				if (!g_hash_table_lookup (stamps, changed_uids->pdata[i]))
+				if (!g_hash_table_contains (stamps, changed_uids->pdata[i]))
 					continue;
 
 				info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), changed_uids->pdata[i]);
@@ -5645,7 +5645,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 			/* the 'stamps' hash table contains only those uid-s,
 			   which were also flagged, not only 'dirty' */
-			if (!g_hash_table_lookup (stamps, uid))
+			if (!g_hash_table_contains (stamps, uid))
 				continue;
 
 			info = camel_folder_summary_get (folder_summary, uid);
