@@ -977,6 +977,9 @@ get_folder_offline (CamelStore *store,
 	service = CAMEL_SERVICE (store);
 	user_cache_dir = camel_service_get_user_cache_dir (service);
 
+	if (g_ascii_strcasecmp (folder_name, "INBOX") == 0)
+		folder_name = "INBOX";
+
 	si = camel_store_summary_path (imapx_store->summary, folder_name);
 
 	if (si != NULL) {
@@ -2767,6 +2770,9 @@ imapx_store_folder_is_subscribed (CamelSubscribable *subscribable,
 
 	if (folder_name && *folder_name == '/')
 		folder_name++;
+
+	if (g_ascii_strcasecmp (folder_name, "INBOX") == 0)
+		folder_name = "INBOX";
 
 	si = camel_store_summary_path (imapx_store->summary, folder_name);
 	if (si != NULL) {
