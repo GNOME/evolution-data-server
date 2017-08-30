@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-08-15 14:33+0000\n"
-"PO-Revision-Date: 2017-08-24 04:44+0200\n"
+"POT-Creation-Date: 2017-08-24 02:45+0000\n"
+"PO-Revision-Date: 2017-08-30 13:48+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
 msgid "Failed to remove file “%s”: %s"
-msgstr "No si è rivâts a gjavâ il file  “%s”: %s"
+msgstr "No si è rivâts a gjavâ il file “%s”: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:148
 #, c-format
@@ -3158,12 +3158,12 @@ msgstr "Anulament sotscrizion de cartele “%s”"
 msgid "Could not parse URL “%s”"
 msgstr "Impussibil analizâ il URL “%s”"
 
-#: ../src/camel/camel-vee-folder.c:500
+#: ../src/camel/camel-vee-folder.c:558
 #, c-format
 msgid "Updating folder “%s”"
 msgstr "Daûr a inzornâ la cartele “%s”"
 
-#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
+#: ../src/camel/camel-vee-folder.c:958 ../src/camel/camel-vee-folder.c:1075
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Impussibil copiâ o spostâ messaçs intune Cartele Virtuâl"
@@ -3172,17 +3172,17 @@ msgstr "Impussibil copiâ o spostâ messaçs intune Cartele Virtuâl"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:937
+#: ../src/camel/camel-vee-folder.c:995
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Messaç %s in “%s : %s” inesistent"
 
-#: ../src/camel/camel-vee-folder.c:991
+#: ../src/camel/camel-vee-folder.c:1051
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Erôr tal archiviâ “%s”: "
 
-#: ../src/camel/camel-vee-folder.c:1241
+#: ../src/camel/camel-vee-folder.c:1301
 msgid "Automatically _update on change in source folders"
 msgstr "Inzorne in a_utomatic ai cambiaments des cartelis sorzint"
 
@@ -4336,11 +4336,11 @@ msgstr "Impussibil otignî il messaç %s: "
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:434
 #, c-format
 msgid "Posting failed: %s"
-msgstr ""
+msgstr "Publicazion falide: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:486
 msgid "Posting failed: "
-msgstr ""
+msgstr "Publicazion falide: "
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:659
 #, c-format
@@ -4392,6 +4392,8 @@ msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
 msgstr ""
+"Cheste opzion e permet di tacâsi al servidôr NNTP in maniere anonime, cence "
+"autenticazion"
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
@@ -4753,12 +4755,12 @@ msgstr "Impussibil analizâ i argoments"
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:215
 #, c-format
 msgid "Could not create pipe to “%s”: %s: mail not sent"
-msgstr ""
+msgstr "Impussibil creâ il condot viers “%s”: %s: pueste no inviade"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:246
 #, c-format
 msgid "Could not fork “%s”: %s: mail not sent"
-msgstr ""
+msgstr "Impussibil fâ il fork di “%s”: %s: pueste no inviade"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:301
 msgid "Could not send message: "
@@ -4914,35 +4916,41 @@ msgstr "Servizi no disponibil, daûr a sierâ il canâl di trasmission"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1094
 msgid "Requested mail action okay, completed"
-msgstr ""
+msgstr "La azion di pueste domandade e je juste, completade"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1096
 msgid "User not local; will forward to <forward-path>"
-msgstr ""
+msgstr "Utent no locâl; si mandarà indenant a <forward-path>"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1098
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr ""
+"No si à cjapât in caric la azion di pueste domandade: casele di pueste no "
+"disponibile"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Requested action not taken: mailbox unavailable"
 msgstr ""
+"No si à cjapât in caric la azion domandade: casele di pueste no disponibile"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1102
 msgid "Requested action aborted: error in processing"
-msgstr ""
+msgstr "E je stade interote la azion domandade: erôr te elaborazion"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1104
 msgid "User not local; please try <forward-path>"
-msgstr ""
+msgstr "Utent no locâl; prove <forward-path>"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1106
 msgid "Requested action not taken: insufficient system storage"
 msgstr ""
+"No si à cjapât in caric la azion domandade: archivi di sisteme no suficient"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1108
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr ""
+"E je stade interote la azion di pueste domandade: assegnazion di archivi "
+"superade"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1110
 msgid "Requested action not taken: mailbox name not allowed"
@@ -4962,7 +4970,7 @@ msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1120
 msgid "Authentication mechanism is too weak"
-msgstr ""
+msgstr "Il mecanisim di autenticazion al è masse debil"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1122
 msgid "Encryption required for requested authentication mechanism"
@@ -5026,28 +5034,30 @@ msgstr ""
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
-msgstr ""
+msgstr "Promemorie compleans e aniversaris"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
-msgstr ""
+msgstr "Indiche se stabilî un promemorie pai compleans e aniversaris"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:3
 msgid "Birthday and anniversary reminder value"
-msgstr ""
+msgstr "Valôr promemorie compleans e aniversaris"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
-msgstr ""
+msgstr "Numar di unitâts par determinâ un promemorie di complean o aniversari"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
 msgid "Birthday and anniversary reminder units"
-msgstr ""
+msgstr "Unitâts promemorie compleans e aniversaris"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:6
 msgid ""
 "Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”"
 msgstr ""
+"Unitâts di timp par un promemorie di complean o aniversari, “minutes”, "
+"“hours” o “days”"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:1
 msgid "Whether the migration of old setting was already done"
