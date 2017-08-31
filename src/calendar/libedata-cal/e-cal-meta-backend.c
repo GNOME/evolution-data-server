@@ -2050,7 +2050,9 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			if (existing_comp != master_comp) {
 				instances = g_slist_remove (instances, existing_comp);
 				g_clear_object (&existing_comp);
-			} else if (mod == E_CAL_OBJ_MOD_ONLY_THIS) {
+			}
+
+			if (existing_comp == master_comp && mod == E_CAL_OBJ_MOD_ONLY_THIS) {
 				success = FALSE;
 				g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 			} else {
