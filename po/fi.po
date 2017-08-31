@@ -12,10 +12,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-02-16 13:57+0000\n"
-"PO-Revision-Date: 2017-02-18 20:25+0200\n"
+"POT-Creation-Date: 2017-08-07 06:43+0000\n"
+"PO-Revision-Date: 2017-08-31 09:48+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -28,7 +28,6 @@ msgstr ""
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
-#| msgid "Failed to remove file '%s': %s"
 msgid "Failed to remove file “%s”: %s"
 msgstr "Tiedoston “%s” poistaminen epäonnistui: %s"
 
@@ -43,68 +42,64 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Lapsiprosessin \"%s\" luominen epäonnistui: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1256
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1257
 msgid "No UID in the contact"
 msgstr "UID puuttuu yhteystiedosta"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:851
+#: ../src/addressbook/backends/file/e-book-backend-file.c:852
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:990
+#: ../src/addressbook/backends/file/e-book-backend-file.c:991
 msgid "Loading..."
 msgstr "Ladataan..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:992
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4353
+#: ../src/addressbook/backends/file/e-book-backend-file.c:993
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4388
 msgid "Searching..."
 msgstr "Etsitään..."
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1284
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1285
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1475
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1560
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1476
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1561
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7342
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7411
 #, c-format
-#| msgid "Contact '%s' not found"
 msgid "Contact “%s” not found"
 msgstr "Yhteystietoa “%s” ei löydy"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1620
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1701
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1621
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1702
 #, c-format
-#| msgid "Protocol not supported"
 msgid "Query “%s” not supported"
 msgstr "Kysely “%s” ei ole tuettu"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1629
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1710
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1630
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1711
 #, c-format
-#| msgid "Invalid Query '%s'"
 msgid "Invalid Query “%s”"
 msgstr "Virheellinen kysely “%s”"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1976
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1998
 msgid "Requested to delete an unrelated cursor"
 msgstr ""
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2047
 #, c-format
-#| msgid "Failed to rename old database from '%s' to '%s': %s"
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Vanhan tietokannan “%s” nimen muuttaminen muotoon “%s” epäonnistui: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1162
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4243
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:384
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:867
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1165
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4278
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:233
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1079
@@ -119,10 +114,9 @@ msgstr "Vanhan tietokannan “%s” nimen muuttaminen muotoon “%s” epäonnis
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:707
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:755
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:772
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:201
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
+#: ../src/calendar/backends/http/e-cal-backend-http.c:199
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
 #: ../src/calendar/libecal/e-cal-client.c:3518
@@ -143,48 +137,35 @@ msgstr "Vanhan tietokannan “%s” nimen muuttaminen muotoon “%s” epäonnis
 #: ../src/calendar/libecal/e-cal-client.c:6450
 #: ../src/calendar/libecal/e-cal-client.c:6813
 #: ../src/calendar/libecal/e-cal-client.c:7035
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3048
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3058
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3070
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1740
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3050
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3060
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3072
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
+#: ../src/libedataserver/e-soup-session.c:1062
+#: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Tuntematon virhe"
 
-#. Query for new contacts asynchronously
-#: ../src/addressbook/backends/google/e-book-backend-google.c:782
-msgid "Querying for updated contacts…"
-msgstr "Haetaan päivittyneitä yhteystietoja..."
+#: ../src/addressbook/backends/google/e-book-backend-google.c:922
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
+msgid "Object to save is not a valid vCard"
+msgstr "Tallennettava objekti ei ole kelvollinen vCard"
 
-#. Run the query asynchronously
-#: ../src/addressbook/backends/google/e-book-backend-google.c:966
-msgid "Querying for updated groups…"
-msgstr "Haetaan päivittyneitä ryhmiä..."
+#: ../src/addressbook/backends/google/e-book-backend-google.c:974
+#, fuzzy
+#| msgid "Failed to authenticate on POP server %s: "
+msgid "Failed to create contact from returned server data"
+msgstr "Tunnistautuminen POP-palvelimelle %s epäonnistui:"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1749
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4995
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1504
-msgid "The backend does not support bulk additions"
-msgstr "Taustapalvelu ei tue massalisäyksiä"
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1906
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5131
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1626
-msgid "The backend does not support bulk modifications"
-msgstr "Taustapalvelu ei tue massamuokkauksia"
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:2115
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1726
-msgid "The backend does not support bulk removals"
-msgstr "Taustapalvelu ei tue massapoistoja"
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:2237
-msgid "Loading…"
-msgstr "Ladataan…"
+#: ../src/addressbook/backends/google/e-book-backend-google.c:990
+msgid "Server returned contact without UID"
+msgstr "Palvelin palautti yhteystiedon ilman UID:tä"
 
 #. System Group: My Contacts
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1670
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1658
 #: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -193,143 +174,109 @@ msgid "Personal"
 msgstr "Henkilökohtainen"
 
 #. System Group: Friends
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1672
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1660
 msgid "Friends"
 msgstr "Ystävät"
 
 #. System Group: Family
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1674
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1662
 msgid "Family"
 msgstr "Perhe"
 
 #. System Group: Coworkers
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1676
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1664
 msgid "Coworkers"
 msgstr "Työkaverit"
 
 #. Translators: An error message shown to a user when trying to do an
 #. * operation on the LDAP address book which is not connected to the server
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:110
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:112
 msgid "Not connected"
 msgstr "Ei yhteyttä"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:888
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:891
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1012
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1015
 msgid "Reconnecting to LDAP server..."
 msgstr "Odotetaan uudelleen yhteyttä LDAP-palvelimeen..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1143
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1146
 msgid "Invalid DN syntax"
 msgstr "Virheellinen DN-syntaksi"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1159
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4242
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1162
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4277
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP-virhe 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1771
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2094
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1778
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2101
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: ldap_first_entry palautti arvon NULL"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2024
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2152
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2031
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2159
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2285
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2412
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2292
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2419
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr ""
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4191
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4226
 msgid "Receiving LDAP search results..."
 msgstr "Vastaanotetaan LDAP-haun tuloksia..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4375
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4410
 msgid "Error performing search"
 msgstr "Virhe suoritettaessa hakua"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4508
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4543
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "Ladataan yhteystietoja (%d)..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5078
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5030
+msgid "The backend does not support bulk additions"
+msgstr "Taustapalvelu ei tue massalisäyksiä"
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5113
 msgid "Adding contact to LDAP server..."
 msgstr "Lisätään yhteystieto LDAP-palvelimelle..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5153
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5166
+msgid "The backend does not support bulk modifications"
+msgstr "Taustapalvelu ei tue massamuokkauksia"
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5188
 msgid "Modifying contact from LDAP server..."
 msgstr "Muokataan yhteystietoa LDAP-palvelimella..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5219
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5254
 msgid "Removing contact from LDAP server..."
 msgstr "Poistetaan yhteystieto LDAP-palvelimelta..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5614
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5649
 #, fuzzy, c-format
 #| msgid "Failed to get the DN for user '%s'"
 msgid "Failed to get the DN for user “%s”"
 msgstr "DN:n hakeminen käyttäjälle \"%s\" epäonnistui"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:588
-#: ../src/calendar/backends/http/e-cal-backend-http.c:514
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:173
 #, c-format
-msgid "Malformed URI: %s"
-msgstr "Virheellinen URI: %s"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:836
-msgid "Loading Addressbook summary..."
-msgstr "Ladataan osoitekirjan yhteenvetoa..."
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:864
-#, c-format
-msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr ""
-"PROPFIND-toiminto webdav-palvelimella epäonnistui HTTP-tilakoodilla %d (%s)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:883
-msgid "No response body in webdav PROPFIND result"
-msgstr "Vastausrunko puuttuu webdav-palvelimen vastauksesta PROPFIND-pyyntöön"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:944
-#, c-format
-msgid "Loading Contacts (%d%%)"
-msgstr "Ladataan yhteystietoja (%d%%)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1358
-msgid "Cannot transform SoupURI to string"
+msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr ""
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1555
-#, c-format
-#| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
-msgid "Create resource “%s” failed with HTTP status %d (%s)"
-msgstr "Resurssin “%s” luominen epäonnistui HTTP-tilakoodilla %d (%s)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1657
-msgid "Contact on server changed -> not modifying"
-msgstr "Yhteystieto muuttui palvelimella -> ei muokata"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1665
-#, c-format
-#| msgid "Modify contact failed with HTTP status: %d (%s)"
-msgid "Modify contact failed with HTTP status %d (%s)"
-msgstr "Yhteystiedon muokkaaminen epäonnistui HTTP-tilakoodilla %d (%s)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1758
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1774
-#, c-format
-msgid "DELETE failed with HTTP status %d"
-msgstr "DELETE epäonnistui HTTP-tilakoodilla %d"
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:855
+msgid "Received object is not a valid vCard"
+msgstr ""
 
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
 #, fuzzy
@@ -568,7 +515,6 @@ msgstr "Videoneuvottelun URL"
 
 #. Misc fields
 #: ../src/addressbook/libebook-contacts/e-contact.c:204
-#| msgid "Spouse's Name"
 msgid "Spouse’s Name"
 msgstr "Puolison nimi"
 
@@ -825,7 +771,7 @@ msgid "Birth Date"
 msgstr "Syntymäpäivä"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:946
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:937
 msgid "Anniversary"
 msgstr "Vuosipäivä"
 
@@ -976,9 +922,9 @@ msgid "Text is too long for a phone number"
 msgstr "Teksti on liian pitkä puhelinnumeroksi"
 
 #: ../src/addressbook/libebook/e-book-client.c:929
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown book property “%s”"
-msgstr "Tuntematon virhe: %s"
+msgstr "Tuntematon kirjan ominaisuus “%s”"
 
 #: ../src/addressbook/libebook/e-book-client.c:944
 #, fuzzy, c-format
@@ -1007,6 +953,7 @@ msgid "Error introspecting unknown summary field “%s”"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
+#: ../src/addressbook/libedata-book/e-book-cache.c:542
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
 #, fuzzy
 #| msgid ""
@@ -1018,6 +965,7 @@ msgstr ""
 "%s"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
+#: ../src/addressbook/libedata-book/e-book-cache.c:4475
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
 #: ../src/camel/camel-db.c:802
 #, c-format
@@ -1030,6 +978,7 @@ msgid "Invalid contact field “%d” specified in summary"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
+#: ../src/addressbook/libedata-book/e-book-cache.c:365
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:604
 #, c-format
 msgid ""
@@ -1038,33 +987,33 @@ msgid ""
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3073
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4176
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4177
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. vcards cannot be returned."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4307
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4400
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
+#: ../src/addressbook/libedata-book/e-book-cache.c:3433
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5817
 #, c-format
 msgid "Query contained unsupported elements"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4311
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4312
 #, c-format
-#| msgid "Invalid query"
 msgid "Invalid Query"
 msgstr "Virheellinen kysely"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4335
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4336
 #, c-format
 msgid ""
 "Full search_contacts are not stored in cache. Hence only summary query is "
 "supported."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4404
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4405
 #: ../src/addressbook/libedata-book/e-data-book.c:394
 #: ../src/addressbook/libedata-book/e-data-book.c:1144
 #: ../src/calendar/libedata-cal/e-data-cal.c:429
@@ -1074,40 +1023,41 @@ msgstr ""
 msgid "Invalid query"
 msgstr "Virheellinen kysely"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4447
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4448
 #, c-format
 msgid ""
 "Full vcards are not stored in cache. Hence only summary query is supported."
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5270
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:5271
 #, fuzzy, c-format
 #| msgid "Failed to remove file '%s': %s"
 msgid "Unable to remove the db file: errno %d"
 msgstr "Tiedoston \"%s\" poistaminen epäonnistui: %s"
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6057
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6457
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6058
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6458
 #, c-format
 msgid "Only summary queries are supported by EbSdbCursor"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6064
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6065
 #, c-format
 msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6078
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6079
 #, c-format
 msgid "Cannot sort by a field that is not in the summary"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6085
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6086
 #, c-format
 msgid "Cannot sort by a field which may have multiple values"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6218
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
+#: ../src/addressbook/libedata-book/e-book-cache.c:5561
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
@@ -1115,7 +1065,8 @@ msgid ""
 "the contact list"
 msgstr ""
 
-#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6226
+#: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
+#: ../src/addressbook/libedata-book/e-book-cache.c:5568
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
@@ -1123,22 +1074,86 @@ msgid ""
 "contact list"
 msgstr ""
 
+#: ../src/addressbook/libedata-book/e-book-cache.c:330
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:570
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr ""
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:3428
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1605
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2834
+#, c-format
+msgid "Invalid query: %s"
+msgstr "Virheellinen kysely: %s"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:3598
+#, fuzzy
+#| msgid "Invalid query: "
+msgid "Invalid query for a book cursor"
+msgstr "Virheellinen haku: "
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:4479
+#: ../src/libebackend/e-cache.c:756
+#, c-format
+msgid "Can’t open database %s: %s"
+msgstr "Tietokantaa %s ei voi avata: %s"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5082
+#: ../src/addressbook/libedata-book/e-book-cache.c:5134
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2250
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2313
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2484
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1314
+#: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
+#: ../src/libebackend/e-cache.c:2278
+#, c-format
+#| msgid "Contact “%s” not found"
+msgid "Object “%s” not found"
+msgstr "Objektia “%s” ei löydy"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5194
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2375
+#, fuzzy, c-format
+#| msgid "Contact “%s” not found"
+msgid "Object with extra “%s” not found"
+msgstr "Yhteystietoa “%s” ei löydy"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5348
+msgid "At least one sort field must be specified to use a cursor"
+msgstr ""
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5357
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
+msgid "Cannot sort by a field that is not a string type"
+msgstr ""
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1033
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1035
+#, c-format
+msgid "Preloaded object for UID “%s” is invalid"
+msgstr ""
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1041
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1043
+#, c-format
+msgid "Received object for UID “%s” is invalid"
+msgstr ""
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1868
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2222
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2987
+#, fuzzy, c-format
+#| msgid "Failed to create child process '%s': %s"
+msgid "Failed to create cache “%s”:"
+msgstr "Lapsiprosessin \"%s\" luominen epäonnistui: %s"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
 "Cannot upgrade contacts database from a legacy database with more than one "
 "addressbook. Delete one of the entries in the “folders” table first."
 msgstr ""
-
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
-#, c-format
-#| msgid "Invalid query: "
-msgid "Invalid query: %s"
-msgstr "Virheellinen kysely: %s"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5985
 #, fuzzy
@@ -1148,10 +1163,6 @@ msgstr "Virheellinen haku: "
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7938
 msgid "At least one sort field must be specified to use an EbSqlCursor"
-msgstr ""
-
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
-msgid "Cannot sort by a field that is not a string type"
 msgstr ""
 
 #: ../src/addressbook/libedata-book/e-data-book.c:378
@@ -1347,101 +1358,42 @@ msgstr "Kansio ei tue INBOXia"
 msgid "Cursor does not support alphabetic indexes"
 msgstr "IMAP-palvelin %s ei tue vaadittua varmennusmenetelmää %s"
 
+#: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:92
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:266
 msgid "Unrecognized cursor origin"
 msgstr ""
 
+#: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:151
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:334
 msgid "Out of sync revision while moving cursor"
 msgstr ""
 
+#: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:222
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:428
 msgid "Alphabetic index was set for incorrect locale"
 msgstr ""
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:705
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
 #, c-format
-msgid "Server is unreachable (%s)"
-msgstr "Palvelin ei ole tavoitettavissa (%s)"
+msgid "Given URL “%s” doesn’t reference CalDAV calendar"
+msgstr "Annettu osoite “%s” ei viittaa CalDAV-kalenteriin"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:731
-#, c-format
-#| msgid "Failed to get the DN for user '%s'"
-msgid "Failed to login to the server: %s"
-msgstr "Kirjautuminen palvelimelle epäonnistui: %s"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:753
-#, c-format
-#| msgid "Failed to connect to a server using SSL: %s"
-msgid "Failed to connect to a server using SSL/TLS: %s"
-msgstr "Yhteyden muodostaminen palvelimeen SSL/TLS:ää käyttäen epäonnistui: %s"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:769
-#, fuzzy, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s)"
-msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
-msgstr "Odottamaton HTTP-tilakoodi %d palautettiin (%s)"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:790
-msgid "CalDAV backend is not loaded yet"
-msgstr "CalDAV-taustapalvelua ei ole vielä ladattu"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1232
-#: ../src/libedataserver/e-webdav-discover.c:145
-msgid "Invalid Redirect URL"
-msgstr "Virheellinen uudelleenohjaus"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2946
-#, c-format
-#| msgid "Cannot create local cache folder '%s'"
-msgid "Cannot create local cache folder “%s”"
-msgstr "Paikallisen välimuistikansion “%s” luominen epäonnistui"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:3032
-#, c-format
-msgid ""
-"Server is unreachable, calendar is opened in read-only mode.\n"
-"Error message: %s"
-msgstr ""
-"Palvelimeen ei saatu yhteyttä, kalenteri avattiin vain-luku -tilassa.\n"
-"Virheviesti oli: %s"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4137
-msgid "CalDAV does not support bulk additions"
-msgstr "CalDAV ei tue massalisäyksiä"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4240
-msgid "CalDAV does not support bulk modifications"
-msgstr "CalDAV ei tue massamuokkauksia"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4521
-msgid "CalDAV does not support bulk removals"
-msgstr "CalDAV ei tue massapoistoja"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5268
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
 #, fuzzy
-#| msgid "Calendar doesn't support Free/Busy"
-msgid "Calendar doesn’t support Free/Busy"
-msgstr "Kalenteri ei tue Vapaa/Varattu -tiloja"
+#| msgid "Failed to encode data"
+msgid "Failed to parse response data"
+msgstr "Tiedon koodaus epäonnistui"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5277
-msgid "Schedule outbox url not found"
-msgstr ""
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5374
-msgid "Unexpected result in schedule-response"
-msgstr ""
-
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:948
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:939
 msgid "Birthday"
 msgstr "Syntymäpäivä"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:984
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:975
 #, c-format
 msgid "Birthday: %s"
 msgstr "Syntymäpäivä: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1015
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1006
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Vuosipäivä: %s"
@@ -1455,25 +1407,27 @@ msgstr "Kalenteritietoja ei voi tallentaa: virheellinen URI."
 msgid "Cannot save calendar data"
 msgstr "Kalenteritietoja ei voi tallentaa"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:583
-#, c-format
-msgid "Redirected to Invalid URI"
-msgstr "Uudelleenohjaus virheelliseen URI:in"
+#: ../src/calendar/backends/http/e-cal-backend-http.c:130
+#, fuzzy
+#| msgid "URI not loaded"
+msgid "URI not set"
+msgstr "URIa ei ole ladattu"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:642
+#: ../src/calendar/backends/http/e-cal-backend-http.c:198
+#, fuzzy, c-format
+#| msgid "Malformed URI: %s"
+msgid "Malformed URI “%s”: %s"
+msgstr "Virheellinen URI: %s"
+
+#: ../src/calendar/backends/http/e-cal-backend-http.c:341
 #, c-format
 msgid "Bad file format."
 msgstr "Virheellinen tiedostomuoto."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:652
+#: ../src/calendar/backends/http/e-cal-backend-http.c:349
 #, c-format
 msgid "Not a calendar."
 msgstr "Ei kalenteri."
-
-#: ../src/calendar/backends/http/e-cal-backend-http.c:956
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:710
-msgid "Could not create cache file"
-msgstr "Välimuistitiedostoa ei voitu luoda"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:196
 msgid "Could not retrieve weather data"
@@ -1543,6 +1497,10 @@ msgstr "%.1f"
 msgid "Forecast"
 msgstr "Sääennuste"
 
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:710
+msgid "Could not create cache file"
+msgstr "Välimuistitiedostoa ei voitu luoda"
+
 #: ../src/calendar/libecal/e-cal.c:2304
 msgid "Repository is offline"
 msgstr "Varasto on yhteydettömässä tilassa"
@@ -1587,7 +1545,6 @@ msgid "Protocol not supported"
 msgstr "Protokolla ei ole tuettu"
 
 #: ../src/calendar/libecal/e-cal.c:2324
-#| msgid "Operation has been canceled"
 msgid "Operation has been cancelled"
 msgstr "Toimenpide on peruttu"
 
@@ -1625,17 +1582,15 @@ msgstr "Virheellinen alue"
 
 #: ../src/calendar/libecal/e-cal-client.c:1063
 #, c-format
-#| msgid "Unknown calendar property '%s'"
 msgid "Unknown calendar property “%s”"
 msgstr "Tuntematon kalenteriominaisuus “%s”"
 
 #: ../src/calendar/libecal/e-cal-client.c:1078
 #, c-format
-#| msgid "Cannot change value of calendar property '%s'"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Kalenteriominaisuuden “%s” arvon muuttaminen ei onnistu"
 
-#: ../src/calendar/libecal/e-cal-component.c:1358
+#: ../src/calendar/libecal/e-cal-component.c:1330
 msgid "Untitled appointment"
 msgstr "Nimeämätön tapaaminen"
 
@@ -1788,19 +1743,19 @@ msgid "Undefined"
 msgstr "Määrittämätön"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1061
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1377
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1504
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1553
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1077
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1390
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1517
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1566
 #, fuzzy, c-format
 #| msgid "\"%s\" expects one argument"
 msgid "“%s” expects one argument"
 msgstr "\"%s\" ottaa yhden argumentin"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:672
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1384
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1392
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:686
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1397
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1405
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be a string"
 msgid "“%s” expects the first argument to be a string"
@@ -1814,11 +1769,11 @@ msgstr "\"%s\" olettaa kahta argumenttia"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:822
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1068
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1453
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1511
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1560
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:836
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1084
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1466
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1524
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1573
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be a time_t"
 msgid "“%s” expects the first argument to be a time_t"
@@ -1827,7 +1782,7 @@ msgstr "\"%s\" olettaa ensimmäisen argumentin olevan muotoa time_t"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:831
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:845
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be a time_t"
 msgid "“%s” expects the second argument to be a time_t"
@@ -1844,33 +1799,33 @@ msgid "“%s” expects none or two arguments"
 msgstr "\"%s\" olettaa kahta argumenttia"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:665
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:815
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1446
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1459
 #, fuzzy, c-format
 #| msgid "\"%s\" expects two arguments"
 msgid "“%s” expects two arguments"
 msgstr "\"%s\" olettaa kahta argumenttia"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:601
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:624
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:747
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:779
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:986
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1019
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1338
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:612
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:761
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:793
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1351
 #, fuzzy, c-format
 #| msgid "\"%s\" expects no arguments"
 msgid "“%s” expects no arguments"
 msgstr "\"%s\" ei ota argumentteja"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:681
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:695
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be a string"
 msgid "“%s” expects the second argument to be a string"
 msgstr "\"%s\" olettaa toisen argumentin olevan merkkijonon"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:712
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, fuzzy, c-format
 #| msgid ""
 #| "\"%s\" expects the first argument to be either \"any\", \"summary\", or "
@@ -1885,13 +1840,13 @@ msgstr ""
 "\"description\", \"sijainti\", \"attendee\", \"organizer\" tai "
 "\"classification\""
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:883
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:897
 #, fuzzy, c-format
 #| msgid "\"%s\" expects at least one argument"
 msgid "“%s” expects at least one argument"
 msgstr "\"%s\" tahtoo vähintään yhden argumentin"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:898
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:912
 #, fuzzy, c-format
 #| msgid ""
 #| "\"%s\" expects all arguments to be strings or one and only one argument "
@@ -1903,18 +1858,57 @@ msgstr ""
 "\"%s\" olettaa kaikkien argumenttien olevan merkkijonoja, tai yhden ja "
 "ainoastaan yhden olevan totuusarvoisen epätoden (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1401
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the first argument to be an ISO 8601 date/time string"
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "\"%s\" olettaa ensimmäisen argumentin olevan ISO-8601 muotoinen päiväys"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1462
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
 #, fuzzy, c-format
 #| msgid "\"%s\" expects the second argument to be an integer"
 msgid "“%s” expects the second argument to be an integer"
 msgstr "\"%s\" olettaa toisen argumentin olevan kokonaisluvun"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1739
+#, fuzzy, c-format
+msgid "Failed to create SQLite function, error code “%d”: %s"
+msgstr "Lapsiprosessin \"%s\" luominen epäonnistui: %s"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2248
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2311
+#, fuzzy, c-format
+#| msgid "Contact “%s” not found"
+msgid "Object “%s”, “%s” not found"
+msgstr "Yhteystietoa “%s” ei löydy"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3006
+#, fuzzy
+#| msgid "Cannot add contact: "
+msgid "Cannot add timezone without tzid"
+msgstr "Yhteystiedon lisäys epäonnistui: "
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3012
+#, fuzzy
+#| msgid "Cannot authenticate without a username"
+msgid "Cannot add timezone without component"
+msgstr "Tunnistautuminen ilman käyttäjätunnusta ei ole mahdollista"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3018
+#, fuzzy
+#| msgid "Cannot send message: one or more invalid recipients"
+msgid "Cannot add timezone with invalid component"
+msgstr "Viestiä ei voi lähettää: yksi tai useampi viallinen vastaanottaja"
+
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
+#, c-format
+msgid "Received object for UID “%s” doesn’t contain any expected component"
+msgstr ""
+
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3741
+msgid "attachment.dat"
+msgstr "liite.dat"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
@@ -2055,113 +2049,113 @@ msgstr "Tietoa ei voitu avata välimuistista: %s: %s"
 msgid "Could not rename “%s” to %s: %s"
 msgstr "Uudelleennimeäminen %s:stä %s:ksi epäonnistui: %s"
 
-#: ../src/camel/camel-filter-driver.c:990
-#: ../src/camel/camel-filter-search.c:779
+#: ../src/camel/camel-filter-driver.c:991
+#: ../src/camel/camel-filter-search.c:871
 #, fuzzy, c-format
 #| msgid "Failed to create child process '%s': %s"
 msgid "Failed to create child process “%s”: %s"
 msgstr "Lapsiprosessin \"%s\" luominen epäonnistui: %s"
 
-#: ../src/camel/camel-filter-driver.c:1038
+#: ../src/camel/camel-filter-driver.c:1039
 #, c-format
 msgid "Invalid message stream received from %s: %s"
 msgstr "Virheellinen viestivirta lähteestä %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1245
-#: ../src/camel/camel-filter-driver.c:1254
+#: ../src/camel/camel-filter-driver.c:1246
+#: ../src/camel/camel-filter-driver.c:1255
 msgid "Syncing folders"
 msgstr "Synkronoidaan kansiota"
 
-#: ../src/camel/camel-filter-driver.c:1352
+#: ../src/camel/camel-filter-driver.c:1358
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "Virhe jäsennettäessä suodatinta: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1363
+#: ../src/camel/camel-filter-driver.c:1369
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "Virhe suoritettaessa suodatinta: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1460
+#: ../src/camel/camel-filter-driver.c:1466
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "Saapuvien viestien kansiota ei voitu avata"
 
-#: ../src/camel/camel-filter-driver.c:1472
+#: ../src/camel/camel-filter-driver.c:1478
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "Saapuvien viestien kansiota ei voitu käsitellä"
 
-#: ../src/camel/camel-filter-driver.c:1496
+#: ../src/camel/camel-filter-driver.c:1502
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "Haetaan viestiä %d (%d %%)"
 
-#: ../src/camel/camel-filter-driver.c:1505
-#: ../src/camel/camel-filter-driver.c:1528
+#: ../src/camel/camel-filter-driver.c:1511
+#: ../src/camel/camel-filter-driver.c:1534
 #, c-format
 msgid "Failed on message %d"
 msgstr "Virhe viestin %d kohdalla"
 
-#: ../src/camel/camel-filter-driver.c:1547
-#: ../src/camel/camel-filter-driver.c:1661
+#: ../src/camel/camel-filter-driver.c:1553
+#: ../src/camel/camel-filter-driver.c:1667
 msgid "Syncing folder"
 msgstr "Synkronoidaan kansiota"
 
-#: ../src/camel/camel-filter-driver.c:1552
-#: ../src/camel/camel-filter-driver.c:1669
+#: ../src/camel/camel-filter-driver.c:1558
+#: ../src/camel/camel-filter-driver.c:1675
 msgid "Complete"
 msgstr "Valmis"
 
-#: ../src/camel/camel-filter-driver.c:1615
+#: ../src/camel/camel-filter-driver.c:1621
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "Haetaan viestiä %d / %d"
 
-#: ../src/camel/camel-filter-driver.c:1633
+#: ../src/camel/camel-filter-driver.c:1639
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "Virhe viestin %d/%d kohdalla"
 
-#: ../src/camel/camel-filter-driver.c:1828
-#: ../src/camel/camel-filter-driver.c:1855
+#: ../src/camel/camel-filter-driver.c:1844
+#: ../src/camel/camel-filter-driver.c:1868
 #, fuzzy, c-format
 #| msgid "Execution of filter '%s' failed: "
 msgid "Execution of filter “%s” failed: "
 msgstr "Suodattimen \"%s\" suorittaminen epäonnistui: "
 
-#: ../src/camel/camel-filter-driver.c:1845
+#: ../src/camel/camel-filter-driver.c:1858
 #, fuzzy, c-format
 #| msgid "Error parsing filter: %s: %s"
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "Virhe jäsennettäessä suodatinta: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1864
+#: ../src/camel/camel-filter-driver.c:1877
 #, fuzzy, c-format
 #| msgid "Error executing filter: %s: %s"
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "Virhe suoritettaessa suodatinta: %s: %s"
 
-#: ../src/camel/camel-filter-search.c:137
+#: ../src/camel/camel-filter-search.c:167
 msgid "Failed to retrieve message"
 msgstr "Viestiä ei voitu hakea."
 
-#: ../src/camel/camel-filter-search.c:519
+#: ../src/camel/camel-filter-search.c:588
 msgid "Invalid arguments to (system-flag)"
 msgstr "Virheellisiä argumentteja (system-flag)"
 
-#: ../src/camel/camel-filter-search.c:537
+#: ../src/camel/camel-filter-search.c:607
 msgid "Invalid arguments to (user-tag)"
 msgstr "Virheellisiä argumentteja (user-tag)"
 
-#: ../src/camel/camel-filter-search.c:1066
+#: ../src/camel/camel-filter-search.c:1170
 #, fuzzy
 #| msgid "Invalid arguments to (system-flag)"
 msgid "Invalid arguments to (message-location)"
 msgstr "Virheellisiä argumentteja (system-flag)"
 
-#: ../src/camel/camel-filter-search.c:1147
-#: ../src/camel/camel-filter-search.c:1158
+#: ../src/camel/camel-filter-search.c:1261
+#: ../src/camel/camel-filter-search.c:1272
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Virhe suoritettaessa suodatinhakua: %s: %s"
@@ -2196,19 +2190,19 @@ msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Suodatetaan uusia viestejä"
 msgstr[1] "Suodatetaan uusia viestejä"
 
-#: ../src/camel/camel-folder.c:1016
+#: ../src/camel/camel-folder.c:1030
 #: ../src/camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Siirretään viestejä"
 
-#: ../src/camel/camel-folder.c:1019
+#: ../src/camel/camel-folder.c:1033
 msgid "Copying messages"
 msgstr "Kopioidaan viestejä"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1064
+#: ../src/camel/camel-folder.c:1078
 #, fuzzy, c-format
 #| msgid "No provider available for protocol '%s'"
 msgid "Quota information not supported for folder “%s : %s”"
@@ -2217,16 +2211,15 @@ msgstr "Protokollalle \"%s\" ei ole saatavilla tuottajaa"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1166
+#: ../src/camel/camel-folder.c:1180
 #, c-format
-#| msgid "Opening folder '%s'"
 msgid "Filtering folder “%s : %s”"
 msgstr "Suodatetaan kansiota “%s : %s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2971
+#: ../src/camel/camel-folder.c:2985
 #, fuzzy, c-format
 #| msgid "Expunging folder '%s'"
 msgid "Expunging folder “%s : %s”"
@@ -2235,7 +2228,7 @@ msgstr "Siivotaan poistettuja kansiosta ”%s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3105
+#: ../src/camel/camel-folder.c:3119
 #, fuzzy, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Haetaan POP-viestiä %d"
@@ -2243,7 +2236,7 @@ msgstr "Haetaan POP-viestiä %d"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3327
+#: ../src/camel/camel-folder.c:3341
 #, fuzzy, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
@@ -2251,11 +2244,11 @@ msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3625
-#, fuzzy, c-format
+#: ../src/camel/camel-folder.c:3639
+#, c-format
 #| msgid "Refreshing folder '%s'"
 msgid "Refreshing folder “%s : %s”"
-msgstr "Päivitetään kansiota ”%s”"
+msgstr "Päivitetään kansiota “%s : %s”"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
 #: ../src/camel/camel-folder-search.c:898
@@ -2312,7 +2305,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1612
+#: ../src/camel/camel-folder-summary.c:1647
 #, fuzzy, c-format
 #| msgid "Cannot write offline journal for folder '%s': %s"
 msgid "Release unused memory for folder “%s : %s”"
@@ -2358,9 +2351,6 @@ msgstr "gpg salalausepyynnön tulkinta epäonnistui."
 
 #: ../src/camel/camel-gpg-context.c:1048
 #, c-format
-#| msgid ""
-#| "You need a PIN to unlock the key for your\n"
-#| "SmartCard: \"%s\""
 msgid ""
 "You need a PIN to unlock the key for your\n"
 "SmartCard: “%s”"
@@ -2370,9 +2360,6 @@ msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1052
 #, c-format
-#| msgid ""
-#| "You need a passphrase to unlock the key for\n"
-#| "user: \"%s\""
 msgid ""
 "You need a passphrase to unlock the key for\n"
 "user: “%s”"
@@ -2393,7 +2380,7 @@ msgid ""
 msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:398
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:405
 #: ../src/libedataserver/e-client.c:161
 #, c-format
 msgid "Cancelled"
@@ -2443,9 +2430,8 @@ msgid "Cannot verify message signature: Incorrect message format"
 msgstr "Viestin allekirjoitusta ei voi tarkistaa: virheellinen viestin muoto"
 
 #: ../src/camel/camel-gpg-context.c:2211
-#, fuzzy
 msgid "Cannot verify message signature: "
-msgstr "Viestin allekirjoitusta ei voi tarkistaa: virheellinen viestin muoto"
+msgstr "Viestin allekirjoitusta ei voi vahvistaa: "
 
 #: ../src/camel/camel-gpg-context.c:2340
 #, fuzzy
@@ -2468,10 +2454,10 @@ msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME-osan salauksen purku epäonnistui: protokollavirhe"
 
 #: ../src/camel/camel-gpg-context.c:2561
-#, fuzzy, c-format
+#, c-format
 #| msgid "Failed to decrypt MIME part: protocol error"
 msgid "Failed to decrypt MIME part: Secret key not found"
-msgstr "MIME-osan salauksen purku epäonnistui: protokollavirhe"
+msgstr "MIME-osan salauksen purku epäonnistui: salaista avainta ei löytynyt"
 
 #: ../src/camel/camel-gpg-context.c:2597
 #: ../src/camel/camel-smime-context.c:1286
@@ -2690,7 +2676,7 @@ msgid "No provider available for protocol “%s”"
 msgstr "Protokollalle \"%s\" ei ole saatavilla tuottajaa"
 
 #: ../src/camel/camel-sasl-anonymous.c:35
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:82
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:85
 msgid "Anonymous"
 msgstr "Anonyymi"
 
@@ -2939,7 +2925,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Protokollalle \"%s\" ei ole saatavilla tuottajaa"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2997
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2999
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -2994,7 +2980,6 @@ msgstr "CMS allekirjoitusaikaa ei voi lisätä"
 #: ../src/camel/camel-smime-context.c:434
 #: ../src/camel/camel-smime-context.c:449
 #, c-format
-#| msgid "Encryption certificate for '%s' does not exist"
 msgid "Encryption certificate for “%s” does not exist"
 msgstr "Salausvarmennetta kohteelle “%s” ei ole olemassa."
 
@@ -3156,46 +3141,44 @@ msgstr "Tiedon lisäys koodaajaan epäonnistui"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME purku: salauskontekstia ei löytynyt"
 
-#: ../src/camel/camel-store.c:1370
+#: ../src/camel/camel-store.c:1400
 #, c-format
-#| msgid "Opening folder '%s'"
 msgid "Opening folder “%s”"
 msgstr "Avataan kansiota “%s”"
 
-#: ../src/camel/camel-store.c:1665
+#: ../src/camel/camel-store.c:1695
 #, fuzzy, c-format
 #| msgid "Scanning folders in '%s'"
 msgid "Scanning folders in “%s”"
 msgstr "Tutkitaan kansion ”%s” alikansioita"
 
-#: ../src/camel/camel-store.c:1693 ../src/camel/camel-store.c:1738
+#: ../src/camel/camel-store.c:1723 ../src/camel/camel-store.c:1768
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Roskakori"
 
-#: ../src/camel/camel-store.c:1707 ../src/camel/camel-store.c:1755
+#: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1785
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Roskaposti"
 
-#: ../src/camel/camel-store.c:2356
+#: ../src/camel/camel-store.c:2386
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kansiota ei voi luoda: %s: kansio on olemassa"
 
-#: ../src/camel/camel-store.c:2363
+#: ../src/camel/camel-store.c:2393
 #, c-format
-#| msgid "Creating folder '%s'"
 msgid "Creating folder “%s”"
 msgstr "Luodaan kansiota “%s”"
 
-#: ../src/camel/camel-store.c:2540 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:422
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kansion poistaminen ei onnistu: %s: Virheellinen tapahtuma"
 
-#: ../src/camel/camel-store.c:2730 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:473
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3229,13 +3212,11 @@ msgstr "Yhteys peruutettu"
 
 #: ../src/camel/camel-stream-process.c:289
 #, c-format
-#| msgid "Could not connect with command \"%s\": %s"
 msgid "Could not connect with command “%s”: %s"
 msgstr "Yhdistäminen komennolla “%s” epäonnistui: %s"
 
 #: ../src/camel/camel-subscribable.c:234
 #, c-format
-#| msgid "Subscribing to folder '%s'"
 msgid "Subscribing to folder “%s”"
 msgstr "Tilataan kansio “%s”"
 
@@ -3250,13 +3231,12 @@ msgstr "_Näytä ainoastaan tilatut kansiot"
 msgid "Could not parse URL “%s”"
 msgstr "URLia \"%s\" ei voi tulkita"
 
-#: ../src/camel/camel-vee-folder.c:498
+#: ../src/camel/camel-vee-folder.c:500
 #, c-format
-#| msgid "Updating folder '%s'"
 msgid "Updating folder “%s”"
 msgstr "Päivitetään kansiota “%s”"
 
-#: ../src/camel/camel-vee-folder.c:898 ../src/camel/camel-vee-folder.c:1013
+#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr ""
@@ -3266,18 +3246,18 @@ msgstr ""
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:935
+#: ../src/camel/camel-vee-folder.c:937
 #, fuzzy, c-format
 #| msgid "No such message %s in %s"
 msgid "No such message %s in “%s : %s”"
 msgstr "Viestiä %s ei voitu löytää %s:stä"
 
-#: ../src/camel/camel-vee-folder.c:989
+#: ../src/camel/camel-vee-folder.c:991
 #, fuzzy, c-format
 msgid "Error storing “%s”: "
 msgstr "Virhe tallennettaessa \"%s\": %s"
 
-#: ../src/camel/camel-vee-folder.c:1236
+#: ../src/camel/camel-vee-folder.c:1241
 msgid "Automatically _update on change in source folders"
 msgstr ""
 
@@ -3287,21 +3267,21 @@ msgstr ""
 msgid "Unmatched"
 msgstr "Ei vastaavaa"
 
-#: ../src/camel/camel-vee-store.c:446
+#: ../src/camel/camel-vee-store.c:448
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Kansion poistaminen ei onnistu: %s: Kansiota ei ole"
 
-#: ../src/camel/camel-vee-store.c:481
+#: ../src/camel/camel-vee-store.c:483
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Kansion nimeäminen ei onnistu: %s: kansiota ei löydy"
 
-#: ../src/camel/camel-vee-store.c:544
+#: ../src/camel/camel-vee-store.c:546
 msgid "Enable _Unmatched folder"
 msgstr ""
 
-#: ../src/camel/camel-vee-store.c:1067
+#: ../src/camel/camel-vee-store.c:1073
 #, fuzzy
 msgid "Updating Unmatched search folder"
 msgstr "Tallennetaan kansiota"
@@ -3323,15 +3303,15 @@ msgstr ""
 "loppuun"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3130
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3132
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1348
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2160
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2304
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1346
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2158
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2306
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:835
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1047
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:920
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1134
 #: ../src/camel/providers/pop3/camel-pop3-store.c:294
 #: ../src/camel/providers/pop3/camel-pop3-store.c:527
 #: ../src/camel/providers/pop3/camel-pop3-store.c:575
@@ -3344,18 +3324,18 @@ msgstr ""
 "Sinun täytyy olla yhteydellisessä tilassa suorittaaksesi tämän toiminnon "
 "loppuun"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1555
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1643
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1602
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1690
 #, c-format
 msgid "No destination folder specified"
 msgstr "Kohdekansiota ei määritelty"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1582
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1629
 #, fuzzy
 msgid "Unable to move junk messages"
 msgstr "Viestin haku epäonnistui: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1677
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1724
 #, fuzzy
 msgid "Unable to move deleted messages"
 msgstr "Viestin haku epäonnistui: %s"
@@ -3369,21 +3349,21 @@ msgstr "Viestin haku epäonnistui: %s"
 msgid "No quota information available for folder “%s : %s”"
 msgstr "Protokollalle \"%s\" ei ole saatavilla tuottajaa"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:980
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:754
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:983
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:841
 msgid "Apply message _filters to this folder"
 msgstr "Toteuta v_iestisuodattimet tässä kansiossa"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:991
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:994
 msgid "Always check for _new mail in this folder"
 msgstr "Etsi aina uusia _viestejä tästä kansiosta"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1102
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1105
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1114
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1117
 #, fuzzy, c-format
 msgid "Could not create cache for %s: "
 msgstr "Välimuistitiedostoa ei voitu luoda"
@@ -3391,7 +3371,7 @@ msgstr "Välimuistitiedostoa ei voitu luoda"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1330
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1333
 #, fuzzy, c-format
 #| msgid "No provider available for protocol '%s'"
 msgid "No IMAP mailbox available for folder “%s : %s”"
@@ -3497,8 +3477,8 @@ msgid "IMAP over TLS"
 msgstr "IMAP TLS:llä"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:87
-msgid "IMAP+"
-msgstr "IMAP+"
+msgid "IMAP"
+msgstr "IMAP"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "For reading and storing mail on IMAP servers."
@@ -3509,45 +3489,45 @@ msgstr "Sähköpostien luku ja tallennus IMAP-palvelimilta."
 msgid "Error writing to cache stream"
 msgstr "Virhe kirjoitettaessa väliaikaista viestitiedostoa: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2901
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3163
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2815
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2903
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3165
 #, fuzzy
 msgid "Failed to get capabilities"
 msgstr "Välimuistiin tallennus epäonnistui %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2832
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2834
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr ""
 "IMAP-palvelimeen %s yhdistäminen turvallisessa muodossa epäonnistui: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2833
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2835
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTTLS laajennos ei ole käytettävissä"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2842
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2844
 msgid "Failed to issue STARTTLS"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2890
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2892
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "IMAP-palvelimeen %s yhdistäminen turvallisessa tilassa epäonnistui: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2984
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2986
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-palvelin %s ei tue tunnistautumismenetelmää %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3015
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3017
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Tunnistautuminen ilman käyttäjätunnusta ei ole mahdollista"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3024
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3026
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
@@ -3555,79 +3535,79 @@ msgstr "Tunnistautuminen ilman käyttäjätunnusta ei ole mahdollista"
 msgid "Authentication password not available"
 msgstr "Todennus epäonnistui"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3032
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3034
 msgid "Failed to authenticate"
 msgstr "Tunnistautuminen epäonnistui"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3185
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3187
 msgid "Failed to issue NAMESPACE"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3203
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3205
 #, fuzzy
 msgid "Failed to enable QResync"
 msgstr "Välimuistiin tallennus epäonnistui %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3235
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3237
 #, fuzzy
 msgid "Failed to issue NOTIFY"
 msgstr "Virhe viestin %d kohdalla"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3713
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3715
 msgid "Failed to select mailbox"
 msgstr "Postilaatikon valinta epäonnistui"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3816
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3818
 #, fuzzy
 msgid "Cannot issue command, no stream available"
 msgstr "Palvelu ei ole saatavilla"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4080
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4082
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Viestiä tunnisteella %s ei voi noutaa: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4081
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4083
 msgid "No such message available."
 msgstr "Tämä viesti ei ole saatavilla."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4118
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4143
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4182
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4120
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4145
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4184
 msgid "Error fetching message"
 msgstr "Virhe viestiä noutaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4160
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4162
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4763
 #, fuzzy
 msgid "Error performing NOOP"
 msgstr "Virhe suoritettaessa hakua"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4175
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4177
 #, fuzzy
 msgid "Failed to close the tmp stream"
 msgstr "Tiedon koodaus epäonnistui"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4206
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4208
 #, fuzzy
 msgid "Failed to copy the tmp file"
 msgstr "Välimuistiin tallennus epäonnistui %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4371
 msgid "Error moving messages"
 msgstr "Virhe viestejä siirtäessä"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4371
 msgid "Error copying messages"
 msgstr "Virhe viestejä kopioitaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4554
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4575
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4556
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4577
 #, fuzzy
 msgid "Cannot create spool file: "
 msgstr "Viestiä ei voi luoda: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4661
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4663
 #, fuzzy
 msgid "Error appending message"
 msgstr "Lähetetään viestiä"
@@ -3635,12 +3615,12 @@ msgstr "Lähetetään viestiä"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4912
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4916
 #, fuzzy, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Etsitään muuttuneita viestejä kansiosta %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4916
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4920
 #, fuzzy
 #| msgid "Error syncing changes"
 msgid "Error scanning changes"
@@ -3649,76 +3629,75 @@ msgstr "Virhe muutoksia synkronoidessa"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4937
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4941
 #, fuzzy, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Haetaan yhteenvetoa uusista viesteistä kansiossa %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4955
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4959
 #, fuzzy
 #| msgid "Error fetching message"
 msgid "Error fetching message info"
 msgstr "Virhe viestiä noutaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5037
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5041
 msgid "Error running STATUS"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5544
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5574
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5609
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5548
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5578
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5613
 msgid "Error syncing changes"
 msgstr "Virhe muutoksia synkronoidessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5747
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5751
 #, fuzzy
 msgid "Error expunging message"
 msgstr "Poistetaan vanhoja viestejä pysyvästi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5819
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5823
 msgid "Error fetching folders"
 msgstr "Virhe kansioita noutaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
-#| msgid "Error fetching folders"
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5834
 msgid "Error fetching subscribed folders"
 msgstr "Virhe tilattuja kansioita noutaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5852
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error creating folder"
 msgstr "Virhe luotaessa kansiota"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5908
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5912
 msgid "Error deleting folder"
 msgstr "Virhe kansiota poistaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5954
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5958
 msgid "Error renaming folder"
 msgstr "Virhe kansion nimeä muutettaessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5986
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5990
 msgid "Error subscribing to folder"
 msgstr "Virhe kansiota tilatessa"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6022
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6026
 #, fuzzy
 msgid "Error unsubscribing from folder"
 msgstr "_Näytä ainoastaan tilatut kansiot"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6062
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6066
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-palvelin ei tue quota-tilarajoja"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6074
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6078
 msgid "Error retrieving quota information"
 msgstr "Virhe haettaessa kiintiötietoja"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6121
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6125
 msgid "Search failed"
 msgstr "Haku epäonnistui"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6239
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
 #, fuzzy
 msgid "Error running IDLE"
 msgstr "Virhe suoritettaessa hakua"
@@ -3744,40 +3723,38 @@ msgstr "Imap-palvelin %s"
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-palvelin %s:lle palvelimella %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:873
+#: ../src/camel/providers/imapx/camel-imapx-store.c:896
 msgid "No IMAPx connection object provided"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:890
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:92
+#: ../src/camel/providers/imapx/camel-imapx-store.c:913
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:95
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Salasana"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:892
+#: ../src/camel/providers/imapx/camel-imapx-store.c:915
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "Ota yhteys IMAP-palvelimeen selväkielistä salasanaa käyttäen."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:975
+#: ../src/camel/providers/imapx/camel-imapx-store.c:998
 #, c-format
 msgid "No such folder %s"
 msgstr "Kansioita %s ei ole olemassa"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1425
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1461
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr ""
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1686
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1920
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1729
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1963
 #, fuzzy, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Valmistellaan kansiota \"%s\" yhteydettömään tilaan"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2137
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2180
 #, c-format
-#| msgid ""
-#| "The folder name \"%s\" is invalid because it contains the character \"%c\""
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Kansion nimi “%s” ei ole kelvollinen koska se sisältää merkin “%c”"
 
@@ -3786,99 +3763,99 @@ msgstr "Kansion nimi “%s” ei ole kelvollinen koska se sisältää merkin “
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2514
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2557
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Luonnokset"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2515
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2558
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Luonnokset"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2516
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2559
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Luonnos"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2519
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2562
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Mallit"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2522
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2565
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arkisto"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2525
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2568
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Lähetetyt"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2526
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2569
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Lähetetyt"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2527
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2570
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Lähetetyt kohteet"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2528
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2571
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Lähetetyt viestit"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2531
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2574
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Roskaposti"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2532
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2575
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Roskaposti"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2533
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2576
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Roskaposti"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2534
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2577
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Roskaposti"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2535
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2578
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Roskaposti"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2536
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2579
 #, fuzzy
 #| msgid "Mail"
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Sähköposti"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2539
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2582
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Roskakori"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2540
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2583
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Roskakori"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2541
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2584
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Poistetut kohteet"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2542
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2585
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Poistetut viestit"
@@ -3947,7 +3924,6 @@ msgid "For storing local mail in MH-like mail directories."
 msgstr "Sähköpostin tallennus MH-muotoisiin hakemistoihin paikallisesti."
 
 #: ../src/camel/providers/local/camel-local-provider.c:65
-#| msgid "_Apply filters to new messages in Inbox"
 msgid "Apply _filters to new messages"
 msgstr "_Käytä suodattimia uusille viesteille"
 
@@ -4103,7 +4079,6 @@ msgstr "Kansio %s on jo olemassa"
 #: ../src/camel/providers/local/camel-mbox-store.c:399
 #: ../src/camel/providers/local/camel-mbox-store.c:420
 #, c-format
-#| msgid "Cannot create folder: %s: %s"
 msgid "Cannot create folder “%s”: %s"
 msgstr "Kansiota “%s” ei voi luoda:: %s"
 
@@ -4150,21 +4125,21 @@ msgstr "ei maildir-hakemisto"
 msgid "Could not scan folder “%s”: %s"
 msgstr "Kansiota \"%s\" ei voitu käydä läpi: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:448
-#: ../src/camel/providers/local/camel-maildir-summary.c:589
+#: ../src/camel/providers/local/camel-maildir-summary.c:457
+#: ../src/camel/providers/local/camel-maildir-summary.c:596
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Maildir-kansiota ei voi avata: %s: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:580
+#: ../src/camel/providers/local/camel-maildir-summary.c:587
 msgid "Checking folder consistency"
 msgstr "Tarkastetaan kansion yhdenmukaisuutta"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:679
+#: ../src/camel/providers/local/camel-maildir-summary.c:709
 msgid "Checking for new messages"
 msgstr "Etsitään uusia viestejä"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:782
+#: ../src/camel/providers/local/camel-maildir-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
 #: ../src/camel/providers/local/camel-mbox-summary.c:585
 #: ../src/camel/providers/local/camel-mbox-summary.c:739
@@ -4205,10 +4180,10 @@ msgid "Cannot get folder “%s”: not a regular file."
 msgstr "Kansiota \"%s\" ei voitu avata: ei ole tavallinen tiedosto"
 
 #: ../src/camel/providers/local/camel-mbox-store.c:594
-#, fuzzy, c-format
+#, c-format
 #| msgid "Cannot create directory '%s': %s."
 msgid "Cannot create directory “%s”: %s."
-msgstr "Kansiota \"%s\" ei voi luoda: %s."
+msgstr "Ei voi luoda kansiota “%s”: %s."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:606
 #, c-format
@@ -4223,9 +4198,6 @@ msgstr "Kansio on jo olemassa"
 #: ../src/camel/providers/local/camel-mbox-store.c:661
 #: ../src/camel/providers/local/camel-mbox-store.c:690
 #, c-format
-#| msgid ""
-#| "Could not delete folder '%s':\n"
-#| "%s"
 msgid ""
 "Could not delete folder “%s”:\n"
 "%s"
@@ -4235,13 +4207,11 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-mbox-store.c:671
 #, c-format
-#| msgid "'%s' is not a regular file."
 msgid "“%s” is not a regular file."
 msgstr "“%s” ei ole tavallinen tiedosto."
 
 #: ../src/camel/providers/local/camel-mbox-store.c:680
 #, c-format
-#| msgid "Folder '%s' is not empty. Not deleted."
 msgid "Folder “%s” is not empty. Not deleted."
 msgstr "Kansio “%s” ei ole tyhjä, sitä ei poistettu."
 
@@ -4346,7 +4316,6 @@ msgstr "Viestiä ei voi liittää MH-kansioon: %s: %s"
 
 #: ../src/camel/providers/local/camel-mh-store.c:538
 #, c-format
-#| msgid "Could not create folder '%s': %s"
 msgid "Could not create folder “%s”: %s"
 msgstr "Kansiota “%s” ei voi luoda: %s"
 
@@ -4390,15 +4359,11 @@ msgstr "Virheellinen lähde"
 
 #: ../src/camel/providers/local/camel-spool-store.c:478
 #, c-format
-#| msgid "Folder '%s/%s' does not exist."
 msgid "Folder “%s/%s” does not exist."
 msgstr "Kansiota “%s/%s” ei ole olemassa."
 
 #: ../src/camel/providers/local/camel-spool-store.c:491
 #, c-format
-#| msgid ""
-#| "Could not open folder '%s':\n"
-#| "%s"
 msgid ""
 "Could not open folder “%s”:\n"
 "%s"
@@ -4408,15 +4373,11 @@ msgstr ""
 
 #: ../src/camel/providers/local/camel-spool-store.c:497
 #, c-format
-#| msgid "Folder '%s' does not exist."
 msgid "Folder “%s” does not exist."
 msgstr "Kansiota “%s” ei ole olemassa."
 
 #: ../src/camel/providers/local/camel-spool-store.c:505
 #, c-format
-#| msgid ""
-#| "Could not create folder '%s':\n"
-#| "%s"
 msgid ""
 "Could not create folder “%s”:\n"
 "%s"
@@ -4425,10 +4386,10 @@ msgstr ""
 "%s"
 
 #: ../src/camel/providers/local/camel-spool-store.c:518
-#, fuzzy, c-format
+#, c-format
 #| msgid "'%s' is not a mailbox file."
 msgid "“%s” is not a mailbox file."
-msgstr "\"%s\" ei ole mailbox-muotoinen tiedosto."
+msgstr "“%s” ei ole mailbox-tiedosto."
 
 #: ../src/camel/providers/local/camel-spool-store.c:582
 #, c-format
@@ -4469,21 +4430,21 @@ msgstr ""
 "Kansio saattaa olla vaurioitunut, kopio tallennettu tiedostoon \"%s\""
 
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:219
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:584
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:636
 #, c-format
 msgid "Internal error: UID in invalid format: %s"
 msgstr "Sisäinen virhe: UID on virheellisessä muodossa: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:289
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:294
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:287
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:292
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:575
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1003
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1090
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Viestin %s hakeminen ei onnistu: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:301
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:618
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:299
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:670
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:479
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:511
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:543
@@ -4499,16 +4460,16 @@ msgstr "Viestin %s hakeminen ei onnistu: %s"
 msgid "Posting failed: %s"
 msgstr "Postitus epäonnistui: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:488
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:486
 msgid "Posting failed: "
 msgstr "Postitus epäonnistui: "
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:607
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:659
 #, c-format
 msgid "This message is not currently available"
 msgstr "Tämä viesti ei ole juuri nyt saatavilla"
 
-#: ../src/camel/providers/nntp/camel-nntp-folder.c:716
+#: ../src/camel/providers/nntp/camel-nntp-folder.c:768
 #, c-format
 msgid "You cannot copy messages from a NNTP folder"
 msgstr "Et voi kopioida viestejä NNTP-kansiosta"
@@ -4522,23 +4483,29 @@ msgstr "Näytä kansiot lyhyessä muodossa (esim. c.o.linux eikä comp.os.linux)
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "Näytä _tilauslomakkeessa suhteelliset kansionimet"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:54
+#. Translators: The '%s' is replaced with a spin button with the actual value to use
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:51
+#, c-format
+msgid "Download only up to %s latest messages"
+msgstr "Lataa vain uusimmat %s viestiä"
+
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:57
 msgid "Default NNTP port"
 msgstr "NNTP:n oletusportti"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:55
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:58
 msgid "NNTP over TLS"
 msgstr "NNTP TLS:llä"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:61
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:64
 msgid "USENET news"
 msgstr "Keskusteluryhmät"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:63
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:66
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr "Tämän tarjoajan avulla voit lukea ja postittaa USENET-uutisryhmiin."
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:84
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:87
 #, fuzzy
 #| msgid ""
 #| "This option will connect to the server using Kerberos 5 authentication."
@@ -4548,7 +4515,7 @@ msgid ""
 msgstr ""
 "Tämä vaihtoehto yhdistää palvelimeen käyttäen Kerberos 5 - tunnistautumista."
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:94
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
@@ -4573,10 +4540,10 @@ msgid "Failed to issue STARTTLS for NNTP server %s: "
 msgstr "Tunnistautuminen POP-palvelimelle %s epäonnistui:"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:421
-#, fuzzy, c-format
+#, c-format
 #| msgid "SMTP server %s does not support %s authentication"
 msgid "NNTP server %s doesn’t support STARTTLS: %s"
-msgstr "SMTP-palvelin %s ei tue tunnistautumismenetelmää %s"
+msgstr "NNTP-palvelin %s ei tue STARTTLS:ää: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:441
 #, fuzzy, c-format
@@ -4589,7 +4556,7 @@ msgstr "Yhdistäminen SMTP-palvelimeen %s turvallisessa tilassa epäonnistui: "
 msgid "USENET News via %s"
 msgstr "USENET uutisryhmät palvelimelta %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1250
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1248
 #, c-format
 msgid ""
 "Error retrieving newsgroups:\n"
@@ -4600,23 +4567,23 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1365
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1363
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr "Et voi luoda kansioita uutisryhmien alle: tilaa sen sijaan ryhmiä."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1381
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1379
 #, c-format
 msgid "You cannot rename a folder in a News store."
 msgstr "Et voi nimetä kansiota Uutisryhmissä."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1404
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1402
 #, c-format
 msgid "You cannot remove a folder in a News store: unsubscribe instead."
 msgstr ""
 "Et voi poistaa kansiota uutisryhmistä: lopeta sen sijaan ryhmän tilaaminen."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1618
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1616
 #, c-format
 msgid ""
 "You cannot subscribe to this newsgroup:\n"
@@ -4627,7 +4594,7 @@ msgstr ""
 "\n"
 "Uutisryhmää ei ole olemassa. Valittu kohta on luultavasti ylempi kansio."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:1685
+#: ../src/camel/providers/nntp/camel-nntp-store.c:1683
 #, c-format
 msgid ""
 "You cannot unsubscribe to this newsgroup:\n"
@@ -4638,40 +4605,52 @@ msgstr ""
 "\n"
 "Uutisryhmää ei ole olemassa!"
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2111
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2109
 msgid "NNTP Command failed: "
 msgstr "NNTP-komento epäonnistui: "
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2216
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2215
 #, c-format
 msgid "Not connected."
 msgstr "Ei yhteyttä."
 
-#: ../src/camel/providers/nntp/camel-nntp-store.c:2318
+#: ../src/camel/providers/nntp/camel-nntp-store.c:2320
 #, c-format
 msgid "No such folder: %s"
 msgstr "Kansiota ei ole: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:190
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:333
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:195
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:340
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Etsii uusia viestejä"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:212
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:217
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Odottamaton palvelimen vastaus xover:ilta: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:354
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:361
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Odottamaton palvelimen vastaus head:ilta: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:403
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:410
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Toiminto epäonnistui: %s"
+
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:457
+#, fuzzy, c-format
+#| msgid "%s: Scanning new messages"
+msgid "%s: Scanning existing messages"
+msgstr "%s: Etsii uusia viestejä"
+
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:470
+#, fuzzy, c-format
+#| msgid "Unexpected server response from xover: %s"
+msgid "Unexpected server response from listgroup: %s"
+msgstr "Odottamaton palvelimen vastaus xover:ilta: %s"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:358
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:442
@@ -4701,11 +4680,11 @@ msgstr "Haetaan POP-yhteenvetoa"
 msgid "Cannot get POP summary: "
 msgstr "POP-yhteenvedon hakeminen ei onnistu: %s"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:812
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:895
 msgid "Expunging old messages"
 msgstr "Poistetaan vanhoja viestejä pysyvästi"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:840
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:925
 msgid "Expunging deleted messages"
 msgstr "Poistetaan poistetut viestit pysyvästi"
 
@@ -4853,7 +4832,6 @@ msgstr ""
 
 #: ../src/camel/providers/pop3/camel-pop3-store.c:898
 #, c-format
-#| msgid "No such folder %s"
 msgid "No such folder “%s”."
 msgstr "Kansioita “%s” ei ole olemassa."
 
@@ -4934,9 +4912,9 @@ msgid "Could not execute “%s”: mail not sent."
 msgstr "Komentoa %s ei voitu suorittaa: sähköpostia ei lähetetty"
 
 #: ../src/camel/providers/sendmail/camel-sendmail-transport.c:358
-#, fuzzy, c-format
+#, c-format
 msgid "“%s” exited with status %d: mail not sent."
-msgstr "Sendmail palautti arvon %d: sähköpostia ei lähetetty"
+msgstr "“%s” sulkeutui tilakoodilla %d: sähköpostia ei lähetetty."
 
 #: ../src/camel/providers/smtp/camel-smtp-provider.c:37
 msgid "Default SMTP port"
@@ -5003,7 +4981,6 @@ msgid "No SASL mechanism was specified"
 msgstr ""
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:697
-#| msgid "AUTH command failed: "
 msgid "AUTH command failed: Not connected."
 msgstr "AUTH-komento epäonnistui: Ei yhdistetty."
 
@@ -5352,6 +5329,16 @@ msgstr "Porttinumero SOCKS-pyynnöille"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "Automaattisen välipalvelinmäärittelyn URL"
 
+#: ../src/libebackend/e-cache.c:751
+msgid "Out of memory"
+msgstr "Muisti on loppu"
+
+#: ../src/libebackend/e-cache.c:943
+#, fuzzy, c-format
+#| msgid "Could not create directory %s: %s"
+msgid "Can not make parent directory: %s"
+msgstr "Hakemistoa %s ei voitu luoda: %s"
+
 #: ../src/libebackend/e-collection-backend.c:977
 #, c-format
 msgid "%s does not support creating remote resources"
@@ -5416,10 +5403,10 @@ msgid "File must have a “.source” extension"
 msgstr "Tiedostolla tulee olla '.source'-pääte"
 
 #: ../src/libebackend/e-source-registry-server.c:320
-#, fuzzy, c-format
+#, c-format
 #| msgid "UID '%s' is already in use"
 msgid "UID “%s” is already in use"
-msgstr "UID '%s' on jo käytössä"
+msgstr "UID “%s” on jo käytössä"
 
 #: ../src/libebackend/e-subprocess-factory.c:277
 #, c-format
@@ -5578,6 +5565,22 @@ msgstr "D-Bus-virhe"
 msgid "Timeout was reached"
 msgstr ""
 
+#: ../src/libedataserver/e-soup-session.c:144
+#| msgid "Forwarding messages is not supported"
+msgid "Credentials required"
+msgstr "Kirjautumistiedot vaaditaan"
+
+#: ../src/libedataserver/e-soup-session.c:830
+#| msgid "Operation has been cancelled"
+msgid "Operation was cancelled"
+msgstr "Toimenpide peruttiin"
+
+#: ../src/libedataserver/e-soup-session.c:833
+#, fuzzy, c-format
+#| msgid "Failed to make directory %s: %s"
+msgid "Failed with HTTP error %d: %s"
+msgstr "Kansion \"%s\" luominen epäonnistui: %s"
+
 #: ../src/libedataserver/e-source.c:775
 #, c-format
 msgid "Source file is missing a [%s] group"
@@ -5620,7 +5623,6 @@ msgstr "Viestien edelleenlähetystä ei tueta"
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:143
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:240
 #, c-format
-#| msgid "Source '%s' (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not a valid Google source"
 msgstr "Lähde “%s” (%s) ei ole kelvollinen Google-lähde"
 
@@ -5633,8 +5635,7 @@ msgstr "Kohdetta ei löydy"
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:188
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:210
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:233
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:530
-#| msgid "Unknown authentication state."
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:531
 msgid "Google authentication is not supported"
 msgstr "Google-tunnistautuminen ei ole tuettu"
 
@@ -5674,7 +5675,7 @@ msgstr "Viestiä ei voitu hakea."
 msgid "Password not found"
 msgstr "Salasanaa ei löydy"
 
-#: ../src/libedataserver/e-source-mail-signature.c:482
+#: ../src/libedataserver/e-source-mail-signature.c:483
 #, c-format
 msgid "Signature script must be a local file"
 msgstr ""
@@ -5824,26 +5825,218 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-discover.c:447
-#: ../src/libedataserver/e-webdav-discover.c:486
-#: ../src/libedataserver/e-webdav-discover.c:495
+#: ../src/libedataserver/e-webdav-session.c:669
+msgid "Cannot determine destination URL without WebDAV extension"
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:943
 #, c-format
-msgid "HTTP Error: %s"
-msgstr "HTTP-virhe: %s"
+msgid ""
+"The server responded with an HTML page, which can mean there’s an error on "
+"the server or with the client request. The used URI was: %s"
+msgstr ""
 
-#: ../src/libedataserver/e-webdav-discover.c:525
-#| msgid "Could not parse recipient list"
-msgid "Could not parse response"
-msgstr "Vastauksen tulkitseminen epäonnistui"
+#: ../src/libedataserver/e-webdav-session.c:945
+#, c-format
+msgid ""
+"The server responded with an HTML page, which can mean there’s an error on "
+"the server or with the client request."
+msgstr ""
 
-#: ../src/libedataserver/e-webdav-discover.c:534
-msgid "Empty response"
-msgstr "Tyhjä vastaus"
+#. Translators: The first '%s' is replaced with error prefix, as provided
+#. by the caller, which can be in a form: "Failed with something".
+#. The '%d' is replaced with actual HTTP status code.
+#. The second '%s' is replaced with a reason phrase of the error (user readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the server.
+#: ../src/libedataserver/e-webdav-session.c:966
+#, c-format
+#| msgid "NSPR error code %d"
+msgid "%s: HTTP error code %d (%s): %s"
+msgstr "%s: HTTP-virhekoodi %d (%s): %s"
 
-#: ../src/libedataserver/e-webdav-discover.c:542
-#| msgid "Unexpected response from IMAP server: %s"
-msgid "Unexpected reply from server"
-msgstr "Odottamaton vastaus palvelimelta"
+#. Translators: The '%d' is replaced with actual HTTP status code.
+#. The '%s' is replaced with a reason phrase of the error (user readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the server.
+#: ../src/libedataserver/e-webdav-session.c:974
+#, c-format
+msgid "Failed with HTTP error code %d (%s): %s"
+msgstr ""
+
+#. Translators: The first '%s' is replaced with error prefix, as provided
+#. by the caller, which can be in a form: "Failed with something".
+#. The '%d' is replaced with actual HTTP status code.
+#. The second '%s' is replaced with a reason phrase of the error (user readable text).
+#: ../src/libedataserver/e-webdav-session.c:989
+#, c-format
+#| msgid "NSPR error code %d"
+msgid "%s: HTTP error code %d (%s)"
+msgstr "%s: HTTP-virhekoodi %d (%s)"
+
+#. Translators: The '%d' is replaced with actual HTTP status code.
+#. The '%s' is replaced with a reason phrase of the error (user readable text).
+#: ../src/libedataserver/e-webdav-session.c:995
+#, c-format
+msgid "Failed with HTTP error code %d (%s)"
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:1245
+#, fuzzy
+#| msgid "Failed to encode data"
+msgid "Failed to post data"
+msgstr "Tiedon koodaus epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1413
+#: ../src/libedataserver/e-webdav-session.c:1517
+#: ../src/libedataserver/e-webdav-session.c:2698
+#: ../src/libedataserver/e-webdav-session.c:3950
+#, fuzzy
+msgid "Failed to get input XML content"
+msgstr "Tiedon koodaus epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:1349
+#, fuzzy
+msgid "Failed to get properties"
+msgstr "Välimuistiin tallennus epäonnistui %s: %s"
+
+#: ../src/libedataserver/e-webdav-session.c:1423
+#, fuzzy
+#| msgid "Failed to authenticate"
+msgid "Failed to update properties"
+msgstr "Tunnistautuminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:1527
+#, fuzzy
+msgid "Failed to issue REPORT"
+msgstr "Virhe viestin %d kohdalla"
+
+#: ../src/libedataserver/e-webdav-session.c:1586
+#| msgid "Failed to retrieve message"
+msgid "Failed to create collection"
+msgstr "Kokoelman luominen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:1677
+#: ../src/libedataserver/e-webdav-session.c:1831
+#, fuzzy
+#| msgid "Failed to retrieve message"
+msgid "Failed to get XML request content"
+msgstr "Viestiä ei voitu hakea."
+
+#: ../src/libedataserver/e-webdav-session.c:1689
+#| msgid "Failed to retrieve message"
+msgid "Failed to create address book"
+msgstr "Osoitekirjan luominen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:1844
+msgid "Failed to create calendar"
+msgstr "Kalenterin luominen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:1976
+#: ../src/libedataserver/e-webdav-session.c:1987
+#| msgid "Failed to retrieve message"
+msgid "Failed to read resource"
+msgstr "Resurssin lukeminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2136
+#, fuzzy
+#| msgid "Forwarding messages is not supported"
+msgid "Cannot rewind input stream: Not supported"
+msgstr "Viestien edelleenlähetystä ei tueta"
+
+#: ../src/libedataserver/e-webdav-session.c:2283
+#, fuzzy
+#| msgid "Failed to encode data"
+msgid "Failed to put data"
+msgstr "Tiedon koodaus epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2302
+#, fuzzy, c-format
+#| msgid "Failed to add data to encoder"
+msgid "Failed to put data to server, error code %d (%s)"
+msgstr "Tiedon lisäys koodaajaan epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2475
+msgid "Failed to delete resource"
+msgstr "Resurssin poistaminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2542
+msgid "Failed to copy resource"
+msgstr "Resurssin kopioiminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2604
+#| msgid "Failed to retrieve message"
+msgid "Failed to move resource"
+msgstr "Resurssin siirtäminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2709
+#| msgid "Failed to retrieve message"
+msgid "Failed to lock resource"
+msgstr "Resurssin lukitseminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2723
+#: ../src/libedataserver/e-webdav-session.c:2925
+msgid "Expected application/xml response, but none returned"
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:2726
+#: ../src/libedataserver/e-webdav-session.c:2928
+#, c-format
+msgid "Expected application/xml response, but %s returned"
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:2738
+#: ../src/libedataserver/e-webdav-session.c:2941
+#, fuzzy
+#| msgid "Failed to encode data"
+msgid "Failed to parse XML data"
+msgstr "Tiedon koodaus epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2817
+#, fuzzy
+#| msgid "Failed to retrieve message"
+msgid "Failed to refresh lock"
+msgstr "Viestiä ei voitu hakea."
+
+#: ../src/libedataserver/e-webdav-session.c:2876
+#| msgid "Failed to authenticate"
+msgid "Failed to unlock"
+msgstr "Lukituksen avaaminen epäonnistui"
+
+#: ../src/libedataserver/e-webdav-session.c:2913
+#, fuzzy, c-format
+#| msgid "Unexpected HTTP status code %d returned (%s)"
+msgid "Expected multistatus response, but %d returned (%s)"
+msgstr "Odottamaton HTTP-tilakoodi %d palautettiin (%s)"
+
+#: ../src/libedataserver/e-webdav-session.c:3960
+#, fuzzy
+#| msgid "Failed to get lock using fcntl(2): %s"
+msgid "Failed to get access control list"
+msgstr "Lukitseminen käyttäen fcntl(2) kutsua epäonnistui: %s"
+
+#: ../src/libedataserver/e-webdav-session.c:4697
+msgid "Cannot store protected nor inherited Access Control Entry."
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:4704
+msgid "Provided invalid principal kind for Access Control Entry."
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:4711
+msgid "Cannot store property-based Access Control Entry."
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:4718
+msgid "Access Control Entry can be only to Grant or Deny, but not None."
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:4726
+msgid "Access Control Entry can be only to Grant or Deny, but not both."
+msgstr ""
+
+#: ../src/libedataserver/e-webdav-session.c:4785
+msgid "Access Control Entry privilege cannot be NULL."
+msgstr ""
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
 #: ../src/libedataserverui/e-credentials-prompter.c:1576
@@ -5858,98 +6051,100 @@ msgstr "Toimenpide on peruttu"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "Kansio ei tue INBOXia"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:444
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:445
 #, fuzzy, c-format
 #| msgid "Failed to open addressbook at '%s': %s"
 msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
 msgstr "Osoitekirjan avaaminen kohteessa \"%s\" epäonnistui: %s"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:492
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:493
 msgid "Requesting access token, please wait..."
 msgstr ""
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:594
-#| msgid "Address book authentication request"
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:595
 msgid "Google Address book authentication request"
 msgstr "Google-osoitekirjan tunnistautumispyyntö"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:597
-#| msgid "Calendar authentication request"
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:598
 msgid "Google Calendar authentication request"
 msgstr "Google-kalenterin tunnistautumispyyntö"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:600
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:601
 #, fuzzy
 #| msgid "Mail authentication request"
 msgid "Google Memo List authentication request"
 msgstr "Sähköpostin tunnistautumispyyntö"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:603
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:604
 #, fuzzy
 #| msgid "Mail authentication request"
 msgid "Google Task List authentication request"
 msgstr "Sähköpostin tunnistautumispyyntö"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:607
-#| msgid "Mail authentication request"
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:608
 msgid "Google Mail authentication request"
 msgstr "Google-sähköpostin tunnistautumispyyntö"
 
 #. generic account prompt
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:610
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:611
 msgid "Google account authentication request"
 msgstr "Google-tilin tunnistautumispyyntö"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:621
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:622
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
+"Kirjaudu Google-tilillesi ja hyväksy ehdot käyttääksesi osoitekirjaasi “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:625
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:626
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
+"Kirjaudu Google-tilillesi ja hyväksy ehdot käyttääksesi kalenteriasi “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:629
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:630
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail account “%s”."
 msgstr ""
+"Kirjaudu Google-tilillesi ja hyväksy ehdot käyttääksesi sähköpostitiliäsi "
+"“%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:633
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:634
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "mail transport “%s”."
 msgstr ""
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:637
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:638
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "memo list “%s”."
 msgstr ""
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:641
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:642
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "task list “%s”."
 msgstr ""
+"Kirjaudu Google-tilillesi ja hyväksy ehdot käyttääksesi tehtävälistaasi “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:645
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:646
 #, c-format
 msgid ""
 "Login to your Google account and accept conditions in order to access your "
 "account “%s”."
-msgstr ""
+msgstr "Kirjaudu Google-tilillesi ja hyväksy ehdot käyttääksesi tiliäsi “%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:689
+#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:690
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1064
@@ -5975,19 +6170,16 @@ msgstr "Todennuspyyntö"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:155
 #, c-format
-#| msgid "Please enter the password for address book \"%s\"."
 msgid "Please enter the password for address book “%s”."
 msgstr "Anna osoitekirjan “%s” salasana."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:159
 #, c-format
-#| msgid "Please enter the password for calendar \"%s\"."
 msgid "Please enter the password for calendar “%s”."
 msgstr "Anna kalenterin “%s” salasana."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:163
 #, c-format
-#| msgid "Please enter the password for mail account \"%s\"."
 msgid "Please enter the password for mail account “%s”."
 msgstr "Anna sähköpostitilin “%s” salasana."
 
@@ -6008,7 +6200,6 @@ msgstr "Syötä %s-salasana käyttäjälle %s palvelimella %s."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:179
 #, c-format
-#| msgid "Please enter the password for account \"%s\"."
 msgid "Please enter the password for account “%s”."
 msgstr "Anna tilin “%s” salasana."
 
@@ -6055,8 +6246,6 @@ msgstr "_Hyväksy pysyvästi"
 #: ../src/libedataserverui/e-trust-prompt.c:186
 #: ../src/modules/trust-prompt/trust-prompt-gtk.c:157
 #, c-format
-#| msgid ""
-#| "SSL/TLS certificate for '%s' is not trusted. Do you wish to accept it?"
 msgid "SSL/TLS certificate for “%s” is not trusted. Do you wish to accept it?"
 msgstr "SSL/TLS-varmenne “%s” ei ole luotettu. Haluatko hyväksyä sen?"
 
@@ -6141,7 +6330,6 @@ msgid "Tasks"
 msgstr "Tehtävät"
 
 #: ../src/libedataserverui/e-webdav-discover-widget.c:826
-#| msgid "Invalid Redirect URL"
 msgid "Invalid URL"
 msgstr "Virheellinen osoite"
 
@@ -6207,32 +6395,27 @@ msgstr "Tiedon koodaus epäonnistui"
 msgid "Failed to find ASUrl and OABUrl in autodiscover response"
 msgstr ""
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1340
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1336
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
 "from which to obtain an access token for “%s”"
 msgstr ""
 
-#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1370
+#: ../src/modules/gnome-online-accounts/module-gnome-online-accounts.c:1366
 #, fuzzy, c-format
 #| msgid "Failed to open addressbook at '%s': %s"
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Osoitekirjan avaaminen kohteessa \"%s\" epäonnistui: %s"
 
-#: ../src/modules/google-backend/module-google-backend.c:605
-#: ../src/modules/yahoo-backend/module-yahoo-backend.c:227
-msgid "Tasks"
-msgstr "Tehtävät"
-
-#: ../src/modules/google-backend/module-google-backend.c:662
+#: ../src/modules/google-backend/module-google-backend.c:555
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "Yhteystiedot"
 
 #: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
-#: ../src/modules/yahoo-backend/module-yahoo-backend.c:200
+#: ../src/tools/list-sources/list-sources.c:148
 msgid "Calendar"
 msgstr "Kalenteri"
 
@@ -6370,10 +6553,10 @@ msgid "On The Web"
 msgstr "Verkossa"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
-msgid "WebDAV"
-msgstr "WebDAV"
+msgid "CardDAV"
+msgstr "CardDAV"
 
-#: ../src/services/evolution-source-registry/evolution-source-registry.c:40
+#: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Älä muunna käyttäjätietoja Evolutionin aiemmista versioista"
 
@@ -6381,53 +6564,336 @@ msgstr "Älä muunna käyttäjätietoja Evolutionin aiemmista versioista"
 msgid "_Dismiss"
 msgstr "_Hylkää"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:68
-#: ../src/tools/addressbook-export/addressbook-export.c:782
+#: ../src/tools/addressbook-export/addressbook-export.c:69
+#: ../src/tools/addressbook-export/addressbook-export.c:781
 msgid "Can not open file"
 msgstr "Tiedoston avaaminen ei onnistu"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:98
+#: ../src/tools/addressbook-export/addressbook-export.c:99
 #, fuzzy, c-format
 #| msgid "Failed to remove file '%s': %s"
 msgid "Failed to open client “%s”: %s"
 msgstr "Tiedoston \"%s\" poistaminen epäonnistui: %s"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:892
+#: ../src/tools/addressbook-export/addressbook-export.c:889
 #, fuzzy
 #| msgid "Detailed error:"
 msgid "Unhandled error"
 msgstr "Yksityiskohtainen virhe:"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:925
+#: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "Specify the output file instead of standard output"
 msgstr ""
 
-#: ../src/tools/addressbook-export/addressbook-export.c:926
+#: ../src/tools/addressbook-export/addressbook-export.c:923
 msgid "OUTPUTFILE"
 msgstr ""
 
-#: ../src/tools/addressbook-export/addressbook-export.c:929
+#: ../src/tools/addressbook-export/addressbook-export.c:926
 #, fuzzy
 #| msgid "Error loading address book: %s"
 msgid "List local address book folders"
 msgstr "Virhe osoitekirjaa ladattaessa: %s"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:932
+#: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
 msgstr ""
 
-#: ../src/tools/addressbook-export/addressbook-export.c:933
+#: ../src/tools/addressbook-export/addressbook-export.c:930
 msgid "[vcard|csv]"
-msgstr ""
+msgstr "[vcard|csv]"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:981
+#: ../src/tools/addressbook-export/addressbook-export.c:978
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 
-#: ../src/tools/addressbook-export/addressbook-export.c:995
+#: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
 msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:83
+#, fuzzy
+#| msgid "_Show only subscribed folders"
+msgid "Show only enabled sources"
+msgstr "_Näytä ainoastaan tilatut kansiot"
+
+#: ../src/tools/list-sources/list-sources.c:86
+#, fuzzy
+msgid "Show source’s UID"
+msgstr "POP:in lähde-URI"
+
+#: ../src/tools/list-sources/list-sources.c:89
+#, fuzzy
+#| msgid "Unsupported authentication method"
+msgid "Show source’s authentication information"
+msgstr "Tunnistautumismenetelmä ei ole tuettu"
+
+#: ../src/tools/list-sources/list-sources.c:92
+msgid ""
+"Write in machine readable format (one source per line, without localized "
+"property names and tab as separator)"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:95
+msgid "Limit only to sources with given extension name"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:106
+msgid "yes"
+msgstr "kyllä"
+
+#: ../src/tools/list-sources/list-sources.c:106
+msgid "no"
+msgstr "ei"
+
+#: ../src/tools/list-sources/list-sources.c:126
+#, fuzzy
+#| msgctxt "CategoryName"
+#| msgid "Competition"
+msgid "Collection"
+msgstr "Kilpailu"
+
+#: ../src/tools/list-sources/list-sources.c:132
+msgid "Collection/GNOME Online Accounts"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:137
+msgid "Collection/Ubuntu Online Accounts"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:147
+msgid "Address Book"
+msgstr "Osoitekirja"
+
+#: ../src/tools/list-sources/list-sources.c:149
+#, fuzzy
+#| msgid "Category List"
+msgid "Memo List"
+msgstr "Ryhmäluettelo"
+
+#: ../src/tools/list-sources/list-sources.c:150
+#, fuzzy
+#| msgid "Tasks"
+msgid "Task List"
+msgstr "Tehtävät"
+
+#: ../src/tools/list-sources/list-sources.c:151
+msgid "Mail Account"
+msgstr "Sähköpostitili"
+
+#: ../src/tools/list-sources/list-sources.c:152
+msgid "Mail Transport"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:153
+#, fuzzy
+#| msgid "Identity"
+msgid "Mail Identity"
+msgstr "Henkilöllisyys"
+
+#: ../src/tools/list-sources/list-sources.c:154
+msgid "Mail Submission"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:155
+#, fuzzy
+#| msgid "Bad signature"
+msgid "Mail Signature"
+msgstr "Hylätty allekirjoitus"
+
+#: ../src/tools/list-sources/list-sources.c:156
+msgid "Proxy"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:224
+#, c-format
+msgid "UID: %s"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:228
+#, fuzzy, c-format
+#| msgid "Malformed URI: %s"
+msgid "Parent UID: %s"
+msgstr "Virheellinen URI: %s"
+
+#: ../src/tools/list-sources/list-sources.c:231
+#, fuzzy, c-format
+#| msgid "Posting failed: %s"
+msgid "Enabled: %s"
+msgstr "Postitus epäonnistui: %s"
+
+#: ../src/tools/list-sources/list-sources.c:233
+#, fuzzy, c-format
+#| msgid "Backend is busy"
+msgid "Backend: %s"
+msgstr "Taustajärjestelmä on käytössä"
+
+#: ../src/tools/list-sources/list-sources.c:238
+#, fuzzy, c-format
+#| msgid "Calendar does not exist"
+msgid "Calendar enabled: %s"
+msgstr "Kalenteria ei ole olemassa"
+
+#: ../src/tools/list-sources/list-sources.c:239
+#, fuzzy, c-format
+#| msgid "Contact ID already exists"
+msgid "Contacts enabled: %s"
+msgstr "Yhteystiedon tunniste on jo olemassa"
+
+#: ../src/tools/list-sources/list-sources.c:240
+#, fuzzy, c-format
+#| msgid "Operation failed: %s"
+msgid "Mail enabled: %s"
+msgstr "Toiminto epäonnistui: %s"
+
+#: ../src/tools/list-sources/list-sources.c:247
+#, c-format
+msgid "MIME Type: %s"
+msgstr "MIME-tyyppi: %s"
+
+#: ../src/tools/list-sources/list-sources.c:269
+#, c-format
+msgid "Auth Host: %s:%d"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:275
+#, c-format
+msgid "Auth Host: %s"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:283
+#, c-format
+msgid "Auth User: %s"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:291
+#, c-format
+msgid "Auth Method: %s"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:299
+#, c-format
+msgid "Auth Proxy UID: %s"
+msgstr ""
+
+#: ../src/tools/list-sources/list-sources.c:420
+#, fuzzy
+msgid "Failed to parse arguments: Unknown error"
+msgstr "Viestiä ei voitu hakea."
+
+#: ../src/tools/list-sources/list-sources.c:429
+#, fuzzy, c-format
+#| msgid "Failed to connect to a server using SSL/TLS: %s"
+msgid "Failed to connect to source registry: %s\n"
+msgstr "Yhteyden muodostaminen palvelimeen SSL/TLS:ää käyttäen epäonnistui: %s"
+
+#: ../src/tools/list-sources/list-sources.c:445
+#, c-format
+msgid "No sources had been found\n"
+msgstr ""
+
+#~ msgid "Querying for updated contacts…"
+#~ msgstr "Haetaan päivittyneitä yhteystietoja..."
+
+#~ msgid "Querying for updated groups…"
+#~ msgstr "Haetaan päivittyneitä ryhmiä..."
+
+#~ msgid "The backend does not support bulk removals"
+#~ msgstr "Taustapalvelu ei tue massapoistoja"
+
+#~ msgid "Loading…"
+#~ msgstr "Ladataan…"
+
+#~ msgid "Loading Addressbook summary..."
+#~ msgstr "Ladataan osoitekirjan yhteenvetoa..."
+
+#~ msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
+#~ msgstr ""
+#~ "PROPFIND-toiminto webdav-palvelimella epäonnistui HTTP-tilakoodilla %d "
+#~ "(%s)"
+
+#~ msgid "No response body in webdav PROPFIND result"
+#~ msgstr ""
+#~ "Vastausrunko puuttuu webdav-palvelimen vastauksesta PROPFIND-pyyntöön"
+
+#~ msgid "Loading Contacts (%d%%)"
+#~ msgstr "Ladataan yhteystietoja (%d%%)"
+
+#~| msgid "Create resource '%s' failed with HTTP status: %d (%s)"
+#~ msgid "Create resource “%s” failed with HTTP status %d (%s)"
+#~ msgstr "Resurssin “%s” luominen epäonnistui HTTP-tilakoodilla %d (%s)"
+
+#~ msgid "Contact on server changed -> not modifying"
+#~ msgstr "Yhteystieto muuttui palvelimella -> ei muokata"
+
+#~| msgid "Modify contact failed with HTTP status: %d (%s)"
+#~ msgid "Modify contact failed with HTTP status %d (%s)"
+#~ msgstr "Yhteystiedon muokkaaminen epäonnistui HTTP-tilakoodilla %d (%s)"
+
+#~ msgid "DELETE failed with HTTP status %d"
+#~ msgstr "DELETE epäonnistui HTTP-tilakoodilla %d"
+
+#~ msgid "Server is unreachable (%s)"
+#~ msgstr "Palvelin ei ole tavoitettavissa (%s)"
+
+#~| msgid "Failed to get the DN for user '%s'"
+#~ msgid "Failed to login to the server: %s"
+#~ msgstr "Kirjautuminen palvelimelle epäonnistui: %s"
+
+#~ msgid "CalDAV backend is not loaded yet"
+#~ msgstr "CalDAV-taustapalvelua ei ole vielä ladattu"
+
+#~ msgid "Invalid Redirect URL"
+#~ msgstr "Virheellinen uudelleenohjaus"
+
+#~| msgid "Cannot create local cache folder '%s'"
+#~ msgid "Cannot create local cache folder “%s”"
+#~ msgstr "Paikallisen välimuistikansion “%s” luominen epäonnistui"
+
+#~ msgid ""
+#~ "Server is unreachable, calendar is opened in read-only mode.\n"
+#~ "Error message: %s"
+#~ msgstr ""
+#~ "Palvelimeen ei saatu yhteyttä, kalenteri avattiin vain-luku -tilassa.\n"
+#~ "Virheviesti oli: %s"
+
+#~ msgid "CalDAV does not support bulk additions"
+#~ msgstr "CalDAV ei tue massalisäyksiä"
+
+#~ msgid "CalDAV does not support bulk modifications"
+#~ msgstr "CalDAV ei tue massamuokkauksia"
+
+#~ msgid "CalDAV does not support bulk removals"
+#~ msgstr "CalDAV ei tue massapoistoja"
+
+#, fuzzy
+#~| msgid "Calendar doesn't support Free/Busy"
+#~ msgid "Calendar doesn’t support Free/Busy"
+#~ msgstr "Kalenteri ei tue Vapaa/Varattu -tiloja"
+
+#~ msgid "Redirected to Invalid URI"
+#~ msgstr "Uudelleenohjaus virheelliseen URI:in"
+
+#~ msgid "IMAP+"
+#~ msgstr "IMAP+"
+
+#~ msgid "HTTP Error: %s"
+#~ msgstr "HTTP-virhe: %s"
+
+#~| msgid "Could not parse recipient list"
+#~ msgid "Could not parse response"
+#~ msgstr "Vastauksen tulkitseminen epäonnistui"
+
+#~ msgid "Empty response"
+#~ msgstr "Tyhjä vastaus"
+
+#~| msgid "Unexpected response from IMAP server: %s"
+#~ msgid "Unexpected reply from server"
+#~ msgstr "Odottamaton vastaus palvelimelta"
+
+#~ msgid "WebDAV"
+#~ msgstr "WebDAV"
 
 #, fuzzy
 #~| msgid "Updating folder '%s'"
@@ -6576,9 +7042,6 @@ msgstr ""
 
 #~ msgid "Cannot create folder '%s': folder exists"
 #~ msgstr "Kansiota \"%s\" ei voi luoda: kansio on jo olemassa"
-
-#~ msgid "NSPR error code %d"
-#~ msgstr "NSPR-virhekoodi %d"
 
 #, fuzzy
 #~ msgid "Could not find a suitable authentication type: code 0x%x"
@@ -6864,10 +7327,6 @@ msgstr ""
 #~ msgstr "Välimuistitiedostoa ei voitu luoda"
 
 #, fuzzy
-#~ msgid "Failed to run calendar factory"
-#~ msgstr "Tiedon koodaus epäonnistui"
-
-#, fuzzy
 #~ msgid "Cannot process, calendar backend is opening"
 #~ msgstr "Kalenteria ei voi päivittää"
 
@@ -6953,9 +7412,6 @@ msgstr ""
 #~ msgid "Unexpected OK response from IMAP server: %s"
 #~ msgstr "Odottamaton OK-vastaus IMAP-palvelimelta: %s"
 
-#~ msgid "Could not create directory %s: %s"
-#~ msgstr "Hakemistoa %s ei voitu luoda: %s"
-
 #~ msgid "Could not load summary for %s"
 #~ msgstr "Yhteenvetoa %s:lle ei voitu ladata"
 
@@ -6994,9 +7450,6 @@ msgstr ""
 
 #~ msgid "IMAP default port"
 #~ msgstr "IMAPin oletusportti"
-
-#~ msgid "IMAP"
-#~ msgstr "IMAP"
 
 #, fuzzy
 #~ msgid "Retrieving list of folders at '%s'"
@@ -7074,9 +7527,6 @@ msgstr ""
 #~ msgid "Search"
 #~ msgstr "Etsi"
 
-#~ msgid "Address Book"
-#~ msgstr "Osoitekirja"
-
 #~ msgid "Select Contacts from Address Book"
 #~ msgstr "Valitse yhteystiedot osoitekirjasta"
 
@@ -7128,9 +7578,6 @@ msgstr ""
 
 #~ msgid "Flags"
 #~ msgstr "Tunnisteet"
-
-#~ msgid "Identity"
-#~ msgstr "Henkilöllisyys"
 
 #, fuzzy
 #~ msgid "Authenticating with the server…"
