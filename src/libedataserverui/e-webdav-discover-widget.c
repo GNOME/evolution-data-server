@@ -994,6 +994,9 @@ e_webdav_discover_content_show_error (GtkWidget *content,
 	gtk_info_bar_set_show_close_button (data->info_bar, TRUE);
 
 	label = gtk_label_new (error->message);
+	gtk_label_set_max_width_chars (GTK_LABEL (label), 120);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
 	gtk_container_add (GTK_CONTAINER (gtk_info_bar_get_content_area (data->info_bar)), label);
 	gtk_widget_show (label);
 	gtk_widget_show (GTK_WIDGET (data->info_bar));
