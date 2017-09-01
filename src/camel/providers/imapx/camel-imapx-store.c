@@ -1398,7 +1398,8 @@ fetch_folder_info_for_namespace_category (CamelIMAPXStore *imapx_store,
 	gboolean success = TRUE;
 
 	namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
-	g_return_val_if_fail (namespace_response != NULL, FALSE);
+	if (!namespace_response)
+		return TRUE;
 
 	list = camel_imapx_namespace_response_list (namespace_response);
 
@@ -1452,7 +1453,8 @@ fetch_folder_info_from_folder_path (CamelIMAPXStore *imapx_store,
 	gboolean success = FALSE;
 
 	namespace_response = camel_imapx_store_ref_namespaces (imapx_store);
-	g_return_val_if_fail (namespace_response != NULL, FALSE);
+	if (!namespace_response)
+		return TRUE;
 
 	/* Find a suitable IMAP namespace for the folder path. */
 	namespace = camel_imapx_namespace_response_lookup_for_path (
