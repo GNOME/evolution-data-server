@@ -1,3 +1,37 @@
+Evolution-Data-Server 3.25.92 2017-09-04
+----------------------------------------
+
+Bug Fixes:
+	Bug 785952 - Google Tasks refresh fails with Bad Request (Milan Crha)
+	Bug 786362 - Keep changed messages in Search Folder view until refreshed (Milan Crha)
+	Bug 553770 - e_time_get_d_fmt_with_4digit_year: Correct %y replacement (Milan Crha)
+	Bug 548814 - [On The Web] Cannot read multiple VCALENDAR objects in single file (Milan Crha)
+	Bug 563602 - Detached recurrence ignored after import until EDS is restarted (Milan Crha)
+
+Miscellaneous:
+	[ESoupSession] Treat G_TLS_ERROR_BAD_CERTIFICATE as SOUP_STATUS_SSL_FAILED (Milan Crha)
+	[CalDAV/CardDAV] Check for TLS/authentication errors on refresh (Milan Crha)
+	[IMAPx] Not all local changes saved to the server (Milan Crha)
+	camel_store_get_inbox_folder() can fail for IMAPx stores (Milan Crha)
+	[EWebDAVDiscoverWidget] Minor changes to error label (Milan Crha)
+	[ECalMetaBackend] Removing detached instance doesn't set EXDATE (Milan Crha)
+	[IMAPx] Handle gracefully when service is unavailable for get_folder_info() (Milan Crha)
+	Merge a cmake/modules change from Evolution (Milan Crha)
+
+Translations:
+	Fabio Tomat (fur)
+	Ask Hjorth Larsen (da)
+	Piotr Drąg (pl)
+	Rūdolfs Mazurs (lv)
+	Милош Поповић (sr)
+	Милош Поповић (sr@latin)
+	Rafael Fontenelle (pt_BR)
+	Jordi Mas (ca)
+	Wolfgang Stöggl (de)
+	Jiri Grönroos (fi)
+	Changwoo Ryu (ko)
+	Dušan Kazik (sk)
+
 Evolution-Data-Server 3.25.91 2017-08-21
 ----------------------------------------
 
