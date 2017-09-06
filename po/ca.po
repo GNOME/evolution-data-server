@@ -5161,7 +5161,7 @@ msgid ""
 "monitoring."
 msgstr ""
 "Quan s'estableix un valor desconegut, llavors el GNetworkMonitor  per "
-"defecte s'utilitza en segon pla. El valor especial «Sempre-en línia» "
+"defecte s'utilitza en segon pla. El valor especial «always-online» "
 "s'utilitza per no monitoritzar xarxes."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:8
@@ -5749,7 +5749,7 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
-"El servidor respon amb una pàgina HTML, el que pot significar es que hi hagi "
+"El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi "
 "un error al servidor o amb la sol·licitud del client. L'URI utilitzat va "
 "ser :%s"
 
@@ -5759,7 +5759,7 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
-"El servidor respon amb una pàgina HTML, el que pot significar es que hi hagi "
+"El servidor respon amb una pàgina HTML, el que pot significar és que hi hagi "
 "un error al servidor o amb la sol·licitud del client."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
