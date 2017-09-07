@@ -1,3 +1,16 @@
+Evolution-Data-Server 3.24.6 2017-09-07
+---------------------------------------
+
+Bug Fixes:
+	Bug 781901 - [CamelOperation] Do not use g_cancellable_connect/disconnect() (Milan Crha)
+
+Translations:
+	Gianvito Cavasoli (it)
+	Мирослав Николић (sr)
+	Мирослав Николић (sr@latin)
+	Aurimas Černius (lt)
+	Balázs Úr (hu)
+
 Evolution-Data-Server 3.24.5 2017-08-07
 ---------------------------------------
 
