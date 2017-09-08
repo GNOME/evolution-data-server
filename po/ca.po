@@ -4489,7 +4489,7 @@ msgstr ""
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
-"No es pot crear una carpeta en un magatzem de notícies. Heu de subscriureu-"
+"No es pot crear una carpeta en un magatzem de notícies. Heu de subscriure-"
 "us-hi."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1379
@@ -4624,7 +4624,7 @@ msgstr "_Suprimeix després de %s dia(es)"
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:42
 msgid "Hint: Use 0 days to keep messages on the server indefinitely."
 msgstr ""
-"Pista: Utilitzeu 0 dies per mantindre els missatges al servidor de forma "
+"Pista: utilitzeu 0 dies per mantenir els missatges al servidor de forma "
 "indefinida."
 
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:44
@@ -6544,7 +6544,7 @@ msgstr "Col·lecció/ Comptes de GNOME en línia"
 
 #: ../src/tools/list-sources/list-sources.c:137
 msgid "Collection/Ubuntu Online Accounts"
-msgstr "Col·lecció/ Comptes de Ubuntu en línia"
+msgstr "Col·lecció/ Comptes d'Ubuntu en línia"
 
 #: ../src/tools/list-sources/list-sources.c:147
 msgid "Address Book"
