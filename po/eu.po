@@ -1855,7 +1855,7 @@ msgstr "Huts egin du SQLite funtzioa sortzean, \"%d\" errore kodea: %s"
 #, c-format
 #| msgid "Contact “%s” not found"
 msgid "Object “%s”, “%s” not found"
-msgstr "Ez da “%s“ objektua aurkitu"
+msgstr "Ez da “%s”, “%s” objektua aurkitu"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3006
 #| msgid "Cannot add contact: "
