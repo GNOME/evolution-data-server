@@ -9,14 +9,14 @@
 # Xavier A. Conde Rueda <xavi.conde@gmail.com>, 2004, 2005, 2006.
 # David Planella Molas <david.planella@googlemail.com>, 2007, 2008, 2009, 2010, 2011.
 # Gil Forcada <gilforcada@guifi.net>, 2011, 2012, 2013.
-# Jordi Serratosa <jordis@softcatala.cat>, 2012.
+# Jordi Serratosa <jordis@softcatala.cat>, 2012, 2017.
 # Carles Ferrando Garcia <carles.ferrando@gmail.com>, 2017.
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server 2.2\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-09-02 03:53+0000\n"
+"POT-Creation-Date: 2017-09-08 07:04+0000\n"
 "PO-Revision-Date: 2017-09-03 12:05+0200\n"
 "Last-Translator: Carles Ferrando Garcia <carles.ferrando@gmail.com>\n"
 "Language-Team: Catalan <info@softcatala.org>\n"
@@ -97,7 +97,7 @@ msgstr "S'ha sol·licitat la supressió d'un cursor sense cap relació"
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr ""
-"No s'ha pogut canviar el nom de la base de dades vella de «%s» a «%s»: %s"
+"No s'ha pogut canviar el nom de la base de dades antiga de «%s» a «%s»: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1165
@@ -155,12 +155,12 @@ msgstr "Error desconegut"
 #: ../src/addressbook/backends/google/e-book-backend-google.c:922
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:963
 msgid "Object to save is not a valid vCard"
-msgstr "L'objecte de guardar no és vàlid a una vCard"
+msgstr "L'objecte que s'ha de desar no és una vCard vàlida"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:974
 msgid "Failed to create contact from returned server data"
 msgstr ""
-"No s'ha pogut crear un contacte a partir de dades del servidor retornat"
+"No s'ha pogut crear un contacte a partir de dades que ha retornat el servidor"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:990
 msgid "Server returned contact without UID"
@@ -275,7 +275,7 @@ msgstr "No s'ha pogut obtenir el nom distingit (DN) per l'usuari «%s»"
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:173
 #, c-format
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
-msgstr "L'URL dada «%s» no fa referència a la llibreta de direccions de WebDAV"
+msgstr "L'URL dada «%s» no fa referència a la llibreta d'adreces de WebDAV"
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:890
 msgid "Received object is not a valid vCard"
@@ -461,7 +461,7 @@ msgstr "Organització"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:183
 msgid "Organizational Unit"
-msgstr "Unitat organitzacional"
+msgstr "Unitat organitzativa"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:184
 msgid "Office"
@@ -490,7 +490,7 @@ msgstr "URL de la pàgina personal"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:192
 msgid "Weblog URL"
-msgstr "URL del bloc"
+msgstr "URL del blog"
 
 #. Contact categories
 #: ../src/addressbook/libebook-contacts/e-contact.c:195
@@ -2382,7 +2382,7 @@ msgstr ""
 
 #: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
-msgstr "No s'ha pogut generar les dades de signatura: "
+msgstr "No s'han pogut generar les dades de signatura: "
 
 #: ../src/camel/camel-gpg-context.c:2023 ../src/camel/camel-gpg-context.c:2259
 #: ../src/camel/camel-gpg-context.c:2375 ../src/camel/camel-gpg-context.c:2551
@@ -3462,7 +3462,7 @@ msgstr "No està implementat l'STARTTLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2844
 msgid "Failed to issue STARTTLS"
-msgstr "Ha fallat al sortir de STARTTLS"
+msgstr "No s'ha pogut emetre STARTTLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2892
 #, c-format
@@ -3493,7 +3493,7 @@ msgstr "Ha fallat l'autentificació"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3187
 msgid "Failed to issue NAMESPACE"
-msgstr "Ha fallat la publicació NAMESPACE"
+msgstr "No s'ha pogut emetre NAMESPACE"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3205
 msgid "Failed to enable QResync"
@@ -3501,7 +3501,7 @@ msgstr "Ha fallat la connexió QResync"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3237
 msgid "Failed to issue NOTIFY"
-msgstr "Ha fallat la publicació NOTIFY"
+msgstr "No s'ha pogut emetre NOTIFY"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3715
 msgid "Failed to select mailbox"
@@ -3509,7 +3509,7 @@ msgstr "Ha fallat la selecció de bústia de correu"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3818
 msgid "Cannot issue command, no stream available"
-msgstr "No es pot publicar l'ordre, no hi ha flux disponible"
+msgstr "No es pot executar l'ordre, no hi ha flux disponible"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:4082
 #, c-format
@@ -4457,7 +4457,7 @@ msgstr "El servidor NNTP %s ha retornat el codi d'error %d: %s"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:410
 #, c-format
 msgid "Failed to issue STARTTLS for NNTP server %s: "
-msgstr "Ha fallat al sortir de STARTTLS per al servidor NNTP %s: "
+msgstr "No s'ha pogut emetre STARTTLS per al servidor NNTP %s: "
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:421
 #, c-format
@@ -4489,8 +4489,8 @@ msgstr ""
 #, c-format
 msgid "You cannot create a folder in a News store: subscribe instead."
 msgstr ""
-"No es pot crear una carpeta en un magatzem de notícies. Heu de subscriure-"
-"us-hi."
+"No es pot crear una carpeta en un magatzem de notícies. Heu de subscriure-us-"
+"hi."
 
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1379
 #, c-format
@@ -4600,7 +4600,7 @@ msgstr "No es pot obtenir el resum POP: "
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:895
 msgid "Expunging old messages"
-msgstr "S'estan suprimint els missatges vells"
+msgstr "S'estan suprimint els missatges antics"
 
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:925
 msgid "Expunging deleted messages"
@@ -5135,7 +5135,7 @@ msgid ""
 "is set, then it will be searched for. Change requires restart of the "
 "application."
 msgstr ""
-"Un exemple és «/usr/bin/gpg». Si no s'ha emplenat o no existeix, es cerca. "
+"Un exemple és «/usr/bin/gpg». Si no s'ha emplenat o no existeix, se cerca. "
 "Si es canvia cal reiniciar l'aplicació."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:4
@@ -5798,7 +5798,7 @@ msgstr "No s'ha pogut amb el codi d'error HTTP %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1245
 msgid "Failed to post data"
-msgstr "No s'ha pogut publicar les dades"
+msgstr "No s'han pogut publicar les dades"
 
 #: ../src/libedataserver/e-webdav-session.c:1338
 #: ../src/libedataserver/e-webdav-session.c:1413
@@ -5810,15 +5810,15 @@ msgstr "No s'ha pogut obtenir el contingut XML d'entrada"
 
 #: ../src/libedataserver/e-webdav-session.c:1349
 msgid "Failed to get properties"
-msgstr "No s'ha pogut obtenir les propietats"
+msgstr "No s'han pogut obtenir les propietats"
 
 #: ../src/libedataserver/e-webdav-session.c:1423
 msgid "Failed to update properties"
-msgstr "No s'ha pogut actualitzar les propietats"
+msgstr "No s'han pogut actualitzar les propietats"
 
 #: ../src/libedataserver/e-webdav-session.c:1527
 msgid "Failed to issue REPORT"
-msgstr "No s'ha pogut emetre INFORME"
+msgstr "No s'ha pogut emetre REPORT"
 
 #: ../src/libedataserver/e-webdav-session.c:1586
 msgid "Failed to create collection"
@@ -5848,12 +5848,12 @@ msgstr "No es pot rebobinar el flux d'entrada: no s'admet"
 
 #: ../src/libedataserver/e-webdav-session.c:2283
 msgid "Failed to put data"
-msgstr "No s'ha pogut posar les dades"
+msgstr "No s'han pogut posar les dades"
 
 #: ../src/libedataserver/e-webdav-session.c:2302
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr "No s'ha pogut posar les dades al servidor, codi d'error %d (%s)"
+msgstr "No s'han pogut posar les dades al servidor, codi d'error %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2475
 msgid "Failed to delete resource"
@@ -5885,7 +5885,7 @@ msgstr "Resposta prevista aplicació/XML, però va tornar %s"
 #: ../src/libedataserver/e-webdav-session.c:2738
 #: ../src/libedataserver/e-webdav-session.c:2941
 msgid "Failed to parse XML data"
-msgstr "No s'ha pogut analitzar les dades XML"
+msgstr "No s'han pogut analitzar les dades XML"
 
 #: ../src/libedataserver/e-webdav-session.c:2817
 msgid "Failed to refresh lock"
@@ -5907,7 +5907,7 @@ msgstr "No s'ha pogut obtenir la llista de control d'accés"
 #: ../src/libedataserver/e-webdav-session.c:4697
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
-"No es pot emmagatzemar l'entrada del control d'accés protegit ni hereditària."
+"No es pot emmagatzemar l'entrada del control d'accés protegit ni heretada."
 
 #: ../src/libedataserver/e-webdav-session.c:4704
 msgid "Provided invalid principal kind for Access Control Entry."
@@ -5956,7 +5956,7 @@ msgstr ""
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:493
 msgid "Requesting access token, please wait..."
-msgstr "S'està sol·licitant el testimoni d'accés; espereu, si us plau..."
+msgstr "S'està sol·licitant el testimoni d'accés; espereu..."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:595
 msgid "Google Address book authentication request"
@@ -6508,7 +6508,7 @@ msgstr "Mostra només els orígens habilitats"
 
 #: ../src/tools/list-sources/list-sources.c:86
 msgid "Show source’s UID"
-msgstr "Mostra la UID de l'origen"
+msgstr "Mostra l'UID de l'origen"
 
 #: ../src/tools/list-sources/list-sources.c:89
 msgid "Show source’s authentication information"
