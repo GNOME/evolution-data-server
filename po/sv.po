@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-06-21 13:50+0000\n"
-"PO-Revision-Date: 2017-07-02 20:34+0200\n"
+"POT-Creation-Date: 2017-08-07 06:43+0000\n"
+"PO-Revision-Date: 2017-09-10 14:41+0200\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Svenska <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.2\n"
+"X-Generator: Poedit 2.0.3\n"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -42,31 +42,31 @@ msgid "Failed to create hardlink for resource “%s”: %s"
 msgstr "Misslyckades med att skapa hårdlänk för resursen ”%s”: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:524
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1256
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1257
 msgid "No UID in the contact"
 msgstr "Inget UID i kontakten"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:851
+#: ../src/addressbook/backends/file/e-book-backend-file.c:852
 #, c-format
 msgid "Conflicting UIDs found in added contacts"
 msgstr "Hittade UID:er i tillagda kontakter som står i konflikt"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:990
+#: ../src/addressbook/backends/file/e-book-backend-file.c:991
 msgid "Loading..."
 msgstr "Läser in…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:992
+#: ../src/addressbook/backends/file/e-book-backend-file.c:993
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4388
 msgid "Searching..."
 msgstr "Söker…"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1284
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1285
 #, c-format
 msgid "Tried to modify contact “%s” with out of sync revision"
 msgstr "Försökte modifiera kontakt ”%s” för en revision som inte är i synk"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1475
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1560
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1476
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1561
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:3085
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7342
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7411
@@ -74,23 +74,24 @@ msgstr "Försökte modifiera kontakt ”%s” för en revision som inte är i sy
 msgid "Contact “%s” not found"
 msgstr "Kontakten ”%s” hittades inte"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1620
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1701
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1621
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1702
 #, c-format
 msgid "Query “%s” not supported"
 msgstr "Frågesats ”%s” stöds inte"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1629
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1710
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1630
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1711
 #, c-format
 msgid "Invalid Query “%s”"
 msgstr "Ogiltig frågesats ”%s”"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:1975
+#: ../src/addressbook/backends/file/e-book-backend-file.c:1976
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1998
 msgid "Requested to delete an unrelated cursor"
 msgstr "Begärde att ta bort en orelaterad markör"
 
-#: ../src/addressbook/backends/file/e-book-backend-file.c:2046
+#: ../src/addressbook/backends/file/e-book-backend-file.c:2047
 #, c-format
 msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "Kunde inte byta namn på gammal databas från ”%s” till ”%s”: %s"
@@ -98,8 +99,7 @@ msgstr "Kunde inte byta namn på gammal databas från ”%s” till ”%s”: %s
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1165
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4278
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:384
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:867
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:233
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1079
@@ -114,10 +114,9 @@ msgstr "Kunde inte byta namn på gammal databas från ”%s” till ”%s”: %s
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:709
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:757
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:774
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:272
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:201
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
+#: ../src/calendar/backends/http/e-cal-backend-http.c:199
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
 #: ../src/calendar/libecal/e-cal-client.c:3518
@@ -138,48 +137,33 @@ msgstr "Kunde inte byta namn på gammal databas från ”%s” till ”%s”: %s
 #: ../src/calendar/libecal/e-cal-client.c:6450
 #: ../src/calendar/libecal/e-cal-client.c:6813
 #: ../src/calendar/libecal/e-cal-client.c:7035
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3048
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3058
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3070
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1740
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3050
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3060
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3072
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
+#: ../src/libedataserver/e-soup-session.c:1062
+#: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Okänt fel"
 
-#. Query for new contacts asynchronously
-#: ../src/addressbook/backends/google/e-book-backend-google.c:782
-msgid "Querying for updated contacts…"
-msgstr "Frågar efter uppdaterade kontakter…"
+#: ../src/addressbook/backends/google/e-book-backend-google.c:922
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
+msgid "Object to save is not a valid vCard"
+msgstr "Objekt att spara är inte ett giltigt vCard"
 
-#. Run the query asynchronously
-#: ../src/addressbook/backends/google/e-book-backend-google.c:966
-msgid "Querying for updated groups…"
-msgstr "Frågar efter uppdaterade grupper…"
+#: ../src/addressbook/backends/google/e-book-backend-google.c:974
+msgid "Failed to create contact from returned server data"
+msgstr "Misslyckades med att skapa kontakt från returnerade serverdata"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1749
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5030
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1504
-msgid "The backend does not support bulk additions"
-msgstr "Bakänden saknar stöd för multipla adderingar"
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:1906
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5166
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1626
-msgid "The backend does not support bulk modifications"
-msgstr "Bakänden saknar stöd för multipla ändringar"
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:2115
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1726
-msgid "The backend does not support bulk removals"
-msgstr "Bakänden saknar stöd för multipla borttagningar"
-
-#: ../src/addressbook/backends/google/e-book-backend-google.c:2237
-msgid "Loading…"
-msgstr "Läser in…"
+#: ../src/addressbook/backends/google/e-book-backend-google.c:990
+msgid "Server returned contact without UID"
+msgstr "Servern returnerade en kontakt utan UID"
 
 #. System Group: My Contacts
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1670
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1658
 #: ../src/services/evolution-source-registry/builtin/system-address-book.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-calendar.source.in.h:1
 #: ../src/services/evolution-source-registry/builtin/system-memo-list.source.in.h:1
@@ -188,17 +172,17 @@ msgid "Personal"
 msgstr "Personligt"
 
 #. System Group: Friends
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1672
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1660
 msgid "Friends"
 msgstr "Vänner"
 
 #. System Group: Family
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1674
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1662
 msgid "Family"
 msgstr "Familj"
 
 #. System Group: Coworkers
-#: ../src/addressbook/backends/google/e-book-google-utils.c:1676
+#: ../src/addressbook/backends/google/e-book-google-utils.c:1664
 msgid "Coworkers"
 msgstr "Kollegor"
 
@@ -257,9 +241,17 @@ msgstr "Fel vid sökning"
 msgid "Downloading contacts (%d)..."
 msgstr "Hämtar kontakter (%d)…"
 
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5030
+msgid "The backend does not support bulk additions"
+msgstr "Bakänden saknar stöd för multipla adderingar"
+
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5113
 msgid "Adding contact to LDAP server..."
 msgstr "Lägger till kontakt till LDAP-server…"
+
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5166
+msgid "The backend does not support bulk modifications"
+msgstr "Bakänden saknar stöd för multipla ändringar"
 
 #: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5188
 msgid "Modifying contact from LDAP server..."
@@ -274,53 +266,14 @@ msgstr "Tar bort kontakt från LDAP-server…"
 msgid "Failed to get the DN for user “%s”"
 msgstr "Misslyckades med att hämta DN för användare ”%s”"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:588
-#: ../src/calendar/backends/http/e-cal-backend-http.c:514
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:173
 #, c-format
-msgid "Malformed URI: %s"
-msgstr "Felaktig URI: %s"
+msgid "Given URL “%s” doesn’t reference WebDAV address book"
+msgstr "Angiven URL ”%s” refererar inte till en WebDAV-adressbok"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:836
-msgid "Loading Addressbook summary..."
-msgstr "Läser in sammanfattning för adressbok…"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:864
-#, c-format
-msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
-msgstr "PROPFIND på webdav misslyckades med HTTP-status %d (%s)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:883
-msgid "No response body in webdav PROPFIND result"
-msgstr "Inget svarsinnehåll i webdav PROPFIND-resultat"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:944
-#, c-format
-msgid "Loading Contacts (%d%%)"
-msgstr "Läser in kontakter (%d%%)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1358
-msgid "Cannot transform SoupURI to string"
-msgstr "Kan inte översätta SoupURI till sträng"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1555
-#, c-format
-msgid "Create resource “%s” failed with HTTP status %d (%s)"
-msgstr "Skapandet av resursen ”%s” misslyckades med HTTP-status %d (%s)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1657
-msgid "Contact on server changed -> not modifying"
-msgstr "Kontakt på servern har ändrats -> ändrar inte"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1665
-#, c-format
-msgid "Modify contact failed with HTTP status %d (%s)"
-msgstr "Ändring av kontakt misslyckades med HTTP-status %d (%s)"
-
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1758
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1774
-#, c-format
-msgid "DELETE failed with HTTP status %d"
-msgstr "DELETE misslyckades med HTTP-status %d"
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:855
+msgid "Received object is not a valid vCard"
+msgstr "Mottaget objekt är inte ett giltigt vCard"
 
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
 msgid "No such book"
@@ -812,7 +765,7 @@ msgid "Birth Date"
 msgstr "Födelsedatum"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:946
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:937
 msgid "Anniversary"
 msgstr "Jubileum"
 
@@ -993,11 +946,13 @@ msgid "Error introspecting unknown summary field “%s”"
 msgstr "Fel vid introspektion av okänt summeringsfält ”%s”"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1515
+#: ../src/addressbook/libedata-book/e-book-cache.c:542
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1393
 msgid "Error parsing regular expression"
 msgstr "Fel vid tolkning av reguljärt uttryck"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1560
+#: ../src/addressbook/libedata-book/e-book-cache.c:4475
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1877
 #: ../src/camel/camel-db.c:802
 #, c-format
@@ -1010,6 +965,7 @@ msgid "Invalid contact field “%d” specified in summary"
 msgstr "Okänt kontaktfält ”%d” specificerat i sammanfattningen"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:1731
+#: ../src/addressbook/libedata-book/e-book-cache.c:365
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:604
 #, c-format
 msgid ""
@@ -1029,6 +985,7 @@ msgstr ""
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4308
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:4401
+#: ../src/addressbook/libedata-book/e-book-cache.c:3433
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5817
 #, c-format
 msgid "Query contained unsupported elements"
@@ -1094,6 +1051,7 @@ msgid "Cannot sort by a field which may have multiple values"
 msgstr "Kan inte sortera på ett fält som kan ha flera olika värden"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6219
+#: ../src/addressbook/libedata-book/e-book-cache.c:5561
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8116
 #, c-format
 msgid ""
@@ -1104,6 +1062,7 @@ msgstr ""
 "kontaktlistan"
 
 #: ../src/addressbook/libedata-book/e-book-backend-sqlitedb.c:6227
+#: ../src/addressbook/libedata-book/e-book-cache.c:5568
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:8124
 #, c-format
 msgid ""
@@ -1113,10 +1072,75 @@ msgstr ""
 "Försökte stega en markör framåt, men markören är redan i slutet på "
 "kontaktlistan"
 
+#: ../src/addressbook/libedata-book/e-book-cache.c:330
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:570
 #, c-format
 msgid "Unsupported contact field “%d” specified in summary"
 msgstr "Icke stött kontaktfält ”%d” angavs i sammanfattningen"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:3428
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1605
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2834
+#, c-format
+msgid "Invalid query: %s"
+msgstr "Ogiltig frågesats: %s"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:3598
+msgid "Invalid query for a book cursor"
+msgstr "Ogiltig frågesats för en bokmarkör"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:4479
+#: ../src/libebackend/e-cache.c:756
+#, c-format
+msgid "Can’t open database %s: %s"
+msgstr "Kan inte öppna databasen %s: %s"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5082
+#: ../src/addressbook/libedata-book/e-book-cache.c:5134
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2250
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2313
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2484
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1314
+#: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
+#: ../src/libebackend/e-cache.c:2278
+#, c-format
+msgid "Object “%s” not found"
+msgstr "Objektet ”%s” hittades inte"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5194
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2375
+#, c-format
+msgid "Object with extra “%s” not found"
+msgstr "Objekt med extra ”%s” hittades inte"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5348
+msgid "At least one sort field must be specified to use a cursor"
+msgstr "Åtminstone ett sorteringsfält måste anges för att använda en markör"
+
+#: ../src/addressbook/libedata-book/e-book-cache.c:5357
+#: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
+msgid "Cannot sort by a field that is not a string type"
+msgstr "Kan inte sortera på ett fält som inte är en strängtyp"
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1033
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1035
+#, c-format
+msgid "Preloaded object for UID “%s” is invalid"
+msgstr "Förinläst objekt för UID ”%s” är ogiltigt"
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1041
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1043
+#, c-format
+msgid "Received object for UID “%s” is invalid"
+msgstr "Mottaget objekt för UID ”%s” är ogiltigt"
+
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1868
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2222
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2987
+#, c-format
+msgid "Failed to create cache “%s”:"
+msgstr "Misslyckades med att skapa cachen ”%s”:"
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
@@ -1126,11 +1150,6 @@ msgstr ""
 "Kan inte uppgradera kontaktdatabas från en äldre databas med mer än en "
 "adressbok. Ta bort en av posterna i tabellen ”folders” först."
 
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
-#, c-format
-msgid "Invalid query: %s"
-msgstr "Ogiltig frågesats: %s"
-
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5985
 msgid "Invalid query for EbSqlCursor"
 msgstr "Ogiltig frågesats för EbSqlCursor"
@@ -1139,10 +1158,6 @@ msgstr "Ogiltig frågesats för EbSqlCursor"
 msgid "At least one sort field must be specified to use an EbSqlCursor"
 msgstr ""
 "Åtminstone ett sorteringsfält måste anges för att använda en EbSqlCursor"
-
-#: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
-msgid "Cannot sort by a field that is not a string type"
-msgstr "Kan inte sortera på ett fält som inte är en strängtyp"
 
 #: ../src/addressbook/libedata-book/e-data-book.c:378
 #: ../src/calendar/libedata-cal/e-data-cal.c:410
@@ -1331,95 +1346,40 @@ msgstr "Markören stöder inte stegning"
 msgid "Cursor does not support alphabetic indexes"
 msgstr "Markören stöder inte alfabetiska index"
 
+#: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:92
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:266
 msgid "Unrecognized cursor origin"
 msgstr "Okänd härkomst för markör"
 
+#: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:151
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:334
 msgid "Out of sync revision while moving cursor"
 msgstr "Revision har tappat synk medan markören flyttades"
 
+#: ../src/addressbook/libedata-book/e-data-book-cursor-cache.c:222
 #: ../src/addressbook/libedata-book/e-data-book-cursor-sqlite.c:428
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabetiskt index sattes för felaktig local"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:707
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
 #, c-format
-msgid "Server is unreachable (%s)"
-msgstr "Servern är inte nåbar (%s)"
+msgid "Given URL “%s” doesn’t reference CalDAV calendar"
+msgstr "Angiven URL ”%s” refererar inte till en CalDAV-kalender"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:733
-#, c-format
-msgid "Failed to login to the server: %s"
-msgstr "Misslyckades med att logga in på servern: %s"
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
+msgid "Failed to parse response data"
+msgstr "Misslyckades med att tolka svarsdata"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:755
-#, c-format
-msgid "Failed to connect to a server using SSL/TLS: %s"
-msgstr "Misslyckades med att ansluta till en server via SSL/TLS: %s"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:771
-#, c-format
-msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
-msgstr "Oväntad HTTP-statuskod %d returnerades (%s) för URI: %s"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:792
-msgid "CalDAV backend is not loaded yet"
-msgstr "CalDAV-bakänden är inte inläst än"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1234
-#: ../src/libedataserver/e-webdav-discover.c:145
-msgid "Invalid Redirect URL"
-msgstr "Ogiltig omdirigerings-URL"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:2948
-#, c-format
-msgid "Cannot create local cache folder “%s”"
-msgstr "Kunde inte skapa lokal cachemapp ”%s”"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:3034
-#, c-format
-msgid ""
-"Server is unreachable, calendar is opened in read-only mode.\n"
-"Error message: %s"
-msgstr ""
-"Servern är inte nåbar. Kalendern är öppnad i skrivskyddat läge.\n"
-"Felmeddelande: %s"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4139
-msgid "CalDAV does not support bulk additions"
-msgstr "CalDAV saknar stöd för multipla adderingar"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4242
-msgid "CalDAV does not support bulk modifications"
-msgstr "CalDAV saknar stöd för multipla ändringar"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:4523
-msgid "CalDAV does not support bulk removals"
-msgstr "CalDAV saknar stöd för multipla borttagningar"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5270
-msgid "Calendar doesn’t support Free/Busy"
-msgstr "Kalendern saknar stöd för Ledig/Upptagen"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5279
-msgid "Schedule outbox url not found"
-msgstr "Hittade inte url för schema-utkorg"
-
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:5376
-msgid "Unexpected result in schedule-response"
-msgstr "Oväntat resultat i schema-svar"
-
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:948
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:939
 msgid "Birthday"
 msgstr "Födelsedag"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:984
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:975
 #, c-format
 msgid "Birthday: %s"
 msgstr "Födelsedag: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1015
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1006
 #, c-format
 msgid "Anniversary: %s"
 msgstr "Jubileum: %s"
@@ -1433,25 +1393,24 @@ msgstr "Kan inte spara kalenderdata: Felaktigt utformad URI."
 msgid "Cannot save calendar data"
 msgstr "Kan inte spara kalenderdata"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:583
-#, c-format
-msgid "Redirected to Invalid URI"
-msgstr "Omdirigerad till ogiltig URI"
+#: ../src/calendar/backends/http/e-cal-backend-http.c:130
+msgid "URI not set"
+msgstr "URI inte inställd"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:642
+#: ../src/calendar/backends/http/e-cal-backend-http.c:198
+#, c-format
+msgid "Malformed URI “%s”: %s"
+msgstr "Felaktig URI ”%s”: %s"
+
+#: ../src/calendar/backends/http/e-cal-backend-http.c:341
 #, c-format
 msgid "Bad file format."
 msgstr "Felaktigt filformat."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:652
+#: ../src/calendar/backends/http/e-cal-backend-http.c:349
 #, c-format
 msgid "Not a calendar."
 msgstr "Inte en kalender."
-
-#: ../src/calendar/backends/http/e-cal-backend-http.c:956
-#: ../src/calendar/backends/weather/e-cal-backend-weather.c:710
-msgid "Could not create cache file"
-msgstr "Kunde inte skapa cachefil"
 
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:196
 msgid "Could not retrieve weather data"
@@ -1520,6 +1479,10 @@ msgstr "%.1f"
 #: ../src/calendar/backends/weather/e-cal-backend-weather.c:618
 msgid "Forecast"
 msgstr "Prognos"
+
+#: ../src/calendar/backends/weather/e-cal-backend-weather.c:710
+msgid "Could not create cache file"
+msgstr "Kunde inte skapa cachefil"
 
 #: ../src/calendar/libecal/e-cal.c:2304
 msgid "Repository is offline"
@@ -1610,7 +1573,7 @@ msgstr "Okänd kalenderegenskap ”%s”"
 msgid "Cannot change value of calendar property “%s”"
 msgstr "Kan inte ändra värdet för kalenderegenskapen ”%s”"
 
-#: ../src/calendar/libecal/e-cal-component.c:1358
+#: ../src/calendar/libecal/e-cal-component.c:1330
 msgid "Untitled appointment"
 msgstr "Namnlöst möte"
 
@@ -1763,18 +1726,18 @@ msgid "Undefined"
 msgstr "Odefinierad"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1061
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1377
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1504
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1553
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1077
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1390
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1517
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1566
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "”%s” förväntar sig ett argument"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:672
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1384
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1392
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:686
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1397
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1405
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "”%s” förväntar sig att första argumentet är en sträng"
@@ -1787,11 +1750,11 @@ msgstr "”%s” förväntar sig två eller tre argument"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:172
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:822
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1068
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1453
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1511
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1560
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:836
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1084
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1466
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1524
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1573
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "”%s” förväntar sig att första argumentet är en time_t"
@@ -1799,7 +1762,7 @@ msgstr "”%s” förväntar sig att första argumentet är en time_t"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:181
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:269
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:333
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:831
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:845
 #, c-format
 msgid "“%s” expects the second argument to be a time_t"
 msgstr "”%s” förväntar sig att andra argumentet är en time_t"
@@ -1815,30 +1778,30 @@ msgid "“%s” expects none or two arguments"
 msgstr "”%s” förväntar sig inget eller två argument"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:665
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:815
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1446
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1459
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "”%s” förväntar sig två argument"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:601
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:624
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:747
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:779
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:986
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1019
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1338
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:612
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:635
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:761
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:793
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1351
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "”%s” förväntar sig inga argument"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:681
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:695
 #, c-format
 msgid "“%s” expects the second argument to be a string"
 msgstr "”%s” förväntar sig att andra argumentet är en sträng"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:712
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:726
 #, c-format
 msgid ""
 "“%s” expects the first argument to be either “any”, “summary”, or "
@@ -1849,12 +1812,12 @@ msgstr ""
 "”description”, eller ”location”, eller ”attendee”, eller ”organizer”, eller "
 "”classification”"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:883
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:897
 #, c-format
 msgid "“%s” expects at least one argument"
 msgstr "”%s” förväntar sig minst ett argument"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:898
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:912
 #, c-format
 msgid ""
 "“%s” expects all arguments to be strings or one and only one argument to be "
@@ -1863,17 +1826,49 @@ msgstr ""
 "”%s” förväntar sig att alla argument är strängar eller att ett och endast "
 "ett argument är booleskt falskt (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1401
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "”%s” förväntar sig att första argumentet är en datum-/tidssträng enligt ISO "
 "8601"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1462
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "”%s” förväntar sig att andra argumentet är ett heltal"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1739
+#, c-format
+msgid "Failed to create SQLite function, error code “%d”: %s"
+msgstr "Misslyckades med att skapa SQLite-funktion, felkod ”%d”: %s"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2248
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2311
+#, c-format
+msgid "Object “%s”, “%s” not found"
+msgstr "Objektet ”%s”, ”%s” hittades inte"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3006
+msgid "Cannot add timezone without tzid"
+msgstr "Kan inte lägga till tidszon utan tzid"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3012
+msgid "Cannot add timezone without component"
+msgstr "Kan inte lägga till tidszon utan komponent"
+
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3018
+msgid "Cannot add timezone with invalid component"
+msgstr "Kan inte lägga till tidszon med ogiltig komponent"
+
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
+#, c-format
+msgid "Received object for UID “%s” doesn’t contain any expected component"
+msgstr "Mottaget objekt för UID ”%s” innehåller inte någon förväntad komponent"
+
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3741
+msgid "attachment.dat"
+msgstr "bilaga.dat"
 
 #: ../src/calendar/libedata-cal/e-data-cal.c:421
 msgid "Unsupported method"
@@ -2140,19 +2135,19 @@ msgid_plural "Filtering new messages in “%s : %s”"
 msgstr[0] "Filtrerar nytt meddelande i ”%s : %s”"
 msgstr[1] "Filtrerar nya meddelanden i ”%s : %s”"
 
-#: ../src/camel/camel-folder.c:1022
+#: ../src/camel/camel-folder.c:1030
 #: ../src/camel/providers/local/camel-maildir-folder.c:330
 msgid "Moving messages"
 msgstr "Flyttar meddelanden"
 
-#: ../src/camel/camel-folder.c:1025
+#: ../src/camel/camel-folder.c:1033
 msgid "Copying messages"
 msgstr "Kopierar meddelanden"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1070
+#: ../src/camel/camel-folder.c:1078
 #, c-format
 msgid "Quota information not supported for folder “%s : %s”"
 msgstr "Kvotinformation stöds inte för mappen ”%s : %s”"
@@ -2160,7 +2155,7 @@ msgstr "Kvotinformation stöds inte för mappen ”%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:1172
+#: ../src/camel/camel-folder.c:1180
 #, c-format
 msgid "Filtering folder “%s : %s”"
 msgstr "Filtrerar mappen ”%s : %s”"
@@ -2168,7 +2163,7 @@ msgstr "Filtrerar mappen ”%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:2977
+#: ../src/camel/camel-folder.c:2985
 #, c-format
 msgid "Expunging folder “%s : %s”"
 msgstr "Tömmer mappen ”%s : %s”"
@@ -2176,7 +2171,7 @@ msgstr "Tömmer mappen ”%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3111
+#: ../src/camel/camel-folder.c:3119
 #, c-format
 msgid "Retrieving message “%s” in “%s : %s”"
 msgstr "Hämtar meddelande ”%s” i ”%s : %s”"
@@ -2184,7 +2179,7 @@ msgstr "Hämtar meddelande ”%s” i ”%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3333
+#: ../src/camel/camel-folder.c:3341
 #, c-format
 msgid "Retrieving quota information for “%s : %s”"
 msgstr "Hämtar kvotinformation för ”%s : %s”"
@@ -2192,7 +2187,7 @@ msgstr "Hämtar kvotinformation för ”%s : %s”"
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder.c:3631
+#: ../src/camel/camel-folder.c:3639
 #, c-format
 msgid "Refreshing folder “%s : %s”"
 msgstr "Uppdaterar mappen ”%s : %s”"
@@ -2262,7 +2257,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1623
+#: ../src/camel/camel-folder-summary.c:1647
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "Frigör oanvänt minne för mappen ”%s : %s”"
@@ -2337,7 +2332,7 @@ msgstr ""
 "kommer det att frågas efter ett lösenord för varje lagrad privat nyckel."
 
 #: ../src/camel/camel-gpg-context.c:1101 ../src/camel/camel-net-utils.c:522
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:402
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:405
 #: ../src/libedataserver/e-client.c:161
 #, c-format
 msgid "Cancelled"
@@ -2623,7 +2618,7 @@ msgid "No provider available for protocol “%s”"
 msgstr "Det finns ingen leverantör för protokollet ”%s”"
 
 #: ../src/camel/camel-sasl-anonymous.c:35
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:82
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:85
 msgid "Anonymous"
 msgstr "Anonym"
 
@@ -2874,7 +2869,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Ogiltig GType registrerad för protokollet ”%s”"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2997
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2999
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3123,43 +3118,43 @@ msgstr "Misslyckades med att lägga till data till kodare"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME-dekryptering: Inget krypterat innehåll hittades"
 
-#: ../src/camel/camel-store.c:1402
+#: ../src/camel/camel-store.c:1400
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "Öppnar mappen ”%s”"
 
-#: ../src/camel/camel-store.c:1697
+#: ../src/camel/camel-store.c:1695
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "Söker igenom mappar i ”%s”"
 
-#: ../src/camel/camel-store.c:1725 ../src/camel/camel-store.c:1770
+#: ../src/camel/camel-store.c:1723 ../src/camel/camel-store.c:1768
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "Papperskorg"
 
-#: ../src/camel/camel-store.c:1739 ../src/camel/camel-store.c:1787
+#: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1785
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "Skräppost"
 
-#: ../src/camel/camel-store.c:2388
+#: ../src/camel/camel-store.c:2386
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "Kan inte skapa mapp: %s: mappen finns redan"
 
-#: ../src/camel/camel-store.c:2395
+#: ../src/camel/camel-store.c:2393
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "Skapar mappen ”%s”"
 
-#: ../src/camel/camel-store.c:2572 ../src/camel/camel-vee-store.c:420
+#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:422
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "Kan inte ta bort mapp: %s: Ogiltig åtgärd"
 
-#: ../src/camel/camel-store.c:2762 ../src/camel/camel-vee-store.c:471
+#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:473
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3208,12 +3203,12 @@ msgstr "Säger upp prenumeration på mappen ”%s”"
 msgid "Could not parse URL “%s”"
 msgstr "Kunde inte tolka URL:en ”%s”"
 
-#: ../src/camel/camel-vee-folder.c:498
+#: ../src/camel/camel-vee-folder.c:500
 #, c-format
 msgid "Updating folder “%s”"
 msgstr "Uppdaterar mappen ”%s”"
 
-#: ../src/camel/camel-vee-folder.c:898 ../src/camel/camel-vee-folder.c:1013
+#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Kan inte kopiera eller flytta meddelanden till en virtuell mapp"
@@ -3222,17 +3217,17 @@ msgstr "Kan inte kopiera eller flytta meddelanden till en virtuell mapp"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:935
+#: ../src/camel/camel-vee-folder.c:937
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Det finns inget sådant meddelande %s i ”%s : %s”"
 
-#: ../src/camel/camel-vee-folder.c:989
+#: ../src/camel/camel-vee-folder.c:991
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Fel vid lagring av ”%s”: "
 
-#: ../src/camel/camel-vee-folder.c:1236
+#: ../src/camel/camel-vee-folder.c:1241
 msgid "Automatically _update on change in source folders"
 msgstr "_Uppdatera automatiskt vid förändringar i källmappen"
 
@@ -3242,21 +3237,21 @@ msgstr "_Uppdatera automatiskt vid förändringar i källmappen"
 msgid "Unmatched"
 msgstr "Omatchade"
 
-#: ../src/camel/camel-vee-store.c:446
+#: ../src/camel/camel-vee-store.c:448
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "Kan inte ta bort mapp: %s: Det finns ingen sådan mapp"
 
-#: ../src/camel/camel-vee-store.c:481
+#: ../src/camel/camel-vee-store.c:483
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "Kan inte byta namn på mapp: %s: Det finns ingen sådan mapp"
 
-#: ../src/camel/camel-vee-store.c:544
+#: ../src/camel/camel-vee-store.c:546
 msgid "Enable _Unmatched folder"
 msgstr "Aktivera mappen _Omatchade"
 
-#: ../src/camel/camel-vee-store.c:1067
+#: ../src/camel/camel-vee-store.c:1073
 msgid "Updating Unmatched search folder"
 msgstr "Uppdaterar sökmappen Omatchade"
 
@@ -3274,15 +3269,15 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Du måste vara ansluten för att kunna genomföra denna åtgärd (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3130
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3132
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2306
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:450
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:633
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:835
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1047
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:920
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1134
 #: ../src/camel/providers/pop3/camel-pop3-store.c:294
 #: ../src/camel/providers/pop3/camel-pop3-store.c:527
 #: ../src/camel/providers/pop3/camel-pop3-store.c:575
@@ -3438,8 +3433,9 @@ msgid "IMAP over TLS"
 msgstr "IMAP över TLS"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:87
-msgid "IMAP+"
-msgstr "IMAP+"
+#| msgid "IMAP+"
+msgid "IMAP"
+msgstr "IMAP"
 
 #: ../src/camel/providers/imapx/camel-imapx-provider.c:89
 msgid "For reading and storing mail on IMAP servers."
@@ -3449,198 +3445,198 @@ msgstr "För läsande och lagrande av e-post på IMAP-servrar."
 msgid "Error writing to cache stream"
 msgstr "Fel vid skrivning till cacheström"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2901
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3163
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2815
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2903
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3165
 msgid "Failed to get capabilities"
 msgstr "Misslyckades med att erhålla egenskaper"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2832
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2834
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Misslyckades med att ansluta till IMAP-servern %s i säkert läge: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2833
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2835
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTTLS stöds inte"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2842
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2844
 msgid "Failed to issue STARTTLS"
 msgstr "Misslyckades med att utfärda STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2890
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2892
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Misslyckades med att ansluta till IMAP-servern %s i säkert läge: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2984
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2986
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP-servern %s saknar stöd för %s-autentisering"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3015
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3017
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Kan inte autentisera utan ett användarnamn"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3024
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3026
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "Lösenord för autentisering finns inte tillgängligt"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3032
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3034
 msgid "Failed to authenticate"
 msgstr "Misslyckades med att autentisera"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3185
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3187
 msgid "Failed to issue NAMESPACE"
 msgstr "Misslyckades med att utfärda NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3203
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3205
 msgid "Failed to enable QResync"
 msgstr "Misslyckades med att aktivera QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3235
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3237
 msgid "Failed to issue NOTIFY"
 msgstr "Misslyckades med att utfärda NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3713
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3715
 msgid "Failed to select mailbox"
 msgstr "Misslyckades med att välja postlåda"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3816
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3818
 msgid "Cannot issue command, no stream available"
 msgstr "Kan inte utfärda kommando, ingen ström tillgänglig"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4080
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4082
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Kan inte hämta meddelande med meddelande-id %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4081
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4083
 msgid "No such message available."
 msgstr "Det finns inget sådant meddelande."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4118
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4143
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4182
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4120
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4145
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4184
 msgid "Error fetching message"
 msgstr "Fel vid hämtning av meddelande"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4160
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4162
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4763
 msgid "Error performing NOOP"
 msgstr "Fel vid genomförande av NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4175
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4177
 msgid "Failed to close the tmp stream"
 msgstr "Misslyckades med att stänga tmp-ström"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4206
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4208
 msgid "Failed to copy the tmp file"
 msgstr "Misslyckades med att kopiera tmp-fil"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4371
 msgid "Error moving messages"
 msgstr "Fel vid flytt av meddelanden"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4369
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4371
 msgid "Error copying messages"
 msgstr "Fel vid kopiering av meddelanden"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4554
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4575
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4556
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4577
 msgid "Cannot create spool file: "
 msgstr "Kan inte skapa köfil: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4661
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4663
 msgid "Error appending message"
 msgstr "Fel vid tillägg av meddelande"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4912
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4916
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Letar efter ändrade meddelanden i ”%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4916
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4920
 msgid "Error scanning changes"
 msgstr "Fel vid genomsökning av ändringar"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4937
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4941
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Hämtar sammandragsinformation för nya meddelanden i ”%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4955
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4959
 msgid "Error fetching message info"
 msgstr "Fel vid hämtning av meddelandeinformation"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5037
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5041
 msgid "Error running STATUS"
 msgstr "Fel vid körning av STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5544
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5574
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5609
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5548
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5578
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5613
 msgid "Error syncing changes"
 msgstr "Fel vid synkronisering av ändringar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5747
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5751
 msgid "Error expunging message"
 msgstr "Fel vid radering av meddelande"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5819
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5823
 msgid "Error fetching folders"
 msgstr "Fel vid hämtning av mappar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5834
 msgid "Error fetching subscribed folders"
 msgstr "Fel vid hämtning av prenumererade mappar"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5852
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5856
 msgid "Error creating folder"
 msgstr "Fel vid skapande av mapp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5908
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5912
 msgid "Error deleting folder"
 msgstr "Fel vid borttagning av mapp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5954
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5958
 msgid "Error renaming folder"
 msgstr "Fel vid namnbyte av mapp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5986
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5990
 msgid "Error subscribing to folder"
 msgstr "Fel vid prenumeration av mapp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6022
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6026
 msgid "Error unsubscribing from folder"
 msgstr "Fel vid uppsägning av prenumeration på mapp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6062
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6066
 msgid "IMAP server does not support quotas"
 msgstr "IMAP-servern saknar stöd för kvoter"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6074
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6078
 msgid "Error retrieving quota information"
 msgstr "Fel vid hämtning av kvotinformation"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6121
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6125
 msgid "Search failed"
 msgstr "Sökning misslyckades"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6239
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
 msgid "Error running IDLE"
 msgstr "Fel vid körning av IDLE"
 
@@ -3665,38 +3661,38 @@ msgstr "IMAP-server %s"
 msgid "IMAP service for %s on %s"
 msgstr "IMAP-tjänst för %s på %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:888
+#: ../src/camel/providers/imapx/camel-imapx-store.c:896
 msgid "No IMAPx connection object provided"
 msgstr "Inget IMAPx-anslutningsobjekt tillhandahållet"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:905
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:92
+#: ../src/camel/providers/imapx/camel-imapx-store.c:913
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:95
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "Lösenord"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:907
+#: ../src/camel/providers/imapx/camel-imapx-store.c:915
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Detta alternativ ansluter till IMAP-servern med ett lösenord i klartext."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:990
+#: ../src/camel/providers/imapx/camel-imapx-store.c:998
 #, c-format
 msgid "No such folder %s"
 msgstr "Det finns ingen mapp %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1440
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1461
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Ingen IMAP-namnrymd för mappsökväg ”%s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1708
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1942
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1729
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1963
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Hämtar mapplista för ”%s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2159
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2180
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "Mappnamnet ”%s” är ogiltigt eftersom det innehåller tecknet ”%c”"
@@ -3706,97 +3702,97 @@ msgstr "Mappnamnet ”%s” är ogiltigt eftersom det innehåller tecknet ”%c�
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2536
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2557
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Utkast"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2537
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2558
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Utkast"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2538
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2559
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Utkast"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2541
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2562
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Mallar"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2544
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2565
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arkiv"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2547
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2568
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Skickad e-post"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2548
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2569
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Skickat"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2549
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2570
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Skickade objekt"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2550
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2571
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Skickade meddelanden"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2553
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2574
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Skräppost"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2554
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2575
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Skräppost"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2555
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2576
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Skräppost"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2556
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2577
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Skräppost"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2557
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2578
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Skräppost"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2558
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2579
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "E-post i stor volym"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2561
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2582
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Papperskorg"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2562
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2583
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Papperskorg"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2563
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2584
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Borttagna objekt"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2564
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2585
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Borttagna meddelanden"
@@ -4053,21 +4049,21 @@ msgstr "är inte en maildir-katalog"
 msgid "Could not scan folder “%s”: %s"
 msgstr "Kunde inte söka igenom mappen ”%s”: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:448
-#: ../src/camel/providers/local/camel-maildir-summary.c:589
+#: ../src/camel/providers/local/camel-maildir-summary.c:457
+#: ../src/camel/providers/local/camel-maildir-summary.c:596
 #, c-format
 msgid "Cannot open maildir directory path: %s: %s"
 msgstr "Kan inte öppna sökvägen till maildir-katalogen: %s: %s"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:580
+#: ../src/camel/providers/local/camel-maildir-summary.c:587
 msgid "Checking folder consistency"
 msgstr "Kontrollerar mapptillstånd"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:679
+#: ../src/camel/providers/local/camel-maildir-summary.c:709
 msgid "Checking for new messages"
 msgstr "Letar efter nya meddelanden"
 
-#: ../src/camel/providers/local/camel-maildir-summary.c:782
+#: ../src/camel/providers/local/camel-maildir-summary.c:813
 #: ../src/camel/providers/local/camel-mbox-summary.c:367
 #: ../src/camel/providers/local/camel-mbox-summary.c:585
 #: ../src/camel/providers/local/camel-mbox-summary.c:739
@@ -4359,7 +4355,7 @@ msgstr "Internt fel: UID är i ogiltigt format: %s"
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:287
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:292
 #: ../src/camel/providers/pop3/camel-pop3-folder.c:575
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:1003
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:1090
 #, c-format
 msgid "Cannot get message %s: %s"
 msgstr "Kan inte hämta meddelande %s: %s"
@@ -4405,25 +4401,31 @@ msgstr ""
 msgid "In the subscription _dialog, show relative folder names"
 msgstr "Visa relativa mappnamn i prenumerations_dialogen"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:54
+#. Translators: The '%s' is replaced with a spin button with the actual value to use
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:51
+#, c-format
+msgid "Download only up to %s latest messages"
+msgstr "Hämta endast upp till de %s senaste meddelandena"
+
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:57
 msgid "Default NNTP port"
 msgstr "Standardport för NNTP"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:55
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:58
 msgid "NNTP over TLS"
 msgstr "NNTP över TLS"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:61
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:64
 msgid "USENET news"
 msgstr "USENET-diskussionsgrupper"
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:63
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:66
 msgid "This is a provider for reading from and posting to USENET newsgroups."
 msgstr ""
 "Det här är en leverantör för läsning och postning till USENET-"
 "diskussionsgrupper."
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:84
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:87
 msgid ""
 "This option will connect to the NNTP server anonymously, without "
 "authentication."
@@ -4431,7 +4433,7 @@ msgstr ""
 "Detta alternativ kommer att ansluta till NNTP-servern anonymt, utan "
 "autentisering."
 
-#: ../src/camel/providers/nntp/camel-nntp-provider.c:94
+#: ../src/camel/providers/nntp/camel-nntp-provider.c:97
 msgid ""
 "This option will authenticate with the NNTP server using a plaintext "
 "password."
@@ -4535,34 +4537,34 @@ msgstr "Inte ansluten."
 msgid "No such folder: %s"
 msgstr "Det finns ingen sådan mapp: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:192
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:337
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:195
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:340
 #, c-format
 msgid "%s: Scanning new messages"
 msgstr "%s: Letar efter nya meddelanden"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:214
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:217
 #, c-format
 msgid "Unexpected server response from xover: %s"
 msgstr "Oväntat serversvar från xover: %s"
 
 # Osäker.
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:358
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:361
 #, c-format
 msgid "Unexpected server response from head: %s"
 msgstr "Oväntat serversvar från head: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:407
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:410
 #, c-format
 msgid "Operation failed: %s"
 msgstr "Åtgärden misslyckades: %s"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:453
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:457
 #, c-format
 msgid "%s: Scanning existing messages"
 msgstr "%s: Söker igenom befintliga meddelanden"
 
-#: ../src/camel/providers/nntp/camel-nntp-summary.c:463
+#: ../src/camel/providers/nntp/camel-nntp-summary.c:470
 #, c-format
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Oväntat serversvar från listgroup: %s"
@@ -4594,11 +4596,11 @@ msgstr "Hämtar POP-sammandrag"
 msgid "Cannot get POP summary: "
 msgstr "Kan inte hämta POP-sammandrag: "
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:812
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:895
 msgid "Expunging old messages"
 msgstr "Tömmer gamla meddelanden"
 
-#: ../src/camel/providers/pop3/camel-pop3-folder.c:840
+#: ../src/camel/providers/pop3/camel-pop3-folder.c:925
 msgid "Expunging deleted messages"
 msgstr "Tömmer borttagna meddelanden"
 
@@ -5238,6 +5240,15 @@ msgstr "(Föråldrad) Portnummer för SOCKS-begäran"
 msgid "(Deprecated) Automatic proxy configuration URL"
 msgstr "(Föråldrad) URL för automatisk proxykonfiguration"
 
+#: ../src/libebackend/e-cache.c:751
+msgid "Out of memory"
+msgstr "Slut på minne"
+
+#: ../src/libebackend/e-cache.c:943
+#, c-format
+msgid "Can not make parent directory: %s"
+msgstr "Kan inte skapa överordnad katalog: %s"
+
 #: ../src/libebackend/e-collection-backend.c:977
 #, c-format
 msgid "%s does not support creating remote resources"
@@ -5459,6 +5470,19 @@ msgstr "D-Bus-fel"
 msgid "Timeout was reached"
 msgstr "Tidsgränsen uppnåddes"
 
+#: ../src/libedataserver/e-soup-session.c:144
+msgid "Credentials required"
+msgstr "Autentiseringsuppgifter krävs"
+
+#: ../src/libedataserver/e-soup-session.c:830
+msgid "Operation was cancelled"
+msgstr "Åtgärden avbröts"
+
+#: ../src/libedataserver/e-soup-session.c:833
+#, c-format
+msgid "Failed with HTTP error %d: %s"
+msgstr "Misslyckades med HTTP-fel %d: %s"
+
 #: ../src/libedataserver/e-source.c:775
 #, c-format
 msgid "Source file is missing a [%s] group"
@@ -5505,7 +5529,7 @@ msgstr "Google-hemlighet hittades inte"
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:188
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:210
 #: ../src/libedataserver/e-source-credentials-provider-impl-google.c:233
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:530
+#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:531
 msgid "Google authentication is not supported"
 msgstr "Google-autentisering stöds inte"
 
@@ -5539,7 +5563,7 @@ msgstr "Misslyckades med att uppdatera element"
 msgid "Password not found"
 msgstr "Lösenord hittades inte"
 
-#: ../src/libedataserver/e-source-mail-signature.c:482
+#: ../src/libedataserver/e-source-mail-signature.c:483
 #, c-format
 msgid "Signature script must be a local file"
 msgstr "Signatur-skript måste vara en lokal fil"
@@ -5688,24 +5712,195 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%I %p"
 
-#: ../src/libedataserver/e-webdav-discover.c:447
-#: ../src/libedataserver/e-webdav-discover.c:486
-#: ../src/libedataserver/e-webdav-discover.c:495
+#: ../src/libedataserver/e-webdav-session.c:669
+msgid "Cannot determine destination URL without WebDAV extension"
+msgstr "Kan inte avgöra mål-URL utan WebDAV-tillägg"
+
+#: ../src/libedataserver/e-webdav-session.c:943
 #, c-format
-msgid "HTTP Error: %s"
-msgstr "HTTP-fel: %s"
+msgid ""
+"The server responded with an HTML page, which can mean there’s an error on "
+"the server or with the client request. The used URI was: %s"
+msgstr ""
+"Servern svarade med en HTML-sida, vilket kan betyda att det finns ett fel på "
+"servern eller med klientbegäran. Den URI som användes var: %s"
 
-#: ../src/libedataserver/e-webdav-discover.c:525
-msgid "Could not parse response"
-msgstr "Kunde inte tolka svar"
+#: ../src/libedataserver/e-webdav-session.c:945
+#, c-format
+msgid ""
+"The server responded with an HTML page, which can mean there’s an error on "
+"the server or with the client request."
+msgstr ""
+"Servern svarade med en HTML-sida, vilket kan betyda att det finns ett fel på "
+"servern eller med klientbegäran."
 
-#: ../src/libedataserver/e-webdav-discover.c:534
-msgid "Empty response"
-msgstr "Tomt svar"
+#. Translators: The first '%s' is replaced with error prefix, as provided
+#. by the caller, which can be in a form: "Failed with something".
+#. The '%d' is replaced with actual HTTP status code.
+#. The second '%s' is replaced with a reason phrase of the error (user readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the server.
+#: ../src/libedataserver/e-webdav-session.c:966
+#, c-format
+msgid "%s: HTTP error code %d (%s): %s"
+msgstr "%s: HTTP-felkod %d (%s): %s"
 
-#: ../src/libedataserver/e-webdav-discover.c:542
-msgid "Unexpected reply from server"
-msgstr "Oväntat svar från server"
+#. Translators: The '%d' is replaced with actual HTTP status code.
+#. The '%s' is replaced with a reason phrase of the error (user readable text).
+#. The last '%s' is replaced with detailed error text, as returned by the server.
+#: ../src/libedataserver/e-webdav-session.c:974
+#, c-format
+msgid "Failed with HTTP error code %d (%s): %s"
+msgstr "Misslyckades med HTTP-felkod %d (%s): %s"
+
+#. Translators: The first '%s' is replaced with error prefix, as provided
+#. by the caller, which can be in a form: "Failed with something".
+#. The '%d' is replaced with actual HTTP status code.
+#. The second '%s' is replaced with a reason phrase of the error (user readable text).
+#: ../src/libedataserver/e-webdav-session.c:989
+#, c-format
+msgid "%s: HTTP error code %d (%s)"
+msgstr "%s: HTTP-felkod %d (%s)"
+
+#. Translators: The '%d' is replaced with actual HTTP status code.
+#. The '%s' is replaced with a reason phrase of the error (user readable text).
+#: ../src/libedataserver/e-webdav-session.c:995
+#, c-format
+msgid "Failed with HTTP error code %d (%s)"
+msgstr "Misslyckades med HTTP-felkod %d (%s)"
+
+#: ../src/libedataserver/e-webdav-session.c:1245
+msgid "Failed to post data"
+msgstr "Misslyckades med att posta data"
+
+#: ../src/libedataserver/e-webdav-session.c:1338
+#: ../src/libedataserver/e-webdav-session.c:1413
+#: ../src/libedataserver/e-webdav-session.c:1517
+#: ../src/libedataserver/e-webdav-session.c:2698
+#: ../src/libedataserver/e-webdav-session.c:3950
+msgid "Failed to get input XML content"
+msgstr "Misslyckades med att erhålla innehåll från XML-indata"
+
+#: ../src/libedataserver/e-webdav-session.c:1349
+msgid "Failed to get properties"
+msgstr "Misslyckades med att erhålla egenskaper"
+
+#: ../src/libedataserver/e-webdav-session.c:1423
+msgid "Failed to update properties"
+msgstr "Misslyckades med att uppdatera egenskaper"
+
+#: ../src/libedataserver/e-webdav-session.c:1527
+msgid "Failed to issue REPORT"
+msgstr "Misslyckades med att utfärda REPORT"
+
+#: ../src/libedataserver/e-webdav-session.c:1586
+msgid "Failed to create collection"
+msgstr "Misslyckades med att skapa samling"
+
+#: ../src/libedataserver/e-webdav-session.c:1677
+#: ../src/libedataserver/e-webdav-session.c:1831
+msgid "Failed to get XML request content"
+msgstr "Misslyckades med att erhålla innehåll från XML-begäran"
+
+#: ../src/libedataserver/e-webdav-session.c:1689
+msgid "Failed to create address book"
+msgstr "Misslyckades med att skapa adressbok"
+
+#: ../src/libedataserver/e-webdav-session.c:1844
+msgid "Failed to create calendar"
+msgstr "Misslyckades med att skapa kalender"
+
+#: ../src/libedataserver/e-webdav-session.c:1976
+#: ../src/libedataserver/e-webdav-session.c:1987
+msgid "Failed to read resource"
+msgstr "Misslyckades med att läsa resurs"
+
+#: ../src/libedataserver/e-webdav-session.c:2136
+msgid "Cannot rewind input stream: Not supported"
+msgstr "Kan inte spola tillbaka indataström: Stöds inte"
+
+#: ../src/libedataserver/e-webdav-session.c:2283
+msgid "Failed to put data"
+msgstr "Misslyckades med att placera data"
+
+#: ../src/libedataserver/e-webdav-session.c:2302
+#, c-format
+msgid "Failed to put data to server, error code %d (%s)"
+msgstr "Misslyckades med att placera data på server, felkod %d (%s)"
+
+#: ../src/libedataserver/e-webdav-session.c:2475
+msgid "Failed to delete resource"
+msgstr "Misslyckades med att ta bort resurs"
+
+#: ../src/libedataserver/e-webdav-session.c:2542
+msgid "Failed to copy resource"
+msgstr "Misslyckades med att kopiera resurs"
+
+#: ../src/libedataserver/e-webdav-session.c:2604
+msgid "Failed to move resource"
+msgstr "Misslyckades med att flytta resurs"
+
+#: ../src/libedataserver/e-webdav-session.c:2709
+msgid "Failed to lock resource"
+msgstr "Misslyckades med att låsa resurs"
+
+#: ../src/libedataserver/e-webdav-session.c:2723
+#: ../src/libedataserver/e-webdav-session.c:2925
+msgid "Expected application/xml response, but none returned"
+msgstr "Förväntade application/xml-svar, men inget returnerades"
+
+#: ../src/libedataserver/e-webdav-session.c:2726
+#: ../src/libedataserver/e-webdav-session.c:2928
+#, c-format
+msgid "Expected application/xml response, but %s returned"
+msgstr "Förväntade application/xml-svar, men %s returnerades"
+
+#: ../src/libedataserver/e-webdav-session.c:2738
+#: ../src/libedataserver/e-webdav-session.c:2941
+msgid "Failed to parse XML data"
+msgstr "Misslyckades med att tolka XML-data"
+
+#: ../src/libedataserver/e-webdav-session.c:2817
+msgid "Failed to refresh lock"
+msgstr "Misslyckades med att uppdatera lås"
+
+#: ../src/libedataserver/e-webdav-session.c:2876
+msgid "Failed to unlock"
+msgstr "Misslyckades med att låsa upp"
+
+#: ../src/libedataserver/e-webdav-session.c:2913
+#, c-format
+msgid "Expected multistatus response, but %d returned (%s)"
+msgstr "Förväntade multistatussvar, men %d returnerades (%s)"
+
+#: ../src/libedataserver/e-webdav-session.c:3960
+msgid "Failed to get access control list"
+msgstr "Misslyckades med att erhålla åtkomstkontrollista"
+
+#: ../src/libedataserver/e-webdav-session.c:4697
+msgid "Cannot store protected nor inherited Access Control Entry."
+msgstr "Kan varken lagra skyddad eller ärvd åtkomstkontrollpost."
+
+# Osäker på bästa översättning för principal kind.
+#: ../src/libedataserver/e-webdav-session.c:4704
+msgid "Provided invalid principal kind for Access Control Entry."
+msgstr "Tillhandahöll ogiltig principalsort för åtkomstkontrollpost."
+
+#: ../src/libedataserver/e-webdav-session.c:4711
+msgid "Cannot store property-based Access Control Entry."
+msgstr "Kan inte lagra egenskapsbaserad åtkomstkontrollpost."
+
+#: ../src/libedataserver/e-webdav-session.c:4718
+msgid "Access Control Entry can be only to Grant or Deny, but not None."
+msgstr ""
+"Åtkomstkontrollpost kan endast vara Grant eller Deny, men inte ingendera."
+
+#: ../src/libedataserver/e-webdav-session.c:4726
+msgid "Access Control Entry can be only to Grant or Deny, but not both."
+msgstr "Åtkomstkontrollpost kan endast vara Grant eller Deny, men inte båda."
+
+#: ../src/libedataserver/e-webdav-session.c:4785
+msgid "Access Control Entry privilege cannot be NULL."
+msgstr "Privilegium för åtkomstkontrollpost kan inte vara NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
 #: ../src/libedataserverui/e-credentials-prompter.c:1576
@@ -6074,14 +6269,14 @@ msgstr ""
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "Misslyckades med att erhålla ett åtkomstelement för ”%s”: "
 
-#: ../src/modules/google-backend/module-google-backend.c:736
+#: ../src/modules/google-backend/module-google-backend.c:555
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
 msgstr "Kontakter"
 
 #: ../src/modules/ubuntu-online-accounts/calendar.service-type.in.in.h:1
-#: ../src/modules/yahoo-backend/module-yahoo-backend.c:200
+#: ../src/tools/list-sources/list-sources.c:148
 msgid "Calendar"
 msgstr "Kalender"
 
@@ -6172,10 +6367,6 @@ msgstr "Yahoo!-kalender"
 msgid "Yahoo! Mail"
 msgstr "Yahoo! e-post"
 
-#: ../src/modules/yahoo-backend/module-yahoo-backend.c:227
-msgid "Tasks"
-msgstr "Uppgifter"
-
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:37
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:39
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
@@ -6221,10 +6412,10 @@ msgid "On The Web"
 msgstr "På webben"
 
 #: ../src/services/evolution-source-registry/builtin/webdav-stub.source.in.h:1
-msgid "WebDAV"
-msgstr "WebDAV"
+msgid "CardDAV"
+msgstr "CardDAV"
 
-#: ../src/services/evolution-source-registry/evolution-source-registry.c:40
+#: ../src/services/evolution-source-registry/evolution-source-registry.c:41
 msgid "Don’t migrate user data from previous versions of Evolution"
 msgstr "Migrera inte användardata från tidigare versioner av Evolution"
 
@@ -6232,49 +6423,305 @@ msgstr "Migrera inte användardata från tidigare versioner av Evolution"
 msgid "_Dismiss"
 msgstr "_Avfärda"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:68
-#: ../src/tools/addressbook-export/addressbook-export.c:780
+#: ../src/tools/addressbook-export/addressbook-export.c:69
+#: ../src/tools/addressbook-export/addressbook-export.c:781
 msgid "Can not open file"
 msgstr "Kan inte öppna fil"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:98
+#: ../src/tools/addressbook-export/addressbook-export.c:99
 #, c-format
 msgid "Failed to open client “%s”: %s"
 msgstr "Misslyckades med att öppna klienten ”%s”: %s"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:888
+#: ../src/tools/addressbook-export/addressbook-export.c:889
 msgid "Unhandled error"
 msgstr "Ohanterat fel"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:921
+#: ../src/tools/addressbook-export/addressbook-export.c:922
 msgid "Specify the output file instead of standard output"
 msgstr "Ange utdatafilen istället för standard ut"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:922
+#: ../src/tools/addressbook-export/addressbook-export.c:923
 msgid "OUTPUTFILE"
 msgstr "UTDATAFIL"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:925
+#: ../src/tools/addressbook-export/addressbook-export.c:926
 msgid "List local address book folders"
 msgstr "Lista lokala adressboksmappar"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:928
+#: ../src/tools/addressbook-export/addressbook-export.c:929
 msgid "Show cards as vcard or csv file"
 msgstr "Visa kort som vcard- eller csv-fil"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:929
+#: ../src/tools/addressbook-export/addressbook-export.c:930
 msgid "[vcard|csv]"
 msgstr "[vcard|csv]"
 
-#: ../src/tools/addressbook-export/addressbook-export.c:977
+#: ../src/tools/addressbook-export/addressbook-export.c:978
 msgid ""
 "Command line arguments error, please use --help option to see the usage."
 msgstr ""
 "Fel i kommandoradsargument, använd flaggan --help för att se användningen."
 
-#: ../src/tools/addressbook-export/addressbook-export.c:991
+#: ../src/tools/addressbook-export/addressbook-export.c:992
 msgid "Only support csv or vcard format."
 msgstr "Stöd endast csv- eller vcard-format."
+
+#: ../src/tools/list-sources/list-sources.c:83
+msgid "Show only enabled sources"
+msgstr "Visa endast aktiverade källor"
+
+#: ../src/tools/list-sources/list-sources.c:86
+msgid "Show source’s UID"
+msgstr "Visa källans UID"
+
+#: ../src/tools/list-sources/list-sources.c:89
+msgid "Show source’s authentication information"
+msgstr "Visa källans autentiseringsinformation"
+
+#: ../src/tools/list-sources/list-sources.c:92
+msgid ""
+"Write in machine readable format (one source per line, without localized "
+"property names and tab as separator)"
+msgstr ""
+"Skriv i maskinläsbart format (en källa per rad, utan lokaliserade "
+"egenskapsnamn och tabb som separator)"
+
+#: ../src/tools/list-sources/list-sources.c:95
+msgid "Limit only to sources with given extension name"
+msgstr "Begränsa endast till källor med angivet tilläggsnamn"
+
+#: ../src/tools/list-sources/list-sources.c:106
+msgid "yes"
+msgstr "ja"
+
+#: ../src/tools/list-sources/list-sources.c:106
+msgid "no"
+msgstr "nej"
+
+#: ../src/tools/list-sources/list-sources.c:126
+msgid "Collection"
+msgstr "Samling"
+
+#: ../src/tools/list-sources/list-sources.c:132
+msgid "Collection/GNOME Online Accounts"
+msgstr "Samling/GNOME Nätkonton"
+
+#: ../src/tools/list-sources/list-sources.c:137
+msgid "Collection/Ubuntu Online Accounts"
+msgstr "Samling/Ubuntu-nätkonton"
+
+#: ../src/tools/list-sources/list-sources.c:147
+msgid "Address Book"
+msgstr "Adressbok"
+
+#: ../src/tools/list-sources/list-sources.c:149
+msgid "Memo List"
+msgstr "Memolista"
+
+#: ../src/tools/list-sources/list-sources.c:150
+msgid "Task List"
+msgstr "Uppgiftslista"
+
+#: ../src/tools/list-sources/list-sources.c:151
+msgid "Mail Account"
+msgstr "E-postkonto"
+
+#: ../src/tools/list-sources/list-sources.c:152
+msgid "Mail Transport"
+msgstr "E-posttransport"
+
+#: ../src/tools/list-sources/list-sources.c:153
+msgid "Mail Identity"
+msgstr "E-postidentitet"
+
+#: ../src/tools/list-sources/list-sources.c:154
+msgid "Mail Submission"
+msgstr "E-postsändning"
+
+#: ../src/tools/list-sources/list-sources.c:155
+msgid "Mail Signature"
+msgstr "E-postsignatur"
+
+#: ../src/tools/list-sources/list-sources.c:156
+msgid "Proxy"
+msgstr "Proxy"
+
+#: ../src/tools/list-sources/list-sources.c:224
+#, c-format
+msgid "UID: %s"
+msgstr "UID: %s"
+
+#: ../src/tools/list-sources/list-sources.c:228
+#, c-format
+msgid "Parent UID: %s"
+msgstr "Överordnat UID: %s"
+
+#: ../src/tools/list-sources/list-sources.c:231
+#, c-format
+msgid "Enabled: %s"
+msgstr "Aktiverad: %s"
+
+#: ../src/tools/list-sources/list-sources.c:233
+#, c-format
+msgid "Backend: %s"
+msgstr "Bakände: %s"
+
+#: ../src/tools/list-sources/list-sources.c:238
+#, c-format
+msgid "Calendar enabled: %s"
+msgstr "Kalender aktiverad: %s"
+
+#: ../src/tools/list-sources/list-sources.c:239
+#, c-format
+msgid "Contacts enabled: %s"
+msgstr "Kontakter aktiverade: %s"
+
+#: ../src/tools/list-sources/list-sources.c:240
+#, c-format
+msgid "Mail enabled: %s"
+msgstr "E-post aktiverad: %s"
+
+#: ../src/tools/list-sources/list-sources.c:247
+#, c-format
+msgid "MIME Type: %s"
+msgstr "MIME-typ: %s"
+
+#: ../src/tools/list-sources/list-sources.c:269
+#, c-format
+msgid "Auth Host: %s:%d"
+msgstr "Autentiseringsvärd: %s:%d"
+
+#: ../src/tools/list-sources/list-sources.c:275
+#, c-format
+msgid "Auth Host: %s"
+msgstr "Autentiseringsvärd: %s"
+
+#: ../src/tools/list-sources/list-sources.c:283
+#, c-format
+msgid "Auth User: %s"
+msgstr "Autentiseringsanvändare: %s"
+
+#: ../src/tools/list-sources/list-sources.c:291
+#, c-format
+msgid "Auth Method: %s"
+msgstr "Autentiseringsmetod: %s"
+
+#: ../src/tools/list-sources/list-sources.c:299
+#, c-format
+msgid "Auth Proxy UID: %s"
+msgstr "Autentiseringsproxy-UID: %s"
+
+#: ../src/tools/list-sources/list-sources.c:420
+msgid "Failed to parse arguments: Unknown error"
+msgstr "Misslyckades med att tolka argument: Okänt fel"
+
+#: ../src/tools/list-sources/list-sources.c:429
+#, c-format
+msgid "Failed to connect to source registry: %s\n"
+msgstr "Misslyckades med att ansluta till källregister: %s\n"
+
+#: ../src/tools/list-sources/list-sources.c:445
+#, c-format
+msgid "No sources had been found\n"
+msgstr "Inga källor hittades\n"
+
+#~ msgid "Querying for updated contacts…"
+#~ msgstr "Frågar efter uppdaterade kontakter…"
+
+#~ msgid "Querying for updated groups…"
+#~ msgstr "Frågar efter uppdaterade grupper…"
+
+#~ msgid "The backend does not support bulk removals"
+#~ msgstr "Bakänden saknar stöd för multipla borttagningar"
+
+#~ msgid "Loading…"
+#~ msgstr "Läser in…"
+
+#~ msgid "Loading Addressbook summary..."
+#~ msgstr "Läser in sammanfattning för adressbok…"
+
+#~ msgid "PROPFIND on webdav failed with HTTP status %d (%s)"
+#~ msgstr "PROPFIND på webdav misslyckades med HTTP-status %d (%s)"
+
+#~ msgid "No response body in webdav PROPFIND result"
+#~ msgstr "Inget svarsinnehåll i webdav PROPFIND-resultat"
+
+#~ msgid "Loading Contacts (%d%%)"
+#~ msgstr "Läser in kontakter (%d%%)"
+
+#~ msgid "Cannot transform SoupURI to string"
+#~ msgstr "Kan inte översätta SoupURI till sträng"
+
+#~ msgid "Create resource “%s” failed with HTTP status %d (%s)"
+#~ msgstr "Skapandet av resursen ”%s” misslyckades med HTTP-status %d (%s)"
+
+#~ msgid "Contact on server changed -> not modifying"
+#~ msgstr "Kontakt på servern har ändrats -> ändrar inte"
+
+#~ msgid "Modify contact failed with HTTP status %d (%s)"
+#~ msgstr "Ändring av kontakt misslyckades med HTTP-status %d (%s)"
+
+#~ msgid "DELETE failed with HTTP status %d"
+#~ msgstr "DELETE misslyckades med HTTP-status %d"
+
+#~ msgid "Server is unreachable (%s)"
+#~ msgstr "Servern är inte nåbar (%s)"
+
+#~ msgid "Failed to login to the server: %s"
+#~ msgstr "Misslyckades med att logga in på servern: %s"
+
+#~ msgid "CalDAV backend is not loaded yet"
+#~ msgstr "CalDAV-bakänden är inte inläst än"
+
+#~ msgid "Invalid Redirect URL"
+#~ msgstr "Ogiltig omdirigerings-URL"
+
+#~ msgid "Cannot create local cache folder “%s”"
+#~ msgstr "Kunde inte skapa lokal cachemapp ”%s”"
+
+#~ msgid ""
+#~ "Server is unreachable, calendar is opened in read-only mode.\n"
+#~ "Error message: %s"
+#~ msgstr ""
+#~ "Servern är inte nåbar. Kalendern är öppnad i skrivskyddat läge.\n"
+#~ "Felmeddelande: %s"
+
+#~ msgid "CalDAV does not support bulk additions"
+#~ msgstr "CalDAV saknar stöd för multipla adderingar"
+
+#~ msgid "CalDAV does not support bulk modifications"
+#~ msgstr "CalDAV saknar stöd för multipla ändringar"
+
+#~ msgid "CalDAV does not support bulk removals"
+#~ msgstr "CalDAV saknar stöd för multipla borttagningar"
+
+#~ msgid "Calendar doesn’t support Free/Busy"
+#~ msgstr "Kalendern saknar stöd för Ledig/Upptagen"
+
+#~ msgid "Schedule outbox url not found"
+#~ msgstr "Hittade inte url för schema-utkorg"
+
+#~ msgid "Unexpected result in schedule-response"
+#~ msgstr "Oväntat resultat i schema-svar"
+
+#~ msgid "Redirected to Invalid URI"
+#~ msgstr "Omdirigerad till ogiltig URI"
+
+#~ msgid "HTTP Error: %s"
+#~ msgstr "HTTP-fel: %s"
+
+#~ msgid "Could not parse response"
+#~ msgstr "Kunde inte tolka svar"
+
+#~ msgid "Empty response"
+#~ msgstr "Tomt svar"
+
+#~ msgid "Unexpected reply from server"
+#~ msgstr "Oväntat svar från server"
+
+#~ msgid "WebDAV"
+#~ msgstr "WebDAV"
 
 #~ msgid "Update preview data for folder '%s : %s'"
 #~ msgstr "Uppdatera förhandsgranskningsdata för mappen ”%s : %s”"
