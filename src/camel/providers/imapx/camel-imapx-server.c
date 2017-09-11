@@ -4952,6 +4952,30 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 	return success;
 }
 
+static gboolean
+camel_imapx_server_skip_old_flags_update (CamelStore *store)
+{
+	CamelSession *session;
+	GNetworkMonitor *network_monitor;
+	gboolean skip_old_flags_update = FALSE;
+
+	if (!CAMEL_IS_STORE (store))
+		return FALSE;
+
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
+	if (!session)
+		return skip_old_flags_update;
+
+	network_monitor = camel_session_ref_network_monitor (session);
+
+	skip_old_flags_update = network_monitor && g_network_monitor_get_network_metered (network_monitor);
+
+	g_clear_object (&network_monitor);
+	g_clear_object (&session);
+
+	return skip_old_flags_update;
+}
+
 gboolean
 camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 				      CamelIMAPXMailbox *mailbox,
@@ -4971,7 +4995,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 	guint64 highestmodseq;
 	guint32 total;
 	guint64 uidl;
-	gboolean need_rescan;
+	gboolean need_rescan, skip_old_flags_update;
 	gboolean success;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -5074,8 +5098,10 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
+	skip_old_flags_update = camel_imapx_server_skip_old_flags_update (camel_folder_get_parent_store (folder));
+
 	success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, uidl, 0, cancellable, error);
-	if (success && uidl != 1)
+	if (success && uidl != 1 && !skip_old_flags_update)
 		success = imapx_server_fetch_changes (is, mailbox, folder, known_uids, 0, uidl, cancellable, error);
 
 	if (success) {
@@ -5092,7 +5118,7 @@ camel_imapx_server_refresh_info_sync (CamelIMAPXServer *is,
 
 	g_mutex_unlock (&is->priv->changes_lock);
 
-	if (success) {
+	if (success && !skip_old_flags_update) {
 		GList *removed = NULL;
 		GPtrArray *array;
 		gint ii;
