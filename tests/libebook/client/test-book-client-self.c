@@ -61,6 +61,14 @@ test_set_self (ETestServerFixture *fixture,
 	if (!client)
 		g_error ("Error connecting to system addressbook: %s", error->message);
 
+	/* Just a safety check which applies when running with installed services */
+	if (e_book_client_get_contact_sync (client, "simple-1", &loaded_contact, NULL, NULL)) {
+		g_clear_object (&loaded_contact);
+
+		e_book_client_remove_contact_by_uid_sync (client, "simple-1", NULL, &error);
+		g_assert_no_error (error);
+	}
+
 	/* Add contact to addressbook */
 	g_assert (add_contact_from_test_case_verify (client, "simple-1", &loaded_contact));
 
