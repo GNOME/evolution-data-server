@@ -1675,6 +1675,14 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 	}
 	g_object_unref (settings);
 
+	if (!uids_to_copy->len) {
+		g_ptr_array_unref (uids_to_copy);
+		g_clear_object (&mailbox);
+		g_free (real_trash_path);
+
+		return TRUE;
+	}
+
 	imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
 
 	if (real_trash_path != NULL) {
@@ -1729,6 +1737,74 @@ imapx_conn_manager_move_to_real_trash_sync (CamelIMAPXConnManager *conn_man,
 
 	g_clear_object (&imapx_store);
 	g_clear_object (&destination);
+	g_clear_object (&mailbox);
+
+	return success;
+}
+
+static gboolean
+imapx_conn_manager_move_to_inbox_sync (CamelIMAPXConnManager *conn_man,
+				       CamelFolder *folder,
+				       GCancellable *cancellable,
+				       gboolean *out_need_to_expunge,
+				       GError **error)
+{
+	CamelIMAPXFolder *imapx_folder;
+	CamelIMAPXMailbox *mailbox;
+	GPtrArray *uids_to_copy;
+	gboolean success = TRUE;
+
+	*out_need_to_expunge = FALSE;
+
+	/* Caller already obtained the mailbox from the folder,
+	 * so the folder should still have it readily available. */
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
+	g_return_val_if_fail (mailbox != NULL, FALSE);
+
+	uids_to_copy = g_ptr_array_new_with_free_func ((GDestroyNotify) camel_pstring_free);
+
+	camel_imapx_folder_claim_move_to_inbox_uids (CAMEL_IMAPX_FOLDER (folder), uids_to_copy);
+
+	if (uids_to_copy->len > 0) {
+		CamelIMAPXStore *imapx_store;
+		CamelIMAPXMailbox *destination = NULL;
+
+		imapx_store = camel_imapx_conn_manager_ref_store (conn_man);
+
+		folder = camel_store_get_inbox_folder_sync (CAMEL_STORE (imapx_store), cancellable, error);
+
+		if (folder != NULL) {
+			destination = camel_imapx_folder_list_mailbox (CAMEL_IMAPX_FOLDER (folder), cancellable, error);
+			g_object_unref (folder);
+		}
+
+		/* Avoid duplicating messages in the Inbox folder. */
+		if (destination == mailbox) {
+			success = TRUE;
+		} else if (destination != NULL) {
+			if (uids_to_copy->len > 0) {
+				success = imapx_conn_manager_copy_message_sync (
+					conn_man, mailbox, destination,
+					uids_to_copy, TRUE, TRUE, TRUE,
+					cancellable, error);
+				*out_need_to_expunge = success;
+			}
+		} else if (uids_to_copy->len > 0) {
+			success = FALSE;
+		}
+
+		if (!success) {
+			g_prefix_error (
+				error, "%s: ",
+				_("Unable to move messages to Inbox"));
+		}
+
+		g_clear_object (&imapx_store);
+		g_clear_object (&destination);
+	}
+
+	g_ptr_array_unref (uids_to_copy);
 	g_clear_object (&mailbox);
 
 	return success;
@@ -1829,6 +1905,13 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 
 	if (success) {
 		success = imapx_conn_manager_move_to_real_trash_sync (
+			conn_man, folder, cancellable,
+			&need_to_expunge, error);
+		expunge |= need_to_expunge;
+	}
+
+	if (success) {
+		success = imapx_conn_manager_move_to_inbox_sync (
 			conn_man, folder, cancellable,
 			&need_to_expunge, error);
 		expunge |= need_to_expunge;

@@ -5241,6 +5241,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	gboolean use_real_junk_path = FALSE;
 	gboolean use_real_trash_path = FALSE;
 	gboolean remove_deleted_flags = FALSE;
+	gboolean is_real_junk_folder = FALSE;
 	gboolean nothing_to_do;
 	gboolean success;
 
@@ -5274,7 +5275,27 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		CamelIMAPXSettings *settings;
 
 		settings = camel_imapx_server_ref_settings (is);
+
 		use_real_junk_path = camel_imapx_settings_get_use_real_junk_path (settings);
+		if (use_real_junk_path) {
+			CamelFolder *junk_folder = NULL;
+			gchar *real_junk_path;
+
+			real_junk_path = camel_imapx_settings_dup_real_junk_path (settings);
+			if (real_junk_path) {
+				junk_folder = camel_store_get_folder_sync (
+					camel_folder_get_parent_store (folder),
+					real_junk_path, 0, cancellable, NULL);
+			}
+
+			is_real_junk_folder = junk_folder == folder;
+
+			use_real_junk_path = junk_folder != NULL;
+
+			g_clear_object (&junk_folder);
+			g_free (real_junk_path);
+		}
+
 		use_real_trash_path = camel_imapx_settings_get_use_real_trash_path (settings);
 		if (use_real_trash_path) {
 			CamelFolder *trash_folder = NULL;
@@ -5294,6 +5315,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 			g_clear_object (&trash_folder);
 			g_free (real_trash_path);
 		}
+
 		g_object_unref (settings);
 	}
 
@@ -5334,6 +5356,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		if (can_influence_flags) {
 			gboolean move_to_real_junk;
 			gboolean move_to_real_trash;
+			gboolean move_to_inbox;
 
 			move_to_real_junk =
 				use_real_junk_path &&
@@ -5343,12 +5366,21 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				use_real_trash_path && remove_deleted_flags &&
 				(flags & CAMEL_MESSAGE_DELETED);
 
+			move_to_inbox = is_real_junk_folder &&
+				!move_to_real_junk &&
+				!move_to_real_trash &&
+				(camel_message_info_get_flags (info) & CAMEL_MESSAGE_NOTJUNK) != 0;
+
 			if (move_to_real_junk)
 				camel_imapx_folder_add_move_to_real_junk (
 					CAMEL_IMAPX_FOLDER (folder), uid);
 
 			if (move_to_real_trash)
 				camel_imapx_folder_add_move_to_real_trash (
+					CAMEL_IMAPX_FOLDER (folder), uid);
+
+			if (move_to_inbox)
+				camel_imapx_folder_add_move_to_inbox (
 					CAMEL_IMAPX_FOLDER (folder), uid);
 		}
 
