@@ -397,6 +397,12 @@ gchar *		imapx_get_temp_uid		(void);
 
 gboolean	imapx_util_all_is_ascii		(const gchar *str);
 
+gssize		imapx_splice_with_progress	(GOutputStream *output_stream,
+						 GInputStream *input_stream,
+						 goffset file_size,
+						 GCancellable *cancellable,
+						 GError **error);
+
 G_END_DECLS
 
 #endif /* CAMEL_IMAPX_UTILS_H */
