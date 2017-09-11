@@ -570,13 +570,16 @@ camel_imapx_input_stream_nstring_bytes (CamelIMAPXInputStream *is,
 			/* If len is big, we could
 			 * automatically use a file backing. */
 			camel_imapx_input_stream_set_literal (is, len);
-			output_stream =
-				g_memory_output_stream_new_resizable ();
-			bytes_written = g_output_stream_splice (
-				output_stream,
-				G_INPUT_STREAM (is),
-				G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET,
-				cancellable, error);
+			output_stream = g_memory_output_stream_new_resizable ();
+			if (len > 1024) {
+				bytes_written = imapx_splice_with_progress (output_stream, G_INPUT_STREAM (is),
+					len, cancellable, error);
+				if (!g_output_stream_close (output_stream, cancellable, error))
+					bytes_written = -1;
+			} else {
+				bytes_written = g_output_stream_splice (output_stream, G_INPUT_STREAM (is),
+					G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET, cancellable, error);
+			}
 			success = (bytes_written >= 0);
 			if (success) {
 				*out_bytes =
