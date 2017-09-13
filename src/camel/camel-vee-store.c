@@ -890,6 +890,31 @@ camel_vee_store_note_vuid_used (CamelVeeStore *vstore,
 	g_mutex_unlock (&vstore->priv->vu_counts_mutex);
 }
 
+static gboolean
+vee_store_folder_contains_uid (CamelFolder *folder,
+			       const gchar *message_uid)
+{
+	CamelFolderSummary *summary;
+	gboolean contains;
+
+	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
+	g_return_val_if_fail (message_uid != NULL, FALSE);
+
+	summary = camel_folder_get_folder_summary (folder);
+	if (!summary) {
+		CamelMessageInfo *nfo;
+
+		nfo = camel_folder_get_message_info (folder, message_uid);
+		contains = nfo != NULL;
+
+		g_clear_object (&nfo);
+	} else {
+		contains = camel_folder_summary_check_uid (summary, message_uid);
+	}
+
+	return contains;
+}
+
 /**
  * camel_vee_store_note_vuid_unused:
  * @vstore: a #CamelVeeStore
@@ -944,7 +969,9 @@ camel_vee_store_note_vuid_unused (CamelVeeStore *vstore,
 		(gpointer) camel_pstring_strdup (vuid),
 		GINT_TO_POINTER (counts));
 
-	if (counts == 0 && camel_vee_store_get_unmatched_enabled (vstore)) {
+	if (counts == 0 &&
+	    camel_vee_store_get_unmatched_enabled (vstore) &&
+	    vee_store_folder_contains_uid (subfolder, camel_vee_message_info_data_get_orig_message_uid (mi_data))) {
 		CamelFolderChangeInfo *changes;
 
 		changes = camel_folder_change_info_new ();
