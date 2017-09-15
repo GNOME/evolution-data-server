@@ -186,6 +186,7 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 	gboolean use_imap_password;
 	gboolean use_smtp_password;
 	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_GOA_PASSWORD_BASED (provider_impl), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
@@ -222,12 +223,16 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 		goto exit;
 	}
 
-	success = goa_account_call_ensure_credentials_sync (
-		goa_account, NULL, cancellable, error);
+	success = goa_account_call_ensure_credentials_sync (goa_account, NULL, cancellable, &local_error);
 	if (!success) {
-		if (error && *error)
-			g_dbus_error_strip_remote_error (*error);
-		goto exit;
+		if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_TIMED_OUT)) {
+			g_clear_error (&local_error);
+		} else if (local_error) {
+			g_dbus_error_strip_remote_error (local_error);
+			g_propagate_error (error, local_error);
+
+			goto exit;
+		}
 	}
 
 	use_imap_password = e_source_has_extension (source, E_SOURCE_EXTENSION_MAIL_ACCOUNT);
