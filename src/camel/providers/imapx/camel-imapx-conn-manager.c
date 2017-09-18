@@ -1931,7 +1931,8 @@ camel_imapx_conn_manager_sync_changes_sync (CamelIMAPXConnManager *conn_man,
 
 		camel_imapx_job_unref (job);
 
-		success = imapx_conn_manager_expunge_sync (conn_man, mailbox, TRUE, cancellable, error);
+		if (success)
+			success = imapx_conn_manager_expunge_sync (conn_man, mailbox, TRUE, cancellable, error);
 	}
 
 	g_clear_object (&folder);
