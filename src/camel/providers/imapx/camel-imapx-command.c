@@ -271,7 +271,16 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 					if (mask & IMAPX_TYPE_ATOM_CHAR)
 						g_string_append (buffer, s);
 					else if (mask & IMAPX_TYPE_TEXT_CHAR) {
+						gboolean is_gmail_search = FALSE;
+
 						g_string_append_c (buffer, '"');
+						if (ic->job_kind == CAMEL_IMAPX_JOB_UID_SEARCH) {
+							is_gmail_search = g_str_has_prefix (format, " X-GM-RAW");
+
+							if (is_gmail_search)
+								g_string_append (buffer, "\\\"");
+						}
+
 						while (*s) {
 							gchar *start = s;
 
@@ -284,6 +293,10 @@ camel_imapx_command_addv (CamelIMAPXCommand *ic,
 								s++;
 							}
 						}
+
+						if (is_gmail_search)
+							g_string_append (buffer, "\\\"");
+
 						g_string_append_c (buffer, '"');
 					} else {
 						camel_imapx_command_add_part (ic, CAMEL_IMAPX_COMMAND_STRING, s);

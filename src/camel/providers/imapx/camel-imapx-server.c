@@ -6120,8 +6120,24 @@ camel_imapx_server_uid_search_sync (CamelIMAPXServer *is,
 		camel_imapx_command_add (ic, " %t", criteria_prefix);
 
 	if (search_key && words) {
+		gboolean is_gmail_server = FALSE;
+
+		if (g_strcasecmp (search_key, "BODY") == 0) {
+			CamelIMAPXStore *imapx_store;
+
+			imapx_store = camel_imapx_server_ref_store (is);
+			if (imapx_store) {
+				is_gmail_server = camel_imapx_store_is_gmail_server (imapx_store);
+				g_object_unref (imapx_store);
+			}
+		}
+
 		for (ii = 0; words[ii]; ii++) {
-			camel_imapx_command_add (ic, " %t %s", search_key, words[ii]);
+			guchar mask = is_gmail_server ? imapx_is_mask (words[ii]) : 0;
+			if (is_gmail_server && !(mask & IMAPX_TYPE_ATOM_CHAR) && (mask & IMAPX_TYPE_TEXT_CHAR) != 0)
+				camel_imapx_command_add (ic, " X-GM-RAW %s", words[ii]);
+			else
+				camel_imapx_command_add (ic, " %t %s", search_key, words[ii]);
 		}
 	}
 
