@@ -30,10 +30,49 @@
 	((obj), E_TYPE_GOA_PASSWORD_BASED, EGoaPasswordBasedPrivate))
 
 struct _EGoaPasswordBasedPrivate {
-	gint placeholder;
+	GoaClient *goa_client;
+	GMutex lock;
 };
 
 G_DEFINE_DYNAMIC_TYPE (EGoaPasswordBased, e_goa_password_based, E_TYPE_SOURCE_CREDENTIALS_PROVIDER_IMPL)
+
+static GoaClient *
+e_goa_password_based_ref_goa_client_sync (EGoaPasswordBased *goa_password_based,
+					  GCancellable *cancellable,
+					  GError **error)
+{
+	GoaClient *goa_client;
+
+	g_return_val_if_fail (E_IS_GOA_PASSWORD_BASED (goa_password_based), NULL);
+
+	g_mutex_lock (&goa_password_based->priv->lock);
+
+	if (goa_password_based->priv->goa_client) {
+		GDBusObjectManager *object_manager;
+		gchar *owner_name = NULL;
+
+		object_manager = goa_client_get_object_manager (goa_password_based->priv->goa_client);
+		if (object_manager)
+			owner_name = g_dbus_object_manager_client_get_name_owner (G_DBUS_OBJECT_MANAGER_CLIENT (object_manager));
+
+		if (!owner_name)
+			g_clear_object (&goa_password_based->priv->goa_client);
+
+		g_free (owner_name);
+	}
+
+	if (!goa_password_based->priv->goa_client)
+		goa_password_based->priv->goa_client = goa_client_new_sync (cancellable, error);
+
+	if (goa_password_based->priv->goa_client)
+		goa_client = g_object_ref (goa_password_based->priv->goa_client);
+	else
+		goa_client = NULL;
+
+	g_mutex_unlock (&goa_password_based->priv->lock);
+
+	return goa_client;
+}
 
 static ESource *
 e_goa_password_based_ref_credentials_source (ESourceCredentialsProvider *provider,
@@ -192,7 +231,7 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (out_credentials, FALSE);
 
-	goa_client = goa_client_new_sync (cancellable, error);
+	goa_client = e_goa_password_based_ref_goa_client_sync (E_GOA_PASSWORD_BASED (provider_impl), cancellable, error);
 	if (goa_client == NULL) {
 		if (error && *error)
 			g_dbus_error_strip_remote_error (*error);
@@ -279,9 +318,37 @@ e_goa_password_based_lookup_sync (ESourceCredentialsProviderImpl *provider_impl,
 }
 
 static void
+e_goa_password_based_dispose (GObject *object)
+{
+	EGoaPasswordBased *goa_password_based = E_GOA_PASSWORD_BASED (object);
+
+	g_mutex_lock (&goa_password_based->priv->lock);
+
+	g_clear_object (&goa_password_based->priv->goa_client);
+
+	g_mutex_unlock (&goa_password_based->priv->lock);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_goa_password_based_parent_class)->dispose (object);
+}
+
+static void
+e_goa_password_based_finalize (GObject *object)
+{
+	EGoaPasswordBased *goa_password_based = E_GOA_PASSWORD_BASED (object);
+
+	g_clear_object (&goa_password_based->priv->goa_client);
+	g_mutex_clear (&goa_password_based->priv->lock);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_goa_password_based_parent_class)->finalize (object);
+}
+
+static void
 e_goa_password_based_class_init (EGoaPasswordBasedClass *class)
 {
 	ESourceCredentialsProviderImplClass *provider_impl_class;
+	GObjectClass *object_class;
 
 	g_type_class_add_private (class, sizeof (EGoaPasswordBasedPrivate));
 
@@ -290,6 +357,10 @@ e_goa_password_based_class_init (EGoaPasswordBasedClass *class)
 	provider_impl_class->can_store = e_goa_password_based_can_store;
 	provider_impl_class->can_prompt = e_goa_password_based_can_prompt;
 	provider_impl_class->lookup_sync = e_goa_password_based_lookup_sync;
+
+	object_class = G_OBJECT_CLASS (class);
+	object_class->dispose = e_goa_password_based_dispose;
+	object_class->finalize = e_goa_password_based_finalize;
 }
 
 static void
@@ -301,6 +372,8 @@ static void
 e_goa_password_based_init (EGoaPasswordBased *session)
 {
 	session->priv = E_GOA_PASSWORD_BASED_GET_PRIVATE (session);
+
+	g_mutex_init (&session->priv->lock);
 }
 
 void
