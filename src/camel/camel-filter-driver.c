@@ -123,7 +123,7 @@ struct _CamelFilterDriverPrivate {
 static void camel_filter_driver_log (CamelFilterDriver *driver, enum filter_log_t status, const gchar *desc, ...);
 
 static CamelFolder *open_folder (CamelFilterDriver *d, const gchar *folder_url);
-static gint close_folders (CamelFilterDriver *d);
+static gint close_folders (CamelFilterDriver *d, GCancellable *cancellable);
 
 static CamelSExpResult *do_delete (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
 static CamelSExpResult *do_forward_to (struct _CamelSExp *f, gint argc, struct _CamelSExpResult **argv, CamelFilterDriver *);
@@ -216,7 +216,7 @@ filter_driver_finalize (GObject *object)
 	priv = CAMEL_FILTER_DRIVER_GET_PRIVATE (object);
 
 	/* close all folders that were opened for appending */
-	close_folders (CAMEL_FILTER_DRIVER (object));
+	close_folders (CAMEL_FILTER_DRIVER (object), NULL);
 	g_hash_table_destroy (priv->folders);
 
 	g_hash_table_foreach (priv->globals, free_hash_strings, object);
@@ -1218,24 +1218,37 @@ open_folder (CamelFilterDriver *driver,
 	return camelfolder;
 }
 
+typedef struct _CloseFolderData {
+	CamelFilterDriver *driver;
+	GCancellable *cancellable;
+} CloseFolderData;
+
 static void
 close_folder (gpointer key,
               gpointer value,
-              gpointer data)
+              gpointer user_data)
 {
 	CamelFolder *folder = value;
-	CamelFilterDriver *driver = data;
+	CamelFilterDriver *driver;
+	CloseFolderData *cfd = user_data;
+
+	g_return_if_fail (cfd != NULL);
+
+	driver = cfd->driver;
 
 	driver->priv->closed++;
 	g_free (key);
 
 	if (folder != FOLDER_INVALID) {
-		/* FIXME Pass a GCancellable */
-		if (camel_folder_synchronize_sync (folder, FALSE, NULL,
-			(driver->priv->error != NULL) ? NULL : &driver->priv->error))
-			camel_folder_refresh_info_sync (
-				folder, NULL,
-				(driver->priv->error != NULL) ? NULL : &driver->priv->error);
+		if (camel_folder_synchronize_sync (folder, FALSE, cfd->cancellable,
+			(driver->priv->error != NULL) ? NULL : &driver->priv->error)) {
+			if (cfd->cancellable) {
+				camel_folder_refresh_info_sync (
+					folder, cfd->cancellable,
+					(driver->priv->error != NULL) ? NULL : &driver->priv->error);
+			}
+		}
+
 		camel_folder_thaw (folder);
 		g_object_unref (folder);
 	}
@@ -1248,14 +1261,21 @@ close_folder (gpointer key,
 
 /* flush/close all folders */
 static gint
-close_folders (CamelFilterDriver *driver)
+close_folders (CamelFilterDriver *driver,
+	       GCancellable *cancellable)
 {
+	CloseFolderData cfd;
+
 	report_status (
 		driver, CAMEL_FILTER_STATUS_PROGRESS,
 		0, _("Syncing folders"));
 
 	driver->priv->closed = 0;
-	g_hash_table_foreach (driver->priv->folders, close_folder, driver);
+
+	cfd.driver = driver;
+	cfd.cancellable = cancellable;
+
+	g_hash_table_foreach (driver->priv->folders, close_folder, &cfd);
 	g_hash_table_destroy (driver->priv->folders);
 	driver->priv->folders = g_hash_table_new (g_str_hash, g_str_equal);
 
@@ -1676,6 +1696,8 @@ camel_filter_driver_filter_folder (CamelFilterDriver *driver,
 
 	if (freeuids)
 		camel_folder_free_uids (folder, uids);
+
+	close_folders (driver, cancellable);
 
 	return status;
 }

@@ -1399,7 +1399,8 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 					camel_operation_progress (cancellable, cnt ? cnt : 1);
 				}
 
-				camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+				if (camel_imapx_server_is_in_idle (is) && !camel_folder_is_frozen (folder))
+					camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
 			}
 
 			g_clear_object (&mi);
@@ -5715,10 +5716,10 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 				camel_store_summary_info_unref (CAMEL_IMAPX_STORE (parent_store)->summary, si);
 			}
 		}
-
-		camel_folder_summary_save (folder_summary, NULL);
-		camel_store_summary_save (CAMEL_IMAPX_STORE (parent_store)->summary);
 	}
+
+	camel_folder_summary_save (camel_folder_get_folder_summary (folder), NULL);
+	camel_store_summary_save (CAMEL_IMAPX_STORE (camel_folder_get_parent_store (folder))->summary);
 
 	imapx_sync_free_user (on_user);
 	imapx_sync_free_user (off_user);
