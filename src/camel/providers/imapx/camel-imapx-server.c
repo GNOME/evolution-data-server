@@ -6465,6 +6465,7 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 {
 	GCancellable *idle_cancellable;
 	gulong handler_id = 0;
+	gint64 wait_end_time;
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
@@ -6537,9 +6538,12 @@ camel_imapx_server_stop_idle_sync (CamelIMAPXServer *is,
 		g_mutex_lock (&is->priv->idle_lock);
 	}
 
+	/* Give server 10 seconds to process the DONE command, if it fails, then give up and reconnect */
+	wait_end_time = g_get_monotonic_time () + 10 * G_TIME_SPAN_SECOND;
+
 	while (success && is->priv->idle_state != IMAPX_IDLE_STATE_OFF &&
 	       !g_cancellable_is_cancelled (cancellable)) {
-		g_cond_wait (&is->priv->idle_cond, &is->priv->idle_lock);
+		success = g_cond_wait_until (&is->priv->idle_cond, &is->priv->idle_lock, wait_end_time);
 	}
 
 	g_mutex_unlock (&is->priv->idle_lock);
