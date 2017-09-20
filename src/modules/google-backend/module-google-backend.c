@@ -466,6 +466,8 @@ google_backend_authenticate_sync (EBackend *backend,
 	if (e_source_collection_get_calendar_enabled (collection_extension) && calendar_url) {
 		result = e_webdav_collection_backend_discover_sync (E_WEBDAV_COLLECTION_BACKEND (backend), calendar_url, NULL,
 			credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
+	} else {
+		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	}
 
 #if GDATA_CHECK_VERSION(0,15,1)
