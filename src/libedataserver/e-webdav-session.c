@@ -2136,6 +2136,8 @@ e_webdav_session_write_restarted (SoupMessage *message,
 					_("Cannot rewind input stream: Not supported"));
 
 			soup_session_cancel_message (cwd->session, message, SOUP_STATUS_CANCELLED);
+		} else {
+			soup_message_body_truncate (message->request_body);
 		}
 	}
 }
