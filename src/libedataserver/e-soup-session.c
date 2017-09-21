@@ -896,6 +896,8 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	ESoupAuthBearer *using_bearer_auth = NULL;
 	GInputStream *input_stream;
 	SoupMessage *message;
+	gboolean redirected;
+	gint resend_count = 0;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), NULL);
@@ -944,7 +946,44 @@ e_soup_session_send_request_sync (ESoupSession *session,
 
 	g_clear_object (&using_bearer_auth);
 
-	input_stream = soup_request_send (SOUP_REQUEST (request), cancellable, &local_error);
+	redirected = TRUE;
+	while (redirected) {
+		redirected = FALSE;
+
+		input_stream = soup_request_send (SOUP_REQUEST (request), cancellable, &local_error);
+		if (input_stream) {
+			message = soup_request_http_get_message (request);
+
+			if (message && SOUP_STATUS_IS_REDIRECTION (message->status_code)) {
+				/* libsoup uses 20, but the constant is not in any public header */
+				if (resend_count >= 30) {
+					soup_message_set_status (message, SOUP_STATUS_TOO_MANY_REDIRECTS);
+				} else {
+					const gchar *new_location;
+
+					new_location = soup_message_headers_get_list (message->response_headers, "Location");
+					if (new_location) {
+						SoupURI *new_uri;
+
+						new_uri = soup_uri_new_with_base (soup_message_get_uri (message), new_location);
+
+						soup_message_set_uri (message, new_uri);
+
+						g_clear_object (&input_stream);
+						soup_uri_free (new_uri);
+
+						g_signal_emit_by_name (message, "restarted");
+
+						resend_count++;
+						redirected = TRUE;
+					}
+				}
+			}
+
+			g_clear_object (&message);
+		}
+	}
+
 	if (input_stream)
 		return input_stream;
 
