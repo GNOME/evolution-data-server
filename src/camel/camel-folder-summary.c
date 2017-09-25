@@ -375,6 +375,13 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 
 		is_junk_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_JUNK;
 		is_trash_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_TRASH;
+	} else if (summary->priv->folder) {
+		guint32 folder_flags;
+
+		folder_flags = camel_folder_get_flags (summary->priv->folder);
+
+		is_junk_folder = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
+		is_trash_folder = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
 	}
 
 	if (!(flags & CAMEL_MESSAGE_SEEN))
@@ -421,6 +428,10 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 
 	if (unread) {
 		summary->priv->unread_count += unread;
+
+		if (summary->priv->unread_count < 0)
+			summary->priv->unread_count = 0;
+
 		g_object_notify (summary_object, "unread-count");
 		changed = TRUE;
 	}
@@ -574,6 +585,13 @@ camel_folder_summary_replace_flags (CamelFolderSummary *summary,
 
 		is_junk_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_JUNK;
 		is_trash_folder = vtrash && camel_vtrash_folder_get_folder_type (vtrash) == CAMEL_VTRASH_FOLDER_TRASH;
+	} else if (summary->priv->folder) {
+		guint32 folder_flags;
+
+		folder_flags = camel_folder_get_flags (summary->priv->folder);
+
+		is_junk_folder = (folder_flags & CAMEL_FOLDER_IS_JUNK) != 0;
+		is_trash_folder = (folder_flags & CAMEL_FOLDER_IS_TRASH) != 0;
 	}
 
 	added_flags = new_flags & (~(old_flags & new_flags));
