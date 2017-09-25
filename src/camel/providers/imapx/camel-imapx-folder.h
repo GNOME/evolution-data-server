@@ -111,6 +111,9 @@ void		camel_imapx_folder_claim_move_to_real_trash_uids
 void		camel_imapx_folder_claim_move_to_inbox_uids
 						(CamelIMAPXFolder *folder,
 						 GPtrArray *out_uids_to_copy);
+void		camel_imapx_folder_update_cache_expire
+						(CamelFolder *folder,
+						 time_t expire_when);
 
 G_END_DECLS
 

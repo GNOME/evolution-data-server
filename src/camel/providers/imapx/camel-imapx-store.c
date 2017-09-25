@@ -179,6 +179,119 @@ imapx_store_update_store_flags (CamelStore *store)
 }
 
 static void
+imapx_store_update_folder_flags (CamelStore *store)
+{
+	CamelSettings *settings;
+	gboolean filter_all;
+	gboolean filter_inbox;
+	gboolean filter_junk;
+	gboolean filter_junk_inbox;
+	GPtrArray *folders;
+	gint ii;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+
+	g_object_get (
+		settings,
+		"filter-all", &filter_all,
+		"filter-inbox", &filter_inbox,
+		"filter-junk", &filter_junk,
+		"filter-junk-inbox", &filter_junk_inbox,
+		NULL);
+
+	g_object_unref (settings);
+
+	folders = camel_store_dup_opened_folders (store);
+	if (!folders)
+		return;
+
+	for (ii = 0; ii < folders->len; ii++) {
+		CamelFolder *folder = g_ptr_array_index (folders, ii);
+		guint32 flags;
+
+		if (!CAMEL_IS_IMAPX_FOLDER (folder))
+			continue;
+
+		flags = camel_folder_get_flags (folder) & (~(CAMEL_FOLDER_FILTER_RECENT | CAMEL_FOLDER_FILTER_JUNK));
+
+		if (filter_all)
+			flags |= CAMEL_FOLDER_FILTER_RECENT;
+
+		if (camel_imapx_mailbox_is_inbox (camel_folder_get_full_name (folder))) {
+			if (filter_inbox)
+				flags |= CAMEL_FOLDER_FILTER_RECENT;
+
+			if (filter_junk)
+				flags |= CAMEL_FOLDER_FILTER_JUNK;
+		} else {
+			gboolean apply_filters = FALSE;
+
+			if (filter_junk && !filter_junk_inbox)
+				flags |= CAMEL_FOLDER_FILTER_JUNK;
+
+			g_object_get (G_OBJECT (folder), "apply-filters", &apply_filters, NULL);
+
+			if (apply_filters)
+				flags |= CAMEL_FOLDER_FILTER_RECENT;
+		}
+
+		camel_folder_set_flags (folder, flags);
+	}
+
+	g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+	g_ptr_array_free (folders, TRUE);
+}
+
+static void
+imapx_store_update_folder_cache_expire (CamelStore *store)
+{
+	CamelSettings *settings;
+	gboolean offline_limit_by_age = FALSE;
+	CamelTimeUnit offline_limit_unit;
+	gint offline_limit_value;
+	time_t when = (time_t) 0;
+	GPtrArray *folders;
+	gint ii;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_STORE (store));
+
+	settings = camel_service_ref_settings (CAMEL_SERVICE (store));
+
+	g_object_get (
+		settings,
+		"limit-by-age", &offline_limit_by_age,
+		"limit-unit", &offline_limit_unit,
+		"limit-value", &offline_limit_value,
+		NULL);
+
+	g_object_unref (settings);
+
+	folders = camel_store_dup_opened_folders (store);
+	if (!folders)
+		return;
+
+	if (offline_limit_by_age)
+		when = camel_time_value_apply (when, offline_limit_unit, offline_limit_value);
+
+	if (when <= (time_t) 0)
+		when = (time_t) -1;
+
+	for (ii = 0; ii < folders->len; ii++) {
+		CamelFolder *folder = g_ptr_array_index (folders, ii);
+
+		if (!CAMEL_IS_IMAPX_FOLDER (folder))
+			continue;
+
+		camel_imapx_folder_update_cache_expire (folder, when);
+	}
+
+	g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+	g_ptr_array_free (folders, TRUE);
+}
+
+static void
 imapx_store_settings_notify_cb (CamelSettings *settings,
                                 GParamSpec *pspec,
                                 CamelStore *store)
@@ -191,6 +304,15 @@ imapx_store_settings_notify_cb (CamelSettings *settings,
 	    g_str_equal (pspec->name, "real-trash-path")) {
 		imapx_store_update_store_flags (store);
 		folder_info_stale = TRUE;
+	} else if (g_str_equal (pspec->name, "filter-all") ||
+		   g_str_equal (pspec->name, "filter-inbox") ||
+		   g_str_equal (pspec->name, "filter-junk") ||
+		   g_str_equal (pspec->name, "filter-junk-inbox")) {
+		imapx_store_update_folder_flags (store);
+	} else if (g_str_equal (pspec->name, "limit-by-age") ||
+		   g_str_equal (pspec->name, "limit-unit") ||
+		   g_str_equal (pspec->name, "limit-value")) {
+		imapx_store_update_folder_cache_expire (store);
 	}
 
 	if (folder_info_stale)

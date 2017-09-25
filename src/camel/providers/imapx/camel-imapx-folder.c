@@ -1088,6 +1088,7 @@ camel_imapx_folder_new (CamelStore *store,
 	gboolean offline_limit_by_age = FALSE;
 	CamelTimeUnit offline_limit_unit;
 	gint offline_limit_value;
+	time_t when = (time_t) 0;
 	guint32 add_folder_flags = 0;
 
 	d ("opening imap folder '%s'\n", folder_dir);
@@ -1148,24 +1149,13 @@ camel_imapx_folder_new (CamelStore *store,
 	g_free (state_file);
 	camel_object_state_read (CAMEL_OBJECT (folder));
 
-	if (camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder))) {
-		time_t when = (time_t) 0;
+	if (offline_limit_by_age)
+		when = camel_time_value_apply (when, offline_limit_unit, offline_limit_value);
 
-		if (offline_limit_by_age)
-			when = camel_time_value_apply (when, offline_limit_unit, offline_limit_value);
+	if (when <= (time_t) 0)
+		when = (time_t) -1;
 
-		if (when <= (time_t) 0)
-			when = (time_t) -1;
-
-		/* Ensure cache will expire when set up, otherwise
-		 * it causes redownload of messages too soon. */
-		camel_data_cache_set_expire_age (imapx_folder->cache, when);
-		camel_data_cache_set_expire_access (imapx_folder->cache, when);
-	} else {
-		/* Set cache expiration for one week. */
-		camel_data_cache_set_expire_age (imapx_folder->cache, 60 * 60 * 24 * 7);
-		camel_data_cache_set_expire_access (imapx_folder->cache, 60 * 60 * 24 * 7);
-	}
+	camel_imapx_folder_update_cache_expire (folder, when);
 
 	camel_binding_bind_property (store, "online",
 		imapx_folder->cache, "expire-enabled",
@@ -1574,4 +1564,26 @@ camel_imapx_folder_set_check_folder (CamelIMAPXFolder *folder,
 	folder->priv->check_folder = check_folder;
 
 	g_object_notify (G_OBJECT (folder), "check-folder");
+}
+
+void
+camel_imapx_folder_update_cache_expire (CamelFolder *folder,
+					time_t expire_when)
+{
+	CamelIMAPXFolder *imapx_folder;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (folder));
+
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+
+	if (camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder))) {
+		/* Ensure cache will expire when set up, otherwise
+		 * it causes redownload of messages too soon. */
+		camel_data_cache_set_expire_age (imapx_folder->cache, expire_when);
+		camel_data_cache_set_expire_access (imapx_folder->cache, expire_when);
+	} else {
+		/* Set cache expiration for one week. */
+		camel_data_cache_set_expire_age (imapx_folder->cache, 60 * 60 * 24 * 7);
+		camel_data_cache_set_expire_access (imapx_folder->cache, 60 * 60 * 24 * 7);
+	}
 }
