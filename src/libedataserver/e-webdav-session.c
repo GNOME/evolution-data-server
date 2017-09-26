@@ -2175,7 +2175,9 @@ e_webdav_session_write_restarted (SoupMessage *message,
  * The @stream should support also #GSeekable interface, because the data
  * send can require restart of the send due to redirect or other reasons.
  *
- * The e_webdav_session_put_data_sync() can be used to write data stored in memory.
+ * This method uses Transfer-Encoding:chunked, in contrast to the
+ * e_webdav_session_put_data_sync(), which writes data stored in memory
+ * like any other request.
  *
  * Returns: Whether succeeded.
  *
@@ -2349,7 +2351,7 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
  *
  * The @out_etag contains ETag of the resource after it had been saved.
  *
- * To read large data use e_webdav_session_put_sync() instead.
+ * To write large data use e_webdav_session_put_sync() instead.
  *
  * Returns: Whether succeeded.
  *
@@ -2367,7 +2369,9 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 				GCancellable *cancellable,
 				GError **error)
 {
-	GInputStream *input_stream;
+	SoupRequestHTTP *request;
+	SoupMessage *message;
+	GByteArray *ret_bytes;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
@@ -2377,13 +2381,81 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 
 	if (length == (gsize) -1)
 		length = strlen (bytes);
+	if (out_href)
+		*out_href = NULL;
+	if (out_etag)
+		*out_etag = NULL;
 
-	input_stream = g_memory_input_stream_new_from_data (bytes, length, NULL);
+	request = e_webdav_session_new_request (webdav, SOUP_METHOD_PUT, uri, error);
+	if (!request)
+		return FALSE;
 
-	success = e_webdav_session_put_sync (webdav, uri, etag, content_type,
-		input_stream, out_href, out_etag, cancellable, error);
+	message = soup_request_http_get_message (request);
+	if (!message) {
+		g_warn_if_fail (message != NULL);
+		g_object_unref (request);
 
-	g_object_unref (input_stream);
+		return FALSE;
+	}
+
+	if (!etag || *etag) {
+		ESource *source;
+		gboolean avoid_ifmatch = FALSE;
+
+		source = e_soup_session_get_source (E_SOUP_SESSION (webdav));
+		if (source && e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND)) {
+			ESourceWebdav *webdav_extension;
+
+			webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+			avoid_ifmatch = e_source_webdav_get_avoid_ifmatch (webdav_extension);
+		}
+
+		if (!avoid_ifmatch) {
+			if (etag) {
+				gint len = strlen (etag);
+
+				if (*etag == '\"' && len > 2 && etag[len - 1] == '\"') {
+					soup_message_headers_replace (message->request_headers, "If-Match", etag);
+				} else {
+					gchar *quoted;
+
+					quoted = g_strconcat ("\"", etag, "\"", NULL);
+					soup_message_headers_replace (message->request_headers, "If-Match", quoted);
+					g_free (quoted);
+				}
+			} else {
+				soup_message_headers_replace (message->request_headers, "If-None-Match", "*");
+			}
+		}
+	}
+
+	if (content_type && *content_type)
+		soup_message_headers_replace (message->request_headers, "Content-Type", content_type);
+
+	soup_message_set_request (message, content_type, SOUP_MEMORY_TEMPORARY, bytes, length);
+
+	ret_bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
+
+	success = !e_webdav_session_replace_with_detailed_error (webdav, request, ret_bytes, FALSE, _("Failed to put data"), error) &&
+		ret_bytes != NULL;
+
+	if (success) {
+		if (success && !SOUP_STATUS_IS_SUCCESSFUL (message->status_code)) {
+			success = FALSE;
+
+			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
+				_("Failed to put data to server, error code %d (%s)"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		}
+	}
+
+	if (success)
+		e_webdav_session_extract_href_and_etag (message, out_href, out_etag);
+
+	if (ret_bytes)
+		g_byte_array_free (ret_bytes, TRUE);
+	g_object_unref (message);
+	g_object_unref (request);
 
 	return success;
 }
