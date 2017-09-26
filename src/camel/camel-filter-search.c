@@ -1194,6 +1194,14 @@ message_location (struct _CamelSExp *f,
 	return r;
 }
 
+static const gchar *
+camel_search_result_to_string (gint value)
+{
+	return value == CAMEL_SEARCH_ERROR ? "ERROR" :
+	       value == CAMEL_SEARCH_NOMATCH ? "NOMATCH" :
+	       value == CAMEL_SEARCH_MATCHED ? "MATCHED" : "???";
+}
+
 /**
  * camel_filter_search_match_with_log:
  * @session:
@@ -1227,7 +1235,7 @@ camel_filter_search_match_with_log (CamelSession *session,
 	FilterMessageSearch fms;
 	CamelSExp *sexp;
 	CamelSExpResult *result;
-	gboolean retval;
+	gint retval;
 	GError *local_error = NULL;
 	gint i;
 
@@ -1295,9 +1303,7 @@ camel_filter_search_match_with_log (CamelSession *session,
 			camel_message_info_get_uid (info), camel_message_info_get_subject (info),
 			folder ? camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))) : "NULL",
 			folder ? camel_folder_get_full_name (folder) : "NULL",
-			retval == CAMEL_SEARCH_ERROR ? "ERROR" :
-			retval == CAMEL_SEARCH_NOMATCH ? "NOMATCH" :
-			retval == CAMEL_SEARCH_MATCHED ? "MATCHED" : "???");
+			camel_search_result_to_string (retval));
 	}
 
 	return retval;

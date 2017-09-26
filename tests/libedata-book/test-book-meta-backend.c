@@ -936,7 +936,7 @@ test_create_contacts (EBookMetaBackend *meta_backend)
 	g_assert_nonnull (vcards[0]);
 	tmp = strstr (vcards[0], "UID:custom-9\r\n");
 	g_assert_nonnull (tmp);
-	strncpy (tmp, "X-TEST:*007*", 12);
+	memcpy (tmp, "X-TEST:*007*", 12);
 
 	success = E_BOOK_BACKEND_GET_CLASS (meta_backend)->create_contacts_sync (E_BOOK_BACKEND (meta_backend),
 		(const gchar * const *) vcards, &new_contacts, NULL, &error);
@@ -1016,7 +1016,7 @@ test_modify_contacts (EBookMetaBackend *meta_backend)
 	g_assert_nonnull (vcards[0]);
 	tmp = strstr (vcards[0], "UID:custom-1");
 	g_assert_nonnull (tmp);
-	strncpy (tmp + 4, "unknown", 7);
+	memcpy (tmp + 4, "unknown", 7);
 
 	success = E_BOOK_BACKEND_GET_CLASS (meta_backend)->modify_contacts_sync (E_BOOK_BACKEND (meta_backend),
 		(const gchar * const *) vcards, &new_contacts, NULL, &error);

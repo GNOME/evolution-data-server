@@ -88,7 +88,7 @@ worker (gpointer d)
 		push ("searching for message %d\n\tusing: %s", id + i, sub);
 		res = camel_folder_search_by_expression (info->folder, sub, NULL, &error);
 		check_msg (error == NULL, "%s", error->message);
-		check_msg (res->len == 1, "res->len = %d", res->len);
+		check_msg (res && res->len == 1, "res->len = %d", res ? res->len : -1);
 		g_clear_error (&error);
 		pull ();
 
@@ -106,7 +106,7 @@ worker (gpointer d)
 		pull ();
 
 		push ("deleting message, cleanup");
-		j = (100.0 * rand () / (RAND_MAX + 1.0));
+		j = g_random_int_range (0, 100);
 		if (j <= 70) {
 			camel_folder_delete_message (info->folder, res->pdata[0]);
 		}
@@ -119,7 +119,7 @@ worker (gpointer d)
 		pull ();
 
 		/* about 1-in 100 calls will expunge */
-		j = (200.0 * rand () / (RAND_MAX + 1.0));
+		j = g_random_int_range (0, 200);
 		if (j <= 2) {
 			push ("expunging folder");
 			camel_folder_expunge_sync (info->folder, NULL, &error);

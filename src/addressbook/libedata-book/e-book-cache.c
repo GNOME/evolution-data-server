@@ -4263,7 +4263,7 @@ e_book_cache_migrate (ECache *cache,
 			const gchar *name = link->data;
 			gchar *stmt;
 
-			if (!link)
+			if (!name)
 				continue;
 
 			stmt = e_cache_sqlite_stmt_printf ("DROP TABLE IF EXISTS %Q", name);
@@ -4695,7 +4695,7 @@ e_book_cache_set_locale (EBookCache *book_cache,
 
 	g_free (stored_lc_collate);
 
-	if (success && changed)
+	if (success || changed)
 		g_object_notify (G_OBJECT (book_cache), "locale");
 
 	return success;

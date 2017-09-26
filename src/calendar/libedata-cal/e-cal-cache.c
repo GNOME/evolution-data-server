@@ -3653,7 +3653,8 @@ ecc_list_cached_timezones (ETimezoneCache *cache)
 {
 	GList *timezones = NULL;
 
-	e_cal_cache_list_timezones (E_CAL_CACHE (cache), &timezones, NULL, NULL);
+	if (!e_cal_cache_list_timezones (E_CAL_CACHE (cache), &timezones, NULL, NULL))
+		return NULL;
 
 	return timezones;
 }
