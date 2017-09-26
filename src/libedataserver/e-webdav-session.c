@@ -4165,7 +4165,11 @@ e_webdav_session_extract_acl_principal (xmlXPathContextPtr xpath_ctx,
 	g_return_val_if_fail (principal_prefix != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
 	g_return_val_if_fail (out_principal_href != NULL || out_principal_hrefs != NULL, E_WEBDAV_ACE_PRINCIPAL_UNKNOWN);
 
-	*out_principal_href = NULL;
+	if (out_principal_href)
+		*out_principal_href = NULL;
+
+	if (out_principal_hrefs)
+		*out_principal_hrefs = NULL;
 
 	if (!e_xml_xpath_eval_exists (xpath_ctx, "%s", principal_prefix))
 		return E_WEBDAV_ACE_PRINCIPAL_UNKNOWN;

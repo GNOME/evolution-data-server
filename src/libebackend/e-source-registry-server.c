@@ -1609,7 +1609,10 @@ source_registry_server_tweak_key_file (ESourceRegistryServer *server,
 
 	key_file = g_key_file_new ();
 
-	g_file_load_contents (file, NULL, &contents, &length, NULL, error);
+	if (!g_file_load_contents (file, NULL, &contents, &length, NULL, error)) {
+		contents = NULL;
+		length = 0;
+	}
 
 	if (contents != NULL) {
 		success = g_key_file_load_from_data (

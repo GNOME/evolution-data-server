@@ -53,7 +53,7 @@ gint main (gint argc, gchar **argv)
 	}
 
 	/* create a pseudo-spool file, and check that */
-	creat ("/tmp/camel-test/testbox", 0600);
+	g_warn_if_fail (creat ("/tmp/camel-test/testbox", 0600) != -1);
 	test_folder_message_ops (session, "spool:///tmp/camel-test/testbox", TRUE, "INBOX");
 
 	check_unref (session, 1);

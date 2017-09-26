@@ -86,8 +86,8 @@ setup (void)
 	srand (42);
 	p = texts[12].text = g_malloc (1024);
 	for (i = 0; i < 1024; i++) {
-		j = rand ();
-		if (j < RAND_MAX / 120)
+		j = g_random_int ();
+		if (j < G_MAXUINT32 / 120)
 			*p++ = '\n';
 		else
 			*p++ = (j % 95) + 32;
@@ -95,8 +95,8 @@ setup (void)
 	texts[12].len = 1024;
 	p = texts[13].text = g_malloc (102400);
 	for (i = 0; i < 102400; i++) {
-		j = rand ();
-		if (j < RAND_MAX / 120)
+		j = g_random_int ();
+		if (j < G_MAXUINT32 / 120)
 			*p++ = '\n';
 		else
 			*p++ = (j % 95) + 32;

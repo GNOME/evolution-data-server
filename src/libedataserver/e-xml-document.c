@@ -234,9 +234,10 @@ e_xml_document_add_namespaces (EXmlDocument *xml,
 
 		if (!g_hash_table_contains (xml->priv->namespaces_by_href, ns_href)) {
 			ns = xmlNewNs (xml->priv->root, (const xmlChar *) ns_href, (const xmlChar *) ns_prefix);
-			g_return_if_fail (ns != NULL);
+			g_warn_if_fail (ns != NULL);
 
-			g_hash_table_insert (xml->priv->namespaces_by_href, g_strdup (ns_href), ns);
+			if (ns)
+				g_hash_table_insert (xml->priv->namespaces_by_href, g_strdup (ns_href), ns);
 		}
 	}
 
@@ -273,9 +274,6 @@ e_xml_document_gen_ns_prefix (EXmlDocument *xml,
 
 	g_return_val_if_fail (E_IS_XML_DOCUMENT (xml), NULL);
 	g_return_val_if_fail (ns_href && *ns_href, NULL);
-
-	if (!ns_href)
-		return NULL;
 
 	prefixes = g_hash_table_new (g_str_hash, g_str_equal);
 

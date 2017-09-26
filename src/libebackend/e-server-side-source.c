@@ -1987,7 +1987,7 @@ e_server_side_source_load (EServerSideSource *source,
 	EDBusSource *dbus_source;
 	GKeyFile *key_file;
 	GFile *file;
-	gboolean success;
+	gboolean success = TRUE;
 	gchar *data = NULL;
 	gsize length;
 	GError *local_error = NULL;
@@ -1996,10 +1996,10 @@ e_server_side_source_load (EServerSideSource *source,
 
 	file = e_server_side_source_get_file (source);
 
-	if (file != NULL)
-		g_file_load_contents (
-			file, cancellable, &data,
-			&length, NULL, &local_error);
+	if (file != NULL && !g_file_load_contents (file, cancellable, &data, &length, NULL, &local_error)) {
+		data = NULL;
+		length = 0;
+	}
 
 	/* Disregard G_IO_ERROR_NOT_FOUND and treat it as a successful load. */
 	if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {

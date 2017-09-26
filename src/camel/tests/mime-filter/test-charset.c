@@ -103,7 +103,8 @@ test_case (const gchar *basename)
 
 	charset = g_strdup (basename + 8);
 	ext = strchr (charset, '.');
-	*((gchar *) ext) = '\0';
+	if (ext)
+		*((gchar *) ext) = '\0';
 
 	filter = camel_mime_filter_charset_new (charset, "UTF-8");
 	if (filter == NULL) {

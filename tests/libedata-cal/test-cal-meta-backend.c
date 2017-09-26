@@ -1659,7 +1659,7 @@ test_create_objects (ECalMetaBackend *meta_backend)
 	g_assert_nonnull (calobj);
 	tmp = strstr (calobj, "UID:event-9\r\n");
 	g_assert_nonnull (tmp);
-	strncpy (tmp, "X-TEST:*007", 11);
+	memcpy (tmp, "X-TEST:*007", 11);
 
 	objects = g_slist_prepend (NULL, calobj);
 
@@ -1740,7 +1740,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	g_assert_nonnull (calobj);
 	tmp = strstr (calobj, "UID:event-1");
 	g_assert_nonnull (tmp);
-	strncpy (tmp + 4, "unknown", 7);
+	memcpy (tmp + 4, "unknown", 7);
 
 	objects = g_slist_prepend (NULL, calobj);
 

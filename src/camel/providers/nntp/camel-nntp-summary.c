@@ -500,11 +500,6 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 
 	camel_operation_pop_message (cancellable);
 
-	if (ret != 0 && existing_articles) {
-		g_hash_table_destroy (existing_articles);
-		existing_articles = NULL;
-	}
-
 	return existing_articles;
 }
 

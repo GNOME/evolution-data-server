@@ -164,7 +164,7 @@ gint main (gint argc, gchar **argv)
 		camel_mime_message_set_date (msg, j * 60 * 24, 0);
 		pull ();
 
-		camel_stream_write_string (mbox, "From \n", NULL, NULL);
+		g_warn_if_fail (camel_stream_write_string (mbox, "From \n", NULL, NULL));
 		check (camel_data_wrapper_write_to_stream_sync (
 			CAMEL_DATA_WRAPPER (msg), mbox, NULL, NULL) != -1);
 #if 0
