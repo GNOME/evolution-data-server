@@ -1,3 +1,12 @@
+Evolution-Data-Server 3.24.7 2017-10-02
+---------------------------------------
+
+Bug Fixes:
+	Bug 786208 - Already opened message box doesn’t show new emails (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Wait for IDLE stop up to 10 seconds, then give up (Milan Crha)
+
 Evolution-Data-Server 3.24.6 2017-09-07
 ---------------------------------------
 
