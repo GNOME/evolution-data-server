@@ -109,6 +109,8 @@ if(NOT (WITH_NSS_INCLUDES STREQUAL ""))
 	set(CMAKE_REQUIRED_INCLUDES ${WITH_NSS_INCLUDES})
 endif(NOT (WITH_NSS_INCLUDES STREQUAL ""))
 
+unset(_have_headers CACHE)
+
 CHECK_INCLUDE_FILES(nss.h ssl.h smime.h _have_headers)
 
 unset(CMAKE_REQUIRED_INCLUDES)
