@@ -303,7 +303,6 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
                           const gchar *vuid,
                           CamelFolder *subfolder)
 {
-	CamelMessageInfo *mi;
 	GHashTable *vuids;
 
 	g_return_if_fail (CAMEL_IS_VEE_SUMMARY (summary));
@@ -319,16 +318,7 @@ camel_vee_summary_remove (CamelVeeSummary *summary,
 			g_hash_table_remove (summary->priv->vuids_by_subfolder, subfolder);
 	}
 
-	mi = camel_folder_summary_peek_loaded (CAMEL_FOLDER_SUMMARY (summary), vuid);
-
 	camel_folder_summary_remove_uid (CAMEL_FOLDER_SUMMARY (summary), vuid);
-
-	if (mi) {
-		/* unref twice, the first for camel_folder_summary_peek_loaded(),
-		 * the second to actually free the mi */
-		g_object_unref (mi);
-		g_clear_object (&mi);
-	}
 
 	camel_folder_summary_unlock (CAMEL_FOLDER_SUMMARY (summary));
 }
