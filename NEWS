@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.26.1 2017-10-02
+---------------------------------------
+
+Bug Fixes:
+	Bug 787266 - Failure in installed tests (Milan Crha)
+	Bug 787341 - [IMAPx] Report message download progress (Milan Crha)
+	Bug 769834 - [IMAPx] Minimize bandwidth usage on metered networks (Milan Crha)
+	Bug 787445 - Add message to Unmatched only if still exists (Milan Crha)
+	Bug 787542 - Fix search for exact phrase in body of mail on Gmail (Milan Crha)
+	Bug 787713 - Can overwrite GError under camel_imapx_conn_manager_sync_changes_sync() (Milan Crha)
+	Bug 787514 - [IMAPx] Overaggressive folder change saving after filtering (Milan Crha)
+	Bug 787935 - Handle Redirection in ESoupSession (Milan Crha)
+	Bug 788048 - Junk/filtering preferences change requires restart (Milan Crha)
+	Bug 788051 - Junk messages moved to a real folder are considered seen (Milan Crha)
+	Bug 787656 - Do not use Transfer-Encoding:chunked for CalDAV/CardDAV PUT (Milan Crha)
+	Bug 786208 - Already opened message box doesn’t show new emails (Milan Crha)
+
+Miscellaneous:
+	e_module_load_all_in_directory: Use g_debug() instead of g_warning() (Milan Crha)
+	Ignore "timed out" error from goa_account_call_ensure_credentials_sync() (Milan Crha)
+	[EGoaPasswordBased] Reuse GoaClient object between password lookup calls (Milan Crha)
+	Misleading error for Google collection account without Calendar part (Milan Crha)
+	[IMAPx] Wait for IDLE stop up to 10 seconds, then give up (Milan Crha)
+	Fix some issues found by Coverity Scan (Milan Crha)
+
+Translations:
+	hanniedu (nl)
+	Dušan Kazik (sk)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.26.0 2017-09-11
 ---------------------------------------
 
