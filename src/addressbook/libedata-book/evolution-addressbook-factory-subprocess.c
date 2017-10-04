@@ -184,6 +184,8 @@ main (gint argc,
 		exit (EXIT_FAILURE);
 	}
 
+	e_xml_initialize_in_main ();
+
 	loop = g_main_loop_new (NULL, FALSE);
 
 	manager = g_dbus_object_manager_server_new ("/org/gnome/evolution/dataserver/Subprocess/Backend");

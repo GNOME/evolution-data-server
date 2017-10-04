@@ -27,6 +27,7 @@
 #endif
 
 #include <libxml/parser.h>
+#include <libxml/catalog.h>
 #include <libxml/tree.h>
 #include <libxml/xpathInternals.h>
 
@@ -37,6 +38,29 @@
 #ifdef G_OS_WIN32
 #define fsync(fd) 0
 #endif
+
+/**
+ * e_xml_initialize_in_main: (skip)
+ *
+ * Initializes libxml library global memory. This should be called
+ * in the main thread. The function does nothing, when it had been
+ * called already.
+ *
+ * Since: 3.26.2
+ **/
+void
+e_xml_initialize_in_main (void)
+{
+	static volatile guint called = 0;
+
+	if (!g_atomic_int_or (&called, 1)) {
+		xmlInitMemory ();
+		xmlInitThreads ();
+		xmlInitGlobals ();
+		xmlInitializeCatalog ();
+		xmlInitParser ();
+	}
+}
 
 /**
  * e_xml_parse_file: (skip)

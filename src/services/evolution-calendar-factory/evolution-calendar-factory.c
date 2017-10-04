@@ -88,6 +88,7 @@ main (gint argc,
 #endif
 
 	e_gdbus_templates_init_main_thread ();
+	e_xml_initialize_in_main ();
 
  reload:
 	server = e_data_cal_factory_new (NULL, &error);
