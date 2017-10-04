@@ -29,6 +29,8 @@
 
 G_BEGIN_DECLS
 
+void		e_xml_initialize_in_main	(void);
+
 xmlDoc *	e_xml_parse_file		(const gchar *filename);
 gint		e_xml_save_file			(const gchar *filename,
 						 xmlDoc *doc);
