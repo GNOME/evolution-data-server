@@ -542,7 +542,7 @@ ecc_encode_time_to_sql (ECalCache *cal_cache,
 	struct icaltimetype itt;
 	icaltimezone *zone = NULL;
 
-	if (!dt || !dt->value || (!dt->value->is_utc && (!dt->tzid || !*dt->tzid)))
+	if (!dt || !dt->value || (!icaltime_is_utc (*dt->value) && (!dt->tzid || !*dt->tzid)))
 		return NULL;
 
 	itt = *dt->value;
@@ -845,14 +845,14 @@ ecc_fill_other_columns (ECalCache *cal_cache,
 		icalcomponent_isa (icalcomp));
 
 	e_cal_component_get_dtstart (comp, &dt);
-	add_value (ECC_COLUMN_OCCUR_START, dt.value && ((dt.tzid && *dt.tzid) || dt.value->is_utc) ? ecc_encode_timet_to_sql (cal_cache, occur_start) : NULL);
+	add_value (ECC_COLUMN_OCCUR_START, dt.value && ((dt.tzid && *dt.tzid) || icaltime_is_utc (*dt.value)) ? ecc_encode_timet_to_sql (cal_cache, occur_start) : NULL);
 
 	has = dt.value != NULL;
 	add_value (ECC_COLUMN_HAS_START, g_strdup (has ? "1" : "0"));
 	e_cal_component_free_datetime (&dt);
 
 	e_cal_component_get_dtend (comp, &dt);
-	add_value (ECC_COLUMN_OCCUR_END, dt.value && ((dt.tzid && *dt.tzid) || dt.value->is_utc) ? ecc_encode_timet_to_sql (cal_cache, occur_end) : NULL);
+	add_value (ECC_COLUMN_OCCUR_END, dt.value && ((dt.tzid && *dt.tzid) || icaltime_is_utc (*dt.value)) ? ecc_encode_timet_to_sql (cal_cache, occur_end) : NULL);
 	e_cal_component_free_datetime (&dt);
 
 	e_cal_component_get_due (comp, &dt);

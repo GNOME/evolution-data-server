@@ -2494,7 +2494,7 @@ get_datetime (struct datetime *datetime,
 	 * This makes the timezone code simpler. */
 	if (datetime->tzid_param)
 		dt->tzid = g_strdup (icalparameter_get_tzid (datetime->tzid_param));
-	else if (dt->value && dt->value->is_utc)
+	else if (dt->value && icaltime_is_utc (*dt->value))
 		dt->tzid = g_strdup ("UTC");
 	else
 		dt->tzid = NULL;
@@ -2531,9 +2531,9 @@ set_datetime (ECalComponent *comp,
 
 	/* If the TZID is set to "UTC", we set the is_utc flag. */
 	if (dt->tzid && !strcmp (dt->tzid, "UTC"))
-		dt->value->is_utc = 1;
-	else
-		dt->value->is_utc = 0;
+		dt->value->zone = icaltimezone_get_utc_timezone ();
+	else if (dt->value->zone == icaltimezone_get_utc_timezone ())
+		dt->value->zone = NULL;
 
 	if (datetime->prop) {
 		/* make sure no VALUE property is left if not needed */

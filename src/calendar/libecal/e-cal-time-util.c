@@ -763,9 +763,8 @@ tm_to_icaltimetype (struct tm *tm,
 
 	itt.day = tm->tm_mday;
 	itt.month = tm->tm_mon + 1;
-	itt.year = tm->tm_year+ 1900;
+	itt.year = tm->tm_year + 1900;
 
-	itt.is_utc = 0;
 	itt.is_date = is_date;
 
 	return itt;
