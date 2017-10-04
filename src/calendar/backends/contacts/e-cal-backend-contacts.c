@@ -690,7 +690,6 @@ cdate_to_icaltime (EContactDate *cdate)
 	ret.month = cdate->month;
 	ret.day = cdate->day;
 	ret.is_date = TRUE;
-	ret.is_utc = FALSE;
 	ret.zone = NULL;
 	ret.is_daylight = FALSE;
 
