@@ -521,7 +521,7 @@ e_collator_generate_key (ECollator *collator,
 		collation_key = g_malloc (key_len + 5);
 
 		/* Format the alphabetic index into the first 4 chars */
-		snprintf (collation_key, 4, "%03d-", alphabet_index);
+		snprintf (collation_key, key_len, "%03d-", alphabet_index);
 
 		/* Get the sort key and put it in &collation_key[4] */
 		ucol_getSortKey (
