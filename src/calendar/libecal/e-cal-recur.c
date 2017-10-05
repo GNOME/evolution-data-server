@@ -193,7 +193,8 @@ ensure_timezone (icalcomponent *comp,
 
 	/* Do not trust the 'zone' set on the structure, as it can come from
 	   a different icalcomponent and cause use-after-free. */
-	tt->zone = NULL;
+	if (tt->zone != icaltimezone_get_utc_timezone ())
+		tt->zone = NULL;
 
 	if (icaltime_is_utc (*tt))
 		return TRUE;
