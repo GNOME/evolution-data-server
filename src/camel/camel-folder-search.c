@@ -296,12 +296,19 @@ search_get_message_sync (CamelFolderSearch *search,
 }
 
 static CamelMimeMessage *
-get_current_message (CamelFolderSearch *search)
+ref_current_message (CamelFolderSearch *search)
 {
 	if (!search || !search->priv->folder || !search->priv->current)
 		return NULL;
 
-	return search_get_message_sync (search, search->priv->folder, camel_message_info_get_uid (search->priv->current), search->priv->cancellable);
+	if (!search->priv->current_message)
+		search->priv->current_message = search_get_message_sync (search, search->priv->folder,
+			camel_message_info_get_uid (search->priv->current), search->priv->cancellable);
+
+	if (search->priv->current_message)
+		return g_object_ref (search->priv->current_message);
+
+	return NULL;
 }
 
 static CamelSExpResult *
@@ -351,7 +358,7 @@ check_header (CamelSExp *sexp,
 			header = camel_message_info_get_mlist (search->priv->current);
 			type = CAMEL_SEARCH_TYPE_MLIST;
 		} else {
-			message = get_current_message (search);
+			message = ref_current_message (search);
 			if (message) {
 				CamelContentType *ct = camel_mime_part_get_content_type (CAMEL_MIME_PART (message));
 
@@ -924,7 +931,8 @@ folder_search_match_all (CamelSExp *sexp,
 	for (i = 0; i < v->len && !g_cancellable_is_cancelled (search->priv->cancellable); i++) {
 		const gchar *uid;
 
-		search->priv->current = camel_folder_summary_get (camel_folder_get_folder_summary (search->priv->folder), v->pdata[i]);
+		camel_folder_search_take_current_message_info (search, camel_folder_summary_get (camel_folder_get_folder_summary (search->priv->folder), v->pdata[i]));
+
 		if (!search->priv->current)
 			continue;
 		uid = camel_message_info_get_uid (search->priv->current);
@@ -945,9 +953,12 @@ folder_search_match_all (CamelSExp *sexp,
 		} else {
 			g_ptr_array_add (r->value.ptrarray, (gchar *) uid);
 		}
-		g_clear_object (&search->priv->current);
+
+		camel_folder_search_set_current_message_info (search, NULL);
 	}
-	search->priv->current = NULL;
+
+	camel_folder_search_set_current_message_info (search, NULL);
+
 	return r;
 }
 
@@ -1172,7 +1183,7 @@ folder_search_body_regex (CamelSExp *sexp,
                           CamelFolderSearch *search)
 {
 	CamelSExpResult *r;
-	CamelMimeMessage *msg = get_current_message (search);
+	CamelMimeMessage *msg = ref_current_message (search);
 
 	if (msg) {
 		regex_t pattern;
@@ -1279,9 +1290,15 @@ folder_search_header_exists (CamelSExp *sexp,
 
 	if (search->priv->current) {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_BOOL);
-		if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING)
-			r->value.boolean = camel_medium_get_header (CAMEL_MEDIUM (search->priv->current), argv[0]->value.string) != NULL;
+		if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
+			CamelMimeMessage *msg;
 
+			msg = ref_current_message (search);
+
+			r->value.boolean = msg && camel_medium_get_header (CAMEL_MEDIUM (msg), argv[0]->value.string) != NULL;
+
+			g_clear_object (&msg);
+		}
 	} else {
 		r = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_ARRAY_PTR);
 		r->value.ptrarray = g_ptr_array_new ();
@@ -1308,7 +1325,7 @@ folder_search_header_regex (CamelSExp *sexp,
 	CamelSExpResult *r;
 	CamelMimeMessage *msg;
 
-	msg = get_current_message (search);
+	msg = ref_current_message (search);
 
 	if (msg) {
 		regex_t pattern;
@@ -1356,7 +1373,7 @@ folder_search_header_full_regex (CamelSExp *sexp,
 	CamelSExpResult *r;
 	CamelMimeMessage *msg;
 
-	msg = get_current_message (search);
+	msg = ref_current_message (search);
 
 	if (msg) {
 		regex_t pattern;
@@ -1814,6 +1831,8 @@ camel_folder_search_set_current_message_info (CamelFolderSearch *search,
 
 		g_clear_object (&search->priv->current);
 		search->priv->current = info;
+
+		g_clear_object (&search->priv->current_message);
 	}
 }
 
@@ -2183,6 +2202,7 @@ fail:
 		g_ptr_array_free (search->priv->summary_set, TRUE);
 	if (search->priv->summary)
 		camel_folder_free_summary (search->priv->folder, search->priv->summary);
+	camel_folder_search_set_current_message_info (search, NULL);
 
 	free_pstring_array (p->owned_pstrings);
 	p->owned_pstrings = NULL;
@@ -2193,7 +2213,6 @@ fail:
 	search->priv->folder = NULL;
 	search->priv->summary = NULL;
 	search->priv->summary_set = NULL;
-	search->priv->current = NULL;
 	search->priv->body_index = NULL;
 
 	return count;
@@ -2363,6 +2382,7 @@ fail:
 		g_ptr_array_free (search->priv->summary_set, TRUE);
 	if (search->priv->summary)
 		camel_folder_free_summary (search->priv->folder, search->priv->summary);
+	camel_folder_search_set_current_message_info (search, NULL);
 
 	free_pstring_array (p->owned_pstrings);
 	p->owned_pstrings = NULL;
@@ -2373,7 +2393,6 @@ fail:
 	search->priv->folder = NULL;
 	search->priv->summary = NULL;
 	search->priv->summary_set = NULL;
-	search->priv->current = NULL;
 	search->priv->body_index = NULL;
 
 	if (error && *error) {
