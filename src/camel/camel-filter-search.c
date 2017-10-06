@@ -173,6 +173,57 @@ camel_filter_search_get_message (FilterMessageSearch *fms,
 	return fms->message;
 }
 
+static const gchar *
+camel_filter_search_get_header (FilterMessageSearch *fms,
+				struct _CamelSExp *sexp,
+				const gchar *name)
+{
+	const CamelNameValueArray *headers;
+	CamelMimeMessage *message;
+	const gchar *value;
+
+	g_return_val_if_fail (fms != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+
+	headers = fms->info ? camel_message_info_get_headers (fms->info) : NULL;
+
+	if (headers) {
+		value = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, name);
+
+		while (value && g_ascii_isspace (*value))
+			value++;
+
+		return value;
+	}
+
+	message = camel_filter_search_get_message (fms, sexp);
+	if (!message)
+		return NULL;
+
+	return camel_medium_get_header (CAMEL_MEDIUM (message), name);
+}
+
+static const CamelNameValueArray *
+camel_filter_search_get_headers (FilterMessageSearch *fms,
+				 struct _CamelSExp *sexp)
+{
+	const CamelNameValueArray *headers;
+
+	g_return_val_if_fail (fms != NULL, NULL);
+
+	headers = fms->info ? camel_message_info_get_headers (fms->info) : NULL;
+
+	if (!headers) {
+		CamelMimeMessage *message;
+
+		message = camel_filter_search_get_message (fms, sexp);
+		if (message)
+			headers = camel_medium_get_headers (CAMEL_MEDIUM (message));
+	}
+
+	return headers;
+}
+
 static gboolean
 check_header_in_message_info (FilterMessageSearch *fms,
                               gint argc,
@@ -204,7 +255,9 @@ check_header_in_message_info (FilterMessageSearch *fms,
 
 	info = fms->info;
 
-	if (!info)
+	/* If there are headers available, then prefer them, thus the addresses are used
+	   as received, not as they are stored in the folder summary. */
+	if (!info || camel_message_info_get_headers (info))
 		return FALSE;
 
 	name = argv[0]->value.string;
@@ -298,30 +351,21 @@ check_header (struct _CamelSExp *f,
 				}
 			}
 		} else if (fms->message || !check_header_in_message_info (fms, argc, argv, how, &matched)) {
-			CamelMimeMessage *message;
-			CamelMimePart *mime_part;
 			const CamelNameValueArray *headers;
 			const gchar *charset = NULL;
 			camel_search_t type = CAMEL_SEARCH_TYPE_ENCODED;
-			CamelContentType *ct;
 			guint ii;
 			const gchar *header_name = NULL, *header_value = NULL;
 
-			message = camel_filter_search_get_message (fms, f);
-			mime_part = CAMEL_MIME_PART (message);
+			headers = camel_filter_search_get_headers (fms, f);
 
-			if (camel_search_header_is_address (name))
+			if (camel_search_header_is_address (name)) {
 				type = CAMEL_SEARCH_TYPE_ADDRESS_ENCODED;
-			else if (message) {
-				ct = camel_mime_part_get_content_type (mime_part);
-				if (ct) {
-					charset = camel_content_type_param (ct, "charset");
-					charset = camel_iconv_charset_name (charset);
-				}
+			} else {
+				charset = camel_search_get_default_charset_from_headers (headers);
 			}
 
-			headers = camel_medium_get_headers (CAMEL_MEDIUM (mime_part));
-			for (ii = 0; camel_name_value_array_get (headers, ii, &header_name, &header_value); ii++) {
+			for (ii = 0; !matched && camel_name_value_array_get (headers, ii, &header_name, &header_value); ii++) {
 				/* empty name means any header */
 				if (!name || !*name || !g_ascii_strcasecmp (header_name, name)) {
 					for (i = 1; i < argc && !matched; i++) {
@@ -402,17 +446,17 @@ header_exists (struct _CamelSExp *f,
                struct _CamelSExpResult **argv,
                FilterMessageSearch *fms)
 {
-	CamelMimeMessage *message;
 	gboolean matched = FALSE;
 	CamelSExpResult *r;
 	gint i;
 
-	message = camel_filter_search_get_message (fms, f);
-
 	for (i = 0; i < argc && !matched; i++) {
 		if (argv[i]->type == CAMEL_SEXP_RES_STRING) {
-			matched = camel_medium_get_header (CAMEL_MEDIUM (message), argv[i]->value.string) != NULL;
-			camel_filter_search_log (fms, "Header '%s' does %sexist", argv[i]->value.string, matched ? "" : "not ");
+			const gchar *name = argv[i]->value.string;
+
+			matched = camel_filter_search_get_header (fms, f, name) != NULL;
+
+			camel_filter_search_log (fms, "Header '%s' does %sexist", name, matched ? "" : "not ");
 		}
 	}
 
@@ -429,16 +473,13 @@ header_regex (struct _CamelSExp *f,
               FilterMessageSearch *fms)
 {
 	CamelSExpResult *r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
-	CamelMimeMessage *message;
 	regex_t pattern;
 	gchar *contents = NULL;
 
-	message = camel_filter_search_get_message (fms, f);
-
 	if (argc > 1 && argv[0]->type == CAMEL_SEXP_RES_STRING
 	    && (contents = camel_search_get_header_decoded (argv[0]->value.string,
-		    camel_medium_get_header (CAMEL_MEDIUM (message), argv[0]->value.string),
-		    camel_search_get_default_charset_from_message (message)))
+			camel_filter_search_get_header (fms, f, argv[0]->value.string),
+			camel_search_get_default_charset_from_headers (camel_filter_search_get_headers (fms, f))))
 	    && camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_ICASE, argc - 1, argv + 1, fms->error) == 0) {
 		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
 		camel_filter_search_log (fms, "Regex on header '%s' does %smatch value '%s'",
@@ -461,15 +502,17 @@ header_full_regex (struct _CamelSExp *f,
                    FilterMessageSearch *fms)
 {
 	CamelSExpResult *r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
-	CamelMimeMessage *message;
 	regex_t pattern;
-	gchar *contents;
 
 	if (camel_search_build_match_regex (&pattern, CAMEL_SEARCH_MATCH_REGEX | CAMEL_SEARCH_MATCH_ICASE | CAMEL_SEARCH_MATCH_NEWLINE,
 					   argc, argv, fms->error) == 0) {
-		message = camel_filter_search_get_message (fms, f);
-		contents = camel_search_get_all_headers_decoded (message);
+		const CamelNameValueArray *headers = camel_filter_search_get_headers (fms, f);
+		gchar *contents;
+
+		contents = camel_search_get_headers_decoded (headers, NULL);
+
 		r->value.boolean = regexec (&pattern, contents, 0, NULL, 0) == 0;
+
 		g_free (contents);
 		regfree (&pattern);
 	} else
@@ -622,12 +665,20 @@ get_sent_date (struct _CamelSExp *f,
                struct _CamelSExpResult **argv,
                FilterMessageSearch *fms)
 {
-	CamelMimeMessage *message;
+	gint64 sent_date;
 	CamelSExpResult *r;
 
-	message = camel_filter_search_get_message (fms, f);
+	if (fms->info) {
+		sent_date = camel_message_info_get_date_sent (fms->info);
+	} else {
+		CamelMimeMessage *message;
+
+		message = camel_filter_search_get_message (fms, f);
+		sent_date = camel_mime_message_get_date (message, NULL);
+	}
+
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_INT);
-	r->value.number = camel_mime_message_get_date (message, NULL);
+	r->value.number = sent_date;
 
 	camel_filter_search_log (fms, "Got sent date '%" G_GINT64_FORMAT "'", (gint64) r->value.number);
 
@@ -640,12 +691,20 @@ get_received_date (struct _CamelSExp *f,
                    struct _CamelSExpResult **argv,
                    FilterMessageSearch *fms)
 {
-	CamelMimeMessage *message;
+	gint64 received_date;
 	CamelSExpResult *r;
 
-	message = camel_filter_search_get_message (fms, f);
+	if (fms->info) {
+		received_date = camel_message_info_get_date_received (fms->info);
+	} else {
+		CamelMimeMessage *message;
+
+		message = camel_filter_search_get_message (fms, f);
+		received_date = camel_mime_message_get_date_received (message, NULL);
+	}
+
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_INT);
-	r->value.number = camel_mime_message_get_date_received (message, NULL);
+	r->value.number = received_date;
 
 	camel_filter_search_log (fms, "Got received date '%" G_GINT64_FORMAT "'", (gint64) r->value.number);
 

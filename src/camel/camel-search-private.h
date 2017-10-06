@@ -103,8 +103,12 @@ void		camel_search_words_free		(struct _camel_search_words *words);
 gboolean	camel_search_header_is_address	(const gchar *header_name);
 const gchar *	camel_search_get_default_charset_from_message
 						(CamelMimeMessage *message);
+const gchar *	camel_search_get_default_charset_from_headers
+						(const CamelNameValueArray *headers);
 gchar *		camel_search_get_header_decoded	(const gchar *header_name,
 						 const gchar *header_value,
+						 const gchar *default_charset);
+gchar *		camel_search_get_headers_decoded(const CamelNameValueArray *headers,
 						 const gchar *default_charset);
 gchar *		camel_search_get_all_headers_decoded
 						(CamelMimeMessage *message);

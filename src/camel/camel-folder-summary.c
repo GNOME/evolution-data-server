@@ -3026,6 +3026,8 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 		camel_message_info_take_references (mi, references);
 	}
 
+	camel_message_info_take_headers (mi, camel_name_value_array_copy (headers));
+
 	camel_message_info_set_abort_notifications (mi, FALSE);
 
 	return mi;
