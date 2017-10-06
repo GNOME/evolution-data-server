@@ -428,11 +428,6 @@ data_cal_view_dispose (GObject *object)
 
 	priv = E_DATA_CAL_VIEW_GET_PRIVATE (object);
 
-	g_clear_object (&priv->connection);
-	g_clear_object (&priv->gdbus_object);
-	g_clear_object (&priv->backend);
-	g_clear_object (&priv->sexp);
-
 	g_mutex_lock (&priv->pending_mutex);
 
 	if (priv->flush_id > 0) {
@@ -441,6 +436,11 @@ data_cal_view_dispose (GObject *object)
 	}
 
 	g_mutex_unlock (&priv->pending_mutex);
+
+	g_clear_object (&priv->connection);
+	g_clear_object (&priv->gdbus_object);
+	g_clear_object (&priv->backend);
+	g_clear_object (&priv->sexp);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_cal_view_parent_class)->dispose (object);
@@ -689,9 +689,11 @@ pending_flush_timeout_cb (gpointer data)
 
 	view->priv->flush_id = 0;
 
-	send_pending_adds (view);
-	send_pending_changes (view);
-	send_pending_removes (view);
+	if (!g_source_is_destroyed (g_main_current_source ())) {
+		send_pending_adds (view);
+		send_pending_changes (view);
+		send_pending_removes (view);
+	}
 
 	g_mutex_unlock (&view->priv->pending_mutex);
 
