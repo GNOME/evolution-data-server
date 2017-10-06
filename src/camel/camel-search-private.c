@@ -792,6 +792,36 @@ camel_search_get_default_charset_from_message (CamelMimeMessage *message)
 }
 
 /**
+ * camel_search_get_default_charset_from_headers:
+ * @headers: a #CamelNameValueArray
+ *
+ * Returns: Default charset from the Content-Type header of the @headers; if none cannot be determined,
+ *    UTF-8 is returned.
+ *
+ * Since: 3.28
+ **/
+const gchar *
+camel_search_get_default_charset_from_headers (const CamelNameValueArray *headers)
+{
+	CamelContentType *ct = NULL;
+	const gchar *content, *charset = NULL;
+
+	if ((content = headers ? camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Type") : NULL)
+	     && (ct = camel_content_type_decode (content)))
+		charset = camel_content_type_param (ct, "charset");
+
+	if (!charset)
+		charset = "utf-8";
+
+	charset = camel_iconv_charset_name (charset);
+
+	if (ct)
+		camel_content_type_unref (ct);
+
+	return charset;
+}
+
+/**
  * camel_search_get_header_decoded:
  * @header_name: the header name
  * @header_value: the header value
@@ -832,31 +862,28 @@ camel_search_get_header_decoded (const gchar *header_name,
 }
 
 /**
- * camel_search_get_all_headers_decoded:
- * @message: a #CamelMessage
+ * camel_search_get_headers_decoded:
+ * @headers: a #CamelNameValueArray
+ * @default_charset: (nullable): default charset to use; or %NULL, to detect from Content-Type of @headers
  *
- * Returns: (transfer full): All headers of the @message, decoded where needed.
+ * Returns: (transfer full): The @headers, decoded where needed.
  *    Free the returned pointer with g_free() when done with it.
  *
- * Since: 3.22
+ * Since: 3.28
  **/
 gchar *
-camel_search_get_all_headers_decoded (CamelMimeMessage *message)
+camel_search_get_headers_decoded (const CamelNameValueArray *headers,
+				  const gchar *default_charset)
 {
-	CamelMedium *medium;
 	GString *str;
-	const CamelNameValueArray *headers;
-	const gchar *default_charset;
 	guint ii, length;
 
-	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
-
-	medium = CAMEL_MEDIUM (message);
-	headers = camel_medium_get_headers (medium);
 	if (!headers)
 		return NULL;
 
-	default_charset = camel_search_get_default_charset_from_message (message);
+	if (!default_charset)
+		default_charset = camel_search_get_default_charset_from_headers (headers);
+
 	str = g_string_new ("");
 
 	length = camel_name_value_array_get_length (headers);
@@ -887,4 +914,22 @@ camel_search_get_all_headers_decoded (CamelMimeMessage *message)
 	}
 
 	return g_string_free (str, FALSE);
+}
+
+/**
+ * camel_search_get_all_headers_decoded:
+ * @message: a #CamelMessage
+ *
+ * Returns: (transfer full): All headers of the @message, decoded where needed.
+ *    Free the returned pointer with g_free() when done with it.
+ *
+ * Since: 3.22
+ **/
+gchar *
+camel_search_get_all_headers_decoded (CamelMimeMessage *message)
+{
+	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), NULL);
+
+	return camel_search_get_headers_decoded (camel_medium_get_headers (CAMEL_MEDIUM (message)),
+		camel_search_get_default_charset_from_message (message));
 }
