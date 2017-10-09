@@ -108,11 +108,11 @@ e_source_credentials_google_util_get_access_token_from_secret (const gchar *secr
 		NULL))
 		return FALSE;
 
-	if (access_token && expires_after &&
-	    g_ascii_strtoll (expires_after, NULL, 10) > g_get_real_time () / G_USEC_PER_SEC) {
+	if (access_token && expires_after) {
 		success = TRUE;
 
-		if (out_access_token) {
+		if (out_access_token &&
+		    g_ascii_strtoll (expires_after, NULL, 10) > g_get_real_time () / G_USEC_PER_SEC) {
 			*out_access_token = access_token;
 			access_token = NULL;
 		}
