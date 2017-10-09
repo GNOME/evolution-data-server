@@ -42,7 +42,7 @@
 
 #include "e-cal-cache.h"
 
-#define E_CAL_CACHE_VERSION		1
+#define E_CAL_CACHE_VERSION		2
 
 #define ECC_TABLE_TIMEZONES		"timezones"
 
@@ -542,11 +542,13 @@ ecc_encode_time_to_sql (ECalCache *cal_cache,
 	struct icaltimetype itt;
 	icaltimezone *zone = NULL;
 
-	if (!dt || !dt->value || (!icaltime_is_utc (*dt->value) && (!dt->tzid || !*dt->tzid)))
+	if (!dt || !dt->value)
 		return NULL;
 
 	itt = *dt->value;
-	zone = ecc_resolve_tzid_cb (dt->tzid, cal_cache);
+
+	if (!itt.is_date && !icaltime_is_utc (itt) && dt->tzid && *dt->tzid)
+		zone = ecc_resolve_tzid_cb (dt->tzid, cal_cache);
 
 	icaltimezone_convert_time (&itt, zone, icaltimezone_get_utc_timezone ());
 
@@ -1745,18 +1747,99 @@ ecc_init_sqlite_functions (ECalCache *cal_cache,
 	return TRUE;
 }
 
+typedef struct _ComponentInfo {
+	GSList *online_comps; /* ECalComponent * */
+	GSList *online_extras; /* gchar * */
+	GSList *offline_comps; /* ECalComponent * */
+	GSList *offline_extras; /* gchar * */
+} ComponentInfo;
+
+static void
+component_info_clear (ComponentInfo *ci)
+{
+	if (ci) {
+		g_slist_free_full (ci->online_comps, g_object_unref);
+		g_slist_free_full (ci->online_extras, g_free);
+		g_slist_free_full (ci->offline_comps, g_object_unref);
+		g_slist_free_full (ci->offline_extras, g_free);
+	}
+}
+
+static gboolean
+cal_cache_gather_v1_affected_cb (ECalCache *cal_cache,
+				 const gchar *uid,
+				 const gchar *rid,
+				 const gchar *revision,
+				 const gchar *object,
+				 const gchar *extra,
+				 EOfflineState offline_state,
+				 gpointer user_data)
+{
+	ComponentInfo *ci = user_data;
+	ECalComponent *comp;
+	ECalComponentDateTime dt;
+
+	g_return_val_if_fail (object != NULL, FALSE);
+	g_return_val_if_fail (ci != NULL, FALSE);
+
+	if (offline_state == E_OFFLINE_STATE_LOCALLY_DELETED)
+		return TRUE;
+
+	comp = e_cal_component_new_from_string (object);
+	if (!comp)
+		return TRUE;
+
+	e_cal_component_get_due (comp, &dt);
+
+	if (dt.value && !icaltime_is_utc (*dt.value) && (!dt.tzid || !*dt.tzid)) {
+		GSList **pcomps, **pextras;
+
+		if (offline_state == E_OFFLINE_STATE_SYNCED) {
+			pcomps = &ci->online_comps;
+			pextras = &ci->online_extras;
+		} else {
+			pcomps = &ci->offline_comps;
+			pextras = &ci->offline_extras;
+		}
+
+		*pcomps = g_slist_prepend (*pcomps, g_object_ref (comp));
+		*pextras = g_slist_prepend (*pextras, g_strdup (extra));
+	}
+
+	e_cal_component_free_datetime (&dt);
+	g_object_unref (comp);
+
+	return TRUE;
+}
+
 static gboolean
 e_cal_cache_migrate (ECache *cache,
 		     gint from_version,
 		     GCancellable *cancellable,
 		     GError **error)
 {
-	/* ECalCache *cal_cache = E_CAL_CACHE (cache); */
+	ECalCache *cal_cache = E_CAL_CACHE (cache);
 	gboolean success = TRUE;
 
-	/* Add any version-related changes here */
-	/*if (from_version < E_CAL_CACHE_VERSION) {
-	}*/
+	/* Add any version-related changes here (E_CAL_CACHE_VERSION) */
+	if (from_version == 1) {
+		/* Version 1 incorrectly stored DATE-only DUE values */
+		ComponentInfo ci;
+
+		memset (&ci, 0, sizeof (ComponentInfo));
+
+		if (e_cal_cache_search_with_callback (cal_cache, NULL, cal_cache_gather_v1_affected_cb, &ci, cancellable, NULL)) {
+			gboolean success = TRUE;
+
+			if (ci.online_comps)
+				success = e_cal_cache_put_components (cal_cache, ci.online_comps, ci.online_extras, E_CACHE_IS_ONLINE, cancellable, NULL);
+
+			if (success && ci.offline_comps)
+				e_cal_cache_put_components (cal_cache, ci.offline_comps, ci.offline_extras, E_CACHE_IS_OFFLINE, cancellable, NULL);
+		}
+
+		component_info_clear (&ci);
+	}
 
 	return success;
 }
