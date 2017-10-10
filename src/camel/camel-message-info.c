@@ -1151,6 +1151,12 @@ camel_message_info_ref_summary (const CamelMessageInfo *mi)
  * when properties are changing. Release the lock with
  * camel_message_info_property_unlock().
  *
+ * Note: Make sure the CamelFolderSummary lock is held before this lock,
+ * if there will be called any 'set' function on the @mi, to avoid deadlock
+ * when the summary would be set as dirty while another thread might try
+ * to read values from the @mi, waiting for the property lock and holding
+ * the summary lock at the same time.
+ *
  * Since: 3.24
  **/
 void
