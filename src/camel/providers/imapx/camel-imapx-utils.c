@@ -404,6 +404,9 @@ imapx_update_store_summary (CamelFolder *folder)
 	full_name = camel_folder_get_full_name (folder);
 	parent_store = camel_folder_get_parent_store (folder);
 
+	if (!parent_store)
+		return;
+
 	imapx_store = CAMEL_IMAPX_STORE (parent_store);
 
 	si = camel_store_summary_path (imapx_store->summary, full_name);
