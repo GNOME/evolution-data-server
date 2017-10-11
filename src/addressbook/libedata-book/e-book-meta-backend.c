@@ -2569,6 +2569,43 @@ e_book_meta_backend_get_connected_writable (EBookMetaBackend *meta_backend)
 	return result;
 }
 
+/**
+ * e_book_meta_backend_dup_sync_tag:
+ * @meta_backend: an #EBookMetaBackend
+ *
+ * Returns the last known synchronization tag, the same as used to
+ * call e_book_meta_backend_get_changes_sync().
+ *
+ * Free the returned string with g_free(), when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): The last known synchronization tag,
+ *    or %NULL, when none is stored.
+ *
+ * Since: 3.26.2
+ **/
+gchar *
+e_book_meta_backend_dup_sync_tag (EBookMetaBackend *meta_backend)
+{
+	EBookCache *book_cache;
+	gchar *sync_tag;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), NULL);
+
+	book_cache = e_book_meta_backend_ref_cache (meta_backend);
+	if (!book_cache)
+		return NULL;
+
+	sync_tag = e_cache_dup_key (E_CACHE (book_cache), EBMB_KEY_SYNC_TAG, NULL);
+	if (sync_tag && !*sync_tag) {
+		g_free (sync_tag);
+		sync_tag = NULL;
+	}
+
+	g_clear_object (&book_cache);
+
+	return sync_tag;
+}
+
 static void
 ebmb_cache_revision_changed_cb (ECache *cache,
 				gpointer user_data)
