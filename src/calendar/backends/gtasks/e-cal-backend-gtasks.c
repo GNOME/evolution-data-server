@@ -42,6 +42,7 @@ struct _ECalBackendGTasksPrivate {
 	GDataTasksService *service;
 	GDataTasksTasklist *tasklist;
 	GHashTable *preloaded; /* gchar *uid ~> ECalComponent * */
+	gboolean bad_request_for_timed_query;
 };
 
 G_DEFINE_TYPE (ECalBackendGTasks, e_cal_backend_gtasks, E_TYPE_CAL_META_BACKEND)
@@ -580,7 +581,7 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
 	if (!ecb_gtasks_check_data_version (cal_cache) ||
-	    !last_sync_tag ||
+	    !last_sync_tag || cbgtasks->priv->bad_request_for_timed_query ||
 	    !g_time_val_from_iso8601 (last_sync_tag, &last_updated)) {
 		last_updated.tv_sec = 0;
 	}
@@ -602,6 +603,10 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_BAD_QUERY_PARAMETER) ||
 	    g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR))) {
 		g_clear_error (&local_error);
+
+		/* To not repeat with broken time format ad infinity;
+		   it changes only with updated libgdata, or change on the server. */
+		cbgtasks->priv->bad_request_for_timed_query = TRUE;
 
 		gdata_query_set_updated_min (GDATA_QUERY (tasks_query), -1);
 
@@ -960,6 +965,7 @@ e_cal_backend_gtasks_init (ECalBackendGTasks *cbgtasks)
 {
 	cbgtasks->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbgtasks, E_TYPE_CAL_BACKEND_GTASKS, ECalBackendGTasksPrivate);
 	cbgtasks->priv->preloaded = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
+	cbgtasks->priv->bad_request_for_timed_query = FALSE;
 }
 
 static void
