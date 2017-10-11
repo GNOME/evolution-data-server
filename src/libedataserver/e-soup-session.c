@@ -998,6 +998,25 @@ e_soup_session_send_request_sync (ESoupSession *session,
 		e_soup_session_extract_ssl_data (session, message);
 
 		g_clear_object (&message);
+	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		message = soup_request_http_get_message (request);
+
+		if (message && message->response_body &&
+		    message->response_body->data && message->response_body->length) {
+			gchar *body = g_strndup (message->response_body->data, message->response_body->length);
+
+			/* Do not localize this string, it is returned by the server. */
+			if (body && (e_util_strstrcase (body, "Daily Limit") ||
+			    e_util_strstrcase (body, "https://console.developers.google.com/"))) {
+				/* Special-case this condition and provide this error up to the UI. */
+				g_set_error_literal (error, local_error->domain, local_error->code, body);
+				g_clear_error (&local_error);
+			}
+
+			g_free (body);
+		}
+
+		g_clear_object (&message);
 	}
 
 	if (local_error)
