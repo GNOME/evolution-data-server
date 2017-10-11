@@ -85,6 +85,11 @@ ecb_http_dup_uri (ECalBackendHttp *cbhttp)
 	uri_string = soup_uri_to_string (soup_uri, FALSE);
 	soup_uri_free (soup_uri);
 
+	if (!uri_string || !*uri_string) {
+		g_free (uri_string);
+		return NULL;
+	}
+
 	uri = ecb_http_webcal_to_http_method (uri_string, secure_connection);
 
 	g_free (uri_string);
