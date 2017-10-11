@@ -3332,6 +3332,43 @@ e_cal_meta_backend_get_connected_writable (ECalMetaBackend *meta_backend)
 	return result;
 }
 
+/**
+ * e_cal_meta_backend_dup_sync_tag:
+ * @meta_backend: an #ECalMetaBackend
+ *
+ * Returns the last known synchronization tag, the same as used to
+ * call e_cal_meta_backend_get_changes_sync().
+ *
+ * Free the returned string with g_free(), when no longer needed.
+ *
+ * Returns: (transfer full) (nullable): The last known synchronization tag,
+ *    or %NULL, when none is stored.
+ *
+ * Since: 3.28
+ **/
+gchar *
+e_cal_meta_backend_dup_sync_tag (ECalMetaBackend *meta_backend)
+{
+	ECalCache *cal_cache;
+	gchar *sync_tag;
+
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
+
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	if (!cal_cache)
+		return NULL;
+
+	sync_tag = e_cache_dup_key (E_CACHE (cal_cache), ECMB_KEY_SYNC_TAG, NULL);
+	if (sync_tag && !*sync_tag) {
+		g_free (sync_tag);
+		sync_tag = NULL;
+	}
+
+	g_clear_object (&cal_cache);
+
+	return sync_tag;
+}
+
 static void
 ecmb_cache_revision_changed_cb (ECache *cache,
 				gpointer user_data)

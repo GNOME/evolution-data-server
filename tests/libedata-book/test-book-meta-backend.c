@@ -297,15 +297,15 @@ e_book_meta_backend_test_get_changes_sync (EBookMetaBackend *meta_backend,
 	} else {
 		g_assert_nonnull (last_sync_tag);
 		g_assert_cmpint (atoi (last_sync_tag), ==, test_backend->sync_tag_index);
-
-		test_backend->sync_tag_index++;
-		*out_new_sync_tag = g_strdup_printf ("%d", test_backend->sync_tag_index);
-
-		if (test_backend->sync_tag_index == 2)
-			*out_repeat = TRUE;
-		else if (test_backend->sync_tag_index == 3)
-			return TRUE;
 	}
+
+	test_backend->sync_tag_index++;
+	*out_new_sync_tag = g_strdup_printf ("%d", test_backend->sync_tag_index);
+
+	if (test_backend->sync_tag_index == 2)
+		*out_repeat = TRUE;
+	else if (test_backend->sync_tag_index == 3)
+		return TRUE;
 
 	/* Nothing to do here at the moment, left the work to the parent class,
 	   which calls list_existing_sync() internally. */
@@ -1342,6 +1342,7 @@ test_refresh (EBookMetaBackend *meta_backend)
 	ECache *cache;
 	guint count;
 	EContact *contact;
+	gchar *sync_tag;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
@@ -1378,6 +1379,11 @@ test_refresh (EBookMetaBackend *meta_backend)
 	g_assert_cmpint (count, ==, 3);
 
 	ebmb_test_cache_and_server_equal (book_cache, test_backend->contacts, E_CACHE_INCLUDE_DELETED);
+
+	sync_tag = e_book_meta_backend_dup_sync_tag (meta_backend);
+	g_assert_nonnull (sync_tag);
+	g_assert_cmpstr (sync_tag, ==, "1");
+	g_free (sync_tag);
 
 	/* Add new contact */
 	ebmb_test_add_test_case (test_backend, "custom-5");
@@ -1485,6 +1491,11 @@ test_refresh (EBookMetaBackend *meta_backend)
 	g_assert_cmpint (count, ==, 3);
 
 	ebmb_test_cache_and_server_equal (book_cache, test_backend->contacts, E_CACHE_INCLUDE_DELETED);
+
+	sync_tag = e_book_meta_backend_dup_sync_tag (meta_backend);
+	g_assert_nonnull (sync_tag);
+	g_assert_cmpstr (sync_tag, ==, "7");
+	g_free (sync_tag);
 
 	g_object_unref (book_cache);
 }

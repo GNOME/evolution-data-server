@@ -968,6 +968,31 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 		}
 	}
 
+	if (!success && cbdav->priv->ctag_supported) {
+		gchar *new_sync_tag = NULL;
+
+		if (e_webdav_session_getctag_sync (cbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL) && new_sync_tag) {
+			gchar *last_sync_tag;
+
+			last_sync_tag = e_cal_meta_backend_dup_sync_tag (meta_backend);
+
+			/* The calendar didn't change, thus the component cannot be there */
+			if (g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
+				g_clear_error (&local_error);
+				g_free (last_sync_tag);
+				g_free (new_sync_tag);
+
+				g_propagate_error (error, EDC_ERROR (ObjectNotFound));
+
+				return FALSE;
+			}
+
+			g_free (last_sync_tag);
+		}
+
+		g_free (new_sync_tag);
+	}
+
 	if (!success) {
 		uri = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
 		g_return_val_if_fail (uri != NULL, FALSE);
@@ -975,7 +1000,10 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 		g_clear_error (&local_error);
 
 		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
-		if (!success && !g_cancellable_is_cancelled (cancellable) &&
+
+		/* Do not try twice with Google, it's either with ".ics" extension or not there.
+		   The worst, it counts to the Error requests quota limit. */
+		if (!success && !cbdav->priv->is_google && !g_cancellable_is_cancelled (cancellable) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			g_free (uri);
 			uri = ecb_caldav_uid_to_uri (cbdav, uid, NULL);

@@ -342,15 +342,15 @@ e_cal_meta_backend_test_get_changes_sync (ECalMetaBackend *meta_backend,
 	} else {
 		g_assert_nonnull (last_sync_tag);
 		g_assert_cmpint (atoi (last_sync_tag), ==, test_backend->sync_tag_index);
-
-		test_backend->sync_tag_index++;
-		*out_new_sync_tag = g_strdup_printf ("%d", test_backend->sync_tag_index);
-
-		if (test_backend->sync_tag_index == 2)
-			*out_repeat = TRUE;
-		else if (test_backend->sync_tag_index == 3)
-			return TRUE;
 	}
+
+	test_backend->sync_tag_index++;
+	*out_new_sync_tag = g_strdup_printf ("%d", test_backend->sync_tag_index);
+
+	if (test_backend->sync_tag_index == 2)
+		*out_repeat = TRUE;
+	else if (test_backend->sync_tag_index == 3)
+		return TRUE;
 
 	/* Nothing to do here at the moment, left the work to the parent class,
 	   which calls list_existing_sync() internally. */
@@ -2398,6 +2398,7 @@ test_refresh (ECalMetaBackend *meta_backend)
 	ECache *cache;
 	guint count;
 	icalcomponent *icalcomp;
+	gchar *sync_tag;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
@@ -2436,6 +2437,11 @@ test_refresh (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (count, ==, 6);
 
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	sync_tag = e_cal_meta_backend_dup_sync_tag (meta_backend);
+	g_assert_nonnull (sync_tag);
+	g_assert_cmpstr (sync_tag, ==, "1");
+	g_free (sync_tag);
 
 	/* Add detached instance, but do not modify the master object, thus it looks like unchanged */
 	ecmb_test_add_test_case (test_backend, "event-6-a");
@@ -2559,6 +2565,11 @@ test_refresh (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (count, ==, 5);
 
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	sync_tag = e_cal_meta_backend_dup_sync_tag (meta_backend);
+	g_assert_nonnull (sync_tag);
+	g_assert_cmpstr (sync_tag, ==, "7");
+	g_free (sync_tag);
 
 	g_object_unref (cal_cache);
 }

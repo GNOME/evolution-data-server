@@ -41,6 +41,9 @@ struct _EBookBackendWebDAVPrivate {
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
+
+	/* Whether talking to the Google server */
+	gboolean is_google;
 };
 
 G_DEFINE_TYPE (EBookBackendWebDAV, e_book_backend_webdav, E_TYPE_BOOK_META_BACKEND)
@@ -163,6 +166,10 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 			e_book_backend_set_writable (E_BOOK_BACKEND (bbdav), is_writable);
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
+
+			bbdav->priv->is_google = soup_uri && soup_uri->host && (
+				g_ascii_strcasecmp (soup_uri->host, "www.google.com") == 0 ||
+				g_ascii_strcasecmp (soup_uri->host, "apidata.googleusercontent.com") == 0);
 		} else {
 			gchar *uri;
 
@@ -852,14 +859,42 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 		}
 	}
 
+	if (!success && bbdav->priv->ctag_supported) {
+		gchar *new_sync_tag = NULL;
+
+		if (e_webdav_session_getctag_sync (bbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL) && new_sync_tag) {
+			gchar *last_sync_tag;
+
+			last_sync_tag = e_book_meta_backend_dup_sync_tag (meta_backend);
+
+			/* The book didn't change, thus the contact cannot be there */
+			if (g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
+				g_clear_error (&local_error);
+				g_free (last_sync_tag);
+				g_free (new_sync_tag);
+
+				g_propagate_error (error, EDB_ERROR (E_DATA_BOOK_STATUS_CONTACT_NOT_FOUND));
+
+				return FALSE;
+			}
+
+			g_free (last_sync_tag);
+		}
+
+		g_free (new_sync_tag);
+	}
+
 	if (!success) {
-		uri = ebb_webdav_uid_to_uri (bbdav, uid, ".vcf");
+		uri = ebb_webdav_uid_to_uri (bbdav, uid, bbdav->priv->is_google ? NULL : ".vcf");
 		g_return_val_if_fail (uri != NULL, FALSE);
 
 		g_clear_error (&local_error);
 
 		success = e_webdav_session_get_data_sync (bbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
-		if (!success && !g_cancellable_is_cancelled (cancellable) &&
+
+		/* Do not try twice with Google, it's either without extension or not there.
+		   The worst, it counts to the Error requests quota limit. */
+		if (!success && !bbdav->priv->is_google && !g_cancellable_is_cancelled (cancellable) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
 			g_free (uri);
 			uri = ebb_webdav_uid_to_uri (bbdav, uid, NULL);
