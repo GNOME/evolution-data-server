@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-09-29 10:17+0200\n"
-"PO-Revision-Date: 2017-10-14 21:49+0200\n"
+"PO-Revision-Date: 2017-10-15 20:32+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -156,9 +156,8 @@ msgid "Failed to create contact from returned server data"
 msgstr "Ustvarjanje stika iz vrnjenih podatkov strežnika je spodletelo."
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:990
-#, fuzzy
 msgid "Server returned contact without UID"
-msgstr "Ustvarjanje stika iz vrnjenih podatkov strežnika je spodletelo."
+msgstr "Strežnik je vrnil podatke stika brez UID."
 
 #. System Group: My Contacts
 #: ../src/addressbook/backends/google/e-book-google-utils.c:1658
@@ -267,12 +266,11 @@ msgstr "Pridobivanje razločnega imena (DN) za uporabnika »%s« je spodletelo."
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:173
 #, c-format
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
-msgstr ""
+msgstr "Podan naslov URL »%s« se ne sklicuje na imenik WebDAV"
 
 #: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:890
-#, fuzzy
 msgid "Received object is not a valid vCard"
-msgstr "Predmet za shranjevanje ni veljavna kartica vCard"
+msgstr "Prejet predmet ni veljavna kartica vCard."
 
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:38
 msgid "No such book"
@@ -1085,10 +1083,8 @@ msgid "Invalid query: %s"
 msgstr "Neveljavna poizvedba: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3598
-#, fuzzy
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
-msgstr "Neveljavna poizvedba: %s"
+msgstr "Neveljavna poizvedba za kazalko knjige"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4479
 #: ../src/libebackend/e-cache.c:756
@@ -1110,16 +1106,13 @@ msgstr "Predmeta »%s« ni mogoče najti"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5194
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2375
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object with extra “%s” not found"
-msgstr "Predmeta %s ni mogoče najti v določilu uporabniškega vmesnika.\n"
+msgstr "Predmeta z %s ni mogoče najti."
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5348
-#, fuzzy
-#| msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgid "At least one sort field must be specified to use a cursor"
-msgstr "Za uporabo EbSdbCursor je treba določiti vsaj eno razvrstilno polje"
+msgstr "Za uporabo kazalke je treba določiti vsaj eno polje razvrščanja"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5357
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:7956
@@ -1128,23 +1121,22 @@ msgstr "Ni mogoče razvrščati po polju, ki ni niz"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1033
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1035
-#, fuzzy, c-format
+#, c-format
 msgid "Preloaded object for UID “%s” is invalid"
-msgstr "Neveljaven UID vira »%s«"
+msgstr "Naložen predmet za UID »%s« je neveljaven."
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1041
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1043
-#, fuzzy, c-format
+#, c-format
 msgid "Received object for UID “%s” is invalid"
-msgstr "Neveljaven tok sporočil, sprejet iz %s: %s"
+msgstr "Prejet predmet za UID »%s« je neveljaven."
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1868
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2222
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2989
-#, fuzzy, c-format
-#| msgid "Failed to create child process “%s”: %s"
+#, c-format
 msgid "Failed to create cache “%s”:"
-msgstr "Ustvarjanje predpomnilnika pkgfile je spodletelo"
+msgstr "Ustvarjanje predpomnilnika »%s« je spodletelo."
 
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:1950
 msgid ""
@@ -1367,7 +1359,7 @@ msgstr "Abecedni indeks je nastavljen za napačne jezikovne nastavitve."
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
-msgstr ""
+msgstr "Podan naslov URL »%s« se ne sklicuje na koledar CalDAV"
 
 #: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1520
 msgid "Failed to parse response data"
@@ -1402,10 +1394,9 @@ msgid "URI not set"
 msgstr "Naslov URI ni nastavljen"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:198
-#, fuzzy, c-format
-#| msgid "Malformed URI: %s"
+#, c-format
 msgid "Malformed URI “%s”: %s"
-msgstr "Nepravilno oblikovan naslov URI: %s"
+msgstr "Nepravilno oblikovan naslov URI »%s«: %s"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:344
 #, c-format
@@ -1841,40 +1832,32 @@ msgid "“%s” expects the second argument to be an integer"
 msgstr "Ukaz »%s« zahteva, da je drugi argument celo število"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1739
-#, fuzzy, c-format
-#| msgid "Failed to create hardlink for resource “%s”: %s"
+#, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
-msgstr "Ustvarjanje trde povezave za vir »%s« je spodletelo: %s"
+msgstr "Ustvarjanje funkcije SQLite je spodletelo s kodo napake »%d«: %s"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2248
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2311
-#, fuzzy, c-format
-#| msgid "Contact “%s” not found"
+#, c-format
 msgid "Object “%s”, “%s” not found"
-msgstr "Predmeta %s ni mogoče najti v določilu uporabniškega vmesnika.\n"
+msgstr "Predmeta »%s«, »%s« ni mogoče."
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3006
-#, fuzzy
-#| msgid "Cannot add contact: "
 msgid "Cannot add timezone without tzid"
-msgstr "Ni mogoče dodati stika:"
+msgstr "Ni mogoče dodati časovnega pasu brez podatka tzid."
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3012
-#, fuzzy
-#| msgid "Cannot authenticate without a username"
 msgid "Cannot add timezone without component"
-msgstr "Brez uporabniškega imena ni mogoče overiti povezave."
+msgstr "Ni mogoče dodati časovnega območja brez enote"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3018
-#, fuzzy
-#| msgid "Cannot send message: one or more invalid recipients"
 msgid "Cannot add timezone with invalid component"
-msgstr "Ni mogoče poslati sporočila: navedeni so neveljavni prejemniki."
+msgstr "Ni mogoče dodati časovnega območja z neveljavno enoto"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
-msgstr ""
+msgstr "Prejet predmet za UID »%s« ne vsebuje pričakovanih sestavnih delov"
 
 #: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3743
 msgid "attachment.dat"
@@ -4374,7 +4357,7 @@ msgstr "V _pogovornem oknu naročil prikaži relativna imena map"
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:51
 #, c-format
 msgid "Download only up to %s latest messages"
-msgstr ""
+msgstr "Prejmi le do %s najnovejših sporočil."
 
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:57
 msgid "Default NNTP port"
@@ -5211,10 +5194,9 @@ msgid "Out of memory"
 msgstr "Primanjkuje pomnilnika"
 
 #: ../src/libebackend/e-cache.c:943
-#, fuzzy, c-format
-#| msgid "Failed to make directory %s: %s"
+#, c-format
 msgid "Can not make parent directory: %s"
-msgstr "Ustvarjanje mape %s je spodletelo: %s"
+msgstr "Ni mogoče ustvariti nadrejene mape: %s"
 
 #: ../src/libebackend/e-collection-backend.c:977
 #, c-format
@@ -5442,20 +5424,17 @@ msgid "Timeout was reached"
 msgstr "Časovna omejitev je presežena"
 
 #: ../src/libedataserver/e-soup-session.c:144
-#, fuzzy
-#| msgid "Credentials store is not supported"
 msgid "Credentials required"
-msgstr "Za povezavo s ciljnim gostiteljem so zahtevana posebna poverila."
+msgstr "Zahtevana so poverila"
 
 #: ../src/libedataserver/e-soup-session.c:830
 msgid "Operation was cancelled"
 msgstr "Opravilo je preklicano"
 
 #: ../src/libedataserver/e-soup-session.c:833
-#, fuzzy, c-format
-#| msgid "Failed to make directory %s: %s"
+#, c-format
 msgid "Failed with HTTP error %d: %s"
-msgstr "Zahteva HTTP je spodletela: %d - %s"
+msgstr "Opravilo je spodletelo z napako HTTP %d: %s"
 
 #: ../src/libedataserver/e-source.c:775
 #, c-format
@@ -5686,7 +5665,7 @@ msgstr "%I %p"
 
 #: ../src/libedataserver/e-webdav-session.c:669
 msgid "Cannot determine destination URL without WebDAV extension"
-msgstr ""
+msgstr "Ni mogoče določiti ciljnega naslova URL brez uporabe razširitve WebDAV"
 
 #: ../src/libedataserver/e-webdav-session.c:943
 #, c-format
@@ -5708,65 +5687,57 @@ msgstr ""
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:966
-#, fuzzy, c-format
+#, c-format
 msgid "%s: HTTP error code %d (%s): %s"
-msgstr "Strežnik NNTP %s je vrnil napako %d: %s"
+msgstr "%s: koda napake HTTP %d (%s): %s"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:974
-#, fuzzy, c-format
+#, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
-msgstr "Nepričakovana koda stanja HTTP %d je vrnila (%s) za URI: %s"
+msgstr "Opravilo je spodletelo s kodo napake HTTP %d (%s): %s"
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:989
-#, fuzzy, c-format
+#, c-format
 msgid "%s: HTTP error code %d (%s)"
-msgstr "Strežnik NNTP %s je vrnil napako %d: %s"
+msgstr "%s: koda napake HTTP %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:995
-#, fuzzy, c-format
+#, c-format
 msgid "Failed with HTTP error code %d (%s)"
-msgstr "Namestitev gonilnikov je spodletela (koda napake %d)."
+msgstr "Opravilo je spodletelo s kodo napake HTTP %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1245
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to post data"
-msgstr "_Objavi na:"
+msgstr "Objavljanje podatkov je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:1338
 #: ../src/libedataserver/e-webdav-session.c:1413
 #: ../src/libedataserver/e-webdav-session.c:1517
 #: ../src/libedataserver/e-webdav-session.c:2772
 #: ../src/libedataserver/e-webdav-session.c:4024
-#, fuzzy
-#| msgid "Failed to find Account element"
 msgid "Failed to get input XML content"
-msgstr "Poizvedba o vrsti vsebine za »%s« je spodletela."
+msgstr "Pridobivanje vhodne vsebine XML je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:1349
 msgid "Failed to get properties"
 msgstr "Pridobivanje lastnosti je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:1423
-#, fuzzy
-#| msgid "Failed to authenticate"
 msgid "Failed to update properties"
-msgstr "Posodabljanje GAL je spodletelo:"
+msgstr "Posodabljanje lastnosti je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:1527
-#, fuzzy
-#| msgid "Failed to issue NOTIFY"
 msgid "Failed to issue REPORT"
-msgstr "Poročaj _težavo"
+msgstr "Objava poročila je spodletela."
 
 #: ../src/libedataserver/e-webdav-session.c:1586
 msgid "Failed to create collection"
@@ -5774,10 +5745,8 @@ msgstr "Ustvarjanje zbirke je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:1677
 #: ../src/libedataserver/e-webdav-session.c:1831
-#, fuzzy
-#| msgid "Failed to refresh token"
 msgid "Failed to get XML request content"
-msgstr "Poizvedba o vrsti vsebine za »%s« je spodletela."
+msgstr "Pridobivanje vsebine zahteve XML je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:1689
 msgid "Failed to create address book"
@@ -5793,24 +5762,19 @@ msgid "Failed to read resource"
 msgstr "Brisanje vira je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:2136
-#, fuzzy
-#| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
-msgstr "Shranjevanje poveril ni podprto"
+msgstr "Ni mogoče prevrteti vhoda pretoka: možnost ni podprta"
 
 #: ../src/libedataserver/e-webdav-session.c:2287
 #: ../src/libedataserver/e-webdav-session.c:2439
-#, fuzzy
-#| msgid "Failed to encode data"
 msgid "Failed to put data"
-msgstr "Podatkov TIFF ni mogoče zapisati"
+msgstr "Postavljanje podatkov je spodletelo"
 
 #: ../src/libedataserver/e-webdav-session.c:2306
 #: ../src/libedataserver/e-webdav-session.c:2447
-#, fuzzy, c-format
-#| msgid "Failed to add data to encoder"
+#, c-format
 msgid "Failed to put data to server, error code %d (%s)"
-msgstr "Dodajanje podatkov v šifrirnik je spodletelo"
+msgstr "Postavljanje podatkov na strežnik je spodletelo z kodo napake %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2549
 msgid "Failed to delete resource"
@@ -5837,7 +5801,7 @@ msgstr ""
 #: ../src/libedataserver/e-webdav-session.c:3002
 #, c-format
 msgid "Expected application/xml response, but %s returned"
-msgstr ""
+msgstr "Pričakovan je odziv, vrnjen pa je %s"
 
 #: ../src/libedataserver/e-webdav-session.c:2812
 #: ../src/libedataserver/e-webdav-session.c:3015
@@ -5853,16 +5817,13 @@ msgid "Failed to unlock"
 msgstr "Odklepanje je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:2987
-#, fuzzy, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
+#, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
-msgstr "Nepričakovana koda stanja HTTP %d je vrnila (%s) za URI: %s"
+msgstr "Pričakovan je odziv stanja, vrnjen pa je odziv %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:4034
-#, fuzzy
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get access control list"
-msgstr "Pridobivanje seznama podcastov je spodletelo: %s"
+msgstr "Pridobivanje seznama nadzora dostopa je spodletelo."
 
 #: ../src/libedataserver/e-webdav-session.c:4775
 msgid "Cannot store protected nor inherited Access Control Entry."
@@ -6463,10 +6424,8 @@ msgid "Show source’s UID"
 msgstr "Pokaži UID vira"
 
 #: ../src/tools/list-sources/list-sources.c:89
-#, fuzzy
-#| msgid "Unsupported authentication method"
 msgid "Show source’s authentication information"
-msgstr "Napaka med nalaganjem podrobnosti overitve za DNS '%s': %s"
+msgstr "Pokaži podrobnosti overitve vira"
 
 #: ../src/tools/list-sources/list-sources.c:92
 msgid ""
@@ -6476,7 +6435,7 @@ msgstr ""
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
-msgstr ""
+msgstr "Omeji le na vire s podanim imenom razširitve"
 
 #: ../src/tools/list-sources/list-sources.c:106
 msgid "yes"
@@ -6523,10 +6482,8 @@ msgid "Mail Identity"
 msgstr "Istovetnost pošte"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#, fuzzy
-#| msgid "Message submission port"
 msgid "Mail Submission"
-msgstr "Pripravljeno za pošiljanje"
+msgstr "Pošiljanje elektronske pošte"
 
 #: ../src/tools/list-sources/list-sources.c:155
 msgid "Mail Signature"
@@ -6577,29 +6534,29 @@ msgid "MIME Type: %s"
 msgstr "VRsta MIME: %s"
 
 #: ../src/tools/list-sources/list-sources.c:269
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Host: %s:%d"
-msgstr "Vzpostavljanje povezave z gostiteljem »%s«, vrata »%d« ..."
+msgstr "Gostitelj overitve: %s:%d"
 
 #: ../src/tools/list-sources/list-sources.c:275
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Host: %s"
-msgstr "Naslov URL gostitelja: %s"
+msgstr "Gostitelj overitve: %s"
 
 #: ../src/tools/list-sources/list-sources.c:283
-#, fuzzy, c-format
+#, c-format
 msgid "Auth User: %s"
-msgstr "    %s (uporabnik)\n"
+msgstr "Uporabnik overitve: %s"
 
 #: ../src/tools/list-sources/list-sources.c:291
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Method: %s"
-msgstr "Način »%s« ne obstaja"
+msgstr "Način overitve: %s"
 
 #: ../src/tools/list-sources/list-sources.c:299
-#, fuzzy, c-format
+#, c-format
 msgid "Auth Proxy UID: %s"
-msgstr "Ni sporočil z UID %s"
+msgstr "Posredniški UID overitve: %s"
 
 #: ../src/tools/list-sources/list-sources.c:420
 msgid "Failed to parse arguments: Unknown error"
