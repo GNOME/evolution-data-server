@@ -1,3 +1,54 @@
+Evolution-Data-Server 3.27.1 2017-10-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 787266 - Failure in installed tests (Milan Crha)
+	Bug 787341 - [IMAPx] Report message download progress (Milan Crha)
+	Bug 769834 - [IMAPx] Minimize bandwidth usage on metered networks (Milan Crha)
+	Bug 786982 - After pressing "NOT JUNK" mail stays in the Junk folder (Milan Crha)
+	Bug 787445 - Add message to Unmatched only if still exists (Milan Crha)
+	Bug 787542 - Fix search for exact phrase in body of mail on Gmail (Milan Crha)
+	Bug 787713 - Can overwrite GError under camel_imapx_conn_manager_sync_changes_sync() (Milan Crha)
+	Bug 787514 - [IMAPx] Overaggressive folder change saving after filtering (Milan Crha)
+	Bug 787935 - Handle Redirection in ESoupSession (Milan Crha)
+	Bug 788048 - Junk/filtering preferences change requires restart (Milan Crha)
+	Bug 788051 - Junk messages moved to a real folder are considered seen (Milan Crha)
+	Bug 787656 - Do not use Transfer-Encoding:chunked for CalDAV/CardDAV PUT (Milan Crha)
+	Bug 786208 - Already opened message box doesn’t show new emails (Milan Crha)
+	Bug 781645 - Skip GSettings schema compile when DESTDIR is set (Milan Crha)
+	Bug 788371 - Correct reuse of _have_headers in FindSMIME.cmake (Дилян Палаузов)
+	Bug 788430 - More corrections to FindSMIME.cmake (Дилян Палаузов)
+	Bug 788686 - Google Tasks not shown in To Do-list after restart of Evolution (Milan Crha)
+	Bug 788848 - [IMAPx] Enhance which folders are refreshed on NOTIFY notices (Milan Crha)
+
+Miscellaneous:
+	e_module_load_all_in_directory: Use g_debug() instead of g_warning() (Milan Crha)
+	Ignore "timed out" error from goa_account_call_ensure_credentials_sync() (Milan Crha)
+	[EGoaPasswordBased] Reuse GoaClient object between password lookup calls (Milan Crha)
+	Misleading error for Google collection account without Calendar part (Milan Crha)
+	[IMAPx] Wait for IDLE stop up to 10 seconds, then give up (Milan Crha)
+	Fix some issues found by Coverity Scan (Milan Crha)
+	Initialize libxml2 global memory in the main() (Milan Crha)
+	Use icaltime_is_utc() instead of icaltimetype::is_utc (Milan Crha)
+	Mute a compiler warning from e_collator_generate_key() (Milan Crha)
+	e-cal-recur.c:ensure_timezone(): Unset icaltimetype::zone only if not UTC (Milan Crha)
+	Crash under e-data-cal-view.c:pending_flush_timeout_cb() (Milan Crha)
+	[CamelFolderSearch] The 'header-exists' misuses message info structure (Milan Crha)
+	[Camel] Speed up message filtering on headers (Milan Crha)
+	Internal Google OAuth2 token not refreshed on calendar open (Milan Crha)
+	[IMAPx] Prevent crash in imapx_update_store_summary() (Milan Crha)
+	Extend a developer comment of camel_message_info_property_lock() (Milan Crha)
+	[ESoupSession] Special-case Daily Limit errors and propagate them to the caller (Milan Crha)
+	[CalDAV/CardDAV] Improve logic for object load from the server (Milan Crha)
+	[GTasks] Remember when timed query resulted in '400 Bad Request' (Milan Crha)
+	Prevent crash when an On The Web calendar has set incorrect URI (Milan Crha)
+
+Translations:
+	hanniedu (nl)
+	Kristjan SCHMIDT (eo)
+	Dušan Kazik (sk)
+	Xavi Ivars (ca@valencia)
+
 Evolution-Data-Server 3.26.0 2017-09-11
 ---------------------------------------
 
