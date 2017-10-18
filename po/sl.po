@@ -11,7 +11,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
 "POT-Creation-Date: 2017-09-29 10:17+0200\n"
-"PO-Revision-Date: 2017-10-15 20:32+0200\n"
+"PO-Revision-Date: 2017-10-17 21:02+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -5673,6 +5673,9 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
 msgstr ""
+"Strežnik se je odzval s prikazom strani HTML, kar najverjetneje pomeni, da "
+"je na strežniku napaka ali pa je napaka odjemalca. Uporabljen je naslov URI: "
+"%s"
 
 #: ../src/libedataserver/e-webdav-session.c:945
 #, c-format
@@ -5680,6 +5683,8 @@ msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
 msgstr ""
+"Strežnik se je odzval s prikazom strani HTML, kar najverjetneje pomeni, da "
+"je na strežniku napaka ali pa je napaka odjemalca."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
@@ -5795,7 +5800,7 @@ msgstr "Zaklepanje vira je spodletelo."
 #: ../src/libedataserver/e-webdav-session.c:2797
 #: ../src/libedataserver/e-webdav-session.c:2999
 msgid "Expected application/xml response, but none returned"
-msgstr ""
+msgstr "Pričakovan je odziv application/xml, vendar odziva ni"
 
 #: ../src/libedataserver/e-webdav-session.c:2800
 #: ../src/libedataserver/e-webdav-session.c:3002
@@ -5828,26 +5833,32 @@ msgstr "Pridobivanje seznama nadzora dostopa je spodletelo."
 #: ../src/libedataserver/e-webdav-session.c:4775
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
+"Ni mogoče shraniti niti zaščitene niti podedovane lastnosti dovoljenja za "
+"nadzor dostopa"
 
 #: ../src/libedataserver/e-webdav-session.c:4782
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "Dodeljena je neveljavna vrsta dovoljenja za nadzor dostopa"
 
 #: ../src/libedataserver/e-webdav-session.c:4789
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "Ni mogoče shraniti lastnosti dovoljenja za nadzor dostopa"
 
 #: ../src/libedataserver/e-webdav-session.c:4796
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr ""
+"Dovoljenje za nadzor dostopa je lahko ali zavrni ali dovoli, ne pa prazno "
+"polje"
 
 #: ../src/libedataserver/e-webdav-session.c:4804
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"Dovoljenje za nadzor dostopa je lahko ali zavrni ali dovoli, ne pa oboje "
+"hkrati"
 
 #: ../src/libedataserver/e-webdav-session.c:4863
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "Polje dovoljenja za nadzor dostopa ne sme biti prazno"
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
 #: ../src/libedataserverui/e-credentials-prompter.c:1576
@@ -6432,6 +6443,8 @@ msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
 msgstr ""
+"Zapiši v strojnem načinu (en vir v vrstici, brez krajevnih imen lastnosti in "
+"z tabulatorjem kot ločilnikom)"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
