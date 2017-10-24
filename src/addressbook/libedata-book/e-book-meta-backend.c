@@ -52,9 +52,18 @@
 
 #define LOCAL_PREFIX "file://"
 
+/* How many times can repeat an operation when credentials fail. */
+#define MAX_REPEAT_COUNT 3
+
+/* How long to wait for credentials, in seconds, during the operation repeat cycle */
+#define MAX_WAIT_FOR_CREDENTIALS_SECS 60
+
 struct _EBookMetaBackendPrivate {
 	GMutex connect_lock;
 	GMutex property_lock;
+	GMutex wait_credentials_lock;
+	GCond wait_credentials_cond;
+	guint wait_credentials_stamp;
 	GError *create_cache_error;
 	EBookCache *cache;
 	ENamedParameters *last_credentials;
@@ -458,6 +467,14 @@ ebmb_requires_reconnect (EBookMetaBackend *meta_backend)
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
 	return requires;
+}
+
+static gboolean
+ebmb_get_ssl_error_details (EBookMetaBackend *meta_backend,
+			    gchar **out_certificate_pem,
+			    GTlsCertificateFlags *out_certificate_errors)
+{
+	return FALSE;
 }
 
 static GSList * /* gchar * */
@@ -2023,12 +2040,20 @@ ebmb_authenticate_sync (EBackend *backend,
 		g_set_error_literal (error, E_CLIENT_ERROR, E_CLIENT_ERROR_REPOSITORY_OFFLINE,
 			e_client_error_to_string (E_CLIENT_ERROR_REPOSITORY_OFFLINE));
 
+		g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+		meta_backend->priv->wait_credentials_stamp++;
+		g_cond_broadcast (&meta_backend->priv->wait_credentials_cond);
+		g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
 		return E_SOURCE_AUTHENTICATION_ERROR;
 	}
 
 	g_mutex_lock (&meta_backend->priv->connect_lock);
 
 	e_source_set_connection_status (e_backend_get_source (backend), E_SOURCE_CONNECTION_STATUS_CONNECTING);
+
+	/* Always disconnect first, then provide new credentials. */
+	e_book_meta_backend_disconnect_sync (meta_backend, cancellable, NULL);
 
 	success = e_book_meta_backend_connect_sync (meta_backend, credentials, &auth_result,
 		out_certificate_pem, out_certificate_errors, cancellable, error);
@@ -2059,6 +2084,11 @@ ebmb_authenticate_sync (EBackend *backend,
 	}
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
+
+	g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+	meta_backend->priv->wait_credentials_stamp++;
+	g_cond_broadcast (&meta_backend->priv->wait_credentials_cond);
+	g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
 
 	if (refresh_after_authenticate)
 		e_book_meta_backend_schedule_refresh (meta_backend);
@@ -2161,6 +2191,87 @@ ebmb_cancel_view_cb (gpointer key,
 	g_return_if_fail (G_IS_CANCELLABLE (cancellable));
 
 	g_cancellable_cancel (cancellable);
+}
+
+static void
+ebmb_wait_for_credentials_cancelled_cb (GCancellable *cancellable,
+					gpointer user_data)
+{
+	EBookMetaBackend *meta_backend = user_data;
+
+	g_return_if_fail (E_IS_BOOK_META_BACKEND (meta_backend));
+
+	g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+	g_cond_broadcast (&meta_backend->priv->wait_credentials_cond);
+	g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+}
+
+static gboolean
+ebmb_maybe_wait_for_credentials (EBookMetaBackend *meta_backend,
+				 guint wait_credentials_stamp,
+				 const GError *op_error,
+				 GCancellable *cancellable)
+{
+	EBackend *backend;
+	ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
+	gchar *certificate_pem = NULL;
+	GTlsCertificateFlags certificate_errors = 0;
+	gboolean got_credentials = FALSE;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
+
+	if (!op_error || g_cancellable_is_cancelled (cancellable))
+		return FALSE;
+
+	if (g_error_matches (op_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE) &&
+	    e_book_meta_backend_get_ssl_error_details (meta_backend, &certificate_pem, &certificate_errors)) {
+		reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
+	} else if (g_error_matches (op_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED)) {
+		reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
+	} else if (g_error_matches (op_error, E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED)) {
+		reason = E_SOURCE_CREDENTIALS_REASON_REJECTED;
+	}
+
+	if (reason == E_SOURCE_CREDENTIALS_REASON_UNKNOWN)
+		return FALSE;
+
+	backend = E_BACKEND (meta_backend);
+
+	g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+
+	if (wait_credentials_stamp != meta_backend->priv->wait_credentials_stamp ||
+	    e_backend_credentials_required_sync (backend, reason, certificate_pem, certificate_errors,
+		op_error, cancellable, &local_error)) {
+		gint64 wait_end_time;
+		gulong handler_id;
+
+		wait_end_time = g_get_monotonic_time () + MAX_WAIT_FOR_CREDENTIALS_SECS * G_TIME_SPAN_SECOND;
+
+		handler_id = cancellable ? g_signal_connect (cancellable, "cancelled",
+			G_CALLBACK (ebmb_wait_for_credentials_cancelled_cb), meta_backend) : 0;
+
+		while (wait_credentials_stamp == meta_backend->priv->wait_credentials_stamp &&
+		       !g_cancellable_is_cancelled (cancellable)) {
+			if (!g_cond_wait_until (&meta_backend->priv->wait_credentials_cond, &meta_backend->priv->wait_credentials_lock, wait_end_time))
+				break;
+		}
+
+		if (handler_id)
+			g_signal_handler_disconnect (cancellable, handler_id);
+
+		if (wait_credentials_stamp != meta_backend->priv->wait_credentials_stamp)
+			got_credentials = e_source_get_connection_status (e_backend_get_source (backend)) == E_SOURCE_CONNECTION_STATUS_CONNECTED;
+	} else {
+		g_warning ("%s: Failed to call credentials required: %s", G_STRFUNC, local_error ? local_error->message : "Unknown error");
+	}
+
+	g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
+	g_clear_error (&local_error);
+	g_free (certificate_pem);
+
+	return got_credentials;
 }
 
 static void
@@ -2311,6 +2422,8 @@ e_book_meta_backend_finalize (GObject *object)
 
 	g_mutex_clear (&meta_backend->priv->connect_lock);
 	g_mutex_clear (&meta_backend->priv->property_lock);
+	g_mutex_clear (&meta_backend->priv->wait_credentials_lock);
+	g_cond_clear (&meta_backend->priv->wait_credentials_cond);
 	g_hash_table_destroy (meta_backend->priv->view_cancellables);
 
 	/* Chain up to parent's method. */
@@ -2332,6 +2445,7 @@ e_book_meta_backend_class_init (EBookMetaBackendClass *klass)
 	klass->search_sync = ebmb_search_sync;
 	klass->search_uids_sync = ebmb_search_uids_sync;
 	klass->requires_reconnect = ebmb_requires_reconnect;
+	klass->get_ssl_error_details = ebmb_get_ssl_error_details;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
 	book_backend_class->get_backend_property = ebmb_get_backend_property;
@@ -2413,6 +2527,8 @@ e_book_meta_backend_init (EBookMetaBackend *meta_backend)
 
 	g_mutex_init (&meta_backend->priv->connect_lock);
 	g_mutex_init (&meta_backend->priv->property_lock);
+	g_mutex_init (&meta_backend->priv->wait_credentials_lock);
+	g_cond_init (&meta_backend->priv->wait_credentials_cond);
 
 	meta_backend->priv->view_cancellables = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_object_unref);
 	meta_backend->priv->current_online_state = FALSE;
@@ -3634,6 +3750,9 @@ e_book_meta_backend_get_changes_sync (EBookMetaBackend *meta_backend,
 				      GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gint repeat_count = 0;
+	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (out_new_sync_tag != NULL, FALSE);
@@ -3647,16 +3766,35 @@ e_book_meta_backend_get_changes_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->get_changes_sync != NULL, FALSE);
 
-	return klass->get_changes_sync (meta_backend,
-		last_sync_tag,
-		is_repeat,
-		out_new_sync_tag,
-		out_repeat,
-		out_created_objects,
-		out_modified_objects,
-		out_removed_objects,
-		cancellable,
-		error);
+	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
+		guint wait_credentials_stamp;
+
+		g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+		wait_credentials_stamp = meta_backend->priv->wait_credentials_stamp;
+		g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
+		g_clear_error (&local_error);
+		repeat_count++;
+
+		success = klass->get_changes_sync (meta_backend,
+			last_sync_tag,
+			is_repeat,
+			out_new_sync_tag,
+			out_repeat,
+			out_created_objects,
+			out_modified_objects,
+			out_removed_objects,
+			cancellable,
+			&local_error);
+
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+			break;
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 /**
@@ -3693,6 +3831,9 @@ e_book_meta_backend_list_existing_sync (EBookMetaBackend *meta_backend,
 				        GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gint repeat_count = 0;
+	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (out_existing_objects != NULL, FALSE);
@@ -3701,7 +3842,27 @@ e_book_meta_backend_list_existing_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->list_existing_sync != NULL, FALSE);
 
-	return klass->list_existing_sync (meta_backend, out_new_sync_tag, out_existing_objects, cancellable, error);
+
+	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
+		guint wait_credentials_stamp;
+
+		g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+		wait_credentials_stamp = meta_backend->priv->wait_credentials_stamp;
+		g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
+		g_clear_error (&local_error);
+		repeat_count++;
+
+		success = klass->list_existing_sync (meta_backend, out_new_sync_tag, out_existing_objects, cancellable, &local_error);
+
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+			break;
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 /**
@@ -3738,6 +3899,9 @@ e_book_meta_backend_load_contact_sync (EBookMetaBackend *meta_backend,
 				       GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gint repeat_count = 0;
+	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -3748,7 +3912,27 @@ e_book_meta_backend_load_contact_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->load_contact_sync != NULL, FALSE);
 
-	return klass->load_contact_sync (meta_backend, uid, extra, out_contact, out_extra, cancellable, error);
+
+	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
+		guint wait_credentials_stamp;
+
+		g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+		wait_credentials_stamp = meta_backend->priv->wait_credentials_stamp;
+		g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
+		g_clear_error (&local_error);
+		repeat_count++;
+
+		success = klass->load_contact_sync (meta_backend, uid, extra, out_contact, out_extra, cancellable, &local_error);
+
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+			break;
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 /**
@@ -3803,6 +3987,9 @@ e_book_meta_backend_save_contact_sync (EBookMetaBackend *meta_backend,
 				       GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gint repeat_count = 0;
+	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (E_IS_CONTACT (contact), FALSE);
@@ -3817,15 +4004,35 @@ e_book_meta_backend_save_contact_sync (EBookMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	return klass->save_contact_sync (meta_backend,
-		overwrite_existing,
-		conflict_resolution,
-		contact,
-		extra,
-		out_new_uid,
-		out_new_extra,
-		cancellable,
-		error);
+
+	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
+		guint wait_credentials_stamp;
+
+		g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+		wait_credentials_stamp = meta_backend->priv->wait_credentials_stamp;
+		g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
+		g_clear_error (&local_error);
+		repeat_count++;
+
+		success = klass->save_contact_sync (meta_backend,
+			overwrite_existing,
+			conflict_resolution,
+			contact,
+			extra,
+			out_new_uid,
+			out_new_extra,
+			cancellable,
+			&local_error);
+
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+			break;
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 /**
@@ -3858,6 +4065,9 @@ e_book_meta_backend_remove_contact_sync (EBookMetaBackend *meta_backend,
 					 GError **error)
 {
 	EBookMetaBackendClass *klass;
+	gint repeat_count = 0;
+	gboolean success = FALSE;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
@@ -3870,7 +4080,27 @@ e_book_meta_backend_remove_contact_sync (EBookMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	return klass->remove_contact_sync (meta_backend, conflict_resolution, uid, extra, object, cancellable, error);
+
+	while (!success && repeat_count <= MAX_REPEAT_COUNT) {
+		guint wait_credentials_stamp;
+
+		g_mutex_lock (&meta_backend->priv->wait_credentials_lock);
+		wait_credentials_stamp = meta_backend->priv->wait_credentials_stamp;
+		g_mutex_unlock (&meta_backend->priv->wait_credentials_lock);
+
+		g_clear_error (&local_error);
+		repeat_count++;
+
+		success = klass->remove_contact_sync (meta_backend, conflict_resolution, uid, extra, object, cancellable, &local_error);
+
+		if (!success && repeat_count <= MAX_REPEAT_COUNT && !ebmb_maybe_wait_for_credentials (meta_backend, wait_credentials_stamp, local_error, cancellable))
+			break;
+	}
+
+	if (local_error)
+		g_propagate_error (error, local_error);
+
+	return success;
 }
 
 /**
@@ -3990,4 +4220,35 @@ e_book_meta_backend_requires_reconnect (EBookMetaBackend *meta_backend)
 	g_return_val_if_fail (klass->requires_reconnect != NULL, FALSE);
 
 	return klass->requires_reconnect (meta_backend);
+}
+
+/**
+ * e_book_meta_backend_get_ssl_error_details:
+ * @meta_backend: an #EBookMetaBackend
+ * @out_certificate_pem: (out): SSL certificate encoded in PEM format
+ * @out_certificate_errors: (out): bit-or of #GTlsCertificateFlags claiming the certificate errors
+ *
+ * It is optional to implement this virtual method by the descendants.
+ * It is used to receive SSL error details when any online operation
+ * returns E_DATA_BOOK_ERROR, E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE error.
+ *
+ * Returns: %TRUE, when the SSL error details had been available and
+ *    the out parameters populated, %FALSE otherwise.
+ *
+ * Since: 3.28
+ **/
+gboolean
+e_book_meta_backend_get_ssl_error_details (EBookMetaBackend *meta_backend,
+					   gchar **out_certificate_pem,
+					   GTlsCertificateFlags *out_certificate_errors)
+{
+	EBookMetaBackendClass *klass;
+
+	g_return_val_if_fail (E_IS_BOOK_META_BACKEND (meta_backend), FALSE);
+
+	klass = E_BOOK_META_BACKEND_GET_CLASS (meta_backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
+	g_return_val_if_fail (klass->get_ssl_error_details != NULL, FALSE);
+
+	return klass->get_ssl_error_details (meta_backend, out_certificate_pem, out_certificate_errors);
 }

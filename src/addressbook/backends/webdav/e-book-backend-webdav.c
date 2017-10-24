@@ -543,6 +543,32 @@ ebb_webdav_search_changes_cb (EBookCache *book_cache,
 	return TRUE;
 }
 
+static void
+ebb_webdav_check_credentials_error (EBookBackendWebDAV *bbdav,
+				    GError *op_error)
+{
+	g_return_if_fail (E_IS_BOOK_BACKEND_WEBDAV (bbdav));
+
+	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && bbdav->priv->webdav) {
+		op_error->domain = E_DATA_BOOK_ERROR;
+		op_error->code = E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE;
+	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		op_error->domain = E_DATA_BOOK_ERROR;
+		op_error->code = E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED;
+
+		if (bbdav->priv->webdav) {
+			ENamedParameters *credentials;
+
+			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (bbdav->priv->webdav));
+			if (credentials && e_named_parameters_count (credentials) > 0)
+				op_error->code = E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED;
+
+			e_named_parameters_free (credentials);
+		}
+	}
+}
+
 static gboolean
 ebb_webdav_get_changes_sync (EBookMetaBackend *meta_backend,
 			     const gchar *last_sync_tag,
@@ -645,42 +671,10 @@ ebb_webdav_get_changes_sync (EBookMetaBackend *meta_backend,
 		} while (success && link);
 	}
 
-	if (local_error && !g_cancellable_is_cancelled (cancellable)) {
-		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
-
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
-			reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-			   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-			reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
-		}
-
-		if (reason != E_SOURCE_CREDENTIALS_REASON_UNKNOWN) {
-			GTlsCertificateFlags certificate_errors = 0;
-			gchar *certificate_pem = NULL;
-			GError *local_error2 = NULL;
-
-			if (!e_soup_session_get_ssl_error_details (E_SOUP_SESSION (bbdav->priv->webdav), &certificate_pem, &certificate_errors)) {
-				certificate_pem = NULL;
-				certificate_errors = 0;
-			}
-
-			if (!e_backend_credentials_required_sync (E_BACKEND (bbdav), reason, certificate_pem, certificate_errors,
-				local_error, cancellable, &local_error2)) {
-				g_warning ("%s: Failed to call credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
-			} else {
-				/* Ignore the error when the caller had been notified through the credentials-required */
-				g_clear_error (&local_error);
-				success = TRUE;
-			}
-
-			g_clear_error (&local_error2);
-			g_free (certificate_pem);
-		}
-	}
-
-	if (local_error)
+	if (local_error) {
+		ebb_webdav_check_credentials_error (bbdav, local_error);
 		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -744,6 +738,7 @@ ebb_webdav_list_existing_sync (EBookMetaBackend *meta_backend,
 {
 	EBookBackendWebDAV *bbdav;
 	EXmlDocument *xml;
+	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (meta_backend), FALSE);
@@ -771,12 +766,17 @@ ebb_webdav_list_existing_sync (EBookMetaBackend *meta_backend,
 	e_xml_document_end_element (xml); /* prop */
 
 	success = e_webdav_session_report_sync (bbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
-		ebb_webdav_extract_existing_cb, out_existing_objects, NULL, NULL, cancellable, error);
+		ebb_webdav_extract_existing_cb, out_existing_objects, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
 
 	if (success)
 		*out_existing_objects = g_slist_reverse (*out_existing_objects);
+
+	if (local_error) {
+		ebb_webdav_check_credentials_error (bbdav, local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -931,8 +931,10 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (etag);
 	g_free (bytes);
 
-	if (local_error)
+	if (local_error) {
+		ebb_webdav_check_credentials_error (bbdav, local_error);
 		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -951,6 +953,7 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 	EBookBackendWebDAV *bbdav;
 	gchar *href = NULL, *etag = NULL, *uid = NULL;
 	gchar *vcard_string = NULL;
+	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (meta_backend), FALSE);
@@ -988,7 +991,7 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 
 		success = e_webdav_session_put_data_sync (bbdav->priv->webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_VCARD,
-			vcard_string, -1, out_new_extra, NULL, cancellable, error);
+			vcard_string, -1, out_new_extra, NULL, cancellable, &local_error);
 
 		/* To read the component back, because server can change it */
 		if (success)
@@ -1002,6 +1005,11 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (href);
 	g_free (etag);
 	g_free (uid);
+
+	if (local_error) {
+		ebb_webdav_check_credentials_error (bbdav, local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -1071,10 +1079,29 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	g_object_unref (contact);
 	g_free (etag);
 
-	if (local_error)
+	if (local_error) {
+		ebb_webdav_check_credentials_error (bbdav, local_error);
 		g_propagate_error (error, local_error);
+	}
 
 	return success;
+}
+
+static gboolean
+ebb_webdav_get_ssl_error_details (EBookMetaBackend *meta_backend,
+				  gchar **out_certificate_pem,
+				  GTlsCertificateFlags *out_certificate_errors)
+{
+	EBookBackendWebDAV *bbdav;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (meta_backend), FALSE);
+
+	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
+
+	if (!bbdav->priv->webdav)
+		return FALSE;
+
+	return e_soup_session_get_ssl_error_details (E_SOUP_SESSION (bbdav->priv->webdav), out_certificate_pem, out_certificate_errors);
 }
 
 static gchar *
@@ -1159,6 +1186,7 @@ e_book_backend_webdav_class_init (EBookBackendWebDAVClass *klass)
 	book_meta_backend_class->load_contact_sync = ebb_webdav_load_contact_sync;
 	book_meta_backend_class->save_contact_sync = ebb_webdav_save_contact_sync;
 	book_meta_backend_class->remove_contact_sync = ebb_webdav_remove_contact_sync;
+	book_meta_backend_class->get_ssl_error_details = ebb_webdav_get_ssl_error_details;
 
 	book_backend_class = E_BOOK_BACKEND_CLASS (klass);
 	book_backend_class->get_backend_property = ebb_webdav_get_backend_property;
