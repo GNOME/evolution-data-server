@@ -571,6 +571,32 @@ ecb_caldav_search_changes_cb (ECalCache *cal_cache,
 	return TRUE;
 }
 
+static void
+ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
+				    GError *op_error)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
+
+	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && cbdav->priv->webdav) {
+		op_error->domain = E_DATA_CAL_ERROR;
+		op_error->code = TLSNotAvailable;
+	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
+		   g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
+		op_error->domain = E_DATA_CAL_ERROR;
+		op_error->code = AuthenticationRequired;
+
+		if (cbdav->priv->webdav) {
+			ENamedParameters *credentials;
+
+			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (cbdav->priv->webdav));
+			if (credentials && e_named_parameters_count (credentials) > 0)
+				op_error->code = AuthenticationFailed;
+
+			e_named_parameters_free (credentials);
+		}
+	}
+}
+
 static gboolean
 ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 			     const gchar *last_sync_tag,
@@ -728,42 +754,10 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 		} while (success && link);
 	}
 
-	if (local_error && !g_cancellable_is_cancelled (cancellable)) {
-		ESourceCredentialsReason reason = E_SOURCE_CREDENTIALS_REASON_UNKNOWN;
-
-		if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED)) {
-			reason = E_SOURCE_CREDENTIALS_REASON_SSL_FAILED;
-		} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
-			   g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
-			reason = E_SOURCE_CREDENTIALS_REASON_REQUIRED;
-		}
-
-		if (reason != E_SOURCE_CREDENTIALS_REASON_UNKNOWN) {
-			GTlsCertificateFlags certificate_errors = 0;
-			gchar *certificate_pem = NULL;
-			GError *local_error2 = NULL;
-
-			if (!e_soup_session_get_ssl_error_details (E_SOUP_SESSION (cbdav->priv->webdav), &certificate_pem, &certificate_errors)) {
-				certificate_pem = NULL;
-				certificate_errors = 0;
-			}
-
-			if (!e_backend_credentials_required_sync (E_BACKEND (cbdav), reason, certificate_pem, certificate_errors,
-				local_error, cancellable, &local_error2)) {
-				g_warning ("%s: Failed to call credentials required: %s", G_STRFUNC, local_error2 ? local_error2->message : "Unknown error");
-			} else {
-				/* Ignore the error when the caller had been notified through the credentials-required */
-				g_clear_error (&local_error);
-				success = TRUE;
-			}
-
-			g_clear_error (&local_error2);
-			g_free (certificate_pem);
-		}
-	}
-
-	if (local_error)
+	if (local_error) {
+		ecb_caldav_check_credentials_error (cbdav, local_error);
 		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -828,6 +822,7 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	ECalBackendCalDAV *cbdav;
 	icalcomponent_kind kind;
 	EXmlDocument *xml;
+	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
@@ -880,12 +875,17 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	e_xml_document_end_element (xml); /* filter */
 
 	success = e_webdav_session_report_sync (cbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
-		ecb_caldav_extract_existing_cb, out_existing_objects, NULL, NULL, cancellable, error);
+		ecb_caldav_extract_existing_cb, out_existing_objects, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
 
 	if (success)
 		*out_existing_objects = g_slist_reverse (*out_existing_objects);
+
+	if (local_error) {
+		ecb_caldav_check_credentials_error (cbdav, local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -1053,8 +1053,10 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	g_free (etag);
 	g_free (bytes);
 
-	if (local_error)
+	if (local_error) {
+		ecb_caldav_check_credentials_error (cbdav, local_error);
 		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -1075,6 +1077,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	gchar *href = NULL, *etag = NULL, *uid = NULL;
 	gchar *ical_string = NULL;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
 	g_return_val_if_fail (instances != NULL, FALSE);
@@ -1127,7 +1130,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 		success = e_webdav_session_put_data_sync (cbdav->priv->webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_CALENDAR,
-			ical_string, -1, out_new_extra, NULL, cancellable, error);
+			ical_string, -1, out_new_extra, NULL, cancellable, &local_error);
 
 		/* To read the component back, because server can change it */
 		if (success)
@@ -1141,6 +1144,11 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	g_free (href);
 	g_free (etag);
 	g_free (uid);
+
+	if (local_error) {
+		ecb_caldav_check_credentials_error (cbdav, local_error);
+		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
@@ -1210,10 +1218,29 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	icalcomponent_free (icalcomp);
 	g_free (etag);
 
-	if (local_error)
+	if (local_error) {
+		ecb_caldav_check_credentials_error (cbdav, local_error);
 		g_propagate_error (error, local_error);
+	}
 
 	return success;
+}
+
+static gboolean
+ecb_caldav_get_ssl_error_details (ECalMetaBackend *meta_backend,
+				  gchar **out_certificate_pem,
+				  GTlsCertificateFlags *out_certificate_errors)
+{
+	ECalBackendCalDAV *cbdav;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
+
+	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+
+	if (!cbdav->priv->webdav)
+		return FALSE;
+
+	return e_soup_session_get_ssl_error_details (E_SOUP_SESSION (cbdav->priv->webdav), out_certificate_pem, out_certificate_errors);
 }
 
 static gboolean
@@ -1881,6 +1908,7 @@ e_cal_backend_caldav_class_init (ECalBackendCalDAVClass *klass)
 	cal_meta_backend_class->load_component_sync = ecb_caldav_load_component_sync;
 	cal_meta_backend_class->save_component_sync = ecb_caldav_save_component_sync;
 	cal_meta_backend_class->remove_component_sync = ecb_caldav_remove_component_sync;
+	cal_meta_backend_class->get_ssl_error_details = ecb_caldav_get_ssl_error_details;
 
 	cal_backend_sync_class = E_CAL_BACKEND_SYNC_CLASS (klass);
 	cal_backend_sync_class->get_free_busy_sync = ecb_caldav_get_free_busy_sync;

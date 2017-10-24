@@ -164,8 +164,12 @@ struct _ECalMetaBackendClass {
 	/* Signals */
 	void		(* source_changed)	(ECalMetaBackend *meta_backend);
 
+	gboolean	(* get_ssl_error_details)
+						(ECalMetaBackend *meta_backend,
+						 gchar **out_certificate_pem,
+						 GTlsCertificateFlags *out_certificate_errors);
 	/* Padding for future expansion */
-	gpointer reserved[10];
+	gpointer reserved[9];
 };
 
 GType		e_cal_meta_backend_get_type	(void) G_GNUC_CONST;
@@ -301,6 +305,10 @@ gboolean	e_cal_meta_backend_search_components_sync
 						 GError **error);
 gboolean	e_cal_meta_backend_requires_reconnect
 						(ECalMetaBackend *meta_backend);
+gboolean	e_cal_meta_backend_get_ssl_error_details
+						(ECalMetaBackend *meta_backend,
+						 gchar **out_certificate_pem,
+						 GTlsCertificateFlags *out_certificate_errors);
 
 G_END_DECLS
 
