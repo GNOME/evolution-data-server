@@ -654,6 +654,7 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 	SoupURI *soup_uri;
 	ESource *source;
 	ESourceWebdav *webdav_extension;
+	const gchar *path;
 
 	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), NULL);
 
@@ -674,6 +675,17 @@ e_webdav_session_new_request (EWebDAVSession *webdav,
 	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
 
 	g_return_val_if_fail (soup_uri != NULL, NULL);
+
+	/* The URI in the ESource should be to a collection, with an ending
+	   forward slash, thus ensure it's there. */
+	path = soup_uri_get_path (soup_uri);
+	if (!path || !*path || !g_str_has_suffix (path, "/")) {
+		gchar *new_path;
+
+		new_path = g_strconcat (path ? path : "", "/", NULL);
+		soup_uri_set_path (soup_uri, new_path);
+		g_free (new_path);
+	}
 
 	request = e_soup_session_new_request_uri (session, method, soup_uri, error);
 
