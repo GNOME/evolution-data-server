@@ -3816,6 +3816,8 @@ e_cal_component_get_recurid (ECalComponent *comp,
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
 
+	recur_id->type = E_CAL_COMPONENT_RANGE_SINGLE;
+
 	get_datetime (
 		&priv->recur_id.recur_time,
 		icalproperty_get_recurrenceid,

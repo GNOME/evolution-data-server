@@ -2456,9 +2456,35 @@ compare_comp_instance (gconstpointer a,
 	return (diff < 0) ? -1 : (diff > 0) ? 1 : 0;
 }
 
+static time_t
+convert_to_tt_with_zone (const ECalComponentDateTime *dt,
+			 ECalRecurResolveTimezoneFn tz_cb,
+			 gpointer tz_cb_data,
+			 icaltimezone *default_timezone)
+{
+	icaltimezone *zone = default_timezone;
+
+	if (!dt || !dt->value)
+		return (time_t) 0;
+
+	if (icaltime_is_utc (*dt->value)) {
+		zone = icaltimezone_get_utc_timezone ();
+	} else if (tz_cb && !dt->value->is_date && dt->tzid) {
+		zone = (*tz_cb) (dt->tzid, tz_cb_data);
+
+		if (!zone)
+			zone = default_timezone;
+	}
+
+	return icaltime_as_timet_with_zone (*dt->value, zone);
+}
+
 static GSList *
 process_detached_instances (GSList *instances,
-                            GSList *detached_instances)
+			    GSList *detached_instances,
+			    ECalRecurResolveTimezoneFn tz_cb,
+			    gpointer tz_cb_data,
+			    icaltimezone *default_timezone)
 {
 	struct comp_instance *ci, *cid;
 	GSList *dl, *unprocessed_instances = NULL;
@@ -2468,6 +2494,7 @@ process_detached_instances (GSList *instances,
 		const gchar *uid;
 		gboolean processed;
 		ECalComponentRange recur_id, instance_recur_id;
+		time_t d_rid, i_rid;
 
 		processed = FALSE;
 		recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
@@ -2477,6 +2504,11 @@ process_detached_instances (GSList *instances,
 		e_cal_component_get_uid (cid->comp, &uid);
 		e_cal_component_get_recurid (cid->comp, &recur_id);
 
+		if (!recur_id.datetime.value)
+			continue;
+
+		d_rid = convert_to_tt_with_zone (&recur_id.datetime, tz_cb, tz_cb_data, default_timezone);
+
 		/* search for coincident instances already expanded */
 		for (il = instances; il != NULL; il = il->next) {
 			const gchar *instance_uid;
@@ -2484,14 +2516,25 @@ process_detached_instances (GSList *instances,
 
 			ci = il->data;
 			e_cal_component_get_uid (ci->comp, &instance_uid);
-			e_cal_component_get_recurid (ci->comp, &instance_recur_id);
+
 			if (strcmp (uid, instance_uid) == 0) {
-				gchar *i_rid = NULL, *d_rid = NULL;
+				e_cal_component_get_recurid (ci->comp, &instance_recur_id);
 
-				i_rid = e_cal_component_get_recurid_as_string (ci->comp);
-				d_rid = e_cal_component_get_recurid_as_string (cid->comp);
+				if (!instance_recur_id.datetime.value) {
+					/*
+					 * Prevent obvious segfault by ignoring missing
+					 * recurrency ids. Real problem might be elsewhere,
+					 * but anything is better than crashing...
+					 */
+					g_warning ("UID %s: instance RECURRENCE-ID and detached instance RECURRENCE-ID cannot compare", uid);
 
-				if (i_rid && d_rid && strcmp (i_rid, d_rid) == 0) {
+					e_cal_component_free_range (&instance_recur_id);
+					continue;
+				}
+
+				i_rid = convert_to_tt_with_zone (&instance_recur_id.datetime, tz_cb, tz_cb_data, default_timezone);
+
+				if (recur_id.type == E_CAL_COMPONENT_RANGE_SINGLE && i_rid == d_rid) {
 					g_object_unref (ci->comp);
 					ci->comp = g_object_ref (cid->comp);
 					ci->start = cid->start;
@@ -2499,29 +2542,7 @@ process_detached_instances (GSList *instances,
 
 					processed = TRUE;
 				} else {
-					if (!instance_recur_id.datetime.value ||
-					    !recur_id.datetime.value) {
-						/*
-						 * Prevent obvious segfault by ignoring missing
-						 * recurrency ids. Real problem might be elsewhere,
-						 * but anything is better than crashing...
-						 */
-						g_log (
-							G_LOG_DOMAIN,
-							G_LOG_LEVEL_CRITICAL,
-							"UID %s: instance RECURRENCE-ID %s + detached instance RECURRENCE-ID %s: cannot compare",
-							uid,
-							i_rid,
-							d_rid);
-
-						e_cal_component_free_datetime (&instance_recur_id.datetime);
-						g_free (i_rid);
-						g_free (d_rid);
-						continue;
-					}
-					cmp = icaltime_compare (
-						*instance_recur_id.datetime.value,
-						*recur_id.datetime.value);
+					cmp = i_rid == d_rid ? 0 : i_rid < d_rid ? -1 : 1;
 					if ((recur_id.type == E_CAL_COMPONENT_RANGE_THISPRIOR && cmp <= 0) ||
 						(recur_id.type == E_CAL_COMPONENT_RANGE_THISFUTURE && cmp >= 0)) {
 						ECalComponent *comp;
@@ -2537,10 +2558,8 @@ process_detached_instances (GSList *instances,
 						ci->comp = comp;
 					}
 				}
-				g_free (i_rid);
-				g_free (d_rid);
 			}
-			e_cal_component_free_datetime (&instance_recur_id.datetime);
+			e_cal_component_free_range (&instance_recur_id);
 		}
 
 		e_cal_component_free_datetime (&recur_id.datetime);
@@ -2577,19 +2596,19 @@ generate_instances (ECalClient *client,
 	GSList *instances, *detached_instances = NULL;
 	GSList *l;
 	ECalClientPrivate *priv;
+	icaltimezone *default_zone;
 
 	priv = client->priv;
 
 	instances = NULL;
 
+	if (priv->default_zone)
+		default_zone = priv->default_zone;
+	else
+		default_zone = icaltimezone_get_utc_timezone ();
+
 	for (l = objects; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
 		ECalComponent *comp;
-		icaltimezone *default_zone;
-
-		if (priv->default_zone)
-			default_zone = priv->default_zone;
-		else
-			default_zone = icaltimezone_get_utc_timezone ();
 
 		comp = l->data;
 		if (e_cal_component_is_instance (comp)) {
@@ -2709,7 +2728,8 @@ generate_instances (ECalClient *client,
 
 	if (!g_cancellable_is_cancelled (cancellable)) {
 		instances = g_slist_sort (instances, compare_comp_instance);
-		instances = process_detached_instances (instances, detached_instances);
+		instances = process_detached_instances (instances, detached_instances,
+			e_cal_client_resolve_tzid_cb, client, default_zone);
 	}
 
 	for (l = instances; l && !g_cancellable_is_cancelled (cancellable); l = l->next) {
