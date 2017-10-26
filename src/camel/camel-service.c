@@ -91,7 +91,6 @@ struct _ConnectionOp {
 	GMutex task_lock;
 	GTask *task;
 	GCancellable *cancellable;
-	gulong cancel_id;
 };
 
 struct _DispatchData {
@@ -175,10 +174,6 @@ connection_op_unref (ConnectionOp *op)
 		if (op->task != NULL)
 			g_object_unref (op->task);
 
-		if (op->cancel_id > 0)
-			g_cancellable_disconnect (
-				op->cancellable, op->cancel_id);
-
 		if (op->cancellable != NULL)
 			g_object_unref (op->cancellable);
 
@@ -206,20 +201,6 @@ connection_op_complete (ConnectionOp *op,
 }
 
 static void
-connection_op_cancelled (GCancellable *cancellable,
-                         ConnectionOp *op)
-{
-	/* A cancelled GTask will always propagate an error, so we
-	 * don't need to explicitly set a G_IO_ERROR_CANCELLED here. */
-
-	g_mutex_lock (&op->task_lock);
-
-	g_clear_object (&op->task);
-
-	g_mutex_unlock (&op->task_lock);
-}
-
-static void
 connection_op_add_pending (ConnectionOp *op,
                            GTask *task,
                            GCancellable *cancellable)
@@ -229,12 +210,6 @@ connection_op_add_pending (ConnectionOp *op,
 	g_return_if_fail (op != NULL);
 
 	pending_op = connection_op_new (task, cancellable);
-
-	if (pending_op->cancellable != NULL)
-		pending_op->cancel_id = g_cancellable_connect (
-			pending_op->cancellable,
-			G_CALLBACK (connection_op_cancelled),
-			pending_op, (GDestroyNotify) NULL);
 
 	g_queue_push_tail (&op->pending, pending_op);
 }
