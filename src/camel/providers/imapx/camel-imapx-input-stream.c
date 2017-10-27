@@ -540,6 +540,7 @@ camel_imapx_input_stream_nstring (CamelIMAPXInputStream *is,
 gboolean
 camel_imapx_input_stream_nstring_bytes (CamelIMAPXInputStream *is,
                                         GBytes **out_bytes,
+					gboolean with_progress,
                                         GCancellable *cancellable,
                                         GError **error)
 {
@@ -571,7 +572,7 @@ camel_imapx_input_stream_nstring_bytes (CamelIMAPXInputStream *is,
 			 * automatically use a file backing. */
 			camel_imapx_input_stream_set_literal (is, len);
 			output_stream = g_memory_output_stream_new_resizable ();
-			if (len > 1024) {
+			if (with_progress && len > 1024) {
 				bytes_written = imapx_splice_with_progress (output_stream, G_INPUT_STREAM (is),
 					len, cancellable, error);
 				if (!g_output_stream_close (output_stream, cancellable, error))

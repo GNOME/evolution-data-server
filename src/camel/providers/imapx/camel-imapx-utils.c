@@ -1814,7 +1814,7 @@ imapx_parse_fetch_body (CamelIMAPXInputStream *stream,
 		}
 
 		success = camel_imapx_input_stream_nstring_bytes (
-			stream, &finfo->body, cancellable, error);
+			stream, &finfo->body, TRUE, cancellable, error);
 
 		/* Sanity check. */
 		g_return_val_if_fail (
@@ -1925,7 +1925,7 @@ imapx_parse_fetch_rfc822_header (CamelIMAPXInputStream *stream,
 	gboolean success;
 
 	success = camel_imapx_input_stream_nstring_bytes (
-		stream, &finfo->header, cancellable, error);
+		stream, &finfo->header, FALSE, cancellable, error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (
@@ -1968,7 +1968,7 @@ imapx_parse_fetch_rfc822_text (CamelIMAPXInputStream *stream,
 	gboolean success;
 
 	success = camel_imapx_input_stream_nstring_bytes (
-		stream, &finfo->text, cancellable, error);
+		stream, &finfo->text, FALSE, cancellable, error);
 
 	/* Sanity check. */
 	g_return_val_if_fail (

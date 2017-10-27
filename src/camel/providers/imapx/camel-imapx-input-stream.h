@@ -128,6 +128,7 @@ gboolean	camel_imapx_input_stream_nstring
 gboolean	camel_imapx_input_stream_nstring_bytes
 						(CamelIMAPXInputStream *is,
 						 GBytes **out_bytes,
+						 gboolean with_progress,
 						 GCancellable *cancellable,
 						 GError **error);
 /* gets 'text' */
