@@ -4390,15 +4390,22 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 
 				destination_folder = imapx_server_ref_folder (is, destination);
 				if (destination_folder) {
+					CamelFolderSummary *destination_summary;
 					CamelMessageInfo *source_info, *destination_info;
 					CamelFolderChangeInfo *changes;
 					gint ii;
+
+					destination_summary = camel_folder_get_folder_summary (destination_folder);
+					camel_folder_summary_lock (destination_summary);
 
 					changes = camel_folder_change_info_new ();
 
 					for (ii = 0; ii < copyuid_status->u.copyuid.uids->len; ii++) {
 						gchar *uid;
 						gboolean is_new = FALSE;
+						guint32 source_flags;
+						CamelNamedFlags *source_user_flags;
+						CamelNameValueArray *source_user_tags;
 
 						uid = g_strdup_printf ("%u", g_array_index (copyuid_status->u.copyuid.uids, guint32, ii));
 						source_info = g_hash_table_lookup (source_infos, uid);
@@ -4408,44 +4415,49 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 							continue;
 
 						uid = g_strdup_printf ("%u", g_array_index (copyuid_status->u.copyuid.copied_uids, guint32, ii));
-						destination_info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
+						destination_info = camel_folder_summary_get (destination_summary, uid);
 
 						if (!destination_info) {
 							is_new = TRUE;
-							destination_info = camel_message_info_clone (source_info, camel_folder_get_folder_summary (destination_folder));
+							destination_info = camel_message_info_clone (source_info, destination_summary);
 							camel_message_info_set_uid (destination_info, uid);
 						}
 
 						g_free (uid);
 
-						camel_message_info_property_lock (source_info);
+						source_flags = camel_message_info_get_flags (source_info);
+						source_user_flags = camel_message_info_dup_user_flags (source_info);
+						source_user_tags = camel_message_info_dup_user_tags (source_info);
 
 						imapx_set_message_info_flags_for_new_message (
 							destination_info,
-							camel_message_info_get_flags (source_info),
-							camel_message_info_get_user_flags (source_info),
+							source_flags,
+							source_user_flags,
 							TRUE,
-							camel_message_info_get_user_tags (source_info),
+							source_user_tags,
 							camel_imapx_mailbox_get_permanentflags (destination));
+
+						camel_named_flags_free (source_user_flags);
+						camel_name_value_array_free (source_user_tags);
+
 						if (remove_deleted_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_DELETED, 0);
 						if (remove_junk_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_JUNK, 0);
 						if (is_new)
-							camel_folder_summary_add (camel_folder_get_folder_summary (destination_folder), destination_info, FALSE);
+							camel_folder_summary_add (destination_summary, destination_info, FALSE);
 						camel_folder_change_info_add_uid (changes, camel_message_info_get_uid (destination_info));
-
-						camel_message_info_property_unlock (source_info);
 
 						g_clear_object (&destination_info);
 					}
 
 					if (camel_folder_change_info_changed (changes)) {
-						camel_folder_summary_touch (camel_folder_get_folder_summary (destination_folder));
-						camel_folder_summary_save (camel_folder_get_folder_summary (destination_folder), NULL);
+						camel_folder_summary_touch (destination_summary);
+						camel_folder_summary_save (destination_summary, NULL);
 						camel_folder_changed (destination_folder, changes);
 					}
 
+					camel_folder_summary_unlock (destination_summary);
 					camel_folder_change_info_free (changes);
 					g_object_unref (destination_folder);
 				}
