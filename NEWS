@@ -1,3 +1,10 @@
+Evolution-Data-Server 3.26.2.1 2017-10-31
+-----------------------------------------
+
+Bug Fixes:
+	Bug 789677 - [ECalClient] Incorrect free call in process_detached_instances() (Jan Alexander Steffens (heftig))
+	Bug 789555 - "Synchronize for offline" works on opened folders only (Milan Crha)
+
 Evolution-Data-Server 3.26.2 2017-10-30
 ---------------------------------------
 
