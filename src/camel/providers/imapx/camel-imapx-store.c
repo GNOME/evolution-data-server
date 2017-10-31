@@ -2777,6 +2777,53 @@ imapx_initial_setup_sync (CamelStore *store,
 }
 
 static void
+imapx_store_dup_downsync_folders_recurse (CamelStore *store,
+					  CamelFolderInfo *info,
+					  GPtrArray **inout_folders)
+{
+	while (info) {
+		CamelFolder *folder;
+
+		if (info->child)
+			imapx_store_dup_downsync_folders_recurse (store, info->child, inout_folders);
+
+		folder = camel_store_get_folder_sync (store, info->full_name, 0, NULL, NULL);
+		if (folder && CAMEL_IS_IMAPX_FOLDER (folder) &&
+		    camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder))) {
+			if (!*inout_folders)
+				*inout_folders = g_ptr_array_sized_new (32);
+			g_ptr_array_add (*inout_folders, g_object_ref (folder));
+		}
+
+		g_clear_object (&folder);
+
+		info = info->next;
+	}
+}
+
+static GPtrArray *
+imapx_store_dup_downsync_folders (CamelOfflineStore *offline_store)
+{
+	CamelStore *store;
+	CamelFolderInfo *fi;
+	GPtrArray *folders = NULL;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (offline_store), NULL);
+
+	store = CAMEL_STORE (offline_store);
+
+	fi = get_folder_info_offline (store, NULL,
+		CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL,
+		NULL, NULL);
+
+	imapx_store_dup_downsync_folders_recurse (store, fi, &folders);
+
+	camel_folder_info_free (fi);
+
+	return folders;
+}
+
+static void
 imapx_migrate_to_user_cache_dir (CamelService *service)
 {
 	const gchar *user_data_dir, *user_cache_dir;
@@ -3100,6 +3147,7 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	GObjectClass *object_class;
 	CamelServiceClass *service_class;
 	CamelStoreClass *store_class;
+	CamelOfflineStoreClass *offline_store_class;
 
 	g_type_class_add_private (class, sizeof (CamelIMAPXStorePrivate));
 
@@ -3130,6 +3178,9 @@ camel_imapx_store_class_init (CamelIMAPXStoreClass *class)
 	store_class->delete_folder_sync = imapx_store_delete_folder_sync;
 	store_class->rename_folder_sync = imapx_store_rename_folder_sync;
 	store_class->initial_setup_sync = imapx_initial_setup_sync;
+
+	offline_store_class = CAMEL_OFFLINE_STORE_CLASS (class);
+	offline_store_class->dup_downsync_folders = imapx_store_dup_downsync_folders;
 
 	class->mailbox_created = imapx_store_mailbox_created;
 	class->mailbox_renamed = imapx_store_mailbox_renamed;

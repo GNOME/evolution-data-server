@@ -42,7 +42,7 @@
 	(G_TYPE_CHECK_CLASS_TYPE \
 	((cls), CAMEL_TYPE_OFFLINE_STORE))
 #define CAMEL_OFFLINE_STORE_GET_CLASS(obj) \
-	(CAMEL_CHECK_GET_CLASS \
+	(G_TYPE_INSTANCE_GET_CLASS \
 	((obj), CAMEL_TYPE_OFFLINE_STORE, CamelOfflineStoreClass))
 
 G_BEGIN_DECLS
@@ -59,8 +59,10 @@ struct _CamelOfflineStore {
 struct _CamelOfflineStoreClass {
 	CamelStoreClass parent_class;
 
+	GPtrArray *	(*dup_downsync_folders)	(CamelOfflineStore *store);
+
 	/* Padding for future expansion */
-	gpointer reserved[20];
+	gpointer reserved[19];
 };
 
 GType		camel_offline_store_get_type (void);
@@ -85,6 +87,8 @@ gboolean	camel_offline_store_prepare_for_offline_sync
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	camel_offline_store_requires_downsync
+						(CamelOfflineStore *store);
+GPtrArray *	camel_offline_store_dup_downsync_folders
 						(CamelOfflineStore *store);
 
 G_END_DECLS

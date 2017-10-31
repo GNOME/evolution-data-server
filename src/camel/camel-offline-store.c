@@ -227,9 +227,9 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		GPtrArray *folders;
 		guint ii;
 
-		folders = camel_store_dup_opened_folders (CAMEL_STORE (store));
+		folders = camel_offline_store_dup_downsync_folders (store);
 
-		for (ii = 0; ii < folders->len; ii++) {
+		for (ii = 0; folders && ii < folders->len; ii++) {
 			CamelFolder *folder = folders->pdata[ii];
 			CamelOfflineFolder *offline_folder;
 
@@ -242,8 +242,10 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 				camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, NULL);
 		}
 
-		g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
-		g_ptr_array_free (folders, TRUE);
+		if (folders) {
+			g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+			g_ptr_array_free (folders, TRUE);
+		}
 
 		camel_store_synchronize_sync (
 			CAMEL_STORE (store), FALSE, cancellable, NULL);
@@ -380,9 +382,9 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 		GPtrArray *folders;
 		guint ii;
 
-		folders = camel_store_dup_opened_folders (CAMEL_STORE (store));
+		folders = camel_offline_store_dup_downsync_folders (store);
 
-		for (ii = 0; ii < folders->len; ii++) {
+		for (ii = 0; folders && ii < folders->len; ii++) {
 			CamelFolder *folder = folders->pdata[ii];
 			CamelOfflineFolder *offline_folder;
 
@@ -395,8 +397,10 @@ camel_offline_store_prepare_for_offline_sync (CamelOfflineStore *store,
 				camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, NULL);
 		}
 
-		g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
-		g_ptr_array_free (folders, TRUE);
+		if (folders) {
+			g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+			g_ptr_array_free (folders, TRUE);
+		}
 	}
 
 	if (host_reachable)
@@ -450,9 +454,9 @@ camel_offline_store_requires_downsync (CamelOfflineStore *store)
 		GPtrArray *folders;
 		guint ii;
 
-		folders = camel_store_dup_opened_folders (CAMEL_STORE (store));
+		folders = camel_offline_store_dup_downsync_folders (store);
 
-		for (ii = 0; ii < folders->len && !sync_any_folder; ii++) {
+		for (ii = 0; folders && ii < folders->len && !sync_any_folder; ii++) {
 			CamelFolder *folder = folders->pdata[ii];
 
 			if (!CAMEL_IS_OFFLINE_FOLDER (folder))
@@ -461,9 +465,45 @@ camel_offline_store_requires_downsync (CamelOfflineStore *store)
 			sync_any_folder = camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder));
 		}
 
-		g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
-		g_ptr_array_free (folders, TRUE);
+		if (folders) {
+			g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+			g_ptr_array_free (folders, TRUE);
+		}
 	}
 
 	return sync_any_folder && host_reachable;
+}
+
+/**
+ * camel_offline_store_dup_downsync_folders:
+ * @store: a #CamelOfflineStore
+ *
+ * Returns a #GPtrArray of #CamelFolder objects which should be checked
+ * for offline synchronization. Free the returned pointer with the below
+ * calls, when no longer needed:
+ *
+ * |[
+ *     g_ptr_array_foreach (array, (GFunc) g_object_unref, NULL);
+ *     g_ptr_array_free (array, TRUE);
+ * ]|
+ *
+ * Returns: (element-type CamelFolder) (transfer full): an array with folders
+ *   to be checked for offline synchronization.
+ *
+ * Since: 3.26.2.1
+ **/
+GPtrArray *
+camel_offline_store_dup_downsync_folders (CamelOfflineStore *store)
+{
+	CamelOfflineStoreClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_OFFLINE_STORE (store), NULL);
+
+	klass = CAMEL_OFFLINE_STORE_GET_CLASS (store);
+	g_return_val_if_fail (klass != NULL, NULL);
+
+	if (klass->dup_downsync_folders)
+		return klass->dup_downsync_folders (store);
+
+	return camel_store_dup_opened_folders (CAMEL_STORE (store));
 }
