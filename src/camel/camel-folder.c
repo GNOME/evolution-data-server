@@ -4574,10 +4574,14 @@ camel_folder_change_info_add_uid (CamelFolderChangeInfo *info,
 
 	if (g_hash_table_lookup_extended (p->uid_stored, uid, (gpointer) &olduid, (gpointer) &olduids)) {
 		/* if it was removed then added, promote it to a changed */
-		/* if it was changed then added, leave as changed */
+		/* if it was changed then added, make it added */
 		if (olduids == info->uid_removed) {
 			g_ptr_array_remove_fast (olduids, olduid);
 			g_ptr_array_add (info->uid_changed, olduid);
+			g_hash_table_insert (p->uid_stored, olduid, info->uid_changed);
+		} else if (olduids == info->uid_changed) {
+			g_ptr_array_remove_fast (olduids, olduid);
+			g_ptr_array_add (info->uid_added, olduid);
 			g_hash_table_insert (p->uid_stored, olduid, info->uid_changed);
 		}
 		return;
