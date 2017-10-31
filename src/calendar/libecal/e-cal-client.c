@@ -2493,12 +2493,12 @@ process_detached_instances (GSList *instances,
 		GSList *il;
 		const gchar *uid;
 		gboolean processed;
-		ECalComponentRange recur_id, instance_recur_id;
+		ECalComponentRange recur_id;
 		time_t d_rid, i_rid;
 
 		processed = FALSE;
 		recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
-		instance_recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
+		recur_id.datetime.value = NULL;
 
 		cid = dl->data;
 		e_cal_component_get_uid (cid->comp, &uid);
@@ -2518,6 +2518,11 @@ process_detached_instances (GSList *instances,
 			e_cal_component_get_uid (ci->comp, &instance_uid);
 
 			if (strcmp (uid, instance_uid) == 0) {
+				ECalComponentRange instance_recur_id;
+
+				instance_recur_id.type = E_CAL_COMPONENT_RANGE_SINGLE;
+				instance_recur_id.datetime.value = NULL;
+
 				e_cal_component_get_recurid (ci->comp, &instance_recur_id);
 
 				if (!instance_recur_id.datetime.value) {
@@ -2558,8 +2563,9 @@ process_detached_instances (GSList *instances,
 						ci->comp = comp;
 					}
 				}
+
+				e_cal_component_free_range (&instance_recur_id);
 			}
-			e_cal_component_free_range (&instance_recur_id);
 		}
 
 		e_cal_component_free_datetime (&recur_id.datetime);
