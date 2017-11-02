@@ -71,6 +71,7 @@ camel_imapx_command_new (CamelIMAPXServer *is,
 	real_ic->public.job_kind = job_kind;
 	real_ic->public.status = NULL;
 	real_ic->public.completed = FALSE;
+	real_ic->public.copy_move_expunged = NULL;
 	g_queue_init (&real_ic->public.parts);
 
 	if (format != NULL && *format != '\0') {
@@ -131,6 +132,7 @@ camel_imapx_command_unref (CamelIMAPXCommand *ic)
 		/* Free the private stuff. */
 
 		g_string_free (real_ic->buffer, TRUE);
+		g_slist_free (real_ic->public.copy_move_expunged);
 
 		g_clear_error (&real_ic->error);
 

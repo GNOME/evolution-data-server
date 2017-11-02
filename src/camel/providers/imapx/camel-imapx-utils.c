@@ -2653,6 +2653,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 	CamelIMAPXFolder *imapx_folder;
 	CamelIMAPXSummary *imapx_summary;
 	CamelIMAPXMailbox *mailbox;
+	GPtrArray *summary_array;
 	guint64 last_known_uidvalidity;
 	guint64 last_known_modsequence;
 	guint32 last_known_message_cnt;
@@ -2667,9 +2668,16 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
 	imapx_summary = CAMEL_IMAPX_SUMMARY (camel_folder_get_folder_summary (folder));
 
+	summary_array = camel_folder_summary_get_array (CAMEL_FOLDER_SUMMARY (imapx_summary));
+	g_return_val_if_fail (summary_array != NULL, FALSE);
+
+	camel_folder_sort_uids (folder, summary_array);
+
 	mailbox = camel_imapx_folder_ref_mailbox (imapx_folder);
-	if (!mailbox)
+	if (!mailbox) {
+		camel_folder_summary_free_array (summary_array);
 		return FALSE;
+	}
 
 	last_known_uidvalidity = camel_imapx_mailbox_get_uidvalidity (mailbox);
 	last_known_modsequence = imapx_summary->modseq;
@@ -2682,16 +2690,16 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 	if (summary_total > 0) {
 		guint last = summary_total - 1;
-		gchar *begin, *end;
 
-		begin = camel_imapx_dup_uid_from_summary_index (folder, 0);
-		end = camel_imapx_dup_uid_from_summary_index (folder, last);
+		if (0 < summary_array->len && last < summary_array->len) {
+			const gchar *begin, *end;
 
-		if (begin != NULL && end != NULL)
-			known_uid_set = g_strconcat (begin, ":", end, NULL);
+			begin = g_ptr_array_index (summary_array, 0);
+			end = g_ptr_array_index (summary_array, last);
 
-		g_free (begin);
-		g_free (end);
+			if (begin && end)
+				known_uid_set = g_strconcat (begin, ":", end, NULL);
+		}
 	}
 
 	/* Make sure we have valid QRESYNC arguments. */
@@ -2736,7 +2744,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 		do {
 			guint32 summary_index;
 			gchar buf[10];
-			gchar *uid;
+			const gchar *uid;
 
 			ii = MIN (ii * 3, sequence_limit);
 			summary_index = sequence_limit - ii;
@@ -2754,12 +2762,12 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 				"%" G_GUINT32_FORMAT,
 				summary_index + 1);
 
-			uid = camel_imapx_dup_uid_from_summary_index (
-				folder, summary_index);
+			uid = NULL;
+			if (summary_index < summary_array->len)
+				uid = g_ptr_array_index (summary_array, summary_index);
 			if (uid != NULL) {
 				g_string_prepend (seqs, buf);
 				g_string_prepend (uids, uid);
-				g_free (uid);
 			}
 		} while (ii < sequence_limit);
 
@@ -2776,7 +2784,7 @@ camel_imapx_command_add_qresync_parameter (CamelIMAPXCommand *ic,
 
 exit:
 	g_free (known_uid_set);
-
+	camel_folder_summary_free_array (summary_array);
 	g_object_unref (mailbox);
 
 	return parameter_added;
