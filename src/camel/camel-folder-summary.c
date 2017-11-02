@@ -1241,6 +1241,7 @@ camel_folder_summary_get_array (CamelFolderSummary *summary)
 
 	camel_folder_summary_lock (summary);
 
+	/* Do not set free_func on the array, it would break IMAPx code */
 	res = g_ptr_array_sized_new (g_hash_table_size (summary->priv->uids));
 	g_hash_table_foreach (summary->priv->uids, folder_summary_dupe_uids_to_array, res);
 
