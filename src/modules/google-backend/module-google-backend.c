@@ -157,12 +157,39 @@ host_ends_with (const gchar *host,
 	return g_ascii_strcasecmp (host + host_len - ends_with_len, ends_with) == 0;
 }
 
+static gboolean
+google_backend_is_google_host (ESourceAuthentication *auth_extension)
+{
+	gboolean is_google;
+	gchar *host;
+
+	g_return_val_if_fail (E_IS_SOURCE_AUTHENTICATION (auth_extension), FALSE);
+
+	host = e_source_authentication_dup_host (auth_extension);
+
+	is_google = host && (
+		host_ends_with (host, "gmail.com") ||
+		host_ends_with (host, "googlemail.com") ||
+		host_ends_with (host, "google.com") ||
+		host_ends_with (host, "googleusercontent.com"));
+
+	g_free (host);
+
+	return is_google;
+}
+
 static void
 google_backend_mail_update_auth_method (ESource *child_source,
 					ESource *master_source)
 {
+	ESourceAuthentication *auth_extension;
 	EOAuth2Support *oauth2_support;
 	const gchar *method;
+
+	auth_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	if (!google_backend_is_google_host (auth_extension))
+		return;
 
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (child_source));
 	if (!oauth2_support && master_source)
@@ -176,18 +203,8 @@ google_backend_mail_update_auth_method (ESource *child_source,
 		method = NULL;
 	}
 
-	if (method) {
-		ESourceAuthentication *auth_extension;
-		gchar *host;
-
-		auth_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		host = e_source_authentication_dup_host (auth_extension);
-
-		if (host && (host_ends_with (host, ".gmail.com") || host_ends_with (host, ".googlemail.com")))
-			e_source_authentication_set_method (auth_extension, method);
-
-		g_free (host);
-	}
+	if (method)
+		e_source_authentication_set_method (auth_extension, method);
 
 	g_clear_object (&oauth2_support);
 }
@@ -208,6 +225,11 @@ google_backend_calendar_update_auth_method (ESource *child_source,
 	ESourceAuthentication *auth_extension;
 	const gchar *method;
 
+	auth_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	if (!google_backend_is_google_host (auth_extension))
+		return;
+
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (child_source));
 	if (!oauth2_support && master_source)
 		oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (master_source));
@@ -220,7 +242,6 @@ google_backend_calendar_update_auth_method (ESource *child_source,
 		method = "plain/password";
 	}
 
-	auth_extension = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
 	e_source_authentication_set_method (auth_extension, method);
 
 	g_clear_object (&oauth2_support);
@@ -243,12 +264,15 @@ google_backend_contacts_update_auth_method (ESource *child_source,
 	const gchar *extension_name;
 	const gchar *method;
 
+	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
+	extension = e_source_get_extension (child_source, extension_name);
+
+	if (!google_backend_is_google_host (extension))
+		return;
+
 	oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (child_source));
 	if (!oauth2_support && master_source)
 		oauth2_support = e_server_side_source_ref_oauth2_support (E_SERVER_SIDE_SOURCE (master_source));
-
-	extension_name = E_SOURCE_EXTENSION_AUTHENTICATION;
-	extension = e_source_get_extension (child_source, extension_name);
 
 	if (oauth2_support != NULL)
 		method = "OAuth2";
