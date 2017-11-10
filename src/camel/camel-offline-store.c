@@ -173,7 +173,6 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
                                      GError **error)
 {
 	CamelService *service;
-	CamelServiceConnectionStatus status;
 	gboolean host_reachable = TRUE;
 	gboolean store_is_online;
 	gboolean success = TRUE;
@@ -184,7 +183,6 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 		return TRUE;
 
 	service = CAMEL_SERVICE (store);
-	status = camel_service_get_connection_status (service);
 
 	if (CAMEL_IS_NETWORK_SERVICE (store)) {
 		/* When going to set the 'online' state, then check with up-to-date
@@ -209,7 +207,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 
 		g_object_notify (G_OBJECT (store), "online");
 
-		if (status == CAMEL_SERVICE_CONNECTING)
+		if (camel_service_get_connection_status (service) == CAMEL_SERVICE_CONNECTING)
 			return TRUE;
 
 		return camel_service_connect_sync (service, cancellable, error);
@@ -251,7 +249,11 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 			CAMEL_STORE (store), FALSE, cancellable, NULL);
 	}
 
-	if (status != CAMEL_SERVICE_DISCONNECTING) {
+	/* Call camel_service_get_connection_status(), to have up-to-date information,
+	   rather than "cached" from the top of the function, which can be obsolete. */
+	if (!online &&
+	    camel_service_get_connection_status (service) != CAMEL_SERVICE_DISCONNECTING &&
+	    camel_service_get_connection_status (service) != CAMEL_SERVICE_DISCONNECTED) {
 		success = camel_service_disconnect_sync (
 			service, host_reachable, cancellable, error);
 	}
