@@ -1761,6 +1761,8 @@ e_source_registry_new_sync (GCancellable *cancellable,
 	 *     until GObject's type initialization deadlock issue is fixed.
 	 *     Apparently only the synchronous instantiation is affected. */
 	g_type_ensure (G_TYPE_DBUS_CONNECTION);
+	g_type_ensure (G_TYPE_DBUS_PROXY);
+	g_type_ensure (G_BUS_TYPE_SESSION);
 
 	registry = source_registry_dup_uninitialized_singleton ();
 
