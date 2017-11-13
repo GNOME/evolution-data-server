@@ -1,3 +1,31 @@
+Evolution-Data-Server 3.27.2 2017-11-13
+---------------------------------------
+
+Bug Fixes:
+	Bug 696047 - [alarm-notify] Busy loop on midnight and DST change (Milan Crha)
+	Bug 789169 - [CalDAV] Ask for credentials when PUT fails with Unauthorized (Milan Crha)
+	Bug 742167 - Stuck when going online (Milan Crha)
+	Bug 789132 - Different TZID of RECURRENCE-ID fails to match instances (Milan Crha)
+	Bug 789677 - [ECalClient] Incorrect free call in process_detached_instances() (Jan Alexander Steffens (heftig))
+	Bug 789555 - "Synchronize for offline" works on opened folders only (Milan Crha)
+	Bug 789147 - [IMAPx] Slow message move with UID MOVE (Milan Crha)
+
+Miscellaneous:
+	Return hash-like IDs from camel_header_msgid_generate() (Milan Crha)
+	[CalDAV/CardDAV] Append ending slash to URL when missing (Milan Crha)
+	[IMAPx] Show progress of message body download only (Milan Crha)
+	[IMAPx] Prevent deadlock under camel_imapx_server_copy_message_sync() (Milan Crha)
+	[google-backend] Limit for what sources authentication method is changed (Milan Crha)
+	Add missed API indexes into developer documentation (Milan Crha)
+	[CamelOfflineStore] Incorrect disconnect when going online (Milan Crha)
+
+Translations:
+	Matej Urbančič (sl)
+	Anders Jonsson (sv)
+	Mario Blättermann (de)
+	Marek Cernocky (cs)
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.27.1 2017-10-16
 ---------------------------------------
 
