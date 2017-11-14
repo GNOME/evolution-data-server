@@ -287,7 +287,7 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 		ESource *source = liter->data;
 		gchar *resource_id;
 
-		resource_id = webdav_collection_backend_get_resource_id (webdav_backend, source);
+		resource_id = e_webdav_collection_backend_get_resource_id (webdav_backend, source);
 		if (resource_id) {
 			ESource *child;
 
@@ -299,7 +299,6 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 
 			g_free (resource_id);
 		}
-
 	}
 
 	g_list_free_full (list, g_object_unref);

@@ -39,7 +39,9 @@
 
 #include "evolution-data-server-config.h"
 
+#include <errno.h>
 #include <glib/gi18n-lib.h>
+#include <glib/gstdio.h>
 
 #include <libedataserver/libedataserver.h>
 
@@ -214,6 +216,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 	ECollectionBackendClass *class;
 	GDir *dir;
 	GFile *file;
+	GSList *remove_redundant = NULL, *link;
 	const gchar *name;
 	const gchar *cache_dir;
 	GError *error = NULL;
@@ -266,10 +269,14 @@ collection_backend_load_resources (ECollectionBackend *backend)
 		resource_id = class->dup_resource_id (backend, source);
 
 		/* Hash table takes ownership of the resource ID. */
-		if (resource_id != NULL)
+		if (resource_id != NULL &&
+		    !g_hash_table_contains (backend->priv->unclaimed_resources, resource_id)) {
 			g_hash_table_insert (
 				backend->priv->unclaimed_resources,
 				resource_id, g_object_ref (source));
+		} else {
+			remove_redundant = g_slist_prepend (remove_redundant, g_strdup (name));
+		}
 
 		g_object_unref (source);
 	}
@@ -279,6 +286,24 @@ collection_backend_load_resources (ECollectionBackend *backend)
 	g_object_unref (file);
 	g_object_unref (server);
 	g_dir_close (dir);
+
+	for (link = remove_redundant; link; link = g_slist_next (link)) {
+		const gchar *name = link->data;
+		gchar *filename;
+
+		filename = g_build_filename (cache_dir, name, NULL);
+		if (filename) {
+			if (g_unlink (filename) == -1) {
+				gint errn = errno;
+				e_source_registry_debug_print ("%s: Failed to remove redundant source '%s': %s\n", G_STRFUNC, filename, g_strerror (errn));
+			} else {
+				e_source_registry_debug_print ("%s: Removed redundant source '%s'\n", G_STRFUNC, filename);
+			}
+		}
+		g_free (filename);
+	}
+
+	g_slist_free_full (remove_redundant, g_free);
 }
 
 static ESource *
