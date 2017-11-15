@@ -4270,10 +4270,14 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	data_uids = g_ptr_array_new ();
 
 	for (ii = 0; ii < uids->len; ii++) {
+		CamelMessageInfo *source_info;
 		gchar *uid = (gchar *) camel_pstring_strdup (uids->pdata[ii]);
 
 		g_ptr_array_add (data_uids, uid);
-		g_hash_table_insert (source_infos, uid, camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid));
+
+		source_info = camel_folder_summary_get (camel_folder_get_folder_summary (folder), uid);
+		if (source_info)
+			g_hash_table_insert (source_infos, uid, source_info);
 	}
 
 	g_ptr_array_sort (data_uids, (GCompareFunc) imapx_uids_array_cmp);
