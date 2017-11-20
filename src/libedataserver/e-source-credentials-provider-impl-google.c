@@ -126,6 +126,7 @@ e_source_credentials_google_util_get_access_token_from_secret (const gchar *secr
 
 static gboolean
 e_source_credentials_google_util_lookup_secret_for_source_sync (ESource *source,
+								gboolean can_return_expired,
 								GCancellable *cancellable,
 								ENamedParameters **out_credentials,
 								GError **error)
@@ -159,9 +160,11 @@ e_source_credentials_google_util_lookup_secret_for_source_sync (ESource *source,
 	}
 
 	if (e_source_credentials_google_util_get_access_token_from_secret (secret, &access_token)) {
-		*out_credentials = e_named_parameters_new ();
-		e_named_parameters_set (*out_credentials, E_SOURCE_CREDENTIAL_GOOGLE_SECRET, secret);
-		e_named_parameters_set (*out_credentials, E_SOURCE_CREDENTIAL_PASSWORD, access_token);
+		if (access_token || can_return_expired) {
+			*out_credentials = e_named_parameters_new ();
+			e_named_parameters_set (*out_credentials, E_SOURCE_CREDENTIAL_GOOGLE_SECRET, secret);
+			e_named_parameters_set (*out_credentials, E_SOURCE_CREDENTIAL_PASSWORD, access_token);
+		}
 	}
 
 	e_util_safe_free_string (access_token);
@@ -189,7 +192,7 @@ e_source_credentials_provider_impl_google_lookup_sync (ESourceCredentialsProvide
 		return FALSE;
 	}
 
-	return e_source_credentials_google_util_lookup_secret_for_source_sync (source, cancellable, out_credentials, error);
+	return e_source_credentials_google_util_lookup_secret_for_source_sync (source, FALSE, cancellable, out_credentials, error);
 }
 
 static gboolean
@@ -540,7 +543,7 @@ e_source_credentials_google_get_access_token_sync (ESource *source,
 	/* Maybe some other part refreshed the token already and stored it into the secret store,
 	   thus try to read it and use it, if it contains proper data.
 	*/
-	if (e_source_credentials_google_util_lookup_secret_for_source_sync (source, cancellable, &tmp_credentials, error) &&
+	if (e_source_credentials_google_util_lookup_secret_for_source_sync (source, TRUE, cancellable, &tmp_credentials, error) &&
 	    e_source_credentials_google_extract_from_credentials_valid_only (tmp_credentials, out_access_token, out_expires_in_seconds)) {
 		e_named_parameters_free (tmp_credentials);
 
@@ -712,6 +715,11 @@ e_source_credentials_google_util_decode_from_secret (const gchar *secret,
 					if (!json_reader_get_error (reader))
 						*out_value = g_strdup_printf ("%" G_GINT64_FORMAT, iv64);
 				}
+			}
+
+			if (*out_value && !**out_value) {
+				g_free (*out_value);
+				*out_value = NULL;
 			}
 		}
 
