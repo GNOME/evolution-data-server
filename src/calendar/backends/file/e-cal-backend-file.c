@@ -1969,6 +1969,7 @@ free_busy_instance (ECalComponent *comp,
 	icalparameter *param;
 	struct icalperiodtype ipt;
 	icaltimezone *utc_zone;
+	const gchar *summary, *location;
 
 	utc_zone = icaltimezone_get_utc_timezone ();
 
@@ -1982,6 +1983,13 @@ free_busy_instance (ECalComponent *comp,
 
 	param = icalparameter_new_fbtype (ICAL_FBTYPE_BUSY);
 	icalproperty_add_parameter (prop, param);
+
+	summary = icalcomponent_get_summary (e_cal_component_get_icalcomponent (comp));
+	if (summary && *summary)
+		icalproperty_set_parameter_from_string (prop, "X-SUMMARY", summary);
+	location = icalcomponent_get_location (e_cal_component_get_icalcomponent (comp));
+	if (location && *location)
+		icalproperty_set_parameter_from_string (prop, "X-LOCATION", location);
 
 	icalcomponent_add_property (vfb, prop);
 
