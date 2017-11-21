@@ -15,11 +15,15 @@
  *
  */
 
+#if !defined (__LIBEDATASERVER_H_INSIDE__) && !defined (LIBEDATASERVER_COMPILATION)
+#error "Only <libedataserver/libedataserver.h> should be included directly."
+#endif
+
 #ifndef E_GDATA_OAUTH2_AUTHORIZER_H
 #define E_GDATA_OAUTH2_AUTHORIZER_H
 
-#include <gdata/gdata.h>
-#include <libedataserver/libedataserver.h>
+#include <libedataserver/e-source.h>
+#include <libedataserver/e-data-server-util.h>
 
 /* Standard GObject macros */
 #define E_TYPE_GDATA_OAUTH2_AUTHORIZER \
@@ -55,21 +59,22 @@ struct _EGDataOAuth2AuthorizerClass {
 	GObjectClass parent_class;
 };
 
-GType		e_gdata_oauth2_authorizer_get_type
-					(void) G_GNUC_CONST;
+gboolean	e_gdata_oauth2_authorizer_supported	(void);
+GType		e_gdata_oauth2_authorizer_get_type	(void) G_GNUC_CONST;
 EGDataOAuth2Authorizer *
-		e_gdata_oauth2_authorizer_new
-					(ESource *source);
-ESource *	e_gdata_oauth2_authorizer_ref_source
-					(EGDataOAuth2Authorizer *authorizer);
+		e_gdata_oauth2_authorizer_new		(ESource *source,
+							 GType service_type);
+ESource *	e_gdata_oauth2_authorizer_ref_source	(EGDataOAuth2Authorizer *oauth2_authorizer);
+GType		e_gdata_oauth2_authorizer_get_service_type
+							(EGDataOAuth2Authorizer *oauth2_authorizer);
 void		e_gdata_oauth2_authorizer_set_credentials
-					(EGDataOAuth2Authorizer *authorizer,
-					 const ENamedParameters *credentials);
+							(EGDataOAuth2Authorizer *oauth2_authorizer,
+							 const ENamedParameters *credentials);
 ENamedParameters *
 		e_gdata_oauth2_authorizer_clone_credentials
-					(EGDataOAuth2Authorizer *authorizer);
+							(EGDataOAuth2Authorizer *oauth2_authorizer);
+gboolean	e_gdata_oauth2_authorizer_is_expired	(EGDataOAuth2Authorizer *oauth2_authorizer);
 
 G_END_DECLS
 
 #endif /* E_GDATA_OAUTH2_AUTHORIZER_H */
-

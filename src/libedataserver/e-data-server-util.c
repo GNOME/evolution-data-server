@@ -2247,7 +2247,7 @@ e_named_parameters_new_clone (const ENamedParameters *parameters)
 
 /**
  * e_named_parameters_free:
- * @parameters: an #ENamedParameters
+ * @parameters: (nullable): an #ENamedParameters
  *
  * Frees an instance of #ENamedParameters, previously allocated
  * with e_named_parameters_new(). Function does nothing, if

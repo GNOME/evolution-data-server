@@ -57,6 +57,7 @@ set(SOURCES
 	e-extension.c
 	e-flag.c
 	e-free-form-exp.c
+	e-gdata-oauth2-authorizer.c
 	e-gdbus-templates.c
 	e-iterator.c
 	e-list.c
@@ -140,6 +141,7 @@ set(HEADERS
 	e-extension.h
 	e-flag.h
 	e-free-form-exp.h
+	e-gdata-oauth2-authorizer.h
 	e-gdbus-templates.h
 	e-iterator.h
 	e-list.h
@@ -242,6 +244,7 @@ target_compile_options(edataserver PUBLIC
 	${GIO_UNIX_CFLAGS}
 	${ICU_CFLAGS}
 	${GOOGLE_AUTH_CFLAGS}
+	${LIBGDATA_CFLAGS}
 )
 
 target_include_directories(edataserver PUBLIC
@@ -256,6 +259,7 @@ target_include_directories(edataserver PUBLIC
 	${GIO_UNIX_INCLUDE_DIRS}
 	${ICU_INCLUDE_DIRS}
 	${GOOGLE_AUTH_INCLUDE_DIRS}
+	${LIBGDATA_INCLUDE_DIRS}
 )
 
 target_link_libraries(edataserver
@@ -265,6 +269,7 @@ target_link_libraries(edataserver
 	${GIO_UNIX_LDFLAGS}
 	${ICU_LDFLAGS}
 	${GOOGLE_AUTH_LDFLAGS}
+	${LIBGDATA_LDFLAGS}
 )
 
 install(TARGETS edataserver

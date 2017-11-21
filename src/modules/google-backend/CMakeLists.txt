@@ -1,8 +1,6 @@
 set(extra_deps)
 if(HAVE_LIBGDATA)
 	set(sources
-		e-gdata-oauth2-authorizer.c
-		e-gdata-oauth2-authorizer.h
 		module-google-backend.c
 	)
 else(HAVE_LIBGDATA)

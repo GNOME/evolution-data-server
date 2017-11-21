@@ -20,19 +20,10 @@
 #include <glib/gi18n-lib.h>
 
 #include <libebackend/libebackend.h>
+#include <libedataserver/libedataserver.h>
 
 #ifdef HAVE_LIBGDATA
 #include <gdata/gdata.h>
-#endif
-
-/* This macro was introduced in libgdata 0.11,
- * but we currently only require libgdata 0.10. */
-#ifndef GDATA_CHECK_VERSION
-#define GDATA_CHECK_VERSION(major,minor,micro) 0
-#endif
-
-#if GDATA_CHECK_VERSION(0,15,1)
-#include "e-gdata-oauth2-authorizer.h"
 #endif
 
 /* Standard GObject macros */
@@ -340,7 +331,7 @@ google_remove_unknown_sources_cb (gpointer resource_id,
 	}
 }
 
-#if GDATA_CHECK_VERSION(0,15,1)
+#ifdef HAVE_LIBGDATA
 static void
 google_add_task_list (ECollectionBackend *collection,
 		      const gchar *resource_id,
@@ -419,7 +410,7 @@ google_add_task_list (ECollectionBackend *collection,
 	g_object_unref (server);
 	g_free (identity);
 }
-#endif /* GDATA_CHECK_VERSION(0,15,1) */
+#endif /* HAVE_LIBGDATA */
 
 static ESourceAuthenticationResult
 google_backend_authenticate_sync (EBackend *backend,
@@ -439,7 +430,6 @@ google_backend_authenticate_sync (EBackend *backend,
 	GList *sources;
 	ENamedParameters *credentials_copy = NULL;
 	const gchar *calendar_url;
-	GError *local_error = NULL;
 
 	g_return_val_if_fail (collection != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 
@@ -494,14 +484,15 @@ google_backend_authenticate_sync (EBackend *backend,
 		result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 	}
 
-#if GDATA_CHECK_VERSION(0,15,1)
+#ifdef HAVE_LIBGDATA
 	if (result == E_SOURCE_AUTHENTICATION_ACCEPTED &&
 	    e_source_collection_get_calendar_enabled (collection_extension) &&
 	    (goa_extension || e_source_credentials_google_is_supported ())) {
 		EGDataOAuth2Authorizer *authorizer;
 		GDataTasksService *tasks_service;
+		GError *local_error = NULL;
 
-		authorizer = e_gdata_oauth2_authorizer_new (e_backend_get_source (backend));
+		authorizer = e_gdata_oauth2_authorizer_new (e_backend_get_source (backend), GDATA_TYPE_TASKS_SERVICE);
 		e_gdata_oauth2_authorizer_set_credentials (authorizer, credentials);
 
 		tasks_service = gdata_tasks_service_new (GDATA_AUTHORIZER (authorizer));
@@ -543,7 +534,7 @@ google_backend_authenticate_sync (EBackend *backend,
 		g_clear_object (&authorizer);
 		g_clear_error (&local_error);
 	}
-#endif /* GDATA_CHECK_VERSION(0,15,1) */
+#endif /* HAVE_LIBGDATA */
 
 	if (result == E_SOURCE_AUTHENTICATION_ACCEPTED) {
 		ESourceRegistryServer *server;

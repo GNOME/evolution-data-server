@@ -21,7 +21,8 @@
 #include <glib/gi18n-lib.h>
 #include <gdata/gdata.h>
 
-#include "e-gdata-oauth2-authorizer.h"
+#include "libedataserver/libedataserver.h"
+
 #include "e-cal-backend-gtasks.h"
 
 #define d(x)
@@ -281,7 +282,7 @@ ecb_gtasks_request_authorization (ECalBackendGTasks *cbgtasks,
 		source = e_backend_get_source (E_BACKEND (cbgtasks));
 
 		/* Only OAuth2 is supported with Google Tasks */
-		authorizer = e_gdata_oauth2_authorizer_new (source);
+		authorizer = e_gdata_oauth2_authorizer_new (source, GDATA_TYPE_TASKS_SERVICE);
 		cbgtasks->priv->authorizer = GDATA_AUTHORIZER (authorizer);
 	}
 

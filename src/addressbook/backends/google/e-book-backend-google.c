@@ -28,9 +28,10 @@
 #include <glib/gi18n-lib.h>
 #include <gdata/gdata.h>
 
+#include "libedataserver/libedataserver.h"
+
 #include "e-book-backend-google.h"
 #include "e-book-google-utils.h"
-#include "e-gdata-oauth2-authorizer.h"
 
 #define URI_GET_CONTACTS "https://www.google.com/m8/feeds/contacts/default/full"
 
@@ -168,8 +169,7 @@ ebb_google_request_authorization (EBookBackendGoogle *bbgoogle,
 
 		source = e_backend_get_source (E_BACKEND (bbgoogle));
 
-		/* Only OAuth2 is supported with Google Tasks */
-		authorizer = e_gdata_oauth2_authorizer_new (source);
+		authorizer = e_gdata_oauth2_authorizer_new (source, GDATA_TYPE_CONTACTS_SERVICE);
 		bbgoogle->priv->authorizer = GDATA_AUTHORIZER (authorizer);
 	}
 

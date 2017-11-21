@@ -9,8 +9,6 @@ set(SOURCES
 	e-cal-backend-gtasks-factory.c
 	e-cal-backend-gtasks.c
 	e-cal-backend-gtasks.h
-	e-gdata-oauth2-authorizer.c
-	e-gdata-oauth2-authorizer.h
 )
 
 add_library(ecalbackendgtasks MODULE

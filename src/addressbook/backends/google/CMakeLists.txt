@@ -12,8 +12,6 @@ add_library(ebookbackendgoogle MODULE
 	e-book-backend-google.h
 	e-book-google-utils.c
 	e-book-google-utils.h
-	e-gdata-oauth2-authorizer.c
-	e-gdata-oauth2-authorizer.h
 )
 
 add_dependencies(ebookbackendgoogle
