@@ -726,6 +726,10 @@ smtp_transport_authenticate_sync (CamelService *service,
 
 		/* the server challenge/response should follow a 334 code */
 		if (strncmp (respbuf, "334", 3) != 0) {
+			if (strncmp (respbuf, "535", 3) == 0) {
+				goto rejected;
+			}
+
 			smtp_set_error (transport, istream, respbuf, cancellable, error);
 			g_prefix_error (error, _("AUTH command failed: "));
 			goto lose;
@@ -779,6 +783,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 	/* If our authentication data was rejected, destroy the
 	 * password so that the user gets prompted to try again. */
 	if (strncmp (respbuf, "535", 3) == 0) {
+ rejected:
 		result = CAMEL_AUTHENTICATION_REJECTED;
 
 		/* Read the continuation, if the server returned it. */
