@@ -72,7 +72,18 @@ e_soup_auth_bearer_update (SoupAuth *auth,
                            SoupMessage *message,
                            GHashTable *auth_header)
 {
-	/* XXX Not sure what to do here.  Discard the access token? */
+	if (message && message->status_code == SOUP_STATUS_UNAUTHORIZED) {
+		ESoupAuthBearer *bearer;
+
+		g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (auth), FALSE);
+
+		bearer = E_SOUP_AUTH_BEARER (auth);
+
+		/* Expire the token, it's likely to be invalid. */
+		bearer->priv->expiry = EXPIRY_INVALID;
+
+		return FALSE;
+	}
 
 	return TRUE;
 }

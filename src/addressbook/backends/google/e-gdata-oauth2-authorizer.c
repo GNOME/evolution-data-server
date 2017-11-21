@@ -15,17 +15,24 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
+#include <time.h>
+
 #include "e-gdata-oauth2-authorizer.h"
 
 #define E_GDATA_OAUTH2_AUTHORIZER_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
 	((obj), E_TYPE_GDATA_OAUTH2_AUTHORIZER, EGDataOAuth2AuthorizerPrivate))
 
+#define EXPIRY_INVALID ((time_t) -1)
+
 struct _EGDataOAuth2AuthorizerPrivate {
 	GWeakRef source;
 
 	/* These members are protected by the global mutex. */
 	gchar *access_token;
+	time_t expiry;
 	GHashTable *authorization_domains;
 	ENamedParameters *credentials;
 };
@@ -49,6 +56,19 @@ G_DEFINE_TYPE_WITH_CODE (
 	G_IMPLEMENT_INTERFACE (
 		GDATA_TYPE_AUTHORIZER,
 		e_gdata_oauth2_authorizer_interface_init))
+
+static gboolean
+e_gdata_oauth2_authorizer_is_expired (GDataAuthorizer *authorizer)
+{
+	EGDataOAuth2Authorizer *oauth2_authorizer;
+
+	g_return_val_if_fail (E_IS_GDATA_OAUTH2_AUTHORIZER (authorizer), TRUE);
+
+	oauth2_authorizer = E_GDATA_OAUTH2_AUTHORIZER (authorizer);
+
+	return oauth2_authorizer->priv->expiry == EXPIRY_INVALID ||
+	       oauth2_authorizer->priv->expiry <= time (NULL);
+}
 
 static gboolean
 gdata_oauth2_authorizer_is_authorized (GDataAuthorizer *authorizer,
@@ -183,7 +203,8 @@ gdata_oauth2_authorizer_process_request (GDataAuthorizer *authorizer,
 
 	g_mutex_lock (&mutex);
 
-	if (!gdata_oauth2_authorizer_is_authorized (authorizer, domain))
+	if (!gdata_oauth2_authorizer_is_authorized (authorizer, domain) ||
+	    e_gdata_oauth2_authorizer_is_expired (authorizer))
 		goto exit;
 
 	/* We can't add an Authorization header without an access token.
@@ -229,28 +250,39 @@ gdata_oauth2_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 {
 	EGDataOAuth2Authorizer *oauth2_authorizer;
 	ESource *source;
-	gchar **ptr_access_token;
+	gchar *access_token = NULL;
+	gint expires_in_seconds = -1;
 	gboolean success = FALSE;
 
 	oauth2_authorizer = E_GDATA_OAUTH2_AUTHORIZER (authorizer);
 	source = e_gdata_oauth2_authorizer_ref_source (oauth2_authorizer);
 	g_return_val_if_fail (source != NULL, FALSE);
 
-	ptr_access_token = &oauth2_authorizer->priv->access_token;
-
 	g_mutex_lock (&mutex);
 
-	g_free (*ptr_access_token);
-	*ptr_access_token = NULL;
-
 	success = e_util_get_source_oauth2_access_token_sync (source, oauth2_authorizer->priv->credentials,
-		ptr_access_token, NULL, cancellable, error);
+		&access_token, &expires_in_seconds, cancellable, error);
+
+	/* Returned token is the same, thus no refresh happened, thus rather fail. */
+	if (access_token && g_strcmp0 (access_token, oauth2_authorizer->priv->access_token) == 0) {
+		g_free (access_token);
+		access_token = NULL;
+		success = FALSE;
+	}
+
+	g_free (oauth2_authorizer->priv->access_token);
+	oauth2_authorizer->priv->access_token = access_token;
+
+	if (success && expires_in_seconds > 0)
+		oauth2_authorizer->priv->expiry = time (NULL) + expires_in_seconds - 1;
+	else
+		oauth2_authorizer->priv->expiry = EXPIRY_INVALID;
 
 	g_mutex_unlock (&mutex);
 
 	g_object_unref (source);
 
-	return success;
+	return success && access_token;
 }
 
 static void
@@ -305,6 +337,7 @@ e_gdata_oauth2_authorizer_init (EGDataOAuth2Authorizer *authorizer)
 
 	authorizer->priv = E_GDATA_OAUTH2_AUTHORIZER_GET_PRIVATE (authorizer);
 	authorizer->priv->authorization_domains = authorization_domains;
+	authorizer->priv->expiry = EXPIRY_INVALID;
 	g_weak_ref_init (&authorizer->priv->source, NULL);
 }
 
