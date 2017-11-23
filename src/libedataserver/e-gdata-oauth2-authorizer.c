@@ -339,6 +339,22 @@ e_gdata_oauth2_authorizer_init (EGDataOAuth2Authorizer *oauth2_authorizer)
 	g_weak_ref_init (&oauth2_authorizer->priv->source, NULL);
 }
 
+#else /* HAVE_LIBGDATA */
+
+/* Define a fake object, thus GObject introspection code is happy even when
+   libgdata support was disabled. */
+G_DEFINE_TYPE (EGDataOAuth2Authorizer, e_gdata_oauth2_authorizer, G_TYPE_OBJECT)
+
+static void
+e_gdata_oauth2_authorizer_class_init (EGDataOAuth2AuthorizerClass *class)
+{
+}
+
+static void
+e_gdata_oauth2_authorizer_init (EGDataOAuth2Authorizer *oauth2_authorizer)
+{
+}
+
 #endif /* HAVE_LIBGDATA */
 
 /**
