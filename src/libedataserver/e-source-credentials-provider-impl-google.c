@@ -180,6 +180,8 @@ e_source_credentials_provider_impl_google_lookup_sync (ESourceCredentialsProvide
 						       ENamedParameters **out_credentials,
 						       GError **error)
 {
+	gboolean success;
+
 	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL_GOOGLE (provider_impl), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 	g_return_val_if_fail (out_credentials != NULL, FALSE);
@@ -192,7 +194,27 @@ e_source_credentials_provider_impl_google_lookup_sync (ESourceCredentialsProvide
 		return FALSE;
 	}
 
-	return e_source_credentials_google_util_lookup_secret_for_source_sync (source, FALSE, cancellable, out_credentials, error);
+	success = e_source_credentials_google_util_lookup_secret_for_source_sync (source, FALSE, cancellable, out_credentials, error);
+
+	/* Try to refresh the access token, in case it's stored, but expired. */
+	if (!success && !g_cancellable_is_cancelled (cancellable)) {
+		ENamedParameters *empty_credentials;
+		gchar *access_token = NULL;
+
+		/* Use empty credentials, to read from store. */
+		empty_credentials = e_named_parameters_new ();
+
+		if (e_source_credentials_google_get_access_token_sync (source, empty_credentials, &access_token, NULL, cancellable, NULL)) {
+			g_free (access_token);
+			g_clear_error (error);
+
+			success = e_source_credentials_google_util_lookup_secret_for_source_sync (source, FALSE, cancellable, out_credentials, error);
+		}
+
+		e_named_parameters_free (empty_credentials);
+	}
+
+	return success;
 }
 
 static gboolean
