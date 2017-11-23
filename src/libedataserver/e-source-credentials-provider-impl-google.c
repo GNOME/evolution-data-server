@@ -337,10 +337,55 @@ cpi_google_abort_session_cb (GCancellable *cancellable,
 	soup_session_abort (session);
 }
 
+static gboolean
+cpi_google_setup_proxy_resolver (SoupSession *session,
+				 ESource *cred_source,
+				 GCancellable *cancellable)
+{
+	ESourceAuthentication *auth_extension;
+	ESource *source = NULL;
+	gchar *uid;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (SOUP_IS_SESSION (session), FALSE);
+	g_return_val_if_fail (G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (cred_source), FALSE);
+
+	if (!e_source_has_extension (cred_source, E_SOURCE_EXTENSION_AUTHENTICATION))
+		return TRUE;
+
+	auth_extension = e_source_get_extension (cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	uid = e_source_authentication_dup_proxy_uid (auth_extension);
+
+	if (uid != NULL) {
+		ESourceRegistry *registry;
+
+		registry = e_source_registry_new_sync (cancellable, NULL);
+		if (!registry)
+			success = FALSE;
+		else
+			source = e_source_registry_ref_source (registry, uid);
+
+		g_clear_object (&registry);
+		g_free (uid);
+	}
+
+	if (source != NULL) {
+		GProxyResolver *proxy_resolver;
+
+		proxy_resolver = G_PROXY_RESOLVER (source);
+		if (g_proxy_resolver_is_supported (proxy_resolver))
+			g_object_set (session, SOUP_SESSION_PROXY_RESOLVER, proxy_resolver, NULL);
+
+		g_object_unref (source);
+	}
+
+	return success;
+}
+
 static guint
 cpi_google_post_data_sync (const gchar *uri,
 			   const gchar *post_data,
-			   /* ESourceRegistry *registry, */
 			   ESource *cred_source,
 			   GCancellable *cancellable,
 			   gchar **out_response_data)
@@ -357,14 +402,6 @@ cpi_google_post_data_sync (const gchar *uri,
 
 	*out_response_data = NULL;
 
-	message = soup_message_new (SOUP_METHOD_POST, uri);
-	g_return_val_if_fail (message != NULL, SOUP_STATUS_MALFORMED);
-
-	soup_message_set_request (message, "application/x-www-form-urlencoded",
-		SOUP_MEMORY_TEMPORARY, post_data, strlen (post_data));
-
-	e_soup_ssl_trust_connect (message, cred_source);
-
 	session = soup_session_new ();
 	g_object_set (
 		session,
@@ -374,8 +411,19 @@ cpi_google_post_data_sync (const gchar *uri,
 		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
 
-	/* Oops, doesn't honor proxy settings (neither EWebDAVDiscover) */
-	/* cpi_google_setup_proxy_resolver (session, registry, cred_source); */
+	if (!cpi_google_setup_proxy_resolver (session, cred_source, cancellable)) {
+		g_object_unref (session);
+
+		return SOUP_STATUS_CANT_RESOLVE_PROXY;
+	}
+
+	message = soup_message_new (SOUP_METHOD_POST, uri);
+	g_return_val_if_fail (message != NULL, SOUP_STATUS_MALFORMED);
+
+	soup_message_set_request (message, "application/x-www-form-urlencoded",
+		SOUP_MEMORY_TEMPORARY, post_data, strlen (post_data));
+
+	e_soup_ssl_trust_connect (message, cred_source);
 
 	soup_message_headers_append (message->request_headers, "Connection", "close");
 

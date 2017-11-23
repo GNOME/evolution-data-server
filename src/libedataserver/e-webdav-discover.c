@@ -21,6 +21,8 @@
 
 #include <libsoup/soup.h>
 
+#include "e-source-authentication.h"
+#include "e-source-registry.h"
 #include "e-source-webdav.h"
 #include "e-webdav-session.h"
 #include "e-xml-utils.h"
@@ -404,6 +406,54 @@ e_webdav_discover_sources_thread (GTask *task,
 	}
 }
 
+static gboolean
+e_webdav_discover_setup_proxy_resolver (EWebDAVSession *webdav,
+					ESource *cred_source,
+					GCancellable *cancellable,
+					GError **error)
+{
+	ESourceAuthentication *auth_extension;
+	ESource *source = NULL;
+	gchar *uid;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (E_IS_WEBDAV_SESSION (webdav), FALSE);
+	g_return_val_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (cred_source), FALSE);
+
+	if (!e_source_has_extension (cred_source, E_SOURCE_EXTENSION_AUTHENTICATION))
+		return TRUE;
+
+	auth_extension = e_source_get_extension (cred_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+	uid = e_source_authentication_dup_proxy_uid (auth_extension);
+
+	if (uid != NULL) {
+		ESourceRegistry * registry;
+
+		registry = e_source_registry_new_sync (cancellable, error);
+		if (!registry) {
+			success = FALSE;
+		} else {
+			source = e_source_registry_ref_source (registry, uid);
+			g_object_unref (registry);
+		}
+
+		g_free (uid);
+	}
+
+	if (source != NULL) {
+		GProxyResolver *proxy_resolver;
+
+		proxy_resolver = G_PROXY_RESOLVER (source);
+		if (g_proxy_resolver_is_supported (proxy_resolver))
+			g_object_set (E_SOUP_SESSION (webdav), SOUP_SESSION_PROXY_RESOLVER, proxy_resolver, NULL);
+
+		g_object_unref (source);
+	}
+
+	return success;
+}
+
 /**
  * e_webdav_discover_sources:
  * @source: an #ESource from which to take connection details
@@ -630,6 +680,14 @@ e_webdav_discover_sources_sync (ESource *source,
 	}
 
 	webdav = e_webdav_session_new (source);
+
+	if (!e_webdav_discover_setup_proxy_resolver (webdav, source, cancellable, error)) {
+		soup_uri_free (soup_uri);
+		g_object_unref (webdav);
+
+		return FALSE;
+	}
+
 	e_soup_session_setup_logging (E_SOUP_SESSION (webdav), g_getenv ("WEBDAV_DEBUG"));
 	e_soup_session_set_credentials (E_SOUP_SESSION (webdav), credentials);
 
