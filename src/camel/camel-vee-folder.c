@@ -1648,6 +1648,38 @@ camel_vee_folder_set_folders (CamelVeeFolder *vfolder,
 }
 
 /**
+ * camel_vee_folder_ref_folders:
+ * @vfolder: a #CamelVeeFolder
+ *
+ * Returns a #GList of all folders of this @vfolder, which
+ * are used to populate it. These are in no particular order.
+ *
+ * Free the returned #GList with
+ * g_list_free_full (folders, g_object_unref);
+ * when no longer needed.
+ *
+ * Returns: (transfer full) (element-type CamelFolder): a #GList of all
+ *    folders of this @vfolder.
+ *
+ * Since: 3.28
+ **/
+GList *
+camel_vee_folder_ref_folders (CamelVeeFolder *vfolder)
+{
+	GList *folders = NULL, *link;
+
+	g_return_val_if_fail (CAMEL_IS_VEE_FOLDER (vfolder), NULL);
+
+	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
+	for (link = vfolder->priv->subfolders; link; link = g_list_next (link)) {
+		folders = g_list_prepend (folders, g_object_ref (link->data));
+	}
+	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
+
+	return folders;
+}
+
+/**
  * camel_vee_folder_add_vuid:
  * @vfolder: a #CamelVeeFolder
  * @mi_data: a #CamelVeeMessageInfoData to add

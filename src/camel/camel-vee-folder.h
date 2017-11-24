@@ -112,6 +112,7 @@ void		camel_vee_folder_remove_folder		(CamelVeeFolder *vfolder,
 void		camel_vee_folder_set_folders		(CamelVeeFolder *vfolder,
 							 GList *folders,
 							 GCancellable *cancellable);
+GList *		camel_vee_folder_ref_folders		(CamelVeeFolder *vfolder);
 void		camel_vee_folder_add_vuid		(CamelVeeFolder *vfolder,
 							 struct _CamelVeeMessageInfoData *mi_data,
 							 CamelFolderChangeInfo *changes);
