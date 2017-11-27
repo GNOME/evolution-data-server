@@ -38,7 +38,7 @@ target_include_directories(ecalbackendweather PUBLIC
 	${CMAKE_BINARY_DIR}/src/calendar
 	${CMAKE_SOURCE_DIR}/src/calendar
 	${CALENDAR_INCLUDE_DIRS}
-	${LIBGWEATHER__INCLUDE_DIRS}
+	${LIBGWEATHER_INCLUDE_DIRS}
 )
 
 target_link_libraries(ecalbackendweather
