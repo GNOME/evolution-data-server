@@ -554,6 +554,39 @@ imapx_store_mailbox_attributes_to_flags (CamelIMAPXMailbox *mailbox)
 	return store_info_flags;
 }
 
+static CamelFolderInfo *
+get_folder_info_offline (CamelStore *store,
+			 const gchar *top,
+			 CamelStoreGetFolderInfoFlags flags,
+			 GCancellable *cancellable,
+			 GError **error);
+
+static gboolean
+imapx_store_mailbox_has_children (CamelIMAPXStore *imapx_store,
+				  CamelIMAPXMailbox *mailbox)
+{
+	CamelFolderInfo *fi;
+	gchar *folder_path;
+	gboolean has_children;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_STORE (imapx_store), FALSE);
+	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox), FALSE);
+
+	folder_path = camel_imapx_mailbox_dup_folder_path (mailbox);
+	if (!folder_path)
+		return FALSE;
+
+	fi = get_folder_info_offline (CAMEL_STORE (imapx_store), folder_path, CAMEL_STORE_FOLDER_INFO_RECURSIVE | CAMEL_STORE_FOLDER_INFO_NO_VIRTUAL, NULL, NULL);
+
+	has_children = fi && fi->child;
+
+	if (fi)
+		camel_folder_info_free (fi);
+	g_free (folder_path);
+
+	return has_children;
+}
+
 static void
 imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
                                         CamelIMAPXMailbox *mailbox,
@@ -641,7 +674,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 		}
 		if (!mailbox_is_subscribed && mailbox_was_subscribed)
 			emit_folder_unsubscribed_deleted = TRUE;
-		if (mailbox_is_nonexistent && mailbox_was_subscribed)
+		if (mailbox_is_nonexistent && mailbox_was_subscribed && !mailbox_is_subscribed)
 			emit_folder_unsubscribed_deleted = TRUE;
 	} else {
 		if (!mailbox_is_nonexistent) {
@@ -651,7 +684,7 @@ imapx_store_process_mailbox_attributes (CamelIMAPXStore *store,
 				emit_folder_created_subscribed = TRUE;
 			}
 		}
-		if (mailbox_is_nonexistent && mailbox_was_in_summary)
+		if (mailbox_is_nonexistent && mailbox_was_in_summary && !imapx_store_mailbox_has_children (store, mailbox))
 			emit_folder_unsubscribed_deleted = TRUE;
 	}
 
