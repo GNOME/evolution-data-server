@@ -237,7 +237,7 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 			offline_folder = CAMEL_OFFLINE_FOLDER (folder);
 
 			if (camel_offline_folder_can_downsync (offline_folder))
-				camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, NULL);
+				camel_offline_folder_schedule_downsync (offline_folder, NULL);
 		}
 
 		if (folders) {
