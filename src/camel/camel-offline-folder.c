@@ -167,7 +167,7 @@ offline_folder_downsync_background (CamelSession *session,
 		gchar *expression = NULL;
 
 		if (limit_time > 0)
-			expression = g_strdup_printf ("(match-all (> (get-sent-date) %" G_GINT64_FORMAT "))", limit_time);
+			expression = g_strdup_printf ("(match-all (> (get-sent-date) %" G_GINT64_FORMAT ")", limit_time);
 
 		camel_offline_folder_downsync_sync (
 			CAMEL_OFFLINE_FOLDER (data->folder),
@@ -287,8 +287,43 @@ static void
 offline_folder_changed (CamelFolder *folder,
                         CamelFolderChangeInfo *changes)
 {
-	if (changes)
-		camel_offline_folder_schedule_downsync (CAMEL_OFFLINE_FOLDER (folder), changes);
+	CamelStore *store;
+	CamelSession *session;
+
+	store = camel_folder_get_parent_store (folder);
+	session = camel_service_ref_session (CAMEL_SERVICE (store));
+
+	if (!session)
+		return;
+
+	if (changes && changes->uid_added->len > 0 && camel_offline_folder_can_downsync (CAMEL_OFFLINE_FOLDER (folder))) {
+		OfflineDownsyncData *data;
+		gchar *description;
+
+		data = g_slice_new0 (OfflineDownsyncData);
+		data->changes = camel_folder_change_info_new ();
+		camel_folder_change_info_cat (data->changes, changes);
+		data->folder = g_object_ref (folder);
+
+		/* Translators: The first “%s” is replaced with an account name and the second “%s”
+		   is replaced with a full path name. The spaces around “:” are intentional, as
+		   the whole “%s : %s” is meant as an absolute identification of the folder. */
+		description = g_strdup_printf (_("Checking download of new messages for offline in “%s : %s”"),
+			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+			camel_folder_get_full_name (folder));
+
+		camel_session_submit_job (
+			session, description, (CamelSessionCallback)
+			offline_folder_downsync_background, data,
+			(GDestroyNotify) offline_downsync_data_free);
+
+		g_free (description);
+	}
+
+	g_object_unref (session);
+
+	if (changes && changes->uid_changed && changes->uid_changed->len > 0)
+		offline_folder_maybe_schedule_folder_change_store (CAMEL_OFFLINE_FOLDER (folder));
 }
 
 static void
@@ -701,68 +736,4 @@ camel_offline_folder_downsync_finish (CamelOfflineFolder *folder,
 		result, camel_offline_folder_downsync), FALSE);
 
 	return g_task_propagate_boolean (G_TASK (result), error);
-}
-
-/**
- * camel_offline_folder_schedule_downsync:
- * @offline_folder: a #CamelOfflineFolder
- * @changes: (nullable): options #CamelFolderChangeInfo for the @offline_folder, or %NULL
- *
- * Schedules synchronization for offline for the @offline_folder, if it's set to
- * synchronize for offline. The @changes can be used to limit what messages will
- * be considered. If it's %NULL, then the folder content will be checked.
- *
- * The request, if scheduled, is done as a #CamelSession job.
- *
- * Since: 3.28
- **/
-void
-camel_offline_folder_schedule_downsync (CamelOfflineFolder *offline_folder,
-					CamelFolderChangeInfo *changes)
-{
-	CamelStore *store;
-	CamelFolder *folder;
-	CamelSession *session;
-
-	g_return_if_fail (CAMEL_IS_OFFLINE_FOLDER (offline_folder));
-
-	folder = CAMEL_FOLDER (offline_folder);
-	store = camel_folder_get_parent_store (folder);
-	session = camel_service_ref_session (CAMEL_SERVICE (store));
-
-	if (!session)
-		return;
-
-	if ((!changes || (changes && changes->uid_added->len > 0)) &&
-	    camel_offline_folder_can_downsync (offline_folder)) {
-		OfflineDownsyncData *data;
-		gchar *description;
-
-		data = g_slice_new0 (OfflineDownsyncData);
-		if (changes) {
-			data->changes = camel_folder_change_info_new ();
-			camel_folder_change_info_cat (data->changes, changes);
-		}
-
-		data->folder = g_object_ref (folder);
-
-		/* Translators: The first “%s” is replaced with an account name and the second “%s”
-		   is replaced with a full path name. The spaces around “:” are intentional, as
-		   the whole “%s : %s” is meant as an absolute identification of the folder. */
-		description = g_strdup_printf (_("Checking download of new messages for offline in “%s : %s”"),
-			camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
-			camel_folder_get_full_name (folder));
-
-		camel_session_submit_job (
-			session, description, (CamelSessionCallback)
-			offline_folder_downsync_background, data,
-			(GDestroyNotify) offline_downsync_data_free);
-
-		g_free (description);
-	}
-
-	g_object_unref (session);
-
-	if (changes && changes->uid_changed && changes->uid_changed->len > 0)
-		offline_folder_maybe_schedule_folder_change_store (CAMEL_OFFLINE_FOLDER (folder));
 }

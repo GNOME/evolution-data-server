@@ -93,9 +93,6 @@ gboolean	camel_offline_folder_downsync_finish
 						(CamelOfflineFolder *folder,
 						 GAsyncResult *result,
 						 GError **error);
-void		camel_offline_folder_schedule_downsync
-						(CamelOfflineFolder *oflfine_folder,
-						 CamelFolderChangeInfo *changes);
 
 G_END_DECLS
 
