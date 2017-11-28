@@ -50,6 +50,40 @@ enum {
 G_DEFINE_TYPE (CamelOfflineStore, camel_offline_store, CAMEL_TYPE_STORE)
 
 static void
+offline_store_downsync_folders_thread (CamelSession *session,
+				       GCancellable *cancellable,
+				       gpointer user_data,
+				       GError **error)
+{
+	CamelStore *store = user_data;
+	GPtrArray *folders;
+	guint ii;
+
+	g_return_if_fail (CAMEL_IS_OFFLINE_STORE (store));
+
+	folders = camel_offline_store_dup_downsync_folders (CAMEL_OFFLINE_STORE (store));
+	if (!folders)
+		return;
+
+	for (ii = 0; ii < folders->len && !g_cancellable_is_cancelled (cancellable); ii++) {
+		CamelFolder *folder = folders->pdata[ii];
+		CamelOfflineFolder *offline_folder;
+
+		if (!CAMEL_IS_OFFLINE_FOLDER (folder))
+			continue;
+
+		offline_folder = CAMEL_OFFLINE_FOLDER (folder);
+
+		if (camel_offline_folder_can_downsync (offline_folder) &&
+		    !camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, error))
+			break;
+	}
+
+	g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);
+	g_ptr_array_free (folders, TRUE);
+}
+
+static void
 offline_store_constructed (GObject *object)
 {
 	CamelOfflineStorePrivate *priv;
@@ -223,22 +257,25 @@ camel_offline_store_set_online_sync (CamelOfflineStore *store,
 
 	if (host_reachable) {
 		GPtrArray *folders;
-		guint ii;
+		CamelSession *session;
 
-		folders = camel_offline_store_dup_downsync_folders (store);
+		session = camel_service_ref_session (service);
+		folders = session ? camel_offline_store_dup_downsync_folders (store) : NULL;
 
-		for (ii = 0; folders && ii < folders->len; ii++) {
-			CamelFolder *folder = folders->pdata[ii];
-			CamelOfflineFolder *offline_folder;
+		if (folders && session) {
+			gchar *description;
 
-			if (!CAMEL_IS_OFFLINE_FOLDER (folder))
-				continue;
+			description = g_strdup_printf (_("Syncing messages in account “%s” to disk"),
+				camel_service_get_display_name (service));
 
-			offline_folder = CAMEL_OFFLINE_FOLDER (folder);
+			camel_session_submit_job (session, description,
+				offline_store_downsync_folders_thread,
+				g_object_ref (store), g_object_unref);
 
-			if (camel_offline_folder_can_downsync (offline_folder))
-				camel_offline_folder_downsync_sync (offline_folder, NULL, cancellable, NULL);
+			g_free (description);
 		}
+
+		g_clear_object (&session);
 
 		if (folders) {
 			g_ptr_array_foreach (folders, (GFunc) g_object_unref, NULL);

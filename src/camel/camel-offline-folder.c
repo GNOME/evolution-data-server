@@ -468,9 +468,23 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 		}
 
 		if (download) {
+			/* Translators: The first “%d” is the sequence number of the message, the second “%d”
+			   is the total number of messages to synchronize.
+			   The first “%s” is replaced with an account name and the second “%s”
+			   is replaced with a full path name. The spaces around “:” are intentional, as
+			   the whole “%s : %s” is meant as an absolute identification of the folder. */
+			camel_operation_push_message (cancellable, _("Syncing message %d of %d in folder “%s : %s” to disk"),
+				i + 1, uncached_uids->len,
+				camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
+				camel_folder_get_full_name (folder));
+
 			/* Stop on failure */
-			if (!camel_folder_synchronize_message_sync (folder, uid, cancellable, NULL))
+			if (!camel_folder_synchronize_message_sync (folder, uid, cancellable, NULL)) {
+				camel_operation_pop_message (cancellable);
 				break;
+			}
+
+			camel_operation_pop_message (cancellable);
 		}
 
 		camel_operation_progress (cancellable, i * 100 / uncached_uids->len);

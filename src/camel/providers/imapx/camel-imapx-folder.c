@@ -421,6 +421,38 @@ imapx_search_by_expression (CamelFolder *folder,
 	return matches;
 }
 
+static GPtrArray *
+imapx_get_uncached_uids (CamelFolder *folder,
+			 GPtrArray *uids,
+			 GError **error)
+{
+	CamelIMAPXFolder *imapx_folder;
+	GPtrArray *result;
+	guint ii;
+
+	g_return_val_if_fail (CAMEL_IS_IMAPX_FOLDER (folder), NULL);
+	g_return_val_if_fail (uids != NULL, NULL);
+
+	imapx_folder = CAMEL_IMAPX_FOLDER (folder);
+
+	result = g_ptr_array_sized_new (uids->len);
+
+	for (ii = 0; ii < uids->len; ii++) {
+		const gchar *uid = uids->pdata[ii];
+		GIOStream *io_stream;
+
+		/* Assume that UIDs with existing stream are valid;
+		   the imapx_get_message_cached() can fail with broken files, but it's rather unlikely. */
+		io_stream = camel_data_cache_get (imapx_folder->cache, "cur", uid, NULL);
+		if (io_stream)
+			g_object_unref (io_stream);
+		else
+			g_ptr_array_add (result, (gpointer) camel_pstring_strdup (uid));
+	}
+
+	return result;
+}
+
 static gchar *
 imapx_get_filename (CamelFolder *folder,
                     const gchar *uid,
@@ -982,6 +1014,7 @@ camel_imapx_folder_class_init (CamelIMAPXFolderClass *class)
 	folder_class->search_by_expression = imapx_search_by_expression;
 	folder_class->search_by_uids = imapx_search_by_uids;
 	folder_class->count_by_expression = imapx_count_by_expression;
+	folder_class->get_uncached_uids = imapx_get_uncached_uids;
 	folder_class->search_free = imapx_search_free;
 	folder_class->get_filename = imapx_get_filename;
 	folder_class->append_message_sync = imapx_append_message_sync;
