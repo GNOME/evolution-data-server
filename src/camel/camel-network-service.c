@@ -1065,16 +1065,19 @@ camel_network_service_can_reach_sync (CamelNetworkService *service,
 
 /* Helper for camel_network_service_can_reach() */
 static void
-network_service_can_reach_thread (GTask *task,
-                                  gpointer source_object,
-                                  gpointer task_data,
-                                  GCancellable *cancellable)
+network_service_can_reach_thread (CamelSession *session,
+                                  GCancellable *cancellable,
+				  gpointer user_data,
+				  GError **error)
 {
+	GTask *task = user_data;
 	gboolean success;
 	GError *local_error = NULL;
 
+	g_return_if_fail (G_IS_TASK (task));
+
 	success = camel_network_service_can_reach_sync (
-		CAMEL_NETWORK_SERVICE (source_object),
+		CAMEL_NETWORK_SERVICE (g_task_get_source_object (task)),
 		cancellable, &local_error);
 
 	if (local_error != NULL) {
@@ -1109,16 +1112,24 @@ camel_network_service_can_reach (CamelNetworkService *service,
                                  GAsyncReadyCallback callback,
                                  gpointer user_data)
 {
+	CamelSession *session;
+	gchar *description;
 	GTask *task;
 
 	g_return_if_fail (CAMEL_IS_NETWORK_SERVICE (service));
 
+	session = camel_service_ref_session (CAMEL_SERVICE (service));
+	g_return_if_fail (session != NULL);
+
 	task = g_task_new (service, cancellable, callback, user_data);
 	g_task_set_source_tag (task, camel_network_service_can_reach);
 
-	g_task_run_in_thread (task, network_service_can_reach_thread);
+	description = g_strdup_printf (_("Checking reach-ability of account “%s”"), camel_service_get_display_name (CAMEL_SERVICE (service)));
 
-	g_object_unref (task);
+	camel_session_submit_job (session, description, network_service_can_reach_thread, task, g_object_unref);
+
+	g_object_unref (session);
+	g_free (description);
 }
 
 /**
