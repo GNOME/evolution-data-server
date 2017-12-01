@@ -427,10 +427,8 @@ folder_summary_update_counts_by_flags (CamelFolderSummary *summary,
 		unread = 0;
 
 	if (unread) {
-		summary->priv->unread_count += unread;
-
-		if (summary->priv->unread_count < 0)
-			summary->priv->unread_count = 0;
+		if (unread > 0 || summary->priv->unread_count)
+			summary->priv->unread_count += unread;
 
 		g_object_notify (summary_object, "unread-count");
 		changed = TRUE;
