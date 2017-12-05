@@ -2256,8 +2256,10 @@ imapx_completion (CamelIMAPXServer *is,
 	c (is->priv->tagprefix, "Got completion response for command %05u '%s'\n", ic->tag, camel_imapx_job_get_kind_name (ic->job_kind));
 
 	/* The camel_imapx_server_refresh_info_sync() gets any piled change
-	   notifications and will emit the signal with all of them at once. */
-	if (!is->priv->fetch_changes_mailbox && !is->priv->fetch_changes_folder && !is->priv->fetch_changes_infos) {
+	   notifications and will emit the signal with all of them at once.
+	   Similarly message COPY/MOVE command. */
+	if (!is->priv->fetch_changes_mailbox && !is->priv->fetch_changes_folder && !is->priv->fetch_changes_infos &&
+	    ic->job_kind != CAMEL_IMAPX_JOB_COPY_MESSAGE && ic->job_kind != CAMEL_IMAPX_JOB_MOVE_MESSAGE) {
 		g_mutex_lock (&is->priv->changes_lock);
 
 		if (camel_folder_change_info_changed (is->priv->changes)) {
@@ -4213,6 +4215,72 @@ camel_imapx_server_sync_message_sync (CamelIMAPXServer *is,
 	return success;
 }
 
+static void
+imapx_copy_move_message_cache (CamelFolder *source_folder,
+			       CamelFolder *destination_folder,
+			       gboolean delete_originals,
+			       const gchar *source_uid,
+			       const gchar *destination_uid,
+			       GCancellable *cancellable)
+{
+	CamelIMAPXFolder *imapx_source_folder, *imapx_destination_folder;
+	gchar *source_filename, *destination_filename;
+
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (source_folder));
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (destination_folder));
+	g_return_if_fail (source_uid != NULL);
+	g_return_if_fail (destination_uid != NULL);
+
+	imapx_source_folder = CAMEL_IMAPX_FOLDER (source_folder);
+	imapx_destination_folder = CAMEL_IMAPX_FOLDER (destination_folder);
+
+	source_filename = camel_data_cache_get_filename  (imapx_source_folder->cache, "cur", source_uid);
+	if (!g_file_test (source_filename, G_FILE_TEST_EXISTS)) {
+		g_free (source_filename);
+		return;
+	}
+
+	destination_filename = camel_data_cache_get_filename  (imapx_destination_folder->cache, "cur", destination_uid);
+	if (!g_file_test (destination_filename, G_FILE_TEST_EXISTS)) {
+		GIOStream *stream;
+
+		/* To create the cache folder structure for the message file */
+		stream = camel_data_cache_add (imapx_destination_folder->cache, "cur", destination_uid, NULL);
+		if (stream) {
+			g_clear_object (&stream);
+
+			/* Remove the empty file, it's gonna be replaced with actual message */
+			g_unlink (destination_filename);
+
+			if (delete_originals) {
+				if (g_rename (source_filename, destination_filename) == -1 && errno != ENOENT) {
+					g_warning ("%s: Failed to rename '%s' to '%s': %s", G_STRFUNC, source_filename, destination_filename, g_strerror (errno));
+				}
+			} else {
+				GFile *source, *destination;
+				GError *local_error = NULL;
+
+				source = g_file_new_for_path (source_filename);
+				destination = g_file_new_for_path (destination_filename);
+
+				if (source && destination &&
+				    !g_file_copy (source, destination, G_FILE_COPY_NONE, cancellable, NULL, NULL, &local_error)) {
+					if (local_error) {
+						g_warning ("%s: Failed to copy '%s' to '%s': %s", G_STRFUNC, source_filename, destination_filename, local_error->message);
+					}
+				}
+
+				g_clear_object (&source);
+				g_clear_object (&destination);
+				g_clear_error (&local_error);
+			}
+		}
+	}
+
+	g_free (source_filename);
+	g_free (destination_filename);
+}
+
 gboolean
 camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 				      CamelIMAPXMailbox *mailbox,
@@ -4314,6 +4382,19 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 			use_move_command ? _("Error moving messages") : _("Error copying messages"),
 			cancellable, error);
 
+		g_mutex_lock (&is->priv->changes_lock);
+		if (camel_folder_change_info_changed (is->priv->changes)) {
+			if (!changes) {
+				changes = is->priv->changes;
+			} else {
+				camel_folder_change_info_cat (changes, is->priv->changes);
+				camel_folder_change_info_free (is->priv->changes);
+			}
+
+			is->priv->changes = camel_folder_change_info_new ();
+		}
+		g_mutex_unlock (&is->priv->changes_lock);
+
 		if (ic->copy_move_expunged) {
 			CamelFolderSummary *summary;
 
@@ -4384,13 +4465,13 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 				if (destination_folder) {
 					CamelFolderSummary *destination_summary;
 					CamelMessageInfo *source_info, *destination_info;
-					CamelFolderChangeInfo *changes;
+					CamelFolderChangeInfo *dest_changes;
 					gint ii;
 
 					destination_summary = camel_folder_get_folder_summary (destination_folder);
 					camel_folder_summary_lock (destination_summary);
 
-					changes = camel_folder_change_info_new ();
+					dest_changes = camel_folder_change_info_new ();
 
 					for (ii = 0; ii < copyuid_status->u.copyuid.uids->len; ii++) {
 						gchar *uid;
@@ -4436,27 +4517,30 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_DELETED, 0);
 						if (remove_junk_flags)
 							camel_message_info_set_flags (destination_info, CAMEL_MESSAGE_JUNK, 0);
+						imapx_copy_move_message_cache (folder, destination_folder, delete_originals || use_move_command,
+							camel_message_info_get_uid (source_info),
+							camel_message_info_get_uid (destination_info),
+							cancellable);
 						if (is_new)
 							camel_folder_summary_add (destination_summary, destination_info, FALSE);
-						camel_folder_change_info_add_uid (changes, camel_message_info_get_uid (destination_info));
+						camel_folder_change_info_add_uid (dest_changes, camel_message_info_get_uid (destination_info));
 
 						g_clear_object (&destination_info);
 					}
 
-					if (camel_folder_change_info_changed (changes)) {
+					if (camel_folder_change_info_changed (dest_changes)) {
 						camel_folder_summary_touch (destination_summary);
 						camel_folder_summary_save (destination_summary, NULL);
-						camel_folder_changed (destination_folder, changes);
+						camel_folder_changed (destination_folder, dest_changes);
 					}
 
 					camel_folder_summary_unlock (destination_summary);
-					camel_folder_change_info_free (changes);
+					camel_folder_change_info_free (dest_changes);
 					g_object_unref (destination_folder);
 				}
 			}
 
 			if (delete_originals || use_move_command) {
-				CamelFolderChangeInfo *changes = NULL;
 				gint jj;
 
 				for (jj = last_index; jj < ii; jj++) {
