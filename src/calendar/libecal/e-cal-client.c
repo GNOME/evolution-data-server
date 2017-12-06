@@ -1244,7 +1244,7 @@ cal_client_init_in_dbus_thread (GSimpleAsyncResult *simple,
 		(((object_path != NULL) || (bus_name != NULL)) && (local_error == NULL)) ||
 		(((object_path == NULL) || (bus_name == NULL)) && (local_error != NULL)));
 
-	if (object_path == NULL) {
+	if (local_error) {
 		g_dbus_error_strip_remote_error (local_error);
 		g_simple_async_result_take_error (simple, local_error);
 		g_object_unref (connection);
