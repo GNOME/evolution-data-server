@@ -185,8 +185,7 @@ e_weather_source_parse (EWeatherSource *source,
 
 	if (source->priv->info == NULL) {
 		source->priv->info = gweather_info_new (
-			source->priv->location,
-			GWEATHER_FORECAST_LIST);
+			source->priv->location);
 		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_ALL);
 		g_signal_connect (
 			source->priv->info, "updated",
