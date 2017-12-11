@@ -1,3 +1,27 @@
+Evolution-Data-Server 3.26.3 2017-12-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 789147 - [IMAPx] Slow message move with UID MOVE (Milan Crha)
+	Bug 790032 - Google Contacts ESource recreated every start of source-registry (Milan Crha)
+	Bug 789549 - [IMAPx] Runtime warning after message copy/move (Milan Crha)
+	Bug 790267 - Expired Google OAuth2 token not refreshed (Milan Crha)
+	Bug 790759 - Proxies are ignored in EWebDAVDiscover and Google OAuth2 token refresh (Eloi Vanderbeken)
+	Bug 790887 - [IMAPx] Folder '[Gmail]' hidden after start (Milan Crha)
+	Bug 790987 - [IMAPx] Also copy/move locally cached message on COPY/MOVE command (Milan Crha)
+
+Miscellaneous:
+	Extend workaround for bug 674885 (type initialisation deadlock in GObject) (Milan Crha)
+	[CamelOfflineStore] Incorrect disconnect when going online (Milan Crha)
+	[SMTP] Recognize rejected credentials during SASL authentication (Milan Crha)
+	[OAuth2] Enhance how expired or invalid access tokens are handled (Milan Crha)
+	[CalDAV/CardDAV] Always set error on failed connection attempt (Milan Crha)
+	Correct typo in libgweather include directory variable (Milan Crha)
+	Correct a failure condition in cal_client_init_in_dbus_thread() (Milan Crha)
+
+Translations:
+	Kjartan Maraas (nb)
+
 Evolution-Data-Server 3.26.2.1 2017-10-31
 -----------------------------------------
 
