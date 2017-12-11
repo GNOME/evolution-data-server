@@ -17,9 +17,11 @@
  * Authors: David Trowbridge <trowbrds@cs.colorado.edu>
  */
 
-#include "e-weather-source.h"
+#include "evolution-data-server-config.h"
 
 #include <string.h>
+
+#include "e-weather-source.h"
 
 #define E_WEATHER_SOURCE_GET_PRIVATE(obj) \
 	(G_TYPE_INSTANCE_GET_PRIVATE \
@@ -185,8 +187,11 @@ e_weather_source_parse (EWeatherSource *source,
 
 	if (source->priv->info == NULL) {
 		source->priv->info = gweather_info_new (
-			source->priv->location,
-			GWEATHER_FORECAST_LIST);
+			source->priv->location
+		#ifndef HAVE_ONE_ARG_GWEATHER_INFO_NEW
+			, GWEATHER_FORECAST_LIST
+		#endif
+		);
 		gweather_info_set_enabled_providers (source->priv->info, GWEATHER_PROVIDER_ALL);
 		g_signal_connect (
 			source->priv->info, "updated",

@@ -190,3 +190,6 @@
 
 /* Have libaccounts-glib */
 #cmakedefine HAVE_UOA 1
+
+/* gweather_info_new() has only one argument */
+#cmakedefine HAVE_ONE_ARG_GWEATHER_INFO_NEW 1
