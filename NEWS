@@ -1,3 +1,35 @@
+Evolution-Data-Server 3.27.3 2017-12-11
+---------------------------------------
+
+Bug Fixes:
+	Bug 790032 - Google Contacts ESource recreated every start of source-registry (Milan Crha)
+	Bug 789549 - [IMAPx] Runtime warning after message copy/move (Milan Crha)
+	Bug 790267 - Expired Google OAuth2 token not refreshed (Milan Crha)
+	Bug 790759 - Proxies are ignored in EWebDAVDiscover and Google OAuth2 token refresh (Eloi Vanderbeken)
+	Bug 790020 - Use original location when composing new message in Search Folder (Milan Crha)
+	Bug 790887 - [IMAPx] Folder '[Gmail]' hidden after start (Milan Crha)
+	Bug 790635 - Slow start with 10+ mail accounts enabled (Milan Crha)
+	Bug 791016 - [Camel] Fix a compiler warning at folder_summary_update_counts_by_flags() (Philip Withnall)
+	Bug 790987 - [IMAPx] Also copy/move locally cached message on COPY/MOVE command (Milan Crha)
+	Bug 791327 - Adapt to gweather_info_new() API change (Milan Crha)
+
+Miscellaneous:
+	Extend workaround for bug 674885 (type initialisation deadlock in GObject) (Milan Crha)
+	[SMTP] Recognize rejected credentials during SASL authentication (Milan Crha)
+	[OAuth2] Enhance how expired or invalid access tokens are handled (Milan Crha)
+	Merge duplicated code around EGDataOAuth2Authorizer (Milan Crha)
+	[File Calendar] Include detailed information in Free/Busy response (Milan Crha)
+	[CalDAV/CardDAV] Always set error on failed connection attempt (Milan Crha)
+	Correct introspection code build without libgdata (Milan Crha)
+	Correct typo in libgweather include directory variable (Milan Crha)
+	Show feedback on message download for offline after going online (Milan Crha)
+	Correct a failure condition in cal_client_init_in_dbus_thread() (Milan Crha)
+
+Translations:
+	Kjartan Maraas (nb)
+	Kukuh Syafaat (id)
+	Hanifi Çakmak (tr)
+
 Evolution-Data-Server 3.27.2 2017-11-13
 ---------------------------------------
 
