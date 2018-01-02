@@ -98,6 +98,7 @@ struct _header_scan_state {
 	gint unstep;		/* how many states to 'unstep' (repeat the current state) */
 
 	guint midline:1;		/* are we mid-line interrupted? */
+	guint check_header_folded:1;	/* check whether header is folded first? */
 	guint scan_from:1;	/* do we care about From lines? */
 	guint scan_pre_from:1;	/* do we return pre-from data? */
 	guint eof:1;		/* reached eof? */
@@ -1308,6 +1309,23 @@ folder_scan_header (struct _header_scan_state *s,
 
 						goto header_done;
 					}
+				} else if (s->check_header_folded) {
+					if (*inptr != ' ' && *inptr != '\t') {
+						s->outptr[0] = 0;
+
+						/* The outbuf can contain an extra \r\n, thus remove it */
+						if (s->outptr > s->outbuf && s->outptr[-1] == '\n')
+							s->outptr[-1] = 0;
+
+						if (s->outptr - 1 > s->outbuf && s->outptr[-2] == '\r')
+							s->outptr[-2] = 0;
+
+						h (printf ("header not folded '%s' at %d\n", s->outbuf, (gint) s->header_start));
+
+						header_raw_append_parse (&h->headers, s->outbuf, s->header_start);
+						s->outptr = s->outbuf;
+						s->header_start = -1;
+					}
 				}
 
 				/* goto next line/sentinal */
@@ -1317,16 +1335,18 @@ folder_scan_header (struct _header_scan_state *s,
 				g_return_val_if_fail (inptr <= s->inend + 1, NULL);
 
 				/* check for sentinal or real end of line */
-				if (inptr > inend) {
+				if (inptr >= inend) {
 					h (printf ("not at end of line yet, going further\n"));
 					/* didn't find end of line within our allowed area */
-					inptr = inend;
 					s->midline = TRUE;
+					s->check_header_folded = inptr == inend;
+					inptr = inend;
 					header_append (s, start, inptr);
 				} else {
 					h (printf ("got line part: '%.*s'\n", inptr - 1 - start, start));
 					/* got a line, strip and add it, process it */
 					s->midline = FALSE;
+					s->check_header_folded = FALSE;
 					header_append (s, start, inptr - 1);
 
 					/* check for end of headers */
@@ -1554,6 +1574,7 @@ folder_scan_init (void)
 	s->start_of_boundary = -1;
 
 	s->midline = FALSE;
+	s->check_header_folded = FALSE;
 	s->scan_from = FALSE;
 	s->scan_pre_from = FALSE;
 	s->eof = FALSE;
