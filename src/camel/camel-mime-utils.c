@@ -1128,6 +1128,35 @@ make_string_utf8_valid (gchar *text,
 	}
 }
 
+static void
+sanitize_decoded_text (guchar *text,
+		       gssize *inout_textlen)
+{
+	gssize ii, jj, textlen;
+
+	g_return_if_fail (text != NULL);
+	g_return_if_fail (inout_textlen != NULL);
+
+	textlen = *inout_textlen;
+
+	for (ii = 0, jj = 0; ii < textlen; ii++) {
+		/* Skip '\0' and '\r' characters */
+		if (text[ii] == 0 || text[ii] == '\r')
+			continue;
+
+		/* Change '\n' into space */
+		if (text[ii] == '\n')
+			text[ii] = ' ';
+
+		if (ii != jj)
+			text[jj] = text[ii];
+
+		jj++;
+	}
+
+	*inout_textlen = jj;
+}
+
 /* decode an rfc2047 encoded-word token */
 static gchar *
 rfc2047_decode_word (const gchar *in,
@@ -1175,6 +1204,8 @@ rfc2047_decode_word (const gchar *in,
 		d (fprintf (stderr, "unknown encoding\n"));
 		return NULL;
 	}
+
+	sanitize_decoded_text (decoded, &declen);
 
 	/* never return empty string, return rather NULL */
 	if (!declen)
@@ -2892,6 +2923,10 @@ header_decode_mailbox (const gchar **in,
 		}
 
 		address = camel_header_address_new_name (name ? name->str : "", addr->str);
+	} else if (name) {
+		/* A name-only address, might be something wrong, but include it anyway */
+		make_string_utf8_valid (name->str, name->len);
+		address = camel_header_address_new_name (name->str, "");
 	}
 
 	d (printf ("got mailbox: %s\n", addr->str));
