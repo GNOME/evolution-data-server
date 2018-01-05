@@ -872,7 +872,6 @@ maildir_summary_sync (CamelLocalSummary *cls,
 				}
 				if (g_stat (dest, &st) == -1) {
 					/* we'll assume it didn't work, but dont change anything else */
-					g_free (newname);
 				} else {
 					/* TODO: If this is made mt-safe, then this code could be a problem, since
 					 * the estrv is being modified.
