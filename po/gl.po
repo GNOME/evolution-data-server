@@ -16,9 +16,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server-master-po-gl-71644\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product"
-"=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-08-07 06:43+0000\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2017-09-04 06:33+0000\n"
 "PO-Revision-Date: 2017-08-10 18:36+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician\n"
@@ -150,18 +150,17 @@ msgstr "Non foi posíbel renomear a base de datos antiga de «%s» a «%s»: %s"
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:498
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1062
+#: ../src/libedataserver/e-soup-session.c:1067
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "Erro descoñecido"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:922
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:963
 msgid "Object to save is not a valid vCard"
 msgstr "O obxecto a gardar non é un vCard válido"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:974
-#| msgid "Failed to authenticate on POP server %s: "
 msgid "Failed to create contact from returned server data"
 msgstr ""
 "Produciuse un fallo ao crear o contacto desde os datos devoltos polo servidor"
@@ -280,7 +279,7 @@ msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr ""
 "O URL fornecido «%s» non fai referencia a un caderno de enderezos WebDAV"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:855
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:890
 msgid "Received object is not a valid vCard"
 msgstr "O obxecto recibido non é un vCard válido"
 
@@ -1102,14 +1101,12 @@ msgid "Invalid query: %s"
 msgstr "Consulta non válida: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3598
-#| msgid "Invalid query for EbSqlCursor"
 msgid "Invalid query for a book cursor"
 msgstr "Consulta non válida para un cursor de caderno"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:4479
 #: ../src/libebackend/e-cache.c:756
 #, c-format
-#| msgid "Cannot open mailbox: %s: "
 msgid "Can’t open database %s: %s"
 msgstr "Non é posíbel abrir a base de datos %s: %s "
 
@@ -1122,19 +1119,16 @@ msgstr "Non é posíbel abrir a base de datos %s: %s "
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object “%s” not found"
 msgstr "Non se atopou o obxecto «%s»"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5194
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2375
 #, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object with extra “%s” not found"
 msgstr "Non se atopou o obxecto con un «%s» adicional"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5348
-#| msgid "At least one sort field must be specified to use an EbSdbCursor"
 msgid "At least one sort field must be specified to use a cursor"
 msgstr "Debe especificar cando menos un campo para ordenar para usar un cursor"
 
@@ -1157,9 +1151,8 @@ msgstr "O obxecto recibido para o UID «%s» non é válido"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1868
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2222
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2987
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2989
 #, c-format
-#| msgid "Failed to create child process “%s”: %s"
 msgid "Failed to create cache “%s”:"
 msgstr "Non foi posíbel crear a caché «%s»"
 
@@ -1388,8 +1381,7 @@ msgstr "O índice alfabético foi configurado para un local incorrecto"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "O URL fornecido «%s» non fai referencia a un calendario CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
-#| msgid "Failed to encode data"
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1520
 msgid "Failed to parse response data"
 msgstr "Produciuse un erro ao analizar os datos da resposta"
 
@@ -1418,22 +1410,20 @@ msgid "Cannot save calendar data"
 msgstr "Non é posíbel gardar os datos do calendario"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:130
-#| msgid "URI not loaded"
 msgid "URI not set"
 msgstr "URI non estabelecido"
 
 #: ../src/calendar/backends/http/e-cal-backend-http.c:198
 #, c-format
-#| msgid "Malformed URI: %s"
 msgid "Malformed URI “%s”: %s"
 msgstr "URI mal formada «%s»: %s"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:341
+#: ../src/calendar/backends/http/e-cal-backend-http.c:344
 #, c-format
 msgid "Bad file format."
 msgstr "O formato de ficheiro non é válido."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:349
+#: ../src/calendar/backends/http/e-cal-backend-http.c:353
 #, c-format
 msgid "Not a calendar."
 msgstr "Non é un calendario."
@@ -1865,7 +1855,6 @@ msgstr "«%s» agarda que o segundo argumento sexa un enteiro"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1739
 #, c-format
-#| msgid "Failed to create hardlink for resource “%s”: %s"
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr ""
 "Produciuse un erro ao crear a función de SQLite, código de erro «%d»: %s"
@@ -1873,22 +1862,18 @@ msgstr ""
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2248
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2311
 #, c-format
-#| msgid "Contact “%s” not found"
 msgid "Object “%s”, “%s” not found"
 msgstr "Obxecto «%s», «%s» non atopado"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3006
-#| msgid "Cannot add contact: "
 msgid "Cannot add timezone without tzid"
 msgstr "Non é posíbel engadir o fuso horario sen o tzid"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3012
-#| msgid "Cannot authenticate without a username"
 msgid "Cannot add timezone without component"
 msgstr "Non é posíbel engadir o fuso horario sen o compoñente"
 
 #: ../src/calendar/libedata-cal/e-cal-cache.c:3018
-#| msgid "Cannot send message: one or more invalid recipients"
 msgid "Cannot add timezone with invalid component"
 msgstr "Non é posíbel engadir o fuso horario con un compoñente non válido"
 
@@ -1898,7 +1883,7 @@ msgid "Received object for UID “%s” doesn’t contain any expected component
 msgstr ""
 "O obxecto recibido para o UID «%s» non contén calquera compoñente agardado"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3741
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3743
 msgid "attachment.dat"
 msgstr "anexo.dat"
 
@@ -3167,7 +3152,7 @@ msgstr "Non é posíbel renomear o cartafol: %s: a operación non é valida"
 
 #: ../src/camel/camel-stream.c:170
 msgid "Cannot write with no base stream"
-msgstr "Non é posíbel autenticar sen un fluxo base"
+msgstr "Non é posíbel escribir sen un fluxo base"
 
 #: ../src/camel/camel-stream.c:290 ../src/camel/camel-stream.c:341
 #, c-format
@@ -3176,7 +3161,7 @@ msgstr "Non se pode busca no tipo de fluxo «%s» "
 
 #: ../src/camel/camel-stream-filter.c:342
 msgid "Only reset to beginning is supported with CamelStreamFilter"
-msgstr "Só é posíbel restabelecer o comezo con CamelHttpFilter"
+msgstr "Só é posíbel restabelecer o comezo con CamelStreamFilter"
 
 #: ../src/camel/camel-stream-null.c:76
 msgid "Only reset to beginning is supported with CamelHttpStream"
@@ -3208,12 +3193,12 @@ msgstr "Desuscribíndose do cartafol «%s»"
 msgid "Could not parse URL “%s”"
 msgstr "Non foi posíbel analizar o URL «%s»"
 
-#: ../src/camel/camel-vee-folder.c:500
+#: ../src/camel/camel-vee-folder.c:558
 #, c-format
 msgid "Updating folder “%s”"
 msgstr "Actualizando o cartafol «%s»"
 
-#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
+#: ../src/camel/camel-vee-folder.c:958 ../src/camel/camel-vee-folder.c:1075
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
@@ -3222,17 +3207,17 @@ msgstr "Non é posíbel copiar ou mover as mensaxes a un cartafol virtual"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:937
+#: ../src/camel/camel-vee-folder.c:995
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "Non existe a mensaxe %s en «%s: %s»"
 
-#: ../src/camel/camel-vee-folder.c:991
+#: ../src/camel/camel-vee-folder.c:1051
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "Produciuse un erro ao almacenar «%s»:"
 
-#: ../src/camel/camel-vee-folder.c:1241
+#: ../src/camel/camel-vee-folder.c:1301
 msgid "Automatically _update on change in source folders"
 msgstr "Actualizar a_utomaticamente ao cambiar os cartafoles de fontes"
 
@@ -3682,23 +3667,23 @@ msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr ""
 "Esta opción conectará co servidor IMAP usando un contrasinal de texto plano."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:998
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1001
 #, c-format
 msgid "No such folder %s"
 msgstr "Non existe o cartafol %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1461
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1466
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "Non hai ningún espazo de nomes IMAP para a ruta de cartafol «%s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1729
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1963
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1734
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1968
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "Obtendo a lista de cartafoles para «%s»"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2180
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2185
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "O nome do cartafol «%s» non é válido porque contén o carácter \"%c\""
@@ -3708,97 +3693,97 @@ msgstr "O nome do cartafol «%s» non é válido porque contén o carácter \"%c
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2557
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2562
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/Borradores"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2558
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2563
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "Borradores"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2559
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2564
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "Borrador"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2562
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2567
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "Modelos"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2565
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2570
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "Arquivo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2568
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2573
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/Correo enviado"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2569
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2574
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "Enviado"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2570
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2575
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "Elementos enviados"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2571
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2576
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "Mensaxes enviadas"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2574
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2579
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/Correo lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2575
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2580
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "Correo lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2576
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2581
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "Correo electrónico lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2577
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2582
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "Correo lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2578
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2583
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "Correo lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2579
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2584
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "Correo en lote"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2582
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2587
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/Lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2583
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2588
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "Lixo"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2584
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2589
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "Elementos eliminados"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2585
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2590
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "Mensaxes eliminadas"
@@ -4565,13 +4550,11 @@ msgstr "Produciuse un fallo na operación: %s"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:457
 #, c-format
-#| msgid "%s: Scanning new messages"
 msgid "%s: Scanning existing messages"
 msgstr "%s: Examinando as mensaxes existentes"
 
 #: ../src/camel/providers/nntp/camel-nntp-summary.c:470
 #, c-format
-#| msgid "Unexpected server response from xover: %s"
 msgid "Unexpected server response from listgroup: %s"
 msgstr "Resposta inesperada do servidor desde listgroup: %s"
 
@@ -5092,7 +5075,7 @@ msgstr "UID do contacto dun usuario"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:1
 msgid "Birthday and anniversary reminder"
-msgstr "Recordatorio de cumpreanos e aniversarios"
+msgstr "Recordatorio de aniversarios"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:2
 msgid "Whether to set a reminder for birthdays and anniversaries"
@@ -5105,7 +5088,7 @@ msgstr "Valor de aviso de aniversarios"
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:4
 msgid "Number of units for determining a birthday or anniversary reminder"
 msgstr ""
-"Número de unidades para determinar un recordatorio de cumpreanos ou "
+"Número de unidades para determinar un recordatorio de "
 "aniversario"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:5
@@ -5261,7 +5244,6 @@ msgstr "Sen memoria"
 
 #: ../src/libebackend/e-cache.c:943
 #, c-format
-#| msgid "Could not create directory %s: %s"
 msgid "Can not make parent directory: %s"
 msgstr "Non foi posíbel crear o directorio pai: %s"
 
@@ -5363,7 +5345,7 @@ msgstr "Aniversario"
 #: ../src/libedataserver/e-categories.c:48
 msgctxt "CategoryName"
 msgid "Birthday"
-msgstr "Cumpreanos"
+msgstr "Aniversario"
 
 #: ../src/libedataserver/e-categories.c:49
 msgctxt "CategoryName"
@@ -5491,18 +5473,15 @@ msgid "Timeout was reached"
 msgstr "Alcanzouse o tempo de espera"
 
 #: ../src/libedataserver/e-soup-session.c:144
-#| msgid "Credentials store is not supported"
 msgid "Credentials required"
 msgstr "Requírense credenciais"
 
 #: ../src/libedataserver/e-soup-session.c:830
-#| msgid "Operation has been cancelled"
 msgid "Operation was cancelled"
 msgstr "A operación foi cancelada"
 
 #: ../src/libedataserver/e-soup-session.c:833
 #, c-format
-#| msgid "Failed to make directory %s: %s"
 msgid "Failed with HTTP error %d: %s"
 msgstr "Produciuse un fallo co erro HTTP %d: %s"
 
@@ -5767,7 +5746,6 @@ msgstr ""
 #. The last '%s' is replaced with detailed error text, as returned by the server.
 #: ../src/libedataserver/e-webdav-session.c:966
 #, c-format
-#| msgid "NSPR error code %d"
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: Código de erro HTTP %d (%s): %s"
 
@@ -5785,7 +5763,6 @@ msgstr "Produciuse un fallo co erro HTTP %d (%s): %s"
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #: ../src/libedataserver/e-webdav-session.c:989
 #, c-format
-#| msgid "NSPR error code %d"
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: Código de erro HTTP %d (%s)"
 
@@ -5797,7 +5774,6 @@ msgid "Failed with HTTP error code %d (%s)"
 msgstr "Produciuse un fallo co código HTTP de erro %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:1245
-#| msgid "Failed to encode data"
 msgid "Failed to post data"
 msgstr "Produciuse un erro ao enviar os datos"
 
@@ -5806,87 +5782,71 @@ msgstr "Produciuse un erro ao enviar os datos"
 #: ../src/libedataserver/e-webdav-session.c:1517
 #: ../src/libedataserver/e-webdav-session.c:2698
 #: ../src/libedataserver/e-webdav-session.c:3950
-#| msgid "Failed to find Account element"
 msgid "Failed to get input XML content"
 msgstr "Produciuse un fallo ao obter o contido XML de entrada"
 
 #: ../src/libedataserver/e-webdav-session.c:1349
-#| msgid "Failed to get capabilities"
 msgid "Failed to get properties"
 msgstr "Produciuse un fallo ao obter as propiedades"
 
 #: ../src/libedataserver/e-webdav-session.c:1423
-#| msgid "Failed to authenticate"
 msgid "Failed to update properties"
 msgstr "Produciuse un fallo ao actualizar as propiedades"
 
 #: ../src/libedataserver/e-webdav-session.c:1527
-#| msgid "Failed to issue NOTIFY"
 msgid "Failed to issue REPORT"
 msgstr "Produciuse un fallo ao executar REPORT"
 
 #: ../src/libedataserver/e-webdav-session.c:1586
-#| msgid "Failed to refresh token"
 msgid "Failed to create collection"
 msgstr "Produciuse un fallo ao crear a colección"
 
 #: ../src/libedataserver/e-webdav-session.c:1677
 #: ../src/libedataserver/e-webdav-session.c:1831
-#| msgid "Failed to refresh token"
 msgid "Failed to get XML request content"
 msgstr "Produciuse un fallo ao obter o contido da solicitude XML"
 
 #: ../src/libedataserver/e-webdav-session.c:1689
-#| msgid "Failed to read From address"
 msgid "Failed to create address book"
 msgstr "Produciuse un fallo ao crear o caderno de enderezos"
 
 #: ../src/libedataserver/e-webdav-session.c:1844
-#| msgid "Failed to run calendar factory"
 msgid "Failed to create calendar"
 msgstr "Produciuse un fallo ao crear o calendario"
 
 #: ../src/libedataserver/e-webdav-session.c:1976
 #: ../src/libedataserver/e-webdav-session.c:1987
-#| msgid "Failed to read From address"
 msgid "Failed to read resource"
 msgstr "Produciuse un fallo ao ler o recurso"
 
 #: ../src/libedataserver/e-webdav-session.c:2136
-#| msgid "Credentials store is not supported"
 msgid "Cannot rewind input stream: Not supported"
 msgstr "Produciuse un fallo ao rebobinar o fluxo de entrada: non admitido"
 
 #: ../src/libedataserver/e-webdav-session.c:2283
-#| msgid "Failed to encode data"
 msgid "Failed to put data"
 msgstr "Produciuse un fallo ao facer put dos datos"
 
 #: ../src/libedataserver/e-webdav-session.c:2302
 #, c-format
-#| msgid "Failed to add data to encoder"
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr ""
 "Produciuse un fallo ao facer put dos datos ao servidor, código de erro %d "
 "(%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:2475
-#| msgid "Failed to enable QResync"
 msgid "Failed to delete resource"
 msgstr "Produciuse un fallo ao eliminar o recurso"
 
 #: ../src/libedataserver/e-webdav-session.c:2542
-#| msgid "Failed to copy the tmp file"
 msgid "Failed to copy resource"
 msgstr "Produciuse un erro ao copiar o recurso"
 
 #: ../src/libedataserver/e-webdav-session.c:2604
-#| msgid "Failed to refresh token"
 msgid "Failed to move resource"
 msgstr "Produciuse un erro ao mover o recurso"
 
 #: ../src/libedataserver/e-webdav-session.c:2709
-#| msgid "Failed to refresh token"
 msgid "Failed to lock resource"
 msgstr "Produciuse un erro ao bloquear o recurso"
 
@@ -5903,28 +5863,23 @@ msgstr "Agardábase unha resposta aplication/xml, pero devolveuse %s"
 
 #: ../src/libedataserver/e-webdav-session.c:2738
 #: ../src/libedataserver/e-webdav-session.c:2941
-#| msgid "Failed to encode data"
 msgid "Failed to parse XML data"
 msgstr "Produciuse un fallo ao analizar os datos XML"
 
 #: ../src/libedataserver/e-webdav-session.c:2817
-#| msgid "Failed to refresh token"
 msgid "Failed to refresh lock"
 msgstr "Produciuse un erro ao actualizar o bloqueo"
 
 #: ../src/libedataserver/e-webdav-session.c:2876
-#| msgid "Failed to authenticate"
 msgid "Failed to unlock"
 msgstr "Produciuse un fallo ao desblquear"
 
 #: ../src/libedataserver/e-webdav-session.c:2913
 #, c-format
-#| msgid "Unexpected HTTP status code %d returned (%s) for URI: %s"
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "Agardábase unha resposta multiestado, pero devolveuse %d (%s)"
 
 #: ../src/libedataserver/e-webdav-session.c:3960
-#| msgid "Failed to get lock using fcntl(2): %s"
 msgid "Failed to get access control list"
 msgstr "Produciuse un fallo ao obter a lista de control de acceso"
 
@@ -5952,7 +5907,8 @@ msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:4726
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
-msgstr "«Access Control Entry» só pode ser «Grant» ou «Deny», máis non as dúas."
+msgstr ""
+"«Access Control Entry» só pode ser «Grant» ou «Deny», máis non as dúas."
 
 #: ../src/libedataserver/e-webdav-session.c:4785
 msgid "Access Control Entry privilege cannot be NULL."
@@ -6071,7 +6027,7 @@ msgstr ""
 #: ../src/libedataserverui/e-credentials-prompter-impl-google.c:690
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1064
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1067
 msgid "_Cancel"
 msgstr "_Cancelar"
 
@@ -6128,7 +6084,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "Escriba o contrasinal para a conta «%s»."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1065
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1068
 msgid "_OK"
 msgstr "_Aceptar"
 
@@ -6436,7 +6392,7 @@ msgstr "Manter en execución até que haxa cando menos un cliente conectado"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
-msgstr "Cumpreanos e aniversarios"
+msgstr "Aniversarios"
 
 #: ../src/services/evolution-source-registry/builtin/caldav-stub.source.in.h:1
 msgid "CalDAV"
@@ -6525,17 +6481,14 @@ msgid "Only support csv or vcard format."
 msgstr "Só se admite o formato csv ou vcard."
 
 #: ../src/tools/list-sources/list-sources.c:83
-#| msgid "_Show only subscribed folders"
 msgid "Show only enabled sources"
 msgstr "Mostrar só as orixes activadas"
 
 #: ../src/tools/list-sources/list-sources.c:86
-#| msgid "POP Source UID"
 msgid "Show source’s UID"
 msgstr "Mostrar UID da orixe"
 
 #: ../src/tools/list-sources/list-sources.c:89
-#| msgid "Unsupported authentication method"
 msgid "Show source’s authentication information"
 msgstr "Mostrar a información de autenticació da orixe"
 
@@ -6560,8 +6513,6 @@ msgid "no"
 msgstr "non"
 
 #: ../src/tools/list-sources/list-sources.c:126
-#| msgctxt "CategoryName"
-#| msgid "Competition"
 msgid "Collection"
 msgstr "Colección"
 
@@ -6578,13 +6529,10 @@ msgid "Address Book"
 msgstr "Axenda de enderezos"
 
 #: ../src/tools/list-sources/list-sources.c:149
-#| msgctxt "WebDAVDiscover"
-#| msgid "Memos"
 msgid "Memo List"
 msgstr "Lista de recordatorios"
 
 #: ../src/tools/list-sources/list-sources.c:150
-#| msgid "Tasks"
 msgid "Task List"
 msgstr "Lista de tarefas"
 
@@ -6597,17 +6545,14 @@ msgid "Mail Transport"
 msgstr "Transporte de correo"
 
 #: ../src/tools/list-sources/list-sources.c:153
-#| msgid "Identity"
 msgid "Mail Identity"
 msgstr "Identidade do correo"
 
 #: ../src/tools/list-sources/list-sources.c:154
-#| msgid "Message submission port"
 msgid "Mail Submission"
 msgstr "Envío de correo"
 
 #: ../src/tools/list-sources/list-sources.c:155
-#| msgid "Bad signature"
 msgid "Mail Signature"
 msgstr "Sinatura do correo"
 
@@ -6622,37 +6567,31 @@ msgstr "UID: %s"
 
 #: ../src/tools/list-sources/list-sources.c:228
 #, c-format
-#| msgid "Malformed URI: %s"
 msgid "Parent UID: %s"
 msgstr "UID pai: %s"
 
 #: ../src/tools/list-sources/list-sources.c:231
 #, c-format
-#| msgid "Posting failed: %s"
 msgid "Enabled: %s"
 msgstr "Activado: %s"
 
 #: ../src/tools/list-sources/list-sources.c:233
 #, c-format
-#| msgid "Backend is busy"
 msgid "Backend: %s"
 msgstr "Motor da infraestrutura: %s"
 
 #: ../src/tools/list-sources/list-sources.c:238
 #, c-format
-#| msgid "Calendar does not exist"
 msgid "Calendar enabled: %s"
 msgstr "Calendario activado: %s"
 
 #: ../src/tools/list-sources/list-sources.c:239
 #, c-format
-#| msgid "Contact ID already exists"
 msgid "Contacts enabled: %s"
 msgstr "Contactos activado: %s"
 
 #: ../src/tools/list-sources/list-sources.c:240
 #, c-format
-#| msgid "Operation failed: %s"
 msgid "Mail enabled: %s"
 msgstr "Correo activado: %s"
 
@@ -6687,13 +6626,11 @@ msgid "Auth Proxy UID: %s"
 msgstr "UID proxi de autenticación: %s"
 
 #: ../src/tools/list-sources/list-sources.c:420
-#| msgid "Failed to parse autodiscover response XML"
 msgid "Failed to parse arguments: Unknown error"
 msgstr "Produciuse un erro ao analizar os argumentos: Erro descoñecido"
 
 #: ../src/tools/list-sources/list-sources.c:429
 #, c-format
-#| msgid "Failed to connect to a server using SSL/TLS: %s"
 msgid "Failed to connect to source registry: %s\n"
 msgstr "Produciuse un fallo ao rexistrar a orixe: %s\n"
 
