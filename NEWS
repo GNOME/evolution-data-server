@@ -1,3 +1,14 @@
+Evolution-Data-Server 3.26.4 2018-01-08
+---------------------------------------
+
+Bug Fixes:
+	Bug 791475 - Incorrectly parses headers in certain case (Milan Crha)
+	Bug 791282 - Sanitize RFC2047 encoded strings to avoid exploits (Milan Crha)
+
+Miscellaneous:
+	Prevent passing NULL ldap handle into LDAP functions (Milan Crha)
+	[Maildir] Correct double free when the source message file doesn't exist (Milan Crha)
+
 Evolution-Data-Server 3.26.3 2017-12-11
 ---------------------------------------
 
