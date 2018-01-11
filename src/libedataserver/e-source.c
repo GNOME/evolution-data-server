@@ -137,9 +137,6 @@ struct _ESourcePrivate {
 	GMutex connection_status_change_lock;
 	ESourceConnectionStatus connection_status;
 
-	GSource *credentials_required_call;
-	GMutex credentials_required_call_lock;
-
 	GMutex property_lock;
 
 	gchar *display_name;
@@ -913,7 +910,7 @@ source_notify_dbus_connection_status_cb (EDBusSource *dbus_source,
 		g_source_set_callback (
 			source->priv->connection_status_change,
 			source_idle_connection_status_change_cb,
-			source, NULL);
+			g_object_ref (source), g_object_unref);
 		g_source_attach (
 			source->priv->connection_status_change,
 			source->priv->main_context);
@@ -1227,6 +1224,13 @@ source_dispose (GObject *object)
 
 	priv = E_SOURCE_GET_PRIVATE (object);
 
+	/* Lock & unlock to make sure any pending operations in other threads
+	   which use this lock are already done */
+	g_rec_mutex_lock (&priv->lock);
+	g_rec_mutex_unlock (&priv->lock);
+
+	g_mutex_lock (&priv->property_lock);
+
 	if (priv->dbus_object != NULL) {
 		EDBusObject *dbus_object;
 		EDBusSource *dbus_source;
@@ -1244,6 +1248,8 @@ source_dispose (GObject *object)
 		g_object_unref (priv->dbus_object);
 		priv->dbus_object = NULL;
 	}
+
+	g_mutex_unlock (&priv->property_lock);
 
 	if (priv->main_context != NULL) {
 		g_main_context_unref (priv->main_context);
@@ -1267,14 +1273,6 @@ source_dispose (GObject *object)
 	}
 	g_mutex_unlock (&priv->connection_status_change_lock);
 
-	g_mutex_lock (&priv->credentials_required_call_lock);
-	if (priv->credentials_required_call != NULL) {
-		g_source_destroy (priv->credentials_required_call);
-		g_source_unref (priv->credentials_required_call);
-		priv->credentials_required_call = NULL;
-	}
-	g_mutex_unlock (&priv->credentials_required_call_lock);
-
 	g_hash_table_remove_all (priv->extensions);
 
 	/* Chain up to parent's dispose() method. */
@@ -1290,7 +1288,6 @@ source_finalize (GObject *object)
 
 	g_mutex_clear (&priv->changed_lock);
 	g_mutex_clear (&priv->connection_status_change_lock);
-	g_mutex_clear (&priv->credentials_required_call_lock);
 	g_mutex_clear (&priv->property_lock);
 
 	g_free (priv->display_name);
@@ -2436,7 +2433,6 @@ e_source_init (ESource *source)
 	source->priv = E_SOURCE_GET_PRIVATE (source);
 	g_mutex_init (&source->priv->changed_lock);
 	g_mutex_init (&source->priv->connection_status_change_lock);
-	g_mutex_init (&source->priv->credentials_required_call_lock);
 	g_mutex_init (&source->priv->property_lock);
 	source->priv->key_file = g_key_file_new ();
 	source->priv->extensions = extensions;
@@ -2617,7 +2613,7 @@ e_source_changed (ESource *source)
 		g_source_set_callback (
 			source->priv->changed,
 			source_idle_changed_cb,
-			source, (GDestroyNotify) NULL);
+			g_object_ref (source), g_object_unref);
 		g_source_attach (
 			source->priv->changed,
 			source->priv->main_context);
