@@ -4306,9 +4306,11 @@ camel_imapx_server_copy_message_sync (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_MAILBOX (destination), FALSE);
 	g_return_val_if_fail (uids != NULL, FALSE);
 
-	/* To get permanent flags. That's okay if the "SELECT" fails here, as it can be
-	   due to the folder being write-only; just ignore the error and continue. */
-	camel_imapx_server_ensure_selected_sync (is, destination, cancellable, NULL);
+	if (camel_imapx_mailbox_get_permanentflags (destination) == ~0) {
+		/* To get permanent flags. That's okay if the "SELECT" fails here, as it can be
+		   due to the folder being write-only; just ignore the error and continue. */
+		camel_imapx_server_ensure_selected_sync (is, destination, cancellable, NULL);
+	}
 
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return FALSE;
