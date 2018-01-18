@@ -1717,8 +1717,75 @@ camel_gpg_context_clone_photo_filename (gpointer ptr)
 	return (gpointer) camel_pstring_strdup (ptr);
 }
 
+static CamelInternetAddress *
+gpg_ctx_extract_email_addresses_from_text (const gchar *text)
+{
+	CamelInternetAddress *signers_alt_emails = NULL;
+	const gchar *lt = NULL, *gt = NULL, *bs = NULL, *be = NULL;
+	gssize ii;
+
+	for (ii = 0; text && text[ii]; ii++) {
+		switch (text[ii]) {
+		case '<':
+			lt = text + ii;
+			gt = NULL;
+			bs = NULL;
+			be = NULL;
+			break;
+		case '>':
+			if (lt) {
+				gt = text + ii;
+				bs = NULL;
+				be = NULL;
+			}
+			break;
+		case '[':
+			if (lt && gt) {
+				bs = text + ii;
+				be = NULL;
+			}
+			break;
+		case ']':
+			if (lt && gt && bs) {
+				be = text + ii;
+			}
+			break;
+		case '\n':
+			if (lt && lt < gt && gt < bs && bs < be) {
+				gchar *email = g_strndup (lt + 1, gt - lt - 1);
+
+				if (!signers_alt_emails)
+					signers_alt_emails = camel_internet_address_new ();
+
+				camel_internet_address_add (signers_alt_emails, NULL, email);
+				g_free (email);
+			}
+			lt = NULL;
+			gt = NULL;
+			bs = NULL;
+			be = NULL;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (lt && lt < gt && gt < bs && bs < be) {
+		gchar *email = g_strndup (lt + 1, gt - lt - 1);
+
+		if (!signers_alt_emails)
+			signers_alt_emails = camel_internet_address_new ();
+
+		camel_internet_address_add (signers_alt_emails, NULL, email);
+		g_free (email);
+	}
+
+	return signers_alt_emails;
+}
+
 static void
 add_signers (CamelCipherValidity *validity,
+	     const gchar *diagnostics,
 	     const GString *signers,
 	     GHashTable *signers_keyid,
 	     const gchar *photos_filename)
@@ -1799,6 +1866,21 @@ add_signers (CamelCipherValidity *validity,
 	if (photos)
 		g_hash_table_destroy (photos);
 	g_object_unref (address);
+
+	if (diagnostics && !g_queue_is_empty (&validity->sign.signers)) {
+		CamelInternetAddress *signers_alt_emails;
+
+		signers_alt_emails = gpg_ctx_extract_email_addresses_from_text (diagnostics);
+		if (signers_alt_emails && camel_address_length (CAMEL_ADDRESS (signers_alt_emails)) > 1) {
+			gchar *addresses = camel_address_format (CAMEL_ADDRESS (signers_alt_emails));
+
+			camel_cipher_validity_set_certinfo_property (validity, CAMEL_CIPHER_VALIDITY_SIGN, 0,
+				CAMEL_CIPHER_CERT_INFO_PROPERTY_SIGNERS_ALT_EMAILS, addresses,
+				g_free, (CamelCipherCloneFunc) g_strdup);
+		}
+
+		g_clear_object (&signers_alt_emails);
+	}
 }
 
 /* ********************************************************************** */
@@ -2276,7 +2358,7 @@ gpg_verify_sync (CamelCipherContext *context,
 		validity->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 	}
 
-	add_signers (validity, gpg->signers, gpg->signers_keyid, gpg->photos_filename);
+	add_signers (validity, diagnostics, gpg->signers, gpg->signers_keyid, gpg->photos_filename);
 
 	gpg_ctx_free (gpg);
 
@@ -2611,7 +2693,7 @@ gpg_decrypt_sync (CamelCipherContext *context,
 				valid->sign.status = CAMEL_CIPHER_VALIDITY_SIGN_BAD;
 			}
 
-			add_signers (valid, gpg->signers, gpg->signers_keyid, gpg->photos_filename);
+			add_signers (valid, gpg_ctx_get_diagnostics (gpg), gpg->signers, gpg->signers_keyid, gpg->photos_filename);
 		}
 	}
 

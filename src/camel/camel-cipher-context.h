@@ -56,6 +56,19 @@
  **/
 #define CAMEL_CIPHER_CERT_INFO_PROPERTY_PHOTO_FILENAME "photo-filename"
 
+/**
+ * CAMEL_CIPHER_CERT_INFO_PROPERTY_SIGNERS_ALT_EMAILS:
+ *
+ * A string containing a list of email addresses of all signers
+ * including their alternative emails. Use camel_address_unformat()
+ * to break them back into separate addresses. This can be set
+ * only on the first signer of the first validity, even the addresses
+ * can belong to a different signer.
+ *
+ * Since: 3.28
+ **/
+#define CAMEL_CIPHER_CERT_INFO_PROPERTY_SIGNERS_ALT_EMAILS "signers-alt-emails"
+
 G_BEGIN_DECLS
 
 typedef gpointer (* CamelCipherCloneFunc) (gpointer value);
