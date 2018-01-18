@@ -128,7 +128,7 @@ main (int argc,
 	if (!test_iconv ())
 		return 1;
 
-	fp = fopen ("iconv-detect.h", "w");
+	fp = fopen (ICONV_DETECT_BUILD_DIR "iconv-detect.h", "w");
 	if (fp == NULL)
 		return 255;
 
