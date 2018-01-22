@@ -31,6 +31,7 @@
 #include "camel-sasl-ntlm.h"
 #include "camel-sasl-plain.h"
 #include "camel-sasl-popb4smtp.h"
+#include "camel-sasl-xoauth2-google.h"
 #include "camel-sasl.h"
 #include "camel-service.h"
 
@@ -119,16 +120,17 @@ sasl_build_class_table (void)
 	GHashTable *class_table;
 
 	/* Register known types. */
-	CAMEL_TYPE_SASL_ANONYMOUS;
-	CAMEL_TYPE_SASL_CRAM_MD5;
-	CAMEL_TYPE_SASL_DIGEST_MD5;
+	g_type_ensure (CAMEL_TYPE_SASL_ANONYMOUS);
+	g_type_ensure (CAMEL_TYPE_SASL_CRAM_MD5);
+	g_type_ensure (CAMEL_TYPE_SASL_DIGEST_MD5);
 #ifdef HAVE_KRB5
-	CAMEL_TYPE_SASL_GSSAPI;
+	g_type_ensure (CAMEL_TYPE_SASL_GSSAPI);
 #endif
-	CAMEL_TYPE_SASL_LOGIN;
-	CAMEL_TYPE_SASL_NTLM;
-	CAMEL_TYPE_SASL_PLAIN;
-	CAMEL_TYPE_SASL_POPB4SMTP;
+	g_type_ensure (CAMEL_TYPE_SASL_LOGIN);
+	g_type_ensure (CAMEL_TYPE_SASL_NTLM);
+	g_type_ensure (CAMEL_TYPE_SASL_PLAIN);
+	g_type_ensure (CAMEL_TYPE_SASL_POPB4SMTP);
+	g_type_ensure (CAMEL_TYPE_SASL_XOAUTH2_GOOGLE);
 
 	class_table = g_hash_table_new_full (
 		(GHashFunc) g_str_hash,
@@ -948,4 +950,45 @@ camel_sasl_authtype (const gchar *mechanism)
 	g_hash_table_destroy (class_table);
 
 	return auth_type;
+}
+
+/**
+ * camel_sasl_is_xoauth2_alias:
+ * @mechanism: (nullable): an authentication mechanism
+ *
+ * Checks whether exists a #CamelSasl method for the @mechanism and
+ * whether it derives from #CamelSaslXOAuth2. Such mechanisms are
+ * also treated as XOAUTH2, even their real name is different.
+ *
+ * Returns: whether exists #CamelSasl for the given @mechanism,
+ *    which also derives from #CamelSaslXOAuth2.
+ *
+ * Since: 3.28
+ **/
+gboolean
+camel_sasl_is_xoauth2_alias (const gchar *mechanism)
+{
+	GHashTable *class_table;
+	CamelSaslClass *sasl_class;
+	gboolean exists = FALSE;
+
+	if (!mechanism || !*mechanism)
+		return FALSE;
+
+	class_table = sasl_build_class_table ();
+	sasl_class = g_hash_table_lookup (class_table, mechanism);
+	if (sasl_class) {
+		gpointer parent_class = sasl_class;
+
+		while (parent_class = g_type_class_peek_parent (parent_class), parent_class) {
+			if (CAMEL_IS_SASL_XOAUTH2_CLASS (parent_class)) {
+				exists = TRUE;
+				break;
+			}
+		}
+	}
+
+	g_hash_table_destroy (class_table);
+
+	return exists;
 }

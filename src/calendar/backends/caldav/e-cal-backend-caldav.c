@@ -174,7 +174,8 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		gboolean credentials_empty;
 		gboolean is_ssl_error;
 
-		credentials_empty = !credentials || !e_named_parameters_count (credentials);
+		credentials_empty = (!credentials || !e_named_parameters_count (credentials)) &&
+			!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbdav->priv->webdav));
 		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
@@ -190,6 +191,10 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
 			else
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+		} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
+			   (!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbdav->priv->webdav)) &&
+			   g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))) {
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 		} else if (!local_error) {
 			g_set_error_literal (&local_error, G_IO_ERROR, G_IO_ERROR_FAILED,
 				_("Unknown error"));

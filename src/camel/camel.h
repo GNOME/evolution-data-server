@@ -108,6 +108,8 @@
 #include <camel/camel-sasl-ntlm.h>
 #include <camel/camel-sasl-plain.h>
 #include <camel/camel-sasl-popb4smtp.h>
+#include <camel/camel-sasl-xoauth2.h>
+#include <camel/camel-sasl-xoauth2-google.h>
 #include <camel/camel-service.h>
 #include <camel/camel-session.h>
 #include <camel/camel-settings.h>

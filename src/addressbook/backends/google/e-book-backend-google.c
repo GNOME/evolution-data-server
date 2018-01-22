@@ -399,10 +399,12 @@ ebb_google_connect_sync (EBookMetaBackend *meta_backend,
 
 	if (!success) {
 		if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
-			if (!e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-			else
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+		} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
+			   g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			g_propagate_error (error, local_error);
+			local_error = NULL;
 		} else {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 			ebb_google_data_book_error_from_gdata_error (error, local_error);

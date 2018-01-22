@@ -460,7 +460,10 @@ server_side_source_credentials_lookup_cb (GObject *source_object,
 		g_strfreev (arg_credentials);
 	} else if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 		if (e_source_registry_debug_enabled ()) {
-			printf ("%s: Failed to lookup password: %s\n", G_STRFUNC, error ? error->message : "Unknown error");
+			printf ("%s: Failed to lookup password for source %s (%s): %s\n", G_STRFUNC,
+				e_source_get_uid (E_SOURCE (data->source)),
+				e_source_get_display_name (E_SOURCE (data->source)),
+				error ? error->message : "Unknown error");
 			fflush (stdout);
 		}
 

@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <glib/gi18n-lib.h>
 
+#include "e-oauth2-services.h"
 #include "e-soup-auth-bearer.h"
 #include "e-soup-ssl-trust.h"
 #include "e-source-authentication.h"
@@ -113,7 +114,6 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 				  GCancellable *cancellable,
 				  GError **error)
 {
-	ENamedParameters *credentials;
 	ESource *source;
 	gchar *access_token = NULL;
 	gint expires_in_seconds = -1;
@@ -123,31 +123,9 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 	g_return_val_if_fail (E_IS_SOUP_AUTH_BEARER (bearer), FALSE);
 
 	source = e_soup_session_get_source (session);
-	credentials = e_soup_session_dup_credentials (session);
 
-	if (!credentials || !e_named_parameters_count (credentials)) {
-		/* Google authentication requires prefilled data in 'credentials' */
-		gboolean is_google = FALSE;
-
-		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
-			ESourceAuthentication *extension;
-			gchar *auth_method;
-
-			extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-			auth_method = e_source_authentication_dup_method (extension);
-			is_google = g_strcmp0 (auth_method, "Google") == 0;
-			g_free (auth_method);
-		}
-
-		if (is_google) {
-			e_named_parameters_free (credentials);
-			g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED, _("Credentials required"));
-			return FALSE;
-		}
-	}
-
-	success = e_util_get_source_oauth2_access_token_sync (source, credentials,
-		&access_token, &expires_in_seconds, cancellable, error);
+	success = e_source_get_oauth2_access_token_sync (source, cancellable,
+		&access_token, &expires_in_seconds, error);
 
 	if (success) {
 		e_soup_auth_bearer_set_access_token (bearer, access_token, expires_in_seconds);
@@ -156,7 +134,6 @@ e_soup_session_setup_bearer_auth (ESoupSession *session,
 			e_soup_session_ensure_bearer_auth_usage (session, message, bearer);
 	}
 
-	e_named_parameters_free (credentials);
 	g_free (access_token);
 
 	return success;
@@ -186,7 +163,7 @@ e_soup_session_maybe_prepare_bearer_auth (ESoupSession *session,
 		return TRUE;
 	}
 
-	if (g_strcmp0 (auth_method, "OAuth2") != 0 && g_strcmp0 (auth_method, "Google") != 0) {
+	if (g_strcmp0 (auth_method, "OAuth2") != 0 && !e_oauth2_services_is_oauth2_alias_static (auth_method)) {
 		g_free (auth_method);
 		return TRUE;
 	}
@@ -628,6 +605,23 @@ e_soup_session_dup_credentials (ESoupSession *session)
 	g_mutex_unlock (&session->priv->property_lock);
 
 	return credentials;
+}
+
+/**
+ * e_soup_session_get_authentication_requires_credentials:
+ * @session: an #ESoupSession
+ *
+ * Returns: Whether the last connection attempt required any credentials.
+ *    Authentications like OAuth2 do not want extra credentials to work.
+ *
+ * Since: 3.28
+ **/
+gboolean
+e_soup_session_get_authentication_requires_credentials (ESoupSession *session)
+{
+	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
+
+	return session->priv->using_bearer_auth != NULL;
 }
 
 /**

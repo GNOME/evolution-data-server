@@ -542,7 +542,7 @@ smtp_transport_connect_sync (CamelService *service,
 			goto exit;
 		}
 
-		if (g_hash_table_lookup (transport->authtypes, g_strcmp0 (mechanism, "Google") == 0 ? "XOAUTH2" : mechanism)) {
+		if (g_hash_table_lookup (transport->authtypes, camel_sasl_is_xoauth2_alias (mechanism) ? "XOAUTH2" : mechanism)) {
 			gint tries = 0;
 			GError *local_error = NULL;
 
@@ -676,7 +676,7 @@ smtp_transport_authenticate_sync (CamelService *service,
 	if (challenge) {
 		auth_challenge = TRUE;
 		cmdbuf = g_strdup_printf (
-			"AUTH %s %s\r\n", g_strcmp0 (mechanism, "Google") == 0 ? "XOAUTH2" : mechanism, challenge);
+			"AUTH %s %s\r\n", camel_sasl_is_xoauth2_alias (mechanism) ? "XOAUTH2" : mechanism, challenge);
 		g_free (challenge);
 	} else if (local_error) {
 		d (fprintf (stderr, "[SMTP] SASL challenge failed: %s", local_error->message));

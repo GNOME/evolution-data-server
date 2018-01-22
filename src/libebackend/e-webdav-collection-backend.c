@@ -302,7 +302,6 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 	}
 
 	g_list_free_full (list, g_object_unref);
-	g_object_unref (server);
 
 	source = e_backend_get_source (E_BACKEND (collection));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
@@ -310,9 +309,28 @@ webdav_collection_backend_populate (ECollectionBackend *collection)
 	if (e_source_get_enabled (source) && (
 	    e_source_collection_get_calendar_enabled (collection_extension) ||
 	    e_source_collection_get_contacts_enabled (collection_extension))) {
-		e_backend_schedule_credentials_required (E_BACKEND (collection),
-			E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL, NULL, G_STRFUNC);
+		gboolean needs_credentials = TRUE;
+
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+			ESourceAuthentication *auth_extension;
+			gchar *method;
+
+			auth_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+			method = e_source_authentication_dup_method (auth_extension);
+			needs_credentials = g_strcmp0 (method, "OAuth2") != 0 &&
+				!e_oauth2_services_is_oauth2_alias (e_source_registry_server_get_oauth2_services (server), method);
+			g_free (method);
+		}
+
+		if (needs_credentials) {
+			e_backend_schedule_credentials_required (E_BACKEND (collection),
+				E_SOURCE_CREDENTIALS_REASON_REQUIRED, NULL, 0, NULL, NULL, G_STRFUNC);
+		} else {
+			e_backend_schedule_authenticate (E_BACKEND (collection), NULL);
+		}
 	}
+
+	g_object_unref (server);
 }
 
 static void

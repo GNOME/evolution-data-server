@@ -132,6 +132,13 @@ struct _CamelSessionClass {
 						 const gchar *address,
 						 GCancellable *cancellable,
 						 GError **error);
+	gboolean	(*get_oauth2_access_token_sync)
+						(CamelSession *session,
+						 CamelService *service,
+						 gchar **out_access_token,
+						 gint *out_expires_in,
+						 GCancellable *cancellable,
+						 GError **error);
 
 	/* Padding for future expansion */
 	gpointer reserved_methods[20];
@@ -258,6 +265,13 @@ void		camel_session_forward_to	(CamelSession *session,
 						 gpointer user_data);
 gboolean	camel_session_forward_to_finish	(CamelSession *session,
 						 GAsyncResult *result,
+						 GError **error);
+gboolean	camel_session_get_oauth2_access_token_sync
+						(CamelSession *session,
+						 CamelService *service,
+						 gchar **out_access_token,
+						 gint *out_expires_in,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

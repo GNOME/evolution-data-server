@@ -442,11 +442,12 @@ ecb_gtasks_connect_sync (ECalMetaBackend *meta_backend,
 
 	if (!success) {
 		if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
-			if (!e_named_parameters_exists (credentials, E_SOURCE_CREDENTIAL_PASSWORD))
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REQUIRED;
-			else
-				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 			g_clear_error (&local_error);
+		} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
+			   g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
+			g_propagate_error (error, local_error);
 		} else {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
 			g_propagate_error (error, local_error);

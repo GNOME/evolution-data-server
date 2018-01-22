@@ -71,6 +71,8 @@ struct _ESourceRegistryServerPrivate {
 	GMutex file_monitor_lock;
 	GHashTable *file_monitor_events; /* gchar *uid ~> FileEventData * */
 	GSource *file_monitor_source;
+
+	EOAuth2Services *oauth2_services;
 };
 
 enum {
@@ -724,6 +726,7 @@ source_registry_server_constructed (GObject *object)
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->constructed (object);
 
 	server->priv->credentials_provider = e_server_side_source_credentials_provider_new (server);
+	server->priv->oauth2_services = e_oauth2_services_new ();
 }
 
 static void
@@ -775,6 +778,8 @@ source_registry_server_finalize (GObject *object)
 	g_mutex_clear (&priv->sources_lock);
 	g_mutex_clear (&priv->orphans_lock);
 	g_mutex_clear (&priv->file_monitor_lock);
+
+	g_clear_object (&priv->oauth2_services);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_server_parent_class)->
@@ -1171,6 +1176,22 @@ e_source_registry_server_ref_credentials_provider (ESourceRegistryServer *server
 	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
 
 	return g_object_ref (server->priv->credentials_provider);
+}
+
+/**
+ * e_source_registry_server_get_oauth2_services:
+ * @server: an #ESourceRegistryServer
+ *
+ * Returns: (transfer none): an #EOAuth2Services instance owned by @server
+ *
+ * Since: 3.28
+ **/
+EOAuth2Services *
+e_source_registry_server_get_oauth2_services (ESourceRegistryServer *server)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), NULL);
+
+	return server->priv->oauth2_services;
 }
 
 /**

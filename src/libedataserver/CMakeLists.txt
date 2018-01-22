@@ -65,6 +65,10 @@ set(SOURCES
 	e-memory.c
 	e-module.c
 	e-network-monitor.c
+	e-oauth2-service.c
+	e-oauth2-service-base.c
+	e-oauth2-service-google.c
+	e-oauth2-services.c
 	e-operation-pool.c
 	e-proxy.c
 	e-secret-store.c
@@ -86,7 +90,7 @@ set(SOURCES
 	e-source-contacts.c
 	e-source-credentials-provider.c
 	e-source-credentials-provider-impl.c
-	e-source-credentials-provider-impl-google.c
+	e-source-credentials-provider-impl-oauth2.c
 	e-source-credentials-provider-impl-password.c
 	e-source-goa.c
 	e-source-ldap.c
@@ -149,6 +153,10 @@ set(HEADERS
 	e-memory.h
 	e-module.h
 	e-network-monitor.h
+	e-oauth2-service.h
+	e-oauth2-service-base.h
+	e-oauth2-service-google.h
+	e-oauth2-services.h
 	e-operation-pool.h
 	e-proxy.h
 	e-secret-store.h
@@ -169,7 +177,7 @@ set(HEADERS
 	e-source-contacts.h
 	e-source-credentials-provider.h
 	e-source-credentials-provider-impl.h
-	e-source-credentials-provider-impl-google.h
+	e-source-credentials-provider-impl-oauth2.h
 	e-source-credentials-provider-impl-password.h
 	e-source-enums.h
 	e-source-extension.h
@@ -243,7 +251,7 @@ target_compile_options(edataserver PUBLIC
 	${GCR_BASE_CFLAGS}
 	${GIO_UNIX_CFLAGS}
 	${ICU_CFLAGS}
-	${GOOGLE_AUTH_CFLAGS}
+	${OAUTH2_CFLAGS}
 	${LIBGDATA_CFLAGS}
 )
 
@@ -258,7 +266,7 @@ target_include_directories(edataserver PUBLIC
 	${GCR_BASE_INCLUDE_DIRS}
 	${GIO_UNIX_INCLUDE_DIRS}
 	${ICU_INCLUDE_DIRS}
-	${GOOGLE_AUTH_INCLUDE_DIRS}
+	${OAUTH2_INCLUDE_DIRS}
 	${LIBGDATA_INCLUDE_DIRS}
 )
 
@@ -268,7 +276,7 @@ target_link_libraries(edataserver
 	${GCR_BASE_LDFLAGS}
 	${GIO_UNIX_LDFLAGS}
 	${ICU_LDFLAGS}
-	${GOOGLE_AUTH_LDFLAGS}
+	${OAUTH2_LDFLAGS}
 	${LIBGDATA_LDFLAGS}
 )
 

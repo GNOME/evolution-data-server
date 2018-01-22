@@ -2918,7 +2918,8 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 		g_mutex_lock (&is->priv->stream_lock);
 
 		if (is->priv->cinfo && !g_hash_table_lookup (is->priv->cinfo->auth_types, mechanism) && (
-		    !g_str_equal (mechanism, "Google") || !g_hash_table_lookup (is->priv->cinfo->auth_types, "XOAUTH2"))) {
+		    !camel_sasl_is_xoauth2_alias (mechanism) ||
+		    !g_hash_table_lookup (is->priv->cinfo->auth_types, "XOAUTH2"))) {
 			g_mutex_unlock (&is->priv->stream_lock);
 			g_set_error (
 				error, CAMEL_SERVICE_ERROR,

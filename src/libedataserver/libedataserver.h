@@ -39,6 +39,10 @@
 #include <libedataserver/e-memory.h>
 #include <libedataserver/e-module.h>
 #include <libedataserver/e-network-monitor.h>
+#include <libedataserver/e-oauth2-service.h>
+#include <libedataserver/e-oauth2-service-base.h>
+#include <libedataserver/e-oauth2-service-google.h>
+#include <libedataserver/e-oauth2-services.h>
 #include <libedataserver/e-operation-pool.h>
 #include <libedataserver/e-proxy.h>
 #include <libedataserver/e-secret-store.h>
@@ -58,7 +62,7 @@
 #include <libedataserver/e-source-contacts.h>
 #include <libedataserver/e-source-credentials-provider.h>
 #include <libedataserver/e-source-credentials-provider-impl.h>
-#include <libedataserver/e-source-credentials-provider-impl-google.h>
+#include <libedataserver/e-source-credentials-provider-impl-oauth2.h>
 #include <libedataserver/e-source-credentials-provider-impl-password.h>
 #include <libedataserver/e-source-enums.h>
 #include <libedataserver/e-source-enumtypes.h>

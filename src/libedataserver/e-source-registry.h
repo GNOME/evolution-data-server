@@ -22,6 +22,7 @@
 #ifndef E_SOURCE_REGISTRY_H
 #define E_SOURCE_REGISTRY_H
 
+#include <libedataserver/e-oauth2-services.h>
 #include <libedataserver/e-source.h>
 
 /* Standard GObject macros */
@@ -95,6 +96,9 @@ void		e_source_registry_new		(GCancellable *cancellable,
 ESourceRegistry *
 		e_source_registry_new_finish	(GAsyncResult *result,
 						 GError **error);
+EOAuth2Services *
+		e_source_registry_get_oauth2_services
+						(ESourceRegistry *registry);
 gboolean	e_source_registry_commit_source_sync
 						(ESourceRegistry *registry,
 						 ESource *source,

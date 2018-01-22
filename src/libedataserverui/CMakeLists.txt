@@ -4,7 +4,7 @@ set(SOURCES
 	e-cell-renderer-color.c
 	e-credentials-prompter.c
 	e-credentials-prompter-impl.c
-	e-credentials-prompter-impl-google.c
+	e-credentials-prompter-impl-oauth2.c
 	e-credentials-prompter-impl-password.c
 	e-trust-prompt.c
 	e-webdav-discover-widget.c
@@ -15,7 +15,7 @@ set(HEADERS
 	e-cell-renderer-color.h
 	e-credentials-prompter.h
 	e-credentials-prompter-impl.h
-	e-credentials-prompter-impl-google.h
+	e-credentials-prompter-impl-oauth2.h
 	e-credentials-prompter-impl-password.h
 	e-trust-prompt.h
 	e-webdav-discover-widget.h
@@ -56,7 +56,7 @@ target_compile_options(edataserverui PUBLIC
 	${GCR_BASE_CFLAGS}
 	${GCR_CFLAGS}
 	${GTK_CFLAGS}
-	${GOOGLE_AUTH_CFLAGS}
+	${OAUTH2_CFLAGS}
 )
 
 target_include_directories(edataserverui PUBLIC
@@ -72,7 +72,7 @@ target_include_directories(edataserverui PUBLIC
 	${GCR_BASE_INCLUDE_DIRS}
 	${GCR_INCLUDE_DIRS}
 	${GTK_INCLUDE_DIRS}
-	${GOOGLE_AUTH_INCLUDE_DIRS}
+	${OAUTH2_INCLUDE_DIRS}
 )
 
 target_link_libraries(edataserverui
@@ -85,7 +85,7 @@ target_link_libraries(edataserverui
 	${GCR_BASE_LDFLAGS}
 	${GCR_LDFLAGS}
 	${GTK_LDFLAGS}
-	${GOOGLE_AUTH_LDFLAGS}
+	${OAUTH2_LDFLAGS}
 )
 
 install(TARGETS edataserverui

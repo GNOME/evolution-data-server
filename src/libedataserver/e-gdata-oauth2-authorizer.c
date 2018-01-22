@@ -258,8 +258,8 @@ e_gdata_oauth2_authorizer_refresh_authorization (GDataAuthorizer *authorizer,
 
 	g_mutex_lock (&mutex);
 
-	success = e_util_get_source_oauth2_access_token_sync (source, oauth2_authorizer->priv->credentials,
-		&access_token, &expires_in_seconds, cancellable, error);
+	success = e_source_get_oauth2_access_token_sync (source, cancellable,
+		&access_token, &expires_in_seconds, error);
 
 	/* Returned token is the same, thus no refresh happened, thus rather fail. */
 	if (access_token && g_strcmp0 (access_token, oauth2_authorizer->priv->access_token) == 0) {

@@ -86,6 +86,8 @@ void		e_soup_session_set_credentials		(ESoupSession *session,
 							 const ENamedParameters *credentials);
 ENamedParameters *
 		e_soup_session_dup_credentials		(ESoupSession *session);
+gboolean	e_soup_session_get_authentication_requires_credentials
+							(ESoupSession *session);
 gboolean	e_soup_session_get_ssl_error_details	(ESoupSession *session,
 							 gchar **out_certificate_pem,
 							 GTlsCertificateFlags *out_certificate_errors);

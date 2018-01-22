@@ -121,6 +121,8 @@ struct _ESourceRegistryPrivate {
 	gboolean initialized;
 	GError *init_error;
 	GMutex init_lock;
+
+	EOAuth2Services *oauth2_services;
 };
 
 struct _AsyncContext {
@@ -1350,6 +1352,8 @@ source_registry_finalize (GObject *object)
 	g_clear_error (&priv->init_error);
 	g_mutex_clear (&priv->init_lock);
 
+	g_clear_object (&priv->oauth2_services);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_source_registry_parent_class)->finalize (object);
 }
@@ -1733,6 +1737,8 @@ e_source_registry_init (ESourceRegistry *registry)
 		G_CALLBACK (source_registry_settings_changed_cb), registry);
 
 	g_mutex_init (&registry->priv->init_lock);
+
+	registry->priv->oauth2_services = e_oauth2_services_new ();
 }
 
 /**
@@ -1853,6 +1859,22 @@ e_source_registry_new_finish (GAsyncResult *result,
 	g_return_val_if_fail (g_task_is_valid (result, NULL), NULL);
 
 	return g_task_propagate_pointer (G_TASK (result), error);
+}
+
+/**
+ * e_source_registry_get_oauth2_services:
+ * @registry: an #ESourceRegistry
+ *
+ * Returns: (transfer none): an instance of #EOAuth2Services, owned by @registry
+ *
+ * Since: 3.28
+ **/
+EOAuth2Services *
+e_source_registry_get_oauth2_services (ESourceRegistry *registry)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), NULL);
+
+	return registry->priv->oauth2_services;
 }
 
 /* Helper for e_source_registry_commit_source() */

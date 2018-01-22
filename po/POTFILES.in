@@ -113,6 +113,7 @@ src/camel/camel-sasl-login.c
 src/camel/camel-sasl-ntlm.c
 src/camel/camel-sasl-plain.c
 src/camel/camel-sasl-popb4smtp.c
+src/camel/camel-sasl-xoauth2-google.c
 src/camel/camel-search-private.c
 src/camel/camel-service.c
 src/camel/camel-session.c
@@ -190,10 +191,11 @@ src/libebackend/e-subprocess-factory.c
 src/libebackend/e-user-prompter-server.c
 src/libedataserver/e-categories.c
 src/libedataserver/e-client.c
+src/libedataserver/e-oauth2-service.c
+src/libedataserver/e-oauth2-service-google.c
 src/libedataserver/e-soup-session.c
 src/libedataserver/e-source.c
 src/libedataserver/e-source-credentials-provider-impl.c
-src/libedataserver/e-source-credentials-provider-impl-google.c
 src/libedataserver/e-source-credentials-provider-impl-password.c
 src/libedataserver/e-source-mail-signature.c
 src/libedataserver/e-source-proxy.c
@@ -203,7 +205,7 @@ src/libedataserver/e-time-utils.c
 src/libedataserver/e-webdav-discover.c
 src/libedataserver/e-webdav-session.c
 src/libedataserverui/e-credentials-prompter.c
-src/libedataserverui/e-credentials-prompter-impl-google.c
+src/libedataserverui/e-credentials-prompter-impl-oauth2.c
 src/libedataserverui/e-credentials-prompter-impl-password.c
 src/libedataserverui/e-trust-prompt.c
 src/libedataserverui/e-webdav-discover-widget.c

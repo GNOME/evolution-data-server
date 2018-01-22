@@ -35,7 +35,7 @@
 #include "e-source.h"
 #include "e-source-authentication.h"
 #include "e-source-backend.h"
-#include "e-source-credentials-provider-impl-google.h"
+#include "e-source-collection.h"
 #include "e-source-enumtypes.h"
 #include "e-source-mail-identity.h"
 #include "e-source-mail-submission.h"
@@ -2917,60 +2917,6 @@ e_util_get_source_full_name (ESourceRegistry *registry,
 	return g_string_free (fullname, FALSE);
 }
 
-
-/**
- * e_util_get_source_oauth2_access_token_sync:
- * @source: an #ESource
- * @credentials: an ENamedParameters
- * @out_access_token: (allow-none) (out): return location for the access token,
- *                    or %NULL
- * @out_expires_in_seconds: (allow-none) (out): return location for the token expiry,
- *                  or %NULL
- * @cancellable: (allow-none): optional #GCancellable object, or %NULL
- * @error: return location for a #GError, or %NULL
- *
- * Obtains the OAuth 2.0 access token for @source along with its expiry
- * in seconds from the current time (or 0 if unknown).
- *
- * Free the returned access token with g_free() when finished with it.
- * If an error occurs, the function will set @error and return %FALSE.
- *
- * Returns: %TRUE on success, %FALSE on error
- **/
-gboolean
-e_util_get_source_oauth2_access_token_sync (ESource *source,
-					    const ENamedParameters *credentials,
-					    gchar **out_access_token,
-					    gint *out_expires_in_seconds,
-					    GCancellable *cancellable,
-					    GError **error)
-{
-	gchar *auth_method = NULL;
-	gboolean success = FALSE;
-
-	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
-
-	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
-		ESourceAuthentication *extension;
-
-		extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
-		auth_method = e_source_authentication_dup_method (extension);
-	}
-
-	if (g_strcmp0 (auth_method, "OAuth2") == 0) {
-		success = e_source_get_oauth2_access_token_sync (
-			source, cancellable, out_access_token,
-			out_expires_in_seconds, error);
-	} else if (g_strcmp0 (auth_method, "Google") == 0) {
-		success = e_source_credentials_google_get_access_token_sync (
-			source, credentials, out_access_token, out_expires_in_seconds, cancellable, error);
-	}
-
-	g_free (auth_method);
-
-	return success;
-}
-
 static gpointer
 unref_object_in_thread (gpointer ptr)
 {
@@ -3130,4 +3076,93 @@ e_util_identity_can_send (ESourceRegistry *registry,
 	g_object_unref (transport_source);
 
 	return can_send;
+}
+
+/**
+ * e_util_can_use_collection_as_credential_source:
+ * @collection_source: (nullable): a collection #ESource, or %NULL
+ * @child_source: a children of @collection_source
+ *
+ * Checks whether the @collection_source can be used as a credential source
+ * for the @child_source. The relationship is not tested in the function.
+ * When the @collection_source is %NULL, then it simply returns %FALSE.
+ *
+ * Returns: whether @collection_source can be used as a credential source
+ *    for @child_source, that is, whether they share credentials.
+ *
+ * Since: 3.28
+ **/
+gboolean
+e_util_can_use_collection_as_credential_source (ESource *collection_source,
+						ESource *child_source)
+{
+	gboolean can_use_collection = FALSE;
+
+	if (collection_source)
+		g_return_val_if_fail (E_IS_SOURCE (collection_source), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (child_source), FALSE);
+
+	if (collection_source && e_source_has_extension (collection_source, E_SOURCE_EXTENSION_COLLECTION)) {
+		/* Use the found parent collection source for credentials store only if
+		   the child source doesn't have any authentication information, or this
+		   information is not filled, or if either the host name or the user name
+		   are the same with the collection source.
+
+		   This allows to create a collection of sources which has one source
+		   (like message send) on a different server, thus this source uses
+		   its own credentials.
+		*/
+		if (!e_source_has_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+			can_use_collection = TRUE;
+		} else if (e_source_has_extension (collection_source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
+			ESourceAuthentication *auth_source, *auth_collection;
+			gchar *host_source, *host_collection;
+
+			auth_source = e_source_get_extension (child_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+			auth_collection = e_source_get_extension (collection_source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+			host_source = e_source_authentication_dup_host (auth_source);
+			host_collection = e_source_authentication_dup_host (auth_collection);
+
+			if (host_source && host_collection && g_ascii_strcasecmp (host_source, host_collection) == 0) {
+				gchar *username_source, *username_collection;
+
+				username_source = e_source_authentication_dup_user (auth_source);
+				username_collection = e_source_authentication_dup_user (auth_collection);
+
+				if (username_source && username_collection && g_ascii_strcasecmp (username_source, username_collection) == 0) {
+					can_use_collection = TRUE;
+				} else {
+					can_use_collection = !username_source || !*username_source;
+				}
+
+				g_free (username_source);
+				g_free (username_collection);
+			} else {
+				/* Only one of them is filled, then use the collection; otherwise
+				   both are filled and they do not match, thus do not use collection. */
+				can_use_collection = (host_collection && *host_collection && (!host_source || !*host_source)) ||
+						     (host_source && *host_source && (!host_collection || !*host_collection));
+
+				if (can_use_collection) {
+					gchar *method_source, *method_collection;
+
+					/* Also check the method; if different, then rather not use the collection */
+					method_source = e_source_authentication_dup_method (auth_source);
+					method_collection = e_source_authentication_dup_method (auth_collection);
+
+					can_use_collection = !method_source || !method_collection ||
+						g_ascii_strcasecmp (method_source, method_collection) == 0;
+
+					g_free (method_source);
+					g_free (method_collection);
+				}
+			}
+
+			g_free (host_source);
+			g_free (host_collection);
+		}
+	}
+
+	return can_use_collection;
 }

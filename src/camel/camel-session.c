@@ -1922,3 +1922,38 @@ camel_session_forward_to_finish (CamelSession *session,
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
+/**
+ * camel_session_get_oauth2_access_token_sync:
+ * @session: a #CamelSession
+ * @service: a #CamelService
+ * @out_access_token: (out) (nullable): return location for the access token, or %NULL
+ * @out_expires_in: (out) (nullable): return location for the token expiry, or %NULL
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Obtains the OAuth 2.0 access token for @service along with its expiry
+ * in seconds from the current time (or 0 if unknown).
+ *
+ * Free the returned access token with g_free() when no longer needed.
+ *
+ * Returns: whether succeeded
+ *
+ * Since: 3.28
+ **/
+gboolean
+camel_session_get_oauth2_access_token_sync (CamelSession *session,
+					    CamelService *service,
+					    gchar **out_access_token,
+					    gint *out_expires_in,
+					    GCancellable *cancellable,
+					    GError **error)
+{
+	CamelSessionClass *klass;
+
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
+
+	klass = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (klass->get_oauth2_access_token_sync != NULL, FALSE);
+
+	return klass->get_oauth2_access_token_sync (session, service, out_access_token, out_expires_in, cancellable, error);
+}

@@ -274,13 +274,6 @@ void		e_type_traverse			(GType parent_type,
 
 gchar *		e_util_get_source_full_name	(struct _ESourceRegistry *registry,
 						 struct _ESource *source);
-gboolean	e_util_get_source_oauth2_access_token_sync
-						(struct _ESource *source,
-						 const ENamedParameters *credentials,
-						 gchar **out_access_token,
-						 gint *out_expires_in_seconds,
-						 GCancellable *cancellable,
-						 GError **error);
 
 void		e_util_unref_in_thread		(gpointer object);
 
@@ -288,6 +281,9 @@ gchar *		e_util_generate_uid		(void);
 
 gboolean	e_util_identity_can_send	(struct _ESourceRegistry *registry,
 						 struct _ESource *identity_source);
+gboolean	e_util_can_use_collection_as_credential_source
+						(struct _ESource *collection_source,
+						 struct _ESource *child_source);
 
 G_END_DECLS
 

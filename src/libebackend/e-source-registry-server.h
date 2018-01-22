@@ -112,6 +112,9 @@ EDBusServer *	e_source_registry_server_new	(void);
 ESourceCredentialsProvider *
 		e_source_registry_server_ref_credentials_provider
 						(ESourceRegistryServer *server);
+EOAuth2Services *
+		e_source_registry_server_get_oauth2_services
+						(ESourceRegistryServer *server);
 void		e_source_registry_server_add_source
 						(ESourceRegistryServer *server,
 						 ESource *source);

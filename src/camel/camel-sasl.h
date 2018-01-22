@@ -132,6 +132,7 @@ gchar *		camel_sasl_challenge_base64_finish
 GList *		camel_sasl_authtype_list	(gboolean include_plain);
 CamelServiceAuthType *
 		camel_sasl_authtype		(const gchar *mechanism);
+gboolean	camel_sasl_is_xoauth2_alias	(const gchar *mechanism);
 
 G_END_DECLS
 

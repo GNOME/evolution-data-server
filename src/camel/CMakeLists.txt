@@ -89,6 +89,8 @@ set(SOURCES
 	camel-sasl-ntlm.c
 	camel-sasl-plain.c
 	camel-sasl-popb4smtp.c
+	camel-sasl-xoauth2.c
+	camel-sasl-xoauth2-google.c
 	camel-sasl.c
 	camel-search-private.c
 	camel-search-sql-sexp.c
@@ -226,6 +228,8 @@ set(HEADERS
 	camel-sasl-ntlm.h
 	camel-sasl-plain.h
 	camel-sasl-popb4smtp.h
+	camel-sasl-xoauth2.h
+	camel-sasl-xoauth2-google.h
 	camel-sasl.h
 	camel-search-private.h
 	camel-search-sql-sexp.h

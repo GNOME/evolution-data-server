@@ -44,7 +44,7 @@ set(USER_PROMPTER_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.UserPrompter
 # ******************************
 # Library versioning
 # ******************************
-set(LIBCAMEL_CURRENT 60)
+set(LIBCAMEL_CURRENT 61)
 set(LIBCAMEL_REVISION 0)
 set(LIBCAMEL_AGE 0)
 
@@ -52,11 +52,11 @@ set(LIBEBACKEND_CURRENT 10)
 set(LIBEBACKEND_REVISION 0)
 set(LIBEBACKEND_AGE 0)
 
-set(LIBEDATASERVER_CURRENT 22)
+set(LIBEDATASERVER_CURRENT 23)
 set(LIBEDATASERVER_REVISION 0)
 set(LIBEDATASERVER_AGE 0)
 
-set(LIBEDATASERVERUI_CURRENT 1)
+set(LIBEDATASERVERUI_CURRENT 2)
 set(LIBEDATASERVERUI_REVISION 0)
 set(LIBEDATASERVERUI_AGE 0)
 
@@ -380,14 +380,14 @@ if(ENABLE_GTK)
 	set(HAVE_GTK 1)
 endif(ENABLE_GTK)
 
-# ***************************************************
-# Check for WebKitGTK+ and json-glib for google auth
-# ***************************************************
+# **************************************************************
+# Check for WebKitGTK+ and json-glib for OAuth2 authentications
+# **************************************************************
 
-add_printable_option(ENABLE_GOOGLE_AUTH "Enable built-in Google authentication" ON)
+add_printable_option(ENABLE_OAUTH2 "Enable built-in OAuth2 authentications" ON)
 
-if(ENABLE_GOOGLE_AUTH)
-	pkg_check_modules_for_option(ENABLE_GOOGLE_AUTH "Google authentication support" GOOGLE_AUTH
+if(ENABLE_OAUTH2)
+	pkg_check_modules_for_option(ENABLE_OAUTH2 "OAuth2 authentication support" OAUTH2
 		webkit2gtk-4.0>=${webkit2gtk_minimum_version}
 		json-glib-1.0>=${json_glib_minimum_version}
 	)
@@ -402,7 +402,7 @@ if(ENABLE_GOOGLE_AUTH)
 	if(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
 		set(WITH_GOOGLE_CLIENT_SECRET "mtfUe5W8Aal9DcgVipOY1T9G")
 	endif(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
-endif(ENABLE_GOOGLE_AUTH)
+endif(ENABLE_OAUTH2)
 
 # ******************************************
 # Check whether to build examples/demos
