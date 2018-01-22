@@ -15,12 +15,22 @@
 
 #include "evolution-data-server-config.h"
 
+#include <glib/gi18n-lib.h>
+
 #include "camel-network-settings.h"
 #include "camel-session.h"
 
 #include "camel-sasl-xoauth2.h"
 
-G_DEFINE_ABSTRACT_TYPE (CamelSaslXOAuth2, camel_sasl_xoauth2, CAMEL_TYPE_SASL)
+static CamelServiceAuthType sasl_xoauth2_auth_type = {
+	N_("OAuth2"),
+	N_("This option will use an OAuth 2.0 "
+	   "access token to connect to the server"),
+	"XOAUTH2",
+	FALSE
+};
+
+G_DEFINE_TYPE (CamelSaslXOAuth2, camel_sasl_xoauth2, CAMEL_TYPE_SASL)
 
 static void
 sasl_xoauth2_append_request (GByteArray *byte_array,
@@ -101,6 +111,7 @@ camel_sasl_xoauth2_class_init (CamelSaslXOAuth2Class *class)
 	CamelSaslClass *sasl_class;
 
 	sasl_class = CAMEL_SASL_CLASS (class);
+	sasl_class->auth_type = &sasl_xoauth2_auth_type;
 	sasl_class->challenge_sync = sasl_xoauth2_challenge_sync;
 }
 

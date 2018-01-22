@@ -113,6 +113,7 @@ src/camel/camel-sasl-login.c
 src/camel/camel-sasl-ntlm.c
 src/camel/camel-sasl-plain.c
 src/camel/camel-sasl-popb4smtp.c
+src/camel/camel-sasl-xoauth2.c
 src/camel/camel-sasl-xoauth2-google.c
 src/camel/camel-search-private.c
 src/camel/camel-service.c
