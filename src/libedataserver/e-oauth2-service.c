@@ -43,8 +43,6 @@
 
 #include "e-oauth2-service.h"
 
-#define DEFAULT_REDIRECT_URI "urn:ietf:wg:oauth:2.0:oob"
-
 G_DEFINE_INTERFACE (EOAuth2Service, e_oauth2_service, G_TYPE_OBJECT)
 
 static gboolean
@@ -145,6 +143,12 @@ eos_default_get_flags (EOAuth2Service *service)
 	return E_OAUTH2_SERVICE_FLAG_NONE;
 }
 
+static const gchar *
+eos_default_get_redirect_uri (EOAuth2Service *service)
+{
+	return "urn:ietf:wg:oauth:2.0:oob";
+}
+
 static void
 eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 					      ESource *source,
@@ -152,7 +156,7 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 {
 	e_oauth2_service_util_set_to_form (uri_query, "response_type", "code");
 	e_oauth2_service_util_set_to_form (uri_query, "client_id", e_oauth2_service_get_client_id (service));
-	e_oauth2_service_util_set_to_form (uri_query, "redirect_uri", DEFAULT_REDIRECT_URI);
+	e_oauth2_service_util_set_to_form (uri_query, "redirect_uri", e_oauth2_service_get_redirect_uri (service));
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
@@ -183,7 +187,7 @@ eos_default_prepare_get_token_form (EOAuth2Service *service,
 	e_oauth2_service_util_set_to_form (form, "code", authorization_code);
 	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service));
 	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service));
-	e_oauth2_service_util_set_to_form (form, "redirect_uri", DEFAULT_REDIRECT_URI);
+	e_oauth2_service_util_set_to_form (form, "redirect_uri", e_oauth2_service_get_redirect_uri (service));
 	e_oauth2_service_util_set_to_form (form, "grant_type", "authorization_code");
 }
 
@@ -216,6 +220,7 @@ e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 	iface->can_process = eos_default_can_process;
 	iface->guess_can_process = eos_default_guess_can_process;
 	iface->get_flags = eos_default_get_flags;
+	iface->get_redirect_uri = eos_default_get_redirect_uri;
 	iface->prepare_authentication_uri_query = eos_default_prepare_authentication_uri_query;
 	iface->get_authentication_policy = eos_default_get_authentication_policy;
 	iface->prepare_get_token_form = eos_default_prepare_get_token_form;
@@ -410,7 +415,7 @@ e_oauth2_service_get_client_id (EOAuth2Service *service)
  * e_oauth2_service_get_client_secret:
  * @service: an #EOAuth2Service
  *
- * Returns: application client secret, as provided by the server
+ * Returns: (nullable): application client secret, as provided by the server, or %NULL
  *
  * Since: 3.28
  **/
@@ -471,6 +476,31 @@ e_oauth2_service_get_refresh_uri (EOAuth2Service *service)
 	g_return_val_if_fail (iface->get_refresh_uri != NULL, NULL);
 
 	return iface->get_refresh_uri (service);
+}
+
+/**
+ * e_oauth2_service_get_redirect_uri:
+ * @service: an #EOAuth2Service
+ *
+ * Returns a value for the "redirect_uri" keys in the authenticate and get_token
+ * operations. The default implementation returns "urn:ietf:wg:oauth:2.0:oob".
+ *
+ * Returns: (nullable): The redirect_uri to use, or %NULL for none
+ *
+ * Since: 3.28
+ **/
+const gchar *
+e_oauth2_service_get_redirect_uri (EOAuth2Service *service)
+{
+	EOAuth2ServiceInterface *iface;
+
+	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+
+	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
+	g_return_val_if_fail (iface != NULL, NULL);
+	g_return_val_if_fail (iface->get_redirect_uri != NULL, NULL);
+
+	return iface->get_redirect_uri (service);
 }
 
 /**

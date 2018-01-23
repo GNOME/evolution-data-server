@@ -120,6 +120,7 @@ struct _EOAuth2ServiceInterface {
 	const gchar *	(* get_client_secret)		(EOAuth2Service *service);
 	const gchar *	(* get_authentication_uri)	(EOAuth2Service *service);
 	const gchar *	(* get_refresh_uri)		(EOAuth2Service *service);
+	const gchar *	(* get_redirect_uri)		(EOAuth2Service *service);
 	void		(* prepare_authentication_uri_query)
 							(EOAuth2Service *service,
 							 ESource *source,
@@ -161,6 +162,7 @@ const gchar *	e_oauth2_service_get_client_id		(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_client_secret	(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_authentication_uri	(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_refresh_uri	(EOAuth2Service *service);
+const gchar *	e_oauth2_service_get_redirect_uri	(EOAuth2Service *service);
 void		e_oauth2_service_prepare_authentication_uri_query
 							(EOAuth2Service *service,
 							 ESource *source,
