@@ -57,6 +57,17 @@ G_DEFINE_TYPE (ECredentialsPrompterImplOAuth2, e_credentials_prompter_impl_oauth
 
 #ifdef ENABLE_OAUTH2
 
+static gboolean
+cpi_oauth2_get_debug (void)
+{
+	static gint oauth2_debug = -1;
+
+	if (oauth2_debug == -1)
+		oauth2_debug = g_strcmp0 (g_getenv ("OAUTH2_DEBUG"), "1") == 0 ? 1 : 0;
+
+	return oauth2_debug == 1;
+}
+
 static gchar *
 cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 			    ESource *source)
@@ -353,6 +364,10 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 	uri = webkit_web_view_get_uri (web_view);
 	if (!title || !uri)
 		return;
+
+	if (cpi_oauth2_get_debug ()) {
+		g_print ("[OAuth2] Loaded URI: '%s'\n", uri);
+	}
 
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);
 
