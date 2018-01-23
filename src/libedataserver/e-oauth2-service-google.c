@@ -32,9 +32,9 @@ G_DEFINE_TYPE_WITH_CODE (EOAuth2ServiceGoogle, e_oauth2_service_google, E_TYPE_O
 	G_IMPLEMENT_INTERFACE (E_TYPE_OAUTH2_SERVICE, e_oauth2_service_google_oauth2_service_init))
 
 static gboolean
-e_oauth2_service_google_guess_can_process (EOAuth2Service *service,
-					   const gchar *protocol,
-					   const gchar *hostname)
+eos_google_guess_can_process (EOAuth2Service *service,
+			      const gchar *protocol,
+			      const gchar *hostname)
 {
 	return hostname && (
 		e_util_utf8_strstrcase (hostname, ".google.com") ||
@@ -44,46 +44,46 @@ e_oauth2_service_google_guess_can_process (EOAuth2Service *service,
 }
 
 static const gchar *
-e_oauth2_service_google_get_name (EOAuth2Service *service)
+eos_google_get_name (EOAuth2Service *service)
 {
 	return "Google";
 }
 
 static const gchar *
-e_oauth2_service_google_get_display_name (EOAuth2Service *service)
+eos_google_get_display_name (EOAuth2Service *service)
 {
 	/* Translators: This is a user-visible string, display name of an OAuth2 service. */
 	return C_("OAuth2Service", "Google");
 }
 
 static const gchar *
-e_oauth2_service_google_get_client_id (EOAuth2Service *service)
+eos_google_get_client_id (EOAuth2Service *service)
 {
 	return GOOGLE_CLIENT_ID;
 }
 
 static const gchar *
-e_oauth2_service_google_get_client_secret (EOAuth2Service *service)
+eos_google_get_client_secret (EOAuth2Service *service)
 {
 	return GOOGLE_CLIENT_SECRET;
 }
 
 static const gchar *
-e_oauth2_service_google_get_authentication_uri (EOAuth2Service *service)
+eos_google_get_authentication_uri (EOAuth2Service *service)
 {
 	return "https://accounts.google.com/o/oauth2/auth";
 }
 
 static const gchar *
-e_oauth2_service_google_get_refresh_uri (EOAuth2Service *service)
+eos_google_get_refresh_uri (EOAuth2Service *service)
 {
 	return "https://www.googleapis.com/oauth2/v3/token";
 }
 
 static void
-e_oauth2_service_google_prepare_authentication_uri_query (EOAuth2Service *service,
-							  ESource *source,
-							  GHashTable *uri_query)
+eos_google_prepare_authentication_uri_query (EOAuth2Service *service,
+					     ESource *source,
+					     GHashTable *uri_query)
 {
 	const gchar *GOOGLE_SCOPE =
 		/* GMail IMAP and SMTP access */
@@ -99,19 +99,16 @@ e_oauth2_service_google_prepare_authentication_uri_query (EOAuth2Service *servic
 
 	g_return_if_fail (uri_query != NULL);
 
-	#define add_to_form(name, value) g_hash_table_insert (uri_query, g_strdup (name), g_strdup (value))
-
-	add_to_form ("scope", GOOGLE_SCOPE);
-	add_to_form ("include_granted_scopes", "false");
-
-	#undef add_to_form
+	e_oauth2_service_util_set_to_form (uri_query, "scope", GOOGLE_SCOPE);
+	e_oauth2_service_util_set_to_form (uri_query, "include_granted_scopes", "false");
 }
 
 static gboolean
-e_oauth2_service_google_extract_authorization_code (EOAuth2Service *service,
-						    const gchar *page_title,
-						    const gchar *page_uri,
-						    gchar **out_authorization_code)
+eos_google_extract_authorization_code (EOAuth2Service *service,
+				       const gchar *page_title,
+				       const gchar *page_uri,
+				       const gchar *page_content,
+				       gchar **out_authorization_code)
 {
 	g_return_val_if_fail (out_authorization_code != NULL, FALSE);
 
@@ -135,15 +132,15 @@ e_oauth2_service_google_extract_authorization_code (EOAuth2Service *service,
 static void
 e_oauth2_service_google_oauth2_service_init (EOAuth2ServiceInterface *iface)
 {
-	iface->guess_can_process = e_oauth2_service_google_guess_can_process;
-	iface->get_name = e_oauth2_service_google_get_name;
-	iface->get_display_name = e_oauth2_service_google_get_display_name;
-	iface->get_client_id = e_oauth2_service_google_get_client_id;
-	iface->get_client_secret = e_oauth2_service_google_get_client_secret;
-	iface->get_authentication_uri = e_oauth2_service_google_get_authentication_uri;
-	iface->get_refresh_uri = e_oauth2_service_google_get_refresh_uri;
-	iface->prepare_authentication_uri_query = e_oauth2_service_google_prepare_authentication_uri_query;
-	iface->extract_authorization_code = e_oauth2_service_google_extract_authorization_code;
+	iface->guess_can_process = eos_google_guess_can_process;
+	iface->get_name = eos_google_get_name;
+	iface->get_display_name = eos_google_get_display_name;
+	iface->get_client_id = eos_google_get_client_id;
+	iface->get_client_secret = eos_google_get_client_secret;
+	iface->get_authentication_uri = eos_google_get_authentication_uri;
+	iface->get_refresh_uri = eos_google_get_refresh_uri;
+	iface->prepare_authentication_uri_query = eos_google_prepare_authentication_uri_query;
+	iface->extract_authorization_code = eos_google_extract_authorization_code;
 }
 
 static void

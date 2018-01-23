@@ -48,6 +48,39 @@
 G_BEGIN_DECLS
 
 /**
+ * EOAuth2ServiceFlags:
+ * @E_OAUTH2_SERVICE_FLAG_NONE: No flag set
+ * @E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT: the service requires also page
+ *    content to be passed to e_oauth2_service_extract_authorization_code()
+ *
+ * Flags of the OAuth2 service.
+ *
+ * Since: 3.28
+ **/
+typedef enum {
+	E_OAUTH2_SERVICE_FLAG_NONE				= 0,
+	E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT	= (1 << 1)
+} EOAuth2ServiceFlags;
+
+/**
+ * EOAuth2ServiceNavigationPolicy:
+ * @E_OAUTH2_SERVICE_NAVIGATION_POLICY_DENY: Deny navigation to the given web resource
+ * @E_OAUTH2_SERVICE_NAVIGATION_POLICY_ALLOW: Allow navigation to the given web resource
+ * @E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT: Abort authentication processing
+ *
+ * A value used during querying authentication URI, to decide whether certain
+ * resource can be used or not. The @E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT
+ * can be used to abort the authentication query, like when user cancelled it.
+ *
+ * Since: 3.28
+ **/
+typedef enum {
+	E_OAUTH2_SERVICE_NAVIGATION_POLICY_DENY,
+	E_OAUTH2_SERVICE_NAVIGATION_POLICY_ALLOW,
+	E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT
+} EOAuth2ServiceNavigationPolicy;
+
+/**
  * EOAuth2ServiceRefSourceFunc:
  * @user_data: user data, as passed to e_oauth2_service_get_token_sync()
  *    or e_oauth2_service_refresh_token_sync()
@@ -80,6 +113,7 @@ struct _EOAuth2ServiceInterface {
 	gboolean	(* guess_can_process)		(EOAuth2Service *service,
 							 const gchar *protocol,
 							 const gchar *hostname);
+	guint32		(* get_flags)			(EOAuth2Service *service);
 	const gchar *	(* get_name)			(EOAuth2Service *service);
 	const gchar *	(* get_display_name)		(EOAuth2Service *service);
 	const gchar *	(* get_client_id)		(EOAuth2Service *service);
@@ -90,9 +124,13 @@ struct _EOAuth2ServiceInterface {
 							(EOAuth2Service *service,
 							 ESource *source,
 							 GHashTable *uri_query);
+	EOAuth2ServiceNavigationPolicy
+			(* get_authentication_policy)	(EOAuth2Service *service,
+							 const gchar *uri);
 	gboolean	(* extract_authorization_code)	(EOAuth2Service *service,
 							 const gchar *page_title,
 							 const gchar *page_uri,
+							 const gchar *page_content,
 							 gchar **out_authorization_code);
 	void		(* prepare_get_token_form)	(EOAuth2Service *service,
 							 const gchar *authorization_code,
@@ -116,6 +154,7 @@ gboolean	e_oauth2_service_can_process		(EOAuth2Service *service,
 gboolean	e_oauth2_service_guess_can_process	(EOAuth2Service *service,
 							 const gchar *protocol,
 							 const gchar *hostname);
+guint32		e_oauth2_service_get_flags		(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_name		(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_display_name	(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_client_id		(EOAuth2Service *service);
@@ -126,10 +165,15 @@ void		e_oauth2_service_prepare_authentication_uri_query
 							(EOAuth2Service *service,
 							 ESource *source,
 							 GHashTable *uri_query);
+EOAuth2ServiceNavigationPolicy
+		e_oauth2_service_get_authentication_policy
+							(EOAuth2Service *service,
+							 const gchar *uri);
 gboolean	e_oauth2_service_extract_authorization_code
 							(EOAuth2Service *service,
 							 const gchar *page_title,
 							 const gchar *page_uri,
+							 const gchar *page_content,
 							 gchar **out_authorization_code);
 void		e_oauth2_service_prepare_get_token_form	(EOAuth2Service *service,
 							 const gchar *authorization_code,
@@ -173,6 +217,13 @@ gboolean	e_oauth2_service_get_access_token_sync	(EOAuth2Service *service,
 							 gint *out_expires_in,
 							 GCancellable *cancellable,
 							 GError **error);
+
+void		e_oauth2_service_util_set_to_form	(GHashTable *form,
+							 const gchar *name,
+							 const gchar *value);
+void		e_oauth2_service_util_take_to_form	(GHashTable *form,
+							 const gchar *name,
+							 gchar *value);
 
 G_END_DECLS
 

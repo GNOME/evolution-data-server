@@ -1079,10 +1079,8 @@ imapx_query_auth_types_sync (CamelService *service,
                              GCancellable *cancellable,
                              GError **error)
 {
-	CamelServiceAuthType *authtype;
 	CamelIMAPXStore *imapx_store;
-	GList *sasl_types = NULL;
-	GList *t, *next;
+	GList *sasl_types;
 	CamelIMAPXServer *server;
 	const struct _capability_info *cinfo;
 
@@ -1098,14 +1096,19 @@ imapx_query_auth_types_sync (CamelService *service,
 
 	cinfo = camel_imapx_server_get_capability_info (server);
 
-	sasl_types = camel_sasl_authtype_list (FALSE);
-	for (t = sasl_types; t; t = next) {
-		authtype = t->data;
-		next = t->next;
+	sasl_types = NULL;
 
-		if (!cinfo || !g_hash_table_lookup (cinfo->auth_types, authtype->authproto)) {
-			sasl_types = g_list_remove_link (sasl_types, t);
-			g_list_free_1 (t);
+	if (cinfo && cinfo->auth_types) {
+		GHashTableIter iter;
+		gpointer key;
+
+		g_hash_table_iter_init (&iter, cinfo->auth_types);
+		while (g_hash_table_iter_next (&iter, &key, NULL)) {
+			CamelServiceAuthType *auth_type;
+
+			auth_type = camel_sasl_authtype (key);
+			if (auth_type)
+				sasl_types = g_list_prepend (sasl_types, auth_type);
 		}
 	}
 

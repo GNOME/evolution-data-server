@@ -248,7 +248,7 @@
     </chapter>
 
     <chapter>
-      <title>Built-in OAuth2 authentication</title>
+      <title>Built-in OAuth 2.0 authentication</title>
       <xi:include href="xml/e-oauth2-service.xml"/>
       <xi:include href="xml/e-oauth2-services.xml"/>
       <xi:include href="xml/e-oauth2-service-base.xml"/>

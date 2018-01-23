@@ -209,29 +209,20 @@ cpi_oauth2_get_access_token_thread (gpointer user_data)
 }
 
 static void
-cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
-				     WebKitLoadEvent load_event,
-				     ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter_oauth2,
+					const gchar *page_title,
+					const gchar *page_uri,
+					const gchar *page_content)
 {
-	const gchar *title, *uri;
 	gchar *authorization_code = NULL;
 
-	g_return_if_fail (WEBKIT_IS_WEB_VIEW (web_view));
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
-
-	if (load_event != WEBKIT_LOAD_FINISHED)
-		return;
-
-	title = webkit_web_view_get_title (web_view);
-	uri = webkit_web_view_get_uri (web_view);
-	if (!title || !uri)
-		return;
-
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);
 
 	if (!e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
-		title, uri, &authorization_code))
+		page_title, page_uri, page_content, &authorization_code)) {
 		return;
+	}
 
 	if (authorization_code) {
 		ECredentialsPrompter *prompter;
@@ -239,10 +230,10 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 		AccessTokenThreadData *td;
 		GThread *thread;
 
-		e_credentials_prompter_impl_oauth2_show_html (web_view,
+		e_credentials_prompter_impl_oauth2_show_html (prompter_oauth2->priv->web_view,
 			"Checking returned code", _("Requesting access token, please wait..."));
 
-		gtk_widget_set_sensitive (GTK_WIDGET (web_view), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (prompter_oauth2->priv->web_view), FALSE);
 
 		e_named_parameters_set (prompter_oauth2->priv->credentials, E_SOURCE_CREDENTIAL_PASSWORD, NULL);
 
@@ -262,6 +253,119 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 	} else {
 		g_cancellable_cancel (prompter_oauth2->priv->cancellable);
 		gtk_dialog_response (prompter_oauth2->priv->dialog, GTK_RESPONSE_CANCEL);
+	}
+}
+
+static void
+cpi_oauth2_web_view_resource_get_data_done_cb (GObject *source_object,
+					       GAsyncResult *result,
+					       gpointer user_data)
+{
+	ECredentialsPrompterImplOAuth2 *prompter_oauth2 = user_data;
+	GByteArray *page_content = NULL;
+	const gchar *title, *uri;
+	guchar *data;
+	gsize len = 0;
+	GError *local_error = NULL;
+
+	g_return_if_fail (WEBKIT_IS_WEB_RESOURCE (source_object));
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
+
+	data = webkit_web_resource_get_data_finish (WEBKIT_WEB_RESOURCE (source_object), result, &len, &local_error);
+	if (data) {
+		page_content = g_byte_array_new_take ((guint8 *) data, len);
+
+		/* NULL-terminate the array, to be able to use it as a string */
+		g_byte_array_append (page_content, (const guint8 *) "", 1);
+	} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+		g_clear_error (&local_error);
+		return;
+	}
+
+	g_clear_error (&local_error);
+
+	title = webkit_web_view_get_title (prompter_oauth2->priv->web_view);
+	uri = webkit_web_view_get_uri (prompter_oauth2->priv->web_view);
+
+	cpi_oauth2_extract_authentication_code (prompter_oauth2, title, uri, page_content ? (const gchar *) page_content->data : NULL);
+
+	if (page_content)
+		g_byte_array_free (page_content, TRUE);
+}
+
+static gboolean
+cpi_oauth2_decide_policy_cb (WebKitWebView *web_view,
+			     WebKitPolicyDecision *decision,
+			     WebKitPolicyDecisionType decision_type,
+			     ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+{
+	WebKitNavigationAction *navigation_action;
+	WebKitURIRequest *request;
+
+	g_return_val_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2), FALSE);
+	g_return_val_if_fail (WEBKIT_IS_POLICY_DECISION (decision), FALSE);
+
+	if (decision_type != WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION)
+		return FALSE;
+
+	navigation_action = webkit_navigation_policy_decision_get_navigation_action (WEBKIT_NAVIGATION_POLICY_DECISION (decision));
+	if (!navigation_action)
+		return FALSE;
+
+	request = webkit_navigation_action_get_request (navigation_action);
+	if (!request || !webkit_uri_request_get_uri (request))
+		return FALSE;
+
+	g_return_val_if_fail (prompter_oauth2->priv->service != NULL, FALSE);
+
+	switch (e_oauth2_service_get_authentication_policy (prompter_oauth2->priv->service, webkit_uri_request_get_uri (request))) {
+	case E_OAUTH2_SERVICE_NAVIGATION_POLICY_DENY:
+		webkit_policy_decision_ignore (decision);
+		break;
+	case E_OAUTH2_SERVICE_NAVIGATION_POLICY_ALLOW:
+		webkit_policy_decision_use (decision);
+		break;
+	case E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT:
+		g_cancellable_cancel (prompter_oauth2->priv->cancellable);
+		gtk_dialog_response (prompter_oauth2->priv->dialog, GTK_RESPONSE_CANCEL);
+		break;
+	default:
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static void
+cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
+				     WebKitLoadEvent load_event,
+				     ECredentialsPrompterImplOAuth2 *prompter_oauth2)
+{
+	const gchar *title, *uri;
+
+	g_return_if_fail (WEBKIT_IS_WEB_VIEW (web_view));
+	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL_OAUTH2 (prompter_oauth2));
+
+	if (load_event != WEBKIT_LOAD_FINISHED)
+		return;
+
+	title = webkit_web_view_get_title (web_view);
+	uri = webkit_web_view_get_uri (web_view);
+	if (!title || !uri)
+		return;
+
+	g_return_if_fail (prompter_oauth2->priv->service != NULL);
+
+	if ((e_oauth2_service_get_flags (prompter_oauth2->priv->service) & E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT) != 0) {
+		WebKitWebResource *main_resource;
+
+		main_resource = webkit_web_view_get_main_resource (web_view);
+		if (main_resource) {
+			webkit_web_resource_get_data (main_resource, prompter_oauth2->priv->cancellable,
+				cpi_oauth2_web_view_resource_get_data_done_cb, prompter_oauth2);
+		}
+	} else {
+		cpi_oauth2_extract_authentication_code (prompter_oauth2, title, uri, NULL);
 	}
 }
 
@@ -449,6 +553,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 	GtkScrolledWindow *scrolled_window;
 	GtkWindow *dialog_parent;
 	ECredentialsPrompter *prompter;
+	WebKitSettings *webkit_settings;
 	gchar *title, *uri;
 	GString *info_markup;
 	gint row = 0;
@@ -544,7 +649,19 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 	scrolled_window = GTK_SCROLLED_WINDOW (widget);
 
-	widget = webkit_web_view_new ();
+	webkit_settings = webkit_settings_new_with_settings (
+		"auto-load-images", TRUE,
+		"default-charset", "utf-8",
+		"enable-html5-database", FALSE,
+		"enable-dns-prefetching", FALSE,
+		"enable-html5-local-storage", FALSE,
+		"enable-offline-web-application-cache", FALSE,
+		"enable-page-cache", FALSE,
+		"enable-plugins", FALSE,
+		"media-playback-allows-inline", FALSE,
+		NULL);
+
+	widget = webkit_web_view_new_with_settings (webkit_settings);
 	g_object_set (
 		G_OBJECT (widget),
 		"hexpand", TRUE,
@@ -553,6 +670,7 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		"valign", GTK_ALIGN_FILL,
 		NULL);
 	gtk_container_add (GTK_CONTAINER (scrolled_window), widget);
+	g_object_unref (webkit_settings);
 
 	prompter_oauth2->priv->web_view = WEBKIT_WEB_VIEW (widget);
 
@@ -578,8 +696,10 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 		success = FALSE;
 	} else {
 		WebKitWebView *web_view = prompter_oauth2->priv->web_view;
-		gulong load_finished_handler_id, progress_handler_id;
+		gulong decide_policy_handler_id, load_finished_handler_id, progress_handler_id;
 
+		decide_policy_handler_id = g_signal_connect (web_view, "decide-policy",
+			G_CALLBACK (cpi_oauth2_decide_policy_cb), prompter_oauth2);
 		load_finished_handler_id = g_signal_connect (web_view, "load-changed",
 			G_CALLBACK (cpi_oauth2_document_load_changed_cb), prompter_oauth2);
 		progress_handler_id = g_signal_connect (web_view, "notify::estimated-load-progress",
@@ -589,6 +709,8 @@ e_credentials_prompter_impl_oauth2_show_dialog (ECredentialsPrompterImplOAuth2 *
 
 		success = gtk_dialog_run (prompter_oauth2->priv->dialog) == GTK_RESPONSE_OK;
 
+		if (decide_policy_handler_id)
+			g_signal_handler_disconnect (web_view, decide_policy_handler_id);
 		if (load_finished_handler_id)
 			g_signal_handler_disconnect (web_view, load_finished_handler_id);
 		if (progress_handler_id)

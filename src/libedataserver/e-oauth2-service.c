@@ -139,16 +139,20 @@ eos_default_guess_can_process (EOAuth2Service *service,
 	return can;
 }
 
+static guint32
+eos_default_get_flags (EOAuth2Service *service)
+{
+	return E_OAUTH2_SERVICE_FLAG_NONE;
+}
+
 static void
 eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 					      ESource *source,
 					      GHashTable *uri_query)
 {
-	#define add_to_form(name, value) g_hash_table_insert (uri_query, g_strdup (name), value)
-
-	add_to_form ("response_type", g_strdup ("code"));
-	add_to_form ("client_id", g_strdup (e_oauth2_service_get_client_id (service)));
-	add_to_form ("redirect_uri", g_strdup (DEFAULT_REDIRECT_URI));
+	e_oauth2_service_util_set_to_form (uri_query, "response_type", "code");
+	e_oauth2_service_util_set_to_form (uri_query, "client_id", e_oauth2_service_get_client_id (service));
+	e_oauth2_service_util_set_to_form (uri_query, "redirect_uri", DEFAULT_REDIRECT_URI);
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
@@ -158,12 +162,10 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 		user = e_source_authentication_dup_user (auth_extension);
 
 		if (user && *user)
-			add_to_form ("login_hint", user);
+			e_oauth2_service_util_take_to_form (uri_query, "login_hint", user);
 		else
 			g_free (user);
 	}
-
-	#undef add_to_form
 }
 
 static void
@@ -171,15 +173,11 @@ eos_default_prepare_get_token_form (EOAuth2Service *service,
 				    const gchar *authorization_code,
 				    GHashTable *form)
 {
-	#define add_to_form(name, value) g_hash_table_insert (form, g_strdup (name), g_strdup (value))
-
-	add_to_form ("code", authorization_code);
-	add_to_form ("client_id", e_oauth2_service_get_client_id (service));
-	add_to_form ("client_secret", e_oauth2_service_get_client_secret (service));
-	add_to_form ("redirect_uri", DEFAULT_REDIRECT_URI);
-	add_to_form ("grant_type", "authorization_code");
-
-	#undef add_to_form
+	e_oauth2_service_util_set_to_form (form, "code", authorization_code);
+	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service));
+	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service));
+	e_oauth2_service_util_set_to_form (form, "redirect_uri", DEFAULT_REDIRECT_URI);
+	e_oauth2_service_util_set_to_form (form, "grant_type", "authorization_code");
 }
 
 static void
@@ -193,14 +191,10 @@ eos_default_prepare_refresh_token_form (EOAuth2Service *service,
 					const gchar *refresh_token,
 					GHashTable *form)
 {
-	#define add_to_form(name, value) g_hash_table_insert (form, g_strdup (name), g_strdup (value))
-
-	add_to_form ("refresh_token", refresh_token);
-	add_to_form ("client_id", e_oauth2_service_get_client_id (service));
-	add_to_form ("client_secret", e_oauth2_service_get_client_secret (service));
-	add_to_form ("grant_type", "refresh_token");
-
-	#undef add_to_form
+	e_oauth2_service_util_set_to_form (form, "refresh_token", refresh_token);
+	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service));
+	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service));
+	e_oauth2_service_util_set_to_form (form, "grant_type", "refresh_token");
 }
 
 static void
@@ -214,6 +208,7 @@ e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 {
 	iface->can_process = eos_default_can_process;
 	iface->guess_can_process = eos_default_guess_can_process;
+	iface->get_flags = eos_default_get_flags;
 	iface->prepare_authentication_uri_query = eos_default_prepare_authentication_uri_query;
 	iface->prepare_get_token_form = eos_default_prepare_get_token_form;
 	iface->prepare_get_token_message = eos_default_prepare_get_token_message;
@@ -304,6 +299,29 @@ e_oauth2_service_guess_can_process (EOAuth2Service *service,
 
 	return iface->guess_can_process != eos_default_guess_can_process &&
 	       iface->guess_can_process (service, protocol, hostname);
+}
+
+/**
+ * e_oauth2_service_get_flags:
+ * @service: an #EOAuth2Service
+ *
+ * Returns: bit-or of #EOAuth2ServiceFlags for the @service. The default
+ *    implementation returns %E_OAUTH2_SERVICE_FLAG_NONE.
+ *
+ * Since: 3.28
+ **/
+guint32
+e_oauth2_service_get_flags (EOAuth2Service *service)
+{
+	EOAuth2ServiceInterface *iface;
+
+	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), E_OAUTH2_SERVICE_FLAG_NONE);
+
+	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
+	g_return_val_if_fail (iface != NULL, E_OAUTH2_SERVICE_FLAG_NONE);
+	g_return_val_if_fail (iface->get_flags != NULL, E_OAUTH2_SERVICE_FLAG_NONE);
+
+	return iface->get_flags (service);
 }
 
 /**
@@ -487,22 +505,61 @@ e_oauth2_service_prepare_authentication_uri_query (EOAuth2Service *service,
 }
 
 /**
+ * e_oauth2_service_get_authentication_policy:
+ * @service: an #EOAuth2Service
+ * @uri: a URI of the navigation resource
+ *
+ * Used to decide what to do when the server redirects to the next page.
+ * The default implementation always returns %E_OAUTH2_SERVICE_NAVIGATION_POLICY_ALLOW.
+ *
+ * This method is called before e_oauth2_service_extract_authorization_code() and
+ * can be used to block certain resources or to abort the authentication when
+ * the server redirects to an unexpected page (like when user denies authorization
+ * in the page).
+ *
+ * Returns: one of #EOAuth2ServiceNavigationPolicy
+ *
+ * Since: 3.28
+ **/
+EOAuth2ServiceNavigationPolicy
+e_oauth2_service_get_authentication_policy (EOAuth2Service *service,
+					    const gchar *uri)
+{
+	EOAuth2ServiceInterface *iface;
+
+	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
+	g_return_val_if_fail (uri != NULL, E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
+
+	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
+	g_return_val_if_fail (iface != NULL, E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
+	g_return_val_if_fail (iface->get_authentication_policy != NULL, E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
+
+	return iface->get_authentication_policy (service, uri);
+}
+
+/**
  * e_oauth2_service_extract_authorization_code:
  * @service: an #EOAuth2Service
  * @page_title: a web page title
  * @page_uri: a web page URI
+ * @page_content: (nullable): a web page content
  * @out_authorization_code: (out) (transfer full): the extracted authorization code
  *
  * Tries to extract an authorization code from a web page provided by the server.
  * The function can be called multiple times, whenever the page load is finished.
  *
  * There can happen three states: 1) either the @service cannot determine
- * the authentication code from the @page_title nor @page_uri, then the %FALSE is
+ * the authentication code from the page information, then the %FALSE is
  * returned and the @out_authorization_code is left untouched; or 2) the server
  * reported a failure, in which case the function returns %TRUE and lefts
  * the @out_authorization_code untouched; or 3) the @service could extract
  * the authentication code from the given arguments, then the function
  * returns %TRUE and sets the received authorization code to @out_authorization_code.
+ *
+ * The @page_content is %NULL, unless flags returned by e_oauth2_service_get_flags()
+ * contain also %E_OAUTH2_SERVICE_FLAG_EXTRACT_REQUIRES_PAGE_CONTENT.
+ *
+ * This method is always called after e_oauth2_service_get_authentication_policy().
  *
  * Returns: whether could recognized successful or failed server response.
  *    The @out_authorization_code is populated on success too.
@@ -513,6 +570,7 @@ gboolean
 e_oauth2_service_extract_authorization_code (EOAuth2Service *service,
 					     const gchar *page_title,
 					     const gchar *page_uri,
+					     const gchar *page_content,
 					     gchar **out_authorization_code)
 {
 	EOAuth2ServiceInterface *iface;
@@ -523,7 +581,7 @@ e_oauth2_service_extract_authorization_code (EOAuth2Service *service,
 	g_return_val_if_fail (iface != NULL, FALSE);
 	g_return_val_if_fail (iface->extract_authorization_code != NULL, FALSE);
 
-	return iface->extract_authorization_code (service, page_title, page_uri, out_authorization_code);
+	return iface->extract_authorization_code (service, page_title, page_uri, page_content, out_authorization_code);
 }
 
 /**
@@ -664,10 +722,14 @@ eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 			 gpointer ref_source_user_data,
 			 ESource *source)
 {
+	static gint oauth2_debug = -1;
 	ESourceAuthentication *auth_extension;
 	ESource *proxy_source = NULL;
 	SoupSession *session;
 	gchar *uid;
+
+	if (oauth2_debug == -1)
+		oauth2_debug = g_strcmp0 (g_getenv ("OAUTH2_DEBUG"), "1") == 0 ? 1 : 0;
 
 	session = soup_session_new ();
 	g_object_set (
@@ -677,6 +739,14 @@ eos_create_soup_session (EOAuth2ServiceRefSourceFunc ref_source,
 		SOUP_SESSION_SSL_USE_SYSTEM_CA_FILE, TRUE,
 		SOUP_SESSION_ACCEPT_LANGUAGE_AUTO, TRUE,
 		NULL);
+
+	if (oauth2_debug) {
+		SoupLogger *logger;
+
+		logger = soup_logger_new (SOUP_LOGGER_LOG_BODY, -1);
+		soup_session_add_feature (session, SOUP_SESSION_FEATURE (logger));
+		g_object_unref (logger);
+	}
 
 	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION))
 		return session;
@@ -776,7 +846,18 @@ eos_send_message (SoupSession *session,
 			status_code = SOUP_STATUS_MALFORMED;
 		}
 	} else if (status_code != SOUP_STATUS_CANCELLED) {
-		g_set_error_literal (error, SOUP_HTTP_ERROR, message->status_code, message->reason_phrase);
+		GString *error_msg;
+
+		error_msg = g_string_new (message->reason_phrase);
+		if (message->response_body && message->response_body->length) {
+			g_string_append (error_msg, " (");
+			g_string_append_len (error_msg, message->response_body->data, message->response_body->length);
+			g_string_append (error_msg, ")");
+		}
+
+		g_set_error_literal (error, SOUP_HTTP_ERROR, message->status_code, error_msg->str);
+
+		g_string_free (error_msg, TRUE);
 	}
 
 	return success;
@@ -1046,7 +1127,7 @@ eos_lookup_token_sync (EOAuth2Service *service,
 		g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED,
 			/* Translators: The first %s is a display name of the source, the second is its UID and
 			   the third is the name of the OAuth service. */
-			_("Source “%s” (%s) is not a valid for “%s” OAuth2 service"),
+			_("Source “%s” (%s) is not valid for “%s” OAuth2 service"),
 			e_source_get_display_name (source),
 			e_source_get_uid (source),
 			e_oauth2_service_get_name (service));
@@ -1376,4 +1457,65 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 	}
 
 	return success;
+}
+
+/**
+ * e_oauth2_service_util_set_to_form:
+ * @form: a #GHashTable
+ * @name: a property name
+ * @value: (nullable): a property value
+ *
+ * Sets @value for @name to @form. The @form should be
+ * the one used in e_oauth2_service_prepare_authentication_uri_query(),
+ * e_oauth2_service_prepare_get_token_form() or
+ * e_oauth2_service_prepare_refresh_token_form().
+ *
+ * If the @value is %NULL, then the property named @name is removed
+ * from the @form instead.
+ *
+ * Since: 3.28
+ **/
+void
+e_oauth2_service_util_set_to_form (GHashTable *form,
+				   const gchar *name,
+				   const gchar *value)
+{
+	g_return_if_fail (form != NULL);
+	g_return_if_fail (name != NULL);
+
+	if (value)
+		g_hash_table_insert (form, g_strdup (name), g_strdup (value));
+	else
+		g_hash_table_remove (form, name);
+}
+
+/**
+ * e_oauth2_service_util_take_to_form:
+ * @form: a #GHashTable
+ * @name: a property name
+ * @value: (transfer full) (nullable): a property value
+ *
+ * Takes ownership of @value and sets it for @name to @form. The @value
+ * will be freed with g_free(), when no longer needed. The @form should be
+ * the one used in e_oauth2_service_prepare_authentication_uri_query(),
+ * e_oauth2_service_prepare_get_token_form() or
+ * e_oauth2_service_prepare_refresh_token_form().
+ *
+ * If the @value is %NULL, then the property named @name is removed
+ * from the @form instead.
+ *
+ * Since: 3.28
+ **/
+void
+e_oauth2_service_util_take_to_form (GHashTable *form,
+				    const gchar *name,
+				    gchar *value)
+{
+	g_return_if_fail (form != NULL);
+	g_return_if_fail (name != NULL);
+
+	if (value)
+		g_hash_table_insert (form, g_strdup (name), value);
+	else
+		g_hash_table_remove (form, name);
 }
