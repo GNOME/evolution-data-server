@@ -168,6 +168,13 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 	}
 }
 
+static EOAuth2ServiceNavigationPolicy
+eos_default_get_authentication_policy (EOAuth2Service *service,
+				       const gchar *uri)
+{
+	return E_OAUTH2_SERVICE_NAVIGATION_POLICY_ALLOW;
+}
+
 static void
 eos_default_prepare_get_token_form (EOAuth2Service *service,
 				    const gchar *authorization_code,
@@ -210,6 +217,7 @@ e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 	iface->guess_can_process = eos_default_guess_can_process;
 	iface->get_flags = eos_default_get_flags;
 	iface->prepare_authentication_uri_query = eos_default_prepare_authentication_uri_query;
+	iface->get_authentication_policy = eos_default_get_authentication_policy;
 	iface->prepare_get_token_form = eos_default_prepare_get_token_form;
 	iface->prepare_get_token_message = eos_default_prepare_get_token_message;
 	iface->prepare_refresh_token_form = eos_default_prepare_refresh_token_form;
