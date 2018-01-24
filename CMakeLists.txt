@@ -402,6 +402,18 @@ if(ENABLE_OAUTH2)
 	if(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
 		set(WITH_GOOGLE_CLIENT_SECRET "mtfUe5W8Aal9DcgVipOY1T9G")
 	endif(WITH_GOOGLE_CLIENT_SECRET STREQUAL "")
+
+	add_printable_variable(WITH_OUTLOOK_CLIENT_ID "Outlook.com OAuth 2.0 client id" "")
+	add_printable_variable(WITH_OUTLOOK_CLIENT_SECRET "Outlook.com OAuth 2.0 client secret" "")
+
+	if(WITH_OUTLOOK_CLIENT_ID STREQUAL "")
+		set(WITH_OUTLOOK_CLIENT_ID "cc6e0693-0e26-4220-8322-9d363e308fc6")
+	endif(WITH_OUTLOOK_CLIENT_ID STREQUAL "")
+
+	# Outlook.com requires client secret only for Web applications
+	#if(WITH_OUTLOOK_CLIENT_SECRET STREQUAL "")
+	#	set(WITH_OUTLOOK_CLIENT_SECRET "")
+	#endif(WITH_OUTLOOK_CLIENT_SECRET STREQUAL "")
 endif(ENABLE_OAUTH2)
 
 # ******************************************

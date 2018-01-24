@@ -36,6 +36,12 @@
 /* Define Google OAuth 2.0 Client Secret to use */
 #define GOOGLE_CLIENT_SECRET "@WITH_GOOGLE_CLIENT_SECRET@"
 
+/* Define Outlook.com OAuth 2.0 Client ID to use */
+#define OUTLOOK_CLIENT_ID "@WITH_OUTLOOK_CLIENT_ID@"
+
+/* Define Outlook.com OAuth 2.0 Client Secret to use */
+#define OUTLOOK_CLIENT_SECRET "@WITH_OUTLOOK_CLIENT_SECRET@"
+
 /* Path to a sendmail binary, or equivalent */
 #define SENDMAIL_PATH "@SENDMAIL_PATH@"
 
