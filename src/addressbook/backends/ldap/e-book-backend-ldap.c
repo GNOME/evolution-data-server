@@ -3989,8 +3989,8 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 	ldap_memfree (dn);
 	if (ldap_uid) *ldap_uid = NULL;
 
-	for (attr = ldap_first_attribute (bl->priv->ldap, e, &ber); attr;
-	     attr = ldap_next_attribute (bl->priv->ldap, e, ber)) {
+	for (attr = ldap_first_attribute (bl->priv->ldap, e, &ber); attr && bl->priv->ldap;
+	     attr = bl->priv->ldap ? ldap_next_attribute (bl->priv->ldap, e, ber) : NULL) {
 		gint i;
 		struct prop_info *info = NULL;
 		gchar **values;
@@ -4032,7 +4032,6 @@ build_contact_from_entry (EBookBackendLDAP *bl,
 
 			if (info) {
 				if (info->prop_type & PROP_WRITE_ONLY) {
-					g_rec_mutex_lock (&eds_ldap_handler_lock);
 					continue;
 				}
 
