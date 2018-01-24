@@ -1080,7 +1080,7 @@ imapx_query_auth_types_sync (CamelService *service,
                              GError **error)
 {
 	CamelIMAPXStore *imapx_store;
-	GList *sasl_types;
+	GList *sasl_types = NULL;
 	CamelIMAPXServer *server;
 	const struct _capability_info *cinfo;
 
@@ -1095,8 +1095,6 @@ imapx_query_auth_types_sync (CamelService *service,
 		goto exit;
 
 	cinfo = camel_imapx_server_get_capability_info (server);
-
-	sasl_types = NULL;
 
 	if (cinfo && cinfo->auth_types) {
 		GHashTableIter iter;
