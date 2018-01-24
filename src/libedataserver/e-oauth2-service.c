@@ -1211,8 +1211,8 @@ eos_lookup_token_sync (EOAuth2Service *service,
  * @service: an #EOAuth2Service
  * @source: an #ESource
  * @authorization_code: authorization code provided by the server
- * @ref_source: an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
- * @ref_source_user_data: user data for @ref_source
+ * @ref_source: (scope call): an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
+ * @ref_source_user_data user data for @ref_source
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
@@ -1299,14 +1299,15 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
  * e_oauth2_service_refresh_and_store_token_sync:
  * @service: an #EOAuth2Service
  * @source: an #ESource
- * @authorization_code: authorization code provided by the server
- * @ref_source: an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
+ * @refresh_token: refresh token as provided by the server
+ * @ref_source: (scope call): an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
  * @ref_source_user_data: user data for @ref_source
  * @cancellable: optional #GCancellable object, or %NULL
  * @error: return location for a #GError, or %NULL
  *
  * Queries @service at e_oauth2_service_get_refresh_uri() with a request to refresh
- * existing @refresh_token and stores it into the secret store on success.
+ * existing access token with provided @refresh_token and stores it into the secret
+ * store on success.
  *
  * Returns: whether succeeded
  *
@@ -1435,7 +1436,7 @@ e_oauth2_service_delete_token_sync (EOAuth2Service *service,
  * e_oauth2_service_get_access_token_sync:
  * @service: an #EOAuth2Service
  * @source: an #ESource
- * @ref_source: an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
+ * @ref_source: (scope call): an #EOAuth2ServiceRefSourceFunc function to obtain an #ESource
  * @ref_source_user_data: user data for @ref_source
  * @out_access_token: (out) (transfer full): return location for the access token
  * @out_expires_in: (out): how many seconds the access token expires in

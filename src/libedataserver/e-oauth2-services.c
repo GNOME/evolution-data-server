@@ -316,7 +316,7 @@ e_oauth2_services_find (EOAuth2Services *services,
 }
 
 /**
- * e_oauth2_services_find:
+ * e_oauth2_services_guess:
  * @services: an #EOAuth2Services
  * @protocol: (nullable): a protocol to search the service for, like "imap", or %NULL
  * @hostname: (nullable): a host name to search the service for, like "server.example.com", or %NULL
