@@ -1174,7 +1174,8 @@ camel_folder_info_build (GPtrArray *folders,
 		namespace_ = "";
 	nlen = strlen (namespace_);
 
-	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), folder_info_cmp);
+	if (folders->pdata && folders->len)
+		qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), folder_info_cmp);
 
 	/* Hash the folders. */
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);

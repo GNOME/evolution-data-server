@@ -2020,9 +2020,10 @@ generate_instances_for_chunk (ECalComponent *comp,
 	cal_obj_sort_occurrences (occs);
 	cal_obj_sort_occurrences (ex_occs);
 
-	qsort (
-		rdate_periods->data, rdate_periods->len,
-		sizeof (CalObjRecurrenceDate), cal_obj_time_compare_func);
+	if (rdate_periods->data && rdate_periods->len) {
+		qsort (rdate_periods->data, rdate_periods->len,
+			sizeof (CalObjRecurrenceDate), cal_obj_time_compare_func);
+	}
 
 	/* Create the final array, by removing the exceptions from the
 	 * occurrences, and removing any duplicates. */
@@ -2677,9 +2678,10 @@ cal_obj_initialize_recur_data (RecurData *recur_data,
 static void
 cal_obj_sort_occurrences (GArray *occs)
 {
-	qsort (
-		occs->data, occs->len, sizeof (CalObjTime),
-		cal_obj_time_compare_func);
+	if (occs->data && occs->len) {
+		qsort (occs->data, occs->len, sizeof (CalObjTime),
+			cal_obj_time_compare_func);
+	}
 }
 
 static void

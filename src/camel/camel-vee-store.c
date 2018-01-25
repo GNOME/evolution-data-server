@@ -288,7 +288,8 @@ vee_store_get_folder_info_sync (CamelStore *store,
 
 	infos_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	folders = camel_store_dup_opened_folders (store);
-	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), vee_folder_cmp);
+	if (folders->pdata && folders->len)
+		qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), vee_folder_cmp);
 	for (i = 0; i < folders->len; i++) {
 		CamelVeeFolder *folder = folders->pdata[i];
 		const gchar *full_name;

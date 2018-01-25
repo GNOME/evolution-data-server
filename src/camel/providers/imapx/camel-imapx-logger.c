@@ -118,7 +118,8 @@ imapx_logger_convert (GConverter *converter,
 
 	min_size = MIN (inbuf_size, outbuf_size);
 
-	memcpy (outbuf, inbuf, min_size);
+	if (inbuf && min_size)
+		memcpy (outbuf, inbuf, min_size);
 	*bytes_read = *bytes_written = min_size;
 
 	login_start = g_strstr_len (outbuf, min_size, " LOGIN ");

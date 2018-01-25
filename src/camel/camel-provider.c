@@ -129,7 +129,8 @@ provider_register_internal (CamelProvider *provider)
 #define P_(string) dgettext (provider->translation_domain, string)
 
 	provider->name = P_(provider->name);
-	provider->description = P_(provider->description);
+	if (provider->description)
+		provider->description = P_(provider->description);
 
 	conf = provider->extra_conf;
 	if (conf != NULL) {
