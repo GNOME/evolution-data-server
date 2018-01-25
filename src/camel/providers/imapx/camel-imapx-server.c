@@ -5423,6 +5423,7 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 		return TRUE;
 	}
 
+	camel_folder_sort_uids (folder, changed_uids);
 	stamps = g_hash_table_new_full (g_str_hash, g_str_equal, (GDestroyNotify) camel_pstring_free, NULL);
 
 	if (can_influence_flags) {
