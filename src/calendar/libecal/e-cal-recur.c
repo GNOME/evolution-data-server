@@ -4737,6 +4737,8 @@ static
  *
  * An array of 31 translated strings for each day of the month (i.e. "1st",
  * "2nd", and so on).
+ *
+ * Deprecated: 3.28: Use e_cal_recur_get_localized_nth() instead
  */
 const gchar *e_cal_recur_nth[31] = {
 	N_("1st"),
@@ -4781,6 +4783,8 @@ const gchar *e_cal_recur_nth[31] = {
  * (i.e. "1st", "2nd", and so on).
  *
  * Returns: a pointer to an array of strings.  This array is static, do not free it.
+ *
+ * Deprecated: 3.28: Use e_cal_recur_get_localized_nth() instead
  */
 const gchar **
 e_cal_get_recur_nth (void)
@@ -4789,3 +4793,21 @@ e_cal_get_recur_nth (void)
 }
 
 #endif
+
+/**
+ * e_cal_recur_get_localized_nth:
+ * @nth: the nth index, counting from zero
+ *
+ * Returns: Localized text for the nth position, counting from zero, which means
+ *    for '0' it'll return "1st", for '1' it'll return "2nd" and so on, up to 30,
+ *    when it'll return "31st".
+ *
+ * Since: 3.28
+ **/
+const gchar *
+e_cal_recur_get_localized_nth (gint nth)
+{
+	g_return_val_if_fail (nth >= 0 && nth < G_N_ELEMENTS (e_cal_recur_nth), NULL);
+
+	return _(e_cal_recur_nth[nth]);
+}

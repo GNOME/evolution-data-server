@@ -86,6 +86,8 @@ e_cal_recur_ensure_end_dates (ECalComponent	*comp,
 			    ECalRecurResolveTimezoneFn  tz_cb,
 			    gpointer		 tz_cb_data);
 
+#ifndef EDS_DISABLE_DEPRECATED
+
 /* Localized nth-day-of-month strings. (Use with _() ) */
 #ifdef G_OS_WIN32
 extern const gchar **e_cal_get_recur_nth (void);
@@ -93,6 +95,10 @@ extern const gchar **e_cal_get_recur_nth (void);
 #else
 extern const gchar *e_cal_recur_nth[31];
 #endif
+
+#endif /* EDS_DISABLE_DEPRECATED */
+
+const gchar *		e_cal_recur_get_localized_nth		(gint nth);
 
 G_END_DECLS
 
