@@ -5477,6 +5477,8 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 	if (changed_uids->len > 20)
 		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
 
+	camel_folder_summary_lock (camel_folder_get_folder_summary (folder));
+
 	off_orset = on_orset = 0;
 	for (i = 0; i < changed_uids->len; i++) {
 		CamelIMAPXMessageInfo *xinfo;
@@ -5615,6 +5617,8 @@ camel_imapx_server_sync_changes_sync (CamelIMAPXServer *is,
 
 		g_clear_object (&info);
 	}
+
+	camel_folder_summary_unlock (camel_folder_get_folder_summary (folder));
 
 	nothing_to_do =
 		(on_orset == 0) &&
