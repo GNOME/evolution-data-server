@@ -30,6 +30,7 @@
 
 static gboolean opt_keep_running = FALSE;
 static gboolean opt_wait_for_client = FALSE;
+static gint opt_backend_per_process = -1;
 
 static GOptionEntry entries[] = {
 
@@ -37,6 +38,8 @@ static GOptionEntry entries[] = {
 	  N_("Keep running after the last client is closed"), NULL },
 	{ "wait-for-client", 'w', 0, G_OPTION_ARG_NONE, &opt_wait_for_client,
 	  N_("Wait running until at least one client is connected"), NULL },
+	{ "backend-per-process", 'b', 0, G_OPTION_ARG_INT, &opt_backend_per_process,
+	  N_("Overrides compile-time backend per process option; use 1 to enable, 0 to disable, any other value is to use compile-time option"), NULL },
 	{ NULL }
 };
 
@@ -83,7 +86,7 @@ main (gint argc,
 	e_xml_initialize_in_main ();
 
  reload:
-	server = e_data_book_factory_new (NULL, &error);
+	server = e_data_book_factory_new (opt_backend_per_process, NULL, &error);
 
 	if (error != NULL) {
 		g_printerr ("%s\n", error->message);

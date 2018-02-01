@@ -190,11 +190,12 @@ e_data_book_factory_init (EDataBookFactory *factory)
 }
 
 EDBusServer *
-e_data_book_factory_new (GCancellable *cancellable,
+e_data_book_factory_new (gint backend_per_process,
+			 GCancellable *cancellable,
                          GError **error)
 {
-	return g_initable_new (
-		E_TYPE_DATA_BOOK_FACTORY,
-		cancellable, error,
-		"reload-supported", TRUE, NULL);
+	return g_initable_new (E_TYPE_DATA_BOOK_FACTORY, cancellable, error,
+		"reload-supported", TRUE,
+		"backend-per-process", backend_per_process,
+		NULL);
 }

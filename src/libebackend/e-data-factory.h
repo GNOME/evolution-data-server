@@ -105,6 +105,8 @@ void		e_data_factory_spawn_subprocess_backend
 						 const gchar *subprocess_path);
 gboolean	e_data_factory_get_reload_supported
 						(EDataFactory *data_factory);
+gint		e_data_factory_get_backend_per_process
+						(EDataFactory *data_factory);
 
 G_END_DECLS
 

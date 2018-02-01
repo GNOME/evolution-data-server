@@ -78,7 +78,8 @@ struct _EDataCalFactoryClass {
 };
 
 GType		e_data_cal_factory_get_type	(void);
-EDBusServer *	e_data_cal_factory_new		(GCancellable *cancellable,
+EDBusServer *	e_data_cal_factory_new		(gint backend_per_process,
+						 GCancellable *cancellable,
 						 GError **error);
 
 G_END_DECLS

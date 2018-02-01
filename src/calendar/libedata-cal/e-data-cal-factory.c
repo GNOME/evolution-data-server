@@ -268,7 +268,8 @@ e_data_cal_factory_init (EDataCalFactory *factory)
 }
 
 EDBusServer *
-e_data_cal_factory_new (GCancellable *cancellable,
+e_data_cal_factory_new (gint backend_per_process,
+			GCancellable *cancellable,
                         GError **error)
 {
 	icalarray *builtin_timezones;
@@ -305,8 +306,8 @@ e_data_cal_factory_new (GCancellable *cancellable,
 		icaltimezone_get_component (zone);
 	}
 
-	return g_initable_new (
-		E_TYPE_DATA_CAL_FACTORY,
-		cancellable, error,
-		"reload-supported", TRUE, NULL);
+	return g_initable_new (E_TYPE_DATA_CAL_FACTORY, cancellable, error,
+		"reload-supported", TRUE,
+		"backend-per-process", backend_per_process,
+		NULL);
 }
