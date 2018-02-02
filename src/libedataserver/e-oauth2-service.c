@@ -144,7 +144,8 @@ eos_default_get_flags (EOAuth2Service *service)
 }
 
 static const gchar *
-eos_default_get_redirect_uri (EOAuth2Service *service)
+eos_default_get_redirect_uri (EOAuth2Service *service,
+			      ESource *source)
 {
 	return "urn:ietf:wg:oauth:2.0:oob";
 }
@@ -155,8 +156,8 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 					      GHashTable *uri_query)
 {
 	e_oauth2_service_util_set_to_form (uri_query, "response_type", "code");
-	e_oauth2_service_util_set_to_form (uri_query, "client_id", e_oauth2_service_get_client_id (service));
-	e_oauth2_service_util_set_to_form (uri_query, "redirect_uri", e_oauth2_service_get_redirect_uri (service));
+	e_oauth2_service_util_set_to_form (uri_query, "client_id", e_oauth2_service_get_client_id (service, source));
+	e_oauth2_service_util_set_to_form (uri_query, "redirect_uri", e_oauth2_service_get_redirect_uri (service, source));
 
 	if (e_source_has_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION)) {
 		ESourceAuthentication *auth_extension;
@@ -174,6 +175,7 @@ eos_default_prepare_authentication_uri_query (EOAuth2Service *service,
 
 static EOAuth2ServiceNavigationPolicy
 eos_default_get_authentication_policy (EOAuth2Service *service,
+				       ESource *source,
 				       const gchar *uri)
 {
 	return E_OAUTH2_SERVICE_NAVIGATION_POLICY_ALLOW;
@@ -181,35 +183,39 @@ eos_default_get_authentication_policy (EOAuth2Service *service,
 
 static void
 eos_default_prepare_get_token_form (EOAuth2Service *service,
+				    ESource *source,
 				    const gchar *authorization_code,
 				    GHashTable *form)
 {
 	e_oauth2_service_util_set_to_form (form, "code", authorization_code);
-	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service));
-	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service));
-	e_oauth2_service_util_set_to_form (form, "redirect_uri", e_oauth2_service_get_redirect_uri (service));
+	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service, source));
+	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service, source));
+	e_oauth2_service_util_set_to_form (form, "redirect_uri", e_oauth2_service_get_redirect_uri (service, source));
 	e_oauth2_service_util_set_to_form (form, "grant_type", "authorization_code");
 }
 
 static void
 eos_default_prepare_get_token_message (EOAuth2Service *service,
+				       ESource *source,
 				       SoupMessage *message)
 {
 }
 
 static void
 eos_default_prepare_refresh_token_form (EOAuth2Service *service,
+					ESource *source,
 					const gchar *refresh_token,
 					GHashTable *form)
 {
 	e_oauth2_service_util_set_to_form (form, "refresh_token", refresh_token);
-	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service));
-	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service));
+	e_oauth2_service_util_set_to_form (form, "client_id", e_oauth2_service_get_client_id (service, source));
+	e_oauth2_service_util_set_to_form (form, "client_secret", e_oauth2_service_get_client_secret (service, source));
 	e_oauth2_service_util_set_to_form (form, "grant_type", "refresh_token");
 }
 
 static void
 eos_default_prepare_refresh_token_message (EOAuth2Service *service,
+					   ESource *source,
 					   SoupMessage *message)
 {
 }
@@ -232,7 +238,7 @@ e_oauth2_service_default_init (EOAuth2ServiceInterface *iface)
 /**
  * e_oauth2_service_can_process:
  * @service: an #EOAuth2Service
- * @source: (nullable): an #ESource, or %NULL
+ * @source: an #ESource
  *
  * Checks whether the @service can be used with the given @source.
  *
@@ -392,50 +398,57 @@ e_oauth2_service_get_display_name (EOAuth2Service *service)
 /**
  * e_oauth2_service_get_client_id:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  *
  * Returns: application client ID, as provided by the server
  *
  * Since: 3.28
  **/
 const gchar *
-e_oauth2_service_get_client_id (EOAuth2Service *service)
+e_oauth2_service_get_client_id (EOAuth2Service *service,
+				ESource *source)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, NULL);
 	g_return_val_if_fail (iface->get_client_id != NULL, NULL);
 
-	return iface->get_client_id (service);
+	return iface->get_client_id (service, source);
 }
 
 /**
  * e_oauth2_service_get_client_secret:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  *
  * Returns: (nullable): application client secret, as provided by the server, or %NULL
  *
  * Since: 3.28
  **/
 const gchar *
-e_oauth2_service_get_client_secret (EOAuth2Service *service)
+e_oauth2_service_get_client_secret (EOAuth2Service *service,
+				    ESource *source)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, NULL);
 	g_return_val_if_fail (iface->get_client_secret != NULL, NULL);
 
-	return iface->get_client_secret (service);
+	return iface->get_client_secret (service, source);
 }
 
 /**
  * e_oauth2_service_get_authentication_uri:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  *
  * Returns: an authentication URI, to be used to obtain
  *    the authentication code
@@ -443,44 +456,50 @@ e_oauth2_service_get_client_secret (EOAuth2Service *service)
  * Since: 3.28
  **/
 const gchar *
-e_oauth2_service_get_authentication_uri (EOAuth2Service *service)
+e_oauth2_service_get_authentication_uri (EOAuth2Service *service,
+					 ESource *source)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, NULL);
 	g_return_val_if_fail (iface->get_authentication_uri != NULL, NULL);
 
-	return iface->get_authentication_uri (service);
+	return iface->get_authentication_uri (service, source);
 }
 
 /**
  * e_oauth2_service_get_refresh_uri:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  *
  * Returns: a URI to be used to refresh the authentication token
  *
  * Since: 3.28
  **/
 const gchar *
-e_oauth2_service_get_refresh_uri (EOAuth2Service *service)
+e_oauth2_service_get_refresh_uri (EOAuth2Service *service,
+				  ESource *source)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, NULL);
 	g_return_val_if_fail (iface->get_refresh_uri != NULL, NULL);
 
-	return iface->get_refresh_uri (service);
+	return iface->get_refresh_uri (service, source);
 }
 
 /**
  * e_oauth2_service_get_redirect_uri:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  *
  * Returns a value for the "redirect_uri" keys in the authenticate and get_token
  * operations. The default implementation returns "urn:ietf:wg:oauth:2.0:oob".
@@ -490,23 +509,25 @@ e_oauth2_service_get_refresh_uri (EOAuth2Service *service)
  * Since: 3.28
  **/
 const gchar *
-e_oauth2_service_get_redirect_uri (EOAuth2Service *service)
+e_oauth2_service_get_redirect_uri (EOAuth2Service *service,
+				   ESource *source)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, NULL);
 	g_return_val_if_fail (iface->get_redirect_uri != NULL, NULL);
 
-	return iface->get_redirect_uri (service);
+	return iface->get_redirect_uri (service, source);
 }
 
 /**
  * e_oauth2_service_prepare_authentication_uri_query:
  * @service: an #EOAuth2Service
- * @source: an #ESource containing information about the user and such
+ * @source: an associated #ESource
  * @uri_query: (element-type utf8 utf8): query for the URI to use
  *
  * The @service can change what arguments are passed in the authentication URI
@@ -545,6 +566,7 @@ e_oauth2_service_prepare_authentication_uri_query (EOAuth2Service *service,
 /**
  * e_oauth2_service_get_authentication_policy:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  * @uri: a URI of the navigation resource
  *
  * Used to decide what to do when the server redirects to the next page.
@@ -561,23 +583,26 @@ e_oauth2_service_prepare_authentication_uri_query (EOAuth2Service *service,
  **/
 EOAuth2ServiceNavigationPolicy
 e_oauth2_service_get_authentication_policy (EOAuth2Service *service,
+					    ESource *source,
 					    const gchar *uri)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
+	g_return_val_if_fail (E_IS_SOURCE (source), E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
 	g_return_val_if_fail (uri != NULL, E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
 	g_return_val_if_fail (iface->get_authentication_policy != NULL, E_OAUTH2_SERVICE_NAVIGATION_POLICY_ABORT);
 
-	return iface->get_authentication_policy (service, uri);
+	return iface->get_authentication_policy (service, source, uri);
 }
 
 /**
  * e_oauth2_service_extract_authorization_code:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  * @page_title: a web page title
  * @page_uri: a web page URI
  * @page_content: (nullable): a web page content
@@ -606,6 +631,7 @@ e_oauth2_service_get_authentication_policy (EOAuth2Service *service,
  **/
 gboolean
 e_oauth2_service_extract_authorization_code (EOAuth2Service *service,
+					     ESource *source,
 					     const gchar *page_title,
 					     const gchar *page_uri,
 					     const gchar *page_content,
@@ -614,17 +640,19 @@ e_oauth2_service_extract_authorization_code (EOAuth2Service *service,
 	EOAuth2ServiceInterface *iface;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
+	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_val_if_fail (iface != NULL, FALSE);
 	g_return_val_if_fail (iface->extract_authorization_code != NULL, FALSE);
 
-	return iface->extract_authorization_code (service, page_title, page_uri, page_content, out_authorization_code);
+	return iface->extract_authorization_code (service, source, page_title, page_uri, page_content, out_authorization_code);
 }
 
 /**
  * e_oauth2_service_prepare_get_token_form:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  * @authorization_code: authorization code, as returned from e_oauth2_service_extract_authorization_code()
  * @form: (element-type utf8 utf8): form parameters to be used in the POST request
  *
@@ -642,28 +670,31 @@ e_oauth2_service_extract_authorization_code (EOAuth2Service *service,
  **/
 void
 e_oauth2_service_prepare_get_token_form (EOAuth2Service *service,
+					 ESource *source,
 					 const gchar *authorization_code,
 					 GHashTable *form)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_if_fail (E_IS_OAUTH2_SERVICE (service));
+	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (authorization_code != NULL);
 	g_return_if_fail (form != NULL);
 
-	eos_default_prepare_get_token_form (service, authorization_code, form);
+	eos_default_prepare_get_token_form (service, source, authorization_code, form);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_if_fail (iface != NULL);
 	g_return_if_fail (iface->prepare_get_token_form != NULL);
 
 	if (iface->prepare_get_token_form != eos_default_prepare_get_token_form)
-		iface->prepare_get_token_form (service, authorization_code, form);
+		iface->prepare_get_token_form (service, source, authorization_code, form);
 }
 
 /**
  * e_oauth2_service_prepare_get_token_message:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  * @message: a #SoupMessage
  *
  * The @service can change the @message before it's sent to
@@ -675,23 +706,26 @@ e_oauth2_service_prepare_get_token_form (EOAuth2Service *service,
  **/
 void
 e_oauth2_service_prepare_get_token_message (EOAuth2Service *service,
+					    ESource *source,
 					    SoupMessage *message)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_if_fail (E_IS_OAUTH2_SERVICE (service));
+	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (SOUP_IS_MESSAGE (message));
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_if_fail (iface != NULL);
 	g_return_if_fail (iface->prepare_get_token_message != NULL);
 
-	iface->prepare_get_token_message (service, message);
+	iface->prepare_get_token_message (service, source, message);
 }
 
 /**
  * e_oauth2_service_prepare_refresh_token_form:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
  * @refresh_token: a refresh token to be used
  * @form: (element-type utf8 utf8): form parameters to be used in the POST request
  *
@@ -709,28 +743,32 @@ e_oauth2_service_prepare_get_token_message (EOAuth2Service *service,
  **/
 void
 e_oauth2_service_prepare_refresh_token_form (EOAuth2Service *service,
+					     ESource *source,
 					     const gchar *refresh_token,
 					     GHashTable *form)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_if_fail (E_IS_OAUTH2_SERVICE (service));
+	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (refresh_token != NULL);
 	g_return_if_fail (form != NULL);
 
-	eos_default_prepare_refresh_token_form (service, refresh_token, form);
+	eos_default_prepare_refresh_token_form (service, source, refresh_token, form);
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_if_fail (iface != NULL);
 	g_return_if_fail (iface->prepare_refresh_token_form != NULL);
 
 	if (iface->prepare_refresh_token_form != eos_default_prepare_refresh_token_form)
-		iface->prepare_refresh_token_form (service, refresh_token, form);
+		iface->prepare_refresh_token_form (service, source, refresh_token, form);
 }
 
 /**
  * e_oauth2_service_prepare_refresh_token_message:
  * @service: an #EOAuth2Service
+ * @source: an associated #ESource
+ * @message: a #SoupMessage
  *
  * The @service can change the @message before it's sent to
  * the e_oauth2_service_get_refresh_uri(), with POST data
@@ -741,18 +779,20 @@ e_oauth2_service_prepare_refresh_token_form (EOAuth2Service *service,
  **/
 void
 e_oauth2_service_prepare_refresh_token_message (EOAuth2Service *service,
+						ESource *source,
 						SoupMessage *message)
 {
 	EOAuth2ServiceInterface *iface;
 
 	g_return_if_fail (E_IS_OAUTH2_SERVICE (service));
+	g_return_if_fail (E_IS_SOURCE (source));
 	g_return_if_fail (SOUP_IS_MESSAGE (message));
 
 	iface = E_OAUTH2_SERVICE_GET_INTERFACE (service);
 	g_return_if_fail (iface != NULL);
 	g_return_if_fail (iface->prepare_refresh_token_message != NULL);
 
-	iface->prepare_refresh_token_message (service, message);
+	iface->prepare_refresh_token_message (service, source, message);
 }
 
 static SoupSession *
@@ -1250,9 +1290,9 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 
 	post_form = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	e_oauth2_service_prepare_get_token_form (service, authorization_code, post_form);
+	e_oauth2_service_prepare_get_token_form (service, source, authorization_code, post_form);
 
-	message = eos_create_soup_message (source, e_oauth2_service_get_refresh_uri (service), post_form);
+	message = eos_create_soup_message (source, e_oauth2_service_get_refresh_uri (service, source), post_form);
 
 	g_hash_table_destroy (post_form);
 
@@ -1261,7 +1301,7 @@ e_oauth2_service_receive_and_store_token_sync (EOAuth2Service *service,
 		return FALSE;
 	}
 
-	e_oauth2_service_prepare_get_token_message (service, message);
+	e_oauth2_service_prepare_get_token_message (service, source, message);
 
 	success = eos_send_message (session, message, &response_json, cancellable, error);
 	if (success) {
@@ -1340,9 +1380,9 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 
 	post_form = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
 
-	e_oauth2_service_prepare_refresh_token_form (service, refresh_token, post_form);
+	e_oauth2_service_prepare_refresh_token_form (service, source, refresh_token, post_form);
 
-	message = eos_create_soup_message (source, e_oauth2_service_get_refresh_uri (service), post_form);
+	message = eos_create_soup_message (source, e_oauth2_service_get_refresh_uri (service, source), post_form);
 
 	g_hash_table_destroy (post_form);
 
@@ -1351,7 +1391,7 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 		return FALSE;
 	}
 
-	e_oauth2_service_prepare_refresh_token_message (service, message);
+	e_oauth2_service_prepare_refresh_token_message (service, source, message);
 
 	success = eos_send_message (session, message, &response_json, cancellable, &local_error);
 	if (success) {
@@ -1369,7 +1409,7 @@ e_oauth2_service_refresh_and_store_token_sync (EOAuth2Service *service,
 			success = FALSE;
 
 			g_set_error (error, G_IO_ERROR, G_IO_ERROR_FAILED, _("Received incorrect response from server “%s”."),
-				e_oauth2_service_get_refresh_uri (service));
+				e_oauth2_service_get_refresh_uri (service, source));
 		}
 
 		e_util_safe_free_string (access_token);

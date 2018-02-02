@@ -116,33 +116,44 @@ struct _EOAuth2ServiceInterface {
 	guint32		(* get_flags)			(EOAuth2Service *service);
 	const gchar *	(* get_name)			(EOAuth2Service *service);
 	const gchar *	(* get_display_name)		(EOAuth2Service *service);
-	const gchar *	(* get_client_id)		(EOAuth2Service *service);
-	const gchar *	(* get_client_secret)		(EOAuth2Service *service);
-	const gchar *	(* get_authentication_uri)	(EOAuth2Service *service);
-	const gchar *	(* get_refresh_uri)		(EOAuth2Service *service);
-	const gchar *	(* get_redirect_uri)		(EOAuth2Service *service);
+	const gchar *	(* get_client_id)		(EOAuth2Service *service,
+							 ESource *source);
+	const gchar *	(* get_client_secret)		(EOAuth2Service *service,
+							 ESource *source);
+	const gchar *	(* get_authentication_uri)	(EOAuth2Service *service,
+							 ESource *source);
+	const gchar *	(* get_refresh_uri)		(EOAuth2Service *service,
+							 ESource *source);
+	const gchar *	(* get_redirect_uri)		(EOAuth2Service *service,
+							 ESource *source);
 	void		(* prepare_authentication_uri_query)
 							(EOAuth2Service *service,
 							 ESource *source,
 							 GHashTable *uri_query);
 	EOAuth2ServiceNavigationPolicy
 			(* get_authentication_policy)	(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *uri);
 	gboolean	(* extract_authorization_code)	(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *page_title,
 							 const gchar *page_uri,
 							 const gchar *page_content,
 							 gchar **out_authorization_code);
 	void		(* prepare_get_token_form)	(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *authorization_code,
 							 GHashTable *form);
 	void		(* prepare_get_token_message)	(EOAuth2Service *service,
+							 ESource *source,
 							 SoupMessage *message);
 	void		(* prepare_refresh_token_form)	(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *refresh_token,
 							 GHashTable *form);
 	void		(* prepare_refresh_token_message)
 							(EOAuth2Service *service,
+							 ESource *source,
 							 SoupMessage *message);
 
 	/* Padding for future expansion */
@@ -158,11 +169,16 @@ gboolean	e_oauth2_service_guess_can_process	(EOAuth2Service *service,
 guint32		e_oauth2_service_get_flags		(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_name		(EOAuth2Service *service);
 const gchar *	e_oauth2_service_get_display_name	(EOAuth2Service *service);
-const gchar *	e_oauth2_service_get_client_id		(EOAuth2Service *service);
-const gchar *	e_oauth2_service_get_client_secret	(EOAuth2Service *service);
-const gchar *	e_oauth2_service_get_authentication_uri	(EOAuth2Service *service);
-const gchar *	e_oauth2_service_get_refresh_uri	(EOAuth2Service *service);
-const gchar *	e_oauth2_service_get_redirect_uri	(EOAuth2Service *service);
+const gchar *	e_oauth2_service_get_client_id		(EOAuth2Service *service,
+							 ESource *source);
+const gchar *	e_oauth2_service_get_client_secret	(EOAuth2Service *service,
+							 ESource *source);
+const gchar *	e_oauth2_service_get_authentication_uri	(EOAuth2Service *service,
+							 ESource *source);
+const gchar *	e_oauth2_service_get_refresh_uri	(EOAuth2Service *service,
+							 ESource *source);
+const gchar *	e_oauth2_service_get_redirect_uri	(EOAuth2Service *service,
+							 ESource *source);
 void		e_oauth2_service_prepare_authentication_uri_query
 							(EOAuth2Service *service,
 							 ESource *source,
@@ -170,25 +186,31 @@ void		e_oauth2_service_prepare_authentication_uri_query
 EOAuth2ServiceNavigationPolicy
 		e_oauth2_service_get_authentication_policy
 							(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *uri);
 gboolean	e_oauth2_service_extract_authorization_code
 							(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *page_title,
 							 const gchar *page_uri,
 							 const gchar *page_content,
 							 gchar **out_authorization_code);
 void		e_oauth2_service_prepare_get_token_form	(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *authorization_code,
 							 GHashTable *form);
 void		e_oauth2_service_prepare_get_token_message
 							(EOAuth2Service *service,
+							 ESource *source,
 							 SoupMessage *message);
 void		e_oauth2_service_prepare_refresh_token_form
 							(EOAuth2Service *service,
+							 ESource *source,
 							 const gchar *refresh_token,
 							 GHashTable *form);
 void		e_oauth2_service_prepare_refresh_token_message
 							(EOAuth2Service *service,
+							 ESource *source,
 							 SoupMessage *message);
 
 gboolean	e_oauth2_service_receive_and_store_token_sync

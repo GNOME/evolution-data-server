@@ -79,7 +79,7 @@ cpi_oauth2_create_auth_uri (EOAuth2Service *service,
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), NULL);
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
-	soup_uri = soup_uri_new (e_oauth2_service_get_authentication_uri (service));
+	soup_uri = soup_uri_new (e_oauth2_service_get_authentication_uri (service, source));
 	g_return_val_if_fail (soup_uri != NULL, NULL);
 
 	uri_query = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
@@ -200,7 +200,7 @@ cpi_oauth2_get_access_token_thread (gpointer user_data)
 		if (!success) {
 			prompter_oauth2->priv->error_text = g_strdup_printf (
 				_("Failed to obtain access token from address “%s”: %s"),
-				e_oauth2_service_get_refresh_uri (td->service),
+				e_oauth2_service_get_refresh_uri (td->service, td->cred_source),
 				local_error ? local_error->message : _("Unknown error"));
 		}
 
@@ -231,6 +231,7 @@ cpi_oauth2_extract_authentication_code (ECredentialsPrompterImplOAuth2 *prompter
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);
 
 	if (!e_oauth2_service_extract_authorization_code (prompter_oauth2->priv->service,
+		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
 		page_title, page_uri, page_content, &authorization_code)) {
 		return;
 	}
@@ -329,7 +330,9 @@ cpi_oauth2_decide_policy_cb (WebKitWebView *web_view,
 
 	g_return_val_if_fail (prompter_oauth2->priv->service != NULL, FALSE);
 
-	switch (e_oauth2_service_get_authentication_policy (prompter_oauth2->priv->service, webkit_uri_request_get_uri (request))) {
+	switch (e_oauth2_service_get_authentication_policy (prompter_oauth2->priv->service,
+		prompter_oauth2->priv->cred_source ? prompter_oauth2->priv->cred_source : prompter_oauth2->priv->auth_source,
+		webkit_uri_request_get_uri (request))) {
 	case E_OAUTH2_SERVICE_NAVIGATION_POLICY_DENY:
 		webkit_policy_decision_ignore (decision);
 		break;

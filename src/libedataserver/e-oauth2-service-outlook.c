@@ -58,13 +58,15 @@ eos_outlook_get_display_name (EOAuth2Service *service)
 }
 
 static const gchar *
-eos_outlook_get_client_id (EOAuth2Service *service)
+eos_outlook_get_client_id (EOAuth2Service *service,
+			   ESource *source)
 {
 	return OUTLOOK_CLIENT_ID;
 }
 
 static const gchar *
-eos_outlook_get_client_secret (EOAuth2Service *service)
+eos_outlook_get_client_secret (EOAuth2Service *service,
+			       ESource *source)
 {
 	const gchar *secret = OUTLOOK_CLIENT_SECRET;
 
@@ -75,19 +77,22 @@ eos_outlook_get_client_secret (EOAuth2Service *service)
 }
 
 static const gchar *
-eos_outlook_get_authentication_uri (EOAuth2Service *service)
+eos_outlook_get_authentication_uri (EOAuth2Service *service,
+				    ESource *source)
 {
 	return "https://login.live.com/oauth20_authorize.srf";
 }
 
 static const gchar *
-eos_outlook_get_refresh_uri (EOAuth2Service *service)
+eos_outlook_get_refresh_uri (EOAuth2Service *service,
+			     ESource *source)
 {
 	return "https://login.live.com/oauth20_token.srf";
 }
 
 static const gchar *
-eos_outlook_get_redirect_uri (EOAuth2Service *service)
+eos_outlook_get_redirect_uri (EOAuth2Service *service,
+			      ESource *source)
 {
 	return "https://login.live.com/oauth20_desktop.srf";
 }
@@ -105,6 +110,7 @@ eos_outlook_prepare_authentication_uri_query (EOAuth2Service *service,
 
 static gboolean
 eos_outlook_extract_authorization_code (EOAuth2Service *service,
+					ESource *source,
 					const gchar *page_title,
 					const gchar *page_uri,
 					const gchar *page_content,
@@ -150,13 +156,14 @@ eos_outlook_extract_authorization_code (EOAuth2Service *service,
 
 static void
 eos_outlook_prepare_refresh_token_form (EOAuth2Service *service,
+					ESource *source,
 					const gchar *refresh_token,
 					GHashTable *form)
 {
 	g_return_if_fail (form != NULL);
 
 	e_oauth2_service_util_set_to_form (form, "scope", OUTLOOK_SCOPE);
-	e_oauth2_service_util_set_to_form (form, "redirect_uri", e_oauth2_service_get_redirect_uri (service));
+	e_oauth2_service_util_set_to_form (form, "redirect_uri", e_oauth2_service_get_redirect_uri (service, source));
 }
 
 static void

@@ -57,25 +57,29 @@ eos_google_get_display_name (EOAuth2Service *service)
 }
 
 static const gchar *
-eos_google_get_client_id (EOAuth2Service *service)
+eos_google_get_client_id (EOAuth2Service *service,
+			  ESource *source)
 {
 	return GOOGLE_CLIENT_ID;
 }
 
 static const gchar *
-eos_google_get_client_secret (EOAuth2Service *service)
+eos_google_get_client_secret (EOAuth2Service *service,
+			      ESource *source)
 {
 	return GOOGLE_CLIENT_SECRET;
 }
 
 static const gchar *
-eos_google_get_authentication_uri (EOAuth2Service *service)
+eos_google_get_authentication_uri (EOAuth2Service *service,
+				   ESource *source)
 {
 	return "https://accounts.google.com/o/oauth2/auth";
 }
 
 static const gchar *
-eos_google_get_refresh_uri (EOAuth2Service *service)
+eos_google_get_refresh_uri (EOAuth2Service *service,
+			    ESource *source)
 {
 	return "https://www.googleapis.com/oauth2/v3/token";
 }
@@ -105,6 +109,7 @@ eos_google_prepare_authentication_uri_query (EOAuth2Service *service,
 
 static gboolean
 eos_google_extract_authorization_code (EOAuth2Service *service,
+				       ESource *source,
 				       const gchar *page_title,
 				       const gchar *page_uri,
 				       const gchar *page_content,
