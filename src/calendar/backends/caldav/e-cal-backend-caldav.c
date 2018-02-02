@@ -175,7 +175,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		gboolean is_ssl_error;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials)) &&
-			!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbdav->priv->webdav));
+			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbdav->priv->webdav));
 		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;

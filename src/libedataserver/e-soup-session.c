@@ -621,7 +621,7 @@ e_soup_session_get_authentication_requires_credentials (ESoupSession *session)
 {
 	g_return_val_if_fail (E_IS_SOUP_SESSION (session), FALSE);
 
-	return session->priv->using_bearer_auth != NULL;
+	return !session->priv->using_bearer_auth;
 }
 
 /**

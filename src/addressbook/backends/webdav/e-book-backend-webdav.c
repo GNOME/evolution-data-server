@@ -214,7 +214,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 		gboolean is_ssl_error;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials)) &&
-			!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (bbdav->priv->webdav));
+			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (bbdav->priv->webdav));
 		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
