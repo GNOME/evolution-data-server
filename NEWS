@@ -1,3 +1,16 @@
+Evolution-Data-Server 3.26.5 2018-02-05
+---------------------------------------
+
+Bug Fixes:
+	Bug 792513 - [IMAPx] Deadlock after deleting messages (with real Trash) (Milan Crha)
+	Bug 789522 - Decode of empty base64 encoded part causes runtime warnings (Milan Crha)
+
+Miscellaneous:
+	Prevent early free of an ESource when it has pending operations (Milan Crha)
+	[IMAPx] Select destination mailbox only when permanentflags not known yet (Milan Crha)
+	Prevent passing NULL ldap handle into LDAP functions ][ (Milan Crha)
+	[IMAPx] Sort array of UIDs before syncing changes to the server (Milan Crha)
+
 Evolution-Data-Server 3.26.4 2018-01-08
 ---------------------------------------
 
