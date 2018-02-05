@@ -1504,7 +1504,7 @@ e_oauth2_service_get_access_token_sync (EOAuth2Service *service,
 					GError **error)
 {
 	gchar *refresh_token = NULL;
-	gboolean success = FALSE;
+	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_OAUTH2_SERVICE (service), FALSE);
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
