@@ -1,3 +1,41 @@
+Evolution-Data-Server 3.27.90 2018-02-05
+----------------------------------------
+
+Bug Fixes:
+	Bug 792302 - CMake build fails to include iconv-detect.h (Milan Crha)
+	Bug 792610 - [GPG] Consider alternate signer emails in sender address verification (Milan Crha)
+	Bug 792513 - [IMAPx] Deadlock after deleting messages (with real Trash) (Milan Crha)
+	Bug 789522 - Decode of empty base64 encoded part causes runtime warnings (Milan Crha)
+
+Miscellaneous:
+	[devel-doc] Rename api-index IDs, to not clash with gtk-doc generated IDs (Milan Crha)
+	Prevent early free of an ESource when it has pending operations (Milan Crha)
+	[IMAPx] Select destination mailbox only when permanentflags not known yet (Milan Crha)
+	Change how built-in OAuth2 authentication works (Milan Crha)
+	Add a debug print for OAUTH2_DEBUG=1 when obtaining authentication token (Milan Crha)
+	Correct OAuth2 mail accounts configured in GNOME Online Accounts (Milan Crha)
+	Miscellaneous changes related to built-in OAuth2 services (Milan Crha)
+	Add missed default implementation for EOAuth2Service::get_authentication_policy() (Milan Crha)
+	Introduce e_oauth2_service_get_redirect_uri() (Milan Crha)
+	[SMTP] Change how the list of available authentication methods is constructed (Milan Crha)
+	Add OAuth2 authentication for Outlook.com IMAP and SMTP (Milan Crha)
+	Correct "may be used uninitialized" warning in imapx_query_auth_types_sync() (Milan Crha)
+	Correct developer documentation in e-oauth2-service/s (Milan Crha)
+	Prevent passing NULL ldap handle into LDAP functions ][ (Milan Crha)
+	[IMAPx] Sort array of UIDs before syncing changes to the server (Milan Crha)
+	Address some issues reported by Undefined Behavior Sanitizer (Milan Crha)
+	Replace e_cal_recur_nth array with e_cal_recur_get_localized_nth() (Milan Crha)
+	Add book/calendar-factory argument to override backend-per-process compile-time option (Milan Crha)
+	Correct return value of e_soup_session_get_authentication_requires_credentials() (Milan Crha)
+	Provide associated ESource to more EOAuth2Service virtual methods (Milan Crha)
+
+Translations:
+	Marcos Lans (gl)
+	Balázs Úr (hu)
+	Daniel Mustieles (es)
+	Rafael Fontenelle (pt_BR)
+	Andika Triwidada (id)
+
 Evolution-Data-Server 3.27.4 2018-01-08
 ---------------------------------------
 
