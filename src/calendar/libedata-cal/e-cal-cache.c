@@ -1384,8 +1384,8 @@ ecc_sexp_func_is_completed (ESExp *esexp,
 	g_return_val_if_fail (ctx != NULL, NULL);
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_STRING);
-	result->value.string = g_strdup_printf ("%s NOT NULL",
-		ECC_COLUMN_COMPLETED);
+	result->value.string = g_strdup_printf ("%s NOT NULL OR (%s NOT NULL AND %s='%s')",
+		ECC_COLUMN_COMPLETED, ECC_COLUMN_STATUS, ECC_COLUMN_STATUS, ecc_get_status_as_string (ICAL_STATUS_COMPLETED));
 
 	return result;
 }

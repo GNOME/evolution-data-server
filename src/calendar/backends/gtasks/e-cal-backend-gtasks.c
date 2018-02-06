@@ -137,7 +137,7 @@ ecb_gtasks_gdata_to_comp (GDataTasksTask *task)
 	}
 
 	if (gdata_tasks_task_get_completed (task) > 0) {
-		tt = icaltime_from_timet_with_zone (gdata_tasks_task_get_completed (task), 1, NULL);
+		tt = icaltime_from_timet_with_zone (gdata_tasks_task_get_completed (task), 0, icaltimezone_get_utc_timezone ());
 		if (icaltime_is_valid_time (tt) && !icaltime_is_null_time (tt))
 			ecb_gtasks_update_ical_time_property (icomp, ICAL_COMPLETED_PROPERTY,
 				icalproperty_new_completed,

@@ -2356,12 +2356,24 @@ e_cal_component_set_completed (ECalComponent *comp,
                                struct icaltimetype *t)
 {
 	ECalComponentPrivate *priv;
+	struct icaltimetype tmp_tt;
 
 	g_return_if_fail (comp != NULL);
 	g_return_if_fail (E_IS_CAL_COMPONENT (comp));
 
 	priv = comp->priv;
 	g_return_if_fail (priv->icalcomp != NULL);
+
+	if (t && t->is_date) {
+		tmp_tt = *t;
+		t = &tmp_tt;
+
+		tmp_tt.is_date = 0;
+		tmp_tt.hour = 0;
+		tmp_tt.minute = 0;
+		tmp_tt.second = 0;
+		tmp_tt.zone = icaltimezone_get_utc_timezone ();
+	}
 
 	set_icaltimetype (
 		comp, &priv->completed,

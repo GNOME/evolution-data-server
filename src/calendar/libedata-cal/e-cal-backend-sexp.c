@@ -1041,6 +1041,12 @@ func_is_completed (ESExp *esexp,
 	if (t) {
 		complete = TRUE;
 		e_cal_component_free_icaltimetype (t);
+	} else {
+		icalproperty_status status = ICAL_STATUS_NONE;
+
+		e_cal_component_get_status (ctx->comp, &status);
+
+		complete = status == ICAL_STATUS_COMPLETED;
 	}
 
 	result = e_sexp_result_new (esexp, ESEXP_RES_BOOL);
