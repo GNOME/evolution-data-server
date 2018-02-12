@@ -1018,19 +1018,15 @@ junk_test (struct _CamelSExp *f,
 	if (flags & CAMEL_MESSAGE_JUNK) {
 		message_is_junk = TRUE;
 		if (camel_debug ("junk"))
-			printf (
-				"Message has a Junk flag set already, "
-				"skipping junk test...\n");
-		camel_filter_search_log (fms, "Message has a Junk flag set already, skipping junk test");
+			printf ("Message '%s' has a Junk flag set already, skipping junk test...\n", camel_message_info_get_uid (info));
+		camel_filter_search_log (fms, "Message '%s' has a Junk flag set already, skipping junk test", camel_message_info_get_uid (info));
 		goto done;
 	}
 
 	if (flags & CAMEL_MESSAGE_NOTJUNK) {
 		if (camel_debug ("junk"))
-			printf (
-				"Message has a NotJunk flag set already, "
-				"skipping junk test...\n");
-		camel_filter_search_log (fms, "Message has a NotJunk flag set already, skipping junk test");
+			printf ("Message '%s' has a NotJunk flag set already, skipping junk test...\n", camel_message_info_get_uid (info));
+		camel_filter_search_log (fms, "Message '%s' has a NotJunk flag set already, skipping junk test", camel_message_info_get_uid (info));
 		goto done;
 	}
 
@@ -1039,11 +1035,14 @@ junk_test (struct _CamelSExp *f,
 
 	sender_is_known = camel_session_lookup_addressbook (
 		fms->session, camel_message_info_get_from (info));
-	camel_filter_search_log (fms, "Sender '%s' is %sin any address book", camel_message_info_get_from (info), sender_is_known ? "" : "not ");
+	camel_filter_search_log (fms, "Sender '%s' of message '%s' is %sin any address book",
+		camel_message_info_get_from (info),
+		camel_message_info_get_uid (info),
+		sender_is_known ? "" : "not ");
 	if (camel_debug ("junk"))
-		printf (
-			"Sender '%s' in book? %d\n",
+		printf ("Sender '%s' of message '%s' in book? %d\n",
 			camel_message_info_get_from (info),
+			camel_message_info_get_uid (info),
 			sender_is_known);
 	if (sender_is_known)
 		goto done;
@@ -1078,10 +1077,11 @@ junk_test (struct _CamelSExp *f,
 
 			if (message_is_junk) {
 				if (camel_debug ("junk"))
-					printf (
-						"Message contains \"%s: %s\"",
+					printf ("Message '%s' contains \"%s: %s\"",
+						camel_message_info_get_uid (info),
 						hdr_name, junk_value);
-				camel_filter_search_log (fms, "Message is junk, because contains header '%s' with value '%s'", hdr_name, junk_value);
+				camel_filter_search_log (fms, "Message '%s' is junk, because contains header '%s' with value '%s'",
+					camel_message_info_get_uid (info), hdr_name, junk_value);
 				camel_message_info_property_unlock (info);
 				goto done;
 			}
@@ -1111,11 +1111,12 @@ junk_test (struct _CamelSExp *f,
 
 			if (message_is_junk) {
 				if (camel_debug ("junk")) {
-					printf (
-						"Message contains \"%s: %s\"",
+					printf ("Message '%s' contains \"%s: %s\"",
+						camel_message_info_get_uid (info),
 						raw_name, value);
 				}
-				camel_filter_search_log (fms, "Message is junk, because contains header '%s' with value '%s'", raw_name, value);
+				camel_filter_search_log (fms, "Message '%s' is junk, because contains header '%s' with value '%s'",
+					camel_message_info_get_uid (info), raw_name, value);
 				goto done;
 			}
 		}
@@ -1157,16 +1158,17 @@ junk_test (struct _CamelSExp *f,
 				break;
 		}
 
-		camel_filter_search_log (fms, "Junk filter classified message as '%s'", status_desc);
+		camel_filter_search_log (fms, "Junk filter classified message '%s' as '%s'", camel_message_info_get_uid (info), status_desc);
 		if (camel_debug ("junk"))
 			printf (
-				"Junk filter classification: %s\n",
+				"Junk filter classification for message '%s': %s\n",
+				camel_message_info_get_uid (info),
 				status_desc);
 	} else {
 		g_warn_if_fail (status == CAMEL_JUNK_STATUS_ERROR);
-		camel_filter_search_log (fms, "Junk classify failed with error '%s'", error->message);
+		camel_filter_search_log (fms, "Junk classify failed for message '%s' with error '%s'", camel_message_info_get_uid (info), error->message);
 		if (camel_debug ("junk"))
-			printf ("Junk classify failed with error: %s\n", error->message);
+			printf ("Junk classify failed for message '%s' with error: %s\n", camel_message_info_get_uid (info), error->message);
 		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
 			g_warning ("%s: %s", G_STRFUNC, error->message);
 		g_error_free (error);
@@ -1174,10 +1176,11 @@ junk_test (struct _CamelSExp *f,
 	}
 
  done:
-	camel_filter_search_log (fms, "Finish message junk classify as %sJunk", message_is_junk ? "" : "not ");
+	camel_filter_search_log (fms, "Finish message '%s' junk classify as %sJunk", camel_message_info_get_uid (info), message_is_junk ? "" : "not ");
 	if (camel_debug ("junk"))
 		printf (
-			"Message is determined to be %s\n",
+			"Message '%s' is determined to be %s\n",
+			camel_message_info_get_uid (info),
 			message_is_junk ? "*JUNK*" : "clean");
 
 	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_BOOL);
