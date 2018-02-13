@@ -22,10 +22,6 @@ add_printable_variable_path(WITH_NSPR_LIBS "Prefix of Mozilla nspr4 libs" "")
 add_printable_variable_path(WITH_NSS_INCLUDES "Prefix of Mozilla nss3 includes" "")
 add_printable_variable_path(WITH_NSS_LIBS "Prefix of Mozilla nss3 libs" "")
 
-if(NOT ENABLE_SMIME)
-	return()
-endif(NOT ENABLE_SMIME)
-
 set(mozilla_nspr "")
 set(mozilla_nss "")
 set(MOZILLA_NSS_LIB_DIR "")
