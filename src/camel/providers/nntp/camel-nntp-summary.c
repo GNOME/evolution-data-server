@@ -477,11 +477,12 @@ nntp_get_existing_article_numbers (CamelNNTPSummary *cns,
 	while ((ret = camel_nntp_stream_line (nntp_stream, (guchar **) &line, &len, cancellable, error)) > 0) {
 		guint nn;
 
-		camel_operation_progress (cancellable, (count * 100) / total);
-		count++;
-
 		if (len == 1 && g_ascii_strncasecmp (line, ".", len) == 0)
 			break;
+
+		if (total > 0)
+			camel_operation_progress (cancellable, (count * 100) / total);
+		count++;
 
 		nn = strtoul (line, NULL, 10);
 		if (nn) {
