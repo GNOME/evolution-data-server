@@ -296,7 +296,7 @@ if(NOT PERL)
 	message(FATAL_ERROR "You need perl to build ${PROJECT_NAME}")
 endif(NOT PERL)
 
-find_program(PYTHON python)
+find_program(PYTHON python3 python2 python)
 if(NOT PYTHON)
 	message(FATAL_ERROR "You need python to build ${PROJECT_NAME}")
 endif(NOT PYTHON)
