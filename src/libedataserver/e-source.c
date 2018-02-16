@@ -905,7 +905,8 @@ source_notify_dbus_connection_status_cb (EDBusSource *dbus_source,
 					 ESource *source)
 {
 	g_mutex_lock (&source->priv->connection_status_change_lock);
-	if (source->priv->connection_status_change == NULL) {
+	if (source->priv->connection_status_change == NULL &&
+	    source->priv->initialized) {
 		source->priv->connection_status_change = g_idle_source_new ();
 		g_source_set_callback (
 			source->priv->connection_status_change,
@@ -2608,6 +2609,7 @@ e_source_changed (ESource *source)
 
 	g_mutex_lock (&source->priv->changed_lock);
 	if (!source->priv->ignore_changed_signal &&
+	    source->priv->initialized &&
 	    source->priv->changed == NULL) {
 		source->priv->changed = g_idle_source_new ();
 		g_source_set_callback (

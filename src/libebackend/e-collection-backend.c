@@ -210,13 +210,37 @@ collection_backend_new_source (ECollectionBackend *backend,
 }
 
 static void
+collection_backend_remove_files (GSList *filenames, /* gchar * */
+				 const gchar *cache_dir,
+				 const gchar *reason)
+{
+	GSList *link;
+
+	for (link = filenames; link; link = g_slist_next (link)) {
+		const gchar *name = link->data;
+		gchar *filename;
+
+		filename = g_build_filename (cache_dir, name, NULL);
+		if (filename) {
+			if (g_unlink (filename) == -1) {
+				gint errn = errno;
+				e_source_registry_debug_print ("%s: Failed to remove %s source '%s': %s\n", G_STRFUNC, reason, filename, g_strerror (errn));
+			} else {
+				e_source_registry_debug_print ("%s: Removed %s source '%s'\n", G_STRFUNC, reason, filename);
+			}
+		}
+		g_free (filename);
+	}
+}
+
+static void
 collection_backend_load_resources (ECollectionBackend *backend)
 {
 	ESourceRegistryServer *server;
 	ECollectionBackendClass *class;
 	GDir *dir;
 	GFile *file;
-	GSList *remove_redundant = NULL, *link;
+	GSList *remove_redundant = NULL, *remove_broken = NULL;
 	const gchar *name;
 	const gchar *cache_dir;
 	GError *error = NULL;
@@ -261,6 +285,9 @@ collection_backend_load_resources (ECollectionBackend *backend)
 			g_warn_if_fail (source == NULL);
 			g_warning ("%s: %s", G_STRFUNC, error->message);
 			g_clear_error (&error);
+
+			/* Internal data, broken file for some reason, delete it */
+			remove_broken = g_slist_prepend (remove_broken, g_strdup (name));
 			continue;
 		}
 
@@ -287,23 +314,11 @@ collection_backend_load_resources (ECollectionBackend *backend)
 	g_object_unref (server);
 	g_dir_close (dir);
 
-	for (link = remove_redundant; link; link = g_slist_next (link)) {
-		const gchar *name = link->data;
-		gchar *filename;
-
-		filename = g_build_filename (cache_dir, name, NULL);
-		if (filename) {
-			if (g_unlink (filename) == -1) {
-				gint errn = errno;
-				e_source_registry_debug_print ("%s: Failed to remove redundant source '%s': %s\n", G_STRFUNC, filename, g_strerror (errn));
-			} else {
-				e_source_registry_debug_print ("%s: Removed redundant source '%s'\n", G_STRFUNC, filename);
-			}
-		}
-		g_free (filename);
-	}
+	collection_backend_remove_files (remove_redundant, cache_dir, "redundant");
+	collection_backend_remove_files (remove_broken, cache_dir, "broken");
 
 	g_slist_free_full (remove_redundant, g_free);
+	g_slist_free_full (remove_broken, g_free);
 }
 
 static ESource *
