@@ -19,10 +19,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server\n"
-"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product"
-"=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-01 17:20+0000\n"
-"PO-Revision-Date: 2018-02-03 11:00-0200\n"
+"Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
+"product=evolution-data-server&keywords=I18N+L10N&component=general\n"
+"POT-Creation-Date: 2018-02-05 20:41+0000\n"
+"PO-Revision-Date: 2018-02-16 14:39-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -2609,7 +2609,6 @@ msgstr "Sincronizando mensagens na pasta “%s : %s” para o disco"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:476
 #, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Sincronizando mensagem %d de %d na pasta “%s : %s” para o disco"
 
@@ -2619,7 +2618,6 @@ msgstr "Copia o conteúdo da pasta localmente para funcionamento _desconectado"
 
 #: ../src/camel/camel-offline-store.c:268
 #, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Sincronizando mensagens na conta “%s” para o disco"
 
@@ -3341,7 +3339,6 @@ msgid "Unable to move deleted messages"
 msgstr "Não é possível mover mensagens excluídas"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1800
-#| msgid "Unable to move junk messages"
 msgid "Unable to move messages to Inbox"
 msgstr "Não foi possível mover mensagens de caixa de entrada"
 
@@ -5215,6 +5212,42 @@ msgstr ""
 "são verificadas antes das variáveis de ambiente, mas após as variáveis pré-"
 "definidas USER, REALNAME e HOST."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+msgid "A list of hints for OAuth2 services"
+msgstr "Uma lista de dicas para serviços OAuth2"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+msgid ""
+"Users can extend the list of supported protocols and hostnames for defined "
+"OAuth2 services, in addition to those hard-coded. Each line can be of the "
+"form: servicename[-protocol]:hostname1,hostname2,... where 'servicename' is "
+"the actual service name; the '-protocol' is optional, and if written, then "
+"the service can be used only if both 'protocol' and 'hostnameX' match; the "
+"'hostnameX' is the actual host name to compare with, case insensitively. "
+"Each line can contain multiple values, separated by comma. There can be "
+"provided multiple lines for one OAuth2 service. Note that the actual URL "
+"where the token is requested and refreshed cannot be changed here, the "
+"hostname is to allow other servers, where the OAuth2 service can be used. "
+"Examples: Company:mail.company.com - enables 'Company' OAuth2 authentication "
+"for 'mail.company.com' host Company-CalDAV:caldav.company.com - enables "
+"'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
+"from 'caldav.companycaldav.com' host"
+msgstr ""
+"Os usuários podem estender a lista de protocolos e nomes de host suportados "
+"para serviços OAuth2 definidos, além dos codificados. Cada linha pode ser da "
+"forma: nome-serviço [-protocolo]: nome-host1, nome-host2, … onde “nome-"
+"serviço” é o nome do serviço real; o “protocolo” é opcional e, se escrito, o "
+"serviço só pode ser usado se o “protocolo” e o “nome-host X” coincidirem; o "
+"“nome-hostX” é o nome do host real para comparar, sem diferenciar maiúsculo "
+"de minúsculo. Cada linha pode conter vários valores, separados por vírgulas. "
+"Pode fornecer várias linhas para um serviço OAuth2. Observe que a URL atual "
+"onde o token é solicitado e atualizado não pode ser alterado aqui, o nome do "
+"host é para permitir outros servidores, onde o serviço OAuth2 pode ser "
+"usado. Exemplos: Empresa: mail.empresa.com.br – habilita a autenticação "
+"“Empresa” OAuth2 para a empresa de hospedagem “mail.empresa.com.br” CalDAV: "
+"caldav.empresa.com.br - habilita a autenticação “Empresa” OAuth2 para "
+"qualquer fonte “CalDAV”, que lê dados do host “caldav.empresacaldav.com.br”"
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(Obsoleto) Tipo de proxy a ser usado"
@@ -5514,38 +5547,33 @@ msgstr "Foi alcançado o tempo de espera"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: ../src/libedataserver/e-oauth2-service.c:1168
+#: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Fonte “%s” (%s) não é válido para um serviço OAuth2 “%s”"
 
-#: ../src/libedataserver/e-oauth2-service.c:1183
-#| msgid "Google secret not found"
+#: ../src/libedataserver/e-oauth2-service.c:1223
 msgid "OAuth2 secret not found"
 msgstr "Segredo de OAuth2 não localizado"
 
-#: ../src/libedataserver/e-oauth2-service.c:1371
+#: ../src/libedataserver/e-oauth2-service.c:1411
 #, c-format
-#| msgid "Unexpected server response from xover: %s"
 msgid "Received incorrect response from server “%s”."
 msgstr "Resposta incorreta recebida do servidor “%s”."
 
-#: ../src/libedataserver/e-oauth2-service.c:1380
-#| msgid "Failed to get access token from refresh_token server response"
+#: ../src/libedataserver/e-oauth2-service.c:1420
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Falha ao renovar token de acesso. Autentique-se no servidor novamente, por "
 "favor."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1422
+#: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Fonte “%s” (%s) não é uma fonte OAuth2 válida"
 
-#: ../src/libedataserver/e-oauth2-service.c:1495
+#: ../src/libedataserver/e-oauth2-service.c:1535
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -5555,7 +5583,6 @@ msgstr ""
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -5971,71 +5998,61 @@ msgstr "A fonte “%s” não possui suporte a ­­solicitação de credenciais"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
-#| msgid "Failed to obtain an access token for “%s”: "
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Falha ao obter um token de acesso do endereço “%s”: %s"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:245
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
 msgstr "Requisitando token de acesso, por favor espere…"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:469
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
 #, c-format
-#| msgid "Address book authentication request"
 msgid "%s Address Book authentication request"
 msgstr "Requisição de autenticação de catálogo de endereços do %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:474
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
 #, c-format
-#| msgid "Calendar authentication request"
 msgid "%s Calendar authentication request"
 msgstr "Requisição de autenticação de agenda do %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:479
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
 #, c-format
-#| msgid "Google Memo List authentication request"
 msgid "%s Memo List authentication request"
 msgstr "Requisição de autenticação da lista de memorando do %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:484
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
 #, c-format
-#| msgid "Google Task List authentication request"
 msgid "%s Task List authentication request"
 msgstr "Requisição de autenticação da lista de tarefa do %s"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:490
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
 #, c-format
-#| msgid "Mail authentication request"
 msgid "%s Mail authentication request"
 msgstr "Requisição de autenticação de correio do %s"
 
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:495
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
 #, c-format
-#| msgid "Google account authentication request"
 msgid "%s account authentication request"
 msgstr "Requisição de autenticação de conta do %s"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:509
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
@@ -6046,11 +6063,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:516
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
@@ -6061,11 +6075,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:523
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
@@ -6076,11 +6087,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:530
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
@@ -6091,11 +6099,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:537
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
@@ -6106,11 +6111,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:544
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
@@ -6121,11 +6123,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:551
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
@@ -6133,7 +6132,7 @@ msgstr ""
 "Autentique-se na sua conta %s e aceite condições para ter acesso a sua conta "
 "“%s”."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:599
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1067
