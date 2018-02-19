@@ -1,3 +1,28 @@
+Evolution-Data-Server 3.27.91 2018-02-19
+----------------------------------------
+
+Bug Fixes:
+	Bug 793104 - COMPLETED in libical 3.0+ is DATE-TIME only (Milan Crha)
+	Bug 793368 - Install AppStream metadata to /usr/share/metainfo/ (Jeremy Bicha)
+	Bug 792746 - Fails to build with ENABLE_SMIME set to OFF (Milan Crha)
+	Bug 793465 - [NNTP] Fix division by zero when folder is empty (Fatih Akca)
+	Bug 793466 - [evolution-source-registry] Empty .source file causes high CPU usage (Milan Crha)
+
+Miscellaneous:
+	Correct return value of e_oauth2_service_get_access_token_sync() (Milan Crha)
+	Write also message UID in Junk filter debug logs (Milan Crha)
+	build: favor python3 as interpreter (Dominique Leuenberger)
+
+Translations:
+	Claude Paroz (fr)
+	Emin Tufan Çetin (tr)
+	Fran Dieguez (gl)
+	Piotr Drąg (pl)
+	Fabio Tomat (fur)
+	Mario Blättermann (de)
+	Rafael Fontenelle (pt_BR)
+	Aurimas Černius (lt)
+
 Evolution-Data-Server 3.27.90 2018-02-05
 ----------------------------------------
 
