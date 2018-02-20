@@ -70,6 +70,9 @@ struct _CamelIMAPXConnManagerPrivate {
 	GMutex busy_mailboxes_lock; /* used for both busy_mailboxes and idle_mailboxes */
 	GHashTable *busy_mailboxes; /* CamelIMAPXMailbox ~> gint */
 	GHashTable *idle_mailboxes; /* CamelIMAPXMailbox ~> gint */
+
+	GMutex idle_refresh_lock;
+	GHashTable *idle_refresh_mailboxes; /* not-referenced CamelIMAPXMailbox, just to use for pointer comparison ~> NULL */
 };
 
 struct _ConnectionInfo {
@@ -138,6 +141,10 @@ imapx_conn_manager_idle_mailbox_refresh_thread (gpointer user_data)
 			local_error ? local_error->message : "Unknown error");
 	}
 
+	g_mutex_lock (&data->conn_man->priv->idle_refresh_lock);
+	g_hash_table_remove (data->conn_man->priv->idle_refresh_mailboxes, data->mailbox);
+	g_mutex_unlock (&data->conn_man->priv->idle_refresh_lock);
+
 	mailbox_refresh_data_free (data);
 	g_clear_error (&local_error);
 
@@ -156,6 +163,13 @@ imapx_conn_manager_refresh_mailbox_cb (CamelIMAPXServer *is,
 	g_return_if_fail (CAMEL_IS_IMAPX_SERVER (is));
 	g_return_if_fail (CAMEL_IS_IMAPX_MAILBOX (mailbox));
 	g_return_if_fail (CAMEL_IS_IMAPX_CONN_MANAGER (conn_man));
+
+	g_mutex_lock (&conn_man->priv->idle_refresh_lock);
+	if (!g_hash_table_insert (conn_man->priv->idle_refresh_mailboxes, mailbox, NULL)) {
+		g_mutex_unlock (&conn_man->priv->idle_refresh_lock);
+		return;
+	}
+	g_mutex_unlock (&conn_man->priv->idle_refresh_lock);
 
 	data = g_new0 (MailboxRefreshData, 1);
 	data->conn_man = g_object_ref (conn_man);
@@ -627,6 +641,8 @@ imapx_conn_manager_finalize (GObject *object)
 	g_mutex_clear (&priv->busy_mailboxes_lock);
 	g_hash_table_destroy (priv->busy_mailboxes);
 	g_hash_table_destroy (priv->idle_mailboxes);
+	g_mutex_clear (&priv->idle_refresh_lock);
+	g_hash_table_destroy (priv->idle_refresh_mailboxes);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_imapx_conn_manager_parent_class)->finalize (object);
@@ -679,10 +695,12 @@ camel_imapx_conn_manager_init (CamelIMAPXConnManager *conn_man)
 	g_cond_init (&conn_man->priv->busy_connections_cond);
 	g_weak_ref_init (&conn_man->priv->store, NULL);
 	g_mutex_init (&conn_man->priv->busy_mailboxes_lock);
+	g_mutex_init (&conn_man->priv->idle_refresh_lock);
 
 	conn_man->priv->last_tagprefix = 'A' - 1;
 	conn_man->priv->busy_mailboxes = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
 	conn_man->priv->idle_mailboxes = g_hash_table_new_full (g_direct_hash, g_direct_equal, g_object_unref, NULL);
+	conn_man->priv->idle_refresh_mailboxes = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, NULL);
 }
 
 static gchar

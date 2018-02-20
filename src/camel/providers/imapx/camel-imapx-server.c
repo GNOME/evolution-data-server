@@ -796,9 +796,36 @@ imapx_untagged_expunge (CamelIMAPXServer *is,
 	/* Ignore EXPUNGE responses when not running a COPY(MOVE)_MESSAGE job */
 	if (!is->priv->current_command || (is->priv->current_command->job_kind != CAMEL_IMAPX_JOB_COPY_MESSAGE &&
 	    is->priv->current_command->job_kind != CAMEL_IMAPX_JOB_MOVE_MESSAGE)) {
+		gboolean ignored = TRUE;
+		gboolean is_idle_command = is->priv->current_command && is->priv->current_command->job_kind == CAMEL_IMAPX_JOB_IDLE;
+
 		COMMAND_UNLOCK (is);
 
-		c (is->priv->tagprefix, "ignoring untagged expunge: %lu\n", expunged_idx);
+		/* Process only untagged EXPUNGE responses within ongoing IDLE command */
+		if (is_idle_command) {
+			CamelIMAPXMailbox *mailbox;
+
+			mailbox = camel_imapx_server_ref_selected (is);
+			if (mailbox) {
+				guint32 messages;
+
+				messages = camel_imapx_mailbox_get_messages (mailbox);
+				if (messages > 0) {
+					camel_imapx_mailbox_set_messages (mailbox, messages - 1);
+
+					ignored = FALSE;
+					c (is->priv->tagprefix, "going to refresh mailbox '%s' due to untagged expunge: %lu\n", camel_imapx_mailbox_get_name (mailbox), expunged_idx);
+
+					g_signal_emit (is, signals[REFRESH_MAILBOX], 0, mailbox);
+				}
+
+				g_object_unref (mailbox);
+			}
+		}
+
+		if (ignored)
+			c (is->priv->tagprefix, "ignoring untagged expunge: %lu\n", expunged_idx);
+
 		return TRUE;
 	}
 
@@ -973,10 +1000,9 @@ imapx_untagged_exists (CamelIMAPXServer *is,
                        GCancellable *cancellable,
                        GError **error)
 {
-	CamelFolder *folder;
 	CamelIMAPXMailbox *mailbox;
 	guint32 exists;
-	gboolean success = TRUE;
+	gboolean success = TRUE, changed;
 
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 
@@ -994,20 +1020,12 @@ imapx_untagged_exists (CamelIMAPXServer *is,
 		camel_imapx_mailbox_get_messages (mailbox),
 		exists);
 
+	changed = camel_imapx_mailbox_get_messages (mailbox) != exists;
 	camel_imapx_mailbox_set_messages (mailbox, exists);
 
-	folder = imapx_server_ref_folder (is, mailbox);
-	g_return_val_if_fail (folder != NULL, FALSE);
+	if (changed && camel_imapx_server_is_in_idle (is))
+		g_signal_emit (is, signals[REFRESH_MAILBOX], 0, mailbox);
 
-	if (camel_imapx_server_is_in_idle (is)) {
-		guint count;
-
-		count = camel_folder_summary_count (camel_folder_get_folder_summary (folder));
-		if (count < exists)
-			g_signal_emit (is, signals[REFRESH_MAILBOX], 0, mailbox);
-	}
-
-	g_object_unref (folder);
 	g_object_unref (mailbox);
 
 	return success;
@@ -1340,6 +1358,26 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 
 			if (free_user_flags)
 				camel_named_flags_free (server_user_flags);
+
+			if (camel_imapx_server_is_in_idle (is) && !camel_folder_is_frozen (folder)) {
+				CamelFolderChangeInfo *changes = NULL;
+
+				g_mutex_lock (&is->priv->changes_lock);
+
+				if (camel_folder_change_info_changed (is->priv->changes)) {
+					changes = is->priv->changes;
+					is->priv->changes = camel_folder_change_info_new ();
+				}
+
+				g_mutex_unlock (&is->priv->changes_lock);
+
+				if (changes) {
+					imapx_update_store_summary (folder);
+					camel_folder_changed (folder, changes);
+
+					camel_folder_change_info_free (changes);
+				}
+			}
 		}
 
 		g_clear_object (&mailbox);
