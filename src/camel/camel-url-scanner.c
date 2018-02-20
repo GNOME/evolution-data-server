@@ -136,6 +136,12 @@ camel_url_scanner_scan (CamelUrlScanner *scanner,
 	return FALSE;
 }
 
+/* stephenhay from https://mathiasbynens.be/demo/url-regex */
+#define URL_PROTOCOLS "news|telnet|nntp|file|https?|s?ftp|webcal|localhost|ssh"
+#define URL_PATTERN "((?:(?:(?:" URL_PROTOCOLS ")\\:\\/\\/)|(?:www\\.|ftp\\.))[^\\s\\/\\$\\.\\?#].[^\\s]*+)"
+
+#define FILE_PATTERN "((?:(?:(?:file)\\:\\/\\/)|(?:(?:file)\\:\\/\\/\\/))[^\\s\\/\\$\\.\\?#].[^\\s]*+)"
+
 static guchar url_scanner_table[256] = {
 	  1,  1,  1,  1,  1,  1,  1,  1,  1,  9,  9,  1,  1,  9,  1,  1,
 	  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
@@ -199,27 +205,48 @@ is_open_brace (gchar c)
 	return FALSE;
 }
 
-static char
-url_stop_at_brace (const gchar *in,
-                   gsize so,
-                   gchar *open_brace)
+static gboolean
+camel_url_pattern_end (const gchar *in,
+		       const gchar *pos,
+		       const gchar *inend,
+		       CamelUrlMatch *match,
+		       const gchar *pattern,
+		       gboolean remove_trailing_bad_chars)
 {
-	gint i;
+	GRegex *regex;
+	GMatchInfo *match_info = NULL;
+	gboolean success = FALSE;
 
-	if (open_brace != NULL)
-		*open_brace = '\0';
+	regex = g_regex_new (pattern, 0, 0, NULL);
+	if (!regex)
+		return FALSE;
 
-	if (so > 0) {
-		for (i = 0; i < G_N_ELEMENTS (url_braces); i++) {
-			if (in[so - 1] == url_braces[i].open) {
-				if (open_brace != NULL)
-					*open_brace = url_braces[i].open;
-				return url_braces[i].close;
+	if (g_regex_match_all_full (regex, pos, inend - pos, 0, G_REGEX_MATCH_NOTEMPTY, &match_info, NULL) && match_info &&
+	    g_match_info_matches (match_info)) {
+		gint start_pos, end_pos;
+
+		if (g_match_info_fetch_pos (match_info, 0, &start_pos, &end_pos) && start_pos == 0 && end_pos > 0 && end_pos <= inend - pos) {
+			const gchar *inptr = pos + end_pos;
+
+			success = TRUE;
+
+			if (remove_trailing_bad_chars) {
+				/* urls are extremely unlikely to end with any
+				 * punctuation, so strip any trailing
+				 * punctuation off. Also strip off any closing
+				 * double-quotes. */
+				while (inptr > pos && strchr (",.:;?!-|}])\"", inptr[-1]))
+					inptr--;
 			}
+
+			match->um_eo = (inptr - in);
 		}
 	}
 
-	return '\0';
+	g_match_info_free (match_info);
+	g_regex_unref (regex);
+
+	return success;
 }
 
 gboolean
@@ -340,25 +367,7 @@ camel_url_file_end (const gchar *in,
                     const gchar *inend,
                     CamelUrlMatch *match)
 {
-	register const gchar *inptr = pos;
-	gchar close_brace;
-
-	inptr += strlen (match->pattern);
-
-	if (*inptr == '/')
-		inptr++;
-
-	close_brace = url_stop_at_brace (in, match->um_so, NULL);
-
-	while (inptr < inend && is_urlsafe (*inptr) && *inptr != close_brace)
-		inptr++;
-
-	if (inptr == pos)
-		return FALSE;
-
-	match->um_eo = (inptr - in);
-
-	return TRUE;
+	return camel_url_pattern_end (in, pos, inend, match, FILE_PATTERN, FALSE);
 }
 
 gboolean
@@ -384,131 +393,7 @@ camel_url_web_end (const gchar *in,
                    const gchar *inend,
                    CamelUrlMatch *match)
 {
-	register const gchar *inptr = pos;
-	gboolean passwd = FALSE;
-	const gchar *save;
-	gchar close_brace, open_brace;
-	gint brace_stack = 0;
-	gint port;
-
-	inptr += strlen (match->pattern);
-
-	close_brace = url_stop_at_brace (in, match->um_so, &open_brace);
-
-	/* find the end of the domain */
-	if (is_atom (*inptr)) {
-		/* might be a domain or user@domain */
-		save = inptr;
-		while (inptr < inend) {
-			if (!is_atom (*inptr))
-				break;
-
-			inptr++;
-
-			while (inptr < inend && is_atom (*inptr))
-				inptr++;
-
-			if ((inptr + 1) < inend && *inptr == '.' && (is_atom (inptr[1]) || inptr[1] == '/'))
-					inptr++;
-		}
-
-		if (*inptr != '@')
-			inptr = save;
-		else
-			inptr++;
-
-		goto domain;
-	} else if (is_domain (*inptr)) {
-	domain:
-		while (inptr < inend) {
-			if (!is_domain (*inptr))
-				break;
-
-			inptr++;
-
-			while (inptr < inend && is_domain (*inptr))
-				inptr++;
-
-			if ((inptr + 1) < inend && *inptr == '.' && (is_domain (inptr[1]) || inptr[1] == '/'))
-					inptr++;
-		}
-	} else {
-		return FALSE;
-	}
-
-	if (inptr < inend) {
-		switch (*inptr) {
-		case ':': /* we either have a port or a password */
-			inptr++;
-
-			if (is_digit (*inptr) || passwd) {
-				port = (*inptr++ - '0');
-
-				while (inptr < inend && is_digit (*inptr) && port < 65536)
-					port = (port * 10) + (*inptr++ - '0');
-
-				if (!passwd && (port >= 65536 || *inptr == '@')) {
-					if (inptr < inend) {
-						/* this must be a password? */
-						goto passwd;
-					}
-
-					inptr--;
-				}
-			} else {
-			passwd:
-				passwd = TRUE;
-				save = inptr;
-
-				while (inptr < inend && is_atom (*inptr))
-					inptr++;
-
-				if ((inptr + 2) < inend) {
-					if (*inptr == '@') {
-						inptr++;
-						if (is_domain (*inptr))
-							goto domain;
-					}
-
-					return FALSE;
-				}
-			}
-
-			if (inptr >= inend || *inptr != '/')
-				break;
-
-			/* we have a '/' so there could be a path - fall through */
-		case '/': /* we've detected a path component to our url */
-			inptr++;
-			/* coverity[fallthrough] */
-		case '?':
-			while (inptr < inend && is_urlsafe (*inptr)) {
-				if (*inptr == open_brace) {
-					brace_stack++;
-				} else if (*inptr == close_brace) {
-					brace_stack--;
-					if (brace_stack == -1)
-						break;
-				}
-				inptr++;
-			}
-
-			break;
-		default:
-			break;
-		}
-	}
-
-	/* urls are extremely unlikely to end with any
-	 * punctuation, so strip any trailing
-	 * punctuation off. Also strip off any closing
-	 * double-quotes. */
-	while (inptr > pos && strchr (",.:;?!-|}])\"", inptr[-1]))
-		inptr--;
-
-	match->um_eo = (inptr - in);
-
-	return TRUE;
+	return camel_url_pattern_end (in, pos, inend, match, URL_PATTERN, TRUE);
 }
 
 #ifdef BUILD_TABLE
