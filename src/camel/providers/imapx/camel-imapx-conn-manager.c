@@ -2063,9 +2063,12 @@ imapx_conn_manager_get_message_matches (CamelIMAPXJob *job,
 	g_return_val_if_fail (job != NULL, FALSE);
 	g_return_val_if_fail (other_job != NULL, FALSE);
 
-	if (camel_imapx_job_get_kind (job) != CAMEL_IMAPX_JOB_GET_MESSAGE ||
-	    camel_imapx_job_get_kind (job) != camel_imapx_job_get_kind (other_job))
+	if ((camel_imapx_job_get_kind (job) != CAMEL_IMAPX_JOB_GET_MESSAGE &&
+	    camel_imapx_job_get_kind (job) != CAMEL_IMAPX_JOB_SYNC_MESSAGE) ||
+	    (camel_imapx_job_get_kind (other_job) != CAMEL_IMAPX_JOB_GET_MESSAGE &&
+	    camel_imapx_job_get_kind (other_job) != CAMEL_IMAPX_JOB_SYNC_MESSAGE)) {
 		return FALSE;
+	}
 
 	job_data = camel_imapx_job_get_user_data (job);
 	other_job_data = camel_imapx_job_get_user_data (other_job);
@@ -2073,7 +2076,7 @@ imapx_conn_manager_get_message_matches (CamelIMAPXJob *job,
 	if (!job_data || !other_job_data)
 		return FALSE;
 
-	return g_strcmp0 (job_data->message_uid, other_job_data->message_uid) == 0;
+	return job_data->summary == other_job_data->summary && g_strcmp0 (job_data->message_uid, other_job_data->message_uid) == 0;
 }
 
 static void
@@ -2115,7 +2118,7 @@ camel_imapx_conn_manager_get_message_sync (CamelIMAPXConnManager *conn_man,
 
 	camel_imapx_job_set_user_data (job, job_data, get_message_job_data_free);
 
-	if (camel_imapx_conn_manager_run_job_sync (conn_man, job, NULL, cancellable, error) &&
+	if (camel_imapx_conn_manager_run_job_sync (conn_man, job, imapx_conn_manager_get_message_matches, cancellable, error) &&
 	    camel_imapx_job_take_result_data (job, &result_data)) {
 		result = result_data;
 	} else {
@@ -2418,7 +2421,7 @@ camel_imapx_conn_manager_sync_message_sync (CamelIMAPXConnManager *conn_man,
 
 	camel_imapx_job_set_user_data (job, job_data, get_message_job_data_free);
 
-	success = camel_imapx_conn_manager_run_job_sync (conn_man, job, NULL, cancellable, error);
+	success = camel_imapx_conn_manager_run_job_sync (conn_man, job, imapx_conn_manager_get_message_matches, cancellable, error);
 
 	camel_imapx_job_unref (job);
 

@@ -4030,6 +4030,17 @@ camel_imapx_server_get_message_sync (CamelIMAPXServer *is,
 	   or finished with an error. */
 	camel_data_cache_remove (message_cache, "tmp", message_uid, NULL);
 
+	/* Check whether the message is already downloaded by another job */
+	cache_stream = camel_data_cache_get (message_cache, "cur", message_uid, NULL);
+	if (cache_stream) {
+		result_stream = camel_stream_new (cache_stream);
+
+		g_clear_object (&cache_stream);
+		g_clear_object (&mi);
+
+		return result_stream;
+	}
+
 	cache_stream = camel_data_cache_add (message_cache, "tmp", message_uid, error);
 	if (cache_stream == NULL) {
 		g_clear_object (&mi);
