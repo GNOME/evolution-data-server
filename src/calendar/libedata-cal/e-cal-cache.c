@@ -2872,7 +2872,7 @@ e_cal_cache_search_ids (ECalCache *cal_cache,
 	if (success) {
 		*out_ids = g_slist_reverse (*out_ids);
 	} else {
-		g_slist_free_full (*out_ids, g_object_unref);
+		g_slist_free_full (*out_ids, (GDestroyNotify) e_cal_component_free_id);
 		*out_ids = NULL;
 	}
 
