@@ -44,7 +44,7 @@
 
       Examples:
          Company:mail.company.com - enables 'Company' OAuth2 authentication for 'mail.company.com' host
-	 Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 authentication for any 'CalDAV' source, which reads data from 'caldav.companycaldav.com' host</_description>
+	 Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 authentication for any 'CalDAV' source, which reads data from 'caldav.company.com' host</_description>
     </key>
   </schema>
 </schemalist>
