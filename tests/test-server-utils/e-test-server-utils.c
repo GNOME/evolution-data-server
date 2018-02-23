@@ -257,16 +257,16 @@ setup_environment (void)
 		g_string_append_printf (libs_dir, EDS_TEST_TOP_BUILD_DIR x); \
 		} G_STMT_END
 
-	add_lib_path ("addressbook/libebook/.libs");
-	add_lib_path ("addressbook/libebook-contacts/.libs");
-	add_lib_path ("addressbook/libedata-book/.libs");
-	add_lib_path ("calendar/libecal/.libs");
-	add_lib_path ("calendar/libedata-cal/.libs");
-	add_lib_path ("camel/.libs");
-	add_lib_path ("libebackend/.libs");
-	add_lib_path ("libedataserver/.libs");
-	add_lib_path ("libedataserverui/.libs");
-	add_lib_path ("private/.libs");
+	add_lib_path ("addressbook/libebook");
+	add_lib_path ("addressbook/libebook-contacts");
+	add_lib_path ("addressbook/libedata-book");
+	add_lib_path ("calendar/libecal");
+	add_lib_path ("calendar/libedata-cal");
+	add_lib_path ("camel");
+	add_lib_path ("libebackend");
+	add_lib_path ("libedataserver");
+	add_lib_path ("libedataserverui");
+	add_lib_path ("private");
 
 	#undef add_lib_path
 
