@@ -463,7 +463,7 @@ endif(ENABLE_UOA)
 # Check if backend per process should be enabled
 # **********************************************
 
-add_printable_option(ENABLE_BACKEND_PER_PROCESS "Enable backend per process support" ON)
+add_printable_option(ENABLE_BACKEND_PER_PROCESS "Enable backend per process support" OFF)
 
 # ***********************************
 # Check for libsecret and gcr-base

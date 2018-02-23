@@ -286,14 +286,9 @@ data_factory_subprocess_data_free (DataFactorySubprocessData *sd)
 	}
 }
 
-static gchar *
-data_factory_dup_subprocess_helper_hash_key (gint override_backend_per_process,
-					     const gchar *factory_name,
-					     const gchar *extension_name,
-					     const gchar *uid,
-					     gboolean backend_factory_share_subprocess)
+static gboolean
+data_factory_use_backend_per_process (gint override_backend_per_process)
 {
-	gchar *helper_hash_key;
 	gboolean backend_per_process;
 
 	if (override_backend_per_process == 0 || override_backend_per_process == 1) {
@@ -306,7 +301,19 @@ data_factory_dup_subprocess_helper_hash_key (gint override_backend_per_process,
 		#endif
 	}
 
-	if (backend_per_process) {
+	return backend_per_process;
+}
+
+static gchar *
+data_factory_dup_subprocess_helper_hash_key (gint override_backend_per_process,
+					     const gchar *factory_name,
+					     const gchar *extension_name,
+					     const gchar *uid,
+					     gboolean backend_factory_share_subprocess)
+{
+	gchar *helper_hash_key;
+
+	if (data_factory_use_backend_per_process (override_backend_per_process)) {
 		helper_hash_key = backend_factory_share_subprocess ?
 			g_strdup (factory_name) : g_strdup_printf ("%s:%s:%s", factory_name, extension_name, uid);
 	} else {
@@ -1268,6 +1275,8 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	g_free (backend_name);
 
 	if (backend_factory) {
+		gboolean backend_per_process;
+
 		type_name = G_OBJECT_TYPE_NAME (backend_factory);
 
 		class = E_DATA_FACTORY_GET_CLASS (data_factory);
@@ -1333,11 +1342,13 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		g_hash_table_insert (priv->subprocess_watched_ids, g_strdup (sd->bus_name), GUINT_TO_POINTER (watched_id));
 		g_mutex_unlock (&priv->subprocess_watched_ids_lock);
 
+		backend_per_process = data_factory_use_backend_per_process (e_data_factory_get_backend_per_process (data_factory));
+
 		subprocess = g_subprocess_new (
 			G_SUBPROCESS_FLAGS_NONE,
 			&error,
 			subprocess_path,
-			"--factory", sd->factory_name,
+			"--factory", backend_per_process ? sd->factory_name : "all",
 			"--bus-name", sd->bus_name,
 			"--own-path", sd->path,
 			NULL);
