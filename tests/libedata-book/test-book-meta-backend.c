@@ -1695,6 +1695,7 @@ main (gint argc,
 	g_assert (g_setenv ("LC_ALL", "en_US.UTF-8", TRUE));
 	setlocale (LC_ALL, "");
 
+	e_test_server_utils_prepare_run (0);
 	e_test_server_utils_setup (&tsfixture, &tsclosure);
 
 	glob_registry = tsfixture.registry;
@@ -1724,6 +1725,7 @@ main (gint argc,
 	res = g_test_run ();
 
 	e_test_server_utils_teardown (&tsfixture, &tsclosure);
+	e_test_server_utils_finish_run ();
 
 	return res;
 }

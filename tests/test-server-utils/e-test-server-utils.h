@@ -162,5 +162,7 @@ void e_test_server_utils_teardown (ETestServerFixture *fixture,
 
 gint e_test_server_utils_run      (void);
 gint e_test_server_utils_run_full (ETestServerFlags flags);
+void e_test_server_utils_prepare_run (ETestServerFlags flags);
+void e_test_server_utils_finish_run (void);
 
 #endif /* E_TEST_UTILS_H */

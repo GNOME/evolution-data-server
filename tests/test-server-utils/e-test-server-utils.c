@@ -741,11 +741,9 @@ e_test_server_utils_run (void)
 	return e_test_server_utils_run_full (0);
 }
 
-gint
-e_test_server_utils_run_full (ETestServerFlags flags)
+void
+e_test_server_utils_prepare_run (ETestServerFlags flags)
 {
-	gint tests_ret;
-
 	/* Cleanup work directory */
 	if (!test_installed_services ()) {
 
@@ -767,10 +765,11 @@ e_test_server_utils_run_full (ETestServerFlags flags)
 		g_test_dbus_up (global_test_dbus);
 	}
 #endif
+}
 
-	/* Run the GTest suite */
-	tests_ret = g_test_run ();
-
+void
+e_test_server_utils_finish_run (void)
+{
 #if GLOBAL_DBUS_DAEMON
 	if (!test_installed_services ()) {
 		/* Teardown the D-Bus Daemon
@@ -784,6 +783,19 @@ e_test_server_utils_run_full (ETestServerFlags flags)
 		global_test_dbus = NULL;
 	}
 #endif
+}
+
+gint
+e_test_server_utils_run_full (ETestServerFlags flags)
+{
+	gint tests_ret;
+
+	e_test_server_utils_prepare_run (flags);
+
+	/* Run the GTest suite */
+	tests_ret = g_test_run ();
+
+	e_test_server_utils_finish_run ();
 
 	return tests_ret;
 }

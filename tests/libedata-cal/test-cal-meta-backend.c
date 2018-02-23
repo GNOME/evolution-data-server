@@ -2704,6 +2704,7 @@ main (gint argc,
 	icaltzutil_set_exact_vtimezones_support (0);
 #endif
 
+	e_test_server_utils_prepare_run (0);
 	e_test_server_utils_setup (&tsfixture, &tsclosure);
 
 	glob_registry = tsfixture.registry;
@@ -2743,6 +2744,7 @@ main (gint argc,
 	res = g_test_run ();
 
 	e_test_server_utils_teardown (&tsfixture, &tsclosure);
+	e_test_server_utils_finish_run ();
 
 	return res;
 }
