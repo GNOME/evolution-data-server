@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-05 20:41+0000\n"
-"PO-Revision-Date: 2018-02-11 09:24+0100\n"
+"POT-Creation-Date: 2018-02-23 13:33+0000\n"
+"PO-Revision-Date: 2018-02-24 06:42+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -131,9 +131,9 @@ msgstr "No si è rivâts a cambiâ non di “%s” a “%s” ae base di dâts v
 #: ../src/calendar/libecal/e-cal-client.c:6839
 #: ../src/calendar/libecal/e-cal-client.c:7061
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1742
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2991
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3001
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3039
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3051
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
@@ -1732,18 +1732,18 @@ msgid "Undefined"
 msgstr "No definide"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1077
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1390
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1517
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1566
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1083
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1396
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1523
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1572
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s” si spiete un argoment"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:686
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1397
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1405
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1403
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1411
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s” si spiete che il prin argoment al sedi une stringhe"
@@ -1757,10 +1757,10 @@ msgstr "“%s” si spiete doi o trê argoments"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:836
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1084
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1466
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1524
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1573
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1090
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1472
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s” si spiete che il prin argoment al sedi un time_t"
@@ -1786,7 +1786,7 @@ msgstr "“%s” si spiete nissun o doi argoments"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1459
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1465
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s” si spiete doi argoments"
@@ -1797,7 +1797,7 @@ msgstr "“%s” si spiete doi argoments"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:793
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1351
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1357
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s” no si spiete nissun argoment"
@@ -1831,13 +1831,13 @@ msgstr ""
 "“%s” si spiete che ducj i argoments a sedin stringhis o che un e dome un "
 "argoment al sedi un boolean fals (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1420
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr ""
 "“%s” si spiete che il prin argoment al sedi une stringhe date/ore ISO 8601"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1481
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s” si spiete che il secont argoment al sedi un intîr"
@@ -2099,12 +2099,12 @@ msgstr "Argoments no valits par (system-flag)"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Argoments no valits par (user-tag)"
 
-#: ../src/camel/camel-filter-search.c:1229
+#: ../src/camel/camel-filter-search.c:1232
 msgid "Invalid arguments to (message-location)"
 msgstr "Argoments no valits par (message-location)"
 
-#: ../src/camel/camel-filter-search.c:1328
-#: ../src/camel/camel-filter-search.c:1339
+#: ../src/camel/camel-filter-search.c:1331
+#: ../src/camel/camel-filter-search.c:1342
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Erôr tal eseguî la ricercje tai filtris: %s: %s"
@@ -2552,7 +2552,7 @@ msgstr "Ricercje dal host “%s” falide: %s"
 #: ../src/camel/camel-network-service.c:1127
 #, c-format
 msgid "Checking reach-ability of account “%s”"
-msgstr ""
+msgstr "Si prove la disponibilitât dal account “%s”"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
@@ -2913,7 +2913,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Regjistrât GType no valit pal protocol “%s”"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2940
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2978
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3275,13 +3275,13 @@ msgstr "Impussibil copiâ messaçs su la cartele “Scovacere”"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Impussibil copiâ messaçs su la cartele “Malvolude”"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:967
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:985
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "Si scugne lavorâ in rêt par completâ cheste operazion (%s)"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3073
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3111
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
@@ -3300,21 +3300,21 @@ msgstr "Si scugne lavorâ in rêt par completâ cheste operazion (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Si scugne lavorâ in rêt par completâ cheste operazion"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1602
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1698
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1620
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1716
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nissune cartele di destinazion specificade"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1629
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1647
 msgid "Unable to move junk messages"
 msgstr "Impussibil spostâ i messaçs malvolûts"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1732
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1750
 msgid "Unable to move deleted messages"
 msgstr "Impussibil spostâ i messaçs eliminâts"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1800
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1818
 msgid "Unable to move messages to Inbox"
 msgstr "Impussibil spostâ i messaçs su “In jentrade”"
 
@@ -3457,203 +3457,203 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Par lei e archiviâ pueste su servidôrs IMAP."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1098
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1116
 msgid "Error writing to cache stream"
 msgstr "Erôr tal scrivi sul flus cache"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2755
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2843
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3106
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2793
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2881
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3144
 msgid "Failed to get capabilities"
 msgstr "No si è rivâts a otignî lis funzionalitâts"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2774
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2812
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "No si è rivâts a conetisi in maniere sigure al servidôr IMAP %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2775
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTTLS no supuartâts"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2784
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2822
 msgid "Failed to issue STARTTLS"
 msgstr "Emission STARTTLS falide"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2832
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2870
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "No si è rivâts a conetisi in maniere sigure al servidôr IMAP %s: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2927
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2965
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "Il servidôr IMAP %s nol supuarte la autenticazion %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2958
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2996
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Impussibil autenticâ cence un non utent"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2967
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3005
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "Password di autenticazion no disponibile"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2975
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3013
 msgid "Failed to authenticate"
 msgstr "No si è rivâts a autenticâ"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3128
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3166
 msgid "Failed to issue NAMESPACE"
 msgstr "Emission NAMESPACE falide"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3146
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
 msgid "Failed to enable QResync"
 msgstr "No si è rivâts a abilitâ QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3178
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3216
 msgid "Failed to issue NOTIFY"
 msgstr "Emission NOTIFY falide"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3656
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3694
 msgid "Failed to select mailbox"
 msgstr "No si è rivâts a selezionâ la casele di pueste"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3797
 msgid "Cannot issue command, no stream available"
 msgstr "Impussibil emeti il comant, nissun flus disponibil"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4023
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Impussibil vê il messaç cul ID messaç %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4024
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4062
 msgid "No such message available."
 msgstr "Nissun messaç dal gjenar disponibil."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4086
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4125
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4110
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4135
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4174
 msgid "Error fetching message"
 msgstr "Erôr tal recuperâ il messaç"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4103
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4862
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4152
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error performing NOOP"
 msgstr "Erôr tal eseguî NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4118
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4167
 msgid "Failed to close the tmp stream"
 msgstr "No si è rivâts a sierâ il flus tmp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4149
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4198
 msgid "Failed to copy the tmp file"
 msgstr "No si è rivâts a copiâ il file tmp"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4385
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Error moving messages"
 msgstr "Erôr tal spostâ i messaçs"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4385
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Error copying messages"
 msgstr "Erôr tal copiâ i messaçs"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4655
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4676
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4704
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4725
 msgid "Cannot create spool file: "
 msgstr "Impussibil creâ il file code di pueste: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4762
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4811
 msgid "Error appending message"
 msgstr "Erôr tal zontâ il messaç"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5015
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Daûr a cirî messaçs modificâts in “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5019
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5068
 msgid "Error scanning changes"
 msgstr "Erôr tal analizâ lis modifichis"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5040
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5089
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr ""
 "Daûr a recuperâ lis informazions di sintesi pai gnûfs messaçs in “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5107
 msgid "Error fetching message info"
 msgstr "Erôr tal recuperâ lis informazion dal messaç"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5164
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5213
 msgid "Error running STATUS"
 msgstr "Erôr tal eseguî STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5710
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5740
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5775
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5789
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5824
 msgid "Error syncing changes"
 msgstr "Erôr tal sincronizâ lis modifichis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5913
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5962
 msgid "Error expunging message"
 msgstr "Erôr tal netâ il messaç"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5985
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
 msgid "Error fetching folders"
 msgstr "Erôr tal recuperâ lis cartelis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5996
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
 msgid "Error fetching subscribed folders"
 msgstr "Erôr tal recuperâ lis cartelis sotscrivudis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6018
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6067
 msgid "Error creating folder"
 msgstr "Erôr tal creâ la cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6074
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6123
 msgid "Error deleting folder"
 msgstr "Erôr tal eliminâ la cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6120
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6169
 msgid "Error renaming folder"
 msgstr "Erôr tal cambiâ non ae cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6152
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6201
 msgid "Error subscribing to folder"
 msgstr "Erôr tal sotscrivi ae cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6188
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
 msgid "Error unsubscribing from folder"
 msgstr "Erôr tal gjavâ la sotscrizion de cartele"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6228
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6277
 msgid "IMAP server does not support quotas"
 msgstr "Il servidôr IMAP nol supuarte lis cuotis"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6240
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6289
 msgid "Error retrieving quota information"
 msgstr "Erôr tal recuperâ lis informazions su la cuote"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6303
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6352
 msgid "Search failed"
 msgstr "Ricercje falide"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6421
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6470
 msgid "Error running IDLE"
 msgstr "Erôr tal eseguî IDLE"
 
@@ -5026,7 +5026,7 @@ msgstr "Azion domandade no eseguide: non de casele di pueste no permetût"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1110
 msgid "Start mail input; end with <CRLF>.<CRLF>"
-msgstr ""
+msgstr "Tache a inserî la pueste; finî cun <CRLF>.<CRLF>"
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:1112
 msgid "Transaction failed"
@@ -5222,8 +5222,23 @@ msgid ""
 "Examples: Company:mail.company.com - enables 'Company' OAuth2 authentication "
 "for 'mail.company.com' host Company-CalDAV:caldav.company.com - enables "
 "'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
-"from 'caldav.companycaldav.com' host"
+"from 'caldav.company.com' host"
 msgstr ""
+"I utents a puedin estindi la liste dai protocoi supuartâts e dai nons host "
+"pai servizis OAuth2 definîts, a chei codificâts in maniere fisse. Ogni rie e "
+"pues jessi de forme: nonservizi[-protocol]:nonhost1,nonhost2,... dulà che "
+"'nonservizi' al è il non dal servizi atuâl; il '-protocol' al è opzionâl e, "
+"se scrit, il servizi al pues jessi doprât dome se ducj i doi, 'protocol' e "
+"'nonhostX', a corispuindin; il 'nonhostX' al è il non host atuâl cun cui "
+"comparâ, indiferent se maiuscul o minuscul. Ogni rie e pues contignî plui "
+"valôrs separâts di virgule. Lì a puedin jessi furnidis plui riis par un "
+"servizi OAuth2. Viôt che il URL atuâl, dulà che il token al è domandât e "
+"inzornât, nol pues jessi cambiât achì, il nonhost al è par permeti altris "
+"servidôrs, dulà che il servizi OAuth2 al pues jessi doprât. Esemplis: "
+"Compagnie:pueste.compagnie.com - al abilite la autenticazion OAuth2 di "
+"'Compagnie' pal host 'pueste.compagnie.com' Company-CalDAV:caldav.company."
+"com - al abilite la autenticazion OAuth2 di 'Company' par ogni sorzint "
+"'CalDAV' che e lei dâts dal host 'caldav.company.com'"
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5295,22 +5310,23 @@ msgstr "Memorie finide"
 #: ../src/libebackend/e-cache.c:943
 #, c-format
 msgid "Can not make parent directory: %s"
-msgstr ""
+msgstr "Impussibil creâ la cartele gjenitôr: %s"
 
-#: ../src/libebackend/e-collection-backend.c:1002
+#: ../src/libebackend/e-collection-backend.c:1017
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s nol supuarte la creazion di risorsis rimotis"
 
-#: ../src/libebackend/e-collection-backend.c:1061
+#: ../src/libebackend/e-collection-backend.c:1076
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s nol supuarte la eliminazion di risorsis rimotis"
 
-#: ../src/libebackend/e-data-factory.c:1348
+#: ../src/libebackend/e-data-factory.c:1359
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr ""
+"Impussibil cjatâ il backend di fabriche pe sorzint “%s” ni pe estension “%s”."
 
 #: ../src/libebackend/e-server-side-source.c:142
 #, c-format
@@ -5322,7 +5338,7 @@ msgid "Failed to lookup credentials: "
 msgstr "No si è rivâts a cirî lis credenziâls: "
 
 #: ../src/libebackend/e-server-side-source.c:1395
-#: ../src/libedataserver/e-source.c:1596
+#: ../src/libedataserver/e-source.c:1597
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "La sorzint dâts “%s” no supuarte la creazion di risorsis rimotis"
@@ -5335,7 +5351,7 @@ msgstr ""
 "La sorzint dâts “%s” no à un backend di colezion par creâ la risorse rimote"
 
 #: ../src/libebackend/e-server-side-source.c:1437
-#: ../src/libedataserver/e-source.c:1709
+#: ../src/libedataserver/e-source.c:1710
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "La sorzint dâts “%s” no supuarte la eliminazion des risorsis rimotis"
@@ -5349,7 +5365,7 @@ msgstr ""
 "rimote"
 
 #: ../src/libebackend/e-server-side-source.c:1482
-#: ../src/libedataserver/e-source.c:1805
+#: ../src/libedataserver/e-source.c:1806
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5558,7 +5574,6 @@ msgstr ""
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -5583,17 +5598,17 @@ msgstr "Falît cun erôr HTTP %d: %s"
 msgid "Source file is missing a [%s] group"
 msgstr "Il file sorzint al mancje di un grup [%s]"
 
-#: ../src/libedataserver/e-source.c:1376
+#: ../src/libedataserver/e-source.c:1377
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "La sorzint dâts “%s” no si pues gjavâ"
 
-#: ../src/libedataserver/e-source.c:1499
+#: ../src/libedataserver/e-source.c:1500
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "La sorzint dâts “%s” no si pues scrivi"
 
-#: ../src/libedataserver/e-source.c:2195
+#: ../src/libedataserver/e-source.c:2196
 msgid "Unnamed"
 msgstr "Cence non"
 
@@ -5939,19 +5954,20 @@ msgstr ""
 
 #: ../src/libedataserver/e-webdav-session.c:4801
 msgid "Cannot store property-based Access Control Entry."
-msgstr ""
+msgstr "Impussibil archiviâ la vôs dal control di acès basade su proprietât."
 
 #: ../src/libedataserver/e-webdav-session.c:4808
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
-msgstr ""
+msgstr "La vôs dal control di acès e pues jessi dome Grant o Deny, ma no None."
 
 #: ../src/libedataserver/e-webdav-session.c:4816
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr ""
+"La vôs dal control di acès e pues jessi dome Grant o Deny, ma no ducj i doi."
 
 #: ../src/libedataserver/e-webdav-session.c:4875
 msgid "Access Control Entry privilege cannot be NULL."
-msgstr ""
+msgstr "Il privileç de vôs di control dal acès nol pues jessi NULL."
 
 #: ../src/libedataserverui/e-credentials-prompter.c:258
 #: ../src/libedataserverui/e-credentials-prompter.c:1576
@@ -6472,6 +6488,9 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
+"Passe parsore ae opzion di backend par procès stabilide in fase di "
+"compilazion; dopre 1 par abilitâ, 0 par disabilitâ, cualsise altri valôr al "
+"dopre la opzion stabilide in fase di compilazion"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
