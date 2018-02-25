@@ -5,18 +5,18 @@
 # Baris Cicek <baris@teamforce.name.tr>, 2004, 2005, 2008, 2009.
 # Necdet Yücel <necdetyucel@gmail.com>, 2015.
 # İşbaran Akçayır <isbaran@gmail.com>, 2015.
-# Muhammet Kara <muhammetk@gmail.com>, 2011, 2014, 2015, 2017.
 # Hanifi Çakmak <hanifi0507@gmail.com>, 2017.
 # Emin Tufan Çetin <etcetin@gmail.com>, 2017, 2018.
+# Muhammet Kara <muhammetk@gmail.com>, 2011, 2014, 2015, 2017, 2018.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD.tr\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-23 13:33+0000\n"
-"PO-Revision-Date: 2018-02-25 17:36+0300\n"
-"Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2018-02-25 15:51+0000\n"
+"PO-Revision-Date: 2018-02-25 18:53+0300\n"
+"Last-Translator: Muhammet Kara <muhammetk@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -2862,7 +2862,6 @@ msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr "%s hizmetiyle POP Before SMTP yetkiledirmesi denendi"
 
 #: ../src/camel/camel-sasl-xoauth2.c:26
-#| msgid "Author"
 msgid "OAuth2"
 msgstr "OAuth2"
 
@@ -5175,7 +5174,6 @@ msgstr ""
 "REALNAME ve HOST değişkenlerinden sonra denetlenir."
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
-#, fuzzy
 msgid "A list of hints for OAuth2 services"
 msgstr "OAuth2 hizmetleri için ipuçları listesi"
 
@@ -5508,30 +5506,25 @@ msgstr "Zaman aşımı gerçekleşti"
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "“%s” (%s) kaynağı, “%s” OAuth2 hizmeti için geçerli değil"
 
 #: ../src/libedataserver/e-oauth2-service.c:1223
-#| msgid "Google secret not found"
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 gizi bulunamadı"
 
 #: ../src/libedataserver/e-oauth2-service.c:1411
 #, c-format
-#| msgid "Unexpected OK response from IMAP server: %s"
 msgid "Received incorrect response from server “%s”."
 msgstr "“%s” sunucusundan geçersiz yanıt alındı."
 
 #: ../src/libedataserver/e-oauth2-service.c:1420
-#| msgid "Failed to get access token from refresh_token server response"
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr "Erişim jetonu yenilenemedi. Lütfen sunucuya yeniden giriş yapın."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "“%s” (%s) kaynağı geçerli bir OAuth2 kaynağı değil"
 
@@ -5543,7 +5536,6 @@ msgstr "Erişim jetonunun süresi dolmuş ve yenilenemedi. Lütfen "
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -5954,7 +5946,6 @@ msgstr "“%s” kaynağı kimlik bilgilerinin sorulmasını desteklemiyor"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
-#| msgid "Failed to obtain an access token for “%s”: "
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "“%s” adresinden erişim jetonu alınamadı: %s"
 
@@ -5966,7 +5957,6 @@ msgstr "Erişim jetoni isteniyor, lütfen bekleyin..."
 #. thus it can form a string like "Google Address Book authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
 #, c-format
-#| msgid "Address book authentication request"
 msgid "%s Address Book authentication request"
 msgstr "%s Adres defteri yetkilendirme isteği"
 
@@ -5974,7 +5964,6 @@ msgstr "%s Adres defteri yetkilendirme isteği"
 #. thus it can form a string like "Google Calendar authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
 #, c-format
-#| msgid "Calendar authentication request"
 msgid "%s Calendar authentication request"
 msgstr "%s Takvim yetkilendirme isteği"
 
@@ -5982,7 +5971,6 @@ msgstr "%s Takvim yetkilendirme isteği"
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
 #, c-format
-#| msgid "Google Memo List authentication request"
 msgid "%s Memo List authentication request"
 msgstr "%s Not Listesi yetkilendirme isteği"
 
@@ -5990,7 +5978,6 @@ msgstr "%s Not Listesi yetkilendirme isteği"
 #. thus it can form a string like "Google Task List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
 #, c-format
-#| msgid "Google Task List authentication request"
 msgid "%s Task List authentication request"
 msgstr "%s Görev Listesi yetkilendirme isteği"
 
@@ -5998,7 +5985,6 @@ msgstr "%s Görev Listesi yetkilendirme isteği"
 #. thus it can form a string like "Google Mail authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
 #, c-format
-#| msgid "Mail authentication request"
 msgid "%s Mail authentication request"
 msgstr "%s E-posta yetkilendirme isteği"
 
@@ -6007,7 +5993,6 @@ msgstr "%s E-posta yetkilendirme isteği"
 #. thus it can form a string like "Google account authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
 #, c-format
-#| msgid "Google account authentication request"
 msgid "%s account authentication request"
 msgstr "%s hesabı yetkilendirme isteği"
 
@@ -6016,9 +6001,6 @@ msgstr "%s hesabı yetkilendirme isteği"
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
@@ -6031,9 +6013,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
@@ -6046,9 +6025,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
@@ -6061,9 +6037,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
@@ -6076,9 +6049,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
@@ -6091,9 +6061,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
@@ -6106,9 +6073,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
@@ -6481,12 +6445,11 @@ msgstr "En az bir istemci bağlanana kadar çalışmaya devam et"
 
 #: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
 #: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
-#, fuzzy
 msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
-"Süreç başı derleme zamanı arkayüzü seçeneğinin üstüne yazar; etkinleştirmek "
+"Süreç başı derleme zamanı arkayüzü seçeneğini geçersiz kılar; etkinleştirmek "
 "için 1, devre dışı bırakmak için 0 kullanın, diğer her değer derleme zamanı "
 "seçeneğini kullandırır"
 
