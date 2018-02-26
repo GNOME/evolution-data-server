@@ -4,7 +4,7 @@
 # ChiDeok Hwang <hwang@mizi.co.kr>, 2001.
 # Young-Ho Cha <ganadist@mizi.com>, 2000, 2002.
 # Seong-ho Cho <darkcircle.0426@gmail.com>, 2012.
-# Changwoo Ryu <cwryu@debian.org>, 2004-2017.
+# Changwoo Ryu <cwryu@debian.org>, 2004-2018.
 #
 # 주의:
 # - 기술적인 용어가 많습니다. 무슨 의미인지 확실히 파악하고 번역하시기 바랍니다.
@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2017-08-07 06:43+0000\n"
-"PO-Revision-Date: 2017-08-29 01:14+0900\n"
+"POT-Creation-Date: 2018-02-23 13:33+0000\n"
+"PO-Revision-Date: 2018-02-26 01:15+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr@googlegroups.com>\n"
 "Language: ko\n"
@@ -61,7 +61,7 @@ msgid "Loading..."
 msgstr "읽어들이는 중입니다..."
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:993
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4388
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4444
 msgid "Searching..."
 msgstr "찾는 중입니다..."
 
@@ -92,7 +92,7 @@ msgid "Invalid Query “%s”"
 msgstr "잘못된 질의: “%s”"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:1976
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1998
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2015
 msgid "Requested to delete an unrelated cursor"
 msgstr "무관한 커서의 삭제를 요청했습니다"
 
@@ -102,9 +102,9 @@ msgid "Failed to rename old database from “%s” to “%s”: %s"
 msgstr "과거 데이터베이스의 이름을 “%s”에서 “%s”(으)로 바꿀 수 없습니다: %s"
 
 #: ../src/addressbook/backends/file/e-book-backend-file-migrate-bdb.c:148
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1165
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4278
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:233
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1159
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4334
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:239
 #: ../src/addressbook/libebook-contacts/e-book-contacts-types.c:49
 #: ../src/addressbook/libebook-contacts/e-phone-number.c:54
 #: ../src/addressbook/libebook/e-book.c:1079
@@ -119,51 +119,52 @@ msgstr "과거 데이터베이스의 이름을 “%s”에서 “%s”(으)로 �
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:201
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:200
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
-#: ../src/calendar/backends/http/e-cal-backend-http.c:199
+#: ../src/calendar/backends/http/e-cal-backend-http.c:204
 #: ../src/calendar/libecal/e-cal.c:2334
 #: ../src/calendar/libecal/e-cal-client.c:277
-#: ../src/calendar/libecal/e-cal-client.c:3518
-#: ../src/calendar/libecal/e-cal-client.c:3691
-#: ../src/calendar/libecal/e-cal-client.c:3955
-#: ../src/calendar/libecal/e-cal-client.c:4196
-#: ../src/calendar/libecal/e-cal-client.c:4386
-#: ../src/calendar/libecal/e-cal-client.c:4579
-#: ../src/calendar/libecal/e-cal-client.c:4788
-#: ../src/calendar/libecal/e-cal-client.c:4957
-#: ../src/calendar/libecal/e-cal-client.c:5160
-#: ../src/calendar/libecal/e-cal-client.c:5310
-#: ../src/calendar/libecal/e-cal-client.c:5504
-#: ../src/calendar/libecal/e-cal-client.c:5657
-#: ../src/calendar/libecal/e-cal-client.c:5874
-#: ../src/calendar/libecal/e-cal-client.c:6028
-#: ../src/calendar/libecal/e-cal-client.c:6254
-#: ../src/calendar/libecal/e-cal-client.c:6450
-#: ../src/calendar/libecal/e-cal-client.c:6813
-#: ../src/calendar/libecal/e-cal-client.c:7035
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1740
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3050
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3060
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3072
+#: ../src/calendar/libecal/e-cal-client.c:3544
+#: ../src/calendar/libecal/e-cal-client.c:3717
+#: ../src/calendar/libecal/e-cal-client.c:3981
+#: ../src/calendar/libecal/e-cal-client.c:4222
+#: ../src/calendar/libecal/e-cal-client.c:4412
+#: ../src/calendar/libecal/e-cal-client.c:4605
+#: ../src/calendar/libecal/e-cal-client.c:4814
+#: ../src/calendar/libecal/e-cal-client.c:4983
+#: ../src/calendar/libecal/e-cal-client.c:5186
+#: ../src/calendar/libecal/e-cal-client.c:5336
+#: ../src/calendar/libecal/e-cal-client.c:5530
+#: ../src/calendar/libecal/e-cal-client.c:5683
+#: ../src/calendar/libecal/e-cal-client.c:5900
+#: ../src/calendar/libecal/e-cal-client.c:6054
+#: ../src/calendar/libecal/e-cal-client.c:6280
+#: ../src/calendar/libecal/e-cal-client.c:6476
+#: ../src/calendar/libecal/e-cal-client.c:6839
+#: ../src/calendar/libecal/e-cal-client.c:7061
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1742
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3039
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3051
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
-#: ../src/libebackend/e-server-side-source.c:498
+#: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
-#: ../src/libedataserver/e-soup-session.c:1062
+#: ../src/libedataserver/e-soup-session.c:1119
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:204
 #: ../src/tools/list-sources/list-sources.c:429
 msgid "Unknown error"
 msgstr "알 수 없는 오류가 발생했습니다"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:922
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:928
+#: ../src/addressbook/backends/google/e-book-backend-google.c:924
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1005
 msgid "Object to save is not a valid vCard"
 msgstr "저장할 오브젝트가 올바른 vCard가 아닙니다"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:974
+#: ../src/addressbook/backends/google/e-book-backend-google.c:976
 msgid "Failed to create contact from returned server data"
 msgstr "반환된 서버 데이터에서 연락처를 만드는데 실패했습니다"
 
-#: ../src/addressbook/backends/google/e-book-backend-google.c:990
+#: ../src/addressbook/backends/google/e-book-backend-google.c:992
 msgid "Server returned contact without UID"
 msgstr "서버에서 UID 없는 연락처를 반환했습니다"
 
@@ -197,86 +198,87 @@ msgstr "직장 동료"
 msgid "Not connected"
 msgstr "연결되지 않았습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:891
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:881
 msgid "Failed to bind using either v3 or v2 binds"
 msgstr "v3 또는 v2 bind를 사용한 바인딩에 실패했습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1015
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1005
 msgid "Reconnecting to LDAP server..."
 msgstr "LDAP 서버에 다시 연결하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1146
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1140
 msgid "Invalid DN syntax"
 msgstr "DN 문법이 잘못되었습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1162
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4277
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1156
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4333
 #, c-format
 msgid "LDAP error 0x%x (%s)"
 msgstr "LDAP 오류 0x%x (%s)"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1778
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2101
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:1772
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2114
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2127
 #, c-format
 msgid "%s: NULL returned from ldap_first_entry"
 msgstr "%s: ldap_first_entry에서 NULL을 리턴했습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2031
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2159
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2041
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2187
 #, c-format
 msgid "%s: Unhandled result type %d returned"
 msgstr "%s: 처리하지 못한 결과 형식 %d을(를) 반환했습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2292
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2419
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2331
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:2469
 #, c-format
 msgid "%s: Unhandled search result type %d returned"
 msgstr "%s: 처리하지 못한 검색 결과 형식 %d을(를) 반환했습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4226
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4270
 msgid "Receiving LDAP search results..."
 msgstr "LDAP 검색 결과를 받는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4410
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4470
 msgid "Error performing search"
 msgstr "검색을 수행하는 중 오류가 발생했습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4543
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:4610
 #, c-format
 msgid "Downloading contacts (%d)..."
 msgstr "연락처(%d)를 다운로드하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5030
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5101
 msgid "The backend does not support bulk additions"
 msgstr "백엔드가 대량 추가를 지원하지 않습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5113
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5184
 msgid "Adding contact to LDAP server..."
 msgstr "연락처를 LDAP 서버에 추가하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5166
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5241
 msgid "The backend does not support bulk modifications"
 msgstr "백엔드가 대량 수정을 지원하지 않습니다"
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5188
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5263
 msgid "Modifying contact from LDAP server..."
 msgstr "연락처를 LDAP 서버에서 수정하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5254
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5333
 msgid "Removing contact from LDAP server..."
 msgstr "연락처를 LDAP 서버에서 제거하는 중입니다..."
 
-#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5649
+#: ../src/addressbook/backends/ldap/e-book-backend-ldap.c:5751
 #, c-format
 msgid "Failed to get the DN for user “%s”"
 msgstr "“%s” 사용자의 DN을 가져오는데 실패했습니다"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:173
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:180
 #, c-format
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "주어진 “%s” URL이 WebDAV 주소록을 참조하지 않습니다"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:855
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:929
 msgid "Received object is not a valid vCard"
 msgstr "받은 오브젝트가 올바른 vCard가 아닙니다"
 
@@ -770,7 +772,7 @@ msgid "Birth Date"
 msgstr "생일"
 
 #: ../src/addressbook/libebook-contacts/e-contact.c:291
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:937
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:936
 msgid "Anniversary"
 msgstr "기념일"
 
@@ -1080,8 +1082,8 @@ msgstr "지원하지 않는 연락처 필드 “%d”번을 요약에서 지정�
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:3428
 #: ../src/addressbook/libedata-book/e-book-sqlite.c:5810
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1605
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2834
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1607
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2917
 #, c-format
 msgid "Invalid query: %s"
 msgstr "질의가 잘못되었습니다: %s"
@@ -1098,10 +1100,10 @@ msgstr "%s 데이터베이스를 열 수 없습니다: %s"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5082
 #: ../src/addressbook/libedata-book/e-book-cache.c:5134
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2250
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2313
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2484
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1314
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2333
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2396
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2567
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1331
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
@@ -1109,7 +1111,7 @@ msgid "Object “%s” not found"
 msgstr "“%s” 오브젝트를 찾을 수 없습니다"
 
 #: ../src/addressbook/libedata-book/e-book-cache.c:5194
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2375
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2458
 #, c-format
 msgid "Object with extra “%s” not found"
 msgstr "추가 데이터 “%s”인 오브젝트를 찾을 수 없습니다"
@@ -1123,21 +1125,21 @@ msgstr "커서를 사용하려면 최소한 하나의 정렬 항목을 지정해
 msgid "Cannot sort by a field that is not a string type"
 msgstr "문자열이 아닌 항목으로는 정렬할 수 없습니다"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1033
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1035
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1050
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1052
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "“%s” UID에 대해 미리 읽어들인 오브젝트가 잘못되었습니다"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1041
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1043
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1058
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1060
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "“%s” UID에 대해 받은 오브젝트가 잘못되었습니다"
 
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1868
-#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2222
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:2987
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:1885
+#: ../src/addressbook/libedata-book/e-book-meta-backend.c:2333
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3100
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "“%s” 캐시를 만드는데 실패했습니다:"
@@ -1365,20 +1367,20 @@ msgstr "올바르지 않은 로캘에 대해 사전 순서 인덱스를 지정�
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "주어진 “%s” URL이 CalDAV 달력을 참조하지 않습니다"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1485
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1579
 msgid "Failed to parse response data"
 msgstr "응답 데이터를 파싱하는데 실패했습니다"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:939
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:938
 msgid "Birthday"
 msgstr "생일"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:975
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:974
 #, c-format
 msgid "Birthday: %s"
 msgstr "생일: %s"
 
-#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1006
+#: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:1005
 #, c-format
 msgid "Anniversary: %s"
 msgstr "기념일: %s"
@@ -1392,21 +1394,21 @@ msgstr "달력 데이터를 저장할 수 없습니다. URI 형식이 틀렸습�
 msgid "Cannot save calendar data"
 msgstr "달력 데이터를 저장할 수 없습니다"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:130
+#: ../src/calendar/backends/http/e-cal-backend-http.c:135
 msgid "URI not set"
 msgstr "URI 설정하지 않았습니다"
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:198
+#: ../src/calendar/backends/http/e-cal-backend-http.c:203
 #, c-format
 msgid "Malformed URI “%s”: %s"
 msgstr "잘못 구성된 URI “%s”: %s\""
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:341
+#: ../src/calendar/backends/http/e-cal-backend-http.c:349
 #, c-format
 msgid "Bad file format."
 msgstr "파일 형식이 틀렸습니다."
 
-#: ../src/calendar/backends/http/e-cal-backend-http.c:349
+#: ../src/calendar/backends/http/e-cal-backend-http.c:358
 #, c-format
 msgid "Not a calendar."
 msgstr "달력이 아닙니다."
@@ -1539,7 +1541,7 @@ msgid "Authentication failed"
 msgstr "인증이 실패했습니다"
 
 #: ../src/calendar/libecal/e-cal.c:2330
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1126
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1124
 #: ../src/libedataserver/e-client.c:150
 msgid "Authentication required"
 msgstr "인증이 필요합니다"
@@ -1576,127 +1578,127 @@ msgstr "“%s” 달력 속성의 값을 바꿀 수 없습니다"
 msgid "Untitled appointment"
 msgstr "제목없는 약속"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4739
+#: ../src/calendar/libecal/e-cal-recur.c:4744
 msgid "1st"
 msgstr "1일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4740
+#: ../src/calendar/libecal/e-cal-recur.c:4745
 msgid "2nd"
 msgstr "2일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4741
+#: ../src/calendar/libecal/e-cal-recur.c:4746
 msgid "3rd"
 msgstr "3일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4742
+#: ../src/calendar/libecal/e-cal-recur.c:4747
 msgid "4th"
 msgstr "4일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4743
+#: ../src/calendar/libecal/e-cal-recur.c:4748
 msgid "5th"
 msgstr "5일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4744
+#: ../src/calendar/libecal/e-cal-recur.c:4749
 msgid "6th"
 msgstr "6일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4745
+#: ../src/calendar/libecal/e-cal-recur.c:4750
 msgid "7th"
 msgstr "7일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4746
+#: ../src/calendar/libecal/e-cal-recur.c:4751
 msgid "8th"
 msgstr "8일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4747
+#: ../src/calendar/libecal/e-cal-recur.c:4752
 msgid "9th"
 msgstr "9일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4748
+#: ../src/calendar/libecal/e-cal-recur.c:4753
 msgid "10th"
 msgstr "10일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4749
+#: ../src/calendar/libecal/e-cal-recur.c:4754
 msgid "11th"
 msgstr "11일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4750
+#: ../src/calendar/libecal/e-cal-recur.c:4755
 msgid "12th"
 msgstr "12일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4751
+#: ../src/calendar/libecal/e-cal-recur.c:4756
 msgid "13th"
 msgstr "13일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4752
+#: ../src/calendar/libecal/e-cal-recur.c:4757
 msgid "14th"
 msgstr "14일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4753
+#: ../src/calendar/libecal/e-cal-recur.c:4758
 msgid "15th"
 msgstr "15일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4754
+#: ../src/calendar/libecal/e-cal-recur.c:4759
 msgid "16th"
 msgstr "16일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4755
+#: ../src/calendar/libecal/e-cal-recur.c:4760
 msgid "17th"
 msgstr "17일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4756
+#: ../src/calendar/libecal/e-cal-recur.c:4761
 msgid "18th"
 msgstr "18일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4757
+#: ../src/calendar/libecal/e-cal-recur.c:4762
 msgid "19th"
 msgstr "19일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4758
+#: ../src/calendar/libecal/e-cal-recur.c:4763
 msgid "20th"
 msgstr "20일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4759
+#: ../src/calendar/libecal/e-cal-recur.c:4764
 msgid "21st"
 msgstr "21일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4760
+#: ../src/calendar/libecal/e-cal-recur.c:4765
 msgid "22nd"
 msgstr "22일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4761
+#: ../src/calendar/libecal/e-cal-recur.c:4766
 msgid "23rd"
 msgstr "23일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4762
+#: ../src/calendar/libecal/e-cal-recur.c:4767
 msgid "24th"
 msgstr "24일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4763
+#: ../src/calendar/libecal/e-cal-recur.c:4768
 msgid "25th"
 msgstr "25일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4764
+#: ../src/calendar/libecal/e-cal-recur.c:4769
 msgid "26th"
 msgstr "26일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4765
+#: ../src/calendar/libecal/e-cal-recur.c:4770
 msgid "27th"
 msgstr "27일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4766
+#: ../src/calendar/libecal/e-cal-recur.c:4771
 msgid "28th"
 msgstr "28일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4767
+#: ../src/calendar/libecal/e-cal-recur.c:4772
 msgid "29th"
 msgstr "29일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4768
+#: ../src/calendar/libecal/e-cal-recur.c:4773
 msgid "30th"
 msgstr "30일"
 
-#: ../src/calendar/libecal/e-cal-recur.c:4769
+#: ../src/calendar/libecal/e-cal-recur.c:4774
 msgid "31st"
 msgstr "31일"
 
@@ -1725,18 +1727,18 @@ msgid "Undefined"
 msgstr "정의안됨"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1077
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1390
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1517
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1566
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1083
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1396
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1523
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1572
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "“%s”에는 한 개의 인자가 필요합니다"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:686
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1397
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1405
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1403
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1411
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "“%s”의 첫번째 인자가 문자열이어야 합니다"
@@ -1750,10 +1752,10 @@ msgstr "“%s”에는 두 개 또는 세 개 인자가 필요합니다"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:836
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1084
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1466
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1524
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1573
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1090
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1472
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "“%s”의 첫번째 인자가 time_t 값이어야 합니다"
@@ -1779,7 +1781,7 @@ msgstr "“%s”에는 인자가 없거나 두 개의 인자가 필요합니다"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1459
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1465
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "“%s”에는 두 개의 인자가 필요합니다"
@@ -1790,7 +1792,7 @@ msgstr "“%s”에는 두 개의 인자가 필요합니다"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:793
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1351
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1357
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "“%s”에는 인자가 필요 없습니다"
@@ -1824,45 +1826,45 @@ msgstr ""
 "“%s”의 모든 인자가 문자열이거나, 아니면 인자가 한 개이고 불리언 거짓(#f) 값이"
 "어야 합니다"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1420
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr "“%s”의 첫번째 인자가 ISO 8601 날짜/시각 문자열이어야 합니다"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1481
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "“%s”의 두번째 인자가 정수 값이어야 합니다"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:1739
+#: ../src/calendar/libedata-cal/e-cal-cache.c:1741
 #, c-format
 msgid "Failed to create SQLite function, error code “%d”: %s"
 msgstr "SQLite 함수를 만드는데 실패, 오류 코드 “%d”: %s"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2248
-#: ../src/calendar/libedata-cal/e-cal-cache.c:2311
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2331
+#: ../src/calendar/libedata-cal/e-cal-cache.c:2394
 #, c-format
 msgid "Object “%s”, “%s” not found"
 msgstr "오브젝트 “%s”, “%s” 없음"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3006
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3089
 msgid "Cannot add timezone without tzid"
 msgstr "TZID 없이 시간대를 추가할 수 없습니다"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3012
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3095
 msgid "Cannot add timezone without component"
 msgstr "구성 요소 없이 시간대를 추가할 수 없습니다"
 
-#: ../src/calendar/libedata-cal/e-cal-cache.c:3018
+#: ../src/calendar/libedata-cal/e-cal-cache.c:3101
 msgid "Cannot add timezone with invalid component"
 msgstr "잘못된 구성 요소로 시간대를 추가할 수 없습니다"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1090
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1107
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "UID “%s”인 받은 오브젝트에 예상한 구성 요소가 들어 있지 않습니다"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3741
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3896
 msgid "attachment.dat"
 msgstr "attachment.dat"
 
@@ -1997,7 +1999,7 @@ msgid "Could not rename “%s” to %s: %s"
 msgstr "“%s”을(를) %s(으)로 이름을 바꿀 수 없습니다: %s"
 
 #: ../src/camel/camel-filter-driver.c:991
-#: ../src/camel/camel-filter-search.c:871
+#: ../src/camel/camel-filter-search.c:930
 #, c-format
 msgid "Failed to create child process “%s”: %s"
 msgstr "하위 프로세스 “%s” 프로세스를 만드는데 실패했습니다: %s"
@@ -2007,74 +2009,74 @@ msgstr "하위 프로세스 “%s” 프로세스를 만드는데 실패했습�
 msgid "Invalid message stream received from %s: %s"
 msgstr "%s에서 잘못된 메시지 스트림을 받았습니다: %s"
 
-#: ../src/camel/camel-filter-driver.c:1246
-#: ../src/camel/camel-filter-driver.c:1255
+#: ../src/camel/camel-filter-driver.c:1259
+#: ../src/camel/camel-filter-driver.c:1271
 msgid "Syncing folders"
-msgstr "폴더 동기중"
+msgstr "폴더 동기 중"
 
-#: ../src/camel/camel-filter-driver.c:1358
+#: ../src/camel/camel-filter-driver.c:1378
 #, c-format
 msgid "Error parsing filter: %s: %s"
 msgstr "필터 분석 중 오류: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1369
+#: ../src/camel/camel-filter-driver.c:1389
 #, c-format
 msgid "Error executing filter: %s: %s"
 msgstr "필터 실행 중 오류: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1466
+#: ../src/camel/camel-filter-driver.c:1486
 #, c-format
 msgid "Unable to open spool folder"
 msgstr "메일 모음 폴더를 열 수 없습니다"
 
-#: ../src/camel/camel-filter-driver.c:1478
+#: ../src/camel/camel-filter-driver.c:1498
 #, c-format
 msgid "Unable to process spool folder"
 msgstr "메일 모음 폴더를 진행할 수 없습니다"
 
-#: ../src/camel/camel-filter-driver.c:1502
+#: ../src/camel/camel-filter-driver.c:1522
 #, c-format
 msgid "Getting message %d (%d%%)"
 msgstr "메시지 %d개(%d%%)를 가져오는 중"
 
-#: ../src/camel/camel-filter-driver.c:1511
-#: ../src/camel/camel-filter-driver.c:1534
+#: ../src/camel/camel-filter-driver.c:1531
+#: ../src/camel/camel-filter-driver.c:1554
 #, c-format
 msgid "Failed on message %d"
 msgstr "메시지 %d개에서 실패"
 
-#: ../src/camel/camel-filter-driver.c:1553
-#: ../src/camel/camel-filter-driver.c:1667
+#: ../src/camel/camel-filter-driver.c:1573
+#: ../src/camel/camel-filter-driver.c:1687
 msgid "Syncing folder"
 msgstr "폴더 동기화"
 
-#: ../src/camel/camel-filter-driver.c:1558
-#: ../src/camel/camel-filter-driver.c:1675
+#: ../src/camel/camel-filter-driver.c:1578
+#: ../src/camel/camel-filter-driver.c:1695
 msgid "Complete"
 msgstr "완료"
 
-#: ../src/camel/camel-filter-driver.c:1621
+#: ../src/camel/camel-filter-driver.c:1641
 #, c-format
 msgid "Getting message %d of %d"
 msgstr "%2$d개 중에서 메시지 %1$d 가져오는 중"
 
-#: ../src/camel/camel-filter-driver.c:1639
+#: ../src/camel/camel-filter-driver.c:1659
 #, c-format
 msgid "Failed at message %d of %d"
 msgstr "%2$d개 중에서 메시지 %1$d에서 실패"
 
-#: ../src/camel/camel-filter-driver.c:1844
-#: ../src/camel/camel-filter-driver.c:1868
+#: ../src/camel/camel-filter-driver.c:1866
+#: ../src/camel/camel-filter-driver.c:1890
 #, c-format
 msgid "Execution of filter “%s” failed: "
 msgstr "“%s” 필터 실행 실패: "
 
-#: ../src/camel/camel-filter-driver.c:1858
+#: ../src/camel/camel-filter-driver.c:1880
 #, c-format
 msgid "Error parsing filter “%s”: %s: %s"
 msgstr "“%s” 필터 파싱 오류: %s: %s"
 
-#: ../src/camel/camel-filter-driver.c:1877
+#: ../src/camel/camel-filter-driver.c:1899
 #, c-format
 msgid "Error executing filter “%s”: %s: %s"
 msgstr "“%s” 필터 실행 오류: %s: %s"
@@ -2083,20 +2085,20 @@ msgstr "“%s” 필터 실행 오류: %s: %s"
 msgid "Failed to retrieve message"
 msgstr "메시지를 가져오는데 실패했습니다"
 
-#: ../src/camel/camel-filter-search.c:588
+#: ../src/camel/camel-filter-search.c:631
 msgid "Invalid arguments to (system-flag)"
 msgstr "(system-flag)에 잘못된 인자"
 
-#: ../src/camel/camel-filter-search.c:607
+#: ../src/camel/camel-filter-search.c:650
 msgid "Invalid arguments to (user-tag)"
 msgstr "(user-flag)에 잘못된 인자"
 
-#: ../src/camel/camel-filter-search.c:1170
+#: ../src/camel/camel-filter-search.c:1232
 msgid "Invalid arguments to (message-location)"
 msgstr "(message-location)에 잘못된 인자"
 
-#: ../src/camel/camel-filter-search.c:1261
-#: ../src/camel/camel-filter-search.c:1272
+#: ../src/camel/camel-filter-search.c:1331
+#: ../src/camel/camel-filter-search.c:1342
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "필터 검색 실행 중 오류: %s: %s"
@@ -2186,39 +2188,39 @@ msgid "Refreshing folder “%s : %s”"
 msgstr "“%s : %s” 폴더를 새로 고치는 중"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:898
-#: ../src/camel/camel-folder-search.c:940
+#: ../src/camel/camel-folder-search.c:905
+#: ../src/camel/camel-folder-search.c:948
 #, c-format
 msgid "(%s) requires a single bool result"
 msgstr "(%s)은(는) 한 개의 불리언 결과가 필요합니다"
 
 #. Translators: Each '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:975
+#: ../src/camel/camel-folder-search.c:986
 #, c-format
 msgid "(%s) not allowed inside %s"
 msgstr "(%s)은(는) %s 안에서 쓸 수 없습니다"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:982
-#: ../src/camel/camel-folder-search.c:990
+#: ../src/camel/camel-folder-search.c:993
+#: ../src/camel/camel-folder-search.c:1001
 #, c-format
 msgid "(%s) requires a match type string"
 msgstr "(%s)은(는) match 타입의 문자열이 필요합니다."
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1018
+#: ../src/camel/camel-folder-search.c:1029
 #, c-format
 msgid "(%s) expects an array result"
 msgstr "(%s)은(는) 한 개의 배열 결과가 필요합니다"
 
 #. Translators: The '%s' is an element type name, part of an expressing language
-#: ../src/camel/camel-folder-search.c:1028
+#: ../src/camel/camel-folder-search.c:1039
 #, c-format
 msgid "(%s) requires the folder set"
 msgstr "(%s)은(는) 폴더 집합이 필요합니다"
 
-#: ../src/camel/camel-folder-search.c:2106
-#: ../src/camel/camel-folder-search.c:2280
+#: ../src/camel/camel-folder-search.c:2125
+#: ../src/camel/camel-folder-search.c:2299
 #, c-format
 msgid ""
 "Cannot parse search expression: %s:\n"
@@ -2227,8 +2229,8 @@ msgstr ""
 "검색 표현식을 해석할 수 없음: %s:\n"
 "%s"
 
-#: ../src/camel/camel-folder-search.c:2118
-#: ../src/camel/camel-folder-search.c:2292
+#: ../src/camel/camel-folder-search.c:2137
+#: ../src/camel/camel-folder-search.c:2311
 #, c-format
 msgid ""
 "Error executing search expression: %s:\n"
@@ -2240,7 +2242,7 @@ msgstr ""
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/camel-folder-summary.c:1647
+#: ../src/camel/camel-folder-summary.c:1668
 #, c-format
 msgid "Release unused memory for folder “%s : %s”"
 msgstr "“%s : %s” 폴더에서 사용하지 않는 메모리 해제"
@@ -2258,7 +2260,7 @@ msgid "Failed to execute gpg: %s"
 msgstr "gpg 실행에 실패했습니다: %s"
 
 #: ../src/camel/camel-gpg-context.c:839
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1129
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1127
 msgid "Unknown"
 msgstr "알 수 없음"
 
@@ -2347,17 +2349,17 @@ msgstr ""
 "암호화 실패: 잘못된 수신자 %s이(가) 지정되었습니다. 흔한 문제는 %s에서 이 수"
 "신자에 대한 공개키를 가져오지 않은 경우입니다."
 
-#: ../src/camel/camel-gpg-context.c:1972 ../src/camel/camel-smime-context.c:841
+#: ../src/camel/camel-gpg-context.c:2054 ../src/camel/camel-smime-context.c:841
 msgid "Could not generate signing data: "
 msgstr "서명 데이터를 만들 수 없습니다: "
 
-#: ../src/camel/camel-gpg-context.c:2023 ../src/camel/camel-gpg-context.c:2259
-#: ../src/camel/camel-gpg-context.c:2375 ../src/camel/camel-gpg-context.c:2551
+#: ../src/camel/camel-gpg-context.c:2105 ../src/camel/camel-gpg-context.c:2341
+#: ../src/camel/camel-gpg-context.c:2457 ../src/camel/camel-gpg-context.c:2633
 msgid "Failed to execute gpg."
 msgstr "GPG 실행에 실패했습니다."
 
-#: ../src/camel/camel-gpg-context.c:2129 ../src/camel/camel-gpg-context.c:2137
-#: ../src/camel/camel-gpg-context.c:2145 ../src/camel/camel-gpg-context.c:2165
+#: ../src/camel/camel-gpg-context.c:2211 ../src/camel/camel-gpg-context.c:2219
+#: ../src/camel/camel-gpg-context.c:2227 ../src/camel/camel-gpg-context.c:2247
 #: ../src/camel/camel-smime-context.c:970
 #: ../src/camel/camel-smime-context.c:984
 #: ../src/camel/camel-smime-context.c:993
@@ -2365,35 +2367,35 @@ msgstr "GPG 실행에 실패했습니다."
 msgid "Cannot verify message signature: Incorrect message format"
 msgstr "메시지 서명을 확인할 수 없습니다: 메시지 형식이 틀렸습니다"
 
-#: ../src/camel/camel-gpg-context.c:2211
+#: ../src/camel/camel-gpg-context.c:2293
 msgid "Cannot verify message signature: "
 msgstr "메시지 서명을 확인할 수 없습니다: "
 
-#: ../src/camel/camel-gpg-context.c:2340
+#: ../src/camel/camel-gpg-context.c:2422
 msgid "Could not generate encrypting data: "
 msgstr "암호화 데이터를 만들 수 없습니다: "
 
-#: ../src/camel/camel-gpg-context.c:2415
+#: ../src/camel/camel-gpg-context.c:2497
 msgid "This is a digitally encrypted message part"
 msgstr "디지탈 암호화된 메시지 부분입니다"
 
-#: ../src/camel/camel-gpg-context.c:2474 ../src/camel/camel-gpg-context.c:2483
-#: ../src/camel/camel-gpg-context.c:2506
+#: ../src/camel/camel-gpg-context.c:2556 ../src/camel/camel-gpg-context.c:2565
+#: ../src/camel/camel-gpg-context.c:2588
 #, c-format
 msgid "Cannot decrypt message: Incorrect message format"
 msgstr "메시지의 암호화를 풀 수 없습니다: 메시지 형식이 틀렸습니다"
 
-#: ../src/camel/camel-gpg-context.c:2494
+#: ../src/camel/camel-gpg-context.c:2576
 #, c-format
 msgid "Failed to decrypt MIME part: protocol error"
 msgstr "MIME 부분을 암호화 해독하는데 실패했습니다: 프로토콜 오류"
 
-#: ../src/camel/camel-gpg-context.c:2561
+#: ../src/camel/camel-gpg-context.c:2643
 #, c-format
 msgid "Failed to decrypt MIME part: Secret key not found"
 msgstr "MIME 부분을 암호화 해독하는데 실패했습니다: 비밀 키가 없습니다"
 
-#: ../src/camel/camel-gpg-context.c:2597
+#: ../src/camel/camel-gpg-context.c:2679
 #: ../src/camel/camel-smime-context.c:1286
 msgid "Encrypted content"
 msgstr "암호화된 내용"
@@ -2535,6 +2537,11 @@ msgstr ""
 msgid "Host lookup “%s” failed: %s"
 msgstr "호스트 “%s” 이름 찾기가 실패했습니다: %s"
 
+#: ../src/camel/camel-network-service.c:1127
+#, c-format
+msgid "Checking reach-ability of account “%s”"
+msgstr "“%s” 계정의 접근 권한을 검사"
+
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
@@ -2567,9 +2574,24 @@ msgstr "“%s : %s”의 연결 중지 모드를 위한 새 메시지를 다운�
 msgid "Syncing messages in folder “%s : %s” to disk"
 msgstr "“%s : %s” 폴더의 메시지를 디스크와 동기화"
 
-#: ../src/camel/camel-offline-folder.c:513
+#. Translators: The first “%d” is the sequence number of the message, the second “%d”
+#. is the total number of messages to synchronize.
+#. The first “%s” is replaced with an account name and the second “%s”
+#. is replaced with a full path name. The spaces around “:” are intentional, as
+#. the whole “%s : %s” is meant as an absolute identification of the folder.
+#: ../src/camel/camel-offline-folder.c:476
+#, c-format
+msgid "Syncing message %d of %d in folder “%s : %s” to disk"
+msgstr "“%3$s : %4$s” 폴더에서 %2$d개 중 %1$d개 메시지를 디스크와 동기화"
+
+#: ../src/camel/camel-offline-folder.c:527
 msgid "Copy folder content locally for _offline operation"
 msgstr "오프라인 작업을 위해 폴더 내용을 로컬에 복사(_O)"
+
+#: ../src/camel/camel-offline-store.c:268
+#, c-format
+msgid "Syncing messages in account “%s” to disk"
+msgstr "“%s” 계정의 메시지를 디스크와 동기화"
 
 #: ../src/camel/camel-provider.c:89
 msgid "Virtual folder email provider"
@@ -2579,23 +2601,23 @@ msgstr "가상 폴더 전자메일 제공 프로그램"
 msgid "For reading mail as a query of another set of folders"
 msgstr "다른 여러 메일 폴더의 질의 결과물을 읽기"
 
-#: ../src/camel/camel-provider.c:294
+#: ../src/camel/camel-provider.c:295
 #, c-format
 msgid "Could not load %s: Module loading not supported on this system."
 msgstr ""
 "%s을(를) 읽어들일 수 없습니다: 이 시스템에는 모듈 로드를 지원하지 않습니다."
 
-#: ../src/camel/camel-provider.c:303
+#: ../src/camel/camel-provider.c:304
 #, c-format
 msgid "Could not load %s: %s"
 msgstr "%s을(를) 읽어들일 수 없습니다: %s"
 
-#: ../src/camel/camel-provider.c:312
+#: ../src/camel/camel-provider.c:313
 #, c-format
 msgid "Could not load %s: No initialization code in module."
 msgstr "%s을(를) 읽어들일 수 없습니다: 모듈에 초기화 코드가 없습니다."
 
-#: ../src/camel/camel-provider.c:458 ../src/camel/camel-session.c:434
+#: ../src/camel/camel-provider.c:459 ../src/camel/camel-session.c:434
 #, c-format
 msgid "No provider available for protocol “%s”"
 msgstr "“%s” 프로토콜의 제공 프로그램이 없습니다"
@@ -2769,7 +2791,7 @@ msgstr "참조한 증명서가 만료된 증명서입니다."
 
 #: ../src/camel/camel-sasl-gssapi.c:220 ../src/camel/camel-sasl-gssapi.c:402
 #: ../src/camel/camel-sasl-gssapi.c:451 ../src/camel/camel-sasl-gssapi.c:468
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:797
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:802
 #, c-format
 msgid "Bad authentication response from server."
 msgstr "서버에서 보낸 인증 응답이 틀렸습니다."
@@ -2830,6 +2852,37 @@ msgstr "알 수 없는 전송 경로를 사용해 SMTP 인증 전에 POP"
 msgid "POP Before SMTP authentication attempted with a %s service"
 msgstr "SMTP 인증 전에 %s 서비스로 POP 시도"
 
+#: ../src/camel/camel-sasl-xoauth2.c:26
+msgid "OAuth2"
+msgstr "OAuth2"
+
+#: ../src/camel/camel-sasl-xoauth2.c:27
+msgid "This option will use an OAuth 2.0 access token to connect to the server"
+msgstr "이 옵션을 사용하면 서버에 연결할 때 OAuth 2.0 접근 토큰을 사용합니다"
+
+#: ../src/camel/camel-sasl-xoauth2-google.c:23
+msgid "OAuth2 (Google)"
+msgstr "OAuth2 (구글)"
+
+#: ../src/camel/camel-sasl-xoauth2-google.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Google "
+"server"
+msgstr ""
+"이 옵션을 사용하면 구글 서버에 연결할 때 OAuth 2.0 접근 토큰을 사용합니다"
+
+#: ../src/camel/camel-sasl-xoauth2-outlook.c:23
+msgid "OAuth2 (Outlook)"
+msgstr "OAuth2 (아웃룩)"
+
+#: ../src/camel/camel-sasl-xoauth2-outlook.c:24
+msgid ""
+"This option will use an OAuth 2.0 access token to connect to the Outlook.com "
+"server"
+msgstr ""
+"이 옵션을 사용하면 Outlook.com 서버에 연결할 때 OAuth 2.0 접근 토큰을 사용합"
+"니다"
+
 #: ../src/camel/camel-search-private.c:114
 #, c-format
 msgid "Regular expression compilation failed: %s: %s"
@@ -2841,7 +2894,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "“%s” 프로토콜에 대해 잘못된 GType을 등록했습니다"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2999
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2978
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3056,43 +3109,43 @@ msgstr "데이터를 인코더에 추가하는데 실패했습니다"
 msgid "S/MIME Decrypt: No encrypted content found"
 msgstr "S/MIME 암호화 해제: 암호화한 내용이 없습니다"
 
-#: ../src/camel/camel-store.c:1400
+#: ../src/camel/camel-store.c:1401
 #, c-format
 msgid "Opening folder “%s”"
 msgstr "폴더 “%s” 여는 중"
 
-#: ../src/camel/camel-store.c:1695
+#: ../src/camel/camel-store.c:1696
 #, c-format
 msgid "Scanning folders in “%s”"
 msgstr "“%s”의 폴더 검사하는 중"
 
-#: ../src/camel/camel-store.c:1723 ../src/camel/camel-store.c:1768
+#: ../src/camel/camel-store.c:1724 ../src/camel/camel-store.c:1769
 #: ../src/camel/camel-vtrash-folder.c:48
 msgid "Trash"
 msgstr "지운 메시지"
 
-#: ../src/camel/camel-store.c:1737 ../src/camel/camel-store.c:1785
+#: ../src/camel/camel-store.c:1738 ../src/camel/camel-store.c:1786
 #: ../src/camel/camel-vtrash-folder.c:50
 msgid "Junk"
 msgstr "정크메일"
 
-#: ../src/camel/camel-store.c:2386
+#: ../src/camel/camel-store.c:2387
 #, c-format
 msgid "Cannot create folder: %s: folder exists"
 msgstr "폴더를 만들 수 없습니다: %s: 폴더가 이미 있습니다"
 
-#: ../src/camel/camel-store.c:2393
+#: ../src/camel/camel-store.c:2394
 #, c-format
 msgid "Creating folder “%s”"
 msgstr "“%s” 폴더를 만드는 중"
 
-#: ../src/camel/camel-store.c:2570 ../src/camel/camel-vee-store.c:422
+#: ../src/camel/camel-store.c:2571 ../src/camel/camel-vee-store.c:423
 #: ../src/camel/providers/local/camel-maildir-store.c:344
 #, c-format
 msgid "Cannot delete folder: %s: Invalid operation"
 msgstr "폴더를 삭제할 수 없습니다: %s: 잘못된 동작"
 
-#: ../src/camel/camel-store.c:2760 ../src/camel/camel-vee-store.c:473
+#: ../src/camel/camel-store.c:2761 ../src/camel/camel-vee-store.c:474
 #: ../src/camel/providers/local/camel-maildir-store.c:912
 #, c-format
 msgid "Cannot rename folder: %s: Invalid operation"
@@ -3129,24 +3182,24 @@ msgstr "“%s” 명령으로 연결할 수 없습니다: %s"
 #: ../src/camel/camel-subscribable.c:234
 #, c-format
 msgid "Subscribing to folder “%s”"
-msgstr "“%s” 폴더 구독 신청중"
+msgstr "“%s” 폴더 구독 신청 중"
 
 #: ../src/camel/camel-subscribable.c:403
 #, c-format
 msgid "Unsubscribing from folder “%s”"
-msgstr "“%s” 폴더에서 구독 해지중"
+msgstr "“%s” 폴더에서 구독 해지 중"
 
 #: ../src/camel/camel-url.c:325
 #, c-format
 msgid "Could not parse URL “%s”"
 msgstr "“%s” URL을 파싱할 수 없습니다"
 
-#: ../src/camel/camel-vee-folder.c:500
+#: ../src/camel/camel-vee-folder.c:558
 #, c-format
 msgid "Updating folder “%s”"
-msgstr "“%s” 폴더 업데이트중"
+msgstr "“%s” 폴더 업데이트 중"
 
-#: ../src/camel/camel-vee-folder.c:900 ../src/camel/camel-vee-folder.c:1015
+#: ../src/camel/camel-vee-folder.c:958 ../src/camel/camel-vee-folder.c:1075
 #, c-format
 msgid "Cannot copy or move messages into a Virtual Folder"
 msgstr "메시지를 가상 폴더에 복사할/옮길 수 없습니다"
@@ -3155,17 +3208,17 @@ msgstr "메시지를 가상 폴더에 복사할/옮길 수 없습니다"
 #. is replaced with an account name and the third “%s” is replaced with a full
 #. path name. The spaces around “:” are intentional, as the whole “%s : %s” is
 #. meant as an absolute identification of the folder.
-#: ../src/camel/camel-vee-folder.c:937
+#: ../src/camel/camel-vee-folder.c:995
 #, c-format
 msgid "No such message %s in “%s : %s”"
 msgstr "“%2$s : %3$s”에 %1$s 메시지는 없습니다"
 
-#: ../src/camel/camel-vee-folder.c:991
+#: ../src/camel/camel-vee-folder.c:1051
 #, c-format
 msgid "Error storing “%s”: "
 msgstr "“%s” 저장하는데 오류: "
 
-#: ../src/camel/camel-vee-folder.c:1241
+#: ../src/camel/camel-vee-folder.c:1301
 msgid "Automatically _update on change in source folders"
 msgstr "원본 폴더 내용 바뀔 때 자동으로 업데이트(_U)"
 
@@ -3175,21 +3228,21 @@ msgstr "원본 폴더 내용 바뀔 때 자동으로 업데이트(_U)"
 msgid "Unmatched"
 msgstr "맞지 않음"
 
-#: ../src/camel/camel-vee-store.c:448
+#: ../src/camel/camel-vee-store.c:449
 #, c-format
 msgid "Cannot delete folder: %s: No such folder"
 msgstr "폴더를 삭제할 수 없습니다: %s: 그런 폴더가 없습니다"
 
-#: ../src/camel/camel-vee-store.c:483
+#: ../src/camel/camel-vee-store.c:484
 #, c-format
 msgid "Cannot rename folder: %s: No such folder"
 msgstr "폴더 이름을 바꿀 수 없습니다: %s: 그런 폴더가 없습니다"
 
-#: ../src/camel/camel-vee-store.c:546
+#: ../src/camel/camel-vee-store.c:547
 msgid "Enable _Unmatched folder"
 msgstr "일치하지 않는 폴더 활성화(_U)"
 
-#: ../src/camel/camel-vee-store.c:1073
+#: ../src/camel/camel-vee-store.c:1101
 msgid "Updating Unmatched search folder"
 msgstr "일치하지 않는 검색 폴더 업데이트"
 
@@ -3201,13 +3254,13 @@ msgstr "지운 메시지 폴더로 메시지를 복사할 수 없습니다"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "정크메일 폴더로 메시지를 복사할 수 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:967
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:985
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "이 작업을(%s) 마치려면 온라인으로 실행해야 합니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3132
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3111
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
@@ -3226,43 +3279,47 @@ msgstr "이 작업을(%s) 마치려면 온라인으로 실행해야 합니다"
 msgid "You must be working online to complete this operation"
 msgstr "이 작업을 마치려면 온라인으로 실행해야 합니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1602
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1690
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1620
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1716
 #, c-format
 msgid "No destination folder specified"
 msgstr "대상 폴더를 지정하지 않았습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1629
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1647
 msgid "Unable to move junk messages"
 msgstr "정크 메시지를 옮길 수 없습니다:"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1724
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1750
 msgid "Unable to move deleted messages"
 msgstr "삭제한 메시지를 옮길 수 없습니다"
+
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1818
+msgid "Unable to move messages to Inbox"
+msgstr "메시지를 받은 편지함으로 옮길 수 없습니다"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:705
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:758
 #, c-format
 msgid "No quota information available for folder “%s : %s”"
 msgstr "“%s : %s” 폴더에 대해 용량 제한 정보가 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:983
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1038
 #: ../src/camel/providers/nntp/camel-nntp-folder.c:841
 msgid "Apply message _filters to this folder"
 msgstr "이 폴더에 메시지 필터 적용(_F)"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:994
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1049
 msgid "Always check for _new mail in this folder"
 msgstr "이 폴더의 새 메일 항상 확인(_N)"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1105
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1162
 #, c-format
 msgid "Could not create folder summary for %s"
 msgstr "%s에 대한 폴더 요약을 만들 수 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1117
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1174
 #, c-format
 msgid "Could not create cache for %s: "
 msgstr "%s에 대한 캐시를 만들 수 없습니다: "
@@ -3270,7 +3327,7 @@ msgstr "%s에 대한 캐시를 만들 수 없습니다: "
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-folder.c:1333
+#: ../src/camel/providers/imapx/camel-imapx-folder.c:1379
 #, c-format
 msgid "No IMAP mailbox available for folder “%s : %s”"
 msgstr "“%s : %s” 폴더에 대한 IMAP 메일함이 없습니다"
@@ -3379,214 +3436,214 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "IMAP서버에 메일을 읽고 저장."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1166
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1116
 msgid "Error writing to cache stream"
 msgstr "캐시 스트림에 쓰는 중 오류 발생"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2815
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2903
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3165
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2793
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2881
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3144
 msgid "Failed to get capabilities"
 msgstr "기능 목록을 가져오는데 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2834
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2812
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "보안 모드로 IMAP 서버 %s에 연결하는데 실패했습니다: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2835
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTLS를 지원하지 않습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2844
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2822
 msgid "Failed to issue STARTTLS"
 msgstr "STARTTLS 보내기에 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2892
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2870
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "보안 모드로 IMAP 서버 %s에 연결하는데 실패했습니다: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2986
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2965
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "%s IMAP 서버는 %s 인증 방법을 지원하지 않습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3017
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2996
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "사용자 이름 없이 인증할 수 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3026
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3005
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "인증 암호가 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3034
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3013
 msgid "Failed to authenticate"
 msgstr "인증에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3187
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3166
 msgid "Failed to issue NAMESPACE"
 msgstr "NAMESPACE 보내기에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3205
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
 msgid "Failed to enable QResync"
 msgstr "QResync 사용에 실패했습니다"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3237
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3216
 msgid "Failed to issue NOTIFY"
 msgstr "NOTIFY 보내기에 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3715
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3694
 msgid "Failed to select mailbox"
 msgstr "메일함 선택에 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3818
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3797
 msgid "Cannot issue command, no stream available"
 msgstr "명령을 보낼 수 없습니다. 스트림이 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4082
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "메시지 ID가 %s인 메시지를 얻을 수 없습니다: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4083
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4062
 msgid "No such message available."
 msgstr "그런 메시지가 없습니다."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4120
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4145
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4184
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4110
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4135
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4174
 msgid "Error fetching message"
 msgstr "메시지 가져오는데 오류 발생"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4162
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4763
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4152
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error performing NOOP"
 msgstr "NOOP 수행하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4177
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4167
 msgid "Failed to close the tmp stream"
 msgstr "임시 스트림을 닫는데 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4208
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4198
 msgid "Failed to copy the tmp file"
 msgstr "임시 파일을 복사하는데 실패했습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4371
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Error moving messages"
 msgstr "메시지 옮기는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4371
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Error copying messages"
 msgstr "메시지 복사하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4556
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4577
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4704
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4725
 msgid "Cannot create spool file: "
 msgstr "메일 모음 파일을 만들 수 없습니다: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4663
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4811
 msgid "Error appending message"
 msgstr "메시지 덧붙이는데 오류 발생"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4916
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "“%s : %s”에서 바뀐 메시지 검색 중"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4920
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5068
 msgid "Error scanning changes"
 msgstr "바뀐 사항을 검사하는데 오류 발생"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4941
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5089
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "“%s : %s”에서 새 메시지 요약 정보를 가져오는 중"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4959
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5107
 msgid "Error fetching message info"
 msgstr "메시지 정보 가져오는데 오류 발생"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5041
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5213
 msgid "Error running STATUS"
 msgstr "STATUS 실행에 오류"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5548
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5578
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5613
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5789
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5824
 msgid "Error syncing changes"
 msgstr "바뀐 내용을 동기화하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5751
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5962
 msgid "Error expunging message"
 msgstr "메시지를 완전히 삭제하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5823
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
 msgid "Error fetching folders"
 msgstr "폴더를 가져오는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5834
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
 msgid "Error fetching subscribed folders"
 msgstr "구독한 폴더를 가져오는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5856
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6067
 msgid "Error creating folder"
 msgstr "폴더를 만드는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5912
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6123
 msgid "Error deleting folder"
 msgstr "폴더를 삭제하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5958
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6169
 msgid "Error renaming folder"
 msgstr "폴더의 이름을 바꾸는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5990
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6201
 msgid "Error subscribing to folder"
 msgstr "폴더에 구독하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6026
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
 msgid "Error unsubscribing from folder"
 msgstr "폴더에 구독 해제하는데 오류 발생"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6066
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6277
 msgid "IMAP server does not support quotas"
 msgstr "IMAP 서버가 용량 제한을 지원하지 않습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6078
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6289
 msgid "Error retrieving quota information"
 msgstr "용량 제한 정보를 가져오는 중 오류"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6125
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6352
 msgid "Search failed"
 msgstr "검색이 실패했습니다"
 
 # IMAP 동작
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6470
 msgid "Error running IDLE"
 msgstr "IDLE 실행하는데 오류 발생"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
-#: ../src/camel/providers/imapx/camel-imapx-store.c:232
+#: ../src/camel/providers/imapx/camel-imapx-store.c:354
 #: ../src/camel/providers/local/camel-maildir-folder.c:478
 #: ../src/camel/providers/local/camel-maildir-store.c:345
 #: ../src/camel/providers/local/camel-maildir-store.c:824
@@ -3596,48 +3653,48 @@ msgstr "IDLE 실행하는데 오류 발생"
 msgid "Inbox"
 msgstr "받은 편지함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:802
+#: ../src/camel/providers/imapx/camel-imapx-store.c:957
 #, c-format
 msgid "IMAP server %s"
 msgstr "IMAP 서버 %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:805
+#: ../src/camel/providers/imapx/camel-imapx-store.c:960
 #, c-format
 msgid "IMAP service for %s on %s"
 msgstr "IMAP 서비스(사용자: %s, 위치: %s)"
 
 # IMAP 동작
-#: ../src/camel/providers/imapx/camel-imapx-store.c:896
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1051
 msgid "No IMAPx connection object provided"
 msgstr "IMAPx 연결 오브젝트가 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:913
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1068
 #: ../src/camel/providers/nntp/camel-nntp-provider.c:95
 #: ../src/camel/providers/pop3/camel-pop3-provider.c:80
 msgid "Password"
 msgstr "암호"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:915
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1070
 msgid "This option will connect to the IMAP server using a plaintext password."
 msgstr "이 옵션을 켜면 일반 텍스트 암호를 이용해 IMAP 서버에 연결합니다."
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:998
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1157
 #, c-format
 msgid "No such folder %s"
 msgstr "%s 폴더가 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1461
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1622
 #, c-format
 msgid "No IMAP namespace for folder path “%s”"
 msgstr "폴더 경로 “%s”에 대해 IMAP 네임스페이스가 없습니다"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1729
-#: ../src/camel/providers/imapx/camel-imapx-store.c:1963
+#: ../src/camel/providers/imapx/camel-imapx-store.c:1890
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2124
 #, c-format
 msgid "Retrieving folder list for “%s”"
 msgstr "“%s”에 대한 폴더 목록을 가져오는 중"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2180
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2341
 #, c-format
 msgid "The folder name “%s” is invalid because it contains the character “%c”"
 msgstr "폴더 이름 “%s”이(가) 올바르지 않습니다. “%c” 문자가 들어 있어 있습니다"
@@ -3647,97 +3704,97 @@ msgstr "폴더 이름 “%s”이(가) 올바르지 않습니다. “%c” 문�
 #. version as well. It's always the folder name (eventually path) as provided by the server,
 #. when returned in given localization. it can be checked semi-easily in the case of
 #. the GMail variants, by changing the GMail interface language in the GMail Preferences.
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2557
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2718
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Drafts"
 msgstr "[Gmail]/임시 보관함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2558
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2719
 msgctxt "IMAPDefaults"
 msgid "Drafts"
 msgstr "임시 보관함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2559
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2720
 msgctxt "IMAPDefaults"
 msgid "Draft"
 msgstr "임시 보관함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2562
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2723
 msgctxt "IMAPDefaults"
 msgid "Templates"
 msgstr "서식"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2565
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2726
 msgctxt "IMAPDefaults"
 msgid "Archive"
 msgstr "보관함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2568
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2729
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Sent Mail"
 msgstr "[Gmail]/보낸 편지함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2569
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2730
 msgctxt "IMAPDefaults"
 msgid "Sent"
 msgstr "보낸 편지함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2570
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2731
 msgctxt "IMAPDefaults"
 msgid "Sent Items"
 msgstr "보낸 항목"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2571
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2732
 msgctxt "IMAPDefaults"
 msgid "Sent Messages"
 msgstr "보낸 메시지"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2574
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2735
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Spam"
 msgstr "[Gmail]/스팸함"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2575
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2736
 msgctxt "IMAPDefaults"
 msgid "Junk"
 msgstr "정크메일"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2576
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2737
 msgctxt "IMAPDefaults"
 msgid "Junk E-mail"
 msgstr "정크 전자메일"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2577
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2738
 msgctxt "IMAPDefaults"
 msgid "Junk Email"
 msgstr "정크 전자메일"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2578
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2739
 msgctxt "IMAPDefaults"
 msgid "Spam"
 msgstr "스팸"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2579
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2740
 msgctxt "IMAPDefaults"
 msgid "Bulk Mail"
 msgstr "벌크 메일"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2582
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2743
 msgctxt "IMAPDefaults"
 msgid "[Gmail]/Trash"
 msgstr "[Gmail]/휴지통"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2583
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2744
 msgctxt "IMAPDefaults"
 msgid "Trash"
 msgstr "휴지통"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2584
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2745
 msgctxt "IMAPDefaults"
 msgid "Deleted Items"
 msgstr "삭제한 항목"
 
-#: ../src/camel/providers/imapx/camel-imapx-store.c:2585
+#: ../src/camel/providers/imapx/camel-imapx-store.c:2746
 msgctxt "IMAPDefaults"
 msgid "Deleted Messages"
 msgstr "삭제한 메시지"
@@ -4825,175 +4882,175 @@ msgstr "AUTH 명령이 실패했습니다: 연결되지 않음."
 
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:704
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:718
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:730
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:734
 msgid "AUTH command failed: "
 msgstr "AUTH 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:887
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:885
 #, c-format
 msgid "Cannot send message: service not connected."
 msgstr "메시지를 보낼 수 없습니다: 서비스에 연결되지 않았습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:896
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:894
 #, c-format
 msgid "Cannot send message: sender address not valid."
 msgstr "메시지를 보낼 수 없습니다. 보내는 사람 주소가 올바르지 않습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:900
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:898
 msgid "Sending message"
 msgstr "메시지를 보냄"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:929
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:927
 #, c-format
 msgid "Cannot send message: no recipients defined."
 msgstr "메시지를 보낼 수 없습니다: 받는 사람이 정의되지 않았습니다."
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:944
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:942
 #, c-format
 msgid "Cannot send message: one or more invalid recipients"
 msgstr "메시지를 보낼 수 없습니다: 받는 사람 중에 한 명 이상이 잘못되었습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1076
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1074
 msgid "Syntax error, command unrecognized"
 msgstr "문법 오류로, 무슨 명령인지 파악할 수 없습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1078
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1076
 msgid "Syntax error in parameters or arguments"
 msgstr "인자 혹은 인수에서 문법 오류입니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1080
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1078
 msgid "Command not implemented"
 msgstr "명령이 구현되지 않았습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1082
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1080
 msgid "Command parameter not implemented"
 msgstr "명령어 인자가 구현되지 않았습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1084
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1082
 msgid "System status, or system help reply"
 msgstr "시스템 상태, 혹은 시스템 도움말 응답"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1086
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1084
 msgid "Help message"
 msgstr "도움말"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1088
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1086
 msgid "Service ready"
 msgstr "서비스 준비되었습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1090
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1088
 msgid "Service closing transmission channel"
 msgstr "서비스가 전송 채널을 닫았습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1092
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1090
 msgid "Service not available, closing transmission channel"
 msgstr "서비스를 사용할 수 없습니다. 전송 채널을 닫습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1094
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1092
 msgid "Requested mail action okay, completed"
 msgstr "요청한 메일 동작을 정상적으로 수행했습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1096
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1094
 msgid "User not local; will forward to <forward-path>"
 msgstr "로컬 사용자가 아닙니다. <forward-path>에 전달합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1098
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1096
 msgid "Requested mail action not taken: mailbox unavailable"
 msgstr "요청한 메일 동작을 하지 않습니다: 메일함을 사용할 수 없습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1100
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1098
 msgid "Requested action not taken: mailbox unavailable"
 msgstr "요청한 작업을 하지 않습니다: 메일함을 사용할 수 없습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1102
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1100
 msgid "Requested action aborted: error in processing"
 msgstr "요청한 작업을 취소했습니다: 처리하는데 오류 발생"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1104
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1102
 msgid "User not local; please try <forward-path>"
 msgstr "로컬 사용자가 아닙니다. <forward-path>를 시도해 보십시오"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1106
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1104
 msgid "Requested action not taken: insufficient system storage"
 msgstr "요청한 메일 작업을 하지 않습니다: 시스템 저장 공간이 부족합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1108
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1106
 msgid "Requested mail action aborted: exceeded storage allocation"
 msgstr "요청한 메일 작업을 취소했습니다: 저장 공간이 할당량을 넘었습니다<b"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1110
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1108
 msgid "Requested action not taken: mailbox name not allowed"
 msgstr "요청한 메일 작업을 하지 않습니다: 메일함 이름이 쓸 수 없는 이름입니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1112
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1110
 msgid "Start mail input; end with <CRLF>.<CRLF>"
 msgstr "메일 입력 시작. <CRLF>.<CRLF>로 끝납니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1114
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1112
 msgid "Transaction failed"
 msgstr "전송이 실패했습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1118
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1116
 msgid "A password transition is needed"
 msgstr "암호를 넘겨야 합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1120
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1118
 msgid "Authentication mechanism is too weak"
 msgstr "인증 방식이 너무 취약합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1122
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1120
 msgid "Encryption required for requested authentication mechanism"
 msgstr "요청한 인증 방식에서는 암호화가 필요합니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1124
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1122
 msgid "Temporary authentication failure"
 msgstr "인증이 임시로 실패했습니다"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1414
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1412
 msgid "SMTP Greeting"
 msgstr "SMTP 초기 메시지"
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1423
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1436
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1443
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1421
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1434
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1441
 msgid "HELO command failed: "
 msgstr "HELO 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1519
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1533
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1542
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1517
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1531
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1540
 msgid "MAIL FROM command failed: "
 msgstr "MAIL FROM 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1570
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1568
 msgid "RCPT TO command failed: "
 msgstr "RCPT TO 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1586
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1595
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1584
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1593
 #, c-format
 msgid "RCPT TO <%s> failed: "
 msgstr "RCPT TO <%s> 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1669
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1680
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1691
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1740
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1758
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1771
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1779
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1667
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1678
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1689
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1738
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1756
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1769
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1777
 msgid "DATA command failed: "
 msgstr "DATA 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1805
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1819
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1827
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1803
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1817
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1825
 msgid "RSET command failed: "
 msgstr "RSET 명령이 실패했습니다: "
 
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1853
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1865
-#: ../src/camel/providers/smtp/camel-smtp-transport.c:1871
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1851
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1863
+#: ../src/camel/providers/smtp/camel-smtp-transport.c:1869
 msgid "QUIT command failed: "
 msgstr "QUIT 명령이 실패했습니다: "
 
@@ -5099,6 +5156,42 @@ msgstr ""
 "되지만, 미리 정의한 USER, REALNAME, HOST 변수가 있으면 이보다 나중에 검사됩니"
 "다."
 
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:12
+msgid "A list of hints for OAuth2 services"
+msgstr "OAuth2 서비스 힌트의 목록"
+
+#: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+msgid ""
+"Users can extend the list of supported protocols and hostnames for defined "
+"OAuth2 services, in addition to those hard-coded. Each line can be of the "
+"form: servicename[-protocol]:hostname1,hostname2,... where 'servicename' is "
+"the actual service name; the '-protocol' is optional, and if written, then "
+"the service can be used only if both 'protocol' and 'hostnameX' match; the "
+"'hostnameX' is the actual host name to compare with, case insensitively. "
+"Each line can contain multiple values, separated by comma. There can be "
+"provided multiple lines for one OAuth2 service. Note that the actual URL "
+"where the token is requested and refreshed cannot be changed here, the "
+"hostname is to allow other servers, where the OAuth2 service can be used. "
+"Examples: Company:mail.company.com - enables 'Company' OAuth2 authentication "
+"for 'mail.company.com' host Company-CalDAV:caldav.company.com - enables "
+"'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
+"from 'caldav.company.com' host"
+msgstr ""
+"정의된 OAuth2 서비스에 대한 지원 프로토콜과 호스트 이름의 목록은 하드 코딩된 "
+"목록에 추가로 사용자가 확장할 수 있습니다. 한 줄 마다 다음과 같은 형식입니"
+"다: <서비스이름>[-<프로토콜>]:<호스트이름1>,<호스트이름2>,...  여기서 '<서비"
+"스이름>'은 실제 서비스 이름입니다. '-<프로토콜>'은 생략할 수 있고, 쓸 경우 '<"
+"프로토콜>' 및 '<호스트이름X>'가 일치할 경우에만 해당 서비스를 사용할 수 있습"
+"니다. '<호스트이름X>'는 실제 비교할 호스트 이름으로, 대소문자를 구별하지 않습"
+"니다. 한 줄마다 여러 개 값이 들어갈 수 있고, 쉼표로 구분합니다. 하나의 "
+"OAuth2 서비스에 대해 여러 줄이 들어갈 수도 있습니다. 토큰을 요청하고 토큰을 "
+"새로 고치는 실제 URL은 여기서 바꿀 수 없으니 주의하십시오. 호스트 이름은 "
+"OAuth2 서비스를 사용할 수 있는 경우 다른 서버를 허용하는 목적입니다. 예를 들"
+"어: Company:mail.company.com - 'Company'의 OAuth2 인증을 'mail.company.com' "
+"호스트에 사용합니다. 또 예를 들어: Company-CalDAV:caldav.company.com - "
+"'Company'의 OAuth2 인증을 'caldav.company.com' 호스트에서 데이터를 읽는 모든 "
+"'CalDAV' 소스에 대해 사용합니다."
+
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
 msgstr "(없어질 예정인 기능) 사용할 프록시 종류"
@@ -5170,17 +5263,17 @@ msgstr "메모리 부족"
 msgid "Can not make parent directory: %s"
 msgstr "상위 디렉터리를 만들 수 없습니다: %s"
 
-#: ../src/libebackend/e-collection-backend.c:977
+#: ../src/libebackend/e-collection-backend.c:1017
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s은(는) 원격 자원 생성을 지원하지 않습니다"
 
-#: ../src/libebackend/e-collection-backend.c:1036
+#: ../src/libebackend/e-collection-backend.c:1076
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s은(는) 원격 자원 삭제를 지원하지 않습니다"
 
-#: ../src/libebackend/e-data-factory.c:1295
+#: ../src/libebackend/e-data-factory.c:1359
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "“%s” 소스의 백엔드 팩토리와 “%s” 확장이 없습니다."
@@ -5190,47 +5283,47 @@ msgstr "“%s” 소스의 백엔드 팩토리와 “%s” 확장이 없습니�
 msgid "Data source is missing a [%s] group"
 msgstr "데이터 소스에서 [%s] 그룹이 빠졌습니다"
 
-#: ../src/libebackend/e-server-side-source.c:467
+#: ../src/libebackend/e-server-side-source.c:470
 msgid "Failed to lookup credentials: "
 msgstr "신원 정보를 찾아 보는데 실패했습니다: "
 
-#: ../src/libebackend/e-server-side-source.c:1392
-#: ../src/libedataserver/e-source.c:1599
+#: ../src/libebackend/e-server-side-source.c:1395
+#: ../src/libedataserver/e-source.c:1597
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "“%s” 데이터 소스에서 원격 자원 만들기를 지원하지 않습니다"
 
-#: ../src/libebackend/e-server-side-source.c:1406
+#: ../src/libebackend/e-server-side-source.c:1409
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to create the remote resource"
 msgstr "“%s” 데이터 소스에 원격 자원을 만들기 위한 콜렉션 백엔드가 없습니다"
 
-#: ../src/libebackend/e-server-side-source.c:1434
-#: ../src/libedataserver/e-source.c:1712
+#: ../src/libebackend/e-server-side-source.c:1437
+#: ../src/libedataserver/e-source.c:1710
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "“%s” 데이터 소스에서 원격 자원 삭제를 지원하지 않습니다"
 
-#: ../src/libebackend/e-server-side-source.c:1448
+#: ../src/libebackend/e-server-side-source.c:1451
 #, c-format
 msgid ""
 "Data source “%s” has no collection backend to delete the remote resource"
 msgstr "“%s” 데이터 소스에 원격 자원을 삭제하기 위한 콜렉션 백엔드가 없습니다"
 
-#: ../src/libebackend/e-server-side-source.c:1479
-#: ../src/libedataserver/e-source.c:1808
+#: ../src/libebackend/e-server-side-source.c:1482
+#: ../src/libedataserver/e-source.c:1806
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
 msgstr "“%s” 데이터 원본은 OAuth 2.0 인증 방법을 지원하지 않습니다"
 
-#: ../src/libebackend/e-server-side-source.c:1857
+#: ../src/libebackend/e-server-side-source.c:1860
 #, c-format
 msgid "File must have a “.source” extension"
 msgstr "파일 확장자는 반드시 “.source” 이어야 합니다"
 
-#: ../src/libebackend/e-source-registry-server.c:320
+#: ../src/libebackend/e-source-registry-server.c:322
 #, c-format
 msgid "UID “%s” is already in use"
 msgstr "“%s” UID는 이미 사용중입니다"
@@ -5390,35 +5483,77 @@ msgstr "D-버스 오류"
 msgid "Timeout was reached"
 msgstr "제한 시간이 됐습니다"
 
-#: ../src/libedataserver/e-soup-session.c:144
-msgid "Credentials required"
-msgstr "신원 정보가 필요합니다"
+#. Translators: The first %s is a display name of the source, the second is its UID and
+#. the third is the name of the OAuth service.
+#: ../src/libedataserver/e-oauth2-service.c:1208
+#, c-format
+msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
+msgstr "“%s” (%s) 소스는 “%s” OAuth2 서비스로 올바르지 않습니다."
 
-#: ../src/libedataserver/e-soup-session.c:830
+#: ../src/libedataserver/e-oauth2-service.c:1223
+msgid "OAuth2 secret not found"
+msgstr "OAuth2 비밀 정보가 없습니다"
+
+#: ../src/libedataserver/e-oauth2-service.c:1411
+#, c-format
+msgid "Received incorrect response from server “%s”."
+msgstr "“%s” 서버에서 올바르지 않은 응답을 받았습니다."
+
+#: ../src/libedataserver/e-oauth2-service.c:1420
+msgid "Failed to refresh access token. Sign to the server again, please."
+msgstr "접근 토큰을 새로 고치는데 실패했습니다. 서버에 다시 로그인하십시오."
+
+#. Translators: The first %s is a display name of the source, the second is its UID.
+#: ../src/libedataserver/e-oauth2-service.c:1462
+#, c-format
+msgid "Source “%s” (%s) is not a valid OAuth2 source"
+msgstr "“%s” (%s) 소스는 올바른 OAuth2 소스가 아닙니다"
+
+#: ../src/libedataserver/e-oauth2-service.c:1535
+msgid ""
+"The access token is expired and it failed to refresh it. Sign to the server "
+"again, please."
+msgstr ""
+"접근 토큰이 만료되었고 토큰을 새로 고치는데 실패했습니다. 서버에 다시 로그인"
+"하십시오."
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-google.c:56
+msgctxt "OAuth2Service"
+msgid "Google"
+msgstr "구글"
+
+#. Translators: This is a user-visible string, display name of an OAuth2 service.
+#: ../src/libedataserver/e-oauth2-service-outlook.c:57
+msgctxt "OAuth2Service"
+msgid "Outlook"
+msgstr "아웃룩"
+
+#: ../src/libedataserver/e-soup-session.c:824
 msgid "Operation was cancelled"
 msgstr "작업을 취소했습니다"
 
-#: ../src/libedataserver/e-soup-session.c:833
+#: ../src/libedataserver/e-soup-session.c:827
 #, c-format
 msgid "Failed with HTTP error %d: %s"
 msgstr "HTTP 오류 %d번으로 실패: %s"
 
-#: ../src/libedataserver/e-source.c:775
+#: ../src/libedataserver/e-source.c:772
 #, c-format
 msgid "Source file is missing a [%s] group"
 msgstr "소스 파일에서 [%s] 그룹이 빠졌습니다"
 
-#: ../src/libedataserver/e-source.c:1379
+#: ../src/libedataserver/e-source.c:1377
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "“%s” 데이터 소스를 제거할 수 없습니다"
 
-#: ../src/libedataserver/e-source.c:1502
+#: ../src/libedataserver/e-source.c:1500
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "“%s” 데이터 소스를 기록할 수 없습니다"
 
-#: ../src/libedataserver/e-source.c:2198
+#: ../src/libedataserver/e-source.c:2196
 msgid "Unnamed"
 msgstr "이름 없음"
 
@@ -5433,49 +5568,6 @@ msgstr "신원 정보 저장을 지원하지 않습니다"
 #: ../src/libedataserver/e-source-credentials-provider-impl.c:63
 msgid "Credentials delete is not supported"
 msgstr "신원 정보 삭제를 지원하지 않습니다"
-
-#. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:79
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:143
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:240
-#, c-format
-msgid "Source “%s” (%s) is not a valid Google source"
-msgstr "“%s” (%s) 소스는 올바른 구글 소스가 아닙니다."
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:157
-msgid "Google secret not found"
-msgstr "구글 비밀 정보가 없습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:188
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:210
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:233
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:531
-msgid "Google authentication is not supported"
-msgstr "구글 인증을 지원하지 않습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:400
-msgid "Failed to get Google secret from credentials"
-msgstr "신원 정보에서 구글 비밀 정보를 찾아 보는데 실패했습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:413
-msgid "Refresh token not found in Google secret"
-msgstr "구글 비밀 정보에 새로 고침 토큰이 없습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:421
-msgid "Failed to construct refresh_token request"
-msgstr "refresh_token 요청을 만드는데 실패했습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:454
-msgid "Failed to encode new access token to Google secret"
-msgstr "구글 비밀 정보에 대한 접근 토큰을 새로 인코딩하는데 실패했습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:464
-msgid "Failed to get access token from refresh_token server response"
-msgstr "refresh_token 서버 응답에서 접근 토큰을 얻는데 실패했습니다"
-
-#: ../src/libedataserver/e-source-credentials-provider-impl-google.c:470
-msgid "Failed to refresh token"
-msgstr "토큰을 새로 고치는데 실패했습니다"
 
 #: ../src/libedataserver/e-source-credentials-provider-impl-password.c:79
 msgid "Password not found"
@@ -5630,30 +5722,34 @@ msgstr "%H%M"
 msgid "%I %p"
 msgstr "%p %I"
 
-#: ../src/libedataserver/e-webdav-session.c:669
+#: ../src/libedataserver/e-webdav-session.c:670
 msgid "Cannot determine destination URL without WebDAV extension"
 msgstr "WebDAV 확장이 없이 대상 URL을 결정할 수 없습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:943
+#: ../src/libedataserver/e-webdav-session.c:955
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request. The used URI was: %s"
-msgstr "서버가 HTML 페이지로 응답했습니다. 서버나 클라이언트 요청에 오류가 있어 보입니다. 사용된 URI는: %s"
+msgstr ""
+"서버가 HTML 페이지로 응답했습니다. 서버나 클라이언트 요청에 오류가 있어 보입"
+"니다. 사용된 URI는: %s"
 
-#: ../src/libedataserver/e-webdav-session.c:945
+#: ../src/libedataserver/e-webdav-session.c:957
 #, c-format
 msgid ""
 "The server responded with an HTML page, which can mean there’s an error on "
 "the server or with the client request."
-msgstr "서버가 HTML 페이지로 응답했습니다. 서버나 클라이언트 요청에 오류가 있어 보입니다."
+msgstr ""
+"서버가 HTML 페이지로 응답했습니다. 서버나 클라이언트 요청에 오류가 있어 보입"
+"니다."
 
 #. Translators: The first '%s' is replaced with error prefix, as provided
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:966
+#: ../src/libedataserver/e-webdav-session.c:978
 #, c-format
 msgid "%s: HTTP error code %d (%s): %s"
 msgstr "%s: HTTP 오류 코드 %d (%s): %s"
@@ -5661,7 +5757,7 @@ msgstr "%s: HTTP 오류 코드 %d (%s): %s"
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
 #. The last '%s' is replaced with detailed error text, as returned by the server.
-#: ../src/libedataserver/e-webdav-session.c:974
+#: ../src/libedataserver/e-webdav-session.c:986
 #, c-format
 msgid "Failed with HTTP error code %d (%s): %s"
 msgstr "HTTP 오류 코드 %d번으로 실패 (%s): %s"
@@ -5670,153 +5766,155 @@ msgstr "HTTP 오류 코드 %d번으로 실패 (%s): %s"
 #. by the caller, which can be in a form: "Failed with something".
 #. The '%d' is replaced with actual HTTP status code.
 #. The second '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:989
+#: ../src/libedataserver/e-webdav-session.c:1001
 #, c-format
 msgid "%s: HTTP error code %d (%s)"
 msgstr "%s: HTTP 오류 코드 %d (%s)"
 
 #. Translators: The '%d' is replaced with actual HTTP status code.
 #. The '%s' is replaced with a reason phrase of the error (user readable text).
-#: ../src/libedataserver/e-webdav-session.c:995
+#: ../src/libedataserver/e-webdav-session.c:1007
 #, c-format
 msgid "Failed with HTTP error code %d (%s)"
 msgstr "HTTP 오류 코드 %d번으로 실패 (%s)"
 
 # HTTP POST를 가리키므로 포스트로 음역
-#: ../src/libedataserver/e-webdav-session.c:1245
+#: ../src/libedataserver/e-webdav-session.c:1257
 msgid "Failed to post data"
 msgstr "데이터를 포스트하는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1338
-#: ../src/libedataserver/e-webdav-session.c:1413
-#: ../src/libedataserver/e-webdav-session.c:1517
-#: ../src/libedataserver/e-webdav-session.c:2698
-#: ../src/libedataserver/e-webdav-session.c:3950
+#: ../src/libedataserver/e-webdav-session.c:1350
+#: ../src/libedataserver/e-webdav-session.c:1425
+#: ../src/libedataserver/e-webdav-session.c:1529
+#: ../src/libedataserver/e-webdav-session.c:2784
+#: ../src/libedataserver/e-webdav-session.c:4036
 msgid "Failed to get input XML content"
 msgstr "입력 XML 내용을 가져오는데 실패했습니다"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:1349
+#: ../src/libedataserver/e-webdav-session.c:1361
 msgid "Failed to get properties"
 msgstr "속성을 가져오는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1423
+#: ../src/libedataserver/e-webdav-session.c:1435
 msgid "Failed to update properties"
 msgstr "속성을 업데이트하는데 실패했습니다"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:1527
+#: ../src/libedataserver/e-webdav-session.c:1539
 msgid "Failed to issue REPORT"
 msgstr "REPORT 보내기에 실패했습니다"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:1586
+#: ../src/libedataserver/e-webdav-session.c:1598
 msgid "Failed to create collection"
 msgstr "컬렉션을 만드는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1677
-#: ../src/libedataserver/e-webdav-session.c:1831
+#: ../src/libedataserver/e-webdav-session.c:1689
+#: ../src/libedataserver/e-webdav-session.c:1843
 msgid "Failed to get XML request content"
 msgstr "XML 요청 내용을 가져오는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1689
+#: ../src/libedataserver/e-webdav-session.c:1701
 msgid "Failed to create address book"
 msgstr "주소록을 만드는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1844
+#: ../src/libedataserver/e-webdav-session.c:1856
 msgid "Failed to create calendar"
 msgstr "달력을 만드는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:1976
-#: ../src/libedataserver/e-webdav-session.c:1987
+#: ../src/libedataserver/e-webdav-session.c:1988
+#: ../src/libedataserver/e-webdav-session.c:1999
 msgid "Failed to read resource"
 msgstr "소스를 읽는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2136
+#: ../src/libedataserver/e-webdav-session.c:2148
 msgid "Cannot rewind input stream: Not supported"
 msgstr "입력 스트림을 뒤로 돌릴 수 없습니다: 지원하지 않습니다"
 
 # HTTP PUT을 가리키므로 포스트로 음역
-#: ../src/libedataserver/e-webdav-session.c:2283
+#: ../src/libedataserver/e-webdav-session.c:2299
+#: ../src/libedataserver/e-webdav-session.c:2451
 msgid "Failed to put data"
 msgstr "데이터 풋에 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2302
+#: ../src/libedataserver/e-webdav-session.c:2318
+#: ../src/libedataserver/e-webdav-session.c:2459
 #, c-format
 msgid "Failed to put data to server, error code %d (%s)"
 msgstr "서버에 데이터 풋에 실패했습니다. 오류 코드 %d (%s)"
 
 # IMAP 동작
-#: ../src/libedataserver/e-webdav-session.c:2475
+#: ../src/libedataserver/e-webdav-session.c:2561
 msgid "Failed to delete resource"
 msgstr "리소스 삭제에 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2542
+#: ../src/libedataserver/e-webdav-session.c:2628
 msgid "Failed to copy resource"
 msgstr "리소스를 복사하는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2604
+#: ../src/libedataserver/e-webdav-session.c:2690
 msgid "Failed to move resource"
 msgstr "리소스를 옮기는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2709
+#: ../src/libedataserver/e-webdav-session.c:2795
 msgid "Failed to lock resource"
 msgstr "리소스를 잠그는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2723
-#: ../src/libedataserver/e-webdav-session.c:2925
+#: ../src/libedataserver/e-webdav-session.c:2809
+#: ../src/libedataserver/e-webdav-session.c:3011
 msgid "Expected application/xml response, but none returned"
 msgstr "application/xml 응답을 예상했지만, 아무 것도 리턴하지 않았습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2726
-#: ../src/libedataserver/e-webdav-session.c:2928
+#: ../src/libedataserver/e-webdav-session.c:2812
+#: ../src/libedataserver/e-webdav-session.c:3014
 #, c-format
 msgid "Expected application/xml response, but %s returned"
 msgstr "application/xml 응답을 예상했지만, %s 응답을 리턴했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2738
-#: ../src/libedataserver/e-webdav-session.c:2941
+#: ../src/libedataserver/e-webdav-session.c:2824
+#: ../src/libedataserver/e-webdav-session.c:3027
 msgid "Failed to parse XML data"
 msgstr "XML 데이터를 파싱하는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2817
+#: ../src/libedataserver/e-webdav-session.c:2903
 msgid "Failed to refresh lock"
 msgstr "잠금을 새로 고치는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2876
+#: ../src/libedataserver/e-webdav-session.c:2962
 msgid "Failed to unlock"
 msgstr "잠금 해제에 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:2913
+#: ../src/libedataserver/e-webdav-session.c:2999
 #, c-format
 msgid "Expected multistatus response, but %d returned (%s)"
 msgstr "다중 상태 응답을 예상했으나, 상태 %d번을 리턴했습니다 (%s)"
 
-#: ../src/libedataserver/e-webdav-session.c:3960
+#: ../src/libedataserver/e-webdav-session.c:4046
 msgid "Failed to get access control list"
 msgstr "접근 컨트롤 목록을 가져오는데 실패했습니다"
 
-#: ../src/libedataserver/e-webdav-session.c:4697
+#: ../src/libedataserver/e-webdav-session.c:4787
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr "보호되어 있거나 상속한 접근 컨트롤 항목은 저장할 수 없습니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4704
+#: ../src/libedataserver/e-webdav-session.c:4794
 msgid "Provided invalid principal kind for Access Control Entry."
 msgstr "잘못된 종류의 주요 접근 컨트롤 항목을 제공했습니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4711
+#: ../src/libedataserver/e-webdav-session.c:4801
 msgid "Cannot store property-based Access Control Entry."
 msgstr "속성 기반 접근 컨트롤 항목은 저장할 수 없습니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4718
+#: ../src/libedataserver/e-webdav-session.c:4808
 msgid "Access Control Entry can be only to Grant or Deny, but not None."
 msgstr "접근 컨트롤 항목은 허용이나 거부 중의 하나여야 하고 없으면 안 됩니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4726
+#: ../src/libedataserver/e-webdav-session.c:4816
 msgid "Access Control Entry can be only to Grant or Deny, but not both."
 msgstr "접근 컨트롤 항목은 허용이나 거부 중의 하나여야 하고 둘 다는 안 됩니다."
 
-#: ../src/libedataserver/e-webdav-session.c:4785
+#: ../src/libedataserver/e-webdav-session.c:4875
 msgid "Access Control Entry privilege cannot be NULL."
 msgstr "접근 컨트롤 항목은 권한은 널이 될 수 없습니다."
 
@@ -5831,100 +5929,143 @@ msgstr "신원 물어보기를 취소했습니다"
 msgid "Source “%s” doesn’t support prompt for credentials"
 msgstr "“%s” 소스에서 신원 정보 물어보기를 지원하지 않습니다"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:445
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
-msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
-msgstr "주소 “%s”에서 대한 접근 토큰을 얻는데 실패했습니다. 오류 코드 %d (%s)"
+msgid "Failed to obtain access token from address “%s”: %s"
+msgstr "“%s” 주소에서 접근 토큰을 얻는데 실패했습니다: %s"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:493
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
 msgstr "접근 토큰을 요청합니다. 기다리는 중..."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:595
-msgid "Google Address book authentication request"
-msgstr "구글 주소록 인증 요청"
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Address Book authentication request".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
+#, c-format
+msgid "%s Address Book authentication request"
+msgstr "%s 주소록 인증 요청"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:598
-msgid "Google Calendar authentication request"
-msgstr "구글 달력 인증 요청"
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Calendar authentication request".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
+#, c-format
+msgid "%s Calendar authentication request"
+msgstr "%s 달력 인증 요청"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:601
-msgid "Google Memo List authentication request"
-msgstr "구글 메모 목록 인증 요청"
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Memo List authentication request".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
+#, c-format
+msgid "%s Memo List authentication request"
+msgstr "%s 메모 목록 인증 요청"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:604
-msgid "Google Task List authentication request"
-msgstr "구글 작업 목록 인증 요청"
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Task List authentication request".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
+#, c-format
+msgid "%s Task List authentication request"
+msgstr "%s 작업 목록 인증 요청"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:608
-msgid "Google Mail authentication request"
-msgstr "구글 메일 인증 요청"
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google Mail authentication request".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
+#, c-format
+msgid "%s Mail authentication request"
+msgstr "%s 메일 인증 요청"
 
 #. generic account prompt
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:611
-msgid "Google account authentication request"
-msgstr "구글 계정 인증 요청"
+#. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Google account authentication request".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
+#, c-format
+msgid "%s account authentication request"
+msgstr "%s 계정 인증 요청"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:622
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
 msgid ""
-"Login to your Google account and accept conditions in order to access your "
+"Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
 msgstr ""
-"“%s” 주소록에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
+"“%2$s” 주소록에 접근하려면 %1$s 계정에 로그인해서 사용 조건에 동의하십시오."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:626
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
 msgid ""
-"Login to your Google account and accept conditions in order to access your "
+"Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
 msgstr ""
-"“%s” 달력에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
+"“%2$s” 달력에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시오."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:630
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
 msgid ""
-"Login to your Google account and accept conditions in order to access your "
-"mail account “%s”."
-msgstr ""
-"“%s” 메일 계정에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
-
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:634
-#, c-format
-msgid ""
-"Login to your Google account and accept conditions in order to access your "
-"mail transport “%s”."
-msgstr ""
-"“%s” 메일 전송에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
-
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:638
-#, c-format
-msgid ""
-"Login to your Google account and accept conditions in order to access your "
-"memo list “%s”."
-msgstr ""
-"“%s” 메모 목록에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
-
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:642
-#, c-format
-msgid ""
-"Login to your Google account and accept conditions in order to access your "
-"task list “%s”."
-msgstr ""
-"“%s” 작업 목록에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
-
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:646
-#, c-format
-msgid ""
-"Login to your Google account and accept conditions in order to access your "
+"Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
 msgstr ""
-"“%s” 계정에 접근하려면 구글 계정에 로그인해서 사용 조건에 동의하십시오."
+"“%2$s” 메일 계정에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시"
+"오."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-google.c:690
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
+#, c-format
+msgid ""
+"Login to your %s account and accept conditions in order to access your mail "
+"transport “%s”."
+msgstr ""
+"“%2$s” 메일 전송에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시"
+"오."
+
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
+#, c-format
+msgid ""
+"Login to your %s account and accept conditions in order to access your memo "
+"list “%s”."
+msgstr ""
+"“%2$s” 메모 목록에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시"
+"오."
+
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
+#, c-format
+msgid ""
+"Login to your %s account and accept conditions in order to access your task "
+"list “%s”."
+msgstr ""
+"“%2$s” 작업 목록에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시"
+"오."
+
+#. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
+#. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
+#. like "On This Computer : Personal".
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
+#, c-format
+msgid ""
+"Login to your %s account and accept conditions in order to access your "
+"account “%s”."
+msgstr ""
+"“%2$s” 계정에 접근하려면 “%1$s” 계정에 로그인해서 사용 조건에 동의하십시오."
+
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1064
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1067
 msgid "_Cancel"
 msgstr "취소(_C)"
 
@@ -5981,7 +6122,7 @@ msgid "Please enter the password for account “%s”."
 msgstr "“%s” 계정에 대한 암호를 입력하십시오."
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:231
-#: ../src/libedataserverui/e-webdav-discover-widget.c:1065
+#: ../src/libedataserverui/e-webdav-discover-widget.c:1068
 msgid "_OK"
 msgstr "확인(_O)"
 
@@ -6113,7 +6254,7 @@ msgstr "취소"
 msgid "Searching server sources..."
 msgstr "서버 공급원을 찾는 중입니다..."
 
-#: ../src/modules/gnome-online-accounts/e-goa-password-based.c:208
+#: ../src/modules/gnome-online-accounts/e-goa-password-based.c:248
 #, c-format
 msgid ""
 "Cannot find a corresponding account in the org.gnome.OnlineAccounts service "
@@ -6122,7 +6263,7 @@ msgstr ""
 "org.gnome.OnlineAccounts 서비스에서 “%s”에 대한 암호를 얻을 해당 계정을 찾을 "
 "수 없습니다"
 
-#: ../src/modules/gnome-online-accounts/e-goa-password-based.c:271
+#: ../src/modules/gnome-online-accounts/e-goa-password-based.c:315
 msgid "Failed to get password from GOA: "
 msgstr "GOA에서 암호를 가져오는데 실패했습니다"
 
@@ -6176,7 +6317,7 @@ msgstr ""
 msgid "Failed to obtain an access token for “%s”: "
 msgstr "“%s”에 대한 접근 토큰을 얻는데 실패했습니다: "
 
-#: ../src/modules/google-backend/module-google-backend.c:555
+#: ../src/modules/google-backend/module-google-backend.c:587
 #: ../src/modules/ubuntu-online-accounts/contacts.service-type.in.in.h:1
 #: ../src/services/evolution-source-registry/builtin/contacts-stub.source.in.h:1
 msgid "Contacts"
@@ -6276,17 +6417,27 @@ msgid "Yahoo! Mail"
 msgstr "야후! 메일"
 
 # command line option
-#: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:37
-#: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:39
+#: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:38
+#: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:40
 #: ../src/services/evolution-user-prompter/evolution-user-prompter.c:33
 msgid "Keep running after the last client is closed"
 msgstr "마지막 클라이언트를 닫은 다음에도 계속 실행"
 
 # command line option
-#: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:39
-#: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:41
+#: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:40
+#: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:42
 msgid "Wait running until at least one client is connected"
 msgstr "클라이언트가 연결될 때까지 실행 대기"
+
+#: ../src/services/evolution-addressbook-factory/evolution-addressbook-factory.c:42
+#: ../src/services/evolution-calendar-factory/evolution-calendar-factory.c:44
+msgid ""
+"Overrides compile-time backend per process option; use 1 to enable, 0 to "
+"disable, any other value is to use compile-time option"
+msgstr ""
+"프로세스 옵션마다 컴파일할 때 주어진 백엔드를 무시합니다. 1이면 사용하고, 0이"
+"면 사용하지 않습니다. 다른 값을 사용하면 컴파일할 때 주어진 옵션을 사용합니"
+"다."
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -6392,7 +6543,9 @@ msgstr "소스의 인증 정보 보이기"
 msgid ""
 "Write in machine readable format (one source per line, without localized "
 "property names and tab as separator)"
-msgstr "컴퓨터가 이해할 수 있는 형식으로 씁니다 (한 줄에 한 개 소스, 속성 이름 번역하지 않고, 탭으로 구분)"
+msgstr ""
+"컴퓨터가 이해할 수 있는 형식으로 씁니다 (한 줄에 한 개 소스, 속성 이름 번역하"
+"지 않고, 탭으로 구분)"
 
 #: ../src/tools/list-sources/list-sources.c:95
 msgid "Limit only to sources with given extension name"
@@ -6532,3 +6685,37 @@ msgstr "소스 레지스트리에 연결하는데 실패했습니다: %s\n"
 #, c-format
 msgid "No sources had been found\n"
 msgstr "어떤 소스도 발견하지 못했습니다\n"
+
+#~ msgid "Credentials required"
+#~ msgstr "신원 정보가 필요합니다"
+
+#~ msgid "Google authentication is not supported"
+#~ msgstr "구글 인증을 지원하지 않습니다"
+
+#~ msgid "Failed to get Google secret from credentials"
+#~ msgstr "신원 정보에서 구글 비밀 정보를 찾아 보는데 실패했습니다"
+
+#~ msgid "Refresh token not found in Google secret"
+#~ msgstr "구글 비밀 정보에 새로 고침 토큰이 없습니다"
+
+#~ msgid "Failed to construct refresh_token request"
+#~ msgstr "refresh_token 요청을 만드는데 실패했습니다"
+
+#~ msgid "Failed to encode new access token to Google secret"
+#~ msgstr "구글 비밀 정보에 대한 접근 토큰을 새로 인코딩하는데 실패했습니다"
+
+#~ msgid "Failed to refresh token"
+#~ msgstr "토큰을 새로 고치는데 실패했습니다"
+
+#~ msgid "Failed to obtain access token from address “%s”. Error code %d (%s)"
+#~ msgstr ""
+#~ "주소 “%s”에서 대한 접근 토큰을 얻는데 실패했습니다. 오류 코드 %d (%s)"
+
+#~ msgid "Google Address book authentication request"
+#~ msgstr "구글 주소록 인증 요청"
+
+#~ msgid "Google Calendar authentication request"
+#~ msgstr "구글 달력 인증 요청"
+
+#~ msgid "Google Mail authentication request"
+#~ msgstr "구글 메일 인증 요청"
