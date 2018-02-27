@@ -58,6 +58,33 @@ struct _ECalBackendCalDAVPrivate {
 
 G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_META_BACKEND)
 
+static void
+ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
+{
+	ESource *source;
+	SoupURI *soup_uri;
+
+	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
+
+	source = e_backend_get_source (E_BACKEND (cbdav));
+
+	if (!e_source_has_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND))
+		return;
+
+	soup_uri = e_source_webdav_dup_soup_uri (e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND));
+	if (!soup_uri)
+		return;
+
+	cbdav->priv->is_google = soup_uri->host && (
+		g_ascii_strcasecmp (soup_uri->host, "www.google.com") == 0 ||
+		g_ascii_strcasecmp (soup_uri->host, "apidata.googleusercontent.com") == 0);
+
+	cbdav->priv->is_icloud = soup_uri->host &&
+		e_util_utf8_strstrcase (soup_uri->host, ".icloud.com");
+
+	soup_uri_free (soup_uri);
+}
+
 static gboolean
 ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			 const ENamedParameters *credentials,
@@ -127,12 +154,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTED);
 
-			cbdav->priv->is_google = soup_uri && soup_uri->host && (
-				g_ascii_strcasecmp (soup_uri->host, "www.google.com") == 0 ||
-				g_ascii_strcasecmp (soup_uri->host, "apidata.googleusercontent.com") == 0);
-
-			cbdav->priv->is_icloud = soup_uri && soup_uri->host &&
-				e_util_utf8_strstrcase (soup_uri->host, ".icloud.com");
+			ecb_caldav_update_tweaks (cbdav);
 		} else {
 			gchar *uri;
 
@@ -1444,8 +1466,12 @@ ecb_caldav_get_usermail (ECalBackendCalDAV *cbdav)
 	auth_extension = e_source_get_extension (source, extension_name);
 	username = e_source_authentication_dup_user (auth_extension);
 
-	if (cbdav->priv->is_google)
+	if (cbdav->priv->is_google) {
 		res = ecb_caldav_maybe_append_email_domain (username, "@gmail.com");
+	} else if (username && strchr (username, '@') && strrchr (username, '.') > strchr (username, '@')) {
+		res = username;
+		username = NULL;
+	}
 
 	g_free (username);
 
@@ -1859,6 +1885,8 @@ e_cal_backend_caldav_constructed (GObject *object)
 		G_CALLBACK (ecb_caldav_dup_component_revision_cb), NULL);
 
 	g_clear_object (&cal_cache);
+
+	ecb_caldav_update_tweaks (cbdav);
 }
 
 static void
