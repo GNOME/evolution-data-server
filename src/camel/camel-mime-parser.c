@@ -1314,10 +1314,10 @@ folder_scan_header (struct _header_scan_state *s,
 						s->outptr[0] = 0;
 
 						/* The outbuf can contain an extra \r\n, thus remove it */
-						if (s->outptr > s->outbuf && s->outptr[-1] == '\n')
+						if (s->outptr > s->outbuf && (s->outptr[-1] == '\r' || s->outptr[-1] == '\n'))
 							s->outptr[-1] = 0;
 
-						if (s->outptr - 1 > s->outbuf && s->outptr[-2] == '\r')
+						if (s->outptr - 1 > s->outbuf && (s->outptr[-2] == '\r' || s->outptr[-2] == '\n'))
 							s->outptr[-2] = 0;
 
 						h (printf ("header not folded '%s' at %d\n", s->outbuf, (gint) s->header_start));
@@ -1408,6 +1408,16 @@ header_truncated:
 	header_append (s, start, inptr);
 
 	s->outptr[0] = 0;
+
+	if (s->check_header_folded && s->midline) {
+		/* The outbuf can contain an extra \r\n, thus remove it */
+		if (s->outptr > s->outbuf && (s->outptr[-1] == '\r' || s->outptr[-1] == '\n'))
+			s->outptr[-1] = 0;
+
+		if (s->outptr - 1 > s->outbuf && (s->outptr[-2] == '\r' || s->outptr[-2] == '\n'))
+			s->outptr[-2] = 0;
+	}
+
 	if (s->outbuf == s->outptr)
 		goto header_done;
 
