@@ -159,6 +159,20 @@ free_category_info (CategoryInfo *cat_info)
 	g_slice_free (CategoryInfo, cat_info);
 }
 
+static gboolean
+category_info_equal (const CategoryInfo *cat_info1,
+		     const CategoryInfo *cat_info2)
+{
+	if (!cat_info1 || !cat_info2 || cat_info1 == cat_info2)
+		return cat_info1 == cat_info2;
+
+	return g_strcmp0 (cat_info1->display_name, cat_info2->display_name) == 0 &&
+		g_strcmp0 (cat_info1->clocale_name, cat_info2->clocale_name) == 0 &&
+		g_strcmp0 (cat_info1->icon_file, cat_info2->icon_file) == 0 &&
+		(cat_info1->is_default ? 1 : 0) == (cat_info2->is_default ? 1 : 0) &&
+		(cat_info1->is_searchable ? 1 : 0) == (cat_info2->is_searchable ? 1 : 0);
+}
+
 static gchar *
 escape_string (const gchar *source)
 {
@@ -323,7 +337,7 @@ categories_add_full (const gchar *category,
                      gboolean is_default,
                      gboolean is_searchable)
 {
-	CategoryInfo *cat_info;
+	CategoryInfo *cat_info, *existing_cat_info;
 	gchar *collation_key;
 
 	cat_info = g_slice_new (CategoryInfo);
@@ -342,10 +356,15 @@ categories_add_full (const gchar *category,
 	cat_info->is_searchable = is_default || is_searchable;
 
 	collation_key = get_collation_key (cat_info->display_name);
-	g_hash_table_insert (categories_table, collation_key, cat_info);
-
-	changed = TRUE;
-	save_categories ();
+	existing_cat_info = g_hash_table_lookup (categories_table, collation_key);
+	if (category_info_equal (existing_cat_info, cat_info)) {
+		free_category_info (cat_info);
+		g_free (collation_key);
+	} else {
+		g_hash_table_insert (categories_table, collation_key, cat_info);
+		changed = TRUE;
+		save_categories ();
+	}
 }
 
 /* This must be called with the @categories lock held. */
