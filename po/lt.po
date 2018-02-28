@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-01 17:20+0000\n"
-"PO-Revision-Date: 2018-02-18 22:29+0200\n"
+"POT-Creation-Date: 2018-02-28 12:50+0000\n"
+"PO-Revision-Date: 2018-02-28 23:12+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -113,7 +113,7 @@ msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:200
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:222
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../src/calendar/backends/http/e-cal-backend-http.c:204
 #: ../src/calendar/libecal/e-cal.c:2334
@@ -137,9 +137,9 @@ msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
 #: ../src/calendar/libecal/e-cal-client.c:6839
 #: ../src/calendar/libecal/e-cal-client.c:7061
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1742
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2991
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3001
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3013
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3029
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3039
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3051
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
@@ -1357,12 +1357,12 @@ msgstr "Nesinchronizuota versija perkeliant žymiklį"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabetinis indeksas buvo nustatytas į neteisingą lokalę"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:165
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Pateiktas URL „%s“ nenurodo CalDAV kalendoriaus"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1579
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1605
 msgid "Failed to parse response data"
 msgstr "Nepavyko perskaityti atsako duomenų"
 
@@ -1722,18 +1722,18 @@ msgid "Undefined"
 msgstr "Neapibrėžtas"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:83
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1077
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1390
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1517
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1566
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1083
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1396
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1523
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1572
 #, c-format
 msgid "“%s” expects one argument"
 msgstr "„%s“ reikia vieno argumento"
 
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:90
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:686
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1397
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1405
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1403
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1411
 #, c-format
 msgid "“%s” expects the first argument to be a string"
 msgstr "„%s“ reikia, kad pirmasis argumentas būtų simbolių seka"
@@ -1747,10 +1747,10 @@ msgstr "„%s“ reikia dviejų arba trijų argumentų"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:261
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:323
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:836
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1084
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1466
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1524
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1573
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1090
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1472
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1530
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1579
 #, c-format
 msgid "“%s” expects the first argument to be a time_t"
 msgstr "„%s“ reikia, kad pirmasis argumentas būtų time_t"
@@ -1776,7 +1776,7 @@ msgstr "„%s“ reikia nė vieno arba dviejų argumentų"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:316
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:679
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:829
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1459
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1465
 #, c-format
 msgid "“%s” expects two arguments"
 msgstr "„%s“ reikia dviejų argumentų"
@@ -1787,7 +1787,7 @@ msgstr "„%s“ reikia dviejų argumentų"
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:793
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1002
 #: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1035
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1351
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1357
 #, c-format
 msgid "“%s” expects no arguments"
 msgstr "„%s“ nereikia argumentų"
@@ -1821,12 +1821,12 @@ msgstr ""
 "„%s“ reikia, kad visi argumentai būtų simbolių eilutės arba kad būtų vienas "
 "loginis neiginys (#f)"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1414
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1420
 #, c-format
 msgid "“%s” expects the first argument to be an ISO 8601 date/time string"
 msgstr "„%s“ reikia, kad pirmasis argumentas būtų data/laikas ISO 8601 formatu"
 
-#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1475
+#: ../src/calendar/libedata-cal/e-cal-backend-sexp.c:1481
 #, c-format
 msgid "“%s” expects the second argument to be an integer"
 msgstr "„%s“ reikia, kad antrasis argumentas būtų sveikas skaičius"
@@ -2088,12 +2088,12 @@ msgstr "Netinkami (system-flag) argumentai"
 msgid "Invalid arguments to (user-tag)"
 msgstr "Netinkami (user-tag) argumentai"
 
-#: ../src/camel/camel-filter-search.c:1229
+#: ../src/camel/camel-filter-search.c:1232
 msgid "Invalid arguments to (message-location)"
 msgstr "Netinkami (message-location) argumentai"
 
-#: ../src/camel/camel-filter-search.c:1328
-#: ../src/camel/camel-filter-search.c:1339
+#: ../src/camel/camel-filter-search.c:1331
+#: ../src/camel/camel-filter-search.c:1342
 #, c-format
 msgid "Error executing filter search: %s: %s"
 msgstr "Klaida vykdant filtro paiešką: %s: %s"
@@ -2585,7 +2585,6 @@ msgstr "Laiškai aplanke „%s : %s“ sinchronizuojami su disku"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:476
 #, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Sinchronizuojamas su disku %d laiškas iš %d aplanke „%s : %s“"
 
@@ -2595,7 +2594,6 @@ msgstr "Nukopijuoti aplanko turinį į savo kompiuterį darbui _atsijungus"
 
 #: ../src/camel/camel-offline-store.c:268
 #, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Laiškai paskyroje „%s“ sinchronizuojami su disku"
 
@@ -2909,7 +2907,7 @@ msgid "Invalid GType registered for protocol “%s”"
 msgstr "Protokolui „%s“ užregistruotas netinkamas GType"
 
 #: ../src/camel/camel-session.c:512
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2940
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2978
 #: ../src/camel/providers/pop3/camel-pop3-store.c:306
 #: ../src/camel/providers/pop3/camel-pop3-store.c:788
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:670
@@ -3270,13 +3268,13 @@ msgstr "Nepavyko nukopijuoti laiškų į šiukšlinės aplanką"
 msgid "Cannot copy messages to the Junk folder"
 msgstr "Nepavyko nukopijuoti laiškų į brukalo aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:967
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:985
 #, c-format
 msgid "You must be working online to complete this operation (%s)"
 msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:975
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3073
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3111
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
@@ -3295,22 +3293,21 @@ msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 msgid "You must be working online to complete this operation"
 msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1602
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1698
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1620
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1716
 #, c-format
 msgid "No destination folder specified"
 msgstr "Nenurodytas paskirties aplankas"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1629
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1647
 msgid "Unable to move junk messages"
 msgstr "Nepavyko perkelti brukalo laiškų"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1732
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1750
 msgid "Unable to move deleted messages"
 msgstr "Nepavyko perkelti ištrintų laiškų"
 
-#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1800
-#| msgid "Unable to move junk messages"
+#: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1818
 msgid "Unable to move messages to Inbox"
 msgstr "Nepavyko perkelti laiškų į gautųjų aplanką"
 
@@ -3452,202 +3449,202 @@ msgstr "IMAP"
 msgid "For reading and storing mail on IMAP servers."
 msgstr "Pašto skaitymui ir rašymui IMAP serveriuose."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:1098
+#: ../src/camel/providers/imapx/camel-imapx-server.c:1116
 msgid "Error writing to cache stream"
 msgstr "Klaida rašant į podėlio srautą"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2755
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2843
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3106
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2793
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2881
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3144
 msgid "Failed to get capabilities"
 msgstr "Nepavyko gauti galimybių"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2774
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2812
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: %s"
 msgstr "Nepavyko prisijungti prie IMAP serverio %s saugia veiksena: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2775
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2813
 #: ../src/camel/providers/smtp/camel-smtp-transport.c:279
 msgid "STARTTLS not supported"
 msgstr "STARTTLS nepalaikomas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2784
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2822
 msgid "Failed to issue STARTTLS"
 msgstr "Nepavyko išduoti STARTTLS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2832
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2870
 #, c-format
 msgid "Failed to connect to IMAP server %s in secure mode: "
 msgstr "Nepavyko prisijungti prie IMAP serverio %s saugia veiksena: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2927
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2965
 #, c-format
 msgid "IMAP server %s does not support %s authentication"
 msgstr "IMAP serveris %s nepalaiko %s tapatybės nustatymo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2958
+#: ../src/camel/providers/imapx/camel-imapx-server.c:2996
 #: ../src/camel/providers/nntp/camel-nntp-store.c:457
 #: ../src/camel/providers/nntp/camel-nntp-store.c:599
 msgid "Cannot authenticate without a username"
 msgstr "Negalima nustatyti tapatybės be naudotojo vardo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2967
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3005
 #: ../src/camel/providers/nntp/camel-nntp-store.c:608
 #: ../src/camel/providers/pop3/camel-pop3-store.c:688
 #: ../src/camel/providers/pop3/camel-pop3-store.c:726
 msgid "Authentication password not available"
 msgstr "Tapatybės patvirtinimo slaptažodis neprieinamas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:2975
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3013
 msgid "Failed to authenticate"
 msgstr "Nepavyko patvirtinti tapatybės"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3128
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3166
 msgid "Failed to issue NAMESPACE"
 msgstr "Nepavyko išduoti NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3146
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
 msgid "Failed to enable QResync"
 msgstr "Nepavyko įjungti QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3178
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3216
 msgid "Failed to issue NOTIFY"
 msgstr "Nepavyko išduoti NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3656
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3694
 msgid "Failed to select mailbox"
 msgstr "Nepavyko Pasirinkti pašto dėžutės"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3797
 msgid "Cannot issue command, no stream available"
 msgstr "Negalima įvykdyti komandos, nėra srauto"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4023
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nepavyko gauti laiško, kurio ID %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4024
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4062
 msgid "No such message available."
 msgstr "Nėra tokio laiško."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4086
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4125
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4110
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4135
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4174
 msgid "Error fetching message"
 msgstr "Klaida gaunant laišką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4103
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4862
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4152
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
 msgid "Error performing NOOP"
 msgstr "Klaida atliekant NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4118
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4167
 msgid "Failed to close the tmp stream"
 msgstr "Nepavyko užverti laikinojo srauto"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4149
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4198
 msgid "Failed to copy the tmp file"
 msgstr "Nepavyko nukopijuoti laikimo failo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4385
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Error moving messages"
 msgstr "Klaida perkeliant laiškus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4385
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
 msgid "Error copying messages"
 msgstr "Klaida kopijuojant laiškus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4655
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4676
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4704
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4725
 msgid "Cannot create spool file: "
 msgstr "Nepavyko sukurti kaupos failo:"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4762
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4811
 msgid "Error appending message"
 msgstr "Klaida pridedant laišką"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5015
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Ieškoma pakeistų laiškų aplanke „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5019
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5068
 msgid "Error scanning changes"
 msgstr "Klaida skaitant pakeitimus"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5040
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5089
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Gaunama naujų laiškų santrauka aplankui „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5058
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5107
 msgid "Error fetching message info"
 msgstr "Klaida gaunant laiško informaciją"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5164
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5213
 msgid "Error running STATUS"
 msgstr "Klaida vykdant STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5710
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5740
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5775
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5759
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5789
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5824
 msgid "Error syncing changes"
 msgstr "Klaida sinchronizuojant pakeitimus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5913
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5962
 msgid "Error expunging message"
 msgstr "Klaida sunaikinant laišką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5985
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
 msgid "Error fetching folders"
 msgstr "Klaida gaunant aplankus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5996
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
 msgid "Error fetching subscribed folders"
 msgstr "Klaida gaunant priregistruotus aplankus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6018
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6067
 msgid "Error creating folder"
 msgstr "Klaida kuriant aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6074
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6123
 msgid "Error deleting folder"
 msgstr "Klaida trinant aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6120
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6169
 msgid "Error renaming folder"
 msgstr "Klaida pervadinant aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6152
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6201
 msgid "Error subscribing to folder"
 msgstr "Klaida registruojantis prie aplanko"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6188
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
 msgid "Error unsubscribing from folder"
 msgstr "Klaida išsiregistruojant iš aplanko"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6228
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6277
 msgid "IMAP server does not support quotas"
 msgstr "IMAP serveris nepalaiko kvotų"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6240
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6289
 msgid "Error retrieving quota information"
 msgstr "Gaunama gaunant kvotos informaciją"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6303
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6352
 msgid "Search failed"
 msgstr "Paieška nepavyko"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6421
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6470
 msgid "Error running IDLE"
 msgstr "Klaida vykdant IDLE"
 
@@ -5185,6 +5182,22 @@ msgid "A list of hints for OAuth2 services"
 msgstr "Patarimų sąrašas OAuth2 tarnyboms"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
+#| msgid ""
+#| "Users can extend the list of supported protocols and hostnames for "
+#| "defined OAuth2 services, in addition to those hard-coded. Each line can "
+#| "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
+#| "'servicename' is the actual service name; the '-protocol' is optional, "
+#| "and if written, then the service can be used only if both 'protocol' and "
+#| "'hostnameX' match; the 'hostnameX' is the actual host name to compare "
+#| "with, case insensitively. Each line can contain multiple values, "
+#| "separated by comma. There can be provided multiple lines for one OAuth2 "
+#| "service. Note that the actual URL where the token is requested and "
+#| "refreshed cannot be changed here, the hostname is to allow other servers, "
+#| "where the OAuth2 service can be used. Examples: Company:mail.company.com "
+#| "- enables 'Company' OAuth2 authentication for 'mail.company.com' host "
+#| "Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 "
+#| "authentication for any 'CalDAV' source, which reads data from 'caldav."
+#| "companycaldav.com' host"
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -5199,7 +5212,7 @@ msgid ""
 "Examples: Company:mail.company.com - enables 'Company' OAuth2 authentication "
 "for 'mail.company.com' host Company-CalDAV:caldav.company.com - enables "
 "'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
-"from 'caldav.companycaldav.com' host"
+"from 'caldav.company.com' host"
 msgstr ""
 "Naudotojai gali plėsti palaikomų protokolų bei serverių sąrašus apibrėžtoms "
 "OAuth2 tarnyboms papildomai šalia jau esamų. Kiekviena eilutė gali būti "
@@ -5290,17 +5303,17 @@ msgstr "Pritrūko atminties"
 msgid "Can not make parent directory: %s"
 msgstr "Nepavyko sukurti tėvinio aplanko: %s"
 
-#: ../src/libebackend/e-collection-backend.c:1002
+#: ../src/libebackend/e-collection-backend.c:1017
 #, c-format
 msgid "%s does not support creating remote resources"
 msgstr "%s nepalaiko nutolusių resursų sukūrimo"
 
-#: ../src/libebackend/e-collection-backend.c:1061
+#: ../src/libebackend/e-collection-backend.c:1076
 #, c-format
 msgid "%s does not support deleting remote resources"
 msgstr "%s nepalaiko nutolusių resursų trynimo"
 
-#: ../src/libebackend/e-data-factory.c:1348
+#: ../src/libebackend/e-data-factory.c:1359
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "Realizacijos gamykla šaltiniui „%s“ bei plėtiniui „%s“ nerasta."
@@ -5315,7 +5328,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Nepavyko ieškoti įgaliojimų: "
 
 #: ../src/libebackend/e-server-side-source.c:1395
-#: ../src/libedataserver/e-source.c:1596
+#: ../src/libedataserver/e-source.c:1583
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių išteklių kūrimo"
@@ -5329,7 +5342,7 @@ msgstr ""
 "sukurti"
 
 #: ../src/libebackend/e-server-side-source.c:1437
-#: ../src/libedataserver/e-source.c:1709
+#: ../src/libedataserver/e-source.c:1696
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Duomenų šaltinis „%s“ nepalaiko nutolusių išteklių trynimo"
@@ -5343,7 +5356,7 @@ msgstr ""
 "ištrinti"
 
 #: ../src/libebackend/e-server-side-source.c:1482
-#: ../src/libedataserver/e-source.c:1805
+#: ../src/libedataserver/e-source.c:1792
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5516,37 +5529,32 @@ msgstr "Baigėsi laikas"
 
 #. Translators: The first %s is a display name of the source, the second is its UID and
 #. the third is the name of the OAuth service.
-#: ../src/libedataserver/e-oauth2-service.c:1168
+#: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas „%s“ OAuth2 šaltinis"
 
-#: ../src/libedataserver/e-oauth2-service.c:1183
-#| msgid "Google secret not found"
+#: ../src/libedataserver/e-oauth2-service.c:1223
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 paslaptis nerasta"
 
-#: ../src/libedataserver/e-oauth2-service.c:1371
+#: ../src/libedataserver/e-oauth2-service.c:1411
 #, c-format
-#| msgid "Unexpected server response from xover: %s"
 msgid "Received incorrect response from server “%s”."
 msgstr "Gautas neteisingas atsakymas iš serverio %s"
 
-#: ../src/libedataserver/e-oauth2-service.c:1380
-#| msgid "Failed to get access token from refresh_token server response"
+#: ../src/libedataserver/e-oauth2-service.c:1420
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
 "Nepavyko atnaujinti prieigos leksemos. Dar kartą prisijunkite prie serverio."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
-#: ../src/libedataserver/e-oauth2-service.c:1422
+#: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Šaltinis „%s“ (%s) nėra tinkamas OAuth2 šaltinis"
 
-#: ../src/libedataserver/e-oauth2-service.c:1495
+#: ../src/libedataserver/e-oauth2-service.c:1535
 msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
@@ -5556,7 +5564,6 @@ msgstr ""
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -5581,17 +5588,17 @@ msgstr "Nepavyko su HTTP klaida %d: %s"
 msgid "Source file is missing a [%s] group"
 msgstr "Šaltinio failui trūksta [%s] grupės"
 
-#: ../src/libedataserver/e-source.c:1376
+#: ../src/libedataserver/e-source.c:1363
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Duomenų šaltinis „%s“ nėra pašalinamas"
 
-#: ../src/libedataserver/e-source.c:1499
+#: ../src/libedataserver/e-source.c:1486
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Duomenų šaltinis „%s“ nėra rašomas"
 
-#: ../src/libedataserver/e-source.c:2195
+#: ../src/libedataserver/e-source.c:2173
 msgid "Unnamed"
 msgstr "Neįvardytas"
 
@@ -5963,71 +5970,61 @@ msgstr "Šaltinis „%s“ nepalaiko įgaliojimų užklausimo"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
-#| msgid "Failed to obtain an access token for “%s”: "
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Nepavyko gauti prieigos leksemos iš adreso „%s“: %s"
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:245
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:246
 msgid "Requesting access token, please wait..."
 msgstr "Prašoma prieigos leksemos, palaukite..."
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Address Book authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:469
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
 #, c-format
-#| msgid "Address book authentication request"
 msgid "%s Address Book authentication request"
 msgstr "%s adresų knygos tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Calendar authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:474
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
 #, c-format
-#| msgid "Calendar authentication request"
 msgid "%s Calendar authentication request"
 msgstr "%s kalendoriaus tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Memo List authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:479
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
 #, c-format
-#| msgid "Google Memo List authentication request"
 msgid "%s Memo List authentication request"
 msgstr "%s raštelių sąrašo tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Task List authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:484
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
 #, c-format
-#| msgid "Google Task List authentication request"
 msgid "%s Task List authentication request"
 msgstr "%s užduočių sąrašo tapatybės patvirtinimo užklausa"
 
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google Mail authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:490
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
 #, c-format
-#| msgid "Mail authentication request"
 msgid "%s Mail authentication request"
 msgstr "%s el. pašto tapatybės patvirtinimo užklausa"
 
 #. generic account prompt
 #. Translators: The %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Google account authentication request".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:495
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
 #, c-format
-#| msgid "Google account authentication request"
 msgid "%s account authentication request"
 msgstr "%s paskyros tapatybės patvirtinimo užklausa"
 
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:509
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
@@ -6038,11 +6035,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:516
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
@@ -6053,11 +6047,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:523
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
@@ -6068,11 +6059,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:530
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
@@ -6083,11 +6071,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:537
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
@@ -6098,11 +6083,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:544
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
@@ -6113,11 +6095,8 @@ msgstr ""
 #. Translators: The first %s is replaced with an OAuth2 service display name, like the strings from "OAuth2Service" translation context,
 #. thus it can form a string like "Login to your Google account and...". The second %s is the actual source display name,
 #. like "On This Computer : Personal".
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:551
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
@@ -6125,7 +6104,7 @@ msgstr ""
 "Prisijunkite prie savo %s paskyros ir sutikite su sąlygomis savo paskyrai "
 "„%s“ pasiekti."
 
-#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:599
+#: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:602
 #: ../src/libedataserverui/e-credentials-prompter-impl-password.c:230
 #: ../src/libedataserverui/e-trust-prompt.c:112
 #: ../src/libedataserverui/e-webdav-discover-widget.c:1067
