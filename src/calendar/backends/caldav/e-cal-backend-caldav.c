@@ -918,7 +918,7 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 {
 	ESourceWebdav *webdav_extension;
 	SoupURI *soup_uri;
-	gchar *uri, *tmp, *filename;
+	gchar *uri, *tmp, *filename, *uid_hash = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
@@ -926,6 +926,16 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 	webdav_extension = e_source_get_extension (e_backend_get_source (E_BACKEND (cbdav)), E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 	soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
 	g_return_val_if_fail (soup_uri != NULL, NULL);
+
+	/* UIDs with forward slashes can cause trouble, because the destination server can
+	   consider them as a path delimiter. Double-encode the URL doesn't always work,
+	   thus rather cause a mismatch between stored UID and its href on the server. */
+	if (strchr (uid, '/')) {
+		uid_hash = g_compute_checksum_for_string (G_CHECKSUM_SHA1, uid, -1);
+
+		if (uid_hash)
+			uid = uid_hash;
+	}
 
 	if (extension) {
 		tmp = g_strconcat (uid, extension, NULL);
@@ -953,6 +963,7 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 
 	soup_uri_free (soup_uri);
 	g_free (filename);
+	g_free (uid_hash);
 
 	return uri;
 }
