@@ -1,3 +1,48 @@
+Evolution-Data-Server 3.27.92 2018-03-05
+----------------------------------------
+
+Bug Fixes:
+	Bug 793491 - Enable C++11 and C++14 when available (Ting-Wei Lan)
+	Bug 793476 - [IMAPx] Message download interleave when synchronizing for offline (Milan Crha)
+	Bug 793504 - Links containing Cyrillic characters are not highlighted properly (Milan Crha)
+	Bug 793673 - Crash on failure of e_cal_cache_search_ids() (Milan Crha)
+	Bug 793031 - Decrease memory usage by disabling backend-per-process by default (Milan Crha)
+	Bug 793728 - Correct typo in description of 'oauth2-services-hint' GSettings key (Milan Crha)
+	Bug 793852 - Remove unused code after changes for bug 793466 (Lubomir Rintel)
+	Bug 791475 - Incorrectly parses headers in certain case ][ (Milan Crha)
+	Bug 793759 - categories.xml keeps changing on disk (Milan Crha)
+	Bug 793779 - Forward slash in UID breaks CardDAV backend (Milan Crha)
+
+Miscellaneous:
+	[IMAPx] Enhance processing of server IDLE notifications (Milan Crha)
+	No more '.libs' directory in the build directory (Milan Crha)
+	Meta backend tests required system-running evolution-source-registry (Milan Crha)
+	Google calendar stopped reporting user email (Milan Crha)
+
+Translations:
+	Милош Поповић (sr)
+	Милош Поповић (sr@latin)
+	Jordi Mas (ca)
+	Justin van Steijn (nl)
+	Piotr Drąg (pl)
+	Balázs Úr (hu)
+	Fabio Tomat (fur)
+	Efstathios Iosifidis (el)
+	Nathan Follens (nl)
+	Mario Blättermann (de)
+	Марко Костић (sr)
+	Emin Tufan Çetin (tr)
+	Muhammet Kara (tr)
+	Changwoo Ryu (ko)
+	Rafael Fontenelle (pt_BR)
+	Baurzhan Muftakhidinov (kk)
+	Aurimas Černius (lt)
+	Kukuh Syafaat (id)
+	Fran Dieguez (gl)
+	Marek Černocký (cs)
+	Bruce Cowan (en_GB)
+	Jiri Grönroos (fi)
+
 Evolution-Data-Server 3.27.91 2018-02-19
 ----------------------------------------
 
