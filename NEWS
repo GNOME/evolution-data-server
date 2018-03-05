@@ -1,3 +1,15 @@
+Evolution-Data-Server 3.26.6 2018-03-05
+---------------------------------------
+
+Bug Fixes:
+	Bug 793466 - [evolution-source-registry] Empty .source file causes high CPU usage (Milan Crha)
+	Bug 793852 - Remove unused code after changes for bug 793466 (Lubomir Rintel)
+	Bug 791475 - Incorrectly parses headers in certain case ][ (Milan Crha)
+	Bug 793779 - Forward slash in UID breaks CardDAV backend (Milan Crha)
+
+Miscellaneous:
+	Google calendar stopped reporting user email (Milan Crha)
+
 Evolution-Data-Server 3.26.5 2018-02-05
 ---------------------------------------
 
