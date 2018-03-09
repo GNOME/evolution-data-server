@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server master\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-23 13:33+0000\n"
-"PO-Revision-Date: 2018-02-24 06:42+0100\n"
+"POT-Creation-Date: 2018-03-06 20:58+0000\n"
+"PO-Revision-Date: 2018-03-09 21:34+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Poedit 2.0.6\n"
 
 #: ../src/addressbook/backends/file/e-book-backend-file.c:120
 #, c-format
@@ -107,7 +107,7 @@ msgstr "No si è rivâts a cambiâ non di “%s” a “%s” ae base di dâts v
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:200
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:222
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../src/calendar/backends/http/e-cal-backend-http.c:204
 #: ../src/calendar/libecal/e-cal.c:2334
@@ -144,7 +144,7 @@ msgid "Unknown error"
 msgstr "Erôr no cognossût"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:924
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1005
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1017
 msgid "Object to save is not a valid vCard"
 msgstr "L'ogjet di salvâ nol è un valit vCard"
 
@@ -266,7 +266,7 @@ msgstr "No si è rivâts a vê il DN pal utent “%s”"
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "Il URL “%s” furnît nol fâs riferiment a une rubriche WebDAV"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:929
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:941
 msgid "Received object is not a valid vCard"
 msgstr "L'ogjet ricevût nol è un valit vCard"
 
@@ -1367,12 +1367,12 @@ msgstr "Revision fûr sincronie dilunc il moviment dal cursôr"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "L'indiç alfabetic al jere stât stabilît par une localizazion sbaliade"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:165
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "L'URL “%s” furnît nol fâs riferiment a un calendari CalDAV"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1579
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1616
 msgid "Failed to parse response data"
 msgstr "No si è rivâts a analizâ i dâts de rispueste"
 
@@ -5338,7 +5338,7 @@ msgid "Failed to lookup credentials: "
 msgstr "No si è rivâts a cirî lis credenziâls: "
 
 #: ../src/libebackend/e-server-side-source.c:1395
-#: ../src/libedataserver/e-source.c:1597
+#: ../src/libedataserver/e-source.c:1583
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "La sorzint dâts “%s” no supuarte la creazion di risorsis rimotis"
@@ -5351,7 +5351,7 @@ msgstr ""
 "La sorzint dâts “%s” no à un backend di colezion par creâ la risorse rimote"
 
 #: ../src/libebackend/e-server-side-source.c:1437
-#: ../src/libedataserver/e-source.c:1710
+#: ../src/libedataserver/e-source.c:1696
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "La sorzint dâts “%s” no supuarte la eliminazion des risorsis rimotis"
@@ -5365,7 +5365,7 @@ msgstr ""
 "rimote"
 
 #: ../src/libebackend/e-server-side-source.c:1482
-#: ../src/libedataserver/e-source.c:1806
+#: ../src/libedataserver/e-source.c:1792
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5598,17 +5598,17 @@ msgstr "Falît cun erôr HTTP %d: %s"
 msgid "Source file is missing a [%s] group"
 msgstr "Il file sorzint al mancje di un grup [%s]"
 
-#: ../src/libedataserver/e-source.c:1377
+#: ../src/libedataserver/e-source.c:1363
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "La sorzint dâts “%s” no si pues gjavâ"
 
-#: ../src/libedataserver/e-source.c:1500
+#: ../src/libedataserver/e-source.c:1486
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "La sorzint dâts “%s” no si pues scrivi"
 
-#: ../src/libedataserver/e-source.c:2196
+#: ../src/libedataserver/e-source.c:2173
 msgid "Unnamed"
 msgstr "Cence non"
 
@@ -5947,10 +5947,11 @@ msgstr "No si è rivâts a otignî la liste di control acès"
 #: ../src/libedataserver/e-webdav-session.c:4787
 msgid "Cannot store protected nor inherited Access Control Entry."
 msgstr ""
+"Impussibil archiviâ la vôs di control dal acès ni ereditade ni protete."
 
 #: ../src/libedataserver/e-webdav-session.c:4794
 msgid "Provided invalid principal kind for Access Control Entry."
-msgstr ""
+msgstr "Furnît gjenar principâl no valit pe vôs di control dal acès."
 
 #: ../src/libedataserver/e-webdav-session.c:4801
 msgid "Cannot store property-based Access Control Entry."
