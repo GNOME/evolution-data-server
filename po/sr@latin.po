@@ -10,9 +10,9 @@ msgstr ""
 "Project-Id-Version: evolution-data-server\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-20 14:52+0000\n"
-"PO-Revision-Date: 2018-02-21 18:15+0100\n"
-"Last-Translator: Miloš Popović <gpopac@gmail.com>\n"
+"POT-Creation-Date: 2018-03-06 20:58+0000\n"
+"PO-Revision-Date: 2018-02-25 08:23+0100\n"
+"Last-Translator: Marko M. Kostić <marko.m.kostic@gmail.com>\n"
 "Language-Team: Serbian <(nothing)>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
@@ -111,7 +111,7 @@ msgstr "Nisam uspeo da preimenujem staru bazu podataka „%s“ u „%s“: %s"
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:200
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:222
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../src/calendar/backends/http/e-cal-backend-http.c:204
 #: ../src/calendar/libecal/e-cal.c:2334
@@ -148,7 +148,7 @@ msgid "Unknown error"
 msgstr "Nepoznata greška"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:924
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1005
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1017
 msgid "Object to save is not a valid vCard"
 msgstr "Objekat u koji treba sačuvati nije u ispravnom vCard formatu"
 
@@ -270,7 +270,7 @@ msgstr "Nisam uspeo da dobavim naziv domena za korisnika „%s“"
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "Uneta adresa „%s“ se ne odnosi na VebDAV imenik"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:929
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:941
 msgid "Received object is not a valid vCard"
 msgstr "Primljeni objekat nije ispravni vCard"
 
@@ -1357,12 +1357,12 @@ msgstr "Van pregleda usaglašavanja prilikom premeštanja kurzora"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Azbučni indeks je podešen za neispravan jezik"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:165
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Navedena adresa „%s“ se ne odnosi na KalDAV kalendar"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1579
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1616
 msgid "Failed to parse response data"
 msgstr "Nisam uspeo da obradim podatke iz odgovora"
 
@@ -5192,7 +5192,7 @@ msgid ""
 "Examples: Company:mail.company.com - enables 'Company' OAuth2 authentication "
 "for 'mail.company.com' host Company-CalDAV:caldav.company.com - enables "
 "'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
-"from 'caldav.companycaldav.com' host"
+"from 'caldav.company.com' host"
 msgstr ""
 "Korisnici mogu proširiti spisak podržanih protokola i naziva mašina, za "
 "definisane OAut2 usluge, uz one koji su tvrdo kodirani. Svaka linija može "
@@ -5290,7 +5290,7 @@ msgstr "„%s“ ne podržava stvaranje udaljenih izvorišta"
 msgid "%s does not support deleting remote resources"
 msgstr "„%s“ ne podržava brisanje udaljenih izvorišta"
 
-#: ../src/libebackend/e-data-factory.c:1348
+#: ../src/libebackend/e-data-factory.c:1359
 #, c-format
 msgid "Backend factory for source “%s” and extension “%s” cannot be found."
 msgstr "Ne mogu da nađem pozadinsku proizvodnju za izvor „%s“ i proširenje „%s“."
@@ -5305,7 +5305,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Nisam uspeo da nađem uverenja: "
 
 #: ../src/libebackend/e-server-side-source.c:1395
-#: ../src/libedataserver/e-source.c:1597
+#: ../src/libedataserver/e-source.c:1583
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Izvor podataka „%s“ ne podržava stvaranje udaljenih izvorišta"
@@ -5318,7 +5318,7 @@ msgstr ""
 "Izvor podataka „%s“ nema pozadinca zbirke da bi napravio udaljeno izvorište"
 
 #: ../src/libebackend/e-server-side-source.c:1437
-#: ../src/libedataserver/e-source.c:1710
+#: ../src/libedataserver/e-source.c:1696
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Izvor podataka „%s“ ne podržava brisanje udaljenih izvorišta"
@@ -5331,7 +5331,7 @@ msgstr ""
 "Izvor podataka „%s“ nema pozadinca zbirke da bi obrisao udaljeno izvorište"
 
 #: ../src/libebackend/e-server-side-source.c:1482
-#: ../src/libedataserver/e-source.c:1806
+#: ../src/libedataserver/e-source.c:1792
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5563,17 +5563,17 @@ msgstr "Neuspeh sa HTTP greškom %d: %s"
 msgid "Source file is missing a [%s] group"
 msgstr "Izvornoj datoteci nedostaje [%s] grupa"
 
-#: ../src/libedataserver/e-source.c:1377
+#: ../src/libedataserver/e-source.c:1363
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Izvor podataka „%s“ se ne može ukloniti"
 
-#: ../src/libedataserver/e-source.c:1500
+#: ../src/libedataserver/e-source.c:1486
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Izvor podataka „%s“ nije upisiv"
 
-#: ../src/libedataserver/e-source.c:2196
+#: ../src/libedataserver/e-source.c:2173
 msgid "Unnamed"
 msgstr "Neimenovan"
 
