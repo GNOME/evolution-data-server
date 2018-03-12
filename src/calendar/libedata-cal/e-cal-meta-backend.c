@@ -102,7 +102,11 @@ enum {
 
 static guint signals[LAST_SIGNAL];
 
-G_DEFINE_ABSTRACT_TYPE (ECalMetaBackend, e_cal_meta_backend, E_TYPE_CAL_BACKEND_SYNC)
+/* Forward Declarations */
+static void e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface);
+
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (ECalMetaBackend, e_cal_meta_backend, E_TYPE_CAL_BACKEND_SYNC,
+	G_IMPLEMENT_INTERFACE (E_TYPE_TIMEZONE_CACHE, e_cal_meta_backend_timezone_cache_init))
 
 G_DEFINE_BOXED_TYPE (ECalMetaBackendInfo, e_cal_meta_backend_info, e_cal_meta_backend_info_copy, e_cal_meta_backend_info_free)
 
@@ -3044,6 +3048,53 @@ ecmb_maybe_wait_for_credentials (ECalMetaBackend *meta_backend,
 }
 
 static void
+ecmb_add_cached_timezone (ETimezoneCache *cache,
+			  icaltimezone *zone)
+{
+	ECalCache *cal_cache;
+
+	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cache));
+	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
+
+	e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (cal_cache), zone);
+
+	g_clear_object (&cal_cache);
+}
+
+static icaltimezone *
+ecmb_get_cached_timezone (ETimezoneCache *cache,
+			  const gchar *tzid)
+{
+	ECalCache *cal_cache;
+	icaltimezone *zone;
+
+	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cache));
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+
+	zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cal_cache), tzid);
+
+	g_clear_object (&cal_cache);
+
+	return zone;
+}
+
+static GList *
+ecmb_list_cached_timezones (ETimezoneCache *cache)
+{
+	ECalCache *cal_cache;
+	GList *zones;
+
+	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cache));
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+
+	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (cal_cache));
+
+	g_clear_object (&cal_cache);
+
+	return zones;
+}
+
+static void
 e_cal_meta_backend_set_property (GObject *object,
 				 guint property_id,
 				 const GValue *value,
@@ -3298,6 +3349,14 @@ e_cal_meta_backend_init (ECalMetaBackend *meta_backend)
 	meta_backend->priv->refresh_after_authenticate = FALSE;
 	meta_backend->priv->ever_connected = -1;
 	meta_backend->priv->connected_writable = -1;
+}
+
+static void
+e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface)
+{
+	iface->add_timezone = ecmb_add_cached_timezone;
+	iface->get_timezone = ecmb_get_cached_timezone;
+	iface->list_timezones = ecmb_list_cached_timezones;
 }
 
 /**
