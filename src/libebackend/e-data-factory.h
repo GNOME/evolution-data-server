@@ -85,7 +85,16 @@ struct _EDataFactoryClass {
 						 const gchar *bus_name,
 						 const gchar *extension_name);
 
-	gpointer reserved[15];
+	EBackend *	(* create_backend)	(EDataFactory *data_factory,
+						 EBackendFactory *backend_factory,
+						 ESource *source);
+	gchar *		(* open_backend)	(EDataFactory *data_factory,
+						 EBackend *backend,
+						 GDBusConnection *connection,
+						 GCancellable *cancellable,
+						 GError **error);
+
+	gpointer reserved[13];
 };
 
 GType		e_data_factory_get_type		(void) G_GNUC_CONST;
@@ -106,6 +115,20 @@ void		e_data_factory_spawn_subprocess_backend
 gboolean	e_data_factory_get_reload_supported
 						(EDataFactory *data_factory);
 gint		e_data_factory_get_backend_per_process
+						(EDataFactory *data_factory);
+gboolean	e_data_factory_use_backend_per_process
+						(EDataFactory *data_factory);
+EBackend *	e_data_factory_create_backend	(EDataFactory *data_factory,
+						 EBackendFactory *backend_factory,
+						 ESource *source);
+gchar *		e_data_factory_open_backend	(EDataFactory *data_factory,
+						 EBackend *backend,
+						 GDBusConnection *connection,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_data_factory_backend_closed	(EDataFactory *data_factory,
+						 EBackend *backend);
+GSList *	e_data_factory_list_opened_backends /* EBackend * */
 						(EDataFactory *data_factory);
 
 G_END_DECLS

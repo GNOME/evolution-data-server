@@ -27,6 +27,7 @@ set(SOURCES
 	e-data-book-factory.c
 	e-data-book-view.c
 	e-subprocess-book-factory.c
+	e-system-locale-watcher.c
 	ximian-vcard.h
 )
 
@@ -49,6 +50,7 @@ set(HEADERS
 	e-book-backend-cache.h
 	e-book-backend-sqlitedb.h
 	e-subprocess-book-factory.h
+	e-system-locale-watcher.h
 )
 
 if(WITH_LIBDB)

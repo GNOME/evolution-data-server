@@ -40,6 +40,7 @@
 #include <libedata-book/e-data-book-view.h>
 #include <libedata-book/e-data-book.h>
 #include <libedata-book/e-subprocess-book-factory.h>
+#include <libedata-book/e-system-locale-watcher.h>
 
 #undef __LIBEDATA_BOOK_H_INSIDE__
 

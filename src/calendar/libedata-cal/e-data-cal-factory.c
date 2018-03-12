@@ -144,6 +144,96 @@ data_cal_complete_open (EDataFactory *data_factory,
 		data_cal_complete_memo_list_open (data_factory, invocation, object_path, bus_name);
 }
 
+static void
+data_cal_factory_backend_closed_cb (EBackend *backend,
+				    const gchar *sender,
+				    EDataFactory *data_factory)
+{
+	e_data_factory_backend_closed (data_factory, backend);
+}
+
+static EBackend *
+data_cal_factory_create_backend (EDataFactory *data_factory,
+				 EBackendFactory *backend_factory,
+				 ESource *source)
+{
+	ECalBackendFactoryClass *backend_factory_class;
+	EBackend *backend;
+
+	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (data_factory), NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND_FACTORY (backend_factory), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	backend_factory_class = E_CAL_BACKEND_FACTORY_GET_CLASS (backend_factory);
+	g_return_val_if_fail (backend_factory_class != NULL, NULL);
+
+	if (g_type_is_a (backend_factory_class->backend_type, G_TYPE_INITABLE)) {
+		GError *local_error = NULL;
+
+		backend = g_initable_new (backend_factory_class->backend_type, NULL, &local_error,
+			"kind", backend_factory_class->component_kind,
+			"registry", e_data_factory_get_registry (data_factory),
+			"source", source,
+			NULL);
+
+		if (!backend)
+			g_warning ("%s: Failed to create backend: %s\n", G_STRFUNC, local_error ? local_error->message : "Unknown error");
+
+		g_clear_error (&local_error);
+	} else {
+		backend = g_object_new (backend_factory_class->backend_type,
+			"kind", backend_factory_class->component_kind,
+			"registry", e_data_factory_get_registry (data_factory),
+			"source", source,
+			NULL);
+	}
+
+	if (backend) {
+		g_signal_connect (backend, "closed",
+			G_CALLBACK (data_cal_factory_backend_closed_cb), data_factory);
+	}
+
+	return backend;
+}
+
+static gchar *
+data_cal_factory_open_backend (EDataFactory *data_factory,
+			       EBackend *backend,
+			       GDBusConnection *connection,
+			       GCancellable *cancellable,
+			       GError **error)
+{
+	EDataCal *data_cal;
+	gchar *object_path;
+
+	g_return_val_if_fail (E_IS_DATA_CAL_FACTORY (data_factory), NULL);
+	g_return_val_if_fail (E_IS_CAL_BACKEND (backend), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+
+	/* If the backend already has an EDataCal installed, return its
+	 * object path.  Otherwise we need to install a new EDataCal. */
+	data_cal = e_cal_backend_ref_data_cal (E_CAL_BACKEND (backend));
+
+	if (data_cal) {
+		object_path = g_strdup (e_data_cal_get_object_path (data_cal));
+	} else {
+		object_path = e_subprocess_factory_construct_path ();
+
+		/* The EDataCal will attach itself to ECalBackend,
+		 * so no need to call e_cal_backend_set_data_cal(). */
+		data_cal = e_data_cal_new (E_CAL_BACKEND (backend), connection, object_path, error);
+
+		if (!data_cal) {
+			g_free (object_path);
+			object_path = NULL;
+		}
+	}
+
+	g_clear_object (&data_cal);
+
+	return object_path;
+}
+
 static gboolean
 data_cal_factory_initable_init (GInitable *initable,
 			        GCancellable *cancellable,
@@ -196,6 +286,8 @@ e_data_cal_factory_class_init (EDataCalFactoryClass *class)
 	data_factory_class->get_dbus_interface_skeleton = data_cal_factory_get_dbus_interface_skeleton;
 	data_factory_class->get_factory_name = data_cal_get_factory_name;
 	data_factory_class->complete_open = data_cal_complete_open;
+	data_factory_class->create_backend = data_cal_factory_create_backend;
+	data_factory_class->open_backend = data_cal_factory_open_backend;
 }
 
 static gboolean

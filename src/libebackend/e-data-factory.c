@@ -85,6 +85,9 @@ struct _EDataFactoryPrivate {
 
 	gboolean reload_supported;
 	gint backend_per_process;
+
+	/* Used only when backend-per-process is disabled, guarded by 'mutex' */
+	GHashTable *opened_backends; /* backend-key ~> OpenedBackendData * */
 };
 
 enum {
@@ -180,6 +183,36 @@ data_factory_subprocess_helper_free (DataFactorySubprocessHelper *helper)
 		g_free (helper->bus_name);
 
 		g_free (helper);
+	}
+}
+
+typedef struct _OpenedBackendData {
+	EBackend *backend;
+	gchar *object_path;
+} OpenedBackendData;
+
+static OpenedBackendData *
+opened_backend_data_new (EBackend *backend, /* assumes ownership of 'backend' */
+			 const gchar *object_path)
+{
+	OpenedBackendData *obd;
+
+	obd = g_new0 (OpenedBackendData, 1);
+	obd->backend = backend;
+	obd->object_path = g_strdup (object_path);
+
+	return obd;
+}
+
+static void
+opened_backend_data_free (gpointer ptr)
+{
+	OpenedBackendData *obd = ptr;
+
+	if (obd) {
+		g_clear_object (&obd->backend);
+		g_free (obd->object_path);
+		g_free (obd);
 	}
 }
 
@@ -286,34 +319,16 @@ data_factory_subprocess_data_free (DataFactorySubprocessData *sd)
 	}
 }
 
-static gboolean
-data_factory_use_backend_per_process (gint override_backend_per_process)
-{
-	gboolean backend_per_process;
-
-	if (override_backend_per_process == 0 || override_backend_per_process == 1) {
-		backend_per_process = override_backend_per_process == 1;
-	} else {
-		#ifdef ENABLE_BACKEND_PER_PROCESS
-		backend_per_process = TRUE;
-		#else
-		backend_per_process = FALSE;
-		#endif
-	}
-
-	return backend_per_process;
-}
-
 static gchar *
-data_factory_dup_subprocess_helper_hash_key (gint override_backend_per_process,
-					     const gchar *factory_name,
+data_factory_dup_subprocess_helper_hash_key (const gchar *factory_name,
 					     const gchar *extension_name,
 					     const gchar *uid,
+					     gboolean backend_per_process,
 					     gboolean backend_factory_share_subprocess)
 {
 	gchar *helper_hash_key;
 
-	if (data_factory_use_backend_per_process (override_backend_per_process)) {
+	if (backend_per_process) {
 		helper_hash_key = backend_factory_share_subprocess ?
 			g_strdup (factory_name) : g_strdup_printf ("%s:%s:%s", factory_name, extension_name, uid);
 	} else {
@@ -962,6 +977,8 @@ data_factory_finalize (GObject *object)
 	g_hash_table_destroy (priv->watched_names);
 	g_mutex_clear (&priv->watched_names_lock);
 
+	g_hash_table_destroy (priv->opened_backends);
+
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (e_data_factory_parent_class)->finalize (object);
 }
@@ -1127,6 +1144,8 @@ e_data_factory_init (EDataFactory *data_factory)
 		(GDestroyNotify) g_free,
 		(GDestroyNotify) watched_names_value_free);
 
+	data_factory->priv->opened_backends = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, opened_backend_data_free);
+
 	data_factory->priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
 	data_factory->priv->reload_supported = FALSE;
 	data_factory->priv->backend_per_process = -1;
@@ -1229,6 +1248,50 @@ e_data_factory_construct_path (EDataFactory *data_factory)
 }
 
 static void
+data_factory_backend_toggle_notify_cb (gpointer user_data,
+				       GObject *backend,
+				       gboolean is_last_ref)
+{
+	if (is_last_ref) {
+		EDataFactory *data_factory = E_DATA_FACTORY (user_data);
+		gboolean found = FALSE;
+
+		g_object_ref (backend);
+
+		g_object_remove_toggle_ref (
+			backend, data_factory_backend_toggle_notify_cb, user_data);
+
+		g_signal_emit_by_name (backend, "shutdown");
+
+		g_mutex_lock (&data_factory->priv->mutex);
+		if (data_factory->priv->opened_backends) {
+			GHashTableIter iter;
+			gpointer key, value;
+
+			g_hash_table_iter_init (&iter, data_factory->priv->opened_backends);
+			while (g_hash_table_iter_next (&iter, &key, &value)) {
+				OpenedBackendData *obd = value;
+
+				if (obd && obd->backend == (EBackend *) backend) {
+					g_hash_table_remove (data_factory->priv->opened_backends, key);
+					found = TRUE;
+					break;
+				}
+			}
+		}
+		g_mutex_unlock (&data_factory->priv->mutex);
+
+		if (!found) {
+			g_warn_if_reached ();
+			g_object_unref (backend);
+		}
+
+		/* Also drop the "reference" on the data_factory */
+		e_dbus_server_release (E_DBUS_SERVER (data_factory));
+	}
+}
+
+static void
 data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 				       GDBusMethodInvocation *invocation,
 				       const gchar *uid,
@@ -1246,6 +1309,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	guint watched_id = 0;
 	gchar *backend_name = NULL;
 	gchar *subprocess_helpers_hash_key;
+	gboolean backend_per_process;
 	const gchar *factory_name;
 	const gchar *filename;
 	const gchar *type_name;
@@ -1265,26 +1329,83 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		extension = e_source_get_extension (source, extension_name);
 		backend_name = e_source_backend_dup_backend_name (extension);
 	}
-	g_clear_object (&source);
 
 	if (backend_name && *backend_name) {
 		backend_factory = e_data_factory_ref_backend_factory (
 			data_factory, backend_name, extension_name);
 	}
 
-	g_free (backend_name);
+	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	backend_per_process = e_data_factory_use_backend_per_process (data_factory);
 
-	if (backend_factory) {
-		gboolean backend_per_process;
+	if (!backend_per_process && backend_factory) {
+		gchar *object_path = NULL, *backend_key;
+		OpenedBackendData *obd;
 
+		backend_key = g_strconcat (backend_name, "\n", uid, "\n", extension_name, NULL);
+
+		g_mutex_lock (&data_factory->priv->mutex);
+		obd = g_hash_table_lookup (data_factory->priv->opened_backends, backend_key);
+		if (obd) {
+			object_path = g_strdup (obd->object_path);
+			g_object_ref (obd->backend);
+
+			/* Also drop the "reference" on the data_factory, it's held by the obj->backend already */
+			e_dbus_server_release (E_DBUS_SERVER (data_factory));
+		}
+		g_mutex_unlock (&data_factory->priv->mutex);
+
+		if (!object_path) {
+			EBackend *backend;
+
+			backend = e_data_factory_create_backend (data_factory, backend_factory, source);
+			object_path = e_data_factory_open_backend (data_factory, backend, g_dbus_method_invocation_get_connection (invocation), NULL, &error);
+			if (object_path) {
+				g_object_add_toggle_ref (
+					G_OBJECT (backend),
+					data_factory_backend_toggle_notify_cb,
+					data_factory);
+
+				g_mutex_lock (&data_factory->priv->mutex);
+				g_hash_table_insert (data_factory->priv->opened_backends, backend_key,
+					opened_backend_data_new (backend, object_path));
+				g_mutex_unlock (&data_factory->priv->mutex);
+
+				backend_key = NULL;
+
+				/* Do not call e_dbus_server_release() here, otherwise the factory will close
+				   shortly afterwards. The backend holds the "reference" to the factory. */
+				/* e_dbus_server_release (E_DBUS_SERVER (data_factory)); */
+			} else {
+				g_clear_object (&backend);
+			}
+		}
+
+		if (object_path) {
+			EDBusServerClass *server_class;
+
+			g_return_if_fail (class->complete_open != NULL);
+
+			server_class = E_DBUS_SERVER_GET_CLASS (data_factory);
+
+			class->complete_open (data_factory, invocation, object_path, server_class->bus_name, extension_name);
+
+			g_mutex_lock (&priv->spawn_subprocess_lock);
+			priv->spawn_subprocess_state = DATA_FACTORY_SPAWN_SUBPROCESS_NONE;
+			g_cond_signal (&priv->spawn_subprocess_cond);
+			g_mutex_unlock (&priv->spawn_subprocess_lock);
+		}
+
+		g_free (object_path);
+		g_free (backend_key);
+	} else if (backend_factory) {
 		type_name = G_OBJECT_TYPE_NAME (backend_factory);
 
-		class = E_DATA_FACTORY_GET_CLASS (data_factory);
 		factory_name = class->get_factory_name (backend_factory);
 
 		subprocess_helpers_hash_key = data_factory_dup_subprocess_helper_hash_key (
-			e_data_factory_get_backend_per_process (data_factory),
-			factory_name, extension_name, uid, e_backend_factory_share_subprocess (backend_factory));
+			factory_name, extension_name, uid, backend_per_process,
+			e_backend_factory_share_subprocess (backend_factory));
 
 		g_mutex_lock (&priv->mutex);
 		helper = g_hash_table_lookup (
@@ -1306,7 +1427,9 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 				filename);
 
 			g_object_unref (backend_factory);
+			g_clear_object (&source);
 			g_free (subprocess_helpers_hash_key);
+			g_free (backend_name);
 
 			return;
 		}
@@ -1342,13 +1465,11 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 		g_hash_table_insert (priv->subprocess_watched_ids, g_strdup (sd->bus_name), GUINT_TO_POINTER (watched_id));
 		g_mutex_unlock (&priv->subprocess_watched_ids_lock);
 
-		backend_per_process = data_factory_use_backend_per_process (e_data_factory_get_backend_per_process (data_factory));
-
 		subprocess = g_subprocess_new (
 			G_SUBPROCESS_FLAGS_NONE,
 			&error,
 			subprocess_path,
-			"--factory", backend_per_process ? sd->factory_name : "all",
+			"--factory", sd->factory_name,
 			"--bus-name", sd->bus_name,
 			"--own-path", sd->path,
 			NULL);
@@ -1359,6 +1480,9 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 			_("Backend factory for source “%s” and extension “%s” cannot be found."),
 			uid, extension_name);
 	}
+
+	g_clear_object (&source);
+	g_free (backend_name);
 
 	if (error != NULL) {
 		e_dbus_server_release (E_DBUS_SERVER (data_factory));
@@ -1464,4 +1588,102 @@ e_data_factory_get_backend_per_process (EDataFactory *data_factory)
 	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), -1);
 
 	return data_factory->priv->backend_per_process;
+}
+
+gboolean
+e_data_factory_use_backend_per_process (EDataFactory *data_factory)
+{
+	gboolean backend_per_process;
+	gint override_backend_per_process;
+
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), FALSE);
+
+	override_backend_per_process = e_data_factory_get_backend_per_process (data_factory);
+
+	if (override_backend_per_process == 0 || override_backend_per_process == 1) {
+		backend_per_process = override_backend_per_process == 1;
+	} else {
+		#ifdef ENABLE_BACKEND_PER_PROCESS
+		backend_per_process = TRUE;
+		#else
+		backend_per_process = FALSE;
+		#endif
+	}
+
+	return backend_per_process;
+}
+
+/* Used only when backend-per-process is off. Free the returned pointer
+   with g_object_unref(), if not NULL and no longer needed */
+EBackend *
+e_data_factory_create_backend (EDataFactory *data_factory,
+			       EBackendFactory *backend_factory,
+			       ESource *source)
+{
+	EDataFactoryClass *klass;
+
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
+	g_return_val_if_fail (E_IS_BACKEND_FACTORY (backend_factory), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	klass = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (klass->create_backend != NULL, NULL);
+
+	return klass->create_backend (data_factory, backend_factory, source);
+}
+
+/* Used only when backend-per-process is off. Free the returned string
+   with g_free(), when no longer needed */
+gchar *
+e_data_factory_open_backend (EDataFactory *data_factory,
+			     EBackend *backend,
+			     GDBusConnection *connection,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	EDataFactoryClass *klass;
+
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
+	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+
+	klass = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (klass->open_backend != NULL, NULL);
+
+	return klass->open_backend (data_factory, backend, connection, cancellable, error);
+}
+
+/* Whenever the backend is closed by any of its clients it should call
+   this function, thus the data_factory knows about it */
+void
+e_data_factory_backend_closed (EDataFactory *data_factory,
+			       EBackend *backend)
+{
+	g_return_if_fail (E_IS_DATA_FACTORY (data_factory));
+	g_return_if_fail (E_IS_BACKEND (backend));
+
+	g_object_unref (backend);
+}
+
+/* free with g_list_free_full (list, g_object_unref);, element is 'EBackend *' */
+GSList *
+e_data_factory_list_opened_backends (EDataFactory *data_factory)
+{
+	GSList *backends = NULL;
+	GHashTableIter iter;
+	gpointer value;
+
+	g_return_val_if_fail (E_IS_DATA_FACTORY (data_factory), NULL);
+
+	g_mutex_lock (&data_factory->priv->mutex);
+	g_hash_table_iter_init (&iter, data_factory->priv->opened_backends);
+	while (g_hash_table_iter_next (&iter, NULL, &value)) {
+		OpenedBackendData *obd = value;
+
+		if (obd && obd->backend)
+			backends = g_slist_prepend (backends, g_object_ref (obd->backend));
+	}
+	g_mutex_unlock (&data_factory->priv->mutex);
+
+	return backends;
 }

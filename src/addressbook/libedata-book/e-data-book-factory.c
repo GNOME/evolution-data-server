@@ -30,10 +30,6 @@
  **/
 #include "evolution-data-server-config.h"
 
-#include <locale.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include <glib/gi18n.h>
 
 /* Private D-Bus classes. */
@@ -43,6 +39,7 @@
 #include "e-book-backend-factory.h"
 #include "e-data-book.h"
 #include "e-data-book-factory.h"
+#include "e-system-locale-watcher.h"
 
 #define d(x)
 
@@ -52,6 +49,9 @@
 
 struct _EDataBookFactoryPrivate {
 	EDBusAddressBookFactory *dbus_factory;
+
+	ESystemLocaleWatcher *locale_watcher;
+	gulong notify_locale_id;
 };
 
 /* Forward Declarations */
@@ -117,15 +117,177 @@ data_book_factory_handle_open_address_book_cb (EDBusAddressBookFactory *iface,
 }
 
 static void
+data_book_factory_backend_closed_cb (EBackend *backend,
+				     const gchar *sender,
+				     EDataFactory *data_factory)
+{
+	e_data_factory_backend_closed (data_factory, backend);
+}
+
+static EBackend *
+data_book_factory_create_backend (EDataFactory *data_factory,
+				  EBackendFactory *backend_factory,
+				  ESource *source)
+{
+	EBookBackendFactoryClass *backend_factory_class;
+	EBackend *backend;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (data_factory), NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_FACTORY (backend_factory), NULL);
+	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
+
+	backend_factory_class = E_BOOK_BACKEND_FACTORY_GET_CLASS (backend_factory);
+	g_return_val_if_fail (backend_factory_class != NULL, NULL);
+
+	if (g_type_is_a (backend_factory_class->backend_type, G_TYPE_INITABLE)) {
+		GError *local_error = NULL;
+
+		backend = g_initable_new (backend_factory_class->backend_type, NULL, &local_error,
+			"registry", e_data_factory_get_registry (data_factory),
+			"source", source,
+			NULL);
+
+		if (!backend)
+			g_warning ("%s: Failed to create backend: %s\n", G_STRFUNC, local_error ? local_error->message : "Unknown error");
+
+		g_clear_error (&local_error);
+	} else {
+		backend = g_object_new (backend_factory_class->backend_type,
+			"registry", e_data_factory_get_registry (data_factory),
+			"source", source,
+			NULL);
+	}
+
+	if (backend) {
+		g_signal_connect (backend, "closed",
+			G_CALLBACK (data_book_factory_backend_closed_cb), data_factory);
+	}
+
+	return backend;
+}
+
+static gchar *
+data_book_factory_open_backend (EDataFactory *data_factory,
+				EBackend *backend,
+				GDBusConnection *connection,
+				GCancellable *cancellable,
+				GError **error)
+{
+	EDataBook *data_book;
+	gchar *object_path;
+
+	g_return_val_if_fail (E_IS_DATA_BOOK_FACTORY (data_factory), NULL);
+	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
+	g_return_val_if_fail (G_IS_DBUS_CONNECTION (connection), NULL);
+
+	/* If the backend already has an EDataBook installed, return its
+	 * object path.  Otherwise we need to install a new EDataBook. */
+	data_book = e_book_backend_ref_data_book (E_BOOK_BACKEND (backend));
+
+	if (data_book != NULL) {
+		object_path = g_strdup (e_data_book_get_object_path (data_book));
+	} else {
+		object_path = e_subprocess_factory_construct_path ();
+
+		/* The EDataBook will attach itself to EBookBackend,
+		 * so no need to call e_book_backend_set_data_book(). */
+		data_book = e_data_book_new (E_BOOK_BACKEND (backend), connection, object_path, error);
+
+		if (data_book) {
+			EDataBookFactory *data_book_factory = E_DATA_BOOK_FACTORY (data_factory);
+			gchar *locale;
+
+			locale = e_system_locale_watcher_dup_locale (data_book_factory->priv->locale_watcher);
+
+			/* Don't set the locale on a new book if we have not
+			 * yet received a notification of a locale change
+			 */
+			if (locale)
+				e_data_book_set_locale (data_book, locale, NULL, NULL);
+
+			g_free (locale);
+		} else {
+			g_free (object_path);
+			object_path = NULL;
+		}
+	}
+
+	g_clear_object (&data_book);
+
+	return object_path;
+}
+
+static void
+data_book_factory_notify_locale_cb (GObject *object,
+				    GParamSpec *pspec,
+				    gpointer user_data)
+{
+	ESystemLocaleWatcher *watcher = E_SYSTEM_LOCALE_WATCHER (object);
+	EDataBookFactory *data_book_factory = E_DATA_BOOK_FACTORY (user_data);
+	gchar *locale;
+
+	locale = e_system_locale_watcher_dup_locale (watcher);
+
+	if (locale) {
+		GSList *backends, *link;
+		GError *local_error = NULL;
+
+		backends = e_data_factory_list_opened_backends (E_DATA_FACTORY (data_book_factory));
+
+		for (link = backends; link; link = g_slist_next (link)) {
+			EBackend *backend = link->data;
+			EDataBook *data_book;
+
+			data_book = e_book_backend_ref_data_book (E_BOOK_BACKEND (backend));
+
+			if (!e_data_book_set_locale (data_book, locale, NULL, &local_error)) {
+				g_warning ("Failed to set locale on addressbook: %s", local_error ? local_error->message : "Unknown error");
+				g_clear_error (&local_error);
+			}
+
+			g_object_unref (data_book);
+		}
+
+		g_slist_free_full (backends, g_object_unref);
+		g_free (locale);
+	}
+}
+
+static void
+data_book_factory_constructed (GObject *object)
+{
+	EDataBookFactory *data_book_factory;
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_data_book_factory_parent_class)->constructed (object);
+
+	data_book_factory = E_DATA_BOOK_FACTORY (object);
+
+	/* Listen to locale changes only when the backends run in the factory process,
+	   aka when the backend-per-process is disabled */
+	if (!e_data_factory_use_backend_per_process (E_DATA_FACTORY (data_book_factory))) {
+		data_book_factory->priv->locale_watcher = e_system_locale_watcher_new ();
+
+		data_book_factory->priv->notify_locale_id = g_signal_connect (
+			data_book_factory->priv->locale_watcher, "notify::locale",
+			G_CALLBACK (data_book_factory_notify_locale_cb), data_book_factory);
+	}
+}
+
+static void
 data_book_factory_dispose (GObject *object)
 {
 	EDataBookFactory *factory;
-	EDataBookFactoryPrivate *priv;
 
 	factory = E_DATA_BOOK_FACTORY (object);
-	priv = factory->priv;
 
-	g_clear_object (&priv->dbus_factory);
+	if (factory->priv->locale_watcher && factory->priv->notify_locale_id) {
+		g_signal_handler_disconnect (factory->priv->locale_watcher, factory->priv->notify_locale_id);
+		factory->priv->notify_locale_id = 0;
+	}
+
+	g_clear_object (&factory->priv->dbus_factory);
+	g_clear_object (&factory->priv->locale_watcher);
 
 	/* Chain up to parent's dispose() method. */
 	G_OBJECT_CLASS (e_data_book_factory_parent_class)->dispose (object);
@@ -154,6 +316,7 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	g_type_class_add_private (class, sizeof (EDataBookFactoryPrivate));
 
 	object_class = G_OBJECT_CLASS (class);
+	object_class->constructed = data_book_factory_constructed;
 	object_class->dispose = data_book_factory_dispose;
 
 	dbus_server_class = E_DBUS_SERVER_CLASS (class);
@@ -168,6 +331,8 @@ e_data_book_factory_class_init (EDataBookFactoryClass *class)
 	data_factory_class->get_dbus_interface_skeleton = data_book_factory_get_dbus_interface_skeleton;
 	data_factory_class->get_factory_name = data_book_get_factory_name;
 	data_factory_class->complete_open = data_book_complete_open;
+	data_factory_class->create_backend = data_book_factory_create_backend;
+	data_factory_class->open_backend = data_book_factory_open_backend;
 }
 
 static void
