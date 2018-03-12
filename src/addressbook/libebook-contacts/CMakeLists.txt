@@ -2,10 +2,31 @@ glib_mkenums(e-book-contacts-enumtypes e-book-contacts-types.h E_BOOK_CONTACTS_E
 
 add_pkgconfig_file(libebook-contacts.pc.in libebook-contacts-${API_VERSION}.pc)
 
+add_executable(gen-western-table
+	gen-western-table.c
+)
+
+target_compile_definitions(gen-western-table PRIVATE
+	-DG_LOG_DOMAIN=\"gen-western-table\"
+)
+
+target_compile_options(gen-western-table PUBLIC
+	${GNOME_PLATFORM_CFLAGS}
+)
+
+target_include_directories(gen-western-table PUBLIC
+	${CMAKE_BINARY_DIR}
+	${GNOME_PLATFORM_INCLUDE_DIRS}
+)
+
+target_link_libraries(gen-western-table
+	${GNOME_PLATFORM_LDFLAGS}
+)
+
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/e-name-western-tables.h
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/gen-western-table.py <${CMAKE_CURRENT_SOURCE_DIR}/e-name-western-tables.h.in >${CMAKE_CURRENT_BINARY_DIR}/e-name-western-tables.h
-	DEPENDS gen-western-table.py e-name-western-tables.h.in
+	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/gen-western-table "${CMAKE_CURRENT_SOURCE_DIR}/e-name-western-tables.h.in" >${CMAKE_CURRENT_BINARY_DIR}/e-name-western-tables.h
+	DEPENDS gen-western-table e-name-western-tables.h.in
 )
 
 set(DEPENDENCIES

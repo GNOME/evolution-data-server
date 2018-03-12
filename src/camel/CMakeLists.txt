@@ -1,9 +1,17 @@
 glib_mkenums(camel-enumtypes camel-enums.h CAMEL_ENUMTYPES_H)
 
+add_executable(camel-gen-tables
+	camel-gen-tables.c
+)
+
+target_include_directories(camel-gen-tables PUBLIC
+	${CMAKE_BINARY_DIR}
+)
+
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/camel-mime-tables.c
-	COMMAND ${PERL} ${CMAKE_CURRENT_SOURCE_DIR}/gentables.pl >${CMAKE_CURRENT_BINARY_DIR}/camel-mime-tables.c
-	DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/gentables.pl
+	COMMAND ${CMAKE_CURRENT_BINARY_DIR}/camel-gen-tables >${CMAKE_CURRENT_BINARY_DIR}/camel-mime-tables.c
+	DEPENDS camel-gen-tables
 )
 
 set(SOURCES
