@@ -3636,12 +3636,17 @@ ecc_add_cached_timezone (ETimezoneCache *cache,
 			 icaltimezone *zone)
 {
 	ECalCache *cal_cache;
+	const gchar *matched_tzid;
 	const gchar *tzid;
 
 	cal_cache = E_CAL_CACHE (cache);
 
 	tzid = icaltimezone_get_tzid (zone);
-	if (tzid == NULL)
+	if (!tzid || !*tzid || icaltimezone_get_builtin_timezone (tzid))
+		return;
+
+	matched_tzid = e_cal_match_tzid (tzid);
+	if (matched_tzid && icaltimezone_get_builtin_timezone_from_tzid (matched_tzid))
 		return;
 
 	e_cal_cache_put_timezone (cal_cache, zone, NULL, NULL);
