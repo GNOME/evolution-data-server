@@ -389,6 +389,13 @@ e_dbus_server_class_init (EDBusServerClass *class)
 static void
 e_dbus_server_init (EDBusServer *server)
 {
+#if !GLIB_CHECK_VERSION(2, 58, 0)
+	/* Workaround glib bug https://bugzilla.gnome.org/show_bug.cgi?id=793727
+	   Do not place this into class_init(), otherwise it can trigger
+	   deadlock under _g_dbus_initialize () at gdbusprivate.c:1950 */
+	g_network_monitor_get_default ();
+#endif
+
 	server->priv = E_DBUS_SERVER_GET_PRIVATE (server);
 	server->priv->main_loop = g_main_loop_new (NULL, FALSE);
 	server->priv->wait_for_client = FALSE;
