@@ -4811,3 +4811,968 @@ e_cal_recur_get_localized_nth (gint nth)
 
 	return _(e_cal_recur_nth[nth]);
 }
+
+static gint
+cal_comp_util_recurrence_count_by_xxx (gshort *field,
+				       gint max_elements)
+{
+	gint ii;
+
+	for (ii = 0; ii < max_elements; ii++)
+		if (field[ii] == ICAL_RECURRENCE_ARRAY_MAX)
+			break;
+
+	return ii;
+}
+
+/**
+ * e_cal_recur_describe_recurrence:
+ * @icalcomp: an icalcomponent
+ * @week_start_day: a day when the week starts
+ * @flags: bit-or of #ECalRecurDescribeRecurrenceFlags
+ *
+ * Describes some simple types of recurrences in a human-readable and localized way.
+ * The @flags influence the output output format and what to do when the @icalcomp
+ * contain more complicated recurrence, some which the function cannot describe.
+ *
+ * The @week_start_day is used for weekly recurrences, to start the list of selected
+ * days at that day.
+ *
+ * Free the returned string with g_free(), when no longer needed.
+ *
+ * Returns: (nullable) (transfer full): a newly allocated string, which
+ *    describes the recurrence of the @icalcomp, or #NULL, when the @icalcomp
+ *    doesn't recur or the recurrence is too complicated to describe, also
+ *    according to given @flags.
+ *
+ * Since: 3.30
+ **/
+gchar *
+e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
+				 GDateWeekday week_start_day,
+				 guint32 flags)
+{
+	gchar *prefix = NULL, *mid = NULL, *suffix = NULL, *result = NULL;
+	icalproperty *prop;
+	struct icalrecurrencetype rrule;
+	gint n_by_second, n_by_minute, n_by_hour;
+	gint n_by_day, n_by_month_day, n_by_year_day;
+	gint n_by_week_no, n_by_month, n_by_set_pos;
+	gboolean prefixed, fallback;
+
+	g_return_val_if_fail (icalcomp != NULL, NULL);
+
+	prefixed = (flags & E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_PREFIXED) != 0;
+	fallback = (flags & E_CAL_RECUR_DESCRIBE_RECURRENCE_FLAG_FALLBACK) != 0;
+
+	prop = icalcomponent_get_first_property (icalcomp, ICAL_RRULE_PROPERTY);
+	if (!prop)
+		return NULL;
+
+	switch (icalcomponent_isa (icalcomp)) {
+	case ICAL_VEVENT_COMPONENT:
+	case ICAL_VTODO_COMPONENT:
+	case ICAL_VJOURNAL_COMPONENT:
+		break;
+	default:
+		return NULL;
+	}
+
+	if (icalcomponent_count_properties (icalcomp, ICAL_RRULE_PROPERTY) != 1 ||
+	    icalcomponent_count_properties (icalcomp, ICAL_RDATE_PROPERTY) != 0 ||
+	    icalcomponent_count_properties (icalcomp, ICAL_EXRULE_PROPERTY) != 0)
+		goto custom;
+
+	rrule = icalproperty_get_rrule (prop);
+
+	switch (rrule.freq) {
+	case ICAL_DAILY_RECURRENCE:
+	case ICAL_WEEKLY_RECURRENCE:
+	case ICAL_MONTHLY_RECURRENCE:
+	case ICAL_YEARLY_RECURRENCE:
+		break;
+	default:
+		goto custom;
+
+	}
+
+#define N_HAS_BY(field) (cal_comp_util_recurrence_count_by_xxx (field, G_N_ELEMENTS (field)))
+
+	n_by_second = N_HAS_BY (rrule.by_second);
+	n_by_minute = N_HAS_BY (rrule.by_minute);
+	n_by_hour = N_HAS_BY (rrule.by_hour);
+	n_by_day = N_HAS_BY (rrule.by_day);
+	n_by_month_day = N_HAS_BY (rrule.by_month_day);
+	n_by_year_day = N_HAS_BY (rrule.by_year_day);
+	n_by_week_no = N_HAS_BY (rrule.by_week_no);
+	n_by_month = N_HAS_BY (rrule.by_month);
+	n_by_set_pos = N_HAS_BY (rrule.by_set_pos);
+
+#undef N_HAS_BY
+
+	if (n_by_second != 0 ||
+	    n_by_minute != 0 ||
+	    n_by_hour != 0)
+		goto custom;
+
+	switch (rrule.freq) {
+	case ICAL_DAILY_RECURRENCE:
+		if (n_by_day != 0 ||
+		    n_by_month_day != 0 ||
+		    n_by_year_day != 0 ||
+		    n_by_week_no != 0 ||
+		    n_by_month != 0 ||
+		    n_by_set_pos != 0)
+			goto custom;
+
+		if (rrule.interval > 0) {
+			if (!rrule.count && !rrule.until.year) {
+				if (prefixed) {
+					result = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"every day forever",
+							"every %d days forever",
+							rrule.interval), rrule.interval);
+				} else {
+					result = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"Every day forever",
+							"Every %d days forever",
+							rrule.interval), rrule.interval);
+				}
+			} else {
+				if (prefixed) {
+					prefix = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"every day",
+							"every %d days",
+							rrule.interval), rrule.interval);
+				} else {
+					prefix = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"Every day",
+							"Every %d days",
+							rrule.interval), rrule.interval);
+				}
+			}
+		}
+		break;
+
+	case ICAL_WEEKLY_RECURRENCE: {
+		gint ii, ndays;
+		guint8 day_mask;
+		gint day_shift = week_start_day;
+
+		/* Sunday is at bit 0 in the day_mask */
+		if (day_shift < 0 || day_shift >= G_DATE_SUNDAY)
+			day_shift = 0;
+
+		if (n_by_month_day != 0 ||
+		    n_by_year_day != 0 ||
+		    n_by_week_no != 0 ||
+		    n_by_month != 0 ||
+		    n_by_set_pos != 0)
+			goto custom;
+
+		day_mask = 0;
+
+		for (ii = 0; ii < 8 && rrule.by_day[ii] != ICAL_RECURRENCE_ARRAY_MAX; ii++) {
+			enum icalrecurrencetype_weekday weekday;
+			gint pos;
+
+			weekday = icalrecurrencetype_day_day_of_week (rrule.by_day[ii]);
+			pos = icalrecurrencetype_day_position (rrule.by_day[ii]);
+
+			if (pos != 0)
+				goto custom;
+
+			switch (weekday) {
+			case ICAL_SUNDAY_WEEKDAY:
+				day_mask |= 1 << 0;
+				break;
+
+			case ICAL_MONDAY_WEEKDAY:
+				day_mask |= 1 << 1;
+				break;
+
+			case ICAL_TUESDAY_WEEKDAY:
+				day_mask |= 1 << 2;
+				break;
+
+			case ICAL_WEDNESDAY_WEEKDAY:
+				day_mask |= 1 << 3;
+				break;
+
+			case ICAL_THURSDAY_WEEKDAY:
+				day_mask |= 1 << 4;
+				break;
+
+			case ICAL_FRIDAY_WEEKDAY:
+				day_mask |= 1 << 5;
+				break;
+
+			case ICAL_SATURDAY_WEEKDAY:
+				day_mask |= 1 << 6;
+				break;
+
+			default:
+				break;
+			}
+		}
+
+		if (ii == 0) {
+			struct icaltimetype dtstart;
+
+			dtstart = icalcomponent_get_dtstart (icalcomp);
+
+			ii = icaltime_day_of_week (dtstart);
+			if (ii >= 1)
+				day_mask |= 1 << (ii - 1);
+		}
+
+		ndays = 0;
+
+		for (ii = 0; ii < 7; ii++) {
+			if ((day_mask & (1 << ii)) != 0)
+				ndays++;
+		}
+
+		if (prefixed) {
+			prefix = g_strdup_printf (
+				g_dngettext (GETTEXT_PACKAGE,
+					"every week",
+					"every %d weeks",
+					rrule.interval), rrule.interval);
+		} else {
+			prefix = g_strdup_printf (
+				g_dngettext (GETTEXT_PACKAGE,
+					"Every week",
+					"Every %d weeks",
+					rrule.interval), rrule.interval);
+		}
+
+		for (ii = 0; ii < 7 && ndays; ii++) {
+			gint bit = ((ii + day_shift) % 7);
+
+			if ((day_mask & (1 << bit)) != 0) {
+				/* Translators: This is used to merge set of week day names in a recurrence, which can contain any
+				   of the week day names. The string always starts with "on DAYNAME", then it can continue either
+				   with ", DAYNAME" or " and DAYNAME", thus it can be something like "on Monday and Tuesday"
+				   or "on Monday, Wednesday and Friday" or simply "on Saturday". The '%1$s' is replaced with
+				   the previously gathered text, while the '%2$s' is replaced with the text to append. */
+				#define merge_fmt C_("recur-description-dayname", "%1$s%2$s")
+				#define merge_string(_on_str, _merge_str, _and_str) G_STMT_START {\
+					if (mid) { \
+						gchar *tmp; \
+						if (ndays == 1) \
+							tmp = g_strdup_printf (merge_fmt, mid, _and_str); \
+						else \
+							tmp = g_strdup_printf (merge_fmt, mid, _merge_str); \
+						g_free (mid); \
+						mid = tmp; \
+					} else { \
+						mid = g_strdup (_on_str); \
+					} \
+					ndays--; \
+					} G_STMT_END
+				switch (bit) {
+				case 0:
+					merge_string (C_("recur-description", "on Sunday"),
+						      C_("recur-description", ", Sunday"),
+						      C_("recur-description", " and Sunday"));
+					break;
+				case 1:
+					merge_string (C_("recur-description", "on Monday"),
+						      C_("recur-description", ", Monday"),
+						      C_("recur-description", " and Monday"));
+					break;
+				case 2:
+					merge_string (C_("recur-description", "on Tuesday"),
+						      C_("recur-description", ", Tuesday"),
+						      C_("recur-description", " and Tuesday"));
+					break;
+				case 3:
+					merge_string (C_("recur-description", "on Wednesday"),
+						      C_("recur-description", ", Wednesday"),
+						      C_("recur-description", " and Wednesday"));
+					break;
+				case 4:
+					merge_string (C_("recur-description", "on Thursday"),
+						      C_("recur-description", ", Thursday"),
+						      C_("recur-description", " and Thursday"));
+					break;
+				case 5:
+					merge_string (C_("recur-description", "on Friday"),
+						      C_("recur-description", ", Friday"),
+						      C_("recur-description", " and Friday"));
+					break;
+				case 6:
+					merge_string (C_("recur-description", "on Saturday"),
+						      C_("recur-description", ", Saturday"),
+						      C_("recur-description", " and Saturday"));
+					break;
+				default:
+					g_warn_if_reached ();
+					break;
+				}
+				#undef merge_string
+				#undef merge_fmt
+			}
+		}
+		break;
+	}
+
+	case ICAL_MONTHLY_RECURRENCE: {
+		enum month_num_options {
+			MONTH_NUM_INVALID = -1,
+			MONTH_NUM_FIRST,
+			MONTH_NUM_SECOND,
+			MONTH_NUM_THIRD,
+			MONTH_NUM_FOURTH,
+			MONTH_NUM_FIFTH,
+			MONTH_NUM_LAST,
+			MONTH_NUM_DAY,
+			MONTH_NUM_OTHER
+		};
+
+		enum month_day_options {
+			MONTH_DAY_NTH,
+			MONTH_DAY_MON,
+			MONTH_DAY_TUE,
+			MONTH_DAY_WED,
+			MONTH_DAY_THU,
+			MONTH_DAY_FRI,
+			MONTH_DAY_SAT,
+			MONTH_DAY_SUN
+		};
+
+		gint month_index = 1;
+		enum month_day_options month_day;
+		enum month_num_options month_num;
+
+		if (n_by_year_day != 0 ||
+		    n_by_week_no != 0 ||
+		    n_by_month != 0 ||
+		    n_by_set_pos > 1)
+			goto custom;
+
+		if (n_by_month_day == 1) {
+			gint nth;
+
+			if (n_by_set_pos != 0)
+				goto custom;
+
+			nth = rrule.by_month_day[0];
+			if (nth < 1 && nth != -1)
+				goto custom;
+
+			if (nth == -1) {
+				struct icaltimetype dtstart;
+
+				dtstart = icalcomponent_get_dtstart (icalcomp);
+
+				month_index = dtstart.day;
+				month_num = MONTH_NUM_LAST;
+			} else {
+				month_index = nth;
+				month_num = MONTH_NUM_DAY;
+			}
+			month_day = MONTH_DAY_NTH;
+
+		} else if (n_by_day == 1) {
+			enum icalrecurrencetype_weekday weekday;
+			gint pos;
+
+			/* Outlook 2000 uses BYDAY=TU;BYSETPOS=2, and will not
+			 * accept BYDAY=2TU. So we now use the same as Outlook
+			 * by default. */
+
+			weekday = icalrecurrencetype_day_day_of_week (rrule.by_day[0]);
+			pos = icalrecurrencetype_day_position (rrule.by_day[0]);
+
+			if (pos == 0) {
+				if (n_by_set_pos != 1)
+					goto custom;
+				pos = rrule.by_set_pos[0];
+			} else if (pos < 0) {
+				goto custom;
+			}
+
+			switch (weekday) {
+			case ICAL_MONDAY_WEEKDAY:
+				month_day = MONTH_DAY_MON;
+				break;
+
+			case ICAL_TUESDAY_WEEKDAY:
+				month_day = MONTH_DAY_TUE;
+				break;
+
+			case ICAL_WEDNESDAY_WEEKDAY:
+				month_day = MONTH_DAY_WED;
+				break;
+
+			case ICAL_THURSDAY_WEEKDAY:
+				month_day = MONTH_DAY_THU;
+				break;
+
+			case ICAL_FRIDAY_WEEKDAY:
+				month_day = MONTH_DAY_FRI;
+				break;
+
+			case ICAL_SATURDAY_WEEKDAY:
+				month_day = MONTH_DAY_SAT;
+				break;
+
+			case ICAL_SUNDAY_WEEKDAY:
+				month_day = MONTH_DAY_SUN;
+				break;
+
+			default:
+				goto custom;
+			}
+
+			if (pos == -1)
+				month_num = MONTH_NUM_LAST;
+			else
+				month_num = pos - 1;
+		} else {
+			goto custom;
+		}
+
+		if (prefixed) {
+			prefix = g_strdup_printf (
+				g_dngettext (GETTEXT_PACKAGE,
+					"every month",
+					"every %d months",
+					rrule.interval), rrule.interval);
+		} else {
+			prefix = g_strdup_printf (
+				g_dngettext (GETTEXT_PACKAGE,
+					"Every month",
+					"Every %d months",
+					rrule.interval), rrule.interval);
+		}
+
+		switch (month_day) {
+		case MONTH_DAY_NTH:
+			if (month_num == MONTH_NUM_LAST) {
+				switch (month_index) {
+				case 0:
+					mid = g_strdup (C_("recur-description", "on the last Sunday"));
+					break;
+				case 1:
+					mid = g_strdup (C_("recur-description", "on the last Monday"));
+					break;
+				case 2:
+					mid = g_strdup (C_("recur-description", "on the last Tuesday"));
+					break;
+				case 3:
+					mid = g_strdup (C_("recur-description", "on the last Wednesday"));
+					break;
+				case 4:
+					mid = g_strdup (C_("recur-description", "on the last Thursday"));
+					break;
+				case 5:
+					mid = g_strdup (C_("recur-description", "on the last Friday"));
+					break;
+				case 6:
+					mid = g_strdup (C_("recur-description", "on the last Saturday"));
+					break;
+				default:
+					g_warning ("%s: What is month_index:%d for the last day?", G_STRFUNC, month_index);
+					break;
+				}
+			} else { /* month_num = MONTH_NUM_DAY; */
+				switch (month_index) {
+				case 1:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 1st day"));
+					break;
+				case 2:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 2nd day"));
+					break;
+				case 3:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 3rd day"));
+					break;
+				case 4:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 4th day"));
+					break;
+				case 5:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 5th day"));
+					break;
+				case 6:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 6th day"));
+					break;
+				case 7:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 7th day"));
+					break;
+				case 8:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 8th day"));
+					break;
+				case 9:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 9th day"));
+					break;
+				case 10:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 10th day"));
+					break;
+				case 11:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 11th day"));
+					break;
+				case 12:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 12th day"));
+					break;
+				case 13:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 13th day"));
+					break;
+				case 14:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 14th day"));
+					break;
+				case 15:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 15th day"));
+					break;
+				case 16:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 16th day"));
+					break;
+				case 17:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 17th day"));
+					break;
+				case 18:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 18th day"));
+					break;
+				case 19:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 19th day"));
+					break;
+				case 20:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 20th day"));
+					break;
+				case 21:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 21st day"));
+					break;
+				case 22:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 22nd day"));
+					break;
+				case 23:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 23rd day"));
+					break;
+				case 24:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 24th day"));
+					break;
+				case 25:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 25th day"));
+					break;
+				case 26:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 26th day"));
+					break;
+				case 27:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 27th day"));
+					break;
+				case 28:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 28th day"));
+					break;
+				case 29:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 29th day"));
+					break;
+				case 30:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 30th day"));
+					break;
+				case 31:
+					/* Translators: This is added to a monthly recurrence, forming something like "Every month on the Xth day" */
+					mid = g_strdup (C_("recur-description", "on the 31st day"));
+					break;
+				}
+			}
+			break;
+		case MONTH_DAY_MON:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Monday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Monday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Monday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Monday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Monday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Monday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		case MONTH_DAY_TUE:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Tuesday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Tuesday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Tuesday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Tuesday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Tuesday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Tuesday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		case MONTH_DAY_WED:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Wednesday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Wednesday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Wednesday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Wednesday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Wednesday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Wednesday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		case MONTH_DAY_THU:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Thursday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Thursday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Thursday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Thursday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Thursday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Thursday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		case MONTH_DAY_FRI:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Friday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Friday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Friday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Friday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Friday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Friday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		case MONTH_DAY_SAT:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Saturday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Saturday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Saturday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Saturday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Saturday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Saturday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		case MONTH_DAY_SUN:
+			switch (month_num) {
+			case MONTH_NUM_FIRST:
+				mid = g_strdup (C_("recur-description", "on the first Sunday"));
+				break;
+			case MONTH_NUM_SECOND:
+				mid = g_strdup (C_("recur-description", "on the second Sunday"));
+				break;
+			case MONTH_NUM_THIRD:
+				mid = g_strdup (C_("recur-description", "on the third Sunday"));
+				break;
+			case MONTH_NUM_FOURTH:
+				mid = g_strdup (C_("recur-description", "on the fourth Sunday"));
+				break;
+			case MONTH_NUM_FIFTH:
+				mid = g_strdup (C_("recur-description", "on the fifth Sunday"));
+				break;
+			case MONTH_NUM_LAST:
+				mid = g_strdup (C_("recur-description", "on the last Sunday"));
+				break;
+			default:
+				g_warning ("%s: What is month_num:%d for month_day:%d?", G_STRFUNC, month_num, month_day);
+				break;
+			}
+			break;
+		}
+
+		break;
+	}
+
+	case ICAL_YEARLY_RECURRENCE:
+		if (n_by_day != 0 ||
+		    n_by_month_day != 0 ||
+		    n_by_year_day != 0 ||
+		    n_by_week_no != 0 ||
+		    n_by_month != 0 ||
+		    n_by_set_pos != 0)
+			goto custom;
+
+		if (rrule.interval > 0) {
+			if (!rrule.count && !rrule.until.year) {
+				if (prefixed) {
+					result = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"every year forever",
+							"every %d years forever",
+							rrule.interval), rrule.interval);
+				} else {
+					result = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"Every year forever",
+							"Every %d years forever",
+							rrule.interval), rrule.interval);
+				}
+			} else {
+				if (prefixed) {
+					prefix = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"every year",
+							"every %d years",
+							rrule.interval), rrule.interval);
+				} else {
+					prefix = g_strdup_printf (
+						g_dngettext (GETTEXT_PACKAGE,
+							"Every year",
+							"Every %d years",
+							rrule.interval), rrule.interval);
+				}
+			}
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	if (prefix) {
+		if (rrule.count) {
+			suffix = g_strdup_printf (
+				g_dngettext (GETTEXT_PACKAGE,
+					/* Translators: This is one of the last possible parts of a recurrence description.
+					   The text is appended at the end of the complete recurrence description, making it
+					   for example: "Every 3 days for 10 occurrences" */
+					"for one occurrence",
+					"for %d occurrences",
+					rrule.count), rrule.count);
+		} else if (rrule.until.year) {
+			struct tm tm;
+			gchar dt_str[256];
+
+			dt_str[0] = 0;
+
+			if (!rrule.until.is_date) {
+				icaltimezone *from_zone, *to_zone;
+				struct icaltimetype dtstart;
+
+				dtstart = icalcomponent_get_dtstart (icalcomp);
+
+				from_zone = icaltimezone_get_utc_timezone ();
+				to_zone = (icaltimezone *) dtstart.zone;
+
+				if (to_zone)
+					icaltimezone_convert_time (&rrule.until, from_zone, to_zone);
+
+				rrule.until.hour = 0;
+				rrule.until.minute = 0;
+				rrule.until.second = 0;
+				rrule.until.is_date = TRUE;
+			}
+
+			tm = icaltimetype_to_tm (&rrule.until);
+			e_time_format_date_and_time (&tm, FALSE, FALSE, FALSE, dt_str, 255);
+
+			if (*dt_str) {
+				/* Translators: This is one of the last possible parts of a recurrence description.
+				   The '%s' is replaced with actual date, thus it can create something like
+				   "until Mon 15.1.2018". The text is appended at the end of the complete
+				   recurrence description, making it for example: "Every 3 days until Mon 15.1.2018" */
+				suffix = g_strdup_printf (C_("recur-description", "until %s"), dt_str);
+			}
+		} else {
+			/* Translators: This is one of the last possible parts of a recurrence description.
+			   The text is appended at the end of the complete recurrence description, making it
+			   for example: "Every 2 months on Tuesday, Thursday and Friday forever" */
+			suffix = g_strdup (C_("recur-description", "forever"));
+		}
+	}
+
+ custom:
+	if (!result && prefix && suffix) {
+		if (mid) {
+			/* Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 weeks",
+			   the '%2$s' is like "on Tuesday and Friday" and the '%3$s' is like "for 10 occurrences", constructing
+			   together one sentence: "Every 2 weeks on Tuesday and Friday for 10 occurrences". */
+			result = g_strdup_printf (C_("recur-description", "%1$s %2$s %3$s"), prefix, mid, suffix);
+		} else {
+			/* Translators: This constructs a complete recurrence description; the '%1$s' is like "Every 2 days",
+			   the '%2$s' is like "for 10 occurrences", constructing together one sentence:
+			   "Every 2 days for 10 occurrences". */
+			result = g_strdup_printf (C_("recur-description", "%1$s %2$s"), prefix, suffix);
+		}
+	}
+
+	if (result) {
+		gint n_exdates;
+		gchar *tmp;
+
+		n_exdates = icalcomponent_count_properties (icalcomp, ICAL_EXDATE_PROPERTY);
+		if (n_exdates > 0) {
+			gchar *exdates_str;
+
+			exdates_str = g_strdup_printf (
+				g_dngettext (GETTEXT_PACKAGE,
+				/* Translators: This text is appended at the end of complete recur description using "%s%s" in
+				   context "recur-description" */
+					", with one exception",
+					", with %d exceptions",
+					n_exdates), n_exdates);
+
+			/* Translators: This appends text like ", with 3 exceptions" at the end of complete recurrence description.
+			   The "%1$s" is replaced with the recurrence description, the "%2$s" with the text about exceptions.
+			   It will form something like: "Every 2 weeks on Tuesday and Friday for 10 occurrences, with 3 exceptions" */
+			tmp = g_strdup_printf (C_("recur-description", "%1$s%2$s"), result, exdates_str);
+
+			g_free (exdates_str);
+			g_free (result);
+			result = tmp;
+		}
+
+		if (prefixed) {
+			const gchar *comp_prefix;
+
+			if (icalcomponent_isa (icalcomp) == ICAL_VEVENT_COMPONENT) {
+				if (icalcomponent_count_properties (icalcomp, ICAL_ORGANIZER_PROPERTY) > 0 &&
+				    icalcomponent_count_properties (icalcomp, ICAL_ATTENDEE_PROPERTY) > 0) {
+					comp_prefix = C_("recur-description", "The meeting recurs");
+				} else {
+					comp_prefix = C_("recur-description", "The appointment recurs");
+				}
+			} else if (icalcomponent_isa (icalcomp) == ICAL_VTODO_COMPONENT) {
+				comp_prefix = C_("recur-description", "The task recurs");
+			} else if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT) {
+				comp_prefix = C_("recur-description", "The memo recurs");
+			}
+
+			/* Translators: This adds a prefix in front of the complete recurrence description.
+			   The '%1$s' is replaced with something like "The meeting recurs" and
+			   the '%2$s' with something like "every 2 days forever", thus forming
+			   sentence like "This meeting recurs every 2 days forever" */
+			tmp = g_strdup_printf (C_("recur-description-prefix", "%1$s %2$s"), comp_prefix, result);
+
+			g_free (result);
+			result = tmp;
+		}
+	} else if (fallback) {
+		if (icalcomponent_isa (icalcomp) == ICAL_VEVENT_COMPONENT) {
+			if (icalcomponent_count_properties (icalcomp, ICAL_ORGANIZER_PROPERTY) > 0 &&
+			    icalcomponent_count_properties (icalcomp, ICAL_ATTENDEE_PROPERTY) > 0) {
+				result = g_strdup (C_("recur-description", "The meeting recurs"));
+			} else {
+				result = g_strdup (C_("recur-description", "The appointment recurs"));
+			}
+		} else if (icalcomponent_isa (icalcomp) == ICAL_VTODO_COMPONENT) {
+			result = g_strdup (C_("recur-description", "The task recurs"));
+		} else if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT) {
+			result = g_strdup (C_("recur-description", "The memo recurs"));
+		}
+	}
+
+	g_free (prefix);
+	g_free (mid);
+	g_free (suffix);
+
+	return result;
+}

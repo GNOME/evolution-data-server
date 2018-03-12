@@ -73,6 +73,7 @@ set(TESTS
 	test-ecal-get-timezone
 	test-ecal-add-timezone
 	test-ecal-set-default-timezone
+	test-ecal-recur-description
 	test-ecal-get-alarm-email-address
 	test-ecal-get-cal-address
 	test-ecal-get-ldap-attribute
