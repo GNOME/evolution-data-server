@@ -31,6 +31,7 @@ G_BEGIN_DECLS
 
 struct _CamelLocalFolderPrivate {
 	GMutex search_lock;	/* for locking the search object */
+	GRecMutex changes_lock; /* for locking changes member */
 };
 
 #define CAMEL_LOCAL_FOLDER_LOCK(f, l) \

@@ -120,6 +120,11 @@ void		set_cannot_get_message_ex	(GError **error,
 						 const gchar *msgID,
 						 const gchar *folder_path,
 						 const gchar *detailErr);
+void		camel_local_folder_lock_changes	(CamelLocalFolder *lf);
+void		camel_local_folder_unlock_changes
+						(CamelLocalFolder *lf);
+void		camel_local_folder_claim_changes
+						(CamelLocalFolder *lf);
 
 G_END_DECLS
 

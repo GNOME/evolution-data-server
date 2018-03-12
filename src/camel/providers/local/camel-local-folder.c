@@ -106,9 +106,11 @@ local_folder_dispose (GObject *object)
 		/* Something can hold the reference to the folder longer than
 		   the parent store is alive, thus count with it. */
 		if (camel_folder_get_parent_store (folder)) {
+			camel_local_folder_lock_changes (local_folder);
 			camel_local_summary_sync (
 				CAMEL_LOCAL_SUMMARY (camel_folder_get_folder_summary (folder)),
 				FALSE, local_folder->changes, NULL, NULL);
+			camel_local_folder_unlock_changes (local_folder);
 		}
 	}
 
@@ -136,6 +138,7 @@ local_folder_finalize (GObject *object)
 	camel_folder_change_info_free (local_folder->changes);
 
 	g_mutex_clear (&local_folder->priv->search_lock);
+	g_rec_mutex_clear (&local_folder->priv->changes_lock);
 
 	/* Chain up to parent's finalize() method. */
 	G_OBJECT_CLASS (camel_local_folder_parent_class)->finalize (object);
@@ -409,14 +412,15 @@ local_folder_refresh_info_sync (CamelFolder *folder,
 	need_summary_check = camel_local_store_get_need_summary_check (
 		CAMEL_LOCAL_STORE (parent_store));
 
+	camel_local_folder_lock_changes (lf);
 	if (need_summary_check &&
-	    camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, cancellable, error) == -1)
+	    camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, cancellable, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return FALSE;
-
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
 	}
+
+	camel_local_folder_unlock_changes (lf);
+	camel_local_folder_claim_changes (lf);
 
 	return TRUE;
 }
@@ -432,8 +436,12 @@ local_folder_synchronize_sync (CamelFolder *folder,
 
 	d (printf ("local sync '%s' , expunge=%s\n", folder->full_name, expunge?"true":"false"));
 
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	camel_local_folder_lock_changes (lf);
+
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return FALSE;
+	}
 
 	camel_object_state_write (CAMEL_OBJECT (lf));
 
@@ -443,10 +451,8 @@ local_folder_synchronize_sync (CamelFolder *folder,
 		expunge, lf->changes, cancellable, error) == 0);
 	camel_local_folder_unlock (lf);
 
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_unlock_changes (lf);
+	camel_local_folder_claim_changes (lf);
 
 	return success;
 }
@@ -515,6 +521,7 @@ camel_local_folder_init (CamelLocalFolder *local_folder)
 
 	local_folder->priv = CAMEL_LOCAL_FOLDER_GET_PRIVATE (local_folder);
 	g_mutex_init (&local_folder->priv->search_lock);
+	g_rec_mutex_init (&local_folder->priv->changes_lock);
 
 	camel_folder_set_flags (folder, camel_folder_get_flags (folder) | CAMEL_FOLDER_HAS_SUMMARY_CAPABILITY);
 
@@ -607,6 +614,8 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 #endif
 	}
 #endif
+	camel_local_folder_lock_changes (lf);
+
 	lf->changes = camel_folder_change_info_new ();
 
 	/* TODO: Remove the following line, it is a temporary workaround to remove
@@ -645,11 +654,14 @@ camel_local_folder_construct (CamelLocalFolder *lf,
 		    camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, cancellable, error) == 0) {
 			/* we sync here so that any hard work setting up the folder isn't lost */
 			if (camel_local_summary_sync ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), FALSE, lf->changes, cancellable, error) == -1) {
+				camel_local_folder_unlock_changes (lf);
 				g_object_unref (folder);
 				return NULL;
 			}
 		}
 	}
+
+	camel_local_folder_unlock_changes (lf);
 
 	/* TODO: This probably shouldn't be here? */
 	if ((flags & CAMEL_STORE_FOLDER_CREATE) != 0) {
@@ -736,4 +748,42 @@ set_cannot_get_message_ex (GError **error,
 		 * the third %s is replaced with a detailed error string */
 		_("Cannot get message %s from folder %s\n%s"),
 		msgID, folder_path, detailErr);
+}
+
+void
+camel_local_folder_lock_changes (CamelLocalFolder *lf)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (lf));
+
+	g_rec_mutex_lock (&lf->priv->changes_lock);
+}
+
+void
+camel_local_folder_unlock_changes (CamelLocalFolder *lf)
+{
+	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (lf));
+
+	g_rec_mutex_unlock (&lf->priv->changes_lock);
+}
+
+void
+camel_local_folder_claim_changes (CamelLocalFolder *lf)
+{
+	CamelFolderChangeInfo *changes = NULL;
+
+	g_return_if_fail (CAMEL_IS_LOCAL_FOLDER (lf));
+
+	camel_local_folder_lock_changes (lf);
+
+	if (lf->changes && camel_folder_change_info_changed (lf->changes)) {
+		changes = lf->changes;
+		lf->changes = camel_folder_change_info_new ();
+	}
+
+	camel_local_folder_unlock_changes (lf);
+
+	if (changes) {
+		camel_folder_changed (CAMEL_FOLDER (lf), changes);
+		camel_folder_change_info_free (changes);
+	}
 }
