@@ -66,12 +66,17 @@ mh_folder_append_message_sync (CamelFolder *folder,
 
 	d (printf ("Appending message\n"));
 
+	camel_local_folder_lock_changes (lf);
+
 	/* If we can't lock, don't do anything */
-	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return FALSE;
+	}
 
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), message, info, lf->changes, error);
+	camel_local_folder_unlock_changes (lf);
 	if (mi == NULL)
 		goto check_changed;
 
@@ -123,10 +128,7 @@ mh_folder_append_message_sync (CamelFolder *folder,
  check_changed:
 	camel_local_folder_unlock (lf);
 
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_claim_changes (lf);
 
 	g_clear_object (&mi);
 
@@ -189,10 +191,7 @@ mh_folder_get_message_sync (CamelFolder *folder,
 
 	camel_local_folder_unlock (lf);
 
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_claim_changes (lf);
 
 	return message;
 }

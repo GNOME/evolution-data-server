@@ -169,14 +169,21 @@ maildir_folder_append_message_sync (CamelFolder *folder,
 
 	d (printf ("Appending message\n"));
 
+	camel_local_folder_lock_changes (lf);
+
 	/* If we can't lock, don't do anything */
-	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (!lf || camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return FALSE;
+	}
 
 	/* add it to the summary/assign the uid, etc */
 	mi = camel_local_summary_add (
 		CAMEL_LOCAL_SUMMARY (camel_folder_get_folder_summary (folder)),
 		message, info, lf->changes, error);
+
+	camel_local_folder_unlock_changes (lf);
+
 	if (mi == NULL)
 		goto check_changed;
 
@@ -245,10 +252,7 @@ maildir_folder_append_message_sync (CamelFolder *folder,
  check_changed:
 	camel_local_folder_unlock (lf);
 
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_claim_changes (lf);
 
 	g_clear_object (&mi);
 
@@ -301,10 +305,7 @@ maildir_folder_get_message_sync (CamelFolder *folder,
 
 	camel_local_folder_unlock (lf);
 
-	if (lf && camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_claim_changes (lf);
 
 	return message;
 }
@@ -381,12 +382,16 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 					camel_message_info_set_flags (info, CAMEL_MESSAGE_JUNK, 0);
 				camel_folder_summary_add (camel_folder_get_folder_summary (dest), clone, FALSE);
 
+				camel_local_folder_lock_changes (df);
 				camel_folder_change_info_add_uid (df->changes, camel_message_info_get_uid (clone));
+				camel_local_folder_unlock_changes (df);
 
 				camel_folder_set_message_flags (
 					source, uid, CAMEL_MESSAGE_DELETED |
 					CAMEL_MESSAGE_SEEN, ~0);
+				camel_local_folder_lock_changes (lf);
 				camel_folder_change_info_remove_uid (lf->changes, camel_message_info_get_uid (info));
+				camel_local_folder_unlock_changes (lf);
 				camel_folder_summary_remove (camel_folder_get_folder_summary (source), info);
 				g_clear_object (&clone);
 			}
@@ -397,15 +402,8 @@ maildir_folder_transfer_messages_to_sync (CamelFolder *source,
 			g_free (new_filename);
 		}
 
-		if (lf && camel_folder_change_info_changed (lf->changes)) {
-			camel_folder_changed (source, lf->changes);
-			camel_folder_change_info_clear (lf->changes);
-		}
-
-		if (df && camel_folder_change_info_changed (df->changes)) {
-			camel_folder_changed (dest, df->changes);
-			camel_folder_change_info_clear (df->changes);
-		}
+		camel_local_folder_claim_changes (lf);
+		camel_local_folder_claim_changes (df);
 
 		camel_folder_thaw (source);
 		camel_folder_thaw (dest);

@@ -109,13 +109,18 @@ mbox_folder_get_filename (CamelFolder *folder,
 
 	d (printf ("Getting message %s\n", uid));
 
+	camel_local_folder_lock_changes (lf);
+
 	/* lock the folder first, burn if we can't, need write lock for summary check */
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return NULL;
+	}
 
 	/* check for new messages always */
 	if (camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, NULL, error) == -1) {
 		camel_local_folder_unlock (lf);
+		camel_local_folder_unlock_changes (lf);
 		return NULL;
 	}
 
@@ -138,6 +143,7 @@ mbox_folder_get_filename (CamelFolder *folder,
 
 	/* and unlock now we're finished with it */
 	camel_local_folder_unlock (lf);
+	camel_local_folder_unlock_changes (lf);
 
 	return filename;
 }
@@ -162,9 +168,14 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 #if 0
 	gchar *xev;
 #endif
+
+	camel_local_folder_lock_changes (lf);
+
 	/* If we can't lock, dont do anything */
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return FALSE;
+	}
 
 	d (printf ("Appending message\n"));
 
@@ -240,10 +251,8 @@ mbox_folder_append_message_sync (CamelFolder *folder,
 	/* unlock as soon as we can */
 	camel_local_folder_unlock (lf);
 
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_unlock_changes (lf);
+	camel_local_folder_claim_changes (lf);
 
 	if (appended_uid)
 		*appended_uid = g_strdup(camel_message_info_get_uid(mi));
@@ -289,11 +298,9 @@ fail:
 	/* make sure we unlock the folder - before we start triggering events into appland */
 	camel_local_folder_unlock (lf);
 
+	camel_local_folder_unlock_changes (lf);
 	/* cascade the changes through, anyway, if there are any outstanding */
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_claim_changes (lf);
 
 	g_clear_object (&mi);
 
@@ -316,13 +323,18 @@ mbox_folder_get_message_sync (CamelFolder *folder,
 
 	d (printf ("Getting message %s\n", uid));
 
+	camel_local_folder_lock_changes (lf);
+
 	/* lock the folder first, burn if we can't, need write lock for summary check */
-	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1)
+	if (camel_local_folder_lock (lf, CAMEL_LOCK_WRITE, error) == -1) {
+		camel_local_folder_unlock_changes (lf);
 		return NULL;
+	}
 
 	/* check for new messages always */
 	if (camel_local_summary_check ((CamelLocalSummary *) camel_folder_get_folder_summary (folder), lf->changes, cancellable, error) == -1) {
 		camel_local_folder_unlock (lf);
+		camel_local_folder_unlock_changes (lf);
 		return NULL;
 	}
 
@@ -404,15 +416,13 @@ retry:
 fail:
 	/* and unlock now we're finished with it */
 	camel_local_folder_unlock (lf);
+	camel_local_folder_unlock_changes (lf);
 
 	if (parser)
 		g_object_unref (parser);
 
 	/* use the opportunity to notify of changes (particularly if we had a rebuild) */
-	if (camel_folder_change_info_changed (lf->changes)) {
-		camel_folder_changed (folder, lf->changes);
-		camel_folder_change_info_clear (lf->changes);
-	}
+	camel_local_folder_claim_changes (lf);
 
 	return message;
 }
