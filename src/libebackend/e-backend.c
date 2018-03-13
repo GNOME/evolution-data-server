@@ -1536,5 +1536,9 @@ e_backend_prepare_shutdown (EBackend *backend)
 	class = E_BACKEND_GET_CLASS (backend);
 	g_return_if_fail (class->prepare_shutdown != NULL);
 
+	g_object_ref (backend);
+
 	class->prepare_shutdown (backend);
+
+	g_object_unref (backend);
 }
