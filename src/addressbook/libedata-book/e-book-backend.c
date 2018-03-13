@@ -3140,6 +3140,9 @@ e_book_backend_remove_view (EBookBackend *backend,
 
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
+	/* In case the view holds the last reference to backend */
+	g_object_ref (backend);
+
 	g_mutex_lock (&backend->priv->views_mutex);
 
 	list = backend->priv->views;
@@ -3153,6 +3156,8 @@ e_book_backend_remove_view (EBookBackend *backend,
 	backend->priv->views = list;
 
 	g_mutex_unlock (&backend->priv->views_mutex);
+
+	g_object_unref (backend);
 }
 
 /**
