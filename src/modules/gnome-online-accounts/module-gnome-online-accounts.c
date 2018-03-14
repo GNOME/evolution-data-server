@@ -42,6 +42,51 @@
 #define CAMEL_OAUTH_MECHANISM_NAME  "XOAUTH"
 #define CAMEL_OAUTH2_MECHANISM_NAME "XOAUTH2"
 
+static void
+e_goa_debug_printf (const gchar *format,
+		    ...) G_GNUC_PRINTF (1, 2);
+
+static void
+e_goa_debug_printf (const gchar *format,
+		    ...)
+{
+	static gint goa_debug = -1;
+	GString *str;
+	va_list args;
+	GDateTime *dt;
+
+	if (goa_debug == -1)
+		goa_debug = g_strcmp0 (g_getenv ("GOA_DEBUG"), "1") == 0 ? 1 : 0;
+
+	if (!goa_debug)
+		return;
+
+	str = g_string_new ("");
+
+	va_start (args, format);
+	g_string_vprintf (str, format, args);
+	va_end (args);
+
+	dt = g_date_time_new_now_local ();
+
+	if (dt) {
+		g_print ("[EDS-GOA] %04d-%02d-%02d %02d:%02d:%02d.%03d - %s",
+			g_date_time_get_year (dt),
+			g_date_time_get_month (dt),
+			g_date_time_get_day_of_month (dt),
+			g_date_time_get_hour (dt),
+			g_date_time_get_minute (dt),
+			g_date_time_get_second (dt),
+			g_date_time_get_microsecond (dt) / 1000,
+			str->str);
+		g_date_time_unref (dt);
+	} else {
+		g_print ("[EDS-GOA] %s", str->str);
+	}
+
+	g_string_free (str, TRUE);
+}
+
 typedef struct _EGnomeOnlineAccounts EGnomeOnlineAccounts;
 typedef struct _EGnomeOnlineAccountsClass EGnomeOnlineAccountsClass;
 
@@ -982,6 +1027,18 @@ gnome_online_accounts_account_added_cb (EGoaClient *goa_client,
 	account_id = goa_account_get_id (goa_account);
 	source_uid = g_hash_table_lookup (extension->goa_to_eds, account_id);
 
+	if (backend_name) {
+		if (source_uid) {
+			e_goa_debug_printf ("Pairing account '%s' with existing source '%s' and backend '%s'\n",
+				account_id, source_uid, backend_name);
+		} else {
+			e_goa_debug_printf ("Create new factory for account '%s' and backend '%s'\n",
+				account_id, backend_name);
+		}
+	} else {
+		e_goa_debug_printf ("No suitable backend found for account '%s'\n", account_id);
+	}
+
 	if (source_uid == NULL && backend_name != NULL)
 		backend_factory = e_data_factory_ref_backend_factory (
 			E_DATA_FACTORY (server), backend_name, E_SOURCE_EXTENSION_COLLECTION);
@@ -1012,6 +1069,13 @@ gnome_online_accounts_account_removed_cb (EGoaClient *goa_client,
 
 	account_id = goa_account_get_id (goa_account);
 	source_uid = g_hash_table_lookup (extension->goa_to_eds, account_id);
+
+	if (source_uid) {
+		e_goa_debug_printf ("Account '%s' removed with corresponding to source '%s'\n",
+			account_id, source_uid);
+	} else {
+		e_goa_debug_printf ("Account '%s' removed without any corresponding source\n", account_id);
+	}
 
 	if (source_uid != NULL)
 		source = e_source_registry_server_ref_source (
@@ -1047,6 +1111,9 @@ gnome_online_accounts_account_swapped_cb (EGoaClient *goa_client,
 
 	account_id = goa_account_get_id (goa_account);
 	source_uid = g_hash_table_lookup (extension->goa_to_eds, account_id);
+
+	e_goa_debug_printf ("Account '%s' swapped to '%s'\n",
+		goa_account_get_id (goa_object_get_account (old_goa_object)), account_id);
 
 	if (source_uid != NULL)
 		source = e_source_registry_server_ref_source (
@@ -1091,6 +1158,8 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 	extension_name = E_SOURCE_EXTENSION_GOA;
 	list = e_source_registry_server_list_sources (server, extension_name);
 
+	e_goa_debug_printf ("Found %d existing sources\n", g_list_length (list));
+
 	for (link = list; link != NULL; link = g_list_next (link)) {
 		ESource *source;
 		ESourceGoa *goa_ext;
@@ -1105,10 +1174,15 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 		goa_ext = e_source_get_extension (source, extension_name);
 		account_id = e_source_goa_get_account_id (goa_ext);
 
-		if (account_id == NULL)
+		if (account_id == NULL) {
+			e_goa_debug_printf ("Source '%s' has no account id\n", source_uid);
 			continue;
+		}
 
 		if (g_hash_table_lookup (extension->goa_to_eds, account_id)) {
+			e_goa_debug_printf ("Source '%s' references account '%s' which is already used by other source\n",
+				source_uid, account_id);
+
 			/* There are more ESource-s referencing the same GOA account;
 			   delete the later. */
 			g_queue_push_tail (&trash, source);
@@ -1126,6 +1200,9 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 		if (match != NULL) {
 			GoaObject *goa_object;
 
+			e_goa_debug_printf ("Assign source '%s' (enabled:%d) with account '%s'\n",
+				source_uid, e_source_get_enabled (source), account_id);
+
 			g_hash_table_insert (
 				extension->goa_to_eds,
 				g_strdup (account_id),
@@ -1135,6 +1212,9 @@ gnome_online_accounts_populate_accounts_table (EGnomeOnlineAccounts *extension,
 			gnome_online_accounts_config_sources (
 				extension, source, goa_object);
 		} else {
+			e_goa_debug_printf ("Account '%s' doesn't exist, remove source '%s'\n",
+				account_id, source_uid);
+
 			g_queue_push_tail (&trash, source);
 		}
 	}
@@ -1166,6 +1246,8 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	goa_client = e_goa_client_new_finish (result, &error);
 
 	if (error != NULL) {
+		e_goa_debug_printf ("Failed to connect to the service: %s\n", error->message);
+
 		g_warn_if_fail (goa_client == NULL);
 		g_warning (
 			"Unable to connect to the GNOME Online "
@@ -1186,6 +1268,8 @@ gnome_online_accounts_create_client_cb (GObject *source_object,
 	extension->create_client = NULL;
 
 	list = e_goa_client_list_accounts (extension->goa_client);
+
+	e_goa_debug_printf ("Connected to service, received %d accounts\n", g_list_length (list));
 
 	/* This populates a hash table of GOA ID -> ESource UID strings by
 	 * searching through available data sources for ones with a "GNOME
@@ -1229,6 +1313,8 @@ gnome_online_accounts_bus_acquired_cb (EDBusServer *server,
                                        EGnomeOnlineAccounts *extension)
 {
 	/* Connect to the GNOME Online Accounts service. */
+
+	e_goa_debug_printf ("Bus-acquired, connecting to the service\n");
 
 	/* Note we don't reference the extension.  If the
 	 * extension gets destroyed before this completes
@@ -1302,6 +1388,8 @@ gnome_online_accounts_constructed (GObject *object)
 	extension = E_EXTENSION (object);
 	extensible = e_extension_get_extensible (extension);
 
+	e_goa_debug_printf ("Waiting for bus-acquired signal\n");
+
 	/* Wait for the registry service to acquire its well-known
 	 * bus name so we don't do anything destructive beforehand. */
 
@@ -1326,11 +1414,15 @@ gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
 	GoaAccount *goa_account;
 	GoaOAuth2Based *goa_oauth2_based;
 	gboolean success;
+	GError *local_error = NULL;
 
 	goa_object = gnome_online_accounts_ref_account (
 		E_GNOME_ONLINE_ACCOUNTS (support), source);
 
 	if (goa_object == NULL) {
+		e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): Cannot find a corresponding GOA account\n",
+			e_source_get_display_name (source), e_source_get_uid (source));
+
 		g_set_error (
 			error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
 			_("Cannot find a corresponding account in "
@@ -1346,25 +1438,48 @@ gnome_online_accounts_get_access_token_sync (EOAuth2Support *support,
 	goa_oauth2_based = goa_object_get_oauth2_based (goa_object);
 	g_return_val_if_fail (goa_oauth2_based != NULL, FALSE);
 
-	success = goa_account_call_ensure_credentials_sync (
-		goa_account, NULL, cancellable, error);
+	e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): Calling ensure-credentials\n",
+		e_source_get_display_name (source), e_source_get_uid (source));
 
-	if (success)
+	success = goa_account_call_ensure_credentials_sync (
+		goa_account, NULL, cancellable, &local_error);
+
+	if (success) {
+		e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): ensure-credentials succeeded, calling get-access-token\n",
+			e_source_get_display_name (source), e_source_get_uid (source));
+
 		success = goa_oauth2_based_call_get_access_token_sync (
 			goa_oauth2_based, out_access_token,
-			out_expires_in, cancellable, error);
+			out_expires_in, cancellable, &local_error);
+
+		if (success) {
+			e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): get-access-token succeeded\n",
+				e_source_get_display_name (source), e_source_get_uid (source));
+		} else {
+			e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): get-access-token failed: %s\n",
+				e_source_get_display_name (source), e_source_get_uid (source),
+				local_error ? local_error->message : "Unknown error");
+		}
+	} else {
+		e_goa_debug_printf ("GetAccessToken: \"%s\" (%s): ensure-credentials failed: %s\n",
+			e_source_get_display_name (source), e_source_get_uid (source),
+			local_error ? local_error->message : "Unknown error");
+	}
 
 	g_object_unref (goa_oauth2_based);
 	g_object_unref (goa_account);
 	g_object_unref (goa_object);
 
-	if (error && *error)
-		g_dbus_error_strip_remote_error (*error);
+	if (local_error) {
+		g_dbus_error_strip_remote_error (local_error);
 
-	g_prefix_error (
-		error,
-		_("Failed to obtain an access token for “%s”: "),
-		e_source_get_display_name (source));
+		g_prefix_error (
+			&local_error,
+			_("Failed to obtain an access token for “%s”: "),
+			e_source_get_display_name (source));
+
+		g_propagate_error (error, local_error);
+	}
 
 	return success;
 }
