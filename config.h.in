@@ -157,7 +157,7 @@
 #cmakedefine HAVE_LDAP 1
 
 /* Define if you use SunLDAP */
-#cmakedefine SUNLDAP */
+#cmakedefine SUNLDAP 1
 
 /* Solaris-style gethostbyaddr_r */
 #cmakedefine GETHOSTBYADDR_R_SEVEN_ARGS 1
