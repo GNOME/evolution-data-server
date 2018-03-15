@@ -32,6 +32,8 @@
 
 G_BEGIN_DECLS
 
+struct _ECalClient;
+
 /**
  * CalObjInstance:
  * @uid: UID of the object
@@ -223,6 +225,16 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define CAL_STATIC_CAPABILITY_TASK_DATE_ONLY		"task-date-only"
 
+/**
+ * CAL_STATIC_CAPABILITY_TASK_CAN_RECUR:
+ *
+ * When the capability is set, the client can store and provide recurring
+ * tasks, otherwise it cannot.
+ *
+ * Since: 3.30
+ **/
+#define CAL_STATIC_CAPABILITY_TASK_CAN_RECUR		"task-can-recur"
+
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 						 struct icaltimetype rid);
@@ -259,6 +271,21 @@ void		e_cal_util_set_x_property	(icalcomponent *icalcomp,
 						 const gchar *value);
 gboolean	e_cal_util_remove_x_property	(icalcomponent *icalcomp,
 						 const gchar *x_name);
+guint		e_cal_util_remove_property_by_kind
+						(icalcomponent *icalcomp,
+						 icalproperty_kind kind,
+						 gboolean all);
+
+gboolean	e_cal_util_init_recur_task_sync	(icalcomponent *vtodo,
+						 struct _ECalClient *cal_client,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_util_mark_task_complete_sync
+						(icalcomponent *vtodo,
+						 time_t completed_time,
+						 struct _ECalClient *cal_client,
+						 GCancellable *cancellable,
+						 GError **error);
 
 #ifndef EDS_DISABLE_DEPRECATED
 /* Used for mode stuff */

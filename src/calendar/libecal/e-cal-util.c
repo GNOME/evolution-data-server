@@ -27,6 +27,7 @@
 #include <libedataserver/libedataserver.h>
 
 #include "e-cal-util.h"
+#include "e-cal-client.h"
 #include "e-cal-system-timezone.h"
 
 #define _TIME_MIN	((time_t) 0)		/* Min valid time_t	*/
@@ -593,6 +594,7 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	GList *alarm_uids;
 	time_t alarm_start, alarm_end;
 	struct alarm_occurrence_data aod;
+	icalcomponent *icalcomp;
 	ECalComponentAlarms *alarms;
 
 	if (!e_cal_component_has_alarms (comp))
@@ -609,11 +611,34 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	aod.triggers = NULL;
 	aod.n_triggers = 0;
 
-	e_cal_recur_generate_instances (
-		comp, alarm_start, alarm_end,
-		add_alarm_occurrences_cb, &aod,
-		resolve_tzid, user_data,
-		default_timezone);
+	icalcomp = e_cal_component_get_icalcomponent (comp);
+
+	if (icalcomponent_isa (icalcomp) == ICAL_VEVENT_COMPONENT ||
+	    !e_cal_util_component_has_recurrences (icalcomp) ||
+	    !icaltime_is_null_time (icalcomponent_get_recurrenceid (icalcomp))) {
+		e_cal_recur_generate_instances (
+			comp, alarm_start, alarm_end,
+			add_alarm_occurrences_cb, &aod,
+			resolve_tzid, user_data,
+			default_timezone);
+	} else {
+		/* Workaround to not expand recurrences for non-VEVENT components.
+		   The component here has recurrences, but not RECURRENCE-ID.
+		   The function doesn't expand recurrences, when there exists
+		   RECURRENCE-ID, thus use this. */
+		struct icaltimetype itt;
+
+		itt = icalcomponent_get_dtstart (icalcomp);
+		icalcomponent_set_recurrenceid (icalcomp, itt);
+
+		e_cal_recur_generate_instances (
+			comp, alarm_start, alarm_end,
+			add_alarm_occurrences_cb, &aod,
+			resolve_tzid, user_data,
+			default_timezone);
+
+		e_cal_util_remove_property_by_kind (icalcomp, ICAL_RECURRENCEID_PROPERTY, FALSE);
+	}
 
 	/* We add the ABSOLUTE triggers separately */
 	generate_absolute_triggers (
@@ -1841,6 +1866,340 @@ e_cal_util_remove_x_property (icalcomponent *icalcomp,
 
 	icalcomponent_remove_property (icalcomp, prop);
 	icalproperty_free (prop);
+
+	return TRUE;
+}
+
+/**
+ * e_cal_util_remove_property_by_kind:
+ * @icalcomp: an icalcomponent
+ * @kind: the kind of the property to remove
+ * @all: %TRUE to remove all, or %FALSE to remove only the first property of the @kind
+ *
+ * Removes all or only the first property of kind @kind in @icalcomp.
+ *
+ * Returns: How many properties had been removed.
+ *
+ * Since: 3.30
+ **/
+guint
+e_cal_util_remove_property_by_kind (icalcomponent *icalcomp,
+				    icalproperty_kind kind,
+				    gboolean all)
+{
+	icalproperty *prop;
+	guint count = 0;
+
+	g_return_val_if_fail (icalcomp != NULL, 0);
+
+	while (prop = icalcomponent_get_first_property (icalcomp, kind), prop) {
+		icalcomponent_remove_property (icalcomp, prop);
+		icalproperty_free (prop);
+
+		count++;
+
+		if (!all)
+			break;
+	}
+
+	return count;
+}
+
+typedef struct _NextOccurrenceData {
+	struct icaltimetype interval_start;
+	struct icaltimetype next;
+	gboolean found_next;
+} NextOccurrenceData;
+
+static gboolean
+ecu_find_next_occurrence_cb (icalcomponent *comp,
+			     struct icaltimetype instance_start,
+			     struct icaltimetype instance_end,
+			     gpointer user_data,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	NextOccurrenceData *nod = user_data;
+
+	g_return_val_if_fail (nod != NULL, FALSE);
+
+	if (icaltime_compare (nod->interval_start, instance_start) < 0) {
+		nod->next = instance_start;
+		nod->found_next = TRUE;
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/* the returned FALSE means failure in timezone resolution, not in @out_time */
+static gboolean
+e_cal_util_find_next_occurrence (icalcomponent *vtodo,
+				 struct icaltimetype for_time,
+				 struct icaltimetype *out_time, /* set to icaltime_null_time() on failure */
+				 ECalClient *cal_client,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	NextOccurrenceData nod;
+	struct icaltimetype interval_start = for_time, interval_end, orig_dtstart, orig_due;
+	gboolean success;
+
+	g_return_val_if_fail (vtodo != NULL, FALSE);
+	g_return_val_if_fail (out_time != NULL, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
+
+	orig_dtstart = icalcomponent_get_dtstart (vtodo);
+	orig_due = icalcomponent_get_due (vtodo);
+
+	e_cal_util_remove_property_by_kind (vtodo, ICAL_DUE_PROPERTY, TRUE);
+
+	if (!icaltime_is_null_time (for_time) && icaltime_is_valid_time (for_time)) {
+		icalcomponent_set_dtstart (vtodo, for_time);
+	}
+
+	interval_start = icalcomponent_get_dtstart (vtodo);
+	if (icaltime_is_null_time (interval_start) || !icaltime_is_valid_time (interval_start))
+		interval_start = icaltime_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+
+	/* Some far-enough time to cover long recurrences */
+	interval_end = icaltime_from_string ("30000101T000000Z");
+
+	nod.interval_start = interval_start;
+	nod.next = icaltime_null_time ();
+	nod.found_next = FALSE;
+
+	success = e_cal_recur_generate_instances_sync (vtodo, interval_start, interval_end,
+		ecu_find_next_occurrence_cb, &nod,
+		e_cal_client_resolve_tzid_sync, cal_client,
+		e_cal_client_get_default_timezone (cal_client),
+		cancellable, error) || nod.found_next;
+
+	if (success)
+		*out_time = nod.next;
+
+	if (!icaltime_is_null_time (for_time) && icaltime_is_valid_time (for_time)) {
+		if (icaltime_is_null_time (orig_dtstart) || !icaltime_is_valid_time (orig_dtstart))
+			e_cal_util_remove_property_by_kind (vtodo, ICAL_DTSTART_PROPERTY, FALSE);
+		else
+			icalcomponent_set_dtstart (vtodo, orig_dtstart);
+	}
+
+	if (icaltime_is_null_time (orig_due) || !icaltime_is_valid_time (orig_due))
+		e_cal_util_remove_property_by_kind (vtodo, ICAL_DUE_PROPERTY, FALSE);
+	else
+		icalcomponent_set_due (vtodo, orig_due);
+
+	return success;
+}
+
+/**
+ * e_cal_util_init_recur_task_sync:
+ * @vtodo: a VTODO component
+ * @cal_client: an #ECalClient to which the @vtodo belongs
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Initializes properties of a recurring @vtodo, like normalizing
+ * the Due date and eventually the Start date. The function does
+ * nothing when the @vtodo is not recurring.
+ *
+ * The function doesn't change LAST-MODIFIED neither the SEQUENCE
+ * property, it's up to the caller to do it.
+ *
+ * Note the @cal_client, @cancellable and @error is used only
+ * for timezone resolution. The function doesn't store the @vtodo
+ * to the @cal_client, it only updates the @vtodo component.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.30
+ **/
+gboolean
+e_cal_util_init_recur_task_sync (icalcomponent *vtodo,
+				 ECalClient *cal_client,
+				 GCancellable *cancellable,
+				 GError **error)
+{
+	struct icaltimetype dtstart, due;
+	gboolean success = TRUE;
+
+	g_return_val_if_fail (vtodo != NULL, FALSE);
+	g_return_val_if_fail (icalcomponent_isa (vtodo) == ICAL_VTODO_COMPONENT, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
+
+	if (!e_cal_util_component_has_recurrences (vtodo))
+		return TRUE;
+
+	/* DTSTART is required for recurring components */
+	dtstart = icalcomponent_get_dtstart (vtodo);
+	if (icaltime_is_null_time (dtstart) || !icaltime_is_valid_time (dtstart)) {
+		dtstart = icaltime_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
+		icalcomponent_set_dtstart (vtodo, dtstart);
+	}
+
+	due = icalcomponent_get_due (vtodo);
+	if (icaltime_is_null_time (due) || !icaltime_is_valid_time (due) ||
+	    icaltime_compare (dtstart, due) < 0) {
+		success = e_cal_util_find_next_occurrence (vtodo, icaltime_null_time (), &due, cal_client, cancellable, error);
+
+		if (!icaltime_is_null_time (due) && icaltime_is_valid_time (due))
+			icalcomponent_set_due (vtodo, due);
+	}
+
+	return success;
+}
+
+/**
+ * e_cal_util_mark_task_complete_sync:
+ * @vtodo: a VTODO component
+ * @completed_time: completed time to set, or (time_t) -1 to use current time
+ * @cal_client: an #ECalClient to which the @vtodo belongs
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Marks the @vtodo as complete with eventual update of other
+ * properties. This is useful also for recurring tasks, for which
+ * it moves the @vtodo into the next occurrence according to
+ * the recurrence rule.
+ *
+ * When the @vtodo is marked as completed, then the existing COMPLETED
+ * date-time is preserved if exists, otherwise it's set either to @completed_time,
+ * or to the current time, when the @completed_time is (time_t) -1.
+ *
+ * The function doesn't change LAST-MODIFIED neither the SEQUENCE
+ * property, it's up to the caller to do it.
+ *
+ * Note the @cal_client, @cancellable and @error is used only
+ * for timezone resolution. The function doesn't store the @vtodo
+ * to the @cal_client, it only updates the @vtodo component.
+ *
+ * Returns: Whether succeeded.
+ *
+ * Since: 3.30
+ **/
+gboolean
+e_cal_util_mark_task_complete_sync (icalcomponent *vtodo,
+				    time_t completed_time,
+				    ECalClient *cal_client,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	icalproperty *prop;
+
+	g_return_val_if_fail (vtodo != NULL, FALSE);
+	g_return_val_if_fail (icalcomponent_isa (vtodo) == ICAL_VTODO_COMPONENT, FALSE);
+	g_return_val_if_fail (E_IS_CAL_CLIENT (cal_client), FALSE);
+
+	if (e_cal_util_component_has_recurrences (vtodo)) {
+		gboolean is_last = FALSE, change_count = FALSE;
+		struct icaltimetype new_dtstart = icaltime_null_time (), new_due = icaltime_null_time ();
+
+		for (prop = icalcomponent_get_first_property (vtodo, ICAL_RRULE_PROPERTY);
+		     prop && !is_last;
+		     prop = icalcomponent_get_next_property (vtodo, ICAL_RRULE_PROPERTY)) {
+			struct icalrecurrencetype rrule;
+
+			rrule = icalproperty_get_rrule (prop);
+
+			if (rrule.interval > 0) {
+				if (rrule.count > 0) {
+					is_last = rrule.count == 1;
+					change_count = TRUE;
+				}
+			}
+		}
+
+		if (!is_last) {
+			if (!e_cal_util_find_next_occurrence (vtodo, icaltime_null_time (), &new_dtstart, cal_client, cancellable, error))
+				return FALSE;
+
+			if (!icaltime_is_null_time (new_dtstart) && icaltime_is_valid_time (new_dtstart)) {
+				struct icaltimetype old_due;
+
+				old_due = icalcomponent_get_due (vtodo);
+
+				/* When the previous DUE is before new DTSTART, then move relatively also the DUE
+				   date, to keep the difference... */
+				if (!icaltime_is_null_time (old_due) && icaltime_is_valid_time (old_due) &&
+				    icaltime_compare (old_due, new_dtstart) < 0) {
+					if (!e_cal_util_find_next_occurrence (vtodo, old_due, &new_due, cal_client, cancellable, error))
+						return FALSE;
+				}
+
+				/* ...  otherwise set the new DUE as the next-next-DTSTART ... */
+				if (icaltime_is_null_time (new_due) || !icaltime_is_valid_time (new_due)) {
+					if (!e_cal_util_find_next_occurrence (vtodo, new_dtstart, &new_due, cal_client, cancellable, error))
+						return FALSE;
+				}
+
+				/* ... eventually fallback to the new DTSTART for the new DUE */
+				if (icaltime_is_null_time (new_due) || !icaltime_is_valid_time (new_due))
+					new_due = new_dtstart;
+			}
+		}
+
+		if (!is_last &&
+		    !icaltime_is_null_time (new_dtstart) && icaltime_is_valid_time (new_dtstart) &&
+		    !icaltime_is_null_time (new_due) && icaltime_is_valid_time (new_due)) {
+			/* Move to the next occurrence */
+			if (change_count) {
+				for (prop = icalcomponent_get_first_property (vtodo, ICAL_RRULE_PROPERTY);
+				     prop;
+				     prop = icalcomponent_get_next_property (vtodo, ICAL_RRULE_PROPERTY)) {
+					struct icalrecurrencetype rrule;
+
+					rrule = icalproperty_get_rrule (prop);
+
+					if (rrule.interval > 0) {
+						if (rrule.count > 0) {
+							rrule.count--;
+							icalproperty_set_rrule (prop, rrule);
+						}
+					}
+				}
+			}
+
+			icalcomponent_set_dtstart (vtodo, new_dtstart);
+			icalcomponent_set_due (vtodo, new_due);
+
+			e_cal_util_remove_property_by_kind (vtodo, ICAL_COMPLETED_PROPERTY, TRUE);
+
+			prop = icalcomponent_get_first_property (vtodo, ICAL_PERCENTCOMPLETE_PROPERTY);
+			if (prop)
+				icalproperty_set_percentcomplete (prop, 0);
+
+			prop = icalcomponent_get_first_property (vtodo, ICAL_STATUS_PROPERTY);
+			if (prop)
+				icalproperty_set_status (prop, ICAL_STATUS_NEEDSACTION);
+
+			return TRUE;
+		}
+	}
+
+	prop = icalcomponent_get_first_property (vtodo, ICAL_COMPLETED_PROPERTY);
+	if (!prop) {
+		prop = icalproperty_new_completed (completed_time != (time_t) -1 ?
+			icaltime_from_timet_with_zone (completed_time, FALSE, icaltimezone_get_utc_timezone ()) :
+			icaltime_current_time_with_zone (icaltimezone_get_utc_timezone ()));
+		icalcomponent_add_property (vtodo, prop);
+	}
+
+	prop = icalcomponent_get_first_property (vtodo, ICAL_PERCENTCOMPLETE_PROPERTY);
+	if (prop) {
+		icalproperty_set_percentcomplete (prop, 100);
+	} else {
+		prop = icalproperty_new_percentcomplete (100);
+		icalcomponent_add_property (vtodo, prop);
+	}
+
+	prop = icalcomponent_get_first_property (vtodo, ICAL_STATUS_PROPERTY);
+	if (prop) {
+		icalproperty_set_status (prop, ICAL_STATUS_COMPLETED);
+	} else {
+		prop = icalproperty_new_status (ICAL_STATUS_COMPLETED);
+		icalcomponent_add_property (vtodo, prop);
+	}
 
 	return TRUE;
 }
