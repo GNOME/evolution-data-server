@@ -235,6 +235,16 @@ gboolean	e_cal_util_event_dates_match	(icalcomponent *icalcomp1,
  **/
 #define CAL_STATIC_CAPABILITY_TASK_CAN_RECUR		"task-can-recur"
 
+/**
+ * CAL_STATIC_CAPABILITY_TASK_NO_ALARM:
+ *
+ * When the capability is set, the client cannot store reminders
+ * on tasks, otherwise it can.
+ *
+ * Since: 3.30
+ **/
+#define CAL_STATIC_CAPABILITY_TASK_NO_ALARM		"task-no-alarm"
+
 /* Recurrent events. Management for instances */
 icalcomponent *	e_cal_util_construct_instance	(icalcomponent *icalcomp,
 						 struct icaltimetype rid);
