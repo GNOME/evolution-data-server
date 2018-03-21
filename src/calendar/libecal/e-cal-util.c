@@ -594,7 +594,6 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	GList *alarm_uids;
 	time_t alarm_start, alarm_end;
 	struct alarm_occurrence_data aod;
-	icalcomponent *icalcomp;
 	ECalComponentAlarms *alarms;
 
 	if (!e_cal_component_has_alarms (comp))
@@ -611,34 +610,11 @@ e_cal_util_generate_alarms_for_comp (ECalComponent *comp,
 	aod.triggers = NULL;
 	aod.n_triggers = 0;
 
-	icalcomp = e_cal_component_get_icalcomponent (comp);
-
-	if (icalcomponent_isa (icalcomp) == ICAL_VEVENT_COMPONENT ||
-	    !e_cal_util_component_has_recurrences (icalcomp) ||
-	    !icaltime_is_null_time (icalcomponent_get_recurrenceid (icalcomp))) {
-		e_cal_recur_generate_instances (
-			comp, alarm_start, alarm_end,
-			add_alarm_occurrences_cb, &aod,
-			resolve_tzid, user_data,
-			default_timezone);
-	} else {
-		/* Workaround to not expand recurrences for non-VEVENT components.
-		   The component here has recurrences, but not RECURRENCE-ID.
-		   The function doesn't expand recurrences, when there exists
-		   RECURRENCE-ID, thus use this. */
-		struct icaltimetype itt;
-
-		itt = icalcomponent_get_dtstart (icalcomp);
-		icalcomponent_set_recurrenceid (icalcomp, itt);
-
-		e_cal_recur_generate_instances (
-			comp, alarm_start, alarm_end,
-			add_alarm_occurrences_cb, &aod,
-			resolve_tzid, user_data,
-			default_timezone);
-
-		e_cal_util_remove_property_by_kind (icalcomp, ICAL_RECURRENCEID_PROPERTY, FALSE);
-	}
+	e_cal_recur_generate_instances (
+		comp, alarm_start, alarm_end,
+		add_alarm_occurrences_cb, &aod,
+		resolve_tzid, user_data,
+		default_timezone);
 
 	/* We add the ABSOLUTE triggers separately */
 	generate_absolute_triggers (
