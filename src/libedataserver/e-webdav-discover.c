@@ -710,7 +710,7 @@ e_webdav_discover_sources_sync (ESource *source,
 
 		g_free (uri);
 
-		if (success && !wdd.calendars && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+		if (!g_cancellable_is_cancelled (cancellable) && !wdd.calendars && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		   (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) &&
 		   (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 			gchar *saved_path;
@@ -733,7 +733,7 @@ e_webdav_discover_sources_sync (ESource *source,
 			g_free (saved_path);
 		}
 
-		if (success && !wdd.addressbooks && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
+		if (!g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0) &&
 		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 			gchar *saved_path;
