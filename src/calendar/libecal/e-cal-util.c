@@ -1909,6 +1909,7 @@ typedef struct _NextOccurrenceData {
 	struct icaltimetype interval_start;
 	struct icaltimetype next;
 	gboolean found_next;
+	gboolean any_hit;
 } NextOccurrenceData;
 
 static gboolean
@@ -1922,6 +1923,8 @@ ecu_find_next_occurrence_cb (icalcomponent *comp,
 	NextOccurrenceData *nod = user_data;
 
 	g_return_val_if_fail (nod != NULL, FALSE);
+
+	nod->any_hit = TRUE;
 
 	if (icaltime_compare (nod->interval_start, instance_start) < 0) {
 		nod->next = instance_start;
@@ -1943,7 +1946,10 @@ e_cal_util_find_next_occurrence (icalcomponent *vtodo,
 {
 	NextOccurrenceData nod;
 	struct icaltimetype interval_start = for_time, interval_end, orig_dtstart, orig_due;
+	gint advance_days = 8;
+	icalproperty *prop;
 	gboolean success;
+	GError *local_error = NULL;
 
 	g_return_val_if_fail (vtodo != NULL, FALSE);
 	g_return_val_if_fail (out_time != NULL, FALSE);
@@ -1962,21 +1968,45 @@ e_cal_util_find_next_occurrence (icalcomponent *vtodo,
 	if (icaltime_is_null_time (interval_start) || !icaltime_is_valid_time (interval_start))
 		interval_start = icaltime_current_time_with_zone (e_cal_client_get_default_timezone (cal_client));
 
-	/* Some far-enough time to cover long recurrences */
-	interval_end = icaltime_from_string ("30000101T000000Z");
+	prop = icalcomponent_get_first_property (vtodo, ICAL_RRULE_PROPERTY);
+	if (prop) {
+		struct icalrecurrencetype rrule;
 
-	nod.interval_start = interval_start;
-	nod.next = icaltime_null_time ();
-	nod.found_next = FALSE;
+		rrule = icalproperty_get_rrule (prop);
 
-	success = e_cal_recur_generate_instances_sync (vtodo, interval_start, interval_end,
-		ecu_find_next_occurrence_cb, &nod,
-		e_cal_client_resolve_tzid_sync, cal_client,
-		e_cal_client_get_default_timezone (cal_client),
-		cancellable, error) || nod.found_next;
+		if (rrule.freq == ICAL_WEEKLY_RECURRENCE && rrule.interval > 1)
+			advance_days = (rrule.interval * 7) + 1;
+		else if (rrule.freq == ICAL_MONTHLY_RECURRENCE)
+			advance_days = (rrule.interval >= 1 ? rrule.interval * 31 : 31) + 1;
+		else if (rrule.freq == ICAL_YEARLY_RECURRENCE)
+			advance_days = (rrule.interval >= 1 ? rrule.interval * 365 : 365) + 2;
+	}
+
+	do {
+		interval_end = interval_start;
+		icaltime_adjust (&interval_end, advance_days, 0, 0, 0);
+
+		nod.interval_start = interval_start;
+		nod.next = icaltime_null_time ();
+		nod.found_next = FALSE;
+		nod.any_hit = FALSE;
+
+		success = e_cal_recur_generate_instances_sync (vtodo, interval_start, interval_end,
+			ecu_find_next_occurrence_cb, &nod,
+			e_cal_client_resolve_tzid_sync, cal_client,
+			e_cal_client_get_default_timezone (cal_client),
+			cancellable, &local_error) || nod.found_next;
+
+		interval_start = interval_end;
+		icaltime_adjust (&interval_start, -1, 0, 0, 0);
+
+	} while (!local_error && !g_cancellable_is_cancelled (cancellable) && !nod.found_next && nod.any_hit);
 
 	if (success)
 		*out_time = nod.next;
+
+	if (local_error)
+		g_propagate_error (error, local_error);
 
 	if (!icaltime_is_null_time (for_time) && icaltime_is_valid_time (for_time)) {
 		if (icaltime_is_null_time (orig_dtstart) || !icaltime_is_valid_time (orig_dtstart))
