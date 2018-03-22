@@ -309,6 +309,7 @@ mime_part_process_header (CamelMedium *medium,
 {
 	CamelMimePart *mime_part = CAMEL_MIME_PART (medium);
 	CamelHeaderType header_type;
+	CamelContentType *content_type;
 	const gchar *charset;
 	gchar *text;
 
@@ -348,7 +349,9 @@ mime_part_process_header (CamelMedium *medium,
 		mime_part->priv->content_location = camel_header_location_decode (value);
 		break;
 	case HEADER_CONTENT_TYPE:
-		camel_data_wrapper_take_mime_type_field (CAMEL_DATA_WRAPPER (mime_part), camel_content_type_decode (value));
+		content_type = camel_content_type_decode (value);
+		if (content_type)
+			camel_data_wrapper_take_mime_type_field (CAMEL_DATA_WRAPPER (mime_part), content_type);
 		break;
 	default:
 		return FALSE;
