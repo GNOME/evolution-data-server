@@ -44,12 +44,19 @@
  * https://github.com/libical/libical/pull/335 and the implementation in
  * https://github.com/libical/libical/blob/master/src/libical/icalversion.h.cmake.
  */
+#if defined(ICAL_CHECK_VERSION) && defined(ICAL_MAJOR_VERSION) && defined(ICAL_MINOR_VERSION) && defined(ICAL_MICRO_VERSION)
 #undef ICAL_CHECK_VERSION
 #define ICAL_CHECK_VERSION(major,minor,micro)                          \
     (ICAL_MAJOR_VERSION > (major) ||                                   \
     (ICAL_MAJOR_VERSION == (major) && ICAL_MINOR_VERSION > (minor)) || \
     (ICAL_MAJOR_VERSION == (major) && ICAL_MINOR_VERSION == (minor) && \
     ICAL_MICRO_VERSION >= (micro)))
+#else
+#if defined(ICAL_CHECK_VERSION)
+#undef ICAL_CHECK_VERSION
+#endif
+#define ICAL_CHECK_VERSION(major,minor,micro) (0)
+#endif
 
 /* Forward Declarations */
 static void	e_subprocess_cal_factory_initable_init
