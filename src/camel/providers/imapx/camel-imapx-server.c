@@ -3028,6 +3028,12 @@ camel_imapx_server_authenticate_sync (CamelIMAPXServer *is,
 				CAMEL_IMAPX_SERVER_ERROR_CONCURRENT_CONNECT_FAILED,
 				ic->status->text ? ic->status->text : _("Unknown error"));
 			result = CAMEL_AUTHENTICATION_ERROR;
+		} else if (ic->status->condition != IMAPX_UNKNOWN && ic->status->condition != IMAPX_AUTHENTICATIONFAILED) {
+			g_set_error_literal (
+				error, CAMEL_SERVICE_ERROR,
+				CAMEL_SERVICE_ERROR_UNAVAILABLE,
+				ic->status->text ? ic->status->text : _("Unknown error"));
+			result = CAMEL_AUTHENTICATION_ERROR;
 		} else if (sasl) {
 			CamelSaslClass *sasl_class;
 
