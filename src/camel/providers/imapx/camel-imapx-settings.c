@@ -15,6 +15,8 @@
  *
  */
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-settings.h"
 
 #define MIN_CONCURRENT_CONNECTIONS 1

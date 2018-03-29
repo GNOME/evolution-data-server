@@ -25,6 +25,8 @@
  * and a mailbox separator character.
  **/
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-namespace.h"
 
 #define CAMEL_IMAPX_NAMESPACE_GET_PRIVATE(obj) \

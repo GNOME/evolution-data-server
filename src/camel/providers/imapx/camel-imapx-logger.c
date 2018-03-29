@@ -25,6 +25,8 @@
  * Attaches to the #GInputStream and #GOutputStream.
  **/
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-logger.h"
 
 #include <string.h>

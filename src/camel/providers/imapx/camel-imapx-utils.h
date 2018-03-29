@@ -95,7 +95,10 @@ typedef enum _camel_imapx_id_t {
 	IMAPX_OVERQUOTA,
 	IMAPX_PRIVACYREQUIRED,
 	IMAPX_SERVERBUG,
-	IMAPX_UNAVAILABLE
+	IMAPX_UNAVAILABLE,
+
+	/* Sentinel for completeness check */
+	IMAPX_LAST_ID_VALUE
 } camel_imapx_id_t;
 
 #define CAMEL_IMAPX_UNTAGGED_BAD        "BAD"

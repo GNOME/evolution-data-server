@@ -28,6 +28,8 @@
  * This is why instantiation requires a #CamelIMAPXListResponse.
  **/
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-mailbox.h"
 #include "camel-imapx-utils.h"
 

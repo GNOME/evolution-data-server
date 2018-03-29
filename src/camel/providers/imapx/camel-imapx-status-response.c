@@ -25,6 +25,8 @@
  * counts and change tracking indicators.
  **/
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-status-response.h"
 
 #include "camel-imapx-utils.h"

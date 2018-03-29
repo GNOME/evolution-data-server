@@ -31,6 +31,8 @@
  * camel_store_get_folder_info().
  **/
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-list-response.h"
 
 #include "camel-imapx-utils.h"

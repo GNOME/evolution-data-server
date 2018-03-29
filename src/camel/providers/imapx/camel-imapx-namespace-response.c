@@ -25,6 +25,8 @@
  * #CamelIMAPXNamespaceCategory.
  **/
 
+#include "evolution-data-server-config.h"
+
 #include "camel-imapx-namespace-response.h"
 
 #include <string.h>

@@ -3166,6 +3166,100 @@ fail:
 
 /* ********************************************************************** */
 
+#ifdef ENABLE_MAINTAINER_MODE
+
+static void
+imapx_verify_tokens_tab (void)
+{
+	#define item(x) { x, #x }
+	struct _values {
+		camel_imapx_id_t id;
+		const gchar *str;
+	} values[] = {
+		item (IMAPX_ALERT),
+		item (IMAPX_APPENDUID),
+		item (IMAPX_BAD),
+		item (IMAPX_BODY),
+		item (IMAPX_BODYSTRUCTURE),
+		item (IMAPX_BYE),
+		item (IMAPX_CAPABILITY),
+		item (IMAPX_CLOSED),
+		item (IMAPX_COPYUID),
+		item (IMAPX_ENVELOPE),
+		item (IMAPX_EXISTS),
+		item (IMAPX_EXPUNGE),
+		item (IMAPX_FETCH),
+		item (IMAPX_FLAGS),
+		item (IMAPX_HIGHESTMODSEQ),
+		item (IMAPX_INTERNALDATE),
+		item (IMAPX_LIST),
+		item (IMAPX_LSUB),
+		item (IMAPX_MESSAGES),
+		item (IMAPX_MODSEQ),
+		item (IMAPX_NAMESPACE),
+		item (IMAPX_NEWNAME),
+		item (IMAPX_NO),
+		item (IMAPX_NOMODSEQ),
+		item (IMAPX_OK),
+		item (IMAPX_PARSE),
+		item (IMAPX_PERMANENTFLAGS),
+		item (IMAPX_PREAUTH),
+		{ IMAPX_READ_ONLY, "READ-ONLY" },
+		{ IMAPX_READ_WRITE, "READ-WRITE" },
+		item (IMAPX_RECENT),
+		{ IMAPX_RFC822_HEADER, "RFC822.HEADER" },
+		{ IMAPX_RFC822_SIZE, "RFC822.SIZE" },
+		{ IMAPX_RFC822_TEXT, "RFC822.TEXT" },
+		item (IMAPX_STATUS),
+		item (IMAPX_TRYCREATE),
+		item (IMAPX_UID),
+		item (IMAPX_UIDVALIDITY),
+		item (IMAPX_UNSEEN),
+		item (IMAPX_UIDNEXT),
+		item (IMAPX_VANISHED),
+		item (IMAPX_ALREADYEXISTS),
+		item (IMAPX_AUTHENTICATIONFAILED),
+		item (IMAPX_AUTHORIZATIONFAILED),
+		item (IMAPX_CANNOT),
+		item (IMAPX_CLIENTBUG),
+		item (IMAPX_CONTACTADMIN),
+		item (IMAPX_CORRUPTION),
+		item (IMAPX_EXPIRED),
+		item (IMAPX_EXPUNGEISSUED),
+		item (IMAPX_INUSE),
+		item (IMAPX_LIMIT),
+		item (IMAPX_NONEXISTENT),
+		item (IMAPX_NOPERM),
+		item (IMAPX_OVERQUOTA),
+		item (IMAPX_PRIVACYREQUIRED),
+		item (IMAPX_SERVERBUG),
+		item (IMAPX_UNAVAILABLE)
+	};
+	#undef item
+	gint ii;
+
+	g_warn_if_fail (G_N_ELEMENTS (values) == IMAPX_LAST_ID_VALUE - 1);
+
+	for (ii = 0; ii < G_N_ELEMENTS (values); ii++) {
+		const gchar *token;
+		camel_imapx_id_t found_id;
+
+		token = strchr (values[ii].str, '_');
+		if (token)
+			token++;
+		else
+			token = values[ii].str;
+
+		found_id = imapx_tokenise (token, strlen (token));
+		if (found_id == IMAPX_UNKNOWN)
+			g_warning ("%s: Unknown token %d (%s) in enum, add it to camel-imapx-tokens.txt", G_STRFUNC, values[ii].id, values[ii].str);
+		else if (found_id != values[ii].id)
+			g_warning ("%s: Token '%s' expected id %d, but got %d", G_STRFUNC, values[ii].str, values[ii].id, found_id);
+	}
+}
+
+#endif
+
 /*
  * From rfc2060
  *
@@ -3265,6 +3359,10 @@ imapx_utils_init (void)
 
 		create_initial_capabilities_table ();
 		camel_imapx_set_debug_flags ();
+
+		#ifdef ENABLE_MAINTAINER_MODE
+		imapx_verify_tokens_tab ();
+		#endif
 
 		g_once_init_leave (&imapx_utils_initialized, 1);
 	}
