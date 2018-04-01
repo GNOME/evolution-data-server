@@ -245,6 +245,7 @@ src/services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]src/services/evolution-source-registry/builtin/system-address-book.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/system-calendar.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/system-memo-list.source.in
+[type: gettext/ini]src/services/evolution-source-registry/builtin/system-proxy.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/system-task-list.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/vfolder.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/weather-stub.source.in
