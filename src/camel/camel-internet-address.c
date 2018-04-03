@@ -378,14 +378,31 @@ camel_internet_address_find_name (CamelInternetAddress *addr,
                                   const gchar **addressp)
 {
 	struct _address *a;
+	gboolean name_is_utf8_valid;
 	gint i, len;
 
 	g_return_val_if_fail (CAMEL_IS_INTERNET_ADDRESS (addr), -1);
 
+	if (!name)
+		return -1;
+
+	name_is_utf8_valid = g_utf8_validate (name, -1, NULL);
+
 	len = addr->priv->addresses->len;
 	for (i = 0; i < len; i++) {
+		gboolean match;
+
 		a = g_ptr_array_index (addr->priv->addresses, i);
-		if (a->name && !strcmp (a->name, name)) {
+
+		if (!a->name)
+			continue;
+
+		if (name_is_utf8_valid && g_utf8_validate (a->name, -1, NULL))
+			match = !g_utf8_collate (a->name, name);
+		else
+			match = !g_ascii_strcasecmp (a->name, name);
+
+		if (match) {
 			if (addressp)
 				*addressp = a->address;
 			return i;
@@ -482,7 +499,7 @@ camel_internet_address_find_address (CamelInternetAddress *addr,
 	len = addr->priv->addresses->len;
 	for (i = 0; i < len; i++) {
 		a = g_ptr_array_index (addr->priv->addresses, i);
-		if (!strcmp (a->address, address)) {
+		if (a->address && address && !g_ascii_strcasecmp (a->address, address)) {
 			if (namep)
 				*namep = a->name;
 			return i;
