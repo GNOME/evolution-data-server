@@ -256,6 +256,12 @@ void		e_data_server_util_set_dbus_call_timeout
 gboolean	e_source_registry_debug_enabled	(void);
 void		e_source_registry_debug_print	(const gchar *format,
 						 ...) G_GNUC_PRINTF (1, 2);
+void		e_util_debug_print		(const gchar *domain,
+						 const gchar *format,
+						 ...) G_GNUC_PRINTF (2, 3);
+void		e_util_debug_printv		(const gchar *domain,
+						 const gchar *format,
+						 va_list args);
 
 /**
  * ETypeFunc:

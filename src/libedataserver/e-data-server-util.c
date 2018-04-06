@@ -2781,19 +2781,92 @@ void
 e_source_registry_debug_print (const gchar *format,
 			       ...)
 {
-	GString *str;
 	va_list args;
 
 	if (!e_source_registry_debug_enabled ())
 		return;
 
-	str = g_string_new ("");
+	va_start (args, format);
+	e_util_debug_printv ("ESR", format, args);
+	va_end (args);
+}
+
+/**
+ * e_util_debug_print:
+ * @domain: a debug domain
+ * @format: a printf-like format
+ * @...: arguments for the @format
+ *
+ * Prints a text according to @format and its arguments to stdout
+ * prefixed with @domain in brackets [] and the current date and time.
+ * This function doesn't check whether the logging is enabled, it's up
+ * to the caller to determine it, the function only prints the information
+ * in a consistent format:
+ * [domain] YYYY-MM-DD hh:mm:ss.ms - format
+ *
+ * Since: 3.30
+ *
+ * See: e_util_debug_printv()
+ **/
+void
+e_util_debug_print (const gchar *domain,
+		    const gchar *format,
+		    ...)
+{
+	va_list args;
 
 	va_start (args, format);
-	g_string_vprintf (str, format, args);
+	e_util_debug_printv (domain, format, args);
 	va_end (args);
+}
 
-	g_print ("%s", str->str);
+/**
+ * e_util_debug_printv:
+ * @domain: a debug domain
+ * @format: a printf-like format
+ * @args: arguments for the @format
+ *
+ * Prints a text according to @format and its @args to stdout
+ * prefixed with @domain in brackets [] and the current date and time.
+ * This function doesn't check whether the logging is enabled, it's up
+ * to the caller to determine it, the function only prints the information
+ * in a consistent form:
+ * [@domain] YYYY-MM-DD hh:mm:ss.ms - @format
+ *
+ * Since: 3.30
+ *
+ * See: e_util_debug_print()
+ **/
+void
+e_util_debug_printv (const gchar *domain,
+		     const gchar *format,
+		     va_list args)
+{
+	GString *str;
+	GDateTime *dt;
+
+	if (!domain)
+		domain = "???";
+
+	str = g_string_new ("");
+	g_string_vprintf (str, format, args);
+	dt = g_date_time_new_now_local ();
+
+	if (dt) {
+		g_print ("[%s] %04d-%02d-%02d %02d:%02d:%02d.%03d - %s",
+			domain,
+			g_date_time_get_year (dt),
+			g_date_time_get_month (dt),
+			g_date_time_get_day_of_month (dt),
+			g_date_time_get_hour (dt),
+			g_date_time_get_minute (dt),
+			g_date_time_get_second (dt),
+			g_date_time_get_microsecond (dt) / 1000,
+			str->str);
+		g_date_time_unref (dt);
+	} else {
+		g_print ("[%s] %s", domain, str->str);
+	}
 
 	g_string_free (str, TRUE);
 }

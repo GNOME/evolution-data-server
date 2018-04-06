@@ -369,7 +369,7 @@ cpi_oauth2_document_load_changed_cb (WebKitWebView *web_view,
 		return;
 
 	if (cpi_oauth2_get_debug ()) {
-		g_print ("[OAuth2] Loaded URI: '%s'\n", uri);
+		e_util_debug_print ("OAuth2", "Loaded URI: '%s'\n", uri);
 	}
 
 	g_return_if_fail (prompter_oauth2->priv->service != NULL);

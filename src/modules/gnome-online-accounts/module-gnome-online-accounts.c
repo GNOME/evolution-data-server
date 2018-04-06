@@ -51,9 +51,7 @@ e_goa_debug_printf (const gchar *format,
 		    ...)
 {
 	static gint goa_debug = -1;
-	GString *str;
 	va_list args;
-	GDateTime *dt;
 
 	if (goa_debug == -1)
 		goa_debug = g_strcmp0 (g_getenv ("GOA_DEBUG"), "1") == 0 ? 1 : 0;
@@ -61,30 +59,9 @@ e_goa_debug_printf (const gchar *format,
 	if (!goa_debug)
 		return;
 
-	str = g_string_new ("");
-
 	va_start (args, format);
-	g_string_vprintf (str, format, args);
+	e_util_debug_printv ("EDS-GOA", format, args);
 	va_end (args);
-
-	dt = g_date_time_new_now_local ();
-
-	if (dt) {
-		g_print ("[EDS-GOA] %04d-%02d-%02d %02d:%02d:%02d.%03d - %s",
-			g_date_time_get_year (dt),
-			g_date_time_get_month (dt),
-			g_date_time_get_day_of_month (dt),
-			g_date_time_get_hour (dt),
-			g_date_time_get_minute (dt),
-			g_date_time_get_second (dt),
-			g_date_time_get_microsecond (dt) / 1000,
-			str->str);
-		g_date_time_unref (dt);
-	} else {
-		g_print ("[EDS-GOA] %s", str->str);
-	}
-
-	g_string_free (str, TRUE);
 }
 
 typedef struct _EGnomeOnlineAccounts EGnomeOnlineAccounts;
