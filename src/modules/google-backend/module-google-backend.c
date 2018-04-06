@@ -36,7 +36,7 @@
 /* Just for readability... */
 #define METHOD(x) (CAMEL_NETWORK_SECURITY_METHOD_##x)
 
-#define GOOGLE_OAUTH2_MEHTOD		"Google"
+#define GOOGLE_OAUTH2_METHOD		"Google"
 
 /* IMAP Configuration Details */
 #define GOOGLE_IMAP_BACKEND_NAME	"imapx"
@@ -107,7 +107,7 @@ google_backend_can_use_google_auth (ESource *source)
 	g_return_val_if_fail (E_IS_SERVER_SIDE_SOURCE (source), FALSE);
 
 	registry = e_server_side_source_get_server (E_SERVER_SIDE_SOURCE (source));
-	if (!e_oauth2_services_is_oauth2_alias (e_source_registry_server_get_oauth2_services (registry), GOOGLE_OAUTH2_MEHTOD))
+	if (!e_oauth2_services_is_oauth2_alias (e_source_registry_server_get_oauth2_services (registry), GOOGLE_OAUTH2_METHOD))
 		return FALSE;
 
 	g_object_ref (source);
@@ -196,7 +196,7 @@ google_backend_mail_update_auth_method (ESource *child_source,
 	if (oauth2_support && !can_use_google_auth) {
 		method = "XOAUTH2";
 	} else if (can_use_google_auth) {
-		method = GOOGLE_OAUTH2_MEHTOD;
+		method = GOOGLE_OAUTH2_METHOD;
 	} else {
 		method = NULL;
 	}
@@ -240,7 +240,7 @@ google_backend_calendar_update_auth_method (ESource *child_source,
 	if (oauth2_support && !can_use_google_auth) {
 		method = "OAuth2";
 	} else if (can_use_google_auth) {
-		method = GOOGLE_OAUTH2_MEHTOD;
+		method = GOOGLE_OAUTH2_METHOD;
 	} else {
 		method = "plain/password";
 	}
@@ -282,11 +282,13 @@ google_backend_contacts_update_auth_method (ESource *child_source,
 
 	if (oauth2_support && !can_use_google_auth)
 		method = "OAuth2";
-	else /* if (can_use_google_auth) */
-		method = GOOGLE_OAUTH2_MEHTOD;
+	else if (can_use_google_auth)
+		method = GOOGLE_OAUTH2_METHOD;
+	else
+		method = "OAuth2";
+
 	/* "ClientLogin" for Contacts is not supported anymore, thus
-	   force GOOGLE_OAUTH2_MEHTOD method regardless the evolution-data-server
-	   was compiled with it or not. */
+	   fallback to OAuth2 method regardless it's supported or not. */
 
 	e_source_authentication_set_method (extension, method);
 
@@ -401,7 +403,7 @@ google_add_task_list (ECollectionBackend *collection,
 
 	e_source_authentication_set_host (E_SOURCE_AUTHENTICATION (extension), "www.google.com");
 	if (google_backend_can_use_google_auth (collection_source))
-		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), GOOGLE_OAUTH2_MEHTOD);
+		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), GOOGLE_OAUTH2_METHOD);
 	else
 		e_source_authentication_set_method (E_SOURCE_AUTHENTICATION (extension), "OAuth2");
 
@@ -485,7 +487,7 @@ google_backend_authenticate_sync (EBackend *backend,
 			gchar *method;
 
 			method = e_source_authentication_dup_method (auth_extension);
-			if (g_strcmp0 (method, GOOGLE_OAUTH2_MEHTOD) == 0)
+			if (g_strcmp0 (method, GOOGLE_OAUTH2_METHOD) == 0)
 				calendar_url = "https://apidata.googleusercontent.com/caldav/v2/";
 
 			g_free (method);
@@ -650,13 +652,25 @@ static void
 google_backend_populate (ECollectionBackend *backend)
 {
 	ESourceCollection *collection_extension;
+	ESourceAuthentication *authentication_extension;
 	ESource *source;
-
-	/* Chain up to parent's method. */
-	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
 
 	source = e_backend_get_source (E_BACKEND (backend));
 	collection_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_COLLECTION);
+	authentication_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_AUTHENTICATION);
+
+	/* When the WebDAV extension is created, the auth method can be reset, thus ensure
+	   it's there before setting correct authentication method on the master source. */
+	(void) e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+	/* Force OAuth2 for GOA/UOA Google accounts and do it before calling parent method,
+	   thus it knows what authentication method it's supposed to use */
+	if (e_source_has_extension (source, E_SOURCE_EXTENSION_GOA) ||
+	    e_source_has_extension (source, E_SOURCE_EXTENSION_UOA))
+		e_source_authentication_set_method (authentication_extension, "OAuth2");
+
+	/* Chain up to parent's method. */
+	E_COLLECTION_BACKEND_CLASS (e_google_backend_parent_class)->populate (backend);
 
 	if (e_source_collection_get_contacts_enabled (collection_extension)) {
 		GList *list;
