@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: lv\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?product=evoluti"
 "on-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-23 13:33+0000\n"
-"PO-Revision-Date: 2018-03-09 21:59+0200\n"
+"POT-Creation-Date: 2018-04-01 15:05+0000\n"
+"PO-Revision-Date: 2018-04-07 18:53+0200\n"
 "Last-Translator: Rūdolfs Mazurs <rudolfs.mazurs@gmail.com>\n"
 "Language-Team: Latvian <lata-l10n@googlegroups.com>\n"
 "Language: lv\n"
@@ -114,7 +114,7 @@ msgstr "Neizdevās pārsaukt veco datubāzi no “%s” par “%s” — %s"
 #: ../src/addressbook/libebook/e-book-client.c:3422
 #: ../src/addressbook/libebook/e-book-client.c:3640
 #: ../src/addressbook/libedata-book/e-book-backend-sexp.c:877
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:200
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:222
 #: ../src/calendar/backends/contacts/e-cal-backend-contacts.c:274
 #: ../src/calendar/backends/http/e-cal-backend-http.c:204
 #: ../src/calendar/libecal/e-cal.c:2334
@@ -139,8 +139,9 @@ msgstr "Neizdevās pārsaukt veco datubāzi no “%s” par “%s” — %s"
 #: ../src/calendar/libecal/e-cal-client.c:7061
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1742
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3029
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3039
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3051
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3035
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3057
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
@@ -151,7 +152,7 @@ msgid "Unknown error"
 msgstr "Nezināma kļūda"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:924
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1005
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1017
 msgid "Object to save is not a valid vCard"
 msgstr "Saglabājamais objekts nav derīgs vCard"
 
@@ -273,7 +274,7 @@ msgstr "Neizdevās saņemt lietotāja “%s” DN"
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "Dotais URL “%s” neatsaucas uz WebDAV adrešu grāmatu"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:929
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:941
 msgid "Received object is not a valid vCard"
 msgstr "Saņemtais objekts nav derīgs vCard"
 
@@ -1100,7 +1101,7 @@ msgstr "Nevar atvērt datubāzi %s — %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2333
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2396
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2567
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1331
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1335
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
@@ -1123,20 +1124,20 @@ msgid "Cannot sort by a field that is not a string type"
 msgstr "Nevar kārtot pēc lauka, kura datu tips nav virkne"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1050
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1052
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1056
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Iepriekš ielādētais UID “%s” objekts nav derīgs"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1058
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1060
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Saņemtais UID “%s” objekts nav derīgs"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1885
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2333
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3100
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3151
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Neizdevās izveidot kešu “%s”:"
@@ -1361,12 +1362,12 @@ msgstr "Asinhrona revīzija, kustinot kursoru"
 msgid "Alphabetic index was set for incorrect locale"
 msgstr "Alfabētiskais indekss bija iestatīts nepareizajai lokālei"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:143
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:165
 #, c-format
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Saņemtais URL “%s” nenorāda uz CalDAV kalendāru"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1579
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1616
 msgid "Failed to parse response data"
 msgstr "Neizdevās saprast atbildes datus"
 
@@ -1858,12 +1859,12 @@ msgstr "Nevar pievienot laika joslu bez komponentes"
 msgid "Cannot add timezone with invalid component"
 msgstr "Nevar pievienot laika joslu ar nederīgu komponenti"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1107
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1111
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Saņemtais UID “%s” objekts nesatur nevienu gaidīto komponenti"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3896
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3955
 msgid "attachment.dat"
 msgstr "pielikums.dat"
 
@@ -2136,7 +2137,7 @@ msgstr[1] "Filtrē jaunās vēstules iekš “%s : %s”"
 msgstr[2] "Filtrē jaunās vēstules iekš “%s : %s”"
 
 #: ../src/camel/camel-folder.c:1030
-#: ../src/camel/providers/local/camel-maildir-folder.c:330
+#: ../src/camel/providers/local/camel-maildir-folder.c:331
 msgid "Moving messages"
 msgstr "Pārvieto vēstules"
 
@@ -2588,7 +2589,6 @@ msgstr "Sinhronizē vēstules no mapes “%s : %s” uz disku"
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
 #: ../src/camel/camel-offline-folder.c:476
 #, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
 msgid "Syncing message %d of %d in folder “%s : %s” to disk"
 msgstr "Sinhronizē vēstuli %d no %d no mapes “%s : %s” uz disku"
 
@@ -2598,7 +2598,6 @@ msgstr "K_opēt mapes saturu lokāli, lai varētu darboties nesaistē"
 
 #: ../src/camel/camel-offline-store.c:268
 #, c-format
-#| msgid "Syncing messages in folder “%s : %s” to disk"
 msgid "Syncing messages in account “%s” to disk"
 msgstr "Sinhronizē vēstules kontā “%s” uz disku"
 
@@ -2891,8 +2890,8 @@ msgid ""
 "This option will use an OAuth 2.0 access token to connect to the Outlook.com "
 "server"
 msgstr ""
-"Šī opcija izmantos OAuth 2.0 piekļuves marķieri, lai savienotos ar"
-" Outlook.com serveri"
+"Šī opcija izmantos OAuth 2.0 piekļuves marķieri, lai savienotos ar Outlook."
+"com serveri"
 
 #: ../src/camel/camel-search-private.c:114
 #, c-format
@@ -3271,7 +3270,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Jums ir jāstrādā tiešsaistē, lai izpildītu šo darbību (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3111
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3117
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
@@ -3305,7 +3304,6 @@ msgid "Unable to move deleted messages"
 msgstr "Nevar pārvietot dzēstās vēstules"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:1818
-#| msgid "Unable to move junk messages"
 msgid "Unable to move messages to Inbox"
 msgstr "Nevar pārvietot vēstules uz Iesūtni"
 
@@ -3452,7 +3450,7 @@ msgstr "Kļūda, rakstot kešatmiņas straumē"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2793
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2881
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3144
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3150
 msgid "Failed to get capabilities"
 msgstr "Neizdevās saņemt iespējas"
 
@@ -3497,157 +3495,157 @@ msgstr "Autentifikācijas parole nav pieejama"
 msgid "Failed to authenticate"
 msgstr "Neizdevās autentificēties"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3166
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3172
 msgid "Failed to issue NAMESPACE"
 msgstr "Neizdevās izdot NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3190
 msgid "Failed to enable QResync"
 msgstr "Neizdevās ieslēgt QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3216
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3222
 msgid "Failed to issue NOTIFY"
 msgstr "Neizdevās izdot NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3694
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3700
 msgid "Failed to select mailbox"
 msgstr "Neizdevās izvēlēties pastkasti"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3797
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3803
 msgid "Cannot issue command, no stream available"
 msgstr "Nevar izdot komandu, nav pieejamu straumju"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4067
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nevar saņemt vēstuli ar vēstules ID %s — %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4062
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4068
 msgid "No such message available."
 msgstr "Tāda vēstule nav pieejama."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4110
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4135
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4174
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4116
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4141
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4180
 msgid "Error fetching message"
 msgstr "Kļūda, saņemot vēstuli"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4152
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4158
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4917
 msgid "Error performing NOOP"
 msgstr "Kļūda, izpildot NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4167
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4173
 msgid "Failed to close the tmp stream"
 msgstr "Neizdevās aizvērt pagaidu straumi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4198
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4204
 msgid "Failed to copy the tmp file"
 msgstr "Neizdevās nokopēt pagaidu datni"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
 msgid "Error moving messages"
 msgstr "Kļūda, pārvietojot vēstules"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
 msgid "Error copying messages"
 msgstr "Kļūda, kopējot vēstules"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4704
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4725
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4710
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4731
 msgid "Cannot create spool file: "
 msgstr "Nevar izvedot spoles datni: "
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4811
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4817
 msgid "Error appending message"
 msgstr "Kļūda, pievienojot vēstuli"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5070
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Meklē izmainītās vēstules mapē “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5068
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5074
 msgid "Error scanning changes"
 msgstr "Kļūda, skenējot izmaiņas"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5089
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5095
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Saņem kopsavilkuma informāciju par jaunām vēstulēm uz “%s : %s”"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5107
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5113
 msgid "Error fetching message info"
 msgstr "Kļūda, saņemot vēstules informāciju"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5213
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5219
 msgid "Error running STATUS"
 msgstr "Kļūda, darbinot STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5759
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5789
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5824
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5765
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5795
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
 msgid "Error syncing changes"
 msgstr "Kļūda, sinhronizējot izmaiņas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5962
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5968
 msgid "Error expunging message"
 msgstr "Kļūda, dzēšot vēstuli"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6040
 msgid "Error fetching folders"
 msgstr "Kļūda, saņemot mapes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6051
 msgid "Error fetching subscribed folders"
 msgstr "Kļūda, saņemot abonētās mapes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6067
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6073
 msgid "Error creating folder"
 msgstr "Kļūda, veidojot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6123
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6129
 msgid "Error deleting folder"
 msgstr "Kļūda, dzēšot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6169
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6175
 msgid "Error renaming folder"
 msgstr "Kļūda, pārsaucot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6201
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6207
 msgid "Error subscribing to folder"
 msgstr "Kļūda, abonējot mapi"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
 msgid "Error unsubscribing from folder"
 msgstr "Kļūda, atrakstoties no mapes"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6277
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
 msgid "IMAP server does not support quotas"
 msgstr "IMAP serveris neatbalsta kvotas"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6289
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6295
 msgid "Error retrieving quota information"
 msgstr "Kļūda, saņemot informāciju par kvotām"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6352
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6358
 msgid "Search failed"
 msgstr "Neizdevās meklēt"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6470
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6476
 msgid "Error running IDLE"
 msgstr "Kļūda, darbinot IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:354
-#: ../src/camel/providers/local/camel-maildir-folder.c:478
+#: ../src/camel/providers/local/camel-maildir-folder.c:476
 #: ../src/camel/providers/local/camel-maildir-store.c:345
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
@@ -3805,7 +3803,7 @@ msgstr "Dzēstās vēstules"
 #. * for folders being under $HOME.  The first %s is replaced
 #. * with a relative path under $HOME, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:187
+#: ../src/camel/providers/local/camel-local-folder.c:190
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
@@ -3819,8 +3817,8 @@ msgstr "~%s (%s)"
 #. * folders being under /var/mail.  The first %s is replaced
 #. * with a relative path under /var/mail, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:197
-#: ../src/camel/providers/local/camel-local-folder.c:206
+#: ../src/camel/providers/local/camel-local-folder.c:200
+#: ../src/camel/providers/local/camel-local-folder.c:209
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "pastkaste — %s (%s)"
@@ -3829,19 +3827,19 @@ msgstr "pastkaste — %s (%s)"
 #. * The first %s is replaced with a folder's full path,
 #. * the second %s is replaced with a protocol name, like
 #. * mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:215
+#: ../src/camel/providers/local/camel-local-folder.c:218
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/camel/providers/local/camel-local-folder.c:505
+#: ../src/camel/providers/local/camel-local-folder.c:511
 msgid "_Index message body data"
 msgstr "_Indeksēt vēstules satura datus"
 
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
 #. * the third %s is replaced with a detailed error string
-#: ../src/camel/providers/local/camel-local-folder.c:737
+#: ../src/camel/providers/local/camel-local-folder.c:749
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3967,28 +3965,28 @@ msgid "Could not rename “%s”: %s"
 msgstr "Nevarēja pārsaukt “%s” — %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
-#: ../src/camel/providers/local/camel-maildir-folder.c:344
-#: ../src/camel/providers/local/camel-mbox-folder.c:128
-#: ../src/camel/providers/local/camel-mbox-folder.c:336
-#: ../src/camel/providers/local/camel-mh-folder.c:157
+#: ../src/camel/providers/local/camel-maildir-folder.c:345
+#: ../src/camel/providers/local/camel-mbox-folder.c:133
+#: ../src/camel/providers/local/camel-mbox-folder.c:348
+#: ../src/camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "Nav tādas vēstules"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:232
+#: ../src/camel/providers/local/camel-maildir-folder.c:239
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Nevar pievienot vēstuli maildir mapei — %s "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:282
-#: ../src/camel/providers/local/camel-maildir-folder.c:292
-#: ../src/camel/providers/local/camel-mbox-folder.c:395
-#: ../src/camel/providers/local/camel-mh-folder.c:169
-#: ../src/camel/providers/local/camel-mh-folder.c:179
+#: ../src/camel/providers/local/camel-maildir-folder.c:286
+#: ../src/camel/providers/local/camel-maildir-folder.c:296
+#: ../src/camel/providers/local/camel-mbox-folder.c:407
+#: ../src/camel/providers/local/camel-mh-folder.c:171
+#: ../src/camel/providers/local/camel-mh-folder.c:181
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "Nevar saņemt vēstuli %s no mapes %s: "
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:362
+#: ../src/camel/providers/local/camel-maildir-folder.c:363
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Nevar pārsūtīt vēstuli mērķa mapei: %s"
@@ -4074,21 +4072,21 @@ msgstr "Meklē jaunās vēstules"
 msgid "Storing folder"
 msgstr "Glabā mapi"
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:194
+#: ../src/camel/providers/local/camel-mbox-folder.c:205
 #, c-format
 msgid "Cannot open mailbox: %s: "
 msgstr "Nevar atvērt pastkasti — %s: "
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:257
+#: ../src/camel/providers/local/camel-mbox-folder.c:266
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
 msgstr "Nevar pievienot vēstuli mbox datnei — %s: "
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:387
+#: ../src/camel/providers/local/camel-mbox-folder.c:399
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Izskatās, ka šī mape ir neatgriezeniski sabojāta."
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:444
+#: ../src/camel/providers/local/camel-mbox-folder.c:454
 #: ../src/camel/providers/local/camel-spool-folder.c:65
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
@@ -4234,7 +4232,7 @@ msgstr "Neizdevās rakstīšana uz pagaidu pastkasti — %s"
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Neizdevās rakstīšana uz pagaidu pastkasti — %s — %s"
 
-#: ../src/camel/providers/local/camel-mh-folder.c:114
+#: ../src/camel/providers/local/camel-mh-folder.c:119
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "Nevar pievienot vēstuli mh mapei — %s: "
@@ -5190,23 +5188,20 @@ msgid ""
 "'Company' OAuth2 authentication for any 'CalDAV' source, which reads data "
 "from 'caldav.company.com' host"
 msgstr ""
-"Lietotāji var paplašināt atbalstīto protokolu un serveru nosaukumu sarakstu"
-" definētajiem OAuth2 pakalpojumiem pie jau esošajiem. "
-"Katra rinda var būt formā “servicename[-protocol]:serveris1,serveris2,...”,"
-" kur “servicename” ir faktiskais pakalpojuma nosaukums;"
-"“-protocol” ir neobligāts slēdzis un, ja tas ir uzrakstīts, tad pakalpojumu"
-" var izmantot tikai, ja “protocol” un “serverisX” atbilst; "
-"“serverisX” ir faktiskais servera nosaukums, ar ko salīdzināt, burtu"
-" reģistram nav nozīmes. "
-"Katra rinda var saturēt vairākas vērtības, ko atdala ar komatu. "
-"Var būt vairākas rindas vienam OAuth2 pakalpojumam. "
-"Ņemiet vērā, ka faktisko URL, kur marķieris tiek pieprasīts un atjaunināts,"
-" šeit mainīt nevar, servera nosaukums ir domāts atļaut citus serverus, kur"
-" var izmantot OAuth2."
-"Piemēram, Company:mail.company.com ļauj “Company” OAuth2 autentifikāciju"
-" serverim “mail.company.com”; Company-CalDAV:caldav.company.com ļauj"
-" “Company” OAuth2 autentifikāciju jebkuram “CalDAV” avotam, kurš lasa datus"
-" no “caldav.company.com” servera."
+"Lietotāji var paplašināt atbalstīto protokolu un serveru nosaukumu sarakstu "
+"definētajiem OAuth2 pakalpojumiem pie jau esošajiem. Katra rinda var būt "
+"formā “servicename[-protocol]:serveris1,serveris2,...”, kur “servicename” ir "
+"faktiskais pakalpojuma nosaukums;“-protocol” ir neobligāts slēdzis un, ja "
+"tas ir uzrakstīts, tad pakalpojumu var izmantot tikai, ja “protocol” un "
+"“serverisX” atbilst; “serverisX” ir faktiskais servera nosaukums, ar ko "
+"salīdzināt, burtu reģistram nav nozīmes. Katra rinda var saturēt vairākas "
+"vērtības, ko atdala ar komatu. Var būt vairākas rindas vienam OAuth2 "
+"pakalpojumam. Ņemiet vērā, ka faktisko URL, kur marķieris tiek pieprasīts un "
+"atjaunināts, šeit mainīt nevar, servera nosaukums ir domāts atļaut citus "
+"serverus, kur var izmantot OAuth2.Piemēram, Company:mail.company.com ļauj "
+"“Company” OAuth2 autentifikāciju serverim “mail.company.com”; Company-CalDAV:"
+"caldav.company.com ļauj “Company” OAuth2 autentifikāciju jebkuram “CalDAV” "
+"avotam, kurš lasa datus no “caldav.company.com” servera."
 
 #: ../data/org.gnome.evolution.shell.network-config.gschema.xml.in.h:1
 msgid "(Deprecated) Proxy type to use"
@@ -5305,7 +5300,7 @@ msgid "Failed to lookup credentials: "
 msgstr "Neizdevās uzmeklēt akreditācijas datus:"
 
 #: ../src/libebackend/e-server-side-source.c:1395
-#: ../src/libedataserver/e-source.c:1597
+#: ../src/libedataserver/e-source.c:1583
 #, c-format
 msgid "Data source “%s” does not support creating remote resources"
 msgstr "Datu avots “%s” neatbalsta attālinātu resursu veidošanu"
@@ -5318,7 +5313,7 @@ msgstr ""
 "Datu avotam “%s” nav kolekciju aizmugures, lai izveidotu attālinātus resursus"
 
 #: ../src/libebackend/e-server-side-source.c:1437
-#: ../src/libedataserver/e-source.c:1710
+#: ../src/libedataserver/e-source.c:1696
 #, c-format
 msgid "Data source “%s” does not support deleting remote resources"
 msgstr "Datu avots “%s” neatbalsta attālinātu resursu dzēšanu"
@@ -5331,7 +5326,7 @@ msgstr ""
 "Datu avotam “%s” nav kolekciju aizmugures, lai dzēstu attālinātus resursus"
 
 #: ../src/libebackend/e-server-side-source.c:1482
-#: ../src/libedataserver/e-source.c:1806
+#: ../src/libedataserver/e-source.c:1792
 #: ../src/modules/ubuntu-online-accounts/module-ubuntu-online-accounts.c:1080
 #, c-format
 msgid "Data source “%s” does not support OAuth 2.0 authentication"
@@ -5506,32 +5501,27 @@ msgstr "Iestājās noildze"
 #. the third is the name of the OAuth service.
 #: ../src/libedataserver/e-oauth2-service.c:1208
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not valid for “%s” OAuth2 service"
 msgstr "Avots “%s” (%s) nav derīgs “%s” OAuth2 pakalpojumam"
 
 #: ../src/libedataserver/e-oauth2-service.c:1223
-#| msgid "Google secret not found"
 msgid "OAuth2 secret not found"
 msgstr "OAuth2 noslēpums nav atrasts"
 
 #: ../src/libedataserver/e-oauth2-service.c:1411
 #, c-format
-#| msgid "Unexpected server response from xover: %s"
 msgid "Received incorrect response from server “%s”."
 msgstr "Saņemta nepareiza atbilde no servera “%s”."
 
 #: ../src/libedataserver/e-oauth2-service.c:1420
-#| msgid "Failed to get access token from refresh_token server response"
 msgid "Failed to refresh access token. Sign to the server again, please."
 msgstr ""
-"Neizdevās atsvaidzināt piekļuves marķieri. Lūdzu, vēlreiz ierakstieties"
-" serverī."
+"Neizdevās atsvaidzināt piekļuves marķieri. Lūdzu, vēlreiz ierakstieties "
+"serverī."
 
 #. Translators: The first %s is a display name of the source, the second is its UID.
 #: ../src/libedataserver/e-oauth2-service.c:1462
 #, c-format
-#| msgid "Source “%s” (%s) is not a valid Google source"
 msgid "Source “%s” (%s) is not a valid OAuth2 source"
 msgstr "Avots “%s” (%s) nav derīgs OAuth2 avots"
 
@@ -5540,12 +5530,11 @@ msgid ""
 "The access token is expired and it failed to refresh it. Sign to the server "
 "again, please."
 msgstr ""
-"Piekļuves marķierim ir beidzies termiņš un neizdevās to atjaunināt. Lūdzu,"
-" vēlreiz ierakstieties serverī."
+"Piekļuves marķierim ir beidzies termiņš un neizdevās to atjaunināt. Lūdzu, "
+"vēlreiz ierakstieties serverī."
 
 #. Translators: This is a user-visible string, display name of an OAuth2 service.
 #: ../src/libedataserver/e-oauth2-service-google.c:56
-#| msgid "Google"
 msgctxt "OAuth2Service"
 msgid "Google"
 msgstr "Google"
@@ -5570,17 +5559,17 @@ msgstr "Neizdevās. HTTP kļūda %d — %s"
 msgid "Source file is missing a [%s] group"
 msgstr "Avota datnē trūkst [%s] grupas"
 
-#: ../src/libedataserver/e-source.c:1377
+#: ../src/libedataserver/e-source.c:1363
 #, c-format
 msgid "Data source “%s” is not removable"
 msgstr "Datu avots “%s” nav izņemams"
 
-#: ../src/libedataserver/e-source.c:1500
+#: ../src/libedataserver/e-source.c:1486
 #, c-format
 msgid "Data source “%s” is not writable"
 msgstr "Datu avots “%s” nav rakstāms"
 
-#: ../src/libedataserver/e-source.c:2196
+#: ../src/libedataserver/e-source.c:2173
 msgid "Unnamed"
 msgstr "Nenosaukts"
 
@@ -5955,7 +5944,6 @@ msgstr "Avots “%s” neatbalsta akreditācijas datu vaicāšanu"
 
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:202
 #, c-format
-#| msgid "Failed to obtain an access token for “%s”: "
 msgid "Failed to obtain access token from address “%s”: %s"
 msgstr "Neizdevās saņemt piekļuves marķieri no adreses “%s”: %s"
 
@@ -5967,7 +5955,6 @@ msgstr "Pieprasa piekļuves marķieri, lūdzu, uzgaidiet..."
 #. thus it can form a string like "Google Address Book authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:472
 #, c-format
-#| msgid "Address book authentication request"
 msgid "%s Address Book authentication request"
 msgstr "%s adrešu grāmatas autentifikācija pieprasījums"
 
@@ -5975,7 +5962,6 @@ msgstr "%s adrešu grāmatas autentifikācija pieprasījums"
 #. thus it can form a string like "Google Calendar authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:477
 #, c-format
-#| msgid "Calendar authentication request"
 msgid "%s Calendar authentication request"
 msgstr "%s kalendāra autentifikācijas pieprasījums"
 
@@ -5983,7 +5969,6 @@ msgstr "%s kalendāra autentifikācijas pieprasījums"
 #. thus it can form a string like "Google Memo List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:482
 #, c-format
-#| msgid "Google Memo List authentication request"
 msgid "%s Memo List authentication request"
 msgstr "%s memo saraksta autentifikācijas pieprasījums"
 
@@ -5991,7 +5976,6 @@ msgstr "%s memo saraksta autentifikācijas pieprasījums"
 #. thus it can form a string like "Google Task List authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:487
 #, c-format
-#| msgid "Google Task List authentication request"
 msgid "%s Task List authentication request"
 msgstr "%s uzdevumu saraksta autentifikācijas pieprasījums"
 
@@ -5999,7 +5983,6 @@ msgstr "%s uzdevumu saraksta autentifikācijas pieprasījums"
 #. thus it can form a string like "Google Mail authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:493
 #, c-format
-#| msgid "Mail authentication request"
 msgid "%s Mail authentication request"
 msgstr "%s pasta autentifikācijas pieprasījums"
 
@@ -6008,7 +5991,6 @@ msgstr "%s pasta autentifikācijas pieprasījums"
 #. thus it can form a string like "Google account authentication request".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:498
 #, c-format
-#| msgid "Google account authentication request"
 msgid "%s account authentication request"
 msgstr "%s konta autentifikācijas pieprasījums"
 
@@ -6017,9 +5999,6 @@ msgstr "%s konta autentifikācijas pieprasījums"
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:512
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your address book “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "address book “%s”."
@@ -6032,9 +6011,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:519
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your calendar “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "calendar “%s”."
@@ -6047,9 +6023,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:526
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "account “%s”."
@@ -6062,9 +6035,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:533
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your mail transport “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your mail "
 "transport “%s”."
@@ -6077,9 +6047,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:540
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your memo list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your memo "
 "list “%s”."
@@ -6092,9 +6059,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:547
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your task list “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your task "
 "list “%s”."
@@ -6107,9 +6071,6 @@ msgstr ""
 #. like "On This Computer : Personal".
 #: ../src/libedataserverui/e-credentials-prompter-impl-oauth2.c:554
 #, c-format
-#| msgid ""
-#| "Login to your Google account and accept conditions in order to access "
-#| "your account “%s”."
 msgid ""
 "Login to your %s account and accept conditions in order to access your "
 "account “%s”."
@@ -6489,9 +6450,9 @@ msgid ""
 "Overrides compile-time backend per process option; use 1 to enable, 0 to "
 "disable, any other value is to use compile-time option"
 msgstr ""
-"Pārraksta kompilēšanas laika opciju “aizmugures uz procesu”; izmantojiet 1,"
-" lai ieslēgtu; 0, lai izslēgtu; jebkura cita vērtība nozīmēs izmantot"
-" kompilēšanas laika opciju"
+"Pārraksta kompilēšanas laika opciju “aizmugures uz procesu”; izmantojiet 1, "
+"lai ieslēgtu; 0, lai izslēgtu; jebkura cita vērtība nozīmēs izmantot "
+"kompilēšanas laika opciju"
 
 #: ../src/services/evolution-source-registry/builtin/birthdays.source.in.h:1
 msgid "Birthdays & Anniversaries"
@@ -6513,6 +6474,10 @@ msgstr "Uz LDAP serveriem"
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
 msgid "On This Computer"
 msgstr "Šajā datorā"
+
+#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
+msgid "Default Proxy Settings"
+msgstr "Noklusējuma starpnieka iestatījumi"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
