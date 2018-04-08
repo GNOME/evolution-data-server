@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: evolution-data-server.HEAD\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=evolution-data-server&keywords=I18N+L10N&component=general\n"
-"POT-Creation-Date: 2018-02-28 12:50+0000\n"
-"PO-Revision-Date: 2018-02-28 23:12+0200\n"
+"POT-Creation-Date: 2018-04-01 15:05+0000\n"
+"PO-Revision-Date: 2018-04-08 17:37+0300\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -138,8 +138,9 @@ msgstr "Nepavyko pervadinti senos duomenų bazės iš „%s“ į „%s“: %s"
 #: ../src/calendar/libecal/e-cal-client.c:7061
 #: ../src/calendar/libedata-cal/e-cal-cache.c:1742
 #: ../src/camel/providers/imapx/camel-imapx-server.c:3029
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3039
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3051
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3035
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3057
 #: ../src/camel/providers/nntp/camel-nntp-store.c:422
 #: ../src/libebackend/e-server-side-source.c:501
 #: ../src/libedataserver/e-client.c:188
@@ -150,7 +151,7 @@ msgid "Unknown error"
 msgstr "Nežinoma klaida"
 
 #: ../src/addressbook/backends/google/e-book-backend-google.c:924
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1005
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:1017
 msgid "Object to save is not a valid vCard"
 msgstr "Įrašomas objektas nėra tinkama vCard"
 
@@ -272,7 +273,7 @@ msgstr "Nepavyko gauti DN naudotojui „%s“"
 msgid "Given URL “%s” doesn’t reference WebDAV address book"
 msgstr "Pateiktas URL „%s“ nenurodo WebDAV adresų knygos"
 
-#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:929
+#: ../src/addressbook/backends/webdav/e-book-backend-webdav.c:941
 msgid "Received object is not a valid vCard"
 msgstr "Gautas objektas nėra tinkama vCard"
 
@@ -1098,7 +1099,7 @@ msgstr "Nepavyko atverti duomenų bazės %s: %s"
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2333
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2396
 #: ../src/calendar/libedata-cal/e-cal-cache.c:2567
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1331
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1335
 #: ../src/libebackend/e-cache.c:1385 ../src/libebackend/e-cache.c:2238
 #: ../src/libebackend/e-cache.c:2278
 #, c-format
@@ -1121,20 +1122,20 @@ msgid "Cannot sort by a field that is not a string type"
 msgstr "Negalima rikiuoti pagal lauką, kurus nėra simbolių eilutės tipo"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1050
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1052
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1056
 #, c-format
 msgid "Preloaded object for UID “%s” is invalid"
 msgstr "Įkelto objekto UID „%s“ yra netinkama"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1058
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1060
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1064
 #, c-format
 msgid "Received object for UID “%s” is invalid"
 msgstr "Pagal UID „%s“ gautas objektas yra netinkamas"
 
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:1885
 #: ../src/addressbook/libedata-book/e-book-meta-backend.c:2333
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3100
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3151
 #, c-format
 msgid "Failed to create cache “%s”:"
 msgstr "Nepavyko sukurti podėlio „%s“:"
@@ -1362,7 +1363,7 @@ msgstr "Alfabetinis indeksas buvo nustatytas į neteisingą lokalę"
 msgid "Given URL “%s” doesn’t reference CalDAV calendar"
 msgstr "Pateiktas URL „%s“ nenurodo CalDAV kalendoriaus"
 
-#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1605
+#: ../src/calendar/backends/caldav/e-cal-backend-caldav.c:1616
 msgid "Failed to parse response data"
 msgstr "Nepavyko perskaityti atsako duomenų"
 
@@ -1854,12 +1855,12 @@ msgstr "Negalima pridėti laiko juostos be komponentės"
 msgid "Cannot add timezone with invalid component"
 msgstr "Negalima pridėti laiko juostos su netinkama komponente"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1107
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:1111
 #, c-format
 msgid "Received object for UID “%s” doesn’t contain any expected component"
 msgstr "Pagal UID „%s“ gautas objektas neturi jokios lauktos komponentės"
 
-#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3896
+#: ../src/calendar/libedata-cal/e-cal-meta-backend.c:3955
 msgid "attachment.dat"
 msgstr "priedas.dat"
 
@@ -2132,7 +2133,7 @@ msgstr[1] "Filtruojami nauji laiškai aplanke „%s : %s“"
 msgstr[2] "Filtruojami nauji laiškai aplanke „%s : %s“"
 
 #: ../src/camel/camel-folder.c:1030
-#: ../src/camel/providers/local/camel-maildir-folder.c:330
+#: ../src/camel/providers/local/camel-maildir-folder.c:331
 msgid "Moving messages"
 msgstr "Perkeliami laiškai"
 
@@ -3274,7 +3275,7 @@ msgid "You must be working online to complete this operation (%s)"
 msgstr "Norėdami užbaigti šią operaciją turite dirbti prisijungę (%s)"
 
 #: ../src/camel/providers/imapx/camel-imapx-conn-manager.c:993
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3111
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3117
 #: ../src/camel/providers/nntp/camel-nntp-store.c:351
 #: ../src/camel/providers/nntp/camel-nntp-store.c:1346
 #: ../src/camel/providers/nntp/camel-nntp-store.c:2158
@@ -3455,7 +3456,7 @@ msgstr "Klaida rašant į podėlio srautą"
 
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2793
 #: ../src/camel/providers/imapx/camel-imapx-server.c:2881
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3144
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3150
 msgid "Failed to get capabilities"
 msgstr "Nepavyko gauti galimybių"
 
@@ -3500,157 +3501,157 @@ msgstr "Tapatybės patvirtinimo slaptažodis neprieinamas"
 msgid "Failed to authenticate"
 msgstr "Nepavyko patvirtinti tapatybės"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3166
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3172
 msgid "Failed to issue NAMESPACE"
 msgstr "Nepavyko išduoti NAMESPACE"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3184
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3190
 msgid "Failed to enable QResync"
 msgstr "Nepavyko įjungti QResync"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3216
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3222
 msgid "Failed to issue NOTIFY"
 msgstr "Nepavyko išduoti NOTIFY"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3694
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3700
 msgid "Failed to select mailbox"
 msgstr "Nepavyko Pasirinkti pašto dėžutės"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:3797
+#: ../src/camel/providers/imapx/camel-imapx-server.c:3803
 msgid "Cannot issue command, no stream available"
 msgstr "Negalima įvykdyti komandos, nėra srauto"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4061
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4067
 #, c-format
 msgid "Cannot get message with message ID %s: %s"
 msgstr "Nepavyko gauti laiško, kurio ID %s: %s"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4062
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4068
 msgid "No such message available."
 msgstr "Nėra tokio laiško."
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4110
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4135
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4174
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4116
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4141
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4180
 msgid "Error fetching message"
 msgstr "Klaida gaunant laišką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4152
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4911
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4158
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4917
 msgid "Error performing NOOP"
 msgstr "Klaida atliekant NOOP"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4167
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4173
 msgid "Failed to close the tmp stream"
 msgstr "Nepavyko užverti laikinojo srauto"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4198
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4204
 msgid "Failed to copy the tmp file"
 msgstr "Nepavyko nukopijuoti laikimo failo"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
 msgid "Error moving messages"
 msgstr "Klaida perkeliant laiškus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4434
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4440
 msgid "Error copying messages"
 msgstr "Klaida kopijuojant laiškus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4704
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4725
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4710
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4731
 msgid "Cannot create spool file: "
 msgstr "Nepavyko sukurti kaupos failo:"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:4811
+#: ../src/camel/providers/imapx/camel-imapx-server.c:4817
 msgid "Error appending message"
 msgstr "Klaida pridedant laišką"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5064
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5070
 #, c-format
 msgid "Scanning for changed messages in “%s : %s”"
 msgstr "Ieškoma pakeistų laiškų aplanke „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5068
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5074
 msgid "Error scanning changes"
 msgstr "Klaida skaitant pakeitimus"
 
 #. Translators: The first “%s” is replaced with an account name and the second “%s”
 #. is replaced with a full path name. The spaces around “:” are intentional, as
 #. the whole “%s : %s” is meant as an absolute identification of the folder.
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5089
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5095
 #, c-format
 msgid "Fetching summary information for new messages in “%s : %s”"
 msgstr "Gaunama naujų laiškų santrauka aplankui „%s : %s“"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5107
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5113
 msgid "Error fetching message info"
 msgstr "Klaida gaunant laiško informaciją"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5213
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5219
 msgid "Error running STATUS"
 msgstr "Klaida vykdant STATUS"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5759
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5789
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5824
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5765
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5795
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5830
 msgid "Error syncing changes"
 msgstr "Klaida sinchronizuojant pakeitimus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:5962
+#: ../src/camel/providers/imapx/camel-imapx-server.c:5968
 msgid "Error expunging message"
 msgstr "Klaida sunaikinant laišką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6034
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6040
 msgid "Error fetching folders"
 msgstr "Klaida gaunant aplankus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6045
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6051
 msgid "Error fetching subscribed folders"
 msgstr "Klaida gaunant priregistruotus aplankus"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6067
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6073
 msgid "Error creating folder"
 msgstr "Klaida kuriant aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6123
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6129
 msgid "Error deleting folder"
 msgstr "Klaida trinant aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6169
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6175
 msgid "Error renaming folder"
 msgstr "Klaida pervadinant aplanką"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6201
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6207
 msgid "Error subscribing to folder"
 msgstr "Klaida registruojantis prie aplanko"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6237
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6243
 msgid "Error unsubscribing from folder"
 msgstr "Klaida išsiregistruojant iš aplanko"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6277
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6283
 msgid "IMAP server does not support quotas"
 msgstr "IMAP serveris nepalaiko kvotų"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6289
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6295
 msgid "Error retrieving quota information"
 msgstr "Gaunama gaunant kvotos informaciją"
 
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6352
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6358
 msgid "Search failed"
 msgstr "Paieška nepavyko"
 
 #. Blocks, until the DONE is issued or on inactivity timeout, error, ...
-#: ../src/camel/providers/imapx/camel-imapx-server.c:6470
+#: ../src/camel/providers/imapx/camel-imapx-server.c:6476
 msgid "Error running IDLE"
 msgstr "Klaida vykdant IDLE"
 
 #. create a dummy "." parent inbox, use to scan, then put back at the top level
 #: ../src/camel/providers/imapx/camel-imapx-store.c:354
-#: ../src/camel/providers/local/camel-maildir-folder.c:478
+#: ../src/camel/providers/local/camel-maildir-folder.c:476
 #: ../src/camel/providers/local/camel-maildir-store.c:345
 #: ../src/camel/providers/local/camel-maildir-store.c:824
 #: ../src/camel/providers/local/camel-maildir-store.c:830
@@ -3810,7 +3811,7 @@ msgstr "Ištrinti laiškai"
 #. * for folders being under $HOME.  The first %s is replaced
 #. * with a relative path under $HOME, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:187
+#: ../src/camel/providers/local/camel-local-folder.c:190
 #, c-format
 msgid "~%s (%s)"
 msgstr "~%s (%s)"
@@ -3824,8 +3825,8 @@ msgstr "~%s (%s)"
 #. * folders being under /var/mail.  The first %s is replaced
 #. * with a relative path under /var/mail, the second %s is
 #. * replaced with a protocol name, like mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:197
-#: ../src/camel/providers/local/camel-local-folder.c:206
+#: ../src/camel/providers/local/camel-local-folder.c:200
+#: ../src/camel/providers/local/camel-local-folder.c:209
 #, c-format
 msgid "mailbox: %s (%s)"
 msgstr "dėžutė: %s (%s)"
@@ -3834,19 +3835,19 @@ msgstr "dėžutė: %s (%s)"
 #. * The first %s is replaced with a folder's full path,
 #. * the second %s is replaced with a protocol name, like
 #. * mbox/maldir/...
-#: ../src/camel/providers/local/camel-local-folder.c:215
+#: ../src/camel/providers/local/camel-local-folder.c:218
 #, c-format
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/camel/providers/local/camel-local-folder.c:505
+#: ../src/camel/providers/local/camel-local-folder.c:511
 msgid "_Index message body data"
 msgstr "_Indeksuoti pagrindinės laiško dalies duomenis"
 
 #. Translators: The first %s is replaced with a message ID,
 #. * the second %s is replaced with the folder path,
 #. * the third %s is replaced with a detailed error string
-#: ../src/camel/providers/local/camel-local-folder.c:737
+#: ../src/camel/providers/local/camel-local-folder.c:749
 #, c-format
 msgid ""
 "Cannot get message %s from folder %s\n"
@@ -3973,28 +3974,28 @@ msgid "Could not rename “%s”: %s"
 msgstr "Nepavyko pervadinti „%s“: %s"
 
 #: ../src/camel/providers/local/camel-maildir-folder.c:107
-#: ../src/camel/providers/local/camel-maildir-folder.c:344
-#: ../src/camel/providers/local/camel-mbox-folder.c:128
-#: ../src/camel/providers/local/camel-mbox-folder.c:336
-#: ../src/camel/providers/local/camel-mh-folder.c:157
+#: ../src/camel/providers/local/camel-maildir-folder.c:345
+#: ../src/camel/providers/local/camel-mbox-folder.c:133
+#: ../src/camel/providers/local/camel-mbox-folder.c:348
+#: ../src/camel/providers/local/camel-mh-folder.c:159
 msgid "No such message"
 msgstr "Nėra tokio laiško"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:232
+#: ../src/camel/providers/local/camel-maildir-folder.c:239
 #, c-format
 msgid "Cannot append message to maildir folder: %s: "
 msgstr "Nepavyko pridurti laiško prie maildir aplanko: %s:"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:282
-#: ../src/camel/providers/local/camel-maildir-folder.c:292
-#: ../src/camel/providers/local/camel-mbox-folder.c:395
-#: ../src/camel/providers/local/camel-mh-folder.c:169
-#: ../src/camel/providers/local/camel-mh-folder.c:179
+#: ../src/camel/providers/local/camel-maildir-folder.c:286
+#: ../src/camel/providers/local/camel-maildir-folder.c:296
+#: ../src/camel/providers/local/camel-mbox-folder.c:407
+#: ../src/camel/providers/local/camel-mh-folder.c:171
+#: ../src/camel/providers/local/camel-mh-folder.c:181
 #, c-format
 msgid "Cannot get message %s from folder %s: "
 msgstr "Nepavyko gauti laiško %s iš aplanko %s:"
 
-#: ../src/camel/providers/local/camel-maildir-folder.c:362
+#: ../src/camel/providers/local/camel-maildir-folder.c:363
 #, c-format
 msgid "Cannot transfer message to destination folder: %s"
 msgstr "Nepavyko perkelti laiško į paskirties aplanką: %s"
@@ -4080,21 +4081,21 @@ msgstr "Tikrinama, ar yra naujų laiškų"
 msgid "Storing folder"
 msgstr "Įrašomas aplankas"
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:194
+#: ../src/camel/providers/local/camel-mbox-folder.c:205
 #, c-format
 msgid "Cannot open mailbox: %s: "
 msgstr "Nepavyko atverti pašto dėžutės: %s:"
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:257
+#: ../src/camel/providers/local/camel-mbox-folder.c:266
 #, c-format
 msgid "Cannot append message to mbox file: %s: "
 msgstr "Nepavyko pridurti laiško prie mbox failo: %s:"
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:387
+#: ../src/camel/providers/local/camel-mbox-folder.c:399
 msgid "The folder appears to be irrecoverably corrupted."
 msgstr "Atrodo, jog aplankas yra neatkuriamai sugadintas."
 
-#: ../src/camel/providers/local/camel-mbox-folder.c:444
+#: ../src/camel/providers/local/camel-mbox-folder.c:454
 #: ../src/camel/providers/local/camel-spool-folder.c:65
 #, c-format
 msgid "Cannot create folder lock on %s: %s"
@@ -4240,7 +4241,7 @@ msgstr "Nepavyko rašyti į laikiną pašto dėžutę: %s"
 msgid "Writing to temporary mailbox failed: %s: %s"
 msgstr "Nepavyko rašyti į laikiną pašto dėžutę: %s: %s"
 
-#: ../src/camel/providers/local/camel-mh-folder.c:114
+#: ../src/camel/providers/local/camel-mh-folder.c:119
 #, c-format
 msgid "Cannot append message to mh folder: %s: "
 msgstr "Nepavyko pridurti laiško prie mh aplanko: %s:"
@@ -5182,22 +5183,6 @@ msgid "A list of hints for OAuth2 services"
 msgstr "Patarimų sąrašas OAuth2 tarnyboms"
 
 #: ../data/org.gnome.evolution-data-server.gschema.xml.in.h:13
-#| msgid ""
-#| "Users can extend the list of supported protocols and hostnames for "
-#| "defined OAuth2 services, in addition to those hard-coded. Each line can "
-#| "be of the form: servicename[-protocol]:hostname1,hostname2,... where "
-#| "'servicename' is the actual service name; the '-protocol' is optional, "
-#| "and if written, then the service can be used only if both 'protocol' and "
-#| "'hostnameX' match; the 'hostnameX' is the actual host name to compare "
-#| "with, case insensitively. Each line can contain multiple values, "
-#| "separated by comma. There can be provided multiple lines for one OAuth2 "
-#| "service. Note that the actual URL where the token is requested and "
-#| "refreshed cannot be changed here, the hostname is to allow other servers, "
-#| "where the OAuth2 service can be used. Examples: Company:mail.company.com "
-#| "- enables 'Company' OAuth2 authentication for 'mail.company.com' host "
-#| "Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 "
-#| "authentication for any 'CalDAV' source, which reads data from 'caldav."
-#| "companycaldav.com' host"
 msgid ""
 "Users can extend the list of supported protocols and hostnames for defined "
 "OAuth2 services, in addition to those hard-coded. Each line can be of the "
@@ -6495,6 +6480,10 @@ msgstr "LDAP serveriuose"
 #: ../src/services/evolution-source-registry/builtin/local-stub.source.in.h:1
 msgid "On This Computer"
 msgstr "Šiame kompiuteryje"
+
+#: ../src/services/evolution-source-registry/builtin/system-proxy.source.in.h:1
+msgid "Default Proxy Settings"
+msgstr "Numatytieji tarpinio serverio nustatymai"
 
 #: ../src/services/evolution-source-registry/builtin/vfolder.source.in.h:1
 msgid "Search Folders"
