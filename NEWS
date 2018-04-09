@@ -1,3 +1,30 @@
+Evolution-Data-Server 3.28.1 2018-04-09
+---------------------------------------
+
+Bug Fixes:
+	Bug 767683 - Crash when updating Maildir 'changes' structure (Milan Crha)
+	Bug 725295 - Crash in e_cal_backend_remove_view() (Milan Crha)
+	Bug 794434 - [EWebDAVDiscover] The .well-known addresses not tried after first failure (Milan Crha)
+	Bug 794534 - Runtime warning when Content-Type header is invalid (Milan Crha)
+	Bug 794628 - Don't preload timezones on libical 3.0.2+ (Dan Nicholson)
+	Bug 793601 - [IMAPx] Asks for password when server is unavailable (Milan Crha)
+	Bug 794639 - Sender/signer address comparison should not be case sensitive (Milan Crha)
+	Bug 794879 - GOA-configured Google account has set wrong authentication method (Milan Crha)
+
+Miscellaneous:
+	[ECalMetaBackend] Doesn't store custom time zones permanently (Milan Crha)
+	Correct typo in config.h.in (Milan Crha)
+	Update POTFILES.in (Piotr Drąg)
+
+Translations:
+	Piotr Drąg (pl)
+	Anders Jonsson (sv)
+	Rafael Fontenelle (pt_BR)
+	Gianvito Cavasoli (it)
+	Rūdolfs Mazurs (lv)
+	Aurimas Černius (lt)
+	Hannie Dumoleyn (nl)
+
 Evolution-Data-Server 3.28.0 2018-03-12
 ---------------------------------------
 
