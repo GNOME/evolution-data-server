@@ -235,7 +235,7 @@ camel_url_pattern_end (const gchar *in,
 				 * punctuation, so strip any trailing
 				 * punctuation off. Also strip off any closing
 				 * double-quotes. */
-				while (inptr > pos && strchr (",.:;?!-|}])\"", inptr[-1]))
+				while (inptr > pos && strchr (",.:;?!-|}])\">", inptr[-1]))
 					inptr--;
 			}
 
