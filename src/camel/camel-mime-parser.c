@@ -1320,6 +1320,12 @@ folder_scan_header (struct _header_scan_state *s,
 						if (s->outptr - 1 > s->outbuf && (s->outptr[-2] == '\r' || s->outptr[-2] == '\n'))
 							s->outptr[-2] = 0;
 
+						if (s->outbuf == s->outptr || !*s->outbuf) {
+							s->check_header_folded = FALSE;
+							s->midline = FALSE;
+							goto header_done;
+						}
+
 						h (printf ("header not folded '%s' at %d\n", s->outbuf, (gint) s->header_start));
 
 						header_raw_append_parse (&h->headers, s->outbuf, s->header_start);
@@ -1341,9 +1347,9 @@ folder_scan_header (struct _header_scan_state *s,
 					s->midline = TRUE;
 					s->check_header_folded = inptr == inend;
 					inptr = inend;
-					header_append (s, start, inptr);
+					header_append (s, start, inptr + (s->check_header_folded ? -1 : 0));
 				} else {
-					h (printf ("got line part: '%.*s'\n", inptr - 1 - start, start));
+					h (printf ("got line part: '%.*s'\n", (gint) (inptr - 1 - start), start));
 					/* got a line, strip and add it, process it */
 					s->midline = FALSE;
 					s->check_header_folded = FALSE;
