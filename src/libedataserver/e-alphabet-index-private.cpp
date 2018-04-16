@@ -36,6 +36,7 @@
 
 using icu::AlphabeticIndex;
 using icu::Locale;
+using icu::UnicodeString;
 
 struct _EAlphabetIndex {
 	AlphabeticIndex *priv;
