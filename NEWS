@@ -1,3 +1,44 @@
+Evolution-Data-Server 3.29.1 2018-04-16
+---------------------------------------
+
+Bug Fixes:
+	Bug 767683 - Crash when updating Maildir 'changes' structure (Milan Crha)
+	Bug 793031 - Decrease memory usage by disabling backend-per-process by default ][ (Milan Crha)
+	Bug 793488 - Drop hard build dependency on python (and partly perl) (Milan Crha)
+	Bug 788193 - [itip-formatter] Describe used recurrence, if possible (Milan Crha)
+	Bug 725295 - Crash in e_cal_backend_remove_view() (Milan Crha)
+	Bug 793963 - Add debugging for GOA accounts (Milan Crha)
+	Bug 200907 - Add support for recurring tasks (Milan Crha)
+	Bug 794417 - Let expand recurring tasks when generating reminders (Milan Crha)
+	Bug 794434 - [EWebDAVDiscover] The .well-known addresses not tried after first failure (Milan Crha)
+	Bug 794534 - Runtime warning when Content-Type header is invalid (Milan Crha)
+	Bug 794628 - Don't preload timezones on libical 3.0.2+ (Dan Nicholson)
+	Bug 793601 - [IMAPx] Asks for password when server is unavailable (Milan Crha)
+	Bug 794639 - Sender/signer address comparison should not be case sensitive (Milan Crha)
+	Bug 794879 - GOA-configured Google account has set wrong authentication method (Milan Crha)
+	Bug 795108 - Trailing bracket not stripped when linkifying URL inside angle brackets (Milan Crha)
+	Bug 791475 - Incorrectly parses headers in certain case ]I[ (Milan Crha)
+
+Miscellaneous:
+	[ECalMetaBackend] Doesn't store custom time zones permanently (Milan Crha)
+	Add a workaround for glib bug 793727 (Milan Crha)
+	Correct typo in config.h.in (Milan Crha)
+	Make it possible to disable Reminders for Tasks (Milan Crha)
+	Change how next occurrence of a recurring task is found (Milan Crha)
+	[IMAPx] Add a code for completeness check of camel-imapx-tokens.txt (Milan Crha)
+	Update POTFILES.in (Piotr Drąg)
+	Introduce e_util_debug_print() for consistent debug print form (Milan Crha)
+
+Translations:
+	Piotr Drąg (pl)
+	Anders Jonsson (sv)
+	Rafael Fontenelle (pt_BR)
+	Gianvito Cavasoli (it)
+	Rūdolfs Mazurs (lv)
+	Aurimas Černius (lt)
+	Balázs Meskó (hu)
+	Mario Blättermann (de)
+
 Evolution-Data-Server 3.28.0 2018-03-12
 ---------------------------------------
 
