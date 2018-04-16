@@ -97,7 +97,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 	ECalBackendCalDAV *cbdav;
 	GHashTable *capabilities = NULL, *allows = NULL;
 	ESource *source;
-	gboolean success;
+	gboolean success, is_writable = FALSE;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
@@ -129,22 +129,39 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 	success = e_webdav_session_options_sync (cbdav->priv->webdav, NULL,
 		&capabilities, &allows, cancellable, &local_error);
 
+	if (success && !g_cancellable_is_cancelled (cancellable)) {
+		GSList *privileges = NULL, *link;
+
+		/* Ignore any errors here */
+		if (e_webdav_session_get_current_user_privilege_set_sync (cbdav->priv->webdav, NULL, &privileges, cancellable, NULL)) {
+			for (link = privileges; link && !is_writable; link = g_slist_next (link)) {
+				EWebDAVPrivilege *privilege = link->data;
+
+				if (privilege) {
+					is_writable =
+						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_WRITE ||
+						privilege->hint == E_WEBDAV_PRIVILEGE_HINT_ALL;
+				}
+			}
+
+			g_slist_free_full (privileges, e_webdav_privilege_free);
+		} else {
+			is_writable = allows && (
+				g_hash_table_contains (allows, SOUP_METHOD_PUT) ||
+				g_hash_table_contains (allows, SOUP_METHOD_POST) ||
+				g_hash_table_contains (allows, SOUP_METHOD_DELETE));
+		}
+	}
+
 	if (success) {
 		ESourceWebdav *webdav_extension;
 		ECalCache *cal_cache;
 		SoupURI *soup_uri;
-		gboolean is_writable;
 		gboolean calendar_access;
 
 		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
 		soup_uri = e_source_webdav_dup_soup_uri (webdav_extension);
 		cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-
-		/* The POST added for FastMail servers, which doesn't advertise PUT on collections. */
-		is_writable = allows && (
-			g_hash_table_contains (allows, SOUP_METHOD_PUT) ||
-			g_hash_table_contains (allows, SOUP_METHOD_POST) ||
-			g_hash_table_contains (allows, SOUP_METHOD_DELETE));
 
 		cbdav->priv->calendar_schedule = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_SCHEDULE);
 		calendar_access = capabilities && g_hash_table_contains (capabilities, E_WEBDAV_CAPABILITY_CALENDAR_ACCESS);
