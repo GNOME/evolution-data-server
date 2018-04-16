@@ -35,6 +35,7 @@
 #include <unicode/translit.h>
 
 using icu::Transliterator;
+using icu::UnicodeString;
 
 struct _ETransliterator {
 	Transliterator *priv;
