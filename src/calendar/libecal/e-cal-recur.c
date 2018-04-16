@@ -5742,7 +5742,7 @@ e_cal_recur_describe_recurrence (icalcomponent *icalcomp,
 				}
 			} else if (icalcomponent_isa (icalcomp) == ICAL_VTODO_COMPONENT) {
 				comp_prefix = C_("recur-description", "The task recurs");
-			} else if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT) {
+			} else /* if (icalcomponent_isa (icalcomp) == ICAL_VJOURNAL_COMPONENT) */ {
 				comp_prefix = C_("recur-description", "The memo recurs");
 			}
 
