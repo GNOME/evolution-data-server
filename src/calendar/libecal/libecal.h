@@ -34,6 +34,7 @@
 #include <libecal/e-cal-types.h>
 #include <libecal/e-cal-util.h>
 #include <libecal/e-cal-view.h>
+#include <libecal/e-reminder-watcher.h>
 #include <libecal/e-timezone-cache.h>
 
 #undef __LIBECAL_H_INSIDE__

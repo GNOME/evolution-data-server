@@ -23,6 +23,14 @@
       <_summary>Birthday and anniversary reminder units</_summary>
       <_description>Units for a birthday or anniversary reminder, “minutes”, “hours” or “days”</_description>
     </key>
-  </schema>
 
+    <key name="reminders-past" type="as">
+      <default>['']</default>
+      <_summary>Past reminders for EReminderWatcher</_summary>
+    </key>
+    <key name="reminders-snoozed" type="as">
+      <default>['']</default>
+      <_summary>Snoozed reminders for EReminderWatcher</_summary>
+    </key>
+  </schema>
 </schemalist>

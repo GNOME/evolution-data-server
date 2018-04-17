@@ -287,6 +287,7 @@
       <xi:include href="xml/e-timezone-cache.xml"/>
       <xi:include href="xml/e-cal-backend-util.xml"/>
       <xi:include href="xml/e-cal-types.xml"/>
+      <xi:include href="xml/e-reminder-watcher.xml"/>
     </chapter>
 
     <chapter>

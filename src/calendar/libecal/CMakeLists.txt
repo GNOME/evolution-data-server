@@ -20,6 +20,7 @@ set(SOURCES
 	e-cal-util.c
 	e-cal-view.c
 	e-cal-view-private.h
+	e-reminder-watcher.c
 	e-timezone-cache.c
 	${CMAKE_CURRENT_BINARY_DIR}/e-cal-enumtypes.c
 )
@@ -37,6 +38,7 @@ set(HEADERS
 	e-cal-types.h
 	e-cal-util.h
 	e-cal-view.h
+	e-reminder-watcher.h
 	e-timezone-cache.h
 	${CMAKE_CURRENT_BINARY_DIR}/e-cal-enumtypes.h
 )
