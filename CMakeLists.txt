@@ -378,9 +378,12 @@ endif(ENABLE_GTK)
 add_printable_option(ENABLE_OAUTH2 "Enable built-in OAuth2 authentications" ON)
 
 if(ENABLE_OAUTH2)
-	pkg_check_modules_for_option(ENABLE_OAUTH2 "OAuth2 authentication support" OAUTH2
-		webkit2gtk-4.0>=${webkit2gtk_minimum_version}
+	pkg_check_modules_for_option(ENABLE_OAUTH2 "OAuth2 authentication support" OAUTH2_JSON_GLIB
 		json-glib-1.0>=${json_glib_minimum_version}
+	)
+
+	pkg_check_modules_for_option(ENABLE_OAUTH2 "OAuth2 authentication support" OAUTH2_WEBKIT2GTK
+		webkit2gtk-4.0>=${webkit2gtk_minimum_version}
 	)
 
 	add_printable_variable(WITH_GOOGLE_CLIENT_ID "Google OAuth 2.0 client id" "")
