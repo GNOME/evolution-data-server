@@ -127,7 +127,10 @@ G_DEFINE_TYPE (CamelSaslGssapi, camel_sasl_gssapi, CAMEL_TYPE_SASL)
 #ifdef HAVE_KRB5
 
 static void
-gssapi_set_mechanism_exception (gss_OID mech, OM_uint32 minor, GError **error)
+gssapi_set_mechanism_exception (gss_OID mech,
+				OM_uint32 minor,
+				const gchar *additional_error,
+				GError **error)
 {
 	OM_uint32 tmajor, tminor, message_status = 0;
 	char *message = NULL;
@@ -160,16 +163,28 @@ gssapi_set_mechanism_exception (gss_OID mech, OM_uint32 minor, GError **error)
 		message = new_message;
 	} while (message_status != 0);
 
-	g_set_error (
-		error, CAMEL_SERVICE_ERROR,
-		CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-		"%s", message);
+	if (additional_error && *additional_error) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			/* Translators: the first '%s' is replaced with a generic error message,
+			   the second '%s' is replaced with additional error information. */
+			C_("gssapi_error", "%s (%s)"), message, additional_error);
+	} else {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			"%s", message);
+	}
 
 	g_free (message);
 }
 
 static void
-gssapi_set_exception (gss_OID mech, OM_uint32 major, OM_uint32 minor,
+gssapi_set_exception (gss_OID mech,
+		      OM_uint32 major,
+		      OM_uint32 minor,
+		      const gchar *additional_error,
                       GError **error)
 {
 	const gchar *str;
@@ -214,16 +229,25 @@ gssapi_set_exception (gss_OID mech, OM_uint32 major, OM_uint32 minor,
 		str = _("The referenced credentials have expired.");
 		break;
 	case GSS_S_FAILURE:
-		return gssapi_set_mechanism_exception (mech, minor, error);
+		return gssapi_set_mechanism_exception (mech, minor, additional_error, error);
 		break;
 	default:
 		str = _("Bad authentication response from server.");
 	}
 
-	g_set_error (
-		error, CAMEL_SERVICE_ERROR,
-		CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
-		"%s", str);
+	if (additional_error && *additional_error) {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			/* Translators: the first '%s' is replaced with a generic error message,
+			   the second '%s' is replaced with additional error information. */
+			C_("gssapi_error", "%s (%s)"), str, additional_error);
+	} else {
+		g_set_error (
+			error, CAMEL_SERVICE_ERROR,
+			CAMEL_SERVICE_ERROR_CANT_AUTHENTICATE,
+			"%s", str);
+	}
 }
 
 static void
@@ -249,7 +273,8 @@ sasl_gssapi_finalize (GObject *object)
 /* DBUS Specific code */
 
 static gboolean
-send_dbus_message (const gchar *name)
+send_dbus_message (const gchar *name,
+		   GError **out_error)
 {
 	gint success = FALSE;
 	GError *error = NULL;
@@ -258,9 +283,8 @@ send_dbus_message (const gchar *name)
 
 	connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
 	if (error) {
-		g_warning ("could not get system bus: %s\n", error->message);
-		g_error_free (error);
-
+		g_prefix_error (&error, _("Could not get session bus:"));
+		g_propagate_error (out_error, error);
 		return FALSE;
 	}
 
@@ -290,8 +314,20 @@ send_dbus_message (const gchar *name)
 
 	if (error) {
 		g_dbus_error_strip_remote_error (error);
-		g_warning ("%s: %s\n", G_STRFUNC, error->message);
-		g_error_free (error);
+		if (out_error) {
+			if (g_error_matches (error, G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN)) {
+				GError *new_error = g_error_new (G_DBUS_ERROR, G_DBUS_ERROR_SERVICE_UNKNOWN,
+					_("Cannot ask for Kerberos ticket. Obtain the ticket manually, like on command line with “kinit” or"
+					  " open “Online Accounts” in “Settings” and add the Kerberos account there. Reported error was: %s"),
+					error->message);
+				g_clear_error (&error);
+				error = new_error;
+			}
+
+			g_propagate_error (out_error, error);
+		} else {
+			g_error_free (error);
+		}
 	}
 
 	if (reply) {
@@ -330,6 +366,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 	const gchar *service_name;
 	gchar *host = NULL;
 	gchar *user = NULL;
+	GError *krb_error = NULL;
 
 	priv = CAMEL_SASL_GSSAPI_GET_PRIVATE (sasl);
 
@@ -386,7 +423,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 		g_free (str);
 
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (priv->mech, major, minor, error);
+			gssapi_set_exception (priv->mech, major, minor, NULL, error);
 			goto exit;
 		}
 
@@ -430,10 +467,11 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 			    major == (OM_uint32) GSS_S_FAILURE &&
 			    (minor == (OM_uint32) KRB5KRB_AP_ERR_TKT_EXPIRED ||
 			     minor == (OM_uint32) KRB5KDC_ERR_NEVER_VALID) &&
-			    send_dbus_message (user))
+			    send_dbus_message (user, &krb_error))
 					goto challenge;
 
-			gssapi_set_exception (priv->used_mech, major, minor, error);
+			gssapi_set_exception (priv->used_mech, major, minor, krb_error ? krb_error->message : NULL, error);
+			g_clear_error (&krb_error);
 			goto exit;
 		}
 
@@ -457,7 +495,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 
 		major = gss_unwrap (&minor, priv->ctx, &inbuf, &outbuf, &conf_state, &qop);
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (priv->used_mech, major, minor, error);
+			gssapi_set_exception (priv->used_mech, major, minor, NULL, error);
 			goto exit;
 		}
 
@@ -496,7 +534,7 @@ sasl_gssapi_challenge_sync (CamelSasl *sasl,
 
 		major = gss_wrap (&minor, priv->ctx, FALSE, qop, &inbuf, &conf_state, &outbuf);
 		if (major != GSS_S_COMPLETE) {
-			gssapi_set_exception (priv->used_mech, major, minor, error);
+			gssapi_set_exception (priv->used_mech, major, minor, NULL, error);
 			g_free (str);
 			goto exit;
 		}
