@@ -2048,6 +2048,10 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 	if (!existing_comp)
 		existing_comp = master_comp;
 
+	/* Pick the first instance in case there's no master component */
+	if (!existing_comp)
+		existing_comp = instances->data;
+
 	/* Remember old and new components */
 	if (out_old_comp && existing_comp)
 		old_comp = e_cal_component_clone (existing_comp);
@@ -2069,11 +2073,17 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 	case E_CAL_OBJ_MOD_THIS:
 		if (rid) {
 			if (existing_comp != master_comp) {
+				/* When it's the last detached instance, then remove all */
+				if (instances && instances->data == existing_comp && !instances->next) {
+					mod = E_CAL_OBJ_MOD_ALL;
+					break;
+				}
+
 				instances = g_slist_remove (instances, existing_comp);
 				g_clear_object (&existing_comp);
 			}
 
-			if (existing_comp == master_comp && mod == E_CAL_OBJ_MOD_ONLY_THIS) {
+			if (existing_comp == master_comp && master_comp && mod == E_CAL_OBJ_MOD_ONLY_THIS) {
 				success = FALSE;
 				g_propagate_error (error, e_data_cal_create_error (ObjectNotFound, NULL));
 			} else {
@@ -2093,11 +2103,12 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 					itt = icaltime_convert_to_zone (itt, icaltimezone_get_utc_timezone ());
 				}
 
-				e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
+				if (master_comp)
+					e_cal_util_remove_instances (e_cal_component_get_icalcomponent (master_comp), itt, mod);
 			}
 
-			if (success && out_new_comp)
-				new_comp = e_cal_component_clone (master_comp);
+			if (success && out_new_comp && (master_comp || existing_comp))
+				new_comp = e_cal_component_clone (master_comp ? master_comp : existing_comp);
 		} else {
 			mod = E_CAL_OBJ_MOD_ALL;
 		}
@@ -2180,11 +2191,51 @@ ecmb_remove_object_sync (ECalMetaBackend *meta_backend,
 			if (*offline_flag == E_CACHE_IS_ONLINE) {
 				gchar *ical_string = NULL;
 
-				g_warn_if_fail (e_cal_cache_get_component_as_string (cal_cache, uid, NULL, &ical_string, cancellable, NULL));
+				/* Use the master object, if exists */
+				if (e_cal_cache_get_component_as_string (cal_cache, uid, NULL, &ical_string, cancellable, NULL)) {
+					success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, ical_string, cancellable, &local_error);
 
-				success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, uid, extra, ical_string, cancellable, &local_error);
+					g_free (ical_string);
+				} else {
+					/* If no master object is available, then delete with the first instance */
+					GSList *link;
 
-				g_free (ical_string);
+					for (link = instances; link && success; link = g_slist_next (link)) {
+						ECalComponent *comp = link->data;
+						ECalComponentId *id;
+						gchar *comp_extra = NULL;
+
+						if (!comp)
+							continue;
+
+						id = e_cal_component_get_id (comp);
+						if (!id)
+							continue;
+
+						if (!e_cal_cache_get_component_extra (cal_cache, id->uid, id->rid, &comp_extra, cancellable, NULL)) {
+							comp_extra = NULL;
+							if (g_cancellable_set_error_if_cancelled (cancellable, &local_error)) {
+								success = FALSE;
+								e_cal_component_free_id (id);
+								break;
+							}
+
+							g_warn_if_reached ();
+						}
+
+						ical_string = e_cal_component_get_as_string (comp);
+
+						/* This pretends the first instance is the master object and the implementations should count with it */
+						success = e_cal_meta_backend_remove_component_sync (meta_backend, conflict_resolution, id->uid, comp_extra, ical_string, cancellable, &local_error);
+
+						e_cal_component_free_id (id);
+						g_clear_pointer (&ical_string, g_free);
+						g_free (comp_extra);
+
+						/* Stop with the first instance */
+						break;
+					}
+				}
 
 				if (local_error) {
 					if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_HOST_NOT_FOUND))
@@ -2346,9 +2397,19 @@ ecmb_receive_object_sync (ECalMetaBackend *meta_backend,
 	cal_backend = E_CAL_BACKEND (meta_backend);
 	registry = e_cal_backend_get_registry (cal_backend);
 
-	/* just to check whether component exists in a cache */
+	/* Just to check whether component exists in the cache */
 	is_in_cache = e_cal_cache_contains (cal_cache, id->uid, NULL, E_CACHE_EXCLUDE_DELETED) ||
 		(id->rid && *id->rid && e_cal_cache_contains (cal_cache, id->uid, id->rid, E_CACHE_EXCLUDE_DELETED));
+
+	/* For cases when there's no master object in the cache */
+	if (!is_in_cache) {
+		GSList *icalstrings = NULL;
+
+		if (e_cal_cache_get_components_by_uid_as_string (cal_cache, id->uid, &icalstrings, cancellable, NULL)) {
+			is_in_cache = icalstrings && icalstrings->data;
+			g_slist_free_full (icalstrings, g_free);
+		}
+	}
 
 	mod = e_cal_component_is_instance (comp) ? E_CAL_OBJ_MOD_THIS : E_CAL_OBJ_MOD_ALL;
 
