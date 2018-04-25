@@ -2257,6 +2257,708 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 }
 
 static void
+test_receive_and_remove (ECalMetaBackend *meta_backend)
+{
+	ECalMetaBackendTest *test_backend;
+	ECalCache *cal_cache;
+	gchar *calobj;
+	GSList *old_components = NULL, *new_components = NULL, *ids;
+	GError *error = NULL;
+
+	g_assert_nonnull (meta_backend);
+
+	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
+	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
+	g_assert_nonnull (cal_cache);
+
+	/* Receive master component */
+	calobj = tcu_new_icalstring_from_test_case ("invite-5");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 1);
+	g_assert_cmpint (test_backend->save_count, ==, 1);
+	g_assert_cmpint (test_backend->remove_count, ==, 0);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	calobj = NULL;
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, "invite-detached", NULL, &calobj, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (calobj);
+	g_assert_nonnull (strstr (calobj, "SUMMARY:Recurring invite\r\n"));
+	g_assert_null (strstr (calobj, "SUMMARY:Detached instance of recurring invite\r\n"));
+	g_free (calobj);
+
+	/* Delete master component, with no detached instances now */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 1);
+	g_assert_cmpint (test_backend->save_count, ==, 1);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive the master component again */
+	calobj = tcu_new_icalstring_from_test_case ("invite-5");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 2);
+	g_assert_cmpint (test_backend->save_count, ==, 2);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Then receive the detached instance */
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 3);
+	g_assert_cmpint (test_backend->save_count, ==, 3);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	calobj = NULL;
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, "invite-detached", NULL, &calobj, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (calobj);
+	g_assert_nonnull (strstr (calobj, "SUMMARY:Recurring invite\r\n"));
+	g_assert_nonnull (strstr (calobj, "SUMMARY:Detached instance of recurring invite\r\n"));
+	g_free (calobj);
+
+	/* Remove only the detached instance */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_nonnull (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 4);
+	g_assert_cmpint (test_backend->save_count, ==, 4);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free_full (new_components, g_object_unref);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	calobj = NULL;
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, "invite-detached", NULL, &calobj, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (calobj);
+	g_assert_nonnull (strstr (calobj, "SUMMARY:Recurring invite\r\n"));
+	g_assert_null (strstr (calobj, "SUMMARY:Detached instance of recurring invite\r\n"));
+	g_free (calobj);
+
+	/* Receive the detached instance again */
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 5);
+	g_assert_cmpint (test_backend->save_count, ==, 5);
+	g_assert_cmpint (test_backend->remove_count, ==, 1);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	calobj = NULL;
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, "invite-detached", NULL, &calobj, &error);
+	g_assert_no_error (error);
+	g_assert_nonnull (calobj);
+	g_assert_nonnull (strstr (calobj, "SUMMARY:Recurring invite\r\n"));
+	g_assert_nonnull (strstr (calobj, "SUMMARY:Detached instance of recurring invite\r\n"));
+	g_free (calobj);
+
+	/* Remove the master object, which should delete both */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 5);
+	g_assert_cmpint (test_backend->save_count, ==, 5);
+	g_assert_cmpint (test_backend->remove_count, ==, 2);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	calobj = NULL;
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, "invite-detached", NULL, &calobj, &error);
+	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
+	g_assert_null (calobj);
+	g_clear_error (&error);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, "invite-detached", "20180502T000000Z", &calobj, &error);
+	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
+	g_assert_null (calobj);
+	g_clear_error (&error);
+
+	/* Receive only the detached instance, with no master object in the cache */
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 8);
+	g_assert_cmpint (test_backend->save_count, ==, 6);
+	g_assert_cmpint (test_backend->remove_count, ==, 2);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	/* Remove the master object with mode THIS, which is not in the cache, but should remove all anyway */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 8);
+	g_assert_cmpint (test_backend->save_count, ==, 6);
+	g_assert_cmpint (test_backend->remove_count, ==, 3);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	/* Remove the master object with mode ALL, which is not in the cache, but should remove all */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 9);
+	g_assert_cmpint (test_backend->save_count, ==, 7);
+	g_assert_cmpint (test_backend->remove_count, ==, 4);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive only the detached instance, with no master object in the cache */
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 10);
+	g_assert_cmpint (test_backend->save_count, ==, 8);
+	g_assert_cmpint (test_backend->remove_count, ==, 4);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	/* Remove the detached instance with mode THIS */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 10);
+	g_assert_cmpint (test_backend->save_count, ==, 8);
+	g_assert_cmpint (test_backend->remove_count, ==, 5);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive only the detached instance, with no master object in the cache */
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 11);
+	g_assert_cmpint (test_backend->save_count, ==, 9);
+	g_assert_cmpint (test_backend->remove_count, ==, 5);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	/* Remove the detached instance with mode ALL */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 11);
+	g_assert_cmpint (test_backend->save_count, ==, 9);
+	g_assert_cmpint (test_backend->remove_count, ==, 6);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive only two detached instances, with no master object in the cache */
+	calobj = tcu_new_icalstring_from_test_case ("invite-7");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 13);
+	g_assert_cmpint (test_backend->save_count, ==, 11);
+	g_assert_cmpint (test_backend->remove_count, ==, 6);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	/* Remove the detached instance with mode THIS */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 14);
+	g_assert_cmpint (test_backend->save_count, ==, 12);
+	g_assert_cmpint (test_backend->remove_count, ==, 6);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive the removed component again */
+	calobj = tcu_new_icalstring_from_test_case ("invite-6");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	/* Remove both detached instances with mode THIS */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
+	ids = g_slist_prepend (ids, e_cal_component_id_new ("invite-detached", "20180509T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 2);
+	g_assert_cmpint (g_slist_length (new_components), ==, 2);
+	g_assert_null (new_components->data);
+	g_assert_null (new_components->next->data);
+	g_assert_cmpint (test_backend->load_count, ==, 16);
+	g_assert_cmpint (test_backend->save_count, ==, 14);
+	g_assert_cmpint (test_backend->remove_count, ==, 7);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive only two detached instances, with no master object in the cache */
+	calobj = tcu_new_icalstring_from_test_case ("invite-7");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 18);
+	g_assert_cmpint (test_backend->save_count, ==, 16);
+	g_assert_cmpint (test_backend->remove_count, ==, 7);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	/* Remove the second detached instance with mode ALL */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180509T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 18);
+	g_assert_cmpint (test_backend->save_count, ==, 16);
+	g_assert_cmpint (test_backend->remove_count, ==, 8);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive only two detached instances, with no master object in the cache */
+	calobj = tcu_new_icalstring_from_test_case ("invite-7");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 20);
+	g_assert_cmpint (test_backend->save_count, ==, 18);
+	g_assert_cmpint (test_backend->remove_count, ==, 8);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", NULL,
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Receive the master object */
+	calobj = tcu_new_icalstring_from_test_case ("invite-5");
+	g_assert_nonnull (calobj);
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, calobj, &error);
+	g_assert_no_error (error);
+	g_free (calobj);
+
+	g_assert_cmpint (test_backend->load_count, ==, 21);
+	g_assert_cmpint (test_backend->save_count, ==, 19);
+	g_assert_cmpint (test_backend->remove_count, ==, 8);
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Remove the second detached instance with mode THIS */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180509T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_nonnull (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 22);
+	g_assert_cmpint (test_backend->save_count, ==, 20);
+	g_assert_cmpint (test_backend->remove_count, ==, 8);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free_full (new_components, g_object_unref);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, FALSE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, FALSE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	/* Remove the first detached instance with mode ALL, which will drop whole series */
+	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
+
+	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
+	g_assert_no_error (error);
+	g_assert_cmpint (g_slist_length (old_components), ==, 1);
+	g_assert_cmpint (g_slist_length (new_components), ==, 1);
+	g_assert_null (new_components->data);
+	g_assert_cmpint (test_backend->load_count, ==, 22);
+	g_assert_cmpint (test_backend->save_count, ==, 20);
+	g_assert_cmpint (test_backend->remove_count, ==, 9);
+
+	g_slist_free_full (old_components, g_object_unref);
+	g_slist_free (new_components);
+	g_slist_free_full (ids, (GDestroyNotify) e_cal_component_free_id);
+	old_components = NULL;
+	new_components = NULL;
+
+	ecmb_test_vcalendar_contains (test_backend->vcalendar, TRUE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+	ecmb_test_cache_contains (cal_cache, TRUE, FALSE,
+		"invite-detached", NULL,
+		"invite-detached", "20180502T000000Z",
+		"invite-detached", "20180509T000000Z",
+		NULL);
+
+	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
+
+	g_object_unref (cal_cache);
+}
+
+static void
 test_get_object (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
@@ -2670,6 +3372,7 @@ main_loop_wrapper (test_create_objects)
 main_loop_wrapper (test_modify_objects)
 main_loop_wrapper (test_remove_objects)
 main_loop_wrapper (test_receive_objects)
+main_loop_wrapper (test_receive_and_remove)
 main_loop_wrapper (test_get_object)
 main_loop_wrapper (test_get_object_list)
 main_loop_wrapper (test_refresh)
@@ -2734,6 +3437,8 @@ main (gint argc,
 		tcu_fixture_setup, test_remove_objects_tcu, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/ReceiveObjects", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_receive_objects_tcu, tcu_fixture_teardown);
+	g_test_add ("/ECalMetaBackend/ReceiveAndRemove", TCUFixture, &closure_events,
+		tcu_fixture_setup, test_receive_and_remove_tcu, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/GetObject", TCUFixture, &closure_events,
 		tcu_fixture_setup, test_get_object_tcu, tcu_fixture_teardown);
 	g_test_add ("/ECalMetaBackend/GetObjectList", TCUFixture, &closure_events,
