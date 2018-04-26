@@ -122,6 +122,28 @@ backend_network_monitor_can_reach_cb (GObject *source_object,
 	g_object_unref (backend);
 }
 
+static GSocketConnectable *
+backend_ref_connectable_internal (EBackend *backend)
+{
+	GSocketConnectable *connectable;
+
+	g_return_val_if_fail (E_IS_BACKEND (backend), NULL);
+
+	connectable = e_backend_ref_connectable (backend);
+
+	if (!connectable) {
+		gchar *host = NULL;
+		guint16 port = 0;
+
+		if (e_backend_get_destination_address (backend, &host, &port) && host)
+			connectable = g_network_address_new (host, port);
+
+		g_free (host);
+	}
+
+	return connectable;
+}
+
 static gboolean
 backend_update_online_state_timeout_cb (gpointer user_data)
 {
@@ -138,7 +160,7 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 	if (!backend)
 		return FALSE;
 
-	connectable = e_backend_ref_connectable (backend);
+	connectable = backend_ref_connectable_internal (backend);
 
 	g_mutex_lock (&backend->priv->update_online_state_lock);
 	g_source_unref (backend->priv->update_online_state);
@@ -154,16 +176,6 @@ backend_update_online_state_timeout_cb (gpointer user_data)
 		g_cancellable_cancel (cancellable);
 		g_object_unref (cancellable);
 		cancellable = NULL;
-	}
-
-	if (!connectable) {
-		gchar *host = NULL;
-		guint16 port = 0;
-
-		if (e_backend_get_destination_address (backend, &host, &port) && host)
-			connectable = g_network_address_new (host, port);
-
-		g_free (host);
 	}
 
 	if (connectable == NULL) {
@@ -233,7 +245,15 @@ backend_network_changed_cb (GNetworkMonitor *network_monitor,
                             gboolean network_available,
                             EBackend *backend)
 {
-	backend_update_online_state (backend);
+	if (network_available) {
+		backend_update_online_state (backend);
+	} else {
+		GSocketConnectable *connectable;
+
+		connectable = backend_ref_connectable_internal (backend);
+		e_backend_set_online (backend, !connectable);
+		g_clear_object (&connectable);
+	}
 }
 
 static ESourceAuthenticationResult
