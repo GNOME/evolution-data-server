@@ -29,6 +29,8 @@
 
 #include <libedataserver/libedataserver.h>
 
+G_BEGIN_DECLS
+
 gchar *		e_trust_prompt_describe_certificate_errors
 					(GTlsCertificateFlags flags);
 ETrustPromptResponse
@@ -55,5 +57,7 @@ gboolean	e_trust_prompt_run_for_source_finish
 					 GAsyncResult *result,
 					 ETrustPromptResponse *response,
 					 GError **error);
+
+G_END_DECLS
 
 #endif /* E_TRUST_PROMPT_H */

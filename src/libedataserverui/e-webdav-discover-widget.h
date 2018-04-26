@@ -27,7 +27,7 @@
 #include <gtk/gtk.h>
 
 #include <libedataserver/libedataserver.h>
-#include <libedataserverui/libedataserverui.h>
+#include <libedataserverui/e-credentials-prompter.h>
 
 G_BEGIN_DECLS
 
