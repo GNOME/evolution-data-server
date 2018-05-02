@@ -315,6 +315,10 @@ struct _CamelIMAPXServerPrivate {
 	gint64 fetch_changes_last_progress; /* when was called last progress */
 
 	struct _status_info *copyuid_status;
+
+	GHashTable *list_responses_hash; /* ghar *mailbox-name ~> CamelIMAPXListResponse *, both owned by list_responses */
+	GSList *list_responses;
+	GSList *lsub_responses;
 };
 
 enum {
@@ -1396,7 +1400,6 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
                      GError **error)
 {
 	CamelIMAPXListResponse *response;
-	CamelIMAPXStore *imapx_store;
 	const gchar *mailbox_name;
 	gchar separator;
 
@@ -1418,11 +1421,23 @@ imapx_untagged_lsub (CamelIMAPXServer *is,
 	if (camel_imapx_mailbox_is_inbox (mailbox_name))
 		is->priv->inbox_separator = separator;
 
-	imapx_store = camel_imapx_server_ref_store (is);
-	camel_imapx_store_handle_lsub_response (imapx_store, is, response);
+	if (is->priv->list_responses_hash) {
+		CamelIMAPXListResponse *list_response;
 
-	g_clear_object (&imapx_store);
-	g_clear_object (&response);
+		is->priv->lsub_responses = g_slist_prepend (is->priv->lsub_responses, response);
+
+		list_response = g_hash_table_lookup (is->priv->list_responses_hash, camel_imapx_list_response_get_mailbox_name (response));
+		if (list_response)
+			camel_imapx_list_response_add_attribute (list_response, CAMEL_IMAPX_LIST_ATTR_SUBSCRIBED);
+	} else {
+		CamelIMAPXStore *imapx_store;
+
+		imapx_store = camel_imapx_server_ref_store (is);
+		camel_imapx_store_handle_lsub_response (imapx_store, is, response);
+
+		g_clear_object (&imapx_store);
+		g_clear_object (&response);
+	}
 
 	return TRUE;
 }
@@ -1434,7 +1449,6 @@ imapx_untagged_list (CamelIMAPXServer *is,
                      GError **error)
 {
 	CamelIMAPXListResponse *response;
-	CamelIMAPXStore *imapx_store;
 	const gchar *mailbox_name;
 	gchar separator;
 
@@ -1452,11 +1466,18 @@ imapx_untagged_list (CamelIMAPXServer *is,
 	if (camel_imapx_mailbox_is_inbox (mailbox_name))
 		is->priv->inbox_separator = separator;
 
-	imapx_store = camel_imapx_server_ref_store (is);
-	camel_imapx_store_handle_list_response (imapx_store, is, response);
+	if (is->priv->list_responses_hash) {
+		is->priv->list_responses = g_slist_prepend (is->priv->list_responses, response);
+		g_hash_table_insert (is->priv->list_responses_hash, (gpointer) camel_imapx_list_response_get_mailbox_name (response), response);
+	} else {
+		CamelIMAPXStore *imapx_store;
 
-	g_clear_object (&imapx_store);
-	g_clear_object (&response);
+		imapx_store = camel_imapx_server_ref_store (is);
+		camel_imapx_store_handle_list_response (imapx_store, is, response);
+
+		g_clear_object (&imapx_store);
+		g_clear_object (&response);
+	}
 
 	return TRUE;
 }
@@ -6029,10 +6050,16 @@ camel_imapx_server_list_sync (CamelIMAPXServer *is,
 	g_return_val_if_fail (CAMEL_IS_IMAPX_SERVER (is), FALSE);
 	g_return_val_if_fail (pattern != NULL, FALSE);
 
+	g_warn_if_fail (is->priv->list_responses_hash == NULL);
+	g_warn_if_fail (is->priv->list_responses == NULL);
+	g_warn_if_fail (is->priv->lsub_responses == NULL);
+
 	if (is->priv->list_return_opts != NULL) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LIST, "LIST \"\" %s RETURN (%t)",
 			pattern, is->priv->list_return_opts);
 	} else {
+		is->priv->list_responses_hash = g_hash_table_new (camel_strcase_hash, camel_strcase_equal);
+
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LIST, "LIST \"\" %s",
 			pattern);
 	}
@@ -6041,16 +6068,46 @@ camel_imapx_server_list_sync (CamelIMAPXServer *is,
 
 	camel_imapx_command_unref (ic);
 
-	if (!success)
-		return FALSE;
-
-	if (!is->priv->list_return_opts) {
+	if (success && !is->priv->list_return_opts) {
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_LSUB, "LSUB \"\" %s",
 			pattern);
 
 		success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching subscribed folders"), cancellable, error);
 
 		camel_imapx_command_unref (ic);
+	}
+
+	if (is->priv->list_responses_hash) {
+		CamelIMAPXStore *imapx_store;
+		GSList *link;
+
+		imapx_store = camel_imapx_server_ref_store (is);
+		if (imapx_store) {
+			/* Preserve order in which these had been received from the server */
+			is->priv->list_responses = g_slist_reverse (is->priv->list_responses);
+			is->priv->lsub_responses = g_slist_reverse (is->priv->lsub_responses);
+
+			for (link = is->priv->list_responses; link; link = g_slist_next (link)) {
+				CamelIMAPXListResponse *response = link->data;
+
+				camel_imapx_store_handle_list_response (imapx_store, is, response);
+			}
+
+			for (link = is->priv->lsub_responses; link; link = g_slist_next (link)) {
+				CamelIMAPXListResponse *response = link->data;
+
+				camel_imapx_store_handle_lsub_response (imapx_store, is, response);
+			}
+
+			g_clear_object (&imapx_store);
+		}
+
+		g_hash_table_destroy (is->priv->list_responses_hash);
+		is->priv->list_responses_hash = NULL;
+		g_slist_free_full (is->priv->list_responses, g_object_unref);
+		is->priv->list_responses = NULL;
+		g_slist_free_full (is->priv->lsub_responses, g_object_unref);
+		is->priv->lsub_responses = NULL;
 	}
 
 	return success;
