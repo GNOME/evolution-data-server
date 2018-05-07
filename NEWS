@@ -1,3 +1,23 @@
+Evolution-Data-Server 3.28.2 2018-05-07
+---------------------------------------
+
+Bug Fixes:
+	Bug 795108 - Trailing bracket not stripped when linkifying URL inside angle brackets (Milan Crha)
+	Bug 791475 - Incorrectly parses headers in certain case ]I[ (Milan Crha)
+	Bug 795295 - Fails to compile after icu 61.1 upgrade (icu::UnicodeString) (Hussam Al-Tayeb)
+	Bug 795414 - Errors on delete of a detached instance (Milan Crha)
+	Bug 794727 - [IMAPx] False unsubscribed signal emitted when LSUB is required (Milan Crha)
+
+Miscellaneous:
+	Link WebKitGTK+ only with libedataserverui when OAuth2 is enabled (Milan Crha)
+	Stale connection used after resume (Milan Crha)
+
+Translations:
+	Balázs Meskó (hu)
+	Mario Blättermann (de)
+	Muhammet Kara (tr)
+	Kukuh Syafaat (id)
+
 Evolution-Data-Server 3.28.1 2018-04-09
 ---------------------------------------
 
