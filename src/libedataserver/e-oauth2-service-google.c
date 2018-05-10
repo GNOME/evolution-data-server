@@ -119,16 +119,49 @@ eos_google_extract_authorization_code (EOAuth2Service *service,
 
 	*out_authorization_code = NULL;
 
-	if (!page_title || !*page_title)
-		return FALSE;
+	if (page_title && *page_title) {
+		/* Known response, but no authorization code */
+		if (g_ascii_strncasecmp (page_title, "Denied ", 7) == 0)
+			return TRUE;
 
-	/* Known response, but no authorization code */
-	if (g_ascii_strncasecmp (page_title, "Denied ", 7) == 0)
-		return TRUE;
+		if (g_ascii_strncasecmp (page_title, "Success code=", 13) == 0) {
+			*out_authorization_code = g_strdup (page_title + 13);
+			return TRUE;
+		}
+	}
 
-	if (g_ascii_strncasecmp (page_title, "Success code=", 13) == 0) {
-		*out_authorization_code = g_strdup (page_title + 13);
-		return TRUE;
+	if (page_uri && *page_uri) {
+		SoupURI *suri;
+
+		suri = soup_uri_new (page_uri);
+		if (suri) {
+			const gchar *query = soup_uri_get_query (suri);
+			gboolean known = FALSE;
+
+			if (query && *query) {
+				GHashTable *params;
+
+				params = soup_form_decode (query);
+				if (params) {
+					const gchar *response;
+
+					response = g_hash_table_lookup (params, "response");
+					if (response && g_ascii_strncasecmp (response, "code=", 5) == 0) {
+						*out_authorization_code = g_strdup (response + 5);
+						known = TRUE;
+					} else if (response && g_ascii_strncasecmp (response, "error", 5) == 0) {
+						known = TRUE;
+					}
+
+					g_hash_table_destroy (params);
+				}
+			}
+
+			soup_uri_free (suri);
+
+			if (known)
+				return TRUE;
+		}
 	}
 
 	return FALSE;
