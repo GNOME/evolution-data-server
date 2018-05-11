@@ -32,5 +32,53 @@
       <default>['']</default>
       <_summary>Snoozed reminders for EReminderWatcher</_summary>
     </key>
+
+    <key name="notify-programs" type="as">
+      <default>[]</default>
+      <_summary>Reminder programs</_summary>
+      <_description>Programs that are allowed to be run by reminders</_description>
+    </key>
+    <key name="notify-with-tray" type="b">
+      <default>true</default>
+      <_summary>Show reminders in notification tray only</_summary>
+      <_description>When set to true, the reminders are shown only in the notification tray, otherwise the reminders dialog is shown immediately</_description>
+    </key>
+    <key name="notify-window-on-top" type="b">
+      <default>true</default>
+      <_summary>Show reminder notification dialog always on top</_summary>
+      <_description>Whether or not to show reminder notification dialog always on top. Note this works only as a hint for the window manager, which may or may not obey it.</_description>
+    </key>
+    <key name="notify-window-x" type="i">
+      <default>-1</default>
+      <_summary>X position of the reminder notification dialog</_summary>
+    </key>
+    <key name="notify-window-y" type="i">
+      <default>-1</default>
+      <_summary>Y position of the reminder notification dialog</_summary>
+    </key>
+    <key name="notify-window-width" type="i">
+      <default>-1</default>
+      <_summary>Width of the reminder notification dialog</_summary>
+    </key>
+    <key name="notify-window-height" type="i">
+      <default>-1</default>
+      <_summary>Height of the reminder notification dialog</_summary>
+    </key>
+    <key name="notify-completed-tasks" type="b">
+      <default>true</default>
+      <_summary>Show reminder notification for completed tasks</_summary>
+    </key>
+    <key name="notify-past-events" type="b">
+      <default>true</default>
+      <_summary>Show reminder notification for past events</_summary>
+    </key>
+    <key name="notify-last-snooze-minutes" type="i">
+      <default>5</default>
+      <_summary>The last used snooze time, in minutes</_summary>
+    </key>
+    <key name="notify-custom-snooze-minutes" type="ai">
+      <default>[]</default>
+      <_summary>User-defined snooze times, in minutes</_summary>
+    </key>
   </schema>
 </schemalist>

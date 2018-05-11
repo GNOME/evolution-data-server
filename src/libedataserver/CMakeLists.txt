@@ -244,6 +244,7 @@ target_compile_definitions(edataserver PRIVATE
 	-DE_DATA_SERVER_LOCALEDIR=\"${LOCALE_INSTALL_DIR}\"
 	-DE_DATA_SERVER_IMAGESDIR=\"${imagesdir}\"
 	-DE_DATA_SERVER_CREDENTIALMODULEDIR=\"${credentialmoduledir}\"
+	-DE_DATA_SERVER_UIMODULEDIR=\"${uimoduledir}\"
 	-DE_DATA_SERVER_PRIVDATADIR=\"${privdatadir}\"
 	-DLIBEDATASERVER_COMPILATION
 )

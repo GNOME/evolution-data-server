@@ -23,6 +23,7 @@
 #define E_REMINDER_WATCHER_H
 
 #include <libedataserver/libedataserver.h>
+#include <libecal/e-cal-client.h>
 
 /* Standard GObject macros */
 #define E_TYPE_REMINDER_WATCHER \
@@ -71,7 +72,7 @@ void		e_reminder_data_free		(gpointer rd); /* EReminderData * */
 /**
  * EReminderWatcherZone:
  *
- * A libical's icaltimezone encapsulated as a GByxed type.
+ * A libical's icaltimezone encapsulated as a GBoxed type.
  * It can be retyped into icaltimezone directly.
  *
  * Since: 3.30
@@ -86,6 +87,21 @@ void		e_reminder_watcher_zone_free	(EReminderWatcherZone *watcher_zone);
 typedef struct _EReminderWatcher EReminderWatcher;
 typedef struct _EReminderWatcherClass EReminderWatcherClass;
 typedef struct _EReminderWatcherPrivate EReminderWatcherPrivate;
+
+/**
+ * EReminderWatcherDescribeFlags:
+ * @E_REMINDER_WATCHER_DESCRIBE_FLAG_NONE: None flags
+ * @E_REMINDER_WATCHER_DESCRIBE_FLAG_MARKUP: Returned description will contain
+ *    also markup. Without it it'll be a plain text.
+ *
+ * Flags modifying behaviour of e_reminder_watcher_describe_data().
+ *
+ * Since: 3.30
+ **/
+typedef enum { /*< flags >*/
+	E_REMINDER_WATCHER_DESCRIBE_FLAG_NONE	= 0,
+	E_REMINDER_WATCHER_DESCRIBE_FLAG_MARKUP = (1 << 1)
+} EReminderWatcherDescribeFlags;
 
 /**
  * EReminderWatcher:
@@ -107,10 +123,14 @@ struct _EReminderWatcherClass {
 	/* Virtual methods and signals */
 	void		(* schedule_timer)	(EReminderWatcher *watcher,
 						 gint64 at_time);
+	void		(* format_time)		(EReminderWatcher *watcher,
+						 const EReminderData *rd,
+						 struct icaltimetype *itt,
+						 gchar **inout_buffer,
+						 gint buffer_size);
 	void		(* triggered)		(EReminderWatcher *watcher,
-						 const GSList *reminders); /* EReminderData * */
-	void		(* removed)		(EReminderWatcher *watcher,
-						 const GSList *reminders); /* EReminderData * */
+						 const GSList *reminders, /* EReminderData * */
+						 gboolean snoozed);
 	void		(* changed)		(EReminderWatcher *watcher);
 
 	/* Padding for future expansion */
@@ -122,9 +142,17 @@ EReminderWatcher *
 		e_reminder_watcher_new			(ESourceRegistry *registry);
 ESourceRegistry *
 		e_reminder_watcher_get_registry		(EReminderWatcher *watcher);
+ECalClient *	e_reminder_watcher_ref_opened_client	(EReminderWatcher *watcher,
+							 const gchar *source_uid);
 void		e_reminder_watcher_set_default_zone	(EReminderWatcher *watcher,
 							 const icaltimezone *zone);
 icaltimezone *	e_reminder_watcher_dup_default_zone	(EReminderWatcher *watcher);
+gboolean	e_reminder_watcher_get_timers_enabled	(EReminderWatcher *watcher);
+void		e_reminder_watcher_set_timers_enabled	(EReminderWatcher *watcher,
+							 gboolean enabled);
+gchar *		e_reminder_watcher_describe_data	(EReminderWatcher *watcher,
+							 const EReminderData *rd,
+							 guint32 flags); /* bit-or of EReminderWatcherDescribeFlags */
 void		e_reminder_watcher_timer_elapsed	(EReminderWatcher *watcher);
 GSList *	e_reminder_watcher_dup_past		(EReminderWatcher *watcher); /* EReminderData * */
 GSList *	e_reminder_watcher_dup_snoozed		(EReminderWatcher *watcher); /* EReminderData * */

@@ -1,4 +1,21 @@
 # ********************************
+# evolution-alarm-notify
+# ********************************
+
+set(autostartdir ${SYSCONF_INSTALL_DIR}/xdg/autostart)
+
+configure_file(org.gnome.Evolution-alarm-notify.desktop.in.in
+	org.gnome.Evolution-alarm-notify.desktop.in
+	@ONLY
+)
+
+intltool_merge(${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop.in org.gnome.Evolution-alarm-notify.desktop --desktop-style --utf8)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.gnome.Evolution-alarm-notify.desktop
+	DESTINATION ${autostartdir}
+)
+
+# ********************************
 # GSettings schemas
 # ********************************
 
@@ -23,6 +40,7 @@ add_custom_command(OUTPUT gschemas.compiled
 
 add_custom_target(data-files ALL
 	DEPENDS gschemas.compiled
+		org.gnome.Evolution-alarm-notify.desktop
 )
 
 add_gsettings_schemas(data-files ${BUILT_SCHEMAS})

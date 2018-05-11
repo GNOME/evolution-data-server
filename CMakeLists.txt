@@ -120,6 +120,7 @@ set(libaccounts_glib_minimum_version 1.4)
 set(libsignon_glib_minimum_version 1.8)
 set(json_glib_minimum_version 1.0.4)
 set(webkit2gtk_minimum_version 2.11.91)
+set(libcanberra_gtk_minimum_version 0.25)
 
 # Load modules from the source tree
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
@@ -195,6 +196,7 @@ endif(WIN32)
 set(imagesdir "${SHARE_INSTALL_PREFIX}/pixmaps/${PROJECT_NAME}")
 set(moduledir "${privlibdir}/registry-modules")
 set(credentialmoduledir "${privlibdir}/credential-modules")
+set(uimoduledir "${privlibdir}/ui-modules")
 set(ebook_backenddir "${privlibdir}/addressbook-backends")
 set(ecal_backenddir "${privlibdir}/calendar-backends")
 set(ro_sourcesdir "${privdatadir}/ro-sources")
@@ -754,6 +756,17 @@ if(ENABLE_WEATHER)
 	unset(CMAKE_REQUIRED_INCLUDES)
 	unset(CMAKE_REQUIRED_LIBRARIES)
 endif(ENABLE_WEATHER)
+
+# ************************************************
+# evolution-alarm-notify : Canberra-GTK for Sound
+# ************************************************
+
+add_printable_option(ENABLE_CANBERRA "Enable Canberra-GTK for sound in evolution-alarm-notify" ON)
+
+if(ENABLE_CANBERRA)
+	pkg_check_modules_for_option(ENABLE_CANBERRA "Canberra-GTK for sound in evolution-alarm-notify" CANBERRA libcanberra-gtk3>=${libcanberra_gtk_minimum_version})
+	set(HAVE_CANBERRA ON)
+endif(ENABLE_CANBERRA)
 
 # ******************************
 # File locking

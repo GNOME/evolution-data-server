@@ -25,6 +25,7 @@
 #include <libedataserverui/e-credentials-prompter-impl.h>
 #include <libedataserverui/e-credentials-prompter-impl-oauth2.h>
 #include <libedataserverui/e-credentials-prompter-impl-password.h>
+#include <libedataserverui/e-reminders-widget.h>
 #include <libedataserverui/e-trust-prompt.h>
 #include <libedataserverui/e-webdav-discover-widget.h>
 

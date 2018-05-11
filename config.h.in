@@ -199,3 +199,6 @@
 
 /* gweather_info_new() has only one argument */
 #cmakedefine HAVE_ONE_ARG_GWEATHER_INFO_NEW 1
+
+/* evolution-alarm-notify - Define if using Canberra-GTK for sound */
+#cmakedefine HAVE_CANBERRA 1

@@ -744,6 +744,78 @@ e_cal_util_priority_from_string (const gchar *string)
 	return priority;
 }
 
+/**
+ * e_cal_util_seconds_to_string:
+ * @seconds: actual time, in seconds
+ *
+ * Converts time, in seconds, into a string representation readable by humans
+ * and localized into the current locale. This can be used to convert event
+ * duration to string or similar use cases.
+ *
+ * Free the returned string with g_free(), when no longer needed.
+ *
+ * Returns: (transfer full): a newly allocated string with localized description
+ *    of the given time in seconds.
+ *
+ * Since: 3.30
+ **/
+gchar *
+e_cal_util_seconds_to_string (gint64 seconds)
+{
+	gchar *times[6], *text;
+	gint ii;
+
+	ii = 0;
+	if (seconds >= 7 * 24 * 3600) {
+		gint weeks;
+
+		weeks = seconds / (7 * 24 * 3600);
+		seconds %= (7 * 24 * 3600);
+
+		times[ii++] = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d week", "%d weeks", weeks), weeks);
+	}
+
+	if (seconds >= 24 * 3600) {
+		gint days;
+
+		days = seconds / (24 * 3600);
+		seconds %= (24 * 3600);
+
+		times[ii++] = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d day", "%d days", days), days);
+	}
+
+	if (seconds >= 3600) {
+		gint hours;
+
+		hours = seconds / 3600;
+		seconds %= 3600;
+
+		times[ii++] = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d hour", "%d hours", hours), hours);
+	}
+
+	if (seconds >= 60) {
+		gint minutes;
+
+		minutes = seconds / 60;
+		seconds %= 60;
+
+		times[ii++] = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d minute", "%d minutes", minutes), minutes);
+	}
+
+	if (seconds != 0) {
+		/* Translators: here, "second" is the time division (like "minute"), not the ordinal number (like "third") */
+		times[ii++] = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d second", "%d seconds", seconds), (gint) seconds);
+	}
+
+	times[ii] = NULL;
+	text = g_strjoinv (" ", times);
+	while (ii > 0) {
+		g_free (times[--ii]);
+	}
+
+	return text;
+}
+
 /* callback for icalcomponent_foreach_tzid */
 typedef struct {
 	icalcomponent *vcal_comp;

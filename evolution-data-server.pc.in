@@ -5,6 +5,7 @@ privlibdir=@privlibdir@
 datarootdir=@SHARE_INSTALL_PREFIX@
 datadir=@SHARE_INSTALL_PREFIX@
 privdatadir=@privdatadir@
+privlibexecdir=@privlibexecdir@
 
 addressbookdbusservicename=@ADDRESS_BOOK_DBUS_SERVICE_NAME@
 calendardbusservicename=@CALENDAR_DBUS_SERVICE_NAME@

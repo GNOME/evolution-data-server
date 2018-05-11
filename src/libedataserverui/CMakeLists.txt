@@ -6,8 +6,11 @@ set(SOURCES
 	e-credentials-prompter-impl.c
 	e-credentials-prompter-impl-oauth2.c
 	e-credentials-prompter-impl-password.c
+	e-reminders-widget.c
 	e-trust-prompt.c
 	e-webdav-discover-widget.c
+	libedataserverui-private.h
+	libedataserverui-private.c
 )
 
 set(HEADERS
@@ -17,6 +20,7 @@ set(HEADERS
 	e-credentials-prompter-impl.h
 	e-credentials-prompter-impl-oauth2.h
 	e-credentials-prompter-impl-password.h
+	e-reminders-widget.h
 	e-trust-prompt.h
 	e-webdav-discover-widget.h
 )
@@ -24,6 +28,7 @@ set(HEADERS
 set(DEPENDENCIES
 	camel
 	ebackend
+	ecal
 	edataserver
 )
 
@@ -45,6 +50,7 @@ set_target_properties(edataserverui PROPERTIES
 target_compile_definitions(edataserverui PRIVATE
 	-DG_LOG_DOMAIN=\"e-data-server-ui\"
 	-DLIBEDATASERVERUI_COMPILATION
+	-DE_DATA_SERVER_UIMODULEDIR=\"${uimoduledir}\"
 )
 
 target_compile_options(edataserverui PUBLIC
@@ -104,14 +110,18 @@ set(gir_identifies_prefixes E)
 set(gir_includes GObject-2.0 Gio-2.0 Gtk-3.0 Soup-2.4)
 set(gir_cflags
 	-DLIBEDATASERVERUI_COMPILATION
+	-I${CMAKE_BINARY_DIR}/src/calendar
+	-I${CMAKE_SOURCE_DIR}/src/calendar
 )
 set(gir_libdirs
 	${CMAKE_BINARY_DIR}/src/private
+	${CMAKE_BINARY_DIR}/src/calendar/libecal
 	${CMAKE_BINARY_DIR}/src/camel
 	${CMAKE_BINARY_DIR}/src/libedataserver
 )
 set(gir_libs
 	camel
+	ecal
 	edataserver
 	edataserverui
 )

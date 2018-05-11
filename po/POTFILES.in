@@ -37,6 +37,7 @@ src/calendar/libecal/e-cal-client-view.c
 src/calendar/libecal/e-cal-component.c
 src/calendar/libecal/e-cal-recur.c
 src/calendar/libecal/e-cal-util.c
+src/calendar/libecal/e-reminder-watcher.c
 src/calendar/libedata-cal/e-cal-backend.c
 src/calendar/libedata-cal/e-cal-backend-sexp.c
 src/calendar/libedata-cal/e-cal-backend-sync.c
@@ -183,6 +184,7 @@ data/org.gnome.evolution-data-server.addressbook.gschema.xml.in
 data/org.gnome.evolution-data-server.calendar.gschema.xml.in
 data/org.gnome.evolution-data-server.gschema.xml.in
 data/org.gnome.evolution.shell.network-config.gschema.xml.in
+data/org.gnome.Evolution-alarm-notify.desktop.in.in
 src/libebackend/e-backend.c
 src/libebackend/e-cache.c
 src/libebackend/e-collection-backend.c
@@ -210,6 +212,7 @@ src/libedataserver/e-webdav-session.c
 src/libedataserverui/e-credentials-prompter.c
 src/libedataserverui/e-credentials-prompter-impl-oauth2.c
 src/libedataserverui/e-credentials-prompter-impl-password.c
+src/libedataserverui/e-reminders-widget.c
 src/libedataserverui/e-trust-prompt.c
 src/libedataserverui/e-webdav-discover-widget.c
 src/modules/gnome-online-accounts/e-goa-password-based.c
@@ -233,6 +236,7 @@ src/modules/ubuntu-online-accounts/uoa-utils.c
 [type: gettext/xml]src/modules/ubuntu-online-accounts/yahoo-mail.service.in.in
 src/modules/yahoo-backend/module-yahoo-backend.c
 src/services/evolution-addressbook-factory/evolution-addressbook-factory.c
+src/services/evolution-alarm-notify/e-alarm-notify.c
 src/services/evolution-calendar-factory/evolution-calendar-factory.c
 [type: gettext/ini]src/services/evolution-source-registry/builtin/birthdays.source.in
 [type: gettext/ini]src/services/evolution-source-registry/builtin/caldav-stub.source.in
