@@ -43,6 +43,7 @@ static const gchar *match_candidates[] = {
 	"+1-857-4663489"
 };
 
+#ifdef ENABLE_PHONENUMBER
 static const EPhoneNumberMatch expected_matches[] = {
 	/* not a number */
 	E_PHONE_NUMBER_MATCH_NONE,
@@ -124,6 +125,7 @@ static const EPhoneNumberMatch expected_matches[] = {
 	E_PHONE_NUMBER_MATCH_NONE,
 	E_PHONE_NUMBER_MATCH_EXACT
 };
+#endif /* ENABLE_PHONENUMBER */
 
 typedef struct {
 	gchar				*phone_number;
@@ -500,9 +502,11 @@ main (gint argc,
 		"/ebook-phone-number/parse-and-format/auto-region",
 		test_parse_auto_region);
 
+	#ifdef ENABLE_PHONENUMBER
 	g_assert_cmpint (
 		G_N_ELEMENTS (match_candidates) * G_N_ELEMENTS (match_candidates),
 		==, G_N_ELEMENTS (expected_matches));
+	#endif
 
 	for (i = 0; i < G_N_ELEMENTS (match_candidates); ++i) {
 		for (j = 0; j < G_N_ELEMENTS (match_candidates); ++j) {
