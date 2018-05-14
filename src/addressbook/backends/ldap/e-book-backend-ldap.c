@@ -1782,7 +1782,7 @@ modify_contact_search_handler (LDAPOp *op,
 	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
 		/* ignore references */
 	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
-		gchar *ldap_error_msg;
+		gchar *ldap_error_msg = NULL;
 		gint ldap_error;
 		gint new_dn_needed;
 
@@ -1803,7 +1803,8 @@ modify_contact_search_handler (LDAPOp *op,
 				ldap_error,
 				ldap_err2string (ldap_error), ldap_error_msg);
 		}
-		ldap_memfree (ldap_error_msg);
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
 
 		if (ldap_error != LDAP_SUCCESS) {
 			/* more here i'm sure */
@@ -1896,7 +1897,7 @@ modify_contact_rename_handler (LDAPOp *op,
 {
 	LDAPModifyOp *modify_op = (LDAPModifyOp *) op;
 	EBookBackendLDAP *bl = E_BOOK_BACKEND_LDAP (op->backend);
-	gchar *ldap_error_msg;
+	gchar *ldap_error_msg = NULL;
 	gint ldap_error;
 	LDAPMod **ldap_mods;
 	gboolean differences;
@@ -1943,7 +1944,8 @@ modify_contact_rename_handler (LDAPOp *op,
 			if (bl->priv->cache)
 				e_book_backend_cache_add_contact (bl->priv->cache, modify_op->contact);
 		}
-		ldap_memfree (ldap_error_msg);
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
 
 		if (ldap_error != LDAP_SUCCESS) {
 			e_data_book_respond_modify_contacts (op->book,
@@ -2152,7 +2154,7 @@ get_contact_handler (LDAPOp *op,
 	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
 		/* ignore references */
 	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
-		gchar *ldap_error_msg;
+		gchar *ldap_error_msg = NULL;
 		gint ldap_error;
 
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2170,7 +2172,8 @@ get_contact_handler (LDAPOp *op,
 				ldap_error,
 				ldap_err2string (ldap_error), ldap_error_msg);
 		}
-		ldap_memfree (ldap_error_msg);
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
 
 		e_data_book_respond_get_contact (
 			op->book,
@@ -2266,7 +2269,7 @@ contact_list_handler (LDAPOp *op,
 	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
 		/* ignore references */
 	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
-		gchar *ldap_error_msg;
+		gchar *ldap_error_msg = NULL;
 		gint ldap_error;
 
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2284,7 +2287,8 @@ contact_list_handler (LDAPOp *op,
 				ldap_error,
 				ldap_err2string (ldap_error), ldap_error_msg);
 		}
-		ldap_memfree (ldap_error_msg);
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
 
 		g_warning ("search returned %d\n", ldap_error);
 
@@ -2409,7 +2413,7 @@ contact_list_uids_handler (LDAPOp *op,
 	} else if (msg_type == LDAP_RES_SEARCH_REFERENCE) {
 		/* ignore references */
 	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
-		gchar *ldap_error_msg;
+		gchar *ldap_error_msg = NULL;
 		gint ldap_error;
 
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -2427,7 +2431,8 @@ contact_list_uids_handler (LDAPOp *op,
 				ldap_error,
 				ldap_err2string (ldap_error), ldap_error_msg);
 		}
-		ldap_memfree (ldap_error_msg);
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
 
 		g_warning ("search returned %d\n", ldap_error);
 
@@ -4298,7 +4303,7 @@ ldap_search_handler (LDAPOp *op,
 		/* ignore references */
 	} else if (msg_type == LDAP_RES_SEARCH_RESULT) {
 		GError *edb_err = NULL;
-		gchar *ldap_error_msg;
+		gchar *ldap_error_msg = NULL;
 		gint ldap_error;
 
 		g_rec_mutex_lock (&eds_ldap_handler_lock);
@@ -4316,7 +4321,8 @@ ldap_search_handler (LDAPOp *op,
 				ldap_error,
 				ldap_err2string (ldap_error), ldap_error_msg);
 		}
-		ldap_memfree (ldap_error_msg);
+		if (ldap_error_msg)
+			ldap_memfree (ldap_error_msg);
 
 		if ((ldap_error == LDAP_TIMELIMIT_EXCEEDED || ldap_error == LDAP_SIZELIMIT_EXCEEDED) && can_browse ((EBookBackend *) bl))
 			/* do not complain when search limit exceeded for browseable LDAPs */
