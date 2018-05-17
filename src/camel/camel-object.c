@@ -428,6 +428,7 @@ camel_object_state_read (CamelObject *object)
 	g_return_val_if_fail (CAMEL_IS_OBJECT (object), -1);
 
 	class = CAMEL_OBJECT_GET_CLASS (object);
+	g_return_val_if_fail (class != NULL, -1);
 
 	state_filename = camel_object_get_state_filename (object);
 	if (state_filename == NULL)
@@ -464,6 +465,7 @@ camel_object_state_write (CamelObject *object)
 	g_return_val_if_fail (CAMEL_IS_OBJECT (object), -1);
 
 	class = CAMEL_OBJECT_GET_CLASS (object);
+	g_return_val_if_fail (class != NULL, -1);
 
 	state_filename = camel_object_get_state_filename (object);
 	if (state_filename == NULL)

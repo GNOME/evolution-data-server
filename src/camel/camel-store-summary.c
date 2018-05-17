@@ -230,6 +230,7 @@ store_summary_store_info_free (CamelStoreSummary *summary,
 	CamelStoreSummaryClass *class;
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+	g_return_if_fail (class != NULL);
 
 	g_free (info->path);
 	g_slice_free1 (class->store_info_size, info);
@@ -449,6 +450,7 @@ camel_store_summary_load (CamelStoreSummary *summary)
 	g_return_val_if_fail (summary->priv->summary_path != NULL, -1);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->store_info_load != NULL, -1);
 
 	in = g_fopen (summary->priv->summary_path, "rb");
@@ -513,6 +515,7 @@ camel_store_summary_save (CamelStoreSummary *summary)
 	g_return_val_if_fail (summary->priv->summary_path != NULL, -1);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->summary_header_save != NULL, -1);
 
 	io (printf ("** saving summary\n"));
@@ -638,6 +641,7 @@ camel_store_summary_add_from_path (CamelStoreSummary *summary,
 		CamelStoreSummaryClass *class;
 
 		class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+		g_return_val_if_fail (class != NULL, NULL);
 		g_return_val_if_fail (class->store_info_new != NULL, NULL);
 
 		info = class->store_info_new (summary, path);
@@ -692,6 +696,7 @@ camel_store_summary_info_unref (CamelStoreSummary *summary,
 		CamelStoreSummaryClass *class;
 
 		class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+		g_return_if_fail (class != NULL);
 		g_return_if_fail (class->store_info_free != NULL);
 
 		class->store_info_free (summary, info);
@@ -785,6 +790,7 @@ camel_store_summary_info_new (CamelStoreSummary *summary)
 	g_return_val_if_fail (CAMEL_IS_STORE_SUMMARY (summary), NULL);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+	g_return_val_if_fail (class > 0, NULL);
 	g_return_val_if_fail (class->store_info_size > 0, NULL);
 
 	info = g_slice_alloc0 (class->store_info_size);
@@ -814,6 +820,7 @@ camel_store_info_set_string (CamelStoreSummary *summary,
 	g_return_if_fail (info != NULL);
 
 	class = CAMEL_STORE_SUMMARY_GET_CLASS (summary);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->store_info_set_string != NULL);
 
 	g_rec_mutex_lock (&summary->priv->summary_lock);

@@ -472,9 +472,13 @@ data_book_cursor_compare_contact (EDataBookCursor *cursor,
                                   EContact *contact,
                                   gboolean *matches_sexp)
 {
+	EDataBookCursorClass *klass;
 	gint result;
 
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) {
+	klass = E_DATA_BOOK_CURSOR_GET_CLASS (cursor);
+	g_return_val_if_fail (klass != NULL, 0);
+
+	if (!klass->compare_contact) {
 		g_critical (
 			"EDataBookCursor.compare_contact() unimplemented on type '%s'",
 			G_OBJECT_TYPE_NAME (cursor));
@@ -482,9 +486,7 @@ data_book_cursor_compare_contact (EDataBookCursor *cursor,
 	}
 
 	g_object_ref (cursor);
-	result = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->compare_contact) (cursor,
-									     contact,
-									     matches_sexp);
+	result = klass->compare_contact (cursor, contact, matches_sexp);
 	g_object_unref (cursor);
 
 	return result;
@@ -754,18 +756,19 @@ e_data_book_cursor_set_sexp (EDataBookCursor *cursor,
                              GCancellable *cancellable,
                              GError **error)
 {
+	EDataBookCursorClass *klass;
 	GError *local_error = NULL;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
+	klass = E_DATA_BOOK_CURSOR_GET_CLASS (cursor);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
 	g_object_ref (cursor);
 
-	if (E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->set_sexp) {
-		success = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->set_sexp) (cursor,
-									       sexp,
-									       error);
-
+	if (klass->set_sexp) {
+		success = klass->set_sexp (cursor, sexp, error);
 	} else {
 		g_set_error_literal (
 			error,
@@ -843,34 +846,30 @@ e_data_book_cursor_step (EDataBookCursor *cursor,
                          GCancellable *cancellable,
                          GError **error)
 {
+	EDataBookCursorClass *klass;
 	gint retval;
 
-	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
+	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), -1);
 	g_return_val_if_fail ((flags & E_BOOK_CURSOR_STEP_FETCH) == 0 ||
 			      (results != NULL && *results == NULL), -1);
 
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->step) {
+	klass = E_DATA_BOOK_CURSOR_GET_CLASS (cursor);
+	g_return_val_if_fail (klass != NULL, -1);
+
+	if (!klass->step) {
 		g_set_error_literal (
 			error,
 			E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_SUPPORTED,
 			_("Cursor does not support step"));
-		return FALSE;
+		return -1;
 	}
 
 	g_object_ref (cursor);
-	retval = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->step) (cursor,
-								  revision_guard,
-								  flags,
-								  origin,
-								  count,
-								  results,
-								  cancellable,
-								  error);
+	retval = klass->step (cursor, revision_guard, flags, origin, count, results, cancellable, error);
 	g_object_unref (cursor);
 
 	if (retval >= 0 && (flags & E_BOOK_CURSOR_STEP_MOVE) != 0) {
-
 		calculate_step_position (cursor, origin, count, retval);
 	}
 
@@ -910,18 +909,19 @@ e_data_book_cursor_set_alphabetic_index (EDataBookCursor *cursor,
                                          GCancellable *cancellable,
                                          GError **error)
 {
+	EDataBookCursorClass *klass;
 	GError *local_error = NULL;
 	gboolean success;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
+	klass = E_DATA_BOOK_CURSOR_GET_CLASS (cursor);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
 	g_object_ref (cursor);
 
-	if (E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->set_alphabetic_index) {
-		success = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->set_alphabetic_index) (cursor,
-											   index,
-											   locale,
-											   error);
+	if (klass->set_alphabetic_index) {
+		success = klass->set_alphabetic_index (cursor, index, locale, error);
 
 		/* We already set the new cursor value, we can't fail anymore so just fire a warning */
 		if (!e_data_book_cursor_recalculate (cursor, cancellable, &local_error)) {
@@ -966,14 +966,18 @@ e_data_book_cursor_recalculate (EDataBookCursor *cursor,
                                 GCancellable *cancellable,
                                 GError **error)
 {
+	EDataBookCursorClass *klass;
 	gint total = 0;
 	gint position = 0;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
+	klass = E_DATA_BOOK_CURSOR_GET_CLASS (cursor);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
 	/* Bad programming error */
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->get_position) {
+	if (!klass->get_position) {
 		g_critical (
 			"EDataBookCursor.get_position() unimplemented on type '%s'",
 			G_OBJECT_TYPE_NAME (cursor));
@@ -982,11 +986,7 @@ e_data_book_cursor_recalculate (EDataBookCursor *cursor,
 	}
 
 	g_object_ref (cursor);
-	success = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->get_position) (cursor,
-									    &total,
-									    &position,
-									    cancellable,
-									    error);
+	success = klass->get_position (cursor, &total, &position, cancellable, error);
 	g_object_unref (cursor);
 
 	if (success)
@@ -1019,15 +1019,19 @@ e_data_book_cursor_load_locale (EDataBookCursor *cursor,
                                 GCancellable *cancellable,
                                 GError **error)
 {
+	EDataBookCursorClass *klass;
 	EDataBookCursorPrivate *priv;
 	gboolean success;
 	gchar *local_locale = NULL;
 
 	g_return_val_if_fail (E_IS_DATA_BOOK_CURSOR (cursor), FALSE);
 
+	klass = E_DATA_BOOK_CURSOR_GET_CLASS (cursor);
+	g_return_val_if_fail (klass != NULL, FALSE);
+
 	priv = cursor->priv;
 
-	if (!E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->load_locale) {
+	if (!klass->load_locale) {
 		g_critical (
 			"EDataBookCursor.load_locale() unimplemented on type '%s'",
 			G_OBJECT_TYPE_NAME (cursor));
@@ -1035,7 +1039,7 @@ e_data_book_cursor_load_locale (EDataBookCursor *cursor,
 	}
 
 	g_object_ref (cursor);
-	success = (* E_DATA_BOOK_CURSOR_GET_CLASS (cursor)->load_locale) (cursor, &local_locale, error);
+	success = klass->load_locale (cursor, &local_locale, error);
 	g_object_unref (cursor);
 
 	/* Changed ! Reset the thing */

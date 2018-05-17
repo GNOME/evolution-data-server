@@ -698,6 +698,7 @@ static void
 cal_backend_constructed (GObject *object)
 {
 	ECalBackend *backend;
+	ECalBackendClass *klass;
 	ESourceRegistry *registry;
 	ESource *source;
 	gint max_threads = -1;
@@ -707,13 +708,16 @@ cal_backend_constructed (GObject *object)
 	G_OBJECT_CLASS (e_cal_backend_parent_class)->constructed (object);
 
 	backend = E_CAL_BACKEND (object);
+	klass = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (klass != NULL);
+
 	registry = e_cal_backend_get_registry (backend);
 	source = e_backend_get_source (E_BACKEND (backend));
 
 	/* If the backend specifies a serial dispatch queue, create
 	 * a thread pool with one exclusive thread.  The thread pool
 	 * will serialize operations for us. */
-	if (E_CAL_BACKEND_GET_CLASS (backend)->use_serial_dispatch_queue) {
+	if (klass->use_serial_dispatch_queue) {
 		max_threads = 1;
 		exclusive = TRUE;
 	}
@@ -1424,6 +1428,7 @@ e_cal_backend_get_backend_property (ECalBackend *backend,
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_backend_property != NULL, NULL);
 
 	return class->get_backend_property (backend, prop_name);
@@ -1588,6 +1593,7 @@ cal_backend_open_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->open != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -1747,6 +1753,7 @@ cal_backend_refresh_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
@@ -1920,6 +1927,7 @@ cal_backend_get_object_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_object != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -2113,6 +2121,7 @@ cal_backend_get_object_list_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_object_list != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -2308,6 +2317,7 @@ cal_backend_get_free_busy_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_free_busy != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -2525,6 +2535,7 @@ cal_backend_create_objects_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
@@ -2746,6 +2757,7 @@ cal_backend_modify_objects_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
@@ -2978,6 +2990,7 @@ cal_backend_remove_objects_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove_objects != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -3216,6 +3229,7 @@ cal_backend_receive_objects_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->receive_objects != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -3395,6 +3409,7 @@ cal_backend_send_objects_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->send_objects != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -3592,6 +3607,7 @@ cal_backend_get_attachment_uris_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_attachment_uris != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -3788,6 +3804,7 @@ cal_backend_discard_alarm_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
 	g_return_if_fail (data_cal != NULL);
@@ -3977,6 +3994,7 @@ cal_backend_get_timezone_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_timezone != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -4163,6 +4181,7 @@ cal_backend_add_timezone_thread (GSimpleAsyncResult *simple,
 	backend = E_CAL_BACKEND (source_object);
 
 	class = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->add_timezone != NULL);
 
 	data_cal = e_cal_backend_ref_data_cal (backend);
@@ -4288,11 +4307,16 @@ void
 e_cal_backend_start_view (ECalBackend *backend,
                           EDataCalView *view)
 {
+	ECalBackendClass *klass;
+
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
-	g_return_if_fail (E_CAL_BACKEND_GET_CLASS (backend)->start_view != NULL);
 
-	(* E_CAL_BACKEND_GET_CLASS (backend)->start_view) (backend, view);
+	klass = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->start_view != NULL);
+
+	klass->start_view (backend, view);
 }
 
 /**
@@ -4308,14 +4332,17 @@ void
 e_cal_backend_stop_view (ECalBackend *backend,
                          EDataCalView *view)
 {
+	ECalBackendClass *klass;
+
 	g_return_if_fail (backend != NULL);
 	g_return_if_fail (E_IS_CAL_BACKEND (backend));
 
-	/* backward compatibility, do not force each backend define this function */
-	if (!E_CAL_BACKEND_GET_CLASS (backend)->stop_view)
-		return;
+	klass = E_CAL_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (klass != NULL);
 
-	(* E_CAL_BACKEND_GET_CLASS (backend)->stop_view) (backend, view);
+	/* backward compatibility, do not force each backend define this function */
+	if (klass->stop_view)
+		klass->stop_view (backend, view);
 }
 
 /**

@@ -58,6 +58,7 @@ collection_backend_factory_get_hash_key (EBackendFactory *factory)
 	gsize length;
 
 	class = E_COLLECTION_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->factory_name != NULL, NULL);
 
 	component_name = E_SOURCE_EXTENSION_COLLECTION;
@@ -80,8 +81,8 @@ collection_backend_factory_new_backend (EBackendFactory *factory,
 	ESourceRegistryServer *server;
 
 	class = E_COLLECTION_BACKEND_FACTORY_GET_CLASS (factory);
-	g_return_val_if_fail (g_type_is_a (
-		class->backend_type, E_TYPE_COLLECTION_BACKEND), NULL);
+	g_return_val_if_fail (class != NULL, NULL);
+	g_return_val_if_fail (g_type_is_a (class->backend_type, E_TYPE_COLLECTION_BACKEND), NULL);
 
 	server = collection_backend_factory_get_server (factory);
 
@@ -187,6 +188,7 @@ e_collection_backend_factory_prepare_mail (ECollectionBackendFactory *factory,
 	g_return_if_fail (E_IS_SOURCE (mail_transport_source));
 
 	class = E_COLLECTION_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->prepare_mail != NULL);
 
 	class->prepare_mail (

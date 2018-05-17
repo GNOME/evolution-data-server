@@ -71,6 +71,8 @@ extension_set_extensible (EExtension *extension,
 	g_return_if_fail (extension->priv->extensible == NULL);
 
 	class = E_EXTENSION_GET_CLASS (extension);
+	g_return_if_fail (class != NULL);
+
 	extensible_type = G_OBJECT_TYPE (extensible);
 
 	/* Verify the EExtensible object is the type we want. */

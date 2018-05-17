@@ -18,8 +18,8 @@
 #ifndef E_USER_PROMPTER_SERVER_H
 #define E_USER_PROMPTER_SERVER_H
 
-#include <libebackend/libebackend.h>
 #include <libedataserver/libedataserver.h>
+#include <libebackend/e-dbus-server.h>
 
 /* Standard GObject macros */
 #define E_TYPE_USER_PROMPTER_SERVER \

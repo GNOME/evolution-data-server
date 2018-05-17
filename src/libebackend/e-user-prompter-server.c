@@ -33,6 +33,7 @@
 /* Private D-Bus classes. */
 #include "e-dbus-user-prompter.h"
 
+#include "e-user-prompter-server-extension.h"
 #include "e-user-prompter-server.h"
 
 #define E_USER_PROMPTER_SERVER_GET_PRIVATE(obj) \

@@ -39,6 +39,7 @@
 
 #include <string.h>
 
+#include "e-user-prompter-server.h"
 #include "e-user-prompter-server-extension.h"
 
 #define E_USER_PROMPTER_SERVER_EXTENSION_GET_PRIVATE(obj) \
@@ -73,7 +74,8 @@ user_prompter_server_extension_constructed (GObject *object)
 	server = E_USER_PROMPTER_SERVER (extensible);
 
 	klass = E_USER_PROMPTER_SERVER_EXTENSION_GET_CLASS (extension);
-	g_return_if_fail (klass->register_dialogs);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->register_dialogs != NULL);
 
 	klass->register_dialogs (extension, server);
 }
@@ -138,6 +140,7 @@ e_user_prompter_server_extension_prompt (EUserPrompterServerExtension *extension
 	g_return_val_if_fail (E_IS_USER_PROMPTER_SERVER_EXTENSION (extension), FALSE);
 
 	klass = E_USER_PROMPTER_SERVER_EXTENSION_GET_CLASS (extension);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->prompt != NULL, FALSE);
 
 	return klass->prompt (extension, prompt_id, dialog_name, parameters);

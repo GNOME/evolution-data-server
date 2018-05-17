@@ -202,7 +202,6 @@ camel_provider_init (void)
 	GDir *dir;
 	const gchar *entry;
 	gchar *p, *name, buf[80];
-	CamelProviderModule *m;
 	static gint loaded = 0;
 	const gchar *provider_dir;
 
@@ -226,6 +225,7 @@ camel_provider_init (void)
 	}
 
 	while ((entry = g_dir_read_name (dir))) {
+		CamelProviderModule *m = NULL;
 		FILE *fp;
 
 		p = strrchr (entry, '.');
@@ -246,9 +246,6 @@ camel_provider_init (void)
 		if (p)
 			strcpy (p, "." G_MODULE_SUFFIX);
 
-		m = g_malloc0 (sizeof (*m));
-		m->path = name;
-
 		while ((fgets (buf, sizeof (buf), fp))) {
 			buf[sizeof (buf) - 1] = '\0';
 			p = strchr (buf, '\n');
@@ -258,11 +255,18 @@ camel_provider_init (void)
 			if (*buf) {
 				gchar *protocol = g_strdup (buf);
 
+				if (!m) {
+					m = g_malloc0 (sizeof (*m));
+					m->path = name;
+				}
+
 				m->types = g_slist_prepend (m->types, protocol);
 				g_hash_table_insert (module_table, protocol, m);
 			}
 		}
 
+		if (!m)
+			g_free (name);
 		fclose (fp);
 	}
 

@@ -97,6 +97,7 @@ camel_index_rename (CamelIndex *idx,
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->rename != NULL, -1);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
@@ -134,6 +135,7 @@ camel_index_sync (CamelIndex *idx)
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->sync != NULL, -1);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
@@ -152,6 +154,7 @@ camel_index_compress (CamelIndex *idx)
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->compress != NULL, -1);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
@@ -171,6 +174,7 @@ camel_index_delete (CamelIndex *idx)
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->delete_ != NULL, -1);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0) {
@@ -193,6 +197,7 @@ camel_index_has_name (CamelIndex *idx,
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), FALSE);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->has_name != NULL, FALSE);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
@@ -219,6 +224,7 @@ camel_index_add_name (CamelIndex *index,
 	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
 	class = CAMEL_INDEX_GET_CLASS (index);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->add_name != NULL, NULL);
 
 	if ((index->state & CAMEL_INDEX_DELETED) == 0)
@@ -236,6 +242,7 @@ camel_index_write_name (CamelIndex *idx,
 	g_return_val_if_fail (CAMEL_IS_INDEX (idx), -1);
 
 	class = CAMEL_INDEX_GET_CLASS (idx);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->write_name != NULL, -1);
 
 	if ((idx->state & CAMEL_INDEX_DELETED) == 0)
@@ -263,6 +270,7 @@ camel_index_find_name (CamelIndex *index,
 	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
 	class = CAMEL_INDEX_GET_CLASS (index);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->find_name != NULL, NULL);
 
 	if ((index->state & CAMEL_INDEX_DELETED) == 0)
@@ -287,6 +295,7 @@ camel_index_delete_name (CamelIndex *index,
 	g_return_if_fail (CAMEL_IS_INDEX (index));
 
 	class = CAMEL_INDEX_GET_CLASS (index);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->delete_name != NULL);
 
 	if ((index->state & CAMEL_INDEX_DELETED) == 0)
@@ -312,6 +321,7 @@ camel_index_find (CamelIndex *index,
 	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
 	class = CAMEL_INDEX_GET_CLASS (index);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->find != NULL, NULL);
 
 	if ((index->state & CAMEL_INDEX_DELETED) != 0)
@@ -343,6 +353,7 @@ camel_index_words (CamelIndex *index)
 	g_return_val_if_fail (CAMEL_IS_INDEX (index), NULL);
 
 	class = CAMEL_INDEX_GET_CLASS (index);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->words != NULL, NULL);
 
 	if ((index->state & CAMEL_INDEX_DELETED) == 0)
@@ -395,6 +406,7 @@ camel_index_name_add_word (CamelIndexName *idn,
 	g_return_if_fail (CAMEL_IS_INDEX_NAME (idn));
 
 	class = CAMEL_INDEX_NAME_GET_CLASS (idn);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->add_word != NULL);
 
 	if (idn->index->normalize)
@@ -416,6 +428,7 @@ camel_index_name_add_buffer (CamelIndexName *idn,
 	g_return_val_if_fail (CAMEL_IS_INDEX_NAME (idn), 0);
 
 	class = CAMEL_INDEX_NAME_GET_CLASS (idn);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->add_buffer != NULL, 0);
 
 	return class->add_buffer (idn, buffer, len);
@@ -463,6 +476,7 @@ camel_index_cursor_next (CamelIndexCursor *idc)
 	g_return_val_if_fail (CAMEL_IS_INDEX_CURSOR (idc), NULL);
 
 	class = CAMEL_INDEX_CURSOR_GET_CLASS (idc);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->next != NULL, NULL);
 
 	return class->next (idc);

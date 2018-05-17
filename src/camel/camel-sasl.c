@@ -88,18 +88,18 @@ sasl_build_class_table_rec (GType type,
 	children = g_type_children (type, &n_children);
 
 	for (ii = 0; ii < n_children; ii++) {
-		GType type = children[ii];
+		GType child_type = children[ii];
 		CamelSaslClass *sasl_class;
 		gpointer key;
 
 		/* Recurse over the child's children. */
-		sasl_build_class_table_rec (type, class_table);
+		sasl_build_class_table_rec (child_type, class_table);
 
 		/* Skip abstract types. */
-		if (G_TYPE_IS_ABSTRACT (type))
+		if (G_TYPE_IS_ABSTRACT (child_type))
 			continue;
 
-		sasl_class = g_type_class_ref (type);
+		sasl_class = g_type_class_ref (child_type);
 
 		if (sasl_class->auth_type == NULL) {
 			g_critical (
@@ -421,6 +421,7 @@ camel_sasl_try_empty_password_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), FALSE);
 
 	class = CAMEL_SASL_GET_CLASS (sasl);
+	g_return_val_if_fail (class != NULL, FALSE);
 
 	if (class->try_empty_password_sync == NULL)
 		return FALSE;
@@ -607,6 +608,7 @@ camel_sasl_challenge_sync (CamelSasl *sasl,
 	g_return_val_if_fail (CAMEL_IS_SASL (sasl), NULL);
 
 	class = CAMEL_SASL_GET_CLASS (sasl);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->challenge_sync != NULL, NULL);
 
 	response = class->challenge_sync (sasl, token, cancellable, error);

@@ -548,12 +548,12 @@ e_credentials_prompter_prompt_finish_for_source (ECredentialsPrompter *prompter,
 	}
 
 	if (ppd->async_result) {
-		ECredentialsPrompter *prompter;
+		ECredentialsPrompter *ppd_prompter;
 
-		prompter = g_weak_ref_get (ppd->prompter);
-		if (prompter) {
-			e_credentials_prompter_complete_prompt_call (prompter, ppd->async_result, ppd->auth_source, credentials, NULL);
-			g_clear_object (&prompter);
+		ppd_prompter = g_weak_ref_get (ppd->prompter);
+		if (ppd_prompter) {
+			e_credentials_prompter_complete_prompt_call (ppd_prompter, ppd->async_result, ppd->auth_source, credentials, NULL);
+			g_clear_object (&ppd_prompter);
 
 			/* To not be completed multiple times */
 			g_clear_object (&ppd->async_result);

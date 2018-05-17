@@ -286,10 +286,17 @@ vee_store_get_folder_info_sync (CamelStore *store,
 
 	d (printf ("Get folder info '%s'\n", top ? top:"<null>"));
 
-	infos_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	folders = camel_store_dup_opened_folders (store);
-	if (folders->pdata && folders->len)
-		qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), vee_folder_cmp);
+	if (!folders || !folders->pdata || !folders->len) {
+		if (folders)
+			g_ptr_array_free (folders, TRUE);
+
+		return NULL;
+	}
+
+	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), vee_folder_cmp);
+
+	infos_hash = g_hash_table_new (g_str_hash, g_str_equal);
 	for (i = 0; i < folders->len; i++) {
 		CamelVeeFolder *folder = folders->pdata[i];
 		const gchar *full_name;
@@ -1064,8 +1071,9 @@ vee_store_rebuild_unmatched_folder (CamelSession *session,
 		camel_folder_changed (unmatched_folder, changes);
 	camel_folder_change_info_free (changes);
 
-	/* coverity[unchecked_value] */
-	g_cancellable_set_error_if_cancelled (cancellable, error);
+	/* Just to mute CHECKED_RETURN warning */
+	if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		return;
 }
 
 /**

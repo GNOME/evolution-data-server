@@ -202,6 +202,7 @@ dbus_server_bus_name_acquired (EDBusServer *server,
 	EDBusServerClass *class;
 
 	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->bus_name != NULL);
 
 	e_source_registry_debug_print ("Bus name '%s' acquired.\n", class->bus_name);
@@ -214,6 +215,7 @@ dbus_server_bus_name_lost (EDBusServer *server,
 	EDBusServerClass *class;
 
 	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->bus_name != NULL);
 
 	e_source_registry_debug_print ("Bus name '%s' lost.\n", class->bus_name);
@@ -229,9 +231,8 @@ dbus_server_run_server (EDBusServer *server)
 	/* Try to acquire the well-known bus name. */
 
 	class = E_DBUS_SERVER_GET_CLASS (server);
-	g_return_val_if_fail (
-		class->bus_name != NULL,
-		E_DBUS_SERVER_EXIT_NONE);
+	g_return_val_if_fail (class != NULL, E_DBUS_SERVER_EXIT_NONE);
+	g_return_val_if_fail (class->bus_name != NULL, E_DBUS_SERVER_EXIT_NONE);
 
 	server->priv->bus_owner_id = g_bus_own_name (
 		G_BUS_TYPE_SESSION,
@@ -608,6 +609,7 @@ e_dbus_server_load_modules (EDBusServer *server)
 	g_return_if_fail (E_IS_DBUS_SERVER (server));
 
 	class = E_DBUS_SERVER_GET_CLASS (server);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->module_directory != NULL);
 
 	/* This ensures a module directory is only loaded once. */

@@ -1130,10 +1130,10 @@ camel_mbox_summary_sync_mbox (CamelMboxSummary *cls,
 			header = camel_mime_parser_dup_headers (mp);
 			xevnew = camel_local_summary_encode_x_evolution ((CamelLocalSummary *) cls, info);
 			if (mbs->xstatus) {
-				guint32 flags = camel_message_info_get_flags (info);
+				guint32 info_flags = camel_message_info_get_flags (info);
 
-				encode_status (flags & STATUS_STATUS, statnew);
-				encode_status (flags & STATUS_XSTATUS, xstatnew);
+				encode_status (info_flags & STATUS_STATUS, statnew);
+				encode_status (info_flags & STATUS_XSTATUS, xstatnew);
 
 				len = camel_local_summary_write_headers (fdout, header, xevnew, statnew, xstatnew);
 			} else {

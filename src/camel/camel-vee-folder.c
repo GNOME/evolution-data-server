@@ -577,8 +577,14 @@ subfolder_changed (CamelFolder *subfolder,
                    CamelFolderChangeInfo *changes,
                    CamelVeeFolder *vfolder)
 {
+	CamelVeeFolderClass *klass;
+
 	g_return_if_fail (vfolder != NULL);
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+
+	klass = CAMEL_VEE_FOLDER_GET_CLASS (vfolder);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->folder_changed != NULL);
 
 	g_rec_mutex_lock (&vfolder->priv->changed_lock);
 	if (g_hash_table_lookup (vfolder->priv->ignore_changed, subfolder) ||
@@ -599,7 +605,7 @@ subfolder_changed (CamelFolder *subfolder,
 	}
 	g_rec_mutex_unlock (&vfolder->priv->changed_lock);
 
-	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->folder_changed (vfolder, subfolder, changes);
+	klass->folder_changed (vfolder, subfolder, changes);
 }
 
 /* track vanishing folders */
@@ -723,6 +729,7 @@ vee_folder_propagate_skipped_changes (CamelVeeFolder *vf)
 	g_return_if_fail (vf != NULL);
 
 	class = CAMEL_VEE_FOLDER_GET_CLASS (vf);
+	g_return_if_fail (class != NULL);
 
 	g_rec_mutex_lock (&vf->priv->changed_lock);
 
@@ -1448,9 +1455,15 @@ void
 camel_vee_folder_set_expression (CamelVeeFolder *vfolder,
                                  const gchar *expression)
 {
+	CamelVeeFolderClass *klass;
+
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
 
-	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->set_expression (vfolder, expression);
+	klass = CAMEL_VEE_FOLDER_GET_CLASS (vfolder);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->set_expression != NULL);
+
+	klass->set_expression (vfolder, expression);
 }
 
 /**
@@ -1482,7 +1495,13 @@ camel_vee_folder_add_folder (CamelVeeFolder *vfolder,
                              CamelFolder *subfolder,
                              GCancellable *cancellable)
 {
+	CamelVeeFolderClass *klass;
+
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+
+	klass = CAMEL_VEE_FOLDER_GET_CLASS (vfolder);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->add_folder != NULL);
 
 	if (vfolder == (CamelVeeFolder *) subfolder) {
 		g_warning ("Adding a virtual folder to itself as source, ignored");
@@ -1517,7 +1536,7 @@ camel_vee_folder_add_folder (CamelVeeFolder *vfolder,
 		subfolder, "deleted",
 		G_CALLBACK (subfolder_deleted), vfolder);
 
-	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->add_folder (vfolder, subfolder, cancellable);
+	klass->add_folder (vfolder, subfolder, cancellable);
 }
 
 /**
@@ -1533,9 +1552,14 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
                                 CamelFolder *subfolder,
                                 GCancellable *cancellable)
 {
+	CamelVeeFolderClass *klass;
 	gint freeze_count;
 
 	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+
+	klass = CAMEL_VEE_FOLDER_GET_CLASS (vfolder);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->remove_folder != NULL);
 
 	g_rec_mutex_lock (&vfolder->priv->subfolder_lock);
 
@@ -1557,7 +1581,7 @@ camel_vee_folder_remove_folder (CamelVeeFolder *vfolder,
 
 	g_rec_mutex_unlock (&vfolder->priv->subfolder_lock);
 
-	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->remove_folder (vfolder, subfolder, cancellable);
+	klass->remove_folder (vfolder, subfolder, cancellable);
 
 	g_object_unref (subfolder);
 }
@@ -1575,9 +1599,17 @@ camel_vee_folder_rebuild_folder (CamelVeeFolder *vfolder,
                                  CamelFolder *subfolder,
                                  GCancellable *cancellable)
 {
+	CamelVeeFolderClass *klass;
+
+	g_return_if_fail (CAMEL_IS_VEE_FOLDER (vfolder));
+
+	klass = CAMEL_VEE_FOLDER_GET_CLASS (vfolder);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->rebuild_folder != NULL);
+
 	vee_folder_propagate_skipped_changes (vfolder);
 
-	CAMEL_VEE_FOLDER_GET_CLASS (vfolder)->rebuild_folder (vfolder, subfolder, cancellable);
+	klass->rebuild_folder (vfolder, subfolder, cancellable);
 }
 
 static void

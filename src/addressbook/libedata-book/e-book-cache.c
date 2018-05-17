@@ -2367,9 +2367,13 @@ query_preflight_check (PreflightContext *context,
 			gint aux_index = summary_field_get_index (book_cache, test->field_id);
 
 			/* It's really improbable that we ever get 64 fields in the summary
-			 * In any case we warn about this in e_book_sqlite_new_full().
+			 * In any case we warn about this.
 			 */
 			g_warn_if_fail (aux_index >= 0 && aux_index < EBC_MAX_SUMMARY_FIELDS);
+
+			/* Just to mute a compiler warning when aux_index == -1 */
+			aux_index = ABS (aux_index);
+
 			context->aux_mask |= (1 << aux_index);
 
 			/* If this condition is a *requirement* for the overall query to
@@ -3184,6 +3188,9 @@ ebc_generate_autocomplete_query (EBookCache *book_cache,
 
 		aux_index = summary_field_get_index (book_cache, test->field_id);
 		g_warn_if_fail (aux_index >= 0 && aux_index < EBC_MAX_SUMMARY_FIELDS);
+
+		/* Just to mute a compiler warning when aux_index == -1 */
+		aux_index = ABS (aux_index);
 		context->aux_mask = (1 << aux_index);
 		context->left_join_mask = 0;
 

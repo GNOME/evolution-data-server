@@ -44,6 +44,8 @@ settings_clone (CamelSettings *settings)
 	guint ii, n_properties;
 
 	class = CAMEL_SETTINGS_GET_CLASS (settings);
+	g_return_val_if_fail (class != NULL, NULL);
+
 	properties = camel_settings_class_list_settings (class, &n_properties);
 
 	parameters = g_new0 (GParameter, n_properties);
@@ -91,6 +93,8 @@ settings_equal (CamelSettings *settings_a,
 	value_b = g_slice_new0 (GValue);
 
 	class = CAMEL_SETTINGS_GET_CLASS (settings_a);
+	g_return_val_if_fail (class != NULL, FALSE);
+
 	properties = camel_settings_class_list_settings (class, &n_properties);
 
 	for (ii = 0; equal && ii < n_properties; ii++) {
@@ -182,6 +186,7 @@ camel_settings_clone (CamelSettings *settings)
 	g_return_val_if_fail (CAMEL_IS_SETTINGS (settings), NULL);
 
 	class = CAMEL_SETTINGS_GET_CLASS (settings);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->clone != NULL, NULL);
 
 	clone = class->clone (settings);
@@ -217,6 +222,7 @@ camel_settings_equal (CamelSettings *settings_a,
 	g_return_val_if_fail (CAMEL_IS_SETTINGS (settings_b), FALSE);
 
 	class = CAMEL_SETTINGS_GET_CLASS (settings_a);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->equal != NULL, FALSE);
 
 	return class->equal (settings_a, settings_b);

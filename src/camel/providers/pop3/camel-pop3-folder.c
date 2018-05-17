@@ -903,7 +903,9 @@ pop3_folder_synchronize_sync (CamelFolder *folder,
 	if (g_cancellable_is_cancelled (cancellable)) {
 		if (error && !*error) {
 			/* coverity[unchecked_value] */
-			g_cancellable_set_error_if_cancelled (cancellable, error);
+			if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+				;
+			}
 		}
 		return FALSE;
 	}

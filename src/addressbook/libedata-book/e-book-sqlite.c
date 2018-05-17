@@ -4914,6 +4914,10 @@ query_preflight_check (PreflightContext *context,
 			 * In any case we warn about this in e_book_sqlite_new_full().
 			 */
 			g_warn_if_fail (aux_index >= 0 && aux_index < EBSQL_MAX_SUMMARY_FIELDS);
+
+			/* Just to mute a compiler warning when aux_index == -1 */
+			aux_index = ABS (aux_index);
+
 			context->aux_mask |= (1 << aux_index);
 			EBSQL_NOTE (
 				PREFLIGHT,
@@ -5670,6 +5674,10 @@ ebsql_generate_autocomplete_query (EBookSqlite *ebsql,
 
 		aux_index = summary_field_get_index (ebsql, test->field_id);
 		g_warn_if_fail (aux_index >= 0 && aux_index < EBSQL_MAX_SUMMARY_FIELDS);
+
+		/* Just to mute a compiler warning when aux_index == -1 */
+		aux_index = ABS (aux_index);
+
 		context->aux_mask = (1 << aux_index);
 		context->left_join_mask = 0;
 

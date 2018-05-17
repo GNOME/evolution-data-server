@@ -187,6 +187,7 @@ camel_medium_add_header (CamelMedium *medium,
 	g_return_if_fail (value != NULL);
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->add_header != NULL);
 
 	class->add_header (medium, name, value);
@@ -218,6 +219,7 @@ camel_medium_set_header (CamelMedium *medium,
 	}
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_header != NULL);
 
 	class->set_header (medium, name, value);
@@ -241,6 +243,7 @@ camel_medium_remove_header (CamelMedium *medium,
 	g_return_if_fail (name != NULL);
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove_header != NULL);
 
 	class->remove_header (medium, name);
@@ -270,6 +273,7 @@ camel_medium_get_header (CamelMedium *medium,
 	g_return_val_if_fail (name != NULL, NULL);
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_header != NULL, NULL);
 
 	return class->get_header (medium, name);
@@ -295,6 +299,7 @@ camel_medium_dup_headers (CamelMedium *medium)
 	g_return_val_if_fail (CAMEL_IS_MEDIUM (medium), NULL);
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->dup_headers != NULL, NULL);
 
 	return class->dup_headers (medium);
@@ -320,6 +325,7 @@ camel_medium_get_headers (CamelMedium *medium)
 	g_return_val_if_fail (CAMEL_IS_MEDIUM (medium), NULL);
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_headers != NULL, NULL);
 
 	return class->get_headers (medium);
@@ -343,6 +349,7 @@ camel_medium_get_content (CamelMedium *medium)
 	g_return_val_if_fail (CAMEL_IS_MEDIUM (medium), NULL);
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_content != NULL, NULL);
 
 	return class->get_content (medium);
@@ -367,6 +374,7 @@ camel_medium_set_content (CamelMedium *medium,
 		g_return_if_fail (CAMEL_IS_DATA_WRAPPER (content));
 
 	class = CAMEL_MEDIUM_GET_CLASS (medium);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_content != NULL);
 
 	class->set_content (medium, content);

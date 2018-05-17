@@ -47,6 +47,7 @@ e_credentials_prompter_impl_constructed (GObject *object)
 	prompter = E_CREDENTIALS_PROMPTER (e_extension_get_extensible (E_EXTENSION (prompter_impl)));
 
 	klass = E_CREDENTIALS_PROMPTER_IMPL_GET_CLASS (object);
+	g_return_if_fail (klass != NULL);
 	g_return_if_fail (klass->authentication_methods != NULL);
 
 	for (ii = 0; klass->authentication_methods[ii]; ii++) {
@@ -174,6 +175,7 @@ e_credentials_prompter_impl_prompt (ECredentialsPrompterImpl *prompter_impl,
 	g_return_if_fail (credentials != NULL);
 
 	klass = E_CREDENTIALS_PROMPTER_IMPL_GET_CLASS (prompter_impl);
+	g_return_if_fail (klass != NULL);
 	g_return_if_fail (klass->process_prompt != NULL);
 
 	klass->process_prompt (prompter_impl, prompt_id, auth_source, cred_source, error_text, credentials);
@@ -224,6 +226,7 @@ e_credentials_prompter_impl_cancel_prompt (ECredentialsPrompterImpl *prompter_im
 	g_return_if_fail (E_IS_CREDENTIALS_PROMPTER_IMPL (prompter_impl));
 
 	klass = E_CREDENTIALS_PROMPTER_IMPL_GET_CLASS (prompter_impl);
+	g_return_if_fail (klass != NULL);
 	g_return_if_fail (klass->cancel_prompt != NULL);
 
 	klass->cancel_prompt (prompter_impl, prompt_id);

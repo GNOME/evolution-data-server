@@ -1997,8 +1997,9 @@ e_book_client_get_self (ESourceRegistry *registry,
 		/* Don't care about errors because
 		 * we'll create a new card on failure. */
 		/* coverity[unchecked_value] */
-		e_book_client_get_contact_sync (
-			book_client, uid, &contact, NULL, NULL);
+		if (!e_book_client_get_contact_sync (book_client, uid, &contact, NULL, NULL))
+			contact = NULL;
+
 		g_free (uid);
 
 		if (contact != NULL) {

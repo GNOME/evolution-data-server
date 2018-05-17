@@ -340,7 +340,9 @@ try_sasl (CamelPOP3Store *store,
 		    || (resp = (guchar *) camel_sasl_challenge_base64_sync (sasl, (const gchar *) line + 2, cancellable, &local_error)) == NULL) {
 			if (camel_stream_write_string (CAMEL_STREAM (pop3_stream), "*\r\n", cancellable, NULL)) {
 				/* coverity[unchecked_value] */
-				camel_pop3_stream_line (pop3_stream, &line, &len, cancellable, NULL);
+				if (!camel_pop3_stream_line (pop3_stream, &line, &len, cancellable, NULL)) {
+					;
+				}
 			}
 
 			if (local_error) {

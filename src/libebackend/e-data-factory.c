@@ -194,6 +194,7 @@ data_factory_construct_subprocess_path (EDataFactory *data_factory)
 	g_atomic_int_inc (&counter);
 
 	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->subprocess_object_path_prefix != NULL, NULL);
 
 	return g_strdup_printf (
@@ -212,6 +213,7 @@ data_factory_construct_subprocess_bus_name (EDataFactory *data_factory)
 	g_atomic_int_inc (&counter);
 
 	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->subprocess_bus_name_prefix != NULL, NULL);
 
 	/* We use the format "%sx%d%u" because we want to be really safe about
@@ -567,6 +569,7 @@ data_factory_call_subprocess_backend_create_sync (EDataFactory *data_factory,
 			data_factory, sender, proxy);
 
 		class = E_DATA_FACTORY_GET_CLASS (data_factory);
+		g_return_if_fail (class != NULL);
 		g_return_if_fail (class->complete_open != NULL);
 
 		class->complete_open (data_factory, invocation, object_path, bus_name, extension_name);
@@ -709,6 +712,8 @@ data_factory_bus_acquired (EDBusServer *server,
 	GError *error = NULL;
 
 	class = E_DATA_FACTORY_GET_CLASS (E_DATA_FACTORY (server));
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->get_dbus_interface_skeleton != NULL);
 
 	skeleton_interface = class->get_dbus_interface_skeleton (server);
 
@@ -832,6 +837,8 @@ data_factory_quit_server (EDBusServer *server,
 	}
 
 	class = E_DATA_FACTORY_GET_CLASS (E_DATA_FACTORY (server));
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->get_dbus_interface_skeleton != NULL);
 
 	skeleton_interface = class->get_dbus_interface_skeleton (server);
 	if (skeleton_interface && g_dbus_interface_skeleton_get_connection (skeleton_interface))
@@ -974,10 +981,12 @@ data_factory_constructed (GObject *object)
 	GList *list, *link;
 
 	data_factory = E_DATA_FACTORY (object);
-	class = E_DATA_FACTORY_GET_CLASS (data_factory);
 
 	/* Chain up to parent's constructed() method. */
 	G_OBJECT_CLASS (e_data_factory_parent_class)->constructed (object);
+
+	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_if_fail (class != NULL);
 
 	/* Collect all backend factories into a hash table. */
 
@@ -1221,6 +1230,7 @@ e_data_factory_construct_path (EDataFactory *data_factory)
 	g_atomic_int_inc (&counter);
 
 	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->data_object_path_prefix != NULL, NULL);
 
 	return g_strdup_printf (
@@ -1239,6 +1249,7 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	DataFactorySubprocessData *sd = NULL;
 	EBackendFactory *backend_factory = NULL;
 	EDataFactoryClass *class;
+	EDBusServerClass *server_class;
 	ESource *source;
 	EDataFactoryPrivate *priv;
 	GError *error = NULL;
@@ -1255,6 +1266,14 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 	g_return_if_fail (uid != NULL && *uid != '\0');
 	g_return_if_fail (extension_name != NULL && *extension_name != '\0');
 	g_return_if_fail (subprocess_path != NULL && *subprocess_path != '\0');
+
+	class = E_DATA_FACTORY_GET_CLASS (data_factory);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->complete_open != NULL);
+	g_return_if_fail (class->get_factory_name != NULL);
+
+	server_class = E_DBUS_SERVER_GET_CLASS (data_factory);
+	g_return_if_fail (server_class != NULL);
 
 	priv = data_factory->priv;
 
@@ -1279,7 +1298,6 @@ data_factory_spawn_subprocess_backend (EDataFactory *data_factory,
 
 		type_name = G_OBJECT_TYPE_NAME (backend_factory);
 
-		class = E_DATA_FACTORY_GET_CLASS (data_factory);
 		factory_name = class->get_factory_name (backend_factory);
 
 		subprocess_helpers_hash_key = data_factory_dup_subprocess_helper_hash_key (

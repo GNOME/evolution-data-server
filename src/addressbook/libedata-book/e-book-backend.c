@@ -560,6 +560,7 @@ static void
 book_backend_constructed (GObject *object)
 {
 	EBookBackend *backend;
+	EBookBackendClass *class;
 	ESourceRegistry *registry;
 	ESource *source;
 	gint max_threads = -1;
@@ -569,13 +570,16 @@ book_backend_constructed (GObject *object)
 	G_OBJECT_CLASS (e_book_backend_parent_class)->constructed (object);
 
 	backend = E_BOOK_BACKEND (object);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	registry = e_book_backend_get_registry (backend);
 	source = e_backend_get_source (E_BACKEND (backend));
 
 	/* If the backend specifies a serial dispatch queue, create
 	 * a thread pool with one exclusive thread.  The thread pool
 	 * will serialize operations for us. */
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->use_serial_dispatch_queue) {
+	if (class->use_serial_dispatch_queue) {
 		max_threads = 1;
 		exclusive = TRUE;
 	}
@@ -676,6 +680,7 @@ book_backend_get_contact_list_uids_sync (EBookBackend *backend,
 	gboolean success;
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->get_contact_list_sync != NULL, FALSE);
 
 	success = class->get_contact_list_sync (
@@ -1135,6 +1140,7 @@ book_backend_open_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->open_sync != NULL);
 
 	if (!e_book_backend_is_opened (backend)) {
@@ -1167,6 +1173,7 @@ book_backend_open_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->open != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -1217,6 +1224,7 @@ e_book_backend_open (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback,
@@ -1343,6 +1351,7 @@ book_backend_refresh_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->refresh_sync != NULL);
 
 	if (!e_book_backend_is_opened (backend)) {
@@ -1380,6 +1389,7 @@ book_backend_refresh_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->refresh != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -1433,6 +1443,7 @@ e_book_backend_refresh (EBookBackend *backend,
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	simple = g_simple_async_result_new (
 		G_OBJECT (backend), callback,
@@ -1565,6 +1576,7 @@ book_backend_create_contacts_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->create_contacts_sync != NULL);
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -1609,6 +1621,7 @@ book_backend_create_contacts_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->create_contacts != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -1680,6 +1693,7 @@ e_book_backend_create_contacts (EBookBackend *backend,
 	g_return_if_fail (vcards != NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->strv = g_strdupv ((gchar **) vcards);
@@ -1829,6 +1843,7 @@ book_backend_modify_contacts_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->modify_contacts_sync != NULL);
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -1873,6 +1888,7 @@ book_backend_modify_contacts_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->modify_contacts != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -1944,6 +1960,7 @@ e_book_backend_modify_contacts (EBookBackend *backend,
 	g_return_if_fail (vcards != NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->strv = g_strdupv ((gchar **) vcards);
@@ -2087,6 +2104,7 @@ book_backend_remove_contacts_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove_contacts_sync != NULL);
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -2130,6 +2148,7 @@ book_backend_remove_contacts_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove_contacts != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -2201,6 +2220,7 @@ e_book_backend_remove_contacts (EBookBackend *backend,
 	g_return_if_fail (uids != NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->strv = g_strdupv ((gchar **) uids);
@@ -2345,6 +2365,7 @@ book_backend_get_contact_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_contact_sync != NULL);
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -2388,6 +2409,7 @@ book_backend_get_contact_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_contact != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -2451,6 +2473,7 @@ e_book_backend_get_contact (EBookBackend *backend,
 	g_return_if_fail (uid != NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->uid = g_strdup (uid);
@@ -2606,6 +2629,7 @@ book_backend_get_contact_list_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_contact_list_sync != NULL);
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -2650,6 +2674,7 @@ book_backend_get_contact_list_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_contact_list != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -2714,6 +2739,7 @@ e_book_backend_get_contact_list (EBookBackend *backend,
 	g_return_if_fail (query != NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->query = g_strdup (query);
@@ -2865,6 +2891,7 @@ book_backend_get_contact_list_uids_thread (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_contact_list_uids_sync != NULL);
 
 	async_context = g_simple_async_result_get_op_res_gpointer (simple);
@@ -2909,6 +2936,7 @@ book_backend_get_contact_list_uids_thread_old_style (GSimpleAsyncResult *simple,
 	backend = E_BOOK_BACKEND (source_object);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_contact_list_uids != NULL);
 
 	data_book = e_book_backend_ref_data_book (backend);
@@ -2973,6 +3001,7 @@ e_book_backend_get_contact_list_uids (EBookBackend *backend,
 	g_return_if_fail (query != NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
 	async_context = g_slice_new0 (AsyncContext);
 	async_context->query = g_strdup (query);
@@ -3077,6 +3106,7 @@ e_book_backend_start_view (EBookBackend *backend,
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->start_view);
 
 	class->start_view (backend, view);
@@ -3099,6 +3129,7 @@ e_book_backend_stop_view (EBookBackend *backend,
 	g_return_if_fail (E_IS_DATA_BOOK_VIEW (view));
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->stop_view != NULL);
 
 	class->stop_view (backend, view);
@@ -3221,6 +3252,7 @@ e_book_backend_get_backend_property (EBookBackend *backend,
 	g_return_val_if_fail (prop_name != NULL, NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_backend_property != NULL, NULL);
 
 	return class->get_backend_property (backend, prop_name);
@@ -3286,6 +3318,7 @@ e_book_backend_get_direct_book (EBookBackend *backend)
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, NULL);
 
 	if (class->get_direct_book != NULL)
 		direct_book = class->get_direct_book (backend);
@@ -3313,10 +3346,15 @@ void
 e_book_backend_configure_direct (EBookBackend *backend,
                                  const gchar *config)
 {
+	EBookBackendClass *class;
+
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->configure_direct)
-		E_BOOK_BACKEND_GET_CLASS (backend)->configure_direct (backend, config);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
+	if (class->configure_direct)
+		class->configure_direct (backend, config);
 }
 
 /**
@@ -3332,14 +3370,20 @@ e_book_backend_configure_direct (EBookBackend *backend,
 void
 e_book_backend_sync (EBookBackend *backend)
 {
+	EBookBackendClass *class;
+
 	g_return_if_fail (E_IS_BOOK_BACKEND (backend));
 
-	g_object_ref (backend);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->sync)
-		(* E_BOOK_BACKEND_GET_CLASS (backend)->sync) (backend);
+	if (class->sync) {
+		g_object_ref (backend);
 
-	g_object_unref (backend);
+		class->sync (backend);
+
+		g_object_unref (backend);
+	}
 }
 
 /**
@@ -3363,21 +3407,25 @@ e_book_backend_set_locale (EBookBackend *backend,
                            GCancellable *cancellable,
                            GError **error)
 {
+	EBookBackendClass *class;
 	/* If the backend does not support locales, just happily return */
 	gboolean success = TRUE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
-	g_object_ref (backend);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) {
-		success = (* E_BOOK_BACKEND_GET_CLASS (backend)->set_locale) (backend, locale,
-									      cancellable, error);
+	if (class->set_locale) {
+		g_object_ref (backend);
+
+		success = class->set_locale (backend, locale, cancellable, error);
+
 		if (success)
 			e_book_backend_notify_complete (backend);
 
+		g_object_unref (backend);
 	}
-	g_object_unref (backend);
 
 	return success;
 }
@@ -3396,16 +3444,21 @@ e_book_backend_set_locale (EBookBackend *backend,
 gchar *
 e_book_backend_dup_locale (EBookBackend *backend)
 {
+	EBookBackendClass *class;
 	gchar *locale = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
-	g_object_ref (backend);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, NULL);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->dup_locale)
-		locale = (* E_BOOK_BACKEND_GET_CLASS (backend)->dup_locale) (backend);
+	if (class->dup_locale) {
+		g_object_ref (backend);
 
-	g_object_unref (backend);
+		locale = class->dup_locale (backend);
+
+		g_object_unref (backend);
+	}
 
 	return locale;
 }
@@ -3432,6 +3485,7 @@ e_book_backend_notify_update (EBookBackend *backend,
 	g_return_if_fail (E_IS_CONTACT (contact));
 
 	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->notify_update != NULL);
 
 	class->notify_update (backend, contact);
@@ -3628,26 +3682,27 @@ e_book_backend_create_cursor (EBookBackend *backend,
                               guint n_fields,
                               GError **error)
 {
+	EBookBackendClass *class;
 	EDataBookCursor *cursor = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), NULL);
 
-	g_object_ref (backend);
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, NULL);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->create_cursor)
-		cursor = (* E_BOOK_BACKEND_GET_CLASS (backend)->create_cursor) (backend,
-										sort_fields,
-										sort_types,
-										n_fields,
-										error);
-	else
+	if (class->create_cursor) {
+		g_object_ref (backend);
+
+		cursor = class->create_cursor (backend, sort_fields, sort_types, n_fields, error);
+
+		g_object_unref (backend);
+	} else {
 		g_set_error (
 			error,
 			E_CLIENT_ERROR,
 			E_CLIENT_ERROR_NOT_SUPPORTED,
 			"Addressbook backend does not support cursors");
-
-	g_object_unref (backend);
+	}
 
 	return cursor;
 }
@@ -3671,14 +3726,18 @@ e_book_backend_delete_cursor (EBookBackend *backend,
                               EDataBookCursor *cursor,
                               GError **error)
 {
+	EBookBackendClass *class;
 	gboolean success = FALSE;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND (backend), FALSE);
 
+	class = E_BOOK_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
+
 	g_object_ref (backend);
 
-	if (E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor)
-		success = (* E_BOOK_BACKEND_GET_CLASS (backend)->delete_cursor) (backend, cursor, error);
+	if (class->delete_cursor)
+		success = class->delete_cursor (backend, cursor, error);
 	else
 		g_warning ("Backend asked to delete a cursor, but does not support cursors");
 

@@ -312,9 +312,9 @@ message_dump_rec (CamelMimeMessage *msg,
 	if (CAMEL_IS_MULTIPART (containee)) {
 		parts = camel_multipart_get_number (CAMEL_MULTIPART (containee));
 		for (i = 0; i < parts; i++) {
-			CamelMimePart *part = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
+			CamelMimePart *subpart = camel_multipart_get_part (CAMEL_MULTIPART (containee), i);
 
-			message_dump_rec (msg, part, depth + 1);
+			message_dump_rec (msg, subpart, depth + 1);
 		}
 	} else if (CAMEL_IS_MIME_MESSAGE (containee)) {
 		message_dump_rec (msg, (CamelMimePart *) containee, depth + 1);

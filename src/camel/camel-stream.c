@@ -504,6 +504,7 @@ camel_stream_read (CamelStream *stream,
 	g_return_val_if_fail (n == 0 || buffer, -1);
 
 	class = CAMEL_STREAM_GET_CLASS (stream);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->read != NULL, -1);
 
 	n_bytes = class->read (stream, buffer, n, cancellable, error);
@@ -539,6 +540,7 @@ camel_stream_write (CamelStream *stream,
 	g_return_val_if_fail (n == 0 || buffer, -1);
 
 	class = CAMEL_STREAM_GET_CLASS (stream);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->write != NULL, -1);
 
 	n_bytes = class->write (stream, buffer, n, cancellable, error);
@@ -569,6 +571,7 @@ camel_stream_flush (CamelStream *stream,
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 
 	class = CAMEL_STREAM_GET_CLASS (stream);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->flush != NULL, -1);
 
 	retval = class->flush (stream, cancellable, error);
@@ -598,6 +601,7 @@ camel_stream_close (CamelStream *stream,
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 
 	class = CAMEL_STREAM_GET_CLASS (stream);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->close != NULL, -1);
 
 	retval = class->close (stream, cancellable, error);
@@ -622,6 +626,7 @@ camel_stream_eos (CamelStream *stream)
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), TRUE);
 
 	class = CAMEL_STREAM_GET_CLASS (stream);
+	g_return_val_if_fail (class != NULL, TRUE);
 	g_return_val_if_fail (class->eos != NULL, TRUE);
 
 	return class->eos (stream);

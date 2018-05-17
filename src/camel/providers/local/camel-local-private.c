@@ -42,11 +42,20 @@ camel_local_frompos_sort (gpointer enc,
 		sa2 = g_realloc (sa2, len2 + 1);
 		l2 = len2 + 1;
 	}
-	strncpy (sa1, data1, len1); sa1[len1] = 0;
-	strncpy (sa2, data2, len2); sa2[len2] = 0;
 
-	a1 = strtoul (sa1, NULL, 10);
-	a2 = strtoul (sa2, NULL, 10);
+	if (sa1) {
+		strncpy (sa1, data1, len1); sa1[len1] = 0;
+		a1 = strtoul (sa1, NULL, 10);
+	} else {
+		a1 = 0;
+	}
+
+	if (sa2) {
+		strncpy (sa2, data2, len2); sa2[len2] = 0;
+		a2 = strtoul (sa2, NULL, 10);
+	} else {
+		a2 = 0;
+	}
 
 	return a1 - a2;
 }

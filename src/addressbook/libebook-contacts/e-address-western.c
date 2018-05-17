@@ -357,6 +357,8 @@ e_address_western_parse (const gchar *in_address)
 		lineindex++;
 	}
 
+	lines[linecntr] = NULL;
+
 	/* Convert the newlines at the end of each line (except the last,
 	 because it is already NULL terminated) to NULLs. */
 	for (cntr = 0; cntr < (linecntr - 1); cntr++) {

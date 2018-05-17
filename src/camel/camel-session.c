@@ -916,6 +916,7 @@ camel_session_add_service (CamelSession *session,
 	g_return_val_if_fail (protocol != NULL, NULL);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->add_service != NULL, NULL);
 
 	service = class->add_service (session, uid, protocol, type, error);
@@ -943,6 +944,7 @@ camel_session_remove_service (CamelSession *session,
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove_service != NULL);
 
 	class->remove_service (session, service);
@@ -1172,6 +1174,7 @@ camel_session_get_password (CamelSession *session,
 	g_return_val_if_fail (item != NULL, NULL);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_password != NULL, NULL);
 
 	password = class->get_password (
@@ -1212,6 +1215,7 @@ camel_session_forget_password (CamelSession *session,
 	g_return_val_if_fail (item != NULL, FALSE);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class, FALSE);
 	g_return_val_if_fail (class->forget_password, FALSE);
 
 	success = class->forget_password (session, service, item, error);
@@ -1247,16 +1251,13 @@ camel_session_trust_prompt (CamelSession *session,
 {
 	CamelSessionClass *class;
 
-	g_return_val_if_fail (
-		CAMEL_IS_SESSION (session), CAMEL_CERT_TRUST_UNKNOWN);
-	g_return_val_if_fail (
-		CAMEL_IS_SERVICE (service), CAMEL_CERT_TRUST_UNKNOWN);
-	g_return_val_if_fail (
-		G_IS_TLS_CERTIFICATE (certificate), CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (CAMEL_IS_SESSION (session), CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (CAMEL_IS_SERVICE (service), CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (G_IS_TLS_CERTIFICATE (certificate), CAMEL_CERT_TRUST_UNKNOWN);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
-	g_return_val_if_fail (
-		class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (class != NULL, CAMEL_CERT_TRUST_UNKNOWN);
+	g_return_val_if_fail (class->trust_prompt != NULL, CAMEL_CERT_TRUST_UNKNOWN);
 
 	return class->trust_prompt (session, service, certificate, errors);
 }
@@ -1323,6 +1324,7 @@ camel_session_lookup_addressbook (CamelSession *session,
 	g_return_val_if_fail (name != NULL, FALSE);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->lookup_addressbook != NULL, FALSE);
 
 	return class->lookup_addressbook (session, name);
@@ -1388,6 +1390,7 @@ camel_session_get_filter_driver (CamelSession *session,
 	g_return_val_if_fail (type != NULL, NULL);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_filter_driver != NULL, NULL);
 
 	driver = class->get_filter_driver (session, type, for_folder, error);
@@ -1648,6 +1651,7 @@ camel_session_authenticate_sync (CamelSession *session,
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), FALSE);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->authenticate_sync != NULL, FALSE);
 
 	success = class->authenticate_sync (
@@ -1801,6 +1805,7 @@ camel_session_forward_to_sync (CamelSession *session,
 	g_return_val_if_fail (address != NULL, FALSE);
 
 	class = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->forward_to_sync != NULL, FALSE);
 
 	success = class->forward_to_sync (
@@ -1953,6 +1958,7 @@ camel_session_get_oauth2_access_token_sync (CamelSession *session,
 	g_return_val_if_fail (CAMEL_IS_SESSION (session), FALSE);
 
 	klass = CAMEL_SESSION_GET_CLASS (session);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->get_oauth2_access_token_sync != NULL, FALSE);
 
 	return klass->get_oauth2_access_token_sync (session, service, out_access_token, out_expires_in, cancellable, error);

@@ -391,6 +391,7 @@ e_source_credentials_provider_ref_source (ESourceCredentialsProvider *provider,
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_GET_CLASS (provider);
+	g_return_val_if_fail (klass != NULL, NULL);
 	g_return_val_if_fail (klass->ref_source != NULL, NULL);
 
 	return klass->ref_source (provider, uid);

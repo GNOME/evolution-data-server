@@ -258,6 +258,10 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 	g_return_val_if_fail (backend_factory_type_name != NULL && *backend_factory_type_name != '\0', NULL);
 	g_return_val_if_fail (module_filename != NULL && *module_filename != '\0', NULL);
 
+	class = E_SUBPROCESS_FACTORY_GET_CLASS (subprocess_factory);
+	g_return_val_if_fail (class != NULL, NULL);
+	g_return_val_if_fail (class->ref_backend != NULL, NULL);
+
 	priv = subprocess_factory->priv;
 
 	g_mutex_lock (&priv->mutex);
@@ -289,8 +293,6 @@ e_subprocess_factory_ref_initable_backend (ESubprocessFactory *subprocess_factor
 			_("No such source for UID “%s”"), uid);
 		goto exit;
 	}
-
-	class = E_SUBPROCESS_FACTORY_GET_CLASS (subprocess_factory);
 
 	backend = class->ref_backend (registry, source, backend_factory_type_name);
 
@@ -397,15 +399,17 @@ e_subprocess_factory_open_backend (ESubprocessFactory *subprocess_factory,
 	g_return_val_if_fail (module_filename != NULL && *module_filename != '\0', NULL);
 	g_return_val_if_fail (E_DBUS_SUBPROCESS_IS_BACKEND (proxy), NULL);
 
+	class = E_SUBPROCESS_FACTORY_GET_CLASS (subprocess_factory);
+	g_return_val_if_fail (class != NULL, NULL);
+	g_return_val_if_fail (class->open_data != NULL, NULL);
+
 	backend = e_subprocess_factory_ref_initable_backend (
 		subprocess_factory, uid, backend_factory_type_name, module_filename, cancellable, error);
 
 	if (backend == NULL)
 		return NULL;
 
-	class = E_SUBPROCESS_FACTORY_GET_CLASS (subprocess_factory);
-	object_path = class->open_data (
-		subprocess_factory, backend, connection, proxy, cancellable, error);
+	object_path = class->open_data (subprocess_factory, backend, connection, proxy, cancellable, error);
 
 	g_clear_object (&backend);
 

@@ -348,6 +348,7 @@ camel_cipher_context_sign_sync (CamelCipherContext *context,
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), FALSE);
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->sign_sync != NULL, FALSE);
 
 	CIPHER_LOCK (context);
@@ -482,6 +483,7 @@ camel_cipher_context_verify_sync (CamelCipherContext *context,
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (ipart), NULL);
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->verify_sync != NULL, NULL);
 
 	CIPHER_LOCK (context);
@@ -638,6 +640,7 @@ camel_cipher_context_encrypt_sync (CamelCipherContext *context,
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (opart), FALSE);
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->encrypt_sync != NULL, FALSE);
 
 	CIPHER_LOCK (context);
@@ -810,6 +813,7 @@ camel_cipher_context_decrypt_sync (CamelCipherContext *context,
 	g_return_val_if_fail (CAMEL_IS_MIME_PART (opart), NULL);
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->decrypt_sync != NULL, NULL);
 
 	CIPHER_LOCK (context);
@@ -952,8 +956,8 @@ camel_cipher_context_id_to_hash (CamelCipherContext *context,
 		CAMEL_CIPHER_HASH_DEFAULT);
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
-	g_return_val_if_fail (
-		class->id_to_hash != NULL, CAMEL_CIPHER_HASH_DEFAULT);
+	g_return_val_if_fail (class != NULL, CAMEL_CIPHER_HASH_DEFAULT);
+	g_return_val_if_fail (class->id_to_hash != NULL, CAMEL_CIPHER_HASH_DEFAULT);
 
 	return class->id_to_hash (context, id);
 }
@@ -967,6 +971,7 @@ camel_cipher_context_hash_to_id (CamelCipherContext *context,
 	g_return_val_if_fail (CAMEL_IS_CIPHER_CONTEXT (context), NULL);
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->hash_to_id != NULL, NULL);
 
 	return class->hash_to_id (context, hash);

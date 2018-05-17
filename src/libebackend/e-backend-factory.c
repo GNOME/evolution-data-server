@@ -79,6 +79,7 @@ e_backend_factory_get_hash_key (EBackendFactory *factory)
 	g_return_val_if_fail (E_IS_BACKEND_FACTORY (factory), NULL);
 
 	class = E_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_hash_key != NULL, NULL);
 
 	return class->get_hash_key (factory);
@@ -105,6 +106,7 @@ e_backend_factory_new_backend (EBackendFactory *factory,
 	g_return_val_if_fail (E_IS_SOURCE (source), NULL);
 
 	class = E_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->new_backend != NULL, NULL);
 
 	return class->new_backend (factory, source);
@@ -129,6 +131,7 @@ e_backend_factory_get_module_filename (EBackendFactory *factory)
 	g_return_val_if_fail (E_IS_BACKEND_FACTORY (factory), NULL);
 
 	class = E_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->e_module != NULL, NULL);
 
 	return e_module_get_filename (class->e_module);
@@ -154,6 +157,7 @@ e_backend_factory_share_subprocess (EBackendFactory *factory)
 	g_return_val_if_fail (E_IS_BACKEND_FACTORY (factory), FALSE);
 
 	class = E_BACKEND_FACTORY_GET_CLASS (factory);
+	g_return_val_if_fail (class != NULL, FALSE);
 
 	return class->share_subprocess;
 }

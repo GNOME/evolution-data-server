@@ -152,6 +152,7 @@ e_source_credentials_provider_impl_can_process (ESourceCredentialsProviderImpl *
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS (provider_impl);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->can_process != NULL, FALSE);
 
 	return klass->can_process (provider_impl, source);
@@ -175,6 +176,7 @@ e_source_credentials_provider_impl_can_store (ESourceCredentialsProviderImpl *pr
 	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL (provider_impl), FALSE);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS (provider_impl);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->can_store != NULL, FALSE);
 
 	return klass->can_store (provider_impl);
@@ -198,6 +200,7 @@ e_source_credentials_provider_impl_can_prompt (ESourceCredentialsProviderImpl *p
 	g_return_val_if_fail (E_IS_SOURCE_CREDENTIALS_PROVIDER_IMPL (provider_impl), FALSE);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS (provider_impl);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->can_prompt != NULL, FALSE);
 
 	return klass->can_prompt (provider_impl);
@@ -238,6 +241,7 @@ e_source_credentials_provider_impl_lookup_sync (ESourceCredentialsProviderImpl *
 	g_return_val_if_fail (out_credentials != NULL, FALSE);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS (provider_impl);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->lookup_sync != NULL, FALSE);
 
 	return klass->lookup_sync (provider_impl, source, cancellable, out_credentials, error);
@@ -277,6 +281,7 @@ e_source_credentials_provider_impl_store_sync (ESourceCredentialsProviderImpl *p
 	g_return_val_if_fail (credentials != NULL, FALSE);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS (provider_impl);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->store_sync != NULL, FALSE);
 
 	return klass->store_sync (provider_impl, source, credentials, permanently, cancellable, error);
@@ -311,6 +316,7 @@ e_source_credentials_provider_impl_delete_sync (ESourceCredentialsProviderImpl *
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	klass = E_SOURCE_CREDENTIALS_PROVIDER_IMPL_GET_CLASS (provider_impl);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->delete_sync != NULL, FALSE);
 
 	return klass->delete_sync (provider_impl, source, cancellable, error);
