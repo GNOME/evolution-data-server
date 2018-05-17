@@ -1159,6 +1159,7 @@ scan_old_dir_info (CamelStore *store,
 			if (stat (tmp, &st) == 0 && S_ISDIR (st.st_mode)) {
 				struct _scan_node in;
 
+				memset (&in, 0, sizeof (struct _scan_node));
 				in.dnode = st.st_dev;
 				in.inode = st.st_ino;
 

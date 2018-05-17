@@ -545,7 +545,8 @@ camel_data_wrapper_set_mime_type (CamelDataWrapper *data_wrapper,
 	g_return_if_fail (mime_type != NULL);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
-	g_return_if_fail (class->set_mime_type);
+	g_return_if_fail (class != NULL);
+	g_return_if_fail (class->set_mime_type != NULL);
 
 	class->set_mime_type (data_wrapper, mime_type);
 }
@@ -564,6 +565,7 @@ camel_data_wrapper_get_mime_type (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), NULL);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_mime_type != NULL, NULL);
 
 	return class->get_mime_type (data_wrapper);
@@ -583,6 +585,7 @@ camel_data_wrapper_get_mime_type_field (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), NULL);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_mime_type_field != NULL, NULL);
 
 	return class->get_mime_type_field (data_wrapper);
@@ -608,6 +611,7 @@ camel_data_wrapper_set_mime_type_field (CamelDataWrapper *data_wrapper,
 	g_return_if_fail (mime_type != NULL);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_mime_type_field != NULL);
 
 	class->set_mime_type_field (data_wrapper, mime_type);
@@ -655,6 +659,7 @@ camel_data_wrapper_is_offline (CamelDataWrapper *data_wrapper)
 	g_return_val_if_fail (CAMEL_IS_DATA_WRAPPER (data_wrapper), TRUE);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, TRUE);
 	g_return_val_if_fail (class->is_offline != NULL, TRUE);
 
 	return class->is_offline (data_wrapper);
@@ -716,6 +721,7 @@ camel_data_wrapper_write_to_stream_sync (CamelDataWrapper *data_wrapper,
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->write_to_stream_sync != NULL, -1);
 
 	bytes_written = class->write_to_stream_sync (
@@ -863,6 +869,7 @@ camel_data_wrapper_decode_to_stream_sync (CamelDataWrapper *data_wrapper,
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), -1);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->decode_to_stream_sync != NULL, -1);
 
 	bytes_written = class->decode_to_stream_sync (
@@ -999,6 +1006,7 @@ camel_data_wrapper_construct_from_stream_sync (CamelDataWrapper *data_wrapper,
 	g_return_val_if_fail (CAMEL_IS_STREAM (stream), FALSE);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->construct_from_stream_sync != NULL, FALSE);
 
 	success = class->construct_from_stream_sync (
@@ -1145,6 +1153,7 @@ camel_data_wrapper_write_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	g_return_val_if_fail (G_IS_OUTPUT_STREAM (output_stream), -1);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->write_to_output_stream_sync != NULL, -1);
 
 	bytes_written = class->write_to_output_stream_sync (
@@ -1297,6 +1306,7 @@ camel_data_wrapper_decode_to_output_stream_sync (CamelDataWrapper *data_wrapper,
 	g_return_val_if_fail (G_IS_OUTPUT_STREAM (output_stream), -1);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->decode_to_output_stream_sync != NULL, -1);
 
 	bytes_written = class->decode_to_output_stream_sync (
@@ -1435,6 +1445,7 @@ camel_data_wrapper_construct_from_input_stream_sync (CamelDataWrapper *data_wrap
 	g_return_val_if_fail (G_IS_INPUT_STREAM (input_stream), FALSE);
 
 	class = CAMEL_DATA_WRAPPER_GET_CLASS (data_wrapper);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->construct_from_input_stream_sync != NULL, FALSE);
 
 	success = class->construct_from_input_stream_sync (

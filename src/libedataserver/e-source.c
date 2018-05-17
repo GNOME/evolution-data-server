@@ -3533,6 +3533,7 @@ e_source_remove_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remove_sync != NULL, FALSE);
 
 	return class->remove_sync (source, cancellable, error);
@@ -3566,6 +3567,7 @@ e_source_remove (ESource *source,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove != NULL);
 
 	class->remove (source, cancellable, callback, user_data);
@@ -3595,6 +3597,7 @@ e_source_remove_finish (ESource *source,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remove_finish != NULL, FALSE);
 
 	return class->remove_finish (source, result, error);
@@ -3626,6 +3629,7 @@ e_source_write_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->write_sync != NULL, FALSE);
 
 	return class->write_sync (source, cancellable, error);
@@ -3659,6 +3663,7 @@ e_source_write (ESource *source,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->write != NULL);
 
 	class->write (source, cancellable, callback, user_data);
@@ -3688,6 +3693,7 @@ e_source_write_finish (ESource *source,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->write_finish != NULL, FALSE);
 
 	return class->write_finish (source, result, error);
@@ -3727,6 +3733,7 @@ e_source_remote_create_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (scratch_source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remote_create_sync != NULL, FALSE);
 
 	return class->remote_create_sync (
@@ -3769,6 +3776,7 @@ e_source_remote_create (ESource *source,
 	g_return_if_fail (E_IS_SOURCE (scratch_source));
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remote_create != NULL);
 
 	class->remote_create (
@@ -3799,6 +3807,7 @@ e_source_remote_create_finish (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remote_create_finish != NULL, FALSE);
 
 	return class->remote_create_finish (source, result, error);
@@ -3831,6 +3840,7 @@ e_source_remote_delete_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remote_delete_sync != NULL, FALSE);
 
 	return class->remote_delete_sync (source, cancellable, error);
@@ -3865,6 +3875,7 @@ e_source_remote_delete (ESource *source,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remote_delete != NULL);
 
 	class->remote_delete (source, cancellable, callback, user_data);
@@ -3893,6 +3904,7 @@ e_source_remote_delete_finish (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->remote_delete_finish != NULL, FALSE);
 
 	return class->remote_delete_finish (source, result, error);
@@ -3930,8 +3942,8 @@ e_source_get_oauth2_access_token_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
-	g_return_val_if_fail (
-		class->get_oauth2_access_token_sync != NULL, FALSE);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->get_oauth2_access_token_sync != NULL, FALSE);
 
 	return class->get_oauth2_access_token_sync (
 		source, cancellable, out_access_token, out_expires_in, error);
@@ -3965,6 +3977,7 @@ e_source_get_oauth2_access_token (ESource *source,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	class = E_SOURCE_GET_CLASS (source);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->get_oauth2_access_token != NULL);
 
 	return class->get_oauth2_access_token (
@@ -4003,8 +4016,8 @@ e_source_get_oauth2_access_token_finish (ESource *source,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	class = E_SOURCE_GET_CLASS (source);
-	g_return_val_if_fail (
-		class->get_oauth2_access_token_finish != NULL, FALSE);
+	g_return_val_if_fail (class != NULL, FALSE);
+	g_return_val_if_fail (class->get_oauth2_access_token_finish != NULL, FALSE);
 
 	return class->get_oauth2_access_token_finish (
 		source, result, out_access_token, out_expires_in, error);
@@ -4486,6 +4499,7 @@ e_source_invoke_credentials_required_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	klass = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->invoke_credentials_required_impl != NULL, FALSE);
 
 	dbus_object = e_source_ref_dbus_object (source);
@@ -4704,6 +4718,7 @@ e_source_invoke_authenticate_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	klass = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->invoke_authenticate_impl != NULL, FALSE);
 
 	dbus_object = e_source_ref_dbus_object (source);
@@ -5107,6 +5122,7 @@ e_source_unset_last_credentials_required_arguments_sync (ESource *source,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	klass = E_SOURCE_GET_CLASS (source);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->unset_last_credentials_required_arguments_impl != NULL, FALSE);
 
 	return klass->unset_last_credentials_required_arguments_impl (source, cancellable, error);

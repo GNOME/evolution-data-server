@@ -114,24 +114,28 @@ give_james_brown_micheal_jacksons_face (EBookClient *book)
 	GError         *error = NULL;
 
 	if (!e_book_client_get_contact_sync (book, micheal_jackson_uid, &micheal, NULL, &error))
-	  g_error ("Unable to get micheal jackson's contact information: %s", error->message);
+		g_error ("Unable to get micheal jackson's contact information: %s", error->message);
 
 	if (!e_book_client_get_contact_sync (book, james_brown_uid, &james, NULL, &error))
-	  g_error ("Unable to get james brown's contact information: %s", error->message);
+		g_error ("Unable to get james brown's contact information: %s", error->message);
 
 	g_assert (micheal);
 	g_assert (james);
 
 	micheal_face = e_contact_get (micheal, E_CONTACT_PHOTO);
+	g_assert_nonnull (micheal_face);
 	g_assert (micheal_face->type == E_CONTACT_PHOTO_TYPE_URI);
 
-	james_face = g_new (EContactPhoto, 1);
+	james_face = e_contact_photo_new ();
 	james_face->type = E_CONTACT_PHOTO_TYPE_URI;
 	james_face->data.uri = g_strdup (micheal_face->data.uri);
 
 	e_contact_set (james, E_CONTACT_PHOTO, james_face);
 
 	g_print ("Giving james brown micheal jacksons face: %s\n", micheal_face->data.uri);
+
+	e_contact_photo_free (micheal_face);
+	e_contact_photo_free (james_face);
 
 	if (!e_book_client_modify_contact_sync (book, james, NULL, &error))
 		g_error ("Failed to modify contact with cross referenced photo: %s", error->message);
@@ -148,13 +152,13 @@ update_contact_inline (EBookClient *book,
 	GError *error = NULL;
 
 	if (!e_book_client_get_contact_sync (book, uid, &contact, NULL, &error))
-	  g_error ("Unable to get contact: %s", error->message);
+		g_error ("Unable to get contact: %s", error->message);
 
 	g_assert (contact);
 
 	data = g_base64_decode (photo_data, &length);
 
-	photo = g_new (EContactPhoto, 1);
+	photo = e_contact_photo_new ();
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
 	photo->data.inlined.mime_type = NULL;
 	photo->data.inlined.data = data;
@@ -163,8 +167,10 @@ update_contact_inline (EBookClient *book,
 	/* set the photo */
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);
 
+	e_contact_photo_free (photo);
+
 	if (!e_book_client_modify_contact_sync (book, contact, NULL, &error))
-	    g_error ("Failed to modify contact with inline photo data: %s", error->message);
+		g_error ("Failed to modify contact with inline photo data: %s", error->message);
 }
 
 /* This assertion is made a couple of times in the view-complete
@@ -276,7 +282,7 @@ add_contact_inline (EBookClient *book)
 
 	data = g_base64_decode (photo_data, &length);
 
-	photo = g_new (EContactPhoto, 1);
+	photo = e_contact_photo_new ();
 	photo->type = E_CONTACT_PHOTO_TYPE_INLINED;
 	photo->data.inlined.mime_type = NULL;
 	photo->data.inlined.data = data;
@@ -286,7 +292,9 @@ add_contact_inline (EBookClient *book)
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);
 	e_contact_set (contact, E_CONTACT_FULL_NAME, "Micheal Jackson");
 
-	if (!add_contact_verify  (book, contact))
+	e_contact_photo_free (photo);
+
+	if (!add_contact_verify (book, contact))
 		g_error ("Failed to add contact");
 
 	micheal_jackson_uid = e_contact_get (contact, E_CONTACT_UID);
@@ -300,7 +308,7 @@ add_contact_uri (EBookClient *book)
 
 	contact = e_contact_new ();
 
-	photo = g_new (EContactPhoto, 1);
+	photo = e_contact_photo_new ();
 	photo->type = E_CONTACT_PHOTO_TYPE_URI;
 	photo->data.uri = g_strdup ("http://en.wikipedia.org/wiki/File:Jamesbrown4.jpg");
 
@@ -308,7 +316,9 @@ add_contact_uri (EBookClient *book)
 	e_contact_set (contact, E_CONTACT_PHOTO, photo);
 	e_contact_set (contact, E_CONTACT_FULL_NAME, "James Brown");
 
-	if (!add_contact_verify  (book, contact))
+	e_contact_photo_free (photo);
+
+	if (!add_contact_verify (book, contact))
 		g_error ("Failed to add contact");
 
 	james_brown_uid = e_contact_get (contact, E_CONTACT_UID);

@@ -643,6 +643,7 @@ camel_offline_folder_downsync_sync (CamelOfflineFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_OFFLINE_FOLDER (folder), FALSE);
 
 	class = CAMEL_OFFLINE_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->downsync_sync != NULL, FALSE);
 
 	success = class->downsync_sync (

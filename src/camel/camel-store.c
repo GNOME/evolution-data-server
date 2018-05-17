@@ -361,6 +361,7 @@ store_constructed (GObject *object)
 	store = CAMEL_STORE (object);
 	class = CAMEL_STORE_GET_CLASS (store);
 
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->hash_folder_name != NULL);
 	g_return_if_fail (class->equal_folder_name != NULL);
 
@@ -387,6 +388,7 @@ store_get_inbox_folder_sync (CamelStore *store,
 	CamelFolder *folder;
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_folder_sync != NULL, NULL);
 
 	/* Assume the inbox's name is "inbox" and open with default flags. */
@@ -1170,12 +1172,21 @@ camel_folder_info_build (GPtrArray *folders,
 	gchar *p, *pname;
 	gint i, nlen;
 
+	if (!folders) {
+		g_warn_if_fail (folders != NULL);
+		return NULL;
+	}
+
+	if (!folders->pdata || !folders->len) {
+		g_warn_if_fail (folders->pdata != NULL);
+		return NULL;
+	}
+
 	if (namespace_ == NULL)
 		namespace_ = "";
 	nlen = strlen (namespace_);
 
-	if (folders->pdata && folders->len)
-		qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), folder_info_cmp);
+	qsort (folders->pdata, folders->len, sizeof (folders->pdata[0]), folder_info_cmp);
 
 	/* Hash the folders. */
 	hash = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
@@ -1318,6 +1329,7 @@ camel_store_can_refresh_folder (CamelStore *store,
 	g_return_val_if_fail (info != NULL, FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->can_refresh_folder != NULL, FALSE);
 
 	return class->can_refresh_folder (store, info, error);
@@ -1359,6 +1371,7 @@ camel_store_get_folder_sync (CamelStore *store,
 	g_return_val_if_fail (folder_name != NULL, NULL);
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, NULL);
 
 try_again:
 	/* Try cache first. */
@@ -1396,6 +1409,13 @@ try_again:
 			return NULL;
 		}
 	}
+
+	if (folder_name_is_vtrash)
+		g_return_val_if_fail (class->get_trash_folder_sync != NULL, NULL);
+	else if (folder_name_is_vjunk)
+		g_return_val_if_fail (class->get_junk_folder_sync != NULL, NULL);
+	else
+		g_return_val_if_fail (class->get_folder_sync != NULL, NULL);
 
 	camel_operation_push_message (
 		cancellable, _("Opening folder “%s”"), folder_name);
@@ -1488,6 +1508,7 @@ try_again:
 		gchar **child_and_parent;
 
 		g_warn_if_fail (folder == NULL);
+		g_return_val_if_fail (class->create_folder_sync != NULL, NULL);
 
 		/* XXX GLib lacks a rightmost string splitting function,
 		 *     so we'll reverse the string and use g_strsplit(). */
@@ -1689,6 +1710,7 @@ camel_store_get_folder_info_sync (CamelStore *store,
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_folder_info_sync != NULL, NULL);
 
 	name = camel_service_get_name (CAMEL_SERVICE (store), TRUE);
@@ -1950,6 +1972,7 @@ camel_store_get_inbox_folder_sync (CamelStore *store,
 	g_return_val_if_fail (CAMEL_IS_STORE (store), NULL);
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_inbox_folder_sync != NULL, NULL);
 
 	folder = class->get_inbox_folder_sync (store, cancellable, error);
@@ -2072,6 +2095,7 @@ camel_store_get_junk_folder_sync (CamelStore *store,
 		CamelFolder *folder;
 
 		class = CAMEL_STORE_GET_CLASS (store);
+		g_return_val_if_fail (class != NULL, NULL);
 		g_return_val_if_fail (class->get_junk_folder_sync != NULL, NULL);
 
 		folder = class->get_junk_folder_sync (store, cancellable, error);
@@ -2198,6 +2222,7 @@ camel_store_get_trash_folder_sync (CamelStore *store,
 		CamelFolder *folder;
 
 		class = CAMEL_STORE_GET_CLASS (store);
+		g_return_val_if_fail (class != NULL, NULL);
 		g_return_val_if_fail (class->get_trash_folder_sync != NULL, NULL);
 
 		folder = class->get_trash_folder_sync (
@@ -2369,6 +2394,7 @@ store_create_folder_thread (GTask *task,
 	folder_name = async_context->folder_name_2;
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->create_folder_sync != NULL);
 
 	if (parent_name == NULL || *parent_name == '\0') {
@@ -2556,6 +2582,7 @@ store_delete_folder_thread (GTask *task,
 	folder_name = async_context->folder_name_1;
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->delete_folder_sync != NULL);
 
 	reserved_vfolder_name =
@@ -2741,6 +2768,7 @@ store_rename_folder_thread (GTask *task,
 	new_name = async_context->folder_name_2;
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->rename_folder_sync != NULL);
 
 	if (g_str_equal (old_name, new_name)) {
@@ -2959,6 +2987,7 @@ camel_store_synchronize_sync (CamelStore *store,
 	g_return_val_if_fail (CAMEL_IS_STORE (store), FALSE);
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
 
 	success = class->synchronize_sync (store, expunge, cancellable, error);
@@ -3107,6 +3136,7 @@ camel_store_initial_setup_sync (CamelStore *store,
 	*out_save_setup = NULL;
 
 	class = CAMEL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->initial_setup_sync != NULL, FALSE);
 
 	save_setup = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);

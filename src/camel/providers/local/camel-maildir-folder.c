@@ -115,9 +115,9 @@ maildir_folder_get_filename (CamelFolder *folder,
 	 * name based on actual flags.
 	*/
 	if (!camel_maildir_message_info_get_filename (mdi)) {
-		const gchar *uid = camel_message_info_get_uid (info);
+		const gchar *info_uid = camel_message_info_get_uid (info);
 
-		if (uid) {
+		if (info_uid) {
 			GDir *dir;
 			gchar *dirname;
 
@@ -127,10 +127,10 @@ maildir_folder_get_filename (CamelFolder *folder,
 
 			if (dir) {
 				const gchar *filename;
-				gint uid_len = strlen (uid);
+				gint uid_len = strlen (info_uid);
 
 				while (filename = g_dir_read_name (dir), filename) {
-					if (g_str_has_prefix (filename, uid) && (filename[uid_len] == '\0' || filename[uid_len] == CAMEL_MAILDIR_FLAG_SEP)) {
+					if (g_str_has_prefix (filename, info_uid) && (filename[uid_len] == '\0' || filename[uid_len] == CAMEL_MAILDIR_FLAG_SEP)) {
 						camel_maildir_message_info_take_filename (mdi, g_strdup (filename));
 						break;
 					}

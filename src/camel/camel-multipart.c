@@ -447,6 +447,7 @@ camel_multipart_add_part (CamelMultipart *multipart,
 	g_return_if_fail (CAMEL_IS_MIME_PART (part));
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->add_part != NULL);
 
 	class->add_part (multipart, part);
@@ -468,6 +469,7 @@ camel_multipart_get_part (CamelMultipart *multipart,
 	g_return_val_if_fail (CAMEL_IS_MULTIPART (multipart), NULL);
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_part != NULL, NULL);
 
 	return class->get_part (multipart, index);
@@ -487,6 +489,7 @@ camel_multipart_get_number (CamelMultipart *multipart)
 	g_return_val_if_fail (CAMEL_IS_MULTIPART (multipart), 0);
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->get_number != NULL, 0);
 
 	return class->get_number (multipart);
@@ -506,6 +509,7 @@ camel_multipart_get_boundary (CamelMultipart *multipart)
 	g_return_val_if_fail (CAMEL_IS_MULTIPART (multipart), NULL);
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_boundary != NULL, NULL);
 
 	return class->get_boundary (multipart);
@@ -530,6 +534,7 @@ camel_multipart_set_boundary (CamelMultipart *multipart,
 	g_return_if_fail (CAMEL_IS_MULTIPART (multipart));
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_boundary != NULL);
 
 	class->set_boundary (multipart, boundary);
@@ -636,6 +641,7 @@ camel_multipart_construct_from_parser (CamelMultipart *multipart,
 	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (mp), -1);
 
 	class = CAMEL_MULTIPART_GET_CLASS (multipart);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->construct_from_parser != NULL, -1);
 
 	return class->construct_from_parser (multipart, mp);

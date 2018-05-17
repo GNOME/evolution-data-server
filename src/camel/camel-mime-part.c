@@ -239,31 +239,31 @@ init_header_name_table (void)
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-Description",
-		(gpointer) HEADER_DESCRIPTION);
+		GINT_TO_POINTER (HEADER_DESCRIPTION));
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-Disposition",
-		(gpointer) HEADER_DISPOSITION);
+		GINT_TO_POINTER (HEADER_DISPOSITION));
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-id",
-		(gpointer) HEADER_CONTENT_ID);
+		GINT_TO_POINTER (HEADER_CONTENT_ID));
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-Transfer-Encoding",
-		(gpointer) HEADER_ENCODING);
+		GINT_TO_POINTER (HEADER_ENCODING));
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-MD5",
-		(gpointer) HEADER_CONTENT_MD5);
+		GINT_TO_POINTER (HEADER_CONTENT_MD5));
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-Location",
-		(gpointer) HEADER_CONTENT_LOCATION);
+		GINT_TO_POINTER (HEADER_CONTENT_LOCATION));
 	g_hash_table_insert (
 		header_name_table,
 		(gpointer) "Content-Type",
-		(gpointer) HEADER_CONTENT_TYPE);
+		GINT_TO_POINTER (HEADER_CONTENT_TYPE));
 
 	header_formatted_table = g_hash_table_new (
 		camel_strcase_hash, camel_strcase_equal);
@@ -317,7 +317,7 @@ mime_part_process_header (CamelMedium *medium,
 	/* known, the job is done in the parsing routine. If not,         */
 	/* we simply add the header in a raw fashion                      */
 
-	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
+	header_type = (CamelHeaderType) GPOINTER_TO_INT (g_hash_table_lookup (header_name_table, name));
 	switch (header_type) {
 	case HEADER_DESCRIPTION: /* raw header->utf8 conversion */
 		g_free (mime_part->priv->description);
@@ -1583,6 +1583,7 @@ camel_mime_part_construct_from_parser_sync (CamelMimePart *mime_part,
 	g_return_val_if_fail (CAMEL_IS_MIME_PARSER (parser), FALSE);
 
 	class = CAMEL_MIME_PART_GET_CLASS (mime_part);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->construct_from_parser_sync != NULL, FALSE);
 
 	success = class->construct_from_parser_sync (

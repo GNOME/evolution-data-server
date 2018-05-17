@@ -63,6 +63,8 @@ e_cal_backend_sync_open (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->open_sync != NULL) {
 		class->open_sync (
 			backend, cal, cancellable, only_if_exists, error);
@@ -97,6 +99,8 @@ e_cal_backend_sync_refresh (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->refresh_sync != NULL) {
 		class->refresh_sync (backend, cal, cancellable, error);
 	} else {
@@ -136,6 +140,8 @@ e_cal_backend_sync_get_object (ECalBackendSync *backend,
 	g_return_if_fail (calobj != NULL);
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->get_object_sync != NULL) {
 		class->get_object_sync (
 			backend, cal, cancellable, uid, rid, calobj, error);
@@ -173,6 +179,8 @@ e_cal_backend_sync_get_object_list (ECalBackendSync *backend,
 	g_return_if_fail (calobjs != NULL);
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->get_object_list_sync != NULL) {
 		class->get_object_list_sync (
 			backend, cal, cancellable, sexp, calobjs, error);
@@ -213,6 +221,8 @@ e_cal_backend_sync_get_free_busy (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->get_free_busy_sync != NULL) {
 		class->get_free_busy_sync (
 			backend, cal, cancellable,
@@ -254,6 +264,8 @@ e_cal_backend_sync_create_objects (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->create_objects_sync != NULL) {
 		class->create_objects_sync (
 			backend, cal, cancellable,
@@ -299,6 +311,8 @@ e_cal_backend_sync_modify_objects (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->modify_objects_sync != NULL) {
 		class->modify_objects_sync (
 			backend, cal, cancellable,
@@ -345,6 +359,8 @@ e_cal_backend_sync_remove_objects (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->remove_objects_sync != NULL) {
 		class->remove_objects_sync (
 			backend, cal, cancellable,
@@ -380,6 +396,8 @@ e_cal_backend_sync_receive_objects (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->receive_objects_sync != NULL) {
 		class->receive_objects_sync (
 			backend, cal, cancellable, calobj, error);
@@ -418,6 +436,8 @@ e_cal_backend_sync_send_objects (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->send_objects_sync != NULL) {
 		class->send_objects_sync (
 			backend, cal, cancellable,
@@ -460,6 +480,8 @@ e_cal_backend_sync_get_attachment_uris (ECalBackendSync *backend,
 	g_return_if_fail (attachments != NULL);
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->get_attachment_uris_sync != NULL) {
 		class->get_attachment_uris_sync (
 			backend, cal, cancellable,
@@ -501,6 +523,8 @@ e_cal_backend_sync_discard_alarm (ECalBackendSync *backend,
 	g_return_if_fail (auid != NULL);
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->discard_alarm_sync != NULL) {
 		class->discard_alarm_sync (
 			backend, cal, cancellable,
@@ -544,6 +568,8 @@ e_cal_backend_sync_get_timezone (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->get_timezone_sync != NULL) {
 		class->get_timezone_sync (
 			backend, cal, cancellable,
@@ -596,6 +622,8 @@ e_cal_backend_sync_add_timezone (ECalBackendSync *backend,
 	g_return_if_fail (E_IS_CAL_BACKEND_SYNC (backend));
 
 	class = E_CAL_BACKEND_SYNC_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
+
 	if (class->add_timezone_sync != NULL) {
 		class->add_timezone_sync (
 			backend, cal, cancellable, tzobject, error);

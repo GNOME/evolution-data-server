@@ -4655,11 +4655,11 @@ e_webdav_session_principal_collection_set_cb (EWebDAVSession *webdav,
 			length = xmlXPathNodeSetGetLength (xpath_obj->nodesetval);
 
 			for (ii = 0; ii < length; ii++) {
-				gchar *href;
+				gchar *got_href;
 
-				href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:principal-collection-set/D:href[%d]", xpath_prop_prefix, ii + 1);
-				if (href)
-					*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, href);
+				got_href = e_xml_xpath_eval_as_string (xpath_ctx, "%s/D:principal-collection-set/D:href[%d]", xpath_prop_prefix, ii + 1);
+				if (got_href)
+					*out_principal_hrefs = g_slist_prepend (*out_principal_hrefs, got_href);
 			}
 
 			xmlXPathFreeObject (xpath_obj);

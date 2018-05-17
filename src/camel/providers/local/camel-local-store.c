@@ -725,6 +725,7 @@ camel_local_store_get_full_path (CamelLocalStore *store,
 	/* XXX Guard against full_name == NULL? */
 
 	class = CAMEL_LOCAL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_full_path != NULL, NULL);
 
 	return class->get_full_path (store, full_name);
@@ -742,6 +743,7 @@ camel_local_store_get_meta_path (CamelLocalStore *store,
 	/* XXX Guard against ext == NULL? */
 
 	class = CAMEL_LOCAL_STORE_GET_CLASS (store);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_meta_path != NULL, NULL);
 
 	return class->get_meta_path (store, full_name, ext);

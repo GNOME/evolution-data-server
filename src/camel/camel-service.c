@@ -1437,6 +1437,7 @@ camel_service_get_name (CamelService *service,
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_name != NULL, NULL);
 
 	return class->get_name (service, brief);
@@ -1610,6 +1611,7 @@ camel_service_set_settings (CamelService *service,
 	g_return_if_fail (CAMEL_IS_SERVICE (service));
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_if_fail (class != NULL);
 
 	if (settings != NULL) {
 		g_return_if_fail (
@@ -2093,9 +2095,8 @@ camel_service_authenticate_sync (CamelService *service,
 		CAMEL_AUTHENTICATION_ERROR);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
-	g_return_val_if_fail (
-		class->authenticate_sync != NULL,
-		CAMEL_AUTHENTICATION_ERROR);
+	g_return_val_if_fail (class != NULL, CAMEL_AUTHENTICATION_ERROR);
+	g_return_val_if_fail (class->authenticate_sync != NULL, CAMEL_AUTHENTICATION_ERROR);
 
 	result = class->authenticate_sync (
 		service, mechanism, cancellable, error);
@@ -2255,6 +2256,7 @@ camel_service_query_auth_types_sync (CamelService *service,
 	g_return_val_if_fail (CAMEL_IS_SERVICE (service), NULL);
 
 	class = CAMEL_SERVICE_GET_CLASS (service);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->query_auth_types_sync != NULL, NULL);
 
 	return class->query_auth_types_sync (service, cancellable, error);

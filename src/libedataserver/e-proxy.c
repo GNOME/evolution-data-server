@@ -533,7 +533,6 @@ ep_parse_ignore_host (gpointer data,
 	SoupAddress *addr;
 	guint status;
 	gchar *input, *netmask, *hostname;
-	ProxyHostAddr *host_addr;
 	gboolean has_error = FALSE;
 
 	if (!proxy || !proxy->priv)
@@ -552,6 +551,7 @@ ep_parse_ignore_host (gpointer data,
 	addr = soup_address_new (hostname, 0);
 	status = soup_address_resolve_sync (addr, NULL);
 	if (status == SOUP_STATUS_OK) {
+		ProxyHostAddr *host_addr;
 		gint addr_len;
 		struct sockaddr * so_addr = NULL;
 
@@ -562,8 +562,10 @@ ep_parse_ignore_host (gpointer data,
 		/* This will never happen, since we have already called
 		 * soup_address_resolve_sync ().
 		*/
-		if (!so_addr)
+		if (!so_addr) {
+			ep_free_proxy_host_addr (host_addr);
 			goto error;
+		}
 
 		if (so_addr->sa_family == AF_INET)
 			has_error = ep_manipulate_ipv4 (
@@ -582,6 +584,7 @@ ep_parse_ignore_host (gpointer data,
 			priv->ign_hosts = g_slist_append (
 				priv->ign_hosts, hostname);
 		} else {
+			ep_free_proxy_host_addr (host_addr);
 			g_free (hostname);
 		}
 	} else {

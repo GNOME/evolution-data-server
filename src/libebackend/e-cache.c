@@ -2059,7 +2059,7 @@ e_cache_foreach_update_cb (ECache *cache,
 
 	fu->rows = g_slist_prepend (fu->rows, rd);
 
-	g_return_val_if_fail ((gint) fu->column_names->len != ncols, FALSE);
+	g_return_val_if_fail (fu->column_names && (gint) fu->column_names->len != ncols, FALSE);
 
 	return TRUE;
 }

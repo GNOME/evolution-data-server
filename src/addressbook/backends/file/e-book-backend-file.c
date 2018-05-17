@@ -953,9 +953,9 @@ uid_rev_fields (GHashTable *fields_of_interest)
 }
 
 static gpointer
-book_view_thread (gpointer data)
+book_view_thread (gpointer user_data)
 {
-	EDataBookView *book_view;
+	EDataBookView *book_view = user_data;
 	FileBackendSearchClosure *closure;
 	EBookBackendFile *bf;
 	EBookBackendSExp *sexp;
@@ -965,9 +965,8 @@ book_view_thread (gpointer data)
 	GError *local_error = NULL;
 	gboolean meta_contact, success;
 
-	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (data), NULL);
+	g_return_val_if_fail (E_IS_DATA_BOOK_VIEW (book_view), NULL);
 
-	book_view = data;
 	closure = get_closure (book_view);
 	if (!closure) {
 		g_warning (G_STRLOC ": NULL closure in book view thread");

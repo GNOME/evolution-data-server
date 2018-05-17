@@ -18,7 +18,7 @@
 #ifndef E_USER_PROMPTER_SERVER_EXTENSION_H
 #define E_USER_PROMPTER_SERVER_EXTENSION_H
 
-#include <libebackend/libebackend.h>
+#include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */
 #define E_TYPE_USER_PROMPTER_SERVER_EXTENSION \

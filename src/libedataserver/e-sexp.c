@@ -795,7 +795,7 @@ e_sexp_term_eval (ESExp *sexp,
 		break;
 	case ESEXP_TERM_FUNC:
 		/* first evaluate all arguments to result types */
-		argv = alloca (sizeof (argv[0]) * t->value.func.termcount);
+		argv = g_alloca (sizeof (argv[0]) * t->value.func.termcount);
 		for (i = 0; i < t->value.func.termcount; i++) {
 			argv[i] = e_sexp_term_eval (sexp, t->value.func.terms[i]);
 		}
@@ -1137,9 +1137,9 @@ e_sexp_term_evaluate_occur_times (ESExp *sexp,
 
 		r = e_sexp_result_new (sexp, ESEXP_RES_UNDEFINED);
 		argc = t->value.func.termcount;
-		argv = alloca (sizeof (argv[0]) * argc);
+		argv = g_alloca (sizeof (argv[0]) * argc);
 
-		for (i = 0; i < t->value.func.termcount; i++) {
+		for (i = 0; i < argc; i++) {
 			argv[i] = e_sexp_term_evaluate_occur_times (
 				sexp, t->value.func.terms[i], start, end);
 		}
@@ -1147,8 +1147,7 @@ e_sexp_term_evaluate_occur_times (ESExp *sexp,
 		if (is_time_function (t->value.func.sym->name)) {
 			/* evaluate time */
 			if (t->value.func.sym->f.func)
-				r = t->value.func.sym->f.func (sexp, t->value.func.termcount,
-					      argv, t->value.func.sym->data);
+				r = t->value.func.sym->f.func (sexp, argc, argv, t->value.func.sym->data);
 		} else if ((generator = get_generator_function (t->value.func.sym->name)) != NULL) {
 			/* evaluate generator function */
 			r->time_generator = TRUE;
@@ -1161,7 +1160,7 @@ e_sexp_term_evaluate_occur_times (ESExp *sexp,
 			r->time_generator = FALSE;
 		}
 
-		e_sexp_resultv_free (sexp, t->value.func.termcount, argv);
+		e_sexp_resultv_free (sexp, argc, argv);
 		break;
 	}
 	case ESEXP_TERM_INT:
@@ -1252,8 +1251,20 @@ parse_values (ESExp *sexp,
 	terms = g_malloc (size * sizeof (*terms));
 	l = list;
 	for (i = size - 1; i >= 0; i--) {
-		g_return_val_if_fail (l, NULL);
-		g_return_val_if_fail (l->data, NULL);
+		if (!l || !l->data) {
+			if (!l)
+				g_warn_if_fail (l != NULL);
+			if (l && !l->data)
+				g_warn_if_fail (l->data != NULL);
+
+			g_slist_free (list);
+			g_free (terms);
+
+			*len = 0;
+
+			return NULL;
+		}
+
 		terms[i] = l->data;
 		l = g_slist_next (l);
 	}

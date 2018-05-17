@@ -226,6 +226,7 @@ camel_mime_filter_filter (CamelMimeFilter *filter,
 	g_return_if_fail (in != NULL);
 
 	class = CAMEL_MIME_FILTER_GET_CLASS (filter);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->filter != NULL);
 
 	filter_run (
@@ -264,6 +265,7 @@ camel_mime_filter_complete (CamelMimeFilter *filter,
 	g_return_if_fail (in != NULL);
 
 	class = CAMEL_MIME_FILTER_GET_CLASS (filter);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->complete != NULL);
 
 	filter_run (
@@ -285,6 +287,7 @@ camel_mime_filter_reset (CamelMimeFilter *filter)
 	g_return_if_fail (CAMEL_IS_MIME_FILTER (filter));
 
 	class = CAMEL_MIME_FILTER_GET_CLASS (filter);
+	g_return_if_fail (class != NULL);
 
 	if (class->reset != NULL)
 		class->reset (filter);

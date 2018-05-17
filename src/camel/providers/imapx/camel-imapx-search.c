@@ -181,19 +181,12 @@ imapx_search_process_criteria (CamelSExp *sexp,
 		((mailbox == NULL) && (local_error != NULL)), NULL);
 
 	if (mailbox != NULL) {
-		CamelIMAPXStore *imapx_store;
 		CamelIMAPXConnManager *conn_man;
-
-		imapx_store = camel_imapx_search_ref_store (imapx_search);
-
-		/* there should always be one, held by one of the callers of this function */
-		g_warn_if_fail (imapx_store != NULL);
 
 		conn_man = camel_imapx_store_get_conn_manager (imapx_store);
 		uids = camel_imapx_conn_manager_uid_search_sync (conn_man, mailbox, criteria_prefix->str, search_key,
 			words ? (const gchar * const *) words->pdata : NULL, imapx_search->priv->cancellable, &local_error);
 
-		g_clear_object (&imapx_store);
 		g_object_unref (mailbox);
 	}
 

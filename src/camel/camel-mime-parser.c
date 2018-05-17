@@ -1087,13 +1087,9 @@ folder_push_part (struct _header_scan_state *s,
 }
 
 static void
-folder_pull_part (struct _header_scan_state *s)
+folder_scan_stack_free (struct _header_scan_stack *h)
 {
-	struct _header_scan_stack *h;
-
-	h = s->parts;
 	if (h) {
-		s->parts = h->parent;
 		g_free (h->boundary);
 #ifdef MEMPOOL
 		camel_mempool_destroy (h->pool);
@@ -1108,6 +1104,19 @@ folder_pull_part (struct _header_scan_state *s)
 		if (h->from_line)
 			g_byte_array_free (h->from_line, TRUE);
 		g_free (h);
+	}
+}
+
+static void
+folder_pull_part (struct _header_scan_state *s)
+{
+	struct _header_scan_stack *h;
+
+	h = s->parts;
+	if (h) {
+		s->parts = h->parent;
+
+		folder_scan_stack_free (h);
 	} else {
 		g_warning ("Header stack underflow!\n");
 	}
@@ -1338,7 +1347,11 @@ folder_scan_header (struct _header_scan_state *s,
 				while ((*inptr++) != '\n')
 					;
 
-				g_return_val_if_fail (inptr <= s->inend + 1, NULL);
+				if (inptr > s->inend + 1) {
+					g_warn_if_fail (inptr <= s->inend + 1);
+					folder_scan_stack_free (h);
+					return NULL;
+				}
 
 				/* check for sentinal or real end of line */
 				if (inptr >= inend) {

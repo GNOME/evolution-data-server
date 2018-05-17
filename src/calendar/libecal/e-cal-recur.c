@@ -4321,6 +4321,13 @@ cal_obj_time_compare_func (gconstpointer arg1,
 	cotime1 = (CalObjTime *) arg1;
 	cotime2 = (CalObjTime *) arg2;
 
+	if (!cotime1 || !cotime2) {
+		if (cotime1 == cotime2)
+			return 0;
+
+		return cotime2 ? -1 : 1;
+	}
+
 	if (cotime1->year < cotime2->year)
 		retval = -1;
 	else if (cotime1->year > cotime2->year)

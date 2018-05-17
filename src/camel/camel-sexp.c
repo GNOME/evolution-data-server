@@ -808,7 +808,7 @@ camel_sexp_term_eval (CamelSExp *sexp,
                       CamelSExpTerm *term)
 {
 	CamelSExpResult *result = NULL;
-	gint i;
+	gint i, argc;
 	CamelSExpResult **argv;
 
 	/* this must only be called from inside term evaluation callbacks! */
@@ -846,15 +846,16 @@ camel_sexp_term_eval (CamelSExp *sexp,
 		break;
 	case CAMEL_SEXP_TERM_FUNC:
 		/* first evaluate all arguments to result types */
-		argv = alloca (sizeof (argv[0]) * term->value.func.termcount);
-		for (i = 0; i < term->value.func.termcount; i++) {
+		argc = term->value.func.termcount;
+		argv = g_alloca (sizeof (argv[0]) * argc);
+		for (i = 0; i < argc; i++) {
 			argv[i] = camel_sexp_term_eval (sexp, term->value.func.terms[i]);
 		}
 		/* call the function */
 		if (term->value.func.sym->f.func)
-			result = term->value.func.sym->f.func (sexp, term->value.func.termcount, argv, term->value.func.sym->data);
+			result = term->value.func.sym->f.func (sexp, argc, argv, term->value.func.sym->data);
 
-		camel_sexp_resultv_free (sexp, term->value.func.termcount, argv);
+		camel_sexp_resultv_free (sexp, argc, argv);
 		break;
 	default:
 		camel_sexp_fatal_error (sexp, "Unknown type in parse tree: %d", term->type);
@@ -1186,9 +1187,9 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 
 		result = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_UNDEFINED);
 		argc = term->value.func.termcount;
-		argv = alloca (sizeof (argv[0]) * argc);
+		argv = g_alloca (sizeof (argv[0]) * argc);
 
-		for (i = 0; i < term->value.func.termcount; i++) {
+		for (i = 0; i < argc; i++) {
 			argv[i] = camel_sexp_term_evaluate_occur_times (
 				sexp, term->value.func.terms[i], start, end);
 		}
@@ -1196,8 +1197,7 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 		if (is_time_function (term->value.func.sym->name)) {
 			/* evaluate time */
 			if (term->value.func.sym->f.func)
-				result = term->value.func.sym->f.func (sexp, term->value.func.termcount,
-					      argv, term->value.func.sym->data);
+				result = term->value.func.sym->f.func (sexp, argc, argv, term->value.func.sym->data);
 		} else if ((generator = get_generator_function (term->value.func.sym->name)) != NULL) {
 			/* evaluate generator function */
 			result->time_generator = TRUE;
@@ -1210,7 +1210,7 @@ camel_sexp_term_evaluate_occur_times (CamelSExp *sexp,
 			result->time_generator = FALSE;
 		}
 
-		camel_sexp_resultv_free (sexp, term->value.func.termcount, argv);
+		camel_sexp_resultv_free (sexp, argc, argv);
 		break;
 	}
 	case CAMEL_SEXP_TERM_INT:
@@ -1304,8 +1304,20 @@ parse_values (CamelSExp *sexp,
 	terms = g_malloc (size * sizeof (*terms));
 	l = list;
 	for (i = size - 1; i >= 0; i--) {
-		g_return_val_if_fail (l, NULL);
-		g_return_val_if_fail (l->data, NULL);
+		if (!l || !l->data) {
+			if (!l)
+				g_warn_if_fail (l != NULL);
+			if (l && !l->data)
+				g_warn_if_fail (l->data != NULL);
+
+			g_slist_free (list);
+			g_free (terms);
+
+			*len = 0;
+
+			return NULL;
+		}
+
 		terms[i] = l->data;
 		l = g_slist_next (l);
 	}

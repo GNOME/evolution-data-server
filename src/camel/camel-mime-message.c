@@ -109,7 +109,7 @@ process_header (CamelMedium *medium,
 	const gchar *charset;
 	gchar *unfolded;
 
-	header_type = (CamelHeaderType) g_hash_table_lookup (header_name_table, name);
+	header_type = (CamelHeaderType) GPOINTER_TO_INT (g_hash_table_lookup (header_name_table, name));
 	switch (header_type) {
 	case HEADER_FROM:
 		addr = camel_internet_address_new ();
@@ -1395,6 +1395,8 @@ cmm_dump_rec (CamelMimeMessage *msg,
 	gint go = TRUE;
 	gchar *s;
 	const GByteArray *data;
+
+	g_return_if_fail (CAMEL_IS_MIME_PART (part));
 
 	s = alloca (depth + 1);
 	memset (s, ' ', depth);

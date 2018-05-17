@@ -1396,6 +1396,7 @@ camel_folder_get_filename (CamelFolder *folder,
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_filename != NULL, NULL);
 
 	filename = class->get_filename (folder, uid, error);
@@ -1713,6 +1714,7 @@ camel_folder_get_message_count (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), -1);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->get_message_count != NULL, -1);
 
 	return class->get_message_count (folder);
@@ -1802,6 +1804,7 @@ camel_folder_get_permanent_flags (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->get_permanent_flags != NULL, 0);
 
 	return class->get_permanent_flags (folder);
@@ -1827,6 +1830,7 @@ camel_folder_get_message_flags (CamelFolder *folder,
 	g_return_val_if_fail (uid != NULL, 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->get_message_flags != NULL, 0);
 
 	return class->get_message_flags (folder, uid);
@@ -1863,6 +1867,7 @@ camel_folder_set_message_flags (CamelFolder *folder,
 	g_return_val_if_fail (uid != NULL, FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->set_message_flags != NULL, FALSE);
 
 	return class->set_message_flags (folder, uid, mask, set);
@@ -1892,6 +1897,7 @@ camel_folder_get_message_user_flag (CamelFolder *folder,
 	g_return_val_if_fail (name != NULL, 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->get_message_user_flag != NULL, 0);
 
 	return class->get_message_user_flag (folder, uid, name);
@@ -1924,6 +1930,7 @@ camel_folder_set_message_user_flag (CamelFolder *folder,
 	g_return_if_fail (name != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_message_user_flag != NULL);
 
 	class->set_message_user_flag (folder, uid, name, value);
@@ -1952,6 +1959,7 @@ camel_folder_get_message_user_tag (CamelFolder *folder,
 	g_return_val_if_fail (name != NULL, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_message_user_tag != NULL, NULL);
 
 	/* FIXME: should duplicate string */
@@ -1985,6 +1993,7 @@ camel_folder_set_message_user_tag (CamelFolder *folder,
 	g_return_if_fail (name != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->set_message_user_tag != NULL);
 
 	class->set_message_user_tag (folder, uid, name, value);
@@ -2011,6 +2020,7 @@ camel_folder_get_message_info (CamelFolder *folder,
 	g_return_val_if_fail (uid != NULL, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_message_info != NULL, NULL);
 
 	return class->get_message_info (folder, uid);
@@ -2055,6 +2065,7 @@ camel_folder_get_uids (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_uids != NULL, NULL);
 
 	return class->get_uids (folder);
@@ -2077,6 +2088,7 @@ camel_folder_free_uids (CamelFolder *folder,
 	g_return_if_fail (array != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->free_uids != NULL);
 
 	class->free_uids (folder, array);
@@ -2109,6 +2121,7 @@ camel_folder_get_uncached_uids (CamelFolder *folder,
 	g_return_val_if_fail (uids != NULL, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_uncached_uids != NULL, NULL);
 
 	uncached_uids = class->get_uncached_uids (folder, uids, error);
@@ -2142,6 +2155,7 @@ camel_folder_cmp_uids (CamelFolder *folder,
 	g_return_val_if_fail (uid2 != NULL, 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->cmp_uids != NULL, 0);
 
 	return class->cmp_uids (folder, uid1, uid2);
@@ -2166,6 +2180,7 @@ camel_folder_sort_uids (CamelFolder *folder,
 	g_return_if_fail (uids != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->sort_uids != NULL);
 
 	class->sort_uids (folder, uids);
@@ -2189,6 +2204,7 @@ camel_folder_get_summary (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_summary != NULL, NULL);
 
 	return class->get_summary (folder);
@@ -2211,6 +2227,7 @@ camel_folder_free_summary (CamelFolder *folder,
 	g_return_if_fail (array != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->free_summary != NULL);
 
 	class->free_summary (folder, array);
@@ -2241,6 +2258,7 @@ camel_folder_search_by_expression (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->search_by_expression != NULL, NULL);
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
@@ -2275,6 +2293,7 @@ camel_folder_count_by_expression (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, 0);
 	g_return_val_if_fail (class->count_by_expression != NULL, 0);
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
@@ -2309,6 +2328,7 @@ camel_folder_search_by_uids (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->search_by_uids != NULL, NULL);
 
 	/* NOTE: that it is upto the callee to CAMEL_FOLDER_REC_LOCK */
@@ -2337,6 +2357,7 @@ camel_folder_search_free (CamelFolder *folder,
 	g_return_if_fail (result != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->search_free != NULL);
 
 	/* NOTE: upto the callee to CAMEL_FOLDER_REC_LOCK */
@@ -2366,6 +2387,7 @@ camel_folder_delete (CamelFolder *folder)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->delete_ != NULL);
 
 	camel_folder_lock (folder);
@@ -2431,6 +2453,7 @@ camel_folder_rename (CamelFolder *folder,
 	g_return_if_fail (new_name != NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->rename != NULL);
 
 	old_name = g_strdup (camel_folder_get_full_name (folder));
@@ -2546,6 +2569,7 @@ camel_folder_freeze (CamelFolder *folder)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->freeze != NULL);
 
 	class->freeze (folder);
@@ -2567,6 +2591,7 @@ camel_folder_thaw (CamelFolder *folder)
 	g_return_if_fail (folder->priv->frozen != 0);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->thaw != NULL);
 
 	class->thaw (folder);
@@ -2586,6 +2611,7 @@ camel_folder_is_frozen (CamelFolder *folder)
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->is_frozen != NULL, FALSE);
 
 	return class->is_frozen (folder);
@@ -2790,6 +2816,7 @@ camel_folder_append_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_MIME_MESSAGE (message), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->append_message_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can append. */
@@ -2964,6 +2991,7 @@ camel_folder_expunge_sync (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->expunge_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can expunge. */
@@ -3110,6 +3138,7 @@ camel_folder_get_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (message_uid != NULL, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_message_sync != NULL, NULL);
 
 	camel_operation_push_message (
@@ -3199,6 +3228,8 @@ camel_folder_get_message_cached (CamelFolder *folder,
 	g_return_val_if_fail (message_uid != NULL, NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
+
 	if (!class->get_message_cached)
 		return NULL;
 
@@ -3333,6 +3364,7 @@ camel_folder_get_quota_info_sync (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), NULL);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->get_quota_info_sync != NULL, NULL);
 
 	/* Translators: The first “%s” is replaced with an account name and the second “%s”
@@ -3470,6 +3502,7 @@ camel_folder_purge_message_cache_sync (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 
 	/* Some backends that wont support mobile
 	 * mode, won't have this api implemented. */
@@ -3618,6 +3651,7 @@ camel_folder_refresh_info_sync (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->refresh_info_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can refresh. */
@@ -3759,6 +3793,7 @@ camel_folder_synchronize_sync (CamelFolder *folder,
 	g_return_val_if_fail (CAMEL_IS_FOLDER (folder), FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->synchronize_sync != NULL, FALSE);
 
 	/* Need to connect the service before we can synchronize. */
@@ -3914,6 +3949,7 @@ camel_folder_synchronize_message_sync (CamelFolder *folder,
 	g_return_val_if_fail (message_uid != NULL, FALSE);
 
 	class = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->get_message_sync != NULL, FALSE);
 
 	camel_folder_lock (folder);
@@ -4108,6 +4144,9 @@ camel_folder_transfer_messages_to_sync (CamelFolder *source,
 			class = CAMEL_FOLDER_GET_CLASS (destination);
 		else
 			class = CAMEL_FOLDER_GET_CLASS (source);
+
+		g_return_val_if_fail (class != NULL, FALSE);
+
 		success = class->transfer_messages_to_sync (
 			source, message_uids, destination, delete_originals,
 			transferred_uids, cancellable, error);
@@ -4270,6 +4309,7 @@ camel_folder_prepare_content_refresh (CamelFolder *folder)
 	g_return_if_fail (CAMEL_IS_FOLDER (folder));
 
 	klass = CAMEL_FOLDER_GET_CLASS (folder);
+	g_return_if_fail (klass != NULL);
 
 	if (klass->prepare_content_refresh)
 		klass->prepare_content_refresh (folder);
@@ -4582,7 +4622,7 @@ camel_folder_change_info_add_uid (CamelFolderChangeInfo *info,
 		} else if (olduids == info->uid_changed) {
 			g_ptr_array_remove_fast (olduids, olduid);
 			g_ptr_array_add (info->uid_added, olduid);
-			g_hash_table_insert (p->uid_stored, olduid, info->uid_changed);
+			g_hash_table_insert (p->uid_stored, olduid, info->uid_added);
 		}
 		return;
 	}

@@ -760,9 +760,14 @@ e_cal_meta_backend_test_change_online (ECalMetaBackend *meta_backend,
 static void
 e_cal_meta_backend_test_call_refresh (ECalMetaBackend *meta_backend)
 {
+	ECalBackendSyncClass *backend_class;
 	EFlag *flag;
 	gulong handler_id;
 	GError *error = NULL;
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->refresh_sync != NULL);
 
 	if (!e_backend_get_online (E_BACKEND (meta_backend)))
 		return;
@@ -772,7 +777,7 @@ e_cal_meta_backend_test_call_refresh (ECalMetaBackend *meta_backend)
 	handler_id = g_signal_connect_swapped (meta_backend, "refresh-completed",
 		G_CALLBACK (e_flag_set), flag);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->refresh_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, &error);
+	backend_class->refresh_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, &error);
 	g_assert_no_error (error);
 
 	e_flag_wait (flag);
@@ -1191,6 +1196,7 @@ test_empty_cache (TCUFixture *fixture,
 		"TZOFFSETTO:-0400\r\n"
 		"END:DAYLIGHT\r\n"
 		"END:VTIMEZONE\r\n";
+	ECalBackendSyncClass *backend_class;
 	ECalMetaBackend *meta_backend;
 	GList *zones;
 	gboolean success;
@@ -1199,9 +1205,12 @@ test_empty_cache (TCUFixture *fixture,
 	meta_backend = e_cal_meta_backend_test_new (fixture->cal_cache);
 	g_assert_nonnull (meta_backend);
 
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->add_timezone_sync != NULL);
+
 	/* Add timezone to the cache */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, in_tzobj, &error);
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, in_tzobj, &error);
 	g_assert_no_error (error);
 
 	zones = NULL;
@@ -1239,6 +1248,7 @@ test_empty_cache (TCUFixture *fixture,
 static void
 test_send_objects (ECalMetaBackend *meta_backend)
 {
+	ECalBackendSyncClass *backend_class;
 	GSList *users = NULL;
 	const gchar *calobj = "fake-iCalendar-object";
 	gchar *modified_calobj = NULL;
@@ -1246,7 +1256,11 @@ test_send_objects (ECalMetaBackend *meta_backend)
 
 	g_assert_nonnull (meta_backend);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->send_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->send_objects_sync != NULL);
+
+	backend_class->send_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, calobj, &users, &modified_calobj, &error);
 
 	g_assert_no_error (error);
@@ -1259,13 +1273,18 @@ test_send_objects (ECalMetaBackend *meta_backend)
 static void
 test_get_attachment_uris (ECalMetaBackend *meta_backend)
 {
+	ECalBackendSyncClass *backend_class;
 	GSList *uris = NULL;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
 
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->get_attachment_uris_sync != NULL);
+
 	/* non-existent event */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_attachment_uris_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_attachment_uris_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "unknown-event", NULL, &uris, &error);
 
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
@@ -1274,14 +1293,14 @@ test_get_attachment_uris (ECalMetaBackend *meta_backend)
 	g_clear_error (&error);
 
 	/* existent event, but with no attachments */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_attachment_uris_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_attachment_uris_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-1", NULL, &uris, &error);
 
 	g_assert_no_error (error);
 	g_assert_null (uris);
 
 	/* event with attachments */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_attachment_uris_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_attachment_uris_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-7", NULL, &uris, &error);
 
 	g_assert_no_error (error);
@@ -1295,12 +1314,17 @@ test_get_attachment_uris (ECalMetaBackend *meta_backend)
 static void
 test_discard_alarm (ECalMetaBackend *meta_backend)
 {
+	ECalBackendSyncClass *backend_class;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
 
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->discard_alarm_sync != NULL);
+
 	/* Not implemented */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->discard_alarm_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->discard_alarm_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "unknown-event", NULL, NULL, &error);
 
 	g_assert_error (error, E_CLIENT_ERROR, E_CLIENT_ERROR_NOT_SUPPORTED);
@@ -1333,6 +1357,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 		"TZOFFSETTO:-0400\r\n"
 		"END:DAYLIGHT\r\n"
 		"END:VTIMEZONE\r\n";
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	icalcomponent *vcalendar;
 	gchar *tzobj = NULL;
@@ -1342,26 +1367,31 @@ test_timezones (ECalMetaBackend *meta_backend)
 
 	g_assert_nonnull (meta_backend);
 
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->add_timezone_sync != NULL);
+	g_return_if_fail (backend_class->get_timezone_sync != NULL);
+
 	/* Verify neither TZID, not LOCATION is in the timezone cache */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, TZID, &tzobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (tzobj);
 	g_clear_error (&error);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, TZLOC, &tzobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (tzobj);
 	g_clear_error (&error);
 
 	/* Add it to the cache */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, in_tzobj, &error);
 	g_assert_no_error (error);
 
 	/* Read it back */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, TZID, &tzobj, &error);
 	g_assert_no_error (error);
 	g_assert_cmpstr (tzobj, ==, in_tzobj);
@@ -1369,14 +1399,14 @@ test_timezones (ECalMetaBackend *meta_backend)
 	tzobj = NULL;
 
 	/* As a non-built-in timezone it cannot be read with location, only with TZID */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, TZLOC, &tzobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (tzobj);
 	g_clear_error (&error);
 
 	/* Try also internal timezone, which will be renamed and added to the cache too */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "America/New_York", &tzobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (tzobj);
@@ -1469,7 +1499,7 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, in_tzobj, &error);
 	g_assert_no_error (error);
 
@@ -1512,11 +1542,16 @@ test_get_free_busy (ECalMetaBackend *meta_backend)
 		"FREEBUSY;FBTYPE=BUSY;X-SUMMARY=After-party clean up;X-LOCATION=All around:\r\n"
 		" 20170102T100000Z/20170102T180000Z\r\n"
 		"END:VFREEBUSY\r\n";
+	ECalBackendSyncClass *backend_class;
 	GSList *users, *objects = NULL;
 	time_t start, end;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->get_free_busy_sync != NULL);
 
 	users = g_slist_prepend (NULL, (gpointer) "user@no.where");
 	users = g_slist_prepend (users, (gpointer) "unknown@no.where");
@@ -1524,7 +1559,7 @@ test_get_free_busy (ECalMetaBackend *meta_backend)
 	start = icaltime_as_timet (icaltime_from_string ("20170102T080000Z"));
 	end = icaltime_as_timet (icaltime_from_string ("20170102T200000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_free_busy_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_free_busy_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, users, start, end, &objects, &error);
 
 	g_assert_no_error (error);
@@ -1539,12 +1574,17 @@ static void
 test_create_objects (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	GSList *objects, *uids = NULL, *new_components = NULL, *offline_changes;
 	gchar *calobj, *tmp;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->create_objects_sync != NULL);
 
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
@@ -1567,7 +1607,7 @@ test_create_objects (ECalMetaBackend *meta_backend)
 	/* Try to add existing event, it should fail */
 	objects = g_slist_prepend (NULL, tcu_new_icalstring_from_test_case ("event-1"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, &uids, &new_components, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectIdAlreadyExists);
 	g_assert_null (uids);
@@ -1580,7 +1620,7 @@ test_create_objects (ECalMetaBackend *meta_backend)
 	/* Try to add new event */
 	objects = g_slist_prepend (NULL, tcu_new_icalstring_from_test_case ("event-7"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, &uids, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (uids), ==, 1);
@@ -1607,7 +1647,7 @@ test_create_objects (ECalMetaBackend *meta_backend)
 	/* Try to add existing event, it should fail */
 	objects = g_slist_prepend (NULL, tcu_new_icalstring_from_test_case ("event-7"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, &uids, &new_components, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectIdAlreadyExists);
 	g_assert_null (uids);
@@ -1620,7 +1660,7 @@ test_create_objects (ECalMetaBackend *meta_backend)
 	/* Try to add new event */
 	objects = g_slist_prepend (NULL, tcu_new_icalstring_from_test_case ("event-8"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, &uids, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (uids), ==, 1);
@@ -1663,7 +1703,7 @@ test_create_objects (ECalMetaBackend *meta_backend)
 
 	objects = g_slist_prepend (NULL, calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->create_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, &uids, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (uids), ==, 1);
@@ -1722,6 +1762,7 @@ static void
 test_modify_objects (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	GSList *objects, *old_components = NULL, *new_components = NULL, *offline_changes;
 	gchar *calobj, *tmp;
@@ -1730,6 +1771,10 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->modify_objects_sync != NULL);
 
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
@@ -1744,7 +1789,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 
 	objects = g_slist_prepend (NULL, calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (old_components);
@@ -1755,7 +1800,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	/* Modify existing event */
 	objects = g_slist_prepend (NULL, ecmb_test_modify_case ("event-1", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -1787,7 +1832,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	/* Modify event-2 */
 	objects = g_slist_prepend (NULL, ecmb_test_modify_case ("event-2", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -1826,7 +1871,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	/* Modify non-recurring with THIS */
 	objects = g_slist_prepend (NULL, ecmb_test_modify_case ("event-4", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -1853,7 +1898,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	/* Modify non-detached recurring instance with ONLY_THIS */
 	objects = g_slist_prepend (NULL, ecmb_test_modify_case ("event-6", "20170227T134900"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, E_CAL_OBJ_MOD_ONLY_THIS, &old_components, &new_components, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (old_components);
@@ -1866,7 +1911,7 @@ test_modify_objects (ECalMetaBackend *meta_backend)
 	/* Modify detached recurring instance with ONLY_THIS */
 	objects = g_slist_prepend (NULL, ecmb_test_modify_case ("event-6-a", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->modify_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, objects, E_CAL_OBJ_MOD_ONLY_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -1899,11 +1944,16 @@ static void
 test_remove_objects (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	GSList *ids, *old_components = NULL, *new_components = NULL, *offline_changes;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->remove_objects_sync != NULL);
 
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
@@ -1912,7 +1962,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	/* Remove non-existing event */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("unknown-event", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (old_components);
@@ -1923,7 +1973,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	/* Remove existing event */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-1", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -1950,7 +2000,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-6", "20170225T134900"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -1981,7 +2031,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-6", "20170227T134900"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ONLY_THIS, &old_components, &new_components, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (old_components);
@@ -1992,7 +2042,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	/* Remove non-existing detached instance with THIS - changes master object */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-6", "20170227T134900"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2024,7 +2074,7 @@ test_remove_objects (ECalMetaBackend *meta_backend)
 	/* Remove existing event */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("event-3", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ONLY_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2074,6 +2124,7 @@ static void
 test_receive_objects (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	gchar *calobj;
 	icalcomponent *icalcomp;
@@ -2081,6 +2132,12 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->get_object_sync != NULL);
+	g_return_if_fail (backend_class->receive_objects_sync != NULL);
+	g_return_if_fail (backend_class->remove_objects_sync != NULL);
 
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
@@ -2110,7 +2167,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 		NULL);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2121,8 +2178,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-2");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2131,7 +2187,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (test_backend->remove_count, ==, 0);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2144,7 +2200,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	/* Remove the 'invite' component, to test also user side */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2173,8 +2229,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-1");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2192,7 +2247,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2204,8 +2259,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-3");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2223,7 +2277,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2235,8 +2289,7 @@ test_receive_objects (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-4");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2260,12 +2313,19 @@ static void
 test_receive_and_remove (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	gchar *calobj;
 	GSList *old_components = NULL, *new_components = NULL, *ids;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->get_object_sync != NULL);
+	g_return_if_fail (backend_class->remove_objects_sync != NULL);
+	g_return_if_fail (backend_class->receive_objects_sync != NULL);
 
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
@@ -2275,8 +2335,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-5");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2294,7 +2353,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite-detached", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2305,7 +2364,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Delete master component, with no detached instances now */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2334,7 +2393,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-5");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
@@ -2356,8 +2415,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2377,7 +2435,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite-detached", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2388,7 +2446,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove only the detached instance */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2420,7 +2478,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite-detached", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2432,8 +2490,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2451,7 +2508,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite-detached", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -2462,7 +2519,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the master object, which should delete both */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2488,13 +2545,13 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	ecmb_test_cache_and_server_equal (cal_cache, test_backend->vcalendar, E_CACHE_INCLUDE_DELETED);
 
 	calobj = NULL;
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite-detached", NULL, &calobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (calobj);
 	g_clear_error (&error);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "invite-detached", "20180502T000000Z", &calobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (calobj);
@@ -2504,8 +2561,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2523,7 +2579,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the master object with mode THIS, which is not in the cache, but should remove all anyway */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2551,15 +2607,14 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
 	/* Remove the master object with mode ALL, which is not in the cache, but should remove all */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", NULL));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2590,8 +2645,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2609,7 +2663,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the detached instance with mode THIS */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2638,8 +2692,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2657,7 +2710,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the detached instance with mode ALL */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2686,8 +2739,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-7");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2707,7 +2759,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the detached instance with mode THIS */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2742,8 +2794,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-6");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2751,7 +2802,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
 	ids = g_slist_prepend (ids, e_cal_component_id_new ("invite-detached", "20180509T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 2);
@@ -2783,8 +2834,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-7");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2804,7 +2854,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the second detached instance with mode ALL */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180509T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2835,8 +2885,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-7");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2865,8 +2914,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	calobj = tcu_new_icalstring_from_test_case ("invite-5");
 	g_assert_nonnull (calobj);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, calobj, &error);
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, calobj, &error);
 	g_assert_no_error (error);
 	g_free (calobj);
 
@@ -2890,7 +2938,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the second detached instance with mode THIS */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180509T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_THIS, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2926,7 +2974,7 @@ test_receive_and_remove (ECalMetaBackend *meta_backend)
 	/* Remove the first detached instance with mode ALL, which will drop whole series */
 	ids = g_slist_prepend (NULL, e_cal_component_id_new ("invite-detached", "20180502T000000Z"));
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->remove_objects_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, ids, E_CAL_OBJ_MOD_ALL, &old_components, &new_components, &error);
 	g_assert_no_error (error);
 	g_assert_cmpint (g_slist_length (old_components), ==, 1);
@@ -2962,12 +3010,17 @@ static void
 test_get_object (ECalMetaBackend *meta_backend)
 {
 	ECalMetaBackendTest *test_backend;
+	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	icalcomponent *icalcomp;
 	gchar *calobj = NULL;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
+
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->get_object_sync != NULL);
 
 	test_backend = E_CAL_META_BACKEND_TEST (meta_backend);
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
@@ -2981,7 +3034,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	g_assert_no_error (error);
 
 	/* Master object with its detached instances */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-6", NULL, &calobj, &error);
 
 	g_assert_no_error (error);
@@ -2999,7 +3052,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	calobj = NULL;
 
 	/* Only the detached instance */
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-6", "20170225T134900", &calobj, &error);
 
 	g_assert_no_error (error);
@@ -3022,7 +3075,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 
 	e_cal_meta_backend_test_reset_counters (test_backend);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-7", NULL, &calobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (calobj);
@@ -3044,7 +3097,7 @@ test_get_object (ECalMetaBackend *meta_backend)
 	e_cal_meta_backend_test_reset_counters (test_backend);
 	g_assert_cmpint (test_backend->connect_count, ==, 0);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "event-7", NULL, &calobj, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobj);
@@ -3062,17 +3115,22 @@ test_get_object (ECalMetaBackend *meta_backend)
 static void
 test_get_object_list (ECalMetaBackend *meta_backend)
 {
+	ECalBackendSyncClass *backend_class;
 	GSList *calobjs = NULL;
 	GError *error = NULL;
 
 	g_assert_nonnull (meta_backend);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_list_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
+	g_return_if_fail (backend_class != NULL);
+	g_return_if_fail (backend_class->get_object_list_sync != NULL);
+
+	backend_class->get_object_list_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "(uid? \"unknown-event\")", &calobjs, &error);
 	g_assert_no_error (error);
 	g_assert_null (calobjs);
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_list_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_list_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "(uid? \"event-3\")", &calobjs, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobjs);
@@ -3081,7 +3139,7 @@ test_get_object_list (ECalMetaBackend *meta_backend)
 	g_slist_free_full (calobjs, g_free);
 	calobjs = NULL;
 
-	E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend)->get_object_list_sync (E_CAL_BACKEND_SYNC (meta_backend),
+	backend_class->get_object_list_sync (E_CAL_BACKEND_SYNC (meta_backend),
 		NULL, NULL, "(uid? \"event-6\")", &calobjs, &error);
 	g_assert_no_error (error);
 	g_assert_nonnull (calobjs);

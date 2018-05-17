@@ -498,6 +498,7 @@ e_collator_generate_key (ECollator *collator,
 
 	if (!source) {
 		g_free (translit_str);
+		g_free (free_me);
 		return NULL;
 	}
 

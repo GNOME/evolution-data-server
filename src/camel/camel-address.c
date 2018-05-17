@@ -84,6 +84,7 @@ camel_address_length (CamelAddress *addr)
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (addr), -1);
 
 	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->length != NULL, -1);
 
 	return class->length (addr);
@@ -107,6 +108,7 @@ camel_address_decode (CamelAddress *addr,
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (addr), -1);
 
 	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->decode != NULL, -1);
 
 	return class->decode (addr, raw);
@@ -128,6 +130,7 @@ camel_address_encode (CamelAddress *addr)
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (addr), NULL);
 
 	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->encode != NULL, NULL);
 
 	return class->encode (addr);
@@ -152,6 +155,7 @@ camel_address_unformat (CamelAddress *addr,
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (addr), -1);
 
 	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->unformat != NULL, -1);
 
 	return class->unformat (addr, raw);
@@ -173,6 +177,7 @@ camel_address_format (CamelAddress *addr)
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (addr), NULL);
 
 	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->format != NULL, NULL);
 
 	return class->format (addr);
@@ -198,6 +203,7 @@ camel_address_cat (CamelAddress *dest,
 	g_return_val_if_fail (CAMEL_IS_ADDRESS (source), -1);
 
 	class = CAMEL_ADDRESS_GET_CLASS (dest);
+	g_return_val_if_fail (class != NULL, -1);
 	g_return_val_if_fail (class->cat != NULL, -1);
 
 	return class->cat (dest, source);
@@ -239,6 +245,7 @@ camel_address_remove (CamelAddress *addr,
 	g_return_if_fail (CAMEL_IS_ADDRESS (addr));
 
 	class = CAMEL_ADDRESS_GET_CLASS (addr);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->remove != NULL);
 
 	if (index == -1) {

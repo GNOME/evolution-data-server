@@ -406,7 +406,7 @@ e_name_western_extract_nickname (ENameWestern *name,
 	if (idxs->first_idx == -1)
 		return;
 
-	if (idxs->middle_idx > idxs->first_idx)
+	if (idxs->middle_idx > idxs->first_idx && name->middle)
 		nick = name->full + idxs->middle_idx + strlen (name->middle);
 	else
 		nick = name->full + idxs->first_idx + strlen (name->first);

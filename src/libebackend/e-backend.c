@@ -270,6 +270,7 @@ e_backend_authenticate_sync (EBackend *backend,
 	g_return_val_if_fail (credentials != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 
 	class = E_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 	g_return_val_if_fail (class->authenticate_sync != NULL, E_SOURCE_AUTHENTICATION_ERROR);
 
 	return class->authenticate_sync (backend, credentials, out_certificate_pem, out_certificate_errors, cancellable, error);
@@ -1475,6 +1476,7 @@ e_backend_get_destination_address (EBackend *backend,
 	g_return_val_if_fail (port != NULL, FALSE);
 
 	klass = E_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (klass != NULL, FALSE);
 	g_return_val_if_fail (klass->get_destination_address != NULL, FALSE);
 
 	return klass->get_destination_address (backend, host, port);
@@ -1554,6 +1556,7 @@ e_backend_prepare_shutdown (EBackend *backend)
 	g_return_if_fail (E_IS_BACKEND (backend));
 
 	class = E_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->prepare_shutdown != NULL);
 
 	g_object_ref (backend);

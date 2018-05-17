@@ -467,7 +467,7 @@ e_destination_set_contact (EDestination *dest,
 				}
 				if (type != NONE && parent_dest) {
 					gchar *id = NULL;
-					gint email_num = 0;
+					gint set_email_num = 0;
 					EDestination *s_dest;
 
 					s_dest = e_destination_new ();
@@ -482,7 +482,7 @@ e_destination_set_contact (EDestination *dest,
 							id = value ? g_strdup (value->data) : NULL;
 						} else if (g_ascii_strcasecmp (param_name, EVC_X_DEST_EMAIL_NUM) == 0) {
 							value = e_vcard_attribute_param_get_values (param->data);
-							email_num = value ? atoi (value->data) : -1;
+							set_email_num = value ? atoi (value->data) : -1;
 						} else if (!g_ascii_strcasecmp (param_name, EVC_X_DEST_HTML_MAIL)) {
 							value = e_vcard_attribute_param_get_values (param->data);
 							e_destination_set_html_mail_pref (s_dest, value ? !g_ascii_strcasecmp (value->data, "true") : FALSE);
@@ -519,7 +519,7 @@ e_destination_set_contact (EDestination *dest,
 					}
 
 					if (id) {
-						e_destination_set_contact_uid (s_dest, id, email_num);
+						e_destination_set_contact_uid (s_dest, id, set_email_num);
 						g_free (id);
 					}
 

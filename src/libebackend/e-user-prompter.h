@@ -23,7 +23,6 @@
 #define E_USER_PROMPTER_H
 
 #include <glib.h>
-#include <libebackend/libebackend.h>
 #include <libedataserver/libedataserver.h>
 
 /* Standard GObject macros */

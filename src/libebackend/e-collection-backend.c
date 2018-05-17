@@ -249,6 +249,7 @@ collection_backend_load_resources (ECollectionBackend *backend)
 	 * and e_source_registry_server_load_directory(). */
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->dup_resource_id != NULL);
 
 	cache_dir = e_collection_backend_get_cache_dir (backend);
@@ -557,6 +558,7 @@ collection_backend_populate_idle_cb (gpointer user_data)
 	backend->priv->scheduled_populate_idle_id = 0;
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->populate != NULL, FALSE);
 
 	class->populate (backend);
@@ -1371,6 +1373,7 @@ e_collection_backend_dup_resource_id (ECollectionBackend *backend,
 	g_return_val_if_fail (E_IS_SOURCE (child_source), NULL);
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, NULL);
 	g_return_val_if_fail (class->dup_resource_id != NULL, NULL);
 
 	/* Make sure the ESource belongs to the ECollectionBackend to
@@ -1610,6 +1613,7 @@ e_collection_backend_create_resource_sync (ECollectionBackend *backend,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->create_resource_sync != NULL, FALSE);
 
 	return class->create_resource_sync (
@@ -1657,6 +1661,7 @@ e_collection_backend_create_resource (ECollectionBackend *backend,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->create_resource != NULL);
 
 	class->create_resource (
@@ -1688,6 +1693,7 @@ e_collection_backend_create_resource_finish (ECollectionBackend *backend,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->create_resource_finish != NULL, FALSE);
 
 	return class->create_resource_finish (backend, result, error);
@@ -1726,6 +1732,7 @@ e_collection_backend_delete_resource_sync (ECollectionBackend *backend,
 	g_return_val_if_fail (E_IS_SOURCE (source), FALSE);
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->delete_resource_sync != NULL, FALSE);
 
 	return class->delete_resource_sync (
@@ -1767,6 +1774,7 @@ e_collection_backend_delete_resource (ECollectionBackend *backend,
 	g_return_if_fail (E_IS_SOURCE (source));
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_if_fail (class != NULL);
 	g_return_if_fail (class->delete_resource != NULL);
 
 	return class->delete_resource (
@@ -1798,6 +1806,7 @@ e_collection_backend_delete_resource_finish (ECollectionBackend *backend,
 	g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
 
 	class = E_COLLECTION_BACKEND_GET_CLASS (backend);
+	g_return_val_if_fail (class != NULL, FALSE);
 	g_return_val_if_fail (class->delete_resource_finish != NULL, FALSE);
 
 	return class->delete_resource_finish (backend, result, error);
