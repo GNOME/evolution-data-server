@@ -2154,6 +2154,28 @@ e_webdav_session_write_restarted (SoupMessage *message,
 	}
 }
 
+static void
+e_webdav_session_set_if_match_header (SoupMessage *message,
+				      const gchar *etag)
+{
+	gint len;
+
+	g_return_if_fail (SOUP_IS_MESSAGE (message));
+	g_return_if_fail (etag != NULL);
+
+	len = strlen (etag);
+
+	if ((*etag == '\"' && len > 2 && etag[len - 1] == '\"') || strchr (etag, '\"')) {
+		soup_message_headers_replace (message->request_headers, "If-Match", etag);
+	} else {
+		gchar *quoted;
+
+		quoted = g_strconcat ("\"", etag, "\"", NULL);
+		soup_message_headers_replace (message->request_headers, "If-Match", quoted);
+		g_free (quoted);
+	}
+}
+
 /**
  * e_webdav_session_put_sync:
  * @webdav: an #EWebDAVSession
@@ -2249,17 +2271,7 @@ e_webdav_session_put_sync (EWebDAVSession *webdav,
 
 		if (!avoid_ifmatch) {
 			if (etag) {
-				gint len = strlen (etag);
-
-				if (*etag == '\"' && len > 2 && etag[len - 1] == '\"') {
-					soup_message_headers_replace (message->request_headers, "If-Match", etag);
-				} else {
-					gchar *quoted;
-
-					quoted = g_strconcat ("\"", etag, "\"", NULL);
-					soup_message_headers_replace (message->request_headers, "If-Match", quoted);
-					g_free (quoted);
-				}
+				e_webdav_session_set_if_match_header (message, etag);
 			} else {
 				soup_message_headers_replace (message->request_headers, "If-None-Match", "*");
 			}
@@ -2424,17 +2436,7 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 
 		if (!avoid_ifmatch) {
 			if (etag) {
-				gint len = strlen (etag);
-
-				if (*etag == '\"' && len > 2 && etag[len - 1] == '\"') {
-					soup_message_headers_replace (message->request_headers, "If-Match", etag);
-				} else {
-					gchar *quoted;
-
-					quoted = g_strconcat ("\"", etag, "\"", NULL);
-					soup_message_headers_replace (message->request_headers, "If-Match", quoted);
-					g_free (quoted);
-				}
+				e_webdav_session_set_if_match_header (message, etag);
 			} else {
 				soup_message_headers_replace (message->request_headers, "If-None-Match", "*");
 			}
@@ -2539,17 +2541,7 @@ e_webdav_session_delete_sync (EWebDAVSession *webdav,
 		}
 
 		if (!avoid_ifmatch) {
-			gint len = strlen (etag);
-
-			if (*etag == '\"' && len > 2 && etag[len - 1] == '\"') {
-				soup_message_headers_replace (message->request_headers, "If-Match", etag);
-			} else {
-				gchar *quoted;
-
-				quoted = g_strconcat ("\"", etag, "\"", NULL);
-				soup_message_headers_replace (message->request_headers, "If-Match", quoted);
-				g_free (quoted);
-			}
+			e_webdav_session_set_if_match_header (message, etag);
 		}
 	}
 
