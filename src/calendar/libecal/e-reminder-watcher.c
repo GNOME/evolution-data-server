@@ -1422,10 +1422,18 @@ e_reminder_watcher_ref_client (EReminderWatcher *watcher,
 				source_type = E_CAL_CLIENT_SOURCE_TYPE_TASKS;
 
 			if (source_type != E_CAL_CLIENT_SOURCE_TYPE_LAST) {
+				EReminderWatcherClass *klass;
 				EClient *tmp_client;
 				GError *local_error = NULL;
 
-				tmp_client = e_cal_client_connect_sync (source, source_type, 30, cancellable, &local_error);
+				klass = E_REMINDER_WATCHER_GET_CLASS (watcher);
+				if (klass && klass->cal_client_connect_sync) {
+					tmp_client = klass->cal_client_connect_sync (source, source_type, 30, cancellable, &local_error);
+				} else {
+					g_warn_if_fail (klass && klass->cal_client_connect_sync);
+					tmp_client = NULL;
+				}
+
 				if (tmp_client)
 					client = E_CAL_CLIENT (tmp_client);
 
@@ -1682,18 +1690,24 @@ e_reminder_watcher_client_connect_cb (GObject *source_object,
 				      gpointer user_data)
 {
 	EReminderWatcher *watcher = user_data;
+	EReminderWatcherClass *klass;
 	EClient *client;
 	ClientData *cd;
 	GError *local_error = NULL;
 
-	client = e_cal_client_connect_finish (result, &local_error);
+	g_return_if_fail (E_IS_REMINDER_WATCHER (watcher));
+
+	klass = E_REMINDER_WATCHER_GET_CLASS (watcher);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->cal_client_connect_finish != NULL);
+
+	client = klass->cal_client_connect_finish (result, &local_error);
 	if (!client) {
 		e_reminder_watcher_debug_print ("Failed to connect client: %s\n", local_error ? local_error->message : "Unknown error");
 		g_clear_error (&local_error);
+		g_object_unref (watcher);
 		return;
 	}
-
-	g_return_if_fail (E_IS_REMINDER_WATCHER (watcher));
 
 	g_rec_mutex_lock (&watcher->priv->lock);
 
@@ -1710,16 +1724,23 @@ e_reminder_watcher_client_connect_cb (GObject *source_object,
 	}
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
+
+	g_object_unref (watcher);
 }
 
 static void
 e_reminder_watcher_source_appeared_cb (EReminderWatcher *watcher,
 				       ESource *source)
 {
+	EReminderWatcherClass *klass;
 	ECalClientSourceType source_type;
 
 	g_return_if_fail (E_IS_REMINDER_WATCHER (watcher));
 	g_return_if_fail (E_IS_SOURCE (source));
+
+	klass = E_REMINDER_WATCHER_GET_CLASS (watcher);
+	g_return_if_fail (klass != NULL);
+	g_return_if_fail (klass->cal_client_connect != NULL);
 
 	g_rec_mutex_lock (&watcher->priv->lock);
 
@@ -1735,7 +1756,7 @@ e_reminder_watcher_source_appeared_cb (EReminderWatcher *watcher,
 	}
 
 	if (watcher->priv->timers_enabled)
-		e_cal_client_connect (source, source_type, 30, watcher->priv->cancellable, e_reminder_watcher_client_connect_cb, watcher);
+		klass->cal_client_connect (source, source_type, 30, watcher->priv->cancellable, e_reminder_watcher_client_connect_cb, g_object_ref (watcher));
 
 	g_rec_mutex_unlock (&watcher->priv->lock);
 }
@@ -1986,6 +2007,9 @@ e_reminder_watcher_class_init (EReminderWatcherClass *klass)
 
 	klass->schedule_timer = e_reminder_watcher_schedule_timer_impl;
 	klass->format_time = e_reminder_watcher_format_time_impl;
+	klass->cal_client_connect_sync = e_cal_client_connect_sync;
+	klass->cal_client_connect = e_cal_client_connect;
+	klass->cal_client_connect_finish = e_cal_client_connect_finish;
 
 	/**
 	 * EReminderWatcher:registry:

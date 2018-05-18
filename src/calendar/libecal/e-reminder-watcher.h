@@ -132,9 +132,24 @@ struct _EReminderWatcherClass {
 						 const GSList *reminders, /* EReminderData * */
 						 gboolean snoozed);
 	void		(* changed)		(EReminderWatcher *watcher);
+	EClient *	(* cal_client_connect_sync)
+						(ESource *source,
+						 ECalClientSourceType source_type,
+						 guint32 wait_for_connected_seconds,
+						 GCancellable *cancellable,
+						 GError **error);
+	void		(* cal_client_connect)	(ESource *source,
+						 ECalClientSourceType source_type,
+						 guint32 wait_for_connected_seconds,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+	EClient *	(* cal_client_connect_finish)
+						(GAsyncResult *result,
+						 GError **error);
 
 	/* Padding for future expansion */
-	gpointer reserved[10];
+	gpointer reserved[7];
 };
 
 GType		e_reminder_watcher_get_type		(void) G_GNUC_CONST;
