@@ -53,15 +53,16 @@ struct _ESecretMonitorClass {
 /* XXX ESource's SecretSchema copied here for searching.
  *     Maybe add a searching function to e-source.[ch]? */
 
-#define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
+#define KEYRING_ITEM_ATTRIBUTE_UID	"e-source-uid"
+#define KEYRING_ITEM_ATTRIBUTE_ORIGIN	"eds-origin"
 #define KEYRING_ITEM_DISPLAY_FORMAT	"Evolution Data Source '%s'"
 
 static SecretSchema password_schema = {
 	"org.gnome.Evolution.Data.Source",
 	SECRET_SCHEMA_DONT_MATCH_NAME,
 	{
-		{ KEYRING_ITEM_ATTRIBUTE_NAME,
-		  SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ KEYRING_ITEM_ATTRIBUTE_UID, SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ KEYRING_ITEM_ATTRIBUTE_ORIGIN, SECRET_SCHEMA_ATTRIBUTE_STRING },
 		{ NULL, 0 }
 	}
 };
@@ -102,9 +103,8 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 
 	server = E_SOURCE_REGISTRY_SERVER (user_data);
 
-	/* XXX secret_service_search_sync() won't accept NULL for its
-	 *     'attributes' parameter, so give it an empty hash table. */
 	attributes = g_hash_table_new (g_str_hash, g_str_equal);
+	g_hash_table_insert (attributes, (gpointer) KEYRING_ITEM_ATTRIBUTE_ORIGIN, (gpointer) PACKAGE);
 
 	/* List all items under our custom SecretSchema. */
 	list = secret_service_search_sync (
@@ -126,8 +126,7 @@ secret_monitor_scan_secrets_thread (gpointer user_data)
 
 		attributes = secret_item_get_attributes (item);
 
-		uid = g_hash_table_lookup (
-			attributes, KEYRING_ITEM_ATTRIBUTE_NAME);
+		uid = g_hash_table_lookup (attributes, KEYRING_ITEM_ATTRIBUTE_UID);
 
 		/* No UID attribute?  Best leave it alone. */
 		if (uid == NULL)
