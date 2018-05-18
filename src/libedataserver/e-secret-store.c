@@ -251,14 +251,15 @@ e_win32_secret_delete_secret_sync (const gchar *uid,
 
 #else /* G_OS_WIN32 */
 
-#define KEYRING_ITEM_ATTRIBUTE_NAME	"e-source-uid"
+#define KEYRING_ITEM_ATTRIBUTE_UID	"e-source-uid"
+#define KEYRING_ITEM_ATTRIBUTE_ORIGIN	"eds-origin"
 
 static SecretSchema password_schema = {
 	"org.gnome.Evolution.Data.Source",
 	SECRET_SCHEMA_DONT_MATCH_NAME,
 	{
-		{ KEYRING_ITEM_ATTRIBUTE_NAME,
-		  SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ KEYRING_ITEM_ATTRIBUTE_UID, SECRET_SCHEMA_ATTRIBUTE_STRING },
+		{ KEYRING_ITEM_ATTRIBUTE_ORIGIN, SECRET_SCHEMA_ATTRIBUTE_STRING },
 		{ NULL, 0 }
 	}
 };
@@ -314,7 +315,8 @@ e_secret_store_store_sync (const gchar *uid,
 		&password_schema,
 		collection, label, secret,
 		cancellable, error,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		KEYRING_ITEM_ATTRIBUTE_UID, uid,
+		KEYRING_ITEM_ATTRIBUTE_ORIGIN, PACKAGE,
 		NULL);
 #endif
 
@@ -359,7 +361,7 @@ e_secret_store_lookup_sync (const gchar *uid,
 	temp = secret_password_lookup_sync (
 		&password_schema,
 		cancellable, &local_error,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		KEYRING_ITEM_ATTRIBUTE_UID, uid,
 		NULL);
 #endif
 
@@ -413,7 +415,7 @@ e_secret_store_delete_sync (const gchar *uid,
 	secret_password_clear_sync (
 		&password_schema,
 		cancellable, &local_error,
-		KEYRING_ITEM_ATTRIBUTE_NAME, uid,
+		KEYRING_ITEM_ATTRIBUTE_UID, uid,
 		NULL);
 #endif
 
