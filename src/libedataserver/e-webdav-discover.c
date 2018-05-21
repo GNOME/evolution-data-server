@@ -579,6 +579,21 @@ e_webdav_discover_sources_finish (ESource *source,
 	return g_task_propagate_boolean (G_TASK (result), error);
 }
 
+static void
+e_webdav_discover_maybe_replace_auth_error (GError **target,
+					    GError **candidate)
+{
+	g_return_if_fail (target != NULL);
+	g_return_if_fail (candidate != NULL);
+
+	if (!g_error_matches (*target, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) &&
+	    g_error_matches (*candidate, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
+		g_clear_error (target);
+		*target = *candidate;
+		*candidate = NULL;
+	}
+}
+
 /**
  * e_webdav_discover_sources_sync:
  * @source: an #ESource from which to take connection details
@@ -714,6 +729,7 @@ e_webdav_discover_sources_sync (ESource *source,
 		   (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS)) != 0) &&
 		   (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 			gchar *saved_path;
+			GError *local_error_2nd = NULL;
 
 			saved_path = g_strdup (soup_uri_get_path (soup_uri));
 
@@ -721,8 +737,7 @@ e_webdav_discover_sources_sync (ESource *source,
 
 			uri = soup_uri_to_string (soup_uri, FALSE);
 
-			/* Ignore errors here */
-			wdd.error = NULL;
+			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_EVENTS | E_WEBDAV_DISCOVER_SUPPORTS_MEMOS | E_WEBDAV_DISCOVER_SUPPORTS_TASKS;
 
 			success = uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE);
@@ -731,12 +746,18 @@ e_webdav_discover_sources_sync (ESource *source,
 
 			soup_uri_set_path (soup_uri, saved_path);
 			g_free (saved_path);
+
+			e_webdav_discover_maybe_replace_auth_error (&local_error, &local_error_2nd);
+			g_clear_error (&local_error_2nd);
+
+			wdd.error = NULL;
 		}
 
 		if (!g_cancellable_is_cancelled (cancellable) && !wdd.addressbooks && (only_supports == E_WEBDAV_DISCOVER_SUPPORTS_NONE ||
 		    (only_supports & (E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS)) != 0) &&
 		    (!soup_uri_get_path (soup_uri) || !strstr (soup_uri_get_path (soup_uri), "/.well-known/"))) {
 			gchar *saved_path;
+			GError *local_error_2nd = NULL;
 
 			saved_path = g_strdup (soup_uri_get_path (soup_uri));
 
@@ -744,8 +765,7 @@ e_webdav_discover_sources_sync (ESource *source,
 
 			uri = soup_uri_to_string (soup_uri, FALSE);
 
-			/* Ignore errors here */
-			wdd.error = NULL;
+			wdd.error = &local_error_2nd;
 			wdd.only_supports = E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS;
 
 			success = uri && *uri && e_webdav_discover_propfind_uri_sync (webdav, &wdd, uri, FALSE);
@@ -754,6 +774,11 @@ e_webdav_discover_sources_sync (ESource *source,
 
 			soup_uri_set_path (soup_uri, saved_path);
 			g_free (saved_path);
+
+			e_webdav_discover_maybe_replace_auth_error (&local_error, &local_error_2nd);
+			g_clear_error (&local_error_2nd);
+
+			wdd.error = NULL;
 		}
 
 		if (wdd.calendars || wdd.addressbooks) {
