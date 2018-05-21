@@ -948,6 +948,12 @@ CHECK_C_SOURCE_COMPILES("#include <libical/ical.h>
 				return 0;
 			}" HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT)
 
+CHECK_C_SOURCE_COMPILES("#include <libical/ical.h>
+			int main(void) {
+				icalproperty_status_to_string (ICAL_STATUS_DELETED);
+				return 0;
+			}" HAVE_ICAL_STATUS_DELETED)
+
 unset(CMAKE_REQUIRED_DEFINITIONS)
 unset(CMAKE_REQUIRED_INCLUDES)
 unset(CMAKE_REQUIRED_LIBRARIES)

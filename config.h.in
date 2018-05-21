@@ -180,6 +180,9 @@
 /* libical provides icaltzutil_set_exact_vtimezones_support function */
 #cmakedefine HAVE_ICALTZUTIL_SET_EXACT_VTIMEZONES_SUPPORT 1
 
+/* libical has ICAL_STATUS_DELETED icalproperty_status value */
+#cmakedefine HAVE_ICAL_STATUS_DELETED 1
+
 /* Define to 1 if you have the libgdata package */
 #cmakedefine HAVE_LIBGDATA 1
 

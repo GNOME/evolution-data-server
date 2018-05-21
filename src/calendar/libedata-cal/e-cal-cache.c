@@ -810,6 +810,10 @@ ecc_get_status_as_string (icalproperty_status status)
 		return "pending";
 	case ICAL_STATUS_FAILED:
 		return "failed";
+#ifdef HAVE_ICAL_STATUS_DELETED
+	case ICAL_STATUS_DELETED:
+		return "deleted";
+#endif
 	case ICAL_STATUS_X:
 		break;
 	}
