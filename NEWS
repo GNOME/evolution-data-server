@@ -1,3 +1,33 @@
+Evolution-Data-Server 3.29.2 2018-05-21
+---------------------------------------
+
+Bug Fixes:
+	Bug 795295 - Fails to compile after icu 61.1 upgrade (icu::UnicodeString) (Hussam Al-Tayeb)
+	Bug 794874 - [CalDAV/CardDAV] Use current-user-privilege-set to determine whether writeable (Milan Crha)
+	Bug 795414 - Errors on delete of a detached instance (Milan Crha)
+	Bug 794727 - [IMAPx] False unsubscribed signal emitted when LSUB is required (Milan Crha)
+	Bug 795997 - Fails to parse Google OAuth2 authorization code (Milan Crha)
+	Bug 585146 - Default to show Reminders window on notification (Milan Crha)
+	Bug 796206 - CalDAV PUT's If-Match ETag is double quoted (Milan Crha)
+
+Miscellaneous:
+	Introduce EReminderWatcher to listen for scheduled reminders (Milan Crha)
+	Link WebKitGTK+ only with libedataserverui when OAuth2 is enabled (Milan Crha)
+	[CamelSaslGssapi] Claim detailed error when org.gnome.KrbAuthDialog not found (Milan Crha)
+	Stale connection used after resume (Milan Crha)
+	Correct some public headers in libedataserverui (Milan Crha)
+	Move evolution-alarm-notify to evolution-data-server (Milan Crha)
+	Address some of the clang warnings (Milan Crha)
+	Address some of the compiler and static analyzers warnings (Milan Crha)
+	[EReminderWatcher] Make it possible to override ECalClient connect functions (Milan Crha)
+	[module-secret-monitor] Correct runtime warning from secret_service_search_sync() (Milan Crha)
+
+Translations:
+	Efstathios Iosifidis (el)
+	Daniel Mustieles (es)
+	Marek Černocký (cs)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.29.1 2018-04-16
 ---------------------------------------
 
