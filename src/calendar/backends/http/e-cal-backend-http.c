@@ -341,7 +341,13 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
-	maincomp = icalparser_parse_string (icalstring);
+	/* Skip the UTF-8 marker at the beginning of the string */
+	if (((guchar) icalstring[0]) == 0xEF &&
+	    ((guchar) icalstring[1]) == 0xBB &&
+	    ((guchar) icalstring[2]) == 0xBF)
+		maincomp = icalparser_parse_string (icalstring + 3);
+	else
+		maincomp = icalparser_parse_string (icalstring);
 
 	g_free (icalstring);
 

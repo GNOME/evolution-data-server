@@ -207,12 +207,48 @@ e_cal_util_parse_ics_string (const gchar *string)
 	return icalcomp;
 }
 
+struct ics_file {
+	FILE *file;
+	gboolean bof;
+};
+
 static gchar *
 get_line_fn (gchar *buf,
-             gsize size,
-             gpointer file)
+	     gsize size,
+	     gpointer user_data)
 {
-	return fgets (buf, size, file);
+	struct ics_file *fl = user_data;
+
+	/* Skip the UTF-8 marker at the beginning of the file */
+	if (fl->bof) {
+		gchar *orig_buf = buf;
+		gchar tmp[4];
+
+		fl->bof = FALSE;
+
+		if (fread (tmp, sizeof (gchar), 3, fl->file) != 3 || feof (fl->file))
+			return NULL;
+
+		if (((guchar) tmp[0]) != 0xEF ||
+		    ((guchar) tmp[1]) != 0xBB ||
+		    ((guchar) tmp[2]) != 0xBF) {
+			if (size <= 3)
+				return NULL;
+
+			buf[0] = tmp[0];
+			buf[1] = tmp[1];
+			buf[2] = tmp[2];
+			buf += 3;
+			size -= 3;
+		}
+
+		if (!fgets (buf, size, fl->file))
+			return NULL;
+
+		return orig_buf;
+	}
+
+	return fgets (buf, size, fl->file);
 }
 
 /**
@@ -230,18 +266,20 @@ e_cal_util_parse_ics_file (const gchar *filename)
 {
 	icalparser *parser;
 	icalcomponent *icalcomp;
-	FILE *file;
+	struct ics_file fl;
 
-	file = g_fopen (filename, "rb");
-	if (!file)
+	fl.file = g_fopen (filename, "rb");
+	if (!fl.file)
 		return NULL;
 
+	fl.bof = TRUE;
+
 	parser = icalparser_new ();
-	icalparser_set_gen_data (parser, file);
+	icalparser_set_gen_data (parser, &fl);
 
 	icalcomp = icalparser_parse (parser, get_line_fn);
 	icalparser_free (parser);
-	fclose (file);
+	fclose (fl.file);
 
 	return icalcomp;
 }
