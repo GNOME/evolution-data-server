@@ -133,19 +133,22 @@ struct _EReminderWatcherClass {
 						 gboolean snoozed);
 	void		(* changed)		(EReminderWatcher *watcher);
 	EClient *	(* cal_client_connect_sync)
-						(ESource *source,
+						(EReminderWatcher *watcher,
+						 ESource *source,
 						 ECalClientSourceType source_type,
 						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GError **error);
-	void		(* cal_client_connect)	(ESource *source,
+	void		(* cal_client_connect)	(EReminderWatcher *watcher,
+						 ESource *source,
 						 ECalClientSourceType source_type,
 						 guint32 wait_for_connected_seconds,
 						 GCancellable *cancellable,
 						 GAsyncReadyCallback callback,
 						 gpointer user_data);
 	EClient *	(* cal_client_connect_finish)
-						(GAsyncResult *result,
+						(EReminderWatcher *watcher,
+						 GAsyncResult *result,
 						 GError **error);
 
 	/* Padding for future expansion */
