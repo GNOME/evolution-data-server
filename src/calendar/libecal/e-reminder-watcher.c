@@ -2022,6 +2022,7 @@ e_reminder_watcher_finalize (GObject *object)
 {
 	EReminderWatcher *watcher = E_REMINDER_WATCHER (object);
 
+	e_reminder_watcher_zone_free ((EReminderWatcherZone *) watcher->priv->default_zone);
 	g_rec_mutex_clear (&watcher->priv->lock);
 
 	/* Chain up to parent's method. */
