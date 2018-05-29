@@ -593,7 +593,7 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	g_return_val_if_fail (system_groups_by_entry_id != NULL, NULL);
 	g_return_val_if_fail (g_hash_table_size (system_groups_by_entry_id) > 0, FALSE);
 
-	uid = gdata_entry_get_id (entry);
+	uid = e_book_google_utils_uid_from_entry (entry);
 	if (NULL == uid)
 		return NULL;
 
@@ -1715,4 +1715,22 @@ e_contact_sanitise_google_group_name (GDataEntry *group)
 		g_warning ("Unknown system group '%s' for group with ID '%s'.", system_group_id, gdata_entry_get_id (group));
 		return g_strdup (gdata_entry_get_title (group));
 	}
+}
+
+/* Makes a non-URL UID from a URL ID; the returned string is owned by @entry */
+const gchar *
+e_book_google_utils_uid_from_entry (GDataEntry *entry)
+{
+	const gchar *id, *slash;
+
+	id = gdata_entry_get_id (entry);
+	if (!id)
+		return NULL;
+
+	slash = strrchr (id, '/');
+
+	if (slash && slash[1])
+		return slash + 1;
+
+	return id;
 }

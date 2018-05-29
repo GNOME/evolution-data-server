@@ -60,6 +60,8 @@ const gchar *e_contact_map_google_with_evo_group (const gchar *group_name, gbool
 gchar *e_contact_sanitise_google_group_id (const gchar *group_id) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 gchar *e_contact_sanitise_google_group_name (GDataEntry *group) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
+const gchar *	e_book_google_utils_uid_from_entry	(GDataEntry *entry);
+
 G_END_DECLS
 
 #endif /* E_BOOK_GOOGLE_UTILS_H */

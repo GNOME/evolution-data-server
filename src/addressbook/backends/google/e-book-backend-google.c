@@ -35,6 +35,9 @@
 
 #define URI_GET_CONTACTS "https://www.google.com/m8/feeds/contacts/default/full"
 
+/* Local cache data version. Change it to re-download whole book content */
+#define EBB_GOOGLE_DATA_VERSION 2
+
 G_DEFINE_TYPE (EBookBackendGoogle, e_book_backend_google, E_TYPE_BOOK_META_BACKEND)
 
 struct _EBookBackendGooglePrivate {
@@ -451,6 +454,7 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 	GTimeVal last_updated;
 	GDataFeed *feed;
 	GDataContactsQuery *contacts_query;
+	GHashTable *known_uids = NULL;
 	GError *local_error = NULL;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_GOOGLE (meta_backend), FALSE);
@@ -469,6 +473,10 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 		return FALSE;
 
 	book_cache = e_book_meta_backend_ref_cache (meta_backend);
+
+	/* Download everything when the local data version mismatches */
+	if (e_cache_get_key_int (E_CACHE (book_cache), "google-data-version", NULL) != EBB_GOOGLE_DATA_VERSION)
+		last_sync_tag = NULL;
 
 	if (!last_sync_tag ||
 	    !g_time_val_from_iso8601 (last_sync_tag, &last_updated)) {
@@ -496,6 +504,26 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 	if (feed && !g_cancellable_is_cancelled (cancellable) && !local_error) {
 		GList *link;
 
+		if (!last_sync_tag) {
+			GSList *uids = NULL, *slink;
+
+			if (e_cache_get_uids (E_CACHE (book_cache), E_CACHE_EXCLUDE_DELETED, &uids, NULL, cancellable, NULL)) {
+				known_uids = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+
+				for (slink = uids; slink; slink = g_slist_next (slink)) {
+					gchar *uid = slink->data;
+
+					if (uid) {
+						g_hash_table_insert (known_uids, uid, NULL);
+						/* Steal the data */
+						slink->data = NULL;
+					}
+				}
+
+				g_slist_free_full (uids, g_free);
+			}
+		}
+
 		if (gdata_feed_get_updated (feed) > updated_time)
 			updated_time = gdata_feed_get_updated (feed);
 
@@ -507,11 +535,14 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 			if (!GDATA_IS_CONTACTS_CONTACT (gdata_contact))
 				continue;
 
-			uid = g_strdup (gdata_entry_get_id (GDATA_ENTRY (gdata_contact)));
+			uid = g_strdup (e_book_google_utils_uid_from_entry (GDATA_ENTRY (gdata_contact)));
 			if (!uid || !*uid) {
 				g_free (uid);
 				continue;
 			}
+
+			if (known_uids)
+				g_hash_table_remove (known_uids, uid);
 
 			if (!e_book_cache_get_contact (book_cache, uid, FALSE, &cached_contact, cancellable, NULL))
 				cached_contact = NULL;
@@ -634,7 +665,28 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 		last_updated.tv_usec = 0;
 
 		*out_new_sync_tag = g_time_val_to_iso8601 (&last_updated);
+
+		if (!last_sync_tag)
+			e_cache_set_key_int (E_CACHE (book_cache), "google-data-version", EBB_GOOGLE_DATA_VERSION, NULL);
+
+		if (known_uids) {
+			GHashTableIter iter;
+			gpointer key;
+
+			g_hash_table_iter_init (&iter, known_uids);
+			while (g_hash_table_iter_next (&iter, &key, NULL)) {
+				const gchar *uid = key;
+
+				if (uid) {
+					*out_removed_objects = g_slist_prepend (*out_removed_objects,
+						e_book_meta_backend_info_new (uid, NULL, NULL, NULL));
+				}
+			}
+		}
 	}
+
+	if (known_uids)
+		g_hash_table_destroy (known_uids);
 
 	g_clear_object (&book_cache);
 
