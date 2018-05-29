@@ -2096,12 +2096,18 @@ get_text_list (GSList *text_list,
 	for (l = text_list; l; l = l->next) {
 		struct text *text;
 		ECalComponentText *t;
+		const gchar *value;
 
 		text = l->data;
 		g_return_if_fail (text->prop != NULL);
 
+		value = (* get_prop_func) (text->prop);
+		/* Skip empty values */
+		if (!value || !*value)
+			continue;
+
 		t = g_new (ECalComponentText, 1);
-		t->value = (* get_prop_func) (text->prop);
+		t->value = value;
 
 		if (text->altrep_param)
 			t->altrep = icalparameter_get_altrep (text->altrep_param);
