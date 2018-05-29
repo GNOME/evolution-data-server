@@ -374,9 +374,8 @@ matches_text_list (GSList *text_list,
 		ECalComponentText *text;
 
 		text = l->data;
-		g_return_val_if_fail (text->value != NULL, FALSE);
 
-		if (e_util_utf8_strstrcasedecomp (text->value, str) != NULL) {
+		if (text && e_util_utf8_strstrcasedecomp (text->value, str) != NULL) {
 			matches = TRUE;
 			break;
 		}

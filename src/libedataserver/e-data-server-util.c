@@ -384,10 +384,10 @@ e_util_utf8_strstrcasedecomp (const gchar *haystack,
 	if (needle == NULL)
 		return NULL;
 
-	if (strlen (needle) == 0)
+	if (!*needle)
 		return haystack;
 
-	if (strlen (haystack) == 0)
+	if (!*haystack)
 		return NULL;
 
 	nuni = g_alloca (sizeof (gunichar) * strlen (needle));
