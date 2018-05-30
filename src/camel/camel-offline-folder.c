@@ -429,27 +429,42 @@ offline_folder_downsync_sync (CamelOfflineFolder *offline,
 		camel_service_get_display_name (CAMEL_SERVICE (camel_folder_get_parent_store (folder))),
 		camel_folder_get_full_name (folder));
 
-	if (expression)
+	limit_time = offline_folder_get_limit_time (folder);
+	if (limit_time > 0 && camel_folder_get_folder_summary (folder)) {
+		gchar *search_sexp;
+
+		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
+
+		/* Also used to know what function to use to free the 'uids' array below */
+		if (!expression)
+			expression = "";
+
+		search_sexp = g_strdup_printf ("(match-all (and "
+			"%s "
+			"(> (get-sent-date) %" G_GINT64_FORMAT ")"
+			"))", expression, (gint64) limit_time);
+
+		uids = camel_folder_search_by_expression (folder, search_sexp, cancellable, NULL);
+
+		g_free (search_sexp);
+	} else if (expression) {
 		uids = camel_folder_search_by_expression (folder, expression, cancellable, NULL);
-	else
+	} else {
 		uids = camel_folder_get_uids (folder);
+	}
 
 	if (!uids)
 		goto done;
+
 	uncached_uids = camel_folder_get_uncached_uids (folder, uids, NULL);
-	if (uids) {
-		if (expression)
-			camel_folder_search_free (folder, uids);
-		else
-			camel_folder_free_uids (folder, uids);
-	}
+
+	if (expression)
+		camel_folder_search_free (folder, uids);
+	else
+		camel_folder_free_uids (folder, uids);
 
 	if (!uncached_uids)
 		goto done;
-
-	limit_time = offline_folder_get_limit_time (folder);
-	if (limit_time > 0 && camel_folder_get_folder_summary (folder))
-		camel_folder_summary_prepare_fetch_all (camel_folder_get_folder_summary (folder), NULL);
 
 	for (i = 0; i < uncached_uids->len && !g_cancellable_is_cancelled (cancellable); i++) {
 		const gchar *uid = uncached_uids->pdata[i];
