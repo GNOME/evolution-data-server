@@ -643,8 +643,10 @@ sm_verify_cmsg (CamelCipherContext *context,
 				}
 
 				for (j = 0; j < nsigners; j++) {
+					CERTCertificate *cert;
 					NSSCMSSignerInfo *si;
 					gchar *cn, *em;
+					gint idx;
 
 					si = NSS_CMSSignedData_GetSignerInfo (sigd, j);
 					NSS_CMSSignedData_VerifySignerInfo (sigd, j, p->certdb, certUsageEmailSigner);
@@ -659,10 +661,39 @@ sm_verify_cmsg (CamelCipherContext *context,
 						cn ? cn:"<unknown>", em ? em:"<unknown>",
 						sm_status_description (status));
 
-					camel_cipher_validity_add_certinfo_ex (
+					cert = NSS_CMSSignerInfo_GetSigningCertificate (si, p->certdb);
+
+					idx = camel_cipher_validity_add_certinfo_ex (
 						valid, CAMEL_CIPHER_VALIDITY_SIGN, cn, em,
-						smime_cert_data_clone (NSS_CMSSignerInfo_GetSigningCertificate (si, p->certdb)),
-						smime_cert_data_free, smime_cert_data_clone);
+						cert ? smime_cert_data_clone (cert) : NULL,
+						cert ? smime_cert_data_free : NULL, cert ? smime_cert_data_clone : NULL);
+
+					if (cert && idx >= 0) {
+						CamelInternetAddress *addrs = NULL;
+						const gchar *cert_email;
+
+						for (cert_email = CERT_GetFirstEmailAddress (cert);
+						     cert_email;
+						     cert_email = CERT_GetNextEmailAddress (cert, cert_email)) {
+							if (!*cert_email)
+								continue;
+
+							if (!addrs)
+								addrs = camel_internet_address_new ();
+
+							camel_internet_address_add (addrs, NULL, cert_email);
+						}
+
+						if (addrs) {
+							gchar *addresses = camel_address_format (CAMEL_ADDRESS (addrs));
+
+							camel_cipher_validity_set_certinfo_property (valid, CAMEL_CIPHER_VALIDITY_SIGN, idx,
+								CAMEL_CIPHER_CERT_INFO_PROPERTY_SIGNERS_ALT_EMAILS, addresses,
+								g_free, (CamelCipherCloneFunc) g_strdup);
+
+							g_object_unref (addrs);
+						}
+					}
 
 					if (cn)
 						PORT_Free (cn);
@@ -1082,10 +1113,10 @@ camel_smime_find_recipients_certs (CERTCertificate *cert,
 				   gpointer user_data)
 {
 	FindRecipientsData *frd = user_data;
-	const char *cert_email = NULL;
+	const gchar *cert_email = NULL;
 	CERTCertificate **hash_value = NULL;
 
-	/* Cannot short-circuit when cbparam->certs_missing is 0, because there can be better certificates */
+	/* Cannot short-circuit when frd->certs_missing is 0, because there can be better certificates */
 	if (!frd->recipients_table ||
 	    CERT_CheckCertValidTimes (cert, frd->now, PR_FALSE) != secCertTimeValid) {
 		return SECFailure;
@@ -1093,7 +1124,7 @@ camel_smime_find_recipients_certs (CERTCertificate *cert,
 
 	/* Loop over all cert's email addresses */
 	for (cert_email = CERT_GetFirstEmailAddress (cert);
-	     cert_email && frd->certs_missing > 0;
+	     cert_email;
 	     cert_email = CERT_GetNextEmailAddress (cert, cert_email)) {
 		hash_value = g_hash_table_lookup (frd->recipients_table, cert_email);
 
