@@ -1231,7 +1231,7 @@ smime_context_encrypt_sync (CamelCipherContext *context,
 			if (!hash_value || !*hash_value) {
 				g_set_error (
 					error, CAMEL_ERROR, CAMEL_ERROR_GENERIC,
-					_("No valid or appropriate certificate for '%s' was found"),
+					_("No valid or appropriate certificate for “%s” was found"),
 					(gchar *) recipients->pdata[i]);
 				g_hash_table_destroy (frd.recipients_table);
 				goto fail;
