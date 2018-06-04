@@ -662,6 +662,9 @@ e_autoconfig_read_user_variables (GSettings *settings)
 		const gchar *line = strv[ii];
 		gchar *name, *value, *sep;
 
+		if (!*line)
+			continue;
+
 		sep = strchr (line, '=');
 		if (!sep || sep == line) {
 			e_source_registry_debug_print ("Autoconfig: GSettings' autoconfig-variables line '%s' doesn't conform format 'name=value'.\n", line);
