@@ -7,7 +7,7 @@ project(evolution-data-server
 	VERSION 3.28.3
 	LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 14)
-set(PROJECT_BUGREPORT "http://bugzilla.gnome.org/enter_bug.cgi?product=Evolution-Data-Server")
+set(PROJECT_BUGREPORT "https://gitlab.gnome.org/GNOME/evolution-data-server/issues/")
 
 # Base Version: This is for API/version tracking for things like
 # D-Bus server files. This should always be the major/minor of
