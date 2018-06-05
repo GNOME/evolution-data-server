@@ -2452,8 +2452,8 @@ camel_content_type_set_param (CamelContentType *t,
  * Returns: %TRUE if the content type @ct is of type @type/@subtype or
  * %FALSE otherwise
  **/
-gint
-camel_content_type_is (CamelContentType *ct,
+gboolean
+camel_content_type_is (const CamelContentType *ct,
                        const gchar *type,
                        const gchar *subtype)
 {
@@ -3853,6 +3853,50 @@ camel_content_disposition_format (CamelContentDisposition *d)
 	ret = out->str;
 	g_string_free (out, FALSE);
 	return ret;
+}
+
+gboolean
+camel_content_disposition_is_attachment (const CamelContentDisposition *disposition,
+					 const CamelContentType *content_type)
+{
+	if (!disposition)
+		return FALSE;
+
+	if (content_type && (
+	    camel_content_type_is (content_type, "application", "xpkcs7mime") ||
+	    camel_content_type_is (content_type, "application", "x-pkcs7-mime") ||
+	    camel_content_type_is (content_type, "application", "pkcs7-mime") ||
+	    camel_content_type_is (content_type, "application", "pkcs7-signature") ||
+	    camel_content_type_is (content_type, "application", "xpkcs7-signature") ||
+	    camel_content_type_is (content_type, "application", "x-pkcs7-signature") ||
+	    camel_content_type_is (content_type, "application", "pkcs7-signature") ||
+	    camel_content_type_is (content_type, "application", "pgp-signature") ||
+	    camel_content_type_is (content_type, "application", "pgp-encrypted")))
+		return FALSE;
+
+	if (disposition->disposition && g_ascii_strcasecmp (disposition->disposition, "attachment") == 0)
+		return TRUE;
+
+	/* If the Content-Disposition isn't an attachment, then call everything with a "filename"
+	   parameter an attachment, but only if there is no Content-Disposition header, or it's
+	   not the "inline" or it's neither text/... nor image/... Content-Type, which can be usually
+	   shown in the UI inline.
+
+	   The test for Content-Type was added for Apple Mail, which marks also for example .pdf
+	   attachments as 'inline', which broke the previous logic here.
+	*/
+	if (!disposition->disposition ||
+	    g_ascii_strcasecmp (disposition->disposition, "inline") != 0 ||
+	    (content_type && !camel_content_type_is (content_type, "text", "*") && !camel_content_type_is (content_type, "image", "*"))) {
+		const struct _camel_header_param *param;
+
+		for (param = disposition->params; param; param = param->next) {
+			if (param->name && param->value && *param->value && g_ascii_strcasecmp (param->name, "filename") == 0)
+				return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 /* date parser macros */

@@ -203,6 +203,15 @@ camel_message_content_info_copy (const CamelMessageContentInfo *src)
 		g_free (content_type);
 	}
 
+	if (src->disposition) {
+		gchar *disposition;
+
+		disposition = camel_content_disposition_format (src->disposition);
+		res->disposition = camel_content_disposition_decode (disposition);
+
+		g_free (disposition);
+	}
+
 	res->id = g_strdup (src->id);
 	res->description = g_strdup (src->description);
 	res->encoding = g_strdup (src->encoding);
@@ -236,6 +245,7 @@ camel_message_content_info_free (CamelMessageContentInfo *ci)
 	pw = ci->childs;
 
 	camel_content_type_unref (ci->type);
+	camel_content_disposition_unref (ci->disposition);
 	g_free (ci->id);
 	g_free (ci->description);
 	g_free (ci->encoding);
@@ -304,42 +314,113 @@ camel_message_content_info_new_from_headers (const CamelNameValueArray *headers)
 	ci->description = camel_header_decode_string (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Description"), charset);
 	ci->encoding = camel_content_transfer_encoding_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Transfer-Encoding"));
 	ci->type = camel_content_type_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Type"));
+	ci->disposition = camel_content_disposition_decode (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-Disposition"));
 
 	return ci;
+}
+
+/* Calls the @func for each ci, including the top one. The @func can return TRUE to
+   continue processing or FALSE to stop it.
+   The function returns FALSE on error or when the @func returned FALSE, otherwise
+   it returns TRUE. */
+gboolean
+camel_message_content_info_traverse (CamelMessageContentInfo *ci,
+				     gboolean (* func) (CamelMessageContentInfo *ci,
+							gint depth,
+							gpointer user_data),
+				     gpointer user_data)
+{
+	CamelMessageContentInfo *next, *cur;
+	gint depth = 0;
+
+	g_return_val_if_fail (ci != NULL, FALSE);
+	g_return_val_if_fail (func != NULL, FALSE);
+
+	cur = ci;
+	do {
+		if (!func (cur, depth, user_data))
+			return FALSE;
+
+		next = cur->childs;
+		if (next)
+			depth++;
+		else
+			next = cur->next;
+
+		if (!next) {
+			next = cur->parent;
+			depth--;
+
+			if (depth < 0) {
+				next = NULL;
+				break;
+			}
+
+			while (next) {
+				CamelMessageContentInfo *sibl;
+
+				sibl = next->next;
+				if (sibl) {
+					next = sibl;
+					break;
+				}
+
+				next = next->parent;
+				depth--;
+
+				if (depth < 0) {
+					next = NULL;
+					break;
+				}
+			}
+		}
+
+		cur = next;
+	} while (cur);
+
+	return TRUE;
+}
+
+static gboolean
+dump_content_into_cb (CamelMessageContentInfo *ci,
+		      gint depth,
+		      gpointer user_data)
+{
+	depth = (GPOINTER_TO_INT (user_data) + depth) * 4;
+
+	if (ci->type)
+		printf ("%*scontent-type: %s/%s\n", depth, "",
+			ci->type->type ? ci->type->type : "(null)",
+			ci->type->subtype ? ci->type->subtype : "(null)");
+	else
+		printf ("%*scontent-type: <unset>\n", depth, "");
+
+	printf ("%*scontent-transfer-encoding: %s\n", depth, "", ci->encoding ? ci->encoding : "(null)");
+	printf ("%*scontent-description: %s\n", depth, "", ci->description ? ci->description : "(null)");
+
+	if (ci->disposition) {
+		gchar *disposition;
+
+		disposition = camel_content_disposition_format (ci->disposition);
+		printf ("%*scontent-disposition: %s\n", depth, "", disposition ? disposition : "(null)");
+		g_free (disposition);
+	} else {
+		printf ("%*scontent-disposition: <unset>\n", depth, "");
+	}
+
+	printf ("%*ssize: %" G_GUINT32_FORMAT "\n", depth, "", ci->size);
+
+	return TRUE;
 }
 
 void
 camel_message_content_info_dump (CamelMessageContentInfo *ci,
 				 gint depth)
 {
-	gchar *p;
-
-	p = alloca (depth * 4 + 1);
-	memset (p, ' ', depth * 4);
-	p[depth * 4] = 0;
-
 	if (ci == NULL) {
-		printf ("%s<empty>\n", p);
+		printf ("%*s<empty>\n", depth * 4, "");
 		return;
 	}
 
-	if (ci->type)
-		printf (
-			"%scontent-type: %s/%s\n",
-			p, ci->type->type ? ci->type->type : "(null)",
-			ci->type->subtype ? ci->type->subtype : "(null)");
-	else
-		printf ("%scontent-type: <unset>\n", p);
-	printf (
-		"%scontent-transfer-encoding: %s\n",
-		p, ci->encoding ? ci->encoding : "(null)");
-	printf (
-		"%scontent-description: %s\n",
-		p, ci->description ? ci->description : "(null)");
-	printf ("%ssize: %lu\n", p, (gulong) ci->size);
-	ci = ci->childs;
-	while (ci) {
-		camel_message_content_info_dump (ci, depth + 1);
-		ci = ci->next;
-	}
+	camel_message_content_info_traverse (ci, dump_content_into_cb, GINT_TO_POINTER (depth));
 }

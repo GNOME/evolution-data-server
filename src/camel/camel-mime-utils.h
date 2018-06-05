@@ -129,7 +129,7 @@ void camel_content_type_unref (CamelContentType *content_type);
 CamelContentType *camel_content_type_ref (CamelContentType *content_type);
 const gchar *camel_content_type_param (CamelContentType *content_type, const gchar *name);
 void camel_content_type_set_param (CamelContentType *content_type, const gchar *name, const gchar *value);
-gint camel_content_type_is (CamelContentType *content_type, const gchar *type, const gchar *subtype);
+gboolean camel_content_type_is (const CamelContentType *content_type, const gchar *type, const gchar *subtype);
 gchar *camel_content_type_format (CamelContentType *content_type);
 gchar *camel_content_type_simple (CamelContentType *content_type);
 
@@ -142,6 +142,7 @@ CamelContentDisposition *camel_content_disposition_decode (const gchar *in);
 CamelContentDisposition *camel_content_disposition_ref (CamelContentDisposition *disposition);
 void camel_content_disposition_unref (CamelContentDisposition *disposition);
 gchar *camel_content_disposition_format (CamelContentDisposition *disposition);
+gboolean camel_content_disposition_is_attachment (const CamelContentDisposition *disposition, const CamelContentType *content_type);
 
 /* decode the contents of a content-encoding header */
 gchar *camel_content_transfer_encoding_decode (const gchar *in);

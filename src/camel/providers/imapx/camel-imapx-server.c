@@ -1056,6 +1056,20 @@ imapx_untagged_flags (CamelIMAPXServer *is,
 }
 
 static gboolean
+imapx_server_cinfo_has_attachment_cb (CamelMessageContentInfo *ci,
+				      gint depth,
+				      gpointer user_data)
+{
+	gboolean *pbool = user_data;
+
+	g_return_val_if_fail (pbool != NULL, FALSE);
+
+	*pbool = camel_content_disposition_is_attachment (ci->disposition, ci->type);
+
+	return !*pbool;
+}
+
+static gboolean
 imapx_untagged_fetch (CamelIMAPXServer *is,
                       GInputStream *input_stream,
                       GCancellable *cancellable,
@@ -1324,6 +1338,14 @@ imapx_untagged_fetch (CamelIMAPXServer *is,
 			camel_message_info_set_abort_notifications (mi, TRUE);
 
 			camel_message_info_set_uid (mi, finfo->uid);
+
+			if ((finfo->got & FETCH_CINFO) && finfo->cinfo) {
+				gboolean has_attachment = FALSE;
+
+				camel_message_content_info_traverse (finfo->cinfo, imapx_server_cinfo_has_attachment_cb, &has_attachment);
+
+				camel_message_info_set_flags (mi, CAMEL_MESSAGE_ATTACHMENTS, has_attachment ? CAMEL_MESSAGE_ATTACHMENTS : 0);
+			}
 
 			if (!(finfo->got & FETCH_FLAGS) && is->priv->fetch_changes_infos) {
 				FetchChangesInfo *nfo;
@@ -3274,7 +3296,7 @@ preauthed:
 		/* XXX The list of FETCH attributes is negotiable. */
 		ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_NOTIFY, "NOTIFY SET "
 			"(selected "
-			"(MessageNew (UID RFC822.SIZE RFC822.HEADER FLAGS)"
+			"(MessageNew (UID RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)"
 			" MessageExpunge"
 			" FlagChange)) "
 			"(personal "
@@ -5175,7 +5197,7 @@ imapx_server_fetch_changes (CamelIMAPXServer *is,
 				ic = camel_imapx_command_new (is, CAMEL_IMAPX_JOB_REFRESH_INFO, "UID FETCH ");
 
 			if (imapx_uidset_add (&uidset, ic, uid) == 1 || (!link->next && ic && imapx_uidset_done (&uidset, ic))) {
-				camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER FLAGS)");
+				camel_imapx_command_add (ic, " (RFC822.SIZE RFC822.HEADER BODYSTRUCTURE FLAGS)");
 
 				success = camel_imapx_server_process_command_sync (is, ic, _("Error fetching message info"), cancellable, error);
 

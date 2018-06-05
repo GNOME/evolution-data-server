@@ -2977,9 +2977,6 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 	cc = summary_format_address (headers, "cc", charset);
 	mlist = camel_headers_dup_mailing_list (headers);
 
-	if (ct)
-		camel_content_type_unref (ct);
-
 	camel_message_info_set_subject (mi, subject);
 	camel_message_info_set_from (mi, from);
 	camel_message_info_set_to (mi, to);
@@ -3066,6 +3063,19 @@ message_info_new_from_headers (CamelFolderSummary *summary,
 
 		camel_message_info_take_references (mi, references);
 	}
+
+	content = camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "Content-class");
+
+	if ((content && g_ascii_strcasecmp (content, "urn:content-classes:calendarmessage") == 0) ||
+	    (ct && camel_content_type_is (ct, "text", "calendar")) ||
+	    camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "X-Calendar-Attachment"))
+		camel_message_info_set_user_flag (mi, "$has_cal", TRUE);
+
+	if (camel_name_value_array_get_named (headers, CAMEL_COMPARE_CASE_INSENSITIVE, "X-Evolution-Note"))
+		camel_message_info_set_user_flag (mi, "$has_note", TRUE);
+
+	if (ct)
+		camel_content_type_unref (ct);
 
 	camel_message_info_take_headers (mi, camel_name_value_array_copy (headers));
 

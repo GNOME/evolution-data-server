@@ -1543,8 +1543,9 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 		return NULL;
 	}
 
-	/* FIXME: do something with the disposition, currently we have no way to pass it out? */
-	if (dinfo)
+	if (cinfo)
+		cinfo->disposition = dinfo;
+	else if (dinfo)
 		camel_content_disposition_unref (dinfo);
 
 	return cinfo;

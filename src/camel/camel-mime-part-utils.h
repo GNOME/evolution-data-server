@@ -47,6 +47,7 @@ struct _CamelMessageContentInfo {
 	CamelMessageContentInfo *parent;
 
 	CamelContentType *type;
+	CamelContentDisposition *disposition;
 	gchar *id;
 	gchar *description;
 	gchar *encoding;
@@ -69,6 +70,12 @@ CamelMessageContentInfo *
 CamelMessageContentInfo *
 		camel_message_content_info_new_from_message
 						(CamelMimePart *mime_part);
+gboolean	camel_message_content_info_traverse
+						(CamelMessageContentInfo *ci,
+						 gboolean (* func) (CamelMessageContentInfo *ci,
+								    gint depth,
+								    gpointer user_data),
+						 gpointer user_data);
 /* debugging functions */
 void		camel_message_content_info_dump	(CamelMessageContentInfo *ci,
 						 gint depth);
