@@ -409,6 +409,13 @@ gchar *		e_cache_get			(ECache *cache,
 						 ECacheColumnValues **out_other_columns,
 						 GCancellable *cancellable,
 						 GError **error);
+gchar *		e_cache_get_object_include_deleted
+						(ECache *cache,
+						 const gchar *uid,
+						 gchar **out_revision,
+						 ECacheColumnValues **out_other_columns,
+						 GCancellable *cancellable,
+						 GError **error);
 gboolean	e_cache_put			(ECache *cache,
 						 const gchar *uid,
 						 const gchar *revision,

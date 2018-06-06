@@ -179,9 +179,11 @@ struct _ECalCacheClass {
 	gchar *		(* dup_component_revision)
 						(ECalCache *cal_cache,
 						 icalcomponent *icalcomp);
+	icaltimezone *	(* get_timezone)	(ECalCache *cal_cache,
+						 const gchar *tzid);
 
 	/* Padding for future expansion */
-	gpointer reserved[10];
+	gpointer reserved[9];
 };
 
 GType		e_cal_cache_get_type		(void) G_GNUC_CONST;
@@ -307,6 +309,7 @@ gboolean	e_cal_cache_delete_attachments	(ECalCache *cal_cache,
 
 gboolean	e_cal_cache_put_timezone	(ECalCache *cal_cache,
 						 const icaltimezone *zone,
+						 guint inc_ref_counts,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_get_timezone	(ECalCache *cal_cache,
@@ -322,6 +325,11 @@ gboolean	e_cal_cache_dup_timezone_as_string
 						 GError **error);
 gboolean	e_cal_cache_list_timezones	(ECalCache *cal_cache,
 						 GList **out_timezones,
+						 GCancellable *cancellable,
+						 GError **error);
+gboolean	e_cal_cache_remove_timezone	(ECalCache *cal_cache,
+						 const gchar *tzid,
+						 guint dec_ref_counts,
 						 GCancellable *cancellable,
 						 GError **error);
 gboolean	e_cal_cache_remove_timezones	(ECalCache *cal_cache,

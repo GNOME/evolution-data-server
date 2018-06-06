@@ -782,6 +782,19 @@ cal_backend_shutdown (ECalBackend *backend)
 		e_source_get_display_name (source));
 }
 
+/* Private function, not meant to be part of the public API */
+void _e_cal_backend_remove_cached_timezones (ECalBackend *cal_backend);
+
+void
+_e_cal_backend_remove_cached_timezones (ECalBackend *cal_backend)
+{
+	g_return_if_fail (E_IS_CAL_BACKEND (cal_backend));
+
+	g_mutex_lock (&cal_backend->priv->zone_cache_lock);
+	g_hash_table_remove_all (cal_backend->priv->zone_cache);
+	g_mutex_unlock (&cal_backend->priv->zone_cache_lock);
+}
+
 static void
 cal_backend_add_cached_timezone (ETimezoneCache *cache,
                                  icaltimezone *zone)

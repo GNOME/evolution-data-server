@@ -27,6 +27,7 @@
 #include "test-cal-cache-utils.h"
 
 void _e_cal_cache_remove_loaded_timezones (ECalCache *cal_cache); /* e-cal-cache.c, private function */
+void _e_cal_backend_remove_cached_timezones (ECalBackend *cal_backend); /* e-cal-backend.c, private function */
 
 #define EXPECTED_TZID		"/freeassociation.sourceforge.net/America/New_York"
 #define EXPECTED_LOCATION	"America/New_York"
@@ -1177,7 +1178,8 @@ test_empty_cache (TCUFixture *fixture,
 	#define TZID "/meta/backend/test/timezone"
 	#define TZLOC "test/timezone"
 
-	const gchar *in_tzobj =
+	const gchar *in_vcalobj =
+		"BEGIN:VCALENDAR\r\n"
 		"BEGIN:VTIMEZONE\r\n"
 		"TZID:" TZID "\r\n"
 		"X-LIC-LOCATION:" TZLOC "\r\n"
@@ -1195,7 +1197,18 @@ test_empty_cache (TCUFixture *fixture,
 		"TZOFFSETFROM:-0500\r\n"
 		"TZOFFSETTO:-0400\r\n"
 		"END:DAYLIGHT\r\n"
-		"END:VTIMEZONE\r\n";
+		"END:VTIMEZONE\r\n"
+		"BEGIN:VEVENT\r\n"
+		"UID:test-event\r\n"
+		"DTSTAMP:20170130T000000Z\r\n"
+		"CREATED:20170216T155507Z\r\n"
+		"LAST-MODIFIED:20170216T155543Z\r\n"
+		"SEQUENCE:1\r\n"
+		"DTSTART;TZID=" TZID ":20170209T013000Z\r\n"
+		"DTEND;TZID=" TZID ":20170209T030000Z\r\n"
+		"SUMMARY:Test Event\r\n"
+		"END:VEVENT\r\n"
+		"END:VCALENDAR\r\n";
 	ECalBackendSyncClass *backend_class;
 	ECalMetaBackend *meta_backend;
 	GList *zones;
@@ -1207,10 +1220,10 @@ test_empty_cache (TCUFixture *fixture,
 
 	backend_class = E_CAL_BACKEND_SYNC_GET_CLASS (meta_backend);
 	g_return_if_fail (backend_class != NULL);
-	g_return_if_fail (backend_class->add_timezone_sync != NULL);
+	g_return_if_fail (backend_class->receive_objects_sync != NULL);
 
-	/* Add timezone to the cache */
-	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, in_tzobj, &error);
+	/* This adds the object and the used timezone to the cache */
+	backend_class->receive_objects_sync (E_CAL_BACKEND_SYNC (meta_backend), NULL, NULL, in_vcalobj, &error);
 	g_assert_no_error (error);
 
 	zones = NULL;
@@ -1332,34 +1345,82 @@ test_discard_alarm (ECalMetaBackend *meta_backend)
 	g_clear_error (&error);
 }
 
+static gboolean
+tcmb_get_uint64_cb (ECache *cache,
+		    gint ncols,
+		    const gchar **column_names,
+		    const gchar **column_values,
+		    gpointer user_data)
+{
+	guint64 *pui64 = user_data;
+
+	g_return_val_if_fail (pui64 != NULL, FALSE);
+
+	if (ncols == 1) {
+		*pui64 = column_values[0] ? g_ascii_strtoull (column_values[0], NULL, 10) : 0;
+	} else {
+		*pui64 = 0;
+	}
+
+	return TRUE;
+}
+
+static gint
+tcmb_get_tzid_ref_count (ECalCache *cal_cache,
+			 const gchar *tzid)
+{
+	guint64 refs = 0;
+	gchar *stmt;
+	gboolean success;
+	GError *error = NULL;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), -1);
+	g_return_val_if_fail (tzid != NULL, -1);
+
+	stmt = e_cache_sqlite_stmt_printf ("SELECT refs FROM timezones WHERE tzid=%Q", tzid);
+
+	success = e_cache_sqlite_select (E_CACHE (cal_cache), stmt, tcmb_get_uint64_cb, &refs, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	e_cache_sqlite_stmt_free (stmt);
+
+	return (gint) refs;
+}
+
 static void
 test_timezones (ECalMetaBackend *meta_backend)
 {
-	#define TZID "/meta/backend/test/timezone"
-	#define TZLOC "test/timezone"
+	#define TZID1 "/meta/backend/test/timezone1"
+	#define TZLOC1 "test/timezone1"
+	#define TZID2 "/meta/backend/test/timezone2"
+	#define TZLOC2 "test/timezone2"
+	#define TZSTRDEF(id, loc) \
+		"BEGIN:VTIMEZONE\r\n" \
+		"TZID:" id "\r\n" \
+		"X-LIC-LOCATION:" loc "\r\n" \
+		"BEGIN:STANDARD\r\n" \
+		"TZNAME:Test-ST\r\n" \
+		"DTSTART:19701106T020000\r\n" \
+		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n" \
+		"TZOFFSETFROM:-0400\r\n" \
+		"TZOFFSETTO:-0500\r\n" \
+		"END:STANDARD\r\n" \
+		"BEGIN:DAYLIGHT\r\n" \
+		"TZNAME:Test-DT\r\n" \
+		"DTSTART:19700313T020000\r\n" \
+		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n" \
+		"TZOFFSETFROM:-0500\r\n" \
+		"TZOFFSETTO:-0400\r\n" \
+		"END:DAYLIGHT\r\n" \
+		"END:VTIMEZONE\r\n"
 
-	const gchar *in_tzobj =
-		"BEGIN:VTIMEZONE\r\n"
-		"TZID:" TZID "\r\n"
-		"X-LIC-LOCATION:" TZLOC "\r\n"
-		"BEGIN:STANDARD\r\n"
-		"TZNAME:Test-ST\r\n"
-		"DTSTART:19701106T020000\r\n"
-		"RRULE:FREQ=YEARLY;BYDAY=1SU;BYMONTH=11\r\n"
-		"TZOFFSETFROM:-0400\r\n"
-		"TZOFFSETTO:-0500\r\n"
-		"END:STANDARD\r\n"
-		"BEGIN:DAYLIGHT\r\n"
-		"TZNAME:Test-DT\r\n"
-		"DTSTART:19700313T020000\r\n"
-		"RRULE:FREQ=YEARLY;BYDAY=2SU;BYMONTH=3\r\n"
-		"TZOFFSETFROM:-0500\r\n"
-		"TZOFFSETTO:-0400\r\n"
-		"END:DAYLIGHT\r\n"
-		"END:VTIMEZONE\r\n";
+	const gchar *in_tz1obj = TZSTRDEF (TZID1, TZLOC1);
+	const gchar *in_tz2obj = TZSTRDEF (TZID2, TZLOC2);
 	ECalBackendSyncClass *backend_class;
 	ECalCache *cal_cache;
 	icalcomponent *vcalendar;
+	ECalComponent *comp;
 	gchar *tzobj = NULL;
 	GList *zones;
 	gboolean success;
@@ -1371,36 +1432,37 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_return_if_fail (backend_class != NULL);
 	g_return_if_fail (backend_class->add_timezone_sync != NULL);
 	g_return_if_fail (backend_class->get_timezone_sync != NULL);
+	g_return_if_fail (backend_class->get_timezone_sync != NULL);
 
 	/* Verify neither TZID, not LOCATION is in the timezone cache */
 	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, TZID, &tzobj, &error);
+		NULL, NULL, TZID1, &tzobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (tzobj);
 	g_clear_error (&error);
 
 	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, TZLOC, &tzobj, &error);
+		NULL, NULL, TZLOC1, &tzobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (tzobj);
 	g_clear_error (&error);
 
 	/* Add it to the cache */
 	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, in_tzobj, &error);
+		NULL, NULL, in_tz1obj, &error);
 	g_assert_no_error (error);
 
 	/* Read it back */
 	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, TZID, &tzobj, &error);
+		NULL, NULL, TZID1, &tzobj, &error);
 	g_assert_no_error (error);
-	g_assert_cmpstr (tzobj, ==, in_tzobj);
+	g_assert_cmpstr (tzobj, ==, in_tz1obj);
 	g_free (tzobj);
 	tzobj = NULL;
 
 	/* As a non-built-in timezone it cannot be read with location, only with TZID */
 	backend_class->get_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, TZLOC, &tzobj, &error);
+		NULL, NULL, TZLOC1, &tzobj, &error);
 	g_assert_error (error, E_DATA_CAL_ERROR, ObjectNotFound);
 	g_assert_null (tzobj);
 	g_clear_error (&error);
@@ -1472,6 +1534,10 @@ test_timezones (ECalMetaBackend *meta_backend)
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+	g_list_free (zones);
+
+	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (meta_backend));
 	g_assert_cmpint (g_list_length (zones), ==, 2);
 	g_list_free (zones);
 
@@ -1484,6 +1550,10 @@ test_timezones (ECalMetaBackend *meta_backend)
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+	g_list_free (zones);
+
+	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (meta_backend));
 	g_assert_cmpint (g_list_length (zones), ==, 4);
 	g_list_free (zones);
 
@@ -1492,6 +1562,41 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert (success);
 
 	_e_cal_cache_remove_loaded_timezones (cal_cache);
+	_e_cal_backend_remove_cached_timezones (E_CAL_BACKEND (meta_backend));
+
+	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (meta_backend));
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, in_tz1obj, &error);
+	g_assert_no_error (error);
+
+	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (meta_backend));
+	g_assert_cmpint (g_list_length (zones), ==, 1);
+	g_list_free (zones);
+
+	/* Remove existing and add the new */
+	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, TRUE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
+	_e_cal_backend_remove_cached_timezones (E_CAL_BACKEND (meta_backend));
+
+	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (meta_backend));
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+
+	icalcomponent_free (vcalendar);
+
+	/* And now when the timezones are actually referenced, thus should be part of the persistent cache */
+
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, in_tz1obj, &error);
+	g_assert_no_error (error);
+
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, in_tz2obj, &error);
+	g_assert_no_error (error);
 
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
@@ -1499,9 +1604,27 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert (success);
 	g_assert_cmpint (g_list_length (zones), ==, 0);
 
-	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
-		NULL, NULL, in_tzobj, &error);
+	/* Uses TZID1 twice */
+	comp = e_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:tz1\r\n"
+		"DTSTAMP:20170130T000000Z\r\n"
+		"CREATED:20170216T155507Z\r\n"
+		"LAST-MODIFIED:20170216T155543Z\r\n"
+		"SEQUENCE:1\r\n"
+		"DTSTART;TZID=" TZID1 ":20170209T013000\r\n"
+		"DTEND;TZID=" TZID1 ":20170209T030000\r\n"
+		"SUMMARY:tz1\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (comp);
+
+	/* Add a component which uses TZID1, thus it's in the cache */
+	success = e_cal_cache_put_component (cal_cache, comp, NULL, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
+	g_assert (success);
+
+	g_object_unref (comp);
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
 
 	zones = NULL;
 	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
@@ -1510,8 +1633,54 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (g_list_length (zones), ==, 1);
 	g_list_free (zones);
 
-	/* Remove existing and add the new */
-	success = e_cal_meta_backend_gather_timezones_sync (meta_backend, vcalendar, TRUE, NULL, &error);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 2);
+
+	/* Uses TZID1 and TZID2 */
+	comp = e_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:tz2\r\n"
+		"DTSTAMP:20170130T000000Z\r\n"
+		"CREATED:20170216T155507Z\r\n"
+		"LAST-MODIFIED:20170216T155543Z\r\n"
+		"SEQUENCE:1\r\n"
+		"DTSTART;TZID=" TZID2 ":20170209T013000\r\n"
+		"DTEND;TZID=" TZID1 ":20170209T030000\r\n"
+		"SUMMARY:tz2\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (comp);
+
+	backend_class->add_timezone_sync (E_CAL_BACKEND_SYNC (meta_backend),
+		NULL, NULL, in_tz2obj, &error);
+	g_assert_no_error (error);
+
+	/* Add a component which uses TZID1 and TZID2, thus it's in the cache */
+	success = e_cal_cache_put_component (cal_cache, comp, NULL, E_CACHE_IS_ONLINE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	g_object_unref (comp);
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 2);
+	g_list_free (zones);
+
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 3);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID2), ==, 1);
+
+	/* Remove in offline doesn't modify timezone cache, because the component is still there */
+	success = e_cal_cache_remove_component (cal_cache, "tz1", NULL, E_CACHE_IS_OFFLINE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 3);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID2), ==, 1);
+
+	/* Remove in online modifies timezone cache */
+	success = e_cal_cache_remove_component (cal_cache, "tz1", NULL, E_CACHE_IS_ONLINE, NULL, &error);
 	g_assert_no_error (error);
 	g_assert (success);
 
@@ -1524,11 +1693,63 @@ test_timezones (ECalMetaBackend *meta_backend)
 	g_assert_cmpint (g_list_length (zones), ==, 2);
 	g_list_free (zones);
 
-	icalcomponent_free (vcalendar);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 1);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID2), ==, 1);
+
+	/* Modify tz2 to use only TZID2, TZID1 is removed */
+	comp = e_cal_component_new_from_string (
+		"BEGIN:VEVENT\r\n"
+		"UID:tz2\r\n"
+		"DTSTAMP:20170130T000000Z\r\n"
+		"CREATED:20170216T155507Z\r\n"
+		"LAST-MODIFIED:20170216T155544Z\r\n"
+		"SEQUENCE:2\r\n"
+		"DTSTART;TZID=" TZID2 ":20170209T013000\r\n"
+		"DTEND:20170209T030000Z\r\n"
+		"SUMMARY:tz2\r\n"
+		"END:VEVENT\r\n");
+	g_assert_nonnull (comp);
+
+	success = e_cal_cache_put_component (cal_cache, comp, NULL, E_CACHE_IS_ONLINE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	g_object_unref (comp);
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 1);
+	g_list_free (zones);
+
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 0);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID2), ==, 1);
+
+	/* Finally remove component straight in online, which removed the only one timezone too */
+	success = e_cal_cache_remove_component (cal_cache, "tz2", NULL, E_CACHE_IS_ONLINE, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+
+	_e_cal_cache_remove_loaded_timezones (cal_cache);
+
+	zones = NULL;
+	success = e_cal_cache_list_timezones (cal_cache, &zones, NULL, &error);
+	g_assert_no_error (error);
+	g_assert (success);
+	g_assert_cmpint (g_list_length (zones), ==, 0);
+
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID1), ==, 0);
+	g_assert_cmpint (tcmb_get_tzid_ref_count (cal_cache, TZID2), ==, 0);
+
 	g_object_unref (cal_cache);
 
-	#undef TZLOC
-	#undef TZID
+	#undef TZSTRDEF
+	#undef TZLOC2
+	#undef TZID2
+	#undef TZLOC1
+	#undef TZID1
 }
 
 static void

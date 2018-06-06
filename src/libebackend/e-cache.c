@@ -1328,6 +1328,51 @@ e_cache_get_object_cb (ECache *cache,
 	return TRUE;
 }
 
+static gchar *
+e_cache_get_object_internal (ECache *cache,
+			     gboolean include_deleted,
+			     const gchar *uid,
+			     gchar **out_revision,
+			     ECacheColumnValues **out_other_columns,
+			     GCancellable *cancellable,
+			     GError **error)
+{
+	struct GetObjectData gd;
+	gboolean success;
+
+	g_return_val_if_fail (E_IS_CACHE (cache), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
+
+	if (out_revision)
+		*out_revision = NULL;
+
+	if (out_other_columns)
+		*out_other_columns = NULL;
+
+	gd.object = NULL;
+	gd.out_revision = out_revision;
+	gd.out_other_columns = out_other_columns;
+
+	if (include_deleted) {
+		success = e_cache_sqlite_exec_printf (cache,
+			"SELECT * FROM " E_CACHE_TABLE_OBJECTS
+			" WHERE " E_CACHE_COLUMN_UID " = %Q",
+			e_cache_get_object_cb, &gd, cancellable, error,
+			uid);
+	} else {
+		success = e_cache_sqlite_exec_printf (cache,
+			"SELECT * FROM " E_CACHE_TABLE_OBJECTS
+			" WHERE " E_CACHE_COLUMN_UID " = %Q AND " E_CACHE_COLUMN_STATE " != %d",
+			e_cache_get_object_cb, &gd, cancellable, error,
+			uid, E_OFFLINE_STATE_LOCALLY_DELETED);
+	}
+
+	if (success && !gd.object)
+		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
+
+	return gd.object;
+}
+
 /**
  * e_cache_get:
  * @cache: an #ECache
@@ -1361,31 +1406,43 @@ e_cache_get (ECache *cache,
 	     GCancellable *cancellable,
 	     GError **error)
 {
-	struct GetObjectData gd;
-
 	g_return_val_if_fail (E_IS_CACHE (cache), NULL);
 	g_return_val_if_fail (uid != NULL, NULL);
 
-	if (out_revision)
-		*out_revision = NULL;
+	return e_cache_get_object_internal (cache, FALSE, uid, out_revision, out_other_columns, cancellable, error);
+}
 
-	if (out_other_columns)
-		*out_other_columns = NULL;
+/**
+ * e_cache_get_object_include_deleted:
+ * @cache: an #ECache
+ * @uid: a unique identifier of an object
+ * @out_revision: (out) (nullable) (transfer full): an out variable for a revision
+ *    of the object, or %NULL to ignore
+ * @out_other_columns: (out) (nullable) (transfer full): an out
+ *    variable for #ECacheColumnValues other columns, as defined when creating the @cache, or %NULL to ignore
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * The same as e_cache_get(), only considers also locally deleted objects.
+ *
+ * Returns: (nullable) (transfer full): An object with the given @uid. Free it
+ *    with g_free(), when no longer needed. Returns %NULL on error, like when
+ *    the object could not be found.
+ *
+ * Since: 3.30
+ **/
+gchar *
+e_cache_get_object_include_deleted (ECache *cache,
+				    const gchar *uid,
+				    gchar **out_revision,
+				    ECacheColumnValues **out_other_columns,
+				    GCancellable *cancellable,
+				    GError **error)
+{
+	g_return_val_if_fail (E_IS_CACHE (cache), NULL);
+	g_return_val_if_fail (uid != NULL, NULL);
 
-	gd.object = NULL;
-	gd.out_revision = out_revision;
-	gd.out_other_columns = out_other_columns;
-
-	if (e_cache_sqlite_exec_printf (cache,
-		"SELECT * FROM " E_CACHE_TABLE_OBJECTS
-		" WHERE " E_CACHE_COLUMN_UID " = %Q AND " E_CACHE_COLUMN_STATE " != %d",
-		e_cache_get_object_cb, &gd, cancellable, error,
-		uid, E_OFFLINE_STATE_LOCALLY_DELETED) &&
-	    !gd.object) {
-		g_set_error (error, E_CACHE_ERROR, E_CACHE_ERROR_NOT_FOUND, _("Object “%s” not found"), uid);
-	}
-
-	return gd.object;
+	return e_cache_get_object_internal (cache, TRUE, uid, out_revision, out_other_columns, cancellable, error);
 }
 
 static gboolean

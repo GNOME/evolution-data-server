@@ -73,6 +73,7 @@ struct _ECalMetaBackendPrivate {
 	gulong source_changed_id;
 	gulong notify_online_id;
 	gulong revision_changed_id;
+	gulong get_timezone_id;
 	guint refresh_timeout_id;
 
 	gboolean refresh_after_authenticate;
@@ -101,6 +102,11 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
+
+/* To be able to call the ECalBackend implementation, which stores zones only in the memory */
+static icaltimezone *	(* ecmb_timezone_cache_parent_get_timezone) (ETimezoneCache *cache,
+								     const gchar *tzid);
+static GList *		(* ecmb_timezone_cache_parent_list_timezones) (ETimezoneCache *cache);
 
 /* Forward Declarations */
 static void e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface);
@@ -1023,7 +1029,8 @@ ecmb_gather_timezones (ECalMetaBackend *meta_backend,
 		clone = icalcomponent_new_clone (subcomp);
 
 		if (icaltimezone_set_component (zone, clone)) {
-			e_timezone_cache_add_timezone (timezone_cache, zone);
+			if (icaltimezone_get_tzid (zone))
+				e_timezone_cache_add_timezone (timezone_cache, zone);
 		} else {
 			icalcomponent_free (clone);
 		}
@@ -1070,7 +1077,7 @@ ecmb_load_component_wrapper_sync (ECalMetaBackend *meta_backend,
 		icalcomponent_kind kind;
 		icalcomponent *subcomp;
 
-		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (cal_cache), icalcomp);
+		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (meta_backend), icalcomp);
 
 		kind = e_cal_backend_get_kind (E_CAL_BACKEND (meta_backend));
 
@@ -2515,7 +2522,7 @@ ecmb_receive_objects_sync (ECalBackendSync *sync_backend,
 	comps = g_slist_reverse (comps);
 
 	if (icalcomponent_isa (icalcomp) == ICAL_VCALENDAR_COMPONENT)
-		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (cal_cache), icalcomp);
+		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (meta_backend), icalcomp);
 
 	if (icalcomponent_get_first_property (icalcomp, ICAL_METHOD_PROPERTY))
 		top_method = icalcomponent_get_method (icalcomp);
@@ -2684,7 +2691,6 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 			gchar **tzobject,
 			GError **error)
 {
-	ECalCache *cal_cache;
 	icaltimezone *zone;
 	gchar *timezone_str = NULL;
 	GError *local_error = NULL;
@@ -2696,10 +2702,7 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 	if (g_cancellable_set_error_if_cancelled (cancellable, error))
 		return;
 
-	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (sync_backend));
-	g_return_if_fail (cal_cache != NULL);
-
-	zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (cal_cache), tzid);
+	zone = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (sync_backend), tzid);
 	if (zone) {
 		icalcomponent *icalcomp;
 
@@ -2711,8 +2714,6 @@ ecmb_get_timezone_sync (ECalBackendSync *sync_backend,
 			timezone_str = icalcomponent_as_ical_string_r (icalcomp);
 		}
 	}
-
-	g_object_unref (cal_cache);
 
 	if (!local_error && !timezone_str)
 		local_error = e_data_cal_create_error (ObjectNotFound, NULL);
@@ -2747,7 +2748,6 @@ ecmb_add_timezone_sync (ECalBackendSync *sync_backend,
 	    icalcomponent_isa (tz_comp) != ICAL_VTIMEZONE_COMPONENT) {
 		g_propagate_error (error, e_data_cal_create_error (InvalidObject, NULL));
 	} else {
-		ECalCache *cal_cache;
 		icaltimezone *zone;
 
 		zone = icaltimezone_new ();
@@ -2755,14 +2755,9 @@ ecmb_add_timezone_sync (ECalBackendSync *sync_backend,
 
 		tz_comp = NULL;
 
-		cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (sync_backend));
-		if (cal_cache) {
-			e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (cal_cache), zone);
-			icaltimezone_free (zone, 1);
-			g_object_unref (cal_cache);
-		} else {
-			g_warn_if_reached ();
-		}
+		/* Add it only to memory, do not store it persistently into the ECalCache */
+		e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (sync_backend), zone);
+		icaltimezone_free (zone, 1);
 	}
 
 	if (tz_comp)
@@ -3108,26 +3103,19 @@ ecmb_maybe_wait_for_credentials (ECalMetaBackend *meta_backend,
 	return got_credentials;
 }
 
-static void
-ecmb_add_cached_timezone (ETimezoneCache *cache,
-			  icaltimezone *zone)
-{
-	ECalCache *cal_cache;
-
-	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cache));
-	g_return_if_fail (E_IS_CAL_CACHE (cal_cache));
-
-	e_timezone_cache_add_timezone (E_TIMEZONE_CACHE (cal_cache), zone);
-
-	g_clear_object (&cal_cache);
-}
-
 static icaltimezone *
 ecmb_get_cached_timezone (ETimezoneCache *cache,
 			  const gchar *tzid)
 {
 	ECalCache *cal_cache;
 	icaltimezone *zone;
+
+	if (ecmb_timezone_cache_parent_get_timezone) {
+		zone = ecmb_timezone_cache_parent_get_timezone (cache, tzid);
+
+		if (zone)
+			return zone;
+	}
 
 	cal_cache = e_cal_meta_backend_ref_cache (E_CAL_META_BACKEND (cache));
 	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
@@ -3151,6 +3139,16 @@ ecmb_list_cached_timezones (ETimezoneCache *cache)
 	zones = e_timezone_cache_list_timezones (E_TIMEZONE_CACHE (cal_cache));
 
 	g_clear_object (&cal_cache);
+
+	if (ecmb_timezone_cache_parent_list_timezones) {
+		GList *backend_zones;
+
+		backend_zones = ecmb_timezone_cache_parent_list_timezones (E_TIMEZONE_CACHE (cache));
+
+		/* There can be duplicates in the 'zones' GList, but let's make it no big deal */
+		if (backend_zones)
+			zones = g_list_concat (zones, backend_zones);
+	}
 
 	return zones;
 }
@@ -3249,6 +3247,12 @@ e_cal_meta_backend_dispose (GObject *object)
 		if (meta_backend->priv->cache)
 			g_signal_handler_disconnect (meta_backend->priv->cache, meta_backend->priv->revision_changed_id);
 		meta_backend->priv->revision_changed_id = 0;
+	}
+
+	if (meta_backend->priv->get_timezone_id) {
+		if (meta_backend->priv->cache)
+			g_signal_handler_disconnect (meta_backend->priv->cache, meta_backend->priv->get_timezone_id);
+		meta_backend->priv->get_timezone_id = 0;
 	}
 
 	g_hash_table_foreach (meta_backend->priv->view_cancellables, ecmb_cancel_view_cb, NULL);
@@ -3415,7 +3419,10 @@ e_cal_meta_backend_init (ECalMetaBackend *meta_backend)
 static void
 e_cal_meta_backend_timezone_cache_init (ETimezoneCacheInterface *iface)
 {
-	iface->add_timezone = ecmb_add_cached_timezone;
+	ecmb_timezone_cache_parent_get_timezone = iface->get_timezone;
+	ecmb_timezone_cache_parent_list_timezones = iface->list_timezones;
+
+	/* leave the iface->add_timezone as it was, to have them in memory only */
 	iface->get_timezone = ecmb_get_cached_timezone;
 	iface->list_timezones = ecmb_list_cached_timezones;
 }
@@ -3623,6 +3630,20 @@ ecmb_cache_revision_changed_cb (ECache *cache,
 	}
 }
 
+static icaltimezone *
+ecmb_cache_get_timezone_cb (ECalCache *cal_cache,
+			    const gchar *tzid,
+			    gpointer user_data)
+{
+	ECalMetaBackend *meta_backend = user_data;
+
+	g_return_val_if_fail (E_IS_CAL_CACHE (cal_cache), NULL);
+	g_return_val_if_fail (tzid != NULL, NULL);
+	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
+
+	return e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (meta_backend), tzid);
+}
+
 /**
  * e_cal_meta_backend_set_cache:
  * @meta_backend: an #ECalMetaBackend
@@ -3656,6 +3677,8 @@ e_cal_meta_backend_set_cache (ECalMetaBackend *meta_backend,
 	if (meta_backend->priv->cache) {
 		g_signal_handler_disconnect (meta_backend->priv->cache,
 			meta_backend->priv->revision_changed_id);
+		g_signal_handler_disconnect (meta_backend->priv->cache,
+			meta_backend->priv->get_timezone_id);
 	}
 
 	g_clear_object (&meta_backend->priv->cache);
@@ -3663,6 +3686,9 @@ e_cal_meta_backend_set_cache (ECalMetaBackend *meta_backend,
 
 	meta_backend->priv->revision_changed_id = g_signal_connect_object (meta_backend->priv->cache,
 		"revision-changed", G_CALLBACK (ecmb_cache_revision_changed_cb), meta_backend, 0);
+
+	meta_backend->priv->get_timezone_id = g_signal_connect_object (meta_backend->priv->cache,
+		"get-timezone", G_CALLBACK (ecmb_cache_get_timezone_cb), meta_backend, 0);
 
 	g_mutex_unlock (&meta_backend->priv->property_lock);
 
@@ -3719,7 +3745,7 @@ sort_master_first_cb (gconstpointer a,
 }
 
 typedef struct {
-	ECalCache *cache;
+	ETimezoneCache *timezone_cache;
 	gboolean replace_tzid_with_location;
 	icalcomponent *vcalendar;
 	icalcomponent *icalcomp;
@@ -3745,8 +3771,8 @@ add_timezone_cb (icalparameter *param,
 	tz = icalcomponent_get_timezone (f_data->icalcomp, tzid);
 	if (!tz)
 		tz = icaltimezone_get_builtin_timezone_from_tzid (tzid);
-	if (!tz && f_data->cache)
-		tz = e_timezone_cache_get_timezone (E_TIMEZONE_CACHE (f_data->cache), tzid);
+	if (!tz && f_data->timezone_cache)
+		tz = e_timezone_cache_get_timezone (f_data->timezone_cache, tzid);
 	if (!tz)
 		return;
 
@@ -3808,7 +3834,6 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 				    const GSList *instances,
 				    gboolean replace_tzid_with_location)
 {
-	ECalCache *cal_cache;
 	ForeachTzidData f_data;
 	icalcomponent *vcalendar;
 	GSList *link, *sorted;
@@ -3816,14 +3841,11 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (E_IS_CAL_META_BACKEND (meta_backend), NULL);
 	g_return_val_if_fail (instances != NULL, NULL);
 
-	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
-	g_return_val_if_fail (cal_cache != NULL, NULL);
-
 	sorted = g_slist_sort (g_slist_copy ((GSList *) instances), sort_master_first_cb);
 
 	vcalendar = e_cal_util_new_top_level ();
 
-	f_data.cache = cal_cache;
+	f_data.timezone_cache = E_TIMEZONE_CACHE (meta_backend);
 	f_data.replace_tzid_with_location = replace_tzid_with_location;
 	f_data.vcalendar = vcalendar;
 
@@ -3844,7 +3866,6 @@ e_cal_meta_backend_merge_instances (ECalMetaBackend *meta_backend,
 		icalcomponent_foreach_tzid (icalcomp, add_timezone_cb, &f_data);
 	}
 
-	g_clear_object (&f_data.cache);
 	g_slist_free (sorted);
 
 	return vcalendar;
@@ -4059,7 +4080,7 @@ e_cal_meta_backend_store_inline_attachments_sync (ECalMetaBackend *meta_backend,
  * @error: return location for a #GError, or %NULL
  *
  * Extracts all VTIMEZONE components from the @vcalendar and adds them
- * to the cache, thus they are available when needed. The function does
+ * to the memory cache, thus they are available when needed. The function does
  * nothing when the @vcalendar doesn't hold a VCALENDAR component.
  *
  * Set the @remove_existing argument to %TRUE to remove all cached timezones
@@ -4095,7 +4116,7 @@ e_cal_meta_backend_gather_timezones_sync (ECalMetaBackend *meta_backend,
 		success = e_cal_cache_remove_timezones (cal_cache, cancellable, error);
 
 	if (success)
-		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (cal_cache), vcalendar);
+		ecmb_gather_timezones (meta_backend, E_TIMEZONE_CACHE (meta_backend), vcalendar);
 
 	e_cache_unlock (E_CACHE (cal_cache), success ? E_CACHE_UNLOCK_COMMIT : E_CACHE_UNLOCK_ROLLBACK);
 
