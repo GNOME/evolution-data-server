@@ -2191,6 +2191,7 @@ gpg_verify_sync (CamelCipherContext *context,
 	CamelMultipart *mps;
 	CamelStream *filter;
 	CamelMimeFilter *canon;
+	gboolean is_retry = FALSE;
 
 	class = CAMEL_CIPHER_CONTEXT_GET_CLASS (context);
 
@@ -2295,21 +2296,20 @@ gpg_verify_sync (CamelCipherContext *context,
 		}
 	}
 
+ retry:
 	g_seekable_seek (G_SEEKABLE (istream), 0, G_SEEK_SET, NULL, NULL);
 
 	canon_stream = camel_stream_mem_new ();
 
 	/* strip trailing white-spaces */
 	filter = camel_stream_filter_new (istream);
-	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF | CAMEL_MIME_FILTER_CANON_STRIP);
+	canon = camel_mime_filter_canon_new (CAMEL_MIME_FILTER_CANON_CRLF | (is_retry ? 0 : CAMEL_MIME_FILTER_CANON_STRIP));
 	camel_stream_filter_add (CAMEL_STREAM_FILTER (filter), canon);
 	g_object_unref (canon);
 
 	camel_stream_write_to_stream (filter, canon_stream, NULL, NULL);
 
 	g_object_unref (filter);
-	g_object_unref (istream);
-	istream = NULL;
 
 	g_seekable_seek (G_SEEKABLE (canon_stream), 0, G_SEEK_SET, NULL, NULL);
 
@@ -2320,12 +2320,15 @@ gpg_verify_sync (CamelCipherContext *context,
 		gpg_ctx_set_sigfile (gpg, sigfile);
 	gpg_ctx_set_istream (gpg, canon_stream);
 
-	if (!gpg_ctx_op_start (gpg, error))
+	if (!gpg_ctx_op_start (gpg, error)) {
+		g_object_unref (canon_stream);
 		goto exception;
+	}
 
 	while (!gpg_ctx_op_complete (gpg)) {
 		if (gpg_ctx_op_step (gpg, cancellable, error) == -1) {
 			gpg_ctx_op_cancel (gpg);
+			g_object_unref (canon_stream);
 			goto exception;
 		}
 	}
@@ -2339,7 +2342,18 @@ gpg_verify_sync (CamelCipherContext *context,
 			error, CAMEL_ERROR, CAMEL_ERROR_GENERIC, "%s",
 			(diagnostics != NULL && *diagnostics != '\0') ?
 			diagnostics : _("Failed to execute gpg."));
+
+		g_object_unref (canon_stream);
+
 		goto exception;
+	}
+
+	if (!is_retry && !gpg->validsig && !gpg->nopubkey) {
+		/* Retry without stripping trailing spaces */
+		is_retry = TRUE;
+		gpg_ctx_free (gpg);
+		g_object_unref (canon_stream);
+		goto retry;
 	}
 
 	validity = camel_cipher_validity_new ();
@@ -2368,6 +2382,7 @@ gpg_verify_sync (CamelCipherContext *context,
 	}
 
 	g_object_unref (canon_stream);
+	g_clear_object (&istream);
 
 	return validity;
 
