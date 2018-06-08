@@ -37,5 +37,15 @@
       a SIGHUP on platforms that support it.
   -->
   <method name="Reload"/>
+
+  <!--
+      RefreshBackend:
+      @source_uid: A UID of a collection ESource
+
+      Initiates refresh of a backend for a collection ESource with the given source_uid.
+  -->
+  <method name="RefreshBackend">
+    <arg name="source_uid" direction="in" type="s"/>
+  </method>
 </interface>
 

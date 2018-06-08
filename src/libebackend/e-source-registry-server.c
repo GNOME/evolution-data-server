@@ -421,6 +421,50 @@ source_registry_server_reload_cb (EDBusSourceManager *dbus_interface,
 	return TRUE;
 }
 
+static gboolean
+source_registry_server_refresh_backend_cb (EDBusSourceManager *dbus_interface,
+					   GDBusMethodInvocation *invocation,
+					   const gchar *source_uid,
+					   ESourceRegistryServer *server)
+{
+	ESource *source;
+	GError *error = NULL;
+
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY_SERVER (server), FALSE);
+	g_return_val_if_fail (source_uid != NULL, FALSE);
+
+	source = e_source_registry_server_ref_source (server, source_uid);
+	if (source) {
+		if (e_source_has_extension (source, E_SOURCE_EXTENSION_COLLECTION)) {
+			ECollectionBackend *backend;
+
+			backend = e_source_registry_server_ref_backend (server, source);
+			if (backend) {
+				e_collection_backend_schedule_populate (backend);
+				g_object_unref (backend);
+			} else {
+				error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+					_("Cannot find corresponding collection backend for source “%s”"), source_uid);
+			}
+		} else {
+			error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+				_("Source “%s” is not a collection source"), source_uid);
+		}
+
+		g_object_unref (source);
+	} else {
+		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+			_("Cannot find source “%s”"), source_uid);
+	}
+
+	if (error)
+		g_dbus_method_invocation_take_error (invocation, error);
+	else
+		e_dbus_source_manager_complete_refresh_backend (dbus_interface, invocation);
+
+	return TRUE;
+}
+
 typedef struct _FileEventData {
 	GFile *file;
 	GFileMonitorEvent event_type;
@@ -1141,6 +1185,11 @@ e_source_registry_server_init (ESourceRegistryServer *server)
 	g_signal_connect (
 		source_manager, "handle-reload",
 		G_CALLBACK (source_registry_server_reload_cb),
+		server);
+
+	g_signal_connect (
+		source_manager, "handle-refresh-backend",
+		G_CALLBACK (source_registry_server_refresh_backend_cb),
 		server);
 }
 

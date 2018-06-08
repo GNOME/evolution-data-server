@@ -2312,6 +2312,122 @@ e_source_registry_create_sources_finish (ESourceRegistry *registry,
 }
 
 /**
+ * e_source_registry_refresh_backend_sync:
+ * @registry: an #ESourceRegistry
+ * @source_uid: UID of a collection #ESource whose backend to refresh
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @error: return location for a #GError, or %NULL
+ *
+ * Requests the D-Bus service to refresh collection backend for an #ESource
+ * with UID @source_uid. The result means that the refresh had been scheduled
+ * not whether the refresh itself succeeded. The refresh is not initiated
+ * when the collection backend is offline.
+ *
+ * If an error occurs, the function will set @error and return %FALSE.
+ *
+ * Returns: Whether succeeded
+ *
+ * Since: 3.30
+ **/
+gboolean
+e_source_registry_refresh_backend_sync (ESourceRegistry *registry,
+					const gchar *source_uid,
+					GCancellable *cancellable,
+					GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
+	g_return_val_if_fail (source_uid != NULL, FALSE);
+
+	return e_dbus_source_manager_call_refresh_backend_sync (
+		registry->priv->dbus_source_manager,
+		source_uid, cancellable, error);
+}
+
+static void
+e_source_registry_refresh_backend_thread (GTask *task,
+					  gpointer source_object,
+					  gpointer task_data,
+					  GCancellable *cancellable)
+{
+	gboolean success;
+	GError *local_error = NULL;
+
+	success = e_source_registry_refresh_backend_sync (source_object, task_data, cancellable, &local_error);
+
+	if (local_error)
+		g_task_return_error (task, local_error);
+	else
+		g_task_return_boolean (task, success);
+}
+
+/**
+ * e_source_registry_refresh_backend:
+ * @registry: an #ESourceRegistry
+ * @source_uid: UID of a collection #ESource whose backend to refresh
+ * @cancellable: optional #GCancellable object, or %NULL
+ * @callback: (scope async): a #GAsyncReadyCallback to call when the request
+ *            is satisfied
+ * @user_data: (closure): data to pass to the callback function
+ *
+ * Asynchronously requests the D-Bus service to refresh collection backend
+ * for an #ESource with UID @source_uid. The result means that the refresh
+ * had been scheduled not whether the refresh itself succeeded. The refresh
+ * is not initiated when the collection backend is offline.
+ *
+ * When the operation is finished, @callback will be called. You can then
+ * call e_source_registry_refresh_backend_finish() to get the result of
+ * the operation.
+ *
+ * Since: 3.30
+ **/
+void
+e_source_registry_refresh_backend (ESourceRegistry *registry,
+				   const gchar *source_uid,
+				   GCancellable *cancellable,
+				   GAsyncReadyCallback callback,
+				   gpointer user_data)
+{
+	GTask *task;
+
+	g_return_if_fail (E_IS_SOURCE_REGISTRY (registry));
+	g_return_if_fail (source_uid != NULL);
+
+	task = g_task_new (registry, cancellable, callback, user_data);
+	g_task_set_source_tag (task, e_source_registry_refresh_backend);
+	g_task_set_task_data (task, g_strdup (source_uid), g_free);
+
+	g_task_run_in_thread (task, e_source_registry_refresh_backend_thread);
+
+	g_object_unref (task);
+}
+
+/**
+ * e_source_registry_refresh_backend_finish:
+ * @registry: an #ESourceRegistry
+ * @result: a #GAsyncResult
+ * @error: return location for a #GError, or %NULL
+ *
+ * Finishes the operation started with e_source_registry_refresh_backend().
+ *
+ * If an error occurred, the function will set @error and return %FALSE.
+ *
+ * Returns: Whether succeeded
+ *
+ * Since: 3.30
+ **/
+gboolean
+e_source_registry_refresh_backend_finish (ESourceRegistry *registry,
+					  GAsyncResult *result,
+					  GError **error)
+{
+	g_return_val_if_fail (E_IS_SOURCE_REGISTRY (registry), FALSE);
+	g_return_val_if_fail (g_task_is_valid (result, registry), FALSE);
+	g_return_val_if_fail (g_async_result_is_tagged (result, e_source_registry_refresh_backend), FALSE);
+
+	return g_task_propagate_boolean (G_TASK (result), error);
+}
+
+/**
  * e_source_registry_ref_source:
  * @registry: an #ESourceRegistry
  * @uid: a unique identifier string

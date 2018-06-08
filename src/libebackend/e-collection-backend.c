@@ -580,17 +580,6 @@ collection_backend_schedule_populate_idle (ECollectionBackend *backend)
 }
 
 static void
-collection_backend_online_cb (EBackend *backend,
-			      GParamSpec *spec,
-			      gpointer user_data)
-{
-	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
-
-	if (e_backend_get_online (backend))
-		collection_backend_schedule_populate_idle (E_COLLECTION_BACKEND (backend));
-}
-
-static void
 collection_backend_notify_collection_cb (ESourceCollection *collection_extension,
 					 GParamSpec *param,
 					 ECollectionBackend *collection_backend)
@@ -903,7 +892,7 @@ collection_backend_constructed (GObject *object)
 	collection_backend_schedule_populate_idle (backend);
 
 	backend->priv->notify_online_handler_id = g_signal_connect (backend, "notify::online",
-		G_CALLBACK (collection_backend_online_cb), NULL);
+		G_CALLBACK (e_collection_backend_schedule_populate), NULL);
 }
 
 static void
@@ -1883,4 +1872,22 @@ e_collection_backend_authenticate_children (ECollectionBackend *backend,
 	g_list_free_full (sources, g_object_unref);
 	g_clear_object (&credentials_provider);
 	g_clear_object (&registry_server);
+}
+
+/**
+ * e_collection_backend_schedule_populate:
+ * @backend: an #ECollectionBackend
+ *
+ * Schedules a call to populate() of the @backend on idle.
+ * The function does nothing in case the @backend is offline.
+ *
+ * Since: 3.30
+ **/
+void
+e_collection_backend_schedule_populate (ECollectionBackend *backend)
+{
+	g_return_if_fail (E_IS_COLLECTION_BACKEND (backend));
+
+	if (e_backend_get_online (E_BACKEND (backend)))
+		collection_backend_schedule_populate_idle (backend);
 }

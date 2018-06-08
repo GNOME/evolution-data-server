@@ -128,6 +128,21 @@ gboolean	e_source_registry_create_sources_finish
 						(ESourceRegistry *registry,
 						 GAsyncResult *result,
 						 GError **error);
+gboolean	e_source_registry_refresh_backend_sync
+						(ESourceRegistry *registry,
+						 const gchar *source_uid,
+						 GCancellable *cancellable,
+						 GError **error);
+void		e_source_registry_refresh_backend
+						(ESourceRegistry *registry,
+						 const gchar *source_uid,
+						 GCancellable *cancellable,
+						 GAsyncReadyCallback callback,
+						 gpointer user_data);
+gboolean	e_source_registry_refresh_backend_finish
+						(ESourceRegistry *registry,
+						 GAsyncResult *result,
+						 GError **error);
 ESource *	e_source_registry_ref_source	(ESourceRegistry *registry,
 						 const gchar *uid);
 GList *		e_source_registry_list_sources	(ESourceRegistry *registry,
