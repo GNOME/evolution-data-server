@@ -39,7 +39,7 @@ set(PROJECT_DISTCONFIGURE_PARAMS
 # ******************************
 set(ADDRESS_BOOK_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.AddressBook9")
 set(CALENDAR_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Calendar7")
-set(SOURCES_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Sources6")
+set(SOURCES_DBUS_SERVICE_NAME		"org.gnome.evolution.dataserver.Sources5")
 set(USER_PROMPTER_DBUS_SERVICE_NAME	"org.gnome.evolution.dataserver.UserPrompter0")
 
 # ******************************
