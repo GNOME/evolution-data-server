@@ -253,8 +253,26 @@ struct _CamelFolderSearchClass {
 						 CamelSExpResult **argv,
 						 CamelFolderSearch *search);
 
+	/* (make-time "string")
+	 * (make-time int)
+	 * Converts the string or int into a time_t value. The function accepts
+	 * date-only value in format YYYYMMDD and also ISO 8601 format. */
+	CamelSExpResult *	(*make_time)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
+
+	/* (compare-date time_t time_t)
+	 * Compares only date portion of the two time_t values and returns an integer
+	 * value < 0 when the first date is before the second, 0 when they are the same
+	 * and value > 0 when the first is after the second date. */
+	CamelSExpResult *	(*compare_date)	(CamelSExp *sexp,
+						 gint argc,
+						 CamelSExpResult **argv,
+						 CamelFolderSearch *search);
+
 	/* Padding for future expansion */
-	gpointer reserved[20];
+	gpointer reserved[18];
 };
 
 GType		camel_folder_search_get_type	(void) G_GNUC_CONST;
@@ -307,7 +325,12 @@ void		camel_folder_search_free_result	(CamelFolderSearch *search,
 time_t		camel_folder_search_util_add_months
 						(time_t t,
 						 gint months);
-
+time_t		camel_folder_search_util_make_time
+						(gint argc,
+						 CamelSExpResult **argv);
+gint		camel_folder_search_util_compare_date
+						(gint64 datetime1,
+						 gint64 datetime2);
 G_END_DECLS
 
 #endif /* CAMEL_FOLDER_SEARCH_H */

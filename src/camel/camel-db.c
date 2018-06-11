@@ -32,6 +32,7 @@
 #include <sqlite3.h>
 
 #include "camel-debug.h"
+#include "camel-folder-search.h"
 #include "camel-object.h"
 #include "camel-string-utils.h"
 
@@ -640,6 +641,23 @@ cdb_match_func (sqlite3_context *ctx,
 }
 
 static void
+cdb_camel_compare_date_func (sqlite3_context *ctx,
+			     gint nArgs,
+			     sqlite3_value **values)
+{
+	sqlite3_int64 v1, v2;
+
+	g_return_if_fail (ctx != NULL);
+	g_return_if_fail (nArgs == 2);
+	g_return_if_fail (values != NULL);
+
+	v1 = sqlite3_value_int64 (values[0]);
+	v2 = sqlite3_value_int64 (values[1]);
+
+	sqlite3_result_int (ctx, camel_folder_search_util_compare_date (v1, v2));
+}
+
+static void
 cdb_writer_lock (CamelDB *cdb)
 {
 	g_return_if_fail (cdb != NULL);
@@ -818,6 +836,7 @@ camel_db_new (const gchar *filename,
 	d (g_print ("\nDatabase succesfully opened  \n"));
 
 	sqlite3_create_function (db, "MATCH", 2, SQLITE_UTF8, NULL, cdb_match_func, NULL, NULL);
+	sqlite3_create_function (db, "CAMELCOMPAREDATE", 2, SQLITE_UTF8, NULL, cdb_camel_compare_date_func, NULL, NULL);
 
 	/* Which is big / costlier ? A Stack frame or a pointer */
 	if (g_getenv ("CAMEL_SQLITE_DEFAULT_CACHE_SIZE") != NULL) {

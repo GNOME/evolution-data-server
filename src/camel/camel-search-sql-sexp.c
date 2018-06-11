@@ -682,6 +682,70 @@ get_size (struct _CamelSExp *f,
 }
 
 static CamelSExpResult *
+make_time_cb (struct _CamelSExp *f,
+	      gint argc,
+	      struct _CamelSExpResult **argv,
+	      gpointer data)
+{
+	CamelSExpResult *r;
+	time_t tt;
+
+	d (printf ("executing make-time\n"));
+
+	tt = camel_folder_search_util_make_time (argc, argv);
+
+	r = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
+	r->value.string = g_strdup_printf ("%" G_GINT64_FORMAT, (gint64) tt);
+
+	return r;
+}
+
+static CamelSExpResult *
+compare_date_cb (struct _CamelSExp *f,
+		 gint argc,
+		 struct _CamelSExpTerm **argv,
+		 gpointer data)
+{
+	struct _CamelSExpResult *res, *r1, *r2;
+
+	d (printf ("executing compare-date\n"));
+
+	res = camel_sexp_result_new (f, CAMEL_SEXP_RES_STRING);
+
+	if (argc == 2) {
+		GString *str = g_string_new ("camelcomparedate( ");
+
+		r1 = camel_sexp_term_eval (f, argv[0]);
+		r2 = camel_sexp_term_eval (f, argv[1]);
+
+		if (r1->type == CAMEL_SEXP_RES_INT)
+			g_string_append_printf (str, "%d", r1->value.number);
+		else if (r1->type == CAMEL_SEXP_RES_TIME)
+			g_string_append_printf (str, "%" G_GINT64_FORMAT, (gint64) r1->value.time);
+		else if (r1->type == CAMEL_SEXP_RES_STRING)
+			g_string_append_printf (str, "%s", r1->value.string);
+
+		g_string_append_printf (str, " , ");
+		if (r2->type == CAMEL_SEXP_RES_INT)
+			g_string_append_printf (str, "%d", r2->value.number);
+		if (r2->type == CAMEL_SEXP_RES_BOOL)
+			g_string_append_printf (str, "%d", r2->value.boolean);
+		else if (r2->type == CAMEL_SEXP_RES_TIME)
+			g_string_append_printf (str, "%" G_GINT64_FORMAT, (gint64) r2->value.time);
+		else if (r2->type == CAMEL_SEXP_RES_STRING)
+			g_string_append_printf (str, "%s", r2->value.string);
+
+		camel_sexp_result_free (f, r1);
+		camel_sexp_result_free (f, r2);
+		g_string_append (str, " )");
+
+		res->value.string = g_string_free (str, FALSE);
+	}
+
+	return res;
+}
+
+static CamelSExpResult *
 sql_exp (struct _CamelSExp *f,
          gint argc,
          struct _CamelSExpResult **argv,
@@ -734,6 +798,8 @@ static struct {
 	{ "get-current-date", get_current_date, 0},
 	{ "get-relative-months", get_relative_months, 0},
 	{ "get-size", get_size, 0},
+	{ "make-time", make_time_cb, 0},
+	{ "compare-date", (CamelSExpFunc) compare_date_cb, 1},
 	{ "sql-exp", sql_exp, 0},
 
 /*	{ "uid", CAMEL_STRUCT_OFFSET(CamelFolderSearchClass, uid), 1 },	*/

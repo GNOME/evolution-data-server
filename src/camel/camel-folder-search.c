@@ -48,6 +48,13 @@
 #include "camel-string-utils.h"
 #include "camel-search-sql-sexp.h"
 
+#ifdef G_OS_WIN32
+#ifdef localtime_r
+#undef localtime_r
+#endif
+#define localtime_r(tp,tmp) memcpy (tmp, localtime (tp), sizeof (struct tm))
+#endif
+
 #define d(x)
 #define r(x)
 #define dd(x) if (camel_debug("search")) x
@@ -217,6 +224,14 @@ static struct {
 
 	{ "message-location",
 	  G_STRUCT_OFFSET (CamelFolderSearchClass, message_location),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "make-time",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, make_time),
+	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
+
+	{ "compare-date",
+	  G_STRUCT_OFFSET (CamelFolderSearchClass, compare_date),
 	  CAMEL_FOLDER_SEARCH_ALWAYS_ENTER },
 };
 
@@ -1667,6 +1682,8 @@ folder_search_message_location (CamelSExp *sexp,
 	CamelSExpResult *r;
 	gboolean same = FALSE;
 
+	r (printf ("executing message-location\n"));
+
 	if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING) {
 		if (argv[0]->value.string && search->priv->folder) {
 			CamelStore *store;
@@ -1706,6 +1723,58 @@ folder_search_message_location (CamelSExp *sexp,
 	return r;
 }
 
+static CamelSExpResult *
+folder_search_make_time (CamelSExp *sexp,
+			 gint argc,
+			 CamelSExpResult **argv,
+			 CamelFolderSearch *search)
+{
+	CamelSExpResult *res;
+
+	r (printf ("executing make-time\n"));
+
+	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_TIME);
+	res->value.time = camel_folder_search_util_make_time (argc, argv);
+
+	return res;
+}
+
+static CamelSExpResult *
+folder_search_compare_date (CamelSExp *sexp,
+			    gint argc,
+			    CamelSExpResult **argv,
+			    CamelFolderSearch *search)
+{
+	CamelSExpResult *res;
+
+	r (printf ("executing compare-date\n"));
+
+	res = camel_sexp_result_new (sexp, CAMEL_SEXP_RES_INT);
+	res->value.number = 0;
+
+	if (argc == 2) {
+		gint64 t1, t2;
+
+		if (argv[0]->type == CAMEL_SEXP_RES_INT)
+			t1 = argv[0]->value.number;
+		else if (argv[0]->type == CAMEL_SEXP_RES_TIME)
+			t1 = (gint64) argv[0]->value.time;
+		else
+			return res;
+
+		if (argv[1]->type == CAMEL_SEXP_RES_INT)
+			t2 = argv[1]->value.number;
+		else if (argv[1]->type == CAMEL_SEXP_RES_TIME)
+			t2 = (gint64) argv[1]->value.time;
+		else
+			return res;
+
+		res->value.number = camel_folder_search_util_compare_date (t1, t2);
+	}
+
+	return res;
+}
+
 static void
 camel_folder_search_class_init (CamelFolderSearchClass *class)
 {
@@ -1741,6 +1810,8 @@ camel_folder_search_class_init (CamelFolderSearchClass *class)
 	class->get_size = folder_search_get_size;
 	class->uid = folder_search_uid;
 	class->message_location = folder_search_message_location;
+	class->make_time = folder_search_make_time;
+	class->compare_date = folder_search_compare_date;
 }
 
 static void
@@ -2455,4 +2526,92 @@ camel_folder_search_util_add_months (time_t t,
 	g_date_time_unref (dt2);
 
 	return res;
+}
+
+static time_t
+folder_search_num_to_timet (gint num)
+{
+	time_t res = (time_t) -1;
+
+	if (num > 9999999) {
+		GDateTime *dtm;
+
+		dtm = g_date_time_new_utc (num / 10000, (num / 100) % 100, num % 100, 0, 0, 0.0);
+		if (dtm) {
+			res = (time_t) g_date_time_to_unix (dtm);
+			g_date_time_unref (dtm);
+		}
+	}
+
+	return res;
+}
+
+/**
+ * camel_folder_search_util_make_time:
+ * @argc: number of arguments in @argv
+ * @argv: array or arguments
+ *
+ * Implementation of 'make-time' function, which expects one argument,
+ * a string or an integer, to be converted into time_t.
+ *
+ * Returns: time_t equivalent of the passed in argument, or (time_t) -1 on error.
+ *
+ * Since: 3.30
+ **/
+time_t
+camel_folder_search_util_make_time (gint argc,
+				    CamelSExpResult **argv)
+{
+	time_t res = (time_t) -1;
+
+	g_return_val_if_fail (argv != NULL, res);
+
+	if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_STRING && argv[0]->value.string) {
+		GTimeVal tv;
+
+		if (g_time_val_from_iso8601 (argv[0]->value.string, &tv)) {
+			res = tv.tv_sec;
+		} else if (strlen (argv[0]->value.string) == 8) {
+			gint num;
+
+			num = atoi (argv[0]->value.string);
+			res = folder_search_num_to_timet (num);
+		}
+	} else if (argc == 1 && argv[0]->type == CAMEL_SEXP_RES_INT) {
+		res = folder_search_num_to_timet (argv[0]->value.number);
+	}
+
+	return res;
+}
+
+/**
+ * camel_folder_search_util_compare_date:
+ * @datetime1: a time_t-like value of the first date-time
+ * @datetime2: a time_t-like value of the second date-time
+ *
+ * Compares date portion of the two date-time values, first converted
+ * into the local time zone. The returned value is like with strcmp().
+ *
+ * Returns: 0 when the dates are equal, < 0 when first is before second and
+ *    > 0 when the first is after the second date
+ *
+ * Since: 3.30
+ **/
+gint
+camel_folder_search_util_compare_date (gint64 datetime1,
+				       gint64 datetime2)
+{
+	struct tm tm;
+	time_t tt;
+	gint dt1, dt2;
+
+	tt = (time_t) datetime1;
+	localtime_r (&tt, &tm);
+	dt1 = ((tm.tm_year + 1900) * 10000) + ((tm.tm_mon + 1) * 100) + tm.tm_mday;
+
+	tt = (time_t) datetime2;
+	localtime_r (&tt, &tm);
+	dt2 = ((tm.tm_year + 1900) * 10000) + ((tm.tm_mon + 1) * 100) + tm.tm_mday;
+
+	return dt1 - dt2;
 }
