@@ -102,6 +102,10 @@ gchar *		e_source_webdav_dup_display_name
 void		e_source_webdav_set_display_name
 						(ESourceWebdav *extension,
 						 const gchar *display_name);
+const gchar *	e_source_webdav_get_color	(ESourceWebdav *extension);
+gchar *		e_source_webdav_dup_color	(ESourceWebdav *extension);
+void		e_source_webdav_set_color	(ESourceWebdav *extension,
+						 const gchar *color);
 const gchar *	e_source_webdav_get_email_address
 						(ESourceWebdav *extension);
 gchar *		e_source_webdav_dup_email_address

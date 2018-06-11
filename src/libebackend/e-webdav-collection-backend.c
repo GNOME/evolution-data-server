@@ -181,24 +181,33 @@ webdav_collection_add_found_source (ECollectionBackend *collection,
 
 	/* these properties are synchronized always */
 	if (source) {
+		ESourceWebdav *webdav_extension;
 		gint rr, gg, bb;
 
 		backend = e_source_get_extension (source, backend_name);
 		e_source_backend_set_backend_name (backend, provider);
 
-		e_source_set_display_name (source, display_name);
+		webdav_extension = e_source_get_extension (source, E_SOURCE_EXTENSION_WEBDAV_BACKEND);
+
+		if (is_new || g_strcmp0 (e_source_webdav_get_display_name (webdav_extension), e_source_get_display_name (source)) == 0)
+			e_source_set_display_name (source, display_name);
+
+		e_source_webdav_set_display_name (webdav_extension, display_name);
 		e_source_set_enabled (source, TRUE);
 
 		/* Also check whether the color format is as expected; it cannot
 		   be used gdk_rgba_parse here, because it required gdk/gtk. */
-		if (is_new && source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS && color &&
+		if (source_type != E_WEBDAV_DISCOVER_SUPPORTS_CONTACTS && color &&
 		    sscanf (color, "#%02x%02x%02x", &rr, &gg, &bb) == 3) {
 			gchar *safe_color;
 
 			/* In case an #RRGGBBAA is returned */
 			safe_color = g_strdup_printf ("#%02x%02x%02x", rr, gg, bb);
 
-			e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), safe_color);
+			if (is_new || g_strcmp0 (e_source_webdav_get_color (webdav_extension), e_source_selectable_get_color (E_SOURCE_SELECTABLE (backend))) == 0)
+				e_source_selectable_set_color (E_SOURCE_SELECTABLE (backend), safe_color);
+
+			e_source_webdav_set_color (webdav_extension, safe_color);
 
 			g_free (safe_color);
 		}

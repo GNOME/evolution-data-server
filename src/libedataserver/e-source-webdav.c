@@ -64,6 +64,7 @@
 
 struct _ESourceWebdavPrivate {
 	gchar *display_name;
+	gchar *color;
 	gchar *email_address;
 	gchar *resource_path;
 	gchar *resource_query;
@@ -77,6 +78,7 @@ enum {
 	PROP_0,
 	PROP_AVOID_IFMATCH,
 	PROP_CALENDAR_AUTO_SCHEDULE,
+	PROP_COLOR,
 	PROP_DISPLAY_NAME,
 	PROP_EMAIL_ADDRESS,
 	PROP_RESOURCE_PATH,
@@ -283,6 +285,12 @@ source_webdav_set_property (GObject *object,
 				g_value_get_boolean (value));
 			return;
 
+		case PROP_COLOR:
+			e_source_webdav_set_color (
+				E_SOURCE_WEBDAV (object),
+				g_value_get_string (value));
+			return;
+
 		case PROP_DISPLAY_NAME:
 			e_source_webdav_set_display_name (
 				E_SOURCE_WEBDAV (object),
@@ -344,6 +352,13 @@ source_webdav_get_property (GObject *object,
 				E_SOURCE_WEBDAV (object)));
 			return;
 
+		case PROP_COLOR:
+			g_value_take_string (
+				value,
+				e_source_webdav_dup_color (
+				E_SOURCE_WEBDAV (object)));
+			return;
+
 		case PROP_DISPLAY_NAME:
 			g_value_take_string (
 				value,
@@ -397,6 +412,7 @@ source_webdav_finalize (GObject *object)
 
 	priv = E_SOURCE_WEBDAV_GET_PRIVATE (object);
 
+	g_free (priv->color);
 	g_free (priv->display_name);
 	g_free (priv->email_address);
 	g_free (priv->resource_path);
@@ -508,6 +524,18 @@ e_source_webdav_class_init (ESourceWebdavClass *class)
 			"Whether the server handles meeting "
 			"invitations (CalDAV-only)",
 			FALSE,
+			G_PARAM_READWRITE |
+			G_PARAM_CONSTRUCT |
+			E_SOURCE_PARAM_SETTING));
+
+	g_object_class_install_property (
+		object_class,
+		PROP_COLOR,
+		g_param_spec_string (
+			"color",
+			"Color",
+			"Color of the WebDAV resource",
+			"",
 			G_PARAM_READWRITE |
 			G_PARAM_CONSTRUCT |
 			E_SOURCE_PARAM_SETTING));
@@ -781,6 +809,89 @@ e_source_webdav_set_display_name (ESourceWebdav *extension,
 	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
 
 	g_object_notify (G_OBJECT (extension), "display-name");
+}
+
+/**
+ * e_source_webdav_get_color:
+ * @extension: an #ESourceWebdav
+ *
+ * Returns the last known color of a WebDAV resource as provided by the server.
+ *
+ * Returns: the color of the WebDAV resource, if any set on the server
+ *
+ * Since: 3.30
+ **/
+const gchar *
+e_source_webdav_get_color (ESourceWebdav *extension)
+{
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
+
+	return extension->priv->color;
+}
+
+/**
+ * e_source_webdav_dup_color:
+ * @extension: an #ESourceWebdav
+ *
+ * Thread-safe variation of e_source_webdav_get_color().
+ * Use this function when accessing @extension from multiple threads.
+ *
+ * The returned string should be freed with g_free() when no longer needed.
+ *
+ * Returns: a newly-allocated copy of #ESourceWebdav:color
+ *
+ * Since: 3.30
+ **/
+gchar *
+e_source_webdav_dup_color (ESourceWebdav *extension)
+{
+	const gchar *protected;
+	gchar *duplicate;
+
+	g_return_val_if_fail (E_IS_SOURCE_WEBDAV (extension), NULL);
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	protected = e_source_webdav_get_color (extension);
+	duplicate = g_strdup (protected);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	return duplicate;
+}
+
+/**
+ * e_source_webdav_set_color:
+ * @extension: an #ESourceWebdav
+ * @color: (optional): the color of the WebDAV resource, or %NULL
+ *
+ * Updates the last known color of a WebDAV resource, as provided by the server.
+ *
+ * The internal copy of @color is automatically stripped of leading
+ * and trailing whitespace. If the resulting string is empty, %NULL is set
+ * instead.
+ *
+ * Since: 3.30
+ **/
+void
+e_source_webdav_set_color (ESourceWebdav *extension,
+			   const gchar *color)
+{
+	g_return_if_fail (E_IS_SOURCE_WEBDAV (extension));
+
+	e_source_extension_property_lock (E_SOURCE_EXTENSION (extension));
+
+	if (g_strcmp0 (extension->priv->color, color) == 0) {
+		e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+		return;
+	}
+
+	g_free (extension->priv->color);
+	extension->priv->color = e_util_strdup_strip (color);
+
+	e_source_extension_property_unlock (E_SOURCE_EXTENSION (extension));
+
+	g_object_notify (G_OBJECT (extension), "color");
 }
 
 /**
