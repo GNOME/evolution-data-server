@@ -38,6 +38,7 @@
 struct _EBookBackendWebDAVPrivate {
 	/* The main WebDAV session  */
 	EWebDAVSession *webdav;
+	GMutex webdav_lock;
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
@@ -47,6 +48,23 @@ struct _EBookBackendWebDAVPrivate {
 };
 
 G_DEFINE_TYPE (EBookBackendWebDAV, e_book_backend_webdav, E_TYPE_BOOK_META_BACKEND)
+
+static EWebDAVSession *
+ebb_webdav_ref_session (EBookBackendWebDAV *bbdav)
+{
+	EWebDAVSession *webdav;
+
+	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (bbdav), NULL);
+
+	g_mutex_lock (&bbdav->priv->webdav_lock);
+	if (bbdav->priv->webdav)
+		webdav = g_object_ref (bbdav->priv->webdav);
+	else
+		webdav = NULL;
+	g_mutex_unlock (&bbdav->priv->webdav_lock);
+
+	return webdav;
+}
 
 static gboolean
 ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
@@ -58,6 +76,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 			 GError **error)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
 	GHashTable *capabilities = NULL, *allows = NULL;
 	ESource *source;
 	gboolean success, is_writable = FALSE;
@@ -68,18 +87,22 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
 
-	if (bbdav->priv->webdav)
+	g_mutex_lock (&bbdav->priv->webdav_lock);
+	if (bbdav->priv->webdav) {
+		g_mutex_unlock (&bbdav->priv->webdav_lock);
 		return TRUE;
+	}
+	g_mutex_unlock (&bbdav->priv->webdav_lock);
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 
-	bbdav->priv->webdav = e_webdav_session_new (source);
+	webdav = e_webdav_session_new (source);
 
-	e_soup_session_setup_logging (E_SOUP_SESSION (bbdav->priv->webdav), g_getenv ("WEBDAV_DEBUG"));
+	e_soup_session_setup_logging (E_SOUP_SESSION (webdav), g_getenv ("WEBDAV_DEBUG"));
 
 	e_binding_bind_property (
 		bbdav, "proxy-resolver",
-		bbdav->priv->webdav, "proxy-resolver",
+		webdav, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
@@ -87,9 +110,9 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
-	e_soup_session_set_credentials (E_SOUP_SESSION (bbdav->priv->webdav), credentials);
+	e_soup_session_set_credentials (E_SOUP_SESSION (webdav), credentials);
 
-	success = e_webdav_session_options_sync (bbdav->priv->webdav, NULL,
+	success = e_webdav_session_options_sync (webdav, NULL,
 		&capabilities, &allows, cancellable, &local_error);
 
 	/* iCloud and Google servers can return "404 Not Found" when issued OPTIONS on the addressbook collection */
@@ -119,7 +142,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 					if (uri) {
 						g_clear_error (&local_error);
 
-						success = e_webdav_session_options_sync (bbdav->priv->webdav, uri,
+						success = e_webdav_session_options_sync (webdav, uri,
 							&capabilities, &allows, cancellable, &local_error);
 					}
 
@@ -147,7 +170,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 		GSList *privileges = NULL, *link;
 
 		/* Ignore any errors here */
-		if (e_webdav_session_get_current_user_privilege_set_sync (bbdav->priv->webdav, NULL, &privileges, cancellable, NULL)) {
+		if (e_webdav_session_get_current_user_privilege_set_sync (webdav, NULL, &privileges, cancellable, NULL)) {
 			for (link = privileges; link && !is_writable; link = g_slist_next (link)) {
 				EWebDAVPrivilege *privilege = link->data;
 
@@ -213,7 +236,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 
 		   The 'getctag' extension is not required, thuch check
 		   for unauthorized error only. */
-		if (!e_webdav_session_getctag_sync (bbdav->priv->webdav, NULL, &ctag, cancellable, &local_error) &&
+		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
@@ -230,7 +253,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 		gboolean is_ssl_error;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials)) &&
-			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (bbdav->priv->webdav));
+			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav));
 		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
@@ -247,7 +270,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 			else
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 		} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
-			   (!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (bbdav->priv->webdav)) &&
+			   (!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav)) &&
 			   g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 		} else if (!local_error) {
@@ -264,7 +287,7 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
-			e_soup_session_get_ssl_error_details (E_SOUP_SESSION (bbdav->priv->webdav), out_certificate_pem, out_certificate_errors);
+			e_soup_session_get_ssl_error_details (E_SOUP_SESSION (webdav), out_certificate_pem, out_certificate_errors);
 		} else {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
@@ -275,8 +298,18 @@ ebb_webdav_connect_sync (EBookMetaBackend *meta_backend,
 	if (allows)
 		g_hash_table_destroy (allows);
 
-	if (!success)
-		g_clear_object (&bbdav->priv->webdav);
+	if (success && !g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		g_mutex_lock (&bbdav->priv->webdav_lock);
+		bbdav->priv->webdav = webdav;
+		g_mutex_unlock (&bbdav->priv->webdav_lock);
+	} else {
+		if (success) {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+			success = FALSE;
+		}
+
+		g_clear_object (&webdav);
+	}
 
 	return success;
 }
@@ -293,10 +326,14 @@ ebb_webdav_disconnect_sync (EBookMetaBackend *meta_backend,
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
 
+	g_mutex_lock (&bbdav->priv->webdav_lock);
+
 	if (bbdav->priv->webdav)
 		soup_session_abort (SOUP_SESSION (bbdav->priv->webdav));
 
 	g_clear_object (&bbdav->priv->webdav);
+
+	g_mutex_unlock (&bbdav->priv->webdav_lock);
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
@@ -403,6 +440,7 @@ ebb_webdav_multiget_response_cb (EWebDAVSession *webdav,
 
 static gboolean
 ebb_webdav_multiget_from_sets_sync (EBookBackendWebDAV *bbdav,
+				    EWebDAVSession *webdav,
 				    GSList **in_link,
 				    GSList **set2,
 				    GCancellable *cancellable,
@@ -461,7 +499,7 @@ ebb_webdav_multiget_from_sets_sync (EBookBackendWebDAV *bbdav,
 	if (left_to_go != E_WEBDAV_MAX_MULTIGET_AMOUNT && success) {
 		GSList *from_link = *in_link;
 
-		success = e_webdav_session_report_sync (bbdav->priv->webdav, NULL, NULL, xml,
+		success = e_webdav_session_report_sync (webdav, NULL, NULL, xml,
 			ebb_webdav_multiget_response_cb, &from_link, NULL, NULL, cancellable, error);
 	}
 
@@ -565,11 +603,12 @@ ebb_webdav_search_changes_cb (EBookCache *book_cache,
 
 static void
 ebb_webdav_check_credentials_error (EBookBackendWebDAV *bbdav,
+				    EWebDAVSession *webdav,
 				    GError *op_error)
 {
 	g_return_if_fail (E_IS_BOOK_BACKEND_WEBDAV (bbdav));
 
-	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && bbdav->priv->webdav) {
+	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
 		op_error->domain = E_DATA_BOOK_ERROR;
 		op_error->code = E_DATA_BOOK_STATUS_TLS_NOT_AVAILABLE;
 	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
@@ -577,10 +616,10 @@ ebb_webdav_check_credentials_error (EBookBackendWebDAV *bbdav,
 		op_error->domain = E_DATA_BOOK_ERROR;
 		op_error->code = E_DATA_BOOK_STATUS_AUTHENTICATION_REQUIRED;
 
-		if (bbdav->priv->webdav) {
+		if (webdav) {
 			ENamedParameters *credentials;
 
-			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (bbdav->priv->webdav));
+			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (webdav));
 			if (credentials && e_named_parameters_count (credentials) > 0)
 				op_error->code = E_DATA_BOOK_STATUS_AUTHENTICATION_FAILED;
 
@@ -602,6 +641,7 @@ ebb_webdav_get_changes_sync (EBookMetaBackend *meta_backend,
 			     GError **error)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
 	EXmlDocument *xml;
 	GHashTable *known_items; /* gchar *href ~> EBookMetaBackendInfo * */
 	GHashTableIter iter;
@@ -621,17 +661,21 @@ ebb_webdav_get_changes_sync (EBookMetaBackend *meta_backend,
 	*out_removed_objects = NULL;
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
+	webdav = ebb_webdav_ref_session (bbdav);
 
 	if (bbdav->priv->ctag_supported) {
 		gchar *new_sync_tag = NULL;
 
-		success = e_webdav_session_getctag_sync (bbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL);
+		success = e_webdav_session_getctag_sync (webdav, NULL, &new_sync_tag, cancellable, NULL);
 		if (!success) {
 			bbdav->priv->ctag_supported = g_cancellable_set_error_if_cancelled (cancellable, error);
-			if (bbdav->priv->ctag_supported || !bbdav->priv->webdav)
+			if (bbdav->priv->ctag_supported || !webdav) {
+				g_clear_object (&webdav);
 				return FALSE;
+			}
 		} else if (new_sync_tag && last_sync_tag && g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
 			*out_new_sync_tag = new_sync_tag;
+			g_clear_object (&webdav);
 			return TRUE;
 		}
 
@@ -647,7 +691,7 @@ ebb_webdav_get_changes_sync (EBookMetaBackend *meta_backend,
 
 	known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_book_meta_backend_info_free);
 
-	success = e_webdav_session_propfind_sync (bbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
+	success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
 		ebb_webdav_get_contact_items_cb, known_items, cancellable, &local_error);
 
 	g_object_unref (xml);
@@ -687,14 +731,16 @@ ebb_webdav_get_changes_sync (EBookMetaBackend *meta_backend,
 		}
 
 		do {
-			success = ebb_webdav_multiget_from_sets_sync (bbdav, &link, &set2, cancellable, &local_error);
+			success = ebb_webdav_multiget_from_sets_sync (bbdav, webdav, &link, &set2, cancellable, &local_error);
 		} while (success && link);
 	}
 
 	if (local_error) {
-		ebb_webdav_check_credentials_error (bbdav, local_error);
+		ebb_webdav_check_credentials_error (bbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -757,6 +803,7 @@ ebb_webdav_list_existing_sync (EBookMetaBackend *meta_backend,
 			       GError **error)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
 	EXmlDocument *xml;
 	GError *local_error = NULL;
 	gboolean success;
@@ -785,7 +832,9 @@ ebb_webdav_list_existing_sync (EBookMetaBackend *meta_backend,
 	e_xml_document_end_element (xml); /* address-data */
 	e_xml_document_end_element (xml); /* prop */
 
-	success = e_webdav_session_report_sync (bbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
+	webdav = ebb_webdav_ref_session (bbdav);
+
+	success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
 		ebb_webdav_extract_existing_cb, out_existing_objects, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
@@ -794,9 +843,11 @@ ebb_webdav_list_existing_sync (EBookMetaBackend *meta_backend,
 		*out_existing_objects = g_slist_reverse (*out_existing_objects);
 
 	if (local_error) {
-		ebb_webdav_check_credentials_error (bbdav, local_error);
+		ebb_webdav_check_credentials_error (bbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -869,6 +920,7 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 			      GError **error)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
 	gchar *uri = NULL, *href = NULL, *etag = NULL, *bytes = NULL;
 	gsize length = -1;
 	gboolean success = FALSE;
@@ -879,11 +931,12 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (out_contact != NULL, FALSE);
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
+	webdav = ebb_webdav_ref_session (bbdav);
 
 	if (extra && *extra) {
 		uri = g_strdup (extra);
 
-		success = e_webdav_session_get_data_sync (bbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 
 		if (!success) {
 			g_free (uri);
@@ -894,13 +947,14 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 	if (!success && bbdav->priv->ctag_supported) {
 		gchar *new_sync_tag = NULL;
 
-		if (e_webdav_session_getctag_sync (bbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL) && new_sync_tag) {
+		if (e_webdav_session_getctag_sync (webdav, NULL, &new_sync_tag, cancellable, NULL) && new_sync_tag) {
 			gchar *last_sync_tag;
 
 			last_sync_tag = e_book_meta_backend_dup_sync_tag (meta_backend);
 
 			/* The book didn't change, thus the contact cannot be there */
 			if (g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
+				g_clear_object (&webdav);
 				g_clear_error (&local_error);
 				g_free (last_sync_tag);
 				g_free (new_sync_tag);
@@ -922,7 +976,7 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 
 		g_clear_error (&local_error);
 
-		success = e_webdav_session_get_data_sync (bbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 
 		/* Do not try twice with Google, it's either without extension or not there.
 		   The worst, it counts to the Error requests quota limit. */
@@ -934,7 +988,7 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 			if (uri) {
 				g_clear_error (&local_error);
 
-				success = e_webdav_session_get_data_sync (bbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+				success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 			}
 		}
 	}
@@ -964,9 +1018,11 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (bytes);
 
 	if (local_error) {
-		ebb_webdav_check_credentials_error (bbdav, local_error);
+		ebb_webdav_check_credentials_error (bbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -983,6 +1039,7 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 			      GError **error)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
 	gchar *href = NULL, *etag = NULL, *uid = NULL;
 	gchar *vcard_string = NULL;
 	GError *local_error = NULL;
@@ -994,6 +1051,7 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (out_new_extra, FALSE);
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
+	webdav = ebb_webdav_ref_session (bbdav);
 
 	uid = e_contact_get (contact, E_CONTACT_UID);
 	etag = e_vcard_util_dup_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
@@ -1021,7 +1079,7 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 			}
 		}
 
-		success = e_webdav_session_put_data_sync (bbdav->priv->webdav, (extra && *extra) ? extra : href,
+		success = e_webdav_session_put_data_sync (webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_VCARD,
 			vcard_string, -1, out_new_extra, NULL, cancellable, &local_error);
 
@@ -1039,9 +1097,11 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (uid);
 
 	if (local_error) {
-		ebb_webdav_check_credentials_error (bbdav, local_error);
+		ebb_webdav_check_credentials_error (bbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -1056,6 +1116,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 				GError **error)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
 	EContact *contact;
 	gchar *etag = NULL;
 	gboolean success;
@@ -1081,7 +1142,9 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	if (conflict_resolution == E_CONFLICT_RESOLUTION_FAIL)
 		etag = e_vcard_util_dup_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG);
 
-	success = e_webdav_session_delete_sync (bbdav->priv->webdav, extra,
+	webdav = ebb_webdav_ref_session (bbdav);
+
+	success = e_webdav_session_delete_sync (webdav, extra,
 		NULL, etag, cancellable, &local_error);
 
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
@@ -1090,7 +1153,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 		href = ebb_webdav_uid_to_uri (bbdav, uid, ".vcf");
 		if (href) {
 			g_clear_error (&local_error);
-			success = e_webdav_session_delete_sync (bbdav->priv->webdav, href,
+			success = e_webdav_session_delete_sync (webdav, href,
 				NULL, etag, cancellable, &local_error);
 
 			g_free (href);
@@ -1100,7 +1163,7 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 			href = ebb_webdav_uid_to_uri (bbdav, uid, NULL);
 			if (href) {
 				g_clear_error (&local_error);
-				success = e_webdav_session_delete_sync (bbdav->priv->webdav, href,
+				success = e_webdav_session_delete_sync (webdav, href,
 					NULL, etag, cancellable, &local_error);
 
 				g_free (href);
@@ -1112,9 +1175,11 @@ ebb_webdav_remove_contact_sync (EBookMetaBackend *meta_backend,
 	g_free (etag);
 
 	if (local_error) {
-		ebb_webdav_check_credentials_error (bbdav, local_error);
+		ebb_webdav_check_credentials_error (bbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -1125,15 +1190,22 @@ ebb_webdav_get_ssl_error_details (EBookMetaBackend *meta_backend,
 				  GTlsCertificateFlags *out_certificate_errors)
 {
 	EBookBackendWebDAV *bbdav;
+	EWebDAVSession *webdav;
+	gboolean res;
 
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (meta_backend), FALSE);
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
+	webdav = ebb_webdav_ref_session (bbdav);
 
-	if (!bbdav->priv->webdav)
+	if (!webdav)
 		return FALSE;
 
-	return e_soup_session_get_ssl_error_details (E_SOUP_SESSION (bbdav->priv->webdav), out_certificate_pem, out_certificate_errors);
+	res = e_soup_session_get_ssl_error_details (E_SOUP_SESSION (webdav), out_certificate_pem, out_certificate_errors);
+
+	g_clear_object (&webdav);
+
+	return res;
 }
 
 static gchar *
@@ -1187,16 +1259,31 @@ e_book_backend_webdav_dispose (GObject *object)
 {
 	EBookBackendWebDAV *bbdav = E_BOOK_BACKEND_WEBDAV (object);
 
+	g_mutex_lock (&bbdav->priv->webdav_lock);
 	g_clear_object (&bbdav->priv->webdav);
+	g_mutex_unlock (&bbdav->priv->webdav_lock);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->dispose (object);
 }
 
 static void
+e_book_backend_webdav_finalize (GObject *object)
+{
+	EBookBackendWebDAV *bbdav = E_BOOK_BACKEND_WEBDAV (object);
+
+	g_mutex_clear (&bbdav->priv->webdav_lock);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_book_backend_webdav_parent_class)->finalize (object);
+}
+
+static void
 e_book_backend_webdav_init (EBookBackendWebDAV *bbdav)
 {
 	bbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (bbdav, E_TYPE_BOOK_BACKEND_WEBDAV, EBookBackendWebDAVPrivate);
+
+	g_mutex_init (&bbdav->priv->webdav_lock);
 }
 
 static void
@@ -1226,4 +1313,5 @@ e_book_backend_webdav_class_init (EBookBackendWebDAVClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = e_book_backend_webdav_constructed;
 	object_class->dispose = e_book_backend_webdav_dispose;
+	object_class->finalize = e_book_backend_webdav_finalize;
 }

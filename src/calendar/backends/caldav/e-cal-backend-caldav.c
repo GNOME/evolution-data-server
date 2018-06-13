@@ -36,6 +36,7 @@
 struct _ECalBackendCalDAVPrivate {
 	/* The main WebDAV session  */
 	EWebDAVSession *webdav;
+	GMutex webdav_lock;
 
 	/* support for 'getctag' extension */
 	gboolean ctag_supported;
@@ -57,6 +58,23 @@ struct _ECalBackendCalDAVPrivate {
 };
 
 G_DEFINE_TYPE (ECalBackendCalDAV, e_cal_backend_caldav, E_TYPE_CAL_META_BACKEND)
+
+static EWebDAVSession *
+ecb_caldav_ref_session (ECalBackendCalDAV *cbdav)
+{
+	EWebDAVSession *webdav;
+
+	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav), NULL);
+
+	g_mutex_lock (&cbdav->priv->webdav_lock);
+	if (cbdav->priv->webdav)
+		webdav = g_object_ref (cbdav->priv->webdav);
+	else
+		webdav = NULL;
+	g_mutex_unlock (&cbdav->priv->webdav_lock);
+
+	return webdav;
+}
 
 static void
 ecb_caldav_update_tweaks (ECalBackendCalDAV *cbdav)
@@ -95,6 +113,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			 GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 	GHashTable *capabilities = NULL, *allows = NULL;
 	ESource *source;
 	gboolean success, is_writable = FALSE;
@@ -105,18 +124,22 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 
-	if (cbdav->priv->webdav)
+	g_mutex_lock (&cbdav->priv->webdav_lock);
+	if (cbdav->priv->webdav) {
+		g_mutex_unlock (&cbdav->priv->webdav_lock);
 		return TRUE;
+	}
+	g_mutex_unlock (&cbdav->priv->webdav_lock);
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 
-	cbdav->priv->webdav = e_webdav_session_new (source);
+	webdav = e_webdav_session_new (source);
 
-	e_soup_session_setup_logging (E_SOUP_SESSION (cbdav->priv->webdav), g_getenv ("CALDAV_DEBUG"));
+	e_soup_session_setup_logging (E_SOUP_SESSION (webdav), g_getenv ("CALDAV_DEBUG"));
 
 	e_binding_bind_property (
 		cbdav, "proxy-resolver",
-		cbdav->priv->webdav, "proxy-resolver",
+		webdav, "proxy-resolver",
 		G_BINDING_SYNC_CREATE);
 
 	/* Thinks the 'getctag' extension is available the first time, but unset it when realizes it isn't. */
@@ -124,16 +147,16 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_CONNECTING);
 
-	e_soup_session_set_credentials (E_SOUP_SESSION (cbdav->priv->webdav), credentials);
+	e_soup_session_set_credentials (E_SOUP_SESSION (webdav), credentials);
 
-	success = e_webdav_session_options_sync (cbdav->priv->webdav, NULL,
+	success = e_webdav_session_options_sync (webdav, NULL,
 		&capabilities, &allows, cancellable, &local_error);
 
 	if (success && !g_cancellable_is_cancelled (cancellable)) {
 		GSList *privileges = NULL, *link;
 
 		/* Ignore any errors here */
-		if (e_webdav_session_get_current_user_privilege_set_sync (cbdav->priv->webdav, NULL, &privileges, cancellable, NULL)) {
+		if (e_webdav_session_get_current_user_privilege_set_sync (webdav, NULL, &privileges, cancellable, NULL)) {
 			for (link = privileges; link && !is_writable; link = g_slist_next (link)) {
 				EWebDAVPrivilege *privilege = link->data;
 
@@ -199,7 +222,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 
 		   The 'getctag' extension is not required, thuch check
 		   for unauthorized error only. */
-		if (!e_webdav_session_getctag_sync (cbdav->priv->webdav, NULL, &ctag, cancellable, &local_error) &&
+		if (!e_webdav_session_getctag_sync (webdav, NULL, &ctag, cancellable, &local_error) &&
 		    g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED)) {
 			success = FALSE;
 		} else {
@@ -214,7 +237,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 		gboolean is_ssl_error;
 
 		credentials_empty = (!credentials || !e_named_parameters_count (credentials)) &&
-			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbdav->priv->webdav));
+			e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav));
 		is_ssl_error = g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED);
 
 		*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR;
@@ -231,7 +254,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			else
 				*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 		} else if (g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_CONNECTION_REFUSED) ||
-			   (!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (cbdav->priv->webdav)) &&
+			   (!e_soup_session_get_authentication_requires_credentials (E_SOUP_SESSION (webdav)) &&
 			   g_error_matches (local_error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND))) {
 			*out_auth_result = E_SOURCE_AUTHENTICATION_REJECTED;
 		} else if (!local_error) {
@@ -248,7 +271,7 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 			*out_auth_result = E_SOURCE_AUTHENTICATION_ERROR_SSL_FAILED;
 
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_SSL_FAILED);
-			e_soup_session_get_ssl_error_details (E_SOUP_SESSION (cbdav->priv->webdav), out_certificate_pem, out_certificate_errors);
+			e_soup_session_get_ssl_error_details (E_SOUP_SESSION (webdav), out_certificate_pem, out_certificate_errors);
 		} else {
 			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
 		}
@@ -259,8 +282,18 @@ ecb_caldav_connect_sync (ECalMetaBackend *meta_backend,
 	if (allows)
 		g_hash_table_destroy (allows);
 
-	if (!success)
-		g_clear_object (&cbdav->priv->webdav);
+	if (success && !g_cancellable_set_error_if_cancelled (cancellable, error)) {
+		g_mutex_lock (&cbdav->priv->webdav_lock);
+		cbdav->priv->webdav = webdav;
+		g_mutex_unlock (&cbdav->priv->webdav_lock);
+	} else {
+		if (success) {
+			e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
+			success = FALSE;
+		}
+
+		g_clear_object (&webdav);
+	}
 
 	return success;
 }
@@ -277,10 +310,12 @@ ecb_caldav_disconnect_sync (ECalMetaBackend *meta_backend,
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
 
+	g_mutex_lock (&cbdav->priv->webdav_lock);
 	if (cbdav->priv->webdav)
 		soup_session_abort (SOUP_SESSION (cbdav->priv->webdav));
 
 	g_clear_object (&cbdav->priv->webdav);
+	g_mutex_unlock (&cbdav->priv->webdav_lock);
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
@@ -424,6 +459,7 @@ ecb_caldav_multiget_response_cb (EWebDAVSession *webdav,
 
 static gboolean
 ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
+				    EWebDAVSession *webdav,
 				    GSList **in_link,
 				    GSList **set2,
 				    GCancellable *cancellable,
@@ -470,7 +506,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 		if (cbdav->priv->is_icloud) {
 			gchar *calendar_data = NULL, *etag = NULL;
 
-			success = e_webdav_session_get_data_sync (cbdav->priv->webdav,
+			success = e_webdav_session_get_data_sync (webdav,
 				nfo->extra, NULL, &etag, &calendar_data, NULL, cancellable, error);
 
 			if (success && calendar_data) {
@@ -510,7 +546,7 @@ ecb_caldav_multiget_from_sets_sync (ECalBackendCalDAV *cbdav,
 	    !cbdav->priv->is_icloud && success) {
 		GSList *from_link = *in_link;
 
-		success = e_webdav_session_report_sync (cbdav->priv->webdav, NULL, NULL, xml,
+		success = e_webdav_session_report_sync (webdav, NULL, NULL, xml,
 			ecb_caldav_multiget_response_cb, &from_link, NULL, NULL, cancellable, error);
 	}
 
@@ -616,11 +652,12 @@ ecb_caldav_search_changes_cb (ECalCache *cal_cache,
 
 static void
 ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
+				    EWebDAVSession *webdav,
 				    GError *op_error)
 {
 	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (cbdav));
 
-	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && cbdav->priv->webdav) {
+	if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_SSL_FAILED) && webdav) {
 		op_error->domain = E_DATA_CAL_ERROR;
 		op_error->code = TLSNotAvailable;
 	} else if (g_error_matches (op_error, SOUP_HTTP_ERROR, SOUP_STATUS_UNAUTHORIZED) ||
@@ -628,10 +665,10 @@ ecb_caldav_check_credentials_error (ECalBackendCalDAV *cbdav,
 		op_error->domain = E_DATA_CAL_ERROR;
 		op_error->code = AuthenticationRequired;
 
-		if (cbdav->priv->webdav) {
+		if (webdav) {
 			ENamedParameters *credentials;
 
-			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (cbdav->priv->webdav));
+			credentials = e_soup_session_dup_credentials (E_SOUP_SESSION (webdav));
 			if (credentials && e_named_parameters_count (credentials) > 0)
 				op_error->code = AuthenticationFailed;
 
@@ -653,6 +690,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 			     GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 	EXmlDocument *xml;
 	GHashTable *known_items; /* gchar *href ~> ECalMetaBackendInfo * */
 	GHashTableIter iter;
@@ -673,17 +711,21 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 	*out_removed_objects = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+	webdav = ecb_caldav_ref_session (cbdav);
 
 	if (cbdav->priv->ctag_supported) {
 		gchar *new_sync_tag = NULL;
 
-		success = e_webdav_session_getctag_sync (cbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL);
+		success = e_webdav_session_getctag_sync (webdav, NULL, &new_sync_tag, cancellable, NULL);
 		if (!success) {
 			cbdav->priv->ctag_supported = g_cancellable_set_error_if_cancelled (cancellable, error);
-			if (cbdav->priv->ctag_supported || !cbdav->priv->webdav)
+			if (cbdav->priv->ctag_supported || !webdav) {
+				g_clear_object (&webdav);
 				return FALSE;
+			}
 		} else if (!is_repeat && new_sync_tag && last_sync_tag && g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
 			*out_new_sync_tag = new_sync_tag;
+			g_clear_object (&webdav);
 			return TRUE;
 		}
 
@@ -752,7 +794,7 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	known_items = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, e_cal_meta_backend_info_free);
 
-	success = e_webdav_session_report_sync (cbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
+	success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS_AND_CHILDREN, xml,
 		ecb_caldav_get_calendar_items_cb, known_items, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
@@ -793,14 +835,16 @@ ecb_caldav_get_changes_sync (ECalMetaBackend *meta_backend,
 		}
 
 		do {
-			success = ecb_caldav_multiget_from_sets_sync (cbdav, &link, &set2, cancellable, &local_error);
+			success = ecb_caldav_multiget_from_sets_sync (cbdav, webdav, &link, &set2, cancellable, &local_error);
 		} while (success && link);
 	}
 
 	if (local_error) {
-		ecb_caldav_check_credentials_error (cbdav, local_error);
+		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -863,6 +907,7 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 			       GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 	icalcomponent_kind kind;
 	EXmlDocument *xml;
 	GError *local_error = NULL;
@@ -874,6 +919,7 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	*out_existing_objects = NULL;
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+
 	kind = e_cal_backend_get_kind (E_CAL_BACKEND (cbdav));
 
 	xml = e_xml_document_new (E_WEBDAV_NS_CALDAV, "calendar-query");
@@ -917,7 +963,9 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 	e_xml_document_end_element (xml); /* comp-filter / VCALENDAR */
 	e_xml_document_end_element (xml); /* filter */
 
-	success = e_webdav_session_report_sync (cbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
+	webdav = ecb_caldav_ref_session (cbdav);
+
+	success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
 		ecb_caldav_extract_existing_cb, out_existing_objects, NULL, NULL, cancellable, &local_error);
 
 	g_object_unref (xml);
@@ -926,9 +974,11 @@ ecb_caldav_list_existing_sync (ECalMetaBackend *meta_backend,
 		*out_existing_objects = g_slist_reverse (*out_existing_objects);
 
 	if (local_error) {
-		ecb_caldav_check_credentials_error (cbdav, local_error);
+		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -1000,6 +1050,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 				GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 	gchar *uri = NULL, *href = NULL, *etag = NULL, *bytes = NULL;
 	gsize length = -1;
 	gboolean success = FALSE;
@@ -1010,11 +1061,12 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (out_component != NULL, FALSE);
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+	webdav = ecb_caldav_ref_session (cbdav);
 
 	if (extra && *extra) {
 		uri = g_strdup (extra);
 
-		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 
 		if (!success) {
 			g_free (uri);
@@ -1025,7 +1077,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	if (!success && cbdav->priv->ctag_supported) {
 		gchar *new_sync_tag = NULL;
 
-		if (e_webdav_session_getctag_sync (cbdav->priv->webdav, NULL, &new_sync_tag, cancellable, NULL) && new_sync_tag) {
+		if (e_webdav_session_getctag_sync (webdav, NULL, &new_sync_tag, cancellable, NULL) && new_sync_tag) {
 			gchar *last_sync_tag;
 
 			last_sync_tag = e_cal_meta_backend_dup_sync_tag (meta_backend);
@@ -1033,6 +1085,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 			/* The calendar didn't change, thus the component cannot be there */
 			if (g_strcmp0 (last_sync_tag, new_sync_tag) == 0) {
 				g_clear_error (&local_error);
+				g_clear_object (&webdav);
 				g_free (last_sync_tag);
 				g_free (new_sync_tag);
 
@@ -1053,7 +1106,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 
 		g_clear_error (&local_error);
 
-		success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+		success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 
 		/* Do not try twice with Google, it's either with ".ics" extension or not there.
 		   The worst, it counts to the Error requests quota limit. */
@@ -1065,7 +1118,7 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 			if (uri) {
 				g_clear_error (&local_error);
 
-				success = e_webdav_session_get_data_sync (cbdav->priv->webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
+				success = e_webdav_session_get_data_sync (webdav, uri, &href, &etag, &bytes, &length, cancellable, &local_error);
 			}
 		}
 	}
@@ -1108,9 +1161,11 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	g_free (bytes);
 
 	if (local_error) {
-		ecb_caldav_check_credentials_error (cbdav, local_error);
+		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -1127,6 +1182,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 				GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 	icalcomponent *vcalendar, *subcomp;
 	gchar *href = NULL, *etag = NULL, *uid = NULL;
 	gchar *ical_string = NULL;
@@ -1163,6 +1219,8 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	ical_string = icalcomponent_as_ical_string_r (vcalendar);
 	icalcomponent_free (vcalendar);
 
+	webdav = ecb_caldav_ref_session (cbdav);
+
 	if (uid && ical_string && (!overwrite_existing || (extra && *extra))) {
 		gboolean force_write = FALSE;
 
@@ -1182,7 +1240,7 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 			}
 		}
 
-		success = e_webdav_session_put_data_sync (cbdav->priv->webdav, (extra && *extra) ? extra : href,
+		success = e_webdav_session_put_data_sync (webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_CALENDAR,
 			ical_string, -1, out_new_extra, NULL, cancellable, &local_error);
 
@@ -1200,9 +1258,11 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	g_free (uid);
 
 	if (local_error) {
-		ecb_caldav_check_credentials_error (cbdav, local_error);
+		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -1217,6 +1277,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 				  GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 	icalcomponent *icalcomp;
 	gchar *etag = NULL;
 	gboolean success;
@@ -1242,7 +1303,9 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	if (conflict_resolution == E_CONFLICT_RESOLUTION_FAIL)
 		etag = e_cal_util_dup_x_property (icalcomp, E_CALDAV_X_ETAG);
 
-	success = e_webdav_session_delete_sync (cbdav->priv->webdav, extra,
+	webdav = ecb_caldav_ref_session (cbdav);
+
+	success = e_webdav_session_delete_sync (webdav, extra,
 		NULL, etag, cancellable, &local_error);
 
 	if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_NOT_FOUND)) {
@@ -1251,7 +1314,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 		href = ecb_caldav_uid_to_uri (cbdav, uid, ".ics");
 		if (href) {
 			g_clear_error (&local_error);
-			success = e_webdav_session_delete_sync (cbdav->priv->webdav, href,
+			success = e_webdav_session_delete_sync (webdav, href,
 				NULL, etag, cancellable, &local_error);
 
 			g_free (href);
@@ -1261,7 +1324,7 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 			href = ecb_caldav_uid_to_uri (cbdav, uid, NULL);
 			if (href) {
 				g_clear_error (&local_error);
-				success = e_webdav_session_delete_sync (cbdav->priv->webdav, href,
+				success = e_webdav_session_delete_sync (webdav, href,
 					NULL, etag, cancellable, &local_error);
 
 				g_free (href);
@@ -1273,9 +1336,11 @@ ecb_caldav_remove_component_sync (ECalMetaBackend *meta_backend,
 	g_free (etag);
 
 	if (local_error) {
-		ecb_caldav_check_credentials_error (cbdav, local_error);
+		ecb_caldav_check_credentials_error (cbdav, webdav, local_error);
 		g_propagate_error (error, local_error);
 	}
+
+	g_clear_object (&webdav);
 
 	return success;
 }
@@ -1286,15 +1351,22 @@ ecb_caldav_get_ssl_error_details (ECalMetaBackend *meta_backend,
 				  GTlsCertificateFlags *out_certificate_errors)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
+	gboolean res;
 
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+	webdav = ecb_caldav_ref_session (cbdav);
 
-	if (!cbdav->priv->webdav)
+	if (!webdav)
 		return FALSE;
 
-	return e_soup_session_get_ssl_error_details (E_SOUP_SESSION (cbdav->priv->webdav), out_certificate_pem, out_certificate_errors);
+	res = e_soup_session_get_ssl_error_details (E_SOUP_SESSION (webdav), out_certificate_pem, out_certificate_errors);
+
+	g_clear_object (&webdav);
+
+	return res;
 }
 
 static gboolean
@@ -1360,6 +1432,7 @@ ecb_caldav_receive_schedule_outbox_url_sync (ECalBackendCalDAV *cbdav,
 					     GError **error)
 {
 	EXmlDocument *xml;
+	EWebDAVSession *webdav;
 	gchar *owner_href = NULL, *schedule_outbox_url = NULL;
 	gboolean success;
 
@@ -1373,12 +1446,15 @@ ecb_caldav_receive_schedule_outbox_url_sync (ECalBackendCalDAV *cbdav,
 	e_xml_document_add_empty_element (xml, NULL, "owner");
 	e_xml_document_end_element (xml); /* prop */
 
-	success = e_webdav_session_propfind_sync (cbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
+	webdav = ecb_caldav_ref_session (cbdav);
+
+	success = e_webdav_session_propfind_sync (webdav, NULL, E_WEBDAV_DEPTH_THIS, xml,
 		ecb_caldav_propfind_get_owner_cb, &owner_href, cancellable, error);
 
 	g_object_unref (xml);
 
 	if (!success || !owner_href || !*owner_href) {
+		g_clear_object (&webdav);
 		g_free (owner_href);
 		return FALSE;
 	}
@@ -1386,6 +1462,7 @@ ecb_caldav_receive_schedule_outbox_url_sync (ECalBackendCalDAV *cbdav,
 	xml = e_xml_document_new (E_WEBDAV_NS_DAV, "propfind");
 	if (!xml) {
 		g_warn_if_fail (xml != NULL);
+		g_clear_object (&webdav);
 		g_free (owner_href);
 		return FALSE;
 	}
@@ -1396,9 +1473,10 @@ ecb_caldav_receive_schedule_outbox_url_sync (ECalBackendCalDAV *cbdav,
 	e_xml_document_add_empty_element (xml, E_WEBDAV_NS_CALDAV, "schedule-outbox-URL");
 	e_xml_document_end_element (xml); /* prop */
 
-	success = e_webdav_session_propfind_sync (cbdav->priv->webdav, owner_href, E_WEBDAV_DEPTH_THIS, xml,
+	success = e_webdav_session_propfind_sync (webdav, owner_href, E_WEBDAV_DEPTH_THIS, xml,
 		ecb_caldav_propfind_get_schedule_outbox_url_cb, &schedule_outbox_url, cancellable, error);
 
+	g_clear_object (&webdav);
 	g_object_unref (xml);
 	g_free (owner_href);
 
@@ -1526,6 +1604,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	ECalComponentOrganizer organizer = { NULL };
 	ESourceAuthentication *auth_extension;
 	ESource *source;
+	EWebDAVSession *webdav;
 	struct icaltimetype dtvalue;
 	icaltimezone *utc;
 	gchar *str;
@@ -1620,7 +1699,9 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 	icalcomponent_free (icalcomp);
 	g_object_unref (comp);
 
-	if (e_webdav_session_post_sync (cbdav->priv->webdav, cbdav->priv->schedule_outbox_url, str, -1, NULL, &response, cancellable, &local_error) &&
+	webdav = ecb_caldav_ref_session (cbdav);
+
+	if (e_webdav_session_post_sync (webdav, cbdav->priv->schedule_outbox_url, str, -1, NULL, &response, cancellable, &local_error) &&
 	    response) {
 		/* parse returned xml */
 		xmlDocPtr doc;
@@ -1689,6 +1770,7 @@ ecb_caldav_get_free_busy_from_schedule_outbox_sync (ECalBackendCalDAV *cbdav,
 			xmlFreeDoc (doc);
 	}
 
+	g_clear_object (&webdav);
 	if (response)
 		g_byte_array_free (response, TRUE);
 	g_free (str);
@@ -1708,6 +1790,7 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 					      GCancellable *cancellable,
 					      GError **error)
 {
+	EWebDAVSession *webdav;
 	EWebDAVResource *resource;
 	GSList *principals = NULL;
 	EXmlDocument *xml;
@@ -1720,13 +1803,17 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 	g_return_val_if_fail (usermail != NULL, FALSE);
 	g_return_val_if_fail (out_freebusy != NULL, FALSE);
 
-	if (!e_webdav_session_principal_property_search_sync (cbdav->priv->webdav, NULL, TRUE,
+	webdav = ecb_caldav_ref_session (cbdav);
+
+	if (!e_webdav_session_principal_property_search_sync (webdav, NULL, TRUE,
 		E_WEBDAV_NS_CALDAV, "calendar-user-address-set", usermail, &principals, cancellable, error)) {
+		g_clear_object (&webdav);
 		return FALSE;
 	}
 
 	if (!principals || principals->next || !principals->data) {
 		g_slist_free_full (principals, e_webdav_resource_free);
+		g_clear_object (&webdav);
 		return FALSE;
 	}
 
@@ -1736,6 +1823,7 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 	g_slist_free_full (principals, e_webdav_resource_free);
 
 	if (!href || !*href) {
+		g_clear_object (&webdav);
 		g_free (href);
 		return FALSE;
 	}
@@ -1747,8 +1835,9 @@ ecb_caldav_get_free_busy_from_principal_sync (ECalBackendCalDAV *cbdav,
 	e_xml_document_add_attribute_time (xml, NULL, "end", end);
 	e_xml_document_end_element (xml); /* time-range */
 
-	success = e_webdav_session_report_sync (cbdav->priv->webdav, NULL, E_WEBDAV_DEPTH_INFINITY, xml, NULL, NULL, &content_type, &content, cancellable, error);
+	success = e_webdav_session_report_sync (webdav, NULL, E_WEBDAV_DEPTH_INFINITY, xml, NULL, NULL, &content_type, &content, cancellable, error);
 
+	g_clear_object (&webdav);
 	g_object_unref (xml);
 
 	if (success && content_type && content && content->data && content->len &&
@@ -1811,24 +1900,29 @@ ecb_caldav_get_free_busy_sync (ECalBackendSync *sync_backend,
 			       GError **error)
 {
 	ECalBackendCalDAV *cbdav;
+	EWebDAVSession *webdav;
 
 	g_return_if_fail (E_IS_CAL_BACKEND_CALDAV (sync_backend));
 	g_return_if_fail (out_freebusy != NULL);
 
 	cbdav = E_CAL_BACKEND_CALDAV (sync_backend);
+	webdav = ecb_caldav_ref_session (cbdav);
 
-	if (e_backend_get_online (E_BACKEND (cbdav)) &&
-	    cbdav->priv->webdav) {
+	if (e_backend_get_online (E_BACKEND (cbdav)) && webdav) {
 		const GSList *link;
 		GError *local_error = NULL;
 
-		if (ecb_caldav_get_free_busy_from_schedule_outbox_sync (cbdav, users, start, end, out_freebusy, cancellable, &local_error))
+		if (ecb_caldav_get_free_busy_from_schedule_outbox_sync (cbdav, users, start, end, out_freebusy, cancellable, &local_error)) {
+			g_clear_object (&webdav);
 			return;
+		}
 
 		g_clear_error (&local_error);
 
-		if (g_cancellable_set_error_if_cancelled (cancellable, error))
+		if (g_cancellable_set_error_if_cancelled (cancellable, error)) {
+			g_clear_object (&webdav);
 			return;
+		}
 
 		*out_freebusy = NULL;
 
@@ -1839,9 +1933,13 @@ ecb_caldav_get_free_busy_sync (ECalBackendSync *sync_backend,
 
 		g_clear_error (&local_error);
 
-		if (*out_freebusy || g_cancellable_set_error_if_cancelled (cancellable, error))
+		if (*out_freebusy || g_cancellable_set_error_if_cancelled (cancellable, error)) {
+			g_clear_object (&webdav);
 			return;
+		}
 	}
+
+	g_clear_object (&webdav);
 
 	/* Chain up to parent's method. */
 	E_CAL_BACKEND_SYNC_CLASS (e_cal_backend_caldav_parent_class)->get_free_busy_sync (sync_backend, cal, cancellable,
@@ -1928,7 +2026,9 @@ e_cal_backend_caldav_dispose (GObject *object)
 {
 	ECalBackendCalDAV *cbdav = E_CAL_BACKEND_CALDAV (object);
 
+	g_mutex_lock (&cbdav->priv->webdav_lock);
 	g_clear_object (&cbdav->priv->webdav);
+	g_mutex_unlock (&cbdav->priv->webdav_lock);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_caldav_parent_class)->dispose (object);
@@ -1940,6 +2040,7 @@ e_cal_backend_caldav_finalize (GObject *object)
 	ECalBackendCalDAV *cbdav = E_CAL_BACKEND_CALDAV (object);
 
 	g_clear_pointer (&cbdav->priv->schedule_outbox_url, g_free);
+	g_mutex_clear (&cbdav->priv->webdav_lock);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_caldav_parent_class)->finalize (object);
@@ -1949,6 +2050,8 @@ static void
 e_cal_backend_caldav_init (ECalBackendCalDAV *cbdav)
 {
 	cbdav->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbdav, E_TYPE_CAL_BACKEND_CALDAV, ECalBackendCalDAVPrivate);
+
+	g_mutex_init (&cbdav->priv->webdav_lock);
 }
 
 static void
