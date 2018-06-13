@@ -785,26 +785,6 @@ struct _body_fields {
 	guint32 size;
 	};*/
 
-void
-imapx_free_body (struct _CamelMessageContentInfo *cinfo)
-{
-	struct _CamelMessageContentInfo *list, *next;
-
-	list = cinfo->childs;
-	while (list) {
-		next = list->next;
-		imapx_free_body (list);
-		list = next;
-	}
-
-	if (cinfo->type)
-		camel_content_type_unref (cinfo->type);
-	g_free (cinfo->id);
-	g_free (cinfo->description);
-	g_free (cinfo->encoding);
-	g_free (cinfo);
-}
-
 gboolean
 imapx_parse_param_list (CamelIMAPXInputStream *stream,
                         struct _camel_header_param **plist,
@@ -879,8 +859,8 @@ imapx_parse_ext_optional (CamelIMAPXInputStream *stream,
 		stream, &token, &len, cancellable, NULL);
 	switch (tok) {
 		case '(':
-			dinfo = g_malloc0 (sizeof (*dinfo));
-			dinfo->refcount = 1;
+			dinfo = camel_content_disposition_new ();
+
 			/* should be string */
 			if (!camel_imapx_input_stream_astring (stream, &token, cancellable, &local_error)) {
 				if (!local_error)
@@ -978,7 +958,7 @@ imapx_parse_body_fields (CamelIMAPXInputStream *stream,
 	 * body_fld_desc SPACE body_fld_enc SPACE
 	 * body_fld_octets */
 
-	cinfo = g_malloc0 (sizeof (*cinfo));
+	cinfo = camel_message_content_info_new ();
 
 	/* this should be string not astring */
 	success = camel_imapx_input_stream_astring (
@@ -1045,7 +1025,7 @@ imapx_parse_body_fields (CamelIMAPXInputStream *stream,
 	return cinfo;
 
 error:
-	imapx_free_body (cinfo);
+	camel_message_content_info_free (cinfo);
 
 	return NULL;
 }
@@ -1361,7 +1341,7 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 		/* body_type_mpart ::= 1*body SPACE media_subtype
 		[SPACE body_ext_mpart] */
 
-		cinfo = g_malloc0 (sizeof (*cinfo));
+		cinfo = camel_message_content_info_new ();
 		last = (struct _CamelMessageContentInfo *) &cinfo->childs;
 		do {
 			subinfo = imapx_parse_body (stream, cancellable, &local_error);
@@ -1550,7 +1530,7 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
 		if (cinfo)
-			imapx_free_body (cinfo);
+			camel_message_content_info_free (cinfo);
 		if (dinfo)
 			camel_content_disposition_unref (dinfo);
 		return NULL;
@@ -1707,7 +1687,7 @@ imapx_free_fetch (struct _fetch_info *finfo)
 	if (finfo->header)
 		g_bytes_unref (finfo->header);
 	if (finfo->cinfo)
-		imapx_free_body (finfo->cinfo);
+		camel_message_content_info_free (finfo->cinfo);
 	camel_named_flags_free (finfo->user_flags);
 	g_clear_object (&finfo->minfo);
 	g_free (finfo->date);

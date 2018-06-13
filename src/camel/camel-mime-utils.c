@@ -3793,6 +3793,19 @@ camel_content_transfer_encoding_decode (const gchar *in)
 }
 
 CamelContentDisposition *
+camel_content_disposition_new (void)
+{
+	CamelContentDisposition *dd;
+
+	dd = g_malloc0 (sizeof (CamelContentDisposition));
+	dd->refcount = 1;
+	dd->disposition = NULL;
+	dd->params = NULL;
+
+	return dd;
+}
+
+CamelContentDisposition *
 camel_content_disposition_decode (const gchar *in)
 {
 	CamelContentDisposition *d = NULL;
@@ -3801,8 +3814,7 @@ camel_content_disposition_decode (const gchar *in)
 	if (in == NULL)
 		return NULL;
 
-	d = g_malloc (sizeof (*d));
-	d->refcount = 1;
+	d = camel_content_disposition_new ();
 	d->disposition = decode_token (&inptr);
 	if (d->disposition == NULL) {
 		w (g_warning ("Empty disposition type"));

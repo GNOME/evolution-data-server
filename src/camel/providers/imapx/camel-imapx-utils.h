@@ -233,7 +233,6 @@ CamelMessageContentInfo *
 gchar *		imapx_parse_section		(CamelIMAPXInputStream *stream,
 						 GCancellable *cancellable,
 						 GError **error);
-void		imapx_free_body			(struct _CamelMessageContentInfo *cinfo);
 
 /* ********************************************************************** */
 /* all the possible stuff we might get from a fetch request */

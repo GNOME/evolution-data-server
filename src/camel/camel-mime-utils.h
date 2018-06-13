@@ -138,6 +138,7 @@ void camel_content_type_dump (CamelContentType *content_type);
 
 /* Content-Disposition header */
 GType camel_content_disposition_get_type (void) G_GNUC_CONST;
+CamelContentDisposition *camel_content_disposition_new (void);
 CamelContentDisposition *camel_content_disposition_decode (const gchar *in);
 CamelContentDisposition *camel_content_disposition_ref (CamelContentDisposition *disposition);
 void camel_content_disposition_unref (CamelContentDisposition *disposition);
