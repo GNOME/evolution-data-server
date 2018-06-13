@@ -42,6 +42,7 @@ struct _ECalBackendGTasksPrivate {
 	GDataAuthorizer *authorizer;
 	GDataTasksService *service;
 	GDataTasksTasklist *tasklist;
+	GRecMutex conn_lock;
 	GHashTable *preloaded; /* gchar *uid ~> ECalComponent * */
 	gboolean bad_request_for_timed_query;
 };
@@ -255,22 +256,26 @@ ecb_gtasks_comp_to_gdata (ECalComponent *comp,
 }
 
 static gboolean
-ecb_gtasks_is_authorized (ECalBackendGTasks *cbgtasks)
+ecb_gtasks_is_authorized_locked (ECalBackendGTasks *cbgtasks)
 {
+	gboolean res;
+
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (cbgtasks), FALSE);
 
 	if (!cbgtasks->priv->service ||
 	    !cbgtasks->priv->tasklist)
 		return FALSE;
 
-	return gdata_service_is_authorized (GDATA_SERVICE (cbgtasks->priv->service));
+	res = gdata_service_is_authorized (GDATA_SERVICE (cbgtasks->priv->service));
+
+	return res;
 }
 
 static gboolean
-ecb_gtasks_request_authorization (ECalBackendGTasks *cbgtasks,
-				  const ENamedParameters *credentials,
-				  GCancellable *cancellable,
-				  GError **error)
+ecb_gtasks_request_authorization_locked (ECalBackendGTasks *cbgtasks,
+					 const ENamedParameters *credentials,
+					 GCancellable *cancellable,
+					 GError **error)
 {
 	/* Make sure we have the GDataService configured
 	 * before requesting authorization. */
@@ -314,9 +319,9 @@ ecb_gtasks_request_authorization (ECalBackendGTasks *cbgtasks,
 }
 
 static gboolean
-ecb_gtasks_prepare_tasklist (ECalBackendGTasks *cbgtasks,
-			     GCancellable *cancellable,
-			     GError **error)
+ecb_gtasks_prepare_tasklist_locked (ECalBackendGTasks *cbgtasks,
+				    GCancellable *cancellable,
+				    GError **error)
 {
 	ESourceResource *resource;
 	ESource *source;
@@ -431,14 +436,20 @@ ecb_gtasks_connect_sync (ECalMetaBackend *meta_backend,
 
 	*out_auth_result = E_SOURCE_AUTHENTICATION_ACCEPTED;
 
-	if (ecb_gtasks_is_authorized (cbgtasks))
-		return TRUE;
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
 
-	success = ecb_gtasks_request_authorization (cbgtasks, credentials, cancellable, &local_error);
+	if (ecb_gtasks_is_authorized_locked (cbgtasks)) {
+		g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
+		return TRUE;
+	}
+
+	success = ecb_gtasks_request_authorization_locked (cbgtasks, credentials, cancellable, &local_error);
 	if (success)
 		success = gdata_authorizer_refresh_authorization (cbgtasks->priv->authorizer, cancellable, &local_error);
 	if (success)
-		success = ecb_gtasks_prepare_tasklist (cbgtasks, cancellable, &local_error);
+		success = ecb_gtasks_prepare_tasklist_locked (cbgtasks, cancellable, &local_error);
+
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 
 	if (!success) {
 		if (g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_AUTHENTICATION_REQUIRED)) {
@@ -468,20 +479,24 @@ ecb_gtasks_disconnect_sync (ECalMetaBackend *meta_backend,
 
 	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
 
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
+
 	g_clear_object (&cbgtasks->priv->service);
 	g_clear_object (&cbgtasks->priv->authorizer);
 	g_clear_object (&cbgtasks->priv->tasklist);
+
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 
 	return TRUE;
 }
 
 static gboolean
-ecb_gtasks_check_tasklist_changed_sync (ECalBackendGTasks *cbgtasks,
-					const gchar *last_sync_tag,
-					gboolean *out_changed,
-					gint64 *out_taskslist_time,
-					GCancellable *cancellable,
-					GError **error)
+ecb_gtasks_check_tasklist_changed_locked_sync (ECalBackendGTasks *cbgtasks,
+					       const gchar *last_sync_tag,
+					       gboolean *out_changed,
+					       gint64 *out_taskslist_time,
+					       GCancellable *cancellable,
+					       GError **error)
 {
 	GDataFeed *feed;
 	gchar *id = NULL;
@@ -574,11 +589,17 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 	*out_modified_objects = NULL;
 	*out_removed_objects = NULL;
 
-	if (!ecb_gtasks_check_tasklist_changed_sync (cbgtasks, last_sync_tag, &changed, &taskslist_time, cancellable, error))
-		return FALSE;
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
 
-	if (!changed)
+	if (!ecb_gtasks_check_tasklist_changed_locked_sync (cbgtasks, last_sync_tag, &changed, &taskslist_time, cancellable, error)) {
+		g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
+		return FALSE;
+	}
+
+	if (!changed) {
+		g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 		return TRUE;
+	}
 
 	cal_cache = e_cal_meta_backend_ref_cache (meta_backend);
 
@@ -703,6 +724,7 @@ ecb_gtasks_get_changes_sync (ECalMetaBackend *meta_backend,
 #endif
 	}
 
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 	g_clear_object (&tasks_query);
 	g_clear_object (&feed);
 
@@ -824,10 +846,14 @@ ecb_gtasks_save_component_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
+
 	if (overwrite_existing)
 		new_task = gdata_tasks_service_update_task (cbgtasks->priv->service, comp_task, cancellable, error);
 	else
 		new_task = gdata_tasks_service_insert_task (cbgtasks->priv->service, comp_task, cbgtasks->priv->tasklist, cancellable, error);
+
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 
 	g_object_unref (comp_task);
 
@@ -895,10 +921,13 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 		return FALSE;
 	}
 
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
+
 	/* Ignore protocol errors here, libgdata 0.15.1 results with "Error code 204 when deleting an entry: No Content",
 	   while the delete succeeded */
 	if (!gdata_tasks_service_delete_task (cbgtasks->priv->service, task, cancellable, &local_error) &&
 	    !g_error_matches (local_error, GDATA_SERVICE_ERROR, GDATA_SERVICE_ERROR_PROTOCOL_ERROR)) {
+		g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 		g_object_unref (cached_comp);
 		g_object_unref (task);
 		g_propagate_error (error, local_error);
@@ -908,6 +937,7 @@ ecb_gtasks_remove_component_sync (ECalMetaBackend *meta_backend,
 		g_clear_error (&local_error);
 	}
 
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 	g_object_unref (cached_comp);
 	g_object_unref (task);
 
@@ -926,8 +956,13 @@ ecb_gtasks_requires_reconnect (ECalMetaBackend *meta_backend)
 	g_return_val_if_fail (E_IS_CAL_BACKEND_GTASKS (meta_backend), FALSE);
 
 	cbgtasks = E_CAL_BACKEND_GTASKS (meta_backend);
-	if (!cbgtasks->priv->tasklist)
+
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
+
+	if (!cbgtasks->priv->tasklist) {
+		g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 		return TRUE;
+	}
 
 	source = e_backend_get_source (E_BACKEND (cbgtasks));
 	resource = e_source_get_extension (source, E_SOURCE_EXTENSION_RESOURCE);
@@ -936,6 +971,7 @@ ecb_gtasks_requires_reconnect (ECalMetaBackend *meta_backend)
 	changed = id && *id && g_strcmp0 (id, gdata_entry_get_id (GDATA_ENTRY (cbgtasks->priv->tasklist))) != 0 &&
 		g_strcmp0 (GTASKS_DEFAULT_TASKLIST_NAME, gdata_entry_get_id (GDATA_ENTRY (cbgtasks->priv->tasklist))) != 0;
 
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 	g_free (id);
 
 	return changed;
@@ -968,6 +1004,8 @@ e_cal_backend_gtasks_init (ECalBackendGTasks *cbgtasks)
 	cbgtasks->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbgtasks, E_TYPE_CAL_BACKEND_GTASKS, ECalBackendGTasksPrivate);
 	cbgtasks->priv->preloaded = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_object_unref);
 	cbgtasks->priv->bad_request_for_timed_query = FALSE;
+
+	g_rec_mutex_init (&cbgtasks->priv->conn_lock);
 }
 
 static void
@@ -995,15 +1033,30 @@ ecb_gtasks_dispose (GObject *object)
 {
 	ECalBackendGTasks *cbgtasks = E_CAL_BACKEND_GTASKS (object);
 
+	g_rec_mutex_lock (&cbgtasks->priv->conn_lock);
+
 	g_clear_object (&cbgtasks->priv->service);
 	g_clear_object (&cbgtasks->priv->authorizer);
 	g_clear_object (&cbgtasks->priv->tasklist);
+
+	g_rec_mutex_unlock (&cbgtasks->priv->conn_lock);
 
 	g_hash_table_destroy (cbgtasks->priv->preloaded);
 	cbgtasks->priv->preloaded = NULL;
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_gtasks_parent_class)->dispose (object);
+}
+
+static void
+ecb_gtasks_finalize (GObject *object)
+{
+	ECalBackendGTasks *cbgtasks = E_CAL_BACKEND_GTASKS (object);
+
+	g_rec_mutex_clear (&cbgtasks->priv->conn_lock);
+
+	/* Chain up to parent's method. */
+	G_OBJECT_CLASS (e_cal_backend_gtasks_parent_class)->finalize (object);
 }
 
 static void
@@ -1030,4 +1083,5 @@ e_cal_backend_gtasks_class_init (ECalBackendGTasksClass *klass)
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->constructed = ecb_gtasks_constructed;
 	object_class->dispose = ecb_gtasks_dispose;
+	object_class->finalize = ecb_gtasks_finalize;
 }

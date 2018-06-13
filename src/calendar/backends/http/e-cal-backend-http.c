@@ -39,6 +39,7 @@ struct _ECalBackendHttpPrivate {
 
 	SoupRequestHTTP *request;
 	GInputStream *input_stream;
+	GRecMutex conn_lock;
 	GHashTable *components; /* gchar *uid ~> icalcomponent * */
 };
 
@@ -119,8 +120,12 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 
 	cbhttp = E_CAL_BACKEND_HTTP (meta_backend);
 
-	if (cbhttp->priv->request && cbhttp->priv->input_stream)
+	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
+
+	if (cbhttp->priv->request && cbhttp->priv->input_stream) {
+		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		return TRUE;
+	}
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 
@@ -130,6 +135,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 	uri = ecb_http_dup_uri (cbhttp);
 
 	if (!uri || !*uri) {
+		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		g_free (uri);
 
 		g_propagate_error (error, EDC_ERROR_EX (OtherError, _("URI not set")));
@@ -214,6 +220,7 @@ ecb_http_connect_sync (ECalMetaBackend *meta_backend,
 		g_clear_object (&input_stream);
 	}
 
+	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 	g_clear_error (&local_error);
 	g_free (uri);
 
@@ -232,6 +239,8 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 
 	cbhttp = E_CAL_BACKEND_HTTP (meta_backend);
 
+	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
+
 	g_clear_object (&cbhttp->priv->input_stream);
 	g_clear_object (&cbhttp->priv->request);
 
@@ -242,6 +251,8 @@ ecb_http_disconnect_sync (ECalMetaBackend *meta_backend,
 		g_hash_table_destroy (cbhttp->priv->components);
 		cbhttp->priv->components = NULL;
 	}
+
+	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
 	source = e_backend_get_source (E_BACKEND (meta_backend));
 	e_source_set_connection_status (source, E_SOURCE_CONNECTION_STATUS_DISCONNECTED);
@@ -305,7 +316,10 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	cbhttp = E_CAL_BACKEND_HTTP (meta_backend);
 
+	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
+
 	if (!cbhttp->priv->request || !cbhttp->priv->input_stream) {
+		g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 		g_propagate_error (error, EDC_ERROR (RepositoryOffline));
 		return FALSE;
 	}
@@ -318,6 +332,7 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 		if (new_etag && !*new_etag) {
 			new_etag = NULL;
 		} else if (new_etag && g_strcmp0 (last_sync_tag, new_etag) == 0) {
+			g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 			/* Nothing changed */
 			g_object_unref (message);
 
@@ -333,6 +348,8 @@ ecb_http_get_changes_sync (ECalMetaBackend *meta_backend,
 
 	icalstring = ecb_http_read_stream_sync (cbhttp->priv->input_stream,
 		soup_request_get_content_length (SOUP_REQUEST (cbhttp->priv->request)), cancellable, error);
+
+	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
 	if (!icalstring) {
 		/* The error is already set */
@@ -582,18 +599,20 @@ e_cal_backend_http_dispose (GObject *object)
 
 	cbhttp = E_CAL_BACKEND_HTTP (object);
 
+	g_rec_mutex_lock (&cbhttp->priv->conn_lock);
+
 	g_clear_object (&cbhttp->priv->request);
 	g_clear_object (&cbhttp->priv->input_stream);
 
-	if (cbhttp->priv->session) {
+	if (cbhttp->priv->session)
 		soup_session_abort (SOUP_SESSION (cbhttp->priv->session));
-		g_clear_object (&cbhttp->priv->session);
-	}
 
 	if (cbhttp->priv->components) {
 		g_hash_table_destroy (cbhttp->priv->components);
 		cbhttp->priv->components = NULL;
 	}
+
+	g_rec_mutex_unlock (&cbhttp->priv->conn_lock);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->dispose (object);
@@ -605,6 +624,7 @@ e_cal_backend_http_finalize (GObject *object)
 	ECalBackendHttp *cbhttp = E_CAL_BACKEND_HTTP (object);
 
 	g_clear_object (&cbhttp->priv->session);
+	g_rec_mutex_clear (&cbhttp->priv->conn_lock);
 
 	/* Chain up to parent's method. */
 	G_OBJECT_CLASS (e_cal_backend_http_parent_class)->finalize (object);
@@ -614,6 +634,8 @@ static void
 e_cal_backend_http_init (ECalBackendHttp *cbhttp)
 {
 	cbhttp->priv = G_TYPE_INSTANCE_GET_PRIVATE (cbhttp, E_TYPE_CAL_BACKEND_HTTP, ECalBackendHttpPrivate);
+
+	g_rec_mutex_init (&cbhttp->priv->conn_lock);
 
 	e_cal_backend_set_writable (E_CAL_BACKEND (cbhttp), FALSE);
 }
