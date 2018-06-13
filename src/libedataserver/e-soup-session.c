@@ -784,6 +784,32 @@ e_soup_session_extract_ssl_data (ESoupSession *session,
 	g_mutex_unlock (&session->priv->property_lock);
 }
 
+static gboolean
+e_soup_session_extract_google_daily_limit_error (SoupMessage *message,
+						 GError **error)
+{
+	gchar *body;
+	gboolean contains_daily_limit = FALSE;
+
+	if (!message || !message->response_body ||
+	    !message->response_body->data || !message->response_body->length)
+		return FALSE;
+
+	body = g_strndup (message->response_body->data, message->response_body->length);
+
+	/* Do not localize this string, it is returned by the server. */
+	if (body && (e_util_strstrcase (body, "Daily Limit") ||
+	    e_util_strstrcase (body, "https://console.developers.google.com/"))) {
+		/* Special-case this condition and provide this error up to the UI. */
+		g_set_error_literal (error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN, body);
+		contains_daily_limit = TRUE;
+	}
+
+	g_free (body);
+
+	return contains_daily_limit;
+}
+
 /**
  * e_soup_session_check_result:
  * @session: an #ESoupSession
@@ -820,17 +846,6 @@ e_soup_session_check_result (ESoupSession *session,
 
 	success = SOUP_STATUS_IS_SUCCESSFUL (message->status_code);
 	if (!success) {
-		if (message->status_code == SOUP_STATUS_CANCELLED) {
-			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Operation was cancelled"));
-		} else {
-			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
-				_("Failed with HTTP error %d: %s"), message->status_code,
-				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
-		}
-
-		if (message->status_code == SOUP_STATUS_SSL_FAILED)
-			e_soup_session_extract_ssl_data (session, message);
-
 		if (read_bytes && bytes_length > 0) {
 			SoupBuffer *buffer;
 
@@ -841,6 +856,20 @@ e_soup_session_check_result (ESoupSession *session,
 			if (buffer)
 				soup_buffer_free (buffer);
 		}
+
+		if (message->status_code == SOUP_STATUS_CANCELLED) {
+			g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_CANCELLED, _("Operation was cancelled"));
+		} else if (message->status_code == SOUP_STATUS_FORBIDDEN &&
+			   e_soup_session_extract_google_daily_limit_error (message, error)) {
+			/* Nothing to do */
+		} else {
+			g_set_error (error, SOUP_HTTP_ERROR, message->status_code,
+				_("Failed with HTTP error %d: %s"), message->status_code,
+				e_soup_session_util_status_to_string (message->status_code, message->reason_phrase));
+		}
+
+		if (message->status_code == SOUP_STATUS_SSL_FAILED)
+			e_soup_session_extract_ssl_data (session, message);
 	}
 
 	g_object_unref (message);
@@ -995,20 +1024,8 @@ e_soup_session_send_request_sync (ESoupSession *session,
 	} else if (g_error_matches (local_error, SOUP_HTTP_ERROR, SOUP_STATUS_FORBIDDEN)) {
 		message = soup_request_http_get_message (request);
 
-		if (message && message->response_body &&
-		    message->response_body->data && message->response_body->length) {
-			gchar *body = g_strndup (message->response_body->data, message->response_body->length);
-
-			/* Do not localize this string, it is returned by the server. */
-			if (body && (e_util_strstrcase (body, "Daily Limit") ||
-			    e_util_strstrcase (body, "https://console.developers.google.com/"))) {
-				/* Special-case this condition and provide this error up to the UI. */
-				g_set_error_literal (error, local_error->domain, local_error->code, body);
-				g_clear_error (&local_error);
-			}
-
-			g_free (body);
-		}
+		if (e_soup_session_extract_google_daily_limit_error (message, error))
+			g_clear_error (&local_error);
 
 		g_clear_object (&message);
 	}
