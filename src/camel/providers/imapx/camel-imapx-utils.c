@@ -1457,19 +1457,32 @@ imapx_parse_body (CamelIMAPXInputStream *stream,
 
 		camel_imapx_input_stream_ungettoken (stream, tok, token, len);
 		if (tok == '(') {
-			struct _CamelMessageInfo * minfo = NULL;
+			CamelMessageInfo *minfo;
 
-			/* what do we do with the envelope?? */
-			minfo = imapx_parse_envelope (
-				stream, cancellable, &local_error);
+			/* Read and ignore the envelope */
+			minfo = imapx_parse_envelope (stream, cancellable, &local_error);
+			g_clear_object (&minfo);
 
 			if (local_error)
 				goto error;
 
-			/* what do we do with the message content info?? */
-			//((CamelMessageInfoBase *) minfo)->content = imapx_parse_body (stream);
-			g_clear_object (&minfo);
-			minfo = NULL;
+			/* Read the message content info */
+			subinfo = imapx_parse_body (stream, cancellable, &local_error);
+
+			if (subinfo) {
+				CamelMessageContentInfo **plast;
+
+				plast = &(cinfo->childs);
+				while (*plast) {
+					plast = &((*plast)->next);
+				}
+
+				*plast = subinfo;
+				subinfo->parent = cinfo;
+			}
+
+			if (local_error)
+				goto error;
 		}
 
 		/* do we have fld_lines following? */
