@@ -1172,12 +1172,12 @@ camel_folder_info_build (GPtrArray *folders,
 	gchar *p, *pname;
 	gint i, nlen;
 
-	if (!folders) {
+	if (!folders || !folders->len) {
 		g_warn_if_fail (folders != NULL);
 		return NULL;
 	}
 
-	if (!folders->pdata || !folders->len) {
+	if (!folders->pdata) {
 		g_warn_if_fail (folders->pdata != NULL);
 		return NULL;
 	}
