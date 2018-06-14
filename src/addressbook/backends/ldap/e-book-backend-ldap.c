@@ -3583,8 +3583,7 @@ func_contains (struct _ESExp *f,
 
 		if (!strcmp (propname, "x-evolution-any-field")) {
 			gint i;
-			gint query_length;
-			gchar *big_query;
+			GString *big_query;
 			gchar *match_str;
 			if (one_star) {
 				g_free (str);
@@ -3597,14 +3596,8 @@ func_contains (struct _ESExp *f,
 
 			match_str = g_strdup_printf ("=*%s*)", str);
 
-			query_length = 3; /* strlen ("(|") + strlen (")") */
-
-			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				query_length += 1 /* strlen ("(") */ + strlen (prop_info[i].ldap_attr) + strlen (match_str);
-			}
-
-			big_query = g_malloc0 (query_length + 1);
-			strcat (big_query, "(|");
+			big_query = g_string_sized_new (G_N_ELEMENTS (prop_info) * 7);
+			g_string_append (big_query, "(|");
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
 				if ((prop_info[i].prop_type & PROP_TYPE_STRING) != 0 &&
 				    !(prop_info[i].prop_type & PROP_WRITE_ONLY) &&
@@ -3612,14 +3605,14 @@ func_contains (struct _ESExp *f,
 				     !(prop_info[i].prop_type & PROP_EVOLVE)) &&
 				    (ldap_data->bl->priv->calEntrySupported ||
 				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
-					strcat (big_query, "(");
-					strcat (big_query, prop_info[i].ldap_attr);
-					strcat (big_query, match_str);
+					g_string_append (big_query, "(");
+					g_string_append (big_query, prop_info[i].ldap_attr);
+					g_string_append (big_query, match_str);
 				}
 			}
-			strcat (big_query, ")");
+			g_string_append (big_query, ")");
 
-			ldap_data->list = g_list_prepend (ldap_data->list, big_query);
+			ldap_data->list = g_list_prepend (ldap_data->list, g_string_free (big_query, FALSE));
 
 			g_free (match_str);
 		}
@@ -3800,34 +3793,27 @@ func_exists (struct _ESExp *f,
 
 		if (!strcmp (propname, "x-evolution-any-field")) {
 			gint i;
-			gint query_length;
-			gchar *big_query;
+			GString *big_query;
 			gchar *match_str;
 
 			match_str = g_strdup ("=*)");
 
-			query_length = 3; /* strlen ("(|") + strlen (")") */
-
-			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
-				query_length += 1 /* strlen ("(") */ + strlen (prop_info[i].ldap_attr) + strlen (match_str);
-			}
-
-			big_query = g_malloc0 (query_length + 1);
-			strcat (big_query, "(|");
+			big_query = g_string_sized_new (G_N_ELEMENTS (prop_info) * 7);
+			g_string_append (big_query, "(|");
 			for (i = 0; i < G_N_ELEMENTS (prop_info); i++) {
 				if (!(prop_info[i].prop_type & PROP_WRITE_ONLY) &&
 				    (ldap_data->bl->priv->evolutionPersonSupported ||
 				     !(prop_info[i].prop_type & PROP_EVOLVE)) &&
 				    (ldap_data->bl->priv->calEntrySupported ||
 				     !(prop_info[i].prop_type & PROP_CALENTRY))) {
-					strcat (big_query, "(");
-					strcat (big_query, prop_info[i].ldap_attr);
-					strcat (big_query, match_str);
+					g_string_append (big_query, "(");
+					g_string_append (big_query, prop_info[i].ldap_attr);
+					g_string_append (big_query, match_str);
 				}
 			}
-			strcat (big_query, ")");
+			g_string_append (big_query, ")");
 
-			ldap_data->list = g_list_prepend (ldap_data->list, big_query);
+			ldap_data->list = g_list_prepend (ldap_data->list, g_string_free (big_query, FALSE));
 
 			g_free (match_str);
 		}
