@@ -1757,28 +1757,28 @@ msgstr[1] "Cada %d dies per sempre"
 #, c-format
 msgid "every day"
 msgid_plural "every %d days"
-msgstr[0] "Cada dia"
-msgstr[1] "Cada %d dies"
+msgstr[0] "cada dia"
+msgstr[1] "cada %d dies"
 
 #: ../src/calendar/libecal/e-cal-recur.c:4960
 #, c-format
 msgid "Every day"
 msgid_plural "Every %d days"
 msgstr[0] "Cada dia"
-msgstr[1] "Cada%ddies"
+msgstr[1] "Cada %d dies"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5050
 #, c-format
 msgid "every week"
 msgid_plural "every %d weeks"
 msgstr[0] "cada setmana"
-msgstr[1] "Cada %d setmanes"
+msgstr[1] "cada %d setmanes"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5056
 #, c-format
 msgid "Every week"
 msgid_plural "Every %d weeks"
-msgstr[0] "cada setmana"
+msgstr[0] "Cada setmana"
 msgstr[1] "Cada %d setmanes"
 
 #. Translators: This is used to merge set of week day names in a recurrence,
@@ -1800,102 +1800,102 @@ msgstr "%1$s%2$s"
 #: ../src/calendar/libecal/e-cal-recur.c:5087
 msgctxt "recur-description"
 msgid "on Sunday"
-msgstr "el Diumenge"
+msgstr "el diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5088
 msgctxt "recur-description"
 msgid ", Sunday"
-msgstr ", Diumenge"
+msgstr ", diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5089
 msgctxt "recur-description"
 msgid " and Sunday"
-msgstr "i Diumenge"
+msgstr "i diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5092
 msgctxt "recur-description"
 msgid "on Monday"
-msgstr "el Dilluns"
+msgstr "el dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5093
 msgctxt "recur-description"
 msgid ", Monday"
-msgstr ", Dilluns"
+msgstr ", dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5094
 msgctxt "recur-description"
 msgid " and Monday"
-msgstr "i Dilluns"
+msgstr "i dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5097
 msgctxt "recur-description"
 msgid "on Tuesday"
-msgstr "el Dimarts"
+msgstr "el dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5098
 msgctxt "recur-description"
 msgid ", Tuesday"
-msgstr ", Dimarts"
+msgstr ", dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5099
 msgctxt "recur-description"
 msgid " and Tuesday"
-msgstr "i Dimarts"
+msgstr "i dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5102
 msgctxt "recur-description"
 msgid "on Wednesday"
-msgstr "el Dimecres"
+msgstr "el dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5103
 msgctxt "recur-description"
 msgid ", Wednesday"
-msgstr ", Dimecres"
+msgstr ", dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5104
 msgctxt "recur-description"
 msgid " and Wednesday"
-msgstr "i Dimecres"
+msgstr "i dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5107
 msgctxt "recur-description"
 msgid "on Thursday"
-msgstr "el Dijous"
+msgstr "el dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5108
 msgctxt "recur-description"
 msgid ", Thursday"
-msgstr ", Dijous"
+msgstr ", dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5109
 msgctxt "recur-description"
 msgid " and Thursday"
-msgstr "i Dijous"
+msgstr "i dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5112
 msgctxt "recur-description"
 msgid "on Friday"
-msgstr "el Divendres"
+msgstr "el divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5113
 msgctxt "recur-description"
 msgid ", Friday"
-msgstr ", Divendres"
+msgstr ", divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5114
 msgctxt "recur-description"
 msgid " and Friday"
-msgstr "i Divendres"
+msgstr "i divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5117
 msgctxt "recur-description"
 msgid "on Saturday"
-msgstr "el Dissabte"
+msgstr "el dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5118
 msgctxt "recur-description"
 msgid ", Saturday"
-msgstr ", Dissabte"
+msgstr ", dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5119
 msgctxt "recur-description"
@@ -1906,57 +1906,57 @@ msgstr "i dissabte"
 #, c-format
 msgid "every month"
 msgid_plural "every %d months"
-msgstr[0] "Cada mes"
-msgstr[1] "Cada %d mesos"
+msgstr[0] "cada mes"
+msgstr[1] "cada %d mesos"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5258
 #, c-format
 msgid "Every month"
 msgid_plural "Every %d months"
-msgstr[0] "Cada mes"
-msgstr[1] "Cada %d mesos"
+msgstr[0] "cada mes"
+msgstr[1] "cada %d mesos"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5268
 #: ../src/calendar/libecal/e-cal-recur.c:5589
 msgctxt "recur-description"
 msgid "on the last Sunday"
-msgstr "el darrer Dissabte"
+msgstr "el darrer dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5271
 #: ../src/calendar/libecal/e-cal-recur.c:5439
 msgctxt "recur-description"
 msgid "on the last Monday"
-msgstr "el darrer Dilluns"
+msgstr "el darrer dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5274
 #: ../src/calendar/libecal/e-cal-recur.c:5464
 msgctxt "recur-description"
 msgid "on the last Tuesday"
-msgstr "el darrer Dimarts"
+msgstr "el darrer dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5277
 #: ../src/calendar/libecal/e-cal-recur.c:5489
 msgctxt "recur-description"
 msgid "on the last Wednesday"
-msgstr "el darrer Dimecres"
+msgstr "el darrer dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5280
 #: ../src/calendar/libecal/e-cal-recur.c:5514
 msgctxt "recur-description"
 msgid "on the last Thursday"
-msgstr "el darrer Dijous"
+msgstr "el darrer dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5283
 #: ../src/calendar/libecal/e-cal-recur.c:5539
 msgctxt "recur-description"
 msgid "on the last Friday"
-msgstr "el darrer Divendres"
+msgstr "el darrer divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5286
 #: ../src/calendar/libecal/e-cal-recur.c:5564
 msgctxt "recur-description"
 msgid "on the last Saturday"
-msgstr "el darrer Dissabte"
+msgstr "el darrer dissabte"
 
 #. Translators: This is added to a monthly recurrence, forming something like
 #. "Every month on the Xth day"
@@ -1984,7 +1984,7 @@ msgstr "el 3r dia"
 #: ../src/calendar/libecal/e-cal-recur.c:5308
 msgctxt "recur-description"
 msgid "on the 4th day"
-msgstr "el 4rt dia"
+msgstr "el 4t dia"
 
 #. Translators: This is added to a monthly recurrence, forming something like
 #. "Every month on the Xth day"
@@ -2033,7 +2033,7 @@ msgstr "el 10è dia"
 #: ../src/calendar/libecal/e-cal-recur.c:5336
 msgctxt "recur-description"
 msgid "on the 11th day"
-msgstr "el 11è dia"
+msgstr "l'11è dia"
 
 #. Translators: This is added to a monthly recurrence, forming something like
 #. "Every month on the Xth day"
@@ -2178,177 +2178,177 @@ msgstr "el 31è dia"
 #: ../src/calendar/libecal/e-cal-recur.c:5424
 msgctxt "recur-description"
 msgid "on the first Monday"
-msgstr "el primer Dilluns"
+msgstr "el primer dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5427
 msgctxt "recur-description"
 msgid "on the second Monday"
-msgstr "el segon Dilluns"
+msgstr "el segon dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5430
 msgctxt "recur-description"
 msgid "on the third Monday"
-msgstr "el tercer Dilluns"
+msgstr "el tercer dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5433
 msgctxt "recur-description"
 msgid "on the fourth Monday"
-msgstr "el quart Dilluns"
+msgstr "el quart dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5436
 msgctxt "recur-description"
 msgid "on the fifth Monday"
-msgstr "el cinquè Dilluns"
+msgstr "el cinquè dilluns"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5449
 msgctxt "recur-description"
 msgid "on the first Tuesday"
-msgstr "el primer Dimarts"
+msgstr "el primer dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5452
 msgctxt "recur-description"
 msgid "on the second Tuesday"
-msgstr "el segon Dimarts"
+msgstr "el segon dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5455
 msgctxt "recur-description"
 msgid "on the third Tuesday"
-msgstr "el tercer Dimarts"
+msgstr "el tercer dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5458
 msgctxt "recur-description"
 msgid "on the fourth Tuesday"
-msgstr "el quart Dimarts"
+msgstr "el quart dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5461
 msgctxt "recur-description"
 msgid "on the fifth Tuesday"
-msgstr "el cinquè Dimarts"
+msgstr "el cinquè dimarts"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5474
 msgctxt "recur-description"
 msgid "on the first Wednesday"
-msgstr "el primer Dimecres"
+msgstr "el primer dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5477
 msgctxt "recur-description"
 msgid "on the second Wednesday"
-msgstr "el segon Dimecres"
+msgstr "el segon dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5480
 msgctxt "recur-description"
 msgid "on the third Wednesday"
-msgstr "el tercer Dimecres"
+msgstr "el tercer dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5483
 msgctxt "recur-description"
 msgid "on the fourth Wednesday"
-msgstr "el quart Dimecres"
+msgstr "el quart dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5486
 msgctxt "recur-description"
 msgid "on the fifth Wednesday"
-msgstr "el cinquè Dimecres"
+msgstr "el cinquè dimecres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5499
 msgctxt "recur-description"
 msgid "on the first Thursday"
-msgstr "el primer Dijous"
+msgstr "el primer dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5502
 msgctxt "recur-description"
 msgid "on the second Thursday"
-msgstr "el segon Dijous"
+msgstr "el segon dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5505
 msgctxt "recur-description"
 msgid "on the third Thursday"
-msgstr "el tercer Dijous"
+msgstr "el tercer dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5508
 msgctxt "recur-description"
 msgid "on the fourth Thursday"
-msgstr "el quart Dijous"
+msgstr "el quart dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5511
 msgctxt "recur-description"
 msgid "on the fifth Thursday"
-msgstr "el cinquè Dijous"
+msgstr "el cinquè dijous"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5524
 msgctxt "recur-description"
 msgid "on the first Friday"
-msgstr "el primer Divendres"
+msgstr "el primer divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5527
 msgctxt "recur-description"
 msgid "on the second Friday"
-msgstr "el segon Divendres"
+msgstr "el segon divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5530
 msgctxt "recur-description"
 msgid "on the third Friday"
-msgstr "el tercer Divendres"
+msgstr "el tercer divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5533
 msgctxt "recur-description"
 msgid "on the fourth Friday"
-msgstr "el quart Divendres"
+msgstr "el quart divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5536
 msgctxt "recur-description"
 msgid "on the fifth Friday"
-msgstr "el cinquè Divendres"
+msgstr "el cinquè divendres"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5549
 msgctxt "recur-description"
 msgid "on the first Saturday"
-msgstr "el primer Dissabte"
+msgstr "el primer dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5552
 msgctxt "recur-description"
 msgid "on the second Saturday"
-msgstr "el segon Dissabte"
+msgstr "el segon dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5555
 msgctxt "recur-description"
 msgid "on the third Saturday"
-msgstr "el tercer Dissabte"
+msgstr "el tercer dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5558
 msgctxt "recur-description"
 msgid "on the fourth Saturday"
-msgstr "el quart Dissabte"
+msgstr "el quart dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5561
 msgctxt "recur-description"
 msgid "on the fifth Saturday"
-msgstr "el cinquè Dissabte"
+msgstr "el cinquè dissabte"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5574
 msgctxt "recur-description"
 msgid "on the first Sunday"
-msgstr "el primer Diumenge"
+msgstr "el primer diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5577
 msgctxt "recur-description"
 msgid "on the second Sunday"
-msgstr "el segon Diumenge"
+msgstr "el segon diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5580
 msgctxt "recur-description"
 msgid "on the third Sunday"
-msgstr "el tercer Diumenge"
+msgstr "el tercer diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5583
 msgctxt "recur-description"
 msgid "on the fourth Sunday"
-msgstr "el quart Diumenge"
+msgstr "el quart diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5586
 msgctxt "recur-description"
 msgid "on the fifth Sunday"
-msgstr "el cinquè Diumenge"
+msgstr "el cinquè diumenge"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5615
 #, c-format
@@ -2368,8 +2368,8 @@ msgstr[1] "Cada %d anys per sempre"
 #, c-format
 msgid "every year"
 msgid_plural "every %d years"
-msgstr[0] "Cada any"
-msgstr[1] "Cada %d anys"
+msgstr[0] "cada any"
+msgstr[1] "cada %d anys"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5635
 #, c-format
@@ -2387,8 +2387,8 @@ msgstr[1] "Cada %d anys"
 #, c-format
 msgid "for one occurrence"
 msgid_plural "for %d occurrences"
-msgstr[0] "per un incident"
-msgstr[1] "per %d incidents"
+msgstr[0] "per una ocurrència"
+msgstr[1] "per %d ocurrències"
 
 #. Translators: This is one of the last possible parts of a recurrence
 #. description.
@@ -2461,7 +2461,7 @@ msgstr "%1$s%2$s"
 #: ../src/calendar/libecal/e-cal-recur.c:5769
 msgctxt "recur-description"
 msgid "The meeting recurs"
-msgstr "La reunió es recurrent"
+msgstr "La reunió és recurrent"
 
 #: ../src/calendar/libecal/e-cal-recur.c:5748
 #: ../src/calendar/libecal/e-cal-recur.c:5771
@@ -2531,7 +2531,7 @@ msgstr[1] "%d setmanes"
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d dia"
-msgstr[1] "%ddies"
+msgstr[1] "%d dies"
 
 #: ../src/calendar/libecal/e-cal-util.c:831
 #: ../src/libedataserverui/e-reminders-widget.c:283
@@ -6139,7 +6139,7 @@ msgid ""
 "otherwise the reminders dialog is shown immediately"
 msgstr ""
 "Quan s'estableix a cert, els recordatoris només es mostren a la safata de "
-"notificació, en cas contrari el quadre de diàleg del recordatoris es "
+"notificació, en cas contrari el quadre de diàleg dels recordatoris es "
 "mostrarà immediatament"
 
 #: ../data/org.gnome.evolution-data-server.calendar.gschema.xml.in.h:13
