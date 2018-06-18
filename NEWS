@@ -1,3 +1,41 @@
+Evolution-Data-Server 3.29.3 2018-06-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 796115 - [EWebDAVDiscover] Propagate auth error from .well-known addresses (Milan Crha)
+	Bug 796116 - [webcal] Skip UTF-8 marker when parsing iCalendar string (Milan Crha)
+	Bug 793927 - [Google book] Do not use URI as contact UID (Milan Crha)
+	Bug 796281 - [Calendar] Runtime warning when searching in empty Description (Milan Crha)
+	Bug 763029 - S/MIME encrypt fails to find certificate in other slots (Milan Crha)
+	Bug 792610 - Consider alternate signer emails in sender address verification (Milan Crha)
+	Bug 796136 - [IMAPx] Guess message info's attachment flag more accurately (Milan Crha)
+	Bug 794108 - ETimezoneCache only grows (Milan Crha)
+	Bug 795197 - Add an API to refresh collection backend (Milan Crha)
+	Bug 795869 - Synchronize color of WebDAV resources (Milan Crha)
+	Bug 796174 - strcat() considered unsafe for buffer overflow (Milan Crha)
+	I#2 - Confusing counts when downloading messages for offline (Milan Crha)
+	I#4 - Incorrectly says signature from KMail is invalid (Milan Crha)
+	I#7 - Missing build dependency for gdbus-codegen on input .xml file (Milan Crha)
+	I#5 - Compare only date when searching with Sent/Received dates (Milan Crha)
+	I#6 - Can throw an error when parsing BODYSTRUCTURE response (Milan Crha)
+
+Miscellaneous:
+	Check for ICAL_STATUS_DELETED status enum value (Milan Crha)
+	Correct prototypes of some virtual functions of EReminderWatcher (Milan Crha)
+	Fix a memory leak (Milan Crha)
+	Use Unicode in translatable strings (Milan Crha)
+	Silently skip empty lines when reading autoconfig-variables (Milan Crha)
+	Update bug URL and switch to https:// in the DOAP file (Milan Crha)
+	Google's "Daily Limit Exceeded" error not always propagated into UI (Milan Crha)
+	[IMAPx] Prefer existing allocate/deallocate structure functions (Milan Crha)
+	[CalDAV] Race condition on connection object (Milan Crha)
+	Correct false runtime warning from camel_folder_info_build() (Milan Crha)
+
+Translations:
+	Christian Kirbach (de)
+	Daniel Mustieles (es)
+	Jordi Mas (ca)
+
 Evolution-Data-Server 3.29.2 2018-05-21
 ---------------------------------------
 
