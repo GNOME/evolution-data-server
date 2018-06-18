@@ -1,3 +1,34 @@
+Evolution-Data-Server 3.28.3 2018-06-18
+---------------------------------------
+
+Bug Fixes:
+	Bug 795997 - Fails to parse Google OAuth2 authorization code (Milan Crha)
+	Bug 796206 - CalDAV PUT's If-Match ETag is double quoted (Milan Crha)
+	Bug 796115 - [EWebDAVDiscover] Propagate auth error from .well-known addresses (Milan Crha)
+	Bug 796116 - [webcal] Skip UTF-8 marker when parsing iCalendar string (Milan Crha)
+	Bug 796281 - [Calendar] Runtime warning when searching in empty Description (Milan Crha)
+	Bug 763029 - S/MIME encrypt fails to find certificate in other slots (Milan Crha)
+	Bug 792610 - Consider alternate signer emails in sender address verification (Milan Crha)
+	I#2 - Confusing counts when downloading messages for offline (Milan Crha)
+	I#4 - Incorrectly says signature from KMail is invalid (Milan Crha)
+
+Miscellaneous:
+	Address some of the clang warnings (Milan Crha)
+	Correct some public headers in libedataserverui (Milan Crha)
+	Address some of the compiler and static analyzers warnings (Milan Crha)
+	[module-secret-monitor] Correct runtime warning from secret_service_search_sync() (Milan Crha)
+	Check for ICAL_STATUS_DELETED status enum value (Milan Crha)
+	Correct find_program() for python with multiple names (Milan Crha)
+	Silently skip empty lines when reading autoconfig-variables (Milan Crha)
+	Update bug URL and switch to https:// in the DOAP file (Milan Crha)
+	Google's "Daily Limit Exceeded" error not always propagated into UI (Milan Crha)
+	[CalDAV] Race condition on connection object (Milan Crha)
+	Correct false runtime warning from camel_folder_info_build() (Milan Crha)
+
+Translations:
+	Marek Černocký (cs)
+	Matej Urbančič (sl)
+
 Evolution-Data-Server 3.28.2 2018-05-07
 ---------------------------------------
 
