@@ -924,6 +924,53 @@ exit:
 	return success;
 }
 
+typedef struct _RemoveCacheFiles {
+	CamelIMAPXFolder *imapx_folder;
+	GSList *uids;
+} RemoveCacheFiles;
+
+static void
+remove_cache_files_free (gpointer ptr)
+{
+	RemoveCacheFiles *rcf = ptr;
+
+	if (rcf) {
+		g_clear_object (&rcf->imapx_folder);
+		g_slist_free_full (rcf->uids, (GDestroyNotify) camel_pstring_free);
+		g_free (rcf);
+	}
+}
+
+static void
+imapx_folder_remove_cache_files_thread (CamelSession *session,
+					GCancellable *cancellable,
+					gpointer user_data,
+					GError **error)
+{
+	RemoveCacheFiles *rcf = user_data;
+	GSList *link;
+	guint len, index;
+
+	g_return_if_fail (rcf != NULL);
+	g_return_if_fail (CAMEL_IS_IMAPX_FOLDER (rcf->imapx_folder));
+	g_return_if_fail (rcf->uids != NULL);
+
+	len = g_slist_length (rcf->uids);
+
+	for (index = 1, link = rcf->uids;
+	     link && !g_cancellable_set_error_if_cancelled (cancellable, error);
+	     index++, link = g_slist_next (link)) {
+		const gchar *message_uid = link->data;
+
+		if (message_uid) {
+			camel_data_cache_remove (rcf->imapx_folder->cache, "tmp", message_uid, NULL);
+			camel_data_cache_remove (rcf->imapx_folder->cache, "cur", message_uid, NULL);
+
+			camel_operation_progress (cancellable, index * 100 / len);
+		}
+	}
+}
+
 static void
 imapx_folder_changed (CamelFolder *folder,
 		      CamelFolderChangeInfo *info)
@@ -932,6 +979,7 @@ imapx_folder_changed (CamelFolder *folder,
 
 	if (info && info->uid_removed && info->uid_removed->len) {
 		CamelIMAPXFolder *imapx_folder;
+		GSList *removed_uids = NULL;
 		guint ii;
 
 		imapx_folder = CAMEL_IMAPX_FOLDER (folder);
@@ -948,11 +996,44 @@ imapx_folder_changed (CamelFolder *folder,
 			g_hash_table_remove (imapx_folder->priv->move_to_real_junk_uids, message_uid);
 			g_hash_table_remove (imapx_folder->priv->move_to_inbox_uids, message_uid);
 
-			camel_data_cache_remove (imapx_folder->cache, "tmp", message_uid, NULL);
-			camel_data_cache_remove (imapx_folder->cache, "cur", message_uid, NULL);
+			removed_uids = g_slist_prepend (removed_uids, (gpointer) camel_pstring_strdup (message_uid));
 		}
 
 		g_mutex_unlock (&imapx_folder->priv->move_to_hash_table_lock);
+
+		if (removed_uids) {
+			CamelSession *session = NULL;
+			CamelStore *parent_store;
+
+			parent_store = camel_folder_get_parent_store (folder);
+			if (parent_store)
+				session = camel_service_ref_session (CAMEL_SERVICE (parent_store));
+
+			if (session) {
+				RemoveCacheFiles *rcf;
+				gchar *description;
+
+				rcf = g_new0 (RemoveCacheFiles, 1);
+				rcf->imapx_folder = g_object_ref (imapx_folder);
+				rcf->uids = removed_uids;
+
+				removed_uids = NULL; /* transfer ownership to 'rcf' */
+
+				/* Translators: The first “%s” is replaced with an account name and the second “%s”
+				   is replaced with a full path name. The spaces around “:” are intentional, as
+				   the whole “%s : %s” is meant as an absolute identification of the folder. */
+				description = g_strdup_printf (_("Removing stale cache files in folder “%s : %s”"),
+					camel_service_get_display_name (CAMEL_SERVICE (parent_store)),
+					camel_folder_get_full_name (CAMEL_FOLDER (imapx_folder)));
+
+				camel_session_submit_job (session, description,
+					imapx_folder_remove_cache_files_thread, rcf, remove_cache_files_free);
+
+				g_free (description);
+			}
+
+			g_slist_free_full (removed_uids, (GDestroyNotify) camel_pstring_free);
+		}
 	}
 
 	/* Chain up to parent's method. */
