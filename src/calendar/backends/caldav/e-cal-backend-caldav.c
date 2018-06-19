@@ -1040,6 +1040,30 @@ ecb_caldav_uid_to_uri (ECalBackendCalDAV *cbdav,
 	return uri;
 }
 
+static void
+ecb_caldav_store_component_etag (icalcomponent *icalcomp,
+				 const gchar *etag)
+{
+	icalcomponent *subcomp;
+
+	g_return_if_fail (icalcomp != NULL);
+	g_return_if_fail (etag != NULL);
+
+	e_cal_util_set_x_property (icalcomp, E_CALDAV_X_ETAG, etag);
+
+	for (subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
+	     subcomp;
+	     subcomp = icalcomponent_get_next_component (icalcomp, ICAL_ANY_COMPONENT)) {
+		icalcomponent_kind kind = icalcomponent_isa (subcomp);
+
+		if (kind == ICAL_VEVENT_COMPONENT ||
+		    kind == ICAL_VJOURNAL_COMPONENT ||
+		    kind == ICAL_VTODO_COMPONENT) {
+			e_cal_util_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
+		}
+	}
+}
+
 static gboolean
 ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 				const gchar *uid,
@@ -1059,8 +1083,30 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 	g_return_val_if_fail (E_IS_CAL_BACKEND_CALDAV (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_component != NULL, FALSE);
+	g_return_val_if_fail (out_extra != NULL, FALSE);
 
 	cbdav = E_CAL_BACKEND_CALDAV (meta_backend);
+
+	/* When called immediately after save and the server didn't change the component,
+	   then the 'extra' contains "href" + "\n" + "vCalendar", to avoid unneeded GET
+	   from the server. */
+	if (extra && *extra) {
+		const gchar *newline;
+
+		newline = strchr (extra, '\n');
+		if (newline && newline[1] && newline != extra) {
+			icalcomponent *vcalendar;
+
+			vcalendar = icalcomponent_new_from_string (newline + 1);
+			if (vcalendar) {
+				*out_extra = g_strndup (extra, newline - extra);
+				*out_component = vcalendar;
+
+				return TRUE;
+			}
+		}
+	}
+
 	webdav = ecb_caldav_ref_session (cbdav);
 
 	if (extra && *extra) {
@@ -1127,23 +1173,12 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 		*out_component = NULL;
 
 		if (href && etag && bytes && length != ((gsize) -1)) {
-			icalcomponent *icalcomp, *subcomp;
+			icalcomponent *icalcomp;
 
 			icalcomp = icalcomponent_new_from_string (bytes);
+
 			if (icalcomp) {
-				e_cal_util_set_x_property (icalcomp, E_CALDAV_X_ETAG, etag);
-
-				for (subcomp = icalcomponent_get_first_component (icalcomp, ICAL_ANY_COMPONENT);
-				     subcomp;
-				     subcomp = icalcomponent_get_next_component (icalcomp, ICAL_ANY_COMPONENT)) {
-					icalcomponent_kind kind = icalcomponent_isa (subcomp);
-
-					if (kind == ICAL_VEVENT_COMPONENT ||
-					    kind == ICAL_VJOURNAL_COMPONENT ||
-					    kind == ICAL_VTODO_COMPONENT) {
-						e_cal_util_set_x_property (subcomp, E_CALDAV_X_ETAG, etag);
-					}
-				}
+				ecb_caldav_store_component_etag (icalcomp, etag);
 
 				*out_component = icalcomp;
 			}
@@ -1217,11 +1252,11 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 	}
 
 	ical_string = icalcomponent_as_ical_string_r (vcalendar);
-	icalcomponent_free (vcalendar);
 
 	webdav = ecb_caldav_ref_session (cbdav);
 
 	if (uid && ical_string && (!overwrite_existing || (extra && *extra))) {
+		gchar *new_extra = NULL, *new_etag = NULL;
 		gboolean force_write = FALSE;
 
 		if (!extra || !*extra)
@@ -1242,16 +1277,43 @@ ecb_caldav_save_component_sync (ECalMetaBackend *meta_backend,
 
 		success = e_webdav_session_put_data_sync (webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_CALENDAR,
-			ical_string, -1, out_new_extra, NULL, cancellable, &local_error);
+			ical_string, -1, &new_extra, &new_etag, cancellable, &local_error);
 
-		/* To read the component back, because server can change it */
-		if (success)
+		if (success) {
+			/* Only if both are returned and it's not a weak ETag */
+			if (new_extra && *new_extra && new_etag && *new_etag &&
+			    g_ascii_strncasecmp (new_etag, "W/", 2) != 0) {
+				gchar *tmp;
+
+				ecb_caldav_store_component_etag (vcalendar, new_etag);
+
+				g_free (ical_string);
+				ical_string = icalcomponent_as_ical_string_r (vcalendar);
+
+				/* Encodes the href and the component into one string, which
+				   will be decoded in the load function */
+				tmp = g_strconcat (new_extra, "\n", ical_string, NULL);
+				g_free (new_extra);
+				new_extra = tmp;
+			}
+
+			/* To read the component back, either from the new_extra
+			   or from the server, because the server could change it */
 			*out_new_uid = g_strdup (uid);
+
+			if (out_new_extra)
+				*out_new_extra = new_extra;
+			else
+				g_free (new_extra);
+		}
+
+		g_free (new_etag);
 	} else {
 		success = FALSE;
 		g_propagate_error (error, EDC_ERROR (InvalidObject));
 	}
 
+	icalcomponent_free (vcalendar);
 	g_free (ical_string);
 	g_free (href);
 	g_free (etag);

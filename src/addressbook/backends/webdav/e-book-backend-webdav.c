@@ -929,8 +929,30 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 	g_return_val_if_fail (E_IS_BOOK_BACKEND_WEBDAV (meta_backend), FALSE);
 	g_return_val_if_fail (uid != NULL, FALSE);
 	g_return_val_if_fail (out_contact != NULL, FALSE);
+	g_return_val_if_fail (out_extra != NULL, FALSE);
 
 	bbdav = E_BOOK_BACKEND_WEBDAV (meta_backend);
+
+	/* When called immediately after save and the server didn't change the vCard,
+	   then the 'extra' contains "href" + "\n" + "vCard", to avoid unneeded GET
+	   from the server. */
+	if (extra && *extra) {
+		const gchar *newline;
+
+		newline = strchr (extra, '\n');
+		if (newline && newline[1] && newline != extra) {
+			EContact *contact;
+
+			contact = e_contact_new_from_vcard (newline + 1);
+			if (contact) {
+				*out_extra = g_strndup (extra, newline - extra);
+				*out_contact = contact;
+
+				return TRUE;
+			}
+		}
+	}
+
 	webdav = ebb_webdav_ref_session (bbdav);
 
 	if (extra && *extra) {
@@ -1061,6 +1083,7 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 	vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
 
 	if (uid && vcard_string && (!overwrite_existing || (extra && *extra))) {
+		gchar *new_extra = NULL, *new_etag = NULL;
 		gboolean force_write = FALSE;
 
 		if (!extra || !*extra)
@@ -1081,11 +1104,37 @@ ebb_webdav_save_contact_sync (EBookMetaBackend *meta_backend,
 
 		success = e_webdav_session_put_data_sync (webdav, (extra && *extra) ? extra : href,
 			force_write ? "" : overwrite_existing ? etag : NULL, E_WEBDAV_CONTENT_TYPE_VCARD,
-			vcard_string, -1, out_new_extra, NULL, cancellable, &local_error);
+			vcard_string, -1, &new_extra, &new_etag, cancellable, &local_error);
 
-		/* To read the component back, because server can change it */
-		if (success)
+		if (success) {
+			/* Only if both are returned and it's not a weak ETag */
+			if (new_extra && *new_extra && new_etag && *new_etag &&
+			    g_ascii_strncasecmp (new_etag, "W/", 2) != 0) {
+				gchar *tmp;
+
+				e_vcard_util_set_x_attribute (E_VCARD (contact), E_WEBDAV_X_ETAG, new_etag);
+
+				g_free (vcard_string);
+				vcard_string = e_vcard_to_string (E_VCARD (contact), EVC_FORMAT_VCARD_30);
+
+				/* Encodes the href and the vCard into one string, which
+				   will be decoded in the load function */
+				tmp = g_strconcat (new_extra, "\n", vcard_string, NULL);
+				g_free (new_extra);
+				new_extra = tmp;
+			}
+
+			/* To read the vCard back, either from the new_extra
+			   or from the server, because the server could change it */
 			*out_new_uid = g_strdup (uid);
+
+			if (out_new_extra)
+				*out_new_extra = new_extra;
+			else
+				g_free (new_extra);
+		}
+
+		g_free (new_etag);
 	} else {
 		success = FALSE;
 		g_propagate_error (error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Object to save is not a valid vCard")));

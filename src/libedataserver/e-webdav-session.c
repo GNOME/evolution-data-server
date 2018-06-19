@@ -2446,6 +2446,8 @@ e_webdav_session_put_data_sync (EWebDAVSession *webdav,
 	if (content_type && *content_type)
 		soup_message_headers_replace (message->request_headers, "Content-Type", content_type);
 
+	soup_message_headers_replace (message->request_headers, "Prefer", "return=minimal");
+
 	soup_message_set_request (message, content_type, SOUP_MEMORY_TEMPORARY, bytes, length);
 
 	ret_bytes = e_soup_session_send_request_simple_sync (E_SOUP_SESSION (webdav), request, cancellable, error);
