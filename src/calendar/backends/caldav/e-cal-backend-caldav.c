@@ -1186,7 +1186,13 @@ ecb_caldav_load_component_sync (ECalMetaBackend *meta_backend,
 
 		if (!*out_component) {
 			success = FALSE;
-			g_propagate_error (&local_error, EDC_ERROR (InvalidObject));
+
+			if (!href)
+				g_propagate_error (&local_error, EDC_ERROR_EX (InvalidObject, _("Server didn't return object's href")));
+			else if (!etag)
+				g_propagate_error (&local_error, EDC_ERROR_EX (InvalidObject, _("Server didn't return object's ETag")));
+			else
+				g_propagate_error (&local_error, EDC_ERROR (InvalidObject));
 		}
 	}
 
