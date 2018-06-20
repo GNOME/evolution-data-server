@@ -1032,9 +1032,9 @@ ebb_webdav_load_contact_sync (EBookMetaBackend *meta_backend,
 			success = FALSE;
 
 			if (!href)
-				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server didn't return object's href")));
+				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server didn’t return object’s href")));
 			else if (!etag)
-				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server didn't return object's ETag")));
+				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Server didn’t return object’s ETag")));
 			else
 				g_propagate_error (&local_error, EDB_ERROR_EX (E_DATA_BOOK_STATUS_OTHER_ERROR, _("Received object is not a valid vCard")));
 		}

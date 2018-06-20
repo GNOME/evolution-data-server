@@ -35,16 +35,16 @@
       <_description>Users can extend the list of supported protocols and hostnames for defined OAuth2 services, in addition to those hard-coded.
       Each line can be of the form:
          servicename[-protocol]:hostname1,hostname2,...
-      where 'servicename' is the actual service name;
-      the '-protocol' is optional, and if written, then the service can be used only if both 'protocol' and 'hostnameX' match;
-      the 'hostnameX' is the actual host name to compare with, case insensitively.
+      where “servicename” is the actual service name;
+      the “-protocol” is optional, and if written, then the service can be used only if both “protocol” and “hostnameX” match;
+      the “hostnameX” is the actual host name to compare with, case insensitively.
       Each line can contain multiple values, separated by comma. There can be provided multiple lines
       for one OAuth2 service. Note that the actual URL where the token is requested and refreshed cannot
       be changed here, the hostname is to allow other servers, where the OAuth2 service can be used.
 
       Examples:
-         Company:mail.company.com - enables 'Company' OAuth2 authentication for 'mail.company.com' host
-	 Company-CalDAV:caldav.company.com - enables 'Company' OAuth2 authentication for any 'CalDAV' source, which reads data from 'caldav.company.com' host</_description>
+         Company:mail.company.com — enables “Company” OAuth2 authentication for “mail.company.com” host
+	 Company-CalDAV:caldav.company.com — enables “Company” OAuth2 authentication for any “CalDAV” source, which reads data from “caldav.company.com” host</_description>
     </key>
   </schema>
 </schemalist>
