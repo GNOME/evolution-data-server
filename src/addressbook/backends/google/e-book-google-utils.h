@@ -24,7 +24,8 @@
 
 #include "e-book-backend-google.h"
 
-#define E_GOOGLE_X_PHOTO_ETAG "X-EVOLUTION-GOOGLE-PHOTO-ETAG"
+#define E_GOOGLE_X_ETAG		"X-EVOLUTION-GOOGLE-ETAG"
+#define E_GOOGLE_X_PHOTO_ETAG	"X-EVOLUTION-GOOGLE-PHOTO-ETAG"
 
 G_BEGIN_DECLS
 
@@ -61,6 +62,7 @@ gchar *e_contact_sanitise_google_group_id (const gchar *group_id) G_GNUC_MALLOC 
 gchar *e_contact_sanitise_google_group_name (GDataEntry *group) G_GNUC_MALLOC G_GNUC_WARN_UNUSED_RESULT;
 
 const gchar *	e_book_google_utils_uid_from_entry	(GDataEntry *entry);
+gchar *		e_book_google_utils_time_to_revision	(gint64 unix_time);
 
 G_END_DECLS
 

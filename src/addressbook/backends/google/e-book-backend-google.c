@@ -33,6 +33,15 @@
 #include "e-book-backend-google.h"
 #include "e-book-google-utils.h"
 
+#ifdef G_OS_WIN32
+#ifdef gmtime_r
+#undef gmtime_r
+#endif
+
+/* The gmtime() in Microsoft's C library is MT-safe */
+#define gmtime_r(tp,tmp) (gmtime(tp)?(*(tmp)=*gmtime(tp),(tmp)):0)
+#endif
+
 #define URI_GET_CONTACTS "https://www.google.com/m8/feeds/contacts/default/full"
 
 /* Local cache data version. Change it to re-download whole book content */
@@ -571,7 +580,9 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 				if (cached_contact) {
 					gchar *old_etag;
 
-					old_etag = e_contact_get (cached_contact, E_CONTACT_REV);
+					old_etag = e_vcard_util_dup_x_attribute (E_VCARD (cached_contact), E_GOOGLE_X_ETAG);
+					if (!old_etag)
+						old_etag = e_contact_get (cached_contact, E_CONTACT_REV);
 
 					if (g_strcmp0 (gdata_entry_get_etag (GDATA_ENTRY (gdata_contact)), old_etag) == 0) {
 						g_object_unref (cached_contact);
@@ -589,8 +600,8 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 				g_rec_mutex_unlock (&bbgoogle->priv->groups_lock);
 
 				if (new_contact) {
-					const gchar *revision, *photo_etag;
-					gchar *object, *extra;
+					const gchar *etag, *photo_etag;
+					gchar *object, *revision, *extra;
 
 					photo_etag = gdata_contacts_contact_get_photo_etag (gdata_contact);
 					if (photo_etag && cached_contact) {
@@ -647,7 +658,9 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 						}
 					}
 
-					revision = gdata_entry_get_etag (GDATA_ENTRY (gdata_contact));
+					etag = gdata_entry_get_etag (GDATA_ENTRY (gdata_contact));
+					e_vcard_util_set_x_attribute (E_VCARD (new_contact), E_GOOGLE_X_ETAG, etag);
+					revision = e_book_google_utils_time_to_revision (gdata_entry_get_updated (GDATA_ENTRY (gdata_contact)));
 					e_contact_set (new_contact, E_CONTACT_REV, revision);
 					object = e_vcard_to_string (E_VCARD (new_contact), EVC_FORMAT_VCARD_30);
 					extra = gdata_parsable_get_xml (GDATA_PARSABLE (gdata_contact));
@@ -660,6 +673,7 @@ ebb_google_get_changes_sync (EBookMetaBackend *meta_backend,
 							e_book_meta_backend_info_new (uid, revision, object, extra));
 					}
 
+					g_free (revision);
 					g_free (object);
 					g_free (extra);
 				}
