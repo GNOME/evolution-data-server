@@ -80,7 +80,7 @@ struct _EBookBackendFilePrivate {
 	gchar     *photo_dirname;
 	gchar     *revision;
 	gchar     *locale;
-	gint       rev_counter;
+	volatile gint rev_counter;
 	gboolean   revision_guards;
 	GRWLock    lock;
 	GList     *cursors;
@@ -643,7 +643,8 @@ e_book_backend_file_create_unique_id (void)
 }
 
 static gchar *
-e_book_backend_file_new_revision (EBookBackendFile *bf)
+e_book_backend_file_new_revision (EBookBackendFile *bf,
+				  gboolean with_counter)
 {
 	gchar time_string[100] = {0};
 	const struct tm *tm = NULL;
@@ -654,7 +655,10 @@ e_book_backend_file_new_revision (EBookBackendFile *bf)
 	if (tm)
 		strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", tm);
 
-	return g_strdup_printf ("%s(%d)", time_string, bf->priv->rev_counter++);
+	if (with_counter)
+		return g_strdup_printf ("%s(%d)", time_string, g_atomic_int_add (&bf->priv->rev_counter, 1));
+
+	return g_strdup (time_string);
 }
 
 /* For now just bump the revision and set it in the DB every
@@ -670,7 +674,7 @@ e_book_backend_file_bump_revision (EBookBackendFile *bf,
 	gchar *new_revision;
 	gboolean success;
 
-	new_revision = e_book_backend_file_new_revision (bf);
+	new_revision = e_book_backend_file_new_revision (bf, TRUE);
 	success = e_book_sqlite_set_key_value (
 		bf->priv->sqlitedb,
 		SQLITE_REVISION_KEY,
@@ -734,7 +738,7 @@ set_revision (EBookBackendFile *bf,
 {
 	gchar *rev;
 
-	rev = e_book_backend_file_new_revision (bf);
+	rev = e_book_backend_file_new_revision (bf, FALSE);
 	e_contact_set (contact, E_CONTACT_REV, rev);
 	g_free (rev);
 }

@@ -581,6 +581,8 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	GHashTable *extended_props;
 	GList *websites, *events;
 	GDate bdate;
+	GDateTime *dt;
+	gchar *rev = NULL;
 	gboolean bdate_has_year;
 	gboolean have_uri_home = FALSE, have_uri_blog = FALSE;
 
@@ -603,27 +605,23 @@ e_contact_new_from_gdata_entry (GDataEntry *entry,
 	attr = e_vcard_attribute_new (NULL, EVC_UID);
 	e_vcard_add_attribute_with_value (vcard, attr, uid);
 
+	if (gdata_entry_get_etag (entry))
+		e_vcard_util_set_x_attribute (vcard, E_GOOGLE_X_ETAG, gdata_entry_get_etag (entry));
+
 	/* REV */
 	attr = e_vcard_attribute_new (NULL, EVC_REV);
-	if (gdata_entry_get_etag (entry)) {
-		e_vcard_add_attribute_with_value (vcard, attr, gdata_entry_get_etag (entry));
-	} else {
-		GDateTime *dt;
-		gchar *rev = NULL;
-
-		dt = g_date_time_new_from_unix_utc (gdata_entry_get_updated (entry));
-		if (dt) {
-			rev = g_date_time_format (dt, "%Y-%m-%dT%H:%M:%S");
-			g_date_time_unref (dt);
-		}
-
-		if (!rev)
-			rev = g_strdup_printf ("%" G_GINT64_FORMAT, gdata_entry_get_updated (entry));
-
-		e_vcard_add_attribute_with_value (vcard, attr, rev);
-
-		g_free (rev);
+	dt = g_date_time_new_from_unix_utc (gdata_entry_get_updated (entry));
+	if (dt) {
+		rev = g_date_time_format (dt, "%Y-%m-%dT%H:%M:%SZ");
+		g_date_time_unref (dt);
 	}
+
+	if (!rev)
+		rev = g_strdup_printf ("%" G_GINT64_FORMAT, gdata_entry_get_updated (entry));
+
+	e_vcard_add_attribute_with_value (vcard, attr, rev);
+
+	g_free (rev);
 
 	/* FN, N */
 	name = gdata_contacts_contact_get_name (GDATA_CONTACTS_CONTACT (entry));
@@ -1715,4 +1713,17 @@ e_contact_sanitise_google_group_name (GDataEntry *group)
 		g_warning ("Unknown system group '%s' for group with ID '%s'.", system_group_id, gdata_entry_get_id (group));
 		return g_strdup (gdata_entry_get_title (group));
 	}
+}
+
+gchar *
+e_book_google_utils_time_to_revision (gint64 unix_time)
+{
+	struct tm stm;
+	time_t tt = (time_t) unix_time;
+	gchar time_string[100] = { 0 };
+
+	gmtime_r (&tt, &stm);
+	strftime (time_string, 100, "%Y-%m-%dT%H:%M:%SZ", &stm);
+
+	return g_strdup (time_string);
 }
